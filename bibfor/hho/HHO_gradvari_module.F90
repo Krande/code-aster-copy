@@ -419,10 +419,7 @@ contains
             call hhoAssGVLhs(hhoCell, hhoData, mapMeca, mapVari, mapLagv, &
                              lhs_mm, lhs_mv, lhs_ml, lhs_vv, lhs_vl, lhs_ll, lhs)
 
-            lhs = 0.d0
-            do j = 1, 60
-                lhs(j, j) = 1.d0
-            end do
+            ! call hhoPrintMat(lhs_vv(1:gv_total_dofs, 1:gv_total_dofs))
         end if
 !
 999     continue
@@ -652,7 +649,7 @@ contains
             dsgv_dgv(1:ndim, 1:ndim) = dsde(neu+3:ntot, neu+3:ntot)
         end if
         ! print *, hhoCS%option
-        ! print *, ipg, lgpg, nbsig
+        ! print *, ipg, lgpg, ntot
         ! print *, eplcm
         ! print *, eplci
         ! print *, sig_vari, sig_lagv, sig_gv
@@ -681,7 +678,7 @@ contains
 !
 !--------------------------------------------------------------------------------------------------
         integer :: mk_cbs, mk_fbs, mk_total_dofs, gv_cbs, gv_fbs, gv_total_dofs
-        integer :: i_face, i_dof, num_tot, num_gv, num_vari
+        integer :: i_face, i_dof, num_tot, num_gv, num_vari, num_mk
 
 !
         call hhoMecaDofs(hhoCell, hhoData, mk_cbs, mk_fbs, mk_total_dofs)
@@ -693,13 +690,14 @@ contains
 !
         num_tot = 0
         num_gv = 0
+        num_mk = 0
         num_vari = 0
 !
         do i_face = 1, hhoCell%nbfaces
             do i_dof = 1, mk_fbs
                 num_tot = num_tot+1
-                num_gv = num_gv+1
-                mapMeca(mk_cbs+num_gv) = num_tot
+                num_mk = num_mk+1
+                mapMeca(mk_cbs+num_mk) = num_tot
             end do
             do i_dof = 1, gv_fbs
                 num_tot = num_tot+1

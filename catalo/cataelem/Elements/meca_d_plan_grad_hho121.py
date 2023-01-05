@@ -306,7 +306,7 @@ class MECA_DGVQ_HHO121(Element):
             para_out=((SP.PDEFONC, EDEFONC), (SP.PDEFONO, EDEFONO)),
         ),
         OP.FORC_NODA(
-            te=484,
+            te=485,
             para_in=(
                 (OP.FORC_NODA.PCOMPOR, LC.CCOMPOR),
                 (OP.FORC_NODA.PCONTMR, ECONTPG),
