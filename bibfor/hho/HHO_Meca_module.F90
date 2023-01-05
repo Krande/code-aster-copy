@@ -73,7 +73,7 @@ module HHO_Meca_module
 !
 !
     public :: HHO_Meca_State
-    public :: hhoMecaInit, hhoPreCalcMeca, hhoLocalContribMeca, hhoCalcStabCoeff
+    public :: hhoMecaInit, hhoPreCalcMeca, hhoLocalContribMeca, hhoCalcStabCoeffMeca
     public :: hhoCalcOpMeca, hhoReloadPreCalcMeca
     public :: YoungModulus, hhoLocalMassMeca
 !
@@ -412,7 +412,7 @@ contains
 !
 ! --- add stabilization
 !
-        call hhoCalcStabCoeff(hhoData, hhoCS%fami, hhoMecaState%time_curr, hhoQuadCellRigi)
+        call hhoCalcStabCoeffMeca(hhoData, hhoCS%fami, hhoMecaState%time_curr, hhoQuadCellRigi)
 !
         if (L_VECT(hhoCS%option)) then
             call dsymv('U', total_dofs, hhoData%coeff_stab(), hhoMecaState%stab, MSIZE_TDOFS_VEC, &
@@ -535,7 +535,7 @@ contains
 !
 !===================================================================================================
 !
-    subroutine hhoCalcStabCoeff(hhoData, fami, time, hhoQuad)
+    subroutine hhoCalcStabCoeffMeca(hhoData, fami, time, hhoQuad)
 !
         implicit none
 !

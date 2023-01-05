@@ -62,8 +62,9 @@ module HHO_LargeStrainMeca_module
 ! Module for large deformations with hho
 !
 ! --------------------------------------------------------------------------------------------------
-    public  :: hhoLargeStrainLCMeca, hhoComputeRhsLarge, hhoCalculF
-    private :: hhoComputeAgphi, hhoComputeLhsLarge, transfo_A
+    public  :: hhoLargeStrainLCMeca, hhoCalculF
+    public :: hhoComputeLhsLarge, hhoComputeRhsLarge
+    private :: hhoComputeAgphi, transfo_A
     private :: select_behavior, gdeflog, nbsigm_cmp, greenlagr
 !
 contains

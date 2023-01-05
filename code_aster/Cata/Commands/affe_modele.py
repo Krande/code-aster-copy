@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -243,12 +243,13 @@ AFFE_MODELE = OPER(
                     "D_PLAN_HH2SUDA",  # person_in_charge: sylvie.granet at edf.fr
                     "PLAN_JHMS",  # person_in_charge: sylvie.granet at edf.fr
                     "AXIS_JHMS",  # person_in_charge: sylvie.granet at edf.fr
-                    "3D_HHO",  # person_in_charge: mickael.abbas at edf.fr
-                    "D_PLAN_HHO",  # person_in_charge: mickael.abbas at edf.fr
+                    "3D_HHO",  # person_in_charge: nicolas.pignet at edf.fr
+                    "D_PLAN_HHO",  # person_in_charge: nicolas.pignet at edf.fr
+                    "D_PLAN_GRAD_H",  # person_in_charge: nicolas.pignet at edf.fr
                 ),
             ),
             b_formu_hho=BLOC(
-                condition="""equal_to('MODELISATION', ('3D_HHO', 'D_PLAN_HHO', ))""",
+                condition="""equal_to('MODELISATION', ('3D_HHO', 'D_PLAN_HHO', "D_PLAN_GRAD_H" ))""",
                 fr=tr("HHO formulation"),
                 FORMULATION=SIMP(
                     statut="f",

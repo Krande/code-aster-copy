@@ -242,7 +242,7 @@ subroutine dismlg(questi, nomobz, repi, repkz, ierd)
 
                     else if (questi .eq. 'EXI_HHO') then
                         call teattr('C', 'TYPMOD2', typmod2, iret, typel=elemTypeName)
-                        if (typmod2 .eq. 'HHO') then
+                        if (typmod2(1:3) .eq. 'HHO') then
                             repk = 'OUI'
                             go to 99
                         else
@@ -251,7 +251,7 @@ subroutine dismlg(questi, nomobz, repi, repkz, ierd)
 
                     else if (questi .eq. 'EXI_NO_HHO') then
                         call teattr('C', 'TYPMOD2', typmod2, iret, typel=elemTypeName)
-                        if (typmod2 .eq. 'HHO') then
+                        if (typmod2(1:3) .eq. 'HHO') then
                             repk = 'NON'
                         else
                             repk = 'OUI'
@@ -259,7 +259,8 @@ subroutine dismlg(questi, nomobz, repi, repkz, ierd)
                         end if
 
                     else if (questi .eq. 'EXI_HHO_LINE') then
-                        if (lteatt('TYPMOD2', 'HHO', typel=elemTypeName)) then
+                        if (lteatt('TYPMOD2', 'HHO', typel=elemTypeName) .or. &
+                            lteatt('TYPMOD2', 'HHO_GRAD', typel=elemTypeName)) then
                             call teattr('C', 'FORMULATION', formul, iret, typel=elemTypeName)
                             if (formul .eq. 'HHO_LINE') then
                                 repk = 'OUI'
@@ -271,7 +272,8 @@ subroutine dismlg(questi, nomobz, repi, repkz, ierd)
                         end if
 
                     else if (questi .eq. 'EXI_HHO_QUAD') then
-                        if (lteatt('TYPMOD2', 'HHO', typel=elemTypeName)) then
+                        if (lteatt('TYPMOD2', 'HHO', typel=elemTypeName) .or. &
+                            lteatt('TYPMOD2', 'HHO_GRAD', typel=elemTypeName)) then
                             call teattr('C', 'FORMULATION', formul, iret, typel=elemTypeName)
                             if (formul .eq. 'HHO_QUAD') then
                                 repk = 'OUI'

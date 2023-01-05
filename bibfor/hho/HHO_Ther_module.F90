@@ -59,9 +59,10 @@ module HHO_Ther_module
 ! --------------------------------------------------------------------------------------------------
 !
 !
-    public :: hhoLocalRigiTher, hhoCalcStabCoeff, hhoLocalMassTher
-    public :: hhoCalcOpTher
-    private :: hhoComputeRhsRigiTher, hhoComputeLhsRigiTher, hhoComputeAgphi
+    public :: hhoLocalRigiTher, hhoCalcStabCoeffTher, hhoLocalMassTher
+    public :: hhoCalcOpTher, hhoComputeRhsRigiTher, hhoComputeLhsRigiTher
+    public :: hhoComputeLhsMassTher, hhoComputeRhsMassTher
+    private :: hhoComputeAgphi
     private :: hhoComputeBehaviourTher, LambdaMax, hhoComputeRhoCpTher
 !
 contains
@@ -212,7 +213,8 @@ contains
 !
 ! --- add stabilization
 !
-        call hhoCalcStabCoeff(hhoData, fami, hhoQuadCellRigi%nbQuadPoints, hhoCell%ndim, time_curr)
+        call hhoCalcStabCoeffTher(hhoData, fami, hhoQuadCellRigi%nbQuadPoints, hhoCell%ndim, &
+                                  time_curr)
 !
         if (l_rhs) then
             call dsymv('U', total_dofs, hhoData%coeff_stab(), stab, MSIZE_TDOFS_SCAL, &
@@ -321,11 +323,17 @@ contains
 !
 ! -------- Compute rhs
 !
-            if (l_rhs) call hhoComputeRhsMassTher(temp_eval, cp, weight, BSCEval, cbs, rhs)
+            if (l_rhs) then
+                call hhoComputeRhsMassTher(temp_eval, cp, weight, BSCEval, cbs, &
+                                           rhs(1:MSIZE_CELL_SCAL))
+            end if
 !
 ! -------- Compute lhs
 !
-            if (l_lhs) call hhoComputeLhsMassTher(cp, weight, BSCEval, cbs, lhs)
+            if (l_lhs) then
+                call hhoComputeLhsMassTher(cp, weight, BSCEval, cbs, &
+                                           lhs(1:MSIZE_CELL_SCAL, 1:MSIZE_CELL_SCAL))
+            end if
 !
         end do
 !
@@ -436,7 +444,7 @@ contains
         real(kind=8), intent(in)        :: weight
         real(kind=8), intent(in)        :: BSCEval(MSIZE_CELL_SCAL)
         integer, intent(in)             :: cbs
-        real(kind=8), intent(inout)     :: rhs(MSIZE_TDOFS_SCAL)
+        real(kind=8), intent(inout)     :: rhs(MSIZE_CELL_SCAL)
 !
 ! ------------------------------------------------------------------------------------------
 !   HHO - thermics
@@ -514,7 +522,7 @@ contains
         real(kind=8), intent(in)        :: weight
         real(kind=8), intent(in)        :: BSCEval(MSIZE_CELL_SCAL)
         integer, intent(in)             :: cbs
-        real(kind=8), intent(inout)     :: lhs(MSIZE_TDOFS_SCAL, MSIZE_TDOFS_SCAL)
+        real(kind=8), intent(inout)     :: lhs(MSIZE_CELL_SCAL, MSIZE_CELL_SCAL)
 !
 ! --------------------------------------------------------------------------------------------------
 !   HHO - thermics
@@ -531,7 +539,7 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
         coeff = cp*weight
-        call dsyr('U', cbs, coeff, BSCEval, 1, lhs, MSIZE_TDOFS_SCAL)
+        call dsyr('U', cbs, coeff, BSCEval, 1, lhs, MSIZE_CELL_SCAL)
 !
     end subroutine
 !
@@ -647,7 +655,7 @@ contains
 !
 !===================================================================================================
 !
-    subroutine hhoCalcStabCoeff(hhoData, fami, nbQuadPoints, ndim, time)
+    subroutine hhoCalcStabCoeffTher(hhoData, fami, nbQuadPoints, ndim, time)
 !
         implicit none
 !

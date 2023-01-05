@@ -172,7 +172,7 @@ subroutine te0450(nomopt, nomte)
 !
 ! --- add stabilization
 !
-    call hhoCalcStabCoeff(hhoData, hhoCS%fami, 0.d0, hhoQuadCellRigi)
+    call hhoCalcStabCoeffMeca(hhoData, hhoCS%fami, 0.d0, hhoQuadCellRigi)
 !
     call dsymv('U', total_dofs, hhoData%coeff_stab(), hhoMecaState%stab, MSIZE_TDOFS_VEC, &
                hhoMecaState%depl_curr, 1, 1.d0, rhs, 1)

@@ -15,15 +15,126 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
+
+subroutine te0485(nomopt, nomte)
 !
-subroutine te0485(option, nomte)
+    use Behaviour_module, only: behaviourOption
+    use HHO_type
+    use HHO_utils_module
+    use HHO_size_module
+    use HHO_quadrature_module
+    use HHO_Meca_module
+    use HHO_compor_module
+    use HHO_GV_module
+    use HHO_init_module, only: hhoInfoInitCell
 !
     implicit none
 !
-#include "asterfort/utmess.h"
+#include "asterf_types.h"
+#include "asterfort/Behaviour_type.h"
+#include "asterfort/HHO_size_module.h"
+#include "asterfort/assert.h"
+#include "asterfort/elrefe_info.h"
+#include "asterfort/jevech.h"
+#include "asterfort/nmtstm.h"
+#include "asterfort/writeVector.h"
+#include "asterfort/writeMatrix.h"
+#include "jeveux.h"
 !
-    character(len=16), intent(in) :: option, nomte
+! --------------------------------------------------------------------------------------------------
+!  HHO
+!  Mechanics - STAT_NON_LINE - GRAD_VARI
 !
-    call utmess('F', 'FERMETUR_8')
+! In  option           : name of option to compute
+! In  nomte            : type of finite element
+! --------------------------------------------------------------------------------------------------
+    character(len=16) :: nomte, nomopt
+!
+! --- Local variables
+!
+    type(HHO_Data) :: hhoData
+    type(HHO_Cell) :: hhoCell
+    type(HHO_Meca_State) :: hhoMecaState
+    type(HHO_GV_State) :: hhoGVState
+    type(HHO_Compor_State) :: hhoComporState
+    type(HHO_Quadrature) :: hhoQuadCellRigi
+    integer :: mk_cbs, mk_fbs, mk_total_dofs
+    integer :: gv_cbs, gv_fbs, gv_total_dofs, total_dofs
+    integer :: jmatt, npg, jcret
+    aster_logical :: lMatr, lVect, lSigm, lVari, matsym
+    character(len=4), parameter :: fami = 'RIGI'
+    real(kind=8) :: rhs(MSIZE_TDOFS_MIX)
+    real(kind=8), dimension(MSIZE_TDOFS_MIX, MSIZE_TDOFS_MIX) :: lhs
+!
+! --- Get HHO informations
+!
+    call hhoInfoInitCell(hhoCell, hhoData)
+!
+! --- Get element parameters
+!
+    call elrefe_info(fami=fami, npg=npg)
+!
+! --- Number of dofs
+    call hhoMecaDofs(hhoCell, hhoData, mk_cbs, mk_fbs, mk_total_dofs)
+    call hhoTherDofs(hhoCell, hhoData, gv_cbs, gv_fbs, gv_total_dofs)
+    total_dofs = mk_total_dofs+gv_total_dofs+gv_cbs
+!
+    if (nomopt /= "RIGI_MECA_TANG" .and. &
+        nomopt /= "FULL_MECA" .and. &
+        nomopt /= "FORC_NODA" .and. &
+        nomopt /= "RAPH_MECA") then
+        ASSERT(ASTER_FALSE)
+    end if
+!
+! --- Properties of behaviour
+!
+    call hhoComporState%initialize(fami, nomopt, hhoCell%ndim, hhoCell%barycenter)
+    hhoComporState%typmod(2) = 'GRADVARI'
+!
+! --- Initialize quadrature for the rigidity
+!
+    call hhoQuadCellRigi%initCell(hhoCell, npg)
+!
+! --- Initialize displacement, vari, ...
+!
+    call hhoMecaState%initialize(hhoCell, hhoData, hhoComporState)
+    call hhoGVState%initialize(hhoCell, hhoData, hhoComporState)
+!
+! --- Compute Operators
+!
+    call hhoCalcOpGv(hhoCell, hhoData, hhoComporState%l_largestrain, &
+                     hhoMecaState, hhoGvState)
+!
+! --- Compute local contribution
+!
+    call hhoGradVariLC(hhoCell, hhoData, hhoQuadCellRigi, &
+                       hhoMecaState, hhoComporState, hhoGVState, lhs, rhs)
+!
+    call behaviourOption(nomopt, hhoComporState%compor, lMatr, lVect, lVari, lSigm)
+!
+! --- Save return code
+!
+    if (lSigm) then
+        call jevech('PCODRET', 'E', jcret)
+        zi(jcret) = hhoComporState%codret
+    end if
+!
+! --- Save rhs
+!
+    if (lVect) then
+        call writeVector('PVECTUR', total_dofs, rhs)
+    end if
+!
+! --- Save of lhs
+!
+    if (lMatr) then
+        call nmtstm(hhoComporState%carcri, jmatt, matsym)
+!
+        if (matsym) then
+            call writeMatrix('PMATUUR', total_dofs, total_dofs, ASTER_TRUE, lhs)
+        else
+            call writeMatrix('PMATUNS', total_dofs, total_dofs, ASTER_FALSE, lhs)
+        end if
+    end if
 !
 end subroutine

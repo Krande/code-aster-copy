@@ -583,7 +583,7 @@ contains
 !
 ! --- Read Parameters
 !
-        ASSERT(lteatt('TYPMOD2', 'HHO'))
+        ASSERT(lteatt('TYPMOD2', 'HHO') .or. lteatt('TYPMOD2', 'HHO_GRAD'))
         if (lteatt('FORMULATION', 'HHO_LINE')) then
             face_deg = 1
             cell_deg = 2

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -7100,6 +7100,46 @@ phen.add(
     ),
 )
 
+
+phen.add(
+    "D_PLAN_GRAD_H#1",
+    Modelisation(
+        dim=(2, 2),
+        code="DGL",
+        attrs=(
+            (AT.FORMULATION, "HHO_LINE"),
+            (AT.TYPMOD2, "HHO_GRAD"),
+            (AT.D_PLAN, "OUI"),
+            (AT.TYPMOD, "D_PLAN"),
+            (AT.NBSIGM, "4"),
+        ),
+        elements=(
+            (MT.QUAD9, EL.MECA_DGVQ_HHO121),
+            (MT.TRIA7, EL.MECA_DGVT_HHO121),
+            (MT.SEG3, EL.MECA_2D_HHO1_F),
+        ),
+    ),
+)
+
+phen.add(
+    "D_PLAN_GRAD_H#2",
+    Modelisation(
+        dim=(2, 2),
+        code="DGQ",
+        attrs=(
+            (AT.FORMULATION, "HHO_QUAD"),
+            (AT.TYPMOD2, "HHO_GRAD"),
+            (AT.D_PLAN, "OUI"),
+            (AT.TYPMOD, "D_PLAN"),
+            (AT.NBSIGM, "4"),
+        ),
+        elements=(
+            (MT.QUAD9, EL.MECA_DGVQ_HHO222),
+            (MT.TRIA7, EL.MECA_DGVT_HHO222),
+            (MT.SEG3, EL.MECA_2D_HHO2_F),
+        ),
+    ),
+)
 
 ############################################################
 # Pour le phenomene : THERMIQUE :
