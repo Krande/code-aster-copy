@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -171,14 +171,17 @@ def check_c_compiler_options(self, options):
 @Configure.conf
 def check_optimization_cflags(self):
     self.setenv("debug")
+    self.start_msg("Setting C debug flags")
     self.remove_optflags("CFLAGS")
     flags = ["-g", "-O0"] + Utils.to_list(self.env["CFLAGS_ASTER_DEBUG"])
-    self.start_msg("Setting C debug flags")
+    if self.options.enable_coverage:
+        flags.append("--coverage")
+        self.env.append_unique("LINKFLAGS", "--coverage")
     self.env.append_unique("CFLAGS", flags)
     self.end_msg(flags)
 
     self.setenv("release")
-    flags = ["-O2"]
     self.start_msg("Setting C optimization flags")
+    flags = ["-O2"]
     self.env.append_unique("CFLAGS", flags)
     self.end_msg(flags)

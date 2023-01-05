@@ -124,6 +124,12 @@ def options(self):
         help="use safe algorithm based on content to check for "
         "implicit dependencies of fortran sources",
     )
+    group.add_option(
+        "--coverage",
+        dest="enable_coverage",
+        action="store_true",
+        help="enable options for coverage (actually only for debug build)",
+    )
 
     group = self.add_option_group("code_aster options")
 

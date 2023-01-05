@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -444,20 +444,23 @@ def check_c_fortran_real8(self):
 def check_optimization_fcflags(self):
     """Check for optimization FCFLAGS."""
     self.setenv("debug")
+    self.start_msg("Setting fortran debug flags")
     self.remove_optflags("FCFLAGS")
     flags = ["-g", "-O0"] + Utils.to_list(self.env["FCFLAGS_ASTER_DEBUG"])
-    self.start_msg("Setting fortran debug flags")
+    if self.options.enable_coverage:
+        flags.append("--coverage")
+        self.env.append_unique("LINKFLAGS", "--coverage")
     self.env.append_unique("FCFLAGS", flags)
     self.end_msg(flags)
 
     self.setenv("release")
+    self.start_msg("Checking loop optimization with LOC")
     testit = partial(self.check_fc, mandatory=False, compile_filename="snippet.f", execute=True)
     flags = [f for f in self.env.FCFLAGS if (f.startswith("-O") and f[-1].isdigit()) or f == "-g"]
     # remove existing optimization flags
     list(map(self.env.FCFLAGS.remove, flags))
     if not flags:
         flags = ["-O2"]
-    self.start_msg("Checking loop optimization with LOC")
     # Loop optimization error using LOC function in gfortran
     # GCC bug: http://gcc.gnu.org/bugzilla/show_bug.cgi?id=51267
     # Check if it must be fixed using the 'VOLATILE' statement.
@@ -511,7 +514,7 @@ def check_optimization_fcflags(self):
         self.end_msg(res)
     if "-fno-frontend-optimize" not in optflag:
         self.check_fortran_compiler_options("-finline-matmul-limit=6")
-    self.start_msg("Getting fortran optimization flags")
+    self.start_msg("Setting Fortran optimization flags")
     self.env.append_unique("FCFLAGS", optflag)
     self.end_msg(optflag)
 
