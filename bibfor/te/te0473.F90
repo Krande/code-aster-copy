@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -49,6 +49,7 @@ subroutine te0473(option, nomte)
     real(kind=8) :: time
     character(len=8) :: func
     real(kind=8), dimension(MSIZE_TDOFS_VEC) :: coeff_L2Proj
+    aster_logical :: with_faces
 !
 ! --- Get HHO informations
 !
@@ -60,14 +61,16 @@ subroutine te0473(option, nomte)
 !
     if (option == "HHO_PROJ_THER") then
 !
-        func = zk8(jfunc)
-        call hhoL2ProjScal(hhoCell, hhoData, func, time, coeff_L2Proj)
+        func = zk8(jfunc-1+1)
+        with_faces = zk8(jfunc-1+2) == "ALL"
+        call hhoL2ProjScal(hhoCell, hhoData, func, time, coeff_L2Proj, with_faces)
 !
         call hhoTherDofs(hhoCell, hhoData, cbs, fbs, total_dofs)
         call writeVector("PTEMP_R", total_dofs, coeff_L2Proj)
     elseif (option == "HHO_PROJ_MECA") then
-        call hhoL2ProjVec(hhoCell, hhoData, zk8(jfunc), time, coeff_L2Proj)
-
+        with_faces = zk8(jfunc-1+hhoCell%ndim+1) == "ALL"
+        call hhoL2ProjVec(hhoCell, hhoData, zk8(jfunc), time, coeff_L2Proj, with_faces)
+!
         call hhoMecaDofs(hhoCell, hhoData, cbs, fbs, total_dofs)
         call writeVector("PDEPL_R", total_dofs, coeff_L2Proj)
     else

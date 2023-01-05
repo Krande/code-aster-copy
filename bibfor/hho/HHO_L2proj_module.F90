@@ -331,7 +331,7 @@ contains
 !
 !===================================================================================================
 !
-    subroutine hhoL2ProjScal(hhoCell, hhoData, func, time, coeff_L2Proj)
+    subroutine hhoL2ProjScal(hhoCell, hhoData, func, time, coeff_L2Proj, all)
 !
         implicit none
 !
@@ -340,6 +340,7 @@ contains
         character(len=8), intent(in)        :: func
         real(kind=8), intent(in)            :: time
         real(kind=8), intent(out)           :: coeff_L2Proj(MSIZE_TDOFS_SCAL)
+        aster_logical, intent(in), optional          :: all
 !
 ! --------------------------------------------------------------------------------------------------
 !   HHO
@@ -358,12 +359,15 @@ contains
         type(HHO_Quadrature) :: hhoQuadFace, hhoQuadCell
         integer :: cbs, fbs, total_dofs, iFace, ind, nbpara
         real(kind=8) :: FuncValuesCellQP(MAX_QP_CELL), FuncValuesFaceQP(MAX_QP_FACE)
+        aster_logical :: with_faces
 ! --------------------------------------------------------------------------------------------------
 !
         call hhoTherDofs(hhoCell, hhoData, cbs, fbs, total_dofs)
 !
         coeff_L2Proj = 0
         FuncValuesCellQP = 0.d0
+        with_faces = ASTER_TRUE
+        if (present(all)) with_faces = all
 !
 ! --- Type of function dor a face
 !
@@ -391,18 +395,20 @@ contains
 !
 ! ----- get quadrature
 !
-            call hhoQuadFace%GetQuadFace(hhoface, 2*hhoData%face_degree()+1)
+            if (with_faces) then
+                call hhoQuadFace%GetQuadFace(hhoface, 2*hhoData%face_degree()+1)
 !
 ! -------------- Value of the function at the quadrature point
 !
-            call hhoFuncFScalEvalQp(hhoQuadFace, func, nbpara, nompar, &
-                                    valpar, hhoCell%ndim, FuncValuesFaceQP)
+                call hhoFuncFScalEvalQp(hhoQuadFace, func, nbpara, nompar, &
+                                        valpar, hhoCell%ndim, FuncValuesFaceQP)
 !
 !
 ! -------------- Compute L2 projection
 !
-            call hhoL2ProjFaceScal(hhoFace, hhoQuadFace, FuncValuesFaceQP, hhoData%face_degree(), &
-                                   coeff_L2Proj(ind))
+                call hhoL2ProjFaceScal(hhoFace, hhoQuadFace, FuncValuesFaceQP, &
+                                       hhoData%face_degree(), coeff_L2Proj(ind))
+            end if
             ind = ind+fbs
         end do
 !
@@ -424,7 +430,7 @@ contains
 !
 !===================================================================================================
 !
-    subroutine hhoL2ProjVec(hhoCell, hhoData, func, time, coeff_L2Proj)
+    subroutine hhoL2ProjVec(hhoCell, hhoData, func, time, coeff_L2Proj, all)
 !
         implicit none
 !
@@ -433,6 +439,8 @@ contains
         character(len=8), intent(in)        :: func(*)
         real(kind=8), intent(in)            :: time
         real(kind=8), intent(out)           :: coeff_L2Proj(MSIZE_TDOFS_VEC)
+        aster_logical, intent(in), optional          :: all
+
 !
 ! --------------------------------------------------------------------------------------------------
 !   HHO
@@ -451,12 +459,15 @@ contains
         type(HHO_Quadrature) :: hhoQuadFace, hhoQuadCell
         integer :: cbs, fbs, total_dofs, iFace, ind, nbpara, idim
         real(kind=8) :: FuncValuesCellQP(3, MAX_QP_CELL), FuncValuesFaceQP(3, MAX_QP_FACE)
+        aster_logical :: with_faces
 ! --------------------------------------------------------------------------------------------------
 !
         call hhoMecaDofs(hhoCell, hhoData, cbs, fbs, total_dofs)
 !
         coeff_L2Proj = 0
         FuncValuesCellQP = 0.d0
+        with_faces = ASTER_TRUE
+        if (present(all)) with_faces = all
 !
 ! --- Type of function dor a face
 !
@@ -481,22 +492,25 @@ contains
         ind = 1
         do iFace = 1, hhoCell%nbfaces
             hhoFace = hhoCell%faces(iFace)
+            if (with_faces) then
 !
 ! ----- get quadrature
 !
-            call hhoQuadFace%GetQuadFace(hhoface, 2*hhoData%face_degree()+1)
+                call hhoQuadFace%GetQuadFace(hhoface, 2*hhoData%face_degree()+1)
 !
 ! -------------- Value of the function at the quadrature point
 !
-            do idim = 1, hhoCell%ndim
-                call hhoFuncFScalEvalQp(hhoQuadFace, func(idim), nbpara, nompar, &
-                                        valpar, hhoCell%ndim, FuncValuesFaceQP(idim, 1:MAX_QP_FACE))
-            end do
+                do idim = 1, hhoCell%ndim
+                    call hhoFuncFScalEvalQp(hhoQuadFace, func(idim), nbpara, nompar, &
+                                            valpar, hhoCell%ndim, &
+                                            FuncValuesFaceQP(idim, 1:MAX_QP_FACE))
+                end do
 !
 ! -------------- Compute L2 projection
 !
-            call hhoL2ProjFaceVec(hhoFace, hhoQuadFace, FuncValuesFaceQP, hhoData%face_degree(), &
-                                  coeff_L2Proj(ind))
+                call hhoL2ProjFaceVec(hhoFace, hhoQuadFace, FuncValuesFaceQP, &
+                                      hhoData%face_degree(), coeff_L2Proj(ind))
+            end if
             ind = ind+fbs
         end do
 !

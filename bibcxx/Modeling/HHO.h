@@ -2,7 +2,7 @@
  * @file HHO.h
  * @brief Header of class HHO
  * @section LICENCE
- *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -40,6 +40,14 @@ class HHO {
     PhysicalProblemPtr _phys_problem;
 
     FunctionPtr _createFunc( const ASTERDOUBLE &value ) const;
+
+    /**
+     * @brief Project function on HHO space
+     */
+    FieldOnNodesRealPtr _projectOnHHOSpace( bool faces, const GenericFunctionPtr fct,
+                                            ASTERDOUBLE time = 0.0 ) const;
+    FieldOnNodesRealPtr _projectOnHHOSpace( bool faces, const std::vector< GenericFunctionPtr > fct,
+                                            ASTERDOUBLE time = 0.0 ) const;
 
   public:
     /** @typedef HHOPtr */

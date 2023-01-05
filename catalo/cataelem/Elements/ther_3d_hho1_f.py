@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -73,7 +73,7 @@ CT_EXTF = LocatedComponents(phys=PHY.TEMP_F, type="ELEM", components=("TEMP",))
 
 
 DDL_THER = LocatedComponents(
-    phys=PHY.TEMP_R, type="ELNO", diff=True, components=(("EN1", ("HHO_F[3]",)), ("EN2", ()))
+    phys=PHY.TEMP_R, type="ELNO", diff=True, components=(("EN1", ("HHO_T[3]",)), ("EN2", ()))
 )
 
 MVECTAR = ArrayOfComponents(phys=PHY.VDEP_R, locatedComponents=NACCELR)

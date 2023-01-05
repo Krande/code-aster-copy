@@ -37,7 +37,11 @@ DDL_MECA = LocatedComponents(
     phys=PHY.DEPL_R,
     type="ELNO",
     diff=True,
-    components=(("EN1", ("HHO_U[2]", "HHO_V[2]")), ("EN2", ()), ("EN3", ("HHO_C[12]"))),
+    components=(
+        ("EN1", ("HHO_DX[2]", "HHO_DY[2]")),
+        ("EN2", ()),
+        ("EN3", ("HHO_DX[6]", "HHO_DY[6]")),
+    ),
 )
 
 EDEPLPG = LocatedComponents(phys=PHY.DEPL_R, type="ELGA", location="RIGI", components=("DX", "DY"))
@@ -132,7 +136,7 @@ EERRENO = LocatedComponents(
     ),
 )
 
-PFONCR = LocatedComponents(phys=PHY.NEUT_K8, type="ELEM", components=("Z[2]",))
+PFONCR = LocatedComponents(phys=PHY.NEUT_K8, type="ELEM", components=("Z[3]",))
 
 CFORCEF = LocatedComponents(phys=PHY.FORC_F, type="ELEM", components=("FX", "FY"))
 

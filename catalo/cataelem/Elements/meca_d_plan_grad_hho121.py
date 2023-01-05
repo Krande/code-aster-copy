@@ -38,9 +38,9 @@ DDL_MECA = LocatedComponents(
     type="ELNO",
     diff=True,
     components=(
-        ("EN1", ("HHO_U[2]", "HHO_V[2]", "HHO_VR[2]")),
+        ("EN1", ("HHO_DX[2]", "HHO_DY[2]", "HHO_VR[2]")),
         ("EN2", ()),
-        ("EN3", ("HHO_C[12]", "HHO_VR[6]", "HHO_GV[6]")),
+        ("EN3", ("HHO_DX[6]", "HHO_DY[6]", "HHO_VR[6]", "HHO_GV[6]")),
     ),
 )
 
@@ -136,7 +136,7 @@ EERRENO = LocatedComponents(
     ),
 )
 
-PFONCR = LocatedComponents(phys=PHY.NEUT_K8, type="ELEM", components=("Z[2]",))
+PFONCR = LocatedComponents(phys=PHY.NEUT_K8, type="ELEM", components=("Z[3]",))
 
 CFORCEF = LocatedComponents(phys=PHY.FORC_F, type="ELEM", components=("FX", "FY"))
 
@@ -264,7 +264,7 @@ DEPLHHO = LocatedComponents(phys=PHY.DEPL_R, type="ELNO", components=("DX", "DY"
 
 PFONC = LocatedComponents(phys=PHY.NEUT_K8, type="ELEM", components=("Z[8]",))
 
-HHOCINE = LocatedComponents(phys=PHY.DEPL_R, type="ELNO", components=("HHO_U[2]", "HHO_V[2]"))
+HHOCINE = LocatedComponents(phys=PHY.DEPL_R, type="ELNO", components=("HHO_DX[2]", "HHO_DY[2]"))
 
 MVECTUR = ArrayOfComponents(phys=PHY.VDEP_R, locatedComponents=DDL_MECA)
 

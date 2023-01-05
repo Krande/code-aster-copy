@@ -842,10 +842,9 @@ list_cmp_depl = (
     "DRGX",
     "DRGY",
     "DRGZ",
-    "HHO_C[30]",
-    "HHO_U[6]",
-    "HHO_V[6]",
-    "HHO_W[6]",
+    "HHO_DX[10]",
+    "HHO_DY[10]",
+    "HHO_DZ[10]",
     "HHO_VR[10]",
     "HHO_GV[10]",
     "PINCH",
@@ -918,10 +917,9 @@ comment_depl = """  DEPL_R/_C/_F  Deplacement reel, complexe ou fonction
        DRGX    : rotation des grilles (élément poutre assemblage combustible)
        DRGY    : rotation des grilles (élément poutre assemblage combustible)
        DRGZ    : rotation des grilles (élément poutre assemblage combustible)
-       HHO_U : degres de liberté HHO: 1, X, Y, X2, Y2, XY (X, Y plan face) dir1
-       HHO_V : degres de liberté HHO: 1, X, Y, X2, Y2, XY (X, Y plan face) dir2
-       HHO_W : degres de liberté HHO: 1, X, Y, X2, Y2, XY (X, Y plan face) dir3
-       HHO_C : degres de liberté HHO: 1, X, Y, Z, X2, Y2, Z2 (X, Y, Z cell)
+       HHO_DX : degres de liberté HHO: 1, X, Y, Z, X2, Y2, Z2,.. (cell + faces)
+       HHO_DY : degres de liberté HHO: 1, X, Y, Z, X2, Y2, Z2,.. (cell + faces)
+       HHO_DZ : degres de liberté HHO: 1, X, Y, Z, X2, Y2, Z2,.. (cell + faces)
        HHO_VR : degres de liberté HHO: VARI (cell + faces)
        HHO_GV : degres de liberté HHO: LAG_GV (cell)
        PINCH   : pinch dof for solid-shell elements
@@ -3637,8 +3635,7 @@ TEMP_R = PhysicalQuantity(
         "DTX",
         "DTY",
         "DTZ",
-        "HHO_F[6]",
-        "HHO_C[10]",
+        "HHO_T[10]",
     ),
     comment="""  TEMP_R Type:R Temperature inconnue du phenomene thermique
        TEMP : temperature
@@ -3652,8 +3649,7 @@ TEMP_R = PhysicalQuantity(
        DTX : derivee de la temperature selon x (n'est pas un ddl)
        DTY : derivee de la temperature selon y (n'est pas un ddl)
        DTZ : derivee de la temperature selon z (n'est pas un ddl)
-       HHO_C   : degres de liberté HHO: 1, X, Y, Z, X2, Y2, Z2 (X, Y, Z cell)
-       HHO_F   : degres de liberté HHO: 1, X, Y, X2, Y2, XY (X, Y plan face)
+       HHO_T : degres de liberté HHO: 1, X, Y, Z, X2, Y2, Z2 (X, Y, Z cell)
 
 """,
 )

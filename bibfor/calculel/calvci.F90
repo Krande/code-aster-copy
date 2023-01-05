@@ -213,6 +213,7 @@ subroutine calvci(nomci, nume_ddlz, nbchci, lchci, inst, &
                 i_cmp = afci(3*(i_affe_cine-1)+3)
                 i_nueq = zi(jprno+(nec+2)*(i_node-1))
                 i_eq = p_nueq(i_nueq+i_cmp-1)
+                zi(jdlci-1+i_eq) = 1
 !
 !           -- CAS EVOL_IMPO (CNSIMP):
 !           ----------------------------------
@@ -260,7 +261,6 @@ subroutine calvci(nomci, nume_ddlz, nbchci, lchci, inst, &
                     call utmess('F', 'CALCULEL_37')
                 end if
 !
-                zi(jdlci-1+i_eq) = 1
             end do
 !
 !

@@ -339,7 +339,8 @@ contains
                                 v_field_valv(i_func) = v_afcv(i_affe_cine)
                                 if (.not. isCellNode) then
                                     hhoField%v_info_cine(3*(i_affe_cine-1)+3) = &
-                                        ndim*nb_cmp_hho_dir_c+nume_cmp
+                                        (dim_cmp-1)*nb_cmp_hho_dir_c+ &
+                                        nume_cmp-(dim_cmp-1)*nb_cmp_hho_dir_f
                                 end if
                             end if
                         end do
@@ -370,7 +371,7 @@ contains
 !
         type(HHO_Field), intent(in)   :: hhoField
         integer, intent(in) :: i_affe_cine
-        real(kind=8) :: res
+        real(kind=8), intent(out) :: res
 !
 !
 ! --------------------------------------------------------------------------------------------------
@@ -414,7 +415,7 @@ contains
 ! ----- Get value
 !
         call cesexi('C', jv_cesd, jv_cesl, elem_nume, node_nume_loc, 1, nume_cmp, iad)
-        ASSERT(iad .gt. 0)
+        ASSERT(iad > 0)
         res = zr(jv_cesv-1+iad)
 
         call detrsd("CHAMP_GD", cesVale)
@@ -534,7 +535,7 @@ contains
 !
 ! --------------------------------------------------------------------------------------------------
 !
-        integer :: idnddl, idvddl, jcmp, cbs_dir
+        integer :: idnddl, idvddl, jcmp, max_cmp
         integer :: iddl, i, nbcmp, ila, icmp, userDOFNbSupp, ndim
         character(len=16) :: currentDOF
         real(kind=8) :: valeDOF
@@ -561,7 +562,9 @@ contains
 ! --- Get type of HHO
 !
         call hhoGetTypeFromModel(model, hhoData, ndim)
-        cbs_dir = binomial(hhoData%cell_degree()+ndim, hhoData%cell_degree())
+        max_cmp = max(binomial(hhoData%cell_degree()+ndim, hhoData%cell_degree()), &
+                      binomial(hhoData%face_degree()+ndim-1, hhoData%face_degree()))
+        ASSERT(max_cmp <= nbCmpSupp)
 !
 ! - Create objects
 !
@@ -599,31 +602,9 @@ contains
                 ASSERT(ASTER_FALSE)
             end if
 !
-            if (currentDOF(1:3) == "HHO") then
-                ASSERT(valeType .eq. 'R')
+            if (currentDOF .eq. 'DX') then
                 nbddl = nbddl+1
-                zk8(idnddl+nbddl-1) = currentDOF(1:8)
-                zr(idvddl+nbddl-1) = valeDOF
-                go to 110
-            end if
-!
-            if (hhoData%face_degree() .ge. 0) then
-                nbddl = nbddl+1
-                if (currentDOF .eq. 'DX') then
-                    zk8(idnddl+nbddl-1) = 'HHO_U1'
-                elseif (currentDOF .eq. 'DY') then
-                    zk8(idnddl+nbddl-1) = 'HHO_V1'
-                elseif (currentDOF .eq. 'DZ') then
-                    if (ndim .ne. 3) then
-                        call utmess('F', 'CHARGES_57')
-                    end if
-                    zk8(idnddl+nbddl-1) = 'HHO_W1'
-                elseif (currentDOF .eq. 'TEMP') then
-                    zk8(idnddl+nbddl-1) = 'HHO_F1'
-                else
-                    ASSERT(ASTER_FALSE)
-                end if
-!
+                zk8(idnddl+nbddl-1) = 'HHO_DX1'
                 if (valeType .eq. 'R') then
                     zr(idvddl+nbddl-1) = valeDOF
                 elseif (valeType .eq. 'F') then
@@ -632,176 +613,12 @@ contains
                 else
                     ASSERT(ASTER_FALSE)
                 end if
-!
-            end if
-!
-            if (hhoData%face_degree() .ge. 1) then
-                if (ndim == 2) then
-                    nbddl = nbddl+1
-                    if (currentDOF .eq. 'DX') then
-                        zk8(idnddl+nbddl-1) = 'HHO_U2'
-                    elseif (currentDOF .eq. 'DY') then
-                        zk8(idnddl+nbddl-1) = 'HHO_V2'
-                    elseif (currentDOF .eq. 'TEMP') then
-                        zk8(idnddl+nbddl-1) = 'HHO_F2'
-                    else
-                        ASSERT(ASTER_FALSE)
-                    end if
-!
-                    if (valeType .eq. 'R') then
-                        zr(idvddl+nbddl-1) = 0.d0
-                    elseif (valeType .eq. 'F') then
-                        zk8(idvddl+nbddl-1) = nomFunc
-                    else
-                        ASSERT(ASTER_FALSE)
-                    end if
-!
-                else if (ndim == 3) then
-                    nbddl = nbddl+1
-                    if (currentDOF .eq. 'DX') then
-                        zk8(idnddl+nbddl-1) = 'HHO_U2'
-                    elseif (currentDOF .eq. 'DY') then
-                        zk8(idnddl+nbddl-1) = 'HHO_V2'
-                    elseif (currentDOF .eq. 'DZ') then
-                        zk8(idnddl+nbddl-1) = 'HHO_W2'
-                    elseif (currentDOF .eq. 'TEMP') then
-                        zk8(idnddl+nbddl-1) = 'HHO_F2'
-                    else
-                        ASSERT(ASTER_FALSE)
-                    end if
-!
-                    if (valeType .eq. 'R') then
-                        zr(idvddl+nbddl-1) = 0.d0
-                    elseif (valeType .eq. 'F') then
-                        zk8(idvddl+nbddl-1) = nomFunc
-                    else
-                        ASSERT(ASTER_FALSE)
-                    end if
-!
-                    nbddl = nbddl+1
-                    if (currentDOF .eq. 'DX') then
-                        zk8(idnddl+nbddl-1) = 'HHO_U3'
-                    elseif (currentDOF .eq. 'DY') then
-                        zk8(idnddl+nbddl-1) = 'HHO_V3'
-                    elseif (currentDOF .eq. 'DZ') then
-                        zk8(idnddl+nbddl-1) = 'HHO_W3'
-                    elseif (currentDOF .eq. 'TEMP') then
-                        zk8(idnddl+nbddl-1) = 'HHO_F3'
-                    else
-                        ASSERT(ASTER_FALSE)
-                    end if
-!
-                    if (valeType .eq. 'R') then
-                        zr(idvddl+nbddl-1) = 0.d0
-                    elseif (valeType .eq. 'F') then
-                        zk8(idvddl+nbddl-1) = nomFunc
-                    else
-                        ASSERT(ASTER_FALSE)
-                    end if
-                else
-                    ASSERT(ASTER_FALSE)
-                end if
-            end if
-!
-            if (hhoData%face_degree() .eq. 2) then
-                if (ndim == 2) then
-                    nbddl = nbddl+1
-                    if (currentDOF .eq. 'DX') then
-                        zk8(idnddl+nbddl-1) = 'HHO_U3'
-                    elseif (currentDOF .eq. 'DY') then
-                        zk8(idnddl+nbddl-1) = 'HHO_V3'
-                    elseif (currentDOF .eq. 'TEMP') then
-                        zk8(idnddl+nbddl-1) = 'HHO_F3'
-                    else
-                        ASSERT(ASTER_FALSE)
-                    end if
-!
-                    if (valeType .eq. 'R') then
-                        zr(idvddl+nbddl-1) = 0.d0
-                    elseif (valeType .eq. 'F') then
-                        zk8(idvddl+nbddl-1) = nomFunc
-                    else
-                        ASSERT(ASTER_FALSE)
-                    end if
-!
-                elseif (ndim == 3) then
-                    nbddl = nbddl+1
-                    if (currentDOF .eq. 'DX') then
-                        zk8(idnddl+nbddl-1) = 'HHO_U4'
-                    elseif (currentDOF .eq. 'DY') then
-                        zk8(idnddl+nbddl-1) = 'HHO_V4'
-                    elseif (currentDOF .eq. 'DZ') then
-                        zk8(idnddl+nbddl-1) = 'HHO_W4'
-                    elseif (currentDOF .eq. 'TEMP') then
-                        zk8(idnddl+nbddl-1) = 'HHO_F4'
-                    else
-                        ASSERT(ASTER_FALSE)
-                    end if
-!
-                    if (valeType .eq. 'R') then
-                        zr(idvddl+nbddl-1) = 0.d0
-                    elseif (valeType .eq. 'F') then
-                        zk8(idvddl+nbddl-1) = nomFunc
-                    else
-                        ASSERT(ASTER_FALSE)
-                    end if
-!
-                    nbddl = nbddl+1
-                    if (currentDOF .eq. 'DX') then
-                        zk8(idnddl+nbddl-1) = 'HHO_U5'
-                    elseif (currentDOF .eq. 'DY') then
-                        zk8(idnddl+nbddl-1) = 'HHO_V5'
-                    elseif (currentDOF .eq. 'DZ') then
-                        zk8(idnddl+nbddl-1) = 'HHO_W5'
-                    elseif (currentDOF .eq. 'TEMP') then
-                        zk8(idnddl+nbddl-1) = 'HHO_F5'
-                    else
-                        ASSERT(ASTER_FALSE)
-                    end if
-!
-                    if (valeType .eq. 'R') then
-                        zr(idvddl+nbddl-1) = 0.d0
-                    elseif (valeType .eq. 'F') then
-                        zk8(idvddl+nbddl-1) = nomFunc
-                    else
-                        ASSERT(ASTER_FALSE)
-                    end if
-!
-                    nbddl = nbddl+1
-                    if (currentDOF .eq. 'DX') then
-                        zk8(idnddl+nbddl-1) = 'HHO_U6'
-                    elseif (currentDOF .eq. 'DY') then
-                        zk8(idnddl+nbddl-1) = 'HHO_V6'
-                    elseif (currentDOF .eq. 'DZ') then
-                        zk8(idnddl+nbddl-1) = 'HHO_W6'
-                    elseif (currentDOF .eq. 'TEMP') then
-                        zk8(idnddl+nbddl-1) = 'HHO_F6'
-                    else
-                        ASSERT(ASTER_FALSE)
-                    end if
-!
-                    if (valeType .eq. 'R') then
-                        zr(idvddl+nbddl-1) = 0.d0
-                    elseif (valeType .eq. 'F') then
-                        zk8(idvddl+nbddl-1) = nomFunc
-                    else
-                        ASSERT(ASTER_FALSE)
-                    end if
-                else
-                    ASSERT(ASTER_FALSE)
-                end if
-!
-            elseif (hhoData%face_degree() .ge. 3) then
-                ASSERT(ASTER_FALSE)
-            end if
-!
-            if (currentDOF .eq. 'DX') then
-                do i = 1, cbs_dir
+                do i = 2, max_cmp
                     nbddl = nbddl+1
                     call codent(i, 'G', code, 'F')
-                    zk8(idnddl+nbddl-1) = 'HHO_C'//code
+                    zk8(idnddl+nbddl-1) = 'HHO_DX'//code
                     if (valeType .eq. 'R') then
-                        zr(idvddl+nbddl-1) = valeDOF
+                        zr(idvddl+nbddl-1) = 0.d0
                     elseif (valeType .eq. 'F') then
                         ASSERT(currentDOF(1:3) .ne. 'HHO')
                         zk8(idvddl+nbddl-1) = nomFunc
@@ -810,12 +627,22 @@ contains
                     end if
                 end do
             elseif (currentDOF .eq. 'DY') then
-                do i = cbs_dir+1, 2*cbs_dir
+                nbddl = nbddl+1
+                zk8(idnddl+nbddl-1) = 'HHO_DY1'
+                if (valeType .eq. 'R') then
+                    zr(idvddl+nbddl-1) = valeDOF
+                elseif (valeType .eq. 'F') then
+                    ASSERT(currentDOF(1:3) .ne. 'HHO')
+                    zk8(idvddl+nbddl-1) = nomFunc
+                else
+                    ASSERT(ASTER_FALSE)
+                end if
+                do i = 2, max_cmp
                     nbddl = nbddl+1
                     call codent(i, 'G', code, 'F')
-                    zk8(idnddl+nbddl-1) = 'HHO_C'//code
+                    zk8(idnddl+nbddl-1) = 'HHO_DY'//code
                     if (valeType .eq. 'R') then
-                        zr(idvddl+nbddl-1) = valeDOF
+                        zr(idvddl+nbddl-1) = 0.d0
                     elseif (valeType .eq. 'F') then
                         ASSERT(currentDOF(1:3) .ne. 'HHO')
                         zk8(idvddl+nbddl-1) = nomFunc
@@ -827,12 +654,22 @@ contains
                 if (ndim .ne. 3) then
                     call utmess('F', 'CHARGES_57')
                 end if
-                do i = 2*cbs_dir+1, 3*cbs_dir
+                nbddl = nbddl+1
+                zk8(idnddl+nbddl-1) = 'HHO_DZ1'
+                if (valeType .eq. 'R') then
+                    zr(idvddl+nbddl-1) = valeDOF
+                elseif (valeType .eq. 'F') then
+                    ASSERT(currentDOF(1:3) .ne. 'HHO')
+                    zk8(idvddl+nbddl-1) = nomFunc
+                else
+                    ASSERT(ASTER_FALSE)
+                end if
+                do i = 2, max_cmp
                     nbddl = nbddl+1
                     call codent(i, 'G', code, 'F')
-                    zk8(idnddl+nbddl-1) = 'HHO_C'//code
+                    zk8(idnddl+nbddl-1) = 'HHO_DZ'//code
                     if (valeType .eq. 'R') then
-                        zr(idvddl+nbddl-1) = valeDOF
+                        zr(idvddl+nbddl-1) = 0.d0
                     elseif (valeType .eq. 'F') then
                         ASSERT(currentDOF(1:3) .ne. 'HHO')
                         zk8(idvddl+nbddl-1) = nomFunc
@@ -841,12 +678,22 @@ contains
                     end if
                 end do
             elseif (currentDOF .eq. 'TEMP') then
-                do i = 1, cbs_dir
+                nbddl = nbddl+1
+                zk8(idnddl+nbddl-1) = 'HHO_T1'
+                if (valeType .eq. 'R') then
+                    zr(idvddl+nbddl-1) = valeDOF
+                elseif (valeType .eq. 'F') then
+                    ASSERT(currentDOF(1:3) .ne. 'HHO')
+                    zk8(idvddl+nbddl-1) = nomFunc
+                else
+                    ASSERT(ASTER_FALSE)
+                end if
+                do i = 2, max_cmp
                     nbddl = nbddl+1
                     call codent(i, 'G', code, 'F')
-                    zk8(idnddl+nbddl-1) = 'HHO_C'//code
+                    zk8(idnddl+nbddl-1) = 'HHO_T'//code
                     if (valeType .eq. 'R') then
-                        zr(idvddl+nbddl-1) = valeDOF
+                        zr(idvddl+nbddl-1) = 0.d0
                     elseif (valeType .eq. 'F') then
                         ASSERT(currentDOF(1:3) .ne. 'HHO')
                         zk8(idvddl+nbddl-1) = nomFunc
@@ -854,14 +701,18 @@ contains
                         ASSERT(ASTER_FALSE)
                     end if
                 end do
+            elseif (currentDOF(1:3) == "HHO") then
+                ASSERT(valeType .eq. 'R')
+                nbddl = nbddl+1
+                zk8(idnddl+nbddl-1) = currentDOF(1:8)
+                zr(idvddl+nbddl-1) = valeDOF
             else
                 ASSERT(ASTER_FALSE)
             end if
 !
-
-!
 110         continue
         end do
+        ASSERT(nbddl <= userDOFNbSupp)
 !
     end subroutine
 !

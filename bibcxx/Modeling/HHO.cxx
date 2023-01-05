@@ -1,6 +1,6 @@
 /**
  * @section LICENCE
- *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -72,7 +72,8 @@ FieldOnNodesRealPtr HHO::projectOnLagrangeSpace( const FieldOnNodesRealPtr hho_f
     return exitField->toFieldOnNodes();
 };
 
-FieldOnNodesRealPtr HHO::projectOnHHOSpace( const GenericFunctionPtr fct, ASTERDOUBLE time ) const {
+FieldOnNodesRealPtr HHO::_projectOnHHOSpace( bool faces, const GenericFunctionPtr fct,
+                                             ASTERDOUBLE time ) const {
 
     const std::string option = "HHO_PROJ_THER";
     auto model = _phys_problem->getModel();
@@ -83,11 +84,13 @@ FieldOnNodesRealPtr HHO::projectOnHHOSpace( const GenericFunctionPtr fct, ASTERD
     auto calcul = std::make_unique< Calcul >( option );
     calcul->setModel( model );
 
+    std::map< bool, std::string > dic_faces{{true, "ALL"}, {false, "CELL"}};
+
     auto funcField = std::make_shared< ConstantFieldOnCellsChar8 >( mesh );
     const std::string physicalName( "NEUT_K8" );
     funcField->allocate( physicalName );
     ConstantFieldOnZone a( mesh );
-    ConstantFieldValues< JeveuxChar8 > b( {"Z1"}, {fct->getName()} );
+    ConstantFieldValues< JeveuxChar8 > b( {"Z1", "Z2"}, {fct->getName(), dic_faces[faces]} );
     funcField->setValueOnZone( a, b );
 
     // Input fields
@@ -107,13 +110,21 @@ FieldOnNodesRealPtr HHO::projectOnHHOSpace( const GenericFunctionPtr fct, ASTERD
     return hho_elno->toFieldOnNodes();
 };
 
-FieldOnNodesRealPtr HHO::projectOnHHOSpace( const std::vector< GenericFunctionPtr > fct,
-                                            ASTERDOUBLE time ) const {
+FieldOnNodesRealPtr HHO::projectOnHHOSpace( const GenericFunctionPtr fct, ASTERDOUBLE time ) const {
+
+    return _projectOnHHOSpace( true, fct, time );
+};
+
+FieldOnNodesRealPtr HHO::_projectOnHHOSpace( bool faces,
+                                             const std::vector< GenericFunctionPtr > fct,
+                                             ASTERDOUBLE time ) const {
 
     const std::string option = "HHO_PROJ_MECA";
     auto model = _phys_problem->getModel();
     auto mesh = model->getMesh();
     auto dimMesh = mesh->getDimension();
+
+    std::map< bool, std::string > dic_faces{{true, "ALL"}, {false, "CELL"}};
 
     AS_ASSERT( model->isMechanical() );
     AS_ASSERT( fct.size() == dimMesh );
@@ -127,12 +138,13 @@ FieldOnNodesRealPtr HHO::projectOnHHOSpace( const std::vector< GenericFunctionPt
     ConstantFieldOnZone a( mesh );
 
     if ( dimMesh == 2 ) {
-        ConstantFieldValues< JeveuxChar8 > b( {"Z1", "Z2"},
-                                              {fct[0]->getName(), fct[1]->getName()} );
+        ConstantFieldValues< JeveuxChar8 > b(
+            {"Z1", "Z2", "Z3"}, {fct[0]->getName(), fct[1]->getName(), dic_faces[faces]} );
         funcField->setValueOnZone( a, b );
     } else {
         ConstantFieldValues< JeveuxChar8 > b(
-            {"Z1", "Z2", "Z3"}, {fct[0]->getName(), fct[1]->getName(), fct[2]->getName()} );
+            {"Z1", "Z2", "Z3", "Z4"},
+            {fct[0]->getName(), fct[1]->getName(), fct[2]->getName(), dic_faces[faces]} );
         funcField->setValueOnZone( a, b );
     }
 
@@ -153,6 +165,11 @@ FieldOnNodesRealPtr HHO::projectOnHHOSpace( const std::vector< GenericFunctionPt
     return hho_elno->toFieldOnNodes();
 };
 
+FieldOnNodesRealPtr HHO::projectOnHHOSpace( const std::vector< GenericFunctionPtr > fct,
+                                            ASTERDOUBLE time ) const {
+    return _projectOnHHOSpace( true, fct, time );
+};
+
 FieldOnNodesRealPtr HHO::projectOnHHOSpace( const ASTERDOUBLE &value ) const {
     return projectOnHHOSpace( _createFunc( value ) );
 };
@@ -168,45 +185,13 @@ FieldOnNodesRealPtr HHO::projectOnHHOSpace( const VectorReal &values ) const {
 
 FieldOnNodesRealPtr HHO::projectOnHHOCellSpace( const GenericFunctionPtr fct,
                                                 ASTERDOUBLE time ) const {
-
-    auto hho_field = projectOnHHOSpace( fct, time );
-
-    std::map< std::string, ASTERDOUBLE > map;
-
-    // Set to zero face unknowns
-    const ASTERDOUBLE zero = 0.0;
-    for ( ASTERINTEGER i = 1; i <= 6; i++ ) {
-        std::string name_cmp = "HHO_F" + std::to_string( i );
-        map[name_cmp] = zero;
-    }
-
-    hho_field->setValues( map );
-
-    return hho_field;
+    return _projectOnHHOSpace( false, fct, time );
 };
 
 FieldOnNodesRealPtr HHO::projectOnHHOCellSpace( const std::vector< GenericFunctionPtr > fct,
                                                 ASTERDOUBLE time ) const {
 
-    auto hho_field = projectOnHHOSpace( fct, time );
-
-    std::map< std::string, ASTERDOUBLE > map;
-
-    // Set to zero face unknowns
-    const ASTERDOUBLE zero = 0.0;
-    for ( ASTERINTEGER i = 1; i <= 6; i++ ) {
-        std::string name_cmp_u = "HHO_U" + std::to_string( i );
-        std::string name_cmp_v = "HHO_V" + std::to_string( i );
-        std::string name_cmp_w = "HHO_W" + std::to_string( i );
-
-        map[name_cmp_u] = zero;
-        map[name_cmp_v] = zero;
-        map[name_cmp_w] = zero;
-    }
-
-    hho_field->setValues( map );
-
-    return hho_field;
+    return _projectOnHHOSpace( false, fct, time );
 };
 
 FieldOnNodesRealPtr HHO::projectOnHHOCellSpace( const ASTERDOUBLE &value ) const {

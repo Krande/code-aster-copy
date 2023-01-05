@@ -93,7 +93,7 @@ EMNEUT_R = LocatedComponents(phys=PHY.NEUT_R, type="ELEM", components=("X[30]",)
 
 ESOURCR = LocatedComponents(phys=PHY.SOUR_R, type="ELGA", location="RIGI", components=("SOUR",))
 
-PFONC = LocatedComponents(phys=PHY.NEUT_K8, type="ELEM", components=("Z[1]",))
+PFONC = LocatedComponents(phys=PHY.NEUT_K8, type="ELEM", components=("Z[2]",))
 
 CINSTR = LocatedComponents(phys=PHY.INST_R, type="ELEM", components=("INST",))
 
@@ -101,7 +101,7 @@ DDL_THER = LocatedComponents(
     phys=PHY.TEMP_R,
     type="ELNO",
     diff=True,
-    components=(("EN1", ("HHO_F[2]",)), ("EN2", ()), ("EN3", ("HHO_C[6]"))),
+    components=(("EN1", ("HHO_T[2]",)), ("EN2", ()), ("EN3", ("HHO_T[6]"))),
 )
 
 TEMPHHO = LocatedComponents(phys=PHY.TEMP_R, type="ELNO", components=("TEMP",))
