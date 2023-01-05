@@ -402,6 +402,7 @@ void ParallelMesh::create_joints( const VectorLong &domains, const VectorLong &g
         ++i;
     }
 
+    _outerNodes->updateValuePointer();
     CALLO_LRM_CLEAN_JOINT( getName(), _outerNodes->getDataPtr() );
 
     auto nbCells = getNumberOfCells();
