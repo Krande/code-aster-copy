@@ -262,9 +262,18 @@ CHHOSTT = LocatedComponents(phys=PHY.N2448R, type="ELEM", components=("X[144]",)
 
 DEPLHHO = LocatedComponents(phys=PHY.DEPL_R, type="ELNO", components=("DX", "DY"))
 
-PFONC = LocatedComponents(phys=PHY.NEUT_K8, type="ELEM", components=("Z[8]",))
+PFONC = LocatedComponents(phys=PHY.NEUT_K8, type="ELEM", components=("Z[10]",))
 
-HHOCINE = LocatedComponents(phys=PHY.DEPL_R, type="ELNO", components=("HHO_DX[2]", "HHO_DY[2]"))
+HHOCINE = LocatedComponents(
+    phys=PHY.DEPL_R,
+    type="ELNO",
+    diff=True,
+    components=(
+        ("EN1", ("HHO_DX[2]", "HHO_DY[2]")),
+        ("EN2", ()),
+        ("EN3", ("HHO_DX[6]", "HHO_DY[6]")),
+    ),
+)
 
 MVECTUR = ArrayOfComponents(phys=PHY.VDEP_R, locatedComponents=DDL_MECA)
 

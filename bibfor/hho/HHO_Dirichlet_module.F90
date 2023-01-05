@@ -350,8 +350,8 @@ contains
                 end if
             end do
 !
-            if (niv .ge. 2) then
-                call imprsd('CHAMP', hhoField%fieldCineFunc, 6, 'Carte fonctions pour Dirichlet')
+            if (niv > 1) then
+                call imprsd('CARTE', hhoField%fieldCineFunc, 6, 'Carte fonctions pour Dirichlet')
             end if
 !
             AS_DEALLOCATE(vl=v_elem_affe)
