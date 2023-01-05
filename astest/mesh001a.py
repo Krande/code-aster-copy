@@ -29,6 +29,8 @@ test = code_aster.TestCase()
 # from MED format
 mesh = code_aster.Mesh()
 mesh.readMedFile("zzzz503a.mmed", verbose=2)
+with test.assertRaisesRegex(AssertionError, "not empty"):
+    mesh.readMedFile("zzzz503a.mmed")
 
 test.assertFalse(mesh.isParallel())
 test.assertFalse(mesh.isQuadratic())

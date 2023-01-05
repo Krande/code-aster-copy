@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -32,7 +32,7 @@ DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
 #    PUIS CREATION DE L'EVOL_THER THERDEP
 # -------------------------------------------------------------------
 #
-MA = LIRE_MAILLAGE(UNITE=21, FORMAT="MED", INFO_MED=2)
+MA = LIRE_MAILLAGE(UNITE=21, FORMAT="MED", INFO_MED=1)
 #
 THERDEP = LIRE_RESU(
     MAILLAGE=MA,

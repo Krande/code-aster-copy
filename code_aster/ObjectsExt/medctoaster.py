@@ -184,6 +184,8 @@ class MEDCouplingMeshHelper:
         Returns:
             Mesh: The same Mesh/ParallelMesh object completed.
         """
+        assert mesh.getDimension() == 0, "the mesh object is not empty"
+        UTMESS("I", "MED_10", valk=self.name)
         timer = self._timer
         with timer("medcoupling parsing"):
             self.parse()

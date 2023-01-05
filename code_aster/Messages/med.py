@@ -87,8 +87,7 @@ On ne peut pas écrire au format MED %(i1)d.%(i2)d.%(i3)d.
     ),
     10: _(
         """
-  -> Le nom de groupe "%(k1)s" contient des caractères interdits.
-     Le groupe "%(k1)s" est renommé en "%(k2)s".
+Nom MED du maillage : %(k1)s
 """
     ),
     11: _(
