@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine dstci2(dci, carat3, hft2, dfc, dmc,&
+subroutine dstci2(dci, carat3, hft2, dfc, dmc, &
                   bca, an, am)
     implicit none
 #include "asterfort/dstbfa.h"
@@ -106,33 +106,33 @@ subroutine dstci2(dci, carat3, hft2, dfc, dmc,&
 !
     do i = 1, 3
         do j = 1, 6
-            am(i,j) = zero
-            dmctbm(i,j) = zero
+            am(i, j) = zero
+            dmctbm(i, j) = zero
         end do
     end do
 !
     do i = 1, 3
         do j = 1, 9
-            an(i,j) = zero
-            aw(i,j) = zero
+            an(i, j) = zero
+            aw(i, j) = zero
         end do
     end do
 !
     do i = 1, 2
         do j = 1, 9
-            dfcbfb(i,j) = zero
+            dfcbfb(i, j) = zero
         end do
     end do
 !
     do i = 1, 2
         do j = 1, 3
-            bca(i,j) = zero
+            bca(i, j) = zero
         end do
     end do
 !
     do i = 1, 6
         do j = 1, 3
-            ta(i,j) = zero
+            ta(i, j) = zero
         end do
     end do
 !
@@ -152,23 +152,23 @@ subroutine dstci2(dci, carat3, hft2, dfc, dmc,&
     y(2) = carat3(5)
     y(3) = carat3(6)
 !
-    ta(1,1) = - huit * c(1)
-    ta(2,3) = - huit * c(3)
-    ta(3,1) = - quatre * c(1)
-    ta(3,2) = quatre * c(2)
-    ta(3,3) = - quatre * c(3)
-    ta(4,1) = - huit * s(1)
-    ta(5,3) = - huit * s(3)
-    ta(6,1) = - quatre * s(1)
-    ta(6,2) = quatre * s(2)
-    ta(6,3) = - quatre * s(3)
+    ta(1, 1) = -huit*c(1)
+    ta(2, 3) = -huit*c(3)
+    ta(3, 1) = -quatre*c(1)
+    ta(3, 2) = quatre*c(2)
+    ta(3, 3) = -quatre*c(3)
+    ta(4, 1) = -huit*s(1)
+    ta(5, 3) = -huit*s(3)
+    ta(6, 1) = -quatre*s(1)
+    ta(6, 2) = quatre*s(2)
+    ta(6, 3) = -quatre*s(3)
 !
 ! --- CALCUL DU PRODUIT HFT2.TA :
 !     -------------------------
     do j = 1, 3
         do k = 1, 6
-            bca(1,j) = bca(1,j) + hft2(1,k) * ta(k,j)
-            bca(2,j) = bca(2,j) + hft2(2,k) * ta(k,j)
+            bca(1, j) = bca(1, j)+hft2(1, k)*ta(k, j)
+            bca(2, j) = bca(2, j)+hft2(2, k)*ta(k, j)
         end do
     end do
 !
@@ -191,7 +191,7 @@ subroutine dstci2(dci, carat3, hft2, dfc, dmc,&
 !         ------------------------
         do i = 1, 2
             do j = 1, 3
-                dfcbfa(i,j) = zero
+                dfcbfa(i, j) = zero
             end do
         end do
 !
@@ -209,14 +209,14 @@ subroutine dstci2(dci, carat3, hft2, dfc, dmc,&
 !         ---------------------------
             do j = 1, 3
                 do k = 1, 3
-                    dfcbfa(1,j) = dfcbfa(1,j) + dfc(k,1)*bfa(k,j)
-                    dfcbfa(2,j) = dfcbfa(2,j) + dfc(k,2)*bfa(k,j)
+                    dfcbfa(1, j) = dfcbfa(1, j)+dfc(k, 1)*bfa(k, j)
+                    dfcbfa(2, j) = dfcbfa(2, j)+dfc(k, 2)*bfa(k, j)
                 end do
             end do
 !
             do i = 1, 2
                 do j = 1, 3
-                    dfcbfa(i,j) = undemi*dfcbfa(i,j)
+                    dfcbfa(i, j) = undemi*dfcbfa(i, j)
                 end do
             end do
 !
@@ -228,8 +228,8 @@ subroutine dstci2(dci, carat3, hft2, dfc, dmc,&
 ! ---   CALCUL DU PRODUIT DCI*(BCA - DFC_T*BFA) :
 !       --------------------------------------
         do j = 1, 3
-            db(1,j) = dci(1,1) * (bca(1,j)-dfcbfa(1,j)) + dci(1,2) * ( bca(2,j)-dfcbfa(2,j))
-            db(2,j) = dci(2,1) * (bca(1,j)-dfcbfa(1,j)) + dci(2,2) * ( bca(2,j)-dfcbfa(2,j))
+            db(1, j) = dci(1, 1)*(bca(1, j)-dfcbfa(1, j))+dci(1, 2)*(bca(2, j)-dfcbfa(2, j))
+            db(2, j) = dci(2, 1)*(bca(1, j)-dfcbfa(1, j))+dci(2, 2)*(bca(2, j)-dfcbfa(2, j))
         end do
 !
 ! ---               |L4 0  0|   |L4C4 L4S4|
@@ -238,9 +238,9 @@ subroutine dstci2(dci, carat3, hft2, dfc, dmc,&
 ! --- LES LKCK SONT DANS X , LES LKSK SONT DANS Y :
 !     -------------------------------------------
         do j = 1, 3
-            aa(ic,j) = - (x(ic) * db(1,j) + y(ic) * db(2,j))
+            aa(ic, j) = -(x(ic)*db(1, j)+y(ic)*db(2, j))
         end do
-        aa(ic,ic) = aa(ic,ic) + deux/trois * l(ic)
+        aa(ic, ic) = aa(ic, ic)+deux/trois*l(ic)
 !
     end do
 !     -------------------------------------------
@@ -267,16 +267,16 @@ subroutine dstci2(dci, carat3, hft2, dfc, dmc,&
 !     ---------------------------
     do j = 1, 9
         do k = 1, 3
-            dfcbfb(1,j) = dfcbfb(1,j) + dfc(k,1)*bfb(k,j)
-            dfcbfb(2,j) = dfcbfb(2,j) + dfc(k,2)*bfb(k,j)
+            dfcbfb(1, j) = dfcbfb(1, j)+dfc(k, 1)*bfb(k, j)
+            dfcbfb(2, j) = dfcbfb(2, j)+dfc(k, 2)*bfb(k, j)
         end do
     end do
 !
 ! --- CALCUL DU PRODUIT DCI*DFC_T*BFB :
 !     -------------------------------
     do j = 1, 9
-        dcidfb(1,j) = dci(1,1)*dfcbfb(1,j) + dci(1,2)*dfcbfb(2,j)
-        dcidfb(2,j) = dci(2,1)*dfcbfb(1,j) + dci(2,2)*dfcbfb(2,j)
+        dcidfb(1, j) = dci(1, 1)*dfcbfb(1, j)+dci(1, 2)*dfcbfb(2, j)
+        dcidfb(2, j) = dci(2, 1)*dfcbfb(1, j)+dci(2, 2)*dfcbfb(2, j)
     end do
 !
 ! ---  CALCUL DE :
@@ -287,7 +287,7 @@ subroutine dstci2(dci, carat3, hft2, dfc, dmc,&
 !     -------------------------------------------
     do i = 1, 3
         do j = 1, 9
-            ab(i,j) = - (x(i)*dcidfb(1,j) + y(i)*dcidfb(2,j))
+            ab(i, j) = -(x(i)*dcidfb(1, j)+y(i)*dcidfb(2, j))
         end do
     end do
 !
@@ -311,16 +311,16 @@ subroutine dstci2(dci, carat3, hft2, dfc, dmc,&
 !     --------------------------
     do j = 1, 6
         do k = 1, 3
-            dmctbm(1,j) = dmctbm(1,j) + dmc(k,1)*bm(k,j)
-            dmctbm(2,j) = dmctbm(2,j) + dmc(k,2)*bm(k,j)
+            dmctbm(1, j) = dmctbm(1, j)+dmc(k, 1)*bm(k, j)
+            dmctbm(2, j) = dmctbm(2, j)+dmc(k, 2)*bm(k, j)
         end do
     end do
 !
 ! --- CALCUL DU PRODUIT DCI*DMC_T*BM :
 !     ------------------------------
     do j = 1, 6
-        dcidmc(1,j) = dci(1,1)*dmctbm(1,j) + dci(1,2)*dmctbm(2,j)
-        dcidmc(2,j) = dci(2,1)*dmctbm(1,j) + dci(2,2)*dmctbm(2,j)
+        dcidmc(1, j) = dci(1, 1)*dmctbm(1, j)+dci(1, 2)*dmctbm(2, j)
+        dcidmc(2, j) = dci(2, 1)*dmctbm(1, j)+dci(2, 2)*dmctbm(2, j)
     end do
 !
 ! ---  CALCUL DE :
@@ -331,7 +331,7 @@ subroutine dstci2(dci, carat3, hft2, dfc, dmc,&
 !     -------------------------------------------
     do i = 1, 3
         do j = 1, 6
-            al(i,j) = - (x(i)*dcidmc(1,j) + y(i)*dcidmc(2,j))
+            al(i, j) = -(x(i)*dcidmc(1, j)+y(i)*dcidmc(2, j))
         end do
     end do
 !
@@ -341,13 +341,13 @@ subroutine dstci2(dci, carat3, hft2, dfc, dmc,&
 !
     do i = 1, 3
         do j = 1, 3
-            aai(i,j) = zero
+            aai(i, j) = zero
         end do
     end do
     do i = 1, 3
-        aai(i,i) = un
+        aai(i, i) = un
     end do
-    call mgauss('NFVP', aa, aai, 3, 3,&
+    call mgauss('NFVP', aa, aai, 3, 3, &
                 3, det, iret)
 !
 !===================================================================
@@ -361,24 +361,24 @@ subroutine dstci2(dci, carat3, hft2, dfc, dmc,&
 ! ---             | 2  L6C6 L6S6   0     0    0  -2  L6C6   L6S6|  =
 !===================================================================
 !
-    aw(1,1) = un
-    aw(1,2) = - undemi*x(1)
-    aw(1,3) = - undemi*y(1)
-    aw(1,4) = - un
-    aw(1,5) = - undemi*x(1)
-    aw(1,6) = - undemi*y(1)
-    aw(2,4) = un
-    aw(2,5) = - undemi*x(2)
-    aw(2,6) = - undemi*y(2)
-    aw(2,7) = - un
-    aw(2,8) = - undemi*x(2)
-    aw(2,9) = - undemi*y(2)
-    aw(3,1) = - un
-    aw(3,2) = - undemi*x(3)
-    aw(3,3) = - undemi*y(3)
-    aw(3,7) = un
-    aw(3,8) = - undemi*x(3)
-    aw(3,9) = - undemi*y(3)
+    aw(1, 1) = un
+    aw(1, 2) = -undemi*x(1)
+    aw(1, 3) = -undemi*y(1)
+    aw(1, 4) = -un
+    aw(1, 5) = -undemi*x(1)
+    aw(1, 6) = -undemi*y(1)
+    aw(2, 4) = un
+    aw(2, 5) = -undemi*x(2)
+    aw(2, 6) = -undemi*y(2)
+    aw(2, 7) = -un
+    aw(2, 8) = -undemi*x(2)
+    aw(2, 9) = -undemi*y(2)
+    aw(3, 1) = -un
+    aw(3, 2) = -undemi*x(3)
+    aw(3, 3) = -undemi*y(3)
+    aw(3, 7) = un
+    aw(3, 8) = -undemi*x(3)
+    aw(3, 9) = -undemi*y(3)
 !
 !===================================================================
 ! --- DETERMINATION DE LA MATRICE AN QUI EST TELLE QUE             =
@@ -391,7 +391,7 @@ subroutine dstci2(dci, carat3, hft2, dfc, dmc,&
     do i = 1, 3
         do k = 1, 3
             do j = 1, 9
-                an(i,j) = an(i,j) + aai(i,k) * (aw(k,j)+ab(k,j))
+                an(i, j) = an(i, j)+aai(i, k)*(aw(k, j)+ab(k, j))
             end do
         end do
     end do
@@ -405,7 +405,7 @@ subroutine dstci2(dci, carat3, hft2, dfc, dmc,&
     do i = 1, 3
         do k = 1, 3
             do j = 1, 6
-                am(i,j) = am(i,j) + aai(i,k) * al(k,j)
+                am(i, j) = am(i, j)+aai(i, k)*al(k, j)
             end do
         end do
     end do

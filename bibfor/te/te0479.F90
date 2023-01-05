@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -41,10 +41,10 @@ subroutine te0479(option, nomte)
     aster_logical :: laxi
 ! DEB ------------------------------------------------------------------
 !
-    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg, &
                      jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
     laxi = .false.
-    if (lteatt('AXIS','OUI')) laxi = .true.
+    if (lteatt('AXIS', 'OUI')) laxi = .true.
 !
 ! ---- RECUPERATION DES COORDONNEES DES CONNECTIVITES
 !      ----------------------------------------------
@@ -53,32 +53,32 @@ subroutine te0479(option, nomte)
     call jevech('PCOORPG', 'E', icopg)
 !
     do kp = 1, npg
-        xx=0.d0
-        yy=0.d0
+        xx = 0.d0
+        yy = 0.d0
         do ino = 1, nno
-            xx=xx+zr(igeom+2*(ino-1)+0)*zr(ivf+(kp-1)*nno+ino-1)
-            yy=yy+zr(igeom+2*(ino-1)+1)*zr(ivf+(kp-1)*nno+ino-1)
+            xx = xx+zr(igeom+2*(ino-1)+0)*zr(ivf+(kp-1)*nno+ino-1)
+            yy = yy+zr(igeom+2*(ino-1)+1)*zr(ivf+(kp-1)*nno+ino-1)
         end do
 !
-        zr(icopg+3*(kp-1)+0)=xx
-        zr(icopg+3*(kp-1)+1)=yy
+        zr(icopg+3*(kp-1)+0) = xx
+        zr(icopg+3*(kp-1)+1) = yy
 !
         if (ndim .eq. 2) then
 !         -- CAS DES ELEMENTS 2D
-            call dfdm2d(nno, kp, ipoids, idfde, zr(igeom),&
+            call dfdm2d(nno, kp, ipoids, idfde, zr(igeom), &
                         poids)
-        else if (ndim.eq.1) then
+        else if (ndim .eq. 1) then
 !         -- CAS DES ELEMENTS PEAU
-            call vff2dn(ndim, nno, kp, ipoids, idfde,&
+            call vff2dn(ndim, nno, kp, ipoids, idfde, &
                         zr(igeom), rbid81(1), rbid81(1), poids)
         else
             ASSERT(.false.)
-        endif
+        end if
 !
 !       EN AXI R C'EST XX
-        if (laxi) poids=poids*xx
+        if (laxi) poids = poids*xx
 !
-        zr(icopg+3*(kp-1)+2)=poids
+        zr(icopg+3*(kp-1)+2) = poids
     end do
 !
 end subroutine

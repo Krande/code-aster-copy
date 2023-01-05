@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-function coyang(dist, dteta, rayon, omega, uc,&
+function coyang(dist, dteta, rayon, omega, uc, &
                 uct, l, lt)
 ! CALCUL DE LA FONCTION DE COHERENCE SUIVANT AU-YANG
     implicit none
@@ -36,14 +36,14 @@ function coyang(dist, dteta, rayon, omega, uc,&
 !
 ! CALCUL DE LA FONCTION DE COHERENCE EN X
 !
-    codist=exp(-dist/l)*cos(omega*dist/uc)
+    codist = exp(-dist/l)*cos(omega*dist/uc)
 !
 ! CALCUL DE LA FONCTION DE COHERENCE EN TETA
 !
-    coteta=exp(-rayon*dteta/lt)*cos(rayon*omega*dteta/uct)*rayon*rayon
+    coteta = exp(-rayon*dteta/lt)*cos(rayon*omega*dteta/uct)*rayon*rayon
 !
 ! CALCUL DE LA FONCTION DE COHERENCE SUIVANT AU-YANG
 !
-    coyang = codist * coteta
+    coyang = codist*coteta
 !
 end function

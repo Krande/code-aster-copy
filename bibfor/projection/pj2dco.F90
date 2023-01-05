@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,15 +16,15 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine pj2dco(typeSelect   ,&
-                  entity1      , entity2        ,&
-                  nbCellSelect1, listCellSelect1,&
-                  nbNodeSelect2, listNodeSelect2,&
-                  geom1        , geom2, corrMesh,&
-                  l_dmax       , dmax, dala,&
-                  listInterc_  , nbInterc_)
+subroutine pj2dco(typeSelect, &
+                  entity1, entity2, &
+                  nbCellSelect1, listCellSelect1, &
+                  nbNodeSelect2, listNodeSelect2, &
+                  geom1, geom2, corrMesh, &
+                  l_dmax, dmax, dala, &
+                  listInterc_, nbInterc_)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -48,15 +48,15 @@ implicit none
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
-character(len=*), intent(in) :: typeSelect
-character(len=8), intent(in) :: entity1, entity2
-integer, intent(in) :: nbCellSelect1, listCellSelect1(*), nbNodeSelect2, listNodeSelect2(*)
-character(len=*), intent(in) :: geom1, geom2
-character(len=16), intent(in)  :: corrMesh
-aster_logical, intent(in) :: l_dmax
-real(kind=8), intent(in) :: dmax, dala
-character(len=16), optional, intent(in)  :: listInterc_
-integer, optional, intent(in)  :: nbInterc_
+    character(len=*), intent(in) :: typeSelect
+    character(len=8), intent(in) :: entity1, entity2
+    integer, intent(in) :: nbCellSelect1, listCellSelect1(*), nbNodeSelect2, listNodeSelect2(*)
+    character(len=*), intent(in) :: geom1, geom2
+    character(len=16), intent(in)  :: corrMesh
+    aster_logical, intent(in) :: l_dmax
+    real(kind=8), intent(in) :: dmax, dala
+    character(len=16), optional, intent(in)  :: listInterc_
+    integer, optional, intent(in)  :: nbInterc_
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -111,14 +111,14 @@ integer, optional, intent(in)  :: nbInterc_
     call infniv(ifm, niv)
 
 ! - Prepare list of entities
-    call pjxxut('2D'         , typeSelect     ,&
-                entity1      , entity2        ,&
-                nbCellSelect1, listCellSelect1,&
-                nbNodeSelect2, listNodeSelect2,&
-                mesh1        , mesh2          ,&
-                nbCellType   , cellListType   , cellListCode)
-    call jeveuo('&&PJXXCO.LIMA1', 'L', vi = listCell1)
-    call jeveuo('&&PJXXCO.LINO2', 'L', vi = listNode2)
+    call pjxxut('2D', typeSelect, &
+                entity1, entity2, &
+                nbCellSelect1, listCellSelect1, &
+                nbNodeSelect2, listNodeSelect2, &
+                mesh1, mesh2, &
+                nbCellType, cellListType, cellListCode)
+    call jeveuo('&&PJXXCO.LIMA1', 'L', vi=listCell1)
+    call jeveuo('&&PJXXCO.LINO2', 'L', vi=listNode2)
 
 ! - Access to meshes
     call dismoi('NB_NO_MAILLA', mesh1, 'MAILLAGE', repi=nbNode1)
@@ -133,25 +133,25 @@ integer, optional, intent(in)  :: nbInterc_
         if (listCell1(iCell1) .ne. 0) then
             cellTypeNume = typmail(iCell1)
             if (cellTypeNume .eq. cellListType(1)) then
-                nbTria = nbTria + 1
-            else if (cellTypeNume.eq.cellListType(2)) then
-                nbTria = nbTria + 1
-            else if (cellTypeNume.eq.cellListType(3)) then
-                nbTria = nbTria + 1
-            else if (cellTypeNume.eq.cellListType(4)) then
-                nbTria = nbTria + 2
-            else if (cellTypeNume.eq.cellListType(5)) then
-                nbTria = nbTria + 2
-            else if (cellTypeNume.eq.cellListType(6)) then
-                nbTria = nbTria + 2
+                nbTria = nbTria+1
+            else if (cellTypeNume .eq. cellListType(2)) then
+                nbTria = nbTria+1
+            else if (cellTypeNume .eq. cellListType(3)) then
+                nbTria = nbTria+1
+            else if (cellTypeNume .eq. cellListType(4)) then
+                nbTria = nbTria+2
+            else if (cellTypeNume .eq. cellListType(5)) then
+                nbTria = nbTria+2
+            else if (cellTypeNume .eq. cellListType(6)) then
+                nbTria = nbTria+2
             else
                 call utmess('F', 'PROJECTION4_1')
-            endif
-        endif
+            end if
+        end if
     end do
     if (nbTria .eq. 0) then
         call utmess('F', 'PROJECTION4_55')
-    endif
+    end if
 
 ! - Create object to cut cells in TRIA3
 !         long(v)=1+4*ntr3
@@ -169,31 +169,31 @@ integer, optional, intent(in)  :: nbInterc_
     do iCell1 = 1, nbCell1
         if (listCell1(iCell1) .ne. 0) then
             cellTypeNume = typmail(iCell1)
-            if ((cellTypeNume.eq.cellListType(1)) .or.&
-                (cellTypeNume.eq.cellListType(2)) .or.&
-                (cellTypeNume.eq.cellListType(3))) then
-                nbTria=nbTria+1
-                zi(iatr3+(nbTria-1)*4+4)=iCell1
-                zi(iatr3+(nbTria-1)*4+1)=connex(1+ zi(ilcnx1-1+iCell1)-2+1)
-                zi(iatr3+(nbTria-1)*4+2)=connex(1+ zi(ilcnx1-1+iCell1)-2+2)
-                zi(iatr3+(nbTria-1)*4+3)=connex(1+ zi(ilcnx1-1+iCell1)-2+3)
-            else if ((cellTypeNume.eq.cellListType(4)) .or.&
-                     (cellTypeNume.eq.cellListType(5)) .or.&
-                     (cellTypeNume.eq.cellListType(6))) then
-                nbTria=nbTria+1
-                zi(iatr3+(nbTria-1)*4+4)=iCell1
-                zi(iatr3+(nbTria-1)*4+1)=connex(1+ zi(ilcnx1-1+iCell1)-2+1)
-                zi(iatr3+(nbTria-1)*4+2)=connex(1+ zi(ilcnx1-1+iCell1)-2+2)
-                zi(iatr3+(nbTria-1)*4+3)=connex(1+ zi(ilcnx1-1+iCell1)-2+3)
-                nbTria=nbTria+1
-                zi(iatr3+(nbTria-1)*4+4)=iCell1
-                zi(iatr3+(nbTria-1)*4+1)=connex(1+ zi(ilcnx1-1+iCell1)-2+1)
-                zi(iatr3+(nbTria-1)*4+2)=connex(1+ zi(ilcnx1-1+iCell1)-2+3)
-                zi(iatr3+(nbTria-1)*4+3)=connex(1+ zi(ilcnx1-1+iCell1)-2+4)
+            if ((cellTypeNume .eq. cellListType(1)) .or. &
+                (cellTypeNume .eq. cellListType(2)) .or. &
+                (cellTypeNume .eq. cellListType(3))) then
+                nbTria = nbTria+1
+                zi(iatr3+(nbTria-1)*4+4) = iCell1
+                zi(iatr3+(nbTria-1)*4+1) = connex(1+zi(ilcnx1-1+iCell1)-2+1)
+                zi(iatr3+(nbTria-1)*4+2) = connex(1+zi(ilcnx1-1+iCell1)-2+2)
+                zi(iatr3+(nbTria-1)*4+3) = connex(1+zi(ilcnx1-1+iCell1)-2+3)
+            else if ((cellTypeNume .eq. cellListType(4)) .or. &
+                     (cellTypeNume .eq. cellListType(5)) .or. &
+                     (cellTypeNume .eq. cellListType(6))) then
+                nbTria = nbTria+1
+                zi(iatr3+(nbTria-1)*4+4) = iCell1
+                zi(iatr3+(nbTria-1)*4+1) = connex(1+zi(ilcnx1-1+iCell1)-2+1)
+                zi(iatr3+(nbTria-1)*4+2) = connex(1+zi(ilcnx1-1+iCell1)-2+2)
+                zi(iatr3+(nbTria-1)*4+3) = connex(1+zi(ilcnx1-1+iCell1)-2+3)
+                nbTria = nbTria+1
+                zi(iatr3+(nbTria-1)*4+4) = iCell1
+                zi(iatr3+(nbTria-1)*4+1) = connex(1+zi(ilcnx1-1+iCell1)-2+1)
+                zi(iatr3+(nbTria-1)*4+2) = connex(1+zi(ilcnx1-1+iCell1)-2+3)
+                zi(iatr3+(nbTria-1)*4+3) = connex(1+zi(ilcnx1-1+iCell1)-2+4)
             else
                 call utmess('F', 'PROJECTION4_1')
-            endif
-        endif
+            end if
+        end if
     end do
 
 ! - Get coordinates of nodes
@@ -201,12 +201,12 @@ integer, optional, intent(in)  :: nbInterc_
         call jeveuo(mesh1//'.COORDO    .VALE', 'L', iacoo1)
     else
         call jeveuo(geom1, 'L', iacoo1)
-    endif
+    end if
     if (geom2 .eq. ' ') then
         call jeveuo(mesh2//'.COORDO    .VALE', 'L', iacoo2)
     else
         call jeveuo(geom2, 'L', iacoo2)
-    endif
+    end if
 
 ! - Create boxes
     call pj2dfb(boite, zi(iatr3), zr(iacoo1), zr(iacoo2))
@@ -249,9 +249,9 @@ integer, optional, intent(in)  :: nbInterc_
 
 ! - Create temporary datastructure
     call wkvect(corrMeshTemp//'.PJXX_K1', 'V V K24', 5, jxxk1)
-    zk24(jxxk1-1+1)=mesh1
-    zk24(jxxk1-1+2)=mesh2
-    zk24(jxxk1-1+3)='COLLOCATION'
+    zk24(jxxk1-1+1) = mesh1
+    zk24(jxxk1-1+2) = mesh2
+    zk24(jxxk1-1+3) = 'COLLOCATION'
     call wkvect(corrMeshTemp//'.PJEF_NB', 'V V I', nbNode2, iaconb)
     call wkvect(corrMeshTemp//'.PJEF_NU', 'V V I', 3*nbNode2, iaconu)
     call wkvect(corrMeshTemp//'.PJEF_CF', 'V V R', 3*nbNode2, iacocf)
@@ -263,74 +263,73 @@ integer, optional, intent(in)  :: nbInterc_
     do iNode2 = 1, nbNode2
         if (listNode2(iNode2) .eq. 0) cycle
 ! ----- Special for XFEM (issue23983))
-        if (zr(iacoo2-1+3*(iNode2-1)+1) .eq. 0.d0 .and.&
+        if (zr(iacoo2-1+3*(iNode2-1)+1) .eq. 0.d0 .and. &
             zr(iacoo2-1+3*(iNode2-1)+2) .eq. 0.d0) then
-            nbpt0=nbpt0+1
+            nbpt0 = nbpt0+1
             if (nbpt0 .eq. 1) then
-                ino2_0=iNode2
-                idecal_0=idecal
+                ino2_0 = iNode2
+                idecal_0 = idecal
             else
-                zi(iaconb-1+iNode2)=3
-                cellLink1=zi(iacotr-1+ino2_0)
-                zi(iacotr-1+iNode2)=cellLink1
-                if (cellLink1.eq.0) cycle
+                zi(iaconb-1+iNode2) = 3
+                cellLink1 = zi(iacotr-1+ino2_0)
+                zi(iacotr-1+iNode2) = cellLink1
+                if (cellLink1 .eq. 0) cycle
                 do k = 1, 3
-                    zi(iaconu-1+idecal+k)= zi(iaconu-1+idecal_0+k)
-                    zr(iacocf-1+idecal+k)= zr(iacocf-1+idecal_0+k)
+                    zi(iaconu-1+idecal+k) = zi(iaconu-1+idecal_0+k)
+                    zr(iacocf-1+idecal+k) = zr(iacocf-1+idecal_0+k)
                 end do
-                idecal=idecal+zi(iaconb-1+iNode2)
+                idecal = idecal+zi(iaconb-1+iNode2)
                 cycle
-            endif
-        endif
-        call pj2dap(iNode2, zr(iacoo2), zr(iacoo1), zi(iatr3),&
-                    cobary, cellLink1, nbtrou, bt2ddi, bt2dvr,&
-                    bt2dnb, bt2dlc, zi( iabtco),&
+            end if
+        end if
+        call pj2dap(iNode2, zr(iacoo2), zr(iacoo1), zi(iatr3), &
+                    cobary, cellLink1, nbtrou, bt2ddi, bt2dvr, &
+                    bt2dnb, bt2dlc, zi(iabtco), &
                     l_dmax, dmax, dala, loin, dmin)
-        if (l_dmax .and. (nbtrou.eq.0)) then
+        if (l_dmax .and. (nbtrou .eq. 0)) then
             zi(iaconb-1+iNode2) = 3
             zi(iacotr-1+iNode2) = 0
             cycle
-        endif
+        end if
         if (nbtrou .eq. 0) then
             call jenuno(jexnum(mesh2//'.NOMNOE', iNode2), nodeName2)
             call utmess('F', 'PROJECTION4_56', sk=nodeName2)
-        endif
+        end if
         zi(iaconb-1+iNode2) = 3
         zi(iacotr-1+iNode2) = cellLink1
         do k = 1, 3
             zi(iaconu-1+idecal+k) = zi(iatr3+4*(cellLink1-1)+k)
             zr(iacocf-1+idecal+k) = cobary(k)
         end do
-        idecal=idecal+zi(iaconb-1+iNode2)
+        idecal = idecal+zi(iaconb-1+iNode2)
     end do
 
 ! - For alarm, see ticket 16186
 
-
 ! - Transform corrMeshTemp in corrMesh (real cells)
-    if (present(listInterc_))then
+    if (present(listInterc_)) then
         ASSERT(present(nbInterc_))
         listInterc = listInterc_
         nbInterc = nbInterc_
-        call pj2dtr(corrMeshTemp, corrMesh,&
-                    cellListType, cellListCode,&
-                    zr(iacoo1), zr(iacoo2),&
-                    spacedim, dala,&
+        call pj2dtr(corrMeshTemp, corrMesh, &
+                    cellListType, cellListCode, &
+                    zr(iacoo1), zr(iacoo2), &
+                    spacedim, dala, &
                     listInterc, nbInterc)
     else
         listInterc = ' '
         nbInterc = 0
-        call pj2dtr(corrMeshTemp, corrMesh,&
-                    cellListType, cellListCode,&
-                    zr(iacoo1), zr(iacoo2),&
+        call pj2dtr(corrMeshTemp, corrMesh, &
+                    cellListType, cellListCode, &
+                    zr(iacoo1), zr(iacoo2), &
                     spacedim, dala)
-    endif
+    end if
 
 ! - Debug
     if (dbg) then
         call utimsd(ifm, 2, ASTER_FALSE, ASTER_TRUE, '&&PJ2DCO', 1, ' ')
         call utimsd(ifm, 2, ASTER_FALSE, ASTER_TRUE, corrMesh, 1, ' ')
-    endif
+    end if
 
 ! - Clean
     call detrsd('CORRESP_2_MAILLA', corrMeshTemp)

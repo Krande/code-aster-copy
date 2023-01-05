@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -29,7 +29,7 @@ subroutine te0399(option, nomte)
 #include "asterfort/jevech.h"
 #include "asterfort/arlapl.h"
 
-    character(len=16) :: nomte,option
+    character(len=16) :: nomte, option
 
 ! ----------------------------------------------------------------------
 
@@ -41,41 +41,39 @@ subroutine te0399(option, nomte)
 
 ! ----------------------------------------------------------------------
 
-
 ! IN  OPTION : OPTION DE CALCUL
 ! IN  NOMTE  : NOM DU TYPE ELEMENT
 
-
     integer :: nbnomx
-    parameter (nbnomx = 27)
+    parameter(nbnomx=27)
     integer :: nbgamx
-    parameter (nbgamx = 64)
+    parameter(nbgamx=64)
 
-    integer :: nns,nnos
-    integer :: npgs,ipoids,ivfs,idfdes,jrefe1,jrefe2
-    integer :: jfamil,jinfor,jcoopg,jdfd2,jgano
+    integer :: nns, nnos
+    integer :: npgs, ipoids, ivfs, idfdes, jrefe1, jrefe2
+    integer :: jfamil, jinfor, jcoopg, jdfd2, jgano
     integer :: ndim
-    character(len=8) :: nomfam,elrfs
-    character(len=8) :: elrf1,elrf2
-    character(len=16) :: nomte1,nomte2
-    integer :: nn1,nn2
+    character(len=8) :: nomfam, elrfs
+    character(len=8) :: elrf1, elrf2
+    character(len=16) :: nomte1, nomte2
+    integer :: nn1, nn2
 
 ! ----------------------------------------------------------------------
 
 ! --- FAMILLE D'INTEGRATION
 
-    call jevech('PFAMILK','L',jfamil)
+    call jevech('PFAMILK', 'L', jfamil)
     nomfam = zk8(jfamil)
 
 ! --- INFORMATIONS SUR MAILLES COUPLEES
 
-    call jevech('PINFORR','L',jinfor)
-    ndim   = nint(zr(jinfor+1-1))
-    nn1    = nint(zr(jinfor+2-1))
-    nn2    = nint(zr(jinfor+3-1))
-    call jevech('PREFE1K','L',jrefe1)
+    call jevech('PINFORR', 'L', jinfor)
+    ndim = nint(zr(jinfor+1-1))
+    nn1 = nint(zr(jinfor+2-1))
+    nn2 = nint(zr(jinfor+3-1))
+    call jevech('PREFE1K', 'L', jrefe1)
     elrf1 = zk8(jrefe1)
-    call jevech('PREFE2K','L',jrefe2)
+    call jevech('PREFE2K', 'L', jrefe2)
     elrf2 = zk8(jrefe2)
 
 ! --- SCHEMA INTEGRATION MAILLE SUPPORT
@@ -84,7 +82,7 @@ subroutine te0399(option, nomte)
 
     if (elrf2 == 'SE2') then
         nomte2 = 'MECA_POU_D_T'
-    endif
+    end if
     if (elrf1 == 'H20') then
         nomte1 = 'MECA_HEXA20'
     elseif (elrf1 == 'HE8') then
@@ -97,27 +95,26 @@ subroutine te0399(option, nomte)
         nomte1 = 'MECA_TETRA10'
     elseif (elrf1 == 'TE4') then
         nomte1 = 'MECA_TETRA4'
-    endif
+    end if
 
     if (nomte1 .ne. nomte) then
-        call arlref(elrefe=elrf1,fami=nomfam,nomte=nomte1,ndim=ndim,nno=nns,nnos=nnos,&
-                    npg=npgs,jpoids=ipoids,jcoopg=jcoopg,jvf=ivfs,jdfde=idfdes,&
-                    jdfd2=jdfd2,jgano=jgano)
+        call arlref(elrefe=elrf1, fami=nomfam, nomte=nomte1, ndim=ndim, nno=nns, nnos=nnos, &
+                    npg=npgs, jpoids=ipoids, jcoopg=jcoopg, jvf=ivfs, jdfde=idfdes, &
+                    jdfd2=jdfd2, jgano=jgano)
         nns = nn1
     else
-        call elrefe_info(elrefe=elrfs,fami=nomfam,ndim=ndim,nno=nns,nnos=nnos,&
-                         npg=npgs,jpoids=ipoids,jcoopg=jcoopg,jvf=ivfs,jdfde=idfdes,&
-                         jdfd2=jdfd2,jgano=jgano)
-    endif
+        call elrefe_info(elrefe=elrfs, fami=nomfam, ndim=ndim, nno=nns, nnos=nnos, &
+                         npg=npgs, jpoids=ipoids, jcoopg=jcoopg, jvf=ivfs, jdfde=idfdes, &
+                         jdfd2=jdfd2, jgano=jgano)
+    end if
 
 ! --- VERIFICATIONS
 
-    ASSERT(nn1.le.nbnomx)
-    ASSERT(nn2.le.nbnomx)
-    ASSERT(nns.le.nbnomx)
-    ASSERT(npgs.le.nbgamx)
+    ASSERT(nn1 .le. nbnomx)
+    ASSERT(nn2 .le. nbnomx)
+    ASSERT(nns .le. nbnomx)
+    ASSERT(npgs .le. nbgamx)
 
-    call arlapl(ndim,nns,nn1,nn2,nomte,npgs,ipoids,ivfs,idfdes)
-
+    call arlapl(ndim, nns, nn1, nn2, nomte, npgs, ipoids, ivfs, idfdes)
 
 end subroutine

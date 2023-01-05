@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,17 +19,17 @@
 !
 subroutine dbrChckGreedy(paraGreedy, lReuse)
 !
-use Rom_Datastructure_type
+    use Rom_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/infniv.h"
 #include "asterfort/romMultiParaChck.h"
 #include "asterfort/utmess.h"
 !
-type(ROM_DS_ParaDBR_Greedy), intent(in) :: paraGreedy
-aster_logical, intent(in) :: lReuse
+    type(ROM_DS_ParaDBR_Greedy), intent(in) :: paraGreedy
+    aster_logical, intent(in) :: lReuse
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -51,14 +51,14 @@ aster_logical, intent(in) :: lReuse
 !
     call infniv(ifm, niv)
     if (niv .ge. 2) then
-        call utmess('I','ROM18_39')
-    endif
+        call utmess('I', 'ROM18_39')
+    end if
 !
 ! - General check
 !
     if (lReuse) then
-        call utmess('F','ROM18_38', sk = operation)
-    endif
+        call utmess('F', 'ROM18_38', sk=operation)
+    end if
 !
 ! - Check data for multiparametric problems
 !
@@ -68,12 +68,12 @@ aster_logical, intent(in) :: lReuse
 !
     if (paraGreedy%multiPara%nb_vari_coef .eq. 0) then
         call utmess('F', 'ROM18_40')
-    endif
+    end if
 !
 ! - Only on nodal fields
 !
     if (paraGreedy%multiPara%field%fieldSupp .ne. 'NOEU') then
-        call utmess('F','ROM18_41', sk = paraGreedy%multiPara%field%fieldSupp)
-    endif
+        call utmess('F', 'ROM18_41', sk=paraGreedy%multiPara%field%fieldSupp)
+    end if
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,9 +18,9 @@
 
 subroutine lcmmro(BEHinteg, omp, nvi, vind, vinf)
 !
-use Behaviour_type
+    use Behaviour_type
 !
-implicit none
+    implicit none
 !
 #include "asterc/r8miem.h"
 #include "asterfort/r8inir.h"
@@ -33,67 +33,67 @@ implicit none
     real(kind=8) :: omp(3), dtheta, iden(3, 3), nax(3, 3), q(3, 3)
     real(kind=8) :: omegap(3, 3), omegae(3, 3), omega(3, 3), dq(3, 3)
     real(kind=8) :: vind(nvi), vinf(nvi), l(3, 3), qm(3, 3)
-    data iden/1.d0,0.d0,0.d0, 0.d0,1.d0,0.d0, 0.d0,0.d0,1.d0/
+    data iden/1.d0, 0.d0, 0.d0, 0.d0, 1.d0, 0.d0, 0.d0, 0.d0, 1.d0/
 !
 !     LA MATRICE DE ROTATION QM EST STOCKEE DANS VIND (N-19 A N-9)
     do i = 1, 3
         do j = 1, 3
-            qm(i,j)=vind(nvi-19+3*(i-1)+j)+iden(i,j)
+            qm(i, j) = vind(nvi-19+3*(i-1)+j)+iden(i, j)
         end do
     end do
 !
     do i = 1, 3
         do j = 1, 3
-            l(i,j)=BEHinteg%elem%gradvelo(3*(i-1)+j)
+            l(i, j) = BEHinteg%elem%gradvelo(3*(i-1)+j)
         end do
     end do
     do i = 1, 3
         do j = 1, 3
-            omega(i,j)=0.5d0*(l(i,j)-l(j,i))
+            omega(i, j) = 0.5d0*(l(i, j)-l(j, i))
         end do
     end do
 !     LE VECTEUR  ROTATION PLASTIQUE EST STOCKE DANS VINF (N-9 A N-7)
     call r8inir(9, 0.d0, omegap, 1)
-    omegap(2,3)=-omp(1)
-    omegap(3,2)=+omp(1)
-    omegap(1,3)=+omp(2)
-    omegap(3,1)=-omp(2)
-    omegap(1,2)=-omp(3)
-    omegap(2,1)=+omp(3)
+    omegap(2, 3) = -omp(1)
+    omegap(3, 2) = +omp(1)
+    omegap(1, 3) = +omp(2)
+    omegap(3, 1) = -omp(2)
+    omegap(1, 2) = -omp(3)
+    omegap(2, 1) = +omp(3)
     do i = 1, 3
         do j = 1, 3
-            omegae(i,j)=omega(i,j)-omegap(i,j)
+            omegae(i, j) = omega(i, j)-omegap(i, j)
         end do
     end do
 !     ANGLE = NORME DU VECTEUR AXIAL
-    dtheta=sqrt(omegae(1,2)**2+omegae(1,3)**2+omegae(2,3)**2)
+    dtheta = sqrt(omegae(1, 2)**2+omegae(1, 3)**2+omegae(2, 3)**2)
 !
     call dcopy(9, iden, 1, dq, 1)
     if (dtheta .gt. r8miem()) then
         do i = 1, 3
             do j = 1, 3
-                nax(i,j)=omegae(i,j)/dtheta
+                nax(i, j) = omegae(i, j)/dtheta
             end do
         end do
         do i = 1, 3
             do j = 1, 3
-                dq(i,j)=dq(i,j)+sin(dtheta)*nax(i,j)
+                dq(i, j) = dq(i, j)+sin(dtheta)*nax(i, j)
             end do
         end do
         do i = 1, 3
             do j = 1, 3
                 do k = 1, 3
-                    dq(i,j)=dq(i,j)+(1.d0-cos(dtheta))*nax(i,k)*nax(k,&
-                    j)
+                    dq(i, j) = dq(i, j)+(1.d0-cos(dtheta))*nax(i, k)*nax(k, &
+                                                                         j)
                 end do
             end do
         end do
-    endif
+    end if
     call r8inir(9, 0.d0, q, 1)
     do i = 1, 3
         do j = 1, 3
             do k = 1, 3
-                q(i,j)=q(i,j)+dq(i,k)*qm(k,j)
+                q(i, j) = q(i, j)+dq(i, k)*qm(k, j)
             end do
         end do
     end do
@@ -101,7 +101,7 @@ implicit none
 ! LA MATRICE DE ROTATION EST STOCKEE DANS VINF (N-18 A N-10)
     do i = 1, 3
         do j = 1, 3
-            vinf(nvi-19+3*(i-1)+j)=(q(i,j)-iden(i,j))
+            vinf(nvi-19+3*(i-1)+j) = (q(i, j)-iden(i, j))
         end do
     end do
 !
@@ -113,9 +113,9 @@ implicit none
 !
 ! LE VECTEUR D-ROTATION ELASTIQUE EST STOCKE DANS VINF (N-6 A N-4)
 !
-    vinf(nvi-6) = omegae(3,2)
-    vinf(nvi-5) = omegae(1,3)
-    vinf(nvi-4) = omegae(2,1)
+    vinf(nvi-6) = omegae(3, 2)
+    vinf(nvi-5) = omegae(1, 3)
+    vinf(nvi-4) = omegae(2, 1)
 !
     vinf(nvi-3) = dtheta+vind(nvi-3)
 !

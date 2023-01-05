@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine asefen(muapde, nomsy, id, stat, neq,&
-                  nbsup, ndir, nsupp, masse, nomsup,&
+subroutine asefen(muapde, nomsy, id, stat, neq, &
+                  nbsup, ndir, nsupp, masse, nomsup, &
                   depsup, recmod, nintra, nbdis)
     implicit none
 #include "asterf_types.h"
@@ -80,7 +80,7 @@ subroutine asefen(muapde, nomsy, id, stat, neq,&
     real(kind=8), pointer :: repmo(:) => null()
     aster_logical :: l_norefe
 !     ------------------------------------------------------------------
-    data  nomcmp / 'DX' , 'DY' , 'DZ' /
+    data nomcmp/'DX', 'DY', 'DZ'/
 !     ------------------------------------------------------------------
 !
     call jemarq()
@@ -91,7 +91,7 @@ subroutine asefen(muapde, nomsy, id, stat, neq,&
     obj2 = noma//'.NOMNOE'
 
 !
-    motfac ='DEPL_MULT_APPUI'
+    motfac = 'DEPL_MULT_APPUI'
     call getvtx('DEPL_MULT_APPUI', 'NOM_CAS', iocc=1, nbval=0, nbret=ns)
     if (ns .ne. 0) then
         call getfac(motfac, ncas)
@@ -104,7 +104,7 @@ subroutine asefen(muapde, nomsy, id, stat, neq,&
             if (nn .ne. 0) then
                 nno = -nn
                 AS_ALLOCATE(vk8=noeud, size=nno)
-                call getvtx(motfac, 'NOEUD', iocc=ioc, nbval=nno, vect=noeud,&
+                call getvtx(motfac, 'NOEUD', iocc=ioc, nbval=nno, vect=noeud, &
                             nbret=nn)
                 call getvr8(motfac, 'DX', iocc=ioc, scal=dx, nbret=nx)
                 call getvr8(motfac, 'DY', iocc=ioc, scal=dy, nbret=ny)
@@ -113,28 +113,28 @@ subroutine asefen(muapde, nomsy, id, stat, neq,&
                     noeu = noeud(ino)
                     call jenonu(jexnom(obj2, noeu), iret)
                     if (iret .eq. 0) then
-                        ier = ier + 1
+                        ier = ier+1
                         valk(1) = noeu
                         valk(2) = noma
                         call utmess('E', 'SEISME_1', nk=2, valk=valk)
                         goto 22
-                    endif
+                    end if
                     if (nx .ne. 0) then
                         do is = 1, nsupp(1)
-                            if (nomsup(is,1) .eq. noeu) depsup(is,1) = dx
+                            if (nomsup(is, 1) .eq. noeu) depsup(is, 1) = dx
                         end do
-                    endif
+                    end if
                     if (ny .ne. 0) then
                         do is = 1, nsupp(2)
-                            if (nomsup(is,2) .eq. noeu) depsup(is,2) = dy
+                            if (nomsup(is, 2) .eq. noeu) depsup(is, 2) = dy
                         end do
-                    endif
+                    end if
                     if (nz .ne. 0) then
                         do is = 1, nsupp(3)
-                            if (nomsup(is,3) .eq. noeu) depsup(is,3) = dz
+                            if (nomsup(is, 3) .eq. noeu) depsup(is, 3) = dz
                         end do
-                    endif
- 22                 continue
+                    end if
+22                  continue
                 end do
                 AS_DEALLOCATE(vk8=noeud)
 !
@@ -143,7 +143,7 @@ subroutine asefen(muapde, nomsy, id, stat, neq,&
                 call getvtx(motfac, 'GROUP_NO', iocc=ioc, nbval=0, nbret=ng)
                 ngr = -ng
                 AS_ALLOCATE(vk24=group_no, size=ngr)
-                call getvtx(motfac, 'GROUP_NO', iocc=ioc, nbval=ngr, vect=group_no,&
+                call getvtx(motfac, 'GROUP_NO', iocc=ioc, nbval=ngr, vect=group_no, &
                             nbret=ng)
                 call getvr8(motfac, 'DX', iocc=ioc, scal=dx, nbret=nx)
                 call getvr8(motfac, 'DY', iocc=ioc, scal=dy, nbret=ny)
@@ -153,7 +153,7 @@ subroutine asefen(muapde, nomsy, id, stat, neq,&
                     grnoeu = group_no(igr)
                     call jeexin(jexnom(obj1, grnoeu), iret)
                     if (iret .eq. 0) then
-                        ier = ier + 1
+                        ier = ier+1
                         valk(1) = grnoeu
                         valk(2) = noma
                         call utmess('E', 'SEISME_2', nk=2, valk=valk)
@@ -165,113 +165,113 @@ subroutine asefen(muapde, nomsy, id, stat, neq,&
                             call jenuno(jexnum(obj2, zi(jdgn+ino-1)), noeu)
                             if (nx .ne. 0) then
                                 do is = 1, nsupp(1)
-                                    if (nomsup(is,1) .eq. noeu) depsup( is,1) = dx
+                                    if (nomsup(is, 1) .eq. noeu) depsup(is, 1) = dx
                                 end do
-                            endif
+                            end if
                             if (ny .ne. 0) then
                                 do is = 1, nsupp(2)
-                                    if (nomsup(is,2) .eq. noeu) depsup( is,2) = dy
+                                    if (nomsup(is, 2) .eq. noeu) depsup(is, 2) = dy
                                 end do
-                            endif
+                            end if
                             if (nz .ne. 0) then
                                 do is = 1, nsupp(3)
-                                    if (nomsup(is,3) .eq. noeu) depsup( is,3) = dz
+                                    if (nomsup(is, 3) .eq. noeu) depsup(is, 3) = dz
                                 end do
-                            endif
+                            end if
                         end do
-                    endif
- 26                 continue
+                    end if
+26                  continue
                 end do
 !
                 AS_DEALLOCATE(vk24=group_no)
 !
-            endif
+            end if
 !
             if (l_norefe) then
                 call jenonu(jexnom(obj2, noeref), ire1)
                 call jeexin(jexnom(obj1, noeref), ire2)
                 if ((ire1+ire2) .eq. 0) then
-                    ier = ier + 1
+                    ier = ier+1
                     valk(1) = noeref
                     valk(2) = noma
                     call utmess('E', 'SEISME_1', nk=2, valk=valk)
                     goto 999
-                endif
+                end if
                 if (ire2 .ne. 0) then
                     call jeveuo(jexnom(obj1, noeref), 'L', jdgn)
                     call jenuno(jexnum(obj2, zi(jdgn)), noeref)
-                endif
+                end if
                 do idi = 1, 3
                     if (ndir(idi) .eq. 1) then
                         do is = 1, nsupp(idi)
-                            if (nomsup(is,idi) .eq. noeref) then
+                            if (nomsup(is, idi) .eq. noeref) then
                                 do in = 1, nsupp(idi)
-                                    depsup(in,idi) = depsup(in,idi) - depsup(is,idi)
+                                    depsup(in, idi) = depsup(in, idi)-depsup(is, idi)
                                 end do
                                 goto 90
-                            endif
+                            end if
                         end do
-                        ier = ier + 1
+                        ier = ier+1
                         call utmess('E', 'SEISME_3', sk=noeref)
                         goto 999
-                    endif
- 90                 continue
+                    end if
+90                  continue
                 end do
-            endif
+            end if
 !
         end do
     else
         do is = 1, nsupp(id)
-            depsup(is,id) = 0.d0
+            depsup(is, id) = 0.d0
         end do
-    endif
+    end if
 !
     cmp = nomcmp(id)
     do is = 1, nbsup
         do in = 1, neq
-            repmo(in + (is-1)*neq) = 0.d0
+            repmo(in+(is-1)*neq) = 0.d0
         end do
     end do
     do is = 1, nsupp(id)
-        noeu = nomsup(is,id)
+        noeu = nomsup(is, id)
         monacc = noeu//cmp
-        xx1 = depsup(is,id)
+        xx1 = depsup(is, id)
         if (ns .ne. 0) then
-            call rsorac(stat, 'NOEUD_CMP', ibid, r8b, monacc,&
-                        cbid, r8b, k8b, tordr, 1,&
+            call rsorac(stat, 'NOEUD_CMP', ibid, r8b, monacc, &
+                        cbid, r8b, k8b, tordr, 1, &
                         nbtrou)
-            iordr=tordr(1)
-            call rsexch('F', stat, nomsy, iordr, chextr,&
+            iordr = tordr(1)
+            call rsexch('F', stat, nomsy, iordr, chextr, &
                         iret)
             call jeexin(chextr//'.VALE', ibid)
             if (ibid .gt. 0) then
                 call jeveuo(chextr//'.VALE', 'L', jvale)
             else
                 call jeveuo(chextr//'.CELV', 'L', jvale)
-            endif
+            end if
 !
             if (muapde) then
                 ioc = nbdis(id, is)
                 do in = 1, neq
-                    xxx = zr(jvale+in-1) * xx1
-                    repmo(in+(ioc-1)*neq) = repmo(in+(ioc- 1)*neq ) + xxx
+                    xxx = zr(jvale+in-1)*xx1
+                    repmo(in+(ioc-1)*neq) = repmo(in+(ioc-1)*neq)+xxx
                 end do
             else
                 do in = 1, neq
-                    xxx = zr(jvale+in-1) * xx1
-                    recmod(1,in,id) = recmod(1,in,id) + xxx*xxx
+                    xxx = zr(jvale+in-1)*xx1
+                    recmod(1, in, id) = recmod(1, in, id)+xxx*xxx
                 end do
-            endif
-        endif
+            end if
+        end if
     end do
     if (muapde) then
         do ioc = 1, nintra
             do in = 1, neq
                 xxx = repmo(in+(ioc-1)*neq)
-                recmod(ioc,in,id) = recmod(ioc,in,id) + xxx*xxx
+                recmod(ioc, in, id) = recmod(ioc, in, id)+xxx*xxx
             end do
         end do
-    endif
+    end if
 !
 999 continue
 !

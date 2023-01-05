@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine fimped(modele, mateco, numedd, neq, vitini,&
-                  vitent, veccor, veanec, vaanec, temps,&
+subroutine fimped(modele, mateco, numedd, neq, vitini, &
+                  vitent, veccor, veanec, vaanec, temps, &
                   foimpe)
     implicit none
 #include "jeveux.h"
@@ -45,7 +45,7 @@ subroutine fimped(modele, mateco, numedd, neq, vitini,&
     call jemarq()
 !
     chinst = '&&CHINST'
-    call mecact('V', chinst, 'MODELE', modele(1:8)//'.MODELE', 'INST_R',&
+    call mecact('V', chinst, 'MODELE', modele(1:8)//'.MODELE', 'INST_R', &
                 ncmp=1, nomcmp='INST', sr=temps)
     call jedetr(veanec(1:19)//'.RELR')
 !
@@ -69,11 +69,11 @@ subroutine fimped(modele, mateco, numedd, neq, vitini,&
     lpaout(1) = 'PVECTUR'
     lchout(1) = veccor
 !
-    call calcul('S', 'IMPE_ABSO', ligrel, npain, lchin,&
-                lpain, 1, lchout, lpaout, 'V',&
+    call calcul('S', 'IMPE_ABSO', ligrel, npain, lchin, &
+                lpain, 1, lchout, lpaout, 'V', &
                 'OUI')
 !
-    call corich('E', lchout(1), ichin_ = -1)
+    call corich('E', lchout(1), ichin_=-1)
 !
     call reajre(veanec, lchout(1), 'V')
     call asasve(veanec, numedd, 'R', vaanec)

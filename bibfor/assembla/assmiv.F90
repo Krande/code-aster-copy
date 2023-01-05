@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine assmiv(base, vec, nbvec, tlivec, licoef,&
+subroutine assmiv(base, vec, nbvec, tlivec, licoef, &
                   nu, vecpro, motcle, type)
     implicit none
 !
@@ -120,52 +120,52 @@ subroutine assmiv(base, vec, nbvec, tlivec, licoef,&
 ! --- VERIF DE MOTCLE:
     if (motcle(1:4) .eq. 'ZERO') then
 !
-    else if (motcle(1:4).eq.'CUMU') then
+    else if (motcle(1:4) .eq. 'CUMU') then
 !
     else
         call utmess('F', 'ASSEMBLA_8', sk=motcle)
-    endif
+    end if
 !
     call jeveuo(jexatr('&CATA.TE.MODELOC', 'LONCUM'), 'L', lcmodl)
     call jeveuo(jexnum('&CATA.TE.MODELOC', 1), 'L', admodl)
 !
-    vecas=vec
-    bas=base
+    vecas = vec
+    bas = base
 !
 ! ------------------------------------------------------------------
-    ldist=.false.
-    ldgrel=.false.
-    rang=0
-    nbproc=1
-    nume_ddl=nu
+    ldist = .false.
+    ldgrel = .false.
+    rang = 0
+    nbproc = 1
+    nume_ddl = nu
 !
     call parti0(nbvec, tlivec, partit)
     if (partit .ne. ' ') then
-        ldist=.true.
+        ldist = .true.
         call jeveuo(partit//'.PRTK', 'L', vk24=prtk)
-        ldgrel=prtk(1).eq.'SOUS_DOMAINE' .or. prtk(1).eq.'GROUP_ELEM'
+        ldgrel = prtk(1) .eq. 'SOUS_DOMAINE' .or. prtk(1) .eq. 'GROUP_ELEM'
         call asmpi_info(rank=mrank, size=msize)
         rang = to_aster_int(mrank)
         nbproc = to_aster_int(msize)
-        if (.not.ldgrel) then
+        if (.not. ldgrel) then
             call jeveuo(partit//'.NUPR', 'L', vi=maille)
-        endif
-    endif
+        end if
+    end if
 !
 !
 ! --- SI LE CONCEPT VECAS EXISTE DEJA,ON LE DETRUIT:
     call detrsd('CHAMP_GD', vecas)
     call wkvect(vecas//'.LIVE', bas//' V K24 ', nbvec, ilivec)
     do i = 1, nbvec
-        zk24(ilivec-1+i)=tlivec(i)
+        zk24(ilivec-1+i) = tlivec(i)
     end do
 !
 ! --- NOMS DES PRINCIPAUX OBJETS JEVEUX LIES A VECAS
-    kmaila='&MAILLA                 '
-    kvelil=vecas//'.LILI'
-    kveref=vecas//'.REFE'
-    kvale=vecas//'.VALE'
-    kvedsc=vecas//'.DESC'
+    kmaila = '&MAILLA                 '
+    kvelil = vecas//'.LILI'
+    kveref = vecas//'.REFE'
+    kvale = vecas//'.VALE'
+    kvedsc = vecas//'.DESC'
 !
 ! --- CREATION DE REFE ET DESC
     call jecreo(kveref, bas//' V K24')
@@ -178,8 +178,8 @@ subroutine assmiv(base, vec, nbvec, tlivec, licoef,&
 !
 ! --- CALCUL D UN LILI POUR VECAS
 ! --- CREATION D'UN VECAS(1:19).ADNE ET VECAS(1:19).ADLI SUR 'V'
-    call crelil('F', nbvec, ilivec, kvelil, 'V',&
-                kmaila, vecas, gd, ma, nec,&
+    call crelil('F', nbvec, ilivec, kvelil, 'V', &
+                kmaila, vecas, gd, ma, nec, &
                 ncmp, ilim, nlili, nbelm, nume_=nume_ddl)
 !
     call jeveuo(vecas(1:19)//'.ADLI', 'E', vi=adli)
@@ -188,32 +188,32 @@ subroutine assmiv(base, vec, nbvec, tlivec, licoef,&
     if (iret .gt. 0) then
         call jeveuo(ma(1:8)//'.CONNEX', 'L', vi=connex)
         call jeveuo(jexatr(ma(1:8)//'.CONNEX', 'LONCUM'), 'L', iconx2)
-    endif
+    end if
 !
 ! --- ON SUPPOSE QUE LE LE LIGREL DE &MAILLA EST LE PREMIER DE LILINU
-    ilimnu=1
+    ilimnu = 1
 !
 ! --- NOMS DES PRINCIPAUX OBJETS JEVEUX LIES A NU
 ! --- IL FAUT ESPERER QUE LE CHAM_NO EST EN INDIRECTION AVEC UN
 !     PROF_CHNO APPARTENANT A UNE NUMEROTATION SINON CA VA PLANTER
 !     DANS LE JEVEUO SUR KNEQUA
     if (nume_ddl(1:1) .eq. ' ') then
-        vprof=vecpro
+        vprof = vecpro
         call jeveuo(vprof//'.REFE', 'L', vk24=refe)
-        nume_ddl=refe(2)(1:14)
-    endif
+        nume_ddl = refe(2) (1:14)
+    end if
 !
-    knequa=nume_ddl//'.NUME.NEQU'
-    k24prn=nume_ddl//'.NUME.PRNO'
-    knulil=nume_ddl//'.NUME.LILI'
+    knequa = nume_ddl//'.NUME.NEQU'
+    k24prn = nume_ddl//'.NUME.PRNO'
+    knulil = nume_ddl//'.NUME.LILI'
     call jeveuo(nume_ddl//'.NUME.NUEQ', 'L', vi=nueq)
 
 !
 ! - Get number of equations
 !
-    call jeveuo(knequa, 'L', vi = v_nequ)
+    call jeveuo(knequa, 'L', vi=v_nequ)
     nb_equa = v_nequ(1)
-    nb_dof  = v_nequ(2)
+    nb_dof = v_nequ(2)
 
 !
     call dismoi('NOM_MODELE', nume_ddl, 'NUME_DDL', repk=mo)
@@ -221,7 +221,7 @@ subroutine assmiv(base, vec, nbvec, tlivec, licoef,&
     call dismoi('NB_NO_SS_MAX', ma, 'MAILLAGE', repi=nbnoss)
 !
 !     100 EST SUPPOSE ETRE LA + GDE DIMENSION D'UNE MAILLE STANDARD:
-    nbnoss=max(nbnoss,100)
+    nbnoss = max(nbnoss, 100)
 !     -- NUMLOC(K,INO) (K=1,3)(INO=1,NBNO(MAILLE))
     call wkvect('&&ASSMIV.NUMLOC', 'V V I', 3*nbnoss, ianulo)
 !
@@ -229,8 +229,8 @@ subroutine assmiv(base, vec, nbvec, tlivec, licoef,&
     call dismoi('NOM_GD_SI', nogdco, 'GRANDEUR', repk=nogdsi)
     call dismoi('NB_CMP_MAX', nogdsi, 'GRANDEUR', repi=nmxcmp)
     call dismoi('NUM_GD_SI', nogdsi, 'GRANDEUR', repi=nugd)
-    nec=nbec(nugd)
-    ncmp=nmxcmp
+    nec = nbec(nugd)
+    ncmp = nmxcmp
 !
 !
 !     -- POSDDL(ICMP) (ICMP=1,NMXCMP(GD_SI))
@@ -247,31 +247,31 @@ subroutine assmiv(base, vec, nbvec, tlivec, licoef,&
 
 !
 ! ---  REMPLISSAGE DE REFE ET DESC
-    zk24(idverf)=ma
-    zk24(idverf+1)=k24prn(1:14)//'.NUME'
-    zi(idveds)=gd
-    zi(idveds+1)=1
+    zk24(idverf) = ma
+    zk24(idverf+1) = k24prn(1:14)//'.NUME'
+    zi(idveds) = gd
+    zi(idveds+1) = 1
 !
 !
 ! --- ALLOCATION VALE
-    ASSERT(type.eq.1)
+    ASSERT(type .eq. 1)
     call wkvect(kvale, bas//' V R8', nb_equa, jvale)
 !
     do i = 1, nb_equa
-        zr(jvale+i-1)=r8maem()
+        zr(jvale+i-1) = r8maem()
     end do
 !
 !
 !   -- REMPLISSAGE DE .VALE
 !   ------------------------
     do imat = 1, nbvec
-        rcoef=licoef(imat)
-        vecel=zk24(ilivec+imat-1)(1:19)
+        rcoef = licoef(imat)
+        vecel = zk24(ilivec+imat-1) (1:19)
 !
         call dismoi('NOM_MODELE', vecel, 'VECT_ELEM', repk=mo2)
         if (mo2 .ne. mo) then
             call utmess('F', 'ASSEMBLA_5')
-        endif
+        end if
 !
         call jeexin(vecel//'.RELR', iret)
         if (iret .eq. 0) goto 90
@@ -279,96 +279,96 @@ subroutine assmiv(base, vec, nbvec, tlivec, licoef,&
         call jeveuo(vecel//'.RELR', 'L', vk24=relr)
         call jelira(vecel//'.RELR', 'LONUTI', nbresu)
         do iresu = 1, nbresu
-            resu=relr(iresu)(1:19)
+            resu = relr(iresu) (1:19)
             call jeveuo(resu//'.NOLI', 'L', iad)
-            nomli=zk24(iad)
+            nomli = zk24(iad)
 !
             call jenonu(jexnom(kvelil, nomli), ilive)
             call jenonu(jexnom(knulil, nomli), ilinu)
 !
             do igr = 1, adli(1+3*(ilive-1))
-                if (ldgrel .and. mod(igr,nbproc) .ne. rang) goto 70
+                if (ldgrel .and. mod(igr, nbproc) .ne. rang) goto 70
 !
 !             -- IL SE PEUT QUE LE GREL IGR SOIT VIDE :
                 call jaexin(jexnum(resu//'.RESL', igr), iexi)
                 if (iexi .eq. 0) goto 70
 !
                 call jeveuo(resu//'.DESC', 'L', vi=desc)
-                mode=desc(1+igr+1)
+                mode = desc(1+igr+1)
                 if (mode .gt. 0) then
-                    nnoe=nbno(mode)
-                    nel=zi(adli(1+3*(ilive-1)+2)+igr)- &
-                        zi(adli(1+3*(ilive-1)+2)+igr-1)-1
+                    nnoe = nbno(mode)
+                    nel = zi(adli(1+3*(ilive-1)+2)+igr)- &
+                          zi(adli(1+3*(ilive-1)+2)+igr-1)-1
                     call jeveuo(jexnum(resu//'.RESL', igr), 'L', jresl)
-                    ncmpel=digdel(mode)
+                    ncmpel = digdel(mode)
 !
                     do iel = 1, nel
-                        numa=zi(adli(1+3*(ilive-1)+1)-1+ &
-                             zi(adli(1+3*(ilive-1)+2)+igr-1)+iel-1)
-                        r=rcoef
+                        numa = zi(adli(1+3*(ilive-1)+1)-1+ &
+                                  zi(adli(1+3*(ilive-1)+2)+igr-1)+iel-1)
+                        r = rcoef
 !
-                        if (ldist .and. .not.ldgrel) then
+                        if (ldist .and. .not. ldgrel) then
                             if (numa .gt. 0) then
                                 if (maille(numa) .ne. rang) goto 60
-                            endif
-                        endif
+                            end if
+                        end if
 !
                         if (numa .gt. 0) then
-                            il=0
+                            il = 0
                             do k1 = 1, nnoe
-                                n1=connex(zi(iconx2+numa-1)+k1-1)
-                                iad1=zi(idprn1-1+zi(idprn2+ilimnu-1)+&
-                                (n1-1)*(nec+2)+1-1)
-                                call corddl(admodl, lcmodl, idprn1, idprn2, ilimnu,&
-                                            mode, nec, ncmp, n1, k1,&
+                                n1 = connex(zi(iconx2+numa-1)+k1-1)
+                                iad1 = zi(idprn1-1+zi(idprn2+ilimnu-1)+ &
+                                          (n1-1)*(nec+2)+1-1)
+                                call corddl(admodl, lcmodl, idprn1, idprn2, ilimnu, &
+                                            mode, nec, ncmp, n1, k1, &
                                             nddl1, posddl)
                                 if (nddl1 .eq. 0) goto 50
                                 if (iad1 .eq. 0) then
-                                    vali(1)=n1
-                                    valk(1)=resu
-                                    valk(2)=vecel
-                                    valk(3)=nume_ddl
+                                    vali(1) = n1
+                                    valk(1) = resu
+                                    valk(2) = vecel
+                                    valk(3) = nume_ddl
                                     call utmess('F', 'ASSEMBLA_41', nk=3, valk=valk, si=vali(1))
-                                endif
+                                end if
 !
                                 if (iad1 .gt. nb_dof) then
-                                    vali(1)=n1
-                                    vali(2)=iad1
-                                    vali(3)=nb_dof
-                                    valk(1)=resu
-                                    valk(2)=vecel
-                                    call utmess('F', 'ASSEMBLA_42', nk=2, valk=valk, ni=3,&
+                                    vali(1) = n1
+                                    vali(2) = iad1
+                                    vali(3) = nb_dof
+                                    valk(1) = resu
+                                    valk(2) = vecel
+                                    call utmess('F', 'ASSEMBLA_42', nk=2, valk=valk, ni=3, &
                                                 vali=vali)
-                                endif
+                                end if
 !
                                 if (nddl1 .gt. 100) then
-                                    vali(1)=nddl1
-                                    vali(2)=100
+                                    vali(1) = nddl1
+                                    vali(2) = 100
                                     call utmess('F', 'ASSEMBLA_43', ni=2, vali=vali)
-                                endif
+                                end if
 !
                                 if (type .eq. 1) then
                                     do i1 = 1, nddl1
-                                        il=il+1
-                                        zr(jvale-1+nueq(iad1+&
-                                        posddl(i1)- 1))=min(zr(&
-                                        jvale-1+nueq(iad1+&
-                                        posddl(i1)-1)), zr(jresl+&
-                                        (iel-1)*ncmpel+il-1)*r)
+                                        il = il+1
+                                        zr(jvale-1+nueq(iad1+ &
+                                                        posddl(i1)-1)) = min(zr( &
+                                                                             jvale-1+nueq(iad1+ &
+                                                                         posddl(i1)-1)), zr(jresl+ &
+                                                                             (iel-1)*ncmpel+il-1)*r)
                                     end do
-                                endif
- 50                             continue
+                                end if
+50                              continue
                             end do
-                        endif
- 60                     continue
+                        end if
+60                      continue
                     end do
                     call jelibe(jexnum(resu//'.RESL', igr))
-                endif
- 70             continue
+                end if
+70              continue
             end do
         end do
 !
- 90     continue
+90      continue
     end do
     call jedetr(vecas//'.LILI')
     call jedetr(vecas//'.LIVE')
@@ -380,7 +380,7 @@ subroutine assmiv(base, vec, nbvec, tlivec, licoef,&
 !   -- REDUCTION + DIFFUSION DE VECAS A TOUS LES PROC
     if (ldist) then
         call asmpi_comm_vect('MPI_MIN', 'R', nbval=nb_equa, vr=zr(jvale))
-    endif
+    end if
 !
 !
     call jedema()

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 subroutine aplcno(mesh, newgeo, sdcont_defi, sdappa)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
@@ -59,7 +59,7 @@ implicit none
     character(len=4) :: zone_type
     real(kind=8) :: norm_vect(3), epsi_maxi
     integer :: norm_type
-    character(len=16), pointer :: valk(:)=>null()
+    character(len=16), pointer :: valk(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -69,10 +69,10 @@ implicit none
 ! - Get parameters
 !
     nb_cont_zone = cfdisi(sdcont_defi, 'NZOCO')
-    model_ndim   = cfdisi(sdcont_defi, 'NDIM' )
+    model_ndim = cfdisi(sdcont_defi, 'NDIM')
     nt_node_slav = cfdisi(sdcont_defi, 'NTNOE')
     nt_node_mast = cfdisi(sdcont_defi, 'NTNOM')
-    nt_node      = nt_node_slav+nt_node_mast
+    nt_node = nt_node_slav+nt_node_mast
 !
 ! - Loop on contact zones
 !
@@ -80,45 +80,45 @@ implicit none
 !
 ! ----- Get parameters on current zone
 !
-        nb_node_mast = mminfi(sdcont_defi, 'NBNOM' , i_zone)
-        nb_node_slav = mminfi(sdcont_defi, 'NBNOE' , i_zone)
-        nb_elem_mast = mminfi(sdcont_defi, 'NBMAM' , i_zone)
-        nb_elem_slav = mminfi(sdcont_defi, 'NBMAE' , i_zone)
-        jdecnm       = mminfi(sdcont_defi, 'JDECNM', i_zone)
-        jdecmm       = mminfi(sdcont_defi, 'JDECMM', i_zone)
-        jdecne       = mminfi(sdcont_defi, 'JDECNE', i_zone)
-        jdecme       = mminfi(sdcont_defi, 'JDECME', i_zone)
-        norm_type    = 0
+        nb_node_mast = mminfi(sdcont_defi, 'NBNOM', i_zone)
+        nb_node_slav = mminfi(sdcont_defi, 'NBNOE', i_zone)
+        nb_elem_mast = mminfi(sdcont_defi, 'NBMAM', i_zone)
+        nb_elem_slav = mminfi(sdcont_defi, 'NBMAE', i_zone)
+        jdecnm = mminfi(sdcont_defi, 'JDECNM', i_zone)
+        jdecmm = mminfi(sdcont_defi, 'JDECMM', i_zone)
+        jdecne = mminfi(sdcont_defi, 'JDECNE', i_zone)
+        jdecme = mminfi(sdcont_defi, 'JDECME', i_zone)
+        norm_type = 0
 !
 ! ----- MPI initialisation
 !
         call jeveuo(sdappa(1:19)//'.MPIB', 'E', vk16=valk)
-        valk(1)='MPI_INCOMPLET'
+        valk(1) = 'MPI_INCOMPLET'
         call jeveuo(sdappa(1:19)//'.MPIC', 'E', vk16=valk)
-        valk(1)='MPI_INCOMPLET'
+        valk(1) = 'MPI_INCOMPLET'
 !
 ! ----- Compute tangents at each node for each master element
 !
         zone_type = 'MAIT'
-        call aptgem(sdappa      , mesh     , newgeo   , sdcont_defi, model_ndim,&
-                    i_zone      , zone_type, iter_maxi, epsi_maxi  , jdecmm    ,&
+        call aptgem(sdappa, mesh, newgeo, sdcont_defi, model_ndim, &
+                    i_zone, zone_type, iter_maxi, epsi_maxi, jdecmm, &
                     nb_elem_mast)
 !
 ! ----- Compute tangents at each node for each slave element
 !
         zone_type = 'ESCL'
-        call aptgem(sdappa      , mesh     , newgeo   , sdcont_defi, model_ndim,&
-                    i_zone      , zone_type, iter_maxi, epsi_maxi  , jdecme    ,&
+        call aptgem(sdappa, mesh, newgeo, sdcont_defi, model_ndim, &
+                    i_zone, zone_type, iter_maxi, epsi_maxi, jdecme, &
                     nb_elem_slav)
-        call sdmpic('SD_APPA_TGEL',sdappa)
+        call sdmpic('SD_APPA_TGEL', sdappa)
 !
 ! ----- Compute tangents at each node by smoothing
 !
-        call aptgnn(sdappa      , mesh     , sdcont_defi, model_ndim, jdecnm,&
-                    nb_node_mast, norm_type, norm_vect  )
-        call aptgnn(sdappa      , mesh     , sdcont_defi, model_ndim, jdecne,&
-                    nb_node_slav, norm_type, norm_vect  )
-        call sdmpic('SD_APPA_TGNO',sdappa)
+        call aptgnn(sdappa, mesh, sdcont_defi, model_ndim, jdecnm, &
+                    nb_node_mast, norm_type, norm_vect)
+        call aptgnn(sdappa, mesh, sdcont_defi, model_ndim, jdecne, &
+                    nb_node_slav, norm_type, norm_vect)
+        call sdmpic('SD_APPA_TGNO', sdappa)
 !
 ! ----- Compute normals at nodes
 !

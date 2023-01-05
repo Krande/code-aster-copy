@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,9 +19,9 @@
 !
 subroutine nmitsp(ds_print, sddisc, iterat, retsup)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/affich.h"
@@ -31,10 +31,10 @@ implicit none
 #include "asterfort/nmlerr.h"
 #include "asterfort/utmess.h"
 !
-type(NL_DS_Print), intent(in) :: ds_print
-character(len=19), intent(in) :: sddisc
-integer, intent(in) :: iterat
-integer, intent(out) :: retsup
+    type(NL_DS_Print), intent(in) :: ds_print
+    character(len=19), intent(in) :: sddisc
+    integer, intent(in) :: iterat
+    integer, intent(out) :: retsup
 !
 ! ----------------------------------------------------------------------
 !
@@ -76,7 +76,7 @@ integer, intent(out) :: retsup
         retsup = 0
         call utmess('I', 'ITERSUPP_2', si=nbiter)
         goto 999
-    endif
+    end if
 !
 ! --- EXTRAPOLATION LINEAIRE DES RESIDUS
 !
@@ -85,13 +85,13 @@ integer, intent(out) :: retsup
 ! --- CALCUL DE LA CIBLE (NOMBRE D'ITERATIONS)
 !
     if (lextra) then
-        ciblen = (valext(1) + valext(2)*log(valext(4)) )/valext(3)
+        ciblen = (valext(1)+valext(2)*log(valext(4)))/valext(3)
         call utmess('I', 'EXTRAPOLATION_11')
     else
         ciblen = 0.d0
         retsup = 0
         goto 999
-    endif
+    end if
 !
 ! --- NOMBRE D'ITERATIONS SUPPLEMENTAIRES
 !
@@ -107,7 +107,7 @@ integer, intent(out) :: retsup
         retsup = 0
         call utmess('I', 'ITERSUPP_4')
         goto 999
-    endif
+    end if
 !
 ! --- L'EXTRAPOLATION DONNE UN NOMBRE D'ITERATION > LIMITE ITERATION
 !
@@ -116,7 +116,7 @@ integer, intent(out) :: retsup
         vali(1) = nbitaj
         vali(2) = nbiter
         call utmess('I', 'ITERSUPP_5', ni=2, vali=vali)
-    endif
+    end if
 !
 999 continue
 !
@@ -125,12 +125,12 @@ integer, intent(out) :: retsup
         call affich('MESSAGE', ' ')
         call nmimpx(ds_print)
         itesup = 1
-    else if (retsup.eq.0) then
+    else if (retsup .eq. 0) then
         call utmess('I', 'ITERSUPP_6')
         itesup = 0
     else
         ASSERT(.false.)
-    endif
+    end if
     call nmlerr(sddisc, 'E', 'ITERSUP', r8bid, itesup)
 !
 end subroutine

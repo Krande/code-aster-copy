@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine prmave(ipr, amat, na, na1, na2,&
+subroutine prmave(ipr, amat, na, na1, na2, &
                   bvec, nb1, cvec, nc1, ier)
 !
 !
@@ -58,32 +58,32 @@ subroutine prmave(ipr, amat, na, na1, na2,&
 !
 ! ----------------------------------------------------------------------
 !
-    ier=0
+    ier = 0
 !
     if (na2 .ne. nb1) then
-        ier = ier + 1
-    endif
+        ier = ier+1
+    end if
 !
     if (nc1 .ne. na1) then
-        ier = ier + 1
-    endif
+        ier = ier+1
+    end if
 !
     if (ier .eq. 0) then
 !
         if (ipr .eq. 0) then
 !
             do i = 1, na1
-                cvec(i)=0.0d0
+                cvec(i) = 0.0d0
             end do
 !
-        endif
+        end if
 !
         do i = 1, na1
             do j = 1, na2
-                cvec(i)=cvec(i)+amat(i,j)*bvec(j)
+                cvec(i) = cvec(i)+amat(i, j)*bvec(j)
             end do
         end do
 !
-    endif
+    end if
 !
 end subroutine

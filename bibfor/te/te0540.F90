@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,11 +28,11 @@ subroutine te0540(option, nomte)
 ! --------------------------------------------------------------------------------------------------
 !
 !
-use Behaviour_module, only : behaviourOption
+    use Behaviour_module, only: behaviourOption
 !
-implicit none
+    implicit none
 !
-character(len=16) :: option, nomte
+    character(len=16) :: option, nomte
 !
 #include "jeveux.h"
 #include "asterf_types.h"
@@ -75,7 +75,7 @@ character(len=16) :: option, nomte
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: nc, nno, dimklv, npg, iret, codrep
-    parameter (nc=9 , dimklv= 2*nc*(2*nc+1)/2 , nno=2 , npg=2)
+    parameter(nc=9, dimklv=2*nc*(2*nc+1)/2, nno=2, npg=2)
     real(kind=8) :: fl(2*nc), u(2*nc), du(2*nc)
     real(kind=8) :: klv(dimklv), sk(dimklv)
 !
@@ -89,7 +89,7 @@ character(len=16) :: option, nomte
     real(kind=8) :: e, g, nu, temp, temm, gxjx
     real(kind=8) :: defam(6), defap(6), angp(3)
     real(kind=8) :: pgl(3, 3), matsct(6)
-    real(kind=8) :: xi, wi, b(4),vv(18),ve(18),fv(18)
+    real(kind=8) :: xi, wi, b(4), vv(18), ve(18), fv(18)
     real(kind=8) :: ang1(3), epsm
     real(kind=8) :: alicom, dalico, ss1, hv, he, vs(3), sv(dimklv)
 !
@@ -100,7 +100,7 @@ character(len=16) :: option, nomte
     character(len=8) :: mator
     character(len=16) :: rela_comp, defo_comp, mult_comp, type_comp
 !
-    real(kind=8), allocatable :: vfv(:,:),vvp(:,:),skp(:,:)
+    real(kind=8), allocatable :: vfv(:, :), vvp(:, :), skp(:, :)
     integer :: nbfibr, nbgrfi, tygrfi, nbcarm, nug(10)
     integer, pointer :: nbfipoutre(:) => null()
     real(kind=8), pointer :: gxjxpou(:) => null()
@@ -114,36 +114,35 @@ character(len=16) :: option, nomte
     integer, parameter :: nb_cara = 3
     real(kind=8) :: vale_cara(nb_cara)
     character(len=8) :: noms_cara(nb_cara)
-    data noms_cara /'EY1','EZ1','JX1'/
+    data noms_cara/'EY1', 'EZ1', 'JX1'/
 ! --------------------------------------------------------------------------------------------------
 !
 !
     fami = 'RIGI'
-    call elrefe_info(fami=fami, npg=npge, jpoids=ipoids, jvf = ivf)
-    ASSERT( npg.ge.npge )
+    call elrefe_info(fami=fami, npg=npge, jpoids=ipoids, jvf=ivf)
+    ASSERT(npg .ge. npge)
 !
     fl(1:2*nc) = 0.0d0
-    codret=0
-    codrep=0
+    codret = 0
+    codrep = 0
 !
 ! --------------------------------------------------------------------------------------------------
 !   Récupération des caractéristiques des fibres
-    call pmfinfo(nbfibr,nbgrfi,tygrfi,nbcarm,nug,jacf=jacf,nbassfi=nbasspou)
-    AS_ALLOCATE(vi= nbfipoutre, size=nbasspou)
-    AS_ALLOCATE(vr= gxjxpou, size=nbasspou)
-    call pmfasseinfo(tygrfi,nbfibr,nbcarm,zr(jacf),maxfipoutre, nbfipoutre, gxjxpou)
+    call pmfinfo(nbfibr, nbgrfi, tygrfi, nbcarm, nug, jacf=jacf, nbassfi=nbasspou)
+    AS_ALLOCATE(vi=nbfipoutre, size=nbasspou)
+    AS_ALLOCATE(vr=gxjxpou, size=nbasspou)
+    call pmfasseinfo(tygrfi, nbfibr, nbcarm, zr(jacf), maxfipoutre, nbfipoutre, gxjxpou)
     AS_ALLOCATE(vr=yj, size=nbasspou)
     AS_ALLOCATE(vr=zj, size=nbasspou)
     AS_ALLOCATE(vr=deffibasse, size=maxfipoutre)
     AS_ALLOCATE(vr=vsigv, size=maxfipoutre)
     AS_ALLOCATE(vr=vev, size=maxfipoutre)
 
-    allocate(vfv(7,maxfipoutre))
-    allocate(vvp(12,nbasspou))
-    allocate(skp(78,nbasspou))
+    allocate (vfv(7, maxfipoutre))
+    allocate (vvp(12, nbasspou))
+    allocate (skp(78, nbasspou))
 !
 ! --------------------------------------------------------------------------------------------------
-
 
 !   Nombre de composantes du champs PSTRX?? par points de gauss
 !   La 15eme composante ne concerne pas les POU_D_TGM
@@ -181,12 +180,12 @@ character(len=16) :: option, nomte
     defo_comp = zk16(icompo-1+DEFO)
     mult_comp = zk16(icompo-1+MULTCOMP)
     type_comp = zk16(icompo-1+INCRELAS)
-    read(zk16(icompo-1+NVAR),'(I16)') nbvalc
+    read (zk16(icompo-1+NVAR), '(I16)') nbvalc
 !
 ! - Select objects to construct from option name
-    call behaviourOption(option, zk16(icompo),&
-                         lMatr , lVect ,&
-                         lVari , lSigm ,&
+    call behaviourOption(option, zk16(icompo), &
+                         lMatr, lVect, &
+                         lVari, lSigm, &
                          codret)
 !
 !   verification que c'est bien des multifibres
@@ -195,7 +194,7 @@ character(len=16) :: option, nomte
     call jeexin(mult_comp, iret)
     if (iret .eq. 0) then
         call utmess('F', 'POUTRE0_14', sk=nomte)
-    endif
+    end if
 !   Recuperation de la SD_COMPOR ou le comportement des groupes de fibres est stocke
 !   pour chaque groupe : (nom, mater, loi, algo1d, deformation nbfig) dans
 !   l'ordre croissant des numeros de groupes
@@ -212,29 +211,29 @@ character(len=16) :: option, nomte
 !
     if (lMatr) then
         call jevech('PMATUUR', 'E', imat)
-    endif
+    end if
     if (lVect) then
         call jevech('PVECTUR', 'E', ivectu)
-    endif
+    end if
     if (lSigm) then
         call jevech('PCONTPR', 'E', icontp)
         call jevech('PCODRET', 'E', jcret)
-    endif
+    end if
     if (lVari) then
         call tecach('OOO', 'PVARIMP', 'L', iret, nval=7, itab=jtab)
         ivarmp = jtab(1)
         call jevech('PSTRXMP', 'L', istrmp)
         call jevech('PVARIPR', 'E', ivarip)
         call jevech('PSTRXPR', 'E', istrxp)
-    endif
+    end if
 !
 !   Calcul des matrices de changement de repère
 !
     if (type_comp .eq. 'COMP_ELAS') then
         call utmess('F', 'POUTRE0_90')
-    else if ((defo_comp .ne. 'PETIT').and.(defo_comp.ne.'GROT_GDEP')) then
-        call utmess('F', 'POUTRE0_40', sk = defo_comp)
-    endif
+    else if ((defo_comp .ne. 'PETIT') .and. (defo_comp .ne. 'GROT_GDEP')) then
+        call utmess('F', 'POUTRE0_40', sk=defo_comp)
+    end if
 !
 !   Géometrie éventuellement reactualisée
 !
@@ -243,25 +242,25 @@ character(len=16) :: option, nomte
 !       recuperation du 3eme angle nautique au temps t-
         gamma = zr(istrxm+18-1)
 !       calcul de PGL,XL et ANGP
-        call porea1(nno, nc, zr(ideplm), zr(ideplp), zr(igeom+1),&
+        call porea1(nno, nc, zr(ideplm), zr(ideplp), zr(igeom+1), &
                     gamma, lVect, pgl, xl, angp)
 !       sauvegarde des angles nautiques
         if (lVect) then
             zr(istrxp+16-1) = angp(1)
             zr(istrxp+17-1) = angp(2)
             zr(istrxp+18-1) = angp(3)
-        endif
+        end if
     else
         ang1(1) = zr(iorien-1+1)
         ang1(2) = zr(iorien-1+2)
         ang1(3) = zr(iorien-1+3)
         call matrot(ang1, pgl)
-    endif
+    end if
 !
 !   recuperation des caracteristiques de la section
     call poutre_modloc('CAGNPO', noms_cara, nb_cara, lvaleur=vale_cara)
-    ey  = vale_cara(1)
-    ez  = vale_cara(2)
+    ey = vale_cara(1)
+    ez = vale_cara(2)
     xjx = vale_cara(3)
 !
 !   coefficient dependant de la temperature moyenne
@@ -270,9 +269,9 @@ character(len=16) :: option, nomte
 !   caracteristiques elastiques (pas de temperature pour l'instant)
 !   on prend le E et NU du materiau torsion (voir op0059)
     call pmfmats(imate, mator)
-    ASSERT( mator.ne.' ' )
+    ASSERT(mator .ne. ' ')
     call matela(zi(imate), mator, 1, temp, e, nu)
-    g = e / (2.d0*(1.d0+nu))
+    g = e/(2.d0*(1.d0+nu))
     gxjx = g*xjx
 !
 !   calcul des deplacements et de leurs increments passage dans le repere local
@@ -286,7 +285,7 @@ character(len=16) :: option, nomte
     call r8inir(2*nc, 0.0d+0, ve, 1)
     call r8inir(2*nc, 0.0d+0, fv, 1)
 !   On recupère alpha mode incompatible=alico
-    alicom=zr(istrxm-1+15)
+    alicom = zr(istrxm-1+15)
 !   deformatiions moins et increment de deformation pour chaque fibre
     AS_ALLOCATE(vr=defmfib, size=nbfibr)
     AS_ALLOCATE(vr=defpfib, size=nbfibr)
@@ -298,20 +297,20 @@ character(len=16) :: option, nomte
 
 !
 !   Boucle pour calculer le alpha mode incompatible : alico
-    ss1=0.0d+0
-    dalico=0.0d+0
+    ss1 = 0.0d+0
+    dalico = 0.0d+0
 !
-    icomax=100; ico = 0
+    icomax = 100; ico = 0
     cico: do
-        ico = ico + 1
+        ico = ico+1
         if (ico .gt. icomax) then
 !           Non convergence sur le mode incompatible, sortie immédiate
             codret = 1
             goto 999
-        endif
+        end if
 !
-        he=0.0d+0
-        hv=0.0d+0
+        he = 0.0d+0
+        hv = 0.0d+0
 
         do kp = 1, npg
 !
@@ -324,18 +323,18 @@ character(len=16) :: option, nomte
                            zr(jacf), nbasspou, maxfipoutre, nbfipoutre, yj, zj, &
                            deffibasse, vfv, defpfib)
 !
-            iposig=jsigfb + nbfibr*(kp-1)
-            ipomod=jmodfb + nbfibr*(kp-1)
+            iposig = jsigfb+nbfibr*(kp-1)
+            ipomod = jmodfb+nbfibr*(kp-1)
             call pmfmcf(kp, nbgrfi, nbfibr, nug, zk24(isdcom), &
                         zr(icarcr), option, zr(iinstm), zr(iinstp), zi(imate), &
                         nbvalc, defam, defap, zr(ivarim), zr(ivarmp), &
-                        zr(icontm), defmfib, defpfib, epsm, zr(ipomod),&
+                        zr(icontm), defmfib, defpfib, epsm, zr(ipomod), &
                         zr(iposig), zr(ivarip), codrep)
             if (codrep .ne. 0) then
                 codret = codrep
 !               code 3: on continue et on le renvoie a la fin, autre codes sortie immediate
                 if (codrep .ne. 3) goto 999
-            endif
+            end if
 !           calcul matrice section
             call pmfite(tygrfi, nbfibr, nbcarm, zr(jacf), zr(ipomod), matsct)
 !           Integration des contraintes sur la section
@@ -344,11 +343,11 @@ character(len=16) :: option, nomte
             hv = hv+wi*gg*gg*matsct(1)
             he = he+wi*gg*vs(1)
 !
-        enddo
+        end do
 !
         if (abs(hv) .le. r8prem()) then
             call utmess('F', 'POUTRE0_15')
-        endif
+        end if
 !       Correction de la position du noeud bulle
         dalico = dalico-he/hv
         if (ico .eq. 1) then
@@ -356,18 +355,18 @@ character(len=16) :: option, nomte
                 exit cico
             else
                 ss1 = abs(vs(1))
-            endif
-        endif
-        if ((abs(he) .le. (ss1*1.0D-06)).or.(abs(he) .le. 1.0D-09)) then
+            end if
+        end if
+        if ((abs(he) .le. (ss1*1.0D-06)) .or. (abs(he) .le. 1.0D-09)) then
             exit cico
-        endif
-    enddo cico
+        end if
+    end do cico
 !   Fin boucle calcul alico
     do kp = 1, npg
 !
         call pmfpti(kp, zr(ipoids), zr(ivf), xl, xi, wi, b, gg)
         if (lMatr) then
-            ipomod=jmodfb + nbfibr*(kp-1)
+            ipomod = jmodfb+nbfibr*(kp-1)
 !           calcul matrice de rigidité
 !           Calcul des caracteristiques de section par integration sur les fibres
             call pmfitebkbbts(3, nbfibr, nbcarm, zr(jacf), zr(ipomod), b, wi, gxjx, gxjxpou, &
@@ -376,33 +375,33 @@ character(len=16) :: option, nomte
 !
             do i = 1, dimklv
                 klv(i) = klv(i)+sk(i)
-            enddo
+            end do
             do i = 1, 2*nc
                 fv(i) = fv(i)+vv(i)
-            enddo
+            end do
 !
-        endif
+        end if
 !
         if (lVect) then
 !           calcul des forces internes
-            iposig=jsigfb + nbfibr*(kp-1)
+            iposig = jsigfb+nbfibr*(kp-1)
             call pmfitsbts(3, nbfibr, nbcarm, zr(jacf), zr(iposig), b, wi, &
-                             nbasspou, yj, zj, maxfipoutre, nbfipoutre, vsigv, vfv, vvp, ve)
+                           nbasspou, yj, zj, maxfipoutre, nbfipoutre, vsigv, vfv, vvp, ve)
             do i = 1, 18
                 fl(i) = fl(i)+ve(i)
-            enddo
+            end do
 !
-        endif
+        end if
 !
-    enddo
+    end do
 !
 !   On modifie la matrice de raideur par condensation statique
     if (lMatr) then
         call pmffftsq(fv, sv)
         do i = 1, dimklv
-            klv(i) = klv(i) - sv(i)/hv
-        enddo
-    endif
+            klv(i) = klv(i)-sv(i)/hv
+        end do
+    end if
 !
 !   Torsion a part pour les forces interne
     call pmftorcor(3, nbasspou, gxjx, gxjxpou, u, du, xl, fl)
@@ -411,12 +410,12 @@ character(len=16) :: option, nomte
     if (lSigm) then
 !       on sort les contraintes sur chaque fibre
         do kp = 1, 2
-            iposcp=icontp + nbfibr*(kp-1)
-            iposig=jsigfb + nbfibr*(kp-1)
+            iposcp = icontp+nbfibr*(kp-1)
+            iposig = jsigfb+nbfibr*(kp-1)
             do i = 0, nbfibr-1
                 zr(iposcp+i) = zr(iposig+i)
-            enddo
-            ifgp=ncomp*(kp-1)-1
+            end do
+            ifgp = ncomp*(kp-1)-1
 !           Stockage des forces intégrées
             zr(istrxp+ifgp+1) = fl(9*(kp-1)+1)
             zr(istrxp+ifgp+2) = fl(9*(kp-1)+2)
@@ -427,27 +426,27 @@ character(len=16) :: option, nomte
             zr(istrxp+ifgp+19) = fl(9*(kp-1)+7)
             zr(istrxp+ifgp+20) = fl(9*(kp-1)+8)
             zr(istrxp+ifgp+21) = fl(9*(kp-1)+9)
-            zr(istrxp+ifgp+15)= alicom+dalico
-        enddo
-    endif
+            zr(istrxp+ifgp+15) = alicom+dalico
+        end do
+    end if
     if (lVect) then
         call utpvlg(nno, nc, pgl, fl, zr(ivectu))
-    endif
+    end if
 !
 !   On sort la matrice tangente
     if (lMatr) then
 !       Passage local -> global
         call utpslg(nno, nc, pgl, klv, zr(imat))
-    endif
+    end if
 !
 999 continue
     if (lSigm) then
         zi(jcret) = codret
-    endif
+    end if
 !   Deallocation memoire pour tableaux temporaires
-    deallocate(vfv)
-    deallocate(skp)
-    deallocate(vvp)
+    deallocate (vfv)
+    deallocate (skp)
+    deallocate (vvp)
     AS_DEALLOCATE(vi=nbfipoutre)
     AS_DEALLOCATE(vr=gxjxpou)
     AS_DEALLOCATE(vr=yj)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine criteo(epsp, epsd, eta, ba, d,&
-                  lambda, mu, alpha, ecrob, ecrod,&
+subroutine criteo(epsp, epsd, eta, ba, d, &
+                  lambda, mu, alpha, ecrob, ecrod, &
                   seuil, crit, critp)
 !
 !
@@ -66,7 +66,7 @@ subroutine criteo(epsp, epsd, eta, ba, d,&
     real(kind=8) :: tdfbde(6, 6), tdfdde(6), dfde(6)
     real(kind=8) :: rtemp, treb, treps, trem, dcoefd, ene, coupl
     real(kind=8) :: tole, rac2, kron(6)
-    data  kron/1.d0,1.d0,1.d0,0.d0,0.d0,0.d0/
+    data kron/1.d0, 1.d0, 1.d0, 0.d0, 0.d0, 0.d0/
 !
 ! ----------------------------------------------------------------------
 !
@@ -75,25 +75,25 @@ subroutine criteo(epsp, epsd, eta, ba, d,&
 !
     rac2 = sqrt(2.d0)
 !
-    t(1,1)=1
-    t(1,2)=4
-    t(1,3)=5
-    t(2,1)=4
-    t(2,2)=2
-    t(2,3)=6
-    t(3,1)=5
-    t(3,2)=6
-    t(3,3)=3
+    t(1, 1) = 1
+    t(1, 2) = 4
+    t(1, 3) = 5
+    t(2, 1) = 4
+    t(2, 2) = 2
+    t(2, 3) = 6
+    t(3, 1) = 5
+    t(3, 2) = 6
+    t(3, 3) = 3
 !
 !
 !
 !
-    epsa(1)=epsp(1)+eta*epsd(1)
-    epsa(2)=epsp(2)+eta*epsd(2)
-    epsa(3)=epsp(3)+eta*epsd(3)
-    epsa(4)=epsp(4)+eta*epsd(4)
-    epsa(5)=epsp(5)+eta*epsd(5)
-    epsa(6)=epsp(6)+eta*epsd(6)
+    epsa(1) = epsp(1)+eta*epsd(1)
+    epsa(2) = epsp(2)+eta*epsd(2)
+    epsa(3) = epsp(3)+eta*epsd(3)
+    epsa(4) = epsp(4)+eta*epsd(4)
+    epsa(5) = epsp(5)+eta*epsd(5)
+    epsa(6) = epsp(6)+eta*epsd(6)
 !
 !
 !
@@ -106,24 +106,24 @@ subroutine criteo(epsp, epsd, eta, ba, d,&
 !
     call diago3(ba, vecb, valb)
     do i = 1, 3
-        b(i)=valb(i)
+        b(i) = valb(i)
     end do
 !
     if (abs(valb(1)) .lt. tole) then
-        rec(1)=0.d0
-        rec(4)=0.d0
-        rec(5)=0.d0
-    endif
+        rec(1) = 0.d0
+        rec(4) = 0.d0
+        rec(5) = 0.d0
+    end if
     if (abs(valb(2)) .lt. tole) then
-        rec(2)=0.d0
-        rec(4)=0.d0
-        rec(6)=0.d0
-    endif
+        rec(2) = 0.d0
+        rec(4) = 0.d0
+        rec(6) = 0.d0
+    end if
     if (abs(valb(3)) .lt. tole) then
-        rec(3)=0.d0
-        rec(5)=0.d0
-        rec(6)=0.d0
-    endif
+        rec(3) = 0.d0
+        rec(5) = 0.d0
+        rec(6) = 0.d0
+    end if
 !
 !
 !
@@ -131,10 +131,10 @@ subroutine criteo(epsp, epsd, eta, ba, d,&
         do j = i, 3
             do k = 1, 3
                 do l = 1, 3
-                    eps(t(i,j))=eps(t(i,j))+vecb(k,i)*epsa(t(k,l))*&
-                    vecb(l,j)
-                    epsdr(t(i,j))=epsdr(t(i,j))+vecb(k,i)*epsd(t(k,l))&
-                    *vecb(l,j)
+                    eps(t(i, j)) = eps(t(i, j))+vecb(k, i)*epsa(t(k, l))* &
+                                   vecb(l, j)
+                    epsdr(t(i, j)) = epsdr(t(i, j))+vecb(k, i)*epsd(t(k, l)) &
+                                     *vecb(l, j)
                 end do
             end do
         end do
@@ -151,8 +151,8 @@ subroutine criteo(epsp, epsd, eta, ba, d,&
     do i = 1, 3
         do j = i, 3
             do k = 1, 3
-                cc(t(i,j))=cc(t(i,j))+b(t(i,k))*eps(t(k,j))+ b(t(j,k))&
-                *eps(t(k,i))
+                cc(t(i, j)) = cc(t(i, j))+b(t(i, k))*eps(t(k, j))+b(t(j, k)) &
+                              *eps(t(k, i))
             end do
         end do
     end do
@@ -161,73 +161,73 @@ subroutine criteo(epsp, epsd, eta, ba, d,&
     call r8inir(6, 0.d0, cpe, 1)
     do i = 1, 3
         if (valcc(i) .lt. 0.d0) then
-            valcc(i)=0.d0
-        endif
+            valcc(i) = 0.d0
+        end if
     end do
     do i = 1, 3
         do j = i, 3
             do k = 1, 3
-                ccp(t(i,j))=ccp(t(i,j))+vecc(i,k)*valcc(k)*vecc(j,k)
+                ccp(t(i, j)) = ccp(t(i, j))+vecc(i, k)*valcc(k)*vecc(j, k)
             end do
         end do
     end do
     do i = 1, 3
         do j = i, 3
             do k = 1, 3
-                cpe(t(i,j))=cpe(t(i,j))+ ccp(t(i,k))*eps(t(k,j))+&
-                ccp(t(j,k))*eps(t(k,i))
+                cpe(t(i, j)) = cpe(t(i, j))+ccp(t(i, k))*eps(t(k, j))+ &
+                               ccp(t(j, k))*eps(t(k, i))
             end do
         end do
     end do
 !
     call r8inir(6, 0.d0, fb, 1)
-    treb=0.d0
+    treb = 0.d0
     do i = 1, 3
-        treb=treb+cc(i)/2
+        treb = treb+cc(i)/2
     end do
     if (treb .gt. 0.d0) then
         do i = 1, 6
-            fb(i)=-lambda*treb*eps(i)
+            fb(i) = -lambda*treb*eps(i)
         end do
-    endif
+    end if
     do i = 1, 6
-        fb(i)=fb(i)-mu/2.d0*cpe(i)+ecrob*(kron(i)-b(i))
+        fb(i) = fb(i)-mu/2.d0*cpe(i)+ecrob*(kron(i)-b(i))
     end do
 !
 !
     do i = 1, 6
-        fbr(i)=fb(i)*rec(i)
+        fbr(i) = fb(i)*rec(i)
     end do
 !
 !
     call diago3(fbr, vecfb, valfb)
-    rtemp=0.d0
+    rtemp = 0.d0
     do i = 1, 3
         if (valfb(i) .gt. 0.d0) then
-            valfb(i)=0.d0
-        endif
-        rtemp=rtemp+valfb(i)*valfb(i)
+            valfb(i) = 0.d0
+        end if
+        rtemp = rtemp+valfb(i)*valfb(i)
     end do
 !
     call r8inir(6, 0.d0, fbm, 1)
     do i = 1, 3
         do j = i, 3
             do k = 1, 3
-                fbm(t(i,j))=fbm(t(i,j))+vecfb(i,k)*valfb(k)*vecfb(j,k)
+                fbm(t(i, j)) = fbm(t(i, j))+vecfb(i, k)*valfb(k)*vecfb(j, k)
             end do
         end do
     end do
 !
 !
-    treps=eps(1)+eps(2)+eps(3)
+    treps = eps(1)+eps(2)+eps(3)
 !
 !
 !
     call diago3(eps, vecc, valcc)
     do i = 1, 3
         if (valcc(i) .gt. 0.d0) then
-            valcc(i)=0.d0
-        endif
+            valcc(i) = 0.d0
+        end if
     end do
 !
     call r8inir(6, 0.d0, ccp, 1)
@@ -235,24 +235,24 @@ subroutine criteo(epsp, epsd, eta, ba, d,&
     do i = 1, 3
         do j = i, 3
             do k = 1, 3
-                ccp(t(i,j))=ccp(t(i,j))+vecc(i,k)*valcc(k)*vecc(j,k)
+                ccp(t(i, j)) = ccp(t(i, j))+vecc(i, k)*valcc(k)*vecc(j, k)
             end do
         end do
     end do
 !
-    trem=valcc(1)**2+valcc(2)**2+valcc(3)**2
+    trem = valcc(1)**2+valcc(2)**2+valcc(3)**2
     if (treps .gt. 0.d0) then
-        treps=0.d0
-    endif
-    dcoefd=2.d0*(1.d0-d)
-    ene=lambda/2*treps**2+mu*trem
-    fd=dcoefd*ene-2.d0*d*ecrod
+        treps = 0.d0
+    end if
+    dcoefd = 2.d0*(1.d0-d)
+    ene = lambda/2*treps**2+mu*trem
+    fd = dcoefd*ene-2.d0*d*ecrod
     if (fd .lt. 0.d0) then
-        fd=0.d0
-    endif
+        fd = 0.d0
+    end if
 !
-    coupl=sqrt(alpha*rtemp+(1-alpha)*fd**2)
-    crit=coupl-seuil
+    coupl = sqrt(alpha*rtemp+(1-alpha)*fd**2)
+    crit = coupl-seuil
 !
 !
 !
@@ -260,13 +260,13 @@ subroutine criteo(epsp, epsd, eta, ba, d,&
 !----CALCUL DE LA DERIVEE DU CRITERE-----------------------------
 !----------------------------------------------------------------
 !
-    fbm(4)=rac2*fbm(4)
-    fbm(5)=rac2*fbm(5)
-    fbm(6)=rac2*fbm(6)
+    fbm(4) = rac2*fbm(4)
+    fbm(5) = rac2*fbm(5)
+    fbm(6) = rac2*fbm(6)
 !
-    call dfbde(3, b, eps, 2.d0*mu, lambda,&
+    call dfbde(3, b, eps, 2.d0*mu, lambda, &
                tdfbde)
-    call dfdde(eps, d, 3, lambda, mu,&
+    call dfdde(eps, d, 3, lambda, mu, &
                tdfdde)
 !
 !
@@ -275,17 +275,17 @@ subroutine criteo(epsp, epsd, eta, ba, d,&
     if (coupl .gt. 1.d-20) then
         do i = 1, 6
             do j = 1, 6
-                dfde(i)=dfde(i)+alpha/coupl*fbm(j)*tdfbde(j,i)*rec(j)
+                dfde(i) = dfde(i)+alpha/coupl*fbm(j)*tdfbde(j, i)*rec(j)
             end do
-            dfde(i)=dfde(i)+(1.d0-alpha)*fd/coupl*tdfdde(i)
+            dfde(i) = dfde(i)+(1.d0-alpha)*fd/coupl*tdfdde(i)
         end do
-    endif
+    end if
 !
     do i = 4, 6
-        epsdr(i)=epsdr(i)*rac2
+        epsdr(i) = epsdr(i)*rac2
     end do
 !
-    critp=ddot(6,dfde,1,epsdr,1)
+    critp = ddot(6, dfde, 1, epsdr, 1)
 !
 !
 end subroutine

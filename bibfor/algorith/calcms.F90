@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine calcms(nbphas, nbcomm, cpmono, nmat, pgl2,&
+subroutine calcms(nbphas, nbcomm, cpmono, nmat, pgl2, &
                   coeft, angmas, nfs, nsg, toutms)
     implicit none
 #include "asterc/r8dgrd.h"
@@ -48,33 +48,33 @@ subroutine calcms(nbphas, nbcomm, cpmono, nmat, pgl2,&
     integer :: nbfsys, i, ifa, nbsys, is, indori, indcp, ir
     integer :: indpha, iphas
 !     ----------------------------------------------------------------
-    ir=0
+    ir = 0
 !         CALCUl DES TENSEURS MS POUR GAGNER DU TEMPS
     do iphas = 1, nbphas
 !        INDPHA indice debut phase IPHAS dans NBCOMM
-        indpha=nbcomm(1+iphas,1)
+        indpha = nbcomm(1+iphas, 1)
 !         recuperer l'orientation de la phase et la proportion
-        indori=nbcomm(1+iphas,3)+1
-        ang(1)=coeft(indori)*r8dgrd()
-        ang(2)=coeft(indori+1)*r8dgrd()
-        ang(3)=coeft(indori+2)*r8dgrd()
+        indori = nbcomm(1+iphas, 3)+1
+        ang(1) = coeft(indori)*r8dgrd()
+        ang(2) = coeft(indori+1)*r8dgrd()
+        ang(3) = coeft(indori+2)*r8dgrd()
         call matrot(ang, pgl1)
         call matrot(angmas, pgl2)
-        call promat(pgl1, 3, 3, 3, pgl2,&
+        call promat(pgl1, 3, 3, 3, pgl2, &
                     3, 3, 3, pgl)
-        nbfsys=nbcomm(indpha,1)
-        indcp=nbcomm(1+iphas,2)
+        nbfsys = nbcomm(indpha, 1)
+        indcp = nbcomm(1+iphas, 2)
         if (nbfsys .gt. nfs) then
             call utmess('F', 'ALGORITH_69')
-        endif
+        end if
 !        Nombre de variables internes de la phase (=monocristal)
         do ifa = 1, nbfsys
-            nomfam=cpmono(indcp+5*(ifa-1)+1)
-            call lcmmsg(nomfam, nbsys, 0, pgl, ms,&
+            nomfam = cpmono(indcp+5*(ifa-1)+1)
+            call lcmmsg(nomfam, nbsys, 0, pgl, ms, &
                         ng, lg, ir, q)
             if (nbsys .eq. 0) then
                 call utmess('F', 'ALGORITH_70')
-            endif
+            end if
 !           indice de la famille IFA
 !            INDFA=INDPHA+IFA
 !
@@ -82,13 +82,13 @@ subroutine calcms(nbphas, nbcomm, cpmono, nmat, pgl2,&
 !              CALCUL DE LA SCISSION REDUITE =
 !              PROJECTION DE SIG SUR LE SYSTEME DE GLISSEMENT
 !              TAU      : SCISSION REDUITE TAU=SIG:MS
-                call lcmmsg(nomfam, nbsys, is, pgl, ms,&
+                call lcmmsg(nomfam, nbsys, is, pgl, ms, &
                             ng, lg, ir, q)
                 do i = 1, 6
-                    toutms(iphas,ifa,is,i)=ms(i)
+                    toutms(iphas, ifa, is, i) = ms(i)
                 end do
             end do
-            toutms(iphas,ifa,1,7)=nbsys
+            toutms(iphas, ifa, 1, 7) = nbsys
         end do
 !
     end do

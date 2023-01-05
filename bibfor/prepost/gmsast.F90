@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -38,21 +38,21 @@ subroutine gmsast(nfie, nfis)
 !
 ! ----------------------------------------------------------------------
 !
-    k16nom='                '
-    if (ulisop ( nfie, k16nom ) .eq. 0) then
+    k16nom = '                '
+    if (ulisop(nfie, k16nom) .eq. 0) then
         call ulopen(nfie, ' ', 'GMSH', 'OLD', 'O')
-    endif
-    if (ulisop ( nfis, k16nom ) .eq. 0) then
+    end if
+    if (ulisop(nfis, k16nom) .eq. 0) then
         call ulopen(nfis, ' ', 'FICHIER-MODELE', 'NEW', 'O')
-    endif
+    end if
 !
     call pregms(nfie, nfis)
 !
-    write(nfis,*) 'FIN'
-    rewind(nfis)
-    close(nfis)
+    write (nfis, *) 'FIN'
+    rewind (nfis)
+    close (nfis)
 !
-    if (ulisop ( nfie, k16nom ) .ne. 0) then
+    if (ulisop(nfie, k16nom) .ne. 0) then
         call ulopen(-nfie, ' ', 'GMSH', 'NEW', 'O')
-    endif
+    end if
 end subroutine

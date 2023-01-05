@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -40,34 +40,34 @@ subroutine ver152(option, moflui, moint, n12, model)
 !
 !        MOFLU8 =
 !
-    if (n12 .eq. 0 .and. (optio9.eq.'AMOR_AJOU'.or. optio9.eq.('RIGI_AJOU'))) then
+    if (n12 .eq. 0 .and. (optio9 .eq. 'AMOR_AJOU' .or. optio9 .eq. ('RIGI_AJOU'))) then
         call utmess('F', 'ALGORITH11_24')
-    endif
+    end if
 !
     call dismoi('PHENOMENE', moflui, 'MODELE', repk=rk16)
 !
     if (rk16(1:9) .ne. 'THERMIQUE') then
         call utmess('F', 'ALGORITH11_25')
-    endif
+    end if
 !
     call dismoi('PHENOMENE', moint, 'MODELE', repk=rk16)
 !
     if (rk16(1:9) .ne. 'THERMIQUE') then
         call utmess('F', 'ALGORITH11_26')
-    endif
+    end if
 !
     call dismoi('MODELISATION', moflui, 'MODELE', repk=rep)
     if (rep .eq. 'PLAN') then
-        model='2D'
+        model = '2D'
     else
         if (rep .eq. 'AXIS') then
-            model='AX'
+            model = 'AX'
         else
             if (rep .eq. '3D') then
-                model='3D'
+                model = '3D'
             else
                 call utmess('F', 'ALGORITH11_27')
-            endif
-        endif
-    endif
+            end if
+        end if
+    end if
 end subroutine

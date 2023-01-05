@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -72,45 +72,45 @@ subroutine xfem_pc(matass, base)
     integer :: jdime, nbnomax, nbnoxfem, maxi_ddl, nvale, niv, ifm
     real(kind=8) :: kmin, kmax, coef, scal
     aster_logical :: lmd
-    parameter    (pc_1='&&XFEM_PC_1')
+    parameter(pc_1='&&XFEM_PC_1')
 !-----------------------------------------------------------------------
 !
     call jemarq()
 !
     matas1 = matass
-    bas1=base
+    bas1 = base
     call jeveuo(matas1//'.REFA', 'E', vk24=refa)
 !
-    lmd=.false.
-    if (refa(11) .eq. 'MATR_DISTR') lmd=.true.
+    lmd = .false.
+    if (refa(11) .eq. 'MATR_DISTR') lmd = .true.
     if (lmd) then
-       goto 999
-    endif
+        goto 999
+    end if
 !
     call infniv(ifm, niv)
-    if(niv .ge. 2) call utmess('I', 'XFEMPRECOND_6')
+    if (niv .ge. 2) call utmess('I', 'XFEMPRECOND_6')
 !
-    nonu=refa(2)(1:14)
+    nonu = refa(2) (1:14)
 !
     call jelira(matas1//'.VALM', 'NMAXOC', nvale)
-    if (nvale.ne.1 .and. nvale.ne.2) then
+    if (nvale .ne. 1 .and. nvale .ne. 2) then
         call utmess('A', 'XFEMPRECOND_1')
         goto 999
-    endif
+    end if
 !
     call jelira(nonu//'.SMOS.SMDI', 'LONMAX', neq)
     call jeveuo(nonu//'.NUME.DEEQ', 'L', jdeeq)
     call jeveuo(nonu//'.NUME.REFN', 'L', vk24=refn)
-    nomgd=refn(2)(1:8)
+    nomgd = refn(2) (1:8)
     call jeveuo(jexnom('&CATA.GD.NOMCMP', nomgd), 'L', jcmp)
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !  - MARQUAGE DES NOEUDS XFEM
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     call dismoi('NOM_MAILLA', nonu, 'NUME_DDL', repk=noma)
     call jeveuo(noma//'.DIME', 'L', jdime)
-    nbnomax=zi(jdime-1+1)
-    AS_ALLOCATE(vl=is_xfem,size=nbnomax)
-    AS_ALLOCATE(vi=ino_xfem,size=nbnomax)
+    nbnomax = zi(jdime-1+1)
+    AS_ALLOCATE(vl=is_xfem, size=nbnomax)
+    AS_ALLOCATE(vi=ino_xfem, size=nbnomax)
 !
     call xfem_count_no(neq, zi(jdeeq), zk8(jcmp), nbnomax, ino_xfem, is_xfem, nbnoxfem)
 !
@@ -120,43 +120,43 @@ subroutine xfem_pc(matass, base)
 !  NEQ_MLOC :: LE NOMBRE TOTAL DE DDL A CONSIDERER POUR UN NOUED XFEM DONNE
 !  IEQ_LOC :: LA POSITION LOCALE D UN DDL DANS IGLOB_DDL (IF <> 0 => DDL MARQUE)
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    AS_ALLOCATE(vi=neq_mloc,size=nbnoxfem)
-    AS_ALLOCATE(vi=ieq_loc,size=neq)
+    AS_ALLOCATE(vi=neq_mloc, size=nbnoxfem)
+    AS_ALLOCATE(vi=ieq_loc, size=neq)
 !
     call xfem_count_ddl(neq, zi(jdeeq), zk8(jcmp), nbnomax, ino_xfem, is_xfem, &
-                              nbnoxfem, ieq_loc, neq_mloc, maxi_ddl)
+                        nbnoxfem, ieq_loc, neq_mloc, maxi_ddl)
 !
-    AS_ALLOCATE(vi=iglob_ddl,size=nbnoxfem*maxi_ddl)
-    do  ieq = 1, neq
-       if (ieq_loc(ieq) .ne. 0) then
-           nuno=zi(jdeeq-1+2*(ieq-1)+1)
-           iglob_ddl(maxi_ddl*(ino_xfem(nuno)-1)+ieq_loc(ieq))=ieq
-       endif
-    enddo
+    AS_ALLOCATE(vi=iglob_ddl, size=nbnoxfem*maxi_ddl)
+    do ieq = 1, neq
+        if (ieq_loc(ieq) .ne. 0) then
+            nuno = zi(jdeeq-1+2*(ieq-1)+1)
+            iglob_ddl(maxi_ddl*(ino_xfem(nuno)-1)+ieq_loc(ieq)) = ieq
+        end if
+    end do
 !
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 ! CALCUL COEFFICIENT MISE A ECHELLE
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     call dismoi('MATR_HPC', matass, 'MATR_ASSE', repk=mathpc)
-    lmhpc = mathpc.eq.'OUI'
+    lmhpc = mathpc .eq. 'OUI'
     call echmat(matas1, lmd, lmhpc, kmin, kmax)
-    coef=(kmin+kmax)/2.d0
-    scal=dsqrt(coef)
+    coef = (kmin+kmax)/2.d0
+    scal = dsqrt(coef)
 !
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 ! MISE A ECHELLE DES DDLS X-FEM
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    AS_ALLOCATE(vr=tab_mloc,size=nbnoxfem*maxi_ddl)
+    AS_ALLOCATE(vr=tab_mloc, size=nbnoxfem*maxi_ddl)
     call xfem_calc_diag(matas1, nonu, neq, zi(jdeeq), nbnomax, &
-                         ino_xfem, is_xfem, nbnoxfem, ieq_loc,&
-                         scal, maxi_ddl, zk8(jcmp), tab_mloc)
-    call xfem_store_pc(matas1, bas1, nonu, neq, zi(jdeeq),&
-                       nbnoxfem, nbnomax, ino_xfem, ieq_loc, neq_mloc,&
+                        ino_xfem, is_xfem, nbnoxfem, ieq_loc, &
+                        scal, maxi_ddl, zk8(jcmp), tab_mloc)
+    call xfem_store_pc(matas1, bas1, nonu, neq, zi(jdeeq), &
+                       nbnoxfem, nbnomax, ino_xfem, ieq_loc, neq_mloc, &
                        maxi_ddl, iglob_ddl, maxi_ddl, tab_mloc, pc_1, 'DIAGO')
     call jeveuo(matas1//'.REFA', 'E', vk24=refa)
-    refa(17)='XFEM_PRECOND'
-    ASSERT( refa(18)(1:19) .eq. ' ' )
-    refa(18)(1:19)=pc_1
+    refa(17) = 'XFEM_PRECOND'
+    ASSERT(refa(18) (1:19) .eq. ' ')
+    refa(18) (1:19) = pc_1
     call mtdscr(pc_1)
 !
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -66,7 +66,7 @@ subroutine acevba(nbocc, nlm, nlg, ier)
     call getres(nomu, concep, cmd)
 !
     AS_ALLOCATE(vi=tab_para, size=10)
-    call acedat('BARRE', 0, tab_para, k16b, k8b,&
+    call acedat('BARRE', 0, tab_para, k16b, k8b, &
                 k8b, k8b)
     nsecba = tab_para(1)
     ntypse = tab_para(1+1)
@@ -77,12 +77,12 @@ subroutine acevba(nbocc, nlm, nlg, ier)
     do i = 1, ntypse
         ncp(i) = tab_para(1+4+i)
     end do
-    ndim = ncp(1+1) * ntypse
+    ndim = ncp(1+1)*ntypse
     AS_ALLOCATE(vk16=typ_sect, size=ntypse)
     AS_ALLOCATE(vk8=expbar, size=nbo)
     AS_ALLOCATE(vk8=tabbar, size=nbo)
     AS_ALLOCATE(vk8=carbar, size=ndim)
-    call acedat('BARRE', 1, tab_para, typ_sect, expbar,&
+    call acedat('BARRE', 1, tab_para, typ_sect, expbar, &
                 tabbar, carbar)
     AS_ALLOCATE(vk8=cara, size=nbcar)
     AS_ALLOCATE(vr=vale, size=nbval)
@@ -97,10 +97,10 @@ subroutine acevba(nbocc, nlm, nlg, ier)
         call getvtx('BARRE', 'SECTION', iocc=ioc, nbval=0, nbret=ns)
         call getvtx('BARRE', 'SECTION', iocc=ioc, scal=sec, nbret=nsec)
         call getvtx('BARRE', 'CARA', iocc=ioc, nbval=0, nbret=nc)
-        call getvtx('BARRE', 'CARA', iocc=ioc, nbval=nbcar, vect=cara,&
+        call getvtx('BARRE', 'CARA', iocc=ioc, nbval=nbcar, vect=cara, &
                     nbret=ncar)
         call getvr8('BARRE', 'VALE', iocc=ioc, nbval=0, nbret=nv)
-        call getvr8('BARRE', 'VALE', iocc=ioc, nbval=nbval, vect=vale,&
+        call getvr8('BARRE', 'VALE', iocc=ioc, nbval=nbval, vect=vale, &
                     nbret=nval)
 !
 ! -- CARA
@@ -115,59 +115,59 @@ subroutine acevba(nbocc, nlm, nlg, ier)
                         valk(2) = ki
                         valk(3) = typ_sect(l)
                         call utmess('E', 'MODELISA_44', nk=3, valk=valk)
-                        ier = ier + 1
-                    endif
+                        ier = ier+1
+                    end if
                     if (l .eq. 2) then
                         if (ncar .gt. 4) then
                             valk(1) = kioc
                             valk(2) = typ_sect(l)
                             call utmess('E', 'MODELISA_45', nk=2, valk=valk)
-                            ier = ier + 1
-                        endif
+                            ier = ier+1
+                        end if
                         irech = 0
                         irece = 0
                         do i = 1, ncar
-                            if (cara(i)(1:2) .eq. 'H ') then
+                            if (cara(i) (1:2) .eq. 'H ') then
                                 if (irech .eq. 2) then
                                     valk(1) = kioc
                                     valk(2) = typ_sect(l)
                                     call utmess('E', 'MODELISA_46', nk=2, valk=valk)
-                                    ier = ier + 1
-                                endif
+                                    ier = ier+1
+                                end if
                                 irech = 1
-                            endif
-                            if (cara(i)(1:2) .eq. 'HY' .or. cara(i)(1:2) .eq. 'HZ') then
+                            end if
+                            if (cara(i) (1:2) .eq. 'HY' .or. cara(i) (1:2) .eq. 'HZ') then
                                 if (irech .eq. 1) then
                                     valk(1) = kioc
                                     valk(2) = typ_sect(l)
                                     call utmess('E', 'MODELISA_47', nk=2, valk=valk)
-                                    ier = ier + 1
-                                endif
+                                    ier = ier+1
+                                end if
                                 irech = 2
-                            endif
-                            if (cara(i)(1:3) .eq. 'EP ') then
+                            end if
+                            if (cara(i) (1:3) .eq. 'EP ') then
                                 if (irece .eq. 1) then
                                     valk(1) = kioc
                                     valk(2) = typ_sect(l)
                                     call utmess('E', 'MODELISA_48', nk=2, valk=valk)
-                                    ier = ier + 1
-                                endif
+                                    ier = ier+1
+                                end if
                                 irece = 2
-                            endif
-                            if (cara(i)(1:3) .eq. 'EPX' .or. cara(i)(1:3) .eq. 'EPY') then
+                            end if
+                            if (cara(i) (1:3) .eq. 'EPX' .or. cara(i) (1:3) .eq. 'EPY') then
                                 if (irece .eq. 2) then
                                     valk(1) = kioc
                                     valk(2) = typ_sect(l)
                                     call utmess('E', 'MODELISA_49', nk=2, valk=valk)
-                                    ier = ier + 1
-                                endif
+                                    ier = ier+1
+                                end if
                                 irece = 1
-                            endif
+                            end if
                         end do
-                    endif
-                endif
+                    end if
+                end if
             end do
-        endif
+        end if
 !
 ! -- VALE
         if (nval .gt. 0) then
@@ -176,7 +176,7 @@ subroutine acevba(nbocc, nlm, nlg, ier)
                 valk(1) = kioc
                 valk(2) = ki
                 call utmess('E', 'MODELISA_50', nk=2, valk=valk)
-                ier = ier + 1
+                ier = ier+1
             else
                 do i = 1, nval
                     call codent(i, 'G', ki)
@@ -185,18 +185,18 @@ subroutine acevba(nbocc, nlm, nlg, ier)
                         valk(2) = typ_sect(l)
                         valk(3) = ki
                         call utmess('E', 'MODELISA_51', nk=3, valk=valk)
-                        ier = ier + 1
-                    endif
+                        ier = ier+1
+                    end if
                 end do
-            endif
-        endif
+            end if
+        end if
 !
 ! ---    GROUP_MA + GROUP_NO + NOEUD + MAILLE
-        nsom = ng + nm
+        nsom = ng+nm
         if (nsom .eq. ng .or. nsom .eq. nm) then
-            nlm = max(nlm,-nm)
-            nlg = max(nlg,-ng)
-        endif
+            nlm = max(nlm, -nm)
+            nlg = max(nlg, -ng)
+        end if
 !
     end do
 !

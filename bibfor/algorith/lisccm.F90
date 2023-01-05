@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -82,7 +82,7 @@ subroutine lisccm(nomcmd, codarr, lischa)
             valk(1) = charge
             valk(2) = nomcmd
             call utmess(codarr, 'CHARGES5_3', nk=2, valk=valk)
-        endif
+        end if
 !
     end do
 !

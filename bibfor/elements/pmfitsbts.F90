@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -64,61 +64,61 @@ subroutine pmfitsbts(typfib, nf, ncarf, vf, vsig, b, wi, nbassepou, yj, zj, maxf
 #include "asterfort/r8inir.h"
 !
     integer :: typfib, nf, ncarf, nbassepou, maxfipoutre, nbfipoutre(*)
-    real(kind=8) :: vf(ncarf, nf), vsig(nf), vs2(3), b(4), wi, ve(*), vet(12),  vs(6)
+    real(kind=8) :: vf(ncarf, nf), vsig(nf), vs2(3), b(4), wi, ve(*), vet(12), vs(6)
 
 !
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: ii, i, pos, posfib
-    real(kind=8) :: yj(*), zj(*), flp(12,*)
-    real(kind=8) :: vfv(7,*), vsigv(*)
+    real(kind=8) :: yj(*), zj(*), flp(12, *)
+    real(kind=8) :: vfv(7, *), vsigv(*)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    vs(:)=0.0d0
+    vs(:) = 0.0d0
 !
-    if ( typfib .eq. 1 ) then
+    if (typfib .eq. 1) then
         call r8inir(12, 0.d0, ve, 1)
 !       3 caractéristiques utiles par fibre : y z aire
         call pmfits(typfib, nf, ncarf, vf, vsig, vs)
         call pmfbts(b, wi, vs, ve)
-    else if ( (typfib .eq. 2) .or. (typfib .eq. 3) ) then
-        vet(:)=0.d0
-        vs(:)=0.d0
-        vs2(:)=0.d0
+    else if ((typfib .eq. 2) .or. (typfib .eq. 3)) then
+        vet(:) = 0.d0
+        vs(:) = 0.d0
+        vs2(:) = 0.d0
         call r8inir(maxfipoutre, 0.d0, yj, 1)
         call r8inir(maxfipoutre, 0.d0, zj, 1)
         call r8inir(maxfipoutre, 0.d0, vsigv, 1)
 !       Boucle sur les poutres
-        pos=1
+        pos = 1
         do i = 1, nbassepou
-          call r8inir(maxfipoutre*7, 0.d0, vfv, 1)
-          !Position de la poutre
-          yj(i)=vf(4,pos)
-          zj(i)=vf(5,pos)
-          !Boucle sur les fibres de la poutre
-          do ii = 1, nbfipoutre(i)
-            !Construction des vecteurs corrigés sur une sous-poutre
-            posfib=pos+ii-1
-            vfv(1,ii)=vf(1,posfib)-yj(i)
-            vfv(2,ii)=vf(2,posfib)-zj(i)
-            vfv(3,ii)=vf(3,posfib)
-            vsigv(ii) = vsig(posfib)
-          enddo
+            call r8inir(maxfipoutre*7, 0.d0, vfv, 1)
+            !Position de la poutre
+            yj(i) = vf(4, pos)
+            zj(i) = vf(5, pos)
+            !Boucle sur les fibres de la poutre
+            do ii = 1, nbfipoutre(i)
+                !Construction des vecteurs corrigés sur une sous-poutre
+                posfib = pos+ii-1
+                vfv(1, ii) = vf(1, posfib)-yj(i)
+                vfv(2, ii) = vf(2, posfib)-zj(i)
+                vfv(3, ii) = vf(3, posfib)
+                vsigv(ii) = vsig(posfib)
+            end do
 !         Integration des efforts de la sous-poutre sur la section
-          call pmfits(typfib, maxfipoutre, ncarf, vfv, vsigv, vs)
+            call pmfits(typfib, maxfipoutre, ncarf, vfv, vsigv, vs)
 !         Transfert aux noeuds
-          call pmfbts(b, wi, vs, vet)
-          do  ii = 1, 12
-              flp(ii,i) = vet(ii)
-          enddo
-          pos=pos+nbfipoutre(i)
-        enddo
+            call pmfbts(b, wi, vs, vet)
+            do ii = 1, 12
+                flp(ii, i) = vet(ii)
+            end do
+            pos = pos+nbfipoutre(i)
+        end do
 !       Calcul des efforts sur l element a partir des efforts sur les sous-poutres
-        call pmpitp(typfib,flp, nbassepou, yj, zj, ve)
+        call pmpitp(typfib, flp, nbassepou, yj, zj, ve)
 
     else
-      call utmess('F', 'ELEMENTS2_40', si=typfib)
-    endif
+        call utmess('F', 'ELEMENTS2_40', si=typfib)
+    end if
 !
 end subroutine

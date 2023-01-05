@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine xalgo3(ndim, elrefp, nnop, it, nnose, cnset, typma, ndime,&
+subroutine xalgo3(ndim, elrefp, nnop, it, nnose, cnset, typma, ndime, &
                   geom, lsnelp, pmilie, ninter, ainter, ar, npts, nptm, &
                   pmmax, nmilie, mfis, lonref, pinref, pintt, pmitt, jonc, exit)
     implicit none
@@ -60,31 +60,31 @@ subroutine xalgo3(ndim, elrefp, nnop, it, nnose, cnset, typma, ndime,&
 !
 !
     if (ndime .eq. 2) then
-        call xalg20(ndim, elrefp, it, nnose, cnset, typma, ndime,&
-                      geom, lsnelp, pmilie, ninter, ainter, ar, npts, nptm,&
-                      pmmax, nmilie, mfis, lonref, pinref, pintt, pmitt, jonc, exit)
+        call xalg20(ndim, elrefp, it, nnose, cnset, typma, ndime, &
+                    geom, lsnelp, pmilie, ninter, ainter, ar, npts, nptm, &
+                    pmmax, nmilie, mfis, lonref, pinref, pintt, pmitt, jonc, exit)
     else if (ninter .eq. 3 .and. npts .eq. 0) then
-         call xalg30(ndim, elrefp, it, nnose, cnset, typma, ndime,&
-                      geom, lsnelp, pmilie, ninter, ainter, ar, npts, nptm,&
-                      pmmax, nmilie, mfis, lonref, pinref, pintt, pmitt, jonc, exit)
+        call xalg30(ndim, elrefp, it, nnose, cnset, typma, ndime, &
+                    geom, lsnelp, pmilie, ninter, ainter, ar, npts, nptm, &
+                    pmmax, nmilie, mfis, lonref, pinref, pintt, pmitt, jonc, exit)
     else if (ninter .eq. 3 .and. npts .eq. 1) then
-         call xalg31(ndim, elrefp, it, nnose, cnset, typma, ndime,&
-                      geom, lsnelp, pmilie, ninter, ainter, ar, npts, nptm,&
-                      pmmax, nmilie, mfis, lonref, pinref, pintt, pmitt, jonc, exit)
-    else if (ninter .eq. 4 .and. npts.eq. 0) then
-         call xalg40(ndim, elrefp, nnop, it, nnose, cnset, typma, ndime,&
-                      geom, lsnelp, pmilie, ninter, ainter, ar, npts, nptm,&
-                      pmmax, nmilie, mfis, lonref, pinref, pintt, pmitt, jonc, exit)
-    else if (ninter .eq. 4 .and. npts.eq. 2) then
-        call xalg42(ndim, elrefp, it, nnose, cnset, typma, ndime,&
-                      geom, lsnelp, pmilie, ninter, ainter, ar, npts, nptm,&
-                      pmmax, nmilie, mfis, lonref, pinref, pintt, pmitt, jonc, exit)
-    else if (ninter .eq. 4 .and. npts.eq. 1) then
-        call xalg41(ndim, elrefp, nnop, it, nnose, cnset, typma, ndime,&
-                      geom, lsnelp, pmilie, ninter, ainter, ar, npts, nptm,&
-                      pmmax, nmilie, mfis, lonref, pinref, pintt, pmitt, jonc, exit)
+        call xalg31(ndim, elrefp, it, nnose, cnset, typma, ndime, &
+                    geom, lsnelp, pmilie, ninter, ainter, ar, npts, nptm, &
+                    pmmax, nmilie, mfis, lonref, pinref, pintt, pmitt, jonc, exit)
+    else if (ninter .eq. 4 .and. npts .eq. 0) then
+        call xalg40(ndim, elrefp, nnop, it, nnose, cnset, typma, ndime, &
+                    geom, lsnelp, pmilie, ninter, ainter, ar, npts, nptm, &
+                    pmmax, nmilie, mfis, lonref, pinref, pintt, pmitt, jonc, exit)
+    else if (ninter .eq. 4 .and. npts .eq. 2) then
+        call xalg42(ndim, elrefp, it, nnose, cnset, typma, ndime, &
+                    geom, lsnelp, pmilie, ninter, ainter, ar, npts, nptm, &
+                    pmmax, nmilie, mfis, lonref, pinref, pintt, pmitt, jonc, exit)
+    else if (ninter .eq. 4 .and. npts .eq. 1) then
+        call xalg41(ndim, elrefp, nnop, it, nnose, cnset, typma, ndime, &
+                    geom, lsnelp, pmilie, ninter, ainter, ar, npts, nptm, &
+                    pmmax, nmilie, mfis, lonref, pinref, pintt, pmitt, jonc, exit)
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine lkd2fs(nmat, materf, para, vara, varh,&
-                  i1, devsig, ds2hds, d2shds, d2fds2,&
+subroutine lkd2fs(nmat, materf, para, vara, varh, &
+                  i1, devsig, ds2hds, d2shds, d2fds2, &
                   iret)
 ! person_in_charge: alexandre.foucault at edf.fr
     implicit none
@@ -43,15 +43,15 @@ subroutine lkd2fs(nmat, materf, para, vara, varh,&
     integer :: ndi, ndt, i
     real(kind=8) :: sigc, sii, coef1, coef2, vident(6), zero, un, vect1(6)
     real(kind=8) :: mat1(6, 6), mat2(6, 6), mat3(6, 6), ucri, deux
-    parameter       ( zero   = 0.0d0 )
-    parameter       ( un     = 1.0d0 )
-    parameter       ( deux   = 2.0d0 )
+    parameter(zero=0.0d0)
+    parameter(un=1.0d0)
+    parameter(deux=2.0d0)
 !     ------------------------------------------------------------------
-    common /tdim/   ndt,ndi
+    common/tdim/ndt, ndi
 !     ------------------------------------------------------------------
 !
 ! --- RECUPERATION PARAMETRES MATERIAU
-    sigc = materf(3,2)
+    sigc = materf(3, 2)
 !
 ! --- CONSTRUCTION DE SII
     sii = norm2(devsig(1:ndt))
@@ -66,7 +66,7 @@ subroutine lkd2fs(nmat, materf, para, vara, varh,&
         coef1 = para(1)*sigc*varh(2)*(para(1)-un)*ucri**(para(1)-deux)
 ! --- CONSTRUCTION COEF2 = A*SIGC*H0C(AD*SII*H+B*I1+D)^(A-1)
         coef2 = un-(vara(1)*para(1)*sigc*varh(2)*ucri**(para(1)-un))
-    endif
+    end if
 !
 ! --- CONSTRUCTION VECTEUR IDENTITE
     vident(:) = zero
@@ -80,12 +80,12 @@ subroutine lkd2fs(nmat, materf, para, vara, varh,&
     end do
 ! --- CONSTRUCTION PRODUIT TENSORIEL COEF1*(VECT1 X VECT1)
     call lcprte(vect1, vect1, mat1)
-    mat2(1:ndt,1:ndt) = coef1 * mat1(1:ndt,1:ndt)
+    mat2(1:ndt, 1:ndt) = coef1*mat1(1:ndt, 1:ndt)
 !
 ! --- CONSTRUCTION PRODUIT COEF2*D2SHDS
-    mat3(1:ndt,1:ndt) = coef2 * d2shds(1:ndt,1:ndt)
+    mat3(1:ndt, 1:ndt) = coef2*d2shds(1:ndt, 1:ndt)
 !
 ! --- CONSTRUCTION DIFFERENCE MAT3-MAT2 = D2FDS2
-    d2fds2(1:ndt,1:ndt) = mat3(1:ndt,1:ndt) - mat2(1:ndt,1:ndt)
+    d2fds2(1:ndt, 1:ndt) = mat3(1:ndt, 1:ndt)-mat2(1:ndt, 1:ndt)
 !
 end subroutine

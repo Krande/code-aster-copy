@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -69,7 +69,7 @@ subroutine calpro(nomres, classe, basmod, nommat)
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: i, iad, idbase,  ier, iret, jrefa, jdeb
+    integer :: i, iad, idbase, ier, iret, jrefa, jdeb
     integer :: j, lddes, ldref, ldres, ldres2, lmat, ltvec1, nbdef
     integer :: neq, ntail
     aster_logical :: lsym
@@ -78,7 +78,7 @@ subroutine calpro(nomres, classe, basmod, nommat)
     integer, pointer :: deeq(:) => null()
     cbid = dcmplx(0.d0, 0.d0)
 !-----------------------------------------------------------------------
-    pgc='CALPRO'
+    pgc = 'CALPRO'
 !-----------------------------------------------------------------------
 !
 ! --- CREATION DU .REFE
@@ -94,34 +94,34 @@ subroutine calpro(nomres, classe, basmod, nommat)
 !
 ! ----VERIFICATION DU TYPE DES VECTEURS PROPRES DANS LA BASE
 !
-    call rsexch('F', basmod, 'DEPL', 1, nomcha,&
+    call rsexch('F', basmod, 'DEPL', 1, nomcha, &
                 iret)
     call jelira(nomcha(1:19)//'.VALE', 'TYPE', cval=typ1)
     if (typ1 .eq. 'C') then
         valk = basmod
         call utmess('F', 'ALGORITH12_16', sk=valk)
-    endif
+    end if
 !
 ! --- ALLOCATION DE LA MATRICE RESULTAT
 !
     call jeveuo(nommat(1:19)//'.REFA', 'L', jrefa)
-    ntail = nbdef* (nbdef+1)/2
+    ntail = nbdef*(nbdef+1)/2
     if (zk24(jrefa-1+9) .eq. 'MS') then
-       lsym = .true.
-       call jecrec(nomres(1:18)//'_VALE', classe//' V R', 'NU', 'DISPERSE', &
-                   'CONSTANT',1)
+        lsym = .true.
+        call jecrec(nomres(1:18)//'_VALE', classe//' V R', 'NU', 'DISPERSE', &
+                    'CONSTANT', 1)
     else
-       lsym = .false.
-       call jecrec(nomres(1:18)//'_VALE', classe//' V R', 'NU', 'DISPERSE', &
-                   'CONSTANT',2)
-    endif
+        lsym = .false.
+        call jecrec(nomres(1:18)//'_VALE', classe//' V R', 'NU', 'DISPERSE', &
+                    'CONSTANT', 2)
+    end if
     call jeecra(nomres(1:18)//'_VALE', 'LONMAX', ntail)
     call jecroc(jexnum(nomres(1:18)//'_VALE', 1))
     call jeveuo(jexnum(nomres(1:18)//'_VALE', 1), 'E', ldres)
-    if (.not.lsym) then
+    if (.not. lsym) then
         call jecroc(jexnum(nomres(1:18)//'_VALE', 2))
         call jeveuo(jexnum(nomres(1:18)//'_VALE', 2), 'E', ldres2)
-    endif
+    end if
 !
 ! --- CONTROLE D'EXISTENCE DE LA MATRICE
 !
@@ -129,7 +129,7 @@ subroutine calpro(nomres, classe, basmod, nommat)
     if (ier .eq. 0) then
         valk = nommat(1:8)
         call utmess('E', 'ALGORITH12_39', sk=valk)
-    endif
+    end if
 !
 ! --- ALLOCATION DESCRIPTEUR DE LA MATRICE
 !
@@ -156,35 +156,35 @@ subroutine calpro(nomres, classe, basmod, nommat)
 !
 ! ----- CALCUL PRODUIT MATRICE DEFORMEE
 !
-        call mrmult('ZERO', lmat, zr(idbase+(i-1)*neq), zr(ltvec1), 1,&
+        call mrmult('ZERO', lmat, zr(idbase+(i-1)*neq), zr(ltvec1), 1, &
                     .true._1)
         call zerlag(neq, deeq, vectr=zr(ltvec1))
 !
 ! ----- PRODUIT AVEC LA DEFORMEE COURANTE
 !
-         xprod= ddot(neq,zr(ltvec1),1,zr(idbase+(i-1)*neq),1)
-         iad = i*(i+1)/2
-         zr(ldres+iad-1) = xprod
-         if (.not.lsym) zr(ldres2+iad-1) = xprod
-         if (lsym) then
-          jdeb = i+1
-         else
-          jdeb=1
-         endif
+        xprod = ddot(neq, zr(ltvec1), 1, zr(idbase+(i-1)*neq), 1)
+        iad = i*(i+1)/2
+        zr(ldres+iad-1) = xprod
+        if (.not. lsym) zr(ldres2+iad-1) = xprod
+        if (lsym) then
+            jdeb = i+1
+        else
+            jdeb = 1
+        end if
 !
 ! ----- PRODUIT AVEC DEFORMEES D'ORDRE SUPERIEURE
 !
 !       if (i .lt. nbdef) then
-            do j = jdeb, nbdef
-                xprod= ddot(neq,zr(ltvec1),1,zr(idbase+(j-1)*neq),1)
-                if (j.gt.i) then
-                  iad = i+(j-1)*j/2
-                  zr(ldres+iad-1) = xprod
-                else
-                  iad = j+(i-1)*i/2
-                  zr(ldres2+iad-1) = xprod
-                end if
-            end do
+        do j = jdeb, nbdef
+            xprod = ddot(neq, zr(ltvec1), 1, zr(idbase+(j-1)*neq), 1)
+            if (j .gt. i) then
+                iad = i+(j-1)*j/2
+                zr(ldres+iad-1) = xprod
+            else
+                iad = j+(i-1)*i/2
+                zr(ldres2+iad-1) = xprod
+            end if
+        end do
 !       endif
 !
     end do

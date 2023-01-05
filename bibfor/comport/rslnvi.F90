@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 subroutine rslnvi(elem_model, ndt_, ndi_, nr_, nvi_)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/assert.h"
 #include "asterfort/utmess.h"
@@ -55,7 +55,7 @@ implicit none
         ndt = 6
         ndi = 3
         nr = ndt+2
-    else if ( elem_model(1:6) .eq. 'D_PLAN' .or. elem_model(1:4) .eq. 'AXIS') then
+    else if (elem_model(1:6) .eq. 'D_PLAN' .or. elem_model(1:4) .eq. 'AXIS') then
         ndt = 4
         ndi = 3
         nr = ndt+2
@@ -67,19 +67,19 @@ implicit none
         nr = ndt+2
     else
         ASSERT(.false.)
-    endif
+    end if
 !
     if (present(ndt_)) then
         ndt_ = ndt
-    endif
+    end if
     if (present(ndi_)) then
         ndi_ = ndi
-    endif
+    end if
     if (present(nr_)) then
-        nr_  = nr
-    endif
+        nr_ = nr
+    end if
     if (present(nvi_)) then
         nvi_ = nvi
-    endif
+    end if
 !
 end subroutine

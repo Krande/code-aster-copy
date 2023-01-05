@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine wp2biy(lm, lc, lk, s2, dsr,&
-                  isi, yh, yb, zh, zb,&
-                  lbloq, u1, u2, u3, u4,&
+subroutine wp2biy(lm, lc, lk, s2, dsr, &
+                  isi, yh, yb, zh, zb, &
+                  lbloq, u1, u2, u3, u4, &
                   n)
     implicit none
 #include "asterfort/mrmult.h"
@@ -54,32 +54,32 @@ subroutine wp2biy(lm, lc, lk, s2, dsr,&
 !-----------------------------------------------------------------------
     zero = 0.0d0
 !
-    call mrmult('ZERO', lk, yh, u1, 1,&
+    call mrmult('ZERO', lk, yh, u1, 1, &
                 .false._1)
-    call mrmult('ZERO', lc, yh, u2, 1,&
+    call mrmult('ZERO', lc, yh, u2, 1, &
                 .false._1)
-    call mrmult('ZERO', lm, yb, u3, 1,&
+    call mrmult('ZERO', lm, yb, u3, 1, &
                 .false._1)
-    call mrmult('ZERO', lm, yh, u4, 1,&
+    call mrmult('ZERO', lm, yh, u4, 1, &
                 .false._1)
 !
     if (dsr .ne. zero) then
 !        --- PARTIE REELLE DU DECALLAGE NON NULLE ---
         do i = 1, n, 1
-            zh(i) = -dsr*u1(i) - s2*(u2(i) + u3(i))
-            zb(i) = dsr*u3(i) + (- s2* u4(i) + u1(i))*lbloq(i)
+            zh(i) = -dsr*u1(i)-s2*(u2(i)+u3(i))
+            zb(i) = dsr*u3(i)+(-s2*u4(i)+u1(i))*lbloq(i)
         end do
     else
 !        --- PARTIE REELLE DU DECALLAGE NULLE ---
         do i = 1, n, 1
-            zh(i) = -s2*(u2(i) + u3(i))
-            zb(i) = (-s2* u4(i) + u1(i))*lbloq(i)
+            zh(i) = -s2*(u2(i)+u3(i))
+            zb(i) = (-s2*u4(i)+u1(i))*lbloq(i)
         end do
-    endif
+    end if
 !
-    call mrmult('CUMU', lk, yb, zh, 1,&
+    call mrmult('CUMU', lk, yb, zh, 1, &
                 .false._1)
-    call mrmult('CUMU', lc, yb, zb, 1,&
+    call mrmult('CUMU', lc, yb, zb, 1, &
                 .false._1)
 !
     do i = 1, n, 1

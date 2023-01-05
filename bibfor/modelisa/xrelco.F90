@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine xrelco(mesh, model, nb_dim, sdline_crack, nb_rela_line,&
+subroutine xrelco(mesh, model, nb_dim, sdline_crack, nb_rela_line, &
                   list_rela_line, nb_edge)
 !
     implicit none
@@ -69,10 +69,10 @@ subroutine xrelco(mesh, model, nb_dim, sdline_crack, nb_rela_line,&
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: nbddl1, nbddl2, nbddl3, nbddl4
-    parameter  (nbddl1=12)
-    parameter  (nbddl2=8)
-    parameter  (nbddl3=27)
-    parameter  (nbddl4=36)
+    parameter(nbddl1=12)
+    parameter(nbddl2=8)
+    parameter(nbddl3=27)
+    parameter(nbddl4=36)
     character(len=8) :: ddlc1(nbddl1)
     character(len=8) :: ddlc2(nbddl2)
     character(len=8) :: ddlc3(nbddl3)
@@ -96,29 +96,29 @@ subroutine xrelco(mesh, model, nb_dim, sdline_crack, nb_rela_line,&
     integer, pointer :: connex(:) => null()
     character(len=8), pointer :: lgrf(:) => null()
 !
-    data ddlc1 /'LAGS_C','LAGS_F1','LAGS_F2',&
-                'LAG2_C','LAG2_F1','LAG2_F2',&
-                'LAG3_C','LAG3_F1','LAG3_F2',&
-                'LAG4_C','LAG4_F1','LAG4_F2'/
+    data ddlc1/'LAGS_C', 'LAGS_F1', 'LAGS_F2', &
+        'LAG2_C', 'LAG2_F1', 'LAG2_F2', &
+        'LAG3_C', 'LAG3_F1', 'LAG3_F2', &
+        'LAG4_C', 'LAG4_F1', 'LAG4_F2'/
 !
-    data ddlc2 /'LAGS_C','LAGS_F1',&
-                'LAG2_C','LAG2_F1',&
-                'LAG3_C','LAG3_F1',&
-                'LAG4_C','LAG4_F1'/
+    data ddlc2/'LAGS_C', 'LAGS_F1', &
+        'LAG2_C', 'LAG2_F1', &
+        'LAG3_C', 'LAG3_F1', &
+        'LAG4_C', 'LAG4_F1'/
 !
-    data ddlc3 /'PRE_FLU','LAG_FLI','LAG_FLS','LAGS_C','LAGS_F1',&
-                'LAG2_C','LAG2_F1','LAG3_C','LAG3_F1',&
-                'PR2_FLU','LA2_FLI','LA2_FLS','D1X','D1Y',&
-                'D2X','D2Y','D3X','D3Y',&
-                'PR3_FLU','LA3_FLI','LA3_FLS','V11','V12',&
-                'V21','V22','V31','V32'/
+    data ddlc3/'PRE_FLU', 'LAG_FLI', 'LAG_FLS', 'LAGS_C', 'LAGS_F1', &
+        'LAG2_C', 'LAG2_F1', 'LAG3_C', 'LAG3_F1', &
+        'PR2_FLU', 'LA2_FLI', 'LA2_FLS', 'D1X', 'D1Y', &
+        'D2X', 'D2Y', 'D3X', 'D3Y', &
+        'PR3_FLU', 'LA3_FLI', 'LA3_FLS', 'V11', 'V12', &
+        'V21', 'V22', 'V31', 'V32'/
 !
-    data ddlc4 /'PRE_FLU','LAG_FLI','LAG_FLS','LAGS_C','LAGS_F1','LAGS_F2',&
-                'LAG2_C','LAG2_F1','LAG2_F2','LAG3_C','LAG3_F1','LAG3_F2',&
-                'PR2_FLU','LA2_FLI','LA2_FLS','D1X','D1Y','D1Z',&
-                'D2X','D2Y','D2Z','D3X','D3Y','D3Z',&
-                'PR3_FLU','LA3_FLI','LA3_FLS','V11','V12','V13',&
-                'V21','V22','V23','V31','V32','V33'/
+    data ddlc4/'PRE_FLU', 'LAG_FLI', 'LAG_FLS', 'LAGS_C', 'LAGS_F1', 'LAGS_F2', &
+        'LAG2_C', 'LAG2_F1', 'LAG2_F2', 'LAG3_C', 'LAG3_F1', 'LAG3_F2', &
+        'PR2_FLU', 'LA2_FLI', 'LA2_FLS', 'D1X', 'D1Y', 'D1Z', &
+        'D2X', 'D2Y', 'D2Z', 'D3X', 'D3Y', 'D3Z', &
+        'PR3_FLU', 'LA3_FLI', 'LA3_FLS', 'V11', 'V12', 'V13', &
+        'V21', 'V22', 'V23', 'V31', 'V32', 'V33'/
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -130,8 +130,8 @@ subroutine xrelco(mesh, model, nb_dim, sdline_crack, nb_rela_line,&
     repe_type(1:8) = 0
     nb_rela_line = 0
     nb_edge = 0
-    value_cplx_dumm=cmplx(0.d0,0.d0)
-    coef_cplx_dumm=cmplx(0.d0,0.d0)
+    value_cplx_dumm = cmplx(0.d0, 0.d0)
+    coef_cplx_dumm = cmplx(0.d0, 0.d0)
 !
     do i = 1, 100
         fonact(i) = 0
@@ -152,23 +152,23 @@ subroutine xrelco(mesh, model, nb_dim, sdline_crack, nb_rela_line,&
     if (ier .eq. 0) then
         nb_edge = 0
     else
-        call jeveuo(sdline_crack, 'L', vi = v_rela_node)
+        call jeveuo(sdline_crack, 'L', vi=v_rela_node)
         call jelira(sdline_crack, 'LONMAX', nb_edge)
         call jeexin(sdline_crack(1:14)//'_LAGR', ier)
         if (ier .eq. 0) then
             l_mult_crack = .false.
         else
             l_mult_crack = .true.
-            call jeveuo(sdline_crack(1:14)//'_LAGR', 'L', vi = v_rela_cmp)
-        endif
-    endif
+            call jeveuo(sdline_crack(1:14)//'_LAGR', 'L', vi=v_rela_cmp)
+        end if
+    end if
 !
 ! --- MODELE HM-XFEM ?
 !
     call dismoi('EXI_THM', model, 'MODELE', repk=repk)
     if (repk .eq. 'OUI') fonact(37) = 1
 !
-    lxthm = isfonc(fonact,'THM')
+    lxthm = isfonc(fonact, 'THM')
 !
     if (lxthm .and. l_mult_crack) then
         chjon = '&&XRELCO.CHJON'
@@ -182,7 +182,7 @@ subroutine xrelco(mesh, model, nb_dim, sdline_crack, nb_rela_line,&
         noma = lgrf(1)
         call jeveuo(noma//'.CONNEX', 'L', vi=connex)
         call jeveuo(jexatr(noma//'.CONNEX', 'LONCUM'), 'L', jconx2)
-    endif
+    end if
 !
     nb_edge = nb_edge/2
 !
@@ -218,31 +218,31 @@ subroutine xrelco(mesh, model, nb_dim, sdline_crack, nb_rela_line,&
                 call jelira(jexnum(cnxinv, node_nume(2)), 'LONMAX', nbmano2)
                 call jeveuo(jexnum(cnxinv, node_nume(2)), 'L', adrma2)
                 do ima1 = 1, nbmano1
-                    numa1 = zi(adrma1-1 + ima1)
-                    nbnoma1 = zi(jconx2+numa1) - zi(jconx2+numa1-1)
+                    numa1 = zi(adrma1-1+ima1)
+                    nbnoma1 = zi(jconx2+numa1)-zi(jconx2+numa1-1)
                     if (nbnoma1 .lt. nb_dim**2) cycle
                     do ima2 = 1, nbmano2
-                        numa2 = zi(adrma2-1 + ima2)
-                        nbnoma2 = zi(jconx2+numa2) - zi(jconx2+numa2-1)
+                        numa2 = zi(adrma2-1+ima2)
+                        nbnoma2 = zi(jconx2+numa2)-zi(jconx2+numa2-1)
                         if (nbnoma2 .lt. nb_dim**2) cycle
                         if (numa1 .eq. numa2) goto 30
                     end do
                 end do
- 30             continue
+30              continue
                 do i = 1, nbnoma2
                     nuno = connex(zi(jconx2+numa1-1)+i-1)
-                    if (nuno .eq. node_nume(1)) ino1=i
-                    if (nuno .eq. node_nume(2)) ino2=i
+                    if (nuno .eq. node_nume(1)) ino1 = i
+                    if (nuno .eq. node_nume(2)) ino2 = i
                 end do
-                jonc1=0
-                jonc2=0
-                call cesexi('C', jcesd, jcesl, numa1, 1,&
+                jonc1 = 0
+                jonc2 = 0
+                call cesexi('C', jcesd, jcesl, numa1, 1, &
                             1, ino1, iad)
-                if (iad .gt. 0) jonc1=cesv(iad)
-                call cesexi('C', jcesd, jcesl, numa1, 1,&
+                if (iad .gt. 0) jonc1 = cesv(iad)
+                call cesexi('C', jcesd, jcesl, numa1, 1, &
                             1, ino2, iad)
-                if (iad .gt. 0) jonc2=cesv(iad)
-            endif
+                if (iad .gt. 0) jonc2 = cesv(iad)
+            end if
 !
             if (nb_dim .eq. 2) then
                 do i = 1, 3+2*nlag
@@ -252,11 +252,11 @@ subroutine xrelco(mesh, model, nb_dim, sdline_crack, nb_rela_line,&
                     else
                         cmp_name(1) = ddlc3(i)
                         cmp_name(2) = ddlc3(i)
-                    endif
-                    call afrela(coef_real, [coef_cplx_dumm], cmp_name, node_name, repe_type,&
-                                [0.d0], 2, vale_real, value_cplx_dumm, vale_func_dumm,&
+                    end if
+                    call afrela(coef_real, [coef_cplx_dumm], cmp_name, node_name, repe_type, &
+                                [0.d0], 2, vale_real, value_cplx_dumm, vale_func_dumm, &
                                 'REEL', 'REEL', 0.d0, list_rela_line)
-                    nb_rela_line = nb_rela_line + 1
+                    nb_rela_line = nb_rela_line+1
                 end do
             else
                 do i = 1, 3+3*nlag
@@ -266,13 +266,13 @@ subroutine xrelco(mesh, model, nb_dim, sdline_crack, nb_rela_line,&
                     else
                         cmp_name(1) = ddlc4(i)
                         cmp_name(2) = ddlc4(i)
-                    endif
-                    call afrela(coef_real, [coef_cplx_dumm], cmp_name, node_name, repe_type,&
-                                [0.d0], 2, vale_real, value_cplx_dumm, vale_func_dumm,&
+                    end if
+                    call afrela(coef_real, [coef_cplx_dumm], cmp_name, node_name, repe_type, &
+                                [0.d0], 2, vale_real, value_cplx_dumm, vale_func_dumm, &
                                 'REEL', 'REEL', 0.d0, list_rela_line)
-                    nb_rela_line = nb_rela_line + 1
+                    nb_rela_line = nb_rela_line+1
                 end do
-            endif
+            end if
 !
             if (l_mult_crack) then
 !         EN PRESENCE DE JONCTIONS POUR LES MODELES HM-XFEM, ON IMPOSE L'EGALITE
@@ -282,40 +282,40 @@ subroutine xrelco(mesh, model, nb_dim, sdline_crack, nb_rela_line,&
                     cmp_name(2) = ddlc3(9*1+1)
                     call jenuno(jexnum(mesh(1:8)//'.NOMNOE', node_nume(1)), node_nameb(1))
                     call jenuno(jexnum(mesh(1:8)//'.NOMNOE', node_nume(1)), node_nameb(2))
-                    call afrela(coef_real, [coef_cplx_dumm], cmp_name, node_nameb, repe_type,&
-                                [0.d0], 2, vale_real, value_cplx_dumm, vale_func_dumm,&
+                    call afrela(coef_real, [coef_cplx_dumm], cmp_name, node_nameb, repe_type, &
+                                [0.d0], 2, vale_real, value_cplx_dumm, vale_func_dumm, &
                                 'REEL', 'REEL', 0.d0, list_rela_line)
-                    nb_rela_line = nb_rela_line + 1
-                else if (v_rela_cmp(2*i_edge).eq.2.and.jonc1.gt.0) then
+                    nb_rela_line = nb_rela_line+1
+                else if (v_rela_cmp(2*i_edge) .eq. 2 .and. jonc1 .gt. 0) then
                     cmp_name(1) = ddlc3(1)
                     cmp_name(2) = ddlc3(9*1+1)
                     call jenuno(jexnum(mesh(1:8)//'.NOMNOE', node_nume(2)), node_nameb(1))
                     call jenuno(jexnum(mesh(1:8)//'.NOMNOE', node_nume(2)), node_nameb(2))
-                    call afrela(coef_real, [coef_cplx_dumm], cmp_name, node_nameb, repe_type,&
-                                [0.d0], 2, vale_real, value_cplx_dumm, vale_func_dumm,&
+                    call afrela(coef_real, [coef_cplx_dumm], cmp_name, node_nameb, repe_type, &
+                                [0.d0], 2, vale_real, value_cplx_dumm, vale_func_dumm, &
                                 'REEL', 'REEL', 0.d0, list_rela_line)
-                    nb_rela_line = nb_rela_line + 1
-                endif
+                    nb_rela_line = nb_rela_line+1
+                end if
                 if (v_rela_cmp(2*(i_edge-1)+1) .eq. 3 .and. jonc1 .gt. 0) then
                     cmp_name(1) = ddlc3(1)
                     cmp_name(2) = ddlc3(9*2+1)
                     call jenuno(jexnum(mesh(1:8)//'.NOMNOE', node_nume(1)), node_nameb(1))
                     call jenuno(jexnum(mesh(1:8)//'.NOMNOE', node_nume(1)), node_nameb(2))
-                    call afrela(coef_real, [coef_cplx_dumm], cmp_name, node_nameb, repe_type,&
-                                [0.d0], 2, vale_real, value_cplx_dumm, vale_func_dumm,&
+                    call afrela(coef_real, [coef_cplx_dumm], cmp_name, node_nameb, repe_type, &
+                                [0.d0], 2, vale_real, value_cplx_dumm, vale_func_dumm, &
                                 'REEL', 'REEL', 0.d0, list_rela_line)
-                    nb_rela_line = nb_rela_line + 1
-                else if (v_rela_cmp(2*i_edge).eq.3.and.jonc1.gt.0) then
+                    nb_rela_line = nb_rela_line+1
+                else if (v_rela_cmp(2*i_edge) .eq. 3 .and. jonc1 .gt. 0) then
                     cmp_name(1) = ddlc3(1)
                     cmp_name(2) = ddlc3(9*2+1)
                     call jenuno(jexnum(mesh(1:8)//'.NOMNOE', node_nume(2)), node_nameb(1))
                     call jenuno(jexnum(mesh(1:8)//'.NOMNOE', node_nume(2)), node_nameb(2))
-                    call afrela(coef_real, [coef_cplx_dumm], cmp_name, node_nameb, repe_type,&
-                                [0.d0], 2, vale_real, value_cplx_dumm, vale_func_dumm,&
+                    call afrela(coef_real, [coef_cplx_dumm], cmp_name, node_nameb, repe_type, &
+                                [0.d0], 2, vale_real, value_cplx_dumm, vale_func_dumm, &
                                 'REEL', 'REEL', 0.d0, list_rela_line)
-                    nb_rela_line = nb_rela_line + 1
-                endif
-            endif
+                    nb_rela_line = nb_rela_line+1
+                end if
+            end if
 !
         else
             do i_dim = 1, nlag*nb_dim
@@ -329,20 +329,20 @@ subroutine xrelco(mesh, model, nb_dim, sdline_crack, nb_rela_line,&
                     else
                         cmp_name(1) = ddlc2(i_dim)
                         cmp_name(2) = ddlc2(i_dim)
-                    endif
-                endif
-                call afrela(coef_real, [coef_cplx_dumm], cmp_name, node_name, repe_type,&
-                            [0.d0], 2, vale_real, value_cplx_dumm, vale_func_dumm,&
+                    end if
+                end if
+                call afrela(coef_real, [coef_cplx_dumm], cmp_name, node_name, repe_type, &
+                            [0.d0], 2, vale_real, value_cplx_dumm, vale_func_dumm, &
                             'REEL', 'REEL', 0.d0, list_rela_line)
-                nb_rela_line = nb_rela_line + 1
+                nb_rela_line = nb_rela_line+1
             end do
-        endif
+        end if
     end do
 !
     if (lxthm .and. l_mult_crack) then
         call detrsd('CHAM_ELEM_S', chjon)
         call jedetr(cnxinv)
-    endif
+    end if
 !
     call jedema()
 end subroutine

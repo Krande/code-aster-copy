@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine lislef(motfac, iexci, nomfct, typfct, phase,&
+subroutine lislef(motfac, iexci, nomfct, typfct, phase, &
                   npuis)
 !
 !
@@ -80,7 +80,7 @@ subroutine lislef(motfac, iexci, nomfct, typfct, phase,&
 !
 ! --- DETECTION DES CAS
 !
-    eximcp = getexm(motfac,'FONC_MULT_C')
+    eximcp = getexm(motfac, 'FONC_MULT_C')
     nfcplx = 0
     fctcsr = '&&LISLEF'
     nfreel = 0
@@ -96,7 +96,7 @@ subroutine lislef(motfac, iexci, nomfct, typfct, phase,&
     call getvid(motfac, 'FONC_MULT', iocc=iexci, scal=k24bid, nbret=nfreel)
     if (eximcp .eq. 1) then
         call getvid(motfac, 'FONC_MULT_C', iocc=iexci, scal=k24bid, nbret=nfcplx)
-    endif
+    end if
 !
 ! --- FONCTIONS MULTIPLICATIVES DES CHARGES - CAS COMPLEXE
 !
@@ -104,25 +104,25 @@ subroutine lislef(motfac, iexci, nomfct, typfct, phase,&
         if (nfcplx .ne. 0) then
             call getvid(motfac, 'FONC_MULT_C', iocc=iexci, scal=nomfct, nbret=ibid)
             typfct = 'FONCT_COMP'
-        else if (nfreel.ne.0) then
+        else if (nfreel .ne. 0) then
             call getvid(motfac, 'FONC_MULT', iocc=iexci, scal=nomfct, nbret=ibid)
             typfct = 'FONCT_REEL'
-        else if ((nfcplx.eq.0).and.(nfreel.eq.0)) then
+        else if ((nfcplx .eq. 0) .and. (nfreel .eq. 0)) then
             call getvc8(motfac, 'COEF_MULT_C', iocc=iexci, scal=ccoef, nbret=nccplx)
             if (nccplx .eq. 0) then
                 call getvr8(motfac, 'COEF_MULT', iocc=iexci, scal=rcoef, nbret=ncreel)
-                ASSERT(ncreel.ne.0)
+                ASSERT(ncreel .ne. 0)
                 lcrfcr = .true.
             else
-                rcoef = dble (ccoef)
+                rcoef = dble(ccoef)
                 icoef = dimag(ccoef)
                 lcrfcc = .true.
-            endif
+            end if
         else
             ASSERT(.false.)
-        endif
+        end if
         goto 99
-    endif
+    end if
 !
 ! --- FONCTIONS MULTIPLICATIVES DES CHARGES - CAS REEL
 !
@@ -132,9 +132,9 @@ subroutine lislef(motfac, iexci, nomfct, typfct, phase,&
     else
         call getvid(motfac, 'FONC_MULT', iocc=iexci, scal=nomfct, nbret=ibid)
         typfct = 'FONCT_REEL'
-    endif
+    end if
 !
- 99 continue
+99  continue
 !
 ! --- CREATION FONCTION CONSTANTE REELLE
 !
@@ -143,35 +143,35 @@ subroutine lislef(motfac, iexci, nomfct, typfct, phase,&
             call exisd('FONCTION', fctcsr, iret)
             if (iret .eq. 0) then
                 call focste(fctcsr, 'TOUTRESU', rcoef, 'V')
-            endif
+            end if
             nomfct = fctcsr
         else
             call codent(iexci, 'D0', knum)
-            ASSERT(iexci.le.9999)
+            ASSERT(iexci .le. 9999)
             nomfct = '&&NC'//knum
             call focste(nomfct, 'TOUTRESU', rcoef, 'V')
-        endif
+        end if
         typfct = 'CONST_REEL'
-    endif
+    end if
 !
 ! --- CREATION FONCTION CONSTANTE COMPLEXE
 !
     if (lcrfcc) then
-        rcoef = dble (ccoef)
+        rcoef = dble(ccoef)
         icoef = dimag(ccoef)
         call codent(iexci, 'D0', knum)
-        ASSERT(iexci.le.9999)
+        ASSERT(iexci .le. 9999)
         nomfct = '&&NC'//knum
         call focstc(nomfct, 'TOUTRESU', rcoef, icoef, 'V')
         typfct = 'CONST_COMP'
-    endif
+    end if
 !
 ! --- RECUP. PULSATION ET PUISSANCE
 !
     call lispcp(motfac, iexci, phase, npuis)
 !
-    ASSERT(typfct.ne.' ')
-    ASSERT(nomfct.ne.' ')
+    ASSERT(typfct .ne. ' ')
+    ASSERT(nomfct .ne. ' ')
 !
     call jedema()
 end subroutine

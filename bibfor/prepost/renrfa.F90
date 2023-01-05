@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -52,30 +52,30 @@ subroutine renrfa(nomfor, valgrd, nrupt, icodre)
     character(len=24) :: chnom, cbid
     character(len=8) :: nompf, typfon, nompfi
     real(kind=8) :: lnf(20), grd(20), lnrup, grdmax
-    data  lnf/ 1.d7, 5.d6, 1.d6, 5.d5, 2.d5, 1.d5, 5.d4, 2.d4,&
-     &           1.2d4, 1.d4, 5.d3,2.d3,1.d3, 5.d2,&
-     &           2.d2, 1.d2, 5.d1, 2.d1, 1.d1 , 1.d0 /
+    data lnf/1.d7, 5.d6, 1.d6, 5.d5, 2.d5, 1.d5, 5.d4, 2.d4,&
+     &           1.2d4, 1.d4, 5.d3, 2.d3, 1.d3, 5.d2,&
+     &           2.d2, 1.d2, 5.d1, 2.d1, 1.d1, 1.d0/
 !
     call jemarq()
 !
 ! RECUPERER LE NOM DE PARAMETRE GRANDEUR_EQUIVALEN
 !
-    nbmx=35
+    nbmx = 35
     chnom(20:24) = '.PROL'
     chnom(1:19) = nomfor
     nrupt = 0.d0
 !
     call jeveuo(chnom, 'L', jprol)
-    typfon = zk24(jprol-1+1)(1:8)
+    typfon = zk24(jprol-1+1) (1:8)
 !
-    call fonbpa(nomfor, zk24(jprol), cbid, nbmx, np,&
+    call fonbpa(nomfor, zk24(jprol), cbid, nbmx, np, &
                 nompf)
 !
     if (typfon .eq. 'FONCTION') then
 !
 ! A PARTIR DE GRANDEUR EQUI, ON RESOUT LE NOMBRE DE CYCLE AVEC
 ! LA FONCTION DU TYPE: NBRUPT = F(VALGRD)
-        call fointe('F', nomfor, np, [nompf], [valgrd],&
+        call fointe('F', nomfor, np, [nompf], [valgrd], &
                     nrupt, icodre)
 !
     else
@@ -85,45 +85,45 @@ subroutine renrfa(nomfor, valgrd, nrupt, icodre)
 ! ON VA RESOUDRE L'EQUATION POUR TROUVER NBRUPT TEL QUE 1<NBRUPT<10^7
 !
         ndat = 20
-        call fonbpa(nomfor, zk24(jprol), cbid, nbmx, np,&
+        call fonbpa(nomfor, zk24(jprol), cbid, nbmx, np, &
                     nompfi)
 !
 ! VERIFIER QUE LA FORMULE A LA VARIABLE NRUPT = N_F
-        if ((nompfi.ne. 'NBRUP') .or. (np .ne. 1)) then
+        if ((nompfi .ne. 'NBRUP') .or. (np .ne. 1)) then
             call utmess('F', 'FATIGUE1_93')
-        endif
+        end if
 !
 ! VERIFIER QUE  VALGRD < GRDMAX
-        call fointe('F', nomfor, np, [nompfi], [lnf(20)],&
+        call fointe('F', nomfor, np, [nompfi], [lnf(20)], &
                     grdmax, icodre)
 !
 !
         if (valgrd .gt. grdmax) then
             call utmess('F', 'FATIGUE1_94')
-        endif
+        end if
 !
-        call fointe('F', nomfor, np, [nompfi], [lnf(1)],&
+        call fointe('F', nomfor, np, [nompfi], [lnf(1)], &
                     grd(1), icodre)
         do i = 2, ndat
-            call fointe('F', nomfor, np, [nompfi], [lnf(i)],&
+            call fointe('F', nomfor, np, [nompfi], [lnf(i)], &
                         grd(i), icodre)
             if (grd(i) .gt. valgrd) then
 !                   NRUPT2 = LNF(I)+
 !      &           (LNF(I-1)-LNF(I))/(GRD(I-1)-GRD(I))*(VALGRD-GRD(I))
 !
-                lnrup = log(&
-                        lnf(i))+ (log(lnf(i-1))-log(lnf(i)))/(log( grd(i-1))- log(grd(i))) *(log(&
-                        &valgrd)-log(grd(i))&
+                lnrup = log( &
+                        lnf(i))+(log(lnf(i-1))-log(lnf(i)))/(log(grd(i-1))-log(grd(i)))*(log(&
+                        &valgrd)-log(grd(i)) &
                         )
                 nrupt = exp(lnrup)
 !
                 goto 20
 !
-            endif
+            end if
         end do
-    endif
+    end if
 !
- 20 continue
+20  continue
 !
     call jedema()
 end subroutine

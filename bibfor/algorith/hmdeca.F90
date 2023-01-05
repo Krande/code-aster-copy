@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -42,10 +42,10 @@ subroutine hmdeca(i, ddls, ddlm, nnos, idec, dec)
 !     LES DDL DE PRESSION SONT A PRENDRE EN COMPTE EN HM-XFEM
 !
     if (i .le. nnos) then
-        idec=ddls*(i-1)
-        dec=1
+        idec = ddls*(i-1)
+        dec = 1
     else
-        idec=ddls*nnos+ddlm*(i-nnos-1)
-        dec=0
-    endif
+        idec = ddls*nnos+ddlm*(i-nnos-1)
+        dec = 0
+    end if
 end subroutine

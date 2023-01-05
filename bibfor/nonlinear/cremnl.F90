@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine cremnl(reprise, baseno, numrep, nbordr0, nbordr,&
-                  nbpt, neq, nbhar, imat, numedd,&
+subroutine cremnl(reprise, baseno, numrep, nbordr0, nbordr, &
+                  nbpt, neq, nbhar, imat, numedd, &
                   parcho, nbchoc, vk8, modrep)
 !
 !
@@ -98,40 +98,40 @@ subroutine cremnl(reprise, baseno, numrep, nbordr0, nbordr,&
             suite = .true.
         else
             suite = .false.
-        endif
+        end if
     else
         suite = .false.
-    endif
+    end if
 !
     rvide = r8vide()
-    cvide = dcmplx(rvide,rvide)
+    cvide = dcmplx(rvide, rvide)
 !
     nbpar = 12
 !
-    nompar(1)='NUME_ORDRE'
-    typpar(1)='I'
-    nompar(2)='FREQUENCE'
-    typpar(2)='R'
-    nompar(3)='ENERGIE'
-    typpar(3)='R'
-    nompar(4)='NB_COEF_FOURIER'
-    typpar(4)='I'
-    nompar(5)='NOM_SD'
-    typpar(5)='K8'
-    nompar(6)='TYPE_OBJET'
-    typpar(6)='K16'
-    nompar(7)='NOM_OBJET'
-    typpar(7)='K16'
-    nompar(8)='CARA_CHOC'
-    typpar(8)='K8'
-    nompar(9)='HARM_MAX'
-    typpar(9)='I'
-    nompar(10)='BIFURCATION'
-    typpar(10)='K16'
-    nompar(11)='STABILITE'
-    typpar(11)='K16'
-    nompar(12)='NUME_REPRISE'
-    typpar(12)='I'
+    nompar(1) = 'NUME_ORDRE'
+    typpar(1) = 'I'
+    nompar(2) = 'FREQUENCE'
+    typpar(2) = 'R'
+    nompar(3) = 'ENERGIE'
+    typpar(3) = 'R'
+    nompar(4) = 'NB_COEF_FOURIER'
+    typpar(4) = 'I'
+    nompar(5) = 'NOM_SD'
+    typpar(5) = 'K8'
+    nompar(6) = 'TYPE_OBJET'
+    typpar(6) = 'K16'
+    nompar(7) = 'NOM_OBJET'
+    typpar(7) = 'K16'
+    nompar(8) = 'CARA_CHOC'
+    typpar(8) = 'K8'
+    nompar(9) = 'HARM_MAX'
+    typpar(9) = 'I'
+    nompar(10) = 'BIFURCATION'
+    typpar(10) = 'K16'
+    nompar(11) = 'STABILITE'
+    typpar(11) = 'K16'
+    nompar(12) = 'NUME_REPRISE'
+    typpar(12) = 'I'
 !
     if ((.not. reprise) .or. (suite)) then
 !-- INITIALISATION DE LA TABLE_CONTAINER
@@ -139,30 +139,30 @@ subroutine cremnl(reprise, baseno, numrep, nbordr0, nbordr,&
         call tbcrsd(nomres, 'G')
         call tbajpa(nomres, nbpar, nompar, typpar)
         call gcncon('_', nomtab)
-    endif
+    end if
 !
     nbsym = 1
     nomsym(1) = 'DEPL'
 !
-    rigid=zk24(zi(imat(1)+1))
-    masse=zk24(zi(imat(2)+1))
+    rigid = zk24(zi(imat(1)+1))
+    masse = zk24(zi(imat(2)+1))
     neqv = zi(imat(1)+2)
     if (neq .ne. neqv) then
         call utmess('F', 'UTILITAI3_21')
-    endif
+    end if
 !
     call jeveuo(baseno//'.SORTI', 'L', isort)
     call jeveuo(baseno//'.BIF', 'L', vi=bif)
 !
     nmodes = 2*nbhar+1
 !
-    AS_ALLOCATE(vr=nspec,size=neq)
+    AS_ALLOCATE(vr=nspec, size=neq)
 !
 !     BOUCLE SUR LES NUMEROS D ORDRE
     do iordr = 1, nbordr
 !   Conversion du numéro d'ordre en chaine de caractère
-        ASSERT( nbordr <=9999 )
-        write (kordr,'(I4.4)') iordr
+        ASSERT(nbordr <= 9999)
+        write (kordr, '(I4.4)') iordr
 !
 !-- ATTRIBUTION D UN NOM DE CONCEPT
         call gcncon('_', nomrep)
@@ -171,32 +171,32 @@ subroutine cremnl(reprise, baseno, numrep, nbordr0, nbordr,&
         matrice(1) = rigid
         matrice(2) = masse
         matrice(3) = ' '
-        call refdaj('F', nomrep, nmodes, numedd, 'DYNAMIQUE',&
+        call refdaj('F', nomrep, nmodes, numedd, 'DYNAMIQUE', &
                     matrice, ier)
         do ihar = 1, nmodes
-            call rsexch(' ', nomrep, nomsym(1), ihar, chamno,&
+            call rsexch(' ', nomrep, nomsym(1), ihar, chamno, &
                         ier)
             if (ier .eq. 0) then
             else if (ier .eq. 100) then
                 call vtcrem(chamno, rigid, 'G', 'R')
             else
                 call utmess('F', 'ALGELINE3_11')
-            endif
+            end if
 !
             call jeveuo(chamno//'.VALE', 'E', vr=vale)
             xnorm = 0.d0
             do ieq = 1, neq
                 iadd = (iordr-1)*(neq*nmodes+2)+(ihar-1)*neq+ieq
                 vale(ieq) = zr(isort-1+iadd)
-                xnorm = xnorm + zr(isort-1+iadd)*zr(isort-1+iadd)
+                xnorm = xnorm+zr(isort-1+iadd)*zr(isort-1+iadd)
             end do
             call rsnoch(nomrep, nomsym(1), ihar)
 !
-            call rsadpa(nomrep, 'E', 1, 'NUME_MODE', ihar,&
+            call rsadpa(nomrep, 'E', 1, 'NUME_MODE', ihar, &
                         0, sjv=ladpa, styp=k8b)
             zi(ladpa) = ihar
 !
-            call rsadpa(nomrep, 'E', 1, 'FREQ', ihar,&
+            call rsadpa(nomrep, 'E', 1, 'FREQ', ihar, &
                         0, sjv=ladpa, styp=k8b)
 !     -----------------------------------------------------------------
 ! reverifier le rangement des contributions harmoniques
@@ -208,12 +208,12 @@ subroutine cremnl(reprise, baseno, numrep, nbordr0, nbordr,&
                 iomega = ihar-1
             else
                 iomega = ihar-(nbhar+1)
-            endif
+            end if
 !
             iadd = (iordr-1)*(neq*nmodes+2)+nmodes*neq+1
             zr(ladpa) = iomega*zr(isort-1+iadd)
 !
-            call rsadpa(nomrep, 'E', 1, 'FACT_PARTICI_DX', ihar,&
+            call rsadpa(nomrep, 'E', 1, 'FACT_PARTICI_DX', ihar, &
                         0, sjv=ladpa, styp=k8b)
             zr(ladpa) = sqrt(xnorm)
         end do
@@ -227,33 +227,33 @@ subroutine cremnl(reprise, baseno, numrep, nbordr0, nbordr,&
         call jelira(nomrep//'           .ORDR', 'LONUTI', nmodes, k8b)
 !
 !       DETERMINER HARMONIQUE MAX
-        harmax=1
+        harmax = 1
         do ieq = 1, neq
             iadd = (iordr-1)*(neq*nmodes+2)+ieq
-            nspec(ieq)=dnrm2(2*nbhar+1,zr(isort-1+iadd),neq)**2
+            nspec(ieq) = dnrm2(2*nbhar+1, zr(isort-1+iadd), neq)**2
         end do
-        inspec=idamax(neq,nspec,1)
+        inspec = idamax(neq, nspec, 1)
         iadd = (iordr-1)*(neq*nmodes+2)+inspec
-        espec(1)=zr(isort-1+iadd)**2/nspec(inspec)
+        espec(1) = zr(isort-1+iadd)**2/nspec(inspec)
         do ihar = 1, nbhar
-            espec(ihar+1)=(zr(isort-1+iadd+ihar*neq)**2+&
-            zr(isort-1+iadd+(nbhar+ihar)*neq)**2)/nspec(inspec)
+            espec(ihar+1) = (zr(isort-1+iadd+ihar*neq)**2+ &
+                             zr(isort-1+iadd+(nbhar+ihar)*neq)**2)/nspec(inspec)
         end do
-        harmaxa=idamax(nbhar+1,espec,1)-1
+        harmaxa = idamax(nbhar+1, espec, 1)-1
         if (harmaxa .gt. harmax) then
-            harmax=harmaxa
-        endif
+            harmax = harmaxa
+        end if
         if (bif(1+int(iordr/(nbpt-1))) .eq. 1) then
-            kbif='OUI'
+            kbif = 'OUI'
         else
-            kbif='NON'
-        endif
+            kbif = 'NON'
+        end if
 !
         if ((reprise) .and. (.not. suite)) then
             vali(1) = iordr+nbordr0
         else
             vali(1) = iordr
-        endif
+        end if
         vali(2) = nmodes
         vali(3) = harmax
         vali(4) = numrep
@@ -266,10 +266,10 @@ subroutine cremnl(reprise, baseno, numrep, nbordr0, nbordr,&
             valk(4) = vk8
         else
             valk(4) = nomtab
-        endif
+        end if
         valk(5) = kbif
         valk(6) = 'NON_EVALUE'
-        call tbajli(nomres, nbpar, nompar, vali, valr,&
+        call tbajli(nomres, nbpar, nompar, vali, valr, &
                     [cvide], valk, 0)
 !
     end do
@@ -288,28 +288,28 @@ subroutine cremnl(reprise, baseno, numrep, nbordr0, nbordr,&
         call jeveuo(parcho//'.CMP', 'L', vk8=cmp)
         call jeveuo(parcho//'.ORIG', 'L', vr=orig)
 !
-        nompat(1)='NUME_CHOC'
-        typpat(1)='I'
-        nompat(2)='TYPE_CHOC'
-        typpat(2)='K8'
-        nompat(3)='NOEUD_CHOC'
-        typpat(3)='K8'
-        nompat(4)='NOM_CMP_1'
-        typpat(4)='K8'
-        nompat(5)='NOM_CMP_2'
-        typpat(5)='K8'
-        nompat(6)='RIGI_NOR'
-        typpat(6)='R'
-        nompat(7)='PARA_REGUL'
-        typpat(7)='R'
-        nompat(8)='JEU'
-        typpat(8)='R'
-        nompat(9)='ORIG_OBST_X'
-        typpat(9)='R'
-        nompat(10)='ORIG_OBST_Y'
-        typpat(10)='R'
-        nompat(11)='ORIG_OBST_Z'
-        typpat(11)='R'
+        nompat(1) = 'NUME_CHOC'
+        typpat(1) = 'I'
+        nompat(2) = 'TYPE_CHOC'
+        typpat(2) = 'K8'
+        nompat(3) = 'NOEUD_CHOC'
+        typpat(3) = 'K8'
+        nompat(4) = 'NOM_CMP_1'
+        typpat(4) = 'K8'
+        nompat(5) = 'NOM_CMP_2'
+        typpat(5) = 'K8'
+        nompat(6) = 'RIGI_NOR'
+        typpat(6) = 'R'
+        nompat(7) = 'PARA_REGUL'
+        typpat(7) = 'R'
+        nompat(8) = 'JEU'
+        typpat(8) = 'R'
+        nompat(9) = 'ORIG_OBST_X'
+        typpat(9) = 'R'
+        nompat(10) = 'ORIG_OBST_Y'
+        typpat(10) = 'R'
+        nompat(11) = 'ORIG_OBST_Z'
+        typpat(11) = 'R'
         call tbajpa(nomtab, nbpart, nompat, typpat)
 !
         do iordr = 1, nbchoc
@@ -324,10 +324,10 @@ subroutine cremnl(reprise, baseno, numrep, nbordr0, nbordr,&
             valrt(4) = orig((iordr-1)*3+1)
             valrt(5) = orig((iordr-1)*3+2)
             valrt(6) = orig((iordr-1)*3+3)
-            call tbajli(nomtab, nbpart, nompat, valit, valrt,&
+            call tbajli(nomtab, nbpart, nompat, valit, valrt, &
                         [cvide], valkt, 0)
         end do
-    endif
+    end if
 !
     call jedema()
 end subroutine

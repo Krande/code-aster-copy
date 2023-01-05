@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,13 +17,13 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine nonlinDSMaterialTimeStep(model          , ds_material, cara_elem,&
-                                    ds_constitutive, hval_incr  ,&
-                                    nume_dof       , sddisc     , nume_inst)
+subroutine nonlinDSMaterialTimeStep(model, ds_material, cara_elem, &
+                                    ds_constitutive, hval_incr, &
+                                    nume_dof, sddisc, nume_inst)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -36,13 +36,13 @@ implicit none
 #include "asterfort/nmchex.h"
 #include "asterfort/nmvcle.h"
 !
-character(len=24), intent(in) :: model, cara_elem
-type(NL_DS_Material), intent(in) :: ds_material
-type(NL_DS_Constitutive), intent(in) :: ds_constitutive
-character(len=19), intent(in) :: hval_incr(*)
-character(len=24), intent(in) :: nume_dof
-character(len=19), intent(in) :: sddisc
-integer, intent(in) :: nume_inst
+    character(len=24), intent(in) :: model, cara_elem
+    type(NL_DS_Material), intent(in) :: ds_material
+    type(NL_DS_Constitutive), intent(in) :: ds_constitutive
+    character(len=19), intent(in) :: hval_incr(*)
+    character(len=24), intent(in) :: nume_dof
+    character(len=19), intent(in) :: sddisc
+    integer, intent(in) :: nume_inst
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -72,7 +72,7 @@ integer, intent(in) :: nume_inst
     call infdbg('MECANONLINE', ifm, niv)
     if (niv .ge. 2) then
         call utmess('I', 'MECANONLINE13_32')
-    endif
+    end if
 !
 ! - Current time
 !
@@ -87,8 +87,8 @@ integer, intent(in) :: nume_inst
 !
     vect_elem = '&&VARCINIT_ELEM'
     vect_asse = ds_material%fvarc_curr(1:19)
-    call nmvcfo('+'   , model    , ds_material%mater, ds_material%mateco,&
-                cara_elem, ds_constitutive%compor,&
+    call nmvcfo('+', model, ds_material%mater, ds_material%mateco, &
+                cara_elem, ds_constitutive%compor, &
                 ds_material%varc_refe, hval_incr, vect_elem)
     call assvec('V', vect_asse, 1, vect_elem, [1.d0], nume_dof)
     call detrsd('RESUELEM', vect_elem)

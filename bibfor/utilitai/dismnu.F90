@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -58,7 +58,7 @@ subroutine dismnu(questi, nomobz, repi, repkz, ierd)
 !         CE N'EST PAS LE NOM D'UN LIGREL
 !
 !-----------------------------------------------------------------------
-    integer ::  iarefe,imatd, iret, neq, i
+    integer ::  iarefe, imatd, iret, neq, i
     aster_logical :: isLagr, isDbLagr
     integer, pointer :: nequ(:) => null()
     integer, pointer :: delg(:) => null()
@@ -75,20 +75,20 @@ subroutine dismnu(questi, nomobz, repi, repkz, ierd)
         call jeveuo(nomob//'.NUME.REFN', 'L', iarefe)
         repk = zk24(iarefe+1) (1:8)
 !
-    else if (questi(1:9).eq.'NUM_GD_SI') then
+    else if (questi(1:9) .eq. 'NUM_GD_SI') then
         call jeexin(nomob//'.NUME.REFN', iret)
         if (iret .eq. 0) then
             repi = 0
         else
             call jeveuo(nomob//'.NUME.REFN', 'L', iarefe)
             call dismgd(questi, zk24(iarefe+1) (1:8), repi, repk, ierd)
-        endif
+        end if
 !
-    else if (questi.eq.'NB_EQUA') then
+    else if (questi .eq. 'NB_EQUA') then
         call jeveuo(nomob//'.NUME.NEQU', 'L', vi=nequ)
         repi = nequ(1)
 !
-    else if (questi.eq.'EXIS_LAGR') then
+    else if (questi .eq. 'EXIS_LAGR') then
         call jeveuo(nomob//'.NUME.DELG', 'L', vi=delg)
         call jeveuo(nomob//'.NUME.NEQU', 'L', vi=nequ)
         neq = nequ(1)
@@ -97,63 +97,63 @@ subroutine dismnu(questi, nomobz, repi, repkz, ierd)
             if (delg(i) .lt. 0) then
                 REPK = 'OUI'
                 goto 10
-            endif
+            end if
         end do
 10      continue
 !
-    else if (questi.eq.'SIMP_LAGR') then
+    else if (questi .eq. 'SIMP_LAGR') then
         call jeveuo(nomob//'.NUME.DELG', 'L', vi=delg)
         call jeveuo(nomob//'.NUME.NEQU', 'L', vi=nequ)
         neq = nequ(1)
-        isLagr=ASTER_FALSE
-        isDbLagr=ASTER_FALSE
+        isLagr = ASTER_FALSE
+        isDbLagr = ASTER_FALSE
         do i = 1, neq
             if (delg(i) .lt. 0) then
-                isLagr=ASTER_TRUE
+                isLagr = ASTER_TRUE
                 if (delg(i) .eq. -2) then
-                    isDbLagr=ASTER_TRUE
+                    isDbLagr = ASTER_TRUE
                     goto 20
-                endif
-            endif
+                end if
+            end if
         end do
 20      continue
-        repk='NON'
-        if (isLagr.and..not.isDbLagr) repk='OUI'
+        repk = 'NON'
+        if (isLagr .and. .not. isDbLagr) repk = 'OUI'
 !
-    else if (questi.eq.'PROF_CHNO') then
+    else if (questi .eq. 'PROF_CHNO') then
         repk = nomob//'.NUME'
 !
-    else if (questi.eq.'NOM_MODELE') then
+    else if (questi .eq. 'NOM_MODELE') then
         call dismpn(questi, nomob//'.NUME', repi, repk, ierd)
 !
-    else if (questi.eq.'MATR_DISTRIBUEE') then
+    else if (questi .eq. 'MATR_DISTRIBUEE') then
         call jeexin(nomob//'.NUML.NULG', imatd)
-        if (imatd.eq.0) then
-            repk='NON'
+        if (imatd .eq. 0) then
+            repk = 'NON'
         else
-            repk='OUI'
-        endif
+            repk = 'OUI'
+        end if
 !
-    else if (questi.eq.'PHENOMENE') then
+    else if (questi .eq. 'PHENOMENE') then
         call jenuno(jexnum(nomob//'.NUME.LILI', 2), nomlig)
         if (nomlig(1:8) .eq. 'LIAISONS') then
             repk = 'MECANIQUE'
         else
             call dismlg(questi, nomlig, repi, repk, ierd)
-        endif
+        end if
 !
-    else if (questi.eq.'NOM_MAILLA') then
+    else if (questi .eq. 'NOM_MAILLA') then
         call jeexin(nomob//'.NUME.REFN', iret)
         if (iret .eq. 0) then
             repk = ' '
         else
             call jeveuo(nomob//'.NUME.REFN', 'L', iarefe)
             repk = zk24(iarefe) (1:8)
-        endif
+        end if
 !
     else
         ierd = 1
-    endif
+    end if
 !
     repkz = repk
     call jedema()

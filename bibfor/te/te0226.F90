@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -53,88 +53,88 @@ subroutine te0226(option, nomte)
 !
     call elref1(elrefe)
 !
-    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfdk,jgano=jgano)
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, &
+                     npg=npg, jpoids=ipoids, jvf=ivf, jdfde=idfdk, jgano=jgano)
     nddl = 3*nno
-    nvec = nddl* (nddl+1)/2
+    nvec = nddl*(nddl+1)/2
 !
 !
     call jevech('PGEOMER', 'L', igeom)
     call jevech('PMATERC', 'L', imate)
     call jevech('PCACOQU', 'L', icaco)
 !
-    fami='FPG1'
-    kpg=1
-    spt=1
-    poum='+'
-    call rcvalb(fami, kpg, spt, poum, zi(imate),&
-                ' ', 'ELAS', 0, ' ', [0.d0],&
+    fami = 'FPG1'
+    kpg = 1
+    spt = 1
+    poum = '+'
+    call rcvalb(fami, kpg, spt, poum, zi(imate), &
+                ' ', 'ELAS', 0, ' ', [0.d0], &
                 1, 'RHO', rho, icodre, 1)
     h = zr(icaco)
     rm = rho(1)*h
     rf = rho(1)*h**3/12.d0
 !
-    do  k = 1, nvec
+    do k = 1, nvec
         matv(k) = 0.0d0
     end do
 !
-    do  kp = 1, npg
+    do kp = 1, npg
         k = (kp-1)*nno
-        call dfdm1d(nno, zr(ipoids+kp-1), zr(idfdk+k), zr(igeom), dfdx,&
+        call dfdm1d(nno, zr(ipoids+kp-1), zr(idfdk+k), zr(igeom), dfdx, &
                     cour, poids, nx, ny)
         if (nomte .eq. 'MECXSE3') then
             r = 0.0d0
-            do  i = 1, nno
-                r = r + zr(igeom+2* (i-1))*zr(ivf+k+i-1)
+            do i = 1, nno
+                r = r+zr(igeom+2*(i-1))*zr(ivf+k+i-1)
             end do
             poids = poids*r
-            rmf = rf* (cour+nx/r)
-        endif
+            rmf = rf*(cour+nx/r)
+        end if
 !
         kd1 = 5
         kd2 = 3
         kd3 = 2
         do i = 1, 3*nno, 3
-            kd1 = kd1 + 3*i - 6
-            kd2 = kd2 + 3*i - 3
-            kd3 = kd3 + 3*i
+            kd1 = kd1+3*i-6
+            kd2 = kd2+3*i-3
+            kd3 = kd3+3*i
             ii = (i+2)/3
-            do  j = 1, i, 3
+            do j = 1, i, 3
                 jj = (j+2)/3
-                ij1 = kd1 + j - 2
-                ij2 = kd2 + j - 2
-                ij3 = kd3 + j - 2
+                ij1 = kd1+j-2
+                ij2 = kd2+j-2
+                ij3 = kd3+j-2
                 vfi = zr(ivf+k+ii-1)
                 vfj = zr(ivf+k+jj-1)
-                matv(ij1) = matv(ij1) + vfi*vfj*poids*rm
+                matv(ij1) = matv(ij1)+vfi*vfj*poids*rm
                 matv(ij2) = 0.0d0
                 matv(ij2+1) = matv(ij1)
-                matv(ij3) = matv(ij3) + vfi*vfj*poids*rmf*ny
-                matv(ij3+1) = matv(ij3+1) - vfi*vfj*poids*rmf*nx
-                matv(ij3+2) = matv(ij3+2) + vfi*vfj*poids*rf
-           end do
+                matv(ij3) = matv(ij3)+vfi*vfj*poids*rmf*ny
+                matv(ij3+1) = matv(ij3+1)-vfi*vfj*poids*rmf*nx
+                matv(ij3+2) = matv(ij3+2)+vfi*vfj*poids*rf
+            end do
 !
-            do  j = 1, i - 3, 3
+            do j = 1, i-3, 3
                 jj = (j+2)/3
-                ij1 = kd1 + j - 2
-                ij2 = kd2 + j - 2
-                ij3 = kd3 + j - 2
+                ij1 = kd1+j-2
+                ij2 = kd2+j-2
+                ij3 = kd3+j-2
                 matv(ij1+1) = matv(ij2)
                 matv(ij1+2) = matv(ij3)
                 matv(ij2+2) = matv(ij3+1)
-          end do
-       end do
-  end do
+            end do
+        end do
+    end do
 !
     if (option .eq. 'MASS_MECA') then
 !
         call jevech('PMATUUR', 'E', imatuu)
 !
-        do  i = 1, nvec
+        do i = 1, nvec
             zr(imatuu+i-1) = matv(i)
         end do
 !
-    else if (option.eq.'M_GAMMA') then
+    else if (option .eq. 'M_GAMMA') then
 !
         call jevech('PACCELR', 'L', iacce)
         call jevech('PVECTUR', 'E', ivect)
@@ -144,6 +144,6 @@ subroutine te0226(option, nomte)
     else
 !C OPTION DE CALCUL INVALIDE
         ASSERT(.false.)
-    endif
+    end if
 !
 end subroutine

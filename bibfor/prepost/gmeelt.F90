@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine gmeelt(imod, nbtyma, nomail, nbnoma, nuconn,&
+subroutine gmeelt(imod, nbtyma, nomail, nbnoma, nuconn, &
                   nbmail)
     implicit none
 #include "jeveux.h"
@@ -96,8 +96,8 @@ subroutine gmeelt(imod, nbtyma, nomail, nbnoma, nuconn,&
 !
 ! ---   ECRITURE DE LA DATE :
 !       -------------------
-        write(unit=imod,fmt='(A,3X,A,3X,A)') nomail(nte),&
-     &    'NOM=INDEFINI',chenti
+        write (unit=imod, fmt='(A,3X,A,3X,A)') nomail(nte),&
+     &    'NOM=INDEFINI', chenti
 !
         ij = 0
 !
@@ -105,9 +105,9 @@ subroutine gmeelt(imod, nbtyma, nomail, nbnoma, nuconn,&
 !     LA LIMITE EST DE 9 999 999 MAILLES
 !
         if (nbmail .ge. 10000000) then
-            vali (1) = nbmail
+            vali(1) = nbmail
             call utmess('E', 'PREPOST6_43', si=vali(1))
-        endif
+        end if
 !
 ! ---   BOUCLE SUR LES MAILLES :
 !       ----------------------
@@ -122,39 +122,39 @@ subroutine gmeelt(imod, nbtyma, nomail, nbnoma, nuconn,&
                 nbnoas = nbnoma(nte)
 !
                 do ino = 1, nbnoas
-                    neu2(ino) = noma(1+ij+nuconn(nte,ino)-1)
+                    neu2(ino) = noma(1+ij+nuconn(nte, ino)-1)
                     call codnop(chtab(ino), prfnoe, 1, 1)
-                    call codent(neu2(ino), 'G', chtab(ino)(2:8))
+                    call codent(neu2(ino), 'G', chtab(ino) (2:8))
                 end do
 !
                 idiv = int(nbnoas/8)
-                irest = mod(nbnoas,8)
+                irest = mod(nbnoas, 8)
 !
                 if (irest .ne. 0) then
-                    write(imod,202) chmail,(chtab(i),i=1,nbnoas)
+                    write (imod, 202) chmail, (chtab(i), i=1, nbnoas)
                 else
                     do k = 1, idiv
                         l = 8*(k-1)
                         if (idiv .eq. 1) then
-                            write(imod,'(A,8(1X,A))') chmail,(chtab(i)&
-                            ,i=1+l,8+l)
+                            write (imod, '(A,8(1X,A))') chmail, (chtab(i) &
+                                                                 , i=1+l, 8+l)
                         else
-                            write(imod,'(8X,8(1X,A))') (chtab(i),i=1+&
-                            l,8+l)
-                        endif
+                            write (imod, '(8X,8(1X,A))') (chtab(i), i=1+ &
+                                                          l, 8+l)
+                        end if
                     end do
-                endif
-            endif
-            ij = ij + nbno
+                end if
+            end if
+            ij = ij+nbno
         end do
 !
-        write(imod,'(A)') 'FINSF'
-        write(imod,'(A)') '%'
+        write (imod, '(A)') 'FINSF'
+        write (imod, '(A)') '%'
 !
- 20     continue
+20      continue
     end do
 !
-    202 format(a,8(1x,a),/,(8x,8(1x,a)))
+202 format(a, 8(1x, a), /, (8x, 8(1x, a)))
 !
 ! --- ECRITURE DES GROUP_MA :
 !     ---------------------
@@ -163,7 +163,7 @@ subroutine gmeelt(imod, nbtyma, nomail, nbnoma, nuconn,&
 !
     maxmai = 0
     do i = 1, indmax
-        maxmai = max(maxmai,nbmag(i))
+        maxmai = max(maxmai, nbmag(i))
     end do
 !
 ! --- SI IL N Y A AU MOINS UN GROUPE :
@@ -179,14 +179,14 @@ subroutine gmeelt(imod, nbtyma, nomail, nbnoma, nuconn,&
         do i = 1, indmax
             numgro = indma(i)
             if (numgro .ge. 1000000) then
-                ier = ier + 1
-                vali (1) = numgro
-                vali (2) = 1000000
+                ier = ier+1
+                vali(1) = numgro
+                vali(2) = 1000000
                 call utmess('E', 'PREPOST5_21', ni=2, vali=vali)
                 goto 60
-            endif
+            end if
             call codent(numgro, 'G', chgrou(3:8))
-            write(imod,'(A,4X,2A)') 'GROUP_MA','NOM=',chgrou
+            write (imod, '(A,4X,2A)') 'GROUP_MA', 'NOM=', chgrou
             call jeveuo(jexnum('&&PREGMS.LISTE.GROUP_MA', i), 'E', jgr)
             do k = 1, nbmag(i)
                 call codnop(chmail, prfmai, 1, 1)
@@ -196,48 +196,48 @@ subroutine gmeelt(imod, nbtyma, nomail, nbnoma, nuconn,&
 !
 ! ---   ECRITURE DES MAILLES DU GROUPE DE MAILLES COURANT :
 !       -------------------------------------------------
-            write(imod,'(8(2X,A))') (zk8(jgrmai+k-1),k=1,nbmag(1+i-&
-            1))
+            write (imod, '(8(2X,A))') (zk8(jgrmai+k-1), k=1, nbmag(1+i- &
+                                                                   1))
 !
-            write(imod,'(A)') 'FINSF'
-            write(imod,'(A)') '%'
+            write (imod, '(A)') 'FINSF'
+            write (imod, '(A)') '%'
 !
 ! --- DANS LE CAS D'UN POINT ECRITURE D'UN GROUPNO
 ! ---  LE GROUPE DE MAILLE CONTIENT ALORS UNE SEULE MAILLE POI1
 !
             if (nbmag(i) .eq. 1) then
                 call jeveuo(jexnum('&&PREGMS.LISTE.GROUP_MA', i), 'E', jgr)
-                ima1=zi(jgr)
-                ij=0
+                ima1 = zi(jgr)
+                ij = 0
                 do ima = 1, nbmail
                     inum = numa(ima)
                     nbno = nbnma(ima)
                     if (inum .eq. ima1) then
                         if (nbno .eq. 1) then
-                            write(imod,'(A,4X,2A)') 'GROUP_NO','NOM=',&
-                            chgrou
+                            write (imod, '(A,4X,2A)') 'GROUP_NO', 'NOM=', &
+                                chgrou
                             neu2(ino) = noma(ij+1)
                             call codnop(chtab(ino), prfnoe, 1, 1)
-                            call codent(neu2(ino), 'G', chtab(ino)(2:8))
-                            write(imod,'((2X,A))') chtab(ino)
-                            write(imod,'(A)') 'FINSF'
-                            write(imod,'(A)') '%'
+                            call codent(neu2(ino), 'G', chtab(ino) (2:8))
+                            write (imod, '((2X,A))') chtab(ino)
+                            write (imod, '(A)') 'FINSF'
+                            write (imod, '(A)') '%'
                             goto 90
-                        endif
-                    endif
-                    ij = ij + nbno
+                        end if
+                    end if
+                    ij = ij+nbno
                 end do
-            endif
- 90         continue
+            end if
+90          continue
 !
- 60         continue
+60          continue
         end do
 !
-    endif
+    end if
 !
     if (ier .ne. 0) then
         call utmess('F', 'PREPOST_60')
-    endif
+    end if
 !
     call jedema()
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine xmmab5(ndim, nnol, pla, ffc, jac,&
-                  coeffr, seuil, tau1, tau2, mu,&
+subroutine xmmab5(ndim, nnol, pla, ffc, jac, &
+                  coeffr, seuil, tau1, tau2, mu, &
                   ik, lact, mmat)
 !
     implicit none
@@ -67,14 +67,14 @@ subroutine xmmab5(ndim, nnol, pla, ffc, jac,&
 ! ----------------------------------------------------------------------
 !
     do i = 1, nnol
-        pli=pla(i)
-        ffi=ffc(i)
-        nli=lact(i)
+        pli = pla(i)
+        ffi = ffc(i)
+        nli = lact(i)
         if (nli .eq. 0) cycle
         do j = 1, nnol
-            plj=pla(j)
-            ffj=ffc(j)
-            nlj=lact(j)
+            plj = pla(j)
+            ffj = ffc(j)
+            nlj = lact(j)
             if (nlj .eq. 0) cycle
 !
 !         CALCUL DE TAIKTA = TAUT.(ID-KN).TAU
@@ -82,8 +82,8 @@ subroutine xmmab5(ndim, nnol, pla, ffc, jac,&
 !
             do k = 1, ndim-1
                 do l = 1, ndim-1
-                    mmat(pli+k,plj+l) = mmat(pli+k,plj+l) +&
-                        (mu*seuil/ coeffr)* ffi*ffj*taikta(k,l)*jac
+                    mmat(pli+k, plj+l) = mmat(pli+k, plj+l)+ &
+                                         (mu*seuil/coeffr)*ffi*ffj*taikta(k, l)*jac
                 end do
             end do
         end do

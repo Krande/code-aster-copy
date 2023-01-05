@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,9 +19,9 @@
 !
 subroutine dbrInitAlgoGreedy(paraGreedy)
 !
-use Rom_Datastructure_type
+    use Rom_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/infniv.h"
@@ -33,7 +33,7 @@ implicit none
 #include "asterfort/romSolveROMSystCreate.h"
 #include "asterfort/utmess.h"
 !
-type(ROM_DS_ParaDBR_Greedy), intent(inout) :: paraGreedy
+    type(ROM_DS_ParaDBR_Greedy), intent(inout) :: paraGreedy
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -59,14 +59,14 @@ type(ROM_DS_ParaDBR_Greedy), intent(inout) :: paraGreedy
     call infniv(ifm, niv)
     if (niv .ge. 2) then
         call utmess('I', 'ROM18_31')
-    endif
+    end if
 !
 ! - Get parameters
 !
     nbModeMaxi = paraGreedy%nbModeMaxi
-    lStabFSI   = paraGreedy%lStabFSI
-    vectRefe   = paraGreedy%algoGreedy%solveDOM%vect_zero
-    matrRefe   = paraGreedy%multiPara%matr_name(1)
+    lStabFSI = paraGreedy%lStabFSI
+    vectRefe = paraGreedy%algoGreedy%solveDOM%vect_zero
+    matrRefe = paraGreedy%multiPara%matr_name(1)
     nbVariCoef = paraGreedy%multiPara%nb_vari_coef
 !
 ! - For FSI: three basis
@@ -77,18 +77,18 @@ type(ROM_DS_ParaDBR_Greedy), intent(inout) :: paraGreedy
 !
 ! - Evaluate type of system
 !
-    call romMultiParaSystEvalType(paraGreedy%multiPara,&
+    call romMultiParaSystEvalType(paraGreedy%multiPara, &
                                   systMatrType, syst2mbrType, systType)
     paraGreedy%algoGreedy%resi_type = systType
 !
 ! - Create objects to solve system (DOM)
 !
-    call romSolveDOMSystCreate(systMatrType, syst2mbrType, systType, matrRefe,&
+    call romSolveDOMSystCreate(systMatrType, syst2mbrType, systType, matrRefe, &
                                paraGreedy%algoGreedy%solveDOM)
 !
 ! - Create objects to solve system (ROM)
 !
-    call romSolveROMSystCreate(systMatrType, syst2mbrType, systType, nbModeMaxi,&
+    call romSolveROMSystCreate(systMatrType, syst2mbrType, systType, nbModeMaxi, &
                                paraGreedy%algoGreedy%solveROM)
 !
 ! - Initializations for multiparametric problems
@@ -99,7 +99,7 @@ type(ROM_DS_ParaDBR_Greedy), intent(inout) :: paraGreedy
 !
     if (lStabFSI) then
         call romFSINumberingInit(paraGreedy%multiPara%field, paraGreedy%algoGreedy)
-    endif
+    end if
 !
 ! - Init algorithm
 !

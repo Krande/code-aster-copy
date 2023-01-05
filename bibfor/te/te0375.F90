@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -118,21 +118,21 @@ subroutine te0375(option, nomte)
 !                                    4 : PYRAMIDE A 5 ET 13 NOEUDS
 !     VOIR TE003 POUR LES EXPLICATIONS DETAILLEES
 !
-    data noe/1,4,3,2,12,11,10, 9,21, 1,2,6,5, 9,14,17,13,22,&
-     &         2,3,7,6,10,15,18,14,23, 3,4,8,7,11,16,19,15,24,&
-     &         4,1,5,8,12,13,20,16,25, 5,6,7,8,17,18,19,20,26,&
-     &         1,3,2,9,8,7, 3*0,       4,5,6,13,14,15, 3*0,&
-     &         1,2,5,4, 7,11,13,10,16, 2,3,6,5,8,12,14,11,17,&
-     &         1,4,6,3,10,15,12, 9,18, 9*0,&
-     &         1,3,2,7,6, 5, 3*0,      2,3,4,6,10,9, 3*0,&
-     &         3,1,4,7,8,10, 3*0,      1,2,4,5, 9,8, 3*0,&
-     &         9*0,                    9*0,&
-     &         1,2,5,6,11,10, 3*0,     2,3,5,7,12,11, 3*0,&
-     &         3,4,5,8,13,12, 3*0,     4,1,5,9,10,13, 3*0,&
-     &         1,4,3,2,9,8,7,6, 0,     9*0 /
+    data noe/1, 4, 3, 2, 12, 11, 10, 9, 21, 1, 2, 6, 5, 9, 14, 17, 13, 22,&
+     &         2, 3, 7, 6, 10, 15, 18, 14, 23, 3, 4, 8, 7, 11, 16, 19, 15, 24,&
+     &         4, 1, 5, 8, 12, 13, 20, 16, 25, 5, 6, 7, 8, 17, 18, 19, 20, 26,&
+     &         1, 3, 2, 9, 8, 7, 3*0, 4, 5, 6, 13, 14, 15, 3*0,&
+     &         1, 2, 5, 4, 7, 11, 13, 10, 16, 2, 3, 6, 5, 8, 12, 14, 11, 17,&
+     &         1, 4, 6, 3, 10, 15, 12, 9, 18, 9*0,&
+     &         1, 3, 2, 7, 6, 5, 3*0, 2, 3, 4, 6, 10, 9, 3*0,&
+     &         3, 1, 4, 7, 8, 10, 3*0, 1, 2, 4, 5, 9, 8, 3*0,&
+     &         9*0, 9*0,&
+     &         1, 2, 5, 6, 11, 10, 3*0, 2, 3, 5, 7, 12, 11, 3*0,&
+     &         3, 4, 5, 8, 13, 12, 3*0, 4, 1, 5, 9, 10, 13, 3*0,&
+     &         1, 4, 3, 2, 9, 8, 7, 6, 0, 9*0/
 !
 ! ----------------------------------------------------------------------
-    1000 format(a,' :',(6(1x,1pe17.10)))
+1000 format(a, ' :', (6(1x, 1pe17.10)))
 ! ----------------------------------------------------------------------
 ! 1 -------------- GESTION DES DONNEES ---------------------------------
 ! ----------------------------------------------------------------------
@@ -145,34 +145,34 @@ subroutine te0375(option, nomte)
     call jevech('PVOISIN', 'L', ivois)
 !
     call jevech('PTEMPSR', 'L', jtime)
-    inst=zr(jtime-1+1)
+    inst = zr(jtime-1+1)
 !
     call jevech('PERREUR', 'E', ierr)
 !
 ! 1.2. --- LES CARACTERISTIQUES DE LA MAILLE EN COURS
 !
     call tecael(iadzi, iazk24)
-    valk(1)=zk24(iazk24-1+3)
-    valk(2)=option
+    valk(1) = zk24(iazk24-1+3)
+    valk(2) = option
 !
     call elref1(elrefe)
 !
     if (niv .ge. 2) then
-        write(ifm,*) ' '
-        write(ifm,*) '================================================='
-        write(ifm,*) ' '
-        write(ifm,*) 'MAILLE NUMERO', zi(iadzi),', DE TYPE ', elrefe
-    endif
+        write (ifm, *) ' '
+        write (ifm, *) '================================================='
+        write (ifm, *) ' '
+        write (ifm, *) 'MAILLE NUMERO', zi(iadzi), ', DE TYPE ', elrefe
+    end if
 !
-    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg, &
                      jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
 ! 1.3. --- CHAMP DE CONTRAINTES
 !
-    call tecach('OOO', 'PCONTNO', 'L', iret, nval=3,&
+    call tecach('OOO', 'PCONTNO', 'L', iret, nval=3, &
                 itab=itab)
-    iad=itab(1)
-    nbcmp=itab(2)/nno
+    iad = itab(1)
+    nbcmp = itab(2)/nno
 !
 ! 1.4. --- CARTES DE PESANTEUR ET ROTATION
 !
@@ -182,14 +182,14 @@ subroutine te0375(option, nomte)
         yapr = .true.
     else
         yapr = .false.
-    endif
+    end if
     call tecach('ONO', 'PROTATR', 'L', iret, iad=itab(1))
     if (itab(1) .ne. 0) then
         call jevech('PROTATR', 'L', irot)
         yaro = .true.
     else
         yaro = .false.
-    endif
+    end if
 !
 ! 1.5. --- FORCES VOLUMIQUES EVENTUELLES
 !          VALEURS REELLES ?
@@ -199,7 +199,7 @@ subroutine te0375(option, nomte)
         call tecach('ONO', 'PFFVOLU', 'L', iret, iad=ifovf)
     else
         ifovf = 0
-    endif
+    end if
 !GN      WRITE(IFM,2000) 'IFOVR', IFOVR
 !GN      WRITE(IFM,2000) 'IFOVF', IFOVF
 !
@@ -211,23 +211,23 @@ subroutine te0375(option, nomte)
 !
 ! 1.7. --- MATERIAU SI BESOIN
 !
-    fami='FPG1'
-    kpg=1
-    spt=1
-    poum='+'
+    fami = 'FPG1'
+    kpg = 1
+    spt = 1
+    poum = '+'
 !
     if (yapr .or. yaro) then
 !
         call jevech('PMATERC', 'L', imate)
         call rccoma(zi(imate), 'ELAS', 1, phenom, icodre(1))
-        nompar(1)='RHO'
-        call rcvalb(fami, kpg, spt, poum, zi(imate),&
-                    ' ', phenom, 1, ' ', [r8bid],&
+        nompar(1) = 'RHO'
+        call rcvalb(fami, kpg, spt, poum, zi(imate), &
+                    ' ', phenom, 1, ' ', [r8bid], &
                     1, nompar, valres, icodre, 1)
         rho = valres(1)
 !GN        WRITE(IFM,1000) 'RHO', RHO
 !
-    endif
+    end if
 !
 ! ----------------------------------------------------------------------
 ! 2 -------------- CALCUL DU PREMIER TERME DE L'ERREUR -----------------
@@ -240,117 +240,117 @@ subroutine te0375(option, nomte)
 ! 2.2. --- CALCUL DE LA FORCE DE PESANTEUR ---
 !
     if (yapr) then
-        fpx=rho*zr(ipes)*zr(ipes+1)
-        fpy=rho*zr(ipes)*zr(ipes+2)
-        fpz=rho*zr(ipes)*zr(ipes+3)
+        fpx = rho*zr(ipes)*zr(ipes+1)
+        fpy = rho*zr(ipes)*zr(ipes+2)
+        fpz = rho*zr(ipes)*zr(ipes+3)
     else
-        fpx=0.d0
-        fpy=0.d0
-        fpz=0.d0
-    endif
+        fpx = 0.d0
+        fpy = 0.d0
+        fpz = 0.d0
+    end if
 !GN      WRITE(IFM,1000) 'P',FPX,FPY,FPZ
 !
 ! 2.3. --- CALCUL DE LA FORCE DE ROTATION ---
 !
     if (yaro) then
-        call resr3d(zr(irot), zr(igeom), zr(ivf), rho, nno,&
+        call resr3d(zr(irot), zr(igeom), zr(ivf), rho, nno, &
                     npg, frx, fry, frz)
     else
-        do 23 , ipg = 1 , npg
-        frx(ipg) = 0.d0
-        fry(ipg) = 0.d0
-        frz(ipg) = 0.d0
- 23     continue
-    endif
+        do 23, ipg = 1, npg
+            frx(ipg) = 0.d0
+            fry(ipg) = 0.d0
+            frz(ipg) = 0.d0
+23          continue
+            end if
 !GN      WRITE(IFM,1000) 'R X',(FRX(IPG),IPG = 1 , NPG)
 !GN      WRITE(IFM,1000) 'R Y',(FRY(IPG),IPG = 1 , NPG)
 !GN      WRITE(IFM,1000) 'R Z',(FRZ(IPG),IPG = 1 , NPG)
 !
 ! 2.4. --- CALCUL DE LA FORCE VOLUMIQUE EVENTUELLE ---
 !
-    if (ifovr .ne. 0) then
-        fovo(1) = zr(ifovr )
-        fovo(2) = zr(ifovr+1)
-        fovo(3) = zr(ifovr+2)
+            if (ifovr .ne. 0) then
+                fovo(1) = zr(ifovr)
+                fovo(2) = zr(ifovr+1)
+                fovo(3) = zr(ifovr+2)
 !
-    else if (ifovf.ne.0) then
-        nompar(1) = 'INST'
-        r8bid3(1) = inst
+            else if (ifovf .ne. 0) then
+                nompar(1) = 'INST'
+                r8bid3(1) = inst
 !       SI UNE COMPOSANTE N'A PAS ETE DECRITE, ASTER AURA MIS PAR
 !       DEFAUT LA FONCTION NULLE &FOZERO. ON LE REPERE POUR
 !       IMPOSER LA VALEUR 0 SANS FAIRE DE CALCULS INUTILES
-        do 24 , ibid = 1 , ndim
-        if (zk8(ifovf+ibid-1)(1:7) .eq. '&FOZERO') then
-            fovo(ibid) = 0.d0
-        else
-            call fointe('FM', zk8(ifovf+ibid-1), 1, nompar, r8bid3,&
-                        fovo(ibid), iret)
-        endif
- 24     continue
+                do 24, ibid = 1, ndim
+                if (zk8(ifovf+ibid-1) (1:7) .eq. '&FOZERO') then
+                    fovo(ibid) = 0.d0
+                else
+                    call fointe('FM', zk8(ifovf+ibid-1), 1, nompar, r8bid3, &
+                                fovo(ibid), iret)
+                end if
+24              continue
 !GN        WRITE(IFM,*) 'F X : ',ZK8(IFOVF),FOVO(1)
 !GN        WRITE(IFM,*) 'F Y : ',ZK8(IFOVF+1),FOVO(2)
 !GN        WRITE(IFM,*) 'F Z : ',ZK8(IFOVF+2),FOVO(3)
-    endif
+                end if
 !
 ! 2.5. --- CALCUL DU TERME D'ERREUR AVEC INTEGRATION DE GAUSS ---
 !
-    ter1 = 0.d0
-    norsig = 0.d0
+                ter1 = 0.d0
+                norsig = 0.d0
 !
-    do 25 , ipg = 1 , npg
+                do 25, ipg = 1, npg
 !
 ! ------- CALCUL DES DERIVEES DES FONCTIONS DE FORMES /X, /Y ET /Z -----
 !
-    call dfdm3d(nno, ipg, ipoids, idfde, zr(igeom),&
-                poids, dfdx, dfdy, dfdz)
+                    call dfdm3d(nno, ipg, ipoids, idfde, zr(igeom), &
+                                poids, dfdx, dfdy, dfdz)
 !
 ! ------- CALCUL DE LA DIVERGENCE ET DE LA NORME DE SIGMA --------------
 !
-    call ermev3(nno, ipg, ivf, iad, nbcmp,&
-                dfdx, dfdy, dfdz, dsx, dsy,&
-                dsz, nor)
+                    call ermev3(nno, ipg, ivf, iad, nbcmp, &
+                                dfdx, dfdy, dfdz, dsx, dsy, &
+                                dsz, nor)
 !
 ! ------- CUMUL
 !
-    r8bid3(1) = fpx + frx(ipg) + dsx
-    r8bid3(2) = fpy + fry(ipg) + dsy
-    r8bid3(3) = fpz + frz(ipg) + dsz
+                    r8bid3(1) = fpx+frx(ipg)+dsx
+                    r8bid3(2) = fpy+fry(ipg)+dsy
+                    r8bid3(3) = fpz+frz(ipg)+dsz
 !
 ! ------- PRISE EN COMPTE DE L'EFFORT VOLUMIQUE EVENTUEL ---------------
 !
-    if (ifovr .ne. 0 .or. ifovf .ne. 0) then
+                    if (ifovr .ne. 0 .or. ifovf .ne. 0) then
 !
 !GN          WRITE(IFM,1000) 'F X', FOVO(1)
 !GN          WRITE(IFM,1000) 'F Y', FOVO(2)
 !GN          WRITE(IFM,1000) 'F Z', FOVO(3)
-        r8bid3(1) = r8bid3(1) + fovo(1)
-        r8bid3(2) = r8bid3(2) + fovo(2)
-        r8bid3(3) = r8bid3(3) + fovo(3)
+                        r8bid3(1) = r8bid3(1)+fovo(1)
+                        r8bid3(2) = r8bid3(2)+fovo(2)
+                        r8bid3(3) = r8bid3(3)+fovo(3)
 !
-    endif
+                    end if
 !
 ! ------- CUMUL DU TERME D'ERREUR
 !
-    ter1 = ter1 + ( r8bid3(1)**2 + r8bid3(2)**2 + r8bid3(3)**2 ) * poids
-    if (niv .ge. 2) then
-        write(ifm,1000) 'POIDS', poids
-        write(ifm,1000) 'A2 + B2 + C2', r8bid3(1)**2 + r8bid3(2)**&
-  2         + r8bid3(3)**2
-        write(ifm,1000) '==> TER1    ', ter1
-    endif
+                    ter1 = ter1+(r8bid3(1)**2+r8bid3(2)**2+r8bid3(3)**2)*poids
+                    if (niv .ge. 2) then
+                        write (ifm, 1000) 'POIDS', poids
+                        write (ifm, 1000) 'A2 + B2 + C2', r8bid3(1)**2+r8bid3(2)** &
+                            2+r8bid3(3)**2
+                        write (ifm, 1000) '==> TER1    ', ter1
+                    end if
 !
 ! ------- CALCUL DE LA NORME DE SIGMA SUR L'ELEMENT --------------------
 !
-    norsig = norsig + nor*poids
+                    norsig = norsig+nor*poids
 !
-    25 end do
+25              end do
 !
-    if (ter1 .lt. 0.d0) then
-        call utmess('A', 'INDICATEUR_9', nk=2, valk=valk)
-        goto 999
-    endif
+                if (ter1 .lt. 0.d0) then
+                    call utmess('A', 'INDICATEUR_9', nk=2, valk=valk)
+                    goto 999
+                end if
 !
-    ter1=hk*sqrt(ter1)
+                ter1 = hk*sqrt(ter1)
 !
 ! ----------------------------------------------------------------------
 ! ------------ FIN DU CALCUL DU PREMIER TERME DE L'ERREUR --------------
@@ -368,12 +368,12 @@ subroutine te0375(option, nomte)
 !       ELREFB : DENOMINATION DE LA MAILLE FACE DE ELREFE - FAMILLE 2
 !      --- REMARQUE : ON IMPOSE UNE FAMILLE DE POINTS DE GAUSS
 !
-    call elref7(elrefe, tymvol, ndegre, nbf, elreff,&
-                elrefb)
+                call elref7(elrefe, tymvol, ndegre, nbf, elreff, &
+                            elrefb)
 !GN      WRITE(6,*) 'TYPE MAILLE VOLUMIQUE COURANTE :',TYMVOL
 ! --- CARACTERISTIQUES DES FACES DE BORD DE LA FAMILLE 1 ---------------
-    call elrefe_info(elrefe=elreff, fami='NOEU', ndim=ndimf, nno=nnof, nnos=nnosf,&
-                     npg=npgf, jpoids=ipoidf, jvf=ivff, jdfde=idfdxf, jgano=jganof)
+                call elrefe_info(elrefe=elreff, fami='NOEU', ndim=ndimf, nno=nnof, nnos=nnosf, &
+                                 npg=npgf, jpoids=ipoidf, jvf=ivff, jdfde=idfdxf, jgano=jganof)
 !GN      WRITE(IFM,2000) 'NDIMF',NDIMF
 !GN      WRITE(IFM,2000) 'NNOSF,NNOF,NPGF',NNOSF,NNOF,NPGF
 !GN      WRITE(IFM,1000) 'IPOIDF', (ZR(IPOIDF+IFA),IFA=0,NPGF-1)
@@ -381,161 +381,161 @@ subroutine te0375(option, nomte)
 ! --- COMPLEMENT EVENTUEL POUR LES MAILLES QUI ONT 2 TYPES DE ---
 ! --- MAILLES DE BORD (PENTAEDRE, PYRAMIDE) ---
 !
-    if (elrefb(1:1) .ne. ' ') then
-        call elrefe_info(elrefe=elrefb, fami='NOEU', ndim=ndimf, nno=nno2, nnos=nnos2,&
-                         npg=npg2, jpoids=ipoid2, jvf=ivf2, jdfde=idfdx2, jgano=jgano2)
+                if (elrefb(1:1) .ne. ' ') then
+                    call elrefe_info(elrefe=elrefb, fami='NOEU', ndim=ndimf, nno=nno2, nnos=nnos2, &
+                                     npg=npg2, jpoids=ipoid2, jvf=ivf2, jdfde=idfdx2, jgano=jgano2)
 !GN       WRITE(IFM,2000) 'NDIMF,NNO2',NDIMF,NNO2
 !GN       WRITE(IFM,2000) 'NNOS2,NPG2',NNOS2,NPG2
 !GN       WRITE(IFM,1000) 'IPOID2', (ZR(IPOID2+IFA),IFA=0,NPG2-1)
-    endif
+                end if
 !
 ! 3.2. --- BOUCLE SUR LES FACES DE LA MAILLE VOLUMIQUE --------------
 !
-    ter2 = 0.d0
-    ter3 = 0.d0
-    do 320 , ifa = 1 , nbf
+                ter2 = 0.d0
+                ter3 = 0.d0
+                do 320, ifa = 1, nbf
 !
 ! ------TEST DU TYPE DE VOISIN -----------------------------------------
 !
-    tyv=zi(ivois+7+ifa)
+                    tyv = zi(ivois+7+ifa)
 !
-    if (tyv .ne. 0) then
+                    if (tyv .ne. 0) then
 !
 ! ------- RECUPERATION DU TYPE DE LA MAILLE VOISINE
 !
-        call jenuno(jexnum('&CATA.TM.NOMTM', tyv), typmav)
-        if (niv .ge. 2) then
-            write(ifm,1003) ifa, zi(ivois+ifa), typmav
-            1003 format (i2,'-EME FACE DE NUMERO',i10,' ==> TYPMAV = ', a)
-            write(ifm,1000) 'TER2', ter2
-            write(ifm,1000) 'TER3', ter3
-        endif
+                        call jenuno(jexnum('&CATA.TM.NOMTM', tyv), typmav)
+                        if (niv .ge. 2) then
+                            write (ifm, 1003) ifa, zi(ivois+ifa), typmav
+1003                        format(i2, '-EME FACE DE NUMERO', i10, ' ==> TYPMAV = ', a)
+                            write (ifm, 1000) 'TER2', ter2
+                            write (ifm, 1000) 'TER3', ter3
+                        end if
 !
 ! --- QUAND ON ARRIVE AUX FACES QUAD DES PENTAEDRES OU DES PYRAMIDES ---
 ! --- IL FAUT REMPLACER LES CARACTERISTIQUES DE LA FAMILLE 1         ---
 ! --- PAR CELLES DE LA FAMILLE 2                                     ---
 !
-        if (( tymvol.eq.2 .and. ifa.ge.3 ) .or. ( tymvol.eq.4 .and. ifa.ge.5 )) then
+                    if ((tymvol .eq. 2 .and. ifa .ge. 3) .or. (tymvol .eq. 4 .and. ifa .ge. 5)) then
 !
-            nnof = nno2
-            npgf = npg2
-            nnosf = nnos2
-            ipoidf = ipoid2
-            idfdxf = idfdx2
+                            nnof = nno2
+                            npgf = npg2
+                            nnosf = nnos2
+                            ipoidf = ipoid2
+                            idfdxf = idfdx2
 !
-        endif
+                        end if
 !GN      WRITE(IFM,*) '. NPGF =', NPGF
 !
 ! ----- CALCUL DU DIAMETRE HF DE LA FACE ----------
 !
-        ibid=0
-        call uthk(nomte, zr(igeom), hf, ibid, niv,&
-                  noe, nnosf, tymvol, ifa)
+                        ibid = 0
+                        call uthk(nomte, zr(igeom), hf, ibid, niv, &
+                                  noe, nnosf, tymvol, ifa)
 !
 ! ------- CALCUL DE NORMALES ET JACOBIENS AUX POINTS DE GAUSS ----------
 !
-        iaux = ifa
-        call calnor('3D', zr(igeom), ibid, ibid, ibid,&
-                    r8bid, nnof, npgf, noe, iaux,&
-                    tymvol, idfdxf, jaco, nx, ny,&
-                    nz, r8bid3, r8bid4, r8bid2)
+                        iaux = ifa
+                        call calnor('3D', zr(igeom), ibid, ibid, ibid, &
+                                    r8bid, nnof, npgf, noe, iaux, &
+                                    tymvol, idfdxf, jaco, nx, ny, &
+                                    nz, r8bid3, r8bid4, r8bid2)
 !
 ! ----------------------------------------------------------------------
 ! --------------- CALCUL DU DEUXIEME TERME DE L'ERREUR -----------------
 ! --------------- LE BORD VOISIN EST UN VOLUME -------------------------
 ! ----------------------------------------------------------------------
 !
-        if (typmav(1:4) .eq. 'HEXA' .or. typmav(1:4) .eq. 'PENT' .or. typmav(1:4) .eq.&
-            'TETR' .or. typmav(1:4) .eq. 'PYRA') then
+                    if (typmav(1:4) .eq. 'HEXA' .or. typmav(1:4) .eq. 'PENT' .or. typmav(1:4) .eq. &
+                            'TETR' .or. typmav(1:4) .eq. 'PYRA') then
 !
 ! ------- CALCUL DU SAUT DE CONTRAINTE ENTRE ELEMENTS ------------------
 ! ------- CE CHAMP DSGXX EST EXPRIME SUR LES NOEUDS DE LA FACE ---------
 !
-            call ermes3(noe, ifa, tymvol, nnof, typmav,&
-                        iref1, ivois, iad, nbcmp, dsg11,&
-                        dsg22, dsg33, dsg12, dsg13, dsg23)
+                            call ermes3(noe, ifa, tymvol, nnof, typmav, &
+                                        iref1, ivois, iad, nbcmp, dsg11, &
+                                        dsg22, dsg33, dsg12, dsg13, dsg23)
 !
 ! ------- CALCUL DE L'INTEGRALE SUR LA FACE ----------------------------
 ! ------- ATTENTION : CELA MARCHE CAR ON A CHOISI LA FAMILLE -----------
 ! ------- AVEC LES POINTS DE GAUSS SUR LES NOEUDS ----------------------
 !
-            do 321 , ipgf = 1 , npgf
-            chx(ipgf) = 0.d0
-            chy(ipgf) = 0.d0
-            chz(ipgf) = 0.d0
-321         continue
+                            do 321, ipgf = 1, npgf
+                                chx(ipgf) = 0.d0
+                                chy(ipgf) = 0.d0
+                                chz(ipgf) = 0.d0
+321                             continue
 !
-            call intega(npgf, jaco, zr(ipoidf), chx, chy,&
-                        chz, dsg11, dsg22, dsg33, dsg12,&
-                        dsg13, dsg23, nx, ny, nz,&
-                        inte)
+                                call intega(npgf, jaco, zr(ipoidf), chx, chy, &
+                                            chz, dsg11, dsg22, dsg33, dsg12, &
+                                            dsg13, dsg23, nx, ny, nz, &
+                                            inte)
 !
 ! ------- CALCUL DU TERME D'ERREUR -------------------------------------
 !
-            if (inte .lt. 0.d0) then
-                call utmess('A', 'INDICATEUR_9', nk=2, valk=valk)
-                goto 999
-            endif
+                                if (inte .lt. 0.d0) then
+                                    call utmess('A', 'INDICATEUR_9', nk=2, valk=valk)
+                                    goto 999
+                                end if
 !
-            ter2=ter2+0.5d0*sqrt(hf)*sqrt(inte)
-            if (niv .ge. 2) then
-                write(ifm,1000) 'VOLU INTE', inte
-                write(ifm,1000) '==> TER2 ', ter2
-            endif
+                                ter2 = ter2+0.5d0*sqrt(hf)*sqrt(inte)
+                                if (niv .ge. 2) then
+                                    write (ifm, 1000) 'VOLU INTE', inte
+                                    write (ifm, 1000) '==> TER2 ', ter2
+                                end if
 !
 ! ----------------------------------------------------------------------
 ! --------------- CALCUL DU TROISIEME TERME DE L'ERREUR ----------------
 ! --------------- LE BORD VOISIN EST UNE FACE --------------------------
 ! ----------------------------------------------------------------------
 !
-            elseif ( typmav(1:4).eq.'QUAD' .or. typmav(1:4).eq.'TRIA'&
-            ) then
+                                elseif (typmav(1:4) .eq. 'QUAD' .or. typmav(1:4) .eq. 'TRIA' &
+                                        ) then
 !
 ! ------- CALCUL EFFORTS SURFACIQUES ET DES CONTRAINTES ----------------
 !
-            call ermeb3(noe, ifa, tymvol, nnof, iref1,&
-                        iref2, ivois, igeom, iad, nbcmp,&
-                        inst, nx, ny, nz, sig11,&
-                        sig22, sig33, sig12, sig13, sig23,&
-                        chx, chy, chz)
+                                call ermeb3(noe, ifa, tymvol, nnof, iref1, &
+                                            iref2, ivois, igeom, iad, nbcmp, &
+                                            inst, nx, ny, nz, sig11, &
+                                            sig22, sig33, sig12, sig13, sig23, &
+                                            chx, chy, chz)
 !
 ! ------- CALCUL DE L'INTEGRALE SUR LA FACE ----------------------------
 ! ------- ATTENTION : CELA MARCHE CAR ON A CHOISI LA FAMILLE -----------
 ! ------- AVEC LES POINTS DE GAUSS SUR LES NOEUDS ----------------------
 !
-            call intega(npgf, jaco, zr(ipoidf), chx, chy,&
-                        chz, sig11, sig22, sig33, sig12,&
-                        sig13, sig23, nx, ny, nz,&
-                        inte)
+                                call intega(npgf, jaco, zr(ipoidf), chx, chy, &
+                                            chz, sig11, sig22, sig33, sig12, &
+                                            sig13, sig23, nx, ny, nz, &
+                                            inte)
 !
 ! ------- CALCUL DU TERME D'ERREUR -------------------------------------
 !
-            if (inte .lt. 0.d0) then
-                call utmess('A', 'INDICATEUR_9', nk=2, valk=valk)
-                goto 999
-            endif
+                                if (inte .lt. 0.d0) then
+                                    call utmess('A', 'INDICATEUR_9', nk=2, valk=valk)
+                                    goto 999
+                                end if
 !
 !GN       WRITE(IFM,*) '==> INTE', INTE
-            ter3=ter3+sqrt(hf)*sqrt(inte)
-            if (niv .ge. 2) then
-                write(ifm,1000) 'SURF INTE', inte
-                write(ifm,1000) '==> TER3 ', ter3
-            endif
+                                ter3 = ter3+sqrt(hf)*sqrt(inte)
+                                if (niv .ge. 2) then
+                                    write (ifm, 1000) 'SURF INTE', inte
+                                    write (ifm, 1000) '==> TER3 ', ter3
+                                end if
 !
 ! ----------------------------------------------------------------------
 ! --------------- CURIEUX ----------------------------------------------
 ! ----------------------------------------------------------------------
 !
-        else
+                                else
 !
-            valk(1)=typmav(1:4)
-            call utmess('F', 'INDICATEUR_10', sk=valk(1))
+                                valk(1) = typmav(1:4)
+                                call utmess('F', 'INDICATEUR_10', sk=valk(1))
 !
-        endif
+                                end if
 !
-    endif
+                            end if
 !
-    320 end do
+320                         end do
 !
 ! ----------------------------------------------------------------------
 ! ------- FIN DU CALCUL DU DEUXIEME ET TROISIEME TERME DE L'ERREUR -----
@@ -545,58 +545,58 @@ subroutine te0375(option, nomte)
 ! 4. ------- MISE EN MEMOIRE DES DIFFERENTS TERMES DE L'ERREUR ---------
 ! ----------------------------------------------------------------------
 !
-    if (ndegre .eq. 2) then
-        coeff=sqrt(96.d0)
-    else if (ndegre.eq.1) then
-        coeff=sqrt(24.d0)
-    endif
+                            if (ndegre .eq. 2) then
+                                coeff = sqrt(96.d0)
+                            else if (ndegre .eq. 1) then
+                                coeff = sqrt(24.d0)
+                            end if
 !
-    errest=(ter1+ter2+ter3)/coeff
-    if ((errest**2+norsig) .ne. 0.d0) then
-        nuest=100.d0*sqrt(errest**2/(errest**2+norsig))
-    else
-        nuest=0.d0
-    endif
-    sigcal=sqrt(norsig)
+                            errest = (ter1+ter2+ter3)/coeff
+                            if ((errest**2+norsig) .ne. 0.d0) then
+                                nuest = 100.d0*sqrt(errest**2/(errest**2+norsig))
+                            else
+                                nuest = 0.d0
+                            end if
+                            sigcal = sqrt(norsig)
 !
-    zr(ierr)=errest
-    zr(ierr+1)=nuest
-    zr(ierr+2)=sigcal
+                            zr(ierr) = errest
+                            zr(ierr+1) = nuest
+                            zr(ierr+2) = sigcal
 !
-    errest=ter1/coeff
-    if ((errest**2+norsig) .ne. 0.d0) then
-        nuest=100.d0*sqrt(errest**2/(errest**2+norsig))
-    else
-        nuest=0.d0
-    endif
+                            errest = ter1/coeff
+                            if ((errest**2+norsig) .ne. 0.d0) then
+                                nuest = 100.d0*sqrt(errest**2/(errest**2+norsig))
+                            else
+                                nuest = 0.d0
+                            end if
 !       TERMRE       TERMR2
-    zr(ierr+3)=errest
-    zr(ierr+4)=nuest
+                            zr(ierr+3) = errest
+                            zr(ierr+4) = nuest
 !
-    errest=ter3/coeff
-    if ((errest**2+norsig) .ne. 0.d0) then
-        nuest=100.d0*sqrt(errest**2/(errest**2+norsig))
-    else
-        nuest=0.d0
-    endif
+                            errest = ter3/coeff
+                            if ((errest**2+norsig) .ne. 0.d0) then
+                                nuest = 100.d0*sqrt(errest**2/(errest**2+norsig))
+                            else
+                                nuest = 0.d0
+                            end if
 !       TERMNO     TERMN2
-    zr(ierr+5)=errest
-    zr(ierr+6)=nuest
+                            zr(ierr+5) = errest
+                            zr(ierr+6) = nuest
 !
-    errest=ter2/coeff
-    if ((errest**2+norsig) .ne. 0.d0) then
-        nuest=100.d0*sqrt(errest**2/(errest**2+norsig))
-    else
-        nuest=0.d0
-    endif
+                            errest = ter2/coeff
+                            if ((errest**2+norsig) .ne. 0.d0) then
+                                nuest = 100.d0*sqrt(errest**2/(errest**2+norsig))
+                            else
+                                nuest = 0.d0
+                            end if
 !       TERMSA       TERMS2
-    zr(ierr+7)=errest
-    zr(ierr+8)=nuest
+                            zr(ierr+7) = errest
+                            zr(ierr+8) = nuest
 !       DIAMETRE
-    zr(ierr+9)=hk
+                            zr(ierr+9) = hk
 !
-999 continue
+999                         continue
 !
-    call jedema()
+                            call jedema()
 !
-end subroutine
+                            end subroutine

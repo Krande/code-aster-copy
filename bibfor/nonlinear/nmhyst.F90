@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -56,12 +56,12 @@ subroutine nmhyst(amort, vitplu, cnhyst)
 ! --- ACCES OBJETS JEVEUX
 !
     call jeveuo(vitplu(1:19)//'.VALE', 'L', vr=vitp)
-    call jeveuo(amort(1:19) //'.&INT', 'L', jamor)
+    call jeveuo(amort(1:19)//'.&INT', 'L', jamor)
     call jeveuo(cnhyst(1:19)//'.VALE', 'E', vr=hyst)
 !
 ! --- CALCUL FORCES AMORTISSEMENT
 !
-    call mrmult('ZERO', jamor, vitp, hyst, 1,&
+    call mrmult('ZERO', jamor, vitp, hyst, 1, &
                 .true._1)
 !
     call jedema()

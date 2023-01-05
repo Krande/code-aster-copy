@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -57,9 +57,9 @@ subroutine te0576(option, nomte)
     integer :: nbsig, igau, isig, igeom, idim, itemps, nbvari, imate, idener
     integer :: idfde, idepl, ideplm, idepmm, idvari, idsig, idsigm, mxcmel, iret
     integer :: idenem, jtab(7)
-    parameter (nbnomx=27)
-    parameter (nbcont=6)
-    parameter (mxcmel=162)
+    parameter(nbnomx=27)
+    parameter(nbcont=6)
+    parameter(mxcmel=162)
     real(kind=8) :: epsi(nbcont), repere(7), instan, zero, undemi, enelem
     real(kind=8) :: enerpg(nbnomx), xyzgau(3), xyz(3)
     real(kind=8) :: nharm, deux, integ1, integ2, integ, r
@@ -75,7 +75,7 @@ subroutine te0576(option, nomte)
 ! ---- GEOMETRIE ET INTEGRATION
 !      ------------------------
     fami = 'RIGI'
-    call elrefe_info(fami=fami, ndim=ndim, nno=nno, nnos=nnos, npg=npg1,&
+    call elrefe_info(fami=fami, ndim=ndim, nno=nno, nnos=nnos, npg=npg1, &
                      jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
 ! ---- NOMBRE DE CONTRAINTES ASSOCIE A L'ELEMENT
@@ -132,37 +132,37 @@ subroutine te0576(option, nomte)
 !
 ! ----   RECUPERATION DU CHAMP DE VARIABLES INTERNES  :
 !        N'EXISTE PAS EN LINEAIRE
-        call tecach('ONO', 'PVARIGR', 'L', iret, nval=7,&
+        call tecach('ONO', 'PVARIGR', 'L', iret, nval=7, &
                     itab=jtab)
         if (iret .eq. 0) then
-            idvari=jtab(1)
-            nbvari = max(jtab(6),1)*jtab(7)
+            idvari = jtab(1)
+            nbvari = max(jtab(6), 1)*jtab(7)
         else
-            idvari=1
-            nbvari=0
-        endif
+            idvari = 1
+            nbvari = 0
+        end if
 !
-    endif
+    end if
 !
 ! ----RECUPERATION DU TYPE DE COMPORTEMENT  :
 !     N'EXISTE PAS EN LINEAIRE
-    call tecach('NNO', 'PCOMPOR', 'L', iret, nval=7,&
+    call tecach('NNO', 'PCOMPOR', 'L', iret, nval=7, &
                 itab=jtab)
-    compor(1)='ELAS'
-    compor(2)=' '
-    compor(3)='PETIT'
+    compor(1) = 'ELAS'
+    compor(2) = ' '
+    compor(3) = 'PETIT'
     if (iret .eq. 0) then
-        compor(1)=zk16(jtab(1))
-        compor(3)=zk16(jtab(1)+2)
-    endif
+        compor(1) = zk16(jtab(1))
+        compor(3) = zk16(jtab(1)+2)
+    end if
 !
 !     GRANDES DEFORMATIONS
 !
-    if ((compor(3).eq.'SIMO_MIEHE') .or. (compor(3).eq.'GDEF_LOG') ) then
+    if ((compor(3) .eq. 'SIMO_MIEHE') .or. (compor(3) .eq. 'GDEF_LOG')) then
         grand = .true.
     else
         grand = .false.
-    endif
+    end if
 !
 !
 ! --- CAS DU CALCUL DE LA DENSITE D'ENERGIE TOTALE :
@@ -171,7 +171,7 @@ subroutine te0576(option, nomte)
 !
         if (grand) then
             call utmess('F', 'COMPOR1_79', sk=compor(3))
-        endif
+        end if
 !
 ! ---    RECUPERATION DU CHAMP DE DEPLACEMENT A L'INSTANT COURANT :
 !        --------------------------------------------------------
@@ -183,7 +183,7 @@ subroutine te0576(option, nomte)
         call tecach('NNO', 'PDEPLM', 'L', iret, iad=ideplm)
         if (ideplm .ne. 0) then
             call jevech('PDEPLM', 'L', idepmm)
-        endif
+        end if
 !
 ! ---    RECUPERATION DU CHAMP DE CONTRAINTES AUX POINTS D'INTEGRATION
 ! ---    A L'INSTANT COURANT :
@@ -196,25 +196,25 @@ subroutine te0576(option, nomte)
         call tecach('NNO', 'PCONTMR', 'L', iret, iad=idsigm)
         if (idsigm .ne. 0) then
             call jevech('PCONTMR', 'L', idsigm)
-        endif
+        end if
 !
 ! ---    CALCUL DU CHAMP DE DEFORMATIONS AU PREMIER ORDRE
 ! ---    CORRESPONDANT AU CHAMP DE DEPLACEMENT COURANT :
 !        ---------------------------------------------
-        call eps1mc(nno, ndim, nbsig, npg1, ipoids,&
-                    ivf, idfde, zr(igeom), zr(idepl), nharm,&
+        call eps1mc(nno, ndim, nbsig, npg1, ipoids, &
+                    ivf, idfde, zr(igeom), zr(idepl), nharm, &
                     epss)
 !
 ! ---    CALCUL EVENTUEL DU CHAMP DE DEFORMATIONS AU PREMIER ORDRE
 ! ---    CORRESPONDANT AU CHAMP DE DEPLACEMENT A L'INSTANT PRECEDENT :
 !        -----------------------------------------------------------
         if (ideplm .ne. 0) then
-            call eps1mc(nno, ndim, nbsig, npg1, ipoids,&
-                        ivf, idfde, zr( igeom), zr(idepmm), nharm,&
+            call eps1mc(nno, ndim, nbsig, npg1, ipoids, &
+                        ivf, idfde, zr(igeom), zr(idepmm), nharm, &
                         epssm)
-        endif
+        end if
 !
-    endif
+    end if
 !
 ! ---- BOUCLE SUR LES POINTS D'INTEGRATION :
 !      ===================================
@@ -222,7 +222,7 @@ subroutine te0576(option, nomte)
 !
 !  --    CALCUL DU JACOBIEN AU POINT D'INTEGRATION COURANT :
 !        -------------------------------------------------
-        call dfdm3d(nno, igau, ipoids, idfde, zr(igeom),&
+        call dfdm3d(nno, igau, ipoids, idfde, zr(igeom), &
                     poids)
 !
         do isig = 1, nbsig
@@ -239,7 +239,7 @@ subroutine te0576(option, nomte)
         do i = 1, nno
 !
             do idim = 1, ndim
-                xyzgau(idim) = xyzgau(idim) + zr(ivf+i+nno* (igau-1)- 1)*zr(igeom+idim+ ndim* (i-&
+                xyzgau(idim) = xyzgau(idim)+zr(ivf+i+nno*(igau-1)-1)*zr(igeom+idim+ndim*(i-&
                                &1)-1)
             end do
 !
@@ -252,76 +252,76 @@ subroutine te0576(option, nomte)
 ! --- TENSEUR DES CONTRAINTES AU POINT D'INTEGRATION COURANT :
 !
             do i = 1, nbsig
-                sigma(i) = zr(idsig+ (igau-1)*nbsig+i-1)
+                sigma(i) = zr(idsig+(igau-1)*nbsig+i-1)
             end do
 !
 ! --- CALCUL DU JACOBIEN AU POINT D'INTEGRATION COURANT :
-            call nmgeom(3, nno, .false._1, grand, zr(igeom),&
-                        igau, ipoids, ivf, idfde, zr(idepl),&
-                        .true._1, poids, dfdbid, f, epsbid,&
+            call nmgeom(3, nno, .false._1, grand, zr(igeom), &
+                        igau, ipoids, ivf, idfde, zr(idepl), &
+                        .true._1, poids, dfdbid, f, epsbid, &
                         r)
 !
 ! ---     CALCUL DE L'ENERGIE ELASTIQUE AU POINT D'INTEGRATION COURANT
 !
-            call enelpg(fami, zi(imate), instan, igau, repere,&
-                        xyzgau, compor, f, sigma, nbvari,&
-                        zr(idvari+(igau-1)*nbvari), enerpg( igau))
+            call enelpg(fami, zi(imate), instan, igau, repere, &
+                        xyzgau, compor, f, sigma, nbvari, &
+                        zr(idvari+(igau-1)*nbvari), enerpg(igau))
 !
 !
 !  --    CALCUL DE LA DENSITE D'ENERGIE TOTALE :
 !        =====================================
-        else if (option(1:4).eq.'ETOT') then
+        else if (option(1:4) .eq. 'ETOT') then
 !
 !  --      TENSEURS DES DEFORMATIONS  ET DES CONTRAINTES AU PAS DE
 !  --      TEMPS COURANT ET AU PAS DE TEMPS PRECEDENT S'IL Y A LIEU,
 !  --      AU POINT D'INTEGRATION COURANT :
 !          ------------------------------
             do i = 1, nbsig
-                epsi(i) = epss(i+ (igau-1)*nbsig)
+                epsi(i) = epss(i+(igau-1)*nbsig)
                 if (ideplm .ne. 0) then
-                    epsim(i) = epssm(i+ (igau-1)*nbsig)
-                endif
-                sigma(i) = zr(idsig+ (igau-1)*nbsig+i-1)
+                    epsim(i) = epssm(i+(igau-1)*nbsig)
+                end if
+                sigma(i) = zr(idsig+(igau-1)*nbsig+i-1)
                 if (idsigm .ne. 0) then
-                    sigmm(i) = zr(idsigm+ (igau-1)*nbsig+i-1)
-                endif
+                    sigmm(i) = zr(idsigm+(igau-1)*nbsig+i-1)
+                end if
             end do
 !
             if (ideplm .ne. 0) then
                 do i = 1, nbsig
-                    delta(i) = epsi(i) - epsim(i)
+                    delta(i) = epsi(i)-epsim(i)
                 end do
             else
                 do i = 1, nbsig
                     delta(i) = 0.d0
                 end do
-            endif
+            end if
 !
 !  --      CALCUL DES TERMES A SOMMER POUR OBTENIR LA DENSITE
 !  --      D'ENERGIE TOTALE :
 !          ----------------
-            integ1 = sigma(1)*delta(1) + sigma(2)*delta(2) + sigma(3)* delta(3) + deux*sigma(4)*d&
-                     &elta(4) + deux*sigma(5)*delta(5) + deux*sigma(6)*delta(6)
+            integ1 = sigma(1)*delta(1)+sigma(2)*delta(2)+sigma(3)*delta(3)+deux*sigma(4)*d&
+                     &elta(4)+deux*sigma(5)*delta(5)+deux*sigma(6)*delta(6)
 !
             if (ideplm .ne. 0 .and. idsigm .ne. 0) then
-                integ2 = sigmm(1)*delta(1) + sigmm(2)*delta(2) + sigmm(3)*delta(3) + deux*sigmm(4&
-                         &)*delta(4) + deux* sigmm(5)*delta(5) + deux*sigmm(6)*delta(6)
+                integ2 = sigmm(1)*delta(1)+sigmm(2)*delta(2)+sigmm(3)*delta(3)+deux*sigmm(4&
+                         &)*delta(4)+deux*sigmm(5)*delta(5)+deux*sigmm(6)*delta(6)
 !
-                enerpg(igau) = undemi* (integ1+integ2)
+                enerpg(igau) = undemi*(integ1+integ2)
             else
 !
 !  --        CAS D'ORDRE NUMERO 1 :
 !            --------------------
-                integ = sigma(1)*epsi(1) + sigma(2)*epsi(2) + sigma(3) *epsi(3) + deux*sigma(4)*e&
-                        &psi(4) + deux*sigma(5)*epsi( 5) + deux*sigma(6)*epsi(6)
+                integ = sigma(1)*epsi(1)+sigma(2)*epsi(2)+sigma(3)*epsi(3)+deux*sigma(4)*e&
+                        &psi(4)+deux*sigma(5)*epsi(5)+deux*sigma(6)*epsi(6)
 !
                 enerpg(igau) = undemi*integ
 !
-            endif
+            end if
 !
-            enelem = enelem + enerpg(igau)*poids
+            enelem = enelem+enerpg(igau)*poids
 !
-        endif
+        end if
 !
     end do
 !
@@ -339,14 +339,14 @@ subroutine te0576(option, nomte)
 !        ================
         if (option .eq. 'ETOT_ELGA') then
             do igau = 1, npg1
-                zr(idener+igau-1)=zr(idenem+igau-1)+enerpg(igau)
+                zr(idener+igau-1) = zr(idenem+igau-1)+enerpg(igau)
             end do
 !
 ! ----   OPTION ETOT_ELEM
 !        ================
-        else if (option.eq.'ETOT_ELEM') then
+        else if (option .eq. 'ETOT_ELEM') then
             zr(idener) = zr(idenem)+enelem
-        endif
+        end if
     else
 !
 ! ----   OPTION ENEL_ELGA
@@ -355,6 +355,6 @@ subroutine te0576(option, nomte)
             do igau = 1, npg1
                 zr(idener+igau-1) = enerpg(igau)
             end do
-        endif
-    endif
+        end if
+    end if
 end subroutine

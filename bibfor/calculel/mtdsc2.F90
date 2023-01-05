@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -45,42 +45,42 @@ subroutine mtdsc2(matas, objet, eoul, adress)
     integer :: i1, i2
     character(len=24), pointer :: refa(:) => null()
 !
-    mat=matas
-    obj=objet
-    ASSERT(obj(3:4).eq.'BL' .or. obj(3:4).eq.'DI' .or. obj(3:4).eq.'HC')
+    mat = matas
+    obj = objet
+    ASSERT(obj(3:4) .eq. 'BL' .or. obj(3:4) .eq. 'DI' .or. obj(3:4) .eq. 'HC')
 !
     call jeveuo(mat//'.REFA', eoul, vk24=refa)
-    nu=refa(2)
+    nu = refa(2)
 !
     call jeexin(nu//'.SMOS.SMDI', i1)
     call jeexin(nu//'.SLCS.SCDI', i2)
 !       SI LDLT, LES 2 OBJETS PEUVENT EXISTER
-    ASSERT(i1.gt.0 .or. i2.gt.0)
+    ASSERT(i1 .gt. 0 .or. i2 .gt. 0)
 !
     if (obj(2:2) .eq. 'X') then
 !           -- ON PRIVILEGIE LE STOCKAGE MORSE :
         if (i1 .gt. 0) then
-            obj='SM'//obj(3:4)
-            ASSERT(obj.ne.'SMBL')
+            obj = 'SM'//obj(3:4)
+            ASSERT(obj .ne. 'SMBL')
             call jeveuo(nu//'.SMOS.'//obj, eoul, adress)
         else
             ASSERT(.false.)
 !            -- LE STOCK. LIGNE_CIEL N'EXISTE QU'AVEC UN STOCK. MORSE
-            obj='SC'//obj(3:4)
+            obj = 'SC'//obj(3:4)
             call jeveuo(nu//'.SLCS.'//obj, eoul, adress)
-        endif
+        end if
 !
-    else if (obj(2:2).eq.'M') then
-        ASSERT(i1.gt.0)
-        ASSERT(obj.ne.'SMBL')
+    else if (obj(2:2) .eq. 'M') then
+        ASSERT(i1 .gt. 0)
+        ASSERT(obj .ne. 'SMBL')
         call jeveuo(nu//'.SMOS.'//obj, eoul, adress)
 !
-    else if (obj(2:2).eq.'C') then
-        ASSERT(i2.gt.0)
+    else if (obj(2:2) .eq. 'C') then
+        ASSERT(i2 .gt. 0)
         call jeveuo(nu//'.SLCS.'//obj, eoul, adress)
 !
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 end subroutine

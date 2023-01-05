@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -53,8 +53,8 @@ subroutine dstb(carat3, pgl, igau, jacgau, bmat)
     aster_logical :: coupmf
 !     ------------------------------------------------------------------
 !
-    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
-                     jpoids=ipoids, jcoopg=icoopg, jvf=ivf, jdfde=idfdx, jdfd2=idfd2,&
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg, &
+                     jpoids=ipoids, jcoopg=icoopg, jvf=ivf, jdfde=idfdx, jdfd2=idfd2, &
                      jgano=jgano)
 !
 ! --- COORDONNEES DU POINT D'INTEGRATION COURANT :
@@ -69,8 +69,8 @@ subroutine dstb(carat3, pgl, igau, jacgau, bmat)
 ! --- CALCUL DES MATRICES DE HOOKE DE FLEXION, MEMBRANE,
 ! --- MEMBRANE-FLEXION, CISAILLEMENT, CISAILLEMENT INVERSE
 !     ----------------------------------------------------
-    call dxmate('RIGI', df, dm, dmf, dc,&
-                dci, dmc, dfc, nno, pgl,&
+    call dxmate('RIGI', df, dm, dmf, dc, &
+                dci, dmc, dfc, nno, pgl, &
                 multic, coupmf, t2iu, t2ui, t1ve)
 !
 ! --- CALCUL DE LA MATRICE NOTEE (HF.T2) PAR BATOZ RELIANT LES
@@ -112,16 +112,16 @@ subroutine dstb(carat3, pgl, igau, jacgau, bmat)
 !     -------------------------
     do i = 1, 3
         do j = 1, 9
-            bfn(i,j) = 0.d0
+            bfn(i, j) = 0.d0
         end do
     end do
 !
     do i = 1, 3
         do j = 1, 9
             do k = 1, 3
-                bfn(i,j) = bfn(i,j) + bfa(i,k)*an(k,j)
+                bfn(i, j) = bfn(i, j)+bfa(i, k)*an(k, j)
             end do
-            bf(i,j) = bfb(i,j) + bfn(i,j)
+            bf(i, j) = bfb(i, j)+bfn(i, j)
         end do
     end do
 !
@@ -135,15 +135,15 @@ subroutine dstb(carat3, pgl, igau, jacgau, bmat)
 !     -----------------------
     do i = 1, 2
         do j = 1, 9
-            bc(i,j) = 0.d0
-            bcn(i,j) = 0.d0
+            bc(i, j) = 0.d0
+            bcn(i, j) = 0.d0
         end do
     end do
 !
     do i = 1, 2
         do j = 1, 9
             do k = 1, 3
-                bcn(i,j) = bcn(i,j) + bca(i,k)*an(k,j)
+                bcn(i, j) = bcn(i, j)+bca(i, k)*an(k, j)
             end do
         end do
     end do
@@ -151,7 +151,7 @@ subroutine dstb(carat3, pgl, igau, jacgau, bmat)
     do i = 1, 2
         do j = 1, 9
             do k = 1, 2
-                bc(i,j) = bc(i,j) + dci(i,k)*bcn(k,j)
+                bc(i, j) = bc(i, j)+dci(i, k)*bcn(k, j)
             end do
         end do
     end do

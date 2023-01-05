@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -72,8 +72,8 @@ subroutine ssdmdn(mag)
     call jeveuo(mag//'.DIME_2', 'L', vi=dime_2)
     call jeveuo(mag//'.NOEUD_CONF', 'L', vi=noeud_conf)
     call jeveuo(mag//'.NOMACR', 'L', vk8=vnomacr)
-    nnnoe= dime(1)
-    nbsma= dime(4)
+    nnnoe = dime(1)
+    nbsma = dime(4)
 !
     call wkvect(mag//'.NOMNOE_2', 'V V K8', nnnoe, ianon2)
 !
@@ -87,45 +87,45 @@ subroutine ssdmdn(mag)
 !
 !           -- CAS : TOUT: 'OUI'
 !           --------------------
-            lpr=0
-            call getltx('DEFI_NOEUD', 'PREFIXE', iocc, 8, 1,&
+            lpr = 0
+            call getltx('DEFI_NOEUD', 'PREFIXE', iocc, 8, 1, &
                         lpr, n2)
             lpref = lpr(1)
-            call getvis('DEFI_NOEUD', 'INDEX', iocc=iocc, nbval=4, vect=indi,&
+            call getvis('DEFI_NOEUD', 'INDEX', iocc=iocc, nbval=4, vect=indi, &
                         nbret=n3)
-            lmail=indi(2)-indi(1)+1
-            lnoeu=indi(4)-indi(3)+1
-            lmail=max(lmail,0)
-            lnoeu=max(lnoeu,0)
-            longt= lpref+lmail+lnoeu
+            lmail = indi(2)-indi(1)+1
+            lnoeu = indi(4)-indi(3)+1
+            lmail = max(lmail, 0)
+            lnoeu = max(lnoeu, 0)
+            longt = lpref+lmail+lnoeu
             if (longt .gt. 8) then
                 call utmess('F', 'SOUSTRUC_57')
-            endif
+            end if
             if (lpref .gt. 0) then
                 call getvtx('DEFI_NOEUD', 'PREFIXE', iocc=iocc, scal=pref, nbret=n2)
-            endif
+            end if
 !
             do isma = 1, nbsma
                 call jeveuo(jexnum(mag//'.SUPMAIL', isma), 'L', iasupm)
                 call jenuno(jexnum(mag//'.SUPMAIL', isma), nosma)
-                nomacr= vnomacr(isma)
+                nomacr = vnomacr(isma)
                 call jeveuo(nomacr//'.CONX', 'L', vi=conx)
                 call dismoi('NOM_MAILLA', nomacr, 'MACR_ELEM_STAT', repk=mal)
-                nbnoe=dime_2(4*(isma-1)+1)
-                nbnol=dime_2(4*(isma-1)+2)
-                nbnoet=nbnoe+nbnol
+                nbnoe = dime_2(4*(isma-1)+1)
+                nbnol = dime_2(4*(isma-1)+2)
+                nbnoet = nbnoe+nbnol
                 do i = 1, nbnoet
-                    ino= zi(iasupm-1+i)
+                    ino = zi(iasupm-1+i)
                     if (ino .gt. nnnoe) goto 3
-                    ino1= conx(3*(i-1)+2)
+                    ino1 = conx(3*(i-1)+2)
                     call jenuno(jexnum(mal//'.NOMNOE', ino1), nomnol)
-                    i1=1
-                    if (lpref .gt. 0) zk8(ianon2-1+ino)(i1:i1-1+lpref) = pref(1:lpref)
-                    i1= i1+lpref
-                    if (lmail .gt. 0) zk8(ianon2-1+ino)(i1:i1-1+lmail) = nosma( indi(1):indi(2))
-                    i1= i1+lmail
-                    if (lnoeu .gt. 0) zk8(ianon2-1+ino)(i1:i1-1+lnoeu) = nomnol( indi(3):indi(4))
-  3                 continue
+                    i1 = 1
+                    if (lpref .gt. 0) zk8(ianon2-1+ino) (i1:i1-1+lpref) = pref(1:lpref)
+                    i1 = i1+lpref
+                    if (lmail .gt. 0) zk8(ianon2-1+ino) (i1:i1-1+lmail) = nosma(indi(1):indi(2))
+                    i1 = i1+lmail
+                    if (lnoeu .gt. 0) zk8(ianon2-1+ino) (i1:i1-1+lnoeu) = nomnol(indi(3):indi(4))
+3                   continue
                 end do
             end do
         else
@@ -138,32 +138,32 @@ subroutine ssdmdn(mag)
             call getvtx('DEFI_NOEUD', 'NOEUD_INIT', iocc=iocc, scal=nomnol, nbret=n3)
             if ((n1*n2*n3) .eq. 0) then
                 call utmess('F', 'SOUSTRUC_58')
-            endif
+            end if
 !
             call jenonu(jexnom(mag//'.SUPMAIL', nosma), isma)
-            nomacr= vnomacr(isma)
+            nomacr = vnomacr(isma)
             call jeveuo(nomacr//'.LINO', 'L', vi=lino)
             call jelira(nomacr//'.LINO', 'LONUTI', nbnoex)
             call dismoi('NOM_MAILLA', nomacr, 'MACR_ELEM_STAT', repk=mal)
             call jenonu(jexnom(mal//'.NOMNOE', nomnol), inol)
-            kk= indiis(lino,inol,1,nbnoex)
+            kk = indiis(lino, inol, 1, nbnoex)
             if (kk .eq. 0) then
                 valk(1) = nomnol
                 valk(2) = nosma
                 call utmess('A', 'SOUSTRUC_59', nk=2, valk=valk)
                 goto 1
-            endif
+            end if
 !
-            ino=dime_2(4*(isma-1)+3)+kk
+            ino = dime_2(4*(isma-1)+3)+kk
             if (noeud_conf(ino) .eq. ino) then
-                zk8(ianon2-1+ino)= nomnog
+                zk8(ianon2-1+ino) = nomnog
             else
                 valk(1) = nomnol
                 valk(2) = nosma
                 call utmess('A', 'SOUSTRUC_60', nk=2, valk=valk)
-            endif
-        endif
-  1     continue
+            end if
+        end if
+1       continue
     end do
 !
     call jedema()

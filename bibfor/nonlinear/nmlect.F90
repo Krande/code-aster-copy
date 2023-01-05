@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 subroutine nmlect(result, model, mater, mateco, cara_elem, list_load, solver_)
 !
-implicit none
+    implicit none
 !
 #include "asterc/getres.h"
 #include "asterfort/cresol.h"
@@ -69,13 +69,13 @@ implicit none
 !
 ! - Get loads information and create datastructure
 !
-    call nmdoch(list_load, l_load_user = .true._1)
+    call nmdoch(list_load, l_load_user=.true._1)
 !
 ! - Get parameters for solver
 !
     if (present(solver_)) then
-        solver_   = '&&OP00XX.SOLVER'
+        solver_ = '&&OP00XX.SOLVER'
         call cresol(solver_, 'V')
-    endif
+    end if
 !
 end subroutine

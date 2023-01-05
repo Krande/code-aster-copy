@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,9 +21,9 @@ subroutine ap_on_off(action, option)
 #include "asterf_types.h"
 #include "asterf_petsc.h"
 !
-use aster_petsc_module
-use petsc_data_module
-use elg_module
+    use aster_petsc_module
+    use petsc_data_module
+    use elg_module
 !
     implicit none
 !
@@ -68,22 +68,22 @@ use elg_module
     if (action .eq. 'OFF') then
 !       petsc a-t-il ete initialise ?
         call PetscInitialized(done, ierr)
-        ASSERT(ierr.eq.0)
+        ASSERT(ierr .eq. 0)
         if (done) then
             call aster_petsc_finalize()
 !           on ne verifie pas le code retour car on peut
 !           se retrouver dans fin suite a une erreur dans l'initialisation
             iprem = 0
-        endif
-    endif
+        end if
+    end if
 !
 !
     if (action .eq. 'ON') then
 !     --------------------
 !        -- quelques verifications sur la coherence Aster / Petsc :
-        ASSERT(kind(rbid).eq.kind(r8))
-        ASSERT(kind(sbid).eq.kind(r8))
-        ASSERT(kind(offbid).eq.kind(np))
+        ASSERT(kind(rbid) .eq. kind(r8))
+        ASSERT(kind(sbid) .eq. kind(r8))
+        ASSERT(kind(offbid) .eq. kind(np))
 !
         ier2 = 0
         call aster_petsc_initialize(option, ier2)
@@ -97,7 +97,7 @@ use elg_module
             nosols(k) = ' '
             nonus(k) = ' '
             tblocs(k) = -1
-        enddo
+        end do
 !
         xlocal = PETSC_NULL_VEC
         xglobal = PETSC_NULL_VEC
@@ -106,7 +106,7 @@ use elg_module
         spmat = ' '
         spsolv = ' '
         iprem = 1
-    endif
+    end if
 
 #else
     call utmess('F', 'FERMETUR_10')

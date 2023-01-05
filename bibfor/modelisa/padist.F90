@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -30,9 +30,9 @@ function padist(ndim, coor1, coor2)
 !---------------------------------------------------------------------
     d = 0.d0
     do i = 1, ndim
-        x = coor1(i) - coor2(i)
-        d = d + x*x
+        x = coor1(i)-coor2(i)
+        d = d+x*x
     end do
-    if (d .ne. 0.d0) d = sqrt( d )
+    if (d .ne. 0.d0) d = sqrt(d)
     padist = d
 end function

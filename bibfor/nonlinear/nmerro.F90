@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,9 +19,9 @@
 !
 subroutine nmerro(sderro, ds_measure, nume_inst)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "event_def.h"
@@ -31,9 +31,9 @@ implicit none
 #include "asterfort/sigusr.h"
 #include "asterfort/utmess.h"
 !
-character(len=24), intent(in) :: sderro
-type(NL_DS_Measure), intent(in) :: ds_measure
-integer, intent(in) :: nume_inst
+    character(len=24), intent(in) :: sderro
+    type(NL_DS_Measure), intent(in) :: ds_measure
+    integer, intent(in) :: nume_inst
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -63,11 +63,11 @@ integer, intent(in) :: nume_inst
 !
     if (etausr() .eq. 1) then
         call sigusr()
-    endif
+    end if
 !
 ! - Get times
 !
-    remain_time    = ds_measure%step_remain_time
+    remain_time = ds_measure%step_remain_time
     iter_mean_time = ds_measure%iter_mean_time
     step_mean_time = ds_measure%step_mean_time
 !
@@ -93,17 +93,17 @@ integer, intent(in) :: nume_inst
         itab(1) = nume_inst
         rtab(1) = iter_mean_time
         rtab(2) = remain_time
-        call utmess('Z', 'MECANONLINE9_1', si=itab(1), nr=2, valr=rtab,&
+        call utmess('Z', 'MECANONLINE9_1', si=itab(1), nr=2, valr=rtab, &
                     num_except=ASTER_TIMELIMIT_ERROR)
     else if (mtcpup) then
         itab(1) = nume_inst
         rtab(1) = step_mean_time
         rtab(2) = remain_time
-        call utmess('Z', 'MECANONLINE9_2', si=itab(1), nr=2, valr=rtab,&
+        call utmess('Z', 'MECANONLINE9_2', si=itab(1), nr=2, valr=rtab, &
                     num_except=ASTER_TIMELIMIT_ERROR)
     else if (echldc) then
         call utmess('Z', 'MECANONLINE9_3', num_except=ASTER_INTEGRATION_ERROR)
-    else if (echeq1.or.echeq2) then
+    else if (echeq1 .or. echeq2) then
         call utmess('Z', 'MECANONLINE9_4', num_except=ASTER_SOLVER_ERROR)
     else if (echco1) then
         call utmess('Z', 'MECANONLINE9_5', num_except=ASTER_CONTACT_ERROR)
@@ -126,12 +126,12 @@ integer, intent(in) :: nume_inst
         valk(1) = failActionKeyword(action_type)
         valk(2) = failEventKeyword(event_type)
         if (action_type .eq. FAIL_ACT_STOP) then
-            call utmess('Z', 'MECANONLINE9_51', sk=failEventKeyword(event_type),&
+            call utmess('Z', 'MECANONLINE9_51', sk=failEventKeyword(event_type), &
                         num_except=ASTER_CONVERGENCE_ERROR)
         else
-            call utmess('Z', 'MECANONLINE9_50', nk=2, valk=valk,&
+            call utmess('Z', 'MECANONLINE9_50', nk=2, valk=valk, &
                         num_except=ASTER_CONVERGENCE_ERROR)
-        endif
-    endif
+        end if
+    end if
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine dgseui(em, num, ef, nuf, eb,&
-                  nub, ftj, h, icisai, syt,&
-                  dxd, syf, drd, pelast,&
+subroutine dgseui(em, num, ef, nuf, eb, &
+                  nub, ftj, h, icisai, syt, &
+                  dxd, syf, drd, pelast, &
                   pelasf)
 !
     implicit none
@@ -57,24 +57,24 @@ subroutine dgseui(em, num, ef, nuf, eb,&
 !
 ! - DETERMINATION DES PARAMETRES EN MEMBRANE
 ! - SEUILS D'ENDOMMAGEMENT EN TRACTION PURE
-    syt=ftj*em*h*(1.d0-nub**2)/(eb*(1.d0-nub*num))
+    syt = ftj*em*h*(1.d0-nub**2)/(eb*(1.d0-nub*num))
 !
 ! - DEPLACEMENT A L'APPARITION DE L'ENDOMMAGEMENT
-    dxd=syt/(h*em)
+    dxd = syt/(h*em)
 !
     if (icisai .eq. 1) then
 ! - CALCUL DE LA PENTE ELASTIQUE EN CISAILLEMENT PUR DANS LE PLAN
-        pelast=em/(1.d0+num)/2.d0*h
+        pelast = em/(1.d0+num)/2.d0*h
     else
 ! - PENTE ELASTIQUE EN TRACTION
-        pelast=em*h
-    endif
+        pelast = em*h
+    end if
 !
 ! - DETERMINATION DES PARAMETRES EN FLEXION
 ! - SEUIL D'ENDOMMAGEMENT EN FLEXION PURE
-    syf=ftj*ef*h**2*(1.d0-nub**2)/(6.d0*eb*(1.d0-nub*nuf))
+    syf = ftj*ef*h**2*(1.d0-nub**2)/(6.d0*eb*(1.d0-nub*nuf))
 ! - ROTATION A L'APPARITION DE L'ENDOMMAGEMENT
-    drd=12.d0*syf/(h**3*ef)
-    pelasf=ef*h**3/12.d0
+    drd = 12.d0*syf/(h**3*ef)
+    pelasf = ef*h**3/12.d0
 !
 end subroutine

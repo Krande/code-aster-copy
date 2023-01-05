@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -33,7 +33,7 @@ subroutine tophys_ms(dplmod, psidel, coef, xgene, xphys)
     real(kind=8), pointer  :: psidel(:)
     real(kind=8), pointer  :: coef(:)
     real(kind=8), pointer  :: xgene(:)
-    real(kind=8),          intent(out) :: xphys(:)
+    real(kind=8), intent(out) :: xphys(:)
 !-----------------------------------------------------------------------
     integer :: i, j, nbmode, nbexci
 !-----------------------------------------------------------------------
@@ -46,13 +46,13 @@ subroutine tophys_ms(dplmod, psidel, coef, xgene, xphys)
 !
     do j = 1, 3
         do i = 1, nbmode
-            xphys(j) = xphys(j) + dplmod((i-1)*3+j)*xgene(i)
+            xphys(j) = xphys(j)+dplmod((i-1)*3+j)*xgene(i)
         end do
     end do
 
     do j = 1, 3
         do i = 1, nbexci
-            xphys(j) = xphys(j) + psidel((i-1)*3+j)*coef(i)
+            xphys(j) = xphys(j)+psidel((i-1)*3+j)*coef(i)
         end do
     end do
 

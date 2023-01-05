@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,8 +26,8 @@ subroutine dis_elas_nosyme(for_discret, iret)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-use te0047_type
-implicit none
+    use te0047_type
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -42,8 +42,8 @@ implicit none
 #include "asterfort/utpvlg.h"
 #include "blas/dcopy.h"
 !
-type(te0047_dscr), intent(in) :: for_discret
-integer, intent(out)          :: iret
+    type(te0047_dscr), intent(in) :: for_discret
+    integer, intent(out)          :: iret
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -62,114 +62,114 @@ integer, intent(out)          :: iret
 !
     neq = for_discret%nno*for_discret%nc
 !   Traitement du cas : repère GLOBAL
-    if ( irep .eq. 1) then
+    if (irep .eq. 1) then
         ! Matrice tangente, dans le repère global
         if (for_discret%lMatr) then
             call jevech('PMATUNS', 'E', imat)
             call dcopy(for_discret%nbt, zr(jdc), 1, zr(imat), 1)
-        endif
+        end if
         ! calcul de df = K.du (incrément d'effort, dans le repère global)
-        if ( for_discret%lVect .or. for_discret%lSigm ) then
+        if (for_discret%lVect .or. for_discret%lSigm) then
             call pmavec('ZERO', neq, zr(jdc), for_discret%dug, dfg)
-        endif
+        end if
         ! calcul des efforts généralisés. Ils doivent être dans le repère local.
-        if ( for_discret%lSigm ) then
+        if (for_discret%lSigm) then
             call jevech('PCONTPR', 'E', icontp)
             ! Passage des incréments d'efforts du repère global vers local
             if (for_discret%ndim .eq. 3) then
                 call utpvgl(for_discret%nno, for_discret%nc, for_discret%pgl, dfg, dfl)
             else
                 call ut2vgl(for_discret%nno, for_discret%nc, for_discret%pgl, dfg, dfl)
-            endif
+            end if
             ! Attention aux signes des efforts sur le 1er noeud pour MECA_DIS_TR_L et MECA_DIS_T_L
             if (for_discret%nno .eq. 1) then
                 do ii = 1, for_discret%nc
-                    zr(icontp-1+ii) = dfl(ii) + zr(icontm-1+ii)
-                enddo
-            else if (for_discret%nno.eq.2) then
+                    zr(icontp-1+ii) = dfl(ii)+zr(icontm-1+ii)
+                end do
+            else if (for_discret%nno .eq. 2) then
                 do ii = 1, for_discret%nc
-                    zr(icontp-1+ii)                = -dfl(ii) + zr(icontm-1+ii)
-                    zr(icontp-1+ii+for_discret%nc) =  dfl(ii+for_discret%nc) + &
-                                                      zr(icontm-1+ii+for_discret%nc)
-                enddo
-            endif
-        endif
+                    zr(icontp-1+ii) = -dfl(ii)+zr(icontm-1+ii)
+                    zr(icontp-1+ii+for_discret%nc) = dfl(ii+for_discret%nc)+ &
+                                                     zr(icontm-1+ii+for_discret%nc)
+                end do
+            end if
+        end if
         ! calcul des forces nodales. Elles doivent être dans le repère global.
-        if ( for_discret%lVect ) then
+        if (for_discret%lVect) then
             call jevech('PVECTUR', 'E', ifono)
             ! Passage des forces nodales (t-) du repère local vers global
             if (for_discret%ndim .eq. 3) then
                 call utpvlg(for_discret%nno, for_discret%nc, for_discret%pgl, zr(icontm), fgm)
             else
                 call ut2vlg(for_discret%nno, for_discret%nc, for_discret%pgl, zr(icontm), fgm)
-            endif
+            end if
             ! Attention aux signes des efforts sur le 1er noeud pour MECA_DIS_TR_L et MECA_DIS_T_L
             if (for_discret%nno .eq. 1) then
                 do ii = 1, for_discret%nc
-                    zr(ifono-1+ii)                = dfg(ii) + fgm(ii)
-                enddo
-            else if (for_discret%nno.eq.2) then
+                    zr(ifono-1+ii) = dfg(ii)+fgm(ii)
+                end do
+            else if (for_discret%nno .eq. 2) then
                 do ii = 1, for_discret%nc
-                    zr(ifono-1+ii)                = dfg(ii)                - fgm(ii)
-                    zr(ifono-1+ii+for_discret%nc) = dfg(ii+for_discret%nc) + fgm(ii+for_discret%nc)
-                enddo
-            endif
-        endif
+                    zr(ifono-1+ii) = dfg(ii)-fgm(ii)
+                    zr(ifono-1+ii+for_discret%nc) = dfg(ii+for_discret%nc)+fgm(ii+for_discret%nc)
+                end do
+            end if
+        end if
 !
 !   Traitement du cas : repère LOCAL
     else
         ! Matrice tangente, dans le repère global
         if (for_discret%lMatr) then
             call jevech('PMATUNS', 'E', imat)
-            if ( for_discret%ndim .eq. 3 ) then
+            if (for_discret%ndim .eq. 3) then
                 call ut3mlg(for_discret%nno, for_discret%nc, for_discret%pgl, zr(jdc), zr(imat))
             else
-                ASSERT( .false. )
-            endif
-        endif
+                ASSERT(.false.)
+            end if
+        end if
         ! calcul de df = K.du (incrément d'effort, dans le repère local)
-        if ( for_discret%lVect .or. for_discret%lSigm ) then
+        if (for_discret%lVect .or. for_discret%lSigm) then
             call pmavec('ZERO', neq, zr(jdc), for_discret%dul, dfl)
-        endif
+        end if
         ! calcul des efforts généralisés. Ils doivent être dans le repère local.
-        if ( for_discret%lSigm ) then
+        if (for_discret%lSigm) then
             call jevech('PCONTPR', 'E', icontp)
             ! Attention aux signes des efforts sur le 1er noeud pour MECA_DIS_TR_L et MECA_DIS_T_L
             if (for_discret%nno .eq. 1) then
                 do ii = 1, for_discret%nc
-                    zr(icontp-1+ii) = dfl(ii) + zr(icontm-1+ii)
-                enddo
-            else if (for_discret%nno.eq.2) then
+                    zr(icontp-1+ii) = dfl(ii)+zr(icontm-1+ii)
+                end do
+            else if (for_discret%nno .eq. 2) then
                 do ii = 1, for_discret%nc
-                    zr(icontp-1+ii)                = -dfl(ii) + zr(icontm-1+ii)
-                    zr(icontp-1+ii+for_discret%nc) =  dfl(ii+for_discret%nc) + &
-                                                      zr(icontm-1+ii+for_discret%nc)
-                enddo
-            endif
-        endif
+                    zr(icontp-1+ii) = -dfl(ii)+zr(icontm-1+ii)
+                    zr(icontp-1+ii+for_discret%nc) = dfl(ii+for_discret%nc)+ &
+                                                     zr(icontm-1+ii+for_discret%nc)
+                end do
+            end if
+        end if
         ! calcul des forces nodales. Elles sont dans le repère global.
-        if ( for_discret%lVect ) then
+        if (for_discret%lVect) then
             call jevech('PVECTUR', 'E', ifono)
             ! Passage des forces nodales (t-) du repère local vers global
             if (for_discret%ndim .eq. 3) then
                 call utpvlg(for_discret%nno, for_discret%nc, for_discret%pgl, zr(icontm), fgm)
-                call utpvlg(for_discret%nno, for_discret%nc, for_discret%pgl, dfl,        dfg)
+                call utpvlg(for_discret%nno, for_discret%nc, for_discret%pgl, dfl, dfg)
             else
                 call ut2vlg(for_discret%nno, for_discret%nc, for_discret%pgl, zr(icontm), fgm)
-                call ut2vlg(for_discret%nno, for_discret%nc, for_discret%pgl, dfl,        dfg)
-            endif
+                call ut2vlg(for_discret%nno, for_discret%nc, for_discret%pgl, dfl, dfg)
+            end if
             ! Attention aux signes des efforts sur le 1er noeud pour MECA_DIS_TR_L et MECA_DIS_T_L
             if (for_discret%nno .eq. 1) then
                 do ii = 1, for_discret%nc
-                    zr(ifono-1+ii)                = dfg(ii) + fgm(ii)
-                enddo
-            else if (for_discret%nno.eq.2) then
+                    zr(ifono-1+ii) = dfg(ii)+fgm(ii)
+                end do
+            else if (for_discret%nno .eq. 2) then
                 do ii = 1, for_discret%nc
-                    zr(ifono-1+ii)                = dfg(ii)                - fgm(ii)
-                    zr(ifono-1+ii+for_discret%nc) = dfg(ii+for_discret%nc) + fgm(ii+for_discret%nc)
-                enddo
-            endif
-        endif
-    endif
+                    zr(ifono-1+ii) = dfg(ii)-fgm(ii)
+                    zr(ifono-1+ii+for_discret%nc) = dfg(ii+for_discret%nc)+fgm(ii+for_discret%nc)
+                end do
+            end if
+        end if
+    end if
 !
 end subroutine

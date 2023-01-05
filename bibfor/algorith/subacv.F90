@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -39,16 +39,16 @@ subroutine subacv(cova, metr, jac, cnva, a)
 !
 !    CALCUL DE LA METRIQUE CONTRAVARIANTE
     det = jac**2
-    a(1,1) = metr(2,2) / det
-    a(2,2) = metr(1,1) / det
-    a(1,2) = - metr(2,1) / det
-    a(2,1) = a(1,2)
+    a(1, 1) = metr(2, 2)/det
+    a(2, 2) = metr(1, 1)/det
+    a(1, 2) = -metr(2, 1)/det
+    a(2, 1) = a(1, 2)
 !
 !
 !    CALCUL DES VECTEURS CONTRAVARIANTS
     do i = 1, 3
-        cnva(i,1) = a(1,1)*cova(i,1) + a(1,2)*cova(i,2)
-        cnva(i,2) = a(2,1)*cova(i,1) + a(2,2)*cova(i,2)
+        cnva(i, 1) = a(1, 1)*cova(i, 1)+a(1, 2)*cova(i, 2)
+        cnva(i, 2) = a(2, 1)*cova(i, 1)+a(2, 2)*cova(i, 2)
     end do
 !
 !

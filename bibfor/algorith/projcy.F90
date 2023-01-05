@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -49,7 +49,7 @@ subroutine projcy(nomres)
     integer :: llref
     character(len=8), pointer :: cycl_type(:) => null()
 !-----------------------------------------------------------------------
-    data nook /.true./
+    data nook/.true./
 !-----------------------------------------------------------------------
 !
 !--------------------RECUPERATION DES CONCEPTS AMONT--------------------
@@ -59,43 +59,43 @@ subroutine projcy(nomres)
 !
 !-------------CAS DE LA DONNEE D'UNE BASE MODALE------------------------
 !
-    soumat='&&OP0080.CYCLIC.SOUS.MAT'
-    repmat='&&OP0080.CYCLIC.REPE.MAT'
+    soumat = '&&OP0080.CYCLIC.SOUS.MAT'
+    repmat = '&&OP0080.CYCLIC.REPE.MAT'
 !
 !--------------RECUPERATION DU TYPE D'INTERFACE-------------------------
 !
     call jeveuo(nomres//'.CYCL_TYPE', 'L', vk8=cycl_type)
-    typint=cycl_type(1)
+    typint = cycl_type(1)
 !
 !----------------CALCUL SOUS-MATRICES DANS LE CAS CRAIG-BAMPTON---------
 !                        ET CRAIG-BAMPTON HARMONIQUE
 !
     if (typint .eq. 'CRAIGB  ' .or. typint .eq. 'CB_HARMO') then
         call prcycb(nomres, soumat, repmat)
-        nook=.false.
-    endif
+        nook = .false.
+    end if
 !
 !----------------CALCUL SOUS-MATRICES DANS LE CAS MAC NEAL--------------
 !
     if (typint .eq. 'MNEAL  ') then
         call prcymn(nomres, soumat, repmat)
-        nook=.false.
-    endif
+        nook = .false.
+    end if
 !
 !----------------CALCUL SOUS-MATRICES DANS LE CAS AUCUN-----------------
 !        (=MAC NEAL SANS FLEXIBILITE RESIDUELLE)
 !
     if (typint .eq. 'AUCUN   ') then
         call prcymn(nomres, soumat, repmat)
-        nook=.false.
-    endif
+        nook = .false.
+    end if
 !
 !--------------AUTRE CAS -----------------------------------------------
 !
     if (nook) then
         valk = typint
         call utmess('F', 'ALGORITH14_3', sk=valk)
-    endif
+    end if
 !
     call jedema()
 end subroutine

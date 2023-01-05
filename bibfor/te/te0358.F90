@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 !
 subroutine te0358(option, nomte)
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterf_types.h"
@@ -38,8 +38,8 @@ implicit none
 #include "asterfort/Behaviour_type.h"
 #include "asterfort/Metallurgy_type.h"
 !
-character(len=16), intent(in) :: option
-character(len=16), intent(in) :: nomte
+    character(len=16), intent(in) :: option
+    character(len=16), intent(in) :: nomte
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -72,7 +72,7 @@ character(len=16), intent(in) :: nomte
     aster_logical :: l_temp
     character(len=16) :: elas_keyword
     character(len=16) :: metaRela, metaGlob
-    real(kind=8), parameter :: kron(6) = (/1.d0,1.d0,1.d0,0.d0,0.d0,0.d0/)
+    real(kind=8), parameter :: kron(6) = (/1.d0, 1.d0, 1.d0, 0.d0, 0.d0, 0.d0/)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -81,11 +81,11 @@ character(len=16), intent(in) :: nomte
 !
 ! - Element reference
 !
-    call elrefe_info(fami=fami,nno=nno,&
-                     npg=npg,jpoids=j_poids,jvf=j_vf,jdfde=j_dfde)
-    call tecach('OOO', 'PVARIPR', 'L', iret, nval=7,&
+    call elrefe_info(fami=fami, nno=nno, &
+                     npg=npg, jpoids=j_poids, jvf=j_vf, jdfde=j_dfde)
+    call tecach('OOO', 'PVARIPR', 'L', iret, nval=7, &
                 itab=jtab)
-    lgpg  = max(jtab(6),1)*jtab(7)
+    lgpg = max(jtab(6), 1)*jtab(7)
 !
 ! - Geometry
 !
@@ -100,19 +100,19 @@ character(len=16), intent(in) :: nomte
 !
 ! - Cannot evaluate command variables effect for Mfront behaviors
 !
-    if ((metaRela.eq.'MFRONT').or.(metaRela.eq.'AnisoLemaitre')&
-        .or.(metaRela(1:4).eq.'Meta')) then
+    if ((metaRela .eq. 'MFRONT') .or. (metaRela .eq. 'AnisoLemaitre') &
+        .or. (metaRela(1:4) .eq. 'Meta')) then
         goto 99
-    endif
+    end if
 !
 ! - Get type of phasis
 !
     metaPhasName = zk16(j_compor-1+META_PHAS)
     call metaGetType(meta_type, nb_phasis)
-    ASSERT(nb_phasis.le.5)
-    if ((meta_type .eq. META_NONE).or.(rela_comp.eq.'META_LEMA_ANI')) then
+    ASSERT(nb_phasis .le. 5)
+    if ((meta_type .eq. META_NONE) .or. (rela_comp .eq. 'META_LEMA_ANI')) then
         goto 99
-    endif
+    end if
 !
 ! - Check type of phasis
 !
@@ -120,20 +120,20 @@ character(len=16), intent(in) :: nomte
     if (metaPhasName .eq. 'ACIER') then
         if (meta_type .ne. META_STEEL) then
             valk(2) = 'ZIRC'
-            call utmess('F', 'COMPOR3_8', nk = 2, valk = valk)
-        endif
+            call utmess('F', 'COMPOR3_8', nk=2, valk=valk)
+        end if
     elseif (metaPhasName .eq. 'ZIRC') then
         if (meta_type .ne. META_ZIRC) then
             valk(2) = 'ACIER'
-            call utmess('F', 'COMPOR3_8', nk = 2, valk = valk)
-        endif
+            call utmess('F', 'COMPOR3_8', nk=2, valk=valk)
+        end if
     else
         goto 99
-    endif
+    end if
 !
 ! - Stresses
 !
-    nb_sigm=6
+    nb_sigm = 6
     call jevech('PCONTMR', 'L', j_sigm)
 !
 ! - Internal variables
@@ -155,67 +155,67 @@ character(len=16), intent(in) :: nomte
     end do
 !
     do ipg = 1, npg
-        k=(ipg-1)*nno
+        k = (ipg-1)*nno
 !
 ! ----- Derived of shape functions
 !
-        call dfdm3d(nno, ipg, j_poids, j_dfde, zr(j_geom),&
+        call dfdm3d(nno, ipg, j_poids, j_dfde, zr(j_geom), &
                     poids, dfdx, dfdy, dfdz)
 !
 ! ----- Get current temperature
 !
-        call rcvarc(' ', 'TEMP', '+', fami, ipg,&
+        call rcvarc(' ', 'TEMP', '+', fami, ipg, &
                     1, temp, iret)
-        l_temp  = iret.eq.0
+        l_temp = iret .eq. 0
 !
 ! ----- Get phasis
 !
         phas_prev(:) = 0.d0
         phas_curr(:) = 0.d0
-        call metaGetPhase(fami     , '-'      , ipg        , ispg, meta_type,&
-                             nb_phasis, phas_prev)
-        call metaGetPhase(fami     , '+'      , ipg        , ispg, meta_type,&
-                             nb_phasis, phas_curr, zcold_ = zcold_curr)
+        call metaGetPhase(fami, '-', ipg, ispg, meta_type, &
+                          nb_phasis, phas_prev)
+        call metaGetPhase(fami, '+', ipg, ispg, meta_type, &
+                          nb_phasis, phas_curr, zcold_=zcold_curr)
 !
 ! ----- Get elastic parameters
 !
         call get_elas_id(j_mater, elas_id, elas_keyword)
-        call get_elas_para(fami, j_mater , '+', ipg, ispg,&
-                           elas_id  , elas_keyword,&
-                           e_ = young , nu_ = nu)
-        ASSERT(elas_id.eq.1)
+        call get_elas_para(fami, j_mater, '+', ipg, ispg, &
+                           elas_id, elas_keyword, &
+                           e_=young, nu_=nu)
+        ASSERT(elas_id .eq. 1)
         deuxmu = young/(1.d0+nu)
 !
 ! ----- Compute coefficients for second member
 !
-        call meta_vpta_coef(metaRela, metaGlob,&
-                            lgpg      , fami     , ipg      , j_mater  ,&
-                            l_temp   , temp      , meta_type, nb_phasis, phas_prev,&
-                            phas_curr, zcold_curr, young    , deuxmu   , coef     ,&
+        call meta_vpta_coef(metaRela, metaGlob, &
+                            lgpg, fami, ipg, j_mater, &
+                            l_temp, temp, meta_type, nb_phasis, phas_prev, &
+                            phas_curr, zcold_curr, young, deuxmu, coef, &
                             trans)
 !
 ! ----- Compute stresses
 !
         sigmo = 0.d0
         do i = 1, 3
-            sigmo = sigmo + zr(j_sigm+(ipg-1)*nb_sigm+i-1)
+            sigmo = sigmo+zr(j_sigm+(ipg-1)*nb_sigm+i-1)
         end do
         sigmo = sigmo/3.d0
 !
         do i = 1, nb_sigm
             sigdv(i) = zr(j_sigm+(ipg-1)*nb_sigm+i-1)-sigmo*kron(i)
-            sig(i)   = coef*(1.5d0*trans*sigdv(i))
-            sig(i)   = deuxmu*sig(i)
+            sig(i) = coef*(1.5d0*trans*sigdv(i))
+            sig(i) = deuxmu*sig(i)
         end do
 !
 ! ----- Second member
 !
         do i = 1, nno
-            zr(j_vectu+3*(i-1))   = zr(j_vectu+3*(i-1))   +&
-                                    poids*(sig(1)*dfdx(i)+sig(4)*dfdy(i)+sig(5)*dfdz(i))
-            zr(j_vectu+3*(i-1)+1) = zr(j_vectu+3*(i-1)+1) +&
+            zr(j_vectu+3*(i-1)) = zr(j_vectu+3*(i-1))+ &
+                                  poids*(sig(1)*dfdx(i)+sig(4)*dfdy(i)+sig(5)*dfdz(i))
+            zr(j_vectu+3*(i-1)+1) = zr(j_vectu+3*(i-1)+1)+ &
                                     poids*(sig(2)*dfdy(i)+sig(4)*dfdx(i)+sig(6)*dfdz(i))
-            zr(j_vectu+3*(i-1)+2) = zr(j_vectu+3*(i-1)+2) +&
+            zr(j_vectu+3*(i-1)+2) = zr(j_vectu+3*(i-1)+2)+ &
                                     poids*(sig(3)*dfdz(i)+sig(5)*dfdx(i)+sig(6)*dfdy(i))
         end do
     end do

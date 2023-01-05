@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -35,16 +35,16 @@ subroutine peaire(resu, mesh, nbocc)
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
-integer :: nbocc
-character(len=*) :: resu
-character(len=8), intent(in) :: mesh
+    integer :: nbocc
+    character(len=*) :: resu
+    character(len=8), intent(in) :: mesh
 !     OPERATEUR   POST_ELEM
 !     TRAITEMENT DU MOT CLE-FACTEUR "AIRE_INTERNE"
 !     ------------------------------------------------------------------
 !
-    integer :: nbparr, ibid, iret, iocc, ng,  ngb, jgb, igb, nbb
+    integer :: nbparr, ibid, iret, iocc, ng, ngb, jgb, igb, nbb
     integer :: ifm, niv, iadgma
-    parameter    ( nbparr = 3 )
+    parameter(nbparr=3)
     real(kind=8) :: valpar(nbparr), aire, long
     character(len=3) :: typarr(nbparr)
     character(len=8) :: k8b
@@ -52,13 +52,13 @@ character(len=8), intent(in) :: mesh
     character(len=24) :: grpma
     complex(kind=8) :: c16b
 !     ------------------------------------------------------------------
-    data noparr / 'GROUP_MA' , 'AIRE' , 'LONGUEUR' /
-    data typarr / 'K24' , 'R' , 'R' /
+    data noparr/'GROUP_MA', 'AIRE', 'LONGUEUR'/
+    data typarr/'K24', 'R', 'R'/
 !     ------------------------------------------------------------------
 !
     call jemarq()
-    ibid=0
-    c16b=(0.d0,0.d0)
+    ibid = 0
+    c16b = (0.d0, 0.d0)
 !
 ! --- RECUPERATION DU NIVEAU D'IMPRESSION
     call infniv(ifm, niv)
@@ -71,24 +71,24 @@ character(len=8), intent(in) :: mesh
     call tbajpa(resu, nbparr, noparr, typarr)
 !
     do iocc = 1, nbocc
-        call getvem(mesh, 'GROUP_MA', 'AIRE_INTERNE', 'GROUP_MA_BORD', iocc,&
+        call getvem(mesh, 'GROUP_MA', 'AIRE_INTERNE', 'GROUP_MA_BORD', iocc, &
                     0, k8b, ngb)
         if (ngb .ne. 0) then
             ngb = -ngb
             call wkvect('&&PEAIRE.GROUP_NO', 'V V K24', ngb, jgb)
-            call getvem(mesh, 'GROUP_MA', 'AIRE_INTERNE', 'GROUP_MA_BORD', iocc,&
+            call getvem(mesh, 'GROUP_MA', 'AIRE_INTERNE', 'GROUP_MA_BORD', iocc, &
                         ngb, zk24(jgb), ng)
             do igb = 1, ngb
                 call jeexin(jexnom(grpma, zk24(jgb+igb-1)), iret)
                 if (iret .eq. 0) then
                     call utmess('A', 'UTILITAI3_46', sk=zk24(jgb+igb-1))
                     cycle
-                endif
+                end if
                 call jelira(jexnom(grpma, zk24(jgb+igb-1)), 'LONMAX', nbb)
                 if (nbb .eq. 0) then
                     call utmess('A', 'UTILITAI3_47', sk=zk24(jgb+igb-1))
                     cycle
-                endif
+                end if
                 call jeveuo(jexnom(grpma, zk24(jgb+igb-1)), 'L', iadgma)
 !
 !              BORD DU TROU : CALCUL DE L'AIRE
@@ -96,11 +96,11 @@ character(len=8), intent(in) :: mesh
                 call peair1(mesh, nbb, zi(iadgma), aire, long)
                 valpar(1) = aire
                 valpar(2) = long
-                call tbajli(resu, nbparr, noparr, [ibid], valpar,&
+                call tbajli(resu, nbparr, noparr, [ibid], valpar, &
                             [c16b], zk24(jgb+igb-1), 0)
             end do
             call jedetr('&&PEAIRE.GROUP_NO')
-        endif
+        end if
     end do
 !
     call jedema()

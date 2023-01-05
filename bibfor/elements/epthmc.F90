@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,11 +16,11 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine epthmc(fami      , nno      , ndim  , nbsig, npg    ,&
-                  shape_func, xyz      , repere, time , j_mater,&
-                  option    , epsi_varc)
+subroutine epthmc(fami, nno, ndim, nbsig, npg, &
+                  shape_func, xyz, repere, time, j_mater, &
+                  option, epsi_varc)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/epstmc.h"
 #include "asterfort/lteatt.h"
@@ -67,12 +67,12 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    zero   = 0.d0
+    zero = 0.d0
     epsi_varc(1:nbsig*npg) = zero
-    ndim2  = ndim
-    if (lteatt('FOURIER','OUI')) then
+    ndim2 = ndim
+    if (lteatt('FOURIER', 'OUI')) then
         ndim2 = 2
-    endif
+    end if
 !
 ! - Loop on Gauss points
 !
@@ -83,53 +83,53 @@ implicit none
         xyzgau(1:3) = zero
         do i = 1, nno
             do idim = 1, ndim2
-                xyzgau(idim) = xyzgau(idim) + shape_func(i+nno*(kpg-1))*xyz( idim+ndim2*(i-1))
+                xyzgau(idim) = xyzgau(idim)+shape_func(i+nno*(kpg-1))*xyz(idim+ndim2*(i-1))
             end do
         end do
 !
 ! ----- Thermic strains
 !
         optio2 = ' '
-        call epstmc(fami, ndim, time, '+', kpg,&
-                    1, xyzgau, repere, j_mater, optio2,&
+        call epstmc(fami, ndim, time, '+', kpg, &
+                    1, xyzgau, repere, j_mater, optio2, &
                     epsi_ther)
 !
 ! ----- Hydric strains
 !
-        optio2 = option(1:9) // '_HYDR'
-        call epstmc(fami, ndim, time, '+', kpg,&
-                    1, xyzgau, repere, j_mater, optio2,&
+        optio2 = option(1:9)//'_HYDR'
+        call epstmc(fami, ndim, time, '+', kpg, &
+                    1, xyzgau, repere, j_mater, optio2, &
                     epsi_hydr)
 !
 ! ----- Drying strains
 !
-        optio2 = option(1:9) // '_SECH'
-        call epstmc(fami, ndim, time, '+', kpg,&
-                    1, xyzgau, repere, j_mater, optio2,&
+        optio2 = option(1:9)//'_SECH'
+        call epstmc(fami, ndim, time, '+', kpg, &
+                    1, xyzgau, repere, j_mater, optio2, &
                     epsi_sech)
 !
 ! ----- Anelastic strains (given by user)
 !
-        optio2 = option(1:9) // '_EPSA'
-        call epstmc(fami, ndim, time, '+', kpg,&
-                    1, xyzgau, repere, j_mater, optio2,&
+        optio2 = option(1:9)//'_EPSA'
+        call epstmc(fami, ndim, time, '+', kpg, &
+                    1, xyzgau, repere, j_mater, optio2, &
                     epsi_anel)
 !
 ! ----- Pressure strains
 !
-        optio2 = option(1:9) // '_PTOT'
-        call epstmc(fami, ndim, time, '+', kpg,&
-                    1, xyzgau, repere, j_mater, optio2,&
+        optio2 = option(1:9)//'_PTOT'
+        call epstmc(fami, ndim, time, '+', kpg, &
+                    1, xyzgau, repere, j_mater, optio2, &
                     epsi_pres)
 !
 ! ----- Total command variables strains
 !
         do i = 1, nbsig
-            epsi_varc(i+nbsig*(kpg-1)) = epsi_varc(i+nbsig*(kpg-1)) + &
-                                         epsi_ther(i)+&
-                                         epsi_hydr(i)+&
-                                         epsi_sech(i)+&
-                                         epsi_anel(i)+&
+            epsi_varc(i+nbsig*(kpg-1)) = epsi_varc(i+nbsig*(kpg-1))+ &
+                                         epsi_ther(i)+ &
+                                         epsi_hydr(i)+ &
+                                         epsi_sech(i)+ &
+                                         epsi_anel(i)+ &
                                          epsi_pres(i)
         end do
     end do

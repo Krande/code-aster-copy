@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -77,8 +77,8 @@ subroutine rfinte(ispec)
             call utmess('F', 'UTILITAI_55', sk=nocham)
         else
             paray = noch
-        endif
-    endif
+        end if
+    end if
 !
     chfreq = nospec//'.DISC'
     call jeveuo(chfreq, 'L', lfreq)
@@ -96,14 +96,14 @@ subroutine rfinte(ispec)
             noej = noei
         else
             call getvtx(' ', 'NOEUD_J', scal=noej, nbret=n4)
-        endif
+        end if
         call getvtx(' ', 'NOM_CMP_I', scal=cmpi, nbret=n4)
         call getvtx(' ', 'NOM_CMP_J', nbval=0, nbret=n4)
         if (n4 .eq. 0) then
             cmpj = cmpi
         else
             call getvtx(' ', 'NOM_CMP_J', scal=cmpj, nbret=n4)
-        endif
+        end if
         chnoei = nospec//'.NOEI'
         chnoej = nospec//'.NOEJ'
         chcmpi = nospec//'.CMPI'
@@ -114,11 +114,11 @@ subroutine rfinte(ispec)
         call jeveuo(chcmpj, 'L', lcmpj)
         call jelira(chnoei, 'LONMAX', mxval)
         do i1 = 1, mxval
-            if ((zk8(lnoei-1+i1) .eq. noei) .and. (zk8(lnoej-1+i1) .eq. noej) .and.&
+            if ((zk8(lnoei-1+i1) .eq. noei) .and. (zk8(lnoej-1+i1) .eq. noej) .and. &
                 (zk8(lcmpi-1+i1) .eq. cmpi) .and. (zk8(lcmpj-1+i1) .eq. cmpj)) then
                 indi = i1
                 indice = .true.
-            endif
+            end if
         end do
     else if (n3 .lt. 0) then
         call getvis(' ', 'NUME_ORDRE_I', scal=numi, nbret=n4)
@@ -127,7 +127,7 @@ subroutine rfinte(ispec)
             numj = numi
         else
             call getvis(' ', 'NUME_ORDRE_J', scal=numj, nbret=n4)
-        endif
+        end if
         chnumi = nospec//'.NUMI'
         chnumj = nospec//'.NUMJ'
         call jeveuo(chnumi, 'L', lnumi)
@@ -137,7 +137,7 @@ subroutine rfinte(ispec)
             if ((zi(lnumi-1+i1) .eq. numi) .and. (zi(lnumj-1+i1) .eq. numj)) then
                 indi = i1
                 indice = .true.
-            endif
+            end if
         end do
     else if (n5 .lt. 0) then
         call getvis(' ', 'NUME_ORDRE', scal=num, nbret=n4)
@@ -148,13 +148,13 @@ subroutine rfinte(ispec)
             if ((zi(lnum-1+i1) .eq. num) .and. (.not. indice)) then
                 indi = i1
                 indice = .true.
-            endif
+            end if
         end do
-    endif
+    end if
 !
     if (.not. indice) then
         call utmess('F', 'UTILITAI4_53')
-    endif
+    end if
 !
     chfreq = nospec//'.DISC'
     call jelira(chfreq, 'LONMAX', nbfreq)
@@ -164,7 +164,7 @@ subroutine rfinte(ispec)
     call jeveuo(jexnum(chvale, indi), 'L', lvale)
     call jelira(jexnum(chvale, indi), 'LONMAX', nbval)
 !
-    ASSERT(lxlgut(nomfon).le.24)
+    ASSERT(lxlgut(nomfon) .le. 24)
     call wkvect(nomfon//'.PROL', 'G V K24', 6, lpro)
     zk24(lpro+1) = 'LIN LIN '
     zk24(lpro+2) = abscisse
@@ -191,7 +191,7 @@ subroutine rfinte(ispec)
             zr(kvale+nbfreq+2*(i-1)) = zr(lvale+2*(i-1))
             zr(kvale+nbfreq+2*(i-1)+1) = zr(lvale+2*(i-1)+1)
         end do
-    endif
+    end if
 !
     call jedema()
 end subroutine

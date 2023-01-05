@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -34,13 +34,13 @@ subroutine ulisog(unit, fname, etat)
 !
 !
     integer :: mxf
-    parameter       (mxf=100)
+    parameter(mxf=100)
     character(len=1) :: typefi(mxf), accefi(mxf), etatfi(mxf), modifi(mxf)
     character(len=16) :: ddname(mxf)
     character(len=255) :: namefi(mxf)
     integer :: first, unitfi(mxf), nbfile
-    common/ asgfi1 / first, unitfi      , nbfile
-    common/ asgfi2 / namefi,ddname,typefi,accefi,etatfi,modifi
+    common/asgfi1/first, unitfi, nbfile
+    common/asgfi2/namefi, ddname, typefi, accefi, etatfi, modifi
 !
     character(len=8) :: k8bid
     integer :: i
@@ -48,9 +48,9 @@ subroutine ulisog(unit, fname, etat)
     if (first .ne. 17111990) call ulinit()
 !
     if (unit .lt. 0) then
-        write(k8bid,'(I4)') -unit
+        write (k8bid, '(I4)')-unit
         call utmess('F', 'UTILITAI5_9', sk=k8bid)
-    endif
+    end if
     fname = ' '
     etat = 'F'
     do i = 1, nbfile
@@ -58,7 +58,7 @@ subroutine ulisog(unit, fname, etat)
             fname = namefi(i)
             etat = etatfi(i)
             goto 999
-        endif
+        end if
     end do
 999 continue
 end subroutine

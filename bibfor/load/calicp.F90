@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 !
 subroutine calicp(load, mesh, model, valeType)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -40,8 +40,8 @@ implicit none
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
-character(len=8), intent(in) :: load, mesh, model
-character(len=4), intent(in) :: valeType
+    character(len=8), intent(in) :: load, mesh, model
+    character(len=4), intent(in) :: valeType
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -97,13 +97,13 @@ character(len=4), intent(in) :: valeType
 !
     if (valeType .eq. 'COMP') then
         ASSERT(.false.)
-    endif
+    end if
 ! - Model informations
     call dismoi('DIM_GEOM', model, 'MODELE', repi=geomDime)
     call dismoi('NOM_LIGREL', model, 'MODELE', repk=modelLigrel)
-    if (.not.(geomDime.eq.2.or.geomDime.eq.3)) then
+    if (.not. (geomDime .eq. 2 .or. geomDime .eq. 3)) then
         call utmess('F', 'CHARGES2_6')
-    endif
+    end if
 
 ! - Information about <GRANDEUR>
 !
@@ -111,7 +111,7 @@ character(len=4), intent(in) :: valeType
     call jeveuo(jexnom('&CATA.GD.NOMCMP', nomg), 'L', jnom)
     call jelira(jexnom('&CATA.GD.NOMCMP', nomg), 'LONMAX', nb_cmp, k8dummy)
     call dismoi('NB_EC', nomg, 'GRANDEUR', repi=nbec)
-    ASSERT(nbec.le.10)
+    ASSERT(nbec .le. 10)
 !
 ! - Index in DEPL_R <GRANDEUR> for DX, DY, DZ, DRX, DRY, DRZ
 !
@@ -127,12 +127,12 @@ character(len=4), intent(in) :: valeType
     cmp_index_dry = indik8(zk8(jnom), cmp_name, 1, nb_cmp)
     cmp_name = 'DRZ'
     cmp_index_drz = indik8(zk8(jnom), cmp_name, 1, nb_cmp)
-    ASSERT(cmp_index_dx.gt.0)
-    ASSERT(cmp_index_dy.gt.0)
-    ASSERT(cmp_index_dz.gt.0)
-    ASSERT(cmp_index_drx.gt.0)
-    ASSERT(cmp_index_dry.gt.0)
-    ASSERT(cmp_index_drz.gt.0)
+    ASSERT(cmp_index_dx .gt. 0)
+    ASSERT(cmp_index_dy .gt. 0)
+    ASSERT(cmp_index_dz .gt. 0)
+    ASSERT(cmp_index_drx .gt. 0)
+    ASSERT(cmp_index_dry .gt. 0)
+    ASSERT(cmp_index_drz .gt. 0)
 !
 ! - Loop on factor keyword
 !
@@ -141,18 +141,18 @@ character(len=4), intent(in) :: valeType
 ! ----- Read nodes - First list
 !
         suffix = '_1'
-        call getnode(mesh, keywordfact, iocc, 'F', list_node_i1,&
-                     nb_node_1, suffix = suffix)
+        call getnode(mesh, keywordfact, iocc, 'F', list_node_i1, &
+                     nb_node_1, suffix=suffix)
 !
 ! ----- Read nodes - Second list
 !
         suffix = '_2'
-        call getnode(mesh, keywordfact, iocc, 'F', list_node_i2,&
-                     nb_node_2, suffix = suffix)
+        call getnode(mesh, keywordfact, iocc, 'F', list_node_i2, &
+                     nb_node_2, suffix=suffix)
 !
         if (nb_node_1 .ne. nb_node_2) then
             call utmess('F', 'CHARGES2_8')
-        endif
+        end if
         nb_node = nb_node_1
 !
 ! ----- Create output lists
@@ -162,11 +162,11 @@ character(len=4), intent(in) :: valeType
 !
 ! ----- Pairing the two lists with transformation
 !
-        call char_pair_node(mesh, nb_node,&
+        call char_pair_node(mesh, nb_node, &
                             list_node_i1, list_node_i2, list_node_o1, list_node_o2, i_error)
         if (i_error .ne. 0) then
             call utmess('F', 'CHARGES2_9')
-        endif
+        end if
 !
 ! ----- Compute linear relations
 !
@@ -176,14 +176,14 @@ character(len=4), intent(in) :: valeType
             zi(j_list_pair-1+1) = nume_node_1
             zi(j_list_pair-1+2) = nume_node_2
             if (geomDime .eq. 2) then
-                call drz12d(mesh, modelLigrel, valeType, 2, list_pair,&
+                call drz12d(mesh, modelLigrel, valeType, 2, list_pair, &
                             cmp_index_drz, list_rela, nom_noeuds)
             else if (geomDime .eq. 3) then
-                call drz13d(mesh, modelLigrel, valeType, 2, list_pair,&
-                            cmp_index_dx, cmp_index_dy, cmp_index_dz, cmp_index_drx,&
+                call drz13d(mesh, modelLigrel, valeType, 2, list_pair, &
+                            cmp_index_dx, cmp_index_dy, cmp_index_dz, cmp_index_drx, &
                             cmp_index_dry, cmp_index_drz, list_rela, nom_noeuds)
-            endif
-        enddo
+            end if
+        end do
         call jedetr(list_node_i1)
         call jedetr(list_node_i2)
         call jedetr(list_node_o1)

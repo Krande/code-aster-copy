@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,11 +18,11 @@
 !
 module model_module
 ! ==================================================================================================
-implicit none
+    implicit none
 ! ==================================================================================================
-public  :: getFSICell, getFluidCell
+    public  :: getFSICell, getFluidCell
 ! ==================================================================================================
-private
+    private
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/as_allocate.h"
@@ -48,66 +48,66 @@ contains
 ! OUT cellFSI          : for each cell in mesh a flag for FSI cell
 !
 ! --------------------------------------------------------------------------------------------------
-subroutine getFSICell(modelz, nbCellFSI, cellFSI)
+    subroutine getFSICell(modelz, nbCellFSI, cellFSI)
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
-    character(len=*), intent(in) :: modelz
-    integer, intent(out) :: nbCellFSI
-    integer, pointer :: cellFSI(:)
+        character(len=*), intent(in) :: modelz
+        integer, intent(out) :: nbCellFSI
+        integer, pointer :: cellFSI(:)
 ! - Local
-    integer :: iCell, nbCell, iCellFSI
-    integer :: cellTypeNume, iret
-    integer, pointer :: modelCells(:) => null()
-    character(len=8) :: mesh, model
-    character(len=16) :: cellTypeName
-    aster_logical, pointer :: isCellFSI(:) => null()
+        integer :: iCell, nbCell, iCellFSI
+        integer :: cellTypeNume, iret
+        integer, pointer :: modelCells(:) => null()
+        character(len=8) :: mesh, model
+        character(len=16) :: cellTypeName
+        aster_logical, pointer :: isCellFSI(:) => null()
 
 !   ------------------------------------------------------------------------------------------------
-    nbCellFSI = 0
-    model     = modelZ
+        nbCellFSI = 0
+        model = modelZ
 !
 ! - Access to model and mesh
 !
-    call dismoi('NOM_MAILLA', model, 'MODELE', repk = mesh)
-    call dismoi('NB_MA_MAILLA', mesh, 'MAILLAGE', repi = nbCell)
-    call jeexin(model//'.MAILLE', iret)
-    if (iret .eq. 0) then
+        call dismoi('NOM_MAILLA', model, 'MODELE', repk=mesh)
+        call dismoi('NB_MA_MAILLA', mesh, 'MAILLAGE', repi=nbCell)
+        call jeexin(model//'.MAILLE', iret)
+        if (iret .eq. 0) then
 ! ----- No cells (sub-structuring)
-        goto 99
-    endif
-    call jeveuo(model//'.MAILLE', 'L', vi=modelCells)
+            goto 99
+        end if
+        call jeveuo(model//'.MAILLE', 'L', vi=modelCells)
 !
-    AS_ALLOCATE(vl = isCellFSI, size = nbCell)
-    do iCell = 1, nbCell
-        cellTypeNume = modelCells(iCell)
-        if (cellTypeNume .ne. 0) then
-            call jenuno(jexnum('&CATA.TE.NOMTE', cellTypeNume), cellTypeName)
-            if (lteatt('FSI', 'OUI', typel=cellTypeName)) then
-                nbCellFSI = nbCellFSI + 1
-                isCellFSI(iCell) = ASTER_TRUE
-            endif
-        endif
-    end do
+        AS_ALLOCATE(vl=isCellFSI, size=nbCell)
+        do iCell = 1, nbCell
+            cellTypeNume = modelCells(iCell)
+            if (cellTypeNume .ne. 0) then
+                call jenuno(jexnum('&CATA.TE.NOMTE', cellTypeNume), cellTypeName)
+                if (lteatt('FSI', 'OUI', typel=cellTypeName)) then
+                    nbCellFSI = nbCellFSI+1
+                    isCellFSI(iCell) = ASTER_TRUE
+                end if
+            end if
+        end do
 !
 ! - Create list of FSI elements
 !
-    if (nbCellFSI .ne. 0) then
-        iCellFSI = 0
-        AS_ALLOCATE(vi = cellFSI, size = nbCellFSI)
-        do iCell = 1, nbCell
-            if (isCellFSI(iCell)) then
-                iCellFSI = iCellFSI + 1
-                cellFSI(iCellFSI) = iCell
-            endif
-        end do
-        ASSERT(iCellFSI .eq. nbCellFSI)
-    endif
-    AS_DEALLOCATE(vl = isCellFSI)
+        if (nbCellFSI .ne. 0) then
+            iCellFSI = 0
+            AS_ALLOCATE(vi=cellFSI, size=nbCellFSI)
+            do iCell = 1, nbCell
+                if (isCellFSI(iCell)) then
+                    iCellFSI = iCellFSI+1
+                    cellFSI(iCellFSI) = iCell
+                end if
+            end do
+            ASSERT(iCellFSI .eq. nbCellFSI)
+        end if
+        AS_DEALLOCATE(vl=isCellFSI)
 !
-99  continue
+99      continue
 !
 !   ------------------------------------------------------------------------------------------------
-end subroutine
+    end subroutine
 ! --------------------------------------------------------------------------------------------------
 !
 ! getFluidCell
@@ -119,56 +119,56 @@ end subroutine
 ! OUT cellFluid        : for each cell in mesh a flag for fluid cells
 !
 ! --------------------------------------------------------------------------------------------------
-subroutine getFluidCell(modelz, nbCellFluid, cellFluid)
+    subroutine getFluidCell(modelz, nbCellFluid, cellFluid)
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
-    character(len=*), intent(in) :: modelz
-    integer, intent(out) :: nbCellFluid
-    integer, pointer :: cellFluid(:)
+        character(len=*), intent(in) :: modelz
+        integer, intent(out) :: nbCellFluid
+        integer, pointer :: cellFluid(:)
 ! - Local
-    integer :: iCell, nbCell, iCellFluid
-    integer :: cellTypeNume
-    integer, pointer :: modelCells(:) => null()
-    character(len=8) :: mesh, model
-    character(len=16) :: cellTypeName
-    aster_logical, pointer :: isCellFluid(:) => null()
+        integer :: iCell, nbCell, iCellFluid
+        integer :: cellTypeNume
+        integer, pointer :: modelCells(:) => null()
+        character(len=8) :: mesh, model
+        character(len=16) :: cellTypeName
+        aster_logical, pointer :: isCellFluid(:) => null()
 
 !   ------------------------------------------------------------------------------------------------
-    nbCellFluid = 0
-    model       = modelZ
+        nbCellFluid = 0
+        model = modelZ
 !
 ! - Access to model and mesh
 !
-    call dismoi('NOM_MAILLA', model, 'MODELE', repk = mesh)
-    call dismoi('NB_MA_MAILLA', mesh, 'MAILLAGE', repi = nbCell)
-    call jeveuo(model//'.MAILLE', 'L', vi=modelCells)
+        call dismoi('NOM_MAILLA', model, 'MODELE', repk=mesh)
+        call dismoi('NB_MA_MAILLA', mesh, 'MAILLAGE', repi=nbCell)
+        call jeveuo(model//'.MAILLE', 'L', vi=modelCells)
 !
-    AS_ALLOCATE(vl = isCellFluid, size = nbCell)
-    do iCell = 1, nbCell
-        cellTypeNume = modelCells(iCell)
-        if (cellTypeNume .ne. 0) then
-            call jenuno(jexnum('&CATA.TE.NOMTE', cellTypeNume), cellTypeName)
-            if (lteatt('FLUIDE', 'OUI', typel=cellTypeName)) then
-                nbCellFluid = nbCellFluid + 1
-                isCellFluid(iCell) = ASTER_TRUE
-            endif
-        endif
-    end do
+        AS_ALLOCATE(vl=isCellFluid, size=nbCell)
+        do iCell = 1, nbCell
+            cellTypeNume = modelCells(iCell)
+            if (cellTypeNume .ne. 0) then
+                call jenuno(jexnum('&CATA.TE.NOMTE', cellTypeNume), cellTypeName)
+                if (lteatt('FLUIDE', 'OUI', typel=cellTypeName)) then
+                    nbCellFluid = nbCellFluid+1
+                    isCellFluid(iCell) = ASTER_TRUE
+                end if
+            end if
+        end do
 !
 ! - Create list of fluid elements
 !
-    iCellFluid = 0
-    AS_ALLOCATE(vi = cellFluid, size = nbCellFluid)
-    do iCell = 1, nbCell
-        if (isCellFluid(iCell)) then
-            iCellFluid = iCellFluid + 1
-            cellFluid(iCellFluid) = iCell
-        endif
-    end do
-    ASSERT(iCellFluid .eq. nbCellFluid)
-    AS_DEALLOCATE(vl = isCellFluid)
+        iCellFluid = 0
+        AS_ALLOCATE(vi=cellFluid, size=nbCellFluid)
+        do iCell = 1, nbCell
+            if (isCellFluid(iCell)) then
+                iCellFluid = iCellFluid+1
+                cellFluid(iCellFluid) = iCell
+            end if
+        end do
+        ASSERT(iCellFluid .eq. nbCellFluid)
+        AS_DEALLOCATE(vl=isCellFluid)
 !
 !   ------------------------------------------------------------------------------------------------
-end subroutine
+    end subroutine
 !
 end module model_module

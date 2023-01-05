@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine peingl(resu, modele, mate, mateco, cara, nh,&
+subroutine peingl(resu, modele, mate, mateco, cara, nh, &
                   nbocc, motfaz)
     implicit none
 #include "asterf_types.h"
@@ -190,7 +190,7 @@ subroutine peingl(resu, modele, mate, mateco, cara, nh,&
     character(len=8) :: resul, crit, noma, nommai, vk8(2), kiordm
     character(len=8) :: kiord, k8b, lpain(14), lpaout(2), typarr(9), nomgd
     character(len=16) :: typres, motfac, noparr(9), ligrmo, compt, option
-    character(len=19) :: knum, ligrel, kins, compor,chvarc, chvref
+    character(len=19) :: knum, ligrel, kins, compor, chvarc, chvref
     character(len=24) :: chgeom, chcara(18), chharm, chvari, chdepl
     character(len=24) :: vk24(2), nomgrm, chsig, lchin(14), lchout(2)
     character(len=24) :: mlggma, mlgnma, chsigm, chdepm, chbid
@@ -204,20 +204,20 @@ subroutine peingl(resu, modele, mate, mateco, cara, nh,&
     integer :: nfiss
     aster_logical :: lxfem
 !
-    data typarr/'I','R','K24','K8','R','R','R','R','R'/
-    data chvarc,chvref /'&&PEINGL.CHVARC','&&PEINGL.CHVARC.REF'/
+    data typarr/'I', 'R', 'K24', 'K8', 'R', 'R', 'R', 'R', 'R'/
+    data chvarc, chvref/'&&PEINGL.CHVARC', '&&PEINGL.CHVARC.REF'/
 !.========================= DEBUT DU CODE EXECUTABLE ==================
 !
     call jemarq()
 !
 ! --- INITIALISATIONS :
 !     ---------------
-    c16b=(0.d0,0.d0)
-    ivari=0
-    chbid='&&PEINGL.VARINUL'
-    compor='&&PEINGL.COMPNUL'
-    compt='XXXXXXXXXXXXXXXX'
-    evol=.false.
+    c16b = (0.d0, 0.d0)
+    ivari = 0
+    chbid = '&&PEINGL.VARINUL'
+    compor = '&&PEINGL.COMPNUL'
+    compt = 'XXXXXXXXXXXXXXXX'
+    evol = .false.
     zero = 0.0d0
     motfac = motfaz
     option = motfaz
@@ -230,39 +230,39 @@ subroutine peingl(resu, modele, mate, mateco, cara, nh,&
     if (motfac(1:4) .eq. 'ENER') then
         noparr(5) = 'TOTALE'
         if (motfac .eq. 'ENER_DISS') then
-            option='DISS_ELEM'
-        else if (motfac.eq.'ENER_ELAS') then
-            option='ENEL_ELEM'
+            option = 'DISS_ELEM'
+        else if (motfac .eq. 'ENER_ELAS') then
+            option = 'ENEL_ELEM'
             noparr(6) = 'MEMBRANE'
             noparr(7) = 'FLEXION'
             noparr(8) = 'CISAILLE'
             noparr(9) = 'COUPL_MF'
             nbparr = 9
-        else if (motfac.eq.'ENER_ELTR') then
-            option='ENTR_ELEM'
-        else if (motfac.eq.'ENER_TOTALE') then
-            option='ENER_TOTALE'
-        endif
-    endif
+        else if (motfac .eq. 'ENER_ELTR') then
+            option = 'ENTR_ELEM'
+        else if (motfac .eq. 'ENER_TOTALE') then
+            option = 'ENER_TOTALE'
+        end if
+    end if
     do i = 1, 5
-        work(i)=0.d0
+        work(i) = 0.d0
     end do
     do i = 1, 6
-        valr(i)=0.d0
+        valr(i) = 0.d0
     end do
 !
     nbgrma_tot = 1
-    if(motfac(1:5) == 'ENER_') then
+    if (motfac(1:5) == 'ENER_') then
         call dismoi('NOM_MAILLA', modele, 'MODELE', repk=noma)
         do iocc = 1, nbocc
-            call getvem(noma, 'GROUP_MA', motfac, 'GROUP_MA', iocc,&
-                            0, k8b, ng)
-            if(ng <0) then
-                nbgrma_tot = nbgrma_tot - ng
+            call getvem(noma, 'GROUP_MA', motfac, 'GROUP_MA', iocc, &
+                        0, k8b, ng)
+            if (ng < 0) then
+                nbgrma_tot = nbgrma_tot-ng
             end if
         end do
     else
-        nbgrma_tot = nbgrma_tot + 1
+        nbgrma_tot = nbgrma_tot+1
     end if
     AS_ALLOCATE(vr=energy_grpma, size=nbgrma_tot)
     energy_tout = 0.d0
@@ -275,15 +275,15 @@ subroutine peingl(resu, modele, mate, mateco, cara, nh,&
 !
     if (nr .eq. 0) then
         call utmess('F', 'UTILITAI3_76')
-    endif
+    end if
 !
 ! --- ON VERIFIE QUE LE  RESULTAT A TRAITER EST DE TYPE EVOL_NOLI :
 !     -----------------------------------------------------------
     call gettco(resul, typres)
-    evol=(typres(1:9).eq.'EVOL_NOLI').or.(typres(1:9).eq.'EVOL_ELAS')
-    if (.not.evol) then
+    evol = (typres(1:9) .eq. 'EVOL_NOLI') .or. (typres(1:9) .eq. 'EVOL_ELAS')
+    if (.not. evol) then
         call utmess('F', 'UTILITAI3_77')
-    endif
+    end if
 !
 ! --- RECUPERATION DE LA PRECISION POUR LE TRAITEMENT DES NUMEROS
 ! --- D'ORDRE :
@@ -309,15 +309,15 @@ subroutine peingl(resu, modele, mate, mateco, cara, nh,&
     if (iret .ne. 0) then
         do iord = 1, nbordr
             numord = zi(jord+iord-1)
-            call rsadpa(resul, 'L', 1, 'INST', numord,&
+            call rsadpa(resul, 'L', 1, 'INST', numord, &
                         0, sjv=iainst, styp=k8b)
             zr(jins+iord-1) = zr(iainst)
         end do
-    endif
+    end if
 !
 ! --- VERIFICATIONS ET RECUPERATION DU NOM DU MAILLAGE :
 !     ------------------------------------------------
-    call mecham(option, modele, cara, nh, chgeom,&
+    call mecham(option, modele, cara, nh, chgeom, &
                 chcara, chharm, iret)
     if (iret .ne. 0) goto 80
     noma = chgeom(1:8)
@@ -370,7 +370,7 @@ subroutine peingl(resu, modele, mate, mateco, cara, nh,&
             call etenca(compor, ligrmo, iret)
             if (iret .ne. 0) then
                 call utmess('F', 'UTILITAI2_62')
-            endif
+            end if
 ! ---    RECUPERATION DE LA GRANDEUR (ICI COMPOR)  ---
 ! ---    REFERENCEE PAR LA CARTE COMPO             ---
 !
@@ -383,7 +383,7 @@ subroutine peingl(resu, modele, mate, mateco, cara, nh,&
 !
             if (nec .gt. 1) then
                 call utmess('F', 'UTILITAI2_61')
-            endif
+            end if
 !
 !
 ! ---    NOMBRE DE COMPOSANTES ASSOCIEES A LA GRANDEUR  ---
@@ -415,9 +415,9 @@ subroutine peingl(resu, modele, mate, mateco, cara, nh,&
 ! ---        ON S'ASSURE QUE LA PREMIERE COMPOSANTE DE LA GRANDEUR
 ! ---        QUI EST RELCOM A BIEN ETE AFFECTEE
 !
-                    if (.not.exisdg([dg],1)) then
+                    if (.not. exisdg([dg], 1)) then
                         call utmess('F', 'UTILITAI2_63')
-                    endif
+                    end if
 ! ---        RECUPERATION DU COMPORTEMENT AFFECTE A LA MAILLE
                     compt = vale(1+idebgd+1-1)
 !
@@ -425,18 +425,18 @@ subroutine peingl(resu, modele, mate, mateco, cara, nh,&
                     call jeveuo(jexnum(noma//'.CONNEX', ima), 'L', iconex)
                     call jelira(jexnum(noma//'.CONNEX', ima), 'LONMAX', nbno)
 !
-                endif
+                end if
             end do
 !
 !CC---FIN DE RECUPERATION DU COMPOR
 !
-        endif
+        end if
 !
 ! ---  RECUPERATION DU CHAMP DE CONTRAINTES ASSOCIE AU
 ! ---  NUMERO D'ORDRE COURANT POUR ENER_ELAS, ENER_ELTR ET ENER_TOTALE:
 !      -----------------------------------------------------
-        if (motfac.eq.'ENER_TOTALE' .or. motfac.eq.'ENER_ELAS' .or. motfac.eq.'ENER_ELTR'&
-       .or. motfac(1:6).eq.'INDIC_') then
+        if (motfac .eq. 'ENER_TOTALE' .or. motfac .eq. 'ENER_ELAS' .or. motfac .eq. 'ENER_ELTR' &
+            .or. motfac(1:6) .eq. 'INDIC_') then
             call rsexch('F', resul, 'SIEF_ELGA', numord, chsig, iret)
 !
 ! --- SI LE NUMERO COURANT EST INFERIEUR A NBORDR ON RECUPERE LES
@@ -446,34 +446,34 @@ subroutine peingl(resu, modele, mate, mateco, cara, nh,&
                 numorm = zi(jord+iord-1-1)
                 call codent(numorm, 'G', kiordm)
                 call rsexch('F', resul, 'SIEF_ELGA', numorm, chsigm, iret)
-            endif
-        endif
+            end if
+        end if
 !
 ! ---  RECUPERATION DU CHAMP DES VARIABLES INTERNES ASSOCIE AU
 ! ---  NUMERO D'ORDRE COURANT DANS LE CAS DES EVOL_NOLI
 !      ----------------------
         if (typres(1:9) .eq. 'EVOL_NOLI') then
             call rsexch(' ', resul, 'VARI_ELGA', numord, chvari, iret)
-            ivari=1
+            ivari = 1
             if (iret .gt. 0) then
-                if ( motfac .ne. 'ENER_ELAS' .and. motfac .ne. 'ENER_ELTR' ) then
+                if (motfac .ne. 'ENER_ELAS' .and. motfac .ne. 'ENER_ELTR') then
                     vk24(1) = resul
                     vk24(2) = kiord
                     call utmess('F', 'UTILITAI3_79', nk=2, valk=vk24)
                 else
 !                   -- creation d'un champ de variables internes nul
-                    ivari=0
-                    chbid='&&PEINGL.VARINUL'
-                    call alchml(ligrmo,'TOU_INI_ELGA','PVARI_R','V',chbid,iret,' ')
-                endif
-            endif
-        endif
+                    ivari = 0
+                    chbid = '&&PEINGL.VARINUL'
+                    call alchml(ligrmo, 'TOU_INI_ELGA', 'PVARI_R', 'V', chbid, iret, ' ')
+                end if
+            end if
+        end if
 !
 ! ---  RECUPERATION DU CHAMP DES DEPLACEMENTS ASSOCIE AU
 ! ---  NUMERO D'ORDRE COURANT POUR ENER_ELAS, ENER_ELTR ET ENER_TOTALE:
 !      -----------------------------------------------------
-        if (motfac.eq.'ENER_TOTALE' .or. motfac.eq.'ENER_ELAS' .or. motfac.eq.'ENER_ELTR'&
-       .or. motfac(1:6).eq.'INDIC_') then
+        if (motfac .eq. 'ENER_TOTALE' .or. motfac .eq. 'ENER_ELAS' .or. motfac .eq. 'ENER_ELTR' &
+            .or. motfac(1:6) .eq. 'INDIC_') then
             call rsexch('F', resul, 'DEPL', numord, chdepl, iret)
 !
 ! ---  RECUPERATION DU CHAMP DES DEPLACEMENTS ASSOCIE AU
@@ -481,12 +481,12 @@ subroutine peingl(resu, modele, mate, mateco, cara, nh,&
 !      ----------------------
             if (iord .gt. 1) then
                 call rsexch('F', resul, 'DEPL', numorm, chdepm, iret)
-            endif
-        endif
+            end if
+        end if
 !
 !      le modele comporte-t-il des elements X-FEM ?
-       call dismoi('NB_FISS_XFEM', modele, 'MODELE', repi=nfiss)
-       lxfem = nfiss .ne. 0
+        call dismoi('NB_FISS_XFEM', modele, 'MODELE', repi=nfiss)
+        lxfem = nfiss .ne. 0
 
 ! ---  CALCUL DE L'INDICATEUR GLOBAL DE PERTE DE RADIALITE
 ! ---  SUR TOUTES LES MAILLES DU MODELE :
@@ -500,7 +500,7 @@ subroutine peingl(resu, modele, mate, mateco, cara, nh,&
             lchin(3) = chvari
         else
             lchin(3) = chbid
-        endif
+        end if
         lpain(4) = 'PCOMPOR'
         lchin(4) = compor
         lpain(5) = 'PVARCPR'
@@ -518,18 +518,18 @@ subroutine peingl(resu, modele, mate, mateco, cara, nh,&
                 lchin(7) = chsigm
                 lpain(8) = 'PDEPLM'
                 lchin(8) = chdepm
-            endif
-        endif
+            end if
+        end if
         if (option .eq. 'ENER_TOTALE' .or. option .eq. 'ENEL_ELEM'&
-    &   .or. option .eq.'ENTR_ELEM' .or. motfac(1:6).eq.'INDIC_') then
+    &   .or. option .eq. 'ENTR_ELEM' .or. motfac(1:6) .eq. 'INDIC_') then
             lpain(9) = 'PDEPLR'
             lchin(9) = chdepl
             lpain(10) = 'PCONTPR'
             lchin(10) = chsig
-            nbin =10
-        endif
+            nbin = 10
+        end if
         if (lxfem) then
-            ASSERT(option.eq.'ENEL_ELEM')
+            ASSERT(option .eq. 'ENEL_ELEM')
             lpain(11) = 'PPINTTO'
             lchin(11) = modele(1:8)//'.TOPOSE.PIN'
             lpain(12) = 'PPMILTO'
@@ -539,15 +539,15 @@ subroutine peingl(resu, modele, mate, mateco, cara, nh,&
             lpain(14) = 'PLONCHA'
             lchin(14) = modele(1:8)//'.TOPOSE.LON'
             nbin = 14
-        endif
+        end if
         if (option .eq. 'INDIC_ENER' .or. option .eq. 'INDIC_SEUIL') then
             nbout = 2
             lpaout(1) = 'PENERD1'
             lchout(1) = '&&PEINGL.INDIC'
             lpaout(2) = 'PENERD2'
             lchout(2) = '&&PEINGL.VOLUME'
-            else if (option.eq.'ENEL_ELEM' .or. option.eq.'ENER_TOTALE')&
-        then
+        else if (option .eq. 'ENEL_ELEM' .or. option .eq. 'ENER_TOTALE') &
+            then
             nbout = 1
             lpaout(1) = 'PENERD1'
             lchout(1) = '&&PEINGL.INDIC'
@@ -555,14 +555,14 @@ subroutine peingl(resu, modele, mate, mateco, cara, nh,&
             nbout = 1
             lpaout(1) = 'PENTRD1'
             lchout(1) = '&&PEINGL.INDIC'
-        else if (option.eq.'DISS_ELEM') then
+        else if (option .eq. 'DISS_ELEM') then
             nbout = 1
             lpaout(1) = 'PDISSD1'
             lchout(1) = '&&PEINGL.INDIC'
-        endif
+        end if
 !
-        call calcul('S', option, ligrel, nbin, lchin,&
-                    lpain, nbout, lchout, lpaout, 'V',&
+        call calcul('S', option, ligrel, nbin, lchin, &
+                    lpain, nbout, lchout, lpaout, 'V', &
                     'OUI')
 !
 ! ---  BOUCLE SUR LES OCCURENCES DU MOT-CLE INDIC_ENER :
@@ -576,9 +576,9 @@ subroutine peingl(resu, modele, mate, mateco, cara, nh,&
 ! ---   L'INDICATEUR :
 !       ------------
             call getvtx(motfac, 'TOUT', iocc=iocc, nbval=0, nbret=nt)
-            call getvem(noma, 'MAILLE', motfac, 'MAILLE', iocc,&
+            call getvem(noma, 'MAILLE', motfac, 'MAILLE', iocc, &
                         0, k8b, nm)
-            call getvem(noma, 'GROUP_MA', motfac, 'GROUP_MA', iocc,&
+            call getvem(noma, 'GROUP_MA', motfac, 'GROUP_MA', iocc, &
                         0, k8b, ng)
 !
 ! ---   TRAITEMENT DU MOT CLE "TOUT" ,LA QUANTITE EST CALCULEE
@@ -600,44 +600,44 @@ subroutine peingl(resu, modele, mate, mateco, cara, nh,&
 !
                     if (indic1 .le. 1.0d4*r8prem()) then
                         indic1 = zero
-                    endif
+                    end if
 !
                     if (volume .le. r8prem()) then
                         call utmess('F', 'UTILITAI3_80')
-                    endif
+                    end if
 !
                     valr(2) = indic1/volume
                     vk8(1) = noma
                     vk8(2) = 'TOUT'
 !
-                else if (motfac.eq.'ENER_ELAS'  .or.&
-     &                   motfac.eq.'ENER_ELTR'  .or.&
-     &                   motfac.eq.'ENER_TOTALE'.or.&
-     &                   motfac.eq.'ENER_DISS') then
+                else if (motfac .eq. 'ENER_ELAS' .or.&
+     &                   motfac .eq. 'ENER_ELTR' .or.&
+     &                   motfac .eq. 'ENER_TOTALE' .or.&
+     &                   motfac .eq. 'ENER_DISS') then
 !
 ! ---          SOMMATION DE L'ENERGIE ( ELASTIQUE OU TOTALE)
 ! ---          SUR LE MODELE :
 !              -------------
-                    if (motfac .eq. 'ENER_TOTALE' .or. motfac.eq.'ENER_DISS') then
+                    if (motfac .eq. 'ENER_TOTALE' .or. motfac .eq. 'ENER_DISS') then
                         call mesomm(lchout(1), 1, vr=work(1))
                     else
                         call mesomm(lchout(1), 5, vr=work(1))
-                    endif
+                    end if
 ! ---  BOUCLE SUR LES PAS DE TEMPS ON SOMME LES TERMES DE
 ! ---  L ENERGIE TOTAL
-                    if ((compt(1:9).ne.'VMIS_ISOT') .and. (compt(1:4) .ne.'ELAS') .and.&
+                    if ((compt(1:9) .ne. 'VMIS_ISOT') .and. (compt(1:4) .ne. 'ELAS') .and. &
                         (motfac .ne. 'ENER_ELAS' .and. motfac .ne. 'ENER_ELTR') .and. &
-                        (motfac.ne.'ENER_DISS')) then
-                        energy_tout = energy_tout + work(1)
+                        (motfac .ne. 'ENER_DISS')) then
+                        energy_tout = energy_tout+work(1)
                     else
                         energy_tout = work(1)
-                    endif
+                    end if
 !
                     vk8(1) = noma
                     vk8(2) = 'TOUT'
                     valr(2) = energy_tout
-                    if (motfac.eq.'ENER_ELAS' .or. motfac.eq.'ENER_ELTR' .or.&
-                        motfac.eq.'ENER_TOTALE') then
+                    if (motfac .eq. 'ENER_ELAS' .or. motfac .eq. 'ENER_ELTR' .or. &
+                        motfac .eq. 'ENER_TOTALE') then
                         valr(3) = work(2)
                         valr(4) = work(3)
                         if (motfac .eq. 'ENER_ELAS') then
@@ -648,16 +648,16 @@ subroutine peingl(resu, modele, mate, mateco, cara, nh,&
 !        UN JOUR.
                             valr(5) = work(4)
                             valr(6) = work(5)
-                        endif
-                    endif
+                        end if
+                    end if
 !
-                endif
+                end if
 !
 ! ---    ECRITURE DE L'INDICATEUR OU DE L'ENERGIE DANS LA TABLE :
 !        ------------------------------------------------------
-                call tbajli(resu, nbparr, noparr, [numord], valr,&
+                call tbajli(resu, nbparr, noparr, [numord], valr, &
                             [c16b], vk8, 0)
-            endif
+            end if
 !
 ! ---   TRAITEMENT DU MOT CLE "GROUP_MA" ,LA QUANTITE EST CALCULEE
 ! ---   SUR LE GROUP_MA COURANT :
@@ -665,7 +665,7 @@ subroutine peingl(resu, modele, mate, mateco, cara, nh,&
             if (ng .ne. 0) then
                 nbgrma = -ng
                 call wkvect('&&PEINGL_GROUPM', 'V V K24', nbgrma, jgr)
-                call getvem(noma, 'GROUP_MA', motfac, 'GROUP_MA', iocc,&
+                call getvem(noma, 'GROUP_MA', motfac, 'GROUP_MA', iocc, &
                             nbgrma, zk24(jgr), ng)
 !
 ! ---     BOUCLE SUR LES GROUPES DE MAILLES :
@@ -676,11 +676,11 @@ subroutine peingl(resu, modele, mate, mateco, cara, nh,&
                     call jeexin(jexnom(mlggma, nomgrm), iret)
                     if (iret .eq. 0) then
                         call utmess('F', 'UTILITAI3_46', sk=nomgrm)
-                    endif
+                    end if
                     call jelira(jexnom(mlggma, nomgrm), 'LONUTI', nbma)
                     if (nbma .eq. 0) then
                         call utmess('F', 'UTILITAI3_47', sk=nomgrm)
-                    endif
+                    end if
                     call jeveuo(jexnom(mlggma, nomgrm), 'L', jad)
 !
                     if (motfac .eq. 'INDIC_ENER' .or. motfac .eq. 'INDIC_SEUIL') then
@@ -699,47 +699,47 @@ subroutine peingl(resu, modele, mate, mateco, cara, nh,&
 !
                         if (indic1 .le. 1.0d4*r8prem()) then
                             indic1 = zero
-                        endif
+                        end if
 !
                         if (volume .le. r8prem()) then
                             call utmess('F', 'UTILITAI3_81', sk=nomgrm)
-                        endif
+                        end if
 !
                         valr(2) = indic1/volume
                         vk24(1) = nomgrm
 !
-                    else if (motfac.eq.'ENER_ELAS' .or.&
-     &                       motfac.eq.'ENER_ELTR' .or.&
-     &                       motfac.eq.'ENER_TOTALE' .or.&
-     &                       motfac.eq.'ENER_DISS') then
+                    else if (motfac .eq. 'ENER_ELAS' .or.&
+     &                       motfac .eq. 'ENER_ELTR' .or.&
+     &                       motfac .eq. 'ENER_TOTALE' .or.&
+     &                       motfac .eq. 'ENER_DISS') then
 !
 ! ---          SOMMATION DE L'ENERGIE ( ELASTIQUE OU TOTALE)
 ! ---          SUR LE MODELE :
 !              -------------
-                        deca = deca + 1
+                        deca = deca+1
                         ASSERT(deca < nbgrma_tot)
-                        if (motfac .eq. 'ENER_TOTALE' .or. motfac.eq.'ENER_DISS') then
+                        if (motfac .eq. 'ENER_TOTALE' .or. motfac .eq. 'ENER_DISS') then
                             call mesomm(lchout(1), 1, vr=work(1), nbma=nbma, linuma=zi(jad))
                         else
                             call mesomm(lchout(1), 5, vr=work, nbma=nbma, linuma=zi(jad))
-                        endif
+                        end if
 !
 ! ---  BOUCLE SUR LES PAS DE TEMPS ON SOMME LES TERMES DE
 ! ---  L ENERGIE TOTAL
 !
-                        if ((compt(1:9).ne.'VMIS_ISOT') .and. (compt( 1:4).ne.'ELAS') .and.&
-                            (motfac .ne.'ENER_ELAS' .and. motfac .ne. 'ENER_ELTR') .and.&
-                            (motfac.ne.'ENER_DISS')) then
+                        if ((compt(1:9) .ne. 'VMIS_ISOT') .and. (compt(1:4) .ne. 'ELAS') .and. &
+                            (motfac .ne. 'ENER_ELAS' .and. motfac .ne. 'ENER_ELTR') .and. &
+                            (motfac .ne. 'ENER_DISS')) then
 !
-                            energy_grpma(deca) = energy_grpma(deca) + work(1)
+                            energy_grpma(deca) = energy_grpma(deca)+work(1)
                         else
                             energy_grpma(deca) = work(1)
-                        endif
+                        end if
 !
                         vk24(1) = nomgrm
                         valr(2) = energy_grpma(deca)
-                        if (motfac.eq.'ENER_ELAS' .or. motfac.eq.'ENER_ELTR' .or.&
-                            motfac.eq.'ENER_TOTALE') then
+                        if (motfac .eq. 'ENER_ELAS' .or. motfac .eq. 'ENER_ELTR' .or. &
+                            motfac .eq. 'ENER_TOTALE') then
                             valr(3) = work(2)
                             valr(4) = work(3)
                             if (motfac .eq. 'ENER_ELAS') then
@@ -750,9 +750,9 @@ subroutine peingl(resu, modele, mate, mateco, cara, nh,&
 !        UN JOUR.
                                 valr(5) = work(4)
                                 valr(6) = work(5)
-                            endif
-                        endif
-                    endif
+                            end if
+                        end if
+                    end if
 !
 !
 ! ---    ECRITURE DE L'INDICATEUR OU DE L'ENERGIE DANS LA TABLE :
@@ -760,15 +760,15 @@ subroutine peingl(resu, modele, mate, mateco, cara, nh,&
 !
 ! ---      ECRITURE DE L'INDICATEUR DANS LA TABLE :
 !          --------------------------------------
-                    call tbajli(resu, nbparr, noparr, [numord], valr,&
+                    call tbajli(resu, nbparr, noparr, [numord], valr, &
                                 [c16b], vk24, 0)
                 end do
 !
 ! --- UNION
-                if(nbgrma > 1) then
+                if (nbgrma > 1) then
                     nomgrm = "UNION_GROUP_MA"
                     call umalma(noma, zk24(jgr), nbgrma, v_allma, nbtot)
-                    ASSERT(nbtot>0)
+                    ASSERT(nbtot > 0)
                     if (motfac .eq. 'INDIC_ENER' .or. motfac .eq. 'INDIC_SEUIL') then
 !
 ! ---      SOMMATION DES INTEGRALES SUIVANTES SUR LES
@@ -785,47 +785,47 @@ subroutine peingl(resu, modele, mate, mateco, cara, nh,&
 !
                         if (indic1 .le. 1.0d4*r8prem()) then
                             indic1 = zero
-                        endif
+                        end if
 !
                         if (volume .le. r8prem()) then
                             call utmess('F', 'UTILITAI3_81', sk=nomgrm)
-                        endif
+                        end if
 !
                         valr(2) = indic1/volume
                         vk24(1) = nomgrm
 !
-                    else if (motfac.eq.'ENER_ELAS' .or.&
-     &                       motfac.eq.'ENER_ELTR' .or.&
-     &                       motfac.eq.'ENER_TOTALE' .or.&
-     &                       motfac.eq.'ENER_DISS') then
+                    else if (motfac .eq. 'ENER_ELAS' .or.&
+     &                       motfac .eq. 'ENER_ELTR' .or.&
+     &                       motfac .eq. 'ENER_TOTALE' .or.&
+     &                       motfac .eq. 'ENER_DISS') then
 !
 ! ---          SOMMATION DE L'ENERGIE ( ELASTIQUE OU TOTALE)
 ! ---          SUR LE MODELE :
 !              -------------
-                        deca = deca + 1
+                        deca = deca+1
                         ASSERT(deca <= nbgrma_tot)
-                        if (motfac .eq. 'ENER_TOTALE' .or. motfac.eq.'ENER_DISS') then
+                        if (motfac .eq. 'ENER_TOTALE' .or. motfac .eq. 'ENER_DISS') then
                             call mesomm(lchout(1), 1, vr=work(1), nbma=nbtot, linuma=v_allma)
                         else
                             call mesomm(lchout(1), 5, vr=work, nbma=nbtot, linuma=v_allma)
-                        endif
+                        end if
 !
 ! ---  BOUCLE SUR LES PAS DE TEMPS ON SOMME LES TERMES DE
 ! ---  L ENERGIE TOTAL
 !
-                        if ((compt(1:9).ne.'VMIS_ISOT') .and. (compt( 1:4).ne.'ELAS') .and.&
-                            (motfac .ne.'ENER_ELAS' .and. motfac .ne. 'ENER_ELTR') .and.&
-                            (motfac.ne.'ENER_DISS')) then
+                        if ((compt(1:9) .ne. 'VMIS_ISOT') .and. (compt(1:4) .ne. 'ELAS') .and. &
+                            (motfac .ne. 'ENER_ELAS' .and. motfac .ne. 'ENER_ELTR') .and. &
+                            (motfac .ne. 'ENER_DISS')) then
 !
-                            energy_grpma(deca) = energy_grpma(deca) + work(1)
+                            energy_grpma(deca) = energy_grpma(deca)+work(1)
                         else
                             energy_grpma(deca) = work(1)
-                        endif
+                        end if
 !
                         vk24(1) = nomgrm
                         valr(2) = energy_grpma(deca)
-                        if (motfac.eq.'ENER_ELAS' .or. motfac.eq.'ENER_ELTR' .or.&
-                            motfac.eq.'ENER_TOTALE') then
+                        if (motfac .eq. 'ENER_ELAS' .or. motfac .eq. 'ENER_ELTR' .or. &
+                            motfac .eq. 'ENER_TOTALE') then
                             valr(3) = work(2)
                             valr(4) = work(3)
                             if (motfac .eq. 'ENER_ELAS') then
@@ -836,9 +836,9 @@ subroutine peingl(resu, modele, mate, mateco, cara, nh,&
 !        UN JOUR.
                                 valr(5) = work(4)
                                 valr(6) = work(5)
-                            endif
-                        endif
-                    endif
+                            end if
+                        end if
+                    end if
 !
 !
 ! ---    ECRITURE DE L'INDICATEUR OU DE L'ENERGIE DANS LA TABLE :
@@ -846,13 +846,13 @@ subroutine peingl(resu, modele, mate, mateco, cara, nh,&
 !
 ! ---      ECRITURE DE L'INDICATEUR DANS LA TABLE :
 !          --------------------------------------
-                    call tbajli(resu, nbparr, noparr, [numord], valr,&
+                    call tbajli(resu, nbparr, noparr, [numord], valr, &
                                 [c16b], vk24, 0)
                     AS_DEALLOCATE(vi=v_allma)
                 end if
 !
                 call jedetr('&&PEINGL_GROUPM')
-            endif
+            end if
 !
 ! ---   TRAITEMENT DU MOT CLE "MAILLE" ,L'INDICATEUR EST CALCULE
 ! ---   SUR LA MAILLE COURANTE :
@@ -860,7 +860,7 @@ subroutine peingl(resu, modele, mate, mateco, cara, nh,&
             if (nm .ne. 0) then
                 nbmail = -nm
                 call wkvect('&&PEINGL_MAILLE', 'V V K8', nbmail, jma)
-                call getvem(noma, 'MAILLE', motfac, 'MAILLE', iocc,&
+                call getvem(noma, 'MAILLE', motfac, 'MAILLE', iocc, &
                             nbmail, zk8(jma), nm)
 !
 ! ---    BOUCLE SUR LES MAILLES :
@@ -871,7 +871,7 @@ subroutine peingl(resu, modele, mate, mateco, cara, nh,&
                     call jeexin(jexnom(mlgnma, nommai), iret)
                     if (iret .eq. 0) then
                         call utmess('F', 'UTILITAI3_49', sk=nommai)
-                    endif
+                    end if
                     call jenonu(jexnom(mlgnma, nommai), nume)
 !
                     if (motfac .eq. 'INDIC_ENER' .or. motfac .eq. 'INDIC_SEUIL') then
@@ -889,42 +889,42 @@ subroutine peingl(resu, modele, mate, mateco, cara, nh,&
 !
                         if (indic1 .le. 1.0d4*r8prem()) then
                             indic1 = zero
-                        endif
+                        end if
 !
                         if (volume .le. r8prem()) then
                             call utmess('F', 'UTILITAI3_82', sk=nommai)
-                        endif
+                        end if
 !
                         valr(2) = indic1/volume
                         vk8(1) = nommai
 !
-                    else if (motfac.eq.'ENER_ELAS' .or.&
-     &                       motfac.eq.'ENER_ELTR' .or.&
-     &                       motfac.eq.'ENER_TOTALE' .or.&
-     &                       motfac.eq.'ENER_DISS') then
+                    else if (motfac .eq. 'ENER_ELAS' .or.&
+     &                       motfac .eq. 'ENER_ELTR' .or.&
+     &                       motfac .eq. 'ENER_TOTALE' .or.&
+     &                       motfac .eq. 'ENER_DISS') then
 !
 ! ---          SOMMATION DE L'ENERGIE ( ELASTIQUE OU TOTALE)
 ! ---          SUR LE MODELE :
 !              -------------
-                        if (motfac .eq. 'ENER_TOTALE' .or. motfac.eq.'ENER_DISS') then
+                        if (motfac .eq. 'ENER_TOTALE' .or. motfac .eq. 'ENER_DISS') then
                             call mesomm(lchout(1), 1, vr=work(1), nbma=1, linuma=[nume])
                         else
                             call mesomm(lchout(1), 5, vr=work, nbma=1, linuma=[nume])
-                        endif
+                        end if
 !
-                        if ((compt(1:9).ne.'VMIS_ISOT') .and. (compt( 1:4).ne.'ELAS') .and.&
-                            (motfac .ne.'ENER_ELAS' .and. motfac.ne.'ENER_ELTR')) then
+                        if ((compt(1:9) .ne. 'VMIS_ISOT') .and. (compt(1:4) .ne. 'ELAS') .and. &
+                            (motfac .ne. 'ENER_ELAS' .and. motfac .ne. 'ENER_ELTR')) then
 !
                             ASSERT(nbmail == 1)
-                            energy_ma = energy_ma + work(1)
+                            energy_ma = energy_ma+work(1)
                         else
                             energy_ma = work(1)
-                        endif
+                        end if
 !
                         valr(2) = energy_ma
                         vk8(1) = nommai
-                        if (motfac.eq.'ENER_ELAS' .or. motfac.eq.'ENER_ELTR' .or.&
-                            motfac.eq.'ENER_TOTALE') then
+                        if (motfac .eq. 'ENER_ELAS' .or. motfac .eq. 'ENER_ELTR' .or. &
+                            motfac .eq. 'ENER_TOTALE') then
                             valr(3) = work(2)
                             valr(4) = work(3)
                             if (motfac .eq. 'ENER_ELAS') then
@@ -935,19 +935,19 @@ subroutine peingl(resu, modele, mate, mateco, cara, nh,&
 !        UN JOUR.
                                 valr(5) = work(4)
                                 valr(6) = work(5)
-                            endif
-                        endif
+                            end if
+                        end if
 !
-                    endif
+                    end if
 !
 ! ---      ECRITURE DE L'INDICATEUR DANS LA TABLE :
 !          --------------------------------------
-                    call tbajli(resu, nbparr, noparr, [numord], valr,&
+                    call tbajli(resu, nbparr, noparr, [numord], valr, &
                                 [c16b], vk8, 0)
                 end do
 !
                 call jedetr('&&PEINGL_MAILLE')
-            endif
+            end if
         end do
         call jedetr('&&MECHTI.CH_INST_R')
         call detrsd('CHAM_ELEM', chvarc)
@@ -955,7 +955,7 @@ subroutine peingl(resu, modele, mate, mateco, cara, nh,&
         call jedetr(compor//'.PTMA')
         call jedema()
     end do
- 70 continue
+70  continue
     call jedetr(knum)
     call jedetr(kins)
     call jedetr('&&PEINGL.INDIC')
@@ -963,9 +963,9 @@ subroutine peingl(resu, modele, mate, mateco, cara, nh,&
     call jedetr('&&MEHARM.NUME_HARM')
     if (ivari .eq. 0) then
         call jedetr(chbid)
-    endif
+    end if
 !
- 80 continue
+80  continue
     AS_DEALLOCATE(vr=energy_grpma)
     call jedema()
 end subroutine

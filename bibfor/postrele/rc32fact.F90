@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine rc32fact(ze200, nb, lieu, ns, fuseism,&
+subroutine rc32fact(ze200, nb, lieu, ns, fuseism, &
                     futot, lefat, futotenv)
     implicit none
 #include "asterf_types.h"
@@ -79,7 +79,7 @@ subroutine rc32fact(ze200, nb, lieu, ns, fuseism,&
             zr(jfu+nb*(iocc1-1)+iocc2-1) = zr(jresucomb+25*nb*(iocc1-1)+25*(iocc2-1)-1+17)
         end do
 ! ----- on y rentre les facteurs d'usage pour les situations seules
-        zr(jfu+(nb+1)*(iocc1-1))= zr(jresu+123*(iocc1-1)+15)
+        zr(jfu+(nb+1)*(iocc1-1)) = zr(jresu+123*(iocc1-1)+15)
     end do
 !
 ! - CREATION D'UN VECTEUR AVEC LES NOMBRES D'OCCURENCES
@@ -122,16 +122,16 @@ subroutine rc32fact(ze200, nb, lieu, ns, fuseism,&
     sps(2) = 0.d0
     if (ze200) then
         do i = 1, 12
-            m0(i) =0.d0
+            m0(i) = 0.d0
         end do
         pres0 = 0.d0
-        call rcZ2s0('SN', m0, m0, pres0, pres0,&
+        call rcZ2s0('SN', m0, m0, pres0, pres0, &
                     1, sns)
-        call rcZ2s0('SP', m0, m0, pres0, pres0,&
+        call rcZ2s0('SP', m0, m0, pres0, pres0, &
                     1, sps(1))
     else
         do i = 1, 6
-            st0(i) =0.d0
+            st0(i) = 0.d0
         end do
 !
         call jeveuo('&&RC3200.SNSEISME.'//lieu, 'L', jsnseis)
@@ -139,8 +139,8 @@ subroutine rc32fact(ze200, nb, lieu, ns, fuseism,&
         call jeveuo('&&RC3200.SPSEISME.'//lieu, 'L', jspseis)
         call rc32s0b(zr(jspseis), st0, sps(1))
 !
-    endif
-    call rc32sa('SITU', sns, sps, sps, rbid,&
+    end if
+    call rc32sa('SITU', sns, sps, sps, rbid, &
                 rbid, sbid, fus)
     fuseism = fus(1)*nbsscyc
 !
@@ -150,11 +150,11 @@ subroutine rc32fact(ze200, nb, lieu, ns, fuseism,&
 ! --------- en prenant en compte le séisme
 ! --------- si la combinaison n'est pas possible zr(jresucomb) vaut r8vide et la
 ! --------- matrice qui est symétrique n'est remplie que au dessus de la diagonale
-            zr(jfus+nb*(iocc1-1)+iocc2-1) = zr(jresucombs+25*nb*(iocc1-1)+25*(iocc2-1)-1+17&
-                                            ) +fuseism
+            zr(jfus+nb*(iocc1-1)+iocc2-1) = zr(jresucombs+25*nb*(iocc1-1)+25*(iocc2-1)-1+17 &
+                                               )+fuseism
         end do
 ! ------- on y rentre les facteurs d'usage pour les situations seules avec le séisme
-        zr(jfus+(nb+1)*(iocc1-1))= zr(jresus+123*(iocc1-1)+15)+fuseism
+        zr(jfus+(nb+1)*(iocc1-1)) = zr(jresus+123*(iocc1-1)+15)+fuseism
     end do
 !
 ! -- on cherche le fumaxs avec séisme
@@ -169,8 +169,8 @@ subroutine rc32fact(ze200, nb, lieu, ns, fuseism,&
                     fumaxs = zr(jfus+nb*(iocc1-1)+iocc2-1)
                     num1 = iocc1
                     num2 = iocc2
-                endif
-            endif
+                end if
+            end if
         end do
     end do
 !
@@ -181,12 +181,12 @@ subroutine rc32fact(ze200, nb, lieu, ns, fuseism,&
     if (zi(jcombi+nb*(num1-1)+num2-1) .ne. 2) then
         noccpris = min(zi(jocc+num1-1), zi(jocc+num2-1), noccs)
         if (noccpris .gt. 0) then
-            futot=futot+fumaxs*noccpris
+            futot = futot+fumaxs*noccpris
             if (num1 .eq. num2) then
                 futotss = futotss+noccpris*zr(jresus+123*(num1-1)+120)
             else
                 futotss = futotss+noccpris*zr(jresucombs+25*nb*(num1-1)+25*(num2-1)-1+21)
-            endif
+            end if
             zi(jfact+6*k) = num1
             zi(jfact+6*k+1) = num2
             zi(jfact+6*k+2) = zi(jocc+num1-1)
@@ -196,28 +196,28 @@ subroutine rc32fact(ze200, nb, lieu, ns, fuseism,&
 !
             zi(jocc+num1-1) = zi(jocc+num1-1)-noccpris
             if (num1 .ne. num2) zi(jocc+num2-1) = zi(jocc+num2-1)-noccpris
-            noccs = noccs - noccpris
+            noccs = noccs-noccpris
 !-- on vérifie si les deux situations ne font pas partie d'un groupe de partage
             if (zi(jpartage-1+num1) .ne. 0) then
                 do iocc3 = 1, nb
                     if (zi(jpartage-1+num1) .eq. zi(jpartage-1+iocc3)) then
                         if (num1 .ne. iocc3) zi(jocc+iocc3-1) = zi(jocc+iocc3-1)-noccpris
-                    endif
+                    end if
                 end do
-            endif
+            end if
 !
             if (num1 .ne. num2 .and. zi(jpartage-1+num2) .ne. 0) then
                 do iocc3 = 1, nb
                     if (zi(jpartage-1+num2) .eq. zi(jpartage-1+iocc3)) then
                         if (num2 .ne. iocc3) zi(jocc+iocc3-1) = zi(jocc+iocc3-1)-noccpris
-                    endif
+                    end if
                 end do
-            endif
+            end if
 !
             k = k+1
             if (k .eq. 200) call utmess('F', 'POSTRCCM_52')
             if (noccs .le. 0) goto 888
-        endif
+        end if
 !
         zr(jfus+nb*(num1-1)+num2-1) = r8vide()
         goto 777
@@ -242,57 +242,57 @@ subroutine rc32fact(ze200, nb, lieu, ns, fuseism,&
                 if (zi(jocc+num-1) .gt. 0) then
                     do iocc1 = 1, nb
                         if (zr(jfus+nb*(iocc1-1)+num-1) .ne. r8vide()) then
-                            fumaxpass = max(fumaxpass,zr(jfus+nb*(iocc1-1)+num-1))
-                        endif
+                            fumaxpass = max(fumaxpass, zr(jfus+nb*(iocc1-1)+num-1))
+                        end if
                     end do
                     do iocc1 = 1, nb
                         if (zr(jfus+nb*(num-1)+iocc1-1) .ne. r8vide()) then
-                            fumaxpass = max(fumaxpass,zr(jfus+nb*(num-1)+iocc1-1))
-                        endif
+                            fumaxpass = max(fumaxpass, zr(jfus+nb*(num-1)+iocc1-1))
+                        end if
                     end do
 !
                     if (fumaxpass .lt. fucible) then
                         fucible = fumaxpass
                         noccpass = zi(jocc+num-1)
                         numpass = zi(jpassage+3*(i-1))
-                    endif
-                endif
+                    end if
+                end if
 !
-            endif
+            end if
             if (zi(jpassage+3*(i-1)+1) .eq. num2 .and. zi(jpassage+3*(i-1)+2) .eq. num1) then
 !
                 num = zi(jpassage+3*(i-1))
                 if (zi(jocc+num-1) .gt. 0) then
                     do iocc1 = 1, nb
                         if (zr(jfus+nb*(iocc1-1)+num-1) .ne. r8vide()) then
-                            fumaxpass = max(fumaxpass,zr(jfus+nb*(iocc1-1)+num-1))
-                        endif
+                            fumaxpass = max(fumaxpass, zr(jfus+nb*(iocc1-1)+num-1))
+                        end if
                     end do
                     do iocc1 = 1, nb
                         if (zr(jfus+nb*(num-1)+iocc1-1) .ne. r8vide()) then
-                            fumaxpass = max(fumaxpass,zr(jfus+nb*(num-1)+iocc1-1))
-                        endif
+                            fumaxpass = max(fumaxpass, zr(jfus+nb*(num-1)+iocc1-1))
+                        end if
                     end do
 !
                     if (fumaxpass .lt. fucible) then
                         fucible = fumaxpass
                         noccpass = zi(jocc+num-1)
                         numpass = zi(jpassage+3*(i-1))
-                    endif
-                endif
+                    end if
+                end if
 !
-            endif
+            end if
         end do
 555     continue
 !
         noccpris = min(noccpass, zi(jocc+num1-1), zi(jocc+num2-1), noccs)
         if (noccpris .gt. 0) then
-            futot=futot+fumaxs*noccpris
+            futot = futot+fumaxs*noccpris
             if (num1 .eq. num2) then
                 futotss = futotss+noccpris*zr(jresus+123*(num1-1)+120)
             else
                 futotss = futotss+noccpris*zr(jresucombs+25*nb*(num1-1)+25*(num2-1)-1+21)
-            endif
+            end if
             zi(jfact+6*k) = num1
             zi(jfact+6*k+1) = num2
             zi(jfact+6*k+2) = zi(jocc+num1-1)
@@ -303,35 +303,35 @@ subroutine rc32fact(ze200, nb, lieu, ns, fuseism,&
             zi(jocc+num1-1) = zi(jocc+num1-1)-noccpris
             zi(jocc+num2-1) = zi(jocc+num2-1)-noccpris
             zi(jocc+numpass-1) = zi(jocc+numpass-1)-noccpris
-            noccs = noccs -noccpris
+            noccs = noccs-noccpris
 !
 !-- on vérifie si les deux situations ne font pas partie d'un groupe de partage
             if (zi(jpartage-1+num1) .ne. 0) then
                 do iocc3 = 1, nb
                     if (zi(jpartage-1+num1) .eq. zi(jpartage-1+iocc3)) then
                         if (num1 .ne. iocc3) zi(jocc+iocc3-1) = zi(jocc+iocc3-1)-noccpris
-                    endif
+                    end if
                 end do
-            endif
+            end if
 !
             if (num1 .ne. num2 .and. zi(jpartage-1+num2) .ne. 0) then
                 do iocc3 = 1, nb
                     if (zi(jpartage-1+num2) .eq. zi(jpartage-1+iocc3)) then
                         if (num2 .ne. iocc3) zi(jocc+iocc3-1) = zi(jocc+iocc3-1)-noccpris
-                    endif
+                    end if
                 end do
-            endif
+            end if
 !
             k = k+1
             if (k .eq. 200) call utmess('F', 'POSTRCCM_52')
             if (noccs .le. 0) goto 888
             goto 777
-        endif
+        end if
 !
         zr(jfus+nb*(num1-1)+num2-1) = r8vide()
         goto 777
 !
-    endif
+    end if
 !
 !---------------------------------------------------
 ! - CALCUL DU FACTEUR D'USAGE SI PAS DE SEISME
@@ -347,8 +347,8 @@ subroutine rc32fact(ze200, nb, lieu, ns, fuseism,&
                     fumax = zr(jfu+nb*(iocc1-1)+iocc2-1)
                     num1 = iocc1
                     num2 = iocc2
-                endif
-            endif
+                end if
+            end if
         end do
     end do
 !
@@ -359,12 +359,12 @@ subroutine rc32fact(ze200, nb, lieu, ns, fuseism,&
     if (zi(jcombi+nb*(num1-1)+num2-1) .ne. 2) then
         noccpris = min(zi(jocc+num1-1), zi(jocc+num2-1))
         if (noccpris .gt. 0) then
-            futot=futot+fumax*noccpris
+            futot = futot+fumax*noccpris
             if (num1 .eq. num2) then
                 futotss = futotss+noccpris*zr(jresu+123*(num1-1)+120)
             else
                 futotss = futotss+noccpris*zr(jresucomb+25*nb*(num1-1)+25*(num2-1)-1+21)
-            endif
+            end if
             zi(jfact+6*k) = num1
             zi(jfact+6*k+1) = num2
             zi(jfact+6*k+2) = zi(jocc+num1-1)
@@ -380,21 +380,21 @@ subroutine rc32fact(ze200, nb, lieu, ns, fuseism,&
                 do iocc3 = 1, nb
                     if (zi(jpartage-1+num1) .eq. zi(jpartage-1+iocc3)) then
                         if (num1 .ne. iocc3) zi(jocc+iocc3-1) = zi(jocc+iocc3-1)-noccpris
-                    endif
+                    end if
                 end do
-            endif
+            end if
 !
             if (num1 .ne. num2 .and. zi(jpartage-1+num2) .ne. 0) then
                 do iocc3 = 1, nb
                     if (zi(jpartage-1+num2) .eq. zi(jpartage-1+iocc3)) then
                         if (num2 .ne. iocc3) zi(jocc+iocc3-1) = zi(jocc+iocc3-1)-noccpris
-                    endif
+                    end if
                 end do
-            endif
+            end if
 !
             k = k+1
             if (k .eq. 200) call utmess('F', 'POSTRCCM_52')
-        endif
+        end if
         zr(jfu+nb*(num1-1)+num2-1) = r8vide()
         goto 888
 !
@@ -418,57 +418,57 @@ subroutine rc32fact(ze200, nb, lieu, ns, fuseism,&
                 if (zi(jocc+num-1) .gt. 0) then
                     do iocc1 = 1, nb
                         if (zr(jfu+nb*(iocc1-1)+num-1) .ne. r8vide()) then
-                            fumaxpass = max(fumaxpass,zr(jfu+nb*(iocc1-1)+num-1))
-                        endif
+                            fumaxpass = max(fumaxpass, zr(jfu+nb*(iocc1-1)+num-1))
+                        end if
                     end do
                     do iocc1 = 1, nb
                         if (zr(jfu+nb*(num-1)+iocc1-1) .ne. r8vide()) then
-                            fumaxpass = max(fumaxpass,zr(jfu+nb*(num-1)+iocc1-1))
-                        endif
+                            fumaxpass = max(fumaxpass, zr(jfu+nb*(num-1)+iocc1-1))
+                        end if
                     end do
 !
                     if (fumaxpass .lt. fucible) then
                         fucible = fumaxpass
                         noccpass = zi(jocc+num-1)
                         numpass = zi(jpassage+3*(i-1))
-                    endif
-                endif
+                    end if
+                end if
 !
-            endif
+            end if
             if (zi(jpassage+3*(i-1)+1) .eq. num2 .and. zi(jpassage+3*(i-1)+2) .eq. num1) then
 !
                 num = zi(jpassage+3*(i-1))
                 if (zi(jocc+num-1) .gt. 0) then
                     do iocc1 = 1, nb
                         if (zr(jfu+nb*(iocc1-1)+num-1) .ne. r8vide()) then
-                            fumaxpass = max(fumaxpass,zr(jfu+nb*(iocc1-1)+num-1))
-                        endif
+                            fumaxpass = max(fumaxpass, zr(jfu+nb*(iocc1-1)+num-1))
+                        end if
                     end do
                     do iocc1 = 1, nb
                         if (zr(jfu+nb*(num-1)+iocc1-1) .ne. r8vide()) then
-                            fumaxpass = max(fumaxpass,zr(jfu+nb*(num-1)+iocc1-1))
-                        endif
+                            fumaxpass = max(fumaxpass, zr(jfu+nb*(num-1)+iocc1-1))
+                        end if
                     end do
 !
                     if (fumaxpass .lt. fucible) then
                         fucible = fumaxpass
                         noccpass = zi(jocc+num-1)
                         numpass = zi(jpassage+3*(i-1))
-                    endif
-                endif
+                    end if
+                end if
 !
-            endif
+            end if
         end do
 666     continue
 !
         noccpris = min(noccpass, zi(jocc+num1-1), zi(jocc+num2-1))
         if (noccpris .gt. 0) then
-            futot=futot+fumax*noccpris
+            futot = futot+fumax*noccpris
             if (num1 .eq. num2) then
                 futotss = futotss+noccpris*zr(jresu+123*(num1-1)+120)
             else
                 futotss = futotss+noccpris*zr(jresucomb+25*nb*(num1-1)+25*(num2-1)-1+21)
-            endif
+            end if
             zi(jfact+6*k) = num1
             zi(jfact+6*k+1) = num2
             zi(jfact+6*k+2) = zi(jocc+num1-1)
@@ -485,27 +485,27 @@ subroutine rc32fact(ze200, nb, lieu, ns, fuseism,&
                 do iocc3 = 1, nb
                     if (zi(jpartage-1+num1) .eq. zi(jpartage-1+iocc3)) then
                         if (num1 .ne. iocc3) zi(jocc+iocc3-1) = zi(jocc+iocc3-1)-noccpris
-                    endif
+                    end if
                 end do
-            endif
+            end if
 !
             if (num1 .ne. num2 .and. zi(jpartage-1+num2) .ne. 0) then
                 do iocc3 = 1, nb
                     if (zi(jpartage-1+num2) .eq. zi(jpartage-1+iocc3)) then
                         if (num2 .ne. iocc3) zi(jocc+iocc3-1) = zi(jocc+iocc3-1)-noccpris
-                    endif
+                    end if
                 end do
-            endif
+            end if
 !
             k = k+1
             if (k .eq. 200) call utmess('F', 'POSTRCCM_52')
             goto 888
-        endif
+        end if
 !
         zr(jfu+nb*(num1-1)+num2-1) = r8vide()
         goto 888
 !
-    endif
+    end if
 !
 999 continue
 !
@@ -517,19 +517,19 @@ subroutine rc32fact(ze200, nb, lieu, ns, fuseism,&
 !
 !--- ECRITURE DANS LE .MESS
     if (lieu .eq. 'ORIG') then
-        write(*,*)'---------------------------------------------------------------------'
-        write(*,*)'FU TOTAL (ORIGINE)   =',futot
-        write(*,*)'   DONT FU_SOUS_CYCLE  =',futotss
-        if (ns .ne. 0) write(*,*)'   DONT FU_SOUS_CYCLE_SISMIQUE  =', int(zi(jinfos+2)/2)*fuseism
-        write(*,*)'---------------------------------------------------------------------'
-    endif
+        write (*, *) '---------------------------------------------------------------------'
+        write (*, *) 'FU TOTAL (ORIGINE)   =', futot
+        write (*, *) '   DONT FU_SOUS_CYCLE  =', futotss
+        if (ns .ne. 0) write (*, *) '   DONT FU_SOUS_CYCLE_SISMIQUE  =', int(zi(jinfos+2)/2)*fuseism
+        write (*, *) '---------------------------------------------------------------------'
+    end if
 !
     if (lieu .eq. 'EXTR') then
-        write(*,*)'FU TOTAL (EXTREMITE) =',futot
-        write(*,*)'   DONT FU_SOUS_CYCLE  =',futotss
-        if (ns .ne. 0) write(*,*)'   DONT FU_SOUS_CYCLE_SISMIQUE  =', int(zi(jinfos+2)/2)*fuseism
-        write(*,*)'---------------------------------------------------------------------'
-    endif
+        write (*, *) 'FU TOTAL (EXTREMITE) =', futot
+        write (*, *) '   DONT FU_SOUS_CYCLE  =', futotss
+        if (ns .ne. 0) write (*, *) '   DONT FU_SOUS_CYCLE_SISMIQUE  =', int(zi(jinfos+2)/2)*fuseism
+        write (*, *) '---------------------------------------------------------------------'
+    end if
 !
 !---------------------------------------------------------
 ! - CALCUL DU FACTEUR D'USAGE SI FATIGUE ENVIRONNEMENTALE

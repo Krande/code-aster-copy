@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,12 +16,12 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine dpvplc(typmod, option, imate, carcri, instam,&
-                  instap, depsm,&
-                  sigm, vim, sig, vip, dsidep,&
+subroutine dpvplc(typmod, option, imate, carcri, instam, &
+                  instap, depsm, &
+                  sigm, vim, sig, vip, dsidep, &
                   iret)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/dpvpdi.h"
 #include "asterfort/dpvpma.h"
@@ -54,37 +54,37 @@ implicit none
 ! OUT IRET    CODE RETOUR (0 = OK)
 ! =====================================================================
     integer :: nbmat, ndt, ndi, nvi, indal, nbre
-    parameter    (nbmat  = 50 )
+    parameter(nbmat=50)
     real(kind=8) :: materd(nbmat, 2), materf(nbmat, 2), deps(6)
     real(kind=8) :: td, tf, tr
     character(len=3) :: matcst
 ! =====================================================================
-    common /tdim/   ndt, ndi
+    common/tdim/ndt, ndi
 ! =====================================================================
     matcst = 'OUI'
 !
 ! - Get temperatures
 !
-    call get_varc('RIGI' , 1  , 1 , 'T',&
+    call get_varc('RIGI', 1, 1, 'T', &
                   td, tf, tr)
 ! =====================================================================
 ! --- RECUPERATION DU TYPE DE LOI DE COMPORTEMENT DP ------------------
 ! =====================================================================
-    call dpvpma(typmod(1), imate, nbmat, td, materd,&
-                materf, matcst, ndt, ndi, nvi,&
+    call dpvpma(typmod(1), imate, nbmat, td, materd, &
+                materf, matcst, ndt, ndi, nvi, &
                 indal)
 ! =====================================================================
 ! --- RETRAIT DE LA DEFORMATION DUE A LA DILATATION THERMIQUE ---------
 ! =====================================================================
-    call dpvpdi(nbmat, materf, td, tf, tr,&
+    call dpvpdi(nbmat, materf, td, tf, tr, &
                 depsm, deps)
 !
 ! =====================================================================
 ! --- RESOLTUTION DE LA LOI DRUCKER PRAGER VISCOPLASTIQUE -------------
 ! =====================================================================
-    call dpvpre(typmod(1), nvi, option, carcri, instam,&
-                instap, nbmat, materf, sigm, deps,&
-                vim, vip, sig, nbre, dsidep,&
+    call dpvpre(typmod(1), nvi, option, carcri, instam, &
+                instap, nbmat, materf, sigm, deps, &
+                vim, vip, sig, nbre, dsidep, &
                 iret)
 ! =====================================================================
 end subroutine

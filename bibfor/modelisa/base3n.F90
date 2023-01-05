@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -35,7 +35,7 @@ subroutine base3n(x1, mat33)
 !
 !     -- CALCUL DE V1 :
     do k = 1, 3
-        v1(k)=x1(k)
+        v1(k) = x1(k)
     end do
     call normev(v1, norme)
 !
@@ -43,24 +43,24 @@ subroutine base3n(x1, mat33)
 !     -- CALCUL DE V2 :
 !     -- ON CHERCHE UNE COMPOSANTE (K1) PAS TROP PETITE DANS V1 :
     do k = 1, 3
-        if (abs(v1(k)) .ge. 0.5d0) k1=k
+        if (abs(v1(k)) .ge. 0.5d0) k1 = k
     end do
 !
     if (k1 .eq. 1) then
-        v2(2)=1.d0
-        v2(3)=0.d0
-        v2(1)=-v1(2)
-    else if (k1.eq.2) then
-        v2(3)=1.d0
-        v2(1)=0.d0
-        v2(2)=-v1(3)
-    else if (k1.eq.3) then
-        v2(1)=1.d0
-        v2(2)=0.d0
-        v2(3)=-v1(1)
+        v2(2) = 1.d0
+        v2(3) = 0.d0
+        v2(1) = -v1(2)
+    else if (k1 .eq. 2) then
+        v2(3) = 1.d0
+        v2(1) = 0.d0
+        v2(2) = -v1(3)
+    else if (k1 .eq. 3) then
+        v2(1) = 1.d0
+        v2(2) = 0.d0
+        v2(3) = -v1(1)
     else
         ASSERT(.false.)
-    endif
+    end if
     call normev(v2, norme)
 !
 !
@@ -71,9 +71,9 @@ subroutine base3n(x1, mat33)
 !
 !     -- RECOPIE DE V1, V2, V3 DANS MAT33 :
     do k = 1, 3
-        mat33(k,1)=v1(k)
-        mat33(k,2)=v2(k)
-        mat33(k,3)=v3(k)
+        mat33(k, 1) = v1(k)
+        mat33(k, 2) = v2(k)
+        mat33(k, 3) = v3(k)
     end do
 !
 !

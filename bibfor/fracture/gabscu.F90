@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine gabscu(lobj2, coorn, nomno, fond, xl,&
+subroutine gabscu(lobj2, coorn, nomno, fond, xl, &
                   absgam)
     implicit none
 !
@@ -76,16 +76,16 @@ subroutine gabscu(lobj2, coorn, nomno, fond, xl,&
 !
     xl = 0.d0
     do j = 1, lobj2-1
-        xi1 = zr(iadrco+(zi(iadnum+j-1) -1)*3+1-1)
-        yi1 = zr(iadrco+(zi(iadnum+j-1) -1)*3+2-1)
-        zi1 = zr(iadrco+(zi(iadnum+j-1) -1)*3+3-1)
+        xi1 = zr(iadrco+(zi(iadnum+j-1)-1)*3+1-1)
+        yi1 = zr(iadrco+(zi(iadnum+j-1)-1)*3+2-1)
+        zi1 = zr(iadrco+(zi(iadnum+j-1)-1)*3+3-1)
         xj1 = zr(iadrco+(zi(iadnum+j+1-1)-1)*3+1-1)
         yj1 = zr(iadrco+(zi(iadnum+j+1-1)-1)*3+2-1)
         zj1 = zr(iadrco+(zi(iadnum+j+1-1)-1)*3+3-1)
         xij = xj1-xi1
         yij = yj1-yi1
         zij = zj1-zi1
-        xl = xl + sqrt(xij*xij + yij *yij +zij*zij)
+        xl = xl+sqrt(xij*xij+yij*yij+zij*zij)
     end do
 !
 !  CALCUL DE L'ABSCISSE CURVILIGNE DE CHAQUE NOEUD DE GAMM0
@@ -97,18 +97,18 @@ subroutine gabscu(lobj2, coorn, nomno, fond, xl,&
 !
         zr(iadabs) = 0.d0
         do i = 1, lobj2-1
-            xi1 = zr(iadrco+(zi(iadnum+i-1) -1)*3+1-1)
-            yi1 = zr(iadrco+(zi(iadnum+i-1) -1)*3+2-1)
-            zi1 = zr(iadrco+(zi(iadnum+i-1) -1)*3+3-1)
+            xi1 = zr(iadrco+(zi(iadnum+i-1)-1)*3+1-1)
+            yi1 = zr(iadrco+(zi(iadnum+i-1)-1)*3+2-1)
+            zi1 = zr(iadrco+(zi(iadnum+i-1)-1)*3+3-1)
             xj1 = zr(iadrco+(zi(iadnum+i+1-1)-1)*3+1-1)
             yj1 = zr(iadrco+(zi(iadnum+i+1-1)-1)*3+2-1)
             zj1 = zr(iadrco+(zi(iadnum+i+1-1)-1)*3+3-1)
             xij = xj1-xi1
             yij = yj1-yi1
             zij = zj1-zi1
-            zr(iadabs+i+1-1) = zr(iadabs+i-1)+ sqrt(xij*xij + yij * yij + zij*zij)
+            zr(iadabs+i+1-1) = zr(iadabs+i-1)+sqrt(xij*xij+yij*yij+zij*zij)
         end do
-    endif
+    end if
 !
 ! DESTRUCTION DES OBJETS DE TRAVAIL
 !

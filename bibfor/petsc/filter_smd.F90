@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,8 +21,8 @@ subroutine filter_smd(nommat, vsmb)
 #include "asterf_petsc.h"
 !
 ! person_in_charge: natacha.bereux at edf.fr
-use aster_petsc_module
-use petsc_data_module
+    use aster_petsc_module
+    use petsc_data_module
 
     implicit none
 
@@ -66,37 +66,37 @@ use petsc_data_module
         call asmpi_info(rank=mrank, size=msize)
         rang = to_aster_int(mrank)
 ! Infos du NUME_DDL
-        nu = refa(2)(1:14)
+        nu = refa(2) (1:14)
         call jeveuo(nu//'.NUML.NULG', 'L', vi=nulg)
         call jeveuo(nu//'.NUML.PDDL', 'L', jpddl)
         call jeveuo(nu//'.NUML.NEQU', 'L', vi=nequl)
         call jeveuo(nu//'.NUME.NEQU', 'L', vi=nequ)
-        neqg=nequ(1)
-        neql=nequl(1)
+        neqg = nequ(1)
+        neql = nequl(1)
         call jeexin(mat//'.CCID', iccid)
 !
         if (iccid .ne. 0) then
             call jeveuo(mat//'.CCID', 'L', vi=ccid)
-        endif
+        end if
 !
         do ieql = 1, neql
-            ieqg=nulg(ieql)
+            ieqg = nulg(ieql)
 ! Le dl courant est-il fixé par une charge cinématique ?
             if (iccid == 0) then
 ! Il n'y a pas de charge cinématique sur le modèle
-                is_ddl_cine=.false.
+                is_ddl_cine = .false.
             else
 ! Il existe au moins une charge cinématique. On vérifie si
 ! le numéro global de dl est concerné
-                is_ddl_cine=ccid(ieqg).eq.1
-            endif
+                is_ddl_cine = ccid(ieqg) .eq. 1
+            end if
 ! Suis-je le proriétaire exclusif (PETSc) de ce ddl ?
-            iam_sole_owner= zi(jpddl-1+ieql) .eq. rang
-            if ((.not.is_ddl_cine) .and. (.not.iam_sole_owner)) then
+            iam_sole_owner = zi(jpddl-1+ieql) .eq. rang
+            if ((.not. is_ddl_cine) .and. (.not. iam_sole_owner)) then
                 vsmb(ieqg) = 0.d0
-            endif
-        enddo
-    endif
+            end if
+        end do
+    end if
 !
     call jedema()
 end subroutine

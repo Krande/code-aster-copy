@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -85,8 +85,8 @@ subroutine presup(iunv, imod, lgrcou)
     aster_logical :: larret
     integer :: min, man, imod, imes, iunv, mxtyma, mxperm, mxperf
     integer :: maxfa, i, nbtyma, ites, maxnod
-    parameter (mxtyma=99,maxnod=32,mxperm=maxnod*mxtyma)
-    parameter (maxfa=6,mxperf=maxfa*mxtyma)
+    parameter(mxtyma=99, maxnod=32, mxperm=maxnod*mxtyma)
+    parameter(maxfa=6, mxperf=maxfa*mxtyma)
     integer :: limail(mxtyma), nbmtot
     integer :: datset, nbnode, nbmail(mxtyma), indic(mxtyma), permut(mxperm)
     integer :: indicf(mxtyma), permuf(mxperf)
@@ -102,7 +102,7 @@ subroutine presup(iunv, imod, lgrcou)
 !
     moins1 = '    -1'
     rquoi = '????????'
-    larret=.true.
+    larret = .true.
 !
 !  -->N  D'UNITE LOGIQUE DES FICHIERS
 !
@@ -113,76 +113,76 @@ subroutine presup(iunv, imod, lgrcou)
         nomail(i) = rquoi
     end do
 !
-    call inistb(maxnod, nbtyma, nomail, indic, permut,&
+    call inistb(maxnod, nbtyma, nomail, indic, permut, &
                 limail, indicf, permuf, maxfa)
 !
 !     RECHERCHE DU PREMIER '    -1'
 !
 1000 continue
-    read (iunv,'(A)',end=999) char
+    read (iunv, '(A)', end=999) char
     if (char .ne. moins1) goto 1000
 !
 !   QUOIQU'IL ARRIVE, ON ECRIT DANS LE TITRE QUE LE MAILLAGE
 !   A ETE LU AU FORMAT IDEAS :
 !   ---------------------------------------------------------------
-    write (imod,'(A,4X,A)')'TITRE','NOM=INDEFINI'
+    write (imod, '(A,4X,A)') 'TITRE', 'NOM=INDEFINI'
     call jjmmaa(ct, aut)
-    write(imod,'(9X,A,17X,A,A2,A,A2,A,A4)')'AUTEUR=INTERFACE_IDEAS'&
-     &    ,'DATE=', ct(1)(1:2),'/',ct(2)(1:2),'/',ct(3)
-    write (imod,'(A)') 'FINSF'
-    write (imod,'(A)') '%'
+    write (imod, '(9X,A,17X,A,A2,A,A2,A,A4)') 'AUTEUR=INTERFACE_IDEAS'&
+     &    , 'DATE=', ct(1) (1:2), '/', ct(2) (1:2), '/', ct(3)
+    write (imod, '(A)') 'FINSF'
+    write (imod, '(A)') '%'
 !
 !
-  1 continue
+1   continue
 !
-    read (iunv,'(I6)',end=999, iostat=io) datset
+    read (iunv, '(I6)', end=999, iostat=io) datset
 !     LORSQU'ON A UN ECHEC LORS DE LA LECTURE DU DATASET
 !     ON INITIALISE DATASET A 0
-    if (io .gt. 0) datset=0
+    if (io .gt. 0) datset = 0
 !
     if (datset .eq. -1) then
 !  -->   FIN DE DATASET
 !
-    else if ((datset.eq.18).or.(datset.eq.2420)) then
+    else if ((datset .eq. 18) .or. (datset .eq. 2420)) then
 !
 !  -->   LECTURE ET ECRITURE DU(DES) SYSTEME(S) DE COORDONNEES
 !
         call slecor(iunv, datset)
 !
-        else if ((datset.eq.15).or.(datset.eq.781) .or.(datset.eq.2411))&
-    then
+    else if ((datset .eq. 15) .or. (datset .eq. 781) .or. (datset .eq. 2411)) &
+        then
 !
 !  -->   LECTURE ET ECRITURE DES  NOEUDS
-        call sleneu(iunv, nbnode, ama, bma, cma,&
-                    ami, bmi, cmi, min, man,&
+        call sleneu(iunv, nbnode, ama, bma, cma, &
+                    ami, bmi, cmi, min, man, &
                     ites, datset)
-        larret=.false.
-        call ecrneu(imod, nbnode, ama, bma, cma,&
-                    ami, bmi, cmi, min, man,&
+        larret = .false.
+        call ecrneu(imod, nbnode, ama, bma, cma, &
+                    ami, bmi, cmi, min, man, &
                     ites)
         if (lgrcou) call snecol(imod, nbnode)
 !
 !
-        else if ((datset.eq.71).or.(datset.eq.780) .or.(datset.eq.2412)&
-    .or. (datset.eq.2431).or.(datset.eq.82)) then
+    else if ((datset .eq. 71) .or. (datset .eq. 780) .or. (datset .eq. 2412) &
+             .or. (datset .eq. 2431) .or. (datset .eq. 82)) then
 !
 !  -->   LECTURE ET ECRITURE DES  MAILLES
-        call sleelt(iunv, maxnod, nbtyma, indic, permut,&
+        call sleelt(iunv, maxnod, nbtyma, indic, permut, &
                     nbmail, mint, mant, datset, nbmtot)
-        larret=.false.
-        call ecrelt(imod, maxnod, nbtyma, nomail, nbmail,&
+        larret = .false.
+        call ecrelt(imod, maxnod, nbtyma, nomail, nbmail, &
                     mint, mant, limail, nbmtot)
         if (lgrcou) call slecol(imod, nbmtot)
 !
-        else if (datset.eq.752.or.datset.eq.2417 .or.datset.eq.2428.or.&
-    datset.eq.2429 .or.datset.eq.2430.or.datset.eq.2432 .or.datset.eq.&
-    2435.or.datset.eq.2452 .or.datset.eq.2467.or.datset.eq.2477) then
+    else if (datset .eq. 752 .or. datset .eq. 2417 .or. datset .eq. 2428 .or. &
+             datset .eq. 2429 .or. datset .eq. 2430 .or. datset .eq. 2432 .or. datset .eq. &
+             2435 .or. datset .eq. 2452 .or. datset .eq. 2467 .or. datset .eq. 2477) then
 !
 !  -->   LECTURE ET ECRITURE DES GROUPES DE NOEUDS OU D'MAILLES
         call slegro(iunv, imod, datset)
-        larret=.false.
+        larret = .false.
 !
-    else if (datset.eq.735) then
+    else if (datset .eq. 735) then
 !
 !  -->   LECTURE ET ECRITURE DES NOEUDS ET MAILLES RATTACHES AUX
 !        CURVES,MESHS AREA ET MESHS VOLUME
@@ -191,16 +191,16 @@ subroutine presup(iunv, imod, lgrcou)
     else
 !
 !  -->   LECTURE D'UNE RUBRIQUE INCONNUE
-        write (imes,*) 'ON NE TRAITE PAS LE DATASET:',datset
-  2     continue
-        read (iunv,'(A)',end=999) char
+        write (imes, *) 'ON NE TRAITE PAS LE DATASET:', datset
+2       continue
+        read (iunv, '(A)', end=999) char
         if (char .ne. moins1) goto 2
-    endif
+    end if
     goto 1
 999 continue
     if (larret) then
         call utmess('F', 'STBTRIAS_1')
-    endif
+    end if
 !
     call jedetr('&&PRESUP.INFO.NOEUDS')
     call jedetr('&&PRESUP.COOR.NOEUDS')

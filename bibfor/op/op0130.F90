@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -51,8 +51,8 @@ subroutine op0130()
     aster_logical :: loptio
     integer, pointer :: desc(:) => null()
 !   ------------------------------------------------------------------
-    data motcle  /'NOEUD','GROUP_NO'/
-    data typmcl  /'NOEUD','GROUP_NO'/
+    data motcle/'NOEUD', 'GROUP_NO'/
+    data typmcl/'NOEUD', 'GROUP_NO'/
 !   ------------------------------------------------------------------
 
 !
@@ -78,39 +78,39 @@ subroutine op0130()
                 loptio = .true.
             else
                 loptio = .false.
-            endif
+            end if
 !           --- Constant integration step
             if (desc(1) .eq. 2) then
-                call pochoc(trange, nbbloc, tdebut, tfin, offset,&
+                call pochoc(trange, nbbloc, tdebut, tfin, offset, &
                             trepos, nbclas, nomres, loptio)
 !           --- Non constant integration
             else if (desc(1) .eq. 3) then
-                call pochpv(trange, nbbloc, tdebut, tfin, offset,&
+                call pochpv(trange, nbbloc, tdebut, tfin, offset, &
                             trepos, nbclas, nomres, loptio)
-            endif
+            end if
         end do
-    endif
+    end if
 !
     call getfac('RELA_EFFO_DEPL', nbind)
     nomno = '&&OP0130.MES_NOEUDS'
     if (nbind .ne. 0 .and. desc(4) .ne. 0) then
         do i = 1, nbind
-                call dismoi('BASE_MODALE', trange, 'RESU_DYNA', repk=base, arret='F')
-                call dismoi('NOM_MODELE', base, 'RESULTAT', repk=modele)
-                call dismoi('NOM_MAILLA', base, 'RESULTAT', repk=maillage)
+            call dismoi('BASE_MODALE', trange, 'RESU_DYNA', repk=base, arret='F')
+            call dismoi('NOM_MODELE', base, 'RESULTAT', repk=modele)
+            call dismoi('NOM_MAILLA', base, 'RESULTAT', repk=maillage)
 !
-                call reliem(modele, maillage, 'NO_NOEUD', 'RELA_EFFO_DEPL', i,&
-                            2, motcle, typmcl, nomno, nbno)
-                call jeveuo(nomno, 'L', jnomno)
-                if (nbno .ne. 1) then
-                    call utmess('F', 'MODELISA5_67', sk='RELA_EFFO_DEPL', si=nbno)
-                endif
-                noeu = zk8(jnomno)
+            call reliem(modele, maillage, 'NO_NOEUD', 'RELA_EFFO_DEPL', i, &
+                        2, motcle, typmcl, nomno, nbno)
+            call jeveuo(nomno, 'L', jnomno)
+            if (nbno .ne. 1) then
+                call utmess('F', 'MODELISA5_67', sk='RELA_EFFO_DEPL', si=nbno)
+            end if
+            noeu = zk8(jnomno)
             call getvtx('RELA_EFFO_DEPL', 'NOM_CMP', iocc=i, scal=cmp)
 !
             call porefd(trange, noeu, cmp, nomres)
         end do
-    endif
+    end if
     call jedetr(nomno)
 !
     call titre()

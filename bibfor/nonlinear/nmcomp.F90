@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,16 +18,16 @@
 ! aslint: disable=W1504
 !
 subroutine nmcomp(BEHinteg, &
-                  fami,   kpg,    ksp,    ndim,       typmod,        &
-                  imate,  compor, carcri, instam,     instap,        &
-                  neps,   epsm,   deps,   nsig,       sigm,          &
-                  vim,    option, angmas, sigp,       vip,           &
-                  ndsde,  dsidep, codret, mult_comp_, l_epsi_varc_,  &
+                  fami, kpg, ksp, ndim, typmod, &
+                  imate, compor, carcri, instam, instap, &
+                  neps, epsm, deps, nsig, sigm, &
+                  vim, option, angmas, sigp, vip, &
+                  ndsde, dsidep, codret, mult_comp_, l_epsi_varc_, &
                   materi_)
 !
-use Behaviour_type
+    use Behaviour_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -39,20 +39,20 @@ implicit none
 #include "asterfort/redece.h"
 #include "asterfort/lcidbg.h"
 !
-type(Behaviour_Integ) :: BEHinteg
+    type(Behaviour_Integ) :: BEHinteg
 !
-integer :: kpg, ksp, ndim, imate, codret, neps, nsig, ndsde
+    integer :: kpg, ksp, ndim, imate, codret, neps, nsig, ndsde
 !
-character(len=*)    :: fami
-character(len=8)    :: typmod(*)
-character(len=16)   :: compor(*), option
+    character(len=*)    :: fami
+    character(len=8)    :: typmod(*)
+    character(len=16)   :: compor(*), option
 !
-real(kind=8) :: instam, instap
-real(kind=8) :: epsm(*), deps(*), dsidep(*), carcri(*), sigm(*), vim(*), sigp(*), vip(*), angmas(*)
+    real(kind=8) :: instam, instap
+ real(kind=8) :: epsm(*), deps(*), dsidep(*), carcri(*), sigm(*), vim(*), sigp(*), vip(*), angmas(*)
 !
-character(len=8),  optional, intent(in) :: materi_
-character(len=16), optional, intent(in) :: mult_comp_
-aster_logical,     optional, intent(in) :: l_epsi_varc_
+    character(len=8), optional, intent(in) :: materi_
+    character(len=16), optional, intent(in) :: mult_comp_
+    aster_logical, optional, intent(in) :: l_epsi_varc_
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -122,7 +122,7 @@ aster_logical,     optional, intent(in) :: l_epsi_varc_
 !
 !   Pour les utilitaires de calcul tensoriel
     integer :: ndt, ndi
-    common /tdim/ ndt,ndi
+    common/tdim/ndt, ndi
 !
     integer :: icp, numlc, cpl, nvv, ncpmax
 !
@@ -136,11 +136,11 @@ aster_logical,     optional, intent(in) :: l_epsi_varc_
     l_epsi_varc = ASTER_TRUE
     if (present(l_epsi_varc_)) then
         l_epsi_varc = l_epsi_varc_
-    endif
+    end if
 !
 !   Contraintes planes ?
     call nmcpl1(compor, typmod, option, vip, deps, optio2, cpl, nvv)
-    cp=(cpl.ne.0)
+    cp = (cpl .ne. 0)
 !
 !   Dimensionnement pour le calcul tensoriel
     ndt = 2*ndim
@@ -152,65 +152,65 @@ aster_logical,     optional, intent(in) :: l_epsi_varc_
     else
         convcp = ASTER_TRUE
         ncpmax = 1
-    endif
+    end if
 !
 !   Les paramètres optionnels
     mult_comp = ' '
     if (present(mult_comp_)) then
         mult_comp = mult_comp_
-    endif
+    end if
     materi = ' '
     if (present(materi_)) then
         materi = materi_
-    endif
+    end if
 !
 !   Numéro de la loi de comportement : numlc
-    read(compor(NUME),'(I16)') numlc
+    read (compor(NUME), '(I16)') numlc
 !
 !   Boucle pour établir les contraintes planes
     do icp = 1, ncpmax
-        call redece(BEHinteg,&
-                    fami,        kpg,    ksp,    ndim,   typmod,    &
-                    l_epsi_varc, imate,  materi, compor, mult_comp, &
-                    carcri,      instam, instap, neps,   epsm,      &
-                    deps,        nsig,   sigm,   vim,    option,    &
-                    angmas,      cp,     numlc,  sigp,   vip,       &
-                    ndsde,       dsidep, codret)
+        call redece(BEHinteg, &
+                    fami, kpg, ksp, ndim, typmod, &
+                    l_epsi_varc, imate, materi, compor, mult_comp, &
+                    carcri, instam, instap, neps, epsm, &
+                    deps, nsig, sigm, vim, option, &
+                    angmas, cp, numlc, sigp, vip, &
+                    ndsde, dsidep, codret)
         !
         ! Vérifier la convergence des contraintes planes et sortir de la boucle si nécessaire
         if (cp) then
-            ASSERT(ndsde.eq.36)
+            ASSERT(ndsde .eq. 36)
             call nmcpl3(compor, option, carcri, deps, dsidep, &
-                        ndim,   sigp,   vip,    cpl,  icp,    &
+                        ndim, sigp, vip, cpl, icp, &
                         convcp)
-        endif
+        end if
         !
         if (convcp) then
             exit
-        endif
+        end if
         !
-    enddo
+    end do
 !
 !   Contraintes planes méthode DE BORST
     if (cp) then
         if (codret .eq. 0) then
-            ASSERT(ndsde.eq.36)
-            call nmcpl2(compor, typmod, option, optio2, cpl,  &
-                        nvv,    carcri, deps,   dsidep, ndim, &
-                        sigp,   vip,    codret)
+            ASSERT(ndsde .eq. 36)
+            call nmcpl2(compor, typmod, option, optio2, cpl, &
+                        nvv, carcri, deps, dsidep, ndim, &
+                        sigp, vip, codret)
         else
-            option=optio2
-        endif
-    endif
+            option = optio2
+        end if
+    end if
 !   Examen du domaine de validité
     if (codret .eq. 0) then
-        call lcvali(fami,   kpg,  ksp,  imate,  materi, &
-                    compor, ndim, epsm, deps,   instam, &
+        call lcvali(fami, kpg, ksp, imate, materi, &
+                    compor, ndim, epsm, deps, instam, &
                     instap, codret)
     else if (codret .eq. 1) then
-        call lcidbg(fami,   kpg,    ksp,    typmod, compor, &
-                    carcri, instam, instap, neps,   epsm,   &
-                    deps,   nsig,   sigm,   vim,    option)
-    endif
+        call lcidbg(fami, kpg, ksp, typmod, compor, &
+                    carcri, instam, instap, neps, epsm, &
+                    deps, nsig, sigm, vim, option)
+    end if
 !
 end subroutine

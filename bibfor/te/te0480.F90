@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,9 +18,9 @@
 
 subroutine te0480(option, nomte)
 !
-use THM_type
+    use THM_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -33,7 +33,7 @@ implicit none
 #include "asterfort/thmGetElemRefe.h"
 #include "asterfort/thmGetElemInfo.h"
 !
-character(len=16), intent(in) :: option, nomte
+    character(len=16), intent(in) :: option, nomte
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -51,13 +51,13 @@ character(len=16), intent(in) :: option, nomte
 ! --------------------------------------------------------------------------------------------------
 !
     aster_logical :: l_axi, l_steady, l_vf
-    integer :: nno, nnos, kp, npg, ndim, nnom,  ndim2
+    integer :: nno, nnos, kp, npg, ndim, nnom, ndim2
     integer :: jv_gano, jv_poids, jv_poids2, jv_func, jv_func2, jv_dfunc, jv_dfunc2
     integer :: k, kk, i, l, ires, itemps, iopt, ndlnm, iech
-    integer :: iret, ndlno, igeom,iechf
+    integer :: iret, ndlno, igeom, iechf
     real(kind=8) :: poids, r, z, nx, ny, valpar(2), deltat
     real(kind=8) :: poids2, nx2, ny2, flu1, flu2, fluth
-    real(kind=8) :: c11,c12,c21,c22,p1ext,p2ext,p1m,p2m
+    real(kind=8) :: c11, c12, c21, c22, p1ext, p2ext, p1m, p2m
     character(len=8) :: nompar(2), elrefe, elref2
     integer :: idepm
 !
@@ -79,7 +79,7 @@ character(len=16), intent(in) :: option, nomte
 !
 ! - Get model of finite element
 !
-    call thmGetElemModel(ds_thm,l_axi_ = l_axi, l_vf_ = l_vf, l_steady_ = l_steady)
+    call thmGetElemModel(ds_thm, l_axi_=l_axi, l_vf_=l_vf, l_steady_=l_steady)
 !
 ! - Get reference elements
 !
@@ -87,16 +87,16 @@ character(len=16), intent(in) :: option, nomte
 !
 ! - Get informations about element
 !
-    call thmGetElemInfo(l_vf   , elrefe  , elref2   ,&
-                        nno    , nnos    , nnom     ,&
-                        jv_gano, jv_poids, jv_poids2,&
-                        jv_func, jv_func2, jv_dfunc , jv_dfunc2,&
-                        npg_ = npg)
+    call thmGetElemInfo(l_vf, elrefe, elref2, &
+                        nno, nnos, nnom, &
+                        jv_gano, jv_poids, jv_poids2, &
+                        jv_func, jv_func2, jv_dfunc, jv_dfunc2, &
+                        npg_=npg)
 !
 ! - Get number of dof on boundary
 !
     ndim2 = 2
-    call dimthm(ds_thm,l_vf, ndim2, ndlno, ndlnm)
+    call dimthm(ds_thm, l_vf, ndim2, ndlno, ndlnm)
 !
 ! - Input/output fields
 !
@@ -133,16 +133,16 @@ character(len=16), intent(in) :: option, nomte
         valpar(2) = zr(itemps)
 ! Recuperation des informations sur le flux
         call jevech('PCHTHMF', 'L', iechf)
-        call fointe('FM', zk8(iechf), 1, nompar(1), valpar(1), c11 , iret)
-        call fointe('FM', zk8(iechf+1), 1, nompar(1), valpar(1), c12 , iret)
-        call fointe('FM', zk8(iechf+2), 1, nompar(1), valpar(1), c21 , iret)
-        call fointe('FM', zk8(iechf+3), 1,nompar(1), valpar(1), c22 , iret)
-        call fointe('FM', zk8(iechf+4), 1, nompar(2), valpar(2), p1ext , iret)
-        call fointe('FM', zk8(iechf+5), 1, nompar(2), valpar(2), p2ext , iret)
+        call fointe('FM', zk8(iechf), 1, nompar(1), valpar(1), c11, iret)
+        call fointe('FM', zk8(iechf+1), 1, nompar(1), valpar(1), c12, iret)
+        call fointe('FM', zk8(iechf+2), 1, nompar(1), valpar(1), c21, iret)
+        call fointe('FM', zk8(iechf+3), 1, nompar(1), valpar(1), c22, iret)
+        call fointe('FM', zk8(iechf+4), 1, nompar(2), valpar(2), p1ext, iret)
+        call fointe('FM', zk8(iechf+5), 1, nompar(2), valpar(2), p2ext, iret)
 !
-     else
+    else
         ASSERT(ASTER_FALSE)
-    endif
+    end if
 ! ======================================================================
 ! --- CAS DU PERMANENT POUR LA PARTIE H OU T : LE SYSTEME A ETE --------
 ! --- CONSTRUIT EN SIMPLIFIANT PAR LE PAS DE TEMPS. ON DOIT DONC -------
@@ -157,9 +157,9 @@ character(len=16), intent(in) :: option, nomte
 ! ======================================================================
 ! --- RECUPERATION DES DERIVEES DES FONCTONS DE FORMES -----------------
 ! ======================================================================
-        call vff2dn(ndim, nno, kp, jv_poids, jv_dfunc,&
+        call vff2dn(ndim, nno, kp, jv_poids, jv_dfunc, &
                     zr(igeom), nx, ny, poids)
-        call vff2dn(ndim, nnos, kp, jv_poids2, jv_dfunc2,&
+        call vff2dn(ndim, nnos, kp, jv_poids2, jv_dfunc2, &
                     zr(igeom), nx2, ny2, poids2)
 ! ======================================================================
 ! --- MODIFICATION DU POIDS POUR LES CAS AXI ---------------------------
@@ -168,11 +168,11 @@ character(len=16), intent(in) :: option, nomte
             r = 0.d0
             z = 0.d0
             do i = 1, nno
-                l = (kp-1)*nno + i
-                r = r + zr(igeom+2*i-2)*zr(jv_func+l-1)
+                l = (kp-1)*nno+i
+                r = r+zr(igeom+2*i-2)*zr(jv_func+l-1)
             end do
             poids = poids*r
-        endif
+        end if
 ! ======================================================================
 ! --- OPTION ECHA_THM_R
 ! ======================================================================
@@ -189,56 +189,56 @@ character(len=16), intent(in) :: option, nomte
 !
 ! --------- Temp-Meca-Hydr1(2)-Hydr2(1,2)
 !
-            if (ds_thm%ds_elem%nb_phase(1) .eq. 2 .and.&
-                ds_thm%ds_elem%l_dof_pre2 .and.&
+            if (ds_thm%ds_elem%nb_phase(1) .eq. 2 .and. &
+                ds_thm%ds_elem%l_dof_pre2 .and. &
                 ds_thm%ds_elem%l_dof_ther) then
 !
                 if (ds_thm%ds_elem%l_dof_meca) then
                     do i = 1, nnos
-                        l = 5* (i-1) - 1
-                        zr(ires+l+3) = zr(ires+l+3) - poids*deltat* flu1*zr(jv_func2+kk+i-1)
-                        zr(ires+l+4) = zr(ires+l+4) - poids*deltat* flu2*zr(jv_func2+kk+i-1)
-                        zr(ires+l+5) = zr(ires+l+5) - poids*deltat* fluth*zr(jv_func2+kk+i-1)
+                        l = 5*(i-1)-1
+                        zr(ires+l+3) = zr(ires+l+3)-poids*deltat*flu1*zr(jv_func2+kk+i-1)
+                        zr(ires+l+4) = zr(ires+l+4)-poids*deltat*flu2*zr(jv_func2+kk+i-1)
+                        zr(ires+l+5) = zr(ires+l+5)-poids*deltat*fluth*zr(jv_func2+kk+i-1)
                     end do
                 else
                     do i = 1, nnos
-                        l = 3* (i-1) - 1
-                        zr(ires+l+1) = zr(ires+l+1) - poids*deltat* flu1*zr(jv_func2+kk+i-1)
-                        zr(ires+l+2) = zr(ires+l+2) - poids*deltat* flu2*zr(jv_func2+kk+i-1)
-                        zr(ires+l+3) = zr(ires+l+3) - poids*deltat* fluth*zr(jv_func2+kk+i-1)
+                        l = 3*(i-1)-1
+                        zr(ires+l+1) = zr(ires+l+1)-poids*deltat*flu1*zr(jv_func2+kk+i-1)
+                        zr(ires+l+2) = zr(ires+l+2)-poids*deltat*flu2*zr(jv_func2+kk+i-1)
+                        zr(ires+l+3) = zr(ires+l+3)-poids*deltat*fluth*zr(jv_func2+kk+i-1)
                     end do
-                endif
-            endif
+                end if
+            end if
 !
 ! --------- Hydr1(2)-Hydr2(1,2)
 !
-            if (ds_thm%ds_elem%nb_phase(1) .eq. 2 .and.&
-                ds_thm%ds_elem%l_dof_pre2 .and.&
-                .not. ds_thm%ds_elem%l_dof_ther .and.&
+            if (ds_thm%ds_elem%nb_phase(1) .eq. 2 .and. &
+                ds_thm%ds_elem%l_dof_pre2 .and. &
+                .not. ds_thm%ds_elem%l_dof_ther .and. &
                 .not. ds_thm%ds_elem%l_dof_meca) then
 !
                 do i = 1, nnos
-                     l = 2* (i-1) - 1
-                     zr(ires+l+1) = zr(ires+l+1) - poids*deltat* flu1*zr(jv_func2+kk+i-1)
-                     zr(ires+l+2) = zr(ires+l+2) - poids*deltat* flu2*zr(jv_func2+kk+i-1)
+                    l = 2*(i-1)-1
+                    zr(ires+l+1) = zr(ires+l+1)-poids*deltat*flu1*zr(jv_func2+kk+i-1)
+                    zr(ires+l+2) = zr(ires+l+2)-poids*deltat*flu2*zr(jv_func2+kk+i-1)
                 end do
-            endif
+            end if
 !
 ! --------- Meca-Hydr1(2)-Hydr2(1,2)
 !
-            if (ds_thm%ds_elem%nb_phase(1) .eq. 2 .and.&
-                      ds_thm%ds_elem%l_dof_pre2 .and.&
-                .not. ds_thm%ds_elem%l_dof_ther .and.&
-                      ds_thm%ds_elem%l_dof_meca) then
+            if (ds_thm%ds_elem%nb_phase(1) .eq. 2 .and. &
+                ds_thm%ds_elem%l_dof_pre2 .and. &
+                .not. ds_thm%ds_elem%l_dof_ther .and. &
+                ds_thm%ds_elem%l_dof_meca) then
 !
                 do i = 1, nnos
-                    l = 4* (i-1) - 1
-                    zr(ires+l+3) = zr(ires+l+3) - poids*deltat*flu1* zr(jv_func2+kk+i-1)
-                    zr(ires+l+4) = zr(ires+l+4) - poids*deltat*flu2* zr(jv_func2+kk+i-1)
+                    l = 4*(i-1)-1
+                    zr(ires+l+3) = zr(ires+l+3)-poids*deltat*flu1*zr(jv_func2+kk+i-1)
+                    zr(ires+l+4) = zr(ires+l+4)-poids*deltat*flu2*zr(jv_func2+kk+i-1)
                 end do
-            endif
+            end if
 !
-        endif
+        end if
     end do
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine chsut1(chs1, nomgd2, ncmp, lcmp1, lcmp2,&
+subroutine chsut1(chs1, nomgd2, ncmp, lcmp1, lcmp2, &
                   base, chs2)
 ! person_in_charge: jacques.pellet at edf.fr
     implicit none
@@ -65,10 +65,10 @@ subroutine chsut1(chs1, nomgd2, ncmp, lcmp1, lcmp2,&
     call exisd('CHAM_ELEM_S', chsa, i2)
     if (i1*i2 .ne. 0) then
         call utmess('A', 'CALCULEL2_2', sk=chsa)
-    endif
+    end if
     if (i1+i2 .eq. 0) then
         call utmess('A', 'CALCULEL2_3', sk=chsa)
-    endif
+    end if
 !
 !
 !     1.  ON RECOPIE LE CHAMP "IN" ET ON RECUPERE LES ADRESSES JEVEUX :
@@ -92,7 +92,7 @@ subroutine chsut1(chs1, nomgd2, ncmp, lcmp1, lcmp2,&
         call jeveuo(chsp//'.CESC', 'L', jcs1c)
         call jeveuo(chsb//'.CESK', 'E', jcs2k)
         call jeveuo(chsb//'.CESC', 'E', jcs2c)
-    endif
+    end if
 !
 !
 !     2. QUELQUES VERIFICATIONS :
@@ -103,18 +103,18 @@ subroutine chsut1(chs1, nomgd2, ncmp, lcmp1, lcmp2,&
     call dismoi('TYPE_SCA', nomgd1, 'GRANDEUR', repk=tsca1)
     call dismoi('TYPE_SCA', nomgd2, 'GRANDEUR', repk=tsca2)
     if (tsca1 .ne. tsca2) then
-        valk(1)=tsca1
-        valk(2)=tsca2
+        valk(1) = tsca1
+        valk(2) = tsca2
         call utmess('F', 'CALCULEL4_4', nk=2, valk=valk)
-    endif
+    end if
 !
 !     2.2 : NOMGD1 ET LCMP1 SONT COHERENTS :
     call verigd(nomgd1, lcmp1, ncmp, iret)
-    ASSERT(iret.le.0)
+    ASSERT(iret .le. 0)
 !
 !     2.3 : NOMGD2 ET LCMP2 SONT COHERENTS :
     call verigd(nomgd2, lcmp2, ncmp, iret)
-    ASSERT(iret.le.0)
+    ASSERT(iret .le. 0)
 !
 !
 !      3. MODIFICATION DE CHS2 :
@@ -123,9 +123,9 @@ subroutine chsut1(chs1, nomgd2, ncmp, lcmp1, lcmp2,&
     ncmpch = zi(jcs1d-1+2)
     do k = 1, ncmpch
         nocmp = zk8(jcs1c-1+k)
-        kk = indik8(lcmp1,nocmp,1,ncmp)
+        kk = indik8(lcmp1, nocmp, 1, ncmp)
 !       SI KK.EQ.0 : ON NE SAIT PAS RENOMMER LA CMP
-        ASSERT(kk.ne.0)
+        ASSERT(kk .ne. 0)
         zk8(jcs2c-1+k) = lcmp2(kk)
     end do
 !
@@ -137,6 +137,6 @@ subroutine chsut1(chs1, nomgd2, ncmp, lcmp1, lcmp2,&
         call detrsd('CHAM_NO_S', chsp)
     else
         call detrsd('CHAM_ELEM_S', chsp)
-    endif
+    end if
 !
 end subroutine

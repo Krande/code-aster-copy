@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,9 +18,9 @@
 
 subroutine afvarc_free(varc_cata, varc_affe)
 !
-use Material_Datastructure_type
+    use Material_Datastructure_type
 !
-implicit none
+    implicit none
 !
     type(Mat_DS_VarcListCata), intent(inout) :: varc_cata
     type(Mat_DS_VarcListAffe), intent(inout) :: varc_affe
@@ -41,13 +41,13 @@ implicit none
     integer :: i
 !
     do i = 1, varc_cata%nb_varc
-        deallocate(varc_cata%list_cata_varc(i)%list_cmp)
+        deallocate (varc_cata%list_cata_varc(i)%list_cmp)
     end do
 !
-    deallocate(varc_cata%list_cata_varc)
+    deallocate (varc_cata%list_cata_varc)
 !
     if (varc_affe%nb_varc_cmp .ne. 0) then
-        deallocate(varc_affe%list_affe_varc)
-    endif
+        deallocate (varc_affe%list_affe_varc)
+    end if
 !
 end subroutine

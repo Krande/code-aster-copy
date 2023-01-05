@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -51,12 +51,12 @@ subroutine simono()
     character(len=19) :: resu
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: i,  in,  jvec, nbd
+    integer :: i, in, jvec, nbd
     integer :: nbdir, nbv
     integer, pointer :: ddl(:) => null()
     real(kind=8), pointer :: vale(:) => null()
 !-----------------------------------------------------------------------
-    data   tabcmp / 'DX' , 'DY' , 'DZ' , 'DRX' , 'DRY' , 'DRZ' /
+    data tabcmp/'DX', 'DY', 'DZ', 'DRX', 'DRY', 'DRZ'/
 !     ------------------------------------------------------------------
 !
 ! --- RECUPERATION DES ARGUMENTS DE LA COMMANDE
@@ -82,23 +82,23 @@ subroutine simono()
 !     --- ON NORMALISE LE VECTEUR ---
     xnorm = 0.d0
     do i = 1, nbdir
-        xnorm = xnorm + depl(i) * depl(i)
+        xnorm = xnorm+depl(i)*depl(i)
     end do
     xnorm = sqrt(xnorm)
     if (xnorm .lt. 0.d0) then
         call utmess('F', 'ALGORITH9_81')
-    endif
+    end if
     do i = 1, nbdir
-        depl(i) = depl(i) / xnorm
+        depl(i) = depl(i)/xnorm
     end do
 !
     call wkvect('&&SIMONO.VECTEUR', 'V V R', neq, jvec)
     AS_ALLOCATE(vi=ddl, size=neq*nbdir)
-    call pteddl('NUME_DDL', nume, nbdir, tabcmp, neq,&
-                tabl_equa = ddl)
+    call pteddl('NUME_DDL', nume, nbdir, tabcmp, neq, &
+                tabl_equa=ddl)
     do i = 1, nbdir
         do in = 0, neq-1
-            zr(jvec+in) = zr(jvec+in) - ddl(1+(i-1)*neq+in)*depl(i)
+            zr(jvec+in) = zr(jvec+in)-ddl(1+(i-1)*neq+in)*depl(i)
         end do
     end do
 !
@@ -107,7 +107,7 @@ subroutine simono()
     call vtcrem(resu, masse, 'G', 'R')
     call jeveuo(resu//'.VALE', 'E', vr=vale)
 !
-    call mrmult('ZERO', lmat, zr(jvec), vale, 1,&
+    call mrmult('ZERO', lmat, zr(jvec), vale, 1, &
                 .true._1)
 !
 !      CALL WKVECT('&&SIMONO.DDL.BLOQUE','V V I',NEQ,IDDL)

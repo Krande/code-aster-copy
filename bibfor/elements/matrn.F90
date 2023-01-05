@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine matrn(nb1, nb2, xr, ksi3s2, epais,&
+subroutine matrn(nb1, nb2, xr, ksi3s2, epais, &
                  intsn, vectn, matn)
 !
 !
@@ -35,9 +35,9 @@ subroutine matrn(nb1, nb2, xr, ksi3s2, epais,&
 !
 #include "asterfort/antisy.h"
 #include "asterfort/r8inir.h"
-    real(kind=8) :: matn ( 3 , 51 )
-    real(kind=8) :: xr ( * )
-    real(kind=8) :: vectn ( 9 , 3 )
+    real(kind=8) :: matn(3, 51)
+    real(kind=8) :: xr(*)
+    real(kind=8) :: vectn(9, 3)
 !
     integer :: jn
 !
@@ -46,7 +46,7 @@ subroutine matrn(nb1, nb2, xr, ksi3s2, epais,&
     integer :: nb1, nb2
     integer :: ii, jj
 !
-    real(kind=8) :: vecnj ( 3 ), antnj ( 3 , 3 )
+    real(kind=8) :: vecnj(3), antnj(3, 3)
     real(kind=8) :: ksi3s2
     real(kind=8) :: epais
 !
@@ -54,7 +54,7 @@ subroutine matrn(nb1, nb2, xr, ksi3s2, epais,&
 !
 !---- INITIALISATION
 !
-    call r8inir(3 * 51, 0.d0, matn, 1)
+    call r8inir(3*51, 0.d0, matn, 1)
 !
 !---- LES ADRESSES DES FONCTIONS DE FORME ET DE LEURS DERIVEES
 !     DECALAGE DE 8 NOEUDS DE SERENDIP ET 9 NOEUDS DE LAGRANGE
@@ -65,7 +65,7 @@ subroutine matrn(nb1, nb2, xr, ksi3s2, epais,&
 !------- NORMALE ET ANTISYM AU NOEUD JN
 !
         do ii = 1, 3
-            vecnj ( ii ) = vectn ( jn , ii )
+            vecnj(ii) = vectn(jn, ii)
         end do
 !
         call antisy(vecnj, 1.d0, antnj)
@@ -77,17 +77,17 @@ subroutine matrn(nb1, nb2, xr, ksi3s2, epais,&
 !---------- PARTIE TRANSLATION
 !
             do jj = 1, 3
-                matn ( jj , ( jn - 1 ) * 6 + jj ) = xr ( 135 + 8 * (&
-                intsn - 1 ) + jn )
+                matn(jj, (jn-1)*6+jj) = xr(135+8*( &
+                                           intsn-1)+jn)
             end do
 !
 !---------- PARTIE ROTATION
 !
             do jj = 1, 3
                 do ii = 1, 3
-                    matn ( ii , ( jn - 1 ) * 6 + jj + 3 ) = - epais *&
-                    ksi3s2 * xr ( 459 + 9 * ( intsn - 1 ) + jn ) *&
-                    antnj ( ii , jj )
+                    matn(ii, (jn-1)*6+jj+3) = -epais* &
+                                              ksi3s2*xr(459+9*(intsn-1)+jn)* &
+                                              antnj(ii, jj)
                 end do
             end do
 !
@@ -99,14 +99,14 @@ subroutine matrn(nb1, nb2, xr, ksi3s2, epais,&
 !
             do jj = 1, 3
                 do ii = 1, 3
-                    matn ( ii , nb1 * 6 + jj ) = - epais * ksi3s2&
-                    * xr ( 459 + 9 * ( intsn - 1 ) + jn ) * antnj (&
-                    ii , jj )
+                    matn(ii, nb1*6+jj) = -epais*ksi3s2 &
+                                         *xr(459+9*(intsn-1)+jn)*antnj( &
+                                         ii, jj)
 !
                 end do
             end do
 !
-        endif
+        end if
 !
     end do
 !

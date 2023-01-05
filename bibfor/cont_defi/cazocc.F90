@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 !
 subroutine cazocc(sdcont, keywf, i_zone, nb_cont_zone)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -33,10 +33,10 @@ implicit none
 #include "asterfort/utmess.h"
 #include "asterc/r8prem.h"
 !
-character(len=8), intent(in) :: sdcont
-integer, intent(in) :: i_zone
-character(len=16), intent(in) :: keywf
-integer, optional, intent(in) :: nb_cont_zone
+    character(len=8), intent(in) :: sdcont
+    integer, intent(in) :: i_zone
+    character(len=16), intent(in) :: keywf
+    integer, optional, intent(in) :: nb_cont_zone
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -87,76 +87,76 @@ integer, optional, intent(in) :: nb_cont_zone
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    inte_order        = 0
-    type_inte         = 0.d0
-    algo_cont         = 0.d0
-    coef_augm_cont    = 100.d0
-    coef_pena_cont    = 100.d0
-    coef_cont         = 100.d0
-    algo_frot         = 0.d0
-    coef_coul_frot    = 0.d0
-    coef_augm_frot    = 100.d0
-    coef_pena_frot    = 100.d0
-    coef_frot         = 0.d0
-    coef_coul_frot    = 0.d0
-    seuil_init        = 0.d0
-    seuil_auto        = 0.d0
-    cont_init         = 0.d0
-    dire_excl_frot_i  = 0.d0
+    inte_order = 0
+    type_inte = 0.d0
+    algo_cont = 0.d0
+    coef_augm_cont = 100.d0
+    coef_pena_cont = 100.d0
+    coef_cont = 100.d0
+    algo_frot = 0.d0
+    coef_coul_frot = 0.d0
+    coef_augm_frot = 100.d0
+    coef_pena_frot = 100.d0
+    coef_frot = 0.d0
+    coef_coul_frot = 0.d0
+    seuil_init = 0.d0
+    seuil_auto = 0.d0
+    cont_init = 0.d0
+    dire_excl_frot_i = 0.d0
     dire_excl_frot(:) = 0.d0
-    l_inte_node       = ASTER_FALSE
-    l_node_excl       = ASTER_FALSE
-    l_frot_excl       = ASTER_FALSE
-    l_gliss           = ASTER_FALSE
-    l_dire_excl_frot  = ASTER_FALSE
-    l_newt_fr         = ASTER_FALSE
-    l_cont_cont       = ASTER_FALSE
-    l_granglis        = ASTER_FALSE
-    s_algo_cont       = ' '
-    s_algo_frot       = ' '
-    iadapt            = 0
-    pene_maxi         = 1.d3
-    glis_maxi         = 1.d3
-    nbret             = -3
+    l_inte_node = ASTER_FALSE
+    l_node_excl = ASTER_FALSE
+    l_frot_excl = ASTER_FALSE
+    l_gliss = ASTER_FALSE
+    l_dire_excl_frot = ASTER_FALSE
+    l_newt_fr = ASTER_FALSE
+    l_cont_cont = ASTER_FALSE
+    l_granglis = ASTER_FALSE
+    s_algo_cont = ' '
+    s_algo_frot = ' '
+    iadapt = 0
+    pene_maxi = 1.d3
+    glis_maxi = 1.d3
+    nbret = -3
 !
 ! - Datastructure for contact
 !
-    sdcont_defi   = sdcont(1:8)//'.CONTACT'
+    sdcont_defi = sdcont(1:8)//'.CONTACT'
     sdcont_caracf = sdcont_defi(1:16)//'.CARACF'
     sdcont_exclfr = sdcont_defi(1:16)//'.EXCLFR'
     sdcont_paraci = sdcont(1:8)//'.PARACI'
     sdcont_paracr = sdcont(1:8)//'.PARACR'
-    call jeveuo(sdcont_caracf, 'E', vr = v_sdcont_caracf)
-    call jeveuo(sdcont_exclfr, 'E', vr = v_sdcont_exclfr)
-    call jeveuo(sdcont_paraci, 'E', vi = v_sdcont_paraci)
-    call jeveuo(sdcont_paracr, 'E', vr = v_sdcont_paracr)
+    call jeveuo(sdcont_caracf, 'E', vr=v_sdcont_caracf)
+    call jeveuo(sdcont_exclfr, 'E', vr=v_sdcont_exclfr)
+    call jeveuo(sdcont_paraci, 'E', vi=v_sdcont_paraci)
+    call jeveuo(sdcont_paracr, 'E', vr=v_sdcont_paracr)
     zcmcf = cfmmvd('ZCMCF')
     zexcl = cfmmvd('ZEXCL')
 !
 ! - Parameters
 !
-    l_frot      = cfdisl(sdcont_defi,'FROTTEMENT')
-    l_cont_cont = cfdisl(sdcont_defi,'FORMUL_CONTINUE')
-    l_newt_fr   = cfdisl(sdcont_defi,'FROT_NEWTON')
+    l_frot = cfdisl(sdcont_defi, 'FROTTEMENT')
+    l_cont_cont = cfdisl(sdcont_defi, 'FORMUL_CONTINUE')
+    l_newt_fr = cfdisl(sdcont_defi, 'FROT_NEWTON')
 !
 ! - Integration scheme
 !
     call getvtx(keywf, 'INTEGRATION', iocc=i_zone, scal=s_type_inte)
     if (s_type_inte .eq. 'AUTO') then
         l_inte_node = ASTER_TRUE
-        type_inte   = 1.d0
+        type_inte = 1.d0
     else if (s_type_inte .eq. 'GAUSS') then
         call getvis(keywf, 'ORDRE_INT', iocc=i_zone, scal=inte_order)
-        type_inte = 10.d0*inte_order + 2.d0
+        type_inte = 10.d0*inte_order+2.d0
     else if (s_type_inte .eq. 'SIMPSON') then
         call getvis(keywf, 'ORDRE_INT', iocc=i_zone, scal=inte_order)
-        type_inte = 10.d0*inte_order + 3.d0
+        type_inte = 10.d0*inte_order+3.d0
     else if (s_type_inte .eq. 'NCOTES') then
         call getvis(keywf, 'ORDRE_INT', iocc=i_zone, scal=inte_order)
-        type_inte = 10.d0*inte_order + 4.d0
+        type_inte = 10.d0*inte_order+4.d0
     else
         ASSERT(ASTER_FALSE)
-    endif
+    end if
     v_sdcont_caracf(zcmcf*(i_zone-1)+1) = type_inte
 !
 ! - Get algorithm for contact
@@ -170,7 +170,7 @@ integer, optional, intent(in) :: nb_cont_zone
         algo_cont = 5.d0
     else
         ASSERT(ASTER_FALSE)
-    endif
+    end if
     v_sdcont_caracf(zcmcf*(i_zone-1)+3) = algo_cont
 !
 ! - Get algorithm for friction
@@ -183,17 +183,17 @@ integer, optional, intent(in) :: nb_cont_zone
             algo_frot = 3.d0
         else
             ASSERT(ASTER_FALSE)
-        endif
+        end if
     else
         algo_frot = 0.d0
-    endif
+    end if
 !
 ! - Automatic adaptation method
 !
-    call getvtx(keywf, 'ADAPTATION', iocc=i_zone, scal=adaptation,nbret=nbret)
+    call getvtx(keywf, 'ADAPTATION', iocc=i_zone, scal=adaptation, nbret=nbret)
     if (nbret .le. 0) then
         adaptation = 'NON'
-    endif
+    end if
     if (adaptation .eq. 'NON') then
         iadapt = 0
     else if (adaptation .eq. 'ADAPT_COEF') then
@@ -212,16 +212,16 @@ integer, optional, intent(in) :: nb_cont_zone
                 iadapt = 1
                 if (s_algo_cont .eq. 'PENALISATION') then
                     iadapt = 2
-                endif
+                end if
                 if (s_algo_frot .eq. 'PENALISATION' .and. s_algo_cont .eq. 'STANDARD') then
                     iadapt = 7
-                endif
-            elseif (s_algo_cont .eq. 'PENALISATION'  ) then
+                end if
+            elseif (s_algo_cont .eq. 'PENALISATION') then
                 iadapt = 3
             else
                 iadapt = 0
-            endif
-        endif
+            end if
+        end if
     else if (adaptation .eq. 'CYCLAGE') then
         iadapt = 4
     else if (adaptation .eq. 'TOUT') then
@@ -237,22 +237,22 @@ integer, optional, intent(in) :: nb_cont_zone
         iadapt = 4
         if (l_cont_cont) then
             if (l_newt_fr) then
-                iadapt = iadapt + 1
+                iadapt = iadapt+1
                 if (s_algo_cont .eq. 'PENALISATION') then
-                    iadapt = iadapt + 2
-                endif
+                    iadapt = iadapt+2
+                end if
                 if (s_algo_frot .eq. 'PENALISATION' .and. s_algo_cont .eq. 'STANDARD') then
-                    iadapt = iadapt + 7
-                endif
-            else if (s_algo_cont .eq. 'PENALISATION' ) then
-                iadapt = iadapt + 3
+                    iadapt = iadapt+7
+                end if
+            else if (s_algo_cont .eq. 'PENALISATION') then
+                iadapt = iadapt+3
             else
-                iadapt = iadapt + 0
-            endif
-        endif
+                iadapt = iadapt+0
+            end if
+        end if
     else
         ASSERT(ASTER_FALSE)
-    endif
+    end if
     v_sdcont_paraci(20) = iadapt
 !
 ! - Contact method
@@ -270,27 +270,27 @@ integer, optional, intent(in) :: nb_cont_zone
         pene_maxi = 1.d3
     else if (s_algo_cont .eq. 'PENALISATION') then
         ! L'utilisateur peut ne pas renseigner pene_maxi
-        call getvr8(keywf, 'PENE_MAXI', iocc=i_zone, scal=pene_maxi,nbret=nbret)
-        if ((adaptation .eq. 'NON' .or. adaptation .eq. 'CYCLAGE') .and. (nbret .le. 0) ) then
+        call getvr8(keywf, 'PENE_MAXI', iocc=i_zone, scal=pene_maxi, nbret=nbret)
+        if ((adaptation .eq. 'NON' .or. adaptation .eq. 'CYCLAGE') .and. (nbret .le. 0)) then
             call getvr8(keywf, 'COEF_PENA_CONT', iocc=i_zone, scal=coef_pena_cont)
             pene_maxi = 1.d3
-        elseif (adaptation .eq. 'ADAPT_COEF' .or. adaptation .eq. 'TOUT' .or.(nbret .ge. 1)) then
+        elseif (adaptation .eq. 'ADAPT_COEF' .or. adaptation .eq. 'TOUT' .or. (nbret .ge. 1)) then
             if (nbret .le. 0) then
                 pene_maxi = -1
-            endif
+            end if
             coef_pena_cont = 1.d2
-        endif
+        end if
         coef_cont = coef_pena_cont
     else if (s_algo_cont .eq. 'LAC') then
         coef_cont = coef_augm_cont
         pene_maxi = 1.d3
         if (iadapt .ne. 0) then
             call utmess('F', 'CONTACT_95')
-        endif
+        end if
     else
         ASSERT(ASTER_FALSE)
-    endif
-    v_sdcont_caracf(zcmcf*(i_zone-1)+2)  = coef_cont
+    end if
+    v_sdcont_caracf(zcmcf*(i_zone-1)+2) = coef_cont
     v_sdcont_caracf(zcmcf*(i_zone-1)+14) = pene_maxi
 !
 ! - Set PENE_MAXI as mininum on all zones
@@ -298,13 +298,13 @@ integer, optional, intent(in) :: nb_cont_zone
     if (s_algo_cont .ne. 'LAC') then
         if (i_zone .eq. nb_cont_zone) then
             pene_critere = pene_maxi
-            do i_pene_zone =1,nb_cont_zone
+            do i_pene_zone = 1, nb_cont_zone
                 if (v_sdcont_caracf(zcmcf*(i_pene_zone-1)+14) .lt. pene_critere) then
                     v_sdcont_paracr(6) = v_sdcont_caracf(zcmcf*(i_pene_zone-1)+14)
-                endif
-            enddo
-        endif
-    endif
+                end if
+            end do
+        end if
+    end if
 !
 ! - Get friction parameters
 !
@@ -315,25 +315,25 @@ integer, optional, intent(in) :: nb_cont_zone
             coef_frot = coef_augm_frot
         else if (s_algo_frot .eq. 'PENALISATION') then
             call getvr8(keywf, 'COEF_PENA_FROT', iocc=i_zone, scal=coef_pena_frot)
-            call getvr8(keywf, 'GLIS_MAXI', iocc=i_zone, scal=glis_maxi,nbret=nbret)
+            call getvr8(keywf, 'GLIS_MAXI', iocc=i_zone, scal=glis_maxi, nbret=nbret)
             coef_frot = coef_pena_frot
         else
             ASSERT(ASTER_FALSE)
-        endif
+        end if
         call getvr8(keywf, 'COULOMB', iocc=i_zone, scal=coef_coul_frot)
         call getvr8(keywf, 'SEUIL_INIT', iocc=i_zone, scal=seuil_init, nbret=noc)
         if (noc .eq. 0) then
             seuil_auto = 1.d0
-        endif
+        end if
         if (coef_coul_frot .le. r8prem()) then
-            coef_frot  = 0.d0
-            algo_frot  = 0.d0
-        endif
-    endif
-    v_sdcont_caracf(zcmcf*(i_zone-1)+4)  = coef_frot
-    v_sdcont_caracf(zcmcf*(i_zone-1)+5)  = algo_frot
-    v_sdcont_caracf(zcmcf*(i_zone-1)+6)  = coef_coul_frot
-    v_sdcont_caracf(zcmcf*(i_zone-1)+7)  = seuil_init
+            coef_frot = 0.d0
+            algo_frot = 0.d0
+        end if
+    end if
+    v_sdcont_caracf(zcmcf*(i_zone-1)+4) = coef_frot
+    v_sdcont_caracf(zcmcf*(i_zone-1)+5) = algo_frot
+    v_sdcont_caracf(zcmcf*(i_zone-1)+6) = coef_coul_frot
+    v_sdcont_caracf(zcmcf*(i_zone-1)+7) = seuil_init
     v_sdcont_caracf(zcmcf*(i_zone-1)+13) = seuil_auto
     v_sdcont_caracf(zcmcf*(i_zone-1)+16) = glis_maxi
 !
@@ -341,54 +341,54 @@ integer, optional, intent(in) :: nb_cont_zone
 !
     if (s_algo_cont .ne. 'LAC') then
         call getvtx(keywf, 'SANS_GROUP_NO', iocc=i_zone, scal=s_cont_excl, nbret=nb_cont_excl_1)
-        call getvtx(keywf, 'SANS_NOEUD'   , iocc=i_zone, scal=s_cont_excl, nbret=nb_cont_excl_2)
-        l_node_excl = (nb_cont_excl_1.ne.0) .or. (nb_cont_excl_2.ne.0)
+        call getvtx(keywf, 'SANS_NOEUD', iocc=i_zone, scal=s_cont_excl, nbret=nb_cont_excl_2)
+        l_node_excl = (nb_cont_excl_1 .ne. 0) .or. (nb_cont_excl_2 .ne. 0)
         call getvtx(keywf, 'SANS_GROUP_MA', iocc=i_zone, scal=s_cont_excl, nbret=nb_cont_excl_3)
-        call getvtx(keywf, 'SANS_MAILLE'  , iocc=i_zone, scal=s_cont_excl, nbret=nb_cont_excl_4)
-        l_node_excl = l_node_excl.or.((nb_cont_excl_3.ne.0).or.(nb_cont_excl_4.ne.0))
-    endif
+        call getvtx(keywf, 'SANS_MAILLE', iocc=i_zone, scal=s_cont_excl, nbret=nb_cont_excl_4)
+        l_node_excl = l_node_excl .or. ((nb_cont_excl_3 .ne. 0) .or. (nb_cont_excl_4 .ne. 0))
+    end if
 !
 ! - Friction nodes excluded
 !
     if (s_algo_cont .ne. 'LAC') then
         call getvtx(keywf, 'SANS_GROUP_NO_FR', iocc=i_zone, scal=s_frot_excl, nbret=nb_frot_excl_1)
-        call getvtx(keywf, 'SANS_NOEUD_FR'   , iocc=i_zone, scal=s_frot_excl, nbret=nb_frot_excl_2)
-        l_frot_excl = (nb_frot_excl_1.ne.0) .or. (nb_frot_excl_2.ne.0)
-    endif
+        call getvtx(keywf, 'SANS_NOEUD_FR', iocc=i_zone, scal=s_frot_excl, nbret=nb_frot_excl_2)
+        l_frot_excl = (nb_frot_excl_1 .ne. 0) .or. (nb_frot_excl_2 .ne. 0)
+    end if
 !
 ! - For friction direction to exclude (vector)
 !
     if (l_frot_excl) then
-        call getvr8(keywf, 'DIRE_EXCL_FROT', iocc=i_zone, nbval=3, vect=dire_excl_frot,&
+        call getvr8(keywf, 'DIRE_EXCL_FROT', iocc=i_zone, nbval=3, vect=dire_excl_frot, &
                     nbret=nb_dire_excl)
         l_dire_excl_frot = (nb_dire_excl .ne. 0)
-        if (.not.l_dire_excl_frot) then
+        if (.not. l_dire_excl_frot) then
 ! --------- All directions excluded
-            dire_excl_frot_i  = 2.d0
+            dire_excl_frot_i = 2.d0
             dire_excl_frot(1) = 0.d0
             dire_excl_frot(2) = 0.d0
             dire_excl_frot(3) = 0.d0
         else
 ! --------- Only one direction excluded
             dire_excl_frot_i = 1.d0
-        endif
+        end if
     else
-        dire_excl_frot_i  = 0.d0
+        dire_excl_frot_i = 0.d0
         dire_excl_frot(1) = 0.d0
         dire_excl_frot(2) = 0.d0
         dire_excl_frot(3) = 0.d0
-    endif
+    end if
 !
 ! - Excluded: only node integration scheme
 !
-    if (.not.l_inte_node) then
+    if (.not. l_inte_node) then
         if (l_node_excl .or. l_frot_excl) then
             call utmess('F', 'CONTACT_97')
-        endif
-        if (.not.mminfl(sdcont_defi, 'MAIT', i_zone)) then
+        end if
+        if (.not. mminfl(sdcont_defi, 'MAIT', i_zone)) then
             call utmess('F', 'CONTACT_98')
-        endif
-    endif
+        end if
+    end if
 !
 ! - Initial contact
 !
@@ -401,7 +401,7 @@ integer, optional, intent(in) :: nb_cont_zone
         cont_init = 0.d0
     else
         ASSERT(ASTER_FALSE)
-    endif
+    end if
 !
 ! - Bilateral contact
 !
@@ -413,8 +413,8 @@ integer, optional, intent(in) :: nb_cont_zone
             l_gliss = ASTER_FALSE
         else
             ASSERT(ASTER_FALSE)
-        endif
-    endif
+        end if
+    end if
 !
 ! - Large sliding method
 !
@@ -428,36 +428,36 @@ integer, optional, intent(in) :: nb_cont_zone
             else
                 print s_grglis(1:3)
                 ASSERT(ASTER_FALSE)
-            endif
+            end if
         else
             l_granglis = ASTER_FALSE
-        endif
+        end if
         if (l_granglis) then
             v_sdcont_caracf(zcmcf*(i_zone-1)+15) = 1.d0
         else
             v_sdcont_caracf(zcmcf*(i_zone-1)+15) = 0.d0
-        endif
-    endif
+        end if
+    end if
 !
     v_sdcont_caracf(zcmcf*(i_zone-1)+8) = cont_init
     if (l_gliss) then
-       v_sdcont_caracf(zcmcf*(i_zone-1)+9) = 1.d0
+        v_sdcont_caracf(zcmcf*(i_zone-1)+9) = 1.d0
     else
-       v_sdcont_caracf(zcmcf*(i_zone-1)+9) = 0.d0
-    endif
+        v_sdcont_caracf(zcmcf*(i_zone-1)+9) = 0.d0
+    end if
     if (l_node_excl) then
         v_sdcont_caracf(zcmcf*(i_zone-1)+10) = 1.d0
     else
         v_sdcont_caracf(zcmcf*(i_zone-1)+10) = 0.d0
-    endif
+    end if
     if (l_frot_excl) then
         v_sdcont_caracf(zcmcf*(i_zone-1)+11) = 1.d0
     else
         v_sdcont_caracf(zcmcf*(i_zone-1)+11) = 0.d0
-    endif
+    end if
     v_sdcont_caracf(zcmcf*(i_zone-1)+12) = dire_excl_frot_i
-    v_sdcont_exclfr(zexcl*(i_zone-1)+1)  = dire_excl_frot(1)
-    v_sdcont_exclfr(zexcl*(i_zone-1)+2)  = dire_excl_frot(2)
-    v_sdcont_exclfr(zexcl*(i_zone-1)+3)  = dire_excl_frot(3)
+    v_sdcont_exclfr(zexcl*(i_zone-1)+1) = dire_excl_frot(1)
+    v_sdcont_exclfr(zexcl*(i_zone-1)+2) = dire_excl_frot(2)
+    v_sdcont_exclfr(zexcl*(i_zone-1)+3) = dire_excl_frot(3)
 !
 end subroutine

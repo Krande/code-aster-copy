@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine pmsta1(sigm, sigp, deps, vim, vip,&
-                  nbvari, nbvita, iforta, nbpar, nompar,&
-                  vr, igrad, typpar, nomvi, sddisc,&
+subroutine pmsta1(sigm, sigp, deps, vim, vip, &
+                  nbvari, nbvita, iforta, nbpar, nompar, &
+                  vr, igrad, typpar, nomvi, sddisc, &
                   liccvg, itemax, conver, actite)
 !
     implicit none
@@ -52,20 +52,20 @@ subroutine pmsta1(sigm, sigp, deps, vim, vip,&
     real(kind=8) :: deps(9), sigm(6), sigp(6), vim(*), vip(*), vr(*), rac2
     real(kind=8) :: dsig(6)
     real(kind=8) :: depst(9), equi(17)
-    data nomeps/'EPXX','EPYY','EPZZ','EPXY','EPXZ','EPYZ'/
-    data nomsig/'SIXX','SIYY','SIZZ','SIXY','SIXZ','SIYZ'/
-    data nomgrd/'F11','F12','F13','F21','F22','F23','F31','F32','F33'/
+    data nomeps/'EPXX', 'EPYY', 'EPZZ', 'EPXY', 'EPXZ', 'EPYZ'/
+    data nomsig/'SIXX', 'SIYY', 'SIZZ', 'SIXY', 'SIXZ', 'SIYZ'/
+    data nomgrd/'F11', 'F12', 'F13', 'F21', 'F22', 'F23', 'F31', 'F32', 'F33'/
 !-----------------------------------------------------------------------
 !
     call jemarq()
 !
-    cbid=(0.d0,0.d0)
-    rac2=sqrt(2.d0)
+    cbid = (0.d0, 0.d0)
+    rac2 = sqrt(2.d0)
     if (igrad .ne. 0) then
-        ncmp=9
+        ncmp = 9
     else
-        ncmp=6
-    endif
+        ncmp = 6
+    end if
 !
 !     CALCUL DES INCREMENTS POUR NMEVDR
 !
@@ -73,7 +73,7 @@ subroutine pmsta1(sigm, sigp, deps, vim, vip,&
     if (igrad .eq. 0) call dscal(3, 1.d0/rac2, depst(4), 1)
 !
     call dcopy(6, sigp, 1, dsig, 1)
-    call daxpy(6, -1.d0, sigm, 1, dsig,&
+    call daxpy(6, -1.d0, sigm, 1, dsig, &
                1)
     call dscal(3, 1.d0/rac2, dsig, 1)
     call fgequi(dsig, 'SIGM_DIR', 3, equi)
@@ -81,7 +81,7 @@ subroutine pmsta1(sigm, sigp, deps, vim, vip,&
 !
     if (iforta .eq. 0) then
 !
-        tabinc='&&OP0033.TABINC'
+        tabinc = '&&OP0033.TABINC'
         call detrsd('TABLE', tabinc)
         call tbcrsd(tabinc, 'V')
         call tbajpa(tabinc, nbpar, nompar, typpar)
@@ -89,20 +89,20 @@ subroutine pmsta1(sigm, sigp, deps, vim, vip,&
 !        VR CONTIENT L'ACCROISSEMENT DE VARIABLES INTERNES
 !        ATTENTION, VR EST LIMITE A  9999 VALEURS
         call dcopy(nbvita, vip, 1, vr(1+ncmp+6+3), 1)
-        call daxpy(nbvita, -1.d0, vim, 1, vr(1+ncmp+6+3),&
+        call daxpy(nbvita, -1.d0, vim, 1, vr(1+ncmp+6+3), &
                    1)
 !
         call dcopy(ncmp, depst, 1, vr(2), 1)
         call dcopy(6, dsig, 1, vr(ncmp+2), 1)
-        vr(ncmp+8)=equi(16)
-        vr(ncmp+9)=equi(1)
+        vr(ncmp+8) = equi(16)
+        vr(ncmp+9) = equi(1)
 !
-        call tbajli(tabinc, nbpar, nompar, [0], vr,&
+        call tbajli(tabinc, nbpar, nompar, [0], vr, &
                     [cbid], k8b, 0)
 !
     else
 !
-        tabinc='&&OPB033.TABINC'
+        tabinc = '&&OPB033.TABINC'
         call detrsd('TABLE', tabinc)
         call tbcrsd(tabinc, 'V')
         call tbajpa(tabinc, nbpar, nompar, typpar)
@@ -111,54 +111,54 @@ subroutine pmsta1(sigm, sigp, deps, vim, vip,&
 !
 !        VR CONTIENT L'ACCROISSEMENT DE VARIABLES INTERNES
         call dcopy(nbvita, vip, 1, zr(jvari), 1)
-        call daxpy(nbvita, -1.d0, vim, 1, zr(jvari),&
+        call daxpy(nbvita, -1.d0, vim, 1, zr(jvari), &
                    1)
 !
-        vr(1)=0.d0
-        vk8(1)='EPSI'
+        vr(1) = 0.d0
+        vk8(1) = 'EPSI'
         do i = 1, ncmp
-            vr(2)=depst(i)
+            vr(2) = depst(i)
             if (igrad .eq. 0) then
-                vk8(2)=nomeps(i)
+                vk8(2) = nomeps(i)
             else
-                vk8(2)=nomgrd(i)
-            endif
-            call tbajli(tabinc, nbpar, nompar, [0], vr,&
+                vk8(2) = nomgrd(i)
+            end if
+            call tbajli(tabinc, nbpar, nompar, [0], vr, &
                         [cbid], vk8, 0)
 !
         end do
-        vk8(1)='SIGM'
+        vk8(1) = 'SIGM'
         do i = 1, 6
-            vr(2)=dsig(i)
-            vk8(2)=nomsig(i)
-            call tbajli(tabinc, nbpar, nompar, [0], vr,&
+            vr(2) = dsig(i)
+            vk8(2) = nomsig(i)
+            call tbajli(tabinc, nbpar, nompar, [0], vr, &
                         [cbid], vk8, 0)
 !
         end do
-        vk8(1)='SIEQ'
-        vr(2)=equi(1)
-        vk8(2)='VMIS'
-        call tbajli(tabinc, nbpar, nompar, [0], vr,&
+        vk8(1) = 'SIEQ'
+        vr(2) = equi(1)
+        vk8(2) = 'VMIS'
+        call tbajli(tabinc, nbpar, nompar, [0], vr, &
                     [cbid], vk8, 0)
 !
-        vr(2)=equi(16)
-        vk8(2)='TRACE'
-        call tbajli(tabinc, nbpar, nompar, [0], vr,&
+        vr(2) = equi(16)
+        vk8(2) = 'TRACE'
+        call tbajli(tabinc, nbpar, nompar, [0], vr, &
                     [cbid], vk8, 0)
 !
-        vk8(1)='VARI'
+        vk8(1) = 'VARI'
         do i = 1, nbvita
-            vr(2)=zr(jvari-1+i)
-            vk8(2)=nomvi(i)
-            call tbajli(tabinc, nbpar, nompar, [0], vr,&
+            vr(2) = zr(jvari-1+i)
+            vk8(2) = nomvi(i)
+            call tbajli(tabinc, nbpar, nompar, [0], vr, &
                         [cbid], vk8, 0)
         end do
 !
-    endif
+    end if
 !
 !     VERIFICATION DES EVENT-DRIVEN
 !
-    call pmevdr(sddisc, tabinc, liccvg, itemax, conver,&
+    call pmevdr(sddisc, tabinc, liccvg, itemax, conver, &
                 actite)
 !
     call jedetr('&&OP0033.VARI')

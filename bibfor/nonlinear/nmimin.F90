@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,9 +19,9 @@
 !
 subroutine nmimin(list_func_acti, sddisc, sdsuiv, nume_inst, ds_print)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/InitTableCvg.h"
@@ -30,11 +30,11 @@ implicit none
 #include "asterfort/infdbg.h"
 #include "asterfort/utmess.h"
 !
-integer, intent(in) :: list_func_acti(*)
-character(len=19), intent(in) :: sddisc
-character(len=24), intent(in) :: sdsuiv
-integer, intent(in) :: nume_inst
-type(NL_DS_Print), intent(inout) :: ds_print
+    integer, intent(in) :: list_func_acti(*)
+    character(len=19), intent(in) :: sddisc
+    character(len=24), intent(in) :: sdsuiv
+    integer, intent(in) :: nume_inst
+    type(NL_DS_Print), intent(inout) :: ds_print
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -59,7 +59,7 @@ type(NL_DS_Print), intent(inout) :: ds_print
     call infdbg('MECANONLINE', ifm, niv)
     if (niv .ge. 2) then
         call utmess('I', 'MECANONLINE13_31')
-    endif
+    end if
 !
 ! - Activations for convergence table
 !

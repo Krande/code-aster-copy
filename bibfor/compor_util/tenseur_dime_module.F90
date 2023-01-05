@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,140 +28,125 @@ module tenseur_dime_module
 
 #include "asterfort/assert.h"
 
-    real(kind=8),parameter,dimension(6)::KRONECKER=[1.d0,1.d0,1.d0,0.d0,0.d0,0.d0]
+    real(kind=8), parameter, dimension(6)::KRONECKER = [1.d0, 1.d0, 1.d0, 0.d0, 0.d0, 0.d0]
     real(kind=8),parameter,dimension(6)::RACINE_2=[1.d0,1.d0,1.d0,sqrt(2.d0),sqrt(2.d0),sqrt(2.d0)]
-    real(kind=8),parameter             ::RAC3 = sqrt(3.d0)
+    real(kind=8), parameter             ::RAC3 = sqrt(3.d0)
 
 contains
-
 
 ! =====================================================================
 !  Extension d'un vecteur a la taille n complete par des zeros
 ! =====================================================================
 
-function rs(nout,vin) result(vout)
-    implicit none
-    integer, intent(in)                  :: nout
-    real(kind=8),dimension(:),intent(in) :: vin
-    real(kind=8),dimension(nout)         :: vout
+    function rs(nout, vin) result(vout)
+        implicit none
+        integer, intent(in)                  :: nout
+        real(kind=8), dimension(:), intent(in) :: vin
+        real(kind=8), dimension(nout)         :: vout
 ! ---------------------------------------------------------------------
-    integer nin
+        integer nin
 ! ---------------------------------------------------------------------
-    nin = size(vin)
-    if (nin.le.nout) then
-        vout         = 0
-        vout(1:nin) = vin
-    else
-        vout = vin(1:nout)
-    end if
+        nin = size(vin)
+        if (nin .le. nout) then
+            vout = 0
+            vout(1:nin) = vin
+        else
+            vout = vin(1:nout)
+        end if
 
-end function rs
-
-
+    end function rs
 
 ! =====================================================================
 !  Kronecker en representation vectorielle (1:ndimsi)
 ! =====================================================================
 
-function kron(ndimsi) result(kr)
+    function kron(ndimsi) result(kr)
 
-    implicit none
-    integer,intent(in)            ::ndimsi
-    real(kind=8),dimension(ndimsi):: kr
+        implicit none
+        integer, intent(in)            ::ndimsi
+        real(kind=8), dimension(ndimsi):: kr
 ! ---------------------------------------------------------------------
-    ASSERT(ndimsi.eq.4 .or. ndimsi.eq.6)
-    kr = KRONECKER(1:ndimsi)
+        ASSERT(ndimsi .eq. 4 .or. ndimsi .eq. 6)
+        kr = KRONECKER(1:ndimsi)
 
-end function kron
-
-
+    end function kron
 
 ! =====================================================================
 !  Vecteur de transformation pour representation de Voigt (*rac2 sur cis)
 ! =====================================================================
 
-function voigt(ndimsi) result(rac2)
+    function voigt(ndimsi) result(rac2)
 
-    implicit none
-    integer,intent(in)            ::ndimsi
-    real(kind=8),dimension(ndimsi):: rac2
+        implicit none
+        integer, intent(in)            ::ndimsi
+        real(kind=8), dimension(ndimsi):: rac2
 ! ---------------------------------------------------------------------
-    ASSERT(ndimsi.eq.4 .or. ndimsi.eq.6)
-    rac2 = RACINE_2(1:ndimsi)
+        ASSERT(ndimsi .eq. 4 .or. ndimsi .eq. 6)
+        rac2 = RACINE_2(1:ndimsi)
 
-end function voigt
-
-
+    end function voigt
 
 ! =====================================================================
 !  matrice identite de taille n
 ! =====================================================================
 
-function identity(n) result(idm)
-    implicit none
-    integer,intent(in) :: n
-    real(kind=8),dimension(n,n) :: idm
+    function identity(n) result(idm)
+        implicit none
+        integer, intent(in) :: n
+        real(kind=8), dimension(n, n) :: idm
 ! ---------------------------------------------------------------------
-    integer :: i
+        integer :: i
 ! ---------------------------------------------------------------------
-    idm = 0.d0
-    do i =1, n
-        idm(i,i) = 1.d0
-    end do
+        idm = 0.d0
+        do i = 1, n
+            idm(i, i) = 1.d0
+        end do
 
-
- end function identity
-
-
+    end function identity
 
 ! =====================================================================
 !  Deviateur d'un tenseur en representation de Voigt
 ! =====================================================================
 
-function deviator(u) result(w)
-    implicit none
-    real(kind=8),dimension(:),intent(in) :: u
-    real(kind=8),dimension(size(u))      :: w
+    function deviator(u) result(w)
+        implicit none
+        real(kind=8), dimension(:), intent(in) :: u
+        real(kind=8), dimension(size(u))      :: w
 ! ---------------------------------------------------------------------
-    w = u - sum(u(1:3))*kron(size(u))/3.d0
+        w = u-sum(u(1:3))*kron(size(u))/3.d0
 
- end function deviator
-
-
+    end function deviator
 
 ! =====================================================================
 !  Partie spherique normee d'un tenseur en representation de Voigt
 ! =====================================================================
 
-function sph_norm(u) result(y)
-    implicit none
-    real(kind=8),dimension(:),intent(in) :: u
-    real(kind=8)                         :: y
+    function sph_norm(u) result(y)
+        implicit none
+        real(kind=8), dimension(:), intent(in) :: u
+        real(kind=8)                         :: y
 ! ---------------------------------------------------------------------
-    y = sum(u(1:3))/RAC3
+        y = sum(u(1:3))/RAC3
 
- end function sph_norm
-
-
+    end function sph_norm
 
 ! =====================================================================
 !  Produit tensoriel de deux vecteurs de dimension quelconque
 ! =====================================================================
 
-function proten(u,v) result(w)
-    implicit none
-    real(kind=8),dimension(:),intent(in) :: u,v
-    real(kind=8),dimension(size(u),size(v)) :: w
+    function proten(u, v) result(w)
+        implicit none
+        real(kind=8), dimension(:), intent(in) :: u, v
+        real(kind=8), dimension(size(u), size(v)) :: w
 ! ---------------------------------------------------------------------
-    integer :: i,j
+        integer :: i, j
 ! ---------------------------------------------------------------------
-    do i =1, size(u)
-        do j =1, size(v)
-            w(i,j) = u(i)*v(j)
+        do i = 1, size(u)
+            do j = 1, size(v)
+                w(i, j) = u(i)*v(j)
+            end do
         end do
-    end do
 
- end function proten
-
+    end function proten
 
 end module tenseur_dime_module

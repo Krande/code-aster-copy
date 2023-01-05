@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -61,7 +61,7 @@ subroutine rc32s0(option, lieu, seis)
 ! DEB ------------------------------------------------------------------
 !
     do j = 1, 72
-        seis(j)= 0.d0
+        seis(j) = 0.d0
     end do
 !
     call jeveuo('&&RC3200.SEIS_INFOI', 'L', jinfois)
@@ -90,12 +90,12 @@ subroutine rc32s0(option, lieu, seis)
                 seismx(j) = 2*ms(4)*zr(jsigu-1+78+3*6+j)
                 seismy(j) = 2*ms(5)*zr(jsigu-1+78+4*6+j)
                 seismz(j) = 2*ms(6)*zr(jsigu-1+78+5*6+j)
-                seisfx2(j)= 2*ms(7)*zr(jsigu-1+78+6*6+j)
-                seisfy2(j)= 2*ms(8)*zr(jsigu-1+78+7*6+j)
-                seisfz2(j)= 2*ms(9)*zr(jsigu-1+78+8*6+j)
-                seismx2(j)= 2*ms(10)*zr(jsigu-1+78+9*6+j)
-                seismy2(j)= 2*ms(11)*zr(jsigu-1+78+10*6+j)
-                seismz2(j)= 2*ms(12)*zr(jsigu-1+78+11*6+j)
+                seisfx2(j) = 2*ms(7)*zr(jsigu-1+78+6*6+j)
+                seisfy2(j) = 2*ms(8)*zr(jsigu-1+78+7*6+j)
+                seisfz2(j) = 2*ms(9)*zr(jsigu-1+78+8*6+j)
+                seismx2(j) = 2*ms(10)*zr(jsigu-1+78+9*6+j)
+                seismy2(j) = 2*ms(11)*zr(jsigu-1+78+10*6+j)
+                seismz2(j) = 2*ms(12)*zr(jsigu-1+78+11*6+j)
             end do
         else if (option .eq. 'SPSP') then
             do j = 1, 6
@@ -105,12 +105,12 @@ subroutine rc32s0(option, lieu, seis)
                 seismx(j) = 2*ms(4)*zr(jsigu-1+6*3+j)
                 seismy(j) = 2*ms(5)*zr(jsigu-1+6*4+j)
                 seismz(j) = 2*ms(6)*zr(jsigu-1+6*5+j)
-                seisfx2(j)= 2*ms(7)*zr(jsigu-1+6*6+j)
-                seisfy2(j)= 2*ms(8)*zr(jsigu-1+6*7+j)
-                seisfz2(j)= 2*ms(9)*zr(jsigu-1+6*8+j)
-                seismx2(j)= 2*ms(10)*zr(jsigu-1+6*9+j)
-                seismy2(j)= 2*ms(11)*zr(jsigu-1+6*10+j)
-                seismz2(j)= 2*ms(12)*zr(jsigu-1+6*11+j)
+                seisfx2(j) = 2*ms(7)*zr(jsigu-1+6*6+j)
+                seisfy2(j) = 2*ms(8)*zr(jsigu-1+6*7+j)
+                seisfz2(j) = 2*ms(9)*zr(jsigu-1+6*8+j)
+                seismx2(j) = 2*ms(10)*zr(jsigu-1+6*9+j)
+                seismy2(j) = 2*ms(11)*zr(jsigu-1+6*10+j)
+                seismz2(j) = 2*ms(12)*zr(jsigu-1+6*11+j)
             end do
         else if (option .eq. 'PMPM') then
             do j = 1, 6
@@ -120,12 +120,12 @@ subroutine rc32s0(option, lieu, seis)
                 seismx(j) = 2*ms(4)*zr(jsigu-1+156+6*3+j)
                 seismy(j) = 2*ms(5)*zr(jsigu-1+156+6*4+j)
                 seismz(j) = 2*ms(6)*zr(jsigu-1+156+6*5+j)
-                seisfx2(j)= 2*ms(7)*zr(jsigu-1+156+6*6+j)
-                seisfy2(j)= 2*ms(8)*zr(jsigu-1+156+6*7+j)
-                seisfz2(j)= 2*ms(9)*zr(jsigu-1+156+6*8+j)
-                seismx2(j)= 2*ms(10)*zr(jsigu-1+156+6*9+j)
-                seismy2(j)= 2*ms(11)*zr(jsigu-1+156+6*10+j)
-                seismz2(j)= 2*ms(12)*zr(jsigu-1+156+6*11+j)
+                seisfx2(j) = 2*ms(7)*zr(jsigu-1+156+6*6+j)
+                seisfy2(j) = 2*ms(8)*zr(jsigu-1+156+6*7+j)
+                seisfz2(j) = 2*ms(9)*zr(jsigu-1+156+6*8+j)
+                seismx2(j) = 2*ms(10)*zr(jsigu-1+156+6*9+j)
+                seismy2(j) = 2*ms(11)*zr(jsigu-1+156+6*10+j)
+                seismz2(j) = 2*ms(12)*zr(jsigu-1+156+6*11+j)
             end do
         else if (option .eq. 'PBPB') then
             do j = 1, 6
@@ -135,14 +135,14 @@ subroutine rc32s0(option, lieu, seis)
                 seismx(j) = 2*ms(4)*zr(jsigu-1+234+6*3+j)
                 seismy(j) = 2*ms(5)*zr(jsigu-1+234+6*4+j)
                 seismz(j) = 2*ms(6)*zr(jsigu-1+234+6*5+j)
-                seisfx2(j)= 2*ms(7)*zr(jsigu-1+234+6*6+j)
-                seisfy2(j)= 2*ms(8)*zr(jsigu-1+234+6*7+j)
-                seisfz2(j)= 2*ms(9)*zr(jsigu-1+234+6*8+j)
-                seismx2(j)= 2*ms(10)*zr(jsigu-1+234+6*9+j)
-                seismy2(j)= 2*ms(11)*zr(jsigu-1+234+6*10+j)
-                seismz2(j)= 2*ms(12)*zr(jsigu-1+234+6*11+j)
+                seisfx2(j) = 2*ms(7)*zr(jsigu-1+234+6*6+j)
+                seisfy2(j) = 2*ms(8)*zr(jsigu-1+234+6*7+j)
+                seisfz2(j) = 2*ms(9)*zr(jsigu-1+234+6*8+j)
+                seismx2(j) = 2*ms(10)*zr(jsigu-1+234+6*9+j)
+                seismy2(j) = 2*ms(11)*zr(jsigu-1+234+6*10+j)
+                seismz2(j) = 2*ms(12)*zr(jsigu-1+234+6*11+j)
             end do
-        endif
+        end if
     else
 !-------------------------------------------
 !---- le séisme est sous forme de 6 tables
@@ -170,11 +170,11 @@ subroutine rc32s0(option, lieu, seis)
 ! ----- on recupere les abscisses curvilignes de la table
         call tbexip(tabfm(1), valek(1), exist, k8b)
         if (.not. exist) then
-            valk (1) = tabfm(1)
-            valk (2) = valek(1)
+            valk(1) = tabfm(1)
+            valk(2) = valek(1)
             call utmess('F', 'POSTRCCM_1', nk=2, valk=valk)
-        endif
-        call tbexv1(tabfm(1), valek(1), 'RC.ABSC', 'V', nbabsc,&
+        end if
+        call tbexv1(tabfm(1), valek(1), 'RC.ABSC', 'V', nbabsc, &
                     k8b)
         call jeveuo('RC.ABSC', 'L', jabsc)
 ! ----- on vérifie la cohérence des tables
@@ -182,42 +182,42 @@ subroutine rc32s0(option, lieu, seis)
             call rcver1('MECANIQUE', tabfm(1), tabfm(1+i))
         end do
 !
-        AS_ALLOCATE(vr=contraintes,  size=nbabsc)
+        AS_ALLOCATE(vr=contraintes, size=nbabsc)
 ! ----- on vient lire les tables
         do i = 1, 6
             do j = 1, 6
                 do k = 1, nbabsc
                     vale(1) = zr(jabsc+k-1)
 !
-                    call tbliva(tabfm(i), 1, valek, [ibid], vale,&
-                                [cbid], k8b, crit, prec, nocmp(j),&
-                                k8b, ibid, contraintes(k), cbid, k8b,&
+                    call tbliva(tabfm(i), 1, valek, [ibid], vale, &
+                                [cbid], k8b, crit, prec, nocmp(j), &
+                                k8b, ibid, contraintes(k), cbid, k8b, &
                                 iret)
                     if (iret .ne. 0) then
-                        valk (1) = tabfm(i)
-                        valk (2) = nocmp(j)
-                        valk (3) = valek(1)
-                        call utmess('F', 'POSTRCCM_2', nk=3, valk=valk, nr=1,&
+                        valk(1) = tabfm(i)
+                        valk(2) = nocmp(j)
+                        valk(3) = valek(1)
+                        call utmess('F', 'POSTRCCM_2', nk=3, valk=valk, nr=1, &
                                     valr=vale(1))
-                    endif
+                    end if
                 end do
                 call rc32my(nbabsc, zr(jabsc), contraintes, momen0, momen1)
                 if (option .eq. 'SNSN') then
                     if (lieu .eq. 'ORIG') then
-                        if (i .eq. 1) seisfx(j) = 2*(momen0 - 0.5d0*momen1)
-                        if (i .eq. 2) seisfy(j) = 2*(momen0 - 0.5d0*momen1)
-                        if (i .eq. 3) seisfz(j) = 2*(momen0 - 0.5d0*momen1)
-                        if (i .eq. 4) seismx(j) = 2*(momen0 - 0.5d0*momen1)
-                        if (i .eq. 5) seismy(j) = 2*(momen0 - 0.5d0*momen1)
-                        if (i .eq. 6) seismz(j) = 2*(momen0 - 0.5d0*momen1)
+                        if (i .eq. 1) seisfx(j) = 2*(momen0-0.5d0*momen1)
+                        if (i .eq. 2) seisfy(j) = 2*(momen0-0.5d0*momen1)
+                        if (i .eq. 3) seisfz(j) = 2*(momen0-0.5d0*momen1)
+                        if (i .eq. 4) seismx(j) = 2*(momen0-0.5d0*momen1)
+                        if (i .eq. 5) seismy(j) = 2*(momen0-0.5d0*momen1)
+                        if (i .eq. 6) seismz(j) = 2*(momen0-0.5d0*momen1)
                     else
-                        if (i .eq. 1) seisfx(j) = 2*(momen0 + 0.5d0*momen1)
-                        if (i .eq. 2) seisfy(j) = 2*(momen0 + 0.5d0*momen1)
-                        if (i .eq. 3) seisfz(j) = 2*(momen0 + 0.5d0*momen1)
-                        if (i .eq. 4) seismx(j) = 2*(momen0 + 0.5d0*momen1)
-                        if (i .eq. 5) seismy(j) = 2*(momen0 + 0.5d0*momen1)
-                        if (i .eq. 6) seismz(j) = 2*(momen0 + 0.5d0*momen1)
-                    endif
+                        if (i .eq. 1) seisfx(j) = 2*(momen0+0.5d0*momen1)
+                        if (i .eq. 2) seisfy(j) = 2*(momen0+0.5d0*momen1)
+                        if (i .eq. 3) seisfz(j) = 2*(momen0+0.5d0*momen1)
+                        if (i .eq. 4) seismx(j) = 2*(momen0+0.5d0*momen1)
+                        if (i .eq. 5) seismy(j) = 2*(momen0+0.5d0*momen1)
+                        if (i .eq. 6) seismz(j) = 2*(momen0+0.5d0*momen1)
+                    end if
                 else if (option .eq. 'SPSP') then
                     if (lieu .eq. 'ORIG') then
                         if (i .eq. 1) seisfx(j) = 2*contraintes(1)
@@ -233,7 +233,7 @@ subroutine rc32s0(option, lieu, seis)
                         if (i .eq. 4) seismx(j) = 2*contraintes(nbabsc)
                         if (i .eq. 5) seismy(j) = 2*contraintes(nbabsc)
                         if (i .eq. 6) seismz(j) = 2*contraintes(nbabsc)
-                    endif
+                    end if
                 else if (option .eq. 'PMPM') then
                     if (i .eq. 1) seisfx(j) = 2*momen0
                     if (i .eq. 2) seisfy(j) = 2*momen0
@@ -248,35 +248,35 @@ subroutine rc32s0(option, lieu, seis)
                     if (i .eq. 4) seismx(j) = 2*(0.5d0*momen1)
                     if (i .eq. 5) seismy(j) = 2*(0.5d0*momen1)
                     if (i .eq. 6) seismz(j) = 2*(0.5d0*momen1)
-                endif
+                end if
             end do
         end do
 !
         do j = 1, 6
-            seisfx2(j)= 0.d0
-            seisfy2(j)= 0.d0
-            seisfz2(j)= 0.d0
-            seismx2(j)= 0.d0
-            seismy2(j)= 0.d0
-            seismz2(j)= 0.d0
+            seisfx2(j) = 0.d0
+            seisfy2(j) = 0.d0
+            seisfz2(j) = 0.d0
+            seismx2(j) = 0.d0
+            seismy2(j) = 0.d0
+            seismz2(j) = 0.d0
         end do
         call jedetr('RC.ABSC')
         AS_DEALLOCATE(vr=contraintes)
-    endif
+    end if
 !
     do j = 1, 6
         seis(j) = seisfx(j)
-        seis(6+j)= seisfy(j)
-        seis(2*6+j)=seisfz(j)
-        seis(3*6+j)=seismx(j)
-        seis(4*6+j)=seismy(j)
-        seis(5*6+j)=seismz(j)
-        seis(6*6+j)= seisfx2(j)
-        seis(7*6+j)=seisfy2(j)
-        seis(8*6+j)=seisfz2(j)
-        seis(9*6+j)=seismx2(j)
-        seis(10*6+j)=seismy2(j)
-        seis(11*6+j)=seismz2(j)
+        seis(6+j) = seisfy(j)
+        seis(2*6+j) = seisfz(j)
+        seis(3*6+j) = seismx(j)
+        seis(4*6+j) = seismy(j)
+        seis(5*6+j) = seismz(j)
+        seis(6*6+j) = seisfx2(j)
+        seis(7*6+j) = seisfy2(j)
+        seis(8*6+j) = seisfz2(j)
+        seis(9*6+j) = seismx2(j)
+        seis(10*6+j) = seismy2(j)
+        seis(11*6+j) = seismz2(j)
     end do
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -41,7 +41,7 @@ subroutine op0089()
     character(len=16) :: kbi1, kbi2, corres, tysd
     character(len=8) :: ouiri, ouima, affick(2)
 !
-    integer :: isma,   ie, n1, lref
+    integer :: isma, ie, n1, lref
     character(len=8) :: noma, macrel, promes, modlms, noca
     character(len=19) :: method
     character(len=24) :: vref
@@ -69,19 +69,19 @@ subroutine op0089()
         affick(2) = noma
         if (isma .le. 0) then
             call utmess('F', 'SOUSTRUC_26', nk=2, valk=affick)
-        endif
+        end if
 !
-        macrel= nomacr(isma)
+        macrel = nomacr(isma)
 !
         call dismoi('NOM_PROJ_MESU', macrel, 'MACR_ELEM_STAT', repk=promes)
         if (promes .eq. ' ') then
             call utmess('F', 'SOUSTRUC_79')
-        endif
+        end if
 !
         vref = macrel//'.PROJM    .PJMRF'
         call jeveuo(vref, 'L', lref)
-        kbi1=zk16(lref-1 +1)
-        modlms=kbi1(1:8)
+        kbi1 = zk16(lref-1+1)
+        modlms = kbi1(1:8)
 !
 !       VERIFIER SI LES MATRICES MASSE ET RAIDEUR CONDENSEES
 !       ONT ETE CALCULEES
@@ -90,17 +90,17 @@ subroutine op0089()
         ouiri = refm(6)
         if (ouiri .ne. 'OUI_RIGI') then
             call utmess('F', 'SOUSTRUC_80')
-        endif
+        end if
 !
         ouima = refm(7)
         if (ouima .ne. 'OUI_MASS') then
             call utmess('F', 'SOUSTRUC_81')
-        endif
+        end if
 !
         corres = ' '
         noca = ' '
         method = ' '
-        call pjxxpr(ug, ul, noma, modlms, corres,&
+        call pjxxpr(ug, ul, noma, modlms, corres, &
                     'G', noca, method)
 !
     else
@@ -109,7 +109,7 @@ subroutine op0089()
         call dismoi('NOM_MAILLA', ug, 'CHAM_NO', repk=noma)
         call getvtx(' ', 'NOM_CAS', scal=nocas, nbret=n1)
         call ssdein(ul, ug, mail, nocas)
-    endif
+    end if
 !
 !
 !     -- CREATION DE L'OBJET .REFD SI NECESSAIRE:

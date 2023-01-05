@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -47,7 +47,7 @@ subroutine recude(caelem, phie, ep)
 !
     real(kind=8) :: phie2
 !-----------------------------------------------------------------------
-    data nomcmp  /'R1      ','EP1     ','R2      ','EP2     '/
+    data nomcmp/'R1      ', 'EP1     ', 'R2      ', 'EP2     '/
 !
 !-----------------------------------------------------------------------
 !
@@ -63,15 +63,15 @@ subroutine recude(caelem, phie, ep)
 !
     nbgd = 4
     call wkvect('&&RECUDE.TEMP.VRES', 'V V R', nbgd*iassef, ivalre)
-    call recugd(carte, nomcmp, zr(ivalre), nbgd, iassef,&
+    call recugd(carte, nomcmp, zr(ivalre), nbgd, iassef, &
                 iassmx)
 !
     phie2 = 0.d0
     do ia = 1, iassef
-        lr1 = ivalre + 4* (ia-1)
+        lr1 = ivalre+4*(ia-1)
         if (zr(lr1) .ne. zr(lr1+2)) then
             call utmess('F', 'ALGELINE3_31')
-        endif
+        end if
 !    PAR HYPOTHESE, LA VALEUR EST NULLE S'IL NE S'AGIT
 !    PAS D'UN SEGMENT
         if (zr(lr1) .eq. 0.d0) goto 10
@@ -79,18 +79,18 @@ subroutine recude(caelem, phie, ep)
         if (ia .ne. 1 .and. phie2 .ne. 0.d0) then
             if (zr(lr1) .ne. phie2) then
                 call utmess('F', 'ALGELINE3_31')
-            endif
-        endif
+            end if
+        end if
 !
         phie2 = zr(lr1)
         ep = zr(lr1+1)
- 10     continue
+10      continue
     end do
 !
-    phie=2.d0*phie2
+    phie = 2.d0*phie2
     if (phie .eq. 0.d0) then
         call utmess('F', 'ALGELINE3_32')
-    endif
+    end if
 !
     call jedetr('&&RECUDE.TEMP.VRES')
     call jedema()

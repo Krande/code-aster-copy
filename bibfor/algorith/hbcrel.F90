@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine hbcrel(vp, gamma, dg, nbmat, materf,&
+subroutine hbcrel(vp, gamma, dg, nbmat, materf, &
                   sigeqe, i1e, etap, parame, seuil)
-    implicit      none
+    implicit none
     integer :: nbmat
     real(kind=8) :: vp(3), gamma, materf(nbmat, 2), sigeqe, i1e, seuil, dg, etap
     real(kind=8) :: parame(4)
@@ -37,25 +37,25 @@ subroutine hbcrel(vp, gamma, dg, nbmat, materf,&
     real(kind=8) :: difsig, sig3, mu, k, sigbd, un, trois, neuf
     real(kind=8) :: aux1, aux2
 ! ======================================================================
-    parameter       ( un     =  1.0d0  )
-    parameter       ( trois  =  3.0d0  )
-    parameter       ( neuf   =  9.0d0  )
+    parameter(un=1.0d0)
+    parameter(trois=3.0d0)
+    parameter(neuf=9.0d0)
 ! ======================================================================
 ! --- RECUPERATION DES DONNEES MATERIAU --------------------------------
 ! ======================================================================
-    mu = materf(4,1)
-    k = materf(5,1)
-    sigbd = materf(14,2)
+    mu = materf(4, 1)
+    k = materf(5, 1)
+    sigbd = materf(14, 2)
 ! ======================================================================
 ! --- CALCUL DES VALEURS PROPRES DE SIG --------------------------------
 ! ======================================================================
-    difsig = (vp(3)-vp(1))*(un - trois*mu*dg/(sigeqe*(etap+un)))
-    sig3 = vp(3)*(un - trois*mu*dg/(sigeqe*(etap+un))) + (i1e - neuf*k*etap*dg/(etap+un))/trois
+    difsig = (vp(3)-vp(1))*(un-trois*mu*dg/(sigeqe*(etap+un)))
+    sig3 = vp(3)*(un-trois*mu*dg/(sigeqe*(etap+un)))+(i1e-neuf*k*etap*dg/(etap+un))/trois
 ! ======================================================================
 ! --- CALCUL DU SEUIL --------------------------------------------------
 ! ======================================================================
     aux1 = -sig3*parame(2)+parame(1)
     aux2 = parame(3)*(un+sig3/sigbd)
-    seuil = (difsig - aux2)**2 - aux1
+    seuil = (difsig-aux2)**2-aux1
 ! ======================================================================
 end subroutine

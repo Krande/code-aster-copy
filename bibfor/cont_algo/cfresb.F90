@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine cfresb(ndim, typlia, fctf, tau1, tau2,&
+subroutine cfresb(ndim, typlia, fctf, tau1, tau2, &
                   rtx, rty, rtz)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 !
@@ -60,33 +60,33 @@ implicit none
 !
 ! ----------------------------------------------------------------------
 !
-    if ((typlia.eq.'F0') .or. (typlia.eq.'GL')) then
-        proj1 = fctf(1) * tau1(1) + fctf(2) * tau1(2)
-        proj2 = fctf(1) * tau2(1) + fctf(2) * tau2(2)
+    if ((typlia .eq. 'F0') .or. (typlia .eq. 'GL')) then
+        proj1 = fctf(1)*tau1(1)+fctf(2)*tau1(2)
+        proj2 = fctf(1)*tau2(1)+fctf(2)*tau2(2)
         if (ndim .eq. 3) then
-            proj1 = proj1 + fctf(3) * tau1(3)
-            proj2 = proj2 + fctf(3) * tau2(3)
-        endif
-    else if (typlia.eq.'F1') then
-        proj1 = fctf(1) * tau1(1) + fctf(2) * tau1(2)
+            proj1 = proj1+fctf(3)*tau1(3)
+            proj2 = proj2+fctf(3)*tau2(3)
+        end if
+    else if (typlia .eq. 'F1') then
+        proj1 = fctf(1)*tau1(1)+fctf(2)*tau1(2)
         proj2 = 0.d0
         if (ndim .eq. 3) then
-            proj1 = proj1 + fctf(3) * tau1(3)
-        endif
-    else if (typlia.eq.'F2') then
+            proj1 = proj1+fctf(3)*tau1(3)
+        end if
+    else if (typlia .eq. 'F2') then
         proj1 = 0.d0
-        proj2 = fctf(1) * tau2(1) + fctf(2) * tau2(2)
+        proj2 = fctf(1)*tau2(1)+fctf(2)*tau2(2)
         if (ndim .eq. 3) then
             proj1 = 0.d0
-            proj2 = proj2 + fctf(3) * tau2(3)
-        endif
-    endif
+            proj2 = proj2+fctf(3)*tau2(3)
+        end if
+    end if
 !
-    rtx = proj1 * tau1(1) + proj2 * tau2(1)
-    rty = proj1 * tau1(2) + proj2 * tau2(2)
+    rtx = proj1*tau1(1)+proj2*tau2(1)
+    rty = proj1*tau1(2)+proj2*tau2(2)
     rtz = 0.d0
     if (ndim .eq. 3) then
-        rtz = proj1 * tau1(3) + proj2 * tau2(3)
-    endif
+        rtz = proj1*tau1(3)+proj2*tau2(3)
+    end if
 !
 end subroutine

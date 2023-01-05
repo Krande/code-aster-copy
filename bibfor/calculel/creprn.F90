@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -68,8 +68,8 @@ subroutine creprn(ligrez, molocz, basez, prnmz, prnsz)
 !
 ! -----  VARIABLES LOCALES
     character(len=*) :: ligrez, molocz, basez, prnmz, prnsz
-    integer :: gd, i,   iamaco, iamail, iamsco, jmoloc, iancmp
-    integer ::  iaprnm, iaprno, iaprns,  icmp
+    integer :: gd, i, iamaco, iamail, iamsco, jmoloc, iancmp
+    integer ::  iaprnm, iaprno, iaprns, icmp
     integer :: icodla, iec, igr, illiel, ilmaco, ilmsco
     integer :: ima, imode, ino, inold, iret, ite, j, k, l, lgncmp, nbnm
     integer :: nbnoms, nbsma, nbssa, nec, nel, nl, nm, nnoe, numa, nunoel
@@ -129,31 +129,31 @@ subroutine creprn(ligrez, molocz, basez, prnmz, prnsz)
     if (moloc .eq. ' ') then
         call dismoi('PHENOMENE', ligrel, 'LIGREL', repk=phenom)
         call dismoi('NOM_MOLOC', phenom, 'PHENOMENE', repk=moloc)
-    endif
+    end if
 !
 !
 !     -- DETERMINATION DE LA GRANDEUR NOMGD A PARTIR DE MOLOC :
 !     ---------------------------------------------------------
     if (exiel(1:3) .eq. 'OUI') then
         do igr = 1, nbgrel(ligrel)
-            ite = typele(ligrel,igr)
+            ite = typele(ligrel, igr)
             call jenuno(jexnum('&CATA.TE.NOMTE', ite), nomte)
             call jenonu(jexnom('&CATA.TE.NOMMOLOC', nomte//moloc), imode)
             if (imode .gt. 0) then
                 call jeveuo(jexnum('&CATA.TE.MODELOC', imode), 'L', jmoloc)
                 call jenuno(jexnum('&CATA.GD.NOMGD', zi(jmoloc-1+2)), nomgd)
                 goto 20
-            endif
+            end if
         end do
 !       -- IL PEUT ARRIVER QUE NBGREL=0. ON S'EN SORT AVEC MOLOC :
         if (moloc .eq. 'DDL_MECA') then
-            nomgd='DEPL_R'
-        else if (moloc.eq.'DDL_THER') then
-            nomgd='TEMP_R'
+            nomgd = 'DEPL_R'
+        else if (moloc .eq. 'DDL_THER') then
+            nomgd = 'TEMP_R'
         else
             ASSERT(.false.)
-        endif
- 20     continue
+        end if
+20      continue
 !
     else
 !       -- SI IL N'Y A PAS D'ELEMENTS FINIS
@@ -161,23 +161,23 @@ subroutine creprn(ligrez, molocz, basez, prnmz, prnsz)
         call dismoi('NOM_GD', 'MECANIQUE', 'PHENOMENE', repk=nomgd)
 !
 !
-    endif
+    end if
 !
 ! --- SI QUE l'ON RENTRE AVEC MODE_LOCAL
-    if(molocz .ne. ' ') then
+    if (molocz .ne. ' ') then
 ! --- Pour certains RESU_ELEM, il faut changer le nom
 ! Il en manque sûrement (voir nulili.F90)
-        if(nomgd(1:4) == "MDEP" .or. nomgd(1:4) == "VDEP" &
-            .or. nomgd(1:4) == "MDNS" ) then
+        if (nomgd(1:4) == "MDEP" .or. nomgd(1:4) == "VDEP" &
+            .or. nomgd(1:4) == "MDNS") then
             nomgd = "DEPL_"//nomgd(6:6)
-        elseif(nomgd(1:4) == "MTEM" .or. nomgd(1:4) == "VTEM" &
-            .or. nomgd(1:4) == "MTNS" ) then
+        elseif (nomgd(1:4) == "MTEM" .or. nomgd(1:4) == "VTEM" &
+                .or. nomgd(1:4) == "MTNS") then
             nomgd = "TEMP_"//nomgd(6:6)
-        elseif(nomgd(1:4) == "MPRE" .or. nomgd(1:4) == "VPRE") then
+        elseif (nomgd(1:4) == "MPRE" .or. nomgd(1:4) == "VPRE") then
             nomgd = "PRES_"//nomgd(6:6)
-        elseif(nomgd(1:4) == "MSIZ" .or. nomgd(1:4) == "VSIZ") then
+        elseif (nomgd(1:4) == "MSIZ" .or. nomgd(1:4) == "VSIZ") then
             nomgd = "SIZZ_"//nomgd(6:6)
-        elseif(nomgd(1:4) == "MZNS" .or. nomgd(1:4) == "VNEU") then
+        elseif (nomgd(1:4) == "MZNS" .or. nomgd(1:4) == "VNEU") then
             nomgd = "NEUT_"//nomgd(6:6)
         end if
     end if
@@ -193,18 +193,18 @@ subroutine creprn(ligrez, molocz, basez, prnmz, prnsz)
         call jeveuo(noma//'.CONNEX', 'L', iamaco)
         call jeveuo(jexatr(noma//'.CONNEX', 'LONCUM'), 'L', ilmaco)
     else
-        iamaco=1
-        ilmaco=1
-    endif
+        iamaco = 1
+        ilmaco = 1
+    end if
 !
     call jeexin(ligrel(1:19)//'.NEMA', iret)
     if (iret .gt. 0) then
         call jeveuo(ligrel(1:19)//'.NEMA', 'L', iamsco)
         call jeveuo(jexatr(ligrel(1:19)//'.NEMA', 'LONCUM'), 'L', ilmsco)
     else
-        iamsco=1
-        ilmsco=1
-    endif
+        iamsco = 1
+        ilmsco = 1
+    end if
 !
 !
 ! --- ALLOCATION DE PRNM :
@@ -214,8 +214,7 @@ subroutine creprn(ligrez, molocz, basez, prnmz, prnsz)
         call wkvect(prnm, base//' V I', (nm+nl)*nec, iaprnm)
     else
         call jeveuo(prnm, 'L', iaprnm)
-    endif
-
+    end if
 
 ! - allocation de prns (pour un ligrel contenant des noeuds tardifs):
 !   ----------------------------------------------------------------
@@ -225,8 +224,7 @@ subroutine creprn(ligrez, molocz, basez, prnmz, prnsz)
         if (nbnoms .gt. 0) call wkvect(prns, base//' V I', nbnoms*nec, iaprns)
     else
         call jeveuo(prns, 'L', iaprns)
-    endif
-
+    end if
 
 ! - traitement des elements finis classiques :
 !   ----------------------------------------
@@ -238,28 +236,27 @@ subroutine creprn(ligrez, molocz, basez, prnmz, prnsz)
 !
 ! ---   calcul de imode (mode_local) :
 !       ------------------------------
-        ite = typele(ligrel,igr)
+        ite = typele(ligrel, igr)
         call jenuno(jexnum('&CATA.TE.NOMTE', ite), nomte)
         call jenonu(jexnom('&CATA.TE.NOMMOLOC', nomte//moloc), imode)
 
-
         if (imode .gt. 0) then
             nnoe = nbno(imode)
-            nel = nbelem(ligrel,igr)
+            nel = nbelem(ligrel, igr)
             do j = 1, nel
-                numa = numail(igr,j)
+                numa = numail(igr, j)
                 if (numa .gt. 0) then
 
 !                   -- il s'agit d'une maille physique du maillage :
 !                   ------------------------------------------------
                     do k = 1, nnoe
-                        nunoel = numglm(numa,k)
+                        nunoel = numglm(numa, k)
                         do l = 1, nec
-                            iec = entcod(admodl,lcmodl,nec,imode,k,l)
-                            zi(iaprnm-1+nec* (nunoel-1)+ l) = ior(&
-                                                              zi( iaprnm-1+nec* ( nunoel-1)+l ),&
-                                                              iec&
-                                                              )
+                            iec = entcod(admodl, lcmodl, nec, imode, k, l)
+                            zi(iaprnm-1+nec*(nunoel-1)+l) = ior( &
+                                                            zi(iaprnm-1+nec*(nunoel-1)+l), &
+                                                            iec &
+                                                            )
                         end do
                     end do
                 else
@@ -268,27 +265,26 @@ subroutine creprn(ligrez, molocz, basez, prnmz, prnsz)
 !                   -----------------------------------
                     numa = -numa
                     do k = 1, nnoe
-                        nunoel = numgls(numa,k)
+                        nunoel = numgls(numa, k)
                         do l = 1, nec
-                            iec = entcod(admodl,lcmodl,nec,imode,k,l)
+                            iec = entcod(admodl, lcmodl, nec, imode, k, l)
                             if (nunoel .gt. 0) then
-                                zi(iaprnm-1+nec* (nunoel-1)+l) =&
-                                ior(zi(iaprnm-1+nec* (nunoel-1)+l),&
-                                iec)
+                                zi(iaprnm-1+nec*(nunoel-1)+l) = &
+                                    ior(zi(iaprnm-1+nec*(nunoel-1)+l), &
+                                        iec)
                             else
-                                zi(iaprns-1+nec* (-nunoel-1)+ l) =&
-                                ior(zi(iaprns-1+nec* (-nunoel-1)+l),&
-                                iec)
-                            endif
+                                zi(iaprns-1+nec*(-nunoel-1)+l) = &
+                                    ior(zi(iaprns-1+nec*(-nunoel-1)+l), &
+                                        iec)
+                            end if
                         end do
                     end do
-                endif
+                end if
             end do
-        endif
+        end if
     end do
 
- 90 continue
-
+90  continue
 
 ! --- BOUCLE SUR LES SUPERELEMENTS :
 !     ----------------------------
@@ -302,13 +298,13 @@ subroutine creprn(ligrez, molocz, basez, prnmz, prnsz)
 !
         call jeveuo(jexnum('&CATA.GD.NOMCMP', gd), 'L', iancmp)
         call jelira(jexnum('&CATA.GD.NOMCMP', gd), 'LONMAX', lgncmp)
-        icmp = indik8(zk8(iancmp),'LAGR',1,lgncmp)
+        icmp = indik8(zk8(iancmp), 'LAGR', 1, lgncmp)
 ! on ne trouve pas la composante "LAGR" dans la grandeur
-        ASSERT(icmp.ne.0)
+        ASSERT(icmp .ne. 0)
 ! il est imprévu d avoir la composante "LAGR" au delà de 30
-        ASSERT(icmp.le.30)
+        ASSERT(icmp .le. 30)
 !
-        icodla = lshift(1,icmp)
+        icodla = lshift(1, icmp)
 !
         do ima = 1, nbsma
             nomacr = vnomacr(ima)
@@ -321,31 +317,31 @@ subroutine creprn(ligrez, molocz, basez, prnmz, prnsz)
 !
                 do i = 1, nbnm
                     ino = zi(iamail-1+i)
-                    inold = conx(3* (i-1)+2)
+                    inold = conx(3*(i-1)+2)
                     if (ino .gt. nm) then
 !
 ! ---                   CAS D'UN NOEUD DE LAGRANGE :
 !                       --------------------------
-                        zi(iaprnm-1+nec* (ino-1)+1) = ior(zi(iaprnm-1+ nec* (ino- 1)+1), icodla)
+                        zi(iaprnm-1+nec*(ino-1)+1) = ior(zi(iaprnm-1+nec*(ino-1)+1), icodla)
 
-                    else if (inold.gt.0) then
+                    else if (inold .gt. 0) then
 !
 ! ---                   CAS D'UN NOEUD PHYSIQUE DU MAILLAGE :
 !                       -----------------------------------
                         do iec = 1, nec
-                            zi(iaprnm-1+nec* (ino-1)+iec) = ior(&
-                                        zi(iaprnm-1+ nec* (ino-1)+iec),&
-                                        zi(iaprno-1+ ( nec+2)* (inold-1)+2+ iec))
+                            zi(iaprnm-1+nec*(ino-1)+iec) = ior( &
+                                                           zi(iaprnm-1+nec*(ino-1)+iec), &
+                                                           zi(iaprno-1+(nec+2)*(inold-1)+2+iec))
                         end do
                     else
 ! on traite un super-élément  et le noeud courant n'est ni un noeud Lagrange,
 ! ni un noeud physique du maillage.
                         ASSERT(.false.)
-                    endif
+                    end if
                 end do
-            endif
+            end if
         end do
-    endif
+    end if
 !
     call jedema()
 !

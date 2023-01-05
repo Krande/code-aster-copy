@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -40,15 +40,15 @@ subroutine uttcpg(action, typimp)
 !                 PAR L'UTILISATEUR
 !        MTPSTA : IMPRESSION DES STATISTIQUES OU NON EN PARALLELE
     integer :: mtpniv, mtpsta, indmax
-    parameter (indmax=5)
+    parameter(indmax=5)
     character(len=80) :: snolon(indmax)
     real(kind=8) :: valmes(indmax*7), valmei(indmax*7)
-    common /mestp1/ mtpniv,mtpsta
-    common /mestp2/ snolon
-    common /mestp3/ valmes,valmei
+    common/mestp1/mtpniv, mtpsta
+    common/mestp2/snolon
+    common/mestp3/valmes, valmei
 !
     integer :: ndim, nbmesu
-    parameter (ndim=30)
+    parameter(ndim=30)
     integer :: ifm, k
     character(len=1) :: prpal(ndim)
     character(len=24) :: nomc(ndim)
@@ -62,8 +62,8 @@ subroutine uttcpg(action, typimp)
             call uttcpu(nomc(k), 'INIT', noml(k))
         end do
 !
-    else if (action.eq.'IMPR') then
-        ifm=6
+    else if (action .eq. 'IMPR') then
+        ifm = 6
 !
         if (mtpniv .eq. 1) then
             do k = 1, nbmesu
@@ -72,19 +72,19 @@ subroutine uttcpg(action, typimp)
                 call uttcpi(nomc(k), ifm, typimp)
             end do
 !
-        else if (mtpniv.eq.2) then
+        else if (mtpniv .eq. 2) then
             do k = 1, nbmesu
                 if (typimp .eq. 'INCR') cycle
                 call uttcpi(nomc(k), ifm, typimp)
             end do
 !
-        else if (mtpniv.eq.3) then
+        else if (mtpniv .eq. 3) then
             do k = 1, nbmesu
                 call uttcpi(nomc(k), ifm, typimp)
             end do
 !
-        endif
+        end if
 !
-    endif
+    end if
 !
 end subroutine

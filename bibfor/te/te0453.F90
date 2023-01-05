@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -46,7 +46,7 @@ subroutine te0453(option, nomte)
     integer :: ipoids, ivf, idfde, igeom, idepl
 ! ......................................................................
 !
-    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg, &
                      jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
     grand = .false.
@@ -60,9 +60,9 @@ subroutine te0453(option, nomte)
     call r8inir(162, 0.d0, vpg, 1)
 !
     do kpg = 1, npg
-        call nmgeom(ndim, nno, axi, grand, zr(igeom),&
-                    kpg, ipoids, ivf, idfde, zr(idepl),&
-                    .true._1, poids, dfdi, f, eps,&
+        call nmgeom(ndim, nno, axi, grand, zr(igeom), &
+                    kpg, ipoids, ivf, idfde, zr(idepl), &
+                    .true._1, poids, dfdi, f, eps, &
                     rbid)
 !       RECUPERATION DE LA DEFORMATION
         do ksig = 1, ncmp
@@ -70,8 +70,8 @@ subroutine te0453(option, nomte)
                 tmp = 1.d0
             else
                 tmp = sqrt(2.d0)
-            endif
-            vpg(ncmp* (kpg-1)+ksig) = eps(ksig)/tmp
+            end if
+            vpg(ncmp*(kpg-1)+ksig) = eps(ksig)/tmp
         end do
 !
     end do

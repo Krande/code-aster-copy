@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine xpoajc(nnm, inm, inmtot, nbmac, ise,&
-                  npg, jcesd1, jcesd2, jcvid1, jcvid2,&
-                  ima, ndim, ndime, iadc, iadv,&
-                  jcesv1, jcesl2, jcesv2, jcviv1, jcvil2,&
+subroutine xpoajc(nnm, inm, inmtot, nbmac, ise, &
+                  npg, jcesd1, jcesd2, jcvid1, jcvid2, &
+                  ima, ndim, ndime, iadc, iadv, &
+                  jcesv1, jcesl2, jcesv2, jcviv1, jcvil2, &
                   jcviv2)
 ! aslint: disable=W1504
     implicit none
@@ -64,7 +64,7 @@ subroutine xpoajc(nnm, inm, inmtot, nbmac, ise,&
 !
     character(len=8) :: valk(2)
 !
-    data          valk /'MAILLES','XPOAJM'/
+    data valk/'MAILLES', 'XPOAJM'/
 !
 ! ----------------------------------------------------------------------
 !
@@ -72,38 +72,38 @@ subroutine xpoajc(nnm, inm, inmtot, nbmac, ise,&
 !
     if (inmtot .ge. 999999) then
         call utmess('F', 'XFEM_8', sk=valk(1))
-    endif
+    end if
 !
-    inm = inm + 1
-    inmtot = inmtot + 1
-    ASSERT(inm.le.nnm)
+    inm = inm+1
+    inmtot = inmtot+1
+    ASSERT(inm .le. nnm)
 !
     npg1 = npg
-    ncmp1 = zi(jcesd1-1+5+4* (ima-1)+3)
-    npg2 = zi(jcesd2-1+5+4* (nbmac +inmtot-1)+1)
+    ncmp1 = zi(jcesd1-1+5+4*(ima-1)+3)
+    npg2 = zi(jcesd2-1+5+4*(nbmac+inmtot-1)+1)
 !
 !     PAS DE CONTRAINTES POUR LES ELEMENTS DE BORD
     if (ndime .ne. ndim) then
-        ASSERT(npg2.eq.0)
+        ASSERT(npg2 .eq. 0)
         goto 999
-    endif
+    end if
 !
-    ncmp2 = zi(jcesd2-1+5+4* (nbmac +inmtot-1)+3)
+    ncmp2 = zi(jcesd2-1+5+4*(nbmac+inmtot-1)+3)
 !
-    ASSERT(ncmp1.eq.ncmp2)
+    ASSERT(ncmp1 .eq. ncmp2)
 !
     if ((jcvid1 .ne. 0) .and. (jcvid2 .ne. 0)) then
-        ncmv1 = zi(jcvid1-1+5+4* (ima-1)+3)
-        npgv2 = zi(jcvid2-1+5+4* (nbmac +inmtot-1)+1)
-        ncmv2 = zi(jcvid2-1+5+4* (nbmac +inmtot-1)+3)
+        ncmv1 = zi(jcvid1-1+5+4*(ima-1)+3)
+        npgv2 = zi(jcvid2-1+5+4*(nbmac+inmtot-1)+1)
+        ncmv2 = zi(jcvid2-1+5+4*(nbmac+inmtot-1)+3)
 !
-        ASSERT(npg2.eq.npgv2)
-        ASSERT(ncmv1.le.ncmv2)
+        ASSERT(npg2 .eq. npgv2)
+        ASSERT(ncmv1 .le. ncmv2)
     else
         ncmv1 = 0
         ncmv2 = 0
         npgv2 = 0
-    endif
+    end if
 !
 !     DECALAGE DANS LE CESV DU CHAMP DE CONTRAINTES 1 DU
 !     AU FAIT QUE L'ON EST SUR LE SOUS-TETRA ISE
@@ -114,15 +114,15 @@ subroutine xpoajc(nnm, inm, inmtot, nbmac, ise,&
 !
     do icmp = 1, ncmp1
 !       VAL : MOYENNE SUR LES POINTS DE GAUSS DU CHAMP 1
-        val=0.d0
+        val = 0.d0
         do ipg = 1, npg1
-            val =val + zr(jcesv1-1+iadc-1+idecal+ncmp1*(ipg-1)+icmp)
+            val = val+zr(jcesv1-1+iadc-1+idecal+ncmp1*(ipg-1)+icmp)
         end do
         val = val/npg1
         do ipt = 1, npg2
-            call cesexi('C', jcesd2, jcesl2, nbmac +inmtot, ipt,&
+            call cesexi('C', jcesd2, jcesl2, nbmac+inmtot, ipt, &
                         1, icmp, iad2)
-            ASSERT(iad2.gt.0)
+            ASSERT(iad2 .gt. 0)
             zl(jcesl2-1+iad2) = .true.
             zr(jcesv2-1+iad2) = val
         end do
@@ -131,22 +131,22 @@ subroutine xpoajc(nnm, inm, inmtot, nbmac, ise,&
     if (ncmv1 .ne. 0) then
         do icmp = 1, ncmv1
 !         VAL : MOYENNE SUR LES POINTS DE GAUSS DU CHAMP 1
-            val=0.d0
+            val = 0.d0
             do ipg = 1, npg1
-                val =val + zr(jcviv1-1+iadv-1+idcalv+ncmv1*(ipg-1)+&
-                icmp)
+                val = val+zr(jcviv1-1+iadv-1+idcalv+ncmv1*(ipg-1)+ &
+                             icmp)
             end do
             val = val/npg1
             do ipt = 1, npg2
-                call cesexi('C', jcvid2, jcvil2, nbmac +inmtot, ipt,&
+                call cesexi('C', jcvid2, jcvil2, nbmac+inmtot, ipt, &
                             1, icmp, iad2)
-                ASSERT(iad2.lt.0)
+                ASSERT(iad2 .lt. 0)
                 iad2 = -iad2
                 zl(jcvil2-1+iad2) = .true.
                 zr(jcviv2-1+iad2) = val
             end do
         end do
-    endif
+    end if
 !
 999 continue
     call jedema()

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,9 +19,9 @@
 !
 subroutine romEvalCoef(ds_multipara, l_init, i_mode_coef_, i_coef_)
 !
-use Rom_Datastructure_type
+    use Rom_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -31,10 +31,10 @@ implicit none
 #include "asterfort/romEvalCoefFunc.h"
 #include "asterfort/romEvalCoefPrep.h"
 !
-type(ROM_DS_MultiPara), intent(inout) :: ds_multipara
-aster_logical, intent(in) :: l_init
-integer, optional, intent(in) :: i_mode_coef_
-integer, optional, intent(in) :: i_coef_
+    type(ROM_DS_MultiPara), intent(inout) :: ds_multipara
+    aster_logical, intent(in) :: l_init
+    integer, optional, intent(in) :: i_mode_coef_
+    integer, optional, intent(in) :: i_coef_
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -61,9 +61,9 @@ integer, optional, intent(in) :: i_coef_
         if (l_init) then
             call utmess('I', 'ROM5_93')
         else
-            call utmess('I', 'ROM5_44', si = i_coef_)
-        endif
-    endif
+            call utmess('I', 'ROM5_44', si=i_coef_)
+        end if
+    end if
 !
 ! - Get parameters
 !
@@ -72,16 +72,16 @@ integer, optional, intent(in) :: i_coef_
 ! - Get index in global list of coefficients
 !
     if (l_init) then
-        i_coef      = 1
+        i_coef = 1
         i_mode_coef = 0
         i_coef_list = 0
     else
         ASSERT(present(i_coef_))
         ASSERT(present(i_mode_coef_))
-        i_coef      = i_coef_
+        i_coef = i_coef_
         i_mode_coef = i_mode_coef_
-        i_coef_list = nb_vari_coef*(i_mode_coef-1) + i_coef
-    endif
+        i_coef_list = nb_vari_coef*(i_mode_coef-1)+i_coef
+    end if
 !
 ! - Prepare EVALCOEF datastructure
 !
@@ -93,11 +93,11 @@ integer, optional, intent(in) :: i_coef_
     do i_matr = 1, nb_matr
         call romEvalCoefFunc(ds_multipara%evalcoef, ds_multipara%matr_coef(i_matr), i_coef)
         if (niv .ge. 2) then
-            call romCoefInfo('M',&
-                             ds_multipara%matr_name(i_matr),&
-                             i_coef,&
+            call romCoefInfo('M', &
+                             ds_multipara%matr_name(i_matr), &
+                             i_coef, &
                              ds_multipara%matr_coef(i_matr))
-        endif
+        end if
     end do
 !
 ! - Evaluate coefficients for second member
@@ -106,11 +106,11 @@ integer, optional, intent(in) :: i_coef_
     do i_vect = 1, nb_vect
         call romEvalCoefFunc(ds_multipara%evalcoef, ds_multipara%vect_coef(i_vect), i_coef_list)
         if (niv .ge. 2) then
-            call romCoefInfo('V',&
-                             ds_multipara%vect_name(i_vect),&
-                             i_coef,&
+            call romCoefInfo('V', &
+                             ds_multipara%vect_name(i_vect), &
+                             i_coef, &
                              ds_multipara%vect_coef(i_vect))
-        endif
+        end if
     end do
 !
 end subroutine

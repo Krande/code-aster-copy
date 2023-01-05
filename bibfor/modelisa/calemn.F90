@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine calemn(motfaz, nomaz, iocc, lisi1z, lonli1,&
+subroutine calemn(motfaz, nomaz, iocc, lisi1z, lonli1, &
                   lisi2z, lonli2)
 !.======================================================================
     implicit none
@@ -113,15 +113,15 @@ subroutine calemn(motfaz, nomaz, iocc, lisi1z, lonli1,&
                     tymocl = 'MAILLE'
                 else
                     call utmess('F', 'MODELISA2_92', sk=motfac)
-                endif
-            endif
-        endif
-    endif
+                end if
+            end if
+        end if
+    end if
 !
 ! --- CONSTITUTION DE LA PREMIERE LISTE DE NOEUDS :
 !     -------------------------------------------
     typem = 'NO_NOEUD'
-    call reliem(' ', noma, typem, motfac, iocc,&
+    call reliem(' ', noma, typem, motfac, iocc, &
                 1, motcle, tymocl, lisin1, lonli1)
 !
 ! --- DETERMINATION DU MOT-CLE A TRAITER POUR LA SECONDE LISTE
@@ -149,17 +149,17 @@ subroutine calemn(motfaz, nomaz, iocc, lisi1z, lonli1,&
                     tymocl = 'MAILLE'
                 else
                     call utmess('F', 'MODELISA2_93', sk=motfac)
-                endif
-            endif
-        endif
-    endif
+                end if
+            end if
+        end if
+    end if
 !
 ! --- CONSTITUTION DE LA SECONDE LISTE DE NOEUDS :
 !     ------------------------------------------
     typem = 'NO_NOEUD'
-    call reliem(' ', noma, typem, motfac, iocc,&
+    call reliem(' ', noma, typem, motfac, iocc, &
                 1, motcle, tymocl, lisin2, lonli2)
 !
-9999  continue
+9999 continue
     call jedema()
 end subroutine

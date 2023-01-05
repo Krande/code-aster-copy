@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,15 +16,15 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine apetsc(action, solvez, matasz, rsolu, vcinez,&
+subroutine apetsc(action, solvez, matasz, rsolu, vcinez, &
                   nbsol, istop, iret)
 !
 #include "asterf_types.h"
 #include "asterf_petsc.h"
 !
-use aster_petsc_module
-use petsc_data_module
-use elg_module
+    use aster_petsc_module
+    use petsc_data_module
+    use elg_module
 !
     implicit none
 !
@@ -112,7 +112,7 @@ use elg_module
 !----------------------------------------------------------------
 !   INITIALISATION DE PETSC A FAIRE AU PREMIER APPEL
     save iprem
-    data iprem /0/
+    data iprem/0/
 !----------------------------------------------------------------
     call jemarq()
 !
@@ -131,34 +131,34 @@ use elg_module
 !           on ne verifie pas le code retour car on peut
 !           se retrouver dans fin suite a une erreur dans l'initialisation
             iprem = 0
-        endif
+        end if
         goto 999
-    endif
+    end if
 !
 !   Vérification du nom de la matrice
-    ASSERT(matas.ne.' ')
+    ASSERT(matas .ne. ' ')
 
 !   PETSc a-t-il ete initialise ?
     call PetscInitialized(initialized, ierr)
-    ASSERT(ierr.eq.0)
+    ASSERT(ierr .eq. 0)
 
 !   Récupération des options PETSc
     myopt = ''
-    if (action.ne.'DETR_MAT') then
+    if (action .ne. 'DETR_MAT') then
         call jeveuo(solveu//'.SLVO', 'L', vk80=slvo)
         call jeveuo(solveu//'.SLVI', 'L', vi=slvi)
         lslvo = slvi(9)
-        do i=1, lslvo
-            myopt(80*(i-1)+1:80*i)=slvo(i)
-        enddo
-    endif
+        do i = 1, lslvo
+            myopt(80*(i-1)+1:80*i) = slvo(i)
+        end do
+    end if
 
-    if (iprem .eq. 0 .or. .not.initialized) then
+    if (iprem .eq. 0 .or. .not. initialized) then
 !     --------------------
 !        -- quelques verifications sur la coherence Aster / Petsc :
-        ASSERT(kind(rbid).eq.kind(r8))
-        ASSERT(kind(sbid).eq.kind(r8))
-        ASSERT(kind(offbid).eq.kind(np))
+        ASSERT(kind(rbid) .eq. kind(r8))
+        ASSERT(kind(sbid) .eq. kind(r8))
+        ASSERT(kind(offbid) .eq. kind(np))
 !
         ier2 = 0
         call aster_petsc_initialize(myopt, ier2)
@@ -172,7 +172,7 @@ use elg_module
             nosols(k) = ' '
             nonus(k) = ' '
             tblocs(k) = -1
-        enddo
+        end do
         xlocal = PETSC_NULL_VEC
         xglobal = PETSC_NULL_VEC
         xscatt = PETSC_NULL_VECSCATTER
@@ -180,15 +180,14 @@ use elg_module
         spmat = ' '
         spsolv = ' '
         iprem = 1
-    endif
+    end if
 
 !   Si PETSc est déjà initialisé (éventuellement avec d'autres options),
 !   on ajoute les options courantes de la commande
-    if (action.ne.'DETR_MAT') then
+    if (action .ne. 'DETR_MAT') then
         call PetscOptionsInsertString(PETSC_NULL_OPTIONS, myopt, ierr)
-        ASSERT(ierr.eq.0)
-    endif
-
+        ASSERT(ierr .eq. 0)
+    end if
 
 !   1. On ne veut pas de matrice complexe :
 !   ----------------------------------------
@@ -202,69 +201,66 @@ use elg_module
 !  2. On recherche l'identifiant de l'image PETSc
 !  de la matrice matas
 !
-    kptsc = get_mat_id( matas )
-    mat_not_recorded = ( kptsc == 0 )
+    kptsc = get_mat_id(matas)
+    mat_not_recorded = (kptsc == 0)
 !
 
     if (action .eq. 'DETR_MAT') then
-       if ( mat_not_recorded ) then
+        if (mat_not_recorded) then
 ! On n'a pas cree d'image PETSc de la matrice => rien à detruire !
-       else
+        else
 ! L'image PETSc de la a matrice est stockée dans le tableau ap,
 ! a l'indice kptsc => on la détruit
-          kbid = repeat(" ",19)
-          call apmain( action, kptsc, [0.d0], kbid, 0, iret )
-       endif
-       goto 999
-    endif
+            kbid = repeat(" ", 19)
+            call apmain(action, kptsc, [0.d0], kbid, 0, iret)
+        end if
+        goto 999
+    end if
 !
 !   3. Quelques verifications et petites actions :
 !   ----------------------------------------------
 !
     if (action .eq. 'PRERES') then
-        call mat_record( matas, solveu, kptsc )
+        call mat_record(matas, solveu, kptsc)
 !
-    else if (action.eq.'RESOUD') then
-        kptsc = get_mat_id( matas )
-        ASSERT(nbsol.ge.1)
-        ASSERT((istop.eq.0).or.(istop.eq.2))
+    else if (action .eq. 'RESOUD') then
+        kptsc = get_mat_id(matas)
+        ASSERT(nbsol .ge. 1)
+        ASSERT((istop .eq. 0) .or. (istop .eq. 2))
 
-    else if (action.eq.'ELIM_LAGR') then
-        call mat_record( matas, solveu, kptsc )
-    endif
-
+    else if (action .eq. 'ELIM_LAGR') then
+        call mat_record(matas, solveu, kptsc)
+    end if
 
 !   4. Si LDLT_INC, il faut renumeroter la matrice (RCMK) :
 !   --------------------------------------------------------
 
-    call apldlt(kptsc,action,'PRE',rsolu,vcine,nbsol)
-
+    call apldlt(kptsc, action, 'PRE', rsolu, vcine, nbsol)
 
 !   5. Verifications + elimination des ddls (affe_char_cine)
 !   --------------------------------------------------------
     call jeveuo(nomat_courant//'.REFA', 'E', vk24=refa)
-    if (action .eq. 'PRERES' .or. nomat_courant.eq.'&&apldlt.matr') then
+    if (action .eq. 'PRERES' .or. nomat_courant .eq. '&&apldlt.matr') then
 !
 !       -- Verification que la matrice n'a pas deja ete factorisee
-        etamat = refa(8)(1:4)
+        etamat = refa(8) (1:4)
         if (etamat .eq. 'DECT') then
             call utmess('A', 'PETSC_4')
             goto 999
         else
             refa(8) = 'DECT'
-        endif
+        end if
 !
 !        -- elimination des ddls (affe_char_cine)
 !        ASSERT(refa(3).ne.'ELIMF')
         if (refa(3) .eq. 'ELIML') call mtmchc(nomat_courant, 'ELIMF')
-        ASSERT(refa(3).ne.'ELIML')
+        ASSERT(refa(3) .ne. 'ELIML')
 
-    else if (action.eq.'ELIM_LAGR') then
-        call build_elg_context( nomat_courant )
-        iret=0
+    else if (action .eq. 'ELIM_LAGR') then
+        call build_elg_context(nomat_courant)
+        iret = 0
         goto 999
-    endif
-
+    end if
 
 !   5. APPEL DE PETSC :
 !   -------------------
@@ -273,20 +269,18 @@ use elg_module
         do k = 1, nbsol
             kdeb = (k-1)*nglo+1
             call dcopy(nglo, rsolu(kdeb), 1, travail, 1)
-            call apmain(action, kptsc, travail, vcine, istop,&
+            call apmain(action, kptsc, travail, vcine, istop, &
                         iret)
             call dcopy(nglo, travail, 1, rsolu(kdeb), 1)
         end do
         AS_DEALLOCATE(vr=travail)
     else
         call apmain(action, kptsc, rsolu, vcine, istop, iret)
-    endif
-
+    end if
 
 !   6. Si LDLT_INC, il faut revenir a la numerotation initiale :
 !   -------------------------------------------------------------
-    call apldlt(kptsc,action,'POST',rsolu,vcine,nbsol)
-
+    call apldlt(kptsc, action, 'POST', rsolu, vcine, nbsol)
 
 999 continue
     call jedema()
@@ -294,9 +288,9 @@ use elg_module
     character(len=1) :: kdummy
     real(kind=8) :: rdummy
     integer :: idummy
-    idummy = nbsol + istop + iret
+    idummy = nbsol+istop+iret
     rdummy = rsolu(1)
-    kdummy = action // solvez // matasz // vcinez
+    kdummy = action//solvez//matasz//vcinez
     call utmess('F', 'FERMETUR_10')
 #endif
 end subroutine

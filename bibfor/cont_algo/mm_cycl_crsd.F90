@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,9 +18,9 @@
 
 subroutine mm_cycl_crsd(ds_contact)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterfort/cfdisi.h"
 #include "asterfort/jedema.h"
@@ -63,8 +63,8 @@ implicit none
 ! - Initializations
 !
     n_cychis = ds_contact%n_cychis
-    nb_cont_poin = cfdisi(ds_contact%sdcont_defi,'NTPC' )
-    nb_cont_zone  = cfdisi(ds_contact%sdcont_defi,'NZOCO' )
+    nb_cont_poin = cfdisi(ds_contact%sdcont_defi, 'NTPC')
+    nb_cont_zone = cfdisi(ds_contact%sdcont_defi, 'NZOCO')
 !
 ! - Status saving (coded integer)
 !
@@ -88,11 +88,11 @@ implicit none
 !
 ! - Creating cycling objects
 !
-    call wkvect(sdcont_cyclis, 'V V I', 4*nb_cont_poin, vi = p_sdcont_cyclis)
-    call wkvect(sdcont_cycnbr, 'V V I', 4*nb_cont_poin, vi = p_sdcont_cycnbr)
-    call wkvect(sdcont_cyceta, 'V V I', 4*nb_cont_poin, vi = p_sdcont_cyceta)
-    call wkvect(sdcont_cychis, 'V V R', n_cychis*nb_cont_poin, vr = p_sdcont_cychis)
-    call wkvect(sdcont_cyccoe, 'V V R', 6*nb_cont_zone, vr = p_sdcont_cyccoe)
+    call wkvect(sdcont_cyclis, 'V V I', 4*nb_cont_poin, vi=p_sdcont_cyclis)
+    call wkvect(sdcont_cycnbr, 'V V I', 4*nb_cont_poin, vi=p_sdcont_cycnbr)
+    call wkvect(sdcont_cyceta, 'V V I', 4*nb_cont_poin, vi=p_sdcont_cyceta)
+    call wkvect(sdcont_cychis, 'V V R', n_cychis*nb_cont_poin, vr=p_sdcont_cychis)
+    call wkvect(sdcont_cyccoe, 'V V R', 6*nb_cont_zone, vr=p_sdcont_cyccoe)
 !
     call jedema()
 end subroutine

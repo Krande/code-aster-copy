@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -40,12 +40,12 @@ subroutine gdsmhy(je, e)
 !
 !
     call lcdevi(e, dve)
-    eqe2 = 1.5d0 * ddot(6,dve,1,dve,1)
+    eqe2 = 1.5d0*ddot(6, dve, 1, dve, 1)
     call lcdete(dve, detdve)
     eh = (e(1)+e(2)+e(3))/3.d0
 !
-    p0 = 8*detdve + je**2
-    p1 = - 4.d0/3.d0*eqe2
+    p0 = 8*detdve+je**2
+    p1 = -4.d0/3.d0*eqe2
     p2 = 0
     call zerop3(p2, p1, p0, rac, nrac)
     do i = 1, nrac
@@ -57,12 +57,12 @@ subroutine gdsmhy(je, e)
         if (abs(rac(i)-eh) .lt. dismin) then
             iopt = i
             dismin = abs(rac(i)-eh)
-        endif
+        end if
     end do
     eh = rac(iopt)
 !
     do i = 1, 3
-        e(i) = eh + dve(i)
+        e(i) = eh+dve(i)
     end do
 !
 end subroutine

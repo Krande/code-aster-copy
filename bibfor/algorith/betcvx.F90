@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,13 +16,13 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine betcvx(BEHinteg,&
-                  nmat, mater, sig, vind, vinf,&
+subroutine betcvx(BEHinteg, &
+                  nmat, mater, sig, vind, vinf, &
                   nvi, nseuil)
 !
-use Behaviour_type
+    use Behaviour_type
 !
-implicit none
+    implicit none
 !
 #include "asterfort/betfpp.h"
 #include "asterfort/lcdevi.h"
@@ -62,18 +62,18 @@ implicit none
     real(kind=8) :: a, b, c, d
     real(kind=8) :: sigeq, sigh, p, dfcdlc, dftdlt, kuc, kut
     real(kind=8) :: lasts, d13, dlambc, dlambt, epsi, zero
-    parameter       ( zero =  0.d0   )
+    parameter(zero=0.d0)
 !       ---------------------------------------------------------------
     integer :: ndt, ndi
-    common /tdim/   ndt , ndi
+    common/tdim/ndt, ndi
 !       ----------------------------------------------------------------
 !
-    data   d13      /.33333333333333d0 /
-    data   un       / 1.d0 /
-    data   deux     / 2.d0 /
-    data   trois    / 3.d0 /
-    data   epsi     / 1.d-6 /
-    rac2 = sqrt (deux)
+    data d13/.33333333333333d0/
+    data un/1.d0/
+    data deux/2.d0/
+    data trois/3.d0/
+    data epsi/1.d-6/
+    rac2 = sqrt(deux)
 !
 ! ---   SEUIL PRECEDENT
 !
@@ -87,25 +87,25 @@ implicit none
     else
         pc = vinf(1)
         pt = vinf(2)
-    endif
+    end if
 !
 ! ---   CARACTERISTIQUES MATERIAU
 !
-    fcp = mater(1,2)
-    ftp = mater(2,2)
-    beta = mater(3,2)
+    fcp = mater(1, 2)
+    ftp = mater(2, 2)
+    beta = mater(3, 2)
 !
 !        ALPHA = FTP / FCP
-    a = rac2 * (beta - un) / (deux * beta - un)
-    b = rac2 / trois * beta / (deux * beta - un)
+    a = rac2*(beta-un)/(deux*beta-un)
+    b = rac2/trois*beta/(deux*beta-un)
     c = rac2
-    d = deux * rac2 / trois
+    d = deux*rac2/trois
 !
 ! ---   CONTRAINTE EQUIVALENTE
 !
     call lcdevi(sig, dev)
     p = dot_product(dev(1:ndt), dev(1:ndt))
-    sigeq = sqrt (1.5d0 * p)
+    sigeq = sqrt(1.5d0*p)
 !
 ! ---   CONTRAINTE HYDROSTATIQUE
 !
@@ -113,19 +113,19 @@ implicit none
 !
 ! ---   ECROUISSAGE EN TRACTION ET EN COMPRESSION
 !
-    call betfpp(BEHinteg,&
-                mater, nmat, pc, pt,&
-                3, fc, ft, dfcdlc, dftdlt,&
+    call betfpp(BEHinteg, &
+                mater, nmat, pc, pt, &
+                3, fc, ft, dfcdlc, dftdlt, &
                 kuc, kut, ke)
 !
 !
 ! -     SEUIL EN COMPRESSION
 !
-    fcomp = (rac2 * d13 * sigeq + a * sigh) / b - fc
+    fcomp = (rac2*d13*sigeq+a*sigh)/b-fc
 !
 ! -     SEUIL EN TRACTION
 !
-    ftrac = (rac2 * d13 * sigeq + c * sigh) / d - ft
+    ftrac = (rac2*d13*sigeq+c*sigh)/d-ft
 !
 ! -     VERIFICATION ET CALCUL DU CAS DE PLASTICITE
 ! -     FCOMP > 0  -->  NSEUIL = 1  (CRITERE COMPRESSION ACTIVE)
@@ -138,8 +138,8 @@ implicit none
     if (ftrac .gt. (ftp*epsi)) nseuil = 2
     if (fcomp .gt. (fcp*epsi) .and. ftrac .gt. (ftp*epsi)) nseuil = 3
 !
-    dlambc = vinf(1) - vind(1)
-    dlambt = vinf(2) - vind(2)
+    dlambc = vinf(1)-vind(1)
+    dlambt = vinf(2)-vind(2)
 !
     if (lasts .gt. 0) then
         if (lasts .eq. 1 .and. dlambc .lt. zero) then
@@ -150,8 +150,8 @@ implicit none
             else
                 nseuil = 2
                 goto 999
-            endif
-        endif
+            end if
+        end if
         if (lasts .eq. 2 .and. dlambt .lt. zero) then
             if (fcomp .le. zero) then
                 call utmess('A', 'ALGORITH_43')
@@ -160,64 +160,64 @@ implicit none
             else
                 nseuil = 1
                 goto 999
-            endif
-        endif
+            end if
+        end if
         if (lasts .eq. 3 .and. dlambc .lt. zero) then
             nseuil = 2
             goto 999
-        endif
+        end if
         if (lasts .eq. 3 .and. dlambt .lt. zero) then
             nseuil = 1
             goto 999
-        endif
+        end if
         if (lasts .eq. 22 .and. nseuil .gt. 0) then
             nseuil = 33
             goto 999
-        endif
+        end if
         if (lasts .eq. 22 .and. dlambt .lt. zero) then
             nseuil = 33
             goto 999
-        endif
+        end if
         if (lasts .eq. 11 .and. nseuil .gt. 0) then
             nseuil = 44
             goto 999
-        endif
+        end if
         if (lasts .eq. 11 .and. dlambc .lt. zero) then
             nseuil = 44
             goto 999
-        endif
+        end if
         if (lasts .eq. 33 .and. nseuil .gt. 0) then
             nseuil = 11
             goto 999
-        endif
+        end if
         if (lasts .eq. 33 .and. dlambc .lt. zero) then
             nseuil = 11
             goto 999
-        endif
+        end if
         if (lasts .eq. 33 .and. dlambt .lt. zero) then
             nseuil = 11
             goto 999
-        endif
+        end if
         if (lasts .eq. 4 .and. nseuil .lt. 0) then
             nseuil = 4
             goto 999
-        endif
+        end if
         if (lasts .eq. 44 .and. nseuil .lt. 0) then
             nseuil = 44
             goto 999
-        endif
+        end if
         if (nseuil .eq. lasts) then
             if (nseuil .eq. 2) then
                 nseuil = 1
-            else if (nseuil.eq.3) then
+            else if (nseuil .eq. 3) then
                 nseuil = 2
-            else if (nseuil.eq.1) then
+            else if (nseuil .eq. 1) then
                 nseuil = 2
             else
                 nseuil = 4
                 goto 999
-            endif
-        endif
+            end if
+        end if
     else
 !
 ! ---   A LA PREMIERE RESOLUTION, ON REPREND LES MEMES CRITERES QU'AU
@@ -225,14 +225,14 @@ implicit none
 !
         if (nseuil .eq. 3) then
             if (vind(nvi) .gt. epsi) then
-                nseuil = int(vind(nvi) + 0.5d0)
+                nseuil = int(vind(nvi)+0.5d0)
                 if (nseuil .eq. 22) nseuil = 2
                 if (nseuil .eq. 11) nseuil = 1
                 if (nseuil .eq. 33) nseuil = 3
-            endif
-        endif
-    endif
+            end if
+        end if
+    end if
 !
-999  continue
+999 continue
 !
 end subroutine

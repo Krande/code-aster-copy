@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -49,11 +49,11 @@ subroutine quavro(quater, theta)
 ! ----------------------------------------------------------------------
 !C
     zero = 0.d0
-    epsil = r8prem( )**2
+    epsil = r8prem()**2
     deux = 2.d0
     pi = r8pi()
 !
-    prosca = ddot(3,quater,1,quater,1)
+    prosca = ddot(3, quater, 1, quater, 1)
     anorx = sqrt(prosca)
     if (anorx .gt. 1.d0) anorx = 1.d0
     if (anorx .lt. epsil) then
@@ -61,15 +61,15 @@ subroutine quavro(quater, theta)
             theta(i) = zero
         end do
         goto 999
-    endif
+    end if
     reste = asin(anorx)
 !
-    if (quater(4) .lt. zero) reste = pi - reste
+    if (quater(4) .lt. zero) reste = pi-reste
 !
     coef = deux*reste/anorx
 !
     do i = 1, 3
-        theta(i) = coef * quater(i)
+        theta(i) = coef*quater(i)
     end do
 999 continue
 end subroutine

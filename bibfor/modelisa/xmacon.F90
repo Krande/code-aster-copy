@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -94,7 +94,7 @@ subroutine xmacon(char, noma, nomo)
 !
     defico = char(1:8)//'.CONTACT'
     ntpc = 0
-    nzoco = cfdisi(defico,'NZOCO' )
+    nzoco = cfdisi(defico, 'NZOCO')
     chs = '&&XMACON.CHS'
     chs2 = '&&XMACON.CHS2'
 !
@@ -139,7 +139,7 @@ subroutine xmacon(char, noma, nomo)
 !
     ntmae = 0
     do ima = 1, nbma
-        call cesexi('C', jcesd, jcesl, ima, 1,&
+        call cesexi('C', jcesd, jcesl, ima, 1, &
                     1, 1, iad)
         if (iad .gt. 0) then
 !          ITYELE=ZI(JMAIL-1+IMA)
@@ -148,13 +148,13 @@ subroutine xmacon(char, noma, nomo)
 !          IF (ENR(3:3).EQ.'C'.OR.ENR(4:4).EQ.'C') THEN
             nfiss = zi(jcesd-1+5+4*(ima-1)+2)
             do ifiss = 1, nfiss
-                call cesexi('C', jcesd2, jcesl2, ima, 1,&
+                call cesexi('C', jcesd2, jcesl2, ima, 1, &
                             ifiss, 1, iad2)
                 ninter = cesv2(iad2)
-                if (ninter .gt. 0) ntmae=ntmae+1
+                if (ninter .gt. 0) ntmae = ntmae+1
             end do
 !          ENDIF
-        endif
+        end if
     end do
 !
 !
@@ -172,26 +172,26 @@ subroutine xmacon(char, noma, nomo)
 !
 ! --- ON RECUPERE LE NOMBRE DE POINTS D'INTEGRATION PAR FACETTE
         if (ndim .eq. 2) then
-            if (xfem_cont(1) .le. 2) elrefe='SE2'
-            if (xfem_cont(1) .eq. 3) elrefe='SE3'
-        else if (ndim.eq.3) then
-            if (xfem_cont(1) .le. 2) elrefe='TR3'
-            if (xfem_cont(1) .eq. 3) elrefe='TR3'
-        endif
+            if (xfem_cont(1) .le. 2) elrefe = 'SE2'
+            if (xfem_cont(1) .eq. 3) elrefe = 'SE3'
+        else if (ndim .eq. 3) then
+            if (xfem_cont(1) .le. 2) elrefe = 'TR3'
+            if (xfem_cont(1) .eq. 3) elrefe = 'TR3'
+        end if
 !
-        typint = mminfi(defico,'INTEGRATION',izone )
+        typint = mminfi(defico, 'INTEGRATION', izone)
         call xmelin(elrefe, typint, nnint)
 !
         nomzon = zk8(jfimai-1+izone)
         do ima = 1, nbma
 ! --- ON VERIFIE QUE C'EST UNE MAILLE X-FEM AVEC CONTACT
-            call cesexi('C', jcesd, jcesl, ima, 1,&
+            call cesexi('C', jcesd, jcesl, ima, 1, &
                         1, 1, iad)
             if (iad .eq. 0) goto 210
 ! --- RECUPERATION DU NUMÉRO DE FISSURE LOCAL
             nfiss = zi(jcesd-1+5+4*(ima-1)+2)
             do ifiss = 1, nfiss
-                call cesexi('C', jcesd, jcesl, ima, 1,&
+                call cesexi('C', jcesd, jcesl, ima, 1, &
                             ifiss, 1, iad1)
                 nomfis = cesv(iad1)
                 if (nomzon .eq. nomfis) goto 230
@@ -201,16 +201,16 @@ subroutine xmacon(char, noma, nomo)
 230         continue
 !
 ! --- ON SORT SI PAS DE POINTS D'INTERSECTIONS
-            call cesexi('C', jcesd2, jcesl2, ima, 1,&
+            call cesexi('C', jcesd2, jcesl2, ima, 1, &
                         ifiss, 1, iad2)
             ninter = cesv2(iad2)
             if (ninter .eq. 0) goto 210
 ! --- ON RECUPERE LE NOMBRE DE FACETTES DE CONTACT
-            call cesexi('C', jcesd2, jcesl2, ima, 1,&
+            call cesexi('C', jcesd2, jcesl2, ima, 1, &
                         ifiss, 2, iad2)
             nface = cesv2(iad2)
 !
-            ityele=zi(jmail-1+ima)
+            ityele = zi(jmail-1+ima)
             call jenuno(jexnum('&CATA.TE.NOMTE', ityele), typele)
             call teattr('S', 'XFEM', enr, ibid, typel=typele)
 ! --- ON SORT SI CE N'EST PAS UNE MAILLE DE CONTACT
@@ -228,11 +228,11 @@ subroutine xmacon(char, noma, nomo)
             itypma = zi(jtypma-1+ima)
             call jenuno(jexnum('&CATA.TM.NOMTM', itypma), typma)
             lmalin = ismali(typma)
-            if (.not.lmalin) then
+            if (.not. lmalin) then
                 if (statut .gt. 1) then
                     call utmess('F', 'XFEM_38')
-                endif
-            endif
+                end if
+            end if
 !
             posmae = posmae+1
             zi(jmaesx+zmesx*(posmae-1)+1-1) = ima
@@ -240,12 +240,12 @@ subroutine xmacon(char, noma, nomo)
             zi(jmaesx+zmesx*(posmae-1)+3-1) = nnint
             zi(jmaesx+zmesx*(posmae-1)+4-1) = statut
             zi(jmaesx+zmesx*(posmae-1)+5-1) = ifiss
-            ntpc = ntpc + nnint*nface
+            ntpc = ntpc+nnint*nface
             if (nface .eq. 0) then
-                ntpc = ntpc + 1
+                ntpc = ntpc+1
                 zi(jmaesx+zmesx*(posmae-1)+3-1) = 1
                 zi(jmaesx+zmesx*(posmae-1)+4-1) = -1*statut
-            endif
+            end if
 210         continue
         end do
     end do
@@ -254,7 +254,7 @@ subroutine xmacon(char, noma, nomo)
 !
     ntmae = posmae
     call jeecra(maescx, 'LONUTI', zmesx*ntmae)
-    zi(jdim+9 -1) = ntmae
+    zi(jdim+9-1) = ntmae
     zi(jdim+13-1) = ntmae
 !
 ! --- NOMBRE DE POINTS ESCLAVES

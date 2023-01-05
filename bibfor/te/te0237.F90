@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -60,172 +60,172 @@ subroutine te0237(option, nomte)
 !-----------------------------------------------------------------------
     call elref1(elrefe)
 !
-    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfdk,jgano=jgano)
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, &
+                     npg=npg, jpoids=ipoids, jvf=ivf, jdfde=idfdk, jgano=jgano)
 !
     call jevech('PGEOMER', 'L', igeom)
     call jevech('PCACOQU', 'L', icaco)
     call jevech('PDEPLAR', 'L', idepl)
     call jevech('PNBSP_I', 'L', jnbspi)
-    nbcou=zi(jnbspi-1+1)
+    nbcou = zi(jnbspi-1+1)
     if (nbcou .le. 0) then
         call utmess('F', 'ELEMENTS_12')
-    endif
+    end if
     if (nbcou .gt. 30) then
         call utmess('F', 'ELEMENTS3_50')
-    endif
+    end if
 !
     if (option .eq. 'EPSI_ELGA') then
-        call tecach('OOO', 'PDEFOPG', 'E', iret, nval=7,&
+        call tecach('OOO', 'PDEFOPG', 'E', iret, nval=7, &
                     itab=itab)
-        idefor=itab(1)
-    else if (option.eq.'SIEF_ELGA') then
+        idefor = itab(1)
+    else if (option .eq. 'SIEF_ELGA') then
         call jevech('PMATERC', 'L', imate)
-        call tecach('OOO', 'PCONTRR', 'E', iret, nval=7,&
+        call tecach('OOO', 'PCONTRR', 'E', iret, nval=7, &
                     itab=itab)
-        icont=itab(1)
-        call rcvarc(' ', 'TEMP', 'REF', 'RIGI', 1,&
+        icont = itab(1)
+        call rcvarc(' ', 'TEMP', 'REF', 'RIGI', 1, &
                     1, tref, iret)
     else
         ASSERT(.false.)
-    endif
+    end if
 !
-    nbcmp=itab(2)/itab(3)
-    ASSERT(nbcmp.gt.0)
+    nbcmp = itab(2)/itab(3)
+    ASSERT(nbcmp .gt. 0)
 !
-    h=zr(icaco)
+    h = zr(icaco)
 !---- COTE MINIMALE SUR L'EPAISSEUR
-    zmin=-h/2.d0
+    zmin = -h/2.d0
 !---- EPAISSEUR DE CHAQUE COUCHE
-    hic=h/nbcou
-    correc=zr(icaco+2)
+    hic = h/nbcou
+    correc = zr(icaco+2)
 ! NOMBRE DE POINT DE GAUSS DANS LA TRANCHE
 ! (POUR RESTER COHERENT AVEC SIEF_ELGA EN PLASTICITE )
-    npge=3
-    ki(1)=-1.d0
-    ki(2)=0.d0
-    ki(3)=1.d0
+    npge = 3
+    ki(1) = -1.d0
+    ki(2) = 0.d0
+    ki(3) = 1.d0
 !
-    do  icou = 1, nbcou
+    do icou = 1, nbcou
         do inte = 1, npge
-            niv=ki(inte)
+            niv = ki(inte)
 !
             if (inte .eq. 1) then
-                zic=zmin+(icou-1)*hic
-            else if (inte.eq.2) then
-                zic=zmin+hic/2.d0+(icou-1)*hic
+                zic = zmin+(icou-1)*hic
+            else if (inte .eq. 2) then
+                zic = zmin+hic/2.d0+(icou-1)*hic
             else
-                zic=zmin+hic+(icou-1)*hic
-            endif
-            x3=zic
+                zic = zmin+hic+(icou-1)*hic
+            end if
+            x3 = zic
 !
             do kp = 1, npg
-                k=(kp-1)*nno
-                idec=nbcmp*(kp-1)*npge*nbcou+ nbcmp*(icou-1)*npge+&
-                nbcmp*(inte-1)
-                call dfdm1d(nno, zr(ipoids+kp-1), zr(idfdk+k), zr(igeom), dfdx,&
+                k = (kp-1)*nno
+                idec = nbcmp*(kp-1)*npge*nbcou+nbcmp*(icou-1)*npge+ &
+                       nbcmp*(inte-1)
+                call dfdm1d(nno, zr(ipoids+kp-1), zr(idfdk+k), zr(igeom), dfdx, &
                             cour, jac, cosa, sina)
 !
-                do  i = 1, 5
-                    eps(i)=0.d0
+                do i = 1, 5
+                    eps(i) = 0.d0
                 end do
-                r=0.d0
-                do  i = 1, nno
-                    eps(1)=eps(1)+dfdx(i)*zr(idepl+3*i-3)
-                    eps(2)=eps(2)+dfdx(i)*zr(idepl+3*i-2)
-                    eps(3)=eps(3)+dfdx(i)*zr(idepl+3*i-1)
-                    eps(4)=eps(4)+zr(ivf+k+i-1)*zr(idepl+3*i-3)
-                    eps(5)=eps(5)+zr(ivf+k+i-1)*zr(idepl+3*i-1)
-                    r=r+zr(ivf+k+i-1)*zr(igeom+2*i-2)
+                r = 0.d0
+                do i = 1, nno
+                    eps(1) = eps(1)+dfdx(i)*zr(idepl+3*i-3)
+                    eps(2) = eps(2)+dfdx(i)*zr(idepl+3*i-2)
+                    eps(3) = eps(3)+dfdx(i)*zr(idepl+3*i-1)
+                    eps(4) = eps(4)+zr(ivf+k+i-1)*zr(idepl+3*i-3)
+                    eps(5) = eps(5)+zr(ivf+k+i-1)*zr(idepl+3*i-1)
+                    r = r+zr(ivf+k+i-1)*zr(igeom+2*i-2)
                 end do
 !
-                e11=eps(2)*cosa-eps(1)*sina
-                k11=eps(3)
-                esx3=eps(5)+eps(1)*cosa+eps(2)*sina
-                e22=eps(4)/r
-                k22=-eps(5)*sina/r
-                ep22=(e22+x3*k22)/(1.d0+(correc*x3*cosa/r))
+                e11 = eps(2)*cosa-eps(1)*sina
+                k11 = eps(3)
+                esx3 = eps(5)+eps(1)*cosa+eps(2)*sina
+                e22 = eps(4)/r
+                k22 = -eps(5)*sina/r
+                ep22 = (e22+x3*k22)/(1.d0+(correc*x3*cosa/r))
 
 !
-                ep11=(e11+x3*k11)/(1.d0+(correc*x3*cour))
-                ep12=esx3/(1.d0+(correc*x3*cour))
+                ep11 = (e11+x3*k11)/(1.d0+(correc*x3*cour))
+                ep12 = esx3/(1.d0+(correc*x3*cour))
 !
                 if (option .eq. 'EPSI_ELGA') then
-                    zr(idefor+idec-1+1)=ep11
-                    zr(idefor+idec-1+2)=ep22
-                    zr(idefor+idec-1+3)=ep12
+                    zr(idefor+idec-1+1) = ep11
+                    zr(idefor+idec-1+2) = ep22
+                    zr(idefor+idec-1+3) = ep12
 !
-                else if (option.eq.'SIEF_ELGA') then
+                else if (option .eq. 'SIEF_ELGA') then
 !
 !         -- RECUPERATION DES PARAMETRES MATERIAU :
 !
 !         ---- RECUPERATION DE LA TEMPERATURE POUR LE MATERIAU:
 !         ---- SI LA TEMPERATURE EST CONNUE AUX POINTS DE GAUSS :
-                    isp=3*(icou-1)
-                    call rcvarc(' ', 'TEMP', '+', 'RIGI', kp,&
+                    isp = 3*(icou-1)
+                    call rcvarc(' ', 'TEMP', '+', 'RIGI', kp, &
                                 isp+1, tpginf, iret1)
-                    call rcvarc(' ', 'TEMP', '+', 'RIGI', kp,&
+                    call rcvarc(' ', 'TEMP', '+', 'RIGI', kp, &
                                 isp+2, tpgmoy, iret2)
-                    call rcvarc(' ', 'TEMP', '+', 'RIGI', kp,&
+                    call rcvarc(' ', 'TEMP', '+', 'RIGI', kp, &
                                 isp+3, tpgsup, iret3)
-                    iret4=iret1+iret2+iret3
-                    ASSERT(iret4.eq.0 .or. iret4.eq.3)
+                    iret4 = iret1+iret2+iret3
+                    ASSERT(iret4 .eq. 0 .or. iret4 .eq. 3)
 !
 !         ---- UTILISATION DE 4 POINTS DE GAUSS DANS L'EPAISSEUR
 !         ---- COMME POUR LA LONGUEUR
 !
                     if (iret4 .eq. 0) then
-                        tpg=tpgsup*niv*(1.d0+niv)/2.d0+tpgmoy*(1.d0-(&
-                        niv)**2)- tpginf*niv*(1.d0-niv)/2.d0
+                        tpg = tpgsup*niv*(1.d0+niv)/2.d0+tpgmoy*(1.d0-( &
+                                                                 niv)**2)-tpginf*niv*(1.d0-niv)/2.d0
                     else
-                        tpg=r8nnem()
-                    endif
-                    valpar=tpg
-                    nbpar=1
-                    nompar='TEMP'
+                        tpg = r8nnem()
+                    end if
+                    valpar = tpg
+                    nbpar = 1
+                    nompar = 'TEMP'
 !
-                    nomres(1)='E'
-                    nomres(2)='NU'
-                    nomres(3)='ALPHA'
-                    call rcvalb('RIGI', 1, 1, '+', zi(imate),&
-                                ' ', 'ELAS', nbpar, nompar, [valpar],&
+                    nomres(1) = 'E'
+                    nomres(2) = 'NU'
+                    nomres(3) = 'ALPHA'
+                    call rcvalb('RIGI', 1, 1, '+', zi(imate), &
+                                ' ', 'ELAS', nbpar, nompar, [valpar], &
                                 2, nomres, valres, icodre, 1)
-                    call rcvalb('RIGI', 1, 1, '+', zi(imate),&
-                                ' ', 'ELAS', nbpar, nompar, [valpar],&
-                                1, nomres(3), valres(3), icodre( 3), 0)
-                    e=valres(1)
-                    nu=valres(2)
+                    call rcvalb('RIGI', 1, 1, '+', zi(imate), &
+                                ' ', 'ELAS', nbpar, nompar, [valpar], &
+                                1, nomres(3), valres(3), icodre(3), 0)
+                    e = valres(1)
+                    nu = valres(2)
                     if (iret4 .eq. 0) then
-                        if ((icodre(3).ne.0) .or. (iret.eq.1)) then
+                        if ((icodre(3) .ne. 0) .or. (iret .eq. 1)) then
                             call utmess('F', 'CALCULEL_15')
                         else
-                            epsthe=(tpg-tref)*valres(3)*e/(1.d0-nu)
-                        endif
+                            epsthe = (tpg-tref)*valres(3)*e/(1.d0-nu)
+                        end if
                     else
-                        epsthe=0.d0
-                    endif
+                        epsthe = 0.d0
+                    end if
 !
 !         -- FIN RECUPERATION DES PARAMETRES MATERIAU :
 !
-                    c1=e/(1.d0+nu)
-                    c2=c1/(1.d0-nu)
+                    c1 = e/(1.d0+nu)
+                    c2 = c1/(1.d0-nu)
 !
-                    si11=c2*(ep11+nu*ep22)-epsthe
-                    si22=c2*(ep22+nu*ep11)-epsthe
+                    si11 = c2*(ep11+nu*ep22)-epsthe
+                    si22 = c2*(ep22+nu*ep11)-epsthe
 
-                    si12=c1*ep12
+                    si12 = c1*ep12
 !
-                    zr(icont+idec-1+1)=si11
-                    zr(icont+idec-1+2)=si22
-                    zr(icont+idec-1+4)=si12
+                    zr(icont+idec-1+1) = si11
+                    zr(icont+idec-1+2) = si22
+                    zr(icont+idec-1+4) = si12
 !
                 else
                     ASSERT(.false.)
-                endif
+                end if
 !
-          end do
+            end do
 !
-       end do
-  end do
+        end do
+    end do
 !
 end subroutine

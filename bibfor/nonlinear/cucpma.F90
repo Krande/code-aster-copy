@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 subroutine cucpma(deficu, resocu, neq, nbliai, numedd, matrcu)
 !
 !
-    implicit     none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/cumata.h"
 #include "asterfort/jedema.h"
@@ -63,7 +63,7 @@ subroutine cucpma(deficu, resocu, neq, nbliai, numedd, matrcu)
 !
     numecu = '&&CUCPMA.NUCU'
     nmult = 1
-    call cumata(deficu, resocu, neq, nbliai, nmult, numedd,&
+    call cumata(deficu, resocu, neq, nbliai, nmult, numedd, &
                 enat, numecu, matrcu)
 !
     call jedema()

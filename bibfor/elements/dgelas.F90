@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 subroutine dgelas(eb, nub, h, b, a, em, num, ef, nuf, icisai)
 !
-    implicit   none
+    implicit none
 !
     integer :: icisai
 !
@@ -48,13 +48,13 @@ subroutine dgelas(eb, nub, h, b, a, em, num, ef, nuf, icisai)
 ! - DETERMINATION DES PARAMETRES ELASTIQUES EN MEMBRANE
     if (icisai .eq. 0) then
 ! - PAR ESSAI DE TRACTION
-        em = b/h + eb*(b+eb*h)/((1.d0-nub**2)*b+eb*h)
+        em = b/h+eb*(b+eb*h)/((1.d0-nub**2)*b+eb*h)
         num = nub*eb*h/((1.d0-nub**2)*b+eb*h)
     else
 ! - PAR ESSAI DE CISAILLEMENT PUR DANS LE PLAN
-        em = eb + b*(1.d0-nub)/h
-        num = nub + b*(1.d0-nub**2)/eb/h
-    endif
+        em = eb+b*(1.d0-nub)/h
+        num = nub+b*(1.d0-nub**2)/eb/h
+    end if
 !
 ! - DETERMINATION DES PARAMETRES ELASTIQUES EN FLEXION
     ef = eb*(eb*h+12.d0*a)/(eb*h+12.d0*a*(1.d0-nub**2))+12.d0*a/h

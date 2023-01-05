@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -45,11 +45,11 @@ subroutine te0447(option, nomte)
     real(kind=8) :: tmp
 ! ......................................................................
 !
-    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg, &
                      jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
     ncmp = 2*ndim
-    axi = lteatt('AXIS','OUI')
+    axi = lteatt('AXIS', 'OUI')
     grand = .false.
     call jevech('PGEOMER', 'L', igeom)
     call jevech('PDEPLAR', 'L', idepl)
@@ -60,25 +60,25 @@ subroutine te0447(option, nomte)
 !
     do kpg = 1, npg
 !
-        call nmgeom(ndim, nno, axi, grand, zr(igeom),&
-                    kpg, ipoids, ivf, idfde, zr(idepl),&
-                    .true._1, poids, dfdi, f, eps,&
+        call nmgeom(ndim, nno, axi, grand, zr(igeom), &
+                    kpg, ipoids, ivf, idfde, zr(idepl), &
+                    .true._1, poids, dfdi, f, eps, &
                     r)
 !
 !       RECUPERATION DE LA DEFORMATION
         do ksig = 1, ncmp
             if (ksig .le. 3) then
-                tmp=1.d0
+                tmp = 1.d0
             else
                 tmp = sqrt(2.d0)
-            endif
-            vpg(ncmp*(kpg-1)+ksig)=eps(ksig)/tmp
+            end if
+            vpg(ncmp*(kpg-1)+ksig) = eps(ksig)/tmp
         end do
     end do
 !
 !     AFFECTATION DU VECTEUR EN SORTIE
     do kk = 1, npg*ncmp
-        zr(idefo+kk-1)= vpg(kk)
+        zr(idefo+kk-1) = vpg(kk)
     end do
 !
 end subroutine

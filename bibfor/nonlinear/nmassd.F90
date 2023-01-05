@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,9 +19,9 @@
 !
 subroutine nmassd(list_func_acti, hval_veasse, cnpilo, cndonn)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -33,9 +33,9 @@ implicit none
 #include "asterfort/nonlinDSVectCombCompute.h"
 #include "asterfort/nonlinDSVectCombAddHat.h"
 !
-integer, intent(in) :: list_func_acti(*)
-character(len=19), intent(in) :: hval_veasse(*)
-character(len=19), intent(in) :: cnpilo, cndonn
+    integer, intent(in) :: list_func_acti(*)
+    character(len=19), intent(in) :: hval_veasse(*)
+    character(len=19), intent(in) :: cnpilo, cndonn
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -61,7 +61,7 @@ character(len=19), intent(in) :: cnpilo, cndonn
     call infdbg('MECANONLINE', ifm, niv)
     if (niv .ge. 2) then
         call utmess('I', 'MECANONLINE11_16')
-    endif
+    end if
 !
 ! - Initializations
 !
@@ -69,8 +69,8 @@ character(len=19), intent(in) :: cnpilo, cndonn
 !
 ! - Active functionnalities
 !
-    l_didi = isfonc(list_func_acti,'DIDI')
-    l_pilo = isfonc(list_func_acti,'PILOTAGE')
+    l_didi = isfonc(list_func_acti, 'DIDI')
+    l_pilo = isfonc(list_func_acti, 'PILOTAGE')
 !
 ! - Dirichlet (given displacements) - AFFE_CHAR_MECA
 !
@@ -78,26 +78,26 @@ character(len=19), intent(in) :: cnpilo, cndonn
     call nonlinDSVectCombAddHat(hval_veasse, 'CNBUDI', -1.d0, ds_vectcomb)
     if (l_didi) then
         call nonlinDSVectCombAddHat(hval_veasse, 'CNDIDI', 1.d0, ds_vectcomb)
-    endif
+    end if
 !
 ! - Second member (standard)
 !
     call nonlinDSVectCombCompute(ds_vectcomb, cndonn)
     if (niv .ge. 2) then
         call nmdebg('VECT', cndonn, 6)
-    endif
+    end if
 !
     call nonlinDSVectCombInit(ds_vectcomb)
     if (l_pilo) then
 ! ----- Get Dirichlet loads (for PILOTAGE)
         call nonlinDSVectCombAddHat(hval_veasse, 'CNDIPI', +1.d0, ds_vectcomb)
-    endif
+    end if
 !
 ! - Second member (PILOTAGE)
 !
     call nonlinDSVectCombCompute(ds_vectcomb, cnpilo)
     if (niv .ge. 2) then
         call nmdebg('VECT', cnpilo, 6)
-    endif
+    end if
 !
 end subroutine

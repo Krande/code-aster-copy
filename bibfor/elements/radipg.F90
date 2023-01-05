@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine radipg(sig1, sig2, npg, nbsig, radia,&
-                  cosang, ind, compor, imate, nvi,&
+subroutine radipg(sig1, sig2, npg, nbsig, radia, &
+                  cosang, ind, compor, imate, nvi, &
                   vari1, vari2)
     implicit none
 #include "asterc/r8prem.h"
@@ -60,7 +60,7 @@ subroutine radipg(sig1, sig2, npg, nbsig, radia,&
 ! ......................................................................
 !
     integer :: mxcmel
-    parameter (mxcmel=162)
+    parameter(mxcmel=162)
 !
     integer :: i, k, igau, icine, nbvar, memo, visc, iradi, idelta
 !
@@ -82,8 +82,8 @@ subroutine radipg(sig1, sig2, npg, nbsig, radia,&
         k = 0
         do igau = 1, npg
             do i = 1, nbsig
-                k = k + 1
-                dsigma(k) = sig2(k) - sig1(k)
+                k = k+1
+                dsigma(k) = sig2(k)-sig1(k)
 !
             end do
         end do
@@ -97,17 +97,17 @@ subroutine radipg(sig1, sig2, npg, nbsig, radia,&
 !            ----------------------------------------
             s1dsig = zero
             do i = 1, 3
-                s1dsig = s1dsig + sig1( i+ (igau-1)*nbsig)* dsigma(i+ ( igau-1)*nbsig)
+                s1dsig = s1dsig+sig1(i+(igau-1)*nbsig)*dsigma(i+(igau-1)*nbsig)
             end do
 !
             do i = 4, nbsig
-                s1dsig = s1dsig + deux*sig1( i+ (igau-1)*nbsig)* dsigma(i+ (igau-1)*nbsig)
+                s1dsig = s1dsig+deux*sig1(i+(igau-1)*nbsig)*dsigma(i+(igau-1)*nbsig)
             end do
 !
 ! ----       CALCUL DU SECOND INVARIANT DES TENSEURS DES CONTRAINTES :
 !            -------------------------------------------------------
-            norm = norsig(sig1(1+ (igau-1)*nbsig),nbsig)
-            dnorm = norsig(dsigma(1+ (igau-1)*nbsig),nbsig)
+            norm = norsig(sig1(1+(igau-1)*nbsig), nbsig)
+            dnorm = norsig(dsigma(1+(igau-1)*nbsig), nbsig)
 !
 ! ----       DANS LE CAS OU NORME(SIG1) = 0  OU NORME(DSIGMA) = 0 :
 ! ----       ON MET L'INDICATEUR A 0 :
@@ -115,100 +115,100 @@ subroutine radipg(sig1, sig2, npg, nbsig, radia,&
             if (norm .le. zernor .or. dnorm .le. zernor) then
                 radia(igau) = zero
                 cosang(igau) = zero
-            else if (dnorm.le.1.0d4*r8prem()*norm) then
+            else if (dnorm .le. 1.0d4*r8prem()*norm) then
                 radia(igau) = zero
                 cosang(igau) = zero
             else
-                radia(igau) = 1.d0 - abs(s1dsig)/norm/dnorm
+                radia(igau) = 1.d0-abs(s1dsig)/norm/dnorm
                 cosang(igau) = s1dsig/norm/dnorm
-            endif
+            end if
         end do
 !
-    else if (ind.eq.1) then
+    else if (ind .eq. 1) then
 !
         do igau = 1, npg
 !
-            iradi=0
+            iradi = 0
             call dcopy(nbsig, sig1(1+(igau-1)*nbsig), 1, tensm, 1)
             call dcopy(nbsig, sig2(1+(igau-1)*nbsig), 1, tensp, 1)
             call dscal(nbsig-3, sqrt(2.d0), tensm(4), 1)
             call dscal(nbsig-3, sqrt(2.d0), tensp(4), 1)
 !
 !           ISOTROPE : LA NORMALE NE DEPEND QUE DE SIG
-            if ((compor.eq.'VMIS_ISOT_TRAC') .or. ( compor.eq.'VMIS_ISOT_LINE') .or.&
-                ( compor.eq.'VMIS_ISOT_PUIS')) then
-                indm=vari1((igau-1)*nvi+2)
-                indp=vari2((igau-1)*nvi+2)
-                icine=0
-                iradi=1
+            if ((compor .eq. 'VMIS_ISOT_TRAC') .or. (compor .eq. 'VMIS_ISOT_LINE') .or. &
+                (compor .eq. 'VMIS_ISOT_PUIS')) then
+                indm = vari1((igau-1)*nvi+2)
+                indp = vari2((igau-1)*nvi+2)
+                icine = 0
+                iradi = 1
 !
 !           CINEMATIQUE : LA NORMALE DEPEND DE SIG ET X
-                elseif ((compor.eq.'VMIS_ECMI_TRAC') .or.(&
-            compor.eq.'VMIS_ECMI_LINE')) then
+            elseif ((compor .eq. 'VMIS_ECMI_TRAC') .or. ( &
+                    compor .eq. 'VMIS_ECMI_LINE')) then
                 call dcopy(nbsig, vari1((igau-1)*nvi+3), 1, xm, 1)
                 call dcopy(nbsig, vari2((igau-1)*nvi+3), 1, xp, 1)
-                indm=vari1((igau-1)*nvi+2)
-                indp=vari2((igau-1)*nvi+2)
-                icine=1
-                iradi=1
+                indm = vari1((igau-1)*nvi+2)
+                indp = vari2((igau-1)*nvi+2)
+                icine = 1
+                iradi = 1
                 call dscal(nbsig-3, sqrt(2.d0), xm(4), 1)
                 call dscal(nbsig-3, sqrt(2.d0), xp(4), 1)
 !
-            else if ((compor.eq.'VMIS_CINE_LINE')) then
+            else if ((compor .eq. 'VMIS_CINE_LINE')) then
                 call dcopy(nbsig, vari1((igau-1)*nvi+1), 1, xm, 1)
                 call dcopy(nbsig, vari2((igau-1)*nvi+1), 1, xp, 1)
-                indm=vari1((igau-1)*nvi+7)
-                indp=vari2((igau-1)*nvi+7)
-                icine=1
-                iradi=1
+                indm = vari1((igau-1)*nvi+7)
+                indp = vari2((igau-1)*nvi+7)
+                icine = 1
+                iradi = 1
                 call dscal(nbsig-3, sqrt(2.d0), xm(4), 1)
                 call dscal(nbsig-3, sqrt(2.d0), xp(4), 1)
 !
-                elseif((compor.eq.'VMIS_CIN1_CHAB') .or. (&
-            compor.eq.'VISC_CIN1_CHAB') .or. (&
-            compor.eq.'VMIS_CIN2_CHAB') .or. (&
-            compor.eq.'VMIS_CIN2_MEMO') .or. (&
-            compor.eq.'VISC_CIN2_CHAB') .or. (&
-            compor.eq.'VISC_CIN2_MEMO')) then
-                compor2=' '
-                compor2(1)=compor
-                call nmcham('RIGI', igau, 1, imate, compor2,&
-                            matel, mat, nbvar, memo, visc,&
+            elseif ((compor .eq. 'VMIS_CIN1_CHAB') .or. ( &
+                    compor .eq. 'VISC_CIN1_CHAB') .or. ( &
+                    compor .eq. 'VMIS_CIN2_CHAB') .or. ( &
+                    compor .eq. 'VMIS_CIN2_MEMO') .or. ( &
+                    compor .eq. 'VISC_CIN2_CHAB') .or. ( &
+                    compor .eq. 'VISC_CIN2_MEMO')) then
+                compor2 = ' '
+                compor2(1) = compor
+                call nmcham('RIGI', igau, 1, imate, compor2, &
+                            matel, mat, nbvar, memo, visc, &
                             idelta, coef)
 !              approximation : on supose C constant
                 cinf = mat(4)/1.5d0
-                indm=vari1((igau-1)*nvi+2)
-                indp=vari2((igau-1)*nvi+2)
+                indm = vari1((igau-1)*nvi+2)
+                indp = vari2((igau-1)*nvi+2)
                 call dcopy(nbsig, vari1((igau-1)*nvi+3), 1, xm, 1)
                 call dcopy(nbsig, vari2((igau-1)*nvi+3), 1, xp, 1)
                 call dscal(nbsig, cinf, xm, 1)
                 call dscal(nbsig, cinf, xp, 1)
                 if (nbvar .eq. 2) then
                     c2inf = mat(9)/1.5d0
-                    call daxpy(nbsig, c2inf, vari1((igau-1)*nvi+9), 1, xm,&
+                    call daxpy(nbsig, c2inf, vari1((igau-1)*nvi+9), 1, xm, &
                                1)
-                    call daxpy(nbsig, c2inf, vari2((igau-1)*nvi+9), 1, xp,&
+                    call daxpy(nbsig, c2inf, vari2((igau-1)*nvi+9), 1, xp, &
                                1)
-                endif
-                icine=1
-                iradi=1
+                end if
+                icine = 1
+                iradi = 1
                 call dscal(nbsig-3, sqrt(2.d0), xm(4), 1)
                 call dscal(nbsig-3, sqrt(2.d0), xp(4), 1)
 !
 !
-            endif
+            end if
 !
 !           CALCUL EFFECTUE UNIQUEMENT SI LE COMPORTEMENT LE PERMET
             if (iradi .eq. 1) then
-                call radial(nbsig, tensm, tensp, indm, indp,&
+                call radial(nbsig, tensm, tensp, indm, indp, &
                             icine, xm, xp, radia(igau))
-                cosang(igau)=sqrt(abs(1.d0-radia(igau)*radia(igau)))
+                cosang(igau) = sqrt(abs(1.d0-radia(igau)*radia(igau)))
             else
-                radia(igau)=0.d0
-                cosang(igau)=0.d0
-            endif
+                radia(igau) = 0.d0
+                cosang(igau) = 0.d0
+            end if
 !
         end do
 !
-    endif
+    end if
 end subroutine

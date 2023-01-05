@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,12 +18,12 @@
 !
 function dhw2p1(signe, dp11p1, alpliq, temp, rho11)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/dhwdp1.h"
 !
-real(kind=8), intent(in) :: temp, signe, dp11p1, alpliq, rho11
-real(kind=8) :: dhw2p1
+    real(kind=8), intent(in) :: temp, signe, dp11p1, alpliq, rho11
+    real(kind=8) :: dhw2p1
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -42,6 +42,6 @@ real(kind=8) :: dhw2p1
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    dhw2p1 = dp11p1 * dhwdp1(signe, alpliq, temp, rho11)
+    dhw2p1 = dp11p1*dhwdp1(signe, alpliq, temp, rho11)
 !
 end function

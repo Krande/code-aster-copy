@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -52,12 +52,12 @@ function iposdg(dg, cmp)
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    nbec = (cmp - 1)/30 + 1
+    nbec = (cmp-1)/30+1
     cmpt = 0
-    reste = cmp - 30*(nbec-1)
-    code = lshift(1,reste)
+    reste = cmp-30*(nbec-1)
+    code = lshift(1, reste)
 !
-    if (iand(dg(nbec),code) .eq. code) then
+    if (iand(dg(nbec), code) .eq. code) then
 !
         do paquet = 1, nbec-1, 1
 !
@@ -65,13 +65,13 @@ function iposdg(dg, cmp)
 !
             do i = 1, 30, 1
 !
-                code = lshift(1,i)
+                code = lshift(1, i)
 !
-                if (iand(valec,code) .eq. code) then
+                if (iand(valec, code) .eq. code) then
 !
-                    cmpt = cmpt + 1
+                    cmpt = cmpt+1
 !
-                endif
+                end if
 !
             end do
 !
@@ -81,17 +81,17 @@ function iposdg(dg, cmp)
 !
         do i = 1, reste, 1
 !
-            code = lshift(1,i)
+            code = lshift(1, i)
 !
-            if (iand(valec,code) .eq. code) then
+            if (iand(valec, code) .eq. code) then
 !
-                cmpt = cmpt + 1
+                cmpt = cmpt+1
 !
-            endif
+            end if
 !
         end do
 !
-    endif
+    end if
 !
     iposdg = cmpt
 !

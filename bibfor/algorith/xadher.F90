@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine xadher(p, saut, lamb1, cstafr, cpenfr,&
-                  algofr, vitang, pboul, kn, ptknp,&
+subroutine xadher(p, saut, lamb1, cstafr, cpenfr, &
+                  algofr, vitang, pboul, kn, ptknp, &
                   ik, adher)
 !
 ! person_in_charge: samuel.geniaut at edf.fr
@@ -64,60 +64,60 @@ subroutine xadher(p, saut, lamb1, cstafr, cpenfr,&
     real(kind=8) :: p2(2, 2), ptknp2(2, 2), kn2(2, 2), xab2(2, 2)
     real(kind=8) :: gt2(3), norme2
     aster_logical :: lpenaf
-    parameter  (prec=1.d-12)
+    parameter(prec=1.d-12)
 !
 !-----------------------------------------------------------------------
 !     CALCUL DE GT = LAMDBA + RHO [[DX]]/DELTAT ET DE SA PROJECTION
 !
     call elrefe_info(fami='RIGI', ndim=ndim)
-    lpenaf = (algofr.eq.2)
+    lpenaf = (algofr .eq. 2)
     do i = 1, ndim
-        vitang(i)=0.d0
+        vitang(i) = 0.d0
 !       "VITESSE TANGENTE" : PROJECTION DU SAUT
         do k = 1, ndim
-            vitang(i)=vitang(i)+p(i,k)*saut(k)
+            vitang(i) = vitang(i)+p(i, k)*saut(k)
         end do
         if (lpenaf) then
 !         PENALISATION SEULE
-            gt(i)=cpenfr * vitang(i)
+            gt(i) = cpenfr*vitang(i)
         else
-            gt(i)=lamb1(i)+cstafr*vitang(i)
-        endif
+            gt(i) = lamb1(i)+cstafr*vitang(i)
+        end if
     end do
     if (ndim .eq. 3) then
-        norme=sqrt(gt(1)*gt(1)+gt(2)*gt(2)+gt(3)*gt(3))
+        norme = sqrt(gt(1)*gt(1)+gt(2)*gt(2)+gt(3)*gt(3))
     else
-        norme=sqrt(gt(1)*gt(1)+gt(2)*gt(2))
-    endif
+        norme = sqrt(gt(1)*gt(1)+gt(2)*gt(2))
+    end if
 !
     if (lpenaf) then
 !       PENALISATION SEULE
         do i = 1, ndim
-            gt2(i)=cpenfr * vitang(i)
+            gt2(i) = cpenfr*vitang(i)
         end do
     else
         do i = 1, ndim
-            gt2(i)=lamb1(i)+cstafr * vitang(i)
+            gt2(i) = lamb1(i)+cstafr*vitang(i)
         end do
-    endif
+    end if
     if (ndim .eq. 3) then
-        norme2=sqrt(gt2(1)*gt2(1)+gt2(2)*gt2(2)+gt2(3)*gt2(3))
+        norme2 = sqrt(gt2(1)*gt2(1)+gt2(2)*gt2(2)+gt2(3)*gt2(3))
     else
-        norme2=sqrt(gt2(1)*gt2(1)+gt2(2)*gt2(2))
-    endif
+        norme2 = sqrt(gt2(1)*gt2(1)+gt2(2)*gt2(2))
+    end if
 !
 !     ADHER : TRUE SI ADHÉRENCE, FALSE SI GLISSEMENT
     if (norme .le. (1.d0+prec)) then
         adher = .true.
         do j = 1, ndim
-            pboul(j)=gt2(j)
+            pboul(j) = gt2(j)
         end do
     else
         adher = .false.
         do j = 1, ndim
-            pboul(j)=gt2(j)/norme2
+            pboul(j) = gt2(j)/norme2
         end do
-    endif
+    end if
 !
 !-----------------------------------------------------------------------
 !     CALCUL DE KN(LAMDBA + CSTA [[DX]]/DELTAT )
@@ -125,11 +125,11 @@ subroutine xadher(p, saut, lamb1, cstafr, cpenfr,&
 !     ADHERENT
 !     OU GLISSANT
 !        ET LAMBDA + CSTA [[DX]]/DELTAT EST DANS LA BOULE UNITE
-    if (adher .or. ((.not.adher).and.norme2.le.(1.d0+prec))) then
+    if (adher .or. ((.not. adher) .and. norme2 .le. (1.d0+prec))) then
 !
-        kn(:,:) = 0.d0
+        kn(:, :) = 0.d0
         do i = 1, ndim
-            kn(i,i)=1.d0
+            kn(i, i) = 1.d0
         end do
 !
 !     GLISSANT
@@ -138,52 +138,52 @@ subroutine xadher(p, saut, lamb1, cstafr, cpenfr,&
 !
         do i = 1, ndim
             do j = 1, ndim
-                kn(i,j)=-gt2(i)*gt2(j)/(norme2*norme2)
+                kn(i, j) = -gt2(i)*gt2(j)/(norme2*norme2)
             end do
         end do
 !
         do i = 1, ndim
-            kn(i,i)= kn(i,i) + 1.d0
+            kn(i, i) = kn(i, i)+1.d0
         end do
 !
         do i = 1, ndim
             do j = 1, ndim
-                kn(i,j)= kn(i,j)/norme2
+                kn(i, j) = kn(i, j)/norme2
             end do
         end do
 !
-    endif
+    end if
 !
 !-----------------------------------------------------------------------
 !
 !     CALCUL DE PT.KN.P
     if (ndim .eq. 3) then
-        call utbtab('ZERO', ndim, ndim, kn, p,&
+        call utbtab('ZERO', ndim, ndim, kn, p, &
                     xab, ptknp)
     else
         do i = 1, ndim
             do j = 1, ndim
-                p2(i,j)=p(i,j)
-                kn2(i,j)=kn(i,j)
+                p2(i, j) = p(i, j)
+                kn2(i, j) = kn(i, j)
             end do
         end do
-        call utbtab('ZERO', ndim, ndim, kn2, p2,&
+        call utbtab('ZERO', ndim, ndim, kn2, p2, &
                     xab2, ptknp2)
         do i = 1, ndim
             do j = 1, ndim
-                ptknp(i,j)=ptknp2(i,j)
+                ptknp(i, j) = ptknp2(i, j)
             end do
         end do
-    endif
+    end if
 !
 !     CALCUL DE Id-KN
     do i = 1, ndim
         do j = 1, ndim
-            ik(i,j)= -1.d0 * kn(i,j)
+            ik(i, j) = -1.d0*kn(i, j)
         end do
     end do
     do i = 1, ndim
-        ik(i,i)= 1.d0 + ik(i,i)
+        ik(i, i) = 1.d0+ik(i, i)
     end do
 !
 !-----------------------------------------------------------------------

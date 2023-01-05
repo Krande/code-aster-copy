@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine rsvpar(nomsd, iordr, nompar, ipar, rpar,&
+subroutine rsvpar(nomsd, iordr, nompar, ipar, rpar, &
                   kpar, ier)
     implicit none
 #include "jeveux.h"
@@ -58,29 +58,29 @@ subroutine rsvpar(nomsd, iordr, nompar, ipar, rpar,&
     do ipa = 1, nbpar
         if (nompar .eq. noms_para(ipa)) then
             goto 12
-        endif
+        end if
     end do
     goto 999
 !
 12  continue
     ier = 110
-    call rsadpa(nomsd, 'L', 1, nompar, iordr,&
+    call rsadpa(nomsd, 'L', 1, nompar, iordr, &
                 1, sjv=jadr, styp=ctype, istop=0)
     if (ctype(1:1) .eq. 'I') then
         if (zi(jadr) .eq. ipar) ier = 100
-    else if (ctype(1:1).eq.'R') then
+    else if (ctype(1:1) .eq. 'R') then
         if (zr(jadr) .eq. rpar) ier = 100
-    else if (ctype(1:3).eq.'K80') then
+    else if (ctype(1:3) .eq. 'K80') then
         if (zk80(jadr) .eq. kpar) ier = 100
-    else if (ctype(1:3).eq.'K32') then
+    else if (ctype(1:3) .eq. 'K32') then
         if (zk32(jadr) .eq. kpar) ier = 100
-    else if (ctype(1:3).eq.'K24') then
+    else if (ctype(1:3) .eq. 'K24') then
         if (zk24(jadr) .eq. kpar) ier = 100
-    else if (ctype(1:3).eq.'K16') then
+    else if (ctype(1:3) .eq. 'K16') then
         if (zk16(jadr) .eq. kpar) ier = 100
-    else if (ctype(1:2).eq.'K8') then
+    else if (ctype(1:2) .eq. 'K8') then
         if (zk8(jadr) .eq. kpar) ier = 100
-    endif
+    end if
 !
 999 continue
     call jedetr('&&RSVPAR.NOMS_PARA')

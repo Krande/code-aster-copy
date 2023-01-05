@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine amppr(amat, nb1, nb2, bmat, n1,&
+subroutine amppr(amat, nb1, nb2, bmat, n1, &
                  n2, i, j)
     implicit none
 !
@@ -48,21 +48,21 @@ subroutine amppr(amat, nb1, nb2, bmat, n1,&
     integer :: ideb, ifin, ii, iideb, iifin
     integer :: jdeb, jfin, jj, jjdeb, jjfin
 !-----------------------------------------------------------------------
-    jdeb=j
-    jfin=min(j+n2-1,nb2)
+    jdeb = j
+    jfin = min(j+n2-1, nb2)
     if (jfin .lt. jdeb) goto 999
-    jjdeb=jdeb-j+1
-    jjfin=jfin-j+1
+    jjdeb = jdeb-j+1
+    jjfin = jfin-j+1
 !
-    ideb=i
-    ifin=min(i+n1-1,nb1)
+    ideb = i
+    ifin = min(i+n1-1, nb1)
     if (ifin .lt. ideb) goto 999
-    iideb=ideb-i+1
-    iifin=ifin-i+1
+    iideb = ideb-i+1
+    iifin = ifin-i+1
 !
     do ii = iideb, iifin
         do jj = jjdeb, jjfin
-            amat(i+ii-1,j+jj-1)=amat(i+ii-1,j+jj-1)+bmat(ii,jj)
+            amat(i+ii-1, j+jj-1) = amat(i+ii-1, j+jj-1)+bmat(ii, jj)
         end do
     end do
 !

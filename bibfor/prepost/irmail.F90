@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine irmail(form, ifi, versio, noma, lmod, nomo, infmai, formar,&
+subroutine irmail(form, ifi, versio, noma, lmod, nomo, infmai, formar, &
                   lfichUniq, nosdfu)
 !
     implicit none
@@ -88,22 +88,22 @@ subroutine irmail(form, ifi, versio, noma, lmod, nomo, infmai, formar,&
 !     ------------------------------------------------------------------
 !
     call jemarq()
-    if(.not.present(lfichUniq)) then
+    if (.not. present(lfichUniq)) then
         lfu = .false._1
         nosdf2 = ' '
     else
         lfu = lfichUniq
         ASSERT(present(nosdfu))
         nosdf2 = nosdfu
-    endif
+    end if
 !
 !   RECUPERATION DE LA DIMENSION DU PROBLEME
     modele = ' '
-    if ( lmod ) then
+    if (lmod) then
         modele = nomo
     else
-        if ( len_trim(nomo) .ne. 0) modele = nomo
-    endif
+        if (len_trim(nomo) .ne. 0) modele = nomo
+    end if
 !
     if (modele .ne. ' ') then
         call dismoi('DIM_GEOM', modele, 'MODELE', repi=repi)
@@ -115,16 +115,16 @@ subroutine irmail(form, ifi, versio, noma, lmod, nomo, infmai, formar,&
 !                   =  23  : 2D+3D     MELANGE
 !                   = 123  : 1D+2D+3D  MELANGE
         select case (repi)
-            case (1)
-                ndim = 1
-            case (2,120)
-                ndim = 2
-            case (3,103,23,123)
-                ndim = 3
+        case (1)
+            ndim = 1
+        case (2, 120)
+            ndim = 2
+        case (3, 103, 23, 123)
+            ndim = 3
         end select
     else
         call dismoi('DIM_GEOM_B', noma, 'MAILLAGE', repi=ndim)
-    endif
+    end if
 !
 !     --- RECUPERATION DU NOMBRE DE MAILLES
     call jelira(noma//'.NOMMAI', 'NOMUTI', nbmai)
@@ -147,10 +147,10 @@ subroutine irmail(form, ifi, versio, noma, lmod, nomo, infmai, formar,&
         call jeveuo(noma//'           .TITR', 'L', jtitr)
         call jelira(noma//'           .TITR', 'LONMAX', nbtitr)
     else
-        nbtitr=1
+        nbtitr = 1
         call wkvect(noma//'           .TITR', 'V V K80', nbtitr, jtitr)
-        zk80(jtitr)='MAILLAGE RESTREINT'
-    endif
+        zk80(jtitr) = 'MAILLAGE RESTREINT'
+    end if
 !
 !
 !       - DESTRUCTION PUIS ALLOCATION DE ZONES DE TRAVAIL
@@ -169,13 +169,13 @@ subroutine irmail(form, ifi, versio, noma, lmod, nomo, infmai, formar,&
         call jenuno(jexnum(noma//'.NOMNOE', ino), zk8(jnonoe-1+ino))
     end do
 !       - TEST EXISTENCE DE GROUPES DE NOEUDS
-    if(lfu) then
+    if (lfu) then
         nopaje = 'NOMMAX'
         nojgrp = '.PAR_GRPNOE'
     else
         nopaje = 'NUTIOC'
         nojgrp = '.GROUPENO'
-    endif
+    end if
     call jeexin(noma//nojgrp, iret)
     if (iret .ne. 0) then
 !         - RECUPERATION DU NOMBRE ET DES NOMS DES GROUPES DE NOEUDS
@@ -183,22 +183,22 @@ subroutine irmail(form, ifi, versio, noma, lmod, nomo, infmai, formar,&
         if (nbgrn .ne. 0) then
             call wkvect('&&IRMAIL.NOMGRNO', 'V V K24', nbgrn, jnogn)
             do ign = 1, nbgrn
-                call jenuno(jexnum(noma//nojgrp, ign), zk24(jnogn- 1+ign))
+                call jenuno(jexnum(noma//nojgrp, ign), zk24(jnogn-1+ign))
             end do
         else
 !           - SI PAS DE GROUPE DE NOEUDS - NOMBRE DE GROUPES = 0
-            nbgrn=0
-        endif
+            nbgrn = 0
+        end if
     else
-        jnogn=1
-        nbgrn=0
-    endif
+        jnogn = 1
+        nbgrn = 0
+    end if
 !       - TEST EXISTENCE DE GROUPES DE MAILLE
-    if(lfu) then
+    if (lfu) then
         nojgrp = '.PAR_GRPMAI'
     else
         nojgrp = '.GROUPEMA'
-    endif
+    end if
     call jeexin(noma//nojgrp, iret)
     if (iret .ne. 0) then
 !         - RECUPERATION DU NOMBRE ET DES NOMS DES GROUPES DE MAILLES
@@ -206,84 +206,84 @@ subroutine irmail(form, ifi, versio, noma, lmod, nomo, infmai, formar,&
         if (nbgrm .ne. 0) then
             call wkvect('&&IRMAIL.NOMGRMA', 'V V K24', nbgrm, jnogm)
             do igm = 1, nbgrm
-                call jenuno(jexnum(noma//nojgrp, igm), zk24(jnogm- 1+igm))
+                call jenuno(jexnum(noma//nojgrp, igm), zk24(jnogm-1+igm))
             end do
         else
-            nbgrm=0
-        endif
+            nbgrm = 0
+        end if
     else
-        jnogm=1
-        nbgrm=0
-    endif
+        jnogm = 1
+        nbgrm = 0
+    end if
     if (lmod) then
 !       - IMPRESSION DU MODELE
 !         --> ON RECUPERE LE TYPE D'ELEMENT FINI DES MAILLES
         call jeveuo(nomo//'.MAILLE', 'L', jtypl)
     else
-        jtypl=1
-    endif
+        jtypl = 1
+    end if
 !
     if (form .eq. 'RESULTAT') then
 !       - TRAITEMENT DU FORMAT 'RESULTAT'
-        call irmare(ifi, ndim, nbnoe, vale, nbmai,&
-                    connex, zi(jpoin), noma, typmail, zi(jtypl),&
-                    lmod, zk80(jtitr), nbtitr, nbgrn, nbgrm,&
+        call irmare(ifi, ndim, nbnoe, vale, nbmai, &
+                    connex, zi(jpoin), noma, typmail, zi(jtypl), &
+                    lmod, zk80(jtitr), nbtitr, nbgrn, nbgrm, &
                     zk8(jnomai), zk8(jnonoe), formar)
 !
-    else if (form.eq.'ASTER') then
+    else if (form .eq. 'ASTER') then
 !       - TRAITEMENT DU FORMAT 'ASTER'
-        call irmare(ifi, ndim, nbnoe, vale, nbmai,&
-                    connex, zi(jpoin), noma, typmail, zi(jtypl),&
-                    lmod, zk80(jtitr), nbtitr, nbgrn, nbgrm,&
+        call irmare(ifi, ndim, nbnoe, vale, nbmai, &
+                    connex, zi(jpoin), noma, typmail, zi(jtypl), &
+                    lmod, zk80(jtitr), nbtitr, nbgrn, nbgrm, &
                     zk8(jnomai), zk8(jnonoe), formar)
 !
-    else if (form.eq.'MED') then
+    else if (form .eq. 'MED') then
 !       - TRAITEMENT DU FORMAT ECHANGE DE DONNEES 'MED'
-        if(lfu) then
-            call irmhdf(ifi, ndim, nbnoe, vale, nbmai,&
-                        connex, zi(jpoin), noma, typmail, zk80(jtitr),&
-                        nbtitr, nbgrn, zk24(jnogn), nbgrm, zk24(jnogm),&
+        if (lfu) then
+            call irmhdf(ifi, ndim, nbnoe, vale, nbmai, &
+                        connex, zi(jpoin), noma, typmail, zk80(jtitr), &
+                        nbtitr, nbgrn, zk24(jnogn), nbgrm, zk24(jnogm), &
                         zk8(jnomai), zk8(jnonoe), infmai, lfu, nosdf2)
         else
-            call irmhdf(ifi, ndim, nbnoe, vale, nbmai,&
-                        connex, zi(jpoin), noma, typmail, zk80(jtitr),&
-                        nbtitr, nbgrn, zk24(jnogn), nbgrm, zk24(jnogm),&
+            call irmhdf(ifi, ndim, nbnoe, vale, nbmai, &
+                        connex, zi(jpoin), noma, typmail, zk80(jtitr), &
+                        nbtitr, nbgrn, zk24(jnogn), nbgrm, zk24(jnogm), &
                         zk8(jnomai), zk8(jnonoe), infmai)
-        endif
+        end if
 !
-    else if (form.eq.'GMSH') then
+    else if (form .eq. 'GMSH') then
 !       - TRAITEMENT DU FORMAT 'GMSH'
 !         ON REGARDE SI LE MAILLAGE EST UN MAILLAGE GMSH (LGMSH)
-        lgmsh=.false.
+        lgmsh = .false.
         call jeexin(noma//'           .TITR', iret)
         if (iret .ne. 0) then
             call jeveuo(noma//'           .TITR', 'L', jtitr)
             call jelira(noma//'           .TITR', 'LONMAX', nbtitr)
             if (nbtitr .ge. 1) then
-                titmai=zk80(jtitr-1+1)
+                titmai = zk80(jtitr-1+1)
                 if (titmai(10:31) .eq. 'AUTEUR=INTERFACE_GMSH') then
-                    lgmsh=.true.
-                endif
-            endif
-        endif
-        call irmgms(ifi, ndim, nbnoe, noma, nbgrm,&
+                    lgmsh = .true.
+                end if
+            end if
+        end if
+        call irmgms(ifi, ndim, nbnoe, noma, nbgrm, &
                     zk8(jnonoe), lgmsh, versio)
 !
-    else if (form(1:5).eq.'IDEAS') then
+    else if (form(1:5) .eq. 'IDEAS') then
 !       - TRAITEMENT FORMAT 'IDEAS'
 !         ON REGARDE SI LE MAILLAGE EST UN MAILLAGE SUPERTAB (LMASU)
-        lmasu=.false.
+        lmasu = .false.
         call jeexin(noma//'           .TITR', iret)
         if (iret .ne. 0) then
             call jeveuo(noma//'           .TITR', 'L', jtitr)
             call jelira(noma//'           .TITR', 'LONMAX', nbtitr)
             if (nbtitr .ge. 1) then
-                titmai=zk80(jtitr-1+1)
+                titmai = zk80(jtitr-1+1)
                 if (titmai(10:31) .eq. 'AUTEUR=INTERFACE_IDEAS') then
-                    lmasu=.true.
-                endif
-            endif
-        endif
+                    lmasu = .true.
+                end if
+            end if
+        end if
 !       - SOUS PROGRAMME : TRAITER LES ADHERENCES SUPERTAB
         call iradhs(versio)
         call jeveuo('&&IRADHS.CODEGRA', 'L', vi=codegra)
@@ -291,22 +291,22 @@ subroutine irmail(form, ifi, versio, noma, lmod, nomo, infmai, formar,&
         call jeveuo('&&IRADHS.CODEPHD', 'L', vi=codephd)
         call jeveuo('&&IRADHS.PERMUTA', 'L', vi=permuta)
         call jelira('&&IRADHS.PERMUTA', 'LONMAX', lon1)
-        maxnod=permuta(lon1)
-        call irmasu(ifi, ndim, nbnoe, vale, nbmai,&
-                    connex, zi(jpoin), typmail, zi(jtypl), codegra,&
-                    codephy, codephd, permuta, maxnod, lmod,&
-                    noma, nbgrn, zk24(jnogn), nbgrm, zk24(jnogm),&
+        maxnod = permuta(lon1)
+        call irmasu(ifi, ndim, nbnoe, vale, nbmai, &
+                    connex, zi(jpoin), typmail, zi(jtypl), codegra, &
+                    codephy, codephd, permuta, maxnod, lmod, &
+                    noma, nbgrn, zk24(jnogn), nbgrm, zk24(jnogm), &
                     lmasu, zk8(jnomai), zk8(jnonoe), versio)
 !       - DESTRUCTION ZONE ALLOUEE POUR GPES DE NOEUDS SI ELLE EXISTE
         call jeexin('&&IRMASU.NOMGRNO', iret)
         if (iret .ne. 0) then
             call jedetr('&&IRMASU.NOMGRNO')
-        endif
+        end if
 !       - DESTRUCTION ZONE ALLOUEE POUR GPES DE MAILLES SI ELLE EXISTE
         call jeexin('&&IRMASU.NOMGRMA', iret)
         if (iret .ne. 0) then
             call jedetr('&&IRMASU.NOMGRMA')
-        endif
+        end if
         call jedetr('&&IRADHS.PERMUTA')
         call jedetr('&&IRADHS.CODEGRA')
         call jedetr('&&IRADHS.CODEPHY')
@@ -314,7 +314,7 @@ subroutine irmail(form, ifi, versio, noma, lmod, nomo, infmai, formar,&
         call jedetr('&&IRMAIL.NOMMAI')
         call jedetr('&&IRMAIL.NOMNOE')
 !
-    endif
+    end if
 !
 ! --- MENAGE
     call jedetr('&&IRMAIL.NOMMAI')

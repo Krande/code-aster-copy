@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,13 +17,13 @@
 ! --------------------------------------------------------------------
 ! aslint: disable=W1504
 !
-subroutine ircmpe(nofimd, ncmpve, numcmp, exicmp, nbvato,&
-                  nbmaec, limaec, adsd, adsl, nbimpr,&
-                  ncaimi, ncaimk, tyefma, typmai, typgeo,&
-                  nomtyp, typech, profas, promed, prorec,&
+subroutine ircmpe(nofimd, ncmpve, numcmp, exicmp, nbvato, &
+                  nbmaec, limaec, adsd, adsl, nbimpr, &
+                  ncaimi, ncaimk, tyefma, typmai, typgeo, &
+                  nomtyp, typech, profas, promed, prorec, &
                   nroimp, chanom, sdcarm, field_type, nosdfu)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -46,15 +46,15 @@ implicit none
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
 !
-integer :: nbvato, ncmpve, numcmp(ncmpve), nbmaec, typmai(*), adsd
-integer :: limaec(*), nbimpr, typgeo(*), profas(nbvato), tyefma(*)
-integer :: nroimp(nbvato), promed(nbvato), prorec(nbvato), adsl
-character(len=*) :: nofimd
-character(len=8) :: nomtyp(*), typech, sdcarm, nosdfu
-character(len=19) :: chanom
-character(len=24) :: ncaimi, ncaimk
-aster_logical :: exicmp(nbvato)
-character(len=16), intent(in) :: field_type
+    integer :: nbvato, ncmpve, numcmp(ncmpve), nbmaec, typmai(*), adsd
+    integer :: limaec(*), nbimpr, typgeo(*), profas(nbvato), tyefma(*)
+    integer :: nroimp(nbvato), promed(nbvato), prorec(nbvato), adsl
+    character(len=*) :: nofimd
+    character(len=8) :: nomtyp(*), typech, sdcarm, nosdfu
+    character(len=19) :: chanom
+    character(len=24) :: ncaimi, ncaimk
+    aster_logical :: exicmp(nbvato)
+    character(len=16), intent(in) :: field_type
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -133,33 +133,33 @@ character(len=16), intent(in) :: field_type
     !
     if (niv .ge. 2) then
         call cpu_time(start_time)
-        write (ifm,805) 'DEBUT DE IRCMPE'
-    endif
+        write (ifm, 805) 'DEBUT DE IRCMPE'
+    end if
     !
     ! ON REMPLIT UN PREMIER TABLEAU PAR MAILLE :
     !   * VRAI DES QU'UNE DES COMPOSANTES DU CHAMP EST PRESENTE SUR LA MAILLE
     !   * FAUX SINON
     ! REMARQUE : ON EXAMINE LES NCMPVE COMPOSANTES QUI SONT DEMANDEES,
     !    MAIS IL FAUT BIEN TENIR COMPTE DE LA NUMEROTATION DE REFERENCE
-    laux = adsd + 1
-    cifpg: do i_fpg = 1 , nbvato
-        laux = laux + 4
+    laux = adsd+1
+    cifpg: do i_fpg = 1, nbvato
+        laux = laux+4
         nbpg = zi(laux)
         nbsp = zi(laux+1)
-        do nrcmp = 1 , ncmpve
+        do nrcmp = 1, ncmpve
             kaux = numcmp(nrcmp)
-            do nrpg = 1 , nbpg
-                do nrsp = 1 , nbsp
-                    call cesexi('C', adsd, adsl, i_fpg, nrpg,&
+            do nrpg = 1, nbpg
+                do nrsp = 1, nbsp
+                    call cesexi('C', adsd, adsl, i_fpg, nrpg, &
                                 nrsp, kaux, jaux)
                     if (jaux .gt. 0) then
                         exicmp(i_fpg) = .true.
                         cycle cifpg
-                    endif
-                enddo
-            enddo
-        enddo
-    enddo cifpg
+                    end if
+                end do
+            end do
+        end do
+    end do cifpg
     !
     ! PROFAS : LISTE DES MAILLES POUR LESQUELS ON AURA IMPRESSION
     !    UNE MAILLE EST PRESENTE SI ET SEULEMENT SI AU MOINS UNE COMPOSANTE
@@ -167,54 +167,54 @@ character(len=16), intent(in) :: field_type
     !
     nb_fpg = 0
     lficUniq = .false._1
-    if(nosdfu.ne.' ') then
-        call asmpi_info(rank = mrank, size = msize)
+    if (nosdfu .ne. ' ') then
+        call asmpi_info(rank=mrank, size=msize)
         rang = to_aster_int(mrank)
         nbproc = to_aster_int(msize)
         call jeveuo(nosdfu//'.MAIL', 'L', jma)
         lficUniq = .true._1
-    endif
+    end if
     !
     ! SANS FILTRAGE : C'EST LA LISTE DES MAILLES QUI POSSEDENT UNE COMPOSANTE VALIDE
-    if(lficUniq) then
+    if (lficUniq) then
         nbmaect = nbmaec
         call asmpi_comm_vect('MPI_SUM', 'I', nbval=1, sci=nbmaect)
         lnbmaec = nbmaect .eq. 0
     else
         lnbmaec = nbmaec .eq. 0
-    endif
+    end if
     if (lnbmaec) then
-        do i_fpg = 1 , nbvato
+        do i_fpg = 1, nbvato
             if (exicmp(i_fpg)) then
-                if(lficUniq) then
-                    if(zi(jma+i_fpg-1).gt.0) then
-                        nb_fpg = nb_fpg + 1
+                if (lficUniq) then
+                    if (zi(jma+i_fpg-1) .gt. 0) then
+                        nb_fpg = nb_fpg+1
                         profas(nb_fpg) = i_fpg
-                    endif
+                    end if
                 else
-                    nb_fpg = nb_fpg + 1
+                    nb_fpg = nb_fpg+1
                     profas(nb_fpg) = i_fpg
-                endif
-            endif
-        enddo
-    !
-    ! AVEC FILTRAGE : C'EST LA LISTE DES MAILLES REQUISES ET AVEC UNE COMPOSANTE VALIDE
+                end if
+            end if
+        end do
+        !
+        ! AVEC FILTRAGE : C'EST LA LISTE DES MAILLES REQUISES ET AVEC UNE COMPOSANTE VALIDE
     else
-        do jaux = 1 , nbmaec
+        do jaux = 1, nbmaec
             i_fpg = limaec(jaux)
             if (exicmp(i_fpg)) then
-                if(lficUniq) then
-                    if(zi(jma+i_fpg-1).gt.0) then
-                        nb_fpg = nb_fpg + 1
+                if (lficUniq) then
+                    if (zi(jma+i_fpg-1) .gt. 0) then
+                        nb_fpg = nb_fpg+1
                         profas(nb_fpg) = i_fpg
-                    endif
+                    end if
                 else
-                    nb_fpg = nb_fpg + 1
+                    nb_fpg = nb_fpg+1
                     profas(nb_fpg) = i_fpg
-                endif
-            endif
-        enddo
-    endif
+                end if
+            end if
+        end do
+    end if
     !
     ! CARACTERISATIONS DES IMPRESSIONS
     !   ON TRIE SELON DEUX CRITERES :
@@ -233,27 +233,27 @@ character(len=16), intent(in) :: field_type
     ! SI ON EST SUR UN CHAMP ELGA, LE TRI DOIT SE FAIRE SUR LES FAMILLES DE POINTS DE GAUSS
     if (typech(1:4) .eq. 'ELGA') then
         call celfpg(chanom, '&&IRCMPE.NOFPGMA', ibid)
-        if(nb_fpg.ne.0) then
+        if (nb_fpg .ne. 0) then
             AS_ALLOCATE(vk16=fpg_name, size=nb_fpg)
-        endif
+        end if
         call jeveuo('&&IRCMPE.NOFPGMA', 'L', vk16=nofpgma)
-    endif
+    end if
     !
     call jeexin(sdcarm//'.CANBSP    .CESV', iret)
-    exicar=.false.
+    exicar = .false.
     if (iret .ne. 0 .and. typech(1:4) .eq. 'ELGA') then
         call jeveuo(sdcarm//'.CANBSP    .CESD', 'L', jcesd)
         call jeveuo(sdcarm//'.CANBSP    .CESC', 'L', jcesc)
         call jeveuo(sdcarm//'.CANBSP    .CESL', 'L', jcesl)
         call jeveuo(sdcarm//'.CANBSP    .CESV', 'L', jcesv)
-        exicar=.true.
-    endif
+        exicar = .true.
+    end if
     !
-    do i_fpg = 1 , nb_fpg
+    do i_fpg = 1, nb_fpg
         ima = profas(i_fpg)
         nrefma = tyefma(ima)
         !
-        laux = adsd + 4*ima + 1
+        laux = adsd+4*ima+1
         nbpg = zi(laux)
         nbsp = zi(laux+1)
         if (typech(1:4) .eq. 'ELNO') then
@@ -261,97 +261,97 @@ character(len=16), intent(in) :: field_type
             if (nbpg .eq. 9) then
                 if (typmai(ima) .eq. MT_HEXA8) then
                     nbpg = 8
-                endif
-            endif
-        endif
+                end if
+            end if
+        end if
 
         nomfpg = 'a fac'
         elga_sp = .false.
         if (typech(1:4) .eq. 'ELGA') then
             nomfpg = nofpgma(ima)
-            if ( exicar ) then
+            if (exicar) then
                 elga_sp = .true.
-            endif
-        endif
+            end if
+        end if
         imafib = 0
         !
-        if ( (nbsp.ge.1) .and. elga_sp ) then
-            call ircael(jcesd, jcesl, jcesv, jcesc, ima,&
+        if ((nbsp .ge. 1) .and. elga_sp) then
+            call ircael(jcesd, jcesl, jcesv, jcesc, ima, &
                         nbqcou, nbtcou, nbsec, nbfib, nbgrf, nugrfi)
             if (nbfib .ne. 0) imafib = ima
-        endif
+        end if
         !
         ! RECHERCHE D'UNE IMPRESSION SEMBLABLE
-        do jaux = 1 , nbimpr
+        do jaux = 1, nbimpr
             if (typech(1:4) .eq. 'ELGA') then
                 ! Pour les ELGA, tri sur les familles de points de gauss
-                if (.not.exicar) then
+                if (.not. exicar) then
                     ! si on n'a pas de cara_elem, le cas est simple
                     ! on compare le nom de la famille de pg et nbsp
-                    if (fpg_name(jaux).eq.nomfpg .and. &
-                        zi(adcaii+10*(jaux-1)+2).eq.nbsp) then
+                    if (fpg_name(jaux) .eq. nomfpg .and. &
+                        zi(adcaii+10*(jaux-1)+2) .eq. nbsp) then
                         nrimpr = jaux
                         goto 423
-                    endif
+                    end if
                 else
                     if (fpg_name(jaux) .eq. nomfpg) then
                         ! Les différents cas : PMF, Coques, Tuyaux, Grille
                         if (nbfib .ne. 0) then
                             ! Pour les PMF, on compare aussi les groupes de fibres
                             ima2 = zi(adcaii+10*(jaux-1)+5)
-                            call ircael(jcesd, jcesl, jcesv, jcesc, ima2,&
+                            call ircael(jcesd, jcesl, jcesv, jcesc, ima2, &
                                         nbqcou2, nbtcou2, nbsec2, nbfib2, nbgrf2, nugrf2)
-                            if ((nbfib2.eq.nbfib).and.(nbgrf2.eq.nbgrf)) then
+                            if ((nbfib2 .eq. nbfib) .and. (nbgrf2 .eq. nbgrf)) then
                                 grfidt = .true.
                                 do igrfi = 1, nbgrf2
-                                    if (nugrf2(igrfi).ne.nugrfi(igrfi)) grfidt = .false.
-                                enddo
+                                    if (nugrf2(igrfi) .ne. nugrfi(igrfi)) grfidt = .false.
+                                end do
                                 if (grfidt) then
                                     nrimpr = jaux
                                     goto 423
-                                endif
-                            endif
+                                end if
+                            end if
                         else
                             ! Coque ou grille
-                            okgrcq = (nbqcou.ge.1).and.(nbsp.ge.1)
+                            okgrcq = (nbqcou .ge. 1) .and. (nbsp .ge. 1)
                             ! tuyau
-                            oktuy  = (nbtcou.ge.1).and.(nbsec.ge.1)
+                            oktuy = (nbtcou .ge. 1) .and. (nbsec .ge. 1)
                             !
                             kaux = adcaii+10*(jaux-1)
-                            if (oktuy.and.(zi(kaux+3).eq.nbtcou).and. &
-                                          (zi(kaux+4).eq.nbsec)) then
+                            if (oktuy .and. (zi(kaux+3) .eq. nbtcou) .and. &
+                                (zi(kaux+4) .eq. nbsec)) then
                                 ! Tuyaux : même nb de couche et de secteur ==> même nbsp
                                 nrimpr = jaux
                                 goto 423
-                            else if (okgrcq.and.(zi(kaux+3).eq.nbqcou).and. &
-                                                (zi(kaux+2).eq.nbsp)  .and. &
-                                                (zi(kaux+1).eq.nbpg) ) then
+                            else if (okgrcq .and. (zi(kaux+3) .eq. nbqcou) .and. &
+                                     (zi(kaux+2) .eq. nbsp) .and. &
+                                     (zi(kaux+1) .eq. nbpg)) then
                                 ! Coques ou Grilles : même nb de couche, de sous-point, de pt gauss
                                 !   Coques  nbsp = 3*nbqcou
                                 !   Grilles nbqcou=nbsp=1
                                 nrimpr = jaux
                                 goto 423
-                            endif
-                        endif
-                    endif
-                endif
+                            end if
+                        end if
+                    end if
+                end if
             else
-                if (zi(adcaii+10*(jaux-1)).eq.nrefma .and. &
-                    zi(adcaii+10*(jaux-1)+2).eq.nbsp) then
+                if (zi(adcaii+10*(jaux-1)) .eq. nrefma .and. &
+                    zi(adcaii+10*(jaux-1)+2) .eq. nbsp) then
                     nrimpr = jaux
                     goto 423
-                endif
-            endif
-        enddo
+                end if
+            end if
+        end do
         !
         ! ON CREE UNE NOUVELLE IMPRESSION SI ON DEPASSE LA LONGUEUR RESERVEE, ON DOUBLE
         if (nbimpr .eq. nbimp0) then
             nbimp0 = 2*nbimp0
             call juveca(ncaimi, 10*nbimp0)
             call jeveuo(ncaimi, 'E', adcaii)
-        endif
+        end if
         !
-        nbimpr = nbimpr + 1
+        nbimpr = nbimpr+1
         jaux = adcaii+10*(nbimpr-1)
         ! CAIMPI(1,I) = TYPE D'EF / MAILLE ASTER (0, SI NOEUD)
         zi(jaux) = nrefma
@@ -361,39 +361,39 @@ character(len=16), intent(in) :: field_type
         zi(jaux+2) = nbsp
         ! CAIMPI(4,I) = NOMBRE DE COUCHES  : Tuyaux ou Coques-Grilles
         ! CAIMPI(5,I) = NOMBRE DE SECTEURS : Tuyaux
-        if ( elga_sp ) then
-            if ( imafib .eq. 0) then
+        if (elga_sp) then
+            if (imafib .eq. 0) then
                 ! Tuyaux
-                if ((nbsec.ge.1).and.(nbtcou.ge.1)) then
+                if ((nbsec .ge. 1) .and. (nbtcou .ge. 1)) then
                     zi(jaux+3) = nbtcou
                     zi(jaux+4) = nbsec
-                    if (nbsp .ne. (2*nbsec+1)* (2*nbtcou+1)) then
-                        call utmess('F', 'MED2_12', sk = field_type)
-                    endif
-                ! Coques
-                else if ((nbqcou.ge.1).and.(nbsp.eq.3*nbqcou)) then
+                    if (nbsp .ne. (2*nbsec+1)*(2*nbtcou+1)) then
+                        call utmess('F', 'MED2_12', sk=field_type)
+                    end if
+                    ! Coques
+                else if ((nbqcou .ge. 1) .and. (nbsp .eq. 3*nbqcou)) then
                     zi(jaux+3) = nbqcou
                     zi(jaux+4) = 0
-                ! Grilles
-                else if ((nbqcou.eq.1).and.(nbsp.eq.1)) then
+                    ! Grilles
+                else if ((nbqcou .eq. 1) .and. (nbsp .eq. 1)) then
                     zi(jaux+3) = nbqcou
                     zi(jaux+4) = 0
                 else
                     ! Ce n'est pas un élément à sous-point
                     zi(jaux+3) = 0
                     zi(jaux+4) = 0
-                endif
+                end if
             else
                 zi(jaux+3) = 0
                 zi(jaux+4) = 0
                 if (nbsp .ne. nbfib) then
-                    call utmess('F', 'MED2_12', sk = field_type)
-                endif
-            endif
+                    call utmess('F', 'MED2_12', sk=field_type)
+                end if
+            end if
         else
             zi(jaux+3) = 0
             zi(jaux+4) = 0
-        endif
+        end if
         ! CAIMPI(6,I) = NUMERO DE LA MAILLE 'EXEMPLE' POUR LES PMF
         zi(jaux+5) = imafib
         ! CAIMPI(7,I) = NOMBRE DE MAILLES A ECRIRE
@@ -405,7 +405,7 @@ character(len=16), intent(in) :: field_type
         !
         if (typech(1:4) .eq. 'ELGA') then
             fpg_name(nbimpr) = nomfpg
-        endif
+        end if
         nrimpr = nbimpr
         !
         ! MEMORISATION DE L'IMPRESSION DE LA MAILLE, CUMUL DU NOMBRE DE MAILLES POUR L'IMPRESSION
@@ -413,18 +413,18 @@ character(len=16), intent(in) :: field_type
         !
         nroimp(ima) = nrimpr
         jaux = adcaii+10*(nrimpr-1)+6
-        zi(jaux) = zi(jaux) + 1
-    enddo
+        zi(jaux) = zi(jaux)+1
+    end do
     !
     if (typech(1:4) .eq. 'ELGA') then
         AS_DEALLOCATE(vk16=fpg_name)
         call jedetr('&&IRCMPE.NOFPGMA')
-    endif
+    end if
     !
     ! Le but du bloc suivant est d'avoir les memes impressions a realiser
     ! sur tous les procs (quite à ce que certaines soient vides)
     ! Il faut donc communiquer pour savoir les impressions de chaque procs
-    if(lficUniq) then
+    if (lficUniq) then
         call asmpi_comm('GET', mpicou)
         nbimprt = nbimpr
         call asmpi_comm_vect('MPI_SUM', 'I', 1, 0, sci=nbimprt)
@@ -434,57 +434,57 @@ character(len=16), intent(in) :: field_type
         call asmpi_allgather_i(nbimprl, taille, zi(jnbimpr+1), taille, mpicou)
         do iaux = 2, nbproc+1
             zi(jnbimpr+iaux-1) = zi(jnbimpr+iaux-1)+zi(jnbimpr+iaux-2)
-        enddo
+        end do
         zi(jnbimpr) = 0
         call wkvect('&&IRCMPE.NBIMPR2', 'V V I', 10*nbimprt, jnbimpr2)
         do iaux = 1, nbimpr
             do jaux = 0, 9
                 zi(jnbimpr2+10*(zi(jnbimpr+rang)+iaux-1)+jaux) = zi(adcaii+10*(iaux-1)+jaux)
-            enddo
-        enddo
+            end do
+        end do
         call jedetr('&&IRCMPE.NBIMPR')
         call wkvect('&&IRCMPE.NBIMPR', 'V V I', nbimprt, jnbimpr)
         call wkvect('&&IRCMPE.NBIMPR3', 'V V I', 10*nbimprt, jnbimpr3)
         call asmpi_comm_vect('MPI_SUM', 'I', 10*nbimprt, 0, vi=zi(jnbimpr2))
         nbimprl(1) = 0
         do iaux = 1, nbimprt
-            if(zi(jnbimpr+iaux-1).eq.-1) cycle
+            if (zi(jnbimpr+iaux-1) .eq. -1) cycle
             nrefma = zi(jnbimpr2+10*(iaux-1))
             nbsp = zi(jnbimpr2+10*(iaux-1)+2)
             do jaux = iaux+1, nbimprt
-                if(nrefma.eq.zi(jnbimpr2+10*(jaux-1)) .and.&
-                   nbsp.eq.zi(jnbimpr2+10*(jaux-1)+2)) then
+                if (nrefma .eq. zi(jnbimpr2+10*(jaux-1)) .and. &
+                    nbsp .eq. zi(jnbimpr2+10*(jaux-1)+2)) then
                     zi(jnbimpr+jaux-1) = -1
                     cycle
-                endif
-            enddo
+                end if
+            end do
             do jaux = 0, 9
                 zi(jnbimpr3+10*nbimprl(1)+jaux) = zi(jnbimpr2+10*(iaux-1)+jaux)
-            enddo
+            end do
             zi(jnbimpr3+10*nbimprl(1)+6) = 0
             do jaux = 1, nbimpr
-                if(nrefma.eq.zi(adcaii+10*(jaux-1)) .and.&
-                   nbsp.eq.zi(adcaii+10*(jaux-1)+2)) then
+                if (nrefma .eq. zi(adcaii+10*(jaux-1)) .and. &
+                    nbsp .eq. zi(adcaii+10*(jaux-1)+2)) then
                     zi(jnbimpr3+10*nbimprl(1)+6) = zi(adcaii+10*(jaux-1)+6)
-                endif
-            enddo
+                end if
+            end do
             nbimprl(1) = nbimprl(1)+1
-        enddo
+        end do
         call jedetr(ncaimi)
         nbimpr = nbimprl(1)
         call wkvect(ncaimi, 'V V I', 10*nbimpr, adcaii)
         do iaux = 1, 10*nbimprl(1)
             zi(adcaii+iaux-1) = zi(jnbimpr3+iaux-1)
-        enddo
+        end do
         call jedetr('&&IRCMPE.NBIMPR')
         call jedetr('&&IRCMPE.NBIMPR2')
         call jedetr('&&IRCMPE.NBIMPR3')
     else
         nbimprt = nbimpr
-    endif
-    if ( nbimprt.eq.0 ) then
+    end if
+    if (nbimprt .eq. 0) then
         goto 999
-    endif
+    end if
     !
     ! CONVERSION DU PROFIL EN NUMEROTATION MED
     !   PROMED : ON STOCKE LES VALEURS DES NUMEROS DES MAILLES AU SENS MED PAR TYPE DE MAILLES.
@@ -495,17 +495,17 @@ character(len=16), intent(in) :: field_type
     !   PROREC : C'EST LA LISTE RECIPROQUE.
     !            POUR LA MAILLE NUMERO IAUX EN NUMEROTATION ASTER, ON A SA POSITION DANS LE
     !            TABLEAU DES VALEURS S'IL FAIT PARTIE DE LA LISTE SINON C'EST 0.
-    do i_fpg = 1 , nb_fpg
+    do i_fpg = 1, nb_fpg
         ima = profas(i_fpg)
         prorec(ima) = i_fpg
-    enddo
+    end do
     !
     ! ADRESSES DANS LE TABLEAU PROFAS
     !   ADRAUX(IAUX) = ADRESSE DE LA FIN DE LA ZONE DE L'IMPRESSION PRECEDENTE, IAUX-1
     adraux(1) = 0
-    do i_fpg = 2 , nbimpr
-        adraux(i_fpg) = adraux(i_fpg-1) + zi(adcaii+10*(i_fpg-2)+6)
-    enddo
+    do i_fpg = 2, nbimpr
+        adraux(i_fpg) = adraux(i_fpg-1)+zi(adcaii+10*(i_fpg-2)+6)
+    end do
     !
     ! DECOMPTE DU NOMBRE DE MAILLES PAR TYPE DE MAILLES ASTER
     !   NMATY0(IAUX) =  NUMERO MED DE LA MAILLE COURANTE, DANS LA CATEGORIE ASTER IAUX.
@@ -513,31 +513,31 @@ character(len=16), intent(in) :: field_type
     !                   POUR TOUTES LES MAILLES DU MAILLAGE
     !   ADRAUX(JAUX) =  ADRESSE DANS LES TABLEAUX PROMED ET PROFAS DE LA MAILLE COURANTE ASSOCIEE
     !                   A L'IMPRESSION NUMERO JAUX
-    do ima = 1 , nbvato
+    do ima = 1, nbvato
         typmas = typmai(ima)
-        nmaty0(typmas) = nmaty0(typmas) + 1
+        nmaty0(typmas) = nmaty0(typmas)+1
         if (prorec(ima) .ne. 0) then
             jaux = nroimp(ima)
-            adraux(jaux) = adraux(jaux) + 1
+            adraux(jaux) = adraux(jaux)+1
             promed(adraux(jaux)) = nmaty0(typmas)
             profas(adraux(jaux)) = ima
-        endif
-    enddo
+        end if
+    end do
     !
     ! MEMORISATION DANS LES CARACTERISTIQUES DE L'IMPRESSION
     !
     ! NOMBRE DE MAILLES DU MEME TYPE
-    do i_fpg = 1 , nbimpr
+    do i_fpg = 1, nbimpr
         jaux = adcaii+10*(i_fpg-1)
         typmas = zi(jaux+7)
         ! CAIMPI(10,I) = NOMBRE DE MAILLES IDENTIQUES
         zi(jaux+9) = nmaty0(typmas)
-    enddo
+    end do
     !
     !CARACTERISTIQUES CARACTERES
     i_fpg = 3*nbimpr
     call wkvect(ncaimk, 'V V K80', i_fpg, adcaik)
-    do i_fpg = 1 , nbimpr
+    do i_fpg = 1, nbimpr
         jaux = adcaik+2*(i_fpg-1)
         ! CAIMPK(1,I) = NOM DE LA LOCALISATION ASSOCIEE
         zk80(jaux) = ednoga
@@ -545,70 +545,70 @@ character(len=16), intent(in) :: field_type
         zk80(jaux+1) = ednopf
         ! CAIMPK(3,I) = NOM DE L'ELEMENT DE STRUCTURE
         zk80(jaux+2) = ednopf
-    enddo
+    end do
     !
     ! STOCKAGE DES EVENTUELS PROFILS DANS LE FICHIER MED
     kaux = 1
-    if(lficUniq) then
+    if (lficUniq) then
         call jeveuo(nosdfu//'.MATY', 'L', jnbma)
     else
         jnbma = 0
-    endif
+    end if
     !
-    do i_fpg = 1 , nbimpr
+    do i_fpg = 1, nbimpr
         jaux = adcaii+10*(i_fpg-1)
         ! SI LE NOMBRE DE MAILLES A ECRIRE EST >0
         if (zi(jaux+6) .gt. 0 .or. lficUniq) then
-            if(lficUniq) then
+            if (lficUniq) then
                 ityp = zi(jaux+7)
                 nbmal = zi(jnbma+3*(ityp-1)+1)
                 iaux = 0
-                if(nbmal .ne. zi(jaux+6)) iaux = 1
+                if (nbmal .ne. zi(jaux+6)) iaux = 1
                 call asmpi_comm_vect('MPI_MAX', 'I', 1, 0, sci=iaux)
                 lnbmal = .false.
-                if(iaux.eq.1) lnbmal = .true._1
+                if (iaux .eq. 1) lnbmal = .true._1
             else
                 lnbmal = (zi(jaux+6) .ne. zi(jaux+9))
                 ityp = 0
-            endif
+            end if
             ! SI LE NOMBRE DE MAILLES A ECRIRE EST DIFFERENT
             ! DU NOMBRE TOTAL DE MAILLES DE MEME TYPE:
             if (lnbmal) then
                 call ircmpf(nofimd, zi(jaux+6), promed(kaux), noprof, nosdfu, 1, ityp)
                 ! CAIMPK(2,I) = NOM DU PROFIL AU SENS MED
                 zk80(adcaik+3*(i_fpg-1)+1) = noprof
-            endif
+            end if
             ! KAUX := POINTEUR PERMETTANT DE SE PLACER DANS PROMED POUR LA PROCHAINE IMPRESSION
-            kaux = kaux + zi(jaux+6)
-        endif
-    enddo
+            kaux = kaux+zi(jaux+6)
+        end if
+    end do
     !
     if (niv .ge. 2) then
         if (typech(1:4) .eq. 'ELGA') then
-            write (ifm,801)
+            write (ifm, 801)
         else
-            write (ifm,804)
-        endif
-        do i_fpg = 1 , nbimpr
+            write (ifm, 804)
+        end if
+        do i_fpg = 1, nbimpr
             jaux = adcaii+10*(i_fpg-1)
             if (zi(jaux+6) .gt. 0) then
                 write (ifm, 802) nomtyp(zi(jaux+7)), zi(jaux+6), zi(jaux+1), zi(jaux+2)
-            endif
-        enddo
-        write (ifm,803)
-        write (ifm,805) 'FIN DE IRCMPE'
+            end if
+        end do
+        write (ifm, 803)
+        write (ifm, 805) 'FIN DE IRCMPE'
         call cpu_time(end_time)
-        write(ifm,*) "=========== EN ", end_time - start_time, "sec"
-    endif
-801 format(4x,65('*'),/,4x,'*  TYPE DE *',22x,'NOMBRE DE',21x,'*',&
-     &/,4x,'*  MAILLE  *  VALEURS   * POINT(S) DE GAUSS *',&
-     &     '   SOUS_POINT(S)   *',/,4x,65('*'))
-802 format(4x,'* ',a8,' *',i11,' *',i15,'    *',i15,'    *')
-803 format(4x,65('*'))
-804 format(4x,65('*'),/,4x,'*  TYPE DE *',22x,'NOMBRE DE',21x,'*',&
-     &/,4x,'*  MAILLE  *  VALEURS   *      POINTS       *',&
-     &     '   SOUS_POINT(S)   *',/,4x,65('*'))
-805 format(/,4x,10('='),a,10('='),/)
+        write (ifm, *) "=========== EN ", end_time-start_time, "sec"
+    end if
+801 format(4x, 65('*'), /, 4x, '*  TYPE DE *', 22x, 'NOMBRE DE', 21x, '*',&
+     &/, 4x, '*  MAILLE  *  VALEURS   * POINT(S) DE GAUSS *',&
+     &     '   SOUS_POINT(S)   *', /, 4x, 65('*'))
+802 format(4x, '* ', a8, ' *', i11, ' *', i15, '    *', i15, '    *')
+803 format(4x, 65('*'))
+804 format(4x, 65('*'), /, 4x, '*  TYPE DE *', 22x, 'NOMBRE DE', 21x, '*',&
+     &/, 4x, '*  MAILLE  *  VALEURS   *      POINTS       *',&
+     &     '   SOUS_POINT(S)   *', /, 4x, 65('*'))
+805 format(/, 4x, 10('='), a, 10('='),/)
 !
 999 continue
 !

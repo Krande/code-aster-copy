@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 subroutine apcond(newgeo, node_nume, node_coor)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/jeveuo.h"
 !
@@ -47,8 +47,8 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     call jeveuo(newgeo(1:19)//'.VALE', 'L', vr=v_newgeo_vale)
-    node_coor(1) = v_newgeo_vale(3*(node_nume -1)+1)
-    node_coor(2) = v_newgeo_vale(3*(node_nume -1)+2)
-    node_coor(3) = v_newgeo_vale(3*(node_nume -1)+3)
+    node_coor(1) = v_newgeo_vale(3*(node_nume-1)+1)
+    node_coor(2) = v_newgeo_vale(3*(node_nume-1)+2)
+    node_coor(3) = v_newgeo_vale(3*(node_nume-1)+3)
 !
 end subroutine

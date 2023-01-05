@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,13 +18,13 @@
 !
 subroutine dpao2d(repere, irep, matr_tran)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/assert.h"
 !
-real(kind=8), intent(in) :: repere(7)
-integer, intent(out) :: irep
-real(kind=8), intent(out) :: matr_tran(4, 4)
+    real(kind=8), intent(in) :: repere(7)
+    integer, intent(out) :: irep
+    real(kind=8), intent(out) :: matr_tran(4, 4)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -66,26 +66,26 @@ real(kind=8), intent(out) :: matr_tran(4, 4)
         sina = sin(angl)
         irep = 1
 !
-        matr_tran(1,1) = cosa*cosa
-        matr_tran(2,1) = sina*sina
-        matr_tran(3,1) = zero
-        matr_tran(4,1) =-deux*cosa*sina
+        matr_tran(1, 1) = cosa*cosa
+        matr_tran(2, 1) = sina*sina
+        matr_tran(3, 1) = zero
+        matr_tran(4, 1) = -deux*cosa*sina
 !
-        matr_tran(1,2) = sina*sina
-        matr_tran(2,2) = cosa*cosa
-        matr_tran(3,2) = zero
-        matr_tran(4,2) = deux*sina*cosa
+        matr_tran(1, 2) = sina*sina
+        matr_tran(2, 2) = cosa*cosa
+        matr_tran(3, 2) = zero
+        matr_tran(4, 2) = deux*sina*cosa
 !
-        matr_tran(1,3) = zero
-        matr_tran(2,3) = zero
-        matr_tran(3,3) = un
-        matr_tran(4,3) = zero
+        matr_tran(1, 3) = zero
+        matr_tran(2, 3) = zero
+        matr_tran(3, 3) = un
+        matr_tran(4, 3) = zero
 !
-        matr_tran(1,4) = sina*cosa
-        matr_tran(2,4) =-sina*cosa
-        matr_tran(3,4) = zero
-        matr_tran(4,4) = cosa*cosa - sina*sina
+        matr_tran(1, 4) = sina*cosa
+        matr_tran(2, 4) = -sina*cosa
+        matr_tran(3, 4) = zero
+        matr_tran(4, 4) = cosa*cosa-sina*sina
 !
-    endif
+    end if
 !
 end subroutine

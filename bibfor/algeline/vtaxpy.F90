@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -42,17 +42,17 @@ subroutine vtaxpy(alpha, chamna, chamnb)
     character(len=24) :: kval1, kval2, chamn1, chamn2
 !
     call jemarq()
-    chamn1=chamna
-    chamn2=chamnb
+    chamn1 = chamna
+    chamn2 = chamnb
 !
-    kval1=chamn1(1:19)//'.VALE'
-    kval2=chamn2(1:19)//'.VALE'
+    kval1 = chamn1(1:19)//'.VALE'
+    kval2 = chamn2(1:19)//'.VALE'
     call jeveuo(kval1, 'L', ival1)
     call jeveuo(kval2, 'E', ival2)
     call jelira(kval1, 'LONMAX', neq1)
     call jelira(kval2, 'LONMAX', neq2)
-    ASSERT(neq1.eq.neq2)
-    call daxpy(neq2, alpha, zr(ival1), 1, zr(ival2),&
+    ASSERT(neq1 .eq. neq2)
+    call daxpy(neq2, alpha, zr(ival1), 1, zr(ival2), &
                1)
 !
 !

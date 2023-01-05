@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,16 +16,16 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine lc7047(BEHinteg,&
-                  fami, kpg, ksp, ndim, imate,&
-                  instam, instap, epsm,&
-                  deps, vim, option,&
-                  sigp, vip, typmod,&
+subroutine lc7047(BEHinteg, &
+                  fami, kpg, ksp, ndim, imate, &
+                  instam, instap, epsm, &
+                  deps, vim, option, &
+                  sigp, vip, typmod, &
                   dsidep, codret)
 !
-use Behaviour_type
+    use Behaviour_type
 !
-implicit none
+    implicit none
 !
 #include "asterfort/lcejdm.h"
 !
@@ -56,9 +56,9 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     codret = 0
-    call lcejdm(BEHinteg,&
-                fami, kpg, ksp, ndim, imate,&
-                option, epsm, deps, sigp,&
-                dsidep, vim, vip, typmod,&
+    call lcejdm(BEHinteg, &
+                fami, kpg, ksp, ndim, imate, &
+                option, epsm, deps, sigp, &
+                dsidep, vim, vip, typmod, &
                 instam, instap)
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine tensk2(icabl, nbno, s, alpha, f0,&
-                  delta, ea, frco, frli, sa,&
+subroutine tensk2(icabl, nbno, s, alpha, f0, &
+                  delta, ea, frco, frli, sa, &
                   f)
     implicit none
 !  DESCRIPTION : CALCUL DE LA TENSION LE LONG D'UN CABLE EN PRENANT EN
@@ -103,13 +103,13 @@ subroutine tensk2(icabl, nbno, s, alpha, f0,&
     long = s(nbno)
     absc2(1) = 0.0d0
     do ino = 2, nbno
-        absc2(ino) = long - s(nbno-ino+1)
+        absc2(ino) = long-s(nbno-ino+1)
     end do
 !
     alphal = alpha(nbno)
     alpha2(1) = 0.0d0
     do ino = 2, nbno
-        alpha2(ino) = alphal - alpha(nbno-ino+1)
+        alpha2(ino) = alphal-alpha(nbno-ino+1)
     end do
 !
 !%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -119,20 +119,20 @@ subroutine tensk2(icabl, nbno, s, alpha, f0,&
 ! 3.1 TENSION APPLIQUEE AU PREMIER ANCRAGE ACTIF
 ! ---
     do ino = 1, nbno
-        f1(ino) = f0 * dble(exp(-frco*alpha(ino)-frli*s(ino)))
+        f1(ino) = f0*dble(exp(-frco*alpha(ino)-frli*s(ino)))
     end do
 !
 ! 3.2 TENSION APPLIQUEE AU SECOND ANCRAGE ACTIF
 ! ---
     do ino = 1, nbno
-        f2(ino) = f0 * dble ( exp ( -frco*alpha2(ino) -frli*absc2(ino) ))
+        f2(ino) = f0*dble(exp(-frco*alpha2(ino)-frli*absc2(ino)))
     end do
 !
 ! 3.3 VALEUR MAXIMALE INDUITE PAR LES TENSIONS APPLIQUEES AUX DEUX
 ! --- ANCRAGES ACTIFS APRES PRISE EN COMPTE DES PERTES PAR FROTTEMENT
 !
     do ino = 1, nbno
-        fmax(ino) = dble(max(f1(ino),f2(1+nbno-ino)))
+        fmax(ino) = dble(max(f1(ino), f2(1+nbno-ino)))
     end do
 !
 !%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -141,14 +141,14 @@ subroutine tensk2(icabl, nbno, s, alpha, f0,&
 !
 ! 4.1 TENSION APPLIQUEE AU PREMIER ANCRAGE ACTIF
 ! ---
-    call ancrca(icabl, nbno, s, alpha, f0,&
-                delta, ea, frco, frli, sa,&
+    call ancrca(icabl, nbno, s, alpha, f0, &
+                delta, ea, frco, frli, sa, &
                 d1, f1)
 !
 ! 4.2 TENSION APPLIQUEE AU SECOND ANCRAGE ACTIF
 ! ---
-    call ancrca(icabl, nbno, absc2, alpha2, f0,&
-                delta, ea, frco, frli, sa,&
+    call ancrca(icabl, nbno, absc2, alpha2, f0, &
+                delta, ea, frco, frli, sa, &
                 d2, f2)
 !
 ! 4.3 VALEUR FINALE INDUITE PAR LES TENSIONS APPLIQUEES AUX DEUX
@@ -157,13 +157,13 @@ subroutine tensk2(icabl, nbno, s, alpha, f0,&
 !
     if (d1+d2 .lt. long) then
         do ino = 1, nbno
-            f(ino) = dble ( max ( f1(ino) , f2(1+nbno-ino) ) )
+            f(ino) = dble(max(f1(ino), f2(1+nbno-ino)))
         end do
     else
         do ino = 1, nbno
-            f(ino) = dble ( min ( f1(ino) , f2(1+nbno-ino) ) )
+            f(ino) = dble(min(f1(ino), f2(1+nbno-ino)))
         end do
-    endif
+    end if
 !
 ! 4.4 CORRECTION SI RECOUVREMENT DES LONGUEURS D'APPLICATION DES PERTES
 ! --- DE TENSION PAR RECUL DES DEUX ANCRAGES
@@ -171,15 +171,15 @@ subroutine tensk2(icabl, nbno, s, alpha, f0,&
     if (d1+d2 .gt. long) then
         wcr = 0.0d0
         do ino = 1, nbno-1
-            wcr = wcr + (&
-                  ( fmax(ino) - f(ino) ) + ( fmax(ino+1) - f(ino+1) ) ) * ( s(ino+1) - s(ino )&
-                  ) / 2.0d0
+            wcr = wcr+( &
+                  (fmax(ino)-f(ino))+(fmax(ino+1)-f(ino+1)))*(s(ino+1)-s(ino) &
+                                                              )/2.0d0
         end do
-        df = ( ea * sa * 2.0d0 * delta - wcr ) / long
+        df = (ea*sa*2.0d0*delta-wcr)/long
         do ino = 1, nbno
-            f(ino) = f(ino) - df
+            f(ino) = f(ino)-df
         end do
-    endif
+    end if
 !
 ! --- MENAGE
     AS_DEALLOCATE(vr=absc2)

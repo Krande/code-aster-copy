@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine as_mfdfin(fid, cha, ma, n, cunit,&
+subroutine as_mfdfin(fid, cha, ma, n, cunit, &
                      cname, cret)
 ! person_in_charge: nicolas.sellenet at edf.fr
 !
@@ -47,15 +47,15 @@ subroutine as_mfdfin(fid, cha, ma, n, cunit,&
     ! On verifie que le champ existe bien avant d'appeler mfdfin
     ! pour eviter les "Erreur à l'ouverture du groupe" dans MED
     call mfioex(fidm, class4, cha, oexist4, cret4)
-    if (oexist4.eq.1) then
-        call mfdfin(fidm, cha, ma, lmesh4, typen4,&
+    if (oexist4 .eq. 1) then
+        call mfdfin(fidm, cha, ma, lmesh4, typen4, &
                     cunit, cname, dtunit, n4, cret4)
         n = n4
         cret = cret4
     else
         n = 0
         cret = -1
-    endif
+    end if
 
 #else
     aster_int :: lmesh, typen
@@ -65,13 +65,13 @@ subroutine as_mfdfin(fid, cha, ma, n, cunit,&
     ! On verifie que le champ existe bien avant d'appeler mfdfin
     ! pour eviter les "Erreur à l'ouverture du groupe" dans MED
     call mfioex(fid, class, cha, oexist, cret)
-    if (oexist.eq.1) then
-        call mfdfin(fid, cha, ma, lmesh, typen,&
+    if (oexist .eq. 1) then
+        call mfdfin(fid, cha, ma, lmesh, typen, &
                     cunit, cname, dtunit, n, cret)
     else
         n = 0
         cret = -1
-    endif
+    end if
 #endif
 !
 #endif

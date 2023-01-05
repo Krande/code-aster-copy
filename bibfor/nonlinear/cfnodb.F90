@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -73,9 +73,9 @@ subroutine cfnodb(sdcont)
 ! --- INITIALISATIONS
 !
     defico = sdcont(1:8)//'.CONTACT'
-    nzoco = cfdisi(defico,'NZOCO' )
-    nnoco = cfdisi(defico,'NNOCO' )
-    iform = cfdisi(defico,'FORMULATION')
+    nzoco = cfdisi(defico, 'NZOCO')
+    nnoco = cfdisi(defico, 'NNOCO')
+    iform = cfdisi(defico, 'FORMULATION')
 !
 ! --- OBJETS TEMPORAIRES
 !
@@ -94,7 +94,7 @@ subroutine cfnodb(sdcont)
         call jeveuo(sansno, 'L', jsans)
         psans = defico(1:16)//'.PSSNOCO'
         call jeveuo(psans, 'L', jpsans)
-    endif
+    end if
 !
 ! ----------------------------------------------------------------------
 !
@@ -102,97 +102,97 @@ subroutine cfnodb(sdcont)
 !
     if (iform .ne. 5) then
         do izone = 1, nzoco
-            nbnoe = mminfi(defico,'NBNOE' ,izone )
-            nbnom = mminfi(defico,'NBNOM' ,izone )
-            jdecne = mminfi(defico,'JDECNE',izone )
-            jdecnm = mminfi(defico,'JDECNM',izone )
-            lcalc = mminfl(defico,'CALCUL',izone )
-            if (.not.lcalc) then
+            nbnoe = mminfi(defico, 'NBNOE', izone)
+            nbnom = mminfi(defico, 'NBNOM', izone)
+            jdecne = mminfi(defico, 'JDECNE', izone)
+            jdecnm = mminfi(defico, 'JDECNM', izone)
+            lcalc = mminfl(defico, 'CALCUL', izone)
+            if (.not. lcalc) then
                 goto 100
-            endif
-            call utlisi('INTER', zi(jnoco+jdecne), nbnoe, zi(jnoco+jdecnm), nbnom,&
+            end if
+            call utlisi('INTER', zi(jnoco+jdecne), nbnoe, zi(jnoco+jdecnm), nbnom, &
                         zi(jnodbl), nnoco, ndoubl)
             if (ndoubl .ne. 0) then
                 if (ndoubl .gt. 0) then
 ! --------- LES NOEUDS COMMUNS SONT-ILS EXCLUS PAR SANS_NOEUD ?
-                    nsans = zi(jpsans+izone) - zi(jpsans+izone-1)
+                    nsans = zi(jpsans+izone)-zi(jpsans+izone-1)
                     jdecs = zi(jpsans+izone-1)
-                    call utlisi('DIFFE', zi(jnodbl), ndoubl, zi(jsans+ jdecs), nsans,&
+                    call utlisi('DIFFE', zi(jnodbl), ndoubl, zi(jsans+jdecs), nsans, &
                                 ibid, 1, nvdbl)
 ! --------- NON !
                     if (nvdbl .ne. 0) then
                         vali(1) = izone
                         vali(2) = abs(nvdbl)
                         call utmess('F', 'CONTACT2_13', ni=2, vali=vali)
-                    endif
+                    end if
                 else
                     ASSERT(.false.)
-                endif
-            endif
+                end if
+            end if
 100         continue
         end do
-    endif
+    end if
 !
 ! ----------------------------------------------------------------------
 !
 ! --- SECOND CAS : NOEUDS COMMUNS A DEUX SURFACES ESCLAVES
 !
     do izonea = 1, nzoco
-        lcalc = mminfl(defico,'CALCUL',izonea)
-        if (.not.lcalc) then
+        lcalc = mminfl(defico, 'CALCUL', izonea)
+        if (.not. lcalc) then
             goto 200
-        endif
+        end if
         do izoneb = izonea+1, nzoco
-            lcalc = mminfl(defico,'CALCUL',izoneb)
-            if (.not.lcalc) then
+            lcalc = mminfl(defico, 'CALCUL', izoneb)
+            if (.not. lcalc) then
                 goto 201
-            endif
-            nbnoea = mminfi(defico,'NBNOE' ,izonea)
-            nbnoeb = mminfi(defico,'NBNOE' ,izoneb)
-            jdecea = mminfi(defico,'JDECNE',izonea)
-            jdeceb = mminfi(defico,'JDECNE',izoneb)
-            call utlisi('INTER', zi(jnoco+jdecea), nbnoea, zi(jnoco+ jdeceb), nbnoeb,&
+            end if
+            nbnoea = mminfi(defico, 'NBNOE', izonea)
+            nbnoeb = mminfi(defico, 'NBNOE', izoneb)
+            jdecea = mminfi(defico, 'JDECNE', izonea)
+            jdeceb = mminfi(defico, 'JDECNE', izoneb)
+            call utlisi('INTER', zi(jnoco+jdecea), nbnoea, zi(jnoco+jdeceb), nbnoeb, &
                         zi(jnodbl), nnoco, ndoubl)
             if (ndoubl .ne. 0) then
                 if (ndoubl .gt. 0) then
                     if (iform .eq. 1) then
 ! ------------- LES NOEUDS COMMUNS SONT-ILS EXCLUS PAR LA ZONE A ?
-                        nsansa = zi(jpsans+izonea) - zi(jpsans+izonea- 1)
+                        nsansa = zi(jpsans+izonea)-zi(jpsans+izonea-1)
                         jdecsa = zi(jpsans+izonea-1)
-                        call utlisi('DIFFE', zi(jnodbl), ndoubl, zi(jsans+jdecsa), nsansa,&
+                        call utlisi('DIFFE', zi(jnodbl), ndoubl, zi(jsans+jdecsa), nsansa, &
                                     zi(jnodb2), nnoco, nvdba)
                         if (nvdba .ne. 0) then
                             if (nvdba .gt. 0) then
 ! ----------------- LES NOEUDS RESTANTS SONT-ILS EXCLUS PAR LA ZONE B ?
-                                nsansb = zi(jpsans+izoneb) - zi( jpsans+izoneb-1)
+                                nsansb = zi(jpsans+izoneb)-zi(jpsans+izoneb-1)
                                 jdecsb = zi(jpsans+izoneb-1)
-                                call utlisi('DIFFE', zi(jnodb2), nvdba, zi(jsans+jdecsb), nsansb,&
+                                call utlisi('DIFFE', zi(jnodb2), nvdba, zi(jsans+jdecsb), nsansb, &
                                             ibid, 1, nvdbb)
                                 if (nvdbb .ne. 0) then
                                     vali(1) = izonea
                                     vali(2) = izoneb
                                     vali(3) = abs(nvdbb)
                                     call utmess('A', 'CONTACT2_15', ni=3, vali=vali)
-                                endif
+                                end if
                             else
                                 ASSERT(.false.)
-                            endif
-                        endif
-                    else if (iform.eq.2 .or. iform .eq. 5) then
-                        lliss = cfdisl(defico,'LISSAGE')
+                            end if
+                        end if
+                    else if (iform .eq. 2 .or. iform .eq. 5) then
+                        lliss = cfdisl(defico, 'LISSAGE')
                         vali(1) = izonea
                         vali(2) = izoneb
                         vali(3) = abs(ndoubl)
                         if ((iform .eq. 5 .and. lliss) .or. (iform .eq. 2)) then
                             call utmess('F', 'CONTACT2_16', ni=3, vali=vali)
-                        endif
+                        end if
                     else
                         ASSERT(.false.)
-                    endif
+                    end if
                 else
                     ASSERT(.false.)
-                endif
-            endif
+                end if
+            end if
 201         continue
         end do
 200     continue

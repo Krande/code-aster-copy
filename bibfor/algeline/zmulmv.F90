@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine zmulmv(trans, m, n, alpha, a,&
-                  lda, x, incx, beta, y,&
+subroutine zmulmv(trans, m, n, alpha, a, &
+                  lda, x, incx, beta, y, &
                   incy)
     implicit none
 #include "asterfort/vecinc.h"
@@ -54,8 +54,8 @@ subroutine zmulmv(trans, m, n, alpha, a,&
     complex(kind=8) :: a(*)
     integer :: kx
 !
-    if (m .eq. 0 .or. n .eq. 0 .or. alpha .eq. (0.0d0,0.0d0) .and. beta .eq. (1.0d0,0.0d0)) &
-    goto 999
+    if (m .eq. 0 .or. n .eq. 0 .or. alpha .eq. (0.0d0, 0.0d0) .and. beta .eq. (1.0d0, 0.0d0)) &
+        goto 999
 !
     if (trans(1:1) .eq. 'N' .or. trans(1:1) .eq. 'n') then
         lenx = n
@@ -63,50 +63,50 @@ subroutine zmulmv(trans, m, n, alpha, a,&
     else
         lenx = m
         leny = n
-    endif
+    end if
 !
     ix = 1
     iy = 1
-    if (incx .lt. 0) ix = (-lenx+1)*incx + 1
-    if (incy .lt. 0) iy = (-leny+1)*incy + 1
+    if (incx .lt. 0) ix = (-lenx+1)*incx+1
+    if (incy .lt. 0) iy = (-leny+1)*incy+1
 !
-    if (beta .eq. (1.0d0,0.0d0)) then
+    if (beta .eq. (1.0d0, 0.0d0)) then
     else if (incy .eq. 0) then
-        if (beta .eq. (0.0d0,0.0d0)) then
-            y(1) = (0.0d0,0.0d0)
+        if (beta .eq. (0.0d0, 0.0d0)) then
+            y(1) = (0.0d0, 0.0d0)
         else
             y(1) = beta**leny*y(1)
-        endif
-    else if (beta .eq. (0.0d0,0.0d0)) then
+        end if
+    else if (beta .eq. (0.0d0, 0.0d0)) then
         call vecinc(leny, (0.0d0, 0.0d0), y, inc=abs(incy))
     else
         call zmult(leny, beta, y, abs(incy))
-    endif
+    end if
 !
-    if (alpha .eq. (0.0d0,0.0d0)) goto 999
+    if (alpha .eq. (0.0d0, 0.0d0)) goto 999
 !
     if (trans(1:1) .eq. 'N' .or. trans(1:1) .eq. 'n') then
         kx = ix
         do i = 1, n
-            call zaxpy(m, alpha*x(kx), a(lda*(i-1)+1), 1, y,&
+            call zaxpy(m, alpha*x(kx), a(lda*(i-1)+1), 1, y, &
                        incy)
-            kx = kx + incx
+            kx = kx+incx
         end do
-    else if (trans(1:1).eq.'T' .or. trans(1:1).eq.'t') then
+    else if (trans(1:1) .eq. 'T' .or. trans(1:1) .eq. 't') then
 !
         ky = iy
         do i = 1, n
-            y(ky) = y(ky) + alpha*zdotu(m,a(lda*(i-1)+1),1,x,incx)
-            ky = ky + incy
+            y(ky) = y(ky)+alpha*zdotu(m, a(lda*(i-1)+1), 1, x, incx)
+            ky = ky+incy
         end do
 !
     else
         ky = iy
         do i = 1, n
-            y(ky) = y(ky) + alpha*zdotc(m,a(lda*(i-1)+1),1,x,incx)
-            ky = ky + incy
+            y(ky) = y(ky)+alpha*zdotc(m, a(lda*(i-1)+1), 1, x, incx)
+            ky = ky+incy
         end do
-    endif
+    end if
 !
 999 continue
 end subroutine

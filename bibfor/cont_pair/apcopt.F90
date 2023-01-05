@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 subroutine apcopt(sdappa, i_poin, poin_coor)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/jeveuo.h"
 !
@@ -48,7 +48,7 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     sdappa_poin = sdappa(1:19)//'.POIN'
-    call jeveuo(sdappa_poin, 'L', vr = v_sdappa_poin)
+    call jeveuo(sdappa_poin, 'L', vr=v_sdappa_poin)
 !
     poin_coor(1) = v_sdappa_poin(3*(i_poin-1)+1)
     poin_coor(2) = v_sdappa_poin(3*(i_poin-1)+2)

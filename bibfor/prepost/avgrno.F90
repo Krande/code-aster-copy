@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine avgrno(vwork, tdisp, lisnoe, nbnot, nbordr,&
-                  nnoini, nbnop, tspaq, nomcri, nomfor,&
-                  grdvie, forvie, fordef, nommai, proaxe,&
+subroutine avgrno(vwork, tdisp, lisnoe, nbnot, nbordr, &
+                  nnoini, nbnop, tspaq, nomcri, nomfor, &
+                  grdvie, forvie, fordef, nommai, proaxe, &
                   nommap, cnsr, post, resu)
 ! person_in_charge: van-xuan.tran at edf.fr
 !
@@ -114,12 +114,12 @@ subroutine avgrno(vwork, tdisp, lisnoe, nbnot, nbordr,&
 !-----------------------------------------------------------------------
 !234567                                                              012
 !-----------------------------------------------------------------------
-    data  tab1/ 180.0d0, 60.0d0, 30.0d0, 20.0d0, 15.0d0, 12.857d0,&
+    data tab1/180.0d0, 60.0d0, 30.0d0, 20.0d0, 15.0d0, 12.857d0,&
      &             11.25d0, 10.588d0, 10.0d0, 10.0d0, 10.0d0, 10.588d0,&
-     &             11.25d0, 12.857d0, 15.0d0, 20.0d0, 30.0d0, 60.0d0 /
+     &             11.25d0, 12.857d0, 15.0d0, 20.0d0, 30.0d0, 60.0d0/
 !
-    data  tab2/ 1, 3, 6, 9, 12, 14, 16, 17, 18, 18, 18, 17, 16, 14,&
-     &           12, 9, 6, 3 /
+    data tab2/1, 3, 6, 9, 12, 14, 16, 17, 18, 18, 18, 17, 16, 14,&
+     &           12, 9, 6, 3/
 !
     pi = r8pi()
 !-----------------------------------------------------------------------
@@ -149,40 +149,40 @@ subroutine avgrno(vwork, tdisp, lisnoe, nbnot, nbordr,&
         call getvid(' ', 'CHAM_MATER', scal=chmat1, nbret=iret)
         chmat = chmat1//'.CHAMP_MAT'
         cesmat = '&&AVGRNO.CESMAT'
-        call carces(chmat, 'ELEM', ' ', 'V', cesmat,&
+        call carces(chmat, 'ELEM', ' ', 'V', cesmat, &
                     'A', iret)
         call jeveuo(cesmat//'.CESD', 'L', icesd)
         call jeveuo(cesmat//'.CESL', 'L', icesl)
         call jeveuo(cesmat//'.CESV', 'L', icesv)
 !
-    endif
+    end if
 !
 ! DEFINITION DU VECTEUR CONTENANT LES VALEURS DU CISAILLEMENT POUR TOUS
 ! LES INSTANTS ET TOUS LES PLANS
 !
     tneces = 209*nbordr*2
     call jedisp(1, tdisp2)
-    tdisp2(1) = (tdisp2(1) * loisem()) / lor8em()
+    tdisp2(1) = (tdisp2(1)*loisem())/lor8em()
     if (tdisp2(1) .lt. tneces) then
-        vali (1) = tdisp2(1)
-        vali (2) = tneces
+        vali(1) = tdisp2(1)
+        vali(2) = tneces
         call utmess('F', 'PREPOST5_8', ni=2, vali=vali)
-    endif
+    end if
 !
     typcha = 'NON_PERIODIQUE'
 !
 !    DECPRO POUR IDENTIFIER L'AXE A PRPJECTER
 !---    ANALYSER LE CRITERE
     crsigm = .false.
-    call anacri(nomcri, nomfor, typcha, 'NON', paract,&
+    call anacri(nomcri, nomfor, typcha, 'NON', paract, &
                 lbid, crsigm, lbid, lbid, lbid)
     fatsoc = 1.0d0
 !
-    if (( nomcri(1:16) .eq. 'FATESOCI_MODI_AV' ) .or. fordef .or. (.not. (crsigm))) then
+    if ((nomcri(1:16) .eq. 'FATESOCI_MODI_AV') .or. fordef .or. (.not. (crsigm))) then
         fatsoc = 1.0d4
     else
         fatsoc = 1.0d0
-    endif
+    end if
 !
 ! CONSTRUCTION DES VECTEURS N, U ET V
 !
@@ -193,14 +193,14 @@ subroutine avgrno(vwork, tdisp, lisnoe, nbnot, nbordr,&
     ideb = 1
     dim = 627
     do j = 1, 18
-        gamma=(j-1)*dgam*(pi/180.0d0)
-        dphi=tab1(j)*(pi/180.0d0)
-        ngam=tab2(j)
+        gamma = (j-1)*dgam*(pi/180.0d0)
+        dphi = tab1(j)*(pi/180.0d0)
+        ngam = tab2(j)
         ifin = ngam
         phi0 = dphi/2.0d0
 !
-        call vecnuv(ideb, ifin, gamma, phi0, dphi,&
-                    n, k, dim, vect_norma, vect_tangu,&
+        call vecnuv(ideb, ifin, gamma, phi0, dphi, &
+                    n, k, dim, vect_norma, vect_tangu, &
                     vect_tangv)
 !
     end do
@@ -220,19 +220,19 @@ subroutine avgrno(vwork, tdisp, lisnoe, nbnot, nbordr,&
         call cncinv(nommai, [0], 0, 'V', ncncin)
         typma = nommai//'.TYPMAIL'
         call jeveuo(typma, 'L', jtypma)
-    endif
+    end if
 !
     do inop = nnoini, nnoini+(nbnop-1)
 !
         if (inop .gt. nnoini) then
             kwork = 1
-            somnow = somnow + 1
-        endif
+            somnow = somnow+1
+        end if
 !
-        cnbno = cnbno + 1
+        cnbno = cnbno+1
         if ((l*int(nbnot/10.0d0)) .lt. cnbno) then
-            l = l + 1
-        endif
+            l = l+1
+        end if
 !
 ! RECUPERATION DU NOM DU MATERIAU AFFECTE A LA MAILLE OU AUX MAILLES
 ! QUI PORTENT LE NOEUD COURANT.
@@ -247,20 +247,20 @@ subroutine avgrno(vwork, tdisp, lisnoe, nbnot, nbordr,&
 !
 !
             do i = 1, nbma
-                call rnomat(icesd, icesl, icesv, i, nomcri,&
-                            adrma, jtypma, k, optio, vala,&
+                call rnomat(icesd, icesl, icesv, i, nomcri, &
+                            adrma, jtypma, k, optio, vala, &
                             valb, coefpa, nommat)
             end do
 !
 !
 !
             if (k .eq. 0) then
-                vali (1) = nunoe
-                vali (2) = nbma
+                vali(1) = nunoe
+                vali(2) = nbma
                 call utmess('A', 'PREPOST5_10', ni=2, vali=vali)
-            endif
+            end if
 !
-        endif
+        end if
 !
 !
         if (post) then
@@ -270,16 +270,16 @@ subroutine avgrno(vwork, tdisp, lisnoe, nbnot, nbordr,&
 !
             call recofa(nomcri, nommat, vala, valb, coefpa)
 !
-        endif
+        end if
 !
         nbvecm = 209
 !
 ! REMPLACER PAR AVPLCR
-        call avplcr(nbvecm, vect_norma, vect_tangu, vect_tangv, nbordr,&
-                    kwork, somnow, vwork, tdisp, tspaq,&
-                    ibidno, nomcri, nomfor, grdvie, forvie,&
-                    fordef, fatsoc, proaxe, nommat, vala,&
-                    coefpa, post, cudomx, nxm, nym,&
+        call avplcr(nbvecm, vect_norma, vect_tangu, vect_tangv, nbordr, &
+                    kwork, somnow, vwork, tdisp, tspaq, &
+                    ibidno, nomcri, nomfor, grdvie, forvie, &
+                    fordef, fatsoc, proaxe, nommat, vala, &
+                    coefpa, post, cudomx, nxm, nym, &
                     nzm)
 !
 ! 11. CONSTRUCTION D'UN CHAM_ELEM SIMPLE PUIS D'UN CHAM_ELEM CONTENANT
@@ -315,12 +315,12 @@ subroutine avgrno(vwork, tdisp, lisnoe, nbnot, nbordr,&
         else
 !
             do icmp = 1, 24
-                jad = 24*(nunoe-1) + icmp
-                zl(jcnrl - 1 + jad) = .true.
+                jad = 24*(nunoe-1)+icmp
+                zl(jcnrl-1+jad) = .true.
                 cnsv(jad) = vresu(icmp)
             end do
 !
-        endif
+        end if
 !
 400     continue
     end do
@@ -329,7 +329,7 @@ subroutine avgrno(vwork, tdisp, lisnoe, nbnot, nbordr,&
 !
     if (.not. post) then
         call detrsd('CHAM_ELEM_S', cesmat)
-    endif
+    end if
 !
     AS_DEALLOCATE(vr=vect_norma)
     AS_DEALLOCATE(vr=vect_tangu)

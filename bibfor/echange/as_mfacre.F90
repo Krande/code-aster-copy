@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine as_mfacre(fid, maa, fam, num, ngro,&
+subroutine as_mfacre(fid, maa, fam, num, ngro, &
                      gro, cret)
 ! person_in_charge: nicolas.sellenet at edf.fr
 !
@@ -40,11 +40,11 @@ subroutine as_mfacre(fid, maa, fam, num, ngro,&
     fidm = to_med_idt(fid)
     num4 = num
     ngro4 = ngro
-    call mfacre(fidm, maa, fam, num4, ngro4,&
+    call mfacre(fidm, maa, fam, num4, ngro4, &
                 gro, cret4)
     cret = cret4
 #else
-    call mfacre(fid, maa, fam, num, ngro,&
+    call mfacre(fid, maa, fam, num, ngro, &
                 gro, cret)
 #endif
 !

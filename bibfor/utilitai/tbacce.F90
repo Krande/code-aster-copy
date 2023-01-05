@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine tbacce(nomta, numeli, para, mode, vi,&
+subroutine tbacce(nomta, numeli, para, mode, vi, &
                   vr, vc, vk)
     implicit none
 #include "jeveux.h"
@@ -63,26 +63,26 @@ subroutine tbacce(nomta, numeli, para, mode, vi,&
     else if (modacc .eq. 'E') then
     else
         call utmess('F', 'UTILITAI4_63', sk=modacc)
-    endif
+    end if
 !
     nomtab = nomta
     call jeexin(nomtab//'.TBBA', iret)
     if (iret .eq. 0) then
         call utmess('F', 'UTILITAI4_64')
-    endif
+    end if
 !
     call jeveuo(nomtab//'.TBNP', 'E', vi=tbnp)
     nbpara = tbnp(1)
     nblign = tbnp(2)
     if (nbpara .eq. 0) then
         call utmess('F', 'UTILITAI4_65')
-    endif
+    end if
     if (nblign .eq. 0) then
         call utmess('F', 'UTILITAI4_66')
-    endif
+    end if
     if (numeli .gt. nblign) then
         call utmess('F', 'UTILITAI4_67')
-    endif
+    end if
 !
     call jeveuo(nomtab//'.TBLP', 'L', vk24=tblp)
 !
@@ -94,7 +94,7 @@ subroutine tbacce(nomta, numeli, para, mode, vi,&
     end do
     valk = inpar
     call utmess('F', 'UTILITAI6_89', sk=valk)
- 12 continue
+12  continue
 !
     type = tblp(1+4*(j-1)+1)
     nomjv = tblp(1+4*(j-1)+2)
@@ -109,7 +109,7 @@ subroutine tbacce(nomta, numeli, para, mode, vi,&
         else
             zi(jvale+numeli-1) = vi
             zi(jvall+numeli-1) = 1
-        endif
+        end if
 !
     else if (type(1:1) .eq. 'R') then
         if (modacc .eq. 'L') then
@@ -117,7 +117,7 @@ subroutine tbacce(nomta, numeli, para, mode, vi,&
         else
             zr(jvale+numeli-1) = vr
             zi(jvall+numeli-1) = 1
-        endif
+        end if
 !
     else if (type(1:1) .eq. 'C') then
         if (modacc .eq. 'L') then
@@ -125,48 +125,48 @@ subroutine tbacce(nomta, numeli, para, mode, vi,&
         else
             zc(jvale+numeli-1) = vc
             zi(jvall+numeli-1) = 1
-        endif
+        end if
 !
     else if (type(1:3) .eq. 'K80') then
         if (modacc .eq. 'L') then
             vk = zk80(jvale+numeli-1)
         else
             zk80(jvale+numeli-1) = vk
-            zi (jvall+numeli-1) = 1
-        endif
+            zi(jvall+numeli-1) = 1
+        end if
 !
     else if (type(1:3) .eq. 'K32') then
         if (modacc .eq. 'L') then
             vk = zk32(jvale+numeli-1)
         else
             zk32(jvale+numeli-1) = vk
-            zi (jvall+numeli-1) = 1
-        endif
+            zi(jvall+numeli-1) = 1
+        end if
 !
     else if (type(1:3) .eq. 'K24') then
         if (modacc .eq. 'L') then
             vk = zk24(jvale+numeli-1)
         else
             zk24(jvale+numeli-1) = vk
-            zi (jvall+numeli-1) = 1
-        endif
+            zi(jvall+numeli-1) = 1
+        end if
 !
     else if (type(1:3) .eq. 'K16') then
         if (modacc .eq. 'L') then
             vk = zk16(jvale+numeli-1)
         else
             zk16(jvale+numeli-1) = vk
-            zi (jvall+numeli-1) = 1
-        endif
+            zi(jvall+numeli-1) = 1
+        end if
 !
     else if (type(1:2) .eq. 'K8') then
         if (modacc .eq. 'L') then
             vk = zk8(jvale+numeli-1)
         else
             zk8(jvale+numeli-1) = vk
-            zi (jvall+numeli-1) = 1
-        endif
-    endif
+            zi(jvall+numeli-1) = 1
+        end if
+    end if
 !
     call jedema()
 end subroutine

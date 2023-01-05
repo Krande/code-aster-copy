@@ -1,6 +1,6 @@
 ! --------------------------------------------------------------------
 ! Copyright (C) LAPACK
-! Copyright (C) 2007 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 2007 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,8 +25,8 @@
 ! THE PRESENT ROUTINE IS MANDATORY FOR ARPACK LIBRARY
 ! WHICH STICKS TO LAPACK 2.0 VERSION
 ! ==============================================================
-subroutine ar_dtrevc(side, howmny, select, n, t,&
-                     ldt, vl, ldvl, vr, ldvr,&
+subroutine ar_dtrevc(side, howmny, select, n, t, &
+                     ldt, vl, ldvl, vr, ldvr, &
                      mm, m, work, info)
 !
 !     SUBROUTINE LAPACK CALCULANT DES VECTEUR PROPRES.
@@ -201,11 +201,11 @@ subroutine ar_dtrevc(side, howmny, select, n, t,&
     integer :: info, ldt, ldvl, ldvr, m, mm, n
 !     ..
 !     .. ARRAY ARGUMENTS ..
-    aster_logical :: select( * )
-    real(kind=8) :: t( ldt, * ), vl( ldvl, * ), vr( ldvr, * ), work( * )
+    aster_logical :: select(*)
+    real(kind=8) :: t(ldt, *), vl(ldvl, *), vr(ldvr, *), work(*)
 !     .. PARAMETERS ..
     real(kind=8) :: zero, one
-    parameter          ( zero = 0.0d+0, one = 1.0d+0 )
+    parameter(zero=0.0d+0, one=1.0d+0)
 !     ..
 !     .. LOCAL SCALARS ..
     aster_logical :: allv, bothv, leftv, over, pair, rightv, somev
@@ -217,32 +217,32 @@ subroutine ar_dtrevc(side, howmny, select, n, t,&
 !     .. EXTERNAL FUNCTIONS ..
 !     ..
 !     .. LOCAL ARRAYS ..
-    real(kind=8) :: x( 2, 2 )
+    real(kind=8) :: x(2, 2)
 !     ..
 !     .. EXECUTABLE STATEMENTS ..
 !
 !     DECODE AND TEST THE INPUT PARAMETERS
 !
-    bothv = lsame( side, 'B' )
-    rightv = lsame( side, 'R' ) .or. bothv
-    leftv = lsame( side, 'L' ) .or. bothv
+    bothv = lsame(side, 'B')
+    rightv = lsame(side, 'R') .or. bothv
+    leftv = lsame(side, 'L') .or. bothv
 !
-    allv = lsame( howmny, 'A' )
-    over = lsame( howmny, 'B' ) .or. lsame( howmny, 'O' )
-    somev = lsame( howmny, 'S' )
+    allv = lsame(howmny, 'A')
+    over = lsame(howmny, 'B') .or. lsame(howmny, 'O')
+    somev = lsame(howmny, 'S')
 !
     info = 0
-    if (.not.rightv .and. .not.leftv) then
+    if (.not. rightv .and. .not. leftv) then
         info = -1
-    else if (.not.allv .and. .not.over .and. .not.somev) then
+    else if (.not. allv .and. .not. over .and. .not. somev) then
         info = -2
-    else if (n.lt.0) then
+    else if (n .lt. 0) then
         info = -4
-    else if (ldt.lt.max( 1, n )) then
+    else if (ldt .lt. max(1, n)) then
         info = -6
-    else if (ldvl.lt.1 .or. ( leftv .and. ldvl.lt.n )) then
+    else if (ldvl .lt. 1 .or. (leftv .and. ldvl .lt. n)) then
         info = -8
-    else if (ldvr.lt.1 .or. ( rightv .and. ldvr.lt.n )) then
+    else if (ldvr .lt. 1 .or. (rightv .and. ldvr .lt. n)) then
         info = -10
     else
 !
@@ -256,35 +256,35 @@ subroutine ar_dtrevc(side, howmny, select, n, t,&
             do j = 1, n
                 if (pair) then
                     pair = .false.
-                    select( j ) = .false.
+                    select(j) = .false.
                 else
                     if (j .lt. n) then
-                        if (t( j+1, j ) .eq. zero) then
-                            if (select( j )) m = m + 1
+                        if (t(j+1, j) .eq. zero) then
+                            if (select(j)) m = m+1
                         else
                             pair = .true.
-                            if (select( j ) .or. select( j+1 )) then
-                                select( j ) = .true.
-                                m = m + 2
-                            endif
-                        endif
+                            if (select(j) .or. select(j+1)) then
+                                select(j) = .true.
+                                m = m+2
+                            end if
+                        end if
                     else
-                        if (select( n )) m = m + 1
-                    endif
-                endif
+                        if (select(n)) m = m+1
+                    end if
+                end if
             end do
         else
             m = n
-        endif
+        end if
 !
         if (mm .lt. m) then
             info = -11
-        endif
-    endif
+        end if
+    end if
     if (info .ne. 0) then
         call xerbla('DTREVC', -info)
         goto 1000
-    endif
+    end if
 !
 !     QUICK RETURN IF POSSIBLE.
 !
@@ -294,18 +294,18 @@ subroutine ar_dtrevc(side, howmny, select, n, t,&
 !
     unfl = r8miem()
 ! DUE TO CRS512      OVFL = ONE / UNFL
-    ulp = r8prem() * 0.5d0 * isbaem()
-    smlnum = unfl*( n / ulp )
-    bignum = ( one-ulp ) / smlnum
+    ulp = r8prem()*0.5d0*isbaem()
+    smlnum = unfl*(n/ulp)
+    bignum = (one-ulp)/smlnum
 !
 !     COMPUTE 1-NORM OF EACH COLUMN OF STRICTLY UPPER TRIANGULAR
 !     PART OF T TO CONTROL OVERFLOW IN TRIANGULAR SOLVER.
 !
-    work( 1 ) = zero
+    work(1) = zero
     do j = 2, n
-        work( j ) = zero
-        do i = 1, j - 1
-            work( j ) = work( j ) + abs( t( i, j ) )
+        work(j) = zero
+        do i = 1, j-1
+            work(j) = work(j)+abs(t(i, j))
         end do
     end do
 !
@@ -327,143 +327,143 @@ subroutine ar_dtrevc(side, howmny, select, n, t,&
             if (ip .eq. 1) goto 130
             if (ki .eq. 1) goto 40
             jnxt = ki-1
-            if (t( ki, jnxt ) .eq. zero) goto 40
+            if (t(ki, jnxt) .eq. zero) goto 40
             ip = -1
 !
- 40         continue
+40          continue
             if (somev) then
                 if (ip .eq. 0) then
-                    if (.not.select( ki )) goto 130
+                    if (.not. select(ki)) goto 130
                 else
-                    if (.not.select( jnxt )) goto 130
-                endif
-            endif
+                    if (.not. select(jnxt)) goto 130
+                end if
+            end if
 !
 !           COMPUTE THE KI-TH EIGENVALUE (WR,WI).
 !
-            wr = t( ki, ki )
+            wr = t(ki, ki)
             wi = zero
             if (ip .ne. 0) then
                 ASSERT(ki .gt. 1)
-            endif
-            if (ip .ne. 0) wi = sqrt( abs(t( ki, jnxt ) ) )* sqrt( abs( t( jnxt, ki ) ) )
-            smin = max( ulp*( abs( wr )+abs( wi ) ), smlnum )
+            end if
+            if (ip .ne. 0) wi = sqrt(abs(t(ki, jnxt)))*sqrt(abs(t(jnxt, ki)))
+            smin = max(ulp*(abs(wr)+abs(wi)), smlnum)
 !
             if (ip .eq. 0) then
 !
 !              REAL RIGHT EIGENVECTOR
 !
-                work( ki+n ) = one
+                work(ki+n) = one
 !
 !              FORM RIGHT-HAND SIDE
 !
-                do k = 1, ki - 1
-                    work( k+n ) = -t( k, ki )
+                do k = 1, ki-1
+                    work(k+n) = -t(k, ki)
                 end do
 !
 !              SOLVE THE UPPER QUASI-TRIANGULAR SYSTEM:
 !                 (T(1:KI-1,1:KI-1) - WR)*X = SCALE*WORK.
 !
-                jnxt = ki - 1
-                do j = ki - 1, 1, -1
+                jnxt = ki-1
+                do j = ki-1, 1, -1
                     if (j .gt. jnxt) goto 60
                     j1 = j
                     j2 = j
-                    jnxt = j - 1
+                    jnxt = j-1
                     if (j .gt. 1) then
-                        if (t( j, jnxt ) .ne. zero) then
+                        if (t(j, jnxt) .ne. zero) then
                             j1 = jnxt
-                            jnxt = j - 2
-                        endif
-                    endif
+                            jnxt = j-2
+                        end if
+                    end if
 !
                     if (j1 .eq. j2) then
 !
 !                    1-BY-1 DIAGONAL BLOCK
 !
-                        call ar_dlaln2(.false._1, 1, 1, smin, one,&
-                                       t( j, j ), ldt, one, one, work( j+n ),&
-                                       n, wr, zero, x, 2,&
+                        call ar_dlaln2(.false._1, 1, 1, smin, one, &
+                                       t(j, j), ldt, one, one, work(j+n), &
+                                       n, wr, zero, x, 2, &
                                        scale, xnorm, ierr)
 !
 !                    SCALE X(1,1) TO AVOID OVERFLOW WHEN UPDATING
 !                    THE RIGHT-HAND SIDE.
 !
                         if (xnorm .gt. one) then
-                            if (work( j ) .gt. bignum / xnorm) then
-                                x( 1, 1 ) = x( 1, 1 ) / xnorm
-                                scale = scale / xnorm
-                            endif
-                        endif
+                            if (work(j) .gt. bignum/xnorm) then
+                                x(1, 1) = x(1, 1)/xnorm
+                                scale = scale/xnorm
+                            end if
+                        end if
 !
 !                    SCALE IF NECESSARY
 !
-                        if (scale .ne. one) call dscal(ki, scale, work( 1+n ), 1)
-                        work( j+n ) = x( 1, 1 )
+                        if (scale .ne. one) call dscal(ki, scale, work(1+n), 1)
+                        work(j+n) = x(1, 1)
 !
 !                    UPDATE RIGHT-HAND SIDE
 !
-                        call daxpy(j-1, -x( 1, 1 ), t( 1, j ), 1, work( 1+n ),&
+                        call daxpy(j-1, -x(1, 1), t(1, j), 1, work(1+n), &
                                    1)
 !
                     else
 !
 !                    2-BY-2 DIAGONAL BLOCK
 !
-                        call ar_dlaln2(.false._1, 2, 1, smin, one,&
-                                       t( j1, j1 ), ldt, one, one, work( j-1+n ),&
-                                       n, wr, zero, x, 2,&
+                        call ar_dlaln2(.false._1, 2, 1, smin, one, &
+                                       t(j1, j1), ldt, one, one, work(j-1+n), &
+                                       n, wr, zero, x, 2, &
                                        scale, xnorm, ierr)
 !
 !                    SCALE X(1,1) AND X(2,1) TO AVOID OVERFLOW WHEN
 !                    UPDATING THE RIGHT-HAND SIDE.
 !
                         if (xnorm .gt. one) then
-                            beta = max( work( j1 ), work( j ) )
-                            if (beta .gt. bignum / xnorm) then
-                                x( 1, 1 ) = x( 1, 1 ) / xnorm
-                                x( 2, 1 ) = x( 2, 1 ) / xnorm
-                                scale = scale / xnorm
-                            endif
-                        endif
+                            beta = max(work(j1), work(j))
+                            if (beta .gt. bignum/xnorm) then
+                                x(1, 1) = x(1, 1)/xnorm
+                                x(2, 1) = x(2, 1)/xnorm
+                                scale = scale/xnorm
+                            end if
+                        end if
 !
 !                    SCALE IF NECESSARY
 !
-                        if (scale .ne. one) call dscal(ki, scale, work( 1+n ), 1)
-                        work( j-1+n ) = x( 1, 1 )
-                        work( j+n ) = x( 2, 1 )
+                        if (scale .ne. one) call dscal(ki, scale, work(1+n), 1)
+                        work(j-1+n) = x(1, 1)
+                        work(j+n) = x(2, 1)
 !
 !                    UPDATE RIGHT-HAND SIDE
 !
-                        call daxpy(j-2, -x( 1, 1 ), t( 1, j1 ), 1, work( 1+n ),&
+                        call daxpy(j-2, -x(1, 1), t(1, j1), 1, work(1+n), &
                                    1)
-                        call daxpy(j-2, -x( 2, 1 ), t( 1, j ), 1, work( 1+n ),&
+                        call daxpy(j-2, -x(2, 1), t(1, j), 1, work(1+n), &
                                    1)
-                    endif
- 60                 continue
+                    end if
+60                  continue
                 end do
 !
 !              COPY THE VECTOR X OR Q*X TO VR AND NORMALIZE.
 !
-                if (.not.over) then
-                    call dcopy(ki, work( 1+n ), 1, vr( 1, is ), 1)
+                if (.not. over) then
+                    call dcopy(ki, work(1+n), 1, vr(1, is), 1)
 !
-                    ii = idamax( ki, vr( 1, is ), 1 )
-                    remax = one / abs( vr( ii, is ) )
-                    call dscal(ki, remax, vr( 1, is ), 1)
+                    ii = idamax(ki, vr(1, is), 1)
+                    remax = one/abs(vr(ii, is))
+                    call dscal(ki, remax, vr(1, is), 1)
 !
-                    do k = ki + 1, n
-                        vr( k, is ) = zero
+                    do k = ki+1, n
+                        vr(k, is) = zero
                     end do
                 else
-                    if (ki .gt. 1) call dgemv('N', n, ki-1, one, vr,&
-                                              ldvr, work( 1+n ), 1, work( ki+n ), vr( 1, ki ),&
+                    if (ki .gt. 1) call dgemv('N', n, ki-1, one, vr, &
+                                              ldvr, work(1+n), 1, work(ki+n), vr(1, ki), &
                                               1)
 !
-                    ii = idamax( n, vr( 1, ki ), 1 )
-                    remax = one / abs( vr( ii, ki ) )
-                    call dscal(n, remax, vr( 1, ki ), 1)
-                endif
+                    ii = idamax(n, vr(1, ki), 1)
+                    remax = one/abs(vr(ii, ki))
+                    call dscal(n, remax, vr(1, ki), 1)
+                end if
 !
             else
 !
@@ -474,176 +474,176 @@ subroutine ar_dtrevc(side, howmny, select, n, t,&
 !                ( (T(KI,KI-1)   T(KI,KI)   )               )
 !
                 jnxt = ki-1
-                if (abs( t( jnxt, ki ) ) .ge. abs( t( ki, jnxt ) )) then
-                    work( ki-1+n ) = one
-                    work( ki+n2 ) = wi / t( jnxt, ki )
+                if (abs(t(jnxt, ki)) .ge. abs(t(ki, jnxt))) then
+                    work(ki-1+n) = one
+                    work(ki+n2) = wi/t(jnxt, ki)
                 else
-                    work( ki-1+n ) = -wi / t( ki, jnxt )
-                    work( ki+n2 ) = one
-                endif
-                work( ki+n ) = zero
-                work( ki-1+n2 ) = zero
+                    work(ki-1+n) = -wi/t(ki, jnxt)
+                    work(ki+n2) = one
+                end if
+                work(ki+n) = zero
+                work(ki-1+n2) = zero
 !
 !              FORM RIGHT-HAND SIDE
 !
-                do k = 1, ki - 2
-                    work( k+n ) = -work( ki-1+n )*t( k, jnxt )
-                    work( k+n2 ) = -work( ki+n2 )*t( k, ki )
+                do k = 1, ki-2
+                    work(k+n) = -work(ki-1+n)*t(k, jnxt)
+                    work(k+n2) = -work(ki+n2)*t(k, ki)
                 end do
 !
 !              SOLVE UPPER QUASI-TRIANGULAR SYSTEM:
 !              (T(1:KI-2,1:KI-2) - (WR+I*WI))*X = SCALE*(WORK+I*WORK2)
 !
-                jnxt = ki - 2
-                do j = ki - 2, 1, -1
+                jnxt = ki-2
+                do j = ki-2, 1, -1
                     if (j .gt. jnxt) goto 90
                     j1 = j
                     j2 = j
-                    jnxt = j - 1
+                    jnxt = j-1
                     if (j .gt. 1) then
-                        if (t( j, jnxt ) .ne. zero) then
+                        if (t(j, jnxt) .ne. zero) then
                             j1 = jnxt
-                            jnxt = j - 2
-                        endif
-                    endif
+                            jnxt = j-2
+                        end if
+                    end if
 !
                     if (j1 .eq. j2) then
 !
 !                    1-BY-1 DIAGONAL BLOCK
 !
-                        call ar_dlaln2(.false._1, 1, 2, smin, one,&
-                                       t( j, j ), ldt, one, one, work( j+n ),&
-                                       n, wr, wi, x, 2,&
+                        call ar_dlaln2(.false._1, 1, 2, smin, one, &
+                                       t(j, j), ldt, one, one, work(j+n), &
+                                       n, wr, wi, x, 2, &
                                        scale, xnorm, ierr)
 !
 !                    SCALE X(1,1) AND X(1,2) TO AVOID OVERFLOW WHEN
 !                    UPDATING THE RIGHT-HAND SIDE.
 !
                         if (xnorm .gt. one) then
-                            if (work( j ) .gt. bignum / xnorm) then
-                                x( 1, 1 ) = x( 1, 1 ) / xnorm
-                                x( 1, 2 ) = x( 1, 2 ) / xnorm
-                                scale = scale / xnorm
-                            endif
-                        endif
+                            if (work(j) .gt. bignum/xnorm) then
+                                x(1, 1) = x(1, 1)/xnorm
+                                x(1, 2) = x(1, 2)/xnorm
+                                scale = scale/xnorm
+                            end if
+                        end if
 !
 !                    SCALE IF NECESSARY
 !
                         if (scale .ne. one) then
-                            call dscal(ki, scale, work( 1+n ), 1)
-                            call dscal(ki, scale, work( 1+n2 ), 1)
-                        endif
-                        work( j+n ) = x( 1, 1 )
-                        work( j+n2 ) = x( 1, 2 )
+                            call dscal(ki, scale, work(1+n), 1)
+                            call dscal(ki, scale, work(1+n2), 1)
+                        end if
+                        work(j+n) = x(1, 1)
+                        work(j+n2) = x(1, 2)
 !
 !                    UPDATE THE RIGHT-HAND SIDE
 !
-                        call daxpy(j-1, -x( 1, 1 ), t( 1, j ), 1, work( 1+n ),&
+                        call daxpy(j-1, -x(1, 1), t(1, j), 1, work(1+n), &
                                    1)
-                        call daxpy(j-1, -x( 1, 2 ), t( 1, j ), 1, work( 1+n2 ),&
+                        call daxpy(j-1, -x(1, 2), t(1, j), 1, work(1+n2), &
                                    1)
 !
                     else
 !
 !                    2-BY-2 DIAGONAL BLOCK
 !
-                        call ar_dlaln2(.false._1, 2, 2, smin, one,&
-                                       t( j1, j1 ), ldt, one, one, work( j-1+n ),&
-                                       n, wr, wi, x, 2,&
+                        call ar_dlaln2(.false._1, 2, 2, smin, one, &
+                                       t(j1, j1), ldt, one, one, work(j-1+n), &
+                                       n, wr, wi, x, 2, &
                                        scale, xnorm, ierr)
 !
 !                    SCALE X TO AVOID OVERFLOW WHEN UPDATING
 !                    THE RIGHT-HAND SIDE.
 !
                         if (xnorm .gt. one) then
-                            beta = max( work( j1 ), work( j ) )
-                            if (beta .gt. bignum / xnorm) then
-                                rec = one / xnorm
-                                x( 1, 1 ) = x( 1, 1 )*rec
-                                x( 1, 2 ) = x( 1, 2 )*rec
-                                x( 2, 1 ) = x( 2, 1 )*rec
-                                x( 2, 2 ) = x( 2, 2 )*rec
+                            beta = max(work(j1), work(j))
+                            if (beta .gt. bignum/xnorm) then
+                                rec = one/xnorm
+                                x(1, 1) = x(1, 1)*rec
+                                x(1, 2) = x(1, 2)*rec
+                                x(2, 1) = x(2, 1)*rec
+                                x(2, 2) = x(2, 2)*rec
                                 scale = scale*rec
-                            endif
-                        endif
+                            end if
+                        end if
 !
 !                    SCALE IF NECESSARY
 !
                         if (scale .ne. one) then
-                            call dscal(ki, scale, work( 1+n ), 1)
-                            call dscal(ki, scale, work( 1+n2 ), 1)
-                        endif
-                        work( j-1+n ) = x( 1, 1 )
-                        work( j+n ) = x( 2, 1 )
-                        work( j-1+n2 ) = x( 1, 2 )
-                        work( j+n2 ) = x( 2, 2 )
+                            call dscal(ki, scale, work(1+n), 1)
+                            call dscal(ki, scale, work(1+n2), 1)
+                        end if
+                        work(j-1+n) = x(1, 1)
+                        work(j+n) = x(2, 1)
+                        work(j-1+n2) = x(1, 2)
+                        work(j+n2) = x(2, 2)
 !
 !                    UPDATE THE RIGHT-HAND SIDE
 !
-                        call daxpy(j-2, -x( 1, 1 ), t( 1, j1 ), 1, work( 1+n ),&
+                        call daxpy(j-2, -x(1, 1), t(1, j1), 1, work(1+n), &
                                    1)
-                        call daxpy(j-2, -x( 2, 1 ), t( 1, j ), 1, work( 1+n ),&
+                        call daxpy(j-2, -x(2, 1), t(1, j), 1, work(1+n), &
                                    1)
-                        call daxpy(j-2, -x( 1, 2 ), t( 1, j1 ), 1, work( 1+n2 ),&
+                        call daxpy(j-2, -x(1, 2), t(1, j1), 1, work(1+n2), &
                                    1)
-                        call daxpy(j-2, -x( 2, 2 ), t( 1, j ), 1, work( 1+n2 ),&
+                        call daxpy(j-2, -x(2, 2), t(1, j), 1, work(1+n2), &
                                    1)
-                    endif
- 90                 continue
+                    end if
+90                  continue
                 end do
 !
 !              COPY THE VECTOR X OR Q*X TO VR AND NORMALIZE.
 !
-                if (.not.over) then
-                    call dcopy(ki, work( 1+n ), 1, vr( 1, is-1 ), 1)
-                    call dcopy(ki, work( 1+n2 ), 1, vr( 1, is ), 1)
+                if (.not. over) then
+                    call dcopy(ki, work(1+n), 1, vr(1, is-1), 1)
+                    call dcopy(ki, work(1+n2), 1, vr(1, is), 1)
 !
                     emax = zero
                     do k = 1, ki
-                        emax = max( emax, abs( vr( k, is-1 ) )+ abs( vr( k, is ) ))
+                        emax = max(emax, abs(vr(k, is-1))+abs(vr(k, is)))
                     end do
 !
-                    remax = one / emax
-                    call dscal(ki, remax, vr( 1, is-1 ), 1)
-                    call dscal(ki, remax, vr( 1, is ), 1)
+                    remax = one/emax
+                    call dscal(ki, remax, vr(1, is-1), 1)
+                    call dscal(ki, remax, vr(1, is), 1)
 !
-                    do k = ki + 1, n
-                        vr( k, is-1 ) = zero
-                        vr( k, is ) = zero
+                    do k = ki+1, n
+                        vr(k, is-1) = zero
+                        vr(k, is) = zero
                     end do
 !
                 else
 !
                     jnxt = ki-1
                     if (ki .gt. 2) then
-                        call dgemv('N', n, ki-2, one, vr,&
-                                   ldvr, work( 1+n ), 1, work( ki-1+n ), vr( 1, jnxt ),&
+                        call dgemv('N', n, ki-2, one, vr, &
+                                   ldvr, work(1+n), 1, work(ki-1+n), vr(1, jnxt), &
                                    1)
-                        call dgemv('N', n, ki-2, one, vr,&
-                                   ldvr, work( 1+n2 ), 1, work( ki+n2 ), vr( 1, ki ),&
+                        call dgemv('N', n, ki-2, one, vr, &
+                                   ldvr, work(1+n2), 1, work(ki+n2), vr(1, ki), &
                                    1)
                     else
-                        call dscal(n, work( ki-1+n ), vr( 1, jnxt ), 1)
-                        call dscal(n, work( ki+n2 ), vr( 1, ki ), 1)
-                    endif
+                        call dscal(n, work(ki-1+n), vr(1, jnxt), 1)
+                        call dscal(n, work(ki+n2), vr(1, ki), 1)
+                    end if
 !
                     emax = zero
                     do k = 1, n
-                        emax = max( emax, abs( vr( k, jnxt ) )+ abs( vr( k, ki ) ))
+                        emax = max(emax, abs(vr(k, jnxt))+abs(vr(k, ki)))
                     end do
-                    remax = one / emax
-                    call dscal(n, remax, vr( 1, jnxt ), 1)
-                    call dscal(n, remax, vr( 1, ki ), 1)
-                endif
-            endif
+                    remax = one/emax
+                    call dscal(n, remax, vr(1, jnxt), 1)
+                    call dscal(n, remax, vr(1, ki), 1)
+                end if
+            end if
 !
-            is = is - 1
-            if (ip .ne. 0) is = is - 1
+            is = is-1
+            if (ip .ne. 0) is = is-1
 130         continue
             if (ip .eq. 1) ip = 0
             if (ip .eq. -1) ip = 1
         end do
-    endif
+    end if
 !
     if (leftv) then
 !
@@ -655,31 +655,31 @@ subroutine ar_dtrevc(side, howmny, select, n, t,&
 !
             if (ip .eq. -1) goto 250
             if (ki .eq. n) goto 150
-            if (t( ki+1, ki ) .eq. zero) goto 150
+            if (t(ki+1, ki) .eq. zero) goto 150
             ip = 1
 !
 150         continue
             if (somev) then
-                if (.not.select( ki )) goto 250
-            endif
+                if (.not. select(ki)) goto 250
+            end if
 !
 !           COMPUTE THE KI-TH EIGENVALUE (WR,WI).
 !
-            wr = t( ki, ki )
+            wr = t(ki, ki)
             wi = zero
-            if (ip .ne. 0) wi = sqrt( abs(t( ki, ki+1 ) ) )* sqrt( abs( t( ki+1, ki ) ) )
-            smin = max( ulp*( abs( wr )+abs( wi ) ), smlnum )
+            if (ip .ne. 0) wi = sqrt(abs(t(ki, ki+1)))*sqrt(abs(t(ki+1, ki)))
+            smin = max(ulp*(abs(wr)+abs(wi)), smlnum)
 !
             if (ip .eq. 0) then
 !
 !              REAL LEFT EIGENVECTOR.
 !
-                work( ki+n ) = one
+                work(ki+n) = one
 !
 !              FORM RIGHT-HAND SIDE
 !
-                do k = ki + 1, n
-                    work( k+n ) = -t( ki, k )
+                do k = ki+1, n
+                    work(k+n) = -t(ki, k)
                 end do
 !
 !              SOLVE THE QUASI-TRIANGULAR SYSTEM:
@@ -688,18 +688,18 @@ subroutine ar_dtrevc(side, howmny, select, n, t,&
                 vmax = one
                 vcrit = bignum
 !
-                jnxt = ki + 1
-                do j = ki + 1, n
+                jnxt = ki+1
+                do j = ki+1, n
                     if (j .lt. jnxt) goto 170
                     j1 = j
                     j2 = j
-                    jnxt = j + 1
+                    jnxt = j+1
                     if (j .lt. n) then
-                        if (t( j+1, j ) .ne. zero) then
-                            j2 = j + 1
-                            jnxt = j + 2
-                        endif
-                    endif
+                        if (t(j+1, j) .ne. zero) then
+                            j2 = j+1
+                            jnxt = j+2
+                        end if
+                    end if
 !
                     if (j1 .eq. j2) then
 !
@@ -708,29 +708,29 @@ subroutine ar_dtrevc(side, howmny, select, n, t,&
 !                    SCALE IF NECESSARY TO AVOID OVERFLOW WHEN FORMING
 !                    THE RIGHT-HAND SIDE.
 !
-                        if (work( j ) .gt. vcrit) then
-                            rec = one / vmax
-                            call dscal(n-ki+1, rec, work( ki+n ), 1)
+                        if (work(j) .gt. vcrit) then
+                            rec = one/vmax
+                            call dscal(n-ki+1, rec, work(ki+n), 1)
                             vmax = one
                             vcrit = bignum
-                        endif
+                        end if
 !
-                        work( j+n ) = work( j+n ) - ddot( j-ki-1, t( ki+1, j ), 1, work( ki+1+n )&
-                                      &, 1 )
+                        work(j+n) = work(j+n)-ddot(j-ki-1, t(ki+1, j), 1, work(ki+1+n)&
+                                      &, 1)
 !
 !                    SOLVE (T(J,J)-WR)'*X = WORK
 !
-                        call ar_dlaln2(.false._1, 1, 1, smin, one,&
-                                       t( j, j ), ldt, one, one, work( j+n ),&
-                                       n, wr, zero, x, 2,&
+                        call ar_dlaln2(.false._1, 1, 1, smin, one, &
+                                       t(j, j), ldt, one, one, work(j+n), &
+                                       n, wr, zero, x, 2, &
                                        scale, xnorm, ierr)
 !
 !                    SCALE IF NECESSARY
 !
-                        if (scale .ne. one) call dscal(n-ki+1, scale, work( ki+n ), 1)
-                        work( j+n ) = x( 1, 1 )
-                        vmax = max( abs( work( j+n ) ), vmax )
-                        vcrit = bignum / vmax
+                        if (scale .ne. one) call dscal(n-ki+1, scale, work(ki+n), 1)
+                        work(j+n) = x(1, 1)
+                        vmax = max(abs(work(j+n)), vmax)
+                        vcrit = bignum/vmax
 !
                     else
 !
@@ -739,66 +739,66 @@ subroutine ar_dtrevc(side, howmny, select, n, t,&
 !                    SCALE IF NECESSARY TO AVOID OVERFLOW WHEN FORMING
 !                    THE RIGHT-HAND SIDE.
 !
-                        beta = max( work( j ), work( j+1 ) )
+                        beta = max(work(j), work(j+1))
                         if (beta .gt. vcrit) then
-                            rec = one / vmax
-                            call dscal(n-ki+1, rec, work( ki+n ), 1)
+                            rec = one/vmax
+                            call dscal(n-ki+1, rec, work(ki+n), 1)
                             vmax = one
                             vcrit = bignum
-                        endif
+                        end if
 !
-                        work( j+n ) = work( j+n ) - ddot( j-ki-1, t( ki+1, j ), 1, work( ki+1+n )&
-                                      &, 1 )
+                        work(j+n) = work(j+n)-ddot(j-ki-1, t(ki+1, j), 1, work(ki+1+n)&
+                                      &, 1)
 !
-                        work( j+1+n ) = work( j+1+n ) - ddot( j-ki-1, t( ki+1, j+1 ), 1, work( ki&
-                                        &+1+n ), 1 )
+                        work(j+1+n) = work(j+1+n)-ddot(j-ki-1, t(ki+1, j+1), 1, work(ki&
+                                        &+1+n), 1)
 !
 !                    SOLVE
 !                      (T(J,J)-WR   T(J,J+1)     )'* X = SCALE*( WORK1 )
 !                      (T(J+1,J)    T(J+1,J+1)-WR)             ( WORK2 )
 !
-                        call ar_dlaln2(.true._1, 2, 1, smin, one,&
-                                       t( j, j ), ldt, one, one, work( j+n ),&
-                                       n, wr, zero, x, 2,&
+                        call ar_dlaln2(.true._1, 2, 1, smin, one, &
+                                       t(j, j), ldt, one, one, work(j+n), &
+                                       n, wr, zero, x, 2, &
                                        scale, xnorm, ierr)
 !
 !                    SCALE IF NECESSARY
 !
-                        if (scale .ne. one) call dscal(n-ki+1, scale, work( ki+n ), 1)
-                        work( j+n ) = x( 1, 1 )
-                        work( j+1+n ) = x( 2, 1 )
+                        if (scale .ne. one) call dscal(n-ki+1, scale, work(ki+n), 1)
+                        work(j+n) = x(1, 1)
+                        work(j+1+n) = x(2, 1)
 !
-                        vmax = max( abs( work( j+n ) ), abs( work( j+ 1+n ) ), vmax)
-                        vcrit = bignum / vmax
+                        vmax = max(abs(work(j+n)), abs(work(j+1+n)), vmax)
+                        vcrit = bignum/vmax
 !
-                    endif
+                    end if
 170                 continue
                 end do
 !
 !              COPY THE VECTOR X OR Q*X TO VL AND NORMALIZE.
 !
-                if (.not.over) then
-                    call dcopy(n-ki+1, work( ki+n ), 1, vl( ki, is ), 1)
+                if (.not. over) then
+                    call dcopy(n-ki+1, work(ki+n), 1, vl(ki, is), 1)
 !
-                    ii = idamax( n-ki+1, vl( ki, is ), 1 ) + ki - 1
-                    remax = one / abs( vl( ii, is ) )
-                    call dscal(n-ki+1, remax, vl( ki, is ), 1)
+                    ii = idamax(n-ki+1, vl(ki, is), 1)+ki-1
+                    remax = one/abs(vl(ii, is))
+                    call dscal(n-ki+1, remax, vl(ki, is), 1)
 !
-                    do k = 1, ki - 1
-                        vl( k, is ) = zero
+                    do k = 1, ki-1
+                        vl(k, is) = zero
                     end do
 !
                 else
 !
-                    if (ki .lt. n) call dgemv('N', n, n-ki, one, vl( 1, ki+1 ),&
-                                              ldvl, work( ki+1+n ), 1, work( ki+n ), vl( 1, ki ),&
+                    if (ki .lt. n) call dgemv('N', n, n-ki, one, vl(1, ki+1), &
+                                              ldvl, work(ki+1+n), 1, work(ki+n), vl(1, ki), &
                                               1)
 !
-                    ii = idamax( n, vl( 1, ki ), 1 )
-                    remax = one / abs( vl( ii, ki ) )
-                    call dscal(n, remax, vl( 1, ki ), 1)
+                    ii = idamax(n, vl(1, ki), 1)
+                    remax = one/abs(vl(ii, ki))
+                    call dscal(n, remax, vl(1, ki), 1)
 !
-                endif
+                end if
 !
             else
 !
@@ -808,21 +808,21 @@ subroutine ar_dtrevc(side, howmny, select, n, t,&
 !                 ((T(KI,KI)    T(KI,KI+1) )' - (WR - I* WI))*X = 0.
 !                 ((T(KI+1,KI) T(KI+1,KI+1))                )
 !
-                if (abs( t( ki, ki+1 ) ) .ge. abs( t( ki+1, ki ) )) then
-                    work( ki+n ) = wi / t( ki, ki+1 )
-                    work( ki+1+n2 ) = one
+                if (abs(t(ki, ki+1)) .ge. abs(t(ki+1, ki))) then
+                    work(ki+n) = wi/t(ki, ki+1)
+                    work(ki+1+n2) = one
                 else
-                    work( ki+n ) = one
-                    work( ki+1+n2 ) = -wi / t( ki+1, ki )
-                endif
-                work( ki+1+n ) = zero
-                work( ki+n2 ) = zero
+                    work(ki+n) = one
+                    work(ki+1+n2) = -wi/t(ki+1, ki)
+                end if
+                work(ki+1+n) = zero
+                work(ki+n2) = zero
 !
 !              FORM RIGHT-HAND SIDE
 !
-                do k = ki + 2, n
-                    work( k+n ) = -work( ki+n )*t( ki, k )
-                    work( k+n2 ) = -work( ki+1+n2 )*t( ki+1, k )
+                do k = ki+2, n
+                    work(k+n) = -work(ki+n)*t(ki, k)
+                    work(k+n2) = -work(ki+1+n2)*t(ki+1, k)
                 end do
 !
 !              SOLVE COMPLEX QUASI-TRIANGULAR SYSTEM:
@@ -831,18 +831,18 @@ subroutine ar_dtrevc(side, howmny, select, n, t,&
                 vmax = one
                 vcrit = bignum
 !
-                jnxt = ki + 2
-                do j = ki + 2, n
+                jnxt = ki+2
+                do j = ki+2, n
                     if (j .lt. jnxt) goto 200
                     j1 = j
                     j2 = j
-                    jnxt = j + 1
+                    jnxt = j+1
                     if (j .lt. n) then
-                        if (t( j+1, j ) .ne. zero) then
-                            j2 = j + 1
-                            jnxt = j + 2
-                        endif
-                    endif
+                        if (t(j+1, j) .ne. zero) then
+                            j2 = j+1
+                            jnxt = j+2
+                        end if
+                    end if
 !
                     if (j1 .eq. j2) then
 !
@@ -851,36 +851,36 @@ subroutine ar_dtrevc(side, howmny, select, n, t,&
 !                    SCALE IF NECESSARY TO AVOID OVERFLOW WHEN
 !                    FORMING THE RIGHT-HAND SIDE ELEMENTS.
 !
-                        if (work( j ) .gt. vcrit) then
-                            rec = one / vmax
-                            call dscal(n-ki+1, rec, work( ki+n ), 1)
-                            call dscal(n-ki+1, rec, work( ki+n2 ), 1)
+                        if (work(j) .gt. vcrit) then
+                            rec = one/vmax
+                            call dscal(n-ki+1, rec, work(ki+n), 1)
+                            call dscal(n-ki+1, rec, work(ki+n2), 1)
                             vmax = one
                             vcrit = bignum
-                        endif
+                        end if
 !
-                        work( j+n ) = work( j+n ) - ddot( j-ki-2, t( ki+2, j ), 1, work( ki+2+n )&
-                                      &, 1 )
-                        work( j+n2 ) = work( j+n2 ) - ddot( j-ki-2, t( ki+2, j ), 1, work( ki+2+n&
-                                       &2 ), 1 )
+                        work(j+n) = work(j+n)-ddot(j-ki-2, t(ki+2, j), 1, work(ki+2+n)&
+                                      &, 1)
+                        work(j+n2) = work(j+n2)-ddot(j-ki-2, t(ki+2, j), 1, work(ki+2+n&
+                                       &2), 1)
 !
 !                    SOLVE (T(J,J)-(WR-I*WI))*(X11+I*X12)= WK+I*WK2
 !
-                        call ar_dlaln2(.false._1, 1, 2, smin, one,&
-                                       t( j, j ), ldt, one, one, work( j+n ),&
-                                       n, wr, -wi, x, 2,&
+                        call ar_dlaln2(.false._1, 1, 2, smin, one, &
+                                       t(j, j), ldt, one, one, work(j+n), &
+                                       n, wr, -wi, x, 2, &
                                        scale, xnorm, ierr)
 !
 !                    SCALE IF NECESSARY
 !
                         if (scale .ne. one) then
-                            call dscal(n-ki+1, scale, work( ki+n ), 1)
-                            call dscal(n-ki+1, scale, work( ki+n2 ), 1)
-                        endif
-                        work( j+n ) = x( 1, 1 )
-                        work( j+n2 ) = x( 1, 2 )
-                        vmax = max( abs( work( j+n ) ), abs( work( j+ n2 ) ), vmax)
-                        vcrit = bignum / vmax
+                            call dscal(n-ki+1, scale, work(ki+n), 1)
+                            call dscal(n-ki+1, scale, work(ki+n2), 1)
+                        end if
+                        work(j+n) = x(1, 1)
+                        work(j+n2) = x(1, 2)
+                        vmax = max(abs(work(j+n)), abs(work(j+n2)), vmax)
+                        vcrit = bignum/vmax
 !
                     else
 !
@@ -889,108 +889,108 @@ subroutine ar_dtrevc(side, howmny, select, n, t,&
 !                    SCALE IF NECESSARY TO AVOID OVERFLOW WHEN FORMING
 !                    THE RIGHT-HAND SIDE ELEMENTS.
 !
-                        beta = max( work( j ), work( j+1 ) )
+                        beta = max(work(j), work(j+1))
                         if (beta .gt. vcrit) then
-                            rec = one / vmax
-                            call dscal(n-ki+1, rec, work( ki+n ), 1)
-                            call dscal(n-ki+1, rec, work( ki+n2 ), 1)
+                            rec = one/vmax
+                            call dscal(n-ki+1, rec, work(ki+n), 1)
+                            call dscal(n-ki+1, rec, work(ki+n2), 1)
                             vmax = one
                             vcrit = bignum
-                        endif
+                        end if
 !
-                        work( j+n ) = work( j+n ) - ddot( j-ki-2, t( ki+2, j ), 1, work( ki+2+n )&
-                                      &, 1 )
+                        work(j+n) = work(j+n)-ddot(j-ki-2, t(ki+2, j), 1, work(ki+2+n)&
+                                      &, 1)
 !
-                        work( j+n2 ) = work( j+n2 ) - ddot( j-ki-2, t( ki+2, j ), 1, work( ki+2+n&
-                                       &2 ), 1 )
+                        work(j+n2) = work(j+n2)-ddot(j-ki-2, t(ki+2, j), 1, work(ki+2+n&
+                                       &2), 1)
 !
-                        work( j+1+n ) = work( j+1+n ) - ddot( j-ki-2, t( ki+2, j+1 ), 1, work( ki&
-                                        &+2+n ), 1 )
+                        work(j+1+n) = work(j+1+n)-ddot(j-ki-2, t(ki+2, j+1), 1, work(ki&
+                                        &+2+n), 1)
 !
-                        work( j+1+n2 ) = work( j+1+n2 ) - ddot( j-ki- 2, t( ki+2, j+1 ), 1, work(&
-                                         & ki+2+n2 ), 1 )
+                        work(j+1+n2) = work(j+1+n2)-ddot(j-ki-2, t(ki+2, j+1), 1, work(&
+                                         & ki+2+n2), 1)
 !
 !                    SOLVE 2-BY-2 COMPLEX LINEAR EQUATION
 !                      ((T(J,J)   T(J,J+1)  )'-(WR-I*WI)*I)*X = SCALE*B
 !                      ((T(J+1,J) T(J+1,J+1))             )
 !
-                        call ar_dlaln2(.true._1, 2, 2, smin, one,&
-                                       t( j, j ), ldt, one, one, work( j+n ),&
-                                       n, wr, -wi, x, 2,&
+                        call ar_dlaln2(.true._1, 2, 2, smin, one, &
+                                       t(j, j), ldt, one, one, work(j+n), &
+                                       n, wr, -wi, x, 2, &
                                        scale, xnorm, ierr)
 !
 !                    SCALE IF NECESSARY
 !
                         if (scale .ne. one) then
-                            call dscal(n-ki+1, scale, work( ki+n ), 1)
-                            call dscal(n-ki+1, scale, work( ki+n2 ), 1)
-                        endif
-                        work( j+n ) = x( 1, 1 )
-                        work( j+n2 ) = x( 1, 2 )
-                        work( j+1+n ) = x( 2, 1 )
-                        work( j+1+n2 ) = x( 2, 2 )
-                        vmax = max(&
-                               abs( x( 1, 1 ) ), abs( x( 1, 2 ) ), abs( x( 2, 1 ) ),&
-                               abs( x( 2, 2 ) ), vmax&
+                            call dscal(n-ki+1, scale, work(ki+n), 1)
+                            call dscal(n-ki+1, scale, work(ki+n2), 1)
+                        end if
+                        work(j+n) = x(1, 1)
+                        work(j+n2) = x(1, 2)
+                        work(j+1+n) = x(2, 1)
+                        work(j+1+n2) = x(2, 2)
+                        vmax = max( &
+                               abs(x(1, 1)), abs(x(1, 2)), abs(x(2, 1)), &
+                               abs(x(2, 2)), vmax &
                                )
-                        vcrit = bignum / vmax
+                        vcrit = bignum/vmax
 !
-                    endif
+                    end if
 200                 continue
                 end do
 !
 !              COPY THE VECTOR X OR Q*X TO VL AND NORMALIZE.
 !
-                if (.not.over) then
-                    call dcopy(n-ki+1, work( ki+n ), 1, vl( ki, is ), 1)
-                    call dcopy(n-ki+1, work( ki+n2 ), 1, vl( ki, is+ 1 ), 1)
+                if (.not. over) then
+                    call dcopy(n-ki+1, work(ki+n), 1, vl(ki, is), 1)
+                    call dcopy(n-ki+1, work(ki+n2), 1, vl(ki, is+1), 1)
 !
                     emax = zero
                     do k = ki, n
-                        emax = max( emax, abs( vl( k, is ) )+ abs( vl( k, is+1 ) ))
+                        emax = max(emax, abs(vl(k, is))+abs(vl(k, is+1)))
                     end do
-                    remax = one / emax
-                    call dscal(n-ki+1, remax, vl( ki, is ), 1)
-                    call dscal(n-ki+1, remax, vl( ki, is+1 ), 1)
+                    remax = one/emax
+                    call dscal(n-ki+1, remax, vl(ki, is), 1)
+                    call dscal(n-ki+1, remax, vl(ki, is+1), 1)
 !
-                    do k = 1, ki - 1
-                        vl( k, is ) = zero
-                        vl( k, is+1 ) = zero
+                    do k = 1, ki-1
+                        vl(k, is) = zero
+                        vl(k, is+1) = zero
                     end do
                 else
                     if (ki .lt. n-1) then
-                        call dgemv('N', n, n-ki-1, one, vl( 1, ki+2 ),&
-                                   ldvl, work( ki+2+n ), 1, work( ki+n ), vl( 1, ki ),&
+                        call dgemv('N', n, n-ki-1, one, vl(1, ki+2), &
+                                   ldvl, work(ki+2+n), 1, work(ki+n), vl(1, ki), &
                                    1)
-                        call dgemv('N', n, n-ki-1, one, vl( 1, ki+2 ),&
-                                   ldvl, work( ki+2+n2 ), 1, work( ki+1+n2 ), vl( 1, ki+1 ),&
+                        call dgemv('N', n, n-ki-1, one, vl(1, ki+2), &
+                                   ldvl, work(ki+2+n2), 1, work(ki+1+n2), vl(1, ki+1), &
                                    1)
                     else
-                        call dscal(n, work( ki+n ), vl( 1, ki ), 1)
-                        call dscal(n, work( ki+1+n2 ), vl( 1, ki+1 ), 1)
-                    endif
+                        call dscal(n, work(ki+n), vl(1, ki), 1)
+                        call dscal(n, work(ki+1+n2), vl(1, ki+1), 1)
+                    end if
 !
                     emax = zero
                     do k = 1, n
-                        emax = max( emax, abs( vl( k, ki ) )+ abs( vl( k, ki+1 ) ))
+                        emax = max(emax, abs(vl(k, ki))+abs(vl(k, ki+1)))
                     end do
-                    remax = one / emax
-                    call dscal(n, remax, vl( 1, ki ), 1)
-                    call dscal(n, remax, vl( 1, ki+1 ), 1)
+                    remax = one/emax
+                    call dscal(n, remax, vl(1, ki), 1)
+                    call dscal(n, remax, vl(1, ki+1), 1)
 !
-                endif
+                end if
 !
-            endif
+            end if
 !
-            is = is + 1
-            if (ip .ne. 0) is = is + 1
+            is = is+1
+            if (ip .ne. 0) is = is+1
 250         continue
             if (ip .eq. -1) ip = 0
             if (ip .eq. 1) ip = -1
 !
         end do
 !
-    endif
+    end if
 !
 1000 continue
 !

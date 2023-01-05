@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -30,9 +30,9 @@ function exigfa(dgf, ngf)
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    iec = ( ngf - 1 ) / 30
-    reste = ngf - 30 * iec
+    iec = (ngf-1)/30
+    reste = ngf-30*iec
     code = 2**reste
-    iec = iec + 1
-    exigfa = iand ( dgf(iec),code ) .eq. code
+    iec = iec+1
+    exigfa = iand(dgf(iec), code) .eq. code
 end function

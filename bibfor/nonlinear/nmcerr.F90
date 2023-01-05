@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,12 +16,12 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine nmcerr(sddisc        , iter_glob_maxi, iter_glob_elas, pas_mini_elas, resi_glob_maxi,&
-                  resi_glob_rela, inikry        , ds_contact_)
+subroutine nmcerr(sddisc, iter_glob_maxi, iter_glob_elas, pas_mini_elas, resi_glob_maxi, &
+                  resi_glob_rela, inikry, ds_contact_)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -79,25 +79,25 @@ implicit none
 !
 ! --- INITIALISATIONS
 !
-    iter_maxi = max(iter_glob_maxi,iter_glob_elas)
-    iter_mini = min(iter_glob_maxi,iter_glob_elas)
+    iter_maxi = max(iter_glob_maxi, iter_glob_elas)
+    iter_mini = min(iter_glob_maxi, iter_glob_elas)
     itesup = 0
     nmax = 0
-    call utdidt('L', sddisc, 'LIST', 'NECHEC',&
-                vali_ = nb_echec)
+    call utdidt('L', sddisc, 'LIST', 'NECHEC', &
+                vali_=nb_echec)
 !
 ! --- NOMBRE D'ITERATIONS AUTORISEES EN PLUS
 !
     do i_echec = 1, nb_echec
-        call utdidt('L', sddisc, 'ECHE', 'PCENT_ITER_PLUS', index_ = i_echec,&
-                    valr_ = pcplus)
+        call utdidt('L', sddisc, 'ECHE', 'PCENT_ITER_PLUS', index_=i_echec, &
+                    valr_=pcplus)
         nplus = nint(pcplus)
-        nmax = max(nmax,nplus)
+        nmax = max(nmax, nplus)
     end do
 !
 ! --- NOMBRE MAXIMUM D'ITERATIONS
 !
-    nbiter = ceil(iter_maxi*(1.d0 + nplus/100.0d0))
+    nbiter = ceil(iter_maxi*(1.d0+nplus/100.0d0))
 !
 ! --- CREATION DU VECTEUR D'INFORMATIONS SUR LA CONVERGENCE
 !
@@ -126,14 +126,14 @@ implicit none
 !
     typres = 0
     if (resi_glob_rela .ne. r8vide()) then
-        typres = typres + 1
-    endif
+        typres = typres+1
+    end if
     if (resi_glob_maxi .ne. r8vide()) then
-        typres = typres + 2
-    endif
+        typres = typres+2
+    end if
     if (typres .eq. 0) then
         typres = 1
-    endif
+    end if
     call nmlerr(sddisc, 'E', 'TYPE_RESI', r8bid, typres)
 !
 ! --- RESIDU INITIAL POUR NEWTON-KRYLOV
@@ -149,11 +149,11 @@ implicit none
     nbitct = 0
     if (present(ds_contact_)) then
         if (ds_contact_%l_meca_cont) then
-            maxgeo = cfdisi(ds_contact_%sdcont_defi,'ITER_GEOM_MAXI')
-            nbreag = cfdisi(ds_contact_%sdcont_defi,'NB_ITER_GEOM' )
-            nbitct = max(maxgeo,nbreag)
-        endif
-    endif
+            maxgeo = cfdisi(ds_contact_%sdcont_defi, 'ITER_GEOM_MAXI')
+            nbreag = cfdisi(ds_contact_%sdcont_defi, 'NB_ITER_GEOM')
+            nbitct = max(maxgeo, nbreag)
+        end if
+    end if
     nbiter = nbiter+nbitct
 !
 ! --- CREATION DU VECTEUR DE STOCKAGE DES RESIDUS

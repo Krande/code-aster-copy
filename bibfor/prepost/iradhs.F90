@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 !
 subroutine iradhs(versio)
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "MeshTypes_type.h"
@@ -38,7 +38,7 @@ implicit none
 #include "asterfort/utidea.h"
 #include "asterfort/wkvect.h"
 !
-integer, intent(in) :: versio
+    integer, intent(in) :: versio
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -64,17 +64,17 @@ integer, intent(in) :: versio
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    character(len=2), parameter :: axdpcp(4) = (/'AX','DP','CP','PL'/)
+    character(len=2), parameter :: axdpcp(4) = (/'AX', 'DP', 'CP', 'PL'/)
     character(len=5) :: phe(2), mot
     character(len=8) :: nommai
     character(len=16) :: nomele
     integer ::  iax, iel, ima, imper, ino, inos
     integer :: iphe, iret1, iret2, iret3, iret4, iret5, iret6
-    integer :: isu, itel,   jcodd,  jpefsu
+    integer :: isu, itel, jcodd, jpefsu
     integer :: jpermu, jpersu, nbn, nbtyel, nbtyma
     integer :: nbtyms
-    integer, parameter :: maxnod=32
-    integer, parameter :: maxfa=6
+    integer, parameter :: maxnod = 32
+    integer, parameter :: maxfa = 6
     character(len=8) :: nomtm
     integer :: icas
     integer, pointer :: codephy(:) => null()
@@ -98,19 +98,19 @@ integer, intent(in) :: versio
 !
     if (iret1 .eq. 0) then
         call wkvect('&&IRADHS.PERMSUP', 'V V I', maxnod*MT_NTYMAX, jpersu)
-    endif
+    end if
     call jeveuo('&&IRADHS.PERMSUP', 'E', jpersu)
     if (iret2 .eq. 0) then
         call wkvect('&&IRADHS.PERFSUP', 'V V I', maxfa*MT_NTYMAX, jpefsu)
-    endif
+    end if
     call jeveuo('&&IRADHS.PERFSUP', 'E', jpefsu)
-    call inistb(maxnod, nbtyms, nomail, indic, zi(jpersu),&
+    call inistb(maxnod, nbtyms, nomail, indic, zi(jpersu), &
                 limail, indicf, zi(jpefsu), maxfa)
     call jelira('&CATA.TM.NOMTM', 'NOMMAX', nbtyma)
     if (iret3 .eq. 0) then
         call jecreo('&&IRADHS.CODEGRA', 'V V I')
         call jeecra('&&IRADHS.CODEGRA', 'LONMAX', nbtyma)
-    endif
+    end if
     call jeveuo('&&IRADHS.CODEGRA', 'E', vi=codegra)
     do ima = 1, nbtyma
         call jenuno(jexnum('&CATA.TM.NOMTM', ima), nomtm)
@@ -121,50 +121,50 @@ integer, intent(in) :: versio
         if (nomtm .eq. 'SEG4') nomtm = 'SEG2'
         do isu = 1, nbtyms
             if (nomtm .eq. nomail(isu)) then
-                codegra(ima)=isu
+                codegra(ima) = isu
                 goto 1
-            endif
+            end if
         end do
- 1      continue
+1       continue
     end do
     if (iret4 .eq. 0) then
         call wkvect('&&IRADHS.PERMUTA', 'V V I', maxnod*MT_NTYMAX+1, jpermu)
-        zi(jpermu-1+maxnod*MT_NTYMAX+1)=maxnod
-    endif
+        zi(jpermu-1+maxnod*MT_NTYMAX+1) = maxnod
+    end if
     if (iret6 .eq. 0) then
         call wkvect('&&IRADHS.CODEPHD', 'V V I', nbtyma, jcodd)
-    endif
+    end if
     call jeveuo('&&IRADHS.PERMUTA', 'E', jpermu)
     call jeveuo('&CATA.TM.NBNO', 'L', vi=nbno)
     do ima = 1, nbtyma
-        nbn=nbno(ima)
-        isu=codegra(ima)
+        nbn = nbno(ima)
+        isu = codegra(ima)
         if (isu .eq. 0) then
             icas = 0
         else
             icas = indic(isu)
-        endif
+        end if
 !
         if (icas .lt. 0) then
             do ino = 1, nbn
-                zi(jpermu-1+maxnod*(ima-1)+ino)=0
+                zi(jpermu-1+maxnod*(ima-1)+ino) = 0
             end do
-        else if (icas.eq.0) then
+        else if (icas .eq. 0) then
             do ino = 1, nbn
-                zi(jpermu-1+maxnod*(ima-1)+ino)=ino
+                zi(jpermu-1+maxnod*(ima-1)+ino) = ino
             end do
         else
             do ino = 1, nbn
                 do inos = 1, nbn
-                    imper=zi(jpersu-1+maxnod*(isu-1)+inos)
+                    imper = zi(jpersu-1+maxnod*(isu-1)+inos)
                     if (ino .eq. imper) then
-                        zi(jpermu-1+maxnod*(ima-1)+ino)=inos
+                        zi(jpermu-1+maxnod*(ima-1)+ino) = inos
                         goto 43
-                    endif
+                    end if
                 end do
 43              continue
             end do
-        endif
+        end if
         call jenuno(jexnum('&CATA.TM.NOMTM', ima), nommai)
         call utidea(nommai, zi(jcodd-1+ima), versio)
     end do
@@ -173,49 +173,49 @@ integer, intent(in) :: versio
         call jecreo('&&IRADHS.CODEPHY', 'V V I')
         call jeecra('&&IRADHS.CODEPHY', 'LONMAX', nbtyel)
         call jeveuo('&CATA.TE.TYPEMA', 'L', vk8=typema)
-    endif
+    end if
     call jeveuo('&&IRADHS.CODEPHY', 'E', vi=codephy)
     do itel = 1, nbtyel
         call jenuno(jexnum('&CATA.TE.NOMTE', itel), nomele)
         call utidea(typema(itel), codephy(itel), versio)
     end do
     call jenonu(jexnom('&CATA.TE.NOMTE', 'MEDKQU4'), iel)
-    if (iel .ne. 0) codephy(iel)=94
+    if (iel .ne. 0) codephy(iel) = 94
     call jenonu(jexnom('&CATA.TE.NOMTE', 'MEDKTR3'), iel)
-    if (iel .ne. 0) codephy(iel)=91
+    if (iel .ne. 0) codephy(iel) = 91
     call jenonu(jexnom('&CATA.TE.NOMTE', 'MEDSQU4'), iel)
-    if (iel .ne. 0) codephy(iel)=94
+    if (iel .ne. 0) codephy(iel) = 94
     call jenonu(jexnom('&CATA.TE.NOMTE', 'MEDSTR3'), iel)
-    if (iel .ne. 0) codephy(iel)=91
+    if (iel .ne. 0) codephy(iel) = 91
     call jenonu(jexnom('&CATA.TE.NOMTE', 'MEQ4QU4'), iel)
-    if (iel .ne. 0) codephy(iel)=94
-    phe(1)='MECA_'
-    phe(2)='THER_'
+    if (iel .ne. 0) codephy(iel) = 94
+    phe(1) = 'MECA_'
+    phe(2) = 'THER_'
     do iphe = 1, 2
         do iax = 1, 4
-            mot=phe(iphe)(1:2)//axdpcp(iax)
+            mot = phe(iphe) (1:2)//axdpcp(iax)
             call jenonu(jexnom('&CATA.TE.NOMTE', mot(1:4)//'QU4'), iel)
-            if (iel .ne. 0 .and. axdpcp(iax) .eq. 'AX') codephy(iel)=84
-            if (iel .ne. 0 .and. axdpcp(iax) .eq. 'CP') codephy(iel)=44
-            if (iel .ne. 0 .and. axdpcp(iax) .eq. 'DP') codephy(iel)=54
-            if (iel .ne. 0 .and. axdpcp(iax) .eq. 'PL') codephy(iel)=44
+            if (iel .ne. 0 .and. axdpcp(iax) .eq. 'AX') codephy(iel) = 84
+            if (iel .ne. 0 .and. axdpcp(iax) .eq. 'CP') codephy(iel) = 44
+            if (iel .ne. 0 .and. axdpcp(iax) .eq. 'DP') codephy(iel) = 54
+            if (iel .ne. 0 .and. axdpcp(iax) .eq. 'PL') codephy(iel) = 44
             call jenonu(jexnom('&CATA.TE.NOMTE', mot(1:4)//'QU8'), iel)
-            if (iel .ne. 0 .and. axdpcp(iax) .eq. 'AX') codephy(iel)=85
-            if (iel .ne. 0 .and. axdpcp(iax) .eq. 'CP') codephy(iel)=45
-            if (iel .ne. 0 .and. axdpcp(iax) .eq. 'DP') codephy(iel)=55
-            if (iel .ne. 0 .and. axdpcp(iax) .eq. 'PL') codephy(iel)=45
+            if (iel .ne. 0 .and. axdpcp(iax) .eq. 'AX') codephy(iel) = 85
+            if (iel .ne. 0 .and. axdpcp(iax) .eq. 'CP') codephy(iel) = 45
+            if (iel .ne. 0 .and. axdpcp(iax) .eq. 'DP') codephy(iel) = 55
+            if (iel .ne. 0 .and. axdpcp(iax) .eq. 'PL') codephy(iel) = 45
             call jenonu(jexnom('&CATA.TE.NOMTE', mot(1:4)//'TR3'), iel)
-            if (iel .ne. 0 .and. axdpcp(iax) .eq. 'AX') codephy(iel)=81
-            if (iel .ne. 0 .and. axdpcp(iax) .eq. 'CP') codephy(iel)=41
-            if (iel .ne. 0 .and. axdpcp(iax) .eq. 'DP') codephy(iel)=51
-            if (iel .ne. 0 .and. axdpcp(iax) .eq. 'PL') codephy(iel)=41
+            if (iel .ne. 0 .and. axdpcp(iax) .eq. 'AX') codephy(iel) = 81
+            if (iel .ne. 0 .and. axdpcp(iax) .eq. 'CP') codephy(iel) = 41
+            if (iel .ne. 0 .and. axdpcp(iax) .eq. 'DP') codephy(iel) = 51
+            if (iel .ne. 0 .and. axdpcp(iax) .eq. 'PL') codephy(iel) = 41
             call jenonu(jexnom('&CATA.TE.NOMTE', mot(1:4)//'TR6'), iel)
-            if (iel .ne. 0 .and. axdpcp(iax) .eq. 'AX') codephy(iel)=82
-            if (iel .ne. 0 .and. axdpcp(iax) .eq. 'CP') codephy(iel)=42
-            if (iel .ne. 0 .and. axdpcp(iax) .eq. 'DP') codephy(iel)=52
-            if (iel .ne. 0 .and. axdpcp(iax) .eq. 'PL') codephy(iel)=42
+            if (iel .ne. 0 .and. axdpcp(iax) .eq. 'AX') codephy(iel) = 82
+            if (iel .ne. 0 .and. axdpcp(iax) .eq. 'CP') codephy(iel) = 42
+            if (iel .ne. 0 .and. axdpcp(iax) .eq. 'DP') codephy(iel) = 52
+            if (iel .ne. 0 .and. axdpcp(iax) .eq. 'PL') codephy(iel) = 42
             call jenonu(jexnom('&CATA.TE.NOMTE', mot(1:4)//'SE2'), iel)
-            if (iel .ne. 0) codephy(iel)=21
+            if (iel .ne. 0) codephy(iel) = 21
         end do
     end do
     call jedetr('&&IRADHS.PERMSUP')

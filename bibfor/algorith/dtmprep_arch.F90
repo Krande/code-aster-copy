@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -72,83 +72,82 @@ subroutine dtmprep_arch(sd_dtm_)
     if (nbocc .ne. 0) then
         call getvid('ARCHIVAGE', 'LIST_INST', iocc=1, scal=numarc, nbret=iret1)
         if (iret1 .ne. 0) then
-            nullify(inst)
+            nullify (inst)
             call jeveuo(numarc//'.VALE', 'L', vr=inst)
             nbinst = size(inst)
         else
             call getvr8('ARCHIVAGE', 'INST', iocc=1, nbval=0, nbret=iret2)
             if (iret2 .ne. 0) then
-                nullify(inst)
+                nullify (inst)
                 nbinst = -iret2
                 AS_ALLOCATE(vr=inst, size=nbinst)
                 call getvr8('ARCHIVAGE', 'INST', iocc=1, nbval=nbinst, vect=inst)
-            endif
-        endif
+            end if
+        end if
         call getvis('ARCHIVAGE', 'PAS_ARCH', iocc=1, scal=iparch, nbret=iret1)
         if (iret1 .eq. 0) iparch = 1
-        if (iparch.lt.0) iparch = ismaem()
-    endif
+        if (iparch .lt. 0) iparch = ismaem()
+    end if
 !
     call dtmget(sd_dtm, _INST_INI, rscal=tinit)
-    call dtmget(sd_dtm, _DT      , rscal=dt)
+    call dtmget(sd_dtm, _DT, rscal=dt)
 !
 !   --- Check that the list of instants belong to the interval {tinit - tfin}
     sizearch = nbinst+2
     AS_ALLOCATE(vr=archlst, size=sizearch)
     nbarch = 0
 
-
     perarch = real(iparch)*dt
     if (perarch .gt. (tfin-tinit)) then
         nbsaves = 1
     else
-        nbsaves = 1 + nint((tfin-tinit)/perarch)
-        nbsaves = 1 + int((tfin+epsi*nbsaves-tinit)/perarch)
+        nbsaves = 1+nint((tfin-tinit)/perarch)
+        nbsaves = 1+int((tfin+epsi*nbsaves-tinit)/perarch)
     end if
 
     do i = 1, nbinst
-        if (inst(i).lt.(tinit-epsi)) then
+        if (inst(i) .lt. (tinit-epsi)) then
             ASSERT(.false.)
-        else if (inst(i).gt.(tfin+epsi)) then
+        else if (inst(i) .gt. (tfin+epsi)) then
             ASSERT(.false.)
         else
-            if (abs(inst(i)-tinit).gt.epsi) then
-                nbarch = nbarch + 1
+            if (abs(inst(i)-tinit) .gt. epsi) then
+                nbarch = nbarch+1
                 archlst(nbarch) = inst(i)
                 j = int((inst(i)-tinit)/dt)
-                residue = mod(inst(i)-tinit,perarch)
-                residue = min(residue,abs(inst(i)-perarch))
-                if ((residue.gt.(j*epsi)).and.(abs(residue-perarch).gt.(j*epsi))) then
-                    nbsaves = nbsaves + 1
+                residue = mod(inst(i)-tinit, perarch)
+                residue = min(residue, abs(inst(i)-perarch))
+                if ((residue .gt. (j*epsi)) .and. (abs(residue-perarch) .gt. (j*epsi))) then
+                    nbsaves = nbsaves+1
                 end if
             end if
         end if
     end do
 
     checktfin = .false.
-    if (nbarch.gt.0) then
-        if (abs(archlst(nbarch)-tfin).gt.epsi) checktfin = .true.
+    if (nbarch .gt. 0) then
+        if (abs(archlst(nbarch)-tfin) .gt. epsi) checktfin = .true.
     end if
 
-    if ((nbarch.eq.0).or.(checktfin)) then
-        nbarch = nbarch + 1
+    if ((nbarch .eq. 0) .or. (checktfin)) then
+        nbarch = nbarch+1
         archlst(nbarch) = tfin
         j = int((tfin-tinit)/dt)
-        residue = mod(tfin-tinit,perarch)
-        residue = min(residue,abs(tfin-perarch))
-        if ((residue.gt.(j*epsi)).and.(abs(residue-perarch).gt.(j*epsi))) then
-            nbsaves = nbsaves + 1
+        residue = mod(tfin-tinit, perarch)
+        residue = min(residue, abs(tfin-perarch))
+        if ((residue .gt. (j*epsi)) .and. (abs(residue-perarch) .gt. (j*epsi))) then
+            nbsaves = nbsaves+1
         end if
     end if
 
 !   --- The archived instant list must be monotone, check renforced
-    do i =1, nbarch-1
-        if (archlst(i).ge.archlst(i+1)) then
+    do i = 1, nbarch-1
+        if (archlst(i) .ge. archlst(i+1)) then
             ASSERT(.false.)
         end if
     end do
 !
-    if (iret2.ne.0) then
+    if (iret2 .ne. 0) then
         AS_DEALLOCATE(vr=inst)
     end if
 !

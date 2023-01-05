@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 !
 subroutine nmiret(codret, tabret)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/asmpi_comm_logical.h"
@@ -37,8 +37,8 @@ implicit none
 #include "asterfort/utmess.h"
 #include "jeveux.h"
 !
-aster_logical :: tabret(0:10)
-character(len=19) :: codret
+    aster_logical :: tabret(0:10)
+    character(len=19) :: codret
 !
 ! ----------------------------------------------------------------------
 !
@@ -79,7 +79,7 @@ character(len=19) :: codret
     call exisd('CHAM_ELEM', codret, iret)
     if (iret .eq. 0) then
         goto 99
-    endif
+    end if
 
 !
 !     -- EN ATTENDANT DE FAIRE MIEUX, POUR PERMETTRE MUMPS/DISTRIBUE :
@@ -95,20 +95,20 @@ character(len=19) :: codret
     call jeveuo(chamns//'.CESL', 'L', jcesl)
 !
 !     CHAM_ELEM/ELGA MAIS EN FAIT : 1 POINT ET 1 SOUS_POINT PAR ELEMENT
-    if ((zi(jcesd-1+3).ne.1) .or. (zi(jcesd-1+4).ne.1)) then
+    if ((zi(jcesd-1+3) .ne. 1) .or. (zi(jcesd-1+4) .ne. 1)) then
         ASSERT(.false.)
-    endif
+    end if
 !
     nomgd = cesk(2)
     if (nomgd .ne. 'CODE_I') then
         ASSERT(.false.)
-    endif
+    end if
 !
     nbmail = zi(jcesd-1+1)
     icmp = zi(jcesd-1+2)
     if (icmp .ne. 1) then
         ASSERT(.false.)
-    endif
+    end if
 !
     do ima = 1, nbmail
         call cesexi('C', jcesd, jcesl, ima, 1, 1, icmp, iad)
@@ -120,13 +120,13 @@ character(len=19) :: codret
         else
             vali = iret
             call utmess('A', 'MECANONLINE2_67', si=vali)
-        endif
+        end if
     end do
 !
 ! --- Il faut faire une synthèse en HPC
 !
-    call dismoi('NOM_MAILLA', codret, 'CHAM_ELEM', repk = mesh)
-    if( isParallelMesh(mesh) ) then
+    call dismoi('NOM_MAILLA', codret, 'CHAM_ELEM', repk=mesh)
+    if (isParallelMesh(mesh)) then
         call asmpi_comm_logical("MPI_LOR", nbval=10, vl=tabret)
     end if
 !
@@ -136,7 +136,7 @@ character(len=19) :: codret
 !
     call detrsd('CHAM_ELEM_S', chamns)
 !
- 99 continue
+99  continue
 !
     call jedema()
 end subroutine

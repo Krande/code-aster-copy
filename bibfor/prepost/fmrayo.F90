@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -51,41 +51,41 @@ subroutine fmrayo(nbfonc, nbptot, sigm, rayon)
     do j = 1, nbfonc
         rau(j) = 0.d0
         do i = 1, nbptot
-            rau(j) = rau(j) + deviat(1+(i-1)*nbfonc+j-1)
+            rau(j) = rau(j)+deviat(1+(i-1)*nbfonc+j-1)
         end do
-        rau(j) = rau(j) / nbptot
+        rau(j) = rau(j)/nbptot
     end do
     nbr = 0
 !
 !-----CALCUL RECURRENT
 !
     n2 = 1
- 30 continue
-    n2 = n2 + 1
-    if (n2 .gt. nbptot) n2 = n2 - nbptot
+30  continue
+    n2 = n2+1
+    if (n2 .gt. nbptot) n2 = n2-nbptot
     do j = 1, nbfonc
         sig(j) = deviat(1+(n2-1)*nbfonc+j-1)-rau(j)
     end do
     if (nbfonc .eq. 6) then
-        pmac = (&
-               sig(1)*sig(1)+sig(2)*sig(2)+sig(3)*sig(3) )/2.d0 + sig(4)*sig(4) + sig(5)*sig(5) +&
-               & sig(6)*sig(6&
+        pmac = ( &
+               sig(1)*sig(1)+sig(2)*sig(2)+sig(3)*sig(3))/2.d0+sig(4)*sig(4)+sig(5)*sig(5)+&
+               & sig(6)*sig(6 &
                )
     else if (nbfonc .eq. 4) then
-        pmac = (sig(1)*sig(1)+sig(2)*sig(2)+sig(3)*sig(3) )/2.d0 + sig(4)*sig(4 )
-    endif
+        pmac = (sig(1)*sig(1)+sig(2)*sig(2)+sig(3)*sig(3))/2.d0+sig(4)*sig(4)
+    end if
     pmac = sqrt(pmac)
-    p = pmac - rayon
+    p = pmac-rayon
     if (p .gt. eps) then
         nbr = 0
-        rayon = rayon + x*p
-        a = ( pmac - rayon ) / pmac
+        rayon = rayon+x*p
+        a = (pmac-rayon)/pmac
         do j = 1, nbfonc
-            rau(j) = rau(j) + a*sig(j)
+            rau(j) = rau(j)+a*sig(j)
         end do
     else
-        nbr = nbr + 1
-    endif
+        nbr = nbr+1
+    end if
     if (nbr .lt. nbptot) goto 30
 !
     AS_DEALLOCATE(vr=deviat)

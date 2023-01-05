@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -81,7 +81,7 @@ subroutine op0113()
     character(len=8), pointer :: lgrf1(:) => null()
     character(len=8), pointer :: lgrf2(:) => null()
 !
-    data motfac /' '/
+    data motfac/' '/
 !
 ! ----------------------------------------------------------------------
 !
@@ -118,7 +118,7 @@ subroutine op0113()
     if (nmoth .eq. 1) then
         call xcpmod(mod1, modthx, modelx)
         goto 999
-    endif
+    end if
 !
 ! --- RECUPERER LE NOMBRE DE FISSURES
 !
@@ -133,7 +133,7 @@ subroutine op0113()
 !
 ! --- RECUPERER LES FISSURES ET REMPLISSAGE DE MODELX//'.FISS'
 !
-    call getvid(motfac, 'FISSURE', iocc=1, nbval=nfiss, vect=zk8(jmofis),&
+    call getvid(motfac, 'FISSURE', iocc=1, nbval=nfiss, vect=zk8(jmofis), &
                 nbret=iret)
 !
 !     VERIFICATION DE LA COHERENCE DES MOT-CLES FISSURE ET MODELE_IN
@@ -152,25 +152,25 @@ subroutine op0113()
         zi(jxc) = 0
     else if (k8cont .eq. 'MORTAR') then
         zi(jxc) = 2
-    else if (k8cont.eq.'STANDARD') then
-        call dismoi('LINE_QUAD', ligr1, 'LIGREL', repk = line_quad)
+    else if (k8cont .eq. 'STANDARD') then
+        call dismoi('LINE_QUAD', ligr1, 'LIGREL', repk=line_quad)
         if (line_quad .eq. 'LINE') then
             zi(jxc) = 1
-        else if (line_quad.eq.'QUAD') then
+        else if (line_quad .eq. 'QUAD') then
             zi(jxc) = 3
         else
             call utmess('F', 'XFEM2_3')
-        endif
+        end if
     else
         ASSERT(.false.)
-    endif
+    end if
 !
     call getvtx(motfac, 'DECOUPE_FACETTE', iocc=1, scal=face, nbret=iret)
-    if (iret.eq.0) then
-       decou=' '
+    if (iret .eq. 0) then
+        decou = ' '
     else
-       decou = face(1:8)
-    endif
+        decou = face(1:8)
+    end if
 !
 ! --- CREATION DU TABLEAU DE TRAVAIL
 !
@@ -185,7 +185,7 @@ subroutine op0113()
 !     1)  REMPLISSAGE DE TAB : NBMA X 5 : GR1 | GR2 | GR3 | GR0 | ITYP
 ! ---------------------------------------------------------------------
 !
-    call xtyele(mod1, trav, nfiss, zk8(jmofis), zi(jxc),&
+    call xtyele(mod1, trav, nfiss, zk8(jmofis), zi(jxc), &
                 ndim, linter)
 !
 ! ---------------------------------------------------------------------
@@ -200,34 +200,34 @@ subroutine op0113()
     do ima = 1, nbma
         if (zi(jtab-1+5*(ima-1)+5) .ne. 0) then
             nelt = nelt+1
-        endif
+        end if
     end do
     if (nelt .eq. 0) then
         call utmess('F', 'XFEM2_51')
-    endif
+    end if
 !
 !-----------------------------------------------------------------------
 !     3)  CONSTRUCTION DU .LIEL2
 !-----------------------------------------------------------------------
 !
-    call jecrec(liel2, 'G V I', 'NU', 'CONTIG', 'VARIABLE',&
+    call jecrec(liel2, 'G V I', 'NU', 'CONTIG', 'VARIABLE', &
                 nelt)
     call jeecra(liel2, 'LONT', 2*nelt)
 !
-    iel=0
+    iel = 0
     do ima = 1, nbma
         if (zi(jtab-1+5*(ima-1)+5) .eq. 0) goto 300
-        iel=iel+1
+        iel = iel+1
         call jecroc(jexnum(liel2, iel))
         call jeecra(jexnum(liel2, iel), 'LONMAX', 2)
         call jeveuo(jexnum(liel2, iel), 'E', j2)
-        zi(j2-1+1)=ima
-        zi(j2-1+2)=zi(jtab-1+5*(ima-1)+5)
+        zi(j2-1+1) = ima
+        zi(j2-1+2) = zi(jtab-1+5*(ima-1)+5)
 300     continue
     end do
 !
     call jelira(liel2, 'NUTIOC', nb1)
-    ASSERT(nb1.eq.nelt)
+    ASSERT(nb1 .eq. nelt)
 !
 !-----------------------------------------------------------------------
 !     4)  CONSTRUCTION DU .MAILLE
@@ -238,7 +238,7 @@ subroutine op0113()
 !        write(6,*)'****** KORUPTION : VERIFICATION DU MODEL.MAILLE ******'
     do ima = 1, nbma
 !        write(6,*)ima,':',zi(jtab-1+5*(ima-1)+4),zi(jtab-1+5*(ima-1)+5)
-        zi(jmail2-1+ima)=zi(jtab-1+5*(ima-1)+5)
+        zi(jmail2-1+ima) = zi(jtab-1+5*(ima-1)+5)
     end do
 !        write(6,*)'******************************************************'
 !
@@ -251,7 +251,7 @@ subroutine op0113()
     call jedupo(ligr1//'.NBNO', 'G', ligr2//'.NBNO', .false._1)
     call jedupo(ligr1//'.LGRF', 'G', ligr2//'.LGRF', .false._1)
     call jeveuo(ligr2//'.LGRF', 'E', vk8=lgrf2)
-    lgrf2(2)=modelx
+    lgrf2(2) = modelx
 !
     call jedup1(mod1//'.NEMA', 'G', modelx//'.NEMA')
     call jedup1(mod1//'.SSSA', 'G', modelx//'.SSSA')

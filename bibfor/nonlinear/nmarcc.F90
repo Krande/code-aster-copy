@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -65,11 +65,11 @@ subroutine nmarcc(result, numarc, typchz, nomchz)
 !
 ! --- ACCES AU CHAMP DANS SD RESULTAT
 !
-    call rsexch(' ', result, typcha, numarc, champ,&
+    call rsexch(' ', result, typcha, numarc, champ, &
                 iret)
     if (iret .gt. 100) then
         ASSERT(.false.)
-    endif
+    end if
 !
 ! --- COPIE DU CHAMP DANS SD RESULTAT
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine prexel(champ, ioc, mamax, nomax, ispmax,&
-                  cmpmax, valmax, mamin, nomin, ispmin,&
-                  cmpmin, valmin, maamax, noamax, isamax,&
-                  cmamax, vaamax, maamin, noamin, isamin,&
+subroutine prexel(champ, ioc, mamax, nomax, ispmax, &
+                  cmpmax, valmax, mamin, nomin, ispmin, &
+                  cmpmin, valmin, maamax, noamax, isamax, &
+                  cmamax, vaamax, maamin, noamin, isamin, &
                   cmamin, vaamin)
 ! aslint: disable=W1504
     implicit none
@@ -84,30 +84,30 @@ subroutine prexel(champ, ioc, mamax, nomax, ispmax,&
     nbma = zi(jcesd-1+1)
     ncmp = zi(jcesd-1+2)
 !
-    call reliem(' ', ma, 'NU_MAILLE', 'ACTION', ioc,&
+    call reliem(' ', ma, 'NU_MAILLE', 'ACTION', ioc, &
                 2, motcle, typmcl, mesmai, nbm)
     if (nbm .gt. 0) then
         nbmail = nbm
         call jeveuo(mesmai, 'L', idmail)
     else
         nbmail = nbma
-    endif
+    end if
 !
     call getvtx('ACTION', 'NOEUD', iocc=ioc, nbval=0, nbret=ier1)
     call getvtx('ACTION', 'GROUP_NO', iocc=ioc, nbval=0, nbret=ier2)
     if (ier1 .ne. 0 .or. ier2 .ne. 0) then
         call utmess('F', 'POSTRELE_66')
-    endif
+    end if
 !
     call getvtx('ACTION', 'NOM_CMP', iocc=ioc, nbval=0, nbret=nbc)
     if (nbc .ne. 0) then
         nbcmp = -nbc
         AS_ALLOCATE(vk8=nom_cmp, size=nbcmp)
-        call getvtx('ACTION', 'NOM_CMP', iocc=ioc, nbval=nbcmp, vect=nom_cmp,&
+        call getvtx('ACTION', 'NOM_CMP', iocc=ioc, nbval=nbcmp, vect=nom_cmp, &
                     nbret=ibid)
     else
         nbcmp = ncmp
-    endif
+    end if
 !
     imamax = 0
     iptmax = 0
@@ -130,25 +130,25 @@ subroutine prexel(champ, ioc, mamax, nomax, ispmax,&
     do i100 = 1, nbcmp
         if (nbc .ne. 0) then
             nocmp = nom_cmp(i100)
-            icp = indik8( cesc, nocmp, 1, ncmp )
+            icp = indik8(cesc, nocmp, 1, ncmp)
             if (icp .eq. 0) goto 100
         else
             icp = i100
             nocmp = cesc(i100)
-        endif
+        end if
 !
         do i110 = 1, nbmail
             if (nbm .ne. 0) then
                 imai = zi(idmail+i110-1)
             else
                 imai = i110
-            endif
+            end if
             nbpt = zi(jcesd-1+5+4*(imai-1)+1)
             nbsp = zi(jcesd-1+5+4*(imai-1)+2)
             call jeveuo(jexnum(ma//'.CONNEX', imai), 'L', jcone)
             do ipt = 1, nbpt
                 do isp = 1, nbsp
-                    call cesexi('C', jcesd, jcesl, imai, ipt,&
+                    call cesexi('C', jcesd, jcesl, imai, ipt, &
                                 isp, icp, iad)
                     if (iad .gt. 0) then
                         x = cesv(iad)
@@ -158,29 +158,29 @@ subroutine prexel(champ, ioc, mamax, nomax, ispmax,&
                             ispmax = isp
                             cmpmax = nocmp
                             valmax = x
-                        endif
+                        end if
                         if (abs(x) .gt. vaamax) then
                             imaaax = imai
                             ipamax = zi(jcone+ipt-1)
                             isamax = isp
                             cmamax = nocmp
                             vaamax = abs(x)
-                        endif
+                        end if
                         if (x .lt. valmin) then
                             imamin = imai
                             iptmin = zi(jcone+ipt-1)
                             ispmin = isp
                             cmpmin = nocmp
                             valmin = x
-                        endif
+                        end if
                         if (abs(x) .lt. vaamin) then
                             imaain = imai
                             ipamin = zi(jcone+ipt-1)
                             isamin = isp
                             cmamin = nocmp
                             vaamin = abs(x)
-                        endif
-                    endif
+                        end if
+                    end if
                 end do
             end do
         end do

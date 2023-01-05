@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine xmvef4(ndim, nnol, pla, ffc, reac12,&
+subroutine xmvef4(ndim, nnol, pla, ffc, reac12, &
                   jac, tau1, tau2, lact, vtmp)
 !
     implicit none
@@ -79,15 +79,15 @@ subroutine xmvef4(ndim, nnol, pla, ffc, reac12,&
 !
     tt(:) = 0.d0
     do i = 1, nnol
-        pli=pla(i)
-        ffi=ffc(i)
-        nli=lact(i)
+        pli = pla(i)
+        ffi = ffc(i)
+        nli = lact(i)
         if (nli .eq. 0) goto 165
 !
-        tt(1)=ddot(ndim,tau1(1),1,reac12,1)
-        if (ndim .eq. 3) tt(2)=ddot(ndim,tau2(1),1,reac12,1)
+        tt(1) = ddot(ndim, tau1(1), 1, reac12, 1)
+        if (ndim .eq. 3) tt(2) = ddot(ndim, tau2(1), 1, reac12, 1)
         do k = 1, ndim-1
-            vtmp(pli+k) = vtmp(pli+k) + tt(k)*ffi*jac
+            vtmp(pli+k) = vtmp(pli+k)+tt(k)*ffi*jac
         end do
 165     continue
     end do

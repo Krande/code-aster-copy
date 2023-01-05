@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,9 +19,9 @@
 !
 subroutine romMultiParaDOMMatrCreate(ds_multipara, i_coef, ds_solve)
 !
-use Rom_Datastructure_type
+    use Rom_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -29,9 +29,9 @@ implicit none
 #include "asterfort/utmess.h"
 #include "asterfort/infniv.h"
 !
-type(ROM_DS_MultiPara), intent(in) :: ds_multipara
-integer, intent(in) :: i_coef
-type(ROM_DS_Solve), intent(in) :: ds_solve
+    type(ROM_DS_MultiPara), intent(in) :: ds_multipara
+    integer, intent(in) :: i_coef
+    type(ROM_DS_Solve), intent(in) :: ds_solve
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -61,36 +61,36 @@ type(ROM_DS_Solve), intent(in) :: ds_solve
     call infniv(ifm, niv)
     if (niv .ge. 2) then
         call utmess('I', 'ROM5_63')
-    endif
+    end if
 !
 ! - Initializations
 !
-    syst_matr      = ds_solve%syst_matr
-    nb_matr        = ds_multipara%nb_matr
+    syst_matr = ds_solve%syst_matr
+    nb_matr = ds_multipara%nb_matr
     ASSERT(nb_matr .le. nb_matr_maxi)
-    type_comb(:)   = ' '
-    matr_comb(:)   = ' '
-    coef_comb(:)   = 0.d0
+    type_comb(:) = ' '
+    matr_comb(:) = ' '
+    coef_comb(:) = 0.d0
 !
 ! - Compute matrix
 !
     i_coef_comb = 0
     do i_matr = 1, nb_matr
         matr_comb(i_matr) = ds_multipara%matr_name(i_matr)
-        l_coefm_cplx      = ds_multipara%matr_coef(i_matr)%l_cplx
+        l_coefm_cplx = ds_multipara%matr_coef(i_matr)%l_cplx
         if (l_coefm_cplx) then
             type_comb(i_matr) = 'C'
-            i_coef_comb = i_coef_comb +1
+            i_coef_comb = i_coef_comb+1
             coef_comb(i_coef_comb) = real(ds_multipara%matr_coef(i_matr)%coef_cplx(i_coef))
-            i_coef_comb = i_coef_comb +1
+            i_coef_comb = i_coef_comb+1
             coef_comb(i_coef_comb) = dimag(ds_multipara%matr_coef(i_matr)%coef_cplx(i_coef))
         else
             type_comb(i_matr) = 'R'
-            i_coef_comb = i_coef_comb +1
+            i_coef_comb = i_coef_comb+1
             coef_comb(i_coef_comb) = ds_multipara%matr_coef(i_matr)%coef_real(i_coef)
-        endif
+        end if
     end do
-    call mtcmbl(nb_matr, type_comb, coef_comb, matr_comb, syst_matr,&
+    call mtcmbl(nb_matr, type_comb, coef_comb, matr_comb, syst_matr, &
                 ' ', ' ', 'ELIM=')
 !
 end subroutine

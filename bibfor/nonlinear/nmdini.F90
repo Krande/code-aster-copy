@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine nmdini(keywf  , list_inst     , inst_init, l_inst_init, tole,&
-                  nb_inst, l_init_noexist, nume_ini )
+subroutine nmdini(keywf, list_inst, inst_init, l_inst_init, tole, &
+                  nb_inst, l_init_noexist, nume_ini)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -65,21 +65,21 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    nume_ini       = 0
+    nume_ini = 0
     l_init_noexist = .false.
 !
 ! - Acces to list of times
 !
-    call jeveuo(list_inst, 'L', vr = v_list_inst)
+    call jeveuo(list_inst, 'L', vr=v_list_inst)
 !
 ! - Get keywords
 !
     call getvis(keywf, 'NUME_INST_INIT', iocc=1, scal=nume_ini, nbret=n1)
-    call getvr8(keywf, 'INST_INIT'     , iocc=1, scal=inst    , nbret=n2)
+    call getvr8(keywf, 'INST_INIT', iocc=1, scal=inst, nbret=n2)
 !
 ! - No NUME_INST_INIT/INST_INIT
 !
-    if ((n1+n2 .eq. 0) .and. (.not.l_inst_init)) then
+    if ((n1+n2 .eq. 0) .and. (.not. l_inst_init)) then
         nume_ini = 0
 !
 ! - INCREMENT/INST_INIT or ETAT_INIT/INST_INIT
@@ -96,31 +96,31 @@ implicit none
 !
             if (nume_ini .lt. 0) then
                 l_init_noexist = .true.
-                dtmin          = inst - v_list_inst(1)
-                ins            = v_list_inst(1)
+                dtmin = inst-v_list_inst(1)
+                ins = v_list_inst(1)
                 do i_inst = 1, nb_inst-1
-                    dt = inst - v_list_inst(1+i_inst)
+                    dt = inst-v_list_inst(1+i_inst)
                     if (dt .le. 0.d0) then
                         goto 45
-                    endif
+                    end if
                     if (dt .lt. dtmin) then
                         dtmin = dt
                         ins = v_list_inst(1+i_inst)
-                    endif
+                    end if
                 end do
- 45             continue
+45              continue
                 inst = ins
-            endif
-        endif
+            end if
+        end if
         call utacli(inst, v_list_inst, nb_inst, tole, nume_ini)
         if (nume_ini .lt. 0) then
             call utmess('F', 'DISCRETISATION_89', sr=inst)
-        endif
-    endif
+        end if
+    end if
 !
 ! - Checks
 !
-    ASSERT(nume_ini.ge.0)
-    ASSERT(nume_ini.le.nb_inst)
+    ASSERT(nume_ini .ge. 0)
+    ASSERT(nume_ini .le. nb_inst)
 !
 end subroutine

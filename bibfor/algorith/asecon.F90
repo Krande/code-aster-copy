@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -76,8 +76,8 @@ subroutine asecon(nomsy, neq, mome, resu)
     integer, pointer :: type(:) => null()
     character(len=8), pointer :: vstat(:) => null()
 !     ------------------------------------------------------------------
-    data  nomcmp / 'DX' , 'DY' , 'DZ' /
-    data  vale / '                   .VALE' /
+    data nomcmp/'DX', 'DY', 'DZ'/
+    data vale/'                   .VALE'/
 !     ------------------------------------------------------------------
 !
     call jemarq()
@@ -101,12 +101,12 @@ subroutine asecon(nomsy, neq, mome, resu)
     noms2 = nomsy
     if (nomsy(1:4) .eq. 'VITE') noms2 = 'DEPL'
 !
-    call rsorac(mome, 'TOUT_ORDRE', ibid, r8b, k8b,&
-                cbid, r8b, k8b, tordr, 1,&
+    call rsorac(mome, 'TOUT_ORDRE', ibid, r8b, k8b, &
+                cbid, r8b, k8b, tordr, 1, &
                 nbtrou)
-    iordr=tordr(1)
+    iordr = tordr(1)
 !
-    call rsexch('F', meca, noms2, iordr, moncha,&
+    call rsexch('F', meca, noms2, iordr, moncha, &
                 ier)
     def = 'SECONDAIRE'
     iordr = 200
@@ -122,34 +122,34 @@ subroutine asecon(nomsy, neq, mome, resu)
         call wkvect('&&ASECON.NORD', 'V V I', nboc+1, jord)
     else
         call jeveuo('&&ASECON.NORD', 'E', jord)
-    endif
+    end if
 !
     do iocc = 1, nboc
 !
 ! POUR CHAQUE OCCURENCE ON STOQUE LE CHAMP
 !
-        call rsexch(' ', resu, nomsy, iordr, champ,&
+        call rsexch(' ', resu, nomsy, iordr, champ, &
                     ier)
         if (ier .eq. 100) then
             call vtdefs(champ, moncha, 'G', 'R')
         else
-            valk (1) = nomsy
-            valk (2) = champ
+            valk(1) = nomsy
+            valk(2) = champ
             call utmess('F', 'SEISME_25', nk=2, valk=valk, si=iocc)
-        endif
+        end if
         vale(1:19) = champ
         call jeexin(vale(1:19)//'.VALE', ibid)
         if (ibid .gt. 0) then
-            vale(20:24)='.VALE'
+            vale(20:24) = '.VALE'
         else
-            vale(20:24)='.CELV'
-        endif
+            vale(20:24) = '.CELV'
+        end if
         call jeveuo(vale, 'E', jvale)
 !
         do in = 1, neq
-            quad(in)= 0.0d0
-            line(in)= 0.0d0
-            vabs(in)= 0.0d0
+            quad(in) = 0.0d0
+            line(in) = 0.0d0
+            vabs(in) = 0.0d0
         end do
         call jelira(jexnum('&&ASENAP.LISTCAS', iocc), 'LONMAX', ncas)
         call jeveuo(jexnum('&&ASENAP.LISTCAS', iocc), 'L', jcas)
@@ -170,79 +170,79 @@ subroutine asecon(nomsy, neq, mome, resu)
                     call jeveuo('&&ASENAP.STAT', 'L', vk8=vstat)
                     stat = vstat(icas)
                     do ino = 1, nbno
-                        noeu =zk8(jno+ino-1)
+                        noeu = zk8(jno+ino-1)
                         do idir = 1, 3
                             if (zr(jdir+3*(ino-1)+idir-1) .ne. epsmac) then
                                 cmp = nomcmp(idir)
                                 monacc = noeu//cmp
                                 xx1 = zr(jdir+3*(ino-1)+idir-1)
-                                call rsorac(stat, 'NOEUD_CMP', ibid, r8b, monacc,&
-                                            cbid, r8b, k8b, tordr, 1,&
+                                call rsorac(stat, 'NOEUD_CMP', ibid, r8b, monacc, &
+                                            cbid, r8b, k8b, tordr, 1, &
                                             nbtrou)
-                                iorst=tordr(1)
-                                call rsexch('F', stat, nomsy, iorst, chextr,&
+                                iorst = tordr(1)
+                                call rsexch('F', stat, nomsy, iorst, chextr, &
                                             iret)
                                 call jeexin(chextr//'.VALE', ibid)
                                 if (ibid .gt. 0) then
                                     call jeveuo(chextr//'.VALE', 'L', jval1)
                                 else
                                     call jeveuo(chextr//'.CELV', 'L', jval1)
-                                endif
+                                end if
                                 do in = 1, neq
-                                    rep(in) = zr(jval1+in-1) * xx1
+                                    rep(in) = zr(jval1+in-1)*xx1
                                 end do
                                 if (type(iocc) .eq. 1) then
 !                 --- COMBINAISON QUADRATIQUE ---
                                     do in = 1, neq
                                         xxx = rep(in)
-                                        quad(in)= quad(in)+&
-                                        xxx*xxx
+                                        quad(in) = quad(in)+ &
+                                                   xxx*xxx
                                     end do
-                                else if (type(iocc).eq.2) then
+                                else if (type(iocc) .eq. 2) then
 !               --- COMBINAISON LINEAIRE ---
                                     do in = 1, neq
-                                        line(in)= line(in)+&
-                                        rep(in)
+                                        line(in) = line(in)+ &
+                                                   rep(in)
                                     end do
                                 else
 !              --- COMBINAISON VALEUR ABSOLUE ---
                                     do in = 1, neq
                                         xx1 = abs(rep(in))
-                                        vabs(in)= vabs(in)+&
-                                        xx1
+                                        vabs(in) = vabs(in)+ &
+                                                   xx1
                                     end do
-                                endif
-                            endif
+                                end if
+                            end if
                         end do
                     end do
-                endif
+                end if
             end do
         end do
         do in = 1, neq
             xx1 = line(in)
             xx2 = vabs(in)
             xx3 = sqrt(quad(in))
-            zr(jvale+in-1) = xx1 + xx2 + xx3
-            ii = ii + 1
+            zr(jvale+in-1) = xx1+xx2+xx3
+            ii = ii+1
             aux(ii) = zr(jvale+in-1)
         end do
 !
         call rsnoch(resu, nomsy, iordr)
-        call rsadpa(resu, 'E', 1, 'NOEUD_CMP', iordr,&
+        call rsadpa(resu, 'E', 1, 'NOEUD_CMP', iordr, &
                     0, sjv=iad, styp=k8b)
         call codent(iocc, 'D', occur)
-        zk16(iad) = 'COMBI'// occur
-        call rsadpa(resu, 'E', 1, 'TYPE_DEFO', iordr,&
+        zk16(iad) = 'COMBI'//occur
+        call rsadpa(resu, 'E', 1, 'TYPE_DEFO', iordr, &
                     0, sjv=iad, styp=k8b)
         zk16(iad) = def
         call jelibe(vale)
 !
         zi(jord+iocc-1) = iordr
-        iordr = iordr + 1
+        iordr = iordr+1
     end do
     zi(jord+nboc) = iordr
 !
-    call rsexch(' ', resu, nomsy, iordr, champ,&
+    call rsexch(' ', resu, nomsy, iordr, champ, &
                 ier)
     if (ier .eq. 100) then
         call vtdefs(champ, moncha, 'G', 'R')
@@ -250,14 +250,14 @@ subroutine asecon(nomsy, neq, mome, resu)
         valk(1) = nomsy
         valk(2) = champ
         call utmess('F', 'SEISME_25', nk=2, valk=valk, si=iordr)
-    endif
+    end if
     vale(1:19) = champ
     call jeexin(vale(1:19)//'.VALE', ibid)
     if (ibid .gt. 0) then
-        vale(20:24)='.VALE'
+        vale(20:24) = '.VALE'
     else
-        vale(20:24)='.CELV'
-    endif
+        vale(20:24) = '.CELV'
+    end if
     call jeveuo(vale, 'E', jvale)
 !
     do ioc = 1, nboc
@@ -268,16 +268,16 @@ subroutine asecon(nomsy, neq, mome, resu)
     end do
 ! STOCKAGE DU CUMUL QUADRATIQUE
     do in = 1, neq
-        zr(jvale+in-1) = sqrt( abs ( cumul(in) ) )
+        zr(jvale+in-1) = sqrt(abs(cumul(in)))
     end do
     call jelibe(vale)
     call rsnoch(resu, nomsy, iordr)
 !
 !        --- PARAMETRE ---
-    call rsadpa(resu, 'E', 1, 'NOEUD_CMP', iordr,&
+    call rsadpa(resu, 'E', 1, 'NOEUD_CMP', iordr, &
                 0, sjv=iad, styp=k8b)
     zk16(iad) = 'CUMUL'//' QUAD'
-    call rsadpa(resu, 'E', 1, 'TYPE_DEFO', iordr,&
+    call rsadpa(resu, 'E', 1, 'TYPE_DEFO', iordr, &
                 0, sjv=iad, styp=k8b)
     zk16(iad) = def
 !

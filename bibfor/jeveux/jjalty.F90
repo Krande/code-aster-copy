@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -36,8 +36,8 @@ subroutine jjalty(typei, ltypi, cel, inatb, jctab)
 !-----------------------------------------------------------------------
     integer :: izr(1), izc(1), izl(1), izk8(1), izk16(1), izk24(1)
     integer :: izk32(1), izk80(1), izi4(1)
-    equivalence    (izr,zr),(izc,zc),(izl,zl),(izk8,zk8),(izk16,zk16),&
-                   (izk24,zk24),(izk32,zk32),(izk80,zk80),(izi4,zi4)
+    equivalence(izr, zr), (izc, zc), (izl, zl), (izk8, zk8), (izk16, zk16), &
+        (izk24, zk24), (izk32, zk32), (izk80, zk80), (izi4, zi4)
 ! DEB ------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
@@ -63,9 +63,9 @@ subroutine jjalty(typei, ltypi, cel, inatb, jctab)
             call jxveuo(cel, izk80, inatb, jctab)
         else
             call jxveuo(cel, izk8, inatb, jctab)
-        endif
+        end if
     else if (typei .eq. 'L') then
         call jxveuo(cel, izl, inatb, jctab)
-    endif
+    end if
 ! FIN ------------------------------------------------------------------
 end subroutine

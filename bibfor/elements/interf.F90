@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine interf(mater, kfonc1, kfonc2, normf, x0,&
+subroutine interf(mater, kfonc1, kfonc2, normf, x0, &
                   xrac)
     implicit none
 #include "asterfort/cdnfo2.h"
@@ -32,42 +32,42 @@ subroutine interf(mater, kfonc1, kfonc2, normf, x0,&
     integer :: icodr2(1)
 !
     phenom = 'GLRC_DAMAGE'
-    iter=0
-    itermx=100
-    xrac=x0
+    iter = 0
+    itermx = 100
+    xrac = x0
 !
     k8b = 'X '
-    call rcvale(mater, phenom, 1, k8b, [xrac],&
+    call rcvale(mater, phenom, 1, k8b, [xrac], &
                 1, kfonc1, fx1(1), icodr2(1), 1)
-    call rcvale(mater, phenom, 1, k8b, [xrac],&
+    call rcvale(mater, phenom, 1, k8b, [xrac], &
                 1, kfonc2, fx2(1), icodr2(1), 1)
 !
-    fx=fx1(1)-fx2(1)
-    err=abs(fx)
-    tole=1.d-8*normf
+    fx = fx1(1)-fx2(1)
+    err = abs(fx)
+    tole = 1.d-8*normf
 !
     do iter = 1, itermx
         if (err .le. tole) goto 10
-        call cdnfo2(mater, kfonc1, xrac, 1, dfx1,&
+        call cdnfo2(mater, kfonc1, xrac, 1, dfx1, &
                     ier1)
-        call cdnfo2(mater, kfonc2, xrac, 1, dfx2,&
+        call cdnfo2(mater, kfonc2, xrac, 1, dfx2, &
                     ier2)
-        dfx=dfx1-dfx2
+        dfx = dfx1-dfx2
 !
         if ((abs(dfx) .lt. 1.d-12) .or. (ier1 .gt. 0) .or. (ier2 .gt. 0)) then
             call utmess('F', 'ELEMENTS2_27')
-        endif
+        end if
 !
-        xrac=xrac-fx/dfx
-        call rcvale(mater, phenom, 1, k8b, [xrac],&
+        xrac = xrac-fx/dfx
+        call rcvale(mater, phenom, 1, k8b, [xrac], &
                     1, kfonc1, fx1(1), icodr2(1), 1)
-        call rcvale(mater, phenom, 1, k8b, [xrac],&
+        call rcvale(mater, phenom, 1, k8b, [xrac], &
                     1, kfonc2, fx2(1), icodr2(1), 1)
-        fx=fx1(1)-fx2(1)
-        err=abs(fx)
+        fx = fx1(1)-fx2(1)
+        err = abs(fx)
     end do
     call utmess('F', 'ELEMENTS2_27')
 !
- 10 continue
+10  continue
 !
 end subroutine

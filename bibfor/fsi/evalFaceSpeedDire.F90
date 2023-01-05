@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,14 +17,14 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine evalFaceSpeedDire(fsi_form, cellDime, jvLoad , speedDire,&
-                             ipg     , nx     , ny       ,&
-                             lFunc_  , lReal_ , lCplx_   ,&
-                             lTime_  , time_  ,&
-                             x_      , y_     ,&
-                             z_      , nz_)
+subroutine evalFaceSpeedDire(fsi_form, cellDime, jvLoad, speedDire, &
+                             ipg, nx, ny, &
+                             lFunc_, lReal_, lCplx_, &
+                             lTime_, time_, &
+                             x_, y_, &
+                             z_, nz_)
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterf_types.h"
@@ -33,14 +33,14 @@ implicit none
 #include "asterfort/fointe.h"
 #include "asterfort/utmess.h"
 !
-character(len=16), intent(in) :: fsi_form
-integer, intent(in) :: cellDime, jvLoad
-real(kind=8), intent(out) :: speedDire
-integer, intent(in) :: ipg
-real(kind=8), intent(in) :: nx, ny
-aster_logical, optional, intent(in) :: lFunc_, lReal_, lCplx_, lTime_
-real(kind=8), optional, intent(in) :: time_, x_, y_
-real(kind=8), optional, intent(in) :: z_, nz_
+    character(len=16), intent(in) :: fsi_form
+    integer, intent(in) :: cellDime, jvLoad
+    real(kind=8), intent(out) :: speedDire
+    integer, intent(in) :: ipg
+    real(kind=8), intent(in) :: nx, ny
+    aster_logical, optional, intent(in) :: lFunc_, lReal_, lCplx_, lTime_
+    real(kind=8), optional, intent(in) :: time_, x_, y_
+    real(kind=8), optional, intent(in) :: z_, nz_
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -71,7 +71,7 @@ real(kind=8), optional, intent(in) :: z_, nz_
     real(kind=8) :: nvx, nvy, nvz, normVect
     real(kind=8) :: nxNorm, nyNorm, nzNorm
     integer :: nbPara, iret
-    character(len=8), parameter :: paraName(4) = (/'X   ', 'Y   ',  'Z   ', 'INST'/)
+    character(len=8), parameter :: paraName(4) = (/'X   ', 'Y   ', 'Z   ', 'INST'/)
     real(kind=8) :: paraVale(4)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -97,13 +97,13 @@ real(kind=8), optional, intent(in) :: z_, nz_
     speedDire = 1.d0
 
 ! - Norm vector
-    normVect = sqrt(nx*nx + ny*ny + nz*nz)
+    normVect = sqrt(nx*nx+ny*ny+nz*nz)
     if (normVect .le. r8prem()) then
         call utmess('F', 'CHARGES6_6')
-    endif
-    nxNorm = nx / normVect
-    nyNorm = ny / normVect
-    nzNorm = nz / normVect
+    end if
+    nxNorm = nx/normVect
+    nyNorm = ny/normVect
+    nzNorm = nz/normVect
 
 ! - Flag if normal speed or not
     lSpeedNorm = ASTER_TRUE
@@ -119,15 +119,15 @@ real(kind=8), optional, intent(in) :: z_, nz_
     else
         ASSERT(ASTER_FALSE)
 
-    endif
+    end if
 
     if (lSpeedNorm) then
         speedDire = 1.d0
 
     else
         if (fsi_form .ne. 'FSI_UPSI') then
-            call utmess('F', 'CHARGES6_7', sk = fsi_form)
-        endif
+            call utmess('F', 'CHARGES6_7', sk=fsi_form)
+        end if
         nvx = 0.d0
         nvy = 0.d0
         nvz = 0.d0
@@ -138,11 +138,11 @@ real(kind=8), optional, intent(in) :: z_, nz_
             if (cellDime .eq. 2) then
                 nbPara = 3
                 paraVale(3) = z
-            endif
+            end if
             if (lTime) then
-                nbPara = nbPara + 1
+                nbPara = nbPara+1
                 paraVale(nbPara) = time
-            endif
+            end if
             funcName = zk8(jvLoad-1+3)
             call fointe('FM', funcName, nbPara, paraname, paraVale, nvx, iret)
             funcName = zk8(jvLoad-1+4)
@@ -150,38 +150,38 @@ real(kind=8), optional, intent(in) :: z_, nz_
             if (cellDime .eq. 2) then
                 funcName = zk8(jvLoad-1+5)
                 call fointe('FM', funcName, nbPara, paraname, paraVale, nvz, iret)
-            endif
+            end if
 
         elseif (lReal) then
             nvx = zr(jvLoad-1+3)
             nvy = zr(jvLoad-1+4)
             if (cellDime .eq. 2) then
                 nvz = zr(jvLoad-1+5)
-            endif
+            end if
 
         elseif (lCplx) then
             nvx = dble(zc(jvLoad-1+3))
             nvy = dble(zc(jvLoad-1+4))
             if (cellDime .eq. 2) then
                 nvz = dble(zc(jvLoad-1+5))
-            endif
+            end if
 
-        endif
+        end if
 
-        normVect = sqrt(nvx*nvx + nvy*nvy + nvz*nvz)
+        normVect = sqrt(nvx*nvx+nvy*nvy+nvz*nvz)
         if (normVect .le. r8prem()) then
             speedDire = 1.d0
         else
-            nvx = nvx / normVect
-            nvy = nvy / normVect
-            nvz = nvz / normVect
+            nvx = nvx/normVect
+            nvy = nvy/normVect
+            nvz = nvz/normVect
             if (cellDime .eq. 2) then
-                speedDire = 1.d0*(nxNorm*nvx + nyNorm*nvy + nzNorm*nvz)
+                speedDire = 1.d0*(nxNorm*nvx+nyNorm*nvy+nzNorm*nvz)
             else
-                speedDire = 1.d0*(nxNorm*nvx + nyNorm*nvy )
-            endif
-        endif
+                speedDire = 1.d0*(nxNorm*nvx+nyNorm*nvy)
+            end if
+        end if
 
-    endif
+    end if
 !
 end subroutine

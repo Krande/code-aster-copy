@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -54,7 +54,7 @@ subroutine axdipo(noma, caelem, modele, iaxe)
 !
 !-----------------------------------------------------------------------
     integer :: nbtel, nbtel1
-    parameter     (nbtel=9,nbtel1=7)
+    parameter(nbtel=9, nbtel1=7)
 !
     integer :: ialpha, iangl, ias, iasmax, iaxe2, ibeta, icaori
     integer :: icmp, icode, idesc, iexcar, igamma, itelok, ipbl
@@ -77,17 +77,17 @@ subroutine axdipo(noma, caelem, modele, iaxe)
     character(len=24) :: modmai, modnem, cadesc, captma, cavale
     character(len=32) :: kexnom
 !
-    data nomcmp/'ALPHA   ','BETA    ','GAMMA   '/
+    data nomcmp/'ALPHA   ', 'BETA    ', 'GAMMA   '/
 !
-    data nomele/'MECA_POU_D_T    ','MECA_POU_D_E    ',&
-     &            'MECA_POU_D_T_GD ','MECA_POU_D_TG   ',&
+    data nomele/'MECA_POU_D_T    ', 'MECA_POU_D_E    ',&
+     &            'MECA_POU_D_T_GD ', 'MECA_POU_D_TG   ',&
      &            'MECA_BARRE      ',&
-     &            'MECA_DIS_T_L    ','MECA_DIS_TR_L   ',&
-     &            'MECA_DIS_T_N    ','MECA_DIS_TR_N   '/
+     &            'MECA_DIS_T_L    ', 'MECA_DIS_TR_L   ',&
+     &            'MECA_DIS_T_N    ', 'MECA_DIS_TR_N   '/
 !
 !-----------------------------------------------------------------------
     call jemarq()
-    tol = 1.0d+08 * r8prem()
+    tol = 1.0d+08*r8prem()
 !
 !     RECUPERATION DU NOMBRE DE MAILLES
     call jelira(noma//'.NOMMAI', 'NOMUTI', nbmail)
@@ -104,7 +104,7 @@ subroutine axdipo(noma, caelem, modele, iaxe)
     if (ixnw .ne. 0) call jelira(modnem, 'NMAXOC', nbmtrd)
     if (nbmtrd .ne. 0) then
         call utmess('F', 'MODELISA2_23')
-    endif
+    end if
 !
 !     RECUPERATION DE LA CARTE D'ORIENTATION DES ELEMENTS
     carte = caelem//'.CARORIEN  '
@@ -113,7 +113,7 @@ subroutine axdipo(noma, caelem, modele, iaxe)
     call jeexin(cadesc, iexcar)
     if (iexcar .eq. 0) then
         call utmess('F', 'MODELISA2_24')
-    endif
+    end if
 !
     call jeveuo(cadesc, 'L', idesc)
     call jeveuo(cavale, 'L', ivale)
@@ -122,19 +122,19 @@ subroutine axdipo(noma, caelem, modele, iaxe)
 !
 !    DETERMINATION DES RANGS DES COMPOSANTES DE LA GRANDEUR <CAORIE>
 !        <ALPHA>  <BETA>  <GAMMA>
-    kexnom = jexnom('&CATA.GD.NOMCMP','CAORIE')
+    kexnom = jexnom('&CATA.GD.NOMCMP', 'CAORIE')
     call jelira(kexnom, 'LONMAX', ncmpor)
     call jeveuo(kexnom, 'L', icaori)
     ialpha = 0
     ibeta = 0
     igamma = 0
-    ialpha = indik8( zk8(icaori) , nomcmp(1) , 1 , ncmpor )
-    ibeta = indik8( zk8(icaori) , nomcmp(2) , 1 , ncmpor )
-    igamma = indik8( zk8(icaori) , nomcmp(3) , 1 , ncmpor )
-    ntrouv = (ialpha.eq.0).or.(ibeta.eq.0).or.(igamma.eq.0)
+    ialpha = indik8(zk8(icaori), nomcmp(1), 1, ncmpor)
+    ibeta = indik8(zk8(icaori), nomcmp(2), 1, ncmpor)
+    igamma = indik8(zk8(icaori), nomcmp(3), 1, ncmpor)
+    ntrouv = (ialpha .eq. 0) .or. (ibeta .eq. 0) .or. (igamma .eq. 0)
     if (ntrouv) then
         call utmess('F', 'MODELISA2_25')
-    endif
+    end if
 !     NOMBRE D'ENTIERS CODES DANS LA CARTE
     call dismoi('NB_EC', 'CAORIE', 'GRANDEUR', repi=nbec)
 !
@@ -144,7 +144,7 @@ subroutine axdipo(noma, caelem, modele, iaxe)
     call etenca(carte, ligrmo, iret)
     if (iret .ne. 0) then
         call utmess('F', 'MODELISA2_26', sk=carte)
-    endif
+    end if
 !
     captma = carte//'.PTMA'
     call jeveuo(captma, 'L', iptma)
@@ -171,46 +171,46 @@ subroutine axdipo(noma, caelem, modele, iaxe)
             if (nutyel .eq. ntyele(itel)) then
                 itelok = itel
                 goto 32
-            endif
+            end if
         end do
         call utmess('F', 'MODELISA2_27')
- 32     continue
+32      continue
 !
         if (itelok .le. nbtel1) then
             ias = zi(iptma+nummai-1)
             if (ias .eq. 0) then
                 call utmess('F', 'MODELISA2_28', si=nummai)
-            endif
+            end if
 !
             icode = zi(idesc-1+3+2*iasmax+nbec*(ias-1)+1)
             irana = 0
             do icmp = 1, ialpha
-                if (exisdg([icode],icmp)) irana = irana + 1
+                if (exisdg([icode], icmp)) irana = irana+1
             end do
             iranb = 0
             do icmp = 1, ibeta
-                if (exisdg([icode],icmp)) iranb = iranb + 1
+                if (exisdg([icode], icmp)) iranb = iranb+1
             end do
             irang = 0
             do icmp = 1, igamma
-                if (exisdg([icode],icmp)) irang = irang + 1
+                if (exisdg([icode], icmp)) irang = irang+1
             end do
-            ntrouv = (irana.eq.0).or.(iranb.eq.0).or.(irang.eq.0)
+            ntrouv = (irana .eq. 0) .or. (iranb .eq. 0) .or. (irang .eq. 0)
             if (ntrouv) then
                 call utmess('F', 'MODELISA2_29', si=nummai)
             else
-                pobali = pobali + 1
+                pobali = pobali+1
                 iaux1 = ivale+ncmpor*(ias-1)
-                zr(iangl+3*(pobali-1) ) = zr(iaux1+irana-1)
+                zr(iangl+3*(pobali-1)) = zr(iaux1+irana-1)
                 zr(iangl+3*(pobali-1)+1) = zr(iaux1+iranb-1)
                 zr(iangl+3*(pobali-1)+2) = zr(iaux1+irang-1)
-            endif
-        endif
+            end if
+        end if
 !
     end do
     if (pobali .eq. 0) then
         call utmess('F', 'MODELISA2_30')
-    endif
+    end if
 !
 !     DETERMINATION DE L'AXE DIRECTEUR DE LA POUTRE A L'AIDE DES
 !     ANGLES NAUTIQUES DU PREMIER ELEMENT ORIENTE : AFFECTATION DE IAXE
@@ -228,29 +228,29 @@ subroutine axdipo(noma, caelem, modele, iaxe)
     cosb = cos(beta)
     sing = sin(gamma)
     cosg = cos(gamma)
-    call locglo(vdl, sina, cosa, sinb, cosb,&
+    call locglo(vdl, sina, cosa, sinb, cosb, &
                 sing, cosg, vdg)
 !
     vdg(1) = abs(vdg(1))
     vdg(2) = abs(vdg(2))
     vdg(3) = abs(vdg(3))
-    dif1 = dble(abs(vdg(1) - 1.d0))
-    dif2 = dble(abs(vdg(2) - 1.d0))
-    dif3 = dble(abs(vdg(3) - 1.d0))
+    dif1 = dble(abs(vdg(1)-1.d0))
+    dif2 = dble(abs(vdg(2)-1.d0))
+    dif3 = dble(abs(vdg(3)-1.d0))
 !
     iaxe = 0
     if (dif1 .lt. tol .and. vdg(2) .lt. tol .and. vdg(3) .lt. tol) then
         iaxe = 1
-        else if (dif2.lt.tol .and. vdg(1).lt.tol .and. vdg(3).lt.tol)&
-    then
+    else if (dif2 .lt. tol .and. vdg(1) .lt. tol .and. vdg(3) .lt. tol) &
+        then
         iaxe = 2
-        else if (dif3.lt.tol .and. vdg(1).lt.tol .and. vdg(2).lt.tol)&
-    then
+    else if (dif3 .lt. tol .and. vdg(1) .lt. tol .and. vdg(2) .lt. tol) &
+        then
         iaxe = 3
-    endif
+    end if
     if (iaxe .eq. 0) then
         call utmess('F', 'MODELISA2_31')
-    endif
+    end if
 !
 !     ON VERIFIE QUE LES ORIENTATIONS DES AUTRES ELEMENTS DEFINISSENT
 !     LE MEME AXE DIRECTEUR
@@ -259,9 +259,9 @@ subroutine axdipo(noma, caelem, modele, iaxe)
             alpha2 = zr(iangl+3*(ipbl-1))
             beta2 = zr(iangl+3*(ipbl-1)+1)
             gamma2 = zr(iangl+3*(ipbl-1)+2)
-            dif1 = dble(abs(alpha2 - alpha))
-            dif2 = dble(abs(beta2 - beta ))
-            dif3 = dble(abs(gamma2 - gamma))
+            dif1 = dble(abs(alpha2-alpha))
+            dif2 = dble(abs(beta2-beta))
+            dif3 = dble(abs(gamma2-gamma))
             if (dif1 .gt. tol .or. dif2 .gt. tol .or. dif3 .gt. tol) then
                 sina2 = sin(alpha2)
                 cosa2 = cos(alpha2)
@@ -269,30 +269,30 @@ subroutine axdipo(noma, caelem, modele, iaxe)
                 cosb2 = cos(beta2)
                 sing2 = sin(gamma2)
                 cosg2 = cos(gamma2)
-                call locglo(vdl, sina2, cosa2, sinb2, cosb2,&
+                call locglo(vdl, sina2, cosa2, sinb2, cosb2, &
                             sing2, cosg2, vdg)
                 vdg(1) = abs(vdg(1))
                 vdg(2) = abs(vdg(2))
                 vdg(3) = abs(vdg(3))
-                dife1 = dble(abs(vdg(1) - 1.d0))
-                dife2 = dble(abs(vdg(2) - 1.d0))
-                dife3 = dble(abs(vdg(3) - 1.d0))
+                dife1 = dble(abs(vdg(1)-1.d0))
+                dife2 = dble(abs(vdg(2)-1.d0))
+                dife3 = dble(abs(vdg(3)-1.d0))
                 iaxe2 = 0
                 if (dife1 .lt. tol .and. vdg(2) .lt. tol .and. vdg(3) .lt. tol) then
                     iaxe2 = 1
-                    else if (dife2.lt.tol .and. vdg(1).lt.tol .and. vdg(3)&
-                .lt.tol) then
+                else if (dife2 .lt. tol .and. vdg(1) .lt. tol .and. vdg(3) &
+                         .lt. tol) then
                     iaxe2 = 2
-                    else if (dife3.lt.tol .and. vdg(1).lt.tol .and. vdg(2)&
-                .lt.tol) then
+                else if (dife3 .lt. tol .and. vdg(1) .lt. tol .and. vdg(2) &
+                         .lt. tol) then
                     iaxe2 = 3
-                endif
+                end if
                 if (iaxe2 .ne. iaxe) then
                     call utmess('F', 'MODELISA2_32')
-                endif
-            endif
+                end if
+            end if
         end do
-    endif
+    end if
 !
     call jedetr('&&AXDIPO.TEMP.ANGL')
     call jedetc('V', carte, 1)

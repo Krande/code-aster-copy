@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine lecelt(iunv, maxnod, nbtyma, indic, permut,&
+subroutine lecelt(iunv, maxnod, nbtyma, indic, permut, &
                   codgra, node, nbnode)
     implicit none
 !     ================================================================
@@ -84,24 +84,24 @@ subroutine lecelt(iunv, maxnod, nbtyma, indic, permut,&
     integer :: imes, iunv
 !-----------------------------------------------------------------------
 !
-    read (iunv,'(8I10)') (nodlu(i),i=1,nbnode)
+    read (iunv, '(8I10)') (nodlu(i), i=1, nbnode)
 !
     if (indic(codgra) .eq. -1) then
         imes = iunifi('MESSAGE')
-        write (imes,*) 'MAILLE DE TYPE ',codgra,' NON TRAITE'
-    else if (indic(codgra).eq.0) then
+        write (imes, *) 'MAILLE DE TYPE ', codgra, ' NON TRAITE'
+    else if (indic(codgra) .eq. 0) then
 !
         do i = 1, nbnode
             node(i) = nodlu(i)
         end do
 !
-    else if (indic(codgra).eq.1) then
+    else if (indic(codgra) .eq. 1) then
 !
         do i = 1, nbnode
-            ii = permut(i,codgra)
+            ii = permut(i, codgra)
             node(ii) = nodlu(i)
         end do
 !
-    endif
+    end if
 !
 end subroutine

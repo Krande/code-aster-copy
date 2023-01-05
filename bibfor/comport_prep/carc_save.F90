@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,9 +19,9 @@
 !
 subroutine carc_save(mesh, carcri, ds_compor_para)
 !
-use Behaviour_type
+    use Behaviour_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterc/lcdiscard.h"
@@ -33,9 +33,9 @@ implicit none
 #include "asterfort/nocart.h"
 #include "asterfort/setBehaviourParaValue.h"
 !
-character(len=8), intent(in) :: mesh
-character(len=19), intent(in) :: carcri
-type(Behaviour_PrepCrit), intent(in) :: ds_compor_para
+    character(len=8), intent(in) :: mesh
+    character(len=19), intent(in) :: carcri
+    type(Behaviour_PrepCrit), intent(in) :: ds_compor_para
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -67,7 +67,7 @@ type(Behaviour_PrepCrit), intent(in) :: ds_compor_para
     nbFactorKeyword = ds_compor_para%nb_comp
 
 ! - Access to MAP
-    call jeveuo(carcri//'.VALV', 'E', vr = carcriValv)
+    call jeveuo(carcri//'.VALV', 'E', vr=carcriValv)
 
 ! - Get parameters from SCHEMA_THM
     parm_theta_thm = ds_compor_para%parm_theta_thm
@@ -81,25 +81,25 @@ type(Behaviour_PrepCrit), intent(in) :: ds_compor_para
 ! - Loop on occurrences of COMPORTEMENT
     do iFactorKeyword = 1, nbFactorKeyword
 ! ----- Get list of elements where comportment is defined
-        call comp_read_mesh(mesh, factorKeyword, iFactorKeyword,&
+        call comp_read_mesh(mesh, factorKeyword, iFactorKeyword, &
                             list_elem_affe, l_affe_all, nb_elem_affe)
 
 ! ----- Set in <CARTE>
-        call setBehaviourParaValue(ds_compor_para%v_crit,&
-                                   parm_theta_thm, parm_alpha_thm,&
-                                   hho_coef_stab, hho_type_stab, hho_type_calc,&
-                                   iFactorKeyword, carcriMap_ = carcriValv)
+        call setBehaviourParaValue(ds_compor_para%v_crit, &
+                                   parm_theta_thm, parm_alpha_thm, &
+                                   hho_coef_stab, hho_type_stab, hho_type_calc, &
+                                   iFactorKeyword, carcriMap_=carcriValv)
 
 ! ----- Affect in <CARTE>
         if (l_affe_all) then
             call nocart(carcri, 1, nbCmp)
         else
-            call jeveuo(list_elem_affe, 'L', vi = v_elem_affe)
-            call nocart(carcri, 3, nbCmp, mode = 'NUM', nma = nb_elem_affe,&
-                        limanu = v_elem_affe)
+            call jeveuo(list_elem_affe, 'L', vi=v_elem_affe)
+            call nocart(carcri, 3, nbCmp, mode='NUM', nma=nb_elem_affe, &
+                        limanu=v_elem_affe)
             call jedetr(list_elem_affe)
-        endif
-    enddo
+        end if
+    end do
 !
     call jedetr(carcri//'.NCMP')
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,9 +19,9 @@
 !
 subroutine vetyma(mesh, ndim, loadType, listCell, nbCell)
 !
-use mesh_module, only: getPropertiesOfCell
+    use mesh_module, only: getPropertiesOfCell
 !
-implicit none
+    implicit none
 !
 #include "asterfort/assert.h"
 #include "asterfort/jedema.h"
@@ -31,11 +31,11 @@ implicit none
 #include "asterfort/jexnum.h"
 #include "asterfort/utmess.h"
 !
-character(len=8), intent(in) :: mesh
-integer, intent(in) :: nbCell
-character(len=24), intent(in) :: listCell
-character(len=16), intent(in) :: loadType
-integer, intent(in) :: ndim
+    character(len=8), intent(in) :: mesh
+    integer, intent(in) :: nbCell
+    character(len=24), intent(in) :: listCell
+    character(len=16), intent(in) :: loadType
+    integer, intent(in) :: ndim
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -73,32 +73,32 @@ integer, intent(in) :: ndim
 !
 ! - Access to mesh
 !
-    call jeveuo(mesh//'.TYPMAIL', 'L', vi = meshTypmail)
-    call jeveuo(listCell, 'L', vi = listCellNume)
+    call jeveuo(mesh//'.TYPMAIL', 'L', vi=meshTypmail)
+    call jeveuo(listCell, 'L', vi=listCellNume)
 !
 ! - Type of elements
 !
     orderMini = -1
-    if (loadType .eq. 'FLUX_REP' .or. loadType .eq. 'PRES_REP' .or.&
-        loadType .eq. 'ECHANGE' .or. loadType .eq. 'FORCE_FACE' .or.&
-        loadType .eq. 'IMPE_FACE' .or. loadType .eq. 'VITE_FACE' .or.&
-        loadType .eq. 'FORCE_CONTOUR' .or. loadType .eq. 'EFFE_FOND' .or.&
+    if (loadType .eq. 'FLUX_REP' .or. loadType .eq. 'PRES_REP' .or. &
+        loadType .eq. 'ECHANGE' .or. loadType .eq. 'FORCE_FACE' .or. &
+        loadType .eq. 'IMPE_FACE' .or. loadType .eq. 'VITE_FACE' .or. &
+        loadType .eq. 'FORCE_CONTOUR' .or. loadType .eq. 'EFFE_FOND' .or. &
         loadType .eq. 'ONDE_PLAN') then
-        topo_2d   = 'LINE'
-        topo_3d   = 'SURF'
+        topo_2d = 'LINE'
+        topo_3d = 'SURF'
 
-    else if (loadType .eq. 'SOURCE' .or. loadType.eq.'FORCE_INTERNE') then
-        topo_2d   = 'SURF'
-        topo_3d   = 'VOLU'
+    else if (loadType .eq. 'SOURCE' .or. loadType .eq. 'FORCE_INTERNE') then
+        topo_2d = 'SURF'
+        topo_3d = 'VOLU'
 
-    else if (loadType.eq.'FORCE_TUYAU') then
-        topo_2d   = 'None'
-        topo_3d   = 'LINE'
+    else if (loadType .eq. 'FORCE_TUYAU') then
+        topo_2d = 'None'
+        topo_3d = 'LINE'
         orderMini = 2
 
     else
         goto 99
-    endif
+    end if
 !
 ! - Select the right set of topological dimension of cells
 !
@@ -113,7 +113,7 @@ integer, intent(in) :: ndim
         cellTypeNume = meshTypmail(cellNume)
         call jenuno(jexnum('&CATA.TM.NOMTM', cellTypeNume), cellTypeName)
         call getPropertiesOfCell(cellTypeName, topoRequired)
-    endif
+    end if
 !
     nerr = 0
     do iCell = 1, nbCell
@@ -134,24 +134,24 @@ integer, intent(in) :: ndim
                 valk(1) = cellName
                 valk(2) = loadType
                 call utmess('A', 'CHARGES2_86', nk=2, valk=valk)
-            endif
+            end if
         else if (topoRequired .eq. 'SURF') then
             if (cellTopo .ne. 'SURF') then
                 nerr = nerr+1
                 valk(1) = cellName
                 valk(2) = loadType
                 call utmess('A', 'CHARGES2_87', nk=2, valk=valk)
-            endif
+            end if
         else if (topoRequired .eq. 'VOLU') then
             if (cellTopo .ne. 'VOLU') then
                 nerr = nerr+1
                 valk(1) = cellName
                 valk(2) = loadType
                 call utmess('A', 'CHARGES2_88', nk=2, valk=valk)
-            endif
+            end if
         else
             ASSERT(ASTER_FALSE)
-        endif
+        end if
 
 ! ----- Check consistency of interpolation order
         if (orderMini .ge. 0) then
@@ -159,14 +159,14 @@ integer, intent(in) :: ndim
                 valk(1) = cellName
                 valk(2) = loadType
                 call utmess('A', 'CHARGES2_85', nk=2, valk=valk)
-            endif
-        endif
+            end if
+        end if
 
-    enddo
+    end do
 !
     if (nbCell .eq. nerr) then
         call utmess('A', 'CHARGES2_89', sk=loadType)
-    endif
+    end if
 !
 99  continue
     call jedema()

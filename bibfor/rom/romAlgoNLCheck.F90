@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,12 +17,12 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine romAlgoNLCheck(phenom        , model_algoz, mesh_algoz, ds_algorom,&
+subroutine romAlgoNLCheck(phenom, model_algoz, mesh_algoz, ds_algorom, &
                           l_line_search_)
 !
-use Rom_Datastructure_type
+    use Rom_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -32,11 +32,11 @@ implicit none
 #include "asterfort/jenonu.h"
 #include "asterfort/jexnom.h"
 !
-character(len=4), intent(in) :: phenom
-character(len=*), intent(in) :: model_algoz
-character(len=*), intent(in) :: mesh_algoz
-type(ROM_DS_AlgoPara), intent(in) :: ds_algorom
-aster_logical, intent(in), optional :: l_line_search_
+    character(len=4), intent(in) :: phenom
+    character(len=*), intent(in) :: model_algoz
+    character(len=*), intent(in) :: mesh_algoz
+    type(ROM_DS_AlgoPara), intent(in) :: ds_algorom
+    aster_logical, intent(in), optional :: l_line_search_
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -69,14 +69,14 @@ aster_logical, intent(in), optional :: l_line_search_
     call infniv(ifm, niv)
     if (niv .ge. 2) then
         call utmess('I', 'ROM5_30')
-    endif
+    end if
 !
 ! - Get parameters
 !
-    mesh_algo  = mesh_algoz
+    mesh_algo = mesh_algoz
     model_algo = model_algoz
-    ds_empi    = ds_algorom%ds_empi
-    l_hrom     = ds_algorom%l_hrom
+    ds_empi = ds_algorom%ds_empi
+    l_hrom = ds_algorom%l_hrom
     grnode_int = ds_algorom%grnode_int
 !
 ! - Check mesh
@@ -84,14 +84,14 @@ aster_logical, intent(in), optional :: l_line_search_
     mesh_base = ds_empi%mode%mesh
     if (mesh_base .ne. mesh_algo) then
         call utmess('F', 'ROM5_31')
-    endif
+    end if
 !
 ! - Check model
 !
     model_base = ds_empi%mode%model
     if (model_base .ne. model_algo) then
         call utmess('F', 'ROM5_49')
-    endif
+    end if
 !
 ! - Check field in base
 !
@@ -99,50 +99,50 @@ aster_logical, intent(in), optional :: l_line_search_
     if (phenom .eq. 'THER') then
         if (fieldName .ne. 'TEMP') then
             call utmess('F', 'ROM5_32')
-        endif
+        end if
     elseif (phenom .eq. 'MECA') then
         if (fieldName .ne. 'DEPL') then
             call utmess('F', 'ROM5_32')
-        endif
+        end if
     else
         ASSERT(ASTER_FALSE)
-    endif
+    end if
     fieldSupp = ds_empi%mode%fieldSupp
     if (fieldSupp .ne. 'NOEU') then
         call utmess('F', 'ROM5_36')
-    endif
+    end if
 !
 ! - Check group of nodes
 !
     if (l_hrom) then
         call jeexin(mesh_algo//'.GROUPENO', iret)
         if (iret .eq. 0) then
-            call utmess('F', 'ROM5_33', sk = grnode_int)
+            call utmess('F', 'ROM5_33', sk=grnode_int)
         else
             call jenonu(jexnom(mesh_algo//'.GROUPENO', grnode_int), iret)
             if (iret .eq. 0) then
-                call utmess('F', 'ROM5_33', sk = grnode_int)
-            endif
-        endif
-    endif
+                call utmess('F', 'ROM5_33', sk=grnode_int)
+            end if
+        end if
+    end if
 !
 ! - Check empiric base
 !
     nbMode = ds_empi%nbMode
     if (nbMode .lt. 1) then
         call utmess('F', 'ROM5_35')
-    endif
+    end if
 !
 ! - Function exclusion
 !
     if (phenom .eq. 'THER') then
         if (l_line_search_) then
             call utmess('F', 'ROM5_34')
-        endif
+        end if
     elseif (phenom .eq. 'MECA') then
 !
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 end subroutine

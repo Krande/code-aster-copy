@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine dismoi(questi, nomob, typeco, repi, repk,&
+subroutine dismoi(questi, nomob, typeco, repi, repk, &
                   arret, ier)
     implicit none
 #include "jeveux.h"
@@ -86,15 +86,15 @@ subroutine dismoi(questi, nomob, typeco, repi, repk,&
 ! DEB-------------------------------------------------------------------
 !
     if (present(arret)) then
-        arret2=arret
+        arret2 = arret
     else
-        arret2='F'
-    endif
-    ASSERT(arret2.eq.'F'.or.arret2.eq.'C')
+        arret2 = 'F'
+    end if
+    ASSERT(arret2 .eq. 'F' .or. arret2 .eq. 'C')
 !
-    repi1=99999
-    ier1=0
-    repk1='????????'
+    repi1 = 99999
+    ier1 = 0
+    repk1 = '????????'
 !
 !     --ON RECOPIE LES ARGUMENTS "CARACTERE" EN ENTREE
 !       DANS DES VARIABLES DE LONGUEUR FIXE (K24) :
@@ -108,83 +108,83 @@ subroutine dismoi(questi, nomob, typeco, repi, repk,&
 !
     if (typec1 .eq. 'MATR_ASSE') then
         call dismms(quest1, nomo1(1:19), repi1, repk1, ier1)
-    else if (typec1.eq.'RESULTAT') then
+    else if (typec1 .eq. 'RESULTAT') then
         call dismrs(quest1, nomo1(1:8), repi1, repk1, ier1)
-    else if (typec1.eq.'CATALOGUE') then
+    else if (typec1 .eq. 'CATALOGUE') then
         call dismct(quest1, nomo1(1:1), repi1, repk1, ier1)
-    else if (typec1.eq.'INCONNU') then
+    else if (typec1 .eq. 'INCONNU') then
         call dismic(quest1, nomo1(1:19), repi1, repk1, ier1)
-    else if (typec1.eq.'MACR_ELEM_STAT') then
+    else if (typec1 .eq. 'MACR_ELEM_STAT') then
         call dismml(quest1, nomo1(1:8), repi1, repk1, ier1)
-    else if (typec1.eq.'CHAM_MATER') then
+    else if (typec1 .eq. 'CHAM_MATER') then
         call dismcm(quest1, nomo1(1:8), repi1, repk1, ier1)
-    else if (typec1.eq.'CARA_ELEM') then
+    else if (typec1 .eq. 'CARA_ELEM') then
         call dismcr(quest1, nomo1(1:8), repi1, repk1, ier1)
-    else if (typec1.eq.'CHAM_NO') then
+    else if (typec1 .eq. 'CHAM_NO') then
         call dismcn(quest1, nomo1(1:19), repi1, repk1, ier1)
-    else if (typec1.eq.'CHAM_NO_S') then
+    else if (typec1 .eq. 'CHAM_NO_S') then
         call dismns(quest1, nomo1(1:19), repi1, repk1, ier1)
-    else if (typec1.eq.'CARTE') then
+    else if (typec1 .eq. 'CARTE') then
         call dismca(quest1, nomo1(1:19), repi1, repk1, ier1)
-    else if (typec1.eq.'CHAMP') then
+    else if (typec1 .eq. 'CHAMP') then
         call dismcp(quest1, nomo1(1:19), repi1, repk1, ier1)
-    else if (typec1.eq.'GRANDEUR') then
+    else if (typec1 .eq. 'GRANDEUR') then
         call dismgd(quest1, nomo1(1:8), repi1, repk1, ier1)
-    else if (typec1.eq.'PHENOMENE') then
+    else if (typec1 .eq. 'PHENOMENE') then
         call dismph(quest1, nomo1(1:16), repi1, repk1, ier1)
-    else if (typec1.eq.'PHEN_MODE') then
+    else if (typec1 .eq. 'PHEN_MODE') then
         call dismpm(quest1, nomo1(1:32), repi1, repk1, ier1)
-    else if (typec1.eq.'NUME_DDL') then
+    else if (typec1 .eq. 'NUME_DDL') then
         call dismnu(quest1, nomo1(1:14), repi1, repk1, ier1)
-    else if (typec1.eq.'PROF_CHNO') then
+    else if (typec1 .eq. 'PROF_CHNO') then
         call dismpn(quest1, nomo1(1:19), repi1, repk1, ier1)
-    else if (typec1.eq.'MATR_ELEM') then
+    else if (typec1 .eq. 'MATR_ELEM') then
         call dismme(quest1, nomo1(1:19), repi1, repk1, ier1)
-    else if (typec1.eq.'VECT_ELEM') then
+    else if (typec1 .eq. 'VECT_ELEM') then
         call dismme(quest1, nomo1(1:19), repi1, repk1, ier1)
-    else if (typec1.eq.'LIGREL') then
+    else if (typec1 .eq. 'LIGREL') then
         call dismlg(quest1, nomo1(1:19), repi1, repk1, ier1)
-    else if (typec1.eq.'MAILLAGE') then
+    else if (typec1 .eq. 'MAILLAGE') then
         call dismma(quest1, nomo1(1:8), repi1, repk1, ier1)
-    else if (typec1.eq.'CHARGE') then
+    else if (typec1 .eq. 'CHARGE') then
         call dismch(quest1, nomo1(1:8), repi1, repk1, ier1)
-    else if (typec1.eq.'MODELE') then
+    else if (typec1 .eq. 'MODELE') then
         call dismmo(quest1, nomo1(1:8), repi1, repk1, ier1)
-    else if (typec1.eq.'CHAM_ELEM') then
+    else if (typec1 .eq. 'CHAM_ELEM') then
         call dismce(quest1, nomo1(1:19), repi1, repk1, ier1)
-    else if (typec1.eq.'CHAM_ELEM_S') then
+    else if (typec1 .eq. 'CHAM_ELEM_S') then
         call dismes(quest1, nomo1(1:19), repi1, repk1, ier1)
-    else if (typec1.eq.'RESUELEM') then
+    else if (typec1 .eq. 'RESUELEM') then
         call dismre(quest1, nomo1(1:19), repi1, repk1, ier1)
-    else if (typec1.eq.'INTERF_DYNA') then
+    else if (typec1 .eq. 'INTERF_DYNA') then
         call dismli(quest1, nomo1(1:8), repi1, repk1, ier1)
-    else if (typec1.eq.'TYPE_ELEM') then
+    else if (typec1 .eq. 'TYPE_ELEM') then
         call dismte(quest1, nomo1(1:16), repi1, repk1, ier1)
-    else if (typec1.eq.'TYPE_MAILLE') then
+    else if (typec1 .eq. 'TYPE_MAILLE') then
         call dismtm(quest1, nomo1(1:8), repi1, repk1, ier1)
-    else if (typec1.eq.'FISS_XFEM') then
+    else if (typec1 .eq. 'FISS_XFEM') then
         call dismxf(quest1, nomo1(1:8), repi1, repk1, ier1)
-    else if (typec1.eq.'FOND_FISS') then
+    else if (typec1 .eq. 'FOND_FISS') then
         call dismff(quest1, nomo1(1:8), repi1, repk1, ier1)
-    else if (typec1.eq.'CARTE_COMPOR') then
+    else if (typec1 .eq. 'CARTE_COMPOR') then
         call dismco(quest1, nomo1(1:19), repi1, repk1, ier1)
-    else if (typec1.eq.'CARTE_CARCRI') then
+    else if (typec1 .eq. 'CARTE_CARCRI') then
         call dismoi_carcri(quest1, nomo1(1:19), repi1, repk1, ier1)
-    else if (typec1.eq.'RESU_DYNA') then
+    else if (typec1 .eq. 'RESU_DYNA') then
         call dismdy(quest1, nomo1(1:8), repi1, repk1, ier1)
     else
         if (arret2 .eq. 'F') then
             repk1 = typeco
             call utmess('F', 'UTILITAI_65', sk=repk1)
-        endif
-    endif
+        end if
+    end if
 !
 !
 !   -- on ne doit pas sortir de dismoi si ier1/=0 et arret='F'
     if (ier1 .ne. 0 .and. arret2 .eq. 'F') then
-        print*, questi, ", ", nomob, ", ", typeco
+        print *, questi, ", ", nomob, ", ", typeco
         ASSERT(.false.)
-    endif
+    end if
 !
     if (present(repk)) repk = repk1
     if (present(repi)) repi = repi1

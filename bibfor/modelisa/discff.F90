@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine discff(nbfonc, nomfon, nbp1, nbp2, disc,&
+subroutine discff(nbfonc, nomfon, nbp1, nbp2, disc, &
                   vale)
     implicit none
 !     DISCRETISATION DES FONCTIONS DE FORME
@@ -70,7 +70,7 @@ subroutine discff(nbfonc, nomfon, nbp1, nbp2, disc,&
     call jeveuo(tblp, 'L', itblp)
     lstfon = zk24(itblp+2)
     call jeveuo(lstfon, 'L', ilfon)
-    fonc1 = zk8(ilfon) //'           '
+    fonc1 = zk8(ilfon)//'           '
     fonc2 = zk8(ilfon+1)//'           '
 !
     call jelibe(lstfon)
@@ -93,13 +93,13 @@ subroutine discff(nbfonc, nomfon, nbp1, nbp2, disc,&
 !
 !-----2.1.ON RECOPIE LES VALEURS DE LA PREMIERE FONCTION
 !
-    iford1 = ifabs1 + nbp1
-    iford2 = ifabs2 + nbp2
+    iford1 = ifabs1+nbp1
+    iford2 = ifabs2+nbp2
     do ip = 1, nbp1
-        vale(ip,1) = zr(iford1+ip-1)
+        vale(ip, 1) = zr(iford1+ip-1)
     end do
     do ip = 1, nbp2
-        vale(nbp1+ip,1) = zr(iford2+ip-1)
+        vale(nbp1+ip, 1) = zr(iford2+ip-1)
     end do
 !
 !-----2.2.ON INTERPOLE LES AUTRES FONCTIONS LE CAS ECHEANT
@@ -114,7 +114,7 @@ subroutine discff(nbfonc, nomfon, nbp1, nbp2, disc,&
             call jeveuo(tblp, 'L', itblp)
             lstfon = zk24(itblp+2)
             call jeveuo(lstfon, 'L', ilfon)
-            fonc1 = zk8(ilfon) //'           '
+            fonc1 = zk8(ilfon)//'           '
             fonc2 = zk8(ilfon+1)//'           '
 !
             call jelibe(lstfon)
@@ -134,18 +134,18 @@ subroutine discff(nbfonc, nomfon, nbp1, nbp2, disc,&
             call jeveuo(fvale2, 'L', ifabs2)
             call jeveuo(fprol2, 'L', ifpro2)
 !
-            iford1 = ifabs1 + nbp1
-            iford2 = ifabs2 + nbp2
+            iford1 = ifabs1+nbp1
+            iford2 = ifabs2+nbp2
 !
-            call fointr(fonc1, zk24(ifpro1), nbp1, zr(ifabs1), zr(iford1),&
+            call fointr(fonc1, zk24(ifpro1), nbp1, zr(ifabs1), zr(iford1), &
                         nbp1, disc(1), vale(1, ifo), ier1)
-            call fointr(fonc2, zk24(ifpro2), nbp2, zr(ifabs2), zr(iford2),&
+            call fointr(fonc2, zk24(ifpro2), nbp2, zr(ifabs2), zr(iford2), &
                         nbp2, disc(nbp1+1), vale(nbp1+1, ifo), ier2)
 !
 !
             if (ier1 .ne. 0 .or. ier2 .ne. 0) then
                 call utmess('F', 'MODELISA4_40')
-            endif
+            end if
 !
             call jelibe(fprol1)
             call jelibe(fprol2)
@@ -159,7 +159,7 @@ subroutine discff(nbfonc, nomfon, nbp1, nbp2, disc,&
             disc(nbp1+ip) = zr(ifabs2+ip-1)+long
         end do
 !
-    endif
+    end if
 !
     call jelibe(fvale1)
     call jelibe(fvale2)

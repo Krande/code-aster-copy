@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -59,7 +59,7 @@ function diinst(sddisc, numins)
 !
     if (numins .lt. 0) then
         ASSERT(.false.)
-    endif
+    end if
     typeco = ' '
 !
     call gettco(sddisc, typeco, errstop=ASTER_FALSE)
@@ -68,7 +68,7 @@ function diinst(sddisc, numins)
 !
     if (typeco .eq. 'LISTR8_SDASTER') then
         call jeveuo(sddisc(1:19)//'.VALE', 'L', jinst)
-    else if (typeco.eq.'LIST_INST') then
+    else if (typeco .eq. 'LIST_INST') then
         call jeveuo(sddisc(1:8)//'.LIST.DITR', 'L', jinst)
     else
         tpsdit = sddisc(1:19)//'.DITR'
@@ -78,13 +78,13 @@ function diinst(sddisc, numins)
             goto 99
         else
             call jeveuo(tpsdit, 'L', jinst)
-        endif
-    endif
+        end if
+    end if
 !
 ! --- VALEUR DE L'INSTANT
 !
     diinst = zr(jinst+numins)
- 99 continue
+99  continue
 !
     call jedema()
 end function

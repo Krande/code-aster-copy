@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,19 +18,19 @@
 !
 subroutine dilata(ds_thm, angl_naut, phi, tbiot, alphfi)
 !
-use THM_type
+    use THM_type
 !
-implicit none
+    implicit none
 !
 #include "asterfort/assert.h"
 #include "asterfort/matrot.h"
 #include "asterfort/utbtab.h"
 !
-type(THM_DS), intent(in) :: ds_thm
-real(kind=8), intent(in) :: angl_naut(3)
-real(kind=8), intent(in) :: phi
-real(kind=8), intent(in) :: tbiot(6)
-real(kind=8), intent(out) :: alphfi
+    type(THM_DS), intent(in) :: ds_thm
+    real(kind=8), intent(in) :: angl_naut(3)
+    real(kind=8), intent(in) :: phi
+    real(kind=8), intent(in) :: tbiot(6)
+    real(kind=8), intent(out) :: alphfi
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -53,36 +53,36 @@ real(kind=8), intent(out) :: alphfi
 !
     integer :: i
     real(kind=8) :: alpha(6)
-    real(kind=8), parameter :: kron(6)  = (/1.d0,1.d0,1.d0,0.d0,0.d0,0.d0/)
+    real(kind=8), parameter :: kron(6) = (/1.d0, 1.d0, 1.d0, 0.d0, 0.d0, 0.d0/)
     real(kind=8) :: talpha(3, 3), talphal(3, 3)
     real(kind=8) :: passag(3, 3), work(3, 3)
 
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    alphfi       = 0.d0
-    talpha(:,:)  = 0.d0
-    talphal(:,:) = 0.d0
-    work(:,:)    = 0.d0
-    passag(:,:)  = 0.d0
+    alphfi = 0.d0
+    talpha(:, :) = 0.d0
+    talphal(:, :) = 0.d0
+    work(:, :) = 0.d0
+    passag(:, :) = 0.d0
 !
 ! - Get parameters
 !
     if (ds_thm%ds_material%elas%id .eq. 1) then
-        talpha(1,1) = ds_thm%ds_material%ther%alpha
-        talpha(2,2) = ds_thm%ds_material%ther%alpha
-        talpha(3,3) = ds_thm%ds_material%ther%alpha
+        talpha(1, 1) = ds_thm%ds_material%ther%alpha
+        talpha(2, 2) = ds_thm%ds_material%ther%alpha
+        talpha(3, 3) = ds_thm%ds_material%ther%alpha
     elseif (ds_thm%ds_material%elas%id .eq. 3) then
-        talpha(1,1) = ds_thm%ds_material%ther%alpha_l
-        talpha(2,2) = ds_thm%ds_material%ther%alpha_l
-        talpha(3,3) = ds_thm%ds_material%ther%alpha_n
+        talpha(1, 1) = ds_thm%ds_material%ther%alpha_l
+        talpha(2, 2) = ds_thm%ds_material%ther%alpha_l
+        talpha(3, 3) = ds_thm%ds_material%ther%alpha_n
     else if (ds_thm%ds_material%elas%id .eq. 2) then
-        talpha(1,1) = ds_thm%ds_material%ther%alpha_l
-        talpha(2,2) = ds_thm%ds_material%ther%alpha_t
-        talpha(3,3) = ds_thm%ds_material%ther%alpha_n
+        talpha(1, 1) = ds_thm%ds_material%ther%alpha_l
+        talpha(2, 2) = ds_thm%ds_material%ther%alpha_t
+        talpha(3, 3) = ds_thm%ds_material%ther%alpha_n
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 ! - Change reference frame
 !
@@ -91,14 +91,14 @@ real(kind=8), intent(out) :: alphfi
 !
 ! - Compute differential thermal expansion ratio
 !
-    alpha(1) = talphal(1,1)
-    alpha(2) = talphal(2,2)
-    alpha(3) = talphal(3,3)
-    alpha(4) = talphal(1,2)
-    alpha(5) = talphal(1,3)
-    alpha(6) = talphal(2,3)
+    alpha(1) = talphal(1, 1)
+    alpha(2) = talphal(2, 2)
+    alpha(3) = talphal(3, 3)
+    alpha(4) = talphal(1, 2)
+    alpha(5) = talphal(1, 3)
+    alpha(6) = talphal(2, 3)
 !
     do i = 1, 6
         alphfi = alphfi+(tbiot(i)-phi*kron(i))*alpha(i)/3.d0
-    enddo
+    end do
 end subroutine

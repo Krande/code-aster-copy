@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine gcou2d(base, resu, noma, nomno, noeud,&
+subroutine gcou2d(base, resu, noma, nomno, noeud, &
                   coor, rinf, rsup, config, l_new_fiss)
     implicit none
 #include "asterf_types.h"
@@ -77,7 +77,7 @@ subroutine gcou2d(base, resu, noma, nomno, noeud,&
 !
     integer :: itheta, i, irefe, idesc, num, nbel, numa, iret
     integer :: nec, ibid, numfon, n1, n2, ndim, jgtl, estbf
-    parameter     (ndim=2)
+    parameter(ndim=2)
     real(kind=8) :: xm, ym, xi, yi, eps, d, norme, alpha, valx, valy, dir(3)
     character(len=8) :: k8b, fiss, fonfis
     character(len=19) :: grlt, chgrs
@@ -90,28 +90,28 @@ subroutine gcou2d(base, resu, noma, nomno, noeud,&
 !
     call jemarq()
     eps = 1.d-06
-    chgrs=''
-    fiss=''
-    fonfis=''
+    chgrs = ''
+    fiss = ''
+    fonfis = ''
     l_new_fissure = ASTER_FALSE
-    if(present(l_new_fiss)) then
+    if (present(l_new_fiss)) then
         l_new_fissure = l_new_fiss
     end if
 !
-    n1=1
-    n2=0
+    n1 = 1
+    n2 = 0
 !
 !   CAS CLASSIQUE (N1 NON NUL) OU CAS X-FEM (N2 NON NUL)
     call getvid('THETA', 'FOND_FISS', iocc=1, scal=fonfis, nbret=n1)
     call getvid('THETA', 'FISSURE', iocc=1, scal=fiss, nbret=n2)
 
 !   TEST DU TYPE DE FISSURE ET RECUPERATION DU NUMERO DE NOEUD DU FOND DE FISSURE FEM
-    estfem=.true.
+    estfem = .true.
     if (n1 .ne. 0 .or. l_new_fissure) then
-        estfem=.true.
+        estfem = .true.
         call jenonu(jexnom(nomno, noeud), num)
     else if (n2 .ne. 0) then
-        estfem=.false.
+        estfem = .false.
         num = 0
     else
         ASSERT(.FALSE.)
@@ -127,31 +127,31 @@ subroutine gcou2d(base, resu, noma, nomno, noeud,&
 !     --- LA DIRECTION DE THETA N'EST DONNEE, ON LA RECUPERE
 !         DE BASEFOND CALCULE DANS DEFI_FOND_FISS. ---
     if (estfem) then
-        if (estbf .eq. 0 .and. (.not.l_new_fissure)) then
-           ! basefond n'existe pas
-           ! Ce cas ne doit exister que si on est en CONFIG_INIT=DECOLLEE et en 2D
-            ASSERT(config.eq.'DECOLLEE')
+        if (estbf .eq. 0 .and. (.not. l_new_fissure)) then
+            ! basefond n'existe pas
+            ! Ce cas ne doit exister que si on est en CONFIG_INIT=DECOLLEE et en 2D
+            ASSERT(config .eq. 'DECOLLEE')
 
-           !Dans ce cas uniquement, on entendant le remplacement par l'opérateur CALC_G
-           !on réintroduit la possibilité de remlir la direction dans le fichier de
-           !commande
+            !Dans ce cas uniquement, on entendant le remplacement par l'opérateur CALC_G
+            !on réintroduit la possibilité de remlir la direction dans le fichier de
+            !commande
 
-            call getvr8('THETA', 'DIRECTION', iocc=1, nbval=2, vect=dir,&
+            call getvr8('THETA', 'DIRECTION', iocc=1, nbval=2, vect=dir, &
                         nbret=iret)
-            dir(3)=0.d0
-            if(iret.eq.0) then
+            dir(3) = 0.d0
+            if (iret .eq. 0) then
                 call utmess('F', 'RUPTURE0_58')
-            endif
+            end if
 
-        elseif(.not.l_new_fissure) then
+        elseif (.not. l_new_fissure) then
             call jeveuo(fonfis//'.BASEFOND', 'L', vr=vbasfd)
-            if (size(vbasfd).gt.4) then
-            ! le front ne doit contenir qu'un noeud, donc 4 composantes dans basefond
-            call utmess('F', 'RUPTURE0_33')
+            if (size(vbasfd) .gt. 4) then
+                ! le front ne doit contenir qu'un noeud, donc 4 composantes dans basefond
+                call utmess('F', 'RUPTURE0_33')
             end if
             norme = sqrt(vbasfd(3)**2+vbasfd(4)**2)
-    !       Basefond contient 4*1 composantes (XN YN XP YP)i
-    !       Avec N pour direction normale et P pour direction plan.
+            !       Basefond contient 4*1 composantes (XN YN XP YP)i
+            !       Avec N pour direction normale et P pour direction plan.
             dir(1) = vbasfd(3)/norme
             dir(2) = vbasfd(4)/norme
             dir(3) = 0.d0
@@ -159,7 +159,7 @@ subroutine gcou2d(base, resu, noma, nomno, noeud,&
             call utmess('A', 'RUPTURE0_62')
             dir = [1.d0, 0.d0, 0.d0]
         end if
-    endif
+    end if
 !
 !  .DESC
     chamno = resu(1:19)//'.DESC'
@@ -187,8 +187,8 @@ subroutine gcou2d(base, resu, noma, nomno, noeud,&
 !     CAS CLASSIQUE
     if (estfem) then
 !       NOEUD DU FOND DE FISSURE
-        zr(itheta + (num-1)*2 + 1 - 1) = dir(1)
-        zr(itheta + (num-1)*2 + 2 - 1) = dir(2)
+        zr(itheta+(num-1)*2+1-1) = dir(1)
+        zr(itheta+(num-1)*2+2-1) = dir(2)
         xi = coor((num-1)*3+1)
         yi = coor((num-1)*3+2)
 !     CAS X-FEM
@@ -204,7 +204,7 @@ subroutine gcou2d(base, resu, noma, nomno, noeud,&
         call cnocns(grlt, 'V', chgrs)
         call jeveuo(chgrs//'.CNSV', 'L', vr=cnsv)
         call jeveuo(chgrs//'.CNSL', 'L', jgtl)
-    endif
+    end if
 !
 !
 ! BOUCLE SUR LES AUTRES NOEUDS COURANTS DU MAILLAGE
@@ -226,32 +226,32 @@ subroutine gcou2d(base, resu, noma, nomno, noeud,&
                     dir(1) = 0.d0
                     dir(2) = 0.d0
                     norme = 1.d0
-                endif
+                end if
 !           IL SE PEUT QUE EN CERTAINS POINTS, LE GRADIENT SOIT NUL
 !           CES POINTS SONT NORMALEMENT HORS COURONNE THETA
                 if (norme .le. r8prem()*1.d04) then
-                    if ((abs(alpha-1).gt.eps) .and. ((alpha-1).le.0)) then
+                    if ((abs(alpha-1) .gt. eps) .and. ((alpha-1) .le. 0)) then
                         call jenuno(jexnum(noma//'.NOMNOE', i), k8b)
                         call utmess('F', 'XFEM_12', sk=k8b)
-                    endif
+                    end if
                     norme = 1.d0
-                endif
+                end if
                 dir(1) = dir(1)/norme
                 dir(2) = dir(2)/norme
-            endif
+            end if
             valx = dir(1)
             valy = dir(2)
-            if ((abs(alpha).le.eps) .or. (alpha.lt.0)) then
+            if ((abs(alpha) .le. eps) .or. (alpha .lt. 0)) then
                 zr(itheta+(i-1)*2+1-1) = valx
                 zr(itheta+(i-1)*2+2-1) = valy
-            else if ((abs(alpha-1).le.eps).or.((alpha-1).gt.0)) then
+            else if ((abs(alpha-1) .le. eps) .or. ((alpha-1) .gt. 0)) then
                 zr(itheta+(i-1)*2+1-1) = 0.d0
                 zr(itheta+(i-1)*2+2-1) = 0.d0
             else
                 zr(itheta+(i-1)*2+1-1) = (1-alpha)*valx
                 zr(itheta+(i-1)*2+2-1) = (1-alpha)*valy
-            endif
-        endif
+            end if
+        end if
     end do
 !
     call detrsd('CHAM_NO_S', chgrs)

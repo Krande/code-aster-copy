@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine hbrmat(mod, imat, nbmat, tempd, materd,&
-                  materf, matcst, ndt, ndi, nr,&
+subroutine hbrmat(mod, imat, nbmat, tempd, materd, &
+                  materf, matcst, ndt, ndi, nr, &
                   nvi)
     implicit none
 #include "asterfort/rcvala.h"
@@ -61,15 +61,15 @@ subroutine hbrmat(mod, imat, nbmat, tempd, materd,&
 ! =================================================================
 ! --- INITIALISATION DE PARAMETRES --------------------------------
 ! =================================================================
-    parameter       ( un     =  1.0d0  )
-    parameter       ( deux   =  2.0d0  )
-    parameter       ( eps    =  1.0d-6  )
+    parameter(un=1.0d0)
+    parameter(deux=2.0d0)
+    parameter(eps=1.0d-6)
 ! =================================================================
     do ii = 1, nbmat
-        materd(ii,1) = 0.d0
-        materd(ii,2) = 0.d0
-        materf(ii,1) = 0.d0
-        materf(ii,2) = 0.d0
+        materd(ii, 1) = 0.d0
+        materd(ii, 2) = 0.d0
+        materf(ii, 1) = 0.d0
+        materf(ii, 2) = 0.d0
     end do
 ! =================================================================
 ! --- DEFINITION DES CHAMPS ---------------------------------------
@@ -91,66 +91,66 @@ subroutine hbrmat(mod, imat, nbmat, tempd, materd,&
 ! =================================================================
 ! --- RECUPERATION DES PARAMETRES MATERIAU ------------------------
 ! =================================================================
-    materf(3,1) = 0.0d0
-    materf(11,2) = 0.0d0
-    call rcvala(imat, ' ', 'ELAS', 0, ' ',&
-                [0.d0], 2, nomc(1), materf(1, 1), cerr(1),&
+    materf(3, 1) = 0.0d0
+    materf(11, 2) = 0.0d0
+    call rcvala(imat, ' ', 'ELAS', 0, ' ', &
+                [0.d0], 2, nomc(1), materf(1, 1), cerr(1), &
                 1)
-    call rcvala(imat, ' ', 'ELAS', 0, ' ',&
-                [0.d0], 1, nomc(3), materf(3, 1), cerr(3),&
+    call rcvala(imat, ' ', 'ELAS', 0, ' ', &
+                [0.d0], 1, nomc(3), materf(3, 1), cerr(3), &
                 0, nan='NON')
-    call rcvala(imat, ' ', 'HOEK_BROWN', 0, ' ',&
-                [0.d0], 10, nomc(4), materf(1, 2), cerr(4),&
+    call rcvala(imat, ' ', 'HOEK_BROWN', 0, ' ', &
+                [0.d0], 10, nomc(4), materf(1, 2), cerr(4), &
                 1)
-    call rcvala(imat, ' ', 'HOEK_BROWN', 0, ' ',&
-                [0.d0], 1, nomc(14), materf(11, 2), cerr(14),&
+    call rcvala(imat, ' ', 'HOEK_BROWN', 0, ' ', &
+                [0.d0], 1, nomc(14), materf(11, 2), cerr(14), &
                 0, nan='NON')
 ! =================================================================
 ! - CALCUL DES MODULES DE CISAILLEMENT ET DE DEFORMATION VOLUMIQUE-
 ! =================================================================
-    e = materf(1,1)
-    nu = materf(2,1)
-    mu = e / (deux*(un+nu))
-    k = e / (3.0d0*(un-deux*nu))
+    e = materf(1, 1)
+    nu = materf(2, 1)
+    mu = e/(deux*(un+nu))
+    k = e/(3.0d0*(un-deux*nu))
 ! =================================================================
 ! --- STOCKAGE DES PARAMETRES ELASTIQUES CALCULES -----------------
 ! =================================================================
-    materf(4,1) = mu
-    materf(5,1) = k
+    materf(4, 1) = mu
+    materf(5, 1) = k
 ! =================================================================
 ! - CALCUL DES COEFFICIENTS PARABOLIQUES ET SIGMABD --------------
 ! =================================================================
-    materf(15,2) = materf(10,2)
-    materf(16,2) = materf(11,2)
-    grup = materf(1,2)
-    gres = materf(2,2)
-    mrup = materf(6,2)
-    srup = materf(4,2)
-    alpha = materf(8,2)
-    bres = materf(7,2) - sqrt(srup)
-    ap = -bres / (grup - gres)**2
-    dp = deux*bres*gres / (grup - gres)**2
-    cp = bres*grup*(grup-deux*gres) / (grup - gres)**2
+    materf(15, 2) = materf(10, 2)
+    materf(16, 2) = materf(11, 2)
+    grup = materf(1, 2)
+    gres = materf(2, 2)
+    mrup = materf(6, 2)
+    srup = materf(4, 2)
+    alpha = materf(8, 2)
+    bres = materf(7, 2)-sqrt(srup)
+    ap = -bres/(grup-gres)**2
+    dp = deux*bres*gres/(grup-gres)**2
+    cp = bres*grup*(grup-deux*gres)/(grup-gres)**2
     cohere = ap*grup**2+dp*grup+cp
     if (abs(cohere) .gt. eps) then
         call utmess('F', 'ALGORITH3_90')
-    endif
+    end if
     cohere = ap*gres**2+dp*gres+cp
     if (abs(cohere-bres) .gt. eps) then
         call utmess('F', 'ALGORITH3_90')
-    endif
-    sigbd = ( (mrup) +sqrt((mrup)**2 + 4.0d0*((un-alpha)**2)*srup)) / (deux*(un-alpha)**2 )
+    end if
+    sigbd = ((mrup)+sqrt((mrup)**2+4.0d0*((un-alpha)**2)*srup))/(deux*(un-alpha)**2)
 !  =================================================================
 ! --- STOCKAGE DES PARAMETRES PLASTIQUES CALCULES -----------------
 ! =================================================================
-    materf(10,2) = bres
-    materf(11,2) = ap
-    materf(12,2) = dp
-    materf(13,2) = cp
-    materf(14,2) = sigbd
+    materf(10, 2) = bres
+    materf(11, 2) = ap
+    materf(12, 2) = dp
+    materf(13, 2) = cp
+    materf(14, 2) = sigbd
     do ii = 1, nbmat
-        materd(ii,1) = materf(ii,1)
-        materd(ii,2) = materf(ii,2)
+        materd(ii, 1) = materf(ii, 1)
+        materd(ii, 2) = materf(ii, 2)
     end do
     matcst = 'OUI'
 ! ======================================================================
@@ -159,14 +159,14 @@ subroutine hbrmat(mod, imat, nbmat, tempd, materd,&
     if (mod(1:2) .eq. '3D') then
         ndt = 6
         ndi = 3
-    else if ((mod(1:6).eq.'D_PLAN') .or. (mod(1:4).eq.'AXIS')) then
+    else if ((mod(1:6) .eq. 'D_PLAN') .or. (mod(1:4) .eq. 'AXIS')) then
         ndt = 4
         ndi = 3
-    else if ((mod(1:6).eq.'C_PLAN') .or. (mod(1:2).eq.'1D')) then
+    else if ((mod(1:6) .eq. 'C_PLAN') .or. (mod(1:2) .eq. '1D')) then
         call utmess('F', 'ALGORITH3_92')
     else
         call utmess('F', 'ALGORITH2_20')
-    endif
+    end if
 ! ======================================================================
 ! --- NOMBRE DE VARIABLES INTERNES -------------------------------------
 ! ======================================================================
@@ -174,6 +174,6 @@ subroutine hbrmat(mod, imat, nbmat, tempd, materd,&
 ! =================================================================
 ! - NOMBRE DE CONDITIONS NON-LINEAIRES ----------------------------
 ! =================================================================
-    nr = ndt + 3
+    nr = ndt+3
 ! ======================================================================
 end subroutine

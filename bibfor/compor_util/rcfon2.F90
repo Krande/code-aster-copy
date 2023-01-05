@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine rcfon2(quest, jprol, jvale, nbvale, sigy,&
-                  e, nu, p, rp, rprim,&
+subroutine rcfon2(quest, jprol, jvale, nbvale, sigy, &
+                  e, nu, p, rp, rprim, &
                   c, sieleq, dp)
 !
     implicit none
@@ -78,8 +78,8 @@ subroutine rcfon2(quest, jprol, jvale, nbvale, sigy,&
 ! --------------------------------------------------------------------------------------------------
 !
     jp = jvale
-    jr = jvale + nbvale
-    type_prol = zk24(jprol+4)(2:2)
+    jr = jvale+nbvale
+    type_prol = zk24(jprol+4) (2:2)
     func_name = zk24(jprol+5)
 !
 ! - Elastic yield
@@ -87,13 +87,13 @@ subroutine rcfon2(quest, jprol, jvale, nbvale, sigy,&
     if (quest .eq. 'S') then
         sigy = zr(jr)
         goto 999
-    endif
+    end if
 !
 ! - Check
 !
     if (p .lt. 0) then
         call utmess('F', 'COMPOR5_59')
-    endif
+    end if
     tessup = .false.
 !
 ! - PARCOURS JUSQU'A P
@@ -101,71 +101,71 @@ subroutine rcfon2(quest, jprol, jvale, nbvale, sigy,&
         if (p .lt. zr(jp+i)) then
             i0 = i-1
             goto 20
-        endif
+        end if
     end do
     tessup = .true.
     if (type_prol .eq. 'E') then
         call utmess('F', 'COMPOR5_60', sk=func_name, sr=p)
-    endif
-    i0=nbvale-1
- 20 continue
+    end if
+    i0 = nbvale-1
+20  continue
 !
 ! - CALCUL DES VALEURS DE R(P), R'(P) ET AIRE(P)
 !
     if (quest .eq. 'V') then
         if (tessup) then
             if (type_prol .eq. 'L') then
-                rprim = (zr(jr+i0)-zr(jr+i0-1))/ (zr(jp+i0)-zr(jp+i0- 1))
+                rprim = (zr(jr+i0)-zr(jr+i0-1))/(zr(jp+i0)-zr(jp+i0-1))
             else
                 rprim = 0.d0
-            endif
+            end if
         else
-            rprim = (zr(jr+i0+1)-zr(jr+i0))/ (zr(jp+i0+1)-zr(jp+i0))
-        endif
+            rprim = (zr(jr+i0+1)-zr(jr+i0))/(zr(jp+i0+1)-zr(jp+i0))
+        end if
 !
         p0 = zr(jp+i0)
         rp0 = zr(jr+i0)
-        rp = rp0 + rprim*(p-p0) - 1.5d0*c*p
-        rprim = rprim - 1.5d0*c
+        rp = rp0+rprim*(p-p0)-1.5d0*c*p
+        rprim = rprim-1.5d0*c
         goto 999
-    endif
+    end if
 !
 ! - RESOLUTION DE L'EQUATION R(P+DP) + 3/2*(2MU+C) DP = SIELEQ
 !
     deuxmu = e/(1+nu)
     do i = i0+1, nbvale-1
-        equ = zr(jr+i) + 1.5d0*(deuxmu+c)*(zr(jp+i)-p) - sieleq
+        equ = zr(jr+i)+1.5d0*(deuxmu+c)*(zr(jp+i)-p)-sieleq
         if (equ .gt. 0) then
             i0 = i-1
             goto 40
-        endif
+        end if
     end do
     tessup = .true.
     if (type_prol .eq. 'E') then
         call utmess('F', 'COMPOR5_60', sk=func_name, sr=p)
-    endif
+    end if
     i0 = nbvale-1
- 40 continue
+40  continue
 !
 ! - CALCUL DES VALEURS DE DP, R(P+DP), R'(P+DP)
 !
     if (tessup) then
         if (type_prol .eq. 'L') then
-            rprim = (zr(jr+i0)-zr(jr+i0-1))/ (zr(jp+i0)-zr(jp+i0-1))
+            rprim = (zr(jr+i0)-zr(jr+i0-1))/(zr(jp+i0)-zr(jp+i0-1))
         else
             rprim = 0.d0
-        endif
+        end if
     else
-        rprim = (zr(jr+i0+1)-zr(jr+i0))/ (zr(jp+i0+1)-zr(jp+i0))
-    endif
+        rprim = (zr(jr+i0+1)-zr(jr+i0))/(zr(jp+i0+1)-zr(jp+i0))
+    end if
 !
     p0 = zr(jp+i0)
     rp0 = zr(jr+i0)
-    rpm = rp0+rprim*(p-p0) -1.5d0*c*p
+    rpm = rp0+rprim*(p-p0)-1.5d0*c*p
     dp = (sieleq-rpm)/(1.5d0*deuxmu+rprim)
     pp = p+dp
-    rp = rp0 + rprim*(pp-p0)-1.5d0*c*pp
-    rprim = rprim - 1.5d0*c
+    rp = rp0+rprim*(pp-p0)-1.5d0*c*pp
+    rprim = rprim-1.5d0*c
 !
 999 continue
 end subroutine

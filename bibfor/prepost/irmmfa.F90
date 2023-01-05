@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,11 +17,11 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: nicolas.sellenet at edf.fr
 !
-subroutine irmmfa(fid, nomamd, nbnoeu, nbmail, nomast,&
-                  nbgrno, nomgno, nbgrma, nomgma, prefix,&
+subroutine irmmfa(fid, nomamd, nbnoeu, nbmail, nomast, &
+                  nbgrno, nomgno, nbgrma, nomgma, prefix, &
                   typgeo, nomtyp, nmatyp, infmed, nosdfu)
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterfort/as_mfacre.h"
@@ -33,16 +33,16 @@ implicit none
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
-med_idt :: fid
-integer :: typgeo(*), nmatyp(*)
-integer :: nbnoeu, nbmail, nbgrno, nbgrma
-integer :: infmed
-character(len=6) :: prefix
-character(len=8) :: nomast
-character(len=24) :: nomgno(*), nomgma(*)
-character(len=8) :: nomtyp(*)
-character(len=*) :: nomamd
-character(len=8) :: nosdfu
+    med_idt :: fid
+    integer :: typgeo(*), nmatyp(*)
+    integer :: nbnoeu, nbmail, nbgrno, nbgrma
+    integer :: infmed
+    character(len=6) :: prefix
+    character(len=8) :: nomast
+    character(len=24) :: nomgno(*), nomgma(*)
+    character(len=8) :: nomtyp(*)
+    character(len=*) :: nomamd
+    character(len=8) :: nosdfu
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -97,8 +97,8 @@ character(len=8) :: nosdfu
     call infniv(ifm, niv)
     if (niv .gt. 1) then
         call cpu_time(start_time)
-        write (ifm,*) '<',nompro,'> DEBUT ECRITURE DES FAMILLES MED : '
-    endif
+        write (ifm, *) '<', nompro, '> DEBUT ECRITURE DES FAMILLES MED : '
+    end if
 !
 !     VECTEUR NUMEROS DES FAMILLES DES ENTITES = NB ENTITES
 !     PAR DEFAUT, JEVEUX MET TOUT A 0. CELA SIGNIFIE QUE, PAR DEFAUT,
@@ -117,8 +117,8 @@ character(len=8) :: nosdfu
 !
 !
     iaux = tygeno
-    call irmmf1(fid, nomamd, iaux, nbnoeu, nbgrno,&
-                nomgno, zi(jnofam), nomast, prefix, typgeo,&
+    call irmmf1(fid, nomamd, iaux, nbnoeu, nbgrno, &
+                nomgno, zi(jnofam), nomast, prefix, typgeo, &
                 nomtyp, nmatyp, infmed, ifm, nosdfu)
 !
 !GN      WRITE (IFM,*)
@@ -129,9 +129,9 @@ character(len=8) :: nosdfu
 !====
 !
 !
-    iaux = tygeno + 1
-    call irmmf1(fid, nomamd, iaux, nbmail, nbgrma,&
-                nomgma, zi(jmafam), nomast, prefix, typgeo,&
+    iaux = tygeno+1
+    call irmmf1(fid, nomamd, iaux, nbmail, nbgrma, &
+                nomgma, zi(jmafam), nomast, prefix, typgeo, &
                 nomtyp, nmatyp, infmed, ifm, nosdfu)
 !
 !GN      WRITE (IFM,*)
@@ -147,17 +147,17 @@ character(len=8) :: nosdfu
 ! 4.1. ==> CARACTERISTIQUE
 !
     numfam = 0
-    natt   = 0
+    natt = 0
     nomfam = 'FAMILLE_NULLE___________________'//'________________________________'
 !
 ! 4.2. ==> ECRITURE
 !
-    call as_mfacre(fid, nomamd, nomfam, numfam, 0,&
+    call as_mfacre(fid, nomamd, nomfam, numfam, 0, &
                    saux80, codret)
     if (codret .ne. 0) then
-        saux08='mfacre'
+        saux08 = 'mfacre'
         call utmess('F', 'DVP_97', sk=saux08, si=codret)
-    endif
+    end if
 !
 !====
 ! 5. LA FIN
@@ -169,9 +169,9 @@ character(len=8) :: nosdfu
 !GN      WRITE (IFM,*) '==> DUREE TOTALE DE ',NOMPRO,' :',TPS1(4)
     if (niv .gt. 1) then
         call cpu_time(end_time)
-        write (ifm,*) '<',nompro,'> FIN ECRITURE DES FAMILLES MED EN ', &
+        write (ifm, *) '<', nompro, '> FIN ECRITURE DES FAMILLES MED EN ', &
             end_time-start_time, "sec."
-    endif
+    end if
 !
     call jedema()
 !

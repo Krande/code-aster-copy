@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine vetrth(modele, charge, infcha, carele, mate,&
-                  inst, chtn, chti, chlapm, chlapp,&
+subroutine vetrth(modele, charge, infcha, carele, mate, &
+                  inst, chtn, chti, chlapm, chlapp, &
                   veres)
 !
 !
@@ -74,7 +74,7 @@ subroutine vetrth(modele, charge, infcha, carele, mate,&
         call jeveuo(infcha, 'L', jinf)
     else
         nchar = 0
-    endif
+    end if
 !
     call megeom(modele, chgeom)
     call mecara(carele, chcara)
@@ -108,27 +108,27 @@ subroutine vetrth(modele, charge, infcha, carele, mate,&
         convch = nomcha//'.CHTH'//'.CONVE'//'.VALE'
         call jeexin(convch, iret)
         if (iret .gt. 0) then
-            iconv = iconv + 1
+            iconv = iconv+1
             if (iconv .gt. 1) then
                 call utmess('F', 'CALCULEL3_72')
-            endif
+            end if
             call jeveuo(convch, 'L', jvites)
             chvite = zk8(jvites)
-        endif
+        end if
     end do
     if (iconv .eq. 0) then
         call utmess('F', 'CALCULEL5_38')
-    endif
+    end if
     lchin(7) = chvite
 !
     call gcnco2(newnom)
     lchout(1) = '&&VETRTH.'//newnom(2:8)
-    call corich('E', lchout(1), ichin_ = -1)
+    call corich('E', lchout(1), ichin_=-1)
     call gcnco2(newnom)
     lchout(3) = '&&VETRTH.'//newnom(2:8)
-    call corich('E', lchout(3), ichin_ = -1)
-    call calcul('S', option, ligrmo, 7, lchin,&
-                lpain, 3, lchout, lpaout, 'V',&
+    call corich('E', lchout(3), ichin_=-1)
+    call calcul('S', option, ligrmo, 7, lchin, &
+                lpain, 3, lchout, lpaout, 'V', &
                 'OUI')
     call reajre(veres, lchout(3), 'V')
 !
@@ -144,12 +144,12 @@ subroutine vetrth(modele, charge, infcha, carele, mate,&
                 option = 'CHAR_THER_FLUTNL'
                 call gcnco2(newnom)
                 lchout(1) = '&&VETRTH.'//newnom(2:8)
-                call corich('E', lchout(1), ichin_ = -1)
-                call calcul('S', option, ligrmo, 5, lchin,&
-                            lpain, 1, lchout, lpaout, 'V',&
+                call corich('E', lchout(1), ichin_=-1)
+                call calcul('S', option, ligrmo, 5, lchin, &
+                            lpain, 1, lchout, lpaout, 'V', &
                             'OUI')
                 call reajre(veres, lchout(1), 'V')
-            endif
+            end if
             lchin(2) = zk24(jchar+icha-1) (1:8)//'.CHTH.T_EXT.DESC'
             call jeexin(lchin(2), iret)
             if (iret .ne. 0) then
@@ -157,20 +157,20 @@ subroutine vetrth(modele, charge, infcha, carele, mate,&
                 c1 = 'R'
                 if (zi(jinf+nchar+icha) .gt. 1) then
                     c1 = 'F'
-                endif
+                end if
                 option = 'RESI_THER_COEH_'//c1
                 lpain(4) = 'PCOEFH'//c1
                 lchin(4) = zk24(jchar+icha-1) (1:8)//'.CHTH.COEFH'
                 call gcnco2(newnom)
                 lchout(1) = '&&VETRTH.'//newnom(2:8)
-                call corich('E', lchout(1), ichin_ = -1)
-                call calcul('S', option, ligrmo, 5, lchin,&
-                            lpain, 1, lchout, lpaout, 'V',&
+                call corich('E', lchout(1), ichin_=-1)
+                call calcul('S', option, ligrmo, 5, lchin, &
+                            lpain, 1, lchout, lpaout, 'V', &
                             'OUI')
                 call reajre(veres, lchout(1), 'V')
-            endif
+            end if
         end do
-    endif
+    end if
 !
     call jedema()
 end subroutine

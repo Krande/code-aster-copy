@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -60,38 +60,38 @@ subroutine xmmjac(alias, geom, dff, jac)
 !
     if (alias(1:5) .eq. 'SE2') then
         do i = 1, 2
-            dxds = dxds + geom(2*(i-1)+1)*dff(1,i)
-            dyds = dyds + geom(2*(i-1)+2)*dff(1,i)
+            dxds = dxds+geom(2*(i-1)+1)*dff(1, i)
+            dyds = dyds+geom(2*(i-1)+2)*dff(1, i)
         end do
         jac = sqrt(dxds**2+dyds**2+dzds**2)
-    else if (alias(1:5).eq.'SE3') then
+    else if (alias(1:5) .eq. 'SE3') then
         do i = 1, 3
-            dxds = dxds + geom(2*(i-1)+1)*dff(1,i)
-            dyds = dyds + geom(2*(i-1)+2)*dff(1,i)
+            dxds = dxds+geom(2*(i-1)+1)*dff(1, i)
+            dyds = dyds+geom(2*(i-1)+2)*dff(1, i)
         end do
         jac = sqrt(dxds**2+dyds**2+dzds**2)
-    else if (alias(1:5).eq.'TR3') then
+    else if (alias(1:5) .eq. 'TR3') then
         do i = 1, 3
-            dxde = dxde + geom(3*i-2)*dff(1,i)
-            dxdk = dxdk + geom(3*i-2)*dff(2,i)
-            dyde = dyde + geom(3*i-1)*dff(1,i)
-            dydk = dydk + geom(3*i-1)*dff(2,i)
-            dzde = dzde + geom(3*i)*dff(1,i)
-            dzdk = dzdk + geom(3*i)*dff(2,i)
+            dxde = dxde+geom(3*i-2)*dff(1, i)
+            dxdk = dxdk+geom(3*i-2)*dff(2, i)
+            dyde = dyde+geom(3*i-1)*dff(1, i)
+            dydk = dydk+geom(3*i-1)*dff(2, i)
+            dzde = dzde+geom(3*i)*dff(1, i)
+            dzdk = dzdk+geom(3*i)*dff(2, i)
         end do
-        jac = sqrt((dyde*dzdk-dzde*dydk)**2+ (dzde*dxdk-dxde*dzdk)**2+ (dxde*dydk-dyde*dxdk)**2)
-    else if (alias(1:5).eq.'TR6') then
+        jac = sqrt((dyde*dzdk-dzde*dydk)**2+(dzde*dxdk-dxde*dzdk)**2+(dxde*dydk-dyde*dxdk)**2)
+    else if (alias(1:5) .eq. 'TR6') then
         do i = 1, 6
-            dxde = dxde + geom(3*i-2)*dff(1,i)
-            dxdk = dxdk + geom(3*i-2)*dff(2,i)
-            dyde = dyde + geom(3*i-1)*dff(1,i)
-            dydk = dydk + geom(3*i-1)*dff(2,i)
-            dzde = dzde + geom(3*i)*dff(1,i)
-            dzdk = dzdk + geom(3*i)*dff(2,i)
+            dxde = dxde+geom(3*i-2)*dff(1, i)
+            dxdk = dxdk+geom(3*i-2)*dff(2, i)
+            dyde = dyde+geom(3*i-1)*dff(1, i)
+            dydk = dydk+geom(3*i-1)*dff(2, i)
+            dzde = dzde+geom(3*i)*dff(1, i)
+            dzdk = dzdk+geom(3*i)*dff(2, i)
         end do
-        jac = sqrt((dyde*dzdk-dzde*dydk)**2+ (dzde*dxdk-dxde*dzdk)**2+ (dxde*dydk-dyde*dxdk)**2)
+        jac = sqrt((dyde*dzdk-dzde*dydk)**2+(dzde*dxdk-dxde*dzdk)**2+(dxde*dydk-dyde*dxdk)**2)
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 end subroutine

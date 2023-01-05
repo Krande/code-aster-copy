@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -56,7 +56,7 @@ subroutine xtopoc(modele, decou)
 !
 !
     integer :: nbout, nbin
-    parameter    (nbout=7, nbin=15)
+    parameter(nbout=7, nbin=15)
     character(len=8) :: lpaout(nbout), lpain(nbin), noma, licmp(2)
     character(len=8) :: nomfis, cpar
     character(len=19) :: lchout(nbout), lchin(nbin)
@@ -90,15 +90,15 @@ subroutine xtopoc(modele, decou)
         debug = .true.
     else
         debug = .false.
-    endif
+    end if
     option = 'TOPOFA'
 !
 ! --- INITIALISATION DES CHAMPS POUR CALCUL
 !
-    call inical(nbin, lpain, lchin, nbout, lpaout,&
+    call inical(nbin, lpain, lchin, nbout, lpaout, &
                 lchout)
 !
-    chdec='&&XTOPOC.CHDEC'
+    chdec = '&&XTOPOC.CHDEC'
     call xchdec(modele, decou, chdec)
 !
 ! --- RECUPERATION DES DONNEES XFEM
@@ -125,26 +125,26 @@ subroutine xtopoc(modele, decou)
 !
 ! --- CREATION D UNE CARTE POUR INFO TYPE DE DISCONTINUITE
 !
-    call jeveuo(modele//'.FISS','L',jmofis)
-    call jeveuo(modele//'.NFIS','L',jnfiss)
+    call jeveuo(modele//'.FISS', 'L', jmofis)
+    call jeveuo(modele//'.NFIS', 'L', jnfiss)
     nfiss = zi(jnfiss)
-    do ifiss = 1,nfiss
+    do ifiss = 1, nfiss
         nomfis = zk8(jmofis-1+ifiss)
-        if(ifiss.gt.1) memtyp = typdis
+        if (ifiss .gt. 1) memtyp = typdis
         call dismoi('TYPE_DISCONTINUITE', nomfis, 'FISS_XFEM', repk=typdis)
 !
 !       SI TYPE DE DISCONTINUITE DIFFERENTES, CELA DOIT ETRE DETECTE
 !       EN AMONT DANS DEFI_FISS_XFEM
-        if(ifiss.gt.1) then
-            if(memtyp.eq.'FISSURE') typdis = 'FISSURE'
-        endif
-    enddo
+        if (ifiss .gt. 1) then
+            if (memtyp .eq. 'FISSURE') typdis = 'FISSURE'
+        end if
+    end do
     typenr = '&&XTOPOC.TYPENR'
-    if(typdis.eq.'FISSURE') ityp = 1
-    if(typdis.eq.'INTERFACE') ityp = 2
-    if(typdis.eq.'COHESIF') ityp = 3
+    if (typdis .eq. 'FISSURE') ityp = 1
+    if (typdis .eq. 'INTERFACE') ityp = 2
+    if (typdis .eq. 'COHESIF') ityp = 3
     cpar = 'X1'
-    call mecact('V', typenr, 'MODELE',ligrel, 'NEUT_I',&
+    call mecact('V', typenr, 'MODELE', ligrel, 'NEUT_I', &
                 ncmp=1, nomcmp=cpar, si=ityp)
 !
 ! --- POUR LE MULTI-HEAVISIDE, TOUS LES CHAMPS DE SORTIE SONT
@@ -156,7 +156,7 @@ subroutine xtopoc(modele, decou)
     licmp(2) = 'NCMP_DYN'
 !
     do i = 1, 7
-        call cescre('V', champ(i), 'ELEM', noma, 'DCEL_I',&
+        call cescre('V', champ(i), 'ELEM', noma, 'DCEL_I', &
                     2, licmp, [0], [-1], [-2])
         call jeveuo(champ(i)//'.CESD', 'L', jcesd)
         call jeveuo(champ(i)//'.CESV', 'E', vi=cesv)
@@ -165,7 +165,7 @@ subroutine xtopoc(modele, decou)
 ! --- REMPLISSAGE DES SOUS-POINTS DE CHAMP(I)
 !
         do ima = 1, nbma
-            call cesexi('S', jcesd, jcesl, ima, 1,&
+            call cesexi('S', jcesd, jcesl, ima, 1, &
                         1, 1, iad)
             zl(jcesl-1-iad) = .true.
             cesv(1-1-iad) = nbsp(ima)
@@ -224,14 +224,14 @@ subroutine xtopoc(modele, decou)
     lpaout(7) = 'PHEAVFA'
     lchout(7) = champ(7)
 !
-    call calcul('C', option, ligrel, nbin, lchin,&
-                lpain, nbout, lchout, lpaout, 'G',&
+    call calcul('C', option, ligrel, nbin, lchin, &
+                lpain, nbout, lchout, lpaout, 'G', &
                 'OUI')
 !
     if (debug) then
-       call dbgcal(option, ifmdbg, nbin, lpain, lchin,&
-            nbout, lpaout, lchout)
-    endif
+        call dbgcal(option, ifmdbg, nbin, lpain, lchin, &
+                    nbout, lpaout, lchout)
+    end if
 !
     call detrsd('CHAM_ELEM', chdec)
 !

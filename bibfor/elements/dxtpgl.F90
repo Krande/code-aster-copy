@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -39,29 +39,29 @@ subroutine dxtpgl(xyzg, pgl)
 !     -----------------------------------------------------------------
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    x21 = xyzg(1,2) - xyzg(1,1)
-    y21 = xyzg(2,2) - xyzg(2,1)
-    z21 = xyzg(3,2) - xyzg(3,1)
-    x31 = xyzg(1,3) - xyzg(1,1)
-    y31 = xyzg(2,3) - xyzg(2,1)
-    z31 = xyzg(3,3) - xyzg(3,1)
+    x21 = xyzg(1, 2)-xyzg(1, 1)
+    y21 = xyzg(2, 2)-xyzg(2, 1)
+    z21 = xyzg(3, 2)-xyzg(3, 1)
+    x31 = xyzg(1, 3)-xyzg(1, 1)
+    y31 = xyzg(2, 3)-xyzg(2, 1)
+    z31 = xyzg(3, 3)-xyzg(3, 1)
 !
-    norm = sqrt ( x21 * x21 + y21 * y21 + z21 * z21 )
-    pgl(1,1) = x21 / norm
-    pgl(1,2) = y21 / norm
-    pgl(1,3) = z21 / norm
+    norm = sqrt(x21*x21+y21*y21+z21*z21)
+    pgl(1, 1) = x21/norm
+    pgl(1, 2) = y21/norm
+    pgl(1, 3) = z21/norm
 !
-    pgl(3,1) = y21 * z31 - z21 * y31
-    pgl(3,2) = z21 * x31 - x21 * z31
-    pgl(3,3) = x21 * y31 - y21 * x31
+    pgl(3, 1) = y21*z31-z21*y31
+    pgl(3, 2) = z21*x31-x21*z31
+    pgl(3, 3) = x21*y31-y21*x31
 !
-    norm = sqrt ( pgl(3,1) * pgl(3,1) + pgl(3,2) * pgl(3,2) + pgl(3,3) * pgl(3,3))
-    pgl(3,1) = pgl(3,1) / norm
-    pgl(3,2) = pgl(3,2) / norm
-    pgl(3,3) = pgl(3,3) / norm
+    norm = sqrt(pgl(3, 1)*pgl(3, 1)+pgl(3, 2)*pgl(3, 2)+pgl(3, 3)*pgl(3, 3))
+    pgl(3, 1) = pgl(3, 1)/norm
+    pgl(3, 2) = pgl(3, 2)/norm
+    pgl(3, 3) = pgl(3, 3)/norm
 !
-    pgl(2,1) = pgl(3,2) * pgl(1,3) - pgl(3,3) * pgl(1,2)
-    pgl(2,2) = pgl(3,3) * pgl(1,1) - pgl(3,1) * pgl(1,3)
-    pgl(2,3) = pgl(3,1) * pgl(1,2) - pgl(3,2) * pgl(1,1)
+    pgl(2, 1) = pgl(3, 2)*pgl(1, 3)-pgl(3, 3)*pgl(1, 2)
+    pgl(2, 2) = pgl(3, 3)*pgl(1, 1)-pgl(3, 1)*pgl(1, 3)
+    pgl(2, 3) = pgl(3, 1)*pgl(1, 2)-pgl(3, 2)*pgl(1, 1)
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,9 +19,9 @@
 subroutine psvari(rela_comp, nbvari, ipop1, ipop2)
     implicit none
 #include "asterfort/assert.h"
-character(len=16), intent(in) :: rela_comp
-integer, intent(in) :: nbvari
-integer, intent(out) :: ipop1, ipop2
+    character(len=16), intent(in) :: rela_comp
+    integer, intent(in) :: nbvari
+    integer, intent(out) :: ipop1, ipop2
 !
 !     FONCTION REALISEE :
 !
@@ -42,30 +42,30 @@ integer, intent(out) :: ipop1, ipop2
 !
     ipop1 = 0
     ipop2 = 0
-    if ((rela_comp.eq.'LEMAITRE' ) .or. (rela_comp.eq.'VMIS_ECMI_TRAC') .or.&
-        (rela_comp.eq.'VMIS_ECMI_LINE') .or. (rela_comp.eq.'VMIS_CIN1_CHAB') .or.&
-        (rela_comp.eq.'VMIS_CIN2_CHAB') .or. (rela_comp.eq.'VISC_CIN1_CHAB') .or.&
-        (rela_comp.eq.'VISC_CIN2_CHAB') .or. (rela_comp.eq.'VMIS_ISOT_TRAC') .or.&
-        (rela_comp.eq.'VMIS_ISOT_LINE') .or. (rela_comp.eq.'VISC_ISOT_TRAC') .or.&
-        (rela_comp.eq.'VISC_ISOT_LINE')) then
-        ipop1=1
-        ipop2=2
-    else if ((rela_comp.eq.'ROUSSELIER')) then
+    if ((rela_comp .eq. 'LEMAITRE') .or. (rela_comp .eq. 'VMIS_ECMI_TRAC') .or. &
+        (rela_comp .eq. 'VMIS_ECMI_LINE') .or. (rela_comp .eq. 'VMIS_CIN1_CHAB') .or. &
+        (rela_comp .eq. 'VMIS_CIN2_CHAB') .or. (rela_comp .eq. 'VISC_CIN1_CHAB') .or. &
+        (rela_comp .eq. 'VISC_CIN2_CHAB') .or. (rela_comp .eq. 'VMIS_ISOT_TRAC') .or. &
+        (rela_comp .eq. 'VMIS_ISOT_LINE') .or. (rela_comp .eq. 'VISC_ISOT_TRAC') .or. &
+        (rela_comp .eq. 'VISC_ISOT_LINE')) then
+        ipop1 = 1
+        ipop2 = 2
+    else if ((rela_comp .eq. 'ROUSSELIER')) then
         ipop1 = 1
         ipop2 = 3
-        else if ( (rela_comp.eq.'ROUSS_PR') .or.(rela_comp.eq.'ROUSS_VISC') )&
-    then
-        ipop1=1
-        ipop2=nbvari
-    else if (rela_comp.eq.'MONOCRISTAL') then
+    else if ((rela_comp .eq. 'ROUSS_PR') .or. (rela_comp .eq. 'ROUSS_VISC')) &
+        then
+        ipop1 = 1
+        ipop2 = nbvari
+    else if (rela_comp .eq. 'MONOCRISTAL') then
         ipop1 = nbvari-1
         ipop2 = nbvari
-    else if (rela_comp.eq.'POLYCRISTAL') then
+    else if (rela_comp .eq. 'POLYCRISTAL') then
         ipop1 = 7
         ipop2 = nbvari
     else
         ASSERT(ASTER_FALSE)
 !
-    endif
+    end if
 !
 end subroutine

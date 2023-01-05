@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,14 +21,14 @@ subroutine pronor(nx, ny, nz, vtan, vnor)
     real(kind=8) :: nx, ny, nz, scal
     real(kind=8) :: vtan(3), vnor(3)
 !
-    scal = nx*vtan(1) + ny*vtan(2) + nz*vtan(3)
+    scal = nx*vtan(1)+ny*vtan(2)+nz*vtan(3)
 !
     vnor(1) = nx*scal
     vnor(2) = ny*scal
     vnor(3) = nz*scal
 !
-    vtan(1) = vtan(1) - vnor(1)
-    vtan(2) = vtan(2) - vnor(2)
-    vtan(3) = vtan(3) - vnor(3)
+    vtan(1) = vtan(1)-vnor(1)
+    vtan(2) = vtan(2)-vnor(2)
+    vtan(3) = vtan(3)-vnor(3)
 !
 end subroutine

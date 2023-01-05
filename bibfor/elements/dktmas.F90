@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -61,8 +61,8 @@ subroutine dktmas(xyzl, option, pgl, mas, ener)
     aster_logical :: exce, iner
 !     ------------------------------------------------------------------
 !
-    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
-                     jpoids=ipoids, jcoopg=icoopg, jvf=ivf, jdfde=idfdx, jdfd2=idfd2,&
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg, &
+                     jpoids=ipoids, jcoopg=icoopg, jvf=ivf, jdfde=idfdx, jdfd2=idfd2, &
                      jgano=jgano)
 !
     zero = 0.0d0
@@ -106,24 +106,24 @@ subroutine dktmas(xyzl, option, pgl, mas, ener)
 ! ---  LES TERMES SONT EN NK*NP                                      =
 !=====================================================================
 !
-    memb(1,1) = carat3(8)*roe/six
-    memb(1,3) = carat3(8)*roe/douze
-    memb(1,5) = memb(1,3)
-    memb(2,2) = memb(1,1)
-    memb(2,4) = memb(1,3)
-    memb(2,6) = memb(1,3)
-    memb(3,1) = memb(1,3)
-    memb(3,3) = memb(1,1)
-    memb(3,5) = memb(1,3)
-    memb(4,2) = memb(1,3)
-    memb(4,4) = memb(1,1)
-    memb(4,6) = memb(1,3)
-    memb(5,1) = memb(1,3)
-    memb(5,3) = memb(1,3)
-    memb(5,5) = memb(1,1)
-    memb(6,2) = memb(1,3)
-    memb(6,4) = memb(1,3)
-    memb(6,6) = memb(1,1)
+    memb(1, 1) = carat3(8)*roe/six
+    memb(1, 3) = carat3(8)*roe/douze
+    memb(1, 5) = memb(1, 3)
+    memb(2, 2) = memb(1, 1)
+    memb(2, 4) = memb(1, 3)
+    memb(2, 6) = memb(1, 3)
+    memb(3, 1) = memb(1, 3)
+    memb(3, 3) = memb(1, 1)
+    memb(3, 5) = memb(1, 3)
+    memb(4, 2) = memb(1, 3)
+    memb(4, 4) = memb(1, 1)
+    memb(4, 6) = memb(1, 3)
+    memb(5, 1) = memb(1, 3)
+    memb(5, 3) = memb(1, 3)
+    memb(5, 5) = memb(1, 1)
+    memb(6, 2) = memb(1, 3)
+    memb(6, 4) = memb(1, 3)
+    memb(6, 6) = memb(1, 1)
 !
 ! --- BOUCLE SUR LES POINTS D'INTEGRATION :
 !     ===================================
@@ -150,7 +150,7 @@ subroutine dktmas(xyzl, option, pgl, mas, ener)
 !       -----------------------------------
         do k = 1, 9
             do j = 1, 9
-                flex(k,j) = flex(k,j) + wkt(k)*wkt(j)*wgt
+                flex(k, j) = flex(k, j)+wkt(k)*wkt(j)*wgt
             end do
         end do
 !
@@ -167,7 +167,7 @@ subroutine dktmas(xyzl, option, pgl, mas, ener)
 !       -------------------------------------------------------
         do k = 1, 9
             do j = 1, 9
-                flex(k,j) = flex(k,j)+(nfx(k)*nfx(j)+nfy(k)*nfy(j))* wgtf
+                flex(k, j) = flex(k, j)+(nfx(k)*nfx(j)+nfy(k)*nfy(j))*wgtf
             end do
         end do
 !
@@ -193,12 +193,12 @@ subroutine dktmas(xyzl, option, pgl, mas, ener)
             do k = 1, 3
                 do j = 1, 9
                     i1 = 2*(k-1)+1
-                    i2 = i1 +1
-                    mefl(i1,j) = mefl(i1,j)+nmi(k)*nfx(j)*wgtmf
-                    mefl(i2,j) = mefl(i2,j)+nmi(k)*nfy(j)*wgtmf
+                    i2 = i1+1
+                    mefl(i1, j) = mefl(i1, j)+nmi(k)*nfx(j)*wgtmf
+                    mefl(i2, j) = mefl(i2, j)+nmi(k)*nfy(j)*wgtmf
                 end do
             end do
-        endif
+        end if
 !
 ! ---   FIN DU TRAITEMENT DU CAS D'UN ELEMENT EXCENTRE
 !       ----------------------------------------------
@@ -210,21 +210,21 @@ subroutine dktmas(xyzl, option, pgl, mas, ener)
 ! --- INSERTION DES DIFFERENTES PARTIES CALCULEES DE LA MATRICE
 ! --- DE MASSE A LA MATRICE ELLE MEME :
 !     ===============================
-    if (( option .eq. 'MASS_MECA' ) .or. (option.eq.'M_GAMMA')) then
+    if ((option .eq. 'MASS_MECA') .or. (option .eq. 'M_GAMMA')) then
         call dxtloc(flex, memb, mefl, ctor, mas)
 !
-    else if (option.eq.'MASS_MECA_DIAG') then
+    else if (option .eq. 'MASS_MECA_DIAG') then
         call dxtloc(flex, memb, mefl, ctor, masloc)
         wgt = carat3(8)*roe
-        wgtf= carat3(8)*rof
+        wgtf = carat3(8)*rof
         call utpslg(3, 6, pgl, masloc, masglo)
-        call dialum(3, 6, 18, wgt, masglo,&
+        call dialum(3, 6, 18, wgt, masglo, &
                     mas)
 !
-    else if (option.eq.'MASS_MECA_EXPLI') then
+    else if (option .eq. 'MASS_MECA_EXPLI') then
         call dxtloc(flex, memb, mefl, ctor, masloc)
         wgt = carat3(8)*roe
-        wgtf= carat3(8)*rof
+        wgtf = carat3(8)*rof
         call utpslg(3, 6, pgl, masloc, masglo)
         call diaexp(3, 6, 18, masglo, mas)
 !
@@ -232,21 +232,21 @@ subroutine dktmas(xyzl, option, pgl, mas, ener)
         coef2 = carat3(8)/huit
         if (coef2 .gt. coef1) then
             coef1 = coef2
-        endif
+        end if
         do j = 1, nno
-            k = 6*(j-1) + 1
-            m2 = 6*(j-1) + 2
-            m3 = 6*(j-1) + 3
-            i1 = 6*(j-1) + 5
-            i2 = 6*(j-1) + 4
+            k = 6*(j-1)+1
+            m2 = 6*(j-1)+2
+            m3 = 6*(j-1)+3
+            i1 = 6*(j-1)+5
+            i2 = 6*(j-1)+4
             i3 = 6*j
 !
-            m1 = (k + 1)*k/2
-            m2 = (m2 + 1)*m2/2
-            m3 = (m3 + 1)*m3/2
-            i1 = (i1 + 1)*i1/2
-            i2 = (i2 + 1)*i2/2
-            i3 = (i3 + 1)*i3/2
+            m1 = (k+1)*k/2
+            m2 = (m2+1)*m2/2
+            m3 = (m3+1)*m3/2
+            i1 = (i1+1)*i1/2
+            i2 = (i2+1)*i2/2
+            i3 = (i3+1)*i3/2
 !
             mas(m2) = mas(m1)
             mas(m3) = mas(m1)
@@ -255,23 +255,23 @@ subroutine dktmas(xyzl, option, pgl, mas, ener)
             mas(i3) = mas(i1)
         end do
 !
-    else if (option.eq.'ECIN_ELEM') then
-        stopz='ONO'
+    else if (option .eq. 'ECIN_ELEM') then
+        stopz = 'ONO'
 ! IRET NE PEUT VALOIR QUE 0 (TOUT VA BIEN) OU 2 (CHAMP NON FOURNI)
         call tecach(stopz, 'PVITESR', 'L', iret, iad=jvitg)
         if (iret .eq. 0) then
             call utpvgl(3, 6, pgl, zr(jvitg), vite)
-            call dxtloe(flex, memb, mefl, ctor, .false._1,&
+            call dxtloe(flex, memb, mefl, ctor, .false._1, &
                         vite, ener)
         else
             call tecach(stopz, 'PDEPLAR', 'L', iret, iad=jdepg)
             if (iret .eq. 0) then
                 call utpvgl(3, 6, pgl, zr(jdepg), depl)
-                call dxtloe(flex, memb, mefl, ctor, .false._1,&
+                call dxtloe(flex, memb, mefl, ctor, .false._1, &
                             depl, ener)
             else
                 call utmess('F', 'ELEMENTS2_1', sk=option)
-            endif
-        endif
-    endif
+            end if
+        end if
+    end if
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine char_rcbp_cabl(cabl_prec, list_cabl, list_anc1, list_anc2, nb_cabl,&
+subroutine char_rcbp_cabl(cabl_prec, list_cabl, list_anc1, list_anc2, nb_cabl, &
                           nb_anc1, nb_anc2)
 !
     implicit none
@@ -86,11 +86,11 @@ subroutine char_rcbp_cabl(cabl_prec, list_cabl, list_anc1, list_anc2, nb_cabl,&
 !
 ! - Get informations in table
 !
-    call tbexve(table, 'NUME_CABLE', list_cabl, 'V', nb_cabl,&
+    call tbexve(table, 'NUME_CABLE', list_cabl, 'V', nb_cabl, &
                 k8bid)
-    call tbexve(table, 'NOM_ANCRAGE1', list_anc1, 'V', nb_anc1,&
+    call tbexve(table, 'NOM_ANCRAGE1', list_anc1, 'V', nb_anc1, &
                 k8bid)
-    call tbexve(table, 'NOM_ANCRAGE2', list_anc2, 'V', nb_anc2,&
+    call tbexve(table, 'NOM_ANCRAGE2', list_anc2, 'V', nb_anc2, &
                 k8bid)
 !
     call jedema()

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine deltau(jrwork, jnbpg, nbpgt, nbordr, ordini,&
-                  nmaini, nbmap, numpaq, tspaq, nommet,&
-                  nomcri, nomfor, grdvie, forvie, forcri,&
+subroutine deltau(jrwork, jnbpg, nbpgt, nbordr, ordini, &
+                  nmaini, nbmap, numpaq, tspaq, nommet, &
+                  nomcri, nomfor, grdvie, forvie, forcri, &
                   cesr)
 ! person_in_charge: van-xuan.tran at edf.fr
     implicit none
@@ -110,7 +110,7 @@ subroutine deltau(jrwork, jnbpg, nbpgt, nbordr, ordini,&
     call getvid(' ', 'CHAM_MATER', scal=chmat1, nbret=iret)
     chmat = chmat1//'.CHAMP_MAT'
     cesmat = '&&DELTAU.CESMAT'
-    call carces(chmat, 'ELEM', ' ', 'V', cesmat,&
+    call carces(chmat, 'ELEM', ' ', 'V', cesmat, &
                 'A', iret)
     call jeveuo(cesmat//'.CESD', 'L', icesd)
     call jeveuo(cesmat//'.CESL', 'L', icesl)
@@ -128,33 +128,33 @@ subroutine deltau(jrwork, jnbpg, nbpgt, nbordr, ordini,&
     do imap = nmaini, nmaini+(nbmap-1)
         if (imap .gt. nmaini) then
             kwork = 1
-            sompgw = sompgw + zi(jnbpg + imap-2)
-        endif
-        nbpg = zi(jnbpg + imap-1)
+            sompgw = sompgw+zi(jnbpg+imap-2)
+        end if
+        nbpg = zi(jnbpg+imap-1)
 ! SI LA MAILLE COURANTE N'A PAS DE POINTS DE GAUSS, LE PROGRAMME
 ! PASSE DIRECTEMENT A LA MAILLE SUIVANTE.
         if (nbpg .eq. 0) then
             goto 400
-        endif
+        end if
 !
-        nbpgp = nbpgp + nbpg
+        nbpgp = nbpgp+nbpg
         if ((l*int(nbpgt/10.0d0)) .lt. nbpgp) then
-            write(6,*)numpaq,'   ',(nbpgp-nbpg)
-            l = l + 1
-        endif
+            write (6, *) numpaq, '   ', (nbpgp-nbpg)
+            l = l+1
+        end if
 !
 ! RECUPERATION DU NOM DU MATERIAU AFFECTE A LA MAILLE COURANTE
 ! ET DES PARAMETRES ASSOCIES AU CRITERE CHOISI POUR LA MAILLE COURANTE.
 !
         optio = 'DOMA_ELGA'
-        call rnomat(icesd, icesl, icesv, imap, nomcri,&
-                    ibid, ibid, ibid, optio, vala,&
+        call rnomat(icesd, icesl, icesv, imap, nomcri, &
+                    ibid, ibid, ibid, optio, vala, &
                     valb, coefpa, nommat)
 !
         call rcpare(nommat, 'FATIGUE', 'WOHLER', icodwo)
         if (icodwo .eq. 1) then
             call utmess('F', 'FATIGUE1_90', sk=nomcri(1:16))
-        endif
+        end if
 !
 !
         do ipg = 1, nbpg
@@ -162,26 +162,26 @@ subroutine deltau(jrwork, jnbpg, nbpgt, nbordr, ordini,&
 !            call jerazo('&&DELTAU.VECTPG', tneces, 1)
 !
 ! REMPACER PAR ACMATA
-            call acgrdo(nbordr, ordini, kwork, sompgw, jrwork,&
-                        tspaq, ipg, nommet, nommat, nomcri,&
-                        vala, coefpa, nomfor, grdvie, forvie,&
+            call acgrdo(nbordr, ordini, kwork, sompgw, jrwork, &
+                        tspaq, ipg, nommet, nommat, nomcri, &
+                        vala, coefpa, nomfor, grdvie, forvie, &
                         forcri, valpar, vresu2)
 !
 !
 ! C AFFECTATION DES RESULTATS DANS UN CHAM_ELEM SIMPLE
 !
             do icmp = 1, 24
-                call cesexi('C', jcerd, jcerl, imap, ipg,&
+                call cesexi('C', jcerd, jcerl, imap, ipg, &
                             1, icmp, jad)
 !
 !              -- TOUTES LES MAILLES NE SAVENT PAS CALCULER LA FATIGUE :
                 if (jad .eq. 0) then
-                    ASSERT(icmp.eq.1)
-                    ASSERT(ipg.eq.1)
+                    ASSERT(icmp .eq. 1)
+                    ASSERT(ipg .eq. 1)
                     goto 400
-                endif
+                end if
                 jad = abs(jad)
-                zl(jcerl - 1 + jad) = .true.
+                zl(jcerl-1+jad) = .true.
                 cerv(jad) = vresu2(icmp)
 !
             end do

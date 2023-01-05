@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,17 +17,17 @@
 ! --------------------------------------------------------------------
 ! aslint: disable=W1504
 !
-subroutine plasti(BEHinteg    ,&
-                  fami        , kpg   , ksp   , typmod, imate,&
-                  compor      , carcri, instam, instap, &
-                  epsdt       , depst , sigm  ,&
-                  vim         , option, angmas, sigp  , vip,&
-                  dsidep      , icomp , nvi   , codret,&
+subroutine plasti(BEHinteg, &
+                  fami, kpg, ksp, typmod, imate, &
+                  compor, carcri, instam, instap, &
+                  epsdt, depst, sigm, &
+                  vim, option, angmas, sigp, vip, &
+                  dsidep, icomp, nvi, codret, &
                   mult_compor_)
 !
-use Behaviour_type
+    use Behaviour_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/lccnvx.h"
@@ -44,23 +44,23 @@ implicit none
 #include "blas/dcopy.h"
 #include "asterfort/Behaviour_type.h"
 !
-type(Behaviour_Integ), intent(in) :: BEHinteg
-character(len=*), intent(in) :: fami
-integer, intent(in) :: kpg, ksp, imate
-character(len=16), intent(in) :: compor(COMPOR_SIZE)
-real(kind=8), intent(in) :: carcri(CARCRI_SIZE)
-real(kind=8), intent(in) :: instam, instap
-real(kind=8), intent(in) :: epsdt(9), depst(9)
-real(kind=8), intent(in) :: sigm(6), vim(*)
-character(len=16), intent(in) :: option
-real(kind=8), intent(in) :: angmas(3)
-real(kind=8), intent(out) :: sigp(6), vip(*)
-character(len=8), intent(in) :: typmod(*)
-integer, intent(in) :: icomp
-integer, intent(in) :: nvi
-real(kind=8), intent(out) :: dsidep(6, *)
-integer, intent(out) :: codret
-character(len=16), optional, intent(in) :: mult_compor_
+    type(Behaviour_Integ), intent(in) :: BEHinteg
+    character(len=*), intent(in) :: fami
+    integer, intent(in) :: kpg, ksp, imate
+    character(len=16), intent(in) :: compor(COMPOR_SIZE)
+    real(kind=8), intent(in) :: carcri(CARCRI_SIZE)
+    real(kind=8), intent(in) :: instam, instap
+    real(kind=8), intent(in) :: epsdt(9), depst(9)
+    real(kind=8), intent(in) :: sigm(6), vim(*)
+    character(len=16), intent(in) :: option
+    real(kind=8), intent(in) :: angmas(3)
+    real(kind=8), intent(out) :: sigp(6), vip(*)
+    character(len=8), intent(in) :: typmod(*)
+    integer, intent(in) :: icomp
+    integer, intent(in) :: nvi
+    real(kind=8), intent(out) :: dsidep(6, *)
+    integer, intent(out) :: codret
+    character(len=16), optional, intent(in) :: mult_compor_
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -167,10 +167,10 @@ character(len=16), optional, intent(in) :: mult_compor_
     real(kind=8) :: toutms(nfs, nsg, 6), hsr(nsg, nsg), drdy(nrm*nrm)
     real(kind=8) :: tempd, tempf, tref
 !     POUR BETON_BURGER - ATTENTION DIMENSION MAXI POUR CE MODELE
-    parameter  ( epsi = 1.d-15 )
+    parameter(epsi=1.d-15)
     aster_logical :: resi, rigi
-    common /tdim/   ndt  , ndi
-    common/polycr/irr,decirr,nbsyst,decal,gdef
+    common/tdim/ndt, ndi
+    common/polycr/irr, decirr, nbsyst, decal, gdef
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -183,39 +183,39 @@ character(len=16), optional, intent(in) :: mult_compor_
     mult_comp = ' '
     if (present(mult_compor_)) then
         mult_comp = mult_compor_
-    endif
+    end if
     mod = typmod(1)
-    dt = instap - instam
-    resi = option(1:9).eq.'RAPH_MECA' .or. option(1:9).eq.'FULL_MECA'
-    rigi = option(1:9).eq.'RIGI_MECA' .or. option(1:9).eq.'FULL_MECA'
+    dt = instap-instam
+    resi = option(1:9) .eq. 'RAPH_MECA' .or. option(1:9) .eq. 'FULL_MECA'
+    rigi = option(1:9) .eq. 'RIGI_MECA' .or. option(1:9) .eq. 'FULL_MECA'
     gdef = 0
-    if (defo_comp .eq. 'SIMO_MIEHE') gdef=1
-    numhsr(1)=1
+    if (defo_comp .eq. 'SIMO_MIEHE') gdef = 1
+    numhsr(1) = 1
 !
     typma = 'VITESSE '
 !
 ! - Get temperatures
 !
-    call get_varc(fami , kpg  , ksp , 'T',&
+    call get_varc(fami, kpg, ksp, 'T', &
                   tempd, tempf, tref, l_temp)
 !
 ! - Glute pour LKR
 !
-    if (.not.l_temp .and. rela_comp .eq.'LKR') then
+    if (.not. l_temp .and. rela_comp .eq. 'LKR') then
         tempd = 0.d0
         tempf = 0.d0
-        tref  = 0.d0
-    endif
+        tref = 0.d0
+    end if
 !
 ! --  RECUPERATION COEF MATERIAU A T ET/OU T+DT
 !
-    call lcmate(BEHinteg,&
-                fami, kpg, ksp, compor, mod,&
-                imate, nmat, tempd, tempf, tref, 0,&
-                typma, hsr, materd, materf, matcst,&
-                nbcomm, cpmono, angmas, pgl, itmax,&
-                toler, ndt, ndi, nr, carcri,&
-                nvi, vim, nfs, nsg, toutms,&
+    call lcmate(BEHinteg, &
+                fami, kpg, ksp, compor, mod, &
+                imate, nmat, tempd, tempf, tref, 0, &
+                typma, hsr, materd, materf, matcst, &
+                nbcomm, cpmono, angmas, pgl, itmax, &
+                toler, ndt, ndi, nr, carcri, &
+                nvi, vim, nfs, nsg, toutms, &
                 1, numhsr, sigm, mult_comp)
 !
 !
@@ -225,34 +225,34 @@ character(len=16), optional, intent(in) :: mult_compor_
         call dcopy(9, epsdt, 1, epsd, 1)
     else
 ! --     RETRAIT INCREMENT DE DEFORMATION DUE A LA DILATATION THERMIQUE
-        call lcdedi(fami, kpg, ksp, nmat, materd,&
-                    materf, tempd, tempf, tref, depst,&
+        call lcdedi(fami, kpg, ksp, nmat, materd, &
+                    materf, tempd, tempf, tref, depst, &
                     epsdt, deps, epsd)
 ! --     RETRAIT ENDOGENNE ET RETRAIT DE DESSICCATION
-        call lcdehy(fami, kpg, ksp, nmat, materd,&
+        call lcdehy(fami, kpg, ksp, nmat, materd, &
                     materf, deps, epsd)
-    endif
+    end if
 !
 ! --    SEUIL A T > ETAT ELASTIQUE OU PLASTIQUE A T
     if (abs(vim(nvi)) .le. epsi) then
         etatd = 'ELASTIC'
     else
         etatd = 'PLASTIC'
-    endif
+    end if
 !
 ! --> REDECOUPAGE IMPOSE
     if (icomp .eq. -1 .and. option .ne. 'RIGI_MECA_TANG') then
         codret = 0
         goto 999
-    endif
+    end if
 !
-    if (option(1:10) .eq. 'RIGI_MECA_' .and. gdef .eq. 1 .and.&
+    if (option(1:10) .eq. 'RIGI_MECA_' .and. gdef .eq. 1 .and. &
         rela_comp .eq. 'MONOCRISTAL') then
-        call lcsmelas(epsd, deps, dsidep,&
-                      nmat = nmat, materd_ = materd)
+        call lcsmelas(epsd, deps, dsidep, &
+                      nmat=nmat, materd_=materd)
         codret = 0
         goto 999
-    endif
+    end if
 !
 !     ----------------------------------------------------------------
 !     OPTIONS 'FULL_MECA' ET 'RAPH_MECA' = CALCUL DE SIG(T+DT)
@@ -262,41 +262,41 @@ character(len=16), optional, intent(in) :: mult_compor_
 !
         if (gdef .eq. 1) then
 !           GDEF_MONO : PAS DE SEUIL CAR C'EST PLUS COMPLIQUE
-            seuil=1.d0
+            seuil = 1.d0
         else
 ! --        INTEGRATION ELASTIQUE SUR DT
-            call lcelas(fami, kpg, ksp, rela_comp, mod,&
-                        imate, nmat, materd, materf, matcst,&
-                        nvi, angmas, deps, sigm, vim,&
-                        sigp, vip, theta, etatd, carcri,&
+            call lcelas(fami, kpg, ksp, rela_comp, mod, &
+                        imate, nmat, materd, materf, matcst, &
+                        nvi, angmas, deps, sigm, vim, &
+                        sigp, vip, theta, etatd, carcri, &
                         iret)
             if (iret .ne. 0) goto 1
 !
 ! --        PREDICTION ETAT ELASTIQUE A T+DT : F(SIG(T+DT),VIN(T)) = 0 ?
-            seuil=1.d0
-            call lccnvx(fami, kpg, ksp, rela_comp, mod,&
-                        imate, nmat, materf, sigm,&
-                        sigp, deps, vim, vip, nbcomm,&
-                        cpmono, pgl, nvi, vp, vecp,&
-                        hsr, nfs, nsg, toutms, instam,&
-                        instap,&
+            seuil = 1.d0
+            call lccnvx(fami, kpg, ksp, rela_comp, mod, &
+                        imate, nmat, materf, sigm, &
+                        sigp, deps, vim, vip, nbcomm, &
+                        cpmono, pgl, nvi, vp, vecp, &
+                        hsr, nfs, nsg, toutms, instam, &
+                        instap, &
                         seuil, iret)
 !
             if (iret .ne. 0) goto 1
-        endif
+        end if
 !
         if (seuil .ge. 0.d0) then
 ! --        PREDICTION INCORRECTE > INTEGRATION ELASTO-PLASTIQUE SUR DT
             etatf = 'PLASTIC'
 !
-            call lcplas(BEHinteg,&
-                        fami, kpg, ksp, rela_comp, toler,&
-                        itmax, mod, imate, nmat, materd,&
-                        materf, nr, nvi, instam, instap,&
-                        deps, epsd, sigm, vim, sigp,&
-                        vip, compor, nbcomm, cpmono, pgl,&
-                        nfs, nsg, toutms, hsr, icomp,&
-                        irtet, theta, vp, vecp, seuil,&
+            call lcplas(BEHinteg, &
+                        fami, kpg, ksp, rela_comp, toler, &
+                        itmax, mod, imate, nmat, materd, &
+                        materf, nr, nvi, instam, instap, &
+                        deps, epsd, sigm, vim, sigp, &
+                        vip, compor, nbcomm, cpmono, pgl, &
+                        nfs, nsg, toutms, hsr, icomp, &
+                        irtet, theta, vp, vecp, seuil, &
                         devg, devgii, drdy, carcri)
 !
 
@@ -304,22 +304,22 @@ character(len=16), optional, intent(in) :: mult_compor_
                 goto 1
             else if (irtet .eq. 2) then
                 goto 2
-            endif
+            end if
         else
 ! --        PREDICTION CORRECTE > INTEGRATION ELASTIQUE FAITE
             etatf = 'ELASTIC'
 ! ---       MISE A JOUR DE VINF EN FONCTION DE LA LOI
 !           ET POST-TRAITEMENTS POUR DES LOIS PARTICULIERES
-            call lcelpl(rela_comp, nmat, materf,&
+            call lcelpl(rela_comp, nmat, materf, &
                         deps, nvi, vim, vip)
-        endif
+        end if
 !
 !        POST-TRAITEMENTS PARTICULIERS
-        call lcpopl(rela_comp, angmas, nmat, materd, materf,&
-                    mod, deps, sigm, sigp, vim,&
+        call lcpopl(rela_comp, angmas, nmat, materd, materf, &
+                    mod, deps, sigm, sigp, vim, &
                     vip)
 !
-    endif
+    end if
 !
 !     ----------------------------------------------------------------
 !     OPTIONS 'FULL_MECA' ET 'RIGI_MECA_TANG' = CALCUL DE DSDE
@@ -329,28 +329,28 @@ character(len=16), optional, intent(in) :: mult_compor_
 !     ----------------------------------------------------------------
 !
     if (rigi) then
-        call lcotan(option, angmas, etatd, etatf, fami,&
-                    kpg, ksp, rela_comp, mod, imate,&
-                    nmat, materd, materf, epsd, deps,&
-                    sigm, sigp, nvi, vim, vip,&
-                    drdy, vp, vecp, theta, dt,&
-                    devg, devgii, instam, instap, compor,&
-                    nbcomm, cpmono, pgl, nfs, nsg,&
-                    toutms, hsr, nr, itmax, toler,&
+        call lcotan(option, angmas, etatd, etatf, fami, &
+                    kpg, ksp, rela_comp, mod, imate, &
+                    nmat, materd, materf, epsd, deps, &
+                    sigm, sigp, nvi, vim, vip, &
+                    drdy, vp, vecp, theta, dt, &
+                    devg, devgii, instam, instap, compor, &
+                    nbcomm, cpmono, pgl, nfs, nsg, &
+                    toutms, hsr, nr, itmax, toler, &
                     typma, dsidep, irtet)
         if (irtet .ne. 0) goto 1
 !
-    endif
+    end if
 !
 !       ----------------------------------------------------------------
 !
     codret = 0
     goto 999
-  1 continue
+1   continue
     codret = 1
     goto 999
 !
-  2 continue
+2   continue
     codret = 2
     goto 999
 !

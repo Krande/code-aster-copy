@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine as_mmhgnw(fid, nomail, typent, typgeo, tblogl,&
+subroutine as_mmhgnw(fid, nomail, typent, typgeo, tblogl, &
                      n, cret)
 ! person_in_charge: nicolas.sellenet at edf.fr
 !
@@ -46,16 +46,16 @@ subroutine as_mmhgnw(fid, nomail, typent, typgeo, tblogl,&
     typen4 = to_med_int(typent)
     typge4 = to_med_int(typgeo)
     nn = to_med_int(n)
-    allocate ( tblog4(n) )
+    allocate (tblog4(n))
 
     call conv_int('ast->med', n, vi_ast=tblogl, vi_med=tblog4)
-    call mmhgnw(fid4, nomail, numdt4, numo4, typen4,&
+    call mmhgnw(fid4, nomail, numdt4, numo4, typen4, &
                 typge4, nn, tblog4, cret4)
 
     cret = to_aster_int(cret4)
     deallocate (tblog4)
 #else
-    call mmhgnw(fid, nomail, -1, -1, typent,&
+    call mmhgnw(fid, nomail, -1, -1, typent, &
                 typgeo, n, tblogl, cret)
 #endif
 

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine xfem_count_ddl(neq, deeq, k8cmp, nbnomax, ino_xfem,&
+subroutine xfem_count_ddl(neq, deeq, k8cmp, nbnomax, ino_xfem, &
                           is_xfem, nbnoxfem, ieq_loc, neq_mloc, maxi_ddl)
 !
 !-----------------------------------------------------------------------
@@ -54,7 +54,7 @@ subroutine xfem_count_ddl(neq, deeq, k8cmp, nbnomax, ino_xfem,&
     integer :: ieq, nuno, nucmp, j
     integer :: ipos
     integer :: ddlmax
-    parameter (ddlmax=52)
+    parameter(ddlmax=52)
 !
 !   REMARQUE: ON A AU PLUS 27 DDLS POUR UN ELEMENT XFEM (cf. 3D_XHHC)
 !-----------------------------------------------------------------------
@@ -62,23 +62,23 @@ subroutine xfem_count_ddl(neq, deeq, k8cmp, nbnomax, ino_xfem,&
     call jemarq()
 !
     do ieq = 1, neq
-        nuno=deeq(2*(ieq-1)+1)
-        nucmp=deeq(2*(ieq-1)+2)
-        nocmp=k8cmp(nucmp)
+        nuno = deeq(2*(ieq-1)+1)
+        nucmp = deeq(2*(ieq-1)+2)
+        nocmp = k8cmp(nucmp)
 !       write(6,*) ieq,'|', nuno,'|', nocmp
         if (nuno .lt. 1) goto 20
         if (.not. is_xfem(nuno)) goto 20
-        if (.not. xfem_cmps(nocmp,'OUI')) goto 20
-        ipos=neq_mloc(ino_xfem(nuno))+1
-        ieq_loc(ieq)=ipos
-        neq_mloc(ino_xfem(nuno))=ipos
- 20     continue
+        if (.not. xfem_cmps(nocmp, 'OUI')) goto 20
+        ipos = neq_mloc(ino_xfem(nuno))+1
+        ieq_loc(ieq) = ipos
+        neq_mloc(ino_xfem(nuno)) = ipos
+20      continue
     end do
 !
-    maxi_ddl=0
+    maxi_ddl = 0
     do j = 1, nbnoxfem
-        maxi_ddl=max(neq_mloc(j),maxi_ddl)
-    enddo
+        maxi_ddl = max(neq_mloc(j), maxi_ddl)
+    end do
 !
     ASSERT(maxi_ddl .le. ddlmax)
 !

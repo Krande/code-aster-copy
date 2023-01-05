@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -84,24 +84,24 @@ subroutine sinoz1(modele, sigma, signo)
 !
     call dismoi('DIM_GEOM', modele, 'MODELE', repi=repdim)
 !
-    if ((repdim.ne.2) .or. (repdim.ne.3)) then
+    if ((repdim .ne. 2) .or. (repdim .ne. 3)) then
         if (repdim .eq. 1) then
             call utmess('F', 'CALCULEL_75')
-        endif
+        end if
         if (repdim .gt. 3) then
             call utmess('F', 'CALCULEL_76')
-        endif
-    endif
+        end if
+    end if
 !
     if (repdim .eq. 2) then
         nbcmp = 4
-    else if (repdim.eq.3) then
+    else if (repdim .eq. 3) then
         nbcmp = 6
     else
         ASSERT(.false.)
-    endif
+    end if
 !
-    massel='&&MASSEL'
+    massel = '&&MASSEL'
 !
 !     CALCUL DE LA MATRICE DE MASSE ZZ1 (A 1 CMP)
     call memzme(modele, massel(1:19))
@@ -117,9 +117,9 @@ subroutine sinoz1(modele, sigma, signo)
 !     -- CREATION DU SOLVEUR :
     solveu = '&&OP0042.SOLVEUR'
 
-    call numero(nupgm, 'VV',&
-                modelocz = 'DDL_NOZ1',&
-                nb_matr_elem = 1     , list_matr_elem = massel)
+    call numero(nupgm, 'VV', &
+                modelocz='DDL_NOZ1', &
+                nb_matr_elem=1, list_matr_elem=massel)
 
     masselK19 = massel(1:19)
 !
@@ -144,18 +144,18 @@ subroutine sinoz1(modele, sigma, signo)
 !     RESOLUTIONS SANS DIRICHLET
 !     -- ON FORCE STOP_SINGULIER='NON' MAIS POURQUOI ??
     call jeveuo(solveu//'.SLVI', 'E', vi=slvi)
-    slvi(3)=1
-    matpre='&&SINOZ1.MATPRE'
-    call preres(solveu, 'V', ier, matpre, '&&MASSAS',&
+    slvi(3) = 1
+    matpre = '&&SINOZ1.MATPRE'
+    call preres(solveu, 'V', ier, matpre, '&&MASSAS', &
                 ibid, -9999)
 !
-    k19bid=' '
-    k1bid=' '
-    criter=' '
+    k19bid = ' '
+    k1bid = ' '
+    criter = ' '
     do i = 1, nbcmp
         call jeveuo(vect(i) (1:19)//'.VALE', 'E', jvect)
-        call resoud('&&MASSAS', matpre, solveu, k19bid, 1,&
-                    k19bid, k19bid, k1bid, zr(jvect), [cbid],&
+        call resoud('&&MASSAS', matpre, solveu, k19bid, 1, &
+                    k19bid, k19bid, k1bid, zr(jvect), [cbid], &
                     criter, .true._1, 0, iret)
     end do
 !
@@ -171,7 +171,7 @@ subroutine sinoz1(modele, sigma, signo)
     licmp(5) = 'SIXZ'
     licmp(6) = 'SIYZ'
     call dismoi('NOM_MAILLA', sigma(1:19), 'CHAM_ELEM', repk=ma)
-    call crcnct('G', signo, ma, 'SIEF_R', nbcmp,&
+    call crcnct('G', signo, ma, 'SIEF_R', nbcmp, &
                 licmp, rcmp)
     call jeveuo(signo(1:19)//'.VALE', 'E', vr=sig)
     call jeveuo(vect(1) (1:19)//'.VALE', 'E', vr=sixx)
@@ -181,22 +181,22 @@ subroutine sinoz1(modele, sigma, signo)
     if (nbcmp .eq. 6) then
         call jeveuo(vect(5) (1:19)//'.VALE', 'E', vr=sixz)
         call jeveuo(vect(6) (1:19)//'.VALE', 'E', vr=siyz)
-    endif
+    end if
     call jeveuo(jexnum(nume(1:14)//'.NUME.PRNO', 1), 'L', jprno)
     call jeveuo(nume(1:14)//'.NUME.NUEQ', 'L', vi=nueq)
 !
     call dismoi('NB_NO_MAILLA', ma, 'MAILLAGE', repi=nbno)
     do i = 1, nbno
-        indeq = zi(jprno-1+3* (i-1)+1)
+        indeq = zi(jprno-1+3*(i-1)+1)
         ieq = nueq(indeq)
-        sig(nbcmp* (i-1)+1) = sixx(ieq)
-        sig(nbcmp* (i-1)+2) = siyy(ieq)
-        sig(nbcmp* (i-1)+3) = sizz(ieq)
-        sig(nbcmp* (i-1)+4) = sixy(ieq)
+        sig(nbcmp*(i-1)+1) = sixx(ieq)
+        sig(nbcmp*(i-1)+2) = siyy(ieq)
+        sig(nbcmp*(i-1)+3) = sizz(ieq)
+        sig(nbcmp*(i-1)+4) = sixy(ieq)
         if (nbcmp .eq. 6) then
-            sig(nbcmp* (i-1)+5) = sixz(ieq)
-            sig(nbcmp* (i-1)+6) = siyz(ieq)
-        endif
+            sig(nbcmp*(i-1)+5) = sixz(ieq)
+            sig(nbcmp*(i-1)+6) = siyz(ieq)
+        end if
     end do
 !
     call detrsd('MATR_ASSE', '&&MASSAS')

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -61,7 +61,7 @@ subroutine op0146()
     real(kind=8) :: aire, alonto, freqf, freqi, pas, pui, pui2
     real(kind=8) :: pui2d, pui3d, vmoy, vmoyto, x1, x2, epsi
 !-----------------------------------------------------------------------
-    parameter   ( nb = 1024 )
+    parameter(nb=1024)
     integer :: i3, ivitef, lfreq, lnumi, lnumj, lrefe
     real(kind=8) :: val, vitef
     aster_logical :: casint
@@ -92,25 +92,25 @@ subroutine op0146()
     else
         nfi = 0
         nff = 0
-    endif
+    end if
 !
 ! --- 0.VERIFICATIONS AVANT EXECUTION ---
 !
     if (npoi .ne. 0) then
         if (freqf .lt. freqi) then
             call utmess('F', 'MODELISA5_70')
-        endif
+        end if
         if (freqf .le. 0.d0 .or. freqi .le. 0.d0) then
             call utmess('F', 'MODELISA5_71')
-        endif
+        end if
         pui2 = log(dble(nbpf))/log(2.d0)
         pui = aint(pui2)
         pui2d = abs(pui2-pui)
         pui3d = abs(1.d0-pui2d)
         if (pui2d .ge. 1.d-06 .and. pui3d .ge. 1.d-06) then
             call utmess('F', 'MODELISA5_72')
-        endif
-    endif
+        end if
+    end if
 !
 ! ----- FIN DES VERIFICATIONS AVANT EXECUTION -----
 !
@@ -136,12 +136,12 @@ subroutine op0146()
     if (nbspec .gt. 1) then
         nspelo = 0
         do is = 1, nbspec
-            if (zi(linds+is-1) .lt. 10) nspelo = nspelo + 1
+            if (zi(linds+is-1) .lt. 10) nspelo = nspelo+1
         end do
         if (nspelo .gt. 0 .and. nspelo .lt. nbspec) then
             call utmess('F', 'MODELISA5_73')
-        endif
-    endif
+        end if
+    end if
 !
 ! --- 2.0 TRAITEMENT SPECIAL POUR SPEC-LONG-COR-5
 !
@@ -154,10 +154,10 @@ subroutine op0146()
         call getvtx(' ', 'OPTION', scal=option)
         zk16(lrefe) = 'SPEC_GENE'
         zk16(lrefe+1) = option
-    endif
+    end if
     zk16(lrefe+2) = 'FREQ'
 !
-    if (vate(1)(1:14) .eq. 'SPEC_CORR_CONV') then
+    if (vate(1) (1:14) .eq. 'SPEC_CORR_CONV') then
         call sfifj(nomu)
     else
 !
@@ -179,11 +179,11 @@ subroutine op0146()
             val = zr(ivite-1+i3)-vitef
             if (abs(val) .lt. epsi) then
                 ivitef = i3
-            endif
+            end if
         end do
         if (ivitef .eq. 0) then
             call utmess('F', 'ALGELINE3_25', sr=vitef)
-        endif
+        end if
 !
         call jeveuo(freq, 'L', ifreq)
         call jelira(freq, 'LONUTI', nbm)
@@ -220,10 +220,10 @@ subroutine op0146()
             pvite = zk8(lfsvk+4)
             pvite = pvite(1:19)//'.VALE'
             call jelira(pvite, 'LONUTI', lnoe)
-            lnoe = lnoe / 2
+            lnoe = lnoe/2
 !
             do is = 1, nbspec
-                nomzon = zk16(lnozo+is-1)(1:8)
+                nomzon = zk16(lnozo+is-1) (1:8)
                 do iz = 1, nzex
                     if (nomzon .eq. zk8(lfsvk+3+iz)) goto 31
                 end do
@@ -231,7 +231,7 @@ subroutine op0146()
                 valk(2) = nomzon
                 valk(3) = typflu
                 call utmess('F', 'MODELISA5_74', nk=3, valk=valk)
- 31             continue
+31              continue
                 valk(1) = zk8(lspec+is-1)
                 valk(2) = zk8(lfsvk+iz+3)
                 call utmess('I', 'MODELISA5_75', nk=2, valk=valk)
@@ -244,15 +244,15 @@ subroutine op0146()
                 do js = is+1, nbspec
                     if (zk8(lspec+is-1) .eq. zk8(lspec+js-1)) then
                         call utmess('F', 'MODELISA5_76')
-                    endif
-                    nompro = zk16(lnozo+is-1)(1:8)
-                    nomzon = zk16(lnozo+js-1)(1:8)
+                    end if
+                    nompro = zk16(lnozo+is-1) (1:8)
+                    nomzon = zk16(lnozo+js-1) (1:8)
                     if (nompro .eq. nomzon) then
                         valk(1) = zk8(lspec+is-1)
                         valk(2) = zk8(lspec+js-1)
                         valk(3) = nomzon
                         call utmess('F', 'MODELISA5_77', nk=3, valk=valk)
-                    endif
+                    end if
                 end do
             end do
 !
@@ -272,7 +272,7 @@ subroutine op0146()
                     if (zr(ipv+lnoe+ik-1) .ne. 0.d0) then
                         n1 = ik
                         goto 121
-                    endif
+                    end if
                 end do
 121             continue
 !
@@ -280,7 +280,7 @@ subroutine op0146()
                     if (zr(ipv+lnoe+ik-1) .ne. 0.d0) then
                         n2 = ik
                         goto 131
-                    endif
+                    end if
                 end do
 131             continue
 !
@@ -288,23 +288,23 @@ subroutine op0146()
                 x1 = zr(ipv+n1-1)
                 x2 = zr(ipv+n2-1)
                 do ik = n1+1, n2
-                    aire = aire + (&
-                           zr(ipv+lnoe+ik-1) + zr(ipv+lnoe+ ik-2) ) * ( zr(ipv+ ik-1) - zr(ipv+ i&
-                           &k-2)&
+                    aire = aire+( &
+                           zr(ipv+lnoe+ik-1)+zr(ipv+lnoe+ik-2))*(zr(ipv+ik-1)-zr(ipv+i&
+                           &k-2) &
                            )/2.d0
                 end do
 !
-                vmoy = aire / (x2-x1)
+                vmoy = aire/(x2-x1)
                 zr(lvmoy+nuzo-1) = vmoy
-                vmoyto = vmoyto + aire
-                alonto = alonto + (x2-x1)
+                vmoyto = vmoyto+aire
+                alonto = alonto+(x2-x1)
 !
 ! ---   FIN DE BOUCLE SUR LES ZONES D EXCITATION DU FLUIDE
             end do
 !
-            vmoyto = vmoyto / alonto
+            vmoyto = vmoyto/alonto
 !
-        endif
+        end if
 !
 ! --- 3.RECUPERATION DE L'OPTION DE CALCUL
 !
@@ -319,11 +319,11 @@ subroutine op0146()
 !        ---- RECHERCHE DES NUMEROS D ORDRE DES MODES PRIS EN COMPTE
 !                       EN FONCTION DE FREQ_INIT ET FREQ_FIN.
 !
-        call rebdfr(zr(ifreq), nfi, nff, freqi, freqf,&
+        call rebdfr(zr(ifreq), nfi, nff, freqi, freqf, &
                     nmodi, nmodf, nbm, npv)
 !
 !
-        dim = (nmodf-nmodi) + 1
+        dim = (nmodf-nmodi)+1
 !
 ! --- 5.CREATION DE LA TABLE D'INTERSPECTRES ---
 !
@@ -340,9 +340,9 @@ subroutine op0146()
             call wkvect('&&OP0146.TEMP.PASF', 'V V R', nbpf, lpasf)
             pas = (freqf-freqi)/dble(nbpf-1)
             do ipf = 1, nbpf
-                zr(lpasf+ipf-1) = freqi + dble(ipf-1)*pas
+                zr(lpasf+ipf-1) = freqi+dble(ipf-1)*pas
             end do
-        endif
+        end if
         call wkvect('&&OP0146.TEMP.DISC', 'V V R', 8*dim, idisc)
 !
 ! --- CREATION DE CHAQUE INTERSPECTRE
@@ -353,7 +353,7 @@ subroutine op0146()
         chnumj = nomu//'.NUMJ'
         call wkvect(chnumj, 'G V I', mxval, lnumj)
         chvale = nomu//'.VALE'
-        call jecrec(chvale, 'G V R', 'NU', 'DISPERSE', 'VARIABLE',&
+        call jecrec(chvale, 'G V R', 'NU', 'DISPERSE', 'VARIABLE', &
                     mxval)
         chfreq = nomu//'.DISC'
         call wkvect(chfreq, 'G V R', nbpf, lfreq)
@@ -362,9 +362,9 @@ subroutine op0146()
         iv = ivitef
 !
         if (npoi .eq. 0) then
-            call pasfre(zr(idisc), zr(ifreq), zr(lpasf), dim, nbm,&
+            call pasfre(zr(idisc), zr(ifreq), zr(lpasf), dim, nbm, &
                         iv, nmodi, freqi, freqf, nb)
-        endif
+        end if
 !
         do ipf = 1, nbpf
             zr(lfreq-1+ipf) = zr(lpasf-1+ipf)
@@ -377,7 +377,7 @@ subroutine op0146()
             if (casint) ideb = nmodi
 !
             do im1 = ideb, im2
-                ij = ij + 1
+                ij = ij+1
 !
                 zi(lnumi-1+ij) = zi(inumo+im2-1)
                 zi(lnumj-1+ij) = zi(inumo+im1-1)
@@ -387,7 +387,7 @@ subroutine op0146()
                     nbabs = nbpf
                 else
                     nbabs = 2*nbpf
-                endif
+                end if
                 call jeecra(jexnum(chvale, ij), 'LONMAX', nbabs)
                 call jeecra(jexnum(chvale, ij), 'LONUTI', nbabs)
 !
@@ -402,20 +402,20 @@ subroutine op0146()
             ispect = zi(linds+is-1)
             spectr = zk8(lspec+is-1)
             if (ispect .lt. 10) then
-                nomzon = zk16(lnozo+is-1)(1:8)
-                call spect1(casint, nomu, spectr, ispect, base,&
-                            vitef, zi(inumo), nmodi, nmodf, nbm,&
+                nomzon = zk16(lnozo+is-1) (1:8)
+                call spect1(casint, nomu, spectr, ispect, base, &
+                            vitef, zi(inumo), nmodi, nmodf, nbm, &
                             nbpf, nomzon, zr(lvmoy+is-1), vmoyto)
-            else if (ispect.eq.11) then
-                call specff(casint, nomu, spectr, base, zi(inumo),&
+            else if (ispect .eq. 11) then
+                call specff(casint, nomu, spectr, base, zi(inumo), &
                             nmodi, nmodf, nbm, nbpf)
             else
-                call specep(casint, nomu, spectr, base, vitef,&
+                call specep(casint, nomu, spectr, base, vitef, &
                             zi(inumo), nmodi, nmodf, nbm, nbpf)
-            endif
+            end if
         end do
 ! FINSI ALTERNATIVE SPEC-LONG-COR-5
-    endif
+    end if
 !
     call titre()
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,15 +16,15 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine impact(nmtab, nbpt, fn, vn, wk3,&
-                  offset, t, elapse, nbchoc, fnmaxa,&
+subroutine impact(nmtab, nbpt, fn, vn, wk3, &
+                  offset, t, elapse, nbchoc, fnmaxa, &
                   fnmmoy, fnmety, npari, lpari, valek)
     implicit none
 #include "asterfort/tbajli.h"
     integer :: nbpt, nbchoc, npari
     real(kind=8) :: fn(*), t(*), vn(*), offset, elapse, wk3(*), fnmaxa, fnmety
     real(kind=8) :: fnmmoy
-    character(len=16) :: lpari(*) 
+    character(len=16) :: lpari(*)
     character(len=24) :: valek(*)
     character(len=*) :: nmtab
 !        COMPTAGE DES CHOCS AMV
@@ -44,7 +44,7 @@ subroutine impact(nmtab, nbpt, fn, vn, wk3,&
     complex(kind=8) :: c16b
 ! ----------------------------------------------------------------------
 !
-    c16b=(0.d0,0.d0)
+    c16b = (0.d0, 0.d0)
     zero = 0.0d0
     nbchoc = 0
     nbrebo = 0
@@ -60,8 +60,8 @@ subroutine impact(nmtab, nbpt, fn, vn, wk3,&
     ichoc = 0
     idebut = 1
     ifin = 1
-    dt = t(4) - t(3)
-    nbpas = nint ( elapse / dt )
+    dt = t(4)-t(3)
+    nbpas = nint(elapse/dt)
 !
     k = 0
     do i = 1, nbpt
@@ -74,8 +74,8 @@ subroutine impact(nmtab, nbpt, fn, vn, wk3,&
 !
 !              ET QUE ETAIT EN REBOND ALORS COMPTER REBOND
 !
-                nbrebo = nbrebo + 1
-            endif
+                nbrebo = nbrebo+1
+            end if
 !
             idech = 0
 !
@@ -91,14 +91,14 @@ subroutine impact(nmtab, nbpt, fn, vn, wk3,&
 !              OUI C'EST LA FIN D'UN CHOC GLOBAL
 !
                 ifin = i
-                tchoc = t(ifin) - t(idebut)
-                fnmmoy = fnmmoy + fnmax
+                tchoc = t(ifin)-t(idebut)
+                fnmmoy = fnmmoy+fnmax
 !                    FNMMOY EST PROVISOIREMENT LE CUMUL DES FNMAX, ON
 !                    DIVISE A LA FIN PAR NBCHOC POUR AVOIR LA MOYENNE
-                fnmety = fnmety + fnmax*fnmax
-                nbchoc = nbchoc + 1
+                fnmety = fnmety+fnmax*fnmax
+                nbchoc = nbchoc+1
                 ichoc = 0
-                k = k + 1
+                k = k+1
                 wk3(k) = fnmax
                 para(1) = tfnmax
                 para(2) = fnmax
@@ -107,9 +107,9 @@ subroutine impact(nmtab, nbpt, fn, vn, wk3,&
                 para(5) = vinit
                 ipar(1) = nbchoc
                 ipar(2) = nbrebo
-                call tbajli(nmtab, npari, lpari, ipar, para,&
+                call tbajli(nmtab, npari, lpari, ipar, para, &
                             [c16b], valek, 0)
-            endif
+            end if
 !
             irebo = 0
 !
@@ -122,35 +122,35 @@ subroutine impact(nmtab, nbpt, fn, vn, wk3,&
                 fnmax = zero
                 impuls = zero
                 nbrebo = 0
-            endif
+            end if
             if (i .eq. 1) then
-                impuls = impuls + fn(i)*t(i)/2.d0
-            else if (i.lt.nbpt) then
-                j=i-1
-                impuls = impuls + fn(i)*(t(i+1)-t(j))/2.d0
+                impuls = impuls+fn(i)*t(i)/2.d0
+            else if (i .lt. nbpt) then
+                j = i-1
+                impuls = impuls+fn(i)*(t(i+1)-t(j))/2.d0
             else
-                impuls = impuls + fn(i)*t(i)/2.d0
-            endif
+                impuls = impuls+fn(i)*t(i)/2.d0
+            end if
             if (fn(i) .ge. fnmax) then
                 fnmax = fn(i)
                 tfnmax = t(i)
-            endif
+            end if
             if (fnmax .ge. fnmaxa) fnmaxa = fnmax
             irebo = 1
             ichoc = 1
 !
-        endif
+        end if
 !
     end do
 !
     if (nbchoc .ne. 0) then
 !      ON PASSE PAR UNE VARIABLE INTERMEDIAIRE FNMMO2
 !      POUR EVITER LES PROBLEMES DE PRECISION
-        fnmmoy = fnmmoy / nbchoc
+        fnmmoy = fnmmoy/nbchoc
         fnmmo2 = fnmmoy*fnmmoy
         fnmety = sqrt(abs(fnmety/nbchoc-fnmmo2))
     else
-        k = k + 1
+        k = k+1
         wk3(k) = fnmax
         fnmmoy = zero
         fnmety = zero
@@ -162,8 +162,8 @@ subroutine impact(nmtab, nbpt, fn, vn, wk3,&
         nbrebo = 0
         ipar(1) = nbchoc
         ipar(2) = nbrebo
-        call tbajli(nmtab, npari, lpari, ipar, para,&
+        call tbajli(nmtab, npari, lpari, ipar, para, &
                     [c16b], valek, 0)
-    endif
+    end if
 !
 end subroutine

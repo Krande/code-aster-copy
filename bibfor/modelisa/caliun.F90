@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@
 subroutine caliun(sdcont_, mesh_, model_)
 !
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterc/getfac.h"
@@ -36,7 +36,7 @@ implicit none
 #include "asterfort/jeveuo.h"
 #include "asterfort/wkvect.h"
 !
-character(len=*), intent(in) :: sdcont_, mesh_, model_
+    character(len=*), intent(in) :: sdcont_, mesh_, model_
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -73,11 +73,11 @@ character(len=*), intent(in) :: sdcont_, mesh_, model_
 !
 ! - Initializations
 !
-    model       = model_(1:8)
-    sdcont      = sdcont_
-    mesh        = mesh_
-    iform       = 4
-    keywf       = 'ZONE'
+    model = model_(1:8)
+    sdcont = sdcont_
+    mesh = mesh_
+    iform = 4
+    keywf = 'ZONE'
     sdcont_defi = sdcont(1:8)//'.CONTACT'
     sdunil_defi = sdcont(1:8)//'.UNILATE'
 !
@@ -102,22 +102,22 @@ character(len=*), intent(in) :: sdcont_, mesh_, model_
         multcu = '&&CARAUN.MULTCU'
         coefcu = '&&CARAUN.COEFCU'
         penacu = '&&CARAUN.PENACU'
-        call caraun(sdcont, nb_unil_zone, nbgdcu, coefcu,&
+        call caraun(sdcont, nb_unil_zone, nbgdcu, coefcu, &
                     compcu, multcu, penacu, ntcmp)
 ! ----- Get list of nodes
         nopono = '&&CALIUN.PONOEU'
         nolino = '&&CALIUN.LINOEU'
-        call listun(mesh, keywf, nb_unil_zone, nopono, nnocu,&
+        call listun(mesh, keywf, nb_unil_zone, nopono, nnocu, &
                     nolino)
 ! ----- Clean list of nodes
         lisnoe = '&&CALIUN.LISNOE'
         poinoe = '&&CALIUN.POINOE'
-        call elimun(mesh, model, keywf, nb_unil_zone, nbgdcu,&
-                    compcu, nopono, nolino, lisnoe, poinoe,&
+        call elimun(mesh, model, keywf, nb_unil_zone, nbgdcu, &
+                    compcu, nopono, nolino, lisnoe, poinoe, &
                     nnocu)
 ! ----- Get list of components
-        call creaun(sdcont, mesh, model, nb_unil_zone, nnocu,&
-                    lisnoe, poinoe, nbgdcu, coefcu, compcu,&
+        call creaun(sdcont, mesh, model, nb_unil_zone, nnocu, &
+                    lisnoe, poinoe, nbgdcu, coefcu, compcu, &
                     multcu, penacu)
 ! ----- Debug
         call surfun(sdcont, mesh)
@@ -132,7 +132,7 @@ character(len=*), intent(in) :: sdcont_, mesh_, model_
         call jedetr(multcu)
         call jedetr(penacu)
 !
-    endif
+    end if
 !
     call jedema()
 !

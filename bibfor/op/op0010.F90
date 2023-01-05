@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -79,7 +79,7 @@ subroutine op0010()
 #include "asterfort/xprfastmarching.h"
 #include "asterfort/xprupw_fmm.h"
 #include "asterfort/xprvit.h"
-    integer :: ifm, niv, ibid, ndim, iret, jcaraf, clsm, jma, jconx1, jconx2, nbma, i , ima
+    integer :: ifm, niv, ibid, ndim, iret, jcaraf, clsm, jma, jconx1, jconx2, nbma, i, ima
     integer :: j, nbrinit
     integer :: iadrma
     real(kind=8) :: lcmin
@@ -143,17 +143,17 @@ subroutine op0010()
     call infmaj()
     call infdbg('XFEM', ifm, niv)
 !
-    damax=0.d0
-    dttot=0.d0
-    vmax=0.d0
-    rayon=0.d0
-    dafiss=0.d0
-    bmax=0.d0
-    radtor=0.d0
-    dist=0.d0
-    distol=0.d0
-    radimp=0.d0
-    radlim=0.d0
+    damax = 0.d0
+    dttot = 0.d0
+    vmax = 0.d0
+    rayon = 0.d0
+    dafiss = 0.d0
+    bmax = 0.d0
+    radtor = 0.d0
+    dist = 0.d0
+    distol = 0.d0
+    radimp = 0.d0
+    radlim = 0.d0
 !
 ! --- NOM DU CONCEPT FISSURE
 !
@@ -174,9 +174,9 @@ subroutine op0010()
 !   OPERATION DEMANDEE
     call getvtx(' ', 'OPERATION', scal=operation, nbret=ibid)
 !
-    if (typdis .ne. 'FISSURE'.and.typdis.ne.'COHESIF') then
+    if (typdis .ne. 'FISSURE' .and. typdis .ne. 'COHESIF') then
         call utmess('F', 'XFEM2_1')
-    endif
+    end if
 !
 !
 ! --- NOM DU MODELE
@@ -184,20 +184,20 @@ subroutine op0010()
     call getvid(' ', 'MODELE', scal=nomo, nbret=ibid)
 !
 !     SEARCH FOR THE CRACK THAT MUST BE PROPAGATED
-    if(operation.ne.'PROPA_COHESIF') then
+    if (operation .ne. 'PROPA_COHESIF') then
         call dismoi('NB_FISS_XFEM', nomo, 'MODELE', repi=nfiss)
         if (nfiss .eq. 0) then
             call utmess('F', 'XFEM2_93', sk=nomo)
-        endif
+        end if
 !
 !     RETRIEVE THE NAME OF THE DATA STRUCTURE CONTAINING EACH CRACK
-      call jeveuo(nomo//'.FISS', 'L', vk8=vfiss)
+        call jeveuo(nomo//'.FISS', 'L', vk8=vfiss)
 !
-        numfis=0
+        numfis = 0
         do crack = 1, nfiss
 !
             ncrack = vfiss(crack)
-            if (ncrack .eq. fispre) numfis=crack
+            if (ncrack .eq. fispre) numfis = crack
 !
         end do
 !
@@ -205,11 +205,11 @@ subroutine op0010()
             msgout(1) = fispre
             msgout(2) = nomo
             call utmess('F', 'XFEM2_89', nk=2, valk=msgout)
-        endif
+        end if
     else
         numfis = 1
         ncrack = fispre
-    endif
+    end if
 !
 ! --- RETRIEVE THE NAME OF THE MESH THAT SHOULD BE USED AS AN AUXILIARY
 !     GRID FOR THE EVALUATION OF THE LEVELSETS.
@@ -217,32 +217,32 @@ subroutine op0010()
     call jeexin(fispre//'.GRI.MAILLA', ibid)
     if (ibid .eq. 0) then
 !        NO AUXILIARY GRID USED
-        grille=.false.
+        grille = .false.
     else
 !        AUXILIARY GRID USED
-        grille=.true.
-    endif
+        grille = .true.
+    end if
 !
 !     WRITE A WARNING IF THE CRACK HAS BEEN DEFINED GIVING DIRECTLY THE
 !     TWO LEVEL SET FIELDS
     call jeexin(fispre//'.CHAMPS.LVS', ibid)
-    if ((ibid.gt.0) .and. (.not.grille)) then
+    if ((ibid .gt. 0) .and. (.not. grille)) then
         call jeveuo(fispre//'.CHAMPS.LVS', 'L', ibid)
         if (zl(ibid)) then
             call utmess('A', 'XFEM_69')
-        endif
-    endif
+        end if
+    end if
 
 !   CHECK IF THE AUXILIARY GRID USED WHITH THE SIMPLEXE METHODE
     if (method .eq. 'SIMPLEXE' .and. grille) then
         call utmess('F', 'XFEM_27')
-    endif
+    end if
 
 !
 !     CHECK IF THE LOCALIZATION OF THE DOMAIN SHOULD BE ACTIVATED
-    locdom=.false.
+    locdom = .false.
     call getvtx(' ', 'ZONE_MAJ', scal=k8bid, nbret=ibid)
-    radimp=0.d0
+    radimp = 0.d0
     if (k8bid(1:4) .eq. 'TORE') then
 !        OK, THE LOCALIZATION MUST BE ACTIVATED
         locdom = .true.
@@ -253,11 +253,11 @@ subroutine op0010()
             radimp = -1.d0
         else
             radimp = radimp**2
-        endif
+        end if
     else
 !        THE WHOLE GRID MUST BE USED
         locdom = .false.
-    endif
+    end if
 !
 !
 ! --- NOM DU MAILLAGE ATTACHE AU MODELE
@@ -268,9 +268,9 @@ subroutine op0010()
 ! --- DIMENSION DU PROBLEME
 !
     call dismoi('DIM_GEOM', noma, 'MAILLAGE', repi=ndim)
-    if ((ndim.lt.2) .or. (ndim.gt.3)) then
+    if ((ndim .lt. 2) .or. (ndim .gt. 3)) then
         call utmess('F', 'XFEM_18')
-    endif
+    end if
 !
     call dismoi('NB_MA_MAILLA', noma, 'MAILLAGE', repi=nbma)
     call jeveuo(noma(1:8)//'.CONNEX', 'L', jconx1)
@@ -278,15 +278,15 @@ subroutine op0010()
 !
 !   blindage : interdiction de traiter des mailles quadratiques
 !
-    mai=noma//'.TYPMAIL'
+    mai = noma//'.TYPMAIL'
     call jeveuo(mai, 'L', jma)
-    quad=.false.
+    quad = .false.
     do ima = 1, nbma
         call jenuno(jexnum('&CATA.TM.NOMTM', zi(jma-1+ima)), typma)
-        if (.not.ismali(typma)) then
-            quad=.true.
+        if (.not. ismali(typma)) then
+            quad = .true.
             exit
-        endif
+        end if
     end do
 !
 !!    if (quad) call utmess('F', 'XFEM_86')
@@ -298,21 +298,21 @@ subroutine op0010()
     call cncinv(noma, [ibid], 0, 'V', cnxinv)
 !  COMPATIBILITE ENTRE LA METHODE ET LE TYPE DE FISSURE
 !
-    if(typdis.eq.'COHESIF') then
-      ASSERT(operation.eq.'DETECT_COHESIF'.or.operation.eq.'PROPA_COHESIF')
-    endif
-    if(operation.eq.'DETECT_COHESIF') then
-        ASSERT(typdis.eq.'COHESIF')
-    endif
+    if (typdis .eq. 'COHESIF') then
+        ASSERT(operation .eq. 'DETECT_COHESIF' .or. operation .eq. 'PROPA_COHESIF')
+    end if
+    if (operation .eq. 'DETECT_COHESIF') then
+        ASSERT(typdis .eq. 'COHESIF')
+    end if
 !
-    if(operation.eq.'PROPA_COHESIF') then
-        ASSERT(typdis.eq.'COHESIF')
-    endif
+    if (operation .eq. 'PROPA_COHESIF') then
+        ASSERT(typdis .eq. 'COHESIF')
+    end if
 !
 !     RETRIEVE THE MAXIMUM ADVANCEMENT OF THE CRACK FRONT
-    if(operation.ne.'DETECT_COHESIF') then
+    if (operation .ne. 'DETECT_COHESIF') then
         call getvr8(' ', 'DA_MAX', scal=damax, nbret=ibid)
-    endif
+    end if
 !
 !     RETRIEVE THE VALUE FOR THE "TEST_MAIL" PARAMETER
     call getvtx(' ', 'TEST_MAIL', scal=test, nbret=ibid)
@@ -321,8 +321,8 @@ subroutine op0010()
     if (test(1:3) .eq. 'OUI') then
         if (ndim .eq. 2) then
             call utmess('F', 'XFEM2_87')
-        endif
-    endif
+        end if
+    end if
 !
 !     RECUPERATION DES VITESSES DE PROPAGATION, DES ANGLES
 !     DE BIFURCATION ET DE L'AVANCEE MAXIMALE DE LA FISSURE
@@ -342,12 +342,12 @@ subroutine op0010()
     call getvr8(' ', 'ANGLE_GAMMA', nbval=-nbval, vect=zr(jgamma), nbret=ibid)
     call getvr8(' ', 'VITESSE', nbval=-nbval, vect=zr(jvit), nbret=ibid)
 !
-    if(operation.ne.'DETECT_COHESIF') then
+    if (operation .ne. 'DETECT_COHESIF') then
         call getvr8(' ', 'DA_FISS', scal=dafiss, nbret=ibid)
 !
 !     RECUPERATION DU NOMBRE DE CYCLES
         call getvr8(' ', 'NB_CYCLES', scal=dttot, nbret=ibid)
-    endif
+    end if
 !
 ! --- RECUPERATION DES LEVEL SETS ET GRADIENTS
 !
@@ -374,26 +374,26 @@ subroutine op0010()
     call jedupo(fispre//'.MAILLAGE', 'G', fiss//'.MAILLAGE', .false._1)
 !
 !
-    if(operation.eq.'PROPA_COHESIF') then
-        call jedupo(fispre//'.FONDFISS','G',fiss//'.FONDFISS',.false._1)
-        call jedupo(fispre//'.BASEFOND','G',fiss//'.BASEFOND',.false._1)
-        call jedupo(fispre//'.FONDMULT','G',fiss//'.FONDMULT',.false._1)
-    endif
-    if(operation.eq.'PROPA_COHESIF'.or.operation.eq.'DETECT_COHESIF') then
-        call jedupo(fispre(1:8)//'.LISEQ     ','G',&
-                   fiss(1:8)//'.LISEQ     ',.false._1)
-    endif
+    if (operation .eq. 'PROPA_COHESIF') then
+        call jedupo(fispre//'.FONDFISS', 'G', fiss//'.FONDFISS', .false._1)
+        call jedupo(fispre//'.BASEFOND', 'G', fiss//'.BASEFOND', .false._1)
+        call jedupo(fispre//'.FONDMULT', 'G', fiss//'.FONDMULT', .false._1)
+    end if
+    if (operation .eq. 'PROPA_COHESIF' .or. operation .eq. 'DETECT_COHESIF') then
+        call jedupo(fispre(1:8)//'.LISEQ     ', 'G', &
+                    fiss(1:8)//'.LISEQ     ', .false._1)
+    end if
 !
 ! --- RECUPERATION DES CARACTERISTIQUES DU FOND DE FISSURE
 !
-    if(typdis.ne.'COHESIF') then
+    if (typdis .ne. 'COHESIF') then
         call jedupo(fispre//'.CARAFOND', 'G', fiss//'.CARAFOND', .false._1)
         call jeveuo(fiss//'.CARAFOND', 'L', jcaraf)
 !
 !
 !   RETRIEVE THE RADIUS THAT MUST BE USED TO ASSESS THE LOCAL RESIDUAL
         call getvr8(' ', 'RAYON', scal=rayon, nbret=ibid)
-    endif
+    end if
 !
 !     SET THE DEFAULT VALUES FOR THE DOMAIN RESTRICTION FLAG
     ldpre = .false.
@@ -429,11 +429,11 @@ subroutine op0010()
 !        WRITE SOME INFORMATIONS ABOUT THE MODELS USED IN THE
 !        PROPAGATION
         if (niv .ge. 0) then
-            write(ifm,*)'UNE GRILLE AUXILIAIRE EST UTILISEE POUR LA'//&
-            ' PROPAGATION:'
-            write(ifm,*)'   MODELE PHYSIQUE  : ',nomo
-            write(ifm,*)'   MAILLAGE GRILLE AUXILIAIRE: ',unoma
-        endif
+            write (ifm, *) 'UNE GRILLE AUXILIAIRE EST UTILISEE POUR LA'// &
+                ' PROPAGATION:'
+            write (ifm, *) '   MODELE PHYSIQUE  : ', nomo
+            write (ifm, *) '   MAILLAGE GRILLE AUXILIAIRE: ', unoma
+        end if
 !
     else
 !
@@ -443,13 +443,13 @@ subroutine op0010()
 !        WRITE SOME INFORMATIONS ABOUT THE MODELS USED IN THE
 !        PROPAGATION
         if (niv .ge. 0) then
-            write(ifm,*)'LA PROPAGATION EST CALCULEE SUR LE MODELE '//&
-            'DE LA STRUCTURE.'
-            write(ifm,*)'AUCUNE GRILLE AUXILIAIRE N''EST UTILISEE.'
-            write(ifm,*)'   MODELE STRUCTURE: ',nomo
-        endif
+            write (ifm, *) 'LA PROPAGATION EST CALCULEE SUR LE MODELE '// &
+                'DE LA STRUCTURE.'
+            write (ifm, *) 'AUCUNE GRILLE AUXILIAIRE N''EST UTILISEE.'
+            write (ifm, *) '   MODELE STRUCTURE: ', nomo
+        end if
 !
-    endif
+    end if
 !
 !-----------------------------------------------------------------------
 !     CHECK FOR THE COHERENCE OF THE USE OF THE AUXILIARY GRID AND
@@ -458,37 +458,37 @@ subroutine op0010()
 !
 !     CHECK THE CONDITION ON THE VALUE OF DAMAX IF THE DOMAIN
 !     LOCALISATION HAS BEEN REQUESTED (ONLY FOR 3D MESHES)
-    if (locdom .and. (ndim.eq.3)) then
+    if (locdom .and. (ndim .eq. 3)) then
         call jeveuo(vbeta, 'L', jbeta)
         call jelira(vbeta, 'LONMAX', j)
         bmax = 0.d0
         do i = 1, j
-            if (abs(zr(jbeta-1+i)) .gt. bmax) bmax=abs(zr(jbeta-1+i))
+            if (abs(zr(jbeta-1+i)) .gt. bmax) bmax = abs(zr(jbeta-1+i))
         end do
 !        THE CHECK IS MADE ONLY IF THE ANGLE IS GREATER THAN 3 DEGREES
 !        AND LOWER OF 90 DEGREES
-        if ((bmax.lt.1.57d0) .and. (bmax.gt.5.2d-2)) then
+        if ((bmax .lt. 1.57d0) .and. (bmax .gt. 5.2d-2)) then
             if (dafiss .lt. (rayon/cos(bmax))) then
-                meserr(1)=damax
-                meserr(2)=dafiss
-                meserr(3)=rayon/cos(bmax)*damax/dafiss
+                meserr(1) = damax
+                meserr(2) = dafiss
+                meserr(3) = rayon/cos(bmax)*damax/dafiss
                 call utmess('A', 'XFEM2_94', nr=3, valr=meserr)
-            endif
-        endif
-    endif
+            end if
+        end if
+    end if
 !
     call jeexin(fispre//'.PRO.RAYON_TORE', ibid)
     if (ibid .ne. 0) then
-        ldpre=.true.
+        ldpre = .true.
     else
-        ldpre=.false.
-    endif
+        ldpre = .false.
+    end if
 !
 !     IF THE DOMAIN LOCALISATION HAS BEEN USED PREVIOUSLY, IT MUST BE
 !     USED ALSO IN THIS STEP
-    if (ldpre .and. (.not.locdom)) then
+    if (ldpre .and. (.not. locdom)) then
         call utmess('F', 'XFEM2_97')
-    endif
+    end if
 !
 !     IF AN AUXILIARY GRID IS USED IN THIS STEP, STORE ITS NAME FOR THE
 !     NEW CRACK
@@ -497,7 +497,7 @@ subroutine op0010()
         ma_grill_pre = zk8(ibid)
         call wkvect(fiss//'.GRI.MAILLA', 'G V K8', 1, ibid)
         zk8(ibid) = ma_grill_pre
-    endif
+    end if
 !
 !-----------------------------------------------------------------------
 !     SET THE CORRECT VALUE OF THE WORKING MODEL IN ORDER TO ASSESS
@@ -525,9 +525,9 @@ subroutine op0010()
         dgrln = grln
         dcnxin = cnxinv
 !
-    endif
+    end if
 !
-    ligr_dnoma='&&OP0010.LIGDMA'
+    ligr_dnoma = '&&OP0010.LIGDMA'
     call x_tmp_ligr(dnoma, ligr_dnoma)
 
 !-----------------------------------------------------------------------
@@ -535,20 +535,20 @@ subroutine op0010()
 !-----------------------------------------------------------------------
     noesom = '&&OP0010.NOESOM'
 
-    if (.not.grille) then
+    if (.not. grille) then
         vcn = '&&OP0010.VCN'
         grlr = '&&OP0010.GRLR'
     else
         vcn = unoma//'.GRLI'
         grlr = unoma//'.GRLR'
-    endif
+    end if
 !
     if (grille) then
 !        RETREIVE THE LENGTH OF THE SHORTEST EDGE IN THE GRID FROM THE
 !        SD_GRILLE
         call jeveuo(unoma//'.GRLR', 'L', ibid)
-        lcmin=zr(ibid)
-    endif
+        lcmin = zr(ibid)
+    end if
 !
     call xprini(dnoma, dcnxin, grille, noesom, vcn, grlr, lcmin, ndim)
 
@@ -557,71 +557,71 @@ subroutine op0010()
 !     DANS LE CADRE DE L'UTILISATION D'UN FOND VIRTUEL
 !-----------------------------------------------------------------------
 !
-    goinop=.false.
-    if ((grille) .and. (ndim.eq.3) .and. (method.ne.'GEOMETRI')) then
+    goinop = .false.
+    if ((grille) .and. (ndim .eq. 3) .and. (method .ne. 'GEOMETRI')) then
         lismag = '&&OP0010.LISTE_MA_ENRICH'
         lisnog = '&&OP0010.LISTE_NO_ENRICH'
-        goinop=.true.
+        goinop = .true.
         call xlenri(dnoma, fispre, goinop, lismag, lisnog)
 !
         cnsljg = '&&OP0010.CNSLJG'
-        cnseg='&&OP0010.CNSEG'
-        cnseng='&&OP0010.CNSENG'
-        call xenrch(dnoma, dcnslt, dcnsln, cnsljg,&
-                    cnseg, cnseng, ndim, fispre, goinop,&
+        cnseg = '&&OP0010.CNSEG'
+        cnseng = '&&OP0010.CNSENG'
+        call xenrch(dnoma, dcnslt, dcnsln, cnsljg, &
+                    cnseg, cnseng, ndim, fispre, goinop, &
                     lismag, lisnog)
 !
         call jedetr(cnsljg)
         call jedetr(cnseg)
         call jedetr(cnseng)
-    endif
+    end if
 !
 !-----------------------------------------------------------------------
 !     CALCUL DES CHAM_NO_S DES VITESSES DE PROPAGATION
 !-----------------------------------------------------------------------
 !
 !   Si locfom = false, initialisation de radtor à 0
-    radtor =  0.d0
+    radtor = 0.d0
 !
     if (locdom) then
         if (radimp .le. 0.d0) then
-            radtor=(rayon+damax)**2
-        endif
-    endif
+            radtor = (rayon+damax)**2
+        end if
+    end if
 !
     if (niv .ge. 0) then
-        write(ifm,*)
-        write(ifm,*)'OP0010-1) CALCUL DU CHAMP DE VITESSE AUX NOEUDS'
-        write(ifm,901)
-    endif
+        write (ifm, *)
+        write (ifm, *) 'OP0010-1) CALCUL DU CHAMP DE VITESSE AUX NOEUDS'
+        write (ifm, 901)
+    end if
 !
-    cnsvt='&&OP0010.CNSVT'
-    cnsvn='&&OP0010.CNSVN'
-    vpoint='&&OP0010.VPOINT'
-    cnsbet='&&OP0010.CNSBET'
-    listp='&&OP0010.LISTP'
-    disfr='&&OP0010.DISFR'
-    cnsbl='&&OP0010.CNSBL'
-    cnsdis='&&OP0010.CNSDIS'
-    delta='&&OP0010.DELTA'
+    cnsvt = '&&OP0010.CNSVT'
+    cnsvn = '&&OP0010.CNSVN'
+    vpoint = '&&OP0010.VPOINT'
+    cnsbet = '&&OP0010.CNSBET'
+    listp = '&&OP0010.LISTP'
+    disfr = '&&OP0010.DISFR'
+    cnsbl = '&&OP0010.CNSBL'
+    cnsdis = '&&OP0010.CNSDIS'
+    delta = '&&OP0010.DELTA'
 !
-    if ((method.eq.'GEOMETRI' .or. method .eq.'SIMPLEXE') &
-         .and. (operation.ne.'PROPA_COHESIF')) then
+    if ((method .eq. 'GEOMETRI' .or. method .eq. 'SIMPLEXE') &
+        .and. (operation .ne. 'PROPA_COHESIF')) then
 
-         call pre_traitement(dnoma, fispre, ndim, vbeta, vgamma)
+        call pre_traitement(dnoma, fispre, ndim, vbeta, vgamma)
 !
-         call xprvit(dnoma, fispre, ndim, vvit, vbeta,&
-                lcmin, cnsvt, cnsvn, vpoint, cnsbl,&
-                cnsdis, disfr, cnsbet, listp, damax,&
-                locdom, radimp, radtor, delta, ucnslt,&
-                ucnsln)
+        call xprvit(dnoma, fispre, ndim, vvit, vbeta, &
+                    lcmin, cnsvt, cnsvn, vpoint, cnsbl, &
+                    cnsdis, disfr, cnsbet, listp, damax, &
+                    locdom, radimp, radtor, delta, ucnslt, &
+                    ucnsln)
     else
-          call xprvit(dnoma, fispre, ndim, vvit, vbeta,&
-                lcmin, cnsvt, cnsvn, vpoint, cnsbl,&
-                cnsdis, disfr, cnsbet, listp, damax,&
-                locdom, radimp, radtor, delta, ucnslt,&
-                ucnsln)
-    endif
+        call xprvit(dnoma, fispre, ndim, vvit, vbeta, &
+                    lcmin, cnsvt, cnsvn, vpoint, cnsbl, &
+                    cnsdis, disfr, cnsbet, listp, damax, &
+                    locdom, radimp, radtor, delta, ucnslt, &
+                    ucnsln)
+    end if
 !
 !
 !-----------------------------------------------------------------------
@@ -629,10 +629,10 @@ subroutine op0010()
 !-----------------------------------------------------------------------
 !
     if (niv .ge. 0) then
-        write(ifm,*)
-        write(ifm,*)'OP0010-2) DOMAINE DE CALCUL'
-        write(ifm,901)
-    endif
+        write (ifm, *)
+        write (ifm, *) 'OP0010-2) DOMAINE DE CALCUL'
+        write (ifm, 901)
+    end if
 !
     if (locdom) then
         vcnt = '&&OP0010.VCNT'
@@ -640,42 +640,42 @@ subroutine op0010()
     else
         vcnt = vcn
         grlrt = grlr
-    endif
+    end if
 !
 !     DEFINE THE PROJECTION DOMAINS FOR THE PHYSICAL AND LEVEL SET
 !     MESHES (IF THE AUXILIARY GRID IS USED)
     if (grille) then
         ndomp = '&&OP0010.NDOMP'
         edomg = '&&OP0010.EDOMG'
-        call xprdom(dnoma, dcnxin, disfr, noma, cnxinv,&
+        call xprdom(dnoma, dcnxin, disfr, noma, cnxinv, &
                     fispre, damax, ndomp, edomg, radtor)
-    else if(operation.ne.'DETECT_COHESIF') then
+    else if (operation .ne. 'DETECT_COHESIF') then
 !        IF THE PROJECTION HAS NOT BEEN SELECTED, THE ESTIMATION OF THE
 !        RADIUS OF THE TORUS DEFINING THE LOCAL DOMAIN TO BE USED FOR
 !        THE LEVEL SET UPDATE CALCULATIONS MUST BE ESTIMATED HERE
         radtor = (rayon+damax)**2
-    endif
+    end if
 !
 !     RETREIVE THE RADIUS OF THE TORUS TO BE IMPOSED
     if (locdom) then
 !        THE USER HAS NOT SPECIFIED THE RADIUS. THE RADIUS USED IN
 !        THE PREVIOUS PROPAGATION SHOULD BE RETREIVED, IF ANY
-        if ((radimp.lt.0.d0) .and. ldpre) then
+        if ((radimp .lt. 0.d0) .and. ldpre) then
             call jeveuo(fispre//'.PRO.RAYON_TORE', 'L', ibid)
             radimp = zr(ibid)
-        endif
-    endif
+        end if
+    end if
 !
 !     DEFINE THE DOMAIN USED FOR THE LEVEL SET COMPUTATION (ONLY IF
 !     THE LOCALISATION HAS BEEN SELECTED)
-    nodtor='&&OP0010.NODTOR'
-    eletor='&&OP0010.ELETOR'
-    liggrd='&&OP0010.LIGGRD'
+    nodtor = '&&OP0010.NODTOR'
+    eletor = '&&OP0010.ELETOR'
+    liggrd = '&&OP0010.LIGGRD'
 !
-    call xprtor(method, dnoma, dcnxin, fispre,&
-                fiss, vcn, grlr, dcnsln, dgrln,&
-                dcnslt, dgrlt, locdom, radtor, radimp,&
-                cnsdis, disfr, cnsbl, nodtor, eletor,&
+    call xprtor(method, dnoma, dcnxin, fispre, &
+                fiss, vcn, grlr, dcnsln, dgrln, &
+                dcnslt, dgrlt, locdom, radtor, radimp, &
+                cnsdis, disfr, cnsbl, nodtor, eletor, &
                 liggrd, vcnt, grlrt)
 !
 !     CHECK IF THE RADIUS OF THE TORUS IS GREATER THAN THE CRITICAL
@@ -687,111 +687,111 @@ subroutine op0010()
         radlim = damax**2+zr(ibid)**2
 !
         if (radlim .lt. radtor) then
-            meserr(1)=sqrt(radtor)
-            meserr(2)=sqrt(radlim)
+            meserr(1) = sqrt(radtor)
+            meserr(2) = sqrt(radlim)
             call utmess('A', 'XFEM2_88', nr=2, valr=meserr)
-        endif
+        end if
 !
-    endif
+    end if
 !
-    if (locdom .and. (niv.ge.0)) then
-        write(ifm,*)'   LE DOMAINE DE CALCUL EST LOCALISE AUTOUR DU'//&
+    if (locdom .and. (niv .ge. 0)) then
+        write (ifm, *) '   LE DOMAINE DE CALCUL EST LOCALISE AUTOUR DU'//&
      &               ' FOND DE LA FISSURE:'
-        write(ifm,*)'      RAYON DU TORE DE LOCALISATION = ',&
+        write (ifm, *) '      RAYON DU TORE DE LOCALISATION = ',&
      &                sqrt(radtor)
 !
         call jelira(nodtor, 'LONMAX', i)
-        write(ifm,*)'      NOMBRE DE NOEUDS DU DOMAINE   = ',i
-    endif
+        write (ifm, *) '      NOMBRE DE NOEUDS DU DOMAINE   = ', i
+    end if
 !
-    if ((.not.locdom) .and. (niv.ge.0)) then
-        if (.not.grille) then
-            write(ifm,*)'   LE DOMAINE DE CALCUL COINCIDE AVEC LE'//&
-     &                  ' MODELE PHYSIQUE ',nomo
+    if ((.not. locdom) .and. (niv .ge. 0)) then
+        if (.not. grille) then
+            write (ifm, *) '   LE DOMAINE DE CALCUL COINCIDE AVEC LE'//&
+     &                  ' MODELE PHYSIQUE ', nomo
         else
-            write(ifm,*)'   LE DOMAINE DE CALCUL COINCIDE AVEC LA'//&
-     &                  ' GRILLE AUXILIAIRE ',unoma
-        endif
-    endif
+            write (ifm, *) '   LE DOMAINE DE CALCUL COINCIDE AVEC LA'//&
+     &                  ' GRILLE AUXILIAIRE ', unoma
+        end if
+    end if
 !
 !     MAKE SOME CHECKS
 !
 !     THE VALUE OF RAYON MUST BE GREATER THAN THE SHORTEST EDGE IN THE
 !     MESH IN ORDER TO BE ABLE TO CALCULATE THE LOCAL RESIDUAL
-    if(typdis.ne.'COHESIF') then
+    if (typdis .ne. 'COHESIF') then
         if (rayon .lt. lcmin) then
-            meserr(1)=rayon
-            meserr(2)=lcmin
+            meserr(1) = rayon
+            meserr(2) = lcmin
             call utmess('F', 'XFEM2_64', nr=2, valr=meserr)
-        endif
+        end if
 !
 !       THE VALUE OF DAMAX SHOULD BE GREATER THAN THE SHORTEST EDGE IN THE
 !       MESH. IF THIS IS NOT TRUE, THE MESH COULD FAIL TO CORRECTLY
 !       REPRESENT THE LEVEL SETS. THIS IS NOT A FATAL ERROR AND A WARNING
 !       MESSAGE IS ISSUED.
         if (lcmin .gt. damax) then
-            meserr(1)=damax
-            meserr(2)=lcmin
+            meserr(1) = damax
+            meserr(2) = lcmin
             call utmess('A', 'XFEM2_63', nr=2, valr=meserr)
-        endif
-    endif
+        end if
+    end if
 !
 !-----------------------------------------------------------------------
 !     AJUSTEMENT DE VT
 !-----------------------------------------------------------------------
 !
-    if (method .ne. 'GEOMETRI'.and. method .ne. 'SIMPLEXE') then
+    if (method .ne. 'GEOMETRI' .and. method .ne. 'SIMPLEXE') then
 !
         if (niv .ge. 0) then
-            write(ifm,*)
-            write(ifm,*)'OP0010-3) AJUSTEMENT DU CHAMP DES VITESSES VN'
-            write(ifm,903)
-        endif
+            write (ifm, *)
+            write (ifm, *) 'OP0010-3) AJUSTEMENT DU CHAMP DES VITESSES VN'
+            write (ifm, 903)
+        end if
 !
-        call xpraju(dnoma, fiss, dcnslt, cnsvt, cnsvn,&
+        call xpraju(dnoma, fiss, dcnslt, cnsvt, cnsvn, &
                     dttot, vmax)
 !
-    endif
+    end if
 !
 !-----------------------------------------------------------------------
 !     PROPAGATION DES LEVEL SETS
 !-----------------------------------------------------------------------
     if (niv .ge. 0) then
-        write(ifm,*)
+        write (ifm, *)
         if (method .eq. 'GEOMETRI') then
-            write(ifm,*)'OP0010-3) MISE A JOUR DES LEVEL SETS'
+            write (ifm, *) 'OP0010-3) MISE A JOUR DES LEVEL SETS'
         else
-            write(ifm,*)'OP0010-4) PROPAGATION DES LEVEL SETS'
-        endif
-        write(ifm,904)
+            write (ifm, *) 'OP0010-4) PROPAGATION DES LEVEL SETS'
+        end if
+        write (ifm, 904)
 !
 !        WRITE SOME INFORMATIONS
-        write(ifm,*)'   AVANCEE MAXIMALE DU FOND DE FISSURE    = '&
-     &               ,dafiss
-        write(ifm,*)'   NOMBRE DE CYCLES DE FATIGUE            = '&
-     &               ,dttot
-    endif
+        write (ifm, *) '   AVANCEE MAXIMALE DU FOND DE FISSURE    = '&
+     &               , dafiss
+        write (ifm, *) '   NOMBRE DE CYCLES DE FATIGUE            = '&
+     &               , dttot
+    end if
 !
-    if (method .eq. 'GEOMETRI' ) then
-        write(ifm,*)'   '
-        write(ifm,*)'   UTILISATION DE LA METHODE GEOMETRIQUE.'
-        call xprgeo(dnoma, dcnsln, dcnslt, dgrln, dgrlt,&
-                    vpoint, cnsbl, dttot, nodtor, liggrd,&
+    if (method .eq. 'GEOMETRI') then
+        write (ifm, *) '   '
+        write (ifm, *) '   UTILISATION DE LA METHODE GEOMETRIQUE.'
+        call xprgeo(dnoma, dcnsln, dcnslt, dgrln, dgrlt, &
+                    vpoint, cnsbl, dttot, nodtor, liggrd, &
                     cnsbet, listp, operation)
         goto 100
-    endif
+    end if
 !
-    if (method .eq. 'SIMPLEXE' ) then
-        write(ifm,*)'   '
-        write(ifm,*)'   UTILISATION DE LA METHODE SIMPLEXE.'
-        call xprgeo(dnoma, dcnsln, dcnslt, dgrln, dgrlt,&
-                    vpoint, cnsbl, dttot, nodtor, liggrd,&
+    if (method .eq. 'SIMPLEXE') then
+        write (ifm, *) '   '
+        write (ifm, *) '   UTILISATION DE LA METHODE SIMPLEXE.'
+        call xprgeo(dnoma, dcnsln, dcnslt, dgrln, dgrlt, &
+                    vpoint, cnsbl, dttot, nodtor, liggrd, &
                     cnsbet, listp, operation)
     else
-        call xprls(dnoma, dcnsln, dcnslt, dgrln, dgrlt,&
-                   cnsvn, cnsvt, cnsbl, dttot, nodtor,&
+        call xprls(dnoma, dcnsln, dcnslt, dgrln, dgrlt, &
+                   cnsvn, cnsvt, cnsbl, dttot, nodtor, &
                    eletor, liggrd, delta)
-    endif
+    end if
 !
     call jedetr(cnsvt)
     call jedetr(cnsvn)
@@ -802,27 +802,27 @@ subroutine op0010()
 !-----------------------------------------------------------------------
 !
     if (niv .ge. 0) then
-        write(ifm,*)
-        write(ifm,*)'OP0010-5) REINITIALISATION DE LSN'
-        write(ifm,905)
-    endif
+        write (ifm, *)
+        write (ifm, *) 'OP0010-5) REINITIALISATION DE LSN'
+        write (ifm, 905)
+    end if
 !
     isozro = '&&OP0010.ISOZRO'
 
-    if (method.eq.'UPWIND') then
-            nbrinit = 1
-            call xprupw_fmm('REINITLN', dnoma, vcnt, grlrt,&
-                             noesom, lcmin, dcnsln, dgrln, dcnslt, &
-                             dgrlt, isozro, nodtor, eletor, liggrd,&
-                             vpoint ,cnsbl ,dttot ,cnsbet ,listp,nbrinit)
-    endif
+    if (method .eq. 'UPWIND') then
+        nbrinit = 1
+        call xprupw_fmm('REINITLN', dnoma, vcnt, grlrt, &
+                        noesom, lcmin, dcnsln, dgrln, dcnslt, &
+                        dgrlt, isozro, nodtor, eletor, liggrd, &
+                        vpoint, cnsbl, dttot, cnsbet, listp, nbrinit)
+    end if
 
     if (method .eq. 'SIMPLEXE') then
         call xprfastmarching('REINITLN', dnoma, cnxinv, &
-                              noesom, lcmin, dcnsln, dgrln, dcnslt, &
-                              dgrlt, isozro, nodtor, eletor, liggrd,&
-                              vpoint ,cnsbl ,cnsbet ,listp)
-     endif
+                             noesom, lcmin, dcnsln, dgrln, dcnslt, &
+                             dgrlt, isozro, nodtor, eletor, liggrd, &
+                             vpoint, cnsbl, cnsbet, listp)
+    end if
 
     call jedetr(isozro)
 !
@@ -831,48 +831,47 @@ subroutine op0010()
 !-----------------------------------------------------------------------
 !
     if (niv .ge. 0) then
-        write(ifm,*)
-        write(ifm,*)'OP0010-7) REINITIALISATION DE LST'
-        write(ifm,907)
-    endif
+        write (ifm, *)
+        write (ifm, *) 'OP0010-7) REINITIALISATION DE LST'
+        write (ifm, 907)
+    end if
 
 !   On réinitialise deux fois pour redresser l'iso zéro
-    if (method.eq.'UPWIND') then
-        do nbrinit = 1 , 2
-           call xprupw_fmm('REINITLT', dnoma, vcnt, grlrt,&
-                           noesom, lcmin, dcnsln, dgrln, dcnslt, &
-                           dgrlt, isozro, nodtor,eletor, liggrd, &
-                           vpoint ,cnsbl ,dttot ,cnsbet ,listp,nbrinit)
-           call jedetr(isozro)
-        enddo
-    endif
+    if (method .eq. 'UPWIND') then
+        do nbrinit = 1, 2
+            call xprupw_fmm('REINITLT', dnoma, vcnt, grlrt, &
+                            noesom, lcmin, dcnsln, dgrln, dcnslt, &
+                            dgrlt, isozro, nodtor, eletor, liggrd, &
+                            vpoint, cnsbl, dttot, cnsbet, listp, nbrinit)
+            call jedetr(isozro)
+        end do
+    end if
 
     if (method .eq. 'SIMPLEXE') then
         call xprfastmarching('REINITLT', dnoma, cnxinv, &
                              noesom, lcmin, dcnsln, dgrln, dcnslt, &
-                             dgrlt, isozro, nodtor, eletor, liggrd,&
-                             vpoint ,cnsbl ,cnsbet ,listp)
+                             dgrlt, isozro, nodtor, eletor, liggrd, &
+                             vpoint, cnsbl, cnsbet, listp)
         call jedetr(isozro)
-    endif
+    end if
 
     call jedetr(cnsbl)
 !------------------------------------------------------------------!
-
 
 100 continue
     call jedetr(vvit)
     call jedetr(vbeta)
     call jedetr(noesom)
-    if ( method .eq. 'UPWIND') then
-        if (.not.grille) then
+    if (method .eq. 'UPWIND') then
+        if (.not. grille) then
             call jedetr(vcn)
             call jedetr(grlr)
-        endif
+        end if
         if (locdom) then
             call jedetr(vcnt)
             call jedetr(grlrt)
-        endif
-    endif
+        end if
+    end if
     call jedetr(cnsdis)
     call jedetr(nodtor)
     call jedetr(eletor)
@@ -888,24 +887,24 @@ subroutine op0010()
 !
     if (grille) then
 !
-        ligr_noma ='&&OP0010.LIGMAI'
+        ligr_noma = '&&OP0010.LIGMAI'
         call x_tmp_ligr(noma, ligr_noma)
 !
 !       CREATE THE CHAMP_NO WITH THE NEW VALUES OF THE LEVELSETS AND
 !       THEIR GRADIENTS. THE EXISTING CHAMP_NO ARE AUTOMATICALLY
 !       DESTROYED BY THE SUBROUTINE "CNSCNO"
-        call cnscno(dcnslt, ' ', 'OUI', 'G', fiss//'.GRI.LTNO',&
+        call cnscno(dcnslt, ' ', 'OUI', 'G', fiss//'.GRI.LTNO', &
                     'F', ibid)
-        call cnscno(dcnsln, ' ', 'OUI', 'G', fiss//'.GRI.LNNO',&
+        call cnscno(dcnsln, ' ', 'OUI', 'G', fiss//'.GRI.LNNO', &
                     'F', ibid)
-        call cnscno(dgrlt, ' ', 'OUI', 'G', fiss//'.GRI.GRLTNO',&
+        call cnscno(dgrlt, ' ', 'OUI', 'G', fiss//'.GRI.GRLTNO', &
                     'F', ibid)
-        call cnscno(dgrln, ' ', 'OUI', 'G', fiss//'.GRI.GRLNNO',&
+        call cnscno(dgrln, ' ', 'OUI', 'G', fiss//'.GRI.GRLNNO', &
                     'F', ibid)
 !
 !       PROJECT THE LEVEL SETS
-        call xprpls(ligr_noma, dnoma, dcnsln, dcnslt, noma,&
-                    cnsln, cnslt, grln, grlt, corres,&
+        call xprpls(ligr_noma, dnoma, dcnsln, dcnslt, noma, &
+                    cnsln, cnslt, grln, grlt, corres, &
                     ndim, ndomp, edomg)
 !
 !       STORE THE LIST OF THE NODES OF THE STRUCTURAL MESH WHERE THE
@@ -920,7 +919,7 @@ subroutine op0010()
             zl(iret-1+zi(ibid-1+i)) = .true.
         end do
 !
-    endif
+    end if
 !
     call jedetr(disfr)
 !
@@ -930,26 +929,26 @@ subroutine op0010()
 !     REAJUSTEMENT DES LEVEL SETS TROP PROCHES DE 0
 !-----------------------------------------------------------------------
     if (niv .ge. 0) then
-        write(ifm,*)
+        write (ifm, *)
         if (method .eq. 'GEOMETRI') then
-            write(ifm,*)'OP0010-4) ENRICHISSEMENT DE LA SD FISS_XFEM'
+            write (ifm, *) 'OP0010-4) ENRICHISSEMENT DE LA SD FISS_XFEM'
         else
-            write(ifm,*)'OP0010-8) ENRICHISSEMENT DE LA SD FISS_XFEM'
-        endif
-        write(ifm,908)
-    endif
+            write (ifm, *) 'OP0010-8) ENRICHISSEMENT DE LA SD FISS_XFEM'
+        end if
+        write (ifm, 908)
+    end if
 !
 !   ON RAJOUTE UN CRITERE LST PLUS LACHE POUR EVITER DES OSCILLATIONS
 !   NUMERIQUE LORS DE LA PROPAGATION / EN THEORIE CE N EST PAS BIEN DE
 !   DE RETOUCHER LA GEOMETRIE A LA VOLEE
 !
-    call xajuls(noma, nbma, cnslt, cnsln, jconx1,&
+    call xajuls(noma, nbma, cnslt, cnsln, jconx1, &
                 jconx2, clsm, typdis, critlst=1.d-3)
 !
     if (niv .ge. 0) then
-        write(ifm,*)'NOMBRE DE LEVEL SET REAJUSTEES APRES CONTROLE:',&
-        clsm
-    endif
+        write (ifm, *) 'NOMBRE DE LEVEL SET REAJUSTEES APRES CONTROLE:', &
+            clsm
+    end if
 !
 !-----------------------------------------------------------------------
 !     EXTENSION DES LEVEL SETS AUX NOEUDS MILIEUX
@@ -960,7 +959,7 @@ subroutine op0010()
 !     IF THE DOMAINE LOCALISATION HAS BEEN USED ON THE PHYSICAL MODEL,
 !     THE VALUES OF THE LEVEL SET GRADIENTS OUTSIDE THE DOMAINE MUST
 !     BE COPIED FROM THE ORIGINAL VALUES (NOW THEY ARE EQUAL TO ZERO!)
-    if ((.not.grille) .and. locdom) then
+    if ((.not. grille) .and. locdom) then
 !        RETRIEVE THE LIST OF THE NODES USED IN THE LAST LOCALIZATION
         call jeveuo(fiss//'.PRO.NOEUD_TORE', 'E', jlisno)
         call jelira(fiss//'.PRO.NOEUD_TORE', 'LONMAX', nbno)
@@ -981,7 +980,7 @@ subroutine op0010()
 !
         do i = 1, nbno
 !
-            if (.not.zl(jlisno-1+i)) then
+            if (.not. zl(jlisno-1+i)) then
                 glt(ndim*(i-1)+1) = gltp(ndim*(i-1)+1)
                 zl(jgltl-1+ndim*(i-1)+1) = .true.
                 glt(ndim*(i-1)+2) = gltp(ndim*(i-1)+2)
@@ -998,31 +997,31 @@ subroutine op0010()
 !
                     gln(ndim*(i-1)+3) = glnp(ndim*(i-1)+3)
                     zl(jglnl-1+ndim*(i-1)+3) = .true.
-                endif
+                end if
 !
-            endif
+            end if
 !
         end do
 !
         call jedetr(grltc)
         call jedetr(grlnc)
 !
-    endif
+    end if
 !
-    call cnscno(cnslt, ' ', 'NON', 'G', fiss//'.LTNO',&
+    call cnscno(cnslt, ' ', 'NON', 'G', fiss//'.LTNO', &
                 'F', ibid)
-    call cnscno(cnsln, ' ', 'NON', 'G', fiss//'.LNNO',&
+    call cnscno(cnsln, ' ', 'NON', 'G', fiss//'.LNNO', &
                 'F', ibid)
-    call cnscno(grlt, ' ', 'NON', 'G', fiss//'.GRLTNO',&
+    call cnscno(grlt, ' ', 'NON', 'G', fiss//'.GRLTNO', &
                 'F', ibid)
-    call cnscno(grln, ' ', 'NON', 'G', fiss//'.GRLNNO',&
+    call cnscno(grln, ' ', 'NON', 'G', fiss//'.GRLNNO', &
                 'F', ibid)
 !
 !     IF THE DOMAIN LOCALISATION HAS NOT BEEN USED, THE BOOLEAN LIST
 !     OF THE NODES IN THE TORE MUST BE DESTROYED
-    if (.not.locdom) then
+    if (.not. locdom) then
         call jedetr(fiss//'.PRO.NOEUD_TORE')
-    endif
+    end if
 !
 !     IF THE DOMAIN LOCALISATION HAS BEEN USED, THE RADIUS OF THE TORUS
 !     USED IN THE LOCALISATION MUST BE STORED
@@ -1030,7 +1029,7 @@ subroutine op0010()
         call wkvect(fiss//'.PRO.RAYON_TORE', 'G V R', 1, ibid)
 !        VALUE OF THE RADIUS USED IN THE ACTUAL PROPAGATION
         zr(ibid) = radtor
-    endif
+    end if
 !
     call jedetr(delta)
 !----------------------------------------------------------------------+
@@ -1046,16 +1045,16 @@ subroutine op0010()
 !-----------------------------------------------------------------------
 !
     cnslj = '&&OP0010.CNSLJ'
-    cnsen='&&OP0010.CNSEN'
-    cnsenr='&&OP0010.CNSENR'
-    goinop=.false.
-    call xenrch(noma, cnslt, cnsln, cnslj,&
-                cnsen, cnsenr, ndim, fiss, goinop,&
+    cnsen = '&&OP0010.CNSEN'
+    cnsenr = '&&OP0010.CNSENR'
+    goinop = .false.
+    call xenrch(noma, cnslt, cnsln, cnslj, &
+                cnsen, cnsenr, ndim, fiss, goinop, &
                 lismae, lisnoe, operation_opt=operation)
 !
 !    call cnscno(cnsenr, ' ', 'NON', 'G', fiss//'.STNOR',&
 !                'F', ibid)
-    call cnscno(cnsen, ' ', 'NON', 'G', fiss//'.STNO',&
+    call cnscno(cnsen, ' ', 'NON', 'G', fiss//'.STNO', &
                 'F', ibid)
 !
 !-----------------------------------------------------------------------
@@ -1080,7 +1079,7 @@ subroutine op0010()
 !        CHECK THE CRACK FRONT
         call xprdis(fisini, fiss, dist, distol, lcmin)
 !
-    endif
+    end if
 !
 !-----------------------------------------------------------------------
 !     FIN
@@ -1090,14 +1089,14 @@ subroutine op0010()
     call detrsd('LIGREL', ligr_dnoma)
     if (grille) then
         call detrsd('LIGREL', ligr_noma)
-    endif
+    end if
 !
-    901 format (10x,37('-'))
-    903 format (10x,35('-'))
-    904 format (10x,26('-'))
-    905 format (10x,23('-'))
-    907 format (10x,23('-'))
-    908 format (10x,33('-'))
+901 format(10x, 37('-'))
+903 format(10x, 35('-'))
+904 format(10x, 26('-'))
+905 format(10x, 23('-'))
+907 format(10x, 23('-'))
+908 format(10x, 33('-'))
 !
     call jedema()
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -54,7 +54,7 @@ subroutine xtopoi(noma, modele)
 !
 !
     integer :: nbout, nbin
-    parameter    (nbout=7, nbin=3)
+    parameter(nbout=7, nbin=3)
     character(len=8) :: lpaout(nbout), lpain(nbin), licmp(2)
     character(len=16) :: option
     character(len=19) :: lchout(nbout), lchin(nbin)
@@ -82,13 +82,13 @@ subroutine xtopoi(noma, modele)
         debug = .true.
     else
         debug = .false.
-    endif
+    end if
     call jeveuo(modele//'.MODELE    .LGRF', 'L', vk8=lgrf)
     chgeom = lgrf(1)//'.COORDO'
 !
 ! --- INITIALISATION DES CHAMPS POUR CALCUL
 !
-    call inical(nbin, lpain, lchin, nbout, lpaout,&
+    call inical(nbin, lpain, lchin, nbout, lpaout, &
                 lchout)
 !
 ! --- RECUPERATION DES DONNEES XFEM (TOPOSE)
@@ -103,7 +103,7 @@ subroutine xtopoi(noma, modele)
 !
     licmp(1) = 'NPG_DYN'
     licmp(2) = 'NCMP_DYN'
-    call cescre('V', heavto, 'ELEM', noma, 'DCEL_I',&
+    call cescre('V', heavto, 'ELEM', noma, 'DCEL_I', &
                 2, licmp, [0], [-1], [-2])
     call jeveuo(heavto//'.CESD', 'L', jcesd)
     call jeveuo(heavto//'.CESV', 'E', vi=cesv)
@@ -117,7 +117,7 @@ subroutine xtopoi(noma, modele)
 !
     call dismoi('NB_MA_MAILLA', noma, 'MAILLAGE', repi=nbma)
     do ima = 1, nbma
-        call cesexi('S', jcesd, jcesl, ima, 1,&
+        call cesexi('S', jcesd, jcesl, ima, 1, &
                     1, 1, iad)
         zl(jcesl-1-iad) = .true.
         cesv(1-1-iad) = nbsp(ima)
@@ -152,14 +152,14 @@ subroutine xtopoi(noma, modele)
 !
 ! --- APPEL A CALCUL
 !
-    call calcul('C', option, ligrel, nbin, lchin,&
-                lpain, nbout, lchout, lpaout, 'G',&
+    call calcul('C', option, ligrel, nbin, lchin, &
+                lpain, nbout, lchout, lpaout, 'G', &
                 'OUI')
 !
     if (debug) then
-        call dbgcal(option, ifmdbg, nbin, lpain, lchin,&
+        call dbgcal(option, ifmdbg, nbin, lpain, lchin, &
                     nbout, lpaout, lchout)
-    endif
+    end if
 !
 !   vérification de la cohérence entre le nombre de points de Gauss générés
 !   par la découpe en sous-éléments et le nombre maximal de points de Gauss

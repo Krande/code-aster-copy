@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 subroutine gmate3(abscur, elrefe, conn, nno, mele)
 
-implicit none
+    implicit none
 
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -58,24 +58,24 @@ implicit none
 
 !   COOR ET POID DU POINT DE GAUSS
 
-        data xpg /-.1080549487073437,&
-     &             .1080549487073437,&
-     &            -.3191123689278897,&
-     &             .3191123689278897,&
-     &            -.5152486363581541,&
-     &             .5152486363581541,&
-     &            -.6872929048116855,&
-     &             .6872929048116855,&
-     &            -.8272013150697650,&
-     &             .8272013150697650,&
-     &            -.9284348836635735,&
-     &             .9284348836635735,&
-     &            -.9862838086968123,&
-     &             .9862838086968123/
+    data xpg/-.1080549487073437,&
+ &             .1080549487073437,&
+ &            -.3191123689278897,&
+ &             .3191123689278897,&
+ &            -.5152486363581541,&
+ &             .5152486363581541,&
+ &            -.6872929048116855,&
+ &             .6872929048116855,&
+ &            -.8272013150697650,&
+ &             .8272013150697650,&
+ &            -.9284348836635735,&
+ &             .9284348836635735,&
+ &            -.9862838086968123,&
+ &             .9862838086968123/
 !
 ! VALEURS DES POIDS ASSOCIES
 !
-    data wpg /    .2152638534631578,&
+    data wpg/.2152638534631578,&
      &            .2152638534631578,&
      &            .2051984637212956,&
      &            .2051984637212956,&
@@ -102,17 +102,17 @@ implicit none
     do ipg = 1, npg
 
 !       CALCUL DES FONCTIONS DE FORMES ET DERIVEES
-        ksi(1)=xpg(ipg)
+        ksi(1) = xpg(ipg)
         call elrfvf(elrefe, ksi, ff, nno)
         call elrfdf(elrefe, ksi, dff)
 
 !       CALCUL DU JACOBIEN (SEGM DE REFERENCE --> SEGM REEL)
-        jac = 0.5d0*(zr(js-1+conn(2)) - zr(js-1+conn(1)))
+        jac = 0.5d0*(zr(js-1+conn(2))-zr(js-1+conn(1)))
 
 !       CONTRIBUTION DU POINT DE GAUSS A LA MATRICE ELEMENTAIRE
         do i = 1, nno
             do j = 1, nno
-               mele(i, j) = mele(i, j) + ff(i)*ff(j)*jac*wpg(ipg)
+                mele(i, j) = mele(i, j)+ff(i)*ff(j)*jac*wpg(ipg)
             end do
         end do
 !

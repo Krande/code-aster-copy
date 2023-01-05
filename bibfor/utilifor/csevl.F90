@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -57,9 +57,9 @@ function csevl(x, cs, n)
 !-----------------------------------------------------------------------
     integer :: i, n, ni
 !-----------------------------------------------------------------------
-    data first /.true./
+    data first/.true./
 !***FIRST EXECUTABLE STATEMENT  DCSEVL
-    if (first) onepl = 1.0d0 + r8prem()
+    if (first) onepl = 1.0d0+r8prem()
     first = .false.
     ASSERT(n .ge. 1)
     ASSERT(n .le. 1000)
@@ -71,8 +71,8 @@ function csevl(x, cs, n)
     do i = 1, n
         b2 = b1
         b1 = b0
-        ni = n + 1 - i
-        b0 = twox*b1 - b2 + cs(ni)
+        ni = n+1-i
+        b0 = twox*b1-b2+cs(ni)
     end do
 !
     csevl = 0.5d0*(b0-b2)

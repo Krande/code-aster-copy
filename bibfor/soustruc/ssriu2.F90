@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -91,7 +91,7 @@ subroutine ssriu2(nomu)
     if (promes .eq. ' ') modif = .false.
 !
     call jeveuo(nomu//'.VARM', 'E', vr=varm)
-    rtbloc=varm(1)
+    rtbloc = varm(1)
     call jeveuo(nomu//'.DESM', 'E', vi=desm)
     nddle = desm(4)
 !     NDDLE = 50
@@ -101,11 +101,11 @@ subroutine ssriu2(nomu)
 !     -----------------------------------------------------
     call mtdscr(matas)
     call jeveuo(matas(1:19)//'.&INT', 'E', lmat)
-    call tldlg3('LDLT', ' ', 1, lmat, 1, nddli, 0,&
+    call tldlg3('LDLT', ' ', 1, lmat, 1, nddli, 0, &
                 ndeci, isingu, npvneg, ier, ' ')
     if (ier .gt. 0) then
         call utmess('F', 'ALGORITH5_19')
-    endif
+    end if
 !
 !
 !     -- ALLOCATION DE PHI_IE ET INITIALISATION PAR K_IE
@@ -114,28 +114,28 @@ subroutine ssriu2(nomu)
 !
     call mtdsc2(zk24(zi(lmat+1)), 'SCDI', 'L', iascdi)
     call jeveuo(zk24(zi(lmat+1)) (1:19)//'.REFA', 'L', vk24=refa)
-    call jeveuo(refa(2)(1:14)//'.SLCS.SCHC', 'L', vi=vschc)
+    call jeveuo(refa(2) (1:14)//'.SLCS.SCHC', 'L', vi=vschc)
     call mtdsc2(zk24(zi(lmat+1)), 'SCBL', 'L', iascbl)
     call jelira(matas//'.UALF', 'NMAXOC', nbbloc)
     call jeveuo(stock//'.SCIB', 'L', vi=scib)
 !
 !     NLBLPH : NOMBRE DE LIGNES DE PHI_IE QUE L'ON PEUT REGROUPER
 !              DANS UN BLOC DE LONGUEUR 5*RTBLOC
-    nlblph=max(1,min(int(5*rtbloc*1024)/nddli,nddle))
+    nlblph = max(1, min(int(5*rtbloc*1024)/nddli, nddle))
 !
 !     LGBLPH : LONGUEUR DES BLOCS DE PHI_IE :
     lgblph = nlblph*nddli
 !
 !     NBLPH : NOMBRE DE BLOCS DE PHI_IE :
-    nblph = (nddle*nddli-1)/lgblph + 1
+    nblph = (nddle*nddli-1)/lgblph+1
 !
 !
-    call jecrec(nomu//'.PHI_IE', 'G V R', 'NU', 'DISPERSE', 'CONSTANT',&
+    call jecrec(nomu//'.PHI_IE', 'G V R', 'NU', 'DISPERSE', 'CONSTANT', &
                 nblph)
     call jeecra(nomu//'.PHI_IE', 'LONMAX', lgblph)
 !
     call jecrec(nomu//'.MAEL_RAID_VALE', 'G V R', 'NU', 'DISPERSE', &
-                   'CONSTANT',1)
+                'CONSTANT', 1)
     call jeecra(nomu//'.MAEL_RAID_VALE', 'LONMAX', (nddle*(nddle+1)/2))
     call jecroc(jexnum(nomu//'.MAEL_RAID_VALE', 1))
     call jeveuo(jexnum(nomu//'.MAEL_RAID_VALE', 1), 'E', iakpee)
@@ -148,39 +148,39 @@ subroutine ssriu2(nomu)
         call jecroc(jexnum(nomu//'.PHI_IE', iblph))
         call jeveuo(jexnum(nomu//'.PHI_IE', iblph), 'E', iaphi0)
         do iiblph = 1, nlblph
-            j = j + 1
+            j = j+1
             if (j .gt. nddle) goto 40
-            iaphie = iaphi0 + (iiblph-1)*nddli
+            iaphie = iaphi0+(iiblph-1)*nddli
             iblo = scib(nddli+j)
             scdi = zi(iascdi-1+nddli+j)
             schc = vschc(nddli+j)
             if (iblo .ne. iblold) then
                 if (iblold .gt. 0) call jelibe(jexnum(matas//'.UALF', iblold))
                 call jeveuo(jexnum(matas//'.UALF', iblo), 'L', jualf)
-            endif
+            end if
             iblold = iblo
             k = 0
 !
             if (modif) then
-                do i = nddli + j + 1 - schc, nddli
-                    k = k + 1
+                do i = nddli+j+1-schc, nddli
+                    k = k+1
                     zr(iaphie-1+i) = 0.d0
                 end do
             else
 !
-                do i = nddli + j + 1 - schc, nddli
-                    k = k + 1
+                do i = nddli+j+1-schc, nddli
+                    k = k+1
                     zr(iaphie-1+i) = zr(jualf-1+scdi-schc+k)
                 end do
 !
                 do i = max(1, j+1-schc), j
-                    ii = ((j-1)*j)/2 + i
+                    ii = ((j-1)*j)/2+i
                     zr(iakpee-1+ii) = zr(jualf-1+scdi+i-j)
                 end do
-            endif
+            end if
 !
         end do
- 40     continue
+40      continue
         call jelibe(jexnum(nomu//'.PHI_IE', iblph))
     end do
     if (iblold .gt. 0) call jelibe(jexnum(matas//'.UALF', iblold))
@@ -192,11 +192,11 @@ subroutine ssriu2(nomu)
     else
         do iblph = 1, nblph
             call jeveuo(jexnum(nomu//'.PHI_IE', iblph), 'E', iaphi0)
-            call rldlr8(zk24(zi(lmat+1)), vschc, zi(iascdi), zi( iascbl), nddli,&
+            call rldlr8(zk24(zi(lmat+1)), vschc, zi(iascdi), zi(iascbl), nddli, &
                         nbbloc, zr(iaphi0), nlblph)
             call jelibe(jexnum(nomu//'.PHI_IE', iblph))
         end do
-    endif
+    end if
 !
 !
 !     -- CALCUL DE KP_EE:
@@ -212,25 +212,25 @@ subroutine ssriu2(nomu)
             if (iblo .ne. iblold) then
                 if (iblold .gt. 0) call jelibe(jexnum(matas//'.UALF', iblold))
                 call jeveuo(jexnum(matas//'.UALF', iblo), 'L', jualf)
-            endif
+            end if
             iblold = iblo
 !
             i = 0
             do iblph = 1, nblph
                 call jeveuo(jexnum(nomu//'.PHI_IE', iblph), 'L', iaphi0)
                 do iiblph = 1, nlblph
-                    i = i + 1
+                    i = i+1
                     if (i .gt. j) goto 90
-                    iaphie = iaphi0 + (iiblph-1)*nddli
-                    ii = (j* (j-1)/2) + i
+                    iaphie = iaphi0+(iiblph-1)*nddli
+                    ii = (j*(j-1)/2)+i
                     kk = 0
-                    do k = nddli + j + 1 - schc, nddli
-                        kk = kk + 1
-                        zr(iakpee-1+ii) = zr(iakpee-1+ii) - zr( iaphie-1+k)*zr(jualf-1+scdi-schc+&
+                    do k = nddli+j+1-schc, nddli
+                        kk = kk+1
+                        zr(iakpee-1+ii) = zr(iakpee-1+ii)-zr(iaphie-1+k)*zr(jualf-1+scdi-schc+&
                                           &kk)
                     end do
                 end do
- 90             continue
+90              continue
                 call jelibe(jexnum(nomu//'.PHI_IE', iblph))
             end do
 !
@@ -238,10 +238,10 @@ subroutine ssriu2(nomu)
         if (iblold .gt. 0) call jelibe(jexnum(matas//'.UALF', iblold))
 !
 ! FIN TEST SUR MODIF
-    endif
+    end if
 !
 !
-    call jelibe(refa(2)(1:14)//'.SLCS.SCHC')
+    call jelibe(refa(2) (1:14)//'.SLCS.SCHC')
 !
     call jedema()
 end subroutine

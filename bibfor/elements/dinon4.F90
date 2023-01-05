@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine dinon4(neq, ul, dul, utl, nno,&
-                  nbcomp, varimo, raide, nbpar, param,&
+subroutine dinon4(neq, ul, dul, utl, nno, &
+                  nbcomp, varimo, raide, nbpar, param, &
                   okdire, varipl)
 ! ----------------------------------------------------------------------
     implicit none
@@ -70,7 +70,7 @@ subroutine dinon4(neq, ul, dul, utl, nno,&
     real(kind=8) :: kdeb, kfin, fpre, useuil, fplus, fmoins, depl
 !
     real(kind=8) :: zero
-    parameter (zero=0.0d0)
+    parameter(zero=0.0d0)
 !
 !************ FIN DES DECLARATIONS DES VARIABLES LOCALES ***************
     r8min = r8miem()
@@ -82,9 +82,9 @@ subroutine dinon4(neq, ul, dul, utl, nno,&
         varipl(ivari) = varimo(ivari)
 !        SI LE COMPORTEMENT EST BI-LINEAIRE DANS CETTE DIRECTION
         if (.not. okdire(ii)) goto 20
-        kdeb = param(ii,1)
-        kfin = param(ii,2)
-        fpre = param(ii,3)
+        kdeb = param(ii, 1)
+        kfin = param(ii, 2)
+        fpre = param(ii, 3)
 !
 !          write(*,'(I2,3(2X,E12.5))') II,KDEB,KFIN,FPRE
         if (abs(kdeb) .le. r8min) goto 20
@@ -94,10 +94,10 @@ subroutine dinon4(neq, ul, dul, utl, nno,&
             ulel = ul(ii)
             utlel = utl(ii)
         else
-            dulel = dul(ii+nbcomp) - dul(ii)
-            ulel = ul(ii+nbcomp) - ul(ii)
-            utlel = utl(ii+nbcomp) - utl(ii)
-        endif
+            dulel = dul(ii+nbcomp)-dul(ii)
+            ulel = ul(ii+nbcomp)-ul(ii)
+            utlel = utl(ii+nbcomp)-utl(ii)
+        end if
 !        SEUIL EN DEPLACEMENT
         useuil = abs(fpre/kdeb)
         if (abs(dulel) .gt. r8min) then
@@ -106,8 +106,8 @@ subroutine dinon4(neq, ul, dul, utl, nno,&
             if (depl .le. useuil) then
                 fmoins = kdeb*depl
             else
-                fmoins = fpre + kfin*(depl-useuil)
-            endif
+                fmoins = fpre+kfin*(depl-useuil)
+            end if
             if (ulel .lt. zero) fmoins = -fmoins
 !           A L'INSTANT PLUS
             depl = abs(utlel)
@@ -115,11 +115,11 @@ subroutine dinon4(neq, ul, dul, utl, nno,&
                 fplus = kdeb*depl
                 varipl(ivari) = 1.0d0
             else
-                fplus = fpre + kfin*(depl-useuil)
+                fplus = fpre+kfin*(depl-useuil)
                 varipl(ivari) = 2.0d0
-            endif
+            end if
             if (utlel .lt. zero) fplus = -fplus
-            raide(ii) = abs(fplus - fmoins)/abs(dulel)
+            raide(ii) = abs(fplus-fmoins)/abs(dulel)
         else
 !           CAS OU DUEL=0 ==> UTLEL=ULEL
             depl = abs(utlel)
@@ -127,9 +127,9 @@ subroutine dinon4(neq, ul, dul, utl, nno,&
                 raide(ii) = kdeb
             else
                 raide(ii) = kfin
-            endif
-        endif
- 20     continue
+            end if
+        end if
+20      continue
     end do
 !
 end subroutine

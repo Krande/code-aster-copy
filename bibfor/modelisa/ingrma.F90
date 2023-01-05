@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -67,14 +67,14 @@ subroutine ingrma(sdmail, nomma, lgrma, nbgrma, codret)
 ! 1.2. ==> VERIFICATIONS
 !
     call jeexin(nommai, ier)
-    ASSERT(ier.ne.0)
+    ASSERT(ier .ne. 0)
 !
     call jeexin(grpmai, ier)
-    ASSERT(ier.ne.0)
+    ASSERT(ier .ne. 0)
 !
     num = 0
     call jenonu(jexnom(nommai, nomma), num)
-    ASSERT(num.ne.0)
+    ASSERT(num .ne. 0)
 !
 !====
 ! 2. BOUCLE SUR LES GROUP_MA
@@ -87,9 +87,9 @@ subroutine ingrma(sdmail, nomma, lgrma, nbgrma, codret)
 !     --- BCLE SUR LES MAILLES DU GROUP_MA
         do j = 1, nbmag
             if (zi(jgrma-1+j) .eq. num) then
-                nbgrma = nbgrma + 1
+                nbgrma = nbgrma+1
                 lgrma(nbgrma) = i
-            endif
+            end if
         end do
     end do
 !

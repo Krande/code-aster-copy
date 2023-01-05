@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,14 +17,14 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine mmmte2(ndim  , nnl   , nne   , nnm   , nbcpf , ndexcl,&
+subroutine mmmte2(ndim, nnl, nne, nnm, nbcpf, ndexcl, &
                   matrff, matrfe, matrfm, matref, matrmf)
 !
-implicit none
+    implicit none
 !
-integer, intent(in) :: ndim, nne, nnl, nnm, nbcpf, ndexcl(10)
-real(kind=8), intent(inout) :: matrff(18, 18), matref(27, 18), matrfe(18, 27)
-real(kind=8), intent(inout) :: matrmf(27, 18), matrfm(18, 27)
+    integer, intent(in) :: ndim, nne, nnl, nnm, nbcpf, ndexcl(10)
+    real(kind=8), intent(inout) :: matrff(18, 18), matref(27, 18), matrfe(18, 27)
+    real(kind=8), intent(inout) :: matrmf(27, 18), matrfm(18, 27)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -55,81 +55,81 @@ real(kind=8), intent(inout) :: matrmf(27, 18), matrfm(18, 27)
     do i = 1, nnl
         if (ndexcl(i) .eq. 1) then
             do l = 1, nbcpf
-                if ((l.eq.2) .and. (ndexcl(10).eq.0)) then
+                if ((l .eq. 2) .and. (ndexcl(10) .eq. 0)) then
                     cycle
-                endif
+                end if
                 ii = nbcpf*(i-1)+l
-                matrff(ii,ii) = 1.d0
+                matrff(ii, ii) = 1.d0
             end do
-        endif
+        end if
     end do
 !
     do inof = 1, nnl
         if (ndexcl(inof) .eq. 1) then
             do inoe = 1, nne
                 do icmp = 1, nbcpf
-                    if ((icmp.eq.2) .and. (ndexcl(10).eq.0)) then
+                    if ((icmp .eq. 2) .and. (ndexcl(10) .eq. 0)) then
                         cycle
-                    endif
+                    end if
                     do idim = 1, ndim
                         ii = nbcpf*(inof-1)+icmp
                         jj = ndim*(inoe-1)+idim
-                        matrfe(ii,jj) = 0.d0
+                        matrfe(ii, jj) = 0.d0
                     end do
                 end do
             end do
-        endif
+        end if
     end do
 !
     do inof = 1, nnl
         if (ndexcl(inof) .eq. 1) then
             do inom = 1, nnm
                 do icmp = 1, nbcpf
-                    if ((icmp.eq.2) .and. (ndexcl(10).eq.0)) then
+                    if ((icmp .eq. 2) .and. (ndexcl(10) .eq. 0)) then
                         cycle
-                    endif
+                    end if
                     do idim = 1, ndim
                         ii = nbcpf*(inof-1)+icmp
                         jj = ndim*(inom-1)+idim
-                        matrfm(ii,jj) = 0.d0
+                        matrfm(ii, jj) = 0.d0
                     end do
                 end do
             end do
-        endif
+        end if
     end do
 !
     do inof = 1, nnl
         if (ndexcl(inof) .eq. 1) then
             do inoe = 1, nne
                 do icmp = 1, nbcpf
-                    if ((icmp.eq.2) .and. (ndexcl(10).eq.0)) then
+                    if ((icmp .eq. 2) .and. (ndexcl(10) .eq. 0)) then
                         cycle
-                    endif
+                    end if
                     do idim = 1, ndim
                         jj = nbcpf*(inof-1)+icmp
                         ii = ndim*(inoe-1)+idim
-                        matref(ii,jj) = 0.d0
+                        matref(ii, jj) = 0.d0
                     end do
                 end do
             end do
-        endif
+        end if
     end do
 !
     do inof = 1, nnl
         if (ndexcl(inof) .eq. 1) then
             do inom = 1, nnm
                 do icmp = 1, nbcpf
-                    if ((icmp.eq.2) .and. (ndexcl(10).eq.0)) then
+                    if ((icmp .eq. 2) .and. (ndexcl(10) .eq. 0)) then
                         cycle
-                    endif
+                    end if
                     do idim = 1, ndim
                         jj = nbcpf*(inof-1)+icmp
                         ii = ndim*(inom-1)+idim
-                        matrmf(ii,jj) = 0.d0
+                        matrmf(ii, jj) = 0.d0
                     end do
                 end do
             end do
-        endif
+        end if
     end do
 !
 end subroutine

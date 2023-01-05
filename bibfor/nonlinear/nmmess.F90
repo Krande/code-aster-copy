@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine nmmess(code, dp0, dp1, dp, func,&
+subroutine nmmess(code, dp0, dp1, dp, func, &
                   nit, nitmax, iret)
     implicit none
 #include "jeveux.h"
@@ -63,42 +63,42 @@ subroutine nmmess(code, dp0, dp1, dp, func,&
     if (iret .eq. 0) goto 999
 !
     call tecael(iadzi, iazk24)
-    nomail= zk24(iazk24-1+3)(1:8)
+    nomail = zk24(iazk24-1+3) (1:8)
 !
 !
     if (iret .eq. 1) then
         call utmess(code//'+', 'ALGORITH15_45')
-    else if (iret.eq.2) then
+    else if (iret .eq. 2) then
         call utmess(code//'+', 'ALGORITH15_46')
-    else if (iret.eq.3) then
+    else if (iret .eq. 3) then
         call utmess(code//'+', 'ALGORITH15_47')
-    endif
+    end if
 !
     valk = nomail
-    vali (1) = nit
-    vali (2) = nitmax
+    vali(1) = nit
+    vali(2) = nitmax
     call utmess(code//'+', 'ALGORITH15_48', sk=valk, ni=2, vali=vali)
     fp = func(dp)
-    valr (1) = dp
-    valr (2) = fp
+    valr(1) = dp
+    valr(2) = fp
     call utmess(code//'+', 'ALGORITH15_49', nr=2, valr=valr)
     f0 = func(dp0)
-    valr (1) = dp0
-    valr (2) = f0
+    valr(1) = dp0
+    valr(2) = f0
     call utmess(code//'+', 'ALGORITH15_50', nr=2, valr=valr)
     f1 = func(dp1)
-    valr (1) = dp1
-    valr (2) = f1
+    valr(1) = dp1
+    valr(2) = f1
     call utmess(code//'+', 'ALGORITH15_51', nr=2, valr=valr)
-    nbp=100
+    nbp = 100
 !
-    vali (1) = nbp
+    vali(1) = nbp
     call utmess(code//'+', 'ALGORITH15_52', si=vali(1))
     do i = 1, nbp
-        dpi=dp0+i*(dp1-dp0)/nbp
+        dpi = dp0+i*(dp1-dp0)/nbp
         fi = func(dpi)
-        valr (1) = dpi
-        valr (2) = fi
+        valr(1) = dpi
+        valr(2) = fi
         call utmess(code//'+', 'ALGORITH15_53', nr=2, valr=valr)
     end do
 !

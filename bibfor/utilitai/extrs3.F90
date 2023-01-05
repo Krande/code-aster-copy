@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine extrs3(resu, param, iordr, cel, itype,&
+subroutine extrs3(resu, param, iordr, cel, itype, &
                   type, iad)
     implicit none
 #include "jeveux.h"
@@ -61,10 +61,10 @@ subroutine extrs3(resu, param, iordr, cel, itype,&
 !
     call jenonu(jexnom(nomsd//'.NOVA', nopara), ipara)
     if (ipara .eq. 0) then
-        valk (1) = nopara
-        valk (2) = nomsd
+        valk(1) = nopara
+        valk(2) = nomsd
         call utmess('F', 'UTILITAI6_12', nk=2, valk=valk)
-    endif
+    end if
 !
     call jeveuo(jexnum(nomsd//'.TAVA', ipara), 'L', iatava)
     nomobj = zk8(iatava-1+1)
@@ -73,28 +73,28 @@ subroutine extrs3(resu, param, iordr, cel, itype,&
     k8maxi = zk8(iatava-1+3)
     call lxliis(k8maxi, imaxi, ire2)
     if (abs(ire1)+abs(ire2) .gt. 0) then
-        valk (1) = nopara
-        valk (2) = k8debu
-        valk (3) = k8maxi
+        valk(1) = nopara
+        valk(2) = k8debu
+        valk(3) = k8maxi
         call utmess('F', 'UTILITAI6_13', nk=3, valk=valk)
-    endif
+    end if
 !
     call jeveuo(nomsd//nomobj, cel, iaobj)
-    iad = iaobj - 1 + (iordr-1)*imaxi + idebu
+    iad = iaobj-1+(iordr-1)*imaxi+idebu
 !
     call jelira(nomsd//nomobj, 'LONUTI', lonuti)
-    if(lonuti < iordr*imaxi) then
+    if (lonuti < iordr*imaxi) then
         call jeecra(nomsd//nomobj, 'LONUTI', iordr*imaxi)
     end if
 !
     if (itype .ne. 0) then
         call jelira(nomsd//nomobj, 'TYPE', cval=type)
         if (type(1:1) .eq. 'K') then
-            ASSERT(len(type).ge.2)
+            ASSERT(len(type) .ge. 2)
             call jelira(nomsd//nomobj, 'LTYP', iloty)
             call codent(iloty, 'G', k8b)
             type = type(1:1)//k8b
-        endif
-    endif
+        end if
+    end if
 !
 end subroutine

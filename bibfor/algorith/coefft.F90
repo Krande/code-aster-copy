@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine coefft(cothe, coeff, dcothe, dcoeff, x,&
+subroutine coefft(cothe, coeff, dcothe, dcoeff, x, &
                   dtime, coeft, nmat, coel)
     implicit none
 !       INTEGRATION DE LOIS DE COMPORTEMENT ELASTO-VISCOPLASTIQUE PAR
@@ -39,33 +39,33 @@ subroutine coefft(cothe, coeff, dcothe, dcoeff, x,&
     real(kind=8) :: hsdt, dtime, x
     real(kind=8) :: coeff(nmat), dcoeff(nmat), coeft(nmat)
 !
-    hsdt=x/dtime
+    hsdt = x/dtime
 !
     call r8inir(nmat, 0.d0, coel, 1)
 !
     if (cothe(nmat) .eq. 0) then
         do i = 1, 3
-            coel(i)=cothe(i)+hsdt*dcothe(i)
+            coel(i) = cothe(i)+hsdt*dcothe(i)
         end do
-        coel(nmat)=0.d0
-    else if (cothe(nmat).eq.1) then
+        coel(nmat) = 0.d0
+    else if (cothe(nmat) .eq. 1) then
 !          MATERIAU ISOTROPE, OU ANISOTROPE, MATRICE DE HOOKE
-        coel(nmat)=1.d0
-        ncoel=75
+        coel(nmat) = 1.d0
+        ncoel = 75
         do i = 1, ncoel
-            coel(i)=cothe(i)+hsdt*dcothe(i)
+            coel(i) = cothe(i)+hsdt*dcothe(i)
         end do
-    endif
+    end if
 !
 !       POUR GAGNER DU TEMPS CPU
     if (coeff(nmat) .eq. 0) then
-        ncoe=nmat
+        ncoe = nmat
     else
-        ncoe=nint(coeff(nmat))
-    endif
+        ncoe = nint(coeff(nmat))
+    end if
 !
     do i = 1, ncoe
-        coeft(i)=coeff(i)+hsdt*dcoeff(i)
+        coeft(i) = coeff(i)+hsdt*dcoeff(i)
     end do
 !
 end subroutine

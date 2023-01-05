@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,21 +16,21 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine separ_RI_elas_3D(elas_id ,nu , g, nui ,gi, &
-                             e1     , e2  , e3  ,&
-                             nu12   , nu13, nu23,&
-                             e1i     , e2i  , e3i  ,&
-                             nu12i   , nu13i, nu23i,&
-                             hr, hi)
+subroutine separ_RI_elas_3D(elas_id, nu, g, nui, gi, &
+                            e1, e2, e3, &
+                            nu12, nu13, nu23, &
+                            e1i, e2i, e3i, &
+                            nu12i, nu13i, nu23i, &
+                            hr, hi)
 !
-implicit none
+    implicit none
 !
-integer, intent(in) :: elas_id
-real(kind=8), intent(in) :: nu, g, e1, e2, e3
-real(kind=8), intent(in) :: nu12, nu13, nu23
-real(kind=8), intent(in) :: nui, gi, e1i, e2i, e3i
-real(kind=8), intent(in) :: nu12i, nu13i, nu23i
-real(kind=8), intent(out) :: hr(6), hi(6)
+    integer, intent(in) :: elas_id
+    real(kind=8), intent(in) :: nu, g, e1, e2, e3
+    real(kind=8), intent(in) :: nu12, nu13, nu23
+    real(kind=8), intent(in) :: nui, gi, e1i, e2i, e3i
+    real(kind=8), intent(in) :: nu12i, nu13i, nu23i
+    real(kind=8), intent(out) :: hr(6), hi(6)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -78,19 +78,19 @@ real(kind=8), intent(out) :: hr(6), hi(6)
 !
     if (elas_id .eq. 1) then
 !
-        hr(1) = 2.d0*g*(1.d0 - nu)/(1.d0 - 2.d0*nu)
-        hr(2) = 2.d0*g*nu/(1.d0 - 2.d0*nu)
+        hr(1) = 2.d0*g*(1.d0-nu)/(1.d0-2.d0*nu)
+        hr(2) = 2.d0*g*nu/(1.d0-2.d0*nu)
 !
     elseif (elas_id .eq. 4) then
 !
         nuc = dcmplx(nu, nui)
         Gc = dcmplx(g, gi)
 !
-        hr(1) = real(2.d0*Gc*(1.d0 - nuc)/(1.d0 - 2.d0*nuc))
-        hr(2) = real(2.d0*Gc*nuc/(1.d0 - 2.d0*nuc))
+        hr(1) = real(2.d0*Gc*(1.d0-nuc)/(1.d0-2.d0*nuc))
+        hr(2) = real(2.d0*Gc*nuc/(1.d0-2.d0*nuc))
 !
-        hi(1) = aimag(2.d0*Gc*(1.d0 - nuc)/(1.d0 - 2.d0*nuc))
-        hi(2) = aimag(2.d0*Gc*nuc/(1.d0 - 2.d0*nuc))
+        hi(1) = aimag(2.d0*Gc*(1.d0-nuc)/(1.d0-2.d0*nuc))
+        hi(2) = aimag(2.d0*Gc*nuc/(1.d0-2.d0*nuc))
 !
     elseif (elas_id .eq. 2) then
 !
@@ -98,12 +98,12 @@ real(kind=8), intent(out) :: hr(6), hi(6)
         nu31 = e3*nu13/e1
         nu32 = e3*nu23/e2
         delta = un-nu23*nu32-nu31*nu13-nu21*nu12-deux*nu23*nu31*nu12
-        hr(1) = (un - nu23*nu32)*e1/delta
-        hr(2) = (nu21 + nu31*nu23)*e1/delta
-        hr(3) = (nu31 + nu21*nu32)*e1/delta
-        hr(4) = (un - nu13*nu31)*e2/delta
-        hr(5) = (nu32 + nu31*nu12)*e2/delta
-        hr(6) = (un - nu21*nu12)*e3/delta
+        hr(1) = (un-nu23*nu32)*e1/delta
+        hr(2) = (nu21+nu31*nu23)*e1/delta
+        hr(3) = (nu31+nu21*nu32)*e1/delta
+        hr(4) = (un-nu13*nu31)*e2/delta
+        hr(5) = (nu32+nu31*nu12)*e2/delta
+        hr(6) = (un-nu21*nu12)*e3/delta
 !
     elseif (elas_id .eq. 5) then
 !
@@ -118,28 +118,28 @@ real(kind=8), intent(out) :: hr(6), hi(6)
         nu31c = e3c*nu13c/e1c
         nu32c = e3c*nu23c/e2c
         deltac = un-nu23c*nu32c-nu31c*nu13c-nu21c*nu12c-deux*nu23c*nu31c*nu12c
-        hr(1) = real((un - nu23c*nu32c)*e1c/deltac)
-        hr(2) = real((nu21c + nu31c*nu23c)*e1c/deltac)
-        hr(3) = real((nu31c + nu21c*nu32c)*e1c/deltac)
-        hr(4) = real((un - nu13c*nu31c)*e2c/deltac)
-        hr(5) = real((nu32c + nu31c*nu12c)*e2c/deltac)
-        hr(6) = real((un - nu21c*nu12c)*e3c/deltac)
-        hi(1) = aimag((un - nu23c*nu32c)*e1c/deltac)
-        hi(2) = aimag((nu21c + nu31c*nu23c)*e1c/deltac)
-        hi(3) = aimag((nu31c + nu21c*nu32c)*e1c/deltac)
-        hi(4) = aimag((un - nu13c*nu31c)*e2c/deltac)
-        hi(5) = aimag((nu32c + nu31c*nu12c)*e2c/deltac)
-        hi(6) = aimag((un - nu21c*nu12c)*e3c/deltac)
+        hr(1) = real((un-nu23c*nu32c)*e1c/deltac)
+        hr(2) = real((nu21c+nu31c*nu23c)*e1c/deltac)
+        hr(3) = real((nu31c+nu21c*nu32c)*e1c/deltac)
+        hr(4) = real((un-nu13c*nu31c)*e2c/deltac)
+        hr(5) = real((nu32c+nu31c*nu12c)*e2c/deltac)
+        hr(6) = real((un-nu21c*nu12c)*e3c/deltac)
+        hi(1) = aimag((un-nu23c*nu32c)*e1c/deltac)
+        hi(2) = aimag((nu21c+nu31c*nu23c)*e1c/deltac)
+        hi(3) = aimag((nu31c+nu21c*nu32c)*e1c/deltac)
+        hi(4) = aimag((un-nu13c*nu31c)*e2c/deltac)
+        hi(5) = aimag((nu32c+nu31c*nu12c)*e2c/deltac)
+        hi(6) = aimag((un-nu21c*nu12c)*e3c/deltac)
 !
     elseif (elas_id .eq. 3) then
 !
         nu31 = nu13*e3/e1
-        c1 = e1/ (un+nu12)
-        delta = un - nu12 - deux*nu13*nu31
-        hr(1) = c1* (un-nu13*nu31)/delta
-        hr(2) = c1* ((un-nu13*nu31)/delta-un)
+        c1 = e1/(un+nu12)
+        delta = un-nu12-deux*nu13*nu31
+        hr(1) = c1*(un-nu13*nu31)/delta
+        hr(2) = c1*((un-nu13*nu31)/delta-un)
         hr(3) = e3*nu13/delta
-        hr(4) = e3* (un-nu12)/delta
+        hr(4) = e3*(un-nu12)/delta
         hr(5) = undemi*c1
 !
     elseif (elas_id .eq. 6) then
@@ -152,19 +152,19 @@ real(kind=8), intent(out) :: hr(6), hi(6)
         nu13c = dcmplx(nu13, nu13i)
 !
         nu31c = nu13c*e3c/e1c
-        c1c = e1c/ (un+nu12c)
-        deltac = un - nu12c - deux*nu13c*nu31c
-        hr(1) = real(c1c* (un-nu13c*nu31c)/deltac)
-        hr(2) = real(c1c* ((un-nu13c*nu31c)/deltac-un))
+        c1c = e1c/(un+nu12c)
+        deltac = un-nu12c-deux*nu13c*nu31c
+        hr(1) = real(c1c*(un-nu13c*nu31c)/deltac)
+        hr(2) = real(c1c*((un-nu13c*nu31c)/deltac-un))
         hr(3) = real(e3c*nu13c/deltac)
-        hr(4) = real(e3c* (un-nu12c)/deltac)
+        hr(4) = real(e3c*(un-nu12c)/deltac)
         hr(5) = real(undemi*c1c)
-        hi(1) = aimag(c1c* (un-nu13c*nu31c)/deltac)
-        hi(2) = aimag(c1c* ((un-nu13c*nu31c)/deltac-un))
+        hi(1) = aimag(c1c*(un-nu13c*nu31c)/deltac)
+        hi(2) = aimag(c1c*((un-nu13c*nu31c)/deltac-un))
         hi(3) = aimag(e3c*nu13c/deltac)
-        hi(4) = aimag(e3c* (un-nu12c)/deltac)
+        hi(4) = aimag(e3c*(un-nu12c)/deltac)
         hi(5) = aimag(undemi*c1c)
 !
-    endif
+    end if
 !
 end subroutine

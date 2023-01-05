@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,11 +17,11 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: nicolas.sellenet at edf.fr
 !
-subroutine irmpga(nofimd, chanom, nochmd, typech, nomtyp,&
-                  nbimpr, caimpi, caimpk, modnum, nuanom,&
+subroutine irmpga(nofimd, chanom, nochmd, typech, nomtyp, &
+                  nbimpr, caimpi, caimpk, modnum, nuanom, &
                   sdcarm, lfichUniq, codret)
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterf_types.h"
@@ -36,17 +36,17 @@ implicit none
 #include "asterfort/uteref.h"
 #include "asterfort/utmess.h"
 !
-integer :: nbimpr
-integer :: caimpi(10, nbimpr)
-integer :: modnum(MT_NTYMAX), nuanom(MT_NTYMAX, *)
-character(len=8) :: nomtyp(*)
-character(len=8) :: typech, sdcarm
-character(len=19) :: chanom
-character(len=80) :: caimpk(3, nbimpr)
-character(len=*) :: nofimd
-character(len=64) :: nochmd
-aster_logical :: lfichUniq
-integer :: codret
+    integer :: nbimpr
+    integer :: caimpi(10, nbimpr)
+    integer :: modnum(MT_NTYMAX), nuanom(MT_NTYMAX, *)
+    character(len=8) :: nomtyp(*)
+    character(len=8) :: typech, sdcarm
+    character(len=19) :: chanom
+    character(len=80) :: caimpk(3, nbimpr)
+    character(len=*) :: nofimd
+    character(len=64) :: nochmd
+    aster_logical :: lfichUniq
+    integer :: codret
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -112,11 +112,11 @@ integer :: codret
 !
     if (niv .gt. 1) then
         call cpu_time(start)
-        write (ifm,100) 'DEBUT DE '//nompro
+        write (ifm, 100) 'DEBUT DE '//nompro
         call utmess('I', 'MED_74')
         call utflsh(codret)
-    endif
-100 format(/,4x,10('='),a,10('='),/)
+    end if
+100 format(/, 4x, 10('='), a, 10('='),/)
 !
 !====
 ! 2. BOUCLAGE SUR LES IMPRESSIONS DEMANDEES
@@ -124,14 +124,14 @@ integer :: codret
 !    GAUSS ET/OU PLUS DE 1 SOUS_POINT
 !====
 !
-    do nrimpr = 1 , nbimpr
-        nbpg = caimpi(2,nrimpr)
-        nbsp = caimpi(3,nrimpr)
+    do nrimpr = 1, nbimpr
+        nbpg = caimpi(2, nrimpr)
+        nbsp = caimpi(3, nrimpr)
 !
         nomasu = ' '
 !
-        tymast = caimpi(8,nrimpr)
-        tygeom = caimpi(9,nrimpr)
+        tymast = caimpi(8, nrimpr)
+        tygeom = caimpi(9, nrimpr)
 !
 ! 2.1.  CARACTERISATIONS DE L'ELEMENT FINI
 !       ON DOIT RECUPERER LES COORDONNEES SOUS LA FORME :
@@ -144,13 +144,13 @@ integer :: codret
         if (codret .eq. 0) then
             if (niv .gt. 1) then
                 if (typech(1:4) .eq. 'ELGA') then
-                    write (ifm,210) typech, nbpg, nbsp
+                    write (ifm, 210) typech, nbpg, nbsp
                 else
-                    write (ifm,211) typech, nbpg, nbsp
-                endif
-            endif
-210        format('CHAMP DE TYPE ',a,', AVEC,',i5,' POINTS DE GAUSS ET',i5,' SOUS_POINTS')
-211        format('CHAMP DE TYPE ',a,', AVEC,',i5,' POINTS ET',i5,' SOUS_POINTS')
+                    write (ifm, 211) typech, nbpg, nbsp
+                end if
+            end if
+210         format('CHAMP DE TYPE ', a, ', AVEC,', i5, ' POINTS DE GAUSS ET', i5, ' SOUS_POINTS')
+211         format('CHAMP DE TYPE ', a, ', AVEC,', i5, ' POINTS ET', i5, ' SOUS_POINTS')
 !
 ! 2.1.1.    CARACTERISATIONS DE L'ELEMENT FINI QUAND C'EST UN CHAMP
 !           AUX POINTS DE GAUSS AVEC PLUS DE 1 POINT DE GAUSS
@@ -159,64 +159,64 @@ integer :: codret
 ! 2.1.1.1.      FORMULE GENERALE. CODE DE RETOUR :
 !               CODRET = 0 : PAS DE PB
 !               CODRET = 1 : LE CHAMP N'EST PAS DEFINI SUR CE TYPE D'ELEMENT
-                ntypef = caimpi(1,nrimpr)
+                ntypef = caimpi(1, nrimpr)
                 call jenuno(jexnum('&CATA.TE.NOMTE', ntypef), nomtef)
 !
-                call uteref(chanom, typech, ntypef, nomtef, lfichUniq,&
-                            nomfpg, nbnoso, nbnoto, nbrepg, ndim,&
+                call uteref(chanom, typech, ntypef, nomtef, lfichUniq, &
+                            nomfpg, nbnoso, nbnoto, nbrepg, ndim, &
                             refcoo, gscoo, wg, nochmd, codret)
                 if (codret .eq. 1) then
                     codret = 0
                     goto 20
-                endif
+                end if
 !
 ! 2.1.1.2.      SI CE TYPE DE MAILLE EST RENUMEROTEE ENTRE ASTER ET MED,
 !               IL FAUT MODIFIER LA REPARTITION DES NOEUDS
                 if (modnum(tymast) .eq. 1) then
                     kaux = ndim*nbnoto
-                    do iaux = 1 , kaux
+                    do iaux = 1, kaux
                         raux1(iaux) = refcoo(iaux)
-                    enddo
-                    do iaux = 1 , nbnoto
+                    end do
+                    do iaux = 1, nbnoto
                         kaux = ndim*(iaux-1)
-                        laux = ndim*(nuanom(tymast,iaux)-1)
-                        do jaux = 1 , ndim
+                        laux = ndim*(nuanom(tymast, iaux)-1)
+                        do jaux = 1, ndim
                             refcoo(kaux+jaux) = raux1(laux+jaux)
-                        enddo
-                    enddo
-                endif
+                        end do
+                    end do
+                end if
 !
-                nbcouc = caimpi(4,nrimpr)
-                nbsect = caimpi(5,nrimpr)
-                nummai = caimpi(6,nrimpr)
+                nbcouc = caimpi(4, nrimpr)
+                nbsect = caimpi(5, nrimpr)
+                nummai = caimpi(6, nrimpr)
                 typsec = ' '
                 ! CAS GRILLE, COQUE, TUYAU, PMF
-                okgr = (nummai.eq.0).and.(nbcouc.eq.1).and.(nbsect.eq.0).and.(nbsp.eq.1)
-                okcq = (nummai.eq.0).and.(nbcouc.ge.1).and.(nbsect.eq.0).and.(nbsp.eq.3*nbcouc)
-                oktu = (nummai.eq.0).and.(nbcouc.ge.1).and.(nbsect.ge.1)
-                okpf = (nummai.ne.0).and.(nbcouc.eq.0).and.(nbsect.eq.0)
+              okgr = (nummai .eq. 0) .and. (nbcouc .eq. 1) .and. (nbsect .eq. 0) .and. (nbsp .eq. 1)
+       okcq = (nummai .eq. 0) .and. (nbcouc .ge. 1) .and. (nbsect .eq. 0) .and. (nbsp .eq. 3*nbcouc)
+                oktu = (nummai .eq. 0) .and. (nbcouc .ge. 1) .and. (nbsect .ge. 1)
+                okpf = (nummai .ne. 0) .and. (nbcouc .eq. 0) .and. (nbsect .eq. 0)
                 !
-                if ( okgr.or.okcq.or.oktu.or.okpf ) then
-                    if      ( okgr ) then
+                if (okgr .or. okcq .or. oktu .or. okpf) then
+                    if (okgr) then
                         typsec = 'GRILLE'
-                        write(chnbco,'(I4)') nbcouc
-                        write(chnbse,'(I4)') nbsp
-                        nomasu = 'SECT_SHELL'//chnbco//'C '//chnbse// 'P'
-                    else if ( okcq ) then
+                        write (chnbco, '(I4)') nbcouc
+                        write (chnbse, '(I4)') nbsp
+                        nomasu = 'SECT_SHELL'//chnbco//'C '//chnbse//'P'
+                    else if (okcq) then
                         typsec = 'COQUE'
-                        write(chnbco,'(I4)') nbcouc
-                        write(chnbse,'(I4)') nbsp
-                        nomasu = 'SECT_SHELL'//chnbco//'C '//chnbse// 'P'
-                    else if ( oktu ) then
+                        write (chnbco, '(I4)') nbcouc
+                        write (chnbse, '(I4)') nbsp
+                        nomasu = 'SECT_SHELL'//chnbco//'C '//chnbse//'P'
+                    else if (oktu) then
                         typsec = 'TUYAU'
-                        write(chnbco,'(I4)') nbcouc
-                        write(chnbse,'(I4)') nbsect
-                        nomasu = 'SECT_PIPE '//chnbco//'C '//chnbse// 'S'
-                    else if ( okpf ) then
+                        write (chnbco, '(I4)') nbcouc
+                        write (chnbse, '(I4)') nbsect
+                        nomasu = 'SECT_PIPE '//chnbco//'C '//chnbse//'S'
+                    else if (okpf) then
                         typsec = 'PMF'
-                        write(nonuma,'(I10)') nummai
+                        write (nonuma, '(I10)') nummai
                         nomasu = 'SECT_BEAM '//nonuma
-                    endif
+                    end if
                     call irmase(nofimd, typsec, nbcouc, nbsect, nummai, sdcarm, nomasu)
                     nbrepg = nbpg
                 else
@@ -224,72 +224,72 @@ integer :: codret
 !                       on reproduit la meme description dans chaque 'couche'.
 !                       c'est une solution temporaire, dans l'attente de l'evolution med
                     if (nbsp .gt. 1) then
-                        do jaux = 2 , nbsp
+                        do jaux = 2, nbsp
                             kaux = ndim*nbpg*(jaux-1)
-                            do iaux = 1 , ndim*nbpg
+                            do iaux = 1, ndim*nbpg
                                 gscoo(kaux+iaux) = gscoo(iaux)
-                            enddo
+                            end do
                             kaux = nbpg*(jaux-1)
-                            do iaux = 1 , nbpg
+                            do iaux = 1, nbpg
                                 wg(kaux+iaux) = wg(iaux)
-                            enddo
-                        enddo
-                    endif
+                            end do
+                        end do
+                    end if
                     nbrepg = nbpg*nbsp
-                endif
+                end if
 !
 ! 2.1.2.    CARACTERISATIONS DE L'ELEMENT FINI QUAND C'EST UN CHAMP AUX POINTS DE GAUSS AVEC
 !           UN SEUL POINT DE GAUSS MAIS PLUSIEURS SOUS_POINTS
 !           ON DEFINIT UNE PSEUDO-LOCALISATION AUX POINTS DE GAUSS
 !           ON DEDUIT LA DIMENSION DU CODAGE MED DU TYPE DE MAILLE SOUS-JACENTE
 !
-            else if ((typech(1:4).eq.'ELEM')) then
-                iaux = mod(caimpi(9,nrimpr),100)
-                ndim = ( caimpi(9,nrimpr) - iaux ) / 100
+            else if ((typech(1:4) .eq. 'ELEM')) then
+                iaux = mod(caimpi(9, nrimpr), 100)
+                ndim = (caimpi(9, nrimpr)-iaux)/100
 !
                 ntypef = 0
                 jaux = 3*lgmax
-                do iaux = 1 , jaux
+                do iaux = 1, jaux
                     refcoo(iaux) = 0.d0
                     gscoo(iaux) = 0.d0
-                enddo
-                do iaux = 1 , lgmax
+                end do
+                do iaux = 1, lgmax
                     wg(iaux) = 0.d0
-                enddo
+                end do
 !
-                nomfpg(1: 8) = nomtyp(tymast)
-                do iaux = 1 , 8
+                nomfpg(1:8) = nomtyp(tymast)
+                do iaux = 1, 8
                     if (nomfpg(iaux:iaux) .eq. ' ') then
                         nomfpg(iaux:iaux) = '_'
-                    endif
-                enddo
+                    end if
+                end do
                 nomfpg(9:16) = typech
 !
-                nbnoto = mod(tygeom,100)
+                nbnoto = mod(tygeom, 100)
                 nbrepg = nbsp
-            endif
+            end if
 !
 ! 2.2.      ON ECRIT LA LOCALISATION
             if (typech(1:4) .eq. 'ELEM' .and. nbpg .eq. 1) then
-                caimpk(1,nrimpr) = ' '
-                caimpk(3,nrimpr) = ' '
-            else if (ndim.gt.0) then
-                call irmpg1(nofimd, nomfpg, nbnoto, nbrepg, nbsp,&
-                            ndim, tygeom, refcoo, gscoo, wg,&
-                            raux1, raux2, raux3, nolopg, nomasu,&
+                caimpk(1, nrimpr) = ' '
+                caimpk(3, nrimpr) = ' '
+            else if (ndim .gt. 0) then
+                call irmpg1(nofimd, nomfpg, nbnoto, nbrepg, nbsp, &
+                            ndim, tygeom, refcoo, gscoo, wg, &
+                            raux1, raux2, raux3, nolopg, nomasu, &
                             lfichUniq, codret)
 !
-                caimpk(1,nrimpr) = nolopg
-                caimpk(3,nrimpr) = nomasu
-            endif
-        endif
+                caimpk(1, nrimpr) = nolopg
+                caimpk(3, nrimpr) = nomasu
+            end if
+        end if
 20      continue
     end do
 !
 ! 3. LA FIN
     if (niv .gt. 1) then
         call cpu_time(end)
-        write (ifm,*) '    ========== FIN DE '//nompro//' EN', end-start, 'sec ==========='
-    endif
+        write (ifm, *) '    ========== FIN DE '//nompro//' EN', end-start, 'sec ==========='
+    end if
 !
 end subroutine

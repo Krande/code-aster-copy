@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -50,7 +50,7 @@ subroutine ppgan2(jgano, nbsp, ncmp, vpg, vno)
 !
     nno = nint(zr(jgano-1+1))
     npg = nint(zr(jgano-1+2))
-    ASSERT(nno*npg.gt.0)
+    ASSERT(nno*npg .gt. 0)
 !
     call tecael(iadzi, iazk24)
     nno2 = zi(iadzi+1)
@@ -59,28 +59,28 @@ subroutine ppgan2(jgano, nbsp, ncmp, vpg, vno)
 !          CE SONT DES ELEMENTS QUADRATIQUES QUI SE FONT PASSER POUR DES
 !          ELEMENTS LINEAIRES
         ima = zi(iadzi)
-        ma = zk24(iazk24)(1:8)
+        ma = zk24(iazk24) (1:8)
         call jeveuo(ma//'.TYPMAIL', 'L', vi=typmail)
         call jenuno(jexnum('&CATA.TM.NOMTM', typmail(ima)), typema)
-        valk (1) = zk24(iazk24-1+3)(1:8)
-        valk (2) = typema
-        vali (1) = nno2
-        vali (2) = nno
-        call utmess('F', 'ELEMENTS4_90', nk=2, valk=valk, ni=2,&
+        valk(1) = zk24(iazk24-1+3) (1:8)
+        valk(2) = typema
+        vali(1) = nno2
+        vali(2) = nno
+        call utmess('F', 'ELEMENTS4_90', nk=2, valk=valk, ni=2, &
                     vali=vali)
-    endif
+    end if
 !
 ! --- PASSAGE DES POINTS DE GAUSS AUX NOEUDS SOMMETS PAR MATRICE
 !     V(NOEUD) = P * V(GAUSS)
 !
-    jmat = jgano + 2
+    jmat = jgano+2
     do icmp = 1, ncmp
         do ino = 1, nno
             do isp = 1, nbsp
                 s = 0.d0
                 do ipg = 1, npg
-                    s = s + zr(jmat-1+(ino-1)*npg+ipg) * vpg((ipg-1)* ncmp*nbsp+(isp-1)*ncmp+icmp&
-                        )
+                    s = s+zr(jmat-1+(ino-1)*npg+ipg)*vpg((ipg-1)*ncmp*nbsp+(isp-1)*ncmp+icmp &
+                                                         )
                 end do
                 vno((ino-1)*ncmp*nbsp+(isp-1)*ncmp+icmp) = s
             end do

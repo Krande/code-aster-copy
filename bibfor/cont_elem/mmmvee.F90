@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,31 +18,31 @@
 ! person_in_charge: mickael.abbas at edf.fr
 ! aslint: disable=W1504
 !
-subroutine mmmvee(phase , l_pena_cont, l_pena_fric, l_large_slip,&
-                  ndim  , nne   ,&
-                  norm  , tau1  , tau2  , mprojt,&
-                  wpg   , ffe   , jacobi, jeu   ,&
-                  coefac, coefaf, lambda, coefff,&
-                  dlagrc, dlagrf, djeu  ,&
-                  rese  , nrese ,&
-                  mprt11, mprt12, mprt21, mprt22, kappa,&
+subroutine mmmvee(phase, l_pena_cont, l_pena_fric, l_large_slip, &
+                  ndim, nne, &
+                  norm, tau1, tau2, mprojt, &
+                  wpg, ffe, jacobi, jeu, &
+                  coefac, coefaf, lambda, coefff, &
+                  dlagrc, dlagrf, djeu, &
+                  rese, nrese, &
+                  mprt11, mprt12, mprt21, mprt22, kappa, &
                   vectce, vectfe)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
 !
-character(len=4), intent(in) :: phase
-aster_logical, intent(in) :: l_pena_cont, l_pena_fric, l_large_slip
-integer, intent(in) :: ndim, nne
-real(kind=8), intent(in) :: norm(3), tau1(3), tau2(3), mprojt(3, 3)
-real(kind=8), intent(in) :: wpg, ffe(9), jacobi, jeu
-real(kind=8), intent(in) :: coefac, coefaf, lambda, coefff
-real(kind=8), intent(in) :: dlagrc, dlagrf(2), djeu(3)
-real(kind=8), intent(in) :: rese(3), nrese
-real(kind=8), intent(in) :: mprt11(3, 3), mprt12(3, 3), mprt21(3, 3), mprt22(3, 3), kappa(2,2)
-real(kind=8), intent(out) :: vectce(27), vectfe(27)
+    character(len=4), intent(in) :: phase
+    aster_logical, intent(in) :: l_pena_cont, l_pena_fric, l_large_slip
+    integer, intent(in) :: ndim, nne
+    real(kind=8), intent(in) :: norm(3), tau1(3), tau2(3), mprojt(3, 3)
+    real(kind=8), intent(in) :: wpg, ffe(9), jacobi, jeu
+    real(kind=8), intent(in) :: coefac, coefaf, lambda, coefff
+    real(kind=8), intent(in) :: dlagrc, dlagrf(2), djeu(3)
+    real(kind=8), intent(in) :: rese(3), nrese
+    real(kind=8), intent(in) :: mprt11(3, 3), mprt12(3, 3), mprt21(3, 3), mprt22(3, 3), kappa(2, 2)
+    real(kind=8), intent(out) :: vectce(27), vectfe(27)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -108,51 +108,51 @@ real(kind=8), intent(out) :: vectce(27), vectfe(27)
 !
 ! - PROJECTION DU LAGRANGE DE FROTTEMENT SUR LE PLAN TANGENT
 !
-    do  i = 1, ndim
+    do i = 1, ndim
         dlagft(i) = dlagrf(1)*tau1(i)+dlagrf(2)*tau2(i)
     end do
 !
 ! - PRODUIT LAGR. FROTTEMENT. PAR MATRICE P
 !
-    do  i = 1, ndim
-        do  j = 1, ndim
-            plagft(i) = mprojt(i,j)*dlagft(j)+plagft(i)
+    do i = 1, ndim
+        do j = 1, ndim
+            plagft(i) = mprojt(i, j)*dlagft(j)+plagft(i)
         end do
     end do
 !
 ! - PRODUIT SEMI MULT. LAGR. FROTTEMENT. PAR MATRICE P
 !
     if (phase .eq. 'GLIS') then
-        do  i = 1, ndim
-            do  j = 1, ndim
+        do i = 1, ndim
+            do j = 1, ndim
                 if (l_large_slip) then
-                   g(i,j) = kappa(1,1)*mprt11(i,j)+&
-                            kappa(1,2)*mprt12(i,j)+&
-                            kappa(2,1)*mprt21(i,j)+&
-                            kappa(2,2)*mprt22(i,j)
-                    prese(i) = g(i,j)*rese(j)/nrese+prese(i)
+                    g(i, j) = kappa(1, 1)*mprt11(i, j)+ &
+                              kappa(1, 2)*mprt12(i, j)+ &
+                              kappa(2, 1)*mprt21(i, j)+ &
+                              kappa(2, 2)*mprt22(i, j)
+                    prese(i) = g(i, j)*rese(j)/nrese+prese(i)
                 else
-                    prese(i) = mprojt(i,j)*rese(j)/nrese+prese(i)
-                endif
-            enddo
-        enddo
-    endif
+                    prese(i) = mprojt(i, j)*rese(j)/nrese+prese(i)
+                end if
+            end do
+        end do
+    end if
 !
 ! - PROJECTION DU SAUT SUR LE PLAN TANGENT
 !
-    do  i = 1, ndim
-        do  k = 1, ndim
-            dvitet(i) = mprojt(i,k)*djeu(k)+dvitet(i)
-        enddo
+    do i = 1, ndim
+        do k = 1, ndim
+            dvitet(i) = mprojt(i, k)*djeu(k)+dvitet(i)
+        end do
     end do
 !
 ! - PRODUIT SAUT PAR MATRICE P
 !
-    do  i = 1, ndim
-        do  j = 1, ndim
-            pdvitt(i) = mprojt(i,j)*dvitet(j)+pdvitt(i)
-        enddo
-    enddo
+    do i = 1, ndim
+        do j = 1, ndim
+            pdvitt(i) = mprojt(i, j)*dvitet(j)+pdvitt(i)
+        end do
+    end do
 !
 ! - Compute terms
 !
@@ -161,48 +161,48 @@ real(kind=8), intent(out) :: vectce(27), vectfe(27)
             do inoe = 1, nne
                 do idim = 1, ndim
                     ii = ndim*(inoe-1)+idim
-                    vectce(ii) = vectce(ii)+&
+                    vectce(ii) = vectce(ii)+ &
                                  wpg*ffe(inoe)*jacobi*norm(idim)*(jeu*coefac)
-                enddo
-            enddo
+                end do
+            end do
         else
             do inoe = 1, nne
                 do idim = 1, ndim
                     ii = ndim*(inoe-1)+idim
-                    vectce(ii) = vectce(ii)-&
+                    vectce(ii) = vectce(ii)- &
                                  wpg*ffe(inoe)*jacobi*norm(idim)*(dlagrc-jeu*coefac)
-                enddo
-            enddo
-        endif
-    endif
+                end do
+            end do
+        end if
+    end if
     if (phase .eq. 'GLIS') then
         do inoe = 1, nne
             do idim = 1, ndim
                 ii = ndim*(inoe-1)+idim
-                vectfe(ii) = vectfe(ii)-&
+                vectfe(ii) = vectfe(ii)- &
                              wpg*ffe(inoe)*jacobi*prese(idim)*(lambda-0.*jeu)*coefff
             end do
         end do
-    endif
+    end if
     if (phase .eq. 'ADHE') then
         if (l_pena_fric) then
             do inoe = 1, nne
                 do idim = 1, ndim
                     ii = ndim*(inoe-1)+idim
-                    vectfe(ii) = vectfe(ii)-&
+                    vectfe(ii) = vectfe(ii)- &
                                  wpg*ffe(inoe)*jacobi*lambda*coefff*pdvitt(idim)*coefaf
-                enddo
-            enddo
+                end do
+            end do
         else
             do inoe = 1, nne
                 do idim = 1, ndim
                     ii = ndim*(inoe-1)+idim
-                    vectfe(ii) = vectfe(ii)-&
-                                 wpg*ffe(inoe)*jacobi* (lambda-0.*jeu)*coefff*&
+                    vectfe(ii) = vectfe(ii)- &
+                                 wpg*ffe(inoe)*jacobi*(lambda-0.*jeu)*coefff* &
                                  (plagft(idim)+pdvitt(idim)*coefaf)
-                 enddo
-            enddo
-        endif
-    endif
+                end do
+            end do
+        end if
+    end if
 !
 end subroutine

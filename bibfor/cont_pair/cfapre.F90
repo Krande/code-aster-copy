@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,9 +18,9 @@
 
 subroutine cfapre(mesh, ds_contact, time_curr)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/apinfi.h"
@@ -87,8 +87,8 @@ implicit none
 !
     call infdbg('CONTACT', ifm, niv)
     if (niv .ge. 2) then
-        write (ifm,*) '<CONTACT> ... Save pairing in contact datastructures'
-    endif
+        write (ifm, *) '<CONTACT> ... Save pairing in contact datastructures'
+    end if
 !
 ! - Pairing datastructure
 !
@@ -100,12 +100,12 @@ implicit none
 !
 ! --- INFOS SUR LA CHARGE DE CONTACT
 !
-    lctfd = cfdisl(ds_contact%sdcont_defi,'FROT_DISCRET')
+    lctfd = cfdisl(ds_contact%sdcont_defi, 'FROT_DISCRET')
 !
 ! --- NOMBRE TOTAL DE NOEUDS ESCLAVES ET DIMENSION DU PROBLEME
 !
-    nzoco = cfdisi(ds_contact%sdcont_defi,'NZOCO' )
-    ndimg = cfdisi(ds_contact%sdcont_defi,'NDIM' )
+    nzoco = cfdisi(ds_contact%sdcont_defi, 'NZOCO')
+    ndimg = cfdisi(ds_contact%sdcont_defi, 'NDIM')
 !
 ! --- INITIALISATIONS
 !
@@ -119,23 +119,23 @@ implicit none
 !
 ! ----- INFORMATION SUR LA ZONE
 !
-        nbpt = mminfi(ds_contact%sdcont_defi,'NBPT' ,izone )
-        jdecne = mminfi(ds_contact%sdcont_defi,'JDECNE',izone )
+        nbpt = mminfi(ds_contact%sdcont_defi, 'NBPT', izone)
+        jdecne = mminfi(ds_contact%sdcont_defi, 'JDECNE', izone)
 !
 ! ----- MODE VERIF: ON SAUTE LES POINTS
 !
-        lveri = mminfl(ds_contact%sdcont_defi,'VERIF',izone )
+        lveri = mminfl(ds_contact%sdcont_defi, 'VERIF', izone)
         if (lveri) then
-            ip = ip + nbpt
+            ip = ip+nbpt
             goto 25
-        endif
+        end if
 !
 ! ----- COEFFICIENTS
 !
         call cfmmco(ds_contact, izone, 'E_N', 'L', coefpn)
         call cfmmco(ds_contact, izone, 'E_T', 'L', coefpt)
-        coefff = mminfr(ds_contact%sdcont_defi,'COEF_COULOMB' ,izone )
-        coefte = mminfr(ds_contact%sdcont_defi,'COEF_MATR_FROT' ,izone )
+        coefff = mminfr(ds_contact%sdcont_defi, 'COEF_COULOMB', izone)
+        coefte = mminfr(ds_contact%sdcont_defi, 'COEF_MATR_FROT', izone)
 !
 ! ----- BOUCLE SUR LES NOEUDS DE CONTACT
 !
@@ -144,7 +144,7 @@ implicit none
 ! ------- NOEUD ESCLAVE COURANT
 !
             inoe = i
-            posnoe = jdecne + inoe
+            posnoe = jdecne+inoe
 !
 ! ------- INDICE ABSOLU DANS LE MAILLAGE DU NOEUD
 !
@@ -172,59 +172,59 @@ implicit none
             if (typapp .lt. 0) then
                 if (niv .ge. 2) then
                     call cfappi(mesh, ds_contact%sdcont_defi, nomnoe, typapp, entapp)
-                endif
+                end if
                 goto 35
-            else if (typapp.eq.1) then
+            else if (typapp .eq. 1) then
 ! --------- CARAC. MAITRE
                 posnom = entapp
 ! --------- LIAISON DE CONTACT EFFECTIVE
-                iliai = iliai + 1
+                iliai = iliai+1
 ! --------- CALCUL LIAISON
-                call cfapno(mesh, newgeo, ds_contact, lctfd,&
-                            ndimg, izone, posnoe(1), numnoe(1),&
+                call cfapno(mesh, newgeo, ds_contact, lctfd, &
+                            ndimg, izone, posnoe(1), numnoe(1), &
                             coorne, posnom(1), tau1m, tau2m, iliai)
 !
-            else if (typapp.eq.2) then
+            else if (typapp .eq. 2) then
 ! --------- CARAC. MAITRE
                 posmam = entapp
 ! --------- LIAISON DE CONTACT EFFECTIVE
-                iliai = iliai + 1
+                iliai = iliai+1
 ! --------- CALCUL LIAISON
-                call cfapma(mesh, newgeo, ds_contact, lctfd,&
-                            ndimg, izone, posnoe(1), numnoe(1),&
-                            coorne, posmam, ksipr1, ksipr2, tau1m,&
+                call cfapma(mesh, newgeo, ds_contact, lctfd, &
+                            ndimg, izone, posnoe(1), numnoe(1), &
+                            coorne, posmam, ksipr1, ksipr2, tau1m, &
                             tau2m, iliai)
             else
                 ASSERT(.false.)
-            endif
+            end if
 !
 ! ------- CALCUL DU JEU FICTIF DE LA ZONE
 !
             call cfdist(ds_contact, izone, posmae, coorne, time_curr, &
-                        gap_user, node_slav_indx_ = posnoe(1))
+                        gap_user, node_slav_indx_=posnoe(1))
 !
 ! ------- CARACTERISTIQUES DE LA LIAISON POUR LA ZONE
 !
-            call cfparz(ds_contact, iliai, coefff, coefpn, coefpt,&
-                        coefte, gap_user, izone, ip, numnoe(1),&
+            call cfparz(ds_contact, iliai, coefff, coefpn, coefpt, &
+                        coefte, gap_user, izone, ip, numnoe(1), &
                         posnoe(1))
 !
- 35         continue
+35          continue
 !
 ! ------- POINT SUIVANT
 !
-            ip = ip + 1
-            ASSERT(iliai.le.ip)
+            ip = ip+1
+            ASSERT(iliai .le. ip)
 !
         end do
- 25     continue
+25      continue
     end do
 !
 ! --- NOMBRE DE LIAISONS EFFECTIVES
 !
     nbliai = iliai
     call cfecrd(ds_contact%sdcont_solv, 'NBLIAI', nbliai)
-    nesmax = cfdisd(ds_contact%sdcont_solv,'NESMAX')
-    ASSERT(nbliai.le.nesmax)
+    nesmax = cfdisd(ds_contact%sdcont_solv, 'NESMAX')
+    ASSERT(nbliai .le. nesmax)
 !
 end subroutine

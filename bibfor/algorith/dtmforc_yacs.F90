@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,8 +17,8 @@
 ! --------------------------------------------------------------------
 
 subroutine dtmforc_yacs(sd_dtm_, sd_nl_, itime, time, dt, depl, vite, fext)
-    use yacsnl_module, only : first_trandata, trandata, send_values, &
-            retrieve_values, set_params ,CHAM_DEPL, CHAM_VITE, CHAM_FORCE
+    use yacsnl_module, only: first_trandata, trandata, send_values, &
+                             retrieve_values, set_params, CHAM_DEPL, CHAM_VITE, CHAM_FORCE
 
     implicit none
 !
@@ -41,85 +41,79 @@ subroutine dtmforc_yacs(sd_dtm_, sd_nl_, itime, time, dt, depl, vite, fext)
 #include "asterfort/jemarq.h"
 #include "asterfort/dtmget.h"
 
-
 !     1. Input / output arguments
-      character(len=*) , intent(in) :: sd_dtm_
-      character(len=*) , intent(in) :: sd_nl_
-      real(kind=8), pointer  :: depl     (:)
-      real(kind=8), pointer  :: vite     (:)
-      real(kind=8), pointer :: fext     (:)
-      real(kind=8),           intent(in)  :: time
-      real(kind=8),           intent(in)  :: dt
-      integer               , intent(in)  :: itime
+    character(len=*), intent(in) :: sd_dtm_
+    character(len=*), intent(in) :: sd_nl_
+    real(kind=8), pointer  :: depl(:)
+    real(kind=8), pointer  :: vite(:)
+    real(kind=8), pointer :: fext(:)
+    real(kind=8), intent(in)  :: time
+    real(kind=8), intent(in)  :: dt
+    integer, intent(in)  :: itime
 
 !     2. local variables
-      type(trandata), pointer             :: current => null()
-      character(len=8)                    :: sd_dtm, sd_nl
-      real(kind=8)                        :: tinit, tfin, dtmin, dtmax
-      logical , save                      :: premier_passage = .true.
+    type(trandata), pointer             :: current => null()
+    character(len=8)                    :: sd_dtm, sd_nl
+    real(kind=8)                        :: tinit, tfin, dtmin, dtmax
+    logical, save                      :: premier_passage = .true.
 
+    ! thanks for visiting but there is nothing to do
+    if (.not. associated(first_trandata)) return
 
+    call jemarq()
 
+    sd_dtm = sd_dtm_
+    sd_nl = sd_nl_
 
-      ! thanks for visiting but there is nothing to do
-      if( .not. associated( first_trandata ) ) return
+    ! this call should be performed from dtmprep_noli_lub not from here !
+    ! but i can't do it since time step is not set when dtmprep_noli_xxx
+    ! are called
+    !
+    if (premier_passage) then
+        premier_passage = .false.
+        call dtmget(sd_dtm, _INST_FIN, rscal=tfin)
+        call dtmget(sd_dtm, _DT_MIN, rscal=dtmin)
+        call dtmget(sd_dtm, _DT_MAX, rscal=dtmax)
+        call dtmget(sd_dtm, _INST_INI, rscal=tinit)
+        call set_params(time, tinit, tfin, dt, dtmin, dtmax)
+    end if
 
-      call jemarq()
+    ! in order to have parallel computing it is better
+    ! to send all informations first and then read on all inlet ports
 
-      sd_dtm = sd_dtm_
-      sd_nl  = sd_nl_
+    current => first_trandata
+    do while (associated(current))
 
-      ! this call should be performed from dtmprep_noli_lub not from here !
-      ! but i can't do it since time step is not set when dtmprep_noli_xxx
-      ! are called
-      !
-      if (premier_passage) then
-            premier_passage = .false.
-            call dtmget(sd_dtm, _INST_FIN, rscal = tfin)
-            call dtmget(sd_dtm, _DT_MIN, rscal = dtmin)
-            call dtmget(sd_dtm, _DT_MAX, rscal = dtmax)
-            call dtmget(sd_dtm, _INST_INI, rscal = tinit)
-            call set_params(time, tinit, tfin, dt, dtmin, dtmax)
-      endif
+        select case (current%type_cham)
+        case (CHAM_DEPL)
+            call send_values(current, depl, itime, time)
 
+        case (CHAM_VITE)
+            call send_values(current, vite, itime, time)
 
-      ! in order to have parallel computing it is better
-      ! to send all informations first and then read on all inlet ports
+        case (CHAM_FORCE)
+            ! inlets port are handled after outlets ports to
+            ! take advantage of yacs parallel computing
+            continue
 
-      current => first_trandata
-      do while( associated (current) )
+        case default
+            ASSERT(.false.)
+        end select
+        current => current%next
 
-           select case (current%type_cham)
-                case (CHAM_DEPL)
-                     call send_values(current, depl, itime, time)
+    end do
 
-                case (CHAM_VITE)
-                     call send_values(current, vite, itime, time)
+    ! now you retrieve forces
+    current => first_trandata
+    do while (associated(current))
 
-                case (CHAM_FORCE)
-                    ! inlets port are handled after outlets ports to
-                    ! take advantage of yacs parallel computing
-                    continue
+        if (current%type_cham .eq. CHAM_FORCE) then
+            call retrieve_values(current, fext, itime, time)
+        end if
+        current => current%next
 
-                case default
-                    ASSERT(.false.)
-           end select
-           current => current %next
+    end do
 
-      end do
-
-      ! now you retrieve forces
-      current => first_trandata
-      do while( associated (current) )
-
-           if( current%type_cham.eq.CHAM_FORCE) then
-                call retrieve_values(current, fext, itime, time)
-           endif
-           current => current%next
-
-      end do
-
-
-      call jedema()
+    call jedema()
 
 end subroutine

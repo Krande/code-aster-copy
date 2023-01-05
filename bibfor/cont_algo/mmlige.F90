@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,14 +17,14 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine mmlige(mesh        , ds_contact, &
-                  nb_cont_pair, v_list_pair,&
-                  nb_type     , v_list_type,&
-                  nt_node     , nb_grel    )
+subroutine mmlige(mesh, ds_contact, &
+                  nb_cont_pair, v_list_pair, &
+                  nb_type, v_list_type, &
+                  nt_node, nb_grel)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -45,14 +45,14 @@ implicit none
 #include "asterfort/mminfl.h"
 #include "asterfort/utmess.h"
 !
-character(len=8), intent(in) :: mesh
-type(NL_DS_Contact), intent(in) :: ds_contact
-integer, intent(out) :: nb_cont_pair
-integer, pointer :: v_list_pair(:)
-integer, intent(out) :: nb_type
-integer, pointer :: v_list_type(:)
-integer, intent(out) :: nt_node
-integer, intent(out) :: nb_grel
+    character(len=8), intent(in) :: mesh
+    type(NL_DS_Contact), intent(in) :: ds_contact
+    integer, intent(out) :: nb_cont_pair
+    integer, pointer :: v_list_pair(:)
+    integer, intent(out) :: nb_type
+    integer, pointer :: v_list_type(:)
+    integer, intent(out) :: nt_node
+    integer, intent(out) :: nb_grel
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -89,7 +89,7 @@ integer, intent(out) :: nb_grel
     character(len=19) :: ligrel_elem_slav
     integer :: typg_slav_nume, typg_mast_nume
     character(len=8) :: typg_slav_name, typg_mast_name, elem_slav_name, elem_mast_name
-    character(len=16) :: typf_slav_name, typg_cont_name,typf_cont_name, valk(6)
+    character(len=16) :: typf_slav_name, typg_cont_name, typf_cont_name, valk(6)
     character(len=24), parameter :: linuma = '&&MMLIGE.LINUMA'
     integer, pointer :: v_linuma(:) => null()
     character(len=24), parameter :: linute = '&&MMLIGE.LINUTE'
@@ -110,51 +110,51 @@ integer, intent(out) :: nb_grel
 !
 ! - Initializations
 !
-    nt_node      = 0
-    nb_grel      = 0
+    nt_node = 0
+    nb_grel = 0
     nb_cont_pair = 0
 !
 ! - Get contact parameters
 !
-    l_axi        = cfdisl(ds_contact%sdcont_defi, 'AXISYMETRIQUE')
+    l_axi = cfdisl(ds_contact%sdcont_defi, 'AXISYMETRIQUE')
     nb_cont_poin = cfdisi(ds_contact%sdcont_defi, 'NTPC')
-    model_ndim   = cfdisi(ds_contact%sdcont_defi, 'NDIM')
-    l_cont_cont  = cfdisl(ds_contact%sdcont_defi, 'FORMUL_CONTINUE')
-    l_cont_lac   = cfdisl(ds_contact%sdcont_defi, 'FORMUL_LAC')
+    model_ndim = cfdisi(ds_contact%sdcont_defi, 'NDIM')
+    l_cont_cont = cfdisl(ds_contact%sdcont_defi, 'FORMUL_CONTINUE')
+    l_cont_lac = cfdisl(ds_contact%sdcont_defi, 'FORMUL_LAC')
 !
 ! - Access to mesh
 !
-    call jeveuo(mesh//'.TYPMAIL', 'L', vi = v_mesh_typmail)
+    call jeveuo(mesh//'.TYPMAIL', 'L', vi=v_mesh_typmail)
 !
 ! - Access to datastructure for contact solving
 !
     if (l_cont_cont) then
         sdcont_tabfin = ds_contact%sdcont_solv(1:14)//'.TABFIN'
-        call jeveuo(sdcont_tabfin, 'L', vr = v_sdcont_tabfin)
+        call jeveuo(sdcont_tabfin, 'L', vr=v_sdcont_tabfin)
         ztabf = cfmmvd('ZTABF')
     else
         sdappa_apli = ds_contact%sdcont_solv(1:14)//'.APPA.APLI'
-        call jeveuo(sdappa_apli, 'L', vi = v_sdappa_apli)
-    endif
+        call jeveuo(sdappa_apli, 'L', vi=v_sdappa_apli)
+    end if
 !
 ! - Get type of element for slave contact elements
 !
     if (l_cont_lac) then
         ligrel_elem_slav = ds_contact%ligrel_elem_slav//'.CHME.LIGRE'
         call liglma(ligrel_elem_slav, nb_elem_slav, linuma, linute)
-        call jeveuo(linuma, 'L', vi = v_linuma)
-        call jeveuo(linute, 'L', vi = v_linute)
-        linuma_max   = maxval(v_linuma)
-        linuma_min   = minval(v_linuma)
-        AS_ALLOCATE(vk16=v_tp_slav_name, size= linuma_max+1-linuma_min)
+        call jeveuo(linuma, 'L', vi=v_linuma)
+        call jeveuo(linute, 'L', vi=v_linute)
+        linuma_max = maxval(v_linuma)
+        linuma_min = minval(v_linuma)
+        AS_ALLOCATE(vk16=v_tp_slav_name, size=linuma_max+1-linuma_min)
         do i_elem_slav = 1, nb_elem_slav
-            elem_slav_nume =v_linuma(i_elem_slav)
+            elem_slav_nume = v_linuma(i_elem_slav)
             typf_slav_nume = v_linute(i_elem_slav)
             call jenuno(jexnum('&CATA.TE.NOMTE', typf_slav_nume), typf_slav_name)
-            indx_slav_name           = elem_slav_nume + 1 - linuma_min
+            indx_slav_name = elem_slav_nume+1-linuma_min
             v_tp_slav_name(indx_slav_name) = typf_slav_name
         end do
-    endif
+    end if
 !
 ! - Number of contact elements
 !
@@ -163,24 +163,24 @@ integer, intent(out) :: nb_grel
 ! - Display
 !
     if (niv .ge. 2) then
-        call utmess('I', 'CONTACT5_23', si = nb_cont_pair)
-    endif
+        call utmess('I', 'CONTACT5_23', si=nb_cont_pair)
+    end if
 !
 ! - Total number of contact elements defined
 !
     if (l_cont_cont) then
-        call mmelem_data_c(nb_cont_type_ = nb_type)
+        call mmelem_data_c(nb_cont_type_=nb_type)
     else
-        call mmelem_data_l(nb_cont_type_ = nb_type)
-    endif
+        call mmelem_data_l(nb_cont_type_=nb_type)
+    end if
 !
 ! - List of contact/friction elements detected
 !
-    AS_ALLOCATE(vi = v_list_type, size = 5*nb_type)
+    AS_ALLOCATE(vi=v_list_type, size=5*nb_type)
 !
 ! - List of contact elements
 !
-    AS_ALLOCATE(vi = v_list_pair, size = 2*nb_cont_pair)
+    AS_ALLOCATE(vi=v_list_pair, size=2*nb_cont_pair)
 !
 ! - Loop on contact points (=contact elements)
 !
@@ -189,17 +189,17 @@ integer, intent(out) :: nb_grel
 ! ----- Get parameters
 !
         if (l_cont_cont) then
-            i_cont_poin    = i_cont_pair
-            i_zone         = nint(v_sdcont_tabfin(ztabf*(i_cont_poin-1)+14))
-            l_frot         = mminfl(ds_contact%sdcont_defi,'FROTTEMENT_ZONE', i_zone )
+            i_cont_poin = i_cont_pair
+            i_zone = nint(v_sdcont_tabfin(ztabf*(i_cont_poin-1)+14))
+            l_frot = mminfl(ds_contact%sdcont_defi, 'FROTTEMENT_ZONE', i_zone)
             elem_slav_nume = nint(v_sdcont_tabfin(ztabf*(i_cont_poin-1)+2))
             elem_mast_nume = nint(v_sdcont_tabfin(ztabf*(i_cont_poin-1)+3))
         else
-            i_zone         = v_sdappa_apli(3*(i_cont_pair-1)+3)
-            l_frot         = .false._1
+            i_zone = v_sdappa_apli(3*(i_cont_pair-1)+3)
+            l_frot = .false._1
             elem_slav_nume = v_sdappa_apli(3*(i_cont_pair-1)+1)
             elem_mast_nume = v_sdappa_apli(3*(i_cont_pair-1)+2)
-        endif
+        end if
 !
 ! ----- Type of slave/master element
 !
@@ -213,28 +213,28 @@ integer, intent(out) :: nb_grel
 ! ----- Identify contact element
 !
         if (l_cont_cont) then
-            call mmelem_data_c(l_axi_          = l_axi         , model_ndim_ = model_ndim    ,&
-                               typg_slav_name_ = typg_slav_name, typg_mast_name_ = typg_mast_name,&
-                               nb_node_elem_   = nb_node_elem  ,&
-                               typg_cont_nume_ = typg_cont_nume,&
-                               typf_cont_nume_ = typf_cont_nume,&
-                               typf_frot_nume_ = typf_frot_nume,&
-                               get_elem_indx_  = elem_indx)
+            call mmelem_data_c(l_axi_=l_axi, model_ndim_=model_ndim, &
+                               typg_slav_name_=typg_slav_name, typg_mast_name_=typg_mast_name, &
+                               nb_node_elem_=nb_node_elem, &
+                               typg_cont_nume_=typg_cont_nume, &
+                               typf_cont_nume_=typf_cont_nume, &
+                               typf_frot_nume_=typf_frot_nume, &
+                               get_elem_indx_=elem_indx)
         else
 !
 ! --------- Index of FE type for slave element
 !
-            indx_slav_name = elem_slav_nume + 1 - linuma_min
+            indx_slav_name = elem_slav_nume+1-linuma_min
             typf_slav_name = v_tp_slav_name(indx_slav_name)
 
-            call mmelem_data_l(l_axi_          = l_axi         ,&
-                               typg_slav_name_ = typg_slav_name, typg_mast_name_ = typg_mast_name,&
-                               typf_slav_name_ = typf_slav_name,&
-                               nb_node_elem_   = nb_node_elem  ,&
-                               typg_cont_nume_ = typg_cont_nume,&
-                               typf_cont_nume_ = typf_cont_nume,&
-                               get_elem_indx_  = elem_indx)
-        endif
+            call mmelem_data_l(l_axi_=l_axi, &
+                               typg_slav_name_=typg_slav_name, typg_mast_name_=typg_mast_name, &
+                               typf_slav_name_=typf_slav_name, &
+                               nb_node_elem_=nb_node_elem, &
+                               typg_cont_nume_=typg_cont_nume, &
+                               typf_cont_nume_=typf_cont_nume, &
+                               get_elem_indx_=elem_indx)
+        end if
         if (niv .ge. 2) then
             call jenuno(jexnum('&CATA.TM.NOMTM', typg_cont_nume), typg_cont_name)
             call jenuno(jexnum('&CATA.TE.NOMTE', typf_cont_nume), typf_cont_name)
@@ -248,8 +248,8 @@ integer, intent(out) :: nb_grel
             valk(4) = typg_mast_name
             valk(5) = elem_slav_name
             valk(6) = typg_slav_name
-            call utmess('I', 'CONTACT5_24', ni = 4, vali = vali, nk=6, valk=valk)
-        endif
+            call utmess('I', 'CONTACT5_24', ni=4, vali=vali, nk=6, valk=valk)
+        end if
 !
 ! ----- Save contact/friction element geometry parameters
 !
@@ -259,33 +259,33 @@ integer, intent(out) :: nb_grel
 ! ----- Save contact/friction element FE parameters
 !
         if (l_frot) then
-            v_list_type(5*(elem_indx-1)+2) = v_list_type(5*(elem_indx-1)+2) + 1
+            v_list_type(5*(elem_indx-1)+2) = v_list_type(5*(elem_indx-1)+2)+1
             v_list_type(5*(elem_indx-1)+3) = typf_cont_nume
             v_list_type(5*(elem_indx-1)+4) = typf_frot_nume
         else
-            v_list_type(5*(elem_indx-1)+1) = v_list_type(5*(elem_indx-1)+1) + 1
+            v_list_type(5*(elem_indx-1)+1) = v_list_type(5*(elem_indx-1)+1)+1
             v_list_type(5*(elem_indx-1)+3) = typf_cont_nume
-        endif
+        end if
         v_list_type(5*(elem_indx-1)+5) = typg_cont_nume
-        nt_node = nt_node + nb_node_elem
+        nt_node = nt_node+nb_node_elem
     end do
 !
 ! - Display
 !
     if (niv .ge. 2) then
-        call utmess('I', 'CONTACT5_25', si = nt_node)
-    endif
+        call utmess('I', 'CONTACT5_25', si=nt_node)
+    end if
 !
 ! - Number of groups of elements (GREL)
 !
     do i_cont_type = 1, nb_type
         elem_indx = i_cont_type
         if (v_list_type(5*(elem_indx-1)+1) .gt. 0) then
-            nb_grel = nb_grel + 1
-        endif
+            nb_grel = nb_grel+1
+        end if
         if (v_list_type(5*(elem_indx-1)+2) .gt. 0) then
-            nb_grel = nb_grel + 1
-        endif
+            nb_grel = nb_grel+1
+        end if
     end do
 !
     call jedetr(linuma)

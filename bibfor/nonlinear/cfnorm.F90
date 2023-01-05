@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@ subroutine cfnorm(ndim, tau1, tau2, norm, noor)
 !
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
+    implicit none
 #include "asterfort/assert.h"
 #include "asterfort/normev.h"
 #include "asterfort/provec.h"
@@ -54,11 +54,11 @@ subroutine cfnorm(ndim, tau1, tau2, norm, noor)
         norm(1) = tau1(2)
         norm(2) = -tau1(1)
         norm(3) = 0.d0
-    else if (ndim.eq.3) then
+    else if (ndim .eq. 3) then
         call provec(tau1, tau2, norm)
     else
         ASSERT(.false.)
-    endif
+    end if
     call normev(norm, noor)
 !
 end subroutine

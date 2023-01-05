@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine as_mfdonp(fid, cha, numdt, numo, typent,&
-                     typgeo, iterma, noma, nompro, nomloc,&
+subroutine as_mfdonp(fid, cha, numdt, numo, typent, &
+                     typgeo, iterma, noma, nompro, nomloc, &
                      n, cret)
 ! person_in_charge: nicolas.sellenet at edf.fr
 !
@@ -49,19 +49,19 @@ subroutine as_mfdonp(fid, cha, numdt, numo, typent,&
     aster_int :: oexist, class
 #endif
     call as_mfinvr(fid, maj, mini, rel, cret)
-    if (maj.eq.3.and.mini.ge.2.or.maj.ge.4) then
+    if (maj .eq. 3 .and. mini .ge. 2 .or. maj .ge. 4) then
         ! On reconstruit le nom oname du champ MED en fonction du
         ! champ et des numeros d'instant et d'ordre.
         ! On verifie ensuite que oname existe bien avant l'appel a mfdonp
         ! pour eviter les "Erreur à l'ouverture du groupe" dans Med
         call codent(numdt, 'D0', numdtchar)
         call codent(numo, 'D0', numochar)
-        ASSERT(len(trim(cha)).le.32)
+        ASSERT(len(trim(cha)) .le. 32)
         oname = trim(cha)//'/'//numdtchar//numochar
     else
         ! On verifie uniquement le nom du champ si la version < 3.2
         oname = trim(cha)
-    endif
+    end if
 #if !ASTER_MED_SAME_INT_IDT
     fidm = to_med_idt(fid)
     numdt4 = numdt
@@ -72,28 +72,28 @@ subroutine as_mfdonp(fid, cha, numdt, numo, typent,&
     ! class4 = 1 <=> field type
     class4 = 1_4
     call mfioex(fidm, class4, oname, oexist4, cret4)
-    if (oexist4.eq.1) then
-        call mfdonp(fidm, cha, numdt4, numo4, typen4,&
-                    typge4, iterm4, noma, nompro, nomloc,&
+    if (oexist4 .eq. 1) then
+        call mfdonp(fidm, cha, numdt4, numo4, typen4, &
+                    typge4, iterm4, noma, nompro, nomloc, &
                     n4, cret4)
         n = n4
         cret = cret4
     else
         n = 0
         cret = -1
-    endif
+    end if
 #else
     ! class = 1 <=> field type
     class = 1
     call mfioex(fid, class, oname, oexist, cret)
-    if (oexist.eq.1) then
-        call mfdonp(fid, cha, numdt, numo, typent,&
-                    typgeo, iterma, noma, nompro, nomloc,&
+    if (oexist .eq. 1) then
+        call mfdonp(fid, cha, numdt, numo, typent, &
+                    typgeo, iterma, noma, nompro, nomloc, &
                     n, cret)
     else
         n = 0
         cret = -1
-    endif
+    end if
 #endif
 !
 #endif

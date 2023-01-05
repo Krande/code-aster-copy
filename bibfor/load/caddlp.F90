@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 !
 subroutine caddlp(load, mesh, model, valeType)
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterc/getfac.h"
@@ -47,8 +47,8 @@ implicit none
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
 !
-character(len=8), intent(in) :: load, mesh, model
-character(len=4), intent(in) :: valeType
+    character(len=8), intent(in) :: load, mesh, model
+    character(len=4), intent(in) :: valeType
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -74,7 +74,7 @@ character(len=4), intent(in) :: valeType
 !
 !
     integer :: cmp_nb_glo
-    parameter (cmp_nb_glo=6)
+    parameter(cmp_nb_glo=6)
     integer :: cmp_acti_glo(cmp_nb_glo)
     real(kind=8) :: cmp_valr_glo(cmp_nb_glo)
     complex(kind=8) :: cmp_valc_glo(cmp_nb_glo)
@@ -83,8 +83,8 @@ character(len=4), intent(in) :: valeType
 !
     integer :: nddli, iocc, ibid, ino
     integer :: ier, nbec, nbnoeu, n_keyword
-    integer :: jdirec,  nume_node
-    integer :: jnom, nbcmp,  jprnm
+    integer :: jdirec, nume_node
+    integer :: jnom, nbcmp, jprnm
     real(kind=8) :: zero
     character(len=24) :: keywordexcl
     character(len=4) :: coef_type
@@ -137,7 +137,7 @@ character(len=4), intent(in) :: valeType
     call jeveuo(jexnom('&CATA.GD.NOMCMP', nomg), 'L', jnom)
     call jelira(jexnom('&CATA.GD.NOMCMP', nomg), 'LONMAX', nbcmp, k8bid)
     call dismoi('NB_EC', nomg, 'GRANDEUR', repi=nbec)
-    ASSERT(nbec.le.10)
+    ASSERT(nbec .le. 10)
 !
 ! - Local coordinate system
 !
@@ -168,37 +168,37 @@ character(len=4), intent(in) :: valeType
 !
 ! --------- Read affected components and their values
 !
-            call char_read_keyw(keywordfact, iocc, valeType, n_keyexcl, keywordexcl,&
-                                n_max_keyword, n_keyword, keywordlist, ddlimp, valimr,&
+            call char_read_keyw(keywordfact, iocc, valeType, n_keyexcl, keywordexcl, &
+                                n_max_keyword, n_keyword, keywordlist, ddlimp, valimr, &
                                 valimf, valimc)
-            ASSERT(n_keyword.le.cmp_nb_glo)
+            ASSERT(n_keyword .le. cmp_nb_glo)
 !
 ! --------- Change components with local coordinate system
 !
-            call char_beam_lcs(mesh, model, ncncin, keywordfact, iocc,&
-                               nume_node, name_node, keywordlist,  n_keyword, valimr, cmp_name_glo,&
+            call char_beam_lcs(mesh, model, ncncin, keywordfact, iocc, &
+                               nume_node, name_node, keywordlist, n_keyword, valimr, cmp_name_glo, &
                                cmp_acti_glo, cmp_valr_glo)
 !
 ! --------- Final linear relation
 !
-            call afddli(model, geomDime, nbcmp, zk8(jnom), nume_node, name_node,&
-                        zi(jprnm-1+(nume_node-1)*nbec+1), dimension(nume_node),&
-                        zr(jdirec+3*(nume_node-1)), coef_type, cmp_nb_glo, cmp_name_glo,&
-                        cmp_acti_glo, valeType, cmp_valr_glo, cmp_valf_glo, cmp_valc_glo,&
-                        icompt, lisrel, .false._1, ibid, ibid,&
+            call afddli(model, geomDime, nbcmp, zk8(jnom), nume_node, name_node, &
+                        zi(jprnm-1+(nume_node-1)*nbec+1), dimension(nume_node), &
+                        zr(jdirec+3*(nume_node-1)), coef_type, cmp_nb_glo, cmp_name_glo, &
+                        cmp_acti_glo, valeType, cmp_valr_glo, cmp_valf_glo, cmp_valc_glo, &
+                        icompt, lisrel, .false._1, ibid, ibid, &
                         k19bid, k19bid, k19bid, k19bid, mesh, k19bid)
-        enddo
+        end do
         do i_keyword = 1, 6
             keyword = cmp_name_glo(i_keyword)
             if (cmp_acti_glo(i_keyword) .eq. 1) then
                 if (icompt(i_keyword) .eq. 0) then
                     call utmess('F', 'CHARGES2_45', sk=keyword)
-                endif
-            endif
-        enddo
+                end if
+            end if
+        end do
         AS_DEALLOCATE(vi=icompt)
         call jedetr(list_node)
-    enddo
+    end do
 !
 ! - Final linear relation affectation
 !

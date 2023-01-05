@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine nmextn(field_disc, type_extr_cmp, type_extr_elem, type_extr, nb_node,&
-                  nb_elem   , nb_cmp       , nb_poin       , nb_spoi  , nb_extr)
+subroutine nmextn(field_disc, type_extr_cmp, type_extr_elem, type_extr, nb_node, &
+                  nb_elem, nb_cmp, nb_poin, nb_spoi, nb_extr)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/nmexto.h"
 !
@@ -65,24 +65,24 @@ implicit none
 !
 ! - Number of components to extract
 !
-    call nmexto('COMP' , field_disc, type_extr_cmp, type_extr_elem, type_extr,&
-                nb_node, nb_elem   , nb_cmp       , nb_poin       , nb_spoi  ,&
+    call nmexto('COMP', field_disc, type_extr_cmp, type_extr_elem, type_extr, &
+                nb_node, nb_elem, nb_cmp, nb_poin, nb_spoi, &
                 nfor)
 !
 ! - Number of points to extract
 !
-    call nmexto('POIN' , field_disc, type_extr_cmp, type_extr_elem, type_extr,&
-                nb_node, nb_elem   , nb_cmp       , nb_poin       , nb_spoi  ,&
+    call nmexto('POIN', field_disc, type_extr_cmp, type_extr_elem, type_extr, &
+                nb_node, nb_elem, nb_cmp, nb_poin, nb_spoi, &
                 npoin)
 !
 ! - Number of localization to extract
 !
-    call nmexto('LIEU' , field_disc, type_extr_cmp, type_extr_elem, type_extr,&
-                nb_node, nb_elem   , nb_cmp       , nb_poin       , nb_spoi  ,&
+    call nmexto('LIEU', field_disc, type_extr_cmp, type_extr_elem, type_extr, &
+                nb_node, nb_elem, nb_cmp, nb_poin, nb_spoi, &
                 nlieu)
 !
 ! - Total of extraction
 !
-    nb_extr = nlieu * npoin * nfor
+    nb_extr = nlieu*npoin*nfor
 !
 end subroutine

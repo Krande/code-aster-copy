@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,13 +16,13 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine pmconv(r, rini, r1, inst, sigp,&
-                  coef, iter, indimp, ds_conv, conver,&
+subroutine pmconv(r, rini, r1, inst, sigp, &
+                  coef, iter, indimp, ds_conv, conver, &
                   itemax)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterc/r8prem.h"
@@ -71,20 +71,20 @@ implicit none
 !
 ! - Get parameters
 !
-    call GetResi(ds_conv, type = 'RESI_GLOB_RELA' , user_para_ = resi_glob_rela,&
-                 l_resi_test_ = l_rela)
-    call GetResi(ds_conv, type = 'RESI_GLOB_MAXI' , user_para_ = resi_glob_maxi)
+    call GetResi(ds_conv, type='RESI_GLOB_RELA', user_para_=resi_glob_rela, &
+                 l_resi_test_=l_rela)
+    call GetResi(ds_conv, type='RESI_GLOB_MAXI', user_para_=resi_glob_maxi)
 
 !-----------------------------------------------------------------------
 !     VERIFICATION DE LA CONVERGENCE EN DY  ET RE-INTEGRATION ?
 !-----------------------------------------------------------------------
-    conver=.false.
-    e1=0.d0
-    e2=0.d0
-    e1ini=0.d0
-    e2ini=0.d0
-    er1=0.d0
-    itemax=.false.
+    conver = .false.
+    e1 = 0.d0
+    e2 = 0.d0
+    e1ini = 0.d0
+    e2ini = 0.d0
+    er1 = 0.d0
+    itemax = .false.
     if (iter .eq. 1) then
 !        SAUVEGARDE DE R(DY0) POUR TEST DE CONVERGENCE
         call dcopy(6, sigp, 1, r1(1), 1)
@@ -94,12 +94,12 @@ implicit none
             er1 = max(er1, abs(r1(i)))
         end do
         if (er1 .le. r8prem()) then
-            ee=er1
-            ind=4
-            conver=.true.
+            ee = er1
+            ind = 4
+            conver = .true.
             goto 999
-        endif
-    endif
+        end if
+    end if
 !
     do i = 1, 6
         e1 = max(e1, abs(r(i)))
@@ -111,28 +111,28 @@ implicit none
         e2ini = max(e2ini, abs(rini(i)))
         e2ini = max(e2ini, abs(r1(i)))
     end do
-    eini=max(e1ini,e2ini)
+    eini = max(e1ini, e2ini)
 !
 !     TEST RELATIF OU ABSOLU
     if (l_rela) then
-        irela=1
+        irela = 1
     else
-        irela=0
-    endif
+        irela = 0
+    end if
     if (irela .eq. 1) then
-        toler=resi_glob_rela
+        toler = resi_glob_rela
         if (eini .gt. r8prem()) then
-            e1=e1/eini
-            e2=e2/eini
-            ee=max(e1,e2)
-            ind=3
-        endif
+            e1 = e1/eini
+            e2 = e2/eini
+            ee = max(e1, e2)
+            ind = 3
+        end if
     else
-        toler=resi_glob_maxi
-        ee=max(e1,e2)
-        ind=4
-    endif
-    itemax=.false.
+        toler = resi_glob_maxi
+        ee = max(e1, e2)
+        ind = 4
+    end if
+    itemax = .false.
     itmax = ds_conv%iter_glob_maxi
 !
     if (iter .lt. itmax) then
@@ -141,16 +141,16 @@ implicit none
             conver = .false.
         else
             conver = .true.
-        endif
+        end if
     else
 ! -      NB ITERATION MAXIMUM ATTEINT SANS CONVERGENCE
-        conver=.false.
-        itemax=.true.
+        conver = .false.
+        itemax = .true.
         call utmess('I', 'COMPOR2_5')
-    endif
+    end if
 999 continue
 !
-    call pmimpr(ind, inst, indimp, r8b,&
-                iter, r8b, r8b, r8b, 1,&
+    call pmimpr(ind, inst, indimp, r8b, &
+                iter, r8b, r8b, r8b, 1, &
                 r8b, ee, eini)
 end subroutine

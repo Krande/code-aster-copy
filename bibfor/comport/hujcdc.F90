@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -40,14 +40,14 @@ subroutine hujcdc(k, mater, sig, vin, seuil)
     real(kind=8) :: tou(3), th(2), touc(2)
     real(kind=8) :: d12, dd, deux
     aster_logical :: debug
-    parameter    (un = 1.d0)
-    parameter    (tole = 1.d-7)
-    parameter    (degr = 0.0174532925199d0)
+    parameter(un=1.d0)
+    parameter(tole=1.d-7)
+    parameter(degr=0.0174532925199d0)
 !       ------------------------------------------------------------
-    common /tdim/   ndt, ndi
-    common /meshuj/ debug
+    common/tdim/ndt, ndi
+    common/meshuj/debug
 !
-    data   d12, deux /0.5d0, 2.d0/
+    data d12, deux/0.5d0, 2.d0/
 !
     call infniv(ifm, niv)
 !
@@ -72,7 +72,7 @@ subroutine hujcdc(k, mater, sig, vin, seuil)
     pcref = mater(7, 2)
     pa = mater(8, 2)
     pcr = pcref*exp(-beta*epsvp)
-    ptrac = mater(21,2)
+    ptrac = mater(21, 2)
     m = sin(degr*phi)
 !
 !
@@ -84,37 +84,37 @@ subroutine hujcdc(k, mater, sig, vin, seuil)
         if (i .ne. k) then
             tou(j) = sig(i)
             j = j+1
-        endif
-    enddo
+        end if
+    end do
 !
     tou(3) = sig(ndt+1-k)
-    dd = d12*( tou(1)-tou(2) )
+    dd = d12*(tou(1)-tou(2))
 !
 !
 ! ==================================================================
 ! --- CALCUL DE PK, QCK --------------------------------------------
 ! ==================================================================
-    p = d12*( tou(1)+tou(2) )
-    p = p -ptrac
+    p = d12*(tou(1)+tou(2))
+    p = p-ptrac
     tou(1) = dd
     tou(2) = -dd
 !
     if ((p/pa) .le. tole) then
-        if (debug) write (ifm,'(A)') 'HUJCDC :: LOG(P/PA) NON DEFINI'
-        seuil=-1.d0
+        if (debug) write (ifm, '(A)') 'HUJCDC :: LOG(P/PA) NON DEFINI'
+        seuil = -1.d0
         goto 999
-    endif
+    end if
 !
     touc(2) = tou(3)-(x(2)-r*th(2))*p*(un-b*log(p/pcr))*m
     touc(1) = tou(1)-(x(1)-r*th(1))*p*(un-b*log(p/pcr))*m
 !
-    q = touc(1)**deux + (touc(2)**deux)/deux
+    q = touc(1)**deux+(touc(2)**deux)/deux
     q = sqrt(q)
 !
 ! ==================================================================
 ! --- CALCUL DU SEUIL DU MECANISME CYCLIQUE DEVIATOIRE K -----------
 ! ==================================================================
-    seuil = -q /m/p - r*(un-b*log(p/pcr))
+    seuil = -q/m/p-r*(un-b*log(p/pcr))
 !
 999 continue
 end subroutine

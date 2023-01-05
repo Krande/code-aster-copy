@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,46 +17,46 @@
 ! --------------------------------------------------------------------
 ! aslint: disable=W1504
 !
-subroutine lc0032(BEHinteg    ,&
-                  fami, kpg, ksp, ndim, imate,&
-                  compor, carcri, instam, instap, neps,&
-                  epsm, deps, sigm, vim, option,&
-                  angmas, sigp, vip,&
-                  typmod, icomp, nvi,&
+subroutine lc0032(BEHinteg, &
+                  fami, kpg, ksp, ndim, imate, &
+                  compor, carcri, instam, instap, neps, &
+                  epsm, deps, sigm, vim, option, &
+                  angmas, sigp, vip, &
+                  typmod, icomp, nvi, &
                   dsidep, codret)
 !
-use Behaviour_type
+    use Behaviour_type
 !
-implicit none
+    implicit none
 !
 #include "asterfort/nmvprk.h"
 #include "asterfort/plasti.h"
 #include "asterfort/utlcal.h"
 !
-type(Behaviour_Integ), intent(in) :: BEHinteg
-character(len=*), intent(in) :: fami
-integer, intent(in) :: kpg
-integer, intent(in) :: ksp
-integer, intent(in) :: ndim
-integer, intent(in) :: imate
-character(len=16), intent(in) :: compor(*)
-real(kind=8), intent(in) :: carcri(*)
-real(kind=8), intent(in) :: instam
-real(kind=8), intent(in) :: instap
-integer, intent(in) :: neps
-real(kind=8), intent(in) :: epsm(neps)
-real(kind=8), intent(in) :: deps(neps)
-real(kind=8), intent(in) :: sigm(6)
-real(kind=8), intent(in) :: vim(*)
-character(len=16), intent(in) :: option
-real(kind=8), intent(in) :: angmas(3)
-real(kind=8), intent(out) :: sigp(6)
-real(kind=8), intent(out) :: vip(*)
-character(len=8), intent(in) :: typmod(*)
-integer, intent(in) :: icomp
-integer, intent(in) :: nvi
-real(kind=8), intent(out) :: dsidep(6, 6)
-integer, intent(out) :: codret
+    type(Behaviour_Integ), intent(in) :: BEHinteg
+    character(len=*), intent(in) :: fami
+    integer, intent(in) :: kpg
+    integer, intent(in) :: ksp
+    integer, intent(in) :: ndim
+    integer, intent(in) :: imate
+    character(len=16), intent(in) :: compor(*)
+    real(kind=8), intent(in) :: carcri(*)
+    real(kind=8), intent(in) :: instam
+    real(kind=8), intent(in) :: instap
+    integer, intent(in) :: neps
+    real(kind=8), intent(in) :: epsm(neps)
+    real(kind=8), intent(in) :: deps(neps)
+    real(kind=8), intent(in) :: sigm(6)
+    real(kind=8), intent(in) :: vim(*)
+    character(len=16), intent(in) :: option
+    real(kind=8), intent(in) :: angmas(3)
+    real(kind=8), intent(out) :: sigp(6)
+    real(kind=8), intent(out) :: vip(*)
+    character(len=8), intent(in) :: typmod(*)
+    integer, intent(in) :: icomp
+    integer, intent(in) :: nvi
+    real(kind=8), intent(out) :: dsidep(6, 6)
+    integer, intent(out) :: codret
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -72,26 +72,26 @@ integer, intent(out) :: codret
 !
     character(len=16) :: algo_inte
     character(len=11) :: meting
-    common /meti/   meting
+    common/meti/meting
 !
 ! --------------------------------------------------------------------------------------------------
 !
     call utlcal('VALE_NOM', algo_inte, carcri(6))
     if (algo_inte(1:6) .eq. 'NEWTON') then
         meting = algo_inte(1:11)
-        call plasti(BEHinteg,&
-                    fami, kpg, ksp, typmod, imate,&
+        call plasti(BEHinteg, &
+                    fami, kpg, ksp, typmod, imate, &
                     compor, carcri, instam, instap, &
-                    epsm, deps, sigm,&
-                    vim, option, angmas, sigp, vip,&
+                    epsm, deps, sigm, &
+                    vim, option, angmas, sigp, vip, &
                     dsidep, icomp, nvi, codret)
     else if (algo_inte .eq. 'RUNGE_KUTTA') then
         meting = 'RUNGE_KUTTA'
-        call nmvprk(BEHinteg,&
-                    fami, kpg, ksp, ndim, typmod,&
-                    imate, compor, carcri, instam, instap,&
-                    neps, epsm, deps, sigm, vim,&
-                    option, angmas, sigp, vip, dsidep,&
+        call nmvprk(BEHinteg, &
+                    fami, kpg, ksp, ndim, typmod, &
+                    imate, compor, carcri, instam, instap, &
+                    neps, epsm, deps, sigm, vim, &
+                    option, angmas, sigp, vip, dsidep, &
                     codret)
-    endif
+    end if
 end subroutine

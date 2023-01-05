@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -45,7 +45,7 @@ subroutine rsmode(resu)
 !
 !    IN/JXVAR : RESU  NOM DU CONCEPT SD_RESULTAT
 !-----------------------------------------------------------------------
-    integer :: iret, neq, iordr, isymb,  k, krang
+    integer :: iret, neq, iordr, isymb, k, krang
     integer :: nbnosy, nbordr, iexi, nbval, jliprf, nbval2
     character(len=1) :: kbid, typ1
     character(len=8) :: resu8, nomgd, ma1, ma2
@@ -59,21 +59,21 @@ subroutine rsmode(resu)
 !
 !
     call jemarq()
-    resu19=resu
-    resu8=resu
+    resu19 = resu
+    resu8 = resu
     call jeexin(resu19//'.REFD', iexi)
     if (iexi .eq. 0) goto 50
 !
-    nu=' '
-    call dismoi('NUME_DDL', resu, 'RESU_DYNA', repk=nu, arret='C',&
+    nu = ' '
+    call dismoi('NUME_DDL', resu, 'RESU_DYNA', repk=nu, arret='C', &
                 ier=iret)
 !
     if (nu .eq. ' ') goto 50
 !
-    prchn1=nu(1:8)//'.NUME'
+    prchn1 = nu(1:8)//'.NUME'
     call dismoi('NOM_MAILLA', nu, 'NUME_DDL', repk=ma1)
 !
-    champt='&&RSMODE.CHAMPT'
+    champt = '&&RSMODE.CHAMPT'
 !
     call jeveuo(resu19//'.ORDR', 'L', vi=ordr)
     call jelira(resu19//'.ORDR', 'LONUTI', nbordr)
@@ -83,8 +83,8 @@ subroutine rsmode(resu)
         call jenuno(jexnum(resu19//'.DESC', isymb), nomsym)
 !
         do krang = 1, nbordr
-            iordr=ordr(krang)
-            call rsexch(' ', resu, nomsym, iordr, nomcha,&
+            iordr = ordr(krang)
+            call rsexch(' ', resu, nomsym, iordr, nomcha, &
                         iret)
             if (iret .ne. 0) goto 30
 !
@@ -96,22 +96,22 @@ subroutine rsmode(resu)
 !
             call dismoi('NOM_MAILLA', nomcha, 'CHAM_NO', repk=ma2)
             if (ma1 .ne. ma2) then
-                valk(1)=resu
-                valk(2)=ma1
-                valk(3)=nu
-                valk(4)=ma2
+                valk(1) = resu
+                valk(2) = ma1
+                valk(3) = nu
+                valk(4) = ma2
                 call utmess('F', 'UTILITAI_29', nk=4, valk=valk)
-            endif
+            end if
 !
 !        -- SI LE CHAMP NOMCHA N'A PAS LA BONNE NUMEROTATION,
 !           IL FAUT LA MODIFIER :
             call jelira(nomcha//'.VALE', 'TYPE', cval=typ1)
-            call vtcreb(champt, 'V', typ1, nume_ddlz = nu, nb_equa_outz = neq)
+            call vtcreb(champt, 'V', typ1, nume_ddlz=nu, nb_equa_outz=neq)
             call vtcopy(nomcha, champt, 'F', iret)
             call detrsd('CHAM_NO', nomcha)
             call copisd('CHAMP', 'G', champt, nomcha)
             call detrsd('CHAM_NO', champt)
- 30         continue
+30          continue
         end do
     end do
 !
@@ -119,19 +119,19 @@ subroutine rsmode(resu)
 !     -- IL FAUT ENCORE DETRUIRE LES PROF_CHNO QUI ONT ETE CREES
 !        INUTILEMENT SUE LA BASE GLOBALE (POUR SDVERI=OUI)
     if (resu .ne. nu(1:8)) then
-        call jelstc('G', resu8//'.PRFCN', 1, 0, kbid,&
+        call jelstc('G', resu8//'.PRFCN', 1, 0, kbid, &
                     nbval)
         if (nbval .lt. 0) then
-            nbval=-nbval
+            nbval = -nbval
             call wkvect('&&RSMODES.LIPRFCN', 'V V K24', nbval, jliprf)
-            call jelstc('G', resu8//'.PRFCN', 1, nbval, zk24(jliprf),&
+            call jelstc('G', resu8//'.PRFCN', 1, nbval, zk24(jliprf), &
                         nbval2)
             do k = 1, nbval2
-                call detrsd('PROF_CHNO', zk24(jliprf-1+k)(1:19))
+                call detrsd('PROF_CHNO', zk24(jliprf-1+k) (1:19))
             end do
-        endif
-    endif
+        end if
+    end if
 !
- 50 continue
+50  continue
     call jedema()
 end subroutine

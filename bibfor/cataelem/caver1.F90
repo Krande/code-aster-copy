@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -83,8 +83,8 @@ subroutine caver1()
         nbvol = zi(iadesc-1+4)
         if (nbvol .ne. 0) then
             call utmess('E', 'CATAELEM_1', sk=nomopt)
-            ier = ier + 1
-        endif
+            ier = ier+1
+        end if
 !
 !
 !       -- ON VERIFIE QU'UNE OPTION N'A JAMAIS 2 PARAMETRES
@@ -93,7 +93,7 @@ subroutine caver1()
         call kndoub(8, zk8(iapara), nbin+nbout, iret)
         if (iret .gt. 0) then
             call utmess('E', 'CATAELEM_2', sk=nomopt)
-        endif
+        end if
 !
 !
         do te = 1, nbte
@@ -109,7 +109,7 @@ subroutine caver1()
             nbno = zi(jnbno)
 !
 !           -- on ne traque pas les erreurs si nucalc = 0, -1 ou -2
-            if ((nucalc.le.0) .and. (nucalc.ge.-2)) goto 30
+            if ((nucalc .le. 0) .and. (nucalc .ge. -2)) goto 30
 !
             call jeveuo(jexnum('&CATA.TE.OPTNOM', ioptte), 'L', iaopno)
             do ipara = 1, nbinte
@@ -120,30 +120,30 @@ subroutine caver1()
                     valk(2) = nomopt
                     valk(3) = nomte
                     call utmess('E', 'CATAELEM_3', nk=3, valk=valk)
-                    ier = ier + 1
+                    ier = ier+1
                     goto 10
-                endif
+                end if
 !
                 call jeveuo(jexnum('&CATA.TE.MODELOC', imolo), 'L', iamolo)
                 igd = zi(iamolo-1+2)
-                itrou = indik8(zk8(iapara-1+1),para,1,nbin)
+                itrou = indik8(zk8(iapara-1+1), para, 1, nbin)
                 igdop = zi(iadesc-1+4+itrou)
-                if ((itrou.eq.0) .or. (igdop.ne.igd)) then
+                if ((itrou .eq. 0) .or. (igdop .ne. igd)) then
                     if (itrou .eq. 0) then
                         valk(1) = para
                         valk(2) = nomopt
                         valk(3) = nomte
                         call utmess('E', 'CATAELEM_4', nk=3, valk=valk)
-                        ier = ier + 1
-                    endif
+                        ier = ier+1
+                    end if
                     if (igdop .ne. igd) then
                         valk(1) = para
                         valk(2) = nomopt
                         valk(3) = nomte
                         call utmess('E', 'CATAELEM_5', nk=3, valk=valk)
-                        ier = ier + 1
-                    endif
-                endif
+                        ier = ier+1
+                    end if
+                end if
 !
 !              -- ON VERIFIE QUE POUR LES MODE LOCAUX AUX NOEUDS
 !                 LE NOMBRE DE NOEUDS EST LE NOMBRE DE NOEUDS DE
@@ -152,25 +152,25 @@ subroutine caver1()
                 icode = zi(iamolo-1+1)
                 nbpt2 = -1
                 if (icode .eq. 2) then
-                    nbpt2 = mod(zi(iamolo-1+4),10000)
-                else if (icode.eq.3) then
+                    nbpt2 = mod(zi(iamolo-1+4), 10000)
+                else if (icode .eq. 3) then
                     nbpt1 = zi(iamolo-1+4)
                     if (nbpt1 .lt. 0) then
-                        nbpt2 = mod(abs(nbpt1),10000)
-                    endif
-                endif
+                        nbpt2 = mod(abs(nbpt1), 10000)
+                    end if
+                end if
                 if (nbpt2 .ge. 0) then
                     if (nbpt2 .ne. nbno) then
                         valk(1) = para
                         valk(2) = nomopt
                         valk(3) = nomte
                         call utmess('E', 'CATAELEM_6', nk=3, valk=valk)
-                        ier = ier + 1
-                    endif
-                endif
+                        ier = ier+1
+                    end if
+                end if
 !
 !
- 10             continue
+10              continue
             end do
 !
 !
@@ -185,45 +185,45 @@ subroutine caver1()
                     valk(2) = nomopt
                     valk(3) = nomte
                     call utmess('E', 'CATAELEM_3', nk=3, valk=valk)
-                    ier = ier + 1
+                    ier = ier+1
                     goto 20
-                endif
+                end if
                 call jeveuo(jexnum('&CATA.TE.MODELOC', imolo), 'L', iamolo)
                 igd = zi(iamolo-1+2)
-                itrou = indik8(zk8(iapara-1+nbin+1),para,1,nbout)
+                itrou = indik8(zk8(iapara-1+nbin+1), para, 1, nbout)
                 igdop = zi(iadesc-1+4+nbin+itrou)
-                if ((itrou.eq.0) .or. (igdop.ne.igd)) then
+                if ((itrou .eq. 0) .or. (igdop .ne. igd)) then
                     if (itrou .eq. 0) then
                         valk(1) = para
                         valk(2) = nomopt
                         valk(3) = nomte
                         call utmess('E', 'CATAELEM_4', nk=3, valk=valk)
-                        ier = ier + 1
-                    endif
+                        ier = ier+1
+                    end if
                     if (igdop .ne. igd) then
                         valk(1) = para
                         valk(2) = nomopt
                         valk(3) = nomte
                         call utmess('E', 'CATAELEM_5', nk=3, valk=valk)
-                        ier = ier + 1
-                    endif
-                endif
+                        ier = ier+1
+                    end if
+                end if
 !
 !           -- ON VERIFIE QUE  LE TYPE DU CHAMP LOCAL EST COHERENT
 !               AVEC CELUI DECLARE DANS L'OPTION :
 !           ---------------------------------------------------
                 icode = zi(iamolo-1+1)
-                typou2=zk8(iapara-1+nbin+nbout+itrou)
-                typout='????'
+                typou2 = zk8(iapara-1+nbin+nbout+itrou)
+                typout = '????'
                 if (icode .ge. 4) then
-                    typout='RESL'
-                else if (icode.eq.3) then
-                    typout='ELGA'
-                else if (icode.eq.2) then
-                    typout='ELNO'
-                else if (icode.eq.1) then
-                    typout='ELEM'
-                endif
+                    typout = 'RESL'
+                else if (icode .eq. 3) then
+                    typout = 'ELGA'
+                else if (icode .eq. 2) then
+                    typout = 'ELNO'
+                else if (icode .eq. 1) then
+                    typout = 'ELEM'
+                end if
 !
                 if (typout .ne. typou2) then
                     valk(1) = para
@@ -232,11 +232,11 @@ subroutine caver1()
                     valk(4) = typou2
                     call utmess('E', 'CATAELEM_7', nk=4, valk=valk)
 !             IER = IER + 1
-                endif
- 20             continue
+                end if
+20              continue
             end do
 !
- 30         continue
+30          continue
         end do
 !
     end do
@@ -263,19 +263,19 @@ subroutine caver1()
             do kk = 1, n1
                 if (zk8(jnocm1-1+kk) .ne. zk8(jnocm1-1+kk)) error = .true.
             end do
-        endif
+        end if
         if (error) then
             valk(1) = gd1
             valk(2) = gd2
             call utmess('E', 'CATAELEM_8', nk=2, valk=valk)
-            ier = ier + 1
-        endif
+            ier = ier+1
+        end if
     end do
 !
 !
     if (ier .gt. 0) then
         call utmess('F', 'CATAELEM_9')
-    endif
+    end if
 !
     call jedema()
 end subroutine

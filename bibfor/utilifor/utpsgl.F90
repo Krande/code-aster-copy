@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -39,16 +39,16 @@ subroutine utpsgl(nn, nc, p, sg, sl)
     integer :: i, j, k, l, m, n, nb
     integer :: nc, nn
 !-----------------------------------------------------------------------
-    data     zero / 0.d0 /
+    data zero/0.d0/
 !
-    if (mod(nc,3) .eq. 0) then
-        nb = nn * nc / 3
+    if (mod(nc, 3) .eq. 0) then
+        nb = nn*nc/3
         do i = 1, nb
-            k = 3 * ( i - 1 )
+            k = 3*(i-1)
             do j = 1, i
-                in(1) = k * (k+1) / 2 + 3*(j-1)
-                in(2) = (k+1) * (k+2) / 2 + 3*(j-1)
-                in(3) = (k+2) * (k+3) / 2 + 3*(j-1)
+                in(1) = k*(k+1)/2+3*(j-1)
+                in(2) = (k+1)*(k+2)/2+3*(j-1)
+                in(3) = (k+2)*(k+3)/2+3*(j-1)
                 if (i .eq. j) then
 !             --------- BLOC DIAGONAL
                     r(1) = sg(in(1)+1)
@@ -64,14 +64,14 @@ subroutine utpsgl(nn, nc, p, sg, sl)
                         do n = 1, m
                             sl(in(m)+n) = zero
                             do l = 1, 3
-                                sl(in(m)+n) = sl(&
-                                              in(m)+n)+ p(m,&
-                                              l)*(&
-                                              r(&
-                                              3*(l-1)+1)* p(n, 1) + r(3*(l-1)+2)*p(n,&
-                                              2) + r(3*(l-1)+3&
-                                              )*p(n, 3&
-                                              )&
+                                sl(in(m)+n) = sl( &
+                                              in(m)+n)+p(m, &
+                                                         l)*( &
+                                              r( &
+                                              3*(l-1)+1)*p(n, 1)+r(3*(l-1)+2)*p(n, &
+                                                                                2)+r(3*(l-1)+3 &
+                                                                                     )*p(n, 3 &
+                                                                                         ) &
                                               )
                             end do
                         end do
@@ -82,67 +82,67 @@ subroutine utpsgl(nn, nc, p, sg, sl)
                         do n = 1, 3
                             sl(in(m)+n) = zero
                             do l = 1, 3
-                                sl(in(m)+n) = sl(&
-                                              in(m)+n)+ p(m,&
-                                              l)*(&
-                                              sg(&
-                                              in(l)+1)* p(n, 1) + sg(in(l)+2)*p(n,&
-                                              2) + sg(in(l)+3&
-                                              )*p(n, 3&
-                                              )&
+                                sl(in(m)+n) = sl( &
+                                              in(m)+n)+p(m, &
+                                                         l)*( &
+                                              sg( &
+                                              in(l)+1)*p(n, 1)+sg(in(l)+2)*p(n, &
+                                                                             2)+sg(in(l)+3 &
+                                                                                   )*p(n, 3 &
+                                                                                       ) &
                                               )
                             end do
                         end do
                     end do
-                endif
+                end if
             end do
         end do
 !
-    else if (mod(nc,3) .eq. 1) then
+    else if (mod(nc, 3) .eq. 1) then
         do i = 1, 14
             do j = 1, 14
-                mtr14(i,j) = 0.d0
+                mtr14(i, j) = 0.d0
             end do
         end do
         do i = 1, 3
             do j = 1, 3
-                mtr14(i ,j ) = p(i,j)
-                mtr14(i+3 ,j+3 ) = p(i,j)
-                mtr14(i+7 ,j+7 ) = p(i,j)
-                mtr14(i+10,j+10) = p(i,j)
+                mtr14(i, j) = p(i, j)
+                mtr14(i+3, j+3) = p(i, j)
+                mtr14(i+7, j+7) = p(i, j)
+                mtr14(i+10, j+10) = p(i, j)
             end do
         end do
-        mtr14( 7, 7) = 1.d0
-        mtr14( 14, 14) = 1.d0
+        mtr14(7, 7) = 1.d0
+        mtr14(14, 14) = 1.d0
         mr14 = transpose(mtr14)
         call vecma(sl, 105, ml14, 14)
-        mv14 = matmul(mtr14,ml14)
-        mtr14 = matmul(mv14,mr14)
+        mv14 = matmul(mtr14, ml14)
+        mtr14 = matmul(mv14, mr14)
         call mavec(mtr14, 14, sg, 105)
 !
-    else if (mod(nc,3) .eq. 2) then
+    else if (mod(nc, 3) .eq. 2) then
         do i = 1, 16
             do j = 1, 16
-                mtr16(i,j) = 0.d0
+                mtr16(i, j) = 0.d0
             end do
         end do
         do i = 1, 3
             do j = 1, 3
-                mtr16(i ,j ) = p(i,j)
-                mtr16(i+3 ,j+3 ) = p(i,j)
-                mtr16(i+8 ,j+8 ) = p(i,j)
-                mtr16(i+11,j+11) = p(i,j)
+                mtr16(i, j) = p(i, j)
+                mtr16(i+3, j+3) = p(i, j)
+                mtr16(i+8, j+8) = p(i, j)
+                mtr16(i+11, j+11) = p(i, j)
             end do
         end do
-        mtr16( 7, 7) = 1.d0
-        mtr16( 8, 8) = 1.d0
-        mtr16( 15, 15) = 1.d0
-        mtr16( 16, 16) = 1.d0
+        mtr16(7, 7) = 1.d0
+        mtr16(8, 8) = 1.d0
+        mtr16(15, 15) = 1.d0
+        mtr16(16, 16) = 1.d0
         mr16 = transpose(mtr16)
         call vecma(sl, 136, ml16, 16)
-        mv16 = matmul(mtr16,ml16)
-        mtr16 = matmul(mv16,mr16)
+        mv16 = matmul(mtr16, ml16)
+        mtr16 = matmul(mv16, mr16)
         call mavec(mtr16, 16, sg, 136)
-    endif
+    end if
 !
 end subroutine

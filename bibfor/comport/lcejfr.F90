@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine lcejfr(BEHinteg, fami, kpg, ksp, ndim,&
-                  mate, option, epsm, deps, sigma,&
-                  dsidep, vim, vip, typmod, instam,&
+subroutine lcejfr(BEHinteg, fami, kpg, ksp, ndim, &
+                  mate, option, epsm, deps, sigma, &
+                  dsidep, vim, vip, typmod, instam, &
                   instap)
 ! person_in_charge: kyrylo.kazymyrenko at edf.fr
 !
@@ -62,7 +62,7 @@ subroutine lcejfr(BEHinteg, fami, kpg, ksp, ndim,&
 ! OUT : SIGMA , DSIDEP , VIP
 !-----------------------------------------------------------------------
     integer :: nbpa
-    parameter (nbpa=10)
+    parameter(nbpa=10)
     integer :: cod(nbpa)
     integer :: i, j, n, ifplas, kronec, ifouv
     real(kind=8) :: kn, kt, kappa, mu, adhe, a(ndim), plasti(ndim), dplas(ndim)
@@ -79,15 +79,15 @@ subroutine lcejfr(BEHinteg, fami, kpg, ksp, ndim,&
 !
 ! OPTION CALCUL DU RESIDU OU CALCUL DE LA MATRICE TANGENTE
 ! CALCUL DE CONTRAINTE (RESIDU)
-    resi = option(1:9).eq.'FULL_MECA' .or. option.eq.'RAPH_MECA'
+    resi = option(1:9) .eq. 'FULL_MECA' .or. option .eq. 'RAPH_MECA'
 ! CALCUL DE LA MATRICE TANGEANTE (RIGIDITE)
-    rigi = option(1:9).eq.'FULL_MECA' .or. option(1:9).eq.'RIGI_MECA'
+    rigi = option(1:9) .eq. 'FULL_MECA' .or. option(1:9) .eq. 'RIGI_MECA'
 ! CALCUL DE LA MATRICE ELASTIQUE A LA PLACE DE LA MATRICE TANGENTE
-    elas = option.eq.'FULL_MECA_ELAS' .or. option.eq.'RIGI_MECA_ELAS'
+    elas = option .eq. 'FULL_MECA_ELAS' .or. option .eq. 'RIGI_MECA_ELAS'
 !
 ! INDICATEUR AVEC/SANS HYDRO
-    if (typmod(2) .eq. 'EJ_HYME') ifhyme=.true.
-    if (typmod(2) .eq. 'ELEMJOIN') ifhyme=.false.
+    if (typmod(2) .eq. 'EJ_HYME') ifhyme = .true.
+    if (typmod(2) .eq. 'ELEMJOIN') ifhyme = .false.
 !
 ! #####################################
 ! RECUPERATION DES PARAMETRES PHYSIQUES
@@ -101,105 +101,105 @@ subroutine lcejfr(BEHinteg, fami, kpg, ksp, ndim,&
     nom(7) = 'RHO_FLUIDE'
     nom(8) = 'VISC_FLUIDE'
     nom(9) = 'OUV_MIN'
-    nom(10) ='SCIAGE'
+    nom(10) = 'SCIAGE'
 !
     if (option .eq. 'RIGI_MECA_TANG') then
         poum = '-'
     else
         poum = '+'
-    endif
+    end if
 !
 ! INSTANT DE CALCUL T- OU T+
     inst = instam
     if (resi) inst = instap
 !
-    call rcvalb(fami, kpg, ksp, poum, mate,&
-                ' ', 'JOINT_MECA_FROT', 0, ' ', [0.d0],&
+    call rcvalb(fami, kpg, ksp, poum, mate, &
+                ' ', 'JOINT_MECA_FROT', 0, ' ', [0.d0], &
                 3, nom, val, cod, 2)
 ! DEFINITION DE PARAMETRES PHYSIQUE:
 !     PENTE ELASTIQUE NORMALE
-    kn=val(1)
+    kn = val(1)
 !     COEFFICIENT DE FROTTEMENT
-    mu=val(2)
+    mu = val(2)
 !     ADHESION
-    adhe=val(3)
+    adhe = val(3)
 !
 ! PENTE ELASTIQUE TANGENTIELLE
 ! (SI ELLE N'EST PAS DEFINI ALORS K_T=K_N)
-    call rcvalb(fami, kpg, ksp, poum, mate,&
-                ' ', 'JOINT_MECA_FROT', 0, ' ', [0.d0],&
+    call rcvalb(fami, kpg, ksp, poum, mate, &
+                ' ', 'JOINT_MECA_FROT', 0, ' ', [0.d0], &
                 1, nom(4), val(4), cod(4), 0)
     if (cod(4) .eq. 0) then
         kt = val(4)
     else
         kt = kn
-    endif
+    end if
 ! PARAMETRE PENA_TANG
 ! (SI IL N'EST PAS DEFINI ALORS KAPPA=(K_N+K_T)*1E-6)
-    call rcvalb(fami, kpg, ksp, poum, mate,&
-                ' ', 'JOINT_MECA_FROT', 0, ' ', [0.d0],&
+    call rcvalb(fami, kpg, ksp, poum, mate, &
+                ' ', 'JOINT_MECA_FROT', 0, ' ', [0.d0], &
                 1, nom(5), val(5), cod(5), 0)
     if (cod(5) .eq. 0) then
         kappa = val(5)
     else
         kappa = (kn+kt)*1.d-6
-    endif
+    end if
 !
 !
 ! DEFINITION DES PARAMETRES POUR LA RECUPERATION DES FONCTIONS
     coorot = 0.d0
     do i = 1, ndim
-        coorot(i) = BEHinteg%elem%coor_elga(kpg,i)
-    enddo
+        coorot(i) = BEHinteg%elem%coor_elga(kpg, i)
+    end do
     do i = 1, ndim*ndim
         coorot(ndim+i) = BEHinteg%elga%rotpg(i)
-    enddo
+    end do
 !
-    nompar(1)='INST'
-    nompar(2)='X'
-    nompar(3)='Y'
-    valpar(1)= inst
-    valpar(2)= coorot(1)
-    valpar(3)= coorot(2)
+    nompar(1) = 'INST'
+    nompar(2) = 'X'
+    nompar(3) = 'Y'
+    valpar(1) = inst
+    valpar(2) = coorot(1)
+    valpar(3) = coorot(2)
     if (ndim .eq. 3) then
-        nompar(4)='Z'
-        valpar(4)= coorot(3)
-    endif
+        nompar(4) = 'Z'
+        valpar(4) = coorot(3)
+    end if
 !
 ! RECUPERATION DE LA PRESS FLUIDE IMPOSEE (FCT DE L'ESPACE ET DU TEMPS)
 !
-    call rcvalb(fami, kpg, ksp, poum, mate,&
-                ' ', 'JOINT_MECA_FROT', ndim+1, nompar, valpar,&
+    call rcvalb(fami, kpg, ksp, poum, mate, &
+                ' ', 'JOINT_MECA_FROT', ndim+1, nompar, valpar, &
                 1, nom(6), val(6), cod(6), 0)
     if (cod(6) .eq. 0) then
         presfl = val(6)
     else
         presfl = 0.d0
-    endif
+    end if
 !
 ! RECUPERATION DE LA TAILLE DE SCIE = SCIAGE (FONCTION DE L'ESPACE ET DU TEMPS)
 !
-    call rcvalb(fami, kpg, ksp, poum, mate,&
-                ' ', 'JOINT_MECA_FROT', ndim+1, nompar, valpar,&
+    call rcvalb(fami, kpg, ksp, poum, mate, &
+                ' ', 'JOINT_MECA_FROT', ndim+1, nompar, valpar, &
                 1, nom(10), val(10), cod(10), 0)
 !
     if (cod(10) .eq. 0) then
         sciage = val(10)
     else
         sciage = 0.d0
-    endif
+    end if
 !
 ! RECUPERATION DE LA MASSE VOL ET DE LA VISCO (MODELISATION JOINT HM)
 !--------------------------------------------------------------------
 !
-    call rcvalb(fami, kpg, ksp, poum, mate,&
-                ' ', 'JOINT_MECA_FROT', 0, ' ', [0.d0],&
+    call rcvalb(fami, kpg, ksp, poum, mate, &
+                ' ', 'JOINT_MECA_FROT', 0, ' ', [0.d0], &
                 1, nom(7), val(7), cod(7), 0)
-    call rcvalb(fami, kpg, ksp, poum, mate,&
-                ' ', 'JOINT_MECA_FROT', 0, ' ', [0.d0],&
+    call rcvalb(fami, kpg, ksp, poum, mate, &
+                ' ', 'JOINT_MECA_FROT', 0, ' ', [0.d0], &
                 1, nom(8), val(8), cod(8), 0)
-    call rcvalb(fami, kpg, ksp, poum, mate,&
-                ' ', 'JOINT_MECA_FROT', 0, ' ', [0.d0],&
+    call rcvalb(fami, kpg, ksp, poum, mate, &
+                ' ', 'JOINT_MECA_FROT', 0, ' ', [0.d0], &
                 1, nom(9), val(9), cod(9), 0)
 !
     if (cod(7) .eq. 0) rhof = val(7)
@@ -207,7 +207,7 @@ subroutine lcejfr(BEHinteg, fami, kpg, ksp, ndim,&
     if (cod(9) .eq. 0) amin = val(9)
 !
 ! INDICATEUR SI LES PARAMETRES HYDRO SONT RENSEIGNES
-    ifpahm = (cod(7).eq.0).and.(cod(8).eq.0).and.(cod(9).eq.0)
+    ifpahm = (cod(7) .eq. 0) .and. (cod(8) .eq. 0) .and. (cod(9) .eq. 0)
 !
 ! VERIFICATION DE LA PRESENCE/ABSENCE DES PARAMETRES
 ! EN FONCTION DE LA MODELISATION MECA PUR OU HYDRO MECA
@@ -216,21 +216,21 @@ subroutine lcejfr(BEHinteg, fami, kpg, ksp, ndim,&
 !       POUR LE CALCUL HYDRO => PAS DE SCIAGE
         if (cod(10) .eq. 0) then
             call utmess('F', 'ALGORITH17_14')
-        endif
+        end if
 !       POUR LE CALCUL HYDRO => PAS DE PRES_FLUIDE
-        if ((cod(6).eq.0)) then
+        if ((cod(6) .eq. 0)) then
             call utmess('F', 'ALGORITH17_14')
-        endif
+        end if
 !       POUR LE CALCUL HYDRO => PRESENCE DE PARA HYDRO
-        if (.not.ifpahm) then
+        if (.not. ifpahm) then
             call utmess('F', 'ALGORITH17_15')
-        endif
+        end if
     else
 !       POUR LE CALCUL MECA => PAS DE PARAMETRE HYDRO
         if (ifpahm) then
             call utmess('F', 'ALGORITH17_16')
-        endif
-    endif
+        end if
+    end if
 !
 !
 ! #####################################
@@ -241,7 +241,7 @@ subroutine lcejfr(BEHinteg, fami, kpg, ksp, ndim,&
 !     A=AM
     call dcopy(ndim, epsm, 1, a, 1)
 !     A=A+DA
-    if (resi) call daxpy(ndim, 1.d0, deps, 1, a,&
+    if (resi) call daxpy(ndim, 1.d0, deps, 1, a, &
                          1)
 !
 ! DANS LE CAS DU SCIAGE
@@ -249,12 +249,12 @@ subroutine lcejfr(BEHinteg, fami, kpg, ksp, ndim,&
 !-----------------------
 ! L'EPASSEUR SCIEE EST DIMINUEE DE L'OUVERTURE INITALE DE JOINT
     doset = 0.d0
-    sciage = sciage - max(0.,epsm(1))
-    if (sciage .gt. 0.d0) doset = doset - sciage
-    oset = vim(10) + doset
+    sciage = sciage-max(0., epsm(1))
+    if (sciage .gt. 0.d0) doset = doset-sciage
+    oset = vim(10)+doset
 !
 ! LA LDC EST DEFINIE PAR RAPPORT A NOUVEAU POINT D'EQUILIBRE
-    a(1) = a(1) - oset
+    a(1) = a(1)-oset
 !
 !
 ! GRADIENT DE PRESSION ET PRESSION EN T- OU T+
@@ -262,18 +262,18 @@ subroutine lcejfr(BEHinteg, fami, kpg, ksp, ndim,&
 !
         do n = 1, ndim-1
             gp(n) = epsm(ndim+n)
-            if (resi) gp(n) = gp(n) + deps(ndim+n)
+            if (resi) gp(n) = gp(n)+deps(ndim+n)
         end do
 !
         presg = epsm(2*ndim)
-        if (resi) presg = presg + deps(2*ndim)
+        if (resi) presg = presg+deps(2*ndim)
 !
-    endif
+    end if
 !
 ! INITIALISATION DE VARIABLE INTERNES
 !     LAMBDA = accumutation de deplacement tang en valeur absolue
 !     PLASTI = vecteur de deplacement plastique tangentiel
-    lambda=vim(1)
+    lambda = vim(1)
     do i = 2, ndim
         plasti(i) = vim(i+1)
     end do
@@ -282,9 +282,9 @@ subroutine lcejfr(BEHinteg, fami, kpg, ksp, ndim,&
         ifplas = 0
     else
         ifplas = nint(vim(2))
-    endif
+    end if
 !     INDICATEUR D'OUVERTURE
-    ifouv=nint(vim(5))
+    ifouv = nint(vim(5))
 !
 ! #####################################
 ! CALCUL DE LA CONTRAINTE
@@ -296,24 +296,24 @@ subroutine lcejfr(BEHinteg, fami, kpg, ksp, ndim,&
 ! CALCUL DE LA CONTRAINTE HYDRO : DEBIT (LOI CUBIQUE)
     if (ifhyme) then
         do n = 1, ndim-1
-            sigma(ndim+n) = -rhof*gp(n)*(max(amin,a(1)+amin))**3/(12* visf)
+            sigma(ndim+n) = -rhof*gp(n)*(max(amin, a(1)+amin))**3/(12*visf)
         end do
-    endif
+    end if
 !
 !     CONTRAINTE NORMALE DE CONTACT PENALISE +
 !     INDICATEUR D'OUVERTURE COMPLETE
 !     (CONTRAINTE TANGENTIEL EST MISE A ZERO)
     if (kn*a(1) .lt. (adhe/mu)) then
-        ifouv=0
+        ifouv = 0
         sigma(1) = kn*a(1)
     else
-        ifouv=1
+        ifouv = 1
         sigma(1) = adhe/mu
-    endif
+    end if
 !
 !     CONTRAINTE TANGENTIELLE
     do i = 2, ndim
-        sigma(i) = kt*( a(i)-plasti(i) )
+        sigma(i) = kt*(a(i)-plasti(i))
     end do
 !
 !     DIRECTION DE GLISSEMENT = SIGMA TANG SANS INCREMENT PLASTIQUE
@@ -323,11 +323,11 @@ subroutine lcejfr(BEHinteg, fami, kpg, ksp, ndim,&
 !
 !     MODULE DE SIGMA TANGENTE SANS INCREMENT PLASTIQUE
 !     NB:SI ABSTAU==0 ON EST TOUJOURS DANS LE REGIME ELASTIQUE
-    abstau=0.d0
+    abstau = 0.d0
     do i = 2, ndim
         abstau = abstau+tau(i)**2
     end do
-    abstau=sqrt(abstau)
+    abstau = sqrt(abstau)
 !
 ! ###########################################################
 ! SI ON CALCULE LA RIGIDITE SEULEMENT, ON Y SAUTE DIRECTEMENT
@@ -335,33 +335,33 @@ subroutine lcejfr(BEHinteg, fami, kpg, ksp, ndim,&
     if (.not. resi) goto 5000
 !
 !     CRITERE DE PLASTICITE  NB: SIGMA(1)<0 EN COMPRESSION
-    criter=abstau+mu*sigma(1)-kappa*lambda - adhe
+    criter = abstau+mu*sigma(1)-kappa*lambda-adhe
 !     VERIFICATION DE CRITERE DE PLASTICITE
     if (criter .le. 0.d0) then
 !     PAS DE PLASTICITE
-        ifplas=0
+        ifplas = 0
         do i = 2, ndim
             dplas(i) = 0.d0
         end do
-        dlam=0.d0
+        dlam = 0.d0
     else
 !     AVEC LA PLASTICITE
-        ifplas=1
+        ifplas = 1
         do i = 2, ndim
             dplas(i) = criter/(kt+kappa)*tau(i)/abstau
             sigma(i) = sigma(i)-kt*dplas(i)
         end do
-        dlam=criter/(kt+kappa)
-    endif
+        dlam = criter/(kt+kappa)
+    end if
 !
 !     PRISE EN COMPTE DE LA PRESSION DE FLUIDE EVENTUELLE
 !     PRESFL : IMPOSEE, PRESG : CALCULEE
 !
     if (ifhyme) then
-        sigma(1) = sigma(1) - presg
+        sigma(1) = sigma(1)-presg
     else
-        sigma(1) = sigma(1) - presfl
-    endif
+        sigma(1) = sigma(1)-presfl
+    end if
 !
 !
 ! ACTUALISATION DES VARIABLES INTERNES
@@ -385,16 +385,16 @@ subroutine lcejfr(BEHinteg, fami, kpg, ksp, ndim,&
     do i = 2, ndim
         vip(i+1) = vim(i+1)+dplas(i)
     end do
-    vip(5) = max(nint(vim(5)),ifouv)
+    vip(5) = max(nint(vim(5)), ifouv)
 !
-    vip(6)=vim(6)
+    vip(6) = vim(6)
     do i = 2, ndim
         vip(6) = vip(6)+sigma(i)**2
-        vip(6)=sqrt(vip(6))
+        vip(6) = sqrt(vip(6))
     end do
-    vip(7) = a(1) + oset
+    vip(7) = a(1)+oset
     do i = 2, ndim
-        vip(i+6)=a(i)
+        vip(i+6) = a(i)
     end do
 !
 !     CALCUL DU NOUVEAU POINT D'EQUILIBRE V10 EN CAS DE SCIAGE
@@ -410,13 +410,13 @@ subroutine lcejfr(BEHinteg, fami, kpg, ksp, ndim,&
         gploc(2) = gp(1)
         if (ndim .eq. 3) then
             gploc(3) = gp(2)
-        endif
+        end if
 !
         fhloc(1) = 0.d0
         fhloc(2) = sigma(ndim+1)
         if (ndim .eq. 3) then
             fhloc(3) = sigma(2*ndim-1)
-        endif
+        end if
 !
         call matinv('S', ndim, coorot(ndim+1), invrot, r8bid)
         call pmavec('ZERO', ndim, invrot, gploc, gpglo)
@@ -424,7 +424,7 @@ subroutine lcejfr(BEHinteg, fami, kpg, ksp, ndim,&
 !
 !       CONTRAINTE MECANIQUE NORMALE SANS PRESSION DE FLUIDE CALCULEE
 !       ON ANNULE SON INFLUENCE
-        vip(11) = sigma(1) + presg
+        vip(11) = sigma(1)+presg
 !
         vip(12) = gpglo(1)
         vip(13) = gpglo(2)
@@ -437,7 +437,7 @@ subroutine lcejfr(BEHinteg, fami, kpg, ksp, ndim,&
         else
             vip(14) = 0.d0
             vip(17) = 0.d0
-        endif
+        end if
 !
 !       PRESSION DE FLUIDE CALCULEE AUX NOEUDS (DDL) ET INTERPOL AU PG
         vip(18) = presg
@@ -446,7 +446,7 @@ subroutine lcejfr(BEHinteg, fami, kpg, ksp, ndim,&
 !
 !       CONTRAINTE MECANIQUE NORMALE SANS PRESSION DE FLUIDE IMPOSEE
 !       ON ANNULE SON INFLUENCE
-        vip(11) = sigma(1) + presfl
+        vip(11) = sigma(1)+presfl
 !
         vip(12) = 0.d0
         vip(13) = 0.d0
@@ -458,7 +458,7 @@ subroutine lcejfr(BEHinteg, fami, kpg, ksp, ndim,&
 !       PRESSION DE FLUIDE IMPOSEE AU PG :
         vip(18) = presfl
 !
-    endif
+    end if
 !
 !
 ! #####################################
@@ -479,8 +479,8 @@ subroutine lcejfr(BEHinteg, fami, kpg, ksp, ndim,&
 !       TERME : DW/DGP  (POUR KTAN P P)
         do n = 1, ndim-1
 !
-            dsidep(ndim+n,ndim+n)=-rhof*(max(amin,a(1)+amin))**3/(12*&
-            visf)
+            dsidep(ndim+n, ndim+n) = -rhof*(max(amin, a(1)+amin))**3/(12* &
+                                                                      visf)
 !
         end do
 !
@@ -488,54 +488,54 @@ subroutine lcejfr(BEHinteg, fami, kpg, ksp, ndim,&
         do n = 1, ndim-1
 !
             if (a(1) .lt. 0.d0) then
-                dsidep(ndim+n,1) = 0.d0
+                dsidep(ndim+n, 1) = 0.d0
             else
-                dsidep(ndim+n,1) = -3*rhof*gp(n)*(a(1)+amin)**2/(12* visf)
-            endif
+                dsidep(ndim+n, 1) = -3*rhof*gp(n)*(a(1)+amin)**2/(12*visf)
+            end if
 !
         end do
 !
-    endif
+    end if
 !
 ! DSIGMA_N/DDELTA_N
     if (ifouv .eq. 0) then
-        dsidep(1,1)=kn
+        dsidep(1, 1) = kn
     else
-        dsidep(1,1)=0.d0
-    endif
+        dsidep(1, 1) = 0.d0
+    end if
 ! DSIGMA_N/DDELTA_T
     do i = 2, ndim
-        dsidep(1,i)=0.d0
+        dsidep(1, i) = 0.d0
     end do
 ! DSIGMA_T/DDELTA_N
     do i = 2, ndim
-        if ((ifouv.eq.0) .and. (ifplas.eq.1)) then
-            dsidep(i,1)=-tau(i)*mu*kn*kt/abstau/(kt+kappa)
+        if ((ifouv .eq. 0) .and. (ifplas .eq. 1)) then
+            dsidep(i, 1) = -tau(i)*mu*kn*kt/abstau/(kt+kappa)
         else
-            dsidep(i,1)=0.d0
-        endif
+            dsidep(i, 1) = 0.d0
+        end if
     end do
 ! DSIGMA_T/DDELTA_T
     if (ifplas .eq. 1) then
-        coefhd= - (kappa*lambda+adhe-mu*sigma(1)) *kt**2/abstau**3/(&
-        kt+kappa)
-        coefd=kappa*kt/(kt+kappa) - coefhd*abstau**2
+        coefhd = -(kappa*lambda+adhe-mu*sigma(1))*kt**2/abstau**3/( &
+                 kt+kappa)
+        coefd = kappa*kt/(kt+kappa)-coefhd*abstau**2
         do j = 2, ndim
             do i = j, ndim
                 if (i .eq. j) then
-                    kronec=1
+                    kronec = 1
                 else
-                    kronec=0
-                endif
-                dsidep(j,i) = coefhd*tau(j)*tau(i) + coefd*kronec
-                dsidep(i,j) = coefhd*tau(i)*tau(j) + coefd*kronec
+                    kronec = 0
+                end if
+                dsidep(j, i) = coefhd*tau(j)*tau(i)+coefd*kronec
+                dsidep(i, j) = coefhd*tau(i)*tau(j)+coefd*kronec
             end do
         end do
     else
         do i = 2, ndim
-            dsidep(i,i)=kt
+            dsidep(i, i) = kt
         end do
-    endif
+    end if
 !
 !
 !CC MATRICE TANGENTE DE CONTACT OUVERT
@@ -544,20 +544,20 @@ subroutine lcejfr(BEHinteg, fami, kpg, ksp, ndim,&
 ! RIGIDITE ARTIFICIELLE DANS LA MATRICE TANGENTE POUR ASSURER
 ! LA CONVERGENCE
 !
-    rigart=1.d-8
+    rigart = 1.d-8
 !
 !     POUR LE JOINT OUVERT LA PARTIE NORMALE EST CORRIGEE
     if (ifouv .eq. 1) then
 !       COMPLETEMENT CASSE NORMALE
-        dsidep(1,1) = kn*rigart
-    endif
+        dsidep(1, 1) = kn*rigart
+    end if
 !     POUR LE JOINT SANS ECROUISSAGE LA PARTIE TANGENTIELLE EST DECALEE
     if (kappa .eq. 0.d0) then
 !     COMPLETEMENT CASSE TANGENTE
         do i = 2, ndim
-            dsidep(i,i) = dsidep(i,i) + kt*rigart
+            dsidep(i, i) = dsidep(i, i)+kt*rigart
         end do
-    endif
+    end if
 !
 !
 999 continue

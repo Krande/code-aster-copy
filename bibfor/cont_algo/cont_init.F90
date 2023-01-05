@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,12 +17,12 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine cont_init(mesh  , model    , ds_contact, nume_inst, ds_measure    ,&
-                     sddyna, hval_incr, sdnume    , list_func_acti)
+subroutine cont_init(mesh, model, ds_contact, nume_inst, ds_measure, &
+                     sddyna, hval_incr, sdnume, list_func_acti)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterfort/cfdisl.h"
 #include "asterfort/isfonc.h"
@@ -32,15 +32,15 @@ implicit none
 #include "asterfort/cfinit.h"
 #include "asterfort/ndynlo.h"
 !
-character(len=8), intent(in) :: mesh
-character(len=24), intent(in) :: model
-type(NL_DS_Contact), intent(inout) :: ds_contact
-type(NL_DS_Measure), intent(inout) :: ds_measure
-integer, intent(in) :: nume_inst
-character(len=19), intent(in) :: hval_incr(*)
-character(len=19), intent(in) :: sddyna
-integer, intent(in) :: list_func_acti(*)
-character(len=19), intent(in) :: sdnume
+    character(len=8), intent(in) :: mesh
+    character(len=24), intent(in) :: model
+    type(NL_DS_Contact), intent(inout) :: ds_contact
+    type(NL_DS_Measure), intent(inout) :: ds_measure
+    integer, intent(in) :: nume_inst
+    character(len=19), intent(in) :: hval_incr(*)
+    character(len=19), intent(in) :: sddyna
+    integer, intent(in) :: list_func_acti(*)
+    character(len=19), intent(in) :: sdnume
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -66,32 +66,32 @@ character(len=19), intent(in) :: sdnume
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    l_cont_disc = isfonc(list_func_acti,'CONT_DISCRET')
-    l_cont_cont = isfonc(list_func_acti,'CONT_CONTINU')
-    l_cont_xfem = isfonc(list_func_acti,'CONT_XFEM')
-    l_cont_lac  = isfonc(list_func_acti,'CONT_LAC')
-    l_cont_allv = cfdisl(ds_contact%sdcont_defi,'ALL_VERIF')
+    l_cont_disc = isfonc(list_func_acti, 'CONT_DISCRET')
+    l_cont_cont = isfonc(list_func_acti, 'CONT_CONTINU')
+    l_cont_xfem = isfonc(list_func_acti, 'CONT_XFEM')
+    l_cont_lac = isfonc(list_func_acti, 'CONT_LAC')
+    l_cont_allv = cfdisl(ds_contact%sdcont_defi, 'ALL_VERIF')
 !
-    if (.not.l_cont_allv) then
+    if (.not. l_cont_allv) then
 ! ----- For discrete contact
         if (l_cont_disc) then
             call cfinit(ds_contact, nume_inst)
-        endif
+        end if
 ! ----- For continue contact
         if (l_cont_cont) then
-            call mminit(mesh  , ds_contact, sddyna, hval_incr, ds_measure,&
+            call mminit(mesh, ds_contact, sddyna, hval_incr, ds_measure, &
                         sdnume, nume_inst, list_func_acti)
-        endif
+        end if
 ! ----- For continue contact (LAC method)
         if (l_cont_lac) then
-            call mminit_lac(mesh  , ds_contact, hval_incr, ds_measure,&
+            call mminit_lac(mesh, ds_contact, hval_incr, ds_measure, &
                             sdnume, nume_inst)
-        endif
+        end if
 ! ----- For XFEM contact
         if (l_cont_xfem) then
-            call xminit(mesh  , model    , ds_contact    , nume_inst, ds_measure,&
+            call xminit(mesh, model, ds_contact, nume_inst, ds_measure, &
                         sddyna, hval_incr, list_func_acti)
-        endif
-    endif
+        end if
+    end if
 !
 end subroutine

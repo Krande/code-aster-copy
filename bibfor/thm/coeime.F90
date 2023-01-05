@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,18 +17,18 @@
 ! --------------------------------------------------------------------
 ! aslint: disable=W1504,W1306
 !
-subroutine coeime(ds_thm, j_mater, nomail, option,&
-                  lSigm, lVari, lMatr,&
-                  ndim, dimdef, dimcon,&
-                  addeme, addep1,&
-                  nbvari, npg, npi,&
-                  defgep, defgem, sigm, sigp, varim,&
-                  varip, ouvh, tlint, drde, kpi,&
+subroutine coeime(ds_thm, j_mater, nomail, option, &
+                  lSigm, lVari, lMatr, &
+                  ndim, dimdef, dimcon, &
+                  addeme, addep1, &
+                  nbvari, npg, npi, &
+                  defgep, defgem, sigm, sigp, varim, &
+                  varip, ouvh, tlint, drde, kpi, &
                   retcom)
 !
-use THM_type
+    use THM_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/lcejex.h"
@@ -36,21 +36,21 @@ implicit none
 #include "asterfort/lcjohm.h"
 #include "asterfort/rcvalb.h"
 !
-type(THM_DS), intent(in) :: ds_thm
-integer, intent(in) :: j_mater
-character(len=8), intent(in) :: nomail
-character(len=16), intent(in) :: option
-aster_logical, intent(in) :: lSigm, lVari, lMatr
-integer, intent(in) :: ndim, dimcon, dimdef
-integer, intent(in) :: addeme, addep1, npg, kpi, npi, nbvari
-real(kind=8), intent(in) :: defgem(dimdef), defgep(dimdef)
-real(kind=8), intent(in) :: sigm(dimcon)
-real(kind=8), intent(inout) :: sigp(dimcon)
-real(kind=8), intent(in) :: varim(nbvari)
-real(kind=8), intent(inout) :: varip(nbvari)
-real(kind=8), intent(out) :: ouvh, tlint
-real(kind=8), intent(inout) :: drde(dimdef, dimdef)
-integer, intent(out) :: retcom
+    type(THM_DS), intent(in) :: ds_thm
+    integer, intent(in) :: j_mater
+    character(len=8), intent(in) :: nomail
+    character(len=16), intent(in) :: option
+    aster_logical, intent(in) :: lSigm, lVari, lMatr
+    integer, intent(in) :: ndim, dimcon, dimdef
+    integer, intent(in) :: addeme, addep1, npg, kpi, npi, nbvari
+    real(kind=8), intent(in) :: defgem(dimdef), defgep(dimdef)
+    real(kind=8), intent(in) :: sigm(dimcon)
+    real(kind=8), intent(inout) :: sigp(dimcon)
+    real(kind=8), intent(in) :: varim(nbvari)
+    real(kind=8), intent(inout) :: varip(nbvari)
+    real(kind=8), intent(out) :: ouvh, tlint
+    real(kind=8), intent(inout) :: drde(dimdef, dimdef)
+    integer, intent(out) :: retcom
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -93,17 +93,17 @@ integer, intent(out) :: retcom
     integer :: icodre(2)
     character(len=16) :: meca
     integer :: advime, advico, vicphi
-    character(len=16), parameter :: ncra(2) = (/'OUV_FICT','UN_SUR_N' /)
+    character(len=16), parameter :: ncra(2) = (/'OUV_FICT', 'UN_SUR_N'/)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    ouvh   = 0.d0
-    tlint  = 0.d0
-    fami   = 'FPG1'
-    kpg    = 1
-    spt    = 1
-    poum   = '+'
-    meca   = ds_thm%ds_behaviour%rela_meca
+    ouvh = 0.d0
+    tlint = 0.d0
+    fami = 'FPG1'
+    kpg = 1
+    spt = 1
+    poum = '+'
+    meca = ds_thm%ds_behaviour%rela_meca
     advime = ds_thm%ds_behaviour%advime
     advico = ds_thm%ds_behaviour%advico
     vicphi = ds_thm%ds_behaviour%vicphi
@@ -114,27 +114,27 @@ integer, intent(out) :: retcom
 !
     if (meca .eq. 'JOINT_BANDIS') then
 !
-        call lcjohm(j_mater, lSigm, lMatr, lVari, kpi, npg,&
-                    nomail, addeme, advico, ndim, dimdef,&
-                    dimcon, nbvari, defgem, defgep, varim,&
-                    varip, sigm, sigp, drde, ouvh,&
+        call lcjohm(j_mater, lSigm, lMatr, lVari, kpi, npg, &
+                    nomail, addeme, advico, ndim, dimdef, &
+                    dimcon, nbvari, defgem, defgep, varim, &
+                    varip, sigm, sigp, drde, ouvh, &
                     retcom)
 !
         tlint = ouvh**2/12.d0
         if (lVari) then
-            varip(advime)=tlint
-        endif
+            varip(advime) = tlint
+        end if
         if (lSigm) then
             if (ds_thm%ds_elem%l_dof_pre1) then
-                sigp(1+ndim)=-defgep(addep1)
-            endif
-        endif
+                sigp(1+ndim) = -defgep(addep1)
+            end if
+        end if
         if ((lMatr) .and. (kpi .le. npg)) then
             if (ds_thm%ds_elem%l_dof_pre1) then
-                drde(addeme,addep1)=-1.d0
-            endif
-        endif
-    endif
+                drde(addeme, addep1) = -1.d0
+            end if
+        end if
+    end if
 !
 ! ====================================================================
 ! LOI DE COMPORTEMENT CZM_LIN_REG
@@ -142,26 +142,26 @@ integer, intent(out) :: retcom
     if (meca .eq. 'CZM_LIN_REG') then
 !
         do i = 1, ndim
-            da(i) = defgep(i) - defgem(i)
+            da(i) = defgep(i)-defgem(i)
         end do
 !
 ! - INTEGRATION DE LA LOI DE COMPORTEMENT MECANIQUE
 !
-        call lcejli('RIGI', kpi, 1, ndim, j_mater,&
-                    option, defgem, da, sigp, dsidep,&
+        call lcejli('RIGI', kpi, 1, ndim, j_mater, &
+                    option, defgem, da, sigp, dsidep, &
                     varim(advime), varip(advime))
 !
 ! - RECUPERATION DES PARAMETRES DE COUPLAGE POUR LA POINTE DE FISSURE
 !
         if (nint(varip(advime)) .eq. 2) then
-            unsurn=0.d0
+            unsurn = 0.d0
         else
-            call rcvalb(fami, kpg, spt, poum, j_mater,&
-                        ' ', 'THM_RUPT', 0, ' ', [0.d0],&
+            call rcvalb(fami, kpg, spt, poum, j_mater, &
+                        ' ', 'THM_RUPT', 0, ' ', [0.d0], &
                         2, ncra, para(1), icodre, 1)
             ouvfic = para(1)
             unsurn = para(2)
-        endif
+        end if
 !
 ! - CALCUL DES TERMES MECA ET DE COUPLAGE DE L'OPERATEUR TANGENT
 !
@@ -169,45 +169,45 @@ integer, intent(out) :: retcom
             if (kpi .le. npg) then
                 do i = 1, ndim
                     do j = 1, ndim
-                        drde(i,j)=dsidep(i,j)
+                        drde(i, j) = dsidep(i, j)
                     end do
                 end do
-                if ((ds_thm%ds_elem%l_dof_pre1) .and.&
-                    ((nint(varip(advime+2)) .eq. 1) .or.(nint(varip(advime+2)).eq. 2) )) then
-                    drde(1,addep1)=-1.d0
-                endif
-            endif
+                if ((ds_thm%ds_elem%l_dof_pre1) .and. &
+                    ((nint(varip(advime+2)) .eq. 1) .or. (nint(varip(advime+2)) .eq. 2))) then
+                    drde(1, addep1) = -1.d0
+                end if
+            end if
             if ((kpi .gt. npg) .or. (npi .eq. npg)) then
-                drde(addep1,addep1)=drde(addep1,addep1)-unsurn
-            endif
+                drde(addep1, addep1) = drde(addep1, addep1)-unsurn
+            end if
 ! - CALCUL DE L'OUVERTURE HYDRO ET DE LA PERMEABILITE
-            ouvh=varim(advico+vicphi)
+            ouvh = varim(advico+vicphi)
             if (nint(varim(3)) .eq. 0) then
-                ouvh=ouvfic
-            endif
-            tlint=ouvh**2/12
-        endif
+                ouvh = ouvfic
+            end if
+            tlint = ouvh**2/12
+        end if
 !
 ! - CALCUL DES TERMES MECA ET DE COUPLAGE DU VECTEUR FORCES INTERNES
 !
         if (lSigm) then
-            if ((ds_thm%ds_elem%l_dof_pre1) .and.&
-                 ((nint(varip(advime+2)) .eq. 1) .or.( nint(varip(advime+2)).eq. 2))) then
-                sigp(1+ndim)=-defgep(addep1)
-            endif
-        endif
+            if ((ds_thm%ds_elem%l_dof_pre1) .and. &
+                ((nint(varip(advime+2)) .eq. 1) .or. (nint(varip(advime+2)) .eq. 2))) then
+                sigp(1+ndim) = -defgep(addep1)
+            end if
+        end if
         if (lVari) then
 ! - CALCUL DE L'OUVERTURE HYDRO ET DE LA PERMEABILITE
-            varip(advico+vicphi)=defgep(1)
-            ouvh=varip(advico+vicphi)
+            varip(advico+vicphi) = defgep(1)
+            ouvh = varip(advico+vicphi)
 ! - SI FISSURE FERMEE ALORS ON DONNE UNE OUVERTURE HYDRO FICTIVE
-            if ((nint(varip(3)).eq.0)) then
-                ouvh=ouvfic
-            endif
-            tlint=ouvh**2/12
-            varip(advico+vicphi)=defgep(1)+defgep(addep1)*unsurn
-        endif
-    endif
+            if ((nint(varip(3)) .eq. 0)) then
+                ouvh = ouvfic
+            end if
+            tlint = ouvh**2/12
+            varip(advico+vicphi) = defgep(1)+defgep(addep1)*unsurn
+        end if
+    end if
 !
 ! ====================================================================
 ! LOI DE COMPORTEMENT CZM_EXP_REG
@@ -215,19 +215,19 @@ integer, intent(out) :: retcom
 !
     if (meca .eq. 'CZM_EXP_REG') then
         do i = 1, ndim
-            da(i) = defgep(i) - defgem(i)
+            da(i) = defgep(i)-defgem(i)
         end do
 !
 ! - INTEGRATION DE LA LOI DE COMPORTEMENT MECANIQUE
 !
-        call lcejex('RIGI', kpi, 1, ndim, j_mater,&
-                    option, defgem, da, sigp, dsidep,&
+        call lcejex('RIGI', kpi, 1, ndim, j_mater, &
+                    option, defgem, da, sigp, dsidep, &
                     varim(advime), varip(advime))
 !
 ! - RECUPERATION DES PARAMETRES DE COUPLAGE POUR LA POINTE DE FISSURE
 !
-        call rcvalb(fami, kpg, spt, poum, j_mater,&
-                    ' ', 'THM_RUPT', 0, ' ', [0.d0],&
+        call rcvalb(fami, kpg, spt, poum, j_mater, &
+                    ' ', 'THM_RUPT', 0, ' ', [0.d0], &
                     2, ncra, para(1), icodre, 1)
         ouvfic = para(1)
         unsurn = para(2)
@@ -238,42 +238,42 @@ integer, intent(out) :: retcom
             if (kpi .le. npg) then
                 do i = 1, ndim
                     do j = 1, ndim
-                        drde(i,j)=dsidep(i,j)
+                        drde(i, j) = dsidep(i, j)
                     end do
                 end do
                 if ((ds_thm%ds_elem%l_dof_pre1) .and. (nint(varip(advime+2)) .eq. 1)) then
-                    drde(1,addep1)=-1.d0
-                endif
-            endif
+                    drde(1, addep1) = -1.d0
+                end if
+            end if
             if ((kpi .gt. npg) .or. (npi .eq. npg)) then
-                drde(addep1,addep1)=drde(addep1,addep1)-unsurn
-            endif
+                drde(addep1, addep1) = drde(addep1, addep1)-unsurn
+            end if
 ! - CALCUL DE L'OUVERTURE HYDRO ET DE LA PERMEABILITE
-            ouvh=varim(advico+vicphi)
+            ouvh = varim(advico+vicphi)
             if (nint(varim(3)) .eq. 0) then
-                ouvh=ouvfic
-            endif
-            tlint=ouvh**2/12
-        endif
+                ouvh = ouvfic
+            end if
+            tlint = ouvh**2/12
+        end if
 !
 ! - CALCUL DES TERMES MECA ET DE COUPLAGE DU VECTEUR FORCES INTERNES
 !
         if (lSigm) then
             if ((ds_thm%ds_elem%l_dof_pre1) .and. (nint(varip(advime+2)) .eq. 1)) then
-                sigp(1+ndim)=-defgep(addep1)
-            endif
-        endif
+                sigp(1+ndim) = -defgep(addep1)
+            end if
+        end if
         if (lVari) then
 ! - CALCUL DE L'OUVERTURE HYDRO ET DE LA PERMEABILITE
-            varip(advico+vicphi)=defgep(1)
-            ouvh=varip(advico+vicphi)
+            varip(advico+vicphi) = defgep(1)
+            ouvh = varip(advico+vicphi)
             if (nint(varip(3)) .eq. 0) then
 ! - SI FISSURE FERMEE ALORS ON DONNE UNE OUVERTURE HYDRO FICTIVE
-                ouvh=ouvfic
-            endif
-            tlint=ouvh**2/12
-            varip(advico+vicphi)=defgep(1)+defgep(addep1)*unsurn
-        endif
-    endif
+                ouvh = ouvfic
+            end if
+            tlint = ouvh**2/12
+            varip(advico+vicphi) = defgep(1)+defgep(addep1)*unsurn
+        end if
+    end if
 !
 end subroutine

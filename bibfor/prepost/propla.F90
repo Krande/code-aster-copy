@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine propla(nbvec, vectn, vectu, vectv, nbordr,&
-                  kwork, sommw, vwork, tdisp, tspaq,&
-                  i, nomcri, nomfor, fordef, fatsoc,&
+subroutine propla(nbvec, vectn, vectu, vectv, nbordr, &
+                  kwork, sommw, vwork, tdisp, tspaq, &
+                  i, nomcri, nomfor, fordef, fatsoc, &
                   jvectr)
     implicit none
 #include "asterf_types.h"
@@ -103,16 +103,16 @@ subroutine propla(nbvec, vectn, vectu, vectv, nbordr,&
     crepse = .false.
     crepsp = .false.
 !
-    call anacri(nomcri, nomfor, typcha, 'NON', paract,&
+    call anacri(nomcri, nomfor, typcha, 'NON', paract, &
                 lbid, crsigm, crepst, crepse, crepsp)
 !
 !
 ! TRAITEMENT DES PAQUETS DE NOEUDS.
 !
-    if (( nomcri(1:16) .eq. 'FATESOCI_MODI_AV' ) .or. fordef) then
+    if ((nomcri(1:16) .eq. 'FATESOCI_MODI_AV') .or. fordef) then
         decpro = 6
         goto 50
-    endif
+    end if
 !
     if (crsigm) then
         decpro = 0
@@ -122,26 +122,26 @@ subroutine propla(nbvec, vectn, vectu, vectv, nbordr,&
         else
             if (crepsp) then
                 decpro = 12
-            endif
-        endif
-    endif
+            end if
+        end if
+    end if
 !
- 50 continue
+50  continue
 !
     decal = 18
 !
     do ivect = 1, nbvec
-        nx = vectn((ivect-1)*3 + 1)
-        ny = vectn((ivect-1)*3 + 2)
-        nz = vectn((ivect-1)*3 + 3)
+        nx = vectn((ivect-1)*3+1)
+        ny = vectn((ivect-1)*3+2)
+        nz = vectn((ivect-1)*3+3)
 !
-        ux = vectu((ivect-1)*3 + 1)
-        uy = vectu((ivect-1)*3 + 2)
-        uz = vectu((ivect-1)*3 + 3)
+        ux = vectu((ivect-1)*3+1)
+        uy = vectu((ivect-1)*3+2)
+        uz = vectu((ivect-1)*3+3)
 !
-        vx = vectv((ivect-1)*3 + 1)
-        vy = vectv((ivect-1)*3 + 2)
-        vz = vectv((ivect-1)*3 + 3)
+        vx = vectv((ivect-1)*3+1)
+        vy = vectv((ivect-1)*3+2)
+        vz = vectv((ivect-1)*3+3)
 !
         do iordr = 1, nbordr
 !
@@ -155,35 +155,35 @@ subroutine propla(nbvec, vectn, vectu, vectv, nbordr,&
 !      &                             + (I-1)*DECAL
 !            ENDIF
 !
-            adrs = (iordr-1)*tspaq + kwork*sommw*decal + (i-1)*decal + decpro
+            adrs = (iordr-1)*tspaq+kwork*sommw*decal+(i-1)*decal+decpro
 !
-            cmpxx = vwork(adrs + 1)
-            cmpyy = vwork(adrs + 2)
-            cmpzz = vwork(adrs + 3)
-            cmpxy = vwork(adrs + 4)
-            cmpxz = vwork(adrs + 5)
-            cmpyz = vwork(adrs + 6)
+            cmpxx = vwork(adrs+1)
+            cmpyy = vwork(adrs+2)
+            cmpzz = vwork(adrs+3)
+            cmpxy = vwork(adrs+4)
+            cmpxz = vwork(adrs+5)
+            cmpyz = vwork(adrs+6)
 !
 ! CALCUL DE vect_F = [CMP].vect_n  AVEC [CMP] = [EPS] OU [SIG]
-            fx = cmpxx*nx + cmpxy*ny + cmpxz*nz
-            fy = cmpxy*nx + cmpyy*ny + cmpyz*nz
-            fz = cmpxz*nx + cmpyz*ny + cmpzz*nz
+            fx = cmpxx*nx+cmpxy*ny+cmpxz*nz
+            fy = cmpxy*nx+cmpyy*ny+cmpyz*nz
+            fz = cmpxz*nx+cmpyz*ny+cmpzz*nz
 !
 ! CALCUL DE NORM = vect_F.vect_n
-            norm = fx*nx + fy*ny + fz*nz
+            norm = fx*nx+fy*ny+fz*nz
 !
 ! CALCUL DE vect_CIS = vect_F - NORM vect_n
 ! vect_CIS = VECTEUR CISAILLEMENT EN CONTRAINTE OU EN DEFORMATION
-            cisx = fx - norm*nx
-            cisy = fy - norm*ny
-            cisz = fz - norm*nz
+            cisx = fx-norm*nx
+            cisy = fy-norm*ny
+            cisz = fz-norm*nz
 !
 ! PROJECTION DU vect_CIS SUR LES VECTEURS u ET v DU REPERE LOCAL
-            cucis = ux*cisx + uy*cisy + uz*cisz
-            cvcis = vx*cisx + vy*cisy + vz*cisz
+            cucis = ux*cisx+uy*cisy+uz*cisz
+            cvcis = vx*cisx+vy*cisy+vz*cisz
 !
-            n = n + 1
-            zr(jvectr+n*2 - 1) = fatsoc*cucis
+            n = n+1
+            zr(jvectr+n*2-1) = fatsoc*cucis
             zr(jvectr+n*2) = fatsoc*cvcis
 !
         end do

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,9 +18,9 @@
 
 subroutine nmrest_ecro(model_, mate_, ds_constitutive, hval_incr)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/calcul.h"
@@ -67,9 +67,9 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     option = 'REST_ECRO'
-    base   = 'V'
-    model  = model_
-    mate   = mate_
+    base = 'V'
+    model = model_
+    mate = mate_
     ligrmo = model(1:8)//'.MODELE'
 !
 ! - Get fields from hat-variables - Begin of time step
@@ -108,8 +108,8 @@ implicit none
 !
 ! - Computation
 !
-    call calcul('S'  , option, ligrmo, nbin  , lchin,&
-                lpain, nbout , lchout, lpaout, base ,&
+    call calcul('S', option, ligrmo, nbin, lchin, &
+                lpain, nbout, lchout, lpaout, base, &
                 'OUI')
 !
     call copisd('CHAMP_GD', 'V', vari_curr_modi, vari_curr)

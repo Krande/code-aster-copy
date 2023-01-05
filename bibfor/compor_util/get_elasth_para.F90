@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,12 +16,12 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine get_elasth_para(fami     , j_mater     , poum   , ipg       , ispg,&
+subroutine get_elasth_para(fami, j_mater, poum, ipg, ispg, &
                            elas_type, elas_keyword, materi_, temp_vale_, &
-                           alpha    , alpha_l     , alpha_t, alpha_n,&
-                           z_h_r_   , deps_ch_tref_)
+                           alpha, alpha_l, alpha_t, alpha_n, &
+                           z_h_r_, deps_ch_tref_)
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterfort/assert.h"
@@ -81,7 +81,7 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: nbresm
-    parameter (nbresm=4)
+    parameter(nbresm=4)
     integer :: icodre(nbresm)
     character(len=16) :: nomres(nbresm)
     real(kind=8) :: valres(nbresm)
@@ -97,91 +97,91 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    nb_para   = 0
+    nb_para = 0
     para_name = ' '
     para_vale = 0.d0
-    materi    = ' '
+    materi = ' '
     if (present(materi_)) then
-        materi    = materi_
-    endif
+        materi = materi_
+    end if
     if (present(temp_vale_)) then
-        nb_para   = 1
+        nb_para = 1
         para_vale = temp_vale_
         para_name = 'TEMP'
-    endif
+    end if
 !
 ! - Get parameters
 !
-    if (elas_type.eq.1) then
-        if (elas_keyword.eq.'ELAS_HYPER') then
-            call utmess('F','COMPOR5_6')
-        elseif (elas_keyword.eq.'ELAS_META') then
-            nbres     = 4
+    if (elas_type .eq. 1) then
+        if (elas_keyword .eq. 'ELAS_HYPER') then
+            call utmess('F', 'COMPOR5_6')
+        elseif (elas_keyword .eq. 'ELAS_META') then
+            nbres = 4
             nomres(1) = 'C_ALPHA'
             nomres(2) = 'F_ALPHA'
             nomres(3) = 'PHASE_REFE'
             nomres(4) = 'EPSF_EPSC_TREF'
-            call rcvalb(fami  , ipg, ispg, poum, j_mater,&
-                        materi, elas_keyword, nb_para, para_name, [para_vale],&
-                        nbres , nomres, valres, icodre, 1)
-            alpha_c       = valres(1)
-            alpha_f       = valres(2)
-            z_h_r         = valres(3)
-            deps_ch_tref  = valres(4)
+            call rcvalb(fami, ipg, ispg, poum, j_mater, &
+                        materi, elas_keyword, nb_para, para_name, [para_vale], &
+                        nbres, nomres, valres, icodre, 1)
+            alpha_c = valres(1)
+            alpha_f = valres(2)
+            z_h_r = valres(3)
+            deps_ch_tref = valres(4)
             if (present(alpha)) then
-                alpha(1)      = alpha_c
-                alpha(2)      = alpha_f
-            endif
-            if (present(z_h_r_ )) then
-                z_h_r_        = z_h_r
-            endif
+                alpha(1) = alpha_c
+                alpha(2) = alpha_f
+            end if
+            if (present(z_h_r_)) then
+                z_h_r_ = z_h_r
+            end if
             if (present(deps_ch_tref_)) then
                 deps_ch_tref_ = deps_ch_tref
-            endif
+            end if
         else
-            nbres     = 1
+            nbres = 1
             nomres(1) = 'ALPHA'
-            call rcvalb(fami  , ipg, ispg, poum, j_mater,&
-                        materi, elas_keyword, nb_para, para_name, [para_vale],&
-                        nbres , nomres, valres, icodre, 1)
-            alpha_a   = valres(1)
-            alpha(1)  = alpha_a
-            alpha(2)  = 0.d0
-        endif
-    elseif (elas_type.eq.2) then
-        nbres     = 3
+            call rcvalb(fami, ipg, ispg, poum, j_mater, &
+                        materi, elas_keyword, nb_para, para_name, [para_vale], &
+                        nbres, nomres, valres, icodre, 1)
+            alpha_a = valres(1)
+            alpha(1) = alpha_a
+            alpha(2) = 0.d0
+        end if
+    elseif (elas_type .eq. 2) then
+        nbres = 3
         nomres(1) = 'ALPHA_L'
         nomres(2) = 'ALPHA_T'
         nomres(3) = 'ALPHA_N'
-        call rcvalb(fami  , ipg, ispg, poum, j_mater,&
-                    materi, elas_keyword, nb_para, para_name, [para_vale],&
-                    nbres , nomres, valres, icodre, 1)
+        call rcvalb(fami, ipg, ispg, poum, j_mater, &
+                    materi, elas_keyword, nb_para, para_name, [para_vale], &
+                    nbres, nomres, valres, icodre, 1)
         alpha_l = valres(1)
         alpha_t = valres(2)
         alpha_n = valres(3)
-    elseif (elas_type.eq.3) then
-        nbres     = 2
+    elseif (elas_type .eq. 3) then
+        nbres = 2
         nomres(1) = 'ALPHA_L'
         nomres(2) = 'ALPHA_N'
-        call rcvalb(fami , ipg, ispg, poum, j_mater,&
-                    materi, elas_keyword, nb_para, para_name, [para_vale],&
-                    nbres , nomres, valres, icodre, 1)
+        call rcvalb(fami, ipg, ispg, poum, j_mater, &
+                    materi, elas_keyword, nb_para, para_name, [para_vale], &
+                    nbres, nomres, valres, icodre, 1)
         alpha_l = valres(1)
         alpha_n = valres(2)
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 ! - Test
 !
     do i = 1, nbres
-        if (icodre(i).ne.0) then
+        if (icodre(i) .ne. 0) then
             call tecael(iadzi, iazk24)
             valk(1) = zk24(iazk24-1+3)
             valk(2) = 'TEMP'
             valk(3) = nomres(i)
             call utmess('F', 'COMPOR5_32', nk=3, valk=valk)
-        endif
+        end if
     end do
 !
 end subroutine

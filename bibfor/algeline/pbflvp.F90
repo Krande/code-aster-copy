@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine pbflvp(umoy, hmoy, rmoy, cf0, mcf0,&
+subroutine pbflvp(umoy, hmoy, rmoy, cf0, mcf0, &
                   rkip, s1, s2, lambda)
     implicit none
 ! COUPLAGE FLUIDELASTIQUE, CONFIGURATIONS DU TYPE "COQUE_COAX"
@@ -54,33 +54,33 @@ subroutine pbflvp(umoy, hmoy, rmoy, cf0, mcf0,&
 !-----------------------------------------------------------------------
     pi = r8pi()
     eps = 1.d-4
-    s = dcmplx(s1,s2)
+    s = dcmplx(s1, s2)
 !
-    a = s/umoy + dcmplx(cf0/hmoy)
+    a = s/umoy+dcmplx(cf0/hmoy)
     b = dcmplx(-1.d0*((rkip/rmoy)**2))
-    c = s/umoy + (mcf0+2.d0) * dcmplx(cf0/hmoy)
+    c = s/umoy+(mcf0+2.d0)*dcmplx(cf0/hmoy)
     c = -1.d0*((rkip/rmoy)**2)*c
-    p = b - (a**2)/3.d0
-    q = 2.d0*(a**3)/27.d0 - a*b/3.d0 + c
-    r = (q/2.d0)**2 + (p/3.d0)**3
+    p = b-(a**2)/3.d0
+    q = 2.d0*(a**3)/27.d0-a*b/3.d0+c
+    r = (q/2.d0)**2+(p/3.d0)**3
     r = r**0.5d0
     if (dcabs2(r) .lt. eps) then
         call utmess('A', 'ALGELINE3_19')
-    endif
+    end if
 !
-    delta = ((3.d0*q/p)**2) + 4.d0*p/3.d0
+    delta = ((3.d0*q/p)**2)+4.d0*p/3.d0
     delta = delta**(0.5d0)
-    alpha = 0.5d0*(-3.d0*q/p + delta)
-    beta = 0.5d0*(-3.d0*q/p - delta)
+    alpha = 0.5d0*(-3.d0*q/p+delta)
+    beta = 0.5d0*(-3.d0*q/p-delta)
     n3 = alpha/beta
 !
     modul = (dcabs2(n3))**(1.d0/3.d0)
     arg = dcargu(n3)/3.d0
-    z1 = modul * dcmplx(dble(cos(arg)),dble(sin(arg)))
-    arg = dcargu(n3)/3.d0 + 2.d0*pi/3.d0
-    z2 = modul * dcmplx(dble(cos(arg)),dble(sin(arg)))
-    arg = dcargu(n3)/3.d0 + 4.d0*pi/3.d0
-    z3 = modul * dcmplx(dble(cos(arg)),dble(sin(arg)))
+    z1 = modul*dcmplx(dble(cos(arg)), dble(sin(arg)))
+    arg = dcargu(n3)/3.d0+2.d0*pi/3.d0
+    z2 = modul*dcmplx(dble(cos(arg)), dble(sin(arg)))
+    arg = dcargu(n3)/3.d0+4.d0*pi/3.d0
+    z3 = modul*dcmplx(dble(cos(arg)), dble(sin(arg)))
 !
     lambda(1) = ((beta*z1-alpha)/(z1-dcmplx(1.d0)))-a/3.d0
     lambda(2) = ((beta*z2-alpha)/(z2-dcmplx(1.d0)))-a/3.d0
@@ -88,9 +88,9 @@ subroutine pbflvp(umoy, hmoy, rmoy, cf0, mcf0,&
 !
     do i = 1, 3
         if (dcabs2(lambda(i)) .lt. eps) then
-            write(k1bid,'(I1)') i
+            write (k1bid, '(I1)') i
             call utmess('A', 'ALGELINE3_20', sk=k1bid)
-        endif
+        end if
     end do
 !
 end subroutine

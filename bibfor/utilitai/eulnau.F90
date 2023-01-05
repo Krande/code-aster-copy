@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -31,42 +31,42 @@ subroutine eulnau(angeul, angnau)
     real(kind=8) :: psi, theta, cospsi, sinpsi
     integer :: i
 !
-    psi  =angeul(1)*r8dgrd()
-    theta=angeul(2)*r8dgrd()
-    phi  =angeul(3)*r8dgrd()
-    cosphi=cos(phi)
-    cospsi=cos(psi)
-    costhe=cos(theta)
-    sinphi=sin(phi)
-    sinpsi=sin(psi)
-    sinthe=sin(theta)
+    psi = angeul(1)*r8dgrd()
+    theta = angeul(2)*r8dgrd()
+    phi = angeul(3)*r8dgrd()
+    cosphi = cos(phi)
+    cospsi = cos(psi)
+    costhe = cos(theta)
+    sinphi = sin(phi)
+    sinpsi = sin(psi)
+    sinthe = sin(theta)
 !
 !     MATRICE ROTATION ASSOCIEE AUX ANGLES D'EULER
-    pe(1,1)= cosphi *cospsi - sinphi *costhe *sinpsi
-    pe(2,1)= cosphi *sinpsi + sinphi *costhe *cospsi
-    pe(3,1)= sinphi *sinthe
-    pe(1,2)= -sinphi *cospsi - cosphi *costhe *sinpsi
-    pe(2,2)= -sinphi *sinpsi + cosphi *costhe *cospsi
-    pe(3,2)= cosphi *sinthe
-    pe(1,3)= sinthe *sinpsi
-    pe(2,3)= -sinthe *cospsi
-    pe(3,3)= costhe
+    pe(1, 1) = cosphi*cospsi-sinphi*costhe*sinpsi
+    pe(2, 1) = cosphi*sinpsi+sinphi*costhe*cospsi
+    pe(3, 1) = sinphi*sinthe
+    pe(1, 2) = -sinphi*cospsi-cosphi*costhe*sinpsi
+    pe(2, 2) = -sinphi*sinpsi+cosphi*costhe*cospsi
+    pe(3, 2) = cosphi*sinthe
+    pe(1, 3) = sinthe*sinpsi
+    pe(2, 3) = -sinthe*cospsi
+    pe(3, 3) = costhe
 !     EXPRESSION DES VECTEURS DE LA BASE LOCALE DANS LE REPERE LOCAL
     do i = 1, 3
-        xg(i)=pe(i,1)
-        yg(i)=pe(i,2)
+        xg(i) = pe(i, 1)
+        yg(i) = pe(i, 2)
 !         ZG(I)=PE(I,3)
     end do
 !
     call angvxy(xg, yg, angnau)
 !
-    if (angnau(1) .lt. 0.d0) angnau(1)=angnau(1)+2.0d0*r8pi()
-    if (angnau(2) .lt. 0.d0) angnau(2)=angnau(2)+2.0d0*r8pi()
-    if (angnau(3) .lt. 0.d0) angnau(3)=angnau(3)+2.0d0*r8pi()
+    if (angnau(1) .lt. 0.d0) angnau(1) = angnau(1)+2.0d0*r8pi()
+    if (angnau(2) .lt. 0.d0) angnau(2) = angnau(2)+2.0d0*r8pi()
+    if (angnau(3) .lt. 0.d0) angnau(3) = angnau(3)+2.0d0*r8pi()
 !
-    angnau(1)=angnau(1)/r8dgrd()
-    angnau(2)=angnau(2)/r8dgrd()
-    angnau(3)=angnau(3)/r8dgrd()
+    angnau(1) = angnau(1)/r8dgrd()
+    angnau(2) = angnau(2)/r8dgrd()
+    angnau(3) = angnau(3)/r8dgrd()
 !
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine mxwell_mt(ndim, typmod, imate , instam, instap, nl,&
-                     deps, sigm  , vim   , option,&
-                     sigp, vip   , dsidep, iret)
+subroutine mxwell_mt(ndim, typmod, imate, instam, instap, nl, &
+                     deps, sigm, vim, option, &
+                     sigp, vip, dsidep, iret)
 !
 !     REALISE LA LOI DE MAXWELL ISOTROPE : VISC_MAXWELL_MT
 !     avec les loies d'homogénéisation de MORI-TANAKA
@@ -56,12 +56,12 @@ subroutine mxwell_mt(ndim, typmod, imate , instam, instap, nl,&
     integer :: ndim, imate, iret, ndimsi
     integer :: k, l, icodre(3)
 !
-    real(kind=8) :: instam, instap, dt ,nl
+    real(kind=8) :: instam, instap, dt, nl
     real(kind=8) :: valres(5)
     real(kind=8) :: esk, nusk, Gsk, bulkmodulussk
     real(kind=8) :: etadsk, etavsk
     real(kind=8) :: G_mt, deuxG, bulkmodulus, etad, etav
-    real(kind=8) :: alpha,coef,tm,tp,tref,depsth(6)
+    real(kind=8) :: alpha, coef, tm, tp, tref, depsth(6)
     real(kind=8) :: depsmo, deps(6), depsdv(6), kron(6)
     real(kind=8) :: sigmmo, sigm(6), sigmdv(6), sigpmo, sigpdv(6), sigp(6), vim(*), vip(*)
     real(kind=8) :: dsidep(6, 6)
@@ -69,36 +69,36 @@ subroutine mxwell_mt(ndim, typmod, imate , instam, instap, nl,&
     character(len=8) :: typmod(*)
     character(len=16) :: nomres(5), option
 !-----------------------------------------------------------------------
-    data kron/1.d0,1.d0,1.d0,0.d0,0.d0,0.d0/
+    data kron/1.d0, 1.d0, 1.d0, 0.d0, 0.d0, 0.d0/
 !
 !     -- 1 INITIALISATIONS :
 !     ----------------------
-    iret=0
+    iret = 0
 !
     cplan = typmod(1) .eq. 'C_PLAN'
 !
     ndimsi = 2*ndim
-    dt = instap - instam
+    dt = instap-instam
 !
 !     -- 2 RECUPERATION DES CARACTERISTIQUES du squelette (sk)
 !     --------------------------------------------------------
 
-    nomres(1)='E'
-    nomres(2)='NU'
-    nomres(3)='ALPHA'
-    nomres(4)='ETA_D'
-    nomres(5)='ETA_V'
+    nomres(1) = 'E'
+    nomres(2) = 'NU'
+    nomres(3) = 'ALPHA'
+    nomres(4) = 'ETA_D'
+    nomres(5) = 'ETA_V'
 !
-    call rcvala(imate, ' ', 'ELAS', 0, ' ', [0.d0],&
+    call rcvala(imate, ' ', 'ELAS', 0, ' ', [0.d0], &
                 3, nomres(1), valres(1), icodre(1), 2)
 !
 !
-    call rcvala(imate, ' ', 'VISC_MAXWELL_MT', 0, ' ', [0.d0],&
+    call rcvala(imate, ' ', 'VISC_MAXWELL_MT', 0, ' ', [0.d0], &
                 2, nomres(4), valres(4), icodre(1), 2)
 !
-    esk    = valres(1)
-    nusk   = valres(2)
-    alpha  = valres(3)
+    esk = valres(1)
+    nusk = valres(2)
+    alpha = valres(3)
     etadsk = valres(4)
     etavsk = valres(5)
 !
@@ -110,23 +110,23 @@ subroutine mxwell_mt(ndim, typmod, imate , instam, instap, nl,&
 !     --------------------------------------------------------
 !
 !
-    bulkmodulus = bulkmodulussk * 4 * (1-nl) * Gsk    / (3*nl*bulkmodulussk + 4*Gsk) ;
-    G_mt        = Gsk    * (1-nl) * (9*bulkmodulussk + 8*Gsk)   /  &
-         (9 * bulkmodulussk * (1+2*nl/3) + 8 * Gsk    * (1+3*nl/2) );
+    bulkmodulus = bulkmodulussk*4*(1-nl)*Gsk/(3*nl*bulkmodulussk+4*Gsk); 
+    G_mt = Gsk*(1-nl)*(9*bulkmodulussk+8*Gsk)/ &
+           (9*bulkmodulussk*(1+2*nl/3)+8*Gsk*(1+3*nl/2)); 
     deuxG = 2*G_mt
 !
-    etav        = etavsk        * 4 * (1-nl) * etadsk / (3*nl*etavsk        + 4*etadsk) ;
-    etad        = etadsk * (1-nl) * (9*etavsk        + 8*etadsk) /  &
-         (9 * etavsk        * (1+2*nl/3) + 8 * etadsk * (1+3*nl/2) );
+    etav = etavsk*4*(1-nl)*etadsk/(3*nl*etavsk+4*etadsk); 
+    etad = etadsk*(1-nl)*(9*etavsk+8*etadsk)/ &
+           (9*etavsk*(1+2*nl/3)+8*etadsk*(1+3*nl/2)); 
 !
 !     -- 4 CALCUL DE DEPSMO ET DEPSDV :   (deformation moyenne et deviateur des deformations)
 !     --------------------------------
 ! - Get temperatures
 !
-    call get_varc('RIGI' , 1  , 1 , 'T',&
+    call get_varc('RIGI', 1, 1, 'T', &
                   tm, tp, tref)
 !
-    coef = alpha*(tp-tref) - alpha*(tm-tref)
+    coef = alpha*(tp-tref)-alpha*(tm-tref)
 !
 
     depsmo = 0.d0
@@ -136,12 +136,12 @@ subroutine mxwell_mt(ndim, typmod, imate , instam, instap, nl,&
         depsth(k) = deps(k)
     end do
     do k = 1, 3
-        depsth(k) = depsth(k) - coef
-        depsmo = depsmo + depsth(k)
+        depsth(k) = depsth(k)-coef
+        depsmo = depsmo+depsth(k)
     end do
     depsmo = depsmo/3.
     do k = 1, ndimsi
-        depsdv(k) = depsth(k) - depsmo * kron(k)
+        depsdv(k) = depsth(k)-depsmo*kron(k)
     end do
 !
 !     -- 6 CALCUL DE SIGMMO, SIGMDV :
@@ -149,16 +149,16 @@ subroutine mxwell_mt(ndim, typmod, imate , instam, instap, nl,&
     sigmmo = 0.d0
     sigmdv(:) = 0.d0
     do k = 1, 3
-        sigmmo = sigmmo + sigm(k)
+        sigmmo = sigmmo+sigm(k)
     end do
-    sigmmo = sigmmo /3.d0
-     do k = 1, ndimsi
-        sigmdv(k) = sigm(k) - sigmmo * kron(k)
+    sigmmo = sigmmo/3.d0
+    do k = 1, ndimsi
+        sigmdv(k) = sigm(k)-sigmmo*kron(k)
     end do
 !
 !     -- 7 CALCUL DE SIGPMO, SIGPDV, SIGP
 !     -------------------------------------
-    if (option(1:9) .eq. 'RAPH_MECA' .or. option(1:9) .eq. 'FULL_MECA' .or. option(1:16)&
+    if (option(1:9) .eq. 'RAPH_MECA' .or. option(1:9) .eq. 'FULL_MECA' .or. option(1:16) &
         .eq. 'RIGI_MECA_IMPLEX') then
 !
         sigpmo = 0.d0
@@ -168,34 +168,34 @@ subroutine mxwell_mt(ndim, typmod, imate , instam, instap, nl,&
 !   VISCO-ELASTICITE
 
 !        ! SIGPMO
-        sigpmo = (depsmo*3.d0*bulkmodulus + sigmmo)/(1.d0+bulkmodulus*dt/etav)
+        sigpmo = (depsmo*3.d0*bulkmodulus+sigmmo)/(1.d0+bulkmodulus*dt/etav)
 !        ! SIGPDV
         do k = 1, ndimsi
-            sigpdv(k) = (depsdv(k)*deuxG + sigmdv(k))/(1.d0+deuxG*dt/etad)
+            sigpdv(k) = (depsdv(k)*deuxG+sigmdv(k))/(1.d0+deuxG*dt/etad)
         end do
 !        ! SIGP
         do k = 1, ndimsi
-            sigp(k) = sigpdv(k) + sigpmo*kron(k)
+            sigp(k) = sigpdv(k)+sigpmo*kron(k)
         end do
 !
         vip(1) = 0.d0
-    endif
+    end if
 !
 !     -- 8 CALCUL DE DSIDEP(6,6) :
 !     ----------------------------
     if (option(1:10) .eq. 'RIGI_MECA_' .or. option(1:9) .eq. 'FULL_MECA') then
 !
-        dsidep(:,:)=0.d0
+        dsidep(:, :) = 0.d0
 !        ! Les 9 premiers termes
         do k = 1, 3
             do l = 1, 3
-                dsidep(k,l) = dsidep(k,l) + bulkmodulus/(1.d0+bulkmodulus*dt/etav)&
-                                 - (1.d0/3.d0)*deuxG/(1.d0+deuxG*dt/etad)
+                dsidep(k, l) = dsidep(k, l)+bulkmodulus/(1.d0+bulkmodulus*dt/etav) &
+                               -(1.d0/3.d0)*deuxG/(1.d0+deuxG*dt/etad)
             end do
         end do
         ! Les termes diagonaux
         do k = 1, ndimsi
-            dsidep(k,k) = dsidep(k,k) + deuxG/(1.d0+deuxG*dt/etad)
+            dsidep(k, k) = dsidep(k, k)+deuxG/(1.d0+deuxG*dt/etad)
         end do
 !       -- 8.3 CORRECTION POUR LES CONTRAINTES PLANES :
         if (cplan) then
@@ -203,11 +203,11 @@ subroutine mxwell_mt(ndim, typmod, imate , instam, instap, nl,&
                 if (k .ne. 3) then
                     do l = 1, ndimsi
                         if (l .ne. 3) then
-                            dsidep(k,l)=dsidep(k,l) - 1.d0/dsidep(3,3)*dsidep(k,3)*dsidep(3,l)
-                        endif
+                            dsidep(k, l) = dsidep(k, l)-1.d0/dsidep(3, 3)*dsidep(k, 3)*dsidep(3, l)
+                        end if
                     end do
-                endif
+                end if
             end do
-        endif
-    endif
+        end if
+    end if
 end subroutine

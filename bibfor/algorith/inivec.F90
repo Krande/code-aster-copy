@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -39,15 +39,15 @@ subroutine inivec(vec, neq, id, nbcp)
 !-----------------------------------------------------------------------
 !
     do i = 1, neq
-        vec(i)=0.d0
+        vec(i) = 0.d0
     end do
 !
     do j = 1, nbcp
         if (id(j) .gt. neq) then
             call utmess('A', 'ALGORITH4_35')
         else
-            vec(id(j))=1.d0
-        endif
+            vec(id(j)) = 1.d0
+        end if
     end do
 !
 end subroutine

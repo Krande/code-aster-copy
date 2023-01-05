@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@
 !
 subroutine cgComporNodes(result, nume_ordre, nb_point, fondNoeudNume, compValues)
 !
-use Behaviour_type
+    use Behaviour_type
 !
     implicit none
 !
@@ -86,14 +86,14 @@ use Behaviour_type
     ligrmo = model(1:8)//'.MODELE'
     call etenca(compor, ligrmo, iret)
     ASSERT(iret == 0)
-    call jeveuo(compor//'.PTMA', 'L', vi = comporPtma)
+    call jeveuo(compor//'.PTMA', 'L', vi=comporPtma)
 !
 ! - Access to COMPOR
 !
-    call jeveuo(compor//'.DESC', 'L', vi   = v_compor_desc)
-    call jeveuo(compor//'.VALE', 'E', vk16 = v_compor_vale)
+    call jeveuo(compor//'.DESC', 'L', vi=v_compor_desc)
+    call jeveuo(compor//'.VALE', 'E', vk16=v_compor_vale)
     call jelira(compor//'.VALE', 'LONMAX', nb_vale)
-    nb_zone    = v_compor_desc(3)
+    nb_zone = v_compor_desc(3)
     nb_cmp_max = nb_vale/v_compor_desc(2)
 !
 ! ----- Inverse connectivity and mesh paramters
@@ -104,24 +104,24 @@ use Behaviour_type
         compor_node = -1
         node_nume = fondNoeudNume(i_node)
 ! --- For nb_point_fond: behavior not identified (could be possible but harder)
-        if(node_nume <= 0) then
+        if (node_nume <= 0) then
             compValues(i_node) = "XXXXXXXX"
             cycle
         end if
 ! --------- Get elements attached to current node
-        call jeveuo(jexatr(connex_inv, 'LONCUM'), 'L', vi = v_coninv_longcum)
-        nb_node_cell = v_coninv_longcum(node_nume+1) - v_coninv_longcum(node_nume)
-        call jeveuo(jexnum(connex_inv, node_nume), 'L', vi = v_coninv)
+        call jeveuo(jexatr(connex_inv, 'LONCUM'), 'L', vi=v_coninv_longcum)
+        nb_node_cell = v_coninv_longcum(node_nume+1)-v_coninv_longcum(node_nume)
+        call jeveuo(jexnum(connex_inv, node_nume), 'L', vi=v_coninv)
 ! --------- Loop on elements attached to current node
         do i_cell = 1, nb_node_cell
             cell_nume = v_coninv(i_cell)
             zone_nume = comporPtma(cell_nume)
             rela_comp = v_compor_vale(nb_cmp_max*(zone_nume-1)+RELA_NAME)
-            if (rela_comp == "ELAS" .or.  rela_comp == "ELAS_FO") then
+            if (rela_comp == "ELAS" .or. rela_comp == "ELAS_FO") then
                 compor_cell = ELAS
-            elseif( rela_comp(1:10) == "ELAS_VMIS_") then
+            elseif (rela_comp(1:10) == "ELAS_VMIS_") then
                 compor_cell = ELAS_NL
-            elseif( rela_comp(1:10) == "VMIS_ISOT_") then
+            elseif (rela_comp(1:10) == "VMIS_ISOT_") then
                 compor_cell = PLAS
             else
                 ASSERT(ASTER_FALSE)
@@ -130,14 +130,14 @@ use Behaviour_type
         end do
 !
         select case (compor_node)
-            case ( ELAS )
-                compValues(i_node) = "ELAS"
-            case ( ELAS_NL )
-                compValues(i_node) = "ELAS_NL"
-            case ( PLAS )
-                compValues(i_node) = "PLAS"
-            case default
-                ASSERT(ASTER_FALSE)
+        case (ELAS)
+            compValues(i_node) = "ELAS"
+        case (ELAS_NL)
+            compValues(i_node) = "ELAS_NL"
+        case (PLAS)
+            compValues(i_node) = "PLAS"
+        case default
+            ASSERT(ASTER_FALSE)
         end select
     end do
 !

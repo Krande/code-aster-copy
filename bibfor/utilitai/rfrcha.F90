@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -96,57 +96,57 @@ subroutine rfrcha()
         if (typcha(1:7) .eq. 'CHAM_NO') then
 !       ----------------------------------
             if (ngn .ne. 0) then
-                call utnono(' ', noma, 'NOEUD', nogno, noeud,&
+                call utnono(' ', noma, 'NOEUD', nogno, noeud, &
                             iret)
                 if (iret .eq. 10) then
                     call utmess('F', 'ELEMENTS_67', sk=nogno)
-                else if (iret.eq.1) then
-                    valk (1) = nogno
-                    valk (2) = noeud
+                else if (iret .eq. 1) then
+                    valk(1) = nogno
+                    valk(2) = noeud
                     call utmess('A', 'SOUSTRUC_87', nk=2, valk=valk)
-                endif
-            endif
+                end if
+            end if
             call getvtx(' ', 'NOM_CMP', scal=cmp, nbret=nc)
-            call posddl('CHAM_NO', cham19, noeud, cmp, inoeud,&
+            call posddl('CHAM_NO', cham19, noeud, cmp, inoeud, &
                         iddl)
             if (inoeud .eq. 0) then
                 lg1 = lxlgut(noeud)
                 call utmess('F', 'UTILITAI_92', sk=noeud(1:lg1))
-            else if (iddl.eq.0) then
+            else if (iddl .eq. 0) then
                 lg1 = lxlgut(noeud)
                 lg2 = lxlgut(cmp)
                 valk(1) = cmp(1:lg2)
                 valk(2) = noeud(1:lg1)
                 call utmess('F', 'UTILITAI_93', nk=2, valk=valk)
-            endif
+            end if
             call jeveuo(cham19//'.VALE', 'L', vr=vale)
             call focste(nomfon, cmp, vale(iddl), 'G')
             goto 10
-        else if (typcha(1:9).eq.'CHAM_ELEM') then
+        else if (typcha(1:9) .eq. 'CHAM_ELEM') then
 !     -----------------------------------
 ! ---  VERIFICATION DE LA PRESENCE DES MOTS CLE GROUP_MA (OU MAILLE)
 ! ---  ET GROUP_NO (OU NOEUD OU POINT) DANS LE CAS D'UN CHAM_ELEM
             if (ngm .ne. 0) then
-                call utnono(' ', noma, 'MAILLE', nogma, maille,&
+                call utnono(' ', noma, 'MAILLE', nogma, maille, &
                             iret)
                 if (iret .eq. 10) then
                     call utmess('F', 'ELEMENTS_73', sk=nogma)
-                else if (iret.eq.1) then
-                    valk (1) = maille
+                else if (iret .eq. 1) then
+                    valk(1) = maille
                     call utmess('A', 'UTILITAI6_72', sk=valk(1))
-                endif
-            endif
+                end if
+            end if
             if (ngn .ne. 0) then
-                call utnono(' ', noma, 'NOEUD', nogno, noeud,&
+                call utnono(' ', noma, 'NOEUD', nogno, noeud, &
                             iret)
                 if (iret .eq. 10) then
                     call utmess('F', 'ELEMENTS_67', sk=nogno)
-                else if (iret.eq.1) then
-                    valk (1) = nogno
-                    valk (2) = noeud
+                else if (iret .eq. 1) then
+                    valk(1) = nogno
+                    valk(2) = noeud
                     call utmess('A', 'SOUSTRUC_87', nk=2, valk=valk)
-                endif
-            endif
+                end if
+            end if
             call dismoi('TYPE_CHAMP', cham19, 'CHAMP', repk=typch2)
             if (typch2 .eq. 'ELEM') then
                 npoint = 1
@@ -154,37 +154,37 @@ subroutine rfrcha()
                 noeud = ' '
                 if (maille .eq. ' ') then
                     call utmess('F', 'CHAMPS_11')
-                endif
-            else if (typch2.eq.'ELNO') then
+                end if
+            else if (typch2 .eq. 'ELNO') then
                 nusp = 1
-                if (maille .eq. ' ' .or. (noeud.eq.' ' .and. npoint.eq.0)) then
+                if (maille .eq. ' ' .or. (noeud .eq. ' ' .and. npoint .eq. 0)) then
                     call utmess('F', 'CHAMPS_12')
-                endif
+                end if
             else
                 if (maille .eq. ' ' .or. npoint .eq. 0) then
                     call utmess('F', 'CHAMPS_13')
-                endif
-            endif
+                end if
+            end if
             call dismoi('NOM_GD', cham19, 'CHAM_ELEM', repk=nomgd)
             call dismoi('TYPE_SCA', nomgd, 'GRANDEUR', repk=type)
             if (type .ne. 'R') then
                 call utmess('F', 'UTILITAI4_19')
-            endif
+            end if
             call utcmp1(nomgd, ' ', 1, cmp, ivari, nom_vari)
-            call utch19(cham19, noma, maille, noeud, npoint,&
-                        nusp, ivari, cmp, type, valr,&
+            call utch19(cham19, noma, maille, noeud, npoint, &
+                        nusp, ivari, cmp, type, valr, &
                         valc, vali, iret)
             if (iret .eq. 0) then
                 call focste(nomfon, cmp, valr, 'G')
-            endif
+            end if
             goto 10
         else
             call utmess('F', 'UTILITAI4_20', sk=typcha)
-        endif
-    endif
+        end if
+    end if
 !
 !     -----------------------------------------------------------------
- 10 continue
+10  continue
     call foattr(' ', 1, nomfon)
 !
 !     --- VERIFICATION QU'ON A BIEN CREER UNE FONCTION ---

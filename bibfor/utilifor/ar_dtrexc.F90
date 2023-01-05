@@ -1,6 +1,6 @@
 ! --------------------------------------------------------------------
 ! Copyright (C) LAPACK
-! Copyright (C) 2007 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 2007 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,8 +25,8 @@
 ! THE PRESENT ROUTINE IS MANDATORY FOR ARPACK LIBRARY
 ! WHICH STICKS TO LAPACK 2.0 VERSION
 ! ==============================================================
-subroutine ar_dtrexc(compq, n, t, ldt, q,&
-                  ldq, ifst, ilst, work, info)
+subroutine ar_dtrexc(compq, n, t, ldt, q, &
+                     ldq, ifst, ilst, work, info)
 !
 !     SUBROUTINE LAPACK REORDONNANT LA FACTORISATION DE SCHUR REELLE
 !     D'UNE MATRICE REELLE QUELCONQUE.
@@ -121,11 +121,11 @@ subroutine ar_dtrexc(compq, n, t, ldt, q,&
     integer :: ifst, ilst, info, ldq, ldt, n
 !     ..
 !     .. ARRAY ARGUMENTS ..
-    real(kind=8) :: q( ldq, * ), t( ldt, * ), work( * )
+    real(kind=8) :: q(ldq, *), t(ldt, *), work(*)
 !
 !     .. PARAMETERS ..
     real(kind=8) :: zero
-    parameter          ( zero = 0.0d+0 )
+    parameter(zero=0.0d+0)
 !     ..
 !     .. LOCAL SCALARS ..
     aster_logical :: wantq
@@ -138,24 +138,24 @@ subroutine ar_dtrexc(compq, n, t, ldt, q,&
 !     DECODE AND TEST THE INPUT ARGUMENTS.
 !
     info = 0
-    wantq = lsame( compq, 'V' )
-    if (.not.wantq .and. .not.lsame( compq, 'N' )) then
+    wantq = lsame(compq, 'V')
+    if (.not. wantq .and. .not. lsame(compq, 'N')) then
         info = -1
-    else if (n.lt.0) then
+    else if (n .lt. 0) then
         info = -2
-    else if (ldt.lt.max( 1, n )) then
+    else if (ldt .lt. max(1, n)) then
         info = -4
-    else if (ldq.lt.1 .or. ( wantq .and. ldq.lt.max( 1, n ) )) then
+    else if (ldq .lt. 1 .or. (wantq .and. ldq .lt. max(1, n))) then
         info = -6
-    else if (ifst.lt.1 .or. ifst.gt.n) then
+    else if (ifst .lt. 1 .or. ifst .gt. n) then
         info = -7
-    else if (ilst.lt.1 .or. ilst.gt.n) then
+    else if (ilst .lt. 1 .or. ilst .gt. n) then
         info = -8
-    endif
+    end if
     if (info .ne. 0) then
         call xerbla('DTREXC', -info)
         goto 1000
-    endif
+    end if
 !
 !     QUICK RETURN IF POSSIBLE
 !
@@ -165,23 +165,23 @@ subroutine ar_dtrexc(compq, n, t, ldt, q,&
 !     AND FIND OUT IT IS 1 BY 1 OR 2 BY 2.
 !
     if (ifst .gt. 1) then
-        if (t( ifst, ifst-1 ) .ne. zero) ifst = ifst - 1
-    endif
+        if (t(ifst, ifst-1) .ne. zero) ifst = ifst-1
+    end if
     nbf = 1
     if (ifst .lt. n) then
-        if (t( ifst+1, ifst ) .ne. zero) nbf = 2
-    endif
+        if (t(ifst+1, ifst) .ne. zero) nbf = 2
+    end if
 !
 !     DETERMINE THE FIRST ROW OF THE FINAL BLOCK
 !     AND FIND OUT IT IS 1 BY 1 OR 2 BY 2.
 !
     if (ilst .gt. 1) then
-        if (t( ilst, ilst-1 ) .ne. zero) ilst = ilst - 1
-    endif
+        if (t(ilst, ilst-1) .ne. zero) ilst = ilst-1
+    end if
     nbl = 1
     if (ilst .lt. n) then
-        if (t( ilst+1, ilst ) .ne. zero) nbl = 2
-    endif
+        if (t(ilst+1, ilst) .ne. zero) nbl = 2
+    end if
 !
     if (ifst .eq. ilst) goto 1000
 !
@@ -189,12 +189,12 @@ subroutine ar_dtrexc(compq, n, t, ldt, q,&
 !
 !        UPDATE ILST
 !
-        if (nbf .eq. 2 .and. nbl .eq. 1) ilst = ilst - 1
-        if (nbf .eq. 1 .and. nbl .eq. 2) ilst = ilst + 1
+        if (nbf .eq. 2 .and. nbl .eq. 1) ilst = ilst-1
+        if (nbf .eq. 1 .and. nbl .eq. 2) ilst = ilst+1
 !
         here = ifst
 !
- 10     continue
+10      continue
 !
 !        SWAP BLOCK WITH NEXT ONE BELOW
 !
@@ -204,22 +204,22 @@ subroutine ar_dtrexc(compq, n, t, ldt, q,&
 !
             nbnext = 1
             if (here+nbf+1 .le. n) then
-                if (t( here+nbf+1, here+nbf ) .ne. zero) nbnext = 2
-            endif
-            call ar_dlaexc(wantq, n, t, ldt, q,&
-                        ldq, here, nbf, nbnext, work,&
-                        info)
+                if (t(here+nbf+1, here+nbf) .ne. zero) nbnext = 2
+            end if
+            call ar_dlaexc(wantq, n, t, ldt, q, &
+                           ldq, here, nbf, nbnext, work, &
+                           info)
             if (info .ne. 0) then
                 ilst = here
                 goto 1000
-            endif
-            here = here + nbnext
+            end if
+            here = here+nbnext
 !
 !           TEST IF 2 BY 2 BLOCK BREAKS INTO TWO 1 BY 1 BLOCKS
 !
             if (nbf .eq. 2) then
-                if (t( here+1, here ) .eq. zero) nbf = 3
-            endif
+                if (t(here+1, here) .eq. zero) nbf = 3
+            end if
 !
         else
 !
@@ -228,60 +228,60 @@ subroutine ar_dtrexc(compq, n, t, ldt, q,&
 !
             nbnext = 1
             if (here+3 .le. n) then
-                if (t( here+3, here+2 ) .ne. zero) nbnext = 2
-            endif
-            call ar_dlaexc(wantq, n, t, ldt, q,&
-                        ldq, here+1, 1, nbnext, work,&
-                        info)
+                if (t(here+3, here+2) .ne. zero) nbnext = 2
+            end if
+            call ar_dlaexc(wantq, n, t, ldt, q, &
+                           ldq, here+1, 1, nbnext, work, &
+                           info)
             if (info .ne. 0) then
                 ilst = here
                 goto 1000
-            endif
+            end if
             if (nbnext .eq. 1) then
 !
 !              SWAP TWO 1 BY 1 BLOCKS, NO PROBLEMS POSSIBLE
 !
-                call ar_dlaexc(wantq, n, t, ldt, q,&
-                            ldq, here, 1, nbnext, work,&
-                            info)
-                here = here + 1
+                call ar_dlaexc(wantq, n, t, ldt, q, &
+                               ldq, here, 1, nbnext, work, &
+                               info)
+                here = here+1
             else
 !
 !              RECOMPUTE NBNEXT IN CASE 2 BY 2 SPLIT
 !
-                if (t( here+2, here+1 ) .eq. zero) nbnext = 1
+                if (t(here+2, here+1) .eq. zero) nbnext = 1
                 if (nbnext .eq. 2) then
 !
 !                 2 BY 2 BLOCK DID NOT SPLIT
 !
-                    call ar_dlaexc(wantq, n, t, ldt, q,&
-                                ldq, here, 1, nbnext, work,&
-                                info)
+                    call ar_dlaexc(wantq, n, t, ldt, q, &
+                                   ldq, here, 1, nbnext, work, &
+                                   info)
                     if (info .ne. 0) then
                         ilst = here
                         goto 1000
-                    endif
-                    here = here + 2
+                    end if
+                    here = here+2
                 else
 !
 !                 2 BY 2 BLOCK DID SPLIT
 !
-                    call ar_dlaexc(wantq, n, t, ldt, q,&
-                                ldq, here, 1, 1, work,&
-                                info)
-                    call ar_dlaexc(wantq, n, t, ldt, q,&
-                                ldq, here+1, 1, 1, work,&
-                                info)
-                    here = here + 2
-                endif
-            endif
-        endif
+                    call ar_dlaexc(wantq, n, t, ldt, q, &
+                                   ldq, here, 1, 1, work, &
+                                   info)
+                    call ar_dlaexc(wantq, n, t, ldt, q, &
+                                   ldq, here+1, 1, 1, work, &
+                                   info)
+                    here = here+2
+                end if
+            end if
+        end if
         if (here .lt. ilst) goto 10
 !
     else
 !
         here = ifst
- 20     continue
+20      continue
 !
 !        SWAP BLOCK WITH NEXT ONE ABOVE
 !
@@ -291,22 +291,22 @@ subroutine ar_dtrexc(compq, n, t, ldt, q,&
 !
             nbnext = 1
             if (here .ge. 3) then
-                if (t( here-1, here-2 ) .ne. zero) nbnext = 2
-            endif
-            call ar_dlaexc(wantq, n, t, ldt, q,&
-                        ldq, here-nbnext, nbnext, nbf, work,&
-                        info)
+                if (t(here-1, here-2) .ne. zero) nbnext = 2
+            end if
+            call ar_dlaexc(wantq, n, t, ldt, q, &
+                           ldq, here-nbnext, nbnext, nbf, work, &
+                           info)
             if (info .ne. 0) then
                 ilst = here
                 goto 1000
-            endif
-            here = here - nbnext
+            end if
+            here = here-nbnext
 !
 !           TEST IF 2 BY 2 BLOCK BREAKS INTO TWO 1 BY 1 BLOCKS
 !
             if (nbf .eq. 2) then
-                if (t( here+1, here ) .eq. zero) nbf = 3
-            endif
+                if (t(here+1, here) .eq. zero) nbf = 3
+            end if
 !
         else
 !
@@ -315,56 +315,56 @@ subroutine ar_dtrexc(compq, n, t, ldt, q,&
 !
             nbnext = 1
             if (here .ge. 3) then
-                if (t( here-1, here-2 ) .ne. zero) nbnext = 2
-            endif
-            call ar_dlaexc(wantq, n, t, ldt, q,&
-                        ldq, here-nbnext, nbnext, 1, work,&
-                        info)
+                if (t(here-1, here-2) .ne. zero) nbnext = 2
+            end if
+            call ar_dlaexc(wantq, n, t, ldt, q, &
+                           ldq, here-nbnext, nbnext, 1, work, &
+                           info)
             if (info .ne. 0) then
                 ilst = here
                 goto 1000
-            endif
+            end if
             if (nbnext .eq. 1) then
 !
 !              SWAP TWO 1 BY 1 BLOCKS, NO PROBLEMS POSSIBLE
 !
-                call ar_dlaexc(wantq, n, t, ldt, q,&
-                            ldq, here, nbnext, 1, work,&
-                            info)
-                here = here - 1
+                call ar_dlaexc(wantq, n, t, ldt, q, &
+                               ldq, here, nbnext, 1, work, &
+                               info)
+                here = here-1
             else
 !
 !              RECOMPUTE NBNEXT IN CASE 2 BY 2 SPLIT
 !
-                if (t( here, here-1 ) .eq. zero) nbnext = 1
+                if (t(here, here-1) .eq. zero) nbnext = 1
                 if (nbnext .eq. 2) then
 !
 !                 2 BY 2 BLOCK DID NOT SPLIT
 !
-                    call ar_dlaexc(wantq, n, t, ldt, q,&
-                                ldq, here-1, 2, 1, work,&
-                                info)
+                    call ar_dlaexc(wantq, n, t, ldt, q, &
+                                   ldq, here-1, 2, 1, work, &
+                                   info)
                     if (info .ne. 0) then
                         ilst = here
                         goto 1000
-                    endif
-                    here = here - 2
+                    end if
+                    here = here-2
                 else
 !
 !                 2 BY 2 BLOCK DID SPLIT
 !
-                    call ar_dlaexc(wantq, n, t, ldt, q,&
-                                ldq, here, 1, 1, work,&
-                                info)
-                    call ar_dlaexc(wantq, n, t, ldt, q,&
-                                ldq, here-1, 1, 1, work,&
-                                info)
-                    here = here - 2
-                endif
-            endif
-        endif
+                    call ar_dlaexc(wantq, n, t, ldt, q, &
+                                   ldq, here, 1, 1, work, &
+                                   info)
+                    call ar_dlaexc(wantq, n, t, ldt, q, &
+                                   ldq, here-1, 1, 1, work, &
+                                   info)
+                    here = here-2
+                end if
+            end if
+        end if
         if (here .gt. ilst) goto 20
-    endif
+    end if
     ilst = here
 !
 1000 continue

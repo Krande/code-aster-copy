@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine xcfacf(ptint, ptmax, ipt, ainter, lsn,&
-                  lst, igeom, nno, ndim, typma,&
+subroutine xcfacf(ptint, ptmax, ipt, ainter, lsn, &
+                  lst, igeom, nno, ndim, typma, &
                   noma, nmaabs)
     implicit none
 !
@@ -72,17 +72,17 @@ subroutine xcfacf(ptint, ptmax, ipt, ainter, lsn,&
     call elref1(elref)
 !
 !     INITIALISATION DES MIN ET MAX
-    maxlsn=-1.d0*r8maem()
-    minlsn=r8maem()
-    maxlst=-1.d0*r8maem()
-    minlst=r8maem()
+    maxlsn = -1.d0*r8maem()
+    minlsn = r8maem()
+    maxlst = -1.d0*r8maem()
+    minlst = r8maem()
 !
 !     RECHERCHE DU MIN ET MAX DES LEVEL SETS SUR LES NOEUDS
     do i = 1, nno
-        maxlsn=max(lsn(i),maxlsn)
-        maxlst=max(lst(i),maxlst)
-        minlsn=min(lsn(i),minlsn)
-        minlst=min(lst(i),minlst)
+        maxlsn = max(lsn(i), maxlsn)
+        maxlst = max(lst(i), maxlst)
+        minlsn = min(lsn(i), minlsn)
+        minlst = min(lst(i), minlst)
     end do
 !
 !     SI CE N'EST PAS UN ELEMENT EN FOND DE FISSURE, ON SORT
@@ -98,31 +98,31 @@ subroutine xcfacf(ptint, ptmax, ipt, ainter, lsn,&
     do ifq = 1, nbf
 !
 !       RECHERCHE DES INTERSECTION ENTRE LE FOND DE FISSURE ET LA FACE
-        call intfac(noma, nmaabs, ifq, fa, nno,&
-                    lst, lsn, ndim, 'NON', ibid,&
-                    ibid, igeom, m, indptf, [rbid],&
+        call intfac(noma, nmaabs, ifq, fa, nno, &
+                    lst, lsn, ndim, 'NON', ibid, &
+                    ibid, igeom, m, indptf, [rbid], &
                     [rbid], codret)
         if (codret .eq. 0) goto 200
 !
 !       POUR IGNORER LES POINTS CONFONDUS AVEC CEUX
 !       DETECTES DANS XCFACE LORSQUE LE PT EST EXACT SUR UNE ARETE
         do j = 1, ipt
-            dst=padist(ndim,m,ptint(ndim*(j-1)+1))
+            dst = padist(ndim, m, ptint(ndim*(j-1)+1))
             if (dst .le. r8prem()) goto 200
         end do
 !
 !       LONGUEUR CARACTERISTIQUE
         do i = 1, ndim
-            a(i) = zr(igeom-1+ndim*(fa(ifq,1)-1)+i)
-            b(i) = zr(igeom-1+ndim*(fa(ifq,2)-1)+i)
-            c(i) = zr(igeom-1+ndim*(fa(ifq,3)-1)+i)
+            a(i) = zr(igeom-1+ndim*(fa(ifq, 1)-1)+i)
+            b(i) = zr(igeom-1+ndim*(fa(ifq, 2)-1)+i)
+            c(i) = zr(igeom-1+ndim*(fa(ifq, 3)-1)+i)
         end do
-        loncar=(padist(ndim,a,b)+padist(ndim,a,c))/2.d0
+        loncar = (padist(ndim, a, b)+padist(ndim, a, c))/2.d0
 !
 !       ON AJOUTE A LA LISTE LE POINT M
 !
-        call xajpin(ndim, ptint, ptmax, ipt, ibid,&
-                    m, loncar, ainter, 0, 0,&
+        call xajpin(ndim, ptint, ptmax, ipt, ibid, &
+                    m, loncar, ainter, 0, 0, &
                     0.d0, ajout)
 !
 200     continue

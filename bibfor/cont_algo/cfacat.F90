@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,12 +16,12 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine cfacat(indic, nbliac, ajliai, spliai,&
+subroutine cfacat(indic, nbliac, ajliai, spliai, &
                   indfac, &
                   sdcont_defi, sdcont_solv, solveu, lmat, &
                   xjvmax)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/cfaca1.h"
 #include "asterfort/cfaca2.h"
@@ -62,11 +62,11 @@ implicit none
 !
     if (indic .ne. -1) then
         call cfaca1(nbliac, ajliai, &
-                    sdcont_defi, sdcont_solv, solveu,&
+                    sdcont_defi, sdcont_solv, solveu, &
                     lmat)
-    endif
+    end if
     call cfaca2(nbliac, spliai, &
-                indfac, sdcont_solv, lmat,&
+                indfac, sdcont_solv, lmat, &
                 xjvmax)
 !
     indic = 1

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine xpoini(maxfem, modele, malini, modvis, licham,&
+subroutine xpoini(maxfem, modele, malini, modvis, licham, &
                   resuco, resux, prefno, nogrfi)
 !
 ! person_in_charge: samuel.geniaut at edf.fr
@@ -59,7 +59,7 @@ subroutine xpoini(maxfem, modele, malini, modvis, licham,&
     integer :: iret, ibid, jlicha, jxc, i
     integer :: nbcham, nchmax
 !     NOMBRE MAX DE CHAMPS A POST-TRAITER
-    parameter    (nchmax=3)
+    parameter(nchmax=3)
     character(len=8) :: k8b
     character(len=16) :: k16b, nomcmd, tysd, linom(nchmax)
     character(len=19) :: k19bid
@@ -82,7 +82,7 @@ subroutine xpoini(maxfem, modele, malini, modvis, licham,&
         call exixfe(modele, iret)
         if (iret .eq. 0) then
             call utmess('F', 'XFEM_3', sk=modele)
-        endif
+        end if
 !
 !
 !       PREFERENCES POUR LE NOMAGE DES NOUVELLES ENTITES
@@ -93,7 +93,7 @@ subroutine xpoini(maxfem, modele, malini, modvis, licham,&
         call getvtx(' ', 'PREF_GROUP_CO', scal=nogrfi, nbret=ibid)
 !
 !     ------------------------------------------------------------------
-    else if (nomcmd.eq.'POST_CHAM_XFEM') then
+    else if (nomcmd .eq. 'POST_CHAM_XFEM') then
 !     ------------------------------------------------------------------
 !
 !       NOM DE LA SD RESULTAT A CREER : RESUX
@@ -104,10 +104,10 @@ subroutine xpoini(maxfem, modele, malini, modvis, licham,&
         call dismoi('NOM_MAILLA', modvis, 'MODELE', repk=maxfem)
 !
 !       VERIFICATION QUE LE MODELE de VISU N'EST PAS X-FEM
-        call exixfe(modvis,ibid)
-        if (ibid.eq.1) then
+        call exixfe(modvis, ibid)
+        if (ibid .eq. 1) then
             call utmess('F', 'XFEM2_30')
-        endif
+        end if
 !
 !       NOM ET TYPE DE LA SD RESULTAT EN ENTREE : RESUCO
         call getvid(' ', 'RESULTAT', scal=resuco, nbret=ibid)
@@ -121,12 +121,12 @@ subroutine xpoini(maxfem, modele, malini, modvis, licham,&
         if (tysd(1:9) .eq. 'MODE_MECA') then
             nbcham = 1
             linom(1) = 'DEPL'
-        else if (tysd(1:9).eq.'EVOL_NOLI') then
+        else if (tysd(1:9) .eq. 'EVOL_NOLI') then
 !         A CORRIGER SUITE FICHE 15408
 !         PB POST-TRAITEMENT VARIABLES INTERNES SI CONTACT P2P1 (GLUTE)
             call jeveuo(modele//'.XFEM_CONT', 'L', jxc)
             if (zi(jxc-1+1) .eq. 3) then
-                write(6,*)'ON NE PEUT PAS POST-TRAITER LE CHAMP VARI_ELGA'
+                write (6, *) 'ON NE PEUT PAS POST-TRAITER LE CHAMP VARI_ELGA'
                 nbcham = 2
                 linom(1) = 'DEPL'
                 linom(2) = 'SIEF_ELGA'
@@ -135,9 +135,9 @@ subroutine xpoini(maxfem, modele, malini, modvis, licham,&
                 linom(1) = 'DEPL'
                 linom(2) = 'SIEF_ELGA'
                 linom(3) = 'VARI_ELGA'
-            endif
-        else if (tysd(1:9).eq.'EVOL_ELAS') then
-            call rsexch(' ', resuco, 'SIEF_ELGA', 1, k19bid,&
+            end if
+        else if (tysd(1:9) .eq. 'EVOL_ELAS') then
+            call rsexch(' ', resuco, 'SIEF_ELGA', 1, k19bid, &
                         iret)
             if (iret .eq. 0) then
                 nbcham = 2
@@ -146,19 +146,19 @@ subroutine xpoini(maxfem, modele, malini, modvis, licham,&
             else
                 nbcham = 1
                 linom(1) = 'DEPL'
-            endif
-        else if (tysd(1:9).eq.'EVOL_THER') then
+            end if
+        else if (tysd(1:9) .eq. 'EVOL_THER') then
             nbcham = 1
             linom(1) = 'TEMP'
-        endif
+        end if
 !
         call wkvect(licham, 'V V K16', nbcham, jlicha)
         do i = 1, nbcham
-            zk16(jlicha-1+i)=linom(i)
+            zk16(jlicha-1+i) = linom(i)
         end do
 !
 !     ----------------------------------------------------------------
-    endif
+    end if
 !     ------------------------------------------------------------------
 !
 !     MAILLAGE INITIAL : MALINI

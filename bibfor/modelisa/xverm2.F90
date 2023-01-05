@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -54,7 +54,7 @@ subroutine xverm2(nfiss, fiss, mod)
 !   recuperation du phenomene
 !
     call dismoi('PHENOMENE', mod, 'MODELE', repk=pheno)
-    ASSERT(pheno.eq.'MECANIQUE' .or. pheno.eq.'THERMIQUE')
+    ASSERT(pheno .eq. 'MECANIQUE' .or. pheno .eq. 'THERMIQUE')
 !
 !   s'agit-il d'une modelisation HM
 !
@@ -69,14 +69,14 @@ subroutine xverm2(nfiss, fiss, mod)
         call dismoi('TYPE_DISCONTINUITE', fiss(ifiss), 'FISS_XFEM', repk=typdis)
         if (exithm .eq. 'OUI' .and. typdis .eq. 'FISSURE') then
             call utmess('F', 'XFEM_78', sk='HM-XFEM')
-        endif
+        end if
 !
 !       on interdit le multi-heaviside en thermique
 !
         call jeexin(fiss(ifiss)//'.JONFISS', iexi)
         if (iexi .ne. 0 .and. pheno .eq. 'THERMIQUE') then
-                call utmess('F', 'XFEM_71', sk=mod)
-        endif
+            call utmess('F', 'XFEM_71', sk=mod)
+        end if
 !
     end do
 !

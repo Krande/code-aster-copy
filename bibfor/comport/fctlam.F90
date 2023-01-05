@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine fctlam(x,finalW)
+subroutine fctlam(x, finalW)
 !
     implicit none
 #include "asterfort/assert.h"
@@ -43,7 +43,7 @@ subroutine fctlam(x,finalW)
     integer :: n, nmax
 !
     eps = 1.d-9
-    currentW=0.d0
+    currentW = 0.d0
     n = 0
     nmax = 1000
 ! - La valeur w0, premier terme de la suite, a un impact fort sur la convergence
@@ -51,26 +51,25 @@ subroutine fctlam(x,finalW)
 !   On lui associe des valeurs précalculées  par le biais d'une régression linéraire
 !   pour assurer cette convergence
 
-    if (x.lt.8) then
-        lastW=1.d0
-    elseif (x.ge.8) then
-        lastW = 0.7988*log(x) - 0.1091
-    endif
-
+    if (x .lt. 8) then
+        lastW = 1.d0
+    elseif (x .ge. 8) then
+        lastW = 0.7988*log(x)-0.1091
+    end if
 
 ! - ON S'ASSURE DE RESTER SUR LES BRANCHES AUX VALEURS REELLES
     if (x .le. -1.d0/exp(1.d0)) then
         ASSERT(.false.)
     end if
 
-    loop:do
+    loop: do
         expW = exp(lastW)
-        currentW = lastW - (lastW*expW-x)/((1+lastW)*expW)
-        if(lastW - currentW < eps) exit loop
+        currentW = lastW-(lastW*expW-x)/((1+lastW)*expW)
+        if (lastW-currentW < eps) exit loop
         lastW = currentW
 
-        n=n+1
-        if(n>nmax) then
+        n = n+1
+        if (n > nmax) then
             ASSERT(.false.)
         end if
 

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 subroutine sanscc(sdcont, keywf, mesh)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/sansno.h"
 !
@@ -43,7 +43,7 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: nb_keyw
-    parameter (nb_keyw=2)
+    parameter(nb_keyw=2)
     character(len=16) :: keyw_name(nb_keyw), keyw_type(nb_keyw)
 !
     character(len=24) :: sdcont_defi
@@ -58,13 +58,13 @@ implicit none
 !
 ! - Datastructure for contact
 !
-    sdcont_defi    = sdcont(1:8)//'.CONTACT'
-    sdcont_sanofr  = sdcont_defi(1:16)//'.SANOFR'
+    sdcont_defi = sdcont(1:8)//'.CONTACT'
+    sdcont_sanofr = sdcont_defi(1:16)//'.SANOFR'
     sdcont_psanofr = sdcont_defi(1:16)//'.PSANOFR'
 !
 ! - Read list of nodes and save them
 !
-    call sansno(sdcont , keywf    , mesh     , sdcont_sanofr, sdcont_psanofr,&
+    call sansno(sdcont, keywf, mesh, sdcont_sanofr, sdcont_psanofr, &
                 nb_keyw, keyw_type, keyw_name)
 !
 end subroutine

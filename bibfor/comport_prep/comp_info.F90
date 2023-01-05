@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,17 +19,17 @@
 !
 subroutine comp_info(model, compor)
 !
-use Behaviour_type
+    use Behaviour_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/comp_meca_pvar.h"
 #include "asterfort/jedetc.h"
 #include "asterfort/imvari.h"
 !
-character(len=8), intent(in) :: model
-character(len=19), intent(in) :: compor
+    character(len=8), intent(in) :: model
+    character(len=19), intent(in) :: compor
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -50,7 +50,7 @@ character(len=19), intent(in) :: compor
 !
 
 ! - Prepare informations about internal variables
-    call comp_meca_pvar(model_ = model, comporMap_ = compor, comporInfo = comporInfo)
+    call comp_meca_pvar(model_=model, comporMap_=compor, comporInfo=comporInfo)
 
 ! - Print informations about internal variables
     call imvari(comporInfo)

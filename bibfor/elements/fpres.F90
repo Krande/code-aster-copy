@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -38,9 +38,9 @@ subroutine fpres(nomte, xi, nb1, vecl, vectpt)
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
     call jevete('&INEL.'//nomte(1:8)//'.DESI', ' ', lzi)
-    nb1  =zi(lzi-1+1)
-    nb2  =zi(lzi-1+2)
-    npgsn=zi(lzi-1+4)
+    nb1 = zi(lzi-1+1)
+    nb2 = zi(lzi-1+2)
+    npgsn = zi(lzi-1+4)
 !
     call jevete('&INEL.'//nomte(1:8)//'.DESR', ' ', lzr)
 !
@@ -51,28 +51,28 @@ subroutine fpres(nomte, xi, nb1, vecl, vectpt)
     call jevech('PPRESSR', 'L', jpres)
     do j = 1, nb1
         do i = 1, 6
-            chgsrl(i)=0.d0
+            chgsrl(i) = 0.d0
         end do
 !-----------------------------------------------------
 !  LE SIGNE MOINS CORRESPOND A LA CONVENTION :
 !      UNE PRESSION POSITIVE PROVOQUE UN GONFLEMENT
-        chgsrl(3)= - zr(jpres-1+j)
+        chgsrl(3) = -zr(jpres-1+j)
 !-----------------------------------------------------
         do jp = 1, 3
             do ip = 1, 3
-                pgl(jp,ip)=vectpt(j,jp,ip)
+                pgl(jp, ip) = vectpt(j, jp, ip)
             end do
         end do
         call utpvlg(1, 6, pgl, chgsrl, chg)
         do i = 1, 6
-            chgsrg(i,j)=chg(i)
+            chgsrg(i, j) = chg(i)
         end do
     end do
 !
     do intsn = 1, npgsn
         call vectci(intsn, nb1, xi, zr(lzr), rnormc)
 !
-        call forsrg(intsn, nb1, nb2, zr(lzr), chgsrg,&
+        call forsrg(intsn, nb1, nb2, zr(lzr), chgsrg, &
                     rnormc, vectpt, vecl1)
     end do
 !
@@ -80,27 +80,27 @@ subroutine fpres(nomte, xi, nb1, vecl, vectpt)
 !     ATTENTION LA ROUTINE N'EST PAS UTILISEE DANS LE CAS DES
 !     EFFORTS SUIVANTS (MOMENTS SURFACIQUES)
 !
-    i1=5*nb1
+    i1 = 5*nb1
     do j = 1, 2
         do i = 1, i1
-            k=(j-1)*i1+i
-            kijkm1(i,j)=zr(lzr-1+1000+k)
+            k = (j-1)*i1+i
+            kijkm1(i, j) = zr(lzr-1+1000+k)
         end do
     end do
 !
     do i = 1, i1
-        f1=0.d0
+        f1 = 0.d0
         do k = 1, 2
-            f1=f1+kijkm1(i,k)*vecl1(i1+k)
+            f1 = f1+kijkm1(i, k)*vecl1(i1+k)
         end do
-        vecl1(i)=vecl1(i)-f1
+        vecl1(i) = vecl1(i)-f1
     end do
 !
 !     EXPANSION DU VECTEUR VECL1 : DUE A L'AJOUT DE LA ROTATION FICTIVE
 !
     call vexpan(nb1, vecl1, vecl)
     do i = 1, 3
-        vecl(6*nb1+i)=0.d0
+        vecl(6*nb1+i) = 0.d0
     end do
 !
 end subroutine

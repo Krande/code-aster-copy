@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine fonno52(noma, na, nb, ndim, vnor,vdir)
+subroutine fonno52(noma, na, nb, ndim, vnor, vdir)
     implicit none
 #include "jeveux.h"
 #include "asterfort/assert.h"
@@ -65,37 +65,37 @@ subroutine fonno52(noma, na, nb, ndim, vnor,vdir)
 !     RECUPERATION DE L'ADRESSE DES COORDONNEES DES NOEUD DU FOND DE FISSURE
     call jeveuo(noma//'.COORDO    .VALE', 'L', vr=vale)
 
-    nx = vnor(1,1)
-    ny = vnor(1,2)
-    nz = vnor(1,3)
+    nx = vnor(1, 1)
+    ny = vnor(1, 2)
+    nz = vnor(1, 3)
 !
-    if (ndim.eq.2) then
+    if (ndim .eq. 2) then
 !       CALCUL DU VECTEUR ALLANT DE B VERS A
-        x1 = vale( (nb-1)*3 + 1 )
-        y1 = vale( (nb-1)*3 + 2 )
-        z1 = vale( (nb-1)*3 + 3 )
-        x2 = vale( (na-1)*3 + 1 )
-        y2 = vale( (na-1)*3 + 2 )
-        z2 = vale( (na-1)*3 + 3 )
+        x1 = vale((nb-1)*3+1)
+        y1 = vale((nb-1)*3+2)
+        z1 = vale((nb-1)*3+3)
+        x2 = vale((na-1)*3+1)
+        y2 = vale((na-1)*3+2)
+        z2 = vale((na-1)*3+3)
 
         x21 = x2-x1
         y21 = y2-y1
         z21 = z2-z1
 
 !       ON SOUSTRAIT A CE VECTEUR SA COMPOSANTE SUIVANT LA NOMALE
-        vdir(1,1) = x21 - (x21*nx+y21*ny+z21*nz)*nx
-        vdir(1,2) = y21 - (x21*nx+y21*ny+z21*nz)*ny
-        vdir(1,3) = z21 - (x21*nx+y21*ny+z21*nz)*nz
+        vdir(1, 1) = x21-(x21*nx+y21*ny+z21*nz)*nx
+        vdir(1, 2) = y21-(x21*nx+y21*ny+z21*nz)*ny
+        vdir(1, 3) = z21-(x21*nx+y21*ny+z21*nz)*nz
 
-    else if(ndim.eq.3) then
+    else if (ndim .eq. 3) then
 
 !       CALCUL DU VECTEUR ALLANT DE B VERS A
-        x1 = vale( (na-1)*3 + 1 )
-        y1 = vale( (na-1)*3 + 2 )
-        z1 = vale( (na-1)*3 + 3 )
-        x2 = vale( (nb-1)*3 + 1 )
-        y2 = vale( (nb-1)*3 + 2 )
-        z2 = vale( (nb-1)*3 + 3 )
+        x1 = vale((na-1)*3+1)
+        y1 = vale((na-1)*3+2)
+        z1 = vale((na-1)*3+3)
+        x2 = vale((nb-1)*3+1)
+        y2 = vale((nb-1)*3+2)
+        z2 = vale((nb-1)*3+3)
 
         x21 = x2-x1
         y21 = y2-y1
@@ -103,26 +103,26 @@ subroutine fonno52(noma, na, nb, ndim, vnor,vdir)
 !
 !    CALCUL DU PRODUIT VECTORIEL : U VECT N , OU U EST LE VECTEUR ARETE
 !
-        vdir(1,1) = y21*nz - z21*ny
-        vdir(1,2) = z21*nx - x21*nz
-        vdir(1,3) = x21*ny - y21*nx
+        vdir(1, 1) = y21*nz-z21*ny
+        vdir(1, 2) = z21*nx-x21*nz
+        vdir(1, 3) = x21*ny-y21*nx
 
 !
     else
         ASSERT(.FALSE.)
-    endif
+    end if
 !
 !    ON NORMALISE
 !
-        norme = sqrt(vdir(1,1)*vdir(1,1)+vdir(1,2)*vdir(1,2)+vdir(1,3)*vdir(1,3))
-        vdir(1,1) = vdir(1,1)/norme
-        vdir(1,2) = vdir(1,2)/norme
-        vdir(1,3) = vdir(1,3)/norme
+    norme = sqrt(vdir(1, 1)*vdir(1, 1)+vdir(1, 2)*vdir(1, 2)+vdir(1, 3)*vdir(1, 3))
+    vdir(1, 1) = vdir(1, 1)/norme
+    vdir(1, 2) = vdir(1, 2)/norme
+    vdir(1, 3) = vdir(1, 3)/norme
 !
 !    ON RECOPIE DANS VDIR(2,*) QUI EST IDENTIQUE DANS CE CAS
-        vdir(2,1) = vdir(1,1)
-        vdir(2,2) = vdir(1,2)
-        vdir(2,3) = vdir(1,3)
+    vdir(2, 1) = vdir(1, 1)
+    vdir(2, 2) = vdir(1, 2)
+    vdir(2, 3) = vdir(1, 3)
 
     call jedema()
 end subroutine

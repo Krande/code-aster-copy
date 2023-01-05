@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine mmfonf(ndim, nno, alias, ksi1, ksi2,&
+subroutine mmfonf(ndim, nno, alias, ksi1, ksi2, &
                   ff, dff, ddff)
 !
 ! person_in_charge: mickael.abbas at edf.fr
@@ -61,13 +61,13 @@ subroutine mmfonf(ndim, nno, alias, ksi1, ksi2,&
 !
 !
 !
-    call mmnonf(ndim, nno, alias, ksi1, ksi2,&
+    call mmnonf(ndim, nno, alias, ksi1, ksi2, &
                 ff)
 !
-    call mmdonf(ndim, nno, alias, ksi1, ksi2,&
+    call mmdonf(ndim, nno, alias, ksi1, ksi2, &
                 dff)
 !
-    call mm2onf(ndim, nno, alias, ksi1, ksi2,&
+    call mm2onf(ndim, nno, alias, ksi1, ksi2, &
                 ddff)
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine clffch(alias, type, nno, xi, yi,&
-                  zi, xin, yin, zin, tn,&
-                  ajx, ajy, ajz, bjxx, bjyy,&
+subroutine clffch(alias, type, nno, xi, yi, &
+                  zi, xin, yin, zin, tn, &
+                  ajx, ajy, ajz, bjxx, bjyy, &
                   bjzz, bjxy, bjxz, bjyz, ider)
 !
 !......................................................................C
@@ -73,56 +73,56 @@ subroutine clffch(alias, type, nno, xi, yi,&
             y0 = yi*yin(i)
             z0 = zi*zin(i)
 !
-            fxy = (1.d0+x0) * (1.d0+y0) * 0.25d0
-            fxydx = xin(i) * (1.d0+y0) * 0.25d0
-            fxydy = (1.d0+x0) * yin(i) * 0.25d0
-            fxydxy = xin(i) * yin(i) * 0.25d0
+            fxy = (1.d0+x0)*(1.d0+y0)*0.25d0
+            fxydx = xin(i)*(1.d0+y0)*0.25d0
+            fxydy = (1.d0+x0)*yin(i)*0.25d0
+            fxydxy = xin(i)*yin(i)*0.25d0
 !
 !          FONCTIONS DE FORME A DERIVEE NULLE AU BORD
 !
-            fz = - 0.25d0 * z0*z0*z0 + 0.75d0 * z0 + 0.5d0
-            fzdz = - 0.75d0 * z0*z0*zin(i) + 0.75d0 * zin(i)
-            fzd2z = - 1.5d0 * z0*zin(i)*zin(i)
+            fz = -0.25d0*z0*z0*z0+0.75d0*z0+0.5d0
+            fzdz = -0.75d0*z0*z0*zin(i)+0.75d0*zin(i)
+            fzd2z = -1.5d0*z0*zin(i)*zin(i)
 !
-            tn(i) = fxy * fz
+            tn(i) = fxy*fz
 !
             if (ider .gt. 0) then
-                ajx(i) = fxydx * fz
-                ajy(i) = fxydy * fz
-                ajz(i) = fxy * fzdz
-            endif
+                ajx(i) = fxydx*fz
+                ajy(i) = fxydy*fz
+                ajz(i) = fxy*fzdz
+            end if
 !
             if (ider .gt. 1) then
                 bjxx(i) = 0.d0
                 bjyy(i) = 0.d0
-                bjzz(i) = fxy * fzd2z
-                bjxy(i) = fxydxy * fz
-                bjxz(i) = fxydx * fzdz
-                bjyz(i) = fxydy * fzdz
-            endif
+                bjzz(i) = fxy*fzd2z
+                bjxy(i) = fxydxy*fz
+                bjxz(i) = fxydx*fzdz
+                bjyz(i) = fxydy*fzdz
+            end if
 !
 !          FONCTIONS DE FORME A VALEUR NULLE AU BORD
 !
-            fz = 0.25d0*( -zin(i) - zi + zin(i)*zi*zi + zi*zi*zi )
-            fzdz = 0.25d0*( -1.d0 + 2.d0*zin(i)*zi + 3.d0*zi*zi )
-            fzd2z = 0.25d0*( 2.d0*zin(i) + 6.d0*zi )
+            fz = 0.25d0*(-zin(i)-zi+zin(i)*zi*zi+zi*zi*zi)
+            fzdz = 0.25d0*(-1.d0+2.d0*zin(i)*zi+3.d0*zi*zi)
+            fzd2z = 0.25d0*(2.d0*zin(i)+6.d0*zi)
 !
-            tn(i+8) = fxy * fz
+            tn(i+8) = fxy*fz
 !
             if (ider .gt. 0) then
-                ajx(i+8) = fxydx * fz
-                ajy(i+8) = fxydy * fz
-                ajz(i+8) = fxy * fzdz
-            endif
+                ajx(i+8) = fxydx*fz
+                ajy(i+8) = fxydy*fz
+                ajz(i+8) = fxy*fzdz
+            end if
 !
             if (ider .gt. 1) then
                 bjxx(i+8) = 0.d0
                 bjyy(i+8) = 0.d0
-                bjzz(i+8) = fxy * fzd2z
-                bjxy(i+8) = fxydxy * fz
-                bjxz(i+8) = fxydx * fzdz
-                bjyz(i+8) = fxydy * fzdz
-            endif
+                bjzz(i+8) = fxy*fzd2z
+                bjxy(i+8) = fxydxy*fz
+                bjxz(i+8) = fxydx*fzdz
+                bjyz(i+8) = fxydy*fzdz
+            end if
         end do
 !
     else if (type .eq. 'FLUIDE') then
@@ -139,39 +139,39 @@ subroutine clffch(alias, type, nno, xi, yi,&
                 z0 = zi*zin(i)
 !
                 if (i .le. 8) then
-                    f = 0.125d0 * (1.d0+x0) * (1.d0+y0) * (1.d0+z0) * (x0+y0+z0-2.d0)
-                    fdx = 0.125d0 * (1.d0+y0) * (1.d0+z0) * (2.d0*xi + xin(i)*(z0+y0-1.d0))
-                    fdy = 0.125d0 * (1.d0+x0) * (1.d0+z0) * (2.d0*yi + yin(i)*(x0+z0-1.d0))
-                    fdz = 0.125d0 * (1.d0+x0) * (1.d0+y0) * (2.d0*zi + zin(i)*(x0+y0-1.d0))
+                    f = 0.125d0*(1.d0+x0)*(1.d0+y0)*(1.d0+z0)*(x0+y0+z0-2.d0)
+                    fdx = 0.125d0*(1.d0+y0)*(1.d0+z0)*(2.d0*xi+xin(i)*(z0+y0-1.d0))
+                    fdy = 0.125d0*(1.d0+x0)*(1.d0+z0)*(2.d0*yi+yin(i)*(x0+z0-1.d0))
+                    fdz = 0.125d0*(1.d0+x0)*(1.d0+y0)*(2.d0*zi+zin(i)*(x0+y0-1.d0))
 !
-                    else if ((i.eq.9).or.(i.eq.11).or. (i.eq.17).or.(&
-                i.eq.19)) then
-                    f = 0.25d0 * (1.d0-xi*xi) * (1.d0+y0) * (1.d0+z0)
-                    fdx = -0.5d0 * xi * (1.d0+y0) * (1.d0+z0)
-                    fdy = 0.25d0 * (1.d0-xi*xi) * yin(i) * (1.d0+z0)
-                    fdz = 0.25d0 * (1.d0-xi*xi) * (1.d0+y0) * zin(i)
+                else if ((i .eq. 9) .or. (i .eq. 11) .or. (i .eq. 17) .or. ( &
+                         i .eq. 19)) then
+                    f = 0.25d0*(1.d0-xi*xi)*(1.d0+y0)*(1.d0+z0)
+                    fdx = -0.5d0*xi*(1.d0+y0)*(1.d0+z0)
+                    fdy = 0.25d0*(1.d0-xi*xi)*yin(i)*(1.d0+z0)
+                    fdz = 0.25d0*(1.d0-xi*xi)*(1.d0+y0)*zin(i)
 !
-                    else if ((i.eq.10).or.(i.eq.12).or. (i.eq.18).or.(&
-                i.eq.20)) then
-                    f = 0.25d0 * (1.d0-yi*yi) * (1.d0+x0) * (1.d0+z0)
-                    fdy = -0.5d0 * yi * (1.d0+x0) * (1.d0+z0)
-                    fdx = 0.25d0 * (1.d0-yi*yi) * xin(i) * (1.d0+z0)
-                    fdz = 0.25d0 * (1.d0-yi*yi) * (1.d0+x0) * zin(i)
+                else if ((i .eq. 10) .or. (i .eq. 12) .or. (i .eq. 18) .or. ( &
+                         i .eq. 20)) then
+                    f = 0.25d0*(1.d0-yi*yi)*(1.d0+x0)*(1.d0+z0)
+                    fdy = -0.5d0*yi*(1.d0+x0)*(1.d0+z0)
+                    fdx = 0.25d0*(1.d0-yi*yi)*xin(i)*(1.d0+z0)
+                    fdz = 0.25d0*(1.d0-yi*yi)*(1.d0+x0)*zin(i)
 !
-                    else if ((i.eq.13).or.(i.eq.14).or. (i.eq.15).or.(&
-                i.eq.16)) then
-                    f = 0.25d0 * (1.d0-zi*zi) * (1.d0+x0) * (1.d0+y0)
-                    fdz = -0.5d0 * zi * (1.d0+x0) * (1.d0+y0)
-                    fdx = 0.25d0 * (1.d0-zi*zi) * xin(i) * (1.d0+y0)
-                    fdy = 0.25d0 * (1.d0-zi*zi) * (1.d0+x0) * yin(i)
-                endif
+                else if ((i .eq. 13) .or. (i .eq. 14) .or. (i .eq. 15) .or. ( &
+                         i .eq. 16)) then
+                    f = 0.25d0*(1.d0-zi*zi)*(1.d0+x0)*(1.d0+y0)
+                    fdz = -0.5d0*zi*(1.d0+x0)*(1.d0+y0)
+                    fdx = 0.25d0*(1.d0-zi*zi)*xin(i)*(1.d0+y0)
+                    fdy = 0.25d0*(1.d0-zi*zi)*(1.d0+x0)*yin(i)
+                end if
 !
                 tn(i) = f
                 if (ider .gt. 0) then
                     ajx(i) = fdx
                     ajy(i) = fdy
                     ajz(i) = fdz
-                endif
+                end if
             end do
 !
         else if (alias .eq. 'HEXA8 ') then
@@ -186,26 +186,26 @@ subroutine clffch(alias, type, nno, xi, yi,&
                 y0 = yi*yin(i)
                 z0 = zi*zin(i)
 !
-                tn(i) = (1.d0+x0) * (1.d0+y0) * (1.d0+z0) * 0.125d0
+                tn(i) = (1.d0+x0)*(1.d0+y0)*(1.d0+z0)*0.125d0
 !
                 if (ider .gt. 0) then
-                    ajx(i) = xin(i) * (1.d0+y0) * (1.d0+z0) * 0.125d0
-                    ajy(i) = yin(i) * (1.d0+x0) * (1.d0+z0) * 0.125d0
-                    ajz(i) = zin(i) * (1.d0+x0) * (1.d0+y0) * 0.125d0
-                endif
+                    ajx(i) = xin(i)*(1.d0+y0)*(1.d0+z0)*0.125d0
+                    ajy(i) = yin(i)*(1.d0+x0)*(1.d0+z0)*0.125d0
+                    ajz(i) = zin(i)*(1.d0+x0)*(1.d0+y0)*0.125d0
+                end if
                 if (ider .gt. 1) then
                     bjxx(i) = 0.d0
                     bjyy(i) = 0.d0
                     bjzz(i) = 0.d0
-                    bjxy(i) = xin(i) * yin(i) * (1.d0+z0) * 0.125d0
-                    bjxz(i) = xin(i) * zin(i) * (1.d0+y0) * 0.125d0
-                    bjyz(i) = yin(i) * zin(i) * (1.d0+x0) * 0.125d0
-                endif
+                    bjxy(i) = xin(i)*yin(i)*(1.d0+z0)*0.125d0
+                    bjxz(i) = xin(i)*zin(i)*(1.d0+y0)*0.125d0
+                    bjyz(i) = yin(i)*zin(i)*(1.d0+x0)*0.125d0
+                end if
             end do
-        endif
+        end if
 !     ---------------------------------------------------------
     else
         call utmess('F', 'ELEMENTS_20')
-    endif
+    end if
 !
 end subroutine

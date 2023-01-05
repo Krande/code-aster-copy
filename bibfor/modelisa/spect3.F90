@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-function spect3(x, a, b, func, tol,&
-                coeff, xlc, vitn, defm, rhoe,&
+function spect3(x, a, b, func, tol, &
+                coeff, xlc, vitn, defm, rhoe, &
                 nbp, im, jm)
     implicit none
 !
@@ -58,7 +58,7 @@ function spect3(x, a, b, func, tol,&
     integer :: jm
     real(kind=8) :: spect3
     interface
-        function func(xx, y, xlc, vitn, rhoe,&
+        function func(xx, y, xlc, vitn, rhoe, &
                       defm, nbp, im, jm)
             integer :: nbp
             real(kind=8) :: xx
@@ -86,12 +86,12 @@ function spect3(x, a, b, func, tol,&
     if (abs(a-b) .lt. 1.0d-30) then
         spect3 = res
         goto 999
-    endif
+    end if
 !
-    ym = ( a + b ) / 2.0d0
-    dy = ( b - a ) / 2.0d0
-    y0 = func(x, ym ,xlc, vitn, rhoe, defm, nbp, im, jm)
-    r1 = (y0+y0) * dy
+    ym = (a+b)/2.0d0
+    dy = (b-a)/2.0d0
+    y0 = func(x, ym, xlc, vitn, rhoe, defm, nbp, im, jm)
+    r1 = (y0+y0)*dy
     index = 0
     n1 = 0
     n2 = 1
@@ -99,19 +99,19 @@ function spect3(x, a, b, func, tol,&
 !
 ! --- REPETER ...
 !
- 10 continue
-    n1 = n1 + n2
+10  continue
+    n1 = n1+n2
     do i = n2, n1
-        index = index + 1
-        y = coeff(index) * dy
+        index = index+1
+        y = coeff(index)*dy
         w(i) = func(x,ym+y,xlc,vitn,rhoe,defm,nbp,im,jm) + func(x,ym-y,xlc, vitn,rhoe,defm,nbp,im&
-               &,jm)
-        index = index + 1
-        som = som + coeff(index)*w(i)
+               &, jm)
+        index = index+1
+        som = som+coeff(index)*w(i)
     end do
-    n2 = n1 + 1
-    index = index + 1
-    res = ( som + coeff(index)*y0 ) * dy
+    n2 = n1+1
+    index = index+1
+    res = (som+coeff(index)*y0)*dy
 !
 ! --- TEST DE CONVERGENCE.
 !
@@ -125,11 +125,11 @@ function spect3(x, a, b, func, tol,&
             r1 = res
             som = 0.0d0
             do i = 1, n1
-                index = index + 1
-                som = som + coeff(index)*w(i)
+                index = index+1
+                som = som+coeff(index)*w(i)
             end do
-        endif
-    endif
+        end if
+    end if
 !
 ! --- JUSQUE ARRET = 1.
 !

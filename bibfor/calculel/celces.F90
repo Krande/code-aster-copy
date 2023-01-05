@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 !
 subroutine celces(celz, basez, cesz, l_copy_nan_, undf0_, rect_)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -45,8 +45,8 @@ implicit none
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
 !
-character(len=*), intent(in) :: celz, cesz, basez
-aster_logical, optional, intent(in) :: l_copy_nan_, undf0_, rect_
+    character(len=*), intent(in) :: celz, cesz, basez
+    aster_logical, optional, intent(in) :: l_copy_nan_, undf0_, rect_
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -103,8 +103,8 @@ aster_logical, optional, intent(in) :: l_copy_nan_, undf0_, rect_
 !
 ! - Initializations
 !
-    cel  = celz
-    ces  = cesz
+    cel = celz
+    ces = cesz
     base = basez
 !
 ! - Parameter: debug ?
@@ -114,26 +114,26 @@ aster_logical, optional, intent(in) :: l_copy_nan_, undf0_, rect_
 ! - Parameter: copy the NaN ?
 !
     l_copy_nan = ASTER_TRUE
-    if ( present(l_copy_nan_)) then
+    if (present(l_copy_nan_)) then
         l_copy_nan = l_copy_nan_
-    endif
+    end if
 !
     undf0 = ASTER_FALSE
-    if ( present(undf0_)) then
+    if (present(undf0_)) then
         undf0 = undf0_
-    endif
+    end if
 !
     rect = ASTER_FALSE
-    if ( present(rect_)) then
+    if (present(rect_)) then
         rect = rect_
-    endif
+    end if
 !
 ! - Some checks
 !
     if (sdveri) then
         call cheksd(cel, 'sd_cham_elem', ierr)
         ASSERT(ierr .eq. 0)
-    endif
+    end if
     call exisd('CHAM_ELEM', cel, ierr)
     ASSERT(ierr .eq. 1)
 !
@@ -144,15 +144,15 @@ aster_logical, optional, intent(in) :: l_copy_nan_, undf0_, rect_
 ! - For MPI
 !
     call dismoi('MPI_COMPLET', cel, 'CHAM_ELEM', repk=kmpic)
-    ASSERT((kmpic.eq.'OUI').or.(kmpic.eq.'NON'))
+    ASSERT((kmpic .eq. 'OUI') .or. (kmpic .eq. 'NON'))
     if (kmpic .eq. 'NON') then
         call sdmpic('CHAM_ELEM', cel)
-    endif
+    end if
 !
 ! - Some parameters about CHAM_ELEM
 !
     call dismoi('NOM_MAILLA', cel, 'CHAM_ELEM', repk=mesh)
-    call dismoi('NOM_GD'    , cel, 'CHAM_ELEM', repk=nomgd)
+    call dismoi('NOM_GD', cel, 'CHAM_ELEM', repk=nomgd)
     call dismoi('NOM_LIGREL', cel, 'CHAM_ELEM', repk=ligrel)
     call dismoi('TYPE_CHAMP', cel, 'CHAM_ELEM', repk=typces)
 !
@@ -162,8 +162,8 @@ aster_logical, optional, intent(in) :: l_copy_nan_, undf0_, rect_
 !
 ! - Some parameters about physical quantity
 !
-    call dismoi('NB_EC'   , nomgd, 'GRANDEUR', repi=nec)
-    call dismoi('NUM_GD'  , nomgd, 'GRANDEUR', repi=gd)
+    call dismoi('NB_EC', nomgd, 'GRANDEUR', repi=nec)
+    call dismoi('NUM_GD', nomgd, 'GRANDEUR', repi=gd)
     call dismoi('TYPE_SCA', nomgd, 'GRANDEUR', repk=tsca)
 !
 ! - Access to CHAM_ELEM
@@ -178,50 +178,50 @@ aster_logical, optional, intent(in) :: l_copy_nan_, undf0_, rect_
     call jeveuo(jexatr(ligrel//'.LIEL', 'LONCUM'), 'L', vi=v_liel_long)
     call jelira(ligrel//'.LIEL', 'NUTIOC', nb_grel_ligr)
     if (nb_grel_ligr .ne. nb_grel) then
-        valk(1)=cel
-        valk(2)=ligrel
-        vali(1)=nb_grel
-        vali(2)=nb_grel_ligr
+        valk(1) = cel
+        valk(2) = ligrel
+        vali(1) = nb_grel
+        vali(2) = nb_grel_ligr
         call utmess('F', 'CALCULEL_19', nk=2, valk=valk, ni=2, vali=vali)
-    endif
+    end if
 !
 ! - Create objects for global components (catalog) <=> local components (field)
 !
-    call cmpcha(cel      , cmp_name, cata_to_field, field_to_cata, nb_cmp,&
+    call cmpcha(cel, cmp_name, cata_to_field, field_to_cata, nb_cmp, &
                 nb_cmp_mx)
 !
 ! - Allocate objects for number of Gauss points, sub-points and components
 !
-    AS_ALLOCATE(vi=v_nbpt , size=nb_cell)
+    AS_ALLOCATE(vi=v_nbpt, size=nb_cell)
     AS_ALLOCATE(vi=v_nbspt, size=nb_cell)
     v_nbspt(1:nb_cell) = 1
     AS_ALLOCATE(vi=v_nbcmp, size=nb_cell)
 !
 ! - Get number of Gauss points, sub-points and components
 !
-    nb_pt_max  = 0
+    nb_pt_max = 0
     nb_dyn_max = 0
     do i_grel = 1, nb_grel
-        nb_elem = nbelem(ligrel,i_grel)
-        imolo   = v_celd(v_celd(4+i_grel)+2)
+        nb_elem = nbelem(ligrel, i_grel)
+        imolo = v_celd(v_celd(4+i_grel)+2)
         if (imolo .ne. 0) then
 ! --------- Access to located components
             call jeveuo(jexnum('&CATA.TE.MODELOC', imolo), 'L', jv_molo)
             ASSERT(zi(jv_molo-1+1) .le. 3)
             ASSERT(zi(jv_molo-1+2) .eq. gd)
-            diff      = zi(jv_molo-1+4).gt.10000
-            nb_pt     = mod(zi(jv_molo-1+4),10000)
-            nb_pt_max = max(nb_pt_max,nb_pt)
+            diff = zi(jv_molo-1+4) .gt. 10000
+            nb_pt = mod(zi(jv_molo-1+4), 10000)
+            nb_pt_max = max(nb_pt_max, nb_pt)
 ! --------- Update maximum number of components on all cells
             nb_cmp_max = 0
             do i_pt = 1, nb_pt
-                kpt=1
-                if (diff) kpt=i_pt
-                iadg = jv_molo - 1 + 4+(kpt-1)*nec+1
+                kpt = 1
+                if (diff) kpt = i_pt
+                iadg = jv_molo-1+4+(kpt-1)*nec+1
                 do i_cmp = 1, nb_cmp_mx
-                    if (exisdg(zi(iadg),i_cmp)) then
-                        nb_cmp_max = max(nb_cmp_max,i_cmp)
-                    endif
+                    if (exisdg(zi(iadg), i_cmp)) then
+                        nb_cmp_max = max(nb_cmp_max, i_cmp)
+                    end if
                 end do
             end do
 ! --------- Loop on all cells in GREL
@@ -232,43 +232,43 @@ aster_logical, optional, intent(in) :: l_copy_nan_, undf0_, rect_
                     nb_spt = v_celd(v_celd(4+i_grel)+4+4*(i_elem-1)+1)
 ! ----------------- Get number of (dynamic) components
                     if (nomgd(1:5) .eq. 'VARI_') then
-                        nb_dyn     = v_celd(v_celd(4+i_grel)+4+4*(i_elem-1)+2)
-                        nb_dyn     = max(nb_dyn,1)
-                        nb_dyn_max = max(nb_dyn_max,nb_dyn)
-                    endif
+                        nb_dyn = v_celd(v_celd(4+i_grel)+4+4*(i_elem-1)+2)
+                        nb_dyn = max(nb_dyn, 1)
+                        nb_dyn_max = max(nb_dyn_max, nb_dyn)
+                    end if
 ! ----------------- Save number of Gauss points and sub-points
-                    v_nbpt(elem_nume)  = nb_pt
+                    v_nbpt(elem_nume) = nb_pt
                     v_nbspt(elem_nume) = nb_spt
 ! ----------------- Save number of components
                     if (nomgd(1:5) .eq. 'VARI_') then
                         v_nbcmp(elem_nume) = nb_dyn
                     else
                         v_nbcmp(elem_nume) = cata_to_field(nb_cmp_max)
-                    endif
-                endif
+                    end if
+                end if
             end do
-        endif
+        end if
     end do
     ASSERT(nb_pt_max .ne. 0)
     if (nomgd(1:5) .eq. 'VARI_') then
         nb_cmp = -nb_dyn_max
-    endif
+    end if
 !
 ! - Si rect
 !
-    if ( rect ) then
-       mval = maxval(v_nbcmp)
-       do elem_nume = 1,  size(v_nbcmp)
-          if ( v_nbcmp(elem_nume) .ne. 0 ) then
-             v_nbcmp(elem_nume) = mval
-          endif
-       enddo
-    endif
+    if (rect) then
+        mval = maxval(v_nbcmp)
+        do elem_nume = 1, size(v_nbcmp)
+            if (v_nbcmp(elem_nume) .ne. 0) then
+                v_nbcmp(elem_nume) = mval
+            end if
+        end do
+    end if
 !
 ! - Allocate the CHAM_ELEM_S
 !
-    call cescre(base  , ces     , typces, mesh   , nomgd,&
-         nb_cmp, cmp_name, v_nbpt, v_nbspt, v_nbcmp, undf0)
+    call cescre(base, ces, typces, mesh, nomgd, &
+                nb_cmp, cmp_name, v_nbpt, v_nbspt, v_nbcmp, undf0)
 !
 ! - Access to the CHAM_ELEM_S
 !
@@ -287,19 +287,19 @@ aster_logical, optional, intent(in) :: l_copy_nan_, undf0_, rect_
             if (imolo .ne. 0) then
 ! ------------- Access to located components
                 call jeveuo(jexnum('&CATA.TE.MODELOC', imolo), 'L', jv_molo)
-                diff    = zi(jv_molo-1+4).gt.10000
-                nb_pt   = mod(zi(jv_molo-1+4),10000)
+                diff = zi(jv_molo-1+4) .gt. 10000
+                nb_pt = mod(zi(jv_molo-1+4), 10000)
                 nb_elem = nbelem(ligrel, i_grel)
 ! ------------- Number of components for each Gauss point
                 do i_pt = 1, nb_pt
-                    kpt=1
-                    if (diff) kpt=i_pt
-                    ico  = 0
+                    kpt = 1
+                    if (diff) kpt = i_pt
+                    ico = 0
                     do i_cmp = 1, nb_cmp
                         nume_cmp = field_to_cata(i_cmp)
-                        if (exisdg(zi(jv_molo - 1 + 4+(kpt-1)*nec+1), nume_cmp)) then
-                            ico = ico + 1
-                        endif
+                        if (exisdg(zi(jv_molo-1+4+(kpt-1)*nec+1), nume_cmp)) then
+                            ico = ico+1
+                        end if
                     end do
                     v_long_pt(i_pt) = ico
                 end do
@@ -307,62 +307,62 @@ aster_logical, optional, intent(in) :: l_copy_nan_, undf0_, rect_
                 nb_cmp_cumu = 0
                 do i_pt = 1, nb_pt
                     long_pt_cumu(i_pt) = nb_cmp_cumu
-                    nb_cmp_cumu = nb_cmp_cumu + v_long_pt(i_pt)
+                    nb_cmp_cumu = nb_cmp_cumu+v_long_pt(i_pt)
                 end do
 ! ------------- Loop on cells
                 do i_elem = 1, nb_elem
-                    elem_nume = numail(i_grel,i_elem)
+                    elem_nume = numail(i_grel, i_elem)
                     if (elem_nume .ge. 0) then
-                        nb_spt = v_celd(v_celd(4+i_grel)+4+4* (i_elem-1)+1)
-                        adiel  = v_celd(v_celd(4+i_grel)+4+4* (i_elem-1)+4)
+                        nb_spt = v_celd(v_celd(4+i_grel)+4+4*(i_elem-1)+1)
+                        adiel = v_celd(v_celd(4+i_grel)+4+4*(i_elem-1)+4)
 ! --------------------- Loop on Gauss points
                         do i_pt = 1, nb_pt
-                            kpt=1
-                            if (diff) kpt=i_pt
+                            kpt = 1
+                            if (diff) kpt = i_pt
                             ico = 0
                             do i_cmp = 1, nb_cmp
                                 nume_cmp = field_to_cata(i_cmp)
-                                if (exisdg(zi(jv_molo - 1 + 4+(kpt-1)*nec+1), nume_cmp)) then
-                                    ico   = ico + 1
+                                if (exisdg(zi(jv_molo-1+4+(kpt-1)*nec+1), nume_cmp)) then
+                                    ico = ico+1
                                     i_cmp_cata = cata_to_field(nume_cmp)
                                     ASSERT(i_cmp_cata .eq. i_cmp)
 ! --------------------------------- Loop on sub-points
                                     do i_spt = 1, nb_spt
-                                        call cesexi('S', jv_cesd, jv_cesl, elem_nume, i_pt,&
+                                        call cesexi('S', jv_cesd, jv_cesl, elem_nume, i_pt, &
                                                     i_spt, i_cmp_cata, iad)
                                         iad = abs(iad)
                                         zl(jv_cesl-1+iad) = ASTER_TRUE
-                                        ieq = adiel - 1 + nb_spt*long_pt_cumu(i_pt) +&
-                                              (i_spt-1)*v_long_pt(i_pt) + ico
+                                        ieq = adiel-1+nb_spt*long_pt_cumu(i_pt)+ &
+                                              (i_spt-1)*v_long_pt(i_pt)+ico
                                         if (tsca .eq. 'R') then
                                             if ((isnan(zr(jv_celv-1+ieq))) .and. &
-                                                (.not.l_copy_nan)) then
+                                                (.not. l_copy_nan)) then
                                                 zl(jv_cesl-1+iad) = ASTER_FALSE
                                             else
                                                 zr(jv_cesv-1+iad) = zr(jv_celv-1+ieq)
-                                            endif
-                                        else if (tsca.eq.'I') then
+                                            end if
+                                        else if (tsca .eq. 'I') then
                                             zi(jv_cesv-1+iad) = zi(jv_celv-1+ieq)
-                                        else if (tsca.eq.'C') then
+                                        else if (tsca .eq. 'C') then
                                             zc(jv_cesv-1+iad) = zc(jv_celv-1+ieq)
-                                        else if (tsca.eq.'L') then
+                                        else if (tsca .eq. 'L') then
                                             zl(jv_cesv-1+iad) = zl(jv_celv-1+ieq)
-                                        else if (tsca.eq.'K8') then
-                                            zk8(jv_cesv-1+iad) = zk8(jv_celv-1+ ieq)
-                                        else if (tsca.eq.'K16') then
+                                        else if (tsca .eq. 'K8') then
+                                            zk8(jv_cesv-1+iad) = zk8(jv_celv-1+ieq)
+                                        else if (tsca .eq. 'K16') then
                                             zk16(jv_cesv-1+iad) = zk16(jv_celv-1+ieq)
-                                        else if (tsca.eq.'K24') then
+                                        else if (tsca .eq. 'K24') then
                                             zk24(jv_cesv-1+iad) = zk24(jv_celv-1+ieq)
                                         else
                                             ASSERT(ASTER_FALSE)
-                                        endif
+                                        end if
                                     end do
-                                endif
+                                end if
                             end do
                         end do
-                    endif
+                    end if
                 end do
-            endif
+            end if
         end do
     else
 !       -- CAS DE VARI_* :
@@ -373,42 +373,42 @@ aster_logical, optional, intent(in) :: l_copy_nan_, undf0_, rect_
                 lgcata = v_celd(v_celd(4+i_grel)+3)
 ! ------------- Access to located components
                 call jeveuo(jexnum('&CATA.TE.MODELOC', imolo), 'L', jv_molo)
-                nb_pt   = mod(zi(jv_molo-1+4),10000)
+                nb_pt = mod(zi(jv_molo-1+4), 10000)
                 nb_elem = nbelem(ligrel, i_grel)
-                ASSERT(nb_pt.eq.lgcata)
+                ASSERT(nb_pt .eq. lgcata)
 ! ------------- Loop on cells
                 do i_elem = 1, nb_elem
                     elem_nume = numail(i_grel, i_elem)
                     if (elem_nume .ge. 0) then
-                        nb_spt = v_celd(v_celd(4+i_grel)+4+4* (i_elem-1)+1)
-                        nb_dyn = max(v_celd(v_celd(4+i_grel)+4+4* (i_elem-1)+ 2),1)
-                        adiel  = v_celd(v_celd(4+i_grel)+4+4* (i_elem-1)+4)
+                        nb_spt = v_celd(v_celd(4+i_grel)+4+4*(i_elem-1)+1)
+                        nb_dyn = max(v_celd(v_celd(4+i_grel)+4+4*(i_elem-1)+2), 1)
+                        adiel = v_celd(v_celd(4+i_grel)+4+4*(i_elem-1)+4)
                         do i_pt = 1, nb_pt
                             do i_spt = 1, nb_spt
                                 do i_cmp = 1, nb_dyn
-                                    call cesexi('S', jv_cesd, jv_cesl, elem_nume, i_pt,&
+                                    call cesexi('S', jv_cesd, jv_cesl, elem_nume, i_pt, &
                                                 i_spt, i_cmp, iad)
                                     iad = abs(iad)
                                     zl(jv_cesl-1+iad) = ASTER_TRUE
-                                    ieq = adiel - 1 + ((i_pt-1)*nb_spt+i_spt-1)* nb_dyn + i_cmp
+                                    ieq = adiel-1+((i_pt-1)*nb_spt+i_spt-1)*nb_dyn+i_cmp
                                     if (tsca .eq. 'R') then
                                         zr(jv_cesv-1+iad) = zr(jv_celv-1+ieq)
                                     else
                                         ASSERT(ASTER_FALSE)
-                                    endif
+                                    end if
                                 end do
                             end do
                         end do
-                    endif
+                    end if
                 end do
             end if
         end do
-    endif
+    end if
 !
     if (sdveri) then
         call cheksd(ces, 'sd_cham_elem_s', ierr)
         ASSERT(ierr .eq. 0)
-    endif
+    end if
 !
     call jedetr('&&CELCES.TMP_NUCMP')
     AS_DEALLOCATE(vi=v_nbpt)
@@ -416,8 +416,8 @@ aster_logical, optional, intent(in) :: l_copy_nan_, undf0_, rect_
     AS_DEALLOCATE(vi=v_nbcmp)
     call jedetr('&&CELCES.LONG_PT')
     AS_DEALLOCATE(vi=long_pt_cumu)
-    AS_DEALLOCATE(vi = cata_to_field)
-    AS_DEALLOCATE(vi = field_to_cata)
-    AS_DEALLOCATE(vk8 = cmp_name)
+    AS_DEALLOCATE(vi=cata_to_field)
+    AS_DEALLOCATE(vi=field_to_cata)
+    AS_DEALLOCATE(vk8=cmp_name)
     call jedema()
 end subroutine

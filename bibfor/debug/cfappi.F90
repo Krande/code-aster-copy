@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -64,11 +64,11 @@ subroutine cfappi(noma, defico, nomnoe, typapp, posapp)
         call cfnomm(noma, defico, 'MAIL', posapp, nomapp)
         valk(2) = nomapp
         call utmess('I', 'CONTACTDEBG_11', nk=2, valk=valk)
-    else if (typapp.eq.-2) then
+    else if (typapp .eq. -2) then
         call utmess('I', 'CONTACTDEBG_12', sk=valk(1))
-    else if (typapp.eq.-1) then
+    else if (typapp .eq. -1) then
         call utmess('I', 'CONTACTDEBG_13', sk=valk(1))
-    endif
+    end if
 !
     call jedema()
 end subroutine

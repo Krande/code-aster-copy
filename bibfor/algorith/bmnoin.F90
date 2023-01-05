@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine bmnoin(basmdz, intfz, nmintz, numint, nbnoi,&
+subroutine bmnoin(basmdz, intfz, nmintz, numint, nbnoi, &
                   numnoe, nbdif)
     implicit none
 #include "jeveux.h"
@@ -68,7 +68,7 @@ subroutine bmnoin(basmdz, intfz, nmintz, numint, nbnoi,&
 !                 SI DONNEE BASE MODALE OU INTERF_DYNA
 !
 !-----------------------------------------------------------------------
-    integer :: i, inoe,  llint, nbdif, nbeffi
+    integer :: i, inoe, llint, nbdif, nbeffi
     integer :: nbnoe, numcou, numint
     integer, pointer :: idc_defo(:) => null()
 !-----------------------------------------------------------------------
@@ -81,27 +81,27 @@ subroutine bmnoin(basmdz, intfz, nmintz, numint, nbnoi,&
 !
         call dismoi('REF_INTD_PREM', basmod, 'RESU_DYNA', repk=intf, arret='C')
         if (intf .eq. '        ') then
-            valk (1) = basmod
+            valk(1) = basmod
             call utmess('F', 'ALGORITH12_30', sk=valk(1))
-        endif
+        end if
     else
         if (intf(1:1) .eq. ' ') then
-            valk (1) = basmod
-            valk (2) = intf
+            valk(1) = basmod
+            valk(2) = intf
             call utmess('F', 'ALGORITH12_31', nk=2, valk=valk)
-        endif
-    endif
+        end if
+    end if
 !
 !----------------RECUPERATION EVENTUELLE DU NUMERO INTERFACE------------
 !
     if (nomint .ne. '             ') then
         call jenonu(jexnom(intf//'.IDC_NOMS', nomint), numint)
-    endif
+    end if
 !
 !
 !----------RECUPERATION DU NOMBRE DE NOEUD DE L' INTERFACES-------------
 !
-    noeint=intf//'.IDC_LINO'
+    noeint = intf//'.IDC_LINO'
 !
     call jelira(jexnum(noeint, numint), 'LONMAX', nbnoe)
     call jeveuo(jexnum(noeint, numint), 'L', llint)
@@ -109,12 +109,12 @@ subroutine bmnoin(basmdz, intfz, nmintz, numint, nbnoi,&
 !----------------------TEST SUR NOMBRE DE NOEUDS ATTENDU----------------
 !
     if (nbnoi .eq. 0) then
-        nbdif=nbnoe
+        nbdif = nbnoe
         goto 999
     else
-        nbeffi=min(nbnoi,nbnoe)
-        nbdif=nbnoi
-    endif
+        nbeffi = min(nbnoi, nbnoe)
+        nbdif = nbnoi
+    end if
 !
 !------------RECUPERATION DU DESCRIPTEUR DE DEFORMEES-------------------
 !
@@ -127,13 +127,13 @@ subroutine bmnoin(basmdz, intfz, nmintz, numint, nbnoi,&
 !  COMPTAGE
 !
     do i = 1, nbeffi
-        inoe=zi(llint+i-1)
-        numcou=idc_defo(inoe)
-        nbdif=nbdif-1
-        if (nbdif .ge. 0) numnoe(nbnoi-nbdif)=numcou
+        inoe = zi(llint+i-1)
+        numcou = idc_defo(inoe)
+        nbdif = nbdif-1
+        if (nbdif .ge. 0) numnoe(nbnoi-nbdif) = numcou
     end do
 !
-    nbdif=-nbdif
+    nbdif = -nbdif
 !
 !
 999 continue

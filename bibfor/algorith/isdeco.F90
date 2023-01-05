@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -36,13 +36,13 @@ subroutine isdeco(icod, idec, ndim)
     integer :: ndim, necmax
     integer :: idec(ndim), icod(*)
     integer :: nec, iec, i, ipui, k
-    parameter (necmax = 10)
+    parameter(necmax=10)
     integer :: ifin(necmax)
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-    nec = (ndim-1)/30 + 1
+    nec = (ndim-1)/30+1
 !
 ! --- IFIN DONNE POUR CHAQUE ENTIER CODE LE NOMBRE MAX DE CMPS
 ! --- QUE L'ON PEUT TROUVER SUR CET ENTIER :
@@ -50,7 +50,7 @@ subroutine isdeco(icod, idec, ndim)
     do iec = 1, nec-1
         ifin(iec) = 30
     end do
-    ifin(nec) = ndim - 30*(nec-1)
+    ifin(nec) = ndim-30*(nec-1)
 !
     k = 0
     do iec = 1, nec
@@ -58,11 +58,11 @@ subroutine isdeco(icod, idec, ndim)
         do i = 1, ifin(iec)
             k = k+1
             ipui = ipui*2
-            if (iand(icod(iec),ipui) .eq. ipui) then
-                idec(k)=1
+            if (iand(icod(iec), ipui) .eq. ipui) then
+                idec(k) = 1
             else
-                idec(k)=0
-            endif
+                idec(k) = 0
+            end if
         end do
     end do
 !

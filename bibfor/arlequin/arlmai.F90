@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine arlmai(mail, mailar, ndim, nom1, nom2,&
+subroutine arlmai(mail, mailar, ndim, nom1, nom2, &
                   tabcor, nbma1, nbma2)
 !
 !
@@ -71,7 +71,7 @@ subroutine arlmai(mail, mailar, ndim, nom1, nom2,&
 !
 !
     integer :: nbnomx
-    parameter    (nbnomx=27)
+    parameter(nbnomx=27)
     integer :: nmain1, nmain2
     integer :: nnoin1, nnoin2, cxcumu
     character(len=24) :: k8bid, nom
@@ -100,7 +100,7 @@ subroutine arlmai(mail, mailar, ndim, nom1, nom2,&
     call exisd('MAILLAGE', mailar, iret)
     if (iret .ne. 0) then
         call detrsd('MAILLAGE', mailar)
-    endif
+    end if
 !
 ! --- INITIALISATIONS
 !
@@ -114,25 +114,25 @@ subroutine arlmai(mail, mailar, ndim, nom1, nom2,&
     call jeveuo(mail(1:8)//'.COORDO    .VALE', 'L', jcooro)
     call jeveuo(mail(1:8)//'.CONNEX         ', 'L', jconxo)
     call jeveuo(jexatr(mail(1:8)//'.CONNEX         ', 'LONCUM'), 'L', jcumuo)
-    call dismoi('NB_NO_MAILLA', mail, 'MAILLAGE', nbno, k8bid,&
+    call dismoi('NB_NO_MAILLA', mail, 'MAILLAGE', nbno, k8bid, &
                 'F', iret)
 !
 ! --- ESTIMATION GROSSIERE DU NOMBRE D'ELEMENTS TOTAL
 !
     nmain1 = nbma1
     nmain2 = nbma2
-    nbmat = nmain1 + nmain2
+    nbmat = nmain1+nmain2
 !
 ! --- ESTIMATION GROSSIERE DE LA LONGUEUR CUMULEE DES CONNECTIVITES
 !
     nnoin1 = nbma1*nbnomx
     nnoin2 = nbma2*2
-    nctot = nnoin1 + nnoin2
+    nctot = nnoin1+nnoin2
 !
 ! --- ESTIMATION DU NOMBRE DE NOEUDS TOTAL
 ! --- CREATIONS DES OBJETS DE BASE POUR LE PSEUDO MAILLAGE
 !
-    call arlini(mailar, 'V', ndim, nbno, nbmat,&
+    call arlini(mailar, 'V', ndim, nbno, nbmat, &
                 nctot)
 !
 ! --- ACCES AUX OBJETS DU PSEUDO MAILLAGE
@@ -158,7 +158,7 @@ subroutine arlmai(mail, mailar, ndim, nom1, nom2,&
             call jecroc(jexnom(nomnoe, nom))
         else
             call utmess('F', 'MODELISA7_10', 1, nom)
-        endif
+        end if
     end do
 !
 ! --- TABLEAU DE CORRESPONDANCE NOUV. MAILLES -> ANCIENNES MAILLES
@@ -176,8 +176,8 @@ subroutine arlmai(mail, mailar, ndim, nom1, nom2,&
 !
 ! ----- MAILLAGE 1
 !
-        imail = imail + 1
-        call arlmaf(mail, mailar, ndim, ngrm1, icpl,&
+        imail = imail+1
+        call arlmaf(mail, mailar, ndim, ngrm1, icpl, &
                     zi(jconxo), zi(jcumuo), imail, numma1, cxcumu)
         zi(jtabco+imail-1) = numma1
     end do
@@ -185,15 +185,15 @@ subroutine arlmai(mail, mailar, ndim, nom1, nom2,&
 !
 ! ----- MAILLAGE 2
 !
-        imail = imail + 1
-        call arlmaf(mail, mailar, ndim, ngrm2, icpl,&
+        imail = imail+1
+        call arlmaf(mail, mailar, ndim, ngrm2, icpl, &
                     zi(jconxo), zi(jcumuo), imail, numma2, cxcumu)
         zi(jtabco+imail-1) = numma2
     end do
 !
 ! --- VRAI NOMBRE D'ELEMENTS
 !
-    zi(jdime - 1 + 3) = imail
+    zi(jdime-1+3) = imail
 !
     call jedema()
 !

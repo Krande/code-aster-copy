@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -65,33 +65,33 @@ subroutine modopt(resuco, modele, lesopt, nbopt)
     call gettco(resuco, tysd)
     call jeveuo(lesopt, 'L', jopt)
 !
-    ierz1 = indk16( zk16(jopt), 'ERZ1_ELEM', 1, nbopt )
+    ierz1 = indk16(zk16(jopt), 'ERZ1_ELEM', 1, nbopt)
 !
-    ierz2 = indk16( zk16(jopt), 'ERZ2_ELEM', 1, nbopt )
+    ierz2 = indk16(zk16(jopt), 'ERZ2_ELEM', 1, nbopt)
 !
-    inoz1 = indk16( zk16(jopt), 'SIZ1_NOEU', 1, nbopt )
+    inoz1 = indk16(zk16(jopt), 'SIZ1_NOEU', 1, nbopt)
 !
-    inoz2 = indk16( zk16(jopt), 'SIZ2_NOEU', 1, nbopt )
+    inoz2 = indk16(zk16(jopt), 'SIZ2_NOEU', 1, nbopt)
 !
-    ierth = indk16( zk16(jopt), 'ERTH_ELEM', 1, nbopt )
+    ierth = indk16(zk16(jopt), 'ERTH_ELEM', 1, nbopt)
 !
-    ierto = indk16( zk16(jopt), 'ERTH_ELNO', 1, nbopt )
+    ierto = indk16(zk16(jopt), 'ERTH_ELNO', 1, nbopt)
 !
-    iertno = indk16( zk16(jopt), 'ERTH_NOEU', 1, nbopt )
+    iertno = indk16(zk16(jopt), 'ERTH_NOEU', 1, nbopt)
 !
-    ierme = indk16( zk16(jopt), 'ERME_ELEM', 1, nbopt )
+    ierme = indk16(zk16(jopt), 'ERME_ELEM', 1, nbopt)
 !
-    iermo = indk16( zk16(jopt), 'ERME_ELNO', 1, nbopt )
+    iermo = indk16(zk16(jopt), 'ERME_ELNO', 1, nbopt)
 !
-    iermno = indk16( zk16(jopt), 'ERME_NOEU', 1, nbopt )
+    iermno = indk16(zk16(jopt), 'ERME_NOEU', 1, nbopt)
 !
-    iqirel = indk16( zk16(jopt), 'QIRE_ELNO', 1, nbopt )
+    iqirel = indk16(zk16(jopt), 'QIRE_ELNO', 1, nbopt)
 !
-    iqiren = indk16( zk16(jopt), 'QIRE_NOEU', 1, nbopt )
+    iqiren = indk16(zk16(jopt), 'QIRE_NOEU', 1, nbopt)
 !
     if (ierz1+ierz2+inoz1+inoz2+ierth+ierto+iertno+ierme+iermo+iermno+iqirel+iqiren .eq. 0) then
         goto 999
-    endif
+    end if
 !
     lesop2 = '&&OP0058.NEW_OPTION'
     call jedupo(lesopt, 'V', lesop2, .false._1)
@@ -107,132 +107,132 @@ subroutine modopt(resuco, modele, lesopt, nbopt)
         call rschex(resuco, 'SISE_ELNO', iret)
         if (iret .eq. 0) then
             zk16(jopt+nbopt2-1) = 'SISE_ELNO'
-            nbopt2 = nbopt2 + 1
-        endif
-    endif
+            nbopt2 = nbopt2+1
+        end if
+    end if
 !
 !
 !     CHAMPS ERME_XXXX
 !
-    if ((ierme.ne.0) .or. (iermo.ne.0) .or. (iermno.ne.0)) then
+    if ((ierme .ne. 0) .or. (iermo .ne. 0) .or. (iermno .ne. 0)) then
 !        EST-CE DE LA THM ?
         call exithm(modele, yathm, perman)
         if (yathm) then
             call rschex(resuco, 'SIEF_ELNO', iret)
             if (iret .eq. 0) then
                 zk16(jopt+nbopt2-1) = 'SIEF_ELNO'
-                nbopt2 = nbopt2 + 1
-            endif
+                nbopt2 = nbopt2+1
+            end if
         else
             call rschex(resuco, 'SIGM_ELNO', iret)
             if (iret .eq. 0) then
                 zk16(jopt+nbopt2-1) = 'SIGM_ELNO'
-                nbopt2 = nbopt2 + 1
-            endif
-        endif
-    endif
+                nbopt2 = nbopt2+1
+            end if
+        end if
+    end if
 !
-    if ((iermo.ne.0) .or. (iermno.ne.0)) then
+    if ((iermo .ne. 0) .or. (iermno .ne. 0)) then
         call rschex(resuco, 'ERME_ELEM', iret)
         if (iret .eq. 0) then
             zk16(jopt+nbopt2-1) = 'ERME_ELEM'
-            nbopt2 = nbopt2 + 1
-        endif
-    endif
+            nbopt2 = nbopt2+1
+        end if
+    end if
 !
     if (iermno .ne. 0) then
         call rschex(resuco, 'ERME_ELNO', iret)
         if (iret .eq. 0) then
             zk16(jopt+nbopt2-1) = 'ERME_ELNO'
-            nbopt2 = nbopt2 + 1
-        endif
-    endif
+            nbopt2 = nbopt2+1
+        end if
+    end if
 !
 !
 !     CHAMPS ERZX_ELEM ET SIZX_NOEU
 !
-    if (( ierz1 .ne. 0 ) .or. ( ierz2 .ne. 0 ) .or. ( inoz1 .ne. 0 ) .or. ( inoz2 .ne. 0 )) then
+    if ((ierz1 .ne. 0) .or. (ierz2 .ne. 0) .or. (inoz1 .ne. 0) .or. (inoz2 .ne. 0)) then
         if (tysd .eq. 'EVOL_ELAS') then
             call rschex(resuco, 'SIEF_ELGA', iret)
             if (iret .eq. 0) then
                 call utmess('A', 'UTILITAI2_52')
                 zk16(jopt+nbopt2-1) = 'SIEF_ELGA'
-                nbopt2 = nbopt2 + 1
-            endif
-        endif
-    endif
+                nbopt2 = nbopt2+1
+            end if
+        end if
+    end if
 !
     if (ierz1 .ne. 0) then
         call rschex(resuco, 'SIZ1_NOEU', iret)
         if (iret .eq. 0) then
             zk16(jopt+nbopt2-1) = 'SIZ1_NOEU'
-            nbopt2 = nbopt2 + 1
-        endif
-    endif
+            nbopt2 = nbopt2+1
+        end if
+    end if
 !
     if (ierz2 .ne. 0) then
         call rschex(resuco, 'SIZ2_NOEU', iret)
         if (iret .eq. 0) then
             zk16(jopt+nbopt2-1) = 'SIZ2_NOEU'
-            nbopt2 = nbopt2 + 1
-        endif
-    endif
+            nbopt2 = nbopt2+1
+        end if
+    end if
 !
 !
 !     CHAMPS ERTH_XXXX
 !
-    if ((ierth.ne.0) .or. (ierto.ne.0) .or. (iertno.ne.0)) then
+    if ((ierth .ne. 0) .or. (ierto .ne. 0) .or. (iertno .ne. 0)) then
         call rschex(resuco, 'FLUX_ELNO', iret)
         if (iret .eq. 0) then
             zk16(jopt+nbopt2-1) = 'FLUX_ELNO'
-            nbopt2 = nbopt2 + 1
-        endif
-    endif
+            nbopt2 = nbopt2+1
+        end if
+    end if
 !
-    if ((ierto.ne.0) .or. (iertno.ne.0)) then
+    if ((ierto .ne. 0) .or. (iertno .ne. 0)) then
         call rschex(resuco, 'ERTH_ELEM', iret)
         if (iret .eq. 0) then
             zk16(jopt+nbopt2-1) = 'ERTH_ELEM'
-            nbopt2 = nbopt2 + 1
-        endif
-    endif
+            nbopt2 = nbopt2+1
+        end if
+    end if
 !
     if (iertno .ne. 0) then
         call rschex(resuco, 'ERTH_ELNO', iret)
         if (iret .eq. 0) then
             zk16(jopt+nbopt2-1) = 'ERTH_ELNO'
-            nbopt2 = nbopt2 + 1
-        endif
-    endif
+            nbopt2 = nbopt2+1
+        end if
+    end if
 !
 !
 !     CHAMPS QIRE_XXXX
 !
-    if ((iqirel.ne.0) .or. (iqiren.ne.0)) then
+    if ((iqirel .ne. 0) .or. (iqiren .ne. 0)) then
         call rschex(resuco, 'QIRE_ELEM', iret)
         if (iret .eq. 0) then
             zk16(jopt+nbopt2-1) = 'QIRE_ELEM'
-            nbopt2 = nbopt2 + 1
-        endif
-    endif
+            nbopt2 = nbopt2+1
+        end if
+    end if
 !
     if (iqiren .ne. 0) then
         call rschex(resuco, 'QIRE_ELNO', iret)
         if (iret .eq. 0) then
             zk16(jopt+nbopt2-1) = 'QIRE_ELNO'
-            nbopt2 = nbopt2 + 1
-        endif
-    endif
+            nbopt2 = nbopt2+1
+        end if
+    end if
 !
-    nbopt2 = nbopt2 - 1
+    nbopt2 = nbopt2-1
 !
     do i = 1, nbopt
         do j = 1, nbopt2
             if (zk16(jopt2+i-1) .eq. zk16(jopt+j-1)) goto 15
-        enddo
-        nbopt2 = nbopt2 + 1
+        end do
+        nbopt2 = nbopt2+1
         zk16(jopt+nbopt2-1) = zk16(jopt2+i-1)
- 15     continue
+15      continue
     end do
 !
     nbopt = nbopt2

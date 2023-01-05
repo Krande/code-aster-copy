@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine ircmec(idfimd, nochmd, nomprf, nolopg, numpt,&
-                  instan, numord, val, ncmpve, nbenty,&
-                  nbrepg, nvalec, typent, typgeo, nosdfu,&
+subroutine ircmec(idfimd, nochmd, nomprf, nolopg, numpt, &
+                  instan, numord, val, ncmpve, nbenty, &
+                  nbrepg, nvalec, typent, typgeo, nosdfu, &
                   tymast, codret)
 ! person_in_charge: nicolas.sellenet at edf.fr
 !_______________________________________________________________________
@@ -78,23 +78,23 @@ subroutine ircmec(idfimd, nochmd, nomprf, nolopg, numpt,&
 !
 !
     character(len=6) :: nompro
-    parameter ( nompro = 'IRCMEC' )
+    parameter(nompro='IRCMEC')
 !
     character(len=32) :: ednopf
 !                         12345678901234567890123456789012
-    parameter ( ednopf='                                ' )
+    parameter(ednopf='                                ')
     integer :: edfuin
-    parameter (edfuin=0)
+    parameter(edfuin=0)
     integer :: edall
-    parameter (edall=0)
+    parameter(edall=0)
     integer :: ednopt
-    parameter (ednopt=-1)
+    parameter(ednopt=-1)
     integer :: ednopg
-    parameter (ednopg=1)
+    parameter(ednopg=1)
     integer :: edcomp
-    parameter (edcomp=2)
+    parameter(edcomp=2)
     character(len=32) :: ednoga
-    parameter ( ednoga='                                ' )
+    parameter(ednoga='                                ')
 !
     integer :: ifm, nivinf
     integer :: iaux, jnbno, nbentl, nbentt, start, filter(1)
@@ -117,18 +117,18 @@ subroutine ircmec(idfimd, nochmd, nomprf, nolopg, numpt,&
 !
     if (nivinf .gt. 1) then
         call cpu_time(start_time)
-        write (ifm,1001) 'DEBUT DE '//nompro
-        1001 format(/,4x,10('='),a,10('='),/)
+        write (ifm, 1001) 'DEBUT DE '//nompro
+1001    format(/, 4x, 10('='), a, 10('='),/)
         call utmess('I', 'MED_49')
-        write (ifm,13001) nbrepg, typent, typgeo
-        do 13 , iaux = 1 , ncmpve
-        write (ifm,13002)&
-     &    '. PREMIERE ET DERNIERE VALEURS A ECRIRE POUR LA COMPOSANTE',&
-     &    iaux, ' : ',val(iaux),val((nvalec*nbrepg-1)*ncmpve+iaux)
- 13     continue
-    endif
-    13001 format(2x,'. NBREPG =',i4,', TYPENT =',i4,', TYPGEO =',i4)
-    13002 format(2x,a,i3,a3,5g16.6)
+        write (ifm, 13001) nbrepg, typent, typgeo
+        do 13, iaux = 1, ncmpve
+            write (ifm, 13002)&
+         &    '. PREMIERE ET DERNIERE VALEURS A ECRIRE POUR LA COMPOSANTE',&
+         &    iaux, ' : ', val(iaux), val((nvalec*nbrepg-1)*ncmpve+iaux)
+13          continue
+            end if
+13001       format(2x, '. NBREPG =', i4, ', TYPENT =', i4, ', TYPGEO =', i4)
+13002       format(2x, a, i3, a3, 5g16.6)
 !
 !====
 ! 2. ECRITURE DES VALEURS
@@ -156,111 +156,111 @@ subroutine ircmec(idfimd, nochmd, nomprf, nolopg, numpt,&
 !GN     >  IAUX=1,NVALEC*NBREPG*NCMPVE-1)
 !GN 1789  FORMAT(10G12.5)
 !
-    if (nivinf .gt. 1) then
+            if (nivinf .gt. 1) then
 !                  12345678901235
-        saux14 = '. ECRITURE DES'
+                saux14 = '. ECRITURE DES'
 !                  12345678901234567890123456789012345
-        saux35 = ' VALEURS POUR LE NUMERO D''ORDRE : '
+                saux35 = ' VALEURS POUR LE NUMERO D''ORDRE : '
 !
-        if (nbrepg .eq. ednopg) then
-            write (ifm,20001) saux14, ncmpve, nvalec, saux35, numord
-        else
-            write (ifm,20002) saux14, ncmpve, nbrepg, nvalec, saux35,&
-            numord
-        endif
-        if (numpt .ne. ednopt) then
-            write (ifm,20003) numpt, instan
-        endif
-        if (nomprf .eq. ednopf) then
-            write (ifm,20004)
-        else
-            write (ifm,20005) nomprf
-        endif
-        if (nolopg .eq. ednoga) then
-            write (ifm,20006)
-        else
-            write (ifm,20007) nolopg
-        endif
-    endif
+                if (nbrepg .eq. ednopg) then
+                    write (ifm, 20001) saux14, ncmpve, nvalec, saux35, numord
+                else
+                    write (ifm, 20002) saux14, ncmpve, nbrepg, nvalec, saux35, &
+                        numord
+                end if
+                if (numpt .ne. ednopt) then
+                    write (ifm, 20003) numpt, instan
+                end if
+                if (nomprf .eq. ednopf) then
+                    write (ifm, 20004)
+                else
+                    write (ifm, 20005) nomprf
+                end if
+                if (nolopg .eq. ednoga) then
+                    write (ifm, 20006)
+                else
+                    write (ifm, 20007) nolopg
+                end if
+            end if
 !
-    20001 format(2x,a14,i3,' * ',i8,a35,i5)
-    20002 format(2x,a14,2(i3,' * '),i8,a35,i5)
-    20003 format(5x,'( PAS DE TEMPS NUMERO :',i5,', T = ',g13.5,' )')
-    20004 format(2x,'. PAS DE PROFIL')
-    20005 format(2x,'. NOM DU PROFIL : ',a)
-    20006 format(2x,'. PAS DE LOCALISATION DE POINTS DE GAUSS')
-    20007 format(2x,'. NOM DE LA LOCALISATION DES POINTS DE GAUSS : ',a)
+20001       format(2x, a14, i3, ' * ', i8, a35, i5)
+20002       format(2x, a14, 2(i3, ' * '), i8, a35, i5)
+20003       format(5x, '( PAS DE TEMPS NUMERO :', i5, ', T = ', g13.5, ' )')
+20004       format(2x, '. PAS DE PROFIL')
+20005       format(2x, '. NOM DU PROFIL : ', a)
+20006       format(2x, '. PAS DE LOCALISATION DE POINTS DE GAUSS')
+20007       format(2x, '. NOM DE LA LOCALISATION DES POINTS DE GAUSS : ', a)
 !
 ! 2.2. ==> NOMBRE DE VALEURS
 !
-    iaux = nbenty
+            iaux = nbenty
 !
 ! 2.3. ==> ECRITURE VRAIE
 !
-    if (nosdfu .ne. ' ') then
+            if (nosdfu .ne. ' ') then
 !
-        if (typent .eq. 0) then
-            if (nomprf .eq. ' ') then
-                call jeveuo(nosdfu//'.MATY', 'L', jnbma)
+                if (typent .eq. 0) then
+                    if (nomprf .eq. ' ') then
+                        call jeveuo(nosdfu//'.MATY', 'L', jnbma)
+                    else
+                        call jeveuo(nosdfu//'.MATYP', 'L', jnbma)
+                    end if
+                    start = zi(jnbma+3*(tymast-1))
+                    nbentl = zi(jnbma+3*(tymast-1)+1)
+                    nbentt = zi(jnbma+3*(tymast-1)+2)
+                else
+                    if (nomprf .eq. ' ') then
+                        call jeveuo(nosdfu//'.NBNO', 'L', jnbno)
+                    else
+                        call jeveuo(nosdfu//'.NBNOP', 'L', jnbno)
+                    end if
+                    start = zi(jnbno)
+                    nbentl = zi(jnbno+1)
+                    nbentt = zi(jnbno+2)
+                end if
+                nbbloc = 1
+                if (nbentl .eq. 0) nbbloc = 0
+                call as_mfrall(1, filter, codret)
+                call as_mfrblc(idfimd, nbentt, nbrepg, ncmpve, 0, &
+                               edfuin, 2, nomprf, start, nbentl, &
+                               nbbloc, nbentl, 0, filter(1), codret)
+!
+                if (codret .ne. 0) then
+                    saux08 = 'mfrblc'
+                    call utmess('F', 'DVP_97', sk=saux08, si=codret)
+                end if
+!
+                call as_mfdraw(idfimd, nochmd, filter(1), val, nolopg, &
+                               typent, typgeo, numpt, instan, numord, &
+                               codret)
+!
+                if (codret .ne. 0) then
+                    saux08 = 'mfdraw'
+                    call utmess('F', 'DVP_97', sk=saux08, si=codret)
+                end if
+!
+                call as_mfrdea(1, filter, codret)
+                if (codret .ne. 0) then
+                    saux08 = 'mfrdea'
+                    call utmess('F', 'DVP_97', sk=saux08, si=codret)
+                end if
             else
-                call jeveuo(nosdfu//'.MATYP', 'L', jnbma)
-            endif
-            start = zi(jnbma+3*(tymast-1))
-            nbentl = zi(jnbma+3*(tymast-1)+1)
-            nbentt = zi(jnbma+3*(tymast-1)+2)
-        else
-            if (nomprf .eq. ' ') then
-                call jeveuo(nosdfu//'.NBNO', 'L', jnbno)
-            else
-                call jeveuo(nosdfu//'.NBNOP', 'L', jnbno)
-            endif
-            start = zi(jnbno)
-            nbentl = zi(jnbno+1)
-            nbentt = zi(jnbno+2)
-        endif
-        nbbloc = 1
-        if (nbentl .eq. 0) nbbloc = 0
-        call as_mfrall(1, filter, codret)
-        call as_mfrblc(idfimd, nbentt, nbrepg, ncmpve, 0,&
-                       edfuin, 2, nomprf, start, nbentl,&
-                       nbbloc, nbentl, 0, filter(1), codret)
 !
-        if (codret .ne. 0) then
-            saux08='mfrblc'
-            call utmess('F', 'DVP_97', sk=saux08, si=codret)
-        endif
+                call as_mfdrpw(idfimd, nochmd, val, edfuin, iaux, &
+                               nolopg, edall, nomprf, edcomp, typent, &
+                               typgeo, numpt, instan, numord, codret)
 !
-        call as_mfdraw(idfimd, nochmd, filter(1), val, nolopg,&
-                       typent, typgeo, numpt, instan, numord,&
-                       codret)
+                if (codret .ne. 0) then
+                    saux08 = 'mfdrpw'
+                    call utmess('F', 'DVP_97', sk=saux08, si=codret)
+                end if
 !
-        if (codret .ne. 0) then
-            saux08='mfdraw'
-            call utmess('F', 'DVP_97', sk=saux08, si=codret)
-        endif
+            end if
 !
-        call as_mfrdea(1, filter, codret)
-        if (codret .ne. 0) then
-            saux08='mfrdea'
-            call utmess('F', 'DVP_97', sk=saux08, si=codret)
-        endif
-    else
+            if (nivinf .gt. 1) then
+                call cpu_time(end_time)
+                write (ifm, *) '    ==========FIN DE '//nompro//' EN ', &
+                    end_time-start_time, " sec=========="
+            end if
 !
-        call as_mfdrpw(idfimd, nochmd, val, edfuin, iaux,&
-                       nolopg, edall, nomprf, edcomp, typent,&
-                       typgeo, numpt, instan, numord, codret)
-!
-        if (codret .ne. 0) then
-            saux08='mfdrpw'
-            call utmess('F', 'DVP_97', sk=saux08, si=codret)
-        endif
-!
-    endif
-!
-    if (nivinf .gt. 1) then
-        call cpu_time(end_time)
-        write (ifm,*) '    ==========FIN DE '//nompro//' EN ', &
-            end_time-start_time, " sec=========="
-    endif
-!
-end subroutine
+            end subroutine

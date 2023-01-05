@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,15 +18,15 @@
 ! person_in_charge: mickael.abbas at edf.fr
 ! aslint: disable=W1504
 !
-subroutine nmpich(modele         , numedd, ds_material, carele    , ds_system ,&
-                  ds_constitutive, lischa, fonact     , ds_measure, ds_contact,&
-                  sdpilo         , iterat, sdnume     , deltat    , valinc    ,&
-                  solalg         , veelem, veasse     , sddisc    , eta       ,&
-                  rho            , offset, ldccvg     , pilcvg    , matass)
+subroutine nmpich(modele, numedd, ds_material, carele, ds_system, &
+                  ds_constitutive, lischa, fonact, ds_measure, ds_contact, &
+                  sdpilo, iterat, sdnume, deltat, valinc, &
+                  solalg, veelem, veasse, sddisc, eta, &
+                  rho, offset, ldccvg, pilcvg, matass)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -34,18 +34,18 @@ implicit none
 #include "asterfort/nmceta.h"
 #include "asterfort/nmpilo.h"
 !
-integer :: fonact(*)
-integer :: iterat, pilcvg, ldccvg
-real(kind=8) :: deltat, eta, rho, offset
-character(len=19) :: lischa, sdnume, sdpilo, sddisc, matass
-character(len=24) :: modele, numedd, carele
-type(NL_DS_Material), intent(in) :: ds_material
-type(NL_DS_Constitutive), intent(in) :: ds_constitutive
-type(NL_DS_Contact), intent(in) :: ds_contact
-type(NL_DS_Measure), intent(inout) :: ds_measure
-type(NL_DS_System), intent(in) :: ds_system
-character(len=19) :: veelem(*), veasse(*)
-character(len=19) :: solalg(*), valinc(*)
+    integer :: fonact(*)
+    integer :: iterat, pilcvg, ldccvg
+    real(kind=8) :: deltat, eta, rho, offset
+    character(len=19) :: lischa, sdnume, sdpilo, sddisc, matass
+    character(len=24) :: modele, numedd, carele
+    type(NL_DS_Material), intent(in) :: ds_material
+    type(NL_DS_Constitutive), intent(in) :: ds_constitutive
+    type(NL_DS_Contact), intent(in) :: ds_contact
+    type(NL_DS_Measure), intent(inout) :: ds_measure
+    type(NL_DS_System), intent(in) :: ds_system
+    character(len=19) :: veelem(*), veasse(*)
+    character(len=19) :: solalg(*), valinc(*)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -101,37 +101,37 @@ character(len=19) :: solalg(*), valinc(*)
 !
     call infdbg('PILOTAGE', ifm, niv)
     if (niv .ge. 2) then
-        write (ifm,*) '<PILOTAGE> ... PILOTAGE SANS RECH_LINE'
-    endif
+        write (ifm, *) '<PILOTAGE> ... PILOTAGE SANS RECH_LINE'
+    end if
 !
 ! --- INITIALISATIONS
 !
     pilcvg = -1
-    rho    = 1.d0
+    rho = 1.d0
     offset = 0.d0
     nbatte = 2
     irecli = ASTER_FALSE
 !
 ! --- RESOLUTION DE L'EQUATION DE PILOTAGE
 !
-    call nmpilo(sdpilo, deltat     , rho            , solalg    , veasse,&
-                modele, ds_material, ds_constitutive, ds_contact, valinc,&
-                nbatte, numedd     , nbeffe         , proeta    , pilcvg,&
+    call nmpilo(sdpilo, deltat, rho, solalg, veasse, &
+                modele, ds_material, ds_constitutive, ds_contact, valinc, &
+                nbatte, numedd, nbeffe, proeta, pilcvg, &
                 carele)
 !
 ! - CHOIX DE ETA_PILOTAGE
 !
     if (pilcvg .ne. 1) then
-        call nmceta(modele         , numedd    , ds_material, carele   , &
-                    ds_constitutive, ds_contact, lischa     , fonact   , ds_measure,&
-                    sdpilo         , iterat    , sdnume     , valinc   , solalg    ,&
-                    veelem         , veasse    , sddisc     , nbeffe   , irecli    ,&
-                    proeta         , offset    , rho        , eta      , ldccvg    ,&
-                    pilcvg         , residu    , matass     , ds_system)
-    endif
+        call nmceta(modele, numedd, ds_material, carele, &
+                    ds_constitutive, ds_contact, lischa, fonact, ds_measure, &
+                    sdpilo, iterat, sdnume, valinc, solalg, &
+                    veelem, veasse, sddisc, nbeffe, irecli, &
+                    proeta, offset, rho, eta, ldccvg, &
+                    pilcvg, residu, matass, ds_system)
+    end if
 !
 ! --- LE CALCUL DE PILOTAGE A FORCEMENT ETE REALISE
 !
-    ASSERT(pilcvg.ge.0)
+    ASSERT(pilcvg .ge. 0)
 !
 end subroutine

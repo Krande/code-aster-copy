@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine singue(cherrs, chenes, nomail, ndim, nnoem,&
-                  nelem, xy, prec, ligrmo, chelem,&
+subroutine singue(cherrs, chenes, nomail, ndim, nnoem, &
+                  nelem, xy, prec, ligrmo, chelem, &
                   types)
 ! aslint: disable=W1306
     implicit none
@@ -103,9 +103,9 @@ subroutine singue(cherrs, chenes, nomail, ndim, nnoem,&
 !              CONNECTES AUX NOEUDS
 !     DEGRE  = 1 EF LINEAIRE - 2 EF QUADRATIQUE
 !
-    nsommx=dime(1)
-    nelcom=dime(2)
-    degre =dime(3)
+    nsommx = dime(1)
+    nelcom = dime(2)
+    degre = dime(3)
 !
 ! 3 - RECUPERATION DE L'ERREUR EN CHAQUE EF ERREUR(EF)
 !       ET DE LA TAILLE EN CHAQUE EF TAILLE(EF)
@@ -121,36 +121,36 @@ subroutine singue(cherrs, chenes, nomail, ndim, nnoem,&
 !
 ! LECTURE DE LA SD .CESC
     do icmp = 1, nbcmp
-        if (zk8(jcesc+icmp-1)(1:6) .eq. 'ERREST') ncmp=icmp
+        if (zk8(jcesc+icmp-1) (1:6) .eq. 'ERREST') ncmp = icmp
     end do
 !
     do inel = 1, nelem
-        call cesexi('C', jcesd, jcesl, inel, 1,&
+        call cesexi('C', jcesd, jcesl, inel, 1, &
                     1, ncmp, iad)
         if (iad .gt. 0) then
-            erreur(inel)=zr(jcesv+iad-1)
-            nbr(inel)=3
+            erreur(inel) = zr(jcesv+iad-1)
+            nbr(inel) = 3
         else
-            erreur(inel)=0.d0
-            nbr(inel)=0
-        endif
+            erreur(inel) = 0.d0
+            nbr(inel) = 0
+        end if
     end do
 !
 ! LECTURE DE LA SD .CESC
     do icmp = 1, nbcmp
-        if (zk8(jcesc+icmp-1)(1:6) .eq. 'TAILLE') ncmp=icmp
+        if (zk8(jcesc+icmp-1) (1:6) .eq. 'TAILLE') ncmp = icmp
     end do
 !
     do inel = 1, nelem
-        call cesexi('C', jcesd, jcesl, inel, 1,&
+        call cesexi('C', jcesd, jcesl, inel, 1, &
                     1, ncmp, iad)
         if (iad .gt. 0) then
-            taille(inel)=zr(jcesv+iad-1)
-            nbr(inel)=3
+            taille(inel) = zr(jcesv+iad-1)
+            nbr(inel) = 3
         else
-            taille(inel)=0.d0
-            nbr(inel)=0
-        endif
+            taille(inel) = 0.d0
+            nbr(inel) = 0
+        end if
     end do
 !
 ! 4 - RECUPERATION DE L'ENERGIE EN CHAQUE EF ENERGI(EF)
@@ -163,29 +163,29 @@ subroutine singue(cherrs, chenes, nomail, ndim, nnoem,&
 !
 ! LECTURE DE LA SD .CESC
     do icmp = 1, nbcmp
-        if (zk8(jcesc+icmp-1)(1:6) .eq. 'TOTALE') ncmp=icmp
+        if (zk8(jcesc+icmp-1) (1:6) .eq. 'TOTALE') ncmp = icmp
     end do
 !
     do inel = 1, nelem
-        call cesexi('C', jcesd, jcesl, inel, 1,&
+        call cesexi('C', jcesd, jcesl, inel, 1, &
                     1, ncmp, iad)
         if (iad .gt. 0) then
-            energi(inel)=zr(jcesv+iad-1)
+            energi(inel) = zr(jcesv+iad-1)
         else
-            energi(inel)=0.d0
-        endif
+            energi(inel) = 0.d0
+        end if
     end do
 !
 ! 5 - CALCUL DU DEGRE DE LA SINGULARITE ALPHA(NELEM) PAR EF
 !
-    call dsingu(ndim, nelem, nnoem, nsommx, nelcom,&
-                degre, conn, cinv, xy, erreur,&
+    call dsingu(ndim, nelem, nnoem, nsommx, nelcom, &
+                degre, conn, cinv, xy, erreur, &
                 energi, mesu, alpha, nalpha)
 !
 ! 6 - CALCUL DU RAPPORT DE TAILLE DES EF RE=HE*/HE
 !     HE TAILLE DE L EF ACTUEL - HE* TAILLE DU NOUVEL EF
 !
-    call rsingu(ndim, nelem, nbr, nalpha, degre,&
+    call rsingu(ndim, nelem, nbr, nalpha, degre, &
                 prec, erreur, alpha, types, re)
 !
 ! 7 - CALCUL DE LA NOUVELLE TAILLE DES EF HE*=RE*HE
@@ -195,7 +195,7 @@ subroutine singue(cherrs, chenes, nomail, ndim, nnoem,&
 !
 ! 8 - STOCKAGE DE ALPHA ET RE DANS CHELEM
 !
-    call ssingu(nomail, nelem, nbr, ligrmo, alpha,&
+    call ssingu(nomail, nelem, nbr, ligrmo, alpha, &
                 re, he, chelem)
 !
     call jedema()

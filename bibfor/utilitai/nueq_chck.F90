@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 subroutine nueq_chck(prof_chnoz, nb_equaz, l_error, l_subs)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/assert.h"
 #include "asterfort/jelira.h"
@@ -56,20 +56,20 @@ implicit none
     deeq = prof_chno//'.DEEQ'
     call jelira(deeq, 'LONMAX', len_v)
     call jelira(nueq, 'LONMAX', nb_equa)
-    if (len_v.ne.2*nb_equa) then
+    if (len_v .ne. 2*nb_equa) then
         if (present(l_error)) then
-            call utmess('F','CHAMPS_20')
+            call utmess('F', 'CHAMPS_20')
         else
             ASSERT(.false.)
-        endif
-    endif
+        end if
+    end if
     if (present(nb_equaz)) then
         nb_equaz = nb_equa
-    endif
+    end if
     if (present(l_subs)) then
-        call jeveuo(nueq,'L',vi = p_nueq)
+        call jeveuo(nueq, 'L', vi=p_nueq)
         do i_equa = 1, nb_equa
-            ASSERT(p_nueq(i_equa).eq.i_equa)
+            ASSERT(p_nueq(i_equa) .eq. i_equa)
         end do
-    endif
+    end if
 end subroutine

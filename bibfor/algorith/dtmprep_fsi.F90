@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -49,7 +49,7 @@ subroutine dtmprep_fsi(sd_dtm_)
 #include "asterfort/as_deallocate.h"
 !
 !   -0.1- Input/output arguments
-    character(len=*)          , intent(in) :: sd_dtm_
+    character(len=*), intent(in) :: sd_dtm_
 !
 !   -0.2- Local variables
     integer          :: iret, jremf, jfsic, ivtflu, jvite
@@ -59,24 +59,24 @@ subroutine dtmprep_fsi(sd_dtm_)
     real(kind=8)     :: deuxpi, vgap
     character(len=8) :: sd_dtm, basflu, typflu, nombm, noma
 !
-    real(kind=8)     , pointer :: c_flu(:)    => null()
+    real(kind=8), pointer :: c_flu(:) => null()
 
-    integer          , pointer :: icoupled(:) => null()
-    integer          , pointer :: nuor(:)     => null()
-    integer          , pointer :: ires(:)     => null()
+    integer, pointer :: icoupled(:) => null()
+    integer, pointer :: nuor(:) => null()
+    integer, pointer :: ires(:) => null()
 
-    real(kind=8)     , pointer :: masg(:)     => null()
-    real(kind=8)     , pointer :: rigg(:)     => null()
-    real(kind=8)     , pointer :: amog(:)     => null()
-    real(kind=8)     , pointer :: puls(:)     => null()
-    real(kind=8)     , pointer :: puls2(:)    => null()
-    real(kind=8)     , pointer :: profv(:)    => null()
-    real(kind=8)     , pointer :: rhoe(:)     => null()
-    real(kind=8)     , pointer :: phie(:)     => null()
-    real(kind=8)     , pointer :: basf(:)     => null()
-    real(kind=8)     , pointer :: absc(:)     => null()
-    real(kind=8)     , pointer :: codim(:)    => null()
-    real(kind=8)     , pointer :: poids(:)    => null()
+    real(kind=8), pointer :: masg(:) => null()
+    real(kind=8), pointer :: rigg(:) => null()
+    real(kind=8), pointer :: amog(:) => null()
+    real(kind=8), pointer :: puls(:) => null()
+    real(kind=8), pointer :: puls2(:) => null()
+    real(kind=8), pointer :: profv(:) => null()
+    real(kind=8), pointer :: rhoe(:) => null()
+    real(kind=8), pointer :: phie(:) => null()
+    real(kind=8), pointer :: basf(:) => null()
+    real(kind=8), pointer :: absc(:) => null()
+    real(kind=8), pointer :: codim(:) => null()
+    real(kind=8), pointer :: poids(:) => null()
 !
 !
 !   -0.3- Initializations
@@ -96,7 +96,7 @@ subroutine dtmprep_fsi(sd_dtm_)
 !   --- 1 - BASE_ELAS_FLUI, *wet* basis defining the FSI coupling
     call getvid(' ', 'BASE_ELAS_FLUI', scal=basflu, nbret=iret)
     fsichoc = 0
-    if (iret.eq.0) goto 100
+    if (iret .eq. 0) goto 100
 !
     ! write(*,*) "BASE_ELAS_FLUI = ", basflu
 
@@ -104,7 +104,7 @@ subroutine dtmprep_fsi(sd_dtm_)
 !   --- 2 - Characteristics of the configuration in study
     call jeveuo(basflu//'           .REMF', 'L', jremf)
     typflu = zk8(jremf)
-    nombm  = zk8(jremf+1)
+    nombm = zk8(jremf+1)
 
     call jeveuo(typflu//'           .FSIC', 'L', jfsic)
     itypfl(1) = zi(jfsic)
@@ -115,10 +115,10 @@ subroutine dtmprep_fsi(sd_dtm_)
         goto 100
     end if
 !
-    if ((itypfl(1).ne.1).and.(itypfl(1).ne.2)) then
+    if ((itypfl(1) .ne. 1) .and. (itypfl(1) .ne. 2)) then
         call utmess('A', 'ALGORITH5_54')
         goto 100
-    endif
+    end if
 
     fsichoc = 1
 !
@@ -134,18 +134,18 @@ subroutine dtmprep_fsi(sd_dtm_)
 !
 !   --- nbmcfc : number of coupled modes
     call jelira(basflu//'           .NUMO', 'LONMAX', nbmcfc)
-    call jeveuo(basflu//'           .NUMO', 'L'     , jnumo)
+    call jeveuo(basflu//'           .NUMO', 'L', jnumo)
 
     call jeveuo(basflu//'           .FREQ', 'L', jfreq)
     call jeveuo(basflu//'           .MASG', 'L', jmasg)
     call dtmget(sd_dtm, _MASS_DIA, vr=masg)
     call dtmget(sd_dtm, _RIGI_DIA, vr=rigg)
     call dtmget(sd_dtm, _AMOR_DIA, vr=amog)
-    call dtmget(sd_dtm, _OMEGA   , vr=puls, lonvec=nbmodd)
+    call dtmget(sd_dtm, _OMEGA, vr=puls, lonvec=nbmodd)
     call dtmget(sd_dtm, _OMEGA_SQ, vr=puls2)
 
-    if (nbmodd.ne.nbm) then
-        write(*,*) "FSI coupling is not compatible with dynamic substructuring"
+    if (nbmodd .ne. nbm) then
+        write (*, *) "FSI coupling is not compatible with dynamic substructuring"
         ASSERT(.false.)
     end if
 
@@ -161,14 +161,14 @@ subroutine dtmprep_fsi(sd_dtm_)
         im = zi(jnumo+j-1)
         if (im .le. nbm) then
             icoupled(j) = 1
-            puls (im) = deuxpi * zr(jfreq+2*(j-1) +2*nbmcfc*( ivtflu-1))
+            puls(im) = deuxpi*zr(jfreq+2*(j-1)+2*nbmcfc*(ivtflu-1))
             puls2(im) = puls(im)*puls(im)
-            masg (im) = zr(jmasg+j-1)
-            rigg (im) = masg(im)*puls2(im)
+            masg(im) = zr(jmasg+j-1)
+            rigg(im) = masg(im)*puls2(im)
 !           --- Save the *pure* fluid damping for later use in case of FSI coupling during chocs
-            c_flu(im) = 2.0d0 * zr(jfreq+2*(j-1)+2*nbmcfc*(ivtflu-1)+1)*puls(im) - amog(im)
-            amog (im) = amog (im) + c_flu(im)
-        endif
+            c_flu(im) = 2.0d0*zr(jfreq+2*(j-1)+2*nbmcfc*(ivtflu-1)+1)*puls(im)-amog(im)
+            amog(im) = amog(im)+c_flu(im)
+        end if
     end do
 
     AS_ALLOCATE(vi=nuor, size=nbm)
@@ -176,22 +176,22 @@ subroutine dtmprep_fsi(sd_dtm_)
         nuor(i) = i
     end do
 
-    if (itypfl(1).eq.1) then
-        call dtminivec(sd_dtm, _FSI_IRES, nbno    , vi=ires)
+    if (itypfl(1) .eq. 1) then
+        call dtminivec(sd_dtm, _FSI_IRES, nbno, vi=ires)
         call dtminivec(sd_dtm, _FSI_PRVI, 2*nbno+1, vr=profv)
-        call dtminivec(sd_dtm, _FSI_RHOE, 2*nbno  , vr=rhoe)
+        call dtminivec(sd_dtm, _FSI_RHOE, 2*nbno, vr=rhoe)
         call dtminivec(sd_dtm, _FSI_BASF, nbm*nbno, vr=basf)
-        call dtminivec(sd_dtm, _FSI_PHIE, 2       , vr=phie)
-        call dtminivec(sd_dtm, _FSI_ABSC, nbno    , vr=absc)
-        call mdconf(typflu, nombm, noma, nbm, nbno,&
-                    nuor, 1, itypfl(2), ires, profv,&
+        call dtminivec(sd_dtm, _FSI_PHIE, 2, vr=phie)
+        call dtminivec(sd_dtm, _FSI_ABSC, nbno, vr=absc)
+        call mdconf(typflu, nombm, noma, nbm, nbno, &
+                    nuor, 1, itypfl(2), ires, profv, &
                     rhoe, basf, phie, absc)
-    else if (itypfl(1).eq.2) then
-        call dtminivec(sd_dtm, _FSI_CODM, 4    , vr=codim)
+    else if (itypfl(1) .eq. 2) then
+        call dtminivec(sd_dtm, _FSI_CODM, 4, vr=codim)
         call dtminivec(sd_dtm, _FSI_POID, 2*nbm, vr=poids)
-        call dtminivec(sd_dtm, _FSI_PHIE, 1    , vr=phie)
-        call mdconf(typflu, nombm, noma, nbm, nbno,&
-                    nuor, 0, itypfl(2), zi(1), masg,&
+        call dtminivec(sd_dtm, _FSI_PHIE, 1, vr=phie)
+        call mdconf(typflu, nombm, noma, nbm, nbno, &
+                    nuor, 0, itypfl(2), zi(1), masg, &
                     codim, poids, phie, zr(1))
     end if
 

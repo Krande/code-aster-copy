@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,11 +16,11 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine vrcomp(comporCurrZ, variZ, ligrelCurrZ, iret,&
-                  comporPrevZ_, typeStop_,  verbose_,&
+subroutine vrcomp(comporCurrZ, variZ, ligrelCurrZ, iret, &
+                  comporPrevZ_, typeStop_, verbose_, &
                   lModiVari_)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -36,12 +36,12 @@ implicit none
 #include "asterfort/vrcomp_chck_rela.h"
 #include "asterfort/vrcomp_prep.h"
 !
-character(len=*), intent(in) :: comporCurrZ, variZ, ligrelCurrZ
-integer, intent(out) :: iret
-character(len=*), optional, intent(in) :: comporPrevZ_
-character(len=1), optional, intent(in) :: typeStop_
-aster_logical, intent(in), optional :: verbose_
-aster_logical, intent(out), optional :: lModiVari_
+    character(len=*), intent(in) :: comporCurrZ, variZ, ligrelCurrZ
+    integer, intent(out) :: iret
+    character(len=*), optional, intent(in) :: comporPrevZ_
+    character(len=1), optional, intent(in) :: typeStop_
+    aster_logical, intent(in), optional :: verbose_
+    aster_logical, intent(out), optional :: lModiVari_
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -108,11 +108,11 @@ aster_logical, intent(out), optional :: lModiVari_
     character(len=19) :: comporCurr, comporPrev
     character(len=19) :: comporCurrRedu, comporPrevRedu
 ! - Beahviours can been mixed with each other
-    character(len=48), parameter :: comp_comb_1 =&
-        'LEMAITRE        VMIS_ISOT_LINE  VMIS_ISOT_TRAC'
+    character(len=48), parameter :: comp_comb_1 = &
+                                    'LEMAITRE        VMIS_ISOT_LINE  VMIS_ISOT_TRAC'
 ! - Beahviours can been mixed with all other ones
-    character(len=48), parameter :: comp_comb_2 =&
-        'ELAS            SANS            KIT_CG'
+    character(len=48), parameter :: comp_comb_2 = &
+                                    'ELAS            SANS            KIT_CG'
     aster_logical :: newBehaviourOnCell, nbSpgDifferent
     aster_logical :: inconsistentBehaviour, nbVariDifferent
     character(len=19) :: ligrelCurr, ligrelPrev
@@ -137,11 +137,11 @@ aster_logical, intent(out), optional :: lModiVari_
     verbose = ASTER_FALSE
     if (present(verbose_)) then
         verbose = verbose_
-    endif
+    end if
     comporPrev = ' '
     if (present(comporPrevZ_)) then
         comporPrev = comporPrevZ_
-    endif
+    end if
     comporCurr = comporCurrZ
     ligrelCurr = ligrelCurrZ
     vari = variZ
@@ -152,7 +152,7 @@ aster_logical, intent(out), optional :: lModiVari_
         typeStop = typeStop_
     else
         typeStop = 'E'
-    endif
+    end if
 
 ! - Acces to reduced CARTE DCEL_I (see CESVAR) on current comportement
     call jeveuo(comporCurr//'.CESD', 'L', vi=cesd)
@@ -161,71 +161,71 @@ aster_logical, intent(out), optional :: lModiVari_
     nbCell = cesd(1)
 
 ! - Get LIGREL from VARI_ELGA field
-    call dismoi('NOM_LIGREL', vari, 'CHAM_ELEM', repk = ligrelPrev)
+    call dismoi('NOM_LIGREL', vari, 'CHAM_ELEM', repk=ligrelPrev)
 
 ! - Check meshes
-    call dismoi('NOM_MAILLA', vari, 'CHAMP', repk = meshField)
+    call dismoi('NOM_MAILLA', vari, 'CHAMP', repk=meshField)
     if (meshCompor .ne. meshField) then
         call utmess('F', 'COMPOR6_1')
-    endif
+    end if
     mesh = meshCompor
 
 ! - Prepare fields
     if (present(comporPrevZ_)) then
-        call vrcomp_prep(vari, variRedu,&
-                         comporCurr, comporCurrRedu,&
+        call vrcomp_prep(vari, variRedu, &
+                         comporCurr, comporCurrRedu, &
                          comporPrev, comporPrevRedu)
     else
-        call vrcomp_prep(vari, variRedu,&
+        call vrcomp_prep(vari, variRedu, &
                          comporCurr, comporCurrRedu)
         comporPrevRedu = ' '
-    endif
+    end if
 
 ! - Check if comportments are the same (or compatible)
     if (present(comporPrevZ_)) then
-        call vrcomp_chck_rela(mesh, nbCell,&
-                              comporCurrRedu, comporPrevRedu,&
-                              ligrelCurr, ligrelPrev,&
-                              comp_comb_1, comp_comb_2, verbose,&
-                              newBehaviourOnCell, inconsistentBehaviour,&
+        call vrcomp_chck_rela(mesh, nbCell, &
+                              comporCurrRedu, comporPrevRedu, &
+                              ligrelCurr, ligrelPrev, &
+                              comp_comb_1, comp_comb_2, verbose, &
+                              newBehaviourOnCell, inconsistentBehaviour, &
                               lModiVari)
-    endif
+    end if
     if (newBehaviourOnCell) then
         iret = 1
         call utmess(typeStop, 'COMPOR6_2')
-    endif
+    end if
     if (inconsistentBehaviour) then
         iret = 1
         call utmess(typeStop, 'COMPOR6_3')
-    endif
+    end if
 
 ! - Check if elements have the same number of internal variables and Gauss-subpoints
-    call vrcomp_chck_cmp(mesh, nbCell,&
-                         comporCurr, comporCurrRedu, comporPrevRedu,&
-                         variRedu, comp_comb_2,&
-                         ligrelCurr, ligrelPrev,&
-                         verbose,&
+    call vrcomp_chck_cmp(mesh, nbCell, &
+                         comporCurr, comporCurrRedu, comporPrevRedu, &
+                         variRedu, comp_comb_2, &
+                         ligrelCurr, ligrelPrev, &
+                         verbose, &
                          nbSpgDifferent, nbVariDifferent, lModiVari)
     if (nbSpgDifferent) then
         iret = 1
         call utmess(typeStop, 'COMPOR6_4')
-    endif
+    end if
     if (nbVariDifferent) then
         iret = 1
         call utmess(typeStop, 'COMPOR6_5')
-    endif
+    end if
 
 ! - Clean
     call detrsd('CHAM_ELEM_S', variRedu)
     if (present(comporPrevZ_)) then
         call detrsd('CHAM_ELEM_S', comporPrevRedu)
-    endif
+    end if
     call detrsd('CHAM_ELEM_S', comporCurrRedu)
 
 ! - Output
     if (present(lModiVari_)) then
         lModiVari_ = lModiVari
-    endif
+    end if
 !
     call jedema()
 !

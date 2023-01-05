@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -38,25 +38,25 @@ subroutine jelgdq(nomlu, rlong, nbsv)
     integer :: nbsv
 !     ------------------------------------------------------------------
     integer :: lk1zon, jk1zon, liszon, jiszon
-    common /izonje/  lk1zon , jk1zon , liszon , jiszon
+    common/izonje/lk1zon, jk1zon, liszon, jiszon
     integer :: n
-    parameter  ( n = 5 )
+    parameter(n=5)
     integer :: jltyp, jlong, jdate, jiadd, jiadm, jlono, jhcod, jcara, jluti
     integer :: jmarq
-    common /jiatje/  jltyp(n), jlong(n), jdate(n), jiadd(n), jiadm(n),&
+    common/jiatje/jltyp(n), jlong(n), jdate(n), jiadd(n), jiadm(n),&
      &                 jlono(n), jhcod(n), jcara(n), jluti(n), jmarq(n)
 !
     integer :: jgenr, jtype, jdocu, jorig, jrnom
-    common /jkatje/  jgenr(n), jtype(n), jdocu(n), jorig(n), jrnom(n)
+    common/jkatje/jgenr(n), jtype(n), jdocu(n), jorig(n), jrnom(n)
 !
     integer :: ipgc, kdesma(2), lgd, lgduti, kposma(2), lgp, lgputi
-    common /iadmje/  ipgc,kdesma,   lgd,lgduti,kposma,   lgp,lgputi
+    common/iadmje/ipgc, kdesma, lgd, lgduti, kposma, lgp, lgputi
     integer :: iclas, iclaos, iclaco, idatos, idatco, idatoc
-    common /iatcje/  iclas ,iclaos , iclaco , idatos , idatco , idatoc
+    common/iatcje/iclas, iclaos, iclaco, idatos, idatco, idatoc
 !     ------------------------------------------------------------------
     integer :: ivnmax, iddeso, idiadd, idlono, idnum
-    parameter    ( ivnmax = 0 , iddeso = 1 , idiadd = 2  ,&
-     &               idlono = 8  ,idnum  = 10 )
+    parameter(ivnmax=0, iddeso=1, idiadd=2,&
+     &               idlono=8, idnum=10)
 !     ------------------------------------------------------------------
     character(len=32) :: noml32
     integer :: ipgcex, icre, iret, ic, id, ibacol, k, ix
@@ -78,46 +78,46 @@ subroutine jelgdq(nomlu, rlong, nbsv)
         ic = iclaos
         id = idatos
         rlong = lono(jlono(ic)+id)*ltyp(jltyp(ic)+id)
-        nbsv = nbsv + 1
+        nbsv = nbsv+1
 !
     else if (iret .eq. 2) then
         ic = iclaco
         call jjallc(iclaco, idatco, 'L', ibacol)
-        id = iszon(jiszon + ibacol + iddeso )
-        ixlono = iszon(jiszon + ibacol + idlono )
-        ixiadd = iszon(jiszon + ibacol + idiadd )
+        id = iszon(jiszon+ibacol+iddeso)
+        ixlono = iszon(jiszon+ibacol+idlono)
+        ixiadd = iszon(jiszon+ibacol+idiadd)
         rlong = idnum*ltyp(jltyp(ic)+id)
-        nbsv = nbsv + 1
+        nbsv = nbsv+1
 !
 ! --------OBJETS ATTRIBUTS DE COLLECTION
 !
         do k = 1, idnum
-            ix = iszon( jiszon + ibacol + k )
+            ix = iszon(jiszon+ibacol+k)
             if (ix .gt. 0) then
-                rlong = rlong + lono(jlono(ic)+ix)*ltyp(jltyp(ic)+ix)
-                nbsv = nbsv + 1
-            endif
+                rlong = rlong+lono(jlono(ic)+ix)*ltyp(jltyp(ic)+ix)
+                nbsv = nbsv+1
+            end if
         end do
 !
 ! ------- CAS D'UNE COLLECTION DISPERSEE
 !
         if (ixiadd .ne. 0) then
-            nmax = iszon(jiszon + ibacol+ivnmax)
+            nmax = iszon(jiszon+ibacol+ivnmax)
             ltypi = ltyp(jltyp(ic)+id)
             if (ixlono .ne. 0) then
-                nmax = iszon(jiszon + ibacol+ivnmax)
-                iblono = iadm (jiadm(ic) + 2*ixlono-1)
+                nmax = iszon(jiszon+ibacol+ivnmax)
+                iblono = iadm(jiadm(ic)+2*ixlono-1)
                 do k = 1, nmax
-                    rlong = rlong + iszon(jiszon+iblono-1+k)*ltypi
-                    nbsv = nbsv + 1
+                    rlong = rlong+iszon(jiszon+iblono-1+k)*ltypi
+                    nbsv = nbsv+1
                 end do
             else
-                rlong = rlong + nmax*lono(jlono(ic)+id)*ltypi
-                nbsv = nbsv + 1
-            endif
-        endif
+                rlong = rlong+nmax*lono(jlono(ic)+id)*ltypi
+                nbsv = nbsv+1
+            end if
+        end if
 !
         call jjlide('JEIMPA', noml32(1:24), 2)
-    endif
+    end if
     ipgc = ipgcex
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 subroutine caliag(fonrez, chargz, phenom)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -78,7 +78,7 @@ implicit none
     integer :: lonli1, lonli2, nb, nbcmp, nbec, nbno, nbterm
     integer :: nddl1, nddl2, nddla, nliag, nmult1, nmult2
 !-----------------------------------------------------------------------
-    parameter (nmocl=300)
+    parameter(nmocl=300)
     real(kind=8) :: beta
     complex(kind=8) :: betac
     aster_logical :: dnor
@@ -115,7 +115,7 @@ implicit none
     lisrel = '&&CALIAG.RLLISTE'
     lisin1 = '&&CALIAG.LISNO1'
     lisin2 = '&&CALIAG.LISNO2'
-    betac = (1.0d0,0.0d0)
+    betac = (1.0d0, 0.0d0)
     nomdep = 'DEPL'
 !
 ! --- MODELE ASSOCIE AU LIGREL DE CHARGE ---
@@ -129,22 +129,22 @@ implicit none
     mcex = 'SANS_NOEUD'
     prefix = charge//'.LIAG.COUPL'
     coni = prefix//'.CONI'
-    call jecrec(coni, 'V V I', 'NU', 'DISPERSE', 'VARIABLE',&
+    call jecrec(coni, 'V V I', 'NU', 'DISPERSE', 'VARIABLE', &
                 nliag)
     conr = prefix//'.CONR'
-    call jecrec(conr, 'V V R', 'NU', 'DISPERSE', 'VARIABLE',&
+    call jecrec(conr, 'V V R', 'NU', 'DISPERSE', 'VARIABLE', &
                 nliag)
     nomdd1 = prefix(1:13)//'.NOMDDL1'
-    call jecrec(nomdd1, 'V V K8', 'NU', 'DISPERSE', 'VARIABLE',&
+    call jecrec(nomdd1, 'V V K8', 'NU', 'DISPERSE', 'VARIABLE', &
                 nliag)
     nomdd2 = prefix(1:13)//'.NOMDDL2'
-    call jecrec(nomdd2, 'V V K8', 'NU', 'DISPERSE', 'VARIABLE',&
+    call jecrec(nomdd2, 'V V K8', 'NU', 'DISPERSE', 'VARIABLE', &
                 nliag)
     coef1 = prefix(1:13)//'.CMULT1'
-    call jecrec(coef1, 'V V R', 'NU', 'DISPERSE', 'VARIABLE',&
+    call jecrec(coef1, 'V V R', 'NU', 'DISPERSE', 'VARIABLE', &
                 nliag)
     coef2 = prefix(1:13)//'.CMULT2'
-    call jecrec(coef2, 'V V R', 'NU', 'DISPERSE', 'VARIABLE',&
+    call jecrec(coef2, 'V V R', 'NU', 'DISPERSE', 'VARIABLE', &
                 nliag)
 !
     do iocc = 1, nliag
@@ -152,19 +152,19 @@ implicit none
 ! --- LECTURE DES MOTS CLES GROUP_MA_1 OU 2 OU MAILLE_1 OU 2 OU ---
 ! --- GROUP_NO_1 OU 2 OU NOEUD_1 OU 2)                          ---
 !
-        call calemn(motfac, noma, iocc, lisin1, lonli1,&
+        call calemn(motfac, noma, iocc, lisin1, lonli1, &
                     lisin2, lonli2)
 !
 ! --- CONSTRUCTION DES VIS A VIS DES LISTES DE NOEUDS         ---
 ! --- LISIN1 ET LISIN2 DANS L'OJB CONI(IOCC)                  ---
 !
-        call calinn(prefix, noma, motfac, iocc, lisin1,&
+        call calinn(prefix, noma, motfac, iocc, lisin1, &
                     lonli1, lisin2, lonli2, mod)
 !
 ! --- LECTURE DES MOTS CLES SANS_GROUP_NO ET SANS_NOEUD ---
 ! --- MISE A JOUR DE CONI ET CONR SI IL EXISTE          ---
 !
-        call caexno(coni, noma, motfac, mcgrex, mcex,&
+        call caexno(coni, noma, motfac, mcgrex, mcex, &
                     iocc)
         call jeveuo(jexnum(coni, iocc), 'L', idconi)
         nbno = zi(idconi)
@@ -173,7 +173,7 @@ implicit none
             dnor = .false.
         else
             dnor = .true.
-        endif
+        end if
 !
 ! --- LECTURE DES DDLS IMPOSES SUR LA LISTE 1 ---
 !
@@ -186,10 +186,10 @@ implicit none
         call getvr8(motfac, 'COEF_MULT_1', iocc=iocc, nbval=0, nbret=nmult1)
         nmult1 = -nmult1
         if (nddl1 .ne. nmult1) then
-            vali (1) = nddl1
-            vali (2) = nmult1
+            vali(1) = nddl1
+            vali(2) = nmult1
             call utmess('F', 'MODELISA8_43', ni=2, vali=vali)
-        endif
+        end if
 !
         call jecroc(jexnum(nomdd1, iocc))
         call jeecra(jexnum(nomdd1, iocc), 'LONMAX', nddl1)
@@ -199,7 +199,7 @@ implicit none
         do k = 1, nddl1
             call lxcaps(zk8(iddl1-1+k))
             call lxcadr(zk8(iddl1-1+k))
-        enddo
+        end do
 !
         call jecroc(jexnum(coef1, iocc))
         call jeecra(jexnum(coef1, iocc), 'LONMAX', nddl1)
@@ -209,11 +209,11 @@ implicit none
 ! --- CAS DE DNOR : ON VA GENERE UNE LIAISON SUR DX,DY DZ POUR ---
 ! --- CHAQUE COUPLE DE LA LIST(UN GREL PAR COUPLE)             ---
 !
-        if ((nddl1.eq.1) .and. (zk8(iddl1).eq.'DNOR')) then
-            if (.not.dnor) then
+        if ((nddl1 .eq. 1) .and. (zk8(iddl1) .eq. 'DNOR')) then
+            if (.not. dnor) then
                 call utmess('F', 'MODELISA2_94')
-            endif
-        endif
+            end if
+        end if
 !
 ! --- LECTURE DES DDLS IMPOSES SUR LA LISTE 2 ---
 !
@@ -226,10 +226,10 @@ implicit none
         call getvr8(motfac, 'COEF_MULT_2', iocc=iocc, nbval=0, nbret=nmult2)
         nmult2 = -nmult2
         if (nddl2 .ne. nmult2) then
-            vali (1) = nddl2
-            vali (2) = nmult2
+            vali(1) = nddl2
+            vali(2) = nmult2
             call utmess('F', 'MODELISA8_44', ni=2, vali=vali)
-        endif
+        end if
 !
         call jecroc(jexnum(nomdd2, iocc))
         call jeecra(jexnum(nomdd2, iocc), 'LONMAX', nddl2)
@@ -239,17 +239,17 @@ implicit none
         do k = 1, nddl2
             call lxcaps(zk8(iddl2-1+k))
             call lxcadr(zk8(iddl2-1+k))
-        enddo
+        end do
 !
         call jecroc(jexnum(coef2, iocc))
         call jeecra(jexnum(coef2, iocc), 'LONMAX', nddl2)
         call jeveuo(jexnum(coef2, iocc), 'E', imult2)
         call getvr8(motfac, 'COEF_MULT_2', iocc=iocc, nbval=nddl2, vect=zr(imult2))
-        if ((nddl2.eq.1) .and. (zk8(iddl2).eq.'DNOR')) then
-            if (.not.dnor) then
+        if ((nddl2 .eq. 1) .and. (zk8(iddl2) .eq. 'DNOR')) then
+            if (.not. dnor) then
                 call utmess('F', 'MODELISA2_94')
-            endif
-        endif
+            end if
+        end if
     end do
 !
 ! --- TYPE DE LA CHARGE ---
@@ -260,21 +260,21 @@ implicit none
         nomg = 'TEMP_R'
     else
         nomg = 'DEPL_R'
-    endif
+    end if
 !
 ! --- NOMBRE D'ENTIERS CODES ASSOCIE A LA GRANDEUR ---
 !
     call dismoi('NB_EC', nomg, 'GRANDEUR', repi=nbec)
-    ASSERT(nbec.le.10)
+    ASSERT(nbec .le. 10)
 !
     call jeveuo(jexnom('&CATA.GD.NOMCMP', nomg), 'L', inom)
     call jelira(jexnom('&CATA.GD.NOMCMP', nomg), 'LONMAX', nbcmp)
-    nddla = nbcmp - 1
+    nddla = nbcmp-1
     if (nddla .gt. nmocl) then
-        vali (1) = nmocl
-        vali (2) = nddla
+        vali(1) = nmocl
+        vali(2) = nddla
         call utmess('F', 'MODELISA8_29', ni=2, vali=vali)
-    endif
+    end if
     do i = 1, nddla
         nomcmp(i) = zk8(inom-1+i)
     end do
@@ -284,14 +284,14 @@ implicit none
 ! --- CREATION ET AFFECTATION DES RELATIONS A LA LISTE DE ---
 ! --- RELATIONS                                           ---
 !
-    icmpz = indik8(nomcmp,'DZ',1,nddla)
+    icmpz = indik8(nomcmp, 'DZ', 1, nddla)
 !
     do iocc = 1, nliag
         if (fonree .eq. 'REEL') then
             call getvr8(motfac, 'COEF_IMPO', iocc=iocc, scal=beta, nbret=nb)
         else
             call getvid(motfac, 'COEF_IMPO', iocc=iocc, scal=kbeta, nbret=nb)
-        endif
+        end if
         call jeveuo(jexnum(coni, iocc), 'L', idconi)
 ! --- NOMBRE DE NOEUDS DE CHACUNES DES LISTES EN VIS A VIS
         nbno = zi(idconi)
@@ -309,7 +309,7 @@ implicit none
 !
         call jelira(jexnum(nomdd2, iocc), 'LONUTI', nddl2)
 !
-        idmax = 3* (nddl1+nddl2)
+        idmax = 3*(nddl1+nddl2)
 !
 ! ---  ALLOCATION D'UN TABLEAU BIDON POUR AFRELA ---
 !
@@ -345,47 +345,47 @@ implicit none
 ! ---  AFFECTATION DE CE VECTEUR ---
 !
         do j = 1, nbno
-            ino1 = zi(idconi+2* (j-1)+1)
-            ino2 = zi(idconi+2* (j-1)+2)
+            ino1 = zi(idconi+2*(j-1)+1)
+            ino2 = zi(idconi+2*(j-1)+2)
 !
             iexcm1 = 0
             iexcm2 = 0
             do iec = 1, nbec
-                if (zi(jprnm-1+ (ino1-1)*nbec+iec) .ne. 0) then
+                if (zi(jprnm-1+(ino1-1)*nbec+iec) .ne. 0) then
                     iexcm1 = 1
                     goto 60
-                endif
-            enddo
- 60         continue
+                end if
+            end do
+60          continue
 !
             do iec = 1, nbec
-                if (zi(jprnm-1+ (ino2-1)*nbec+iec) .ne. 0) then
+                if (zi(jprnm-1+(ino2-1)*nbec+iec) .ne. 0) then
                     iexcm2 = 1
                     goto 80
-                endif
-            enddo
- 80         continue
-            idg1 = jprnm - 1 + (ino1-1)*nbec + 1
-            idg2 = jprnm - 1 + (ino2-1)*nbec + 1
+                end if
+            end do
+80          continue
+            idg1 = jprnm-1+(ino1-1)*nbec+1
+            idg2 = jprnm-1+(ino2-1)*nbec+1
 !
             if (iexcm1 .eq. 0) then
                 call jenuno(jexnum(noma//'.NOMNOE', ino1), nomno1)
                 call utmess('F', 'CHARGES2_33', sk=nomno1)
-            endif
-            nbnor(2* (j-1)+1) = 3
-            if ((icmpz.eq.0) .or. (.not.exisdg(zi(idg1),icmpz))) then
-                nbnor(2* (j-1)+1) = 2
-            endif
+            end if
+            nbnor(2*(j-1)+1) = 3
+            if ((icmpz .eq. 0) .or. (.not. exisdg(zi(idg1), icmpz))) then
+                nbnor(2*(j-1)+1) = 2
+            end if
 !
             if (iexcm2 .eq. 0) then
                 call jenuno(jexnum(noma//'.NOMNOE', ino2), nomno2)
                 call utmess('F', 'CHARGES2_33', sk=nomno2)
-            endif
-            nbnor(2* (j-1)+2) = 3
-            if ((icmpz.eq.0) .or. (.not.exisdg(zi(idg2),icmpz))) then
-                nbnor(2* (j-1)+2) = 2
-            endif
-        enddo
+            end if
+            nbnor(2*(j-1)+2) = 3
+            if ((icmpz .eq. 0) .or. (.not. exisdg(zi(idg2), icmpz))) then
+                nbnor(2*(j-1)+2) = 2
+            end if
+        end do
 !
 ! ---  AFFECTATION DES RELATIONS ---
 !
@@ -394,53 +394,53 @@ implicit none
 !
 ! --- PREMIER NOEUD DE LA RELATION ---
 !
-            ino1 = zi(idconi+2* (j-1)+1)
+            ino1 = zi(idconi+2*(j-1)+1)
             call jenuno(jexnum(noma//'.NOMNOE', ino1), nomno1)
             cmp = zk8(iddl1)
             if (cmp .eq. 'DNOR') then
                 call jeveuo(jexnum(conr, iocc), 'L', idconr)
-                idim = nbnor(2* (j-1)+1)
-                k = k + 1
+                idim = nbnor(2*(j-1)+1)
+                k = k+1
                 coef(k) = zr(idco1)
                 nomnoe(k) = nomno1
                 nomddl(k) = nomdep
                 dim(k) = idim
                 do i = 1, idim
-                    direct(1+3* (k-1)+i-1) = zr(idconr-1+(2*idim+1)* (j-1)+i)
-                enddo
+                    direct(1+3*(k-1)+i-1) = zr(idconr-1+(2*idim+1)*(j-1)+i)
+                end do
             else
                 do i = 1, nddl1
-                    k = k + 1
+                    k = k+1
                     nomnoe(k) = nomno1
                     nomddl(k) = zk8(iddl1+i-1)
                     coef(k) = zr(idco1+i-1)
-                enddo
-            endif
+                end do
+            end if
 !
 ! --- DEUXIEME NOEUD DE LA RELATION ---
 !
-            ino2 = zi(idconi+2* (j-1)+2)
+            ino2 = zi(idconi+2*(j-1)+2)
             call jenuno(jexnum(noma//'.NOMNOE', ino2), nomno2)
             cmp = zk8(iddl2)
             if (cmp .eq. 'DNOR') then
                 call jeveuo(jexnum(conr, iocc), 'L', idconr)
-                idim = nbnor(2* (j-1)+2)
-                k = k + 1
+                idim = nbnor(2*(j-1)+2)
+                k = k+1
                 coef(k) = zr(idco2)
                 nomnoe(k) = nomno2
                 nomddl(k) = nomdep
                 dim(k) = idim
                 do i = 1, idim
-                    direct(1+3* (k-1)+i-1) = zr( idconr-1+ (2*idim+1)* (j-1)+idim+i )
-                enddo
+                    direct(1+3*(k-1)+i-1) = zr(idconr-1+(2*idim+1)*(j-1)+idim+i)
+                end do
             else
                 do i = 1, nddl2
-                    k = k + 1
+                    k = k+1
                     nomnoe(k) = nomno2
                     nomddl(k) = zk8(iddl2+i-1)
                     coef(k) = zr(idco2+i-1)
-                enddo
-            endif
+                end do
+            end if
 !
 ! --- NOMBRE DE TERMES DE LA RELATION ---
 !
@@ -448,15 +448,15 @@ implicit none
 !
 ! --- AFFECTATION DE LA RELATION ---
 !
-            call afrela(coef, coemuc, nomddl, nomnoe, dim,&
-                        direct, nbterm, beta, betac, kbeta,&
+            call afrela(coef, coemuc, nomddl, nomnoe, dim, &
+                        direct, nbterm, beta, betac, kbeta, &
                         typcoe, fonree, 0.d0, lisrel)
 !
 ! --- FIN DE LA BOUCLE SUR LES RELATIONS                       ---
 ! --- (I.E. LES COUPLES DE NOEUDS EN VIS A VIS POUR LE MOT-CLE ---
 ! --- LIAISON-GROUP COURANT)                                   ---
 !
-        enddo
+        end do
 !
 ! --- IMPRESSION DES COUPLES DE NOEUDS EN VIS-A-VIS ---
 !
@@ -464,15 +464,15 @@ implicit none
         if (niv .eq. 2) then
             call utmess('I', 'CHARGES2_35', si=iocc)
             do j = 1, nbno
-                ino1 = zi(idconi+2* (j-1)+1)
+                ino1 = zi(idconi+2*(j-1)+1)
                 call jenuno(jexnum(noma//'.NOMNOE', ino1), nomno1)
-                ino2 = zi(idconi+2* (j-1)+2)
+                ino2 = zi(idconi+2*(j-1)+2)
                 call jenuno(jexnum(noma//'.NOMNOE', ino2), nomno2)
                 valk(1) = nomno1
                 valk(2) = nomno2
                 call utmess('I', 'CHARGES2_36', nk=2, valk=valk)
-            enddo
-        endif
+            end do
+        end if
 !
 ! --- DESTRUCTION DES TABLEAUX DE TRAVAIL  ---
 !
@@ -493,8 +493,8 @@ implicit none
 !
 ! --- AFFECTATION DE LA LISTE DE RELATIONS A LA CHARGE  ---
 !
-    if (phenom.eq.'MECA') then
-    endif
+    if (phenom .eq. 'MECA') then
+    end if
     call aflrch(lisrel, charge, 'LIN')
 !
 999 continue

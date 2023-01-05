@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,12 +16,12 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 ! aslint: disable=W1504
-subroutine lcinit(fami, kpg, ksp, rela_comp, typess,&
-                  essai, mod, nmat, materf,&
-                  timed, timef, intg, nr, nvi,&
-                  yd, epsd, deps, dy, compor,&
-                  nbcomm, cpmono, pgl, nfs, nsg,&
-                  toutms, vind, sigd, sigf, epstr,&
+subroutine lcinit(fami, kpg, ksp, rela_comp, typess, &
+                  essai, mod, nmat, materf, &
+                  timed, timef, intg, nr, nvi, &
+                  yd, epsd, deps, dy, compor, &
+                  nbcomm, cpmono, pgl, nfs, nsg, &
+                  toutms, vind, sigd, sigf, epstr, &
                   bnews, mtrac, indi, iret)
 
     implicit none
@@ -74,41 +74,41 @@ subroutine lcinit(fami, kpg, ksp, rela_comp, typess,&
     real(kind=8) :: toutms(nfs, nsg, 6), sigf(6)
     character(len=*) :: fami
     character(len=8) :: mod
-character(len=16), intent(in) :: rela_comp
+    character(len=16), intent(in) :: rela_comp
     character(len=16), intent(in) :: compor(COMPOR_SIZE)
     character(len=24) :: cpmono(5*nmat+1)
     aster_logical :: bnews(3), mtrac
 !       ----------------------------------------------------------------
 !
-    iret=0
+    iret = 0
 !
     if (rela_comp .eq. 'VISCOCHAB') then
-        call cvmini(typess, essai, mod, nmat, materf,&
-                    timed, timef, yd, epsd, deps,&
+        call cvmini(typess, essai, mod, nmat, materf, &
+                    timed, timef, yd, epsd, deps, &
                     dy)
 !
     else if (rela_comp .eq. 'MONOCRISTAL') then
-        call lcmmin(typess, essai, mod, nmat, materf,&
-                    nr, nvi, yd, deps, dy,&
-                    compor, nbcomm, cpmono, pgl, nfs,&
-                    nsg, toutms, timed, timef, vind,&
+        call lcmmin(typess, essai, mod, nmat, materf, &
+                    nr, nvi, yd, deps, dy, &
+                    compor, nbcomm, cpmono, pgl, nfs, &
+                    nsg, toutms, timed, timef, vind, &
                     sigd, epstr)
 !
     else if (rela_comp .eq. 'IRRAD3M') then
-        call irrini(fami, kpg, ksp, typess, essai,&
-                    mod, nmat, materf, yd, deps,&
+        call irrini(fami, kpg, ksp, typess, essai, &
+                    mod, nmat, materf, yd, deps, &
                     dy)
 !
     else if (rela_comp .eq. 'LETK') then
         call lklini(sigf, nr, yd, dy)
 !
     else if (rela_comp .eq. 'LKR') then
-        call srlini(sigf,nr,yd,dy)
+        call srlini(sigf, nr, yd, dy)
 !
     else if (rela_comp .eq. 'HUJEUX') then
-        call hujini(mod, nmat, materf, intg, deps,&
-                    nr, yd, nvi, vind, sigd,&
-                    sigf, bnews, mtrac, dy, indi,&
+        call hujini(mod, nmat, materf, intg, deps, &
+                    nr, yd, nvi, vind, sigd, &
+                    sigf, bnews, mtrac, dy, indi, &
                     iret)
 !
     else
@@ -116,7 +116,7 @@ character(len=16), intent(in) :: rela_comp
         dy(1:nr) = 0.d0
         if (mod(1:6) .eq. 'C_PLAN') then
             deps(3) = 0.d0
-        endif
-    endif
+        end if
+    end if
 !
 end subroutine

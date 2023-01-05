@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -55,7 +55,7 @@ subroutine diag99(nomres)
 !----------------------------------------------------------------------
 !
 !
-    integer :: iad, jiad, ier,  idmode, lmasse, idstat
+    integer :: iad, jiad, ier, idmode, lmasse, idstat
     integer ::     jnsta, i, j, k, ieq, nbord
     integer :: nbmode, nbstat, neq, n1, iorne, iorol
     real(kind=8) :: alpha, r8scal
@@ -131,22 +131,22 @@ subroutine diag99(nomres)
         do i = 1, nbmode
 !
 ! --------- PRODUIT MASSE*MODE PROPRE I
-            call mrmult('ZERO', lmasse, zr(idmode+(i-1)*neq), trav2, 1,&
+            call mrmult('ZERO', lmasse, zr(idmode+(i-1)*neq), trav2, 1, &
                         .true._1)
 !
 ! --------- (T(MODE STAT J)*MASSE*MODE PROPRE I)
-            r8scal=ddot(neq,zr(idstat+(j-1)*neq),1,trav2,1)
+            r8scal = ddot(neq, zr(idstat+(j-1)*neq), 1, trav2, 1)
 !
 ! --------- PRODUIT (T(MODE STAT J)*MASSE*MODE PROPRE I)*MODE PROPRE I
 ! --------- PUIS
 ! --------- SOMME (T(MODE STAT J)*MASSE*MODE PROPRE I)*MODE PROPRE I
             do k = 1, neq
-                trav1(1+(k-1)) = trav1(1+(k-1)) + r8scal * zr( idmode+(i-1)*neq+(k-1) )
+                trav1(1+(k-1)) = trav1(1+(k-1))+r8scal*zr(idmode+(i-1)*neq+(k-1))
             end do
         end do
 !
         do k = 1, neq
-            zr(jnsta+(j-1)*neq+(k-1)) = zr( idstat+(j-1)*neq+(k-1)) - trav1(1+(k-1) )
+            zr(jnsta+(j-1)*neq+(k-1)) = zr(idstat+(j-1)*neq+(k-1))-trav1(1+(k-1))
         end do
 !
     end do
@@ -156,81 +156,81 @@ subroutine diag99(nomres)
     end do
     alpha = 0.717d0
 !
-    call vpgskp(neq, nbstat, zr(jnsta), alpha, lmasse,&
-                2, trav1, trav4,trav3)
+    call vpgskp(neq, nbstat, zr(jnsta), alpha, lmasse, &
+                2, trav1, trav4, trav3)
 !
-    nbord = nbmode + nbstat
+    nbord = nbmode+nbstat
     call rscrsd('G', nomres, 'MODE_MECA', nbord)
 !
-    iorne =0
+    iorne = 0
     do i = 1, nbmode
         iorol = ordm(i)
         iorne = iorne+1
 !
-        call rsexch('F', meca, 'DEPL', iorol, chamol,&
+        call rsexch('F', meca, 'DEPL', iorol, chamol, &
                     ier)
-        call rsexch(' ', nomres, 'DEPL', iorne, chamne,&
+        call rsexch(' ', nomres, 'DEPL', iorne, chamne, &
                     ier)
         call copisd('CHAMP', 'G', chamol, chamne)
         call rsnoch(nomres, 'DEPL', iorne)
 !
-        call rsadpa(meca, 'L', 1, 'NUME_MODE', iorol,&
+        call rsadpa(meca, 'L', 1, 'NUME_MODE', iorol, &
                     0, sjv=iad, styp=k8b, istop=0)
-        call rsadpa(nomres, 'E', 1, 'NUME_MODE', iorne,&
+        call rsadpa(nomres, 'E', 1, 'NUME_MODE', iorne, &
                     0, sjv=jiad, styp=k8b)
         zi(jiad) = zi(iad)
 !
-        call rsadpa(meca, 'L', 1, 'FREQ', iorol,&
+        call rsadpa(meca, 'L', 1, 'FREQ', iorol, &
                     0, sjv=iad, styp=k8b, istop=0)
-        call rsadpa(nomres, 'E', 1, 'FREQ', iorne,&
+        call rsadpa(nomres, 'E', 1, 'FREQ', iorne, &
                     0, sjv=jiad, styp=k8b)
         zr(jiad) = zr(iad)
 !
-        call rsadpa(meca, 'L', 1, 'NORME', iorol,&
+        call rsadpa(meca, 'L', 1, 'NORME', iorol, &
                     0, sjv=iad, styp=k8b, istop=0)
-        call rsadpa(nomres, 'E', 1, 'NORME', iorne,&
+        call rsadpa(nomres, 'E', 1, 'NORME', iorne, &
                     0, sjv=jiad, styp=k8b)
         zk24(jiad) = zk24(iad)
 !
-        call rsadpa(meca, 'L', 1, 'OMEGA2', iorol,&
+        call rsadpa(meca, 'L', 1, 'OMEGA2', iorol, &
                     0, sjv=iad, styp=k8b, istop=0)
-        call rsadpa(nomres, 'E', 1, 'OMEGA2', iorne,&
+        call rsadpa(nomres, 'E', 1, 'OMEGA2', iorne, &
                     0, sjv=jiad, styp=k8b)
         zr(jiad) = zr(iad)
 !
-        call rsadpa(meca, 'L', 1, 'MASS_GENE', iorol,&
+        call rsadpa(meca, 'L', 1, 'MASS_GENE', iorol, &
                     0, sjv=iad, styp=k8b, istop=0)
-        call rsadpa(nomres, 'E', 1, 'MASS_GENE', iorne,&
+        call rsadpa(nomres, 'E', 1, 'MASS_GENE', iorne, &
                     0, sjv=jiad, styp=k8b)
         zr(jiad) = zr(iad)
 !
-        call rsadpa(meca, 'L', 1, 'RIGI_GENE', iorol,&
+        call rsadpa(meca, 'L', 1, 'RIGI_GENE', iorol, &
                     0, sjv=iad, styp=k8b, istop=0)
-        call rsadpa(nomres, 'E', 1, 'RIGI_GENE', iorne,&
+        call rsadpa(nomres, 'E', 1, 'RIGI_GENE', iorne, &
                     0, sjv=jiad, styp=k8b)
         zr(jiad) = zr(iad)
 !
-        call rsadpa(meca, 'L', 1, 'TYPE_MODE', iorol,&
+        call rsadpa(meca, 'L', 1, 'TYPE_MODE', iorol, &
                     0, sjv=iad, styp=k8b, istop=0)
-        call rsadpa(nomres, 'E', 1, 'TYPE_MODE', iorne,&
+        call rsadpa(nomres, 'E', 1, 'TYPE_MODE', iorne, &
                     0, sjv=jiad, styp=k8b)
         zk16(jiad) = zk16(iad)
 
-        call rsadpa(meca, 'L', 1, 'MODELE', iorol,&
+        call rsadpa(meca, 'L', 1, 'MODELE', iorol, &
                     0, sjv=iad, styp=k8b, istop=0)
-        call rsadpa(nomres, 'E', 1, 'MODELE', iorne,&
+        call rsadpa(nomres, 'E', 1, 'MODELE', iorne, &
                     0, sjv=jiad, styp=k8b)
         zk8(jiad) = zk8(iad)
 
-        call rsadpa(meca, 'L', 1, 'CHAMPMAT', iorol,&
+        call rsadpa(meca, 'L', 1, 'CHAMPMAT', iorol, &
                     0, sjv=iad, styp=k8b, istop=0)
-        call rsadpa(nomres, 'E', 1, 'CHAMPMAT', iorne,&
+        call rsadpa(nomres, 'E', 1, 'CHAMPMAT', iorne, &
                     0, sjv=jiad, styp=k8b)
         zk8(jiad) = zk8(iad)
 
-        call rsadpa(meca, 'L', 1, 'CARAELEM', iorol,&
+        call rsadpa(meca, 'L', 1, 'CARAELEM', iorol, &
                     0, sjv=iad, styp=k8b, istop=0)
-        call rsadpa(nomres, 'E', 1, 'CARAELEM', iorne,&
+        call rsadpa(nomres, 'E', 1, 'CARAELEM', iorne, &
                     0, sjv=jiad, styp=k8b)
         zk8(jiad) = zk8(iad)
 !
@@ -240,63 +240,63 @@ subroutine diag99(nomres)
         iorol = ords(i)
         iorne = iorne+1
 !
-        call rsadpa(nomres, 'E', 1, 'NUME_MODE', iorne,&
+        call rsadpa(nomres, 'E', 1, 'NUME_MODE', iorne, &
                     0, sjv=jiad, styp=k8b)
         zi(jiad) = iorol+nbmode
 !
-        call rsadpa(nomres, 'E', 1, 'FREQ', iorne,&
+        call rsadpa(nomres, 'E', 1, 'FREQ', iorne, &
                     0, sjv=jiad, styp=k8b)
         zr(jiad) = 0.d0
 !
-        call rsadpa(nomres, 'E', 1, 'OMEGA2', iorne,&
+        call rsadpa(nomres, 'E', 1, 'OMEGA2', iorne, &
                     0, sjv=jiad, styp=k8b)
         zr(jiad) = 0.d0
 !
-        call rsadpa(nomres, 'E', 1, 'MASS_GENE', iorne,&
+        call rsadpa(nomres, 'E', 1, 'MASS_GENE', iorne, &
                     0, sjv=jiad, styp=k8b)
         zr(jiad) = 0.d0
 !
-        call rsadpa(nomres, 'E', 1, 'RIGI_GENE', iorne,&
+        call rsadpa(nomres, 'E', 1, 'RIGI_GENE', iorne, &
                     0, sjv=jiad, styp=k8b)
         zr(jiad) = 0.d0
 !
-        call rsadpa(stat, 'L', 1, 'NOEUD_CMP', iorol,&
+        call rsadpa(stat, 'L', 1, 'NOEUD_CMP', iorol, &
                     0, sjv=iad, styp=k8b, istop=0)
-        call rsadpa(nomres, 'E', 1, 'NOEUD_CMP', iorne,&
+        call rsadpa(nomres, 'E', 1, 'NOEUD_CMP', iorne, &
                     0, sjv=jiad, styp=k8b)
         zk16(jiad) = zk16(iad)
 !
-        call rsadpa(stat, 'L', 1, 'TYPE_DEFO', iorol,&
+        call rsadpa(stat, 'L', 1, 'TYPE_DEFO', iorol, &
                     0, sjv=iad, styp=k8b, istop=0)
-        call rsadpa(nomres, 'E', 1, 'TYPE_DEFO', iorne,&
+        call rsadpa(nomres, 'E', 1, 'TYPE_DEFO', iorne, &
                     0, sjv=jiad, styp=k8b)
         zk16(jiad) = zk16(iad)
 !
-        call rsadpa(stat, 'L', 1, 'TYPE_MODE', iorol,&
+        call rsadpa(stat, 'L', 1, 'TYPE_MODE', iorol, &
                     0, sjv=iad, styp=k8b, istop=0)
-        call rsadpa(nomres, 'E', 1, 'TYPE_MODE', iorne,&
+        call rsadpa(nomres, 'E', 1, 'TYPE_MODE', iorne, &
                     0, sjv=jiad, styp=k8b)
         zk16(jiad) = zk16(iad)
 
-        call rsadpa(stat, 'L', 1, 'MODELE', iorol,&
+        call rsadpa(stat, 'L', 1, 'MODELE', iorol, &
                     0, sjv=iad, styp=k8b, istop=0)
-        call rsadpa(nomres, 'E', 1, 'MODELE', iorne,&
+        call rsadpa(nomres, 'E', 1, 'MODELE', iorne, &
                     0, sjv=jiad, styp=k8b)
         zk8(jiad) = zk8(iad)
 
-        call rsadpa(stat, 'L', 1, 'CHAMPMAT', iorol,&
+        call rsadpa(stat, 'L', 1, 'CHAMPMAT', iorol, &
                     0, sjv=iad, styp=k8b, istop=0)
-        call rsadpa(nomres, 'E', 1, 'CHAMPMAT', iorne,&
+        call rsadpa(nomres, 'E', 1, 'CHAMPMAT', iorne, &
                     0, sjv=jiad, styp=k8b)
         zk8(jiad) = zk8(iad)
 
-        call rsadpa(stat, 'L', 1, 'CARAELEM', iorol,&
+        call rsadpa(stat, 'L', 1, 'CARAELEM', iorol, &
                     0, sjv=iad, styp=k8b, istop=0)
-        call rsadpa(nomres, 'E', 1, 'CARAELEM', iorne,&
+        call rsadpa(nomres, 'E', 1, 'CARAELEM', iorne, &
                     0, sjv=jiad, styp=k8b)
         zk8(jiad) = zk8(iad)
 !
-        call rsexch(' ', nomres, 'DEPL', iorne, chamol,&
+        call rsexch(' ', nomres, 'DEPL', iorne, chamol, &
                     ier)
         call vtcrem(chamol, masse, 'G', 'R')
         call jeveuo(chamol//'.VALE', 'E', vr=vale)

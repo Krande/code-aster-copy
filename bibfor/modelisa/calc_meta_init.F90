@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine calc_meta_init(sd_temp, temp_nume, ligrmo, compor, phasin,&
+subroutine calc_meta_init(sd_temp, temp_nume, ligrmo, compor, phasin, &
                           chmate)
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterfort/assert.h"
@@ -32,12 +32,12 @@ implicit none
 #include "asterfort/rsnoch.h"
 #include "asterfort/utmess.h"
 !
-character(len=8), intent(in) :: sd_temp
-integer, intent(in) :: temp_nume
-character(len=24), intent(in) :: ligrmo
-character(len=19), intent(in) :: compor
-character(len=24), intent(in) :: phasin
-character(len=24), intent(in) :: chmate
+    character(len=8), intent(in) :: sd_temp
+    integer, intent(in) :: temp_nume
+    character(len=24), intent(in) :: ligrmo
+    character(len=19), intent(in) :: compor
+    character(len=24), intent(in) :: phasin
+    character(len=24), intent(in) :: chmate
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -73,23 +73,23 @@ character(len=24), intent(in) :: chmate
 !
 ! - Temperature field
 !
-    call rsexch('F', sd_temp, 'TEMP', temp_nume, tempe,&
+    call rsexch('F', sd_temp, 'TEMP', temp_nume, tempe, &
                 iret)
 !
 ! - Current time
 !
-    call rsadpa(sd_temp, 'L', 1, 'INST', temp_nume,&
+    call rsadpa(sd_temp, 'L', 1, 'INST', temp_nume, &
                 0, sjv=iainst, styp=k8_dummy)
     time = zr(iainst)
 !
 ! - Computation of metallurgical field
 !
-    call calc_meta_field(ligrmo, chmate, tempe, compor, phasin,&
+    call calc_meta_field(ligrmo, chmate, tempe, compor, phasin, &
                          meta_out)
 !
 ! - Save META_ELNO in result datastructure
 !
-    call rsexch(' ', sd_temp, 'META_ELNO', temp_nume, sd_field,&
+    call rsexch(' ', sd_temp, 'META_ELNO', temp_nume, sd_field, &
                 iret)
     call copisd('CHAMP_GD', 'G', meta_out, sd_field)
     call rsnoch(sd_temp, 'META_ELNO', temp_nume)
@@ -97,7 +97,7 @@ character(len=24), intent(in) :: chmate
 !
 ! - Save COMPORMETA in result datastructure
 !
-    call rsexch(' ', sd_temp, 'COMPORMETA', temp_nume, sd_field,&
+    call rsexch(' ', sd_temp, 'COMPORMETA', temp_nume, sd_field, &
                 iret)
     call copisd('CHAMP_GD', 'G', compor, sd_field)
     call rsnoch(sd_temp, 'COMPORMETA', temp_nume)

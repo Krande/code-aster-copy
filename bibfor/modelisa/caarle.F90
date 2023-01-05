@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -72,7 +72,7 @@ subroutine caarle(numdlz, iocc, lisrez, chargz)
     integer :: jtypm, jlgrf
     character(len=16) :: motfac, option
 !
-    data typmai /'&&CAARLE.NOMTM'/
+    data typmai/'&&CAARLE.NOMTM'/
 !
 ! ----------------------------------------------------------------------
     call jemarq()
@@ -89,14 +89,14 @@ subroutine caarle(numdlz, iocc, lisrez, chargz)
     call getvtx(motfac, 'OPTION', iocc=zocc, scal=option, nbret=iop)
     if (option .ne. '3D_POU_ARLEQUIN') then
         call utmess('F', 'MODELISA6_39', sk=option)
-    endif
+    end if
 !
     call getfac(motfac, nocc)
     if (nocc .eq. 0) goto 999
 !
 ! --- LECTURE NOMS DU MODELE ET DU MAILLAGE
 !
-    call getvid(' ', 'MODELE', iocc=0, nbval=1, scal=nomo,&
+    call getvid(' ', 'MODELE', iocc=0, nbval=1, scal=nomo, &
                 nbret=ibid)
     call jeveuo(nomo(1:8)//'.MODELE    .LGRF', 'L', jlgrf)
     mail = zk8(jlgrf)
@@ -118,12 +118,12 @@ subroutine caarle(numdlz, iocc, lisrez, chargz)
 !
 ! --- LECTURE ET VERIFICATION DES MAILLES DES MODELES
 !
-    call arllec(motfac, zocc, nomo, noma, nomb,&
+    call arllec(motfac, zocc, nomo, noma, nomb, &
                 model, cine, dime)
 !
 ! --- CALCUL DES EQUATIONS DE COUPLAGE
 !
-    call arlcou(mail, zocc, nomo, typmai, noma,&
+    call arlcou(mail, zocc, nomo, typmai, noma, &
                 nomb, cine, dime, lisrel, charge)
 !
 ! --- DESALLOCATION GROUPES 1 ET 2

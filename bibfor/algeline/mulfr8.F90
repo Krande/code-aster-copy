@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine mulfr8(nommat, npivot, neq, typsym, eps,&
+subroutine mulfr8(nommat, npivot, neq, typsym, eps, &
                   renumz)
 ! person_in_charge: olivier.boiteau at edf.fr
-use superv_module
+    use superv_module
     implicit none
 #include "jeveux.h"
 #include "asterc/ismaem.h"
@@ -97,7 +97,7 @@ use superv_module
     integer :: nproc, ifm, niv, lpmax
 !     NB : ORDRE DES MATRICES CL ET CU (LES PRODUITS MATRICE*MATRICE)
 !     96 EST OPTIMUM POUR EV68, 32 EST OPTIMUM POUR PENTIUM 4
-    integer :: cl, cu,  lm, lr, ni, vali(2)
+    integer :: cl, cu, lm, lr, ni, vali(2)
     real(kind=8), pointer :: digs(:) => null()
     character(len=24), pointer :: refa(:) => null()
 !     ------------------------------------------------------------------
@@ -124,8 +124,8 @@ use superv_module
 !
     call infniv(ifm, niv)
 !----------------------------------------------------------------------
-    nb=llbloc()
-    lm=ismaem()
+    nb = llbloc()
+    lm = ismaem()
     noma19 = nommat
     npivot = 0
 !
@@ -134,10 +134,10 @@ use superv_module
     call dismoi('NOM_NUME_DDL', noma19, 'MATR_ASSE', repk=nu)
     nomloc = nu//'.MLTF.LOCL'
     nomadi = nu//'.MLTF.ADNT'
-    call mlnmin(nu, nomp01, nomp02, nomp03, nomp04,&
-                nomp05, nomp06, nomp07, nomp08, nomp09,&
-                nomp10, nomp11, nomp12, nomp13, nomp14,&
-                nomp15, nomp16, nomp17, nomp18, nomp19,&
+    call mlnmin(nu, nomp01, nomp02, nomp03, nomp04, &
+                nomp05, nomp06, nomp07, nomp08, nomp09, &
+                nomp10, nomp11, nomp12, nomp13, nomp14, &
+                nomp15, nomp16, nomp17, nomp18, nomp19, &
                 nomp20)
     ierr = 0
     factol(1:19) = nommat
@@ -154,24 +154,24 @@ use superv_module
     nbloc = zi(desc+2)
     lgpile = zi(desc+3)
     if (typsym .eq. 0) lgpile = 2*lgpile
-    lr=lor8em()
+    lr = lor8em()
     if (lgpile .gt. lm/lr) then
-        ni=2
-        vali(1)=lgpile
-        vali(2)=lm
+        ni = 2
+        vali(1) = lgpile
+        vali(2) = lm
         call utmess('A', 'ALGELINE3_43', ni=ni, vali=vali)
-    endif
+    end if
 !
     lonmat = zi(desc+4)
     call jelibe(nomp01)
     call wkvect(nomadj, ' V V I ', lonmat, adjnit)
     do i = 0, lonmat-1
-        zi(adjnit+i)=zi(adinit+i)
+        zi(adjnit+i) = zi(adinit+i)
     end do
     call jelibe(nomadi)
 !
 !
-    call mltasa(nbloc, zi(lgbloc), zi(adjnit), nommat, lonmat,&
+    call mltasa(nbloc, zi(lgbloc), zi(adjnit), nommat, lonmat, &
                 factol, factou, typsym)
 !
     call jedetr(nomadj)
@@ -181,47 +181,47 @@ use superv_module
     call jedisp(2, it)
 !
 !    -- SUR LES MACHINES I4, ON MODIFIE IT() POUR PARLER EN R8 :
-    ASSERT(lor8em().eq.8)
+    ASSERT(lor8em() .eq. 8)
     if (loisem() .eq. 4) then
-        it(1)=it(1)/2
-        it(2)=it(2)/2
-    endif
+        it(1) = it(1)/2
+        it(2) = it(2)/2
+    end if
 !
 !
     mxbloc = 0
     do i = 1, nbloc
-        mxbloc = max(mxbloc,zi(lgbloc+i-1))
+        mxbloc = max(mxbloc, zi(lgbloc+i-1))
     end do
     lpmax = zi(lgsn)
-    mxmate= lpmax*(lpmax+1)/2
+    mxmate = lpmax*(lpmax+1)/2
     do i = 1, nbsn-1
         ln = zi(lgsn+i)
-        mxmate = max(mxmate,ln*(ln+1)/2)
-        lpmax = max(lpmax,ln)
+        mxmate = max(mxmate, ln*(ln+1)/2)
+        lpmax = max(lpmax, ln)
     end do
     if (niv .ge. 2) then
-        write (ifm,*) ''
-        write (ifm,*) ' -----------------------------------------'
-        write (ifm,*) ' AVANT FACTORISATION LONGUEURS DISPONIBLES (R8)',&
-     &        it(1),' ET ',it(2),'LONGUEUR DE LA PILE ',lgpile,&
-     &        ', PLUS GRAND BLOC DE FACTOL ',mxbloc
-        write (ifm,*) 'PLUS GRAND BLOC DE MATRICES FRONTALES: ',&
-        mxmate
-        write (ifm,*) ' NOMBRE DE PROCESSEURS : ',nproc
-        write (ifm,*) ' TYPSYM : ',typsym
-    endif
+        write (ifm, *) ''
+        write (ifm, *) ' -----------------------------------------'
+        write (ifm, *) ' AVANT FACTORISATION LONGUEURS DISPONIBLES (R8)',&
+     &        it(1), ' ET ', it(2), 'LONGUEUR DE LA PILE ', lgpile,&
+     &        ', PLUS GRAND BLOC DE FACTOL ', mxbloc
+        write (ifm, *) 'PLUS GRAND BLOC DE MATRICES FRONTALES: ', &
+            mxmate
+        write (ifm, *) ' NOMBRE DE PROCESSEURS : ', nproc
+        write (ifm, *) ' TYPSYM : ', typsym
+    end if
 !
 ! ######################################################################
 !
 !     ON ALLOUE LA PILE
-    if (niv .eq. 2) write (ifm,*) ' => PILE TOUT EN MEMOIRE '
+    if (niv .eq. 2) write (ifm, *) ' => PILE TOUT EN MEMOIRE '
     if (lgpile .gt. mxbloc) then
         call wkvect(nompil, ' V V R ', lgpile, pile)
         call wkvect(nompr1, ' V V R ', mxbloc, adbl1)
     else
         call wkvect(nompr1, ' V V R ', mxbloc, adbl1)
         call wkvect(nompil, ' V V R ', lgpile, pile)
-    endif
+    end if
 !
 !
 !
@@ -241,7 +241,7 @@ use superv_module
     call jeveuo(nomp17, 'L', ncbloc)
     call jeveuo(nomp18, 'L', decal)
     call jeveuo(nomp20, 'L', seq)
-    ltempr=nb*lpmax*nproc
+    ltempr = nb*lpmax*nproc
     call wkvect(nmprt1, ' V V R ', ltempr, trav1)
     call wkvect(nmprt2, ' V V R ', ltempr, trav2)
     call wkvect(nmprcl, ' V V R ', nproc*nb**2, cl)
@@ -259,11 +259,11 @@ use superv_module
 !     APPEL A MLTFAS1
 !
     call jedetr(nompr1)
-    call mltfc1(nbloc, zi(ncbloc), zi(decal), zi(supnd), zi(fils),&
-                zi(frere), zi(seq), zi(lgsn), zi(lfront), zi(adress),&
-                zi4(local), zi(adpile), zi(nbass), zr(pile), lgpile,&
-                zi(tempi), zr(trav1), zr(trav2), factol, factou,&
-                typsym, zi(tabi2), eps, ierr, nb,&
+    call mltfc1(nbloc, zi(ncbloc), zi(decal), zi(supnd), zi(fils), &
+                zi(frere), zi(seq), zi(lgsn), zi(lfront), zi(adress), &
+                zi4(local), zi(adpile), zi(nbass), zr(pile), lgpile, &
+                zi(tempi), zr(trav1), zr(trav2), factol, factou, &
+                typsym, zi(tabi2), eps, ierr, nb, &
                 zr(cl), zr(cu), zr(ldiag))
 !
     if (ierr .gt. 0) goto 9998
@@ -277,7 +277,7 @@ use superv_module
 !
 !     PIVOTS NEGATIFS :
     do i = 1, neq
-        if (zr(ldiag+i-1) .lt. 0.d0) npivot = npivot - 1
+        if (zr(ldiag+i-1) .lt. 0.d0) npivot = npivot-1
     end do
     call jeveuo(noma19//'.DIGS', 'E', vr=digs)
 !
@@ -292,18 +292,18 @@ use superv_module
 9998 continue
     if (ierr .ne. 0) then
         npivot = zi(anc-1+ierr)
-    endif
+    end if
 !
 !
     call jeveuo(noma19//'.REFA', 'E', vk24=refa)
-    refa(8)='DECT'
+    refa(8) = 'DECT'
 !
     call uttcpu('CPU.MULFR8', 'FIN', ' ')
     if (niv .eq. 2) then
         call uttcpr('CPU.MULFR8', 7, temps)
-        write (ifm,*) ' FACTORISATION DE LA MATRICE.'//'TEMPS CPU',&
-            temps(3),' + TEMPS CPU SYSTEME ',temps(6), ' TEMPS ELAPSED ',temps(7)
-    endif
+        write (ifm, *) ' FACTORISATION DE LA MATRICE.'//'TEMPS CPU', &
+            temps(3), ' + TEMPS CPU SYSTEME ', temps(6), ' TEMPS ELAPSED ', temps(7)
+    end if
     call jedetr(nomdia)
     call jedetr(nmprt1)
     call jedetr(nmprt2)

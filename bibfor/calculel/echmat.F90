@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -72,15 +72,15 @@ subroutine echmat(matz, ldist, lmhpc, rmin, rmax)
 !=================================================================
     call jemarq()
 !
-    mat19=matz
+    mat19 = matz
     call jeveuo(mat19//'.REFA', 'L', vk24=refa)
-    nonu=refa(2)(1:14)
+    nonu = refa(2) (1:14)
     call jelira(nonu//'.SMOS.SMDI', 'LONMAX', n)
     call jeveuo(nonu//'.SMOS.SMDI', 'L', vi=smdi)
-    nz=smdi(n)
+    nz = smdi(n)
     call jeveuo(nonu//'.SMOS.SMHC', 'L', jsmhc)
     call jelira(nonu//'.SMOS.SMHC', 'LONMAX', nsmhc)
-    ASSERT(nz.le.nsmhc)
+    ASSERT(nz .le. nsmhc)
 !
 !
     call jeveuo(nonu//'.NUME.DELG', 'L', jdelgg)
@@ -89,55 +89,55 @@ subroutine echmat(matz, ldist, lmhpc, rmin, rmax)
     if (imatd .ne. 0) then
         call jeveuo(nonu//'.NUML.DELG', 'L', jdelgl)
     else
-        jdelgl=jdelgg
-        ASSERT(ng.eq.n)
-    endif
+        jdelgl = jdelgg
+        ASSERT(ng .eq. n)
+    end if
     !
     call jeexin(nonu//'.NUML.NLGP', imatd)
     if (imatd .ne. 0) then
         call jeveuo(nonu//'.NUML.NLGP', 'L', vi=nlgp)
-    endif
+    end if
 !
     call jelira(mat19//'.VALM', 'TYPE', cval=ktyp)
     call jelira(mat19//'.VALM', 'CLAS', cval=base1)
     call jeveuo(jexnum(mat19//'.VALM', 1), 'L', jvalm1)
     call jelira(jexnum(mat19//'.VALM', 1), 'LONMAX', nlong)
-    ASSERT(nlong.eq.nz)
+    ASSERT(nlong .eq. nz)
 !
 !   Le vecteur rdiag/zdiag contient la diagonale de la matrice globale
 !
     if (ktyp .eq. 'R') then
         AS_ALLOCATE(vr=rdiag, size=ng)
-        rdiag(:)=0.d0
+        rdiag(:) = 0.d0
     else
         AS_ALLOCATE(vc=zdiag, size=ng)
-        zdiag(:)=cmplx(0.d0, 0.d0)
-    endif
+        zdiag(:) = cmplx(0.d0, 0.d0)
+    end if
 !
 !
 !     --CALCUL DE RMIN ET RMAX :
 !     -----------------------------
-    rmin=r8maem()
-    rmax=-1.d0
+    rmin = r8maem()
+    rmax = -1.d0
 !     CALCUL DE RMIN : PLUS PETIT TERME NON NUL DE LA DIAGONALE
 !     CALCUL DE RMAX : PLUS GRAND TERME DE LA DIAGONALE
     do jcol = 1, n
 ! si le dl est un multiplicateur de Lagrange on passe
         if (zi(jdelgl-1+jcol) .lt. 0) then
             cycle
-        endif
+        end if
 !   Indice dans la matrice globale Aster de la colonne locale jcol
         if (imatd .ne. 0) then
             jcolg = nlgp(jcol)
         else
             jcolg = jcol
-        endif
+        end if
 !   Lecture des valeurs de rdiag/zdiag
         if (ktyp .eq. 'R') then
-            rdiag(jcolg)=rdiag(jcolg)+zr(jvalm1-1+smdi(jcol))
+            rdiag(jcolg) = rdiag(jcolg)+zr(jvalm1-1+smdi(jcol))
         else
-            zdiag(jcolg)=zdiag(jcolg)+zc(jvalm1-1+smdi(jcol))
-        endif
+            zdiag(jcolg) = zdiag(jcolg)+zc(jvalm1-1+smdi(jcol))
+        end if
 !
     end do
 !
@@ -148,19 +148,19 @@ subroutine echmat(matz, ldist, lmhpc, rmin, rmax)
             call asmpi_comm_vect('MPI_SUM', 'R', nbval=ng, vr=rdiag)
         else
             call asmpi_comm_vect('MPI_SUM', 'C', nbval=ng, vc=zdiag)
-        endif
-    endif
+        end if
+    end if
 !
 !   Tous les procs possèdent les termes qui correspondent à des ddls physiques.
 !   On calcule les valeurs min et max des modules des termes de la diagonale.
 !
     if (ktyp .eq. 'R') then
         rmax = maxval(abs(rdiag))
-        rmin = minval(abs(rdiag), mask = abs(rdiag) > r8prem())
+        rmin = minval(abs(rdiag), mask=abs(rdiag) > r8prem())
     else
         rmax = maxval(abs(zdiag))
-        rmin = minval(abs(zdiag), mask = abs(zdiag) > r8prem())
-    endif
+        rmin = minval(abs(zdiag), mask=abs(zdiag) > r8prem())
+    end if
 !
     if (lmhpc) then
         if (ktyp .eq. 'R') then
@@ -168,8 +168,8 @@ subroutine echmat(matz, ldist, lmhpc, rmin, rmax)
             call asmpi_comm_vect('MPI_MAX', 'R', scr=rmax)
         else
             ASSERT(.false.)
-        endif
-    endif
+        end if
+    end if
 !
 !   Libération de la mémoire
 !

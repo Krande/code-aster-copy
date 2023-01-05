@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine colelt(nbnode, maxnod, nbtyma, nbmail, nbnoma,&
+subroutine colelt(nbnode, maxnod, nbtyma, nbmail, nbnoma, &
                   nuconn)
 ! person_in_charge: nicolas.greffet at edf.fr
     implicit none
@@ -119,18 +119,18 @@ subroutine colelt(nbnode, maxnod, nbtyma, nbmail, nbnoma,&
     do ima = 1, nbmail
 !
 ! NUMERO DE LA MAILLE
-        zi(jnuma - 1 + ima) = ima
+        zi(jnuma-1+ima) = ima
 ! TYPE DE LA MAILLE (TOUJOURS UN POINT)
-        zi(jtypma - 1 + ima) = 15
+        zi(jtypma-1+ima) = 15
 ! NOMBRE DE NOEUDS PAR MAILLE (TOUJOURS UN POINT)
-        zi(jnbnma - 1 + ima) = 1
+        zi(jnbnma-1+ima) = 1
 ! NUMERO DES NOEUDS DE LA MAILLE (TOUJOURS UN POINT)
-        zi(jnoma - 1 + ij+1) = ima
+        zi(jnoma-1+ij+1) = ima
 !
 !      INDICATION DES NOEUDS QUI NE SONT PAS ORPHELINS
         ityp = zi(jtypma+ima-1)
         do ino = 1, nbnoma(ityp)
-            node = zi(jnoma+ij+nuconn(ityp,ino)-1)
+            node = zi(jnoma+ij+nuconn(ityp, ino)-1)
             noeuds(node+1) = 1
         end do
 !
@@ -143,22 +143,22 @@ subroutine colelt(nbnode, maxnod, nbtyma, nbmail, nbnoma,&
                     exisgr = .true.
                     indgro = i
                     goto 30
-                endif
+                end if
             end do
- 30         continue
-            if (.not.exisgr) then
-                nbgrou = nbgrou + 1
+30          continue
+            if (.not. exisgr) then
+                nbgrou = nbgrou+1
                 indgro = nbgrou
                 zi(jindma+indgro-1) = mailles(ima)
-            endif
-        endif
+            end if
+        end if
 !MH
         indgro = 1
 !MH
-        zi(jnbmag+indgro-1) = zi(jnbmag+indgro-1) + 1
+        zi(jnbmag+indgro-1) = zi(jnbmag+indgro-1)+1
 !
-        ij = ij + zi(jnbnma+ima-1)
-        zi(jnbtym+zi(jtypma+ima-1)-1) = zi(jnbtym+zi(jtypma+ima-1)-1)+ 1
+        ij = ij+zi(jnbnma+ima-1)
+        zi(jnbtym+zi(jtypma+ima-1)-1) = zi(jnbtym+zi(jtypma+ima-1)-1)+1
     end do
 !
     indmax = nbgrou
@@ -169,12 +169,12 @@ subroutine colelt(nbnode, maxnod, nbtyma, nbmail, nbnoma,&
 !
 ! --- CREATION DE LA COLLECTION DES GROUPES DE MAILLES :
 !     ------------------------------------------------
-    call jecrec('&&PRECOU.LISTE.GROUP_MA', 'V V I', 'NU', 'CONTIG', 'VARIABLE',&
+    call jecrec('&&PRECOU.LISTE.GROUP_MA', 'V V I', 'NU', 'CONTIG', 'VARIABLE', &
                 indmax)
     call jeecra('&&PRECOU.LISTE.GROUP_MA', 'LONT', nbmail)
 !
     do i = 1, indmax
-        call jeecra(jexnum('&&PRECOU.LISTE.GROUP_MA', i), 'LONMAX', zi( jnbmag+i-1))
+        call jeecra(jexnum('&&PRECOU.LISTE.GROUP_MA', i), 'LONMAX', zi(jnbmag+i-1))
         zi(jnbmag+i-1) = 0
     end do
 !
@@ -195,18 +195,18 @@ subroutine colelt(nbnode, maxnod, nbtyma, nbmail, nbnoma,&
                     exisgr = .true.
                     indgro = i
                     goto 70
-                endif
+                end if
             end do
- 70         continue
-            if (.not.exisgr) then
-                nbgrou = nbgrou + 1
+70          continue
+            if (.not. exisgr) then
+                nbgrou = nbgrou+1
                 indgro = nbgrou
-            endif
-        endif
+            end if
+        end if
 !MH
 !   INDGRO = 1
 !MH
-        zi(jnbmag+indgro-1) = zi(jnbmag+indgro-1) + 1
+        zi(jnbmag+indgro-1) = zi(jnbmag+indgro-1)+1
 !
         zi(jindma+indgro-1) = mailles(ima)
         call jeveuo(jexnum('&&PRECOU.LISTE.GROUP_MA', indgro), 'E', jgr)

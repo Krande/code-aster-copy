@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -58,7 +58,7 @@ subroutine extdia(matr, numddl, icode, diag)
 !
 !-----------------------------------------------------------------------
     aster_logical :: iscmplx
-    integer :: idia, j,  jbloc,   k
+    integer :: idia, j, jbloc, k
     integer :: l, lmat, nbacti, nbbloq, nblagr, nbliai, neq
     character(len=24) :: typmatr
     integer, pointer :: vtypddl(:) => null()
@@ -72,47 +72,47 @@ subroutine extdia(matr, numddl, icode, diag)
     call jeveuo(matr//'           .&INT', 'L', lmat)
 !
     call gettco(matr, typmatr)
-    iscmplx = (typmatr(1:9).eq.'MATR_ASSE') .and. (typmatr(16:16).eq.'C')
+    iscmplx = (typmatr(1:9) .eq. 'MATR_ASSE') .and. (typmatr(16:16) .eq. 'C')
 !
     call jeveuo(numddl(1:8)//'      .SMOS.SMDE', 'L', vi=smde)
     neq = smde(1)
 !
     AS_ALLOCATE(vi=vtypddl, size=neq)
-    call typddl('ACTI', numddl(1:8), neq, vtypddl, nbacti,&
+    call typddl('ACTI', numddl(1:8), neq, vtypddl, nbacti, &
                 nbbloq, nblagr, nbliai)
     if (icode .eq. 2) then
         if (nbliai .gt. 0) then
             call utmess('F', 'UTILITAI_76')
-        endif
-    endif
+        end if
+    end if
 !
     call jeveuo(numddl(1:8)//'      .SMOS.SMDI', 'L', vi=smdi)
     k = 0
     l = 0
     call jeveuo(jexnum(matr//'           .VALM', 1), 'L', jbloc)
-    if (.not.(iscmplx) )then
+    if (.not. (iscmplx)) then
         do j = 1, neq
-            k = k + 1
+            k = k+1
             if (vtypddl(k) .ne. 0) then
-                idia=smdi(k)
-                l=l+1
-                diag(l)=zr(jbloc-1+idia)
-            else if (icode.eq.0.or.icode.eq.2) then
-                l=l+1
-                diag(l)=0.d0
-            endif
+                idia = smdi(k)
+                l = l+1
+                diag(l) = zr(jbloc-1+idia)
+            else if (icode .eq. 0 .or. icode .eq. 2) then
+                l = l+1
+                diag(l) = 0.d0
+            end if
         end do
     else
         do j = 1, neq
-            k = k + 1
+            k = k+1
             if (vtypddl(k) .ne. 0) then
-                idia=smdi(k)
-                l=l+1
-                diag(l)=sqrt(real(zc(jbloc-1+idia))**2+imag(zc(jbloc-1+idia))**2)
-            else if (icode.eq.0.or.icode.eq.2) then
-                l=l+1
-                diag(l)=0.d0
-            endif
+                idia = smdi(k)
+                l = l+1
+                diag(l) = sqrt(real(zc(jbloc-1+idia))**2+imag(zc(jbloc-1+idia))**2)
+            else if (icode .eq. 0 .or. icode .eq. 2) then
+                l = l+1
+                diag(l) = 0.d0
+            end if
         end do
     end if
     AS_DEALLOCATE(vi=vtypddl)

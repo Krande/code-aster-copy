@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,9 +18,9 @@
 
 subroutine cfprep(mesh, matr_asse, disp_iter, disp_cumu_inst, ds_contact)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/cfdisd.h"
@@ -73,26 +73,26 @@ implicit none
 !
     call infdbg('CONTACT', ifm, niv)
     if (niv .ge. 2) then
-        write (ifm,*) '<CONTACT> ...... PREPARATION DU CALCUL'
-    endif
+        write (ifm, *) '<CONTACT> ...... PREPARATION DU CALCUL'
+    end if
 !
 ! - Get parameters
 !
-    nbliai       = cfdisd(ds_contact%sdcont_solv,'NBLIAI' )
-    model_ndim   = cfdisd(ds_contact%sdcont_solv,'NDIM' )
-    nt_cont_poin = cfdisi(ds_contact%sdcont_defi,'NTPC' )
-    l_pena_cont  = cfdisl(ds_contact%sdcont_defi,'CONT_PENA' )
-    l_pena_frot  = cfdisl(ds_contact%sdcont_defi,'FROT_PENA' )
-    l_frot       = cfdisl(ds_contact%sdcont_defi,'FROT_DISCRET')
+    nbliai = cfdisd(ds_contact%sdcont_solv, 'NBLIAI')
+    model_ndim = cfdisd(ds_contact%sdcont_solv, 'NDIM')
+    nt_cont_poin = cfdisi(ds_contact%sdcont_defi, 'NTPC')
+    l_pena_cont = cfdisl(ds_contact%sdcont_defi, 'CONT_PENA')
+    l_pena_frot = cfdisl(ds_contact%sdcont_defi, 'FROT_PENA')
+    l_frot = cfdisl(ds_contact%sdcont_defi, 'FROT_DISCRET')
 !
 ! - Access to contact datastructures
 !
     sdcont_liot = ds_contact%sdcont_solv(1:14)//'.LIOT'
-    sdcont_mu   = ds_contact%sdcont_solv(1:14)//'.MU'
+    sdcont_mu = ds_contact%sdcont_solv(1:14)//'.MU'
     sdcont_copo = ds_contact%sdcont_solv(1:14)//'.COPO'
-    call jeveuo(sdcont_liot, 'E', vi = v_sdcont_liot)
-    call jeveuo(sdcont_mu  , 'E', vr = v_sdcont_mu)
-    call jeveuo(sdcont_copo, 'E', vr = v_sdcont_copo)
+    call jeveuo(sdcont_liot, 'E', vi=v_sdcont_liot)
+    call jeveuo(sdcont_mu, 'E', vr=v_sdcont_mu)
+    call jeveuo(sdcont_copo, 'E', vr=v_sdcont_copo)
 !
 ! - Get matrix access
 !
@@ -101,7 +101,7 @@ implicit none
 ! - Get geometric loop state
 !
     l_first_geom = ds_contact%l_first_geom
-    l_pair       = ds_contact%l_pair
+    l_pair = ds_contact%l_pair
 !
 ! - Null pivot detection
 !
@@ -117,22 +117,22 @@ implicit none
             v_sdcont_mu(2*nt_cont_poin+iliai) = 0.d0
             v_sdcont_mu(nt_cont_poin+iliai) = 0.d0
         end do
-    endif
+    end if
 !
     if (l_pena_cont) then
         do iliai = 1, nt_cont_poin
             v_sdcont_mu(iliai) = 0.d0
             if (l_pena_frot) then
                 v_sdcont_mu(3*nt_cont_poin+iliai) = 0.d0
-            endif
+            end if
         end do
-    endif
+    end if
 !
 ! - Restore Lagrange multiplier after pairing
 !
     if (l_pair) then
         call cfrsmu(ds_contact, l_first_geom)
-    endif
+    end if
 !
 ! - Prepare algorithm fields
 !

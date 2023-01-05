@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 subroutine zgauss(v_matr, v_2mbr, dim, nb, v_solu)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterc/matfpe.h"
@@ -52,10 +52,10 @@ implicit none
     call matfpe(-1)
 !
     equed = 'N'
-    call zgesvx('N', 'T', dim, nb, v_matr,&
-                dim, af, dim, ipiv, equed,&
-                r, c, v_2mbr, dim, v_solu,&
-                dim, rcond, ferr, berr, work,&
+    call zgesvx('N', 'T', dim, nb, v_matr, &
+                dim, af, dim, ipiv, equed, &
+                r, c, v_2mbr, dim, v_solu, &
+                dim, rcond, ferr, berr, work, &
                 rwork, info)
 !
     call matfpe(1)

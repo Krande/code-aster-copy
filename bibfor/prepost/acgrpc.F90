@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine acgrpc(nbordr, kwork, sompgw, jrwork, tspaq,&
-                  ipg, nommet, forcri, nompar, vanocr,&
+subroutine acgrpc(nbordr, kwork, sompgw, jrwork, tspaq, &
+                  ipg, nommet, forcri, nompar, vanocr, &
                   respc, vnmax)
     implicit none
 #include "jeveux.h"
@@ -83,12 +83,12 @@ subroutine acgrpc(nbordr, kwork, sompgw, jrwork, tspaq,&
 !
 !
 !-----------------------------------------------------------------------
-    data  tab1/ 180.0d0, 60.0d0, 30.0d0, 20.0d0, 15.0d0, 12.857d0,&
+    data tab1/180.0d0, 60.0d0, 30.0d0, 20.0d0, 15.0d0, 12.857d0,&
      &             11.25d0, 10.588d0, 10.0d0, 10.0d0, 10.0d0, 10.588d0,&
-     &             11.25d0, 12.857d0, 15.0d0, 20.0d0, 30.0d0, 60.0d0 /
+     &             11.25d0, 12.857d0, 15.0d0, 20.0d0, 30.0d0, 60.0d0/
 !
-    data  tab2/ 1, 3, 6, 9, 12, 14, 16, 17, 18, 18, 18, 17, 16, 14,&
-     &           12, 9, 6, 3 /
+    data tab2/1, 3, 6, 9, 12, 14, 16, 17, 18, 18, 18, 17, 16, 14,&
+     &           12, 9, 6, 3/
 !
 !-----------------------------------------------------------------------
 !     ------------------------------------------------------------------
@@ -118,15 +118,15 @@ subroutine acgrpc(nbordr, kwork, sompgw, jrwork, tspaq,&
     tneces = 209*nbordr*2
     tnecno = 209*nbordr
     call jedisp(1, tdisp)
-    tdisp(1) = (tdisp(1) * loisem()) / lor8em()
+    tdisp(1) = (tdisp(1)*loisem())/lor8em()
     if (tdisp(1) .lt. tneces) then
-        vali (1) = tdisp(1)
-        vali (2) = tneces
+        vali(1) = tdisp(1)
+        vali(2) = tneces
         call utmess('F', 'PREPOST5_8', ni=2, vali=vali)
     else
         call wkvect('&&ACGRPC.VECTNO', 'V V R', tneces, jvecno)
         call wkvect('&&ACGRPC.VECT_NOR', 'V V R', tnecno, jnorma)
-    endif
+    end if
 !
     dgam = 10.0d0
 !
@@ -135,13 +135,13 @@ subroutine acgrpc(nbordr, kwork, sompgw, jrwork, tspaq,&
     ideb = 1
     dim = 627
     do j = 1, 18
-        gamma=(j-1)*dgam*(pi/180.0d0)
-        dphi=tab1(j)*(pi/180.0d0)
-        phi0=dphi/2.0d0
-        ngam=tab2(j)
+        gamma = (j-1)*dgam*(pi/180.0d0)
+        dphi = tab1(j)*(pi/180.0d0)
+        phi0 = dphi/2.0d0
+        ngam = tab2(j)
 !
-        call vecnuv(ideb, ngam, gamma, phi0, dphi,&
-                    n, k, dim, zr( jvectn), zr(jvectu),&
+        call vecnuv(ideb, ngam, gamma, phi0, dphi, &
+                    n, k, dim, zr(jvectn), zr(jvectu), &
                     zr(jvectv))
 !
     end do
@@ -154,9 +154,9 @@ subroutine acgrpc(nbordr, kwork, sompgw, jrwork, tspaq,&
 !!!!IDENTIFIER LE PLAN DE MAXIMUM DE GRANDEUR CRITIQUE
     nbvec = 209
 !
-    call acgrcr(nbvec, jvectn, jvectu, jvectv, nbordr,&
-                kwork, sompgw, jrwork, tspaq, ipg,&
-                nommet, jvecno, jnorma, forcri, nompar,&
+    call acgrcr(nbvec, jvectn, jvectu, jvectv, nbordr, &
+                kwork, sompgw, jrwork, tspaq, ipg, &
+                nommet, jvecno, jnorma, forcri, nompar, &
                 vanocr, respc, vnmax)
 !
 !
@@ -177,19 +177,19 @@ subroutine acgrpc(nbordr, kwork, sompgw, jrwork, tspaq,&
         nym(k) = vnmax(2+(k-1)*3)
         nzm(k) = vnmax(3+(k-1)*3)
 !
-        gammam = atan2(sqrt(abs(1.0d0-nzm(k)**2)),nzm(k))
+        gammam = atan2(sqrt(abs(1.0d0-nzm(k)**2)), nzm(k))
         if (gammam .lt. 0.0d0) then
-            gammam = gammam + pi
-        endif
+            gammam = gammam+pi
+        end if
 !
         if ((abs(nym(k)) .lt. epsilo) .and. (abs(nxm(k)) .lt. epsilo)) then
             phim = 0.0d0
         else
-            phim = atan2(abs(nym(k)),nxm(k))
-        endif
+            phim = atan2(abs(nym(k)), nxm(k))
+        end if
         if (phim .lt. 0.0d0) then
-            phim = phim + pi
-        endif
+            phim = phim+pi
+        end if
 !
         if (abs(gammam) .lt. epsilo) then
             gamma = 5.0d0*(pi/180.0d0)
@@ -197,22 +197,22 @@ subroutine acgrpc(nbordr, kwork, sompgw, jrwork, tspaq,&
             phi0 = 0.0d0
             n = 0
 !
-            call vecnuv(1, 6, gamma, phi0, dphi2,&
-                        n, 1, dim, zr( jvecn2), zr(jvecu2),&
+            call vecnuv(1, 6, gamma, phi0, dphi2, &
+                        n, 1, dim, zr(jvecn2), zr(jvecu2), &
                         zr(jvecv2))
 !
             gamma = 0.0d0
             phi0 = pi
 !
-            call vecnuv(1, 1, gamma, phi0, dphi2,&
-                        n, 1, dim, zr( jvecn2), zr(jvecu2),&
+            call vecnuv(1, 1, gamma, phi0, dphi2, &
+                        n, 1, dim, zr(jvecn2), zr(jvecu2), &
                         zr(jvecv2))
 !
             nbvec = 7
 !
-            call acgrcr(nbvec, jvecn2, jvecu2, jvecv2, nbordr,&
-                        kwork, sompgw, jrwork, tspaq, ipg,&
-                        nommet, jvpg2, jnorm2, forcri, nompar,&
+            call acgrcr(nbvec, jvecn2, jvecu2, jvecv2, nbordr, &
+                        kwork, sompgw, jrwork, tspaq, ipg, &
+                        nommet, jvpg2, jnorm2, forcri, nompar, &
                         vanocr, respc, vnmax)
 !
         else
@@ -220,22 +220,22 @@ subroutine acgrpc(nbordr, kwork, sompgw, jrwork, tspaq,&
             dphi2 = dgam2/sin(gammam)
             n = 0
             do j = 1, 3
-                gamma = gammam + (j-2)*dgam2
+                gamma = gammam+(j-2)*dgam2
 !
-                call vecnuv(1, 3, gamma, phim, dphi2,&
-                            n, 2, dim, zr(jvecn2), zr(jvecu2),&
+                call vecnuv(1, 3, gamma, phim, dphi2, &
+                            n, 2, dim, zr(jvecn2), zr(jvecu2), &
                             zr(jvecv2))
 !
             end do
 !
             nbvec = 9
 !
-            call acgrcr(nbvec, jvecn2, jvecu2, jvecv2, nbordr,&
-                        kwork, sompgw, jrwork, tspaq, ipg,&
-                        nommet, jvpg2, jnorm2, forcri, nompar,&
+            call acgrcr(nbvec, jvecn2, jvecu2, jvecv2, nbordr, &
+                        kwork, sompgw, jrwork, tspaq, ipg, &
+                        nommet, jvpg2, jnorm2, forcri, nompar, &
                         vanocr, respc, vnmax)
 !
-        endif
+        end if
 !
     end do
 !

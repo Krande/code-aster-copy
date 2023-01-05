@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,8 +26,8 @@ subroutine didashpot(for_discret, iret)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-use te0047_type
-implicit none
+    use te0047_type
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -45,8 +45,8 @@ implicit none
 #include "asterfort/vecma.h"
 #include "blas/dcopy.h"
 !
-type(te0047_dscr), intent(in) :: for_discret
-integer, intent(out)          :: iret
+    type(te0047_dscr), intent(in) :: for_discret
+    integer, intent(out)          :: iret
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -61,7 +61,7 @@ integer, intent(out)          :: iret
 !
     iret = 0
     ! Seulement en 3D et Translation
-    if (for_discret%nomte(1:11).ne.'MECA_DIS_T_') then
+    if (for_discret%nomte(1:11) .ne. 'MECA_DIS_T_') then
         call jevech('PCOMPOR', 'L', icompo)
         messak(1) = for_discret%nomte
         messak(2) = zk16(icompo+3)
@@ -69,7 +69,7 @@ integer, intent(out)          :: iret
         call tecael(iadzi, iazk24)
         messak(4) = zk24(iazk24-1+3)
         call utmess('F', 'DISCRETS_23', nk=4, valk=messak)
-    endif
+    end if
     !
     ! paramètres en entrée
     call jevech('PCADISK', 'L', jdc)
@@ -81,52 +81,52 @@ integer, intent(out)          :: iret
     if (irep .eq. 1) then
         if (for_discret%ndim .eq. 3) then
             call utpsgl(for_discret%nno, for_discret%nc, for_discret%pgl, zr(jdc), klv)
-        else if (for_discret%ndim.eq.2) then
+        else if (for_discret%ndim .eq. 2) then
             call ut2mgl(for_discret%nno, for_discret%nc, for_discret%pgl, zr(jdc), klv)
-        endif
+        end if
     else
         call dcopy(for_discret%nbt, zr(jdc), 1, klv, 1)
-    endif
+    end if
     ! calcul de la matrice tangente
-    if ( for_discret%lMatr ) then
+    if (for_discret%lMatr) then
         call jevech('PMATUUR', 'E', imat)
         if (for_discret%ndim .eq. 3) then
             call utpslg(for_discret%nno, for_discret%nc, for_discret%pgl, klv, zr(imat))
-        else if (for_discret%ndim.eq.2) then
+        else if (for_discret%ndim .eq. 2) then
             call ut2mlg(for_discret%nno, for_discret%nc, for_discret%pgl, klv, zr(imat))
-        endif
-    endif
+        end if
+    end if
     neq = for_discret%nno*for_discret%nc
     !
-    if ( for_discret%lVect .or. for_discret%lSigm ) then
+    if (for_discret%lVect .or. for_discret%lSigm) then
         ! demi-matrice klv transformée en matrice pleine klc
         call vecma(klv, for_discret%nbt, klc, neq)
         ! calcul de fl = klc.dul (incrément d'effort)
         call pmavec('ZERO', neq, klc, for_discret%dul, fl)
-    endif
+    end if
     ! calcul des efforts généralisés et des forces nodales
-    if ( for_discret%lSigm ) then
+    if (for_discret%lSigm) then
         call jevech('PCONTPR', 'E', icontp)
         ! Attention aux signes des efforts sur le premier noeud pour MECA_DIS_TR_L et MECA_DIS_T_L
         if (for_discret%nno .eq. 1) then
             do ii = 1, neq
                 zr(icontp-1+ii) = fl(ii)
-            enddo
-        else if (for_discret%nno.eq.2) then
+            end do
+        else if (for_discret%nno .eq. 2) then
             do ii = 1, for_discret%nc
-                zr(icontp-1+ii)                = -fl(ii)
-                zr(icontp-1+ii+for_discret%nc) =  fl(ii+for_discret%nc)
-            enddo
-        endif
-    endif
+                zr(icontp-1+ii) = -fl(ii)
+                zr(icontp-1+ii+for_discret%nc) = fl(ii+for_discret%nc)
+            end do
+        end if
+    end if
     ! calcul des forces nodales
-    if ( for_discret%lVect ) then
+    if (for_discret%lVect) then
         call jevech('PVECTUR', 'E', ifono)
         ! Attention aux signes des efforts sur le premier noeud pour MECA_DIS_TR_L et MECA_DIS_T_L
         if (for_discret%nc .ne. 2) then
             call utpvlg(for_discret%nno, for_discret%nc, for_discret%pgl, fl, zr(ifono))
         else
             call ut2vlg(for_discret%nno, for_discret%nc, for_discret%pgl, fl, zr(ifono))
-        endif
-    endif
+        end if
+    end if
 end subroutine

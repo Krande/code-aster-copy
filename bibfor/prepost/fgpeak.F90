@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -51,8 +51,8 @@ subroutine fgpeak(nomfon, pseuil, coemul, nbpoin, valpoi)
 !
     nbpoin = 1
     valpoi(nbpoin) = zr(ifonc+nbpts/2+1-1)*coemul
-    max = valpoi (nbpoin)
-    min = valpoi (nbpoin)
+    max = valpoi(nbpoin)
+    min = valpoi(nbpoin)
     pass = 0
     sortie = 2
 !
@@ -62,42 +62,42 @@ subroutine fgpeak(nomfon, pseuil, coemul, nbpoin, valpoi)
         valeur = zr(ifonc+nbpts/2+i-1)*coemul
         if (max .lt. valeur) then
             max = valeur
-        endif
+        end if
         if (min .gt. valeur) then
             min = valeur
-        endif
+        end if
         if (pass .eq. 0) then
             if ((valeur-min) .gt. pseuil) then
                 sortie = 1
                 pass = 1
-            endif
+            end if
             if ((max-valeur) .gt. pseuil) then
                 sortie = 0
                 pass = 1
-            endif
-        endif
-        if ((sortie.eq.1) .and. (max-valeur) .gt. pseuil) then
-            nbpoin = nbpoin + 1
+            end if
+        end if
+        if ((sortie .eq. 1) .and. (max-valeur) .gt. pseuil) then
+            nbpoin = nbpoin+1
             valpoi(nbpoin) = max
             min = valeur
             sortie = 0
-        endif
-        if ((sortie.eq.0) .and. (valeur-min) .gt. pseuil) then
-            nbpoin = nbpoin + 1
+        end if
+        if ((sortie .eq. 0) .and. (valeur-min) .gt. pseuil) then
+            nbpoin = nbpoin+1
             valpoi(nbpoin) = min
             max = valeur
             sortie = 1
-        endif
+        end if
     end do
 !
     if (sortie .eq. 0) then
-        nbpoin = nbpoin + 1
-        valpoi (nbpoin) = min
-    endif
+        nbpoin = nbpoin+1
+        valpoi(nbpoin) = min
+    end if
     if (sortie .eq. 1) then
-        nbpoin = nbpoin + 1
-        valpoi (nbpoin) = max
-    endif
+        nbpoin = nbpoin+1
+        valpoi(nbpoin) = max
+    end if
 !
     call jedema()
 end subroutine

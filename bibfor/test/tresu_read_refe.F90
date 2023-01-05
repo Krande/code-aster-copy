@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -42,19 +42,19 @@ subroutine tresu_read_refe(mclfac, iocc, tbref)
     call getvtx(mclfac, 'LEGENDE', iocc=iocc, nbval=0, nbret=n0)
     call getvtx(mclfac, 'REFERENCE', iocc=iocc, nbval=0, nbret=n2)
 !
-    legend='XXXX'
+    legend = 'XXXX'
     if (n0 .lt. 0) then
         call getvtx(mclfac, 'LEGENDE', iocc=iocc, scal=legend, nbret=n0)
         call lxnoac(legend, legend)
-    endif
+    end if
 !
-    refer='NON_REGRESSION'
+    refer = 'NON_REGRESSION'
     if (n2 .lt. 0) then
         call getvtx(mclfac, 'REFERENCE', iocc=iocc, scal=refer, nbret=n2)
-    endif
+    end if
 !
-    tbref(1)=refer
-    tbref(2)=legend
+    tbref(1) = refer
+    tbref(2) = legend
 !
     call jedema()
 !

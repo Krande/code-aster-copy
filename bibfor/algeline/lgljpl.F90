@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine lgljpl(mod, nbmat, mater, sig, devg,&
+subroutine lgljpl(mod, nbmat, mater, sig, devg, &
                   devgii, vin, dsde, codret)
 !
-    implicit      none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/calcds.h"
 #include "asterfort/cos3t.h"
@@ -65,10 +65,10 @@ subroutine lgljpl(mod, nbmat, mater, sig, devg,&
 ! ======================================================================
 ! --- INITIALISATION DE PARAMETRES -------------------------------------
 ! ======================================================================
-    parameter       ( epssig  =  1.0d-8 )
-    parameter       ( mun     = -1.0d0  )
+    parameter(epssig=1.0d-8)
+    parameter(mun=-1.0d0)
 ! ======================================================================
-    common /tdim/   ndt , ndi
+    common/tdim/ndt, ndi
 ! ======================================================================
     call jemarq()
 ! ======================================================================
@@ -78,15 +78,15 @@ subroutine lgljpl(mod, nbmat, mater, sig, devg,&
     derive = '&&LGLJPL.DERIVE'
     call wkvect(parecr, 'V V R', 5, jpara)
     call wkvect(derive, 'V V R', 4, jderiv)
-    hook(:,:) = 0.0d0
-    dsde(:,:) = 0.0d0
+    hook(:, :) = 0.0d0
+    dsde(:, :) = 0.0d0
 ! ======================================================================
 ! --- RECUPERATION DE PARAMETRES MATERIAU ------------------------------
 ! ======================================================================
-    sigc = mater ( 9,2)
-    gamcjs = mater (12,2)
-    pref = mater (15,2)
-    gampn=vin(1)
+    sigc = mater(9, 2)
+    gamcjs = mater(12, 2)
+    pref = mater(15, 2)
+    gampn = vin(1)
 ! ======================================================================
 ! --- RECUPERATION DE LA MATRICE DE HOOK -------------------------------
 ! ======================================================================
@@ -95,10 +95,10 @@ subroutine lgljpl(mod, nbmat, mater, sig, devg,&
 ! --- CALCULS INITIAUX DE VARIABLES INTERMEDIAIRES ---------------------
 ! ======================================================================
     call lcdevi(sig, sn)
-    snii=ddot(ndt,sn,1,sn,1)
-    snii = sqrt (snii)
-    invn = trace (ndi, sig)
-    h0 = hlode (gamcjs, mun)
+    snii = ddot(ndt, sn, 1, sn, 1)
+    snii = sqrt(snii)
+    invn = trace(ndi, sig)
+    h0 = hlode(gamcjs, mun)
 ! ======================================================================
 ! --- CALCULS DES VARIABLES D'ECROUISSAGES ET DE SES DERIVEES ----------
 ! ======================================================================
@@ -107,9 +107,9 @@ subroutine lgljpl(mod, nbmat, mater, sig, devg,&
 ! ======================================================================
 ! --- CALCUL DES VARIABLES INITIALES -----------------------------------
 ! ======================================================================
-    rcos3t = cos3t (sn, pref, epssig)
-    rn = hlode (gamcjs, rcos3t)
-    gn = gdev (snii, rn)
+    rcos3t = cos3t(sn, pref, epssig)
+    rn = hlode(gamcjs, rcos3t)
+    gn = gdev(snii, rn)
 ! ======================================================================
 ! --- CALCUL DE Q A L'ITERATION COURANTE -------------------------------
 ! ======================================================================
@@ -125,28 +125,28 @@ subroutine lgljpl(mod, nbmat, mater, sig, devg,&
 ! **********************************************************************
 ! --- CALCUL DE DUDG ---------------------------------------------------
 ! **********************************************************************
-    call drudrg(zr(jpara), zr(jderiv), h0, sigc, gn,&
+    call drudrg(zr(jpara), zr(jderiv), h0, sigc, gn, &
                 invn, dudg)
 ! **********************************************************************
 ! --- CALCUL DE DFDS ---------------------------------------------------
 ! **********************************************************************
-    call drfdrs(q, zr(jpara), h0, sigc, gn,&
+    call drfdrs(q, zr(jpara), h0, sigc, gn, &
                 duds, dfds)
 ! **********************************************************************
 ! --- CALCUL DE DFDG ---------------------------------------------------
 ! **********************************************************************
-    call drfdrg(zr(jpara), zr(jderiv), h0, sigc, gn,&
+    call drfdrg(zr(jpara), zr(jderiv), h0, sigc, gn, &
                 dudg, dfdg)
 ! **********************************************************************
 ! ======================================================================
 ! --- CALCUL DE DSIG/DEPS ----------------------------------------------
 ! ======================================================================
-    call calcds(hook, devg, devgii, dfds, dfdg,&
+    call calcds(hook, devg, devgii, dfds, dfdg, &
                 dsde)
 ! ======================================================================
 ! --- DESTRUCTION DES VECTEURS INUTILES --------------------------------
 ! ======================================================================
-100  continue
+100 continue
     call jedetr(parecr)
     call jedetr(derive)
 ! ======================================================================

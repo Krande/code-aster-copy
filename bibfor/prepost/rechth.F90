@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine rechth(temps, nval2, tbinth, tabthr, tempa,&
+subroutine rechth(temps, nval2, tbinth, tabthr, tempa, &
                   tempb)
 !
     implicit none
@@ -52,7 +52,7 @@ subroutine rechth(temps, nval2, tbinth, tabthr, tempa,&
 ! ======================================================================
 ! --- INITIALISATION ---------------------------------------------------
 ! ======================================================================
-    cbid=(0.d0,0.d0)
+    cbid = (0.d0, 0.d0)
     lcrit = 'RELATIF'
     lprec = 1.0d-06
     tmpth1 = '&&RECHTH.TMPTH1'
@@ -69,14 +69,14 @@ subroutine rechth(temps, nval2, tbinth, tabthr, tempa,&
             temph1 = zr(jinsth+ith-2)
             temph2 = zr(jinsth+ith-1)
             goto 20
-        endif
+        end if
     end do
- 20 continue
+20  continue
 ! ======================================================================
 ! --- RECUPERATION DES SOUS-TABLES ASSOCIEES A L'INSTANT COURANT -------
 ! ======================================================================
-    call tbextb(tabthr, 'V', tmpth1, 1, 'INST',&
-                'EQ', [ibid], [temph1], [cbid], k8b,&
+    call tbextb(tabthr, 'V', tmpth1, 1, 'INST', &
+                'EQ', [ibid], [temph1], [cbid], k8b, &
                 [lprec], lcrit, iret)
     if (iret .eq. 10) then
         valk(1) = 'INST'
@@ -86,9 +86,9 @@ subroutine rechth(temps, nval2, tbinth, tabthr, tempa,&
         valk(1) = tabthr
         valk(2) = 'INST'
         call utmess('F', 'UTILITAI7_3', nk=2, valk=valk)
-    endif
-    call tbextb(tabthr, 'V', tmpth2, 1, 'INST',&
-                'EQ', [ibid], [temph2], [cbid], k8b,&
+    end if
+    call tbextb(tabthr, 'V', tmpth2, 1, 'INST', &
+                'EQ', [ibid], [temph2], [cbid], k8b, &
                 [lprec], lcrit, iret)
     if (iret .eq. 10) then
         valk(1) = 'INST'
@@ -98,16 +98,16 @@ subroutine rechth(temps, nval2, tbinth, tabthr, tempa,&
         valk(1) = tabthr
         valk(2) = 'INST'
         call utmess('F', 'UTILITAI7_3', nk=2, valk=valk)
-    endif
+    end if
 ! ======================================================================
 ! --- RECUPERATION DE LA LISTE DE TEMPERATURE TEMPH1 -------------------
 ! ======================================================================
-    call tbexve(tmpth1, 'TEMP', defth1, 'V', notot,&
+    call tbexve(tmpth1, 'TEMP', defth1, 'V', notot, &
                 k8b)
 ! ======================================================================
 ! --- RECUPERATION DE LA LISTE DE TEMPERATURE TEMPH2 -------------------
 ! ======================================================================
-    call tbexve(tmpth2, 'TEMP', defth2, 'V', ibid,&
+    call tbexve(tmpth2, 'TEMP', defth2, 'V', ibid, &
                 k8b)
 ! ======================================================================
 ! --- RECUPERATION DES VECTEURS ASSOCIES -------------------------------
@@ -117,13 +117,13 @@ subroutine rechth(temps, nval2, tbinth, tabthr, tempa,&
 ! ======================================================================
 ! --- CALCUL DE LA TEMPERATURE EN POINTE A, A L'INSTANT TEMPS ----------
 ! ======================================================================
-    tempa = zr(jteth1-1+1) + ( zr(jteth2-1+1) - zr(jteth1-1+1) ) / ( temph2 - temph1 ) * ( temps &
-            &- temph1 )
+    tempa = zr(jteth1-1+1)+(zr(jteth2-1+1)-zr(jteth1-1+1))/(temph2-temph1)*(temps &
+            &-temph1)
 ! ======================================================================
 ! --- CALCUL DE LA TEMPERATURE EN POINTE B, A L'INSTANT TEMPS ----------
 ! ======================================================================
-    tempb = zr(jteth1-1+notot) + ( zr(jteth2-1+notot) - zr(jteth1-1+notot) ) / ( temph2 - temph1 &
-            &) * ( temps - temph1 )
+    tempb = zr(jteth1-1+notot)+(zr(jteth2-1+notot)-zr(jteth1-1+notot))/(temph2-temph1 &
+            &)*(temps-temph1)
 ! ======================================================================
 ! --- DESTRUCTION DES TABLES INUTILES ----------------------------------
 ! ======================================================================

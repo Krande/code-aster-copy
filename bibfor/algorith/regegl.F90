@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -79,10 +79,10 @@ subroutine regegl(nomres, resgen, mailsk, profno)
 !
 !
     integer :: i, iad, iar, ibid, idep, ieq, ier, iord, iret, j, jbid, k, l
-    integer ::  llchab, llchol, llind,   llmass, i1, k1
+    integer ::  llchab, llchol, llind, llmass, i1, k1
     integer ::  llors, llprs, llrot
     integer ::  nbbas, nbcmp, nbcou, nbmas, nbmax, nbmod(1), nbnot, nbsst
-    integer :: neq, neqs, nno, numo, nutars,   elim, lmoet
+    integer :: neq, neqs, nno, numo, nutars, elim, lmoet
     integer :: neqet, lmapro, neqred, lsilia, numsst, lsst, lrevind
     integer :: iadpar(12)
     integer :: vali(2), i_ligr_ss
@@ -109,16 +109,16 @@ subroutine regegl(nomres, resgen, mailsk, profno)
     character(len=24), pointer :: refn(:) => null()
 !
 !-----------------------------------------------------------------------
-    data depl   /'DEPL            '/
-    data nompar /'FREQ','RIGI_GENE','MASS_GENE','OMEGA2','NUME_MODE',&
-     &            'MASS_EFFE_DX','MASS_EFFE_DY','MASS_EFFE_DZ',&
-     &            'FACT_PARTICI_DX','FACT_PARTICI_DY','FACT_PARTICI_DZ',&
+    data depl/'DEPL            '/
+    data nompar/'FREQ', 'RIGI_GENE', 'MASS_GENE', 'OMEGA2', 'NUME_MODE',&
+     &            'MASS_EFFE_DX', 'MASS_EFFE_DY', 'MASS_EFFE_DZ',&
+     &            'FACT_PARTICI_DX', 'FACT_PARTICI_DY', 'FACT_PARTICI_DZ',&
      &            'TYPE_MODE'/
 !-----------------------------------------------------------------------
 !
     call jemarq()
 !
-    indirf='&&REGEGL.INDIR.SST'
+    indirf = '&&REGEGL.INDIR.SST'
 !
 !-----ECRITURE DU TITRE-------------------------------------------------
 !
@@ -130,7 +130,7 @@ subroutine regegl(nomres, resgen, mailsk, profno)
     if (iret .eq. 0) then
         valk = mailsk
         call utmess('F', 'ALGORITH14_27', sk=valk)
-    endif
+    end if
     call jeveuo(mailsk//'.INV.SKELETON', 'L', vi=skeleton)
 !
 !-----RECUPERATION DU MODELE GENERALISE--------------------------------
@@ -138,18 +138,18 @@ subroutine regegl(nomres, resgen, mailsk, profno)
     call dismoi('REF_RIGI_PREM', resgen, 'RESU_DYNA', repk=raid)
 !
     call jeveuo(raid//'.REFA', 'L', vk24=refa)
-    nume_gene = refa(2)(1:14)
+    nume_gene = refa(2) (1:14)
     prof_gene = nume_gene//'.NUME'
     call nueq_chck(prof_gene, neqred)
     call jelibe(raid//'.REFA')
 !
     call jeveuo(prof_gene//'.REFN', 'L', vk24=refn)
-    model_gene=refn(1)(1:8)
+    model_gene = refn(1) (1:8)
     call jelibe(prof_gene//'.REFN')
 !
     call jelira(model_gene//'      .MODG.SSNO', 'NOMMAX', nbsst)
-    kbid='  '
-    call mgutdm(model_gene, kbid, 1, 'NB_CMP_MAX', nbcmp,&
+    kbid = '  '
+    call mgutdm(model_gene, kbid, 1, 'NB_CMP_MAX', nbcmp, &
                 kbid)
 !
 !-----RECUPERATION DES ROTATIONS----------------------------------------
@@ -159,9 +159,9 @@ subroutine regegl(nomres, resgen, mailsk, profno)
     AS_ALLOCATE(vr=rotz, size=nbsst)
     do i = 1, nbsst
         call jeveuo(jexnum(model_gene//'      .MODG.SSOR', i), 'L', llrot)
-        rotz(i)=zr(llrot)
-        roty(i)=zr(llrot+1)
-        rotx(i)=zr(llrot+2)
+        rotz(i) = zr(llrot)
+        roty(i) = zr(llrot+1)
+        rotx(i) = zr(llrot+2)
     end do
 !
 !-----CREATION DU PROF-CHAMNO-------------------------------------------
@@ -175,13 +175,13 @@ subroutine regegl(nomres, resgen, mailsk, profno)
 !
 !-----RECUPERATION DE LA BASE MODALE------------------------------------
 !
-    crefe(1)=mailsk
-    crefe(2)=profno
+    crefe(1) = mailsk
+    crefe(2) = profno
 !
 !-----RECUPERATION NOMBRE DE MODES PROPRES CALCULES---------------------
 !
-    call rsorac(resgen, 'LONUTI', 0, rbid, kbid,&
-                cbid, rbid, kbid, nbmod, 1,&
+    call rsorac(resgen, 'LONUTI', 0, rbid, kbid, &
+                cbid, rbid, kbid, nbmod, 1, &
                 ibid)
 !
 !
@@ -197,7 +197,7 @@ subroutine regegl(nomres, resgen, mailsk, profno)
         do i = 1, nbmod(1)
             zi(jbid+i-1) = i
         end do
-    endif
+    end if
 !
 !-----ALLOCATION STRUCTURE DE DONNEES RESULTAT--------------------------
 !
@@ -205,28 +205,28 @@ subroutine regegl(nomres, resgen, mailsk, profno)
 !
 !-- ON TESTE SI ON A EU RECOURS A L'ELIMINATION
 !
-    seliai=nume_gene(1:14)//'.ELIM.BASE'
-    sizlia=nume_gene(1:14)//'.ELIM.TAIL'
-    sst=   nume_gene(1:14)//'.ELIM.NOMS'
+    seliai = nume_gene(1:14)//'.ELIM.BASE'
+    sizlia = nume_gene(1:14)//'.ELIM.TAIL'
+    sst = nume_gene(1:14)//'.ELIM.NOMS'
 !
     call jeexin(seliai, elim)
     if (elim .ne. 0) then
-        neqet=0
-        nomsst=model_gene//'      .MODG.SSNO'
+        neqet = 0
+        nomsst = model_gene//'      .MODG.SSNO'
         call jeveuo(seliai, 'L', lmapro)
         call jeveuo(sizlia, 'L', lsilia)
         call jeveuo(sst, 'L', lsst)
         do i = 1, nbsst
-            neqet=neqet+zi(lsilia+i-1)
+            neqet = neqet+zi(lsilia+i-1)
         end do
         call wkvect('&&MODE_ETENDU_REST_ELIM', 'V V R', neqet, lmoet)
         !-- Recherche de la position dans MODGEN des SST de NUMGEN
-        call wkvect('&&REGEGL.REVERSE_INDEX','V V I',nbsst,lrevind)
+        call wkvect('&&REGEGL.REVERSE_INDEX', 'V V I', nbsst, lrevind)
         do k = 1, nbsst
-          call jenonu(jexnom(nomsst, zk8(lsst+k-1)), numsst)
-          zi(lrevind+numsst-1)=k
+            call jenonu(jexnom(nomsst, zk8(lsst+k-1)), numsst)
+            zi(lrevind+numsst-1) = k
         end do
-    endif
+    end if
 !
 !
 !---RESTITUTION PROPREMENT DITE---------------------------------------
@@ -250,23 +250,23 @@ subroutine regegl(nomres, resgen, mailsk, profno)
 !-- SI ELIMINATION, ON RESTITUE D'ABORD LES MODES GENERALISES
         if (elim .ne. 0) then
             do i1 = 1, neqet
-                zr(lmoet+i1-1)=0.d0
+                zr(lmoet+i1-1) = 0.d0
                 do k1 = 1, neqred
-                    zr(lmoet+i1-1)=zr(lmoet+i1-1)+ zr(lmapro+(k1-1)*&
-                    neqet+i1-1)* zr(llchol+k1-1)
+                    zr(lmoet+i1-1) = zr(lmoet+i1-1)+zr(lmapro+(k1-1)* &
+                                                       neqet+i1-1)*zr(llchol+k1-1)
                 end do
             end do
-            llchol=lmoet
-        endif
+            llchol = lmoet
+        end if
 !
 !  REQUETTE NOM ET ADRESSE NOUVEAU CHAMNO
 !
-        call rsexch(' ', nomres, depl, i, chamne,&
+        call rsexch(' ', nomres, depl, i, chamne, &
                     ier)
         call vtcrea(chamne, crefe, 'G', 'R', neq)
         call jeveuo(chamne//'.VALE', 'E', vr=vale)
 !
-        call rsadpa(resgen, 'L', 8, nompar, iord,&
+        call rsadpa(resgen, 'L', 8, nompar, iord, &
                     0, tjv=iadpar, styp=kbid)
         freq = zr(iadpar(1))
         genek = zr(iadpar(2))
@@ -286,33 +286,33 @@ subroutine regegl(nomres, resgen, mailsk, profno)
 !  TEST SI LA SST GENERE DES DDL GLOBAUX
 !
             if (iret .ne. 0) then
-                kbid='  '
+                kbid = '  '
                 if (elim .ne. 0) then
-                    numsst=zi(lrevind+k-1)
-                    ieq=0
+                    numsst = zi(lrevind+k-1)
+                    ieq = 0
                     do i1 = 1, numsst-1
-                        ieq=ieq+zi(lsilia+i1-1)
+                        ieq = ieq+zi(lsilia+i1-1)
                     end do
                 else
-                    numsst=k
+                    numsst = k
 !  RECUPERATION DU NUMERO TARDIF DE LA SST
                     do j = 1, nbsst
-                        if (zi(llors+j-1) .eq. numsst) nutars=j
+                        if (zi(llors+j-1) .eq. numsst) nutars = j
                     end do
-                    ieq=zi(llprs+(nutars-1)*2)
-                endif
+                    ieq = zi(llprs+(nutars-1)*2)
+                end if
 !
-                call mgutdm(model_gene, kbid, k, 'NOM_BASE_MODALE', ibid,&
+                call mgutdm(model_gene, kbid, k, 'NOM_BASE_MODALE', ibid, &
                             basmod)
 !
                 call dismoi('REF_INTD_PREM', basmod, 'RESU_DYNA', repk=intf)
                 call jeveuo(intf(1:8)//'.IDC_TYPE', 'L', vk8=idc_type)
                 if (idc_type(1) .eq. 'AUCUN') then
-                    vali (1) = k
-                    vali (2) = k
+                    vali(1) = k
+                    vali(2) = k
                     call utmess('A', 'ALGORITH14_28', ni=2, vali=vali)
-                endif
-                call mgutdm(model_gene, kbid, k, 'NOM_MACR_ELEM', ibid,&
+                end if
+                call mgutdm(model_gene, kbid, k, 'NOM_MACR_ELEM', ibid, &
                             macrel)
                 call jeveuo(jexnum(macrel//'.MAEL_MASS_VALE', 1), 'L', llmass)
                 call jelira(macrel//'.MAEL_MASS_VALE', 'LONMAX', nbmax)
@@ -324,8 +324,8 @@ subroutine regegl(nomres, resgen, mailsk, profno)
                 call matrot(zr(llrot), mat)
 !
                 call dismoi('NB_MODES_TOT', basmod, 'RESULTAT', repi=nbbas)
-                kbid='  '
-                call mgutdm(model_gene, kbid, k, 'NOM_NUME_DDL', ibid,&
+                kbid = '  '
+                call mgutdm(model_gene, kbid, k, 'NOM_NUME_DDL', ibid, &
                             numddl)
                 call dismoi('NB_EQUA', numddl, 'NUME_DDL', repi=neqs)
                 AS_ALLOCATE(vr=trav, size=neqs)
@@ -339,10 +339,10 @@ subroutine regegl(nomres, resgen, mailsk, profno)
 !  BOUCLE SUR LES EQUATIONS PHYSIQUES
 !
                     if (elim .ne. 0) then
-                        iad=llchol+ieq+j-1
+                        iad = llchol+ieq+j-1
                     else
-                        iad=llchol+nueq(1+ieq+j-2)-1
-                    endif
+                        iad = llchol+nueq(1+ieq+j-2)-1
+                    end if
 !
 !-- DANS LE CAS ELIM, CHANGER LE IAD, le ZI(LLNUEQ EST PAS BON)
 !
@@ -351,30 +351,30 @@ subroutine regegl(nomres, resgen, mailsk, profno)
                     compy = mael_iner_vale(1+nbbas+j-1)
                     compz = mael_iner_vale(1+2*nbbas+j-1)
 !             --- UTILISATION DE MAT TRANSPOSEE (TRANSFORMATION INVERSE)
-                    efmasx = efmasx + zr(iad)*(compx*mat(1,1) + compy* mat(2,1) + compz*mat(3,1))
-                    efmasy = efmasy + zr(iad)*(compx*mat(1,2) + compy* mat(2,2) + compz*mat(3,2))
-                    efmasz = efmasz + zr(iad)*(compx*mat(1,3) + compy* mat(2,3) + compz*mat(3,3))
+                    efmasx = efmasx+zr(iad)*(compx*mat(1, 1)+compy*mat(2, 1)+compz*mat(3, 1))
+                    efmasy = efmasy+zr(iad)*(compx*mat(1, 2)+compy*mat(2, 2)+compz*mat(3, 2))
+                    efmasz = efmasz+zr(iad)*(compx*mat(1, 3)+compy*mat(2, 3)+compz*mat(3, 3))
 !
 !  BOUCLE SUR LES DDL DE LA BASE
 !
                     do l = 1, neqs
-                        trav(l)=trav(l)+zr(llchab+l-1)*&
-                        zr(iad)
+                        trav(l) = trav(l)+zr(llchab+l-1)* &
+                                  zr(iad)
                     end do
 !
                     call jelibe(chamba)
                 end do
                 call jeveuo(jexnum(indirf, k), 'L', llind)
                 call jelira(jexnum(indirf, k), 'LONMAX', nbcou)
-                nbcou=nbcou/2
+                nbcou = nbcou/2
                 do l = 1, nbcou
-                    idep=zi(llind+(l-1)*2)
-                    iar=zi(llind+(l-1)*2+1)
-                    vale(iar)=trav(idep)
+                    idep = zi(llind+(l-1)*2)
+                    iar = zi(llind+(l-1)*2+1)
+                    vale(iar) = trav(idep)
                 end do
                 call jelibe(jexnum(indirf, k))
                 AS_DEALLOCATE(vr=trav)
-            endif
+            end if
         end do
 !
         fpartx = efmasx/genem
@@ -384,7 +384,7 @@ subroutine regegl(nomres, resgen, mailsk, profno)
         efmasy = efmasy*efmasy/genem
         efmasz = efmasz*efmasz/genem
         call rsnoch(nomres, depl, i)
-        call rsadpa(nomres, 'E', 12, nompar, i,&
+        call rsadpa(nomres, 'E', 12, nompar, i, &
                     0, tjv=iadpar, styp=kbid)
         zr(iadpar(1)) = freq
         zr(iadpar(2)) = genek
@@ -403,13 +403,12 @@ subroutine regegl(nomres, resgen, mailsk, profno)
 !
 !  ROTATION DU CHAMPS AUX NOEUDS
 !
-        call rotchm(profno, vale, rotx, nbsst, skeleton,&
+        call rotchm(profno, vale, rotx, nbsst, skeleton, &
                     nbnot, nbcmp, 1)
-        call rotchm(profno, vale, roty, nbsst, skeleton,&
+        call rotchm(profno, vale, roty, nbsst, skeleton, &
                     nbnot, nbcmp, 2)
-        call rotchm(profno, vale, rotz, nbsst, skeleton,&
+        call rotchm(profno, vale, rotz, nbsst, skeleton, &
                     nbnot, nbcmp, 3)
-
 
     end do
 !

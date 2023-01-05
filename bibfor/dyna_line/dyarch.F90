@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine dyarch(nbpas, lisins, lisarc, nbarch, ich,&
+subroutine dyarch(nbpas, lisins, lisarc, nbarch, ich, &
                   nbexcl, type)
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterc/getfac.h"
@@ -35,8 +35,8 @@ implicit none
 #include "asterfort/jeveuo.h"
 #include "asterfort/wkvect.h"
 !
-integer :: nbpas, nbarch, ich, nbexcl
-character(len=*) :: lisins, lisarc, type(*)
+    integer :: nbpas, nbarch, ich, nbexcl
+    character(len=*) :: lisins, lisarc, type(*)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -75,11 +75,11 @@ character(len=*) :: lisins, lisarc, type(*)
             call getvtx('ARCHIVAGE', 'CRITERE', iocc=1, scal=rela, nbret=n1)
             call jeveuo(numarc//'.VALE', 'L', jnum)
             call jelira(numarc//'.VALE', 'LONUTI', lnum)
-            call dyarc1(zr(jinsc), nbpas, zr(jnum), lnum, zi(jarch),&
+            call dyarc1(zr(jinsc), nbpas, zr(jnum), lnum, zi(jarch), &
                         epsi, rela)
             zi(jarch+nbpas-1) = 1
             goto 100
-        endif
+        end if
 !
         call getvr8('ARCHIVAGE', 'INST', iocc=1, nbval=0, nbret=n1)
         if (n1 .ne. 0) then
@@ -88,14 +88,14 @@ character(len=*) :: lisins, lisarc, type(*)
             call getvr8('ARCHIVAGE', 'PRECISION', iocc=1, scal=epsi, nbret=n1)
             call getvtx('ARCHIVAGE', 'CRITERE', iocc=1, scal=rela, nbret=n1)
             call wkvect('&&DYARCH.VALE_INST', 'V V R', lnum, jnum)
-            call getvr8('ARCHIVAGE', 'INST', iocc=1, nbval=lnum, vect=zr(jnum),&
+            call getvr8('ARCHIVAGE', 'INST', iocc=1, nbval=lnum, vect=zr(jnum), &
                         nbret=n1)
-            call dyarc1(zr(jinsc), nbpas, zr(jnum), lnum, zi(jarch),&
+            call dyarc1(zr(jinsc), nbpas, zr(jnum), lnum, zi(jarch), &
                         epsi, rela)
             call jedetr('&&DYARCH.VALE_INST')
             zi(jarch+nbpas-1) = 1
             goto 100
-        endif
+        end if
 !
         call getvis('ARCHIVAGE', 'PAS_ARCH', iocc=1, scal=ipach, nbret=n1)
         if (n1 .eq. 0) ipach = 1
@@ -111,20 +111,20 @@ character(len=*) :: lisins, lisarc, type(*)
             call getvtx('ARCHIVAGE', 'CHAM_EXCLU', iocc=1, nbval=0, nbret=n1)
             if (n1 .ne. 0) then
                 nbexcl = -n1
-                call getvtx('ARCHIVAGE', 'CHAM_EXCLU', iocc=1, nbval=nbexcl, vect=type,&
+                call getvtx('ARCHIVAGE', 'CHAM_EXCLU', iocc=1, nbval=nbexcl, vect=type, &
                             nbret=n1)
-            endif
-        endif
+            end if
+        end if
     else
         do k = 1, nbpas
             zi(jarch+k-1) = 1
         end do
-    endif
+    end if
 !
 !     --- 1 : CONDITIONS INITIALES ---
     nbarch = 1
     do k = 1, nbpas
-        nbarch = nbarch + zi(jarch+k-1)
+        nbarch = nbarch+zi(jarch+k-1)
     end do
 !
     call jedema()

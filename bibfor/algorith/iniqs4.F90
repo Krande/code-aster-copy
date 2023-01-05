@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -44,17 +44,17 @@ subroutine iniqs4(nno, sdfde, sdfdk, poipg, coopg)
     elrefe = 'QU4     '
     famil = 'FPG4    '
 !
-    call elraga(elrefe, famil, ndim, nbpg, coopg,&
+    call elraga(elrefe, famil, ndim, nbpg, coopg, &
                 poipg)
 !
-    call elrefe_info(elrefe=elrefe, fami='MASS', ndim=ndim, nno=nno, nnos=nnos,&
+    call elrefe_info(elrefe=elrefe, fami='MASS', ndim=ndim, nno=nno, nnos=nnos, &
                      npg=npg, jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
     do i = 1, npg
         k = 2*nno*(i-1)
         do j = 1, nno
-            sdfde(i,j) = zr(idfde+k+2*(j-1)-1+1)
-            sdfdk(i,j) = zr(idfde+k+2*(j-1)-1+2)
+            sdfde(i, j) = zr(idfde+k+2*(j-1)-1+1)
+            sdfdk(i, j) = zr(idfde+k+2*(j-1)-1+2)
         end do
     end do
 !

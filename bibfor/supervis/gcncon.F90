@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -43,23 +43,23 @@ subroutine gcncon(type, result)
     character(len=8) :: nomuni
 !     ------------------------------------------------------------------
     call jemarq()
-    numuni='&&_NUM_CONCEPT_UNIQUE'
+    numuni = '&&_NUM_CONCEPT_UNIQUE'
 !     ------------------------------------------------------------------
-    if ((type.eq.'.') .or. (type.eq.'_') .or. (type.eq.'S')) then
+    if ((type .eq. '.') .or. (type .eq. '_') .or. (type .eq. 'S')) then
         call jeexin(numuni, ier)
         if (ier .eq. 0) then
 !           INITIALISATION D'UN NUM POUR CREER UN NOM DE CONCEPT UNIQUE
             call wkvect(numuni, 'G V I', 1, ipos)
-            zi(ipos)=0
-        endif
+            zi(ipos) = 0
+        end if
 !        RECUPERATION, FORMATTAGE ET INCREMENTATION
         call jeveuo(numuni, 'E', ipos)
-        write (nomuni,'(A,I7.7)') type,zi(ipos)
-        result=nomuni
-        zi(ipos)=zi(ipos)+1
+        write (nomuni, '(A,I7.7)') type, zi(ipos)
+        result = nomuni
+        zi(ipos) = zi(ipos)+1
         ASSERT(zi(ipos) .lt. 10000000)
     else
         call utmess('F', 'SUPERVIS_8', sk=type)
-    endif
+    end if
     call jedema()
 end subroutine

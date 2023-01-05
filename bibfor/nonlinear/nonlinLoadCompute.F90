@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,19 +17,19 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine nonlinLoadCompute(mode       , list_load      ,&
-                             model      , cara_elem      , nume_dof  , list_func_acti,&
-                             ds_material, ds_constitutive, ds_measure,&
-                             time_prev  , time_curr      ,&
-                             hval_incr  , hval_algo      ,&
-                             hval_veelem, hval_veasse    ,&
-                             hhoField_  , prediction_)
+subroutine nonlinLoadCompute(mode, list_load, &
+                             model, cara_elem, nume_dof, list_func_acti, &
+                             ds_material, ds_constitutive, ds_measure, &
+                             time_prev, time_curr, &
+                             hval_incr, hval_algo, &
+                             hval_veelem, hval_veasse, &
+                             hhoField_, prediction_)
 !
-use NonLin_Datastructure_type
-use HHO_type
-use HHO_Dirichlet_module
+    use NonLin_Datastructure_type
+    use HHO_type
+    use HHO_Dirichlet_module
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -53,18 +53,18 @@ implicit none
 #include "asterfort/infdbg.h"
 #include "asterfort/utmess.h"
 !
-character(len=4), intent(in) :: mode
-character(len=19), intent(in) :: list_load
-character(len=24), intent(in) :: model, cara_elem, nume_dof
-integer, intent(in) :: list_func_acti(*)
-type(NL_DS_Material), intent(in) :: ds_material
-type(NL_DS_Constitutive), intent(in) :: ds_constitutive
-type(NL_DS_Measure), intent(inout) :: ds_measure
-real(kind=8), intent(in) :: time_prev, time_curr
-character(len=19), intent(in) :: hval_incr(*), hval_algo(*)
-character(len=19), intent(in) :: hval_veelem(*), hval_veasse(*)
-type(HHO_Field), optional, intent(in) :: hhoField_
-aster_logical, optional, intent(in) :: prediction_
+    character(len=4), intent(in) :: mode
+    character(len=19), intent(in) :: list_load
+    character(len=24), intent(in) :: model, cara_elem, nume_dof
+    integer, intent(in) :: list_func_acti(*)
+    type(NL_DS_Material), intent(in) :: ds_material
+    type(NL_DS_Constitutive), intent(in) :: ds_constitutive
+    type(NL_DS_Measure), intent(inout) :: ds_measure
+    real(kind=8), intent(in) :: time_prev, time_curr
+    character(len=19), intent(in) :: hval_incr(*), hval_algo(*)
+    character(len=19), intent(in) :: hval_veelem(*), hval_veasse(*)
+    type(HHO_Field), optional, intent(in) :: hhoField_
+    aster_logical, optional, intent(in) :: prediction_
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -112,21 +112,21 @@ aster_logical, optional, intent(in) :: prediction_
     call infdbg('MECANONLINE', ifm, niv)
     if (niv .ge. 2) then
         call utmess('I', 'MECANONLINE11_4')
-    endif
+    end if
 !
 ! - Initializations
 !
-    lload_name    = list_load(1:19)//'.LCHA'
-    lload_info    = list_load(1:19)//'.INFC'
-    lload_func    = list_load(1:19)//'.FCHA'
-    lload_fcss    = list_load(1:19)//'.FCSS'
+    lload_name = list_load(1:19)//'.LCHA'
+    lload_info = list_load(1:19)//'.INFC'
+    lload_func = list_load(1:19)//'.FCHA'
+    lload_fcss = list_load(1:19)//'.FCSS'
 !
-    l_lapl        = isfonc(list_func_acti,'LAPLACE')
-    l_pilo        = isfonc(list_func_acti,'PILOTAGE')
-    l_diri_undead = isfonc(list_func_acti,'DIRI_UNDEAD')
-    l_sstf        = isfonc(list_func_acti,'SOUS_STRUC')
-    l_hho         = isfonc(list_func_acti,'HHO')
-    l_load_cine   = isfonc(list_func_acti,'DIRI_CINE')
+    l_lapl = isfonc(list_func_acti, 'LAPLACE')
+    l_pilo = isfonc(list_func_acti, 'PILOTAGE')
+    l_diri_undead = isfonc(list_func_acti, 'DIRI_UNDEAD')
+    l_sstf = isfonc(list_func_acti, 'SOUS_STRUC')
+    l_hho = isfonc(list_func_acti, 'HHO')
+    l_load_cine = isfonc(list_func_acti, 'DIRI_CINE')
 !
 ! - For HHO
 !
@@ -134,10 +134,10 @@ aster_logical, optional, intent(in) :: prediction_
         ASSERT(present(hhoField_))
         hhoField = hhoField_
 !
-        if(hhoField%l_cine_f) then
+        if (hhoField%l_cine_f) then
             call hhoDiriFuncCompute(model, hhoField, time_curr)
         end if
-    endif
+    end if
 !
 ! - Hat variable
 !
@@ -147,11 +147,11 @@ aster_logical, optional, intent(in) :: prediction_
     call nmchex(hval_incr, 'VALINC', 'DEPPLU', disp_curr)
     call nmchex(hval_incr, 'VALINC', 'VITPLU', vite_curr)
 !
-    if ( present(prediction_) ) then
+    if (present(prediction_)) then
         call nmchex(hval_incr, 'VALINC', 'ACCMOI', acce_curr)
     else
         call nmchex(hval_incr, 'VALINC', 'ACCPLU', acce_curr)
-    endif
+    end if
 !
     call nmchex(hval_incr, 'VALINC', 'COMPLU', varc_curr)
     call nmvcex('TOUT', varc_curr, vrcplu)
@@ -164,51 +164,51 @@ aster_logical, optional, intent(in) :: prediction_
 !
 ! - Launch timer
 !
-    call nmtime(ds_measure, 'Init'  , '2nd_Member')
+    call nmtime(ds_measure, 'Init', '2nd_Member')
     call nmtime(ds_measure, 'Launch', '2nd_Member')
 !
 ! - Dirichlet (AFFE_CHAR_MECA)
 !
-    if (mode .eq. 'FIXE' .or. mode .eq. 'ACCI' .or.&
+    if (mode .eq. 'FIXE' .or. mode .eq. 'ACCI' .or. &
         (mode .eq. 'VARI' .and. l_diri_undead)) then
         call nmchex(hval_veelem, 'VEELEM', 'CNDIDO', vect_elem)
         call nmchex(hval_veasse, 'VEASSE', 'CNDIDO', vect_asse)
         call vedime(model, lload_name, lload_info, time_curr, 'R', vect_elem)
         call asasve(vect_elem, nume_dof, 'R', vect_alem)
-        call ascova('D', vect_alem, lload_func, 'INST', time_curr,&
+        call ascova('D', vect_alem, lload_func, 'INST', time_curr, &
                     'R', vect_asse)
         if (niv .ge. 2) then
             call nmdebg('VECT', vect_asse, 6)
-        endif
-    endif
+        end if
+    end if
 !
 ! - Dirichlet (AFFE_CHAR_CINE)
 !
     if (mode .eq. 'FIXE' .or. mode .eq. 'ACCI') then
         call nmchex(hval_veasse, 'VEASSE', 'CNCINE', vect_asse)
-        call nmcvci(model     , hhoField  ,&
-                    lload_name, lload_info, lload_func, nume_dof, disp_prev,&
-                    time_curr , vect_asse )
+        call nmcvci(model, hhoField, &
+                    lload_name, lload_info, lload_func, nume_dof, disp_prev, &
+                    time_curr, vect_asse)
         if (niv .ge. 2) then
             call nmdebg('VECT', vect_asse, 6)
-        endif
-    endif
+        end if
+    end if
 !
 ! - Neumann (dead)
 !
     if (mode .eq. 'FIXE' .or. mode .eq. 'ACCI') then
         call nmchex(hval_veelem, 'VEELEM', 'CNFEDO', vect_elem)
         call nmchex(hval_veasse, 'VEASSE', 'CNFEDO', vect_asse)
-        call vechme('S', model, lload_name, lload_info, time_list,&
-                    cara_elem, ds_material%mater , ds_material%mateco, &
-                    vect_elem, varc_currz = vrcplu)
+        call vechme('S', model, lload_name, lload_info, time_list, &
+                    cara_elem, ds_material%mater, ds_material%mateco, &
+                    vect_elem, varc_currz=vrcplu)
         call asasve(vect_elem, nume_dof, 'R', vect_alem)
-        call ascova('D', vect_alem, lload_func, 'INST', time_curr,&
+        call ascova('D', vect_alem, lload_func, 'INST', time_curr, &
                     'R', vect_asse)
         if (niv .ge. 2) then
             call nmdebg('VECT', vect_asse, 6)
-        endif
-    endif
+        end if
+    end if
 !
 ! - Laplace
 !
@@ -216,16 +216,16 @@ aster_logical, optional, intent(in) :: prediction_
         if (mode .eq. 'FIXE') then
             call nmchex(hval_veelem, 'VEELEM', 'CNLAPL', vect_elem)
             call nmchex(hval_veasse, 'VEASSE', 'CNLAPL', vect_asse)
-            call velame(model, lload_name, lload_info, disp_prev,&
+            call velame(model, lload_name, lload_info, disp_prev, &
                         vect_elem)
             call asasve(vect_elem, nume_dof, 'R', vect_alem)
-            call ascova('D', vect_alem, lload_func, 'INST', time_curr,&
+            call ascova('D', vect_alem, lload_func, 'INST', time_curr, &
                         'R', vect_asse)
             if (niv .ge. 2) then
                 call nmdebg('VECT', vect_asse, 6)
-            endif
-        endif
-    endif
+            end if
+        end if
+    end if
 !
 ! - Neumann (PILOTAGE)
 !
@@ -233,14 +233,14 @@ aster_logical, optional, intent(in) :: prediction_
         if (mode .eq. 'FIXE') then
             call nmchex(hval_veelem, 'VEELEM', 'CNDIPI', vect_elem)
             call nmchex(hval_veasse, 'VEASSE', 'CNDIPI', vect_asse)
-            call vedpme(model, lload_name, lload_info, time_curr,&
+            call vedpme(model, lload_name, lload_info, time_curr, &
                         vect_elem)
             call assvec('V', vect_asse, 1, vect_elem, [1.d0], nume_dof)
             if (niv .ge. 2) then
                 call nmdebg('VECT', vect_asse, 6)
-            endif
-        endif
-    endif
+            end if
+        end if
+    end if
 !
 ! - Dirichlet (PILOTAGE)
 !
@@ -248,18 +248,18 @@ aster_logical, optional, intent(in) :: prediction_
         if (mode .eq. 'FIXE' .or. mode .eq. 'VARI') then
             call nmchex(hval_veelem, 'VEELEM', 'CNFEPI', vect_elem)
             call nmchex(hval_veasse, 'VEASSE', 'CNFEPI', vect_asse)
-            call vefpme(model     , cara_elem , ds_material%mater, ds_material%mateco,&
-                        lload_name, lload_info,&
-                        time_list , vrcplu    , vect_elem, ' ',&
+            call vefpme(model, cara_elem, ds_material%mater, ds_material%mateco, &
+                        lload_name, lload_info, &
+                        time_list, vrcplu, vect_elem, ' ', &
                         disp_prev, disp_cumu_inst)
             call asasve(vect_elem, nume_dof, 'R', vect_alem)
-            call ascova('D', vect_alem, lload_func, 'INST', time_curr,&
+            call ascova('D', vect_alem, lload_func, 'INST', time_curr, &
                         'R', vect_asse)
             if (niv .ge. 2) then
                 call nmdebg('VECT', vect_asse, 6)
-            endif
-        endif
-    endif
+            end if
+        end if
+    end if
 !
 ! - Neumann (undead)
 !
@@ -268,15 +268,15 @@ aster_logical, optional, intent(in) :: prediction_
         call nmchex(hval_veasse, 'VEASSE', 'CNFSDO', vect_asse)
         call vecgme(model, cara_elem, ds_material%mater, ds_material%mateco, lload_name, &
                     lload_info, time_curr, disp_prev, disp_cumu_inst, &
-                    vect_elem, time_prev, ds_constitutive%compor, ' '  , &
+                    vect_elem, time_prev, ds_constitutive%compor, ' ', &
                     vite_curr, acce_curr, strx_prev)
         call asasve(vect_elem, nume_dof, 'R', vect_alem)
-        call ascova('D', vect_alem, lload_func, 'INST', time_curr,&
+        call ascova('D', vect_alem, lload_func, 'INST', time_curr, &
                     'R', vect_asse)
         if (niv .ge. 2) then
             call nmdebg('VECT', vect_asse, 6)
-        endif
-    endif
+        end if
+    end if
 !
 ! - Dynamic sub-structuring
 !
@@ -284,15 +284,15 @@ aster_logical, optional, intent(in) :: prediction_
         if (mode .eq. 'FIXE' .or. mode .eq. 'ACCI') then
             call nmchex(hval_veelem, 'VEELEM', 'CNSSTF', vect_elem)
             call nmchex(hval_veasse, 'VEASSE', 'CNSSTF', vect_asse)
-            call nmsssv(model, ds_material%mater, cara_elem, list_load,&
+            call nmsssv(model, ds_material%mater, cara_elem, list_load, &
                         vect_elem)
-            call assvss('V', vect_asse, vect_elem, nume_dof, ' ',&
+            call assvss('V', vect_asse, vect_elem, nume_dof, ' ', &
                         'ZERO', 1, lload_fcss, time_curr)
             if (niv .ge. 2) then
                 call nmdebg('VECT', vect_asse, 6)
-            endif
-        endif
-    endif
+            end if
+        end if
+    end if
 !
 ! - Stop timer
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -71,7 +71,7 @@ subroutine aceama(nomu, noma, lmax, nbocc)
     zk8(jdcc+5) = 'Y'
     zk8(jdcc+6) = 'Z'
 !
-    zr(jdvc ) = 1.d0
+    zr(jdvc) = 1.d0
     zr(jdvc+1) = 0.d0
     zr(jdvc+2) = 0.d0
     zr(jdvc+3) = 0.d0
@@ -89,30 +89,30 @@ subroutine aceama(nomu, noma, lmax, nbocc)
         orig(1) = 0.d0
         orig(2) = 0.d0
         orig(3) = 0.d0
-        call getvem(noma, 'GROUP_MA', 'MASSIF', 'GROUP_MA', ioc,&
+        call getvem(noma, 'GROUP_MA', 'MASSIF', 'GROUP_MA', ioc, &
                     lmax, zk24(jdls), ng)
-        call getvem(noma, 'MAILLE', 'MASSIF', 'MAILLE', ioc,&
+        call getvem(noma, 'MAILLE', 'MASSIF', 'MAILLE', ioc, &
                     lmax, zk8(jdls2), nm)
-        call getvr8('MASSIF', 'ANGL_REP', iocc=ioc, nbval=3, vect=ang(1),&
+        call getvr8('MASSIF', 'ANGL_REP', iocc=ioc, nbval=3, vect=ang(1), &
                     nbret=nrep)
-        call getvr8('MASSIF', 'ANGL_EULER', iocc=ioc, nbval=3, vect=angeul(1),&
+        call getvr8('MASSIF', 'ANGL_EULER', iocc=ioc, nbval=3, vect=angeul(1), &
                     nbret=neul)
-        call getvr8('MASSIF', 'ANGL_AXE', iocc=ioc, nbval=2, vect=ang(1),&
+        call getvr8('MASSIF', 'ANGL_AXE', iocc=ioc, nbval=2, vect=ang(1), &
                     nbret=naxe)
-        call getvr8('MASSIF', 'ORIG_AXE', iocc=ioc, nbval=3, vect=orig(1),&
+        call getvr8('MASSIF', 'ORIG_AXE', iocc=ioc, nbval=3, vect=orig(1), &
                     nbret=norig)
 !
         if (nrep .ne. 0) then
-            zr(jdvc ) = 1.d0
+            zr(jdvc) = 1.d0
             zr(jdvc+1) = ang(1)
             zr(jdvc+2) = ang(2)
             zr(jdvc+3) = ang(3)
             zr(jdvc+4) = 0.d0
             zr(jdvc+5) = 0.d0
             zr(jdvc+6) = 0.d0
-        else if (neul.ne.0) then
+        else if (neul .ne. 0) then
             call eulnau(angeul, ang)
-            zr(jdvc ) = 2.d0
+            zr(jdvc) = 2.d0
             zr(jdvc+1) = ang(1)
             zr(jdvc+2) = ang(2)
             zr(jdvc+3) = ang(3)
@@ -120,28 +120,28 @@ subroutine aceama(nomu, noma, lmax, nbocc)
             zr(jdvc+5) = angeul(2)
             zr(jdvc+6) = angeul(3)
         else
-            zr(jdvc ) = -1.d0
+            zr(jdvc) = -1.d0
             zr(jdvc+1) = ang(1)
             zr(jdvc+2) = ang(2)
             zr(jdvc+3) = ang(2)
             zr(jdvc+4) = orig(1)
             zr(jdvc+5) = orig(2)
             zr(jdvc+6) = orig(3)
-        endif
+        end if
 !
 ! ---    "GROUP_MA" = TOUTES LES MAILLES DE LA LISTE DE GROUPES MAILLES
         if (ng .gt. 0) then
             do i = 1, ng
                 call nocart(cartma, 2, 7, groupma=zk24(jdls+i-1))
             end do
-        endif
+        end if
 !
 ! ---    "MAILLE" = TOUTES LES MAILLES DE LA LISTE DE MAILLES
 !
         if (nm .gt. 0) then
-            call nocart(cartma, 3, 7, mode='NOM', nma=nm,&
+            call nocart(cartma, 3, 7, mode='NOM', nma=nm, &
                         limano=zk8(jdls2))
-        endif
+        end if
 !
     end do
 !

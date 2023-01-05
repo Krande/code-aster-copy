@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -57,7 +57,7 @@ subroutine fonnor(resu, noma, cnxinv)
 !        CNXINV : CONNECTIVITE INVERSE
 !-----------------------------------------------------------------------
 !
-    integer :: j, jnoe1, jbasno,  jbasse, jtail, k
+    integer :: j, jnoe1, jbasno, jbasse, jtail, k
     integer :: jborl, jdirol, jnvdir
     integer :: i, ina, inb, iseg, iret, nbnose, nbnoff, inc, ilev
     integer :: na, nb, nret, ndim, nbnoel, nseg, nbmax, nbmac, inoext
@@ -69,7 +69,7 @@ subroutine fonnor(resu, noma, cnxinv)
     character(len=16) :: casfon
     character(len=19) :: basnof, basseg, macofo
     character(len=8), pointer :: type(:) => null()
-    parameter    (nompro='FONNOR')
+    parameter(nompro='FONNOR')
 !     -----------------------------------------------------------------
 !
     call jemarq()
@@ -101,13 +101,13 @@ subroutine fonnor(resu, noma, cnxinv)
         call jelira(resu//'.FOND.NOEU', 'LONUTI', nbnoff)
     else
         ASSERT(.FALSE.)
-    endif
+    end if
 !
 !     VERIFICATION DE LA PRESENCE DE LEVRE_SUP
     call jeexin(resu//'.LEVRESUP.MAIL', ilev)
 !
 !     INITIALISATION DU SENS DU VECTEUR NORMAL
-    sens=1.d0
+    sens = 1.d0
 !
 !     RECUPERATION DU TYPE DE MAILLE EN FOND DE FISSURE EN 3D
     if (ndim .eq. 3) then
@@ -120,7 +120,7 @@ subroutine fonnor(resu, noma, cnxinv)
             casfon = 'LINEAIRE'
             nbnose = 2
             nbmax = 3
-        else if (typfon.eq.'NOE3'.or.typfon.eq.'SEG3') then
+        else if (typfon .eq. 'NOE3' .or. typfon .eq. 'SEG3') then
             casfon = 'QUADRATIQUE'
             nbnose = 3
             nbmax = 6
@@ -128,11 +128,11 @@ subroutine fonnor(resu, noma, cnxinv)
             nbnose = 2
             nbmax = 3
 !
-        endif
+        end if
     else
         nbnose = 2
         nbmax = 3
-    endif
+    end if
     if (ndim .eq. 2) casfon = '2D'
 !
 !
@@ -148,15 +148,15 @@ subroutine fonnor(resu, noma, cnxinv)
 !
 !     NSEG : NOMBRE DE "SEGMENTS" DU FOND A TRAITER
     if (ndim .eq. 2) then
-        ASSERT(nbnoff.eq.1)
+        ASSERT(nbnoff .eq. 1)
         nseg = 1
-    else if (ndim.eq.3) then
-        if (.not.(nbnoff .gt. 1)) then
+    else if (ndim .eq. 3) then
+        if (.not. (nbnoff .gt. 1)) then
             call utmess('F', 'RUPTURE0_92', sk=noma)
-        endif
+        end if
         if (casfon .eq. 'LINEAIRE') nseg = nbnoff-1
         if (casfon .eq. 'QUADRATIQUE') nseg = (nbnoff-1)/2
-    endif
+    end if
 !
 !     VECTEUR TEMPORAIRE DES BASES LOCALES PAR SEGMENT DU FOND
     basseg = '&&'//nompro//'.BASSEG'
@@ -178,7 +178,7 @@ subroutine fonnor(resu, noma, cnxinv)
     call wkvect('&&FONNOR.NVDIR', 'V V I', nbnoff, jnvdir)
 !
     do i = 1, nbnoff
-        zl(jborl-1+i)=.false.
+        zl(jborl-1+i) = .false.
     end do
 !
 !
@@ -192,14 +192,14 @@ subroutine fonnor(resu, noma, cnxinv)
 !       NOEUDS SOMMETS (INA ET INB), NOEUD MILIEU (INC)
         if (casfon .eq. '2D') then
             ina = iseg
-        else if (casfon.eq.'LINEAIRE') then
+        else if (casfon .eq. 'LINEAIRE') then
             ina = iseg
             inb = iseg+1
-        else if (casfon.eq.'QUADRATIQUE') then
+        else if (casfon .eq. 'QUADRATIQUE') then
             ina = 2*iseg-1
             inb = 2*iseg+1
             inc = 2*iseg
-        endif
+        end if
 !
 !       NUMEROS (ABSOLUS) DES NOEUDS SOMMETS DU SEGMENT : NA ET NB
         noeua = zk8(jnoe1-1+ina)
@@ -207,14 +207,14 @@ subroutine fonnor(resu, noma, cnxinv)
         if (ndim .eq. 3) then
             call jenonu(jexnom(noma//'.NOMNOE', zk8(jnoe1-1+inb)), nb)
             if (iseg .eq. 1) then
-                inoext=na
-                inoseg=nb
-            endif
+                inoext = na
+                inoseg = nb
+            end if
             if (iseg .eq. nseg) then
-                inoext=nb
-                inoseg=na
-            endif
-        endif
+                inoext = nb
+                inoseg = na
+            end if
+        end if
 !
 !
 !       1) RECUP DES NUMEROS DES MAILLES CONNECTEES AU SEGMENT DU FOND
@@ -223,7 +223,7 @@ subroutine fonnor(resu, noma, cnxinv)
 !
 !       VECTEUR DES MAILLES CONNECTEES AU SEGMENT DU FOND
         macofo = '&&'//'NOMPRO'//'.MACOFOND'
-        call fonno1(noma, cnxinv, ndim, na, nb,&
+        call fonno1(noma, cnxinv, ndim, na, nb, &
                     nbmac, macofo)
 !
 !
@@ -232,7 +232,7 @@ subroutine fonnor(resu, noma, cnxinv)
 !          -> REMPLISSAGE DE TABLEV
 !       ----------------------------------------------------------------
 !
-        call fonno2(macofo, noma, nbmac, nbnoff, nbnose,&
+        call fonno2(macofo, noma, nbmac, nbnoff, nbnose, &
                     nbmax, noeua, tablev)
 !
 !
@@ -242,7 +242,7 @@ subroutine fonnor(resu, noma, cnxinv)
 !          -> REMPLISSAGE DE NOE
 !       ----------------------------------------------------
 !
-        call fonno3(noma, tablev, ndim, na, nb,&
+        call fonno3(noma, tablev, ndim, na, nb, &
                     noe)
 !
 !
@@ -250,7 +250,7 @@ subroutine fonnor(resu, noma, cnxinv)
 !          -> REMPLISSAGE DE INDIC
 !       ----------------------------------------------------
 !
-        call fonno4(ndim, macofo, noma, nbmac, tablev,&
+        call fonno4(ndim, macofo, noma, nbmac, tablev, &
                     noe, nbnoff, indic)
         call jedetr(macofo)
 !
@@ -261,8 +261,8 @@ subroutine fonnor(resu, noma, cnxinv)
 !        RQ : CHACUN CONTIENT EN FAIT 2 VECTEURS (UN PAR LEVRE)
 !       --------------------------------------------------------
 !
-        call fonno5(noma, indic, noe, na, nb,&
-                     ndim, nbnoel, indr, vnor, vdir)
+        call fonno5(noma, indic, noe, na, nb, &
+                    ndim, nbnoel, indr, vnor, vdir)
 !
 !
 !       6) DETERMINATION DU VRAI VECTEUR ET BASE PAR SEGMENT
@@ -271,10 +271,10 @@ subroutine fonnor(resu, noma, cnxinv)
 !
         if (ilev .ne. 0 .and. iseg .eq. 1) then
             call fonno8(resu, noma, tablev, vect)
-        endif
+        end if
 !
         call fonno6(resu, noma, ndim, &
-                    iseg, nseg, noe, indr, nbnoel,&
+                    iseg, nseg, noe, indr, nbnoel, &
                     vnor, vdir, basseg, vect, sens)
 !
 !
@@ -289,13 +289,13 @@ subroutine fonnor(resu, noma, cnxinv)
 !         DIRECT POUR LE NOEUD MILIEU INC
             do j = 1, 6
 !
-                zr(jbasno-1+6*(ina-1)+j)=( zr(jbasno-1+6*(ina -1)+j)&
-                +zr(jbasse-1+6*(iseg-1)+j) )/2.d0
+                zr(jbasno-1+6*(ina-1)+j) = (zr(jbasno-1+6*(ina-1)+j) &
+                                            +zr(jbasse-1+6*(iseg-1)+j))/2.d0
 !
-                zr(jbasno-1+6*(inb-1)+j)=( zr(jbasno-1+6*(inb -1)+j)&
-                +zr(jbasse-1+6*(iseg-1)+j) )/2.d0
+                zr(jbasno-1+6*(inb-1)+j) = (zr(jbasno-1+6*(inb-1)+j) &
+                                            +zr(jbasse-1+6*(iseg-1)+j))/2.d0
 !
-                if (casfon .eq. 'QUADRATIQUE') zr(jbasno-1+6*(inc-1)+j) = zr(&
+                if (casfon .eq. 'QUADRATIQUE') zr(jbasno-1+6*(inc-1)+j) = zr( &
                                                                           jbasse-1+6*(iseg-1)+j)
 !
             end do
@@ -309,31 +309,31 @@ subroutine fonnor(resu, noma, cnxinv)
 !
 !         CORRECTION DU VECTEUR DE PROPAGATION AUX EXTREMITES DU FOND
 !         SE TROUVANT SUR UN BORD DE LA STRUCTURE
-            if (((iseg.eq.1).or.(iseg.eq.nseg)) .and. tyfond .ne. 'FERME') then
-                call fonext(noma, cnxinv, jbasno, inoext, inoseg,&
+            if (((iseg .eq. 1) .or. (iseg .eq. nseg)) .and. tyfond .ne. 'FERME') then
+                call fonext(noma, cnxinv, jbasno, inoext, inoseg, &
                             nbnoff, jborl, jdirol, jnvdir, iseg)
-            endif
+            end if
 !
-        else if (ndim.eq.2) then
+        else if (ndim .eq. 2) then
 !
             do j = 1, 4
                 zr(jbasno-1+4*(ina-1)+j) = zr(jbasse-1+4*(iseg-1)+j)
             end do
 !
-        endif
+        end if
 !
 !     DETERMINATION DE LA TAILLE DE MAILLE POUR LE NOEUD NA
 !     (ET LE NOEUD MILIEU INC EN QUADRATIQUE)
         do k = 1, ndim
-            vecdir(k)=zr(jbasno-1+2*ndim*(ina-1)+k+ndim)
+            vecdir(k) = zr(jbasno-1+2*ndim*(ina-1)+k+ndim)
         end do
 !
-        call fonno7(noma, cnxinv, ndim, na, vecdir,&
+        call fonno7(noma, cnxinv, ndim, na, vecdir, &
                     hmax)
 !
-        if ((casfon.eq.'QUADRATIQUE') .and. (iseg.eq.1)) then
+        if ((casfon .eq. 'QUADRATIQUE') .and. (iseg .eq. 1)) then
             zr(jtail) = hmax
-        else if ((casfon.eq.'QUADRATIQUE') .and. (iseg.ne.1)) then
+        else if ((casfon .eq. 'QUADRATIQUE') .and. (iseg .ne. 1)) then
 !          TAILLE POUR LE NOEUD SOMMET NA COURANT
             zr(jtail-1+2*(iseg-1)+1) = hmax
 !          RECUP TAILLE NOEUD SOMMET NA PRECEDENT
@@ -342,46 +342,46 @@ subroutine fonnor(resu, noma, cnxinv)
             zr(jtail-1+2*(iseg-2)+2) = (hmax+hmaxpr)/2
         else
             zr(jtail-1+iseg) = hmax
-        endif
+        end if
 !
     end do
 !
 !     DANS LE CAS D'UN FOND FERME: CORRECTION DE BASEFOND
 !     AUX NOEUDS EXTREMITES
-    if ((tyfond.eq.'FERME') .and. (ndim.eq.3)) then
+    if ((tyfond .eq. 'FERME') .and. (ndim .eq. 3)) then
         do j = 1, 6
-            zr(jbasno-1+6*(1-1)+j)=(zr(jbasse-1+6*(1-1)+j) +zr(&
-            jbasse-1+6*(nseg-1)+j))/2.d0
-            zr(jbasno-1+6*(nbnoff-1)+j)=zr(jbasno-1+6*(1-1)+j)
+            zr(jbasno-1+6*(1-1)+j) = (zr(jbasse-1+6*(1-1)+j)+zr( &
+                                      jbasse-1+6*(nseg-1)+j))/2.d0
+            zr(jbasno-1+6*(nbnoff-1)+j) = zr(jbasno-1+6*(1-1)+j)
         end do
         call normev(zr(jbasno-1+6*(1-1)+1), norme)
         call normev(zr(jbasno-1+6*(1-1)+4), norme)
         call normev(zr(jbasno-1+6*(nbnoff-1)+1), norme)
         call normev(zr(jbasno-1+6*(nbnoff-1)+4), norme)
-    endif
+    end if
 !
 !     DETERMINATION DE LA TAILLE DE MAILLE POUR LE DERNIER NOEUD
     if (ndim .eq. 3) then
 !
         do k = 1, ndim
-            vecdir(k)=zr(jbasno-1+2*ndim*(inb-1)+k+ndim)
+            vecdir(k) = zr(jbasno-1+2*ndim*(inb-1)+k+ndim)
         end do
 !
-        call fonno7(noma, cnxinv, ndim, nb, vecdir,&
+        call fonno7(noma, cnxinv, ndim, nb, vecdir, &
                     hmax)
-        zr(jtail-1+nbnoff)=hmax
+        zr(jtail-1+nbnoff) = hmax
 !
 !         TAILLE DE MAILLE POUR LE DERNIER NOEUD MILIEU
         if (casfon .eq. 'QUADRATIQUE') then
             hmaxpr = zr(jtail-1+nbnoff-2)
-            zr(jtail-1+nbnoff-1)=(hmax+hmaxpr)/2
-        endif
+            zr(jtail-1+nbnoff-1) = (hmax+hmaxpr)/2
+        end if
 !
 !        DANS LE CAS D'UN FOND FERME: CORRECTION DE LA TAILLE DE
 !        MAILLE AU PREMIER NOEUD
-        if (tyfond .eq. 'FERME') zr(jtail-1+1)=zr(jtail-1+nbnoff)
+        if (tyfond .eq. 'FERME') zr(jtail-1+1) = zr(jtail-1+nbnoff)
 !
-    endif
+    end if
 !
 !     MENAGE
     call jedetr(basseg)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine nmpime(fami, kpg, ksp, imate, option,&
-                  xlong0, a, xlongm, dlong0, ncstpm,&
-                  cstpm, vim, effnom, vip, effnop,&
+subroutine nmpime(fami, kpg, ksp, imate, option, &
+                  xlong0, a, xlongm, dlong0, ncstpm, &
+                  cstpm, vim, effnom, vip, effnop, &
                   klv, fono)
 !
     implicit none
@@ -29,7 +29,7 @@ subroutine nmpime(fami, kpg, ksp, imate, option,&
     integer :: nbt, neq, nvar
     real(kind=8) :: dsde
 !-----------------------------------------------------------------------
-    parameter   (neq = 6,nbt = 21,nvar=8)
+    parameter(neq=6, nbt=21, nvar=8)
 !
     character(len=*) :: fami, option
     real(kind=8) :: xlong0, a, xlongm
@@ -89,19 +89,19 @@ subroutine nmpime(fami, kpg, ksp, imate, option,&
 !
 !----------RECUPERATION DES CARACTERISTIQUES
 !
-    call verift(fami, kpg, ksp, 'T', imate,&
+    call verift(fami, kpg, ksp, 'T', imate, &
                 epsth_=epsthe)
 !
     epsm = (xlongm-xlong0)/xlong0
     epsp = (xlongm+dlong0-xlong0)/xlong0
-    deps = epsp - epsm - epsthe
+    deps = epsp-epsm-epsthe
     sigm = effnom/a
 !
-    call nm1dpm(fami, kpg, ksp, imate, option,&
-                nvar, ncstpm, cstpm, sigm, vim,&
+    call nm1dpm(fami, kpg, ksp, imate, option, &
+                nvar, ncstpm, cstpm, sigm, vim, &
                 deps, vip, sigp, dsde)
 !
-    effnop=sigp*a
+    effnop = sigp*a
 !
 ! --- CALCUL DES FORCES NODALES
 !
@@ -116,10 +116,10 @@ subroutine nmpime(fami, kpg, ksp, imate, option,&
 !
     if (option(1:10) .eq. 'RIGI_MECA_' .or. option(1:9) .eq. 'FULL_MECA') then
 !
-        xrig= dsde*a/xlong0
+        xrig = dsde*a/xlong0
         klv(1) = xrig
         klv(7) = -xrig
         klv(10) = xrig
-    endif
+    end if
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,14 +16,14 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine numero(nume_ddlz, base,&
-                  old_nume_ddlz, modelocz    ,&
-                  modelz       , list_loadz  ,&
-                  nb_matr_elem , list_matr_elem,&
-                  nb_ligrel , list_ligrel,&
+subroutine numero(nume_ddlz, base, &
+                  old_nume_ddlz, modelocz, &
+                  modelz, list_loadz, &
+                  nb_matr_elem, list_matr_elem, &
+                  nb_ligrel, list_ligrel, &
                   sd_iden_relaz)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/as_deallocate.h"
 #include "asterfort/crnulg.h"
@@ -93,49 +93,49 @@ implicit none
     sd_iden_rela = ' '
     if (present(sd_iden_relaz)) then
         sd_iden_rela = sd_iden_relaz
-    endif
+    end if
 !
 ! - Local mode
 !
     modeloc = ' '
     if (present(modelocz)) then
         modeloc = modelocz
-    endif
+    end if
     old_nume_ddl = ' '
     if (present(old_nume_ddlz)) then
         old_nume_ddl = old_nume_ddlz
-    endif
+    end if
 !
 ! - Create list of LIGREL for numbering
 !
     if (present(list_matr_elem)) then
         call numoch(list_matr_elem, nb_matr_elem, list_ligr, nb_ligr)
-    elseif(present(list_ligrel)) then
+    elseif (present(list_ligrel)) then
         ASSERT(present(nb_ligrel))
-        AS_ALLOCATE(vk24 = list_ligr, size = nb_ligrel)
-        nb_ligr= nb_ligrel
+        AS_ALLOCATE(vk24=list_ligr, size=nb_ligrel)
+        nb_ligr = nb_ligrel
         do igr = 1, nb_ligr
             list_ligr(igr) = list_ligrel(igr)
         end do
     else
         call numcch(modelz, list_loadz, list_ligr, nb_ligr)
-    endif
+    end if
 !
 ! - Create numbering
 !
-    call numer2(nb_ligr, list_ligr, base, nume_ddlz,&
-                old_nume_ddl, modeloc  , sd_iden_rela)
+    call numer2(nb_ligr, list_ligr, base, nume_ddlz, &
+                old_nume_ddl, modeloc, sd_iden_rela)
 !
-    if ( present(modelz) ) then
+    if (present(modelz)) then
         call dismoi('NOM_MAILLA', modelz, 'MODELE', repk=nommai)
         call gettco(nommai, typsd)
-        if( typsd.eq.'MAILLAGE_P' ) then
+        if (typsd .eq. 'MAILLAGE_P') then
             nume_ddl = nume_ddlz
             call crnulg(nume_ddl)
-        endif
-    endif
+        end if
+    end if
 !
-    AS_DEALLOCATE(vk24 = list_ligr)
+    AS_DEALLOCATE(vk24=list_ligr)
     call uttcpu('CPU.RESO.1', 'FIN', ' ')
     call uttcpu('CPU.RESO.2', 'FIN', ' ')
 !

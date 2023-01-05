@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine evali2(isz, pg, nma, phi, valpar,&
-                  posmai, ipg, pdgi, icmp, nocmpi,&
+subroutine evali2(isz, pg, nma, phi, valpar, &
+                  posmai, ipg, pdgi, icmp, nocmpi, &
                   sphi)
 !
     implicit none
@@ -99,34 +99,34 @@ subroutine evali2(isz, pg, nma, phi, valpar,&
 !
     call jemarq()
 !
-    zerod=0.0d0
+    zerod = 0.0d0
 !
 !
 ! NOMS DES PARAMETRES DES FONCTIONS ANALYTIQUES
-    nompar(1)='X1'
-    nompar(2)='Y1'
-    nompar(3)='Z1'
-    nompar(4)='X2'
-    nompar(5)='Y2'
-    nompar(6)='Z2'
-    nompar(7)='FREQ'
+    nompar(1) = 'X1'
+    nompar(2) = 'Y1'
+    nompar(3) = 'Z1'
+    nompar(4) = 'X2'
+    nompar(5) = 'Y2'
+    nompar(6) = 'Z2'
+    nompar(7) = 'FREQ'
 !
 ! EXPLORATION DE LA TABLE INTER-SPECTRE CONTENANT LES FONCTIONS DE FORME
-    is='                   '
-    is(1:8)=isz
+    is = '                   '
+    is(1:8) = isz
     call jeveuo(is//'.TBNP', 'L', vi=tbnp)
     call jeveuo(is//'.TBLP', 'L', vk24=tblp)
-    nbpara=tbnp(1)
-    nbl=tbnp(2)
+    nbpara = tbnp(1)
+    nbl = tbnp(2)
     do ipara = 1, nbpara
-        k24=tblp(1-4+ipara*4)
+        k24 = tblp(1-4+ipara*4)
         if (k24(1:10) .eq. 'FONCTION_C') then
-            nofos=tblp(1-4+ipara*4+2)
-        else if (k24(1:12).eq.'NUME_ORDRE_I') then
-            cmpis=tblp(1-4+ipara*4+2)
-        else if (k24(1:12).eq.'NUME_ORDRE_J') then
-            cmpjs=tblp(1-4+ipara*4+2)
-        endif
+            nofos = tblp(1-4+ipara*4+2)
+        else if (k24(1:12) .eq. 'NUME_ORDRE_I') then
+            cmpis = tblp(1-4+ipara*4+2)
+        else if (k24(1:12) .eq. 'NUME_ORDRE_J') then
+            cmpjs = tblp(1-4+ipara*4+2)
+        end if
     end do
 !
 ! CHAMP CONTENANT LES COORDONNEES DES POINTS DE GAUSS DU MAILLAGE
@@ -143,59 +143,59 @@ subroutine evali2(isz, pg, nma, phi, valpar,&
 ! BOUCLES SUR LES LIGNES DE LA TABLE INTER-SPECTRE ANALYTIQUE
     do ili = 1, nbl
         call jeveuo(cmpis, 'L', icmpi)
-        cmpi=zk8(icmpi-1+ili)
+        cmpi = zk8(icmpi-1+ili)
         call jeveuo(cmpjs, 'L', icmpj)
-        cmpj=zk8(icmpj-1+ili)
+        cmpj = zk8(icmpj-1+ili)
         call jeveuo(nofos, 'L', ifo)
-        fonc=zk8(ifo-1+ili)
+        fonc = zk8(ifo-1+ili)
 ! BOUCLE SUR LES MAILLES ET POINTS DE GAUSS & EVALUATION DE LA FONCTION
 ! DE L'IS CORRESPONDANT AUX COMP CMPI ET CMPJ
         do jma = 1, nma
 !  NOMBRE DE PDG ET DE SOUS PDG DE LA MAILLE JMA
-            nbpg=vpg(5+4*(jma-1)+1)
-            nbsp=vpg(5+4*(jma-1)+2)
-            posma=vpg(5+4*(jma-1)+4)
-            ASSERT(nbsp.eq.1)
+            nbpg = vpg(5+4*(jma-1)+1)
+            nbsp = vpg(5+4*(jma-1)+2)
+            posma = vpg(5+4*(jma-1)+4)
+            ASSERT(nbsp .eq. 1)
             do jpg = 1, nbpg
 !  COORDONNEES DU POINT DE GAUSS JPG X2,Y2,Z2
-                valpar(4)=zr(ivpg+posma+4*(jpg-1))
-                valpar(5)=zr(ivpg+posma+4*(jpg-1)+1)
-                valpar(6)=zr(ivpg+posma+4*(jpg-1)+2)
-                pdgj=zr(ivpg+posma+4*(jpg-1)+3)
-                call fointc('F', fonc, 7, nompar, valpar,&
+                valpar(4) = zr(ivpg+posma+4*(jpg-1))
+                valpar(5) = zr(ivpg+posma+4*(jpg-1)+1)
+                valpar(6) = zr(ivpg+posma+4*(jpg-1)+2)
+                pdgj = zr(ivpg+posma+4*(jpg-1)+3)
+                call fointc('F', fonc, 7, nompar, valpar, &
                             resur, resui, ier)
-                resu=dcmplx(resur,resui)
+                resu = dcmplx(resur, resui)
 !
 ! BOUCLE SUR LES MODES
                 do modj = 1, nbm
 ! ALLER CHERCHER LA VALEUR DE PHI(MODJ) AU POINT DE GAUSS DONNE
 ! POUR LA COMPOSANTE DONNEE
-                    phii=zk24(iphi-1+modj)(1:19)
-                    sphii=zk24(isphi-1+modj)(1:19)
+                    phii = zk24(iphi-1+modj) (1:19)
+                    sphii = zk24(isphi-1+modj) (1:19)
                     call jeveuo(phii//'.CESV', 'L', vr=vfi)
                     call jeveuo(phii//'.CESD', 'L', idfi)
                     call jeveuo(phii//'.CESL', 'L', ilfi)
                     call jeveuo(phii//'.CESK', 'L', ikfi)
                     call jeveuo(phii//'.CESC', 'L', vk8=cesc)
                     call jeveuo(sphii//'.CESV', 'E', vc=vsfi)
-                    nbcmp=zi(idfi-1+5+4*(jma-1)+3)
-                    posmaj=zi(idfi-1+5+4*(jma-1)+4)
+                    nbcmp = zi(idfi-1+5+4*(jma-1)+3)
+                    posmaj = zi(idfi-1+5+4*(jma-1)+4)
                     do jcmp = 1, nbcmp
-                        nocmpj=cesc(jcmp)
-                        if ((nocmpj.eq.cmpj) .and. (nocmpi.eq.cmpi)) then
-                            call cesexi('S', idfi, ilfi, jma, jpg,&
+                        nocmpj = cesc(jcmp)
+                        if ((nocmpj .eq. cmpj) .and. (nocmpi .eq. cmpi)) then
+                            call cesexi('S', idfi, ilfi, jma, jpg, &
                                         1, jcmp, iret)
                             if (iret .lt. 0) goto 8
-                            valphi=vfi(1+posmaj+nbcmp*(jpg-1)+jcmp-&
-                            1)
+                            valphi = vfi(1+posmaj+nbcmp*(jpg-1)+jcmp- &
+                                         1)
 ! CALCUL DE WI.WJ.SFF(XI,XJ,FREQ).PHI(XJ,MODJ)
-                            valsph = vsfi(1+posmai+nbcmp*(ipg-1)+ icmp-1)
-                            valsph = valsph + dcmplx(valphi,zerod)* resu *dcmplx(pdgi,zerod)*dcmp&
+                            valsph = vsfi(1+posmai+nbcmp*(ipg-1)+icmp-1)
+                            valsph = valsph+dcmplx(valphi, zerod)*resu*dcmplx(pdgi, zerod)*dcmp&
                                      &lx(pdgj, zerod)
-                            vsfi(1+posmai+nbcmp*(ipg-1)+icmp-1) =&
-                            valsph
-                        endif
-  8                     continue
+                            vsfi(1+posmai+nbcmp*(ipg-1)+icmp-1) = &
+                                valsph
+                        end if
+8                       continue
                     end do
                 end do
             end do

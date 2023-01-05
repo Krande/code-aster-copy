@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -74,14 +74,14 @@ subroutine rc32si()
 !
 !------ on récupère le ou les groupes de la situation
         do i = 1, 20
-            zi(jinfo+27*(iocc-1)+i)= 0
+            zi(jinfo+27*(iocc-1)+i) = 0
         end do
-        call getvis('SITUATION', 'NUME_GROUPE', iocc = iocc, nbval=0, nbret=n1)
+        call getvis('SITUATION', 'NUME_GROUPE', iocc=iocc, nbval=0, nbret=n1)
         nbgr = -n1
-        call getvis('SITUATION', 'NUME_GROUPE', iocc = iocc, nbval=nbgr, vect=numgr,&
+        call getvis('SITUATION', 'NUME_GROUPE', iocc=iocc, nbval=nbgr, vect=numgr, &
                     nbret=n1)
         do i = 1, nbgr
-            zi(jinfo+27*(iocc-1)+i)= numgr(i)
+            zi(jinfo+27*(iocc-1)+i) = numgr(i)
             if (numgr(i) .le. 0) call utmess('F', 'POSTRCCM_12')
         end do
 !
@@ -107,7 +107,7 @@ subroutine rc32si()
             zi(jinfo+27*(iocc-1)+24) = chara
             call getvis('SITUATION', 'CHAR_ETAT_B', iocc=iocc, scal=charb, nbret=n1)
             zi(jinfo+27*(iocc-1)+25) = charb
-        endif
+        end if
         call getvis('SITUATION', 'NUME_RESU_MECA', iocc=iocc, scal=ibid, nbret=n1)
         if (n1 .ne. 0) zi(jinfo+27*(iocc-1)+23) = 2
         call getvr8('SITUATION', 'TEMP_A', iocc=iocc, scal=tempa, nbret=n1)
@@ -134,7 +134,7 @@ subroutine rc32si()
             zk16(jnom+iocc-1) = nom
         else
             zk16(jnom+iocc-1) = 'PAS DE NOM'
-        endif
+        end if
 !
     end do
 !
@@ -161,7 +161,7 @@ subroutine rc32si()
         if (n2 .ne. 0) zr(jinfor+4*(iocc-1)+3) = tempb
         if (n1 .ne. 0 .and. n2 .ne. 0) then
             if (abs(tempa-tempb) .lt. 1.0d-08) call utmess('F', 'POSTRCCM_47')
-        endif
+        end if
 !
     end do
 !----------------------------------------------------------------------
@@ -200,7 +200,7 @@ subroutine rc32si()
     if (n1 .ne. 0) then
         zi(jinfos+3) = 1
         zi(jinfos+4) = chara
-    endif
+    end if
     call getvid('SEISME', 'TABL_FX', iocc=1, scal=cbid, nbret=n1)
     if (n1 .ne. 0) zi(jinfos+3) = 2
 !
@@ -213,7 +213,7 @@ subroutine rc32si()
         zk16(jnoms) = nom
     else
         zk16(jnoms) = 'PAS DE NOM'
-    endif
+    end if
 !
 999 continue
 !
@@ -245,8 +245,8 @@ subroutine rc32si()
                 do i2 = 1, 20
                     if (numgr1(i1) .ne. 0 .and. numgr2(i2) .ne. 0) then
                         if (numgr2(i2) .eq. numgr1(i1)) zi(jcombi+nb*(iocc1-1)+iocc2-1) = &
-                                                        1
-                    endif
+                            1
+                    end if
                 end do
             end do
         end do
@@ -261,13 +261,13 @@ subroutine rc32si()
     do i = 1, 20
         grpass(i) = 0
     end do
-    compteur =0
+    compteur = 0
     do iocc = 1, nb
-        call getvis('SITUATION', 'NUME_PASSAGE', iocc = iocc, nbval=0, nbret=n1)
+        call getvis('SITUATION', 'NUME_PASSAGE', iocc=iocc, nbval=0, nbret=n1)
         if (n1 .ne. 0) then
 !
             nbgrpass = -n1
-            call getvis('SITUATION', 'NUME_PASSAGE', iocc = iocc, nbval=nbgrpass, vect=grpass,&
+            call getvis('SITUATION', 'NUME_PASSAGE', iocc=iocc, nbval=nbgrpass, vect=grpass, &
                         nbret=n1)
 ! -- on vérifie que la situation fait bien partie des groupes qu'elle relie
             do i1 = 1, nbgrpass
@@ -296,34 +296,34 @@ subroutine rc32si()
                             do i3 = 1, 20
                                 do i4 = 1, 20
                                     if (numgr1(i3) .ne. 0 .and. numgr2(i4) .ne. 0) then
-                                        if (numgr1(i3) .eq. numgr1p .and. numgr2(i4) .eq.&
-                                            numgr2p .and. zi(jcombi+nb*(iocc1-1)+iocc2-1)&
+                                        if (numgr1(i3) .eq. numgr1p .and. numgr2(i4) .eq. &
+                                            numgr2p .and. zi(jcombi+nb*(iocc1-1)+iocc2-1) &
                                             .ne. 1 .and. .not. dejapass) then
                                             dejapass = .true.
                                             zi(jcombi+nb*(iocc1-1)+iocc2-1) = 2
-                                            zi(jpassage+3*compteur)=iocc
-                                            zi(jpassage+3*compteur+1)=iocc1
-                                            zi(jpassage+3*compteur+2)=iocc2
-                                            compteur = compteur +1
+                                            zi(jpassage+3*compteur) = iocc
+                                            zi(jpassage+3*compteur+1) = iocc1
+                                            zi(jpassage+3*compteur+2) = iocc2
+                                            compteur = compteur+1
 !
-                                            if (compteur .ge. nb*nb*nb) call utmess('F',&
+                                            if (compteur .ge. nb*nb*nb) call utmess('F', &
                                                                                     'POSTRCCM_34&
                                                                                     &')
-                                        endif
-                                        if (numgr1(i3) .eq. numgr2p .and. numgr2(i4) .eq.&
-                                            numgr1p .and. zi(jcombi+nb*(iocc1-1)+iocc2-1)&
+                                        end if
+                                        if (numgr1(i3) .eq. numgr2p .and. numgr2(i4) .eq. &
+                                            numgr1p .and. zi(jcombi+nb*(iocc1-1)+iocc2-1) &
                                             .ne. 1 .and. .not. dejapass) then
                                             dejapass = .true.
                                             zi(jcombi+nb*(iocc1-1)+iocc2-1) = 2
-                                            zi(jpassage+3*compteur)=iocc
-                                            zi(jpassage+3*compteur+1)=iocc1
-                                            zi(jpassage+3*compteur+2)=iocc2
-                                            compteur = compteur +1
-                                            if (compteur .ge. nb*nb*nb) call utmess('F',&
+                                            zi(jpassage+3*compteur) = iocc
+                                            zi(jpassage+3*compteur+1) = iocc1
+                                            zi(jpassage+3*compteur+2) = iocc2
+                                            compteur = compteur+1
+                                            if (compteur .ge. nb*nb*nb) call utmess('F', &
                                                                                     'POSTRCCM_34&
                                                                                     &')
-                                        endif
-                                    endif
+                                        end if
+                                    end if
                                 end do
                             end do
                         end do
@@ -331,7 +331,7 @@ subroutine rc32si()
                 end do
             end do
 !
-        endif
+        end if
     end do
 !
 ! -- on traite les situations combinables avec elle même seulement
@@ -342,9 +342,9 @@ subroutine rc32si()
                 if (iocc2 .ne. iocc1) then
                     zi(jcombi+nb*(iocc1-1)+iocc2-1) = 0
                     zi(jcombi+nb*(iocc2-1)+iocc1-1) = 0
-                endif
+                end if
             end do
-        endif
+        end if
     end do
 !
 !----------------------------------------------------------------------
@@ -374,19 +374,19 @@ subroutine rc32si()
                     if (nbocc1 .ne. nbocc2) call utmess('A', 'POSTRCCM_53')
                     partageok = .false.
                     do k1 = 1, 20
-                        numgr1(k1)= zi(jinfo+27*(iocc-1)+k1)
+                        numgr1(k1) = zi(jinfo+27*(iocc-1)+k1)
                         do k2 = 1, 20
-                            numgr2(k2)= zi(jinfo+27*(i-1)+k2)
+                            numgr2(k2) = zi(jinfo+27*(i-1)+k2)
                             if (numgr1(k1) .eq. numgr2(k2) .and. numgr1(k1) .ne. 0) then
-                                partageok =.true.
-                            endif
+                                partageok = .true.
+                            end if
                         end do
                     end do
                     if (.not. partageok) call utmess('A', 'POSTRCCM_53')
-                endif
+                end if
             end do
 !
-        endif
+        end if
     end do
 !
     call jedema()

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,15 +19,15 @@
 !
 subroutine romAlgoNLPrintInfo(paraAlgo)
 !
-use Rom_Datastructure_type
+    use Rom_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterfort/assert.h"
 #include "asterfort/utmess.h"
 #include "asterfort/romBasePrintInfo.h"
 !
-type(ROM_DS_AlgoPara), intent(in) :: paraAlgo
+    type(ROM_DS_AlgoPara), intent(in) :: paraAlgo
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -45,17 +45,17 @@ type(ROM_DS_AlgoPara), intent(in) :: paraAlgo
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    l_hrom        = paraAlgo%l_hrom
+    l_hrom = paraAlgo%l_hrom
     l_hrom_corref = paraAlgo%l_hrom_corref
     if (l_hrom) then
         call utmess('I', 'ROM5_82')
         if (l_hrom_corref) then
             call utmess('I', 'ROM5_84')
-            call utmess('I', 'ROM5_85', sr = paraAlgo%vale_pena)
-        endif
+            call utmess('I', 'ROM5_85', sr=paraAlgo%vale_pena)
+        end if
     else
         call utmess('I', 'ROM5_83')
-    endif
+    end if
     call utmess('I', 'ROM5_81')
     call romBasePrintInfo(paraAlgo%ds_empi)
 !

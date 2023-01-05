@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine fgcoke(nbcycl, sigmin, sigmax, n, m,&
+subroutine fgcoke(nbcycl, sigmin, sigmax, n, m, &
                   sm, rke)
     implicit none
 #include "jeveux.h"
@@ -44,11 +44,11 @@ subroutine fgcoke(nbcycl, sigmin, sigmax, n, m,&
         delta = abs(sigmax(i)-sigmin(i))
         if (delta .le. 3.d0*sm) then
             rke(i) = 1.d0
-        else if (delta.gt.3.d0*sm.and.delta.lt.3.d0*m*sm) then
-            rke(i) = 1.d0 + ((1-n)/(n*(m-1)))*((delta/(3.d0*sm))-1.d0)
-        else if (delta.ge.3*m*sm) then
+        else if (delta .gt. 3.d0*sm .and. delta .lt. 3.d0*m*sm) then
+            rke(i) = 1.d0+((1-n)/(n*(m-1)))*((delta/(3.d0*sm))-1.d0)
+        else if (delta .ge. 3*m*sm) then
             rke(i) = 1.d0/n
-        endif
+        end if
     end do
 !
 end subroutine

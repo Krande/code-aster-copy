@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,9 +19,9 @@
 !
 subroutine nmstat(phasis, ds_measure, ds_print, sddisc, nume_inst, sderro)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterc/r8prem.h"
@@ -37,12 +37,12 @@ implicit none
 #include "asterfort/nmstat_table.h"
 #include "asterfort/nmstat_vale.h"
 !
-character(len=1), intent(in) :: phasis
-type(NL_DS_Measure), intent(inout) :: ds_measure
-type(NL_DS_Print), intent(in) :: ds_print
-character(len=19), intent(in) :: sddisc
-integer, intent(in) :: nume_inst
-character(len=24), intent(in) :: sderro
+    character(len=1), intent(in) :: phasis
+    type(NL_DS_Measure), intent(inout) :: ds_measure
+    type(NL_DS_Print), intent(in) :: ds_print
+    character(len=19), intent(in) :: sddisc
+    integer, intent(in) :: nume_inst
+    character(len=24), intent(in) :: sderro
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -84,60 +84,60 @@ character(len=24), intent(in) :: sderro
 !
 ! - Print for this step time ?
 !
-    l_print   = ds_print%l_print
+    l_print = ds_print%l_print
 !
 ! - Time for other operations (not measured)
 !
     nb_device = ds_measure%nb_device
     if (phasis .eq. 'P') then
         call nmtimr(ds_measure, 'Time_Step', phasis, time_time_step)
-        time_sub  = 0.d0
+        time_sub = 0.d0
         do i_device = 1, nb_device
-            device      = ds_measure%device(i_device)
+            device = ds_measure%device(i_device)
             device_type = device%type
             call GetDevice(ds_measure, device_type, device)
             if (device%time_indi_step .ne. 0 .and. device_type .ne. 'Time_Step') then
                 call nmtimr(ds_measure, device_type, phasis, time)
-                time_sub = time_sub + time
-            endif
+                time_sub = time_sub+time
+            end if
         end do
-        time_other = time_time_step - time_sub
+        time_other = time_time_step-time_sub
         if (time_other .le. 0.d0) then
             time_other = 0.d0
-        endif
+        end if
         call nmrtim(ds_measure, 'Other', time_other)
-    endif
+    end if
 !
 ! - Save values in columns
 !
-    if (phasis.eq.'P') then
+    if (phasis .eq. 'P') then
         call nmstat_vale(ds_measure, time_curr, sderro)
-    endif
+    end if
 !
 ! - Print at end of current step time
 !
-    if ((phasis.eq.'P') .and. l_print) then
+    if ((phasis .eq. 'P') .and. l_print) then
         call nmstat_mess(ds_measure, phasis)
         call impmem()
-    endif
+    end if
 !
 ! - Save in table
 !
-    if ((phasis.eq.'P') .and. ds_measure%l_table) then
+    if ((phasis .eq. 'P') .and. ds_measure%l_table) then
         call nmstat_table(ds_measure)
-    endif
+    end if
 !
 ! - Save in file
 !
-    if ((phasis.eq.'P') .and. ds_measure%table%l_csv) then
+    if ((phasis .eq. 'P') .and. ds_measure%table%l_csv) then
         call nonlinDSPrintTableLine(ds_measure%table, ',', ds_measure%table%unit_csv)
-    endif
+    end if
 !
 ! - Print at end of computation
 !
     if (phasis .eq. 'T') then
         call nmstat_mess(ds_measure, phasis)
-    endif
+    end if
 !
 ! - Reset times and counters
 !

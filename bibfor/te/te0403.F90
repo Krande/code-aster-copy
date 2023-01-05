@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -52,20 +52,20 @@ subroutine te0403(option, nomte)
     call jevete('&INEL.'//nomte(1:8)//'.DESR', ' ', lzr)
 !
     call jevete('&INEL.'//nomte(1:8)//'.DESI', ' ', lzi)
-    nb1  =zi(lzi-1+1)
-    nb2  =zi(lzi-1+2)
-    call vectan(nb1, nb2, zr(jgeom), zr(lzr), vecta,&
+    nb1 = zi(lzi-1+1)
+    nb2 = zi(lzi-1+2)
+    call vectan(nb1, nb2, zr(jgeom), zr(lzr), vecta, &
                 vectn, vectt)
 !
     do ib = 1, nb2
         do i = 1, 2
             do j = 1, 3
-                vectpt(ib,i,j)=vectt(ib,i,j)
+                vectpt(ib, i, j) = vectt(ib, i, j)
             end do
         end do
-        vectpt(ib,3,1)=vectn(ib,1)
-        vectpt(ib,3,2)=vectn(ib,2)
-        vectpt(ib,3,3)=vectn(ib,3)
+        vectpt(ib, 3, 1) = vectn(ib, 1)
+        vectpt(ib, 3, 2) = vectn(ib, 2)
+        vectpt(ib, 3, 3) = vectn(ib, 3)
     end do
 !
 !
@@ -73,22 +73,22 @@ subroutine te0403(option, nomte)
 !------------------------------------------------------
 !      PAS DE CHANGEMENT DE SIGNE POUR LES FORCES REPARTIES
 !------------------------------------------------------
-        call fsurf(option, nomte, zr(jgeom), nb1, vecl,&
+        call fsurf(option, nomte, zr(jgeom), nb1, vecl, &
                    vectpt)
 !
-    else if (option.eq.'CHAR_MECA_PESA_R') then
+    else if (option .eq. 'CHAR_MECA_PESA_R') then
         call fpesa(nomte, zr(jgeom), nb1, vecl)
 !
-    else if (option.eq.'CHAR_MECA_ROTA_R') then
+    else if (option .eq. 'CHAR_MECA_ROTA_R') then
         call fcent(nomte, zr(jgeom), nb1, vecl)
 !
-    else if (option.eq.'CHAR_MECA_PRES_R') then
+    else if (option .eq. 'CHAR_MECA_PRES_R') then
 !------------------------------------------------------
 !      CHANGEMENT DE SIGNE POUR LES PRESSIONS DANS FPRES
 !------------------------------------------------------
         call fpres(nomte, zr(jgeom), nb1, vecl, vectpt)
 !
-    else if (option.eq.'CHAR_MECA_PRES_F') then
+    else if (option .eq. 'CHAR_MECA_PRES_F') then
         call jevech('PPRESSF', 'L', jpres)
         if (zk8(jpres) .eq. '&FOZERO') goto 999
         call jevech('PTEMPSR', 'L', itemps)
@@ -98,20 +98,20 @@ subroutine te0403(option, nomte)
         nompar(2) = 'Y'
         nompar(3) = 'Z'
         do j = 0, nb1-1
-            valpar(1) = zr(jgeom+3*j )
+            valpar(1) = zr(jgeom+3*j)
             valpar(2) = zr(jgeom+3*j+1)
             valpar(3) = zr(jgeom+3*j+2)
-            call fointe('FM', zk8(jpres), 4, nompar, valpar,&
+            call fointe('FM', zk8(jpres), 4, nompar, valpar, &
                         pr, ier)
             if (pr .ne. 0.d0) then
                 call tecael(iadzi, iazk24)
-                nomail = zk24(iazk24-1+3)(1:8)
+                nomail = zk24(iazk24-1+3) (1:8)
                 valk = nomail
                 call utmess('F', 'ELEMENTS4_92', sk=valk)
-            endif
+            end if
         end do
         goto 999
-    endif
+    end if
 !
     call trnflg(nb2, vectpt, vecl, zr(jvecg))
 !

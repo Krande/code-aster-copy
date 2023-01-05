@@ -1,6 +1,6 @@
 ! --------------------------------------------------------------------
 ! Copyright (C) 2007 NECS - BRUNO ZUBER   WWW.NECS.FR
-! Copyright (C) 2007 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 2007 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -43,8 +43,8 @@ subroutine te0208(option, nomte)
     character(len=8) :: typmod(2)
 !
 !    PARAMETRES DE L'ELEMENT FINI
-    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, &
+                     npg=npg, jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
     nddl = 6*nno
 !
@@ -63,16 +63,16 @@ subroutine te0208(option, nomte)
     typmod(2) = 'ELEMJOIN'
 !
 ! RECUPERATION DU NOMBRE DE VARIABLES INTERNES PAR POINTS DE GAUSS :
-    call tecach('OOO', 'PVARIMR', 'L', iret, nval=7,&
+    call tecach('OOO', 'PVARIMR', 'L', iret, nval=7, &
                 itab=jtab)
-    lgpg = max(jtab(6),1)*jtab(7)
+    lgpg = max(jtab(6), 1)*jtab(7)
 !
 ! PARAMETRE EN SORTIE
     call jevech('PCOPILO', 'E', icopil)
 !
-    call pipef3(ndim, nno, nddl, npg, lgpg,&
-                zr(ipoids), zr(ivf), zr(idfde), zi(imater), zr(igeom),&
-                zr(ivarim), zr(iddepl), zr(ideplm), zr(idepl0), zr(idepl1),&
+    call pipef3(ndim, nno, nddl, npg, lgpg, &
+                zr(ipoids), zr(ivf), zr(idfde), zi(imater), zr(igeom), &
+                zr(ivarim), zr(iddepl), zr(ideplm), zr(idepl0), zr(idepl1), &
                 zr(ictau), typmod, zk16(icompo), zr(icopil))
 !
 !

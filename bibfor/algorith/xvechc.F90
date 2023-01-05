@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine xvechc(nnops, pla, ffc, pinf,&
+subroutine xvechc(nnops, pla, ffc, pinf, &
                   pf, psup, jac, vect)
     implicit none
 !
@@ -37,11 +37,11 @@ subroutine xvechc(nnops, pla, ffc, pinf,&
     real(kind=8) :: vect(560), ffi
 !   CALCUL DE LA CONTINUITE DE LA PRESSION
     do i = 1, nnops
-       pli = pla(i)
-       ffi = ffc(i)
+        pli = pla(i)
+        ffi = ffc(i)
 !
-       vect(pli+1) = vect(pli+1) + ffi*(psup-pf)*jac
+        vect(pli+1) = vect(pli+1)+ffi*(psup-pf)*jac
 !
-       vect(pli+2) = vect(pli+2) + ffi*(pinf-pf)*jac
+        vect(pli+2) = vect(pli+2)+ffi*(pinf-pf)*jac
     end do
 end subroutine

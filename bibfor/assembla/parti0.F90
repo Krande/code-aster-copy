@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -41,17 +41,17 @@ subroutine parti0(nbmat, tlimat, partit)
     integer :: i
 !----------------------------------------------------------------------
 
-    partit=' '
+    partit = ' '
     do i = 1, nbmat
         matel = tlimat(i)
         call dismoi('PARTITION', matel, 'MATR_ELEM', repk=part1)
-        if (partit .eq. ' ' .and. part1 .ne. ' ') partit=part1
+        if (partit .eq. ' ' .and. part1 .ne. ' ') partit = part1
         if (partit .ne. ' ' .and. part1 .eq. ' ') goto 10
         if (partit .ne. ' ' .and. partit .ne. part1) then
-            valk(1)=partit
-            valk(2)=part1
+            valk(1) = partit
+            valk(2) = part1
             call utmess('F', 'CALCULEL_10', nk=2, valk=valk)
-        endif
- 10     continue
+        end if
+10      continue
     end do
 end subroutine

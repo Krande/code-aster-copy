@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine noligr(ligrz, igrel, numel, nunoeu,&
-                  code, inema, nbno, jlgns, rapide,&
+subroutine noligr(ligrz, igrel, numel, nunoeu, &
+                  code, inema, nbno, jlgns, rapide, &
                   jliel0, jlielc, jnema0, jnemac, l_lag1)
     implicit none
 #include "asterf_types.h"
@@ -31,14 +31,14 @@ subroutine noligr(ligrz, igrel, numel, nunoeu,&
 #include "asterfort/jexatr.h"
 #include "asterfort/assert.h"
 !
-    character(len=*),intent(in) :: ligrz
-    integer,intent(in) :: igrel
-    integer,intent(in) :: numel
-    integer,intent(in) :: nunoeu
-    integer,intent(in) :: code
-    integer,intent(inout) :: inema
-    integer,intent(inout) :: nbno
-    integer,intent(in) :: jlgns
+    character(len=*), intent(in) :: ligrz
+    integer, intent(in) :: igrel
+    integer, intent(in) :: numel
+    integer, intent(in) :: nunoeu
+    integer, intent(in) :: code
+    integer, intent(inout) :: inema
+    integer, intent(inout) :: nbno
+    integer, intent(in) :: jlgns
 
 !   -- arguments optionnels pour gagner du temps CPU :
     character(len=3), intent(in), optional ::  rapide
@@ -47,7 +47,6 @@ subroutine noligr(ligrz, igrel, numel, nunoeu,&
     integer, intent(in), optional ::  jnema0
     integer, intent(in), optional ::  jnemac
     aster_logical, intent(in), optional :: l_lag1
-
 
 !
 ! but: remplir le ligrel ligr
@@ -93,36 +92,35 @@ subroutine noligr(ligrz, igrel, numel, nunoeu,&
     integer :: jliel, jliel02, jlielc2
     integer :: kligr, lonigr, lgnema
     aster_logical :: lrapid, l_lag1c
-    integer, save :: iprem=0 , numpoi, numse3
+    integer, save :: iprem = 0, numpoi, numse3
 !-----------------------------------------------------------------------
-    if( present(l_lag1) ) then
+    if (present(l_lag1)) then
         l_lag1c = l_lag1
     else
         l_lag1c = .false.
-    endif
-    iprem=iprem+1
-    if (iprem.eq.1) then
+    end if
+    iprem = iprem+1
+    if (iprem .eq. 1) then
         call jenonu(jexnom('&CATA.TM.NBNO', 'POI1'), numpoi)
-        if(l_lag1c) then
+        if (l_lag1c) then
             call jenonu(jexnom('&CATA.TM.NBNO', 'SEG2'), numse3)
         else
             call jenonu(jexnom('&CATA.TM.NBNO', 'SEG3'), numse3)
-        endif
-    endif
+        end if
+    end if
 
-    ligr=ligrz
-    liel=ligr//'.LIEL'
-    nema=ligr//'.NEMA'
-
+    ligr = ligrz
+    liel = ligr//'.LIEL'
+    nema = ligr//'.NEMA'
 
 !   -- gestion des derniers arguments facultatifs (pour gains CPU) :
 !   ----------------------------------------------------------------
-    lrapid=.false.
+    lrapid = .false.
     if (present(rapide)) then
-        if (rapide.eq.'OUI') lrapid=.true.
-    endif
+        if (rapide .eq. 'OUI') lrapid = .true.
+    end if
 
-    if (.not.lrapid) then
+    if (.not. lrapid) then
         call jeveuo(liel, 'E', jliel02)
         call jeveuo(jexatr(liel, 'LONCUM'), 'E', jlielc2)
         call jeveuo(nema, 'E', jnema02)
@@ -132,60 +130,58 @@ subroutine noligr(ligrz, igrel, numel, nunoeu,&
         ASSERT(present(jlielc))
         ASSERT(present(jnema0))
         ASSERT(present(jnemac))
-        jliel02=jliel0
-        jlielc2=jlielc
-        jnema02=jnema0
-        jnemac2=jnemac
-    endif
+        jliel02 = jliel0
+        jlielc2 = jlielc
+        jnema02 = jnema0
+        jnemac2 = jnemac
+    end if
 
-    ASSERT(code.ge.1 .and. code.le.4)
+    ASSERT(code .ge. 1 .and. code .le. 4)
 
 !   -- lgnema : longueur d'un objet de la collection .NEMA :
     if (code .eq. 1) then
-        lgnema=2
+        lgnema = 2
     else
-        if(l_lag1c) then
-            lgnema=3
+        if (l_lag1c) then
+            lgnema = 3
         else
-            lgnema=4
-        endif
-    endif
-
+            lgnema = 4
+        end if
+    end if
 
     lonigr = 2
-    if (.not.lrapid) then
-        call jeecra(jexnum(liel,igrel), 'LONMAX', ival=lonigr)
-        call jecroc(jexnum(liel,igrel))
+    if (.not. lrapid) then
+        call jeecra(jexnum(liel, igrel), 'LONMAX', ival=lonigr)
+        call jecroc(jexnum(liel, igrel))
     else
-        if (igrel.eq.1) zi(jlielc2)=1
-        if (inema.eq.1) zi(jnemac2)=1
-        zi(jlielc2-1+igrel+1)=zi(jlielc2-1+igrel)+lonigr
-    endif
-
+        if (igrel .eq. 1) zi(jlielc2) = 1
+        if (inema .eq. 1) zi(jnemac2) = 1
+        zi(jlielc2-1+igrel+1) = zi(jlielc2-1+igrel)+lonigr
+    end if
 
     kligr = 0
-    jliel=jliel02-1+zi(jlielc2-1+igrel)
+    jliel = jliel02-1+zi(jlielc2-1+igrel)
 
-    kligr = kligr + 1
-    inema = inema + 1
+    kligr = kligr+1
+    inema = inema+1
     zi(jliel-1+kligr) = -inema
 
-    jnema=jnema02-1+zi(jnemac2-1+inema)
-    if (.not.lrapid) then
-        call jeecra(jexnum(nema,inema), 'LONMAX', ival=lgnema)
-        call jecroc(jexnum(nema,inema))
+    jnema = jnema02-1+zi(jnemac2-1+inema)
+    if (.not. lrapid) then
+        call jeecra(jexnum(nema, inema), 'LONMAX', ival=lgnema)
+        call jecroc(jexnum(nema, inema))
     else
-        zi(jnemac2-1+inema+1)=zi(jnemac2-1+inema)+lgnema
-    endif
+        zi(jnemac2-1+inema+1) = zi(jnemac2-1+inema)+lgnema
+    end if
 
     if (code .eq. 1) then
         zi(jnema-1+1) = nunoeu
         zi(jnema-1+2) = numpoi
 
-    else if (code.eq.3) then
+    else if (code .eq. 3) then
         zi(jnema-1+1) = nunoeu
-        ASSERT(jlgns.ne.1)
-        if(l_lag1c) then
+        ASSERT(jlgns .ne. 1)
+        if (l_lag1c) then
             zi(jnema-1+2) = -nbno
             zi(jnema-1+3) = numse3
             zi(jlgns+nbno-1) = 1
@@ -195,10 +191,10 @@ subroutine noligr(ligrz, igrel, numel, nunoeu,&
             zi(jnema-1+4) = numse3
             zi(jlgns+nbno-2) = 1
             zi(jlgns+nbno-1) = -2
-        endif
+        end if
     else
         ASSERT(.false.)
-    endif
-     zi(jliel-1+kligr+1) = numel
+    end if
+    zi(jliel-1+kligr+1) = numel
 
 end subroutine

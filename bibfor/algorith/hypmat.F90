@@ -1,6 +1,6 @@
 ! --------------------------------------------------------------------
 ! Copyright (C) 2005 UCBL LYON1 - T. BARANGER     WWW.CODE-ASTER.ORG
-! Copyright (C) 2007 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 2007 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine hypmat(fami, kpg, ksp, poum, imate,&
+subroutine hypmat(fami, kpg, ksp, poum, imate, &
                   c10, c01, c20, k)
 !
 ! person_in_charge: mickael.abbas at edf.fr
@@ -56,7 +56,7 @@ subroutine hypmat(fami, kpg, ksp, poum, imate,&
 ! ----------------------------------------------------------------------
 !
     integer :: nbres
-    parameter   ( nbres = 3  )
+    parameter(nbres=3)
     character(len=16) :: nomres(nbres)
     integer :: codres(nbres)
     real(kind=8) :: valres(nbres)
@@ -73,8 +73,8 @@ subroutine hypmat(fami, kpg, ksp, poum, imate,&
 ! --- A PARTIR DU NU
 !
     nomres(1) = 'K'
-    call rcvalb(fami, kpg, ksp, poum, imate,&
-                ' ', 'ELAS_HYPER', 0, ' ', [0.d0],&
+    call rcvalb(fami, kpg, ksp, poum, imate, &
+                ' ', 'ELAS_HYPER', 0, ' ', [0.d0], &
                 1, nomres, valres, codres, 0)
 !
     if (codres(1) .eq. 0) then
@@ -82,24 +82,24 @@ subroutine hypmat(fami, kpg, ksp, poum, imate,&
         cmpk = .false.
     else
         nomres(1) = 'NU'
-        call rcvalb(fami, kpg, ksp, poum, imate,&
-                    ' ', 'ELAS_HYPER', 0, ' ', [0.d0],&
+        call rcvalb(fami, kpg, ksp, poum, imate, &
+                    ' ', 'ELAS_HYPER', 0, ' ', [0.d0], &
                     1, nomres, valres, codres, 2)
         nu = valres(1)
         denom = 3.d0*(1.d0-2.d0*nu)
         if (denom .le. r8prem()) then
             call utmess('F', 'ELASHYPER_98')
-        endif
+        end if
         cmpk = .true.
-    endif
+    end if
 !
 ! --- RECUPERATION C10, C01 ET C20
 !
     nomres(1) = 'C10'
     nomres(2) = 'C01'
     nomres(3) = 'C20'
-    call rcvalb(fami, kpg, ksp, poum, imate,&
-                ' ', 'ELAS_HYPER', 0, ' ', [0.d0],&
+    call rcvalb(fami, kpg, ksp, poum, imate, &
+                ' ', 'ELAS_HYPER', 0, ' ', [0.d0], &
                 nbres, nomres, valres, codres, 2)
     c10 = valres(1)
     c01 = valres(2)
@@ -109,6 +109,6 @@ subroutine hypmat(fami, kpg, ksp, poum, imate,&
 !
     if (cmpk) then
         k = 4.d0*(c10+c01)*(1.d0+nu)/denom
-    endif
+    end if
 !
 end subroutine

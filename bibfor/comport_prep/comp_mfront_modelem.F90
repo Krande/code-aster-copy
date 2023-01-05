@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,22 +17,22 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine comp_mfront_modelem(elem_type_name, l_mfront_cp ,&
-                               model_dim     , model_mfront,&
-                               codret        , type_cpla)
+subroutine comp_mfront_modelem(elem_type_name, l_mfront_cp, &
+                               model_dim, model_mfront, &
+                               codret, type_cpla)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/teattr.h"
 !
-character(len=16), intent(in) :: elem_type_name
-aster_logical, intent(in) :: l_mfront_cp
-integer, intent(out) :: model_dim
-character(len=16), intent(out) :: model_mfront
-integer, intent(out) :: codret
-character(len=16), intent(out) :: type_cpla
+    character(len=16), intent(in) :: elem_type_name
+    aster_logical, intent(in) :: l_mfront_cp
+    integer, intent(out) :: model_dim
+    character(len=16), intent(out) :: model_mfront
+    integer, intent(out) :: codret
+    character(len=16), intent(out) :: type_cpla
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -60,48 +60,48 @@ character(len=16), intent(out) :: type_cpla
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    codret       = 0
-    model_dim    = 0
+    codret = 0
+    model_dim = 0
     model_mfront = ' '
-    type_cpla    = 'VIDE'
+    type_cpla = 'VIDE'
 !
 ! - Get attributes on finite element
 !
-    call teattr('C', 'TYPMOD'         , model_type , iret, typel = elem_type_name)
-    call teattr('C', 'PRINCIPAL'      , principal  , iret, typel = elem_type_name)
-    call teattr('C', 'DIM_TOPO_MODELI', model_dim_s, iret, typel = elem_type_name)
-    read(model_dim_s,'(I1)') model_dim
+    call teattr('C', 'TYPMOD', model_type, iret, typel=elem_type_name)
+    call teattr('C', 'PRINCIPAL', principal, iret, typel=elem_type_name)
+    call teattr('C', 'DIM_TOPO_MODELI', model_dim_s, iret, typel=elem_type_name)
+    read (model_dim_s, '(I1)') model_dim
 !
 ! - Select modelisation for MFront
 !
     if (principal .eq. 'OUI') then
-        if ( model_type .eq. '3D' ) then
+        if (model_type .eq. '3D') then
             model_mfront = '_Tridimensional'
-        elseif ( model_type .eq. 'C_PLAN' ) then
+        elseif (model_type .eq. 'C_PLAN') then
             if (l_mfront_cp) then
                 model_mfront = '_PlaneStress'
-                type_cpla    = 'ANALYTIQUE'
+                type_cpla = 'ANALYTIQUE'
             else
                 model_mfront = '_Axisymmetrical'
-                model_dim    = 2
-                type_cpla    = 'DEBORST'
-            endif
-        elseif ( model_type .eq. 'D_PLAN' ) then
+                model_dim = 2
+                type_cpla = 'DEBORST'
+            end if
+        elseif (model_type .eq. 'D_PLAN') then
             model_mfront = '_PlaneStrain'
-        elseif ( model_type .eq. 'AXIS' ) then
+        elseif (model_type .eq. 'AXIS') then
             model_mfront = '_Axisymmetrical'
-        elseif ( model_type .eq. '1D' ) then
+        elseif (model_type .eq. '1D') then
             model_mfront = '_Axisymmetrical'
-            model_dim    = 2
-            type_cpla    = 'DEBORST'
+            model_dim = 2
+            type_cpla = 'DEBORST'
         else
             model_mfront = model_type
             codret = 2
-        endif
-    endif
+        end if
+    end if
 !
     if (model_dim .le. 1) then
         codret = 2
-    endif
+    end if
 !
 end subroutine

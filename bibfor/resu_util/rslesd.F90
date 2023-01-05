@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,11 +16,11 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine rslesd(result     , nume   ,&
-                  model_     , materi_, cara_elem_,&
-                  list_load_ , iexcit_)
+subroutine rslesd(result, nume, &
+                  model_, materi_, cara_elem_, &
+                  list_load_, iexcit_)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/utmess.h"
 #include "asterfort/rs_get_mate.h"
@@ -64,11 +64,11 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    model     = ' '
+    model = ' '
     cara_elem = ' '
-    materi    = ' '
+    materi = ' '
     list_load = ' '
-    iexcit    = 0
+    iexcit = 0
 !
 ! - Get model at index stored in results datastructure or from command file
 !
@@ -76,9 +76,9 @@ implicit none
         call rs_get_model(result, nume, model, codret)
         if (codret .eq. 4) then
             call utmess('A', 'RESULT1_37')
-        endif
+        end if
         model_ = model
-    endif
+    end if
 !
 ! - Get elem. characteristics field at index stored in results datastructure or from command file
 !
@@ -86,9 +86,9 @@ implicit none
         call rs_get_caraelem(result, nume, cara_elem, codret)
         if (codret .eq. 4) then
             call utmess('A', 'RESULT1_38')
-        endif
+        end if
         cara_elem_ = cara_elem
-    endif
+    end if
 !
 ! - Get material field at index stored in results datastructure or from command file
 !
@@ -96,18 +96,18 @@ implicit none
         call rs_get_mate(result, nume, materi, codret)
         if (codret .eq. 4) then
             call utmess('A', 'RESULT1_39')
-        endif
+        end if
         materi_ = materi
-    endif
+    end if
 !
 ! - Get list of loads at index stored in results datastructure or from command file
 !
     if (present(list_load_)) then
         call rs_get_listload(result, nume, list_load, iexcit)
         list_load_ = list_load
-    endif
+    end if
     if (present(iexcit_)) then
-        iexcit_    = iexcit
-    endif
+        iexcit_ = iexcit
+    end if
 !
 end subroutine

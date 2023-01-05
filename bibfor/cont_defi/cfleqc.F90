@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine cfleqc(mesh       , sdcont_defi, nb_cont_zone, nb_cont_node, nb_cont_surf,&
+subroutine cfleqc(mesh, sdcont_defi, nb_cont_zone, nb_cont_node, nb_cont_surf, &
                   v_poin_node, v_indi_node, nb_node_elim)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/as_allocate.h"
@@ -82,7 +82,7 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     nb_node_elim = 0
-    jdecqu       = 0
+    jdecqu = 0
 !
 ! - Create vectors to use in cfmeno subroutine
 !
@@ -92,19 +92,19 @@ implicit none
 ! - Datastructure for contact definition
 !
     sdcont_pzoneco = sdcont_defi(1:16)//'.PZONECO'
-    sdcont_mailco  = sdcont_defi(1:16)//'.MAILCO'
-    sdcont_noeuco  = sdcont_defi(1:16)//'.NOEUCO'
+    sdcont_mailco = sdcont_defi(1:16)//'.MAILCO'
+    sdcont_noeuco = sdcont_defi(1:16)//'.NOEUCO'
     sdcont_pnoeuqu = sdcont_defi(1:16)//'.PNOEUQU'
-    sdcont_noeuqu  = sdcont_defi(1:16)//'.NOEUQU'
-    call jeveuo(sdcont_pzoneco, 'L', vi = v_sdcont_pzoneco)
-    call jeveuo(sdcont_mailco , 'L', vi = v_sdcont_mailco)
-    call jeveuo(sdcont_noeuco , 'L', vi = v_sdcont_noeuco)
-    call jeveuo(sdcont_pnoeuqu, 'L', vi = v_sdcont_pnoeuqu)
-    call jeveuo(sdcont_noeuqu , 'L', vi = v_sdcont_noeuqu)
+    sdcont_noeuqu = sdcont_defi(1:16)//'.NOEUQU'
+    call jeveuo(sdcont_pzoneco, 'L', vi=v_sdcont_pzoneco)
+    call jeveuo(sdcont_mailco, 'L', vi=v_sdcont_mailco)
+    call jeveuo(sdcont_noeuco, 'L', vi=v_sdcont_noeuco)
+    call jeveuo(sdcont_pnoeuqu, 'L', vi=v_sdcont_pnoeuqu)
+    call jeveuo(sdcont_noeuqu, 'L', vi=v_sdcont_noeuqu)
 !
 ! - Access to mesh
 !
-    call jeveuo(mesh(1:8)//'.TYPMAIL', 'L', vi = v_mesh_typmail)
+    call jeveuo(mesh(1:8)//'.TYPMAIL', 'L', vi=v_mesh_typmail)
 !
 ! - Loop on contact zones
 !
@@ -112,15 +112,15 @@ implicit none
 !
 ! ----- No computation
 !
-        l_veri = mminfl(sdcont_defi,'VERIF',i_zone )
+        l_veri = mminfl(sdcont_defi, 'VERIF', i_zone)
         if (l_veri) then
             goto 21
-        endif
+        end if
 !
 ! ----- Number of contact surfaces
 !
-        nb_surf = v_sdcont_pzoneco(i_zone+1) - v_sdcont_pzoneco(i_zone)
-        ASSERT(nb_surf.eq.2)
+        nb_surf = v_sdcont_pzoneco(i_zone+1)-v_sdcont_pzoneco(i_zone)
+        ASSERT(nb_surf .eq. 2)
 !
 ! ----- Loop on surfaces
 !
@@ -151,8 +151,8 @@ implicit none
 ! ------------- Suppress middle nodes of QUAD8
 !
                 if (type_name(1:5) .eq. 'QUAD8') then
-                    nb_node_quad = (v_sdcont_pnoeuqu(i_zone+1) - v_sdcont_pnoeuqu(i_zone))/3
-                    jdecqu       = v_sdcont_pnoeuqu(i_zone)
+                    nb_node_quad = (v_sdcont_pnoeuqu(i_zone+1)-v_sdcont_pnoeuqu(i_zone))/3
+                    jdecqu = v_sdcont_pnoeuqu(i_zone)
                     call cfnbsf(sdcont_defi, i_surf_curr, 'NOEU', nb_node, jdecno)
                     do i_node_quad = 1, nb_node_quad
                         node_nume_1 = v_sdcont_noeuqu(jdecqu+3*(i_node_quad-1)+1)
@@ -162,17 +162,17 @@ implicit none
                                 if (v_indi_node(jdecno+i_node) .eq. 0) then
                                     v_indi_node(jdecno+i_node) = 1
                                     v_poin_node(i_surf_curr+1) = v_poin_node(i_surf_curr+1)+1
-                                    nb_node_elim = nb_node_elim + 1
-                                endif
-                            endif
+                                    nb_node_elim = nb_node_elim+1
+                                end if
+                            end if
                         end do
                     end do
-                endif
+                end if
             end do
         end do
- 21     continue
+21      continue
     end do
 !
-    ASSERT((2*nb_cont_zone).eq.nb_cont_surf)
+    ASSERT((2*nb_cont_zone) .eq. nb_cont_surf)
 !
 end subroutine

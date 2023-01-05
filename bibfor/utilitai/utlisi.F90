@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine utlisi(motcle, a, na, b, nb,&
+subroutine utlisi(motcle, a, na, b, nb, &
                   c, nc, ntrou)
     implicit none
 !
@@ -74,72 +74,72 @@ subroutine utlisi(motcle, a, na, b, nb,&
     character(len=5) :: motcl2
     integer :: ia, ib, ic, ii
 ! DEB-------------------------------------------------------------------
-    motcl2=motcle
+    motcl2 = motcle
 !
 !
     if (motcl2 .eq. 'SINGL') then
 !     ---------------------------
-        ic=0
+        ic = 0
         do ia = 1, na
-            ii= indiis(a,a(ia),1,ia-1)
+            ii = indiis(a, a(ia), 1, ia-1)
             if (ii .eq. 0) then
-                ic=ic+1
-                if (ic .le. nc) c(ic)=a(ia)
-            endif
+                ic = ic+1
+                if (ic .le. nc) c(ic) = a(ia)
+            end if
         end do
-        ntrou=ic
-        if (ic .gt. nc) ntrou= -ntrou
+        ntrou = ic
+        if (ic .gt. nc) ntrou = -ntrou
 !
 !
-    else if (motcl2.eq.'UNION') then
+    else if (motcl2 .eq. 'UNION') then
 !     ---------------------------------
-        ic=0
+        ic = 0
         do ia = 1, na
-            ic=ic+1
-            if (ic .le. nc) c(ic)=a(ia)
+            ic = ic+1
+            if (ic .le. nc) c(ic) = a(ia)
         end do
         do ib = 1, nb
-            ii= indiis(a,b(ib),1,na)
+            ii = indiis(a, b(ib), 1, na)
             if (ii .eq. 0) then
-                ic=ic+1
-                if (ic .le. nc) c(ic)=b(ib)
-            endif
+                ic = ic+1
+                if (ic .le. nc) c(ic) = b(ib)
+            end if
         end do
-        ntrou=ic
-        if (ic .gt. nc) ntrou= -ntrou
+        ntrou = ic
+        if (ic .gt. nc) ntrou = -ntrou
 !
 !
-    else if (motcl2.eq.'INTER') then
+    else if (motcl2 .eq. 'INTER') then
 !     ---------------------------------
-        ic=0
+        ic = 0
         do ia = 1, na
-            ii= indiis(b,a(ia),1,nb)
+            ii = indiis(b, a(ia), 1, nb)
             if (ii .gt. 0) then
-                ic=ic+1
-                if (ic .le. nc) c(ic)=a(ia)
-            endif
+                ic = ic+1
+                if (ic .le. nc) c(ic) = a(ia)
+            end if
         end do
-        ntrou=ic
-        if (ic .gt. nc) ntrou= -ntrou
+        ntrou = ic
+        if (ic .gt. nc) ntrou = -ntrou
 !
 !
-    else if (motcl2(1:5).eq.'DIFFE') then
+    else if (motcl2(1:5) .eq. 'DIFFE') then
 !     ---------------------------------
-        ic=0
+        ic = 0
         do ia = 1, na
-            ii= indiis(b,a(ia),1,nb)
+            ii = indiis(b, a(ia), 1, nb)
             if (ii .eq. 0) then
-                ic=ic+1
-                if (ic .le. nc) c(ic)=a(ia)
-            endif
+                ic = ic+1
+                if (ic .le. nc) c(ic) = a(ia)
+            end if
         end do
-        ntrou=ic
-        if (ic .gt. nc) ntrou= -ntrou
+        ntrou = ic
+        if (ic .gt. nc) ntrou = -ntrou
 !
 !
     else
 !     -----
         call utmess('F', 'UTILITAI5_47', sk=motcl2)
-    endif
+    end if
 !
 end subroutine

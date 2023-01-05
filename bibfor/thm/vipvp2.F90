@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,31 +16,31 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine vipvp2(nbvari,&
-                  advico, vicpvp,&
-                  mamolv, rgaz  , rho11 , kh,&
-                  pvp1  ,&
-                  temp  , p2    ,&
-                  dtemp , dp2   ,&
-                  pvp0  , pvpm  , pvp   ,&
-                  vintm , vintp ,&
+subroutine vipvp2(nbvari, &
+                  advico, vicpvp, &
+                  mamolv, rgaz, rho11, kh, &
+                  pvp1, &
+                  temp, p2, &
+                  dtemp, dp2, &
+                  pvp0, pvpm, pvp, &
+                  vintm, vintp, &
                   retcom)
 !
-implicit none
+    implicit none
 !
 #include "asterc/r8prem.h"
 !
-integer, intent(in) :: nbvari
-integer, intent(in) :: advico, vicpvp
-real(kind=8), intent(in) :: mamolv, rgaz, rho11, kh
-real(kind=8), intent(in) :: pvp1
-real(kind=8), intent(in) :: temp, p2
-real(kind=8), intent(in) :: dtemp, dp2
-real(kind=8), intent(in) :: pvp0
-real(kind=8), intent(out) :: pvpm, pvp
-real(kind=8), intent(in) :: vintm(nbvari)
-real(kind=8), intent(out) :: vintp(nbvari)
-integer, intent(out)  :: retcom
+    integer, intent(in) :: nbvari
+    integer, intent(in) :: advico, vicpvp
+    real(kind=8), intent(in) :: mamolv, rgaz, rho11, kh
+    real(kind=8), intent(in) :: pvp1
+    real(kind=8), intent(in) :: temp, p2
+    real(kind=8), intent(in) :: dtemp, dp2
+    real(kind=8), intent(in) :: pvp0
+    real(kind=8), intent(out) :: pvpm, pvp
+    real(kind=8), intent(in) :: vintm(nbvari)
+    real(kind=8), intent(out) :: vintp(nbvari)
+    integer, intent(out)  :: retcom
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -80,14 +80,14 @@ integer, intent(out)  :: retcom
     if (abs(varbio) .lt. r8prem()) then
         retcom = 1
         goto 30
-    endif
-    pvpm = vintm(advico+vicpvp) + pvp0
-    pvp  = (rho11*kh-mamolv*(pvpm+(p2-dp2)*rgaz*log(temp/(temp-dtemp))))/varbio
+    end if
+    pvpm = vintm(advico+vicpvp)+pvp0
+    pvp = (rho11*kh-mamolv*(pvpm+(p2-dp2)*rgaz*log(temp/(temp-dtemp))))/varbio
     if ((p2-pvp) .lt. 0.d0) then
         retcom = 1
         goto 30
-    endif
-    vintp(advico+vicpvp) = pvp - pvp0
+    end if
+    vintp(advico+vicpvp) = pvp-pvp0
 !
 30  continue
 !

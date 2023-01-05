@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,12 +16,12 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine cfnoap(noma, defico, typapp, entapp, nomapp,&
+subroutine cfnoap(noma, defico, typapp, entapp, nomapp, &
                   type2)
 !
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/cfnomm.h"
@@ -67,19 +67,19 @@ subroutine cfnoap(noma, defico, typapp, entapp, nomapp,&
     if (typapp .lt. 0) then
         type2 = ' NON'
         nomapp = ' APPARIE'
-    else if (typapp.eq.1) then
+    else if (typapp .eq. 1) then
         posnom = entapp
         call cfnomm(noma, defico, 'NOEU', posnom, nomnom)
         type2 = '/ND '
         nomapp = nomnom
-    else if (typapp.eq.2) then
+    else if (typapp .eq. 2) then
         posmam = entapp
         call cfnomm(noma, defico, 'MAIL', posmam, nommam)
         type2 = '/EL '
         nomapp = nommam
     else
         ASSERT(.false.)
-    endif
+    end if
 !
     call jedema()
 !

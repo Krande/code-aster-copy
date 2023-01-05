@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,11 +16,11 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine ther_mtan(model    , cara_elem,     mate,      time, varc_curr,&
-                     compor   , temp_iter, dry_prev,  dry_curr, resu_elem,&
-                     matr_elem,      base)
+subroutine ther_mtan(model, cara_elem, mate, time, varc_curr, &
+                     compor, temp_iter, dry_prev, dry_curr, resu_elem, &
+                     matr_elem, base)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/calcul.h"
@@ -66,7 +66,7 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: nb_in_maxi, nbout
-    parameter (nb_in_maxi = 9, nbout = 1)
+    parameter(nb_in_maxi=9, nbout=1)
     character(len=8) :: lpain(nb_in_maxi), lpaout(nbout)
     character(len=19) :: lchin(nb_in_maxi), lchout(nbout)
 !
@@ -78,14 +78,14 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    stop_calc    = 'S'
-    option       = 'MTAN_RIGI_MASS'
+    stop_calc = 'S'
+    option = 'MTAN_RIGI_MASS'
     ligrel_model = model(1:8)//'.MODELE'
 !
 ! - Init fields
 !
-    call inical(nb_in_maxi, lpain, lchin, nbout, lpaout,&
-                lchout    )
+    call inical(nb_in_maxi, lpain, lchin, nbout, lpaout, &
+                lchout)
 !
 ! - Geometry field
 !
@@ -97,25 +97,25 @@ implicit none
 !
 ! - Input fields
 !
-    lpain(1)  = 'PGEOMER'
-    lchin(1)  = chgeom(1:19)
-    lpain(2)  = 'PMATERC'
-    lchin(2)  = mate(1:19)
-    lpain(3)  = 'PTEMPSR'
-    lchin(3)  = time(1:19)
-    lpain(4)  = 'PTEMPEI'
-    lchin(4)  = temp_iter(1:19)
-    lpain(5)  = 'PCOMPOR'
-    lchin(5)  = compor(1:19)
-    lpain(6)  = 'PTMPCHI'
-    lchin(6)  = dry_prev(1:19)
-    lpain(7)  = 'PTMPCHF'
-    lchin(7)  = dry_curr(1:19)
-    lpain(8)  = 'PVARCPR'
-    lchin(8)  = varc_curr(1:19)
-    lpain(9)  = 'PCAMASS'
-    lchin(9)  = chcara(12)(1:19)
-    nbin      = 9
+    lpain(1) = 'PGEOMER'
+    lchin(1) = chgeom(1:19)
+    lpain(2) = 'PMATERC'
+    lchin(2) = mate(1:19)
+    lpain(3) = 'PTEMPSR'
+    lchin(3) = time(1:19)
+    lpain(4) = 'PTEMPEI'
+    lchin(4) = temp_iter(1:19)
+    lpain(5) = 'PCOMPOR'
+    lchin(5) = compor(1:19)
+    lpain(6) = 'PTMPCHI'
+    lchin(6) = dry_prev(1:19)
+    lpain(7) = 'PTMPCHF'
+    lchin(7) = dry_curr(1:19)
+    lpain(8) = 'PVARCPR'
+    lchin(8) = varc_curr(1:19)
+    lpain(9) = 'PCAMASS'
+    lchin(9) = chcara(12) (1:19)
+    nbin = 9
 !
 ! - Output fields
 !
@@ -124,8 +124,8 @@ implicit none
 !
 ! - Compute
 !
-    call calcul(stop_calc, option, ligrel_model, nbin  , lchin,&
-                lpain    , nbout , lchout      , lpaout, base ,&
+    call calcul(stop_calc, option, ligrel_model, nbin, lchin, &
+                lpain, nbout, lchout, lpaout, base, &
                 'OUI')
 !
 ! - Add RESU_ELEM in MATR_ELEM

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -94,7 +94,7 @@ subroutine cffpfo(resoco, nbliai, nbliac, ndim)
             lambdf = coefff*lambdc
         else
             lambdf = 0.d0
-        endif
+        end if
 !
 ! ----- ACTIVATION GLISSEMENT/ADHERENCE
 !
@@ -103,10 +103,10 @@ subroutine cffpfo(resoco, nbliai, nbliac, ndim)
                 zr(jmu+3*nbliai+iliai-1) = sqrt(coefpt)
             else
                 zr(jmu+3*nbliai+iliai-1) = sqrt(lambdf/glis)
-            endif
+            end if
         else
             zr(jmu+3*nbliai+iliai-1) = 0.d0
-        endif
+        end if
     end do
 !
     call jedema()

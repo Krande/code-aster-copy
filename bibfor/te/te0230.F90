@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 subroutine te0230(option, nomte)
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterc/r8vide.h"
@@ -47,8 +47,8 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: nbres, nbpar
-    parameter  ( nbres=2 )
-    parameter  ( nbpar=3 )
+    parameter(nbres=2)
+    parameter(nbpar=3)
 !
     integer :: i, igau, imate, imatuu, j, iret, idrigi(2), rigi
     integer :: k, nbinco, nbsig, ndim, nno
@@ -73,21 +73,21 @@ implicit none
 ! - Finite element informations
 !
     fami = 'RIGI'
-    call elrefe_info(fami=fami,ndim=ndim,nno=nno,nnos=nnos,&
-                        npg=npg1,jpoids=ipoids,jvf=ivf,jdfde=idfde)
+    call elrefe_info(fami=fami, ndim=ndim, nno=nno, nnos=nnos, &
+                     npg=npg1, jpoids=ipoids, jvf=ivf, jdfde=idfde)
 !
 ! - Initializations
 !
-    instan     = r8vide()
-    nbinco     = ndim*nno
-    nharm      = 0.d0
-    btdbi(:,:) = 0.d0
-    xyzgau(:)  = 0.d0
-    bary(:)    = 0.d0
+    instan = r8vide()
+    nbinco = ndim*nno
+    nharm = 0.d0
+    btdbi(:, :) = 0.d0
+    xyzgau(:) = 0.d0
+    bary(:) = 0.d0
 !
 ! - Number of stress components
 !
-    nbsig     = nbsigm()
+    nbsig = nbsigm()
 !
 ! - Geometry
 !
@@ -114,9 +114,9 @@ implicit none
     end do
     call ortrep(ndim, bary, repere)
 !
-    nompar(1)='X'
-    nompar(2)='Y'
-    nompar(3)='Z'
+    nompar(1) = 'X'
+    nompar(2) = 'Y'
+    nompar(3) = 'Z'
 !
 ! - Get RIGI_MECA real part
 !
@@ -127,41 +127,41 @@ implicit none
 !
 ! - Case of a viscoelastic materials
 !
-    if (phenom .eq. 'ELAS_VISCO'.or. &
-        phenom .eq. 'ELAS_VISCO_ISTR' .or.&
+    if (phenom .eq. 'ELAS_VISCO' .or. &
+        phenom .eq. 'ELAS_VISCO_ISTR' .or. &
         phenom .eq. 'ELAS_VISCO_ORTH') then
         do igau = 1, npg1
-    !
-    ! ----- Compute matrix [B]: displacement -> strain (first order)
-    !
-            call bmatmc(igau, nbsig, zr(igeom), ipoids, ivf,&
+            !
+            ! ----- Compute matrix [B]: displacement -> strain (first order)
+            !
+            call bmatmc(igau, nbsig, zr(igeom), ipoids, ivf, &
                         idfde, nno, nharm, jacgau, b)
-    !
-    ! ---------- Compute Hooke matrix [D]
-    !
-                call dmatmc(fami, zi(imate), instan, '+',&
-                            igau, 1, repere, xyzgau, nbsig,&
-                            di_=di)
-    !
-    ! --------- Compute rigidity matrix [K] = [B]Tx[D]x[B]
-    !
-                call btdbmc(b, di, jacgau, ndim, nno,&
-                            nbsig, elas_id, btdbi)
-        enddo
+            !
+            ! ---------- Compute Hooke matrix [D]
+            !
+            call dmatmc(fami, zi(imate), instan, '+', &
+                        igau, 1, repere, xyzgau, nbsig, &
+                        di_=di)
+            !
+            ! --------- Compute rigidity matrix [K] = [B]Tx[D]x[B]
+            !
+            call btdbmc(b, di, jacgau, ndim, nno, &
+                        nbsig, elas_id, btdbi)
+        end do
 !
 ! ---- Case of an elastic material
 !
     else
 
-        nomres(1)='AMOR_HYST'
+        nomres(1) = 'AMOR_HYST'
         valres(1) = 0.d0
-        call rcvalb('RIGI', 1, 1, '+', zi(imate),&
-                    nomat, phenom, ndim, nompar, bary,&
-                    1, nomres, valres, icodre, 0,&
+        call rcvalb('RIGI', 1, 1, '+', zi(imate), &
+                    nomat, phenom, ndim, nompar, bary, &
+                    1, nomres, valres, icodre, 0, &
                     nan='NON')
         eta = valres(1)
 !
-    endif
+    end if
 !
 ! - Set matrix in output field
 !
@@ -170,14 +170,14 @@ implicit none
     k = 0
     do i = 1, nbinco
         do j = 1, i
-            k = k + 1
-            if (phenom .eq. 'ELAS_VISCO'.or. &
-                phenom .eq. 'ELAS_VISCO_ISTR' .or.&
+            k = k+1
+            if (phenom .eq. 'ELAS_VISCO' .or. &
+                phenom .eq. 'ELAS_VISCO_ISTR' .or. &
                 phenom .eq. 'ELAS_VISCO_ORTH') then
-                zc(imatuu+k-1) = dcmplx(zr(rigi+k-1), btdbi(i,j))
+                zc(imatuu+k-1) = dcmplx(zr(rigi+k-1), btdbi(i, j))
             else
                 zc(imatuu+k-1) = dcmplx(zr(rigi+k-1), eta*zr(rigi+k-1))
-            endif
+            end if
         end do
     end do
 !

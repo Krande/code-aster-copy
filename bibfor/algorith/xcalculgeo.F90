@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -64,7 +64,7 @@ subroutine xcalculgeo(ndim, vale, jvp, jbl, deltat, jbeta, &
 !     ------------------------------------------------------------------
 
     integer                      :: k, pos, pos1
-    real(kind=8),dimension(ndim) :: t1, n1, p1
+    real(kind=8), dimension(ndim) :: t1, n1, p1
     real(kind=8)                 :: deltaa, cbeta, sbeta
 !
 !-----------------------------------------------------------------------
@@ -72,7 +72,7 @@ subroutine xcalculgeo(ndim, vale, jvp, jbl, deltat, jbeta, &
 !-----------------------------------------------------------------------
 
 !     PROPAGATION VECTOR DELTA_A
-    deltaa=zr(jvp-1+node)*deltat
+    deltaa = zr(jvp-1+node)*deltat
 !
 !     STORE THE COS AND SIN OF THE PROPAGATION ANGLE
     cbeta = cos(zr(jbeta-1+node))

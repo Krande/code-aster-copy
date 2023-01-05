@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,9 +19,9 @@
 !
 subroutine nonlinSystemInit(list_func_acti, nume_dof, ds_algopara, ds_contact, ds_system)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -32,11 +32,11 @@ implicit none
 #include "asterfort/vtcreb.h"
 #include "asterfort/cfdisl.h"
 !
-integer, intent(in) :: list_func_acti(*)
-character(len=24), intent(in) :: nume_dof
-type(NL_DS_AlgoPara), intent(in) :: ds_algopara
-type(NL_DS_Contact), intent(in) :: ds_contact
-type(NL_DS_System), intent(inout) :: ds_system
+    integer, intent(in) :: list_func_acti(*)
+    character(len=24), intent(in) :: nume_dof
+    type(NL_DS_AlgoPara), intent(in) :: ds_algopara
+    type(NL_DS_Contact), intent(in) :: ds_contact
+    type(NL_DS_System), intent(inout) :: ds_system
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -62,18 +62,18 @@ type(NL_DS_System), intent(inout) :: ds_system
     call infdbg('MECANONLINE', ifm, niv)
     if (niv .ge. 2) then
         call utmess('I', 'MECANONLINE13_10')
-    endif
+    end if
 !
 ! - Active functionnalities
 !
-    l_cont_elem      = isfonc(list_func_acti, 'ELT_CONTACT')
+    l_cont_elem = isfonc(list_func_acti, 'ELT_CONTACT')
     l_cont_all_verif = isfonc(list_func_acti, 'CONT_ALL_VERIF')
 !
 ! - Create fields
 !
-    call vtcreb(ds_system%cninte, 'V', 'R', nume_ddlz = nume_dof)
-    call vtcreb(ds_system%cnfint, 'V', 'R', nume_ddlz = nume_dof)
-    call vtcreb(ds_system%cnfnod, 'V', 'R', nume_ddlz = nume_dof)
+    call vtcreb(ds_system%cninte, 'V', 'R', nume_ddlz=nume_dof)
+    call vtcreb(ds_system%cnfint, 'V', 'R', nume_ddlz=nume_dof)
+    call vtcreb(ds_system%cnfnod, 'V', 'R', nume_ddlz=nume_dof)
 !
 ! - Set flag for symmetric rigidity matrix
 !
@@ -81,22 +81,22 @@ type(NL_DS_System), intent(inout) :: ds_system
 !
 ! - Set flag for contact matrix to add in rigidity matrix
 !
-    if (l_cont_elem .and. .not.l_cont_all_verif) then
+    if (l_cont_elem .and. .not. l_cont_all_verif) then
         ds_system%l_rigi_cont = ASTER_TRUE
-    endif
+    end if
 !
 ! - Set flag for modifiy matrix because of contact (LAC/DISCRETE/LIAISON_UNIL)
 !
     if (ds_contact%l_contact) then
         if (ds_contact%l_form_disc) then
             ds_system%l_matr_cont = cfdisl(ds_contact%sdcont_defi, 'MODI_MATR_GLOB')
-        endif
+        end if
         if (ds_contact%l_meca_unil) then
             if (cfdisl(ds_contact%sdcont_defi, 'UNIL_PENA')) then
                 ds_system%l_matr_cont = ASTER_TRUE
-            endif
-        endif
-    endif
+            end if
+        end if
+    end if
 !
 ! - Set name of numbering object
 !

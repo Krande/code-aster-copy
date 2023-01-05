@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -56,11 +56,11 @@ subroutine versst(nomres)
     integer :: i, ibid, lddesc, lldesc, nbcmpr, nbecr, nbsst
     integer :: numgd, numgdr
 !-----------------------------------------------------------------------
-    data blanc /'        '/
+    data blanc/'        '/
 !-----------------------------------------------------------------------
 !
     call jemarq()
-    pblog=.false.
+    pblog = .false.
 !
 !------------RECUPERATION DU NOMBRE DE MACR_ELEM MIS EN JEU-------------
 !
@@ -69,44 +69,44 @@ subroutine versst(nomres)
 !------RECUPERATION VALEURS DE REFERENCE GRANDEUR SOUS-JACENTE----------
 !      (ON PREND CELLES DU PREMIER MACR_ELEM)
 !
-    nmsstr=blanc
-    call mgutdm(nomres, nmsstr, 1, 'NOM_MACR_ELEM', ibid,&
+    nmsstr = blanc
+    call mgutdm(nomres, nmsstr, 1, 'NOM_MACR_ELEM', ibid, &
                 nmmclr)
     call jeveuo(nmmclr//'.MAEL_DESC', 'L', lldesc)
-    nbecr=zi(lldesc)
-    nbcmpr=zi(lldesc+1)
-    numgdr=zi(lldesc+2)
+    nbecr = zi(lldesc)
+    nbcmpr = zi(lldesc+1)
+    numgdr = zi(lldesc+2)
 !
 !----------------BOUCLE SUR TOUS LES MACR_ELEM MIS EN JEU---------------
 !
     do i = 1, nbsst
-        nmsst=blanc
-        call mgutdm(nomres, nmsst, i, 'NOM_MACR_ELEM', ibid,&
+        nmsst = blanc
+        call mgutdm(nomres, nmsst, i, 'NOM_MACR_ELEM', ibid, &
                     nmmcl)
         call jeveuo(nmmcl//'.MAEL_DESC', 'L', lldesc)
-        numgd=zi(lldesc+2)
+        numgd = zi(lldesc+2)
         if (numgdr .ne. numgd) then
-            pblog=.true.
+            pblog = .true.
             call jenuno(jexnum(nomres//'      .MODG.SSNO', i), nmsst)
-            valk (1) = nmsstr
-            valk (2) = nmmclr
-            valk (3) = nmsst
-            valk (4) = nmmcl
-            vali (1) = numgdr
-            vali (2) = numgd
-            call utmess('E', 'ALGORITH14_73', nk=4, valk=valk, ni=2,&
+            valk(1) = nmsstr
+            valk(2) = nmmclr
+            valk(3) = nmsst
+            valk(4) = nmmcl
+            vali(1) = numgdr
+            vali(2) = numgd
+            call utmess('E', 'ALGORITH14_73', nk=4, valk=valk, ni=2, &
                         vali=vali)
-        endif
+        end if
     end do
 !
     if (pblog) then
         call utmess('F', 'ALGORITH14_74')
-    endif
+    end if
 !
     call wkvect(nomres//'      .MODG.DESC', 'G V I', 3, lddesc)
-    zi(lddesc)=nbecr
-    zi(lddesc+1)=nbcmpr
-    zi(lddesc+2)=numgdr
+    zi(lddesc) = nbecr
+    zi(lddesc+1) = nbcmpr
+    zi(lddesc+2) = numgdr
 !
     call jedema()
 end subroutine

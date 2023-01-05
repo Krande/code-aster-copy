@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine titreb(donnee, iligd, icold, nbtitr, sortie,&
+subroutine titreb(donnee, iligd, icold, nbtitr, sortie, &
                   iligs, icols, formr, nomsym, iordr)
     implicit none
 #include "asterf_types.h"
@@ -73,7 +73,7 @@ subroutine titreb(donnee, iligd, icold, nbtitr, sortie,&
     aster_logical :: lfreq
 !
 !     REMARQUE :  MXPARA DONNE LE NOMBRE DE PARAMETRES DU DEMON
-    parameter          (mxdemo=20)
+    parameter(mxdemo=20)
     character(len=16) :: demons(mxdemo), cbid, tysd
     character(len=24) :: para(2)
     integer :: mxpara(mxdemo)
@@ -81,19 +81,19 @@ subroutine titreb(donnee, iligd, icold, nbtitr, sortie,&
 !     ------------------------------------------------------------------
 !     --- LISTE DES DEMONS RECONNUS ---
     data demons/&
-     &  'DATE'     , 'DATE_HEURE'    , 'HEURE'    ,&
-     &  'RESULTAT' , 'TYPE'          , 'COMMANDE' ,&
-     &  'CODE'     , 'TITRE_MAILLAGE', 'VERSION'  , 'RL'      ,&
-     &  'NB_ELEM'  , 'NB_NOEUD'      , 'PHENOMENE', 'DIM_GEOM',&
-     &  'NB_EQUA'  , 'LOC'           , 'NOM_SYMB' , 'NUME_ORDRE',&
-     &  'ACCES'    , 'VALEUR'        /
+     &  'DATE', 'DATE_HEURE', 'HEURE',&
+     &  'RESULTAT', 'TYPE', 'COMMANDE',&
+     &  'CODE', 'TITRE_MAILLAGE', 'VERSION', 'RL',&
+     &  'NB_ELEM', 'NB_NOEUD', 'PHENOMENE', 'DIM_GEOM',&
+     &  'NB_EQUA', 'LOC', 'NOM_SYMB', 'NUME_ORDRE',&
+     &  'ACCES', 'VALEUR'/
     data mxpara/&
-     &    0        ,       0         ,     0      ,&
-     &    0        ,       1         ,     0      ,&
-     &    0        ,       1         ,     0      ,    0      ,&
-     &    1        ,       1         ,     1      ,    1      ,&
-     &    1        ,       1         ,     2      ,    2      ,&
-     &    2        ,       1         /
+     &    0, 0, 0,&
+     &    0, 1, 0,&
+     &    0, 1, 0, 0,&
+     &    1, 1, 1, 1,&
+     &    1, 1, 2, 2,&
+     &    2, 1/
 !     ------------------------------------------------------------------
 !
 !     --- LIRE LE NOM DU DEMON DE MINUIT ---
@@ -105,7 +105,7 @@ subroutine titreb(donnee, iligd, icold, nbtitr, sortie,&
         lenf = 12
         formrb = '(1PE12.5)'
     else
-        formrb=formr
+        formrb = formr
         leng = lxlgut(formrb)
         deb = 0
         fin = 0
@@ -113,22 +113,22 @@ subroutine titreb(donnee, iligd, icold, nbtitr, sortie,&
             if (formrb(itmp:itmp) .eq. 'E') deb = itmp+1
             if (formrb(itmp:itmp) .eq. '.') fin = itmp-1
         end do
-        ASSERT(deb.ne.0.and.fin.ne.0)
-        read(formrb(deb:fin),'(I2)') lenf
-    endif
+        ASSERT(deb .ne. 0 .and. fin .ne. 0)
+        read (formrb(deb:fin), '(I2)') lenf
+    end if
 !
     nbpara = 0
     lfreq = .false.
-    icold = icold + 1
+    icold = icold+1
 888 continue
-    call lxscan(donnee(iligd), icold, iclass, ival, rval,&
+    call lxscan(donnee(iligd), icold, iclass, ival, rval, &
                 cval)
     if (iclass .eq. -1) then
         icold = 1
-        iligd = iligd + 1
+        iligd = iligd+1
         if (iligd .le. nbtitr) then
             goto 888
-        endif
+        end if
     else if (iclass .ne. 3) then
 !CC      DEMON INCORRECT
         call sndbg(iunifi('MESSAGE'), iclass, ival, [rval], cval)
@@ -146,8 +146,8 @@ subroutine titreb(donnee, iligd, icold, nbtitr, sortie,&
         case (1)
 !       --- DATE ---
             call jjmmaa(ct, cbid(1:12))
-            cgen(1:2) = ct(1)(1:2)
-            cgen(4:5) = ct(2)(1:2)
+            cgen(1:2) = ct(1) (1:2)
+            cgen(4:5) = ct(2) (1:2)
             cgen(7:10) = ct(3)
             cgen(6:6) = '/'
             cgen(3:3) = '/'
@@ -171,7 +171,7 @@ subroutine titreb(donnee, iligd, icold, nbtitr, sortie,&
 !
         case (5)
 !        --- 'TYPE' ---
-            call titrec(donnee, iligd, icold, nbtitr, mxpara(iplace),&
+            call titrec(donnee, iligd, icold, nbtitr, mxpara(iplace), &
                         para, nbpara)
             call gettco(para(1), cgen)
             if (cgen .eq. '  ') goto 991
@@ -189,27 +189,27 @@ subroutine titreb(donnee, iligd, icold, nbtitr, sortie,&
 !
         case (8)
 !        --- TITRE_MAILLAGE ---
-            call titrec(donnee, iligd, icold, nbtitr, mxpara(iplace),&
+            call titrec(donnee, iligd, icold, nbtitr, mxpara(iplace), &
                         para, nbpara)
             call gettco(para(1), cgen)
             if (cgen .eq. '  ') cgen = 'CHAMP'
             if (cgen(1:16) .eq. 'MAILLAGE') then
-                cbid = para(1)(1:16)
+                cbid = para(1) (1:16)
             else
-                call dismoi('NOM_MAILLA', para(1), cgen, repk=cbid, arret='C',&
+                call dismoi('NOM_MAILLA', para(1), cgen, repk=cbid, arret='C', &
                             ier=ierd)
                 if (ierd .ne. 0) goto 900
-            endif
+            end if
             call jeveuo(cbid(1:8)//'           .TITR', 'L', vk80=titr)
             call jelira(cbid(1:8)//'           .TITR', 'LONMAX', nl, cbid(9:))
 !                 ---> LA RECOPIE SE FAIT ICI
             if (icols+igen-1 .gt. len(sortie(1))) then
-                iligs = iligs + 1
+                iligs = iligs+1
                 icols = 1
-            endif
+            end if
             do itit = 1, nl
-                sortie(iligs)(icols:) = titr(itit)
-                iligs = iligs + 1
+                sortie(iligs) (icols:) = titr(itit)
+                iligs = iligs+1
                 icols = 1
             end do
             igen = 0
@@ -221,23 +221,23 @@ subroutine titreb(donnee, iligd, icold, nbtitr, sortie,&
 !
         case (10)
 !        --- RETOUR A LA LIGNE ---
-            iligs = iligs + 1
+            iligs = iligs+1
             icols = 0
 !
         case (11)
 !        --- NB_ELEM  ---
-            call titrec(donnee, iligd, icold, nbtitr, mxpara(iplace),&
+            call titrec(donnee, iligd, icold, nbtitr, mxpara(iplace), &
                         para, nbpara)
             call gettco(para(1), cgen)
             if (cgen .eq. '  ') cgen = 'CHAMP'
             if (cgen(1:16) .eq. 'MAILLAGE') then
-                cbid = para(1)(1:16)
+                cbid = para(1) (1:16)
             else
-                call dismoi('NOM_MAILLA', para(1), cgen, repk=cbid, arret='C',&
+                call dismoi('NOM_MAILLA', para(1), cgen, repk=cbid, arret='C', &
                             ier=ierd)
                 if (ierd .ne. 0) goto 900
-            endif
-            call dismoi('NB_MA_MAILLA', cbid, 'MAILLAGE', repi=ibid, arret='C',&
+            end if
+            call dismoi('NB_MA_MAILLA', cbid, 'MAILLAGE', repi=ibid, arret='C', &
                         ier=ierd)
             if (ierd .ne. 0) goto 900
             cgen = '  '
@@ -246,18 +246,18 @@ subroutine titreb(donnee, iligd, icold, nbtitr, sortie,&
 !
         case (12)
 !        --- NB_NOEUD ---
-            call titrec(donnee, iligd, icold, nbtitr, mxpara(iplace),&
+            call titrec(donnee, iligd, icold, nbtitr, mxpara(iplace), &
                         para, nbpara)
             call gettco(para(1), cgen)
             if (cgen .eq. '  ') cgen = 'CHAMP'
             if (cgen(1:16) .eq. 'MAILLAGE') then
-                cbid = para(1)(1:16)
+                cbid = para(1) (1:16)
             else
-                call dismoi('NOM_MAILLA', para(1), cgen, repk=cbid, arret='C',&
+                call dismoi('NOM_MAILLA', para(1), cgen, repk=cbid, arret='C', &
                             ier=ierd)
                 if (ierd .ne. 0) goto 900
-            endif
-            call dismoi('NB_NO_MAILLA', cbid, 'MAILLAGE', repi=ibid, arret='C',&
+            end if
+            call dismoi('NB_NO_MAILLA', cbid, 'MAILLAGE', repi=ibid, arret='C', &
                         ier=ierd)
             if (ierd .ne. 0) goto 900
             cgen = '  '
@@ -266,37 +266,37 @@ subroutine titreb(donnee, iligd, icold, nbtitr, sortie,&
 !
         case (13)
 !        --- PHENOMENE ---
-            call titrec(donnee, iligd, icold, nbtitr, mxpara(iplace),&
+            call titrec(donnee, iligd, icold, nbtitr, mxpara(iplace), &
                         para, nbpara)
             call gettco(para(1), cgen)
             if (cgen .eq. '  ') cgen = 'CHAMP'
             if (cgen(1:16) .eq. 'MODELE') then
-                cbid = para(1)(1:16)
+                cbid = para(1) (1:16)
             else
-                call dismoi('NOM_MODELE', para(1), cgen, repk=cbid, arret='C',&
+                call dismoi('NOM_MODELE', para(1), cgen, repk=cbid, arret='C', &
                             ier=ierd)
                 if (ierd .ne. 0) goto 900
-            endif
+            end if
             cgen = '  '
-            call dismoi('PHENOMENE', cbid, 'MODELE', repk=cgen(1:16), arret='C',&
+            call dismoi('PHENOMENE', cbid, 'MODELE', repk=cgen(1:16), arret='C', &
                         ier=ierd)
             if (ierd .ne. 0) goto 900
             igen = lxlgut(cgen(1:16))
 !
         case (14)
 !        --- DIMENSION GEOMETRIE ---
-            call titrec(donnee, iligd, icold, nbtitr, mxpara(iplace),&
+            call titrec(donnee, iligd, icold, nbtitr, mxpara(iplace), &
                         para, nbpara)
             call gettco(para(1), cgen)
             if (cgen .eq. '  ') cgen = 'CHAMP'
             if (cgen(1:16) .eq. 'MAILLAGE') then
-                cbid = para(1)(1:16)
+                cbid = para(1) (1:16)
             else
-                call dismoi('NOM_MAILLA', para(1), cgen, repk=cbid, arret='C',&
+                call dismoi('NOM_MAILLA', para(1), cgen, repk=cbid, arret='C', &
                             ier=ierd)
                 if (ierd .ne. 0) goto 900
-            endif
-            call dismoi('DIM_GEOM_B', cbid, 'MAILLAGE', repi=ibid, arret='C',&
+            end if
+            call dismoi('DIM_GEOM_B', cbid, 'MAILLAGE', repi=ibid, arret='C', &
                         ier=ierd)
             if (ierd .ne. 0) goto 900
             cgen = '.D'
@@ -305,11 +305,11 @@ subroutine titreb(donnee, iligd, icold, nbtitr, sortie,&
 !
         case (15)
 !        --- NOMBRE D'EQUATIONS ---
-            call titrec(donnee, iligd, icold, nbtitr, mxpara(iplace),&
+            call titrec(donnee, iligd, icold, nbtitr, mxpara(iplace), &
                         para, nbpara)
             call gettco(para(1), cgen)
             if (cgen .eq. '  ') cgen = 'CHAMP'
-            call dismoi('NB_EQUA', para(1), cgen, repi=ibid, arret='C',&
+            call dismoi('NB_EQUA', para(1), cgen, repi=ibid, arret='C', &
                         ier=ierd)
             if (ierd .ne. 0) goto 900
             cgen = '  '
@@ -318,9 +318,9 @@ subroutine titreb(donnee, iligd, icold, nbtitr, sortie,&
 !
         case (16)
 !        --- LOCALISATION POUR UN CHAM_ELEM ---
-            call titrec(donnee, iligd, icold, nbtitr, mxpara(iplace),&
+            call titrec(donnee, iligd, icold, nbtitr, mxpara(iplace), &
                         para, nbpara)
-            call dismoi('TYPE_CHAMP', para(1), 'CHAMP', repk=cbid, arret='C',&
+            call dismoi('TYPE_CHAMP', para(1), 'CHAMP', repk=cbid, arret='C', &
                         ier=ierd)
             if (cbid(1:4) .eq. 'ELNO') then
                 cgen = 'AUX NOEUDS'
@@ -334,95 +334,95 @@ subroutine titreb(donnee, iligd, icold, nbtitr, sortie,&
             else
                 cgen = 'EN '//cbid(1:4)
                 igen = 7
-            endif
+            end if
 !
         case (17)
 !        --- NOM SYMBOLIQUE POUR UN CHAMP D'UN RESULTAT ---
-            call titrec(donnee, iligd, icold, nbtitr, mxpara(iplace),&
+            call titrec(donnee, iligd, icold, nbtitr, mxpara(iplace), &
                         para, nbpara)
             cgen = nomsym
             igen = lxlgut(nomsym)
 !
         case (18)
 !        --- NUMERO D'ORDRE POUR UN CHAMP D'UN RESULTAT ---
-            call titrec(donnee, iligd, icold, nbtitr, mxpara(iplace),&
+            call titrec(donnee, iligd, icold, nbtitr, mxpara(iplace), &
                         para, nbpara)
             call codent(iordr, 'G', cgen(1:16), ' ')
             igen = lxlgut(cgen(1:16))
 !
         case (19)
 !        --- ACCES ---
-            call titrec(donnee, iligd, icold, nbtitr, mxpara(iplace),&
+            call titrec(donnee, iligd, icold, nbtitr, mxpara(iplace), &
                         para, nbpara)
-            call rsnopa(para(1)(1:8), 0, '&&TITREB.NOM_ACCE', nbacce, nbpa)
+            call rsnopa(para(1) (1:8), 0, '&&TITREB.NOM_ACCE', nbacce, nbpa)
             call jeexin('&&TITREB.NOM_ACCE', iret)
             if (iret .gt. 0) call jeveuo('&&TITREB.NOM_ACCE', 'E', jpara)
             ibid = iordr
             do iacc = 1, nbacce
-                call gettco(para(1)(1:8), tysd)
+                call gettco(para(1) (1:8), tysd)
                 ilg = lxlgut(zk16(jpara-1+iacc))
                 cgen(igen+1:igen+ilg) = zk16(jpara-1+iacc)
                 cgen(igen+ilg+1:igen+ilg+1) = ':'
 !
-                call rsadpa(para(1)(1:8), 'L', 1, zk16(jpara-1+iacc), ibid,&
+                call rsadpa(para(1) (1:8), 'L', 1, zk16(jpara-1+iacc), ibid, &
                             1, sjv=iad, styp=ctype, istop=0)
 !                   TEST SUR LE TYPE DU CONCEPT
 !                   MODE_MECA A 3 VAR D'ACCES (FREQ,NUME_MODE,et NOEUD_CMP)
                 if (tysd .eq. 'MODE_MECA') then
                     if (zk16(jpara-1+iacc) .eq. 'FREQ') then
                         if (zr(iad) .eq. r8vide()) then
-                            lfreq= .true.
+                            lfreq = .true.
                         else
                             lfreq = .false.
-                        endif
-                    endif
+                        end if
+                    end if
 !
                     iposa = igen+1
                     iposb = igen+ilg
                     iposc = igen+ilg+1
 !
-                    if (.not.lfreq) then
+                    if (.not. lfreq) then
 !                       --- PAS D'AFFICHAGE DU TEXTE NOEUD_CMP
                         if (zk16(jpara-1+iacc) .eq. 'NOEUD_CMP') then
                             cgen(iposa:iposb) = ' '
                             cgen(iposc:iposc) = ' '
-                        endif
+                        end if
                     else
 !                       --- PAS D'AFFICHAGE DU TEXTE FREQ,ET NUME_MODE
                         if (zk16(jpara-1+iacc) .eq. 'FREQ') then
                             cgen(iposa:iposb) = ' '
                             cgen(iposc:iposc) = ' '
-                        else if (zk16(jpara-1+iacc).eq.'NUME_MODE') then
+                        else if (zk16(jpara-1+iacc) .eq. 'NUME_MODE') then
                             cgen(iposa:iposb) = ' '
                             cgen(iposc:iposc) = ' '
-                        endif
-                    endif
+                        end if
+                    end if
 !
                     igen = igen+ilg+2
-                    if ((ctype(1:1).eq.'I') .and. (.not.lfreq)) then
+                    if ((ctype(1:1) .eq. 'I') .and. (.not. lfreq)) then
 !                       --- ENTIER
                         call codent(zi(iad), 'G', cbid, ' ')
                         ilg = lxlgut(cbid)
                         cgen(igen+1:igen+ilg) = cbid
                         igen = igen+ilg+1
-                    else if ((ctype(1:1).eq.'R').and.(.not.lfreq)) then
+                    else if ((ctype(1:1) .eq. 'R') .and. (.not. lfreq)) then
 !                       --- REEL
                         ilg = lenf+1
-                        write(cgen(igen+1:igen+ilg), '(1X,'//formrb(1:&
-                            leng)//')')zr(iad)
+                        write (cgen(igen+1:igen+ilg), '(1X,'//formrb(1: &
+                                                                     leng)//')') zr(iad)
                         igen = igen+ilg+1
-                    else if ((ctype(1:3).eq.'K16').and.(lfreq)) then
+                    else if ((ctype(1:3) .eq. 'K16') .and. (lfreq)) then
 !                       --- K16
                         ilg = 16
-                        write(cgen(igen+1:igen+ilg),'(A)') zk16(iad)
+                        write (cgen(igen+1:igen+ilg), '(A)') zk16(iad)
                         igen = igen+ilg+1
                     else
-                        if ((ctype(1:3).eq.'K16') .or. (ctype(1:1).eq.'I') .or.&
-                            (ctype(1:1).eq.'R')) then
+                        if ((ctype(1:3) .eq. 'K16') .or. (ctype(1:1) .eq. 'I') .or. &
+                            (ctype(1:1) .eq. 'R')) then
                             goto 191
-                        endif
+                        end if
                         ASSERT(.false.)
-                    endif
+                    end if
 !
                 else
 !
@@ -433,50 +433,50 @@ subroutine titreb(donnee, iligd, icold, nbtitr, sortie,&
                         ilg = lxlgut(cbid)
                         cgen(igen+1:igen+ilg) = cbid
                         igen = igen+ilg+1
-                    else if (ctype(1:1).eq.'R') then
+                    else if (ctype(1:1) .eq. 'R') then
 !                       --- REEL
                         ilg = lenf+1
-                        write(cgen(igen+1:igen+ilg), '(1X,'//formrb(1:&
-                            leng)//')')zr(iad)
+                        write (cgen(igen+1:igen+ilg), '(1X,'//formrb(1: &
+                                                                     leng)//')') zr(iad)
                         igen = igen+ilg+1
-                    else if (ctype(1:2).eq.'K8') then
+                    else if (ctype(1:2) .eq. 'K8') then
 !                       --- K8
                         ilg = 8
-                        write(cgen(igen+1:igen+ilg),'(A)') zk8(iad)
+                        write (cgen(igen+1:igen+ilg), '(A)') zk8(iad)
                         igen = igen+ilg+1
-                    else if (ctype(1:3).eq.'K16') then
+                    else if (ctype(1:3) .eq. 'K16') then
 !                       --- K16
                         ilg = 16
-                        write(cgen(igen+1:igen+ilg),'(A)') zk16(iad)
+                        write (cgen(igen+1:igen+ilg), '(A)') zk16(iad)
                         igen = igen+ilg+1
-                    else if (ctype(1:3).eq.'K24') then
+                    else if (ctype(1:3) .eq. 'K24') then
 !                       --- K24
                         ilg = 24
-                        write(cgen(igen+1:igen+ilg),'(A)') zk24(iad)
+                        write (cgen(igen+1:igen+ilg), '(A)') zk24(iad)
                         igen = igen+ilg+1
-                    else if (ctype(1:3).eq.'K32') then
+                    else if (ctype(1:3) .eq. 'K32') then
 !                       --- K32
                         ilg = 32
-                        write(cgen(igen+1:igen+ilg),'(A)') zk32(iad)
+                        write (cgen(igen+1:igen+ilg), '(A)') zk32(iad)
                         igen = igen+ilg+1
-                    else if (ctype(1:3).eq.'K80') then
+                    else if (ctype(1:3) .eq. 'K80') then
 !                       --- K80
                         ilg = 80
-                        write(cgen(igen+1:igen+ilg),'(A)') zk80(iad)
+                        write (cgen(igen+1:igen+ilg), '(A)') zk80(iad)
                         igen = igen+ilg+1
-                    else if (ctype(1:1).eq.'C') then
+                    else if (ctype(1:1) .eq. 'C') then
                         ASSERT(.false.)
                     else
                         ASSERT(.false.)
-                    endif
-                endif
+                    end if
+                end if
             end do
 191         continue
             call jedetr('&&TITREB.NOM_ACCE')
 !
         case (20)
 !        --- VALEUR PARAMETRE ---
-            call titrec(donnee, iligd, icold, nbtitr, mxpara(iplace),&
+            call titrec(donnee, iligd, icold, nbtitr, mxpara(iplace), &
                         para, nbpara)
             ideb = 1
             do iuti = 1, 2
@@ -484,67 +484,67 @@ subroutine titreb(donnee, iligd, icold, nbtitr, sortie,&
                 if (iret .eq. 0) then
 !               --- CONCEPT INEXISTANT
                     goto 210
-                endif
+                end if
                 call jelira(para(iuti), 'TYPE', cval=cval)
                 call jeveuo(para(iuti), 'L', jad)
                 if (cval(1:1) .eq. 'R') then
                     rbid = zr(jad)
-                    write(cgen(ideb:),formrb(1:leng)) rbid
+                    write (cgen(ideb:), formrb(1:leng)) rbid
                     igen = lxlgut(cgen)
                     ideb = igen+1
-                else if (cval(1:1).eq.'I') then
+                else if (cval(1:1) .eq. 'I') then
                     ibid = zi(jad)
                     call codent(ibid, 'G', cgen(ideb:), ' ')
                     igen = lxlgut(cgen)
                     ideb = igen+1
-                else if (cval(1:1).eq.'K') then
+                else if (cval(1:1) .eq. 'K') then
                     call jelira(para(iuti), 'LTYP', ival)
                     if (ival .eq. 80) then
                         cgen(ideb:) = zk80(jad-1+1)
                         igen = lxlgut(cgen)
                         ideb = igen+1
-                    else if (ival.eq.32) then
+                    else if (ival .eq. 32) then
                         cgen(ideb:) = zk32(jad-1+1)
                         igen = lxlgut(cgen)
                         ideb = igen+1
-                    else if (ival.eq.24) then
+                    else if (ival .eq. 24) then
                         cgen(ideb:) = zk24(jad-1+1)
                         igen = lxlgut(cgen)
                         ideb = igen+1
-                    else if (ival.eq.16) then
+                    else if (ival .eq. 16) then
                         cgen(ideb:) = zk16(jad-1+1)
                         igen = lxlgut(cgen)
                         ideb = igen+1
-                    else if (ival.eq.8) then
+                    else if (ival .eq. 8) then
                         cgen(ideb:) = zk8(jad-1+1)
                         igen = lxlgut(cgen)
                         ideb = igen+1
-                    endif
-                endif
+                    end if
+                end if
             end do
 210         continue
             igen = lxlgut(cgen)
         case default
 !CC      DEMON INCORRECT
         end select
-    endif
+    end if
 900 continue
 !     ------------------------------------------------------------------
     if (igen .gt. 0) then
 !       --- Y A T IL ASSEZ DE PLACE ---
-        icols = icols + 1
+        icols = icols+1
         if (icols+igen-1 .gt. len(sortie(1))) then
-            iligs = iligs + 1
+            iligs = iligs+1
             icols = 1
-        endif
-        sortie(iligs)(icols:) = cgen(1:igen)
-        icols = icols + igen - 1
-    endif
+        end if
+        sortie(iligs) (icols:) = cgen(1:igen)
+        icols = icols+igen-1
+    end if
     goto 999
 !
 991 continue
     ilg = lxlgut(para(1))
-    call utmess('A', 'UTILITAI_99', sk=para(1)(1:ilg))
+    call utmess('A', 'UTILITAI_99', sk=para(1) (1:ilg))
 !
 999 continue
     call jedema()

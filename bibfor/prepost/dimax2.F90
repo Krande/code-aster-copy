@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine dimax2(jdom, nbpt, cuon, cvon, rayon,&
+subroutine dimax2(jdom, nbpt, cuon, cvon, rayon, &
                   cupn, cvpn, iret)
     implicit none
 #include "jeveux.h"
@@ -64,16 +64,16 @@ subroutine dimax2(jdom, nbpt, cuon, cvon, rayon,&
     epsilo = 1.0d-4
 !
     do i = 1, nbpt
-        cui = zr(jdom + (i-1)*2)
-        cvi = zr(jdom + (i-1)*2 + 1)
-        dist = sqrt((cuon - cui)**2 + (cvon - cvi)**2)
+        cui = zr(jdom+(i-1)*2)
+        cvi = zr(jdom+(i-1)*2+1)
+        dist = sqrt((cuon-cui)**2+(cvon-cvi)**2)
 !
         if (dist .gt. (ray0*(1.0d0+epsilo))) then
             ray0 = dist
             cupn = cui
             cvpn = cvi
             iret = 1
-        endif
+        end if
 !
     end do
 !

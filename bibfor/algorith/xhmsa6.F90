@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,10 +18,10 @@
 ! person_in_charge: daniele.colombo at ifpen.fr
 ! aslint: disable=W1504
 !
-subroutine xhmsa6(ds_thm, ndim, ipgf, imate, lamb,&
-                  wsaut, nd, tau1, tau2, cohes,&
-                  job, rela, alpha, dsidep, sigma,&
-                  p, am, raug, wsautm, dpf,&
+subroutine xhmsa6(ds_thm, ndim, ipgf, imate, lamb, &
+                  wsaut, nd, tau1, tau2, cohes, &
+                  job, rela, alpha, dsidep, sigma, &
+                  p, am, raug, wsautm, dpf, &
                   rho110)
 !
     use THM_type
@@ -84,9 +84,9 @@ subroutine xhmsa6(ds_thm, ndim, ipgf, imate, lamb,&
 !
     am(:) = 0.d0
     dam(:) = 0.d0
-    p(:,:) = 0.d0
-    dsidep(:,:) = 0.d0
-    dsid2d(:,:) = 0.d0
+    p(:, :) = 0.d0
+    dsidep(:, :) = 0.d0
+    dsid2d(:, :) = 0.d0
     sigma(:) = 0.d0
     vim(:) = 0.d0
     vip(:) = 0.d0
@@ -96,8 +96,8 @@ subroutine xhmsa6(ds_thm, ndim, ipgf, imate, lamb,&
     rho110 = ds_thm%ds_material%liquid%rho
     cliq = ds_thm%ds_material%liquid%unsurk
 !
-    rho11 = cohes(4) + rho110
-    rho11m = cohes(4) + rho110
+    rho11 = cohes(4)+rho110
+    rho11m = cohes(4)+rho110
 !
     w11 = cohes(5)
     w11m = cohes(5)
@@ -111,16 +111,16 @@ subroutine xhmsa6(ds_thm, ndim, ipgf, imate, lamb,&
     end do
 !
     do i = 1, ndim
-        p(1,i) = nd(i)
+        p(1, i) = nd(i)
     end do
     do i = 1, ndim
-        p(2,i) = tau1(i)
+        p(2, i) = tau1(i)
     end do
     if (ndim .eq. 3) then
         do i = 1, ndim
-            p(3,i) = tau2(i)
+            p(3, i) = tau2(i)
         end do
-    endif
+    end if
 !
 ! --- CALCUL DU SAUT DE DEPLACEMENT AM EN BASE LOCALE
 ! attention on ne fait plus d inversion de convention
@@ -129,33 +129,33 @@ subroutine xhmsa6(ds_thm, ndim, ipgf, imate, lamb,&
 !
 ! --- CALCUL VECTEUR ET MATRICE TANGENTE EN BASE LOCALE
 !
-    vim(1)=cohes(1)
+    vim(1) = cohes(1)
     if (nint(rela) .eq. 1) then
         vim(2) = cohes(2)
     else
         if (cohes(2) .le. 0.d0) then
-            vim(2)=0.d0
+            vim(2) = 0.d0
         else
-            vim(2)=1.d0
-        endif
-        vim(3) = abs(cohes(2)) - 1.d0
-    endif
+            vim(2) = 1.d0
+        end if
+        vim(3) = abs(cohes(2))-1.d0
+    end if
 !
 ! PREDICTION: COHES(3)=1 ; CORRECTION: COHES(3)=2
 !
     if (nint(cohes(3)) .eq. 1) then
-        option='RIGI_MECA_TANG'
+        option = 'RIGI_MECA_TANG'
     else if (nint(cohes(3)) .eq. 2) then
-        option='FULL_MECA'
+        option = 'FULL_MECA'
     else
-        option='FULL_MECA'
-    endif
+        option = 'FULL_MECA'
+    end if
 !
 ! VIM = VARIABLES INTERNES UTILISEES DANS LCEJEX
 !.............VIM(1): SEUIL, PLUS GRANDE NORME DU SAUT
 !
-    call lcecli('RIGI', ipgf, 1, ndim, imate,&
-                option, lamb, wsaut, sigma, dsidep,&
+    call lcecli('RIGI', ipgf, 1, ndim, imate, &
+                option, lamb, wsaut, sigma, dsidep, &
                 vim, vip, raug)
 !
     alpha(1) = vip(1)
@@ -165,34 +165,34 @@ subroutine xhmsa6(ds_thm, ndim, ipgf, imate, lamb,&
         if (vip(2) .eq. 0.d0) then
             alpha(2) = -vip(3)-1.d0
         else if (vip(2) .eq. 1.d0) then
-            alpha(2) = vip(3) + 1.d0
+            alpha(2) = vip(3)+1.d0
         else
             ASSERT(.false.)
-        endif
-    endif
+        end if
+    end if
 ! --- VARIABLES INTERNES HYDRAULIQUES
     if (option .eq. 'FULL_MECA') then
 !   CALCUL DE LA VARIABLE INTERNE : MASSE VOLUMIQUE
         varbio = dpf*cliq
         if (varbio .gt. 5.d0) then
             ASSERT(.false.)
-        endif
+        end if
 !
         rho11 = rho11m*exp(varbio)
 !
 !   CALCUL DE LA VARIABLE INTERNE : APPORTS MASSIQUES
 !   (SEULEMENT UTILE POUR LE CAS DU SECOND-MEMBRE)
 !
-        w11 = w11m + rho11*wsaut(1) - rho11m*wsautm(1)
-    endif
+        w11 = w11m+rho11*wsaut(1)-rho11m*wsautm(1)
+    end if
     alpha(4) = rho11-rho110
     alpha(5) = w11
 ! ici on a enleve la securite numerique
 !
     if (job .eq. 'ACTU_VI') then
         alpha(3) = 1.d0
-    else if (job.eq.'MATRICE') then
+    else if (job .eq. 'MATRICE') then
         alpha(3) = 2.d0
-    endif
+    end if
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,15 +19,15 @@
 !
 subroutine nmarex(keywfact, sdarch, lDyna_)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/getvtx.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/utmess.h"
 !
-character(len=19), intent(in) :: sdarch
-character(len=16), intent(in) :: keywfact
-aster_logical, optional, intent(in) :: lDyna_
+    character(len=19), intent(in) :: sdarch
+    character(len=16), intent(in) :: keywfact
+    aster_logical, optional, intent(in) :: lDyna_
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -51,14 +51,14 @@ aster_logical, optional, intent(in) :: lDyna_
     lDyna = ASTER_FALSE
     if (present(lDyna_)) then
         lDyna = lDyna_
-    endif
+    end if
 !
     call getvtx(keywfact, 'CHAM_EXCLU', iocc=1, nbval=0, nbret=nbFieldExcl)
     nbFieldExcl = -nbFieldExcl
     if (nbFieldExcl .ne. 0) then
-        call wkvect(sdarch(1:19)//'.AEXC', 'V V K16', nbFieldExcl, vk16 = fieldExcl)
-        call getvtx(keywfact, 'CHAM_EXCLU', iocc=1, nbval = nbFieldExcl, vect = fieldExcl)
-    endif
+        call wkvect(sdarch(1:19)//'.AEXC', 'V V K16', nbFieldExcl, vk16=fieldExcl)
+        call getvtx(keywfact, 'CHAM_EXCLU', iocc=1, nbval=nbFieldExcl, vect=fieldExcl)
+    end if
 !
     if (lDyna) then
         lSigm = ASTER_TRUE
@@ -66,15 +66,15 @@ aster_logical, optional, intent(in) :: lDyna_
         do iFieldExcl = 1, nbFieldExcl
             if (fieldExcl(iFieldExcl) .eq. 'SIEF_ELGA') then
                 lSigm = ASTER_FALSE
-            endif
+            end if
             if (fieldExcl(iFieldExcl) .eq. 'ACCE') then
                 lAcce = ASTER_FALSE
-            endif
+            end if
         end do
         if (lSigm .and. .not. lAcce) then
             call utmess('A', 'MECANONLINE5_26')
-        endif
-    endif
+        end if
+    end if
 
 !
 end subroutine

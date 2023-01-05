@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -70,7 +70,7 @@ subroutine pjfuco(c1, c2, base, c3)
             valk(1) = ma1
             valk(2) = ma2
             call utmess('F', 'CALCULEL4_65', nk=2, valk=valk)
-        endif
+        end if
     end do
     call jedupo(c1//'.PJXX_K1', base, c3//'.PJXX_K1', .false._1)
 !
@@ -95,12 +95,12 @@ subroutine pjfuco(c1, c2, base, c3)
             tmp1(ino2) = 1
             zi(i3-1+ino2) = zi(i1-1+ino2)
             zi(j3-1+ino2) = zi(j1-1+ino2)
-        endif
+        end if
         if (zi(i2-1+ino2) .ne. 0) then
             tmp1(ino2) = 2
             zi(i3-1+ino2) = zi(i2-1+ino2)
             zi(j3-1+ino2) = zi(j2-1+ino2)
-        endif
+        end if
     end do
 !
 !
@@ -115,7 +115,7 @@ subroutine pjfuco(c1, c2, base, c3)
     call jeveuo(c2//'.PJEF_CF', 'L', i2cf)
     lont = 0
     do k = 1, nbno2
-        lont = lont + zi(i3nb-1+k)
+        lont = lont+zi(i3nb-1+k)
     end do
     call wkvect(c3//'.PJEF_NU', base//' V I', lont, i3nu)
     call wkvect(c3//'.PJEF_CF', base//' V R', lont, i3cf)
@@ -131,16 +131,16 @@ subroutine pjfuco(c1, c2, base, c3)
                 zi(i3nu-1+deca3+k) = zi(i1nu-1+deca1+k)
                 zr(i3cf-1+deca3+k) = zr(i1cf-1+deca1+k)
             end do
-        else if (i1ou2.eq.2) then
+        else if (i1ou2 .eq. 2) then
             nbno = zi(i3nb-1+ino2)
             do k = 1, nbno
                 zi(i3nu-1+deca3+k) = zi(i2nu-1+deca2+k)
                 zr(i3cf-1+deca3+k) = zr(i2cf-1+deca2+k)
             end do
-        endif
-        deca1 = deca1 + zi(i1nb-1+ino2)
-        deca2 = deca2 + zi(i2nb-1+ino2)
-        deca3 = deca3 + zi(i3nb-1+ino2)
+        end if
+        deca1 = deca1+zi(i1nb-1+ino2)
+        deca2 = deca2+zi(i2nb-1+ino2)
+        deca3 = deca3+zi(i3nb-1+ino2)
     end do
 !
 !

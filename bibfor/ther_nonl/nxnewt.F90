@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,18 +18,18 @@
 ! person_in_charge: mickael.abbas at edf.fr
 ! aslint: disable=W1504
 !
-subroutine nxnewt(model    , mate       , mateco     , cara_elem  , list_load, nume_dof  ,&
-                  solver   , tpsthe     , time       , matass   , cn2mbr    ,&
-                  maprec   , cnchci     , varc_curr  , temp_prev, temp_iter ,&
-                  vtempp   , vec2nd     , mediri     , conver   , hydr_prev ,&
-                  hydr_curr, dry_prev   , dry_curr   , compor   , cnvabt    ,&
-                  cnresi   , ther_crit_i, ther_crit_r, reasma   , ds_algorom,&
-                  ds_print , sddisc    , iter_newt )
+subroutine nxnewt(model, mate, mateco, cara_elem, list_load, nume_dof, &
+                  solver, tpsthe, time, matass, cn2mbr, &
+                  maprec, cnchci, varc_curr, temp_prev, temp_iter, &
+                  vtempp, vec2nd, mediri, conver, hydr_prev, &
+                  hydr_curr, dry_prev, dry_curr, compor, cnvabt, &
+                  cnresi, ther_crit_i, ther_crit_r, reasma, ds_algorom, &
+                  ds_print, sddisc, iter_newt)
 !
-use NonLin_Datastructure_type
-use Rom_Datastructure_type
+    use NonLin_Datastructure_type
+    use Rom_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -62,25 +62,25 @@ implicit none
 #include "asterfort/nxcvci.h"
 #include "asterfort/impcmp.h"
 !
-character(len=24), intent(in) :: model
-character(len=24), intent(in) :: mate, mateco
-character(len=24), intent(in) :: cara_elem
-character(len=19), intent(in) :: list_load
-character(len=24), intent(in) :: nume_dof
-character(len=19), intent(in) :: solver
-real(kind=8) :: tpsthe(6)
-character(len=24), intent(in) :: time
-character(len=19), intent(in) :: varc_curr, sddisc
-integer, intent(in) :: iter_newt
-aster_logical, intent(out) :: conver
-aster_logical :: reasma
-character(len=19) :: maprec
-character(len=24) :: matass, cnchci, cnresi, temp_prev, temp_iter, vtempp, vec2nd, cn2mbr
-character(len=24) :: hydr_prev, hydr_curr, compor, dry_prev, dry_curr
-integer :: ther_crit_i(*)
-real(kind=8) :: ther_crit_r(*)
-type(ROM_DS_AlgoPara), intent(in) :: ds_algorom
-type(NL_DS_Print), intent(inout) :: ds_print
+    character(len=24), intent(in) :: model
+    character(len=24), intent(in) :: mate, mateco
+    character(len=24), intent(in) :: cara_elem
+    character(len=19), intent(in) :: list_load
+    character(len=24), intent(in) :: nume_dof
+    character(len=19), intent(in) :: solver
+    real(kind=8) :: tpsthe(6)
+    character(len=24), intent(in) :: time
+    character(len=19), intent(in) :: varc_curr, sddisc
+    integer, intent(in) :: iter_newt
+    aster_logical, intent(out) :: conver
+    aster_logical :: reasma
+    character(len=19) :: maprec
+    character(len=24) :: matass, cnchci, cnresi, temp_prev, temp_iter, vtempp, vec2nd, cn2mbr
+    character(len=24) :: hydr_prev, hydr_curr, compor, dry_prev, dry_curr
+    integer :: ther_crit_i(*)
+    real(kind=8) :: ther_crit_r(*)
+    type(ROM_DS_AlgoPara), intent(in) :: ds_algorom
+    type(NL_DS_Print), intent(inout) :: ds_print
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -117,8 +117,8 @@ type(NL_DS_Print), intent(inout) :: ds_print
     cnresi = ' '
     cnvabt = ' '
     typres = 'R'
-    chsol  = '&&NXNEWT.SOLUTION'
-    bidon  = '&&FOMULT.BIDON'
+    chsol = '&&NXNEWT.SOLUTION'
+    bidon = '&&FOMULT.BIDON'
     veresi = '&&VERESI'
     vebtla = '&&VETBTL           .RELR'
     merigi = '&&METRIG           .RELR'
@@ -131,29 +131,29 @@ type(NL_DS_Print), intent(inout) :: ds_print
 !
 ! - Neumann loads elementary vectors (residuals)
 !
-    call verstp(model    , lload_name, lload_info, cara_elem, mateco   ,&
-                time_curr,  time     , compor    , temp_prev ,temp_iter,&
-                varc_curr,  veresi   , 'V'       ,&
-                hydr_prev, hydr_curr , dry_prev  , dry_curr )
+    call verstp(model, lload_name, lload_info, cara_elem, mateco, &
+                time_curr, time, compor, temp_prev, temp_iter, &
+                varc_curr, veresi, 'V', &
+                hydr_prev, hydr_curr, dry_prev, dry_curr)
 !
 ! - Neumann loads vector (residuals)
 !
     call asasve(veresi, nume_dof, typres, varesi)
-    call ascova('D', varesi, bidon, 'INST', r8bid,&
+    call ascova('D', varesi, bidon, 'INST', r8bid, &
                 typres, cnresi)
 !
 ! - Compute Dirichlet loads (AFFE_CHAR_CINE)
 !
-    call nxcvci(model, lload_name, lload_info, lload_func, nume_dof, temp_iter,&
-    time_curr, cnchci )
+    call nxcvci(model, lload_name, lload_info, lload_func, nume_dof, temp_iter, &
+                time_curr, cnchci)
 
 !
 ! - Dirichlet - BT LAMBDA
 !
-    call vethbt(model, lload_name, lload_info, cara_elem, mate,&
+    call vethbt(model, lload_name, lload_info, cara_elem, mate, &
                 temp_iter, vebtla, 'V')
     call asasve(vebtla, nume_dof, typres, vabtla)
-    call ascova('D', vabtla, bidon, 'INST', r8bid,&
+    call ascova('D', vabtla, bidon, 'INST', r8bid, &
                 typres, cnvabt)
 !
 ! - Evaluate residuals
@@ -162,36 +162,36 @@ type(NL_DS_Print), intent(inout) :: ds_print
     ieq_maxi = 0
     if (ds_algorom%l_rom) then
         if (ds_algorom%phase .eq. 'HROM') then
-            call romAlgoNLTherResidual(ds_algorom, vec2nd   , cnvabt, cnresi, cn2mbr,&
-                                       resi_rela , resi_maxi)
+            call romAlgoNLTherResidual(ds_algorom, vec2nd, cnvabt, cnresi, cn2mbr, &
+                                       resi_rela, resi_maxi)
         else if (ds_algorom%phase .eq. 'CORR_EF') then
-            call romAlgoNLCorrEFTherResidual(ds_algorom, vec2nd   , cnvabt, cnresi, cn2mbr,&
-                                             resi_rela , resi_maxi)
-        endif
+            call romAlgoNLCorrEFTherResidual(ds_algorom, vec2nd, cnvabt, cnresi, cn2mbr, &
+                                             resi_rela, resi_maxi)
+        end if
     else
-        call nxresi(matass, vec2nd   , cnvabt   , cnresi  , cn2mbr,&
+        call nxresi(matass, vec2nd, cnvabt, cnresi, cn2mbr, &
                     resi_rela, resi_maxi, ieq_rela, ieq_maxi)
-    endif
+    end if
     call impcmp(ieq_rela, nume_dof, name_dof_rela)
     call impcmp(ieq_maxi, nume_dof, name_dof_maxi)
 !
 ! - Evaluate convergence
 !
     call nxconv(ther_crit_i, ther_crit_r, resi_rela, resi_maxi, conver)
-    call nmimci(ds_print, 'ITER_NUME', iter_newt, l_affe = ASTER_TRUE)
-    call SetTableColumn(ds_print%table_cvg, name_ = 'RESI_RELA', mark_ = ' ')
-    call SetTableColumn(ds_print%table_cvg, name_ = 'RESI_MAXI', mark_ = ' ')
-    call nmimcr(ds_print, 'RESI_RELA', resi_rela, l_affe = ASTER_TRUE)
-    call nmimcr(ds_print, 'RESI_MAXI', resi_maxi, l_affe = ASTER_TRUE)
-    call nmimck(ds_print, 'RELA_NOEU', name_dof_rela, l_affe = ASTER_TRUE)
-    call nmimck(ds_print, 'MAXI_NOEU', name_dof_maxi, l_affe = ASTER_TRUE)
+    call nmimci(ds_print, 'ITER_NUME', iter_newt, l_affe=ASTER_TRUE)
+    call SetTableColumn(ds_print%table_cvg, name_='RESI_RELA', mark_=' ')
+    call SetTableColumn(ds_print%table_cvg, name_='RESI_MAXI', mark_=' ')
+    call nmimcr(ds_print, 'RESI_RELA', resi_rela, l_affe=ASTER_TRUE)
+    call nmimcr(ds_print, 'RESI_MAXI', resi_maxi, l_affe=ASTER_TRUE)
+    call nmimck(ds_print, 'RELA_NOEU', name_dof_rela, l_affe=ASTER_TRUE)
+    call nmimck(ds_print, 'MAXI_NOEU', name_dof_maxi, l_affe=ASTER_TRUE)
     if (.not. conver) then
         if (ther_crit_i(1) .eq. 0) then
-            call SetTableColumn(ds_print%table_cvg, name_ = 'RESI_RELA', mark_ = 'X')
+            call SetTableColumn(ds_print%table_cvg, name_='RESI_RELA', mark_='X')
         else
-            call SetTableColumn(ds_print%table_cvg, name_ = 'RESI_MAXI', mark_ = 'X')
-        endif
-    endif
+            call SetTableColumn(ds_print%table_cvg, name_='RESI_MAXI', mark_='X')
+        end if
+    end if
 !
 ! - Save residuals for Newton-Krylov solver
 !
@@ -203,34 +203,34 @@ type(NL_DS_Print), intent(inout) :: ds_print
     if (conver) then
         call copisd('CHAMP_GD', 'V', temp_iter, vtempp)
         goto 999
-    endif
+    end if
 !
 ! - New matrix if necessary
 !
     if (reasma) then
 ! ----- Compute tangent matrix (non-linear) - Volumic and surfacic terms
-        call merxth(model    , lload_name, lload_info, cara_elem, mate     , mateco, &
-                    time_curr, time      , temp_iter , compor   , varc_curr,&
-                    merigi   , 'V',&
-                    dry_prev , dry_curr)
+        call merxth(model, lload_name, lload_info, cara_elem, mate, mateco, &
+                    time_curr, time, temp_iter, compor, varc_curr, &
+                    merigi, 'V', &
+                    dry_prev, dry_curr)
 
         nbmat = 0
         call jeexin(merigi(1:19)//'.RELR', iret)
         if (iret .ne. 0) then
             call jeveuo(merigi(1:19)//'.RELR', 'L', jmer)
-            if (zk24(jmer)(1:8) .ne. '        ') then
-                nbmat = nbmat + 1
-                tlimat(nbmat) =merigi(1:19)
-            endif
-        endif
+            if (zk24(jmer) (1:8) .ne. '        ') then
+                nbmat = nbmat+1
+                tlimat(nbmat) = merigi(1:19)
+            end if
+        end if
         call jeexin(mediri(1:19)//'.RELR', iret)
         if (iret .ne. 0) then
             call jeveuo(mediri(1:19)//'.RELR', 'L', jmed)
-            if (zk24(jmed)(1:8) .ne. '        ') then
-                nbmat = nbmat + 1
-                tlimat(nbmat) =mediri(1:19)
-            endif
-        endif
+            if (zk24(jmed) (1:8) .ne. '        ') then
+                nbmat = nbmat+1
+                tlimat(nbmat) = mediri(1:19)
+            end if
+        end if
 ! ----- Assemble tangent matrix
         call asmatr(nbmat, tlimat, ' ', nume_dof, &
                     list_load, 'ZERO', 'V', 1, matass)
@@ -238,10 +238,10 @@ type(NL_DS_Print), intent(inout) :: ds_print
         if (ds_algorom%l_rom .and. ds_algorom%phase .eq. 'HROM') then
             call mtdscr(matass)
         else
-            call preres(solver, 'V', ierr, maprec, matass,ibid, -9999)
-        endif
+            call preres(solver, 'V', ierr, maprec, matass, ibid, -9999)
+        end if
 !
-    endif
+    end if
 !
 ! - Solve linear system
 !
@@ -254,7 +254,7 @@ type(NL_DS_Print), intent(inout) :: ds_print
         call nxreso(matass, maprec, solver, cnchci, cn2mbr, chsol)
     else
         call nxreso(matass, maprec, solver, cnchci, cn2mbr, chsol)
-    endif
+    end if
 !
 ! - RECOPIE DANS VTEMPP DU CHAMP SOLUTION CHSOL, INCREMENT DE TEMPERATURE
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine premlc(n1, diag, col, parent, parend,&
-                  anc, nouv, supnd, supnd2, nouvsn,&
-                  ancsn, p, q, lbd1, lbd2,&
-                  rl, rl1, rl2, nrl, invp,&
+subroutine premlc(n1, diag, col, parent, parend, &
+                  anc, nouv, supnd, supnd2, nouvsn, &
+                  ancsn, p, q, lbd1, lbd2, &
+                  rl, rl1, rl2, nrl, invp, &
                   perm, lgind, ddlmoy, nbsnd)
 ! person_in_charge: olivier.boiteau at edf.fr
 !     VERSION O2000 AVEC CREATION D'UN NOUVEAU SN POUR
@@ -64,18 +64,18 @@ subroutine premlc(n1, diag, col, parent, parend,&
 !
 !------------------------------- RELATIONS LINEAIRES
     do i = 1, nrl
-        iddl2 = rl(2,i)
-        minrl = n1 + 1
+        iddl2 = rl(2, i)
+        minrl = n1+1
         maxrl = 0
         iddl1 = col(diag(iddl2-1)+1)
         if ((diag(iddl2)-diag(iddl2-1)) .le. 2) then
-            vali (1) = iddl2
+            vali(1) = iddl2
             call utmess('F', 'ALGELINE5_35', si=vali(1))
-        endif
-        rl(1,i) = iddl1
-        j1 = diag(iddl2-1) + 2
-        j2 = diag(iddl2) - 1
-        lgind = lgind + 2* (j2-j1+2) * ddlmoy
+        end if
+        rl(1, i) = iddl1
+        j1 = diag(iddl2-1)+2
+        j2 = diag(iddl2)-1
+        lgind = lgind+2*(j2-j1+2)*ddlmoy
         do j = j1, j2
             iddl = col(j)
             ipp = p(iddl)
@@ -84,14 +84,14 @@ subroutine premlc(n1, diag, col, parent, parend,&
                 ip = invp(ipp)
                 if (ip .gt. maxrl) maxrl = invp(p(iddl))
                 if (ip .lt. minrl) minrl = invp(p(iddl))
-            endif
+            end if
 !
         end do
 !                      RL1 ET RL2 MARQUENT LES DDL T.Q.
 !                      LEURS IMAGES PAR LA RENUMEROTATION
 !                      SOIENT LES PREMIERS ET DERNIERS ENCADRES
-        rl(3,i) = minrl
-        rl(4,i) = maxrl
+        rl(3, i) = minrl
+        rl(4, i) = maxrl
         rl1(minrl) = 1
         rl2(maxrl) = 1
     end do
@@ -106,10 +106,10 @@ subroutine premlc(n1, diag, col, parent, parend,&
 !                     POUR LES  SUPERNDS
     nbsnd = 1
     num = 1
-    supnd(nbsnd)= num
+    supnd(nbsnd) = num
     do isn = 1, nbsn
         i1 = supnd2(isn)
-        i2 = supnd2(isn+1) - 1
+        i2 = supnd2(isn+1)-1
 !
 !                                 ON MET EN TETE DU SUPERNOEUD :
 !                                LES LAMBDA1 DE RELATION LINEAIRES
@@ -118,20 +118,20 @@ subroutine premlc(n1, diag, col, parent, parend,&
             if (rl1(i) .ne. 0) then
 !         I EST LE 1ER DDL D UN RELATION LINEAIRE ( LA J EME)
                 do j = 1, nrl
-                    if (rl(3,j) .eq. i) then
-                        nouv(rl(1,j)) = num
-                        anc(num) = rl(1,j)
-                        num = num + 1
+                    if (rl(3, j) .eq. i) then
+                        nouv(rl(1, j)) = num
+                        anc(num) = rl(1, j)
+                        num = num+1
 !       CREATION D UN NOUVEAU SN ANCSN A UNE VALEUR NEGATIVE POUR
 !       MARQUER LA NOUVEAUTE
-                        ancsn(nbsnd) = - isn
+                        ancsn(nbsnd) = -isn
 !        PRINT *, ' ON CREE UN NV SN LAMBD1 DE RL : '
-                        nbsnd = nbsnd + 1
+                        nbsnd = nbsnd+1
                         supnd(nbsnd) = num
-                    endif
+                    end if
                 end do
 !
-            endif
+            end if
 !
         end do
 !
@@ -141,14 +141,14 @@ subroutine premlc(n1, diag, col, parent, parend,&
 !         I EST UN DDL BLOQUE
                 nouv(lbd1(ianc)) = num
                 anc(num) = lbd1(ianc)
-                num = num + 1
+                num = num+1
 !       CREATION D UN NOUVEAU SN ANCSN A UNE VALEUR NEGATIVE POUR
 !       MARQUER LA NOUVEAUTE
-                ancsn(nbsnd) = - isn
+                ancsn(nbsnd) = -isn
 !        PRINT *, ' ON CREE UN NV SN LAMBD1 DE BLOCAGE : '
-                nbsnd = nbsnd + 1
+                nbsnd = nbsnd+1
                 supnd(nbsnd) = num
-            endif
+            end if
 !
         end do
 !       ADDITION DES DDL NON LAGRANGES
@@ -156,7 +156,7 @@ subroutine premlc(n1, diag, col, parent, parend,&
             ianc = q(perm(i))
             nouv(ianc) = num
             anc(num) = ianc
-            num = num + 1
+            num = num+1
         end do
 !                         ON MET EN QUEUS DU SUPERNOEUD :
 !                            LES LAMBDA2 DE BLOCAGE,PUIS
@@ -166,72 +166,72 @@ subroutine premlc(n1, diag, col, parent, parend,&
             if (lbd2(ianc) .ne. 0) then
                 nouv(lbd2(ianc)) = num
                 anc(num) = lbd2(ianc)
-                num = num + 1
-            endif
+                num = num+1
+            end if
 !
         end do
         do i = i1, i2
             if (rl2(i) .ne. 0) then
                 do j = 1, nrl
-                    if (rl(4,j) .eq. i) then
-                        nouv(rl(2,j)) = num
-                        anc(num) = rl(2,j)
-                        num = num + 1
-                    endif
+                    if (rl(4, j) .eq. i) then
+                        nouv(rl(2, j)) = num
+                        anc(num) = rl(2, j)
+                        num = num+1
+                    end if
 !
                 end do
-            endif
+            end if
 !
         end do
 !        PRINT *, ' ON CREE UN NV SN DDL ORDINAIRE : '
         ancsn(nbsnd) = isn
         nouvsn(isn) = nbsnd
-        nbsnd = nbsnd + 1
+        nbsnd = nbsnd+1
         supnd(nbsnd) = num
     end do
     nbsnd = nbsnd-1
-    num = num -1
+    num = num-1
     if (num .ne. n1) then
-        vali (1) = num
-        vali (2) = n1
+        vali(1) = num
+        vali(2) = n1
         call utmess('F+', 'ALGELINE5_36', ni=2, vali=vali)
         do i = 1, n1
             if (lbd1(i) .ne. 0) then
-                write(ifm,*)'LE DDL BLOQUE: ',i,' A POUR LAMBDA1: ',&
-                lbd1(i)
-                write(ifm,*)'LE DDL BLOQUE: ',i,' A POUR LAMBDA2: ',&
-                lbd2(i)
-                if (lbd2(i) .eq. 0) ier =1
-            else if (lbd2(i).ne.0) then
-                ier =1
-            endif
+                write (ifm, *) 'LE DDL BLOQUE: ', i, ' A POUR LAMBDA1: ', &
+                    lbd1(i)
+                write (ifm, *) 'LE DDL BLOQUE: ', i, ' A POUR LAMBDA2: ', &
+                    lbd2(i)
+                if (lbd2(i) .eq. 0) ier = 1
+            else if (lbd2(i) .ne. 0) then
+                ier = 1
+            end if
             if (ier .eq. 1) then
-                vali (1) = i
-                vali (2) = lbd1(i)
-                vali (3) = lbd2(i)
+                vali(1) = i
+                vali(2) = lbd1(i)
+                vali(3) = lbd2(i)
                 call utmess('F+', 'ALGELINE5_37', ni=3, vali=vali)
-            endif
+            end if
         end do
-        vali (1) = nrl
+        vali(1) = nrl
         call utmess('F+', 'ALGELINE5_38', si=vali(1))
         do i = 1, nrl
-            vali (1) = rl(1,i)
-            vali (2) = rl(2,i)
+            vali(1) = rl(1, i)
+            vali(2) = rl(2, i)
             call utmess('F+', 'ALGELINE5_39', ni=2, vali=vali)
         end do
-    endif
+    end if
 !----------------------    CALCUL DU NOUVEAU PARENT
     do isn = 1, nbsnd
         if (ancsn(isn) .gt. 0) then
-            parend(isn) = nouvsn( parent( ancsn( isn ) ) )
+            parend(isn) = nouvsn(parent(ancsn(isn)))
         else
 !       C'EST UN NOUVEAU SN (LAMBDA1)
-            parend(isn) = nouvsn( - ancsn( isn ) )
-        endif
+            parend(isn) = nouvsn(-ancsn(isn))
+        end if
     end do
     if (niv .ge. 2) then
-        write(ifm,*)'   --- APRES ADDITION  DES  RELATIONS LINEAIRES '
-        write(ifm,*)'   --- NOMBRE DE SUPERNOEUDS ',nbsnd
-    endif
+        write (ifm, *) '   --- APRES ADDITION  DES  RELATIONS LINEAIRES '
+        write (ifm, *) '   --- NOMBRE DE SUPERNOEUDS ', nbsnd
+    end if
 !
 end subroutine

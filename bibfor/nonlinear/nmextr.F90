@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,14 +17,14 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine nmextr(meshz       , modelz     , sdextrz   , ds_inout , keyw_fact,&
-                  nb_keyw_fact, nb_extr    ,&
-                  cara_elemz  , ds_material, ds_constitutive, disp_curr, strx_curr,&
-                  varc_curr   , time      )
+subroutine nmextr(meshz, modelz, sdextrz, ds_inout, keyw_fact, &
+                  nb_keyw_fact, nb_extr, &
+                  cara_elemz, ds_material, ds_constitutive, disp_curr, strx_curr, &
+                  varc_curr, time)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -47,20 +47,20 @@ implicit none
 #include "asterfort/nmextr_comp.h"
 #include "asterfort/utmess.h"
 !
-character(len=*), intent(in) :: meshz
-character(len=*), intent(in) :: modelz
-character(len=*), intent(in) :: sdextrz
-type(NL_DS_InOut), intent(in) :: ds_inout
-integer, intent(in) :: nb_keyw_fact
-character(len=16), intent(in) :: keyw_fact
-integer, intent(out) :: nb_extr
-character(len=*), optional, intent(in) :: cara_elemz
-type(NL_DS_Material), optional, intent(in) :: ds_material
-type(NL_DS_Constitutive), optional, intent(in) :: ds_constitutive
-character(len=*), optional, intent(in) :: disp_curr
-character(len=*), optional, intent(in) :: strx_curr
-character(len=*), optional, intent(in) :: varc_curr
-real(kind=8), optional, intent(in) :: time
+    character(len=*), intent(in) :: meshz
+    character(len=*), intent(in) :: modelz
+    character(len=*), intent(in) :: sdextrz
+    type(NL_DS_InOut), intent(in) :: ds_inout
+    integer, intent(in) :: nb_keyw_fact
+    character(len=16), intent(in) :: keyw_fact
+    integer, intent(out) :: nb_extr
+    character(len=*), optional, intent(in) :: cara_elemz
+    type(NL_DS_Material), optional, intent(in) :: ds_material
+    type(NL_DS_Constitutive), optional, intent(in) :: ds_constitutive
+    character(len=*), optional, intent(in) :: disp_curr
+    character(len=*), optional, intent(in) :: strx_curr
+    character(len=*), optional, intent(in) :: varc_curr
+    real(kind=8), optional, intent(in) :: time
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -109,74 +109,74 @@ real(kind=8), optional, intent(in) :: time
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    nb_extr    = 0
-    nb_field   = 0
-    sdextr     = sdextrz
-    l_pmesh    = isParallelMesh(meshz)
+    nb_extr = 0
+    nb_field = 0
+    sdextr = sdextrz
+    l_pmesh = isParallelMesh(meshz)
 !
 ! - List of fields to extract
 !
-    call nmextr_read_1(ds_inout, keyw_fact, nb_keyw_fact, list_field, rela_field_keyw,&
+    call nmextr_read_1(ds_inout, keyw_fact, nb_keyw_fact, list_field, rela_field_keyw, &
                        nb_field, nb_field_comp)
 !
 ! - Create datastructure
 !
     call nmextr_crsd(sdextr, nb_keyw_fact, nb_field, nb_field_comp)
-    extr_info  = sdextr(1:14)//'     .INFO'
-    call jeveuo(extr_info , 'E' , vi   = v_extr_info)
-    if (nb_keyw_fact.eq.0) then
+    extr_info = sdextr(1:14)//'     .INFO'
+    call jeveuo(extr_info, 'E', vi=v_extr_info)
+    if (nb_keyw_fact .eq. 0) then
         goto 99
-    endif
+    end if
 !
 ! - Set datastructure for fields to compute
 !
-    if (nb_field_comp.ne.0) then
-        call nmextr_read_2(sdextrz      , ds_inout, nb_keyw_fact, list_field, rela_field_keyw,&
+    if (nb_field_comp .ne. 0) then
+        call nmextr_read_2(sdextrz, ds_inout, nb_keyw_fact, list_field, rela_field_keyw, &
                            nb_field_comp)
-    endif
+    end if
 !
 ! - Access to datastructure
 !
     extr_field = sdextr(1:14)//'     .CHAM'
-    call jeveuo(extr_field, 'E' , vk24 = v_extr_field)
-    extr_type  = sdextr(1:14)//'     .EXTR'
-    call jeveuo(extr_type , 'E' , vk8  = v_extr_type)
-    extr_flag  = sdextr(1:14)//'     .ACTI'
-    call jeveuo(extr_flag , 'E' , vl   = v_extr_flag)
-    extr_comp  = sdextr(1:14)//'     .COMP'
+    call jeveuo(extr_field, 'E', vk24=v_extr_field)
+    extr_type = sdextr(1:14)//'     .EXTR'
+    call jeveuo(extr_type, 'E', vk8=v_extr_type)
+    extr_flag = sdextr(1:14)//'     .ACTI'
+    call jeveuo(extr_flag, 'E', vl=v_extr_flag)
+    extr_comp = sdextr(1:14)//'     .COMP'
 !
 ! - Pre-compute fields
 !
-    if (nb_field_comp.ne.0) then
-        call jeveuo(extr_comp , 'L' , vk24 = v_extr_comp)
+    if (nb_field_comp .ne. 0) then
+        call jeveuo(extr_comp, 'L', vk24=v_extr_comp)
         do i_field_comp = 1, nb_field_comp
             field_comp = v_extr_comp(4*(i_field_comp-1)+1)
-            field_disc = v_extr_comp(4*(i_field_comp-1)+2)(1:4)
+            field_disc = v_extr_comp(4*(i_field_comp-1)+2) (1:4)
             field_type = v_extr_comp(4*(i_field_comp-1)+3)
-            call nmextr_comp(field_comp, field_disc , field_type     , meshz    , modelz   ,&
-                             cara_elemz, ds_material, ds_constitutive, disp_curr, strx_curr,&
-                             varc_curr , time      )
+            call nmextr_comp(field_comp, field_disc, field_type, meshz, modelz, &
+                             cara_elemz, ds_material, ds_constitutive, disp_curr, strx_curr, &
+                             varc_curr, time)
         end do
-    endif
+    end if
 !
 ! - Prepare extraction data
 !
     do i_keyw_fact = 1, nb_keyw_fact
 !
-        nb_extr_keyw   = 0
+        nb_extr_keyw = 0
         type_extr_elem = 'NONE'
-        type_extr_cmp  = 'NONE'
-        type_sele_cmp  = 'NONE'
-        type_extr      = 'NONE'
+        type_extr_cmp = 'NONE'
+        type_sele_cmp = 'NONE'
+        type_extr = 'NONE'
 !
 ! ----- Datastructure name generation
 !
-        write(chaine,'(I2)') i_keyw_fact
+        write (chaine, '(I2)') i_keyw_fact
         list_node = sdextr(1:14)//chaine(1:2)//'   .NOEU'
         list_elem = sdextr(1:14)//chaine(1:2)//'   .MAIL'
         list_poin = sdextr(1:14)//chaine(1:2)//'   .POIN'
         list_spoi = sdextr(1:14)//chaine(1:2)//'   .SSPI'
-        list_cmp  = sdextr(1:14)//chaine(1:2)//'   .CMP '
+        list_cmp = sdextr(1:14)//chaine(1:2)//'   .CMP '
         list_vari = sdextr(1:14)//chaine(1:2)//'   .VARI'
 !
 ! ----- Get field index
@@ -186,7 +186,7 @@ real(kind=8), optional, intent(in) :: time
 !
 ! ----- Type of field
 !
-        field_type   = list_field(i_field)
+        field_type = list_field(i_field)
         if (field_type .eq. 'NONE') then
             call getvtx(keyw_fact, 'NOM_CHAM', iocc=i_keyw_fact, scal=field_type)
             call utmess('A', 'EXTRACTION_99', sk=field_type)
@@ -202,28 +202,28 @@ real(kind=8), optional, intent(in) :: time
 !
 ! --------- Get reduced field
 !
-            field_s      = field_type(1:18)//'S'
+            field_s = field_type(1:18)//'S'
 !
 ! --------- Get topology (nodes or elements) and type of extraction for field
 !
-            call nmextl(meshz     , modelz   , keyw_fact, i_keyw_fact, field_type,&
-                        field_disc, list_node, list_elem, nb_node    , nb_elem   ,&
+            call nmextl(meshz, modelz, keyw_fact, i_keyw_fact, field_type, &
+                        field_disc, list_node, list_elem, nb_node, nb_elem, &
                         type_extr)
 !
 ! --------- Get topology (point and subpoints) and type of extraction for element
 !
             if (field_disc .eq. 'ELGA' .or. field_disc .eq. 'ELEM') then
-                call nmextp(keyw_fact, i_keyw_fact, field_type, field_disc, field  ,&
-                            field_s  , list_poin  , list_spoi , nb_poin   , nb_spoi,&
+                call nmextp(keyw_fact, i_keyw_fact, field_type, field_disc, field, &
+                            field_s, list_poin, list_spoi, nb_poin, nb_spoi, &
                             type_extr_elem)
-            endif
+            end if
 !
 ! --------- Get component(s)
 !
-            call nmextk(meshz    , modelz    , keyw_fact , i_keyw_fact, field        , field_type,&
-                        field_s  , field_disc, list_node  , list_elem    , list_poin ,&
-                        list_spoi, nb_node   , nb_elem    , nb_poin      , nb_spoi   ,&
-                        ds_constitutive%compor, list_cmp  , list_vari  , nb_cmp     , type_sele_cmp)
+            call nmextk(meshz, modelz, keyw_fact, i_keyw_fact, field, field_type, &
+                        field_s, field_disc, list_node, list_elem, list_poin, &
+                        list_spoi, nb_node, nb_elem, nb_poin, nb_spoi, &
+                        ds_constitutive%compor, list_cmp, list_vari, nb_cmp, type_sele_cmp)
 !
 ! --------- Get type of extraction for components
 !
@@ -231,8 +231,8 @@ real(kind=8), optional, intent(in) :: time
 !
 ! --------- Count number of extractions
 !
-            call nmextn(field_disc, type_extr_cmp, type_extr_elem, type_extr, nb_node,&
-                        nb_elem   , nb_cmp       , nb_poin       , nb_spoi  , nb_extr_keyw)
+            call nmextn(field_disc, type_extr_cmp, type_extr_elem, type_extr, nb_node, &
+                        nb_elem, nb_cmp, nb_poin, nb_spoi, nb_extr_keyw)
 !
 ! --------- Save
 !
@@ -252,26 +252,26 @@ real(kind=8), optional, intent(in) :: time
             v_extr_info(7+7*(i_keyw_fact-1)+6) = nb_extr_keyw
             v_extr_info(7+7*(i_keyw_fact-1)+7) = i_field
 !
-        endif
+        end if
 !
-        nb_extr = nb_extr + nb_extr_keyw
+        nb_extr = nb_extr+nb_extr_keyw
 !
     end do
 !
 ! - Cleaning CHAM_ELEM_S
 !
     do i_field = 1, nb_field
-        field_s    = v_extr_field(4*(i_field-1)+2)
-        field_disc = v_extr_field(4*(i_field-1)+3)(1:4)
-        if (field_disc.eq.'ELGA' .or. field_disc.eq.'ELEM') then
+        field_s = v_extr_field(4*(i_field-1)+2)
+        field_disc = v_extr_field(4*(i_field-1)+3) (1:4)
+        if (field_disc .eq. 'ELGA' .or. field_disc .eq. 'ELEM') then
             call detrsd('CHAM_ELEM_S', field_s)
-        elseif (field_disc.eq.'NOEU') then
+        elseif (field_disc .eq. 'NOEU') then
             call detrsd('CHAM_NO_S', field_s)
         else
             ASSERT(.false.)
-        endif
+        end if
     end do
- 99 continue
+99  continue
 !
 ! - Set information vector
 !
@@ -283,8 +283,8 @@ real(kind=8), optional, intent(in) :: time
     v_extr_info(6) = nb_field
     v_extr_info(7) = nb_field_comp
 !
-    if(nb_extr == 0) then
-        if(l_pmesh) then
+    if (nb_extr == 0) then
+        if (l_pmesh) then
 ! --- No observation for this mesh -> do not try observation after
             v_extr_info(1) = 0
         end if
@@ -292,11 +292,11 @@ real(kind=8), optional, intent(in) :: time
 !
 ! - Create LIGREL for fields not a default in nonlinear operator
 !
-    if (nb_field_comp.ne.0) then
+    if (nb_field_comp .ne. 0) then
         call nmextr_ligr(meshz, modelz, sdextrz, nb_keyw_fact, nb_field_comp)
-    endif
+    end if
 !
-    AS_DEALLOCATE(vk24 = list_field)
-    AS_DEALLOCATE(vi   = rela_field_keyw)
+    AS_DEALLOCATE(vk24=list_field)
+    AS_DEALLOCATE(vi=rela_field_keyw)
 !
 end subroutine

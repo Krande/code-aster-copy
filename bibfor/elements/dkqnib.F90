@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 
 subroutine dkqnib(qsi, eta, caraq4, nfx, nfy)
-    implicit  none
+    implicit none
     real(kind=8) :: qsi, eta, caraq4(*), nfx(12), nfy(12)
 !.======================================================================
 !  DKQNIB -- DETERMINATION DES FONCTIONS DE FORME DES ROTATIONS
@@ -80,7 +80,7 @@ subroutine dkqnib(qsi, eta, caraq4, nfx, nfy)
     s6 = caraq4(18)
     s7 = caraq4(19)
     s8 = caraq4(20)
-    l5 = caraq4( 9)
+    l5 = caraq4(9)
     l6 = caraq4(10)
     l7 = caraq4(11)
     l8 = caraq4(12)
@@ -95,36 +95,36 @@ subroutine dkqnib(qsi, eta, caraq4, nfx, nfy)
     p7 = undemi*(un-qsi*qsi)*(un+eta)
     p8 = undemi*(un-eta*eta)*(un-qsi)
 !
-    nfx(1) = trois/deux*(p5*c5/l5 - p8*c8/l8)
-    nfx(2) = n1 - trois/quatre*(p5*c5*c5 + p8*c8*c8)
-    nfx(3) = -trois/quatre*(p5*c5*s5 + p8*c8*s8)
+    nfx(1) = trois/deux*(p5*c5/l5-p8*c8/l8)
+    nfx(2) = n1-trois/quatre*(p5*c5*c5+p8*c8*c8)
+    nfx(3) = -trois/quatre*(p5*c5*s5+p8*c8*s8)
 !
-    nfx(4) = trois/deux*(p6*c6/l6 - p5*c5/l5)
-    nfx(5) = n2 - trois/quatre*(p6*c6*c6 + p5*c5*c5)
-    nfx(6) = -trois/quatre*(p6*c6*s6 + p5*c5*s5)
+    nfx(4) = trois/deux*(p6*c6/l6-p5*c5/l5)
+    nfx(5) = n2-trois/quatre*(p6*c6*c6+p5*c5*c5)
+    nfx(6) = -trois/quatre*(p6*c6*s6+p5*c5*s5)
 !
-    nfx(7) = trois/deux*(p7*c7/l7 - p6*c6/l6)
-    nfx(8) = n3 - trois/quatre*(p7*c7*c7 + p6*c6*c6)
-    nfx(9) = -trois/quatre*(p7*c7*s7 + p6*c6*s6)
+    nfx(7) = trois/deux*(p7*c7/l7-p6*c6/l6)
+    nfx(8) = n3-trois/quatre*(p7*c7*c7+p6*c6*c6)
+    nfx(9) = -trois/quatre*(p7*c7*s7+p6*c6*s6)
 !
-    nfx(10) = trois/deux*(p8*c8/l8 - p7*c7/l7)
-    nfx(11) = n4 - trois/quatre*(p8*c8*c8 + p7*c7*c7)
-    nfx(12) = -trois/quatre*(p8*c8*s8 + p7*c7*s7)
+    nfx(10) = trois/deux*(p8*c8/l8-p7*c7/l7)
+    nfx(11) = n4-trois/quatre*(p8*c8*c8+p7*c7*c7)
+    nfx(12) = -trois/quatre*(p8*c8*s8+p7*c7*s7)
 !
-    nfy(1) = trois/deux*(p5*s5/l5 - p8*s8/l8)
+    nfy(1) = trois/deux*(p5*s5/l5-p8*s8/l8)
     nfy(2) = nfx(3)
-    nfy(3) = n1 - trois/quatre*(p5*s5*s5 + p8*s8*s8)
+    nfy(3) = n1-trois/quatre*(p5*s5*s5+p8*s8*s8)
 !
-    nfy(4) = trois/deux*(p6*s6/l6 - p5*s5/l5)
+    nfy(4) = trois/deux*(p6*s6/l6-p5*s5/l5)
     nfy(5) = nfx(6)
-    nfy(6) = n2 - trois/quatre*(p6*s6*s6 + p5*s5*s5)
+    nfy(6) = n2-trois/quatre*(p6*s6*s6+p5*s5*s5)
 !
-    nfy(7) = trois/deux*(p7*s7/l7 - p6*s6/l6)
+    nfy(7) = trois/deux*(p7*s7/l7-p6*s6/l6)
     nfy(8) = nfx(9)
-    nfy(9) = n3 - trois/quatre*(p7*s7*s7 + p6*s6*s6)
+    nfy(9) = n3-trois/quatre*(p7*s7*s7+p6*s6*s6)
 !
-    nfy(10) = trois/deux*(p8*s8/l8 - p7*s7/l7)
+    nfy(10) = trois/deux*(p8*s8/l8-p7*s7/l7)
     nfy(11) = nfx(12)
-    nfy(12) = n4 - trois/quatre*(p8*s8*s8 + p7*s7*s7)
+    nfy(12) = n4-trois/quatre*(p8*s8*s8+p7*s7*s7)
 !
 end subroutine

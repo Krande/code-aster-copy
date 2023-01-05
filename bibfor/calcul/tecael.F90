@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -73,20 +73,20 @@ subroutine tecael(iadzi, iazk24, noms)
 !----------------------------------------------------------------------
 !
     if (present(noms)) then
-        noms2=noms
+        noms2 = noms
     else
-        noms2=1
-    endif
-    ASSERT(noms2.eq.0 .or. noms2.eq.1)
+        noms2 = 1
+    end if
+    ASSERT(noms2 .eq. 0 .or. noms2 .eq. 1)
 !
 !
 !   -- recuperation du numero de la maille et du nombre de noeuds :
 !   ---------------------------------------------------------------
-    ma = zk24(ca_icaelk_-1+1)(1:8)
+    ma = zk24(ca_icaelk_-1+1) (1:8)
 !
     ima = zi(ca_ialiel_-1+zi(ca_illiel_+ca_igr_-1)+ca_iel_-1)
     if (ima .gt. 0) then
-        nno = zi(ca_ilmaco_-1+ima+1) - zi(ca_ilmaco_-1+ima)
+        nno = zi(ca_ilmaco_-1+ima+1)-zi(ca_ilmaco_-1+ima)
         zi(ca_icaeli_-1+1) = ima
         zi(ca_icaeli_-1+2) = nno
         if (noms2 .eq. 1) then
@@ -94,13 +94,13 @@ subroutine tecael(iadzi, iazk24, noms)
             zk24(ca_icaelk_-1+3) = nomma
         else
             zk24(ca_icaelk_-1+3) = ' '
-        endif
+        end if
     else
-        nno = zi(ca_ilmsco_-1-ima+1) - zi(ca_ilmsco_-1-ima) - 1
+        nno = zi(ca_ilmsco_-1-ima+1)-zi(ca_ilmsco_-1-ima)-1
         zi(ca_icaeli_-1+1) = ima
         zi(ca_icaeli_-1+2) = nno
         zk24(ca_icaelk_-1+3) = ' '
-    endif
+    end if
 !
     zk24(ca_icaelk_-1+3+nno+1) = ca_nomte_
     zk24(ca_icaelk_-1+3+nno+2) = ca_option_
@@ -114,15 +114,15 @@ subroutine tecael(iadzi, iazk24, noms)
             nuno = zi(ca_iamaco_-1+zi(ca_ilmaco_+ima-1)+ino-1)
         else
             nuno = zi(ca_iamsco_-1+zi(ca_ilmsco_-ima-1)+ino-1)
-        endif
+        end if
         zi(ca_icaeli_-1+2+ino) = nuno
 !
-        if ((noms2.eq.1) .and. (nuno .gt. 0)) then
+        if ((noms2 .eq. 1) .and. (nuno .gt. 0)) then
             call jenuno(jexnum(ma//'.NOMNOE', nuno), nomno)
             zk24(ca_icaelk_-1+3+ino) = nomno
         else
             zk24(ca_icaelk_-1+3+ino) = ' '
-        endif
+        end if
     end do
 !
     zi(ca_icaeli_-1+2+nno+1) = ca_igr_

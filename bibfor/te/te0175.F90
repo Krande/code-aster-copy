@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -48,7 +48,7 @@ subroutine te0175(option, nomte)
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-    call elrefe_info(fami='NOEU', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+    call elrefe_info(fami='NOEU', ndim=ndim, nno=nno, nnos=nnos, npg=npg, &
                      jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
     call jevech('PGEOMER', 'L', igeom)
@@ -56,39 +56,39 @@ subroutine te0175(option, nomte)
     call jevech('PMATERC', 'L', imate)
     call jevech('PINTER', 'E', iinte)
 !
-    mater=zi(imate)
-    fami='FPG1'
-    kpg=1
-    spt=1
-    poum='+'
-    call rcvalb(fami, kpg, spt, poum, mater,&
-                ' ', 'FLUIDE', 0, '   ', [0.d0],&
+    mater = zi(imate)
+    fami = 'FPG1'
+    kpg = 1
+    spt = 1
+    poum = '+'
+    call rcvalb(fami, kpg, spt, poum, mater, &
+                ' ', 'FLUIDE', 0, '   ', [0.d0], &
                 1, 'RHO', rho, icodre, 1)
 !
     call jevech('PFREQR', 'L', ifreq)
-    pi=r8pi()
-    omerho=2.d0*pi*zr(ifreq)*rho(1)
+    pi = r8pi()
+    omerho = 2.d0*pi*zr(ifreq)*rho(1)
 !
 !    BOUCLE SUR LES NOEUDS
     do ino = 1, npg
-        idino=iinte+(ino-1)*4-1
-        call dfdm2d(nno, ino, ipoids, idfde, zr(igeom),&
+        idino = iinte+(ino-1)*4-1
+        call dfdm2d(nno, ino, ipoids, idfde, zr(igeom), &
                     jac, dfdx, dfdy)
 !
-        vitx=(0.0d0,0.0d0)
-        vity=(0.0d0,0.0d0)
+        vitx = (0.0d0, 0.0d0)
+        vity = (0.0d0, 0.0d0)
         do i = 1, nno
-            vitx=vitx+dfdx(i)*zc(ipres+i-1)
-            vity=vity+dfdy(i)*zc(ipres+i-1)
+            vitx = vitx+dfdx(i)*zc(ipres+i-1)
+            vity = vity+dfdy(i)*zc(ipres+i-1)
         end do
 !
-        vitx=vitx*(0.d0,1.d0)/omerho
-        vity=vity*(0.d0,1.d0)/omerho
+        vitx = vitx*(0.d0, 1.d0)/omerho
+        vity = vity*(0.d0, 1.d0)/omerho
 !
-        zr(idino+1)=0.5d0*dble(zc(ipres+ino-1)*dconjg(vitx))
-        zr(idino+2)=0.5d0*dble(zc(ipres+ino-1)*dconjg(vity))
-        zr(idino+3)=0.5d0*dimag(zc(ipres+ino-1)*dconjg(vitx))
-        zr(idino+4)=0.5d0*dimag(zc(ipres+ino-1)*dconjg(vity))
+        zr(idino+1) = 0.5d0*dble(zc(ipres+ino-1)*dconjg(vitx))
+        zr(idino+2) = 0.5d0*dble(zc(ipres+ino-1)*dconjg(vity))
+        zr(idino+3) = 0.5d0*dimag(zc(ipres+ino-1)*dconjg(vitx))
+        zr(idino+4) = 0.5d0*dimag(zc(ipres+ino-1)*dconjg(vity))
     end do
 !
 end subroutine

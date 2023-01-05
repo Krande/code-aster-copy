@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine xpocox(nbmac, ima, inmtot, nbcmpc, jresd1,&
+subroutine xpocox(nbmac, ima, inmtot, nbcmpc, jresd1, &
                   jresv1, jresl1, jresd2, jresv2, jresl2)
     implicit none
 #include "jeveux.h"
@@ -55,21 +55,21 @@ subroutine xpocox(nbmac, ima, inmtot, nbcmpc, jresd1,&
     call jemarq()
 !
 !     NUMERO DE LA NOUVELLE MAILLE
-    ima2 = nbmac + inmtot
+    ima2 = nbmac+inmtot
 !
 !     COMPORTEMENT
     do icmp = 1, nbcmpc
 !
-        call cesexi('C', jresd1, jresl1, ima, 1,&
+        call cesexi('C', jresd1, jresl1, ima, 1, &
                     1, icmp, iadr1)
-        call cesexi('C', jresd2, jresl2, ima2, 1,&
+        call cesexi('C', jresd2, jresl2, ima2, 1, &
                     1, icmp, iadr2)
 !
         if (iadr1 .gt. 0) then
-            ASSERT(iadr2.lt.0)
+            ASSERT(iadr2 .lt. 0)
             zk16(jresv2-1-iadr2) = zk16(jresv1-1+iadr1)
             zl(jresl2-1-iadr2) = .true.
-        endif
+        end if
 !
     end do
 !

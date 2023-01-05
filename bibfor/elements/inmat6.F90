@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 !
 subroutine inmat6(elrefa, fapg, mganos)
 !
-implicit none
+    implicit none
 !
 #include "MeshTypes_type.h"
 #include "asterfort/assert.h"
@@ -27,8 +27,8 @@ implicit none
 #include "asterfort/elrfvf.h"
 #include "asterfort/mgauss.h"
 !
-character(len=8), intent(in) :: elrefa, fapg
-real(kind=8), intent(out) :: mganos(MT_NBPGMX, MT_NNOMAX)
+    character(len=8), intent(in) :: elrefa, fapg
+    real(kind=8), intent(out) :: mganos(MT_NBPGMX, MT_NNOMAX)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -55,32 +55,32 @@ real(kind=8), intent(out) :: mganos(MT_NBPGMX, MT_NNOMAX)
 !
     call elrfno(elrefa, nno, nnos, ndim)
     call elraga(elrefa, fapg, ndim, npg, xpg, poipg)
-    ASSERT(npg.le.MT_NBPGMX)
+    ASSERT(npg .le. MT_NBPGMX)
 !
 ! - Lobatto schemes => not inversible !
 !
     if (fapg .eq. 'LOB5' .or. fapg .eq. 'LOB7') then
         mganos = 0.d0
         do i = 1, nnos/2
-            mganos(1,i) = 1.d0
+            mganos(1, i) = 1.d0
         end do
         do i = nnos/2+1, nnos
-            mganos(5,i) = 1.d0
+            mganos(5, i) = 1.d0
         end do
         elref2 = elrefa
         goto 100
-    endif
+    end if
 !
 ! - QU4/FIS2 NON INVERSIBLE => not inversible !
 !
     if (elrefa .eq. 'QU4' .and. fapg .eq. 'FIS2') then
-        mganos      = 0.d0
-        mganos(1,1) = 1.d0
-        mganos(1,4) = 1.d0
-        mganos(2,2) = 1.d0
-        mganos(2,3) = 1.d0
+        mganos = 0.d0
+        mganos(1, 1) = 1.d0
+        mganos(1, 4) = 1.d0
+        mganos(2, 2) = 1.d0
+        mganos(2, 3) = 1.d0
         goto 100
-    endif
+    end if
 !
 ! - Get linear support
 !
@@ -104,7 +104,7 @@ real(kind=8), intent(out) :: mganos(MT_NBPGMX, MT_NNOMAX)
         elref2 = 'SE2'
     else
         elref2 = elrefa
-    endif
+    end if
 !
 !
 !     CALCUL DES MATRICES M ET P :
@@ -114,28 +114,28 @@ real(kind=8), intent(out) :: mganos(MT_NBPGMX, MT_NNOMAX)
     end do
 !
     do kp = 1, npg
-        do kdim = 1,ndim
-            xg(kdim) = xpg(ndim* (kp-1)+kdim)
+        do kdim = 1, ndim
+            xg(kdim) = xpg(ndim*(kp-1)+kdim)
         end do
         call elrfvf(elref2, xg, ff)
         ln = (kp-1)*nnos
         do i = 1, nnos
             p(ln+i) = ff(i)
             do j = 1, nnos
-                lm = nnos* (i-1) + j
-                m(lm) = m(lm) + ff(i)*ff(j)
+                lm = nnos*(i-1)+j
+                m(lm) = m(lm)+ff(i)*ff(j)
             end do
         end do
     end do
 !
 !     CALCUL DE LA MATRICE M-1*P :
 !     ----------------------------
-    call mgauss('NFVP', m, p, nnos, nnos,&
+    call mgauss('NFVP', m, p, nnos, nnos, &
                 npg, det, iret)
 !
     do i = 1, nnos
         do kp = 1, npg
-            mganos(kp,i) = p((kp-1)*nnos+i)
+            mganos(kp, i) = p((kp-1)*nnos+i)
         end do
     end do
 !

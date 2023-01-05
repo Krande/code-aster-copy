@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -45,7 +45,7 @@ subroutine pcmump(matasz, solvez, iretz, new_facto)
 !----------------------------------------------------------------------
 !     VARIABLES LOCALES
 !----------------------------------------------------------------------
-    integer ::   iterpr, reacpr, pcpiv,  iret, redmpi
+    integer ::   iterpr, reacpr, pcpiv, iret, redmpi
     aster_logical :: new_facto_loc
     complex(kind=8) :: cbid
     character(len=19) :: solveu, matass
@@ -62,24 +62,24 @@ subroutine pcmump(matasz, solvez, iretz, new_facto)
 !
     matass = matasz
     solveu = solvez
-    cbid=dcmplx(0.d0,0.d0)
+    cbid = dcmplx(0.d0, 0.d0)
 !
 ! --  PARAMETRES DU PRECONDITIONNEUR
     call jeveuo(solveu//'.SLVK', 'L', vk24=slvk)
     call jeveuo(solveu//'.SLVI', 'L', vi=slvi)
     call jeveuo(solveu//'.SLVR', 'L', vr=slvr)
-    redmpi=slvi(1)
+    redmpi = slvi(1)
     precon = slvk(2)
     renum = slvk(4)
     usersm = slvk(9)
     iterpr = slvi(5)
     reacpr = slvi(6)
-    pcpiv  = slvi(7)
+    pcpiv = slvi(7)
     blreps = slvr(4)
 !
     new_facto_loc = .false.
 !
-    ASSERT((precon.eq.'LDLT_SP').or.(precon.eq.'LDLT_DP'))
+    ASSERT((precon .eq. 'LDLT_SP') .or. (precon .eq. 'LDLT_DP'))
 !
 ! --  PRISE EN COMPTE DES CHARGEMENTS CINEMATIQUES
 ! --  SAUF DANS LE CAS OU LE SOLVEUR EST PETSC
@@ -88,38 +88,38 @@ subroutine pcmump(matasz, solvez, iretz, new_facto)
         call jeveuo(matass//'.REFA', 'L', vk24=refa)
 !       ASSERT(refa(3).ne.'ELIMF')
         if (refa(3) .eq. 'ELIML') call mtmchc(matass, 'ELIMF')
-        ASSERT(refa(3).ne.'ELIML')
-    endif
+        ASSERT(refa(3) .ne. 'ELIML')
+    end if
 !
 ! --  CREATION DE LA SD SOLVEUR MUMPS SIMPLE PRECISION/LOW_RANK
 ! --  (A DETRUIRE A LA SORTIE)
-    solvbd=slvk(3)
-    if ( precon .eq. 'LDLT_SP' ) then
-       prec='S'
-    else if ( precon .eq. 'LDLT_DP') then
-       prec='D'
-    endif
-    if (abs(blreps) < r8prem()) then
-        rank='F'
-    else
-        rank='L'
-    endif
     solvbd = slvk(3)
-    call crsvfm(solvbd, matass, prec, rank, pcpiv, usersm, blreps, renum, redmpi )
+    if (precon .eq. 'LDLT_SP') then
+        prec = 'S'
+    else if (precon .eq. 'LDLT_DP') then
+        prec = 'D'
+    end if
+    if (abs(blreps) < r8prem()) then
+        rank = 'F'
+    else
+        rank = 'L'
+    end if
+    solvbd = slvk(3)
+    call crsvfm(solvbd, matass, prec, rank, pcpiv, usersm, blreps, renum, redmpi)
 !
 ! --  APPEL AU PRECONDITIONNEUR
     iret = 0
     if (iterpr .gt. reacpr .or. iterpr .eq. 0) then
-        call amumph('DETR_MAT', solvbd, matass, [0.d0], [cbid],&
+        call amumph('DETR_MAT', solvbd, matass, [0.d0], [cbid], &
                     ' ', 0, iret, .true._1)
-        call amumph('PRERES', solvbd, matass, [0.d0], [cbid],&
+        call amumph('PRERES', solvbd, matass, [0.d0], [cbid], &
                     ' ', 0, iret, .true._1)
         new_facto_loc = .true.
-    endif
+    end if
 !
-    if ( present( new_facto) ) then
-       new_facto = new_facto_loc
-    endif
+    if (present(new_facto)) then
+        new_facto = new_facto_loc
+    end if
 !
 ! --  DESTRUCTION DE LA SD SOLVEUR MUMPS SIMPLE PRECISION
     call detrsd('SOLVEUR', solvbd)

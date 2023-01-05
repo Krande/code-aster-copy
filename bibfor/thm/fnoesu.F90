@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,19 +16,19 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine fnoesu(nface ,&
-                  dimcon, dimuel,&
-                  press1, press2,&
-                  congem, vectu )
+subroutine fnoesu(nface, &
+                  dimcon, dimuel, &
+                  press1, press2, &
+                  congem, vectu)
 !
-implicit none
+    implicit none
 !
-integer, parameter :: maxfa = 6
-integer, intent(in) :: nface
-integer, intent(in) :: dimcon, dimuel
-integer, intent(in) :: press1(7), press2(7)
-real(kind=8), intent(in) :: congem(dimcon, maxfa+1)
-real(kind=8), intent(inout) :: vectu(dimuel)
+    integer, parameter :: maxfa = 6
+    integer, intent(in) :: nface
+    integer, intent(in) :: dimcon, dimuel
+    integer, intent(in) :: press1(7), press2(7)
+    real(kind=8), intent(in) :: congem(dimcon, maxfa+1)
+    real(kind=8), intent(inout) :: vectu(dimuel)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -70,13 +70,13 @@ real(kind=8), intent(inout) :: vectu(dimuel)
 ! - Compute flux
 !
     do ifa = 1, nface
-        vectu(adcf1(ifa)) = congem(adcp11+1,ifa+1)
-        vectu(adcf2(ifa)) = congem(adcp12+1,ifa+1)
+        vectu(adcf1(ifa)) = congem(adcp11+1, ifa+1)
+        vectu(adcf2(ifa)) = congem(adcp12+1, ifa+1)
     end do
-    sfluw        = congem(adcp11+1,1)
-    sfluvp       = congem(adcp12+1,1)
-    sfluas       = congem(adcp21+1,1)
-    sfluad       = congem(adcp22+1,1)
+    sfluw = congem(adcp11+1, 1)
+    sfluvp = congem(adcp12+1, 1)
+    sfluas = congem(adcp21+1, 1)
+    sfluad = congem(adcp22+1, 1)
     vectu(adcm1) = sfluw+sfluvp
     vectu(adcm2) = sfluas+sfluad
 !

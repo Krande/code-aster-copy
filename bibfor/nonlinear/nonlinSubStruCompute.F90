@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,12 +17,12 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine nonlinSubStruCompute(ds_measure , disp  ,&
+subroutine nonlinSubStruCompute(ds_measure, disp, &
                                 hval_measse, cnsstr)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -33,9 +33,9 @@ implicit none
 #include "asterfort/utmess.h"
 #include "asterfort/nmdebg.h"
 !
-type(NL_DS_Measure), intent(inout) :: ds_measure
-character(len=19), intent(in) :: disp
-character(len=19), intent(in) :: cnsstr, hval_measse(*)
+    type(NL_DS_Measure), intent(inout) :: ds_measure
+    character(len=19), intent(in) :: disp
+    character(len=19), intent(in) :: cnsstr, hval_measse(*)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -60,7 +60,7 @@ character(len=19), intent(in) :: cnsstr, hval_measse(*)
     call infdbg('MECANONLINE', ifm, niv)
     if (niv .ge. 2) then
         call utmess('I', 'MECANONLINE11_7')
-    endif
+    end if
 !
 ! - Get hat variables
 !
@@ -68,7 +68,7 @@ character(len=19), intent(in) :: cnsstr, hval_measse(*)
 !
 ! - Launch timer
 !
-    call nmtime(ds_measure, 'Init'  , '2nd_Member')
+    call nmtime(ds_measure, 'Init', '2nd_Member')
     call nmtime(ds_measure, 'Launch', '2nd_Member')
 !
 ! - Compute
@@ -83,6 +83,6 @@ character(len=19), intent(in) :: cnsstr, hval_measse(*)
 !
     if (niv .ge. 2) then
         call nmdebg('VECT', cnsstr, 6)
-    endif
+    end if
 !
 end subroutine

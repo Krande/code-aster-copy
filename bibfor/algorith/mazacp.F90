@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine mazacp(option, ndimsi, epsm, deps, epsane,&
-                  ee, mazars, varm, varp, sigp,&
+subroutine mazacp(option, ndimsi, epsm, deps, epsane, &
+                  ee, mazars, varm, varp, sigp, &
                   dsidep)
     implicit none
 #include "asterf_types.h"
@@ -62,9 +62,9 @@ subroutine mazacp(option, ndimsi, epsm, deps, epsane,&
 ! --- ------------------------------------------------------------------
 !     INDEX DES VARIABLES INTERNES
     integer :: icels, icelu
-    parameter (icels=1,icelu=2)
+    parameter(icels=1, icelu=2)
     integer :: idomm, iepsqt, iepsqc, irsigm, idissd
-    parameter (idomm=3,iepsqt=4,iepsqc=5,irsigm=6,idissd=8)
+    parameter(idomm=3, iepsqt=4, iepsqc=5, irsigm=6, idissd=8)
 ! --- ------------------------------------------------------------------
     aster_logical :: rigi, resi
     aster_logical :: elas, prog
@@ -80,16 +80,16 @@ subroutine mazacp(option, ndimsi, epsm, deps, epsane,&
     real(kind=8) :: rtemp, epsela(6), sigela(6)
 !
     real(kind=8) :: kron(6)
-    data       kron/1.0d0,1.0d0,1.0d0,0.0d0,0.0d0,0.0d0/
-    data       grdexp,rac2/200.0d0,1.4142135623731d0/
+    data kron/1.0d0, 1.0d0, 1.0d0, 0.0d0, 0.0d0, 0.0d0/
+    data grdexp, rac2/200.0d0, 1.4142135623731d0/
 !
 ! --------------------------------------------------------------------------------------------------
 !
 !   RIGI_MECA_TANG ->        DSIDEP        -->  RIGI
 !   FULL_MECA      ->  SIGP  DSIDEP  VARP  -->  RIGI  RESI
 !   RAPH_MECA      ->  SIGP          VARP  -->        RESI
-    rigi = (option(1:4).eq.'RIGI' .or. option(1:4).eq.'FULL')
-    resi = (option(1:4).eq.'RAPH' .or. option(1:4).eq.'FULL')
+    rigi = (option(1:4) .eq. 'RIGI' .or. option(1:4) .eq. 'FULL')
+    resi = (option(1:4) .eq. 'RAPH' .or. option(1:4) .eq. 'FULL')
 !
 !   caractéristiques matériaux
     epsd0 = mazars(1)
@@ -102,7 +102,7 @@ subroutine mazacp(option, ndimsi, epsm, deps, epsane,&
     epelu = mazars(8)
     nu = mazars(9)
 !
-    lambda = ee*nu/(1.0d0+nu)/(1.0d0 - 2.0d0*nu)
+    lambda = ee*nu/(1.0d0+nu)/(1.0d0-2.0d0*nu)
     deuxmu = ee/(1.0d0+nu)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -111,20 +111,20 @@ subroutine mazacp(option, ndimsi, epsm, deps, epsane,&
     call r8inir(6, 0.0d0, epsela, 1)
     if (resi) then
         do ii = 1, ndimsi
-            epsela(ii) = epsm(ii) + deps(ii) - epsane*kron(ii)
-        enddo
+            epsela(ii) = epsm(ii)+deps(ii)-epsane*kron(ii)
+        end do
     else
         do ii = 1, ndimsi
-            epsela(ii) = epsm(ii) - epsane*kron(ii)
-        enddo
-    endif
+            epsela(ii) = epsm(ii)-epsane*kron(ii)
+        end do
+    end if
 !
 ! --------------------------------------------------------------------------------------------------
 !   on est obligatoirement en contraintes planes
     epsela(3) = -nu*(epsela(1)+epsela(2))/(1.0d0-nu)
     do ii = 4, ndimsi
         epsela(ii) = epsela(ii)/rac2
-    enddo
+    end do
 !
 ! --------------------------------------------------------------------------------------------------
 !   on passe dans le repère propre de EPS :
@@ -144,14 +144,14 @@ subroutine mazacp(option, ndimsi, epsm, deps, epsane,&
     call r8inir(6, 0.d0, tr, 1)
     call r8inir(6, 0.d0, epsplu, 1)
     do ii = 1, 3
-        epseq = epseq + (epspri(ii)**2)
+        epseq = epseq+(epspri(ii)**2)
         if (epspri(ii) .gt. 0.0d0) then
-            epseqt = epseqt + (epspri(ii)**2)
+            epseqt = epseqt+(epspri(ii)**2)
             tr(ii) = epspri(ii)
         else
-            epseqc = epseqc + (epspri(ii)**2)
-        endif
-    enddo
+            epseqc = epseqc+(epspri(ii)**2)
+        end if
+    end do
     epseqt = sqrt(epseqt)
     epseqc = sqrt(epseqc)
     epseq = sqrt(epseq)
@@ -159,14 +159,14 @@ subroutine mazacp(option, ndimsi, epsm, deps, epsane,&
     call bptobg(tr, epsplu, vecpe)
     do ii = 4, ndimsi
         epsplu(ii) = epsplu(ii)*rac2
-    enddo
+    end do
 !
 ! --------------------------------------------------------------------------------------------------
 !   calcul des contraintes élastiques
 !   dans le repère principal de déformation ==> elles sont planes
     do ii = 1, 3
-        sigpri(ii) = lambda*(epspri(1)+epspri(2)+epspri(3)) + deuxmu* epspri(ii )
-    enddo
+        sigpri(ii) = lambda*(epspri(1)+epspri(2)+epspri(3))+deuxmu*epspri(ii)
+    end do
 !   calcul de : |SIGMA| , SIGMA+ , SIGMA- , SIGEQT , SIGEQC , SIGEQ
     trsiga = 0.0d0
     trsigt = 0.0d0
@@ -175,34 +175,34 @@ subroutine mazacp(option, ndimsi, epsm, deps, epsane,&
     sigeqc = 0.0d0
     sigeq = 0.0d0
     do ii = 1, 3
-        trsiga = trsiga + abs(sigpri(ii))
-        sigeq = sigeq + (sigpri(ii)**2)
+        trsiga = trsiga+abs(sigpri(ii))
+        sigeq = sigeq+(sigpri(ii)**2)
         if (sigpri(ii) .lt. 0.0d0) then
-            trsigc = trsigc + sigpri(ii)
-            sigeqc = sigeqc + (sigpri(ii)**2)
+            trsigc = trsigc+sigpri(ii)
+            sigeqc = sigeqc+(sigpri(ii)**2)
         else
-            trsigt = trsigt + sigpri(ii)
-            sigeqt = sigeqt + (sigpri(ii)**2)
-        endif
-    enddo
+            trsigt = trsigt+sigpri(ii)
+            sigeqt = sigeqt+(sigpri(ii)**2)
+        end if
+    end do
     sigeqt = sqrt(sigeqt)
     sigeqc = sqrt(sigeqc)
     sigeq = sqrt(sigeq)
 ! --------------------------------------------------------------------------------------------------
 !   calcul de R : 1 en traction pure, 0 en compression
     if (trsiga .gt. trsigt+r8prem()) then
-        rr = trsigt / trsiga
+        rr = trsigt/trsiga
     else
         rr = 1.0d0
-    endif
+    end if
     if (rr .lt. 0.00001d0) rr = 0.0d0
     if (rr .gt. 0.99999d0) rr = 1.0d0
 ! --------------------------------------------------------------------------------------------------
 !   calcul de gamma 3D:[ 0.577... ; 1 ] CP:[ 0.707... ; 1 ]
     gamma = 1.0d0
-    if ((abs(trsigc).gt.1.d-10) .and. (rr.eq.0.d0)) then
+    if ((abs(trsigc) .gt. 1.d-10) .and. (rr .eq. 0.d0)) then
         gamma = sigeqc/abs(trsigc)
-    endif
+    end if
 ! --------------------------------------------------------------------------------------------------
 !   variables internes précédentes
     dommag = varm(idomm)
@@ -215,21 +215,21 @@ subroutine mazacp(option, ndimsi, epsm, deps, epsane,&
     elas = .true.
     if (resi) then
         yyp = gamma*epseqt
-        if ((yyp.gt.epsd0) .and. (yyp.gt.yy)) then
+        if ((yyp .gt. epsd0) .and. (yyp .gt. yy)) then
             yy = yyp
 !           calcul de l'endommagement
-            aa = 2.0d0*(rr*rr)*(at-2.0d0*kk*at+ac) - rr*(at-4.0d0*kk*at+3.0d0*ac) + ac
-            bb = (rr*rr)*bt + (1.0d0-rr*rr)*bc
+            aa = 2.0d0*(rr*rr)*(at-2.0d0*kk*at+ac)-rr*(at-4.0d0*kk*at+3.0d0*ac)+ac
+            bb = (rr*rr)*bt+(1.0d0-rr*rr)*bc
 !           il faut éviter que le calcul plante dans l'évaluation
 !           de exp(rtemp) si rtemp trop grand
             rtemp = bb*(yy-epsd0)
-            dommag = 1.0d0 - epsd0*(1.0d0-aa)/yy
-            if (rtemp .le. grdexp) dommag = dommag - (aa/exp(rtemp))
-            dommag = min( max( varm(idomm), dommag ) , 0.99999d0 )
+            dommag = 1.0d0-epsd0*(1.0d0-aa)/yy
+            if (rtemp .le. grdexp) dommag = dommag-(aa/exp(rtemp))
+            dommag = min(max(varm(idomm), dommag), 0.99999d0)
 !
-            prog = ( dommag .gt. varm(idomm) )
-            elas = ( dommag .le. 0.0d0 )
-        endif
+            prog = (dommag .gt. varm(idomm))
+            elas = (dommag .le. 0.0d0)
+        end if
 !
 !       calcul des contraintes dans le repère initial
         call r8inir(6, 0.0d0, sigp, 1)
@@ -241,17 +241,17 @@ subroutine mazacp(option, ndimsi, epsm, deps, epsane,&
         call bptobg(tr, sigp, vecpe)
         do ii = 4, ndimsi
             sigp(ii) = rac2*sigp(ii)
-        enddo
+        end do
 !       correspond aux critères ELS, ELU dans le cas non-linéaire 1D
-        varp(icels) = sigeq*sgmxve(3,sigpri)*(1.0d0-dommag)/sgels
-        varp(icelu) = epseq*sgmxve(3,epspri)/epelu
+        varp(icels) = sigeq*sgmxve(3, sigpri)*(1.0d0-dommag)/sgels
+        varp(icelu) = epseq*sgmxve(3, epspri)/epelu
 !       mise à jour des variables internes
         varp(idomm) = dommag
         varp(iepsqt) = yy
         varp(iepsqc) = epseqc
         varp(irsigm) = rr
         varp(idissd) = 0.0d0
-    endif
+    end if
 !
 ! --------------------------------------------------------------------------------------------------
 !   calcul de la matrice tangente DSIDEP
@@ -262,24 +262,24 @@ subroutine mazacp(option, ndimsi, epsm, deps, epsane,&
         call r8inir(36, 0.0d0, dsidep, 1)
         lambda = lambda*(1.0d0-dommag)
         deuxmu = deuxmu*(1.0d0-dommag)
-        dsidep(1,1) = lambda+deuxmu
-        dsidep(2,2) = lambda+deuxmu
-        dsidep(3,3) = lambda+deuxmu
-        dsidep(1,2) = lambda
-        dsidep(2,1) = lambda
-        dsidep(1,3) = lambda
-        dsidep(3,1) = lambda
-        dsidep(2,3) = lambda
-        dsidep(3,2) = lambda
-        dsidep(4,4) = deuxmu
-        dsidep(5,5) = deuxmu
-        dsidep(6,6) = deuxmu
+        dsidep(1, 1) = lambda+deuxmu
+        dsidep(2, 2) = lambda+deuxmu
+        dsidep(3, 3) = lambda+deuxmu
+        dsidep(1, 2) = lambda
+        dsidep(2, 1) = lambda
+        dsidep(1, 3) = lambda
+        dsidep(3, 1) = lambda
+        dsidep(2, 3) = lambda
+        dsidep(3, 2) = lambda
+        dsidep(4, 4) = deuxmu
+        dsidep(5, 5) = deuxmu
+        dsidep(6, 6) = deuxmu
 !       contribution de l'endommagement
         prog = .false.
-        if ((.not.elas) .and. prog .and. (dommag.lt.0.99999d0)) then
+        if ((.not. elas) .and. prog .and. (dommag .lt. 0.99999d0)) then
             rtemp = bb*(yy-epsd0)
             coeff = epsd0*(1.0d0-aa)/yy**2
-            if (rtemp .le. grdexp) coeff = coeff + aa*bb/exp(rtemp)
+            if (rtemp .le. grdexp) coeff = coeff+aa*bb/exp(rtemp)
             coeff = coeff*gamma*gamma/yy
 !
             call r8inir(6, 0.0d0, sigela, 1)
@@ -291,22 +291,22 @@ subroutine mazacp(option, ndimsi, epsm, deps, epsane,&
             call bptobg(tr, sigela, vecpe)
             do ii = 4, ndimsi
                 sigela(ii) = rac2*sigela(ii)
-            enddo
+            end do
             do ii = 1, 6
                 do jj = 1, 6
-                    dsidep(ii,jj) = dsidep (ii,jj) - coeff*sigela(ii)* epsplu(jj)
-                enddo
-            enddo
-        endif
+                    dsidep(ii, jj) = dsidep(ii, jj)-coeff*sigela(ii)*epsplu(jj)
+                end do
+            end do
+        end if
 !       correction contraintes planes
         do ii = 1, ndimsi
             if (ii .lt. 3) then
                 do ll = 1, ndimsi
                     if (ll .lt. 3) then
-                        dsidep(ii,ll) = dsidep(ii,ll) - dsidep(ii,3)*dsidep(3,ll)/dsidep(3,3)
-                    endif
-                enddo
-            endif
-        enddo
-    endif
+                        dsidep(ii, ll) = dsidep(ii, ll)-dsidep(ii, 3)*dsidep(3, ll)/dsidep(3, 3)
+                    end if
+                end do
+            end if
+        end do
+    end if
 end subroutine

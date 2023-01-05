@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,11 +19,11 @@
 !
 module crea_maillage_module
 !
-use sort_module
+    use sort_module
 !
-implicit none
+    implicit none
 !
-private
+    private
 !
 #include "asterc/asmpi_comm.h"
 #include "asterc/asmpi_sendrecv_i.h"
@@ -78,7 +78,7 @@ private
         integer :: nno(MT_NTYMAX) = 0
         integer :: nnos(MT_NTYMAX) = 0
 ! ----- member functions
-        contains
+    contains
         procedure, public, pass :: init => init_conv
         procedure, public, pass :: add_conversion
     end type
@@ -160,7 +160,7 @@ private
         aster_logical :: isHPC
         integer :: info = 0
 ! ----- member functions
-        contains
+    contains
         procedure, public, pass :: add_cell
         procedure, public, pass :: check_mesh
         procedure, public, pass :: clean => clean_mesh
@@ -231,38 +231,38 @@ contains
 !
         implicit none
 !
-            class(Mmesh), intent(in) :: this
-            integer, intent(in) :: nnos_sort(2)
-            aster_logical, intent(out) :: find
-            integer, intent(out) :: edge_id
+        class(Mmesh), intent(in) :: this
+        integer, intent(in) :: nnos_sort(2)
+        aster_logical, intent(out) :: find
+        integer, intent(out) :: edge_id
 !
 ! Find edge_id of edges
 !
-            integer :: i_edge, nb_edges, edge_i
-            aster_logical :: ok
+        integer :: i_edge, nb_edges, edge_i
+        aster_logical :: ok
 !
-            find = ASTER_FALSE
-            edge_id = 0
+        find = ASTER_FALSE
+        edge_id = 0
 !
-            nb_edges = this%nodes(nnos_sort(1))%nb_edges
-            if(nb_edges > 0) then
-                do i_edge = 1, nb_edges
-                    edge_i = this%nodes(nnos_sort(1))%edges(i_edge)
-                    ok = ASTER_TRUE
-                    if( nnos_sort(1) .ne. this%edges(edge_i)%nnos_sort(1)) then
+        nb_edges = this%nodes(nnos_sort(1))%nb_edges
+        if (nb_edges > 0) then
+            do i_edge = 1, nb_edges
+                edge_i = this%nodes(nnos_sort(1))%edges(i_edge)
+                ok = ASTER_TRUE
+                if (nnos_sort(1) .ne. this%edges(edge_i)%nnos_sort(1)) then
+                    ok = ASTER_FALSE
+                else
+                    if (nnos_sort(2) .ne. this%edges(edge_i)%nnos_sort(2)) then
                         ok = ASTER_FALSE
-                    else
-                        if( nnos_sort(2) .ne. this%edges(edge_i)%nnos_sort(2)) then
-                            ok = ASTER_FALSE
-                        end if
                     end if
-                    if(ok) then
-                        find = ASTER_TRUE
-                        edge_id = edge_i
-                        exit
-                    end if
-                end do
-            end if
+                end if
+                if (ok) then
+                    find = ASTER_TRUE
+                    edge_id = edge_i
+                    exit
+                end if
+            end do
+        end if
 !
     end subroutine
 !
@@ -274,42 +274,42 @@ contains
 !
         implicit none
 !
-            class(Mmesh), intent(in) ::this
-            integer, intent(in) :: nnos
-            integer, intent(in) :: nnos_sort(4)
-            aster_logical, intent(out) :: find
-            integer, intent(out) :: face_id
+        class(Mmesh), intent(in) ::this
+        integer, intent(in) :: nnos
+        integer, intent(in) :: nnos_sort(4)
+        aster_logical, intent(out) :: find
+        integer, intent(out) :: face_id
 !
 ! Find face_id of face
 !
-            integer :: i_face, i_node, nb_faces, face_i
-            aster_logical :: ok
+        integer :: i_face, i_node, nb_faces, face_i
+        aster_logical :: ok
 !
-            find = ASTER_FALSE
-            face_id = 0
+        find = ASTER_FALSE
+        face_id = 0
 !
-            nb_faces = this%nodes(nnos_sort(1))%nb_faces
-            if(nb_faces > 0) then
-                do i_face = 1, nb_faces
-                    face_i = this%nodes(nnos_sort(1))%faces(i_face)
-                    if(nnos == this%faces(face_i)%nnos) then
-                        ok = ASTER_TRUE
-                        do i_node = 1, nnos
-                            if( nnos_sort(i_node) .ne. this%faces(face_i)%nnos_sort(i_node)) then
-                                ok = ASTER_FALSE
-                                exit
-                            end if
-                        end do
-                    else
-                        ok = ASTER_FALSE
-                    end if
-                    if(ok) then
-                        find = ASTER_TRUE
-                        face_id = face_i
-                        exit
-                    end if
-                end do
-            end if
+        nb_faces = this%nodes(nnos_sort(1))%nb_faces
+        if (nb_faces > 0) then
+            do i_face = 1, nb_faces
+                face_i = this%nodes(nnos_sort(1))%faces(i_face)
+                if (nnos == this%faces(face_i)%nnos) then
+                    ok = ASTER_TRUE
+                    do i_node = 1, nnos
+                        if (nnos_sort(i_node) .ne. this%faces(face_i)%nnos_sort(i_node)) then
+                            ok = ASTER_FALSE
+                            exit
+                        end if
+                    end do
+                else
+                    ok = ASTER_FALSE
+                end if
+                if (ok) then
+                    find = ASTER_TRUE
+                    face_id = face_i
+                    exit
+                end if
+            end do
+        end if
 !
     end subroutine
 !
@@ -322,45 +322,45 @@ contains
 !
         implicit none
 !
-            integer, intent(in) :: nb_nodes
-            integer, intent(inout) :: nodes(1:nb_nodes)
+        integer, intent(in) :: nb_nodes
+        integer, intent(inout) :: nodes(1:nb_nodes)
 !
-            integer :: tmp(27), ind_min, i_node, val_min
+        integer :: tmp(27), ind_min, i_node, val_min
 !
-            ASSERT(nb_nodes <= 27)
+        ASSERT(nb_nodes <= 27)
 
-            tmp(1:nb_nodes) = nodes(1:nb_nodes)
+        tmp(1:nb_nodes) = nodes(1:nb_nodes)
 !
-            ind_min = 1
-            val_min = nodes(1)
-            do i_node = 2, nb_nodes
-                if(nodes(i_node) == val_min) then
-                    ASSERT(ASTER_FALSE)
-                else if(nodes(i_node) < val_min) then
-                    ind_min = i_node
-                    val_min = nodes(i_node)
-                end if
+        ind_min = 1
+        val_min = nodes(1)
+        do i_node = 2, nb_nodes
+            if (nodes(i_node) == val_min) then
+                ASSERT(ASTER_FALSE)
+            else if (nodes(i_node) < val_min) then
+                ind_min = i_node
+                val_min = nodes(i_node)
+            end if
+        end do
+        ASSERT(ind_min >= 1 .and. ind_min <= nb_nodes)
+!
+        if (ind_min > 1) then
+            do i_node = ind_min, nb_nodes
+                nodes(i_node-ind_min+1) = tmp(i_node)
             end do
-            ASSERT(ind_min >= 1 .and. ind_min <= nb_nodes)
+            do i_node = 1, ind_min-1
+                nodes(i_node+nb_nodes-ind_min+1) = tmp(i_node)
+            end do
+        end if
 !
-            if(ind_min > 1) then
-                do i_node = ind_min, nb_nodes
-                    nodes(i_node - ind_min + 1) = tmp(i_node)
-                end do
-                do i_node = 1, ind_min-1
-                    nodes(i_node + nb_nodes - ind_min + 1) = tmp(i_node)
-                end do
-            end if
-!
-            if(nodes(nb_nodes) > nodes(2)) then
-                tmp(1:nb_nodes) = nodes(1:nb_nodes)
+        if (nodes(nb_nodes) > nodes(2)) then
+            tmp(1:nb_nodes) = nodes(1:nb_nodes)
 
-                do i_node = 2, nb_nodes
-                    nodes(i_node) = tmp(nb_nodes - i_node + 2)
-                end do
-            end if
+            do i_node = 2, nb_nodes
+                nodes(i_node) = tmp(nb_nodes-i_node+2)
+            end do
+        end if
 !
-            ASSERT(nodes(1) == val_min)
+        ASSERT(nodes(1) == val_min)
 !
     end subroutine
 !
@@ -370,102 +370,102 @@ contains
 !
         implicit none
 !
-            class(Mconverter), intent(inout) :: this
+        class(Mconverter), intent(inout) :: this
 !
-            integer :: i_type, type_nume
+        integer :: i_type, type_nume
 !
-            call jemarq()
+        call jemarq()
 !
-            this%name(MT_POI1)     = "POI1"
-            this%name(MT_SEG2)     = "SEG2"
-            this%name(MT_SEG3)     = "SEG3"
-            this%name(MT_SEG4)     = "SEG4"
-            this%name(MT_TRIA3)    = "TRIA3"
-            this%name(MT_TRIA6)    = "TRIA6"
-            this%name(MT_TRIA7)    = "TRIA7"
-            this%name(MT_QUAD4)    = "QUAD4"
-            this%name(MT_QUAD8)    = "QUAD8"
-            this%name(MT_QUAD9)    = "QUAD9"
-            this%name(MT_TETRA4)   = "TETRA4"
-            this%name(MT_TETRA10)  = "TETRA10"
-            this%name(MT_TETRA15)  = "TETRA15"
-            this%name(MT_HEXA8)    = "HEXA8"
-            this%name(MT_HEXA9)    = "HEXA9"
-            this%name(MT_HEXA20)   = "HEXA20"
-            this%name(MT_HEXA27)   = "HEXA27"
-            this%name(MT_PYRAM5)   = "PYRAM5"
-            this%name(MT_PYRAM13)  = "PYRAM13"
-            this%name(MT_PYRAM19)  = "PYRAM19"
-            this%name(MT_PENTA6)   = "PENTA6"
-            this%name(MT_PENTA7)   = "PENTA7"
-            this%name(MT_PENTA15)  = "PENTA15"
-            this%name(MT_PENTA18)  = "PENTA18"
-            this%name(MT_PENTA21)  = "PENTA21"
+        this%name(MT_POI1) = "POI1"
+        this%name(MT_SEG2) = "SEG2"
+        this%name(MT_SEG3) = "SEG3"
+        this%name(MT_SEG4) = "SEG4"
+        this%name(MT_TRIA3) = "TRIA3"
+        this%name(MT_TRIA6) = "TRIA6"
+        this%name(MT_TRIA7) = "TRIA7"
+        this%name(MT_QUAD4) = "QUAD4"
+        this%name(MT_QUAD8) = "QUAD8"
+        this%name(MT_QUAD9) = "QUAD9"
+        this%name(MT_TETRA4) = "TETRA4"
+        this%name(MT_TETRA10) = "TETRA10"
+        this%name(MT_TETRA15) = "TETRA15"
+        this%name(MT_HEXA8) = "HEXA8"
+        this%name(MT_HEXA9) = "HEXA9"
+        this%name(MT_HEXA20) = "HEXA20"
+        this%name(MT_HEXA27) = "HEXA27"
+        this%name(MT_PYRAM5) = "PYRAM5"
+        this%name(MT_PYRAM13) = "PYRAM13"
+        this%name(MT_PYRAM19) = "PYRAM19"
+        this%name(MT_PENTA6) = "PENTA6"
+        this%name(MT_PENTA7) = "PENTA7"
+        this%name(MT_PENTA15) = "PENTA15"
+        this%name(MT_PENTA18) = "PENTA18"
+        this%name(MT_PENTA21) = "PENTA21"
 !
-            this%short_name(MT_POI1)     = "PO1"
-            this%short_name(MT_SEG2)     = "SE2"
-            this%short_name(MT_SEG3)     = "SE3"
-            this%short_name(MT_SEG4)     = "SE4"
-            this%short_name(MT_TRIA3)    = "TR3"
-            this%short_name(MT_TRIA6)    = "TR6"
-            this%short_name(MT_TRIA7)    = "TR7"
-            this%short_name(MT_QUAD4)    = "QU4"
-            this%short_name(MT_QUAD8)    = "QU8"
-            this%short_name(MT_QUAD9)    = "QU9"
-            this%short_name(MT_TETRA4)   = "TE4"
-            this%short_name(MT_TETRA10)  = "T10"
-            this%short_name(MT_TETRA15)  = "T15"
-            this%short_name(MT_HEXA8)    = "HE8"
-            this%short_name(MT_HEXA9)    = "HE9"
-            this%short_name(MT_HEXA20)   = "H20"
-            this%short_name(MT_HEXA27)   = "H27"
-            this%short_name(MT_PYRAM5)   = "PY5"
-            this%short_name(MT_PYRAM13)  = "P13"
-            this%short_name(MT_PYRAM19)  = "P19"
-            this%short_name(MT_PENTA6)   = "PE6"
-            this%short_name(MT_PENTA7)   = "PE7"
-            this%short_name(MT_PENTA15)  = "P15"
-            this%short_name(MT_PENTA18)  = "P18"
-            this%short_name(MT_PENTA21)  = "P21"
+        this%short_name(MT_POI1) = "PO1"
+        this%short_name(MT_SEG2) = "SE2"
+        this%short_name(MT_SEG3) = "SE3"
+        this%short_name(MT_SEG4) = "SE4"
+        this%short_name(MT_TRIA3) = "TR3"
+        this%short_name(MT_TRIA6) = "TR6"
+        this%short_name(MT_TRIA7) = "TR7"
+        this%short_name(MT_QUAD4) = "QU4"
+        this%short_name(MT_QUAD8) = "QU8"
+        this%short_name(MT_QUAD9) = "QU9"
+        this%short_name(MT_TETRA4) = "TE4"
+        this%short_name(MT_TETRA10) = "T10"
+        this%short_name(MT_TETRA15) = "T15"
+        this%short_name(MT_HEXA8) = "HE8"
+        this%short_name(MT_HEXA9) = "HE9"
+        this%short_name(MT_HEXA20) = "H20"
+        this%short_name(MT_HEXA27) = "H27"
+        this%short_name(MT_PYRAM5) = "PY5"
+        this%short_name(MT_PYRAM13) = "P13"
+        this%short_name(MT_PYRAM19) = "P19"
+        this%short_name(MT_PENTA6) = "PE6"
+        this%short_name(MT_PENTA7) = "PE7"
+        this%short_name(MT_PENTA15) = "P15"
+        this%short_name(MT_PENTA18) = "P18"
+        this%short_name(MT_PENTA21) = "P21"
 !
-            this%convert_max(MT_POI1)     = MT_POI1
-            this%convert_max(MT_SEG2)     = MT_SEG3
-            this%convert_max(MT_SEG3)     = MT_SEG3
-            this%convert_max(MT_SEG4)     = MT_SEG4
-            this%convert_max(MT_TRIA3)    = MT_TRIA7
-            this%convert_max(MT_TRIA6)    = MT_TRIA7
-            this%convert_max(MT_TRIA7)    = MT_TRIA7
-            this%convert_max(MT_QUAD4)    = MT_QUAD9
-            this%convert_max(MT_QUAD8)    = MT_QUAD9
-            this%convert_max(MT_QUAD9)    = MT_QUAD9
-            this%convert_max(MT_TETRA4)   = MT_TETRA15
-            this%convert_max(MT_TETRA10)  = MT_TETRA15
-            this%convert_max(MT_TETRA15)  = MT_TETRA15
-            this%convert_max(MT_HEXA8)    = MT_HEXA27
-            this%convert_max(MT_HEXA9)    = MT_HEXA27
-            this%convert_max(MT_HEXA20)   = MT_HEXA27
-            this%convert_max(MT_HEXA27)   = MT_HEXA27
-            this%convert_max(MT_PYRAM5)   = MT_PYRAM19
-            this%convert_max(MT_PYRAM13)  = MT_PYRAM19
-            this%convert_max(MT_PYRAM19)  = MT_PYRAM19
-            this%convert_max(MT_PENTA6)   = MT_PENTA21
-            this%convert_max(MT_PENTA7)   = MT_PENTA21
-            this%convert_max(MT_PENTA15)  = MT_PENTA21
-            this%convert_max(MT_PENTA18)  = MT_PENTA21
-            this%convert_max(MT_PENTA21)  = MT_PENTA21
+        this%convert_max(MT_POI1) = MT_POI1
+        this%convert_max(MT_SEG2) = MT_SEG3
+        this%convert_max(MT_SEG3) = MT_SEG3
+        this%convert_max(MT_SEG4) = MT_SEG4
+        this%convert_max(MT_TRIA3) = MT_TRIA7
+        this%convert_max(MT_TRIA6) = MT_TRIA7
+        this%convert_max(MT_TRIA7) = MT_TRIA7
+        this%convert_max(MT_QUAD4) = MT_QUAD9
+        this%convert_max(MT_QUAD8) = MT_QUAD9
+        this%convert_max(MT_QUAD9) = MT_QUAD9
+        this%convert_max(MT_TETRA4) = MT_TETRA15
+        this%convert_max(MT_TETRA10) = MT_TETRA15
+        this%convert_max(MT_TETRA15) = MT_TETRA15
+        this%convert_max(MT_HEXA8) = MT_HEXA27
+        this%convert_max(MT_HEXA9) = MT_HEXA27
+        this%convert_max(MT_HEXA20) = MT_HEXA27
+        this%convert_max(MT_HEXA27) = MT_HEXA27
+        this%convert_max(MT_PYRAM5) = MT_PYRAM19
+        this%convert_max(MT_PYRAM13) = MT_PYRAM19
+        this%convert_max(MT_PYRAM19) = MT_PYRAM19
+        this%convert_max(MT_PENTA6) = MT_PENTA21
+        this%convert_max(MT_PENTA7) = MT_PENTA21
+        this%convert_max(MT_PENTA15) = MT_PENTA21
+        this%convert_max(MT_PENTA18) = MT_PENTA21
+        this%convert_max(MT_PENTA21) = MT_PENTA21
 !
-            do i_type = 1, MT_NTYMAX
-                if(this%name(i_type) .ne. ' ') then
-                    call jenonu(jexnom('&CATA.TM.NOMTM', this%name(i_type)), type_nume)
-                    this%cata_type(i_type) = type_nume
-                    this%map_type(type_nume) = i_type
-                    call elrfno(this%short_name(i_type), this%nno(i_type), this%nnos(i_type), &
-                                this%dim(i_type))
-                    this%convert_to(i_type) = i_type
-                end if
-            end do
+        do i_type = 1, MT_NTYMAX
+            if (this%name(i_type) .ne. ' ') then
+                call jenonu(jexnom('&CATA.TM.NOMTM', this%name(i_type)), type_nume)
+                this%cata_type(i_type) = type_nume
+                this%map_type(type_nume) = i_type
+                call elrfno(this%short_name(i_type), this%nno(i_type), this%nnos(i_type), &
+                            this%dim(i_type))
+                this%convert_to(i_type) = i_type
+            end if
+        end do
 !
-            call jedema()
+        call jedema()
 !
     end subroutine
 !
@@ -475,100 +475,100 @@ contains
 !
         implicit none
 !
-            class(Mmesh), intent(inout) :: this
-            character(len=8), intent(in) :: mesh_in
-            integer, optional :: info
+        class(Mmesh), intent(inout) :: this
+        character(len=8), intent(in) :: mesh_in
+        integer, optional :: info
 ! --------------------------------------------------------------------------------------------------
 ! The idea is to read a given mesh (mesh_in). Internally, all the cells are stored with all nodes
 ! possibles for a cell. The internal cells stored are POI1, SEG3, SEG4, TRIA7, QUAD9,
 ! TETRA15, HEXA27, PENTA21 and PYRAM19
 ! For an other cell type is only necessary to know which nodes to use
 ! --------------------------------------------------------------------------------------------------
-            integer, pointer :: v_mesh_dime(:) => null()
-            integer, pointer :: v_noex(:) => null()
-            real(kind=8), pointer :: v_coor(:) => null()
-            character(len=8) :: name
-            integer :: nb_elem_mesh, nb_node_mesh, i_node
-            integer :: i_cell, nno, node_id, owner
-            real(kind=8):: start, end
+        integer, pointer :: v_mesh_dime(:) => null()
+        integer, pointer :: v_noex(:) => null()
+        real(kind=8), pointer :: v_coor(:) => null()
+        character(len=8) :: name
+        integer :: nb_elem_mesh, nb_node_mesh, i_node
+        integer :: i_cell, nno, node_id, owner
+        real(kind=8):: start, end
 !
-            call jemarq()
-            call this%converter%init()
+        call jemarq()
+        call this%converter%init()
 !
-            if(present(info)) then
-                this%info = info
-            end if
+        if (present(info)) then
+            this%info = info
+        end if
 !
-            if(this%info >= 2) then
-                print*, "Creating mesh..."
-                call cpu_time(start)
-            end if
+        if (this%info >= 2) then
+            print *, "Creating mesh..."
+            call cpu_time(start)
+        end if
 !
-            this%isHPC = isParallelMesh(mesh_in)
+        this%isHPC = isParallelMesh(mesh_in)
 !
-            call jeveuo(mesh_in//'.DIME', 'L', vi = v_mesh_dime)
-            this%dim_mesh = v_mesh_dime(6)
-            nb_elem_mesh = v_mesh_dime(3)
-            nb_node_mesh = v_mesh_dime(1)
-            this%mesh_in = mesh_in
-            this%connex_in = mesh_in//'.CONNEX'
+        call jeveuo(mesh_in//'.DIME', 'L', vi=v_mesh_dime)
+        this%dim_mesh = v_mesh_dime(6)
+        nb_elem_mesh = v_mesh_dime(3)
+        nb_node_mesh = v_mesh_dime(1)
+        this%mesh_in = mesh_in
+        this%connex_in = mesh_in//'.CONNEX'
 !
-            this%max_cells = max(1, nb_elem_mesh)
-            this%max_volumes = max(1, nb_elem_mesh)
-            this%max_faces = max(1, 6*nb_elem_mesh)
-            this%max_edges = max(1, 12*nb_elem_mesh)
-            this%max_nodes = max(1, 4*nb_node_mesh)
+        this%max_cells = max(1, nb_elem_mesh)
+        this%max_volumes = max(1, nb_elem_mesh)
+        this%max_faces = max(1, 6*nb_elem_mesh)
+        this%max_edges = max(1, 12*nb_elem_mesh)
+        this%max_nodes = max(1, 4*nb_node_mesh)
 !
-            allocate(this%cells(this%max_cells))
-            allocate(this%volumes(this%max_volumes))
-            allocate(this%faces(this%max_faces))
-            allocate(this%edges(this%max_edges))
-            allocate(this%nodes(this%max_nodes))
+        allocate (this%cells(this%max_cells))
+        allocate (this%volumes(this%max_volumes))
+        allocate (this%faces(this%max_faces))
+        allocate (this%edges(this%max_edges))
+        allocate (this%nodes(this%max_nodes))
 !
-            call jeveuo(mesh_in//'.TYPMAIL', 'L', vi=this%v_typema)
-            call jeveuo(mesh_in// '.COORDO    .VALE', 'L', vr = v_coor)
-            if(this%isHPC) then
-                call jeveuo(mesh_in// '.NOEX', 'L', vi = v_noex)
-            endif
+        call jeveuo(mesh_in//'.TYPMAIL', 'L', vi=this%v_typema)
+        call jeveuo(mesh_in//'.COORDO    .VALE', 'L', vr=v_coor)
+        if (this%isHPC) then
+            call jeveuo(mesh_in//'.NOEX', 'L', vi=v_noex)
+        end if
 !
 ! --- Fill mesh
 !
-            this%nb_total_nodes = this%nb_nodes
-            owner = 0
-            do i_node = 1, nb_node_mesh
-                call jenuno(jexnum(mesh_in//'.NOMNOE', i_node), name)
-                if(this%isHPC) then
-                    owner = v_noex(i_node)
-                endif
-                node_id = this%add_node(v_coor(3*(i_node-1)+1:3*(i_node-1)+3), owner, name)
-                ASSERT(i_node == node_id)
-                this%nodes(node_id)%orphelan = ASTER_TRUE
-                this%nodes(node_id)%max_faces = 30
-                allocate(this%nodes(node_id)%faces(this%nodes(node_id)%max_faces))
-                this%nodes(node_id)%max_edges = 30
-                allocate(this%nodes(node_id)%edges(this%nodes(node_id)%max_edges))
-            end do
+        this%nb_total_nodes = this%nb_nodes
+        owner = 0
+        do i_node = 1, nb_node_mesh
+            call jenuno(jexnum(mesh_in//'.NOMNOE', i_node), name)
+            if (this%isHPC) then
+                owner = v_noex(i_node)
+            end if
+            node_id = this%add_node(v_coor(3*(i_node-1)+1:3*(i_node-1)+3), owner, name)
+            ASSERT(i_node == node_id)
+            this%nodes(node_id)%orphelan = ASTER_TRUE
+            this%nodes(node_id)%max_faces = 30
+            allocate (this%nodes(node_id)%faces(this%nodes(node_id)%max_faces))
+            this%nodes(node_id)%max_edges = 30
+            allocate (this%nodes(node_id)%edges(this%nodes(node_id)%max_edges))
+        end do
 !
-            do i_cell = 1, nb_elem_mesh
-                call this%add_cell(i_cell)
-            end do
+        do i_cell = 1, nb_elem_mesh
+            call this%add_cell(i_cell)
+        end do
 !
 ! --- Search orphelan nodes - to keep at the end
-            this%nb_total_cells = this%nb_cells
-            do i_cell = 1, this%nb_cells
-                nno = this%converter%nno(this%cells(i_cell)%type)
-                do i_node = 1, nno
-                    node_id = this%cells(i_cell)%nodes(i_node)
-                    this%nodes(node_id)%orphelan = ASTER_FALSE
-                end do
+        this%nb_total_cells = this%nb_cells
+        do i_cell = 1, this%nb_cells
+            nno = this%converter%nno(this%cells(i_cell)%type)
+            do i_node = 1, nno
+                node_id = this%cells(i_cell)%nodes(i_node)
+                this%nodes(node_id)%orphelan = ASTER_FALSE
             end do
+        end do
 !
-            if(this%info >= 2) then
-                call cpu_time(end)
-                print*, "... in ", end-start, " seconds."
-            end if
+        if (this%info >= 2) then
+            call cpu_time(end)
+            print *, "... in ", end-start, " seconds."
+        end if
 !
-            call jedema()
+        call jedema()
 !
     end subroutine
 !
@@ -578,29 +578,29 @@ contains
 !
         implicit none
 !
-            class(Mmesh), intent(inout) :: this
+        class(Mmesh), intent(inout) :: this
 !
-            integer :: i_node, nb_nodes
+        integer :: i_node, nb_nodes
 !
-            if(this%info >= 2) then
-                print*, "Cleaning objects..."
+        if (this%info >= 2) then
+            print *, "Cleaning objects..."
+        end if
+!
+        nb_nodes = size(this%nodes)
+        do i_node = 1, nb_nodes
+            if (allocated(this%nodes(i_node)%faces)) then
+                deallocate (this%nodes(i_node)%faces)
             end if
+            if (allocated(this%nodes(i_node)%edges)) then
+                deallocate (this%nodes(i_node)%edges)
+            end if
+        end do
 !
-            nb_nodes = size(this%nodes)
-            do i_node = 1, nb_nodes
-                if( allocated(this%nodes(i_node)%faces) ) then
-                    deallocate(this%nodes(i_node)%faces)
-                end if
-                if( allocated(this%nodes(i_node)%edges) ) then
-                    deallocate(this%nodes(i_node)%edges)
-                end if
-            end do
-!
-            deallocate(this%nodes)
-            deallocate(this%edges)
-            deallocate(this%faces)
-            deallocate(this%volumes)
-            deallocate(this%cells)
+        deallocate (this%nodes)
+        deallocate (this%edges)
+        deallocate (this%faces)
+        deallocate (this%volumes)
+        deallocate (this%cells)
 !
     end subroutine
 !
@@ -611,7 +611,7 @@ contains
         implicit none
 !
         integer, intent(in) :: cell_type
-        integer, intent(out) :: nb_edge, edge_type(12), edge_loc(3,12)
+        integer, intent(out) :: nb_edge, edge_type(12), edge_loc(3, 12)
 ! --------------------------------------------------------------------------------------------------
 ! Get edge connectivity of a cell
 !
@@ -620,105 +620,105 @@ contains
         edge_type = 0
         edge_loc = 0
 !
-        if(cell_type == MT_QUAD4 .or. cell_type == MT_QUAD8 .or. cell_type == MT_QUAD9) then
+        if (cell_type == MT_QUAD4 .or. cell_type == MT_QUAD8 .or. cell_type == MT_QUAD9) then
             nb_edge = 4
-            edge_loc(1:2,1) = [1,2]
-            edge_loc(1:2,2) = [2,3]
-            edge_loc(1:2,3) = [3,4]
-            edge_loc(1:2,4) = [4,1]
-            if(cell_type == MT_QUAD4) then
+            edge_loc(1:2, 1) = [1, 2]
+            edge_loc(1:2, 2) = [2, 3]
+            edge_loc(1:2, 3) = [3, 4]
+            edge_loc(1:2, 4) = [4, 1]
+            if (cell_type == MT_QUAD4) then
                 edge_type(1:nb_edge) = MT_SEG2
             else
                 edge_type(1:nb_edge) = MT_SEG3
-                edge_loc(3,1:nb_edge) = [5,6,7,8]
+                edge_loc(3, 1:nb_edge) = [5, 6, 7, 8]
             end if
-        elseif(cell_type == MT_TRIA3 .or. cell_type == MT_TRIA6 .or. cell_type == MT_TRIA7) then
+        elseif (cell_type == MT_TRIA3 .or. cell_type == MT_TRIA6 .or. cell_type == MT_TRIA7) then
             nb_edge = 3
-            edge_loc(1:2,1) = [1,2]
-            edge_loc(1:2,2) = [2,3]
-            edge_loc(1:2,3) = [3,1]
-            if(cell_type == MT_TRIA3) then
+            edge_loc(1:2, 1) = [1, 2]
+            edge_loc(1:2, 2) = [2, 3]
+            edge_loc(1:2, 3) = [3, 1]
+            if (cell_type == MT_TRIA3) then
                 edge_type(1:nb_edge) = MT_SEG2
             else
                 edge_type(1:nb_edge) = MT_SEG3
-                edge_loc(3,1:nb_edge) = [4,5,6]
+                edge_loc(3, 1:nb_edge) = [4, 5, 6]
             end if
-        elseif(cell_type == MT_HEXA8 .or. cell_type == MT_HEXA20 .or. cell_type == MT_HEXA27) then
+        elseif (cell_type == MT_HEXA8 .or. cell_type == MT_HEXA20 .or. cell_type == MT_HEXA27) then
             nb_edge = 12
-            edge_loc(1:2,1) = [1,2]
-            edge_loc(1:2,2) = [2,3]
-            edge_loc(1:2,3) = [3,4]
-            edge_loc(1:2,4) = [1,4]
-            edge_loc(1:2,5) = [1,5]
-            edge_loc(1:2,6) = [2,6]
-            edge_loc(1:2,7) = [3,7]
-            edge_loc(1:2,8) = [4,8]
-            edge_loc(1:2,9) = [5,6]
-            edge_loc(1:2,10) = [6,7]
-            edge_loc(1:2,11) = [7,8]
-            edge_loc(1:2,12) = [5,8]
-            if(cell_type == MT_HEXA8) then
+            edge_loc(1:2, 1) = [1, 2]
+            edge_loc(1:2, 2) = [2, 3]
+            edge_loc(1:2, 3) = [3, 4]
+            edge_loc(1:2, 4) = [1, 4]
+            edge_loc(1:2, 5) = [1, 5]
+            edge_loc(1:2, 6) = [2, 6]
+            edge_loc(1:2, 7) = [3, 7]
+            edge_loc(1:2, 8) = [4, 8]
+            edge_loc(1:2, 9) = [5, 6]
+            edge_loc(1:2, 10) = [6, 7]
+            edge_loc(1:2, 11) = [7, 8]
+            edge_loc(1:2, 12) = [5, 8]
+            if (cell_type == MT_HEXA8) then
                 edge_type(1:nb_edge) = MT_SEG2
-           elseif(cell_type == MT_HEXA20 .or. cell_type == MT_HEXA27) then
+            elseif (cell_type == MT_HEXA20 .or. cell_type == MT_HEXA27) then
                 edge_type(1:nb_edge) = MT_SEG3
-                edge_loc(3,1:nb_edge) = [9,10,11,12,13,14,15,16,17,18,19,20]
+                edge_loc(3, 1:nb_edge) = [9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]
             else
                 ASSERT(ASTER_FALSE)
             end if
-        elseif(cell_type == MT_TETRA4 .or. cell_type == MT_TETRA10 .or. &
+        elseif (cell_type == MT_TETRA4 .or. cell_type == MT_TETRA10 .or. &
                 cell_type == MT_TETRA15) then
             nb_edge = 6
-            edge_loc(1:2,1) = [1,2]
-            edge_loc(1:2,2) = [2,3]
-            edge_loc(1:2,3) = [1,3]
-            edge_loc(1:2,4) = [1,4]
-            edge_loc(1:2,5) = [2,4]
-            edge_loc(1:2,6) = [3,4]
-            if(cell_type == MT_TETRA4) then
+            edge_loc(1:2, 1) = [1, 2]
+            edge_loc(1:2, 2) = [2, 3]
+            edge_loc(1:2, 3) = [1, 3]
+            edge_loc(1:2, 4) = [1, 4]
+            edge_loc(1:2, 5) = [2, 4]
+            edge_loc(1:2, 6) = [3, 4]
+            if (cell_type == MT_TETRA4) then
                 edge_type(1:nb_edge) = MT_SEG2
-            elseif(cell_type == MT_TETRA10 .or. cell_type == MT_TETRA15) then
+            elseif (cell_type == MT_TETRA10 .or. cell_type == MT_TETRA15) then
                 edge_type(1:nb_edge) = MT_SEG3
-                edge_loc(3,1:nb_edge) = [5,6,7,8,9,10]
+                edge_loc(3, 1:nb_edge) = [5, 6, 7, 8, 9, 10]
             else
                 ASSERT(ASTER_FALSE)
             end if
-        elseif(cell_type == MT_PENTA6 .or. cell_type == MT_PENTA15 .or. cell_type == MT_PENTA18 &
+        elseif (cell_type == MT_PENTA6 .or. cell_type == MT_PENTA15 .or. cell_type == MT_PENTA18 &
                 .or. cell_type == MT_PENTA21) then
             nb_edge = 9
-            edge_loc(1:2,1) = [1,2]
-            edge_loc(1:2,2) = [2,3]
-            edge_loc(1:2,3) = [1,3]
-            edge_loc(1:2,4) = [1,4]
-            edge_loc(1:2,5) = [2,5]
-            edge_loc(1:2,6) = [3,6]
-            edge_loc(1:2,7) = [4,5]
-            edge_loc(1:2,8) = [5,6]
-            edge_loc(1:2,9) = [4,6]
-            if(cell_type == MT_PENTA6) then
+            edge_loc(1:2, 1) = [1, 2]
+            edge_loc(1:2, 2) = [2, 3]
+            edge_loc(1:2, 3) = [1, 3]
+            edge_loc(1:2, 4) = [1, 4]
+            edge_loc(1:2, 5) = [2, 5]
+            edge_loc(1:2, 6) = [3, 6]
+            edge_loc(1:2, 7) = [4, 5]
+            edge_loc(1:2, 8) = [5, 6]
+            edge_loc(1:2, 9) = [4, 6]
+            if (cell_type == MT_PENTA6) then
                 edge_type(1:nb_edge) = MT_SEG2
-            elseif(cell_type == MT_PENTA15 .or. cell_type == MT_PENTA18 .or. &
-                cell_type == MT_PENTA21) then
+            elseif (cell_type == MT_PENTA15 .or. cell_type == MT_PENTA18 .or. &
+                    cell_type == MT_PENTA21) then
                 edge_type(1:nb_edge) = MT_SEG3
-                edge_loc(3,1:nb_edge) = [7,8,9,10,11,12,13,14,15]
+                edge_loc(3, 1:nb_edge) = [7, 8, 9, 10, 11, 12, 13, 14, 15]
             else
                 ASSERT(ASTER_FALSE)
             end if
-        elseif(cell_type == MT_PYRAM5 .or. cell_type == MT_PYRAM13 .or. &
+        elseif (cell_type == MT_PYRAM5 .or. cell_type == MT_PYRAM13 .or. &
                 cell_type == MT_PYRAM19) then
             nb_edge = 8
-            edge_loc(1:2,1) = [1,2]
-            edge_loc(1:2,2) = [2,3]
-            edge_loc(1:2,3) = [3,4]
-            edge_loc(1:2,4) = [1,4]
-            edge_loc(1:2,5) = [1,5]
-            edge_loc(1:2,6) = [2,5]
-            edge_loc(1:2,7) = [3,5]
-            edge_loc(1:2,8) = [4,5]
-            if(cell_type == MT_PYRAM5) then
+            edge_loc(1:2, 1) = [1, 2]
+            edge_loc(1:2, 2) = [2, 3]
+            edge_loc(1:2, 3) = [3, 4]
+            edge_loc(1:2, 4) = [1, 4]
+            edge_loc(1:2, 5) = [1, 5]
+            edge_loc(1:2, 6) = [2, 5]
+            edge_loc(1:2, 7) = [3, 5]
+            edge_loc(1:2, 8) = [4, 5]
+            if (cell_type == MT_PYRAM5) then
                 edge_type(1:nb_edge) = MT_SEG2
-            elseif(cell_type == MT_PYRAM13 .or. cell_type == MT_PYRAM19) then
+            elseif (cell_type == MT_PYRAM13 .or. cell_type == MT_PYRAM19) then
                 edge_type(1:nb_edge) = MT_SEG3
-                edge_loc(3,1:nb_edge) = [6,7,8,9,10,11,12,13]
+                edge_loc(3, 1:nb_edge) = [6, 7, 8, 9, 10, 11, 12, 13]
             else
                 ASSERT(ASTER_FALSE)
             end if
@@ -735,7 +735,7 @@ contains
         implicit none
 !
         integer, intent(in) :: cell_type
-        integer, intent(out) :: nb_face, face_type(6), face_loc(9,6)
+        integer, intent(out) :: nb_face, face_type(6), face_loc(9, 6)
 ! ---------------------------------------------------------------------------------
 ! Get face connectivity of a cell
 !
@@ -744,108 +744,108 @@ contains
         face_type = 0
         face_loc = 0
 !
-        if(cell_type == MT_HEXA8 .or. cell_type == MT_HEXA20 .or. cell_type == MT_HEXA27) then
+        if (cell_type == MT_HEXA8 .or. cell_type == MT_HEXA20 .or. cell_type == MT_HEXA27) then
             nb_face = 6
-            face_loc(1:4,1) = [1,4,3,2]
-            face_loc(1:4,2) = [1,2,6,5]
-            face_loc(1:4,3) = [2,3,7,6]
-            face_loc(1:4,4) = [3,4,8,7]
-            face_loc(1:4,5) = [1,5,8,4]
-            face_loc(1:4,6) = [5,6,7,8]
-            if(cell_type == MT_HEXA8) then
+            face_loc(1:4, 1) = [1, 4, 3, 2]
+            face_loc(1:4, 2) = [1, 2, 6, 5]
+            face_loc(1:4, 3) = [2, 3, 7, 6]
+            face_loc(1:4, 4) = [3, 4, 8, 7]
+            face_loc(1:4, 5) = [1, 5, 8, 4]
+            face_loc(1:4, 6) = [5, 6, 7, 8]
+            if (cell_type == MT_HEXA8) then
                 face_type(1:6) = MT_QUAD4
-           elseif(cell_type == MT_HEXA20 .or. cell_type == MT_HEXA27) then
+            elseif (cell_type == MT_HEXA20 .or. cell_type == MT_HEXA27) then
                 face_type(1:6) = MT_QUAD8
-                face_loc(5:8,1) = [12,11,10,9]
-                face_loc(5:8,2) = [9,14,17,13]
-                face_loc(5:8,3) = [10,15,18,14]
-                face_loc(5:8,4) = [11,16,19,15]
-                face_loc(5:8,5) = [13,20,16,12]
-                face_loc(5:8,6) = [17,18,19,20]
-                if(cell_type == MT_HEXA27) then
+                face_loc(5:8, 1) = [12, 11, 10, 9]
+                face_loc(5:8, 2) = [9, 14, 17, 13]
+                face_loc(5:8, 3) = [10, 15, 18, 14]
+                face_loc(5:8, 4) = [11, 16, 19, 15]
+                face_loc(5:8, 5) = [13, 20, 16, 12]
+                face_loc(5:8, 6) = [17, 18, 19, 20]
+                if (cell_type == MT_HEXA27) then
                     face_type(1:6) = MT_QUAD9
-                    face_loc(9,1:6) = [21,22,23,24,25,26]
-                endif
+                    face_loc(9, 1:6) = [21, 22, 23, 24, 25, 26]
+                end if
             else
                 ASSERT(ASTER_FALSE)
             end if
-        elseif(cell_type == MT_TETRA4 .or. cell_type == MT_TETRA10 &
+        elseif (cell_type == MT_TETRA4 .or. cell_type == MT_TETRA10 &
                 .or. cell_type == MT_TETRA15) then
             nb_face = 4
-            face_loc(1:3,1) = [1,3,2]
-            face_loc(1:3,2) = [1,2,4]
-            face_loc(1:3,3) = [1,4,3]
-            face_loc(1:3,4) = [2,3,4]
-            if(cell_type == MT_TETRA4) then
+            face_loc(1:3, 1) = [1, 3, 2]
+            face_loc(1:3, 2) = [1, 2, 4]
+            face_loc(1:3, 3) = [1, 4, 3]
+            face_loc(1:3, 4) = [2, 3, 4]
+            if (cell_type == MT_TETRA4) then
                 face_type(1:4) = MT_TRIA3
-            elseif(cell_type == MT_TETRA10 .or. cell_type == MT_TETRA15) then
+            elseif (cell_type == MT_TETRA10 .or. cell_type == MT_TETRA15) then
                 face_type(1:4) = MT_TRIA6
-                face_loc(4:6,1) = [7,6,5]
-                face_loc(4:6,2) = [5,9,8]
-                face_loc(4:6,3) = [8,10,7]
-                face_loc(4:6,4) = [6,10,9]
-                if(cell_type == MT_TETRA15) then
+                face_loc(4:6, 1) = [7, 6, 5]
+                face_loc(4:6, 2) = [5, 9, 8]
+                face_loc(4:6, 3) = [8, 10, 7]
+                face_loc(4:6, 4) = [6, 10, 9]
+                if (cell_type == MT_TETRA15) then
                     face_type(1:4) = MT_TRIA7
-                    face_loc(7,1:4) = [11,12,13,14]
-                endif
+                    face_loc(7, 1:4) = [11, 12, 13, 14]
+                end if
             else
                 ASSERT(ASTER_FALSE)
             end if
-        elseif(cell_type == MT_PENTA6 .or. cell_type == MT_PENTA15 .or. cell_type == MT_PENTA18 &
-            .or. cell_type == MT_PENTA21) then
+        elseif (cell_type == MT_PENTA6 .or. cell_type == MT_PENTA15 .or. cell_type == MT_PENTA18 &
+                .or. cell_type == MT_PENTA21) then
             nb_face = 5
-            face_loc(1:4,1) = [1,2,5,4]
-            face_loc(1:4,2) = [2,3,6,5]
-            face_loc(1:4,3) = [1,4,6,3]
-            face_loc(1:3,4) = [1,3,2]
-            face_loc(1:3,5) = [4,5,6]
-            if(cell_type == MT_PENTA6) then
+            face_loc(1:4, 1) = [1, 2, 5, 4]
+            face_loc(1:4, 2) = [2, 3, 6, 5]
+            face_loc(1:4, 3) = [1, 4, 6, 3]
+            face_loc(1:3, 4) = [1, 3, 2]
+            face_loc(1:3, 5) = [4, 5, 6]
+            if (cell_type == MT_PENTA6) then
                 face_type(1:3) = MT_QUAD4
                 face_type(4:5) = MT_TRIA3
-            elseif(cell_type == MT_PENTA15 .or. cell_type == MT_PENTA18 .or. &
+            elseif (cell_type == MT_PENTA15 .or. cell_type == MT_PENTA18 .or. &
                     cell_type == MT_PENTA21) then
                 face_type(1:3) = MT_QUAD8
                 face_type(4:5) = MT_TRIA6
-                face_loc(5:8,1) = [7,11,13,10]
-                face_loc(5:8,2) = [8,12,14,11]
-                face_loc(5:8,3) = [10,15,12,9]
-                face_loc(4:6,4) = [9,8,7]
-                face_loc(4:6,5) = [13,14,15]
-                if(cell_type == MT_PENTA18 .or. cell_type == MT_PENTA21) then
+                face_loc(5:8, 1) = [7, 11, 13, 10]
+                face_loc(5:8, 2) = [8, 12, 14, 11]
+                face_loc(5:8, 3) = [10, 15, 12, 9]
+                face_loc(4:6, 4) = [9, 8, 7]
+                face_loc(4:6, 5) = [13, 14, 15]
+                if (cell_type == MT_PENTA18 .or. cell_type == MT_PENTA21) then
                     face_type(1:3) = MT_QUAD9
-                    face_loc(9,1:3) = [16,17,18]
-                    if(cell_type == MT_PENTA21) then
+                    face_loc(9, 1:3) = [16, 17, 18]
+                    if (cell_type == MT_PENTA21) then
                         face_type(4:5) = MT_TRIA7
-                        face_loc(7,4:5) = [19,20]
-                    endif
-                endif
+                        face_loc(7, 4:5) = [19, 20]
+                    end if
+                end if
             else
                 ASSERT(ASTER_FALSE)
             end if
-        elseif(cell_type == MT_PYRAM5 .or. cell_type == MT_PYRAM13 .or. &
+        elseif (cell_type == MT_PYRAM5 .or. cell_type == MT_PYRAM13 .or. &
                 cell_type == MT_PYRAM19) then
             nb_face = 5
-            face_loc(1:4,1) = [1,2,3,4]
-            face_loc(1:3,2) = [1,2,5]
-            face_loc(1:3,3) = [2,3,5]
-            face_loc(1:3,4) = [3,4,5]
-            face_loc(1:3,5) = [4,1,5]
-            if(cell_type == MT_PYRAM5) then
+            face_loc(1:4, 1) = [1, 2, 3, 4]
+            face_loc(1:3, 2) = [1, 2, 5]
+            face_loc(1:3, 3) = [2, 3, 5]
+            face_loc(1:3, 4) = [3, 4, 5]
+            face_loc(1:3, 5) = [4, 1, 5]
+            if (cell_type == MT_PYRAM5) then
                 face_type(1) = MT_QUAD4
                 face_type(2:5) = MT_TRIA3
-            elseif(cell_type == MT_PYRAM13 .or. cell_type == MT_PYRAM19) then
+            elseif (cell_type == MT_PYRAM13 .or. cell_type == MT_PYRAM19) then
                 face_type(1) = MT_QUAD8
                 face_type(2:5) = MT_TRIA6
-                face_loc(5:8,1) = [6,7,8,9]
-                face_loc(4:6,2) = [6,11,10]
-                face_loc(4:6,3) = [7,12,11]
-                face_loc(4:6,4) = [8,13,12]
-                face_loc(4:6,5) = [9,10,13]
-                if(cell_type == MT_PYRAM19) then
+                face_loc(5:8, 1) = [6, 7, 8, 9]
+                face_loc(4:6, 2) = [6, 11, 10]
+                face_loc(4:6, 3) = [7, 12, 11]
+                face_loc(4:6, 4) = [8, 13, 12]
+                face_loc(4:6, 5) = [9, 10, 13]
+                if (cell_type == MT_PYRAM19) then
                     face_type(1) = MT_QUAD9
                     face_type(2:5) = MT_TRIA7
-                    face_loc(9,1) = 14
-                    face_loc(7,2:5) = [15,16,17,18]
+                    face_loc(9, 1) = 14
+                    face_loc(7, 2:5) = [15, 16, 17, 18]
                 end if
             else
                 ASSERT(ASTER_FALSE)
@@ -877,12 +877,12 @@ contains
         end do
         if (cell_type .eq. MT_HEXA9) then
             nodes_loc(1:8) = [1, 2, 3, 4, 5, 6, 7, 8]
-            nodes_loc(9)   = 27
-        endif
+            nodes_loc(9) = 27
+        end if
         if (cell_type .eq. MT_PENTA7) then
             nodes_loc(1:6) = [1, 2, 3, 4, 5, 6]
-            nodes_loc(7)   = 21
-        endif
+            nodes_loc(7) = 21
+        end if
 !
     end subroutine
 !
@@ -893,7 +893,7 @@ contains
         implicit none
 !
         integer, intent(in) :: cell_type
-        integer, intent(out) :: nb_sub, sub_type(10), sub_loc(10,10), conv_type(10)
+        integer, intent(out) :: nb_sub, sub_type(10), sub_loc(10, 10), conv_type(10)
 ! --------------------------------------------------------------------------------------------------
 ! Get subdivision of a cell (node connectivity)
 !
@@ -902,89 +902,89 @@ contains
         sub_type = 0
         sub_loc = 0
 !
-        if(cell_type == MT_SEG2 .or. cell_type == MT_SEG3) then
+        if (cell_type == MT_SEG2 .or. cell_type == MT_SEG3) then
             nb_sub = 2
             sub_type(1:nb_sub) = MT_SEG2
             conv_type(1:nb_sub) = cell_type
-            sub_loc(1:2,1) = [1,3]
-            sub_loc(1:2,2) = [2,3]
-        elseif(cell_type == MT_QUAD4 .or. cell_type == MT_QUAD8 .or. cell_type == MT_QUAD9) then
+            sub_loc(1:2, 1) = [1, 3]
+            sub_loc(1:2, 2) = [2, 3]
+        elseif (cell_type == MT_QUAD4 .or. cell_type == MT_QUAD8 .or. cell_type == MT_QUAD9) then
             nb_sub = 4
             sub_type(1:nb_sub) = MT_QUAD4
             conv_type(1:nb_sub) = cell_type
-            sub_loc(1:4,1) = [1,5,9,8]
-            sub_loc(1:4,2) = [2,6,9,5]
-            sub_loc(1:4,3) = [3,7,9,6]
-            sub_loc(1:4,4) = [4,8,9,7]
-        elseif(cell_type == MT_TRIA3 .or. cell_type == MT_TRIA6 .or. cell_type == MT_TRIA7) then
+            sub_loc(1:4, 1) = [1, 5, 9, 8]
+            sub_loc(1:4, 2) = [2, 6, 9, 5]
+            sub_loc(1:4, 3) = [3, 7, 9, 6]
+            sub_loc(1:4, 4) = [4, 8, 9, 7]
+        elseif (cell_type == MT_TRIA3 .or. cell_type == MT_TRIA6 .or. cell_type == MT_TRIA7) then
             nb_sub = 4
             sub_type(1:nb_sub) = MT_TRIA3
             conv_type(1:nb_sub) = cell_type
-            sub_loc(1:3,1) = [1,4,6]
-            sub_loc(1:3,2) = [2,5,4]
-            sub_loc(1:3,3) = [3,6,5]
-            sub_loc(1:3,4) = [4,5,6]
-        elseif(cell_type == MT_HEXA8 .or. cell_type == MT_HEXA20 .or. cell_type == MT_HEXA27) then
+            sub_loc(1:3, 1) = [1, 4, 6]
+            sub_loc(1:3, 2) = [2, 5, 4]
+            sub_loc(1:3, 3) = [3, 6, 5]
+            sub_loc(1:3, 4) = [4, 5, 6]
+        elseif (cell_type == MT_HEXA8 .or. cell_type == MT_HEXA20 .or. cell_type == MT_HEXA27) then
             nb_sub = 8
             sub_type(1:nb_sub) = MT_HEXA8
             conv_type(1:nb_sub) = cell_type
-            sub_loc(1:8,1) = [1,9,21,12,13,22,27,25]
-            sub_loc(1:8,2) = [2,10,21,9,14,23,27,22]
-            sub_loc(1:8,3) = [3,11,21,10,15,24,27,23]
-            sub_loc(1:8,4) = [4,12,21,11,16,25,27,24]
-            sub_loc(1:8,5) = [13,22,27,25,5,17,26,20]
-            sub_loc(1:8,6) = [14,23,27,22,6,18,26,17]
-            sub_loc(1:8,7) = [15,24,27,23,7,19,26,18]
-            sub_loc(1:8,8) = [16,25,27,24,8,20,26,19]
-        elseif(cell_type == MT_TETRA4 .or. cell_type == MT_TETRA10 .or. &
+            sub_loc(1:8, 1) = [1, 9, 21, 12, 13, 22, 27, 25]
+            sub_loc(1:8, 2) = [2, 10, 21, 9, 14, 23, 27, 22]
+            sub_loc(1:8, 3) = [3, 11, 21, 10, 15, 24, 27, 23]
+            sub_loc(1:8, 4) = [4, 12, 21, 11, 16, 25, 27, 24]
+            sub_loc(1:8, 5) = [13, 22, 27, 25, 5, 17, 26, 20]
+            sub_loc(1:8, 6) = [14, 23, 27, 22, 6, 18, 26, 17]
+            sub_loc(1:8, 7) = [15, 24, 27, 23, 7, 19, 26, 18]
+            sub_loc(1:8, 8) = [16, 25, 27, 24, 8, 20, 26, 19]
+        elseif (cell_type == MT_TETRA4 .or. cell_type == MT_TETRA10 .or. &
                 cell_type == MT_TETRA15) then
             nb_sub = 8
             conv_type(1:nb_sub) = cell_type
             sub_type(1:nb_sub) = MT_TETRA4
-            sub_loc(1:4,1) = [1,5,7,8]
-            sub_loc(1:4,2) = [2,6,5,9]
-            sub_loc(1:4,3) = [3,10,7,6]
-            sub_loc(1:4,4) = [4,8,10,9]
-            sub_loc(1:4,5) = [5,6,7,9]
-            sub_loc(1:4,6) = [6,9,10,7]
-            sub_loc(1:4,7) = [8,9,5,7]
-            sub_loc(1:4,8) = [8,10,9,7]
-        elseif(cell_type == MT_PENTA6 .or. cell_type == MT_PENTA15 .or. cell_type == MT_PENTA18 &
+            sub_loc(1:4, 1) = [1, 5, 7, 8]
+            sub_loc(1:4, 2) = [2, 6, 5, 9]
+            sub_loc(1:4, 3) = [3, 10, 7, 6]
+            sub_loc(1:4, 4) = [4, 8, 10, 9]
+            sub_loc(1:4, 5) = [5, 6, 7, 9]
+            sub_loc(1:4, 6) = [6, 9, 10, 7]
+            sub_loc(1:4, 7) = [8, 9, 5, 7]
+            sub_loc(1:4, 8) = [8, 10, 9, 7]
+        elseif (cell_type == MT_PENTA6 .or. cell_type == MT_PENTA15 .or. cell_type == MT_PENTA18 &
                 .or. cell_type == MT_PENTA21) then
             nb_sub = 8
             sub_type(1:nb_sub) = MT_PENTA6
             conv_type(1:nb_sub) = cell_type
-            sub_loc(1:6,1) = [1,7,9,10,16,18]
-            sub_loc(1:6,2) = [7,2,8,16,11,17]
-            sub_loc(1:6,3) = [9,7,8,18,16,17]
-            sub_loc(1:6,4) = [9,8,3,18,17,12]
-            sub_loc(1:6,5) = [10,16,18,4,13,15]
-            sub_loc(1:6,6) = [16,11,17,13,5,14]
-            sub_loc(1:6,7) = [18,16,17,15,13,14]
-            sub_loc(1:6,8) = [18,17,12,15,14,6]
-        elseif(cell_type == MT_PYRAM5 .or. cell_type == MT_PYRAM13 .or. &
+            sub_loc(1:6, 1) = [1, 7, 9, 10, 16, 18]
+            sub_loc(1:6, 2) = [7, 2, 8, 16, 11, 17]
+            sub_loc(1:6, 3) = [9, 7, 8, 18, 16, 17]
+            sub_loc(1:6, 4) = [9, 8, 3, 18, 17, 12]
+            sub_loc(1:6, 5) = [10, 16, 18, 4, 13, 15]
+            sub_loc(1:6, 6) = [16, 11, 17, 13, 5, 14]
+            sub_loc(1:6, 7) = [18, 16, 17, 15, 13, 14]
+            sub_loc(1:6, 8) = [18, 17, 12, 15, 14, 6]
+        elseif (cell_type == MT_PYRAM5 .or. cell_type == MT_PYRAM13 .or. &
                 cell_type == MT_PYRAM19) then
             nb_sub = 10
             sub_type(1:6) = MT_PYRAM5
             conv_type(1:6) = cell_type
-            sub_loc(1:5,1) = [1,6,14,9,10]
-            sub_loc(1:5,2) = [6,2,7,14,11]
-            sub_loc(1:5,3) = [3,8,14,7,12]
-            sub_loc(1:5,4) = [4,9,14,8,13]
-            sub_loc(1:5,5) = [10,11,12,13,5]
-            sub_loc(1:5,6) = [13,12,11,10,14]
+            sub_loc(1:5, 1) = [1, 6, 14, 9, 10]
+            sub_loc(1:5, 2) = [6, 2, 7, 14, 11]
+            sub_loc(1:5, 3) = [3, 8, 14, 7, 12]
+            sub_loc(1:5, 4) = [4, 9, 14, 8, 13]
+            sub_loc(1:5, 5) = [10, 11, 12, 13, 5]
+            sub_loc(1:5, 6) = [13, 12, 11, 10, 14]
             sub_type(7:10) = MT_TETRA4
-            sub_loc(1:4,7) = [6,10,11,14]
-            sub_loc(1:4,8) = [7,11,12,14]
-            sub_loc(1:4,9) = [8,12,13,14]
-            sub_loc(1:4,10) = [9,13,10,14]
+            sub_loc(1:4, 7) = [6, 10, 11, 14]
+            sub_loc(1:4, 8) = [7, 11, 12, 14]
+            sub_loc(1:4, 9) = [8, 12, 13, 14]
+            sub_loc(1:4, 10) = [9, 13, 10, 14]
             select case (cell_type)
-                case (MT_PYRAM5)
-                    conv_type(7:10) = MT_TETRA4
-                case (MT_PYRAM13)
-                    conv_type(7:10) = MT_TETRA10
-                case (MT_PYRAM19)
-                    conv_type(7:10) = MT_TETRA15
+            case (MT_PYRAM5)
+                conv_type(7:10) = MT_TETRA4
+            case (MT_PYRAM13)
+                conv_type(7:10) = MT_TETRA10
+            case (MT_PYRAM19)
+                conv_type(7:10) = MT_TETRA15
             end select
         else
             ASSERT(ASTER_FALSE)
@@ -1020,46 +1020,46 @@ contains
 !
         implicit none
 !
-            class(Mmesh), intent(inout) :: this
-            integer, intent(in) :: cell_id
+        class(Mmesh), intent(inout) :: this
+        integer, intent(in) :: cell_id
 !
-            integer :: cell_type, cell_dim, cell_nodes(27), nb_nodes, cell_index
-            integer, pointer :: v_connex(:) => null()
+        integer :: cell_type, cell_dim, cell_nodes(27), nb_nodes, cell_index
+        integer, pointer :: v_connex(:) => null()
 !
-            ASSERT(this%nb_total_cells < this%max_cells)
-            this%nb_cells = this%nb_cells + 1
-            this%nb_total_cells = this%nb_total_cells + 1
-            cell_type = this%converter%map_type(this%v_typema(cell_id))
-            cell_dim = this%converter%dim(cell_type)
+        ASSERT(this%nb_total_cells < this%max_cells)
+        this%nb_cells = this%nb_cells+1
+        this%nb_total_cells = this%nb_total_cells+1
+        cell_type = this%converter%map_type(this%v_typema(cell_id))
+        cell_dim = this%converter%dim(cell_type)
 !
-            call jeveuo(jexnum(this%connex_in, cell_id), 'L',  vi = v_connex)
-            nb_nodes = this%converter%nno(cell_type)
-            cell_nodes(1:nb_nodes) = v_connex(1:nb_nodes)
+        call jeveuo(jexnum(this%connex_in, cell_id), 'L', vi=v_connex)
+        nb_nodes = this%converter%nno(cell_type)
+        cell_nodes(1:nb_nodes) = v_connex(1:nb_nodes)
 !
-            if(this%debug) then
-                print*, "Cell ", this%nb_total_cells, ": ", cell_type, &
+        if (this%debug) then
+            print *, "Cell ", this%nb_total_cells, ": ", cell_type, &
                 this%converter%name(cell_type), cell_dim
-            end if
+        end if
 !
-            if(cell_dim == 3) then
-                cell_index = this%add_volume(cell_type, cell_nodes)
-            elseif(cell_dim == 2) then
-                cell_index = this%add_face(cell_type, cell_nodes)
-            elseif(cell_dim == 1) then
-                cell_index = this%add_edge(cell_type, cell_nodes)
-            elseif(cell_dim == 0) then
-                cell_index = this%add_point1(cell_type, cell_nodes)
-            else
-                ASSERT(ASTER_FALSE)
-            end if
+        if (cell_dim == 3) then
+            cell_index = this%add_volume(cell_type, cell_nodes)
+        elseif (cell_dim == 2) then
+            cell_index = this%add_face(cell_type, cell_nodes)
+        elseif (cell_dim == 1) then
+            cell_index = this%add_edge(cell_type, cell_nodes)
+        elseif (cell_dim == 0) then
+            cell_index = this%add_point1(cell_type, cell_nodes)
+        else
+            ASSERT(ASTER_FALSE)
+        end if
 !
-            this%cells(this%nb_total_cells)%type = cell_type
-            this%cells(this%nb_total_cells)%dim = cell_dim
-            this%cells(this%nb_total_cells)%id = this%nb_total_cells
-            this%cells(this%nb_total_cells)%ss_id = cell_index
-            this%cells(this%nb_total_cells)%nodes(1:nb_nodes) = cell_nodes(1:nb_nodes)
-            call jenuno(jexnum(this%mesh_in//'.NOMMAI', cell_id), &
-                this%cells(this%nb_total_cells)%name)
+        this%cells(this%nb_total_cells)%type = cell_type
+        this%cells(this%nb_total_cells)%dim = cell_dim
+        this%cells(this%nb_total_cells)%id = this%nb_total_cells
+        this%cells(this%nb_total_cells)%ss_id = cell_index
+        this%cells(this%nb_total_cells)%nodes(1:nb_nodes) = cell_nodes(1:nb_nodes)
+        call jenuno(jexnum(this%mesh_in//'.NOMMAI', cell_id), &
+                    this%cells(this%nb_total_cells)%name)
 !
     end subroutine
 !
@@ -1069,66 +1069,66 @@ contains
 !
         implicit none
 !
-            class(Mmesh), intent(inout) :: this
-            integer, intent(in) :: type, nodes(27)
-            integer :: volume_id
+        class(Mmesh), intent(inout) :: this
+        integer, intent(in) :: type, nodes(27)
+        integer :: volume_id
 ! ----------------------------------------------------------------------
-            integer :: nno, i_face
-            integer :: nb_edges, edge_type(12), edge_loc(3,12), edge_id, edge_nno
-            integer :: nb_faces, face_type(6), face_loc(9,6), i_node, i_edge
-            integer :: face_nno, face_nodes(27), face_id, edge_nodes(27)
+        integer :: nno, i_face
+        integer :: nb_edges, edge_type(12), edge_loc(3, 12), edge_id, edge_nno
+        integer :: nb_faces, face_type(6), face_loc(9, 6), i_node, i_edge
+        integer :: face_nno, face_nodes(27), face_id, edge_nodes(27)
 !
-            ASSERT(this%converter%dim(type) == 3)
-            nno = this%converter%nno(type)
+        ASSERT(this%converter%dim(type) == 3)
+        nno = this%converter%nno(type)
 !
-            this%nb_volumes = this%nb_volumes + 1
-            if(this%nb_volumes > this%max_volumes) then
-                call this%increase_memory("VOLUMES ", 2*this%max_volumes)
-            end if
-            ASSERT(this%nb_volumes <= this%max_volumes)
-            volume_id = this%nb_volumes
-            this%volumes(volume_id)%type = type
-            this%volumes(volume_id)%nodes(1:nno) = nodes(1:nno)
+        this%nb_volumes = this%nb_volumes+1
+        if (this%nb_volumes > this%max_volumes) then
+            call this%increase_memory("VOLUMES ", 2*this%max_volumes)
+        end if
+        ASSERT(this%nb_volumes <= this%max_volumes)
+        volume_id = this%nb_volumes
+        this%volumes(volume_id)%type = type
+        this%volumes(volume_id)%nodes(1:nno) = nodes(1:nno)
 ! --- create edges
-            call numbering_edge(type, nb_edges, edge_type, edge_loc)
-            this%volumes(volume_id)%nb_edges = nb_edges
-            do i_edge = 1, nb_edges
-                edge_nno = this%converter%nno(edge_type(i_edge))
-                edge_nodes = 0
-                do i_node = 1, edge_nno
-                    edge_nodes(i_node) = nodes(edge_loc(i_node, i_edge))
-                end do
-                edge_id = this%add_edge(edge_type(i_edge), edge_nodes)
-                this%volumes(volume_id)%edges(i_edge) = edge_id
+        call numbering_edge(type, nb_edges, edge_type, edge_loc)
+        this%volumes(volume_id)%nb_edges = nb_edges
+        do i_edge = 1, nb_edges
+            edge_nno = this%converter%nno(edge_type(i_edge))
+            edge_nodes = 0
+            do i_node = 1, edge_nno
+                edge_nodes(i_node) = nodes(edge_loc(i_node, i_edge))
             end do
+            edge_id = this%add_edge(edge_type(i_edge), edge_nodes)
+            this%volumes(volume_id)%edges(i_edge) = edge_id
+        end do
 ! --- create faces
-            call numbering_face(type, nb_faces, face_type, face_loc)
-            this%volumes(volume_id)%nb_faces = nb_faces
-            do i_face = 1, nb_faces
-                face_nno = this%converter%nno(face_type(i_face))
-                face_nodes = 0
-                do i_node = 1, face_nno
-                    face_nodes(i_node) = nodes(face_loc(i_node, i_face))
-                end do
-                face_id = this%add_face(face_type(i_face), face_nodes)
-                this%volumes(volume_id)%faces(i_face) = face_id
+        call numbering_face(type, nb_faces, face_type, face_loc)
+        this%volumes(volume_id)%nb_faces = nb_faces
+        do i_face = 1, nb_faces
+            face_nno = this%converter%nno(face_type(i_face))
+            face_nodes = 0
+            do i_node = 1, face_nno
+                face_nodes(i_node) = nodes(face_loc(i_node, i_face))
             end do
+            face_id = this%add_face(face_type(i_face), face_nodes)
+            this%volumes(volume_id)%faces(i_face) = face_id
+        end do
 !
-            call this%convert_volume(volume_id)
+        call this%convert_volume(volume_id)
 !
-            if(this%debug) then
-                print*, "Add volume: ", volume_id
-                print*, "- Find: ", ASTER_FALSE
-                print*, "- Type: ", this%converter%name(this%volumes(volume_id)%type), &
-                                    "(",this%volumes(volume_id)%type, ")"
-                print*, "- Owner: ", this%owner_cell(nno, this%volumes(volume_id)%nodes)
-                print*, "- Nodes: ", this%volumes(volume_id)%nodes
-                print*, "- Edges: ", this%volumes(volume_id)%edges
-                print*, "- Faces: ", this%volumes(volume_id)%faces
-                if(mult_elem(nno, this%volumes(volume_id)%nodes)) then
-                    ASSERT(ASTER_FALSE)
-                end if
+        if (this%debug) then
+            print *, "Add volume: ", volume_id
+            print *, "- Find: ", ASTER_FALSE
+            print *, "- Type: ", this%converter%name(this%volumes(volume_id)%type), &
+                "(", this%volumes(volume_id)%type, ")"
+            print *, "- Owner: ", this%owner_cell(nno, this%volumes(volume_id)%nodes)
+            print *, "- Nodes: ", this%volumes(volume_id)%nodes
+            print *, "- Edges: ", this%volumes(volume_id)%edges
+            print *, "- Faces: ", this%volumes(volume_id)%faces
+            if (mult_elem(nno, this%volumes(volume_id)%nodes)) then
+                ASSERT(ASTER_FALSE)
             end if
+        end if
 !
     end function
 !
@@ -1138,83 +1138,83 @@ contains
 !
         implicit none
 !
-            class(Mmesh), intent(inout) :: this
-            integer, intent(in) :: face_type, nodes(27)
-            integer :: face_id
+        class(Mmesh), intent(inout) :: this
+        integer, intent(in) :: face_type, nodes(27)
+        integer :: face_id
 ! ----------------------------------------------------------------------
-            integer :: nno, nnos, nnos_sort(4), i_edge, edge_id
-            integer :: nb_edge, edge_type(12), edge_loc(3,12), i_node
-            integer :: edge_nno, edge_nodes(27), old_size
-            integer, allocatable :: new_faces(:)
-            aster_logical :: find
+        integer :: nno, nnos, nnos_sort(4), i_edge, edge_id
+        integer :: nb_edge, edge_type(12), edge_loc(3, 12), i_node
+        integer :: edge_nno, edge_nodes(27), old_size
+        integer, allocatable :: new_faces(:)
+        aster_logical :: find
 !
-            ASSERT(face_type > 0)
-            ASSERT(this%converter%dim(face_type) == 2)
-            nno = this%converter%nno(face_type)
-            nnos = this%converter%nnos(face_type)
-            nnos_sort(1:nnos) = nodes(1:nnos)
+        ASSERT(face_type > 0)
+        ASSERT(this%converter%dim(face_type) == 2)
+        nno = this%converter%nno(face_type)
+        nnos = this%converter%nnos(face_type)
+        nnos_sort(1:nnos) = nodes(1:nnos)
 !
-            call circ_perm(nnos, nnos_sort)
+        call circ_perm(nnos, nnos_sort)
 !
-            call this%find_face(nnos, nnos_sort, find, face_id)
+        call this%find_face(nnos, nnos_sort, find, face_id)
 !
-            if(.not. find) then
-                this%nb_faces = this%nb_faces + 1
-                if(this%nb_faces > this%max_faces) then
-                    call this%increase_memory("FACES   ", 2*this%max_faces)
-                end if
-                ASSERT(this%nb_faces <= this%max_faces)
-                face_id = this%nb_faces
-                this%faces(face_id)%type = face_type
-                this%faces(face_id)%nodes(1:nno) = nodes(1:nno)
-                this%faces(face_id)%nnos = nnos
-                this%faces(face_id)%nnos_sort(1:nnos) = nnos_sort(1:nnos)
+        if (.not. find) then
+            this%nb_faces = this%nb_faces+1
+            if (this%nb_faces > this%max_faces) then
+                call this%increase_memory("FACES   ", 2*this%max_faces)
+            end if
+            ASSERT(this%nb_faces <= this%max_faces)
+            face_id = this%nb_faces
+            this%faces(face_id)%type = face_type
+            this%faces(face_id)%nodes(1:nno) = nodes(1:nno)
+            this%faces(face_id)%nnos = nnos
+            this%faces(face_id)%nnos_sort(1:nnos) = nnos_sort(1:nnos)
 ! --- create edges
-                call numbering_edge(face_type, nb_edge, edge_type, edge_loc)
-                this%faces(face_id)%nb_edges = nb_edge
-                do i_edge = 1, nb_edge
-                    edge_nno = this%converter%nno(edge_type(i_edge))
-                    do i_node = 1, edge_nno
-                        edge_nodes(i_node) = nodes(edge_loc(i_node, i_edge))
-                    end do
-                    edge_id = this%add_edge(edge_type(i_edge), edge_nodes)
-                    this%faces(face_id)%edges(i_edge) = edge_id
+            call numbering_edge(face_type, nb_edge, edge_type, edge_loc)
+            this%faces(face_id)%nb_edges = nb_edge
+            do i_edge = 1, nb_edge
+                edge_nno = this%converter%nno(edge_type(i_edge))
+                do i_node = 1, edge_nno
+                    edge_nodes(i_node) = nodes(edge_loc(i_node, i_edge))
                 end do
+                edge_id = this%add_edge(edge_type(i_edge), edge_nodes)
+                this%faces(face_id)%edges(i_edge) = edge_id
+            end do
 !
-                if(this%nodes(nnos_sort(1))%nb_faces >= this%nodes(nnos_sort(1))%max_faces) then
-                    if(this%nodes(nnos_sort(1))%max_faces > 0) then
-                        old_size = this%nodes(nnos_sort(1))%max_faces
-                        allocate(new_faces(old_size))
-                        new_faces(1:old_size) = this%nodes(nnos_sort(1))%faces(1:old_size)
-                        deallocate(this%nodes(nnos_sort(1))%faces)
-                        allocate(this%nodes(nnos_sort(1))%faces(2*old_size))
-                        this%nodes(nnos_sort(1))%faces(1:old_size) = new_faces(1:old_size)
-                        deallocate(new_faces)
-                        this%nodes(nnos_sort(1))%max_faces = 2 * old_size
-                    else
-                        this%nodes(nnos_sort(1))%max_faces = 30
-                        allocate(this%nodes(nnos_sort(1))%faces(30))
-                    end if
-                end if
-                this%nodes(nnos_sort(1))%nb_faces = this%nodes(nnos_sort(1))%nb_faces + 1
-                this%nodes(nnos_sort(1))%faces(this%nodes(nnos_sort(1))%nb_faces) = face_id
-!
-                call this%convert_face(face_id)
-            end if
-!
-            if(this%debug) then
-                print*, "Add face: ", face_id
-                print*, "- Find: ", find
-                print*, "- Type: ", this%converter%name(this%faces(face_id)%type), &
-                                    "(",this%faces(face_id)%type, ")"
-                print*, "- Owner: ", this%owner_cell(nno, this%faces(face_id)%nodes)
-                print*, "- Nodes: ", this%faces(face_id)%nodes
-                print*, "- NNOS: ", this%faces(face_id)%nnos_sort
-                print*, "- Edges: ", this%faces(face_id)%edges
-                if(mult_elem(nno, this%faces(face_id)%nodes)) then
-                    ASSERT(ASTER_FALSE)
+            if (this%nodes(nnos_sort(1))%nb_faces >= this%nodes(nnos_sort(1))%max_faces) then
+                if (this%nodes(nnos_sort(1))%max_faces > 0) then
+                    old_size = this%nodes(nnos_sort(1))%max_faces
+                    allocate (new_faces(old_size))
+                    new_faces(1:old_size) = this%nodes(nnos_sort(1))%faces(1:old_size)
+                    deallocate (this%nodes(nnos_sort(1))%faces)
+                    allocate (this%nodes(nnos_sort(1))%faces(2*old_size))
+                    this%nodes(nnos_sort(1))%faces(1:old_size) = new_faces(1:old_size)
+                    deallocate (new_faces)
+                    this%nodes(nnos_sort(1))%max_faces = 2*old_size
+                else
+                    this%nodes(nnos_sort(1))%max_faces = 30
+                    allocate (this%nodes(nnos_sort(1))%faces(30))
                 end if
             end if
+            this%nodes(nnos_sort(1))%nb_faces = this%nodes(nnos_sort(1))%nb_faces+1
+            this%nodes(nnos_sort(1))%faces(this%nodes(nnos_sort(1))%nb_faces) = face_id
+!
+            call this%convert_face(face_id)
+        end if
+!
+        if (this%debug) then
+            print *, "Add face: ", face_id
+            print *, "- Find: ", find
+            print *, "- Type: ", this%converter%name(this%faces(face_id)%type), &
+                "(", this%faces(face_id)%type, ")"
+            print *, "- Owner: ", this%owner_cell(nno, this%faces(face_id)%nodes)
+            print *, "- Nodes: ", this%faces(face_id)%nodes
+            print *, "- NNOS: ", this%faces(face_id)%nnos_sort
+            print *, "- Edges: ", this%faces(face_id)%edges
+            if (mult_elem(nno, this%faces(face_id)%nodes)) then
+                ASSERT(ASTER_FALSE)
+            end if
+        end if
 !
     end function
 !
@@ -1224,67 +1224,67 @@ contains
 !
         implicit none
 !
-            class(Mmesh), intent(inout) :: this
-            integer, intent(in) :: type, nodes(27)
-            integer :: edge_id
+        class(Mmesh), intent(inout) :: this
+        integer, intent(in) :: type, nodes(27)
+        integer :: edge_id
 ! ----------------------------------------------------------------------
-            integer :: nno, nnos_sort(2), old_size
-            integer, allocatable :: new_edges(:)
-            aster_logical :: find
+        integer :: nno, nnos_sort(2), old_size
+        integer, allocatable :: new_edges(:)
+        aster_logical :: find
 !
-            ASSERT(this%converter%dim(type) == 1)
-            nno = this%converter%nno(type)
-            nnos_sort(1:2) = nodes(1:2)
+        ASSERT(this%converter%dim(type) == 1)
+        nno = this%converter%nno(type)
+        nnos_sort(1:2) = nodes(1:2)
 !
-            call circ_perm(2, nnos_sort)
+        call circ_perm(2, nnos_sort)
 !
-            call this%find_edge(nnos_sort, find, edge_id)
+        call this%find_edge(nnos_sort, find, edge_id)
 !
-            if(.not. find) then
-                this%nb_edges = this%nb_edges + 1
-                if(this%nb_edges > this%max_edges) then
-                    call this%increase_memory("EDGES   ", 2*this%max_edges)
-                end if
-                ASSERT(this%nb_edges <= this%max_edges)
-                edge_id = this%nb_edges
-                this%edges(edge_id)%type = type
-                this%edges(edge_id)%nodes(1:nno) = nodes(1:nno)
-                this%edges(edge_id)%nnos_sort = nnos_sort
-!
-                if(this%nodes(nnos_sort(1))%nb_edges >= this%nodes(nnos_sort(1))%max_edges) then
-                    if(this%nodes(nnos_sort(1))%max_edges > 0) then
-                        old_size = this%nodes(nnos_sort(1))%max_edges
-                        allocate(new_edges(old_size))
-                        new_edges(1:old_size) = this%nodes(nnos_sort(1))%edges(1:old_size)
-                        deallocate(this%nodes(nnos_sort(1))%edges)
-                        allocate(this%nodes(nnos_sort(1))%edges(2*old_size))
-                        this%nodes(nnos_sort(1))%edges(1:old_size) = new_edges(1:old_size)
-                        deallocate(new_edges)
-                        this%nodes(nnos_sort(1))%max_edges = 2 * old_size
-                    else
-                        this%nodes(nnos_sort(1))%max_edges = 30
-                        allocate(this%nodes(nnos_sort(1))%edges(30))
-                    end if
-                end if
-                this%nodes(nnos_sort(1))%nb_edges = this%nodes(nnos_sort(1))%nb_edges + 1
-                this%nodes(nnos_sort(1))%edges(this%nodes(nnos_sort(1))%nb_edges) = edge_id
-!
-                call this%convert_edge(edge_id)
+        if (.not. find) then
+            this%nb_edges = this%nb_edges+1
+            if (this%nb_edges > this%max_edges) then
+                call this%increase_memory("EDGES   ", 2*this%max_edges)
             end if
+            ASSERT(this%nb_edges <= this%max_edges)
+            edge_id = this%nb_edges
+            this%edges(edge_id)%type = type
+            this%edges(edge_id)%nodes(1:nno) = nodes(1:nno)
+            this%edges(edge_id)%nnos_sort = nnos_sort
 !
-            if(this%debug) then
-                print*, "Add edge: ", edge_id
-                print*, "- Find: ", find
-                print*, "- Type: ", this%converter%name(this%edges(edge_id)%type), &
-                                    "(",this%edges(edge_id)%type, ")"
-                print*, "- Owner: ", this%owner_cell(3, this%edges(edge_id)%nodes)
-                print*, "- Nodes: ", this%edges(edge_id)%nodes
-                print*, "- NNOS: ", this%edges(edge_id)%nnos_sort
-                if(mult_elem(nno, this%edges(edge_id)%nodes)) then
-                    ASSERT(ASTER_FALSE)
+            if (this%nodes(nnos_sort(1))%nb_edges >= this%nodes(nnos_sort(1))%max_edges) then
+                if (this%nodes(nnos_sort(1))%max_edges > 0) then
+                    old_size = this%nodes(nnos_sort(1))%max_edges
+                    allocate (new_edges(old_size))
+                    new_edges(1:old_size) = this%nodes(nnos_sort(1))%edges(1:old_size)
+                    deallocate (this%nodes(nnos_sort(1))%edges)
+                    allocate (this%nodes(nnos_sort(1))%edges(2*old_size))
+                    this%nodes(nnos_sort(1))%edges(1:old_size) = new_edges(1:old_size)
+                    deallocate (new_edges)
+                    this%nodes(nnos_sort(1))%max_edges = 2*old_size
+                else
+                    this%nodes(nnos_sort(1))%max_edges = 30
+                    allocate (this%nodes(nnos_sort(1))%edges(30))
                 end if
+            end if
+            this%nodes(nnos_sort(1))%nb_edges = this%nodes(nnos_sort(1))%nb_edges+1
+            this%nodes(nnos_sort(1))%edges(this%nodes(nnos_sort(1))%nb_edges) = edge_id
+!
+            call this%convert_edge(edge_id)
+        end if
+!
+        if (this%debug) then
+            print *, "Add edge: ", edge_id
+            print *, "- Find: ", find
+            print *, "- Type: ", this%converter%name(this%edges(edge_id)%type), &
+                "(", this%edges(edge_id)%type, ")"
+            print *, "- Owner: ", this%owner_cell(3, this%edges(edge_id)%nodes)
+            print *, "- Nodes: ", this%edges(edge_id)%nodes
+            print *, "- NNOS: ", this%edges(edge_id)%nnos_sort
+            if (mult_elem(nno, this%edges(edge_id)%nodes)) then
+                ASSERT(ASTER_FALSE)
+            end if
 
-            end if
+        end if
 !
     end function
 !
@@ -1294,21 +1294,21 @@ contains
 !
         implicit none
 !
-            class(Mmesh), intent(inout) :: this
-            integer, intent(in) :: type, nodes(27)
-            integer :: point_id
+        class(Mmesh), intent(inout) :: this
+        integer, intent(in) :: type, nodes(27)
+        integer :: point_id
 ! ----------------------------------------------------------------------
 !
-            ASSERT(this%converter%dim(type) == 0)
-            ASSERT(this%converter%nno(type) == 1)
-            point_id = 1
+        ASSERT(this%converter%dim(type) == 0)
+        ASSERT(this%converter%nno(type) == 1)
+        point_id = 1
 !
-            if(this%debug) then
-                print*, "Add point1: "
-                print*, "- Type: ", this%converter%name(type), "(", type, ")"
-                print*, "- Nodes: ", nodes(1)
-                print*, "- NNOS: ", nodes(1)
-            end if
+        if (this%debug) then
+            print *, "Add point1: "
+            print *, "- Type: ", this%converter%name(type), "(", type, ")"
+            print *, "- Nodes: ", nodes(1)
+            print *, "- NNOS: ", nodes(1)
+        end if
 !
     end function
 !
@@ -1318,29 +1318,29 @@ contains
 !
         implicit none
 !
-            class(Mmesh), intent(inout) :: this
-            real(kind=8), intent(in) :: coor(3)
-            integer, intent(in) :: owner
-            character(len=8), intent(in), optional :: name
-            integer :: node_id
+        class(Mmesh), intent(inout) :: this
+        real(kind=8), intent(in) :: coor(3)
+        integer, intent(in) :: owner
+        character(len=8), intent(in), optional :: name
+        integer :: node_id
 ! ----------------------------------------------------------------------
 !
-            this%nb_nodes = this%nb_nodes + 1
-            this%nb_total_nodes = this%nb_total_nodes + 1
-            if(this%nb_nodes > this%max_nodes) then
-                call this%increase_memory("NODES   ", 2*this%max_nodes)
-            end if
-            ASSERT(this%nb_nodes <= this%max_nodes)
-            node_id = this%nb_nodes
-            this%nodes(node_id)%id = node_id
-            this%nodes(node_id)%keep = ASTER_TRUE
-            this%nodes(node_id)%coor(1:3) = coor
-            this%nodes(node_id)%owner = owner
-            if(present(name)) then
-                this%nodes(node_id)%name = name
-            else
-                this%nodes(node_id)%name = 'XXXXXXXX'
-            end if
+        this%nb_nodes = this%nb_nodes+1
+        this%nb_total_nodes = this%nb_total_nodes+1
+        if (this%nb_nodes > this%max_nodes) then
+            call this%increase_memory("NODES   ", 2*this%max_nodes)
+        end if
+        ASSERT(this%nb_nodes <= this%max_nodes)
+        node_id = this%nb_nodes
+        this%nodes(node_id)%id = node_id
+        this%nodes(node_id)%keep = ASTER_TRUE
+        this%nodes(node_id)%coor(1:3) = coor
+        this%nodes(node_id)%owner = owner
+        if (present(name)) then
+            this%nodes(node_id)%name = name
+        else
+            this%nodes(node_id)%name = 'XXXXXXXX'
+        end if
 !
     end function
 !
@@ -1350,184 +1350,184 @@ contains
 !
         implicit none
 !
-            class(Mmesh), intent(inout) :: this
-            character(len=8), intent(in) :: mesh_out
+        class(Mmesh), intent(inout) :: this
+        character(len=8), intent(in) :: mesh_out
 ! ------------------------------------------------------------------
-            character(len=24) :: nommai, nomnoe, cooval, coodsc, cooref, grpnoe
-            character(len=24) :: gpptnn, grpmai, gpptnm, connex, titre, typmai, adapma
-            character(len=32) :: name
-            character(len=4) :: dimesp
-            integer :: i_node, nno, i_cell, ntgeo, nbnoma, node_id, iret, nb_no_loc
-            integer :: rank, nbproc, i_proc, deca, cell_id
-            mpi_int :: mrank, msize
-            real(kind=8):: start, end
-            real(kind=8), pointer :: v_coor(:) => null()
-            integer, pointer :: v_int(:) => null()
-            integer, pointer :: v_connex(:) => null()
-            integer, pointer :: v_noex(:) => null()
-            integer, pointer :: v_maex(:) => null()
-            integer, pointer :: v_nuloc(:) => null()
-            integer, pointer :: v_nulogl(:) => null()
-            character(len=24), pointer :: v_k24(:) => null()
+        character(len=24) :: nommai, nomnoe, cooval, coodsc, cooref, grpnoe
+        character(len=24) :: gpptnn, grpmai, gpptnm, connex, titre, typmai, adapma
+        character(len=32) :: name
+        character(len=4) :: dimesp
+        integer :: i_node, nno, i_cell, ntgeo, nbnoma, node_id, iret, nb_no_loc
+        integer :: rank, nbproc, i_proc, deca, cell_id
+        mpi_int :: mrank, msize
+        real(kind=8):: start, end
+        real(kind=8), pointer :: v_coor(:) => null()
+        integer, pointer :: v_int(:) => null()
+        integer, pointer :: v_connex(:) => null()
+        integer, pointer :: v_noex(:) => null()
+        integer, pointer :: v_maex(:) => null()
+        integer, pointer :: v_nuloc(:) => null()
+        integer, pointer :: v_nulogl(:) => null()
+        character(len=24), pointer :: v_k24(:) => null()
 !
-            call jemarq()
+        call jemarq()
 !
-            call this%check_mesh()
+        call this%check_mesh()
 !
-            call asmpi_info(rank = mrank, size = msize)
-            rank = to_aster_int(mrank)
-            nbproc = to_aster_int(msize)
+        call asmpi_info(rank=mrank, size=msize)
+        rank = to_aster_int(mrank)
+        nbproc = to_aster_int(msize)
 !
-            if(this%info >= 2) then
-                print*, "Copying mesh..."
-                call cpu_time(start)
-            end if
+        if (this%info >= 2) then
+            print *, "Copying mesh..."
+            call cpu_time(start)
+        end if
 !
-            call sdmail(mesh_out, nommai, nomnoe, cooval, coodsc,&
-                        cooref, grpnoe, gpptnn, grpmai, gpptnm,&
-                        connex, titre, typmai, adapma)
+        call sdmail(mesh_out, nommai, nomnoe, cooval, coodsc, &
+                    cooref, grpnoe, gpptnn, grpmai, gpptnm, &
+                    connex, titre, typmai, adapma)
 !
 ! --- Create nodes
 !
 ! ------ Set names
-            call jecreo(nomnoe, 'G N K8')
-            call jeecra(nomnoe, 'NOMMAX', this%nb_nodes)
-            do i_node = 1 , this%nb_total_nodes
-                if(this%nodes(i_node)%keep) then
-                    name = jexnom(nomnoe, this%nodes(i_node)%name)
-                    call jeexin(name, iret)
-                    if( iret == 0) then
-                        call jecroc(name)
-                    else
-                        call utmess('F', 'MESH2_3', sk=this%nodes(i_node)%name)
-                    end if
+        call jecreo(nomnoe, 'G N K8')
+        call jeecra(nomnoe, 'NOMMAX', this%nb_nodes)
+        do i_node = 1, this%nb_total_nodes
+            if (this%nodes(i_node)%keep) then
+                name = jexnom(nomnoe, this%nodes(i_node)%name)
+                call jeexin(name, iret)
+                if (iret == 0) then
+                    call jecroc(name)
+                else
+                    call utmess('F', 'MESH2_3', sk=this%nodes(i_node)%name)
                 end if
-            end do
+            end if
+        end do
 ! ------ Copy coordinates
-            call wkvect(cooval, 'G V R', this%nb_nodes*3, vr=v_coor)
-            if(this%isHPC) then
-                call wkvect(mesh_out//'.NOEX', 'G V I', this%nb_nodes, vi=v_noex)
+        call wkvect(cooval, 'G V R', this%nb_nodes*3, vr=v_coor)
+        if (this%isHPC) then
+            call wkvect(mesh_out//'.NOEX', 'G V I', this%nb_nodes, vi=v_noex)
+        end if
+        call codent(this%dim_mesh, 'G', dimesp)
+        call jeecra(cooval, 'DOCU', cval=dimesp)
+        node_id = 0
+        nb_no_loc = 0
+        do i_node = 1, this%nb_total_nodes
+            if (this%nodes(i_node)%keep) then
+                node_id = node_id+1
+                ASSERT(node_id == this%nodes(i_node)%id)
+                v_coor(3*(node_id-1)+1:3*(node_id-1)+3) = this%nodes(i_node)%coor(1:3)
+                if (this%isHPC) then
+                    v_noex(node_id) = this%nodes(i_node)%owner
+                    if (v_noex(node_id) == rank) then
+                        nb_no_loc = nb_no_loc+1
+                    end if
+                end if
             end if
-            call codent(this%dim_mesh, 'G', dimesp)
-            call jeecra(cooval, 'DOCU', cval=dimesp)
-            node_id = 0
-            nb_no_loc = 0
-            do i_node = 1, this%nb_total_nodes
-                if(this%nodes(i_node)%keep) then
-                    node_id = node_id + 1
-                    ASSERT(node_id == this%nodes(i_node)%id)
-                    v_coor(3*(node_id-1)+1:3*(node_id-1)+3) = this%nodes(i_node)%coor(1:3)
-                    if(this%isHPC) then
-                        v_noex(node_id) = this%nodes(i_node)%owner
-                        if(v_noex(node_id) == rank) then
-                            nb_no_loc = nb_no_loc + 1
-                        end if
-                    endif
+        end do
+        ASSERT(node_id == this%nb_nodes)
+! ------ Create Global numbering
+        if (this%isHPC) then
+            call wkvect('&&CREAMA.NOLOC', 'V V I', nbproc, vi=v_nuloc)
+            v_nuloc(rank+1) = nb_no_loc
+            call asmpi_comm_vect('MPI_SUM', 'I', nbval=nbproc, vi=v_nuloc)
+            deca = 0
+            do i_proc = 1, rank
+                deca = deca+v_nuloc(i_proc)
+            end do
+!
+            call wkvect(mesh_out//'.NULOGL', 'G V I', this%nb_nodes, vi=v_nulogl)
+            v_nulogl = -1
+            do i_node = 1, this%nb_nodes
+                if (v_noex(i_node) == rank) then
+                    v_nulogl(i_node) = deca
+                    deca = deca+1
                 end if
             end do
-            ASSERT(node_id == this%nb_nodes)
-! ------ Create Global numbering
-            if(this%isHPC) then
-                call wkvect('&&CREAMA.NOLOC', 'V V I', nbproc, vi=v_nuloc)
-                v_nuloc(rank+1) = nb_no_loc
-                call asmpi_comm_vect('MPI_SUM', 'I', nbval=nbproc, vi=v_nuloc)
-                deca = 0
-                do i_proc = 1, rank
-                    deca = deca + v_nuloc(i_proc)
-                end do
-!
-                call wkvect(mesh_out//'.NULOGL', 'G V I', this%nb_nodes, vi=v_nulogl)
-                v_nulogl = -1
-                do i_node = 1, this%nb_nodes
-                    if(v_noex(i_node) == rank) then
-                        v_nulogl(i_node) = deca
-                        deca = deca + 1
-                    end if
-                end do
-                call jedetr('&&CREAMA.NOLOC')
-            end if
+            call jedetr('&&CREAMA.NOLOC')
+        end if
 ! ------ Type of GEOM_R field
-            call jenonu(jexnom('&CATA.GD.NOMGD', 'GEOM_R'), ntgeo)
-            call wkvect(coodsc, 'G V I', 3, vi=v_int)
-            call jeecra(coodsc, 'DOCU', 0, 'CHNO')
-            v_int(1) = ntgeo
-            v_int(2) = -3
-            v_int(3) = 14
+        call jenonu(jexnom('&CATA.GD.NOMGD', 'GEOM_R'), ntgeo)
+        call wkvect(coodsc, 'G V I', 3, vi=v_int)
+        call jeecra(coodsc, 'DOCU', 0, 'CHNO')
+        v_int(1) = ntgeo
+        v_int(2) = -3
+        v_int(3) = 14
 !
-            call wkvect(cooref, 'G V K24', 4, vk24=v_k24)
-            v_k24(1) = mesh_out
+        call wkvect(cooref, 'G V K24', 4, vk24=v_k24)
+        v_k24(1) = mesh_out
 !
 ! --- Create cells
 !
 ! ------ Set names
-            call jecreo(nommai, 'G N K8')
-            call jeecra(nommai, 'NOMMAX', this%nb_cells)
-            do i_cell = 1, this%nb_total_cells
-                if(this%cells(i_cell)%keep) then
-                    name = jexnom(nommai, this%cells(i_cell)%name)
-                    call jeexin(name, iret)
-                    if( iret == 0) then
-                        call jecroc(name)
-                    else
-                        call utmess('F', 'MESH2_2', sk=this%cells(i_cell)%name)
-                    end if
+        call jecreo(nommai, 'G N K8')
+        call jeecra(nommai, 'NOMMAX', this%nb_cells)
+        do i_cell = 1, this%nb_total_cells
+            if (this%cells(i_cell)%keep) then
+                name = jexnom(nommai, this%cells(i_cell)%name)
+                call jeexin(name, iret)
+                if (iret == 0) then
+                    call jecroc(name)
+                else
+                    call utmess('F', 'MESH2_2', sk=this%cells(i_cell)%name)
                 end if
-            end do
-! ------ Count total number of nodes (repeated)
-            nbnoma = 0
-            do i_cell = 1, this%nb_total_cells
-                if(this%cells(i_cell)%keep) then
-                    nbnoma = nbnoma + this%converter%nno(this%cells(i_cell)%type)
-                end if
-            end do
-! ------ Create connectivity
-            call wkvect(typmai, 'G V I', this%nb_cells, vi=v_int)
-            call jecrec(connex, 'G V I', 'NU', 'CONTIG', 'VARIABLE', this%nb_cells)
-            call jeecra(connex, 'NUTIOC', this%nb_cells)
-            call jeecra(connex, 'LONT', nbnoma)
-            if(this%isHPC) then
-                call wkvect(mesh_out//'.MAEX', 'G V I', this%nb_cells, vi=v_maex)
             end if
+        end do
+! ------ Count total number of nodes (repeated)
+        nbnoma = 0
+        do i_cell = 1, this%nb_total_cells
+            if (this%cells(i_cell)%keep) then
+                nbnoma = nbnoma+this%converter%nno(this%cells(i_cell)%type)
+            end if
+        end do
+! ------ Create connectivity
+        call wkvect(typmai, 'G V I', this%nb_cells, vi=v_int)
+        call jecrec(connex, 'G V I', 'NU', 'CONTIG', 'VARIABLE', this%nb_cells)
+        call jeecra(connex, 'NUTIOC', this%nb_cells)
+        call jeecra(connex, 'LONT', nbnoma)
+        if (this%isHPC) then
+            call wkvect(mesh_out//'.MAEX', 'G V I', this%nb_cells, vi=v_maex)
+        end if
 !
-            do i_cell = 1, this%nb_total_cells
-                if(this%cells(i_cell)%keep) then
-                    cell_id = this%cells(i_cell)%id
-                    v_int(cell_id) = this%converter%cata_type(this%cells(i_cell)%type)
-                    nno = this%converter%nno(this%cells(i_cell)%type)
-                    call jeecra(jexnum(connex, cell_id), 'LONMAX', nno)
-                    call jeecra(jexnum(connex, cell_id), 'LONUTI', nno)
-                    call jeveuo(jexnum(connex, cell_id), 'E', vi=v_connex)
-                    do i_node = 1, nno
-                        v_connex(i_node) = this%nodes(this%cells(i_cell)%nodes(i_node))%id
-                    end do
-                    if(this%isHPC) then
-                        v_maex(cell_id) = this%owner_cell(nno, this%cells(i_cell)%nodes)
-                    end if
+        do i_cell = 1, this%nb_total_cells
+            if (this%cells(i_cell)%keep) then
+                cell_id = this%cells(i_cell)%id
+                v_int(cell_id) = this%converter%cata_type(this%cells(i_cell)%type)
+                nno = this%converter%nno(this%cells(i_cell)%type)
+                call jeecra(jexnum(connex, cell_id), 'LONMAX', nno)
+                call jeecra(jexnum(connex, cell_id), 'LONUTI', nno)
+                call jeveuo(jexnum(connex, cell_id), 'E', vi=v_connex)
+                do i_node = 1, nno
+                    v_connex(i_node) = this%nodes(this%cells(i_cell)%nodes(i_node))%id
+                end do
+                if (this%isHPC) then
+                    v_maex(cell_id) = this%owner_cell(nno, this%cells(i_cell)%nodes)
                 end if
-            end do
+            end if
+        end do
 !
 ! --- Create groups
 !
-            call this%copy_group_no(grpnoe, gpptnn)
-            call this%copy_group_ma(grpmai, gpptnm)
+        call this%copy_group_no(grpnoe, gpptnn)
+        call this%copy_group_ma(grpmai, gpptnm)
 !
 ! --- Create .DIME
 !
-            call wkvect(mesh_out//'.DIME', 'G V I', 6, vi=v_int)
-            v_int(1)= this%nb_nodes
-            v_int(3)= this%nb_cells
-            v_int(6)= this%dim_mesh
+        call wkvect(mesh_out//'.DIME', 'G V I', 6, vi=v_int)
+        v_int(1) = this%nb_nodes
+        v_int(3) = this%nb_cells
+        v_int(6) = this%dim_mesh
 !
 ! --- Create joint for ParallelMesh
 !
-            call this%create_joints(mesh_out)
+        call this%create_joints(mesh_out)
 !
-            if(this%info >= 2) then
-                call cpu_time(end)
-                print*, "... in ", end-start, " seconds."
-            end if
+        if (this%info >= 2) then
+            call cpu_time(end)
+            print *, "... in ", end-start, " seconds."
+        end if
 !
-            call jedema()
+        call jedema()
 !
     end subroutine
 !
@@ -1537,72 +1537,72 @@ contains
 !
         implicit none
 !
-            class(Mmesh), intent(inout) :: this
-            integer, intent(in) :: nb_cells, list_cells(nb_cells)
-            character(len=8), intent(in), optional :: prefix
-            integer, intent(in), optional :: ndinit
+        class(Mmesh), intent(inout) :: this
+        integer, intent(in) :: nb_cells, list_cells(nb_cells)
+        character(len=8), intent(in), optional :: prefix
+        integer, intent(in), optional :: ndinit
 ! ------------------------------------------------------------------
-            integer :: i_cell, cell_id, cell_dim, object_id, nno, cell_type
-            integer :: i_node, nodes_loc(27)
-            real(kind=8):: start, end
+        integer :: i_cell, cell_id, cell_dim, object_id, nno, cell_type
+        integer :: i_node, nodes_loc(27)
+        real(kind=8):: start, end
 !
-            if(this%info >= 2) then
-                print*, "Converting cells..."
-                call cpu_time(start)
+        if (this%info >= 2) then
+            print *, "Converting cells..."
+            call cpu_time(start)
+        end if
+!
+        if (present(prefix)) then
+            this%node_prefix = prefix
+        end if
+        if (present(ndinit)) then
+            this%node_index = ndinit
+        end if
+!
+        do i_cell = 1, nb_cells
+            cell_id = list_cells(i_cell)
+            cell_dim = this%cells(cell_id)%dim
+            cell_type = this%cells(cell_id)%type
+            object_id = this%cells(cell_id)%ss_id
+!
+            if (this%debug) then
+                print *, "Convert ", cell_id, ": ", this%cells(cell_id)%type, &
+                    this%converter%name(this%cells(cell_id)%type), cell_dim
             end if
 !
-            if(present(prefix)) then
-                this%node_prefix = prefix
-            end if
-            if(present(ndinit)) then
-                this%node_index = ndinit
-            end if
-!
-            do i_cell = 1, nb_cells
-                cell_id = list_cells(i_cell)
-                cell_dim = this%cells(cell_id)%dim
-                cell_type = this%cells(cell_id)%type
-                object_id = this%cells(cell_id)%ss_id
-!
-                if(this%debug) then
-                    print*, "Convert ", cell_id, ": ", this%cells(cell_id)%type, &
-                        this%converter%name(this%cells(cell_id)%type), cell_dim
+            if (this%converter%to_convert(cell_type)) then
+                this%cells(cell_id)%type = this%converter%convert_to(cell_type)
+                nno = this%converter%nno(this%cells(cell_id)%type)
+                call this%numbering_nodes(this%cells(cell_id)%type, nodes_loc)
+                this%cells(cell_id)%nodes = 0
+                if (cell_dim == 3) then
+                    do i_node = 1, nno
+                        this%cells(cell_id)%nodes(i_node) = &
+                            this%volumes(object_id)%nodes(nodes_loc(i_node))
+                    end do
+                elseif (cell_dim == 2) then
+                    do i_node = 1, nno
+                        this%cells(cell_id)%nodes(i_node) = &
+                            this%faces(object_id)%nodes(nodes_loc(i_node))
+                    end do
+                elseif (cell_dim == 1) then
+                    do i_node = 1, nno
+                        this%cells(cell_id)%nodes(i_node) = &
+                            this%edges(object_id)%nodes(nodes_loc(i_node))
+                    end do
+                elseif (cell_dim == 0) then
+                    ASSERT(ASTER_FALSE)
+                else
+                    ASSERT(ASTER_FALSE)
                 end if
-!
-                if(this%converter%to_convert(cell_type)) then
-                    this%cells(cell_id)%type = this%converter%convert_to(cell_type)
-                    nno = this%converter%nno(this%cells(cell_id)%type)
-                    call this%numbering_nodes(this%cells(cell_id)%type, nodes_loc)
-                    this%cells(cell_id)%nodes = 0
-                    if(cell_dim == 3) then
-                        do i_node = 1, nno
-                            this%cells(cell_id)%nodes(i_node) = &
-                                this%volumes(object_id)%nodes(nodes_loc(i_node))
-                        end do
-                    elseif(cell_dim == 2) then
-                        do i_node = 1, nno
-                            this%cells(cell_id)%nodes(i_node) = &
-                                this%faces(object_id)%nodes(nodes_loc(i_node))
-                        end do
-                    elseif(cell_dim == 1) then
-                        do i_node = 1, nno
-                            this%cells(cell_id)%nodes(i_node) = &
-                                this%edges(object_id)%nodes(nodes_loc(i_node))
-                        end do
-                    elseif(cell_dim == 0) then
-                        ASSERT(ASTER_FALSE)
-                    else
-                        ASSERT(ASTER_FALSE)
-                    end if
-                end if
-            end do
+            end if
+        end do
 ! --- Keep only necessary nodes
-            call this%update()
+        call this%update()
 !
-            if(this%info >= 2) then
-                call cpu_time(end)
-                print*, "... in ", end-start, " seconds."
-            end if
+        if (this%info >= 2) then
+            call cpu_time(end)
+            print *, "... in ", end-start, " seconds."
+        end if
 !
     end subroutine
 !
@@ -1612,61 +1612,61 @@ contains
 !
         implicit none
 !
-            class(Mmesh), intent(inout) :: this
-            integer, intent(in) :: volu_id
+        class(Mmesh), intent(inout) :: this
+        integer, intent(in) :: volu_id
 ! ------------------------------------------------------------------
-            integer :: volu_type, volu_type_end
-            integer :: nno, nno_end, node_id, i_face, i_node, face_type, face_nno
-            integer :: nb_edges, edge_type(12), edge_loc(3,12), face_id
-            integer :: nb_faces, faces_type(6), face_loc(9,6), i_edge, owner
+        integer :: volu_type, volu_type_end
+        integer :: nno, nno_end, node_id, i_face, i_node, face_type, face_nno
+        integer :: nb_edges, edge_type(12), edge_loc(3, 12), face_id
+        integer :: nb_faces, faces_type(6), face_loc(9, 6), i_edge, owner
 !
-            volu_type = this%volumes(volu_id)%type
-            nno = this%converter%nno(volu_type)
-            volu_type_end = this%converter%convert_max(volu_type)
-            nno_end = this%converter%nno(volu_type_end)
+        volu_type = this%volumes(volu_id)%type
+        nno = this%converter%nno(volu_type)
+        volu_type_end = this%converter%convert_max(volu_type)
+        nno_end = this%converter%nno(volu_type_end)
 !
-            if(this%debug) then
-                print*, "Volume: ", volu_id, volu_type, volu_type_end
-            end if
+        if (this%debug) then
+            print *, "Volume: ", volu_id, volu_type, volu_type_end
+        end if
 !
-            this%volumes(volu_id)%type = volu_type_end
+        this%volumes(volu_id)%type = volu_type_end
 !
-            if(nno_end > nno) then
+        if (nno_end > nno) then
 ! --- Add nodes on edges
-                if(volu_type == MT_HEXA8 .or. volu_type == MT_TETRA4 .or.  &
-                    volu_type == MT_PYRAM5 .or. volu_type == MT_PENTA6) then
-                    call numbering_edge(volu_type_end, nb_edges, edge_type, edge_loc)
-                    do i_edge = 1, this%volumes(volu_id)%nb_edges
-                        call this%convert_edge(this%volumes(volu_id)%edges(i_edge))
-                        this%volumes(volu_id)%nodes(edge_loc(3, i_edge)) = &
+            if (volu_type == MT_HEXA8 .or. volu_type == MT_TETRA4 .or. &
+                volu_type == MT_PYRAM5 .or. volu_type == MT_PENTA6) then
+                call numbering_edge(volu_type_end, nb_edges, edge_type, edge_loc)
+                do i_edge = 1, this%volumes(volu_id)%nb_edges
+                    call this%convert_edge(this%volumes(volu_id)%edges(i_edge))
+                    this%volumes(volu_id)%nodes(edge_loc(3, i_edge)) = &
                         this%edges(this%volumes(volu_id)%edges(i_edge))%nodes(3)
-                    end do
-                end if
+                end do
+            end if
 ! --- Add nodes on faces
-                call numbering_face(volu_type_end, nb_faces, faces_type, face_loc)
-                do i_face = 1, this%volumes(volu_id)%nb_faces
-                    face_id = this%volumes(volu_id)%faces(i_face)
-                    call this%convert_face(this%volumes(volu_id)%faces(i_face))
-                    face_type = faces_type(i_face)
-                    face_nno = this%converter%nno(face_type)
+            call numbering_face(volu_type_end, nb_faces, faces_type, face_loc)
+            do i_face = 1, this%volumes(volu_id)%nb_faces
+                face_id = this%volumes(volu_id)%faces(i_face)
+                call this%convert_face(this%volumes(volu_id)%faces(i_face))
+                face_type = faces_type(i_face)
+                face_nno = this%converter%nno(face_type)
 !
-                    this%volumes(volu_id)%nodes(face_loc(face_nno, i_face)) = &
-                                    this%faces(face_id)%nodes(face_nno)
-                end do
+                this%volumes(volu_id)%nodes(face_loc(face_nno, i_face)) = &
+                    this%faces(face_id)%nodes(face_nno)
+            end do
 ! --- Add node at barycenter
-                owner = this%owner_cell(nno_end-1, this%volumes(volu_id)%nodes)
-                node_id = this%add_node(this%barycenter(nno_end-1, this%volumes(volu_id)%nodes), &
-                                        owner)
-                this%volumes(volu_id)%nodes(nno_end) = node_id
-            else
-                ASSERT(volu_type == volu_type_end)
-            end if
+            owner = this%owner_cell(nno_end-1, this%volumes(volu_id)%nodes)
+            node_id = this%add_node(this%barycenter(nno_end-1, this%volumes(volu_id)%nodes), &
+                                    owner)
+            this%volumes(volu_id)%nodes(nno_end) = node_id
+        else
+            ASSERT(volu_type == volu_type_end)
+        end if
 !
-            if(this%debug) then
-                do i_node = 1, nno_end
-                    ASSERT(this%volumes(volu_id)%nodes(i_node) > 0)
-                end do
-            end if
+        if (this%debug) then
+            do i_node = 1, nno_end
+                ASSERT(this%volumes(volu_id)%nodes(i_node) > 0)
+            end do
+        end if
 !
     end subroutine
 !
@@ -1676,46 +1676,46 @@ contains
 !
         implicit none
 !
-            class(Mmesh), intent(inout) :: this
-            integer, intent(in) :: face_id
+        class(Mmesh), intent(inout) :: this
+        integer, intent(in) :: face_id
 ! ------------------------------------------------------------------
-            integer :: face_type, face_type_end, owner
-            integer :: nno, nno_end, node_id, i_edge, i_node
+        integer :: face_type, face_type_end, owner
+        integer :: nno, nno_end, node_id, i_edge, i_node
 !
-            face_type = this%faces(face_id)%type
-            nno = this%converter%nno(face_type)
-            face_type_end = this%converter%convert_max(face_type)
-            nno_end = this%converter%nno(face_type_end)
+        face_type = this%faces(face_id)%type
+        nno = this%converter%nno(face_type)
+        face_type_end = this%converter%convert_max(face_type)
+        nno_end = this%converter%nno(face_type_end)
 !
-            if(this%debug) then
-                print*, "Face: ", face_id, face_type, face_type_end, this%faces(face_id)%nodes
-            end if
+        if (this%debug) then
+            print *, "Face: ", face_id, face_type, face_type_end, this%faces(face_id)%nodes
+        end if
 !
-            this%faces(face_id)%type = face_type_end
+        this%faces(face_id)%type = face_type_end
 !
-            if(nno_end > nno) then
+        if (nno_end > nno) then
 ! --- Add nodes at the middle of edges
-                if(face_type == MT_TRIA3 .or. face_type == MT_QUAD4) then
-                    do i_edge = 1, this%faces(face_id)%nb_edges
-                        call this%convert_edge(this%faces(face_id)%edges(i_edge))
-                        this%faces(face_id)%nodes(nno+i_edge) = &
-                             this%edges(this%faces(face_id)%edges(i_edge))%nodes(3)
-                    end do
-                end if
-! --- Add node at the barycenter
-                owner = this%owner_cell(nno_end-1, this%faces(face_id)%nodes)
-                node_id = this%add_node(this%barycenter(nno_end-1, this%faces(face_id)%nodes), &
-                                        owner)
-                this%faces(face_id)%nodes(nno_end) = node_id
-            else
-                ASSERT(face_type == face_type_end)
-            end if
-!
-            if(this%debug) then
-                do i_node = 1, nno_end
-                    ASSERT(this%faces(face_id)%nodes(i_node) > 0)
+            if (face_type == MT_TRIA3 .or. face_type == MT_QUAD4) then
+                do i_edge = 1, this%faces(face_id)%nb_edges
+                    call this%convert_edge(this%faces(face_id)%edges(i_edge))
+                    this%faces(face_id)%nodes(nno+i_edge) = &
+                        this%edges(this%faces(face_id)%edges(i_edge))%nodes(3)
                 end do
             end if
+! --- Add node at the barycenter
+            owner = this%owner_cell(nno_end-1, this%faces(face_id)%nodes)
+            node_id = this%add_node(this%barycenter(nno_end-1, this%faces(face_id)%nodes), &
+                                    owner)
+            this%faces(face_id)%nodes(nno_end) = node_id
+        else
+            ASSERT(face_type == face_type_end)
+        end if
+!
+        if (this%debug) then
+            do i_node = 1, nno_end
+                ASSERT(this%faces(face_id)%nodes(i_node) > 0)
+            end do
+        end if
 !
     end subroutine
 !
@@ -1725,44 +1725,44 @@ contains
 !
         implicit none
 !
-            class(Mmesh), intent(inout) :: this
-            integer, intent(in) :: edge_id
+        class(Mmesh), intent(inout) :: this
+        integer, intent(in) :: edge_id
 ! ------------------------------------------------------------------
-            integer :: edge_type, edge_type_end, owner
-            integer :: nno, nno_end, node_id, i_node
+        integer :: edge_type, edge_type_end, owner
+        integer :: nno, nno_end, node_id, i_node
 !
-            edge_type = this%edges(edge_id)%type
-            nno = this%converter%nno(edge_type)
-            edge_type_end = this%converter%convert_max(edge_type)
-            nno_end = this%converter%nno(edge_type_end)
+        edge_type = this%edges(edge_id)%type
+        nno = this%converter%nno(edge_type)
+        edge_type_end = this%converter%convert_max(edge_type)
+        nno_end = this%converter%nno(edge_type_end)
 !
-            if(this%debug) then
-                print*, "Edge: ", edge_id, edge_type, edge_type_end, this%edges(edge_id)%nodes
-            end if
+        if (this%debug) then
+            print *, "Edge: ", edge_id, edge_type, edge_type_end, this%edges(edge_id)%nodes
+        end if
 !
-            this%edges(edge_id)%type = edge_type_end
+        this%edges(edge_id)%type = edge_type_end
 !
-            if(nno_end > nno) then
-                if(edge_type_end == MT_SEG3) then
-                    owner = this%owner_cell(2, this%edges(edge_id)%nodes)
-                    node_id = this%add_node(this%barycenter(2, this%edges(edge_id)%nodes), owner)
-                    this%edges(edge_id)%nodes(3) = node_id
-                else
-                    ASSERT(ASTER_FALSE)
-                    node_id = this%add_node([0.d0, 0.d0, 0.d0], -1)
-                    this%edges(edge_id)%nodes(3) = node_id
-                    node_id = this%add_node([0.d0, 0.d0, 0.d0], -1)
-                    this%edges(edge_id)%nodes(4) = node_id
-                end if
+        if (nno_end > nno) then
+            if (edge_type_end == MT_SEG3) then
+                owner = this%owner_cell(2, this%edges(edge_id)%nodes)
+                node_id = this%add_node(this%barycenter(2, this%edges(edge_id)%nodes), owner)
+                this%edges(edge_id)%nodes(3) = node_id
             else
-                ASSERT(edge_type == edge_type_end)
+                ASSERT(ASTER_FALSE)
+                node_id = this%add_node([0.d0, 0.d0, 0.d0], -1)
+                this%edges(edge_id)%nodes(3) = node_id
+                node_id = this%add_node([0.d0, 0.d0, 0.d0], -1)
+                this%edges(edge_id)%nodes(4) = node_id
             end if
+        else
+            ASSERT(edge_type == edge_type_end)
+        end if
 !
-            if(this%debug) then
-                do i_node = 1, nno_end
-                    ASSERT(this%edges(edge_id)%nodes(i_node) > 0)
-                end do
-            end if
+        if (this%debug) then
+            do i_node = 1, nno_end
+                ASSERT(this%edges(edge_id)%nodes(i_node) > 0)
+            end do
+        end if
 !
     end subroutine
 !
@@ -1772,17 +1772,17 @@ contains
 !
         implicit none
 !
-            class(Mmesh), intent(in) :: this
-            integer, intent(in) :: nb_nodes, nodes(nb_nodes)
-            real(kind=8) :: coor(3)
+        class(Mmesh), intent(in) :: this
+        integer, intent(in) :: nb_nodes, nodes(nb_nodes)
+        real(kind=8) :: coor(3)
 ! ---------------------------------------------------------------------------------
-            integer :: i_node
+        integer :: i_node
 !
-            coor = 0.d0
-            do i_node = 1, nb_nodes
-                coor(1:3) = coor(1:3) + this%nodes(nodes(i_node))%coor(1:3)
-            end do
-            coor(1:3) = coor(1:3) / real(nb_nodes, kind=8)
+        coor = 0.d0
+        do i_node = 1, nb_nodes
+            coor(1:3) = coor(1:3)+this%nodes(nodes(i_node))%coor(1:3)
+        end do
+        coor(1:3) = coor(1:3)/real(nb_nodes, kind=8)
     end function
 !
 ! ==================================================================================================
@@ -1791,117 +1791,117 @@ contains
 !
         implicit none
 !
-            class(Mmesh), intent(inout) :: this
-            aster_logical, intent(in), optional :: rename_nodes_
+        class(Mmesh), intent(inout) :: this
+        aster_logical, intent(in), optional :: rename_nodes_
 ! -----------------------------------------------------------------------
-            integer :: i_node, i_cell, nno, node_id, rank, len_max
-            mpi_int :: mrank, msize
-            aster_logical :: keep, cod, rename_nodes
-            character(len=8) :: nume
+        integer :: i_node, i_cell, nno, node_id, rank, len_max
+        mpi_int :: mrank, msize
+        aster_logical :: keep, cod, rename_nodes
+        character(len=8) :: nume
 !
-            rename_nodes = ASTER_FALSE
-            if(present(rename_nodes_)) then
-                rename_nodes = rename_nodes_
-            end if
+        rename_nodes = ASTER_FALSE
+        if (present(rename_nodes_)) then
+            rename_nodes = rename_nodes_
+        end if
 !
-            call asmpi_info(rank = mrank, size = msize)
-            rank = to_aster_int(mrank)
+        call asmpi_info(rank=mrank, size=msize)
+        rank = to_aster_int(mrank)
 !
-            do i_node = 1, this%nb_total_nodes
-                this%nodes(i_node)%keep = ASTER_FALSE
-            end do
+        do i_node = 1, this%nb_total_nodes
+            this%nodes(i_node)%keep = ASTER_FALSE
+        end do
 !
 ! --- Do not keep cells with no-owner nodes
-            if(this%isHPC) then
-                do i_cell = 1, this%nb_total_cells
-                    if(this%cells(i_cell)%keep) then
-                        nno = this%converter%nno(this%cells(i_cell)%type)
-!
-                        keep = ASTER_FALSE
-                        do i_node = 1, nno
-                            node_id = this%cells(i_cell)%nodes(i_node)
-                            if(this%nodes(node_id)%owner == rank) then
-                                keep = ASTER_TRUE
-                                exit
-                            end if
-                        end do
-                        this%cells(i_cell)%keep = keep
-                    end if
-                end do
-            end if
-!
-! --- Keep initial orphelan nodes
-            do i_node = 1, this%nb_total_nodes
-                this%nodes(i_node)%keep = ASTER_FALSE
-                if(this%nodes(i_node)%orphelan) then
-                    this%nodes(i_node)%keep = ASTER_TRUE
-                end if
-            end do
-!
-! --- Keep only nodes of cells
+        if (this%isHPC) then
             do i_cell = 1, this%nb_total_cells
-                if(this%cells(i_cell)%keep) then
+                if (this%cells(i_cell)%keep) then
                     nno = this%converter%nno(this%cells(i_cell)%type)
 !
-                    if(this%debug) then
-                        print*, "Cell: ", i_cell, this%cells(i_cell)%type, nno, &
-                        this%cells(i_cell)%nodes(1:nno)
-                    end if
-!
+                    keep = ASTER_FALSE
                     do i_node = 1, nno
                         node_id = this%cells(i_cell)%nodes(i_node)
-                        this%nodes(node_id)%keep = ASTER_TRUE
+                        if (this%nodes(node_id)%owner == rank) then
+                            keep = ASTER_TRUE
+                            exit
+                        end if
                     end do
+                    this%cells(i_cell)%keep = keep
                 end if
             end do
+        end if
 !
-! --- Renumbering and rename
-            this%nb_nodes = 0
-            len_max = 10**(8-len_trim(this%node_prefix)) - 1
-            if(rename_nodes) this%node_index = 1
-            cod = this%nb_total_nodes .ge. len_max
-            do i_node = 1, this%nb_total_nodes
-                if(this%nodes(i_node)%keep) then
-                    this%nb_nodes = this%nb_nodes + 1
-                    this%nodes(i_node)%id = this%nb_nodes
-                    if(rename_nodes .or. this%nodes(i_node)%name == "XXXXXXXX") then
-                        if(cod) then
-                            call codlet(this%node_index, 'G', nume)
-                        else
-                            call codent(this%node_index, 'G', nume)
-                        endif
-                        this%nodes(i_node)%name = trim(this%node_prefix)//trim(nume)
-                        this%node_index = this%node_index + 1
-                    end if
+! --- Keep initial orphelan nodes
+        do i_node = 1, this%nb_total_nodes
+            this%nodes(i_node)%keep = ASTER_FALSE
+            if (this%nodes(i_node)%orphelan) then
+                this%nodes(i_node)%keep = ASTER_TRUE
+            end if
+        end do
+!
+! --- Keep only nodes of cells
+        do i_cell = 1, this%nb_total_cells
+            if (this%cells(i_cell)%keep) then
+                nno = this%converter%nno(this%cells(i_cell)%type)
+!
+                if (this%debug) then
+                    print *, "Cell: ", i_cell, this%cells(i_cell)%type, nno, &
+                        this%cells(i_cell)%nodes(1:nno)
                 end if
-            end do
 !
-! --- Renumbering
-            this%nb_cells = 0
-            do i_cell = 1, this%nb_total_cells
-                if(this%cells(i_cell)%keep) then
-                    this%nb_cells = this%nb_cells + 1
-                    this%cells(i_cell)%id = this%nb_cells
-                end if
-            end do
-!
-            if(this%debug) then
-                print*, "Update nodes: ", this%nb_nodes, this%nb_total_nodes
-                do i_node = 1, this%nb_total_nodes
-                    if(this%nodes(i_node)%keep) then
-                        print*, "Node: ", i_node, this%nodes(i_node)%id, this%nodes(i_node)%owner, &
-                            this%nodes(i_node)%coor
-                    end if
-                end do
-                print*, "Update cells: ", this%nb_cells, this%nb_total_cells
-                do i_cell = 1, this%nb_total_cells
-                    if(this%cells(i_cell)%keep) then
-                        print*, "Cell: ", i_cell, this%cells(i_cell)%id, this%cells(i_cell)%type
-                    end if
+                do i_node = 1, nno
+                    node_id = this%cells(i_cell)%nodes(i_node)
+                    this%nodes(node_id)%keep = ASTER_TRUE
                 end do
             end if
-            ASSERT(this%nb_nodes <= this%nb_total_nodes)
-            ASSERT(this%nb_nodes > 0)
+        end do
+!
+! --- Renumbering and rename
+        this%nb_nodes = 0
+        len_max = 10**(8-len_trim(this%node_prefix))-1
+        if (rename_nodes) this%node_index = 1
+        cod = this%nb_total_nodes .ge. len_max
+        do i_node = 1, this%nb_total_nodes
+            if (this%nodes(i_node)%keep) then
+                this%nb_nodes = this%nb_nodes+1
+                this%nodes(i_node)%id = this%nb_nodes
+                if (rename_nodes .or. this%nodes(i_node)%name == "XXXXXXXX") then
+                    if (cod) then
+                        call codlet(this%node_index, 'G', nume)
+                    else
+                        call codent(this%node_index, 'G', nume)
+                    end if
+                    this%nodes(i_node)%name = trim(this%node_prefix)//trim(nume)
+                    this%node_index = this%node_index+1
+                end if
+            end if
+        end do
+!
+! --- Renumbering
+        this%nb_cells = 0
+        do i_cell = 1, this%nb_total_cells
+            if (this%cells(i_cell)%keep) then
+                this%nb_cells = this%nb_cells+1
+                this%cells(i_cell)%id = this%nb_cells
+            end if
+        end do
+!
+        if (this%debug) then
+            print *, "Update nodes: ", this%nb_nodes, this%nb_total_nodes
+            do i_node = 1, this%nb_total_nodes
+                if (this%nodes(i_node)%keep) then
+                    print *, "Node: ", i_node, this%nodes(i_node)%id, this%nodes(i_node)%owner, &
+                        this%nodes(i_node)%coor
+                end if
+            end do
+            print *, "Update cells: ", this%nb_cells, this%nb_total_cells
+            do i_cell = 1, this%nb_total_cells
+                if (this%cells(i_cell)%keep) then
+                    print *, "Cell: ", i_cell, this%cells(i_cell)%id, this%cells(i_cell)%type
+                end if
+            end do
+        end if
+        ASSERT(this%nb_nodes <= this%nb_total_nodes)
+        ASSERT(this%nb_nodes > 0)
     end subroutine
 !
 ! ==================================================================================================
@@ -1910,76 +1910,76 @@ contains
 !
         implicit none
 !
-            class(Mmesh), intent(in) :: this
+        class(Mmesh), intent(in) :: this
 ! -----------------------------------------------------------------------
-            integer :: i_cell, i_node, i_edge, i_face, i_volume, nno, nno1, nno2
-            integer :: nb_edges, edges_type(12), edges_loc(3,12), edge_id
-            integer :: face_type, volu_type, face_id
-            integer :: nb_faces, faces_type(6), faces_loc(9,6)
+        integer :: i_cell, i_node, i_edge, i_face, i_volume, nno, nno1, nno2
+        integer :: nb_edges, edges_type(12), edges_loc(3, 12), edge_id
+        integer :: face_type, volu_type, face_id
+        integer :: nb_faces, faces_type(6), faces_loc(9, 6)
 !
 ! --- Check Nodes
-            do i_cell = 1, this%nb_total_cells
-                if(this%cells(i_cell)%keep) then
-                    nno = this%converter%nno(this%cells(i_cell)%type)
-                    do i_node = 1, nno
-                        ASSERT(this%nodes(this%cells(i_cell)%nodes(i_node))%keep)
-                        ASSERT(this%nodes(this%cells(i_cell)%nodes(i_node))%owner >= 0)
-                    end do
-                end if
-            end do
+        do i_cell = 1, this%nb_total_cells
+            if (this%cells(i_cell)%keep) then
+                nno = this%converter%nno(this%cells(i_cell)%type)
+                do i_node = 1, nno
+                    ASSERT(this%nodes(this%cells(i_cell)%nodes(i_node))%keep)
+                    ASSERT(this%nodes(this%cells(i_cell)%nodes(i_node))%owner >= 0)
+                end do
+            end if
+        end do
 !
 ! --- Check Edges
-            do i_edge = 1, this%nb_edges
-                nno = this%converter%nno(this%edges(i_edge)%type)
-                do i_node = 1, nno
-                    ASSERT(this%edges(i_edge)%nodes(i_node) > 0)
-                end do
+        do i_edge = 1, this%nb_edges
+            nno = this%converter%nno(this%edges(i_edge)%type)
+            do i_node = 1, nno
+                ASSERT(this%edges(i_edge)%nodes(i_node) > 0)
             end do
+        end do
 !
 ! --- Check Faces
-            do i_face = 1, this%nb_faces
-                face_type = this%faces(i_face)%type
-                nno = this%converter%nno(face_type)
-                do i_node = 1, nno
-                    ASSERT(this%faces(i_face)%nodes(i_node) > 0)
-                end do
-!
-                call numbering_edge(face_type, nb_edges, edges_type, edges_loc)
-                ASSERT(nb_edges == this%faces(i_face)%nb_edges)
-                do i_edge = 1, this%faces(i_face)%nb_edges
-                    edge_id = this%faces(i_face)%edges(i_edge)
-                    nno1 = this%converter%nno(this%edges(edge_id)%type)
-                    nno2 = this%converter%nno(edges_type(i_edge))
-                    ASSERT(nno1 >= nno2)
-                end do
+        do i_face = 1, this%nb_faces
+            face_type = this%faces(i_face)%type
+            nno = this%converter%nno(face_type)
+            do i_node = 1, nno
+                ASSERT(this%faces(i_face)%nodes(i_node) > 0)
             end do
+!
+            call numbering_edge(face_type, nb_edges, edges_type, edges_loc)
+            ASSERT(nb_edges == this%faces(i_face)%nb_edges)
+            do i_edge = 1, this%faces(i_face)%nb_edges
+                edge_id = this%faces(i_face)%edges(i_edge)
+                nno1 = this%converter%nno(this%edges(edge_id)%type)
+                nno2 = this%converter%nno(edges_type(i_edge))
+                ASSERT(nno1 >= nno2)
+            end do
+        end do
 !
 ! --- Check Volumes
-            do i_volume = 1, this%nb_volumes
-                volu_type = this%volumes(i_volume)%type
-                nno = this%converter%nno(volu_type)
-                do i_node = 1, nno
-                    ASSERT(this%volumes(i_volume)%nodes(i_node) > 0)
-                end do
-!
-                call numbering_edge(volu_type, nb_edges, edges_type, edges_loc)
-                ASSERT(nb_edges == this%volumes(i_volume)%nb_edges)
-                do i_edge = 1, this%volumes(i_volume)%nb_edges
-                    edge_id = this%volumes(i_volume)%edges(i_edge)
-                    nno1 = this%converter%nno(this%edges(edge_id)%type)
-                    nno2 = this%converter%nno(edges_type(i_edge))
-                    ASSERT(nno1 >= nno2)
-                end do
-!
-                call numbering_face(volu_type, nb_faces, faces_type, faces_loc)
-                ASSERT(nb_faces == this%volumes(i_volume)%nb_faces)
-                do i_face = 1, this%volumes(i_volume)%nb_faces
-                    face_id = this%volumes(i_volume)%faces(i_face)
-                    nno1 = this%converter%nno(this%faces(face_id)%type)
-                    nno2 = this%converter%nno(faces_type(i_face))
-                    ASSERT(nno1 >= nno2)
-                end do
+        do i_volume = 1, this%nb_volumes
+            volu_type = this%volumes(i_volume)%type
+            nno = this%converter%nno(volu_type)
+            do i_node = 1, nno
+                ASSERT(this%volumes(i_volume)%nodes(i_node) > 0)
             end do
+!
+            call numbering_edge(volu_type, nb_edges, edges_type, edges_loc)
+            ASSERT(nb_edges == this%volumes(i_volume)%nb_edges)
+            do i_edge = 1, this%volumes(i_volume)%nb_edges
+                edge_id = this%volumes(i_volume)%edges(i_edge)
+                nno1 = this%converter%nno(this%edges(edge_id)%type)
+                nno2 = this%converter%nno(edges_type(i_edge))
+                ASSERT(nno1 >= nno2)
+            end do
+!
+            call numbering_face(volu_type, nb_faces, faces_type, faces_loc)
+            ASSERT(nb_faces == this%volumes(i_volume)%nb_faces)
+            do i_face = 1, this%volumes(i_volume)%nb_faces
+                face_id = this%volumes(i_volume)%faces(i_face)
+                nno1 = this%converter%nno(this%faces(face_id)%type)
+                nno2 = this%converter%nno(faces_type(i_face))
+                ASSERT(nno1 >= nno2)
+            end do
+        end do
     end subroutine
 !
 ! ==================================================================================================
@@ -1988,95 +1988,95 @@ contains
 !
         implicit none
 !
-            class(Mmesh), intent(inout) :: this
-            integer, intent(in) :: cell_id
+        class(Mmesh), intent(inout) :: this
+        integer, intent(in) :: cell_id
 !
-            integer :: cell_type, cell_dim, cell_nodes(27), nb_nodes, cell_index, cell_type_sub
-            integer :: nb_sub, sub_type(10), sub_loc(10,10), i_sub, i_node, obj, cell_id_sub
-            integer :: nodes_loc(27), nno, conv_type(10)
-            character(len=8) :: nume
+        integer :: cell_type, cell_dim, cell_nodes(27), nb_nodes, cell_index, cell_type_sub
+        integer :: nb_sub, sub_type(10), sub_loc(10, 10), i_sub, i_node, obj, cell_id_sub
+        integer :: nodes_loc(27), nno, conv_type(10)
+        character(len=8) :: nume
 !
-            cell_dim = this%cells(cell_id)%dim
-            cell_type = this%cells(cell_id)%type
-            obj = this%cells(cell_id)%ss_id
+        cell_dim = this%cells(cell_id)%dim
+        cell_type = this%cells(cell_id)%type
+        obj = this%cells(cell_id)%ss_id
 
 ! --- compute sub-division
-            call dividing_cell(cell_type, nb_sub, sub_type, sub_loc, conv_type)
+        call dividing_cell(cell_type, nb_sub, sub_type, sub_loc, conv_type)
 !
-            this%nb_cells = this%nb_cells - 1
-            this%cells(cell_id)%keep = ASTER_FALSE
-            if((this%nb_total_cells + nb_sub) >= this%max_cells) then
-                call this%increase_memory("CELLS   ", &
-                                            max(2*this%max_cells, this%nb_total_cells + nb_sub))
-            end if
+        this%nb_cells = this%nb_cells-1
+        this%cells(cell_id)%keep = ASTER_FALSE
+        if ((this%nb_total_cells+nb_sub) >= this%max_cells) then
+            call this%increase_memory("CELLS   ", &
+                                      max(2*this%max_cells, this%nb_total_cells+nb_sub))
+        end if
 
-            if(this%debug) then
-                print*, "Refine ", cell_id, ": ", cell_type, &
-                        this%converter%name(cell_type), cell_dim
+        if (this%debug) then
+            print *, "Refine ", cell_id, ": ", cell_type, &
+                this%converter%name(cell_type), cell_dim
+        end if
+!
+        do i_sub = 1, nb_sub
+            cell_type_sub = sub_type(i_sub)
+            nb_nodes = this%converter%nno(cell_type_sub)
+            cell_nodes = 0
+!
+            if (cell_dim == 3) then
+                do i_node = 1, nb_nodes
+                    cell_nodes(i_node) = this%volumes(obj)%nodes(sub_loc(i_node, i_sub))
+                end do
+                cell_index = this%add_volume(cell_type_sub, cell_nodes)
+            elseif (cell_dim == 2) then
+                do i_node = 1, nb_nodes
+                    cell_nodes(i_node) = this%faces(obj)%nodes(sub_loc(i_node, i_sub))
+                end do
+                cell_index = this%add_face(cell_type_sub, cell_nodes)
+            elseif (cell_dim == 1) then
+                do i_node = 1, nb_nodes
+                    cell_nodes(i_node) = this%edges(obj)%nodes(sub_loc(i_node, i_sub))
+                end do
+                cell_index = this%add_edge(cell_type_sub, cell_nodes)
+            else
+                ASSERT(ASTER_FALSE)
             end if
 !
-            do i_sub = 1, nb_sub
-                cell_type_sub = sub_type(i_sub)
-                nb_nodes = this%converter%nno(cell_type_sub)
-                cell_nodes = 0
+            this%nb_total_cells = this%nb_total_cells+1
+            ASSERT(this%nb_total_cells <= this%max_cells)
+            this%nb_cells = this%nb_cells+1
+            cell_id_sub = this%nb_total_cells
+            this%cells(cell_id_sub)%dim = cell_dim
+            this%cells(cell_id_sub)%id = cell_id_sub
+            this%cells(cell_id_sub)%ss_id = cell_index
+            call codlet(this%cell_index, 'G', nume)
+            this%cells(cell_id_sub)%name = trim(this%cell_prefix)//trim(nume)
+            this%cell_index = this%cell_index+1
 !
-                if(cell_dim == 3) then
-                    do i_node = 1, nb_nodes
-                        cell_nodes(i_node) = this%volumes(obj)%nodes(sub_loc(i_node, i_sub))
-                    end do
-                    cell_index = this%add_volume(cell_type_sub, cell_nodes)
-                elseif(cell_dim == 2) then
-                    do i_node = 1, nb_nodes
-                        cell_nodes(i_node) = this%faces(obj)%nodes(sub_loc(i_node, i_sub))
-                    end do
-                    cell_index = this%add_face(cell_type_sub, cell_nodes)
-                elseif(cell_dim == 1) then
-                    do i_node = 1, nb_nodes
-                        cell_nodes(i_node) = this%edges(obj)%nodes(sub_loc(i_node, i_sub))
-                    end do
-                    cell_index = this%add_edge(cell_type_sub, cell_nodes)
-                else
-                    ASSERT(ASTER_FALSE)
-                end if
-!
-                this%nb_total_cells = this%nb_total_cells + 1
-                ASSERT(this%nb_total_cells <= this%max_cells)
-                this%nb_cells = this%nb_cells + 1
-                cell_id_sub = this%nb_total_cells
-                this%cells(cell_id_sub)%dim = cell_dim
-                this%cells(cell_id_sub)%id = cell_id_sub
-                this%cells(cell_id_sub)%ss_id = cell_index
-                call codlet(this%cell_index, 'G', nume)
-                this%cells(cell_id_sub)%name = trim(this%cell_prefix)//trim(nume)
-                this%cell_index = this%cell_index + 1
-!
-                this%cells(cell_id)%child(i_sub) = cell_id_sub
-                this%cells(cell_id)%nb_child = this%cells(cell_id)%nb_child + 1
+            this%cells(cell_id)%child(i_sub) = cell_id_sub
+            this%cells(cell_id)%nb_child = this%cells(cell_id)%nb_child+1
 !
 ! --- Il faut convertir comme le type de depart et pas lineaire
-                this%cells(cell_id_sub)%type = conv_type(i_sub)
-                nno = this%converter%nno(this%cells(cell_id_sub)%type)
-                call this%numbering_nodes(this%cells(cell_id_sub)%type, nodes_loc)
-                this%cells(cell_id_sub)%nodes = 0
-                if(cell_dim == 3) then
-                    do i_node = 1, nno
-                        this%cells(cell_id_sub)%nodes(i_node) = &
-                            this%volumes(cell_index)%nodes(nodes_loc(i_node))
-                    end do
-                elseif(cell_dim == 2) then
-                    do i_node = 1, nno
-                        this%cells(cell_id_sub)%nodes(i_node) = &
-                            this%faces(cell_index)%nodes(nodes_loc(i_node))
-                    end do
-                elseif(cell_dim == 1) then
-                    do i_node = 1, nno
-                        this%cells(cell_id_sub)%nodes(i_node) = &
-                            this%edges(cell_index)%nodes(nodes_loc(i_node))
-                    end do
-                else
-                    ASSERT(ASTER_FALSE)
-                end if
-            end do
+            this%cells(cell_id_sub)%type = conv_type(i_sub)
+            nno = this%converter%nno(this%cells(cell_id_sub)%type)
+            call this%numbering_nodes(this%cells(cell_id_sub)%type, nodes_loc)
+            this%cells(cell_id_sub)%nodes = 0
+            if (cell_dim == 3) then
+                do i_node = 1, nno
+                    this%cells(cell_id_sub)%nodes(i_node) = &
+                        this%volumes(cell_index)%nodes(nodes_loc(i_node))
+                end do
+            elseif (cell_dim == 2) then
+                do i_node = 1, nno
+                    this%cells(cell_id_sub)%nodes(i_node) = &
+                        this%faces(cell_index)%nodes(nodes_loc(i_node))
+                end do
+            elseif (cell_dim == 1) then
+                do i_node = 1, nno
+                    this%cells(cell_id_sub)%nodes(i_node) = &
+                        this%edges(cell_index)%nodes(nodes_loc(i_node))
+                end do
+            else
+                ASSERT(ASTER_FALSE)
+            end if
+        end do
 !
     end subroutine
 !
@@ -2086,36 +2086,36 @@ contains
 !
         implicit none
 !
-            class(Mmesh), intent(inout) :: this
-            integer, intent(in) :: level
+        class(Mmesh), intent(inout) :: this
+        integer, intent(in) :: level
 ! -----------------------------------------------------------------------
-            integer :: i_cell, nb_cells_ref, i_level
-            real(kind=8) :: start, end
+        integer :: i_cell, nb_cells_ref, i_level
+        real(kind=8) :: start, end
 !
-            this%cell_index = this%nb_total_cells
+        this%cell_index = this%nb_total_cells
 ! --- Refine cells
-            this%nb_level = level
-            if(this%info >= 2) then
-                print*, "Refining mesh..."
-                call cpu_time(start)
+        this%nb_level = level
+        if (this%info >= 2) then
+            print *, "Refining mesh..."
+            call cpu_time(start)
+        end if
+        do i_level = 1, level
+            if (this%info >= 2) then
+                print *, "- Level ", i_level
             end if
-            do i_level = 1, level
-                if(this%info >= 2) then
-                    print*, "- Level ", i_level
+            nb_cells_ref = this%nb_total_cells
+            do i_cell = 1, nb_cells_ref
+                if (this%cells(i_cell)%keep .and. this%cells(i_cell)%dim > 0) then
+                    call this%refine_cell(i_cell)
                 end if
-                nb_cells_ref = this%nb_total_cells
-                do i_cell = 1, nb_cells_ref
-                    if(this%cells(i_cell)%keep .and. this%cells(i_cell)%dim > 0) then
-                        call this%refine_cell(i_cell)
-                    end if
-                end do
             end do
+        end do
 !
-            call this%update(ASTER_TRUE)
-            if(this%info >= 2) then
-                call cpu_time(end)
-                print*, "... in ", end-start, " seconds."
-            end if
+        call this%update(ASTER_TRUE)
+        if (this%info >= 2) then
+            call cpu_time(end)
+            print *, "... in ", end-start, " seconds."
+        end if
     end subroutine
 !
 ! ==================================================================================================
@@ -2124,22 +2124,22 @@ contains
 !
         implicit none
 !
-            class(Mmesh), intent(inout) :: this
-            integer, intent(inout) :: nb_cells, cell_id
-            integer, allocatable :: cells(:)
+        class(Mmesh), intent(inout) :: this
+        integer, intent(inout) :: nb_cells, cell_id
+        integer, allocatable :: cells(:)
 ! -----------------------------------------------------------------------
-            integer :: i_cell
+        integer :: i_cell
 !
-            if(this%cells(cell_id)%keep) then
-                nb_cells = nb_cells + 1
-                ASSERT(nb_cells <= size(cells))
-                ASSERT(this%cells(cell_id)%nb_child == 0)
-                cells(nb_cells) = this%cells(cell_id)%id
-            else
-                do i_cell = 1, this%cells(cell_id)%nb_child
-                    call this%sub_cells(this%cells(cell_id)%child(i_cell), nb_cells, cells)
-                end do
-            end if
+        if (this%cells(cell_id)%keep) then
+            nb_cells = nb_cells+1
+            ASSERT(nb_cells <= size(cells))
+            ASSERT(this%cells(cell_id)%nb_child == 0)
+            cells(nb_cells) = this%cells(cell_id)%id
+        else
+            do i_cell = 1, this%cells(cell_id)%nb_child
+                call this%sub_cells(this%cells(cell_id)%child(i_cell), nb_cells, cells)
+            end do
+        end if
 
     end subroutine
 !
@@ -2149,77 +2149,77 @@ contains
 !
         implicit none
 !
-            class(Mmesh), intent(in) :: this
-            character(len=24), intent(in) :: grpnoe, gpptnn
+        class(Mmesh), intent(in) :: this
+        character(len=24), intent(in) :: grpnoe, gpptnn
 ! -----------------------------------------------------------------------
-            integer :: i_node, nb_nodes_in, nb_nodes_out, codret, nb_grno_out
-            integer :: i_group, node_id, nb_grno_in
-            character(len=24) :: grno_in, nomgrp
-            integer, pointer :: nodes_in(:) => null()
-            integer, pointer :: grno_out(:) => null()
-            integer, pointer :: nodes_out(:) => null()
+        integer :: i_node, nb_nodes_in, nb_nodes_out, codret, nb_grno_out
+        integer :: i_group, node_id, nb_grno_in
+        character(len=24) :: grno_in, nomgrp
+        integer, pointer :: nodes_in(:) => null()
+        integer, pointer :: grno_out(:) => null()
+        integer, pointer :: nodes_out(:) => null()
 !
-            call jemarq()
+        call jemarq()
 !
-            grno_in = this%mesh_in//'.GROUPENO'
+        grno_in = this%mesh_in//'.GROUPENO'
 !
-            call jedetr(grpnoe)
-            call jedetr(gpptnn)
-            call jeexin(grno_in, codret)
-            if (codret .eq. 0) goto 999
+        call jedetr(grpnoe)
+        call jedetr(gpptnn)
+        call jeexin(grno_in, codret)
+        if (codret .eq. 0) goto 999
 
-            call jelira(grno_in, 'NOMUTI', nb_grno_in)
-            AS_ALLOCATE(vi=grno_out, size=nb_grno_in)
-            grno_out(:) = 0
-            nb_grno_out = 0
+        call jelira(grno_in, 'NOMUTI', nb_grno_in)
+        AS_ALLOCATE(vi=grno_out, size=nb_grno_in)
+        grno_out(:) = 0
+        nb_grno_out = 0
 !
 ! --- Find groups
-            do i_group = 1, nb_grno_in
-                call jeveuo(jexnum(grno_in, i_group), 'L', vi=nodes_in)
-                call jelira(jexnum(grno_in, i_group), 'LONUTI', nb_nodes_in)
-                do i_node = 1, nb_nodes_in
-                    node_id = nodes_in(i_node)
-                    if(this%nodes(node_id)%keep) then
-                        grno_out(i_group) = grno_out(i_group) + 1
-                    end if
-                end do
-                if(grno_out(i_group) > 0) then
-                    nb_grno_out = nb_grno_out + 1
+        do i_group = 1, nb_grno_in
+            call jeveuo(jexnum(grno_in, i_group), 'L', vi=nodes_in)
+            call jelira(jexnum(grno_in, i_group), 'LONUTI', nb_nodes_in)
+            do i_node = 1, nb_nodes_in
+                node_id = nodes_in(i_node)
+                if (this%nodes(node_id)%keep) then
+                    grno_out(i_group) = grno_out(i_group)+1
                 end if
             end do
+            if (grno_out(i_group) > 0) then
+                nb_grno_out = nb_grno_out+1
+            end if
+        end do
 !
 ! --- Create groups
-            if(nb_grno_out > 0) then
-                call jecreo(gpptnn, 'G N K24')
-                call jeecra(gpptnn, 'NOMMAX', nb_grno_out)
-                call jecrec(grpnoe, 'G V I', 'NO '//gpptnn, 'DISPERSE', 'VARIABLE', nb_grno_out)
+        if (nb_grno_out > 0) then
+            call jecreo(gpptnn, 'G N K24')
+            call jeecra(gpptnn, 'NOMMAX', nb_grno_out)
+            call jecrec(grpnoe, 'G V I', 'NO '//gpptnn, 'DISPERSE', 'VARIABLE', nb_grno_out)
 !
-                do i_group = 1, nb_grno_in
-                    if(grno_out(i_group) > 0) then
-                        call jenuno(jexnum(grno_in, i_group), nomgrp)
-                        call jecroc(jexnom(grpnoe, nomgrp))
-                        call jeveuo(jexnum(grno_in, i_group), 'L', vi=nodes_in)
-                        call jelira(jexnum(grno_in, i_group), 'LONUTI', nb_nodes_in)
-                        call jeecra(jexnom(grpnoe, nomgrp), 'LONMAX', grno_out(i_group))
-                        call jeecra(jexnom(grpnoe, nomgrp), 'LONUTI', grno_out(i_group))
-                        call jeveuo(jexnom(grpnoe, nomgrp), 'E', vi=nodes_out)
-                        nb_nodes_out = 0
-                        do i_node = 1, nb_nodes_in
-                            node_id = nodes_in(i_node)
-                            if(this%nodes(node_id)%keep) then
-                                nb_nodes_out = nb_nodes_out + 1
-                                nodes_out(nb_nodes_out) = this%nodes(node_id)%id
-                            end if
-                        end do
-                    end if
-                end do
-            end if
+            do i_group = 1, nb_grno_in
+                if (grno_out(i_group) > 0) then
+                    call jenuno(jexnum(grno_in, i_group), nomgrp)
+                    call jecroc(jexnom(grpnoe, nomgrp))
+                    call jeveuo(jexnum(grno_in, i_group), 'L', vi=nodes_in)
+                    call jelira(jexnum(grno_in, i_group), 'LONUTI', nb_nodes_in)
+                    call jeecra(jexnom(grpnoe, nomgrp), 'LONMAX', grno_out(i_group))
+                    call jeecra(jexnom(grpnoe, nomgrp), 'LONUTI', grno_out(i_group))
+                    call jeveuo(jexnom(grpnoe, nomgrp), 'E', vi=nodes_out)
+                    nb_nodes_out = 0
+                    do i_node = 1, nb_nodes_in
+                        node_id = nodes_in(i_node)
+                        if (this%nodes(node_id)%keep) then
+                            nb_nodes_out = nb_nodes_out+1
+                            nodes_out(nb_nodes_out) = this%nodes(node_id)%id
+                        end if
+                    end do
+                end if
+            end do
+        end if
 !
-            AS_DEALLOCATE(vi=grno_out)
+        AS_DEALLOCATE(vi=grno_out)
 !
-999 continue
+999     continue
 !
-            call jedema()
+        call jedema()
 !
     end subroutine
 !
@@ -2229,81 +2229,81 @@ contains
 !
         implicit none
 !
-            class(Mmesh), intent(inout) :: this
-            character(len=24), intent(in) :: grpmai, gpptnm
+        class(Mmesh), intent(inout) :: this
+        character(len=24), intent(in) :: grpmai, gpptnm
 ! -----------------------------------------------------------------------
-            integer :: i_cell, nb_cells_in, nb_cells_out, codret, nb_grma_out
-            integer :: i_group, cell_id, nb_grma_in
-            integer :: nb_cells
-            character(len=24) :: grma_in, nomgrp
-            integer, pointer :: cells_in(:) => null()
-            integer, pointer :: grma_out(:) => null()
-            integer, pointer :: cells_out(:) => null()
-            integer, allocatable :: cells(:)
+        integer :: i_cell, nb_cells_in, nb_cells_out, codret, nb_grma_out
+        integer :: i_group, cell_id, nb_grma_in
+        integer :: nb_cells
+        character(len=24) :: grma_in, nomgrp
+        integer, pointer :: cells_in(:) => null()
+        integer, pointer :: grma_out(:) => null()
+        integer, pointer :: cells_out(:) => null()
+        integer, allocatable :: cells(:)
 !
-            call jemarq()
+        call jemarq()
 !
-            grma_in = this%mesh_in//'.GROUPEMA'
+        grma_in = this%mesh_in//'.GROUPEMA'
 !
-            call jedetr(grpmai)
-            call jedetr(gpptnm)
-            call jeexin(grma_in, codret)
-            if (codret .eq. 0) goto 999
+        call jedetr(grpmai)
+        call jedetr(gpptnm)
+        call jeexin(grma_in, codret)
+        if (codret .eq. 0) goto 999
 
-            call jelira(grma_in, 'NOMUTI', nb_grma_in)
-            AS_ALLOCATE(vi=grma_out, size=nb_grma_in)
-            allocate(cells(8**this%nb_level))
-            grma_out(:) = 0
-            nb_grma_out = 0
+        call jelira(grma_in, 'NOMUTI', nb_grma_in)
+        AS_ALLOCATE(vi=grma_out, size=nb_grma_in)
+        allocate (cells(8**this%nb_level))
+        grma_out(:) = 0
+        nb_grma_out = 0
 !
 ! --- Find groups
-            do i_group = 1, nb_grma_in
-                call jeveuo(jexnum(grma_in, i_group), 'L', vi=cells_in)
-                call jelira(jexnum(grma_in, i_group), 'LONUTI', nb_cells_in)
-                do i_cell = 1, nb_cells_in
-                    cell_id = cells_in(i_cell)
-                    nb_cells = 0
-                    call this%sub_cells(cell_id, nb_cells, cells)
-                    grma_out(i_group) = grma_out(i_group) + nb_cells
-                end do
-                if(grma_out(i_group) > 0) then
-                    nb_grma_out = nb_grma_out + 1
-                end if
+        do i_group = 1, nb_grma_in
+            call jeveuo(jexnum(grma_in, i_group), 'L', vi=cells_in)
+            call jelira(jexnum(grma_in, i_group), 'LONUTI', nb_cells_in)
+            do i_cell = 1, nb_cells_in
+                cell_id = cells_in(i_cell)
+                nb_cells = 0
+                call this%sub_cells(cell_id, nb_cells, cells)
+                grma_out(i_group) = grma_out(i_group)+nb_cells
             end do
+            if (grma_out(i_group) > 0) then
+                nb_grma_out = nb_grma_out+1
+            end if
+        end do
 !
 ! --- Create groups
-            if(nb_grma_out > 0) then
-                call jecreo(gpptnm, 'G N K24')
-                call jeecra(gpptnm, 'NOMMAX', nb_grma_out)
-                call jecrec(grpmai, 'G V I', 'NO '//gpptnm, 'DISPERSE', 'VARIABLE', nb_grma_out)
+        if (nb_grma_out > 0) then
+            call jecreo(gpptnm, 'G N K24')
+            call jeecra(gpptnm, 'NOMMAX', nb_grma_out)
+            call jecrec(grpmai, 'G V I', 'NO '//gpptnm, 'DISPERSE', 'VARIABLE', nb_grma_out)
 !
-                do i_group = 1, nb_grma_in
-                    if(grma_out(i_group) > 0) then
-                        call jenuno(jexnum(grma_in, i_group), nomgrp)
-                        call jecroc(jexnom(grpmai, nomgrp))
-                        call jeveuo(jexnum(grma_in, i_group), 'L', vi=cells_in)
-                        call jelira(jexnum(grma_in, i_group), 'LONUTI', nb_cells_in)
-                        call jeecra(jexnom(grpmai, nomgrp), 'LONMAX', grma_out(i_group))
-                        call jeecra(jexnom(grpmai, nomgrp), 'LONUTI', grma_out(i_group))
-                        call jeveuo(jexnom(grpmai, nomgrp), 'E', vi=cells_out)
-                        nb_cells_out = 1
-                        do i_cell = 1, nb_cells_in
-                            cell_id = cells_in(i_cell)
-                            nb_cells = 0
-                            call this%sub_cells(cell_id, nb_cells, cells)
-                            cells_out(nb_cells_out:nb_cells_out+nb_cells) = cells(1:nb_cells)
-                            nb_cells_out = nb_cells_out+nb_cells
-                        end do
-                    end if
-                end do
-            end if
+            do i_group = 1, nb_grma_in
+                if (grma_out(i_group) > 0) then
+                    call jenuno(jexnum(grma_in, i_group), nomgrp)
+                    call jecroc(jexnom(grpmai, nomgrp))
+                    call jeveuo(jexnum(grma_in, i_group), 'L', vi=cells_in)
+                    call jelira(jexnum(grma_in, i_group), 'LONUTI', nb_cells_in)
+                    call jeecra(jexnom(grpmai, nomgrp), 'LONMAX', grma_out(i_group))
+                    call jeecra(jexnom(grpmai, nomgrp), 'LONUTI', grma_out(i_group))
+                    call jeveuo(jexnom(grpmai, nomgrp), 'E', vi=cells_out)
+                    nb_cells_out = 1
+                    do i_cell = 1, nb_cells_in
+                        cell_id = cells_in(i_cell)
+                        nb_cells = 0
+                        call this%sub_cells(cell_id, nb_cells, cells)
+                        cells_out(nb_cells_out:nb_cells_out+nb_cells) = cells(1:nb_cells)
+                        nb_cells_out = nb_cells_out+nb_cells
+                    end do
+                end if
+            end do
+        end if
 !
-            AS_DEALLOCATE(vi=grma_out)
-            deallocate(cells)
+        AS_DEALLOCATE(vi=grma_out)
+        deallocate (cells)
 !
-999 continue
+999     continue
 !
-            call jedema()
+        call jedema()
 !
     end subroutine
 !
@@ -2314,65 +2314,65 @@ contains
 !
         implicit none
 !
-            class(Mmesh), intent(inout) :: this
-            character(len=8), intent(in) :: object
-            integer, intent(in) :: new_size
+        class(Mmesh), intent(inout) :: this
+        character(len=8), intent(in) :: object
+        integer, intent(in) :: new_size
 ! -----------------------------------------------------------------------
-            integer :: old_size
-            type(Mnode), allocatable :: nodes(:)
-            type(Medge), allocatable :: edges(:)
-            type(Mface), allocatable :: faces(:)
-            type(Mvolume), allocatable :: volumes(:)
-            type(Mcell), allocatable :: cells(:)
+        integer :: old_size
+        type(Mnode), allocatable :: nodes(:)
+        type(Medge), allocatable :: edges(:)
+        type(Mface), allocatable :: faces(:)
+        type(Mvolume), allocatable :: volumes(:)
+        type(Mcell), allocatable :: cells(:)
 !
-            if(object == "NODES") then
-                old_size = size(this%nodes)
-                allocate(nodes(old_size))
-                nodes(1:old_size) = this%nodes(1:old_size)
-                deallocate(this%nodes)
-                allocate(this%nodes(new_size))
-                this%nodes(1:old_size) = nodes(1:old_size)
-                deallocate(nodes)
-                this%max_nodes = new_size
-            elseif(object == "EDGES") then
-                old_size = size(this%edges)
-                allocate(edges(old_size))
-                edges(1:old_size) = this%edges(1:old_size)
-                deallocate(this%edges)
-                allocate(this%edges(new_size))
-                this%edges(1:old_size) = edges(1:old_size)
-                deallocate(edges)
-                this%max_edges = new_size
-            elseif(object == "FACES") then
-                old_size = size(this%faces)
-                allocate(faces(old_size))
-                faces(1:old_size) = this%faces(1:old_size)
-                deallocate(this%faces)
-                allocate(this%faces(new_size))
-                this%faces(1:old_size) = faces(1:old_size)
-                deallocate(faces)
-                this%max_faces = new_size
-            elseif(object == "VOLUMES") then
-                old_size = size(this%volumes)
-                allocate(volumes(old_size))
-                volumes(1:old_size) = this%volumes(1:old_size)
-                deallocate(this%volumes)
-                allocate(this%volumes(new_size))
-                this%volumes(1:old_size) = volumes(1:old_size)
-                deallocate(volumes)
-                this%max_volumes = new_size
-            elseif(object == "CELLS") then
-                old_size = size(this%cells)
-                allocate(cells(old_size))
-                cells(1:old_size) = this%cells(1:old_size)
-                deallocate(this%cells)
-                allocate(this%cells(new_size))
-                this%cells(1:old_size) = cells(1:old_size)
-                deallocate(cells)
-                this%max_cells = new_size
-            else
-                ASSERT(ASTER_FALSE)
-            end if
+        if (object == "NODES") then
+            old_size = size(this%nodes)
+            allocate (nodes(old_size))
+            nodes(1:old_size) = this%nodes(1:old_size)
+            deallocate (this%nodes)
+            allocate (this%nodes(new_size))
+            this%nodes(1:old_size) = nodes(1:old_size)
+            deallocate (nodes)
+            this%max_nodes = new_size
+        elseif (object == "EDGES") then
+            old_size = size(this%edges)
+            allocate (edges(old_size))
+            edges(1:old_size) = this%edges(1:old_size)
+            deallocate (this%edges)
+            allocate (this%edges(new_size))
+            this%edges(1:old_size) = edges(1:old_size)
+            deallocate (edges)
+            this%max_edges = new_size
+        elseif (object == "FACES") then
+            old_size = size(this%faces)
+            allocate (faces(old_size))
+            faces(1:old_size) = this%faces(1:old_size)
+            deallocate (this%faces)
+            allocate (this%faces(new_size))
+            this%faces(1:old_size) = faces(1:old_size)
+            deallocate (faces)
+            this%max_faces = new_size
+        elseif (object == "VOLUMES") then
+            old_size = size(this%volumes)
+            allocate (volumes(old_size))
+            volumes(1:old_size) = this%volumes(1:old_size)
+            deallocate (this%volumes)
+            allocate (this%volumes(new_size))
+            this%volumes(1:old_size) = volumes(1:old_size)
+            deallocate (volumes)
+            this%max_volumes = new_size
+        elseif (object == "CELLS") then
+            old_size = size(this%cells)
+            allocate (cells(old_size))
+            cells(1:old_size) = this%cells(1:old_size)
+            deallocate (this%cells)
+            allocate (this%cells(new_size))
+            this%cells(1:old_size) = cells(1:old_size)
+            deallocate (cells)
+            this%max_cells = new_size
+        else
+            ASSERT(ASTER_FALSE)
+        end if
 !
     end subroutine
 !
@@ -2382,71 +2382,71 @@ contains
 !
         implicit none
 !
-            class(Mmesh), intent(in) :: this
-            character(len=8), intent(in) :: mesh_out
+        class(Mmesh), intent(in) :: this
+        character(len=8), intent(in) :: mesh_out
 ! ------------------------------------------------------------------
-            character(len=4) :: chnbjo
-            character(len=24) :: nojoin
-            integer, pointer :: v_rnode(:) => null()
-            integer, pointer :: v_noex(:) => null()
-            integer, pointer :: v_nojoin(:) => null()
-            integer, pointer :: v_snume(:) => null()
-            integer, pointer :: v_rnume(:) => null()
-            integer, pointer :: v_nkeep(:) => null()
-            integer, pointer :: v_ckeep(:) => null()
-            integer, pointer :: v_nulogl(:) => null()
-            integer, pointer :: v_proc(:) => null()
-            integer, pointer :: v_comm(:) => null()
-            integer, pointer :: v_tag(:) => null()
-            aster_logical, pointer :: v_keep(:) => null()
-            real(kind=8), pointer :: v_send(:) => null()
-            real(kind=8), pointer :: v_recv(:) => null()
-            mpi_int :: msize, mrank, count_send, count_recv, id, tag, mpicou
-            integer :: nbproc, rank, ind, nb_recv, i_proc, recv(1)
-            integer :: n_coor_send, n_coor_recv, proc_id, i_comm
-            integer :: i_node, nb_nodes_keep, i_node_r, node_id, j_node
-            integer :: i_cell, nno, nb_cells_keep, owner, cell_id
-            real(kind=8) :: coor(3), coor_diff(3), tole_comp, start, end
-            real(kind=8), parameter :: tole = 1.d-15
-            aster_logical :: find, keep
+        character(len=4) :: chnbjo
+        character(len=24) :: nojoin
+        integer, pointer :: v_rnode(:) => null()
+        integer, pointer :: v_noex(:) => null()
+        integer, pointer :: v_nojoin(:) => null()
+        integer, pointer :: v_snume(:) => null()
+        integer, pointer :: v_rnume(:) => null()
+        integer, pointer :: v_nkeep(:) => null()
+        integer, pointer :: v_ckeep(:) => null()
+        integer, pointer :: v_nulogl(:) => null()
+        integer, pointer :: v_proc(:) => null()
+        integer, pointer :: v_comm(:) => null()
+        integer, pointer :: v_tag(:) => null()
+        aster_logical, pointer :: v_keep(:) => null()
+        real(kind=8), pointer :: v_send(:) => null()
+        real(kind=8), pointer :: v_recv(:) => null()
+        mpi_int :: msize, mrank, count_send, count_recv, id, tag, mpicou
+        integer :: nbproc, rank, ind, nb_recv, i_proc, recv(1)
+        integer :: n_coor_send, n_coor_recv, proc_id, i_comm
+        integer :: i_node, nb_nodes_keep, i_node_r, node_id, j_node
+        integer :: i_cell, nno, nb_cells_keep, owner, cell_id
+        real(kind=8) :: coor(3), coor_diff(3), tole_comp, start, end
+        real(kind=8), parameter :: tole = 1.d-15
+        aster_logical :: find, keep
 !
-        if(isParallelMesh(mesh_out)) then
-            if(this%info >= 2) then
-                print*, "Create joints..."
+        if (isParallelMesh(mesh_out)) then
+            if (this%info >= 2) then
+                print *, "Create joints..."
                 call cpu_time(start)
             end if
 
             call jemarq()
             call asmpi_comm('GET', mpicou)
-            call asmpi_info(rank = mrank, size = msize)
+            call asmpi_info(rank=mrank, size=msize)
             rank = to_aster_int(mrank)
             nbproc = to_aster_int(msize)
 !
 ! --- 1: On commence par compter le nombre de noeuds que l'on doit recevoir
 !
-            call jeveuo(mesh_out // ".NOEX", 'L', vi=v_noex)
-            call jeveuo(mesh_out // ".NULOGL", 'L', vi=v_nulogl)
+            call jeveuo(mesh_out//".NOEX", 'L', vi=v_noex)
+            call jeveuo(mesh_out//".NULOGL", 'L', vi=v_nulogl)
 
             call wkvect("&&CREAMA.RNODE", 'V V I', nbproc, vi=v_rnode)
             do i_node = 1, this%nb_nodes
-                ind = v_noex(i_node) + 1
-                v_rnode(ind) = v_rnode(ind) + 1
+                ind = v_noex(i_node)+1
+                v_rnode(ind) = v_rnode(ind)+1
             end do
             v_rnode(rank+1) = 0
 ! --- On compte combien on doit recevoir et envoyer
             nb_recv = 0
             do i_proc = 0, nbproc-1
-                if(v_rnode(i_proc+1) > 0) then
-                    nb_recv = nb_recv + 1
+                if (v_rnode(i_proc+1) > 0) then
+                    nb_recv = nb_recv+1
                 end if
             end do
-            if(nb_recv > 0) then
+            if (nb_recv > 0) then
                 call wkvect(mesh_out//'.DOMJOINTS', 'G V I', nb_recv, vi=v_proc)
             end if
             nb_recv = 0
             do i_proc = 0, nbproc-1
-                if(v_rnode(i_proc+1) > 0) then
-                    nb_recv = nb_recv + 1
+                if (v_rnode(i_proc+1) > 0) then
+                    nb_recv = nb_recv+1
                     v_proc(nb_recv) = i_proc
                 end if
             end do
@@ -2459,11 +2459,11 @@ contains
             call wkvect('&&CREAMA.CKEEP', 'V V I', this%nb_total_cells, vi=v_ckeep)
             nb_cells_keep = 0
             do i_cell = 1, this%nb_total_cells
-                if(.not.this%cells(i_cell)%keep) cycle
+                if (.not. this%cells(i_cell)%keep) cycle
                 nno = this%converter%nno(this%cells(i_cell)%type)
                 do i_node = 1, nno
-                    if(v_noex(this%nodes(this%cells(i_cell)%nodes(i_node))%id) .ne. rank) then
-                        nb_cells_keep = nb_cells_keep + 1
+                    if (v_noex(this%nodes(this%cells(i_cell)%nodes(i_node))%id) .ne. rank) then
+                        nb_cells_keep = nb_cells_keep+1
                         v_ckeep(nb_cells_keep) = i_cell
                         exit
                     end if
@@ -2473,8 +2473,8 @@ contains
             call wkvect('&&CREAMA.NKEEP', 'V V L', this%nb_total_nodes, vl=v_keep)
             call wkvect('&&CREAMA.NRESTRICT', 'V V I', this%nb_total_nodes, vi=v_nkeep)
 !
-            if(this%info >= 2) then
-                print*, "-Nombre de cells candidates totales: ", nb_cells_keep
+            if (this%info >= 2) then
+                print *, "-Nombre de cells candidates totales: ", nb_cells_keep
             end if
 ! --- On crée les joints
             do i_comm = 1, nb_recv
@@ -2489,7 +2489,7 @@ contains
                 count_recv = to_mpi_int(1)
                 n_coor_send = v_rnode(proc_id+1)
                 call asmpi_sendrecv_i([n_coor_send], count_send, id, tag, &
-                                          recv, count_recv, id, tag, mpicou)
+                                      recv, count_recv, id, tag, mpicou)
                 n_coor_recv = recv(1)
 !
                 call wkvect("&&CREAMA.SCOOR", 'V V R', 4*n_coor_send, vr=v_send)
@@ -2498,11 +2498,11 @@ contains
 ! --- Prepare data to send (local_id, coor(1:3))
                 ind = 0
                 do i_node = 1, this%nb_total_nodes
-                    if(this%nodes(i_node)%keep) then
-                        if(v_noex(this%nodes(i_node)%id) == proc_id) then
+                    if (this%nodes(i_node)%keep) then
+                        if (v_noex(this%nodes(i_node)%id) == proc_id) then
                             v_send(ind+1) = real(this%nodes(i_node)%id, kind=8)
                             v_send(ind+2:ind+4) = this%nodes(i_node)%coor(1:3)
-                            ind = ind + 4
+                            ind = ind+4
                         end if
                     end if
                 end do
@@ -2512,7 +2512,7 @@ contains
                 count_send = to_mpi_int(4*n_coor_send)
                 count_recv = to_mpi_int(4*n_coor_recv)
                 call asmpi_sendrecv_r(v_send, count_send, id, tag, &
-                                          v_recv, count_recv, id, tag, mpicou)
+                                      v_recv, count_recv, id, tag, mpicou)
 !
 ! --- Research corresponding node
 ! --- On cherche les noeuds avec les coor - c'est pas génial mais pas mieux
@@ -2525,18 +2525,18 @@ contains
                     nno = this%converter%nno(this%cells(cell_id)%type)
                     do i_node = 1, nno
                         owner = v_noex(this%nodes(this%cells(cell_id)%nodes(i_node))%id)
-                        if(owner == proc_id) then
+                        if (owner == proc_id) then
                             keep = ASTER_TRUE
                             exit
                         end if
                     end do
-                    if(keep) then
+                    if (keep) then
                         do i_node = 1, nno
                             node_id = this%cells(cell_id)%nodes(i_node)
                             owner = v_noex(this%nodes(node_id)%id)
-                            if( owner == rank .and. (.not.v_keep(node_id))) then
+                            if (owner == rank .and. (.not. v_keep(node_id))) then
                                 v_keep(node_id) = ASTER_TRUE
-                                nb_nodes_keep = nb_nodes_keep + 1
+                                nb_nodes_keep = nb_nodes_keep+1
                                 v_nkeep(nb_nodes_keep) = node_id
                             end if
                         end do
@@ -2544,14 +2544,14 @@ contains
                 end do
                 ASSERT(nb_nodes_keep == n_coor_recv)
 !
-                if(this%debug) then
-                !  On regarde que les noeuds ne sont pas confondu.
+                if (this%debug) then
+                    !  On regarde que les noeuds ne sont pas confondu.
                     do i_node = 1, nb_nodes_keep
-                        tole_comp = max(tole, tole* norm2(this%nodes(v_nkeep(i_node))%coor))
-                        do j_node = i_node + 1, nb_nodes_keep
-                            coor_diff = abs(this%nodes(v_nkeep(i_node))%coor - &
-                                                    this%nodes(v_nkeep(j_node))%coor)
-                            if(maxval(coor_diff) < tole_comp) then
+                        tole_comp = max(tole, tole*norm2(this%nodes(v_nkeep(i_node))%coor))
+                        do j_node = i_node+1, nb_nodes_keep
+                            coor_diff = abs(this%nodes(v_nkeep(i_node))%coor- &
+                                            this%nodes(v_nkeep(j_node))%coor)
+                            if (maxval(coor_diff) < tole_comp) then
                                 !! Verif pas de noeud double
                                 ASSERT(ASTER_FALSE)
                             end if
@@ -2559,10 +2559,10 @@ contains
                     end do
                 end if
 !
-                if(this%info >= 2) then
-                    print*, "-Domaine: ", proc_id, &
-                            ", nombre de noeuds à trouver: ", n_coor_recv, &
-                            " pour ", nb_nodes_keep, " candidats"
+                if (this%info >= 2) then
+                    print *, "-Domaine: ", proc_id, &
+                        ", nombre de noeuds à trouver: ", n_coor_recv, &
+                        " pour ", nb_nodes_keep, " candidats"
                 end if
 !
 ! --- Create joint .E
@@ -2578,9 +2578,9 @@ contains
                     node_id = 0
                     tole_comp = max(tole, tole*norm2(coor))
                     do i_node = 1, nb_nodes_keep
-                        if(v_keep(i_node)) then
+                        if (v_keep(i_node)) then
                             coor_diff = abs(coor-this%nodes(v_nkeep(i_node))%coor)
-                            if(maxval(coor_diff) < tole_comp) then
+                            if (maxval(coor_diff) < tole_comp) then
                                 find = ASTER_TRUE
                                 node_id = this%nodes(v_nkeep(i_node))%id
                                 v_keep(i_node) = ASTER_FALSE
@@ -2601,7 +2601,7 @@ contains
                 count_send = to_mpi_int(2*n_coor_recv)
                 count_recv = to_mpi_int(2*n_coor_send)
                 call asmpi_sendrecv_i(v_snume, count_send, id, tag, &
-                                          v_rnume, count_recv, id, tag, mpicou)
+                                      v_rnume, count_recv, id, tag, mpicou)
 !
 ! --- Create joint .R
                 nojoin = mesh_out//'.R'//chnbjo
@@ -2632,9 +2632,9 @@ contains
                 ASSERT(v_nulogl(i_node) >= 0)
             end do
 !
-            if(this%info >= 2) then
+            if (this%info >= 2) then
                 call cpu_time(end)
-                print*, "... in ", end-start, " seconds."
+                print *, "... in ", end-start, " seconds."
             end if
 !
             call jedema()
@@ -2650,22 +2650,22 @@ contains
 !
         implicit none
 !
-            integer, intent(in) :: nb_nodes
-            integer, intent(inout) :: nodes(1:nb_nodes)
+        integer, intent(in) :: nb_nodes
+        integer, intent(inout) :: nodes(1:nb_nodes)
 !
-            integer :: i_node, j_node
+        integer :: i_node, j_node
 !
-            ASSERT(nb_nodes <= 27)
-            mult_elem = .false.
+        ASSERT(nb_nodes <= 27)
+        mult_elem = .false.
 !
-            do i_node = 1, nb_nodes
-                do j_node = i_node + 1, nb_nodes
-                    if(nodes(i_node) == nodes(j_node)) then
-                        mult_elem = .true.
-                        exit
-                    end if
-                end do
+        do i_node = 1, nb_nodes
+            do j_node = i_node+1, nb_nodes
+                if (nodes(i_node) == nodes(j_node)) then
+                    mult_elem = .true.
+                    exit
+                end if
             end do
+        end do
     end function
 !
 end module

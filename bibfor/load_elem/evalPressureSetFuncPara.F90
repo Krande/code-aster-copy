@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,27 +17,27 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine evalPressureSetFuncPara(lTime     , time    ,&
-                                   nbNode    , cellDime, ipg,&
-                                   jvShapFunc, jvGeom  , &
-                                   paraNbMax , paraNb  , paraName, paraVale,&
+subroutine evalPressureSetFuncPara(lTime, time, &
+                                   nbNode, cellDime, ipg, &
+                                   jvShapFunc, jvGeom, &
+                                   paraNbMax, paraNb, paraName, paraVale, &
                                    geomCurr_)
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterf_types.h"
 #include "asterfort/assert.h"
 !
-aster_logical, intent(in) :: lTime
-real(kind=8), intent(in) :: time
-integer, intent(in) :: nbNode, cellDime, ipg
-integer, intent(in) :: jvShapFunc, jvGeom
-integer, intent(in) :: paraNbMax
-integer, intent(out) :: paraNb
-character(len=8) :: paraName(paraNbMax)
-real(kind=8) :: paraVale(paraNbMax)
-real(kind=8), optional, intent(in) :: geomCurr_(*)
+    aster_logical, intent(in) :: lTime
+    real(kind=8), intent(in) :: time
+    integer, intent(in) :: nbNode, cellDime, ipg
+    integer, intent(in) :: jvShapFunc, jvGeom
+    integer, intent(in) :: paraNbMax
+    integer, intent(out) :: paraNb
+    character(len=8) :: paraName(paraNbMax)
+    real(kind=8) :: paraVale(paraNbMax)
+    real(kind=8), optional, intent(in) :: geomCurr_(*)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -70,25 +70,25 @@ real(kind=8), optional, intent(in) :: geomCurr_(*)
     ldec = (ipg-1)*nbNode
 
 ! - Initial and current coordinates of current Gauss point
-    x  = 0.d0
-    y  = 0.d0
-    z  = 0.d0
+    x = 0.d0
+    y = 0.d0
+    z = 0.d0
     xf = 0.d0
     yf = 0.d0
     zf = 0.d0
     do iNode = 1, nbNode
-        x  = x + zr(jvGeom+(cellDime+1)*(iNode-1)-1+1) * zr(jvShapFunc+ldec-1+iNode)
-        y  = y + zr(jvGeom+(cellDime+1)*(iNode-1)-1+2) * zr(jvShapFunc+ldec-1+iNode)
+        x = x+zr(jvGeom+(cellDime+1)*(iNode-1)-1+1)*zr(jvShapFunc+ldec-1+iNode)
+        y = y+zr(jvGeom+(cellDime+1)*(iNode-1)-1+2)*zr(jvShapFunc+ldec-1+iNode)
         if (present(geomCurr_)) then
-            xf = xf + geomCurr_((cellDime+1)*(iNode-1)+1) * zr(jvShapFunc+ldec-1+iNode)
-            yf = yf + geomCurr_((cellDime+1)*(iNode-1)+2) * zr(jvShapFunc+ldec-1+iNode)
-        endif
+            xf = xf+geomCurr_((cellDime+1)*(iNode-1)+1)*zr(jvShapFunc+ldec-1+iNode)
+            yf = yf+geomCurr_((cellDime+1)*(iNode-1)+2)*zr(jvShapFunc+ldec-1+iNode)
+        end if
         if (cellDime .eq. 2) then
-            z  = z + zr(jvGeom+(cellDime+1)*(iNode-1)-1+3) * zr(jvShapFunc+ldec-1+iNode)
+            z = z+zr(jvGeom+(cellDime+1)*(iNode-1)-1+3)*zr(jvShapFunc+ldec-1+iNode)
             if (present(geomCurr_)) then
-                zf = zf + geomCurr_((cellDime+1)*(iNode-1)+3) * zr(jvShapFunc+ldec-1+iNode)
-            endif
-        endif
+                zf = zf+geomCurr_((cellDime+1)*(iNode-1)+3)*zr(jvShapFunc+ldec-1+iNode)
+            end if
+        end if
     end do
 
 ! - List of parameters
@@ -102,17 +102,17 @@ real(kind=8), optional, intent(in) :: geomCurr_(*)
     paraVale(4) = yf
     paraName(4) = 'YF'
     if (cellDime .eq. 2) then
-        paraNb = paraNb + 1
+        paraNb = paraNb+1
         paraVale(paraNb) = z
         paraName(paraNb) = 'Z'
-        paraNb = paraNb + 1
+        paraNb = paraNb+1
         paraVale(paraNb) = zf
         paraName(paraNb) = 'ZF'
-    endif
+    end if
     if (lTime) then
-        paraNb = paraNb + 1
+        paraNb = paraNb+1
         paraVale(paraNb) = time
         paraName(paraNb) = 'INST'
-    endif
+    end if
 !
 end subroutine

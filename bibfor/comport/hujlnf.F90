@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine hujlnf(toler, nmat, mater, nvi, vind,&
-                  vinf, vins, nr, yd, yf,&
+subroutine hujlnf(toler, nmat, mater, nvi, vind, &
+                  vinf, vins, nr, yd, yf, &
                   sigd, sigf, indi, iret)
 ! person_in_charge: alexandre.foucault at edf.fr
 ! aslint: disable=W1306
@@ -53,17 +53,17 @@ subroutine hujlnf(toler, nmat, mater, nvi, vind,&
     real(kind=8) :: matert(22, 2)
     aster_logical :: negmul(8), chgmec
 !
-    parameter  (un   = 1.d0)
-    parameter  (ndt  = 6   )
+    parameter(un=1.d0)
+    parameter(ndt=6)
 ! ----------------------------------------------------------------
 ! --- PARAMETRES MATERIAU
-    e0 = mater(1,1)
-    pref = mater(8,2)
+    e0 = mater(1, 1)
+    pref = mater(8, 2)
 !
 ! --- CONSTRUCTION DE NBMECA + NEGMUL
     nbmeca = 0
     do k = 1, 8
-        if (vind(23+k) .eq. un) nbmeca = nbmeca + 1
+        if (vind(23+k) .eq. un) nbmeca = nbmeca+1
         negmul(k) = .false.
     end do
 !
@@ -97,18 +97,18 @@ subroutine hujlnf(toler, nmat, mater, nvi, vind,&
     do k = 1, nbmeca
         kk = indi(k)
         if (yft(ndt+1+k) .gt. vind(kk)) then
-            if ((kk.gt.4) .and. (kk.lt.8)) then
+            if ((kk .gt. 4) .and. (kk .lt. 8)) then
                 if (yft(ndt+1+k) .le. vind(kk-4)) then
                     vinf(kk) = yft(ndt+1+k)
                 else
                     vinf(kk) = vind(kk-4)
-                endif
+                end if
             else
                 vinf(kk) = yft(ndt+1+k)
-            endif
+            end if
         else
             vinf(kk) = vind(kk)
-        endif
+        end if
     end do
 !
 ! ----------------------------------------------
@@ -123,7 +123,7 @@ subroutine hujlnf(toler, nmat, mater, nvi, vind,&
         ratio = yf(ndt+1+nbmeca+k)/maxi
         if (ratio .lt. -un) then
             negmul(indi(k)) = .true.
-        endif
+        end if
     end do
 !
 ! ----------------------------------------------
@@ -137,11 +137,11 @@ subroutine hujlnf(toler, nmat, mater, nvi, vind,&
     chgmec = .false.
 !
     do i = 1, 22
-        matert(i,1) = mater(i,1)
-        matert(i,2) = mater(i,2)
+        matert(i, 1) = mater(i, 1)
+        matert(i, 2) = mater(i, 2)
     end do
 !
-    call hujact(matert, vind, vinf, vins, sigd,&
+    call hujact(matert, vind, vinf, vins, sigd, &
                 sigf, negmul, chgmec, indi)
 !
     cumuli = vinf(35)
@@ -151,7 +151,7 @@ subroutine hujlnf(toler, nmat, mater, nvi, vind,&
         vinf(1:nvi) = vind(1:nvi)
         vinf(35) = cumuli
         goto 999
-    endif
+    end if
 !
 999 continue
 !

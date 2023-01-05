@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,12 +17,12 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine comp_ntvari(model_, comporMap_, comporList_, comporInfo,&
+subroutine comp_ntvari(model_, comporMap_, comporList_, comporInfo, &
                        nt_vari, nb_vari_maxi, mapNbZone, behaviourParaExte)
 !
-use Behaviour_type
+    use Behaviour_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -36,12 +36,12 @@ implicit none
 #include "asterfort/teattr.h"
 #include "asterfort/Behaviour_type.h"
 !
-character(len=8), optional, intent(in) :: model_
-character(len=19), optional, intent(in) :: comporMap_
-character(len=16), optional, intent(in) :: comporList_(COMPOR_SIZE)
-character(len=19), intent(in) :: comporInfo
-integer, intent(out) :: nt_vari, nb_vari_maxi, mapNbZone
-type(Behaviour_ParaExte), pointer :: behaviourParaExte(:)
+    character(len=8), optional, intent(in) :: model_
+    character(len=19), optional, intent(in) :: comporMap_
+    character(len=16), optional, intent(in) :: comporList_(COMPOR_SIZE)
+    character(len=19), intent(in) :: comporInfo
+    integer, intent(out) :: nt_vari, nb_vari_maxi, mapNbZone
+    type(Behaviour_ParaExte), pointer :: behaviourParaExte(:)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -87,34 +87,34 @@ type(Behaviour_ParaExte), pointer :: behaviourParaExte(:)
     mapNbZone = 0
     behaviourParaExte => null()
     if (present(model_)) then
-        call jeveuo(model_//'.MAILLE', 'L', vi = modelCell)
-    endif
+        call jeveuo(model_//'.MAILLE', 'L', vi=modelCell)
+    end if
 
 ! - Access to map
     if (present(comporMap_)) then
-        call jeveuo(comporMap_//'.DESC', 'L', vi = comporDesc)
-        call jeveuo(comporMap_//'.VALE', 'L', vk16 = comporVale)
+        call jeveuo(comporMap_//'.DESC', 'L', vi=comporDesc)
+        call jeveuo(comporMap_//'.VALE', 'L', vk16=comporVale)
         call jelira(comporMap_//'.VALE', 'LONMAX', nbVale)
-        call jeveuo(jexnum(comporMap_//'.LIMA', 1), 'L', vi = comporLima)
-        call jeveuo(jexatr(comporMap_//'.LIMA', 'LONCUM'), 'L', vi = comporLimaCumu)
+        call jeveuo(jexnum(comporMap_//'.LIMA', 1), 'L', vi=comporLima)
+        call jeveuo(jexatr(comporMap_//'.LIMA', 'LONCUM'), 'L', vi=comporLimaCumu)
         mapNbZone = comporDesc(3)
         mapNbCmpMax = nbVale/comporDesc(2)
-        call dismoi('NOM_MAILLA'  , comporMap_, 'CARTE', repk=mesh)
+        call dismoi('NOM_MAILLA', comporMap_, 'CARTE', repk=mesh)
         call dismoi('NB_MA_MAILLA', mesh, 'MAILLAGE', repi=nbCellMesh)
-    endif
+    end if
 
 ! - Parameters if list
     if (present(comporList_)) then
         mapNbZone = 1
         mapNbCmpMax = 0
         nbCellMesh = 1
-    endif
+    end if
 
 ! - Create list of zones: for each zone (in CARTE), how many elements
-    call jeveuo(comporInfo(1:19)//'.ZONE', 'L', vi = comporInfoZone)
+    call jeveuo(comporInfo(1:19)//'.ZONE', 'L', vi=comporInfoZone)
 
 ! - Prepare objects for external constitutive laws
-    allocate(behaviourParaExte(mapNbZone))
+    allocate (behaviourParaExte(mapNbZone))
 
 ! - Count internal variables by comportment
     do iMapZone = 1, mapNbZone
@@ -125,26 +125,26 @@ type(Behaviour_ParaExte), pointer :: behaviourParaExte(:)
 
 ! ----- Get parameters
         if (present(comporMap_)) then
-            rela_comp   = comporVale(mapNbCmpMax*(iMapZone-1)+RELA_NAME)
-            defo_comp   = comporVale(mapNbCmpMax*(iMapZone-1)+DEFO)
-            type_cpla   = comporVale(mapNbCmpMax*(iMapZone-1)+PLANESTRESS)
-            mult_comp   = comporVale(mapNbCmpMax*(iMapZone-1)+MULTCOMP)
+            rela_comp = comporVale(mapNbCmpMax*(iMapZone-1)+RELA_NAME)
+            defo_comp = comporVale(mapNbCmpMax*(iMapZone-1)+DEFO)
+            type_cpla = comporVale(mapNbCmpMax*(iMapZone-1)+PLANESTRESS)
+            mult_comp = comporVale(mapNbCmpMax*(iMapZone-1)+MULTCOMP)
             kit_comp(1) = comporVale(mapNbCmpMax*(iMapZone-1)+KIT1_NAME)
             kit_comp(2) = comporVale(mapNbCmpMax*(iMapZone-1)+KIT2_NAME)
             kit_comp(3) = comporVale(mapNbCmpMax*(iMapZone-1)+KIT3_NAME)
             kit_comp(4) = comporVale(mapNbCmpMax*(iMapZone-1)+KIT4_NAME)
-            post_iter   = comporVale(mapNbCmpMax*(iMapZone-1)+POSTITER)
+            post_iter = comporVale(mapNbCmpMax*(iMapZone-1)+POSTITER)
         else
-            rela_comp   = comporList_(RELA_NAME)
-            defo_comp   = comporList_(DEFO)
-            type_cpla   = comporList_(PLANESTRESS)
-            mult_comp   = comporList_(MULTCOMP)
+            rela_comp = comporList_(RELA_NAME)
+            defo_comp = comporList_(DEFO)
+            type_cpla = comporList_(PLANESTRESS)
+            mult_comp = comporList_(MULTCOMP)
             kit_comp(1) = comporList_(KIT1_NAME)
             kit_comp(2) = comporList_(KIT2_NAME)
             kit_comp(3) = comporList_(KIT3_NAME)
             kit_comp(4) = comporList_(KIT4_NAME)
-            post_iter   = comporList_(POSTITER)
-        endif
+            post_iter = comporList_(POSTITER)
+        end if
 
 ! ----- Find right TYPELEM
         if (present(comporMap_)) then
@@ -158,12 +158,12 @@ type(Behaviour_ParaExte), pointer :: behaviourParaExte(:)
                 posit = 0
             else
                 ASSERT(ASTER_FALSE)
-            endif
+            end if
         else
             affeZoneType = 0
             nbCell = 1
             ASSERT(iMapZone .eq. 1)
-        endif
+        end if
         do iCell = 1, nbCell
             if (affeZoneType .eq. 3) then
                 cellNume = comporLima(posit+iCell-1)
@@ -173,34 +173,34 @@ type(Behaviour_ParaExte), pointer :: behaviourParaExte(:)
                 cellNume = 1
             else
                 ASSERT(.false.)
-            endif
+            end if
             if (cellNume .ne. 0 .and. affeZoneType .gt. 0) then
                 cellTypeNume = modelCell(cellNume)
                 if (cellTypeNume .ne. 0) then
                     call jenuno(jexnum('&CATA.TE.NOMTE', cellTypeNume), cellTypeName)
-                    call teattr('C', 'PRINCIPAL', principal, iret, typel = cellTypeName)
+                    call teattr('C', 'PRINCIPAL', principal, iret, typel=cellTypeName)
                     if (principal .eq. 'OUI') then
                         goto 20
-                    endif
-                endif
-            endif
+                    end if
+                end if
+            end if
         end do
-    20  continue
+20      continue
 
 ! ----- Get parameters for external programs (MFRONT/UMAT)
-        call getExternalBehaviourPara(mesh, modelCell,&
-                                      rela_comp, kit_comp,&
-                                      l_comp_external, behaviourParaExte(iMapZone),&
-                                      elem_type_     = cellTypeNume,&
-                                      type_cpla_in_  = type_cpla)
+        call getExternalBehaviourPara(mesh, modelCell, &
+                                      rela_comp, kit_comp, &
+                                      l_comp_external, behaviourParaExte(iMapZone), &
+                                      elem_type_=cellTypeNume, &
+                                      type_cpla_in_=type_cpla)
 
 ! ----- Get number of internal variables
         if (present(comporMap_)) then
-            read (comporVale(mapNbCmpMax*(iMapZone-1)+NVAR),'(I16)') nb_vari
+            read (comporVale(mapNbCmpMax*(iMapZone-1)+NVAR), '(I16)') nb_vari
         else
-            read (comporList_(NVAR),'(I16)') nb_vari
-        endif
-        nt_vari      = nt_vari+nb_vari
+            read (comporList_(NVAR), '(I16)') nb_vari
+        end if
+        nt_vari = nt_vari+nb_vari
         nb_vari_maxi = max(nb_vari_maxi, nb_vari)
     end do
 !

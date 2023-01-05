@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,9 +18,9 @@
 
 subroutine ComputeTableHead(table, col_sep, table_head)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -56,10 +56,10 @@ implicit none
 !
 ! - Get parameters
 !
-    nb_cols      = table%nb_cols
+    nb_cols = table%nb_cols
     title_height = table%title_height
-    table_width  = table%width
-    ASSERT((title_height .gt. 0).and.(title_height .le. 3))
+    table_width = table%width
+    ASSERT((title_height .gt. 0) .and. (title_height .le. 3))
     ASSERT(table_width .le. 512)
     ASSERT(nb_cols .le. table%nb_cols_maxi)
 !
@@ -68,35 +68,35 @@ implicit none
     call PrepareTableLine(table, col_sep, table_head(1))
     if (title_height .ge. 2) then
         call PrepareTableLine(table, col_sep, table_head(2))
-    endif
+    end if
     if (title_height .eq. 3) then
         call PrepareTableLine(table, col_sep, table_head(3))
-    endif
+    end if
 !
 ! - Set title of columns in heads of table
 !
     pos = 2
     do i_col = 1, nb_cols
         if (table%l_cols_acti(i_col)) then
-            col_width    = 16
+            col_width = 16
             col_title(1) = table%cols(i_col)%title(1)
             if (title_height .ge. 2) then
                 col_title(2) = table%cols(i_col)%title(2)
-            endif
+            end if
             if (title_height .eq. 3) then
                 col_title(3) = table%cols(i_col)%title(3)
-            endif
-            table_head(1)(pos:pos+col_width-1) = col_title(1)
+            end if
+            table_head(1) (pos:pos+col_width-1) = col_title(1)
             if (title_height .ge. 2) then
-                table_head(2)(pos:pos+col_width-1) = col_title(2)
-            endif
+                table_head(2) (pos:pos+col_width-1) = col_title(2)
+            end if
             if (title_height .eq. 3) then
-                table_head(3)(pos:pos+col_width-1) = col_title(3)
-            endif
+                table_head(3) (pos:pos+col_width-1) = col_title(3)
+            end if
             pos = pos+col_width+1
-        endif
+        end if
     end do
 !
-    ASSERT(pos.eq.table_width+1)
+    ASSERT(pos .eq. table_width+1)
 !
 end subroutine

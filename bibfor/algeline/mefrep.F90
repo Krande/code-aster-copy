@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine mefrep(nbz, nbmod, nbcyl, nbgrp, numgrp,&
-                  z, freq0, rho, visc, rint,&
+subroutine mefrep(nbz, nbmod, nbcyl, nbgrp, numgrp, &
+                  z, freq0, rho, visc, rint, &
                   phix, phiy, dcent, matma)
     implicit none
 #include "jeveux.h"
@@ -78,14 +78,14 @@ subroutine mefrep(nbz, nbmod, nbcyl, nbgrp, numgrp,&
 ! --- DECALAGES DES TABLEAUX DE COEFFICIENTS ET DES MATRICES EN AIR
 ! --- DANS LE VECTEUR DCENT
 !
-    ippxx = nbcyl + nbcyl + nbcyl*nbcyl + nbcyl*nbcyl
-    ippxy = ippxx + nbcyl*nbgrp
-    ippyx = ippxy + nbcyl*nbgrp
-    ippyy = ippyx + nbcyl*nbgrp
-    ivnxx = ippyy + nbcyl*nbgrp
-    ivnxy = ivnxx + nbcyl*nbgrp
-    ivnyx = ivnxy + nbcyl*nbgrp
-    ivnyy = ivnyx + nbcyl*nbgrp
+    ippxx = nbcyl+nbcyl+nbcyl*nbcyl+nbcyl*nbcyl
+    ippxy = ippxx+nbcyl*nbgrp
+    ippyx = ippxy+nbcyl*nbgrp
+    ippyy = ippyx+nbcyl*nbgrp
+    ivnxx = ippyy+nbcyl*nbgrp
+    ivnxy = ivnxx+nbcyl*nbgrp
+    ivnyx = ivnxy+nbcyl*nbgrp
+    ivnyy = ivnyx+nbcyl*nbgrp
 !
     call wkvect('&&MEFREP.TEMP.FCT', 'V V R', nbz, ifct)
 !
@@ -102,7 +102,7 @@ subroutine mefrep(nbz, nbmod, nbcyl, nbgrp, numgrp,&
             do icyl = 1, nbcyl
                 if (numgrp(icyl) .eq. igrp) then
                     rayo = rint(icyl)
-                endif
+                end if
             end do
             do jgrp = 1, nbgrp
                 ncyl = 0
@@ -110,22 +110,22 @@ subroutine mefrep(nbz, nbmod, nbcyl, nbgrp, numgrp,&
                     do icyl = 1, nbcyl
                         if (numgrp(icyl) .eq. igrp) then
                             ncyl = ncyl-1
-                        endif
+                        end if
                     end do
-                endif
+                end if
 !
-                amor = amor-rayo* (&
-                       (&
-                       dcent(ivnxx+nbcyl*(jgrp-1)+igrp) + dble(ncyl)) * mefin1(nbz, nbgrp, imod,&
-                       igrp, imod, jgrp, z, phix, phix,&
-                       zr(ifct)) + dcent(ivnxy+nbcyl*(jgrp-1)+ igrp) * mefin1(nbz, nbgrp, imod,&
-                       igrp, imod, jgrp, z, phix, phiy,&
-                       zr(ifct)) + dcent(ivnyx+nbcyl*(jgrp-1)+igrp) * mefin1(nbz, nbgrp, imod,&
-                       igrp, imod, jgrp, z, phiy, phix,&
-                       zr( ifct)) + ( dcent(ivnyy+nbcyl*(jgrp-1)+igrp) + dble( ncyl) ) * mefin1(n&
-                       &bz,&
-                       nbgrp, imod, igrp, imod, jgrp, z, phiy, phiy, zr(ifct)&
-                       )&
+                amor = amor-rayo*( &
+                       ( &
+                       dcent(ivnxx+nbcyl*(jgrp-1)+igrp)+dble(ncyl))*mefin1(nbz, nbgrp, imod, &
+                       igrp, imod, jgrp, z, phix, phix, &
+                       zr(ifct))+dcent(ivnxy+nbcyl*(jgrp-1)+igrp)*mefin1(nbz, nbgrp, imod, &
+                       igrp, imod, jgrp, z, phix, phiy, &
+                       zr(ifct))+dcent(ivnyx+nbcyl*(jgrp-1)+igrp)*mefin1(nbz, nbgrp, imod, &
+                       igrp, imod, jgrp, z, phiy, phix, &
+                       zr(ifct))+(dcent(ivnyy+nbcyl*(jgrp-1)+igrp)+dble(ncyl))*mefin1(n&
+                       &bz, &
+                       nbgrp, imod, igrp, imod, jgrp, z, phiy, phiy, zr(ifct) &
+                       ) &
                        )
             end do
         end do

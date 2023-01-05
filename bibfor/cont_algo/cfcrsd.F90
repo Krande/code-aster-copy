@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,9 +19,9 @@
 !
 subroutine cfcrsd(mesh, nume_dof, ds_contact)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -43,9 +43,9 @@ implicit none
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
-character(len=8), intent(in) :: mesh
-character(len=24), intent(in) :: nume_dof
-type(NL_DS_Contact), intent(inout) :: ds_contact
+    character(len=8), intent(in) :: mesh
+    character(len=24), intent(in) :: nume_dof
+    type(NL_DS_Contact), intent(inout) :: ds_contact
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -91,29 +91,29 @@ type(NL_DS_Contact), intent(inout) :: ds_contact
     call jemarq()
     call infdbg('CONTACT', ifm, niv)
     if (niv .ge. 2) then
-        call utmess('I','CONTACT5_4')
-    endif
+        call utmess('I', 'CONTACT5_4')
+    end if
 !
 ! - Get contact parameters
 !
-    ztacf        = cfmmvd('ZTACF')
-    model_ndim   = cfdisi(ds_contact%sdcont_defi,'NDIM')
-    nt_cont_poin = cfdisi(ds_contact%sdcont_defi,'NTPC')
-    nb_cont_node = cfdisi(ds_contact%sdcont_defi,'NNOCO')
-    l_frot       = cfdisl(ds_contact%sdcont_defi,'FROT_DISCRET')
-    l_pena_cont  = cfdisl(ds_contact%sdcont_defi,'CONT_PENA')
-    l_pena_frot  = cfdisl(ds_contact%sdcont_defi,'FROT_PENA')
-    l_matr_cont  = cfdisl(ds_contact%sdcont_defi,'MATR_CONT')
-    l_gcp        = cfdisl(ds_contact%sdcont_defi,'CONT_GCP')
-    l_pre_cond   = cfdisl(ds_contact%sdcont_defi,'PRE_COND_DIRICHLET')
+    ztacf = cfmmvd('ZTACF')
+    model_ndim = cfdisi(ds_contact%sdcont_defi, 'NDIM')
+    nt_cont_poin = cfdisi(ds_contact%sdcont_defi, 'NTPC')
+    nb_cont_node = cfdisi(ds_contact%sdcont_defi, 'NNOCO')
+    l_frot = cfdisl(ds_contact%sdcont_defi, 'FROT_DISCRET')
+    l_pena_cont = cfdisl(ds_contact%sdcont_defi, 'CONT_PENA')
+    l_pena_frot = cfdisl(ds_contact%sdcont_defi, 'FROT_PENA')
+    l_matr_cont = cfdisl(ds_contact%sdcont_defi, 'MATR_CONT')
+    l_gcp = cfdisl(ds_contact%sdcont_defi, 'CONT_GCP')
+    l_pre_cond = cfdisl(ds_contact%sdcont_defi, 'PRE_COND_DIRICHLET')
 !
 ! - For geometric loop
 !
     sdcont_rea1 = ds_contact%sdcont_solv(1:14)//'.REA1'
     sdcont_rea2 = ds_contact%sdcont_solv(1:14)//'.REA2'
-    call vtcreb(sdcont_rea1, 'V', 'R', nume_ddlz = nume_dof,&
-                nb_equa_outz = nb_equa)
-    call vtcreb(sdcont_rea2, 'V', 'R', nume_ddlz = nume_dof)
+    call vtcreb(sdcont_rea1, 'V', 'R', nume_ddlz=nume_dof, &
+                nb_equa_outz=nb_equa)
+    call vtcreb(sdcont_rea2, 'V', 'R', nume_ddlz=nume_dof)
 !
 ! - Parameters for "PENALISATION" and "LAGRANGIEN"
 !
@@ -141,7 +141,7 @@ type(NL_DS_Contact), intent(inout) :: ds_contact
 ! - Pseudo-penalization value for 3D lagangrian
 !
     sdcont_copo = ds_contact%sdcont_solv(1:14)//'.COPO'
-    call wkvect(sdcont_copo, 'V V R', 1, vr = v_sdcont_copo)
+    call wkvect(sdcont_copo, 'V V R', 1, vr=v_sdcont_copo)
     v_sdcont_copo(1) = r8vide()
 !
 ! - Contact forces
@@ -154,48 +154,48 @@ type(NL_DS_Contact), intent(inout) :: ds_contact
     if (l_frot) then
         sdcont_afmu = ds_contact%sdcont_solv(1:14)//'.AFMU'
         call wkvect(sdcont_afmu, 'V V R', nb_equa, jv_sdcont_afmu)
-    endif
+    end if
 !
 ! - Contact forces for contact penalization methods
 !
-    if (l_pena_cont .and. (.not.l_frot)) then
+    if (l_pena_cont .and. (.not. l_frot)) then
         sdcont_afmu = ds_contact%sdcont_solv(1:14)//'.AFMU'
         call wkvect(sdcont_afmu, 'V V R', nb_equa, jv_sdcont_afmu)
-    endif
+    end if
 !
 ! - Solution increment without contact
 !
     sdcont_del0 = ds_contact%sdcont_solv(1:14)//'.DEL0'
-    call vtcreb(sdcont_del0, 'V', 'R', nume_ddlz = nume_dof)
+    call vtcreb(sdcont_del0, 'V', 'R', nume_ddlz=nume_dof)
 !
 ! - Solution increment for contact iteration
 !
     sdcont_ddel = ds_contact%sdcont_solv(1:14)//'.DDEL'
-    call vtcreb(sdcont_ddel, 'V', 'R', nume_ddlz = nume_dof)
+    call vtcreb(sdcont_ddel, 'V', 'R', nume_ddlz=nume_dof)
 !
 ! - Solution increment with contact
 !
     sdcont_delc = ds_contact%sdcont_solv(1:14)//'.DELC'
-    call vtcreb(sdcont_delc, 'V', 'R', nume_ddlz = nume_dof)
+    call vtcreb(sdcont_delc, 'V', 'R', nume_ddlz=nume_dof)
 !
 ! - Solution increment since beginning of time step without contact
 !
     if (l_frot) then
         sdcont_dep0 = ds_contact%sdcont_solv(1:14)//'.DEP0'
-        call vtcreb(sdcont_dep0, 'V', 'R', nume_ddlz = nume_dof)
-    endif
+        call vtcreb(sdcont_dep0, 'V', 'R', nume_ddlz=nume_dof)
+    end if
 !
 ! - Solution increment since beginning of time step with contact
 !
     if (l_frot) then
         sdcont_depc = ds_contact%sdcont_solv(1:14)//'.DEPC'
-        call vtcreb(sdcont_depc, 'V', 'R', nume_ddlz = nume_dof)
-    endif
+        call vtcreb(sdcont_depc, 'V', 'R', nume_ddlz=nume_dof)
+    end if
 !
 ! - Void kinematic load
 !
     sdcont_cin0 = ds_contact%sdcont_solv(1:14)//'.CIN0'
-    call vtcreb(sdcont_cin0, 'V', 'R', nume_ddlz = nume_dof)
+    call vtcreb(sdcont_cin0, 'V', 'R', nume_ddlz=nume_dof)
 !
 ! - Fields for GCP
 !
@@ -205,15 +205,15 @@ type(NL_DS_Contact), intent(inout) :: ds_contact
         sdcont_dire = ds_contact%sdcont_solv(1:14)//'.DIRE'
         sdcont_sgpm = ds_contact%sdcont_solv(1:14)//'.SGPM'
         sdcont_sgpp = ds_contact%sdcont_solv(1:14)//'.SGPP'
-        sdcont_mum  = ds_contact%sdcont_solv(1:14)//'.MUM'
+        sdcont_mum = ds_contact%sdcont_solv(1:14)//'.MUM'
         sdcont_secm = ds_contact%sdcont_solv(1:14)//'.SECM'
-        call vtcreb(sdcont_secm, 'V', 'R', nume_ddlz = nume_dof)
+        call vtcreb(sdcont_secm, 'V', 'R', nume_ddlz=nume_dof)
         call wkvect(sdcont_sgdm, 'V V R', nt_cont_poin, jv_sdcont_sgdm)
         call wkvect(sdcont_sgdp, 'V V R', nt_cont_poin, jv_sdcont_sgdp)
         call wkvect(sdcont_sgpm, 'V V R', nt_cont_poin, jv_sdcont_sgpm)
         call wkvect(sdcont_sgpp, 'V V R', nt_cont_poin, jv_sdcont_sgpp)
         call wkvect(sdcont_dire, 'V V R', nt_cont_poin, jv_sdcont_dire)
-        call wkvect(sdcont_mum , 'V V R', nt_cont_poin, jv_sdcont_mum)
+        call wkvect(sdcont_mum, 'V V R', nt_cont_poin, jv_sdcont_mum)
         if (l_pre_cond) then
             sdcont_pcrs = ds_contact%sdcont_solv(1:14)//'.PCRS'
             call wkvect(sdcont_pcrs, 'V V R', nt_cont_poin, jv_sdcont_pcrs)
@@ -221,8 +221,8 @@ type(NL_DS_Contact), intent(inout) :: ds_contact
             call wkvect(sdcont_pcdr, 'V V R', nt_cont_poin, jv_sdcont_pcdr)
             sdcont_pcuu = ds_contact%sdcont_solv(1:14)//'.PCUU'
             call wkvect(sdcont_pcuu, 'V V R', nb_equa, jv_sdcont_pcuu)
-        endif
-    endif
+        end if
+    end if
 !
 ! - State saving for GCP
 !
@@ -231,7 +231,7 @@ type(NL_DS_Contact), intent(inout) :: ds_contact
         call wkvect(sdcont_svm0, 'V V R', nb_cont_node, jv_sdcont_svm0)
         sdcont_svmu = ds_contact%sdcont_solv(1:14)//'.SVMU'
         call wkvect(sdcont_svmu, 'V V R', nb_cont_node, jv_sdcont_svmu)
-    endif
+    end if
 !
 ! - Contact matrix parameters: sizes
 !
@@ -243,14 +243,14 @@ type(NL_DS_Contact), intent(inout) :: ds_contact
         nbfro2 = 0
         if (l_pena_cont) then
             nbenat = nbliai
-        else if ((.not.l_frot) .or. l_pena_frot) then
+        else if ((.not. l_frot) .or. l_pena_frot) then
             nbcm1a = nbliai
         else
             nbcm1a = model_ndim*nbliai
-        endif
+        end if
         nbfro1 = (model_ndim-1)*nbliai
         nbfro2 = nbliai
-    endif
+    end if
 !
 ! - Contact matrix parameters: sizes
 !
@@ -269,7 +269,7 @@ type(NL_DS_Contact), intent(inout) :: ds_contact
             do ii = 1, nbcm1a
                 call jecroc(jexnum(sdcont_cm1a, ii))
             end do
-        endif
+        end if
         if (l_frot) then
             sdcont_fro1 = ds_contact%sdcont_solv(1:14)//'.FRO1'
             sdcont_fro2 = ds_contact%sdcont_solv(1:14)//'.FRO2'
@@ -283,23 +283,23 @@ type(NL_DS_Contact), intent(inout) :: ds_contact
             do ii = 1, nbfro2
                 call jecroc(jexnum(sdcont_fro2, ii))
             end do
-        endif
-    endif
+        end if
+    end if
 !
 ! - Matrix A.C-1.AT
 !
     if (l_matr_cont) then
         call cfcrma(nbcm1a, mesh, ds_contact%sdcont_solv)
-    endif
+    end if
 !
 ! - Forces to solve
 !
-    call vtcreb(ds_contact%cnctdc, 'V', 'R', nume_ddlz = nume_dof)
+    call vtcreb(ds_contact%cnctdc, 'V', 'R', nume_ddlz=nume_dof)
     ds_contact%l_cnctdc = ASTER_TRUE
     if (l_frot .or. l_pena_cont) then
-        call vtcreb(ds_contact%cnctdf, 'V', 'R', nume_ddlz = nume_dof)
+        call vtcreb(ds_contact%cnctdf, 'V', 'R', nume_ddlz=nume_dof)
         ds_contact%l_cnctdf = ASTER_TRUE
-    endif
+    end if
 !
     call jedema()
 end subroutine

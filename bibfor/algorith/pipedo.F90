@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine pipedo(ndim, typmod, tau, mate, vim,&
-                  epsm, epspc, epsdc, etamin, etamax,&
+subroutine pipedo(ndim, typmod, tau, mate, vim, &
+                  epsm, epspc, epsdc, etamin, etamax, &
                   a0, a1, a2, a3, etas)
 !
 !
@@ -66,7 +66,7 @@ subroutine pipedo(ndim, typmod, tau, mate, vim,&
 ! ----------------------------------------------------------------------
 !
     integer :: nbres
-    parameter   (nbres=6)
+    parameter(nbres=6)
     integer :: icodre(nbres)
     character(len=16) :: nomres(nbres)
     character(len=8) :: fami, poum
@@ -106,36 +106,36 @@ subroutine pipedo(ndim, typmod, tau, mate, vim,&
     nsol = 0
 !
 ! TOLE: TOLERANCE POUR ARRET EVOLUTION DE L ENDOMMAGEMENT
-    tole=1.d-2
+    tole = 1.d-2
 !
-    t(1,1)=1
-    t(1,2)=4
-    t(1,3)=5
-    t(2,1)=4
-    t(2,2)=2
-    t(2,3)=6
-    t(3,1)=5
-    t(3,2)=6
-    t(3,3)=3
+    t(1, 1) = 1
+    t(1, 2) = 4
+    t(1, 3) = 5
+    t(2, 1) = 4
+    t(2, 2) = 2
+    t(2, 3) = 6
+    t(3, 1) = 5
+    t(3, 2) = 6
+    t(3, 3) = 3
 !
 ! -- OPTION ET MODELISATION
-    cplan = (typmod(1).eq.'C_PLAN  ')
+    cplan = (typmod(1) .eq. 'C_PLAN  ')
     ndimsi = 2*ndim
     rac2 = sqrt(2.d0)
-    fami='FPG1'
-    kpg=1
-    spt=1
-    poum='+'
+    fami = 'FPG1'
+    kpg = 1
+    spt = 1
+    poum = '+'
 !
 ! -- LECTURE DES CARACTERISTIQUES THERMOELASTIQUES
     nomres(1) = 'E'
     nomres(2) = 'NU'
-    call rcvalb(fami, kpg, spt, poum, mate,&
-                ' ', 'ELAS', 0, ' ', [0.d0],&
+    call rcvalb(fami, kpg, spt, poum, mate, &
+                ' ', 'ELAS', 0, ' ', [0.d0], &
                 2, nomres, valres, icodre, 1)
     e = valres(1)
     nu = valres(2)
-    lambda = e * nu / (1.d0+nu) / (1.d0 - 2.d0*nu)
+    lambda = e*nu/(1.d0+nu)/(1.d0-2.d0*nu)
     mu = e/(2.d0*(1.d0+nu))
 !
 ! -- LECTURE DES CARACTERISTIQUES D'ENDOMMAGEMENT
@@ -145,8 +145,8 @@ subroutine pipedo(ndim, typmod, tau, mate, vim,&
     nomres(4) = 'K2'
     nomres(5) = 'ECROB'
     nomres(6) = 'ECROD'
-    call rcvalb(fami, kpg, spt, poum, mate,&
-                ' ', 'ENDO_ORTH_BETON', 0, ' ', [0.d0],&
+    call rcvalb(fami, kpg, spt, poum, mate, &
+                ' ', 'ENDO_ORTH_BETON', 0, ' ', [0.d0], &
                 nbres, nomres, valres, icodre, 1)
     alpha = valres(1)
     k0 = valres(2)
@@ -156,13 +156,13 @@ subroutine pipedo(ndim, typmod, tau, mate, vim,&
     ecrod = valres(6)
 !
 !
-    trepsm=epsm(1)+epsm(2)+epsm(3)
+    trepsm = epsm(1)+epsm(2)+epsm(3)
     if (trepsm .gt. 0.d0) then
-        trepsm=0.d0
-    endif
+        trepsm = 0.d0
+    end if
 !
     stra = trepsm
-    seuil = k0-k1*stra*(atan2(-stra/k2,un))
+    seuil = k0-k1*stra*(atan2(-stra/k2, un))
     seuila = seuil
 !
 !
@@ -189,22 +189,22 @@ subroutine pipedo(ndim, typmod, tau, mate, vim,&
     trb = b(1)+b(2)+b(3)
 !
 ! -- CAS DE L'ENDOMMAGEMENT SATURE
-    if ((trb.le.tole) .or. (d.ge.(1.d0-tole))) then
+    if ((trb .le. tole) .or. (d .ge. (1.d0-tole))) then
         a0 = 0.d0
         a1 = 0.d0
         a2 = r8vide()
         a3 = r8vide()
         etas = r8vide()
         goto 999
-    endif
+    end if
 !
 ! -- CALCUL DES DEFORMATIONS EN PRESENCE DE CONTRAINTES PLANES
 !
     if (cplan) then
-        coplan = - nu/(1.d0-nu)
-        epspc(3) = coplan * (epspc(1)+epspc(2))
-        epsdc(3) = coplan * (epsdc(1)+epsdc(2))
-    endif
+        coplan = -nu/(1.d0-nu)
+        epspc(3) = coplan*(epspc(1)+epspc(2))
+        epsdc(3) = coplan*(epsdc(1)+epsdc(2))
+    end if
     do k = 1, 3
         epsp(k) = epspc(k)
         epsd(k) = epsdc(k)
@@ -215,10 +215,10 @@ subroutine pipedo(ndim, typmod, tau, mate, vim,&
     end do
     if (ndimsi .lt. 6) then
         do k = ndimsi+1, 6
-            epsp(k)=0.d0
-            epsd(k)=0.d0
+            epsp(k) = 0.d0
+            epsd(k) = 0.d0
         end do
-    endif
+    end if
 !
 !
 !-- CALCUL DES FORCES THERMO CALCULEES AVEC +EPSD ET -EPSD
@@ -233,33 +233,33 @@ subroutine pipedo(ndim, typmod, tau, mate, vim,&
 !
     call diago3(b, vecb, valb)
     do i = 1, 3
-        br(i)=valb(i)
+        br(i) = valb(i)
     end do
 !
     if (abs(valb(1)) .lt. tole) then
-        rec(1)=0.d0
-        rec(4)=0.d0
-        rec(5)=0.d0
-    endif
+        rec(1) = 0.d0
+        rec(4) = 0.d0
+        rec(5) = 0.d0
+    end if
     if (abs(valb(2)) .lt. tole) then
-        rec(2)=0.d0
-        rec(4)=0.d0
-        rec(6)=0.d0
-    endif
+        rec(2) = 0.d0
+        rec(4) = 0.d0
+        rec(6) = 0.d0
+    end if
     if (abs(valb(3)) .lt. tole) then
-        rec(3)=0.d0
-        rec(5)=0.d0
-        rec(6)=0.d0
-    endif
+        rec(3) = 0.d0
+        rec(5) = 0.d0
+        rec(6) = 0.d0
+    end if
 !
     do i = 1, 3
         do j = i, 3
             do k = 1, 3
                 do l = 1, 3
-                    epsdp(t(i,j))=epsdp(t(i,j))+vecb(k,i)*epsd(t(k,l))&
-                    *vecb(l,j)
-                    epsdm(t(i,j))=epsdm(t(i,j))-vecb(k,i)*epsd(t(k,l))&
-                    *vecb(l,j)
+                    epsdp(t(i, j)) = epsdp(t(i, j))+vecb(k, i)*epsd(t(k, l)) &
+                                     *vecb(l, j)
+                    epsdm(t(i, j)) = epsdm(t(i, j))-vecb(k, i)*epsd(t(k, l)) &
+                                     *vecb(l, j)
                 end do
             end do
         end do
@@ -271,10 +271,10 @@ subroutine pipedo(ndim, typmod, tau, mate, vim,&
     do i = 1, 3
         do j = i, 3
             do k = 1, 3
-                ccp(t(i,j))=ccp(t(i,j))+br(t(i,k))*epsdp(t(k,j))+&
-                br(t(j,k))*epsdp(t(k,i))
-                ccm(t(i,j))=ccm(t(i,j))+br(t(i,k))*epsdm(t(k,j))+&
-                br(t(j,k))*epsdm(t(k,i))
+                ccp(t(i, j)) = ccp(t(i, j))+br(t(i, k))*epsdp(t(k, j))+ &
+                               br(t(j, k))*epsdp(t(k, i))
+                ccm(t(i, j)) = ccm(t(i, j))+br(t(i, k))*epsdm(t(k, j))+ &
+                               br(t(j, k))*epsdm(t(k, i))
             end do
         end do
     end do
@@ -290,20 +290,20 @@ subroutine pipedo(ndim, typmod, tau, mate, vim,&
 !
     do i = 1, 3
         if (valccp(i) .lt. 0.d0) then
-            valccp(i)=0.d0
-        endif
+            valccp(i) = 0.d0
+        end if
         if (valccm(i) .lt. 0.d0) then
-            valccm(i)=0.d0
-        endif
+            valccm(i) = 0.d0
+        end if
     end do
 !
     do i = 1, 3
         do j = i, 3
             do k = 1, 3
-                ccpp(t(i,j))=ccpp(t(i,j))+veccp(i,k)*valccp(k)*veccp(&
-                j,k)
-                ccpm(t(i,j))=ccpm(t(i,j))+veccm(i,k)*valccm(k)*veccm(&
-                j,k)
+                ccpp(t(i, j)) = ccpp(t(i, j))+veccp(i, k)*valccp(k)*veccp( &
+                                j, k)
+                ccpm(t(i, j)) = ccpm(t(i, j))+veccm(i, k)*valccm(k)*veccm( &
+                                j, k)
             end do
         end do
     end do
@@ -311,10 +311,10 @@ subroutine pipedo(ndim, typmod, tau, mate, vim,&
     do i = 1, 3
         do j = i, 3
             do k = 1, 3
-                cpep(t(i,j))=cpep(t(i,j))+ ccpp(t(i,k))*epsdp(t(k,j))+&
-                ccpp(t(j,k))*epsdp(t(k,i))
-                cpem(t(i,j))=cpem(t(i,j))+ ccpm(t(i,k))*epsdm(t(k,j))+&
-                ccpm(t(j,k))*epsdm(t(k,i))
+                cpep(t(i, j)) = cpep(t(i, j))+ccpp(t(i, k))*epsdp(t(k, j))+ &
+                                ccpp(t(j, k))*epsdp(t(k, i))
+                cpem(t(i, j)) = cpem(t(i, j))+ccpm(t(i, k))*epsdm(t(k, j))+ &
+                                ccpm(t(j, k))*epsdm(t(k, i))
             end do
         end do
     end do
@@ -322,84 +322,84 @@ subroutine pipedo(ndim, typmod, tau, mate, vim,&
     call r8inir(6, 0.d0, fbp, 1)
     call r8inir(6, 0.d0, fbm, 1)
 !
-    trebp=0.d0
-    trebm=0.d0
+    trebp = 0.d0
+    trebm = 0.d0
 !
     do i = 1, 3
-        trebp=trebp+ccp(i)/2
-        trebm=trebm+ccm(i)/2
+        trebp = trebp+ccp(i)/2
+        trebm = trebm+ccm(i)/2
     end do
 !
     if (trebp .gt. 0.d0) then
         do i = 1, 6
-            fbp(i)=-lambda*trebp*epsdp(i)
+            fbp(i) = -lambda*trebp*epsdp(i)
         end do
-    endif
+    end if
     if (trebm .gt. 0.d0) then
         do i = 1, 6
-            fbm(i)=-lambda*trebm*epsdm(i)
+            fbm(i) = -lambda*trebm*epsdm(i)
         end do
-    endif
+    end if
 !
     do i = 1, 6
-        fbp(i)=(fbp(i)-mu/2.d0*cpep(i))
-        fbm(i)=(fbm(i)-mu/2.d0*cpem(i))
+        fbp(i) = (fbp(i)-mu/2.d0*cpep(i))
+        fbm(i) = (fbm(i)-mu/2.d0*cpem(i))
     end do
 !
     call diago3(fbp, vecfbp, valfbp)
     call diago3(fbm, vecfbm, valfbm)
 !
-    rtempp=0.d0
-    rtempm=0.d0
+    rtempp = 0.d0
+    rtempm = 0.d0
 !
     do i = 1, 3
         if (valfbp(i) .gt. 0.d0) then
-            valfbp(i)=0.d0
-        endif
-        rtempp=rtempp+valfbp(i)*valfbp(i)
+            valfbp(i) = 0.d0
+        end if
+        rtempp = rtempp+valfbp(i)*valfbp(i)
         if (valfbm(i) .gt. 0.d0) then
-            valfbm(i)=0.d0
-        endif
-        rtempm=rtempm+valfbm(i)*valfbm(i)
+            valfbm(i) = 0.d0
+        end if
+        rtempm = rtempm+valfbm(i)*valfbm(i)
     end do
 !
 !
-    treps=epsdp(1)+epsdp(2)+epsdp(3)
+    treps = epsdp(1)+epsdp(2)+epsdp(3)
     call diago3(epsdp, vecc, valcc)
     do i = 1, 3
         if (valcc(i) .gt. 0.d0) then
-            valcc(i)=0.d0
-        endif
+            valcc(i) = 0.d0
+        end if
     end do
-    trem=valcc(1)**2+valcc(2)**2+valcc(3)**2
+    trem = valcc(1)**2+valcc(2)**2+valcc(3)**2
     if (treps .gt. 0.d0) then
-        treps=0.d0
-    endif
-    dcoefd=2.d0*(1.d0-d)
-    ene=lambda/2*treps**2+mu*trem
+        treps = 0.d0
+    end if
+    dcoefd = 2.d0*(1.d0-d)
+    ene = lambda/2*treps**2+mu*trem
 !      FDP=DCOEFD*ENE-2.d0*ECROD*D
-    fdp=dcoefd*ene
+    fdp = dcoefd*ene
     if (fdp .lt. 0.d0) then
-        fdp=0.d0
-    endif
+        fdp = 0.d0
+    end if
 !
-    treps=epsdm(1)+epsdm(2)+epsdm(3)
+    treps = epsdm(1)+epsdm(2)+epsdm(3)
     call diago3(epsdm, vecc, valcc)
     do i = 1, 3
         if (valcc(i) .gt. 0.d0) then
-            valcc(i)=0.d0
-        endif
+            valcc(i) = 0.d0
+        end if
     end do
-    trem=valcc(1)**2+valcc(2)**2+valcc(3)**2
+    trem = valcc(1)**2+valcc(2)**2+valcc(3)**2
     if (treps .gt. 0.d0) then
-        treps=0.d0
-    endif
-    ene=lambda/2*treps**2+mu*trem
+        treps = 0.d0
+    end if
+    ene = lambda/2*treps**2+mu*trem
 !      FDM=DCOEFD*ENE-2.d0*ECROD*D
-    fdm=dcoefd*ene
+    fdm = dcoefd*ene
     if (fdm .lt. 0.d0) then
-        fdm=0.d0
-    endif
+        fdm = 0.d0
+    end if
 !
 !----------------------------------------------------------
 !---COMPORTEMENT A L INFINI ET NOMBRE DE SOLUTIONS---------
@@ -424,125 +424,125 @@ subroutine pipedo(ndim, typmod, tau, mate, vim,&
 !                     AVOIR F(ETA)<0
 !    RECHBD : IDEM A DROITE
 !
-    nsol=2
-    if ((rtempm.eq.0.d0) .and. (fdm.eq.0.d0)) nsol=1
-    if ((rtempp.eq.0.d0) .and. (fdp.eq.0.d0)) nsol=-1
+    nsol = 2
+    if ((rtempm .eq. 0.d0) .and. (fdm .eq. 0.d0)) nsol = 1
+    if ((rtempp .eq. 0.d0) .and. (fdp .eq. 0.d0)) nsol = -1
 !
 !
     if (abs(nsol) .gt. 0) then
-        if ((nsol.eq.2) .or. (nsol.eq.-1)) rechbg=.true.
-        if ((nsol.eq.2) .or. (nsol.eq.1)) rechbd=.true.
+        if ((nsol .eq. 2) .or. (nsol .eq. -1)) rechbg = .true.
+        if ((nsol .eq. 2) .or. (nsol .eq. 1)) rechbd = .true.
 !
-        eta=etamin
+        eta = etamin
 !
-        call criteo(epsp, epsd, eta, b, d,&
-                    lambda, mu, alpha, ecrob, ecrod,&
+        call criteo(epsp, epsd, eta, b, d, &
+                    lambda, mu, alpha, ecrob, ecrod, &
                     seuil, crit1, critp1)
 !
-        iter=0
-        rpas=(etamax-etamin)
+        iter = 0
+        rpas = (etamax-etamin)
 !
         if (rechbg) then
- 60         continue
-            iter=iter+1
-            rpas=rpas*2
-            if ((crit1.lt.0.d0) .or. (critp1.ge.0.d0)) then
-                eta=eta-rpas
-                call criteo(epsp, epsd, eta, b, d,&
-                            lambda, mu, alpha, ecrob, ecrod,&
+60          continue
+            iter = iter+1
+            rpas = rpas*2
+            if ((crit1 .lt. 0.d0) .or. (critp1 .ge. 0.d0)) then
+                eta = eta-rpas
+                call criteo(epsp, epsd, eta, b, d, &
+                            lambda, mu, alpha, ecrob, ecrod, &
                             seuil, crit1, critp1)
                 goto 60
-            endif
+            end if
 !          write (6,*) 'ITER-1 = ',ITER
         else
- 30         continue
-            iter=iter+1
-            rpas=rpas*2
+30          continue
+            iter = iter+1
+            rpas = rpas*2
             if (crit1 .ge. 0.d0) then
-                eta=eta-rpas
-                call criteo(epsp, epsd, eta, b, d,&
-                            lambda, mu, alpha, ecrob, ecrod,&
+                eta = eta-rpas
+                call criteo(epsp, epsd, eta, b, d, &
+                            lambda, mu, alpha, ecrob, ecrod, &
                             seuil, crit1, critp1)
                 goto 30
-            endif
+            end if
 !          write (6,*) 'ITER-1b = ',ITER
-        endif
-        eta1=eta
+        end if
+        eta1 = eta
 !
 !
-        eta=etamax
-        rpas=(etamax-etamin)
-        call criteo(epsp, epsd, eta, b, d,&
-                    lambda, mu, alpha, ecrob, ecrod,&
+        eta = etamax
+        rpas = (etamax-etamin)
+        call criteo(epsp, epsd, eta, b, d, &
+                    lambda, mu, alpha, ecrob, ecrod, &
                     seuil, crit2, critp2)
-        iter=0
+        iter = 0
         if (rechbd) then
- 40         continue
-            iter=iter+1
-            rpas=rpas*2
-            if ((crit2.lt.0.d0) .or. (critp2.le.0.d0)) then
-                eta=eta+rpas
-                call criteo(epsp, epsd, eta, b, d,&
-                            lambda, mu, alpha, ecrob, ecrod,&
+40          continue
+            iter = iter+1
+            rpas = rpas*2
+            if ((crit2 .lt. 0.d0) .or. (critp2 .le. 0.d0)) then
+                eta = eta+rpas
+                call criteo(epsp, epsd, eta, b, d, &
+                            lambda, mu, alpha, ecrob, ecrod, &
                             seuil, crit2, critp2)
                 goto 40
-            endif
+            end if
 !          write (6,*) 'ITER-2 = ',ITER
         else
- 50         continue
-            iter=iter+1
-            rpas=rpas*2
+50          continue
+            iter = iter+1
+            rpas = rpas*2
             if (crit2 .ge. 0.d0) then
-                eta=eta+rpas
-                call criteo(epsp, epsd, eta, b, d,&
-                            lambda, mu, alpha, ecrob, ecrod,&
+                eta = eta+rpas
+                call criteo(epsp, epsd, eta, b, d, &
+                            lambda, mu, alpha, ecrob, ecrod, &
                             seuil, crit2, critp2)
                 goto 50
-            endif
+            end if
 !          write (6,*) 'ITER-2b = ',ITER
-        endif
-        eta2=eta
+        end if
+        eta2 = eta
 !
 !
-    endif
+    end if
 !
 ! -- CAS A UNE SOLUTION
     if (abs(nsol) .eq. 1) then
         if (nsol .eq. 1) then
-            x(1)=eta1
-            y(1)=crit1
-            z(1)=critp1
-            x(2)=eta2
-            y(2)=crit2
-            z(2)=critp2
+            x(1) = eta1
+            y(1) = crit1
+            z(1) = critp1
+            x(2) = eta2
+            y(2) = crit2
+            z(2) = critp2
         else
-            x(1)=eta2
-            y(1)=crit2
-            z(1)=critp2
-            x(2)=eta1
-            y(2)=crit1
-            z(2)=critp1
-        endif
-        x(3)=x(1)
-        y(3)=y(1)
-        z(3)=z(1)
+            x(1) = eta2
+            y(1) = crit2
+            z(1) = critp2
+            x(2) = eta1
+            y(2) = crit1
+            z(2) = critp1
+        end if
+        x(3) = x(1)
+        y(3) = y(1)
+        z(3) = z(1)
         do iter = 1, nitmax
             if (abs(y(3)) .le. epstol*seuila*tau) goto 201
-            if (mod(iter,5) .ne. 0) then
+            if (mod(iter, 5) .ne. 0) then
                 call zerog2(x, y, z, iter)
             else
                 call zerod2(x, y, z)
-            endif
-            call criteo(epsp, epsd, x(3), b, d,&
-                        lambda, mu, alpha, ecrob, ecrod,&
+            end if
+            call criteo(epsp, epsd, x(3), b, d, &
+                        lambda, mu, alpha, ecrob, ecrod, &
                         seuil, y(3), z(3))
         end do
         call utmess('F', 'UTILITAI2_53')
 201     continue
 !        write (6,*) 'ITER-3 = ',ITER
-        eta=x(3)
-        nsol=1
-    endif
+        eta = x(3)
+        nsol = 1
+    end if
 !
 ! -- CAS A MINIMUM (ZERO OU DEUX SOLUTIONS)
     if (nsol .eq. 2) then
@@ -553,7 +553,7 @@ subroutine pipedo(ndim, typmod, tau, mate, vim,&
 !    ET ON RACCOURCIT L'INTERVALLE EN UTILISANT LA DERIVEE
 250     continue
 !     TEST D'ARRET POUR UN MINIMUM AU-DESSUS DE 0
-        iter=iter+1
+        iter = iter+1
         if (iter .gt. nitmax) then
 !            write (6,*) 'ETAMIN = ',ETAMIN,' ; ETAMAX = ',ETAMAX
 !            write (6,*) 'ETA1 = ',ETA1,' ; CRIT1 = ',CRIT1,
@@ -561,40 +561,40 @@ subroutine pipedo(ndim, typmod, tau, mate, vim,&
 !            write (6,*) 'ETA2 = ',ETA2,' ; CRIT2 = ',CRIT2,
 !     &                     ' ; CRITP2',CRITP2
             call utmess('F', 'PILOTAGE_83')
-        endif
-        if ((abs(critp1*(eta2-eta1)).lt.epstol*seuila*tau) .and.&
-            (abs(critp2*(eta2-eta1)).lt.epstol*seuila*tau)) then
+        end if
+        if ((abs(critp1*(eta2-eta1)) .lt. epstol*seuila*tau) .and. &
+            (abs(critp2*(eta2-eta1)) .lt. epstol*seuila*tau)) then
             if ((crit1+critp1*(eta2-eta1)) .gt. 0.d0) then
                 if ((crit2+critp2*(eta1-eta2)) .gt. 0.d0) then
                     goto 260
-                endif
-            endif
-        endif
+                end if
+            end if
+        end if
         if (crit1 .lt. crit2) then
-            etac=c*eta1+r*eta2
+            etac = c*eta1+r*eta2
         else
-            etac=c*eta2+r*eta1
-        endif
-        call criteo(epsp, epsd, etac, b, d,&
-                    lambda, mu, alpha, ecrob, ecrod,&
+            etac = c*eta2+r*eta1
+        end if
+        call criteo(epsp, epsd, etac, b, d, &
+                    lambda, mu, alpha, ecrob, ecrod, &
                     seuil, critc, critp)
 !     TEST D'ARRET SI ON PASSE EN DESSOUS DE 0 (-> 2 SOLUTIONS)
         if (critc .lt. 0.d0) then
             goto 260
-        endif
+        end if
         if (critp .gt. 0.d0) then
-            eta2=etac
-            crit2=critc
-            critp2=critp
+            eta2 = etac
+            crit2 = critc
+            critp2 = critp
         else
-            eta1=etac
-            crit1=critc
-            critp1=critp
-        endif
+            eta1 = etac
+            crit1 = critc
+            critp1 = critp
+        end if
 !     TEST D'ARRET DE PRECISION NUMERIQUE
         if (eta2 .eq. eta1) then
             call utmess('F', 'PILOTAGE_84')
-        endif
+        end if
         goto 250
 !
 ! -- SI MINIMUM SOUS 0 : 2 SOLUTIONS, SINON : 0 SOLUTION
@@ -602,58 +602,58 @@ subroutine pipedo(ndim, typmod, tau, mate, vim,&
 260     continue
 !       write (6,*) 'ITER-4 = ',ITER
         if (critc .lt. 0.d0) then
-            nsol=2
-            eta3=etac
-            crit3=critc
-            critp3=critp
+            nsol = 2
+            eta3 = etac
+            crit3 = critc
+            critp3 = critp
 !
-            x(1)=etac
-            y(1)=critc
-            z(1)=critp
-            x(2)=etamax
-            call criteo(epsp, epsd, x(2), b, d,&
-                        lambda, mu, alpha, ecrob, ecrod,&
+            x(1) = etac
+            y(1) = critc
+            z(1) = critp
+            x(2) = etamax
+            call criteo(epsp, epsd, x(2), b, d, &
+                        lambda, mu, alpha, ecrob, ecrod, &
                         seuil, y(2), z(2))
-            x(3)=x(2)
-            y(3)=y(2)
-            z(3)=z(2)
+            x(3) = x(2)
+            y(3) = y(2)
+            z(3) = z(2)
             do iter = 1, nitmax
                 if (abs(y(3)) .le. epstol*seuila*tau) goto 401
-                if (mod(iter,5) .ne. 0) then
+                if (mod(iter, 5) .ne. 0) then
                     call zerog2(x, y, z, iter)
                 else
                     call zerod2(x, y, z)
-                endif
-                call criteo(epsp, epsd, x(3), b, d,&
-                            lambda, mu, alpha, ecrob, ecrod,&
+                end if
+                call criteo(epsp, epsd, x(3), b, d, &
+                            lambda, mu, alpha, ecrob, ecrod, &
                             seuil, y(3), z(3))
             end do
             call utmess('F', 'PILOTAGE_83')
 401         continue
 !          write (6,*) 'ITER-5 = ',ITER
-            eta1=x(3)
+            eta1 = x(3)
 !
-            x(1)=eta3
-            y(1)=crit3
-            z(1)=critp3
-            x(2)=etamin
-            call criteo(epsp, epsd, x(2), b, d,&
-                        lambda, mu, alpha, ecrob, ecrod,&
+            x(1) = eta3
+            y(1) = crit3
+            z(1) = critp3
+            x(2) = etamin
+            call criteo(epsp, epsd, x(2), b, d, &
+                        lambda, mu, alpha, ecrob, ecrod, &
                         seuil, y(2), z(2))
-            x(3)=x(2)
-            y(3)=y(2)
-            z(3)=z(2)
+            x(3) = x(2)
+            y(3) = y(2)
+            z(3) = z(2)
             do iter = 1, nitmax
                 if (abs(y(3)) .le. epstol*seuila*tau) goto 501
-                if (mod(iter,5) .ne. 0) then
+                if (mod(iter, 5) .ne. 0) then
                     call zerog2(x, y, z, iter)
                 else
                     call zerod2(x, y, z)
-                endif
+                end if
 !
 !
-                call criteo(epsp, epsd, x(3), b, d,&
-                            lambda, mu, alpha, ecrob, ecrod,&
+                call criteo(epsp, epsd, x(3), b, d, &
+                            lambda, mu, alpha, ecrob, ecrod, &
                             seuil, y(3), z(3))
 !
             end do
@@ -663,31 +663,31 @@ subroutine pipedo(ndim, typmod, tau, mate, vim,&
             call utmess('F', 'PILOTAGE_83')
 501         continue
 !          write (6,*) 'ITER-5b = ',ITER
-            eta2=x(3)
+            eta2 = x(3)
         else
-            eta=etac
-            nsol=0
-        endif
-    endif
+            eta = etac
+            nsol = 0
+        end if
+    end if
 !
     if (nsol .eq. 0) then
-        etas=eta
-        call criteo(epsp, epsd, eta, b, d,&
-                    lambda, mu, alpha, ecrob, ecrod,&
+        etas = eta
+        call criteo(epsp, epsd, eta, b, d, &
+                    lambda, mu, alpha, ecrob, ecrod, &
                     seuila, crit1, critp)
-        a0=crit1/seuila
+        a0 = crit1/seuila
     else
-        seuil=seuila
-        etas=r8vide()
+        seuil = seuila
+        etas = r8vide()
 !
 !        WRITE(6,*) 'ETA1=',ETA1
 !        WRITE(6,*) 'ETA2=',ETA2
 !
         if (nsol .eq. 2) then
-            eta=eta1
-        endif
-        call criteo(epsp, epsd, eta, b, d,&
-                    lambda, mu, alpha, ecrob, ecrod,&
+            eta = eta1
+        end if
+        call criteo(epsp, epsd, eta, b, d, &
+                    lambda, mu, alpha, ecrob, ecrod, &
                     seuila, crit1, critp)
 !
 !
@@ -698,24 +698,24 @@ subroutine pipedo(ndim, typmod, tau, mate, vim,&
 !                        LINEARISATION DU CRITERE
 ! ======================================================================
 !
-        a0 = (crit1 - eta*critp ) /seuila
-        a1 =critp/ seuila
+        a0 = (crit1-eta*critp)/seuila
+        a1 = critp/seuila
 !
         if (nsol .eq. 2) then
-            eta=eta2
-            call criteo(epsp, epsd, eta, b, d,&
-                        lambda, mu, alpha, ecrob, ecrod,&
+            eta = eta2
+            call criteo(epsp, epsd, eta, b, d, &
+                        lambda, mu, alpha, ecrob, ecrod, &
                         seuila, crit1, critp)
 ! ======================================================================
 !                        LINEARISATION DU CRITERE
 ! ======================================================================
-            a2 = (crit1 - eta*critp ) /seuila
-            a3 =critp/ seuila
+            a2 = (crit1-eta*critp)/seuila
+            a3 = critp/seuila
         else
-            a2=r8vide()
-            a3=r8vide()
-        endif
-    endif
+            a2 = r8vide()
+            a3 = r8vide()
+        end if
+    end if
 !         WRITE(6,*) 'A0=',A0
 !         WRITE(6,*) 'A1=',A1
 !         WRITE(6,*) 'A2=',A2

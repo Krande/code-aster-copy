@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,9 +19,9 @@
 !
 subroutine op0027()
 !
-use calcG_type
+    use calcG_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -64,7 +64,7 @@ implicit none
 !-- Calcul de la courbure
     if (cgField%ndim == 3) then
         call cgTheta%compute_curvature(cgStudy%model)
-    endif
+    end if
 !
 !-- Verification (A nettoyer)
     call cgVerification(cgField, cgTheta, cgStudy, cgStat)
@@ -72,7 +72,7 @@ implicit none
 !-- Compute Theta factors
     if (.not. cgTheta%theta_factors_in) then
         call cgComputeFactors(cgField, cgTheta, cgStat)
-    endif
+    end if
 !
 ! --- Compute A Matrix from equation A*G(s)=g(theta)
 !
@@ -112,9 +112,9 @@ implicit none
 !
 !-- Print statistics
     call cgStat%finish()
-    if(cgStat%level_info > 1) then
+    if (cgStat%level_info > 1) then
         call cgStat%print()
-    endif
+    end if
 !
     call jedema()
 !

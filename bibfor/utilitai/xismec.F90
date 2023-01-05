@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -46,14 +46,14 @@ function xismec()
     k16tmp = zk16(jlicha-1+1)
 !
     if (k16tmp .eq. 'DEPL') then
-        lmeca=.true.
-    else if (k16tmp.eq.'TEMP') then
+        lmeca = .true.
+    else if (k16tmp .eq. 'TEMP') then
         lmeca = .false.
     else
         ASSERT(.false.)
-    endif
+    end if
 !
-    xismec=lmeca
+    xismec = lmeca
 !
     call jedema()
 end function

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -112,7 +112,7 @@ subroutine mxmoam(sddyna, nbmodp)
     call getvid('PROJ_MODAL', 'MODE_MECA', iocc=1, scal=modmec, nbret=nbmd)
     if (nbmd .eq. 0) then
         ASSERT(.false.)
-    endif
+    end if
 !
 ! --- MASSE, RIGIDITE ET AMORTISSEMENT GENERALISES
 !
@@ -122,9 +122,9 @@ subroutine mxmoam(sddyna, nbmodp)
 !
 ! --- IL FAUT MASS_GENE _ET_ RIGI_GENE (VOIR CAPY)
 !
-    if ((nbmg.gt.0) .and. (nbrg.eq.0)) then
+    if ((nbmg .gt. 0) .and. (nbrg .eq. 0)) then
         ASSERT(.false.)
-    endif
+    end if
 !
 ! --- INFORMATIONS SUR MATRICE DES MODES MECANIQUES
 !
@@ -138,15 +138,15 @@ subroutine mxmoam(sddyna, nbmodp)
 !
     if (ibid .eq. 0) then
         nbmax = nbmodp
-    endif
+    end if
 !
     if (nbmax .ne. nbmodp) then
         vali(1) = nbmodp
         vali(2) = nbmax
-        vali(3) = min(nbmodp,nbmax)
+        vali(3) = min(nbmodp, nbmax)
         call utmess('I', 'MECANONLINE5_29', ni=3, vali=vali)
-        nbmodp = min(nbmodp,nbmax)
-    endif
+        nbmodp = min(nbmodp, nbmax)
+    end if
 !
 ! --- CREATION VECTEUR DES FORCES MODALES
 !
@@ -167,17 +167,17 @@ subroutine mxmoam(sddyna, nbmodp)
 ! ---   ON RECUPERE MODES DANS MODE_MECA
 !
         do imode = 1, nbmodp
-            call rsexch('F', modmec, 'DEPL', imode, nomcha,&
+            call rsexch('F', modmec, 'DEPL', imode, nomcha, &
                         iret)
             call jeveuo(nomcha(1:19)//'.VALE', 'L', jval)
             call dcopy(neq, zr(jval), 1, zr(jbasmo+(imode-1)*neq), 1)
-            call zerlag(neq, zi( iddeeq), vectr=zr(jbasmo+(imode-1)*neq))
+            call zerlag(neq, zi(iddeeq), vectr=zr(jbasmo+(imode-1)*neq))
         end do
 !
 ! ---   ON RECUPERE MASSES GENERALISEES DANS MODE_MECA
 !
         do imode = 1, nbmodp
-            call rsadpa(modmec, 'L', 1, 'MASS_GENE', imode,&
+            call rsadpa(modmec, 'L', 1, 'MASS_GENE', imode, &
                         0, sjv=lpar, styp=k8bid)
             zr(jmasge+imode-1) = zr(lpar)
         end do
@@ -199,11 +199,11 @@ subroutine mxmoam(sddyna, nbmodp)
 ! --- ON RECUPERE MODES DANS MODE_MECA
 !
         do imode = 1, nbmodp
-            call rsexch('F', modmec, 'DEPL', imode, nomcha,&
+            call rsexch('F', modmec, 'DEPL', imode, nomcha, &
                         iret)
             call jeveuo(nomcha(1:19)//'.VALE', 'L', jval)
             call dcopy(neq, zr(jval), 1, zr(jbasmo+(imode-1)*neq), 1)
-            call zerlag(neq, zi( iddeeq), vectr=zr(jbasmo+(imode-1)*neq))
+            call zerlag(neq, zi(iddeeq), vectr=zr(jbasmo+(imode-1)*neq))
         end do
 !
 ! --- CREATION RIGIDITES GENERALISEES
@@ -216,18 +216,18 @@ subroutine mxmoam(sddyna, nbmodp)
 !
 ! --- CREATION FORCES/FONC_MULT GENERALISEES
 !
-        nbgene = ndynin(sddyna,'NBRE_EXCIT_GENE')
+        nbgene = ndynin(sddyna, 'NBRE_EXCIT_GENE')
         if (nbgene .ne. 0) then
             call wkvect(fongen, 'V V K24', nbgene, jfonge)
             AS_ALLOCATE(vk24=lifoge, size=nbgene)
             call wkvect(forgen, 'V V R', nbgene*nbmodp, jforge)
-        endif
+        end if
 !
 ! --- CREATION VECTEUR DE RESOLUTION FORCES
 !
         if (nbgene .ne. 0) then
             call wkvect(valfon, 'V V R', nbgene, jvalfo)
-        endif
+        end if
 !
 ! --- RECUPERATION MASSES GENERALISEES
 !
@@ -241,8 +241,8 @@ subroutine mxmoam(sddyna, nbmodp)
         call jeveuo(jexnum(rigene//'           .VALM', 1), 'L', ldblo1)
         do imode = 1, nbmodp
             do imode2 = 1, imode
-                zr(jrigge+(imode-1)*nbmodp+imode2-1) = zr( ldblo1+ imode*(imode-1 )/2+imode2-1 )
-                zr(jrigge+(imode2-1)*nbmodp+imode-1) = zr( ldblo1+ imode*(imode-1 )/2+imode2-1 )
+                zr(jrigge+(imode-1)*nbmodp+imode2-1) = zr(ldblo1+imode*(imode-1)/2+imode2-1)
+                zr(jrigge+(imode2-1)*nbmodp+imode-1) = zr(ldblo1+imode*(imode-1)/2+imode2-1)
             end do
         end do
 !
@@ -252,11 +252,11 @@ subroutine mxmoam(sddyna, nbmodp)
         do imode = 1, nbmodp
             do imode2 = 1, imode
                 if (nbag .ne. 0) then
-                    zr(jamoge+(imode-1)*nbmodp+imode2-1) = zr(ldblo2+ imode*( imode-1)/2+imode2-1&
-                                                           )
-                    zr(jamoge+(imode2-1)*nbmodp+imode-1) = zr(ldblo2+ imode*( imode-1)/2+imode2-1&
-                                                           )
-                endif
+                    zr(jamoge+(imode-1)*nbmodp+imode2-1) = zr(ldblo2+imode*(imode-1)/2+imode2-1 &
+                                                              )
+                    zr(jamoge+(imode2-1)*nbmodp+imode-1) = zr(ldblo2+imode*(imode-1)/2+imode2-1 &
+                                                              )
+                end if
             end do
         end do
 !
@@ -264,16 +264,16 @@ subroutine mxmoam(sddyna, nbmodp)
 !
         if (nbgene .ne. 0) then
             do ifonc = 1, nbgene
-                call getvid('EXCIT_GENE', 'FONC_MULT', iocc=ifonc, scal=zk24(jfonge+ifonc-1),&
+                call getvid('EXCIT_GENE', 'FONC_MULT', iocc=ifonc, scal=zk24(jfonge+ifonc-1), &
                             nbret=nf)
                 call getvid('EXCIT_GENE', 'VECT_GENE', iocc=ifonc, scal=lifoge(ifonc), nbret=nf)
-                call jeveuo(lifoge(ifonc)(1:19)//'.VALE', 'L', vr=fge)
+                call jeveuo(lifoge(ifonc) (1:19)//'.VALE', 'L', vr=fge)
                 do imode = 1, nbmodp
                     zr(jforge+(ifonc-1)*nbmodp+imode-1) = fge(imode)
                 end do
             end do
-        endif
-    endif
+        end if
+    end if
 !
 ! --- MENAGE
 !

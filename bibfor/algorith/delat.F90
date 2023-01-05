@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -47,36 +47,36 @@ subroutine delat(modgen, nbsst, nbmo)
 !
 ! NB DE MODES TOTAL
 !
-    nbmo=0
+    nbmo = 0
     do isst = 1, nbsst
         call jeveuo(jexnum(modgen//'      .MODG.SSME', isst), 'L', imacl)
-        macel=zk8(imacl)
+        macel = zk8(imacl)
         call jeveuo(macel//'.MAEL_REFE', 'L', ibamo)
-        call rsorac(zk24(ibamo), 'LONUTI', ibid, bid, k8bid,&
-                    cbid, ebid, 'ABSOLU', nbmodg, 1,&
+        call rsorac(zk24(ibamo), 'LONUTI', ibid, bid, k8bid, &
+                    cbid, ebid, 'ABSOLU', nbmodg, 1, &
                     nbid)
-        nbmo=nbmo+nbmodg(1)
+        nbmo = nbmo+nbmodg(1)
     end do
 !
 ! TABLEAU INDIQUANT LES MODES PROPRES
 !
     call wkvect('&&DELAT.INDIC', 'V V I', nbmo, idelat)
-    icompt=0
+    icompt = 0
     do isst = 1, nbsst
         call jeveuo(jexnum(modgen//'      .MODG.SSME', isst), 'L', imacl)
-        macel=zk8(imacl)
+        macel = zk8(imacl)
 !
         call jeveuo(macel//'.MAEL_REFE', 'L', ibamo)
 !
 !       CALL JEVEUO(ZK24(IBAMO)(1:19)//'.TYPE','L',ITYPE)
-        call jelira(zk24(ibamo)(1:19)//'.ORDR', 'LONUTI', nbtype)
+        call jelira(zk24(ibamo) (1:19)//'.ORDR', 'LONUTI', nbtype)
         do ij = 1, nbtype
-            icompt=icompt+1
-            call rsadpa(zk24(ibamo)(1:19), 'L', 1, 'TYPE_DEFO', ij,&
+            icompt = icompt+1
+            call rsadpa(zk24(ibamo) (1:19), 'L', 1, 'TYPE_DEFO', ij, &
                         0, sjv=jpara, styp=k8bid)
-            if (zk16(jpara)(1:8) .ne. 'PROPRE  ') goto 3
-            zi(idelat+icompt-1)=1
-  3         continue
+            if (zk16(jpara) (1:8) .ne. 'PROPRE  ') goto 3
+            zi(idelat+icompt-1) = 1
+3           continue
         end do
     end do
     call jedema()

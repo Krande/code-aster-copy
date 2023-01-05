@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -57,8 +57,8 @@ subroutine crea_maillage(noma, noma2, base, nbno, lino)
 !  lima   : in  : liste des numeros des noeuds
 ! ======================================================================
 
-    integer ::  nbnoin,ino, jdim,jcorou,iad, ntgeo, nbnoou
-    integer ::  ino2, typpoi,jadou,itypou, k
+    integer ::  nbnoin, ino, jdim, jcorou, iad, ntgeo, nbnoou
+    integer ::  ino2, typpoi, jadou, itypou, k
     character(len=4) :: docu
     character(len=8) ::  nomno, nom
     character(len=24) ::  nomnoe, cooval, cooref, coodsc
@@ -68,30 +68,28 @@ subroutine crea_maillage(noma, noma2, base, nbno, lino)
 
     call jemarq()
 
-    ASSERT(noma.ne.noma2)
-    ASSERT(base.eq.'V' .or. base.eq.'G')
-
+    ASSERT(noma .ne. noma2)
+    ASSERT(base .eq. 'V' .or. base .eq. 'G')
 
 ! -1- PRELIMINAIRES
 !     ============
     call dismoi('NB_NO_MAILLA', noma, 'MAILLAGE', repi=nbnoin)
-    nbnoou=nbno
-
+    nbnoou = nbno
 
 ! -2- CREATION DU NOUVEAU MAILLAGE
 !     ============================
-    nomnoe=noma2//'.NOMNOE'
-    cooval=noma2//'.COORDO    .VALE'
-    coodsc=noma2//'.COORDO    .DESC'
-    cooref=noma2//'.COORDO    .REFE'
+    nomnoe = noma2//'.NOMNOE'
+    cooval = noma2//'.COORDO    .VALE'
+    coodsc = noma2//'.COORDO    .DESC'
+    cooref = noma2//'.COORDO    .REFE'
 
 ! --- OBJET .DIME
-    dimin=noma//'.DIME'
-    dimou=noma2//'.DIME'
+    dimin = noma//'.DIME'
+    dimou = noma2//'.DIME'
     call jedupo(dimin, base, dimou, .false._1)
     call jeveuo(dimou, 'E', jdim)
-    zi(jdim-1+1)=nbnoou
-    zi(jdim-1+3)=0
+    zi(jdim-1+1) = nbnoou
+    zi(jdim-1+3) = 0
 
 ! --- OBJET .NOMNOE
     call jecreo(nomnoe, base//' N K8')
@@ -107,12 +105,11 @@ subroutine crea_maillage(noma, noma2, base, nbno, lino)
     call jeecra(cooval, 'DOCU', cval=docu)
     call jeveuo(noma//'.COORDO    .VALE', 'L', vr=vale)
     do ino2 = 1, nbnoou
-        ino=lino(ino2)
-        zr(jcorou+3*(ino2-1))=vale(1+3*(ino-1))
-        zr(jcorou+3*(ino2-1)+1)=vale(1+3*(ino-1)+1)
-        zr(jcorou+3*(ino2-1)+2)=vale(1+3*(ino-1)+2)
+        ino = lino(ino2)
+        zr(jcorou+3*(ino2-1)) = vale(1+3*(ino-1))
+        zr(jcorou+3*(ino2-1)+1) = vale(1+3*(ino-1)+1)
+        zr(jcorou+3*(ino2-1)+2) = vale(1+3*(ino-1)+2)
     end do
-
 
 ! --- OBJET COORDO.DESC
     call jecreo(coodsc, base//' V I')
@@ -120,48 +117,45 @@ subroutine crea_maillage(noma, noma2, base, nbno, lino)
     call jeecra(coodsc, 'DOCU', cval='CHNO')
     call jeveuo(coodsc, 'E', iad)
     call jenonu(jexnom('&CATA.GD.NOMGD', 'GEOM_R'), ntgeo)
-    zi(iad)=ntgeo
-    zi(iad+1)=-3
-    zi(iad+2)=14
-
+    zi(iad) = ntgeo
+    zi(iad+1) = -3
+    zi(iad+2) = 14
 
 ! --- OBJET COORDO.REFE
     call wkvect(cooref, base//' V K24', 4, iad)
-    zk24(iad)=noma2
-
+    zk24(iad) = noma2
 
 ! --- Pour qu'on puisse voire le maillage de noeuds avec salome,
 !     on ajoute des POI1 sur tous les noeuds
 !----------------------------------------------------
-    nommai=noma2//'.NOMMAI'
-    connex=noma2//'.CONNEX'
-    typmai=noma2//'.TYPMAIL'
+    nommai = noma2//'.NOMMAI'
+    connex = noma2//'.CONNEX'
+    typmai = noma2//'.TYPMAIL'
 
 ! --- OBJET .NOMMAI
     call jecreo(nommai, base//' N K8')
     call jeecra(nommai, 'NOMMAX', nbnoou)
-    nom='M'
-    do k=1,nbnoou
+    nom = 'M'
+    do k = 1, nbnoou
         call codent(k, 'G', nom(2:8))
         call jecroc(jexnom(nommai, nom))
-    enddo
+    end do
 
 ! --- OBJET .TYPMAIL
     call wkvect(typmai, base//' V I', nbnoou, itypou)
-    call jenonu(jexnom('&CATA.TM.NOMTM', 'POI1' ), typpoi)
-    do k=1,nbnoou
-        zi(itypou-1+k)=typpoi
-    enddo
+    call jenonu(jexnom('&CATA.TM.NOMTM', 'POI1'), typpoi)
+    do k = 1, nbnoou
+        zi(itypou-1+k) = typpoi
+    end do
 
 ! --- OBJET .CONNEX
-    call jecrec(connex, base//' V I', 'NU', 'CONTIG', 'VARIABLE',nbnoou)
+    call jecrec(connex, base//' V I', 'NU', 'CONTIG', 'VARIABLE', nbnoou)
     call jeecra(connex, 'LONT', nbnoou, ' ')
-    do k=1,nbnoou
+    do k = 1, nbnoou
         call jeecra(jexnum(connex, k), 'LONMAX', 1)
         call jeveuo(jexnum(connex, k), 'E', jadou)
-        zi(jadou+1-1)=k
-    enddo
-
+        zi(jadou+1-1) = k
+    end do
 
     call cargeo(noma2)
 

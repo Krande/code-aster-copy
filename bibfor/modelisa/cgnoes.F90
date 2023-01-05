@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -95,7 +95,7 @@ subroutine cgnoes(mofaz, iocc, nomaz, lisnoz, nbno)
         ndim = 2
     else
         ndim = 3
-    endif
+    end if
 !
 ! --- RECUPERATION DES COORDONNES DES NOEUDS DU MAILLAGE :
 !     --------------------------------------------------
@@ -106,7 +106,7 @@ subroutine cgnoes(mofaz, iocc, nomaz, lisnoz, nbno)
     mocle(1) = 'POINT'
     mocle(2) = 'NOEUD_CENTRE'
     mocle(3) = 'GROUP_NO_CENTRE'
-    call utcono(motfac, mocle, iocc, noma, ndim,&
+    call utcono(motfac, mocle, iocc, noma, ndim, &
                 x0, iret)
 !
 ! --- RECUPERATION DU RAYON DE LA SPHERE :
@@ -118,8 +118,8 @@ subroutine cgnoes(mofaz, iocc, nomaz, lisnoz, nbno)
         call getvr8(motfac, 'RAYON', iocc=iocc, scal=rayon, nbret=nb)
         if (rayon .le. zero) then
             call utmess('F', 'MODELISA3_83')
-        endif
-    endif
+        end if
+    end if
 !
 ! --- RECUPERATION DE LA DEMI-EPAISSEUR DE L'ENVELOPPE :
 !     ------------------------------------------------
@@ -130,8 +130,8 @@ subroutine cgnoes(mofaz, iocc, nomaz, lisnoz, nbno)
         call getvr8(motfac, 'PRECISION', iocc=iocc, scal=prec, nbret=nb)
         if (prec .le. zero) then
             call utmess('F', 'MODELISA3_91')
-        endif
-    endif
+        end if
+    end if
 !
 ! --- RECUPERATION DU NOMBRE DE NOEUDS DU MAILLAGE :
 !     ---------------------------------------------
@@ -153,11 +153,11 @@ subroutine cgnoes(mofaz, iocc, nomaz, lisnoz, nbno)
         x(2) = vale(3*(ino-1)+2)
         if (ndim .eq. 3) then
             x(3) = vale(3*(ino-1)+3)
-        endif
+        end if
 !
 ! ---     DISTANCE DU NOEUD COURANT AU CENTRE DE LA SPHERE :
 !         ------------------------------------------------
-        d2 = ( x(1)-x0(1))*(x(1)-x0(1)) + (x(2)-x0(2))*(x(2)-x0(2)) + (x(3)-x0(3))*(x(3)-x0(3) )
+        d2 = (x(1)-x0(1))*(x(1)-x0(1))+(x(2)-x0(2))*(x(2)-x0(2))+(x(3)-x0(3))*(x(3)-x0(3))
 !
 ! ---     SI LE NOEUD COURANT APPARTIENT A L'ENVELOPPE DE LA SPHERE
 ! ---     ON L'AFFECTE A LA LISTE DE NOEUDS QUI SERA AFFECTEE
@@ -165,9 +165,9 @@ subroutine cgnoes(mofaz, iocc, nomaz, lisnoz, nbno)
 !         -----------
         dist = sqrt(d2)
         if (abs(dist-rayon) .le. prec) then
-            nbno = nbno + 1
+            nbno = nbno+1
             zi(idlino+nbno-1) = ino
-        endif
+        end if
 !
     end do
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,11 +16,11 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine gtvois(v_connex  , v_connex_lcum, list_elem, nb_elem   , elem_nume, elem_code,&
-                  v_conx_inv, v_inv_lcum   , nb_neigh , list_neigh)
+subroutine gtvois(v_connex, v_connex_lcum, list_elem, nb_elem, elem_nume, elem_code, &
+                  v_conx_inv, v_inv_lcum, nb_neigh, list_neigh)
 
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterfort/jexnum.h"
@@ -63,7 +63,7 @@ implicit none
     integer :: nb_find, elem_find(2)
     integer :: list_node_next(4)
     integer :: i_node, i_neigh, nb_dime
-    integer :: a(nb_elem) , b(nb_elem), i
+    integer :: a(nb_elem), b(nb_elem), i
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -96,21 +96,21 @@ implicit none
 !
 ! - Find neighbours
 !
-    if (nb_dime.eq.2) then
-        do i_neigh = 1,nb_neigh
+    if (nb_dime .eq. 2) then
+        do i_neigh = 1, nb_neigh
             nb_find = 0
-            node_1  = list_node(i_neigh)
-            node_2  = list_node(list_node_next(i_neigh))
-            node_nbelem_1=v_inv_lcum(node_1+1) - v_inv_lcum(node_1)
-            node_nbelem_2=v_inv_lcum(node_2+1) - v_inv_lcum(node_2)
-            do i= 1 , node_nbelem_1
-                a(i)=v_conx_inv(v_inv_lcum(node_1)-1+i)
+            node_1 = list_node(i_neigh)
+            node_2 = list_node(list_node_next(i_neigh))
+            node_nbelem_1 = v_inv_lcum(node_1+1)-v_inv_lcum(node_1)
+            node_nbelem_2 = v_inv_lcum(node_2+1)-v_inv_lcum(node_2)
+            do i = 1, node_nbelem_1
+                a(i) = v_conx_inv(v_inv_lcum(node_1)-1+i)
             end do
-            do i= 1 , node_nbelem_2
-                b(i)=v_conx_inv(v_inv_lcum(node_2)-1+i)
+            do i = 1, node_nbelem_2
+                b(i) = v_conx_inv(v_inv_lcum(node_2)-1+i)
             end do
-            call utlisi('INTER'   , a, node_nbelem_1,b, node_nbelem_2,&
-                        elem_find , 2            , nb_find)
+            call utlisi('INTER', a, node_nbelem_1, b, node_nbelem_2, &
+                        elem_find, 2, nb_find)
             ASSERT(nb_find .le. 2)
             ASSERT(nb_find .ge. 1)
             if (nb_find .eq. 2) then
@@ -122,10 +122,10 @@ implicit none
             end if
         end do
     elseif (nb_dime .eq. 1) then
-        do i_neigh = 1,nb_neigh
+        do i_neigh = 1, nb_neigh
             nb_find = 0
-            node_1  = list_node(i_neigh)
-            node_nbelem_1=v_inv_lcum(node_1+1) - v_inv_lcum(node_1)
+            node_1 = list_node(i_neigh)
+            node_nbelem_1 = v_inv_lcum(node_1+1)-v_inv_lcum(node_1)
             ASSERT(node_nbelem_1 .le. 2)
             if (node_nbelem_1 .eq. 2) then
                 if (list_elem(v_conx_inv(v_inv_lcum(node_1))) .eq. elem_nume) then

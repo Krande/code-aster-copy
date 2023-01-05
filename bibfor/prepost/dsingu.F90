@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine dsingu(ndim, nelem, nnoem, nsommx, nelcom,&
-                  degre, icnc, numeli, xy, erreur,&
+subroutine dsingu(ndim, nelem, nnoem, nsommx, nelcom, &
+                  degre, icnc, numeli, xy, erreur, &
                   energi, mesu, alpha, nalpha)
     implicit none
 #include "jeveux.h"
@@ -84,15 +84,15 @@ subroutine dsingu(ndim, nelem, nnoem, nsommx, nelcom,&
 ! CALCUL DU DEGRE DE LA SINGULARITE ALPHA(NELEM)
 !
     if (ndim .eq. 2) then
-        call dalp2d(nelem, nnoem, degre, nsommx, icnc,&
-                    nelcom, numeli, xy, erreur, energi,&
+        call dalp2d(nelem, nnoem, degre, nsommx, icnc, &
+                    nelcom, numeli, xy, erreur, energi, &
                     mesu, alpha, nalpha)
-    else if (ndim.eq.3) then
-        call dalp3d(nelem, nnoem, degre, nsommx, icnc,&
-                    nelcom, numeli, xy, erreur, energi,&
+    else if (ndim .eq. 3) then
+        call dalp3d(nelem, nnoem, degre, nsommx, icnc, &
+                    nelcom, numeli, xy, erreur, energi, &
                     mesu, alpha, nalpha)
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 end subroutine

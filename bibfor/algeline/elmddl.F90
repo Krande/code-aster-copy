@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine elmddl(raide, option, neq, ddl, nddle,&
+subroutine elmddl(raide, option, neq, ddl, nddle, &
                   nbddl, vecddl)
 !
 !
@@ -73,20 +73,20 @@ subroutine elmddl(raide, option, neq, ddl, nddle,&
 !
 ! ------- RECUPERATION DES POSITIONS DES DDL
 !
-            call pteddl('NUME_DDL', nume, 1, ddl(i), neq,&
-                        list_equa = inter)
+            call pteddl('NUME_DDL', nume, 1, ddl(i), neq, &
+                        list_equa=inter)
 !
 ! ------- CALCUL DU NOMBRE DE 'DDL': NBDDL
 !
             do ieq = 1, neq
-                nbddl = nbddl + inter(ieq)
+                nbddl = nbddl+inter(ieq)
             end do
 !
 ! ------- STOP SI ON CHERCHE A ELIM UN DDL ABSENT DE LA MODELISATION
 !
             if (nbddl .eq. 0) then
                 ASSERT(.false.)
-            endif
+            end if
 !
 ! ------- INVERSION : INTER = 0 SI DDL TROUVE ET 1 SINON
 !
@@ -99,30 +99,30 @@ subroutine elmddl(raide, option, neq, ddl, nddle,&
             end do
 !
         end do
-    endif
+    end if
 !
 ! --- IMPRESSION DES DDL
 !
     if (niv .ge. 1) then
         if (nbddl .gt. 0) then
-            write (ifm,*) option
+            write (ifm, *) option
             do i = 1, nddle
-                write (ifm,910) ddl(i)
+                write (ifm, 910) ddl(i)
             end do
-            write (ifm,950) nbddl
-            write (ifm,960)
+            write (ifm, 950) nbddl
+            write (ifm, 960)
         else
-            write (ifm,901)
-        endif
-    endif
+            write (ifm, 901)
+        end if
+    end if
 !
 ! ----------------------------------------------------------------------
 !
     call jedema()
 !
-    901 format (1x,'PAS DE DDL_TROUVE')
-    910 format (13x,a8,/)
-    950 format (1x,'NOMBRE DE DDL',10x,i7,/)
-    960 format (72('-'))
+901 format(1x, 'PAS DE DDL_TROUVE')
+910 format(13x, a8,/)
+950 format(1x, 'NOMBRE DE DDL', 10x, i7,/)
+960 format(72('-'))
 !
 end subroutine

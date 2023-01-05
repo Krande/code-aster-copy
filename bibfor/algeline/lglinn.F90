@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,11 +16,11 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine lglinn(nbmat, mater, parame, derive, ge,&
-                  ie, q, vecn, f0, delta,&
+subroutine lglinn(nbmat, mater, parame, derive, ge, &
+                  ie, q, vecn, f0, delta, &
                   devg, devgii, traceg, dy)
 !
-    implicit      none
+    implicit none
 #include "asterfort/calcdy.h"
 #include "asterfort/calcg.h"
 #include "asterfort/drfdrg.h"
@@ -60,16 +60,16 @@ subroutine lglinn(nbmat, mater, parame, derive, ge,&
 ! ======================================================================
 ! --- INITIALISATION DE PARAMETRES -------------------------------------
 ! ======================================================================
-    parameter       ( mun    = -1.0d0  )
+    parameter(mun=-1.0d0)
 ! ======================================================================
     call jemarq()
 ! ======================================================================
 ! --- INITIALISATION DE DONNEES ----------------------------------------
 ! ======================================================================
-    mu = mater( 4,1)
-    k = mater( 5,1)
-    sigc = mater( 9,2)
-    gamcjs = mater(12,2)
+    mu = mater(4, 1)
+    k = mater(5, 1)
+    sigc = mater(9, 2)
+    gamcjs = mater(12, 2)
 ! ======================================================================
 ! --- CALCUL DE H0, CALCUL INTERMEDIAIRE -------------------------------
 ! ======================================================================
@@ -83,32 +83,32 @@ subroutine lglinn(nbmat, mater, parame, derive, ge,&
 ! ======================================================================
 ! --- CALCUL DE DUDG ---------------------------------------------------
 ! ======================================================================
-    call drudrg(parame, derive, h0, sigc, ge,&
+    call drudrg(parame, derive, h0, sigc, ge, &
                 ie, dudg)
 ! ======================================================================
 ! --- CALCUL DE DFDS ---------------------------------------------------
 ! ======================================================================
-    call drfdrs(q, parame, h0, sigc, ge,&
+    call drfdrs(q, parame, h0, sigc, ge, &
                 duds, dfds)
 ! ======================================================================
 ! --- CALCUL DE DFDG ---------------------------------------------------
 ! ======================================================================
-    call drfdrg(parame, derive, h0, sigc, ge,&
+    call drfdrg(parame, derive, h0, sigc, ge, &
                 dudg, dfdg)
 ! ======================================================================
 ! --- CALCUL DE G ------------------------------------------------------
 ! ======================================================================
-    call calcg(dfds, vecn, g, devg, traceg,&
+    call calcg(dfds, vecn, g, devg, traceg, &
                devgii)
 ! ======================================================================
 ! --- CALCUL DE DFDL ---------------------------------------------------
 ! ======================================================================
-    call drfnew(devg, devgii, traceg, dfds, dfdg,&
+    call drfnew(devg, devgii, traceg, dfds, dfdg, &
                 mu, k, dfdl)
 ! ======================================================================
 ! --- CALCUL DES DIFFERENTS INCREMENTS ---------------------------------
 ! ======================================================================
-    call calcdy(mu, k, f0, devg, devgii,&
+    call calcdy(mu, k, f0, devg, devgii, &
                 traceg, dfdl, delta, dy)
 ! ======================================================================
     call jedema()

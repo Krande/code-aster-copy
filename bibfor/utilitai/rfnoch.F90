@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -63,8 +63,8 @@ subroutine rfnoch()
 !
     if (nc .ne. 0) then
 !
-        call focrch(nomfon, resu, noeud, parax, paray,&
-                    'G', int, intitu, ind, listr,&
+        call focrch(nomfon, resu, noeud, parax, paray, &
+                    'G', int, intitu, ind, listr, &
                     sst, nsst, iret)
 !
     else
@@ -72,20 +72,20 @@ subroutine rfnoch()
         call dismoi('BASE_MODALE', resu, 'RESU_DYNA', repk=basemo)
         call dismoi('NOM_MAILLA', basemo, 'RESULTAT', repk=noma)
 !
-        call utnono(' ', noma, 'NOEUD', nogno, noeud,&
+        call utnono(' ', noma, 'NOEUD', nogno, noeud, &
                     iret)
         if (iret .eq. 10) then
             call utmess('F', 'ELEMENTS_67', sk=nogno)
-        else if (iret.eq.1) then
+        else if (iret .eq. 1) then
             valk(1) = nogno
             valk(2) = noeud
             call utmess('A', 'SOUSTRUC_87', nk=2, valk=valk)
-        endif
+        end if
 !
-        call focrch(nomfon, resu, noeud, parax, paray,&
-                    'G', int, intitu, ind, listr,&
+        call focrch(nomfon, resu, noeud, parax, paray, &
+                    'G', int, intitu, ind, listr, &
                     sst, nsst, iret)
-    endif
+    end if
 !
     call foattr(' ', 1, nomfon)
 !

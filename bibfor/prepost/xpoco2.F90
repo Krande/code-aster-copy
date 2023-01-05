@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine xpoco2(malini, dirno, nbno, dirma, nbma,&
-                  cns1, cns2, ces1, ces2, cesvi1,&
+subroutine xpoco2(malini, dirno, nbno, dirma, nbma, &
+                  cns1, cns2, ces1, ces2, cesvi1, &
                   cesvi2, resuco, comps1, comps2, pre1)
 !
 ! person_in_charge: samuel.geniaut at edf.fr
@@ -71,12 +71,12 @@ subroutine xpoco2(malini, dirno, nbno, dirma, nbma,&
     character(len=16) :: tysd
     integer :: iviex, iret
 !
-    integer :: jresd1,  jresl1, iadr1
-    integer :: jresd2,  jresl2, iadr2
+    integer :: jresd1, jresl1, iadr1
+    integer :: jresd2, jresl2, iadr2
     integer :: jcnsl1, nbcmp2
 !   ON INDIQUE EN DUR LE NOMBRE DE COMPOSANTE A VERIFIER EN HM-XFEM
 !   A CAUSE DES DDLS DE PRESSION
-    parameter (nbcmp2=52)
+    parameter(nbcmp2=52)
     aster_logical :: exist(nbno, nbcmp2)
     real(kind=8), pointer :: cnsv1(:) => null()
     character(len=8), pointer :: cnsc(:) => null()
@@ -108,7 +108,7 @@ subroutine xpoco2(malini, dirno, nbno, dirma, nbma,&
 !
 !     VERIF QUE LES 2 PREMIERES COMPOSANTES DU CHAMP DEP1 ou DEP4
 !     SONT DX DY OU QUE LA PREMIERE COMPOSANTES DE CE CHAMP EST TEMP
-      ASSERT((cnsc(1).eq.'DX'.and.cnsc(2).eq.'DY') .or. (cnsc(1).eq.'TEMP'))
+    ASSERT((cnsc(1) .eq. 'DX' .and. cnsc(2) .eq. 'DY') .or. (cnsc(1) .eq. 'TEMP'))
 !
     lmeca = xismec()
 !     RQ : "NDIMC" CORRESPOND AU NOMBRE DE COMPOSANTE VECTORIELLE DU
@@ -118,19 +118,19 @@ subroutine xpoco2(malini, dirno, nbno, dirma, nbma,&
         ndimc = ndim
     else
         ndimc = 1
-    endif
+    end if
 !
     if (pre1) then
 !       INDICATEUR QUI NOUS SERT POUR RECUPERER LA PRESSION SUR
 !       LES NOEUDS SOMMETS UNIQUEMENT
         do i = 1, nbno
             do icmp = 1, nbcmp2
-                exist(i,icmp)= .false.
+                exist(i, icmp) = .false.
             end do
         end do
         do i = 1, nbno
             do icmp = 1, nbcmp
-                exist(i,icmp)= zl(jcnsl1-1+(i-1)*nbcmp + icmp)
+                exist(i, icmp) = zl(jcnsl1-1+(i-1)*nbcmp+icmp)
             end do
         end do
 !
@@ -139,21 +139,21 @@ subroutine xpoco2(malini, dirno, nbno, dirma, nbma,&
                 idecv2 = jcnsv2-1+(4*ndimc+4)*(dirno(i)-1)
                 idecl2 = jcnsl2-1+(4*ndimc+4)*(dirno(i)-1)
                 do j = 1, ndimc
-                    zr(idecv2+j)= cnsv1(nbcmp*(i-1)+j)
-                    zl(idecl2+j)=.true.
+                    zr(idecv2+j) = cnsv1(nbcmp*(i-1)+j)
+                    zl(idecl2+j) = .true.
                 end do
                 if (ndim .eq. 2) then
-                    if (exist(i,3)) then
-                        zr(idecv2+3)= cnsv1(nbcmp*(i-1)+3)
-                        zl(idecl2+3)=.true.
-                    endif
+                    if (exist(i, 3)) then
+                        zr(idecv2+3) = cnsv1(nbcmp*(i-1)+3)
+                        zl(idecl2+3) = .true.
+                    end if
                 else if (ndim .eq. 3) then
-                    if (exist(i,4)) then
-                        zr(idecv2+4)= cnsv1(nbcmp*(i-1)+4)
-                        zl(idecl2+4)=.true.
-                    endif
-                endif
-            endif
+                    if (exist(i, 4)) then
+                        zr(idecv2+4) = cnsv1(nbcmp*(i-1)+4)
+                        zl(idecl2+4) = .true.
+                    end if
+                end if
+            end if
         end do
     else
         do i = 1, nbno
@@ -164,14 +164,14 @@ subroutine xpoco2(malini, dirno, nbno, dirma, nbma,&
                 else
                     idecv2 = jcnsv2-1+ndimc*(dirno(i)-1)
                     idecl2 = jcnsl2-1+ndimc*(dirno(i)-1)
-                endif
+                end if
                 do j = 1, ndimc
-                    zr(idecv2+j)= cnsv1(nbcmp*(i-1)+j)
-                    zl(idecl2+j)=.true.
+                    zr(idecv2+j) = cnsv1(nbcmp*(i-1)+j)
+                    zl(idecl2+j) = .true.
                 end do
-            endif
+            end if
         end do
-    endif
+    end if
 !
     call gettco(resuco, tysd)
 !
@@ -191,7 +191,7 @@ subroutine xpoco2(malini, dirno, nbno, dirma, nbma,&
             call jeveuo(cesvi1//'.CESV', 'L', vr=cviv1)
             call jeveuo(cesvi1//'.CESD', 'L', jcvid1)
             call jeveuo(cesvi1//'.CESL', 'L', jcvil1)
-        endif
+        end if
         iviex = iret
 !
         call jeexin(cesvi2//'.CESV', iret)
@@ -199,7 +199,7 @@ subroutine xpoco2(malini, dirno, nbno, dirma, nbma,&
             call jeveuo(cesvi2//'.CESV', 'E', vr=cviv2)
             call jeveuo(cesvi2//'.CESD', 'L', jcvid2)
             call jeveuo(cesvi2//'.CESL', 'E', jcvil2)
-        endif
+        end if
         iviex = iviex*iret
 !
 !
@@ -207,53 +207,53 @@ subroutine xpoco2(malini, dirno, nbno, dirma, nbma,&
             ima2 = dirma(ima)
 !
             if (ima2 .eq. 0) goto 10
-            npg1 = zi(jcesd1-1+5+4* (ima-1)+1)
-            ncmp1 = zi(jcesd1-1+5+4* (ima-1)+3)
+            npg1 = zi(jcesd1-1+5+4*(ima-1)+1)
+            ncmp1 = zi(jcesd1-1+5+4*(ima-1)+3)
 !
-            npg2 = zi(jcesd2-1+5+4* (ima2-1)+1)
-            ncmp2 = zi(jcesd2-1+5+4* (ima2-1)+3)
-            if (npg2.eq.0) cycle
-            ASSERT(npg1.eq.npg2)
-            ASSERT(ncmp1.eq.ncmp2)
+            npg2 = zi(jcesd2-1+5+4*(ima2-1)+1)
+            ncmp2 = zi(jcesd2-1+5+4*(ima2-1)+3)
+            if (npg2 .eq. 0) cycle
+            ASSERT(npg1 .eq. npg2)
+            ASSERT(ncmp1 .eq. ncmp2)
 !
             if (iviex .ne. 0) then
-                npgv1 = zi(jcvid1-1+5+4* (ima-1)+1)
-                ncmv1 = zi(jcvid1-1+5+4* (ima-1)+3)
-                npgv2 = zi(jcvid2-1+5+4* (ima2-1)+1)
-                ncmv2 = zi(jcvid2-1+5+4* (ima2-1)+3)
-                ASSERT(npg2.eq.npgv2)
-                ASSERT(npgv1.eq.npg2)
-                ASSERT(ncmv1.le.ncmv2)
-            endif
+                npgv1 = zi(jcvid1-1+5+4*(ima-1)+1)
+                ncmv1 = zi(jcvid1-1+5+4*(ima-1)+3)
+                npgv2 = zi(jcvid2-1+5+4*(ima2-1)+1)
+                ncmv2 = zi(jcvid2-1+5+4*(ima2-1)+3)
+                ASSERT(npg2 .eq. npgv2)
+                ASSERT(npgv1 .eq. npg2)
+                ASSERT(ncmv1 .le. ncmv2)
+            end if
 !
             do ipg = 1, npg1
                 do icmp = 1, ncmp1
-                    call cesexi('C', jcesd1, jcesl1, ima, ipg,&
+                    call cesexi('C', jcesd1, jcesl1, ima, ipg, &
                                 1, icmp, iad1)
-                    ASSERT(iad1.gt.0)
-                    call cesexi('C', jcesd2, jcesl2, dirma(ima), ipg,&
+                    ASSERT(iad1 .gt. 0)
+                    call cesexi('C', jcesd2, jcesl2, dirma(ima), ipg, &
                                 1, icmp, iad2)
-                    ASSERT(iad2.gt.0)
+                    ASSERT(iad2 .gt. 0)
                     zl(jcesl2-1+iad2) = .true.
                     cesv2(iad2) = cesv1(iad1)
                 end do
                 if (iviex .ne. 0) then
                     do icmp = 1, ncmv1
-                        call cesexi('C', jcvid1, jcvil1, ima, ipg,&
+                        call cesexi('C', jcvid1, jcvil1, ima, ipg, &
                                     1, icmp, iad1)
-                        ASSERT(iad1.gt.0)
-                        call cesexi('C', jcvid2, jcvil2, dirma(ima), ipg,&
+                        ASSERT(iad1 .gt. 0)
+                        call cesexi('C', jcvid2, jcvil2, dirma(ima), ipg, &
                                     1, icmp, iad2)
-                        ASSERT(iad2.lt.0)
+                        ASSERT(iad2 .lt. 0)
                         iad2 = -iad2
                         zl(jcvil2-1+iad2) = .true.
                         cviv2(iad2) = cviv1(iad1)
                     end do
-                endif
+                end if
             end do
- 10         continue
+10          continue
         end do
-    endif
+    end if
 !
 !
 !     ------------------------------------------------------------------
@@ -276,7 +276,7 @@ subroutine xpoco2(malini, dirno, nbno, dirma, nbma,&
 !
 !       VERIF QUE LE CHAMP DE SORTIE A BIEN ETE CREE
         call exisd('CHAM_ELEM_S', comps2, iret)
-        ASSERT(iret.ne.0)
+        ASSERT(iret .ne. 0)
 !
 !       RECUP DES INFOS SUR LE CHAM_ELEM_S DU COMPORTEMENT EN SORTIE
         call jeveuo(comps2//'.CESD', 'L', jresd2)
@@ -292,22 +292,22 @@ subroutine xpoco2(malini, dirno, nbno, dirma, nbma,&
 !
             do icmp = 1, nbcmp
 !
-                call cesexi('C', jresd1, jresl1, ima, 1,&
+                call cesexi('C', jresd1, jresl1, ima, 1, &
                             1, icmp, iadr1)
-                call cesexi('C', jresd2, jresl2, ima2, 1,&
+                call cesexi('C', jresd2, jresl2, ima2, 1, &
                             1, icmp, iadr2)
 !
                 if (iadr1 .gt. 0) then
-                    ASSERT(iadr2.lt.0)
+                    ASSERT(iadr2 .lt. 0)
                     resv2(1-1-iadr2) = resv1(iadr1)
                     zl(jresl2-1-iadr2) = .true.
-                endif
+                end if
 !
             end do
 300         continue
         end do
 !
-    endif
+    end if
 !
 !     ------------------------------------------------------------------
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,10 +18,10 @@
 
 subroutine mecoe1(opt, te)
 
-use calcul_module, only : ca_iamloc_, ca_iaoppa_, ca_iawlo2_, ca_igr_,&
-     ca_ilmloc_, ca_nbgr_, ca_npario_
+    use calcul_module, only: ca_iamloc_, ca_iaoppa_, ca_iawlo2_, ca_igr_, &
+                             ca_ilmloc_, ca_nbgr_, ca_npario_
 
-implicit none
+    implicit none
 
 ! person_in_charge: jacques.pellet at edf.fr
 
@@ -46,48 +46,46 @@ implicit none
 
 !   -- on met a "-1" lgcata pour les parametres inconnus
 !      des type_element
-    do iparg = 1,ca_npario_
-        zi(ca_iawlo2_-1+5*(ca_nbgr_*(iparg-1)+ca_igr_-1)+2)=-1
+    do iparg = 1, ca_npario_
+        zi(ca_iawlo2_-1+5*(ca_nbgr_*(iparg-1)+ca_igr_-1)+2) = -1
     end do
 
-
-    npara = nbpara(opt,te,'IN ')
+    npara = nbpara(opt, te, 'IN ')
     do ipar = 1, npara
-        nompar = nopara(opt,te,'IN ',ipar)
-        iparg = indik8(zk8(ca_iaoppa_),nompar,1,ca_npario_)
-        m2 = modatt(opt,te,'IN ',ipar)
-        modloc = ca_iamloc_ - 1 + zi(ca_ilmloc_-1+m2)
+        nompar = nopara(opt, te, 'IN ', ipar)
+        iparg = indik8(zk8(ca_iaoppa_), nompar, 1, ca_npario_)
+        m2 = modatt(opt, te, 'IN ', ipar)
+        modloc = ca_iamloc_-1+zi(ca_ilmloc_-1+m2)
         icode = zi(modloc-1+1)
         nbscal = zi(modloc-1+3)
         if (icode .le. 3) then
             nbpoin = zi(modloc-1+4)
         else
             nbpoin = 0
-        endif
+        end if
 
-        zi(ca_iawlo2_-1+5*(ca_nbgr_*(iparg-1)+ca_igr_-1)+1)=m2
-        zi(ca_iawlo2_-1+5*(ca_nbgr_*(iparg-1)+ca_igr_-1)+2)=nbscal
-        zi(ca_iawlo2_-1+5*(ca_nbgr_*(iparg-1)+ca_igr_-1)+3)=nbpoin
+        zi(ca_iawlo2_-1+5*(ca_nbgr_*(iparg-1)+ca_igr_-1)+1) = m2
+        zi(ca_iawlo2_-1+5*(ca_nbgr_*(iparg-1)+ca_igr_-1)+2) = nbscal
+        zi(ca_iawlo2_-1+5*(ca_nbgr_*(iparg-1)+ca_igr_-1)+3) = nbpoin
     end do
 
-
-    npara = nbpara(opt,te,'OUT')
+    npara = nbpara(opt, te, 'OUT')
     do ipar = 1, npara
-        nompar = nopara(opt,te,'OUT',ipar)
-        iparg = indik8(zk8(ca_iaoppa_),nompar,1,ca_npario_)
-        m2 = modatt(opt,te,'OUT',ipar)
-        modloc = ca_iamloc_ - 1 + zi(ca_ilmloc_-1+m2)
+        nompar = nopara(opt, te, 'OUT', ipar)
+        iparg = indik8(zk8(ca_iaoppa_), nompar, 1, ca_npario_)
+        m2 = modatt(opt, te, 'OUT', ipar)
+        modloc = ca_iamloc_-1+zi(ca_ilmloc_-1+m2)
         icode = zi(modloc-1+1)
         nbscal = zi(modloc-1+3)
         if (icode .le. 3) then
             nbpoin = zi(modloc-1+4)
         else
             nbpoin = 0
-        endif
+        end if
 
-        zi(ca_iawlo2_-1+5*(ca_nbgr_*(iparg-1)+ca_igr_-1)+1)=m2
-        zi(ca_iawlo2_-1+5*(ca_nbgr_*(iparg-1)+ca_igr_-1)+2)=nbscal
-        zi(ca_iawlo2_-1+5*(ca_nbgr_*(iparg-1)+ca_igr_-1)+3)=nbpoin
+        zi(ca_iawlo2_-1+5*(ca_nbgr_*(iparg-1)+ca_igr_-1)+1) = m2
+        zi(ca_iawlo2_-1+5*(ca_nbgr_*(iparg-1)+ca_igr_-1)+2) = nbscal
+        zi(ca_iawlo2_-1+5*(ca_nbgr_*(iparg-1)+ca_igr_-1)+3) = nbpoin
     end do
 
 end subroutine

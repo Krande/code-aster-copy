@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -51,18 +51,18 @@ subroutine xmafr2(tau1, tau2, b, abc)
 !
 !     MATRICES A ET C
     do j = 1, ndim
-        a(1,j)=tau1(j)
-        if (ndim .eq. 3) a(2,j)=tau2(j)
-        c(j,1)=tau1(j)
-        if (ndim .eq. 3) c(j,2)=tau2(j)
+        a(1, j) = tau1(j)
+        if (ndim .eq. 3) a(2, j) = tau2(j)
+        c(j, 1) = tau1(j)
+        if (ndim .eq. 3) c(j, 2) = tau2(j)
     end do
 !
 !     PRODUIT B.C
     do i = 1, ndim
         do j = 1, ndim-1
-            bc(i,j)=0.d0
+            bc(i, j) = 0.d0
             do k = 1, ndim
-                bc(i,j)=bc(i,j)+b(i,k)*c(k,j)
+                bc(i, j) = bc(i, j)+b(i, k)*c(k, j)
             end do
         end do
     end do
@@ -70,9 +70,9 @@ subroutine xmafr2(tau1, tau2, b, abc)
 !     PRODUIT A.BC
     do i = 1, ndim-1
         do j = 1, ndim-1
-            abc(i,j)=0.d0
+            abc(i, j) = 0.d0
             do k = 1, ndim
-                abc(i,j)=abc(i,j)+a(i,k)*bc(k,j)
+                abc(i, j) = abc(i, j)+a(i, k)*bc(k, j)
             end do
         end do
     end do

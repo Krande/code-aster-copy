@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 
 subroutine op9999(options)
-    use parameters_module, only : ST_OK
+    use parameters_module, only: ST_OK
     implicit none
     integer, intent(in) :: options
 #include "asterc/chkmsg.h"
@@ -80,11 +80,11 @@ subroutine op9999(options)
 
 !    call lcdiscard(" ")
 
-    if ( close_base ) then
-        if ( iand(options, OnlyProc0) .eq. 0 ) then
+    if (close_base) then
+        if (iand(options, OnlyProc0) .eq. 0) then
 !           Check warning messages in parallel
             call asmpi_checkalarm()
-        endif
+        end if
 
 !       Check error messages of type 'E' not followed by 'F' message
         call chkmsg(1, iret)
@@ -97,9 +97,9 @@ subroutine op9999(options)
         call uimpba('G', iunmes)
 
 !       Repacking of the GLOBALE database
-        if ( iand(options, Repack) .ne. 0 ) then
+        if (iand(options, Repack) .ne. 0) then
             call jetass('G')
-        endif
+        end if
 
 !       Call jxveri to check that the execution is ending properly
         call jxveri()
@@ -107,40 +107,40 @@ subroutine op9999(options)
         call jelibf('DETRUIT', 'V', 1)
 
 !       Effective repacking
-        if ( iand(options, Repack) .ne. 0 ) then
+        if (iand(options, Repack) .ne. 0) then
             call jxcopy('G', 'GLOBALE', 'V', 'VOLATILE', nbext)
             iunres = iunifi('RESULTAT')
             if (iunres .gt. 0) then
-                write(iunres,'(A,I2,A)') &
-                    ' <I> <FIN> RETASSAGE DE LA BASE "GLOBALE" EFFECTUEE, ',&
+                write (iunres, '(A,I2,A)') &
+                    ' <I> <FIN> RETASSAGE DE LA BASE "GLOBALE" EFFECTUEE, ', &
                     nbext, ' FICHIER(S) UTILISE(S).'
-            endif
-        endif
-    endif
+            end if
+        end if
+    end if
 
     call jedema()
 
 !   The diagnosis of the execution is OK thanks to this message
-    if ( options .ne. 0 ) then
+    if (options .ne. 0) then
         call utmess('I', 'SUPERVIS2_99')
-    endif
+    end if
     call jefini('NORMAL', close_base)
 
-    if ( .not. close_base ) then
+    if (.not. close_base) then
         idx = 1
         iret = 0
         do while (iret .eq. 0 .and. idx .lt. 99)
             call get_jvbasename("glob", idx, path)
             call rmfile(path, 1, iret)
-            idx = idx + 1
+            idx = idx+1
         end do
         idx = 1
         iret = 0
         do while (iret .eq. 0 .and. idx .lt. 99)
             call get_jvbasename("vola", idx, path)
             call rmfile(path, 1, iret)
-            idx = idx + 1
+            idx = idx+1
         end do
-    endif
+    end if
 
 end subroutine

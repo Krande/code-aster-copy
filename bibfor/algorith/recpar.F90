@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine recpar(neq, dti, dtmax, vmin, vvar,&
+subroutine recpar(neq, dti, dtmax, vmin, vvar, &
                   cmp, cdp, dtmin, nper, nrmax)
 !
     implicit none
@@ -68,8 +68,8 @@ subroutine recpar(neq, dti, dtmax, vmin, vvar,&
 !
     if (n1 .eq. 0) then
         call getvr8('SCHEMA_TEMPS', 'PAS_LIMI_RELA', iocc=1, scal=cpmin, nbret=n1)
-        dtmin = dti * cpmin
-    endif
+        dtmin = dti*cpmin
+    end if
 !
 !     --- NOMBRE DE POINTS PAR PERIODE
 !
@@ -80,12 +80,12 @@ subroutine recpar(neq, dti, dtmax, vmin, vvar,&
     call getvis('SCHEMA_TEMPS', 'NMAX_ITER_PAS', iocc=1, scal=nrmax, nbret=n1)
 !
 !
-    vali (1) = nper
-    vali (2) = nrmax
-    valr (1) = cmp
-    valr (2) = cdp
-    valr (3) = dtmin
-    valr (4) = dtmax
+    vali(1) = nper
+    vali(2) = nrmax
+    valr(1) = cmp
+    valr(2) = cdp
+    valr(3) = dtmin
+    valr(4) = dtmax
     valk = vvar
 
 end subroutine

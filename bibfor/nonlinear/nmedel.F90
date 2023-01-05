@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine nmedel(ndim, typmod, imate, deps, sigm,&
+subroutine nmedel(ndim, typmod, imate, deps, sigm, &
                   option, sigp, dsidep)
 !
 !
@@ -60,7 +60,7 @@ subroutine nmedel(ndim, typmod, imate, deps, sigm,&
     integer :: icodre(3)
     character(len=8) :: fami, poum
     character(len=16) :: nomres(3)
-    data        kron/1.d0,1.d0,1.d0,0.d0,0.d0,0.d0/
+    data kron/1.d0, 1.d0, 1.d0, 0.d0, 0.d0, 0.d0/
 !
 !     INITIALISATIONS
 !     ---------------
@@ -70,15 +70,15 @@ subroutine nmedel(ndim, typmod, imate, deps, sigm,&
 !
 !     RECUPERATION DES CARACTERISTIQUES
 !     ---------------------------------
-    nomres(1)='E'
-    nomres(2)='NU'
-    fami='FPG1'
-    kpg=1
-    spt=1
-    poum='+'
+    nomres(1) = 'E'
+    nomres(2) = 'NU'
+    fami = 'FPG1'
+    kpg = 1
+    spt = 1
+    poum = '+'
 !
-    call rcvalb(fami, kpg, spt, poum, imate,&
-                ' ', 'ELAS', 0, ' ', [0.d0],&
+    call rcvalb(fami, kpg, spt, poum, imate, &
+                ' ', 'ELAS', 0, ' ', [0.d0], &
                 2, nomres(1), valres(1), icodre(1), 2)
     e = valres(1)
     nu = valres(2)
@@ -87,10 +87,10 @@ subroutine nmedel(ndim, typmod, imate, deps, sigm,&
     troisk = e/(1.d0-2.d0*nu)
 !
 !
-    if (cplan) deps(3)=-nu/(1.d0-nu)*(deps(1)+deps(2)) +(1.d0+nu)/(1.d0-nu)
+    if (cplan) deps(3) = -nu/(1.d0-nu)*(deps(1)+deps(2))+(1.d0+nu)/(1.d0-nu)
     depsmo = (deps(1)+deps(2)+deps(3))/3.d0
     do k = 1, ndimsi
-        depsdv(k) = deps(k) - depsmo * kron(k)
+        depsdv(k) = deps(k)-depsmo*kron(k)
     end do
 !
 !
@@ -107,13 +107,13 @@ subroutine nmedel(ndim, typmod, imate, deps, sigm,&
 !
         do k = 1, 3
             do j = 1, 3
-                dsidep(k,j) = troisk/3.d0-deuxmu/(3.d0)
+                dsidep(k, j) = troisk/3.d0-deuxmu/(3.d0)
             end do
         end do
         do k = 1, ndimsi
-            dsidep(k,k) = dsidep(k,k) + deuxmu
+            dsidep(k, k) = dsidep(k, k)+deuxmu
         end do
 !
-    endif
+    end if
 !
 end subroutine

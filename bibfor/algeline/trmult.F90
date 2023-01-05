@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine trmult(modsta, numexi, mailla, neq, iddeeq,&
+subroutine trmult(modsta, numexi, mailla, neq, iddeeq, &
                   pside, numddl)
     implicit none
 #include "jeveux.h"
@@ -78,7 +78,7 @@ subroutine trmult(modsta, numexi, mailla, neq, iddeeq,&
     character(len=24), pointer :: group_no(:) => null()
     real(kind=8), pointer :: base(:) => null()
 !-----------------------------------------------------------------------
-    data cmp / 'DX' , 'DY' , 'DZ' , 'DRX' , 'DRY' , 'DRZ' /
+    data cmp/'DX', 'DY', 'DZ', 'DRX', 'DRY', 'DRZ'/
 !     ------------------------------------------------------------------
 !     ------------------------------------------------------------------
 !
@@ -88,45 +88,45 @@ subroutine trmult(modsta, numexi, mailla, neq, iddeeq,&
     epsi = 1.d-4
     magrno = ' '
     manono = ' '
-    ier=0
+    ier = 0
 !
 !     --- RECUPERATION DE LA DIRECTION SISMIQUE  ---
 !
     call getvr8('EXCIT', 'DIRECTION', iocc=numexi, nbval=0, nbret=nbd)
     nbdir = -nbd
-    call getvr8('EXCIT', 'DIRECTION', iocc=numexi, nbval=nbdir, vect=depl,&
+    call getvr8('EXCIT', 'DIRECTION', iocc=numexi, nbval=nbdir, vect=depl, &
                 nbret=nbd)
 !     --- ON NORMALISE LE VECTEUR ---
     xnorm = 0.d0
     do i = 1, nbdir
-        xnorm = xnorm + depl(i) * depl(i)
+        xnorm = xnorm+depl(i)*depl(i)
     end do
     xnorm = sqrt(xnorm)
     if (xnorm .lt. 0.d0) then
         call utmess('F', 'ALGORITH9_81')
-    endif
+    end if
     do i = 1, nbdir
-        depl(i) = depl(i) / xnorm
+        depl(i) = depl(i)/xnorm
     end do
 !
 !     --- RECUPERATION DES POINTS D'ANCRAGE ---
 !
-    call getvem(mailla, 'NOEUD', 'EXCIT', 'NOEUD', numexi,&
+    call getvem(mailla, 'NOEUD', 'EXCIT', 'NOEUD', numexi, &
                 0, kbid, nbno)
     if (nbno .ne. 0) then
 !        --- ON RECUPERE UNE LISTE DE NOEUD ---
-        nbno = - nbno
+        nbno = -nbno
         call wkvect('&&TRMULT.NOEUD', 'V V K8', nbno, idno)
-        call getvem(mailla, 'NOEUD', 'EXCIT', 'NOEUD', numexi,&
+        call getvem(mailla, 'NOEUD', 'EXCIT', 'NOEUD', numexi, &
                     nbno, zk8(idno), nbv)
     else
 !        --- ON RECUPERE UNE LISTE DE GROUP_NO ---
-        call getvem(mailla, 'GROUP_NO', 'EXCIT', 'GROUP_NO', numexi,&
+        call getvem(mailla, 'GROUP_NO', 'EXCIT', 'GROUP_NO', numexi, &
                     0, kbid, nbgr)
-        nbgr = - nbgr
+        nbgr = -nbgr
         if (nbgr .ne. 0) then
             AS_ALLOCATE(vk24=group_no, size=nbgr)
-            call getvem(mailla, 'GROUP_NO', 'EXCIT', 'GROUP_NO', numexi,&
+            call getvem(mailla, 'GROUP_NO', 'EXCIT', 'GROUP_NO', numexi, &
                         nbgr, group_no, nbv)
 !           --- ECLATE LE GROUP_NO EN NOEUD ---
             call compno(mailla, nbgr, group_no, nbno)
@@ -139,15 +139,15 @@ subroutine trmult(modsta, numexi, mailla, neq, iddeeq,&
                 call jeveuo(jexnom(magrno, group_no(i)), 'L', ldgn)
                 do in = 0, nb-1
                     call jenuno(jexnum(manono, zi(ldgn+in)), nomnoe)
-                    ii = ii + 1
+                    ii = ii+1
                     zk8(idno+ii) = nomnoe
                 end do
             end do
-        endif
-    endif
+        end if
+    end if
 !
-    call rsorac(modsta, 'LONUTI', 0, r8b, kbid,&
-                c16b, r8b, kbid, tmod, 1,&
+    call rsorac(modsta, 'LONUTI', 0, r8b, kbid, &
+                c16b, r8b, kbid, tmod, 1, &
                 ibid)
     AS_ALLOCATE(vr=base, size=neq*tmod(1))
     call copmod(modsta, bmodr=base, numer=numddl)
@@ -159,42 +159,42 @@ subroutine trmult(modsta, numexi, mailla, neq, iddeeq,&
         xd = depl(id)
         if (abs(xd) .gt. epsi) then
             do in = 1, nbno
-                acces(1:8 ) = zk8(idno+in-1)
+                acces(1:8) = zk8(idno+in-1)
                 acces(9:16) = cmp(id)
 !
 !              --- ON RECUPERE LE MODE STATIQUE ASSOCIE AU NOEUD ---
-                call rsorac(modsta, 'NOEUD_CMP', ibid, r8b, acces,&
-                            c16b, epsi, crit, iordr, 1,&
+                call rsorac(modsta, 'NOEUD_CMP', ibid, r8b, acces, &
+                            c16b, epsi, crit, iordr, 1, &
                             nbtrou)
                 if (nbtrou .ne. 1) then
-                    ier = ier + 1
-                    valk (1) = acces(1:8)
-                    valk (2) = acces(9:16)
+                    ier = ier+1
+                    valk(1) = acces(1:8)
+                    valk(2) = acces(9:16)
                     call utmess('F', 'ALGELINE4_61', nk=2, valk=valk)
                     goto 40
-                endif
+                end if
                 imode = iordr(1)
 !
-                call rsvpar(modsta, imode, 'TYPE_DEFO', ibid, r8b,&
+                call rsvpar(modsta, imode, 'TYPE_DEFO', ibid, r8b, &
                             'DEPL_IMPO', iret)
                 if (iret .ne. 100) then
-                    ier = ier + 1
-                    valk (1) = 'MODE_MECA'
-                    valk (2) = acces(1:8)
-                    valk (3) = acces(9:16)
+                    ier = ier+1
+                    valk(1) = 'MODE_MECA'
+                    valk(2) = acces(1:8)
+                    valk(3) = acces(9:16)
                     call utmess('F', 'ALGELINE4_62', nk=3, valk=valk)
                     goto 40
-                endif
-                call rsexch('F', modsta, 'DEPL', imode, chamno,&
+                end if
+                call rsexch('F', modsta, 'DEPL', imode, chamno, &
                             iret)
 !
 !              --- ON EFFECTUE LE PRODUIT  MODE_STAT * DIR ---
                 do i = 1, neq
-                    pside(i) = pside(i)+ xd * base((imode-1)*neq+i)
+                    pside(i) = pside(i)+xd*base((imode-1)*neq+i)
                 end do
- 40             continue
+40              continue
             end do
-        endif
+        end if
     end do
 !
 !     --- MISE A ZERO DES DDL DE LAGRANGE

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,12 +17,12 @@
 ! --------------------------------------------------------------------
 
 subroutine mmstaf(mesh, ndim, chdepd, coef_frot, &
-                  nummae, aliase, nne, nummam, ksipc1,&
-                  ksipc2, ksipr1, ksipr2, mult_lagr_f1, mult_lagr_f2,&
-                  tang_1, tang_2, norm, pres_frot, dist_frot,&
+                  nummae, aliase, nne, nummam, ksipc1, &
+                  ksipc2, ksipr1, ksipr2, mult_lagr_f1, mult_lagr_f2, &
+                  tang_1, tang_2, norm, pres_frot, dist_frot, &
                   indi_frot_eval)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -100,65 +100,65 @@ implicit none
 !
 ! - Initializations
 !
-    laug_frot_norm  = 0.d0
-    indi_frot_eval  = 0
-    laug_frot(:)    = 0.d0
-    dist_frot(:)    = 0.d0
-    dist_total(:)   = 0.d0
-    pres_frot(:)    = 0.d0
-    dlagrf(:)       = 0.d0
-    mprojt(:,:)     = 0.d0
+    laug_frot_norm = 0.d0
+    indi_frot_eval = 0
+    laug_frot(:) = 0.d0
+    dist_frot(:) = 0.d0
+    dist_total(:) = 0.d0
+    pres_frot(:) = 0.d0
+    dlagrf(:) = 0.d0
+    mprojt(:, :) = 0.d0
 !
 ! - Tangent projection matrix
 !
     do idim1 = 1, ndim
         do idim2 = 1, ndim
-            mprojt(idim1,idim2) = -1.d0*norm(idim1)*norm(idim2)
+            mprojt(idim1, idim2) = -1.d0*norm(idim1)*norm(idim2)
         end do
     end do
     do idim1 = 1, ndim
-        mprojt(idim1,idim1) = 1.d0 + mprojt(idim1,idim1)
+        mprojt(idim1, idim1) = 1.d0+mprojt(idim1, idim1)
     end do
 !
 ! - Lagrange multiplier for friction at current contact point
 !
-    call mmvalp_scal(ndim, aliase, nne, ksipc1,&
-                ksipc2, mult_lagr_f1, dlagrf(1))
+    call mmvalp_scal(ndim, aliase, nne, ksipc1, &
+                     ksipc2, mult_lagr_f1, dlagrf(1))
     if (ndim .eq. 3) then
-        call mmvalp_scal(ndim, aliase, nne, ksipc1,&
-                    ksipc2, mult_lagr_f2, dlagrf(2))
-    endif
+        call mmvalp_scal(ndim, aliase, nne, ksipc1, &
+                         ksipc2, mult_lagr_f2, dlagrf(2))
+    end if
 !
 ! - Displacement increment
 !
-    call mcopco(mesh, chdepd, ndim, nummae, ksipc1,&
+    call mcopco(mesh, chdepd, ndim, nummae, ksipc1, &
                 ksipc2, ddeple)
-    call mcopco(mesh, chdepd, ndim, nummam, ksipr1,&
+    call mcopco(mesh, chdepd, ndim, nummam, ksipr1, &
                 ksipr2, ddeplm)
 !
 ! - Gap increment
 !
-    dist_total(1:3) = ddeple(1:3) - ddeplm(1:3)
+    dist_total(1:3) = ddeple(1:3)-ddeplm(1:3)
 !
 ! - Projection of gap increment on tangent plane
 !
 !    if (.not.lpenaf) then
-        do idim1 = 1, ndim
-            do idim2 = 1, ndim
-                dist_frot(idim1) = mprojt(idim1,idim2)*dist_total(idim2)+dist_frot(idim1)
-            end do
+    do idim1 = 1, ndim
+        do idim2 = 1, ndim
+            dist_frot(idim1) = mprojt(idim1, idim2)*dist_total(idim2)+dist_frot(idim1)
         end do
+    end do
 !    endif
 !
 ! - Friction "pressure"
 !
     if (ndim .eq. 2) then
         pres_frot(1:2) = dlagrf(1)*tang_1(1:2)
-    else if (ndim.eq.3) then
-        pres_frot(1:3) = dlagrf(1)*tang_1(1:3) + dlagrf(2)*tang_2(1:3)
+    else if (ndim .eq. 3) then
+        pres_frot(1:3) = dlagrf(1)*tang_1(1:3)+dlagrf(2)*tang_2(1:3)
     else
         ASSERT(ASTER_FALSE)
-    endif
+    end if
 !
 ! - Norm of the augmented lagrangian for friction
 !
@@ -170,7 +170,7 @@ implicit none
         indi_frot_eval = 1
     else
         indi_frot_eval = 0
-    endif
+    end if
 !
     call jedema()
 end subroutine

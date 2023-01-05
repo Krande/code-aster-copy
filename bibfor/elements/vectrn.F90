@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine vectrn(nb2, vectpt, vectn, vecthe, vecnph,&
+subroutine vectrn(nb2, vectpt, vectn, vecthe, vecnph, &
                   blam)
 !
     implicit none
@@ -30,29 +30,29 @@ subroutine vectrn(nb2, vectpt, vectn, vecthe, vecnph,&
 !
     integer :: in
 !
-    real(kind=8) :: vectn ( 9 , 3 )
+    real(kind=8) :: vectn(9, 3)
 !
-    real(kind=8) :: vecthe ( 9 , 3 )
+    real(kind=8) :: vecthe(9, 3)
 !
-    real(kind=8) :: vecnph ( 9 , 3 )
+    real(kind=8) :: vecnph(9, 3)
 !
-    real(kind=8) :: vecni ( 3 ), vecnpi ( 3 )
+    real(kind=8) :: vecni(3), vecnpi(3)
 !
-    real(kind=8) :: theta ( 3 ), lambda ( 3 , 3 )
-    real(kind=8) :: lambd0 ( 3 , 3 )
-    real(kind=8) :: barl ( 3 , 3 )
+    real(kind=8) :: theta(3), lambda(3, 3)
+    real(kind=8) :: lambd0(3, 3)
+    real(kind=8) :: barl(3, 3)
 !
-    real(kind=8) :: blam ( 9 , 3 , 3 )
+    real(kind=8) :: blam(9, 3, 3)
 !
-    real(kind=8) :: vectpt ( 9 , 2 , 3 )
+    real(kind=8) :: vectpt(9, 2, 3)
 !
 !DEB
 !
 !---- INITIALISATIONS
 !
-    call r8inir(9 * 3, 0.d0, vecnph, 1)
+    call r8inir(9*3, 0.d0, vecnph, 1)
 !
-    call r8inir(9 * 3 * 3, 0.d0, blam, 1)
+    call r8inir(9*3*3, 0.d0, blam, 1)
 !
 !---- EN CHAQUE NOEUD
 !
@@ -64,17 +64,17 @@ subroutine vectrn(nb2, vectpt, vectn, vecthe, vecnph,&
 !
 !---------- NORMALE INITIALE
 !
-            vecni ( ii ) = vectn ( in , ii )
+            vecni(ii) = vectn(in, ii)
 !
 !---------- VECTEUR DE ROTATION
 !
-            theta ( ii ) = vecthe ( in , ii )
+            theta(ii) = vecthe(in, ii)
 !
 !---------- TERMES DE LA LAMBD0
 !
-            lambd0 ( ii , 1 ) = vectpt ( in , 1 , ii )
-            lambd0 ( ii , 2 ) = vectpt ( in , 2 , ii )
-            lambd0 ( ii , 3 ) = vectn ( in , ii )
+            lambd0(ii, 1) = vectpt(in, 1, ii)
+            lambd0(ii, 2) = vectpt(in, 2, ii)
+            lambd0(ii, 3) = vectn(in, ii)
 !
         end do
 !
@@ -86,12 +86,12 @@ subroutine vectrn(nb2, vectpt, vectn, vecthe, vecnph,&
 !
 !------- TRANSFORMEE DE LA NORMALE
 !
-        call promat(lambda, 3, 3, 3, vecni,&
+        call promat(lambda, 3, 3, 3, vecni, &
                     3, 3, 1, vecnpi)
 !
 !------- MATRICE DE ROTATION TOTALE
 !
-        call promat(lambda, 3, 3, 3, lambd0,&
+        call promat(lambda, 3, 3, 3, lambd0, &
                     3, 3, 3, barl)
 !
 !
@@ -99,11 +99,11 @@ subroutine vectrn(nb2, vectpt, vectn, vecthe, vecnph,&
 !
 !---------- EN CHAQUE NOEUD
 !
-            vecnph ( in , jj ) = vecnpi ( jj )
+            vecnph(in, jj) = vecnpi(jj)
 !
             do ii = 1, 3
 !
-                blam ( in , ii , jj ) = barl ( ii , jj )
+                blam(in, ii, jj) = barl(ii, jj)
 !
             end do
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,9 +17,9 @@
 ! --------------------------------------------------------------------
 
 subroutine dxqgm(shpr1, shpr2, gm)
-    implicit  none
+    implicit none
 #include "asterf_types.h"
-    real(kind=8) :: shpr1(3,4), shpr2(3,4), gm(3, 4)
+    real(kind=8) :: shpr1(3, 4), shpr2(3, 4), gm(3, 4)
 !     MATRICE GM(3,4) MEMBRANE AU POINT QSI ETA POUR ELEMENTS DKQ ET DSQ
 !     ------------------------------------------------------------------
 !     ADDED LOCAL VARIABLES :
@@ -28,11 +28,10 @@ subroutine dxqgm(shpr1, shpr2, gm)
 !
 !
     do j = 1, 4
-     gm(1,j) = shpr1(1,j)
-     gm(2,j) = shpr2(2,j)
-     gm(3,j) = shpr1(2,j) + shpr2(1,j)
+        gm(1, j) = shpr1(1, j)
+        gm(2, j) = shpr2(2, j)
+        gm(3, j) = shpr1(2, j)+shpr2(1, j)
     end do
-
 
 !
 end subroutine

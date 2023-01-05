@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -48,13 +48,13 @@ subroutine te0054(option, nomte)
     integer :: jgano, nno, kp, npg2, ij, i, j, imattt, itemps
     integer :: nnos, kpg, spt
 !
-    if (lteatt('LUMPE','OUI')) then
-        call elrefe_info(fami='NOEU',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg2,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
+    if (lteatt('LUMPE', 'OUI')) then
+        call elrefe_info(fami='NOEU', ndim=ndim, nno=nno, nnos=nnos, &
+                         npg=npg2, jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
     else
-        call elrefe_info(fami='MASS',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg2,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
-    endif
+        call elrefe_info(fami='MASS', ndim=ndim, nno=nno, nnos=nnos, &
+                         npg=npg2, jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
+    end if
 !
     call jevech('PGEOMER', 'L', igeom)
     call jevech('PMATERC', 'L', imate)
@@ -64,15 +64,15 @@ subroutine te0054(option, nomte)
     call rccoma(zi(imate), 'THER', 1, phenom, icodre(1))
     if (icodre(1) .ne. 0) then
         call utmess('A', 'ELEMENTS2_63')
-    endif
-    fami='FPG1'
-    kpg=1
-    spt=1
-    poum='+'
+    end if
+    fami = 'FPG1'
+    kpg = 1
+    spt = 1
+    poum = '+'
 !
     valpar = zr(itemps)
-    call rcvalb(fami, kpg, spt, poum, zi(imate),&
-                ' ', phenom, 1, 'INST', [valpar],&
+    call rcvalb(fami, kpg, spt, poum, zi(imate), &
+                ' ', phenom, 1, 'INST', [valpar], &
                 1, 'RHO_CP', cp, icodre(1), 1)
 !
 !    BOUCLE SUR LES POINTS DE GAUSS
@@ -80,14 +80,14 @@ subroutine te0054(option, nomte)
     do kp = 1, npg2
 !
         ll = (kp-1)*nno
-        call dfdm3d(nno, kp, ipoids, idfde, zr(igeom),&
+        call dfdm3d(nno, kp, ipoids, idfde, zr(igeom), &
                     poids)
 !
         do i = 1, nno
 !
             do j = 1, i
-                ij = (i-1)*i/2 + j
-                zr(imattt+ij-1)=zr(imattt+ij-1) + cp(1)*poids* zr(ivf+ll+i-1)* zr(ivf+ll+j-1)
+                ij = (i-1)*i/2+j
+                zr(imattt+ij-1) = zr(imattt+ij-1)+cp(1)*poids*zr(ivf+ll+i-1)*zr(ivf+ll+j-1)
 !
             end do
         end do

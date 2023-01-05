@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine cdnfon(zimat, kfonc, xx, dn, fxx,&
+subroutine cdnfon(zimat, kfonc, xx, dn, fxx, &
                   ier)
 !
     implicit none
@@ -43,34 +43,34 @@ subroutine cdnfon(zimat, kfonc, xx, dn, fxx,&
 !
     phenom = 'GLRC_DAMAGE'
     ier = 0
-    fami='FPG1'
-    kpg=1
-    spt=1
-    poum='+'
+    fami = 'FPG1'
+    kpg = 1
+    spt = 1
+    poum = '+'
 !
     if (dn .eq. 0) then
-        call rcvalb(fami, kpg, spt, poum, zimat,&
-                    ' ', phenom, 1, 'X ', [xx],&
+        call rcvalb(fami, kpg, spt, poum, zimat, &
+                    ' ', phenom, 1, 'X ', [xx], &
                     1, kfonc, val, codres, 0)
     else if (dn .eq. 1) then
-        write (kaux,'(A1,A7)') 'D',kfonc(1:7)
-        call rcvalb(fami, kpg, spt, poum, zimat,&
-                    ' ', phenom, 1, 'X ', [xx],&
+        write (kaux, '(A1,A7)') 'D', kfonc(1:7)
+        call rcvalb(fami, kpg, spt, poum, zimat, &
+                    ' ', phenom, 1, 'X ', [xx], &
                     1, kaux, val, codres, 0)
     else if (dn .eq. 2) then
-        write (kaux,'(A2,A6)') 'DD',kfonc(1:6)
-        call rcvalb(fami, kpg, spt, poum, zimat,&
-                    ' ', phenom, 1, 'X ', [xx],&
+        write (kaux, '(A2,A6)') 'DD', kfonc(1:6)
+        call rcvalb(fami, kpg, spt, poum, zimat, &
+                    ' ', phenom, 1, 'X ', [xx], &
                     1, kaux, val, codres, 0)
     else
         ier = 3
-    endif
+    end if
 !
     if (codres(1) .ne. 0) then
         fxx = 0.d0
         ier = 2
     else
-        fxx=val(1)
-    endif
+        fxx = val(1)
+    end if
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine dfbdb(dim, b, e, deuxmu, lambda,&
+subroutine dfbdb(dim, b, e, deuxmu, lambda, &
                  ecrob, dsidep)
 !
 !
@@ -52,35 +52,35 @@ subroutine dfbdb(dim, b, e, deuxmu, lambda,&
 !
 !
     if (dim .eq. 3) then
-        t(1,1)=1
-        t(1,2)=4
-        t(1,3)=5
-        t(2,1)=4
-        t(2,2)=2
-        t(2,3)=6
-        t(3,1)=5
-        t(3,2)=6
-        t(3,3)=3
-        ndim=6
-    else if (dim.eq.2) then
-        t(1,1)=1
-        t(1,2)=3
-        t(2,2)=2
-        t(2,1)=3
-        ndim=3
-    endif
+        t(1, 1) = 1
+        t(1, 2) = 4
+        t(1, 3) = 5
+        t(2, 1) = 4
+        t(2, 2) = 2
+        t(2, 3) = 6
+        t(3, 1) = 5
+        t(3, 2) = 6
+        t(3, 3) = 3
+        ndim = 6
+    else if (dim .eq. 2) then
+        t(1, 1) = 1
+        t(1, 2) = 3
+        t(2, 2) = 2
+        t(2, 1) = 3
+        ndim = 3
+    end if
 !
-    kron(1,1)=1.d0
-    kron(1,2)=0.d0
-    kron(1,3)=0.d0
-    kron(2,1)=0.d0
-    kron(2,2)=1.d0
-    kron(2,3)=0.d0
-    kron(3,1)=0.d0
-    kron(3,2)=0.d0
-    kron(3,3)=1.d0
+    kron(1, 1) = 1.d0
+    kron(1, 2) = 0.d0
+    kron(1, 3) = 0.d0
+    kron(2, 1) = 0.d0
+    kron(2, 2) = 1.d0
+    kron(2, 3) = 0.d0
+    kron(3, 1) = 0.d0
+    kron(3, 2) = 0.d0
+    kron(3, 3) = 1.d0
 !
-    rac2=sqrt(2.d0)
+    rac2 = sqrt(2.d0)
     call r8inir(36, 0.d0, dbedb, 1)
     call r8inir(6, 0.d0, c, 1)
     call r8inir(36, 0.d0, dsidep, 1)
@@ -92,20 +92,20 @@ subroutine dfbdb(dim, b, e, deuxmu, lambda,&
             do k = 1, dim
                 do l = 1, dim
                     if (i .eq. j) then
-                        rtemp3=1.d0
+                        rtemp3 = 1.d0
                     else
-                        rtemp3=rac2
-                    endif
+                        rtemp3 = rac2
+                    end if
                     if (k .eq. l) then
-                        rtemp4=1.d0
+                        rtemp4 = 1.d0
                     else
-                        rtemp4=1.d0/rac2
-                    endif
-                    dbedb(t(i,j),t(k,l))=dbedb(t(i,j),t(k,l))+(kron(k,&
-                    i)* e(t(l,j))+kron(j,l)*e(t(i,k)))*rtemp3*rtemp4
+                        rtemp4 = 1.d0/rac2
+                    end if
+                    dbedb(t(i, j), t(k, l)) = dbedb(t(i, j), t(k, l))+(kron(k, &
+                                                  i)*e(t(l, j))+kron(j, l)*e(t(i, k)))*rtemp3*rtemp4
                 end do
-                c(t(i,j))=c(t(i,j))+ b(t(i,k))*e(t(k,j))+e(t(i,k))*b(&
-                t(k,j))
+                c(t(i, j)) = c(t(i, j))+b(t(i, k))*e(t(k, j))+e(t(i, k))*b( &
+                             t(k, j))
             end do
         end do
     end do
@@ -115,7 +115,7 @@ subroutine dfbdb(dim, b, e, deuxmu, lambda,&
     do i = 1, ndim
         do j = 1, ndim
             do k = 1, ndim
-                a(i,j)=a(i,j)+mtemp(i,k)*dbedb(k,j)
+                a(i, j) = a(i, j)+mtemp(i, k)*dbedb(k, j)
             end do
         end do
     end do
@@ -126,23 +126,23 @@ subroutine dfbdb(dim, b, e, deuxmu, lambda,&
             do k = 1, dim
                 do l = 1, ndim
                     if (i .eq. j) then
-                        rtemp2=1.d0
+                        rtemp2 = 1.d0
                     else
-                        rtemp2=rac2
-                    endif
+                        rtemp2 = rac2
+                    end if
                     if (k .eq. j) then
-                        rtemp3=1.d0
+                        rtemp3 = 1.d0
                     else
-                        rtemp3=1.d0/rac2
-                    endif
+                        rtemp3 = 1.d0/rac2
+                    end if
                     if (k .eq. i) then
-                        rtemp4=1.d0
+                        rtemp4 = 1.d0
                     else
-                        rtemp4=1.d0/rac2
-                    endif
-                    dsidep(t(i,j),l)=dsidep(t(i,j),l)+(a(t(i,k),l)*e(&
-                    t(k,j))* rtemp4+e(t(i,k))*a(t(k,j),l)*rtemp3)*&
-                    rtemp2
+                        rtemp4 = 1.d0/rac2
+                    end if
+                    dsidep(t(i, j), l) = dsidep(t(i, j), l)+(a(t(i, k), l)*e( &
+                                                 t(k, j))*rtemp4+e(t(i, k))*a(t(k, j), l)*rtemp3)* &
+                                         rtemp2
                 end do
             end do
         end do
@@ -150,36 +150,36 @@ subroutine dfbdb(dim, b, e, deuxmu, lambda,&
 !
 !
     do i = dim+1, ndim
-        e(i)=rac2*e(i)
+        e(i) = rac2*e(i)
     end do
 !
     if (dim .eq. 3) then
-        treb=(c(1)+c(2)+c(3))
-    else if (dim.eq.2) then
-        treb=(c(1)+c(2))
-    endif
+        treb = (c(1)+c(2)+c(3))
+    else if (dim .eq. 2) then
+        treb = (c(1)+c(2))
+    end if
 !
 !
     if (treb .lt. 0.d0) then
-        treb=0.d0
+        treb = 0.d0
     else
-        treb=1.d0
-    endif
+        treb = 1.d0
+    end if
     do i = 1, ndim
         do j = 1, ndim
-            dsidep(i,j)=-deuxmu/4.d0*dsidep(i,j)-lambda*treb*e(i)*e(j)
+            dsidep(i, j) = -deuxmu/4.d0*dsidep(i, j)-lambda*treb*e(i)*e(j)
         end do
     end do
 !
     do i = dim+1, ndim
-        e(i)=e(i)/rac2
+        e(i) = e(i)/rac2
     end do
 !
 !
 !CC ON RAJOUTE LE TERME QUI VIENT DE L ECROUISSAGE
 !
     do i = 1, ndim
-        dsidep(i,i)=dsidep(i,i)-ecrob
+        dsidep(i, i) = dsidep(i, i)-ecrob
     end do
 !
 !

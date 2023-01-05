@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine calico(sdcont, mesh, model, model_ndim_, cont_form,&
+subroutine calico(sdcont, mesh, model, model_ndim_, cont_form, &
                   ligret)
 !
-implicit none
+    implicit none
 !
 #include "asterc/getfac.h"
 #include "asterfort/assert.h"
@@ -60,9 +60,9 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    model_ndim   = 0
+    model_ndim = 0
     nb_cont_zone = 0
-    keywf        = 'ZONE'
+    keywf = 'ZONE'
 !
 ! - Number of contact zones
 !
@@ -81,10 +81,10 @@ implicit none
                 model_ndim = 2
             else
                 ASSERT(.false.)
-            endif
+            end if
         else
             model_ndim = model_ndim_
-        endif
+        end if
 !
 ! ----- Creation of datastructures
 !
@@ -96,12 +96,12 @@ implicit none
 !
 ! ----- Get elements and nodes of contact, checkings
 !
-        call limaco(sdcont      , keywf, mesh, model, model_ndim,&
+        call limaco(sdcont, keywf, mesh, model, model_ndim, &
                     nb_cont_zone, ligret)
 !
 ! ----- Debug print
 !
         call surfco(sdcont, mesh)
-    endif
+    end if
 !
 end subroutine

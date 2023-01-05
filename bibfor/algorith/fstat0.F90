@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine fstat0(nbpt, fn, offset, fnmoyt, fnmoyc,&
-                  fnrmst, fnrmsc, fnmax, fnmin, fmaxmo,&
+subroutine fstat0(nbpt, fn, offset, fnmoyt, fnmoyc, &
+                  fnrmst, fnrmsc, fnmax, fnmin, fmaxmo, &
                   fminmo, nbmaxr, nbminr)
 ! CETTE ROUTINE EST EN FAIT L'ANCIENNE FSTAT RENOMMEE FSTAT0
 !
@@ -75,15 +75,15 @@ subroutine fstat0(nbpt, fn, offset, fnmoyt, fnmoyc,&
     do i = 1, nbpt
 !
         if ((abs(fn(i))) .gt. offset) then
-            ncount = ncount + 1
-            sfn = sfn + fn(i)
+            ncount = ncount+1
+            sfn = sfn+fn(i)
 !
 !           RECHERCHE DES EXTREMAS ABSOLUS
 !
             if (fn(i) .gt. fnmax) fnmax = fn(i)
             if (fn(i) .lt. fnmin) fnmin = fn(i)
 !
-        endif
+        end if
 !
     end do
 !
@@ -93,17 +93,17 @@ subroutine fstat0(nbpt, fn, offset, fnmoyt, fnmoyc,&
 !
 !           RECHERCHE DES EXTREMAS RELATIFS
 !
-            if ((fn(i).gt.fn(i-1)) .and. (fn(i).gt.fn(i+1))) then
-                smaxr = smaxr + fn(i)
-                nbmaxr = nbmaxr + 1
-            endif
+            if ((fn(i) .gt. fn(i-1)) .and. (fn(i) .gt. fn(i+1))) then
+                smaxr = smaxr+fn(i)
+                nbmaxr = nbmaxr+1
+            end if
 !
-            if ((fn(i).lt.fn(i-1)) .and. (fn(i).lt.fn(i+1))) then
-                sminr = sminr + fn(i)
-                nbminr = nbminr + 1
-            endif
+            if ((fn(i) .lt. fn(i-1)) .and. (fn(i) .lt. fn(i+1))) then
+                sminr = sminr+fn(i)
+                nbminr = nbminr+1
+            end if
 !
-        endif
+        end if
 !
     end do
 !
@@ -115,26 +115,26 @@ subroutine fstat0(nbpt, fn, offset, fnmoyt, fnmoyc,&
     else
         fnmoyc = 0.d0
         fnmoyt = sfn/dble(nbpt)
-    endif
+    end if
 !
     if (nbminr .ne. 0) then
         fminmo = sminr/dble(nbminr)
 !
     else
         fminmo = 0.d0
-    endif
+    end if
 !
     if (nbmaxr .ne. 0) then
         fmaxmo = smaxr/dble(nbmaxr)
 !
     else
         fmaxmo = 0.d0
-    endif
+    end if
 !
     do i = 1, nbpt
         if (abs(fn(i)) .gt. offset) then
-            sfn2 = sfn2 + fn(i)**2
-        endif
+            sfn2 = sfn2+fn(i)**2
+        end if
 !
     end do
 !
@@ -148,9 +148,9 @@ subroutine fstat0(nbpt, fn, offset, fnmoyt, fnmoyc,&
 !
         fnmin = 0.d0
         fnmax = 0.d0
-    endif
+    end if
 !
     goto 30
 !
- 30 continue
+30  continue
 end subroutine

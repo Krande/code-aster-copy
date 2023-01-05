@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine lkimat(mod, imat, nmat, materd, materf,&
+subroutine lkimat(mod, imat, nmat, materd, materf, &
                   matcst, ndt, ndi, nvi, nr)
-    implicit  none
+    implicit none
 ! person_in_charge: alexandre.foucault at edf.fr
 !       --------------------------------------------------------------
 !       RECUPERATION PROPRIETES MATERIAU POUR LETK ET DIMENSION NR
@@ -45,12 +45,12 @@ subroutine lkimat(mod, imat, nmat, materd, materf,&
 !
     integer :: indal
 !
-    call lklmat(mod, imat, nmat, 0.d0, materd,&
-                materf, matcst, ndt, ndi, nvi,&
+    call lklmat(mod, imat, nmat, 0.d0, materd, &
+                materf, matcst, ndt, ndi, nvi, &
                 indal)
 !
 ! --- L'INCONNUE DU SYSTEME NL EST COMPOSEE :
 ! --- DES CONTRAINTES + DLAMBDA + XIP + XIVP
-    nr = ndt + 3
+    nr = ndt+3
 !
 end subroutine

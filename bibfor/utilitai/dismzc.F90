@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -66,7 +66,7 @@ subroutine dismzc(questi, nomobz, repi, repkz, ierd)
 #define numglm(numail,ino) connex(zi(ilmaco+numail-1)+ino-1)
 ! --------------------------------------------------------------------
     call jemarq()
-    ASSERT(questi.eq.'Z_CST')
+    ASSERT(questi .eq. 'Z_CST')
 !
     nolig = nomobz
     repk = ' '
@@ -104,7 +104,7 @@ subroutine dismzc(questi, nomobz, repi, repkz, ierd)
         typma = typema(zi(jima+nbma-1))
         call jenonu(jexnom('&CATA.TM.NOMTM', typma), itypm)
         nbpt = nbno(itypm)
-        nbma = nbma - 1
+        nbma = nbma-1
 !
         do ii = 1, nbma
 !
@@ -114,7 +114,7 @@ subroutine dismzc(questi, nomobz, repi, repkz, ierd)
 ! --------- MAILLE TARDIVE: ON RECUPERE NEMA
                 if (ier .eq. 0) then
                     call utmess('F', 'UTILITAI_71')
-                endif
+                end if
                 ima = -numail
                 call jeveuo(jexnum(nema, ima), 'L', idnema)
                 call jelira(jexnum(nema, ima), 'LONMAX', nbnot)
@@ -124,7 +124,7 @@ subroutine dismzc(questi, nomobz, repi, repkz, ierd)
                     nunota = zi(idnema+ino-1)
                     if (nunota .lt. 0) then
                         call utmess('F', 'UTILITAI_72')
-                    endif
+                    end if
                     zi(jnbno+nunota-1) = 1
                 end do
             else
@@ -133,10 +133,10 @@ subroutine dismzc(questi, nomobz, repi, repkz, ierd)
 !           DES NOEUDS DE LA MAILLE NUMAIL
 !
                 do ino = 1, nbpt
-                    nunoel = numglm(numail,ino)
+                    nunoel = numglm(numail, ino)
                     zi(jnbno+nunoel-1) = 1
                 end do
-            endif
+            end if
         end do
     end do
 !
@@ -147,22 +147,22 @@ subroutine dismzc(questi, nomobz, repi, repkz, ierd)
         if (zi(jnbno+ino-1) .ne. 0) then
             z1 = vale(3*(ino-1)+3)
             goto 26
-        endif
+        end if
     end do
- 26 continue
+26  continue
 !
     do ino = 1, nbnoma
         if (zi(jnbno+ino-1) .ne. 0) then
             if (vale(3*(ino-1)+3) .ne. z1) goto 30
-        endif
+        end if
     end do
     repk = 'OUI'
     goto 999
- 30 continue
+30  continue
     repk = 'NON'
 !
 999 continue
-    repkz=repk
+    repkz = repk
     call jedetr('&&DISMZC.TRAV.NOEUDS')
     call jedema()
 end subroutine

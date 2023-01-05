@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,9 +19,9 @@
 !
 subroutine romResultGetInfo(resultNameZ, result)
 !
-use Rom_Datastructure_type
+    use Rom_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/as_allocate.h"
@@ -37,8 +37,8 @@ implicit none
 #include "asterfort/rsGetOneModelFromResult.h"
 #include "asterfort/utmess.h"
 !
-character(len=*), intent(in) :: resultNameZ
-type(ROM_DS_Result), intent(inout) :: result
+    character(len=*), intent(in) :: resultNameZ
+    type(ROM_DS_Result), intent(inout) :: result
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -67,17 +67,17 @@ type(ROM_DS_Result), intent(inout) :: result
 !
     call infniv(ifm, niv)
     if (niv .ge. 2) then
-        call utmess('I','ROM13_1')
-    endif
+        call utmess('I', 'ROM13_1')
+    end if
 !
 ! - Initializations
 !
-    nbStore       = 0
-    resultName    = resultNameZ
-    resultType    = ' '
+    nbStore = 0
+    resultName = resultNameZ
+    resultType = ' '
     lTablFromResu = ASTER_FALSE
-    modelRefe     = '#SANS'
-    comporRefe    = '#SANS'
+    modelRefe = '#SANS'
+    comporRefe = '#SANS'
 !
 ! - Get number of storing index
 !
@@ -99,37 +99,37 @@ type(ROM_DS_Result), intent(inout) :: result
                 iret = 1
             else
                 iret = 0
-            endif
-        endif
-    endif
+            end if
+        end if
+    end if
     lTablFromResu = iret .eq. 0
 !
 ! - Get reference model and behaviour
 !
     if (nbStore .gt. 0) then
-        AS_ALLOCATE(vi = listStore, size = nbStore)
+        AS_ALLOCATE(vi=listStore, size=nbStore)
         call rs_get_liststore(resultName, nbStore, listStore)
         call rsGetOneModelFromResult(resultName, nbStore, listStore, modelRefe)
         call rsGetOneBehaviourFromResult(resultName, nbStore, listStore, comporRefe)
-    endif
+    end if
 !
 ! - Save parameters in datastructure
 !
-    result%modelRefe     = modelRefe
-    result%comporRefe    = comporRefe
-    result%resultType    = resultType
-    result%resultName    = resultName
-    result%nbStore       = nbStore
+    result%modelRefe = modelRefe
+    result%comporRefe = comporRefe
+    result%resultType = resultType
+    result%resultName = resultName
+    result%nbStore = nbStore
     result%lTablFromResu = lTablFromResu
 !
 ! - Clean
 !
-    AS_DEALLOCATE(vi = listStore)
+    AS_DEALLOCATE(vi=listStore)
 !
 ! - Debug
 !
     if (niv .ge. 2) then
         call romResultPrintInfo(result)
-    endif
+    end if
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine ernozz(modele, sigma, mateco, signo, chvarc,&
-                  option, ligrel, iordr, resuco, resuc1,&
+subroutine ernozz(modele, sigma, mateco, signo, chvarc, &
+                  option, ligrel, iordr, resuco, resuc1, &
                   champ)
     implicit none
 #include "asterfort/erglob.h"
@@ -57,9 +57,9 @@ subroutine ernozz(modele, sigma, mateco, signo, chvarc,&
 !
 !    CALCUL DE L'ESTIMATEUR D'ERREUR
 !
-    call zzloca(modele, ligrel, mateco, sigma, signo,&
+    call zzloca(modele, ligrel, mateco, sigma, signo, &
                 chvarc, champ)
-    call erglob(champ, .false._1, .false._1, option, iordr,&
+    call erglob(champ, .false._1, .false._1, option, iordr, &
                 resuco, resuc1)
 !
 end subroutine

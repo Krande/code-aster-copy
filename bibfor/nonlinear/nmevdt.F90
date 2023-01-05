@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,9 +18,9 @@
 
 subroutine nmevdt(ds_measure, sderro, timer)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterc/etausr.h"
@@ -66,14 +66,14 @@ implicit none
 !
     if (timer .eq. 'PAS') then
         call nmtima(ds_measure, 'Time_Step', itcpup)
-    else if (timer.eq.'ITE') then
+    else if (timer .eq. 'ITE') then
         call nmleeb(sderro, 'NEWT', etnewt)
         if (etnewt .ne. 'CONV') then
             call nmtima(ds_measure, 'Newt_Iter', itcpui)
-        endif
+        end if
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 ! --- INTERRUPTION DEMANDEE PAR SIGNAL ?
 !
@@ -87,9 +87,9 @@ implicit none
 !
 ! --- SAUVEGARDE DES EVENEMENTS
 !
-    mtcpui = itcpui.eq.1
-    mtcpup = itcpup.eq.1
-    stopus = isusr1.eq.1
+    mtcpui = itcpui .eq. 1
+    mtcpup = itcpup .eq. 1
+    stopus = isusr1 .eq. 1
     call nmcrel(sderro, 'ERRE_TIMP', mtcpup)
     call nmcrel(sderro, 'ERRE_TIMN', mtcpui)
     call nmcrel(sderro, 'ERRE_EXCP', stopus)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -60,17 +60,17 @@ subroutine ef0154(nomte)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    lteimp= ASTER_FALSE
-    nno=2
-    nc=3
-    fami='RIGI'
+    lteimp = ASTER_FALSE
+    nno = 2
+    nc = 3
+    fami = 'RIGI'
 !
-    if ( (nomte.ne.'MECA_BARRE') .and. &
-         (nomte.ne.'MECA_2D_BARRE') .and. &
-         (nomte.ne.'MECABL2')) then
-        ch16=nomte
+    if ((nomte .ne. 'MECA_BARRE') .and. &
+        (nomte .ne. 'MECA_2D_BARRE') .and. &
+        (nomte .ne. 'MECABL2')) then
+        ch16 = nomte
         call utmess('F', 'ELEMENTS2_42', sk=ch16)
-    endif
+    end if
 !
 !   RECUPERATION DES CARACTERISTIQUES MATERIAUX ---
     call jevech('PMATERC', 'L', lmater)
@@ -78,29 +78,29 @@ subroutine ef0154(nomte)
     call verift(fami, 1, 1, '+', zi(lmater), epsth_=epsth)
 !
     r8bid = 0.0d0
-    call rcvalb(fami, 1, 1, '+', zi(lmater), ' ', 'ELAS', 0, ' ', [r8bid],&
+    call rcvalb(fami, 1, 1, '+', zi(lmater), ' ', 'ELAS', 0, ' ', [r8bid], &
                 1, 'E', val, codres, 1)
-    e=val(1)
-    if (epsth .ne. 0.d0) lteimp= ASTER_TRUE
+    e = val(1)
+    if (epsth .ne. 0.d0) lteimp = ASTER_TRUE
 !
 !   Longueur de l'élément
 !   Caracteristiques de la section
-    if      (nomte.eq.'MECA_BARRE') then
+    if (nomte .eq. 'MECA_BARRE') then
         xl = lonele()
         valp(1) = 'A1'
         call get_value_mode_local('PCAGNBA', valp, valr, iret, nbpara_=1)
-    else if (nomte.eq.'MECA_2D_BARRE') then
+    else if (nomte .eq. 'MECA_2D_BARRE') then
         xl = lonele(dime=2)
         valp(1) = 'A1'
         call get_value_mode_local('PCAGNBA', valp, valr, iret, nbpara_=1)
-    else if (nomte.eq.'MECABL2') then
+    else if (nomte .eq. 'MECABL2') then
         xl = lonele()
         valp(1) = 'A1'
         call get_value_mode_local('PCACABL', valp, valr, iret, nbpara_=1)
     else
         xl = 0.0d0
-        ASSERT( ASTER_FALSE )
-    endif
+        ASSERT(ASTER_FALSE)
+    end if
     a = valr(1)
 !
 !   RECUPERATION DES ORIENTATIONS ALPHA,BETA,GAMMA ---
@@ -109,32 +109,32 @@ subroutine ef0154(nomte)
     call matrot(zr(lorien), pgl)
 !
 !   RECUPERATION DES DEPLACEMENTS OU DES VITESSES
-    ugr(:)=0.d0
+    ugr(:) = 0.d0
 !
 !   ON RECUPERE DES DEPLACEMENTS
     call jevech('PDEPLAR', 'L', jdepl)
-    if ((nomte.eq.'MECA_BARRE').or.(nomte.eq.'MECABL2')) then
+    if ((nomte .eq. 'MECA_BARRE') .or. (nomte .eq. 'MECABL2')) then
         do i = 1, 6
-            ugr(i)=zr(jdepl+i-1)
-        enddo
-    else if (nomte.eq.'MECA_2D_BARRE') then
-        ugr(1)=zr(jdepl+1-1)
-        ugr(2)=zr(jdepl+2-1)
-        ugr(4)=zr(jdepl+3-1)
-        ugr(5)=zr(jdepl+4-1)
-    endif
+            ugr(i) = zr(jdepl+i-1)
+        end do
+    else if (nomte .eq. 'MECA_2D_BARRE') then
+        ugr(1) = zr(jdepl+1-1)
+        ugr(2) = zr(jdepl+2-1)
+        ugr(4) = zr(jdepl+3-1)
+        ugr(5) = zr(jdepl+4-1)
+    end if
 !
 !   VECTEUR DANS REPERE LOCAL  ULR = PGL * UGR
     call utpvgl(nno, nc, pgl, ugr, ulr)
 !
 !   RIGIDITE ELEMENTAIRE
-    klc(:,:)= 0.0d0
+    klc(:, :) = 0.0d0
 !
-    xrig=e*a/xl
-    klc(1,1)=xrig
-    klc(1,4)=-xrig
-    klc(4,1)=-xrig
-    klc(4,4)=xrig
+    xrig = e*a/xl
+    klc(1, 1) = xrig
+    klc(1, 4) = -xrig
+    klc(4, 1) = -xrig
+    klc(4, 4) = xrig
 !
 !   VECTEUR EFFORT LOCAL  FLR = KLC * ULR
     call pmavec('ZERO', 6, klc, ulr, flr)
@@ -142,14 +142,14 @@ subroutine ef0154(nomte)
 !   TENIR COMPTE DES EFFORTS DUS A LA DILATATION ---
     if (lteimp) then
 !       CALCUL DES FORCES INDUITES ---
-        xfl1=-epsth*e*a
-        xfl4=-xfl1
-        flr(1)=flr(1)-xfl1
-        flr(4)=flr(4)-xfl4
-    endif
+        xfl1 = -epsth*e*a
+        xfl4 = -xfl1
+        flr(1) = flr(1)-xfl1
+        flr(4) = flr(4)-xfl4
+    end if
 !
     call jevech('PEFFORR', 'E', jeffo)
-    zr(jeffo)=-flr(1)
-    zr(jeffo+1)=flr(4)
+    zr(jeffo) = -flr(1)
+    zr(jeffo+1) = flr(4)
 !
 end subroutine

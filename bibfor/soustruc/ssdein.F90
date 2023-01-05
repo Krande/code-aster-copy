@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -84,17 +84,17 @@ subroutine ssdein(chno_lz, chno_gz, mail, nocas)
     real(kind=8), pointer :: vale(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
-    chno_g= chno_gz
-    chno_l= chno_lz
+    chno_g = chno_gz
+    chno_l = chno_lz
 !
     call dismoi('NOM_MAILLA', chno_gz, 'CHAM_NO', repk=mag)
     call jeveuo(chno_g//'.REFE', 'L', vk24=refe)
-    prof_chno_g=refe(2)(1:19)
+    prof_chno_g = refe(2) (1:19)
     call nueq_chck(prof_chno_g)
     call dismoi('NOM_GD', chno_gz, 'CHAM_NO', repk=nomgd)
     if (nomgd(1:6) .ne. 'DEPL_R') then
         call utmess('F', 'SOUSTRUC_43', sk=nomgd)
-    endif
+    end if
 !
 !
 !     1- RECUPERATION DU NOM DU MACR_ELEM:
@@ -102,23 +102,23 @@ subroutine ssdein(chno_lz, chno_gz, mail, nocas)
     call jeveuo(mag//'.NOMACR', 'L', vk8=vnomacr)
     call jenonu(jexnom(mag//'.SUPMAIL', mail), isma)
     if (isma .le. 0) then
-        ch8(1)=mail
-        ch8(2)=mag
+        ch8(1) = mail
+        ch8(2) = mag
         call utmess('F', 'SOUSTRUC_44', nk=2, valk=ch8)
-    endif
+    end if
     call jeveuo(jexnom(mag//'.SUPMAIL', mail), 'L', iasupm)
-    nomacr= vnomacr(isma)
-    nul= nomacr
+    nomacr = vnomacr(isma)
+    nul = nomacr
     prof_chno_l = nul//'.NUME'
     call nueq_chck(prof_chno_l)
 !
     call dismoi('NOM_MAILLA', nomacr, 'MACR_ELEM_STAT', repk=mal)
     call jeveuo(nomacr//'.CONX', 'L', vi=conx)
     call jeveuo(nomacr//'.DESM', 'L', vi=desm)
-    nbnoet= desm(2)+desm(8)+desm(9)
-    nddle= desm(4)
-    nddli= desm(5)
-    nddlt= nddle+nddli
+    nbnoet = desm(2)+desm(8)+desm(9)
+    nddle = desm(4)
+    nddli = desm(5)
+    nddlt = nddle+nddli
 !                 '&&SSDEIN.VALP' EST UN VECTEUR DE TRAVAIL :
     call wkvect('&&SSDEIN.VALP', 'V V R', nddlt, iavalp)
 !
@@ -135,13 +135,13 @@ subroutine ssdein(chno_lz, chno_gz, mail, nocas)
 !     .DESC:
     call wkvect(chno_l//'.DESC', 'G V I', 2, iadesc)
     call jeveuo(chno_g//'.DESC', 'L', vi=desc)
-    zi(iadesc-1+1)=desc(1)
-    zi(iadesc-1+2)=1
+    zi(iadesc-1+1) = desc(1)
+    zi(iadesc-1+2) = 1
     call jeecra(chno_l//'.DESC', 'DOCU', ibid, 'CHNO')
 !     .REFE:
     call wkvect(chno_l//'.REFE', 'G V K24', 4, iarefe)
-    zk24(iarefe-1+1)=mal
-    zk24(iarefe-1+2)=nul//'.NUME'
+    zk24(iarefe-1+1) = mal
+    zk24(iarefe-1+2) = nul//'.NUME'
 !     .VALE:
     call wkvect(chno_l//'.VALE', 'G V R', nddlt, iavall)
 !
@@ -152,131 +152,131 @@ subroutine ssdein(chno_lz, chno_gz, mail, nocas)
 !     4-1- ON RECOPIE CHNO_G.VALE DANS Q_E:
 !     ---------------------------------
     do inoe = 1, nbnoet
-        inog=zi(iasupm-1+inoe)
-        inol= conx(3*(inoe-1)+2)
-        ili= conx(3*(inoe-1)+1)
+        inog = zi(iasupm-1+inoe)
+        inol = conx(3*(inoe-1)+2)
+        ili = conx(3*(inoe-1)+1)
 !
         call jeveuo(jexnum(prof_chno_l//'.PRNO', ili), 'L', iaprnl)
 !
-        nueql = zi(iaprnl-1+ (inol-1)* (nec+2)+1)
-        iadgl = iaprnl - 1 + (inol-1)* (nec+2)+3
-        ieql=nuel(nueql)
+        nueql = zi(iaprnl-1+(inol-1)*(nec+2)+1)
+        iadgl = iaprnl-1+(inol-1)*(nec+2)+3
+        ieql = nuel(nueql)
         if (ieql .le. nddli) then
             call utmess('F', 'SOUSTRUC_45')
-        endif
+        end if
 !
-        nueqg = zi(iaprng-1+ (inog-1)* (nec+2)+1)
-        iadgg = iaprng - 1 + (inog-1)* (nec+2)+3
+        nueqg = zi(iaprng-1+(inog-1)*(nec+2)+1)
+        iadgg = iaprng-1+(inog-1)*(nec+2)+3
 !
         icol = 0
         icog = 0
-        do 2 ,icmp = 1,ncmpmx
-        exil= exisdg(zi(iadgl),icmp)
-        exig= exisdg(zi(iadgg),icmp)
-        if (exil) icol=icol+1
-        if (exig) icog=icog+1
-        if (exig .and. exil) then
-            ieql= nuel(nueql-1+icol)
-            ieqg= nueg(nueqg-1+icog)
-            zr(iavall-1+ieql) = vale(ieqg)
-        endif
-  2     continue
-    end do
+        do 2, icmp = 1, ncmpmx
+            exil = exisdg(zi(iadgl), icmp)
+            exig = exisdg(zi(iadgg), icmp)
+            if (exil) icol = icol+1
+            if (exig) icog = icog+1
+            if (exig .and. exil) then
+                ieql = nuel(nueql-1+icol)
+                ieqg = nueg(nueqg-1+icog)
+                zr(iavall-1+ieql) = vale(ieqg)
+            end if
+2           continue
+        end do
 !
 !
 !     4-2- ON CHANGE LE REPERE (ROTATION G->L ) : Q_E  --> Q_E :
 !     ----------------------------------------------------------
 !
-    call ssrone(mag, isma, rota)
+        call ssrone(mag, isma, rota)
 !
-    if (rota(1:3) .eq. 'OUI') then
-        call jeveuo(mag//'.PARA_R', 'L', vr=para_r)
-        angl(1) = para_r(14*(isma-1)+4)
-        angl(2) = para_r(14*(isma-1)+5)
-        angl(3) = para_r(14*(isma-1)+6)
-        call matrot(angl, pgl)
-        do i = 1, 3
-            do j = 1, 3
-                lambda(i,j) = pgl(i,j)
-                lambda(i,j+3) = 0.d0
-                lambda(i+3,j) = 0.d0
-                lambda(i+3,j+3) = pgl(i,j)
+        if (rota(1:3) .eq. 'OUI') then
+            call jeveuo(mag//'.PARA_R', 'L', vr=para_r)
+            angl(1) = para_r(14*(isma-1)+4)
+            angl(2) = para_r(14*(isma-1)+5)
+            angl(3) = para_r(14*(isma-1)+6)
+            call matrot(angl, pgl)
+            do i = 1, 3
+                do j = 1, 3
+                    lambda(i, j) = pgl(i, j)
+                    lambda(i, j+3) = 0.d0
+                    lambda(i+3, j) = 0.d0
+                    lambda(i+3, j+3) = pgl(i, j)
+                end do
             end do
-        end do
-        call ssvaro(lambda, 'GL', .false._1, 'EXTE', nomacr,&
-                    iavall, iavalp)
-        do i = 1, nddle
-            zr(iavall-1+nddli+i)= zr(iavalp-1+nddli+i)
-        end do
-        call jedetr('&&SSVARO.IINO')
-    endif
+            call ssvaro(lambda, 'GL', .false._1, 'EXTE', nomacr, &
+                        iavall, iavalp)
+            do i = 1, nddle
+                zr(iavall-1+nddli+i) = zr(iavalp-1+nddli+i)
+            end do
+            call jedetr('&&SSVARO.IINO')
+        end if
 !
 !
 !     4-3  Q_I= (K_II**-1)*F_I :
 !     -------------------------
-    if (nocas(1:1) .ne. ' ') then
-        call jeexin(jexnom(nomacr//'.LICA', nocas), iret)
-        if (iret .eq. 0) then
-            valk(1) = nocas
-            valk(2) = nomacr
-            call utmess('A', 'SOUSTRUC_46', nk=2, valk=valk)
-        else
-            call jeveuo(jexnom(nomacr//'.LICA', nocas), 'L', ialica)
-            call jeveuo(jexnom(nomacr//'.LICH', nocas), 'L', ialich)
+        if (nocas(1:1) .ne. ' ') then
+            call jeexin(jexnom(nomacr//'.LICA', nocas), iret)
+            if (iret .eq. 0) then
+                valk(1) = nocas
+                valk(2) = nomacr
+                call utmess('A', 'SOUSTRUC_46', nk=2, valk=valk)
+            else
+                call jeveuo(jexnom(nomacr//'.LICA', nocas), 'L', ialica)
+                call jeveuo(jexnom(nomacr//'.LICH', nocas), 'L', ialich)
 !
-            if (zk8(ialich-1+1)(1:3) .eq. 'NON') then
+                if (zk8(ialich-1+1) (1:3) .eq. 'NON') then
 !
 !           -- LE CHARGEMENT N'EST PAS "SUIVEUR" :
-                if (rota(1:3) .eq. 'OUI') then
-                    call ssvaro(lambda, 'GL', .false._1, 'TOUS', nomacr,&
-                                ialica, iavalp)
-                    call ssvau1(nomacr, iavalp, iavalp)
-                    do i = 1, nddli
-                        zr(iavall-1+i)=zr(iavalp-1+i)
-                    end do
-                else
-                    do i = 1, nddli
-                        zr(iavall-1+i)=zr(ialica-1+nddlt+i)
-                    end do
-                endif
+                    if (rota(1:3) .eq. 'OUI') then
+                        call ssvaro(lambda, 'GL', .false._1, 'TOUS', nomacr, &
+                                    ialica, iavalp)
+                        call ssvau1(nomacr, iavalp, iavalp)
+                        do i = 1, nddli
+                            zr(iavall-1+i) = zr(iavalp-1+i)
+                        end do
+                    else
+                        do i = 1, nddli
+                            zr(iavall-1+i) = zr(ialica-1+nddlt+i)
+                        end do
+                    end if
 !
-            else if (zk8(ialich-1+1)(1:3).eq.'OUI') then
+                else if (zk8(ialich-1+1) (1:3) .eq. 'OUI') then
 !
 !           -- LE CHARGEMENT EST "SUIVEUR" :
-                do i = 1, nddli
-                    zr(iavall-1+i)=zr(ialica-1+nddlt+i)
-                end do
-            else
-                call utmess('F', 'SOUSTRUC_47')
-            endif
-        endif
-    endif
+                    do i = 1, nddli
+                        zr(iavall-1+i) = zr(ialica-1+nddlt+i)
+                    end do
+                else
+                    call utmess('F', 'SOUSTRUC_47')
+                end if
+            end if
+        end if
 !
 !
 !
 !     4-4  Q_I= Q_I + PHI_IE * Q_E :
 !     ------------------------------
-    call jelira(nomacr//'.PHI_IE', 'LONMAX', lgblph)
-    call jelira(nomacr//'.PHI_IE', 'NMAXOC', nblph)
-    nlblph=lgblph/nddli
+        call jelira(nomacr//'.PHI_IE', 'LONMAX', lgblph)
+        call jelira(nomacr//'.PHI_IE', 'NMAXOC', nblph)
+        nlblph = lgblph/nddli
 !
-    j=0
-    do iblph = 1, nblph
-        call jeveuo(jexnum(nomacr//'.PHI_IE', iblph), 'L', iaphi0)
-        do iiblph = 1, nlblph
-            j=j+1
-            if (j .gt. nddle) goto 13
-            iaphie=iaphi0+ (iiblph-1)*nddli
-            do i = 1, nddli
-                zr(iavall-1+i)=zr(iavall-1+i) - zr(iaphie-1+i)* zr(&
-                iavall-1+nddli+j)
+        j = 0
+        do iblph = 1, nblph
+            call jeveuo(jexnum(nomacr//'.PHI_IE', iblph), 'L', iaphi0)
+            do iiblph = 1, nlblph
+                j = j+1
+                if (j .gt. nddle) goto 13
+                iaphie = iaphi0+(iiblph-1)*nddli
+                do i = 1, nddli
+                    zr(iavall-1+i) = zr(iavall-1+i)-zr(iaphie-1+i)*zr( &
+                                     iavall-1+nddli+j)
+                end do
             end do
+13          continue
+            call jelibe(jexnum(nomacr//'.PHI_IE', iblph))
         end do
- 13     continue
-        call jelibe(jexnum(nomacr//'.PHI_IE', iblph))
-    end do
 !
-    call jedetr('&&SSDEIN.VALP')
+        call jedetr('&&SSDEIN.VALP')
 !
-    call jedema()
-end subroutine
+        call jedema()
+        end subroutine

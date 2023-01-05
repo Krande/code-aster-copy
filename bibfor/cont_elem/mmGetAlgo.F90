@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,24 +17,24 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine mmGetAlgo(l_large_slip, ndexfr     , jeusup     , lambds     ,&
-                     ialgoc      , ialgof     , i_reso_fric, i_reso_geom,&
-                     l_pena_cont , l_pena_fric,&
+subroutine mmGetAlgo(l_large_slip, ndexfr, jeusup, lambds, &
+                     ialgoc, ialgof, i_reso_fric, i_reso_geom, &
+                     l_pena_cont, l_pena_fric, &
                      lambds_prev_, jeu_prev_)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/jevech.h"
 !
-aster_logical, intent(out) :: l_large_slip
-integer, intent(out) :: ndexfr
-real(kind=8), intent(out) :: jeusup
-real(kind=8), intent(out) :: lambds
-integer, intent(out) :: ialgoc, i_reso_fric, ialgof, i_reso_geom
-aster_logical, intent(out) :: l_pena_cont, l_pena_fric
-real(kind=8), optional, intent(out) :: lambds_prev_, jeu_prev_
+    aster_logical, intent(out) :: l_large_slip
+    integer, intent(out) :: ndexfr
+    real(kind=8), intent(out) :: jeusup
+    real(kind=8), intent(out) :: lambds
+    integer, intent(out) :: ialgoc, i_reso_fric, ialgof, i_reso_geom
+    aster_logical, intent(out) :: l_pena_cont, l_pena_fric
+    real(kind=8), optional, intent(out) :: lambds_prev_, jeu_prev_
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -71,18 +71,18 @@ real(kind=8), optional, intent(out) :: lambds_prev_, jeu_prev_
 !
     call jevech('PCONFR', 'L', jpcf)
 !
-    lambds       = zr(jpcf-1+13)
-    jeusup       = zr(jpcf-1+14)
-    ialgoc       = nint(zr(jpcf-1+15))
-    i_reso_fric  = nint(zr(jpcf-1+17))
-    ialgof       = nint(zr(jpcf-1+18))
-    ndexfr       = nint(zr(jpcf-1+21))
-    i_reso_geom  = nint(zr(jpcf-1+25))
+    lambds = zr(jpcf-1+13)
+    jeusup = zr(jpcf-1+14)
+    ialgoc = nint(zr(jpcf-1+15))
+    i_reso_fric = nint(zr(jpcf-1+17))
+    ialgof = nint(zr(jpcf-1+18))
+    ndexfr = nint(zr(jpcf-1+21))
+    i_reso_geom = nint(zr(jpcf-1+25))
     l_large_slip = nint(zr(jpcf-1+48)) .eq. 1
-    lambds_prev  = zr(jpcf-1+26)
-    jeu_prev     = zr(jpcf-1+29)
-    l_pena_cont  = (ialgoc .eq. 3) .or. nint(zr(jpcf-1+45)) .eq. 4
-    l_pena_fric  = (ialgof .eq. 3) .or. nint(zr(jpcf-1+46)) .eq. 4
+    lambds_prev = zr(jpcf-1+26)
+    jeu_prev = zr(jpcf-1+29)
+    l_pena_cont = (ialgoc .eq. 3) .or. nint(zr(jpcf-1+45)) .eq. 4
+    l_pena_fric = (ialgof .eq. 3) .or. nint(zr(jpcf-1+46)) .eq. 4
     if (present(lambds_prev_)) lambds_prev_ = lambds_prev
     if (present(jeu_prev_)) jeu_prev_ = jeu_prev
 !

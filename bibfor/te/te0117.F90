@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -40,7 +40,7 @@ subroutine te0117(option, nomte)
 !
     real(kind=8) :: zero
 !-----------------------------------------------------------------------
-    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg, &
                      jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
 ! --- INITIALISATIONS :
@@ -72,8 +72,8 @@ subroutine te0117(option, nomte)
 !
 ! ---- CALCUL DU VECTEUR DES FORCES INTERNES (BT*SIGMA) :
 !      --------------------------------------------------
-    call bsigmc(nno, ndim, nbsig, npg, ipoids,&
-                ivf, idfde, zr(igeom), nharm, zr(icontm),&
+    call bsigmc(nno, ndim, nbsig, npg, ipoids, &
+                ivf, idfde, zr(igeom), nharm, zr(icontm), &
                 bsigm)
 !
 ! ---- AFFECTATION DU VECTEUR EN SORTIE :

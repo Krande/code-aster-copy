@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine pmevdr(sddisc, tabinc, liccvg, itemax, conver,&
+subroutine pmevdr(sddisc, tabinc, liccvg, itemax, conver, &
                   actite)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/infniv.h"
@@ -74,14 +74,14 @@ implicit none
 !
     call infniv(ifm, niv)
     if (niv .ge. 2) then
-        write (ifm,*) '<SIMUPOINTMAT> EVALUATION DES EVENT-DRIVEN'
-    endif
+        write (ifm, *) '<SIMUPOINTMAT> EVALUATION DES EVENT-DRIVEN'
+    end if
 !
 ! --- INITIALISATIONS
 !
     ldccvg = liccvg(2)
     faccvg = liccvg(5)
-    lerror =(ldccvg.eq.1) .or. (faccvg.ne.0) .or. itemax
+    lerror = (ldccvg .eq. 1) .or. (faccvg .ne. 0) .or. itemax
     ievdac = 0
     k24bla = ' '
     lsvimx = .false.
@@ -96,11 +96,11 @@ implicit none
         actite = 0
     else
         actite = 2
-    endif
+    end if
 !
 ! --- DETECTION DU PREMIER EVENEMENT DECLENCHE
 !
-    call nmevel(sddisc, numins, tabinc, 'NEWT', lsvimx,&
+    call nmevel(sddisc, numins, tabinc, 'NEWT', lsvimx, &
                 ldvres, lresmx, linsta, lcritl, lerror, conver)
 !
 ! --- UN EVENEMENT SE DECLENCHE
@@ -108,6 +108,6 @@ implicit none
     call nmacto(sddisc, ievdac)
     if (ievdac .ne. 0) then
         actite = 1
-    endif
+    end if
 !
 end subroutine

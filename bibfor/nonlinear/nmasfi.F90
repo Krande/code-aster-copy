@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,9 +19,9 @@
 !
 subroutine nmasfi(list_func_acti, hval_veasse, cnffdo, sddyna_)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/nonlinDSVectCombCompute.h"
@@ -32,9 +32,9 @@ implicit none
 #include "asterfort/ndynlo.h"
 #include "asterfort/ndynre.h"
 !
-integer, intent(in) :: list_func_acti(*)
-character(len=19), intent(in) :: hval_veasse(*), cnffdo
-character(len=19), optional, intent(in) :: sddyna_
+    integer, intent(in) :: list_func_acti(*)
+    character(len=19), intent(in) :: hval_veasse(*), cnffdo
+    character(len=19), optional, intent(in) :: sddyna_
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -58,18 +58,18 @@ character(len=19), optional, intent(in) :: sddyna_
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    l_lapl      = isfonc(list_func_acti,'LAPLACE')
-    l_sstf      = isfonc(list_func_acti,'SOUS_STRUC')
-    l_dyna      = ASTER_FALSE
+    l_lapl = isfonc(list_func_acti, 'LAPLACE')
+    l_sstf = isfonc(list_func_acti, 'SOUS_STRUC')
+    l_dyna = ASTER_FALSE
     l_mult_step = ASTER_FALSE
-    l_viss      = ASTER_FALSE
-    l_wave      = ASTER_FALSE
+    l_viss = ASTER_FALSE
+    l_wave = ASTER_FALSE
     if (present(sddyna_)) then
-        l_mult_step = ndynlo(sddyna_,'MULTI_PAS')
-        l_dyna      = ndynlo(sddyna_,'DYNAMIQUE')
-        l_viss      = ndynlo(sddyna_,'VECT_ISS')
-        l_wave      = ndynlo(sddyna_,'ONDE_PLANE')
-    endif
+        l_mult_step = ndynlo(sddyna_, 'MULTI_PAS')
+        l_dyna = ndynlo(sddyna_, 'DYNAMIQUE')
+        l_viss = ndynlo(sddyna_, 'VECT_ISS')
+        l_wave = ndynlo(sddyna_, 'ONDE_PLANE')
+    end if
 !
 ! - Initializations
 !
@@ -78,12 +78,12 @@ character(len=19), optional, intent(in) :: sddyna_
 ! - Coefficients
 !
     if (l_dyna) then
-        coeext = ndynre(sddyna_,'COEF_MPAS_FEXT_PREC')
-        coeex2 = ndynre(sddyna_,'COEF_MPAS_FEXT_COUR')
+        coeext = ndynre(sddyna_, 'COEF_MPAS_FEXT_PREC')
+        coeex2 = ndynre(sddyna_, 'COEF_MPAS_FEXT_COUR')
     else
         coeext = 1.d0
         coeex2 = 1.d0
-    endif
+    end if
 !
 ! - Dead Neumann forces
 !
@@ -93,25 +93,25 @@ character(len=19), optional, intent(in) :: sddyna_
 !
     if (l_lapl) then
         call nonlinDSVectCombAddHat(hval_veasse, 'CNLAPL', coeex2, ds_vectcomb)
-    endif
+    end if
 !
 ! - Wave load
 !
     if (l_wave) then
         call nonlinDSVectCombAddHat(hval_veasse, 'CNONDP', -1.d0*coeex2, ds_vectcomb)
-    endif
+    end if
 !
 ! - Sub-structuring force
 !
     if (l_sstf) then
         call nonlinDSVectCombAddHat(hval_veasse, 'CNSSTF', coeex2, ds_vectcomb)
-    endif
+    end if
 !
 ! - FSI ground load
 !
     if (l_viss) then
         call nonlinDSVectCombAddHat(hval_veasse, 'CNVISS', coeex2, ds_vectcomb)
-    endif
+    end if
 !
 ! - Multi-step dynamic schemes forces from previous time step
 !
@@ -119,17 +119,17 @@ character(len=19), optional, intent(in) :: sddyna_
         call nonlinDSVectCombAddDyna(sddyna_, 'CNFEDO', coeext, ds_vectcomb)
         if (l_lapl) then
             call nonlinDSVectCombAddDyna(sddyna_, 'CNLAPL', coeext, ds_vectcomb)
-        endif
+        end if
         if (l_wave) then
             call nonlinDSVectCombAddDyna(sddyna_, 'CNONDP', -1.d0*coeext, ds_vectcomb)
-        endif
+        end if
         if (l_viss) then
             call nonlinDSVectCombAddDyna(sddyna_, 'CNVISS', coeext, ds_vectcomb)
-        endif
+        end if
         if (l_sstf) then
             call nonlinDSVectCombAddDyna(sddyna_, 'CNSSTF', coeext, ds_vectcomb)
-        endif
-    endif
+        end if
+    end if
 !
 ! - Combination
 !

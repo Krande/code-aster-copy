@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 subroutine eneven(sddisc, i_event, lacti)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/utdidt.h"
@@ -53,9 +53,9 @@ implicit none
             active = 'OUI'
         else
             active = 'NON'
-        endif
-        call utdidt('E', sddisc, 'ECHE', 'VERIF_EVEN', index_ = i_event,&
-                    valk_ = active)
-    endif
+        end if
+        call utdidt('E', sddisc, 'ECHE', 'VERIF_EVEN', index_=i_event, &
+                    valk_=active)
+    end if
 !
 end subroutine

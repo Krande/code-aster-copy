@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,13 +17,13 @@
 ! --------------------------------------------------------------------
 ! aslint: disable=W1504
 !
-subroutine nmgrtg(ndim    , nno   , poids    , kpg   , vff     ,&
-                  dfdi    , def   , pff      , axi   ,&
-                  lVect   , lMatr , lMatrPred,&
-                  r       , fPrev , fCurr    , dsidep, sigmPrev,&
-                  sigmCurr, matsym, matuu    , vectu)
+subroutine nmgrtg(ndim, nno, poids, kpg, vff, &
+                  dfdi, def, pff, axi, &
+                  lVect, lMatr, lMatrPred, &
+                  r, fPrev, fCurr, dsidep, sigmPrev, &
+                  sigmCurr, matsym, matuu, vectu)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/nmfdff.h"
@@ -31,11 +31,11 @@ implicit none
 #include "asterfort/nmgrt3.h"
 #include "blas/dcopy.h"
 !
-integer :: ndim, nno, kpg
-real(kind=8) :: pff(*), def(*), r, dsidep(6, 6), poids, vectu(*)
-real(kind=8) :: sigmCurr(6), sigmPrev(6), matuu(*), vff(*)
-real(kind=8) :: fPrev(3, 3), fCurr(3, 3), dfdi(*)
-aster_logical :: matsym, axi, lVect, lMatr, lMatrPred
+    integer :: ndim, nno, kpg
+    real(kind=8) :: pff(*), def(*), r, dsidep(6, 6), poids, vectu(*)
+    real(kind=8) :: sigmCurr(6), sigmPrev(6), matuu(*), vff(*)
+    real(kind=8) :: fPrev(3, 3), fCurr(3, 3), dfdi(*)
+    aster_logical :: matsym, axi, lVect, lMatr, lMatrPred
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -70,23 +70,23 @@ aster_logical :: matsym, axi, lVect, lMatr, lMatrPred
         call dcopy(9, fCurr, 1, fr, 1)
     else
         call dcopy(9, fPrev, 1, fr, 1)
-    endif
+    end if
 !
-    call nmfdff(ndim , nno   , axi, kpg, r   ,&
-                lMatr, matsym, fr , vff, dfdi,&
-                def  , pff)
+    call nmfdff(ndim, nno, axi, kpg, r, &
+                lMatr, matsym, fr, vff, dfdi, &
+                def, pff)
 !
     if (ndim .eq. 3) then
-        call nmgrt3(nno, poids, def, pff,&
-                    lVect, lMatr, lMatrPred,&
-                    dsidep, sigmPrev, sigmCurr, matsym,&
+        call nmgrt3(nno, poids, def, pff, &
+                    lVect, lMatr, lMatrPred, &
+                    dsidep, sigmPrev, sigmCurr, matsym, &
                     matuu, vectu)
     else if (ndim .eq. 2) then
-        call nmgrt2(nno, poids, kpg, vff, def,&
-                    pff, axi, r,&
-                    lVect, lMatr, lMatrPred,&
-                    dsidep, sigmPrev, sigmCurr, matsym,&
+        call nmgrt2(nno, poids, kpg, vff, def, &
+                    pff, axi, r, &
+                    lVect, lMatr, lMatrPred, &
+                    dsidep, sigmPrev, sigmCurr, matsym, &
                     matuu, vectu)
-    endif
+    end if
 !
 end subroutine

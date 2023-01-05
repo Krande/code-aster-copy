@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,17 +18,17 @@
 !
 subroutine thmGetParaBiot(j_mater, ds_thm)
 !
-use THM_type
+    use THM_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterc/r8nnem.h"
 #include "asterfort/rcvala.h"
 #include "asterfort/THM_type.h"
 !
-integer, intent(in) :: j_mater
-type(THM_DS), intent(inout) :: ds_thm
+    integer, intent(in) :: j_mater
+    type(THM_DS), intent(inout) :: ds_thm
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -43,10 +43,10 @@ type(THM_DS), intent(inout) :: ds_thm
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: nb_resu =  4
+    integer, parameter :: nb_resu = 4
     integer :: icodre(nb_resu)
     real(kind=8) :: resu_vale(nb_resu)
-    character(len=16), parameter :: resu_name(nb_resu) = (/'BIOT_COEF', 'BIOT_L   ',&
+    character(len=16), parameter :: resu_name(nb_resu) = (/'BIOT_COEF', 'BIOT_L   ', &
                                                            'BIOT_N   ', 'BIOT_T   '/)
     real(kind=8) :: emmag, phi0
     real(kind=8), parameter :: eps = 1.d-21
@@ -57,17 +57,17 @@ type(THM_DS), intent(inout) :: ds_thm
 !
 ! - Read resumeters
 !
-    call rcvala(j_mater, ' '      , 'THM_DIFFU',&
-                0      , ' '      , [0.d0]     ,&
-                nb_resu, resu_name, resu_vale  ,&
-                icodre , 0        , nan='OUI')
+    call rcvala(j_mater, ' ', 'THM_DIFFU', &
+                0, ' ', [0.d0], &
+                nb_resu, resu_name, resu_vale, &
+                icodre, 0, nan='OUI')
 !
 ! - Set resumeters
 !
     ds_thm%ds_material%biot%coef = resu_vale(1)
-    ds_thm%ds_material%biot%l    = resu_vale(2)
-    ds_thm%ds_material%biot%n    = resu_vale(3)
-    ds_thm%ds_material%biot%t    = resu_vale(4)
+    ds_thm%ds_material%biot%l = resu_vale(2)
+    ds_thm%ds_material%biot%n = resu_vale(3)
+    ds_thm%ds_material%biot%t = resu_vale(4)
 !
 ! - Type
 !
@@ -78,20 +78,20 @@ type(THM_DS), intent(inout) :: ds_thm
             ds_thm%ds_material%biot%type = BIOT_TYPE_ORTH
         else
             ds_thm%ds_material%biot%type = BIOT_TYPE_ISTR
-        endif
-    endif
+        end if
+    end if
 !
 ! - If small storage coefficient
 !
     if (ds_thm%ds_material%hydr%l_emmag) then
         emmag = ds_thm%ds_material%hydr%emmag
-        phi0  = ds_thm%ds_parainit%poro_init
+        phi0 = ds_thm%ds_parainit%poro_init
         if (emmag .lt. eps) then
             ds_thm%ds_material%biot%coef = phi0
-            ds_thm%ds_material%biot%l    = phi0
-            ds_thm%ds_material%biot%t    = phi0
-            ds_thm%ds_material%biot%t    = phi0
-        endif
-    endif
+            ds_thm%ds_material%biot%l = phi0
+            ds_thm%ds_material%biot%t = phi0
+            ds_thm%ds_material%biot%t = phi0
+        end if
+    end if
 !
 end subroutine

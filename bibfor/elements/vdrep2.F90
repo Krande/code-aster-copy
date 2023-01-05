@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine vdrep2(alpha, beta, zilzi, zrlzr, matevn,&
+subroutine vdrep2(alpha, beta, zilzi, zrlzr, matevn, &
                   matevg)
 !.======================================================================
     implicit none
@@ -61,13 +61,13 @@ subroutine vdrep2(alpha, beta, zilzi, zrlzr, matevn,&
 !
 ! --- NOMBRE DE POINTS D'INTEGRATION DE L'ELEMENT (SOUS-INTEGRE) :
 !     ----------------------------------------------------------
-    npgsr=zilzi(3)
+    npgsr = zilzi(3)
 !
 ! --- RECUPERATION DES ANGLES DETERMINANT LE REPERE UTILISATEUR
 ! --- PAR RAPPORT AU REPERE GLOBAL :
 !     ============================
-    alpha = alpha * r8dgrd()
-    beta = beta * r8dgrd()
+    alpha = alpha*r8dgrd()
+    beta = beta*r8dgrd()
 !
 ! --- DETERMINATION DES MATRICES DE PASSAGE DES REPERES INTRINSEQUES
 ! --- AUX NOEUDS DE L'ELEMENT AU REPERE UTILISATEUR :
@@ -87,8 +87,8 @@ subroutine vdrep2(alpha, beta, zilzi, zrlzr, matevn,&
         k = 0
         do j = 1, 3
             do i = 1, 3
-                k = k + 1
-                pgl(i,j) = zrlzr(idec+(ino-1)*9+k)
+                k = k+1
+                pgl(i, j) = zrlzr(idec+(ino-1)*9+k)
             end do
         end do
 !
@@ -96,13 +96,13 @@ subroutine vdrep2(alpha, beta, zilzi, zrlzr, matevn,&
 ! ---   UTILISATEUR SUR LE FEUILLET TANGENT A LA COQUE AU NOEUD
 ! ---   COURANT :
 !       -------
-        call coqrep(pgl, alpha, beta, r8bid4, r8bid4,&
+        call coqrep(pgl, alpha, beta, r8bid4, r8bid4, &
                     c, s)
 !
-        matevn(1,1,ino) = c
-        matevn(2,1,ino) = s
-        matevn(1,2,ino) = -s
-        matevn(2,2,ino) = c
+        matevn(1, 1, ino) = c
+        matevn(2, 1, ino) = s
+        matevn(1, 2, ino) = -s
+        matevn(2, 2, ino) = c
 !
     end do
 !
@@ -126,8 +126,8 @@ subroutine vdrep2(alpha, beta, zilzi, zrlzr, matevn,&
         k = 0
         do j = 1, 3
             do i = 1, 3
-                k = k + 1
-                pgl(i,j) = zrlzr(idec+(igau-1)*9+k)
+                k = k+1
+                pgl(i, j) = zrlzr(idec+(igau-1)*9+k)
             end do
         end do
 !
@@ -135,13 +135,13 @@ subroutine vdrep2(alpha, beta, zilzi, zrlzr, matevn,&
 ! ---   UTILISATEUR SUR LE FEUILLET TANGENT A LA COQUE AU POINT
 ! ---   D'INTEGRATION COURANT :
 !       ---------------------
-        call coqrep(pgl, alpha, beta, r8bid4, r8bid4,&
+        call coqrep(pgl, alpha, beta, r8bid4, r8bid4, &
                     c, s)
 !
-        matevg(1,1,igau) = c
-        matevg(2,1,igau) = s
-        matevg(1,2,igau) = -s
-        matevg(2,2,igau) = c
+        matevg(1, 1, igau) = c
+        matevg(2, 1, igau) = s
+        matevg(1, 2, igau) = -s
+        matevg(2, 2, igau) = c
 !
     end do
 !

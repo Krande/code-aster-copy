@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,14 +18,14 @@
 !
 subroutine nmimpe(modele, limped)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/utmess.h"
 !
-character(len=24) :: modele
-aster_logical :: limped
+    character(len=24) :: modele
+    aster_logical :: limped
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -38,5 +38,5 @@ aster_logical :: limped
     limped = answer .eq. 'OUI'
     if (limped) then
         call utmess('I', 'DYNALINE1_23')
-    endif
+    end if
 end subroutine

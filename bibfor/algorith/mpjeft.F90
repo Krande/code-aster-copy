@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -59,7 +59,7 @@ subroutine mpjeft(corres)
     integer :: ndim, ncas, n1, nbocc, iocc, nbno2, nuno1, nuno2
     integer ::  idecal, ino, irep
     integer :: llin1, llin2, llou2, nbncal, nbnlis
-    integer :: kk, nbnmes, nbno1,  jxxk1, iaconb, iaconu, iacocf, i
+    integer :: kk, nbnmes, nbno1, jxxk1, iaconb, iaconu, iacocf, i
     integer :: nbold
     integer :: ndecal, it1, it2, it3, ifres
     real(kind=8) :: coef, rbid
@@ -123,7 +123,7 @@ subroutine mpjeft(corres)
         ndim = 2
     else
         ndim = 3
-    endif
+    end if
 !
 !     PAR DEFAUT ON FAIT UNE INTERPOLATION SUR TOUS LES NOEUDS
 !     DU MAILLAGE 2 (MAILLAGE EXPERIMENTAL)
@@ -133,21 +133,21 @@ subroutine mpjeft(corres)
 !     --------------------------------------------------------
     if (ndim .eq. 2) then
         ncas = 2
-    else if (ndim.eq.3) then
+    else if (ndim .eq. 3) then
         call dismoi('EXI_ELTVOL', model1, 'MODELE', repk=exivol)
         if (exivol .eq. 'OUI') then
             ncas = 3
         else
             ncas = 4
-        endif
-    endif
+        end if
+    end if
     call dismoi('EXI_RDM', model1, 'MODELE', repk=exirdm)
     irep = 0
     call dismoi('EXI_PLAQUE', model1, 'MODELE', repk=exipla)
     call dismoi('EXI_COQ3D', model1, 'MODELE', repk=exicoq)
     if (exipla .eq. 'OUI') irep = 1
     if (exicoq .eq. 'OUI') irep = 1
-    if ((exirdm.eq.'OUI') .and. (irep.eq.0)) ncas = 0
+    if ((exirdm .eq. 'OUI') .and. (irep .eq. 0)) ncas = 0
     call dismoi('EXI_POUX', model1, 'MODELE', repk=exipou)
     if (exipou .eq. 'OUI') ncas = 5
 !
@@ -157,18 +157,18 @@ subroutine mpjeft(corres)
 !
     l_dmax = ASTER_FALSE
     if (ncas .eq. 2) then
-        call pj2dco('TOUT', model1, model2, 0, [0],&
-                    0, [0], ' ', ' ', corres,&
+        call pj2dco('TOUT', model1, model2, 0, [0], &
+                    0, [0], ' ', ' ', corres, &
                     l_dmax, rbid, 0.d0)
-    else if (ncas.eq.3) then
-        call pj3dco('TOUT', model1, model2, 0, [0],&
-                    0, [0], ' ', ' ', corres,&
+    else if (ncas .eq. 3) then
+        call pj3dco('TOUT', model1, model2, 0, [0], &
+                    0, [0], ' ', ' ', corres, &
                     l_dmax, rbid, 0.d0)
-    else if (ncas.eq.4) then
-        call pj4dco('TOUT', model1, model2, 0, [0],&
-                    0, [0], ' ', ' ', corres,&
+    else if (ncas .eq. 4) then
+        call pj4dco('TOUT', model1, model2, 0, [0], &
+                    0, [0], ' ', ' ', corres, &
                     l_dmax, rbid, 0.d0)
-    else if (ncas.eq.5) then
+    else if (ncas .eq. 5) then
         call pj5dco(model1, model2, corres)
     else
 !
@@ -181,13 +181,13 @@ subroutine mpjeft(corres)
         call wkvect(corres//'.PJEF_NU', 'V V I', nbnmes, iaconu)
         call wkvect(corres//'.PJEF_CF', 'V V R', nbnmes, iacocf)
 !
-        zk24(jxxk1-1 +1)=noma1
-        zk24(jxxk1-1 +2)=noma2
-        zk24(jxxk1-1 +3)='ELEM'
+        zk24(jxxk1-1+1) = noma1
+        zk24(jxxk1-1+2) = noma2
+        zk24(jxxk1-1+3) = 'ELEM'
 !
         do ino = 1, nbnmes
-            zi(iaconb-1 +ino)=1
-            zr(iacocf-1 +ino)=1.d0
+            zi(iaconb-1+ino) = 1
+            zr(iacocf-1+ino) = 1.d0
         end do
 !
 ! CREATION DES LISTES DE NOEUDS UTILISEES
@@ -210,7 +210,7 @@ subroutine mpjeft(corres)
         call wkvect(lisin1, 'V V K8', nbnmes, llin1)
 !
         do ino = 1, nbnmes
-            call jenuno(jexnum (noma2//'.NOMNOE', ino), zk8(llin1-1+ ino))
+            call jenuno(jexnum(noma2//'.NOMNOE', ino), zk8(llin1-1+ino))
         end do
 !
 ! ALLOCATION ET REMPLISSAGE DE LA LISTE DES NOEUDS NUMERIQUES
@@ -218,22 +218,22 @@ subroutine mpjeft(corres)
         call wkvect(lisin2, 'V V K8', nbncal, llin2)
 !
         do ino = 1, nbncal
-            call jenuno(jexnum (noma1//'.NOMNOE', ino), zk8(llin2-1+ ino))
+            call jenuno(jexnum(noma1//'.NOMNOE', ino), zk8(llin2-1+ino))
         end do
 !
 ! RECHERCHE DES NOEUDS EN VIS-A-VIS
 ! *********************************
-        call pacoa2(lisin1, lisin2, nbnmes, nbncal, noma2,&
+        call pacoa2(lisin1, lisin2, nbnmes, nbncal, noma2, &
                     noma1, lisou1, lisou2, nbnlis)
 !
         call jeveuo(lisou2, 'L', llou2)
 !
         if (nbnlis .ne. nbnmes) then
             call utmess('F', 'ALGORITH6_20')
-        endif
+        end if
 !
         do ino = 1, nbnmes
-            call jenonu(jexnom (noma1//'.NOMNOE', zk8(llou2-1+ino)), zi(iaconu-1+ino))
+            call jenonu(jexnom(noma1//'.NOMNOE', zk8(llou2-1+ino)), zi(iaconu-1+ino))
         end do
 !
         call jedetr(lisin1)
@@ -241,7 +241,7 @@ subroutine mpjeft(corres)
         call jedetr(lisou1)
         call jedetr(lisou2)
 !
-    endif
+    end if
 !
 !     SURCHARGE SI CORRESPONDANCE MANUELLE
 !
@@ -257,11 +257,11 @@ subroutine mpjeft(corres)
 !        ----------------------------------------------
             motcle(1) = 'NOEU_CALCUL'
             tymocl(1) = 'NOEUD'
-            call reliem(' ', noma1, 'NU_NOEUD', 'CORR_MANU', iocc,&
+            call reliem(' ', noma1, 'NU_NOEUD', 'CORR_MANU', iocc, &
                         1, motcle, tymocl, '&&PJEFTE.LINONU1', nbno1)
             if (nbno1 .eq. 0) then
                 call utmess('F', 'ALGORITH6_21')
-            endif
+            end if
             call jeveuo('&&PJEFTE.LINONU1', 'L', vi=linonu1)
 !
 !
@@ -269,21 +269,21 @@ subroutine mpjeft(corres)
 !        ----------------------------------------------
             motcle(1) = 'NOEU_MESURE'
             tymocl(1) = 'NOEUD'
-            call reliem(' ', noma2, 'NU_NOEUD', 'CORR_MANU', iocc,&
+            call reliem(' ', noma2, 'NU_NOEUD', 'CORR_MANU', iocc, &
                         1, motcle, tymocl, '&&PJEFTE.LINONU2', nbno2)
             if (nbno2 .eq. 0) then
                 call utmess('F', 'ALGORITH6_22')
-            endif
+            end if
             call jeveuo('&&PJEFTE.LINONU2', 'L', vi=linonu2)
 !
 !        -- REACTUALISATION DU CORRESP_2_MAILLA POUR IOCC
 !        ----------------------------------------------
             if (nbno1 .ne. nbno2) then
                 call utmess('F', 'ALGORITH6_23')
-            endif
+            end if
             if (nbno1 .gt. 1) then
                 call utmess('F', 'ALGORITH6_24')
-            endif
+            end if
 !        -- RECUPERATION DES NUMEROS DES NOEUDS
             nuno1 = linonu1(1)
             nuno2 = linonu2(1)
@@ -297,7 +297,7 @@ subroutine mpjeft(corres)
 ! RECUPERATION DE LA DIMENSION DE PJEF_NU OU PJEF_CF
             idecal = 0
             do i = 1, nbnmes
-                idecal = idecal + zi(iaconb-1 +i)
+                idecal = idecal+zi(iaconb-1+i)
             end do
 ! CREATION DES VECTEURS TAMPON
             call wkvect('TAMPON1', 'V V I', nbnmes, it1)
@@ -305,11 +305,11 @@ subroutine mpjeft(corres)
             call wkvect('TAMPON3', 'V V R', idecal, it3)
 ! RECOPIE DE PJEF_NB PJEF_NU ET PJEF_CF
             do i = 1, nbnmes
-                zi(it1-1 +i) = zi(iaconb-1 +i)
+                zi(it1-1+i) = zi(iaconb-1+i)
             end do
             do i = 1, idecal
-                zi(it2-1 +i) = zi(iaconu-1 +i)
-                zr(it3-1 +i) = zr(iacocf-1 +i)
+                zi(it2-1+i) = zi(iaconu-1+i)
+                zr(it3-1+i) = zr(iacocf-1+i)
             end do
 ! DESTRUCTION DES ANCIENS PJEF_NB PJEF_NU ET PJEF_CF
             call jedetr(corres//'.PJEF_NB')
@@ -318,18 +318,18 @@ subroutine mpjeft(corres)
 !
 !        -- DECALAGE DES DONNEES
             idecal = 0
-            do i = 1, nuno2 - 1
-                idecal = idecal + zi(it1-1 +i)
+            do i = 1, nuno2-1
+                idecal = idecal+zi(it1-1+i)
             end do
 !
-            nbold = zi(it1-1 +nuno2)
-            zi(it1-1 + nuno2)=1
-            zi(it2-1 + idecal+1)= nuno1
-            zr(it3-1 + idecal+1)= 1.d0
+            nbold = zi(it1-1+nuno2)
+            zi(it1-1+nuno2) = 1
+            zi(it2-1+idecal+1) = nuno1
+            zr(it3-1+idecal+1) = 1.d0
 !
             ndecal = 0
-            do i = nuno2 +1, nbnmes
-                ndecal = ndecal + zi(it1-1 + i)
+            do i = nuno2+1, nbnmes
+                ndecal = ndecal+zi(it1-1+i)
             end do
 !
             do i = 1, ndecal
@@ -338,17 +338,17 @@ subroutine mpjeft(corres)
             end do
 !
 ! CREATION DES NOUVEAUX OBJETS
-            nbold = idecal + 1 + ndecal
+            nbold = idecal+1+ndecal
             call wkvect(corres//'.PJEF_NB', 'V V I', nbnmes, iaconb)
             call wkvect(corres//'.PJEF_NU', 'V V I', nbold, iaconu)
             call wkvect(corres//'.PJEF_CF', 'V V R', nbold, iacocf)
 ! RECOPIE DES DONNEES
             do i = 1, nbnmes
-                zi(iaconb-1 + i) = zi(it1-1 +i)
+                zi(iaconb-1+i) = zi(it1-1+i)
             end do
             do i = 1, nbold
-                zi(iaconu-1 + i) = zi(it2-1 +i)
-                zr(iacocf-1 + i) = zr(it3-1 +i)
+                zi(iaconu-1+i) = zi(it2-1+i)
+                zr(iacocf-1+i) = zr(it3-1+i)
             end do
 !
 ! DESTRUCTION DES VECTEURS TAMPON
@@ -362,12 +362,12 @@ subroutine mpjeft(corres)
 !
         end do
 !
-    endif
+    end if
 !
 !     AFFICHAGE DE LA CORRESPONDANCE DES NOEUDS
-    ifres = iunifi ('MESSAGE')
-    write(ifres,'(A)') 'TABLE DE CORRESPONDANCE DES NOEUDS '
-    write(ifres,'(A)') '----------------------------------'
+    ifres = iunifi('MESSAGE')
+    write (ifres, '(A)') 'TABLE DE CORRESPONDANCE DES NOEUDS '
+    write (ifres, '(A)') '----------------------------------'
     call jeveuo(corres//'.PJEF_NB', 'L', iaconb)
     call jeveuo(corres//'.PJEF_NU', 'L', iaconu)
     call jeveuo(corres//'.PJEF_CF', 'L', iacocf)
@@ -375,18 +375,18 @@ subroutine mpjeft(corres)
     kk = 0
     do i = 1, nbnmes
         call jenuno(jexnum(noma2//'.NOMNOE', i), labk8)
-        write(ifres,100) labk8
-        nbno1 = zi(iaconb-1 +i)
+        write (ifres, 100) labk8
+        nbno1 = zi(iaconb-1+i)
         do iocc = 1, nbno1
-            kk = kk + 1
+            kk = kk+1
             call jenuno(jexnum(noma1//'.NOMNOE', zi(iaconu-1+kk)), labk8)
-            coef = zr(iacocf-1 +kk)
-            write(ifres,101) labk8,coef
+            coef = zr(iacocf-1+kk)
+            write (ifres, 101) labk8, coef
         end do
     end do
 !
-100 format (' NOEUD MESURE :  ',a8)
-101 format ('       ',a8,'    POIDS : ',d12.5)
+100 format(' NOEUD MESURE :  ', a8)
+101 format('       ', a8, '    POIDS : ', d12.5)
 !
     call jedema()
 end subroutine

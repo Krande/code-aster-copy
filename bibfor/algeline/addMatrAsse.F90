@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -52,11 +52,11 @@ subroutine addMatrAsse(mat1, mat2, coeff1, coeff2, matres)
 !
     call jemarq()
 !
-    reuse = ASTER_FALSE;
-    if(matres == mat1) then
+    reuse = ASTER_FALSE
+    if (matres == mat1) then
         mat19 = nameMatr
         reuse = ASTER_TRUE
-    elseif(matres == mat2) then
+    elseif (matres == mat2) then
         mat19 = nameMatr
         reuse = ASTER_TRUE
     else
@@ -64,13 +64,13 @@ subroutine addMatrAsse(mat1, mat2, coeff1, coeff2, matres)
     end if
 
     listMatr(1:2) = [mat1, mat2]
-    jpomr=1
+    jpomr = 1
     do iocc = 1, nbMatr
 !       -- on recherche une eventuelle matrice non symetrique
         call jeveuo(listMatr(iocc)//'.REFA', 'L', jrefe)
         if (zk24(jrefe-1+9) .eq. 'MR') then
-            jpomr=iocc
-        endif
+            jpomr = iocc
+        end if
     end do
 !
 !   --- controle des references :
@@ -78,41 +78,41 @@ subroutine addMatrAsse(mat1, mat2, coeff1, coeff2, matres)
     call vrrefe(listMatr(1), listMatr(2), iret)
     if (iret .ne. 0) then
         call utmess('F', 'ALGELINE2_28', nk=2, valk=listMatr)
-    endif
+    end if
 !
 !   -- combinaison des matrices :
 !   ------------------------------------------------------------------
 ! initialisation de la matrice resultat :
     call mtdefs(mat19, listMatr(jpomr), 'G', ' ')
-    call mtcmbl(nbMatr, ['R', 'R'], [coeff1, coeff2], listMatr, mat19,&
+    call mtcmbl(nbMatr, ['R', 'R'], [coeff1, coeff2], listMatr, mat19, &
                 ' ', ' ', 'ELIM=')
 !
 !   -- Il faut concatener les objets .LIME (voir issue21327) :
 !   -----------------------------------------------------------
-        n1=0
-        do iocc = 1, nbMatr
-            call jeexin(listMatr(iocc)//'.LIME', iexi)
-            if (iexi .gt. 0) then
-                call jelira(listMatr(iocc)//'.LIME', 'LONMAX', n2)
-                n1=n1+n2
-            endif
-        enddo
-        call jedetr(mat19//'.LIME')
-        call wkvect(mat19//'.LIME', 'G V K24', n1, jlime)
-        n1=0
-        do iocc = 1, nbMatr
-            call jeexin(listMatr(iocc)//'.LIME', iexi)
-            if (iexi .gt. 0) then
-                call jelira(listMatr(iocc)//'.LIME', 'LONMAX', n2)
-                call jeveuo(listMatr(iocc)//'.LIME', 'L', jlime1)
-                do k = 1, n2
-                    zk24(jlime-1+n1+k)=zk24(jlime1-1+k)
-                enddo
-                n1=n1+n2
-            endif
-        enddo
+    n1 = 0
+    do iocc = 1, nbMatr
+        call jeexin(listMatr(iocc)//'.LIME', iexi)
+        if (iexi .gt. 0) then
+            call jelira(listMatr(iocc)//'.LIME', 'LONMAX', n2)
+            n1 = n1+n2
+        end if
+    end do
+    call jedetr(mat19//'.LIME')
+    call wkvect(mat19//'.LIME', 'G V K24', n1, jlime)
+    n1 = 0
+    do iocc = 1, nbMatr
+        call jeexin(listMatr(iocc)//'.LIME', iexi)
+        if (iexi .gt. 0) then
+            call jelira(listMatr(iocc)//'.LIME', 'LONMAX', n2)
+            call jeveuo(listMatr(iocc)//'.LIME', 'L', jlime1)
+            do k = 1, n2
+                zk24(jlime-1+n1+k) = zk24(jlime1-1+k)
+            end do
+            n1 = n1+n2
+        end if
+    end do
 !
-    if(reuse) then
+    if (reuse) then
         call detrsd('MATR_ASSE', matres)
         call copisd('MATR_ASSE', 'G', mat19, matres)
         call detrsd('MATR_ASSE', mat19)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine lrcnme(chanom, nochmd, nomamd, nomaas, nomgd,&
-                  typent, nbcmpv, ncmpva, ncmpvm, iinst,&
-                  numpt, numord, inst, crit, prec,&
+subroutine lrcnme(chanom, nochmd, nomamd, nomaas, nomgd, &
+                  typent, nbcmpv, ncmpva, ncmpvm, iinst, &
+                  numpt, numord, inst, crit, prec, &
                   nrofic, codret, base)
 !_____________________________________________________________________
 !
@@ -98,7 +98,7 @@ subroutine lrcnme(chanom, nochmd, nomamd, nomaas, nomgd,&
 ! 0.3. ==> VARIABLES LOCALES
 !
     character(len=6) :: nompro
-    parameter ( nompro = 'LRCNME' )
+    parameter(nompro='LRCNME')
 !
     integer :: iaux, iret, jcmpva, nbcmpa, nbcham, i, nbcmp, jcmp, junit
     integer :: ibid, nseqca, tycha, j
@@ -107,7 +107,7 @@ subroutine lrcnme(chanom, nochmd, nomamd, nomaas, nomgd,&
     parameter(ubid=1)
     integer :: unbid(ubid)
     integer :: edlect
-    parameter (edlect=0)
+    parameter(edlect=0)
 !
     character(len=1) :: saux01
     character(len=8) :: saux08, parbid
@@ -129,16 +129,16 @@ subroutine lrcnme(chanom, nochmd, nomamd, nomaas, nomgd,&
         bas2 = 'G'
     else
         bas2 = base
-    endif
+    end if
 !
 ! 1.1. ==> REPERAGE DES CARACTERISTIQUES DE CETTE GRANDEUR
 !
-    call jenonu(jexnom ( '&CATA.GD.NOMGD', nomgd ), iaux)
+    call jenonu(jexnom('&CATA.GD.NOMGD', nomgd), iaux)
     if (iaux .eq. 0) then
         call utmess('F', 'MED_65')
-    endif
-    call jeveuo(jexnom ( '&CATA.GD.NOMCMP', nomgd ), 'L', jnocmp)
-    call jelira(jexnom ( '&CATA.GD.NOMCMP', nomgd ), 'LONMAX', ncmprf)
+    end if
+    call jeveuo(jexnom('&CATA.GD.NOMCMP', nomgd), 'L', jnocmp)
+    call jelira(jexnom('&CATA.GD.NOMCMP', nomgd), 'LONMAX', ncmprf)
 !
 ! 1.2. ==> ALLOCATION DU CHAM_NO_S
 !
@@ -152,17 +152,17 @@ subroutine lrcnme(chanom, nochmd, nomamd, nomaas, nomgd,&
         call jelira(ncmpva, 'LONMAX', nbcmpa)
         if (nbcmpa .le. ncmprf) then
             do i = 1, nbcmpa
-                ttt=.false.
+                ttt = .false.
                 do j = 1, ncmprf
-                    if (zk8(jcmpva+i-1) .eq. zk8(jnocmp+j-1)) ttt= .true.
+                    if (zk8(jcmpva+i-1) .eq. zk8(jnocmp+j-1)) ttt = .true.
                 end do
-                if (.not.ttt) then
+                if (.not. ttt) then
                     call utmess('F', 'MED_66')
-                endif
+                end if
             end do
         else
             call utmess('F', 'MED_70')
-        endif
+        end if
 !
     else
         call ulisog(nrofic, kfic, saux01)
@@ -171,45 +171,45 @@ subroutine lrcnme(chanom, nochmd, nomamd, nomaas, nomgd,&
             nofimd = 'fort.'//saux08
         else
             nofimd = kfic(1:200)
-        endif
+        end if
         call as_med_open(idfimd, nofimd, edlect, iret)
         call as_mfdnfd(idfimd, nbcham, iret)
         do i = 1, nbcham
             call as_mfdnfc(idfimd, i, nbcmp, iret)
             call wkvect('&&LRCNME.NOMCMP_K16', 'V V K16', nbcmp, jcmp)
             call wkvect('&&LRCNME.UNITCMP', 'V V K16', nbcmp, junit)
-            call as_mfdfdi(idfimd, i, nomcha, tycha, zk16(jcmp),&
+            call as_mfdfdi(idfimd, i, nomcha, tycha, zk16(jcmp), &
                            zk16(junit), nseqca, iret)
             if (nomcha .eq. nochmd) then
-                ncmprf=nbcmp
+                ncmprf = nbcmp
                 call wkvect('&&LRCNME.NOMCMP_K8', 'V V K8', nbcmp, jnocmp)
                 do j = 1, nbcmp
-                    zk8(jnocmp+j-1)=zk16(jcmp+j-1)(1:8)
+                    zk8(jnocmp+j-1) = zk16(jcmp+j-1) (1:8)
                 end do
                 call jedetr('&&LRCNME.NOMCMP_K16')
                 call jedetr('&&LRCNME.UNITCMP')
                 goto 780
-            endif
+            end if
             call jedetr('&&LRCNME.NOMCMP_K16')
             call jedetr('&&LRCNME.UNITCMP')
 780         continue
         end do
         call as_mficlo(idfimd, iret)
 !
-    endif
+    end if
 !
 !====
 ! 2. LECTURE
 !====
 !
-    ligbid=' '
-    optbid=' '
-    parbid=' '
-    call lrcame(nrofic, nochmd, nomamd, nomaas, ligbid,&
-                optbid, parbid, 'NOEU', typent, unbid,&
-                unbid, unbid, nbcmpv, ncmpva, ncmpvm,&
-                iinst, numpt, numord, inst, crit,&
-                prec, nomgd, ncmprf, jnocmp, chamns,&
+    ligbid = ' '
+    optbid = ' '
+    parbid = ' '
+    call lrcame(nrofic, nochmd, nomamd, nomaas, ligbid, &
+                optbid, parbid, 'NOEU', typent, unbid, &
+                unbid, unbid, nbcmpv, ncmpva, ncmpvm, &
+                iinst, numpt, numord, inst, crit, &
+                prec, nomgd, ncmprf, jnocmp, chamns, &
                 codret)
 !
 !====
@@ -218,7 +218,7 @@ subroutine lrcnme(chanom, nochmd, nomamd, nomaas, nomgd,&
 !
     chamn = chanom
 !
-    call cnscno(chamns, ' ', 'NON', bas2, chamn,&
+    call cnscno(chamns, ' ', 'NON', bas2, chamn, &
                 'F', ibid)
 !
     call detrsd('CHAM_NO_S', chamns)
@@ -229,7 +229,7 @@ subroutine lrcnme(chanom, nochmd, nomamd, nomaas, nomgd,&
 !
     if (codret .ne. 0) then
         call utmess('A', 'MED_55', sk=chamn)
-    endif
+    end if
     call jedetr('&&LRCNME.NOMCMP_K8')
     call jedema()
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 subroutine nmetnc(field_name_algo, field_algo)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/assert.h"
 !
@@ -54,14 +54,14 @@ implicit none
                 field_algo = '&&NXLECTVAR_____'
             else
                 field_algo = '&&NMCH1P.'//hat_vari
-            endif
-        else if (hat_type.eq.'VEASSE') then
+            end if
+        else if (hat_type .eq. 'VEASSE') then
             field_algo = '&&NMCH5P.'//hat_vari
         else
             ASSERT(.false.)
-        endif
+        end if
     else
         field_algo = field_name_algo
-    endif
+    end if
 !
 end subroutine

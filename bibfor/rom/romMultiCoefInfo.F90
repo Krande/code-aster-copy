@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,9 +18,9 @@
 
 subroutine romMultiCoefInfo(ds_multicoef)
 !
-use Rom_Datastructure_type
+    use Rom_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterfort/assert.h"
 #include "asterfort/utmess.h"
@@ -49,22 +49,22 @@ implicit none
         if (ds_multicoef%l_cste) then
             valr(1) = real(ds_multicoef%coef_cste_cplx)
             valr(2) = dimag(ds_multicoef%coef_cste_cplx)
-            call utmess('I', 'ROM3_41', nr = 2, valr = valr)
+            call utmess('I', 'ROM3_41', nr=2, valr=valr)
         elseif (ds_multicoef%l_func) then
-            call utmess('I', 'ROM3_43', sk = ds_multicoef%func_name)
+            call utmess('I', 'ROM3_43', sk=ds_multicoef%func_name)
         else
             ASSERT(.false.)
-        endif
+        end if
     elseif (ds_multicoef%l_real) then
         if (ds_multicoef%l_cste) then
-            call utmess('I', 'ROM3_42', sr = ds_multicoef%coef_cste_real)
+            call utmess('I', 'ROM3_42', sr=ds_multicoef%coef_cste_real)
         elseif (ds_multicoef%l_func) then
-            call utmess('I', 'ROM3_44', sk = ds_multicoef%func_name)
+            call utmess('I', 'ROM3_44', sk=ds_multicoef%func_name)
         else
             ASSERT(.false.)
-        endif
+        end if
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 end subroutine

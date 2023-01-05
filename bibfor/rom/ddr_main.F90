@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,9 +19,9 @@
 !
 subroutine ddr_main(cmdPara)
 !
-use Rom_Datastructure_type
+    use Rom_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/as_allocate.h"
@@ -31,7 +31,7 @@ implicit none
 #include "asterfort/infniv.h"
 #include "asterfort/ddr_prep.h"
 !
-type(ROM_DS_ParaDDR), intent(in) :: cmdPara
+    type(ROM_DS_ParaDDR), intent(in) :: cmdPara
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -62,8 +62,8 @@ type(ROM_DS_ParaDDR), intent(in) :: cmdPara
 !
 ! - Prepare working objects
 !
-    AS_ALLOCATE(vi = v_equa_prim, size = nbModePrim)
-    AS_ALLOCATE(vi = v_equa_dual, size = nbModeDual)
+    AS_ALLOCATE(vi=v_equa_prim, size=nbModePrim)
+    AS_ALLOCATE(vi=v_equa_dual, size=nbModeDual)
 !
 ! - Application of DEIM
 !

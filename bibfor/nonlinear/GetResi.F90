@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,13 +16,13 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine GetResi(ds_conv   , type  ,&
-                   col_name_ , col_name_locus_, vale_calc_  , locus_calc_, user_para_,&
-                   l_conv_   , event_type_    , l_resi_test_)
+subroutine GetResi(ds_conv, type, &
+                   col_name_, col_name_locus_, vale_calc_, locus_calc_, user_para_, &
+                   l_conv_, event_type_, l_resi_test_)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -65,45 +65,45 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    i_type  = 0
+    i_type = 0
     nb_resi = ds_conv%nb_resi
 !
 ! - Find residual
 !
     do i_resi = 1, nb_resi
         if (ds_conv%list_resi(i_resi)%type .eq. type) then
-            ASSERT(i_type.eq.0)
+            ASSERT(i_type .eq. 0)
             i_type = i_resi
-        endif
+        end if
     end do
-    ASSERT(i_type.ne.0)
+    ASSERT(i_type .ne. 0)
 !
 ! - Get parameters
 !
     if (present(vale_calc_)) then
-        vale_calc_      = ds_conv%list_resi(i_type)%vale_calc
-    endif
+        vale_calc_ = ds_conv%list_resi(i_type)%vale_calc
+    end if
     if (present(locus_calc_)) then
-        locus_calc_     = ds_conv%list_resi(i_type)%locus_calc
-    endif
+        locus_calc_ = ds_conv%list_resi(i_type)%locus_calc
+    end if
     if (present(user_para_)) then
-        user_para_      = ds_conv%list_resi(i_type)%user_para
-    endif
+        user_para_ = ds_conv%list_resi(i_type)%user_para
+    end if
     if (present(l_conv_)) then
-        l_conv_         = ds_conv%list_resi(i_type)%l_conv
-    endif
+        l_conv_ = ds_conv%list_resi(i_type)%l_conv
+    end if
     if (present(col_name_)) then
-        col_name_       = ds_conv%list_resi(i_type)%col_name
-    endif
+        col_name_ = ds_conv%list_resi(i_type)%col_name
+    end if
     if (present(col_name_locus_)) then
         col_name_locus_ = ds_conv%list_resi(i_type)%col_name_locus
-    endif
+    end if
     if (present(event_type_)) then
-        event_type_     = ds_conv%list_resi(i_type)%event_type
-    endif
+        event_type_ = ds_conv%list_resi(i_type)%event_type
+    end if
     if (present(l_resi_test_)) then
-        l_resi_test_    = ds_conv%l_resi_test(i_type)
-    endif
+        l_resi_test_ = ds_conv%l_resi_test(i_type)
+    end if
 
 !
 end subroutine

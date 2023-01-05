@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine tbajli(nomta, nbpar, nompar, vi, vr,&
+subroutine tbajli(nomta, nbpar, nompar, vi, vr, &
                   vc, vk, nume)
     implicit none
 #include "jeveux.h"
@@ -61,7 +61,7 @@ subroutine tbajli(nomta, nbpar, nompar, vi, vr,&
 !
     call jemarq()
 !
-    call tbadap(nomta, nbpar, nompar, vi, vr,&
+    call tbadap(nomta, nbpar, nompar, vi, vr, &
                 vc, vk)
 !
     nomtab = ' '
@@ -69,30 +69,30 @@ subroutine tbajli(nomta, nbpar, nompar, vi, vr,&
     call jeexin(nomtab//'.TBBA', iret)
     if (iret .eq. 0) then
         call utmess('F', 'UTILITAI4_64')
-    endif
+    end if
     if (nomtab(18:19) .ne. '  ') then
         call utmess('F', 'UTILITAI4_68')
-    endif
+    end if
 !
     call jeveuo(nomtab//'.TBNP', 'E', vi=tbnp)
     nbpara = tbnp(1)
     nblign = tbnp(2)
     if (nbpara .eq. 0) then
         call utmess('F', 'UTILITAI4_65')
-    endif
+    end if
     if (nume .lt. 0) then
         call utmess('F', 'UTILITAI4_70')
-    endif
+    end if
     if (nume .gt. nblign) then
         call utmess('F', 'UTILITAI4_74')
-    endif
+    end if
 !
     call jeveuo(nomtab//'.TBLP', 'L', vk24=tblp)
     nomjv = tblp(3)
     call jelira(nomjv, 'LONMAX', nbpm)
     call jelira(nomjv, 'LONUTI', nbpu)
 !
-    ndim = nbpu + 1
+    ndim = nbpu+1
     if (ndim .gt. nbpm) then
         ndim = nint((ndim*3.d0)/2.d0)
         do i = 1, nbpara
@@ -101,10 +101,10 @@ subroutine tbajli(nomta, nbpar, nompar, vi, vr,&
             nomjv = tblp(1+4*(i-1)+3)
             call juveca(nomjv, ndim)
         end do
-    endif
+    end if
 !
     if (nume .eq. 0) then
-        nblign = nblign + 1
+        nblign = nblign+1
         tbnp(2) = nblign
 !
         do i = 1, nbpara
@@ -121,83 +121,83 @@ subroutine tbajli(nomta, nbpar, nompar, vi, vr,&
         do j = 1, nbpar
             jnpar = nompar(j)
             do i = 1, nbpara
-                inpar = tblp(1+4*(i-1) )
+                inpar = tblp(1+4*(i-1))
                 if (jnpar .eq. inpar) then
-                    type = tblp(1+4*(i-1)+1)(1:3)
+                    type = tblp(1+4*(i-1)+1) (1:3)
                     nomjv = tblp(1+4*(i-1)+2)
                     nomjvl = tblp(1+4*(i-1)+3)
                     call jeveuo(nomjv, 'E', jvale)
                     call jeveuo(nomjvl, 'E', jlogq)
                     if (type(1:1) .eq. 'I') then
-                        ki = ki + 1
+                        ki = ki+1
                         if (vi(ki) .eq. ismaem()) then
                             zi(jlogq+nblign-1) = 0
                         else
                             zi(jvale+nblign-1) = vi(ki)
                             zi(jlogq+nblign-1) = 1
-                        endif
+                        end if
                     else if (type(1:1) .eq. 'R') then
-                        kr = kr + 1
+                        kr = kr+1
                         if (vr(kr) .eq. r8vide()) then
                             zi(jlogq+nblign-1) = 0
                         else
                             zr(jvale+nblign-1) = vr(kr)
                             zi(jlogq+nblign-1) = 1
-                        endif
+                        end if
                     else if (type(1:1) .eq. 'C') then
-                        kc = kc + 1
-                        if (dble(vc(kc)) .eq. r8vide() .and. dimag( vc(kc)) .eq. r8vide()) then
+                        kc = kc+1
+                        if (dble(vc(kc)) .eq. r8vide() .and. dimag(vc(kc)) .eq. r8vide()) then
                             zi(jlogq+nblign-1) = 0
                         else
                             zc(jvale+nblign-1) = vc(kc)
                             zi(jlogq+nblign-1) = 1
-                        endif
+                        end if
                     else if (type(1:3) .eq. 'K80') then
-                        kk = kk + 1
-                        if (vk(kk)(1:7) .eq. '???????') then
+                        kk = kk+1
+                        if (vk(kk) (1:7) .eq. '???????') then
                             zi(jlogq+nblign-1) = 0
                         else
                             zk80(jvale+nblign-1) = vk(kk)
                             zi(jlogq+nblign-1) = 1
-                        endif
+                        end if
                     else if (type(1:3) .eq. 'K32') then
-                        kk = kk + 1
-                        if (vk(kk)(1:7) .eq. '???????') then
+                        kk = kk+1
+                        if (vk(kk) (1:7) .eq. '???????') then
                             zi(jlogq+nblign-1) = 0
                         else
                             zk32(jvale+nblign-1) = vk(kk)
                             zi(jlogq+nblign-1) = 1
-                        endif
+                        end if
                     else if (type(1:3) .eq. 'K24') then
-                        kk = kk + 1
-                        if (vk(kk)(1:7) .eq. '???????') then
+                        kk = kk+1
+                        if (vk(kk) (1:7) .eq. '???????') then
                             zi(jlogq+nblign-1) = 0
                         else
                             zk24(jvale+nblign-1) = vk(kk)
                             zi(jlogq+nblign-1) = 1
-                        endif
+                        end if
                     else if (type(1:3) .eq. 'K16') then
-                        kk = kk + 1
-                        if (vk(kk)(1:7) .eq. '???????') then
+                        kk = kk+1
+                        if (vk(kk) (1:7) .eq. '???????') then
                             zi(jlogq+nblign-1) = 0
                         else
                             zk16(jvale+nblign-1) = vk(kk)
                             zi(jlogq+nblign-1) = 1
-                        endif
+                        end if
                     else if (type(1:2) .eq. 'K8') then
-                        kk = kk + 1
-                        if (vk(kk)(1:7) .eq. '???????') then
+                        kk = kk+1
+                        if (vk(kk) (1:7) .eq. '???????') then
                             zi(jlogq+nblign-1) = 0
                         else
                             zk8(jvale+nblign-1) = vk(kk)
                             zi(jlogq+nblign-1) = 1
-                        endif
-                    endif
+                        end if
+                    end if
                     goto 34
-                endif
+                end if
             end do
             call utmess('F', 'TABLE0_1', sk=jnpar)
- 34         continue
+34          continue
         end do
 !
     else
@@ -208,86 +208,86 @@ subroutine tbajli(nomta, nbpar, nompar, vi, vr,&
         do j = 1, nbpar
             jnpar = nompar(j)
             do i = 1, nbpara
-                inpar = tblp(1+4*(i-1) )
+                inpar = tblp(1+4*(i-1))
                 if (jnpar .eq. inpar) then
-                    type = tblp(1+4*(i-1)+1)(1:3)
+                    type = tblp(1+4*(i-1)+1) (1:3)
                     nomjv = tblp(1+4*(i-1)+2)
                     nomjvl = tblp(1+4*(i-1)+3)
                     call jeveuo(nomjv, 'E', jvale)
                     call jeveuo(nomjvl, 'E', jlogq)
                     if (type(1:1) .eq. 'I') then
-                        ki = ki + 1
+                        ki = ki+1
                         if (vi(ki) .eq. ismaem()) then
                             zi(jlogq+nblign-1) = 0
                         else
                             zi(jvale+nume-1) = vi(ki)
                             zi(jlogq+nume-1) = 1
-                        endif
+                        end if
                     else if (type(1:1) .eq. 'R') then
-                        kr = kr + 1
+                        kr = kr+1
                         if (vr(kr) .eq. r8vide()) then
                             zi(jlogq+nume-1) = 0
                         else
                             zr(jvale+nume-1) = vr(kr)
                             zi(jlogq+nume-1) = 1
-                        endif
+                        end if
                     else if (type(1:1) .eq. 'C') then
-                        kc = kc + 1
-                        if (dble(vc(kc)) .eq. r8vide() .and. dimag( vc(kc)) .eq. r8vide()) then
+                        kc = kc+1
+                        if (dble(vc(kc)) .eq. r8vide() .and. dimag(vc(kc)) .eq. r8vide()) then
                             zi(jlogq+nume-1) = 0
                         else
                             zc(jvale+nume-1) = vc(kc)
                             zi(jlogq+nume-1) = 1
-                        endif
+                        end if
                     else if (type(1:3) .eq. 'K80') then
-                        kk = kk + 1
-                        if (vk(kk)(1:7) .eq. '???????') then
+                        kk = kk+1
+                        if (vk(kk) (1:7) .eq. '???????') then
                             zi(jlogq+nblign-1) = 0
                         else
                             zk80(jvale+nume-1) = vk(kk)
                             zi(jlogq+nume-1) = 1
-                        endif
+                        end if
                     else if (type(1:3) .eq. 'K32') then
-                        kk = kk + 1
-                        if (vk(kk)(1:7) .eq. '???????') then
+                        kk = kk+1
+                        if (vk(kk) (1:7) .eq. '???????') then
                             zi(jlogq+nblign-1) = 0
                         else
                             zk32(jvale+nume-1) = vk(kk)
                             zi(jlogq+nume-1) = 1
-                        endif
+                        end if
                     else if (type(1:3) .eq. 'K24') then
-                        kk = kk + 1
-                        if (vk(kk)(1:7) .eq. '???????') then
+                        kk = kk+1
+                        if (vk(kk) (1:7) .eq. '???????') then
                             zi(jlogq+nblign-1) = 0
                         else
                             zk24(jvale+nume-1) = vk(kk)
                             zi(jlogq+nume-1) = 1
-                        endif
+                        end if
                     else if (type(1:3) .eq. 'K16') then
-                        kk = kk + 1
-                        if (vk(kk)(1:7) .eq. '???????') then
+                        kk = kk+1
+                        if (vk(kk) (1:7) .eq. '???????') then
                             zi(jlogq+nblign-1) = 0
                         else
                             zk16(jvale+nume-1) = vk(kk)
                             zi(jlogq+nume-1) = 1
-                        endif
+                        end if
                     else if (type(1:2) .eq. 'K8') then
-                        kk = kk + 1
-                        if (vk(kk)(1:7) .eq. '???????') then
+                        kk = kk+1
+                        if (vk(kk) (1:7) .eq. '???????') then
                             zi(jlogq+nblign-1) = 0
                         else
                             zk8(jvale+nume-1) = vk(kk)
                             zi(jlogq+nume-1) = 1
-                        endif
-                    endif
+                        end if
+                    end if
                     goto 44
-                endif
+                end if
             end do
             call utmess('F', 'TABLE0_1', sk=jnpar)
- 44         continue
+44          continue
         end do
 !
-    endif
+    end if
 !
     call jedema()
 end subroutine

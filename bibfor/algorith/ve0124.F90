@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -46,11 +46,11 @@ subroutine ve0124(typres)
             call getvtx('AFFE', 'NOM_CAS', iocc=k, scal=k8bid, nbret=n0)
             if (n0 .ne. 0) then
                 call utmess('E', 'ALGORITH11_7')
-            endif
+            end if
             call getvis('AFFE', 'NUME_MODE', iocc=k, scal=ibid, nbret=n0)
             if (n0 .ne. 0) then
                 call utmess('E', 'ALGORITH11_8')
-            endif
+            end if
         end do
 !
     else if (typres .eq. 'MULT_ELAS') then
@@ -58,15 +58,15 @@ subroutine ve0124(typres)
             call getvis('AFFE', 'NUME_MODE', iocc=k, scal=ibid, nbret=n0)
             if (n0 .ne. 0) then
                 call utmess('E', 'ALGORITH11_9')
-            endif
+            end if
             call getvr8('AFFE', 'INST', iocc=k, scal=r8bid, nbret=n0)
             if (n0 .ne. 0) then
                 call utmess('E', 'ALGORITH11_10')
-            endif
+            end if
             call getvid('AFFE', 'LIST_INST', iocc=k, scal=k8bid, nbret=n0)
             if (n0 .ne. 0) then
                 call utmess('E', 'ALGORITH11_10')
-            endif
+            end if
         end do
 !
     else if (typres .eq. 'FOURIER_ELAS') then
@@ -74,15 +74,15 @@ subroutine ve0124(typres)
             call getvtx('AFFE', 'NOM_CAS', iocc=k, scal=k8bid, nbret=n0)
             if (n0 .ne. 0) then
                 call utmess('E', 'ALGORITH11_11')
-            endif
+            end if
             call getvr8('AFFE', 'INST', iocc=k, scal=r8bid, nbret=n0)
             if (n0 .ne. 0) then
                 call utmess('E', 'ALGORITH11_12')
-            endif
+            end if
             call getvid('AFFE', 'LIST_INST', iocc=k, scal=k8bid, nbret=n0)
             if (n0 .ne. 0) then
                 call utmess('E', 'ALGORITH11_12')
-            endif
+            end if
         end do
 !
     else if (typres .eq. 'FOURIER_THER') then
@@ -90,36 +90,36 @@ subroutine ve0124(typres)
             call getvtx('AFFE', 'NOM_CAS', iocc=k, scal=k8bid, nbret=n0)
             if (n0 .ne. 0) then
                 call utmess('E', 'ALGORITH11_13')
-            endif
+            end if
             call getvr8('AFFE', 'INST', iocc=k, scal=r8bid, nbret=n0)
             if (n0 .ne. 0) then
                 call utmess('E', 'ALGORITH11_14')
-            endif
+            end if
             call getvid('AFFE', 'LIST_INST', iocc=k, scal=k8bid, nbret=n0)
             if (n0 .ne. 0) then
                 call utmess('E', 'ALGORITH11_14')
-            endif
+            end if
         end do
-    endif
+    end if
 !
     call getfac('PERM_CHAM', iocc)
     if (iocc .gt. 0) then
         call getvid(' ', 'RESU_INIT', nbval=0, nbret=n1)
         if (n1 .eq. 0) then
             call utmess('E', 'ALGORITH11_15')
-        endif
+        end if
         call getvid(' ', 'MAILLAGE_INIT', nbval=0, nbret=n1)
         if (n1 .eq. 0) then
             call utmess('E', 'ALGORITH11_16')
-        endif
+        end if
         call getvid(' ', 'RESU_FINAL', nbval=0, nbret=n1)
         if (n1 .eq. 0) then
             call utmess('E', 'ALGORITH11_17')
-        endif
+        end if
         call getvid(' ', 'MAILLAGE_FINAL', nbval=0, nbret=n1)
         if (n1 .eq. 0) then
             call utmess('E', 'ALGORITH11_18')
-        endif
-    endif
+        end if
+    end if
 !
 end subroutine

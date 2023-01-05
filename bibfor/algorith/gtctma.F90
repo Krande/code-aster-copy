@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine gtctma(elem_coor, elem_nbnode,elem_code, elem_dime,&
+subroutine gtctma(elem_coor, elem_nbnode, elem_code, elem_dime, &
                   ctcoor)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -27,7 +27,7 @@ implicit none
 !
 !
 
-    real(kind=8), intent(in) :: elem_coor(3,9)
+    real(kind=8), intent(in) :: elem_coor(3, 9)
     integer, intent(in) :: elem_nbnode
     character(len=8), intent(in) :: elem_code
     integer, intent(in) :: elem_dime
@@ -49,8 +49,8 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-  real(kind=8) :: rfcoor(3), elem_cort(27)
-  integer      :: i_dime, i_node
+    real(kind=8) :: rfcoor(3), elem_cort(27)
+    integer      :: i_dime, i_node
 
 !
 ! --------------------------------------------------------------------------------------------------
@@ -61,41 +61,41 @@ implicit none
 !
     ctcoor(1:3) = 0.d0
     select case (elem_code)
-        case('SE2')
-            rfcoor(1) = 0.d0
-            rfcoor(2) = 0.d0
-            rfcoor(3) = 0.d0
-        case('SE3')
-            rfcoor(1) = 0.d0
-            rfcoor(2) = 0.d0
-            rfcoor(3) = 0.d0
-        case('TR3')
-            rfcoor(1) = 1.d0/3.d0
-            rfcoor(2) = 1.d0/3.d0
-            rfcoor(3) = 0.d0
-        case('TR6')
-            rfcoor(1) = 1.d0/3.d0
-            rfcoor(2) = 1.d0/3.d0
-            rfcoor(3) = 0.d0
-        case('QU4')
-            rfcoor(1) = 0.d0
-            rfcoor(2) = 0.d0
-            rfcoor(3) = 0.d0
-        case('QU8')
-            rfcoor(1) = 0.d0
-            rfcoor(2) = 0.d0
-            rfcoor(3) = 0.d0
-        case('QU9')
-            rfcoor(1) = 0.d0
-            rfcoor(2) = 0.d0
-            rfcoor(3) = 0.d0
-        case default
-            ASSERT(.false.)
+    case ('SE2')
+        rfcoor(1) = 0.d0
+        rfcoor(2) = 0.d0
+        rfcoor(3) = 0.d0
+    case ('SE3')
+        rfcoor(1) = 0.d0
+        rfcoor(2) = 0.d0
+        rfcoor(3) = 0.d0
+    case ('TR3')
+        rfcoor(1) = 1.d0/3.d0
+        rfcoor(2) = 1.d0/3.d0
+        rfcoor(3) = 0.d0
+    case ('TR6')
+        rfcoor(1) = 1.d0/3.d0
+        rfcoor(2) = 1.d0/3.d0
+        rfcoor(3) = 0.d0
+    case ('QU4')
+        rfcoor(1) = 0.d0
+        rfcoor(2) = 0.d0
+        rfcoor(3) = 0.d0
+    case ('QU8')
+        rfcoor(1) = 0.d0
+        rfcoor(2) = 0.d0
+        rfcoor(3) = 0.d0
+    case ('QU9')
+        rfcoor(1) = 0.d0
+        rfcoor(2) = 0.d0
+        rfcoor(3) = 0.d0
+    case default
+        ASSERT(.false.)
     end select
 !
 ! - Transform the format of slave element coordinates
 !
-    do i_node = 1,elem_nbnode
+    do i_node = 1, elem_nbnode
         do i_dime = 1, elem_dime
             elem_cort(elem_dime*(i_node-1)+i_dime) = elem_coor(i_dime, i_node)
         end do
@@ -104,8 +104,8 @@ implicit none
 !
 ! - Compute center
 !
-   call reerel(elem_code, elem_nbnode, elem_dime, elem_cort, rfcoor,&
-               ctcoor)
+    call reerel(elem_code, elem_nbnode, elem_dime, elem_cort, rfcoor, &
+                ctcoor)
 !
 ! - Print check
 !

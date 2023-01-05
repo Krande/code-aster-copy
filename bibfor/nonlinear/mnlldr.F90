@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine mnlldr(ind, imat, neq, ninc, nd,&
-                  nchoc, h, hf, parcho, xcdl,&
+subroutine mnlldr(ind, imat, neq, ninc, nd, &
+                  nchoc, h, hf, parcho, xcdl, &
                   adime, xtemp)
     implicit none
 !
@@ -70,7 +70,7 @@ subroutine mnlldr(ind, imat, neq, ninc, nd,&
     call wkvect('&&mnlldr.l', 'V V R', ninc-1, il)
     call wkvect('&&mnlldr.temp1', 'V V R', neq, itemp1)
     call wkvect('&&mnlldr.temp2', 'V V R', neq, itemp2)
-    stp=.true.
+    stp = .true.
 !
     call jeveuo(parcho//'.RAID', 'L', vr=raid)
     call jeveuo(parcho//'.REG', 'L', vr=reg)
@@ -88,103 +88,103 @@ subroutine mnlldr(ind, imat, neq, ninc, nd,&
 ! ----------------------------------------------------------------------
 ! --- INCONNUE DU SYSTEME DYNAMIQUE i.e. 1:ND*(2*H+1)
 ! ----------------------------------------------------------------------
-    hind=int((ind-1)/nd)
-    ddl=ind-nd*hind
+    hind = int((ind-1)/nd)
+    ddl = ind-nd*hind
     if (ind .le. nd*(2*h+1)) then
         call dscal(neq, 0.d0, zr(itemp1), 1)
         call dscal(neq, 0.d0, zr(itemp2), 1)
-        i=0
+        i = 0
         do k = 1, neq
             if (zi(icdl-1+k) .eq. 0) then
-                i=i+1
+                i = i+1
                 if (i .eq. ddl) then
-                    zr(itemp1-1+k)=1.d0
-                endif
-            endif
+                    zr(itemp1-1+k) = 1.d0
+                end if
+            end if
         end do
-        call mrmult('ZERO', imat(1), zr(itemp1), zr(itemp2), 1,&
+        call mrmult('ZERO', imat(1), zr(itemp1), zr(itemp2), 1, &
                     .false._1)
-        i=0
+        i = 0
         do k = 1, neq
             if (zi(icdl-1+k) .eq. 0) then
-                i=i+1
-                zr(il-1+hind*nd+i)=zr(itemp2-1+k)/zr(iadim)
-            endif
+                i = i+1
+                zr(il-1+hind*nd+i) = zr(itemp2-1+k)/zr(iadim)
+            end if
         end do
-    else if (ind.le.(ninc-4)) then
-        deb=nd*(2*h+1)
+    else if (ind .le. (ninc-4)) then
+        deb = nd*(2*h+1)
         do i = 1, nchoc
-            jeu=vjeu(i)/jeumax(1)
-            ncmp=vncmp(i)
+            jeu = vjeu(i)/jeumax(1)
+            ncmp = vncmp(i)
             do j = 1, ncmp
-                nddl=vnddl(6*(i-1)+j)
-                if (ind .gt. deb+(j-1)*(2*hf+1) .and. ind .le. deb+j*(2* hf+1)) then
-                    hfind=ind-deb-(j-1)*(2*hf+1)-1
+                nddl = vnddl(6*(i-1)+j)
+                if (ind .gt. deb+(j-1)*(2*hf+1) .and. ind .le. deb+j*(2*hf+1)) then
+                    hfind = ind-deb-(j-1)*(2*hf+1)-1
                     if (hfind .le. h) then
-                        zr(il-1+nd*hfind+nddl)=jeu
-                    else if (hfind.ge.(hf+1).and.hfind.le.(hf+h)) then
-                        zr(il-1+nd*(hfind-hf+h)+nddl)=jeu
-                    endif
-                endif
+                        zr(il-1+nd*hfind+nddl) = jeu
+                    else if (hfind .ge. (hf+1) .and. hfind .le. (hf+h)) then
+                        zr(il-1+nd*(hfind-hf+h)+nddl) = jeu
+                    end if
+                end if
             end do
-            deb=deb+neqs(i)*(2*hf+1)
+            deb = deb+neqs(i)*(2*hf+1)
         end do
-    endif
+    end if
 ! ----------------------------------------------------------------------
 ! --- EQUATIONS SUPPLEMENTAIRES POUR DEFINIR LA FORCE NON-LINEAIRE
 ! ----------------------------------------------------------------------
-    deb=nd*(2*h+1)
+    deb = nd*(2*h+1)
     do i = 1, nchoc
-        alpha=raid(i)/zr(iadim-1+1)
-        eta=reg(i)
-        jeu=vjeu(i)/jeumax(1)
-        if (type(i)(1:7) .eq. 'BI_PLAN') then
-            nddl=vnddl(6*(i-1)+1)
+        alpha = raid(i)/zr(iadim-1+1)
+        eta = reg(i)
+        jeu = vjeu(i)/jeumax(1)
+        if (type(i) (1:7) .eq. 'BI_PLAN') then
+            nddl = vnddl(6*(i-1)+1)
             if (ind .le. nd*(2*h+1)) then
                 if (ddl .eq. nddl) then
                     if (hind .le. h) then
-                        zr(il-1+deb+hind+1)=-eta/jeu
+                        zr(il-1+deb+hind+1) = -eta/jeu
                     else
-                        zr(il-1+deb+(hf+1)+(hind-h))=-eta/jeu
-                    endif
-                endif
-            else if ((ind.gt.deb).and.(ind.le.(deb+2*(2*hf+1)))) then
-                zr(il-1+ind)=1.d0
-            endif
-        else if (type(i)(1:6).eq.'CERCLE') then
-            nddlx=vnddl(6*(i-1)+1)
-            nddly=vnddl(6*(i-1)+2)
+                        zr(il-1+deb+(hf+1)+(hind-h)) = -eta/jeu
+                    end if
+                end if
+            else if ((ind .gt. deb) .and. (ind .le. (deb+2*(2*hf+1)))) then
+                zr(il-1+ind) = 1.d0
+            end if
+        else if (type(i) (1:6) .eq. 'CERCLE') then
+            nddlx = vnddl(6*(i-1)+1)
+            nddly = vnddl(6*(i-1)+2)
 ! ---     +2*ORIG1*UX + 2*ORIG2*UY
             if (ind .le. nd*(2*h+1)) then
                 if (hind .le. h) then
                     if (ddl .eq. nddlx) then
-                        zr(il-1+deb+2*(2*hf+1)+hind+1)=2*orig(1+3*(i-1))/jeu**2
-                    else if (ddl.eq.nddly) then
-                        zr(il-1+deb+2*(2*hf+1)+hind+1)=2*orig(1+3*(i-1)+1)/jeu**2
-                    endif
+                        zr(il-1+deb+2*(2*hf+1)+hind+1) = 2*orig(1+3*(i-1))/jeu**2
+                    else if (ddl .eq. nddly) then
+                        zr(il-1+deb+2*(2*hf+1)+hind+1) = 2*orig(1+3*(i-1)+1)/jeu**2
+                    end if
                 else
                     if (ddl .eq. nddlx) then
-                        zr(il-1+deb+2*(2*hf+1)+(hf+1)+(hind-h))= 2*orig(1+3*(i-1))/jeu**2
-                    else if (ddl.eq.nddly) then
-                        zr(il-1+deb+2*(2*hf+1)+(hf+1)+(hind-h))= 2*orig(1+3*(i-1)+1)/jeu**2
-                    endif
-                endif
-            endif
+                        zr(il-1+deb+2*(2*hf+1)+(hf+1)+(hind-h)) = 2*orig(1+3*(i-1))/jeu**2
+                    else if (ddl .eq. nddly) then
+                        zr(il-1+deb+2*(2*hf+1)+(hf+1)+(hind-h)) = 2*orig(1+3*(i-1)+1)/jeu**2
+                    end if
+                end if
+            end if
             if (ind .gt. (deb+3*(2*hf+1)) .and. ind .le. (deb+4*(2*hf+1))) then
 ! ---     +ORIG1*FN
-                zr(il-1+deb+(ind-deb-3*(2*hf+1)))=orig(1+3*(i-1))/jeu
+                zr(il-1+deb+(ind-deb-3*(2*hf+1))) = orig(1+3*(i-1))/jeu
 ! ---     +ORIG2*FN
-                zr(il-1+deb+(2*hf+1)+(ind-deb-3*(2*hf+1)))=orig(1+3*(i-1)+1)/jeu
+                zr(il-1+deb+(2*hf+1)+(ind-deb-3*(2*hf+1))) = orig(1+3*(i-1)+1)/jeu
 ! ---     FN
-                zr(il-1+ind)=1.d0
-            endif
-        else if (type(i)(1:4).eq.'PLAN') then
+                zr(il-1+ind) = 1.d0
+            end if
+        else if (type(i) (1:4) .eq. 'PLAN') then
 ! ---     F
             if (ind .gt. deb .and. ind .le. (deb+(2*hf+1))) then
-                zr(il-1+ind)=1.d0
-            endif
-        endif
-        deb=deb+neqs(i)*(2*hf+1)
+                zr(il-1+ind) = 1.d0
+            end if
+        end if
+        deb = deb+neqs(i)*(2*hf+1)
     end do
 ! ----------------------------------------------------------------------
 ! --- AUTRES EQUATIONS
@@ -192,11 +192,11 @@ subroutine mnlldr(ind, imat, neq, ninc, nd,&
 ! --- GAMMA1
     if (ind .eq. ninc-3) then
         zr(il-1+ninc-3) = 1.d0
-    endif
+    end if
 ! --- GAMMA2
     if (ind .eq. ninc-2) then
         zr(il-1+ninc-2) = 1.d0
-    endif
+    end if
 !
     call dcopy(ninc-1, zr(il), 1, zr(itemp), 1)
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine tutemp(option, nomte, nbrddl, f, b,&
+subroutine tutemp(option, nomte, nbrddl, f, b, &
                   vout, pass, vtemp)
     implicit none
 #include "jeveux.h"
@@ -43,7 +43,7 @@ subroutine tutemp(option, nomte, nbrddl, f, b,&
 ! ......................................................................
 !
     integer :: nbrddl, nbsecm, nbcoum
-    parameter (nbsecm=32,nbcoum=10)
+    parameter(nbsecm=32, nbcoum=10)
     real(kind=8) :: h, a, l, valpar, beta, r, r1
     real(kind=8) :: poicou(2*nbcoum+1), poisec(2*nbsecm+1)
     real(kind=8) :: f(nbrddl), b(4, nbrddl), vout(nbrddl), sig(4)
@@ -65,11 +65,11 @@ subroutine tutemp(option, nomte, nbrddl, f, b,&
 !
     integer, parameter :: nb_cara1 = 2
     real(kind=8) :: vale_cara1(nb_cara1)
-    character(len=8), parameter :: noms_cara1(nb_cara1) = (/'R1 ','EP1'/)
+    character(len=8), parameter :: noms_cara1(nb_cara1) = (/'R1 ', 'EP1'/)
 !-----------------------------------------------------------------------
-    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg,jpoids=ipoids,jcoopg=jcoopg,jvf=ivf,jdfde=idfdk,&
-  jdfd2=jdfd2,jgano=jgano)
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, &
+                     npg=npg, jpoids=ipoids, jcoopg=jcoopg, jvf=ivf, jdfde=idfdk, &
+                     jdfd2=jdfd2, jgano=jgano)
 !
     pi = r8pi()
     deuxpi = 2.d0*pi
@@ -83,8 +83,8 @@ subroutine tutemp(option, nomte, nbrddl, f, b,&
     call jevech('PCAORIE', 'L', lorien)
     call poutre_modloc('CAGEP1', noms_cara1, nb_cara1, lvaleur=vale_cara1)
     r1 = vale_cara1(1)
-    h  = vale_cara1(2)
-    a  = r1-h/2.d0
+    h = vale_cara1(2)
+    a = r1-h/2.d0
 !
 ! A= RMOY, H = EPAISSEUR
 ! RINT = RAYON INTERIEUR
@@ -102,7 +102,7 @@ subroutine tutemp(option, nomte, nbrddl, f, b,&
 !     LES POIDS POUR L'INTEGRATION DANS L'EPAISSEUR
 !
     poicou(1) = 1.d0/3.d0
-    do i = 1, nbcou - 1
+    do i = 1, nbcou-1
         poicou(2*i) = 4.d0/3.d0
         poicou(2*i+1) = 2.d0/3.d0
     end do
@@ -112,7 +112,7 @@ subroutine tutemp(option, nomte, nbrddl, f, b,&
 !     LES POIDS POUR L'INTEGRATION SUR LA CIRCONFERENCE
 !
     poisec(1) = 1.d0/3.d0
-    do i = 1, nbsec - 1
+    do i = 1, nbsec-1
         poisec(2*i) = 4.d0/3.d0
         poisec(2*i+1) = 2.d0/3.d0
     end do
@@ -123,25 +123,25 @@ subroutine tutemp(option, nomte, nbrddl, f, b,&
 !
 ! CALCUL DE L = LONGUEUR DU COUDE
 !
-    call carcou(zr(lorien), l, pgl, rayon, theta,&
-                pgl1, pgl2, pgl3, pgl4, nno,&
+    call carcou(zr(lorien), l, pgl, rayon, theta, &
+                pgl1, pgl2, pgl3, pgl4, nno, &
                 omega, icoud2)
 !
     if (icoud2 .ge. 10) then
-        icoude = icoud2 - 10
+        icoude = icoud2-10
         mmt = 0
     else
         icoude = icoud2
         mmt = 1
-    endif
+    end if
 !
 !---- RECUPERATION TEMPERATURE
 !===============================================================
 !          -- RECUPERATION DE LA TEMPERATURE :
 !     -- SI LA TEMPERATURE N'EST PAS DONNEE:
-    nspg=(2*nbsec + 1)*(2*nbcou + 1)
-    iret2=0
-    call moytem('RIGI', npg, nspg, '+', valpar,&
+    nspg = (2*nbsec+1)*(2*nbcou+1)
+    iret2 = 0
+    call moytem('RIGI', npg, nspg, '+', valpar, &
                 iret2)
     nbpar = 1
     nompar = 'TEMP'
@@ -154,8 +154,8 @@ subroutine tutemp(option, nomte, nbrddl, f, b,&
     nomres(1) = 'E'
     nomres(2) = 'NU'
 !
-    call rcvalb('RIGI', 1, 1, '+', zi(imate),&
-                ' ', phenom, nbpar, nompar, [valpar],&
+    call rcvalb('RIGI', 1, 1, '+', zi(imate), &
+                ' ', phenom, nbpar, nompar, [valpar], &
                 2, nomres, valres, codres, 1)
     e = valres(1)
     nu = valres(2)
@@ -164,13 +164,13 @@ subroutine tutemp(option, nomte, nbrddl, f, b,&
 ! DEFINITION DE LA MATRICE DE COMPORTEMENT C
 ! POUR LA DILATATION
 !
-    beta = 1.d0/ (1.d0-nu**2)
+    beta = 1.d0/(1.d0-nu**2)
 !
-    c(1,1) = e*beta
-    c(1,2) = e*nu*beta
+    c(1, 1) = e*beta
+    c(1, 2) = e*nu*beta
 !
-    c(2,1) = e*nu*beta
-    c(2,2) = e*beta
+    c(2, 1) = e*nu*beta
+    c(2, 2) = e*beta
 !
 !
 !     FIN DE LA CONSTRUCTION DE LA MATRICE DE COMPORTEMENT C
@@ -179,74 +179,74 @@ subroutine tutemp(option, nomte, nbrddl, f, b,&
 !
 !----- CAS DILATATION THERMIQUE
 !
-        do i = 1,nbrddl
+        do i = 1, nbrddl
             f(i) = 0.d0
         end do
 !
 !     DEBUT CONSTRUCTION DE B
 !
 ! BOUCLE SUR LES POINTS DE GAUSS
-        nspg=(2*nbsec + 1)*(2*nbcou + 1)
+        nspg = (2*nbsec+1)*(2*nbcou+1)
         do igau = 1, npg
-            call verifg('RIGI', igau, nspg, '+', zi(imate),&
+            call verifg('RIGI', igau, nspg, '+', zi(imate), &
                         coe1, iret)
-            sig(1) = (c(1,1)+c(1,2))*coe1
-            sig(2) = (c(2,1)+c(2,2))*coe1
+            sig(1) = (c(1, 1)+c(1, 2))*coe1
+            sig(2) = (c(2, 1)+c(2, 2))*coe1
             sig(3) = 0.d0
             sig(4) = 0.d0
 !
 ! BOUCLE SUR LES POINTS DE SIMPSON DANS L'EPAISSEUR
 !
-            do icou = 1, 2*nbcou + 1
+            do icou = 1, 2*nbcou+1
                 if (mmt .eq. 0) then
                     r = a
                 else
-                    r = a + (icou-1)*h/ (2.d0*nbcou) - h/2.d0
-                endif
+                    r = a+(icou-1)*h/(2.d0*nbcou)-h/2.d0
+                end if
 !
 !
 ! BOUCLE SUR LES POINTS DE SIMPSON SUR LA CIRCONFERENCE
 !
-                do isect = 1, 2*nbsec + 1
+                do isect = 1, 2*nbsec+1
                     if (icoude .eq. 0) then
-                        call bcoude(igau, icou, isect, l, h,&
-                                    a, m, nno, nbcou, nbsec,&
+                        call bcoude(igau, icou, isect, l, h, &
+                                    a, m, nno, nbcou, nbsec, &
                                     zr(ivf), zr(idfdk), zr(jdfd2), mmt, b)
-                    else if (icoude.eq.1) then
-                        fi = (isect-1)*deuxpi/ (2.d0*nbsec)
+                    else if (icoude .eq. 1) then
+                        fi = (isect-1)*deuxpi/(2.d0*nbsec)
 !
                         sinfi = sin(fi)
-                        l = theta* (rayon+r*sinfi)
-                        call bcoudc(igau, icou, isect, h, a,&
-                                    m, omega, xpg, nno, nbcou,&
-                                    nbsec, zr(ivf), zr(idfdk), zr(jdfd2), rayon,&
+                        l = theta*(rayon+r*sinfi)
+                        call bcoudc(igau, icou, isect, h, a, &
+                                    m, omega, xpg, nno, nbcou, &
+                                    nbsec, zr(ivf), zr(idfdk), zr(jdfd2), rayon, &
                                     theta, mmt, b)
-                    endif
+                    end if
                     do j = 1, nbrddl
-                        vout(j) = b(1,j)*sig(1) + b(2,j)*sig(2)
+                        vout(j) = b(1, j)*sig(1)+b(2, j)*sig(2)
                     end do
 !
 !  STOCKAGE DU VECTEUR VOUT DANS FI
 !
-                    poids = zr(ipoids-1+igau)*poicou(icou)*poisec( isect)* (l/2.d0)*h*deuxpi/ (4.&
+                    poids = zr(ipoids-1+igau)*poicou(icou)*poisec(isect)*(l/2.d0)*h*deuxpi/(4.&
                             &d0*nbcou*nbsec)*r
 !
                     do i = 1, nbrddl
-                        f(i) = f(i) + vout(i)*poids
+                        f(i) = f(i)+vout(i)*poids
                     end do
                 end do
             end do
         end do
         if (icoude .eq. 0) then
-            call vlggl(nno, nbrddl, pgl, f, 'LG',&
+            call vlggl(nno, nbrddl, pgl, f, 'LG', &
                        pass, vtemp)
         else
-            call vlgglc(nno, nbrddl, pgl1, pgl2, pgl3,&
+            call vlgglc(nno, nbrddl, pgl1, pgl2, pgl3, &
                         pgl4, f, 'LG', pass, vtemp)
-        endif
+        end if
         call jevech('PVECTUR', 'E', jout)
-        do i = 1,nbrddl
+        do i = 1, nbrddl
             zr(jout-1+i) = f(i)
         end do
-    endif
+    end if
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine lceitc(fami, kpg, ksp, mat, option,&
-                  mu, su, de, ddedt, vim,&
+subroutine lceitc(fami, kpg, ksp, mat, option, &
+                  mu, su, de, ddedt, vim, &
                   vip, r, pfluide)
 !
 ! person_in_charge: jerome.laverne at edf.fr
@@ -56,33 +56,33 @@ subroutine lceitc(fami, kpg, ksp, mat, option,&
     character(len=16) :: nom(4)
     character(len=1) :: poum
     real(kind=8) :: eps
-    parameter    (eps=1.d-8)
+    parameter(eps=1.d-8)
 !
-    data nom /'GC','SIGM_C','PENA_LAGR','RIGI_GLIS'/
+    data nom/'GC', 'SIGM_C', 'PENA_LAGR', 'RIGI_GLIS'/
 !-----------------------------------------------------------------------
 !
 !
 ! OPTION CALCUL DU RESIDU OU CALCUL DE LA MATRICE TANGENTE
 !
-    resi = option(1:4).eq.'FULL' .or. option(1:4).eq.'RAPH'
-    rigi = option(1:4).eq.'FULL' .or. option(1:4).eq.'RIGI'
+    resi = option(1:4) .eq. 'FULL' .or. option(1:4) .eq. 'RAPH'
+    rigi = option(1:4) .eq. 'FULL' .or. option(1:4) .eq. 'RIGI'
 !
     if (option .eq. 'RIGI_MECA_TANG') then
         poum = '-'
     else
         poum = '+'
-    endif
+    end if
 !
 ! RECUPERATION DES PARAMETRES PHYSIQUES
-    call rcvalb(fami, kpg, ksp, poum, mat,&
-                ' ', 'RUPT_FRAG', 0, ' ', [0.d0],&
+    call rcvalb(fami, kpg, ksp, poum, mat, &
+                ' ', 'RUPT_FRAG', 0, ' ', [0.d0], &
                 4, nom, val, cod, 2)
 !
     gc = val(1)
     sc = val(2)
     dc = 2.d0*gc/sc
     h = sc/dc
-    r = h * val(3)
+    r = h*val(3)
 !
 ! -- INITIALISATION
 !
@@ -90,10 +90,10 @@ subroutine lceitc(fami, kpg, ksp, mat, option,&
     ga = vim(4)
 !
 !    CALCUL DE KAPPA : KA = DC*(1-SQRT(1-GA))
-    tmp = sqrt(max(0.d0,1.d0-ga))
+    tmp = sqrt(max(0.d0, 1.d0-ga))
     tmp = dc*(1.d0-tmp)
-    tmp = max(0.d0,tmp)
-    tmp = min(dc,tmp)
+    tmp = max(0.d0, tmp)
+    tmp = min(dc, tmp)
     ka = tmp
 !
 !    FORCE COHESIVE AUGMENTEE : LAMBDA + R.[U] + PF
@@ -101,22 +101,22 @@ subroutine lceitc(fami, kpg, ksp, mat, option,&
 !    LE MODELE HM-XFEM
 !
     if (present(pfluide)) then
-       t(1) = mu(1) + r*su(1) + pfluide
-       t(2) = mu(2) + r*su(2)
-       t(3) = mu(3) + r*su(3)
+        t(1) = mu(1)+r*su(1)+pfluide
+        t(2) = mu(2)+r*su(2)
+        t(3) = mu(3)+r*su(3)
     else
-       t(1) = mu(1) + r*su(1)
-       t(2) = mu(2) + r*su(2)
-       t(3) = mu(3) + r*su(3)
-    endif
+        t(1) = mu(1)+r*su(1)
+        t(2) = mu(2)+r*su(2)
+        t(3) = mu(3)+r*su(3)
+    end if
 !
 !    PARTIE NORMALE POSITIVE
 !
-    if (t(1).ge.0.d0) then
-       tpo(1) = t(1)
+    if (t(1) .ge. 0.d0) then
+        tpo(1) = t(1)
     else
-       tpo(1) = 0.d0
-    endif
+        tpo(1) = 0.d0
+    end if
     tpo(2) = t(2)
     tpo(3) = t(3)
     tno = sqrt(tpo(1)**2+tpo(2)**2+tpo(3)**2)
@@ -127,43 +127,43 @@ subroutine lceitc(fami, kpg, ksp, mat, option,&
     if (.not. resi) then
         regime = nint(vim(2))
         goto 500
-    endif
+    end if
 !
 !    SI ZONE COHESIVE INTACTE A L'INSTANT PRECEDANT
-    if (ka.eq.0.d0) then
+    if (ka .eq. 0.d0) then
 !       ADHESION INITIALE
-       if (tno.le.sc) then
-          regime=-1
-          lbd=0.d0
+        if (tno .le. sc) then
+            regime = -1
+            lbd = 0.d0
 !       SURFACE LIBRE
-       else if (tno.ge.r*dc) then
-          regime=2
-          lbd=1/r
+        else if (tno .ge. r*dc) then
+            regime = 2
+            lbd = 1/r
 !       ENDOMMAGEMENT
-       else
-          regime=1
-          lbd=(tno-sc)/((r-h)*tno)
-       endif
+        else
+            regime = 1
+            lbd = (tno-sc)/((r-h)*tno)
+        end if
 !    SI ZONE COHESIVE ANEANTIE A L'INSTANT PRECEDANT
-    else if (ka.ge.dc) then
-       regime=2
-       lbd=1/r
+    else if (ka .ge. dc) then
+        regime = 2
+        lbd = 1/r
 !    SI ZONE COHESIVE ENDOMMAGEE A L'INSTANT PRECEDANT
     else
 !       SURFACE LIBRE
-       if (tno.ge.r*dc) then
-          regime=2
-          lbd=1/r
+        if (tno .ge. r*dc) then
+            regime = 2
+            lbd = 1/r
 !       ENDOMMAGEMENT
-       else if (tno.ge.(ka*(r-h)+sc-eps)) then
-          regime=1
-          lbd=(tno-sc)/((r-h)*tno)
+        else if (tno .ge. (ka*(r-h)+sc-eps)) then
+            regime = 1
+            lbd = (tno-sc)/((r-h)*tno)
 !       RETOUR ELASTIQUE
-       else
-          regime=3
-          lbd=ka/(ka*(r-h)+sc)
-       endif
-    endif
+        else
+            regime = 3
+            lbd = ka/(ka*(r-h)+sc)
+        end if
+    end if
 !
     call r8inir(6, 0.d0, de, 1)
     de(1) = lbd*tpo(1)
@@ -190,21 +190,21 @@ subroutine lceitc(fami, kpg, ksp, mat, option,&
 !        (NULLE POUR CE TYPE D'IRREVERSIBILITE)
 !   V7 A V9 : VALEURS DE DELTA
 !
-    kap = min( max(ka,dn) , dc )
-    gap = kap/dc * (2.d0 - kap/dc)
-    gap = max(0.d0,gap)
-    gap = min(1.d0,gap)
+    kap = min(max(ka, dn), dc)
+    gap = kap/dc*(2.d0-kap/dc)
+    gap = max(0.d0, gap)
+    gap = min(1.d0, gap)
 !
     vip(1) = kap
     vip(2) = regime
 !
     if (kap .eq. 0.d0) then
         vip(3) = 0.d0
-    else if (kap.eq.dc) then
+    else if (kap .eq. dc) then
         vip(3) = 2.d0
     else
         vip(3) = 1.d0
-    endif
+    end if
 !
     vip(4) = gap
     vip(5) = gc*vip(4)
@@ -221,26 +221,26 @@ subroutine lceitc(fami, kpg, ksp, mat, option,&
     call r8inir(36, 0.d0, ddedt, 1)
 !
     if (regime .eq. 2) then
-       ddedt(1,1) = 1/r
-       ddedt(2,2) = 1/r
-       ddedt(3,3) = 1/r
-       if (t(1).lt.0.d0) ddedt(1,1) = 0.d0
+        ddedt(1, 1) = 1/r
+        ddedt(2, 2) = 1/r
+        ddedt(3, 3) = 1/r
+        if (t(1) .lt. 0.d0) ddedt(1, 1) = 0.d0
     else if (regime .eq. 1) then
-       ddedt(1,1) = 1/(r-h)-sc/(tno*(r-h))
-       ddedt(2,2) = 1/(r-h)-sc/(tno*(r-h))
-       ddedt(3,3) = 1/(r-h)-sc/(tno*(r-h))
-       if (t(1).lt.0.d0) ddedt(1,1) = 0.d0
-       do i = 1, 3
-          do j = 1, 3
-             ddedt(i,j) = ddedt(i,j)+sc/((r-h)*tno**3)*tpo(i)*tpo(j)
-          end do
-       end do
+        ddedt(1, 1) = 1/(r-h)-sc/(tno*(r-h))
+        ddedt(2, 2) = 1/(r-h)-sc/(tno*(r-h))
+        ddedt(3, 3) = 1/(r-h)-sc/(tno*(r-h))
+        if (t(1) .lt. 0.d0) ddedt(1, 1) = 0.d0
+        do i = 1, 3
+            do j = 1, 3
+                ddedt(i, j) = ddedt(i, j)+sc/((r-h)*tno**3)*tpo(i)*tpo(j)
+            end do
+        end do
     else if (regime .eq. 3) then
-       ddedt(1,1) = ka/(ka*(r-h)+sc)
-       ddedt(2,2) = ka/(ka*(r-h)+sc)
-       ddedt(3,3) = ka/(ka*(r-h)+sc)
-       if (t(1).lt.0.d0) ddedt(1,1) = 0.d0
-    endif
+        ddedt(1, 1) = ka/(ka*(r-h)+sc)
+        ddedt(2, 2) = ka/(ka*(r-h)+sc)
+        ddedt(3, 3) = ka/(ka*(r-h)+sc)
+        if (t(1) .lt. 0.d0) ddedt(1, 1) = 0.d0
+    end if
 !
 999 continue
 !

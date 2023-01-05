@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -54,31 +54,30 @@ subroutine liglma(ligrel, nbma, linuma, linute)
     call jelira(ligrel//'.LIEL', 'NMAXOC', nbgrel)
 
 !   -- calcul de nbma :
-    nbma=0
-    do igrel=1,nbgrel
+    nbma = 0
+    do igrel = 1, nbgrel
         call jelira(jexnum(ligrel//'.LIEL', igrel), 'LONMAX', n1)
-        nbel=n1-1
-        nbma=nbma+nbel
+        nbel = n1-1
+        nbma = nbma+nbel
     end do
-    ASSERT(nbma.gt.0)
-
+    ASSERT(nbma .gt. 0)
 
 !    -- calcul de linuma et linute :
     call wkvect(linuma, 'V V I', nbma, jnuma)
     call wkvect(linute, 'V V I', nbma, jnute)
 
-    ico=0
-    do igrel=1,nbgrel
+    ico = 0
+    do igrel = 1, nbgrel
         call jelira(jexnum(ligrel//'.LIEL', igrel), 'LONMAX', n1)
         call jeveuo(jexnum(ligrel//'.LIEL', igrel), 'L', jliel)
-        nbel=n1-1
-        nute=zi(jliel-1+n1)
-        do iel=1,nbel
-            ico=ico+1
-            numa=zi(jliel-1+iel)
-            zi(jnuma-1+ico)=numa
-            zi(jnute-1+ico)=nute
-        enddo
+        nbel = n1-1
+        nute = zi(jliel-1+n1)
+        do iel = 1, nbel
+            ico = ico+1
+            numa = zi(jliel-1+iel)
+            zi(jnuma-1+ico) = numa
+            zi(jnute-1+ico) = nute
+        end do
     end do
 
     call jedema()

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -75,11 +75,11 @@ subroutine typeco(char, noma)
 ! --- INITIALISATIONS
 !
     defico = char(1:8)//'.CONTACT'
-    nzoco = cfdisi(defico,'NZOCO' )
-    nnoco = cfdisi(defico,'NNOCO' )
-    nmaco = cfdisi(defico,'NMACO' )
-    ntmae = cfdisi(defico,'NTMAE' )
-    iform = cfdisi(defico,'FORMULATION')
+    nzoco = cfdisi(defico, 'NZOCO')
+    nnoco = cfdisi(defico, 'NNOCO')
+    nmaco = cfdisi(defico, 'NMACO')
+    ntmae = cfdisi(defico, 'NTMAE')
+    iform = cfdisi(defico, 'FORMULATION')
 !
 ! --- ACCES OBJETS JEVEUX
 !
@@ -99,19 +99,19 @@ subroutine typeco(char, noma)
 ! --- REMPLISSAGE DU TABLEAU TYPE_NOEUD
 !
     do izone = 1, nzoco
-        nbnoe = mminfi(defico,'NBNOE' ,izone )
-        nbnom = mminfi(defico,'NBNOM' ,izone )
-        jdecne = mminfi(defico,'JDECNE',izone )
-        jdecnm = mminfi(defico,'JDECNM',izone )
+        nbnoe = mminfi(defico, 'NBNOE', izone)
+        nbnom = mminfi(defico, 'NBNOM', izone)
+        jdecne = mminfi(defico, 'JDECNE', izone)
+        jdecnm = mminfi(defico, 'JDECNM', izone)
 !
         do inom = 1, nbnom
-            posnom = jdecnm + inom
+            posnom = jdecnm+inom
             zi(jtypno+ztypn*(posnom-1)+1-1) = 1
             zi(jtypno+ztypn*(posnom-1)+2-1) = izone
         end do
 !
         do inoe = 1, nbnoe
-            posnoe = jdecne + inoe
+            posnoe = jdecne+inoe
             zi(jtypno+ztypn*(posnoe-1)+1-1) = -1
             zi(jtypno+ztypn*(posnoe-1)+2-1) = izone
         end do
@@ -123,14 +123,14 @@ subroutine typeco(char, noma)
     indmae = 0
     indmam = 0
     do izone = 1, nzoco
-        nbmae = mminfi(defico,'NBMAE' ,izone )
-        nbmam = mminfi(defico,'NBMAM' ,izone )
-        jdecme = mminfi(defico,'JDECME',izone )
-        jdecmm = mminfi(defico,'JDECMM',izone )
+        nbmae = mminfi(defico, 'NBMAE', izone)
+        nbmam = mminfi(defico, 'NBMAM', izone)
+        jdecme = mminfi(defico, 'JDECME', izone)
+        jdecmm = mminfi(defico, 'JDECMM', izone)
 !
         do imam = 1, nbmam
-            posmam = jdecmm + imam
-            indmam = indmam + 1
+            posmam = jdecmm+imam
+            indmam = indmam+1
             zi(jtypma+ztypm*(posmam-1)+1-1) = 1
             zi(jtypma+ztypm*(posmam-1)+2-1) = indmam
             if (iform .eq. 2) then
@@ -139,13 +139,13 @@ subroutine typeco(char, noma)
                 if (alias .eq. 'PO1') then
                     call jenuno(jexnum(noma//'.NOMMAI', nummam), nommam)
                     call utmess('F', 'CONTACT3_2', sk=nommam)
-                endif
-            endif
+                end if
+            end if
         end do
 !
         do imae = 1, nbmae
-            posmae = jdecme + imae
-            indmae = indmae + 1
+            posmae = jdecme+imae
+            indmae = indmae+1
             zi(jtypma+ztypm*(posmae-1)+1-1) = -1
             zi(jtypma+ztypm*(posmae-1)+2-1) = indmae
             if (iform .eq. 2) then
@@ -154,8 +154,8 @@ subroutine typeco(char, noma)
                 if (alias .eq. 'PO1') then
                     call jenuno(jexnum(noma//'.NOMMAI', nummae), nommae)
                     call utmess('F', 'CONTACT3_2', sk=nommae)
-                endif
-            endif
+                end if
+            end if
         end do
     end do
 !
@@ -163,21 +163,21 @@ subroutine typeco(char, noma)
 !
     indmae = 0
     do izone = 1, nzoco
-        nbmae = mminfi(defico,'NBMAE' ,izone )
-        jdecme = mminfi(defico,'JDECME',izone )
+        nbmae = mminfi(defico, 'NBMAE', izone)
+        jdecme = mminfi(defico, 'JDECME', izone)
 !
         do imae = 1, nbmae
-            posmae = jdecme + imae
-            indmae = indmae + 1
+            posmae = jdecme+imae
+            indmae = indmae+1
             call cfnumm(defico, posmae, nummae)
             if (iform .eq. 2) then
-                typint = mminfi(defico,'INTEGRATION',izone )
+                typint = mminfi(defico, 'INTEGRATION', izone)
                 call mmelin(noma, nummae, typint, nptm)
                 call mmssfr(defico, izone, posmae, ndexfr(1))
             else
                 nptm = 0
                 ndexfr(1) = 0
-            endif
+            end if
             zi(jmaesc+zmaes*(indmae-1)+1-1) = posmae
             zi(jmaesc+zmaes*(indmae-1)+2-1) = izone
             zi(jmaesc+zmaes*(indmae-1)+3-1) = nptm
@@ -189,16 +189,16 @@ subroutine typeco(char, noma)
 !
     do ino = 1, nnoco
         posno = ino
-        if (zi(jtypno+ztypn*(posno -1)+1-1) .eq. 0) then
+        if (zi(jtypno+ztypn*(posno-1)+1-1) .eq. 0) then
             ASSERT(.false.)
-        endif
+        end if
     end do
 !
     do ima = 1, nmaco
         posma = ima
-        if (zi(jtypma+ztypm*(posma -1)+1-1) .eq. 0) then
+        if (zi(jtypma+ztypm*(posma-1)+1-1) .eq. 0) then
             ASSERT(.false.)
-        endif
+        end if
     end do
 !
     call jedema()

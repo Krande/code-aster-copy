@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -37,13 +37,13 @@ subroutine cumuma(i, j, pmat, coef, gmat)
     integer :: jj
     real(kind=8) :: coef
 !-----------------------------------------------------------------------
-    i1 = (i-1) * 6
-    j1 = (j-1) * 6
+    i1 = (i-1)*6
+    j1 = (j-1)*6
     do j2 = 1, 6
-        jj = j1 + j2
+        jj = j1+j2
         do i2 = 1, 6
-            ii = i1 + i2
-            gmat(ii,jj) = gmat(ii,jj) + coef*pmat(i2,j2)
+            ii = i1+i2
+            gmat(ii, jj) = gmat(ii, jj)+coef*pmat(i2, j2)
         end do
     end do
 end subroutine

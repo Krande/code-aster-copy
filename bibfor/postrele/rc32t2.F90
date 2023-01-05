@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -80,11 +80,11 @@ subroutine rc32t2()
 !
     jvorig = '&&RC3200.TRANSIT.ORIG'
     jvextr = '&&RC3200.TRANSIT.EXTR'
-    call jecrec(jvorig, 'V V R', 'NU', 'DISPERSE', 'VARIABLE',&
+    call jecrec(jvorig, 'V V R', 'NU', 'DISPERSE', 'VARIABLE', &
                 nbsitu)
-    call jecrec(jvextr, 'V V R', 'NU', 'DISPERSE', 'VARIABLE',&
+    call jecrec(jvextr, 'V V R', 'NU', 'DISPERSE', 'VARIABLE', &
                 nbsitu)
-    call jecrec('&&RC3200.TEMPCST', 'V V R', 'NU', 'DISPERSE', 'VARIABLE',&
+    call jecrec('&&RC3200.TEMPCST', 'V V R', 'NU', 'DISPERSE', 'VARIABLE', &
                 nbsitu)
 !
     call getfac('RESU_THER', nbther)
@@ -116,38 +116,38 @@ subroutine rc32t2()
         call getvis('SITUATION', 'NUME_RESU_PRES', iocc=iocc, scal=nume2, nbret=n2)
         call getvis('SITUATION', 'NUME_RESU_MECA', iocc=iocc, scal=nume3, nbret=n3)
         call getvid('SITUATION', 'TABL_TEMP', iocc=iocc, scal=tabtemp, nbret=n4)
-        nn= n1+n2+n3
+        nn = n1+n2+n3
         if ((nn+n4) .eq. 0) goto 888
 !
         if (n1 .ne. 0) then
             do ither = 1, nbther, 1
                 call getvis('RESU_THER', 'NUME_RESU_THER', iocc=ither, scal=numether, nbret=n5)
                 if (numether .eq. nume1) then
-                    call getvid('RESU_THER', 'TABL_RESU_THER', iocc=ither, scal=tabther,&
+                    call getvid('RESU_THER', 'TABL_RESU_THER', iocc=ither, scal=tabther, &
                                 nbret=n5)
-                endif
+                end if
             end do
-        endif
+        end if
 !
         if (n2 .ne. 0) then
             do ipres = 1, nbpres, 1
                 call getvis('RESU_PRES', 'NUME_RESU_PRES', iocc=ipres, scal=numepres, nbret=n5)
                 if (numepres .eq. nume2) then
-                    call getvid('RESU_PRES', 'TABL_RESU_PRES', iocc=ipres, scal=tabpres,&
+                    call getvid('RESU_PRES', 'TABL_RESU_PRES', iocc=ipres, scal=tabpres, &
                                 nbret=n5)
-                endif
+                end if
             end do
-        endif
+        end if
 !
         if (n3 .ne. 0) then
             do imeca = 1, nbmeca, 1
                 call getvis('RESU_MECA', 'NUME_RESU_MECA', iocc=imeca, scal=numemeca, nbret=n5)
                 if (numemeca .eq. nume3) then
-                    call getvid('RESU_MECA', 'TABL_RESU_MECA', iocc=imeca, scal=tabmeca,&
+                    call getvid('RESU_MECA', 'TABL_RESU_MECA', iocc=imeca, scal=tabmeca, &
                                 nbret=n5)
-                endif
+                end if
             end do
-        endif
+        end if
 !----------------------------------------------------
 ! ------ RECUPERATION DES INSTANTS ET DES ABSCISSES
 !----------------------------------------------------
@@ -160,7 +160,7 @@ subroutine rc32t2()
             tableok = tabmeca
         else
             tableok = tabtemp
-        endif
+        end if
 !
 ! --------- on verifie l'ordre des noeuds de la table
         call rcveri(tableok)
@@ -168,22 +168,22 @@ subroutine rc32t2()
 ! --------- on recupere les instants de la table
         call tbexip(tableok, valek(1), exist, k8b)
         if (.not. exist) then
-            valk (1) = tableok
-            valk (2) = valek(1)
+            valk(1) = tableok
+            valk(2) = valek(1)
             call utmess('F', 'POSTRCCM_1', nk=2, valk=valk)
-        endif
-        call tbexv1(tableok, valek(1), 'RC.INSTANT', 'V', nbinst,&
+        end if
+        call tbexv1(tableok, valek(1), 'RC.INSTANT', 'V', nbinst, &
                     k8b)
         call jeveuo('RC.INSTANT', 'L', jinst)
 !
 ! --------- on recupere les abscisses curvilignes de la table
         call tbexip(tableok, valek(2), exist, k8b)
         if (.not. exist) then
-            valk (1) = tableok
-            valk (2) = valek(2)
+            valk(1) = tableok
+            valk(2) = valek(2)
             call utmess('F', 'POSTRCCM_1', nk=2, valk=valk)
-        endif
-        call tbexv1(tableok, valek(2), 'RC.ABSC', 'V', nbabsc,&
+        end if
+        call tbexv1(tableok, valek(2), 'RC.ABSC', 'V', nbabsc, &
                     k8b)
         call jeveuo('RC.ABSC', 'L', jabsc)
 !
@@ -194,22 +194,22 @@ subroutine rc32t2()
         if (l .gt. 1) then
             if (abs(verifori-zr(jabsc)) .gt. 1e-8) call utmess('F', 'POSTRCCM_45')
             if (abs(verifextr-zr(jabsc+nbabsc-1)) .gt. 1e-8) call utmess('F', 'POSTRCCM_45')
-        endif
+        end if
 !
 ! ------ ON VERIFIE LA COHERENCE DES TABLES (THERMIQUE, PRESSION ET MECA)
         if (n1 .ne. 0) then
             if (n2 .ne. 0) then
                 call rcver1('MECANIQUE', tabpres, tabther)
-            endif
+            end if
             if (n3 .ne. 0) then
                 call rcver1('MECANIQUE', tabmeca, tabther)
-            endif
-        endif
+            end if
+        end if
         if (n2 .ne. 0) then
             if (n3 .ne. 0) then
                 call rcver1('MECANIQUE', tabmeca, tabpres)
-            endif
-        endif
+            end if
+        end if
 !
         if (nn .eq. 0) then
             if (n4 .ne. 0) then
@@ -218,38 +218,38 @@ subroutine rc32t2()
                 call jeecra(jexnum('&&RC3200.TEMPCST', iocc), 'LONUTI', 2)
                 call jeveuo(jexnum('&&RC3200.TEMPCST', iocc), 'E', jtemp)
 !
-                vale(1)= zr(jinst)
-                vale(2)= zr(jabsc)
-                call tbliva(tabtemp, 2, valek, [ibid], vale,&
-                            [cbid], k8b, crit, prec, 'TEMP',&
-                            k8b, ibid, zr(jtemp), cbid, k8b,&
+                vale(1) = zr(jinst)
+                vale(2) = zr(jabsc)
+                call tbliva(tabtemp, 2, valek, [ibid], vale, &
+                            [cbid], k8b, crit, prec, 'TEMP', &
+                            k8b, ibid, zr(jtemp), cbid, k8b, &
                             iret)
                 if (iret .ne. 0) then
-                    valk (1) = tabtemp
-                    valk (2) = 'TEMP'
-                    valk (3) = valek(1)
-                    valk (4) = valek(2)
-                    call utmess('F', 'POSTRCCM_2', nk=4, valk=valk, nr=2,&
+                    valk(1) = tabtemp
+                    valk(2) = 'TEMP'
+                    valk(3) = valek(1)
+                    valk(4) = valek(2)
+                    call utmess('F', 'POSTRCCM_2', nk=4, valk=valk, nr=2, &
                                 valr=vale)
-                endif
+                end if
 !
-                vale(1)= zr(jinst)
-                vale(2)= zr(jabsc+nbabsc-1)
-                call tbliva(tabtemp, 2, valek, [ibid], vale,&
-                            [cbid], k8b, crit, prec, 'TEMP',&
-                            k8b, ibid, zr(jtemp+1), cbid, k8b,&
+                vale(1) = zr(jinst)
+                vale(2) = zr(jabsc+nbabsc-1)
+                call tbliva(tabtemp, 2, valek, [ibid], vale, &
+                            [cbid], k8b, crit, prec, 'TEMP', &
+                            k8b, ibid, zr(jtemp+1), cbid, k8b, &
                             iret)
                 if (iret .ne. 0) then
-                    valk (1) = tabtemp
-                    valk (2) = 'TEMP'
-                    valk (3) = valek(1)
-                    valk (4) = valek(2)
-                    call utmess('F', 'POSTRCCM_2', nk=4, valk=valk, nr=2,&
+                    valk(1) = tabtemp
+                    valk(2) = 'TEMP'
+                    valk(3) = valek(1)
+                    valk(4) = valek(2)
+                    call utmess('F', 'POSTRCCM_2', nk=4, valk=valk, nr=2, &
                                 valr=vale)
-                endif
-            endif
+                end if
+            end if
             goto 888
-        endif
+        end if
 !---------------------------------------------------------------
 ! ------ on stocke d'abord le nombre d'instant total, puis l'instant calculé
 ! ------ puis CREATION DES nbinst*8 TABLES A 6 composantes de contraintes
@@ -258,13 +258,13 @@ subroutine rc32t2()
 ! ------ puis CREATION DE nbinst*1 TABLE A 1 composante de température
 !---------------------------------------------------------------
 !
-        AS_ALLOCATE(vr=contraintesth,  size=nbabsc)
-        AS_ALLOCATE(vr=contraintespr,  size=nbabsc)
+        AS_ALLOCATE(vr=contraintesth, size=nbabsc)
+        AS_ALLOCATE(vr=contraintespr, size=nbabsc)
         AS_ALLOCATE(vr=contraintesmec, size=nbabsc)
         AS_ALLOCATE(vr=contraintestot, size=nbabsc)
 !
-        ncmp=6
-        ndim = 1+nbinst+nbinst * 8 * ncmp + nbinst*1*1
+        ncmp = 6
+        ndim = 1+nbinst+nbinst*8*ncmp+nbinst*1*1
         call jecroc(jexnum(jvorig, iocc))
         call jeecra(jexnum(jvorig, iocc), 'LONMAX', ndim)
         call jeecra(jexnum(jvorig, iocc), 'LONUTI', ndim)
@@ -284,33 +284,33 @@ subroutine rc32t2()
 !-------- on vérifie que tous les instants sont dans l'ordre croissant
             if (i .gt. 1) then
                 if (vale(1) .le. zr(jinst-1+i-1)) call utmess('A', 'POSTRCCM_55')
-            endif
-            zr(jorig+50*(i-1)+1)= zr(jinst-1+i)
-            zr(jextr+50*(i-1)+1)= zr(jinst-1+i)
+            end if
+            zr(jorig+50*(i-1)+1) = zr(jinst-1+i)
+            zr(jextr+50*(i-1)+1) = zr(jinst-1+i)
 !
             do j = 1, ncmp
 !
                 do k = 1, nbabsc
                     vale(2) = zr(jabsc-1+k)
                     if (n1 .ne. 0) then
-                        call tbliva(tabther, 2, valek, [ibid], vale,&
-                                    [cbid], k8b, crit, prec, nocmp(j),&
-                                    k8b, ibid, contraintesth(k), cbid, k8b,&
+                        call tbliva(tabther, 2, valek, [ibid], vale, &
+                                    [cbid], k8b, crit, prec, nocmp(j), &
+                                    k8b, ibid, contraintesth(k), cbid, k8b, &
                                     iret)
-                    endif
+                    end if
                     if (n2 .ne. 0) then
-                        call tbliva(tabpres, 2, valek, [ibid], vale,&
-                                    [cbid], k8b, crit, prec, nocmp(j),&
-                                    k8b, ibid, contraintespr(k), cbid, k8b,&
+                        call tbliva(tabpres, 2, valek, [ibid], vale, &
+                                    [cbid], k8b, crit, prec, nocmp(j), &
+                                    k8b, ibid, contraintespr(k), cbid, k8b, &
                                     iret)
-                    endif
+                    end if
                     if (n3 .ne. 0) then
-                        call tbliva(tabmeca, 2, valek, [ibid], vale,&
-                                    [cbid], k8b, crit, prec, nocmp(j),&
-                                    k8b, ibid, contraintesmec(k), cbid, k8b,&
+                        call tbliva(tabmeca, 2, valek, [ibid], vale, &
+                                    [cbid], k8b, crit, prec, nocmp(j), &
+                                    k8b, ibid, contraintesmec(k), cbid, k8b, &
                                     iret)
-                    endif
-                    contraintestot(k)=contraintesth(k)+contraintespr(k)+contraintesmec(k)
+                    end if
+                    contraintestot(k) = contraintesth(k)+contraintespr(k)+contraintesmec(k)
                 end do
                 zr(jorig+50*(i-1)+1+j) = contraintestot(1)
                 zr(jorig+50*(i-1)+1+6+j) = contraintespr(1)+contraintesmec(1)
@@ -322,57 +322,57 @@ subroutine rc32t2()
                 call rc32my(nbabsc, zr(jabsc), contraintespr, momen0pres, momen1pres)
                 call rc32my(nbabsc, zr(jabsc), contraintesmec, momen0mec, momen1mec)
 !
-                zr(jorig+50*(i-1)+1+12+j) = momen0 - 0.5d0*momen1
+                zr(jorig+50*(i-1)+1+12+j) = momen0-0.5d0*momen1
                 zr(jorig+50*(i-1)+1+18+j) = momen0pres
-                zr(jorig+50*(i-1)+1+24+j) = momen0ther - 0.5d0*momen1ther
-                zr(jorig+50*(i-1)+1+30+j) = momen0pres - 0.5d0*momen1pres
-                zr(jorig+50*(i-1)+1+36+j) = momen0mec - 0.5d0*momen1mec
-                zr(jorig+50*(i-1)+1+42+j) = - 0.5d0*momen1ther
+                zr(jorig+50*(i-1)+1+24+j) = momen0ther-0.5d0*momen1ther
+                zr(jorig+50*(i-1)+1+30+j) = momen0pres-0.5d0*momen1pres
+                zr(jorig+50*(i-1)+1+36+j) = momen0mec-0.5d0*momen1mec
+                zr(jorig+50*(i-1)+1+42+j) = -0.5d0*momen1ther
 !
-                zr(jextr+50*(i-1)+1+12+j) = momen0 + 0.5d0*momen1
+                zr(jextr+50*(i-1)+1+12+j) = momen0+0.5d0*momen1
                 zr(jextr+50*(i-1)+1+18+j) = momen0pres
-                zr(jextr+50*(i-1)+1+24+j) = momen0ther + 0.5d0*momen1ther
-                zr(jextr+50*(i-1)+1+30+j) = momen0pres + 0.5d0*momen1pres
-                zr(jextr+50*(i-1)+1+36+j) = momen0mec + 0.5d0*momen1mec
-                zr(jextr+50*(i-1)+1+42+j) = + 0.5d0*momen1ther
+                zr(jextr+50*(i-1)+1+24+j) = momen0ther+0.5d0*momen1ther
+                zr(jextr+50*(i-1)+1+30+j) = momen0pres+0.5d0*momen1pres
+                zr(jextr+50*(i-1)+1+36+j) = momen0mec+0.5d0*momen1mec
+                zr(jextr+50*(i-1)+1+42+j) = +0.5d0*momen1ther
 !
             end do
 !
             vale(2) = zr(jabsc)
             zr(jorig+50*(i-1)+1+48) = 0.d0
             if (n4 .ne. 0) then
-                call tbliva(tabtemp, 2, valek, [ibid], vale,&
-                            [cbid], k8b, crit, prec, 'TEMP',&
-                            k8b, ibid, temp, cbid, k8b,&
+                call tbliva(tabtemp, 2, valek, [ibid], vale, &
+                            [cbid], k8b, crit, prec, 'TEMP', &
+                            k8b, ibid, temp, cbid, k8b, &
                             iret)
                 if (iret .ne. 0) then
-                    valk (1) = tabtemp
-                    valk (2) = 'TEMP'
-                    valk (3) = valek(1)
-                    valk (4) = valek(2)
-                    call utmess('F', 'POSTRCCM_2', nk=4, valk=valk, nr=2,&
+                    valk(1) = tabtemp
+                    valk(2) = 'TEMP'
+                    valk(3) = valek(1)
+                    valk(4) = valek(2)
+                    call utmess('F', 'POSTRCCM_2', nk=4, valk=valk, nr=2, &
                                 valr=vale)
-                endif
+                end if
                 zr(jorig+50*(i-1)+1+48+1) = temp
-            endif
+            end if
 !
             vale(2) = zr(jabsc-1+nbabsc)
             zr(jextr+50*(i-1)+1+48) = 0.d0
             if (n4 .ne. 0) then
-                call tbliva(tabtemp, 2, valek, [ibid], vale,&
-                            [cbid], k8b, crit, prec, 'TEMP',&
-                            k8b, ibid, temp, cbid, k8b,&
+                call tbliva(tabtemp, 2, valek, [ibid], vale, &
+                            [cbid], k8b, crit, prec, 'TEMP', &
+                            k8b, ibid, temp, cbid, k8b, &
                             iret)
                 if (iret .ne. 0) then
-                    valk (1) = tabtemp
-                    valk (2) = 'TEMP'
-                    valk (3) = valek(1)
-                    valk (4) = valek(2)
-                    call utmess('F', 'POSTRCCM_2', nk=4, valk=valk, nr=2,&
+                    valk(1) = tabtemp
+                    valk(2) = 'TEMP'
+                    valk(3) = valek(1)
+                    valk(4) = valek(2)
+                    call utmess('F', 'POSTRCCM_2', nk=4, valk=valk, nr=2, &
                                 valr=vale)
-                endif
+                end if
                 zr(jextr+50*(i-1)+1+48+1) = temp
-            endif
+            end if
         end do
 !
         call jedetr('RC.INSTANT')

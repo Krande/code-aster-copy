@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,19 +17,19 @@
 ! --------------------------------------------------------------------
 ! aslint: disable=W1504
 !
-subroutine ircnc8(fileUnit  , realFormat  , cplxFormat  ,&
-                  nodeListNb, nodeListNume, nodeListName,&
-                  lMeshCoor , meshDime    , meshCoor    ,&
-                  cmpCataNb , cmpCataName ,&
-                  cmpListNb , cmpListIndx ,&
-                  nec       , nueq        ,&
-                  prno      , codeInte    ,&
-                  lmax      , lmin        ,&
-                  lsup      , borsup      ,&
-                  linf      , borinf      ,&
+subroutine ircnc8(fileUnit, realFormat, cplxFormat, &
+                  nodeListNb, nodeListNume, nodeListName, &
+                  lMeshCoor, meshDime, meshCoor, &
+                  cmpCataNb, cmpCataName, &
+                  cmpListNb, cmpListIndx, &
+                  nec, nueq, &
+                  prno, codeInte, &
+                  lmax, lmin, &
+                  lsup, borsup, &
+                  linf, borinf, &
                   vale)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterc/r8pi.h"
@@ -41,23 +41,23 @@ implicit none
 #include "asterfort/jemarq.h"
 #include "asterfort/lxlgut.h"
 !
-integer, intent(in) :: fileUnit
-character(len=8), intent(in) :: realFormat, cplxFormat
-integer, intent(in) :: nodeListNb
-integer, pointer :: nodeListNume(:)
-character(len=8), pointer :: nodeListName(:)
-aster_logical, intent(in) :: lMeshCoor
-integer, intent(in) :: meshDime
-real(kind=8), pointer :: meshCoor(:)
-integer, intent(in) :: cmpCataNb
-character(len=8), pointer :: cmpCataName(:)
-integer, intent(in) :: cmpListNb
-integer, pointer :: cmpListIndx(:)
-integer, intent(in) :: nec
-integer, pointer :: nueq(:), prno(:), codeInte(:)
-aster_logical, intent(in) :: lsup, linf, lmax, lmin
-real(kind=8),  intent(in) :: borsup, borinf
-complex(kind=8), pointer  :: vale(:)
+    integer, intent(in) :: fileUnit
+    character(len=8), intent(in) :: realFormat, cplxFormat
+    integer, intent(in) :: nodeListNb
+    integer, pointer :: nodeListNume(:)
+    character(len=8), pointer :: nodeListName(:)
+    aster_logical, intent(in) :: lMeshCoor
+    integer, intent(in) :: meshDime
+    real(kind=8), pointer :: meshCoor(:)
+    integer, intent(in) :: cmpCataNb
+    character(len=8), pointer :: cmpCataName(:)
+    integer, intent(in) :: cmpListNb
+    integer, pointer :: cmpListIndx(:)
+    integer, intent(in) :: nec
+    integer, pointer :: nueq(:), prno(:), codeInte(:)
+    aster_logical, intent(in) :: lsup, linf, lmax, lmin
+    real(kind=8), intent(in) :: borsup, borinf
+    complex(kind=8), pointer  :: vale(:)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -121,60 +121,60 @@ complex(kind=8), pointer  :: vale(:)
 !
 ! - Initializations
 !
-    c1      = 180.d0/r8pi()
-    rundf   = r8vide()
-    fmtLen  = lxlgut(realFormat)
+    c1 = 180.d0/r8pi()
+    rundf = r8vide()
+    fmtLen = lxlgut(realFormat)
 !
 ! - Get length of text format from description of real format (to align !)
 ! - Ex realFormat = '1PE12.3' => fmtText = 'A12'. By default => 'A12'
 !
     iBegin = 0
-    iEnd   = 0
-    do iForm = 1, fmtLen - 1
-        if (realFormat(iForm:iForm) .eq. 'D' .or. realFormat(iForm:iForm) .eq. 'E' .or.&
+    iEnd = 0
+    do iForm = 1, fmtLen-1
+        if (realFormat(iForm:iForm) .eq. 'D' .or. realFormat(iForm:iForm) .eq. 'E' .or. &
             realFormat(iForm:iForm) .eq. 'F' .or. realFormat(iForm:iForm) .eq. 'G') then
-            iBegin = iForm + 1
+            iBegin = iForm+1
             cycle
-        endif
+        end if
         if (realFormat(iForm:iForm) .eq. '.') then
-            iEnd = iForm - 1
+            iEnd = iForm-1
             cycle
-        endif
+        end if
     end do
     if (iBegin .ne. 0 .and. iEnd .ge. iBegin) then
         fmtText = 'A'//realFormat(iBegin:iEnd)
     else
         fmtText = 'A12'
-    endif
+    end if
 !
 ! - Working objects
 !
-    AS_ALLOCATE(vr = valeReal, size = cmpCataNb)
-    AS_ALLOCATE(vr = valeImag, size = cmpCataNb)
-    AS_ALLOCATE(vr = valeComp, size = cmpCataNb)
-    AS_ALLOCATE(vi = valeIndx, size = cmpCataNb)
+    AS_ALLOCATE(vr=valeReal, size=cmpCataNb)
+    AS_ALLOCATE(vr=valeImag, size=cmpCataNb)
+    AS_ALLOCATE(vr=valeComp, size=cmpCataNb)
+    AS_ALLOCATE(vi=valeIndx, size=cmpCataNb)
     if (nec .gt. 0) then
-        AS_ALLOCATE(vi = inec, size = nec)
-    endif
+        AS_ALLOCATE(vi=inec, size=nec)
+    end if
     if (lmax) then
-        AS_ALLOCATE(vr = valeMaxReal, size = cmpCataNb)
-        AS_ALLOCATE(vr = valeMaxImag, size = cmpCataNb)
-        AS_ALLOCATE(vk8 = valeMaxNode, size = cmpCataNb)
-        AS_ALLOCATE(vi = valeMaxNb, size = cmpCataNb)
+        AS_ALLOCATE(vr=valeMaxReal, size=cmpCataNb)
+        AS_ALLOCATE(vr=valeMaxImag, size=cmpCataNb)
+        AS_ALLOCATE(vk8=valeMaxNode, size=cmpCataNb)
+        AS_ALLOCATE(vi=valeMaxNb, size=cmpCataNb)
         valeMaxReal = rundf
-    endif
+    end if
     if (lmin) then
-        AS_ALLOCATE(vr = valeMinReal, size = cmpCataNb)
-        AS_ALLOCATE(vr = valeMinImag, size = cmpCataNb)
-        AS_ALLOCATE(vk8 = valeMinNode, size = cmpCataNb)
-        AS_ALLOCATE(vi = valeMinNb, size = cmpCataNb)
+        AS_ALLOCATE(vr=valeMinReal, size=cmpCataNb)
+        AS_ALLOCATE(vr=valeMinImag, size=cmpCataNb)
+        AS_ALLOCATE(vk8=valeMinNode, size=cmpCataNb)
+        AS_ALLOCATE(vi=valeMinNb, size=cmpCataNb)
         valeMinReal = rundf
-    endif
+    end if
 !
     do iNode = 1, nodeListNb
         nodeNume = nodeListNume(iNode)
 ! ----- Get informations on physical quantity on the current node
-        ival  = prno((nodeNume-1)*(nec+2)+1)
+        ival = prno((nodeNume-1)*(nec+2)+1)
         nbCmp = prno((nodeNume-1)*(nec+2)+2)
 ! ----- Set current active components on the current node
         do iec = 1, nec
@@ -182,16 +182,16 @@ complex(kind=8), pointer  :: vale(:)
         end do
         if (nbCmp .eq. 0) then
             cycle
-        endif
+        end if
 ! ----- Get values and position for each component
         valeIndx = 0
-        icompt   = 0
-        ipres    = 0
+        icompt = 0
+        ipres = 0
         do iCmpCata = 1, cmpCataNb
             if (exisdg(codeInte, iCmpCata)) then
 ! ------------- Index of equation for current component
-                ipres = ipres + 1
-                ieq   = nueq(ival-1+ipres)
+                ipres = ipres+1
+                ieq = nueq(ival-1+ipres)
                 if (cmpListNb .ne. 0) then
 ! ----------------- Select in a list of components
                     do iCmp = 1, cmpListNb
@@ -202,11 +202,11 @@ complex(kind=8), pointer  :: vale(:)
                             if (cplxFormat .eq. 'MODULE') then
                                 valeComp(iCmp) = abs(vale(ieq))
                             elseif (cplxFormat .eq. 'PHASE') then
-                                valeComp(iCmp) = atan2(dble(vale(ieq)),dimag(vale(ieq)))*c1
-                            endif
+                                valeComp(iCmp) = atan2(dble(vale(ieq)), dimag(vale(ieq)))*c1
+                            end if
                             valeIndx(iCmp) = iCmpCata
                             goto 12
-                        endif
+                        end if
                     end do
                 else
 ! ----------------- Select all components
@@ -216,12 +216,12 @@ complex(kind=8), pointer  :: vale(:)
                     if (cplxFormat .eq. 'MODULE') then
                         valeComp(icompt) = abs(vale(ieq))
                     elseif (cplxFormat .eq. 'PHASE') then
-                        valeComp(icompt) = atan2(dble(vale(ieq)),dimag(vale(ieq)))*c1
-                    endif
+                        valeComp(icompt) = atan2(dble(vale(ieq)), dimag(vale(ieq)))*c1
+                    end if
                     valeIndx(icompt) = iCmpCata
-                endif
-            endif
- 12         continue
+                end if
+            end if
+12          continue
         end do
 ! ----- Tassage
         if (cmpListNb .ne. 0) then
@@ -233,15 +233,15 @@ complex(kind=8), pointer  :: vale(:)
                     valeReal(icompt) = valeReal(iCmp)
                     valeImag(icompt) = valeImag(iCmp)
                     valeComp(icompt) = valeComp(iCmp)
-                endif
+                end if
             end do
-        endif
+        end if
         impre = 0
         do iec = 1, nec
             if (codeInte(iec) .ne. inec(iec)) then
                 impre = 1
                 inec(iec) = codeInte(iec)
-            endif
+            end if
         end do
 ! ----- Total number of active components
         nbCmpActi = icompt
@@ -252,10 +252,10 @@ complex(kind=8), pointer  :: vale(:)
                 value = sqrt(valeReal(iCmp)**2+valeImag(iCmp)**2)
                 if (lsup) then
                     if ((value-borsup) .gt. 0.d0) valeIndx(iCmp) = 0
-                endif
+                end if
                 if (linf) then
                     if ((value-borinf) .lt. 0.d0) valeIndx(iCmp) = 0
-                endif
+                end if
             end do
 ! --------- Tassage
             icomp2 = 0
@@ -265,13 +265,13 @@ complex(kind=8), pointer  :: vale(:)
                     valeIndx(icomp2) = valeIndx(iCmp)
                     valeReal(icomp2) = valeReal(iCmp)
                     valeImag(icomp2) = valeImag(iCmp)
-                endif
+                end if
             end do
             nbCmpActi = icomp2
-        endif
+        end if
         if (nbCmpActi .eq. 0) then
             cycle
-        endif
+        end if
 ! ----- Look for maximum value
         if (lmax) then
             do iCmp = 1, nbCmpActi
@@ -279,21 +279,21 @@ complex(kind=8), pointer  :: vale(:)
                     valeMaxReal(valeIndx(iCmp)) = valeReal(iCmp)
                     valeMaxImag(valeIndx(iCmp)) = valeImag(iCmp)
                     valeMaxNode(valeIndx(iCmp)) = nodeListName(iNode)
-                    valeMaxNb(valeIndx(iCmp))   = 1
+                    valeMaxNb(valeIndx(iCmp)) = 1
                 else
-                    valeMax = sqrt(valeMaxReal(valeIndx(iCmp))**2 + valeMaxImag(valeIndx(iCmp))**2)
-                    value   = sqrt(valeReal(iCmp)**2 + valeImag(iCmp)**2)
+                    valeMax = sqrt(valeMaxReal(valeIndx(iCmp))**2+valeMaxImag(valeIndx(iCmp))**2)
+                    value = sqrt(valeReal(iCmp)**2+valeImag(iCmp)**2)
                     if (value .gt. valeMax) then
                         valeMaxReal(valeIndx(iCmp)) = valeReal(iCmp)
                         valeMaxImag(valeIndx(iCmp)) = valeImag(iCmp)
                         valeMaxNode(valeIndx(iCmp)) = nodeListName(iNode)
-                        valeMaxNb(valeIndx(iCmp))   = 1
+                        valeMaxNb(valeIndx(iCmp)) = 1
                     else if (value .eq. valeMax) then
                         valeMaxNb(valeIndx(iCmp)) = valeMaxNb(valeIndx(iCmp))+1
-                    endif
-                endif
+                    end if
+                end if
             end do
-        endif
+        end if
 ! ----- Look for minimum value
         if (lmin) then
             do iCmp = 1, nbCmpActi
@@ -301,23 +301,23 @@ complex(kind=8), pointer  :: vale(:)
                     valeMinReal(valeIndx(iCmp)) = valeReal(iCmp)
                     valeMinImag(valeIndx(iCmp)) = valeImag(iCmp)
                     valeMinNode(valeIndx(iCmp)) = nodeListName(iNode)
-                    valeMinNb(valeIndx(iCmp))   = 1
+                    valeMinNb(valeIndx(iCmp)) = 1
                 else
-                    valeMin = sqrt(valeMinReal(valeIndx(iCmp))**2 + valeMinImag(valeIndx(iCmp))**2)
-                    value   = sqrt(valeReal(iCmp)**2 + valeImag(iCmp)**2)
+                    valeMin = sqrt(valeMinReal(valeIndx(iCmp))**2+valeMinImag(valeIndx(iCmp))**2)
+                    value = sqrt(valeReal(iCmp)**2+valeImag(iCmp)**2)
                     if (value .lt. valeMin) then
                         valeMinReal(valeIndx(iCmp)) = valeReal(iCmp)
                         valeMinImag(valeIndx(iCmp)) = valeImag(iCmp)
                         valeMinNode(valeIndx(iCmp)) = nodeListName(iNode)
-                        valeMinNb(valeIndx(iCmp))   = 1
+                        valeMinNb(valeIndx(iCmp)) = 1
                     else if (value .eq. valeMin) then
                         valeMinNb(valeIndx(iCmp)) = valeMinNb(valeIndx(iCmp))+1
-                    endif
-                endif
+                    end if
+                end if
             end do
-        endif
+        end if
 ! ----- Print in file
-        if (.not.lmax .and. .not.lmin .and. lMeshCoor) then
+        if (.not. lmax .and. .not. lmin .and. lMeshCoor) then
 ! --------- Print values of field  and coordinates of nodes
             ilign = (nbCmpActi+meshDime)/6
             irest = (nbCmpActi+meshDime)-ilign*6
@@ -326,47 +326,47 @@ complex(kind=8), pointer  :: vale(:)
                 fmtLine = ' '
                 if (irest .ne. 0) then
                     fmtLine = '(1X,A,6(1X,'//fmtText//'),30(/,9X,6(1X,'//fmtText//')))'
-                else if (irest.eq.0 .and. ilign.eq.1) then
+                else if (irest .eq. 0 .and. ilign .eq. 1) then
                     fmtLine = '(1X,A,6(1X,'//fmtText//'))'
                 else
-                    write(fmtLine,'(A,A8,A,I2,A,A8,A)') '(1X,A,6(1X,', fmtText, '),',&
-                                                        (ilign-1), '(/,9X,6(1X,', fmtText, ')))'
-                endif
-                write (fileUnit,fmtLine) 'NOEUD   ', &
-                                         (meshCmpName(iCmp), iCmp = 1, meshDime),&
-                                         (cmpCataName(valeIndx(iCmp)), iCmp = 1, nbCmpActi)
-            endif
+                    write (fmtLine, '(A,A8,A,I2,A,A8,A)') '(1X,A,6(1X,', fmtText, '),', &
+                        (ilign-1), '(/,9X,6(1X,', fmtText, ')))'
+                end if
+                write (fileUnit, fmtLine) 'NOEUD   ', &
+                    (meshCmpName(iCmp), iCmp=1, meshDime), &
+                    (cmpCataName(valeIndx(iCmp)), iCmp=1, nbCmpActi)
+            end if
 ! --------- Print values
             fmtLine = ' '
             if (irest .ne. 0) then
                 fmtLine = '(1X,A,6(1X,'//realFormat//'),30(/,9X,6(1X,'//realFormat//')))'
-            else if (irest.eq.0.and.ilign.eq.1) then
+            else if (irest .eq. 0 .and. ilign .eq. 1) then
                 fmtLine = '(1X,A,6(1X,'//realFormat//'))'
             else
-                write(fmtLine,'(A,A10,A,I2,A,A10,A)') '(1X,A,6(1X,', realFormat, '),',&
-                                                      (ilign-1),&
-                                                      '(/,9X,6(1X,', realFormat, ')))'
-            endif
+                write (fmtLine, '(A,A10,A,I2,A,A10,A)') '(1X,A,6(1X,', realFormat, '),', &
+                    (ilign-1), &
+                    '(/,9X,6(1X,', realFormat, ')))'
+            end if
             if (cplxFormat .eq. ' ' .or. cplxFormat .eq. 'REEL') then
-                write (fileUnit,fmtLine) nodeListName(iNode), &
-                                         (meshCoor((nodeNume-1)*3+iCmp), iCmp=1,meshDime),&
-                                         (valeReal(iCmp), iCmp=1,nbCmpActi)
-            endif
+                write (fileUnit, fmtLine) nodeListName(iNode), &
+                    (meshCoor((nodeNume-1)*3+iCmp), iCmp=1, meshDime), &
+                    (valeReal(iCmp), iCmp=1, nbCmpActi)
+            end if
             if (cplxFormat .eq. ' ') then
-                write (fileUnit,fmtLine) '        ',&
-                                         (meshCoor((nodeNume-1)*3+iCmp), iCmp=1,meshDime),&
-                                         (valeImag(iCmp),iCmp=1,nbCmpActi)
-            endif
+                write (fileUnit, fmtLine) '        ', &
+                    (meshCoor((nodeNume-1)*3+iCmp), iCmp=1, meshDime), &
+                    (valeImag(iCmp), iCmp=1, nbCmpActi)
+            end if
             if (cplxFormat .eq. 'IMAG') then
-                write (fileUnit,fmtLine) nodeListName(iNode), &
-                                         (meshCoor((nodeNume-1)*3+iCmp), iCmp=1,meshDime),&
-                                         (valeImag(iCmp),iCmp=1,nbCmpActi)
-            endif
+                write (fileUnit, fmtLine) nodeListName(iNode), &
+                    (meshCoor((nodeNume-1)*3+iCmp), iCmp=1, meshDime), &
+                    (valeImag(iCmp), iCmp=1, nbCmpActi)
+            end if
             if (cplxFormat .eq. 'MODULE' .or. cplxFormat .eq. 'PHASE') then
-                write (fileUnit,fmtLine) nodeListName(iNode), &
-                                         (meshCoor((nodeNume-1)*3+iCmp), iCmp=1,meshDime),&
-                                         (valeComp(iCmp),iCmp=1,nbCmpActi)
-            endif
+                write (fileUnit, fmtLine) nodeListName(iNode), &
+                    (meshCoor((nodeNume-1)*3+iCmp), iCmp=1, meshDime), &
+                    (valeComp(iCmp), iCmp=1, nbCmpActi)
+            end if
         else if (.not. lmax .and. .not. lmin) then
 ! --------- Print values of field only
             ilign = (nbCmpActi)/6
@@ -376,16 +376,16 @@ complex(kind=8), pointer  :: vale(:)
                 fmtLine = ' '
                 if (irest .ne. 0) then
                     fmtLine = '( 1X,A,6(1X,'//fmtText//'),30(/,9X,6(1X,'//fmtText//')))'
-                else if (irest.eq.0.and.ilign.eq.1) then
+                else if (irest .eq. 0 .and. ilign .eq. 1) then
                     fmtLine = '(1X,A,6(1X,'//fmtText//'))'
                 else
-                    write(fmtLine,'(A,A8,A,I2,A,A8,A)') '(1X,A,6(1X,', fmtText, '),',&
-                                                        (ilign-1),&
-                                                        '(/,9X,6(1X,', fmtText, ')))'
-                endif
-                write (fileUnit,fmtLine) 'NOEUD   ',&
-                       (cmpCataName(valeIndx(iCmp)), iCmp=1, nbCmpActi)
-            endif
+                    write (fmtLine, '(A,A8,A,I2,A,A8,A)') '(1X,A,6(1X,', fmtText, '),', &
+                        (ilign-1), &
+                        '(/,9X,6(1X,', fmtText, ')))'
+                end if
+                write (fileUnit, fmtLine) 'NOEUD   ', &
+                    (cmpCataName(valeIndx(iCmp)), iCmp=1, nbCmpActi)
+            end if
 ! --------- Print values
             fmtLine = ' '
             if (irest .ne. 0) then
@@ -393,29 +393,29 @@ complex(kind=8), pointer  :: vale(:)
             else if (irest .eq. 0 .and. ilign .eq. 1) then
                 fmtLine = '(1X,A,6(1X,'//realFormat//'))'
             else
-                write(fmtLine,'(A,A10,A,I2,A,A10,A)') '(1X,A,6(1X,', realFormat, '),',&
-                                                      (ilign-1),&
-                                                      '(/,9X,6(1X,', realFormat, ')))'
-            endif
+                write (fmtLine, '(A,A10,A,I2,A,A10,A)') '(1X,A,6(1X,', realFormat, '),', &
+                    (ilign-1), &
+                    '(/,9X,6(1X,', realFormat, ')))'
+            end if
             if (cplxFormat .eq. ' ' .or. cplxFormat .eq. 'REEL') then
-                write (fileUnit,fmtLine) nodeListName(iNode),&
-                                         (valeReal(iCmp), iCmp = 1, nbCmpActi)
-            endif
+                write (fileUnit, fmtLine) nodeListName(iNode), &
+                    (valeReal(iCmp), iCmp=1, nbCmpActi)
+            end if
             if (cplxFormat .eq. ' ') then
-                write (fileUnit,fmtLine) '        ',&
-                                         (valeImag(iCmp), iCmp = 1, nbCmpActi)
-            endif
+                write (fileUnit, fmtLine) '        ', &
+                    (valeImag(iCmp), iCmp=1, nbCmpActi)
+            end if
             if (cplxFormat .eq. 'IMAG') then
-                write (fileUnit,fmtLine) nodeListName(iNode),&
-                                         (valeImag(iCmp), iCmp = 1, nbCmpActi)
-            endif
+                write (fileUnit, fmtLine) nodeListName(iNode), &
+                    (valeImag(iCmp), iCmp=1, nbCmpActi)
+            end if
             if (cplxFormat .eq. 'MODULE' .or. cplxFormat .eq. 'PHASE') then
-                write (fileUnit,fmtLine) nodeListName(iNode),&
-                                         (valeComp(iCmp), iCmp = 1, nbCmpActi)
-            endif
-        endif
+                write (fileUnit, fmtLine) nodeListName(iNode), &
+                    (valeComp(iCmp), iCmp=1, nbCmpActi)
+            end if
+        end if
     end do
-    write (fileUnit,'(A)') ' '
+    write (fileUnit, '(A)') ' '
 !
 ! - Print maximum value
 !
@@ -423,12 +423,12 @@ complex(kind=8), pointer  :: vale(:)
         do iCmp = 1, cmpCataNb
             if (valeMaxReal(iCmp) .ne. rundf) then
                 fmtLine = '(1X,3A,1X,'//realFormat//',1X,'//realFormat//',A,I4,A,A8)'
-                write(fileUnit,fmtLine) 'LA VALEUR MAXIMALE DE ', cmpCataName(iCmp),&
-                ' EST',valeMaxReal(iCmp),valeMaxImag(iCmp), ' EN ',valeMaxNb(&
-                iCmp),' NOEUD(S) : ',valeMaxNode(iCmp)
-            endif
+                write (fileUnit, fmtLine) 'LA VALEUR MAXIMALE DE ', cmpCataName(iCmp), &
+                    ' EST', valeMaxReal(iCmp), valeMaxImag(iCmp), ' EN ', valeMaxNb( &
+                    iCmp), ' NOEUD(S) : ', valeMaxNode(iCmp)
+            end if
         end do
-    endif
+    end if
 !
 ! - Print minimum value
 !
@@ -436,26 +436,26 @@ complex(kind=8), pointer  :: vale(:)
         do iCmp = 1, cmpCataNb
             if (valeMinReal(iCmp) .ne. rundf) then
                 fmtLine = '(1X,3A,1X,'//realFormat//',1X,'//realFormat//',A,I4,A,A8)'
-                write(fileUnit,fmtLine) 'LA VALEUR MINIMALE DE ', cmpCataName(iCmp),&
-                ' EST',valeMinReal(iCmp),valeMinImag(iCmp), ' EN ',valeMinNb(&
-                iCmp),' NOEUD(S) : ',valeMinNode(iCmp)
-            endif
+                write (fileUnit, fmtLine) 'LA VALEUR MINIMALE DE ', cmpCataName(iCmp), &
+                    ' EST', valeMinReal(iCmp), valeMinImag(iCmp), ' EN ', valeMinNb( &
+                    iCmp), ' NOEUD(S) : ', valeMinNode(iCmp)
+            end if
         end do
-    endif
+    end if
 !
-    AS_DEALLOCATE(vr = valeReal)
-    AS_DEALLOCATE(vr = valeImag)
-    AS_DEALLOCATE(vr = valeComp)
-    AS_DEALLOCATE(vi = valeIndx)
-    AS_DEALLOCATE(vr = valeMaxReal)
-    AS_DEALLOCATE(vr = valeMaxImag)
-    AS_DEALLOCATE(vk8 = valeMaxNode)
-    AS_DEALLOCATE(vi = valeMaxNb)
-    AS_DEALLOCATE(vr = valeMinReal)
-    AS_DEALLOCATE(vr = valeMinImag)
-    AS_DEALLOCATE(vk8 = valeMinNode)
-    AS_DEALLOCATE(vi = valeMinNb)
-    AS_DEALLOCATE(vi = inec)
+    AS_DEALLOCATE(vr=valeReal)
+    AS_DEALLOCATE(vr=valeImag)
+    AS_DEALLOCATE(vr=valeComp)
+    AS_DEALLOCATE(vi=valeIndx)
+    AS_DEALLOCATE(vr=valeMaxReal)
+    AS_DEALLOCATE(vr=valeMaxImag)
+    AS_DEALLOCATE(vk8=valeMaxNode)
+    AS_DEALLOCATE(vi=valeMaxNb)
+    AS_DEALLOCATE(vr=valeMinReal)
+    AS_DEALLOCATE(vr=valeMinImag)
+    AS_DEALLOCATE(vk8=valeMinNode)
+    AS_DEALLOCATE(vi=valeMinNb)
+    AS_DEALLOCATE(vi=inec)
 !
     call jedema()
 end subroutine

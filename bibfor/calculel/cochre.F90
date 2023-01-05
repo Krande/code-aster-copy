@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -45,19 +45,19 @@ subroutine cochre(kchar, nbchar, nbchre, iocc)
     iocc = 0
 !
     do i = 1, nbchar
-        chrrep = kchar(i)(1:8)//'.CHME.F1D1D'
-        chpesa = kchar(i)(1:8)//'.CHME.PESAN'
+        chrrep = kchar(i) (1:8)//'.CHME.F1D1D'
+        chpesa = kchar(i) (1:8)//'.CHME.PESAN'
 !
         call jeexin(chrrep//'.DESC', iret1)
         call jeexin(chpesa//'.DESC', iret2)
 !
         if (iret1 .ne. 0) then
-            nbchre = nbchre + 1
+            nbchre = nbchre+1
             iocc = i
         else if (iret2 .ne. 0) then
-            nbchre = nbchre + 1
+            nbchre = nbchre+1
             iocc = i
-        endif
+        end if
     end do
 !
     call jedema()

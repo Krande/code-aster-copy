@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine usupu2(nbpt, nbpair, coef, ang, isupp,&
-                  nbinst, temps, puusur, vustub, vusob,&
+subroutine usupu2(nbpt, nbpair, coef, ang, isupp, &
+                  nbinst, temps, puusur, vustub, vusob, &
                   pus, pmoye, pourpu, poupre)
     implicit none
 !     CALCULE LA PUISSANCE D'USURE AU SENS D'ARCHARD
@@ -68,7 +68,7 @@ subroutine usupu2(nbpt, nbpair, coef, ang, isupp,&
     real(kind=8), pointer :: vcho(:) => null()
     real(kind=8), pointer :: vint(:) => null()
     integer, pointer :: nltype(:) => null()
-    integer, pointer :: vindx (:) => null()
+    integer, pointer :: vindx(:) => null()
     character(len=24), pointer :: nlname(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
@@ -82,10 +82,10 @@ subroutine usupu2(nbpt, nbpair, coef, ang, isupp,&
     nbnoli = desc(3)
 !
     nomk16 = trange(1:16)
-    call jeveuo(nomk16//'.NL.TYPE', 'L', vi =nltype)
-    call jeveuo(nomk16//'.NL.VIND', 'L', vi =vindx)
+    call jeveuo(nomk16//'.NL.TYPE', 'L', vi=nltype)
+    call jeveuo(nomk16//'.NL.VIND', 'L', vi=vindx)
     call jeveuo(nomk16//'.NL.INTI', 'L', vk24=nlname)
-    call jeveuo(nomk16//'.NL.VINT', 'L', vr =vint)
+    call jeveuo(nomk16//'.NL.VINT', 'L', vr=vint)
     nbvint = vindx(nbnoli+1)-1
 !
     AS_ALLOCATE(vi=chindx, size=nbnoli)
@@ -93,7 +93,7 @@ subroutine usupu2(nbpt, nbpair, coef, ang, isupp,&
     nbchoc = 0
     do i = 1, nbnoli
         if (nltype(i) .eq. NL_CHOC) then
-            nbchoc = nbchoc + 1
+            nbchoc = nbchoc+1
             chindx(nbchoc) = i
         end if
     end do
@@ -105,10 +105,10 @@ subroutine usupu2(nbpt, nbpair, coef, ang, isupp,&
     call jeveuo(trange//'.DISC', 'L', vr=disc)
     call jelira(trange//'.DISC', 'LONMAX', nbpt)
 !
-    AS_ALLOCATE(vr =fcho, size=  3*nbtot*nbpt)
-    AS_ALLOCATE(vr =dloc, size=2*3*nbtot*nbpt)
-    AS_ALLOCATE(vr =vcho, size=  3*nbtot*nbpt)
-    AS_ALLOCATE(vk8=ncho, size=  2*nbtot)
+    AS_ALLOCATE(vr=fcho, size=3*nbtot*nbpt)
+    AS_ALLOCATE(vr=dloc, size=2*3*nbtot*nbpt)
+    AS_ALLOCATE(vr=vcho, size=3*nbtot*nbpt)
+    AS_ALLOCATE(vk8=ncho, size=2*nbtot)
 !
     do ic = 1, nbchoc
         i = chindx(ic)
@@ -129,8 +129,8 @@ subroutine usupu2(nbpt, nbpair, coef, ang, isupp,&
             vcho((j-1)*3*nbtot+(ic-1)*3+2) = vint((j-1)*nbvint+vindx(i)-1+11)
             vcho((j-1)*3*nbtot+(ic-1)*3+3) = vint((j-1)*nbvint+vindx(i)-1+12)
         end do
-        ncho(ic) = nlname((i-1)*5+2)(1:8)
-        ncho(nbtot+ic) = nlname((i-1)*5+3)(1:8)
+        ncho(ic) = nlname((i-1)*5+2) (1:8)
+        ncho(nbtot+ic) = nlname((i-1)*5+3) (1:8)
     end do
 !
 !
@@ -138,7 +138,7 @@ subroutine usupu2(nbpt, nbpair, coef, ang, isupp,&
     if (n1 .ne. 0) then
         call impus(ifires, 0, puusur)
         goto 999
-    endif
+    end if
 !
 !
     call getvis(' ', 'NB_BLOC', scal=nbloc, nbret=n1)
@@ -152,11 +152,11 @@ subroutine usupu2(nbpt, nbpair, coef, ang, isupp,&
         if (ncho(ichoc) .eq. noeu) goto 12
     end do
 !
-    lg = max(1,lxlgut(noeu))
+    lg = max(1, lxlgut(noeu))
     call utmess('F', 'UTILITAI_87', sk=noeu(1:lg))
     goto 999
 !
- 12 continue
+12  continue
 !
     tmax = disc(nbpt)
     tmin = disc(1)
@@ -165,35 +165,35 @@ subroutine usupu2(nbpt, nbpair, coef, ang, isupp,&
         tdebut = tmin
     else
         if (tdebut .lt. tmin) tdebut = tmin
-    endif
+    end if
     if (n3 .eq. 0) then
         tfin = tmax
     else
         if (tfin .gt. tmax) tfin = tmax
-    endif
+    end if
     if (tdebut .ge. tfin) then
         call utmess('F', 'PREPOST4_47')
-    endif
+    end if
 !
     do j = 1, nbpt
         if (disc(j) .ge. tdebut) then
             idebut = j
             goto 15
-        endif
+        end if
     end do
- 15 continue
+15  continue
 !
     do j = 1, nbpt
         if (disc(j) .ge. tfin) then
             ifin = j
             goto 17
-        endif
+        end if
     end do
- 17 continue
+17  continue
 !
-    nbpas = ifin - idebut + 1
+    nbpas = ifin-idebut+1
     if (nbloc .eq. 0) nbloc = 1
-    nbval = nbpas / nbloc
+    nbval = nbpas/nbloc
 !
     call wkvect('&&USURPU.WK1', 'V V R', nbpt, jwk1)
     call wkvect('&&USURPU.WK2', 'V V R', nbpt, jwk2)
@@ -203,11 +203,11 @@ subroutine usupu2(nbpt, nbpair, coef, ang, isupp,&
     call wkvect('&&USURPU.WK5', 'V V R', nbpt, jwk5)
     call wkvect('&&USURPU.WK6', 'V V R', nbpt, jwk6)
 !
-    call stapu2(nbchoc, nbpt, nbpair, disc, fcho,&
-                vcho, dloc, coef, ang, zr(jwk1),&
-                zr(jwk2), zr(jwk3), zr( jwk4), zr(jwk5), zr(jwk6),&
-                idebut, nbloc, nbval, ichoc, isupp,&
-                nbinst, temps, puusur, vustub, vusob,&
+    call stapu2(nbchoc, nbpt, nbpair, disc, fcho, &
+                vcho, dloc, coef, ang, zr(jwk1), &
+                zr(jwk2), zr(jwk3), zr(jwk4), zr(jwk5), zr(jwk6), &
+                idebut, nbloc, nbval, ichoc, isupp, &
+                nbinst, temps, puusur, vustub, vusob, &
                 pus, pmoye, pourpu, poupre)
 !
     call jedetr('&&USURPU.WK1')
@@ -218,9 +218,9 @@ subroutine usupu2(nbpt, nbpair, coef, ang, isupp,&
     call jedetr('&&USURPU.WK6')
 !
     AS_DEALLOCATE(vi=chindx)
-    AS_DEALLOCATE(vr =dloc)
-    AS_DEALLOCATE(vr =fcho)
-    AS_DEALLOCATE(vr =vcho)
+    AS_DEALLOCATE(vr=dloc)
+    AS_DEALLOCATE(vr=fcho)
+    AS_DEALLOCATE(vr=vcho)
     AS_DEALLOCATE(vk8=ncho)
 !
 999 continue

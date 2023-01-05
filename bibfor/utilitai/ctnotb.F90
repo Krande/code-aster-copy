@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine ctnotb(nbno, mesnoe, noma, nbval, nkcha,&
-                  nkcmp, toucmp, nbcmp, typac, ndim,&
-                  nrval, resu, nomtb, nsymb, nival,&
+subroutine ctnotb(nbno, mesnoe, noma, nbval, nkcha, &
+                  nkcmp, toucmp, nbcmp, typac, ndim, &
+                  nrval, resu, nomtb, nsymb, nival, &
                   niord, label)
     implicit none
 #include "asterf_types.h"
@@ -87,8 +87,8 @@ subroutine ctnotb(nbno, mesnoe, noma, nbval, nkcha,&
     call jemarq()
 !
 ! --- 0. INITIALISATIONS
-    ibid=0
-    cbid=(0.d0,0.d0)
+    ibid = 0
+    cbid = (0.d0, 0.d0)
     chamns = '&&CTNOTB.CNS       '
     call jeveuo(nkcmp, 'L', jcmp)
     call jeveuo(nkcha, 'L', jkcha)
@@ -109,7 +109,7 @@ subroutine ctnotb(nbno, mesnoe, noma, nbval, nkcha,&
 
     do i = 1, nbval
 !
-        if (zk24(jkcha+i-1)(1:18) .ne. '&&CHAMP_INEXISTANT') then
+        if (zk24(jkcha+i-1) (1:18) .ne. '&&CHAMP_INEXISTANT') then
 !            -- PASSAGE CHAM_NO => CHAM_NO_S
             call cnocns(zk24(jkcha+i-1), 'V', chamns)
             call jeveuo(chamns//'.CNSV', 'L', vr=cnsv)
@@ -124,20 +124,20 @@ subroutine ctnotb(nbno, mesnoe, noma, nbval, nkcha,&
                     slabel = resu
                 else
                     slabel = zk24(jkcha+i-1)
-                endif
-            endif
+                end if
+            end if
 
 !             NOMBRE DE NOEUDS MAX DU CHAMP: NBNOX
-            nbnox=cnsd(1)
+            nbnox = cnsd(1)
 !             NOMBRE DE COMPOSANTES MAX DU CHAMP : NBCMPX
-            nbcmpx=cnsd(2)
+            nbcmpx = cnsd(2)
 !
 !             NOMBRE DE COMPOSANTES DESIREES : N
             if (toucmp) then
-                n=nbcmpx
+                n = nbcmpx
             else
-                n=nbcmp
-            endif
+                n = nbcmp
+            end if
 !
 !             TABLEAU DES VALEURS DES COMPOSANTES DESIREES: ZR(JVAL)
             AS_ALLOCATE(vr=val_cmp, size=n)
@@ -150,26 +150,26 @@ subroutine ctnotb(nbno, mesnoe, noma, nbval, nkcha,&
 !
 !               - SI LE NOEUD FAIT PARTIE DES NOEUDS DESIRES,
 !               ON POURSUIT, SINON ON VA AU NOEUD SUIVANT:
-                indno=indiis(zi(jlno),ino,1,nbno)
+                indno = indiis(zi(jlno), ino, 1, nbno)
                 if (indno .eq. 0) goto 110
-                kcp=0
+                kcp = 0
 !
 !              - ON PARCOURT LES COMPOSANTES:
                 do icmp = 1, nbcmpx
-                    if (.not.toucmp) then
+                    if (.not. toucmp) then
 !                    -SI LA COMPOSANTE FAIT PARTIE DES COMPOSANTES
 !                     DESIREES, ON POURSUIT, SINON ON VA A LA
 !                     COMPOSANTE SUIVANTE
-                        indcmp=indik8(zk8(jcmp),cnsc(icmp),&
-                        1,nbcmp)
+                        indcmp = indik8(zk8(jcmp), cnsc(icmp), &
+                                        1, nbcmp)
                         if (indcmp .eq. 0) goto 120
-                    endif
+                    end if
 !                  - SI LE CHAMP A UNE VALEUR, ON POURSUIT ET ON
 !                  STOCKE LE NOM ET LA VALEUR DE COMPOSANTE :
-                    if (.not.zl(jcnsl+nbcmpx*(ino-1)+icmp-1)) goto 120
-                    kcp=kcp+1
-                    val_cmp(kcp)=cnsv(1+nbcmpx*(ino-1)+icmp-1)
-                    nom_cmp(kcp)=cnsc(icmp)
+                    if (.not. zl(jcnsl+nbcmpx*(ino-1)+icmp-1)) goto 120
+                    kcp = kcp+1
+                    val_cmp(kcp) = cnsv(1+nbcmpx*(ino-1)+icmp-1)
+                    nom_cmp(kcp) = cnsc(icmp)
 120                 continue
                 end do
 !
@@ -177,96 +177,96 @@ subroutine ctnotb(nbno, mesnoe, noma, nbval, nkcha,&
 !               SOIT NR LE NOMBRE DE VALEURS REELES DE LA TABLE
 !               SOIT NK LE NOMBRE DE VALEURS CARACTERES DE LA TABLE
 !
-                nr=ndim+kcp
-                ni=1
-                nk=3
+                nr = ndim+kcp
+                ni = 1
+                nk = 3
                 if (resu .ne. ' ') then
                     if (typac .eq. 'FREQ' .or. typac .eq. 'INST') then
-                        nr=nr+1
-                    else if (typac.eq.'MODE') then
-                        ni=ni+1
-                    endif
+                        nr = nr+1
+                    else if (typac .eq. 'MODE') then
+                        ni = ni+1
+                    end if
                 else
-                    ni=0
-                    nk=2
-                endif
+                    ni = 0
+                    nk = 2
+                end if
 !
 !
 !               ON REMPLIT LES TABLEAUX ZI(JI),ZR(JR),ZK16(JK)
-                kk=0
+                kk = 0
                 if (typac .eq. 'FREQ' .or. typac .eq. 'INST') then
-                    table_valr(kk+1)=zr(jrval+i-1)
-                    kk=kk+1
-                endif
+                    table_valr(kk+1) = zr(jrval+i-1)
+                    kk = kk+1
+                end if
                 do j = 1, ndim
-                    table_valr(kk+1)=vale(1+3*(ino-1)+j-1)
-                    kk=kk+1
+                    table_valr(kk+1) = vale(1+3*(ino-1)+j-1)
+                    kk = kk+1
                 end do
                 do j = 1, kcp
-                    table_valr(kk+1)=val_cmp(j)
-                    kk=kk+1
+                    table_valr(kk+1) = val_cmp(j)
+                    kk = kk+1
                 end do
 !
-                kk=0
+                kk = 0
                 table_valk(kk+1) = slabel
-                kk=kk+1
+                kk = kk+1
                 if (resu .ne. ' ') then
-                    table_valk(kk+1)=nsymb
-                    kk=kk+1
-                    table_vali(1)=zi(jniord+i-1)
-                    if (typac .eq. 'MODE') table_vali(1+1)=zi(jival+i-1)
-                endif
+                    table_valk(kk+1) = nsymb
+                    kk = kk+1
+                    table_vali(1) = zi(jniord+i-1)
+                    if (typac .eq. 'MODE') table_vali(1+1) = zi(jival+i-1)
+                end if
                 call jenuno(jexnum(noma//'.NOMNOE', ino), kno)
-                table_valk(kk+1)=kno
+                table_valk(kk+1) = kno
 !
 !
 !               TABLEAU DES NOMS DE PARAMETRES DE LA TABLE: ZK16(JPARAK)
-                nbpara=nr+ni+nk
+                nbpara = nr+ni+nk
                 AS_ALLOCATE(vk16=table_parak, size=nbpara)
 !
 !               ON REMPLIT ZK16(JPARAK)
-                kk=0
+                kk = 0
                 if (resu .eq. ' ') then
-                    table_parak(kk+1)='CHAM_GD'
-                    kk=kk+1
+                    table_parak(kk+1) = 'CHAM_GD'
+                    kk = kk+1
                 else
-                    table_parak(kk+1)='RESULTAT'
-                    kk=kk+1
-                    table_parak(kk+1)='NOM_CHAM'
-                    kk=kk+1
+                    table_parak(kk+1) = 'RESULTAT'
+                    kk = kk+1
+                    table_parak(kk+1) = 'NOM_CHAM'
+                    kk = kk+1
                     if (typac .ne. 'ORDRE') then
-                        table_parak(kk+1)=typac
-                        kk=kk+1
-                    endif
-                    table_parak(kk+1)='NUME_ORDRE'
-                    kk=kk+1
-                endif
-                table_parak(kk+1)='NOEUD'
-                kk=kk+1
-                table_parak(kk+1)='COOR_X'
-                kk=kk+1
+                        table_parak(kk+1) = typac
+                        kk = kk+1
+                    end if
+                    table_parak(kk+1) = 'NUME_ORDRE'
+                    kk = kk+1
+                end if
+                table_parak(kk+1) = 'NOEUD'
+                kk = kk+1
+                table_parak(kk+1) = 'COOR_X'
+                kk = kk+1
                 if (ndim .ge. 2) then
-                    table_parak(kk+1)='COOR_Y'
-                    kk=kk+1
-                endif
+                    table_parak(kk+1) = 'COOR_Y'
+                    kk = kk+1
+                end if
                 if (ndim .eq. 3) then
-                    table_parak(kk+1)='COOR_Z'
-                    kk=kk+1
-                endif
+                    table_parak(kk+1) = 'COOR_Z'
+                    kk = kk+1
+                end if
                 do j = 1, kcp
-                    table_parak(kk+1)=nom_cmp(j)
-                    kk=kk+1
+                    table_parak(kk+1) = nom_cmp(j)
+                    kk = kk+1
                 end do
 !
 !
 !               ON AJOUTE LA LIGNE A LA TABLE
                 if (resu .eq. ' ') then
-                    call tbajli(nomtb, nbpara, table_parak, [ibid], table_valr,&
+                    call tbajli(nomtb, nbpara, table_parak, [ibid], table_valr, &
                                 [cbid], table_valk, 0)
                 else
-                    call tbajli(nomtb, nbpara, table_parak, table_vali, table_valr,&
+                    call tbajli(nomtb, nbpara, table_parak, table_vali, table_valr, &
                                 [cbid], table_valk, 0)
-                endif
+                end if
                 AS_DEALLOCATE(vk16=table_parak)
 !
 110             continue
@@ -274,7 +274,7 @@ subroutine ctnotb(nbno, mesnoe, noma, nbval, nkcha,&
             AS_DEALLOCATE(vr=val_cmp)
             AS_DEALLOCATE(vk8=nom_cmp)
 !
-        endif
+        end if
 !
     end do
 !

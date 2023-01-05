@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,12 +17,12 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine nmetcr(ds_inout  , model    , compor   , list_func_acti, sddyna   ,&
+subroutine nmetcr(ds_inout, model, compor, list_func_acti, sddyna, &
                   ds_contact, cara_elem, list_load)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -39,14 +39,14 @@ implicit none
 #include "asterfort/GetIOField.h"
 #include "asterfort/SetIOField.h"
 !
-type(NL_DS_InOut), intent(inout) :: ds_inout
-character(len=24), intent(in) :: model
-integer, intent(in) :: list_func_acti(*)
-type(NL_DS_Contact), intent(in) :: ds_contact
-character(len=24), intent(in) :: compor
-character(len=19), intent(in) :: sddyna
-character(len=24), intent(in) :: cara_elem
-character(len=19), intent(in) :: list_load
+    type(NL_DS_InOut), intent(inout) :: ds_inout
+    character(len=24), intent(in) :: model
+    integer, intent(in) :: list_func_acti(*)
+    type(NL_DS_Contact), intent(in) :: ds_contact
+    character(len=24), intent(in) :: compor
+    character(len=19), intent(in) :: sddyna
+    character(len=24), intent(in) :: cara_elem
+    character(len=19), intent(in) :: list_load
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -76,8 +76,8 @@ character(len=19), intent(in) :: list_load
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    result         = '&&NMETCR'
-    nb_field       = ds_inout%nb_field
+    result = '&&NMETCR'
+    nb_field = ds_inout%nb_field
     list_load_resu = ds_inout%list_load_resu
 !
 ! - Special copy of list of loads for save in results datastructure
@@ -90,29 +90,29 @@ character(len=19), intent(in) :: list_load
 !
 ! - Set localization for cohesive XFEM fields
 !
-    call GetIOField(ds_inout, 'COHE_ELEM', l_acti_ = l_xfem_cohe)
+    call GetIOField(ds_inout, 'COHE_ELEM', l_acti_=l_xfem_cohe)
     if (l_xfem_cohe) then
         call jeveuo(model(1:8)//'.XFEM_CONT', 'L', vi=xfem_cont)
-        if (xfem_cont(1).eq.2) then
-            call SetIOField(ds_inout, 'COHE_ELEM', disc_type_ = 'ELNO')
-        endif
-        if (xfem_cont(1).eq.1.or.xfem_cont(1).eq.3) then
-            call SetIOField(ds_inout, 'COHE_ELEM', disc_type_ = 'ELEM')
-        endif
-    endif
+        if (xfem_cont(1) .eq. 2) then
+            call SetIOField(ds_inout, 'COHE_ELEM', disc_type_='ELNO')
+        end if
+        if (xfem_cont(1) .eq. 1 .or. xfem_cont(1) .eq. 3) then
+            call SetIOField(ds_inout, 'COHE_ELEM', disc_type_='ELEM')
+        end if
+    end if
 !
 ! - Add fields
 !
     do i_field = 1, nb_field
         field_type = ds_inout%field(i_field)%type
-        call nmetcc(field_type, algo_name, init_name ,&
-                    compor    , sddyna   , ds_contact)
-        if (algo_name.ne.'XXXXXXXXXXXXXXXX') then
+        call nmetcc(field_type, algo_name, init_name, &
+                    compor, sddyna, ds_contact)
+        if (algo_name .ne. 'XXXXXXXXXXXXXXXX') then
             ds_inout%field(i_field)%algo_name = algo_name
-        endif
-        if (init_name.ne.'XXXXXXXXXXXXXXXX') then
+        end if
+        if (init_name .ne. 'XXXXXXXXXXXXXXXX') then
             ds_inout%field(i_field)%init_name = init_name
-        endif
+        end if
     end do
 !
 ! - Create initial state fields
@@ -125,18 +125,18 @@ character(len=19), intent(in) :: list_load
     call jelira(result(1:8)//'           .DESC', 'NOMMAX', nb_field_resu)
     do i_field = 1, nb_field
         field_type = ds_inout%field(i_field)%type
-        init_name  = ds_inout%field(i_field)%init_name
+        init_name = ds_inout%field(i_field)%init_name
         if (ds_inout%field(i_field)%l_store) then
             l_find = .false._1
             do i_field_resu = 1, nb_field_resu
                 call jenuno(jexnum(result(1:8)//'           .DESC', i_field_resu), field_resu)
                 if (field_resu .eq. field_type) then
                     l_find = .true._1
-                endif
+                end if
             end do
 ! --------- No field in results => change rscrsd subroutine !
             ASSERT(l_find)
-        endif
+        end if
     end do
     call detrsd('RESULTAT', result)
 !

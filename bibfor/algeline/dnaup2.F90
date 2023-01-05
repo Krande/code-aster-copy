@@ -1,6 +1,6 @@
 ! --------------------------------------------------------------------
 ! Copyright (C) LAPACK
-! Copyright (C) 2007 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 2007 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,10 +17,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine dnaup2(ido, bmat, n, which, nev,&
-                  np, tol, resid, ishift, mxiter,&
-                  v, ldv, h, ldh, ritzr,&
-                  ritzi, bounds, q, ldq, workl,&
+subroutine dnaup2(ido, bmat, n, which, nev, &
+                  np, tol, resid, ishift, mxiter, &
+                  v, ldv, h, ldh, ritzr, &
+                  ritzi, bounds, q, ldq, workl, &
                   ipntr, workd, info, neqact, alpha)
 !
 !     SUBROUTINE ARPACK CALCULANT LES VALEURS PROPRES DE (OP) VIA
@@ -222,11 +222,11 @@ subroutine dnaup2(ido, bmat, n, which, nev,&
 #include "blas/dnrm2.h"
     integer :: logfil, ndigit, mgetv0, mnaupd, mnaup2, mnaitr, mneigh, mnapps
     integer :: mngets, mneupd
-    common /debug/&
+    common/debug/&
      &  logfil, ndigit, mgetv0,&
      &  mnaupd, mnaup2, mnaitr, mneigh, mnapps, mngets, mneupd
     integer :: nopx, nbx, nrorth, nitref, nrstrt
-    common /infor/&
+    common/infor/&
      &  nopx, nbx, nrorth, nitref, nrstrt
 !
 !     %------------------%
@@ -245,14 +245,14 @@ subroutine dnaup2(ido, bmat, n, which, nev,&
     integer :: ipntr(13)
     real(kind=8) :: bounds(nev+np), h(ldh, nev+np), q(ldq, nev+np), resid(n)
     real(kind=8) :: ritzi(nev+np), ritzr(nev+np), v(ldv, nev+np), workd(3*n)
-    real(kind=8) :: workl( (nev+np)*(nev+np+3) )
+    real(kind=8) :: workl((nev+np)*(nev+np+3))
 !
 !     %------------%
 !     | PARAMETERS |
 !     %------------%
 !
     real(kind=8) :: zero
-    parameter (zero = 0.0d+0)
+    parameter(zero=0.0d+0)
 !
 !     %---------------%
 !     | LOCAL SCALARS |
@@ -291,7 +291,7 @@ subroutine dnaup2(ido, bmat, n, which, nev,&
 !        %-------------------------------------%
 !
         eps23 = r8prem()*0.5d0
-        eps23 = eps23**(2.0d+0 / 3.0d+0)
+        eps23 = eps23**(2.0d+0/3.0d+0)
 !
         nev0 = nev
         np0 = np
@@ -305,7 +305,7 @@ subroutine dnaup2(ido, bmat, n, which, nev,&
 !        |      ITERATION STEP.                |
 !        %-------------------------------------%
 !
-        kplusp = nev + np
+        kplusp = nev+np
         nconv = 0
         iter = 0
 !
@@ -329,8 +329,8 @@ subroutine dnaup2(ido, bmat, n, which, nev,&
             info = 0
         else
             initv = .false.
-        endif
-    endif
+        end if
+    end if
 !
 !     %---------------------------------------------%
 !     | GET A POSSIBLY RANDOM STARTING VECTOR AND   |
@@ -339,8 +339,8 @@ subroutine dnaup2(ido, bmat, n, which, nev,&
 !
 !
     if (getv0) then
-        call dgetv0(ido, bmat, 1, initv, n,&
-                    1, v, ldv, resid, rnorm,&
+        call dgetv0(ido, bmat, 1, initv, n, &
+                    1, v, ldv, resid, rnorm, &
                     ipntr, workd, info, alpha)
         if (ido .ne. 99) goto 9000
         if (rnorm .eq. zero) then
@@ -351,10 +351,10 @@ subroutine dnaup2(ido, bmat, n, which, nev,&
 !
             info = -9
             goto 1100
-        endif
+        end if
         getv0 = .false.
         ido = 0
-    endif
+    end if
 !
 !     %-----------------------------------%
 !     | BACK FROM REVERSE COMMUNICATION : |
@@ -380,8 +380,8 @@ subroutine dnaup2(ido, bmat, n, which, nev,&
 !     | COMPUTE THE FIRST NEV STEPS OF THE ARNOLDI FACTORIZATION |
 !     %----------------------------------------------------------%
 !
-    call dnaitr(ido, bmat, n, 0, nev,&
-                resid, rnorm, v, ldv, h,&
+    call dnaitr(ido, bmat, n, 0, nev, &
+                resid, rnorm, v, ldv, h, &
                 ldh, ipntr, workd, info, alpha)
 !
 !     %---------------------------------------------------%
@@ -395,7 +395,7 @@ subroutine dnaup2(ido, bmat, n, which, nev,&
         mxiter = iter
         info = -9999
         goto 1200
-    endif
+    end if
 !
 !     %--------------------------------------------------------------%
 !     |                                                              |
@@ -407,11 +407,11 @@ subroutine dnaup2(ido, bmat, n, which, nev,&
 !
 1000 continue
 !
-    iter = iter + 1
+    iter = iter+1
     if (msglvl .gt. 0) then
-        call ivout(logfil, 1, [iter], ndigit,&
+        call ivout(logfil, 1, [iter], ndigit, &
                    '_NAUP2: **** START OF MAJOR ITERATION NUMBER ****')
-    endif
+    end if
 !
 !        %-----------------------------------------------------------%
 !        | COMPUTE NP ADDITIONAL STEPS OF THE ARNOLDI FACTORIZATION. |
@@ -419,22 +419,22 @@ subroutine dnaup2(ido, bmat, n, which, nev,&
 !        | TO THE SHIFT APPLICATION ROUTINE DNAPPS.                  |
 !        %-----------------------------------------------------------%
 !
-    np = kplusp - nev
+    np = kplusp-nev
     if (msglvl .gt. 1) then
-        call ivout(logfil, 1, [nev], ndigit,&
+        call ivout(logfil, 1, [nev], ndigit, &
                    '_NAUP2: THE LENGTH OF THE CURRENT ARNOLDI FACTORIZATION')
         call ivout(logfil, 1, [np], ndigit, '_NAUP2: EXTEND THE ARNOLDI FACTORIZATION BY')
-    endif
+    end if
 !
 !        %-----------------------------------------------------------%
 !        | COMPUTE NP ADDITIONAL STEPS OF THE ARNOLDI FACTORIZATION. |
 !        %-----------------------------------------------------------%
 !
     ido = 0
- 20 continue
+20  continue
     update = .true.
-    call dnaitr(ido, bmat, n, nev, np,&
-                resid, rnorm, v, ldv, h,&
+    call dnaitr(ido, bmat, n, nev, np, &
+                resid, rnorm, v, ldv, h, &
                 ldh, ipntr, workd, info, alpha)
 !
 !        %---------------------------------------------------%
@@ -448,38 +448,38 @@ subroutine dnaup2(ido, bmat, n, which, nev,&
         mxiter = iter
         if (info .ge. neqact) then
             if (msglvl .gt. 0) then
-                write(logfil,*)
-                write(logfil,*)'&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&'
-                write(logfil,*)'& ESPACE INVARIANT DE TAILLE &'
-                write(logfil,*)'& NEQACT = ',neqact
-                write(logfil,*)'& SHUNTAGE PARTIEL DE DNAUP2 &'
-                write(logfil,*)'&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&'
-                write(logfil,*)
-            endif
+                write (logfil, *)
+                write (logfil, *) '&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&'
+                write (logfil, *) '& ESPACE INVARIANT DE TAILLE &'
+                write (logfil, *) '& NEQACT = ', neqact
+                write (logfil, *) '& SHUNTAGE PARTIEL DE DNAUP2 &'
+                write (logfil, *) '&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&'
+                write (logfil, *)
+            end if
         else
             info = -9999
             goto 1200
-        endif
-    endif
+        end if
+    end if
     update = .false.
 !
     if (msglvl .gt. 1) then
         call dvout(logfil, 1, [rnorm], ndigit, '_NAUP2: CORRESPONDING B-NORM OF THE RESIDUAL')
-    endif
+    end if
 !
 !        %--------------------------------------------------------%
 !        | COMPUTE THE EIGENVALUES AND CORRESPONDING ERROR BOUNDS |
 !        | OF THE CURRENT UPPER HESSENBERG MATRIX.                |
 !        %--------------------------------------------------------%
 !
-    call dneigh(rnorm, kplusp, h, ldh, ritzr,&
-                ritzi, bounds, q, ldq, workl,&
+    call dneigh(rnorm, kplusp, h, ldh, ritzr, &
+                ritzi, bounds, q, ldq, workl, &
                 ierr)
 !
     if (ierr .ne. 0) then
         info = -8
         goto 1200
-    endif
+    end if
 !
 !        %----------------------------------------------------%
 !        | MAKE A COPY OF EIGENVALUES AND CORRESPONDING ERROR |
@@ -506,7 +506,7 @@ subroutine dnaup2(ido, bmat, n, which, nev,&
     nev = nev0
     np = np0
     numcnv = nev
-    call dngets(ishift, which, nev, np, ritzr,&
+    call dngets(ishift, which, nev, np, ritzr, &
                 ritzi, bounds, workl, workl(np+1))
     if (nev .eq. nev0+1) numcnv = nev0+1
 !
@@ -515,7 +515,7 @@ subroutine dnaup2(ido, bmat, n, which, nev,&
 !        %-------------------%
 !
     call dcopy(nev, bounds(np+1), 1, workl(2*np+1), 1)
-    call dnconv(nev, ritzr(np+1), ritzi(np+1), workl(2*np+1), tol,&
+    call dnconv(nev, ritzr(np+1), ritzi(np+1), workl(2*np+1), tol, &
                 nconv)
 !
     if (msglvl .gt. 2) then
@@ -525,11 +525,11 @@ subroutine dnaup2(ido, bmat, n, which, nev,&
         kp(4) = nconv
         call ivout(logfil, 4, kp, ndigit, '_NAUP2: NEV, NP, NUMCNV, NCONV ARE')
         call dvout(logfil, kplusp, ritzr, ndigit, '_NAUP2: REAL PART OF THE EIGENVALUES OF H')
-        call dvout(logfil, kplusp, ritzi, ndigit,&
+        call dvout(logfil, kplusp, ritzi, ndigit, &
                    '_NAUP2: IMAGINARY PART OF THE EIGENVALUES OF H')
-        call dvout(logfil, kplusp, bounds, ndigit,&
+        call dvout(logfil, kplusp, bounds, ndigit, &
                    '_NAUP2: RITZ ESTIMATES OF THE CURRENT NCV RITZ VALUES')
-    endif
+    end if
 !
 !        %---------------------------------------------------------%
 !        | COUNT THE NUMBER OF UNWANTED RITZ VALUES THAT HAVE ZERO |
@@ -544,21 +544,21 @@ subroutine dnaup2(ido, bmat, n, which, nev,&
     nptemp = np
     do j = 1, nptemp
         if (bounds(j) .eq. zero) then
-            np = np - 1
-            nev = nev + 1
-        endif
+            np = np-1
+            nev = nev+1
+        end if
     end do
 !
     if ((nconv .ge. numcnv) .or. (iter .gt. mxiter) .or. (np .eq. 0)) then
 !
         if (msglvl .gt. 4) then
-            call dvout(logfil, kplusp, workl(kplusp**2+1), ndigit,&
+            call dvout(logfil, kplusp, workl(kplusp**2+1), ndigit, &
                        '_NAUP2: REAL PART OF THE EIG COMPUTED BY _NEIGH:')
-            call dvout(logfil, kplusp, workl(kplusp**2+kplusp+1), ndigit,&
+            call dvout(logfil, kplusp, workl(kplusp**2+kplusp+1), ndigit, &
                        '_NAUP2: IMAG PART OF THE EIG COMPUTED BY _NEIGH:')
-            call dvout(logfil, kplusp, workl(kplusp**2+kplusp*2+1), ndigit,&
+            call dvout(logfil, kplusp, workl(kplusp**2+kplusp*2+1), ndigit, &
                        '_NAUP2: RITZ EISTMATES COMPUTED BY _NEIGH:')
-        endif
+        end if
 !
 !           %------------------------------------------------%
 !           | PREPARE TO EXIT. PUT THE CONVERGED RITZ VALUES |
@@ -572,7 +572,7 @@ subroutine dnaup2(ido, bmat, n, which, nev,&
 !           |  RNORM TO _NEUPD IF NEEDED               |
 !           %------------------------------------------%
 !
-        h(3,1) = rnorm
+        h(3, 1) = rnorm
 !
 !           %----------------------------------------------%
 !           | TO BE CONSISTENT WITH DNGETS, WE FIRST DO A  |
@@ -590,7 +590,7 @@ subroutine dnaup2(ido, bmat, n, which, nev,&
         if (which .eq. 'LI') wprime = 'SM'
         if (which .eq. 'SI') wprime = 'LM'
 !
-        call dsortc(wprime, .true._1, kplusp, ritzr, ritzi,&
+        call dsortc(wprime, .true._1, kplusp, ritzr, ritzi, &
                     bounds)
 !
 !           %----------------------------------------------%
@@ -607,7 +607,7 @@ subroutine dnaup2(ido, bmat, n, which, nev,&
         if (which .eq. 'LI') wprime = 'SI'
         if (which .eq. 'SI') wprime = 'LI'
 !
-        call dsortc(wprime, .true._1, kplusp, ritzr, ritzi,&
+        call dsortc(wprime, .true._1, kplusp, ritzr, ritzi, &
                     bounds)
 !
 !           %--------------------------------------------------%
@@ -616,7 +616,7 @@ subroutine dnaup2(ido, bmat, n, which, nev,&
 !           %--------------------------------------------------%
 !
         do j = 1, nev0
-            temp = max(eps23,dlapy2(ritzr(j), ritzi(j)))
+            temp = max(eps23, dlapy2(ritzr(j), ritzi(j)))
             bounds(j) = bounds(j)/temp
         end do
 !
@@ -628,7 +628,7 @@ subroutine dnaup2(ido, bmat, n, which, nev,&
 !           %----------------------------------------------------%
 !
         wprime = 'LR'
-        call dsortc(wprime, .true._1, nev0, bounds, ritzr,&
+        call dsortc(wprime, .true._1, nev0, bounds, ritzr, &
                     ritzi)
 !
 !           %----------------------------------------------%
@@ -647,16 +647,16 @@ subroutine dnaup2(ido, bmat, n, which, nev,&
 !           | RITZR, RITZI AND BOUND.                        |
 !           %------------------------------------------------%
 !
-        call dsortc(which, .true._1, nconv, ritzr, ritzi,&
+        call dsortc(which, .true._1, nconv, ritzr, ritzi, &
                     bounds)
 !
         if (msglvl .gt. 1) then
-            call dvout(logfil, kplusp, ritzr, ndigit,&
+            call dvout(logfil, kplusp, ritzr, ndigit, &
                        '_NAUP2: SORTED REAL PART OF THE EIGENVALUES')
-            call dvout(logfil, kplusp, ritzi, ndigit,&
+            call dvout(logfil, kplusp, ritzi, ndigit, &
                        '_NAUP2: SORTED IMAGINARY PART OF THE EIGENVALUES')
             call dvout(logfil, kplusp, bounds, ndigit, '_NAUP2: SORTED RITZ ESTIMATES.')
-        endif
+        end if
 !
 !           %------------------------------------%
 !           | MAX ITERATIONS HAVE BEEN EXCEEDED. |
@@ -682,39 +682,39 @@ subroutine dnaup2(ido, bmat, n, which, nev,&
 !           %-------------------------------------------------%
 !
         nevbef = nev
-        nev = nev + min(nconv, np/2)
+        nev = nev+min(nconv, np/2)
         if (nev .eq. 1 .and. kplusp .ge. 6) then
-            nev = kplusp / 2
+            nev = kplusp/2
         else if (nev .eq. 1 .and. kplusp .gt. 3) then
             nev = 2
-        endif
-        np = kplusp - nev
+        end if
+        np = kplusp-nev
 !
 !           %---------------------------------------%
 !           | IF THE SIZE OF NEV WAS JUST INCREASED |
 !           | RESORT THE EIGENVALUES.               |
 !           %---------------------------------------%
 !
-        if (nevbef .lt. nev) call dngets(ishift, which, nev, np, ritzr,&
+        if (nevbef .lt. nev) call dngets(ishift, which, nev, np, ritzr, &
                                          ritzi, bounds, workl, workl(np+1))
 !
-    endif
+    end if
 !
     if (msglvl .gt. 0) then
-        call ivout(logfil, 1, [nconv], ndigit,&
+        call ivout(logfil, 1, [nconv], ndigit, &
                    '_NAUP2: NO. OF "CONVERGED" RITZ VALUES AT THIS ITER.')
         if (msglvl .gt. 1) then
             kp(1) = nev
             kp(2) = np
             call ivout(logfil, 2, kp, ndigit, '_NAUP2: NEV AND NP ARE')
-            call dvout(logfil, nev, ritzr(np+1), ndigit,&
+            call dvout(logfil, nev, ritzr(np+1), ndigit, &
                        '_NAUP2: "WANTED" RITZ VALUES -- REAL PART')
-            call dvout(logfil, nev, ritzi(np+1), ndigit,&
+            call dvout(logfil, nev, ritzi(np+1), ndigit, &
                        '_NAUP2: "WANTED" RITZ VALUES -- IMAG PART')
-            call dvout(logfil, nev, bounds(np+1), ndigit,&
+            call dvout(logfil, nev, bounds(np+1), ndigit, &
                        '_NAUP2: RITZ ESTIMATES OF THE "WANTED" VALUES ')
-        endif
-    endif
+        end if
+    end if
 !
     if (ishift .eq. 0) then
 !
@@ -727,9 +727,9 @@ subroutine dnaup2(ido, bmat, n, which, nev,&
         ushift = .true.
         ido = 3
         goto 9000
-    endif
+    end if
 !
- 50 continue
+50  continue
 !
 !        %------------------------------------%
 !        | BACK FROM REVERSE COMMUNICATION,   |
@@ -748,15 +748,15 @@ subroutine dnaup2(ido, bmat, n, which, nev,&
 !
         call dcopy(np, workl, 1, ritzr, 1)
         call dcopy(np, workl(np+1), 1, ritzi, 1)
-    endif
+    end if
 !
     if (msglvl .gt. 2) then
         call ivout(logfil, 1, [np], ndigit, '_NAUP2: THE NUMBER OF SHIFTS TO APPLY ')
         call dvout(logfil, np, ritzr, ndigit, '_NAUP2: REAL PART OF THE SHIFTS')
         call dvout(logfil, np, ritzi, ndigit, '_NAUP2: IMAGINARY PART OF THE SHIFTS')
-        if (ishift .eq. 1) call dvout(logfil, np, bounds, ndigit,&
+        if (ishift .eq. 1) call dvout(logfil, np, bounds, ndigit, &
                                       '_NAUP2: RITZ ESTIMATES OF THE SHIFTS')
-    endif
+    end if
 !
 !        %---------------------------------------------------------%
 !        | APPLY THE NP IMPLICIT SHIFTS BY QR BULGE CHASING.       |
@@ -765,8 +765,8 @@ subroutine dnaup2(ido, bmat, n, which, nev,&
 !        | THE FIRST 2*N LOCATIONS OF WORKD ARE USED AS WORKSPACE. |
 !        %---------------------------------------------------------%
 !
-    call dnapps(n, nev, np, ritzr, ritzi,&
-                v, ldv, h, ldh, resid,&
+    call dnapps(n, nev, np, ritzr, ritzi, &
+                v, ldv, h, ldh, resid, &
                 q, ldq, workl, workd)
 !
 !        %---------------------------------------------%
@@ -777,9 +777,9 @@ subroutine dnaup2(ido, bmat, n, which, nev,&
 !
     cnorm = .true.
     if (bmat .eq. 'G') then
-        nbx = nbx + 1
+        nbx = nbx+1
         call dcopy(n, resid, 1, workd(n+1), 1)
-        ipntr(1) = n + 1
+        ipntr(1) = n+1
         ipntr(2) = 1
         ido = 2
 !
@@ -790,7 +790,7 @@ subroutine dnaup2(ido, bmat, n, which, nev,&
         goto 9000
     else if (bmat .eq. 'I') then
         call dcopy(n, resid, 1, workd, 1)
-    endif
+    end if
 !
 100 continue
 !
@@ -800,19 +800,19 @@ subroutine dnaup2(ido, bmat, n, which, nev,&
 !        %----------------------------------%
 !
     if (bmat .eq. 'G') then
-        rnorm = ddot (n, resid, 1, workd, 1)
+        rnorm = ddot(n, resid, 1, workd, 1)
         rnorm = sqrt(abs(rnorm))
     else if (bmat .eq. 'I') then
         rnorm = dnrm2(n, resid, 1)
-    endif
+    end if
     cnorm = .false.
 !
     if (msglvl .gt. 2) then
-        call dvout(logfil, 1, [rnorm], ndigit,&
+        call dvout(logfil, 1, [rnorm], ndigit, &
                    '_NAUP2: B-NORM OF RESIDUAL FOR COMPRESSED FACTORIZATION')
-        call dmout(logfil, nev, nev, h, ldh,&
+        call dmout(logfil, nev, nev, h, ldh, &
                    ndigit, '_NAUP2: COMPRESSED UPPER HESSENBERG MATRIX H')
-    endif
+    end if
 !
     goto 1000
 !

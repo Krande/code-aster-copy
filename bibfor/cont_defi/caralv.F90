@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 !
 subroutine caralv(sdcont, nb_cont_zone, cont_form)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/cfdisl.h"
@@ -28,9 +28,9 @@ implicit none
 #include "asterfort/mminfl.h"
 #include "asterfort/utmess.h"
 !
-character(len=8), intent(in) :: sdcont
-integer, intent(in) :: cont_form
-integer, intent(in) :: nb_cont_zone
+    character(len=8), intent(in) :: sdcont
+    integer, intent(in) :: cont_form
+    integer, intent(in) :: nb_cont_zone
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -66,119 +66,119 @@ integer, intent(in) :: nb_cont_zone
 !
 ! - All zones are only contact verification ?
 !
-    if ((cont_form .eq. 1).or.(cont_form .eq. 2)) then
+    if ((cont_form .eq. 1) .or. (cont_form .eq. 2)) then
         i_zone = 1
-        l_all  = mminfl(sdcont_defi,'VERIF',i_zone)
+        l_all = mminfl(sdcont_defi, 'VERIF', i_zone)
         do i_zone = 2, nb_cont_zone
-            l_verif = mminfl(sdcont_defi,'VERIF',i_zone)
-            l_all   = l_all.and.l_verif
+            l_verif = mminfl(sdcont_defi, 'VERIF', i_zone)
+            l_all = l_all .and. l_verif
         end do
         if (l_all) then
             v_sdcont_paraci(8) = 1
-        endif
+        end if
 !
 ! ----- If contact verification : REAC_GEOM= 'SANS' / ALGO_RESO_GEOM='POINT_FIXE'
 !
         if (l_all) then
-            l_newt_geom = cfdisl(sdcont_defi,'GEOM_NEWTON')
+            l_newt_geom = cfdisl(sdcont_defi, 'GEOM_NEWTON')
             if (l_newt_geom) then
                 v_sdcont_paraci(1) = 0
                 v_sdcont_paraci(9) = 0
                 call utmess('I', 'CONTACT2_3')
                 call utmess('I', 'CONTACT2_4')
             else
-                l_geom_hpp = cfdisl(sdcont_defi,'REAC_GEOM_SANS')
+                l_geom_hpp = cfdisl(sdcont_defi, 'REAC_GEOM_SANS')
                 if (.not. l_geom_hpp) then
                     v_sdcont_paraci(1) = 0
                     call utmess('I', 'CONTACT2_3')
-                endif
-            endif
-        endif
-    endif
+                end if
+            end if
+        end if
+    end if
 !
 ! - At least one zone is contact verification ?
 !
-    if ((cont_form .eq. 1).or.(cont_form .eq. 2)) then
+    if ((cont_form .eq. 1) .or. (cont_form .eq. 2)) then
         l_exist = ASTER_FALSE
         do i_zone = 1, nb_cont_zone
-            l_verif = mminfl(sdcont_defi,'VERIF',i_zone)
-            l_exist = l_exist.or.l_verif
+            l_verif = mminfl(sdcont_defi, 'VERIF', i_zone)
+            l_exist = l_exist .or. l_verif
         end do
         if (l_exist) then
             v_sdcont_paraci(23) = 1
-        endif
-    endif
+        end if
+    end if
 !
 ! - Penalization ? (non-symmetric matrix)
 !
     if ((cont_form .eq. 2) .or. (cont_form .eq. 3)) then
         l_exist = ASTER_FALSE
         do i_zone = 1, nb_cont_zone
-            l_pena = (&
-                    mminfl(sdcont_defi,'ALGO_CONT_PENA',i_zone) .or.&
-                    mminfl(sdcont_defi,'ALGO_FROT_PENA',i_zone))
-            l_exist = l_exist.or.l_pena
-                end do
+            l_pena = ( &
+                     mminfl(sdcont_defi, 'ALGO_CONT_PENA', i_zone) .or. &
+                     mminfl(sdcont_defi, 'ALGO_FROT_PENA', i_zone))
+            l_exist = l_exist .or. l_pena
+        end do
         if (l_exist) then
             v_sdcont_paraci(22) = 1
-        endif
-    endif
+        end if
+    end if
 !
 ! - Integration scheme for CONTINUE formulation: nodes ?
 !
     if (cont_form .eq. 2) then
         i_zone = 1
-        l_all  = (mminfi(sdcont_defi,'INTEGRATION' ,i_zone).eq.1)
+        l_all = (mminfi(sdcont_defi, 'INTEGRATION', i_zone) .eq. 1)
         do i_zone = 2, nb_cont_zone
-            l_node = (mminfi(sdcont_defi,'INTEGRATION' ,i_zone).eq.1)
-            l_all = l_all.and.l_node
-                end do
+            l_node = (mminfi(sdcont_defi, 'INTEGRATION', i_zone) .eq. 1)
+            l_all = l_all .and. l_node
+        end do
         if (l_all) then
             v_sdcont_paraci(24) = 1
-        endif
-    else if (cont_form.eq.1) then
+        end if
+    else if (cont_form .eq. 1) then
         v_sdcont_paraci(24) = 1
-    else if (cont_form.eq.3) then
+    else if (cont_form .eq. 3) then
         v_sdcont_paraci(24) = 1
-    endif
+    end if
 !
 ! - Bilateral contact ?
 !
     if (cont_form .eq. 2) then
         l_exist = ASTER_FALSE
         do i_zone = 1, nb_cont_zone
-            l_glis_zone  = mminfl(sdcont_defi,'GLISSIERE_ZONE',i_zone)
-            l_exist      = l_exist.or.l_glis_zone
-                end do
+            l_glis_zone = mminfl(sdcont_defi, 'GLISSIERE_ZONE', i_zone)
+            l_exist = l_exist .or. l_glis_zone
+        end do
         if (l_exist) then
             v_sdcont_paraci(26) = 1
-        endif
-    endif
+        end if
+    end if
 !
 ! - At least one zone with XFEM+CZM ?
 !
     if (cont_form .eq. 3) then
         l_exist = ASTER_FALSE
         do i_zone = 1, nb_cont_zone
-            l_cont_xczm = mminfl(sdcont_defi,'CONT_XFEM_CZM',i_zone)
-            l_exist     = l_exist.or.l_cont_xczm
-                end do
+            l_cont_xczm = mminfl(sdcont_defi, 'CONT_XFEM_CZM', i_zone)
+            l_exist = l_exist .or. l_cont_xczm
+        end do
         if (l_exist) then
             v_sdcont_paraci(21) = 1
-        endif
-    endif
+        end if
+    end if
 !
 ! - All zones ares CONTACT_INIT INTERPENETRE ?
 !
     if (cont_form .eq. 2) then
         l_all = ASTER_TRUE
         do i_zone = 1, nb_cont_zone
-            i_cont_init = mminfi(sdcont_defi,'CONTACT_INIT',i_zone)
-            l_all       = l_all .and.(i_cont_init.eq.2)
+            i_cont_init = mminfi(sdcont_defi, 'CONTACT_INIT', i_zone)
+            l_all = l_all .and. (i_cont_init .eq. 2)
         end do
         if (l_all) then
             v_sdcont_paraci(11) = 1
-        endif
-    endif
+        end if
+    end if
 !
 end subroutine

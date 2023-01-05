@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 !
 subroutine ndloam(sddyna, result, evonol, nume)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -36,10 +36,10 @@ implicit none
 #include "asterfort/utmess.h"
 #include "blas/dcopy.h"
 !
-character(len=19) :: sddyna
-character(len=8) :: result
-integer :: nume
-aster_logical :: evonol
+    character(len=19) :: sddyna
+    character(len=8) :: result
+    integer :: nume
+    aster_logical :: evonol
 !
 ! ----------------------------------------------------------------------
 !
@@ -77,8 +77,8 @@ aster_logical :: evonol
     call jemarq()
     call infdbg('MECANONLINE', ifm, niv)
     if (niv .ge. 2) then
-        write (ifm,*) '<MECANONLINE> ... LECTURE PROJ. MODALE'
-    endif
+        write (ifm, *) '<MECANONLINE> ... LECTURE PROJ. MODALE'
+    end if
 !
 ! --- INITIALISATIONS
 !
@@ -87,7 +87,7 @@ aster_logical :: evonol
 !
 ! --- OBJETS PROJECTION MODALE
 !
-    nbmodp = ndynin(sddyna,'NBRE_MODE_PROJ')
+    nbmodp = ndynin(sddyna, 'NBRE_MODE_PROJ')
     call ndynkk(sddyna, 'PRMO_DEPGEM', depgem)
     call ndynkk(sddyna, 'PRMO_VITGEM', vitgem)
     call ndynkk(sddyna, 'PRMO_ACCGEM', accgem)
@@ -103,7 +103,7 @@ aster_logical :: evonol
 !
 ! --- SI PAS RE-ENTRANT: ON PART DE ZERO
 !
-    if (.not.evonol) then
+    if (.not. evonol) then
         linit = .true.
         call getvid('PROJ_MODAL', 'DEPL_INIT_GENE', iocc=1, scal=depgen, nbret=nocc1)
         call getvid('PROJ_MODAL', 'VITE_INIT_GENE', iocc=1, scal=vitgen, nbret=nocc2)
@@ -114,7 +114,7 @@ aster_logical :: evonol
 !
 ! --- EXISTENCE DU PARAMETRE DANS SD_RESULTAT
 !
-        call rsadpa(result, 'L', 1, 'TRAN_GENE_NOLI', nume,&
+        call rsadpa(result, 'L', 1, 'TRAN_GENE_NOLI', nume, &
                     1, sjv=jtrgen, styp=ctype)
         trgene = zk24(jtrgen)
         call jeexin(trgene(1:18)//'D', iret)
@@ -125,8 +125,8 @@ aster_logical :: evonol
             dgen = trgene(1:18)//'D'
             vgen = trgene(1:18)//'V'
             agen = trgene(1:18)//'A'
-        endif
-    endif
+        end if
+    end if
 !
 ! --- INITIALISATION OU LECTURE
 !
@@ -159,19 +159,19 @@ aster_logical :: evonol
                 call jeveuo(depgen//'.VALE', 'L', jrestd)
                 call dcopy(nbmodp, zr(jrestd), 1, zr(jdepgm), 1)
                 call dcopy(nbmodp, zr(jrestd), 1, zr(jdepgp), 1)
-            endif
+            end if
             if (nocc2 .ne. 0) then
                 call jeveuo(vitgen//'.VALE', 'L', jrestv)
                 call dcopy(nbmodp, zr(jrestv), 1, zr(jvitgm), 1)
                 call dcopy(nbmodp, zr(jrestv), 1, zr(jvitgp), 1)
-            endif
+            end if
             if (nocc3 .ne. 0) then
                 call jeveuo(accgen//'.VALE', 'L', jresta)
                 call dcopy(nbmodp, zr(jresta), 1, zr(jaccgm), 1)
                 call dcopy(nbmodp, zr(jresta), 1, zr(jaccgp), 1)
-            endif
-        endif
-    endif
+            end if
+        end if
+    end if
 !
     call jedema()
 !

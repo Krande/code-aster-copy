@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -66,11 +66,11 @@ subroutine genugl(prof_chno, indirf, modgen, mailsk)
 !-----------------------------------------------------------------------
     integer :: i, icomp, iddn, idds, iec, ieq, i_ligr_mesh, ibid, i_ligr_link
     integer :: ipoint, j, k, lddeeq, ldinse, ldnueq
-    integer :: ldprno, linueq,   llprno, lttds, nbcmp
+    integer :: ldprno, linueq, llprno, lttds, nbcmp
     integer :: nbcou, nbcpmx, nbddl, nbec, nbnot, nbsst, nddlt
     integer :: ntail, numno, nusst
 !-----------------------------------------------------------------------
-    parameter    (nbcpmx=300)
+    parameter(nbcpmx=300)
     character(len=6) :: pgc
     character(len=8) :: mailsk, modgen, kbid
     character(len=8) :: k8bid
@@ -81,12 +81,12 @@ subroutine genugl(prof_chno, indirf, modgen, mailsk)
     integer, pointer :: skeleton(:) => null()
 !
 !-----------------------------------------------------------------------
-    data pgc /'GENUGL'/
+    data pgc/'GENUGL'/
 !-----------------------------------------------------------------------
 !
     call jemarq()
-    kbid='  '
-    call mgutdm(modgen, kbid, 1, 'NB_CMP_MAX', nbcmp,&
+    kbid = '  '
+    call mgutdm(modgen, kbid, 1, 'NB_CMP_MAX', nbcmp, &
                 k8bid)
 !
 !-----RECUPERATION DU NOMBRE D'ENTIERS CODES DE LA GRANDEUR DEPL_R------
@@ -94,7 +94,7 @@ subroutine genugl(prof_chno, indirf, modgen, mailsk)
     call dismoi('NB_EC', 'DEPL_R', 'GRANDEUR', repi=nbec)
     if (nbec .gt. 10) then
         call utmess('F', 'MODELISA_94')
-    endif
+    end if
 !
 !-----RECUPERATION DU NOMBRE DE SOUS-STRUCTURES-------------------------
 !
@@ -115,36 +115,36 @@ subroutine genugl(prof_chno, indirf, modgen, mailsk)
 !
 !-----BOUCLE DE COMPTAGE DES DDL FINAUX---------------------------------
 !
-    nddlt=0
+    nddlt = 0
     do i = 1, nbsst
-        kbid='  '
-        call mgutdm(modgen, kbid, i, 'NOM_NUME_DDL', ibid,&
+        kbid = '  '
+        call mgutdm(modgen, kbid, i, 'NOM_NUME_DDL', ibid, &
                     numddl)
-        numddl(15:19)='.NUME'
+        numddl(15:19) = '.NUME'
         call jenonu(jexnom(numddl//'.LILI', '&MAILLA'), ibid)
         call jeveuo(jexnum(numddl//'.PRNO', ibid), 'L', llprno)
         do j = 1, nbnot
-            nusst=skeleton(j)
-            numno=skeleton(1+nbnot+j-1)
+            nusst = skeleton(j)
+            numno = skeleton(1+nbnot+j-1)
             if (nusst .eq. i) then
-                nddlt=nddlt+zi(llprno+(numno-1)*(2+nbec)+1)
-                zi(lttds+i-1)=zi(lttds+i-1)+zi(llprno+(numno-1)*(2+&
-                nbec)+1)
-            endif
+                nddlt = nddlt+zi(llprno+(numno-1)*(2+nbec)+1)
+                zi(lttds+i-1) = zi(lttds+i-1)+zi(llprno+(numno-1)*(2+ &
+                                                                   nbec)+1)
+            end if
         end do
     end do
 !
 !-----ALLOCATION DES DIVERS OBJETS-------------------------------------
 !
-    lili=prof_chno//'.LILI'
-    prno=prof_chno//'.PRNO'
-    deeq=prof_chno//'.DEEQ'
-    nueq=prof_chno//'.NUEQ'
+    lili = prof_chno//'.LILI'
+    prno = prof_chno//'.PRNO'
+    deeq = prof_chno//'.DEEQ'
+    nueq = prof_chno//'.NUEQ'
 !
 ! - Create PROF_CHNO
 !
-    call profchno_crsd(prof_chno, 'G', nb_equa = nddlt, nb_ligrz = 2,&
-                       prno_lengthz = nbnot*(2+nbec))
+    call profchno_crsd(prof_chno, 'G', nb_equa=nddlt, nb_ligrz=2, &
+                       prno_lengthz=nbnot*(2+nbec))
     call jeveuo(deeq, 'E', lddeeq)
     call jeveuo(nueq, 'E', ldnueq)
 !
@@ -154,15 +154,15 @@ subroutine genugl(prof_chno, indirf, modgen, mailsk)
     call jenonu(jexnom(lili, 'LIAISONS'), i_ligr_link)
     call jeecra(jexnum(prno, i_ligr_link), 'LONMAX', 1)
 
-    call jecrec(indirf, 'V V I', 'NU', 'DISPERSE', 'VARIABLE',&
+    call jecrec(indirf, 'V V I', 'NU', 'DISPERSE', 'VARIABLE', &
                 nbsst)
 !
     do i = 1, nbsst
-        ntail=2*zi(lttds+i-1)
+        ntail = 2*zi(lttds+i-1)
         if (ntail .gt. 0) then
             call jeecra(jexnum(indirf, i), 'LONMAX', ntail)
             call jecroc(jexnum(indirf, i))
-        endif
+        end if
     end do
 !
 !-----REMPLISSAGE DES OBJETS--------------------------------------------
@@ -170,21 +170,21 @@ subroutine genugl(prof_chno, indirf, modgen, mailsk)
     call jenonu(jexnom(lili, '&MAILLA'), i_ligr_mesh)
     call jeveuo(jexnum(prno, i_ligr_mesh), 'E', ldprno)
 !
-    icomp=0
+    icomp = 0
 !
 !  BOUCLE SUR LES SST DU MODELE GENERALISE
 !
     do i = 1, nbsst
-        nbcou=zi(lttds+i-1)
-        idds=0
+        nbcou = zi(lttds+i-1)
+        idds = 0
 !
 !  TEST SI LA SST COURANTE ENGENDRE DES DDL GLOBAUX
 !
         if (nbcou .gt. 0) then
-            kbid='  '
-            call mgutdm(modgen, kbid, i, 'NOM_NUME_DDL', ibid,&
+            kbid = '  '
+            call mgutdm(modgen, kbid, i, 'NOM_NUME_DDL', ibid, &
                         numddl)
-            numddl(15:19)='.NUME'
+            numddl(15:19) = '.NUME'
             call jenonu(jexnom(numddl//'.LILI', '&MAILLA'), ibid)
             call jeveuo(jexnum(numddl//'.PRNO', ibid), 'L', llprno)
             call jeveuo(numddl//'.NUEQ', 'L', vi=vnueq)
@@ -193,41 +193,41 @@ subroutine genugl(prof_chno, indirf, modgen, mailsk)
 !  BOUCLE SUR LES DDL GLOBAUX
 !
             do j = 1, nbnot
-                nusst=skeleton(j)
+                nusst = skeleton(j)
 !
 !  TEST SI LE NOEUD GLOBAL EST ENGENDRE PAR LA SST
 !
                 if (nusst .eq. i) then
-                    numno=skeleton(1+nbnot+j-1)
-                    ieq=zi(llprno+(numno-1)*(2+nbec))
-                    nbddl=zi(llprno+(numno-1)*(2+nbec)+1)
+                    numno = skeleton(1+nbnot+j-1)
+                    ieq = zi(llprno+(numno-1)*(2+nbec))
+                    nbddl = zi(llprno+(numno-1)*(2+nbec)+1)
                     call isdeco(zi(llprno+(numno-1)*(2+nbec)+2), idec, nbcmp)
-                    zi(ldprno+(j-1)*(2+nbec))=icomp+1
-                    zi(ldprno+(j-1)*(2+nbec)+1)=nbddl
+                    zi(ldprno+(j-1)*(2+nbec)) = icomp+1
+                    zi(ldprno+(j-1)*(2+nbec)+1) = nbddl
                     do iec = 1, nbec
-                        zi(ldprno+(j-1)*(2+nbec)+1+iec)= zi(llprno+(&
-                        numno-1)*(2+nbec)+1+iec)
+                        zi(ldprno+(j-1)*(2+nbec)+1+iec) = zi(llprno+( &
+                                                             numno-1)*(2+nbec)+1+iec)
                     end do
-                    iddn=0
+                    iddn = 0
                     do k = 1, nbcmp
                         if (idec(k) .gt. 0) then
-                            iddn=iddn+1
-                            icomp=icomp+1
-                            zi(lddeeq+(icomp-1)*2)=j
-                            zi(lddeeq+(icomp-1)*2+1)=k
-                            zi(ldnueq+icomp-1)=icomp
-                            linueq=vnueq(1+ieq+iddn-2)
-                            ipoint=ldinse+2*idds-1
-                            zi(ipoint+1)=linueq
-                            zi(ipoint+2)=icomp
-                            idds=idds+1
-                        endif
+                            iddn = iddn+1
+                            icomp = icomp+1
+                            zi(lddeeq+(icomp-1)*2) = j
+                            zi(lddeeq+(icomp-1)*2+1) = k
+                            zi(ldnueq+icomp-1) = icomp
+                            linueq = vnueq(1+ieq+iddn-2)
+                            ipoint = ldinse+2*idds-1
+                            zi(ipoint+1) = linueq
+                            zi(ipoint+2) = icomp
+                            idds = idds+1
+                        end if
                     end do
-                endif
+                end if
             end do
             call jelibe(numddl//'.NUEQ')
             call jelibe(jexnum(indirf, i))
-        endif
+        end if
     end do
 !
 !-----SAUVEGARDE DES OBJETS---------------------------------------------

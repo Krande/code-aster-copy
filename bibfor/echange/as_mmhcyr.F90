@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine as_mmhcyr(fid, maa, conn, csize, switch,&
+subroutine as_mmhcyr(fid, maa, conn, csize, switch, &
                      typent, typgeo, typcon, cret)
 ! person_in_charge: nicolas.sellenet at edf.fr
 !     L'ARGUMENT CSIZE N'EST PAS DANS L'API MED
@@ -51,8 +51,8 @@ subroutine as_mmhcyr(fid, maa, conn, csize, switch,&
     switc4 = switch
     mdnon4 = mdnont
     mdnoi4 = mdnoit
-    allocate ( conn4(csize) )
-    call mmhcyr(fidm, maa, mdnon4, mdnoi4, typen4,&
+    allocate (conn4(csize))
+    call mmhcyr(fidm, maa, mdnon4, mdnoi4, typen4, &
                 typge4, typco4, switc4, conn4, cret4)
     call conv_int('med->ast', csize, vi_ast=conn, vi_med=conn4)
     cret = cret4
@@ -60,7 +60,7 @@ subroutine as_mmhcyr(fid, maa, conn, csize, switch,&
 #else
     mdnont = -1
     mdnoit = -1
-    call mmhcyr(fid, maa, mdnont, mdnoit, typent,&
+    call mmhcyr(fid, maa, mdnont, mdnoit, typent, &
                 typgeo, typcon, switch, conn, cret)
 #endif
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,12 +16,12 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine mminit_lac(mesh     , ds_contact, hat_valinc, ds_measure, sdnume,&
+subroutine mminit_lac(mesh, ds_contact, hat_valinc, ds_measure, sdnume, &
                       nume_inst)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -36,12 +36,12 @@ implicit none
 #include "asterfort/infdbg.h"
 #include "asterfort/utmess.h"
 !
-character(len=8), intent(in) :: mesh
-type(NL_DS_Contact), intent(inout) :: ds_contact
-character(len=19), intent(in) :: hat_valinc(*)
-type(NL_DS_Measure), intent(inout) :: ds_measure
-character(len=19), intent(in) :: sdnume
-integer, intent(in) :: nume_inst
+    character(len=8), intent(in) :: mesh
+    type(NL_DS_Contact), intent(inout) :: ds_contact
+    character(len=19), intent(in) :: hat_valinc(*)
+    type(NL_DS_Measure), intent(inout) :: ds_measure
+    character(len=19), intent(in) :: sdnume
+    integer, intent(in) :: nume_inst
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -64,7 +64,7 @@ integer, intent(in) :: nume_inst
     aster_logical :: l_cont_allv, l_step_first
     character(len=19) :: sdcont_depgeo, disp_prev, sdcont_depini, sdappa
     character(len=19) :: sdcont_stat, sdcont_zeta, sdcont_zgpi
-    character(len=19) :: sdcont_zpoi, sdcont_znmc,  sdcont_zcoe
+    character(len=19) :: sdcont_zpoi, sdcont_znmc, sdcont_zcoe
     character(len=24) :: sdappa_gapi, sdappa_poid, sdappa_nmcp, sdappa_coef
     integer, pointer :: v_sdcont_stat(:) => null()
     integer, pointer :: v_sdcont_zeta(:) => null()
@@ -83,12 +83,12 @@ integer, intent(in) :: nume_inst
     call infdbg('CONTACT', ifm, niv)
     if (niv .ge. 2) then
         call utmess('I', 'CONTACT5_14')
-    endif
+    end if
 !
 ! - Initializations
 !
-    l_cont_allv  = cfdisl(ds_contact%sdcont_defi,'ALL_VERIF')
-    ASSERT(.not.l_cont_allv)
+    l_cont_allv = cfdisl(ds_contact%sdcont_defi, 'ALL_VERIF')
+    ASSERT(.not. l_cont_allv)
 !
 ! - Using *_INIT options (like SEUIL_INIT)
 !
@@ -134,26 +134,26 @@ integer, intent(in) :: nume_inst
     sdcont_zpoi = ds_contact%sdcont_solv(1:14)//'.ZPOI'
     sdcont_znmc = ds_contact%sdcont_solv(1:14)//'.ZNMC'
     sdcont_zcoe = ds_contact%sdcont_solv(1:14)//'.ZCOE'
-    call jeveuo(sdcont_stat, 'E', vi = v_sdcont_stat)
-    call jeveuo(sdappa_gapi, 'E', vr = v_sdappa_gapi)
-    call jeveuo(sdappa_nmcp, 'E', vi = v_sdappa_nmcp)
-    call jeveuo(sdappa_poid, 'E', vr = v_sdappa_poid)
-    call jeveuo(sdappa_coef, 'E', vr = v_sdappa_coef)
-    call jeveuo(sdcont_zeta, 'L', vi = v_sdcont_zeta)
-    call jeveuo(sdcont_zpoi, 'L', vr = v_sdcont_zpoi)
-    call jeveuo(sdcont_znmc, 'L', vi = v_sdcont_znmc)
-    call jeveuo(sdcont_zcoe, 'L', vr = v_sdcont_zcoe)
-    call jeveuo(sdcont_zgpi, 'L', vr = v_sdcont_zgpi)
-    v_sdcont_stat(:)=v_sdcont_zeta(:)
-    v_sdappa_gapi(:)=v_sdcont_zgpi(:)
-    v_sdappa_poid(:)=v_sdcont_zpoi(:)
-    v_sdappa_nmcp(:)=v_sdcont_znmc(:)
-    v_sdappa_coef(:)=v_sdcont_zcoe(:)
+    call jeveuo(sdcont_stat, 'E', vi=v_sdcont_stat)
+    call jeveuo(sdappa_gapi, 'E', vr=v_sdappa_gapi)
+    call jeveuo(sdappa_nmcp, 'E', vi=v_sdappa_nmcp)
+    call jeveuo(sdappa_poid, 'E', vr=v_sdappa_poid)
+    call jeveuo(sdappa_coef, 'E', vr=v_sdappa_coef)
+    call jeveuo(sdcont_zeta, 'L', vi=v_sdcont_zeta)
+    call jeveuo(sdcont_zpoi, 'L', vr=v_sdcont_zpoi)
+    call jeveuo(sdcont_znmc, 'L', vi=v_sdcont_znmc)
+    call jeveuo(sdcont_zcoe, 'L', vr=v_sdcont_zcoe)
+    call jeveuo(sdcont_zgpi, 'L', vr=v_sdcont_zgpi)
+    v_sdcont_stat(:) = v_sdcont_zeta(:)
+    v_sdappa_gapi(:) = v_sdcont_zgpi(:)
+    v_sdappa_poid(:) = v_sdcont_zpoi(:)
+    v_sdappa_nmcp(:) = v_sdcont_znmc(:)
+    v_sdappa_coef(:) = v_sdcont_zcoe(:)
 !
 ! - Initial options
 !
-    if (.not.l_cont_allv .and. l_step_first) then
-       call mmopti_lac(mesh, ds_contact)
-    endif
+    if (.not. l_cont_allv .and. l_step_first) then
+        call mmopti_lac(mesh, ds_contact)
+    end if
 !
 end subroutine

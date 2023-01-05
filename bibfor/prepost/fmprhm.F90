@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -35,10 +35,10 @@ subroutine fmprhm(nbfonc, nbptot, sigm, rphmax)
 !-----------------------------------------------------------------------
     integer :: i, ide
 !-----------------------------------------------------------------------
-    rphmax=(sigm(1)+sigm(2)+sigm(3))/3.d0
+    rphmax = (sigm(1)+sigm(2)+sigm(3))/3.d0
     do i = 2, nbptot
         ide = (i-1)*nbfonc
-        rph=(sigm(ide+1)+sigm(ide+2)+sigm(ide+3))/3.d0
+        rph = (sigm(ide+1)+sigm(ide+2)+sigm(ide+3))/3.d0
         if (rph .gt. rphmax) rphmax = rph
     end do
 !

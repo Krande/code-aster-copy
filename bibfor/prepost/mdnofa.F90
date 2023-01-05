@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine mdnofa(numfam, nogrf, nbgf, nbfaex, nofaex,&
+subroutine mdnofa(numfam, nogrf, nbgf, nbfaex, nofaex, &
                   nomfam)
 ! person_in_charge: nicolas.sellenet at edf.fr
 !  ENTREES :
@@ -69,61 +69,61 @@ subroutine mdnofa(numfam, nogrf, nbgf, nbfaex, nofaex,&
 !====
 !
     lgnofx = len(nomfam)
-    do 11 , iaux = 1 , lgnofx
-    nomfam(iaux:iaux) = ' '
-    11 end do
+    do 11, iaux = 1, lgnofx
+        nomfam(iaux:iaux) = ' '
+11  end do
 !
 !====
 ! 2. CALCUL DE LA TAILLE NECESSAIRE A LA CONCATENATION
 !====
 !
     lgnofa = 0
-    do 21 , iaux = 1 , nbgf
-    lgnofa = lgnofa + lxlgut(nogrf(iaux))
-    if (iaux .lt. nbgf) then
-        lgnofa = lgnofa + 1
-    endif
- 21 continue
+    do 21, iaux = 1, nbgf
+        lgnofa = lgnofa+lxlgut(nogrf(iaux))
+        if (iaux .lt. nbgf) then
+            lgnofa = lgnofa+1
+        end if
+21      continue
 !
 !====
 ! 2. ON A LA PLACE : FABRICATION DU NOM
 !====
 !
-    if (lgnofa .le. lgnofx) then
+        if (lgnofa .le. lgnofx) then
 !
-        ifin = 0
-        do 31 , iaux = 1 , nbgf
-        jaux = lxlgut(nogrf(iaux))
-        ideb = ifin + 1
-        ifin = ifin + jaux
-        nomfam(ideb:ifin) = nogrf(iaux)(1:jaux)
-        if (iaux .lt. nbgf) then
-            ifin = ifin + 1
-            nomfam(ifin:ifin) = '_'
-        endif
- 31     continue
+            ifin = 0
+            do 31, iaux = 1, nbgf
+                jaux = lxlgut(nogrf(iaux))
+                ideb = ifin+1
+                ifin = ifin+jaux
+                nomfam(ideb:ifin) = nogrf(iaux) (1:jaux)
+                if (iaux .lt. nbgf) then
+                    ifin = ifin+1
+                    nomfam(ifin:ifin) = '_'
+                end if
+31              continue
 !
 !====
 ! 4. SINON, C'EST UN NOM ARBITRAIRE, CONSTRUIT AVEC LE NUMERO DE
 !    LA FAMILLE
 !====
 !
-    else
+                else
 !
 !                      12345678
-        nomfam(1:8) = 'FAMILLE_'
+                nomfam(1:8) = 'FAMILLE_'
 !
-        call codent(numfam, 'G', saux08)
+                call codent(numfam, 'G', saux08)
 !
-        jaux = lxlgut(saux08)
-        nomfam(9:8+jaux) = saux08(1:jaux)
+                jaux = lxlgut(saux08)
+                nomfam(9:8+jaux) = saux08(1:jaux)
 !
-    endif
+                end if
 !
 !====
 ! 5. MEMORISATION DU NOM DANS LE TABLEAU
 !====
 !
-    nofaex(nbfaex+1) = nomfam
+                nofaex(nbfaex+1) = nomfam
 !
-end subroutine
+                end subroutine

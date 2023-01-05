@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -40,33 +40,33 @@ function ioriv3(num, noeud, vect, coor)
 !.========================= DEBUT DU CODE EXECUTABLE ==================
 !
 !     BOUCLE SUR LES SOMMETS
-    ioriv3=0
+    ioriv3 = 0
     do i = 1, 2
         if (num(i) .eq. noeud) then
-            n1=num(1)
-            n2=num(2)
-            x1=x(n1)
-            y1=y(n1)
-            z1=z(n1)
-            x2=x(n2)
-            y2=y(n2)
-            z2=z(n2)
-            scal=(x2-x1)*vect(1)+(y2-y1)*vect(2)+(z2-z1)*vect(3)
+            n1 = num(1)
+            n2 = num(2)
+            x1 = x(n1)
+            y1 = y(n1)
+            z1 = z(n1)
+            x2 = x(n2)
+            y2 = y(n2)
+            z2 = z(n2)
+            scal = (x2-x1)*vect(1)+(y2-y1)*vect(2)+(z2-z1)*vect(3)
             if (scal .gt. 0) then
-                ioriv3= 1
-            else if (scal.lt.0) then
-                ioriv3=-1
+                ioriv3 = 1
+            else if (scal .lt. 0) then
+                ioriv3 = -1
             else
                 call utmess('F', 'MODELISA4_83')
-            endif
-        endif
+            end if
+        end if
     end do
     if (ioriv3 .lt. 0) then
 !       ON PERMUTE LES SOMMETS
-        k=num(1)
-        l=num(2)
-        num(1)=l
-        num(2)=k
-    endif
+        k = num(1)
+        l = num(2)
+        num(1) = l
+        num(2) = k
+    end if
 !
 end function

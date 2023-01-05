@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine modcoq(base, nuor, nbm, mater1, mater2,&
-                  noma, nomgrp, iaxe, kec, geom,&
+subroutine modcoq(base, nuor, nbm, mater1, mater2, &
+                  noma, nomgrp, iaxe, kec, geom, &
                   vicoq, torco, tcoef, ifreba)
     implicit none
 ! CARACTERISATION DES DEFORMEES DES MODES PRIS EN COMPTE POUR LE
@@ -92,7 +92,7 @@ subroutine modcoq(base, nuor, nbm, mater1, mater2,&
     real(kind=8) :: poiss1, poiss2, rho1, rho2, rtemp, tole, young1
     real(kind=8) :: young2
 !-----------------------------------------------------------------------
-    data nompar /'E       ','NU      ','RHO     '/
+    data nompar/'E       ', 'NU      ', 'RHO     '/
 !
 !-----------------------------------------------------------------------
     call jemarq()
@@ -104,26 +104,26 @@ subroutine modcoq(base, nuor, nbm, mater1, mater2,&
     if (iaxe .eq. 1) then
         iddl(1) = 2
         iddl(2) = 3
-    else if (iaxe.eq.2) then
+    else if (iaxe .eq. 2) then
         iddl(1) = 3
         iddl(2) = 1
     else
         iddl(1) = 1
         iddl(2) = 2
-    endif
+    end if
 !
 !
     ifm = iunifi('MESSAGE')
-    500 format('*******************************************')
-    501 format('*                                         *')
-    502 format('*  CARACTERISATION DES DEFORMEES MODALES  *')
-    503 format('DEFORMEE DU ',i3,'-IEME MODE RETENU')
-    504 format('================================')
-    510 format('-----  MOUVEMENT DE LA COQUE INTERNE  ------')
-    511 format('--- PAS DE MOUVEMENT DE LA COQUE INTERNE ---')
-    520 format('-----  MOUVEMENT DE LA COQUE EXTERNE  ------')
-    521 format('--- PAS DE MOUVEMENT DE LA COQUE EXTERNE ---')
-    530 format(30x,'---/---')
+500 format('*******************************************')
+501 format('*                                         *')
+502 format('*  CARACTERISATION DES DEFORMEES MODALES  *')
+503 format('DEFORMEE DU ', i3, '-IEME MODE RETENU')
+504 format('================================')
+510 format('-----  MOUVEMENT DE LA COQUE INTERNE  ------')
+511 format('--- PAS DE MOUVEMENT DE LA COQUE INTERNE ---')
+520 format('-----  MOUVEMENT DE LA COQUE EXTERNE  ------')
+521 format('--- PAS DE MOUVEMENT DE LA COQUE EXTERNE ---')
+530 format(30x, '---/---')
 !
 !
 ! --- 2.RECUPERATION DES CARACTERISTIQUES MATERIAU
@@ -131,16 +131,16 @@ subroutine modcoq(base, nuor, nbm, mater1, mater2,&
 ! --- 2.1.MATERIAU CONSTITUTIF DE LA COQUE INTERNE
 !
     call rccome(mater1, 'ELAS', iret, k11_ind_nomrc=k11)
-    if ( iret .eq. 0 ) then
-       rcvalk = mater1//k11//'.VALK'
-       rcvalr = mater1//k11//'.VALR'
+    if (iret .eq. 0) then
+        rcvalk = mater1//k11//'.VALK'
+        rcvalr = mater1//k11//'.VALR'
     else
-       rcvalk = ' '
-    endif
+        rcvalk = ' '
+    end if
     call jeexin(rcvalk, iret)
     if (iret .eq. 0) then
         call utmess('F', 'ALGELINE_92')
-    endif
+    end if
     call jeveuo(rcvalk, 'L', ivalk)
     call jeveuo(rcvalr, 'L', ivalr)
 !
@@ -152,33 +152,33 @@ subroutine modcoq(base, nuor, nbm, mater1, mater2,&
         if (zk16(ivalk+ipara-1) .eq. nompar(1)) then
             iok1 = 1
             young1 = zr(ivalr+ipara-1)
-        else if (zk16(ivalk+ipara-1).eq.nompar(2)) then
+        else if (zk16(ivalk+ipara-1) .eq. nompar(2)) then
             iok2 = 1
             poiss1 = zr(ivalr+ipara-1)
-        else if (zk16(ivalk+ipara-1).eq.nompar(3)) then
+        else if (zk16(ivalk+ipara-1) .eq. nompar(3)) then
             iok3 = 1
             rho1 = zr(ivalr+ipara-1)
-        endif
+        end if
     end do
     if (iok1 .eq. 0 .or. iok2 .eq. 0 .or. iok3 .eq. 0) then
         call utmess('F', 'ALGELINE_93')
-    else if (young1.eq.0.d0) then
+    else if (young1 .eq. 0.d0) then
         call utmess('F', 'ALGELINE_94')
-    endif
+    end if
 !
 ! --- 2.2.MATERIAU CONSTITUTIF DE LA COQUE EXTERNE
 !
     call rccome(mater2, 'ELAS', iret, k11_ind_nomrc=k11)
-    if ( iret .eq. 0 ) then
-       rcvalk = mater2//k11//'.VALK'
-       rcvalr = mater2//k11//'.VALR'
+    if (iret .eq. 0) then
+        rcvalk = mater2//k11//'.VALK'
+        rcvalr = mater2//k11//'.VALR'
     else
-       rcvalk = ' '
-    endif
+        rcvalk = ' '
+    end if
     call jeexin(rcvalk, iret)
     if (iret .eq. 0) then
         call utmess('F', 'ALGELINE_95')
-    endif
+    end if
     call jeveuo(rcvalk, 'L', ivalk)
     call jeveuo(rcvalr, 'L', ivalr)
 !
@@ -190,19 +190,19 @@ subroutine modcoq(base, nuor, nbm, mater1, mater2,&
         if (zk16(ivalk+ipara-1) .eq. nompar(1)) then
             iok1 = 1
             young2 = zr(ivalr+ipara-1)
-        else if (zk16(ivalk+ipara-1).eq.nompar(2)) then
+        else if (zk16(ivalk+ipara-1) .eq. nompar(2)) then
             iok2 = 1
             poiss2 = zr(ivalr+ipara-1)
-        else if (zk16(ivalk+ipara-1).eq.nompar(3)) then
+        else if (zk16(ivalk+ipara-1) .eq. nompar(3)) then
             iok3 = 1
             rho2 = zr(ivalr+ipara-1)
-        endif
+        end if
     end do
     if (iok1 .eq. 0 .or. iok2 .eq. 0 .or. iok3 .eq. 0) then
         call utmess('F', 'ALGELINE_96')
-    else if (young2.eq.0.d0) then
+    else if (young2 .eq. 0.d0) then
         call utmess('F', 'ALGELINE_97')
-    endif
+    end if
 !
 !
 ! --- 3.EXTRACTION DES DEFORMEES MODALES DANS LES DEUX DIRECTIONS DU
@@ -215,7 +215,7 @@ subroutine modcoq(base, nuor, nbm, mater1, mater2,&
     call dismoi('NB_NO_MAILLA', noma, 'MAILLAGE', repi=nbnoto)
 !
     call wkvect('&&MODCOQ.TEMP.DEFM', 'V V R', 2*nbnoto*nbm, idefm)
-    call extmod(base, numddl, nuor, nbm, zr(idefm),&
+    call extmod(base, numddl, nuor, nbm, zr(idefm), &
                 nbeq, nbnoto, iddl, 2)
 !
 !.....PERMUTATION DES DDLS DX, DZ -> DZ, DX LORSQUE IAXE = 2
@@ -223,15 +223,15 @@ subroutine modcoq(base, nuor, nbm, mater1, mater2,&
 !
     if (iaxe .eq. 2) then
         do imod = 1, nbm
-            idecm = 2 * nbnoto * (imod-1)
+            idecm = 2*nbnoto*(imod-1)
             do ino = 1, nbnoto
-                idecmn = idecm + 2 * (ino-1)
+                idecmn = idecm+2*(ino-1)
                 rtemp = zr(idefm+idecmn)
                 zr(idefm+idecmn) = zr(idefm+idecmn+1)
                 zr(idefm+idecmn+1) = rtemp
             end do
         end do
-    endif
+    end if
 !
 !
 ! --- 4.ACCES AUX OBJETS DU CONCEPT MAILLAGE
@@ -255,19 +255,19 @@ subroutine modcoq(base, nuor, nbm, mater1, mater2,&
 !       - DETERMINATION DE L'ORDRE DE COQUE ET DU DEPHASAGE
 !       - DETERMINATION DES COEFFICIENTS DE LA DEFORMEE AXIALE
 !
-    write(ifm,500)
-    write(ifm,501)
-    write(ifm,502)
-    write(ifm,501)
-    write(ifm,500)
-    write(ifm,*)
+    write (ifm, 500)
+    write (ifm, 501)
+    write (ifm, 502)
+    write (ifm, 501)
+    write (ifm, 500)
+    write (ifm, *)
 !
 !
     do imod = 1, nbm
 !
-        write(ifm,503) imod
-        write(ifm,504)
-        write(ifm,*)
+        write (ifm, 503) imod
+        write (ifm, 504)
+        write (ifm, *)
         numod = nuor(imod)
         fremod = zr(ifreba+numod-1)
 !
@@ -284,7 +284,7 @@ subroutine modcoq(base, nuor, nbm, mater1, mater2,&
             if (dpnorm .gt. dpmaxi) then
                 dpmaxi = dpnorm
                 inmaxi = ino
-            endif
+            end if
         end do
 !
 ! ----- 5.2.DETECTION DU DEPLACEMENT MAXIMUM SUR LA COQUE EXTERNE
@@ -300,7 +300,7 @@ subroutine modcoq(base, nuor, nbm, mater1, mater2,&
             if (dpnorm .gt. dpmaxe) then
                 dpmaxe = dpnorm
                 inmaxe = ino
-            endif
+            end if
         end do
 !
 ! ----- 5.3.DETERMINATION DE L'ORDRE DE COQUE ET DES COEFFICIENTS DE
@@ -310,79 +310,79 @@ subroutine modcoq(base, nuor, nbm, mater1, mater2,&
 !
         if (dpmaxe .lt. dpmaxi*tole) then
 !
-            write(ifm,510)
-            write(ifm,*)
+            write (ifm, 510)
+            write (ifm, *)
             icoq = 1
-            call ordcoq(imod, nbm, icoq, nbnoin, zi(inunoi),&
-                        inmaxi, nbnoto, zr(icoor), iaxe, zr(idefm),&
+            call ordcoq(imod, nbm, icoq, nbnoin, zi(inunoi), &
+                        inmaxi, nbnoto, zr(icoor), iaxe, zr(idefm), &
                         nunoe0, drmax, torco)
-            call coedef(imod, fremod, nbm, young1, poiss1,&
-                        rho1, icoq, nbnoin, zi(inunoi), nunoe0,&
-                        nbnoto, zr(icoor), iaxe, kec, geom,&
+            call coedef(imod, fremod, nbm, young1, poiss1, &
+                        rho1, icoq, nbnoin, zi(inunoi), nunoe0, &
+                        nbnoto, zr(icoor), iaxe, kec, geom, &
                         zr(idefm), drmax, torco, tcoef)
 !
             vicoq(imod) = icoq
-            write(ifm,*)
-            write(ifm,521)
-            write(ifm,*)
+            write (ifm, *)
+            write (ifm, 521)
+            write (ifm, *)
 !
 ! ----- 5.3.2.COQUE EXTERNE SEULE EN MOUVEMENT
 !
-        else if (dpmaxi.lt.dpmaxe*tole) then
+        else if (dpmaxi .lt. dpmaxe*tole) then
 !
-            write(ifm,511)
-            write(ifm,*)
-            write(ifm,520)
-            write(ifm,*)
+            write (ifm, 511)
+            write (ifm, *)
+            write (ifm, 520)
+            write (ifm, *)
             icoq = 2
-            call ordcoq(imod, nbm, icoq, nbnoex, zi(inunoe),&
-                        inmaxe, nbnoto, zr(icoor), iaxe, zr(idefm),&
+            call ordcoq(imod, nbm, icoq, nbnoex, zi(inunoe), &
+                        inmaxe, nbnoto, zr(icoor), iaxe, zr(idefm), &
                         nunoe0, drmax, torco)
-            call coedef(imod, fremod, nbm, young2, poiss2,&
-                        rho2, icoq, nbnoex, zi(inunoe), nunoe0,&
-                        nbnoto, zr(icoor), iaxe, kec, geom,&
+            call coedef(imod, fremod, nbm, young2, poiss2, &
+                        rho2, icoq, nbnoex, zi(inunoe), nunoe0, &
+                        nbnoto, zr(icoor), iaxe, kec, geom, &
                         zr(idefm), drmax, torco, tcoef)
 !
             vicoq(imod) = icoq
-            write(ifm,*)
+            write (ifm, *)
 !
 ! ----- 5.3.3.COQUES INTERNE + EXTERNE EN MOUVEMENT
 !
         else
 !
-            write(kmod,'(I3)') imod
+            write (kmod, '(I3)') imod
             call utmess('A', 'ALGELINE_98', sk=kmod)
 !
-            write(ifm,510)
-            write(ifm,*)
+            write (ifm, 510)
+            write (ifm, *)
             icoq = 1
-            call ordcoq(imod, nbm, icoq, nbnoin, zi(inunoi),&
-                        inmaxi, nbnoto, zr(icoor), iaxe, zr(idefm),&
+            call ordcoq(imod, nbm, icoq, nbnoin, zi(inunoi), &
+                        inmaxi, nbnoto, zr(icoor), iaxe, zr(idefm), &
                         nunoe0, drmax, torco)
-            call coedef(imod, fremod, nbm, young1, poiss1,&
-                        rho1, icoq, nbnoin, zi(inunoi), nunoe0,&
-                        nbnoto, zr(icoor), iaxe, kec, geom,&
+            call coedef(imod, fremod, nbm, young1, poiss1, &
+                        rho1, icoq, nbnoin, zi(inunoi), nunoe0, &
+                        nbnoto, zr(icoor), iaxe, kec, geom, &
                         zr(idefm), drmax, torco, tcoef)
 !
-            write(ifm,*)
-            write(ifm,520)
-            write(ifm,*)
+            write (ifm, *)
+            write (ifm, 520)
+            write (ifm, *)
             icoq = 2
-            call ordcoq(imod, nbm, icoq, nbnoex, zi(inunoe),&
-                        inmaxe, nbnoto, zr(icoor), iaxe, zr(idefm),&
+            call ordcoq(imod, nbm, icoq, nbnoex, zi(inunoe), &
+                        inmaxe, nbnoto, zr(icoor), iaxe, zr(idefm), &
                         nunoe0, drmax, torco)
-            call coedef(imod, fremod, nbm, young2, poiss2,&
-                        rho2, icoq, nbnoex, zi(inunoe), nunoe0,&
-                        nbnoto, zr(icoor), iaxe, kec, geom,&
+            call coedef(imod, fremod, nbm, young2, poiss2, &
+                        rho2, icoq, nbnoex, zi(inunoe), nunoe0, &
+                        nbnoto, zr(icoor), iaxe, kec, geom, &
                         zr(idefm), drmax, torco, tcoef)
 !
             vicoq(imod) = 3
-            write(ifm,*)
+            write (ifm, *)
 !
-        endif
+        end if
 !
-        write(ifm,530)
-        write(ifm,*)
+        write (ifm, 530)
+        write (ifm, *)
 !
     end do
 !

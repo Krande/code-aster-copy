@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -62,22 +62,22 @@ subroutine cresol(solveu, basz, xfem)
 ! ----------------------------------------------------------------------
 !
     call jemarq()
-    if( present(basz) ) then
+    if (present(basz)) then
         base = basz
     else
         base = 'V'
-    endif
+    end if
 !
 ! --- INITS. GLOBALES (CAR MOT-CLES OPTIONNELS)
-    nomsol='SOLVEUR'
-    nprec=8
-    istop=0
-    kstop=' '
-    epsmat=-1.d0
-    mixpre='NON'
+    nomsol = 'SOLVEUR'
+    nprec = 8
+    istop = 0
+    kstop = ' '
+    epsmat = -1.d0
+    mixpre = 'NON'
     modele = ' '
-    kellag='NON'
-    kxfem=' '
+    kellag = 'NON'
+    kxfem = ' '
 !
     call getfac(nomsol, nsolve)
     if (nsolve .eq. 0) goto 10
@@ -90,58 +90,58 @@ subroutine cresol(solveu, basz, xfem)
 ! ------------------------------------------------------
 !
 ! ----- STOP SINGULIER/NPREC
-    eximc=getexm(nomsol,'STOP_SINGULIER')
+    eximc = getexm(nomsol, 'STOP_SINGULIER')
     if (eximc .eq. 1) then
         call getvtx(nomsol, 'STOP_SINGULIER', iocc=1, scal=kstop, nbret=ibid)
-    endif
-    eximc=getexm(nomsol,'NPREC')
+    end if
+    eximc = getexm(nomsol, 'NPREC')
     if (eximc .eq. 1) then
         call getvis(nomsol, 'NPREC', iocc=1, scal=nprec, nbret=ibid)
-        if ((nprec.lt.0).or.(nprec.gt.13)) then
-          call utmess('I', 'FACTOR_9',si=nprec)
-        endif
+        if ((nprec .lt. 0) .or. (nprec .gt. 13)) then
+            call utmess('I', 'FACTOR_9', si=nprec)
+        end if
         if (kstop .eq. 'OUI') then
             istop = 0
-        else if (kstop.eq.'NON') then
+        else if (kstop .eq. 'NON') then
             istop = 1
-        endif
-    endif
+        end if
+    end if
 !
 ! ----- FILTRAGE_MATRICE
-    eximc=getexm(nomsol,'FILTRAGE_MATRICE')
+    eximc = getexm(nomsol, 'FILTRAGE_MATRICE')
     if (eximc .eq. 1) then
         call getvr8(nomsol, 'FILTRAGE_MATRICE', iocc=1, scal=epsmat, nbret=ibid)
-    endif
+    end if
 !
 ! ----- MIXER PRECISION
-    eximc=getexm(nomsol,'MIXER_PRECISION')
+    eximc = getexm(nomsol, 'MIXER_PRECISION')
     if (eximc .eq. 1) then
         call getvtx(nomsol, 'MIXER_PRECISION', iocc=1, scal=mixpre, nbret=ibid)
-    endif
+    end if
 !
 ! ------ ELIM_LAGR
-    eximc=getexm(nomsol,'ELIM_LAGR')
+    eximc = getexm(nomsol, 'ELIM_LAGR')
     if (eximc .eq. 1) then
         call getvtx(nomsol, 'ELIM_LAGR', iocc=1, scal=kellag, nbret=n1)
         if (n1 .eq. 1) then
-            if (kellag .ne. 'OUI') kellag='NON'
+            if (kellag .ne. 'OUI') kellag = 'NON'
         else
-            kellag='NON'
-        endif
-    endif
+            kellag = 'NON'
+        end if
+    end if
 !
 ! ------ PRE_COND_XFEM
-    if( present(xfem) ) then
+    if (present(xfem)) then
         kxfem = xfem
     else
-        eximc=getexm(' ','MODELE')
+        eximc = getexm(' ', 'MODELE')
         if (eximc .eq. 1) then
             call getvid(' ', 'MODELE', scal=modele, nbret=n1)
-                if (n1 .eq. 1 .and. modele .ne. ' ') then
-                    call dismoi('PRE_COND_XFEM', modele, 'MODELE', repk=kxfem)
-                endif
-        endif
-    endif
+            if (n1 .eq. 1 .and. modele .ne. ' ') then
+                call dismoi('PRE_COND_XFEM', modele, 'MODELE', repk=kxfem)
+            end if
+        end if
+    end if
 !
     zslvk = sdsolv('ZSLVK')
     zslvr = sdsolv('ZSLVR')
@@ -160,34 +160,34 @@ subroutine cresol(solveu, basz, xfem)
 
     if (method .eq. 'MUMPS') then
 !     -----------------------------
-        call crsvmu(nomsol, solveu, istop, nprec,&
+        call crsvmu(nomsol, solveu, istop, nprec, &
                     epsmat, mixpre, kellag, kxfem)
 !
-    else if (method.eq.'PETSC') then
+    else if (method .eq. 'PETSC') then
 !     -----------------------------
-        call crsvpe(nomsol, solveu, kellag )
+        call crsvpe(nomsol, solveu, kellag)
 !
-    else if (method.eq.'LDLT') then
+    else if (method .eq. 'LDLT') then
 !     -----------------------------
-        call crsvld(nomsol, solveu, istop, nprec,&
+        call crsvld(nomsol, solveu, istop, nprec, &
                     epsmat, mixpre, kellag, kxfem)
 !
-    else if (method.eq.'GCPC') then
+    else if (method .eq. 'GCPC') then
 !     -----------------------------
         call crsvgc(nomsol, solveu, kellag)
 !
-    else if (method.eq.'MULT_FRONT') then
+    else if (method .eq. 'MULT_FRONT') then
 !     -----------------------------
 !       do not create threads in blas
         call asthread_blasset(1)
-        call crsvmf(nomsol, solveu, istop, nprec,&
+        call crsvmf(nomsol, solveu, istop, nprec, &
                     epsmat, mixpre, kellag, kxfem)
 !
     else
         ASSERT(.false.)
-    endif
+    end if
 !
- 10 continue
+10  continue
 !
     call jedema()
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine pjtyco(isole, resuin, cham1, lnoeu, lelno,&
+subroutine pjtyco(isole, resuin, cham1, lnoeu, lelno, &
                   lelem, lelga)
 ! person_in_charge: jacques.pellet at edf.fr
 !
@@ -27,7 +27,6 @@ subroutine pjtyco(isole, resuin, cham1, lnoeu, lelno,&
     implicit none
 
 ! 0.1. ==> ARGUMENTS
-
 
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -47,22 +46,15 @@ subroutine pjtyco(isole, resuin, cham1, lnoeu, lelno,&
     aster_logical :: isole
     aster_logical :: lnoeu, lelno, lelem, lelga
 
-
 !  LNOEU  : .TRUE.  : IL Y A UN CHAM_NO A PROJETER
 !  LELNO  : .TRUE.  : IL Y A UN CHAM_ELEM DE TYPE ELNO A PROJETER
 !  LELEM  : .TRUE.  : IL Y A UN CHAM_ELEM DE TYPE ELEM A PROJETER
 !  LELGA  : .TRUE.  : IL Y A UN CHAM_ELEM DE TYPE ELGA A PROJETER
 
-
-
-
 ! 0.2. ==> COMMUNS
 ! ----------------------------------------------------------------------
 
-
-
 ! 0.3. ==> VARIABLES LOCALES
-
 
     integer :: i, ie, iret
     integer :: nbordr
@@ -77,134 +69,130 @@ subroutine pjtyco(isole, resuin, cham1, lnoeu, lelno,&
 ! DEB ------------------------------------------------------------------
     call jemarq()
 
-    lnoeu=.false.
-    lelno=.false.
-    lelem=.false.
-    lelga=.false.
-
-
+    lnoeu = .false.
+    lelno = .false.
+    lelem = .false.
+    lelga = .false.
 
 !   1- CAS CHAMP ISOLE :
 !   =====================
     if (isole) then
         call dismoi('TYPE_CHAMP', cham1, 'CHAMP', repk=tych)
         if (tych .eq. 'NOEU') then
-            lnoeu=.true.
-        else if (tych.eq.'ELNO') then
-            lelno=.true.
-        else if (tych.eq.'ELEM') then
-            lelem=.true.
-        else if (tych.eq.'ELGA') then
-            lelga=.true.
+            lnoeu = .true.
+        else if (tych .eq. 'ELNO') then
+            lelno = .true.
+        else if (tych .eq. 'ELEM') then
+            lelem = .true.
+        else if (tych .eq. 'ELGA') then
+            lelga = .true.
         else
             ASSERT(.false.)
-        endif
-
+        end if
 
 !   2- CAS SD_RESULTAT :
 !   =====================
     else
         call getvr8(' ', 'PRECISION', scal=prec, nbret=ie)
         call getvtx(' ', 'CRITERE', scal=crit, nbret=ie)
-        call rsutnu(resuin, ' ', 0, '&&PJXXCO.NUME_ORDRE', nbordr,&
+        call rsutnu(resuin, ' ', 0, '&&PJXXCO.NUME_ORDRE', nbordr, &
                     prec, crit, iret)
 
         if (iret .ne. 0) then
             call utmess('F', 'CALCULEL4_61', sk=resuin)
-        endif
+        end if
         if (nbordr .eq. 0) then
             call utmess('F', 'CALCULEL4_62', sk=resuin)
-        endif
+        end if
 
         call jeveuo('&&PJXXCO.NUME_ORDRE', 'L', vi=nume_ordre)
-        call rsutc4(resuin, ' ', 1, 200, nomsym,&
+        call rsutc4(resuin, ' ', 1, 200, nomsym, &
                     nbsym, acceno)
-
 
 !       -- DETERMINATION DE LNOEU
         do isym = 1, nbsym
             do i = 1, nbordr
-                iordr=nume_ordre(i)
-                call rsexch(' ', resuin, nomsym(isym), iordr, cham1,&
+                iordr = nume_ordre(i)
+                call rsexch(' ', resuin, nomsym(isym), iordr, cham1, &
                             iret)
 
                 if (iret .eq. 0) then
                     call dismoi('TYPE_CHAMP', cham1, 'CHAMP', repk=tych)
                     if (tych .eq. 'NOEU') then
-                        lnoeu=.true.
+                        lnoeu = .true.
                         goto 20
 
-                    endif
-                endif
+                    end if
+                end if
 
             end do
- 20         continue
+20          continue
         end do
 
 !       -- DETERMINATION DE LELNO
         do isym = 1, nbsym
             do i = 1, nbordr
-                iordr=nume_ordre(i)
-                call rsexch(' ', resuin, nomsym(isym), iordr, cham1,&
+                iordr = nume_ordre(i)
+                call rsexch(' ', resuin, nomsym(isym), iordr, cham1, &
                             iret)
 
                 if (iret .eq. 0) then
                     call dismoi('TYPE_CHAMP', cham1, 'CHAMP', repk=tych)
                     if (tych .eq. 'ELNO') then
-                        lelno=.true.
+                        lelno = .true.
                         goto 40
 
-                    endif
-                endif
+                    end if
+                end if
 
             end do
- 40         continue
+40          continue
         end do
 
 !       -- DETERMINATION DE LELEM
         do isym = 1, nbsym
             do i = 1, nbordr
-                iordr=nume_ordre(i)
-                call rsexch(' ', resuin, nomsym(isym), iordr, cham1,&
+                iordr = nume_ordre(i)
+                call rsexch(' ', resuin, nomsym(isym), iordr, cham1, &
                             iret)
 
                 if (iret .eq. 0) then
                     call dismoi('TYPE_CHAMP', cham1, 'CHAMP', repk=tych)
                     if (tych .eq. 'ELEM') then
-                        lelem=.true.
+                        lelem = .true.
                         goto 60
 
-                    endif
-                endif
+                    end if
+                end if
 
             end do
- 60         continue
+60          continue
         end do
 
 !       -- DETERMINATION DE LELGA
         do isym = 1, nbsym
             do i = 1, nbordr
-                iordr=nume_ordre(i)
-                call rsexch(' ', resuin, nomsym(isym), iordr, cham1,&
+                iordr = nume_ordre(i)
+                call rsexch(' ', resuin, nomsym(isym), iordr, cham1, &
                             iret)
 
                 if (iret .eq. 0) then
                     call dismoi('TYPE_CHAMP', cham1, 'CHAMP', repk=tych)
                     if (tych .eq. 'ELGA') then
-                        lelga=.true.
+                        lelga = .true.
                         goto 80
 
-                    endif
-                endif
+                    end if
+                end if
 
             end do
- 80         continue
+80          continue
         end do
-    endif
+    end if
 
-    if (.not.lelga .and. .not.lelno .and. .not.lelem .and. .not.lnoeu) then
+    if (.not. lelga .and. .not. lelno .and. .not. lelem .and. .not. lnoeu) then
         call utmess('F', 'CALCULEL4_75', sk=resuin)
-    endif
+    end if
 
     call jedema()
 end subroutine

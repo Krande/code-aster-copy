@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,7 +24,7 @@ subroutine xassfa(elp, npts, nintar, lst, noeud, cface, nface, pinter, jgrlsn)
 #include "asterfort/iselli.h"
 #include "blas/ddot.h"
 !
-    integer :: npts, nintar, noeud(9), cface(30,6), nface, jgrlsn
+    integer :: npts, nintar, noeud(9), cface(30, 6), nface, jgrlsn
     real(kind=8) :: lst(6), pinter(*)
     character(len=8) :: elp
 !
@@ -55,130 +55,130 @@ subroutine xassfa(elp, npts, nintar, lst, noeud, cface, nface, pinter, jgrlsn)
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !
 !   PREMIER CAS
-    if (npts.eq.1.and.nintar.eq.2) then
-       nface = nface+1
-       if (lst(2).lt.0.d0.or.lst(3).lt.0.d0) then
-          cface(nface,1) = noeud(3)
-          cface(nface,2) = noeud(1)
-          cface(nface,3) = noeud(4)
-          if (.not.iselli(elp)) then
-             cface(nface,4) = noeud(5)
-             cface(nface,5) = noeud(6)
-             cface(nface,6) = noeud(8)
-          endif
-       else if (lst(1).lt.0.d0) then
-          cface(nface,1) = noeud(1)
-          cface(nface,2) = noeud(3)
-          cface(nface,3) = noeud(4)
-          if (.not.iselli(elp)) then
-             cface(nface,4) = noeud(5)
-             cface(nface,5) = noeud(8)
-             cface(nface,6) = noeud(6)
-          endif
-       else
-          ASSERT(.false.)
-       endif
+    if (npts .eq. 1 .and. nintar .eq. 2) then
+        nface = nface+1
+        if (lst(2) .lt. 0.d0 .or. lst(3) .lt. 0.d0) then
+            cface(nface, 1) = noeud(3)
+            cface(nface, 2) = noeud(1)
+            cface(nface, 3) = noeud(4)
+            if (.not. iselli(elp)) then
+                cface(nface, 4) = noeud(5)
+                cface(nface, 5) = noeud(6)
+                cface(nface, 6) = noeud(8)
+            end if
+        else if (lst(1) .lt. 0.d0) then
+            cface(nface, 1) = noeud(1)
+            cface(nface, 2) = noeud(3)
+            cface(nface, 3) = noeud(4)
+            if (.not. iselli(elp)) then
+                cface(nface, 4) = noeud(5)
+                cface(nface, 5) = noeud(8)
+                cface(nface, 6) = noeud(6)
+            end if
+        else
+            ASSERT(.false.)
+        end if
 !   DEUXIEME CAS
-    else if (npts.eq.2.and.nintar.eq.2) then
-       nface = nface+2
-       if (lst(1).gt.0.d0) then
-          cface(nface-1,1) = noeud(1)
-          cface(nface-1,2) = noeud(2)
-          cface(nface-1,3) = noeud(4)
-          if (.not.iselli(elp)) then
-             cface(nface-1,4) = noeud(7)
-             cface(nface-1,5) = noeud(6)
-             cface(nface-1,6) = noeud(9)
-          endif
-          cface(nface,1) = noeud(1)
-          cface(nface,2) = noeud(4)
-          cface(nface,3) = noeud(3)
-          if (.not.iselli(elp)) then
-             cface(nface,4) = noeud(9)
-             cface(nface,5) = noeud(8)
-             cface(nface,6) = noeud(5)
-          endif
-       else if (lst(2).gt.0.d0) then
-          cface(nface-1,1) = noeud(1)
-          cface(nface-1,2) = noeud(3)
-          cface(nface-1,3) = noeud(2)
-          if (.not.iselli(elp)) then
-             cface(nface-1,4) = noeud(5)
-             cface(nface-1,5) = noeud(9)
-             cface(nface-1,6) = noeud(7)
-          endif
-          cface(nface,1) = noeud(3)
-          cface(nface,2) = noeud(4)
-          cface(nface,3) = noeud(2)
-          if (.not.iselli(elp)) then
-             cface(nface,4) = noeud(8)
-             cface(nface,5) = noeud(6)
-             cface(nface,6) = noeud(9)
-          endif
-       else if (lst(3).gt.0.d0) then
-          cface(nface-1,1) = noeud(1)
-          cface(nface-1,2) = noeud(2)
-          cface(nface-1,3) = noeud(3)
-          if (.not.iselli(elp)) then
-             cface(nface-1,4) = noeud(7)
-             cface(nface-1,5) = noeud(5)
-             cface(nface-1,6) = noeud(9)
-          endif
-          cface(nface,1) = noeud(1)
-          cface(nface,2) = noeud(3)
-          cface(nface,3) = noeud(4)
-          if (.not.iselli(elp)) then
-             cface(nface,4) = noeud(9)
-             cface(nface,5) = noeud(8)
-             cface(nface,6) = noeud(6)
-          endif
-       else
-          ASSERT(.false.)
-       endif
+    else if (npts .eq. 2 .and. nintar .eq. 2) then
+        nface = nface+2
+        if (lst(1) .gt. 0.d0) then
+            cface(nface-1, 1) = noeud(1)
+            cface(nface-1, 2) = noeud(2)
+            cface(nface-1, 3) = noeud(4)
+            if (.not. iselli(elp)) then
+                cface(nface-1, 4) = noeud(7)
+                cface(nface-1, 5) = noeud(6)
+                cface(nface-1, 6) = noeud(9)
+            end if
+            cface(nface, 1) = noeud(1)
+            cface(nface, 2) = noeud(4)
+            cface(nface, 3) = noeud(3)
+            if (.not. iselli(elp)) then
+                cface(nface, 4) = noeud(9)
+                cface(nface, 5) = noeud(8)
+                cface(nface, 6) = noeud(5)
+            end if
+        else if (lst(2) .gt. 0.d0) then
+            cface(nface-1, 1) = noeud(1)
+            cface(nface-1, 2) = noeud(3)
+            cface(nface-1, 3) = noeud(2)
+            if (.not. iselli(elp)) then
+                cface(nface-1, 4) = noeud(5)
+                cface(nface-1, 5) = noeud(9)
+                cface(nface-1, 6) = noeud(7)
+            end if
+            cface(nface, 1) = noeud(3)
+            cface(nface, 2) = noeud(4)
+            cface(nface, 3) = noeud(2)
+            if (.not. iselli(elp)) then
+                cface(nface, 4) = noeud(8)
+                cface(nface, 5) = noeud(6)
+                cface(nface, 6) = noeud(9)
+            end if
+        else if (lst(3) .gt. 0.d0) then
+            cface(nface-1, 1) = noeud(1)
+            cface(nface-1, 2) = noeud(2)
+            cface(nface-1, 3) = noeud(3)
+            if (.not. iselli(elp)) then
+                cface(nface-1, 4) = noeud(7)
+                cface(nface-1, 5) = noeud(5)
+                cface(nface-1, 6) = noeud(9)
+            end if
+            cface(nface, 1) = noeud(1)
+            cface(nface, 2) = noeud(3)
+            cface(nface, 3) = noeud(4)
+            if (.not. iselli(elp)) then
+                cface(nface, 4) = noeud(9)
+                cface(nface, 5) = noeud(8)
+                cface(nface, 6) = noeud(6)
+            end if
+        else
+            ASSERT(.false.)
+        end if
 !   TROISIEME CAS
-    else if (npts.eq.2.and.nintar.eq.1) then
-       nface = nface+1
-       if ((lst(1).eq.0.d0.or.lst(3).gt.0.d0) .or. (lst(2).eq.0.d0.or.lst(1).gt.0.d0)) then
-          cface(nface,1) = noeud(1)
-          cface(nface,2) = noeud(2)
-          cface(nface,3) = noeud(3)
-          if (.not.iselli(elp)) then
-             cface(nface,4) = noeud(7)
-             cface(nface,5) = noeud(5)
-             cface(nface,6) = noeud(8)
-          endif
-       else if ((lst(2).eq.0.d0.or.lst(3).gt.0.d0) .or. (lst(3).eq.0.d0.or.lst(1).gt.0.d0)) then
-          cface(nface,1) = noeud(1)
-          cface(nface,2) = noeud(2)
-          cface(nface,3) = noeud(3)
-          if (.not.iselli(elp)) then
-             cface(nface,4) = noeud(7)
-             cface(nface,5) = noeud(8)
-             cface(nface,6) = noeud(5)
-          endif
-       else if (lst(1).eq.0.d0.or.lst(2).gt.0.d0) then
-          cface(nface,1) = noeud(1)
-          cface(nface,2) = noeud(3)
-          cface(nface,3) = noeud(2)
-          if (.not.iselli(elp)) then
-             cface(nface,4) = noeud(8)
-             cface(nface,5) = noeud(5)
-             cface(nface,6) = noeud(7)
-          endif
-       else if (lst(3).eq.0.d0.or.lst(2).gt.0.d0) then
-          cface(nface,1) = noeud(1)
-          cface(nface,2) = noeud(3)
-          cface(nface,3) = noeud(2)
-          if (.not.iselli(elp)) then
-             cface(nface,4) = noeud(5)
-             cface(nface,5) = noeud(8)
-             cface(nface,6) = noeud(7)
-          endif
-       else
-          ASSERT(.false.)
-       endif
+    else if (npts .eq. 2 .and. nintar .eq. 1) then
+        nface = nface+1
+    if ((lst(1) .eq. 0.d0 .or. lst(3) .gt. 0.d0) .or. (lst(2) .eq. 0.d0 .or. lst(1) .gt. 0.d0)) then
+            cface(nface, 1) = noeud(1)
+            cface(nface, 2) = noeud(2)
+            cface(nface, 3) = noeud(3)
+            if (.not. iselli(elp)) then
+                cface(nface, 4) = noeud(7)
+                cface(nface, 5) = noeud(5)
+                cface(nface, 6) = noeud(8)
+            end if
+        else if ((lst(2).eq.0.d0.or.lst(3).gt.0.d0) .or. (lst(3).eq.0.d0.or.lst(1).gt.0.d0)) then
+            cface(nface, 1) = noeud(1)
+            cface(nface, 2) = noeud(2)
+            cface(nface, 3) = noeud(3)
+            if (.not. iselli(elp)) then
+                cface(nface, 4) = noeud(7)
+                cface(nface, 5) = noeud(8)
+                cface(nface, 6) = noeud(5)
+            end if
+        else if (lst(1) .eq. 0.d0 .or. lst(2) .gt. 0.d0) then
+            cface(nface, 1) = noeud(1)
+            cface(nface, 2) = noeud(3)
+            cface(nface, 3) = noeud(2)
+            if (.not. iselli(elp)) then
+                cface(nface, 4) = noeud(8)
+                cface(nface, 5) = noeud(5)
+                cface(nface, 6) = noeud(7)
+            end if
+        else if (lst(3) .eq. 0.d0 .or. lst(2) .gt. 0.d0) then
+            cface(nface, 1) = noeud(1)
+            cface(nface, 2) = noeud(3)
+            cface(nface, 3) = noeud(2)
+            if (.not. iselli(elp)) then
+                cface(nface, 4) = noeud(5)
+                cface(nface, 5) = noeud(8)
+                cface(nface, 6) = noeud(7)
+            end if
+        else
+            ASSERT(.false.)
+        end if
     else
-       ASSERT(.false.)
-    endif
+        ASSERT(.false.)
+    end if
 !
 end subroutine

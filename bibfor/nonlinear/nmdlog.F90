@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,17 +17,17 @@
 ! --------------------------------------------------------------------
 ! aslint: disable=W1306,W1504
 !
-subroutine nmdlog(fami    , option  , typmod  , ndim     , nno     ,&
-                  npg     , iw      , ivf     , vff      , idff    ,&
-                  geomInit, dff     , compor  , mult_comp, mate    , lgpg,&
-                  carcri  , angmas  , instm   , instp    , matsym  ,&
-                  dispPrev, dispIncr, sigmPrev, vim      , sigmCurr,&
-                  vip     , fint    , matuu   , codret)
+subroutine nmdlog(fami, option, typmod, ndim, nno, &
+                  npg, iw, ivf, vff, idff, &
+                  geomInit, dff, compor, mult_comp, mate, lgpg, &
+                  carcri, angmas, instm, instp, matsym, &
+                  dispPrev, dispIncr, sigmPrev, vim, sigmCurr, &
+                  vip, fint, matuu, codret)
 !
-use Behaviour_type
-use Behaviour_module
+    use Behaviour_type
+    use Behaviour_module
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -42,7 +42,7 @@ implicit none
 #include "blas/dcopy.h"
 #include "asterfort/Behaviour_type.h"
 !
-integer, intent(in) :: ndim, nno, npg
+    integer, intent(in) :: ndim, nno, npg
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -114,27 +114,27 @@ integer, intent(in) :: ndim, nno, npg
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    grand     = ASTER_TRUE
-    axi       = typmod(1) .eq. 'AXIS'
-    cplan     = typmod(1).eq.'C_PLAN'
-    lSigm     = L_SIGM(option)
-    lVari     = L_VARI(option)
-    lVect     = L_VECT(option)
-    lMatr     = L_MATR(option)
+    grand = ASTER_TRUE
+    axi = typmod(1) .eq. 'AXIS'
+    cplan = typmod(1) .eq. 'C_PLAN'
+    lSigm = L_SIGM(option)
+    lVari = L_VARI(option)
+    lVect = L_VECT(option)
+    lMatr = L_MATR(option)
     lMatrPred = L_MATR_PRED(option)
-    lCorr     = L_CORR(option)
-    nddl      = ndim*nno
-    ASSERT(nno.le.27)
+    lCorr = L_CORR(option)
+    nddl = ndim*nno
+    ASSERT(nno .le. 27)
     ASSERT(compor(PLANESTRESS) .ne. 'DEBORST')
 
 ! - Initialisation of behaviour datastructure
     call behaviourInit(BEHinteg)
 
 ! - Prepare external state variables
-    call behaviourPrepESVAElem(carcri  , typmod  ,&
-                               nno     , npg     , ndim,&
-                               iw      , ivf     , idff,&
-                               geomInit, BEHinteg,&
+    call behaviourPrepESVAElem(carcri, typmod, &
+                               nno, npg, ndim, &
+                               iw, ivf, idff, &
+                               geomInit, BEHinteg, &
                                dispPrev, dispIncr)
 
 ! - Update configuration
@@ -143,66 +143,66 @@ integer, intent(in) :: ndim, nno, npg
     call dcopy(nddl, dispPrev, 1, dispCurr, 1)
     if (lCorr) then
         call daxpy(nddl, 1.d0, dispIncr, 1, dispCurr, 1)
-    endif
+    end if
 
 ! - Loop on Gauss points
     lintbo = ASTER_FALSE
-    cod    = 0
+    cod = 0
     do kpg = 1, npg
 ! ----- Kinematic - Previous strains
-        call dfdmip(ndim, nno, axi, geomInit, kpg,&
-                    iw, vff(1, kpg), idff, r, poids,&
+        call dfdmip(ndim, nno, axi, geomInit, kpg, &
+                    iw, vff(1, kpg), idff, r, poids, &
                     dff)
-        call nmepsi(ndim, nno, axi, grand, vff(1, kpg),&
+        call nmepsi(ndim, nno, axi, grand, vff(1, kpg), &
                     r, dff, dispPrev, fPrev)
 ! ----- Kinematic - Current strains
-        call nmepsi(ndim, nno, axi, grand, vff(1, kpg),&
+        call nmepsi(ndim, nno, axi, grand, vff(1, kpg), &
                     r, dff, dispCurr, fCurr)
 ! ----- Pre-treatment of kinematic quantities
-        call prelog(ndim    , lgpg , vim(1, kpg), gn      , lamb    ,&
-                    logl    , fPrev, fCurr      , epslPrev, epslIncr,&
+        call prelog(ndim, lgpg, vim(1, kpg), gn, lamb, &
+                    logl, fPrev, fCurr, epslPrev, epslIncr, &
                     tlogPrev, lCorr, cod(kpg))
         if (cod(kpg) .ne. 0) then
             goto 999
-        endif
+        end if
 ! ----- Compute behaviour
         cod(kpg) = 0
-        dtde     = 0.d0
-        tlogCurr    = 0.d0
-        call nmcomp(BEHinteg   ,&
-                    fami       , kpg        , 1       , ndim , typmod  ,&
-                    mate       , compor     , carcri  , instm, instp   ,&
-                    6          , epslPrev   , epslIncr, 6    , tlogPrev,&
-                    vim(1, kpg), option     , angmas  , &
-                    tlogCurr   , vip(1, kpg), 36      , dtde ,&
-                    cod(kpg)   , mult_comp)
+        dtde = 0.d0
+        tlogCurr = 0.d0
+        call nmcomp(BEHinteg, &
+                    fami, kpg, 1, ndim, typmod, &
+                    mate, compor, carcri, instm, instp, &
+                    6, epslPrev, epslIncr, 6, tlogPrev, &
+                    vim(1, kpg), option, angmas, &
+                    tlogCurr, vip(1, kpg), 36, dtde, &
+                    cod(kpg), mult_comp)
         if (cod(kpg) .eq. 1) then
             goto 999
-        endif
+        end if
         if (cod(kpg) .eq. 4) then
-            lintbo= .true.
-        endif
+            lintbo = .true.
+        end if
 ! ----- Post-treatment of sthenic quantities
-        call poslog(lCorr, lMatr, lSigm, lVari,&
-                    tlogPrev, tlogCurr, fPrev,&
-                    lgpg, vip(1, kpg), ndim, fCurr, kpg ,&
-                    dtde, sigmPrev(1, kpg), cplan, fami, mate ,&
-                    instp , angmas, gn, lamb, logl,&
-                    sigmCurr(1, kpg), dsidep, pk2Prev, pk2Curr , iret)
+        call poslog(lCorr, lMatr, lSigm, lVari, &
+                    tlogPrev, tlogCurr, fPrev, &
+                    lgpg, vip(1, kpg), ndim, fCurr, kpg, &
+                    dtde, sigmPrev(1, kpg), cplan, fami, mate, &
+                    instp, angmas, gn, lamb, logl, &
+                    sigmCurr(1, kpg), dsidep, pk2Prev, pk2Curr, iret)
         if (iret .eq. 1) then
             cod(kpg) = 1
             goto 999
         end if
 ! ----- Compute internal forces and matrix
-        call nmgrtg(ndim   , nno   , poids    , kpg   , vff    ,&
-                    dff    , def   , pff      , axi    ,&
-                    lVect  , lMatr , lMatrPred,&
-                    r      , fPrev , fCurr    , dsidep, pk2Prev,&
-                    pk2Curr, matsym, matuu    , fint)
+        call nmgrtg(ndim, nno, poids, kpg, vff, &
+                    dff, def, pff, axi, &
+                    lVect, lMatr, lMatrPred, &
+                    r, fPrev, fCurr, dsidep, pk2Prev, &
+                    pk2Curr, matsym, matuu, fint)
     end do
     if (lintbo) then
         cod(1) = 4
-    endif
+    end if
 !
 999 continue
 !

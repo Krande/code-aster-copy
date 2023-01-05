@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -44,8 +44,8 @@ subroutine te0017(option, nomte)
     character(len=8) :: nompar(4)
 !     ------------------------------------------------------------------
 !
-    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg1,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, &
+                     npg=npg1, jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
     call jevech('PGEOMER', 'L', igeom)
     call jevech('PVECTUR', 'E', ivectu)
@@ -68,32 +68,32 @@ subroutine te0017(option, nomte)
     do kp = 1, npg1
 !
         l = (kp-1)*nno
-        call dfdm3d(nno, kp, ipoids, idfde, zr(igeom),&
+        call dfdm3d(nno, kp, ipoids, idfde, zr(igeom), &
                     poids)
 !
         xx = 0.d0
         yy = 0.d0
         zz = 0.d0
         do i = 1, nno
-            xx = xx + zr(igeom+3*i-3)*zr(ivf+l+i-1)
-            yy = yy + zr(igeom+3*i-2)*zr(ivf+l+i-1)
-            zz = zz + zr(igeom+3*i-1)*zr(ivf+l+i-1)
+            xx = xx+zr(igeom+3*i-3)*zr(ivf+l+i-1)
+            yy = yy+zr(igeom+3*i-2)*zr(ivf+l+i-1)
+            zz = zz+zr(igeom+3*i-1)*zr(ivf+l+i-1)
         end do
         valpar(1) = xx
         valpar(2) = yy
         valpar(3) = zz
-        call fointe('FM', zk8(iforc ), 4, nompar, valpar,&
+        call fointe('FM', zk8(iforc), 4, nompar, valpar, &
                     fx, ier)
-        call fointe('FM', zk8(iforc+1), 4, nompar, valpar,&
+        call fointe('FM', zk8(iforc+1), 4, nompar, valpar, &
                     fy, ier)
-        call fointe('FM', zk8(iforc+2), 4, nompar, valpar,&
+        call fointe('FM', zk8(iforc+2), 4, nompar, valpar, &
                     fz, ier)
 !
         do i = 1, nno
-            ii = 3* (i-1)
-            zr(ivectu+ii ) = zr(ivectu+ii ) + poids*zr(ivf+l+i-1)*fx
-            zr(ivectu+ii+1) = zr(ivectu+ii+1) + poids*zr(ivf+l+i-1)* fy
-            zr(ivectu+ii+2) = zr(ivectu+ii+2) + poids*zr(ivf+l+i-1)* fz
+            ii = 3*(i-1)
+            zr(ivectu+ii) = zr(ivectu+ii)+poids*zr(ivf+l+i-1)*fx
+            zr(ivectu+ii+1) = zr(ivectu+ii+1)+poids*zr(ivf+l+i-1)*fy
+            zr(ivectu+ii+2) = zr(ivectu+ii+2)+poids*zr(ivf+l+i-1)*fz
 !
         end do
 !

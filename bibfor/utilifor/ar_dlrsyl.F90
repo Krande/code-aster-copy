@@ -1,6 +1,6 @@
 ! --------------------------------------------------------------------
 ! Copyright (C) LAPACK
-! Copyright (C) 2007 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 2007 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,8 +25,8 @@
 ! THE PRESENT ROUTINE IS MANDATORY FOR ARPACK LIBRARY
 ! WHICH STICKS TO LAPACK 2.0 VERSION
 ! ==============================================================
-subroutine ar_dlrsyl(trana, tranb, isgn, m, n,&
-                     a, lda, b, ldb, c,&
+subroutine ar_dlrsyl(trana, tranb, isgn, m, n, &
+                     a, lda, b, ldb, c, &
                      ldc, scale, info)
 !
 !     SUBROUTINE LAPACK RESOLVANT L'EQUATION DE SYLVESTER.
@@ -143,11 +143,11 @@ subroutine ar_dlrsyl(trana, tranb, isgn, m, n,&
     real(kind=8) :: scale
 !     ..
 !     .. ARRAY ARGUMENTS ..
-    real(kind=8) :: a( lda, * ), b( ldb, * ), c( ldc, * )
+    real(kind=8) :: a(lda, *), b(ldb, *), c(ldc, *)
 !     ..
 !     .. PARAMETERS ..
     real(kind=8) :: zero, one
-    parameter          ( zero = 0.0d+0, one = 1.0d+0 )
+    parameter(zero=0.0d+0, one=1.0d+0)
 !     ..
 !     .. LOCAL SCALARS ..
     aster_logical :: notrna, notrnb
@@ -156,7 +156,7 @@ subroutine ar_dlrsyl(trana, tranb, isgn, m, n,&
     real(kind=8) :: sumr, xnorm
 !     ..
 !     .. LOCAL ARRAYS ..
-    real(kind=8) :: dum( 1 ), vec( 2, 2 ), x( 2, 2 )
+    real(kind=8) :: dum(1), vec(2, 2), x(2, 2)
 !     ..
 !     .. EXTERNAL FUNCTIONS ..
 !     ..
@@ -169,32 +169,32 @@ subroutine ar_dlrsyl(trana, tranb, isgn, m, n,&
 !
 !     DECODE AND TEST INPUT PARAMETERS
 !
-    notrna = lsame( trana, 'N' )
-    notrnb = lsame( tranb, 'N' )
+    notrna = lsame(trana, 'N')
+    notrnb = lsame(tranb, 'N')
 !
     info = 0
-    if (.not.notrna .and. .not.lsame( trana, 'T' ) .and. .not. lsame( trana, 'C' )) then
+    if (.not. notrna .and. .not. lsame(trana, 'T') .and. .not. lsame(trana, 'C')) then
         info = -1
-        else if( .not.notrnb .and. .not.lsame( tranb, 'T' ) .and. .not.&
-    lsame( tranb, 'C' ) ) then
+    else if (.not. notrnb .and. .not. lsame(tranb, 'T') .and. .not. &
+             lsame(tranb, 'C')) then
         info = -2
-    else if (isgn.ne.1 .and. isgn.ne.-1) then
+    else if (isgn .ne. 1 .and. isgn .ne. -1) then
         info = -3
-    else if (m.lt.0) then
+    else if (m .lt. 0) then
         info = -4
-    else if (n.lt.0) then
+    else if (n .lt. 0) then
         info = -5
-    else if (lda.lt.max( 1, m )) then
+    else if (lda .lt. max(1, m)) then
         info = -7
-    else if (ldb.lt.max( 1, n )) then
+    else if (ldb .lt. max(1, n)) then
         info = -9
-    else if (ldc.lt.max( 1, m )) then
+    else if (ldc .lt. max(1, m)) then
         info = -11
-    endif
+    end if
     if (info .ne. 0) then
         call xerbla('DLRSYL', -info)
         goto 1000
-    endif
+    end if
 !
 !     QUICK RETURN IF POSSIBLE
 !
@@ -202,14 +202,14 @@ subroutine ar_dlrsyl(trana, tranb, isgn, m, n,&
 !
 !     SET CONSTANTS TO CONTROL OVERFLOW
 !
-    eps = r8prem() * 0.5d0 * isbaem()
+    eps = r8prem()*0.5d0*isbaem()
     smlnum = r8miem()
-    bignum = one / smlnum
-    smlnum = smlnum*dble( m*n ) / eps
-    bignum = one / smlnum
+    bignum = one/smlnum
+    smlnum = smlnum*dble(m*n)/eps
+    bignum = one/smlnum
 !
-    smin = max(smlnum, eps*dlange( 'M', m, m, a, lda, dum ), eps*dlange( 'M', n, n, b, ldb, dum )&
-           )
+    smin = max(smlnum, eps*dlange('M', m, m, a, lda, dum), eps*dlange('M', n, n, b, ldb, dum) &
+               )
 !
     scale = one
     sgn = isgn
@@ -238,16 +238,16 @@ subroutine ar_dlrsyl(trana, tranb, isgn, m, n,&
                 l1 = l
                 l2 = l
             else
-                if (b( l+1, l ) .ne. zero) then
+                if (b(l+1, l) .ne. zero) then
                     l1 = l
-                    l2 = l + 1
-                    lnext = l + 2
+                    l2 = l+1
+                    lnext = l+2
                 else
                     l1 = l
                     l2 = l
-                    lnext = l + 1
-                endif
-            endif
+                    lnext = l+1
+                end if
+            end if
 !
 !           START ROW LOOP (INDEX = K)
 !           K1 (K2): ROW INDEX OF THE FIRST (LAST) ROW OF X(K,L).
@@ -259,137 +259,137 @@ subroutine ar_dlrsyl(trana, tranb, isgn, m, n,&
                     k1 = k
                     k2 = k
                 else
-                    knext = k - 1
-                    if (a( k, knext ) .ne. zero) then
+                    knext = k-1
+                    if (a(k, knext) .ne. zero) then
                         k1 = knext
                         k2 = k
-                        knext = k - 2
+                        knext = k-2
                     else
                         k1 = k
                         k2 = k
-                    endif
-                endif
+                    end if
+                end if
 !
                 if (l1 .eq. l2 .and. k1 .eq. k2) then
-                    suml = ddot( m-k1, a( k1, min( k1+1, m ) ), lda, c( min( k1+1, m ), l1 ), 1 )
-                    sumr = ddot( l1-1, c( k1, 1 ), ldc, b( 1, l1 ), 1 )
-                    vec( 1, 1 ) = c( k1, l1 ) - ( suml+sgn*sumr )
+                    suml = ddot(m-k1, a(k1, min(k1+1, m)), lda, c(min(k1+1, m), l1), 1)
+                    sumr = ddot(l1-1, c(k1, 1), ldc, b(1, l1), 1)
+                    vec(1, 1) = c(k1, l1)-(suml+sgn*sumr)
                     scaloc = one
 !
-                    a11 = a( k1, k1 ) + sgn*b( l1, l1 )
-                    da11 = abs( a11 )
+                    a11 = a(k1, k1)+sgn*b(l1, l1)
+                    da11 = abs(a11)
                     if (da11 .le. smin) then
                         a11 = smin
                         da11 = smin
                         info = 1
-                    endif
-                    db = abs( vec( 1, 1 ) )
+                    end if
+                    db = abs(vec(1, 1))
                     if (da11 .lt. one .and. db .gt. one) then
-                        if (db .gt. bignum*da11) scaloc = one / db
-                    endif
-                    x( 1, 1 ) = ( vec( 1, 1 )*scaloc ) / a11
+                        if (db .gt. bignum*da11) scaloc = one/db
+                    end if
+                    x(1, 1) = (vec(1, 1)*scaloc)/a11
 !
                     if (scaloc .ne. one) then
                         do j = 1, n
-                            call dscal(m, scaloc, c( 1, j ), 1)
+                            call dscal(m, scaloc, c(1, j), 1)
                         end do
                         scale = scale*scaloc
-                    endif
-                    c( k1, l1 ) = x( 1, 1 )
+                    end if
+                    c(k1, l1) = x(1, 1)
 !
-                else if (l1.eq.l2 .and. k1.ne.k2) then
+                else if (l1 .eq. l2 .and. k1 .ne. k2) then
 !
-                    suml = ddot( m-k2, a( k1, min( k2+1, m ) ), lda, c( min( k2+1, m ), l1 ), 1 )
-                    sumr = ddot( l1-1, c( k1, 1 ), ldc, b( 1, l1 ), 1 )
-                    vec( 1, 1 ) = c( k1, l1 ) - ( suml+sgn*sumr )
+                    suml = ddot(m-k2, a(k1, min(k2+1, m)), lda, c(min(k2+1, m), l1), 1)
+                    sumr = ddot(l1-1, c(k1, 1), ldc, b(1, l1), 1)
+                    vec(1, 1) = c(k1, l1)-(suml+sgn*sumr)
 !
-                    suml = ddot( m-k2, a( k2, min( k2+1, m ) ), lda, c( min( k2+1, m ), l1 ), 1 )
-                    sumr = ddot( l1-1, c( k2, 1 ), ldc, b( 1, l1 ), 1 )
-                    vec( 2, 1 ) = c( k2, l1 ) - ( suml+sgn*sumr )
+                    suml = ddot(m-k2, a(k2, min(k2+1, m)), lda, c(min(k2+1, m), l1), 1)
+                    sumr = ddot(l1-1, c(k2, 1), ldc, b(1, l1), 1)
+                    vec(2, 1) = c(k2, l1)-(suml+sgn*sumr)
 !
-                    call ar_dlaln2(.false._1, 2, 1, smin, one,&
-                                   a( k1, k1 ), lda, one, one, vec,&
-                                   2, -sgn*b( l1, l1 ), zero, x, 2,&
+                    call ar_dlaln2(.false._1, 2, 1, smin, one, &
+                                   a(k1, k1), lda, one, one, vec, &
+                                   2, -sgn*b(l1, l1), zero, x, 2, &
                                    scaloc, xnorm, ierr)
                     if (ierr .ne. 0) info = 1
 !
                     if (scaloc .ne. one) then
                         do j = 1, n
-                            call dscal(m, scaloc, c( 1, j ), 1)
+                            call dscal(m, scaloc, c(1, j), 1)
                         end do
                         scale = scale*scaloc
-                    endif
-                    c( k1, l1 ) = x( 1, 1 )
-                    c( k2, l1 ) = x( 2, 1 )
+                    end if
+                    c(k1, l1) = x(1, 1)
+                    c(k2, l1) = x(2, 1)
 !
-                else if (l1.ne.l2 .and. k1.eq.k2) then
+                else if (l1 .ne. l2 .and. k1 .eq. k2) then
 !
-                    suml = ddot( m-k1, a( k1, min( k1+1, m ) ), lda, c( min( k1+1, m ), l1 ), 1 )
-                    sumr = ddot( l1-1, c( k1, 1 ), ldc, b( 1, l1 ), 1 )
-                    vec( 1, 1 ) = sgn*( c( k1, l1 )-( suml+sgn*sumr ) )
+                    suml = ddot(m-k1, a(k1, min(k1+1, m)), lda, c(min(k1+1, m), l1), 1)
+                    sumr = ddot(l1-1, c(k1, 1), ldc, b(1, l1), 1)
+                    vec(1, 1) = sgn*(c(k1, l1)-(suml+sgn*sumr))
 !
-                    suml = ddot( m-k1, a( k1, min( k1+1, m ) ), lda, c( min( k1+1, m ), l2 ), 1 )
-                    sumr = ddot( l1-1, c( k1, 1 ), ldc, b( 1, l2 ), 1 )
-                    vec( 2, 1 ) = sgn*( c( k1, l2 )-( suml+sgn*sumr ) )
+                    suml = ddot(m-k1, a(k1, min(k1+1, m)), lda, c(min(k1+1, m), l2), 1)
+                    sumr = ddot(l1-1, c(k1, 1), ldc, b(1, l2), 1)
+                    vec(2, 1) = sgn*(c(k1, l2)-(suml+sgn*sumr))
 !
-                    call ar_dlaln2(.true._1, 2, 1, smin, one,&
-                                   b( l1, l1 ), ldb, one, one, vec,&
-                                   2, -sgn*a( k1, k1 ), zero, x, 2,&
+                    call ar_dlaln2(.true._1, 2, 1, smin, one, &
+                                   b(l1, l1), ldb, one, one, vec, &
+                                   2, -sgn*a(k1, k1), zero, x, 2, &
                                    scaloc, xnorm, ierr)
                     if (ierr .ne. 0) info = 1
 !
                     if (scaloc .ne. one) then
                         do j = 1, n
-                            call dscal(m, scaloc, c( 1, j ), 1)
+                            call dscal(m, scaloc, c(1, j), 1)
                         end do
                         scale = scale*scaloc
-                    endif
-                    c( k1, l1 ) = x( 1, 1 )
-                    c( k1, l2 ) = x( 2, 1 )
+                    end if
+                    c(k1, l1) = x(1, 1)
+                    c(k1, l2) = x(2, 1)
 !
-                else if (l1.ne.l2 .and. k1.ne.k2) then
+                else if (l1 .ne. l2 .and. k1 .ne. k2) then
 !
-                    suml = ddot( m-k2, a( k1, min( k2+1, m ) ), lda, c( min( k2+1, m ), l1 ), 1 )
-                    sumr = ddot( l1-1, c( k1, 1 ), ldc, b( 1, l1 ), 1 )
-                    vec( 1, 1 ) = c( k1, l1 ) - ( suml+sgn*sumr )
+                    suml = ddot(m-k2, a(k1, min(k2+1, m)), lda, c(min(k2+1, m), l1), 1)
+                    sumr = ddot(l1-1, c(k1, 1), ldc, b(1, l1), 1)
+                    vec(1, 1) = c(k1, l1)-(suml+sgn*sumr)
 !
-                    suml = ddot( m-k2, a( k1, min( k2+1, m ) ), lda, c( min( k2+1, m ), l2 ), 1 )
-                    sumr = ddot( l1-1, c( k1, 1 ), ldc, b( 1, l2 ), 1 )
-                    vec( 1, 2 ) = c( k1, l2 ) - ( suml+sgn*sumr )
+                    suml = ddot(m-k2, a(k1, min(k2+1, m)), lda, c(min(k2+1, m), l2), 1)
+                    sumr = ddot(l1-1, c(k1, 1), ldc, b(1, l2), 1)
+                    vec(1, 2) = c(k1, l2)-(suml+sgn*sumr)
 !
-                    suml = ddot( m-k2, a( k2, min( k2+1, m ) ), lda, c( min( k2+1, m ), l1 ), 1 )
-                    sumr = ddot( l1-1, c( k2, 1 ), ldc, b( 1, l1 ), 1 )
-                    vec( 2, 1 ) = c( k2, l1 ) - ( suml+sgn*sumr )
+                    suml = ddot(m-k2, a(k2, min(k2+1, m)), lda, c(min(k2+1, m), l1), 1)
+                    sumr = ddot(l1-1, c(k2, 1), ldc, b(1, l1), 1)
+                    vec(2, 1) = c(k2, l1)-(suml+sgn*sumr)
 !
-                    suml = ddot( m-k2, a( k2, min( k2+1, m ) ), lda, c( min( k2+1, m ), l2 ), 1 )
-                    sumr = ddot( l1-1, c( k2, 1 ), ldc, b( 1, l2 ), 1 )
-                    vec( 2, 2 ) = c( k2, l2 ) - ( suml+sgn*sumr )
+                    suml = ddot(m-k2, a(k2, min(k2+1, m)), lda, c(min(k2+1, m), l2), 1)
+                    sumr = ddot(l1-1, c(k2, 1), ldc, b(1, l2), 1)
+                    vec(2, 2) = c(k2, l2)-(suml+sgn*sumr)
 !
-                    call ar_dlasy2(.false._1, .false._1, isgn, 2, 2,&
-                                   a( k1, k1 ), lda, b( l1, l1 ), ldb, vec,&
-                                   2, scaloc, x, 2, xnorm,&
+                    call ar_dlasy2(.false._1, .false._1, isgn, 2, 2, &
+                                   a(k1, k1), lda, b(l1, l1), ldb, vec, &
+                                   2, scaloc, x, 2, xnorm, &
                                    ierr)
                     if (ierr .ne. 0) info = 1
 !
                     if (scaloc .ne. one) then
                         do j = 1, n
-                            call dscal(m, scaloc, c( 1, j ), 1)
+                            call dscal(m, scaloc, c(1, j), 1)
                         end do
                         scale = scale*scaloc
-                    endif
-                    c( k1, l1 ) = x( 1, 1 )
-                    c( k1, l2 ) = x( 1, 2 )
-                    c( k2, l1 ) = x( 2, 1 )
-                    c( k2, l2 ) = x( 2, 2 )
-                endif
+                    end if
+                    c(k1, l1) = x(1, 1)
+                    c(k1, l2) = x(1, 2)
+                    c(k2, l1) = x(2, 1)
+                    c(k2, l2) = x(2, 2)
+                end if
 !
- 50             continue
+50              continue
             end do
 !
- 60         continue
+60          continue
         end do
 !
-    else if (.not.notrna .and. notrnb) then
+    else if (.not. notrna .and. notrnb) then
 !
 !        SOLVE    A' *X + ISGN*X*B = SCALE*C.
 !
@@ -413,16 +413,16 @@ subroutine ar_dlrsyl(trana, tranb, isgn, m, n,&
                 l1 = l
                 l2 = l
             else
-                if (b( l+1, l ) .ne. zero) then
+                if (b(l+1, l) .ne. zero) then
                     l1 = l
-                    l2 = l + 1
-                    lnext = l + 2
+                    l2 = l+1
+                    lnext = l+2
                 else
                     l1 = l
                     l2 = l
-                    lnext = l + 1
-                endif
-            endif
+                    lnext = l+1
+                end if
+            end if
 !
 !           START ROW LOOP (INDEX = K)
 !           K1 (K2): ROW INDEX OF THE FIRST (LAST) ROW OF X(K,L)
@@ -434,136 +434,136 @@ subroutine ar_dlrsyl(trana, tranb, isgn, m, n,&
                     k1 = k
                     k2 = k
                 else
-                    if (a( k+1, k ) .ne. zero) then
+                    if (a(k+1, k) .ne. zero) then
                         k1 = k
-                        k2 = k + 1
-                        knext = k + 2
+                        k2 = k+1
+                        knext = k+2
                     else
                         k1 = k
                         k2 = k
-                        knext = k + 1
-                    endif
-                endif
+                        knext = k+1
+                    end if
+                end if
 !
                 if (l1 .eq. l2 .and. k1 .eq. k2) then
-                    suml = ddot( k1-1, a( 1, k1 ), 1, c( 1, l1 ), 1 )
-                    sumr = ddot( l1-1, c( k1, 1 ), ldc, b( 1, l1 ), 1 )
-                    vec( 1, 1 ) = c( k1, l1 ) - ( suml+sgn*sumr )
+                    suml = ddot(k1-1, a(1, k1), 1, c(1, l1), 1)
+                    sumr = ddot(l1-1, c(k1, 1), ldc, b(1, l1), 1)
+                    vec(1, 1) = c(k1, l1)-(suml+sgn*sumr)
                     scaloc = one
 !
-                    a11 = a( k1, k1 ) + sgn*b( l1, l1 )
-                    da11 = abs( a11 )
+                    a11 = a(k1, k1)+sgn*b(l1, l1)
+                    da11 = abs(a11)
                     if (da11 .le. smin) then
                         a11 = smin
                         da11 = smin
                         info = 1
-                    endif
-                    db = abs( vec( 1, 1 ) )
+                    end if
+                    db = abs(vec(1, 1))
                     if (da11 .lt. one .and. db .gt. one) then
-                        if (db .gt. bignum*da11) scaloc = one / db
-                    endif
-                    x( 1, 1 ) = ( vec( 1, 1 )*scaloc ) / a11
+                        if (db .gt. bignum*da11) scaloc = one/db
+                    end if
+                    x(1, 1) = (vec(1, 1)*scaloc)/a11
 !
                     if (scaloc .ne. one) then
                         do j = 1, n
-                            call dscal(m, scaloc, c( 1, j ), 1)
+                            call dscal(m, scaloc, c(1, j), 1)
                         end do
                         scale = scale*scaloc
-                    endif
-                    c( k1, l1 ) = x( 1, 1 )
+                    end if
+                    c(k1, l1) = x(1, 1)
 !
-                else if (l1.eq.l2 .and. k1.ne.k2) then
+                else if (l1 .eq. l2 .and. k1 .ne. k2) then
 !
-                    suml = ddot( k1-1, a( 1, k1 ), 1, c( 1, l1 ), 1 )
-                    sumr = ddot( l1-1, c( k1, 1 ), ldc, b( 1, l1 ), 1 )
-                    vec( 1, 1 ) = c( k1, l1 ) - ( suml+sgn*sumr )
+                    suml = ddot(k1-1, a(1, k1), 1, c(1, l1), 1)
+                    sumr = ddot(l1-1, c(k1, 1), ldc, b(1, l1), 1)
+                    vec(1, 1) = c(k1, l1)-(suml+sgn*sumr)
 !
-                    suml = ddot( k1-1, a( 1, k2 ), 1, c( 1, l1 ), 1 )
-                    sumr = ddot( l1-1, c( k2, 1 ), ldc, b( 1, l1 ), 1 )
-                    vec( 2, 1 ) = c( k2, l1 ) - ( suml+sgn*sumr )
+                    suml = ddot(k1-1, a(1, k2), 1, c(1, l1), 1)
+                    sumr = ddot(l1-1, c(k2, 1), ldc, b(1, l1), 1)
+                    vec(2, 1) = c(k2, l1)-(suml+sgn*sumr)
 !
-                    call ar_dlaln2(.true._1, 2, 1, smin, one,&
-                                   a( k1, k1 ), lda, one, one, vec,&
-                                   2, -sgn*b( l1, l1 ), zero, x, 2,&
+                    call ar_dlaln2(.true._1, 2, 1, smin, one, &
+                                   a(k1, k1), lda, one, one, vec, &
+                                   2, -sgn*b(l1, l1), zero, x, 2, &
                                    scaloc, xnorm, ierr)
                     if (ierr .ne. 0) info = 1
 !
                     if (scaloc .ne. one) then
                         do j = 1, n
-                            call dscal(m, scaloc, c( 1, j ), 1)
+                            call dscal(m, scaloc, c(1, j), 1)
                         end do
                         scale = scale*scaloc
-                    endif
-                    c( k1, l1 ) = x( 1, 1 )
-                    c( k2, l1 ) = x( 2, 1 )
+                    end if
+                    c(k1, l1) = x(1, 1)
+                    c(k2, l1) = x(2, 1)
 !
-                else if (l1.ne.l2 .and. k1.eq.k2) then
+                else if (l1 .ne. l2 .and. k1 .eq. k2) then
 !
-                    suml = ddot( k1-1, a( 1, k1 ), 1, c( 1, l1 ), 1 )
-                    sumr = ddot( l1-1, c( k1, 1 ), ldc, b( 1, l1 ), 1 )
-                    vec( 1, 1 ) = sgn*( c( k1, l1 )-( suml+sgn*sumr ) )
+                    suml = ddot(k1-1, a(1, k1), 1, c(1, l1), 1)
+                    sumr = ddot(l1-1, c(k1, 1), ldc, b(1, l1), 1)
+                    vec(1, 1) = sgn*(c(k1, l1)-(suml+sgn*sumr))
 !
-                    suml = ddot( k1-1, a( 1, k1 ), 1, c( 1, l2 ), 1 )
-                    sumr = ddot( l1-1, c( k1, 1 ), ldc, b( 1, l2 ), 1 )
-                    vec( 2, 1 ) = sgn*( c( k1, l2 )-( suml+sgn*sumr ) )
+                    suml = ddot(k1-1, a(1, k1), 1, c(1, l2), 1)
+                    sumr = ddot(l1-1, c(k1, 1), ldc, b(1, l2), 1)
+                    vec(2, 1) = sgn*(c(k1, l2)-(suml+sgn*sumr))
 !
-                    call ar_dlaln2(.true._1, 2, 1, smin, one,&
-                                   b( l1, l1 ), ldb, one, one, vec,&
-                                   2, -sgn*a( k1, k1 ), zero, x, 2,&
+                    call ar_dlaln2(.true._1, 2, 1, smin, one, &
+                                   b(l1, l1), ldb, one, one, vec, &
+                                   2, -sgn*a(k1, k1), zero, x, 2, &
                                    scaloc, xnorm, ierr)
                     if (ierr .ne. 0) info = 1
 !
                     if (scaloc .ne. one) then
                         do j = 1, n
-                            call dscal(m, scaloc, c( 1, j ), 1)
+                            call dscal(m, scaloc, c(1, j), 1)
                         end do
                         scale = scale*scaloc
-                    endif
-                    c( k1, l1 ) = x( 1, 1 )
-                    c( k1, l2 ) = x( 2, 1 )
+                    end if
+                    c(k1, l1) = x(1, 1)
+                    c(k1, l2) = x(2, 1)
 !
-                else if (l1.ne.l2 .and. k1.ne.k2) then
+                else if (l1 .ne. l2 .and. k1 .ne. k2) then
 !
-                    suml = ddot( k1-1, a( 1, k1 ), 1, c( 1, l1 ), 1 )
-                    sumr = ddot( l1-1, c( k1, 1 ), ldc, b( 1, l1 ), 1 )
-                    vec( 1, 1 ) = c( k1, l1 ) - ( suml+sgn*sumr )
+                    suml = ddot(k1-1, a(1, k1), 1, c(1, l1), 1)
+                    sumr = ddot(l1-1, c(k1, 1), ldc, b(1, l1), 1)
+                    vec(1, 1) = c(k1, l1)-(suml+sgn*sumr)
 !
-                    suml = ddot( k1-1, a( 1, k1 ), 1, c( 1, l2 ), 1 )
-                    sumr = ddot( l1-1, c( k1, 1 ), ldc, b( 1, l2 ), 1 )
-                    vec( 1, 2 ) = c( k1, l2 ) - ( suml+sgn*sumr )
+                    suml = ddot(k1-1, a(1, k1), 1, c(1, l2), 1)
+                    sumr = ddot(l1-1, c(k1, 1), ldc, b(1, l2), 1)
+                    vec(1, 2) = c(k1, l2)-(suml+sgn*sumr)
 !
-                    suml = ddot( k1-1, a( 1, k2 ), 1, c( 1, l1 ), 1 )
-                    sumr = ddot( l1-1, c( k2, 1 ), ldc, b( 1, l1 ), 1 )
-                    vec( 2, 1 ) = c( k2, l1 ) - ( suml+sgn*sumr )
+                    suml = ddot(k1-1, a(1, k2), 1, c(1, l1), 1)
+                    sumr = ddot(l1-1, c(k2, 1), ldc, b(1, l1), 1)
+                    vec(2, 1) = c(k2, l1)-(suml+sgn*sumr)
 !
-                    suml = ddot( k1-1, a( 1, k2 ), 1, c( 1, l2 ), 1 )
-                    sumr = ddot( l1-1, c( k2, 1 ), ldc, b( 1, l2 ), 1 )
-                    vec( 2, 2 ) = c( k2, l2 ) - ( suml+sgn*sumr )
+                    suml = ddot(k1-1, a(1, k2), 1, c(1, l2), 1)
+                    sumr = ddot(l1-1, c(k2, 1), ldc, b(1, l2), 1)
+                    vec(2, 2) = c(k2, l2)-(suml+sgn*sumr)
 !
-                    call ar_dlasy2(.true._1, .false._1, isgn, 2, 2,&
-                                   a( k1, k1 ), lda, b( l1, l1 ), ldb, vec,&
-                                   2, scaloc, x, 2, xnorm,&
+                    call ar_dlasy2(.true._1, .false._1, isgn, 2, 2, &
+                                   a(k1, k1), lda, b(l1, l1), ldb, vec, &
+                                   2, scaloc, x, 2, xnorm, &
                                    ierr)
                     if (ierr .ne. 0) info = 1
 !
                     if (scaloc .ne. one) then
                         do j = 1, n
-                            call dscal(m, scaloc, c( 1, j ), 1)
+                            call dscal(m, scaloc, c(1, j), 1)
                         end do
                         scale = scale*scaloc
-                    endif
-                    c( k1, l1 ) = x( 1, 1 )
-                    c( k1, l2 ) = x( 1, 2 )
-                    c( k2, l1 ) = x( 2, 1 )
-                    c( k2, l2 ) = x( 2, 2 )
-                endif
+                    end if
+                    c(k1, l1) = x(1, 1)
+                    c(k1, l2) = x(1, 2)
+                    c(k2, l1) = x(2, 1)
+                    c(k2, l2) = x(2, 2)
+                end if
 !
 110             continue
             end do
 120         continue
         end do
 !
-    else if (.not.notrna .and. .not.notrnb) then
+    else if (.not. notrna .and. .not. notrnb) then
 !
 !        SOLVE    A'*X + ISGN*X*B' = SCALE*C.
 !
@@ -587,16 +587,16 @@ subroutine ar_dlrsyl(trana, tranb, isgn, m, n,&
                 l1 = l
                 l2 = l
             else
-                lnext = l - 1
-                if (b( l, lnext ) .ne. zero) then
+                lnext = l-1
+                if (b(l, lnext) .ne. zero) then
                     l1 = lnext
                     l2 = l
-                    lnext = l - 2
+                    lnext = l-2
                 else
                     l1 = l
                     l2 = l
-                endif
-            endif
+                end if
+            end if
 !
 !           START ROW LOOP (INDEX = K)
 !           K1 (K2): ROW INDEX OF THE FIRST (LAST) ROW OF X(K,L)
@@ -608,136 +608,136 @@ subroutine ar_dlrsyl(trana, tranb, isgn, m, n,&
                     k1 = k
                     k2 = k
                 else
-                    if (a( k+1, k ) .ne. zero) then
+                    if (a(k+1, k) .ne. zero) then
                         k1 = k
-                        k2 = k + 1
-                        knext = k + 2
+                        k2 = k+1
+                        knext = k+2
                     else
                         k1 = k
                         k2 = k
-                        knext = k + 1
-                    endif
-                endif
+                        knext = k+1
+                    end if
+                end if
 !
                 if (l1 .eq. l2 .and. k1 .eq. k2) then
-                    suml = ddot( k1-1, a( 1, k1 ), 1, c( 1, l1 ), 1 )
-                    sumr = ddot(n-l1, c( k1, min( l1+1, n ) ), ldc, b( l1, min( l1+1, n ) ), ldb)
-                    vec( 1, 1 ) = c( k1, l1 ) - ( suml+sgn*sumr )
+                    suml = ddot(k1-1, a(1, k1), 1, c(1, l1), 1)
+                    sumr = ddot(n-l1, c(k1, min(l1+1, n)), ldc, b(l1, min(l1+1, n)), ldb)
+                    vec(1, 1) = c(k1, l1)-(suml+sgn*sumr)
                     scaloc = one
 !
-                    a11 = a( k1, k1 ) + sgn*b( l1, l1 )
-                    da11 = abs( a11 )
+                    a11 = a(k1, k1)+sgn*b(l1, l1)
+                    da11 = abs(a11)
                     if (da11 .le. smin) then
                         a11 = smin
                         da11 = smin
                         info = 1
-                    endif
-                    db = abs( vec( 1, 1 ) )
+                    end if
+                    db = abs(vec(1, 1))
                     if (da11 .lt. one .and. db .gt. one) then
-                        if (db .gt. bignum*da11) scaloc = one / db
-                    endif
-                    x( 1, 1 ) = ( vec( 1, 1 )*scaloc ) / a11
+                        if (db .gt. bignum*da11) scaloc = one/db
+                    end if
+                    x(1, 1) = (vec(1, 1)*scaloc)/a11
 !
                     if (scaloc .ne. one) then
                         do j = 1, n
-                            call dscal(m, scaloc, c( 1, j ), 1)
+                            call dscal(m, scaloc, c(1, j), 1)
                         end do
                         scale = scale*scaloc
-                    endif
-                    c( k1, l1 ) = x( 1, 1 )
+                    end if
+                    c(k1, l1) = x(1, 1)
 !
-                else if (l1.eq.l2 .and. k1.ne.k2) then
+                else if (l1 .eq. l2 .and. k1 .ne. k2) then
 !
-                    suml = ddot( k1-1, a( 1, k1 ), 1, c( 1, l1 ), 1 )
-                    sumr = ddot(n-l2, c( k1, min( l2+1, n ) ), ldc, b( l1, min( l2+1, n ) ), ldb)
-                    vec( 1, 1 ) = c( k1, l1 ) - ( suml+sgn*sumr )
+                    suml = ddot(k1-1, a(1, k1), 1, c(1, l1), 1)
+                    sumr = ddot(n-l2, c(k1, min(l2+1, n)), ldc, b(l1, min(l2+1, n)), ldb)
+                    vec(1, 1) = c(k1, l1)-(suml+sgn*sumr)
 !
-                    suml = ddot( k1-1, a( 1, k2 ), 1, c( 1, l1 ), 1 )
-                    sumr = ddot(n-l2, c( k2, min( l2+1, n ) ), ldc, b( l1, min( l2+1, n ) ), ldb)
-                    vec( 2, 1 ) = c( k2, l1 ) - ( suml+sgn*sumr )
+                    suml = ddot(k1-1, a(1, k2), 1, c(1, l1), 1)
+                    sumr = ddot(n-l2, c(k2, min(l2+1, n)), ldc, b(l1, min(l2+1, n)), ldb)
+                    vec(2, 1) = c(k2, l1)-(suml+sgn*sumr)
 !
-                    call ar_dlaln2(.true._1, 2, 1, smin, one,&
-                                   a( k1, k1 ), lda, one, one, vec,&
-                                   2, -sgn*b( l1, l1 ), zero, x, 2,&
+                    call ar_dlaln2(.true._1, 2, 1, smin, one, &
+                                   a(k1, k1), lda, one, one, vec, &
+                                   2, -sgn*b(l1, l1), zero, x, 2, &
                                    scaloc, xnorm, ierr)
                     if (ierr .ne. 0) info = 1
 !
                     if (scaloc .ne. one) then
                         do j = 1, n
-                            call dscal(m, scaloc, c( 1, j ), 1)
+                            call dscal(m, scaloc, c(1, j), 1)
                         end do
                         scale = scale*scaloc
-                    endif
-                    c( k1, l1 ) = x( 1, 1 )
-                    c( k2, l1 ) = x( 2, 1 )
+                    end if
+                    c(k1, l1) = x(1, 1)
+                    c(k2, l1) = x(2, 1)
 !
-                else if (l1.ne.l2 .and. k1.eq.k2) then
+                else if (l1 .ne. l2 .and. k1 .eq. k2) then
 !
-                    suml = ddot( k1-1, a( 1, k1 ), 1, c( 1, l1 ), 1 )
-                    sumr = ddot(n-l2, c( k1, min( l2+1, n ) ), ldc, b( l1, min( l2+1, n ) ), ldb)
-                    vec( 1, 1 ) = sgn*( c( k1, l1 )-( suml+sgn*sumr ) )
+                    suml = ddot(k1-1, a(1, k1), 1, c(1, l1), 1)
+                    sumr = ddot(n-l2, c(k1, min(l2+1, n)), ldc, b(l1, min(l2+1, n)), ldb)
+                    vec(1, 1) = sgn*(c(k1, l1)-(suml+sgn*sumr))
 !
-                    suml = ddot( k1-1, a( 1, k1 ), 1, c( 1, l2 ), 1 )
-                    sumr = ddot(n-l2, c( k1, min( l2+1, n ) ), ldc, b( l2, min( l2+1, n ) ), ldb)
-                    vec( 2, 1 ) = sgn*( c( k1, l2 )-( suml+sgn*sumr ) )
+                    suml = ddot(k1-1, a(1, k1), 1, c(1, l2), 1)
+                    sumr = ddot(n-l2, c(k1, min(l2+1, n)), ldc, b(l2, min(l2+1, n)), ldb)
+                    vec(2, 1) = sgn*(c(k1, l2)-(suml+sgn*sumr))
 !
-                    call ar_dlaln2(.false._1, 2, 1, smin, one,&
-                                   b( l1, l1 ), ldb, one, one, vec,&
-                                   2, -sgn*a( k1, k1 ), zero, x, 2,&
+                    call ar_dlaln2(.false._1, 2, 1, smin, one, &
+                                   b(l1, l1), ldb, one, one, vec, &
+                                   2, -sgn*a(k1, k1), zero, x, 2, &
                                    scaloc, xnorm, ierr)
                     if (ierr .ne. 0) info = 1
 !
                     if (scaloc .ne. one) then
                         do j = 1, n
-                            call dscal(m, scaloc, c( 1, j ), 1)
+                            call dscal(m, scaloc, c(1, j), 1)
                         end do
                         scale = scale*scaloc
-                    endif
-                    c( k1, l1 ) = x( 1, 1 )
-                    c( k1, l2 ) = x( 2, 1 )
+                    end if
+                    c(k1, l1) = x(1, 1)
+                    c(k1, l2) = x(2, 1)
 !
-                else if (l1.ne.l2 .and. k1.ne.k2) then
+                else if (l1 .ne. l2 .and. k1 .ne. k2) then
 !
-                    suml = ddot( k1-1, a( 1, k1 ), 1, c( 1, l1 ), 1 )
-                    sumr = ddot(n-l2, c( k1, min( l2+1, n ) ), ldc, b( l1, min( l2+1, n ) ), ldb)
-                    vec( 1, 1 ) = c( k1, l1 ) - ( suml+sgn*sumr )
+                    suml = ddot(k1-1, a(1, k1), 1, c(1, l1), 1)
+                    sumr = ddot(n-l2, c(k1, min(l2+1, n)), ldc, b(l1, min(l2+1, n)), ldb)
+                    vec(1, 1) = c(k1, l1)-(suml+sgn*sumr)
 !
-                    suml = ddot( k1-1, a( 1, k1 ), 1, c( 1, l2 ), 1 )
-                    sumr = ddot(n-l2, c( k1, min( l2+1, n ) ), ldc, b( l2, min( l2+1, n ) ), ldb)
-                    vec( 1, 2 ) = c( k1, l2 ) - ( suml+sgn*sumr )
+                    suml = ddot(k1-1, a(1, k1), 1, c(1, l2), 1)
+                    sumr = ddot(n-l2, c(k1, min(l2+1, n)), ldc, b(l2, min(l2+1, n)), ldb)
+                    vec(1, 2) = c(k1, l2)-(suml+sgn*sumr)
 !
-                    suml = ddot( k1-1, a( 1, k2 ), 1, c( 1, l1 ), 1 )
-                    sumr = ddot(n-l2, c( k2, min( l2+1, n ) ), ldc, b( l1, min( l2+1, n ) ), ldb)
-                    vec( 2, 1 ) = c( k2, l1 ) - ( suml+sgn*sumr )
+                    suml = ddot(k1-1, a(1, k2), 1, c(1, l1), 1)
+                    sumr = ddot(n-l2, c(k2, min(l2+1, n)), ldc, b(l1, min(l2+1, n)), ldb)
+                    vec(2, 1) = c(k2, l1)-(suml+sgn*sumr)
 !
-                    suml = ddot( k1-1, a( 1, k2 ), 1, c( 1, l2 ), 1 )
-                    sumr = ddot(n-l2, c( k2, min( l2+1, n ) ), ldc, b( l2, min( l2+1, n ) ), ldb)
-                    vec( 2, 2 ) = c( k2, l2 ) - ( suml+sgn*sumr )
+                    suml = ddot(k1-1, a(1, k2), 1, c(1, l2), 1)
+                    sumr = ddot(n-l2, c(k2, min(l2+1, n)), ldc, b(l2, min(l2+1, n)), ldb)
+                    vec(2, 2) = c(k2, l2)-(suml+sgn*sumr)
 !
-                    call ar_dlasy2(.true._1, .true._1, isgn, 2, 2,&
-                                   a( k1, k1 ), lda, b( l1, l1 ), ldb, vec,&
-                                   2, scaloc, x, 2, xnorm,&
+                    call ar_dlasy2(.true._1, .true._1, isgn, 2, 2, &
+                                   a(k1, k1), lda, b(l1, l1), ldb, vec, &
+                                   2, scaloc, x, 2, xnorm, &
                                    ierr)
                     if (ierr .ne. 0) info = 1
 !
                     if (scaloc .ne. one) then
                         do j = 1, n
-                            call dscal(m, scaloc, c( 1, j ), 1)
+                            call dscal(m, scaloc, c(1, j), 1)
                         end do
                         scale = scale*scaloc
-                    endif
-                    c( k1, l1 ) = x( 1, 1 )
-                    c( k1, l2 ) = x( 1, 2 )
-                    c( k2, l1 ) = x( 2, 1 )
-                    c( k2, l2 ) = x( 2, 2 )
-                endif
+                    end if
+                    c(k1, l1) = x(1, 1)
+                    c(k1, l2) = x(1, 2)
+                    c(k2, l1) = x(2, 1)
+                    c(k2, l2) = x(2, 2)
+                end if
 !
 170             continue
             end do
 180         continue
         end do
 !
-    else if (notrna .and. .not.notrnb) then
+    else if (notrna .and. .not. notrnb) then
 !
 !        SOLVE    A*X + ISGN*X*B' = SCALE*C.
 !
@@ -761,16 +761,16 @@ subroutine ar_dlrsyl(trana, tranb, isgn, m, n,&
                 l1 = l
                 l2 = l
             else
-                lnext = l - 1
-                if (b( l, lnext ) .ne. zero) then
+                lnext = l-1
+                if (b(l, lnext) .ne. zero) then
                     l1 = lnext
                     l2 = l
-                    lnext = l - 2
+                    lnext = l-2
                 else
                     l1 = l
                     l2 = l
-                endif
-            endif
+                end if
+            end if
 !
 !           START ROW LOOP (INDEX = K)
 !           K1 (K2): ROW INDEX OF THE FIRST (LAST) ROW OF X(K,L)
@@ -782,136 +782,136 @@ subroutine ar_dlrsyl(trana, tranb, isgn, m, n,&
                     k1 = k
                     k2 = k
                 else
-                    knext = k - 1
-                    if (a( k, knext ) .ne. zero) then
+                    knext = k-1
+                    if (a(k, knext) .ne. zero) then
                         k1 = knext
                         k2 = k
-                        knext = k - 2
+                        knext = k-2
                     else
                         k1 = k
                         k2 = k
-                    endif
-                endif
+                    end if
+                end if
 !
                 if (l1 .eq. l2 .and. k1 .eq. k2) then
-                    suml = ddot( m-k1, a( k1, min( k1+1, m ) ), lda, c( min( k1+1, m ), l1 ), 1 )
-                    sumr = ddot(n-l1, c( k1, min( l1+1, n ) ), ldc, b( l1, min( l1+1, n ) ), ldb)
-                    vec( 1, 1 ) = c( k1, l1 ) - ( suml+sgn*sumr )
+                    suml = ddot(m-k1, a(k1, min(k1+1, m)), lda, c(min(k1+1, m), l1), 1)
+                    sumr = ddot(n-l1, c(k1, min(l1+1, n)), ldc, b(l1, min(l1+1, n)), ldb)
+                    vec(1, 1) = c(k1, l1)-(suml+sgn*sumr)
                     scaloc = one
 !
-                    a11 = a( k1, k1 ) + sgn*b( l1, l1 )
-                    da11 = abs( a11 )
+                    a11 = a(k1, k1)+sgn*b(l1, l1)
+                    da11 = abs(a11)
                     if (da11 .le. smin) then
                         a11 = smin
                         da11 = smin
                         info = 1
-                    endif
-                    db = abs( vec( 1, 1 ) )
+                    end if
+                    db = abs(vec(1, 1))
                     if (da11 .lt. one .and. db .gt. one) then
-                        if (db .gt. bignum*da11) scaloc = one / db
-                    endif
-                    x( 1, 1 ) = ( vec( 1, 1 )*scaloc ) / a11
+                        if (db .gt. bignum*da11) scaloc = one/db
+                    end if
+                    x(1, 1) = (vec(1, 1)*scaloc)/a11
 !
                     if (scaloc .ne. one) then
                         do j = 1, n
-                            call dscal(m, scaloc, c( 1, j ), 1)
+                            call dscal(m, scaloc, c(1, j), 1)
                         end do
                         scale = scale*scaloc
-                    endif
-                    c( k1, l1 ) = x( 1, 1 )
+                    end if
+                    c(k1, l1) = x(1, 1)
 !
-                else if (l1.eq.l2 .and. k1.ne.k2) then
+                else if (l1 .eq. l2 .and. k1 .ne. k2) then
 !
-                    suml = ddot( m-k2, a( k1, min( k2+1, m ) ), lda, c( min( k2+1, m ), l1 ), 1 )
-                    sumr = ddot(n-l2, c( k1, min( l2+1, n ) ), ldc, b( l1, min( l2+1, n ) ), ldb)
-                    vec( 1, 1 ) = c( k1, l1 ) - ( suml+sgn*sumr )
+                    suml = ddot(m-k2, a(k1, min(k2+1, m)), lda, c(min(k2+1, m), l1), 1)
+                    sumr = ddot(n-l2, c(k1, min(l2+1, n)), ldc, b(l1, min(l2+1, n)), ldb)
+                    vec(1, 1) = c(k1, l1)-(suml+sgn*sumr)
 !
-                    suml = ddot( m-k2, a( k2, min( k2+1, m ) ), lda, c( min( k2+1, m ), l1 ), 1 )
-                    sumr = ddot(n-l2, c( k2, min( l2+1, n ) ), ldc, b( l1, min( l2+1, n ) ), ldb)
-                    vec( 2, 1 ) = c( k2, l1 ) - ( suml+sgn*sumr )
+                    suml = ddot(m-k2, a(k2, min(k2+1, m)), lda, c(min(k2+1, m), l1), 1)
+                    sumr = ddot(n-l2, c(k2, min(l2+1, n)), ldc, b(l1, min(l2+1, n)), ldb)
+                    vec(2, 1) = c(k2, l1)-(suml+sgn*sumr)
 !
-                    call ar_dlaln2(.false._1, 2, 1, smin, one,&
-                                   a( k1, k1 ), lda, one, one, vec,&
-                                   2, -sgn*b( l1, l1 ), zero, x, 2,&
+                    call ar_dlaln2(.false._1, 2, 1, smin, one, &
+                                   a(k1, k1), lda, one, one, vec, &
+                                   2, -sgn*b(l1, l1), zero, x, 2, &
                                    scaloc, xnorm, ierr)
                     if (ierr .ne. 0) info = 1
 !
                     if (scaloc .ne. one) then
                         do j = 1, n
-                            call dscal(m, scaloc, c( 1, j ), 1)
+                            call dscal(m, scaloc, c(1, j), 1)
                         end do
                         scale = scale*scaloc
-                    endif
-                    c( k1, l1 ) = x( 1, 1 )
-                    c( k2, l1 ) = x( 2, 1 )
+                    end if
+                    c(k1, l1) = x(1, 1)
+                    c(k2, l1) = x(2, 1)
 !
-                else if (l1.ne.l2 .and. k1.eq.k2) then
+                else if (l1 .ne. l2 .and. k1 .eq. k2) then
 !
-                    suml = ddot( m-k1, a( k1, min( k1+1, m ) ), lda, c( min( k1+1, m ), l1 ), 1 )
-                    sumr = ddot(n-l2, c( k1, min( l2+1, n ) ), ldc, b( l1, min( l2+1, n ) ), ldb)
-                    vec( 1, 1 ) = sgn*( c( k1, l1 )-( suml+sgn*sumr ) )
+                    suml = ddot(m-k1, a(k1, min(k1+1, m)), lda, c(min(k1+1, m), l1), 1)
+                    sumr = ddot(n-l2, c(k1, min(l2+1, n)), ldc, b(l1, min(l2+1, n)), ldb)
+                    vec(1, 1) = sgn*(c(k1, l1)-(suml+sgn*sumr))
 !
-                    suml = ddot( m-k1, a( k1, min( k1+1, m ) ), lda, c( min( k1+1, m ), l2 ), 1 )
-                    sumr = ddot(n-l2, c( k1, min( l2+1, n ) ), ldc, b( l2, min( l2+1, n ) ), ldb)
-                    vec( 2, 1 ) = sgn*( c( k1, l2 )-( suml+sgn*sumr ) )
+                    suml = ddot(m-k1, a(k1, min(k1+1, m)), lda, c(min(k1+1, m), l2), 1)
+                    sumr = ddot(n-l2, c(k1, min(l2+1, n)), ldc, b(l2, min(l2+1, n)), ldb)
+                    vec(2, 1) = sgn*(c(k1, l2)-(suml+sgn*sumr))
 !
-                    call ar_dlaln2(.false._1, 2, 1, smin, one,&
-                                   b( l1, l1 ), ldb, one, one, vec,&
-                                   2, -sgn*a( k1, k1 ), zero, x, 2,&
+                    call ar_dlaln2(.false._1, 2, 1, smin, one, &
+                                   b(l1, l1), ldb, one, one, vec, &
+                                   2, -sgn*a(k1, k1), zero, x, 2, &
                                    scaloc, xnorm, ierr)
                     if (ierr .ne. 0) info = 1
 !
                     if (scaloc .ne. one) then
                         do j = 1, n
-                            call dscal(m, scaloc, c( 1, j ), 1)
+                            call dscal(m, scaloc, c(1, j), 1)
                         end do
                         scale = scale*scaloc
-                    endif
-                    c( k1, l1 ) = x( 1, 1 )
-                    c( k1, l2 ) = x( 2, 1 )
+                    end if
+                    c(k1, l1) = x(1, 1)
+                    c(k1, l2) = x(2, 1)
 !
-                else if (l1.ne.l2 .and. k1.ne.k2) then
+                else if (l1 .ne. l2 .and. k1 .ne. k2) then
 !
-                    suml = ddot( m-k2, a( k1, min( k2+1, m ) ), lda, c( min( k2+1, m ), l1 ), 1 )
-                    sumr = ddot(n-l2, c( k1, min( l2+1, n ) ), ldc, b( l1, min( l2+1, n ) ), ldb)
-                    vec( 1, 1 ) = c( k1, l1 ) - ( suml+sgn*sumr )
+                    suml = ddot(m-k2, a(k1, min(k2+1, m)), lda, c(min(k2+1, m), l1), 1)
+                    sumr = ddot(n-l2, c(k1, min(l2+1, n)), ldc, b(l1, min(l2+1, n)), ldb)
+                    vec(1, 1) = c(k1, l1)-(suml+sgn*sumr)
 !
-                    suml = ddot( m-k2, a( k1, min( k2+1, m ) ), lda, c( min( k2+1, m ), l2 ), 1 )
-                    sumr = ddot(n-l2, c( k1, min( l2+1, n ) ), ldc, b( l2, min( l2+1, n ) ), ldb)
-                    vec( 1, 2 ) = c( k1, l2 ) - ( suml+sgn*sumr )
+                    suml = ddot(m-k2, a(k1, min(k2+1, m)), lda, c(min(k2+1, m), l2), 1)
+                    sumr = ddot(n-l2, c(k1, min(l2+1, n)), ldc, b(l2, min(l2+1, n)), ldb)
+                    vec(1, 2) = c(k1, l2)-(suml+sgn*sumr)
 !
-                    suml = ddot( m-k2, a( k2, min( k2+1, m ) ), lda, c( min( k2+1, m ), l1 ), 1 )
-                    sumr = ddot(n-l2, c( k2, min( l2+1, n ) ), ldc, b( l1, min( l2+1, n ) ), ldb)
-                    vec( 2, 1 ) = c( k2, l1 ) - ( suml+sgn*sumr )
+                    suml = ddot(m-k2, a(k2, min(k2+1, m)), lda, c(min(k2+1, m), l1), 1)
+                    sumr = ddot(n-l2, c(k2, min(l2+1, n)), ldc, b(l1, min(l2+1, n)), ldb)
+                    vec(2, 1) = c(k2, l1)-(suml+sgn*sumr)
 !
-                    suml = ddot( m-k2, a( k2, min( k2+1, m ) ), lda, c( min( k2+1, m ), l2 ), 1 )
-                    sumr = ddot(n-l2, c( k2, min( l2+1, n ) ), ldc, b( l2, min( l2+1, n ) ), ldb)
-                    vec( 2, 2 ) = c( k2, l2 ) - ( suml+sgn*sumr )
+                    suml = ddot(m-k2, a(k2, min(k2+1, m)), lda, c(min(k2+1, m), l2), 1)
+                    sumr = ddot(n-l2, c(k2, min(l2+1, n)), ldc, b(l2, min(l2+1, n)), ldb)
+                    vec(2, 2) = c(k2, l2)-(suml+sgn*sumr)
 !
-                    call ar_dlasy2(.false._1, .true._1, isgn, 2, 2,&
-                                   a( k1, k1 ), lda, b( l1, l1 ), ldb, vec,&
-                                   2, scaloc, x, 2, xnorm,&
+                    call ar_dlasy2(.false._1, .true._1, isgn, 2, 2, &
+                                   a(k1, k1), lda, b(l1, l1), ldb, vec, &
+                                   2, scaloc, x, 2, xnorm, &
                                    ierr)
                     if (ierr .ne. 0) info = 1
 !
                     if (scaloc .ne. one) then
                         do j = 1, n
-                            call dscal(m, scaloc, c( 1, j ), 1)
+                            call dscal(m, scaloc, c(1, j), 1)
                         end do
                         scale = scale*scaloc
-                    endif
-                    c( k1, l1 ) = x( 1, 1 )
-                    c( k1, l2 ) = x( 1, 2 )
-                    c( k2, l1 ) = x( 2, 1 )
-                    c( k2, l2 ) = x( 2, 2 )
-                endif
+                    end if
+                    c(k1, l1) = x(1, 1)
+                    c(k1, l2) = x(1, 2)
+                    c(k2, l1) = x(2, 1)
+                    c(k2, l2) = x(2, 2)
+                end if
 !
 230             continue
             end do
 240         continue
         end do
 !
-    endif
+    end if
 !
 1000 continue
     call matfpe(1)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine messtr(base      , option_, model_, cara_elem_, mate_,&
+subroutine messtr(base, option_, model_, cara_elem_, mate_, &
                   matr_elem_)
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterf_types.h"
@@ -36,7 +36,7 @@ implicit none
 !
     character(len=24), pointer :: v_rerr(:) => null()
 !
-    call memare(base, matr_elem_, model_, mate_, cara_elem_,&
+    call memare(base, matr_elem_, model_, mate_, cara_elem_, &
                 option_)
     call jeveuo(matr_elem_//'.RERR', 'E', vk24=v_rerr)
     v_rerr(3) = 'OUI_SOUS_STRUC'

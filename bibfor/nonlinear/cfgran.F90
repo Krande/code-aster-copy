@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -75,7 +75,7 @@ subroutine cfgran(resoco, nbliac, kkliai, kkliac)
         if (rminmu .gt. valmu) then
             rminmu = valmu
             index = iliac
-        endif
+        end if
     end do
 !
 ! --- ON REPERE LA LIAISON KKMIN AYANT LE MU LE PLUS NEGATIF
@@ -83,14 +83,14 @@ subroutine cfgran(resoco, nbliac, kkliai, kkliac)
     kkliac = index
     if (kkliac .ne. 0) then
         kkliai = zi(jliac-1+kkliac)
-    endif
+    end if
 !
 ! --- SI TOUS LES MU SONT > 0 -> ON A CONVERGE (IL Y A CONTACT)
 !
     if (rminmu .ge. 0.d0) then
         kkliai = 0
         kkliac = 0
-    endif
+    end if
 !
     call jedema()
 !

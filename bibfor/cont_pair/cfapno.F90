@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,13 +16,13 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine cfapno(noma, newgeo, ds_contact, lctfd,&
-                  ndimg, izone, posnoe, numnoe,&
+subroutine cfapno(noma, newgeo, ds_contact, lctfd, &
+                  ndimg, izone, posnoe, numnoe, &
                   coorne, posnom, tau1m, tau2m, iliai)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterc/r8prem.h"
@@ -109,8 +109,8 @@ implicit none
 !
 ! --- RE-DEFINITION BASE TANGENTE SUIVANT OPTIONS
 !
-    call cftanr(noma, ndimg, ds_contact, izone,&
-                posnoe, 'NOEU', posnom(1), numnom(1), r8bid,&
+    call cftanr(noma, ndimg, ds_contact, izone, &
+                posnoe, 'NOEU', posnom(1), numnom(1), r8bid, &
                 r8bid, tau1m, tau2m, tau1, tau2)
 !
 ! --- CALCUL DE LA NORMALE INTERIEURE
@@ -119,7 +119,7 @@ implicit none
     if (noor .le. r8prem()) then
         call jenuno(jexnum(noma//'.NOMNOE', numnoe), nomnoe)
         call utmess('F', 'CONTACT3_26', sk=nomnoe)
-    endif
+    end if
 !
 ! --- CALCUL DU JEU
 !
@@ -127,12 +127,12 @@ implicit none
 !
 ! --- COEFFICIENT DE LA RELATION LINEAIRE SUR NOEUD MAITRE
 !
-    coefno(1) = - 1.d0
+    coefno(1) = -1.d0
 !
 ! --- AJOUT DE LA LIAISON NODALE
 !
-    call cfaddm(ds_contact, lctfd, posnoe, iliai,&
-                ndimg, 1, [posnom], coefno, tau1,&
+    call cfaddm(ds_contact, lctfd, posnoe, iliai, &
+                ndimg, 1, [posnom], coefno, tau1, &
                 tau2, norm, jeu, coornm)
 !
 end subroutine

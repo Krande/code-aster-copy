@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -36,35 +36,35 @@ subroutine jesvos(clas)
     integer :: jiadm, jlong, jlono, jltyp, jluti, jmarq, jorig
     integer :: jrnom, jtype, n, ncla1, ncla2
 !-----------------------------------------------------------------------
-    parameter  ( n = 5 )
-    common /jiatje/  jltyp(n), jlong(n), jdate(n), jiadd(n), jiadm(n),&
+    parameter(n=5)
+    common/jiatje/jltyp(n), jlong(n), jdate(n), jiadd(n), jiadm(n),&
      &               jlono(n), jhcod(n), jcara(n), jluti(n), jmarq(n)
 !
-    common /jkatje/  jgenr(n), jtype(n), jdocu(n), jorig(n), jrnom(n)
+    common/jkatje/jgenr(n), jtype(n), jdocu(n), jorig(n), jrnom(n)
 !
     integer :: nrhcod, nremax, nreuti
-    common /icodje/  nrhcod(n) , nremax(n) , nreuti(n)
+    common/icodje/nrhcod(n), nremax(n), nreuti(n)
 !
     character(len=2) :: dn2
     character(len=5) :: classe
     character(len=8) :: nomfic, kstout, kstini
-    common /kficje/  classe, nomfic(n), kstout(n), kstini(n), dn2(n)
+    common/kficje/classe, nomfic(n), kstout(n), kstini(n), dn2(n)
     integer :: iclas, iclaos, iclaco, idatos, idatco, idatoc
-    common /iatcje/  iclas ,iclaos , iclaco , idatos , idatco , idatoc
+    common/iatcje/iclas, iclaos, iclaco, idatos, idatco, idatoc
 ! ----------------------------------------------------------------------
     character(len=1) :: kclas, clasi
     character(len=32) :: crnom
 ! DEB ------------------------------------------------------------------
 !
-    kclas = clas ( 1: min(1,len(clas)))
+    kclas = clas(1:min(1, len(clas)))
     if (kclas .eq. ' ') then
         ncla1 = 1
-        ncla2 = index ( classe , '$' ) - 1
+        ncla2 = index(classe, '$')-1
         if (ncla2 .lt. 0) ncla2 = n
     else
-        ncla1 = index ( classe , kclas)
+        ncla1 = index(classe, kclas)
         ncla2 = ncla1
-    endif
+    end if
     do i = ncla1, ncla2
         clasi = classe(i:i)
         if (clasi .ne. ' ') then
@@ -74,12 +74,12 @@ subroutine jesvos(clas)
                 idatos = j
                 crnom = rnom(jrnom(i)+j)
                 if (crnom(1:1) .eq. '?') goto 5
-                if ( iadd(jiadd(i)+2*j-1) .eq. 0 ) then
-                   call jjlide ('JETASS', crnom , 1 )
-                endif
- 5              continue
+                if (iadd(jiadd(i)+2*j-1) .eq. 0) then
+                    call jjlide('JETASS', crnom, 1)
+                end if
+5               continue
             end do
-        endif
+        end if
     end do
 ! FIN ------------------------------------------------------------------
 end subroutine

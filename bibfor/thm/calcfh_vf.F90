@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,16 +17,16 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: sylvie.granet at edf.fr
 !
-subroutine calcfh_vf(ds_thm,&
-                     option, j_mater, ifa,&
-                     t     , p1     , p2     , pvp, pad ,&
-                     rho11 , h11    , h12    ,&
-                     satur , dsatur , &
+subroutine calcfh_vf(ds_thm, &
+                     option, j_mater, ifa, &
+                     t, p1, p2, pvp, pad, &
+                     rho11, h11, h12, &
+                     satur, dsatur, &
                      valfac, valcen)
 !
-use THM_type
+    use THM_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -34,15 +34,15 @@ implicit none
 #include "asterfort/thmFlhVF010.h"
 #include "asterfort/THM_type.h"
 !
-type(THM_DS), intent(in) :: ds_thm
-character(len=16), intent(in) :: option
-integer, intent(in) :: j_mater
-integer, intent(in) :: ifa
-real(kind=8), intent(in) :: t, p1, p2, pvp, pad
-real(kind=8), intent(in) :: rho11, h11, h12
-real(kind=8), intent(in) :: satur, dsatur
-real(kind=8), intent(inout) :: valcen(14, 6)
-real(kind=8), intent(inout) :: valfac(6, 14, 6)
+    type(THM_DS), intent(in) :: ds_thm
+    character(len=16), intent(in) :: option
+    integer, intent(in) :: j_mater
+    integer, intent(in) :: ifa
+    real(kind=8), intent(in) :: t, p1, p2, pvp, pad
+    real(kind=8), intent(in) :: rho11, h11, h12
+    real(kind=8), intent(in) :: satur, dsatur
+    real(kind=8), intent(inout) :: valcen(14, 6)
+    real(kind=8), intent(inout) :: valfac(6, 14, 6)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -74,16 +74,16 @@ real(kind=8), intent(inout) :: valfac(6, 14, 6)
     select case (ds_thm%ds_behaviour%nume_thmc)
     case (LIQU_AD_GAZ_VAPE)
         call thmFlhVF009(ds_thm, option, j_mater, ifa, &
-                         t     , p1    , p2     , pvp, pad,&
-                         rho11 , h11   , h12    ,&
-                         satur , dsatur, &
+                         t, p1, p2, pvp, pad, &
+                         rho11, h11, h12, &
+                         satur, dsatur, &
                          valfac, valcen)
 
     case (LIQU_AD_GAZ)
         call thmFlhVF010(ds_thm, option, j_mater, ifa, &
-                         t     , p1    , p2     , pvp, pad,&
-                         rho11 , h11   , h12    ,&
-                         satur , dsatur, &
+                         t, p1, p2, pvp, pad, &
+                         rho11, h11, h12, &
+                         satur, dsatur, &
                          valfac, valcen)
 
     case default

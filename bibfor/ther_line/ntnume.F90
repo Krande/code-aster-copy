@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 subroutine ntnume(model, list_load, result, nume_dof)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/gnomsd.h"
@@ -53,12 +53,12 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     nume_dof = '12345678.NUMED'
-    noojb    = '12345678.00000.NUME.PRNO'
+    noojb = '12345678.00000.NUME.PRNO'
     call gnomsd(' ', noojb, 10, 14)
     nume_dof = noojb(1:14)
     call rsnume(result, 'TEMP', nuposs)
-    call numero(nume_dof, 'VG',&
-                old_nume_ddlz = nuposs,&
-                modelz = model , list_loadz = list_load)
+    call numero(nume_dof, 'VG', &
+                old_nume_ddlz=nuposs, &
+                modelz=model, list_loadz=list_load)
 !
 end subroutine

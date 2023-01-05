@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 !
 subroutine te0257(option, nomte)
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterf_types.h"
@@ -31,7 +31,7 @@ implicit none
 #include "asterfort/utmess.h"
 #include "asterfort/getFluidPara.h"
 !
-character(len=16), intent(in) :: option, nomte
+    character(len=16), intent(in) :: option, nomte
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -59,7 +59,7 @@ character(len=16), intent(in) :: option, nomte
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    a    = 0.d0
+    a = 0.d0
     mmat = 0.d0
 !
 ! - Input fields
@@ -70,9 +70,9 @@ character(len=16), intent(in) :: option, nomte
 ! - Get element parameters
 !
     call teattr('S', 'FORMULATION', fsi_form, iret)
-    l_axis = (lteatt('AXIS','OUI'))
-    call elrefe_info(fami='RIGI',&
-                     nno=nno, npg=npg, ndim=ndim,&
+    l_axis = (lteatt('AXIS', 'OUI'))
+    call elrefe_info(fami='RIGI', &
+                     nno=nno, npg=npg, ndim=ndim, &
                      jpoids=ipoids, jvf=ivf, jdfde=idfde)
     ASSERT(nno .le. 3)
 !
@@ -85,42 +85,42 @@ character(len=16), intent(in) :: option, nomte
 !
     do ipg = 1, npg
         ldec = (ipg-1)*nno
-        call vff2dn(ndim, nno, ipg, ipoids, idfde,&
+        call vff2dn(ndim, nno, ipg, ipoids, idfde, &
                     zr(jv_geom), nx, ny, poids)
         norm(1) = nx
         norm(2) = ny
         if (l_axis) then
             r = 0.d0
             do ino1 = 1, nno
-                r = r + zr(jv_geom+2*(ino1-1))*zr(ivf+ldec+ino1-1)
+                r = r+zr(jv_geom+2*(ino1-1))*zr(ivf+ldec+ino1-1)
             end do
             poids = poids*r
-        endif
+        end if
         if (fsi_form .eq. 'FSI_UPPHI') then
             do ino1 = 1, nno
                 do ino2 = 1, ino1
                     do idim = 1, 2
-                        a(idim,3,ino1,ino2) = a(idim,3,ino1,ino2) +&
-                                              poids*norm(idim)*rho*&
-                                              zr(ivf+ldec+ino1-1)*zr(ivf+ldec+ino2-1)
+                        a(idim, 3, ino1, ino2) = a(idim, 3, ino1, ino2)+ &
+                                                 poids*norm(idim)*rho* &
+                                                 zr(ivf+ldec+ino1-1)*zr(ivf+ldec+ino2-1)
                     end do
                 end do
             end do
         elseif (fsi_form .eq. 'FSI_UP') then
             do ino1 = 1, nno
-               do ino2 = 1, nno
-                   do idim = 1, 2
+                do ino2 = 1, nno
+                    do idim = 1, 2
                         ind1 = 3*(ino1-1)+idim
                         ind2 = 3*(ino2-1)+3
-                        mmat(ind2,ind1) = mmat(ind2,ind1) +&
-                                          poids * norm(idim)* rho *&
-                                          zr(ivf+ldec+ino1-1) * zr(ivf+ldec+ino2-1)
-                   end do
-               end do
+                        mmat(ind2, ind1) = mmat(ind2, ind1)+ &
+                                           poids*norm(idim)*rho* &
+                                           zr(ivf+ldec+ino1-1)*zr(ivf+ldec+ino2-1)
+                    end do
+                end do
             end do
         else
-            call utmess('F', 'FLUID1_2', sk = fsi_form)
-        endif
+            call utmess('F', 'FLUID1_2', sk=fsi_form)
+        end if
     end do
 !
 ! - Output field
@@ -130,7 +130,7 @@ character(len=16), intent(in) :: option, nomte
         do ino1 = 1, nno
             do ino2 = 1, ino1
                 do idim = 1, 2
-                    a(3,idim,ino1,ino2) = a(idim,3,ino1,ino2)
+                    a(3, idim, ino1, ino2) = a(idim, 3, ino1, ino2)
                 end do
             end do
         end do
@@ -139,8 +139,8 @@ character(len=16), intent(in) :: option, nomte
                 do ino1 = 1, nno
                     ik = ((3*ino1+k-4)*(3*ino1+k-3))/2
                     do ino2 = 1, ino1
-                        ijkl = ik + 3*(ino2-1) + l
-                        zr(jv_matr+ijkl-1) = a(k,l,ino1,ino2)
+                        ijkl = ik+3*(ino2-1)+l
+                        zr(jv_matr+ijkl-1) = a(k, l, ino1, ino2)
                     end do
                 end do
             end do
@@ -150,11 +150,11 @@ character(len=16), intent(in) :: option, nomte
         do ino2 = 1, 3*nno
             do ino1 = 1, 3*nno
                 ij = ino2+3*nno*(ino1-1)
-                zr(jv_matr+ij-1) = mmat(ino1,ino2)
+                zr(jv_matr+ij-1) = mmat(ino1, ino2)
             end do
         end do
     else
-        call utmess('F', 'FLUID1_2', sk = fsi_form)
-    endif
+        call utmess('F', 'FLUID1_2', sk=fsi_form)
+    end if
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,15 +17,15 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine romModeSave(resultName, numeMode  ,&
-                       fieldIden , mode      ,&
-                       modeValeR_, modeValeC_,&
-                       modeSing_ , numeSlice_,&
+subroutine romModeSave(resultName, numeMode, &
+                       fieldIden, mode, &
+                       modeValeR_, modeValeC_, &
+                       modeSing_, numeSlice_, &
                        nbSnap_)
 !
-use Rom_Datastructure_type
+    use Rom_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterfort/assert.h"
 #include "asterfort/copisd.h"
@@ -35,14 +35,14 @@ implicit none
 #include "asterfort/rsexch.h"
 #include "asterfort/rsnoch.h"
 !
-character(len=8), intent(in) :: resultName
-integer, intent(in) :: numeMode
-type(ROM_DS_Field), intent(in) :: mode
-character(len=24), intent(in) :: fieldIden
-real(kind=8), optional, pointer :: modeValeR_(:)
-complex(kind=8), optional, pointer :: modeValeC_(:)
-real(kind=8), optional, intent(in) :: modeSing_
-integer, optional, intent(in) :: numeSlice_, nbSnap_
+    character(len=8), intent(in) :: resultName
+    integer, intent(in) :: numeMode
+    type(ROM_DS_Field), intent(in) :: mode
+    character(len=24), intent(in) :: fieldIden
+    real(kind=8), optional, pointer :: modeValeR_(:)
+    complex(kind=8), optional, pointer :: modeValeC_(:)
+    real(kind=8), optional, intent(in) :: modeSing_
+    integer, optional, intent(in) :: numeSlice_, nbSnap_
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -77,28 +77,28 @@ integer, optional, intent(in) :: numeSlice_, nbSnap_
     numeSlice = 0
     if (present(numeSlice_)) then
         numeSlice = numeSlice_
-    endif
+    end if
     modeSing = 0.d0
     if (present(modeSing_)) then
         modeSing = modeSing_
-    endif
+    end if
     nbSnap = 0
     if (present(nbSnap_)) then
         nbSnap = nbSnap_
-    endif
+    end if
 !
 ! - Get parameters from mode
 !
-    nbEqua       = mode%nbEqua
+    nbEqua = mode%nbEqua
     modeSymbName = mode%fieldName
-    fieldRefe    = mode%fieldRefe
-    fieldSupp    = mode%fieldSupp
-    model        = mode%model
+    fieldRefe = mode%fieldRefe
+    fieldSupp = mode%fieldSupp
+    model = mode%model
 !
 ! - Get field from result to save mode
 !
     call rsexch(' ', resultName, fieldIden, numeMode, resultField, iret)
-    ASSERT(iret .eq. 100 .or. iret.eq.0 .or. iret .eq. 110)
+    ASSERT(iret .eq. 100 .or. iret .eq. 0 .or. iret .eq. 110)
 !
 ! - Extend results datastructure
 !
@@ -106,31 +106,31 @@ integer, optional, intent(in) :: numeSlice_, nbSnap_
         call rsagsd(resultName, 0)
         call rsexch(' ', resultName, fieldIden, numeMode, resultField, iret)
         ASSERT(iret .eq. 100 .or. iret .eq. 0)
-    endif
+    end if
 !
 ! - Create a new field for mode
 !
     if (iret .eq. 100) then
         call copisd('CHAMP_GD', 'G', fieldRefe, resultField)
-    endif
+    end if
 !
 ! - Access to values of mode
 !
     if (fieldSupp .eq. 'NOEU') then
         if (present(modeValeC_)) then
-            call jeveuo(resultField(1:19)//'.VALE', 'E', vc = resuFieldValeC)
+            call jeveuo(resultField(1:19)//'.VALE', 'E', vc=resuFieldValeC)
         else
-            call jeveuo(resultField(1:19)//'.VALE', 'E', vr = resuFieldValeR)
-        endif
+            call jeveuo(resultField(1:19)//'.VALE', 'E', vr=resuFieldValeR)
+        end if
     elseif (fieldSupp .eq. 'ELGA') then
         if (present(modeValeC_)) then
-            call jeveuo(resultField(1:19)//'.CELV', 'E', vc = resuFieldValeC)
+            call jeveuo(resultField(1:19)//'.CELV', 'E', vc=resuFieldValeC)
         else
-            call jeveuo(resultField(1:19)//'.CELV', 'E', vr = resuFieldValeR)
-        endif
+            call jeveuo(resultField(1:19)//'.CELV', 'E', vr=resuFieldValeR)
+        end if
     else
         ASSERT(ASTER_FALSE)
-    endif
+    end if
 !
 ! - Copy values of mode
 !
@@ -138,14 +138,14 @@ integer, optional, intent(in) :: numeSlice_, nbSnap_
         resuFieldValeC(:) = modeValeC_(1:nbEqua)
     else
         resuFieldValeR(:) = modeValeR_(1:nbEqua)
-    endif
+    end if
     call rsnoch(resultName, fieldIden, numeMode)
 !
 ! - Save parameters
 !
-    call romModeParaSave(resultName, numeMode    ,&
-                         model     , modeSymbName,&
-                         modeSing  , numeSlice   ,&
+    call romModeParaSave(resultName, numeMode, &
+                         model, modeSymbName, &
+                         modeSing, numeSlice, &
                          nbSnap)
 !
 end subroutine

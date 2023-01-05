@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -48,19 +48,19 @@ subroutine te0181(option, nomte)
 !-----------------------------------------------------------------------
     integer :: l, ndi, ndim, nnos
 !-----------------------------------------------------------------------
-    call elrefe_info(fami='MASS',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
-    ndi = nno* (nno+1)/2
+    call elrefe_info(fami='MASS', ndim=ndim, nno=nno, nnos=nnos, &
+                     npg=npg, jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
+    ndi = nno*(nno+1)/2
 !
     call jevech('PGEOMER', 'L', igeom)
     call jevech('PMATERC', 'L', imate)
     call jevech('PMATTTC', 'E', imattt)
 !
-    call rcvalc(zi(imate), 'FLUIDE', 1, 'CELE_C', valres,&
+    call rcvalc(zi(imate), 'FLUIDE', 1, 'CELE_C', valres, &
                 icodre, 1)
 !
     do i = 1, ndi
-        zc(imattt-1+i) = (0.0d0,0.0d0)
+        zc(imattt-1+i) = (0.0d0, 0.0d0)
     end do
 !
 !    BOUCLE SUR LES POINTS DE GAUSS
@@ -68,13 +68,13 @@ subroutine te0181(option, nomte)
     do kp = 1, npg
         l = (kp-1)*nno
 !
-        call dfdm3d(nno, kp, ipoids, idfde, zr(igeom),&
+        call dfdm3d(nno, kp, ipoids, idfde, zr(igeom), &
                     poids)
 !
         do i = 1, nno
             do j = 1, i
-                ij = (i-1)*i/2 + j
-                zc(imattt+ij-1) = zc(imattt+ij-1) + ((1.0d0,0.0d0)/ ( valres(1)**2))*poids*zr(ivf&
+                ij = (i-1)*i/2+j
+                zc(imattt+ij-1) = zc(imattt+ij-1)+((1.0d0, 0.0d0)/(valres(1)**2))*poids*zr(ivf&
                                   &+l+i-1)*zr(ivf+l+j-1)
             end do
         end do

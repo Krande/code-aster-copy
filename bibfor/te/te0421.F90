@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -42,7 +42,7 @@ subroutine te0421(option, nomte)
     integer :: jgano, nbpar, nbres, ndim, nnos
     real(kind=8) :: e1, e2, e3
 !-----------------------------------------------------------------------
-    parameter        ( nbres=10 )
+    parameter(nbres=10)
     character(len=32) :: phenom
     character(len=16) :: nomres(nbres)
     character(len=8) :: nompar, blan8
@@ -56,11 +56,11 @@ subroutine te0421(option, nomte)
     integer :: ipoids, ivf, idfde, igeom, imate
 !
 !
-    data  zero / 0.d0 /
+    data zero/0.d0/
 !
-    blan8='        '
+    blan8 = '        '
     fami = 'RIGI'
-    call elrefe_info(fami=fami, ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+    call elrefe_info(fami=fami, ndim=ndim, nno=nno, nnos=nnos, npg=npg, &
                      jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
     call jevech('PGEOMER', 'L', igeom)
@@ -70,16 +70,16 @@ subroutine te0421(option, nomte)
     call tecach('ONO', 'PTEMPSR', 'L', iret, iad=itemps)
     if (itemps .eq. 0) then
         nbpar = 0
-        nompar=' '
-    endif
+        nompar = ' '
+    end if
 !
     do i = 1, nbres
-        nomres(i)=blan8
+        nomres(i) = blan8
     end do
     if (phenom .eq. 'ELAS') then
         nomres(1) = 'E'
         nomres(2) = 'NU'
-    else if (phenom.eq.'ELAS_ORTH') then
+    else if (phenom .eq. 'ELAS_ORTH') then
         nomres(1) = 'E_X'
         nomres(2) = 'E_Y'
         nomres(3) = 'E_Z'
@@ -87,66 +87,66 @@ subroutine te0421(option, nomte)
         nomres(5) = 'NU_XZ'
         nomres(6) = 'NU_YZ'
         nomres(7) = 'G_XY'
-    else if (phenom.eq.'ELAS_GITR') then
+    else if (phenom .eq. 'ELAS_GITR') then
         nomres(1) = 'E_XY'
         nomres(2) = 'E_Z'
         nomres(3) = 'NU_XY'
         nomres(4) = 'NU_Z'
     else
         call utmess('F', 'ELEMENTS_50')
-    endif
+    end if
     call jevech('PVECTUR', 'E', ivectu)
 !
     do kp = 1, npg
-        k=(kp-1)*nno
-        call dfdm2d(nno, kp, ipoids, idfde, zr(igeom),&
+        k = (kp-1)*nno
+        call dfdm2d(nno, kp, ipoids, idfde, zr(igeom), &
                     poids, dfdx, dfdy)
         r = zero
-        call rcvarc(' ', 'EPSAXX', '+', 'RIGI', kp,&
+        call rcvarc(' ', 'EPSAXX', '+', 'RIGI', kp, &
                     1, exx, iret)
-        if (iret .eq. 1) exx=0.d0
-        call rcvarc(' ', 'EPSAYY', '+', 'RIGI', kp,&
+        if (iret .eq. 1) exx = 0.d0
+        call rcvarc(' ', 'EPSAYY', '+', 'RIGI', kp, &
                     1, eyy, iret)
-        if (iret .eq. 1) eyy=0.d0
-        call rcvarc(' ', 'EPSAZZ', '+', 'RIGI', kp,&
+        if (iret .eq. 1) eyy = 0.d0
+        call rcvarc(' ', 'EPSAZZ', '+', 'RIGI', kp, &
                     1, ezz, iret)
-        if (iret .eq. 1) ezz=0.d0
-        call rcvarc(' ', 'EPSAXY', '+', 'RIGI', kp,&
+        if (iret .eq. 1) ezz = 0.d0
+        call rcvarc(' ', 'EPSAXY', '+', 'RIGI', kp, &
                     1, exy, iret)
-        if (iret .eq. 1) exy=0.d0
+        if (iret .eq. 1) exy = 0.d0
 !
         nbpar = 1
         nompar = 'INST'
         valpar = zr(itemps)
 !
         do i = 1, nno
-            r = r + zr(igeom+2*i-2)*zr(ivf+k+i-1)
+            r = r+zr(igeom+2*i-2)*zr(ivf+k+i-1)
         end do
 !
 !
         if (phenom .eq. 'ELAS') then
 !CC --- CAS ISOTROPE
-            call rcvalb(fami, kp, 1, '+', zi(imate),&
-                        ' ', phenom, nbpar, nompar, [valpar],&
+            call rcvalb(fami, kp, 1, '+', zi(imate), &
+                        ' ', phenom, nbpar, nompar, [valpar], &
                         2, nomres, valres, icodre, 1)
-            call rcvalb(fami, kp, 1, '+', zi(imate),&
-                        ' ', phenom, nbpar, nompar, [valpar],&
+            call rcvalb(fami, kp, 1, '+', zi(imate), &
+                        ' ', phenom, nbpar, nompar, [valpar], &
                         1, nomres(3), valres(3), icodre(3), 0)
             if (icodre(3) .ne. 0) valres(3) = 0.d0
 !
-            c1 = valres(1)/(1.d0 + valres(2))
-            a11 = c1*(1.d0 - valres(2))/(1.d0 - 2.d0*valres(2))
-            a12 = c1* valres(2) /(1.d0 - 2.d0*valres(2))
+            c1 = valres(1)/(1.d0+valres(2))
+            a11 = c1*(1.d0-valres(2))/(1.d0-2.d0*valres(2))
+            a12 = c1*valres(2)/(1.d0-2.d0*valres(2))
             a13 = a12
             a22 = a11
             a23 = a12
             a33 = a11
             g12 = c1/2.d0
 !
-        else if (phenom.eq.'ELAS_ORTH') then
+        else if (phenom .eq. 'ELAS_ORTH') then
 !CC --- CAS ORTHOTROPE
-            call rcvalb(fami, kp, 1, '+', zi(imate),&
-                        ' ', phenom, nbpar, nompar, [valpar],&
+            call rcvalb(fami, kp, 1, '+', zi(imate), &
+                        ' ', phenom, nbpar, nompar, [valpar], &
                         7, nomres, valres, icodre, 1)
 !
             e1 = valres(1)
@@ -158,20 +158,20 @@ subroutine te0421(option, nomte)
             nu21 = e1*nu12/e2
             nu31 = e1*nu13/e3
             nu32 = e2*nu23/e3
-            delta = 1.d0-nu23*nu32-nu31*nu13-nu12*nu21-2.d0*nu23*nu31* nu12
-            a11 = (1.d0 - nu23*nu32)*e1/delta
-            a12 = (nu12 + nu13*nu32)*e1/delta
-            a13 = (nu13 + nu12*nu23)*e1/delta
-            a22 = (1.d0 - nu13*nu31)*e2/delta
-            a23 = (nu23 + nu13*nu21)*e2/delta
-            a33 = (1.d0 - nu12*nu21)*e3/delta
+            delta = 1.d0-nu23*nu32-nu31*nu13-nu12*nu21-2.d0*nu23*nu31*nu12
+            a11 = (1.d0-nu23*nu32)*e1/delta
+            a12 = (nu12+nu13*nu32)*e1/delta
+            a13 = (nu13+nu12*nu23)*e1/delta
+            a22 = (1.d0-nu13*nu31)*e2/delta
+            a23 = (nu23+nu13*nu21)*e2/delta
+            a33 = (1.d0-nu12*nu21)*e3/delta
             g12 = valres(7)
 !
 !
-        else if (phenom.eq.'ELAS_GITR') then
+        else if (phenom .eq. 'ELAS_GITR') then
 !CC     CAS ISOTROPE_TRANSVERSE
-            call rcvalb(fami, kp, 1, '+', zi(imate),&
-                        ' ', phenom, nbpar, nompar, [valpar],&
+            call rcvalb(fami, kp, 1, '+', zi(imate), &
+                        ' ', phenom, nbpar, nompar, [valpar], &
                         4, nomres, valres, icodre, 1)
 !
             e1 = valres(1)
@@ -179,53 +179,53 @@ subroutine te0421(option, nomte)
             nu12 = valres(3)
             nu13 = valres(4)
             c1 = e1/(1.d0+nu12)
-            delta = 1.d0 - nu12 - 2.d0*nu13*nu13*e1/e3
-            a11 = (1.d0 - nu13*nu13*e1/e3)/delta
-            a12 = c1*(a11 - 1.d0)
+            delta = 1.d0-nu12-2.d0*nu13*nu13*e1/e3
+            a11 = (1.d0-nu13*nu13*e1/e3)/delta
+            a12 = c1*(a11-1.d0)
             a11 = c1*a11
             a13 = e1*nu13/delta
             a22 = a11
             a23 = a13
-            a33 = e3*(1.d0 - nu12)/delta
+            a33 = e3*(1.d0-nu12)/delta
             g12 = c1/2.d0
 !
-        endif
+        end if
 !
-        if (lteatt('C_PLAN','OUI')) then
-            a11=a11-a13*a13/a33
-            a12=a12-a13*a23/a33
-            a22=a22-a23*a23/a33
-            a13=0.d0
-            a23=0.d0
-        endif
+        if (lteatt('C_PLAN', 'OUI')) then
+            a11 = a11-a13*a13/a33
+            a12 = a12-a13*a23/a33
+            a22 = a22-a23*a23/a33
+            a13 = 0.d0
+            a23 = 0.d0
+        end if
 !
-        if (lteatt('AXIS','OUI')) then
+        if (lteatt('AXIS', 'OUI')) then
             poids = poids*r
             if (r .ne. 0.d0) then
                 do i = 1, nno
-                    zr(ivectu+2*i-2) = zr(ivectu+2*i-2) + poids *( (a11*exx+a12*eyy+a13*ezz)* dfd&
-                                       &x(i) + (a13*exx+a23* eyy+a33*ezz)*zr(ivf+k+i-1)/r + 2*g12&
+                    zr(ivectu+2*i-2) = zr(ivectu+2*i-2)+poids*((a11*exx+a12*eyy+a13*ezz)*dfd&
+                                       &x(i)+(a13*exx+a23*eyy+a33*ezz)*zr(ivf+k+i-1)/r+2*g12&
                                        &*exy*dfdy(i))
-                    zr(ivectu+2*i-1) = zr(ivectu+2*i-1) + poids *( (a12*exx+a22*eyy+a23*ezz)*dfdy&
-                                       &(i) + 2*g12*exy* dfdx(i))
+                    zr(ivectu+2*i-1) = zr(ivectu+2*i-1)+poids*((a12*exx+a22*eyy+a23*ezz)*dfdy&
+                                       &(i)+2*g12*exy*dfdx(i))
                 end do
             else
                 do i = 1, nno
-                    zr(ivectu+2*i-2) = zr(ivectu+2*i-2) + poids * ( (a11*exx+a12*eyy+a13*ezz)*dfd&
-                                       &x(i) + (a13*exx+a23* eyy+a33*ezz)*dfdx(i) + 2*g12*exy*dfd&
+                    zr(ivectu+2*i-2) = zr(ivectu+2*i-2)+poids*((a11*exx+a12*eyy+a13*ezz)*dfd&
+                                       &x(i)+(a13*exx+a23*eyy+a33*ezz)*dfdx(i)+2*g12*exy*dfd&
                                        &y(i))
-                    zr(ivectu+2*i-1) = zr(ivectu+2*i-1) + poids * ( (a12*exx+a22*eyy+a23*ezz)*dfd&
-                                       &y(i) + 2*g12*exy* dfdx(i))
+                    zr(ivectu+2*i-1) = zr(ivectu+2*i-1)+poids*((a12*exx+a22*eyy+a23*ezz)*dfd&
+                                       &y(i)+2*g12*exy*dfdx(i))
                 end do
-            endif
+            end if
 !
         else
             do i = 1, nno
-                zr(ivectu+2*i-2)=zr(ivectu+2*i-2) + poids * ( (a11*&
-                exx+a12*eyy+a13*ezz)*dfdx(i) + 2*g12*exy*dfdy(i))
-                zr(ivectu+2*i-1)=zr(ivectu+2*i-1) + poids * ( (a12*&
-                exx+a22*eyy+a23*ezz)*dfdy(i) + 2*g12*exy*dfdx(i))
+                zr(ivectu+2*i-2) = zr(ivectu+2*i-2)+poids*((a11* &
+                                                     exx+a12*eyy+a13*ezz)*dfdx(i)+2*g12*exy*dfdy(i))
+                zr(ivectu+2*i-1) = zr(ivectu+2*i-1)+poids*((a12* &
+                                                     exx+a22*eyy+a23*ezz)*dfdy(i)+2*g12*exy*dfdx(i))
             end do
-        endif
+        end if
     end do
 end subroutine

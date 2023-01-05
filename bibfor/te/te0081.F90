@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 subroutine te0081(option, nomte)
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterc/r8vide.h"
@@ -59,22 +59,22 @@ implicit none
 ! - Finite element informations
 !
     fami = 'RIGI'
-    call elrefe_info(fami=fami,ndim=ndim,nno=nno,nnos=nnos,&
-                      npg=npg1,jpoids=ipoids,jvf=ivf,jdfde=idfde)
+    call elrefe_info(fami=fami, ndim=ndim, nno=nno, nnos=nnos, &
+                     npg=npg1, jpoids=ipoids, jvf=ivf, jdfde=idfde)
 !
 ! - Initializations
 !
-    ndim      = 2
-    instan    = r8vide()
-    nbinco    = ndim*nno
-    nharm     = 0.d0
-    btdb(:,:) = 0.d0
+    ndim = 2
+    instan = r8vide()
+    nbinco = ndim*nno
+    nharm = 0.d0
+    btdb(:, :) = 0.d0
     xyzgau(:) = 0.d0
-    bary(:)   = 0.d0
+    bary(:) = 0.d0
 !
 ! - Number of stress components
 !
-    nbsig     = nbsigm()
+    nbsig = nbsigm()
 !
 ! - Geometry
 !
@@ -103,7 +103,7 @@ implicit none
 !
 ! ----- Compute matrix [B]: displacement -> strain (first order)
 !
-        call bmatmc(igau, nbsig, zr(igeom), ipoids, ivf,&
+        call bmatmc(igau, nbsig, zr(igeom), ipoids, ivf, &
                     idfde, nno, nharm, jacgau, b)
 !
 ! ----- Compute Hooke matrix [D]
@@ -113,7 +113,7 @@ implicit none
 !
 ! ----- Compute rigidity matrix [K] = [B]Tx[D]x[B]
 !
-        call btdbmc(b, d, jacgau, ndim, nno,&
+        call btdbmc(b, d, jacgau, ndim, nno, &
                     nbsig, elas_id, btdb)
     end do
 !
@@ -123,8 +123,8 @@ implicit none
     k = 0
     do i = 1, nbinco
         do j = 1, i
-            k = k + 1
-            zr(imatuu+k-1) = btdb(i,j)
+            k = k+1
+            zr(imatuu+k-1) = btdb(i, j)
         end do
     end do
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -71,7 +71,7 @@ subroutine gsyste(matr, nchthe, nnoff, gthi, gi)
         do j = 1, nchthe
             do k = 1, nnoff
                 kk = iadra1+(i-1)*nchthe+j-1
-                zr(kk) = zr(kk)+ zr(istok +(k-1)*nchthe+i-1)*zr(istok+ (k-1)*nchthe+j-1)
+                zr(kk) = zr(kk)+zr(istok+(k-1)*nchthe+i-1)*zr(istok+(k-1)*nchthe+j-1)
 !
             end do
         end do
@@ -81,13 +81,13 @@ subroutine gsyste(matr, nchthe, nnoff, gthi, gi)
 !
     do i = 1, nchthe
         do j = 1, nnoff
-            gi(i) = gi(i) + zr(istok +(j-1)*nchthe+i-1)*gthi(j)
+            gi(i) = gi(i)+zr(istok+(j-1)*nchthe+i-1)*gthi(j)
         end do
     end do
 !
 ! RESOLUTION DU SYSTEME LINEAIRE NON SYMETRIQUE PAR GAUSS
 !
-    call mgauss('NFVP', zr(iadra1), gi, nchthe, nchthe,&
+    call mgauss('NFVP', zr(iadra1), gi, nchthe, nchthe, &
                 1, det, iret)
 !
     call jedetr('&&GSYSTE.A1')

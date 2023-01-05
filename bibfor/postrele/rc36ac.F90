@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine rc36ac(noma, ncncin, chindi, chcara, nbma,&
+subroutine rc36ac(noma, ncncin, chindi, chcara, nbma, &
                   listma, chresu)
     implicit none
 #include "asterf_types.h"
@@ -195,14 +195,14 @@ subroutine rc36ac(noma, ncncin, chindi, chcara, nbma,&
             if (niv .ge. 2) then
                 call jenuno(jexnum(nommai, ima), k8b)
                 call jenuno(jexnum(nomnoe, ino), noeud)
-                write(ifm,1000)'===>> TRAITEMENT DU NOEUD ', noeud,&
-                ' APPARTENANT A LA MAILLE ', k8b
-            endif
+                write (ifm, 1000) '===>> TRAITEMENT DU NOEUD ', noeud, &
+                    ' APPARTENANT A LA MAILLE ', k8b
+            end if
 !
 ! ------- LES INDICES DE CONTRAINTES
 !
             do icmp = 1, 3
-                iad = decin + (ipt-1)*nbcin + icmp
+                iad = decin+(ipt-1)*nbcin+icmp
                 if (.not. zl(jcinl-1+iad)) then
                     call jenuno(jexnum(nomnoe, ino), valk(1))
                     call jenuno(jexnum(nommai, ima), valk(2))
@@ -212,11 +212,11 @@ subroutine rc36ac(noma, ncncin, chindi, chcara, nbma,&
                         valk(3) = 'C2'
                     else
                         valk(3) = 'C3'
-                    endif
+                    end if
                     call utmess('F', 'POSTRCCM_9', nk=3, valk=valk)
-                endif
+                end if
                 c(icmp) = cinv(iad)
-                iad = decin + (ipt-1)*nbcin + icmp + 3
+                iad = decin+(ipt-1)*nbcin+icmp+3
                 if (.not. zl(jcinl-1+iad)) then
                     call jenuno(jexnum(nomnoe, ino), valk(1))
                     call jenuno(jexnum(nommai, ima), valk(2))
@@ -226,21 +226,21 @@ subroutine rc36ac(noma, ncncin, chindi, chcara, nbma,&
                         valk(3) = 'K2'
                     else
                         valk(3) = 'K3'
-                    endif
+                    end if
                     call utmess('F', 'POSTRCCM_9', nk=3, valk=valk)
-                endif
+                end if
                 k(icmp) = cinv(iad)
             end do
 !
 ! ------- LES CARATERISTIQUES : INERTIE, DIAMETRE, EPAISSEUR
 !
             do icmp = 2, 4
-                iad = decca + (ipt-1)*nbcca + icmp
+                iad = decca+(ipt-1)*nbcca+icmp
                 if (.not. zl(jccal-1+iad)) then
                     call jenuno(jexnum(nomnoe, ino), valk(1))
                     call jenuno(jexnum(nommai, ima), valk(2))
                     call utmess('F', 'POSTRCCM_8', nk=2, valk=valk)
-                endif
+                end if
                 cara(icmp-1) = ccav(iad)
             end do
 !
@@ -271,7 +271,7 @@ subroutine rc36ac(noma, ncncin, chindi, chcara, nbma,&
                     if (nbp12 .ne. 0 .or. nbp23 .ne. 0) goto 100
                 else if (ig .eq. 3) then
                     if (nbp13 .ne. 0 .or. nbp23 .ne. 0) goto 100
-                endif
+                end if
 !
 ! --------- PASSAGE 1 : PRISE EN COMPTE DU SEISME,
 !                       CALCUL DU FACTEUR D'USAGE -> UTOT
@@ -280,21 +280,21 @@ subroutine rc36ac(noma, ncncin, chindi, chcara, nbma,&
                     snb = 0.d0
                     sab = 0.d0
                     seisme = .true.
-                    call rc3601(numgr, iocs, seisme, npass, ima,&
-                                ipt, nbm, zi(adrm), c, k,&
-                                cara, nommat, snb, sab, utot,&
+                    call rc3601(numgr, iocs, seisme, npass, ima, &
+                                ipt, nbm, zi(adrm), c, k, &
+                                cara, nommat, snb, sab, utot, &
                                 sm, zr(jfact))
                     seisme = .false.
-                endif
+                end if
 !
 ! --------- PASSAGE 2 : SANS LE SEISME
 !                       CALCUL SU SN_MAX
 !                       CALCUL SU SALT_MAX
 !                       CALCUL DU FACTEUR D'USAGE -> UTOT
 !
-                call rc3601(numgr, iocs, seisme, npass, ima,&
-                            ipt, nbm, zi(adrm), c, k,&
-                            cara, nommat, snmax, samax, utot,&
+                call rc3601(numgr, iocs, seisme, npass, ima, &
+                            ipt, nbm, zi(adrm), c, k, &
+                            cara, nommat, snmax, samax, utot, &
                             sm, zr(jfact))
 !
 100             continue
@@ -331,14 +331,14 @@ subroutine rc36ac(noma, ncncin, chindi, chcara, nbma,&
                     momepi = situ_moment_a(ioc1)
                     call rcmo01(momepi, ima, ipt, mpi)
                     matepi = materiau(1+2*ioc1-1)
-                    call rcma01(matepi, ima, ipt, nbm, zi(adrm),&
+                    call rcma01(matepi, ima, ipt, nbm, zi(adrm), &
                                 matpi)
 !
                     ppj = situ_pres_b(ioc1)
                     momepj = situ_moment_b(ioc1)
                     call rcmo01(momepj, ima, ipt, mpj)
                     matepj = materiau(1+2*ioc1-2)
-                    call rcma01(matepj, ima, ipt, nbm, zi(adrm),&
+                    call rcma01(matepj, ima, ipt, nbm, zi(adrm), &
                                 matpj)
 !
                     call jelira(jexnum('&&RC3600.SITU_THERMIQUE', ioc1), 'LONUTI', nbth1)
@@ -346,58 +346,58 @@ subroutine rc36ac(noma, ncncin, chindi, chcara, nbma,&
                         call jeveuo(jexnum('&&RC3600.SITU_THERMIQUE', ioc1), 'L', jth1)
                     else
                         jth1 = 1
-                    endif
+                    end if
 !
                     nbth2 = 0
-                    ioc2=0
+                    ioc2 = 0
 !
 ! ----------- CALCUL DU SN
 !
                     sn = 0.d0
-                    call rc36sn(nbm, zi(adrm), ipt, c, cara,&
-                                matpi, ppi, mpi, matpj, ppj,&
-                                mpj, mse, nbth1, nbth2, ioc1,&
+                    call rc36sn(nbm, zi(adrm), ipt, c, cara, &
+                                matpi, ppi, mpi, matpj, ppj, &
+                                mpj, mse, nbth1, nbth2, ioc1, &
                                 ioc2, sn)
-                    snmax = max ( snmax , sn )
+                    snmax = max(snmax, sn)
 !
 ! ----------- CALCUL DU SP
 !
-                    typeke=matpi(14)
+                    typeke = matpi(14)
                     sp = 0.d0
                     spmeca = 0.d0
                     spther = 0.d0
-                    call rc36sp(nbm, zi(adrm), ipt, c, k,&
-                                cara, matpi, ppi, mpi, matpj,&
-                                ppj, mpj, mse, nbth1, nbth2,&
-                                ioc1, ioc2, sp, typeke, spmeca,&
+                    call rc36sp(nbm, zi(adrm), ipt, c, k, &
+                                cara, matpi, ppi, mpi, matpj, &
+                                ppj, mpj, mse, nbth1, nbth2, &
+                                ioc1, ioc2, sp, typeke, spmeca, &
                                 spther)
 !
 ! ----------- CALCUL DU SALT
 !
-                    call rc36sa(nommat, matpi, matpj, sn, sp,&
+                    call rc36sa(nommat, matpi, matpj, sn, sp, &
                                 typeke, spmeca, spther, saltij, smm)
 !
                     if (saltij .gt. samax) then
                         samax = saltij
                         sm = smm
-                    endif
+                    end if
 !
 ! ----------- CALCUL DU FACTEUR D'USAGE
 !
                     call limend(nommat, saltij, 'WOHLER', kbid, endur)
                     if (endur) then
-                        ug=0.d0
+                        ug = 0.d0
                     else
-                        call rcvale(nommat, 'FATIGUE', 1, 'SIGM    ', [saltij],&
+                        call rcvale(nommat, 'FATIGUE', 1, 'SIGM    ', [saltij], &
                                     1, 'WOHLER  ', nadm(1), icodre(1), 2)
                         if (nadm(1) .lt. 0) then
                             vale(1) = saltij
                             vale(2) = nadm(1)
                             call utmess('A', 'POSTRCCM_32', nr=2, valr=vale)
-                        endif
-                        ug = dble( nocc ) / nadm(1)
-                    endif
-                    utot = utot + ug
+                        end if
+                        ug = dble(nocc)/nadm(1)
+                    end if
+                    utot = utot+ug
 !
 210                 continue
                 end do
@@ -422,21 +422,21 @@ subroutine rc36ac(noma, ncncin, chindi, chcara, nbma,&
                     seisme = .false.
                 else
                     seisme = .true.
-                endif
+                end if
 !
                 call jelira(jexnum('&&RC3600.LES_GROUPES', numgr), 'LONMAX', nbsigr)
                 call jeveuo(jexnum('&&RC3600.LES_GROUPES', numgr), 'L', jnsg)
                 if (niv .ge. 2) then
-                    write (ifm,3004)
-                    write (ifm,3002) (situ_numero(1+zi(jnsg+i1-1)-1),i1=1,&
-                    nbsigr)
-                endif
+                    write (ifm, 3004)
+                    write (ifm, 3002) (situ_numero(1+zi(jnsg+i1-1)-1), i1=1, &
+                                       nbsigr)
+                end if
 !
                 npass = 7
 !
-                call rc3601(numgr, iocs, seisme, npass, ima,&
-                            ipt, nbm, zi(adrm), c, k,&
-                            cara, nommat, snmax, samax, utot,&
+                call rc3601(numgr, iocs, seisme, npass, ima, &
+                            ipt, nbm, zi(adrm), c, k, &
+                            cara, nommat, snmax, samax, utot, &
                             sm, zr(jfact))
 !
 310             continue
@@ -449,36 +449,36 @@ subroutine rc36ac(noma, ncncin, chindi, chcara, nbma,&
 !
 !         - LE SM
             icmp = 1
-            iad = decrs + (ipt-1)*nbcrs + icmp
+            iad = decrs+(ipt-1)*nbcrs+icmp
             cesv(iad) = sm
 !         - LE SN
             icmp = 2
-            iad = decrs + (ipt-1)*nbcrs + icmp
+            iad = decrs+(ipt-1)*nbcrs+icmp
             cesv(iad) = snmax
 !         - LE SN/3SM
             icmp = 3
-            iad = decrs + (ipt-1)*nbcrs + icmp
+            iad = decrs+(ipt-1)*nbcrs+icmp
             if (sm .eq. 0.d0) then
                 cesv(iad) = 0.d0
             else
-                cesv(iad) = snmax / ( 3 * sm )
-            endif
+                cesv(iad) = snmax/(3*sm)
+            end if
 !         - LE SALT
             icmp = 4
-            iad = decrs + (ipt-1)*nbcrs + icmp
+            iad = decrs+(ipt-1)*nbcrs+icmp
             cesv(iad) = samax
 !         - LE U_TOTAL
             icmp = 5
-            iad = decrs + (ipt-1)*nbcrs + icmp
+            iad = decrs+(ipt-1)*nbcrs+icmp
             cesv(iad) = utot
 !
         end do
 !
     end do
 !
-    1000 format(a,a8,a,a8)
-    3002 format ('=> LISTE DES NUMEROS DE SITUATION: ',100 (i4,1x))
-    3004 format (/,'=> SITUATION DE PASSAGE')
+1000 format(a, a8, a, a8)
+3002 format('=> LISTE DES NUMEROS DE SITUATION: ', 100(i4, 1x))
+3004 format(/, '=> SITUATION DE PASSAGE')
 !
     call jedema()
 end subroutine

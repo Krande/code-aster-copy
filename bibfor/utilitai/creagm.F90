@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -78,7 +78,7 @@ subroutine creagm(nbmato, nbpart, ma, masd)
     if (niv .ge. 2) then
         call uttcpu('CPU.CREAGM', 'INIT', ' ')
         call uttcpu('CPU.CREAGM', 'DEBUT', ' ')
-    endif
+    end if
 !
     call wkvect('&&FETSKP.ID1', 'V V I', nbpart, id1)
     call wkvect('&&FETSKP.IDMASD', 'V V I', nbpart+1, idmasd)
@@ -88,7 +88,7 @@ subroutine creagm(nbmato, nbpart, ma, masd)
 ! ------- On RECUPERE LE NOM DES SOUS DOMAINES
 !
     do isd = 1, nbpart
-        write(ktmp,'(I4)')isd-1
+        write (ktmp, '(I4)') isd-1
         call lxcadr(ktmp)
         zk24(nomsdm-1+isd) = 'SD'//ktmp
     end do
@@ -96,41 +96,41 @@ subroutine creagm(nbmato, nbpart, ma, masd)
 !
 ! ------- CREATION DU TABLEAU DES PLACES DES GRPMA
 !
-    zi(idmasd)=1
+    zi(idmasd) = 1
     do isd = 2, nbpart+1
-        zi(idmasd-1+isd)=zi(idmasd-1+isd-1)+zi(nbmasd-1+isd-1)
+        zi(idmasd-1+isd) = zi(idmasd-1+isd-1)+zi(nbmasd-1+isd-1)
     end do
 !
 ! ------- CREATION DU TABLEAU DONNANT LES MAILLES POUR CHAQUE GRMPA
 !
     do ima = 1, nbmato
-        nbre=zi(numsdm-1+ima)+1
+        nbre = zi(numsdm-1+ima)+1
         zi(masd-1+zi(idmasd-1+nbre)+zi(id1-1+nbre)) = zi(renum-1+ima)
         zi(id1-1+nbre) = zi(id1-1+nbre)+1
     end do
 !
 !
 !   -- on cree un "GROUPEMA" par sous-domaine :
-    nbgrsd=0
+    nbgrsd = 0
     do isd = 1, nbpart
-        nbma=zi(nbmasd-1+isd)
-        if (nbma .gt. 0) nbgrsd=nbgrsd+1
-    enddo
-    call jecrec('&&FETCRF.GROUPEMA', 'V V I', 'NO', 'DISPERSE', 'VARIABLE',&
+        nbma = zi(nbmasd-1+isd)
+        if (nbma .gt. 0) nbgrsd = nbgrsd+1
+    end do
+    call jecrec('&&FETCRF.GROUPEMA', 'V V I', 'NO', 'DISPERSE', 'VARIABLE', &
                 nbgrsd)
 !
     do isd = 1, nbpart
-        grpema=zk24(nomsdm-1+isd)
-        nbma=zi(nbmasd-1+isd)
+        grpema = zk24(nomsdm-1+isd)
+        nbma = zi(nbmasd-1+isd)
         if (nbma .gt. 0) then
             call jecroc(jexnom('&&FETCRF.GROUPEMA', grpema))
             call jeecra(jexnom('&&FETCRF.GROUPEMA', grpema), 'LONMAX', nbma)
             call jeecra(jexnom('&&FETCRF.GROUPEMA', grpema), 'LONUTI', nbma)
             call jeveuo(jexnom('&&FETCRF.GROUPEMA', grpema), 'E', idma)
-            do ima = 0, nbma - 1
+            do ima = 0, nbma-1
                 zi(idma+ima) = zi(masd+zi(idmasd-1+isd)-1+ima)
             end do
-        endif
+        end if
     end do
 !
     call jedetr('&&FETSKP.ID1')
@@ -138,9 +138,9 @@ subroutine creagm(nbmato, nbpart, ma, masd)
     if (niv .ge. 2) then
         call uttcpu('CPU.CREAGM', 'FIN', ' ')
         call uttcpr('CPU.CREAGM', 7, tmps)
-        write(ifm,*)'--- CREATION DES GRPMA :',tmps(7)
-        write(ifm,*)'  '
-    endif
+        write (ifm, *) '--- CREATION DES GRPMA :', tmps(7)
+        write (ifm, *) '  '
+    end if
 !
     call jedema()
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,20 +17,20 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine mmtrpr(ndim, lpenaf, djeut, dlagrf, coefaf,&
-                  tau1, tau2  , ladhe, rese  , nrese)
+subroutine mmtrpr(ndim, lpenaf, djeut, dlagrf, coefaf, &
+                  tau1, tau2, ladhe, rese, nrese)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
 !
-integer, intent(in) :: ndim
-aster_logical, intent(in):: lpenaf
-real(kind=8), intent(in) :: djeut(3), dlagrf(2), coefaf
-real(kind=8), intent(in) :: tau1(3), tau2(3)
-real(kind=8), intent(out) :: rese(3), nrese
-aster_logical, intent(out):: ladhe
+    integer, intent(in) :: ndim
+    aster_logical, intent(in):: lpenaf
+    real(kind=8), intent(in) :: djeut(3), dlagrf(2), coefaf
+    real(kind=8), intent(in) :: tau1(3), tau2(3)
+    real(kind=8), intent(out) :: rese(3), nrese
+    aster_logical, intent(out):: ladhe
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -57,7 +57,7 @@ aster_logical, intent(out):: ladhe
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    nrese   = 0.d0
+    nrese = 0.d0
     rese(:) = 0.d0
 !
 ! - Compute Lagrange (semi) multiplier for friction
@@ -71,19 +71,19 @@ aster_logical, intent(out):: ladhe
             do idim = 1, 2
                 rese(idim) = dlagrf(1)*tau1(idim)+coefaf*djeut(idim)
             end do
-        else if (ndim.eq.3) then
+        else if (ndim .eq. 3) then
             do idim = 1, 3
                 rese(idim) = dlagrf(1)*tau1(idim)+dlagrf(2)*tau2(idim)+coefaf*djeut(idim)
             end do
         else
             ASSERT(ASTER_FALSE)
-        endif
-    endif
+        end if
+    end if
 !
 ! - Compute norm of Lagrange (semi) multiplier for friction
 !
     do idim = 1, 3
-        nrese = rese(idim)*rese(idim) + nrese
+        nrese = rese(idim)*rese(idim)+nrese
     end do
     nrese = sqrt(nrese)
 !
@@ -93,6 +93,6 @@ aster_logical, intent(out):: ladhe
         ladhe = ASTER_TRUE
     else
         ladhe = ASTER_FALSE
-    endif
+    end if
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine vppfac(lmasse, masgen, vect, neq, nbvect,&
+subroutine vppfac(lmasse, masgen, vect, neq, nbvect, &
                   mxvect, masmod, facpar)
     implicit none
 #include "asterf_types.h"
@@ -51,7 +51,7 @@ subroutine vppfac(lmasse, masgen, vect, neq, nbvect,&
 !
 !
     integer :: lddl, laux1, laux2, iddl, ia, ieq, ivect, mxddl, iadpar(1), l1, ibid
-    parameter     ( mxddl=6 )
+    parameter(mxddl=6)
     character(len=8) :: nomddl(mxddl), basemo, k8b
     character(len=14) :: nume
     character(len=16) :: nompar(3), typmas, typbas
@@ -62,17 +62,16 @@ subroutine vppfac(lmasse, masgen, vect, neq, nbvect,&
     character(len=24), pointer :: refn(:) => null()
     real(kind=8) :: rundef
 !     ------------------------------------------------------------------
-    data nomddl / 'DX      ', 'DY      ', 'DZ      ' ,&
-     &              'DRX     ', 'DRY     ', 'DRZ     ' /
-    data nompar /'FACT_PARTICI_DX','FACT_PARTICI_DY','FACT_PARTICI_DZ'/
+    data nomddl/'DX      ', 'DY      ', 'DZ      ',&
+     &              'DRX     ', 'DRY     ', 'DRZ     '/
+    data nompar/'FACT_PARTICI_DX', 'FACT_PARTICI_DY', 'FACT_PARTICI_DZ'/
 !
 !     ------------------------------------------------------------------
-    data  posddl/'&&VPPFAC.POSITION.DDL'/
-    data  vecau1/'&&VPPFAC.VECTEUR.AUX1'/
-    data  vecau2/'&&VPPFAC.VECTEUR.AUX2'/
+    data posddl/'&&VPPFAC.POSITION.DDL'/
+    data vecau1/'&&VPPFAC.VECTEUR.AUX1'/
+    data vecau2/'&&VPPFAC.VECTEUR.AUX2'/
 
     rundef = r8vide()
-
 
 !     ------------------------------------------------------------------
 !     ----------------- CREATION DE VECTEURS DE TRAVAIL ----------------
@@ -90,65 +89,65 @@ subroutine vppfac(lmasse, masgen, vect, neq, nbvect,&
 !     ------------------------------------------------------------------
 !
     call jemarq()
-    masse = zk24(zi(lmasse+1))(1:19)
+    masse = zk24(zi(lmasse+1)) (1:19)
     call dismoi('NOM_NUME_DDL', masse, 'MATR_ASSE', repk=nume)
     call gettco(masse, typmas)
 !
-    rmin=100.d0*r8miem()
-    rmax=sqrt(r8maem())
+    rmin = 100.d0*r8miem()
+    rmax = sqrt(r8maem())
 !
 ! DETERMINATION DU CAS : BASE PHYSIQUE OU BASE GENERALISEE
     gene = .false.
     if (typmas(1:14) .eq. 'MATR_ASSE_GENE') then
 ! SI MATR_ASSE_GENE : BASE GENERALISEE
         call jeveuo(nume(1:14)//'.NUME.REFN', 'L', vk24=refn)
-        basemo = refn(1)(1:8)
+        basemo = refn(1) (1:8)
 ! SAUF SI NUME.REFN POINTE VERS UN MODELE_GENE ET NON VERS UNE BASE
 ! ALORS CAS DE LA SSD, TRAITE COMME UN MODE_MECA CLASSIQUE
         call gettco(basemo, typbas)
         if (typbas(1:14) .eq. 'MODE_MECA') then
-            gene= .true.
-        endif
-    endif
+            gene = .true.
+        end if
+    end if
     do iddl = 1, 3
         if (gene) then
             do ieq = 1, neq
-                call rsvpar(basemo, 1, nompar(iddl), ibid, rundef,&
+                call rsvpar(basemo, 1, nompar(iddl), ibid, rundef, &
                             k8b, l1)
                 if (l1 .eq. 100) then
                     zr(laux1+ieq-1) = 0.D0
                 else
-                    call rsadpa(basemo, 'L', 1, nompar(iddl), ieq,&
+                    call rsadpa(basemo, 'L', 1, nompar(iddl), ieq, &
                                 0, tjv=iadpar)
                     zr(laux1+ieq-1) = zr(iadpar(1))
-                endif
+                end if
 ! SECURITE SI ON EST PASSE PAR DES MODES HETERODOXES AVEC FACTEURS DE PARTICIPATIONS HERETIQUES
             end do
         else
-           call pteddl('NUME_DDL', nume, mxddl, nomddl, neq,&
-                       tabl_equa = zi(lddl))
-           ia = (iddl-1)*neq
-           do ieq = 1, neq
-               zr(laux1+ieq-1) = zi(lddl+ia+ieq-1)
-           end do
-        endif
+            call pteddl('NUME_DDL', nume, mxddl, nomddl, neq, &
+                        tabl_equa=zi(lddl))
+            ia = (iddl-1)*neq
+            do ieq = 1, neq
+                zr(laux1+ieq-1) = zi(lddl+ia+ieq-1)
+            end do
+        end if
 !
 !     ------------------------------------------------------------------
 !     ----------- CALCUL DE  FREQ * MASSE * UNITAIRE_DIRECTION ---------
 !     ------------------------------------------------------------------
-        call mrmult('ZERO', lmasse, zr(laux1), zr(laux2), 1,&
+        call mrmult('ZERO', lmasse, zr(laux1), zr(laux2), 1, &
                     .false._1)
         do ivect = 1, nbvect
-            rval = ddot(neq,vect(1,ivect),1,zr(laux2),1)
+            rval = ddot(neq, vect(1, ivect), 1, zr(laux2), 1)
             raux = masgen(ivect)
             if ((abs(raux) .lt. rmin) .or. (abs(rval) .gt. rmax)) then
-                masmod(ivect,iddl) = rmax
-                facpar(ivect,iddl) = rmax
+                masmod(ivect, iddl) = rmax
+                facpar(ivect, iddl) = rmax
             else
-                raux=rval/raux
-                masmod(ivect,iddl) = rval * raux
-                facpar(ivect,iddl) = raux
-            endif
+                raux = rval/raux
+                masmod(ivect, iddl) = rval*raux
+                facpar(ivect, iddl) = raux
+            end if
         end do
     end do
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine paqnoe(nomsd, nomu, nommai, nommet, nomcri,&
-                  nomfor, grdvie, forvie, forcri, fordef,&
+subroutine paqnoe(nomsd, nomu, nommai, nommet, nomcri, &
+                  nomfor, grdvie, forvie, forcri, fordef, &
                   typcha, proaxe, instic, inscri, prec)
 ! person_in_charge: van-xuan.tran at edf.fr
     implicit none
@@ -101,15 +101,15 @@ subroutine paqnoe(nomsd, nomu, nommai, nommet, nomcri,&
 !-----------------------------------------------------------------------
 !234567                                                              012
 !-----------------------------------------------------------------------
-    data  lsig/ 'SIXX', 'SIYY', 'SIZZ', 'SIXY', 'SIXZ', 'SIYZ' /
+    data lsig/'SIXX', 'SIYY', 'SIZZ', 'SIXY', 'SIXZ', 'SIYZ'/
 !
-    data  leps/ 'EPXX', 'EPYY', 'EPZZ', 'EPXY', 'EPXZ', 'EPYZ' /
+    data leps/'EPXX', 'EPYY', 'EPZZ', 'EPXY', 'EPXZ', 'EPYZ'/
 !
-    data  lresu/ 'DTAUM1', 'VNM1X', 'VNM1Y', 'VNM1Z', 'SINMAX1',&
+    data lresu/'DTAUM1', 'VNM1X', 'VNM1Y', 'VNM1Z', 'SINMAX1',&
      &             'SINMOY1', 'EPNMAX1', 'EPNMOY1', 'SIGEQ1', 'NBRUP1',&
      &             'ENDO1', 'DTAUM2', 'VNM2X', 'VNM2Y', 'VNM2Z',&
      &             'SINMAX2', 'SINMOY2', 'EPNMAX2', 'EPNMOY2', 'SIGEQ2',&
-     &             'NBRUP2', 'ENDO2' ,'VMIS', 'TRESCA' /
+     &             'NBRUP2', 'ENDO2', 'VMIS', 'TRESCA'/
 !-----------------------------------------------------------------------
 !
     call jemarq()
@@ -125,64 +125,64 @@ subroutine paqnoe(nomsd, nomu, nommai, nommet, nomcri,&
     call dismoi('TYPE_RESU', nomsd, 'RESULTAT', repk=typres)
     if ((typres(1:9) .ne. 'EVOL_ELAS') .and. (typres(1:9) .ne. 'EVOL_NOLI')) then
         call utmess('F', 'PREPOST4_26')
-    endif
+    end if
 !
 ! CONSTRUCTION DU CHAMP SIMPLE DESTINE A RECEVOIR LES RESULTATS :
 ! DTAUM,....
 !
     cnsr = '&&PAQNOE.FACY'
-    call cnscre(nommai, 'FACY_R', 24, lresu, 'V',&
+    call cnscre(nommai, 'FACY_R', 24, lresu, 'V', &
                 cnsr)
 !
 ! RECUPERATION DU NOMBRE DE NUMEROS D'ORDRE ET DE LA LISTE
 ! DES NUMEROS D'ORDRE
 !
-    call rsorac(nomsd, 'TOUT_ORDRE', ibid, r8b, k8b,&
-                c16b, r8b, k8b, tord, 1,&
+    call rsorac(nomsd, 'TOUT_ORDRE', ibid, r8b, k8b, &
+                c16b, r8b, k8b, tord, 1, &
                 nbordr)
-    lordr=tord(1)
+    lordr = tord(1)
 !
     if (nbordr .lt. 0) then
         ndim = -nbordr
     else if (nbordr .gt. 0) then
         ndim = nbordr
-    endif
+    end if
 !
     AS_ALLOCATE(vi=nume_ordre, size=ndim)
-    call rsorac(nomsd, 'TOUT_ORDRE', ibid, r8b, k8b,&
-                c16b, r8b, k8b, nume_ordre, ndim,&
+    call rsorac(nomsd, 'TOUT_ORDRE', ibid, r8b, k8b, &
+                c16b, r8b, k8b, nume_ordre, ndim, &
                 nbordr)
     ordini = 1
     do k = 2, nbordr
         iord = nume_ordre(k)
-        call rsadpa(nomsd, 'L', 1, 'INST', iord,&
+        call rsadpa(nomsd, 'L', 1, 'INST', iord, &
                     0, sjv=jinst, styp=kbid)
         if (instic .gt. r8prem()) then
             if (inscri .eq. 'ABSOLU') then
-                if (abs(zr(jinst) - instic) .lt. prec) then
+                if (abs(zr(jinst)-instic) .lt. prec) then
                     ordini = k
                     goto 410
-                endif
+                end if
             else
                 if (inscri .eq. 'RELATIF') then
-                    if (abs(zr(jinst)/instic - 1.d0) .lt. prec) then
+                    if (abs(zr(jinst)/instic-1.d0) .lt. prec) then
                         ordini = k
                         goto 410
-                    endif
-                endif
-            endif
-        endif
+                    end if
+                end if
+            end if
+        end if
     end do
 410 continue
 !
-    if ((ordini .eq. 1) .and. ((inscri .eq.'ABSOLU') .or. (inscri .eq.'RELATIF') )) then
+    if ((ordini .eq. 1) .and. ((inscri .eq. 'ABSOLU') .or. (inscri .eq. 'RELATIF'))) then
         call utmess('A', 'PREPOST4_48')
-    endif
+    end if
 !
     if (nume_ordre(1) .eq. 0) then
         call utmess('A', 'PREPOST4_27')
-        nbordr = nbordr - 1
-    endif
+        nbordr = nbordr-1
+    end if
 !
 !  INITIALISER
     crsigm = .false.
@@ -190,7 +190,7 @@ subroutine paqnoe(nomsd, nomu, nommai, nommet, nomcri,&
     crepse = .false.
     crepsp = .false.
 !---    ANALYSER LE CRITERE
-    call anacri(nomcri, nomfor, typcha, 'NON', paract,&
+    call anacri(nomcri, nomfor, typcha, 'NON', paract, &
                 lbid, crsigm, crepst, crepse, crepsp)
 !
 ! IF CRITERE CONTIENT DEFORMATION ELASTIQUE
@@ -199,14 +199,14 @@ subroutine paqnoe(nomsd, nomu, nommai, nommet, nomcri,&
         if (.not. crepst) then
             call utmess('A', 'PREPOST4_45')
             crepst = .true.
-        endif
+        end if
 !
-        if (( .not. crepsp )) then
+        if ((.not. crepsp)) then
             call utmess('A', 'PREPOST4_46')
             creppe = .true.
-        endif
+        end if
 !
-    endif
+    end if
 !
 ! CREATION D'UN OBJET JEVEUX CONTENANT LA LISTE DES NUMEROS
 ! DE NOEUDS AINSI QUE LE NOMBRE DE NOEUDS
@@ -220,13 +220,13 @@ subroutine paqnoe(nomsd, nomu, nommai, nommet, nomcri,&
     tymocl(3) = 'GROUP_NO'
     motcle(4) = 'NOEUD'
     tymocl(4) = 'NOEUD'
-    call reliem(' ', nommai, 'NU_NOEUD', ' ', 0,&
+    call reliem(' ', nommai, 'NU_NOEUD', ' ', 0, &
                 4, motcle, tymocl, lisnoe, nbno)
     call jeveuo(lisnoe, 'L', jnoeu)
 !
-    write(6,*)'NOMBRE TOTAL DE NOEUDS A TRAITER ==>',nbno
-    write(6,*)' '
-    write(6,*)'NUMERO DU PAQUET DE NOEUDS   -   ' //&
+    write (6, *) 'NOMBRE TOTAL DE NOEUDS A TRAITER ==>', nbno
+    write (6, *) ' '
+    write (6, *) 'NUMERO DU PAQUET DE NOEUDS   -   '//&
      &           'NOMBRE DE NOEUDS TRAITES'
 !
 ! CONSTRUCTION DES PAQUETS DE NOEUDS.
@@ -236,7 +236,7 @@ subroutine paqnoe(nomsd, nomu, nommai, nommet, nomcri,&
 !    JEDISP REND LA DIMENSION EN ENTIERS, ON LA CONVERTIT A L'AIDE
 !    DES FONCTIONS ENVIMA POUR ALLOUER UN TABLEAU DE REELS
     call jedisp(1, tdisp)
-    tdisp(1) = (tdisp(1) * loisem()) / lor8em()
+    tdisp(1) = (tdisp(1)*loisem())/lor8em()
     tdisp(1) = int(0.6d0*tdisp(1))
     call wkvect('&&PAQNOE.RWORK', 'V V R', tdisp(1), jrwork)
 !
@@ -247,13 +247,13 @@ subroutine paqnoe(nomsd, nomu, nommai, nommet, nomcri,&
 !
 !     ON TIENT COMPTE DU RECUL DE DEUX NOEUDS POUR CALCULER NBPMAX
     if (val1 .lt. 1.0d0) then
-        nbp0 = int(1.0d0/val1) + 1
+        nbp0 = int(1.0d0/val1)+1
         bor0 = nbp0*2*nbordr*nbcmp
         val2 = dble(tdisp(1))/dble(bormax+bor0)
-        nbpmax = int(1.0d0/val2) + 1
+        nbpmax = int(1.0d0/val2)+1
     else
         nbpmax = 2
-    endif
+    end if
     AS_ALLOCATE(vi=paqno, size=nbpmax*4)
 !
 ! TPAQ   = TAILLE DU PAQUET DE NOEUDS
@@ -268,59 +268,59 @@ subroutine paqnoe(nomsd, nomu, nommai, nommet, nomcri,&
     nnopaq = 0
 !
     do ino = 1, nbno
-        tpaq = tpaq + nbordr*nbcmp
-        nnopaq = nnopaq + 1
+        tpaq = tpaq+nbordr*nbcmp
+        nnopaq = nnopaq+1
 !
         if (tpaq .lt. tdisp(1)) then
             if (ino .eq. nbno) then
-                numpaq = numpaq + 1
-                paqno(1 + (numpaq-1)*4) = numpaq
-                paqno(1 + (numpaq-1)*4 + 1) = tpaq
-                paqno(1 + (numpaq-1)*4 + 2) = ino - (nnopaq - 1)
-                paqno(1 + (numpaq-1)*4 + 3) = nnopaq
+                numpaq = numpaq+1
+                paqno(1+(numpaq-1)*4) = numpaq
+                paqno(1+(numpaq-1)*4+1) = tpaq
+                paqno(1+(numpaq-1)*4+2) = ino-(nnopaq-1)
+                paqno(1+(numpaq-1)*4+3) = nnopaq
                 nbpaq = numpaq
-            endif
+            end if
 !
-        else if (( tpaq .ge. tdisp(1) ) .and. (ino .lt. 3)) then
-            vali (1) = tdisp(1)
-            vali (2) = tpaq
+        else if ((tpaq .ge. tdisp(1)) .and. (ino .lt. 3)) then
+            vali(1) = tdisp(1)
+            vali(2) = tpaq
             call utmess('F', 'PREPOST5_67', ni=2, vali=vali)
 !
 ! 2/ STOCKAGE DES NUMEROS DES PAQUETS, DE LA TAILLE DES PAQUETS,
 !    DU NUMERO DE LA PREMIERE MAILLE DE CHAQUE PAQUET DE MAILLES,
 !    DU NOMBRE DE MAILLE DE CHAQUE PAQUET ET DU NOMBRE DE PAQUET.
 !
-        else if (( tpaq .ge. tdisp(1) ) .and. (ino .gt. 2)) then
+        else if ((tpaq .ge. tdisp(1)) .and. (ino .gt. 2)) then
 ! ON RECULE DE DEUX NOEUDS POUR ETRE SUR DE NE PAS DEBORDER DU VECTEUR
 ! DE TRAVAIL (JRWORK).
 !
-            tpaq = tpaq - (2*nbordr*nbcmp)
-            numpaq = numpaq + 1
-            paqno(1 + (numpaq-1)*4) = numpaq
-            paqno(1 + (numpaq-1)*4 + 1) = tpaq
-            paqno(1 + (numpaq-1)*4 + 2) = ino - (nnopaq - 1)
-            paqno(1 + (numpaq-1)*4 + 3) = nnopaq - 2
+            tpaq = tpaq-(2*nbordr*nbcmp)
+            numpaq = numpaq+1
+            paqno(1+(numpaq-1)*4) = numpaq
+            paqno(1+(numpaq-1)*4+1) = tpaq
+            paqno(1+(numpaq-1)*4+2) = ino-(nnopaq-1)
+            paqno(1+(numpaq-1)*4+3) = nnopaq-2
             nbpaq = numpaq
 !
             tpaq = 2*nbordr*nbcmp
             nnopaq = 2
             if (ino .eq. nbno) then
-                numpaq = numpaq + 1
-                paqno(1 + (numpaq-1)*4) = numpaq
-                paqno(1 + (numpaq-1)*4 + 1) = tpaq
-                paqno(1 + (numpaq-1)*4 + 2) = ino - (nnopaq - 1)
-                paqno(1 + (numpaq-1)*4 + 3) = nnopaq
+                numpaq = numpaq+1
+                paqno(1+(numpaq-1)*4) = numpaq
+                paqno(1+(numpaq-1)*4+1) = tpaq
+                paqno(1+(numpaq-1)*4+2) = ino-(nnopaq-1)
+                paqno(1+(numpaq-1)*4+3) = nnopaq
                 nbpaq = numpaq
-            endif
-        endif
+            end if
+        end if
 !
     end do
 !
     if (nbpaq .gt. nbpmax) then
-        vali (1) = nbpmax
-        vali (2) = nbpaq
+        vali(1) = nbpmax
+        vali(2) = nbpaq
         call utmess('F', 'PREPOST5_70', ni=2, vali=vali)
-    endif
+    end if
 !
 ! TRAITEMENT DES PAQUETS DE NOEUDS.
 !
@@ -328,9 +328,9 @@ subroutine paqnoe(nomsd, nomu, nommai, nommet, nomcri,&
 !
     do numpaq = 1, nbpaq
         call jerazo('&&PAQNOE.RWORK', tdisp(1), 1)
-        tpaq = paqno(1 + (numpaq-1)*4 + 1)
-        nnoini = paqno(1 + (numpaq-1)*4 + 2)
-        nbnop = paqno(1 + (numpaq-1)*4 + 3)
+        tpaq = paqno(1+(numpaq-1)*4+1)
+        nnoini = paqno(1+(numpaq-1)*4+2)
+        nbnop = paqno(1+(numpaq-1)*4+3)
         tspaq = tpaq/nbordr
 !
         do iordr = 1, nbordr
@@ -338,100 +338,100 @@ subroutine paqnoe(nomsd, nomu, nommai, nommet, nomcri,&
 ! IF CRITERE CONTIENT CONTRAINTE
             if (crsigm) then
 !
-                call rsexch(' ', nomsd, 'SIGM_NOEU', iordr, chsig1,&
+                call rsexch(' ', nomsd, 'SIGM_NOEU', iordr, chsig1, &
                             iret1)
-                call rsexch(' ', nomsd, 'SIEF_NOEU', iordr, chsig2,&
+                call rsexch(' ', nomsd, 'SIEF_NOEU', iordr, chsig2, &
                             iret2)
 !
-                if ((iret1.ne.0) .and. (iret2.ne.0)) then
+                if ((iret1 .ne. 0) .and. (iret2 .ne. 0)) then
                     call utmess('A', 'PREPOST4_38')
-                endif
+                end if
 !
                 if (iret1 .eq. 0) then
                     chsig = chsig1
-                else if (iret2.eq.0) then
+                else if (iret2 .eq. 0) then
                     chsig = chsig2
-                endif
+                end if
 !
                 cns1 = '&&PAQNOE.SIG_S1'
                 cns2 = '&&PAQNOE.SIG_ORDO'
                 call cnocns(chsig, 'V', cns1)
-                call cnsred(cns1, 0, [ibid], 6, lsig,&
+                call cnsred(cns1, 0, [ibid], 6, lsig, &
                             'V', cns2)
                 call jeexin(cns2(1:19)//'.CNSV', iret)
                 if (iret .eq. 0) then
                     call utmess('F', 'PREPOST4_40')
-                endif
+                end if
                 call jeveuo(cns2(1:19)//'.CNSD', 'L', jsigd)
                 call jeveuo(cns2(1:19)//'.CNSL', 'L', jsigl)
                 call jeveuo(cns2(1:19)//'.CNSV', 'L', jsigv)
-            endif
+            end if
 !
 ! IF CRITERE CONTIENT DEFORMATION TOTALE
             if (crepst) then
 !
-                call rsexch('F', nomsd, 'EPSI_NOEU', iordr, cheps,&
+                call rsexch('F', nomsd, 'EPSI_NOEU', iordr, cheps, &
                             iret3)
 !
                 cns3 = '&&PAQNOE.EPS_S3'
                 cns4 = '&&PAQNOE.EPS_ORDO'
                 call cnocns(cheps, 'V', cns3)
-                call cnsred(cns3, 0, [ibid], 6, leps,&
+                call cnsred(cns3, 0, [ibid], 6, leps, &
                             'V', cns4)
                 call jeexin(cns4(1:19)//'.CNSV', iret)
                 if (iret .eq. 0) then
                     call utmess('F', 'PREPOST4_41')
-                endif
+                end if
                 call jeveuo(cns4(1:19)//'.CNSD', 'L', jepsd)
                 call jeveuo(cns4(1:19)//'.CNSL', 'L', jepsl)
                 call jeveuo(cns4(1:19)//'.CNSV', 'L', jepsv)
 !
-            endif
+            end if
 !
 ! IF CRITERE CONTIENT DEFORMATION PLASTQIUE
             if (crepsp) then
 !
-                call rsexch('F', nomsd, 'EPSP_NOEU', iordr, chepsp,&
+                call rsexch('F', nomsd, 'EPSP_NOEU', iordr, chepsp, &
                             iret4)
 !
                 cns5 = '&&PAQNOE.EPSP_S5'
                 cns6 = '&&PAQNOE.EPSP_ORDO'
                 call cnocns(chepsp, 'V', cns5)
-                call cnsred(cns5, 0, [ibid], 6, leps,&
+                call cnsred(cns5, 0, [ibid], 6, leps, &
                             'V', cns6)
                 call jeexin(cns6(1:19)//'.CNSV', iret)
                 if (iret .eq. 0) then
                     call utmess('F', 'PREPOST4_43')
-                endif
+                end if
                 call jeveuo(cns6(1:19)//'.CNSD', 'L', jepspd)
                 call jeveuo(cns6(1:19)//'.CNSL', 'L', jepspl)
                 call jeveuo(cns6(1:19)//'.CNSV', 'L', jepspv)
 !
-            endif
+            end if
 !
 ! IF CRITERE CONTIENT DEFORMATION ELASTIQUE
             if (creppe) then
 !
-                call rsexch(' ', nomsd, 'EPSP_NOEU', iordr, cheppe,&
+                call rsexch(' ', nomsd, 'EPSP_NOEU', iordr, cheppe, &
                             valep)
                 if (valep .ne. 0) then
                     call utmess('A', 'PREPOST4_46')
-                endif
+                end if
                 if (valep .eq. 0) then
                     cns7 = '&&PAQNOE.EPSPE_S7'
                     cns8 = '&&PAQNOE.EPSPE_ORDO'
                     call cnocns(cheppe, 'V', cns7)
-                    call cnsred(cns7, 0, [ibid], 6, leps,&
+                    call cnsred(cns7, 0, [ibid], 6, leps, &
                                 'V', cns8)
                     call jeexin(cns8(1:19)//'.CNSV', iret)
                     if (iret .eq. 0) then
                         call utmess('F', 'PREPOST4_43')
-                    endif
+                    end if
                     call jeveuo(cns8(1:19)//'.CNSD', 'L', jepped)
                     call jeveuo(cns8(1:19)//'.CNSL', 'L', jeppel)
                     call jeveuo(cns8(1:19)//'.CNSV', 'L', jeppev)
-                endif
-            endif
+                end if
+            end if
 !
             kwork = 0
             somnow = 0
@@ -439,78 +439,78 @@ subroutine paqnoe(nomsd, nomu, nommai, nommet, nomcri,&
             do inop = nnoini, nnoini+(nbnop-1)
                 if (inop .gt. nnoini) then
                     kwork = 1
-                    somnow = somnow + 1
-                endif
+                    somnow = somnow+1
+                end if
 !
-                nunoe = zi(jnoeu + inop-1)
+                nunoe = zi(jnoeu+inop-1)
 !
 ! BOUCLE SUR LES CONTRAINTES (6 COMPOSANTES)
                 if (crsigm) then
                     do icmp = 1, 6
-                        if (zl(jsigl + (icmp-1) + (nunoe-1)*6)) then
-                            zr( jrwork + (icmp-1) + kwork*somnow*18 +&
-                            (iordr-1)*tspaq ) = zr( jsigv + (icmp-1) +&
-                            (nunoe-1)*6 )
+                        if (zl(jsigl+(icmp-1)+(nunoe-1)*6)) then
+                            zr(jrwork+(icmp-1)+kwork*somnow*18+ &
+                               (iordr-1)*tspaq) = zr(jsigv+(icmp-1)+ &
+                                                     (nunoe-1)*6)
                         else if (icmp .eq. 5) then
                             call utmess('F', 'FATIGUE1_2', si=icmp)
                         else
                             call utmess('F', 'PREPOST4_30')
-                        endif
+                        end if
                     end do
-                endif
+                end if
 !
 ! BOUCLE SUR LES DEFORMATIONS TOTALES (6 COMPOSANTES)
                 if (crepst) then
                     do icmp = 1, 6
-                        if (zl(jepsl + (icmp-1) + (nunoe-1)*6)) then
-                            zr( jrwork + (icmp+6-1) + kwork*somnow*18&
-                            + (iordr-1)*tspaq ) = zr( jepsv + (icmp-1)&
-                            + (nunoe-1)*6 )
+                        if (zl(jepsl+(icmp-1)+(nunoe-1)*6)) then
+                            zr(jrwork+(icmp+6-1)+kwork*somnow*18 &
+                               +(iordr-1)*tspaq) = zr(jepsv+(icmp-1) &
+                                                      +(nunoe-1)*6)
                         else if (icmp .eq. 5) then
                             call utmess('F', 'FATIGUE1_3', si=icmp)
                         else
                             call utmess('F', 'PREPOST4_35')
-                        endif
+                        end if
                     end do
-                endif
+                end if
 !
 ! BOUCLE SUR LES DEFORMATIONS TOTALES (6 COMPOSANTES)
                 if (crepsp) then
                     do icmp = 1, 6
-                        if (zl(jepspl + (icmp-1) + (nunoe-1)*6)) then
-                            zr( jrwork + (icmp+6+6-1) + kwork*somnow*&
- 18                          + (iordr-1)*tspaq ) = zr( jepspv + (&
-                            icmp-1) + (nunoe-1)*6 )
+                        if (zl(jepspl+(icmp-1)+(nunoe-1)*6)) then
+                            zr(jrwork+(icmp+6+6-1)+kwork*somnow* &
+                               18+(iordr-1)*tspaq) = zr(jepspv+( &
+                                                        icmp-1)+(nunoe-1)*6)
                         else if (icmp .eq. 5) then
                             call utmess('F', 'FATIGUE1_3', si=icmp)
                         else
                             call utmess('F', 'PREPOST4_35')
-                        endif
+                        end if
                     end do
-                endif
+                end if
 !
                 if (creppe) then
                     if (valep .eq. 0) then
 !
                         do icmp = 1, 6
-                            if (zl(jeppel + (icmp-1) + (nunoe-1)*6)) then
-                                zr( jrwork + (icmp+6+6-1) + kwork*&
-                                somnow*18 + (iordr-1)*tspaq ) =&
-                                zr( jeppev + (icmp-1) + (nunoe-1)*6 )
+                            if (zl(jeppel+(icmp-1)+(nunoe-1)*6)) then
+                                zr(jrwork+(icmp+6+6-1)+kwork* &
+                                   somnow*18+(iordr-1)*tspaq) = &
+                                    zr(jeppev+(icmp-1)+(nunoe-1)*6)
                             else if (icmp .eq. 5) then
                                 call utmess('F', 'FATIGUE1_3', si=icmp)
                             else
                                 call utmess('F', 'PREPOST4_35')
-                            endif
+                            end if
                         end do
 !
                     else
                         do ic = 1, 6
-                            zr( jrwork + (ic+6+6-1) + kwork*somnow*18&
-                            + (iordr-1)*tspaq ) = 0.d0
+                            zr(jrwork+(ic+6+6-1)+kwork*somnow*18 &
+                               +(iordr-1)*tspaq) = 0.d0
                         end do
-                    endif
-                endif
+                    end if
+                end if
 !
             end do
         end do
@@ -520,17 +520,17 @@ subroutine paqnoe(nomsd, nomu, nommai, nommet, nomcri,&
 !
         if (nomcri(1:11) .eq. 'VMIS_TRESCA') then
             nomopt = 'DOMA_NOEUD'
-            call vampli(zr(jrwork), tdisp(1), zi(jnoeu), nbno, nbordr,&
+            call vampli(zr(jrwork), tdisp(1), zi(jnoeu), nbno, nbordr, &
                         nnoini, nbnop, tspaq, nomopt, cnsr)
             goto 200
-        endif
+        end if
 !
         if (typcha .eq. 'PERIODIQUE') then
             post = .false.
 !
-            call dtauno(jrwork, zi(jnoeu), nbno, nbordr, ordini,&
-                        nnoini, nbnop, tspaq, nommet, nomcri,&
-                        nomfor, grdvie, forvie, forcri, nommai,&
+            call dtauno(jrwork, zi(jnoeu), nbno, nbordr, ordini, &
+                        nnoini, nbnop, tspaq, nommet, nomcri, &
+                        nomfor, grdvie, forvie, forcri, nommai, &
                         cnsr, k8b, post, valpar, vresu)
 !
         else if (typcha .eq. 'NON_PERIODIQUE') then
@@ -538,18 +538,18 @@ subroutine paqnoe(nomsd, nomu, nommai, nommet, nomcri,&
 !   POUR POST_FATIGUE
             post = .false.
 !
-            call avgrno(zr(jrwork), tdisp(1), zi(jnoeu), nbno, nbordr,&
-                        nnoini, nbnop, tspaq, nomcri, nomfor,&
-                        grdvie, forvie, fordef, nommai, proaxe,&
+            call avgrno(zr(jrwork), tdisp(1), zi(jnoeu), nbno, nbordr, &
+                        nnoini, nbnop, tspaq, nomcri, nomfor, &
+                        grdvie, forvie, fordef, nommai, proaxe, &
                         k8b, cnsr, post, resu)
-        endif
+        end if
 !
 200     continue
     end do
 !
 ! TRANSFORMATION D'UN CHAM_NO SIMPLE EN CHAM_NO
 !
-    call cnscno(cnsr, ' ', 'NON', 'G', nomu,&
+    call cnscno(cnsr, ' ', 'NON', 'G', nomu, &
                 'F', ibid)
 !
 ! MENAGE
@@ -558,22 +558,22 @@ subroutine paqnoe(nomsd, nomu, nommai, nommet, nomcri,&
     if (crsigm) then
         call detrsd('CHAM_NO_S', cns1)
         call detrsd('CHAM_NO_S', cns2)
-    endif
+    end if
 !
     if (crepst) then
         call detrsd('CHAM_NO_S', cns3)
         call detrsd('CHAM_NO_S', cns4)
-    endif
+    end if
 !
     if (crepsp) then
         call detrsd('CHAM_NO_S', cns5)
         call detrsd('CHAM_NO_S', cns6)
-    endif
+    end if
 !
     if (creppe .and. (valep .eq. 0)) then
         call detrsd('CHAM_NO_S', cns7)
         call detrsd('CHAM_NO_S', cns8)
-    endif
+    end if
 !
     AS_DEALLOCATE(vi=nume_ordre)
     call jedetr('&&PAQNOE.RWORK')

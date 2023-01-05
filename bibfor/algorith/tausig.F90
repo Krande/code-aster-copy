@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine tausig(ndim,  jac, tau, sig, ind)
+subroutine tausig(ndim, jac, tau, sig, ind)
 !
-implicit none
+    implicit none
 !
     integer, intent(in) :: ndim, ind
     real(kind=8), intent(in) :: jac
@@ -46,17 +46,17 @@ implicit none
 !
 !   SEPARATION DIM 2 ET DIM 3 POUR GAGNER DU TEMPS CPU
     if (ind .eq. 1) then
-        sig = tau / jac
+        sig = tau/jac
 !
         if (ndim .eq. 2) then
-            sig(4) = sig(4) / rac2
-        else if (ndim.eq.3) then
-            sig(4:6) = sig(4:6) / rac2
-        endif
+            sig(4) = sig(4)/rac2
+        else if (ndim .eq. 3) then
+            sig(4:6) = sig(4:6)/rac2
+        end if
 !
-    else if (ind.eq.-1) then
-        tau = sig * jac
+    else if (ind .eq. -1) then
+        tau = sig*jac
 !
-    endif
+    end if
 !
 end subroutine

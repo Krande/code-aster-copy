@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine as_mmheaw(fid, maa, nom, n, typent,&
+subroutine as_mmheaw(fid, maa, nom, n, typent, &
                      typgeo, cret)
 ! person_in_charge: nicolas.sellenet at edf.fr
 !
@@ -47,13 +47,13 @@ subroutine as_mmheaw(fid, maa, nom, n, typent,&
     n4 = n
     mdnon4 = mdnont
     mdnoi4 = mdnoit
-    call mmheaw(fidm, maa, mdnon4, mdnoi4, typen4,&
+    call mmheaw(fidm, maa, mdnon4, mdnoi4, typen4, &
                 typge4, n4, nom, cret4)
     cret = cret4
 #else
     mdnont = -1
     mdnoit = -1
-    call mmheaw(fid, maa, mdnont, mdnoit, typent,&
+    call mmheaw(fid, maa, mdnont, mdnoit, typent, &
                 typgeo, n, nom, cret)
 #endif
 !

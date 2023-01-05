@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,17 +19,17 @@
 !
 subroutine rs_getlast(result_, nume_last, inst_last, freq_last)
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterfort/rsadpa.h"
 #include "asterfort/rsorac.h"
 !
 
-character(len=*), intent(in) :: result_
-integer, intent(out) :: nume_last
-real(kind=8), optional, intent(out) :: inst_last
-real(kind=8), optional, intent(out) :: freq_last
+    character(len=*), intent(in) :: result_
+    integer, intent(out) :: nume_last
+    real(kind=8), optional, intent(out) :: inst_last
+    real(kind=8), optional, intent(out) :: freq_last
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -54,23 +54,23 @@ real(kind=8), optional, intent(out) :: freq_last
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    result    = result_
+    result = result_
     nume_last = 0
-    call rsorac(result, 'DERNIER', 0  , r8bid, k8bid,&
-                c16bid, 0.d0     , ' ', list , 1    ,&
+    call rsorac(result, 'DERNIER', 0, r8bid, k8bid, &
+                c16bid, 0.d0, ' ', list, 1, &
                 iret)
     if (iret .eq. 1) then
         nume_last = list(1)
-    endif
+    end if
     if (present(inst_last)) then
-        call rsadpa(result, 'L', 1, 'INST', nume_last,&
+        call rsadpa(result, 'L', 1, 'INST', nume_last, &
                     0, sjv=jinst)
         inst_last = zr(jinst)
-    endif
+    end if
     if (present(freq_last)) then
-        call rsadpa(result, 'L', 1, 'FREQ', nume_last,&
+        call rsadpa(result, 'L', 1, 'FREQ', nume_last, &
                     0, sjv=jinst)
         freq_last = zr(jinst)
-    endif
+    end if
 
 end subroutine

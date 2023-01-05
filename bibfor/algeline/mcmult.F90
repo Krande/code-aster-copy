@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine mcmult(cumul, lmat, vect, xsol, nbvect,&
+subroutine mcmult(cumul, lmat, vect, xsol, nbvect, &
                   prepos)
     implicit none
 #include "asterf_types.h"
@@ -61,18 +61,18 @@ subroutine mcmult(cumul, lmat, vect, xsol, nbvect,&
     character(len=24), pointer :: refa(:) => null()
 !
     call jemarq()
-    prepo2=prepos
-    matas=zk24(zi(lmat+1))(1:19)
+    prepo2 = prepos
+    matas = zk24(zi(lmat+1)) (1:19)
     call jeveuo(matas//'.REFA', 'L', vk24=refa)
     if (refa(3) .eq. 'ELIMF') call mtmchc(matas, 'ELIML')
 !
     call dismoi('MPI_COMPLET', matas, 'MATR_ASSE', repk=kmpic)
     if (kmpic .ne. 'OUI') then
         call utmess('F', 'CALCULEL6_54')
-    endif
+    end if
 !
-    call jeveuo(refa(2)(1:14)//'.SMOS.SMHC', 'L', jsmhc)
-    neq=zi(lmat+2)
+    call jeveuo(refa(2) (1:14)//'.SMOS.SMHC', 'L', jsmhc)
+    neq = zi(lmat+2)
     AS_ALLOCATE(vc=vectmp, size=neq)
 !
 !
@@ -80,21 +80,21 @@ subroutine mcmult(cumul, lmat, vect, xsol, nbvect,&
     if (zi(lmat+3) .eq. 1) then
 !
         call mtdsc2(zk24(zi(lmat+1)), 'SMDI', 'L', jsmdi)
-        call mcmmvr(cumul, lmat, zi(jsmdi), zi4(jsmhc), neq,&
+        call mcmmvr(cumul, lmat, zi(jsmdi), zi4(jsmhc), neq, &
                     vect, xsol, nbvect, vectmp, prepo2)
 !
     else if (zi(lmat+3) .eq. 2) then
 !
 !     MATRICE COMPLEXE
         call mtdsc2(zk24(zi(lmat+1)), 'SMDI', 'L', jsmdi)
-        call mcmmvc(cumul, lmat, zi(jsmdi), zi4(jsmhc), neq,&
+        call mcmmvc(cumul, lmat, zi(jsmdi), zi4(jsmhc), neq, &
                     vect, xsol, nbvect, vectmp, prepo2)
 !
     else
 !
         call utmess('F', 'ALGELINE_66')
 !
-    endif
+    end if
 !
     AS_DEALLOCATE(vc=vectmp)
     call jedema()

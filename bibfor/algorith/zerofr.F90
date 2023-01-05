@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine zerofr(intini, algo, func, x1, x2,&
+subroutine zerofr(intini, algo, func, x1, x2, &
                   tol, itmax, solu, iret, iter)
     implicit none
 !
@@ -69,26 +69,26 @@ subroutine zerofr(intini, algo, func, x1, x2,&
 !     RECHERCHE DE L'INTERVALLE INITIAL [A,B]
 !     ------------------------------------------------------------------
 !
-    ASSERT(intini.eq.0.or. intini.eq.1.or. intini.eq.2)
+    ASSERT(intini .eq. 0 .or. intini .eq. 1 .or. intini .eq. 2)
 !
     if (intini .eq. 1) then
 !
 !       BRACKETING CROISSANT A GAUCHE ET A DROITE
-        call encadr(func, a, b, fa, fb,&
+        call encadr(func, a, b, fa, fb, &
                     itmax, 1.6d0, iret)
         if (iret .ne. 0) goto 9999
 !
-    else if (intini.eq.2) then
+    else if (intini .eq. 2) then
 !
 !       BRACKETING CROISSANT UNIQUEMNT A DROITE :
 !       SOUVENT LE CAS POUR LES LOIS DE COMPORTEMENT
 !       (SI F EST CROISSANTE ET F(A)<0, OU L'INVERSE),
 !       CE QUI PERMET DE PRENDRE UN COEF MULT GRAND (10)
-        call encadr(func, a, b, fa, fb,&
+        call encadr(func, a, b, fa, fb, &
                     itmax, 10.d0, iret)
         if (iret .ne. 0) goto 9999
 !
-    endif
+    end if
 !
 !     ------------------------------------------------------------------
 !     RECHERCHE DU ZERO DE F ENTRE X1 ET X2
@@ -99,30 +99,30 @@ subroutine zerofr(intini, algo, func, x1, x2,&
 !
     if (algoz .eq. 'BRENT') then
 !
-        call zerofb(func, a, b, tol, itmax,&
+        call zerofb(func, a, b, tol, itmax, &
                     solu, iret, iter)
 !
-    else if (algoz.eq.'SECANTE') then
+    else if (algoz .eq. 'SECANTE') then
 !
-        call zerofc(func, a, b, tol, itmax,&
+        call zerofc(func, a, b, tol, itmax, &
                     solu, iret, iter)
 !
-    else if (algoz.eq.'DEKKER') then
+    else if (algoz .eq. 'DEKKER') then
 !
-        call zerofo(func, a, b, tol, itmax,&
+        call zerofo(func, a, b, tol, itmax, &
                     solu, iret, iter)
 !
-    else if (algoz.eq.'DEKKER2') then
+    else if (algoz .eq. 'DEKKER2') then
 !
-        call zerof2(func, a, b, tol, itmax,&
+        call zerof2(func, a, b, tol, itmax, &
                     solu, iret, iter)
 !
     else
 !
         ASSERT(.false.)
 !
-    endif
+    end if
 !
 !
-9999  continue
+9999 continue
 end subroutine

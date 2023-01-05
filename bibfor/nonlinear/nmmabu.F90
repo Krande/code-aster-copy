@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine nmmabu(ndim, nno, axi, grand, dfdi,&
+subroutine nmmabu(ndim, nno, axi, grand, dfdi, &
                   b)
 !
 !
@@ -48,37 +48,37 @@ subroutine nmmabu(ndim, nno, axi, grand, dfdi,&
 !
     if (grand) then
         call utmess('F', 'ALGORITH7_76')
-    endif
+    end if
     if (axi) then
         call utmess('F', 'ALGORITH7_76')
-    endif
+    end if
 !
     call r8inir(18*nno, 0.d0, b, 1)
     r2 = sqrt(2.d0)/2.d0
 !
-    ASSERT((ndim.eq.2).or.(ndim.eq.3))
+    ASSERT((ndim .eq. 2) .or. (ndim .eq. 3))
 !
     if (ndim .eq. 2) then
         do n = 1, nno
-            b(1,1,n) = dfdi(n,1)
-            b(2,2,n) = dfdi(n,2)
-            b(4,1,n) = r2*dfdi(n,2)
-            b(4,2,n) = r2*dfdi(n,1)
+            b(1, 1, n) = dfdi(n, 1)
+            b(2, 2, n) = dfdi(n, 2)
+            b(4, 1, n) = r2*dfdi(n, 2)
+            b(4, 2, n) = r2*dfdi(n, 1)
         end do
 !
-    else if (ndim.eq.3) then
+    else if (ndim .eq. 3) then
         do n = 1, nno
-            b(1,1,n) = dfdi(n,1)
-            b(2,2,n) = dfdi(n,2)
-            b(3,3,n) = dfdi(n,3)
-            b(4,1,n) = r2*dfdi(n,2)
-            b(4,2,n) = r2*dfdi(n,1)
-            b(5,1,n) = r2*dfdi(n,3)
-            b(5,3,n) = r2*dfdi(n,1)
-            b(6,2,n) = r2*dfdi(n,3)
-            b(6,3,n) = r2*dfdi(n,2)
+            b(1, 1, n) = dfdi(n, 1)
+            b(2, 2, n) = dfdi(n, 2)
+            b(3, 3, n) = dfdi(n, 3)
+            b(4, 1, n) = r2*dfdi(n, 2)
+            b(4, 2, n) = r2*dfdi(n, 1)
+            b(5, 1, n) = r2*dfdi(n, 3)
+            b(5, 3, n) = r2*dfdi(n, 1)
+            b(6, 2, n) = r2*dfdi(n, 3)
+            b(6, 3, n) = r2*dfdi(n, 2)
         end do
 !
-    endif
+    end if
 !
 end subroutine

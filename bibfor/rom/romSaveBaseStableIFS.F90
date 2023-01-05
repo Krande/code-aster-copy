@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,9 +19,9 @@
 !
 subroutine romSaveBaseStableIFS(l_ortho_base, ds_multipara, ds_algoGreedy, ds_empi, i_mode)
 !
-use Rom_Datastructure_type
+    use Rom_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -31,11 +31,11 @@ implicit none
 #include "asterfort/romGreedyModeSave.h"
 #include "asterfort/romOrthoBasis.h"
 !
-aster_logical, intent(in) :: l_ortho_base
-type(ROM_DS_MultiPara), intent(in) :: ds_multipara
-type(ROM_DS_AlgoGreedy), intent(in) :: ds_algoGreedy
-type(ROM_DS_Empi), intent(inout) :: ds_empi
-integer, intent(in) :: i_mode
+    aster_logical, intent(in) :: l_ortho_base
+    type(ROM_DS_MultiPara), intent(in) :: ds_multipara
+    type(ROM_DS_AlgoGreedy), intent(in) :: ds_algoGreedy
+    type(ROM_DS_Empi), intent(inout) :: ds_empi
+    integer, intent(in) :: i_mode
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -67,16 +67,16 @@ integer, intent(in) :: i_mode
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    field     = ds_multipara%field
-    ds_solve  = ds_algoGreedy%solveDOM
+    field = ds_multipara%field
+    ds_solve = ds_algoGreedy%solveDOM
     nume_pres = ds_algoGreedy%nume_pres
-    nume_phi  = ds_algoGreedy%nume_phi
+    nume_phi = ds_algoGreedy%nume_phi
 !
 ! - Prepre 3 champs noeuds pour la base
 !
-    base_1   = '&&&OP0053.BASE_U'
-    base_2   = '&&&OP0053.BASE_P'
-    base_3   = '&&&OP0053.BASE_PHI'
+    base_1 = '&&&OP0053.BASE_U'
+    base_2 = '&&&OP0053.BASE_P'
+    base_3 = '&&&OP0053.BASE_PHI'
     call copisd('CHAMP_GD', 'V', ds_solve%vect_zero, base_1)
     call copisd('CHAMP_GD', 'V', ds_solve%vect_zero, base_2)
     call copisd('CHAMP_GD', 'V', ds_solve%vect_zero, base_3)
@@ -84,12 +84,12 @@ integer, intent(in) :: i_mode
 ! - Remplir les .VALE
 !
     syst_type = ds_solve%syst_type
-    nb_equa   = ds_solve%syst_size
+    nb_equa = ds_solve%syst_size
     if (syst_type .eq. 'R') then
-        call jeveuo(ds_solve%syst_solu//'.VALE', 'L', vr = vr_syst_solu)
-        call jeveuo(base_1(1:19)//'.VALE',       'E', vr = vr_base_1)
-        call jeveuo(base_2(1:19)//'.VALE',       'E', vr = vr_base_2)
-        call jeveuo(base_3(1:19)//'.VALE',       'E', vr = vr_base_3)
+        call jeveuo(ds_solve%syst_solu//'.VALE', 'L', vr=vr_syst_solu)
+        call jeveuo(base_1(1:19)//'.VALE', 'E', vr=vr_base_1)
+        call jeveuo(base_2(1:19)//'.VALE', 'E', vr=vr_base_2)
+        call jeveuo(base_3(1:19)//'.VALE', 'E', vr=vr_base_3)
         vr_base_1(:) = 0.d0
         vr_base_2(:) = 0.d0
         vr_base_3(:) = 0.d0
@@ -102,16 +102,16 @@ integer, intent(in) :: i_mode
                 vr_base_1(i_equa) = vr_syst_solu(i_equa)
             else
                 ASSERT(ASTER_FALSE)
-            endif
+            end if
         end do
     else if (syst_type .eq. 'C') then
-        call jeveuo(ds_solve%syst_solu//'.VALE', 'L', vc = vc_syst_solu)
-        call jeveuo(base_1(1:19)//'.VALE',       'E', vc = vc_base_1)
-        call jeveuo(base_2(1:19)//'.VALE',       'E', vc = vc_base_2)
-        call jeveuo(base_3(1:19)//'.VALE',       'E', vc = vc_base_3)
-        vc_base_1(:) = dcmplx(0.d0,0.d0)
-        vc_base_2(:) = dcmplx(0.d0,0.d0)
-        vc_base_3(:) = dcmplx(0.d0,0.d0)
+        call jeveuo(ds_solve%syst_solu//'.VALE', 'L', vc=vc_syst_solu)
+        call jeveuo(base_1(1:19)//'.VALE', 'E', vc=vc_base_1)
+        call jeveuo(base_2(1:19)//'.VALE', 'E', vc=vc_base_2)
+        call jeveuo(base_3(1:19)//'.VALE', 'E', vc=vc_base_3)
+        vc_base_1(:) = dcmplx(0.d0, 0.d0)
+        vc_base_2(:) = dcmplx(0.d0, 0.d0)
+        vc_base_3(:) = dcmplx(0.d0, 0.d0)
         do i_equa = 1, nb_equa
             if (field%equaCmpName(i_equa) .eq. nume_pres) then
                 vc_base_2(i_equa) = vc_syst_solu(i_equa)
@@ -121,7 +121,7 @@ integer, intent(in) :: i_mode
                 vc_base_1(i_equa) = vc_syst_solu(i_equa)
             else
                 ASSERT(ASTER_FALSE)
-            endif
+            end if
         end do
     else
         ASSERT(ASTER_FALSE)

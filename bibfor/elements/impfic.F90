@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -49,7 +49,7 @@ subroutine impfic(vale, nomnoe, rcmp, unit, lxfem)
     fic2 = vale(3)
     k1 = vale(4)
     k2 = vale(5)
-    girwin = fic1*fic1 + fic2*fic2
+    girwin = fic1*fic1+fic2*fic2
 !
 ! CALCUL DE L'ANGLE DE PROPAGATION DE LA FISSURE SELON 3 CRITERES:
 !  K1MAX, K2MIN, GMAX (FORMULES ISSUES DE AMNESTOY-BUI)
@@ -63,7 +63,7 @@ subroutine impfic(vale, nomnoe, rcmp, unit, lxfem)
     k11(7) = 0.6559d0
     k11(8) = 0.5598d0
     k11(9) = 0.4640d0
-    k11(10)= 0.3722d0
+    k11(10) = 0.3722d0
 !
     k21(1) = 0
     k21(2) = 0.0864d0
@@ -74,7 +74,7 @@ subroutine impfic(vale, nomnoe, rcmp, unit, lxfem)
     k21(7) = 0.3696d0
     k21(8) = 0.3788d0
     k21(9) = 0.3718d0
-    k21(10)= 0.3507d0
+    k21(10) = 0.3507d0
 !
     k12(1) = 0.d0
     k12(2) = -0.2597d0
@@ -85,7 +85,7 @@ subroutine impfic(vale, nomnoe, rcmp, unit, lxfem)
     k12(7) = -1.1681d0
     k12(8) = -1.2220d0
     k12(9) = -1.2293d0
-    k12(10)= -1.1936d0
+    k12(10) = -1.1936d0
 !
     k22(1) = 1.d0
     k22(2) = 0.9764d0
@@ -96,98 +96,98 @@ subroutine impfic(vale, nomnoe, rcmp, unit, lxfem)
     k22(7) = 0.3077d0
     k22(8) = 0.1266d0
     k22(9) = -0.0453d0
-    k22(10)= -0.1988d0
+    k22(10) = -0.1988d0
 !
     k1max = 0.d0
     k1min = 0.d0
     k2min = -abs(k2)
     k2sup = +abs(k2)
     gmax = 0.d0
-    k1phi= 0
-    k2phi= 0
-    gphi= 0
+    k1phi = 0
+    k2phi = 0
+    gphi = 0
 !
     do i = 1, 10
-        k1dev= k11(i)*k1+k12(i)*k2
-        k2dev= k21(i)*k1+k22(i)*k2
-        fic1d= k11(i)*fic1+k12(i)*fic2
-        fic2d= k21(i)*fic1+k22(i)*fic2
+        k1dev = k11(i)*k1+k12(i)*k2
+        k2dev = k21(i)*k1+k22(i)*k2
+        fic1d = k11(i)*fic1+k12(i)*fic2
+        fic2d = k21(i)*fic1+k22(i)*fic2
         gdev = fic1d*fic1d+fic2d*fic2d
-        if ((k1dev.gt.k1max) .or. (k1dev.lt.k1min)) then
-            k1phi =10*(i-1)
+        if ((k1dev .gt. k1max) .or. (k1dev .lt. k1min)) then
+            k1phi = 10*(i-1)
             k1min = -abs(k1dev)
             k1max = abs(k1dev)
-        endif
-        if ((k2dev.le.k2sup) .and. (k2dev.ge.k2min)) then
-            k2phi=10*(i-1)
+        end if
+        if ((k2dev .le. k2sup) .and. (k2dev .ge. k2min)) then
+            k2phi = 10*(i-1)
             k2min = -abs(k2dev)
             k2sup = abs(k2dev)
-        endif
+        end if
         if (gdev .gt. gmax) then
-            gphi =10*(i-1)
+            gphi = 10*(i-1)
             gmax = gdev
-        endif
+        end if
     end do
     do i = 2, 10
-        k1dev= k11(i)*k1-k12(i)*k2
-        k2dev= -k21(i)*k1+k22(i)*k2
-        fic1d= k11(i)*fic1-k12(i)*fic2
-        fic2d= -k21(i)*fic1+k22(i)*fic2
+        k1dev = k11(i)*k1-k12(i)*k2
+        k2dev = -k21(i)*k1+k22(i)*k2
+        fic1d = k11(i)*fic1-k12(i)*fic2
+        fic2d = -k21(i)*fic1+k22(i)*fic2
         gdev = fic1d*fic1d+fic2d*fic2d
-        if ((k1dev.gt.k1max) .or. (k1dev.lt.k1min)) then
-            k1phi =-10*(i-1)
+        if ((k1dev .gt. k1max) .or. (k1dev .lt. k1min)) then
+            k1phi = -10*(i-1)
             k1min = -abs(k1dev)
             k1max = abs(k1dev)
-        endif
-        if ((k2dev.le.k2sup) .and. (k2dev.ge.k2min)) then
-            k2phi=-10*(i-1)
+        end if
+        if ((k2dev .le. k2sup) .and. (k2dev .ge. k2min)) then
+            k2phi = -10*(i-1)
             k2min = -abs(k2dev)
             k2sup = abs(k2dev)
-        endif
+        end if
         if (gdev .gt. gmax) then
-            gphi=-10*(i-1)
+            gphi = -10*(i-1)
             gmax = gdev
-        endif
+        end if
     end do
 !
-    write(unit,*)
-    write(unit,555)
-    write(unit,*)
+    write (unit, *)
+    write (unit, 555)
+    write (unit, *)
 !
-    if (.not.lxfem) then
-        write(unit,*) 'NOEUD DE FOND DE FISSURE : ',nomnoe
-    endif
-    write(unit,*)
+    if (.not. lxfem) then
+        write (unit, *) 'NOEUD DE FOND DE FISSURE : ', nomnoe
+    end if
+    write (unit, *)
 !
-    write(unit,*) 'COORDONNEES DU NOEUD DE FOND DE FISSURE : ',&
-     &              rcmp(1),' ',rcmp(2)
-    write(unit,*)
-    write(unit,*) 'COORDONNEES DE LA NORMALE A LA FISSURE :  ',&
-     &              rcmp(5),' ',rcmp(6)
-    write(unit,*)
+    write (unit, *) 'COORDONNEES DU NOEUD DE FOND DE FISSURE : ',&
+     &              rcmp(1), ' ', rcmp(2)
+    write (unit, *)
+    write (unit, *) 'COORDONNEES DE LA NORMALE A LA FISSURE :  ',&
+     &              rcmp(5), ' ', rcmp(6)
+    write (unit, *)
 !
-    write(unit,*) '       K1                K2         '//&
+    write (unit, *) '       K1                K2         '//&
      &               '     G (IRWIN)'
-    write(unit,*)
-    write(unit,999) k1,k2,girwin
-    write(unit,*)
-    write(unit,777) 'TAUX DE RESTITUTION D''ENERGIE G : ', g
-    write(unit,*)
-    write(unit,*) 'DIRECTION DE LA DEVIATION DE LA FISSURE '&
+    write (unit, *)
+    write (unit, 999) k1, k2, girwin
+    write (unit, *)
+    write (unit, 777) 'TAUX DE RESTITUTION D''ENERGIE G : ', g
+    write (unit, *)
+    write (unit, *) 'DIRECTION DE LA DEVIATION DE LA FISSURE '&
      &             //'(EN DEGRES): '
-    write(unit,*)
-    write(unit,666) 'SELON LE CRITERE K1 MAXIMUM : ', k1phi,&
-     &              ' AVEC K1MAX = ',k1max
-    write(unit,666) 'SELON LE CRITERE K2 NUL     : ', k2phi,&
-     &              ' AVEC K2NUL = ',k2sup
-    write(unit,666) 'SELON LE CRITERE G MAXIMUM  : ', gphi,&
-     &              ' AVEC GMAX  = ',gmax
-    write(unit,555)
-    write(unit,*)
+    write (unit, *)
+    write (unit, 666) 'SELON LE CRITERE K1 MAXIMUM : ', k1phi,&
+     &              ' AVEC K1MAX = ', k1max
+    write (unit, 666) 'SELON LE CRITERE K2 NUL     : ', k2phi,&
+     &              ' AVEC K2NUL = ', k2sup
+    write (unit, 666) 'SELON LE CRITERE G MAXIMUM  : ', gphi,&
+     &              ' AVEC GMAX  = ', gmax
+    write (unit, 555)
+    write (unit, *)
 !
-    555 format(60('*'))
-    666 format(a,i3,a,1pd12.5)
-    777 format(a,1pd12.5)
-    999 format(3(1pd12.5,8x))
+555 format(60('*'))
+666 format(a, i3, a, 1pd12.5)
+777 format(a, 1pd12.5)
+999 format(3(1pd12.5, 8x))
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -44,21 +44,21 @@ subroutine te0538(option, nomte)
     integer :: jgano, nno, npg, imatuu, ndim
     integer :: ipoids, ivf, idfde, igeom, imate
     integer :: jpintt, jcnset, jheavt, jlonch, jbaslo, jlsn, jlst, jstno
-    integer :: nnos, nfiss, jfisno, jheavn, ncompn, heavn(27,5), jtab(7), ino, ig, iret
+    integer :: nnos, nfiss, jfisno, jheavn, ncompn, heavn(27, 5), jtab(7), ino, ig, iret
     integer :: nfh, ddlc, nddl, nnom, nfe, ibid, ddls, ddlm
     integer :: jpmilt
 !
 !
 !
 ! - FONCTIONS DE FORMES ET POINTS DE GAUSS
-    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, &
+                     npg=npg, jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
-    ASSERT(nno.le.27)
+    ASSERT(nno .le. 27)
 !
 !     INITIALISATION DES DIMENSIONS DES DDLS X-FEM
-    call xteini(nomte, nfh, nfe, ibid, ddlc,&
-                nnom, ddls, nddl, ddlm, nfiss,&
+    call xteini(nomte, nfh, nfe, ibid, ddlc, &
+                nnom, ddls, nddl, ddlm, nfiss, &
                 ibid)
 !
 ! - PARAMETRES EN ENTREE
@@ -75,29 +75,29 @@ subroutine te0538(option, nomte)
     call jevech('PSTANO', 'L', jstno)
 !
     call elref1(elref)
-    if (.not.iselli(elref)) call jevech('PPMILTTO', 'L', jpmilt)
+    if (.not. iselli(elref)) call jevech('PPMILTTO', 'L', jpmilt)
 !
 !     RECUPERATION DE LA DEFINITION DES DDL HEAVISIDES
-    if (nfh.gt.0) then
-      call jevech('PHEA_NO', 'L', jheavn)
-      call tecach('OOO', 'PHEA_NO', 'L', iret, nval=7,&
-                itab=jtab)
-      ncompn = jtab(2)/jtab(3)
-      ASSERT(ncompn.eq.5)
-      do ino = 1, nno
-        do ig = 1 , ncompn
-          heavn(ino,ig) = zi(jheavn-1+ncompn*(ino-1)+ig)
-        enddo
-      enddo
-    endif
+    if (nfh .gt. 0) then
+        call jevech('PHEA_NO', 'L', jheavn)
+        call tecach('OOO', 'PHEA_NO', 'L', iret, nval=7, &
+                    itab=jtab)
+        ncompn = jtab(2)/jtab(3)
+        ASSERT(ncompn .eq. 5)
+        do ino = 1, nno
+            do ig = 1, ncompn
+                heavn(ino, ig) = zi(jheavn-1+ncompn*(ino-1)+ig)
+            end do
+        end do
+    end if
 !
     if (nfiss .gt. 1) call jevech('PFISNO', 'L', jfisno)
 !
     call jevech('PMATUUR', 'E', imatuu)
 !
-    call xmasel(nno, nfh, nfe, ddlc, igeom,&
-                zi(imate), zr(jpintt), zi(jcnset), zi(jheavt), zi(jlonch),&
-                zr(jbaslo), zr(jlsn), zr(jlst), zr(imatuu), heavn, jpmilt,&
+    call xmasel(nno, nfh, nfe, ddlc, igeom, &
+                zi(imate), zr(jpintt), zi(jcnset), zi(jheavt), zi(jlonch), &
+                zr(jbaslo), zr(jlsn), zr(jlst), zr(imatuu), heavn, jpmilt, &
                 jstno, nnos, ddlm)
 !
 !
@@ -105,10 +105,10 @@ subroutine te0538(option, nomte)
     call teattr('C', 'XLAG', lag, ibid)
     if (ibid .eq. 0 .and. lag .eq. 'ARETE') then
         nno = nnos
-    endif
-    call xteddl(ndim, nfh, nfe, ddls, nddl,&
-                nno, nnos, zi(jstno), .false._1, .true._1,&
-                option, nomte, ddlm,&
+    end if
+    call xteddl(ndim, nfh, nfe, ddls, nddl, &
+                nno, nnos, zi(jstno), .false._1, .true._1, &
+                option, nomte, ddlm, &
                 nfiss, jfisno, mat=zr(imatuu))
 !
 end subroutine

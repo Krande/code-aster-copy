@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,16 +23,16 @@ subroutine tilbar(stild, vectt, bars)
 #include "asterfort/btkb.h"
 #include "asterfort/sigbar.h"
 #include "asterfort/sigvte.h"
-    real(kind=8) :: stild ( 5 )
-    real(kind=8) :: vectt ( 3 , 3 )
-    real(kind=8) :: bars ( 9 , 9 )
+    real(kind=8) :: stild(5)
+    real(kind=8) :: vectt(3, 3)
+    real(kind=8) :: bars(9, 9)
 !
-    real(kind=8) :: bid33 ( 3 , 3 )
+    real(kind=8) :: bid33(3, 3)
 !
-    real(kind=8) :: stil ( 3 , 3 )
+    real(kind=8) :: stil(3, 3)
 !
 !
-    real(kind=8) :: s ( 3 , 3 )
+    real(kind=8) :: s(3, 3)
 !
 !DEB
 !
@@ -44,7 +44,7 @@ subroutine tilbar(stild, vectt, bars)
 !
 !              S     =  ( VECTT ) T * STIL  * VECTT
 !
-    call btkb(3, 3, 3, stil, vectt,&
+    call btkb(3, 3, 3, stil, vectt, &
               bid33, s)
 !
 !---- BARS   ( 9 , 9 )

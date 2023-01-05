@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 !
 subroutine montee(nout, lchout, lpaout, fin)
 !
-    use calcul_module, only : ca_calvoi_, ca_igr_, ca_nbgr_, ca_ligrel_
+    use calcul_module, only: ca_calvoi_, ca_igr_, ca_nbgr_, ca_ligrel_
 !
     implicit none
 ! person_in_charge: jacques.pellet at edf.fr
@@ -41,19 +41,19 @@ subroutine montee(nout, lchout, lpaout, fin)
 !
     if (ca_calvoi_ .eq. 0) then
         if (fin .eq. ' ') then
-            igr2=ca_igr_
-            te2=typele(ca_ligrel_,igr2,1)
+            igr2 = ca_igr_
+            te2 = typele(ca_ligrel_, igr2, 1)
             call monte1(te2, nout, lchout, lpaout, igr2)
-        endif
+        end if
     else
 !       -- on recopie tout a la fin :
         if (fin .eq. 'FIN') then
             do igr2 = 1, ca_nbgr_
-                te2=typele(ca_ligrel_,igr2,1)
+                te2 = typele(ca_ligrel_, igr2, 1)
                 call monte1(te2, nout, lchout, lpaout, igr2)
             end do
-        endif
-    endif
+        end if
+    end if
 !
 !
 end subroutine

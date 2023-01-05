@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,11 +18,11 @@
 !
 subroutine tbSuppressAllLines(tabl_namez)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/jeveuo.h"
 !
-character(len=*), intent(in) :: tabl_namez
+    character(len=*), intent(in) :: tabl_namez
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -47,14 +47,14 @@ character(len=*), intent(in) :: tabl_namez
 !
     tablName = tabl_namez
 !
-    call jeveuo(tablName(1:19)//'.TBNP', 'E', vi   = tbnp)
-    call jeveuo(tablName(1:19)//'.TBLP', 'E', vk24 = tblp)
+    call jeveuo(tablName(1:19)//'.TBNP', 'E', vi=tbnp)
+    call jeveuo(tablName(1:19)//'.TBLP', 'E', vk24=tblp)
     nbPara = tbnp(1)
     nbLine = tbnp(2)
     do iPara = 1, nbPara
         lineObje = tblp(1+4*(iPara-1)+2)
         lineFlag = tblp(1+4*(iPara-1)+3)
-        call jeveuo(lineFlag, 'E', vi = flag)
+        call jeveuo(lineFlag, 'E', vi=flag)
         flag(1:nbLine) = 0
     end do
     tbnp(2) = 0

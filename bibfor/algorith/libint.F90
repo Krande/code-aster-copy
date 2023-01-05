@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -91,7 +91,7 @@ subroutine libint(imped, nume91, nbint, lisint, nbeq1)
 !
     do k1 = 1, nbint
 !
-        indin1='&&VEC_DDL_INTF_'//zk8(lintf+k1-1)
+        indin1 = '&&VEC_DDL_INTF_'//zk8(lintf+k1-1)
         call jeveuo(indin1, 'L', llint1)
         call jelira(indin1, 'LONMAX', nbddl1)
 !
@@ -100,38 +100,38 @@ subroutine libint(imped, nume91, nbint, lisint, nbeq1)
                 call ddllag(nume91, zi(llint1+m1-1), nbeq1, lag1, lag2)
 !-- SUPRESSION DES COUPLAGES L1 / L2
                 if (lag1 .gt. 1) then
-                    l1=smdi(lag1)-smdi(1+lag1-2)-1
-                    ind=smdi(1+lag1-2)
+                    l1 = smdi(lag1)-smdi(1+lag1-2)-1
+                    ind = smdi(1+lag1-2)
                     do n1 = 1, l1
-                        zr(lklibr+ind+n1-1)=0.d0
+                        zr(lklibr+ind+n1-1) = 0.d0
                     end do
-                endif
+                end if
                 if (lag2 .gt. 1) then
-                    l1=smdi(lag2)-smdi(1+lag2-2)-1
-                    ind=smdi(1+lag2-2)
+                    l1 = smdi(lag2)-smdi(1+lag2-2)-1
+                    ind = smdi(1+lag2-2)
                     do n1 = 1, l1
-                        zr(lklibr+ind+n1-1)=0.d0
+                        zr(lklibr+ind+n1-1) = 0.d0
                     end do
-                endif
+                end if
 !
 !-- SUPPRESSION DES COUPLAGES EQ / L1
                 if (zi(llint1+m1-1) .gt. 1) then
-                    l1=smdi(1+zi(llint1+m1-1)-1)- smdi(1+zi(&
-                    llint1+m1-1)-2)-1
-                    ind=smdi(1+zi(llint1+m1-1)-2)
+                    l1 = smdi(1+zi(llint1+m1-1)-1)-smdi(1+zi( &
+                                                        llint1+m1-1)-2)-1
+                    ind = smdi(1+zi(llint1+m1-1)-2)
                     do j1 = 1, l1
 !-- ON TESTE DANS LE NUME.DELG SI LA VALEUR EST NEGATIVE
                         if (delg(1+zi4(lsmhc+ind+j1-1)-1) .lt. 0) then
-                            zr(lklibr+ind+j1-1)=0.d0
-                        endif
+                            zr(lklibr+ind+j1-1) = 0.d0
+                        end if
                     end do
-                endif
+                end if
 !-- ON REND LA DIAGONALE POSITIVE
-                zr(lklibr+smdi(lag1)-1)= abs(zr(lklibr+smdi(1+&
-                lag1-1)-1))
-                zr(lklibr+smdi(lag2)-1)= abs(zr(lklibr+smdi(1+&
-                lag2-1)-1))
-            endif
+                zr(lklibr+smdi(lag1)-1) = abs(zr(lklibr+smdi(1+ &
+                                                             lag1-1)-1))
+                zr(lklibr+smdi(lag2)-1) = abs(zr(lklibr+smdi(1+ &
+                                                             lag2-1)-1))
+            end if
 !
         end do
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -57,31 +57,31 @@ subroutine fgtahe(kdomm, nbcycl, epsmin, epsmax, dom)
         call getvid(' ', 'MATER', nbval=0, nbret=nbval)
         if (nbval .eq. 0) then
             call utmess('F', 'FATIGUE1_8')
-        endif
+        end if
         call getvid(' ', 'TAHERI_FONC', nbval=0, nbret=nbval)
         if (nbval .eq. 0) then
             call utmess('F', 'FATIGUE1_9')
-        endif
+        end if
         call getvid(' ', 'TAHERI_NAPPE', nbval=0, nbret=nbval)
         if (nbval .eq. 0) then
             call utmess('F', 'FATIGUE1_10')
-        endif
+        end if
         call getvid(' ', 'MATER', scal=nommat, nbret=nbval)
         pheno = 'FATIGUE'
         call rccome(nommat, pheno, icodre(1))
         if (icodre(1) .eq. 1) then
             call utmess('F', 'FATIGUE1_24')
-        endif
+        end if
         cara = 'MANSON_COFFIN'
         call rcpare(nommat, pheno, cara, icodma)
         if (icodma .ne. 0) then
             call utmess('F', 'FATIGUE1_11')
-        endif
+        end if
         call getvid(' ', 'TAHERI_FONC', scal=nomfo1, nbret=nbval)
         call getvid(' ', 'TAHERI_NAPPE', scal=nomnap, nbret=nbval)
-        call fgtaep(nommat, nomfo1, nomnap, nbcycl, epsmin,&
+        call fgtaep(nommat, nomfo1, nomnap, nbcycl, epsmin, &
                     epsmax, dom)
-    endif
+    end if
 !
 ! --- CALCUL DU DOMMAGE ELEMENTAIRE DE TAHERI_MIXTE
 !
@@ -89,17 +89,17 @@ subroutine fgtahe(kdomm, nbcycl, epsmin, epsmax, dom)
         call getvid(' ', 'MATER', nbval=0, nbret=nbval)
         if (nbval .eq. 0) then
             call utmess('F', 'FATIGUE1_12')
-        endif
+        end if
         call getvid(' ', 'TAHERI_NAPPE', nbval=0, nbret=nbval)
         if (nbval .eq. 0) then
             call utmess('F', 'FATIGUE1_10')
-        endif
+        end if
         call getvid(' ', 'MATER', scal=nommat, nbret=nbval)
         pheno = 'FATIGUE'
         call rccome(nommat, pheno, icodre(1))
         if (icodre(1) .eq. 1) then
             call utmess('F', 'FATIGUE1_24')
-        endif
+        end if
         cara = 'MANSON_COFFIN'
         call rcpare(nommat, pheno, cara, icodma)
         cara = 'WOHLER'
@@ -110,14 +110,14 @@ subroutine fgtahe(kdomm, nbcycl, epsmin, epsmax, dom)
         call rcpare(nommat, pheno, cara, icodhs)
         if (icodma .ne. 0) then
             call utmess('F', 'FATIGUE1_13')
-        endif
+        end if
         if (icodwo .ne. 0 .and. icodba .ne. 0 .and. icodhs .ne. 0) then
             call utmess('F', 'FATIGUE1_14')
-        endif
+        end if
         call getvid(' ', 'TAHERI_NAPPE', scal=nomnap, nbret=nbval)
-        call fgtaes(nommat, nomnap, nbcycl, epsmin, epsmax,&
+        call fgtaes(nommat, nomnap, nbcycl, epsmin, epsmax, &
                     dom)
-    endif
+    end if
 !
     call jedema()
 end subroutine

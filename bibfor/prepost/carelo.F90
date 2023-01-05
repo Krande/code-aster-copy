@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine carelo(modele, carele, base, chrel1, chrel2,&
+subroutine carelo(modele, carele, base, chrel1, chrel2, &
                   chrel3)
-    implicit   none
+    implicit none
 #include "jeveux.h"
 !
 #include "asterfort/calcul.h"
@@ -65,8 +65,8 @@ subroutine carelo(modele, carele, base, chrel1, chrel2,&
     lpaou(2) = 'PREPLO2'
     lchou(3) = chrel3
     lpaou(3) = 'PREPLO3'
-    call calcul('C', 'REPERE_LOCAL', ligrmo, 4, lchin,&
-                lpain, 3, lchou, lpaou, base,&
+    call calcul('C', 'REPERE_LOCAL', ligrmo, 4, lchin, &
+                lpain, 3, lchou, lpaou, base, &
                 'NON')
 !
     call jedema()

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,9 +19,9 @@
 !
 subroutine nmdoct(list_load, ds_contact)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -35,8 +35,8 @@ implicit none
 #include "asterfort/liscli.h"
 #include "asterfort/utmess.h"
 !
-character(len=19), intent(in) :: list_load
-type(NL_DS_Contact), intent(in) :: ds_contact
+    character(len=19), intent(in) :: list_load
+    type(NL_DS_Contact), intent(in) :: ds_contact
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -51,7 +51,7 @@ type(NL_DS_Contact), intent(in) :: ds_contact
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: nb_info_maxi =99
+    integer, parameter :: nb_info_maxi = 99
     character(len=24) :: list_info_type(nb_info_maxi)
     integer :: nb_load_init, nb_load_new, nb_info_type, iret
     integer :: i_neum_lapl, i_load
@@ -66,59 +66,59 @@ type(NL_DS_Contact), intent(in) :: ds_contact
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    list_load_new    = '&&NMDOCT.LISCHA'
+    list_load_new = '&&NMDOCT.LISCHA'
 !
     if (ds_contact%l_contact) then
 !
 ! ----- Read previous list of load
 !
         lload_info = list_load(1:19)//'.INFC'
-        call jeveuo(lload_info, 'L', vi = v_load_info)
+        call jeveuo(lload_info, 'L', vi=v_load_info)
         nb_load_init = v_load_info(1)
-        nb_load_new  = nb_load_init
+        nb_load_new = nb_load_init
 !
 ! ----- Check if single Lagrange multiplier is not used
 !
         lload_list = list_load(1:19)//'.LCHA'
-        call jeveuo(lload_list, 'L', vk24 = v_load_list)
+        call jeveuo(lload_list, 'L', vk24=v_load_list)
         do i_load = 1, nb_load_init
             load_n = v_load_list(i_load)
             call jeexin(load_n(1:19)//'.LGRF', iret)
-            if( iret.ne.0 ) then
-                call jeveuo(load_n(1:19)//'.LGRF', 'L', vk8 = v_lgrf)
+            if (iret .ne. 0) then
+                call jeveuo(load_n(1:19)//'.LGRF', 'L', vk8=v_lgrf)
                 lag12 = v_lgrf(3)
-                if( lag12.eq.'LAG1' ) then
+                if (lag12 .eq. 'LAG1') then
                     call utmess('F', 'MECANONLINE_5')
-                endif
-            endif
-        enddo
+                end if
+            end if
+        end do
 !
 ! ----- Prepare constant function
 !
         func_const = '&&NMDOCT'
-        coef       = 1.d0
+        coef = 1.d0
         call focste(func_const, 'TOUTRESU', coef, 'V')
 !
 ! ----- Add list of elements for slave surface (create in DEFI_CONTACT)
 !
         if (ds_contact%l_elem_slav) then
             ligrel_link_slav = ds_contact%ligrel_elem_slav
-            nb_load_new      = nb_load_new + 1
-        endif
+            nb_load_new = nb_load_new+1
+        end if
 !
 ! ----- Add list of contact elements (create in MECA_NON_LINE)
 !
         if (ds_contact%l_elem_cont) then
             ligrel_link_cont = ds_contact%ligrel_elem_cont(1:8)
-            nb_load_new      = nb_load_new + 1
-        endif
+            nb_load_new = nb_load_new+1
+        end if
 !
 ! ----- Add list of linear relation
 !
         if (ds_contact%l_dof_rela) then
             ligrel_link = ds_contact%ligrel_dof_rela
-            nb_load_new = nb_load_new + 1
-        endif
+            nb_load_new = nb_load_new+1
+        end if
 !
 ! ----- Add LIGREL to list of loads
 !
@@ -132,10 +132,10 @@ type(NL_DS_Contact), intent(in) :: ds_contact
 !
             do i_load = 1, nb_load_init
                 nb_info_type = nb_info_maxi
-                call liscli(list_load, i_load, nb_info_maxi, list_info_type, load_name,&
+                call liscli(list_load, i_load, nb_info_maxi, list_info_type, load_name, &
                             load_func, nb_info_type, i_neum_lapl)
-                call liscad('MECA'      , list_load_new , i_load, load_name, load_func, &
-                            nb_info_type, list_info_type, i_neum_laplz = i_neum_lapl)
+                call liscad('MECA', list_load_new, i_load, load_name, load_func, &
+                            nb_info_type, list_info_type, i_neum_laplz=i_neum_lapl)
             end do
 !
 ! --------- Add elements (slave)
@@ -143,26 +143,26 @@ type(NL_DS_Contact), intent(in) :: ds_contact
             i_load = nb_load_init
             if (ds_contact%l_elem_slav) then
                 ASSERT(ds_contact%l_elem_cont)
-                i_load = i_load + 1
-                call liscad('MECA'        ,list_load_new, i_load, ligrel_link_slav, func_const,&
-                            info_typez = 'ELEM_TARDIF')
-            endif
+                i_load = i_load+1
+                call liscad('MECA', list_load_new, i_load, ligrel_link_slav, func_const, &
+                            info_typez='ELEM_TARDIF')
+            end if
 !
 ! --------- Add elements (contact)
 !
             if (ds_contact%l_elem_cont) then
-                i_load = i_load + 1
-                call liscad('MECA'        ,list_load_new, i_load, ligrel_link_cont, func_const,&
-                            info_typez = 'ELEM_TARDIF')
-            endif
+                i_load = i_load+1
+                call liscad('MECA', list_load_new, i_load, ligrel_link_cont, func_const, &
+                            info_typez='ELEM_TARDIF')
+            end if
 !
 ! --------- Add list of linear relations
 !
             if (ds_contact%l_dof_rela) then
-                i_load = i_load + 1
-                call liscad('MECA'        ,list_load_new, i_load, ligrel_link, func_const,&
-                            info_typez = 'DIRI_CSTE')
-            endif
+                i_load = i_load+1
+                call liscad('MECA', list_load_new, i_load, ligrel_link, func_const, &
+                            info_typez='DIRI_CSTE')
+            end if
             ASSERT(i_load .eq. nb_load_new)
 !
 ! --------- Copy and clean
@@ -170,7 +170,7 @@ type(NL_DS_Contact), intent(in) :: ds_contact
             call lisccr('MECA', list_load, nb_load_new, 'V')
             call copisd(' ', 'V', list_load_new, list_load)
             call detrsd('LISTE_CHARGES', list_load_new)
-        endif
-    endif
+        end if
+    end if
 !
 end subroutine

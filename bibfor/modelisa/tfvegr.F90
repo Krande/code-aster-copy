@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -53,28 +53,28 @@ subroutine tfvegr(nommcf, ocgril)
     nbgtot = abs(nbgtot)
     if (nbgtot .lt. ntypg) then
         call utmess('E', 'MODELISA7_15')
-    endif
+    end if
     call getvis(nommcf, 'TYPE_GRILLE', iocc=ocgril, nbval=0, nbret=ntot2)
     if (abs(ntot2) .ne. nbgtot) then
         call utmess('E', 'MODELISA7_16')
-    endif
+    end if
     call wkvect('&&TFVEGR.TEMP.VECI', 'V V I', nbgtot, iveci)
-    call getvis(nommcf, 'TYPE_GRILLE', iocc=ocgril, nbval=nbgtot, vect=zi(iveci),&
+    call getvis(nommcf, 'TYPE_GRILLE', iocc=ocgril, nbval=nbgtot, vect=zi(iveci), &
                 nbret=ibid)
     do igril = 1, nbgtot
-        if ((zi(iveci+igril-1).lt.1) .or. (zi(iveci+igril-1).gt.ntypg)) then
+        if ((zi(iveci+igril-1) .lt. 1) .or. (zi(iveci+igril-1) .gt. ntypg)) then
             call utmess('E', 'MODELISA7_17')
-        endif
+        end if
     end do
     call getvr8(nommcf, 'LARG_TYPG', iocc=ocgril, nbval=0, nbret=ntypg2)
     call getvr8(nommcf, 'EPAI_TYPG', iocc=ocgril, nbval=0, nbret=ntypg3)
     call getvr8(nommcf, 'RUGO_TYPG', iocc=ocgril, nbval=0, nbret=ntypg4)
     call getvr8(nommcf, 'COEF_TRAI_TYPG', iocc=ocgril, nbval=0, nbret=ntypg5)
     call getvr8(nommcf, 'COEF_DPOR_TYPG', iocc=ocgril, nbval=0, nbret=ntypg6)
-    if ((abs(ntypg2).ne.ntypg) .or. (abs(ntypg3).ne.ntypg) .or. (abs(ntypg4).ne.ntypg) .or.&
-        (abs(ntypg5).ne.ntypg) .or. (abs(ntypg6).ne.ntypg)) then
+    if ((abs(ntypg2) .ne. ntypg) .or. (abs(ntypg3) .ne. ntypg) .or. (abs(ntypg4) .ne. ntypg) .or. &
+        (abs(ntypg5) .ne. ntypg) .or. (abs(ntypg6) .ne. ntypg)) then
         call utmess('E', 'MODELISA7_18')
-    endif
+    end if
 !
 !
     call jedetr('&&TFVEGR.TEMP.VECI')

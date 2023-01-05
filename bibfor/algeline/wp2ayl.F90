@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine wp2ayl(appr, lmatra, lmasse, lamor, sigma,&
-                  lbloq, yh, yb, zh, zb,&
-                  u1, u2, u3, u4, v,&
+subroutine wp2ayl(appr, lmatra, lmasse, lamor, sigma, &
+                  lbloq, yh, yb, zh, zb, &
+                  u1, u2, u3, u4, v, &
                   n, solveu)
     implicit none
 #include "jeveux.h"
@@ -68,19 +68,19 @@ subroutine wp2ayl(appr, lmatra, lmasse, lamor, sigma,&
     real(kind=8) :: si
     cbid = dcmplx(0.d0, 0.d0)
 !-----------------------------------------------------------------------
-    matass=zk24(zi(lmatra+1))
-    chcine=' '
-    criter=' '
-    k19bid=' '
+    matass = zk24(zi(lmatra+1))
+    chcine = ' '
+    criter = ' '
+    k19bid = ' '
     zero = 0.0d0
     sr = dble(sigma)
     si = dimag(sigma)
 !
-    call mrmult('ZERO', lamor, yh, u1, 1,&
+    call mrmult('ZERO', lamor, yh, u1, 1, &
                 .false._1)
-    call mrmult('ZERO', lmasse, yb, u2, 1,&
+    call mrmult('ZERO', lmasse, yb, u2, 1, &
                 .false._1)
-    call mrmult('ZERO', lmasse, yh, u3, 1,&
+    call mrmult('ZERO', lmasse, yh, u3, 1, &
                 .false._1)
 !-RM-DEB
 !     LA BOUCLE 5 REALISE LE PRODUIT PAR MASSE*INV(MASSE_REG)*MASSR
@@ -93,32 +93,32 @@ subroutine wp2ayl(appr, lmatra, lmasse, lamor, sigma,&
 !-RM-FIN
     if (si .ne. zero) then
         do i = 1, n, 1
-            v(i) = dcmplx(u1(i)) + sigma*dcmplx(u3(i)) + dcmplx(u2(i))
+            v(i) = dcmplx(u1(i))+sigma*dcmplx(u3(i))+dcmplx(u2(i))
         end do
-        call resoud(matass, k19bid, solveu, chcine, 1,&
-                    k19bid, k19bid, kbid, [0.d0], v,&
+        call resoud(matass, k19bid, solveu, chcine, 1, &
+                    k19bid, k19bid, kbid, [0.d0], v, &
                     criter, .false._1, 0, iret)
         if (appr .eq. 'R') then
             do i = 1, n, 1
-                zh(i) = - dble(v(i))
-                zb(i) = (yh(i) - dble(sigma*v(i)))*lbloq(i)
+                zh(i) = -dble(v(i))
+                zb(i) = (yh(i)-dble(sigma*v(i)))*lbloq(i)
             end do
         else
             do i = 1, n, 1
-                zh(i) = - dimag(v(i))
-                zb(i) = - dimag(sigma*v(i))*lbloq(i)
+                zh(i) = -dimag(v(i))
+                zb(i) = -dimag(sigma*v(i))*lbloq(i)
             end do
-        endif
+        end if
     else
         do i = 1, n, 1
-            u4(i) = u1(i) + sr*u3(i) + u2(i)
+            u4(i) = u1(i)+sr*u3(i)+u2(i)
         end do
-        call resoud(matass, k19bid, solveu, chcine, 1,&
-                    k19bid, k19bid, kbid, u4, [cbid],&
+        call resoud(matass, k19bid, solveu, chcine, 1, &
+                    k19bid, k19bid, kbid, u4, [cbid], &
                     criter, .false._1, 0, iret)
         do i = 1, n, 1
             zh(i) = -u4(i)
-            zb(i) = (yh(i) - sr*u4(i))*lbloq(i)
+            zb(i) = (yh(i)-sr*u4(i))*lbloq(i)
         end do
-    endif
+    end if
 end subroutine

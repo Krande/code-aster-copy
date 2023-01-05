@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,12 +16,12 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine mmbclc(mesh  , model , iter_newt, nume_inst, ds_measure,&
+subroutine mmbclc(mesh, model, iter_newt, nume_inst, ds_measure, &
                   sddisc, sddyna, hval_incr, hval_algo, ds_contact)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -85,15 +85,15 @@ implicit none
 !
 ! - Get contact parameters
 !
-    l_all_verif = cfdisl(ds_contact%sdcont_defi,'ALL_VERIF')
-    l_newt_cont = cfdisl(ds_contact%sdcont_defi,'CONT_NEWTON')
-    l_newt_geom = cfdisl(ds_contact%sdcont_defi,'GEOM_NEWTON')
+    l_all_verif = cfdisl(ds_contact%sdcont_defi, 'ALL_VERIF')
+    l_newt_cont = cfdisl(ds_contact%sdcont_defi, 'CONT_NEWTON')
+    l_newt_geom = cfdisl(ds_contact%sdcont_defi, 'GEOM_NEWTON')
 !
 ! - No computation
 !
     if (l_all_verif) then
         call mmbouc(ds_contact, 'Cont', 'Set_Convergence')
-    endif
+    end if
 !
 ! - For generalized Newton method
 !
@@ -104,39 +104,39 @@ implicit none
         if (l_newt_geom) then
             call copisd('CHAMP_GD', 'V', disp_curr, sdcont_depgeo)
             call mmctcg(mesh, ds_contact, ds_measure)
-        endif
+        end if
 !
 ! ----- Start timer for preparation of contact
 !
         if (l_newt_cont .or. l_newt_geom) then
             call nmtime(ds_measure, 'Launch', 'Cont_Prep')
-        endif
+        end if
 !
 ! ----- Create contact elements
 !
         if (l_newt_geom) then
             call mmligr(mesh, model, ds_contact)
-        endif
+        end if
 !
 ! ----- Management of contact loop
 !
         if (l_newt_cont .or. l_newt_geom) then
-            call mmstat(mesh  , iter_newt, nume_inst, &
+            call mmstat(mesh, iter_newt, nume_inst, &
                         sddisc, disp_curr, disp_cumu_inst, ds_contact)
-        endif
+        end if
 !
 ! ----- Update input field
 !
         if (l_newt_cont .or. l_newt_geom) then
             call mmchml(mesh, ds_contact, sddisc, sddyna, nume_inst)
-        endif
+        end if
 !
 ! ----- Stop timer for preparation of contact
 !
         if (l_newt_cont .or. l_newt_geom) then
             call nmtime(ds_measure, 'Stop', 'Cont_Prep')
             call nmrinc(ds_measure, 'Cont_Prep ')
-        endif
-    endif
+        end if
+    end if
 !
 end subroutine

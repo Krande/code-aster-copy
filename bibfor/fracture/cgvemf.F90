@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -52,22 +52,22 @@ subroutine cgvemf(modele, typfis, nomfis, typdis)
 !     ERREUR SI FOND_FISS EST DONNE AVEC UN MODELE X-FEM
     if (typfis .eq. 'FONDFISS' .and. ixfem .eq. 1) then
         call utmess('F', 'RUPTURE0_95', sk=modele)
-    endif
+    end if
 !
 !     ERREUR SI FISSURE EST DONNE AVEC UN MODELE NON X-FEM
     if (typfis .eq. 'FISSURE' .and. ixfem .eq. 0) then
         call utmess('F', 'RUPTURE0_96', sk=modele)
-    endif
+    end if
 !
 !     ERREUR SI FISSURE N'EST PAS ASSOCIEE AU MODELE X-FEM
 !     SAUF SI MODELE COHESIF
-    if (typfis .eq. 'FISSURE'.and.typdis.eq.'FISSURE') then
-        fiinmo = xvfimo(modele,nomfis)
-        if (.not.fiinmo) then
-            valk(1)=nomfis
-            valk(2)=modele
+    if (typfis .eq. 'FISSURE' .and. typdis .eq. 'FISSURE') then
+        fiinmo = xvfimo(modele, nomfis)
+        if (.not. fiinmo) then
+            valk(1) = nomfis
+            valk(2) = modele
             call utmess('F', 'RUPTURE0_97', nk=2, valk=valk)
-        endif
-    endif
+        end if
+    end if
 !
 end subroutine

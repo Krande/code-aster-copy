@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -64,8 +64,8 @@ function lisnbg(lischa, genchz)
 !
     do ichar = 1, nbchar
         call lislco(lischa, ichar, genrec)
-        lok = lisico(genchz,genrec)
-        if (lok) lisnbg = lisnbg + 1
+        lok = lisico(genchz, genrec)
+        if (lok) lisnbg = lisnbg+1
     end do
 !
 999 continue

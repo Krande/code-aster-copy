@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,15 +17,15 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine nmelcm(mesh           , model     ,&
-                  ds_material    , ds_contact,&
-                  ds_constitutive, ds_measure,&
-                  hval_incr      , hval_algo ,&
+subroutine nmelcm(mesh, model, &
+                  ds_material, ds_contact, &
+                  ds_constitutive, ds_measure, &
+                  hval_incr, hval_algo, &
                   matr_elem)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -46,14 +46,14 @@ implicit none
 #include "asterfort/nmtime.h"
 #include "asterfort/utmess.h"
 !
-character(len=8), intent(in) :: mesh
-character(len=24), intent(in) :: model
-type(NL_DS_Material), intent(in) :: ds_material
-type(NL_DS_Contact), intent(in) :: ds_contact
-type(NL_DS_Constitutive), intent(in) :: ds_constitutive
-type(NL_DS_Measure), intent(inout) :: ds_measure
-character(len=19), intent(in) :: hval_incr(*), hval_algo(*)
-character(len=19), intent(out) :: matr_elem
+    character(len=8), intent(in) :: mesh
+    character(len=24), intent(in) :: model
+    type(NL_DS_Material), intent(in) :: ds_material
+    type(NL_DS_Contact), intent(in) :: ds_contact
+    type(NL_DS_Constitutive), intent(in) :: ds_constitutive
+    type(NL_DS_Measure), intent(inout) :: ds_measure
+    character(len=19), intent(in) :: hval_incr(*), hval_algo(*)
+    character(len=19), intent(out) :: matr_elem
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -77,7 +77,7 @@ character(len=19), intent(out) :: matr_elem
 !
     integer :: ifm, niv
     integer, parameter :: nbout = 3
-    integer, parameter :: nbin  = 36
+    integer, parameter :: nbin = 36
     character(len=8) :: lpaout(nbout), lpain(nbin)
     character(len=19) :: lchout(nbout), lchin(nbin)
     character(len=1) :: base
@@ -117,25 +117,25 @@ character(len=19), intent(out) :: matr_elem
 !
 ! - Get contact parameters
 !
-    l_cont_lac  = cfdisl(ds_contact%sdcont_defi, 'FORMUL_LAC')
-    l_xfem_czm  = cfdisl(ds_contact%sdcont_defi, 'EXIS_XFEM_CZM')
+    l_cont_lac = cfdisl(ds_contact%sdcont_defi, 'FORMUL_LAC')
+    l_xfem_czm = cfdisl(ds_contact%sdcont_defi, 'EXIS_XFEM_CZM')
     l_all_verif = cfdisl(ds_contact%sdcont_defi, 'ALL_VERIF')
-    l_xthm      = ds_contact%l_cont_thm
+    l_xthm = ds_contact%l_cont_thm
 
-    if (.not.l_all_verif .and. ((.not.l_cont_lac) .or. ds_contact%nb_cont_pair.ne.0)) then
+    if (.not. l_all_verif .and. ((.not. l_cont_lac) .or. ds_contact%nb_cont_pair .ne. 0)) then
 ! ----- Display
         if (niv .ge. 2) then
-            call utmess('I','CONTACT5_27')
-        endif
+            call utmess('I', 'CONTACT5_27')
+        end if
 ! ----- Init fields
         call inical(nbin, lpain, lchin, nbout, lpaout, lchout)
 ! ----- Prepare input fields
-        call nmelco_prep('MATR'   ,&
-                         mesh     , model    , ds_material, ds_contact,&
-                         disp_prev, vite_prev, acce_prev, vite_curr , disp_cumu_inst,&
-                         nbin     , lpain    , lchin    ,&
-                         option   , time_prev, time_curr , ds_constitutive,&
-                         ccohes   , xcohes)
+        call nmelco_prep('MATR', &
+                         mesh, model, ds_material, ds_contact, &
+                         disp_prev, vite_prev, acce_prev, vite_curr, disp_cumu_inst, &
+                         nbin, lpain, lchin, &
+                         option, time_prev, time_curr, ds_constitutive, &
+                         ccohes, xcohes)
 ! ----- <LIGREL> for contact elements
         ligrel = ds_contact%ligrel_elem_cont
 ! ----- Preparation of elementary matrix
@@ -147,20 +147,20 @@ character(len=19), intent(out) :: matr_elem
         lpaout(2) = 'PMATUUR'
         lchout(2) = matr_elem(1:15)//'.M02'
         if (l_xthm .or. l_xfem_czm) then
-           lpaout(3) = 'PCOHESO'
-           lchout(3) = ccohes
-        endif
+            lpaout(3) = 'PCOHESO'
+            lchout(3) = ccohes
+        end if
 ! ----- Computation
-        call calcul('S', option, ligrel, nbin, lchin,&
-                    lpain, nbout, lchout, lpaout, base,&
+        call calcul('S', option, ligrel, nbin, lchin, &
+                    lpain, nbout, lchout, lpaout, base, &
                     'OUI')
 ! ----- Copy output fields
         call reajre(matr_elem, lchout(1), base)
         call reajre(matr_elem, lchout(2), base)
         if (l_xthm .or. l_xfem_czm) then
             call copisd('CHAMP_GD', 'V', lchout(3), xcohes)
-        endif
-    endif
+        end if
+    end if
 !
 ! - End measure
 !

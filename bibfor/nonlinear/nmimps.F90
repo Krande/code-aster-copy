@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,9 +18,9 @@
 
 subroutine nmimps(ds_print, ds_conv, sderro)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/nmerge.h"
@@ -72,21 +72,21 @@ implicit none
         if (l_swap_comp_rela) then
             call utmess('I', 'MECANONLINE6_61')
             call utmess('I', 'MECANONLINE2_96')
-        endif
+        end if
         if (l_swap_rela_maxi) then
             call utmess('I', 'MECANONLINE6_62')
-            call GetResi(ds_conv, type = 'RESI_GLOB_MAXI' , user_para_ = valr(2))
+            call GetResi(ds_conv, type='RESI_GLOB_MAXI', user_para_=valr(2))
             valr(1) = ds_conv%swap_trig
             call utmess('I', 'MECANONLINE2_98', nr=2, valr=valr)
-        endif
+        end if
         do i_resi = 1, nb_resi
             if (ds_conv%l_resi_test(i_resi)) then
                 valk(1) = ds_conv%list_resi(i_resi)%type
                 valk(2) = ds_conv%list_resi(i_resi)%locus_calc
                 valr(1) = ds_conv%list_resi(i_resi)%vale_calc
                 call utmess('I', 'MECANONLINE6_70', nk=2, valk=valk, sr=valr(1))
-            endif
+            end if
         end do
-    endif
+    end if
 !
 end subroutine

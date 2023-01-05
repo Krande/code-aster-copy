@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine calmdg(model, modgen, nugene, num, nu,&
-                  ma, mate, mateco, moint, ndble,&
-                  itxsto, itysto, itzsto, iprsto, nbmo,&
+subroutine calmdg(model, modgen, nugene, num, nu, &
+                  ma, mate, mateco, moint, ndble, &
+                  itxsto, itysto, itzsto, iprsto, nbmo, &
                   iadirg)
 ! aslint: disable=
     implicit none
@@ -89,10 +89,10 @@ subroutine calmdg(model, modgen, nugene, num, nu,&
 !---------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: iadirg,   iadrz, iadx, iady, iadz
-    integer ::  icompt,  igeo, ilires, ilmax
+    integer :: iadirg, iadrz, iadx, iady, iadz
+    integer ::  icompt, igeo, ilires, ilmax
     integer :: imacl, imodg, ind, ior, iprs, irang, iret
-    integer :: irot,  itzsto, k, nbmo, nbmod, nbmodg
+    integer :: irot, itzsto, k, nbmo, nbmod, nbmodg
     integer :: nbsst, nn
     real(kind=8) :: bid, ebid
     integer, pointer :: tabl_adrx(:) => null()
@@ -114,7 +114,7 @@ subroutine calmdg(model, modgen, nugene, num, nu,&
     if (repon(1:3) .eq. 'NON') then
         call delat(modgen, nbsst, nbmo)
         call jeveuo('&&DELAT.INDIC', 'L', vi=indic)
-    endif
+    end if
 !
 ! CREATION DE TABLEAUX D ADRESSES PAR SOUS-STRUCTURES POUR LES
 ! NOMS DES CHAMNO DE DEPL_R PAR COMPOSANTES ET LA PRESSION
@@ -127,71 +127,71 @@ subroutine calmdg(model, modgen, nugene, num, nu,&
     call wkvect('&&CALMDG.TABL_LONMAX', 'V V I', nbsst, ilmax)
 !
 !
-    ilires=0
-    icompt=0
+    ilires = 0
+    icompt = 0
     do isst = 1, nbsst
-        k=0
+        k = 0
         call jeveuo(jexnum(modgen//'      .MODG.SSME', isst), 'L', imacl)
-        macel=zk8(imacl)
+        macel = zk8(imacl)
 !
         call jeveuo(macel//'.MAEL_REFE', 'L', vk24=mael_refe)
-        bamo = mael_refe(1)(1:8)
+        bamo = mael_refe(1) (1:8)
 !
 ! TEST POUR DETERMINER SI FLUIDE ET STRUCTURE S APPUIENT SUR
 ! DES MAILLAGES COMMUNS
 !
-        call rsexch('F', bamo, 'DEPL', 1, nomcha,&
+        call rsexch('F', bamo, 'DEPL', 1, nomcha, &
                     iret)
         call dismoi('NOM_MAILLA', nomcha(1:19), 'CHAM_NO', repk=mailla)
         call dismoi('NOM_MAILLA', moint, 'MODELE', repk=maflui)
         if (maflui .ne. mailla) then
-            call tabcor(model, mate, mateco, mailla, maflui, moint,&
+            call tabcor(model, mate, mateco, mailla, maflui, moint, &
                         num, ndble, icor)
-        endif
+        end if
 !
 ! RECUPERATION DES CMPS DE TRANSLATION
 !
         call jeveuo(jexnum(modgen//'      .MODG.SSTR', isst), 'L', igeo)
 !
-        tgeom(1)=zr(igeo)
-        tgeom(2)=zr(igeo+1)
-        tgeom(3)=zr(igeo+2)
+        tgeom(1) = zr(igeo)
+        tgeom(2) = zr(igeo+1)
+        tgeom(3) = zr(igeo+2)
 !
 ! RECUPERATION DES CMPS DE ROTATION
 !
         call jeveuo(jexnum(modgen//'      .MODG.SSOR', isst), 'L', irot)
 !
-        tgeom(4)=zr(irot)
-        tgeom(5)=zr(irot+1)
-        tgeom(6)=zr(irot+2)
+        tgeom(4) = zr(irot)
+        tgeom(5) = zr(irot+1)
+        tgeom(6) = zr(irot+2)
 !
         norm1 = sqrt(tgeom(1)**2+tgeom(2)**2+tgeom(3)**2)
 !
-        deuxpi = 4.0d0 * acos ( 0.0d0 )
+        deuxpi = 4.0d0*acos(0.0d0)
 !
         do ior = 1, 3
 !
-            reste(ior)=mod(tgeom(ior+3),deuxpi)
+            reste(ior) = mod(tgeom(ior+3), deuxpi)
 !
         end do
 !
-        if ((reste(1).eq.0.0d0) .and. (reste(2).eq.0.0d0) .and. (reste(3) .eq.0.0d0)) then
+        if ((reste(1) .eq. 0.0d0) .and. (reste(2) .eq. 0.0d0) .and. (reste(3) .eq. 0.0d0)) then
             norm2 = 0.0d0
         else
             norm2 = 1.0d0
-        endif
+        end if
 !
 !
 !
 ! ON RECUPERE LE NOMBRE DE MODES DANS LA BASE MODALE DU MACRO-ELEMENT
 ! DEFINI
 !
-        call rsorac(bamo, 'LONUTI', ibid, bid, k8bid,&
-                    cbid, ebid, 'ABSOLU', tmod, 1,&
+        call rsorac(bamo, 'LONUTI', ibid, bid, k8bid, &
+                    cbid, ebid, 'ABSOLU', tmod, 1, &
                     nbid)
-        nbmodg=tmod(1)
+        nbmodg = tmod(1)
 !
-        tabl_mode(isst)=nbmodg
+        tabl_mode(isst) = nbmodg
 !
 ! CREATION DE VECTEURS CONTENANT LES NOMS DES VECTEURS DE CHAMP AUX
 ! NOEUDS DE DEPLACEMENTS SUIVANT OX  OY  OZ AINSI QUE LE CHAMP DE
@@ -206,24 +206,24 @@ subroutine calmdg(model, modgen, nugene, num, nu,&
         call jeecra('&&CALMDG.TXSTO'//chaine, 'LONMAX', nbmodg)
         call jeecra('&&CALMDG.TXSTO'//chaine, 'LONUTI', nbmodg)
         call jeveut('&&CALMDG.TXSTO'//chaine, 'E', iadx)
-        tabl_adrx(isst)=iadx
+        tabl_adrx(isst) = iadx
         call jecreo('&&CALMDG.TYSTO'//chaine, 'V V K24')
         call jeecra('&&CALMDG.TYSTO'//chaine, 'LONMAX', nbmodg)
         call jeecra('&&CALMDG.TYSTO'//chaine, 'LONUTI', nbmodg)
         call jeveut('&&CALMDG.TYSTO'//chaine, 'E', iady)
-        tabl_adry(isst)=iady
+        tabl_adry(isst) = iady
         if (model .eq. '3D') then
             call jecreo('&&CALMDG.TZSTO'//chaine, 'V V K24')
             call jeecra('&&CALMDG.TZSTO'//chaine, 'LONMAX', nbmodg)
             call jeecra('&&CALMDG.TZSTO'//chaine, 'LONUTI', nbmodg)
             call jeveut('&&CALMDG.TZSTO'//chaine, 'E', iadz)
-            zi(iadrz+isst-1)=iadz
-        endif
+            zi(iadrz+isst-1) = iadz
+        end if
         call jecreo('&&CALMDG.PRES'//chaine, 'V V K24')
         call jeecra('&&CALMDG.PRES'//chaine, 'LONMAX', nbmodg)
         call jeecra('&&CALMDG.PRES'//chaine, 'LONUTI', nbmodg)
         call jeveut('&&CALMDG.PRES'//chaine, 'E', iprs)
-        zi(iadrp+isst-1)=iprs
+        zi(iadrp+isst-1) = iprs
 !
 ! RECUPERATION DES MODES PROPRES ET CONTRAINTS AUQUELS ON
 ! FAIT SUBIR ROTATION ET TRANSLATION DEFINIES DANS LE MODELE
@@ -232,19 +232,19 @@ subroutine calmdg(model, modgen, nugene, num, nu,&
 ! CALCULES SUR UNE SEULE SOUS STRUCTURE
 !
         do imodg = 1, nbmodg
-            icompt=icompt+1
+            icompt = icompt+1
 !
             if (repon(1:3) .eq. 'NON') then
                 if (indic(icompt) .ne. 1) goto 2
-            endif
+            end if
 !
-            call trprot(model, bamo, tgeom, imodg, iadx,&
-                        iady, iadz, isst, iadrp, norm1,&
-                        norm2, ndble, num, nu, ma,&
+            call trprot(model, bamo, tgeom, imodg, iadx, &
+                        iady, iadz, isst, iadrp, norm1, &
+                        norm2, ndble, num, nu, ma, &
                         mate, mateco, moint, ilires, k, icor)
 !
 !
-  2         continue
+2           continue
         end do
 !
 ! DESTRUCTION DU TABLEAU DES CORRESPONDANCES
@@ -258,9 +258,9 @@ subroutine calmdg(model, modgen, nugene, num, nu,&
 !----------------------------------------------------------------
 ! CALCUL DU NOMBRE DE MODES TOTAL
 !
-    nbmo=0
+    nbmo = 0
     do isst = 1, nbsst
-        nbmo=nbmo+tabl_mode(isst)
+        nbmo = nbmo+tabl_mode(isst)
     end do
 !
 ! CREATION D UN TABLEAU DE VECTEURS CONTENANT LES NOMS DE TOUS
@@ -280,7 +280,7 @@ subroutine calmdg(model, modgen, nugene, num, nu,&
         call jeecra('&&TPZSTO', 'LONMAX', nbmo)
         call jeecra('&&TPZSTO', 'LONUTI', nbmo)
         call jeveut('&&TPZSTO', 'E', itzsto)
-    endif
+    end if
     call jecreo('&&VESTOC', 'V V K24')
     call jeecra('&&VESTOC', 'LONMAX', nbmo)
     call jeecra('&&VESTOC', 'LONUTI', nbmo)
@@ -290,22 +290,22 @@ subroutine calmdg(model, modgen, nugene, num, nu,&
     call jeecra('&&TABIRG', 'LONUTI', nbmo)
     call jeveut('&&TABIRG', 'E', iadirg)
 !
-    ind=0
+    ind = 0
     do i = 1, nbsst
 !
 ! NB DE MODES PAR SST
 !
-        nbmod=tabl_mode(i)
+        nbmod = tabl_mode(i)
 !
         do j = 1, nbmod
 !
-            ind=ind+1
-            zk24(itxsto+ind-1)=zk24(tabl_adrx(i)+j-1)
-            zk24(itysto+ind-1)=zk24(tabl_adry(i)+j-1)
-            if (model .eq. '3D') zk24(itzsto+ind-1)=zk24(zi(iadrz+i-1)+j- 1)
-            zk24(iprsto+ind-1)=zk24(zi(iadrp+i-1)+j-1)
+            ind = ind+1
+            zk24(itxsto+ind-1) = zk24(tabl_adrx(i)+j-1)
+            zk24(itysto+ind-1) = zk24(tabl_adry(i)+j-1)
+            if (model .eq. '3D') zk24(itzsto+ind-1) = zk24(zi(iadrz+i-1)+j-1)
+            zk24(iprsto+ind-1) = zk24(zi(iadrp+i-1)+j-1)
             call rangen(nugene//'.NUME', i, j, irang)
-            zi(iadirg+ind-1)=irang
+            zi(iadirg+ind-1) = irang
 !
         end do
     end do

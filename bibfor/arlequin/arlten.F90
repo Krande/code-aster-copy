@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine arlten(coorc1, coorc2, npgs, ndim, poijcs,&
-                  ndml1, ndml2, fcpig1, dfdx1, dfdy1,&
+subroutine arlten(coorc1, coorc2, npgs, ndim, poijcs, &
+                  ndml1, ndml2, fcpig1, dfdx1, dfdy1, &
                   dfdz1, mcpln1)
 !
 !
@@ -100,10 +100,10 @@ subroutine arlten(coorc1, coorc2, npgs, ndim, poijcs,&
     angle(3) = gamma
     mcpln1 = 0.0
     hooke = 0.0
-    hooke(1,1) = e
-    hooke(4,4) = g
-    hooke(5,5) = g
-    hooke(6,6) = g
+    hooke(1, 1) = e
+    hooke(4, 4) = g
+    hooke(5, 5) = g
+    hooke(6, 6) = g
 !
 ! --- CONSTRUCTION DU BARYCENTRE DE LA MAILLE 3D
 !
@@ -118,15 +118,15 @@ subroutine arlten(coorc1, coorc2, npgs, ndim, poijcs,&
 ! --- POINT DE GAUSS DANS LE REPERE GLOBAL
 !
         do jaux = 1, ndml1
-            xg(1) = xg(1) + fcpig1(ndim*ndim*ndml1*(kpgs-1)+jaux*3-2)*coorc1(jaux*3-2)
-            xg(2) = xg(2) + fcpig1(ndim*ndim*ndml1*(kpgs-1)+jaux*3-2)*coorc1(jaux*3-1)
-            xg(3) = xg(3) + fcpig1(ndim*ndim*ndml1*(kpgs-1)+jaux*3-2)*coorc1(jaux*3-0)
+            xg(1) = xg(1)+fcpig1(ndim*ndim*ndml1*(kpgs-1)+jaux*3-2)*coorc1(jaux*3-2)
+            xg(2) = xg(2)+fcpig1(ndim*ndim*ndml1*(kpgs-1)+jaux*3-2)*coorc1(jaux*3-1)
+            xg(3) = xg(3)+fcpig1(ndim*ndim*ndml1*(kpgs-1)+jaux*3-2)*coorc1(jaux*3-0)
         end do
 !
 ! --- APPEL AU CHAMP DES FONCTIONS DE FORME POUTRE
 !
         xl = 0.d0
-        xl = sqrt((coorc2(4)-coorc2(1))**2+(coorc2(5)-coorc2(2))**2 + (coorc2(6)-coorc2(3))**2)
+        xl = sqrt((coorc2(4)-coorc2(1))**2+(coorc2(5)-coorc2(2))**2+(coorc2(6)-coorc2(3))**2)
 !
 ! --- POINT DE GAUSS DANS LE REPERE LOCAL
 !
@@ -138,16 +138,16 @@ subroutine arlten(coorc1, coorc2, npgs, ndim, poijcs,&
         xgl(1) = xgl(1)/xl
         phiy = (c012*e*xiy)/(g*a*alfaz*xl**2)
         phiz = (c012*e*xiz)/(g*a*alfay*xl**2)
-        call arlpff(xgl(1), xgl(2), xgl(3), xl, phiy,&
+        call arlpff(xgl(1), xgl(2), xgl(3), xl, phiy, &
                     phiz, B1d, B1dnrj)
         poids = poijcs(kpgs)
-        B3d(1,:) = fcpig1(ndim*ndim*ndml1*(kpgs-1)+1: ndim*ndim*ndml1*(kpgs-1)+ndim*ndml1)
-        B3d(2,:) = fcpig1(&
-                   ndim*ndim*ndml1*(kpgs-1)+1+ndim*ndml1: ndim*ndim*ndml1*(kpgs-1)+2*ndim*ndml1)
-        B3d(3,:) = fcpig1(&
-                   ndim*ndim*ndml1*(kpgs-1)+1+2*ndim*ndml1: ndim*ndim*ndml1*(kpgs-1)+3*ndim*ndml1&
-                   )
-        mcpln1 = mcpln1 + matmul(transpose(B1d),B3d)*poids
+        B3d(1, :) = fcpig1(ndim*ndim*ndml1*(kpgs-1)+1:ndim*ndim*ndml1*(kpgs-1)+ndim*ndml1)
+        B3d(2, :) = fcpig1( &
+                    ndim*ndim*ndml1*(kpgs-1)+1+ndim*ndml1:ndim*ndim*ndml1*(kpgs-1)+2*ndim*ndml1)
+        B3d(3, :) = fcpig1( &
+                    ndim*ndim*ndml1*(kpgs-1)+1+2*ndim*ndml1:ndim*ndim*ndml1*(kpgs-1)+3*ndim*ndml1 &
+                    )
+        mcpln1 = mcpln1+matmul(transpose(B1d), B3d)*poids
     end do
 !
 !

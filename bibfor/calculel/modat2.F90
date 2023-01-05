@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -56,7 +56,6 @@ function modat2(iopt, ite, nompar)
     lgco = nbligcol(1)
     iopte = optte((ite-1)*lgco+iopt)
 
-
     if (iopte .eq. 0) goto 20
 
     call jeveuo(jexnum('&CATA.TE.OPTMOD', iopte), 'L', joptmo)
@@ -64,8 +63,8 @@ function modat2(iopt, ite, nompar)
     if (nucalc .le. 0) goto 20
 
     call jeveuo(jexnum('&CATA.TE.OPTNOM', iopte), 'L', joptno)
-    nbpar = zi(joptmo-1+2) + zi(joptmo-1+3)
-    do k = 1,nbpar
+    nbpar = zi(joptmo-1+2)+zi(joptmo-1+3)
+    do k = 1, nbpar
         if (nompar .ne. zk8(joptno-1+k)) cycle
         modat2 = zi(joptmo-1+3+k)
     end do

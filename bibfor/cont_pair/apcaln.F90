@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,9 +18,9 @@
 
 subroutine apcaln(mesh, ds_contact)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/aptgen.h"
@@ -55,8 +55,8 @@ implicit none
 !
     call infdbg('APPARIEMENT', ifm, niv)
     if (niv .ge. 2) then
-        write (ifm,*) '<Pairing> . Compute tangents'
-    endif
+        write (ifm, *) '<Pairing> . Compute tangents'
+    end if
 !
 ! - Inititializations
 !
@@ -77,8 +77,8 @@ implicit none
 ! - All-reduce for tangents field by element
 !
     if (.not. one_proc) then
-        call sdmpic('SD_APPA_TGEL',sdappa)
-    endif
+        call sdmpic('SD_APPA_TGEL', sdappa)
+    end if
 !
 ! - Compute
 !
@@ -87,8 +87,8 @@ implicit none
 ! - All-reduce for tangents at each node field
 !
     if (.not. one_proc) then
-        call sdmpic('SD_APPA_TGNO',sdappa)
-    endif
+        call sdmpic('SD_APPA_TGNO', sdappa)
+    end if
 !
 ! - Check normals discontinuity
 !

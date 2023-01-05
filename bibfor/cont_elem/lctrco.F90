@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 subroutine lctrco(i_tria, tria_node, poin_inte, tria_coor)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/assert.h"
 !
@@ -47,9 +47,9 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    do i_node=1, 3
-        tria_coor(1,i_node) = poin_inte(1,tria_node(i_tria,i_node))
-        tria_coor(2,i_node) = poin_inte(2,tria_node(i_tria,i_node))
+    do i_node = 1, 3
+        tria_coor(1, i_node) = poin_inte(1, tria_node(i_tria, i_node))
+        tria_coor(2, i_node) = poin_inte(2, tria_node(i_tria, i_node))
     end do
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,16 +19,16 @@
 !
 subroutine romFieldDSCopy(fieldIn, fieldOut)
 !
-use Rom_Datastructure_type
+    use Rom_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/as_allocate.h"
 !
-type(ROM_DS_Field), intent(in)  :: fieldIn
-type(ROM_DS_Field), intent(inout) :: fieldOut
+    type(ROM_DS_Field), intent(in)  :: fieldIn
+    type(ROM_DS_Field), intent(inout) :: fieldOut
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -54,27 +54,27 @@ type(ROM_DS_Field), intent(inout) :: fieldOut
     fieldOut%fieldName = fieldIn%fieldName
     fieldOut%fieldRefe = fieldIn%fieldRefe
     fieldOut%fieldSupp = fieldIn%fieldSupp
-    fieldOut%mesh      = fieldIn%mesh
-    fieldOut%model     = fieldIn%model
-    fieldOut%nbEqua    = fieldIn%nbEqua
-    fieldOut%lLagr     = fieldIn%lLagr
+    fieldOut%mesh = fieldIn%mesh
+    fieldOut%model = fieldIn%model
+    fieldOut%nbEqua = fieldIn%nbEqua
+    fieldOut%lLagr = fieldIn%lLagr
     fieldOut%nbCmpName = fieldIn%nbCmpName
 !
 ! - Copy pointers
 !
     nbCmpName = fieldIn%nbCmpName
     if (nbCmpName .ne. 0) then
-        AS_ALLOCATE(vk8 = fieldOut%listCmpName, size = nbCmpName)
+        AS_ALLOCATE(vk8=fieldOut%listCmpName, size=nbCmpName)
         do iCmpName = 1, nbCmpName
             fieldOut%listCmpName(iCmpName) = fieldIn%listCmpName(iCmpName)
         end do
-    endif
+    end if
     nbEqua = fieldIn%nbEqua
     if (nbEqua .ne. 0) then
-        AS_ALLOCATE(vi = fieldOut%equaCmpName, size = nbEqua)
+        AS_ALLOCATE(vi=fieldOut%equaCmpName, size=nbEqua)
         do iEqua = 1, nbEqua
             fieldOut%equaCmpName(iEqua) = fieldIn%equaCmpName(iEqua)
         end do
-    endif
+    end if
 !
 end subroutine

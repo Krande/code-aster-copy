@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -77,11 +77,11 @@ subroutine agligr(long, ligrch)
 ! --- COPIE DE LIGR1 ET LIGR2 SUR LIGRCH.LIEL ET LIGRCH.NEMA
 !
     long1 = 2*long
-    long1 = max(long1,lon1+2*abs((long-nmax1)))
+    long1 = max(long1, lon1+2*abs((long-nmax1)))
     long2 = 4*long
-    long2 = max(long2,lon2+4*abs((long-nmax2)))
+    long2 = max(long2, lon2+4*abs((long-nmax2)))
 !
-    long3=max(long,nmax1,nmax2)
+    long3 = max(long, nmax1, nmax2)
     call jeagco(ligr1, ligrch//'.LIEL', long3, long1, base)
     call jeagco(ligr2, ligrch//'.NEMA', long3, long2, base)
 !

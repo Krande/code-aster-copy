@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -182,7 +182,7 @@ subroutine tremno(ncmp, nssche, nomsd)
 !
     do i = 1, nbtcmp, 1
 !
-        nbcpac = nbcpac + min(zi(apcmp + i-1),1)
+        nbcpac = nbcpac+min(zi(apcmp+i-1), 1)
 !
     end do
 !
@@ -205,19 +205,19 @@ subroutine tremno(ncmp, nssche, nomsd)
 !
     do im = 1, nbtmai, 1
 !
-        if (zi(apadr + im-1) .ne. 0) then
+        if (zi(apadr+im-1) .ne. 0) then
 !
-            adrm=iconec+zi(lconec-1+im)-1
+            adrm = iconec+zi(lconec-1+im)-1
 !
-            nbn = zi(apnbn + im-1)
+            nbn = zi(apnbn+im-1)
 !
             call i2trgi(entier, zi(adrm), nbn, libre)
 !
-        endif
+        end if
 !
     end do
 !
-    nbtnd = libre - 1
+    nbtnd = libre-1
 !
     call jecreo(nnund, 'V V I')
     call jeecra(nnund, 'LONMAX', nbtnd)
@@ -225,7 +225,7 @@ subroutine tremno(ncmp, nssche, nomsd)
 !
     do in = 1, nbtnd, 1
 !
-        zi(anund + in-1) = entier(in)
+        zi(anund+in-1) = entier(in)
 !
     end do
 !
@@ -234,32 +234,32 @@ subroutine tremno(ncmp, nssche, nomsd)
 !   CONSTRUCTION DU .VACP
 !   ---------------------
 !
-    call jecrec(nvacp, 'V V R', 'NU', 'DISPERSE', 'VARIABLE',&
+    call jecrec(nvacp, 'V V R', 'NU', 'DISPERSE', 'VARIABLE', &
                 nbtnd)
-    call jecrec(nnuma, 'V V I', 'NU', 'DISPERSE', 'VARIABLE',&
+    call jecrec(nnuma, 'V V I', 'NU', 'DISPERSE', 'VARIABLE', &
                 nbtnd)
 !
     do in = 1, nbtnd, 1
 !
-        n = zi(anund + in-1)
+        n = zi(anund+in-1)
 !
 !
-        adrm=icncin+zi(lcncin-1+n)-1
-        nbm=zi(lcncin+n)-zi(lcncin-1+n)
+        adrm = icncin+zi(lcncin-1+n)-1
+        nbm = zi(lcncin+n)-zi(lcncin-1+n)
 !
         lngm = 0
         lngv = 0
 !
         do im = 1, nbm, 1
 !
-            m = zi(adrm + im-1)
+            m = zi(adrm+im-1)
 !
             if (m .ne. 0) then
 !
-                lngm = lngm + min(zi(apadr + m-1),1)
-                lngv = lngv + min(zi(apadr + m-1),1)*pnco(m)* pnsp(m)
+                lngm = lngm+min(zi(apadr+m-1), 1)
+                lngv = lngv+min(zi(apadr+m-1), 1)*pnco(m)*pnsp(m)
 !
-            endif
+            end if
 !
         end do
 !
@@ -268,7 +268,7 @@ subroutine tremno(ncmp, nssche, nomsd)
             vali = n
             call utmess('F', 'PREPOST5_76', si=vali)
 !
-        endif
+        end if
 !
         call jecroc(jexnum(nvacp, in))
         call jeecra(jexnum(nvacp, in), 'LONMAX', lngv)
@@ -283,37 +283,37 @@ subroutine tremno(ncmp, nssche, nomsd)
 !
         do im = 1, nbm, 1
 !
-            m = zi(adrm + im-1)
+            m = zi(adrm+im-1)
 !
             if (m .ne. 0) then
 !
-                if (zi(apadr + m-1) .ne. 0) then
+                if (zi(apadr+m-1) .ne. 0) then
 !
                     nbco = pnco(m)
                     nbsp = pnsp(m)
                     ndloc = 1
                     trouve = .false.
 !
-                    aconec=iconec+zi(lconec-1+m)-1
-                    nbnm=zi(lconec+m)-zi(lconec-1+m)
+                    aconec = iconec+zi(lconec-1+m)-1
+                    nbnm = zi(lconec+m)-zi(lconec-1+m)
 !
 !
 220                 continue
                     if ((.not. trouve) .and. (ndloc .le. nbnm)) then
 !
-                        if (zi(aconec + ndloc-1) .eq. n) then
+                        if (zi(aconec+ndloc-1) .eq. n) then
 !
                             trouve = .true.
 !
                         else
 !
-                            ndloc = ndloc + 1
+                            ndloc = ndloc+1
 !
-                        endif
+                        end if
 !
                         goto 220
 !
-                    endif
+                    end if
 !
                     tsp = nbcpac*nbsp
 !
@@ -323,25 +323,25 @@ subroutine tremno(ncmp, nssche, nomsd)
 !
                         do isp = 1, nbsp, 1
 !
-                            zr(avacp + ptv-1) = zr(&
-                                                avale + zi(apadr+m- 1) + tco + (ndloc-1)*tsp + (i&
-                                                &sp-1)*nbcpac + zi(apcmp + numcp-1) - 2&
+                            zr(avacp+ptv-1) = zr( &
+                                                avale+zi(apadr+m-1)+tco+(ndloc-1)*tsp+(i&
+                                                &sp-1)*nbcpac+zi(apcmp+numcp-1)-2 &
                                                 )
 !
-                            ptv = ptv + 1
+                            ptv = ptv+1
 !
                         end do
 !
                     end do
 !
 !
-                    zi(anuma + ptm-1) = m
+                    zi(anuma+ptm-1) = m
 !
-                    ptm = ptm + 1
+                    ptm = ptm+1
 !
-                endif
+                end if
 !
-            endif
+            end if
 !
         end do
 !

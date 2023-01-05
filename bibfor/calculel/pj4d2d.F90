@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -42,38 +42,38 @@ subroutine pj4d2d(tria3, itr, geom1, coorno, nbno, nunos, cooele, xg)
 ! DEB ------------------------------------------------------------------
 
     do k = 1, 3
-        a(k)=geom1(3*(tria3(1+4*(itr-1)+1)-1)+k)
-        b(k)=geom1(3*(tria3(1+4*(itr-1)+2)-1)+k)
-        c(k)=geom1(3*(tria3(1+4*(itr-1)+3)-1)+k)
-        ab(k)=b(k)-a(k)
-        ac(k)=c(k)-a(k)
+        a(k) = geom1(3*(tria3(1+4*(itr-1)+1)-1)+k)
+        b(k) = geom1(3*(tria3(1+4*(itr-1)+2)-1)+k)
+        c(k) = geom1(3*(tria3(1+4*(itr-1)+3)-1)+k)
+        ab(k) = b(k)-a(k)
+        ac(k) = c(k)-a(k)
     end do
 
 !   calcul du vecteur normal
 !   ------------------------
-    v(1)=ab(2)*ac(3)-ab(3)*ac(2)
-    v(2)=ab(3)*ac(1)-ab(1)*ac(3)
-    v(3)=ab(1)*ac(2)-ab(2)*ac(1)
-    norm=sqrt(ddot(3,v,1,v,1))
-    v(:)=v(:)/norm
+    v(1) = ab(2)*ac(3)-ab(3)*ac(2)
+    v(2) = ab(3)*ac(1)-ab(1)*ac(3)
+    v(3) = ab(1)*ac(2)-ab(2)*ac(1)
+    norm = sqrt(ddot(3, v, 1, v, 1))
+    v(:) = v(:)/norm
 
 !   premier vecteur du plan
-    norm=sqrt(ddot(3,ab,1,ab,1))
-    ab(:)=ab(:)/norm
+    norm = sqrt(ddot(3, ab, 1, ab, 1))
+    ab(:) = ab(:)/norm
 
 !   deuxième vecteur du plan
-    ac(1)=v(2)*ab(3)-v(3)*ab(2)
-    ac(2)=v(3)*ab(1)-v(1)*ab(3)
-    ac(3)=v(1)*ab(2)-v(2)*ab(1)
+    ac(1) = v(2)*ab(3)-v(3)*ab(2)
+    ac(2) = v(3)*ab(1)-v(1)*ab(3)
+    ac(3) = v(1)*ab(2)-v(2)*ab(1)
 
 !   changement de repère
-    xg(1) = ddot(3,coorno,1,ab,1)
-    xg(2) = ddot(3,coorno,1,ac,1)
+    xg(1) = ddot(3, coorno, 1, ab, 1)
+    xg(2) = ddot(3, coorno, 1, ac, 1)
 
     do ino = 1, nbno
         nuno = nunos(ino)
-        cooele(2*(ino-1)+1) = ddot(3,geom1(3*(nuno-1)+1),1,ab,1)
-        cooele(2*(ino-1)+2) = ddot(3,geom1(3*(nuno-1)+1),1,ac,1)
-    enddo
+        cooele(2*(ino-1)+1) = ddot(3, geom1(3*(nuno-1)+1), 1, ab, 1)
+        cooele(2*(ino-1)+2) = ddot(3, geom1(3*(nuno-1)+1), 1, ac, 1)
+    end do
 
 end subroutine

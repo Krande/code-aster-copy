@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 subroutine copisd(typesd, base, sd1, sd2)
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterfort/assert.h"
@@ -85,9 +85,9 @@ implicit none
 !
     call jemarq()
     bas2 = base
-    x1=sd1
-    x2=sd2
-    ASSERT(x1.ne.x2)
+    x1 = sd1
+    x2 = sd2
+    ASSERT(x1 .ne. x2)
 !
 ! ----------------------------------------------------------------------
 !     SUPRESSION DE SD2 :
@@ -97,18 +97,18 @@ implicit none
     if (typesd .eq. ' ') then
 !     -----------------------
 !       -- TYPESD INCONNU => ON UTILISE JEDUPC => COUTEUX EN CPU
-        call jedupc(' ', sd1, 1, base, sd2,&
+        call jedupc(' ', sd1, 1, base, sd2, &
                     .true._1)
 !
 ! ----------------------------------------------------------------------
-    else if ((typesd.eq.'CHAMP') .or. (typesd.eq.'CHAMP_GD')) then
+    else if ((typesd .eq. 'CHAMP') .or. (typesd .eq. 'CHAMP_GD')) then
 !     ----------------------------------------------------------------
         ch1 = sd1
         ch2 = sd2
         call copich(bas2, ch1, ch2)
 !
 ! ----------------------------------------------------------------------
-    else if (typesd.eq.'VARI_COM') then
+    else if (typesd .eq. 'VARI_COM') then
 !     -----------------------------------
         com1 = sd1
         com2 = sd2
@@ -129,7 +129,7 @@ implicit none
         if (iret .gt. 0) call copich(bas2, com1//'.TOUT', com2//'.TOUT')
 !
 ! ----------------------------------------------------------------------
-    else if (typesd.eq.'SOLVEUR') then
+    else if (typesd .eq. 'SOLVEUR') then
 !     -----------------------------------
         k191 = sd1
         k192 = sd2
@@ -140,7 +140,7 @@ implicit none
         call jedup1(k191//'.SLVO', bas2, k192//'.SLVO')
 !
 ! ----------------------------------------------------------------------
-    else if (typesd.eq.'LISTE_RELA') then
+    else if (typesd .eq. 'LISTE_RELA') then
 !     -------------------------------------
         k191 = sd1
         k192 = sd2
@@ -157,7 +157,7 @@ implicit none
         call jedup1(k191//'.RLDD', bas2, k192//'.RLDD')
 !
 ! ----------------------------------------------------------------------
-    else if (typesd.eq.'FONCTION') then
+    else if (typesd .eq. 'FONCTION') then
 !     -----------------------------------
         k191 = sd1
         k192 = sd2
@@ -167,7 +167,7 @@ implicit none
         call jedup1(k191//'.VALE', bas2, k192//'.VALE')
 !
 ! ----------------------------------------------------------------------
-    else if (typesd.eq.'LISTR8'.or.typesd.eq.'LISTIS') then
+    else if (typesd .eq. 'LISTR8' .or. typesd .eq. 'LISTIS') then
 !     --------------------------------------------------
         k191 = sd1
         k192 = sd2
@@ -178,7 +178,7 @@ implicit none
         call jedup1(k191//'.VALE', bas2, k192//'.VALE')
 !
 ! ----------------------------------------------------------------------
-    else if (typesd.eq.'CORRESP_2_MAILLA') then
+    else if (typesd .eq. 'CORRESP_2_MAILLA') then
 !        ---------------------------------
         corr1 = sd1
         corr2 = sd2
@@ -195,7 +195,7 @@ implicit none
         call jedup1(corr1//'.PJNG_I2', bas2, corr2//'.PJNG_I2')
 !
 ! ----------------------------------------------------------------------
-    else if (typesd.eq.'CHAM_NO_S') then
+    else if (typesd .eq. 'CHAM_NO_S') then
 !     -----------------------------------
         k191 = sd1
         k192 = sd2
@@ -206,7 +206,7 @@ implicit none
         call jedup1(k191//'.CNSV', bas2, k192//'.CNSV')
 !
 ! ----------------------------------------------------------------------
-    else if (typesd.eq.'CHAM_ELEM_S') then
+    else if (typesd .eq. 'CHAM_ELEM_S') then
 !     -----------------------------------
         k191 = sd1
         k192 = sd2
@@ -217,7 +217,7 @@ implicit none
         call jedup1(k191//'.CESV', bas2, k192//'.CESV')
 !
 ! ----------------------------------------------------------------------
-    else if (typesd.eq.'PROF_CHNO') then
+    else if (typesd .eq. 'PROF_CHNO') then
 !     -----------------------------------
         k191 = sd1
         k192 = sd2
@@ -227,7 +227,7 @@ implicit none
         call jedup1(k191//'.LILI', bas2, k192//'.LILI')
 !
 ! ----------------------------------------------------------------------
-    else if (typesd.eq.'NUME_EQUA') then
+    else if (typesd .eq. 'NUME_EQUA') then
 !     -----------------------------------
         k191 = sd1
         k192 = sd2
@@ -237,7 +237,7 @@ implicit none
         call jedup1(k191//'.DELG', bas2, k192//'.DELG')
 !
 ! ----------------------------------------------------------------------
-    else if (typesd.eq.'STOCKAGE') then
+    else if (typesd .eq. 'STOCKAGE') then
 !     -----------------------------------
         k191 = sd1
         k192 = sd2
@@ -254,7 +254,7 @@ implicit none
         call jedup1(k191//'.SMHC', bas2, k192//'.SMHC')
 !
 ! ----------------------------------------------------------------------
-    else if (typesd.eq.'NUME_DDL') then
+    else if (typesd .eq. 'NUME_DDL') then
 !     -----------------------------------
         nu1 = sd1
         nu2 = sd2
@@ -263,7 +263,7 @@ implicit none
         call copis2('STOCKAGE', bas2, nu1//'.SMOS', nu2//'.SMOS')
 !
 ! --------------------------------------------------------------------
-    else if (typesd.eq.'MATR_ASSE_GENE' .or. typesd.eq.'MATR_ASSE') then
+    else if (typesd .eq. 'MATR_ASSE_GENE' .or. typesd .eq. 'MATR_ASSE') then
 !     ---------------------------------------------
         k191 = sd1
         k192 = sd2
@@ -284,29 +284,29 @@ implicit none
 !
 !
 ! --------------------------------------------------------------------
-    else if (typesd.eq.'TABLE') then
+    else if (typesd .eq. 'TABLE') then
 !     -----------------------------------
         call exisd(typesd, sd1, iret)
         if (iret .eq. 0) then
             sdr1 = sd1
             call utmess('F', 'UTILITAI_40', sk=sdr1)
-        endif
+        end if
 !
         call tbcopi(base, sd1, sd2)
 !
 ! ----------------------------------------------------------------------
-    else if (typesd.eq.'RESULTAT') then
+    else if (typesd .eq. 'RESULTAT') then
 !     -----------------------------------
         call exisd(typesd, sd1, iret)
         if (iret .eq. 0) then
             sdr1 = sd1
             call utmess('F', 'UTILITAI_40', sk=sdr1)
-        endif
+        end if
 !
         call rscopi(base, sd1, sd2)
 !
 ! ----------------------------------------------------------------------
-    else if (typesd.eq.'VOISINAGE') then
+    else if (typesd .eq. 'VOISINAGE') then
 !     -----------------------------------
         k121 = sd1
         k122 = sd2
@@ -314,7 +314,7 @@ implicit none
         call jedup1(k121//'.ELVOIS', bas2, k122//'.ELVOIS')
 !
 ! ----------------------------------------------------------------------
-    else if (typesd.eq.'LIGREL') then
+    else if (typesd .eq. 'LIGREL') then
 !     -----------------------------------
         k191 = sd1
         k192 = sd2
@@ -330,7 +330,7 @@ implicit none
         call jedup1(k191//'.SSSA', bas2, k192//'.SSSA')
 !
 ! ----------------------------------------------------------------------
-    else if (typesd.eq.'CABL_PRECONT') then
+    else if (typesd .eq. 'CABL_PRECONT') then
 !     -----------------------------------
         k81 = sd1
         k82 = sd2
@@ -339,7 +339,7 @@ implicit none
         call copis2('L_TABLE', bas2, k81, k82)
 !
 ! ----------------------------------------------------------------------
-    else if (typesd.eq.'SQUELETTE') then
+    else if (typesd .eq. 'SQUELETTE') then
 !     -----------------------------------
         k81 = sd1
         k82 = sd2
@@ -352,7 +352,7 @@ implicit none
         call jedup1(k81//'.TRANS', bas2, k82//'.TRANS')
 !
 ! ----------------------------------------------------------------------
-    else if (typesd.eq.'L_TABLE') then
+    else if (typesd .eq. 'L_TABLE') then
 !     -----------------------------------
         k191 = sd1
         k192 = sd2
@@ -366,20 +366,20 @@ implicit none
             call jeveuo(k192//'.LTNS', 'E', vk24=ltn2)
             k192(1:8) = k192
             do i = 1, nbtu
-                k191 = ltn1(i)(1:19)
+                k191 = ltn1(i) (1:19)
                 k192(9:19) = k191(9:19)
                 call exisd('TABLE', k191, iret)
                 if (iret .ne. 0) then
                     call tbcopi(bas2, k191, k192)
                 else
                     call utmess('F', 'UTILITAI_41', sk=k191)
-                endif
+                end if
                 ltn2(i) = k192
             end do
-        endif
+        end if
 !
 ! ----------------------------------------------------------------------
-    else if (typesd.eq.'MAILLAGE') then
+    else if (typesd .eq. 'MAILLAGE') then
 !     -----------------------------------
         k81 = sd1
         k82 = sd2
@@ -388,12 +388,12 @@ implicit none
 !       -- LES 2 CHAMPS COPIES DOIVENT S'APPUYER
 !          SUR LE NOUVEAU MAILLAGE :
         call jeveuo(k82//'.COORDO    .REFE', 'E', j1)
-        zk24(j1-1+1)=k82
+        zk24(j1-1+1) = k82
         call jeexin(k82//'.ABSC_CURV .NOMA', iexi)
         if (iexi .gt. 0) then
             call jeveuo(k82//'.ABSC_CURV .NOMA', 'E', j1)
-            zk8(j1-1+1)=k82
-        endif
+            zk8(j1-1+1) = k82
+        end if
 !
 !
         call jedup1(k81//'.ADAPTATION', bas2, k82//'.ADAPTATION')
@@ -414,7 +414,7 @@ implicit none
         call jedup1(k81//'           .TITR', bas2, k82//'           .TITR')
 !
 ! ----------------------------------------------------------------------
-    else if (typesd.eq.'MODELE') then
+    else if (typesd .eq. 'MODELE') then
 !     -----------------------------------
         k81 = sd1
         k82 = sd2
@@ -428,10 +428,10 @@ implicit none
         call jeexin(k82//'.MODELE    .LGRF', iexi)
         if (iexi .gt. 0) then
             call jeveuo(k82//'.MODELE    .LGRF', 'E', j1)
-            zk8(j1-1+2)=k82
-        endif
+            zk8(j1-1+2) = k82
+        end if
 !
-    else if (typesd.eq.'PARTITION') then
+    else if (typesd .eq. 'PARTITION') then
 !     -----------------------------------
         k191 = sd1
         k192 = sd2
@@ -443,7 +443,7 @@ implicit none
         call jedup1(k191//'.FETA', bas2, k192//'.FETA')
 !
 ! ----------------------------------------------------------------------
-    else if (typesd.eq.'MATR_ELEM' .or. typesd.eq.'VECT_ELEM') then
+    else if (typesd .eq. 'MATR_ELEM' .or. typesd .eq. 'VECT_ELEM') then
 !     ---------------------------------------------------------------
         k191 = sd1
         k192 = sd2
@@ -453,7 +453,7 @@ implicit none
         call jedup1(k191//'.TITR', bas2, k192//'.TITR')
 
 !     ------------------------------------------------------------------
-    else if (typesd.eq.'LISTE_CHARGES') then
+    else if (typesd .eq. 'LISTE_CHARGES') then
 !     -----------------------------------
         k191 = sd1
         k192 = sd2
@@ -464,7 +464,7 @@ implicit none
 ! ----------------------------------------------------------------------
     else
         ASSERT(.false.)
-    endif
+    end if
 !
     call jedema()
 end subroutine

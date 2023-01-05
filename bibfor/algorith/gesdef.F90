@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -70,7 +70,7 @@ subroutine gesdef(nomres, numddl)
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: i, iad1, iad2, ik,  lldeeq
+    integer :: i, iad1, iad2, ik, lldeeq
     integer :: lldes, ltidec, ltmat, nbcmp, nbdef, nbec, nbno
     integer :: nbnot, nbtem, neq, nomax
     integer, pointer :: idc_desc(:) => null()
@@ -103,12 +103,12 @@ subroutine gesdef(nomres, numddl)
     do i = 1, nbnot
         ik = zi(lldes+nbnot+i-1)
         ik = -ik
-        ikyp(ik) = ikyp(ik) + 1
+        ikyp(ik) = ikyp(ik)+1
     end do
 !
-    nomax = max(ikyp(1),ikyp(2))
-    nomax = max(nomax,ikyp(3))
-    nomax = max(nomax,ikyp(4))
+    nomax = max(ikyp(1), ikyp(2))
+    nomax = max(nomax, ikyp(3))
+    nomax = max(nomax, ikyp(4))
 !
 !-----------CREATION MATRICE DES ENTIER CODES DDL ASSEMBLES------------
 !    COLONNES SEPARES POUR LES DDL PHYSIQUES ET LES LAGRANGES
@@ -136,12 +136,12 @@ subroutine gesdef(nomres, numddl)
 !
     nbno = ikyp(1)
 !
-    call recddl(nbcmp, zi(lldes+nbtem), nbno, nbec, zi(lldeeq),&
+    call recddl(nbcmp, zi(lldes+nbtem), nbno, nbec, zi(lldeeq), &
                 neq, zi(ltmat), zi(ltidec))
 !
-    iad1 = lldes + nbnot*2 + nbtem*nbec
-    iad2 = lldes + nbnot + nbtem
-    call maskmn(nbcmp, nbno, nbec, zi(ltmat), zi(iad1),&
+    iad1 = lldes+nbnot*2+nbtem*nbec
+    iad2 = lldes+nbnot+nbtem
+    call maskmn(nbcmp, nbno, nbec, zi(ltmat), zi(iad1), &
                 zi(iad2), nbdef)
 !
 !----------TRAITEMENT DES MODES CONTRAINTS (CRAIG BAMPTON)--------------
@@ -152,28 +152,28 @@ subroutine gesdef(nomres, numddl)
 !
     nbno = ikyp(2)
 !
-    call recddl(nbcmp, zi(lldes+nbtem), nbno, nbec, zi(lldeeq),&
+    call recddl(nbcmp, zi(lldes+nbtem), nbno, nbec, zi(lldeeq), &
                 neq, zi(ltmat), zi(ltidec))
 !
-    iad1 = lldes + nbnot*2 + nbtem*nbec
-    iad2 = lldes + nbnot + nbtem
-    call maskcb(nbcmp, nbno, nbec, zi(ltmat), zi(iad1),&
+    iad1 = lldes+nbnot*2+nbtem*nbec
+    iad2 = lldes+nbnot+nbtem
+    call maskcb(nbcmp, nbno, nbec, zi(ltmat), zi(iad1), &
                 zi(iad2), nbdef)
 !
 !-------TRAITEMENT DES MODES CONTRAINTS HARMONIQUES(CB-HARMO)-----------
 !
 !   DECALAGE EVENTUEL DE LA LISTE DES NOEUDS MN DANS LA LISTE GLOBALE
 !
-    nbtem = ikyp(1) + ikyp(2)
+    nbtem = ikyp(1)+ikyp(2)
 !
     nbno = ikyp(3)
 !
-    call recddl(nbcmp, zi(lldes+nbtem), nbno, nbec, zi(lldeeq),&
+    call recddl(nbcmp, zi(lldes+nbtem), nbno, nbec, zi(lldeeq), &
                 neq, zi(ltmat), zi(ltidec))
 !
-    iad1 = lldes + nbnot*2 + nbtem*nbec
-    iad2 = lldes + nbnot + nbtem
-    call maskcb(nbcmp, nbno, nbec, zi(ltmat), zi(iad1),&
+    iad1 = lldes+nbnot*2+nbtem*nbec
+    iad2 = lldes+nbnot+nbtem
+    call maskcb(nbcmp, nbno, nbec, zi(ltmat), zi(iad1), &
                 zi(iad2), nbdef)
 !
 !-----------------TRAITEMENT DES NOEUDS D'INTERFACE AUCUN---------------
@@ -181,15 +181,15 @@ subroutine gesdef(nomres, numddl)
 !
 !   DECALAGE EVENTUEL DE LA LISTE DES NOEUDS AU DANS LA LISTE GLOBALE
 !
-    nbtem = ikyp(1) + ikyp(2) + ikyp(3)
+    nbtem = ikyp(1)+ikyp(2)+ikyp(3)
 !
     nbno = ikyp(4)
 !
-    call recddl(nbcmp, zi(lldes+nbtem), nbno, nbec, zi(lldeeq),&
+    call recddl(nbcmp, zi(lldes+nbtem), nbno, nbec, zi(lldeeq), &
                 neq, zi(ltmat), zi(ltidec))
 !
-    iad1 = lldes + nbnot*2 + nbtem*nbec
-    iad2 = lldes + nbnot + nbtem
+    iad1 = lldes+nbnot*2+nbtem*nbec
+    iad2 = lldes+nbnot+nbtem
     call maskau(nbno, nbec, zi(iad1))
 !
 !------------------------FINITION DU .DESC------------------------------

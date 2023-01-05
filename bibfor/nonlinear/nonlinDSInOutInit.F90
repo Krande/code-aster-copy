@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,9 +19,9 @@
 !
 subroutine nonlinDSInOutInit(phenom, ds_inout)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -29,8 +29,8 @@ implicit none
 #include "asterfort/nonlinDSTableIOSetPara.h"
 #include "asterfort/nonlinDSTableIOGetName.h"
 !
-character(len=4), intent(in) :: phenom
-type(NL_DS_InOut), intent(inout) :: ds_inout
+    character(len=4), intent(in) :: phenom
+    type(NL_DS_InOut), intent(inout) :: ds_inout
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -46,20 +46,20 @@ type(NL_DS_InOut), intent(inout) :: ds_inout
 ! --------------------------------------------------------------------------------------------------
 !
     integer, parameter :: nbPara = 2
-    character(len=24), parameter :: paraName(nbPara) = (/'NUME_REUSE','INST      '/)
-    character(len=8),  parameter :: paraType(nbPara) = (/'I','R'/)
+    character(len=24), parameter :: paraName(nbPara) = (/'NUME_REUSE', 'INST      '/)
+    character(len=8), parameter :: paraType(nbPara) = (/'I', 'R'/)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    if ((phenom.eq.'MECA') .or. (phenom.eq.'VIBR')) then
+    if ((phenom .eq. 'MECA') .or. (phenom .eq. 'VIBR')) then
 ! ----- Create list of parameters
-        call nonlinDSTableIOSetPara(tableio_  = ds_inout%table_io,&
-                                    nbPara_   = nbPara,&
-                                    paraName_ = paraName,&
-                                    paraType_ = paraType)
+        call nonlinDSTableIOSetPara(tableio_=ds_inout%table_io, &
+                                    nbPara_=nbPara, &
+                                    paraName_=paraName, &
+                                    paraType_=paraType)
 
 ! ----- Set other parameters
-        ds_inout%table_io%resultName   = ds_inout%result
+        ds_inout%table_io%resultName = ds_inout%result
         ds_inout%table_io%tablSymbName = 'PARA_CALC'
 
 ! ----- Get name of table in results datastructure
@@ -70,6 +70,6 @@ type(NL_DS_InOut), intent(inout) :: ds_inout
 
     else
         ASSERT(ASTER_FALSE)
-    endif
+    end if
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -35,11 +35,11 @@ subroutine coesp4(tauvid, phi0)
 !
 ! ******************   DEBUT DU CODE EXECUTABLE   **********************
 !
-    phi0 = (&
-           24.042d0 * (tauvid**0.5d0) ) - ( 50.421d0 * (tauvid**1.5d0) ) + ( 63.483d0 * (tauvid**&
-           &2.5d0) ) - ( 33.284d0 * (tauvid**3.5d0)&
+    phi0 = ( &
+           24.042d0*(tauvid**0.5d0))-(50.421d0*(tauvid**1.5d0))+(63.483d0*(tauvid**&
+           &2.5d0))-(33.284d0*(tauvid**3.5d0) &
            )
 !
-    phi0 = (10.0d0**phi0) / (6.8d-2)
+    phi0 = (10.0d0**phi0)/(6.8d-2)
 !
 end subroutine

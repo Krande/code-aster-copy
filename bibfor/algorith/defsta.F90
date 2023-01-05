@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine defsta(nmresz, numrfz, raildz, lddl, nocmp,&
+subroutine defsta(nmresz, numrfz, raildz, lddl, nocmp, &
                   nbfor, nbdef, tydef, inord)
     implicit none
 !  P. RICHARD     DATE 09/07/91
@@ -68,7 +68,7 @@ subroutine defsta(nmresz, numrfz, raildz, lddl, nocmp,&
     integer :: ltcham, ltcvn, nbdef, nbfor, nbpabm, neq, neqr
 !
 !-----------------------------------------------------------------------
-    parameter    (nbpabm=9)
+    parameter(nbpabm=9)
 !
     integer :: lddl(nbfor, nbdef), ldpar(nbpabm)
     character(len=6) :: pgc
@@ -83,13 +83,13 @@ subroutine defsta(nmresz, numrfz, raildz, lddl, nocmp,&
 !
 !-----------------------------------------------------------------------
 !
-    data  bmpara/&
-     &  'NUME_MODE  '     , 'FREQ'       , 'NORME'           ,&
-     &  'NOEUD_CMP'       , 'TYPE_DEFO'          , 'OMEGA2'   ,&
-     &  'MASS_GENE'      , 'RIGI_GENE', 'TYPE_MODE' /
-    data pgc /'DEFSTA'/
-    data blanc /'                        '/
-    data depl /'DEPL'/
+    data bmpara/&
+     &  'NUME_MODE  ', 'FREQ', 'NORME',&
+     &  'NOEUD_CMP', 'TYPE_DEFO', 'OMEGA2',&
+     &  'MASS_GENE', 'RIGI_GENE', 'TYPE_MODE'/
+    data pgc/'DEFSTA'/
+    data blanc/'                        '/
+    data depl/'DEPL'/
 !
     call jemarq()
     nomres = nmresz
@@ -103,18 +103,18 @@ subroutine defsta(nmresz, numrfz, raildz, lddl, nocmp,&
 ! --- RECUPERATION DU MODELE DE REFERENCE
 !
     call dismoi('NOM_MAILLA', numref, 'NUME_DDL', repk=mailla)
-    crefe(1)=mailla
-    crefe(2)=numref
+    crefe(1) = mailla
+    crefe(2) = numref
 !
 ! --- CONVERSION DU NUMDDL ASSOCIE A LA MATRICE
 !
     call dismoi('NOM_NUME_DDL', raildl, 'MATR_ASSE', repk=numddl)
-    numddl(15:19)='.NUME'
+    numddl(15:19) = '.NUME'
 !
     call dismoi('NB_EQUA', numddl, 'NUME_DDL', repi=neq)
 !
-    nomcvn='&&'//pgc//'.CONV.NUMDDL'
-    numref(15:19)='.NUME'
+    nomcvn = '&&'//pgc//'.CONV.NUMDDL'
+    numref(15:19) = '.NUME'
     call convnu(numddl, numref, nomcvn, 'V', neqr)
     call jeveuo(nomcvn, 'L', ltcvn)
 !
@@ -128,7 +128,7 @@ subroutine defsta(nmresz, numrfz, raildz, lddl, nocmp,&
 !
 ! ----- GENERATION DU NOM DU CHAMP RESULTAT
 !
-        call rsexch(' ', nomres, depl, inord, chamno,&
+        call rsexch(' ', nomres, depl, inord, chamno, &
                     ier)
         if (ier .eq. 0) then
             call utmess('A', 'ALGORITH2_64', sk=chamno)
@@ -136,7 +136,7 @@ subroutine defsta(nmresz, numrfz, raildz, lddl, nocmp,&
             call vtcrea(chamno, crefe, 'G', 'R', neqr)
         else
             call utmess('F', 'ALGORITH2_65')
-        endif
+        end if
 !
 ! ----- INITIALISATION DU SECOND MEMBRE
 !
@@ -145,10 +145,10 @@ subroutine defsta(nmresz, numrfz, raildz, lddl, nocmp,&
 !
 ! ----- RESOLUTION EN PLACE
 !
-        matpre='&&OP0099.MATPRE'
-        solveu='&&OP0099.SOLVEUR'
-        call resoud(raildl, matpre, solveu, ' ', 1,&
-                    ' ', ' ', ' ', zr(ltcham), [cbid],&
+        matpre = '&&OP0099.MATPRE'
+        solveu = '&&OP0099.SOLVEUR'
+        call resoud(raildl, matpre, solveu, ' ', 1, &
+                    ' ', ' ', ' ', zr(ltcham), [cbid], &
                     ' ', .true._1, 0, iret)
 !
 ! ----- CONVERSION NUMEROTATION
@@ -171,21 +171,21 @@ subroutine defsta(nmresz, numrfz, raildz, lddl, nocmp,&
 !
 ! ----- STOCKAGE DES PSEUDO PARAMETRES
 !
-        call rsadpa(nomres, 'E', nbpabm, bmpara, inord,&
+        call rsadpa(nomres, 'E', nbpabm, bmpara, inord, &
                     0, tjv=ldpar, styp=kbid)
-        zi(ldpar(1))=inord
-        zr(ldpar(2))=0.d0
-        zk24(ldpar(3))=blanc
-        zk16(ldpar(4))=nocmp(i)
-        zk16(ldpar(5))=tydef
-        zr(ldpar(6))=0.d0
-        zr(ldpar(7))=0.d0
-        zr(ldpar(8))=0.d0
-        zk16(ldpar(9))='MODE_STA'
+        zi(ldpar(1)) = inord
+        zr(ldpar(2)) = 0.d0
+        zk24(ldpar(3)) = blanc
+        zk16(ldpar(4)) = nocmp(i)
+        zk16(ldpar(5)) = tydef
+        zr(ldpar(6)) = 0.d0
+        zr(ldpar(7)) = 0.d0
+        zr(ldpar(8)) = 0.d0
+        zk16(ldpar(9)) = 'MODE_STA'
 !
 ! ----- INCREMENT DU NUMERO D'ORDRE
 !
-        inord=inord+1
+        inord = inord+1
 !
     end do
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine conini(ma, noecon, maicon, marcon, nbmar,&
-                  nbnoe, nbmarc, nommar, jmicor, mbcor,&
+subroutine conini(ma, noecon, maicon, marcon, nbmar, &
+                  nbnoe, nbmarc, nommar, jmicor, mbcor, &
                   nomtyr, nbgco, io8gco)
 !
 !  ROUTINE CONINI
@@ -108,14 +108,14 @@ subroutine conini(ma, noecon, maicon, marcon, nbmar,&
 !-----------------------------------------------------------------------
 !     TYPES VALIDES POUR LES MAILLES DE REFERENCE
 #define valid() (cas2d .and. (ktyr(:4).eq.'TRIA'.or.ktyc(: \
-    4).eq.'QUAD')) .or. (cas3d .and. \
-    (ktyr(:5).eq.'PENTA'.or.ktyr(:4).eq.'HEXA'.or.ktyr(: \
-    5).eq.'PYRAM'.or.ktyr(:5).eq.'TETRA'))
+4   ) .eq. 'QUAD')) .or. (cas3d .and. \
+    (ktyr(:5) .eq. 'PENTA' .or. ktyr(:4) .eq. 'HEXA' .or. ktyr(:\
+5   ) .eq. 'PYRAM' .or. ktyr(:5) .eq. 'TETRA'))
 !
 !
-    inval=.false.
-    cas2d=.false.
-    cas3d=.false.
+    inval = .false.
+    cas2d = .false.
+    cas3d = .false.
 !CC     ON COMMENTE JEMARQ CAR ADRESSES PASSEES EN ARGUMENT
 !CC      CALL JEMARQ()
     call infniv(ifm, niv)
@@ -123,16 +123,16 @@ subroutine conini(ma, noecon, maicon, marcon, nbmar,&
 !     ==================================================================
 !
     do inoe = 1, nbnoe
-        noecon(inoe)=0
+        noecon(inoe) = 0
     end do
 !
     do imai = 1, nbmar
-        maicon(imai)=0
+        maicon(imai) = 0
     end do
 !
-    nbmarc=0
-    ierr=0
- 30 continue
+    nbmarc = 0
+    ierr = 0
+30  continue
 !     ------------------------------------------------------------------
 !     BOUCLE SUR LES GROUPE_MA_FISSURE
 !     ------------------------------------------------------------------
@@ -165,8 +165,8 @@ subroutine conini(ma, noecon, maicon, marcon, nbmar,&
 !     BOUCLE SUR LES MAILLES DU GROUP_MA
 !     ------------------------------------------------------------------
             do imag = 1, nbmag
-                imac=zi(imigma+imag-1)
-                maicon(imac)=maicon(imac)+1
+                imac = zi(imigma+imag-1)
+                maicon(imac) = maicon(imac)+1
 !     ------------------------------------------------------------------
 !     RECHERCHE DU NOM DE LA MAILLE
 !     ------------------------------------------------------------------
@@ -175,26 +175,26 @@ subroutine conini(ma, noecon, maicon, marcon, nbmar,&
 !     RECHERCHE DE L'ADRESSE DU TYPE DE LA MAILLE DANS ZI
 !     ------------------------------------------------------------------
                 call jeveuo(ma//'.TYPMAIL', 'L', iatyma)
-                imityc=iatyma-1+imac
-                ityc=zi(imityc)
+                imityc = iatyma-1+imac
+                ityc = zi(imityc)
 !     ------------------------------------------------------------------
 !     RECHERCHE DU TYPE DE LA MAILLE DANS CATA.TM.NOMTM
 !     ------------------------------------------------------------------
                 call jenuno(jexnum('&CATA.TM.NOMTM', ityc), ktyc)
 !
                 if (ktyc(:5) .eq. 'QUAD4' .or. ktyc(:5) .eq. 'QUAD8') then
-                    cas2d=.true.
-                    if (ierr .ne. 0) write (ifm, *)'MAILLE 2D : ', kmac, ' DE TYPE ', ktyc
-                    elseif (ktyc(:5).eq.'PENTA' .or. ktyc(:4).eq.'HEXA')&
-                then
-                    cas3d=.true.
-                    if (ierr .ne. 0) write (ifm, *)'MAILLE 3D : ', kmac, ' DE TYPE ', ktyc
+                    cas2d = .true.
+                    if (ierr .ne. 0) write (ifm, *) 'MAILLE 2D : ', kmac, ' DE TYPE ', ktyc
+                elseif (ktyc(:5) .eq. 'PENTA' .or. ktyc(:4) .eq. 'HEXA') &
+                    then
+                    cas3d = .true.
+                    if (ierr .ne. 0) write (ifm, *) 'MAILLE 3D : ', kmac, ' DE TYPE ', ktyc
                 else
-                    inval=.true.
-                    valk(1)=kmac
-                    valk(2)=ktyc
+                    inval = .true.
+                    valk(1) = kmac
+                    valk(2) = ktyc
                     call utmess('E', 'ALGORITH2_27', nk=2, valk=valk)
-                endif
+                end if
 !
 !     ------------------------------------------------------------------
 !     RECHERCHE DE L ADRESSE DES CONNEXIONS DE LA MAILLE
@@ -209,30 +209,30 @@ subroutine conini(ma, noecon, maicon, marcon, nbmar,&
 !     BOUCLE SUR LES CONNEXIONS DE LA MAILLE
 !     ------------------------------------------------------------------
                 do icoc = 1, nbcoc
-                    inoc=zi(imicoc+icoc-1)
-                    noecon(inoc)=noecon(inoc)+1
+                    inoc = zi(imicoc+icoc-1)
+                    noecon(inoc) = noecon(inoc)+1
                 end do
             end do
 !     ------------------------------------------------------------------
-        endif
+        end if
 !     ------------------------------------------------------------------
     end do
     if (inval) then
         call utmess('F', 'ALGORITH2_28')
-    endif
+    end if
 !
     if (cas2d .and. cas3d) then
         if (ierr .eq. 0) then
 !       ON RETOURNE DANS LA BOUCLE AVEC DEMANDE DE MESSAGES
-            ierr=1
+            ierr = 1
             goto 30
 !
         else
             call utmess('F', 'ALGORITH2_29')
-        endif
-    endif
-    if (cas2d) itest=2
-    if (cas3d) itest=3
+        end if
+    end if
+    if (cas2d) itest = 2
+    if (cas3d) itest = 3
 !
 !     ------------------------------------------------------------------
 !     BOUCLE SUR LES MAILLES DU MAILLAGE
@@ -243,25 +243,25 @@ subroutine conini(ma, noecon, maicon, marcon, nbmar,&
 !     RECHERCHE DU NOM DE LA MAILLE
 !     ------------------------------------------------------------------
         call jenuno(jexnum(ma//'.NOMMAI', imar), kmar)
-        nommar(imar)=kmar
+        nommar(imar) = kmar
 !
 !     ------------------------------------------------------------------
 !     RECHERCHE DE L ADRESSE DES CONNEXIONS DE LA MAILLE
 !     ------------------------------------------------------------------
         call jeveuo(jexnum(ma//'.CONNEX', imar), 'L', imicor)
-        jmicor(imar)=imicor
+        jmicor(imar) = imicor
 !     ------------------------------------------------------------------
 !     RECHERCHE DU NOMBRE DE CONNEXIONS DE LA MAILLE
 !     ------------------------------------------------------------------
         call jelira(jexnum(ma//'.CONNEX', imar), 'LONMAX', nbcor)
-        mbcor(imar)=nbcor
+        mbcor(imar) = nbcor
 !     ------------------------------------------------------------------
 !     BOUCLE SUR LES CONNEXIONS DE LA MAILLE
 !     ------------------------------------------------------------------
-        nbcom=0
+        nbcom = 0
         do icor = 1, nbcor
-            inor=zi(imicor+icor-1)
-            if (noecon(inor) .ne. 0) nbcom=nbcom+1
+            inor = zi(imicor+icor-1)
+            if (noecon(inor) .ne. 0) nbcom = nbcom+1
 !
         end do
         if (nbcom .ge. itest) then
@@ -269,20 +269,20 @@ subroutine conini(ma, noecon, maicon, marcon, nbmar,&
 !     RECHERCHE DE L'ADRESSE DU TYPE DE LA MAILLE DANS ZI
 !     ------------------------------------------------------------------
             call jeveuo(ma//'.TYPMAIL', 'L', iatyma)
-            imityr=iatyma-1+imar
-            ityr=zi(imityr)
+            imityr = iatyma-1+imar
+            ityr = zi(imityr)
 !     ------------------------------------------------------------------
 !     RECHERCHE DU TYPE DE LA MAILLE DANS CATA.TM.NOMTM
 !     ------------------------------------------------------------------
             call jenuno(jexnum('&CATA.TM.NOMTM', ityr), ktyr)
-            nomtyr(imar)=ktyr
+            nomtyr(imar) = ktyr
 !
             if (valid()) then
-                nbmarc=nbmarc+1
-                marcon(nbmarc)=imar
-            endif
-        endif
- 80     continue
+                nbmarc = nbmarc+1
+                marcon(nbmarc) = imar
+            end if
+        end if
+80      continue
     end do
 !     ==================================================================
 !CC      ON COMMENTE JEMARQ CAR ADRESSES PASSEES EN ARGUMENT

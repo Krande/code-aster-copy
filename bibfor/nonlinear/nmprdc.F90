@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,12 +17,12 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine nmprdc(ds_algopara, nume_dof , disp_prev, sddisc, nume_inst,&
-                  incr_esti  , disp_esti)
+subroutine nmprdc(ds_algopara, nume_dof, disp_prev, sddisc, nume_inst, &
+                  incr_esti, disp_esti)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterfort/copisd.h"
 #include "asterfort/diinst.h"
@@ -36,13 +36,13 @@ implicit none
 #include "blas/daxpy.h"
 #include "blas/dcopy.h"
 !
-type(NL_DS_AlgoPara), intent(in) :: ds_algopara
-character(len=24), intent(in) :: nume_dof
-character(len=19), intent(in) :: disp_prev
-character(len=19), intent(in) :: sddisc
-integer, intent(in)  :: nume_inst
-character(len=19), intent(in) :: incr_esti
-character(len=19), intent(in) :: disp_esti
+    type(NL_DS_AlgoPara), intent(in) :: ds_algopara
+    character(len=24), intent(in) :: nume_dof
+    character(len=19), intent(in) :: disp_prev
+    character(len=19), intent(in) :: sddisc
+    integer, intent(in)  :: nume_inst
+    character(len=19), intent(in) :: incr_esti
+    character(len=19), intent(in) :: disp_esti
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -75,13 +75,13 @@ character(len=19), intent(in) :: disp_esti
 !
     call infniv(ifm, niv)
     if (niv .ge. 2) then
-        write (ifm,*) '<MECANONLINE> ... PAR DEPL. CALCULE'
-    endif
+        write (ifm, *) '<MECANONLINE> ... PAR DEPL. CALCULE'
+    end if
 !
 ! - Initializations
 !
     call dismoi('NB_EQUA', nume_dof, 'NUME_DDL', repi=nb_equa)
-    time        = diinst(sddisc,nume_inst)
+    time = diinst(sddisc, nume_inst)
 !
 ! - Get results datastructure for PREDICTION='DEPL_CALCULE
 !
@@ -90,11 +90,11 @@ character(len=19), intent(in) :: disp_esti
 ! - Get displacement in results datastructure
 !
     disp_extr = '&&NMPRDC.DEPEST'
-    call rsinch(result_extr, 'DEPL', 'INST', time, disp_extr,&
+    call rsinch(result_extr, 'DEPL', 'INST', time, disp_extr, &
                 'EXCLU', 'EXCLU', 0, 'V', iret)
     if (iret .gt. 0) then
         call utmess('F', 'MECANONLINE2_27', sk=result_extr, sr=time)
-    endif
+    end if
 !
 ! - Copy displacement
 !
@@ -102,12 +102,12 @@ character(len=19), intent(in) :: disp_esti
         call vtcopy(disp_extr, disp_esti, 'F', iret)
     else
         call chamnoIsSame(disp_extr, disp_esti, iret)
-        if (iret.gt.0) then
+        if (iret .gt. 0) then
             call utmess('F', 'MECANONLINE2_28', sk=result_extr, sr=time)
         else
             call copisd('CHAMP_GD', 'V', disp_extr, disp_esti)
-        endif
-    endif
+        end if
+    end if
 !
 ! - Compute increment: incr_esti = disp_esti - disp_prev
 !
@@ -115,6 +115,6 @@ character(len=19), intent(in) :: disp_esti
     call jeveuo(disp_prev(1:19)//'.VALE', 'L', vr=v_disp_prev)
     call jeveuo(incr_esti(1:19)//'.VALE', 'E', vr=v_incr_esti)
     call dcopy(nb_equa, v_disp_esti, 1, v_incr_esti, 1)
-    call daxpy(nb_equa, -1.d0, v_disp_prev, 1, v_incr_esti,1)
+    call daxpy(nb_equa, -1.d0, v_disp_prev, 1, v_incr_esti, 1)
 !
 end subroutine

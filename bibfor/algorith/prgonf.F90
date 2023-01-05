@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,15 +28,15 @@ function prgonf(biot, betam, pref, p1)
     real(kind=8) :: pi, rpi, s, rbetam
 !
     pi = r8pi()
-    rpi=sqrt(pi)
-    rbetam=sqrt(betam)
-    betam=rbetam*rbetam
-    s=p1/pref
+    rpi = sqrt(pi)
+    rbetam = sqrt(betam)
+    betam = rbetam*rbetam
+    s = p1/pref
     derf = (1.d0-erfcfo(s*rbetam))
     if (s .gt. 0.d0) then
-        prgonf=pref*biot*((rpi/(2.d0*rbetam))*derf +(0.5d0/betam)*(&
-        1.d0-exp(-betam*s*s)))
+        prgonf = pref*biot*((rpi/(2.d0*rbetam))*derf+(0.5d0/betam)*( &
+                            1.d0-exp(-betam*s*s)))
     else
-        prgonf=pref*biot*s
-    endif
+        prgonf = pref*biot*s
+    end if
 end function

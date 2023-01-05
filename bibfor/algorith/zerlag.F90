@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine zerlag(nbddl, ideeq, vectr, vectz )
+subroutine zerlag(nbddl, ideeq, vectr, vectz)
     implicit none
 !
 !                             FONCTION
@@ -63,16 +63,16 @@ subroutine zerlag(nbddl, ideeq, vectr, vectz )
     if (present(vectr)) then
         do i = 1, nbddl
             ityp = ideeq(2*i)
-            if (ityp .le. 0) vectr(i)=0.d0
+            if (ityp .le. 0) vectr(i) = 0.d0
         end do
-    endif
+    end if
     if (present(vectz)) then
 !     1.2 - CAS COMPLEXE
         do i = 1, nbddl
             ityp = ideeq(2*i)
-            if (ityp .le. 0) vectz(i)=dcmplx(0.d0,0.d0)
+            if (ityp .le. 0) vectz(i) = dcmplx(0.d0, 0.d0)
         end do
-    endif
+    end if
 !  ____________________________________________________________________
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 
 subroutine rctres(sigm, tresca)
-    implicit   none
+    implicit none
 #include "asterfort/lcqeqv.h"
 #include "asterfort/rcjaco.h"
     real(kind=8) :: sigm(*), tresca
@@ -29,8 +29,8 @@ subroutine rctres(sigm, tresca)
     real(kind=8) :: tr(6), tu(6), nul(6)
     real(kind=8) :: equi(3)
     integer :: nt, nd
-    common /tdim/  nt, nd
-    data   nul     /6*0.d0/
+    common/tdim/nt, nd
+    data nul/6*0.d0/
 ! ----------------------------------------------------------------------
     nt = 6
     nd = 3
@@ -51,12 +51,12 @@ subroutine rctres(sigm, tresca)
     tr(5) = sigm(6)
     tr(6) = sigm(3)
 !
-    if (lcqeqv(tr,nul) .eq. 'OUI') then
+    if (lcqeqv(tr, nul) .eq. 'OUI') then
         tresca = 0.d0
     else
         call rcjaco(tr, equi)
 ! ------ TRESCA = MAX DIFF VALEURS PRINCIPALES
-        tresca = max ( abs(equi(1)-equi(2)), abs(equi(1)-equi(3)), abs(equi(2)-equi(3)) )
-    endif
+        tresca = max(abs(equi(1)-equi(2)), abs(equi(1)-equi(3)), abs(equi(2)-equi(3)))
+    end if
 !
 end subroutine

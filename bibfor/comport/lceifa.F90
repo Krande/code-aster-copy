@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine lceifa(fami, kpg, ksp, mat, option,&
-                  mu, su, deltap, ddedt, vim,&
+subroutine lceifa(fami, kpg, ksp, mat, option, &
+                  mu, su, deltap, ddedt, vim, &
                   vip, r)
 !
 ! person_in_charge: jerome.laverne at edf.fr
@@ -53,15 +53,15 @@ subroutine lceifa(fami, kpg, ksp, mat, option,&
     character(len=16) :: nom(4)
     character(len=1) :: poum
 !
-    data nom /'GC','SIGM_C','PENA_LAGR','RIGI_GLIS'/
+    data nom/'GC', 'SIGM_C', 'PENA_LAGR', 'RIGI_GLIS'/
 !-----------------------------------------------------------------------
 !
 !
 ! OPTION CALCUL DU RESIDU OU CALCUL DE LA MATRICE TANGENTE
 !
-    resi = option(1:4).eq.'FULL' .or. option(1:4).eq.'RAPH'
-    rigi = option(1:4).eq.'FULL' .or. option(1:4).eq.'RIGI'
-    elas = option(11:14).eq.'ELAS'
+    resi = option(1:4) .eq. 'FULL' .or. option(1:4) .eq. 'RAPH'
+    rigi = option(1:4) .eq. 'FULL' .or. option(1:4) .eq. 'RIGI'
+    elas = option(11:14) .eq. 'ELAS'
 !
 ! RECUPERATION DES PARAMETRES PHYSIQUES
 !
@@ -69,18 +69,18 @@ subroutine lceifa(fami, kpg, ksp, mat, option,&
         poum = '-'
     else
         poum = '+'
-    endif
+    end if
 !
-    call rcvalb(fami, kpg, ksp, poum, mat,&
-                ' ', 'RUPT_FRAG', 0, ' ', [0.d0],&
+    call rcvalb(fami, kpg, ksp, poum, mat, &
+                ' ', 'RUPT_FRAG', 0, ' ', [0.d0], &
                 4, nom, val, cod, 2)
 !
     gc = val(1)
     sc = val(2)
     dc0 = 2*gc/sc
     h = sc/dc0
-    r = h * val(3)
-    c = h * val(4)
+    r = h*val(3)
+    c = h*val(4)
 !
 ! -- INITIALISATION
 !
@@ -88,14 +88,14 @@ subroutine lceifa(fami, kpg, ksp, mat, option,&
     ka = vim(1)
     deltam = vim(7)
 !
-    sk = max( 0.d0 , sc*(1.d0 - ka/dc0) )
-    rk = max( 0.d0 , sc*(1.d0 - (ka-deltam)/dc0) )
-    dc = dc0 - ka + deltam
+    sk = max(0.d0, sc*(1.d0-ka/dc0))
+    rk = max(0.d0, sc*(1.d0-(ka-deltam)/dc0))
+    dc = dc0-ka+deltam
 !
 !    FORCES COHESIVES AUGMENTEES
-    t(1) = mu(1) + r*su(1)
-    t(2) = mu(2) + r*su(2)
-    t(3) = mu(3) + r*su(3)
+    t(1) = mu(1)+r*su(1)
+    t(2) = mu(2)+r*su(2)
+    t(3) = mu(3)+r*su(3)
     tn = t(1)
 !
 ! -- CALCUL DE DELTA
@@ -104,7 +104,7 @@ subroutine lceifa(fami, kpg, ksp, mat, option,&
     if (.not. resi) then
         regime = nint(vim(2))
         goto 5000
-    endif
+    end if
 !
 !    CONTACT
     if (tn .lt. 0.d0) then
@@ -117,7 +117,7 @@ subroutine lceifa(fami, kpg, ksp, mat, option,&
         dn = tn/r
 !
 !    ADHERENCE (INITIALE OU COURANTE)
-    else if (tn .le. r*deltam + sk) then
+    else if (tn .le. r*deltam+sk) then
         regime = 0
         dn = deltam
 !
@@ -130,7 +130,7 @@ subroutine lceifa(fami, kpg, ksp, mat, option,&
     else
         regime = 2
         dn = tn/r
-    endif
+    end if
 !
     call r8inir(6, 0.d0, deltap, 1)
 !    COMPOSANTE DE L'OUVERTURE :
@@ -157,23 +157,23 @@ subroutine lceifa(fami, kpg, ksp, mat, option,&
 !   V6 :  NON UTILISEE POUR CETTE LOI
 !   V7 A V9 : VALEURS DE DELTA
 !
-    incr = max(0.d0, deltap(1) - deltam)
-    kap = min( ka + incr , dc0 )
+    incr = max(0.d0, deltap(1)-deltam)
+    kap = min(ka+incr, dc0)
 !
-    gap = kap/dc0 * (2 - kap/dc0)
-    gap = max(0.d0,gap)
-    gap = min(1.d0,gap)
+    gap = kap/dc0*(2-kap/dc0)
+    gap = max(0.d0, gap)
+    gap = min(1.d0, gap)
 !
     vip(1) = kap
     vip(2) = regime
 !
     if (kap .eq. 0.d0) then
         vip(3) = 0.d0
-    else if (kap.eq.dc0) then
+    else if (kap .eq. dc0) then
         vip(3) = 2.d0
     else
         vip(3) = 1.d0
-    endif
+    end if
 !
     vip(4) = gap
     vip(5) = gc*vip(4)
@@ -191,12 +191,12 @@ subroutine lceifa(fami, kpg, ksp, mat, option,&
 !    AJUSTEMENT POUR PRENDRE EN COMPTE *_MECA_ELAS
     if (elas) then
         if (regime .eq. 1) regime = 0
-    endif
+    end if
 !
     call r8inir(36, 0.d0, ddedt, 1)
 !
-    ddedt(2,2) = 1/(c+r)
-    ddedt(3,3) = 1/(c+r)
+    ddedt(2, 2) = 1/(c+r)
+    ddedt(3, 3) = 1/(c+r)
 !
     if (regime .eq. 0) then
         ddndtn = 0
@@ -208,8 +208,8 @@ subroutine lceifa(fami, kpg, ksp, mat, option,&
         ddndtn = 1/r
     else if (regime .eq. -1) then
         ddndtn = 0
-    endif
-    ddedt(1,1) = ddndtn
+    end if
+    ddedt(1, 1) = ddndtn
 !
 9999 continue
 !

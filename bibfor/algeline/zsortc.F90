@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -118,7 +118,7 @@ subroutine zsortc(which, apply, n, x, y)
 !     %-----------------------%
 !
     call matfpe(-1)
-    igap = n / 2
+    igap = n/2
 !
     if (which .eq. 'LM') then
 !
@@ -126,17 +126,17 @@ subroutine zsortc(which, apply, n, x, y)
 !        | SORT X INTO INCREASING ORDER OF MAGNITUDE. |
 !        %--------------------------------------------%
 !
- 10     continue
+10      continue
         if (igap .eq. 0) goto 9000
 !
         do i = igap, n-1
             j = i-igap
- 20         continue
+20          continue
 !
             if (j .lt. 0) goto 30
 !
-            temp1 = dlapy2(dble(x(j)),dimag(x(j)))
-            temp2 = dlapy2(dble(x(j+igap)),dimag(x(j+igap)))
+            temp1 = dlapy2(dble(x(j)), dimag(x(j)))
+            temp2 = dlapy2(dble(x(j+igap)), dimag(x(j+igap)))
 !
             if (temp1 .gt. temp2) then
                 temp = x(j)
@@ -147,15 +147,15 @@ subroutine zsortc(which, apply, n, x, y)
                     temp = y(j)
                     y(j) = y(j+igap)
                     y(j+igap) = temp
-                endif
+                end if
             else
                 goto 30
-            endif
+            end if
             j = j-igap
             goto 20
- 30         continue
+30          continue
         end do
-        igap = igap / 2
+        igap = igap/2
         goto 10
 !
     else if (which .eq. 'SM') then
@@ -164,17 +164,17 @@ subroutine zsortc(which, apply, n, x, y)
 !        | SORT X INTO DECREASING ORDER OF MAGNITUDE. |
 !        %--------------------------------------------%
 !
- 40     continue
+40      continue
         if (igap .eq. 0) goto 9000
 !
         do i = igap, n-1
             j = i-igap
- 50         continue
+50          continue
 !
             if (j .lt. 0) goto 60
 !
-            temp1 = dlapy2(dble(x(j)),dimag(x(j)))
-            temp2 = dlapy2(dble(x(j+igap)),dimag(x(j+igap)))
+            temp1 = dlapy2(dble(x(j)), dimag(x(j)))
+            temp2 = dlapy2(dble(x(j+igap)), dimag(x(j+igap)))
 !
             if (temp1 .lt. temp2) then
                 temp = x(j)
@@ -185,15 +185,15 @@ subroutine zsortc(which, apply, n, x, y)
                     temp = y(j)
                     y(j) = y(j+igap)
                     y(j+igap) = temp
-                endif
+                end if
             else
                 goto 60
-            endif
+            end if
             j = j-igap
             goto 50
- 60         continue
+60          continue
         end do
-        igap = igap / 2
+        igap = igap/2
         goto 40
 !
     else if (which .eq. 'LR') then
@@ -202,12 +202,12 @@ subroutine zsortc(which, apply, n, x, y)
 !        | SORT XREAL INTO INCREASING ORDER OF ALGEBRAIC. |
 !        %------------------------------------------------%
 !
- 70     continue
+70      continue
         if (igap .eq. 0) goto 9000
 !
         do i = igap, n-1
             j = i-igap
- 80         continue
+80          continue
 !
             if (j .lt. 0) goto 90
 !
@@ -220,15 +220,15 @@ subroutine zsortc(which, apply, n, x, y)
                     temp = y(j)
                     y(j) = y(j+igap)
                     y(j+igap) = temp
-                endif
+                end if
             else
                 goto 90
-            endif
+            end if
             j = j-igap
             goto 80
- 90         continue
+90          continue
         end do
-        igap = igap / 2
+        igap = igap/2
         goto 70
 !
     else if (which .eq. 'SR') then
@@ -254,15 +254,15 @@ subroutine zsortc(which, apply, n, x, y)
                     temp = y(j)
                     y(j) = y(j+igap)
                     y(j+igap) = temp
-                endif
+                end if
             else
                 goto 120
-            endif
+            end if
             j = j-igap
             goto 110
 120         continue
         end do
-        igap = igap / 2
+        igap = igap/2
         goto 100
 !
     else if (which .eq. 'LI') then
@@ -288,15 +288,15 @@ subroutine zsortc(which, apply, n, x, y)
                     temp = y(j)
                     y(j) = y(j+igap)
                     y(j+igap) = temp
-                endif
+                end if
             else
                 goto 150
-            endif
+            end if
             j = j-igap
             goto 140
 150         continue
         end do
-        igap = igap / 2
+        igap = igap/2
         goto 130
 !
     else if (which .eq. 'SI') then
@@ -322,17 +322,17 @@ subroutine zsortc(which, apply, n, x, y)
                     temp = y(j)
                     y(j) = y(j+igap)
                     y(j+igap) = temp
-                endif
+                end if
             else
                 goto 180
-            endif
+            end if
             j = j-igap
             goto 170
 180         continue
         end do
-        igap = igap / 2
+        igap = igap/2
         goto 160
-    endif
+    end if
 !
 9000 continue
     call matfpe(1)

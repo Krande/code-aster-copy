@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,13 +19,13 @@
 !
 subroutine nmmacv(disp, matr_sstr, cnsstr)
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/mrmult.h"
 !
-character(len=19), intent(in) :: matr_sstr, disp, cnsstr
+    character(len=19), intent(in) :: matr_sstr, disp, cnsstr
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -49,7 +49,7 @@ character(len=19), intent(in) :: matr_sstr, disp, cnsstr
 !
     call jeveuo(cnsstr(1:19)//'.VALE', 'E', vr=v_cnsstr)
     call jeveuo(disp(1:19)//'.VALE', 'L', vr=v_disp)
-    call jeveuo(matr_sstr(1:19) //'.&INT', 'L', jrsst)
+    call jeveuo(matr_sstr(1:19)//'.&INT', 'L', jrsst)
     call mrmult('ZERO', jrsst, v_disp, v_cnsstr, 1, ASTER_TRUE)
 !
 end subroutine

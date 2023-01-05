@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 !
 subroutine manopg(model, ligrez, optioz, paramz, mnogaz)
 !
-implicit none
+    implicit none
 !
 #include "MeshTypes_type.h"
 #include "asterf_types.h"
@@ -56,7 +56,7 @@ implicit none
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
 !
-character(len=8), intent(in) :: model
+    character(len=8), intent(in) :: model
     character(len=*) :: ligrez, mnogaz, optioz, paramz
 ! ------------------------------------------------------------------
 ! BUT: CREER LE CHAM_ELEM_S MNOGAZ QUI CONTIENDRA LA MATRICE
@@ -96,15 +96,15 @@ character(len=8), intent(in) :: model
 !
 !-----------------------------------------------------------------------
 !
-    integer :: nbpgmx,  nbflmx
-    parameter (nbpgmx=27,nbflmx=20)
-    integer :: nbma, ima, jcesd, jcesl,  iad, jnbpg
+    integer :: nbpgmx, nbflmx
+    parameter(nbpgmx=27, nbflmx=20)
+    integer :: nbma, ima, jcesd, jcesl, iad, jnbpg
     integer :: ilcnx1, k, jfpgl
     integer :: nec, kfpg, ndim, nno, npg, kp, ino
     integer ::  nbgrel, nel, nute, imolo, jmolo, jecono
-    integer :: igr, iel,  lont1
+    integer :: igr, iel, lont1
     integer :: jnbno, jdime, iret, ncpmax, nbfam, kfam, nbpgt, iad0, iad1
-    integer :: nblfpg,  nuflpg, nufgpg, jliel, jliel1
+    integer :: nblfpg, nuflpg, nufgpg, jliel, jliel1
     integer :: jcesgl, jcesgv, jcesgd, nbpt, nbsp
     character(len=3) :: exixfm
     character(len=8) :: ma, nomgd, famil, elrefe, param
@@ -123,10 +123,10 @@ character(len=8), intent(in) :: model
 !     ------------------------------------------------------------------
     call jemarq()
 !
-    mnoga=mnogaz
-    ligrel=ligrez
-    option=optioz
-    param=paramz
+    mnoga = mnogaz
+    ligrel = ligrez
+    option = optioz
+    param = paramz
 !
     obnbpg = '&&MANOPG.NBPG'
     obnbno = '&&MANOPG.NBNO'
@@ -146,16 +146,16 @@ character(len=8), intent(in) :: model
 !   0.1 CALCUL DE '&&MANOPG.ECONO' ET '&&MANOPG.CHSGEO'
 !   ------------------------------------------------------------------
 !     '.ECONO': V(IGR) = 1 => LE GREL IGR EST STOCKE 'ECONOMIQUE'
-    kecono='&&MANOPG.ECONO'
-    chsgeo='&&MANOPG.CHSGEO'
-    call manopx(model, ligrel, option, param, chsgeo, exixfm,&
+    kecono = '&&MANOPG.ECONO'
+    chsgeo = '&&MANOPG.CHSGEO'
+    call manopx(model, ligrel, option, param, chsgeo, exixfm, &
                 kecono)
     call jeveuo(kecono, 'L', jecono)
     if (exixfm .eq. 'OUI') then
         call jeveuo(chsgeo//'.CESD', 'L', jcesgd)
         call jeveuo(chsgeo//'.CESV', 'L', jcesgv)
         call jeveuo(chsgeo//'.CESL', 'L', jcesgl)
-    endif
+    end if
 !
 !
 !   0.2 ON FABRIQUE UN "FAUX" LIGREL (LIGRE1) N'AYANT QUE LE NOMBRE
@@ -166,61 +166,60 @@ character(len=8), intent(in) :: model
 !                       DE REFERENCE
     AS_ALLOCATE(vi=mailref, size=nbma)
 !
-    ligre1='&&MANOPG.LIGRE1'
-    ASSERT(nbgrel.gt.0)
-    call jecrec(ligre1//'.LIEL', 'V V I', 'NU', 'CONTIG', 'VARIABLE',&
+    ligre1 = '&&MANOPG.LIGRE1'
+    ASSERT(nbgrel .gt. 0)
+    call jecrec(ligre1//'.LIEL', 'V V I', 'NU', 'CONTIG', 'VARIABLE', &
                 nbgrel)
-    lont1=0
+    lont1 = 0
     do igr = 1, nbgrel
-        econom=zi(jecono-1+igr).eq.1
-        nel = nbelem(ligrel,igr)
+        econom = zi(jecono-1+igr) .eq. 1
+        nel = nbelem(ligrel, igr)
         if (econom .and. nel .gt. 1) then
-            lont1=lont1+2
+            lont1 = lont1+2
         else
-            lont1=lont1+nel+1
-        endif
+            lont1 = lont1+nel+1
+        end if
     end do
 !
     call jeecra(ligre1//'.LIEL', 'LONT', lont1, ' ')
     do igr = 1, nbgrel
-        econom=zi(jecono-1+igr).eq.1
-        nel = nbelem(ligrel,igr)
+        econom = zi(jecono-1+igr) .eq. 1
+        nel = nbelem(ligrel, igr)
         if (econom .and. nel .gt. 1) then
             call jecroc(jexnum(ligre1//'.LIEL', igr))
             call jeecra(jexnum(ligre1//'.LIEL', igr), 'LONMAX', 2)
             call jeveuo(jexnum(ligre1//'.LIEL', igr), 'E', jliel1)
             call jeveuo(jexnum(ligrel//'.LIEL', igr), 'L', jliel)
-            zi(jliel1-1+1)=zi(jliel-1+1)
-            zi(jliel1-1+2)=zi(jliel-1+nel+1)
+            zi(jliel1-1+1) = zi(jliel-1+1)
+            zi(jliel1-1+2) = zi(jliel-1+nel+1)
             do iel = 1, nel
-                ima=zi(jliel-1+iel)
+                ima = zi(jliel-1+iel)
                 if (ima .lt. 0) cycle
                 if (iel .eq. 1) then
-                    mailref(ima)=+zi(jliel-1+1)
+                    mailref(ima) = +zi(jliel-1+1)
                 else
-                    mailref(ima)=-zi(jliel-1+1)
-                endif
+                    mailref(ima) = -zi(jliel-1+1)
+                end if
             end do
         else
             call jecroc(jexnum(ligre1//'.LIEL', igr))
             call jeecra(jexnum(ligre1//'.LIEL', igr), 'LONMAX', nel+1)
             call jeveuo(jexnum(ligre1//'.LIEL', igr), 'E', jliel1)
             call jeveuo(jexnum(ligrel//'.LIEL', igr), 'L', jliel)
-            zi(jliel1-1+nel+1)=zi(jliel-1+nel+1)
+            zi(jliel1-1+nel+1) = zi(jliel-1+nel+1)
             do iel = 1, nel
-                zi(jliel1-1+iel)=zi(jliel-1+iel)
-                ima=zi(jliel-1+iel)
+                zi(jliel1-1+iel) = zi(jliel-1+iel)
+                ima = zi(jliel-1+iel)
                 if (ima .lt. 0) cycle
-                mailref(ima)=+zi(jliel-1+iel)
+                mailref(ima) = +zi(jliel-1+iel)
             end do
-        endif
+        end if
     end do
     call jedup1(ligrel//'.LGRF', 'V', ligre1//'.LGRF')
     call jedup1(ligrel//'.NBNO', 'V', ligre1//'.NBNO')
     call jedup1(ligrel//'.NEMA', 'V', ligre1//'.NEMA')
-    call cormgi('V',ligre1)
+    call cormgi('V', ligre1)
     call initel(ligre1)
-
 
 !
 !
@@ -235,26 +234,26 @@ character(len=8), intent(in) :: model
 !   2. ALLOCATION DU CHAM_ELEM_S MNOGA :
 !   ---------------------------------------------------------------
     call wkvect(obdime, 'V V I', nbma, jdime)
-    ncpmax=0
+    ncpmax = 0
     do ima = 1, nbma
-        zi(jdime-1+ima)= zi(jnbpg-1+ima)*zi(jnbno-1+ima) +2
-        ncpmax=max(ncpmax,zi(jdime-1+ima))
+        zi(jdime-1+ima) = zi(jnbpg-1+ima)*zi(jnbno-1+ima)+2
+        ncpmax = max(ncpmax, zi(jdime-1+ima))
     end do
-    call cescre('V', mnoga, 'ELEM', ma, 'VARI_R',&
+    call cescre('V', mnoga, 'ELEM', ma, 'VARI_R', &
                 -ncpmax, ' ', [-1], [-1], zi(jdime))
 !
 !
 !   3. ALLOCATION D'UN CHAMP MODELE POUR DETERMINER LES FAMILLES
 !      DE POINTS DE GAUSS UTILISEES.
 !   ---------------------------------------------------------------
-    celmod='&&MANOPG.CELMOD'
-    call alchml(ligre1, option, param, 'V', celmod,&
+    celmod = '&&MANOPG.CELMOD'
+    call alchml(ligre1, option, param, 'V', celmod, &
                 iret, ' ')
     if (iret .ne. 0) then
         valk(1) = param
         valk(2) = option
         call utmess('F', 'CALCULEL7_7', nk=2, valk=valk)
-    endif
+    end if
     call jeveuo(celmod//'.CELD', 'L', vi=celd)
 !
 !
@@ -266,10 +265,10 @@ character(len=8), intent(in) :: model
 !
 !
     do igr = 1, nbgrel
-        econom=zi(jecono-1+igr).eq.1
+        econom = zi(jecono-1+igr) .eq. 1
         call jeveuo(jexnum(ligrel//'.LIEL', igr), 'L', jliel)
-        nel = nbelem(ligrel,igr)
-        nute = typele(ligrel,igr)
+        nel = nbelem(ligrel, igr)
+        nute = typele(ligrel, igr)
         call jenuno(jexnum('&CATA.TE.NOMTE', nute), nomte)
         imolo = celd(celd(4+igr)+2)
         if (imolo .eq. 0) goto 1
@@ -289,70 +288,70 @@ character(len=8), intent(in) :: model
         if (kfpg .lt. 0) then
 !          FAMILLE "LISTE" :
             call jelira(jexnum('&CATA.TE.FPG_LISTE', -kfpg), 'LONMAX', nbfam)
-            nbfam=nbfam-1
-            ASSERT(nbfam.le.nbflmx)
+            nbfam = nbfam-1
+            ASSERT(nbfam .le. nbflmx)
             call jeveuo(jexnum('&CATA.TE.FPG_LISTE', -kfpg), 'L', jfpgl)
-            elrefe=zk8(jfpgl-1+nbfam+1)
+            elrefe = zk8(jfpgl-1+nbfam+1)
             do k = 1, nbfam
-                lielrf(k)=elrefe
+                lielrf(k) = elrefe
                 noflpg = nomte//elrefe//zk8(jfpgl-1+k)
-                nuflpg = indk32(pnlocfpg,noflpg,1,nblfpg)
+                nuflpg = indk32(pnlocfpg, noflpg, 1, nblfpg)
                 nufgpg = nolocfpg(nuflpg)
                 call jenuno(jexnum('&CATA.TM.NOFPG', nufgpg), nofpg)
-                ASSERT(elrefe.eq.nofpg(1:8))
-                lifapg(k)=nofpg(9:16)
+                ASSERT(elrefe .eq. nofpg(1:8))
+                lifapg(k) = nofpg(9:16)
             end do
 !
 !       -- FAMILLE "ORDINAIRE"
         else
-            nbfam=1
+            nbfam = 1
             call jenuno(jexnum('&CATA.TM.NOFPG', kfpg), nofpg)
-            lielrf(1)=nofpg(1:8)
-            lifapg(1)=nofpg(9:16)
-        endif
+            lielrf(1) = nofpg(1:8)
+            lifapg(1) = nofpg(9:16)
+        end if
 !
 !
 !       4.2 BOUCLE SUR LA/LES FAMILLE(S) :
 !       ------------------------------------------
-        nbpgt=0
+        nbpgt = 0
         do kfam = 1, nbfam
-            elrefe=lielrf(kfam)
-            famil=lifapg(kfam)
+            elrefe = lielrf(kfam)
+            famil = lifapg(kfam)
 
-            call elrfno(elrefe, ndim = ndim, nno = nno)
+            call elrfno(elrefe, ndim=ndim, nno=nno)
 !
 !         4.2.1 CALCUL DE NPG ET XPG (SI FAMILLE != XFEM)
 !         ------------------------------------------------
             if (famil(1:4) .ne. 'XFEM') then
-                call elraga(elrefe, famil, ndim, npg, xpg,&
+                call elraga(elrefe, famil, ndim, npg, xpg, &
                             poipg)
-                ASSERT(npg.le.nbpgmx)
+                ASSERT(npg .le. nbpgmx)
 !
 !         4.2.2 CALCUL DE NPG (SI FAMILLE == 'XFEM...')
 !         ------------------------------------------------
             else
-                ima=zi(jliel-1+1)
-                npg = zi(jcesgd-1+5+4* (ima-1)+1)
-            endif
+                ima = zi(jliel-1+1)
+                npg = zi(jcesgd-1+5+4*(ima-1)+1)
+            end if
 !
 !         4.2.3 ECRITURE DANS MANOPG :
 !         ------------------------------------------
             do iel = 1, nel
-                ima=zi(jliel-1+iel)
+                ima = zi(jliel-1+iel)
                 if (ima .lt. 0) goto 3
 !
-                call cesexi('C', jcesd, jcesl, ima, 1,&
+                call cesexi('C', jcesd, jcesl, ima, 1, &
                             1, 1, iad0)
-                iad0=abs(iad0)
-                ASSERT(iad0.gt.0)
+                iad0 = abs(iad0)
+                ASSERT(iad0 .gt. 0)
 !
 !           -- SI CE N'EST PAS UNE MAILLE DE REFERENCE :
                 if (mailref(ima) .lt. 0) then
                     zl(jcesl-1+iad0-1+1) = .true.
                     cesv(iad0-1+1) = mailref(ima)
                     goto 3
-                endif
-                ASSERT(mailref(ima).eq.ima)
+                end if
+                ASSERT(mailref(ima) .eq. ima)
 !
 !
 !           -- LES 2 PREMIERES CMPS : NNO ET NPG :
@@ -362,41 +361,41 @@ character(len=8), intent(in) :: model
                     cesv(iad0-1+1) = nno
                     cesv(iad0-1+2) = npg
                 else
-                    ASSERT(nint(cesv(iad0-1+1)).eq.nno)
-                    cesv(iad0-1+2) = cesv(iad0-1+2) + npg
-                endif
+                    ASSERT(nint(cesv(iad0-1+1)) .eq. nno)
+                    cesv(iad0-1+2) = cesv(iad0-1+2)+npg
+                end if
 !
-                call cesexi('C', jcesd, jcesl, ima, 1,&
+                call cesexi('C', jcesd, jcesl, ima, 1, &
                             1, 2+nno*(nbpgt+npg), iad)
-                ASSERT(iad.lt.0)
-                iad=iad0+2+nbpgt*nno
+                ASSERT(iad .lt. 0)
+                iad = iad0+2+nbpgt*nno
 !
 !           -- LES NNO*NPG AUTRES CMPS :
                 do kp = 1, npg
                     if (famil(1:4) .eq. 'XFEM') then
-                        ASSERT(.not.econom)
-                        nbpt = zi(jcesgd-1+5+4* (ima-1)+1)
-                        nbsp = zi(jcesgd-1+5+4* (ima-1)+2)
-                        ASSERT(nbpt.eq.npg)
-                        ASSERT(nbsp.eq.1)
-                        call cesexi('C', jcesgd, jcesgl, ima, kp,&
+                        ASSERT(.not. econom)
+                        nbpt = zi(jcesgd-1+5+4*(ima-1)+1)
+                        nbsp = zi(jcesgd-1+5+4*(ima-1)+2)
+                        ASSERT(nbpt .eq. npg)
+                        ASSERT(nbsp .eq. 1)
+                        call cesexi('C', jcesgd, jcesgl, ima, kp, &
                                     1, 1, iad1)
-                        ASSERT(iad1.gt.0)
+                        ASSERT(iad1 .gt. 0)
                         call elrfvf(elrefe, zr(jcesgv-1+iad1), ff, nno)
                     else
                         call elrfvf(elrefe, xpg(ndim*(kp-1)+1), ff, nno)
-                    endif
+                    end if
                     do ino = 1, nno
                         zl(jcesl-1+iad-1+nno*(kp-1)+ino) = .true.
                         cesv(iad-1+nno*(kp-1)+ino) = ff(ino)
                     end do
                 end do
 !
-  3             continue
+3               continue
             end do
-            nbpgt=nbpgt+npg
+            nbpgt = nbpgt+npg
         end do
-  1     continue
+1       continue
     end do
 !
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine solrei(gamp, s, i1n, parame, nbmat,&
+subroutine solrei(gamp, s, i1n, parame, nbmat, &
                   mater, q, vecn, codret)
 !
-    implicit   none
+    implicit none
 #include "asterfort/bprime.h"
 #include "asterfort/calcn.h"
 #include "asterfort/calcq.h"
@@ -45,22 +45,22 @@ subroutine solrei(gamp, s, i1n, parame, nbmat,&
 ! ======================================================================
 ! --- INITIALISATION DE PARAMETRE --------------------------------------
 ! ======================================================================
-    parameter       ( zero     =  0.0d0   )
-    parameter       ( epssig   =  1.0d-8  )
+    parameter(zero=0.0d0)
+    parameter(epssig=1.0d-8)
 ! ======================================================================
-    common /tdim/   ndt , ndi
+    common/tdim/ndt, ndi
 ! ======================================================================
     call jemarq()
 ! ======================================================================
 ! --- RECUPERATION DE PARAMETRES MATERIAU ------------------------------
 ! ======================================================================
-    gamult = mater( 1,2)
-    gamcjs = mater(12,2)
-    pref = mater(15,2)
+    gamult = mater(1, 2)
+    gamcjs = mater(12, 2)
+    pref = mater(15, 2)
 ! ======================================================================
 ! --- CALCUL DE Q ------------------------------------------------------
 ! ======================================================================
-    call calcq(s, gamcjs, pref, epssig, q,&
+    call calcq(s, gamcjs, pref, epssig, q, &
                codret)
     if (codret .ne. 0) goto 100
 ! ======================================================================
@@ -75,10 +75,10 @@ subroutine solrei(gamp, s, i1n, parame, nbmat,&
 ! --- CAS OU GAMP <= GAMULT(1-EPS) -------------------------------------
 ! ======================================================================
         b = bprime(nbmat, mater, parame, i1n, s, epssig)
-    endif
+    end if
     call calcn(s, b, vecn)
 ! ======================================================================
-100  continue
+100 continue
     call jedema()
 ! ======================================================================
 end subroutine

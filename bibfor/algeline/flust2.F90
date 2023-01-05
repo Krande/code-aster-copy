@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine flust2(melflu, typflu, base, noma, nuor,&
-                  amor, freq, masg, fact, vite,&
+subroutine flust2(melflu, typflu, base, noma, nuor, &
+                  amor, freq, masg, fact, vite, &
                   nbm, npv, nivpar, nivdef)
     implicit none
 ! DESCRIPTION :  CALCUL DES PARAMETRES DE COUPLAGE FLUIDE-STRUCTURE
@@ -115,16 +115,16 @@ subroutine flust2(melflu, typflu, base, noma, nuor,&
             if (dble(abs(vite(iv))) .lt. vlim) then
                 lnul = .true.
                 goto 11
-            else if (vite(iv).lt.0.d0) then
+            else if (vite(iv) .lt. 0.d0) then
                 lneg = .true.
                 goto 11
-            endif
+            end if
         end do
- 11     continue
+11      continue
         if (lnul .or. lneg) then
             call utmess('F', 'ALGELINE_43')
-        endif
-    endif
+        end if
+    end if
 !
 !
 !-----3.ACCES AUX OBJETS UTILES
@@ -151,7 +151,7 @@ subroutine flust2(melflu, typflu, base, noma, nuor,&
         call wkvect('&&FLUST2.TEMP.POIDS', 'V V R', 2*nbm, ipoids)
 !
         nt = 2
-        lwork(1) = 2*nt*nt + 10*nt + 2
+        lwork(1) = 2*nt*nt+10*nt+2
         call wkvect('&&FLUST2.TEMP.WORK', 'V V R', lwork(1), iwork)
 !
 !-------5.2.TYPE DE CONFIGURATION GRAPPE --> VARIABLE INDIC ---
@@ -161,8 +161,8 @@ subroutine flust2(melflu, typflu, base, noma, nuor,&
 !           CALCUL DES PONDERATIONS DUES AUX DEFORMEES MODALES
 !           CALCUL DES MASSES MODALES EN EAU
 !
-        call mdconf(typflu, base, noma, nbm, ibid,&
-                    nuor, 0, igrap, lwork, masg,&
+        call mdconf(typflu, base, noma, nbm, ibid, &
+                    nuor, 0, igrap, lwork, masg, &
                     zr(icodim), zr(ipoids), phie, vecr5)
 !
 !-------5.3.OPERATIONS SIMULTANEES :
@@ -177,7 +177,7 @@ subroutine flust2(melflu, typflu, base, noma, nuor,&
 !
             numod = nuor(imod)
 !
-            call rsadpa(base, 'L', 1, 'MASS_GENE', numod,&
+            call rsadpa(base, 'L', 1, 'MASS_GENE', numod, &
                         0, sjv=lmasg, styp=k8b)
             zr(imist+imod-1) = zr(lmasg)
 !
@@ -186,34 +186,34 @@ subroutine flust2(melflu, typflu, base, noma, nuor,&
             zr(iamfr+nbm+imod-1) = fi
 !
 !
-            call rsadpa(base, 'L', 1, 'FACT_PARTICI_DX', numod,&
+            call rsadpa(base, 'L', 1, 'FACT_PARTICI_DX', numod, &
                         0, sjv=lfact, styp=k8b)
-            fact(3*(imod-1)+1) = zr(lfact ) * masg(imod)
-            fact(3*(imod-1)+2) = zr(lfact+1) * masg(imod)
-            fact(3*(imod-1)+3) = zr(lfact+2) * masg(imod)
+            fact(3*(imod-1)+1) = zr(lfact)*masg(imod)
+            fact(3*(imod-1)+2) = zr(lfact+1)*masg(imod)
+            fact(3*(imod-1)+3) = zr(lfact+2)*masg(imod)
 !
         end do
 !
 !
 !-------5.4.CALCUL DES PARAMETRES MODAUX SOUS ECOULEMENT
 !
-        call pacouc(typflu, masg, zr(icodim), vite, zr(ipoids),&
-                    zr(imist), freq, zr(iamfr), nbm, igrap,&
-                    npv, zr(iwork), lwork, phie, [0.d0],&
+        call pacouc(typflu, masg, zr(icodim), vite, zr(ipoids), &
+                    zr(imist), freq, zr(iamfr), nbm, igrap, &
+                    npv, zr(iwork), lwork, phie, [0.d0], &
                     ier)
 !
 !-------5.5.IMPRESSIONS DANS LE FICHIER RESULTAT SI DEMANDEES
 !
         if (nivpar .eq. 1 .or. nivdef .eq. 1) then
-            phid = phie(1) * (1172.d0/890.d0 - 1.d0)
-            carac(1)=phid
-            carac(2)=0.d0
-            calcul(1)=.true.
-            calcul(2)=.false.
-            call fluimp(2, nivpar, nivdef, melflu, typflu,&
-                        nuor, freq, zr(ifreqi), nbm, vite,&
+            phid = phie(1)*(1172.d0/890.d0-1.d0)
+            carac(1) = phid
+            carac(2) = 0.d0
+            calcul(1) = .true.
+            calcul(2) = .false.
+            call fluimp(2, nivpar, nivdef, melflu, typflu, &
+                        nuor, freq, zr(ifreqi), nbm, vite, &
                         npv, carac, calcul, [0.d0])
-        endif
+        end if
 !
 !
 !-----6.SINON (COUPLAGE FLUIDE-STRUCTURE NON PRIS EN COMPTE)
@@ -224,14 +224,14 @@ subroutine flust2(melflu, typflu, base, noma, nuor,&
 !
         do imod = 1, nbm
             numod = nuor(imod)
-            call rsadpa(base, 'L', 1, 'MASS_GENE', numod,&
+            call rsadpa(base, 'L', 1, 'MASS_GENE', numod, &
                         0, sjv=lmasg, styp=k8b)
-            call rsadpa(base, 'L', 1, 'FACT_PARTICI_DX', numod,&
+            call rsadpa(base, 'L', 1, 'FACT_PARTICI_DX', numod, &
                         0, sjv=lfact, styp=k8b)
             masg(imod) = zr(lmasg)
-            fact(3*(imod-1)+1) = zr(lfact ) * masg(imod)
-            fact(3*(imod-1)+2) = zr(lfact+1) * masg(imod)
-            fact(3*(imod-1)+3) = zr(lfact+2) * masg(imod)
+            fact(3*(imod-1)+1) = zr(lfact)*masg(imod)
+            fact(3*(imod-1)+2) = zr(lfact+1)*masg(imod)
+            fact(3*(imod-1)+3) = zr(lfact+2)*masg(imod)
         end do
 !
 !-------6.2.REMPLISSAGE DE L'OBJET .FREQ
@@ -245,7 +245,7 @@ subroutine flust2(melflu, typflu, base, noma, nuor,&
             end do
         end do
 !
-    endif
+    end if
 !
 ! --- MENAGE
 !

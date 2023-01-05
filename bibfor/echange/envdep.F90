@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! *   LOGICIEL CODE_ASTER - COUPLAGE ASTER/EDYOS - Copyright EDF 2009  *
 ! This file is part of code_aster.
 !
@@ -199,7 +199,7 @@
 ! !            !  +(IPAL-1)  !  CONSIDERE                            !
 ! !____________!_____________!_______________________________________!
 !
-subroutine envdep(numpas, nbpal, dt, dtsto, temps,&
+subroutine envdep(numpas, nbpal, dt, dtsto, temps, &
                   dep, vit, vrotat, finpal, prdeff)
 !
 !
@@ -258,23 +258,23 @@ subroutine envdep(numpas, nbpal, dt, dtsto, temps,&
     real(kind=8) :: vitpal(6), deppal(6), tr8
     real(kind=8) :: posvit(11), rzpr
     integer(kind=4) :: onze
-    parameter  (onze=11)
+    parameter(onze=11)
     real(kind=8) :: pi
 !
 !     ANCIENS INCLUDE (CALCIUM.H)
 !     ===========================
     integer(kind=4) :: lenvar
-    parameter (lenvar = 144)
+    parameter(lenvar=144)
     character(len=lenvar) :: nomvar
     integer(kind=4) :: cpiter
-    parameter (cpiter= 41)
+    parameter(cpiter=41)
 !
 !
 !     COMMON
 !     ======
     integer :: icompo
     integer :: palmax
-    parameter (palmax=20)
+    parameter(palmax=20)
     integer :: iadr
     character(len=3) :: finpal(palmax)
     character(len=24) :: ayacs
@@ -292,7 +292,7 @@ subroutine envdep(numpas, nbpal, dt, dtsto, temps,&
 !
 !     ASSIGNATION DES NOMS POUR LES ADRESSES DANS LES COMMON ASTER
 !     ------------------------------------------------------------
-    ayacs='&ADR_YACS'
+    ayacs = '&ADR_YACS'
 !
 !     RECUPERATION DES DONNEES DANS LES "COMMON" ASTER
 !     ================================================
@@ -303,16 +303,16 @@ subroutine envdep(numpas, nbpal, dt, dtsto, temps,&
 !     RECUPERATION DE L'ADRESSE YACS
 !     ------------------------------
     call jeveuo(ayacs, 'L', iadr)
-    icompo=zi(iadr)
+    icompo = zi(iadr)
 !
 !     RZPR: ROTATION INITIALE (PAS UTILISÉE PAR EDYOS (XAV))
 !     ------------------------------------------------------
-    rzpr =0.d0
+    rzpr = 0.d0
 !
 !     REMPLISSAGE DU VECTEUR POSVIT POUR EDYOS
 !     ----------------------------------------
-    posvit(1)=temps
-    posvit(2)=dt
+    posvit(1) = temps
+    posvit(2) = dt
 !
 !     DEBUT DE LA BOUCLE SUR LES PALIERS
 !
@@ -335,74 +335,74 @@ subroutine envdep(numpas, nbpal, dt, dtsto, temps,&
 !
         if (numpas .le. 1) then
 !            PREMIER PAS DE TEMPS => DEPLACEMENTS ET VITESSES NULS
-            posvit(3)=0.d0
-            posvit(4)=0.d0
-            posvit(5)=0.d0
-            posvit(6)=0.d0
-            posvit(7)=0.d0
-            posvit(8)=0.d0
-            posvit(9)=rzpr
+            posvit(3) = 0.d0
+            posvit(4) = 0.d0
+            posvit(5) = 0.d0
+            posvit(6) = 0.d0
+            posvit(7) = 0.d0
+            posvit(8) = 0.d0
+            posvit(9) = rzpr
             posvit(10) = (vrotat/30.d0)*pi
-            if (niv .ge. 2) write(ifm, *)' ASTEREDYOS : ', nomprg, ' VIT_ROTAT LUE ', posvit(10)
+            if (niv .ge. 2) write (ifm, *) ' ASTEREDYOS : ', nomprg, ' VIT_ROTAT LUE ', posvit(10)
 !
-            posvit(11)=dtsto
+            posvit(11) = dtsto
 !
         else
             do ipat = 1, 6
-                deppal(ipat)=dep(ipal,ipat)
-                vitpal(ipat)=vit(ipal,ipat)
+                deppal(ipat) = dep(ipal, ipat)
+                vitpal(ipat) = vit(ipal, ipat)
             end do
-            posvit(3)=deppal(1)
-            posvit(4)=deppal(2)
-            posvit(5)=vitpal(1)
-            posvit(6)=vitpal(2)
-            posvit(7)=deppal(4)
-            posvit(8)=deppal(5)
-            posvit(9)=rzpr
-            posvit(10)=(vrotat/30.d0)*pi
-            posvit(11)=dtsto
-        endif
+            posvit(3) = deppal(1)
+            posvit(4) = deppal(2)
+            posvit(5) = vitpal(1)
+            posvit(6) = vitpal(2)
+            posvit(7) = deppal(4)
+            posvit(8) = deppal(5)
+            posvit(9) = rzpr
+            posvit(10) = (vrotat/30.d0)*pi
+            posvit(11) = dtsto
+        end if
 !
 !         ECRITURE DES VALEURS ENVOYEES
         if (niv .ge. 2) then
-            write(ifm,*)' *****  ASTEREDYOS :',nomprg,'  NUMPAS = ',&
+            write (ifm, *) ' *****  ASTEREDYOS :', nomprg, '  NUMPAS = ',&
      &           numpas
-            write(ifm,*)' ASTEREDYOS : ',nomprg,&
+            write (ifm, *) ' ASTEREDYOS : ', nomprg,&
      &           '  : ENVOI DES DEPLA A EDYOS'
-            write(ifm,*)' ASTEREDYOS : ',nomprg,&
-     &           '  - NUMERO PALIER : ',ipal
-            write(ifm,*)' ASTEREDYOS : ',nomprg,&
-     &           '  TEMPS,PAS DE TEMPS: ',posvit(1),posvit(2)
-            write(ifm,*)' ASTEREDYOS : ',nomprg,'  DEPX  DEPY: ',&
-     &           posvit(3),posvit(4)
-            write(ifm,*)' ASTEREDYOS : ',nomprg,'  VITX  VITY: ',&
-     &           posvit(5),posvit(6)
-            write(ifm,*)' ASTEREDYOS : ',nomprg,'  ROTX  ROTY  ',&
-     &           posvit(7),posvit(8)
-            write(ifm,*)' ASTEREDYOS : ',nomprg,&
-     &           '  RZPR (PAS UTILISEE): ',posvit(9)
-            write(ifm,*)' ASTEREDYOS : ',nomprg,'  OMEGA : ',&
+            write (ifm, *) ' ASTEREDYOS : ', nomprg,&
+     &           '  - NUMERO PALIER : ', ipal
+            write (ifm, *) ' ASTEREDYOS : ', nomprg,&
+     &           '  TEMPS,PAS DE TEMPS: ', posvit(1), posvit(2)
+            write (ifm, *) ' ASTEREDYOS : ', nomprg, '  DEPX  DEPY: ',&
+     &           posvit(3), posvit(4)
+            write (ifm, *) ' ASTEREDYOS : ', nomprg, '  VITX  VITY: ',&
+     &           posvit(5), posvit(6)
+            write (ifm, *) ' ASTEREDYOS : ', nomprg, '  ROTX  ROTY  ',&
+     &           posvit(7), posvit(8)
+            write (ifm, *) ' ASTEREDYOS : ', nomprg,&
+     &           '  RZPR (PAS UTILISEE): ', posvit(9)
+            write (ifm, *) ' ASTEREDYOS : ', nomprg, '  OMEGA : ',&
      &           posvit(10)
-            write(ifm,*)' ASTEREDYOS : ',nomprg,&
-     &           '  PAS DE TEMPS DE STOCKAGE:',posvit(11)
-            write(ifm,*)' ASTEREDYOS : ',nomprg,'  ITERATION : ',&
+            write (ifm, *) ' ASTEREDYOS : ', nomprg,&
+     &           '  PAS DE TEMPS DE STOCKAGE:', posvit(11)
+            write (ifm, *) ' ASTEREDYOS : ', nomprg, '  ITERATION : ',&
      &           numpas
-            write(ifm,*)' *****  ASTEREDYOS : ',nomprg,'    ****** '
-        endif
+            write (ifm, *) ' *****  ASTEREDYOS : ', nomprg, '    ****** '
+        end if
 !
 !
 !         TR8 = TEMPS PIPEAU NE SERVANT A RIEN
         tr8 = 0.d0
-        nomvar='POSITION'//finpal(ipal)
+        nomvar = 'POSITION'//finpal(ipal)
 !
 !         ENVOI DES DEPLACEMENTS ET VITESSES A EDYOS
-        npas=numpas
+        npas = numpas
         if (prdeff) then
-            call cpedb(icompo, cpiter, tr8, npas, nomvar,&
+            call cpedb(icompo, cpiter, tr8, npas, nomvar, &
                        onze, posvit, info)
-            call errcou(nomprg, npas, nomvar, info, onze,&
+            call errcou(nomprg, npas, nomvar, info, onze, &
                         onze)
-        endif
+        end if
     end do
 !     FIN DE LA BOUCLE SUR LES PALIERS
     call jedema()

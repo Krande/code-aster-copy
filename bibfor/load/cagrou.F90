@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 subroutine cagrou(load, mesh, vale_type, phenom)
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterc/getfac.h"
@@ -60,7 +60,7 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: nb_term
-    parameter (nb_term=2)
+    parameter(nb_term=2)
     real(kind=8) :: coef_real_unit(nb_term)
     complex(kind=8) :: coef_cplx_unit(nb_term)
     character(len=8) :: dof_name(nb_term)
@@ -84,8 +84,8 @@ implicit none
     integer :: jlidof
     integer :: nb_dof
 !
-    data repe_type /0, 0/
-    data repe_defi /0.d0, 0.d0, 0.d0, 0.d0, 0.d0, 0.d0/
+    data repe_type/0, 0/
+    data repe_defi/0.d0, 0.d0, 0.d0, 0.d0, 0.d0, 0.d0/
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -97,10 +97,10 @@ implicit none
 ! - Initializations
 !
     vale_func_zero = '&FOZERO'
-    vale_cplx_zero = (0.d0,0.d0)
+    vale_cplx_zero = (0.d0, 0.d0)
     vale_real_zero = 0.d0
-    coef_cplx_unit(1) = (1.0d0,0.0d0)
-    coef_cplx_unit(2) = (-1.0d0,0.0d0)
+    coef_cplx_unit(1) = (1.0d0, 0.0d0)
+    coef_cplx_unit(2) = (-1.0d0, 0.0d0)
     coef_real_unit(1) = 1.d0
     coef_real_unit(2) = -1.d0
     list_rela = '&&CAGROU.RLLISTE'
@@ -110,13 +110,13 @@ implicit none
 !
     if (vale_type .eq. 'COMP') then
         ASSERT(.false.)
-    else if (vale_type.eq.'REEL') then
+    else if (vale_type .eq. 'REEL') then
         coef_type = 'REEL'
-    else if (vale_type.eq.'FONC') then
+    else if (vale_type .eq. 'FONC') then
         coef_type = 'REEL'
     else
         ASSERT(.false.)
-    endif
+    end if
 !
     do iocc = 1, nliai
 !
@@ -127,16 +127,16 @@ implicit none
                      nb_node)
         if (nb_node .lt. 2) then
             call utmess('F', 'CHARGES2_82')
-        endif
+        end if
         call jeveuo(list_node, 'L', jlino)
 !
 ! ----- Get dof
 !
         call getvtx(keywordfact, 'DDL', iocc=iocc, nbval=0, nbret=nb_dof)
         ASSERT(nb_dof .ne. 0)
-        nb_dof= - nb_dof
+        nb_dof = -nb_dof
         call wkvect(list_dof, 'V V K8', nb_dof, jlidof)
-        call getvtx(keywordfact, 'DDL', iocc=iocc, nbval=nb_dof, vect=zk8(jlidof),&
+        call getvtx(keywordfact, 'DDL', iocc=iocc, nbval=nb_dof, vect=zk8(jlidof), &
                     nbret=ibid)
 !
 ! ----- First node
@@ -152,11 +152,11 @@ implicit none
             do i_no = 2, nb_node
                 node_nume(2) = zi(jlino-1+i_no)
                 call jenuno(jexnum(mesh//'.NOMNOE', node_nume(2)), node_name(2))
-                call afrela(coef_real_unit, coef_cplx_unit, dof_name, node_name, repe_type,&
-                            repe_defi, nb_term, vale_real_zero, vale_cplx_zero, vale_func_zero,&
+                call afrela(coef_real_unit, coef_cplx_unit, dof_name, node_name, repe_type, &
+                            repe_defi, nb_term, vale_real_zero, vale_cplx_zero, vale_func_zero, &
                             coef_type, vale_type, 0.d0, list_rela)
-            enddo
-        enddo
+            end do
+        end do
 !
         call jedetr(list_node)
         call jedetr(list_dof)
@@ -164,10 +164,10 @@ implicit none
 !
 ! - Final linear relation affectation
 !
-    if (phenom.eq.'MECA') then
-    endif
+    if (phenom .eq. 'MECA') then
+    end if
     call aflrch(list_rela, load, 'LIN')
 !
-999  continue
+999 continue
     call jedema()
 end subroutine

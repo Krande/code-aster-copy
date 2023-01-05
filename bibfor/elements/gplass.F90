@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -34,15 +34,15 @@ function gplass(nmnbn, nmplas, bend)
     real(kind=8) :: gplass, nmnbn(6), nmplas(2, 3)
     real(kind=8) :: x, y, coef
 !
-    x = nmnbn(4)-nmplas(bend,1)
-    y = nmnbn(5)-nmplas(bend,2)
+    x = nmnbn(4)-nmplas(bend, 1)
+    y = nmnbn(5)-nmplas(bend, 2)
 !
     coef = 1.001d0
 !
     if (bend .eq. 1) then
-        gplass = max(coef*x + y, x/coef + y)
+        gplass = max(coef*x+y, x/coef+y)
     else
-        gplass = max(-coef*x - y,-x/coef - y)
-    endif
+        gplass = max(-coef*x-y, -x/coef-y)
+    end if
 !
 end function

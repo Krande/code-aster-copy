@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@ function gtstat(istat)
 ! person_in_charge: mathieu.courtois at edf.fr
 !
 !
-    use parameters_module, only : ST_OK
+    use parameters_module, only: ST_OK
     implicit none
 #include "asterf_debug.h"
 #include "asterf_types.h"
@@ -34,12 +34,12 @@ function gtstat(istat)
 !     LA VALEUR DU STATUT GLOBAL IGLBST EST STOCKE DANS LE COMMON CGLBST
 !-----------------------------------------------------------------------
     integer :: iglbst
-    common  / cglbst / iglbst
+    common/cglbst/iglbst
 !
     if (istat .eq. ST_OK) then
         gtstat = iglbst .eq. ST_OK
     else
         gtstat = iand(istat, iglbst) .eq. istat
-    endif
+    end if
     DEBUG_MPI('get status: in/returned', istat, gtstat)
 end function

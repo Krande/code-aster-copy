@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine ccvrrl(nommai, modele, carael, mesmai, chames,&
+subroutine ccvrrl(nommai, modele, carael, mesmai, chames, &
                   cmperr, codret)
     implicit none
 !     --- ARGUMENTS ---
@@ -89,7 +89,7 @@ subroutine ccvrrl(nommai, modele, carael, mesmai, chames,&
 !
     aster_logical :: llimai, lprobm
     integer, pointer :: dime(:) => null()
-    parameter (maxtol = 8.7266463d-2)
+    parameter(maxtol=8.7266463d-2)
 !
     call jemarq()
     codret = 0
@@ -112,50 +112,50 @@ subroutine ccvrrl(nommai, modele, carael, mesmai, chames,&
         jmai = 1
         nbma = 0
         llimai = .false.
-    endif
+    end if
     call jeveuo(chames//'.CESD', 'L', jcesdd)
 !
 !   CONVERSION DE LA CARTE D'ORIENTATION EN UN CHAM_ELEM_S
     carori = carael//'.CARORIEN  .VALE'
     call jeexin(carori, iexori)
     if (iexori .ne. 0) then
-        call carces(carael//'.CARORIEN', 'ELEM', ' ', 'V', carsd,&
+        call carces(carael//'.CARORIEN', 'ELEM', ' ', 'V', carsd, &
                     ' ', ier)
         call jeveuo(carsd//'.CESD', 'L', jcesd)
         call jeveuo(carsd//'.CESL', 'L', jcesl)
         call jeveuo(carsd//'.CESV', 'L', jcesv)
         call jeveuo(carsd//'.CESC', 'L', jcesc)
         call jelira(carsd//'.CESC', 'LONMAX', ncmax)
-        jalpha = indik8(zk8(jcesc),'ALPHA   ',1,ncmax)
-        jbeta = indik8(zk8(jcesc),'BETA    ',1,ncmax)
-        jgamma = indik8(zk8(jcesc),'GAMMA   ',1,ncmax)
+        jalpha = indik8(zk8(jcesc), 'ALPHA   ', 1, ncmax)
+        jbeta = indik8(zk8(jcesc), 'BETA    ', 1, ncmax)
+        jgamma = indik8(zk8(jcesc), 'GAMMA   ', 1, ncmax)
     else
-        jcesd=0
-        jcesl=0
-        jcesv=0
-        jcesc=0
-    endif
+        jcesd = 0
+        jcesl = 0
+        jcesv = 0
+        jcesc = 0
+    end if
 !
 !   CONVERSION DE LA CARTE CARACTERISTIQUE DES COQUES EN UN CHAM_ELEM_S
     carcoq = carael//'.CARCOQUE  .VALE'
     call jeexin(carcoq, iexori)
     if (iexori .ne. 0) then
-        call carces(carael//'.CARCOQUE', 'ELEM', ' ', 'V', carcc,&
+        call carces(carael//'.CARCOQUE', 'ELEM', ' ', 'V', carcc, &
                     ' ', ier)
         call jeveuo(carcc//'.CESD', 'L', jcesdc)
         call jeveuo(carcc//'.CESL', 'L', jceslc)
         call jeveuo(carcc//'.CESV', 'L', jcesvc)
         call jeveuo(carcc//'.CESC', 'L', jcescc)
         call jelira(carcc//'.CESC', 'LONMAX', ncmax)
-        iepais = indik8(zk8(jcescc),'EP      ',1,ncmax)
-        ialpha = indik8(zk8(jcescc),'ALPHA   ',1,ncmax)
-        ibeta = indik8(zk8(jcescc),'BETA    ',1,ncmax)
+        iepais = indik8(zk8(jcescc), 'EP      ', 1, ncmax)
+        ialpha = indik8(zk8(jcescc), 'ALPHA   ', 1, ncmax)
+        ibeta = indik8(zk8(jcescc), 'BETA    ', 1, ncmax)
     else
-        jcesdc=0
-        jceslc=0
-        jcesvc=0
-        jcescc=0
-    endif
+        jcesdc = 0
+        jceslc = 0
+        jcesvc = 0
+        jcescc = 0
+    end if
 !
 !   CREATION DE LA CONNECTIVITE INVERSE
     call cncinv(nommai, zi(jmai), nbma, 'V', cnxinv)
@@ -165,7 +165,7 @@ subroutine ccvrrl(nommai, modele, carael, mesmai, chames,&
     call wkvect(vecsau, 'V V R', 6*nbmato, jvect)
     do i = 1, 6*nbmato
         zr(jvect+i-1) = 0.d0
-    enddo
+    end do
 !
     call jelira(cnxinv, 'NUTIOC', nbno)
 !
@@ -199,17 +199,17 @@ subroutine ccvrrl(nommai, modele, carael, mesmai, chames,&
                 numma = zi(jmai+posma-1)
             else
                 numma = posma
-            endif
+            end if
             if (numma .eq. 0) goto 20
 !
-            if ((zr(jvect+6*(numma-1)) .eq.0.d0) .and. (zr(jvect+6*(numma-1)+1).eq.0.d0)&
-                .and. (zr(jvect+6*(numma-1)+2).eq.0.d0) .and.&
-                (zr(jvect+6*(numma-1)+3).eq.0.d0) .and. (zr(jvect+6*(numma-1)+4).eq.0.d0)&
-                .and. (zr(jvect+6*(numma-1)+5).eq.0.d0)) then
+            if ((zr(jvect+6*(numma-1)) .eq. 0.d0) .and. (zr(jvect+6*(numma-1)+1) .eq. 0.d0) &
+                .and. (zr(jvect+6*(numma-1)+2) .eq. 0.d0) .and. &
+                (zr(jvect+6*(numma-1)+3) .eq. 0.d0) .and. (zr(jvect+6*(numma-1)+4) .eq. 0.d0) &
+                .and. (zr(jvect+6*(numma-1)+5) .eq. 0.d0)) then
 !
-                call cccmcr(jcesdd, numma, jrepe, jconx2, jconx1,&
-                            jcoord, adcar1, adcar2, ialpha, ibeta,&
-                            iepais, jalpha, jbeta, jgamma, ligrmo,&
+                call cccmcr(jcesdd, numma, jrepe, jconx2, jconx1, &
+                            jcoord, adcar1, adcar2, ialpha, ibeta, &
+                            iepais, jalpha, jbeta, jgamma, ligrmo, &
                             ino, pgl, modeli, ier)
                 if (ier .eq. 3) goto 20
                 if (ier .eq. 1 .or. ier .eq. 2) then
@@ -218,8 +218,8 @@ subroutine ccvrrl(nommai, modele, carael, mesmai, chames,&
                         call utmess('A', 'MODELISA10_5', sk=nomail)
                     else
                         call utmess('A', 'ELEMENTS4_80', sk=nomail)
-                    endif
-                endif
+                    end if
+                end if
 !
                 vl(1) = 1.d0
                 vl(2) = 0.d0
@@ -232,16 +232,16 @@ subroutine ccvrrl(nommai, modele, carael, mesmai, chames,&
 !               sauvegarde de la valeur trouvee sauf pour les coques 3d
                 if (modeli .ne. 'CQ3') then
                     do idir = 1, 3
-                        zr(jvect +6*(numma-1)+idir-1) = vg1(idir)
+                        zr(jvect+6*(numma-1)+idir-1) = vg1(idir)
                         zr(jvect+3+6*(numma-1)+idir-1) = vg2(idir)
-                    enddo
-                endif
+                    end do
+                end if
             else
                 do idir = 1, 3
-                    vg1(idir) = zr(jvect+ 6*(numma-1)+idir-1)
+                    vg1(idir) = zr(jvect+6*(numma-1)+idir-1)
                     vg2(idir) = zr(jvect+3+6*(numma-1)+idir-1)
-                enddo
-            endif
+                end do
+            end if
 !
 !           Compare les repères des autres mailles liées au noeud ino
             do ima2 = ima+1, nbma
@@ -251,19 +251,19 @@ subroutine ccvrrl(nommai, modele, carael, mesmai, chames,&
                     numma2 = zi(jmai+posma-1)
                 else
                     numma2 = posma
-                endif
+                end if
                 if (numma2 .eq. 0) goto 30
 !
-                if ((zr(jvect+6*(numma2-1)) .eq.0.d0) .and.&
-                    (zr(jvect+6*(numma2-1)+1).eq.0.d0) .and.&
-                    (zr(jvect+6*(numma2-1)+2).eq.0.d0) .and.&
-                    (zr(jvect+6*(numma2-1)+3).eq.0.d0) .and.&
-                    (zr(jvect+6*(numma2-1)+4).eq.0.d0) .and.&
-                    (zr(jvect+6*(numma2-1)+5).eq.0.d0)) then
+                if ((zr(jvect+6*(numma2-1)) .eq. 0.d0) .and. &
+                    (zr(jvect+6*(numma2-1)+1) .eq. 0.d0) .and. &
+                    (zr(jvect+6*(numma2-1)+2) .eq. 0.d0) .and. &
+                    (zr(jvect+6*(numma2-1)+3) .eq. 0.d0) .and. &
+                    (zr(jvect+6*(numma2-1)+4) .eq. 0.d0) .and. &
+                    (zr(jvect+6*(numma2-1)+5) .eq. 0.d0)) then
 !
-                    call cccmcr(jcesdd, numma2, jrepe, jconx2, jconx1,&
-                                jcoord, adcar1, adcar2, ialpha, ibeta,&
-                                iepais, jalpha, jbeta, jgamma, ligrmo,&
+                    call cccmcr(jcesdd, numma2, jrepe, jconx2, jconx1, &
+                                jcoord, adcar1, adcar2, ialpha, ibeta, &
+                                iepais, jalpha, jbeta, jgamma, ligrmo, &
                                 ino, pgl, modeli, ier)
                     if (ier .eq. 3) goto 30
                     if (ier .eq. 1 .or. ier .eq. 2) then
@@ -272,8 +272,8 @@ subroutine ccvrrl(nommai, modele, carael, mesmai, chames,&
                             call utmess('A', 'MODELISA10_5', sk=nomail)
                         else
                             call utmess('A', 'ELEMENTS4_80', sk=nomail)
-                        endif
-                    endif
+                        end if
+                    end if
 !
                     vl(1) = 1.d0
                     vl(2) = 0.d0
@@ -286,39 +286,39 @@ subroutine ccvrrl(nommai, modele, carael, mesmai, chames,&
 !                   sauvegarde de la valeur trouvee sauf pour les coques3d
                     if (modeli .ne. 'COQUE_3D') then
                         do idir = 1, 3
-                            zr(jvect+ 6*(numma2-1)+idir-1) = vg3(idir)
-                            zr(jvect+3+6*(numma2-1)+idir-1) = vg4( idir)
-                        enddo
-                    endif
+                            zr(jvect+6*(numma2-1)+idir-1) = vg3(idir)
+                            zr(jvect+3+6*(numma2-1)+idir-1) = vg4(idir)
+                        end do
+                    end if
 !
                 else
                     do idir = 1, 3
-                        vg3(idir) = zr(jvect+ 6*(numma2-1)+idir-1)
+                        vg3(idir) = zr(jvect+6*(numma2-1)+idir-1)
                         vg4(idir) = zr(jvect+3+6*(numma2-1)+idir-1)
-                    enddo
-                endif
+                    end do
+                end if
 !
                 call angvec(vg1, vg3, angle1)
                 call angvec(vg2, vg4, angle2)
                 if (angle1 .gt. maxtol .or. angle2 .gt. maxtol) then
-                    maxdif = max(angle1,maxdif)
-                    maxdif = max(angle2,maxdif)
+                    maxdif = max(angle1, maxdif)
+                    maxdif = max(angle2, maxdif)
                     lprobm = .true.
-                endif
+                end if
 !
- 30             continue
+30              continue
             end do
- 20         continue
+20          continue
         end do
-    enddo
+    end do
 !
     if (lprobm) then
         if (cmperr .ne. ' ') then
             tabres(1) = maxdif*180.0/3.14
             call utmess(cmperr, 'UTILITAI_4', sr=tabres(1))
-        endif
+        end if
         codret = 1
-    endif
+    end if
 !
     call jedetr(cnxinv)
     call jedetr(vecsau)

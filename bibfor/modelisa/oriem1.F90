@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -82,24 +82,24 @@ subroutine oriem1(ma, kdim, numa2d, numa3d)
     if (kdim .eq. '3D') then
         n3 = lino3(3)
         do ic = 1, 3
-            n1n2(ic)=coor(3*(n2-1)+ic)-coor(3*(n1-1)+ic)
-            n1n3(ic)=coor(3*(n3-1)+ic)-coor(3*(n1-1)+ic)
+            n1n2(ic) = coor(3*(n2-1)+ic)-coor(3*(n1-1)+ic)
+            n1n3(ic) = coor(3*(n3-1)+ic)-coor(3*(n1-1)+ic)
         end do
         call provec(n1n2, n1n3, nor1)
 !
 !   -- cas 2D :
     else
         do ic = 1, 3
-            n1n2(ic)=coor(3*(n2-1)+ic)-coor(3*(n1-1)+ic)
+            n1n2(ic) = coor(3*(n2-1)+ic)-coor(3*(n1-1)+ic)
         end do
-        ASSERT(n1n2(3).eq.0.d0)
+        ASSERT(n1n2(3) .eq. 0.d0)
 !
 !       -- on tourne n1n2 de +90 degres :
-        nor1(1)=-n1n2(2)
-        nor1(2)=n1n2(1)
-        nor1(3)=0.d0
-    endif
-    ASSERT(ddot(3,nor1,1,nor1,1).gt.0)
+        nor1(1) = -n1n2(2)
+        nor1(2) = n1n2(1)
+        nor1(3) = 0.d0
+    end if
+    ASSERT(ddot(3, nor1, 1, nor1, 1) .gt. 0)
 !
 !
 !   -- 2. position de la maille numa3d par rapport a la maille de peau  => ps1
@@ -107,22 +107,22 @@ subroutine oriem1(ma, kdim, numa2d, numa3d)
     do ino = 1, nbno1
 !        -- on cherche un noeud de lino1 (n2) qui ne soit pas un noeud
 !           de la peau :
-        indi=indiis(lino3,lino1(ino),1,nbno3)
+        indi = indiis(lino3, lino1(ino), 1, nbno3)
         if (indi .eq. 0) then
-            n2=lino1(ino)
-            n1=lino3(1)
+            n2 = lino1(ino)
+            n1 = lino3(1)
             do ic = 1, 3
-                n1n2(ic)=coor(3*(n2-1)+ic)-coor(3*(n1-1)+ic)
+                n1n2(ic) = coor(3*(n2-1)+ic)-coor(3*(n1-1)+ic)
             end do
 !           -- ps1 > 0 <=> la normale de la peau est orientee comme la
 !                         la normale exterieure de la maille 1
-            ps1=ddot(3,n1n2,1,nor1,1)
+            ps1 = ddot(3, n1n2, 1, nor1, 1)
             goto 40
 !
-        endif
+        end if
     end do
     ASSERT(.false.)
- 40 continue
+40  continue
 !
 !
 !   -- si numa3d est degeneree ou du cote "+", on la supprime :
@@ -130,8 +130,8 @@ subroutine oriem1(ma, kdim, numa2d, numa3d)
         call jenuno(jexnum(ma//'.NOMMAI', numa3d), valk(1))
         call jenuno(jexnum(ma//'.NOMMAI', numa2d), valk(2))
         call utmess('A', 'CALCULEL3_47', nk=2, valk=valk)
-        numa3d=0
-    endif
+        numa3d = 0
+    end if
 !
     call jedema()
 end subroutine

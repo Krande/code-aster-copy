@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -38,11 +38,11 @@ subroutine acevma(nbocc, nlm, nlg)
         call getvtx('MASSIF', 'GROUP_MA', iocc=ioc, nbval=0, nbret=ng)
         call getvtx('MASSIF', 'MAILLE', iocc=ioc, nbval=0, nbret=nm)
 !
-        nsom = ng + nm
+        nsom = ng+nm
         if (nsom .eq. ng .or. nsom .eq. nm) then
-            nlm = max(nlm,-nm)
-            nlg = max(nlg,-ng)
-        endif
+            nlm = max(nlm, -nm)
+            nlg = max(nlg, -ng)
+        end if
 !
     end do
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -49,9 +49,9 @@ function indk24(lk24, k24z, rang, nbk24)
     do i = 1, nbk24
         lk24z = lk24(i)
         if (lk24z .eq. k24) then
-            j = j + 1
+            j = j+1
             if (j .eq. rang) goto 110
-        endif
+        end if
     end do
     indk24 = 0
     goto 120

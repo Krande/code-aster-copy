@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine rot3di(x, sina, cosa, sinb, cosb,&
+subroutine rot3di(x, sina, cosa, sinb, cosb, &
                   sing, cosg, y)
     implicit none
 !  CODE 1083
@@ -28,49 +28,49 @@ subroutine rot3di(x, sina, cosa, sinb, cosb,&
     integer :: i, j, k, l
     real(kind=8) :: cosa, cosb, cosg, sina, sinb, sing
 !-----------------------------------------------------------------------
-    rz(1,1)=1.d0
-    ry(2,2)=      rz(1,1)
-    rx(3,3)=      ry(2,2)
-    rx(1,1)= cosa
-    rx(1,2)= sina
-    rx(2,1)=-sina
-    rx(2,2)= cosa
-    rx(3,2)=0.d0
-    rx(3,1)=      rx(3,2)
-    rx(2,3)=      rx(3,1)
-    rx(1,3)=      rx(2,3)
-    ry(1,1)= cosb
-    ry(1,3)=-sinb
-    ry(3,1)= sinb
-    ry(3,3)= cosb
-    ry(3,2)=0.d0
-    ry(2,3)=      ry(3,2)
-    ry(2,1)=      ry(2,3)
-    ry(1,2)=      ry(2,1)
-    rz(2,2)= cosg
-    rz(2,3)= sing
-    rz(3,2)=-sing
-    rz(3,3)= cosg
-    rz(3,1)=0.d0
-    rz(2,1)=      rz(3,1)
-    rz(1,3)=      rz(2,1)
-    rz(1,2)=      rz(1,3)
+    rz(1, 1) = 1.d0
+    ry(2, 2) = rz(1, 1)
+    rx(3, 3) = ry(2, 2)
+    rx(1, 1) = cosa
+    rx(1, 2) = sina
+    rx(2, 1) = -sina
+    rx(2, 2) = cosa
+    rx(3, 2) = 0.d0
+    rx(3, 1) = rx(3, 2)
+    rx(2, 3) = rx(3, 1)
+    rx(1, 3) = rx(2, 3)
+    ry(1, 1) = cosb
+    ry(1, 3) = -sinb
+    ry(3, 1) = sinb
+    ry(3, 3) = cosb
+    ry(3, 2) = 0.d0
+    ry(2, 3) = ry(3, 2)
+    ry(2, 1) = ry(2, 3)
+    ry(1, 2) = ry(2, 1)
+    rz(2, 2) = cosg
+    rz(2, 3) = sing
+    rz(3, 2) = -sing
+    rz(3, 3) = cosg
+    rz(3, 1) = 0.d0
+    rz(2, 1) = rz(3, 1)
+    rz(1, 3) = rz(2, 1)
+    rz(1, 2) = rz(1, 3)
     do l = 1, 3
         do k = 1, 3
-            if (abs(rx(k,l)) .lt. 1.d-6) rx(k,l)=0.d0
-            if (abs(ry(k,l)) .lt. 1.d-6) ry(k,l)=0.d0
-            if (abs(rz(k,l)) .lt. 1.d-6) rz(k,l)=0.d0
+            if (abs(rx(k, l)) .lt. 1.d-6) rx(k, l) = 0.d0
+            if (abs(ry(k, l)) .lt. 1.d-6) ry(k, l) = 0.d0
+            if (abs(rz(k, l)) .lt. 1.d-6) rz(k, l) = 0.d0
         end do
     end do
     do j = 1, 3
         do i = 1, 3
-            rzyx(i,j)=0.d0
+            rzyx(i, j) = 0.d0
             do k = 1, 3
-                p(k)=0.d0
+                p(k) = 0.d0
                 do l = 1, 3
-                    p(k)=p(k)+rx(i,l)*ry(l,k)
+                    p(k) = p(k)+rx(i, l)*ry(l, k)
                 end do
-                rzyx(i,j)=rzyx(i,j)+p(k)*rz(k,j)
+                rzyx(i, j) = rzyx(i, j)+p(k)*rz(k, j)
             end do
         end do
     end do

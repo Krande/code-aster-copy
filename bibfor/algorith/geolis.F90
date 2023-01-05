@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine geolis(modgen, sst1, sst2, intf1, intf2,&
+subroutine geolis(modgen, sst1, sst2, intf1, intf2, &
                   geom1, geom2, limail, nmga1)
     implicit none
 !***********************************************************************
@@ -83,21 +83,21 @@ subroutine geolis(modgen, sst1, sst2, intf1, intf2,&
 !
         tra1(k) = zero
         tra2(k) = zero
-        angl1(k)= zero
-        angl2(k)= zero
+        angl1(k) = zero
+        angl2(k) = zero
         centr1(k) = zero
         centr2(k) = zero
 !
         do kk = 1, 3
             if (k .eq. kk) then
-                rot1(k,k) = un
-                rot2(k,k) = un
+                rot1(k, k) = un
+                rot2(k, k) = un
             else
-                rot1(k,kk) = zero
-                rot1(kk,k) = zero
-                rot2(k,kk) = zero
-                rot2(kk,k) = zero
-            endif
+                rot1(k, kk) = zero
+                rot1(kk, k) = zero
+                rot2(k, kk) = zero
+                rot2(kk, k) = zero
+            end if
         end do
     end do
 !
@@ -105,20 +105,20 @@ subroutine geolis(modgen, sst1, sst2, intf1, intf2,&
 !
 !-----RECUPERATION DES ROTATIONS ET DES TRANSLATIONS
 !
-    repnom=modgen//'      .MODG.SSNO'
+    repnom = modgen//'      .MODG.SSNO'
     call jenonu(jexnom(repnom, sst1), nusst1)
     call jenonu(jexnom(repnom, sst2), nusst2)
     call jeveuo(jexnum(modgen//'      .MODG.SSOR', nusst1), 'L', llrot1)
     call jeveuo(jexnum(modgen//'      .MODG.SSOR', nusst2), 'L', llrot2)
     do i = 1, 3
-        angl1(i)=zr(llrot1+i-1)*r8dgrd()
-        angl2(i)=zr(llrot2+i-1)*r8dgrd()
+        angl1(i) = zr(llrot1+i-1)*r8dgrd()
+        angl2(i) = zr(llrot2+i-1)*r8dgrd()
     end do
     call jeveuo(jexnum(modgen//'      .MODG.SSTR', nusst1), 'L', lltra1)
     call jeveuo(jexnum(modgen//'      .MODG.SSTR', nusst2), 'L', lltra2)
     do i = 1, 3
-        tra1(i)=zr(lltra1+i-1)
-        tra2(i)=zr(lltra2+i-1)
+        tra1(i) = zr(lltra1+i-1)
+        tra2(i) = zr(lltra2+i-1)
     end do
 !
     call matrot(angl1, rot1)
@@ -126,9 +126,9 @@ subroutine geolis(modgen, sst1, sst2, intf1, intf2,&
 !
 !-----RECUPERATION MAILLAGE
 !
-    call mgutdm(modgen, sst1, ibid, 'NOM_MAILLAGE', ibid,&
+    call mgutdm(modgen, sst1, ibid, 'NOM_MAILLAGE', ibid, &
                 mail1)
-    call mgutdm(modgen, sst2, ibid, 'NOM_MAILLAGE', ibid,&
+    call mgutdm(modgen, sst2, ibid, 'NOM_MAILLAGE', ibid, &
                 mail2)
 !
 !
@@ -141,15 +141,15 @@ subroutine geolis(modgen, sst1, sst2, intf1, intf2,&
 !
     call jeveuo(limail, 'L', iagma1)
 !
-    toto='TUTU'
+    toto = 'TUTU'
     call wkvect(toto, 'V V I', 2*nno1, ialino)
 !
-    call gmgnre(mail1, nno1, zi(ialino), zi(iagma1), nmga1,&
+    call gmgnre(mail1, nno1, zi(ialino), zi(iagma1), nmga1, &
                 zi(ialino+nno1), nbno1, 'TOUS')
 !
     do ino1 = 1, nbno1
         nuno1 = zi(ialino+nno1+ino1-1)
-        call parotr(mail1, iageo1, nuno1, 0, centr1,&
+        call parotr(mail1, iageo1, nuno1, 0, centr1, &
                     rot1, tra1, coor1)
         do k = 1, 3
             zr(igeom1+3*(nuno1-1)+k-1) = coor1(k)
@@ -158,12 +158,12 @@ subroutine geolis(modgen, sst1, sst2, intf1, intf2,&
 !
 ! --- DETERMINATION DES COORDONNEES TRANSFORMEES ESCLAVE :
 !     ---------------------------------------------------
-    call mgutdm(modgen, sst2, ibid, 'NOM_LIST_INTERF', ibid,&
+    call mgutdm(modgen, sst2, ibid, 'NOM_LIST_INTERF', ibid, &
                 lint2)
-    int2=lint2//'.IDC_LINO'
+    int2 = lint2//'.IDC_LINO'
     call jenonu(jexnom(int2(1:13)//'NOMS', intf2), ibid)
     call jelira(jexnum(int2, ibid), 'LONMAX', nbno2)
-    call jeveuo(jexnum(lint2 //'.IDC_LINO', ibid), 'L', llint2)
+    call jeveuo(jexnum(lint2//'.IDC_LINO', ibid), 'L', llint2)
     call jeveuo(lint2//'.IDC_DEFO', 'L', vi=idc_defo)
 !
     call dismoi('NB_NO_MAILLA', mail2, 'MAILLAGE', repi=nno2)
@@ -171,11 +171,11 @@ subroutine geolis(modgen, sst1, sst2, intf1, intf2,&
     call jeveuo(mail2//'.COORDO    .VALE', 'L', iageo2)
 !
 !     Recuperation des numeros des noeuds esclaves
-    call jenonu(jexnom(lint2 //'.IDC_NOMS', intf2), ibid)
+    call jenonu(jexnom(lint2//'.IDC_NOMS', intf2), ibid)
 !
     do ino2 = 1, nbno2
         nuno2 = idc_defo(ino2)
-        call parotr(mail2, iageo2, nuno2, 0, centr2,&
+        call parotr(mail2, iageo2, nuno2, 0, centr2, &
                     rot2, tra2, coor2)
         do k = 1, 3
             zr(igeom2+3*(nuno2-1)+k-1) = coor2(k)

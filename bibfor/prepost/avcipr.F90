@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine avcipr(nbvec, vectn, vectu, vectv, nbordr,&
-                  kwork, sommw, vwork, tdisp, tspaq,&
-                  ipgn, nomcri, nomfor, fordef, fatsoc,&
-                  proaxe, pseuil, method, ncycl, jvmin,&
+subroutine avcipr(nbvec, vectn, vectu, vectv, nbordr, &
+                  kwork, sommw, vwork, tdisp, tspaq, &
+                  ipgn, nomcri, nomfor, fordef, fatsoc, &
+                  proaxe, pseuil, method, ncycl, jvmin, &
                   jvmax, jomin, jomax)
 ! aslint: disable=W1306,W1504
     implicit none
@@ -184,9 +184,9 @@ subroutine avcipr(nbvec, vectn, vectu, vectv, nbordr,&
     call wkvect('&&AVCIPR_VALORD', 'V V I', nbvec*nbordr, jvalor)
     call wkvect('&&AVCIPR_ORPIC', 'V V I', nbvec*(nbordr+2), jordpi)
 !
-    call propla(nbvec, vectn, vectu, vectv, nbordr,&
-                kwork, sommw, vwork, tdisp, tspaq,&
-                ipgn, nomcri, nomfor, fordef, fatsoc,&
+    call propla(nbvec, vectn, vectu, vectv, nbordr, &
+                kwork, sommw, vwork, tdisp, tspaq, &
+                ipgn, nomcri, nomfor, fordef, fatsoc, &
                 jvectr)
 !
 ! CALCUL DU DOMMAGE MAX ET DU VECTEUR NORMAL ASSOCIE POUR
@@ -200,7 +200,7 @@ subroutine avcipr(nbvec, vectn, vectu, vectv, nbordr,&
 !
     lsig0 = .false.
 !
-    call avenca(jvectr, nbvec, nbordr, lsig0, iflag,&
+    call avenca(jvectr, nbvec, nbordr, lsig0, iflag, &
                 rmima)
 !
 !       IF (LSIG0) THEN
@@ -213,28 +213,28 @@ subroutine avcipr(nbvec, vectn, vectu, vectv, nbordr,&
 !
 ! 3. PROJECTION DE L'HISTORIQUE DE CHARGEMENT SUR UN OU DEUX AXES
 !
-    call projax(jvectr, nbvec, nbordr, proaxe, iflag,&
+    call projax(jvectr, nbvec, nbordr, proaxe, iflag, &
                 rmima, jraxe)
 !
 ! 4. COMPTAGE RAINFLOW (NORME AFNOR + POSTDAM)
 !
 ! 4.1 PREMIER FILTRAGE DES PICS DE LA FONCTION
 !
-    call avpeak(jraxe, nbvec, nbordr, pseuil, iflag,&
+    call avpeak(jraxe, nbvec, nbordr, pseuil, iflag, &
                 npoin, jvalpo, jvalor)
 !
 ! 4.2 REARANGEMENT ET EXTRACTION DES PICS
 !
 !
-    call avpic2(method, nbvec, nbordr, jrtrv, jitrv,&
-                npoin, jvalpo, jvalor, npic, jpic,&
+    call avpic2(method, nbvec, nbordr, jrtrv, jitrv, &
+                npoin, jvalpo, jvalor, npic, jpic, &
                 jordpi)
 !
 ! 4.3 COMPTAGE RAINFLOW
 !
 !
-    call avrain(nbvec, nbordr, jitrv, npic, jpic,&
-                jordpi, fatsoc, ncycl, jvmin, jvmax,&
+    call avrain(nbvec, nbordr, jitrv, npic, jpic, &
+                jordpi, fatsoc, ncycl, jvmin, jvmax, &
                 jomin, jomax)
 !
 !

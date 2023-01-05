@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine srlmat(mod, imat, nbmat, tempd, tempf, tempr, materd,&
+subroutine srlmat(mod, imat, nbmat, tempd, tempf, tempr, materd, &
                   materf, matcst, ndt, ndi, nvi, indal)
 
 !
@@ -52,8 +52,8 @@ subroutine srlmat(mod, imat, nbmat, tempd, tempf, tempr, materd,&
     !!! Variables globales
     !!!
 
-    integer :: ndt,ndi,nvi,imat,nbmat
-    real(kind=8) :: materd(nbmat,2),materf(nbmat,2),tempd,tempf,tempr
+    integer :: ndt, ndi, nvi, imat, nbmat
+    real(kind=8) :: materd(nbmat, 2), materf(nbmat, 2), tempd, tempf, tempr
     character(len=3) :: matcst
     character(len=8) :: mod
 
@@ -61,9 +61,9 @@ subroutine srlmat(mod, imat, nbmat, tempd, tempf, tempr, materd,&
     !!! Variables locales
     !!!
 
-    integer :: ii,indal
-    real(kind=8) :: e,nu,mu,k
-    real(kind=8) :: dtempm,dtempp,dtemp
+    integer :: ii, indal
+    real(kind=8) :: e, nu, mu, k
+    real(kind=8) :: dtempm, dtempp, dtemp
     integer :: cerr(31)
     character(len=13) :: nomc(31)
 
@@ -77,15 +77,15 @@ subroutine srlmat(mod, imat, nbmat, tempd, tempf, tempr, materd,&
     !!! Definition du nom des parametres materiau
     !!!
 
-    nomc(1)  = 'E            '
-    nomc(2)  = 'NU           '
-    nomc(3)  = 'ALPHA        '
-    nomc(4)  = 'PA           '
-    nomc(5)  = 'NELAS        '
-    nomc(6)  = 'SIGMA_C      '
-    nomc(7)  = 'BETA         '
-    nomc(8)  = 'GAMMA        '
-    nomc(9)  = 'V_1          '
+    nomc(1) = 'E            '
+    nomc(2) = 'NU           '
+    nomc(3) = 'ALPHA        '
+    nomc(4) = 'PA           '
+    nomc(5) = 'NELAS        '
+    nomc(6) = 'SIGMA_C      '
+    nomc(7) = 'BETA         '
+    nomc(8) = 'GAMMA        '
+    nomc(9) = 'V_1          '
     nomc(10) = 'V_2          '
     nomc(11) = 'A_2          '
     nomc(12) = 'M_0          '
@@ -113,65 +113,65 @@ subroutine srlmat(mod, imat, nbmat, tempd, tempf, tempr, materd,&
     !!! Recuperation des parametres materiau
     !!!
 
-    materd(:,:) = 0.d0
+    materd(:, :) = 0.d0
 
     !!! parametres elastiques
-    call rcvala(imat,' ','ELAS',3,'TEMP',[tempd,tempf,tempr],&
-                3,nomc(1),materd(1,1),cerr(1),0)
-    indal=1
-    if (cerr(3).ne.0) indal=0
+    call rcvala(imat, ' ', 'ELAS', 3, 'TEMP', [tempd, tempf, tempr], &
+                3, nomc(1), materd(1, 1), cerr(1), 0)
+    indal = 1
+    if (cerr(3) .ne. 0) indal = 0
 
     !!! parametres lkr
-    call rcvala(imat,' ','LKR',3,'TEMP',[tempd,tempf,tempr],&
-                28,nomc(4),materd(1,2),cerr(4),0)
+    call rcvala(imat, ' ', 'LKR', 3, 'TEMP', [tempd, tempf, tempr], &
+                28, nomc(4), materd(1, 2), cerr(4), 0)
 
     !!!
     !!! Calcul des modules de cisaillement et de compressibilite et stockage
     !!!
 
-    e=materd(1,1)
-    nu=materd(2,1)
-    mu=e/(2.d0*(1.d0+nu))
-    k=e/(3.d0*(1.d0-2.d0*nu))
+    e = materd(1, 1)
+    nu = materd(2, 1)
+    mu = e/(2.d0*(1.d0+nu))
+    k = e/(3.d0*(1.d0-2.d0*nu))
 
-    materd(4,1)=mu
-    materd(5,1)=k
+    materd(4, 1) = mu
+    materd(5, 1) = k
 
     !!!
     !!! Stockage des temperatures et increments comme parametres materiau
     !!!
 
-    materd(6,1)=tempd
-    materd(7,1)=tempf
-    materd(8,1)=tempr
+    materd(6, 1) = tempd
+    materd(7, 1) = tempf
+    materd(8, 1) = tempr
 
-    if ((tempf-tempr).ge.0.d0) then
-        dtempp=tempf-tempr
+    if ((tempf-tempr) .ge. 0.d0) then
+        dtempp = tempf-tempr
     else
         dtempp = 0.d0
-    endif
+    end if
 
-    if ((tempd-tempr).ge.0.d0) then
-        dtempm=tempd-tempr
+    if ((tempd-tempr) .ge. 0.d0) then
+        dtempm = tempd-tempr
     else
-        dtempm=0.d0
-    endif
+        dtempm = 0.d0
+    end if
 
-    dtemp=tempf-tempd
+    dtemp = tempf-tempd
 
-    materd(9,1)=dtempm
-    materd(10,1)=dtempp
-    materd(11,1)=dtemp
+    materd(9, 1) = dtempm
+    materd(10, 1) = dtempp
+    materd(11, 1) = dtemp
 
     !!!
     !!! Definition d'un materiau final
     !!!
 
-    do ii=1,nbmat
-        materf(ii,1)=materd(ii,1)
-        materf(ii,2)=materd(ii,2)
+    do ii = 1, nbmat
+        materf(ii, 1) = materd(ii, 1)
+        materf(ii, 2) = materd(ii, 2)
     end do
 
-    matcst='OUI'
+    matcst = 'OUI'
 
 end subroutine

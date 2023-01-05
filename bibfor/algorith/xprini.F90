@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine xprini(noma, cnxinv, grille, noesom, vcn,&
+subroutine xprini(noma, cnxinv, grille, noesom, vcn, &
                   grlr, lcmin, ndim)
     implicit none
 #include "asterf_types.h"
@@ -105,36 +105,36 @@ subroutine xprini(noma, cnxinv, grille, noesom, vcn,&
     call getvtx(' ', 'METHODE', scal=method, nbret=ibid)
 !
 !
-    if (method .eq. 'UPWIND' .and. (.not.grille)) then
-        call xprcnu(noma, cnxinv, 'V', vcn, grlr,&
+    if (method .eq. 'UPWIND' .and. (.not. grille)) then
+        call xprcnu(noma, cnxinv, 'V', vcn, grlr, &
                     lcmin)
-    endif
+    end if
 !
-    if (method .ne. 'UPWIND' .and. (.not.grille)) then
+    if (method .ne. 'UPWIND' .and. (.not. grille)) then
 !
         lcmin = r8gaem()
 !
 ! boucle sur les mailles
         do ima = 1, nbma
-            itypma=mai(ima)
+            itypma = mai(ima)
             call jenuno(jexnum('&CATA.TM.NOMTM', itypma), typma)
             call conare(typma, ar, nbar)
             do iar = 1, nbar
-                na=ar(iar,1)
-                nb=ar(iar,2)
-                nunoa=zi(jconx1-1+(zi(jconx2+ima-1)+na-1))
-                nunob=zi(jconx1-1+(zi(jconx2+ima-1)+nb-1))
+                na = ar(iar, 1)
+                nb = ar(iar, 2)
+                nunoa = zi(jconx1-1+(zi(jconx2+ima-1)+na-1))
+                nunob = zi(jconx1-1+(zi(jconx2+ima-1)+nb-1))
                 xa(1:ndim) = vale(3*(nunoa-1)+1:3*(nunoa-1)+ndim)
                 xb(1:ndim) = vale(3*(nunob-1)+1:3*(nunob-1)+ndim)
-                v=xb-xa
+                v = xb-xa
                 dist = sqrt(dot_product(v, v))
-                lcmin = min(lcmin,dist)
-            enddo
-        enddo
+                lcmin = min(lcmin, dist)
+            end do
+        end do
     else
-        write(ifm,*)'   LONGUEUR DE LA PLUS PETITE ARETE DU MAILLAGE:'&
-     &               //' ',lcmin
-    endif
+        write (ifm, *) '   LONGUEUR DE LA PLUS PETITE ARETE DU MAILLAGE:'&
+     &               //' ', lcmin
+    end if
 !
 !------------------------------------------------------------------
 !     ON REPERE LES NOEUDS SOMMETS (DONT LE GRADIENT DE LS EST NUL)
@@ -143,7 +143,7 @@ subroutine xprini(noma, cnxinv, grille, noesom, vcn,&
     call wkvect(noesom, 'V V L', nbno, jnosom)
     do ino = 1, nbno
         zl(jnosom-1+ino) = .true.
-        call jenuno(jexnum(noma //'.NOMNOE', ino), nomno)
+        call jenuno(jexnum(noma//'.NOMNOE', ino), nomno)
         if (nomno(1:2) .eq. 'NS') zl(jnosom-1+ino) = .false.
 !
     end do

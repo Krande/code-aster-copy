@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 subroutine avcdmx(nbvec, domtot, cudomx, vnormx, nbplan)
 ! person_in_charge: van-xuan.tran at edf.fr
-    implicit   none
+    implicit none
 #include "jeveux.h"
 #include "asterc/r8prem.h"
 #include "asterfort/jedema.h"
@@ -45,7 +45,7 @@ subroutine avcdmx(nbvec, domtot, cudomx, vnormx, nbplan)
 !     ------------------------------------------------------------------
 !
     call jemarq()
-    prec=100.d0*r8prem()
+    prec = 100.d0*r8prem()
 !
     cudomx = 0.0d0
     vnormx(1) = 1
@@ -57,17 +57,17 @@ subroutine avcdmx(nbvec, domtot, cudomx, vnormx, nbplan)
         if (domtot(ivect) .gt. cudomx) then
             cudomx = domtot(ivect)
             vnormx(1) = ivect
-        endif
+        end if
     end do
 !
 ! ON CHERCHE SI EXISTE DIFFERENT PLAN
     vnormx(2) = vnormx(1)
 !
     do ivect = 1, nbvec
-        if ((abs(domtot(ivect)-cudomx) .lt. prec ) .and. (ivect .ne. vnormx(1))) then
-            nbplan = nbplan + 1
+        if ((abs(domtot(ivect)-cudomx) .lt. prec) .and. (ivect .ne. vnormx(1))) then
+            nbplan = nbplan+1
             vnormx(2) = ivect
-        endif
+        end if
 !
     end do
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine ssvalm(statut, option, mo, ma, isma,&
+subroutine ssvalm(statut, option, mo, ma, isma, &
                   jresl, nbvel)
 !
     implicit none
@@ -77,13 +77,13 @@ subroutine ssvalm(statut, option, mo, ma, isma,&
     real(kind=8) :: lambda(6, 6), angl(3), pgl(3, 3)
     character(len=24) :: nomob
 !-----------------------------------------------------------------------
-    integer :: i, iadesm, ianmcr,   iavmat
+    integer :: i, iadesm, ianmcr, iavmat
     integer :: iret, j, jsma, nbsma, nbssa, nbvel, nddle
     integer :: ndim, nmxval
     integer, pointer :: sssa(:) => null()
     real(kind=8), pointer :: para_r(:) => null()
 !-----------------------------------------------------------------------
-    optio2=option
+    optio2 = option
 !
 !     -- SI APPEL INITIAL : ON ALLOUE UN OBJET SUFFISANT :
 !     ----------------------------------------------------
@@ -93,23 +93,23 @@ subroutine ssvalm(statut, option, mo, ma, isma,&
         if (nbssa .gt. 0) then
             call jeveuo(mo//'.MODELE    .SSSA', 'L', vi=sssa)
             call jeveuo(ma//'.NOMACR', 'L', ianmcr)
-            nmxval=0
+            nmxval = 0
             do jsma = 1, nbsma
                 if (sssa(jsma) .eq. 1) then
-                    nomacr=zk8(ianmcr-1+jsma)
+                    nomacr = zk8(ianmcr-1+jsma)
                     call jeveuo(nomacr//'.DESM', 'L', iadesm)
-                    nddle=zi(iadesm-1+4)
+                    nddle = zi(iadesm-1+4)
 !             --LA DIMENSION DES MATRICES CONDENSEES EST DONNEE PAR
 !               LA RIGIDITE:
-                    ndim=nddle*(nddle+1)/2
-                    nmxval=max(nmxval,ndim)
-                endif
+                    ndim = nddle*(nddle+1)/2
+                    nmxval = max(nmxval, ndim)
+                end if
             end do
             if (nmxval .gt. 0) then
                 call wkvect('&&SSVALM.VALEURS', 'V V R', nmxval, jresl)
-            endif
-        endif
-    endif
+            end if
+        end if
+    end if
 !
 !
 !     -- SI APPEL FINAL : ON DETRUIT LES OBJETS DE TRAVAIL :
@@ -118,33 +118,33 @@ subroutine ssvalm(statut, option, mo, ma, isma,&
         call jedetr('&&SSVALM.VALEURS')
         call jeexin('&&SSVARO.IINO', iret)
         if (iret .gt. 0) call jedetr('&&SSVARO.IINO')
-    endif
+    end if
 !
 !
 !     -- SI APPEL COURANT : ON RECOPIE OU ON TOURNE :
 !     -----------------------------------------------
     if (statut(1:1) .eq. ' ') then
         call jeveuo(ma//'.NOMACR', 'L', ianmcr)
-        nomacr=zk8(ianmcr-1+isma)
+        nomacr = zk8(ianmcr-1+isma)
         call jeveuo(nomacr//'.DESM', 'L', iadesm)
-        nddle=zi(iadesm-1+4)
+        nddle = zi(iadesm-1+4)
 !
         if (optio2(1:4) .eq. 'RIGI' .or. optio2 == "MECA_DDLM_R") then
 !          NOMOB=NOMACR//'.KP_EE'
-            nomob=nomacr//'.MAEL_RAID_VALE'
-        else if (optio2(1:4).eq.'MASS') then
+            nomob = nomacr//'.MAEL_RAID_VALE'
+        else if (optio2(1:4) .eq. 'MASS') then
 !          NOMOB=NOMACR//'.MP_EE'
-            nomob=nomacr//'.MAEL_MASS_VALE'
-        else if (optio2(1:4).eq.'AMOR') then
+            nomob = nomacr//'.MAEL_MASS_VALE'
+        else if (optio2(1:4) .eq. 'AMOR') then
 !          NOMOB=NOMACR//'.AP_EE'
-            nomob=nomacr//'.MAEL_AMOR_VALE'
+            nomob = nomacr//'.MAEL_AMOR_VALE'
         else
             ASSERT(.false.)
-        endif
+        end if
 !
 !       call jeveuo(nomob, 'L', iavmat)
         call jeveuo(jexnum(nomob, 1), 'L', iavmat)
-        nbvel=nddle*(nddle+1)/2
+        nbvel = nddle*(nddle+1)/2
 !
 !
 !       -- RECOPIE (OU ROTATION):
@@ -155,31 +155,31 @@ subroutine ssvalm(statut, option, mo, ma, isma,&
         if (rota(1:3) .eq. 'NON') then
 !         RECOPIE:
             do i = 1, nbvel
-                zr(jresl-1+i)=zr(iavmat-1+i)
+                zr(jresl-1+i) = zr(iavmat-1+i)
             end do
-        else if (rota(1:3).eq.'OUI') then
+        else if (rota(1:3) .eq. 'OUI') then
 !         ROTATION:
             call jeveuo(ma//'.PARA_R', 'L', vr=para_r)
-            angl(1)=para_r(14*(isma-1)+4)
-            angl(2)=para_r(14*(isma-1)+5)
-            angl(3)=para_r(14*(isma-1)+6)
+            angl(1) = para_r(14*(isma-1)+4)
+            angl(2) = para_r(14*(isma-1)+5)
+            angl(3) = para_r(14*(isma-1)+6)
             call matrot(angl, pgl)
             do i = 1, 3
                 do j = 1, 3
-                    lambda(i,j)=pgl(i,j)
-                    lambda(i,j+3)=0.d0
-                    lambda(i+3,j)=0.d0
-                    lambda(i+3,j+3)=pgl(i,j)
+                    lambda(i, j) = pgl(i, j)
+                    lambda(i, j+3) = 0.d0
+                    lambda(i+3, j) = 0.d0
+                    lambda(i+3, j+3) = pgl(i, j)
                 end do
             end do
-            call ssvaro(lambda, 'LG', .true._1, 'EXTE', nomacr,&
+            call ssvaro(lambda, 'LG', .true._1, 'EXTE', nomacr, &
                         iavmat, jresl)
         else
             ASSERT(.false.)
-        endif
+        end if
 !
         call jelibe(nomob)
-    endif
+    end if
 !
 !
 !

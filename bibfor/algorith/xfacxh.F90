@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,11 +16,11 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine xfacxh(elp, jpint, jmilt, jnit, jcnset,&
-                  pinter, ninter, jphe, ndim, ainter,&
-                  nface, nptf, cface, igeom, jlsn,&
-                  jaint, jgrlsn, nfiss, ifiss, fisc,&
-                  nfisc, nfisc2, ncompe, jstano, jlst,&
+subroutine xfacxh(elp, jpint, jmilt, jnit, jcnset, &
+                  pinter, ninter, jphe, ndim, ainter, &
+                  nface, nptf, cface, igeom, jlsn, &
+                  jaint, jgrlsn, nfiss, ifiss, fisc, &
+                  nfisc, nfisc2, ncompe, jstano, jlst, &
                   typdis, minlst)
     implicit none
 !
@@ -83,7 +83,7 @@ subroutine xfacxh(elp, jpint, jmilt, jnit, jcnset,&
 ! --------------------------------------------------------------------
 !
 !
-    ASSERT(ndim.eq.2 .or. ndim .eq. 3)
+    ASSERT(ndim .eq. 2 .or. ndim .eq. 3)
 !
     zxain = xxmmvd('ZXAIN')
     minlst = 1*r8maem()
@@ -92,7 +92,7 @@ subroutine xfacxh(elp, jpint, jmilt, jnit, jcnset,&
     call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos)
 !
     call tecael(iadzi, iazk24, noms=0)
-    typma=zk24(iazk24-1+3+zi(iadzi-1+2)+3)(1:8)
+    typma = zk24(iazk24-1+3+zi(iadzi-1+2)+3) (1:8)
 !
 !     INITIALISATION DU NOMBRE DE POINTS TELS QUE LSN=0
     ninter = 0
@@ -105,53 +105,53 @@ subroutine xfacxh(elp, jpint, jmilt, jnit, jcnset,&
     inc = 0
 !
 !     L'ELEMENT EST-IL TRAVERSE STRICTEMENT PAR LSN=0?
-    cut=.false.
-    i=1
-  1 continue
+    cut = .false.
+    i = 1
+1   continue
 !     (1) RECHERCHE D'UN NOEUD PIVOT (LSN NON NULLE)
     if (zr(jlsn-1+(i-1)*nfiss+ifiss) .ne. 0.d0 .and. i .lt. nno) then
         do k = i+1, nno
 !     (2) PRODUIT DE CE PIVOT PAR LES AUTRES LSN
-            if (zr(jlsn-1+(i-1)*nfiss+ifiss)*zr(jlsn-1+(k-1)*nfiss+ifiss) .lt. 0.d0) cut=.true.
+            if (zr(jlsn-1+(i-1)*nfiss+ifiss)*zr(jlsn-1+(k-1)*nfiss+ifiss) .lt. 0.d0) cut = .true.
         end do
-    else if (i.lt.nno) then
-        i=i+1
+    else if (i .lt. nno) then
+        i = i+1
         goto 1
-    endif
+    end if
 !     RECHERCHE DE MINLSN
     minlsn = 0.d0
     maxlsn = 0.d0
     do i = 1, nnos
-        minlsn=min(zr(jlsn-1+(i-1)*nfiss+ifiss),minlsn)
-        maxlsn=max(zr(jlsn-1+(i-1)*nfiss+ifiss),maxlsn)
+        minlsn = min(zr(jlsn-1+(i-1)*nfiss+ifiss), minlsn)
+        maxlsn = max(zr(jlsn-1+(i-1)*nfiss+ifiss), maxlsn)
     end do
 !     ON NE PREND QUE CERTAINS ELEMENTS POUR NE PAS AVOIR DE "DOUBLONS"
     arete = .false.
     lsnabs = 0.d0
-    if (.not.cut) then
+    if (.not. cut) then
         if (ndim .eq. 3) then
             call confac(typma, ibid2, ibid, f, nbf)
             do i = 1, nbf
                 lsnabs = 0.d0
                 do j = 1, 4
-                    if (f(i,j) .ne. 0) lsnabs = lsnabs+abs(zr(jlsn-1+(f(i,j)-1)*nfiss+ifiss))
+                    if (f(i, j) .ne. 0) lsnabs = lsnabs+abs(zr(jlsn-1+(f(i, j)-1)*nfiss+ifiss))
                 end do
                 if (lsnabs .le. cridist*lonref) arete = .true.
             end do
-        else if (ndim.eq.2) then
+        else if (ndim .eq. 2) then
             call conare(typma, ar, nbar)
             do i = 1, nbar
                 lsnabs = 0.d0
-                lsnabs = abs(&
-                         zr(&
-                         jlsn-1+(ar(i,1)-1)*nfiss+ifiss))+ abs(zr(jlsn-1+(ar(i,2)-1)*nfiss+ifiss)&
-                         )
+                lsnabs = abs( &
+                         zr( &
+                         jlsn-1+(ar(i, 1)-1)*nfiss+ifiss))+abs(zr(jlsn-1+(ar(i, 2)-1)*nfiss+ifiss) &
+                                                               )
                 if (lsnabs .le. cridist*lonref) arete = .true.
             end do
-        endif
-        if (.not.arete) goto 999
+        end if
+        if (.not. arete) goto 999
         if (arete .and. minlsn .ge. 0.d0) goto 999
-    endif
+    end if
 !
 !      INITIALISATION DU SIGNE POUR LA RECHERCHE DANS LES SOUS ELEMENTS
     signe = -1
@@ -171,7 +171,7 @@ subroutine xfacxh(elp, jpint, jmilt, jnit, jcnset,&
             end do
             i = 1
             jonc = .false.
- 10         continue
+10          continue
 !     (1) RECHERCHE D'UN NOEUD PIVOT (LSN NON NULLE)
             if (lsninter(i) .ne. 0.d0 .and. i .lt. nno) then
                 do k = i+1, nno
@@ -181,26 +181,26 @@ subroutine xfacxh(elp, jpint, jmilt, jnit, jcnset,&
 !     LA FISSURE EN QUESTION DOIT ETRE VUE PAR TOUS LES NEOUDS DE L'ELEMENT
                         do j = 1, nno
                             if (zi(jstano-1+(j-1)*nfiss+fisc(2*(ifisc+nfisc)-1)) .eq. 0) &
-                            jonc= .false.
+                                jonc = .false.
                         end do
                         if (jonc) then
                             nbinter = nbinter+1
                             intersec = ifisc
-                        endif
+                        end if
                         exit
-                    endif
+                    end if
                 end do
-            else if (i.lt.nno) then
-                i=i+1
+            else if (i .lt. nno) then
+                i = i+1
                 goto 10
-            endif
+            end if
         end do
         if (nbinter .ge. 2) call utmess('A', 'XFEM_54')
         if (nbinter .ge. 1) then
             if (fisc(2*(intersec+nfisc)) .lt. 0) signe = 1
             if (fisc(2*(intersec+nfisc)) .gt. 0) signe = -1
-        endif
-    endif
+        end if
+    end if
 !      NOMBRE TOTAL DE SOUS SOUS ELEMENTS
     nelttot = zi(jnit-1+1)
 !      COMPTEUR DU NOMBRE D'ELEMENTS QUI CONSTITUENT LA LEVRE
@@ -221,7 +221,7 @@ subroutine xfacxh(elp, jpint, jmilt, jnit, jcnset,&
             nptf = 2
             typsma = 'TRIA3   '
             call conare(typsma, ar, nbf)
-        endif
+        end if
 !      BOUCLE SUR LES SOUS ELEMENTS
         do i = 1, nelttot
 !      ON NE REGARDE QUE LES SOUS ELEMENTS AYANT HE=-1
@@ -232,124 +232,124 @@ subroutine xfacxh(elp, jpint, jmilt, jnit, jcnset,&
                     h = 0
 !      BOUCLE SUR SOMMETS DE l'ARETE (2D) OU DE LA FACE (3D)
                     do k = 1, 2
-                        if (zi(jcnset-1+nnose*(i-1)+ar(j,k)) .gt. 1000) then
+                        if (zi(jcnset-1+nnose*(i-1)+ar(j, k)) .gt. 1000) then
                             h = h+1
-                            else if (zr(jlsn-1+(zi(jcnset-1+nnose*(i-1)+ar(j,k))&
-                                 -1)*nfiss+ifiss).eq.0.d0 ) then
+                        else if (zr(jlsn-1+(zi(jcnset-1+nnose*(i-1)+ar(j, k)) &
+                                            -1)*nfiss+ifiss) .eq. 0.d0) then
                             h = h+1
                         else
                             goto 22
-                        endif
+                        end if
                     end do
 !      TEST SPECIFIQUE POUR LA PROPAGATION COHESIVE
                     if (typdis .eq. 'COHESIF') then
                         do k = 1, 2
                             lst = 0.d0
-                            if (zi(jcnset-1+nnose*(i-1)+ar(j,k)) .gt. 1000) then
+                            if (zi(jcnset-1+nnose*(i-1)+ar(j, k)) .gt. 1000) then
                                 do ii = 1, ndim
-                                    newpt(ii) = zr(&
-                                                jpint-1+ndim*(&
-                                                zi(jcnset-1+nnose* (i-1)+ar(j,k))-1001)+ii&
+                                    newpt(ii) = zr( &
+                                                jpint-1+ndim*( &
+                                                zi(jcnset-1+nnose*(i-1)+ar(j, k))-1001)+ii &
                                                 )
                                 end do
-                                call reeref(elp, nno, zr(igeom), newpt, ndim,&
+                                call reeref(elp, nno, zr(igeom), newpt, ndim, &
                                             ptref, ff)
                                 do ino = 1, nno
-                                    lst= lst + zr(jlst-1+(ino-1)*nfiss+ifiss)*ff(ino)
+                                    lst = lst+zr(jlst-1+(ino-1)*nfiss+ifiss)*ff(ino)
                                 end do
-                                if (minlst .gt. lst) minlst=lst
+                                if (minlst .gt. lst) minlst = lst
                             else
-                                if (minlst .gt.&
-                                    zr(&
-                                    jlst-1+(zi(jcnset-1+ nnose*(i-1)+ar(j,k))-1&
-                                    )*nfiss+ifiss&
+                                if (minlst .gt. &
+                                    zr( &
+                                    jlst-1+(zi(jcnset-1+nnose*(i-1)+ar(j, k))-1 &
+                                            )*nfiss+ifiss &
                                     )) then
-                                    minlst=zr(jlst-1+(zi(jcnset-1+nnose*(i-1)+ar(j,k))-1)*nfiss+ifiss)
-                                endif
-                            endif
+                               minlst = zr(jlst-1+(zi(jcnset-1+nnose*(i-1)+ar(j, k))-1)*nfiss+ifiss)
+                                end if
+                            end if
                         end do
-                    endif
+                    end if
 !      TEST SPECIFIQUE POUR LES ELEMENTS MULTI-HEAVISIDE
                     if (nfiss .gt. 1) then
                         lsn(:) = 0.d0
                         do k = 1, 2
                             newpt(:) = 0.d0
-                            if (zi(jcnset-1+nnose*(i-1)+ar(j,k)) .gt. 1000) then
+                            if (zi(jcnset-1+nnose*(i-1)+ar(j, k)) .gt. 1000) then
                                 do ii = 1, ndim
-                                    newpt(ii) = zr(&
-                                                jpint-1+ndim*(&
-                                                zi(jcnset-1+nnose* (i-1)+ar(j,k))-1001)+ii&
+                                    newpt(ii) = zr( &
+                                                jpint-1+ndim*( &
+                                                zi(jcnset-1+nnose*(i-1)+ar(j, k))-1001)+ii &
                                                 )
                                 end do
-                            else if (zi(jcnset-1+nnose*(i-1)+ar(j,k)) .lt. 1000) then
+                            else if (zi(jcnset-1+nnose*(i-1)+ar(j, k)) .lt. 1000) then
                                 do ii = 1, ndim
-                                    newpt(ii) = zr(&
-                                                igeom-1+ndim*(zi(jcnset-1+nnose* (i-1)+ar(j,k))-1&
-                                                )+ii&
+                                    newpt(ii) = zr( &
+                                                igeom-1+ndim*(zi(jcnset-1+nnose*(i-1)+ar(j, k))-1 &
+                                                              )+ii &
                                                 )
                                 end do
-                            endif
-                            call reeref(elp, nno, zr(igeom), newpt, ndim,&
+                            end if
+                            call reeref(elp, nno, zr(igeom), newpt, ndim, &
                                         ptref, ff)
                             do ino = 1, nno
-                                lsn(k)= lsn(k) + zr(jlsn-1+(ino-1)*nfiss+ifiss)*ff(ino)
+                                lsn(k) = lsn(k)+zr(jlsn-1+(ino-1)*nfiss+ifiss)*ff(ino)
                             end do
 !      ON AJUSTE LES POINTS DE JONCTION DE FISSURE A ZERO
-                            if (zi(jcnset-1+nnose*(i-1)+ar(j,k)) .gt. 1000) then
-                                if (zr(&
-                                    jaint-1+zxain*(zi(jcnset-1+nnose*(i-1)+ ar(j,k))-1001&
-                                    )+4&
-                                    )&
+                            if (zi(jcnset-1+nnose*(i-1)+ar(j, k)) .gt. 1000) then
+                                if (zr( &
+                                    jaint-1+zxain*(zi(jcnset-1+nnose*(i-1)+ar(j, k))-1001 &
+                                                   )+4 &
+                                    ) &
                                     .eq. -1.d0) then
                                     if (abs(lsn(k)) .le. (lonref*crijonc)) lsn(k) = 0.d0
-                                endif
-                            endif
+                                end if
+                            end if
                         end do
                         if ((abs(lsn(1))+abs(lsn(2))) .ge. (lonref*cridist)) goto 22
 !      TEST SUPPLEMENTAIRE POUR LES ELEMENTS TRES ALONGES A PROXIMITE DE LA FISSURE
-                        if (zi(jcnset-1+nnose*(i-1)+6-ar(j,1)-ar(j,2)) .gt. 1000) then
+                        if (zi(jcnset-1+nnose*(i-1)+6-ar(j, 1)-ar(j, 2)) .gt. 1000) then
                             newpt(:) = 0.d0
                             do ii = 1, ndim
-                                newpt(ii) = zr(&
-                                            jpint-1+ndim*(&
-                                            zi(jcnset-1+nnose* (i-1)+6-ar(j,1)-ar(j,2))-1001)+ii&
+                                newpt(ii) = zr( &
+                                            jpint-1+ndim*( &
+                                            zi(jcnset-1+nnose*(i-1)+6-ar(j, 1)-ar(j, 2))-1001)+ii &
                                             )
                             end do
-                            call reeref(elp, nno, zr(igeom), newpt, ndim,&
+                            call reeref(elp, nno, zr(igeom), newpt, ndim, &
                                         ptref, ff)
                             do ino = 1, nno
-                                lsn(3)= lsn(3) + zr(jlsn-1+(ino-1)*nfiss+ifiss)*ff(ino)
+                                lsn(3) = lsn(3)+zr(jlsn-1+(ino-1)*nfiss+ifiss)*ff(ino)
                             end do
-                            if (abs(lsn(3)) .lt. max(abs(lsn(1)),abs(lsn(2)))) goto 22
-                        endif
+                            if (abs(lsn(3)) .lt. max(abs(lsn(1)), abs(lsn(2)))) goto 22
+                        end if
 !      EN QUADRATIQUE ON VERIFIE QUE LE NOEUD MILIEU DE L'ARETE VERIFIE LSN=0,
 !      SINON ON EXCLUE CETTE ARETE
-                    else if (.not.iselli(elp)) then
+                    else if (.not. iselli(elp)) then
                         lsn(:) = 0.d0
                         newpt(:) = 0.d0
-                        if (zi(jcnset-1+nnose*(i-1)+ar(j,3)) .gt. 3000) then
+                        if (zi(jcnset-1+nnose*(i-1)+ar(j, 3)) .gt. 3000) then
                             do ii = 1, ndim
-                                newpt(ii)=zr(jmilt-1+ndim*(zi(jcnset-1+nnose*(i-1)+ar(j,3))-3001)+ii)
+                            newpt(ii) = zr(jmilt-1+ndim*(zi(jcnset-1+nnose*(i-1)+ar(j, 3))-3001)+ii)
                             end do
-                        else if (zi(jcnset-1+nnose*(i-1)+ar(j,3)) .gt. 2000) then
+                        else if (zi(jcnset-1+nnose*(i-1)+ar(j, 3)) .gt. 2000) then
                             do ii = 1, ndim
-                                newpt(ii)=zr(jmilt-1+ndim*(zi(jcnset-1+nnose*(i-1)+ar(j,3))-2001)+ii)
+                            newpt(ii) = zr(jmilt-1+ndim*(zi(jcnset-1+nnose*(i-1)+ar(j, 3))-2001)+ii)
                             end do
-                        else if (zi(jcnset-1+nnose*(i-1)+ar(j,3)) .lt. 2000) then
-                            if (zr(jlsn-1+zi(jcnset-1+nnose*(i-1)+ar(j,3))) .ne. 0.d0) then
+                        else if (zi(jcnset-1+nnose*(i-1)+ar(j, 3)) .lt. 2000) then
+                            if (zr(jlsn-1+zi(jcnset-1+nnose*(i-1)+ar(j, 3))) .ne. 0.d0) then
                                 goto 22
                             else
                                 goto 48
-                            endif
-                        endif
-                        call reeref(elp, nno, zr(igeom), newpt, ndim,&
+                            end if
+                        end if
+                        call reeref(elp, nno, zr(igeom), newpt, ndim, &
                                     ptref, ff)
                         do ino = 1, nno
-                            lsn(1)= lsn(1)+zr(jlsn-1+ino)*ff(ino)
+                            lsn(1) = lsn(1)+zr(jlsn-1+ino)*ff(ino)
                         end do
                         if (abs(lsn(1)) .ge. lonref*cridist) goto 22
-                    endif
- 48                 continue
+                    end if
+48                  continue
 !      SI LE NOMBRE DE NOEUDS SOMMETS DE L'ARETE QUI SONT SUR LA LSN EST 2
                     if (h .eq. 2) then
 !      ON AJOUTE CETTE ARETE
@@ -357,17 +357,17 @@ subroutine xfacxh(elp, jpint, jmilt, jnit, jcnset,&
 !      RECUPERATION DES COORDONNEES REELLES DES NOEUDS SITUES SUR CE SEGMENT ET ARCHIVAGE
 !      SI NON DEJA ARCHIVE
                         do k = 1, 2
-                            if (zi(jcnset-1+nnose*(i-1)+ar(j,k)) .gt. 1000) then
+                            if (zi(jcnset-1+nnose*(i-1)+ar(j, k)) .gt. 1000) then
                                 do ii = 1, ndim
-                                    newpt(ii) = zr(&
-                                                jpint-1+ndim*(&
-                                                zi(jcnset-1+nnose*(i-1)+ ar(j,k))-1001)+ii&
+                                    newpt(ii) = zr( &
+                                                jpint-1+ndim*( &
+                                                zi(jcnset-1+nnose*(i-1)+ar(j, k))-1001)+ii &
                                                 )
                                 end do
                                 do ii = 1, zxain-1
-                                    rainter(ii) = zr(&
-                                                  jaint-1+zxain*(&
-                                                  zi(jcnset-1+nnose*(i-1)+ ar(j,k))-1001)+ii&
+                                    rainter(ii) = zr( &
+                                                  jaint-1+zxain*( &
+                                                  zi(jcnset-1+nnose*(i-1)+ar(j, k))-1001)+ii &
                                                   )
                                 end do
 !                              if (rainter(1) .eq. 0.d0 .and. rainter(2) .eq. 0.d0 &
@@ -387,112 +387,112 @@ subroutine xfacxh(elp, jpint, jmilt, jnit, jcnset,&
 !                                    endif
 !                                 end do
 !                              endif
-                            else if (zi(jcnset-1+nnose*(i-1)+ar(j,k)) .lt. 1000) then
+                            else if (zi(jcnset-1+nnose*(i-1)+ar(j, k)) .lt. 1000) then
                                 do ii = 1, ndim
-                                    newpt(ii) = zr(&
-                                                igeom-1+ndim*(zi(jcnset-1+nnose*(i-1)+ ar(j,k))-1&
-                                                )+ii&
+                                    newpt(ii) = zr( &
+                                                igeom-1+ndim*(zi(jcnset-1+nnose*(i-1)+ar(j, k))-1 &
+                                                              )+ii &
                                                 )
                                 end do
                                 rainter(1) = 0.d0
-                                rainter(2) = zi(jcnset-1+nnose*(i-1)+ar(j,k))
+                                rainter(2) = zi(jcnset-1+nnose*(i-1)+ar(j, k))
                                 rainter(3) = 0.d0
                                 rainter(4) = 0.d0
-                            endif
+                            end if
                             deja = .false.
 !      VERIF SI CE POINT A DEJA ETE STOCKE OU NON
                             do ii = 1, npi
                                 do jj = 1, ndim
                                     p(jj) = pinter(ndim*(ii-1)+jj)
                                 end do
-                                if (padist(ndim,p,newpt) .lt. (lonref*cridist)) then
+                                if (padist(ndim, p, newpt) .lt. (lonref*cridist)) then
                                     deja = .true.
-                                    ni=ii
-                                endif
+                                    ni = ii
+                                end if
                             end do
 !      ON ARCHIVE PINTER ET CFACE
-                            if (.not.deja) then
+                            if (.not. deja) then
                                 npi = npi+1
                                 npis = npis+1
                                 do jj = 1, ndim
                                     pinter(ndim*(npi-1)+jj) = newpt(jj)
                                 end do
-                                cface(nface,k)=npi
+                                cface(nface, k) = npi
                                 do jj = 1, zxain-1
                                     ainter(zxain*(npi-1)+jj) = rainter(jj)
                                 end do
                             else
-                                cface(nface,k)=ni
-                            endif
+                                cface(nface, k) = ni
+                            end if
                         end do
 !       NECESSITE D'INVERSER LA CONNECTIVITE? (ON SOUHAITE TOUJOURS GARDER LA
 !       MEME CONVENTION NORMALE DIRIGEE SELON GRADLSN)
-                        det = (&
-                              pinter(&
-                              ndim*(&
-                              cface(nface,2)-1)+1)-pinter(ndim*(cface(nface,1)-1)+ 1))*zr(jgrlsn-&
-                              &1+ndim*(ifiss-1)+2) - (pinter(ndim*(cface(nface,2)-1 )+2)-pinter(n&
-                              &dim*(cface(nface,1)-1)+2)&
-                              )*zr(jgrlsn-1+ndim*(ifiss-1&
-                              )+1&
+                        det = ( &
+                              pinter( &
+                              ndim*( &
+                              cface(nface, 2)-1)+1)-pinter(ndim*(cface(nface, 1)-1)+1))*zr(jgrlsn-&
+                              &1+ndim*(ifiss-1)+2)-(pinter(ndim*(cface(nface, 2)-1)+2)-pinter(n&
+                              &dim*(cface(nface, 1)-1)+2) &
+                              )*zr(jgrlsn-1+ndim*(ifiss-1 &
+                              )+1 &
                               )
                         if (det .lt. 0.d0) then
-                            tempo = cface(nface,1)
-                            cface(nface,1) = cface(nface,2)
-                            cface(nface,2) = tempo
-                        endif
+                            tempo = cface(nface, 1)
+                            cface(nface, 1) = cface(nface, 2)
+                            cface(nface, 2) = tempo
+                        end if
 !       DANS LE CAS QUADRATIQUE ON RAJOUTE LE POINT MILIEU DU SEGMENT
                         if (.not. iselli(elp)) then
-                            if (zi(jcnset-1+nnose*(i-1)+ar(j,3)) .gt. 3000) then
+                            if (zi(jcnset-1+nnose*(i-1)+ar(j, 3)) .gt. 3000) then
                                 do ii = 1, ndim
-                                    newpt(ii) = zr(&
-                                                jmilt-1+ndim*(&
-                                                zi(jcnset-1+nnose*(i-1)+ar(j,3))- 3001)+ii&
+                                    newpt(ii) = zr( &
+                                                jmilt-1+ndim*( &
+                                                zi(jcnset-1+nnose*(i-1)+ar(j, 3))-3001)+ii &
                                                 )
                                 end do
-                            else if (zi(jcnset-1+nnose*(i-1)+ar(j,3)) .gt. 2000) then
+                            else if (zi(jcnset-1+nnose*(i-1)+ar(j, 3)) .gt. 2000) then
                                 do ii = 1, ndim
-                                    newpt(ii) = zr(&
-                                                jmilt-1+ndim*(&
-                                                zi(jcnset-1+nnose*(i-1)+ar(j,3))- 2001)+ii&
+                                    newpt(ii) = zr( &
+                                                jmilt-1+ndim*( &
+                                                zi(jcnset-1+nnose*(i-1)+ar(j, 3))-2001)+ii &
                                                 )
                                 end do
-                            else if (zi(jcnset-1+nnose*(i-1)+ar(j,3)) .lt. 2000) then
+                            else if (zi(jcnset-1+nnose*(i-1)+ar(j, 3)) .lt. 2000) then
                                 do ii = 1, ndim
-                                    newpt(ii) = zr(&
-                                                igeom-1+ndim*(zi(jcnset-1+nnose*(i-1)+ar(j,3))- 1&
-                                                )+ii&
+                                    newpt(ii) = zr( &
+                                                igeom-1+ndim*(zi(jcnset-1+nnose*(i-1)+ar(j, 3))-1 &
+                                                              )+ii &
                                                 )
                                 end do
-                            endif
+                            end if
 !      ON ARCHIVE PINTER ET CFACE
                             npi = npi+1
                             do jj = 1, ndim
                                 pinter(ndim*(npi-1)+jj) = newpt(jj)
                             end do
-                            cface(nface,3)=npi
+                            cface(nface, 3) = npi
                             do jj = 1, zxain-1
                                 ainter(zxain*(npi-1)+jj) = 0.d0
                             end do
-                        endif
-                    endif
- 22                 continue
+                        end if
+                    end if
+22                  continue
                 end do
-            endif
+            end if
         end do
     else
         if (.not. iselli(elp)) then
             nnose = 10
             nptf = 6
             typsma = 'TETRA10'
-            call confac(typsma, ibid2, ibid, f, nbf,&
+            call confac(typsma, ibid2, ibid, f, nbf, &
                         quad='OUI')
         else
             nnose = 4
             nptf = 3
             typsma = 'TETRA4'
             call confac(typsma, ibid2, ibid, f, nbf)
-        endif
+        end if
 !      BOUCLE SUR LES SOUS ELEMENTS
         do i = 1, nelttot
 !      ON NE REGARDE QUE LES SOUS ELEMENTS AYANT HE=-1
@@ -503,135 +503,135 @@ subroutine xfacxh(elp, jpint, jmilt, jnit, jcnset,&
                     h = 0
 !      BOUCLE SUR SOMMETS DE l'ARETE (2D) OU DE LA FACE (3D)
                     do k = 1, 3
-                        if (zi(jcnset-1+nnose*(i-1)+f(j,k)) .gt. 1000) then
+                        if (zi(jcnset-1+nnose*(i-1)+f(j, k)) .gt. 1000) then
                             h = h+1
-                            else if (zr(jlsn-1+(zi(jcnset-1+nnose*(i-1)+f(j,k))-1)*nfiss+&
-                                ifiss).eq.0.d0) then
+                        else if (zr(jlsn-1+(zi(jcnset-1+nnose*(i-1)+f(j, k))-1)*nfiss+ &
+                                    ifiss) .eq. 0.d0) then
                             h = h+1
                         else
                             goto 23
-                        endif
+                        end if
                     end do
 !      TEST SPECIFIQUE POUR LA PROPAGATION COHESIVE
                     if (typdis .eq. 'COHESIF') then
                         do k = 1, 3
-                            if (zi(jcnset-1+nnose*(i-1)+f(j,k)) .gt. 1000) then
+                            if (zi(jcnset-1+nnose*(i-1)+f(j, k)) .gt. 1000) then
                                 do ii = 1, ndim
-                                    newpt(ii) = zr(&
-                                                jpint-1+ndim*(&
-                                                zi(jcnset-1+nnose* (i-1)+f(j,k))-1001)+ii&
+                                    newpt(ii) = zr( &
+                                                jpint-1+ndim*( &
+                                                zi(jcnset-1+nnose*(i-1)+f(j, k))-1001)+ii &
                                                 )
                                 end do
-                                call reeref(elp, nno, zr(igeom), newpt, ndim,&
+                                call reeref(elp, nno, zr(igeom), newpt, ndim, &
                                             ptref, ff)
                                 lst = 0.d0
                                 do ino = 1, nno
-                                    lst= lst + zr(jlst-1+(ino-1)*nfiss+ifiss)*ff(ino)
+                                    lst = lst+zr(jlst-1+(ino-1)*nfiss+ifiss)*ff(ino)
                                 end do
-                                if (minlst .gt. lst) minlst=lst
+                                if (minlst .gt. lst) minlst = lst
                             else
-                                if (minlst .gt.&
-                                    zr(&
-                                    jlst-1+(zi(jcnset-1+ nnose*(i-1)+f(j,k))-1)*nfiss+ifiss&
+                                if (minlst .gt. &
+                                    zr( &
+                                    jlst-1+(zi(jcnset-1+nnose*(i-1)+f(j, k))-1)*nfiss+ifiss &
                                     )) then
-                                    minlst=zr(jlst-1+(zi(jcnset-1+nnose*(i-1)+f(j,k))-1)*nfiss+ifiss)
-                                endif
-                            endif
+                                minlst = zr(jlst-1+(zi(jcnset-1+nnose*(i-1)+f(j, k))-1)*nfiss+ifiss)
+                                end if
+                            end if
                         end do
-                    endif
+                    end if
 !
 !      TEST SPECIFIQUE POUR LES ELEMENTS MULTI-HEAVISIDE
                     if (nfiss .gt. 1) then
                         lsn(:) = 0.d0
                         do k = 1, 3
                             newpt(:) = 0.d0
-                            if (zi(jcnset-1+nnose*(i-1)+f(j,k)) .gt. 1000) then
+                            if (zi(jcnset-1+nnose*(i-1)+f(j, k)) .gt. 1000) then
                                 do ii = 1, ndim
-                                    newpt(ii) = zr(&
-                                                jpint-1+ndim*(&
-                                                zi(jcnset-1+nnose*(i-1)+f(j,k))- 1001)+ii&
+                                    newpt(ii) = zr( &
+                                                jpint-1+ndim*( &
+                                                zi(jcnset-1+nnose*(i-1)+f(j, k))-1001)+ii &
                                                 )
                                 end do
-                            else if (zi(jcnset-1+nnose*(i-1)+f(j,k)) .lt. 1000) then
+                            else if (zi(jcnset-1+nnose*(i-1)+f(j, k)) .lt. 1000) then
                                 do ii = 1, ndim
-                                    newpt(ii) = zr(&
-                                                igeom-1+ndim*(zi(jcnset-1+nnose*(i-1)+f(j,k))- 1&
-                                                )+ii&
+                                    newpt(ii) = zr( &
+                                                igeom-1+ndim*(zi(jcnset-1+nnose*(i-1)+f(j, k))-1 &
+                                                              )+ii &
                                                 )
                                 end do
-                            endif
-                            call reeref(elp, nno, zr(igeom), newpt, ndim,&
+                            end if
+                            call reeref(elp, nno, zr(igeom), newpt, ndim, &
                                         ptref, ff)
                             do ino = 1, nno
-                                lsn(k)= lsn(k) + zr(jlsn-1+(ino-1)*nfiss+ifiss)*ff(ino)
+                                lsn(k) = lsn(k)+zr(jlsn-1+(ino-1)*nfiss+ifiss)*ff(ino)
                             end do
 !      ON AJUSTE LES POINTS DE JONCTION DE FISSURE A ZERO
-                            if (zi(jcnset-1+nnose*(i-1)+f(j,k)) .gt. 1000) then
-                                if (zr(&
-                                    jaint-1+zxain*(zi(jcnset-1+nnose*(i-1)+ f(j,k))-1001)+4&
-                                    )&
+                            if (zi(jcnset-1+nnose*(i-1)+f(j, k)) .gt. 1000) then
+                                if (zr( &
+                                    jaint-1+zxain*(zi(jcnset-1+nnose*(i-1)+f(j, k))-1001)+4 &
+                                    ) &
                                     .eq. -1.d0) then
                                     if (abs(lsn(k)) .le. (lonref*crijonc)) lsn(k) = 0.d0
-                                endif
-                            endif
+                                end if
+                            end if
                         end do
                         if ((abs(lsn(1))+abs(lsn(2))+abs(lsn(3))) .ge. (lonref*cridist)) &
-                        goto 23
+                            goto 23
 !      TEST SUPPLEMENTAIRE POUR LES ELEMENTS TRES ALONGES A PROXIMITE DE LA FISSURE
-                        if (zi(jcnset-1+nnose*(i-1)+10-f(j,1)-f(j,2)-f(j,3)) .gt. 1000) then
+                        if (zi(jcnset-1+nnose*(i-1)+10-f(j, 1)-f(j, 2)-f(j, 3)) .gt. 1000) then
                             newpt(:) = 0.d0
                             do ii = 1, ndim
-                                newpt(ii) = zr(&
-                                            jpint-1+ndim*(&
-                                            zi(jcnset-1+nnose* (i-1)+10-f(j,1)-f(j,2)-f(j,3)&
-                                            )-1001&
-                                            )+ii&
+                                newpt(ii) = zr( &
+                                            jpint-1+ndim*( &
+                                            zi(jcnset-1+nnose*(i-1)+10-f(j, 1)-f(j, 2)-f(j, 3) &
+                                               )-1001 &
+                                            )+ii &
                                             )
                             end do
-                            call reeref(elp, nno, zr(igeom), newpt, ndim,&
+                            call reeref(elp, nno, zr(igeom), newpt, ndim, &
                                         ptref, ff)
                             do ino = 1, nno
-                                lsn(4)= lsn(4) + zr(jlsn-1+(ino-1)*nfiss+ifiss)*ff(ino)
+                                lsn(4) = lsn(4)+zr(jlsn-1+(ino-1)*nfiss+ifiss)*ff(ino)
                             end do
-                            if (abs(lsn(4)) .lt. max(abs(lsn(1)),abs(lsn(2)),abs(lsn(3)))) &
-                            goto 23
-                        endif
+                            if (abs(lsn(4)) .lt. max(abs(lsn(1)), abs(lsn(2)), abs(lsn(3)))) &
+                                goto 23
+                        end if
 !      EN QUADRATIQUE ON VERIFIE QUE LES NOEUDS MILIEU DU TRIA VERIFIENT LSN=0,
 !      SINON ON EXCLUE CE TRIA
-                    else if (.not.iselli(elp)) then
+                    else if (.not. iselli(elp)) then
                         lsn(:) = 0.d0
                         do k = 1, 3
                             newpt(:) = 0.d0
-                            if (zi(jcnset-1+nnose*(i-1)+f(j,3+k)) .gt. 3000) then
+                            if (zi(jcnset-1+nnose*(i-1)+f(j, 3+k)) .gt. 3000) then
                                 do ii = 1, ndim
-                                    newpt(ii) = zr(&
-                                                jmilt-1+ndim*(&
-                                                zi(jcnset-1+nnose*(i-1)+ f(j,3+k))-3001)+ii&
+                                    newpt(ii) = zr( &
+                                                jmilt-1+ndim*( &
+                                                zi(jcnset-1+nnose*(i-1)+f(j, 3+k))-3001)+ii &
                                                 )
                                 end do
-                            else if (zi(jcnset-1+nnose*(i-1)+f(j,3+k)) .gt. 2000) then
+                            else if (zi(jcnset-1+nnose*(i-1)+f(j, 3+k)) .gt. 2000) then
                                 do ii = 1, ndim
-                                    newpt(ii) = zr(&
-                                                jmilt-1+ndim*(&
-                                                zi(jcnset-1+nnose*(i-1)+ f(j,3+k))-2001)+ii&
+                                    newpt(ii) = zr( &
+                                                jmilt-1+ndim*( &
+                                                zi(jcnset-1+nnose*(i-1)+f(j, 3+k))-2001)+ii &
                                                 )
                                 end do
-                            else if (zi(jcnset-1+nnose*(i-1)+f(j,3+k)) .lt. 2000) then
-                                if (zr(jlsn-1+zi(jcnset-1+nnose*(i-1)+f(j,3+k))) .ne. 0.d0) then
+                            else if (zi(jcnset-1+nnose*(i-1)+f(j, 3+k)) .lt. 2000) then
+                                if (zr(jlsn-1+zi(jcnset-1+nnose*(i-1)+f(j, 3+k))) .ne. 0.d0) then
                                     goto 23
                                 else
                                     goto 49
-                                endif
-                            endif
-                            call reeref(elp, nno, zr(igeom), newpt, ndim,&
+                                end if
+                            end if
+                            call reeref(elp, nno, zr(igeom), newpt, ndim, &
                                         ptref, ff)
                             do ino = 1, nno
-                                lsn(k)=lsn(k)+zr(jlsn-1+ino)*ff(ino)
+                                lsn(k) = lsn(k)+zr(jlsn-1+ino)*ff(ino)
                             end do
                             if (abs(lsn(k)) .ge. lonref*cridist) goto 23
                         end do
-                    endif
- 49                 continue
+                    end if
+49                  continue
 !      SI LE NOMBRE DE NOEUDS SOMMETS DE LA FACE QUI SONT SUR LA LSN EST 3
                     if (h .eq. 3) then
 !      ON AJOUTE CETTE FACE
@@ -639,17 +639,17 @@ subroutine xfacxh(elp, jpint, jmilt, jnit, jcnset,&
 !      RECUPERATION DES COORDONNEES REELLES DES NOEUDS SITUES SUR CETTE FACE ET ARCHIVAGE
 !      SI NON DEJA ARCHIVE
                         do k = 1, 3
-                            if (zi(jcnset-1+nnose*(i-1)+f(j,k)) .gt. 1000) then
+                            if (zi(jcnset-1+nnose*(i-1)+f(j, k)) .gt. 1000) then
                                 do ii = 1, ndim
-                                    newpt(ii) = zr(&
-                                                jpint-1+ndim*(&
-                                                zi(jcnset-1+nnose*(i-1)+f(j,k))- 1001)+ii&
+                                    newpt(ii) = zr( &
+                                                jpint-1+ndim*( &
+                                                zi(jcnset-1+nnose*(i-1)+f(j, k))-1001)+ii &
                                                 )
                                 end do
                                 do ii = 1, zxain-1
-                                    rainter(ii) = zr(&
-                                                  jaint-1+zxain*(&
-                                                  zi(jcnset-1+nnose*(i-1)+ f(j,k))-1001)+ii&
+                                    rainter(ii) = zr( &
+                                                  jaint-1+zxain*( &
+                                                  zi(jcnset-1+nnose*(i-1)+f(j, k))-1001)+ii &
                                                   )
                                 end do
 !                              if (rainter(1) .eq. 0.d0 .and. rainter(2) .eq. 0.d0 .and. &
@@ -670,127 +670,127 @@ subroutine xfacxh(elp, jpint, jmilt, jnit, jcnset,&
 !                                    endif
 !                                 end do
 !                              endif
-                            else if (zi(jcnset-1+nnose*(i-1)+f(j,k)) .lt. 1000) then
+                            else if (zi(jcnset-1+nnose*(i-1)+f(j, k)) .lt. 1000) then
                                 do ii = 1, ndim
-                                    newpt(ii) = zr(&
-                                                igeom-1+ndim*(zi(jcnset-1+nnose*(i-1)+ f(j,k))-1&
-                                                )+ii&
+                                    newpt(ii) = zr( &
+                                                igeom-1+ndim*(zi(jcnset-1+nnose*(i-1)+f(j, k))-1 &
+                                                              )+ii &
                                                 )
                                 end do
                                 rainter(1) = 0.d0
-                                rainter(2) = zi(jcnset-1+nnose*(i-1)+f(j,k))
+                                rainter(2) = zi(jcnset-1+nnose*(i-1)+f(j, k))
                                 rainter(3) = 0.d0
                                 rainter(4) = 0.d0
-                            endif
+                            end if
                             deja = .false.
 !      VERIF SI CE POINT A DEJA ETE STOCKE OU NON
                             do ii = 1, npi
                                 do jj = 1, ndim
                                     p(jj) = pinter(ndim*(ii-1)+jj)
                                 end do
-                                if (padist(ndim,p,newpt) .lt. (lonref*cridist)) then
+                                if (padist(ndim, p, newpt) .lt. (lonref*cridist)) then
                                     deja = .true.
-                                    ni=ii
-                                endif
+                                    ni = ii
+                                end if
                             end do
 !      ON ARCHIVE PINTER ET CFACE
-                            if (.not.deja) then
+                            if (.not. deja) then
                                 npi = npi+1
                                 npis = npis+1
                                 do jj = 1, ndim
                                     pinter(ndim*(npi-1)+jj) = newpt(jj)
                                 end do
-                                cface(nface,k)=npi
+                                cface(nface, k) = npi
                                 do jj = 1, zxain-1
                                     ainter(zxain*(npi-1)+jj) = rainter(jj)
                                 end do
                             else
-                                cface(nface,k)=ni
-                            endif
+                                cface(nface, k) = ni
+                            end if
                         end do
 !      DANS LE CAS QUADRATIQUE ON AJOUTE LES POINTS MILIEUX
                         if (.not. iselli(elp)) then
                             do k = 4, 6
                                 deja = .false.
-                                if (zi(jcnset-1+nnose*(i-1)+f(j,k)) .gt. 3000) then
+                                if (zi(jcnset-1+nnose*(i-1)+f(j, k)) .gt. 3000) then
                                     do ii = 1, ndim
-                                        newpt(ii) = zr(&
-                                                    jmilt-1+ndim*(&
-                                                    zi(jcnset-1+nnose*(i-1)+ f(j,k))-3001)+ii&
+                                        newpt(ii) = zr( &
+                                                    jmilt-1+ndim*( &
+                                                    zi(jcnset-1+nnose*(i-1)+f(j, k))-3001)+ii &
                                                     )
                                     end do
-                                else if (zi(jcnset-1+nnose*(i-1)+f(j,k)) .gt. 2000) then
+                                else if (zi(jcnset-1+nnose*(i-1)+f(j, k)) .gt. 2000) then
                                     do ii = 1, ndim
-                                        newpt(ii) = zr(&
-                                                    jmilt-1+ndim*(&
-                                                    zi(jcnset-1+nnose*(i-1)+ f(j,k))-2001)+ii&
+                                        newpt(ii) = zr( &
+                                                    jmilt-1+ndim*( &
+                                                    zi(jcnset-1+nnose*(i-1)+f(j, k))-2001)+ii &
                                                     )
                                     end do
-                                else if (zi(jcnset-1+nnose*(i-1)+f(j,k)) .lt. 2000) then
+                                else if (zi(jcnset-1+nnose*(i-1)+f(j, k)) .lt. 2000) then
                                     do ii = 1, ndim
-                                        newpt(ii) = zr(&
-                                                    igeom-1+ndim*(&
-                                                    zi(jcnset-1+nnose*(i-1)+ f(j,k))-1)+ii&
+                                        newpt(ii) = zr( &
+                                                    igeom-1+ndim*( &
+                                                    zi(jcnset-1+nnose*(i-1)+f(j, k))-1)+ii &
                                                     )
                                     end do
-                                endif
+                                end if
 !      VERIF SI CE POINT A DEJA ETE STOCKE OU NON
                                 do ii = 1, npi
                                     do jj = 1, ndim
                                         p(jj) = pinter(ndim*(ii-1)+jj)
                                     end do
-                                    if (padist(ndim,p,newpt) .lt. (lonref*cridist)) then
+                                    if (padist(ndim, p, newpt) .lt. (lonref*cridist)) then
                                         deja = .true.
-                                        ni=ii
-                                    endif
+                                        ni = ii
+                                    end if
                                 end do
 !      ON ARCHIVE PINTER ET CFACE
-                                if (.not.deja) then
+                                if (.not. deja) then
                                     npi = npi+1
                                     do jj = 1, ndim
                                         pinter(ndim*(npi-1)+jj) = newpt(jj)
                                     end do
-                                    cface(nface,k)=npi
+                                    cface(nface, k) = npi
                                     do jj = 1, zxain-1
                                         ainter(zxain*(npi-1)+jj) = 0.d0
                                     end do
                                 else
-                                    cface(nface,k)=ni
-                                endif
+                                    cface(nface, k) = ni
+                                end if
                             end do
-                        endif
+                        end if
 !       NECESSITE D'INVERSER LA CONNECTIVITE? (ON SOUHAITE TOUJOURS GARDER LA
 !       MEME CONVENTION NORMALE DIRIGEE SELON GRADLSN)
                         do jj = 1, ndim
-                            ab(jj) = pinter(&
-                                     ndim*(cface(nface,2)-1)+jj) - pinter(ndim* (cface(nface,1)-1&
-                                     )+jj&
-                                     )
-                            bc(jj) = pinter(&
-                                     ndim*(cface(nface,3)-1)+jj) - pinter(ndim* (cface(nface,2)-1&
-                                     )+jj&
-                                     )
+                            ab(jj) = pinter( &
+                                     ndim*(cface(nface, 2)-1)+jj)-pinter(ndim*(cface(nface, 1)-1 &
+                                                                               )+jj &
+                                                                         )
+                            bc(jj) = pinter( &
+                                     ndim*(cface(nface, 3)-1)+jj)-pinter(ndim*(cface(nface, 2)-1 &
+                                                                               )+jj &
+                                                                         )
                             gradlsn(jj) = zr(jgrlsn-1+ndim*(ifiss-1)+jj)
                             normfa(jj) = 0.d0
                         end do
                         call provec(ab, bc, normfa)
                         det = ddot(ndim, gradlsn, 1, normfa, 1)
                         if (det .lt. 0.d0) then
-                            tempo = cface(nface,2)
-                            cface(nface,2) = cface(nface,3)
-                            cface(nface,3) = tempo
+                            tempo = cface(nface, 2)
+                            cface(nface, 2) = cface(nface, 3)
+                            cface(nface, 3) = tempo
                             if (.not. iselli(elp)) then
-                                tempo = cface(nface,4)
-                                cface(nface,4) = cface(nface,6)
-                                cface(nface,6) = tempo
-                            endif
-                        endif
-                    endif
- 23                 continue
+                                tempo = cface(nface, 4)
+                                cface(nface, 4) = cface(nface, 6)
+                                cface(nface, 6) = tempo
+                            end if
+                        end if
+                    end if
+23                  continue
                 end do
-            endif
+            end if
         end do
-    endif
+    end if
 !
     ninter = npi
 !

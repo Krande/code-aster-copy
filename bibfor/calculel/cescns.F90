@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine cescns(cesz, celfpz, base, cnsz, comp,&
+subroutine cescns(cesz, celfpz, base, cnsz, comp, &
                   cret)
 ! person_in_charge: jacques.pellet at edf.fr
     implicit none
@@ -77,7 +77,7 @@ subroutine cescns(cesz, celfpz, base, cnsz, comp,&
     integer :: ima, ncmp, icmp, jcnsl, jcnsv, ispt
     integer :: jcesd, jcesv, jcesl, nbma, iret, nbno
     integer :: ino, nuno, nbpt, iad1, ilcnx1
-    integer :: jcesk,  nbnot, jnbno, ieq, nbsp
+    integer :: jcesk, nbnot, jnbno, ieq, nbsp
     character(len=3) :: tsca
     character(len=8) :: ma, nomgd
     character(len=19) :: ces, cns, ces1
@@ -94,7 +94,7 @@ subroutine cescns(cesz, celfpz, base, cnsz, comp,&
 !     1- ON TRANSFORME CES EN CHAM_ELEM_S/ELNO:
 !     --------------------------------------------
     ces1 = '&&CESCNS.CES1'
-    call cesces(ces, 'ELNO', ' ', ' ', celfpz,&
+    call cesces(ces, 'ELNO', ' ', ' ', celfpz, &
                 'V', ces1)
 !
 !
@@ -107,7 +107,7 @@ subroutine cescns(cesz, celfpz, base, cnsz, comp,&
 !        ILCNX1,IACNX1   : ADRESSES DE LA CONNECTIVITE DU MAILLAGE
 !     --------------------------------------------------------------
     call exisd('CHAM_ELEM_S', ces1, iret)
-    ASSERT(iret.gt.0)
+    ASSERT(iret .gt. 0)
     call jeveuo(ces1//'.CESK', 'L', jcesk)
     call jeveuo(ces1//'.CESC', 'L', vk8=cesc)
     call jeveuo(ces1//'.CESD', 'L', jcesd)
@@ -116,7 +116,7 @@ subroutine cescns(cesz, celfpz, base, cnsz, comp,&
     ma = zk8(jcesk-1+1)
     nomgd = zk8(jcesk-1+2)
 !     TEST SI CHAMP ELNO
-    ASSERT(zk8(jcesk-1+3).eq.'ELNO')
+    ASSERT(zk8(jcesk-1+3) .eq. 'ELNO')
     call dismoi('NB_MA_MAILLA', ma, 'MAILLAGE', repi=nbma)
     call dismoi('NB_NO_MAILLA', ma, 'MAILLAGE', repi=nbnot)
     call dismoi('TYPE_SCA', nomgd, 'GRANDEUR', repk=tsca)
@@ -132,17 +132,17 @@ subroutine cescns(cesz, celfpz, base, cnsz, comp,&
             call utmess(comp, 'UTILITAI_3')
         else
             cret = 100
-        endif
-    endif
+        end if
+    end if
 !
 !     ON ATTEND SEULEMENT DES REELS OU DES COMPLEXES
-    ASSERT((tsca.eq.'R').or.(tsca.eq.'C'))
+    ASSERT((tsca .eq. 'R') .or. (tsca .eq. 'C'))
 !
 !
 !     3- ALLOCATION DE CNS :
 !     -------------------------------------------
     if (nomgd .eq. 'VARI_R') nomgd = 'VAR2_R'
-    call cnscre(ma, nomgd, ncmp, cesc, base,&
+    call cnscre(ma, nomgd, ncmp, cesc, base, &
                 cns)
 !
 !
@@ -156,55 +156,55 @@ subroutine cescns(cesz, celfpz, base, cnsz, comp,&
         call wkvect('&&CESCNS.NBNO', 'V V I', nbnot, jnbno)
 !
         do ima = 1, nbma
-            nbpt = zi(jcesd-1+5+4* (ima-1)+1)
-            nbsp = zi(jcesd-1+5+4* (ima-1)+2)
-            nbno = zi(ilcnx1+ima) - zi(ilcnx1-1+ima)
+            nbpt = zi(jcesd-1+5+4*(ima-1)+1)
+            nbsp = zi(jcesd-1+5+4*(ima-1)+2)
+            nbno = zi(ilcnx1+ima)-zi(ilcnx1-1+ima)
 !
-            ASSERT(nbno.eq.nbpt)
+            ASSERT(nbno .eq. nbpt)
             if (nbsp .eq. 1) then
                 do ino = 1, nbno
-                    call cesexi('C', jcesd, jcesl, ima, ino,&
+                    call cesexi('C', jcesd, jcesl, ima, ino, &
                                 1, icmp, iad1)
                     if (iad1 .le. 0) goto 10
 !
                     nuno = connex(1+zi(ilcnx1-1+ima)-2+ino)
-                    ieq = (nuno-1)*ncmp + icmp
+                    ieq = (nuno-1)*ncmp+icmp
                     zl(jcnsl-1+ieq) = .true.
                     if (tsca .eq. 'R') then
-                        if (zi(jnbno-1+nuno) .eq. 0) zr(jcnsv-1+ieq)= 0.d0
-                        zr(jcnsv-1+ieq) = zr(jcnsv-1+ieq) + zr(jcesv- 1+iad1)
-                    else if (tsca.eq.'C') then
-                        if (zi(jnbno-1+nuno) .eq. 0) zc(jcnsv-1+ieq)=( 0.d0,0.d0)
-                        zc(jcnsv-1+ieq) = zc(jcnsv-1+ieq) + zc(jcesv- 1+iad1)
-                    endif
-                    zi(jnbno-1+nuno) = zi(jnbno-1+nuno) + 1
+                        if (zi(jnbno-1+nuno) .eq. 0) zr(jcnsv-1+ieq) = 0.d0
+                        zr(jcnsv-1+ieq) = zr(jcnsv-1+ieq)+zr(jcesv-1+iad1)
+                    else if (tsca .eq. 'C') then
+                        if (zi(jnbno-1+nuno) .eq. 0) zc(jcnsv-1+ieq) = (0.d0, 0.d0)
+                        zc(jcnsv-1+ieq) = zc(jcnsv-1+ieq)+zc(jcesv-1+iad1)
+                    end if
+                    zi(jnbno-1+nuno) = zi(jnbno-1+nuno)+1
 !
- 10                 continue
+10                  continue
                 end do
             else
                 do ino = 1, nbno
                     do ispt = 1, nbsp
-                        call cesexi('C', jcesd, jcesl, ima, ino,&
+                        call cesexi('C', jcesd, jcesl, ima, ino, &
                                     ispt, icmp, iad1)
                         if (iad1 .le. 0) goto 60
                         nuno = connex(1+zi(ilcnx1-1+ima)-2+ino)
-                        ieq = (nuno-1)*ncmp + icmp
+                        ieq = (nuno-1)*ncmp+icmp
                         zl(jcnsl-1+ieq) = .false.
- 60                     continue
+60                      continue
                     end do
                 end do
-            endif
+            end if
         end do
 !
         do nuno = 1, nbnot
-            ieq = (nuno-1)*ncmp + icmp
+            ieq = (nuno-1)*ncmp+icmp
             if (zl(jcnsl-1+ieq)) then
                 if (tsca .eq. 'R') then
                     zr(jcnsv-1+ieq) = zr(jcnsv-1+ieq)/zi(jnbno-1+nuno)
-                else if (tsca.eq.'C') then
+                else if (tsca .eq. 'C') then
                     zc(jcnsv-1+ieq) = zc(jcnsv-1+ieq)/zi(jnbno-1+nuno)
-                endif
-            endif
+                end if
+            end if
         end do
 !
     end do

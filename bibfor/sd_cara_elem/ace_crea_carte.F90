@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine ace_crea_carte(infdonn,infcarte)
+subroutine ace_crea_carte(infdonn, infcarte)
 !
 !
 ! --------------------------------------------------------------------------------------------------
@@ -33,8 +33,8 @@ subroutine ace_crea_carte(infdonn,infcarte)
     use cara_elem_info_type
     use cara_elem_carte_type
     implicit none
-    type (cara_elem_info)  :: infdonn
-    type (cara_elem_carte) :: infcarte(*)
+    type(cara_elem_info)  :: infdonn
+    type(cara_elem_carte) :: infcarte(*)
 !
 #include "jeveux.h"
 #include "asterfort/alcart.h"
@@ -52,35 +52,35 @@ subroutine ace_crea_carte(infdonn,infcarte)
     integer             :: ii, jj, ixci, ibid, indx
     real(kind=8)        :: r8bid
     character(len=6)    :: kjj
-    character(len=8)    :: nomu,noma,k8bid
+    character(len=8)    :: nomu, noma, k8bid
     character(len=24)   :: tmpcinf, tmpvinf
 !
     integer             :: adr_cmp, adr_val, nbr_cmp
     character(len=19)   :: nom_carte
 !
-    character(len=5), parameter :: kma(3) =(/ 'K    ', 'M    ', 'A    ' /)
+    character(len=5), parameter :: kma(3) = (/'K    ', 'M    ', 'A    '/)
 ! --------------------------------------------------------------------------------------------------
     call jemarq()
 !
     nomu = infdonn%nomu
     noma = infdonn%maillage
 !
-    do ii = 1 , ACE_NB_CARTE
-        nom_carte = nomu//ACE_CARTE(1 + (ii-1)*ACE_NB_CARTE_CMP)
+    do ii = 1, ACE_NB_CARTE
+        nom_carte = nomu//ACE_CARTE(1+(ii-1)*ACE_NB_CARTE_CMP)
         tmpcinf = nom_carte//'.NCMP'
         tmpvinf = nom_carte//'.VALV'
 !       Si la carte n'existe pas on la crée
         call jeexin(tmpcinf, ixci)
         if (ixci .eq. 0) then
-            call alcart('G', nom_carte, noma, ACE_CARTE(2 + (ii-1)*ACE_NB_CARTE_CMP))
+            call alcart('G', nom_carte, noma, ACE_CARTE(2+(ii-1)*ACE_NB_CARTE_CMP))
         else
-            ASSERT( .false. )
-        endif
+            ASSERT(.false.)
+        end if
         call jeveut(tmpcinf, 'E', adr_cmp)
         call jeveut(tmpvinf, 'E', adr_val)
 !       Remplissage des cartes par les valeurs par défaut
         nbr_cmp = 0
-        if ( ii .eq. ACE_CAR_DINFO ) then
+        if (ii .eq. ACE_CAR_DINFO) then
 !           Par défaut pour K, M, A : repère global, matrice symétrique, pas affectée
             call infdis('DIMC', nbr_cmp, r8bid, k8bid)
             do jj = 1, 3
@@ -90,13 +90,13 @@ subroutine ace_crea_carte(infdonn,infcarte)
                 call infdis('INIT', ibid, zr(adr_val+jj+2), zk8(adr_cmp+jj+2))
                 zk8(adr_cmp+jj+5) = 'DIS'//kma(jj)
                 call infdis('INIT', ibid, zr(adr_val+jj+5), zk8(adr_cmp+jj+5))
-            enddo
-            zk8(adr_cmp+9)  = 'ETAK    '
+            end do
+            zk8(adr_cmp+9) = 'ETAK    '
             call infdis('INIT', ibid, zr(adr_val+9), zk8(adr_cmp+9))
             zk8(adr_cmp+10) = 'TYDI    '
             call infdis('INIT', ibid, zr(adr_val+10), zk8(adr_cmp+10))
             call nocart(nom_carte, 1, nbr_cmp)
-        else if ( in_liste_entier(ii, [ACE_CAR_DISCK,ACE_CAR_DISCM,ACE_CAR_DISCA],indx) ) then
+        else if (in_liste_entier(ii, [ACE_CAR_DISCK, ACE_CAR_DISCM, ACE_CAR_DISCA], indx)) then
 !           Affectation systématique de valeurs nulles dans les cartes pour pouvoir calculer
 !           les matrices K, M, A dans tous les cas dans le repère global par défaut.
 !
@@ -109,15 +109,15 @@ subroutine ace_crea_carte(infdonn,infcarte)
             do jj = 1, nbr_cmp
                 call codent(jj, 'G', kjj)
                 zr(adr_val+jj-1) = 0.d0
-                zk8(adr_cmp+jj-1) = kma(indx)(1:1)//kjj
-            enddo
+                zk8(adr_cmp+jj-1) = kma(indx) (1:1)//kjj
+            end do
             call nocart(nom_carte, 1, nbr_cmp)
-        endif
+        end if
         infcarte(ii)%nom_carte = nom_carte
-        infcarte(ii)%nbr_cmp   = nbr_cmp
-        infcarte(ii)%adr_cmp   = adr_cmp
-        infcarte(ii)%adr_val   = adr_val
-    enddo
+        infcarte(ii)%nbr_cmp = nbr_cmp
+        infcarte(ii)%adr_cmp = adr_cmp
+        infcarte(ii)%adr_val = adr_val
+    end do
 !
     call jedema()
 end subroutine

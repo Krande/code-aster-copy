@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,21 +18,21 @@
 ! person_in_charge: mickael.abbas at edf.fr
 ! aslint: disable=W1504
 !
-subroutine nmnewt(mesh       , model    , numins         , numedd    , numfix   ,&
-                  ds_material, cara_elem, ds_constitutive, list_load , ds_system,&
-                  hhoField ,&
-                  ds_algopara, fonact   , ds_measure     , sderro    , ds_print ,&
-                  sdnume     , sddyna   , sddisc         , sdcrit    , sdsuiv   ,&
-                  sdpilo     , ds_conv  , solveu         , maprec    , matass   ,&
-                  ds_inout   , valinc   , solalg         , meelem    , measse   ,&
-                  veelem     , veasse   , ds_contact     , ds_algorom, eta      ,&
-                  nbiter  )
+subroutine nmnewt(mesh, model, numins, numedd, numfix, &
+                  ds_material, cara_elem, ds_constitutive, list_load, ds_system, &
+                  hhoField, &
+                  ds_algopara, fonact, ds_measure, sderro, ds_print, &
+                  sdnume, sddyna, sddisc, sdcrit, sdsuiv, &
+                  sdpilo, ds_conv, solveu, maprec, matass, &
+                  ds_inout, valinc, solalg, meelem, measse, &
+                  veelem, veasse, ds_contact, ds_algorom, eta, &
+                  nbiter)
 !
-use NonLin_Datastructure_type
-use Rom_Datastructure_type
-use HHO_type
+    use NonLin_Datastructure_type
+    use Rom_Datastructure_type
+    use HHO_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -69,43 +69,43 @@ implicit none
 #include "asterfort/infdbg.h"
 #include "asterfort/nonlinDSPrintSepLine.h"
 !
-character(len=8), intent(in) :: mesh
-character(len=24), intent(in) :: model
-integer :: numins
-character(len=24) :: numedd
-character(len=24) :: numfix
-type(NL_DS_Material), intent(in) :: ds_material
-character(len=24), intent(in) :: cara_elem
-type(NL_DS_Constitutive), intent(inout) :: ds_constitutive
-character(len=19), intent(in) :: list_load
-type(NL_DS_System), intent(in) :: ds_system
-type(NL_DS_AlgoPara), intent(inout) :: ds_algopara
-integer :: fonact(*)
-type(NL_DS_Measure), intent(inout) :: ds_measure
-type(HHO_Field), intent(in) :: hhoField
-character(len=24) :: sderro
-type(NL_DS_Print), intent(inout) :: ds_print
-character(len=19) :: sdnume
-character(len=19) :: sddyna
-character(len=19) :: sddisc
-character(len=19) :: sdcrit
-character(len=24) :: sdsuiv
-character(len=19) :: sdpilo
-type(NL_DS_Conv), intent(inout) :: ds_conv
-character(len=19) :: solveu
-character(len=19) :: maprec
-character(len=19) :: matass
-type(NL_DS_InOut), intent(in) :: ds_inout
-character(len=19) :: valinc(*)
-character(len=19) :: solalg(*)
-character(len=19) :: meelem(*)
-character(len=19) :: measse(*)
-character(len=19) :: veelem(*)
-character(len=19) :: veasse(*)
-type(NL_DS_Contact), intent(inout) :: ds_contact
-type(ROM_DS_AlgoPara), intent(inout) :: ds_algorom
-real(kind=8) :: eta
-integer :: nbiter
+    character(len=8), intent(in) :: mesh
+    character(len=24), intent(in) :: model
+    integer :: numins
+    character(len=24) :: numedd
+    character(len=24) :: numfix
+    type(NL_DS_Material), intent(in) :: ds_material
+    character(len=24), intent(in) :: cara_elem
+    type(NL_DS_Constitutive), intent(inout) :: ds_constitutive
+    character(len=19), intent(in) :: list_load
+    type(NL_DS_System), intent(in) :: ds_system
+    type(NL_DS_AlgoPara), intent(inout) :: ds_algopara
+    integer :: fonact(*)
+    type(NL_DS_Measure), intent(inout) :: ds_measure
+    type(HHO_Field), intent(in) :: hhoField
+    character(len=24) :: sderro
+    type(NL_DS_Print), intent(inout) :: ds_print
+    character(len=19) :: sdnume
+    character(len=19) :: sddyna
+    character(len=19) :: sddisc
+    character(len=19) :: sdcrit
+    character(len=24) :: sdsuiv
+    character(len=19) :: sdpilo
+    type(NL_DS_Conv), intent(inout) :: ds_conv
+    character(len=19) :: solveu
+    character(len=19) :: maprec
+    character(len=19) :: matass
+    type(NL_DS_InOut), intent(in) :: ds_inout
+    character(len=19) :: valinc(*)
+    character(len=19) :: solalg(*)
+    character(len=19) :: meelem(*)
+    character(len=19) :: measse(*)
+    character(len=19) :: veelem(*)
+    character(len=19) :: veasse(*)
+    type(NL_DS_Contact), intent(inout) :: ds_contact
+    type(ROM_DS_AlgoPara), intent(inout) :: ds_algorom
+    real(kind=8) :: eta
+    integer :: nbiter
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -160,15 +160,15 @@ integer :: nbiter
     call infdbg('MECANONLINE', ifm, niv)
     if (niv .ge. 2) then
         call nonlinDSPrintSepLine()
-    endif
+    end if
 !
 ! - Active functionnalities
 !
-    l_loop_exte   = isfonc(fonact, 'BOUCLE_EXTERNE')
-    l_cont_disc   = isfonc(fonact, 'CONT_DISCRET')
-    l_cont        = isfonc(fonact, 'CONTACT')
+    l_loop_exte = isfonc(fonact, 'BOUCLE_EXTERNE')
+    l_cont_disc = isfonc(fonact, 'CONT_DISCRET')
+    l_cont = isfonc(fonact, 'CONTACT')
     l_hrom_corref = isfonc(fonact, 'HROM_CORR_EF')
-    l_hho         = isfonc(fonact, 'HHO')
+    l_hho = isfonc(fonact, 'HHO')
 !
 ! - Reset events
 !
@@ -188,31 +188,31 @@ integer :: nbiter
             niveau = 10
         else
             ASSERT(.false.)
-        endif
-    endif
+        end if
+    end if
 !
 ! - Updates for new time step
 !
-    call nmnpas(mesh       , model          , cara_elem,&
-                fonact     , list_load      ,&
-                ds_material, ds_constitutive,&
-                ds_measure , ds_print       ,&
-                sddisc     , numins         ,&
-                sdsuiv     , sddyna         ,&
-                ds_contact , ds_conv        ,&
-                sdnume     , numedd         , solveu,&
-                valinc     , solalg)
+    call nmnpas(mesh, model, cara_elem, &
+                fonact, list_load, &
+                ds_material, ds_constitutive, &
+                ds_measure, ds_print, &
+                sddisc, numins, &
+                sdsuiv, sddyna, &
+                ds_contact, ds_conv, &
+                sdnume, numedd, solveu, &
+                valinc, solalg)
 !
 ! - Compute forces for second member when constant in time step
 !
-    call nmforc_step(fonact     ,&
-                     model      , cara_elem      , numedd  ,&
-                     list_load  , sddyna         ,&
-                     ds_material, ds_constitutive,&
-                     ds_measure , ds_inout       ,&
-                     sddisc     , numins         ,&
-                     valinc     , solalg         , hhoField ,&
-                     veelem     , veasse)
+    call nmforc_step(fonact, &
+                     model, cara_elem, numedd, &
+                     list_load, sddyna, &
+                     ds_material, ds_constitutive, &
+                     ds_measure, ds_inout, &
+                     sddisc, numins, &
+                     valinc, solalg, hhoField, &
+                     veelem, veasse)
 !
 ! ======================================================================
 !     BOUCLE POINTS FIXES
@@ -221,19 +221,19 @@ integer :: nbiter
 100 continue
 !
     iterat = 0
-    nbiter = nbiter + 1
+    nbiter = nbiter+1
     ds_contact%iteration_newton = iterat
     ds_contact%it_adapt_maxi = ds_conv%iter_glob_maxi
 !
 ! - External loop management - BEGIN
 !
-    call nmible(niveau, model     , mesh    , ds_contact,&
+    call nmible(niveau, model, mesh, ds_contact, &
                 fonact, ds_measure, ds_print, ds_algorom)
 !
 ! - External loop management - Initializations for new loop
 !
-    call nmnble(mesh  , model , fonact, sddisc    , numins    ,&
-                sddyna, sdnume, numedd, ds_measure, ds_contact,&
+    call nmnble(mesh, model, fonact, sddisc, numins, &
+                sddyna, sdnume, numedd, ds_measure, ds_contact, &
                 valinc, solalg)
 !
 ! ======================================================================
@@ -247,12 +247,12 @@ integer :: nbiter
 !
 ! --- PREDICTION D'UNE DIRECTION DE DESCENTE
 !
-    call nmpred(mesh,     model, numedd   , numfix     , ds_material, cara_elem,&
-                ds_constitutive, list_load, ds_algopara, solveu     , ds_system,&
-                fonact         , ds_print , ds_measure , ds_algorom , sddisc   ,&
-                sdnume         , sderro   , numins     , valinc     , solalg   ,hhoField,&
-                matass         , maprec   , ds_contact , sddyna     , &
-                meelem         , measse   , veelem     , veasse     , lerrit)
+    call nmpred(mesh, model, numedd, numfix, ds_material, cara_elem, &
+                ds_constitutive, list_load, ds_algopara, solveu, ds_system, &
+                fonact, ds_print, ds_measure, ds_algorom, sddisc, &
+                sdnume, sderro, numins, valinc, solalg, hhoField, &
+                matass, maprec, ds_contact, sddyna, &
+                meelem, measse, veelem, veasse, lerrit)
 !
     if (lerrit) goto 315
 !
@@ -266,50 +266,50 @@ integer :: nbiter
 !
     if (iterat .ne. 0) then
         call nmtime(ds_measure, 'Launch', 'Newt_Iter')
-    endif
+    end if
 !
 ! --- CALCUL PROPREMENT DIT DE L'INCREMENT DE DEPLACEMENT
 ! --- EN CORRIGEANT LA (LES) DIRECTIONS DE DESCENTE
 ! --- SI CONTACT OU PILOTAGE OU RECHERCHE LINEAIRE
 !
-    call nmdepl(model          , numedd   , ds_material, cara_elem , &
-                ds_constitutive, list_load, fonact     , ds_measure, ds_algopara,&
-                mesh           , numins   , iterat     , solveu    , matass     ,&
-                sddisc         , sddyna   , sdnume     , sdpilo    , sderro     ,&
-                ds_contact     , valinc   , solalg     , veelem    , veasse     ,&
-                eta            , ds_conv  , ds_system  , lerrit)
+    call nmdepl(model, numedd, ds_material, cara_elem, &
+                ds_constitutive, list_load, fonact, ds_measure, ds_algopara, &
+                mesh, numins, iterat, solveu, matass, &
+                sddisc, sddyna, sdnume, sdpilo, sderro, &
+                ds_contact, valinc, solalg, veelem, veasse, &
+                eta, ds_conv, ds_system, lerrit)
 !
     if (lerrit) goto 315
 !
 ! --- CALCUL DES FORCES APRES CORRECTION
 !
-    call nmfcor(model          , numedd    , ds_material, cara_elem  , ds_system,&
-                ds_constitutive, list_load , fonact     , ds_algopara, numins,&
-                iterat         , ds_measure, sddisc     , sddyna     , sdnume,&
-                sderro         , ds_contact, valinc     , solalg     , hhoField,&
-                veelem         , veasse    , measse     , matass     ,lerrit)
+    call nmfcor(model, numedd, ds_material, cara_elem, ds_system, &
+                ds_constitutive, list_load, fonact, ds_algopara, numins, &
+                iterat, ds_measure, sddisc, sddyna, sdnume, &
+                sderro, ds_contact, valinc, solalg, hhoField, &
+                veelem, veasse, measse, matass, lerrit)
 !
     if (lerrit) goto 315
 !
 ! - DOF monitoring
 !
-    call nmsuiv(mesh       , sdsuiv         , ds_print, cara_elem, model ,&
-                ds_material, ds_constitutive, valinc  , sddisc   , numins)
+    call nmsuiv(mesh, sdsuiv, ds_print, cara_elem, model, &
+                ds_material, ds_constitutive, valinc, sddisc, numins)
 !
 ! --- ESTIMATION DE LA CONVERGENCE
 !
 315 continue
-    call nmconv(mesh    , model , ds_material, numedd     , sdnume    ,&
-                fonact  , sddyna, ds_conv    , ds_print   , ds_measure,&
-                sddisc  , sdcrit, sderro     , ds_algopara, ds_algorom,&
-                ds_inout, matass, solveu     , ds_system  , numins    ,&
-                iterat  , eta   , ds_contact , valinc     ,&
-                solalg  , measse, veasse )
+    call nmconv(mesh, model, ds_material, numedd, sdnume, &
+                fonact, sddyna, ds_conv, ds_print, ds_measure, &
+                sddisc, sdcrit, sderro, ds_algopara, ds_algorom, &
+                ds_inout, matass, solveu, ds_system, numins, &
+                iterat, eta, ds_contact, valinc, &
+                solalg, measse, veasse)
 !
 ! --- MISE A JOUR DES EFFORTS DE CONTACT
 !
-    call nmfcon(model     , numedd, ds_material, fonact         , ds_contact,&
-                ds_measure, valinc, solalg     , ds_constitutive)
+    call nmfcon(model, numedd, ds_material, fonact, ds_contact, &
+                ds_measure, valinc, solalg, ds_constitutive)
 !
 ! - Evaluate events at current Newton iteration
 !
@@ -317,7 +317,7 @@ integer :: nbiter
 !
 ! - Print during Newton loop
 !
-    call nmaffi(fonact, ds_conv, ds_print, sderro, sddisc,&
+    call nmaffi(fonact, ds_conv, ds_print, sderro, sddisc, &
                 'NEWT')
 !
 ! - Stop Newton iterations
@@ -326,29 +326,29 @@ integer :: nbiter
 
     if (etnewt .ne. 'CONT') then
         goto 330
-    endif
+    end if
 !
 ! --- ON CONTINUE LES ITERATIONS DE NEWTON : CALCUL DE LA DESCENTE
 !
 320 continue
 !
-    call nmdesc(mesh           , model      , numedd    ,&
-                numfix         , ds_material, cara_elem ,&
-                ds_constitutive, list_load  , ds_contact,&
-                ds_algopara    , ds_system  , solveu    ,&
-                fonact         , numins     , iterat    ,&
-                sddisc         , ds_print   , ds_measure,&
-                ds_algorom     , sddyna     , sdnume    ,&
-                sderro         , matass     , maprec    ,&
-                valinc         , solalg     , hhoField  , meelem,&
-                measse         , veasse     , lerrit)
+    call nmdesc(mesh, model, numedd, &
+                numfix, ds_material, cara_elem, &
+                ds_constitutive, list_load, ds_contact, &
+                ds_algopara, ds_system, solveu, &
+                fonact, numins, iterat, &
+                sddisc, ds_print, ds_measure, &
+                ds_algorom, sddyna, sdnume, &
+                sderro, matass, maprec, &
+                valinc, solalg, hhoField, meelem, &
+                measse, veasse, lerrit)
 !
     if (lerrit) goto 315
 !
 ! --- ON CONTINUE NEWTON
 !
-    iterat = iterat + 1
-    nbiter = nbiter + 1
+    iterat = iterat+1
+    nbiter = nbiter+1
     ds_contact%iteration_newton = iterat
 !
 ! --- CAS DU CONTACT DISCRET
@@ -358,7 +358,7 @@ integer :: nbiter
         call nmeceb(sderro, 'NEWT', 'CONT')
         call nmtime(ds_measure, 'Stop', 'Newt_Iter')
         goto 300
-    endif
+    end if
 !
 330 continue
 !
@@ -390,8 +390,8 @@ integer :: nbiter
 !
 ! --- GESTION DES ACTIONS A LA FIN DE LA BOUCLE DE NEWTON
 !
-    call nmactn(ds_print, sddisc, sderro, ds_contact,&
-                ds_conv , iterat, numins)
+    call nmactn(ds_print, sddisc, sderro, ds_contact, &
+                ds_conv, iterat, numins)
 !
 ! --- ON FAIT DES ITERATIONS SUPPLEMENTAIRES ?
 !
@@ -400,14 +400,14 @@ integer :: nbiter
         call nmtime(ds_measure, 'Launch', 'Newt_Iter')
         call nmcrel(sderro, 'ITER_MAXI', .false._1)
         goto 320
-    endif
+    end if
 !
 ! - External loop management - END
 !
-    call nmtble(niveau, model, mesh    , ds_material, ds_contact, &
+    call nmtble(niveau, model, mesh, ds_material, ds_contact, &
                 fonact, ds_print, &
-                sderro, ds_conv , sddisc, numins, valinc,&
-                solalg,  ds_constitutive, ds_algorom)
+                sderro, ds_conv, sddisc, numins, valinc, &
+                solalg, ds_constitutive, ds_algorom)
 !
 ! --- ETAT DE LA CONVERGENCE POINT FIXE
 !
@@ -415,27 +415,27 @@ integer :: nbiter
 !
 ! --- GESTION DES ACTIONS A LA FIN D'UNE BOUCLE DE POINT FIXE
 !
-    call nmactf(ds_print, sddisc, sderro, ds_contact,&
-                ds_conv , iterat, numins)
+    call nmactf(ds_print, sddisc, sderro, ds_contact, &
+                ds_conv, iterat, numins)
 !
 ! --- POUR LA CONTINUATION DU POINT FIXE: GLUTE DUE AU CONTACT DISCRET
 !
     call nmleeb(sderro, 'FIXE', etfixe)
     if (etfixe .eq. 'CONT') then
         if (l_cont_disc) then
-            if (.not.ds_conv%l_stop) then
+            if (.not. ds_conv%l_stop) then
                 call nmeceb(sderro, 'FIXE', 'CONV')
             else
                 call nmeceb(sderro, 'NEWT', 'CTCD')
                 call nmtime(ds_measure, 'Launch', 'Newt_Iter')
                 goto 320
-            endif
+            end if
         else if (l_loop_exte) then
             goto 100
         else
             call nmeceb(sderro, 'FIXE', 'CONV')
-        endif
-    endif
+        end if
+    end if
 !
 ! ======================================================================
 !     FIN BOUCLE POINTS FIXES
@@ -443,6 +443,6 @@ integer :: nbiter
 !
     if (niv .ge. 2) then
         call nonlinDSPrintSepLine()
-    endif
+    end if
 !
 end subroutine

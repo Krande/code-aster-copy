@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,9 +18,9 @@
 !
 subroutine thmCompForcNoda(ds_thm)
 !
-use THM_type
+    use THM_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -36,7 +36,7 @@ implicit none
 #include "asterfort/thmGetGene.h"
 #include "asterfort/thmGetElemIntegration.h"
 !
-type(THM_DS), intent(inout) :: ds_thm
+    type(THM_DS), intent(inout) :: ds_thm
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -71,7 +71,7 @@ type(THM_DS), intent(inout) :: ds_thm
 ! --------------------------------------------------------------------------------------------------
 !
     fnoevo = .false.
-    dt     = 0.d0
+    dt = 0.d0
 !
 ! - Get model of finite element
 !
@@ -79,7 +79,7 @@ type(THM_DS), intent(inout) :: ds_thm
 !
 ! - Cannot compute for finite volume
 !
-    ASSERT(.not.l_vf)
+    ASSERT(.not. l_vf)
 !
 ! - Get type of integration
 !
@@ -87,20 +87,20 @@ type(THM_DS), intent(inout) :: ds_thm
 !
 ! - Get generalized coordinates
 !
-    call thmGetGene(ds_thm, l_steady, l_vf  , ndim ,&
-                    mecani, press1  , press2, tempe)
+    call thmGetGene(ds_thm, l_steady, l_vf, ndim, &
+                    mecani, press1, press2, tempe)
 !
 ! - Is transient computation (STAT_NON_LINE or CALC_CHAMP ? )
 !
     call tecach('ONO', 'PINSTMR', 'L', iretm, iad=jv_instm)
     call tecach('ONO', 'PINSTPR', 'L', iretp, iad=jv_instp)
     if (iretm .eq. 0 .and. iretp .eq. 0) then
-        dt     = zr(jv_instp) - zr(jv_instm)
+        dt = zr(jv_instp)-zr(jv_instm)
         fnoevo = .true.
     else
-        dt     = 0.d0
+        dt = 0.d0
         fnoevo = .false.
-    endif
+    end if
 !
 ! - Input/ouput fields
 !
@@ -115,37 +115,37 @@ type(THM_DS), intent(inout) :: ds_thm
 !
 ! - Get informations about element
 !
-    call thmGetElemInfo(l_vf, elrefe, elref2,&
+    call thmGetElemInfo(l_vf, elrefe, elref2, &
                         nno, nnos, nnom, &
-                        jv_gano, jv_poids, jv_poids2,&
-                        jv_func, jv_func2, jv_dfunc, jv_dfunc2,&
-                        inte_type, npi   , npi2    , npg)
+                        jv_gano, jv_poids, jv_poids2, &
+                        jv_func, jv_func2, jv_dfunc, jv_dfunc2, &
+                        inte_type, npi, npi2, npg)
     ASSERT(npi .le. 27)
     ASSERT(nno .le. 20)
 !
 ! - Get dimensions of generalized vectors
 !
-    call thmGetGeneDime(ndim  ,&
-                        mecani, press1, press2, tempe,&
+    call thmGetGeneDime(ndim, &
+                        mecani, press1, press2, tempe, &
                         dimdep, dimdef, dimcon)
 !
 ! - Get dimensions about element
 !
-    call thmGetElemDime(ndim     , nnos   , nnom   ,&
-                        mecani   , press1 , press2 , tempe ,&
-                        nddls    , nddlm  ,&
-                        nddl_meca, nddl_p1, nddl_p2,&
-                        dimdep   , dimdef , dimcon , dimuel)
+    call thmGetElemDime(ndim, nnos, nnom, &
+                        mecani, press1, press2, tempe, &
+                        nddls, nddlm, &
+                        nddl_meca, nddl_p1, nddl_p2, &
+                        dimdep, dimdef, dimcon, dimuel)
 !
 ! - Compute
 !
-    call fnothm(ds_thm, zi(jv_mater), ndim     , l_axi    , l_steady , fnoevo ,&
-                mecani      , press1   , press2   , tempe    ,&
-                nno         , nnos     , npi      , npg    ,&
-                zr(jv_geom) , dt       , dimdef   , dimcon   , dimuel ,&
-                jv_poids    , jv_poids2,&
-                jv_func     , jv_func2 , jv_dfunc , jv_dfunc2,&
-                nddls       , nddlm    , nddl_meca, nddl_p1  , nddl_p2,&
-                zr(jv_sigm) , b        , r        , zr(jv_vect) )
+    call fnothm(ds_thm, zi(jv_mater), ndim, l_axi, l_steady, fnoevo, &
+                mecani, press1, press2, tempe, &
+                nno, nnos, npi, npg, &
+                zr(jv_geom), dt, dimdef, dimcon, dimuel, &
+                jv_poids, jv_poids2, &
+                jv_func, jv_func2, jv_dfunc, jv_dfunc2, &
+                nddls, nddlm, nddl_meca, nddl_p1, nddl_p2, &
+                zr(jv_sigm), b, r, zr(jv_vect))
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,12 +17,12 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine romFieldNodesAreDefined(field  , listEqua, numeDof  ,&
-                                   grnode_, nbNode_ , listNode_)
+subroutine romFieldNodesAreDefined(field, listEqua, numeDof, &
+                                   grnode_, nbNode_, listNode_)
 !
-use Rom_Datastructure_type
+    use Rom_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterfort/as_allocate.h"
 #include "asterfort/assert.h"
@@ -33,12 +33,12 @@ implicit none
 #include "asterfort/select_dof.h"
 #include "asterfort/utmess.h"
 !
-type(ROM_DS_Field), intent(in) :: field
-integer, pointer :: listEqua(:)
-character(len=24), intent(in) :: numeDof
-character(len=24), optional, intent(in) :: grnode_
-integer, optional, intent(in) :: nbNode_
-integer, pointer, optional :: listNode_(:)
+    type(ROM_DS_Field), intent(in) :: field
+    integer, pointer :: listEqua(:)
+    character(len=24), intent(in) :: numeDof
+    character(len=24), optional, intent(in) :: grnode_
+    integer, optional, intent(in) :: nbNode_
+    integer, pointer, optional :: listNode_(:)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -72,12 +72,12 @@ integer, pointer, optional :: listNode_(:)
     call infniv(ifm, niv)
     if (niv .ge. 2) then
         call utmess('I', 'ROM11_8')
-    endif
+    end if
 !
 ! - Get parameters
 !
-    mesh      = field%mesh
-    nbEqua    = field%nbEqua
+    mesh = field%mesh
+    nbEqua = field%nbEqua
     fieldSupp = field%fieldSupp
     fieldRefe = field%fieldRefe
     ASSERT(fieldSupp .eq. 'NOEU')
@@ -86,25 +86,25 @@ integer, pointer, optional :: listNode_(:)
 !
     if (present(grnode_)) then
         call jelira(jexnom(mesh//'.GROUPENO', grnode_), 'LONUTI', nbNode)
-        call jeveuo(jexnom(mesh//'.GROUPENO', grnode_), 'L'     , vi = listNodeFromGroup)
+        call jeveuo(jexnom(mesh//'.GROUPENO', grnode_), 'L', vi=listNodeFromGroup)
     else
         nbNode = nbNode_
-    endif
+    end if
 !
 ! - Create list of equations
 !
-    AS_ALLOCATE(vi = listEqua, size = nbEqua)
+    AS_ALLOCATE(vi=listEqua, size=nbEqua)
 !
 ! - Find index of equations
 !
     if (present(listNode_)) then
-        call select_dof(listEqua_      = listEqua ,&
-                        numeDofZ_      = numeDof,&
-                        nbNodeToSelect_= nbNode, listNodeToSelect_ = listNode_)
+        call select_dof(listEqua_=listEqua, &
+                        numeDofZ_=numeDof, &
+                        nbNodeToSelect_=nbNode, listNodeToSelect_=listNode_)
     else
-        call select_dof(listEqua_      = listEqua ,&
-                        numeDofZ_      = numeDof,&
-                        nbNodeToSelect_= nbNode, listNodeToSelect_ = listNodeFromGroup)
-    endif
+        call select_dof(listEqua_=listEqua, &
+                        numeDofZ_=numeDof, &
+                        nbNodeToSelect_=nbNode, listNodeToSelect_=listNodeFromGroup)
+    end if
 !
 end subroutine

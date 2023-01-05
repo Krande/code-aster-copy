@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine vdxedg(nomte, option, xi, nb1, npgsr,&
+subroutine vdxedg(nomte, option, xi, nb1, npgsr, &
                   edgpg, effgt)
     implicit none
 #include "jeveux.h"
@@ -65,45 +65,45 @@ subroutine vdxedg(nomte, option, xi, nb1, npgsr,&
 !
     zero = 0.0d0
     un = 1.0d0
-    call r8inir(4 * 3 * 42, 0.d0, btdm1, 1)
-    call r8inir(4 * 2 * 42, 0.d0, btds1, 1)
-    call r8inir(3 * 42, 0.d0, btdf1, 1)
+    call r8inir(4*3*42, 0.d0, btdm1, 1)
+    call r8inir(4*2*42, 0.d0, btds1, 1)
+    call r8inir(3*42, 0.d0, btdf1, 1)
 !
 !     RECUPERATION DES OBJETS
 !
     call jevete('&INEL.'//nomte(1:8)//'.DESI', ' ', lzi)
-    nb1  =zi(lzi-1+1)
-    nb2  =zi(lzi-1+2)
-    npgsr=zi(lzi-1+3)
-    npgsn=zi(lzi-1+4)
+    nb1 = zi(lzi-1+1)
+    nb2 = zi(lzi-1+2)
+    npgsr = zi(lzi-1+3)
+    npgsn = zi(lzi-1+4)
 !
     call jevete('&INEL.'//nomte(1:8)//'.DESR', ' ', lzr)
 !
     call jevech('PCACOQU', 'L', jcara)
     epais = zr(jcara)
 !
-    call vectan(nb1, nb2, xi, zr(lzr), vecta,&
+    call vectan(nb1, nb2, xi, zr(lzr), vecta, &
                 vectn, vectpt)
 !
     call jevech('PDEPLAR', 'L', jdepg)
 !
-    call trndgl(nb2, vectn, vectpt, zr(jdepg), depl,&
+    call trndgl(nb2, vectn, vectpt, zr(jdepg), depl, &
                 rotf)
 !
-    kwgt=0
+    kwgt = 0
 !
 !  ---- MEMBRANE ET CISAILLEMENT
 !
     do intsr = 1, npgsr
-        call mahsms(0, nb1, xi, un, intsr,&
-                    zr(lzr), epais, vectn, vectg, vectt,&
+        call mahsms(0, nb1, xi, un, intsr, &
+                    zr(lzr), epais, vectn, vectg, vectt, &
                     hsfm, hss)
 !
-        call hsj1ms(epais, vectg, vectt, hsfm, hss,&
+        call hsj1ms(epais, vectg, vectt, hsfm, hss, &
                     hsj1m, hsj1s)
 !
-        call btdmsr(nb1, nb2, un, intsr, zr(lzr),&
-                    epais, vectpt, hsj1m, hsj1s, btdm,&
+        call btdmsr(nb1, nb2, un, intsr, zr(lzr), &
+                    epais, vectpt, hsj1m, hsj1s, btdm, &
                     btds)
     end do
 !
@@ -111,76 +111,76 @@ subroutine vdxedg(nomte, option, xi, nb1, npgsr,&
 !
     do intsn = 1, npgsn
 !
-        call mahsf(1, nb1, xi, un, intsn,&
-                   zr(lzr), epais, vectn, vectg, vectt,&
+        call mahsf(1, nb1, xi, un, intsn, &
+                   zr(lzr), epais, vectn, vectg, vectt, &
                    hsf)
 !
-        call hsj1f(intsn, zr(lzr), epais, vectg, vectt,&
+        call hsj1f(intsn, zr(lzr), epais, vectg, vectt, &
                    hsf, kwgt, hsj1fx, wgt)
 !
-        call btdfn(1, nb1, nb2, un, intsn,&
+        call btdfn(1, nb1, nb2, un, intsn, &
                    zr(lzr), epais, vectpt, hsj1fx, btdf)
 !
 !     CALCUL DE BTDMN, BTDSN : M=MEMBRANE , S=CISAILLEMENT , N=NORMAL
 !     FORMATION DE BTILD
 !
-        call btdmsn(1, nb1, intsn, npgsr, zr(lzr),&
+        call btdmsn(1, nb1, intsn, npgsr, zr(lzr), &
                     btdm, btdf1, btds1, btild1)
-        call btdmsn(1, nb1, intsn, npgsr, zr(lzr),&
+        call btdmsn(1, nb1, intsn, npgsr, zr(lzr), &
                     btdm1, btdf, btds, btild)
 !
         do i = 1, 5
-            epsim(i)=zero
+            epsim(i) = zero
             do k = 1, 5*nb1+2
-                epsim(i)=epsim(i)+btild1(i,k)*depl(k)
+                epsim(i) = epsim(i)+btild1(i, k)*depl(k)
             end do
         end do
 !
         do i = 1, 5
-            epsif(i)=zero
+            epsif(i) = zero
             do k = 1, 5*nb1+2
-                epsif(i)=epsif(i)+btild(i,k)*depl(k)
+                epsif(i) = epsif(i)+btild(i, k)*depl(k)
             end do
         end do
-        epsif(1)=epsif(1)/epais
-        epsif(2)=epsif(2)/epais
-        epsif(3)=epsif(3)/epais
-        epsif(4)=epsif(4)
-        epsif(5)=epsif(5)
+        epsif(1) = epsif(1)/epais
+        epsif(2) = epsif(2)/epais
+        epsif(3) = epsif(3)/epais
+        epsif(4) = epsif(4)
+        epsif(5) = epsif(5)
 !
 ! STOCKAGE DES DEFORMATIONS DE MEMBRANE , FLEXION ET DE CISAILLMEENT
 !  DANS EDGPG
 !
 ! --- DEFOMATIONS DE MEMBRANE
-        edgpg((intsn-1)*8+1)=epsim(1)
-        edgpg((intsn-1)*8+2)=epsim(2)
-        edgpg((intsn-1)*8+3)=epsim(3)
+        edgpg((intsn-1)*8+1) = epsim(1)
+        edgpg((intsn-1)*8+2) = epsim(2)
+        edgpg((intsn-1)*8+3) = epsim(3)
 ! --- DEFORMATION DE FLEXION
-        edgpg((intsn-1)*8+4)=epsif(1)
-        edgpg((intsn-1)*8+5)=epsif(2)
-        edgpg((intsn-1)*8+6)=epsif(3)
+        edgpg((intsn-1)*8+4) = epsif(1)
+        edgpg((intsn-1)*8+5) = epsif(2)
+        edgpg((intsn-1)*8+6) = epsif(3)
 ! --- DEFORMATION DE CISAILLEMENT
-        edgpg((intsn-1)*8+7)=epsif(4)
-        edgpg((intsn-1)*8+8)=epsif(5)
+        edgpg((intsn-1)*8+7) = epsif(4)
+        edgpg((intsn-1)*8+8) = epsif(5)
 !
     end do
     if (option(1:9) .eq. 'DEGE_ELNO') then
-        call vddege(nomte, nb2, npgsn, zr(lzr), edgpg,&
+        call vddege(nomte, nb2, npgsn, zr(lzr), edgpg, &
                     effgt)
-    endif
+    end if
 !
 ! --- DETERMINATION DES REPERES LOCAUX DE L'ELEMENT AUX POINTS
 ! --- D'INTEGRATION ET STOCKAGE DE CES REPERES DANS LE VECTEUR .DESR :
 !     --------------------------------------------------------------
     k = 0
     do intsr = 1, npgsr
-        call vectgt(0, nb1, xi, zero, intsr,&
+        call vectgt(0, nb1, xi, zero, intsr, &
                     zr(lzr), epais, vectn, vectg, vectt)
 !
         do j = 1, 3
             do i = 1, 3
-                k = k + 1
-                zr(lzr+2000+k-1) = vectt(i,j)
+                k = k+1
+                zr(lzr+2000+k-1) = vectt(i, j)
             end do
         end do
     end do

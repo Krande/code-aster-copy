@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,13 +16,13 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine lcjacp(fami, kpg, ksp, rela_comp, toler,&
-                  itmax, mod, imat, nmat, materd,&
-                  materf, nr, nvi, timed, timef,&
-                  deps, epsd, vind, vinf, yd,&
-                  nbcomm, cpmono, pgl, nfs,&
-                  nsg, toutms, hsr, dy, r,&
-                  drdy, verjac, drdyb, iret, crit,&
+subroutine lcjacp(fami, kpg, ksp, rela_comp, toler, &
+                  itmax, mod, imat, nmat, materd, &
+                  materf, nr, nvi, timed, timef, &
+                  deps, epsd, vind, vinf, yd, &
+                  nbcomm, cpmono, pgl, nfs, &
+                  nsg, toutms, hsr, dy, r, &
+                  drdy, verjac, drdyb, iret, crit, &
                   indi)
 !
 !     CONSTRUCTION DE LA MATRICE JACOBIENNE PAR PERTURBATION
@@ -89,124 +89,124 @@ subroutine lcjacp(fami, kpg, ksp, rela_comp, toler,&
 ! ----------------------------------------------------------------------
     dyini(1:nr) = dy(1:nr)
     rini(1:nr) = r(1:nr)
-    maxtgt=0.d0
-    normd1=0.d0
-    normd2=0.d0
+    maxtgt = 0.d0
+    normd1 = 0.d0
+    normd2 = 0.d0
 !
     do i = 1, 6
-        normd1=normd1+dyini(i)*dyini(i)
+        normd1 = normd1+dyini(i)*dyini(i)
     end do
 !
     do i = 7, nr
-        normd2=normd2+dyini(i)*dyini(i)
+        normd2 = normd2+dyini(i)*dyini(i)
     end do
 !
     if (normd1 .lt. r8miem()) then
         do i = 1, 6
-            normd1=normd1+yd(i)*yd(i)
+            normd1 = normd1+yd(i)*yd(i)
         end do
-    endif
+    end if
     if (normd2 .lt. r8miem()) then
         do i = 7, nr
-            normd2=normd2+yd(i)*yd(i)
+            normd2 = normd2+yd(i)*yd(i)
         end do
-    endif
+    end if
 !
-    eps0=1.d-7
-    eps1=eps0
-    eps2=eps0
+    eps0 = 1.d-7
+    eps1 = eps0
+    eps2 = eps0
     if (normd1 .gt. r8miem()) then
-        eps1=eps1*sqrt(normd1)
-    endif
+        eps1 = eps1*sqrt(normd1)
+    end if
     if (normd2 .gt. r8miem()) then
-        eps2=eps2*sqrt(normd2)
-    endif
+        eps2 = eps2*sqrt(normd2)
+    end if
 !
     do i = 1, nr
         dyp(1:nr) = dyini(1:nr)
         if (i .le. 6) then
-            dyp(i)=dyp(i)+eps1
+            dyp(i) = dyp(i)+eps1
         else
-            dyp(i)=dyp(i)+eps2
-        endif
-        yfp(1:nr) = yd(1:nr) + dyp(1:nr)
-        call lcresi(fami, kpg, ksp, rela_comp, mod,&
-                    imat, nmat, materd, materf,&
-                    nbcomm, cpmono, pgl, nfs, nsg,&
-                    toutms, hsr, nr, nvi, vind,&
-                    vinf, itmax, toler, timed, timef,&
-                    yd, yfp, deps, epsd, dyp,&
+            dyp(i) = dyp(i)+eps2
+        end if
+        yfp(1:nr) = yd(1:nr)+dyp(1:nr)
+        call lcresi(fami, kpg, ksp, rela_comp, mod, &
+                    imat, nmat, materd, materf, &
+                    nbcomm, cpmono, pgl, nfs, nsg, &
+                    toutms, hsr, nr, nvi, vind, &
+                    vinf, itmax, toler, timed, timef, &
+                    yd, yfp, deps, epsd, dyp, &
                     rp, iret, crit, indi)
         if (iret .gt. 0) then
             goto 999
-        endif
+        end if
         dym(1:nr) = dyini(1:nr)
         if (i .le. 6) then
-            dym(i)=dym(i)-eps1
+            dym(i) = dym(i)-eps1
         else
-            dym(i)=dym(i)-eps2
-        endif
-        yfm(1:nr) = yd(1:nr) + dym(1:nr)
-        call lcresi(fami, kpg, ksp, rela_comp, mod,&
-                    imat, nmat, materd, materf,&
-                    nbcomm, cpmono, pgl, nfs, nsg,&
-                    toutms, hsr, nr, nvi, vind,&
-                    vinf, itmax, toler, timed, timef,&
-                    yd, yfm, deps, epsd, dym,&
+            dym(i) = dym(i)-eps2
+        end if
+        yfm(1:nr) = yd(1:nr)+dym(1:nr)
+        call lcresi(fami, kpg, ksp, rela_comp, mod, &
+                    imat, nmat, materd, materf, &
+                    nbcomm, cpmono, pgl, nfs, nsg, &
+                    toutms, hsr, nr, nvi, vind, &
+                    vinf, itmax, toler, timed, timef, &
+                    yd, yfm, deps, epsd, dym, &
                     rm, iret, crit, indi)
         if (iret .gt. 0) then
             goto 999
-        endif
+        end if
 !        SIGNE - CAR LCRESI CALCULE -R
         do j = 1, nr
             if (i .le. 6) then
-                drdyb(j,i)=-(rp(j)-rm(j))/2.d0/eps1
+                drdyb(j, i) = -(rp(j)-rm(j))/2.d0/eps1
             else
-                drdyb(j,i)=-(rp(j)-rm(j))/2.d0/eps2
-            endif
+                drdyb(j, i) = -(rp(j)-rm(j))/2.d0/eps2
+            end if
         end do
     end do
 !
 ! COMPARAISON DRDY ET DRDYB
 !
-    maxerr=0.d0
-    err=0.d0
-    if ((verjac.eq.1) .and. (impr.eq.0)) then
+    maxerr = 0.d0
+    err = 0.d0
+    if ((verjac .eq. 1) .and. (impr .eq. 0)) then
         do i = 1, nr
             do j = 1, nr
-                if (abs(drdy(i,j)) .gt. maxtgt) then
-                    maxtgt=abs(drdy(i,j))
-                endif
+                if (abs(drdy(i, j)) .gt. maxtgt) then
+                    maxtgt = abs(drdy(i, j))
+                end if
             end do
         end do
         do i = 1, nr
             do j = 1, nr
-                if (abs(drdy(i,j)) .gt. (1.d-9*maxtgt)) then
-                    if (abs(drdyb(i,j)) .gt. (1.d-9*maxtgt)) then
-                        err=abs(drdy(i,j)-drdyb(i,j))/drdyb(i,j)
+                if (abs(drdy(i, j)) .gt. (1.d-9*maxtgt)) then
+                    if (abs(drdyb(i, j)) .gt. (1.d-9*maxtgt)) then
+                        err = abs(drdy(i, j)-drdyb(i, j))/drdyb(i, j)
                         if (err .gt. 1.d-3) then
                             vali(1) = i
                             vali(2) = j
 !
                             valr(1) = timef
                             valr(2) = err
-                            valr(3) = drdyb(i,j)
-                            valr(4) = drdy(i,j)
-                            call utmess('I', 'DEBUG_1', ni=2, vali=vali, nr=4,&
+                            valr(3) = drdyb(i, j)
+                            valr(4) = drdy(i, j)
+                            call utmess('I', 'DEBUG_1', ni=2, vali=vali, nr=4, &
                                         valr=valr)
-                            maxerr=max(maxerr,abs(err))
-                            impr=1
-                        endif
-                    endif
-                endif
+                            maxerr = max(maxerr, abs(err))
+                            impr = 1
+                        end if
+                    end if
+                end if
             end do
         end do
-    endif
+    end if
 !
 !     UTILISATION DE DRDYB COMME MATRICE JACOBIENNE
     if (verjac .eq. 2) then
-        drdy(:,:) = drdyb(:,:)
-    endif
+        drdy(:, :) = drdyb(:, :)
+    end if
 !
 999 continue
 end subroutine

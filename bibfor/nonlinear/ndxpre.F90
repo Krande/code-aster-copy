@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,16 +18,16 @@
 ! person_in_charge: mickael.abbas at edf.fr
 ! aslint: disable=W1504
 !
-subroutine ndxpre(model          , nume_dof   , numfix     , ds_material, cara_elem  ,&
-                  ds_constitutive, list_load  , ds_algopara, solveu     , ds_system  ,&
-                  list_func_acti , sddisc     , ds_measure , nume_inst  , hval_incr  ,&
-                  hval_algo      , matass     , maprec     , sddyna     , sderro     ,&
-                  sdnume         , hval_meelem, hval_measse, hval_veelem, hval_veasse,&
+subroutine ndxpre(model, nume_dof, numfix, ds_material, cara_elem, &
+                  ds_constitutive, list_load, ds_algopara, solveu, ds_system, &
+                  list_func_acti, sddisc, ds_measure, nume_inst, hval_incr, &
+                  hval_algo, matass, maprec, sddyna, sderro, &
+                  sdnume, hval_meelem, hval_measse, hval_veelem, hval_veasse, &
                   lerrit)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/diinst.h"
@@ -41,23 +41,23 @@ implicit none
 #include "asterfort/nmresd.h"
 #include "asterfort/vtzero.h"
 !
-integer :: list_func_acti(*)
-integer :: nume_inst
-type(NL_DS_AlgoPara), intent(in) :: ds_algopara
-character(len=19) :: matass, maprec
-type(NL_DS_Material), intent(in) :: ds_material
-type(NL_DS_Measure), intent(inout) :: ds_measure
-character(len=19) :: list_load, solveu
-character(len=19), intent(in) :: sdnume, sddyna, sddisc
-character(len=24) :: model, cara_elem
-type(NL_DS_Constitutive), intent(in) :: ds_constitutive
-type(NL_DS_System), intent(in) :: ds_system
-character(len=24) :: nume_dof, numfix
-character(len=24) :: sderro
-character(len=19) :: hval_meelem(*), hval_veelem(*)
-character(len=19) :: hval_measse(*), hval_veasse(*)
-character(len=19) :: hval_algo(*), hval_incr(*)
-aster_logical :: lerrit
+    integer :: list_func_acti(*)
+    integer :: nume_inst
+    type(NL_DS_AlgoPara), intent(in) :: ds_algopara
+    character(len=19) :: matass, maprec
+    type(NL_DS_Material), intent(in) :: ds_material
+    type(NL_DS_Measure), intent(inout) :: ds_measure
+    character(len=19) :: list_load, solveu
+    character(len=19), intent(in) :: sdnume, sddyna, sddisc
+    character(len=24) :: model, cara_elem
+    type(NL_DS_Constitutive), intent(in) :: ds_constitutive
+    type(NL_DS_System), intent(in) :: ds_system
+    character(len=24) :: nume_dof, numfix
+    character(len=24) :: sderro
+    character(len=19) :: hval_meelem(*), hval_veelem(*)
+    character(len=19) :: hval_measse(*), hval_veasse(*)
+    character(len=19) :: hval_algo(*), hval_incr(*)
+    aster_logical :: lerrit
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -104,12 +104,12 @@ aster_logical :: lerrit
 !
     call infdbg('MECANONLINE', ifm, niv)
     if (niv .ge. 2) then
-        write (ifm,*) '<MECANONLINE> CALCUL DE PREDICTION'
-    endif
+        write (ifm, *) '<MECANONLINE> CALCUL DE PREDICTION'
+    end if
 !
 ! --- INITIALISATIONS
 !
-    instap = diinst(sddisc,nume_inst)
+    instap = diinst(sddisc, nume_inst)
     cndonn = '&&CNCHAR.DONN'
     cnzero = '&&CNPART.ZERO'
     call vtzero(cndonn)
@@ -123,44 +123,44 @@ aster_logical :: lerrit
 !
 ! --- CALCUL DE LA MATRICE GLOBALE
 !
-    call ndxprm(model    , ds_material, cara_elem  , ds_constitutive, ds_algopara   ,&
-                list_load, nume_dof   , numfix     , solveu         , ds_system     ,&
-                sddisc   , sddyna     , ds_measure , nume_inst      , list_func_acti,&
-                hval_incr, hval_algo  , hval_meelem, hval_measse    ,&
-                maprec   , matass     , faccvg     , ldccvg)
+    call ndxprm(model, ds_material, cara_elem, ds_constitutive, ds_algopara, &
+                list_load, nume_dof, numfix, solveu, ds_system, &
+                sddisc, sddyna, ds_measure, nume_inst, list_func_acti, &
+                hval_incr, hval_algo, hval_meelem, hval_measse, &
+                maprec, matass, faccvg, ldccvg)
 !
 ! --- ERREUR SANS POSSIBILITE DE CONTINUER
 !
     if ((faccvg .eq. 1) .or. (faccvg .eq. 2) .or. (ldccvg .eq. 1)) then
         goto 99
-    endif
+    end if
 !
 ! - Compute forces for second member at prediction
 !
-    call ndxforc_pred(list_func_acti,&
-                      model         , cara_elem      , nume_dof ,&
-                      list_load     , sddyna         ,&
-                      ds_material   , ds_constitutive, ds_system,&
-                      ds_measure    , sdnume         ,&
-                      sddisc        , nume_inst      ,&
-                      hval_incr     , hval_algo      ,&
-                      hval_veelem   , hval_veasse    ,&
-                      hval_measse   , ldccvg)
+    call ndxforc_pred(list_func_acti, &
+                      model, cara_elem, nume_dof, &
+                      list_load, sddyna, &
+                      ds_material, ds_constitutive, ds_system, &
+                      ds_measure, sdnume, &
+                      sddisc, nume_inst, &
+                      hval_incr, hval_algo, &
+                      hval_veelem, hval_veasse, &
+                      hval_measse, ldccvg)
 !
 ! - Evaluate second member
 !
-    call nmassx(list_func_acti, sddyna, hval_veasse, ds_system,&
+    call nmassx(list_func_acti, sddyna, hval_veasse, ds_system, &
                 cndonn)
 !
 ! - Solve system
 !
     if (ldccvg .eq. 0) then
-        call nmresd(list_func_acti, sddyna   , ds_measure, solveu, nume_dof,&
-                    instap        , maprec   , matass    , cndonn, cnzero  ,&
-                    cncine        , hval_algo, rescvg)
-    endif
+        call nmresd(list_func_acti, sddyna, ds_measure, solveu, nume_dof, &
+                    instap, maprec, matass, cndonn, cnzero, &
+                    cncine, hval_algo, rescvg)
+    end if
 !
- 99 continue
+99  continue
 !
 ! --- TRANSFORMATION DES CODES RETOURS EN EVENEMENTS
 !

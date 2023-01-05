@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -157,8 +157,8 @@ subroutine te0490(option, nomte)
     integer :: ipoids, iret1, ivf, jgano, jprol, jvale, mxcmel
     integer :: nbsgm, nbsig, nbsig2, nbval, nbvari, ndim, nno
     integer :: nnos, npg, iret, idim, i, jtab(7), icodre(5)
-    parameter (mxcmel = 162)
-    parameter (nbsgm  =   6)
+    parameter(mxcmel=162)
+    parameter(nbsgm=6)
     real(kind=8) :: airep, c1, c2, deux, deuxmu, dsde, e
     real(kind=8) :: lame, mu, vecp(3, 3), epm(3)
     real(kind=8) :: enelas, eneldv, enelsp, enelto, eplaeq, eplast, epseq
@@ -207,16 +207,16 @@ subroutine te0490(option, nomte)
 !
 !
     fami = 'RIGI'
-    call elrefe_info(fami=fami, ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+    call elrefe_info(fami=fami, ndim=ndim, nno=nno, nnos=nnos, npg=npg, &
                      jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
 ! --- TYPE DE MODELISATION
 !
-    if (lteatt('AXIS','OUI')) then
-        axi=.true.
+    if (lteatt('AXIS', 'OUI')) then
+        axi = .true.
     else
-        axi=.false.
-    endif
+        axi = .false.
+    end if
 !
 ! ---- NOMBRE DE CONTRAINTES ASSOCIE A L'ELEMENT :
 !
@@ -259,37 +259,37 @@ subroutine te0490(option, nomte)
 !
 ! ----RECUPERATION DU TYPE DE COMPORTEMENT  :
 !     N'EXISTE PAS EN LINEAIRE
-    call tecach('NNO', 'PCOMPOR', 'L', iret, nval=7,&
+    call tecach('NNO', 'PCOMPOR', 'L', iret, nval=7, &
                 itab=jtab)
-    compor(1)='ELAS'
-    compor(2)=' '
-    compor(3)='PETIT'
+    compor(1) = 'ELAS'
+    compor(2) = ' '
+    compor(3) = 'PETIT'
     if (iret .eq. 0) then
-        compor(1)=zk16(jtab(1))
-        compor(3)=zk16(jtab(1)+2)
-    endif
+        compor(1) = zk16(jtab(1))
+        compor(3) = zk16(jtab(1)+2)
+    end if
 !
 !     GRANDES DEFORMATIONS
 !
-    if ((compor(3).eq.'SIMO_MIEHE') .or. (compor(3).eq.'GDEF_LOG')) then
+    if ((compor(3) .eq. 'SIMO_MIEHE') .or. (compor(3) .eq. 'GDEF_LOG')) then
         grand = .true.
     else
         grand = .false.
-    endif
+    end if
 !
 ! ON TESTE LA RECUPERATION DU CHAMP DE CONTRAINTES DU PAS PRECEDENT
 !
     if (option .eq. 'ENER_TOTALE') then
         if (grand) then
             call utmess('F', 'COMPOR1_78', sk=compor(3))
-        endif
-        if ((compor(1)(1:9).ne.'VMIS_ISOT') .and. (compor(1)(1:4) .ne.'ELAS')) then
+        end if
+        if ((compor(1) (1:9) .ne. 'VMIS_ISOT') .and. (compor(1) (1:4) .ne. 'ELAS')) then
             call tecach('NNO', 'PCONTMR', 'L', iret, iad=idconm)
             if (idconm .ne. 0) then
                 call jevech('PCONTMR', 'L', idsigm)
-            endif
-        endif
-    endif
+            end if
+        end if
+    end if
 !
 !
 ! ---- RECUPERATION DU CHAMP DE DEPLACEMENTS AUX NOEUDS
@@ -299,41 +299,41 @@ subroutine te0490(option, nomte)
         call tecach('NNO', 'PDEPLM', 'L', iret, iad=ideplm)
         if (ideplm .ne. 0) then
             call jevech('PDEPLM', 'L', idepmm)
-        endif
-    endif
+        end if
+    end if
 !
 ! ----   RECUPERATION DU CHAMP DE VARIABLES INTERNES  :
 !        N'EXISTE PAS EN LINEAIRE
-    call tecach('ONO', 'PVARIPR', 'L', iret, nval=7,&
+    call tecach('ONO', 'PVARIPR', 'L', iret, nval=7, &
                 itab=jtab)
     if (iret .eq. 0) then
-        idvari=jtab(1)
-        nbvari = max(jtab(6),1)*jtab(7)
+        idvari = jtab(1)
+        nbvari = max(jtab(6), 1)*jtab(7)
     else
-        idvari=1
-        nbvari=0
-    endif
+        idvari = 1
+        nbvari = 0
+    end if
 !
 ! -- CALCUL DES DEFORMATIONS TOTALES DANS LE CAS DE
 ! -- ENERGIE TOTALE A L INSTANT COURANT ET CELUI D AVANT
 !
-    if ((compor(1)(1:9).ne.'VMIS_ISOT') .and. (compor(1)(1:4).ne.'ELAS')) then
+    if ((compor(1) (1:9) .ne. 'VMIS_ISOT') .and. (compor(1) (1:4) .ne. 'ELAS')) then
 !
         if (option .eq. 'ENER_TOTALE') then
 !
 !  CALCUL DE B.U
 !
-            call eps1mc(nno, ndim, nbsig, npg, ipoids,&
-                        ivf, idfde, zr(igeom), zr(idepl), nharm,&
+            call eps1mc(nno, ndim, nbsig, npg, ipoids, &
+                        ivf, idfde, zr(igeom), zr(idepl), nharm, &
                         epss)
 !
             if (ideplm .ne. 0) then
-                call eps1mc(nno, ndim, nbsig, npg, ipoids,&
-                            ivf, idfde, zr(igeom), zr(idepmm), nharm,&
+                call eps1mc(nno, ndim, nbsig, npg, ipoids, &
+                            ivf, idfde, zr(igeom), zr(idepmm), nharm, &
                             epssm)
-            endif
-        endif
-    endif
+            end if
+        end if
+    end if
 !
 ! ---- CALCUL DES DEFORMATIONS HORS THERMIQUES CORRESPONDANTES AU
 ! ---- CHAMP DE DEPLACEMENT I.E. EPSM = EPST - EPSTH
@@ -343,8 +343,8 @@ subroutine te0490(option, nomte)
 ! ----    EPSTH = ALPHA*(T-TREF) :
 !         ----------------------
     optio2 = 'EPME_ELGA'
-    call epsvmc(fami, nno, ndim, nbsig, npg,&
-                ipoids, ivf, idfde, zr(igeom), zr(idepl),&
+    call epsvmc(fami, nno, ndim, nbsig, npg, &
+                ipoids, ivf, idfde, zr(igeom), zr(idepl), &
                 instan, repere, nharm, optio2, epsm)
 !
 !                      ===========================
@@ -356,7 +356,7 @@ subroutine te0490(option, nomte)
 !                      =                         =
 !                      ===========================
 !
-    if (option .eq. 'INDIC_ENER' .or. option .eq. 'ENEL_ELEM' .or. option .eq.&
+    if (option .eq. 'INDIC_ENER' .or. option .eq. 'ENEL_ELEM' .or. option .eq. &
         'ENER_TOTALE' .or. option .eq. 'ENTR_ELEM') then
 !
 ! --- BOUCLE SUR LES POINTS D'INTEGRATION
@@ -377,20 +377,20 @@ subroutine te0490(option, nomte)
 !
 ! --- CALCUL DU JACOBIEN AU POINT D'INTEGRATION COURANT :
 !
-            call nmgeom(2, nno, axi, grand, zr(igeom),&
-                        igau, ipoids, ivf, idfde, zr(idepl),&
-                        .true._1, poids, trav, f, eps,&
+            call nmgeom(2, nno, axi, grand, zr(igeom), &
+                        igau, ipoids, ivf, idfde, zr(idepl), &
+                        .true._1, poids, trav, f, eps, &
                         r)
 !
-            call enelpg(fami, zi(imate), instan, igau, repere,&
-                        xyz, compor, f, sigma, nbvari,&
+            call enelpg(fami, zi(imate), instan, igau, repere, &
+                        xyz, compor, f, sigma, nbvari, &
                         zr(idvari+(igau-1)*nbvari), enelas)
 !
 !
 !
             if (option .eq. 'ENEL_ELEM') then
 !
-                welas = welas + enelas*poids
+                welas = welas+enelas*poids
 !
                 goto 10
 !
@@ -399,13 +399,13 @@ subroutine te0490(option, nomte)
 !  ===============================================
 !
 !
-            endif
+            end if
 !
             nomres(1) = 'E'
             nomres(2) = 'NU'
 !
-            call rcvalb(fami, igau, 1, '+', zi(imate),&
-                        ' ', 'ELAS', 0, ' ', [0.d0],&
+            call rcvalb(fami, igau, 1, '+', zi(imate), &
+                        ' ', 'ELAS', 0, ' ', [0.d0], &
                         2, nomres, valres, icodre, 2)
 !
 !
@@ -414,7 +414,7 @@ subroutine te0490(option, nomte)
 !
 !
             deuxmu = e/(un+nu)
-            k = untier*e/(un - deux*nu)
+            k = untier*e/(un-deux*nu)
             lame = (e*nu)/((1+nu)*(1-2*nu))
             mu = e/(2*(1+nu))
 !
@@ -422,13 +422,13 @@ subroutine te0490(option, nomte)
 ! --- EPS_ELAS    = 1/D*SIGMA
 ! ---             = ((1+NU)/E)*SIGMA-(NU/E)*TRACE(SIGMA) :
 !
-            c1 = (un + nu)/e
+            c1 = (un+nu)/e
             c2 = nu/e
 !
 ! --- CAS DES CONTRAINTES PLANES :
 !
-            if (lteatt('C_PLAN','OUI')) then
-                trsig = sigma(1) + sigma(2)
+            if (lteatt('C_PLAN', 'OUI')) then
+                trsig = sigma(1)+sigma(2)
                 epsel(1) = c1*sigma(1)-c2*trsig
                 epsel(2) = c1*sigma(2)-c2*trsig
                 epsel(3) = -c2*trsig
@@ -439,7 +439,7 @@ subroutine te0490(option, nomte)
 ! --- CAS AXI ET DEFORMATIONS PLANES :
 !
             else
-                trsig = sigma(1) + sigma(2) + sigma(3)
+                trsig = sigma(1)+sigma(2)+sigma(3)
                 epsel(1) = c1*sigma(1)-c2*trsig
                 epsel(2) = c1*sigma(2)-c2*trsig
                 epsel(3) = c1*sigma(3)-c2*trsig
@@ -447,16 +447,16 @@ subroutine te0490(option, nomte)
                 epsel(5) = c1*sigma(5)
                 epsel(6) = c1*sigma(6)
 !
-            endif
+            end if
 !
 !
 ! --- PARTIE SPHERIQUE DE L'ENERGIE DE DEFORMATION ELASTIQUE POSITIVE OU NULLE:
 !
 !
-            trepstraction = epsel(1) + epsel(2) + epsel(3)
+            trepstraction = epsel(1)+epsel(2)+epsel(3)
             if (trepstraction .le. zero) then
                 trepstraction = zero
-            endif
+            end if
 !
             enelpart1 = undemi*lame*trepstraction*trepstraction
 !
@@ -466,13 +466,13 @@ subroutine te0490(option, nomte)
 !
             if (epm(1) .le. zero) then
                 epm(1) = zero
-            endif
+            end if
             if (epm(2) .le. zero) then
                 epm(2) = zero
-            endif
+            end if
             if (epm(3) .le. zero) then
                 epm(3) = zero
-            endif
+            end if
 !
 !
 ! --- PARTIE DE L'ENERGIE DE DEFORMATION ELASTIQUE (DIRECTIONS PRINCIPALES) POSITIVE OU NULLE:
@@ -483,13 +483,13 @@ subroutine te0490(option, nomte)
 !
 ! --- ENERGIE DE DEFORMATION ELASTIQUE DE TRACTION:
 !
-            enelastr = enelpart1 + enelpart2
+            enelastr = enelpart1+enelpart2
 !
 ! --- TRAITEMENT DE L'OPTION ENEL_ELTR :
 !
             if (option .eq. 'ENTR_ELEM') then
 !
-                welastr = welastr + enelastr*poids
+                welastr = welastr+enelastr*poids
 !
                 goto 10
 !
@@ -497,15 +497,15 @@ subroutine te0490(option, nomte)
 !  = FIN TRAITEMENT DE L'OPTION ENEL_ELTR        =
 !  ===============================================
 !
-            endif
+            end if
 !
 ! --- RECUPERATION DES CARACTERISTIQUES DU MATERIAU :
 !
             nomres(1) = 'E'
             nomres(2) = 'NU'
 !
-            call rcvalb(fami, igau, 1, '+', zi(imate),&
-                        ' ', 'ELAS', 0, ' ', [0.d0],&
+            call rcvalb(fami, igau, 1, '+', zi(imate), &
+                        ' ', 'ELAS', 0, ' ', [0.d0], &
                         2, nomres, valres, icodre, 2)
 !
 !
@@ -526,8 +526,8 @@ subroutine te0490(option, nomte)
                 nomres(1) = 'D_SIGM_EPSI'
                 nomres(2) = 'SY'
 !
-                call rcvalb(fami, igau, 1, '+', zi(imate),&
-                            ' ', 'ECRO_LINE', 0, ' ', [0.d0],&
+                call rcvalb(fami, igau, 1, '+', zi(imate), &
+                            ' ', 'ECRO_LINE', 0, ' ', [0.d0], &
                             2, nomres, valres, icodre, 2)
 !
                 dsde = valres(1)
@@ -543,7 +543,7 @@ subroutine te0490(option, nomte)
 !
 ! --- CONTRAINTE UNIAXIALE SUR LA COURBE DE TRACTION :
 !
-                rp = sigy + rprim*p
+                rp = sigy+rprim*p
 !
 ! --- TRAVAIL PLASTIQUE 'EQUIVALENT' :
 !
@@ -551,20 +551,20 @@ subroutine te0490(option, nomte)
 !
 ! --- TRAITEMENT DU CAS DE L'ECROUISSAGE NON-LINEAIRE ISOTROPE :
 !
-            else if (compor(1).eq.'VMIS_ISOT_TRAC') then
+            else if (compor(1) .eq. 'VMIS_ISOT_TRAC') then
 !
 ! --- RECUPERATION DE LA COURBE DE TRACTION :
 !
 !  --- TEMPERATURE AU POINT D'INTEGRATION COURANT :
 !
-                call rcvarc(' ', 'TEMP', '+', fami, igau,&
+                call rcvarc(' ', 'TEMP', '+', fami, igau, &
                             1, tempg, iret1)
-                call rctype(zi(imate), 1, 'TEMP', [tempg], para_vale,&
+                call rctype(zi(imate), 1, 'TEMP', [tempg], para_vale, &
                             para_type)
-                if ((para_type(1:4).eq.'TEMP') .and. (iret1.eq.1)) then
-                    call utmess('F', 'COMPOR5_5', sk = para_type)
-                endif
-                call rctrac(zi(imate), 1, 'SIGM', para_vale, jprol,&
+                if ((para_type(1:4) .eq. 'TEMP') .and. (iret1 .eq. 1)) then
+                    call utmess('F', 'COMPOR5_5', sk=para_type)
+                end if
+                call rctrac(zi(imate), 1, 'SIGM', para_vale, jprol, &
                             jvale, nbval, e)
 !
 ! --- RECUPERATION DE LA DEFORMATION PLASTIQUE CUMULEE :
@@ -573,23 +573,23 @@ subroutine te0490(option, nomte)
 !
 ! --- TRAVAIL PLASTIQUE 'EQUIVALENT' :
 !
-                call rcfonc('V', 1, jprol, jvale, nbval,&
-                            p = p, rp = rp, rprim = rprim, airerp = airep)
+                call rcfonc('V', 1, jprol, jvale, nbval, &
+                            p=p, rp=rp, rprim=rprim, airerp=airep)
 !
                 eplast = airep
-            endif
+            end if
 !
 ! ---  AFFECTATION A OMEGA QUI EST L'ENERGIE TOTALE
 ! ---  DE LA CONTRIBUTION AU POINT D'INTEGRATION DE L'ENERGIE
 ! ---  ELASTIQUE ET DE L'ENERGIE PLASTIQUE :
 !
-            omega = omega + enelas + eplast
+            omega = omega+enelas+eplast
 !
 ! ---  TRAITEMENT DE L'OPTION ENER_TOTALE :
 !
             if (option .eq. 'ENER_TOTALE') then
 !
-                if ((compor(1)(1:9) .ne.'VMIS_ISOT') .and. ( compor(1)( 1:4).ne.'ELAS')) then
+                if ((compor(1) (1:9) .ne. 'VMIS_ISOT') .and. (compor(1) (1:4) .ne. 'ELAS')) then
 !
 ! ---       TENSEUR DES CONTRAINTES AU POINT D'INTEGRATION PRECEDENT
 !           ON LE CALCULE SEULEMENT DANS LE CAS DE LOI DE COMPORTEMENT
@@ -599,14 +599,14 @@ subroutine te0490(option, nomte)
                         do i = 1, nbsig
                             sigmm(i) = zr(idsigm+(igau-1)*nbsig+i-1)
                         end do
-                    endif
+                    end if
 !
 ! ---       TENSEUR DES DEFORMATIONS AU POINT D'INTEGRATION COURANT
 !           ON LE CALCULE SEULEMENT DANS LE CAS DE LOI DE COMPORTEMENT
 !           NI VMIS_ISOT_ NI ELAS
 !
                     do i = 1, nbsig
-                        epsi(i)= epss(i+(igau-1)*nbsig)
+                        epsi(i) = epss(i+(igau-1)*nbsig)
                     end do
 !
 ! ---      TENSEUR DES DEFORMATIONS AU POINT D'INTEGRATION PRECEDENT
@@ -617,37 +617,37 @@ subroutine te0490(option, nomte)
                         do i = 1, nbsig
                             epsim(i) = epssm(i+(igau-1)*nbsig)
                         end do
-                    endif
+                    end if
 !
-                    if ((idconm.ne.0) .and. (ideplm.ne.0)) then
+                    if ((idconm .ne. 0) .and. (ideplm .ne. 0)) then
                         do i = 1, nbsig
-                            delta(i)=epsi(i)-epsim(i)
+                            delta(i) = epsi(i)-epsim(i)
                         end do
 !
 !---          CALCUL DES TERMES A SOMMER
 !
-                        integ1=sigmm(1)*delta(1)+sigmm(2)*delta(2)+&
-                        sigmm(3)*delta(3)+2.0d0*sigmm(4)*delta(4)
-                        integ2=sigma(1)*delta(1)+sigma(2)*delta(2)+&
-                        sigma(3)*delta(3)+2.0d0*sigma(4)*delta(4)
-                        integ=undemi*(integ1+integ2)*poids
+                        integ1 = sigmm(1)*delta(1)+sigmm(2)*delta(2)+ &
+                                 sigmm(3)*delta(3)+2.0d0*sigmm(4)*delta(4)
+                        integ2 = sigma(1)*delta(1)+sigma(2)*delta(2)+ &
+                                 sigma(3)*delta(3)+2.0d0*sigma(4)*delta(4)
+                        integ = undemi*(integ1+integ2)*poids
 !
                     else
 !
 !---          CAS OU LE NUMERO D ORDRE EST UN
 !
-                        integ= sigma(1)*epsi(1)+sigma(2)*epsi(2)+&
-                        sigma(3)*epsi(3)+2.0d0*sigma(4)*epsi(4)
-                        integ=undemi*integ*poids
-                    endif
+                        integ = sigma(1)*epsi(1)+sigma(2)*epsi(2)+ &
+                                sigma(3)*epsi(3)+2.0d0*sigma(4)*epsi(4)
+                        integ = undemi*integ*poids
+                    end if
 !
-                    wtotal=wtotal+integ
+                    wtotal = wtotal+integ
 !
                 else
 !
-                    wtotal = wtotal + (enelas + eplast)*poids
+                    wtotal = wtotal+(enelas+eplast)*poids
 !
-                endif
+                end if
 !
 !  ===============================================
 !  = FIN TRAITEMENT DE L'OPTION ENER_TOTALE      =
@@ -655,7 +655,7 @@ subroutine te0490(option, nomte)
 !
                 goto 10
 !
-            endif
+            end if
 !
 !---------------------------------------------------------
 !   CACUL DU TERME PSI REPRESENTANT L'ENERGIE ELASTIQUE  -
@@ -666,7 +666,7 @@ subroutine te0490(option, nomte)
 ! --- COMPRESSIBILITE : K) :
 !
             deuxmu = e/(un+nu)
-            k = untier*e/(un - deux*nu)
+            k = untier*e/(un-deux*nu)
 !
             eplast = zero
             p = zero
@@ -674,50 +674,50 @@ subroutine te0490(option, nomte)
 !
 !  -- DEFORMATION THERMIQUE AU POINT D'INTEGRATION COURANT :
 !
-            call verift(fami, igau, 1, '+', zi(imate),&
+            call verift(fami, igau, 1, '+', zi(imate), &
                         epsth_=epsthe)
 !
 !
 ! --- TRAITEMENT DU CAS CONTRAINTES PLANES :
 !
-            if (lteatt('C_PLAN','OUI')) then
+            if (lteatt('C_PLAN', 'OUI')) then
 !
 ! --- CALCUL DE LA COMPOSANTE EPSZZ DE LA DEFORMATION TOTALE
 ! --- EN ECRIVANT EPSZZ = EPSZZ_ELAS   + EPSZZ_PLAS
 ! --- SOIT        EPSZZ = D-1*SIGMA(3) - EPSXX_PLAS - EPSYY_PLAS:
 !
-                c1 = (un + nu)/e
+                c1 = (un+nu)/e
                 c2 = nu/e
-                trsig = sigma(1) + sigma(2)
-                epsel(1) = c1*sigma(1) - c2*trsig
-                epsel(2) = c1*sigma(2) - c2*trsig
-                epsel(3) = - c2*trsig
+                trsig = sigma(1)+sigma(2)
+                epsel(1) = c1*sigma(1)-c2*trsig
+                epsel(2) = c1*sigma(2)-c2*trsig
+                epsel(3) = -c2*trsig
 !
-                epsm(3+(igau-1)*nbsig)= epsel(3) + epsthe - epsm(1+(&
-                igau-1)*nbsig) + epsel(1) - epsm(2+(igau-1)*nbsig) +&
-                epsel(2)
-            endif
+                epsm(3+(igau-1)*nbsig) = epsel(3)+epsthe-epsm(1+( &
+                                                   igau-1)*nbsig)+epsel(1)-epsm(2+(igau-1)*nbsig)+ &
+                                         epsel(2)
+            end if
 !
 ! --- CALCUL DE LA DILATATION VOLUMIQUE AU POINT D'INTEGRATION COURANT:
 !
-            trepsm = epsm( 1+(igau-1)*nbsig) + epsm(2+(igau-1)*nbsig) + epsm(3+(igau-1)*nbsig )
+            trepsm = epsm(1+(igau-1)*nbsig)+epsm(2+(igau-1)*nbsig)+epsm(3+(igau-1)*nbsig)
 !
 ! --- CALCUL DU DEVIATEUR DES DEFORMATIONS AU POINT D'INTEGRATION
 ! --- COURANT :
 !
-            epsdv(1) = epsm(1+(igau-1)*nbsig) - untier*trepsm
-            epsdv(2) = epsm(2+(igau-1)*nbsig) - untier*trepsm
-            epsdv(3) = epsm(3+(igau-1)*nbsig) - untier*trepsm
+            epsdv(1) = epsm(1+(igau-1)*nbsig)-untier*trepsm
+            epsdv(2) = epsm(2+(igau-1)*nbsig)-untier*trepsm
+            epsdv(3) = epsm(3+(igau-1)*nbsig)-untier*trepsm
             epsdv(4) = epsm(4+(igau-1)*nbsig)
 !
 ! --- CALCUL DE LA DEFORMATION ELASTIQUE EQUIVALENTE AU
 ! --- POINT D'INTEGRATION COURANT :
 !
-            epseq = sqrt(&
-                    trois/deux* (&
-                    epsdv(1)*epsdv(1) + epsdv(2)* epsdv(2) + epsdv(3)*epsdv(3) + deux*epsdv(4)*ep&
-                    &sdv(4)&
-                    )&
+            epseq = sqrt( &
+                    trois/deux*( &
+                    epsdv(1)*epsdv(1)+epsdv(2)*epsdv(2)+epsdv(3)*epsdv(3)+deux*epsdv(4)*ep&
+                    &sdv(4) &
+                    ) &
                     )
 !
 ! --- CALCUL DE LA CONTRAINTE ELASTIQUE EQUIVALENTE AU
@@ -739,8 +739,8 @@ subroutine te0490(option, nomte)
                 nomres(1) = 'D_SIGM_EPSI'
                 nomres(2) = 'SY'
 !
-                call rcvalb(fami, igau, 1, '+', zi(imate),&
-                            ' ', 'ECRO_LINE', 0, ' ', [0.d0],&
+                call rcvalb(fami, igau, 1, '+', zi(imate), &
+                            ' ', 'ECRO_LINE', 0, ' ', [0.d0], &
                             2, nomres, valres, icodre, 2)
 !
                 dsde = valres(1)
@@ -752,12 +752,12 @@ subroutine te0490(option, nomte)
 !
 ! --- DEFORMATION NON-LINEAIRE CUMULEE EQUIVALENTE :
 !
-                p = (sigeq - sigy)/(rprim + trois/deux*deuxmu)
+                p = (sigeq-sigy)/(rprim+trois/deux*deuxmu)
                 if (p .le. r8prem()) p = zero
 !
 ! --- CONTRAINTE UNIAXIALE SUR LA COURBE DE TRACTION :
 !
-                rp = sigy + rprim*p
+                rp = sigy+rprim*p
 !
 ! ---  TRAVAIL ELASTIQUE NON-LINEAIRE 'EQUIVALENT' :
 !
@@ -765,34 +765,34 @@ subroutine te0490(option, nomte)
 !
 ! ---  TRAITEMENT DU CAS DE L'ECROUISSAGE NON-LINEAIRE ISOTROPE :
 !
-            else if (compor(1).eq.'VMIS_ISOT_TRAC') then
+            else if (compor(1) .eq. 'VMIS_ISOT_TRAC') then
 !
 ! ---  RECUPERATION DE LA COURBE DE TRACTION :
 !
-                call rctrac(zi(imate), 1, 'SIGM', tempg, jprol,&
+                call rctrac(zi(imate), 1, 'SIGM', tempg, jprol, &
                             jvale, nbval, e)
 !
 ! --- CALCUL DE LA LIMITE ELASTIQUE SIGY :
 !
-                call rcfonc('S', 1, jprol, jvale, nbval,&
-                            sigy = sigy)
+                call rcfonc('S', 1, jprol, jvale, nbval, &
+                            sigy=sigy)
 !
                 if (sigeq .ge. sigy) then
 !
 ! --- CALCUL DU TRAVAIL ELASTIQUE NON-LINEAIRE ET DE LA
 ! --- CONTRAINTE EQUIVALENTE :
 !
-                    call rcfonc('E', 1, jprol, jvale, nbval,&
-                                e = e, nu = nu, p = zero, rp = rp, rprim = rprim,&
-                                airerp = airep, sieleq = sigeq, dp = p)
+                    call rcfonc('E', 1, jprol, jvale, nbval, &
+                                e=e, nu=nu, p=zero, rp=rp, rprim=rprim, &
+                                airerp=airep, sieleq=sigeq, dp=p)
 !
 ! --- TRAVAIL ELASTIQUE NON-LINEAIRE 'EQUIVALENT' :
 !
                     eplast = airep
-                endif
+                end if
             else
                 call utmess('F', 'ELEMENTS4_2')
-            endif
+            end if
 !
 ! --- PARTIE DEVIATORIQUE DE L'ENERGIE DE DEFORMATION ELASTIQUE
 ! --- TOTALE 'EQUIVALENTE' (I.E. ASSOCIEE A LA COURBE DE
@@ -803,31 +803,31 @@ subroutine te0490(option, nomte)
                 eneldv = epseq*epseq*deuxmu/trois
             else
                 eneldv = rp*rp/deuxmu/trois
-            endif
+            end if
 !
 ! --- ENERGIE DE DEFORMATION ELASTIQUE TOTALE AU POINT
 ! --- D'INTEGRATION COURANT :
 !
-            enelto = enelsp + eneldv + eplast
+            enelto = enelsp+eneldv+eplast
 !
 ! --- AFFECTATION A PSI QUI EST L'ENERGIE ELASTIQUE TOTALE
 ! --- DE LA CONTRIBUTION AU POINT D'INTEGRATION DE CETTE ENERGIE :
 !
-            psi = psi + enelto
+            psi = psi+enelto
 !
 ! --- VOLUME DE L'ELEMENT :
 !
-            volume = volume + poids
+            volume = volume+poids
 !
 ! --- INDICATEUR GLOBAL ENERGETIQUE (NON NORMALISE) :
 !
             if (omega .ge. 1d04*r8prem()) then
                 if (psi .lt. omega) then
-                    indigl = indigl + (un - psi/omega)*poids
-                endif
-            endif
+                    indigl = indigl+(un-psi/omega)*poids
+                end if
+            end if
 !
- 10         continue
+10          continue
         end do
 !
 ! ----   RECUPERATION ET AFFECTATION DES GRANDEURS EN SORTIE
@@ -843,16 +843,16 @@ subroutine te0490(option, nomte)
             zr(idene1) = indigl
             call jevech('PENERD2', 'E', idene2)
             zr(idene2) = volume
-        else if (option.eq.'ENEL_ELEM') then
+        else if (option .eq. 'ENEL_ELEM') then
             call jevech('PENERD1', 'E', idene1)
             zr(idene1) = welas
-        else if (option.eq.'ENTR_ELEM') then
+        else if (option .eq. 'ENTR_ELEM') then
             call jevech('PENTRD1', 'E', idene1)
             zr(idene1) = welastr
-        else if (option.eq.'ENER_TOTALE') then
+        else if (option .eq. 'ENER_TOTALE') then
             call jevech('PENERD1', 'E', idene1)
             zr(idene1) = wtotal
-        endif
+        end if
 !
 !  ===========================
 !  =                         =
@@ -860,7 +860,7 @@ subroutine te0490(option, nomte)
 !  =                         =
 !  ===========================
 !
-    else if (option.eq.'INDIC_SEUIL') then
+    else if (option .eq. 'INDIC_SEUIL') then
 !
 ! --- BOUCLE SUR LES POINTS D'INTEGRATION
 !
@@ -873,8 +873,8 @@ subroutine te0490(option, nomte)
             nomres(1) = 'E'
             nomres(2) = 'NU'
 !
-            call rcvalb(fami, igau, 1, '+', zi(imate),&
-                        ' ', 'ELAS', 0, ' ', [0.d0],&
+            call rcvalb(fami, igau, 1, '+', zi(imate), &
+                        ' ', 'ELAS', 0, ' ', [0.d0], &
                         2, nomres, valres, icodre, 2)
 !
             e = valres(1)
@@ -891,13 +891,13 @@ subroutine te0490(option, nomte)
 ! --- EPS_ELAS    = 1/D*SIGMA
 ! ---             = ((1+NU)/E)*SIGMA-(NU/E)*TRACE(SIGMA) :
 !
-            c1 = (un + nu)/e
+            c1 = (un+nu)/e
             c2 = nu/e
 !
 ! --- CAS DES CONTRAINTES PLANES :
 !
-            if (lteatt('C_PLAN','OUI')) then
-                trsig = sigma(1) + sigma(2)
+            if (lteatt('C_PLAN', 'OUI')) then
+                trsig = sigma(1)+sigma(2)
                 epsel(1) = c1*sigma(1)-c2*trsig
                 epsel(2) = c1*sigma(2)-c2*trsig
                 epsel(3) = -c2*trsig
@@ -906,22 +906,22 @@ subroutine te0490(option, nomte)
 ! --- CAS AXI ET DEFORMATIONS PLANES :
 !
             else
-                trsig = sigma(1) + sigma(2) + sigma(3)
+                trsig = sigma(1)+sigma(2)+sigma(3)
                 epsel(1) = c1*sigma(1)-c2*trsig
                 epsel(2) = c1*sigma(2)-c2*trsig
                 epsel(3) = c1*sigma(3)-c2*trsig
                 epsel(4) = c1*sigma(4)
-            endif
+            end if
 !
 ! --- CALCUL DES DEFORMATIONS PLASTIQUES AU POINT
 ! --- D'INTEGRATION COURANT
 ! --- EPS_PLAST = EPS_TOT - EPS_ELAS - EPSTH :
 ! --- EPS_PLAST = EPS_HORS_THERMIQUE - EPS_ELAS  :
 !
-            epspla(1) = epsm(1+(igau-1)*nbsig) - epsel(1)
-            epspla(2) = epsm(2+(igau-1)*nbsig) - epsel(2)
-            epspla(3) = epsm(3+(igau-1)*nbsig) - epsel(3)
-            epspla(4) = epsm(4+(igau-1)*nbsig) - epsel(4)
+            epspla(1) = epsm(1+(igau-1)*nbsig)-epsel(1)
+            epspla(2) = epsm(2+(igau-1)*nbsig)-epsel(2)
+            epspla(3) = epsm(3+(igau-1)*nbsig)-epsel(3)
+            epspla(4) = epsm(4+(igau-1)*nbsig)-epsel(4)
 !
 ! --- CAS DE L'ECROUISSAGE CINEMATIQUE :
 ! --- LE TENSEUR A PRENDRE EN CONSIDERATION POUR LE CALCUL
@@ -929,21 +929,21 @@ subroutine te0490(option, nomte)
 !
             if (compor(1) .eq. 'VMIS_CINE_LINE') then
                 nbsig2 = 7
-                ASSERT(idvari.ne.1)
+                ASSERT(idvari .ne. 1)
                 do i = 1, nbsig
                     x(i) = zr(idvari+(igau-1)*nbsig2+i-1)
                 end do
                 do i = 1, nbsig
-                    sigma(i) = sigma(i) - x(i)
+                    sigma(i) = sigma(i)-x(i)
                 end do
-            endif
+            end if
 !
 ! --- CALCUL DU TRAVAIL PLASTIQUE AU POINT D'INTEGRATION COURANT :
 !
-            eplast = sigma(1)*epspla(1) + sigma(2)*epspla(2) + sigma( 3)*epspla(3) + deux*sigma(4&
+            eplast = sigma(1)*epspla(1)+sigma(2)*epspla(2)+sigma(3)*epspla(3)+deux*sigma(4&
                      &)*epspla(4)
 ! VALEUR ABSOLUE DU TRAVAIL PLASTIQUE
-            eplast=abs(eplast)
+            eplast = abs(eplast)
 ! --- CALCUL DU TRAVAIL PLASTIQUE EQUIVALENT AU POINT
 ! --- D'INTEGRATION COURANT :
 !
@@ -956,8 +956,8 @@ subroutine te0490(option, nomte)
 !
                 nomres(1) = 'D_SIGM_EPSI'
                 nomres(2) = 'SY'
-                call rcvalb(fami, igau, 1, '+', zi(imate),&
-                            ' ', 'ECRO_LINE', 0, ' ', [0.d0],&
+                call rcvalb(fami, igau, 1, '+', zi(imate), &
+                            ' ', 'ECRO_LINE', 0, ' ', [0.d0], &
                             2, nomres, valres, icodre, 2)
 !
                 dsde = valres(1)
@@ -965,11 +965,11 @@ subroutine te0490(option, nomte)
 !
 ! --- CALCUL DE LA DEFORMATION PLASTIQUE EQUIVALENTE :
 !
-                epseq = sqrt(&
-                        trois/deux*(&
-                        epspla(1)*epspla(1) + epspla(2)*epspla(2) + epspla(3)*epspla(3) + deux* e&
-                        &pspla(4)*epspla(4)&
-                        )&
+                epseq = sqrt( &
+                        trois/deux*( &
+                        epspla(1)*epspla(1)+epspla(2)*epspla(2)+epspla(3)*epspla(3)+deux*e&
+                        &pspla(4)*epspla(4) &
+                        ) &
                         )
 !
 ! --- DEFORMATION PLASTIQUE CUMULEE :
@@ -977,9 +977,9 @@ subroutine te0490(option, nomte)
 ! --- (TEMPORAIRE POUR L'ECROUISSAGE CINEMATIQUE)
                 if (compor(1) .eq. 'VMIS_CINE_LINE') then
                     p = epseq
-                else if (compor(1).eq.'VMIS_ISOT_LINE') then
+                else if (compor(1) .eq. 'VMIS_ISOT_LINE') then
                     p = zr(idvari+(igau-1)*nbvari+1-1)
-                endif
+                end if
 !
 ! --- PENTE DE LA COURBE DE TRACTION DANS LE DIAGRAMME 'REDRESSE' :
 !
@@ -987,7 +987,7 @@ subroutine te0490(option, nomte)
 !
 ! --- CONTRAINTE UNIAXIALE SUR LA COURBE DE TRACTION :
 !
-                rp = sigy + rprim*p
+                rp = sigy+rprim*p
 !
 ! --- TRAVAIL PLASTIQUE 'EQUIVALENT' :
 !
@@ -995,13 +995,13 @@ subroutine te0490(option, nomte)
 !
 ! --- TRAITEMENT DU CAS DE L'ECROUISSAGE NON-LINEAIRE ISOTROPE :
 !
-            else if (compor(1).eq.'VMIS_ISOT_TRAC') then
+            else if (compor(1) .eq. 'VMIS_ISOT_TRAC') then
 !
 ! --- RECUPERATION DE LA COURBE DE TRACTION :
 !
-                call rcvarc(' ', 'TEMP', '+', fami, igau,&
+                call rcvarc(' ', 'TEMP', '+', fami, igau, &
                             1, tempg, iret1)
-                call rctrac(zi(imate), 1, 'SIGM', tempg, jprol,&
+                call rctrac(zi(imate), 1, 'SIGM', tempg, jprol, &
                             jvale, nbval, e)
 !
 ! --- RECUPERATION DE LA DEFORMATION PLASTIQUE CUMULEE :
@@ -1010,30 +1010,30 @@ subroutine te0490(option, nomte)
 !
 ! --- TRAVAIL PLASTIQUE 'EQUIVALENT' :
 !
-                call rcfonc('V', 1, jprol, jvale, nbval,&
-                            p = p, rp = rp, rprim = rprim, airerp = airep)
+                call rcfonc('V', 1, jprol, jvale, nbval, &
+                            p=p, rp=rp, rprim=rprim, airerp=airep)
 !
                 eplaeq = rp*p
             else
                 call utmess('F', 'ELEMENTS4_3')
-            endif
+            end if
 !
 ! --- CALCUL DU JACOBIEN AU POINT D'INTEGRATION COURANT :
 !
-            call nmgeom(2, nno, axi, grand, zr(igeom),&
-                        igau, ipoids, ivf, idfde, zr(idepl),&
-                        .true._1, poids, trav, f, eps,&
+            call nmgeom(2, nno, axi, grand, zr(igeom), &
+                        igau, ipoids, ivf, idfde, zr(idepl), &
+                        .true._1, poids, trav, f, eps, &
                         r)
 !
 ! --- VOLUME DE L'ELEMENT :
 !
-            volume = volume + poids
+            volume = volume+poids
 !
 ! --- INDICATEUR GLOBAL ENERGETIQUE (NON NORMALISE) :
 !
             if (eplaeq .ge. 1d04*r8prem()) then
-                indigl = indigl + (un - eplast/eplaeq)*poids
-            endif
+                indigl = indigl+(un-eplast/eplaeq)*poids
+            end if
 !
         end do
 !
@@ -1046,6 +1046,6 @@ subroutine te0490(option, nomte)
         call jevech('PENERD2', 'E', idene2)
         zr(idene2) = volume
 !
-    endif
+    end if
 !
 end subroutine

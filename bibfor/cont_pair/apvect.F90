@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 subroutine apvect(sdappa, questi_, i_poin, valr)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/assert.h"
 #include "asterfort/jeveuo.h"
@@ -65,34 +65,34 @@ implicit none
     sdappa_tau2 = sdappa(1:19)//'.TAU2'
     sdappa_dist = sdappa(1:19)//'.DIST'
     sdappa_tgno = sdappa(1:19)//'.TGNO'
-    call jeveuo(sdappa_tau1, 'L', vr = v_sdappa_tau1)
-    call jeveuo(sdappa_tau2, 'L', vr = v_sdappa_tau2)
-    call jeveuo(sdappa_dist, 'L', vr = v_sdappa_dist)
-    call jeveuo(sdappa_tgno, 'L', vr = v_sdappa_tgno)
+    call jeveuo(sdappa_tau1, 'L', vr=v_sdappa_tau1)
+    call jeveuo(sdappa_tau2, 'L', vr=v_sdappa_tau2)
+    call jeveuo(sdappa_dist, 'L', vr=v_sdappa_dist)
+    call jeveuo(sdappa_tgno, 'L', vr=v_sdappa_tgno)
     valr(1:3) = 0.d0
 !
     if (questi_ .eq. 'APPARI_TAU1') then
         valr(1) = v_sdappa_tau1(3*(i_poin-1)+1)
         valr(2) = v_sdappa_tau1(3*(i_poin-1)+2)
         valr(3) = v_sdappa_tau1(3*(i_poin-1)+3)
-    else if (questi_.eq.'APPARI_TAU2') then
+    else if (questi_ .eq. 'APPARI_TAU2') then
         valr(1) = v_sdappa_tau2(3*(i_poin-1)+1)
         valr(2) = v_sdappa_tau2(3*(i_poin-1)+2)
         valr(3) = v_sdappa_tau2(3*(i_poin-1)+3)
-    else if (questi_.eq.'APPARI_VECTPM') then
+    else if (questi_ .eq. 'APPARI_VECTPM') then
         valr(1) = v_sdappa_dist(4*(i_poin-1)+2)
         valr(2) = v_sdappa_dist(4*(i_poin-1)+3)
         valr(3) = v_sdappa_dist(4*(i_poin-1)+4)
-    else if (questi_.eq.'APPARI_NOEUD_TAU1') then
+    else if (questi_ .eq. 'APPARI_NOEUD_TAU1') then
         valr(1) = v_sdappa_tgno(6*(i_poin-1)+1)
         valr(2) = v_sdappa_tgno(6*(i_poin-1)+2)
         valr(3) = v_sdappa_tgno(6*(i_poin-1)+3)
-    else if (questi_.eq.'APPARI_NOEUD_TAU2') then
+    else if (questi_ .eq. 'APPARI_NOEUD_TAU2') then
         valr(1) = v_sdappa_tgno(6*(i_poin-1)+4)
         valr(2) = v_sdappa_tgno(6*(i_poin-1)+5)
         valr(3) = v_sdappa_tgno(6*(i_poin-1)+6)
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 end subroutine

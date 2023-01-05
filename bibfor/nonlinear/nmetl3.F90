@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,9 +19,9 @@
 !
 subroutine nmetl3(model, compor, i_field, ds_inout, verbose)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -35,11 +35,11 @@ implicit none
 #include "asterfort/vrcom2.h"
 #include "asterfort/sgcomp.h"
 !
-character(len=24), intent(in) :: model
-character(len=24), intent(in) :: compor
-type(NL_DS_InOut), intent(in) :: ds_inout
-integer, intent(in) :: i_field
-aster_logical, intent(in) :: verbose
+    character(len=24), intent(in) :: model
+    character(len=24), intent(in) :: compor
+    type(NL_DS_InOut), intent(in) :: ds_inout
+    integer, intent(in) :: i_field
+    aster_logical, intent(in) :: verbose
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -74,9 +74,9 @@ aster_logical, intent(in) :: verbose
 !
 ! - Get parameters
 !
-    l_stin_evol  = ds_inout%l_stin_evol
-    stin_evol    = ds_inout%stin_evol
-    init_nume    = ds_inout%init_nume
+    l_stin_evol = ds_inout%l_stin_evol
+    stin_evol = ds_inout%stin_evol
+    init_nume = ds_inout%init_nume
     l_state_init = ds_inout%l_state_init
 !
 ! - Field to read ?
@@ -85,33 +85,33 @@ aster_logical, intent(in) :: verbose
 !
 ! ----- Name of field (type) in results datastructure
 !
-        field_type     = ds_inout%field(i_field)%type
+        field_type = ds_inout%field(i_field)%type
 !
 ! ----- Name of field in algorithm
 !
-        algo_name      = ds_inout%field(i_field)%algo_name
+        algo_name = ds_inout%field(i_field)%algo_name
         call nmetnc(algo_name, field_algo)
 !
 ! ----- Spatial discretization of field
 !
-        disc_type      = ds_inout%field(i_field)%disc_type
+        disc_type = ds_inout%field(i_field)%disc_type
 !
 ! ----- Name of field in algorithm
 !
-        algo_name      = ds_inout%field(i_field)%algo_name
+        algo_name = ds_inout%field(i_field)%algo_name
         call nmetnc(algo_name, field_algo)
 !
 ! ----- Actual state of field
 !
-        init_type      = ds_inout%field(i_field)%init_type
+        init_type = ds_inout%field(i_field)%init_type
 !
 ! ----- Type of GRANDEUR of field
 !
-        gran_name      = ds_inout%field(i_field)%gran_name
+        gran_name = ds_inout%field(i_field)%gran_name
 !
 ! ----- Is field should been active ?
 !
-        l_acti         = ds_inout%l_field_acti(i_field)
+        l_acti = ds_inout%l_field_acti(i_field)
 !
 ! ----- Informations about field
 !
@@ -123,20 +123,20 @@ aster_logical, intent(in) :: verbose
                 valk(2) = stin_evol
                 if (init_type .eq. 'ZERO') then
                     call utmess('I', 'ETATINIT_31', sk=field_type)
-                else if (init_type.eq.'RESU') then
+                else if (init_type .eq. 'RESU') then
                     call utmess('I', 'ETATINIT_32', nk=2, valk=valk)
-                else if (init_type.eq.'READ') then
+                else if (init_type .eq. 'READ') then
                     call utmess('I', 'ETATINIT_33', sk=field_type)
                 else
                     ASSERT(.false.)
-                endif
-            endif
+                end if
+            end if
 !
 ! --------- Check GRANDEUR and discretization
 !
             if (gran_name .ne. ' ') then
                 call chpver('F', field_algo, disc_type, gran_name, iret)
-            endif
+            end if
 !
 ! --------- For pre-stressed load
 !
@@ -147,9 +147,9 @@ aster_logical, intent(in) :: verbose
                     call sgcomp(compor, field_algo, modelLigrel, iret)
                     if (iret .eq. 1) then
                         call utmess('F', 'MECANONLINE5_58')
-                    endif
-                endif
-            endif
+                    end if
+                end if
+            end if
 !
 ! --------- Check internal variables
 !
@@ -157,31 +157,31 @@ aster_logical, intent(in) :: verbose
                 if (l_state_init) then
                     compom = ' '
                     if (l_stin_evol) then
-                        call rsexch(' ', stin_evol, 'COMPORTEMENT', init_nume, compom,&
+                        call rsexch(' ', stin_evol, 'COMPORTEMENT', init_nume, compom, &
                                     iret)
                         if (iret .ne. 0) compom = ' '
-                    endif
+                    end if
                     if (compom .eq. ' ') then
-                        call vrcomp(compor, field_algo, modelLigrel, iret, verbose_ = verbose,&
-                                    lModiVari_= lModiVari)
+                        call vrcomp(compor, field_algo, modelLigrel, iret, verbose_=verbose, &
+                                    lModiVari_=lModiVari)
                     else
-                        call vrcomp(compor, field_algo, modelLigrel, iret,&
-                                    comporPrevz_ = compom, verbose_ = verbose,&
-                                    lModiVari_= lModiVari)
-                    endif
+                        call vrcomp(compor, field_algo, modelLigrel, iret, &
+                                    comporPrevz_=compom, verbose_=verbose, &
+                                    lModiVari_=lModiVari)
+                    end if
                     if (iret .eq. 1) then
                         call utmess('F', 'MECANONLINE5_2')
-                    endif
+                    end if
                     if (lModiVari) then
                         call vrcom2(compor, field_algo, modelLigrel, ASTER_FALSE)
-                    endif
-                endif
-            endif
+                    end if
+                end if
+            end if
         else
             if (init_type .eq. 'RESU' .or. init_type .eq. 'READ') then
                 call utmess('I', 'ETATINIT_36', sk=field_type)
-            endif
-        endif
-    endif
+            end if
+        end if
+    end if
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -57,19 +57,19 @@ subroutine te0274(option, nomte)
 !
     call elref1(elrefe)
 !
-    if (lteatt('LUMPE','OUI')) then
+    if (lteatt('LUMPE', 'OUI')) then
         call teattr('S', 'ALIAS8', alias8, ibid)
-        if (alias8(6:8) .eq. 'SE3') elrefe='SE2'
-    endif
+        if (alias8(6:8) .eq. 'SE3') elrefe = 'SE2'
+    end if
 !
-    call elrefe_info(elrefe=elrefe, fami='RIGI', ndim=ndim, nno=nno, nnos=nnos,&
+    call elrefe_info(elrefe=elrefe, fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, &
                      npg=npg, jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
-    if (lteatt('AXIS','OUI')) then
+    if (lteatt('AXIS', 'OUI')) then
         laxi = .true.
     else
         laxi = .false.
-    endif
+    end if
 !
 !====
 ! 1.2 PREALABLES LIES AUX RECHERCHES DE DONNEES GENERALES
@@ -106,36 +106,36 @@ subroutine te0274(option, nomte)
 !
         do i = 1, nno
             do j = 1, 2
-                coorse(2* (i-1)+j) = zr(igeom-1+2* (c(ise,i)-1)+j)
+                coorse(2*(i-1)+j) = zr(igeom-1+2*(c(ise, i)-1)+j)
             end do
         end do
 !
 ! BOUCLE SUR LES POINTS DE GAUSS
         do kp = 1, npg
-            call vff2dn(ndim, nno, kp, ipoids, idfde,&
+            call vff2dn(ndim, nno, kp, ipoids, idfde, &
                         coorse, nx, ny, poids)
             tpg = 0.d0
             do i = 1, nno
 ! CALCUL DE T-
-                l = (kp-1)*nno + i
-                tpg = tpg + zr(itempr-1+c(ise,i))*zr(ivf+l-1)
+                l = (kp-1)*nno+i
+                tpg = tpg+zr(itempr-1+c(ise, i))*zr(ivf+l-1)
             end do
 !
 ! CALCUL DU JACOBIEN EN AXI
             if (laxi) then
                 r = 0.d0
                 do i = 1, nno
-                    l = (kp-1)*nno + i
-                    r = r + coorse(2* (i-1)+1)*zr(ivf+l-1)
+                    l = (kp-1)*nno+i
+                    r = r+coorse(2*(i-1)+1)*zr(ivf+l-1)
                 end do
                 poids = poids*r
-            endif
+            end if
 !
             call foderi(coef, tpg, alpha, rbid)
 !
             do i = 1, nno
-                li = ivf + (kp-1)*nno + i - 1
-                vectt(c(ise,i)) = vectt( c(ise,i)) + poids* (1.d0- theta)*alpha*zr(li)
+                li = ivf+(kp-1)*nno+i-1
+                vectt(c(ise, i)) = vectt(c(ise, i))+poids*(1.d0-theta)*alpha*zr(li)
             end do
 ! FIN BOUCLE SUR LES PTS DE GAUSS
         end do

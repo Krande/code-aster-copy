@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -58,7 +58,7 @@ subroutine accep2(modmec, nbm, pgout, phiout, sphout)
     integer :: iret, idm, ibid, nbm, inocha, isncha, nbchin, nbchou
     character(len=6) :: chaine
     character(len=8) :: moint, modmec
-    parameter    (nbchin=1,nbchou=1)
+    parameter(nbchin=1, nbchou=1)
     character(len=8) :: lpain(nbchin), lpaou(nbchou)
     character(len=19) :: nochno, nochns, nches1, nches2, nchel1, mnoga
     character(len=19) :: lchin(nbchin), lchou(nbchou), pgout, phiout
@@ -75,15 +75,15 @@ subroutine accep2(modmec, nbm, pgout, phiout, sphout)
     call getvid(' ', 'MODELE_INTERFACE', scal=moint, nbret=ibid)
     if (ibid .eq. 0) then
         call utmess('F', 'MODELISA10_14')
-    endif
+    end if
 !
 ! NOMS DE CHAMPS PROVISOIRES
-    nochns='&&ACCEP2.CHNOS'
-    ligrel='&&ACCEP2.LIGREL'
-    nchel1='&&ACCEP2.CHELEL'
-    nchelc='&&ACCEP2.CHELELC'
-    nches1='&&ACCEP2.CHELES1'
-    mnoga='&&ACCEP.MNOGA'
+    nochns = '&&ACCEP2.CHNOS'
+    ligrel = '&&ACCEP2.LIGREL'
+    nchel1 = '&&ACCEP2.CHELEL'
+    nchelc = '&&ACCEP2.CHELELC'
+    nches1 = '&&ACCEP2.CHELES1'
+    mnoga = '&&ACCEP.MNOGA'
 ! LIGREL ASSOCIE AU MODELE ET A UN GROUPE DE MAILLE
     call exlima(' ', 0, 'V', moint, ligrel)
 !
@@ -98,19 +98,19 @@ subroutine accep2(modmec, nbm, pgout, phiout, sphout)
     do idm = 1, nbm
         call codent(idm, 'D', chaine)
 ! NCHESC : CHAM_ELEM_S COMPLEXE. UNIQUEMENT POUR INITIALISATION
-        nchesc='&&SFIFJ.SPHI.'//chaine
+        nchesc = '&&SFIFJ.SPHI.'//chaine
 ! NCHES2 : CHAM_ELEM_S CONTENANT LES MODES INTERPOLES AUX PDG
-        nches2='&&SFIFJ.PHI.'//chaine
-        zk24(inocha-1+idm)=nches2
-        zk24(isncha-1+idm)=nchesc
+        nches2 = '&&SFIFJ.PHI.'//chaine
+        zk24(inocha-1+idm) = nches2
+        zk24(isncha-1+idm) = nchesc
 ! RECUPERATION DU CHAMP CORRESPONDANT AU NUM ORDRE
-        call rsexch('F', modmec, 'DEPL', idm, nochno,&
+        call rsexch('F', modmec, 'DEPL', idm, nochno, &
                     iret)
         call cnocns(nochno, 'V', nochns)
 ! FABRICATION D'UN CHAM_ELEM VIERGE (UN REEL) ET UN COMPLEXE)
-        call alchml(ligrel, 'TOU_INI_ELGA', 'PDEPL_R', 'V', nchel1,&
+        call alchml(ligrel, 'TOU_INI_ELGA', 'PDEPL_R', 'V', nchel1, &
                     iret, ' ')
-        call alchml(ligrel, 'TOU_INI_ELGA', 'PDEPL_C', 'V', nchelc,&
+        call alchml(ligrel, 'TOU_INI_ELGA', 'PDEPL_C', 'V', nchelc, &
                     iret, ' ')
         call celces(nchel1, 'V', nches1)
         call celces(nchelc, 'V', nchesc)
@@ -118,7 +118,7 @@ subroutine accep2(modmec, nbm, pgout, phiout, sphout)
         call dismoi('NOM_PARAM', nchel1, 'CHAM_ELEM', repk=param)
         call manopg(moint, ligrel, option, param, mnoga)
 ! INTERPOLER LE CHAM NO SIMPLE SUR LES PDG
-        call cnsces(nochns, 'ELGA', nches1, mnoga, 'V',&
+        call cnsces(nochns, 'ELGA', nches1, mnoga, 'V', &
                     nches2)
 ! DESTRUCTION DES CHAMPS TEMPORAIRES
         call detrsd('CHAM_NO_S', nochns)
@@ -127,20 +127,20 @@ subroutine accep2(modmec, nbm, pgout, phiout, sphout)
         call detrsd('CHAM_ELEM', nchel1)
     end do
 !
-    phiout='&&SFIFJ.PHI'
-    sphout='&&SFIFJ.SPHI'
+    phiout = '&&SFIFJ.PHI'
+    sphout = '&&SFIFJ.SPHI'
 !
 ! 2 - CREATION D'UN CHAM_ELEM_S CONTENANT LES COORDONNEES
 !     DES POINTS DE GAUSS ET LEUR POIDS
     call megeom(moint, chgeom)
-    lchin(1)=chgeom(1:19)
-    lpain(1)='PGEOMER'
-    lchou(1)='&&ACCEP2.PGCOOR'
-    lpaou(1)='PCOORPG'
-    call calcul('C', 'COOR_ELGA', ligrel, nbchin, lchin,&
-                lpain, nbchou, lchou, lpaou, 'V',&
+    lchin(1) = chgeom(1:19)
+    lpain(1) = 'PGEOMER'
+    lchou(1) = '&&ACCEP2.PGCOOR'
+    lpaou(1) = 'PCOORPG'
+    call calcul('C', 'COOR_ELGA', ligrel, nbchin, lchin, &
+                lpain, nbchou, lchou, lpaou, 'V', &
                 'OUI')
-    pgout='&&SFIFJ.PGCOOR'
+    pgout = '&&SFIFJ.PGCOOR'
     call celces(lchou(1), 'V', pgout)
 !
     call jedema()

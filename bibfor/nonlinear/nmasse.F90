@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine nmasse(fami, kpg, ksp, poum, icodma,&
-                  materi, inst, e, nu, deuxmu,&
+subroutine nmasse(fami, kpg, ksp, poum, icodma, &
+                  materi, inst, e, nu, deuxmu, &
                   troisk)
 !
     implicit none
@@ -43,14 +43,14 @@ subroutine nmasse(fami, kpg, ksp, poum, icodma,&
     real(kind=8) :: valres(2), valpar
     integer :: icodre(2)
 !
-    nompar='INST'
-    valpar=inst
+    nompar = 'INST'
+    valpar = inst
 ! CARACTERISTIQUES: MODULE D'YOUNG, COEFFICIENT DE POISSON
-    nomres(1)='E'
-    nomres(2)='NU'
+    nomres(1) = 'E'
+    nomres(2) = 'NU'
 !
-    call rcvalb(fami, kpg, ksp, poum, icodma,&
-                materi, 'ELAS', 1, nompar, [valpar],&
+    call rcvalb(fami, kpg, ksp, poum, icodma, &
+                materi, 'ELAS', 1, nompar, [valpar], &
                 2, nomres, valres, icodre, 2)
 !
     e = valres(1)

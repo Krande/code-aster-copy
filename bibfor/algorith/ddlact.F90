@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -68,32 +68,32 @@ subroutine ddlact(nomres, numddl)
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
     integer :: i, iec, ino, j, ldact, lldeeq
-    integer :: lldes, llnoe,  ltcono, ltidec, ltmat, ltnono
+    integer :: lldes, llnoe, ltcono, ltidec, ltmat, ltnono
     integer :: nbcmp, nbec, nbint, nbno, nbnot, neq, nomax
     character(len=8), pointer :: idc_type(:) => null()
 !
 !-----------------------------------------------------------------------
-    data pgc /'DDLACT'/
+    data pgc/'DDLACT'/
 !-----------------------------------------------------------------------
 !
     call jemarq()
-    noeint=nomres//'.IDC_LINO'
-    actint=nomres//'.IDC_DDAC'
+    noeint = nomres//'.IDC_LINO'
+    actint = nomres//'.IDC_DDAC'
 !
 !------RECUPERATION DONNEES RELATIVES A LA GRANDEUR SOUS-JACENTE--------
 !            ET ALLOCATION VECTEUR TRAVAIL DECODAGE
 !
     call dismoi('NB_CMP_MAX', nomres, 'INTERF_DYNA', repi=nbcmp)
     call dismoi('NB_EC', nomres, 'INTERF_DYNA', repi=nbec)
-    temdec='&&'//pgc//'.IDEC'
+    temdec = '&&'//pgc//'.IDEC'
     call wkvect(temdec, 'V V I', nbcmp*nbec*2, ltidec)
 !
 !-----------REQUETTE ADRESSE DE LA TABLE DESCRIPTION DES DEFORMEES------
 !
-    desdef=nomres//'.IDC_DEFO'
+    desdef = nomres//'.IDC_DEFO'
     call jeveuo(desdef, 'L', lldes)
     call jelira(desdef, 'LONMAX', nbnot)
-    nbnot=nbnot/(2+nbec)
+    nbnot = nbnot/(2+nbec)
 !
 !---------------RECUPERATION DU NOMBRE D'INTERFACE----------------------
 !
@@ -105,16 +105,16 @@ subroutine ddlact(nomres, numddl)
 !
 !----------------COMPTAGE DU NOMBRE MAX DE NOEUDS DES INTERFACE---------
 !
-    nomax=0
+    nomax = 0
     do i = 1, nbint
         call jelira(jexnum(noeint, i), 'LONMAX', nbno)
-        nomax=max(nomax,nbno)
+        nomax = max(nomax, nbno)
     end do
 !
 !---------CREATION DU NOM DE LA MATRICE DESCRIPTIVE DES DDL-------------
 !
-    nomax=2*nomax
-    temmat='&&'//pgc//'.MATDDL'
+    nomax = 2*nomax
+    temmat = '&&'//pgc//'.MATDDL'
     call wkvect(temmat, 'V V I', nomax*nbec, ltmat)
 !
 !--------------------CREATION VECTEUR DE TRAVAIL------------------------
@@ -124,7 +124,7 @@ subroutine ddlact(nomres, numddl)
 !
 !--------------------REQUETE SUR LE DEEQ DU NUMDDL----------------------
 !
-    deeq=numddl//'.DEEQ'
+    deeq = numddl//'.DEEQ'
     call jeveuo(deeq, 'L', lldeeq)
     call dismoi('NB_EQUA', numddl, 'NUME_DDL', repi=neq)
 !
@@ -136,42 +136,42 @@ subroutine ddlact(nomres, numddl)
         call jeveuo(jexnum(actint, i), 'E', ldact)
 !
         do j = 1, nbno
-            ino=zi(llnoe+j-1)
-            zi(ltnono+j-1)=zi(lldes+ino-1)
+            ino = zi(llnoe+j-1)
+            zi(ltnono+j-1) = zi(lldes+ino-1)
             do iec = 1, nbec
-                zi(ltcono+(j-1)*nbec+iec-1)= zi(lldes+2*nbnot+(ino-1)*&
-                nbec+iec-1)
+                zi(ltcono+(j-1)*nbec+iec-1) = zi(lldes+2*nbnot+(ino-1)* &
+                                                 nbec+iec-1)
             end do
         end do
 !
-        call recddl(nbcmp, zi(ltnono), nbno, nbec, zi(lldeeq),&
+        call recddl(nbcmp, zi(ltnono), nbno, nbec, zi(lldeeq), &
                     neq, zi(ltmat), zi(ltidec))
 !
-        typint=idc_type(i)
+        typint = idc_type(i)
 !
         if (typint .eq. 'CRAIGB  ' .or. typint .eq. 'CB_HARMO') then
-            call acticb(nbcmp, nbno, nbec, zi(ltmat), zi(ltcono),&
+            call acticb(nbcmp, nbno, nbec, zi(ltmat), zi(ltcono), &
                         zi(ldact))
-        endif
+        end if
 !
         if (typint .eq. 'MNEAL   ') then
             call actimn(nbcmp, nbno, nbec, zi(ltmat), zi(ldact))
-        endif
+        end if
 !
         if (typint .eq. 'AUCUN   ') then
             call actiau(nbcmp, nbno, nbec, zi(ltmat), zi(ldact))
-        endif
+        end if
 !
 !--  TEST SUR LA PRESENCE DE DDL ACTIFS
 !
-        actifs=0.d0
+        actifs = 0.d0
         do j = 1, nbno*nbec
-            actifs=actifs+zi(ldact+j-1)**2
+            actifs = actifs+zi(ldact+j-1)**2
         end do
 !
         if (actifs .lt. 1) then
             call utmess('F', 'SOUSTRUC2_8')
-        endif
+        end if
 !
         call jelibe(jexnum(actint, i))
         call jelibe(jexnum(noeint, i))

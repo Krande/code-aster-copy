@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -70,14 +70,14 @@ subroutine peenca(champ, long, vr, nbmail, nummai)
     call jelira(champ2//'.CELD', 'DOCU', cval=docu)
     if (docu .ne. 'CHML') then
         call utmess('F', 'CALCULEL3_52')
-    endif
+    end if
     call jeveuo(champ2//'.CELK', 'L', vk24=celk)
-    ligrel = celk(1)(1:19)
+    ligrel = celk(1) (1:19)
 !
     call jeveuo(champ2//'.CELD', 'L', vi=celd)
 !
 !     --- TYPE DE LA GRANDEUR ---
-    scal= scalai(celd(1))
+    scal = scalai(celd(1))
 !
     nbgr = nbgrel(ligrel)
 !
@@ -88,80 +88,80 @@ subroutine peenca(champ, long, vr, nbmail, nummai)
         end do
     else
         call utmess('F', 'CALCULEL3_74', sk=scal)
-    endif
+    end if
 !
     call jeveuo(champ2//'.CELV', 'L', vr=celv)
     if (nbmail .le. 0) then
         do j = 1, nbgr
-            mode=celd(celd(4+j) +2)
+            mode = celd(celd(4+j)+2)
             if (mode .eq. 0) goto 30
             longt = digdel(mode)
-            icoef=max(1,celd(4))
-            longt = longt * icoef
-            nel = nbelem(ligrel,j)
-            idecgr=celd(celd(4+j)+8)
+            icoef = max(1, celd(4))
+            longt = longt*icoef
+            nel = nbelem(ligrel, j)
+            idecgr = celd(celd(4+j)+8)
             do k = 1, nel
 !
 !              --- TOTALE ---
                 i = 1
                 ztot = celv(idecgr+(k-1)*longt+i-1)
-                vr(1) = vr(1)+ ztot
+                vr(1) = vr(1)+ztot
             end do
- 30         continue
+30          continue
         end do
         vr(2) = 100.0d0
     else
         ztot = rzero
         do j = 1, nbgr
-            mode=celd(celd(4+j) +2)
+            mode = celd(celd(4+j)+2)
             if (mode .eq. 0) goto 34
             longt = digdel(mode)
-            icoef=max(1,celd(4))
-            longt = longt * icoef
-            nel = nbelem(ligrel,j)
-            idecgr=celd(celd(4+j)+8)
+            icoef = max(1, celd(4))
+            longt = longt*icoef
+            nel = nbelem(ligrel, j)
+            idecgr = celd(celd(4+j)+8)
             do k = 1, nel
-                ztot = ztot + celv(idecgr+(k-1)*longt)
+                ztot = ztot+celv(idecgr+(k-1)*longt)
             end do
- 34         continue
+34          continue
         end do
         call jeveuo(ligrel//'.LIEL', 'L', vi=liel)
         do im = 1, nbmail
             inum = 0
             do j = 1, nbgr
-                mode=celd(celd(4+j) +2)
-                nel = nbelem(ligrel,j)
+                mode = celd(celd(4+j)+2)
+                nel = nbelem(ligrel, j)
 !
                 if (mode .eq. 0) then
-                    inum = inum + nel + 1
+                    inum = inum+nel+1
                     goto 42
-                endif
+                end if
                 longt = digdel(mode)
-                icoef=max(1,celd(4))
-                longt = longt * icoef
+                icoef = max(1, celd(4))
+                longt = longt*icoef
 !
-                idecgr=celd(celd(4+j)+8)
+                idecgr = celd(celd(4+j)+8)
                 do k = 1, nel
                     iel = liel(1+inum+k-1)
                     if (iel .ne. nummai(im)) goto 44
 !
 !                 --- TOTALE ---
                     i = 1
-                    vr(1) = vr(1)+ celv(idecgr+(k-1)*longt+i-1)
+                    vr(1) = vr(1)+celv(idecgr+(k-1)*longt+i-1)
                     goto 40
- 44                 continue
+44                  continue
                 end do
-                inum = inum + nel + 1
- 42             continue
+                inum = inum+nel+1
+42              continue
             end do
- 40         continue
+40          continue
         end do
-        if (( vr(1).lt.r8prem() ) .and. ( ztot.lt.r8prem() )) then
+        if ((vr(1) .lt. r8prem()) .and. (ztot .lt. r8prem())) then
             vr(2) = 0.0d0
         else
-            vr(2) = 100.0d0 * vr(1) / ztot
-        endif
-    endif
+            vr(2) = 100.0d0*vr(1)/ztot
+        end if
+    end if
 !
     call jedema()
 end subroutine

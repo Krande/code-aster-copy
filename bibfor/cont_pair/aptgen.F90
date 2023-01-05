@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 subroutine aptgen(sdappa, mesh, sdcont_defi, newgeo)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/cfdisi.h"
@@ -68,19 +68,19 @@ implicit none
 !
     call infdbg('APPARIEMENT', ifm, niv)
     if (niv .ge. 2) then
-        write (ifm,*) '<APPARIEMENT> ...... TANGENTES SUR LES NOEUDS PAR ELEMENT (ELNO)'
-    endif
+        write (ifm, *) '<APPARIEMENT> ...... TANGENTES SUR LES NOEUDS PAR ELEMENT (ELNO)'
+    end if
 !
 ! - Get parameters
 !
-    epsi_maxi    = cfdisr(sdcont_defi,'PROJ_NEWT_RESI')
-    iter_maxi    = cfdisi(sdcont_defi,'PROJ_NEWT_ITER')
-    model_ndim   = cfdisi(sdcont_defi,'NDIM'  )
-    nb_cont_zone = cfdisi(sdcont_defi,'NZOCO' )
+    epsi_maxi = cfdisr(sdcont_defi, 'PROJ_NEWT_RESI')
+    iter_maxi = cfdisi(sdcont_defi, 'PROJ_NEWT_ITER')
+    model_ndim = cfdisi(sdcont_defi, 'NDIM')
+    nb_cont_zone = cfdisi(sdcont_defi, 'NZOCO')
     sdappa_tgel = sdappa(1:19)//'.TGEL'
-    length=0
+    length = 0
     call jelira(sdappa_tgel, 'LONT', length)
-    call jerazo(sdappa_tgel, length ,1)
+    call jerazo(sdappa_tgel, length, 1)
 !
 ! - Loop on contact zones
 !
@@ -88,33 +88,33 @@ implicit none
 !
 ! ----- Parameters on current zone - Master
 !
-        nb_elem_mast = mminfi(sdcont_defi, 'NBMAM' , i_zone)
-        jdecmm       = mminfi(sdcont_defi, 'JDECMM', i_zone)
+        nb_elem_mast = mminfi(sdcont_defi, 'NBMAM', i_zone)
+        jdecmm = mminfi(sdcont_defi, 'JDECMM', i_zone)
         zone_type = 'MAIT'
 !
 ! ----- Compute tangents at each node for each element - Master
 !
         apcald = cfcald(sdcont_defi, i_zone, 'MAIT')
         if (apcald) then
-            call aptgem(sdappa      , mesh     , newgeo   , sdcont_defi, model_ndim,&
-                        i_zone      , zone_type, iter_maxi, epsi_maxi  , jdecmm    ,&
+            call aptgem(sdappa, mesh, newgeo, sdcont_defi, model_ndim, &
+                        i_zone, zone_type, iter_maxi, epsi_maxi, jdecmm, &
                         nb_elem_mast)
-        endif
+        end if
 !
 ! ----- Parameters on current zone - Slave
 !
-        nb_elem_slav = mminfi(sdcont_defi, 'NBMAE' , i_zone)
-        jdecme       = mminfi(sdcont_defi, 'JDECME', i_zone)
+        nb_elem_slav = mminfi(sdcont_defi, 'NBMAE', i_zone)
+        jdecme = mminfi(sdcont_defi, 'JDECME', i_zone)
         zone_type = 'ESCL'
 !
 ! ----- Compute tangents at each node for each element - Slave
 !
         apcald = cfcald(sdcont_defi, i_zone, 'ESCL')
         if (apcald) then
-            call aptgem(sdappa      , mesh     , newgeo   , sdcont_defi, model_ndim,&
-                        i_zone      , zone_type, iter_maxi, epsi_maxi  , jdecme    ,&
+            call aptgem(sdappa, mesh, newgeo, sdcont_defi, model_ndim, &
+                        i_zone, zone_type, iter_maxi, epsi_maxi, jdecme, &
                         nb_elem_slav)
-        endif
+        end if
     end do
 !
 end subroutine

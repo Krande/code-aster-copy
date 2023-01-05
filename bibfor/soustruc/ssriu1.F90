@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -106,7 +106,7 @@ subroutine ssriu1(nomu)
     character(len=14) :: nume_ddl
     character(len=19) :: prof_chno
     integer :: iaconx
-    integer :: iaprno,   ico, icoe, icoi
+    integer :: iaprno, ico, icoe, icoi
     integer :: ieqn, ili, inl, ino, iret
     integer :: itylag, n1, nbno, nbnoe, nbnoet, nddle, nddli
     integer :: nddlt, nec, nlage, nlagi, nlagl, nlili, nuddl
@@ -127,7 +127,7 @@ subroutine ssriu1(nomu)
     call dismoi('NOM_GD', nume_ddl, 'NUME_DDL', repk=nogdsi)
     if (nogdsi .ne. 'DEPL_R') then
         call utmess('F', 'SOUSTRUC_70')
-    endif
+    end if
     call dismoi('NU_CMP_LAGR', 'DEPL_R', 'GRANDEUR', repi=nulag)
     call dismoi('NB_EC', nogdsi, 'GRANDEUR', repi=nec)
 
@@ -158,56 +158,56 @@ subroutine ssriu1(nomu)
     nlage = 0
 !
     do i = 1, nddlt
-        ASSERT(vnueq(i).eq.i)
+        ASSERT(vnueq(i) .eq. i)
 !
-        nuno = deeq(2* (i-1)+1)
-        nuddl = deeq(2* (i-1)+2)
+        nuno = deeq(2*(i-1)+1)
+        nuddl = deeq(2*(i-1)+2)
 !
 !        -- LES LAGRANGES DU MAILLAGE SONT TOUS DECLARES EXTERNES:
 !           (ON LES CONSERVERA DONC A TOUS LES NIVEAUX)
         if (nuddl .eq. nulag) then
-            nlage = nlage + 1
+            nlage = nlage+1
             goto 10
-        endif
+        end if
 !
         if (nuno .ne. 0) then
-            nuno2 = indiis(lino,nuno,1,nbnoe)
+            nuno2 = indiis(lino, nuno, 1, nbnoe)
             if (nuno2 .eq. 0) then
                 interne(i) = 1
-                nddli = nddli + 1
-            endif
+                nddli = nddli+1
+            end if
 !
 !           -- ON COMPTE LES LAGRANGES INTERNES ET EXTERNES:
             if (nuddl .lt. 0) then
                 if (nuno2 .eq. 0) then
-                    nlagi = nlagi + 1
+                    nlagi = nlagi+1
                 else
-                    nlage = nlage + 1
-                endif
-            endif
+                    nlage = nlage+1
+                end if
+            end if
 !
 !           -- ON COMPTE LES NOEUDS INTERNES ET EXTERNES:
-            if ((nuddl.gt.0) .and. (nunold.ne.nuno)) then
+            if ((nuddl .gt. 0) .and. (nunold .ne. nuno)) then
                 nunold = nuno
                 if (nuno2 .eq. 0) then
-                    icoi = icoi + 1
+                    icoi = icoi+1
                 else
-                    icoe = icoe + 1
-                    ASSERT(icoe.le.nbnoe)
-                endif
-            endif
+                    icoe = icoe+1
+                    ASSERT(icoe .le. nbnoe)
+                end if
+            end if
         else
-            nlagl = nlagl + 1
-        endif
- 10     continue
+            nlagl = nlagl+1
+        end if
+10      continue
     end do
 !
-    ASSERT(nbnoe.eq.icoe)
+    ASSERT(nbnoe .eq. icoe)
     if (icoi .eq. 0) then
         call utmess('F', 'SOUSTRUC_71')
-    endif
+    end if
     desm(3) = icoi
-    nddle = nddlt - nddli
+    nddle = nddlt-nddli
     desm(4) = nddle
     desm(5) = nddli
     desm(8) = nlage
@@ -227,25 +227,25 @@ subroutine ssriu1(nomu)
 !     -- ON CLASSE LES DDLS INTERNES:
     do i = 1, nddlt
         if (interne(i) .eq. 1) then
-            ico = ico + 1
+            ico = ico+1
             vnueq(i) = ico
             work2(ico) = i
-        endif
+        end if
     end do
 !
 !     -- ON CLASSE LES DDLS EXTERNES:
     do i = 1, nddlt
         if (interne(i) .eq. 0) then
-            ico = ico + 1
+            ico = ico+1
             vnueq(i) = ico
             work2(ico) = i
-        endif
+        end if
     end do
 !
 !
 !     -- CREATION DE .CONX:
 !     ---------------------
-    nbnoet = nlage + nlagl + nbnoe
+    nbnoet = nlage+nlagl+nbnoe
     call wkvect(nomu//'.CONX', 'G V I', 3*nbnoet, iaconx)
     AS_ALLOCATE(vi=work1, size=2*nddlt)
     ico = 0
@@ -255,53 +255,53 @@ subroutine ssriu1(nomu)
 !     ------------------------------------------------------------
 !     --ON TRAVAILLE AVEC L'ANCIEN .DEEQ:
     do i = 1, nddlt
-        nuno = deeq(2* (i-1)+1)
-        nuddl = deeq(2* (i-1)+2)
+        nuno = deeq(2*(i-1)+1)
+        nuddl = deeq(2*(i-1)+2)
 !        -- ITYLAG EST LE TYPE DU NOEUD DE LAGRANGE (-1 OU -2)
         itylag = delg(i)
         if (nuno .ne. 0) then
-            nuno2 = indiis(lino,nuno,1,nbnoe)
+            nuno2 = indiis(lino, nuno, 1, nbnoe)
 !
 !           -- TYPE LAGRANGE DES NOEUDS SUPPLEMENTAIRES:
             if (nuddl .lt. 0) then
                 if (nuno2 .ne. 0) then
-                    ico = ico + 1
-                    zi(iaconx-1+3* (ico-1)+3) = itylag
+                    ico = ico+1
+                    zi(iaconx-1+3*(ico-1)+3) = itylag
                     ieqn = vnueq(i)
-                    ASSERT(ieqn.gt.nddli)
+                    ASSERT(ieqn .gt. nddli)
                     work1(ieqn) = ico
-                endif
-            endif
+                end if
+            end if
 !
 !           -- NOEUDS LAGRANGES DU MAILLAGE :
             if (nuddl .eq. nulag) then
-                ico = ico + 1
-                zi(iaconx-1+3* (ico-1)+1) = 1
-                zi(iaconx-1+3* (ico-1)+2) = nuno
-                zi(iaconx-1+3* (ico-1)+3) = itylag
+                ico = ico+1
+                zi(iaconx-1+3*(ico-1)+1) = 1
+                zi(iaconx-1+3*(ico-1)+2) = nuno
+                zi(iaconx-1+3*(ico-1)+3) = itylag
                 ieqn = vnueq(i)
-                ASSERT(ieqn.gt.nddli)
+                ASSERT(ieqn .gt. nddli)
                 work1(ieqn) = ico
-            endif
+            end if
 !
 !           -- NOEUDS PHYSIQUES DU MAILLAGE :
-            if ((nuddl.gt.0) .and. (nunold.ne.nuno)) then
+            if ((nuddl .gt. 0) .and. (nunold .ne. nuno)) then
                 nunold = nuno
                 if (nuno2 .ne. 0) then
-                    ico = ico + 1
-                    zi(iaconx-1+3* (ico-1)+1) = 1
-                    zi(iaconx-1+3* (ico-1)+2) = nuno
-                endif
-            endif
+                    ico = ico+1
+                    zi(iaconx-1+3*(ico-1)+1) = 1
+                    zi(iaconx-1+3*(ico-1)+2) = nuno
+                end if
+            end if
         else
 !
 !           -- NOEUDS LAGRANGE DES LIAISONS DDL :
-            ico = ico + 1
-            zi(iaconx-1+3* (ico-1)+3) = itylag
+            ico = ico+1
+            zi(iaconx-1+3*(ico-1)+3) = itylag
             ieqn = vnueq(i)
-            ASSERT(ieqn.gt.nddli)
+            ASSERT(ieqn .gt. nddli)
             work1(ieqn) = ico
-        endif
+        end if
     end do
 !
 !     -- MISE A JOUR DE .CONX : NOEUDS DE LAGRANGE :
@@ -312,19 +312,19 @@ subroutine ssriu1(nomu)
         call jelira(jexnum(prof_chno//'.PRNO', ili), 'LONMAX', n1)
         if (n1 .eq. 0) goto 60
         call jeveuo(jexnum(prof_chno//'.PRNO', ili), 'L', iaprno)
-        nbno = n1/ (nec+2)
+        nbno = n1/(nec+2)
         do ino = 1, nbno
-            nueq = zi(iaprno-1+ (ino-1)* (nec+2)+1)
+            nueq = zi(iaprno-1+(ino-1)*(nec+2)+1)
             if (nueq .eq. 0) goto 50
             ieqn = vnueq(nueq)
             if (ieqn .gt. nddli) then
                 inl = work1(ieqn)
-                zi(iaconx-1+3* (inl-1)+1) = ili
-                zi(iaconx-1+3* (inl-1)+2) = ino
-            endif
- 50         continue
+                zi(iaconx-1+3*(inl-1)+1) = ili
+                zi(iaconx-1+3*(inl-1)+2) = ino
+            end if
+50          continue
         end do
- 60     continue
+60      continue
     end do
 !
 !
@@ -339,8 +339,8 @@ subroutine ssriu1(nomu)
     end do
 !
     do i = 1, nddlt
-        work1(2* (i-1)+1) = deeq(2* (work2(i)-1)+1)
-        work1(2* (i-1)+2) = deeq(2* (work2(i)-1)+2)
+        work1(2*(i-1)+1) = deeq(2*(work2(i)-1)+1)
+        work1(2*(i-1)+2) = deeq(2*(work2(i)-1)+2)
     end do
     do i = 1, 2*nddlt
         deeq(i) = work1(i)
@@ -353,10 +353,10 @@ subroutine ssriu1(nomu)
     do i = 1, nbnoet
 !
 !     -- SI C'EST UN NOEUD PHYSIQUE DU MAILLAGE :
-        if ((zi(iaconx-1+3* (i-1)+1).eq.1) .and. (zi(iaconx-1+3* (i-1) +3).eq.0)) then
-            ico = ico + 1
-            lino(ico) = zi(iaconx-1+3* (i-1)+2)
-        endif
+        if ((zi(iaconx-1+3*(i-1)+1) .eq. 1) .and. (zi(iaconx-1+3*(i-1)+3) .eq. 0)) then
+            ico = ico+1
+            lino(ico) = zi(iaconx-1+3*(i-1)+2)
+        end if
     end do
 !
 ! --- MENAGE

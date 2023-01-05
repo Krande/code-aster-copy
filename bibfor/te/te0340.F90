@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,9 +18,9 @@
 !
 subroutine te0340(option, nomte)
 !
-use Behaviour_module, only : behaviourOption
+    use Behaviour_module, only: behaviourOption
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterfort/assert.h"
@@ -35,7 +35,7 @@ implicit none
 #include "blas/dcopy.h"
 #include "asterfort/Behaviour_type.h"
 !
-character(len=16), intent(in) :: option, nomte
+    character(len=16), intent(in) :: option, nomte
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -72,21 +72,21 @@ character(len=16), intent(in) :: option, nomte
 ! --------------------------------------------------------------------------------------------------
 !
     codret = 0
-    imatuu=1
-    ivectu=1
-    icontp=1
-    ivarip=1
+    imatuu = 1
+    ivectu = 1
+    icontp = 1
+    ivarip = 1
 !
 ! - FONCTIONS DE FORME
 !
     call elref2(nomte, 2, lielrf, ntrou)
-    call elrefe_info(elrefe=lielrf(1),fami='RIGI',&
-                     jvf=ivf1,jdfde=idf1)
-    call elrefe_info(elrefe=lielrf(1),fami='NOEU',nno=nno1,&
-                     npg=npgn,jdfde=idf1n)
-    call elrefe_info(elrefe=lielrf(2),fami='RIGI',nno=nno2,&
-                     npg=npg,jpoids=iw,jvf=ivf2)
-    ndim  = 3
+    call elrefe_info(elrefe=lielrf(1), fami='RIGI', &
+                     jvf=ivf1, jdfde=idf1)
+    call elrefe_info(elrefe=lielrf(1), fami='NOEU', nno=nno1, &
+                     npg=npgn, jdfde=idf1n)
+    call elrefe_info(elrefe=lielrf(2), fami='RIGI', nno=nno2, &
+                     npg=npg, jpoids=iw, jvf=ivf2)
+    ndim = 3
     nddl1 = 5
 !
 ! - DECALAGE D'INDICE POUR LES ELEMENTS D'INTERFACE
@@ -114,9 +114,9 @@ character(len=16), intent(in) :: option, nomte
 !
 ! - Select objects to construct from option name
 !
-    call behaviourOption(option, zk16(icompo),&
-                         lMatr , lVect ,&
-                         lVari , lSigm ,&
+    call behaviourOption(option, zk16(icompo), &
+                         lMatr, lVect, &
+                         lVari, lSigm, &
                          codret)
 !
 ! - Properties of behaviour
@@ -130,20 +130,20 @@ character(len=16), intent(in) :: option, nomte
     if (defo_comp .eq. 'PETIT') then
         do ino = 1, nno1
             do i = 1, ndim
-                geom(i,ino) = zr(igeom-1+(ino-1)*ndim+i)
-            enddo
-        enddo
+                geom(i, ino) = zr(igeom-1+(ino-1)*ndim+i)
+            end do
+        end do
     elseif (defo_comp .eq. 'PETIT_REAC') then
         do ino = 1, nno1
             do i = 1, ndim
-                geom(i,ino) = zr(igeom-1+(ino-1)*ndim+i)&
-                            + zr(iddlm-1+(ino-1)*nddl1+i)&
-                            + zr(iddld-1+(ino-1)*nddl1+i)
-            enddo
-        enddo
+                geom(i, ino) = zr(igeom-1+(ino-1)*ndim+i) &
+                               +zr(iddlm-1+(ino-1)*nddl1+i) &
+                               +zr(iddld-1+(ino-1)*nddl1+i)
+            end do
+        end do
     else
         call utmess('F', 'CABLE0_6', sk=defo_comp)
-    endif
+    end if
 !
 !     DEFINITION DES TANGENTES
 !
@@ -155,48 +155,48 @@ character(len=16), intent(in) :: option, nomte
 ! - ON VERIFIE QUE PVARIMR ET PVARIPR ONT LE MEME NOMBRE DE V.I. :
 !
     call tecach('OOO', 'PVARIMR', 'L', iret, nval=7, itab=jtab)
-    lgpg1 = max(jtab(6),1)*jtab(7)
+    lgpg1 = max(jtab(6), 1)*jtab(7)
 !
     if (lVari) then
         call tecach('OOO', 'PVARIPR', 'E', iret, nval=7, itab=jtab)
-        lgpg2 = max(jtab(6),1)*jtab(7)
+        lgpg2 = max(jtab(6), 1)*jtab(7)
         ASSERT(lgpg1 .eq. lgpg2)
-    endif
+    end if
     lgpg = lgpg1
 !
 ! - Get output fields
 !
     if (lMatr) then
         call jevech('PMATUNS', 'E', imatuu)
-    endif
+    end if
     if (lVect) then
         call jevech('PVECTUR', 'E', ivectu)
-    endif
+    end if
     if (lSigm) then
         call jevech('PCONTPR', 'E', icontp)
         call jevech('PCODRET', 'E', jcret)
-    endif
+    end if
     if (lVari) then
         call jevech('PVARIPR', 'E', ivarip)
         call jevech('PVARIMP', 'L', ivarix)
         call dcopy(npg*lgpg, zr(ivarix), 1, zr(ivarip), 1)
-    endif
+    end if
 !
 ! - FORCES INTERIEURES ET MATRICE TANGENTE
 !
     do i = 1, COMPOR_SIZE
         comporKit(i) = zk16(icompo-1+i)
     end do
-    call cgfint(ndim, nno1, nno2, npg, zr(iw),&
-                zr(ivf1), zr(ivf2), zr(idf1), geom, tang,&
-                typmod, option, zi(imate), comporKit, lgpg,&
-                zr(icarcr), zr(iinstm), zr(iinstp), zr(iddlm), zr(iddld),&
-                iu, iuc, im, a, zr(icontm),&
-                zr(ivarim), zr(icontp), zr(ivarip), zr( imatuu), zr(ivectu),&
+    call cgfint(ndim, nno1, nno2, npg, zr(iw), &
+                zr(ivf1), zr(ivf2), zr(idf1), geom, tang, &
+                typmod, option, zi(imate), comporKit, lgpg, &
+                zr(icarcr), zr(iinstm), zr(iinstp), zr(iddlm), zr(iddld), &
+                iu, iuc, im, a, zr(icontm), &
+                zr(ivarim), zr(icontp), zr(ivarip), zr(imatuu), zr(ivectu), &
                 codret)
 !
     if (lSigm) then
         zi(jcret) = codret
-    endif
+    end if
 !
 end subroutine

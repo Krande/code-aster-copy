@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -37,7 +37,7 @@ subroutine te0464(option, nomte)
 !     ------------------------------------------------------------------
 !
     integer :: nddlm, nl, ipoint, lorien
-    parameter     (nddlm=6,nl=nddlm*nddlm)
+    parameter(nddlm=6, nl=nddlm*nddlm)
     integer :: i, nc, nno, jdm, jdc, j, infodi, ibid
     real(kind=8) :: vxx, r8bid, pgl(3, 3), klv(nl)
     character(len=8) :: k8bid
@@ -53,39 +53,39 @@ subroutine te0464(option, nomte)
         if (infodi .ne. ibid) then
             call utmess('F+', 'DISCRETS_25', sk=nomte)
             call infdis('DUMP', ibid, r8bid, 'F+')
-        endif
+        end if
 !        DISCRET DE TYPE MASSE
         call infdis('DISM', infodi, r8bid, k8bid)
         if (infodi .eq. 0) then
             call utmess('A+', 'DISCRETS_26', sk=nomte)
             call infdis('DUMP', ibid, r8bid, 'A+')
-        endif
+        end if
         nc = 6
     else
         call utmess('F', 'CALCULEL_17')
-    endif
+    end if
 !     OPTION DE CALCUL INVALIDE
     if (option .ne. 'RIGI_GYRO') then
         ASSERT(.false.)
-    endif
+    end if
 !
     call infdis('SYMM', infodi, r8bid, k8bid)
     call jevech('PCADISM', 'L', jdc)
     if (infodi .eq. 1) then
         vxx = zr(jdc+10-1)
-    else if (infodi.eq.2) then
+    else if (infodi .eq. 2) then
         vxx = zr(jdc+22-1)
-    endif
+    end if
     call jevech('PMATUNS', 'E', jdm)
 !
     do i = 1, nl
-        klv(i)=0.d0
+        klv(i) = 0.d0
     end do
 !
 !     I : LIGNE ; J : COLONNE
     i = 5
     j = 6
-    ipoint = nc*(j-1) + i
+    ipoint = nc*(j-1)+i
     klv(ipoint) = vxx
 !
     call jevech('PCAORIE', 'L', lorien)

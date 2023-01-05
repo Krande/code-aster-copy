@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -35,24 +35,24 @@ subroutine dstlxy(codi, hlt2, an, depf, lambda)
     s(3) = codi(6)
     do k = 1, 6
         do j = 1, 3
-            ta(k,j) = 0.d0
+            ta(k, j) = 0.d0
         end do
     end do
-    ta(1,1) = -8.d0*c(1)
-    ta(2,3) = -8.d0*c(3)
-    ta(3,1) = -4.d0*c(1)
-    ta(3,2) = 4.d0*c(2)
-    ta(3,3) = -4.d0*c(3)
-    ta(4,1) = -8.d0*s(1)
-    ta(5,3) = -8.d0*s(3)
-    ta(6,1) = -4.d0*s(1)
-    ta(6,2) = 4.d0*s(2)
-    ta(6,3) = -4.d0*s(3)
+    ta(1, 1) = -8.d0*c(1)
+    ta(2, 3) = -8.d0*c(3)
+    ta(3, 1) = -4.d0*c(1)
+    ta(3, 2) = 4.d0*c(2)
+    ta(3, 3) = -4.d0*c(3)
+    ta(4, 1) = -8.d0*s(1)
+    ta(5, 3) = -8.d0*s(3)
+    ta(6, 1) = -4.d0*s(1)
+    ta(6, 2) = 4.d0*s(2)
+    ta(6, 3) = -4.d0*s(3)
     do i = 1, 4
         do j = 1, 3
-            bla(i,j) = 0.d0
+            bla(i, j) = 0.d0
             do k = 1, 6
-                bla(i,j) = bla(i,j) + hlt2(i,k)*ta(k,j)
+                bla(i, j) = bla(i, j)+hlt2(i, k)*ta(k, j)
             end do
         end do
     end do
@@ -62,11 +62,11 @@ subroutine dstlxy(codi, hlt2, an, depf, lambda)
     end do
     do i = 1, 4
         do j = 1, 9
-            bln(i,j) = 0.d0
+            bln(i, j) = 0.d0
             do k = 1, 3
-                bln(i,j) = bln(i,j) + bla(i,k)*an(k,j)
+                bln(i, j) = bln(i, j)+bla(i, k)*an(k, j)
             end do
-            lambda(i) = lambda(i) + bln(i,j)*depf(j)
+            lambda(i) = lambda(i)+bln(i, j)*depf(j)
         end do
     end do
 !

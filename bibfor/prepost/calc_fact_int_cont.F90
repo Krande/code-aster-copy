@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine calc_fact_int_cont(nbnoe, sigma, abscr, prodef, trans,&
+subroutine calc_fact_int_cont(nbnoe, sigma, abscr, prodef, trans, &
                               k1a, k1b)
 !
     implicit none
@@ -43,9 +43,9 @@ subroutine calc_fact_int_cont(nbnoe, sigma, abscr, prodef, trans,&
 ! ======================================================================
 ! --- INITIALISATION DE PARAMETRES -------------------------------------
 ! ======================================================================
-    parameter       ( zero   =  0.0d0 )
-    parameter       ( un     =  1.0d0 )
-    parameter       ( deux   =  2.0d0 )
+    parameter(zero=0.0d0)
+    parameter(un=1.0d0)
+    parameter(deux=2.0d0)
 ! ======================================================================
 ! --- INITIALISATIONS DES VARIABLES NECESSAIRE AU CALCUL ---------------
 ! ======================================================================
@@ -55,34 +55,34 @@ subroutine calc_fact_int_cont(nbnoe, sigma, abscr, prodef, trans,&
 ! --- CALCULS DES FACTEURS D'INTENSITE DE CONTRAINTES
 ! ====================================================
     do ific = 1, nbnoe-1
-        alpha = ( sigma(ific+1) - sigma(ific) ) / ( abscr(ific+1) - abscr(ific))
-        beta = sigma(ific) - alpha * ( abscr(ific) + trans )
-        gamx = ( abscr(ific) + trans )
-        gamy = sqrt( abs(a*a - gamx*gamx) )
+        alpha = (sigma(ific+1)-sigma(ific))/(abscr(ific+1)-abscr(ific))
+        beta = sigma(ific)-alpha*(abscr(ific)+trans)
+        gamx = (abscr(ific)+trans)
+        gamy = sqrt(abs(a*a-gamx*gamx))
         if (gamy .le. r8prem()) then
             if (gamx .lt. zero) then
-                gamma1 = - pi / deux
+                gamma1 = -pi/deux
             else
-                gamma1 = pi / deux
-            endif
+                gamma1 = pi/deux
+            end if
         else
-            gamma1 = atan2( gamx/gamy , un )
-        endif
-        gamx = ( abscr(ific+1 ) + trans )
-        gamy = sqrt( abs(a*a - gamx*gamx) )
+            gamma1 = atan2(gamx/gamy, un)
+        end if
+        gamx = (abscr(ific+1)+trans)
+        gamy = sqrt(abs(a*a-gamx*gamx))
         if (gamy .le. r8prem()) then
             if (gamx .lt. zero) then
-                gamma2 = - pi / deux
+                gamma2 = -pi/deux
             else
-                gamma2 = pi / deux
-            endif
+                gamma2 = pi/deux
+            end if
         else
-            gamma2 = atan2( gamx/gamy , un )
-        endif
-        k1a = k1a + (beta-alpha*a/2) * (gamma2-gamma1) + (beta-alpha* a) * (cos(gamma2)-cos(gamma&
-              &1)) + alpha*a*(sin(2*gamma2)-sin(2* gamma1))/4
-        k1b = k1b + (beta+alpha*a/2) * (gamma2-gamma1) - (beta+alpha* a) * (cos(gamma2)-cos(gamma&
-              &1)) - alpha*a*(sin(2*gamma2)-sin(2* gamma1))/4
+            gamma2 = atan2(gamx/gamy, un)
+        end if
+        k1a = k1a+(beta-alpha*a/2)*(gamma2-gamma1)+(beta-alpha*a)*(cos(gamma2)-cos(gamma&
+              &1))+alpha*a*(sin(2*gamma2)-sin(2*gamma1))/4
+        k1b = k1b+(beta+alpha*a/2)*(gamma2-gamma1)-(beta+alpha*a)*(cos(gamma2)-cos(gamma&
+              &1))-alpha*a*(sin(2*gamma2)-sin(2*gamma1))/4
     end do
 !
 end subroutine

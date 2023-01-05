@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine xmmab3(ndim, nno, nnos, nnol, pla,&
-                  ffc, ffp, jac, knp, nfh,&
-                  seuil, tau1, tau2, mu, singu,&
+subroutine xmmab3(ndim, nno, nnos, nnol, pla, &
+                  ffc, ffp, jac, knp, nfh, &
+                  seuil, tau1, tau2, mu, singu, &
                   fk, lact, ddls, ddlm, mmat)
 !
 !
@@ -31,7 +31,7 @@ subroutine xmmab3(ndim, nno, nnos, nnol, pla,&
     real(kind=8) :: mmat(216, 216)
     real(kind=8) :: ffc(8), ffp(27), jac, tau1(3), tau2(3)
     real(kind=8) :: seuil, knp(3, 3), mu
-    real(kind=8) :: fk(27,3,3)
+    real(kind=8) :: fk(27, 3, 3)
 ! ROUTINE CONTACT (METHODE XFEM HPP - CALCUL ELEM.)
 !
 ! --- CALCUL DE B, BT
@@ -74,52 +74,52 @@ subroutine xmmab3(ndim, nno, nnos, nnol, pla,&
 ! ----------------------------------------------------------------------
 !
 !     INITIALISATION
-    tauknp(:,:) = 0.d0
-    coefj=xcalc_saut(1,0,1)
+    tauknp(:, :) = 0.d0
+    coefj = xcalc_saut(1, 0, 1)
 !
 !     II.3.1. CALCUL DE B ET DE BT
 !
     do i = 1, nnol
-        pli=pla(i)
-        ffi=ffc(i)
-        nli=lact(i)
+        pli = pla(i)
+        ffi = ffc(i)
+        nli = lact(i)
         if (nli .eq. 0) cycle
 !
 !     CALCUL DE TAU.KN.P
         do j = 1, ndim
-            tauknp(1,j) = 0.d0
+            tauknp(1, j) = 0.d0
             do k = 1, ndim
-                tauknp(1,j) = tauknp(1,j) + tau1(k) * knp(k,j)
+                tauknp(1, j) = tauknp(1, j)+tau1(k)*knp(k, j)
             end do
         end do
 !
         if (ndim .eq. 3) then
             do j = 1, ndim
-                tauknp(2,j) = 0.d0
+                tauknp(2, j) = 0.d0
                 do k = 1, ndim
-                    tauknp(2,j) = tauknp(2,j) + tau2(k) * knp(k,j)
+                    tauknp(2, j) = tauknp(2, j)+tau2(k)*knp(k, j)
                 end do
             end do
-        endif
+        end if
 !
         do j = 1, nno
             call indent(j, ddls, ddlm, nnos, jn)
             do k = 1, ndim-1
                 do l = 1, nfh*ndim
-                    mmat(pli+k,jn+ndim+l) = mmat(pli+k,jn+ndim+l) +&
-                                            coefj*mu*seuil*ffi*ffp(j)*tauknp(k,l)*jac
-                    mmat(jn+ndim+l,pli+k) = mmat(jn+ndim+l,pli+k) +&
-                                            coefj*mu*seuil*ffi*ffp(j)*tauknp(k,l)*jac
+                    mmat(pli+k, jn+ndim+l) = mmat(pli+k, jn+ndim+l)+ &
+                                             coefj*mu*seuil*ffi*ffp(j)*tauknp(k, l)*jac
+                    mmat(jn+ndim+l, pli+k) = mmat(jn+ndim+l, pli+k)+ &
+                                             coefj*mu*seuil*ffi*ffp(j)*tauknp(k, l)*jac
                 end do
 !
                 do l = 1, singu*ndim
                     do alpj = 1, ndim
-                        mmat(pli+k,jn+ndim*(1+nfh)+alpj) = mmat(pli+k,jn+ ndim*(1+nfh)+alpj) +&
-                            2.d0*fk(j,alpj,l)*mu*seuil*ffi*tauknp(k,l)*jac
+                        mmat(pli+k, jn+ndim*(1+nfh)+alpj) = mmat(pli+k, jn+ndim*(1+nfh)+alpj)+ &
+                                                   2.d0*fk(j, alpj, l)*mu*seuil*ffi*tauknp(k, l)*jac
 !
-                        mmat(jn+ndim*(1+nfh)+alpj,pli+k) = mmat(jn+ndim*(1+ nfh)+alpj,pli+k) +&
-                            2.d0*fk(j,alpj,l)*mu*seuil*ffi*tauknp(k,l)*jac
-                   enddo
+                        mmat(jn+ndim*(1+nfh)+alpj, pli+k) = mmat(jn+ndim*(1+nfh)+alpj, pli+k)+ &
+                                                   2.d0*fk(j, alpj, l)*mu*seuil*ffi*tauknp(k, l)*jac
+                    end do
                 end do
             end do
         end do

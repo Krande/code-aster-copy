@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,9 +19,9 @@
 !
 subroutine mmligr(mesh, model, ds_contact)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/as_deallocate.h"
@@ -46,9 +46,9 @@ implicit none
 #include "asterfort/wkvect.h"
 #include "asterfort/utmess.h"
 !
-character(len=8), intent(in) :: mesh
-character(len=8), intent(in) :: model
-type(NL_DS_Contact), intent(in) :: ds_contact
+    character(len=8), intent(in) :: mesh
+    character(len=8), intent(in) :: model
+    type(NL_DS_Contact), intent(in) :: ds_contact
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -94,49 +94,49 @@ type(NL_DS_Contact), intent(in) :: ds_contact
 !
 ! - Re-create LIGREL or not ?
 !
-    l_renumber   = ds_contact%l_renumber
+    l_renumber = ds_contact%l_renumber
 !
 ! - Get pairing datastructure
 !
-    sdappa       = ds_contact%sdcont_solv(1:14)//'.APPA'
+    sdappa = ds_contact%sdcont_solv(1:14)//'.APPA'
 !
 ! - Get parameters
 !
-    l_cont_cont  = cfdisl(ds_contact%sdcont_defi, 'FORMUL_CONTINUE')
-    l_cont_lac   = cfdisl(ds_contact%sdcont_defi, 'FORMUL_LAC')
+    l_cont_cont = cfdisl(ds_contact%sdcont_defi, 'FORMUL_CONTINUE')
+    l_cont_lac = cfdisl(ds_contact%sdcont_defi, 'FORMUL_LAC')
 !
 ! - Print
 !
     if (l_renumber) then
         if (niv .ge. 2) then
             call utmess('I', 'CONTACT5_21')
-        endif
+        end if
     else
         if (niv .ge. 2) then
             call utmess('I', 'CONTACT5_22')
-        endif
+        end if
         goto 999
-    endif
+    end if
 !
 ! - Acces to mesh
 !
-    call jeveuo(mesh//'.CONNEX', 'L', vi = v_connex)
-    call jeveuo(jexatr(mesh//'.CONNEX', 'LONCUM'), 'L', vi = v_connex_lcum)
+    call jeveuo(mesh//'.CONNEX', 'L', vi=v_connex)
+    call jeveuo(jexatr(mesh//'.CONNEX', 'LONCUM'), 'L', vi=v_connex_lcum)
 !
 ! - Access to datastructure for contact solving
 !
     if (l_cont_cont) then
         sdcont_tabfin = ds_contact%sdcont_solv(1:14)//'.TABFIN'
-        call jeveuo(sdcont_tabfin, 'L', vr = v_sdcont_tabfin)
+        call jeveuo(sdcont_tabfin, 'L', vr=v_sdcont_tabfin)
         ztabf = cfmmvd('ZTABF')
     else
         nb_cont_pair = ds_contact%nb_cont_pair
-        if (nb_cont_pair.eq.0) then
+        if (nb_cont_pair .eq. 0) then
             go to 999
         end if
         sdappa_apli = ds_contact%sdcont_solv(1:14)//'.APPA.APLI'
-        call jeveuo(sdappa_apli, 'L', vi = v_sdappa_apli)
-    endif
+        call jeveuo(sdappa_apli, 'L', vi=v_sdappa_apli)
+    end if
 !
 ! - Get <LIGREL> for contact elements
 !
@@ -145,44 +145,44 @@ type(NL_DS_Contact), intent(in) :: ds_contact
 !
 ! - Create list of late elements for contact
 !
-    call mmlige(mesh        , ds_contact, &
-                nb_cont_pair, v_list_pair,&
-                nb_type     , v_list_type,&
-                nt_node     , nb_grel    )
+    call mmlige(mesh, ds_contact, &
+                nb_cont_pair, v_list_pair, &
+                nb_type, v_list_type, &
+                nt_node, nb_grel)
 !
 ! - No late nodes
 !
-    call wkvect(ligrcf//'.NBNO', 'V V I', 1, vi = v_ligrcf_nbno)
+    call wkvect(ligrcf//'.NBNO', 'V V I', 1, vi=v_ligrcf_nbno)
     v_ligrcf_nbno(1) = 0
 !
 ! - Create object NEMA
 !
     call jecrec(ligrcf//'.NEMA', 'V V I', 'NU', 'CONTIG', 'VARIABLE', nb_cont_pair)
-    call jeecra(ligrcf//'.NEMA', 'LONT', nt_node + nb_cont_pair)
+    call jeecra(ligrcf//'.NEMA', 'LONT', nt_node+nb_cont_pair)
     deca = 0
-    call jeveuo(ligrcf//'.NEMA', 'E', vi = v_ligrcf_nema)
+    call jeveuo(ligrcf//'.NEMA', 'E', vi=v_ligrcf_nema)
     do i_cont_pair = 1, nb_cont_pair
 !
 ! ----- Get parameters
 !
         if (l_cont_cont) then
-            i_cont_poin    = i_cont_pair
+            i_cont_poin = i_cont_pair
             elem_slav_nume = nint(v_sdcont_tabfin(ztabf*(i_cont_poin-1)+2))
             elem_mast_nume = nint(v_sdcont_tabfin(ztabf*(i_cont_poin-1)+3))
         else
             elem_slav_nume = v_sdappa_apli(3*(i_cont_pair-1)+1)
             elem_mast_nume = v_sdappa_apli(3*(i_cont_pair-1)+2)
-        endif
+        end if
 !
 ! ----- Get parameters for current contact element
 !
         typg_cont_nume = v_list_pair(2*(i_cont_pair-1)+1)
-        nb_node_elem   = v_list_pair(2*(i_cont_pair-1)+2)
+        nb_node_elem = v_list_pair(2*(i_cont_pair-1)+2)
 !
 ! ----- Check number of nodes
 !
-        nb_node_slav   = v_connex_lcum(elem_slav_nume+1) - v_connex_lcum(elem_slav_nume)
-        nb_node_mast   = v_connex_lcum(elem_mast_nume+1) - v_connex_lcum(elem_mast_nume)
+        nb_node_slav = v_connex_lcum(elem_slav_nume+1)-v_connex_lcum(elem_slav_nume)
+        nb_node_mast = v_connex_lcum(elem_mast_nume+1)-v_connex_lcum(elem_mast_nume)
         ASSERT(nb_node_elem .eq. (nb_node_mast+nb_node_slav))
 !
 ! ----- Create contact element in LIGREL
@@ -200,7 +200,7 @@ type(NL_DS_Contact), intent(in) :: ds_contact
 ! ----- Copy master nodes
 !
         do i_node = 1, nb_node_mast
-            v_ligrcf_nema(deca+nb_node_slav+i_node) = v_connex(v_connex_lcum(elem_mast_nume)-1+&
+            v_ligrcf_nema(deca+nb_node_slav+i_node) = v_connex(v_connex_lcum(elem_mast_nume)-1+ &
                                                                i_node)
         end do
         deca = deca+nb_node_elem+1
@@ -210,10 +210,10 @@ type(NL_DS_Contact), intent(in) :: ds_contact
 !
     ligrcf_liel_lont = nb_grel
     do i_cont_type = 1, nb_type
-        elem_indx        = i_cont_type
-        nb_cont          = v_list_type(5*(elem_indx-1)+1)
-        nb_frot          = v_list_type(5*(elem_indx-1)+2)
-        ligrcf_liel_lont = ligrcf_liel_lont + nb_cont + nb_frot
+        elem_indx = i_cont_type
+        nb_cont = v_list_type(5*(elem_indx-1)+1)
+        nb_frot = v_list_type(5*(elem_indx-1)+2)
+        ligrcf_liel_lont = ligrcf_liel_lont+nb_cont+nb_frot
     end do
     ASSERT(nb_grel .gt. 0)
 !
@@ -223,9 +223,9 @@ type(NL_DS_Contact), intent(in) :: ds_contact
     call jeecra(ligrcf//'.LIEL', 'LONT', ligrcf_liel_lont)
     i_elem = 0
     do i_cont_type = 1, nb_type
-        elem_indx      = i_cont_type
-        nb_cont        = v_list_type(5*(elem_indx-1)+1)
-        nb_frot        = v_list_type(5*(elem_indx-1)+2)
+        elem_indx = i_cont_type
+        nb_cont = v_list_type(5*(elem_indx-1)+1)
+        nb_frot = v_list_type(5*(elem_indx-1)+2)
         typf_cont_nume = v_list_type(5*(elem_indx-1)+3)
         typf_frot_nume = v_list_type(5*(elem_indx-1)+4)
         typg_cont_nume = v_list_type(5*(elem_indx-1)+5)
@@ -234,10 +234,10 @@ type(NL_DS_Contact), intent(in) :: ds_contact
 !
 ! --------- Create new element
 !
-            i_elem = i_elem + 1
+            i_elem = i_elem+1
             call jecroc(jexnum(ligrcf//'.LIEL', i_elem))
             call jeecra(jexnum(ligrcf//'.LIEL', i_elem), 'LONMAX', nb_cont+1)
-            call jeveuo(jexnum(ligrcf//'.LIEL', i_elem), 'E', vi = v_ligrcf_liel)
+            call jeveuo(jexnum(ligrcf//'.LIEL', i_elem), 'E', vi=v_ligrcf_liel)
 !
 ! --------- Add contact element
 !
@@ -247,27 +247,27 @@ type(NL_DS_Contact), intent(in) :: ds_contact
                 if (v_list_pair(2*(i_cont_pair-1)+1) .eq. typf_cont_nume) then
                     if (l_cont_cont) then
                         i_cont_poin = i_cont_pair
-                        i_zone      = nint(v_sdcont_tabfin(ztabf*(i_cont_poin-1)+14))
-                        l_frot      = mminfl(ds_contact%sdcont_defi,'FROTTEMENT_ZONE', i_zone )
+                        i_zone = nint(v_sdcont_tabfin(ztabf*(i_cont_poin-1)+14))
+                        l_frot = mminfl(ds_contact%sdcont_defi, 'FROTTEMENT_ZONE', i_zone)
                     else
-                        l_frot      = .false._1
-                    endif
+                        l_frot = .false._1
+                    end if
                     if (.not. l_frot) then
-                        jv_liel                = jv_liel + 1
+                        jv_liel = jv_liel+1
                         v_ligrcf_liel(jv_liel) = -i_cont_pair
-                    endif
-                endif
+                    end if
+                end if
             end do
-            ASSERT(jv_liel.eq.nb_cont)
-        endif
+            ASSERT(jv_liel .eq. nb_cont)
+        end if
         if (nb_frot .ne. 0) then
 !
 ! --------- Create new element
 !
-            i_elem = i_elem + 1
+            i_elem = i_elem+1
             call jecroc(jexnum(ligrcf//'.LIEL', i_elem))
             call jeecra(jexnum(ligrcf//'.LIEL', i_elem), 'LONMAX', nb_frot+1)
-            call jeveuo(jexnum(ligrcf//'.LIEL', i_elem), 'E', vi = v_ligrcf_liel)
+            call jeveuo(jexnum(ligrcf//'.LIEL', i_elem), 'E', vi=v_ligrcf_liel)
 !
 ! --------- Add friction element
 !
@@ -277,19 +277,19 @@ type(NL_DS_Contact), intent(in) :: ds_contact
                 if (v_list_pair(2*(i_cont_pair-1)+1) .eq. typf_cont_nume) then
                     if (l_cont_cont) then
                         i_cont_poin = i_cont_pair
-                        i_zone      = nint(v_sdcont_tabfin(ztabf*(i_cont_poin-1)+14))
-                        l_frot      = mminfl(ds_contact%sdcont_defi,'FROTTEMENT_ZONE', i_zone )
+                        i_zone = nint(v_sdcont_tabfin(ztabf*(i_cont_poin-1)+14))
+                        l_frot = mminfl(ds_contact%sdcont_defi, 'FROTTEMENT_ZONE', i_zone)
                     else
-                        l_frot      = .false._1
-                    endif
+                        l_frot = .false._1
+                    end if
                     if (l_frot) then
-                        jv_liel                = jv_liel + 1
+                        jv_liel = jv_liel+1
                         v_ligrcf_liel(jv_liel) = -i_cont_pair
-                    endif
-                endif
+                    end if
+                end if
             end do
-            ASSERT(jv_liel.eq.nb_frot)
-        endif
+            ASSERT(jv_liel .eq. nb_frot)
+        end if
     end do
     ASSERT(i_elem .eq. nb_grel)
 !
@@ -301,8 +301,8 @@ type(NL_DS_Contact), intent(in) :: ds_contact
 !
 ! - Clean
 !
-    AS_DEALLOCATE(vi = v_list_type)
-    AS_DEALLOCATE(vi = v_list_pair)
+    AS_DEALLOCATE(vi=v_list_type)
+    AS_DEALLOCATE(vi=v_list_pair)
 !
 999 continue
 !

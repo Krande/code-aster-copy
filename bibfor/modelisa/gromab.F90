@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine gromab(mailla, nmabet, nbmabe, mail2d, caelem,&
+subroutine gromab(mailla, nmabet, nbmabe, mail2d, caelem, &
                   gromai)
     implicit none
 !  DESCRIPTION : RECHERCHE DES PLUS GRANDS DIAMETRES DES MAILLES DE LA
@@ -66,7 +66,7 @@ subroutine gromab(mailla, nmabet, nbmabe, mail2d, caelem,&
     integer :: ino, jcoor, nbno, ima, iad
     real(kind=8) :: xmax, xk, ymax, yk, zmax, zk, x, y, z, epmax
     real(kind=8) :: ep, sqrt
-    character(len= 8) :: ngrand, nomai
+    character(len=8) :: ngrand, nomai
     character(len=19) :: carte
     character(len=24) :: coorno, connex, k24bid, mommai
 !
@@ -93,9 +93,9 @@ subroutine gromab(mailla, nmabet, nbmabe, mail2d, caelem,&
     call jeveuo(connex, 'L', jconn)
     call jeveuo(jexatr(connex, 'LONCUM'), 'L', jtabco)
     call jeveuo(nmabet, 'L', jmabet)
-    xmax=0.d0
-    ymax=0.d0
-    zmax=0.d0
+    xmax = 0.d0
+    ymax = 0.d0
+    zmax = 0.d0
     do i = 1, nbmabe
         ima = zi(jmabet-1+i)
         iad = zi(jtabco-1+ima)
@@ -103,17 +103,17 @@ subroutine gromab(mailla, nmabet, nbmabe, mail2d, caelem,&
         nbno = iad2-iad
         do j = 1, nbno
             ino = zi(jconn-1+iad-1+j)
-            nunoe(j)=ino
-        enddo
+            nunoe(j) = ino
+        end do
 !
         do j = 1, nbno-1
             ino = nunoe(j)
-            x = zr(jcoor+3*(ino-1) )
+            x = zr(jcoor+3*(ino-1))
             y = zr(jcoor+3*(ino-1)+1)
             z = zr(jcoor+3*(ino-1)+2)
             do k = j+1, nbno
                 inok = nunoe(k)
-                xk = zr(jcoor+3*(inok-1) )
+                xk = zr(jcoor+3*(inok-1))
                 yk = zr(jcoor+3*(inok-1)+1)
                 zk = zr(jcoor+3*(inok-1)+2)
 !
@@ -121,18 +121,18 @@ subroutine gromab(mailla, nmabet, nbmabe, mail2d, caelem,&
                 if (abs(y-yk) .gt. ymax) ymax = abs(y-yk)
                 if (abs(z-zk) .gt. zmax) zmax = abs(z-zk)
 !
-            enddo
-        enddo
+            end do
+        end do
     end do
     call jeveuo(gromai, 'E', jgmai)
-    zr(jgmai)=xmax
-    zr(jgmai+1)=ymax
-    zr(jgmai+2)=zmax
+    zr(jgmai) = xmax
+    zr(jgmai+1) = ymax
+    zr(jgmai+2) = zmax
 !
-    j=0
+    j = 0
     if (mail2d) then
 !       DETERMINATION DE LA PLUS GRANDE EPAISSEUR
-        carte=caelem//'.CARCOQUE  '
+        carte = caelem//'.CARCOQUE  '
         call jeveuo(carte//'.DESC', 'L', vi=desc)
         call jeveuo(carte//'.VALE', 'L', vr=vale)
         igrand = desc(1)
@@ -142,8 +142,8 @@ subroutine gromab(mailla, nmabet, nbmabe, mail2d, caelem,&
         call jelira(jexnum('&CATA.GD.NOMCMP', igrand), 'LONMAX', nbcmp)
         call jeveuo(jexnum('&CATA.GD.NOMCMP', igrand), 'L', inomcp)
         call dismoi('NB_EC', ngrand, 'GRANDEUR', repi=nbec)
-        irep = indik8( zk8(inomcp), 'EP' , 1, nbcmp )
-        ASSERT(irep .ne. 0 )
+        irep = indik8(zk8(inomcp), 'EP', 1, nbcmp)
+        ASSERT(irep .ne. 0)
 !       BOUCLE SUR LES MAILLES
         epmax = 0.d0
         do i = 1, nbmabe
@@ -159,42 +159,42 @@ subroutine gromab(mailla, nmabet, nbmabe, mail2d, caelem,&
                     call jeveuo(jexnum(k24bid, izone), 'L', ilima)
                     call jelira(jexnum(k24bid, izone), 'LONMAX', nbmaza)
 !              SI C'EST UN GROUPE DE MAILLE
-                else if (icode.eq.2) then
+                else if (icode .eq. 2) then
                     k24bid = mailla//'.GROUPEMA'
                     call jeveuo(jexnum(k24bid, izone), 'L', ilima)
                     call jelira(jexnum(k24bid, izone), 'LONMAX', nbmaza)
 !              SI C'EST TOUT LE MAILLAGE
-                else if (icode.eq.1) then
+                else if (icode .eq. 1) then
                     iasbon = ii
                     goto 160
                 else
                     ASSERT(.false.)
-                endif
+                end if
 !              MAILLE DANS LISTE OU GROUPE DE MAILLE DE CETTE ZONE
                 do jj = 1, nbmaza
                     if (ima .eq. zi(ilima+jj-1)) then
                         iasbon = ii
                         goto 160
-                    endif
+                    end if
                 end do
             end do
 160         continue
             icode = desc(1+3+2*iasmax+nbec*(iasbon-1))
-            irvep = rgcmpg(icode,irep)
+            irvep = rgcmpg(icode, irep)
             if (irvep .eq. 0) then
                 call jenuno(jexnum(mommai, ima), nomai)
                 call utmess('F', 'MODELISA8_3', sk=nomai)
-            endif
-            ep=vale(1+(iasbon-1)*nbcmp + irvep - 1)
+            end if
+            ep = vale(1+(iasbon-1)*nbcmp+irvep-1)
             if (ep .gt. epmax) epmax = ep
-        enddo
+        end do
 !
         epmax = epmax*sqrt(2.d0)
         do i = 1, 3
             if (zr(jgmai-1+i) .lt. epmax) zr(jgmai-1+i) = epmax
-        enddo
+        end do
 !
-    endif
+    end if
 !
     call jedema()
 end subroutine

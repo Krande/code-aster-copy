@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine load_neut_evol(nb_type_neumz, type_calc  , time_curr, load_name, load_type_ligr,&
-                          load_opti_r  , load_para_r, load_obje, nb_obje)
+subroutine load_neut_evol(nb_type_neumz, type_calc, time_curr, load_name, load_type_ligr, &
+                          load_opti_r, load_para_r, load_obje, nb_obje)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/assert.h"
 #include "asterfort/load_neut_data.h"
@@ -67,7 +67,7 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: nb_type_neum
-    parameter (nb_type_neum = 11)
+    parameter(nb_type_neum=11)
 !
     integer :: i_type_neum, i_type_echa, iret, nb_cham
     character(len=24) :: load_keyw, evol_obje
@@ -78,87 +78,87 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    i_type_echa    = 0
-    ASSERT(nb_type_neumz.eq.nb_type_neum)
+    i_type_echa = 0
+    ASSERT(nb_type_neumz .eq. nb_type_neum)
 !
 ! - Get EVOL_CHAR
 !
     evol_obje = load_name//'.CHTH.EVOL.CHAR'
     call jeexin(evol_obje, iret)
-    ASSERT(iret.gt.0)
-    call jeveuo(evol_obje, 'L', vk8 = p_object)
+    ASSERT(iret .gt. 0)
+    call jeveuo(evol_obje, 'L', vk8=p_object)
     evol_char = p_object(1)
 !
 ! - Checks
 !
     call dismoi('NB_CHAMP_UTI', evol_char, 'RESULTAT', repi=nb_cham)
-    ASSERT(nb_cham.gt.0)
+    ASSERT(nb_cham .gt. 0)
     call gettco(evol_char, type_sd)
     ASSERT(type_sd .eq. 'EVOL_CHAR')
 !
 ! - Identify type of load (ECHANGE with COEF_H and T_EXT or FLUX_REP with FLUN)
 !
     load_name_evol(1) = '&&NTDEPR.FLURE'
-    call rsinch(evol_char, 'FLUN', 'INST', time_curr, load_name_evol(1),&
+    call rsinch(evol_char, 'FLUN', 'INST', time_curr, load_name_evol(1), &
                 'EXCLU', 'EXCLU', 0, 'V', iret)
-    if (iret.gt.2) then
+    if (iret .gt. 2) then
 
         load_name_evol(1) = '&&NTDEPR.COEFH'
         load_name_evol(2) = '&&NTDEPR.T_EXT'
 !
 ! -     Get exterior temperature
 !
-        call rsinch(evol_char, 'COEF_H', 'INST', time_curr, load_name_evol(1),&
+        call rsinch(evol_char, 'COEF_H', 'INST', time_curr, load_name_evol(1), &
                     'EXCLU', 'EXCLU', 0, 'V', iret)
-        if (iret.gt.2) then
+        if (iret .gt. 2) then
             call utmess('F', 'CHARGES3_12', sk=evol_char, sr=time_curr)
-        endif
+        end if
 !
 ! -     Get exchange coefficient
 !
-        call rsinch(evol_char, 'T_EXT', 'INST', time_curr, load_name_evol(2),&
+        call rsinch(evol_char, 'T_EXT', 'INST', time_curr, load_name_evol(2), &
                     'EXCLU', 'EXCLU', 0, 'V', iret)
-        if (iret.gt.2) then
+        if (iret .gt. 2) then
             call utmess('F', 'CHARGES3_12', sk=evol_char, sr=time_curr)
-        endif
+        end if
 !
 ! -     Identify ECHANGE load
 !
         do i_type_neum = 1, nb_type_neum
-            call load_neut_data(i_type_neum, nb_type_neum,&
-                                load_keyw_ = load_keyw)
-            if (load_keyw.eq.'ECHANGE') then
+            call load_neut_data(i_type_neum, nb_type_neum, &
+                                load_keyw_=load_keyw)
+            if (load_keyw .eq. 'ECHANGE') then
                 i_type_echa = i_type_neum
-            endif
+            end if
         end do
     else
 !
 ! -     Identify FLUX_REP_NORM load
 !
         do i_type_neum = 1, nb_type_neum
-            call load_neut_data(i_type_neum, nb_type_neum,&
-                                load_keyw_ = load_keyw)
-            if (load_keyw.eq.'FLUX_REP_XYZ') then
+            call load_neut_data(i_type_neum, nb_type_neum, &
+                                load_keyw_=load_keyw)
+            if (load_keyw .eq. 'FLUX_REP_XYZ') then
                 i_type_echa = i_type_neum
-            endif
+            end if
         end do
-    endif
+    end if
 
-    ASSERT(i_type_echa.ne.0)
+    ASSERT(i_type_echa .ne. 0)
 !
 ! - Get data for select load
 !
-    call load_neut_data(i_type_echa   , nb_type_neum, type_calc,&
-                        load_type_ligr,&
-                        load_opti_r_ = load_opti_r,&
-                        load_para_r_ = load_para_r,&
-                        load_obje_   = load_obje  , nb_obje_ = nb_obje)
+    call load_neut_data(i_type_echa, nb_type_neum, type_calc, &
+                        load_type_ligr, &
+                        load_opti_r_=load_opti_r, &
+                        load_para_r_=load_para_r, &
+                        load_obje_=load_obje, nb_obje_=nb_obje)
 !
 ! - Output objects
 !
-    ASSERT(nb_obje.gt.0 .and. nb_obje.le.2)
+    ASSERT(nb_obje .gt. 0 .and. nb_obje .le. 2)
 
     load_obje(1) = load_name_evol(1)
-    if (nb_obje.eq.2) load_obje(2) = load_name_evol(2)
+    if (nb_obje .eq. 2) load_obje(2) = load_name_evol(2)
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 
 subroutine tbtr01(tabin, nbpara, nopara, nblign, nume)
-    implicit   none
+    implicit none
 #include "jeveux.h"
 !
 #include "asterfort/jedema.h"
@@ -41,7 +41,7 @@ subroutine tbtr01(tabin, nbpara, nopara, nblign, nume)
 !                      LES "VIDE" EN TETE
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
-    integer ::  jnuvi,  i, j, jvale, jvall, nbvid, nbnvd
+    integer ::  jnuvi, i, j, jvale, jvall, nbvid, nbnvd
     integer :: lvale, jnume
     character(len=4) :: type
     character(len=19) :: nomtab
@@ -67,7 +67,7 @@ subroutine tbtr01(tabin, nbpara, nopara, nblign, nume)
     do j = 1, nbpara
         jnpar = tblp(1+4*(j-1))
         if (inpar .eq. jnpar) then
-            type = tblp(1+4*(j-1)+1)(1:4)
+            type = tblp(1+4*(j-1)+1) (1:4)
             nomjv = tblp(1+4*(j-1)+2)
             nomjvl = tblp(1+4*(j-1)+3)
             call jeveuo(nomjv, 'L', jvale)
@@ -76,17 +76,17 @@ subroutine tbtr01(tabin, nbpara, nopara, nblign, nume)
             nbnvd = 0
             do i = 1, nblign
                 if (zi(jvall+nume(i)-1) .eq. 0) then
-                    nbvid = nbvid + 1
+                    nbvid = nbvid+1
                     zi(jnuvi+nbvid-1) = nume(i)
                 else
-                    nbnvd = nbnvd + 1
+                    nbnvd = nbnvd+1
                     n_vide(nbnvd) = nume(i)
-                endif
+                end if
             end do
             goto 102
-        endif
-     end do
-102  continue
+        end if
+    end do
+102 continue
 !
     if (nbnvd .eq. 0) goto 999
 !
@@ -141,7 +141,7 @@ subroutine tbtr01(tabin, nbpara, nopara, nblign, nume)
         end do
         call tbtri(nbnvd, tri, tabchk=zk8(lvale))
         call jedetr('&&TBTR01.VALEUR')
-    endif
+    end if
 !
     do i = 1, nbvid
         nume(i) = 0
@@ -153,7 +153,7 @@ subroutine tbtr01(tabin, nbpara, nopara, nblign, nume)
 !
     AS_DEALLOCATE(vi=tri)
 !
-999   continue
+999 continue
 !
     call jedetr('&&TBTR01.NUME  ')
     call jedetr('&&TBTR01.VIDE  ')

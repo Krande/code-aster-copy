@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -65,16 +65,16 @@ subroutine te0548(option, nomte)
 !
 !
     call elref1(elref)
-    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg, &
                      jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
 !     INITIALISATION DES DIMENSIONS DES DDLS X-FEM
-    call xteini(nomte, nfh, nfe, singu, ddlc,&
-                nnom, ddls, nddl, ddlm, ibid,&
+    call xteini(nomte, nfh, nfe, singu, ddlc, &
+                nnom, ddls, nddl, ddlm, ibid, &
                 contac)
 !
     call tecael(iadzi, iazk24, noms=0)
-    typma=zk24(iazk24-1+3+zi(iadzi-1+2)+3)(1:8)
+    typma = zk24(iazk24-1+3+zi(iadzi-1+2)+3) (1:8)
 !
 ! --- ROUTINE SPECIFIQUE P2P1
 !
@@ -93,19 +93,19 @@ subroutine te0548(option, nomte)
 !
 !     RECUPERATIONS DES DONNEES SUR LE CONTACT ET
 !     SUR LA TOPOLOGIE DES FACETTES
-    ninter=zi(jlonch-1+1)
-    nface=zi(jlonch-1+2)
-    nptf=zi(jlonch-1+3)
+    ninter = zi(jlonch-1+1)
+    nface = zi(jlonch-1+2)
+    nptf = zi(jlonch-1+3)
 !
     do i = 1, 30
         do j = 1, 6
-            cface(i,j)=0
+            cface(i, j) = 0
         end do
     end do
 !
     do i = 1, nface
         do j = 1, nptf
-            cface(i,j)=zi(jcface-1+nptf*(i-1)+j)
+            cface(i, j) = zi(jcface-1+nptf*(i-1)+j)
         end do
     end do
 !
@@ -115,29 +115,29 @@ subroutine te0548(option, nomte)
 !
     if (ndim .eq. 3) then
         if (contac .le. 2) then
-            elc='TR3'
+            elc = 'TR3'
         else
-            elc='TR3'
-        endif
-    else if (ndim.eq.2) then
+            elc = 'TR3'
+        end if
+    else if (ndim .eq. 2) then
         if (contac .le. 2) then
-            elc='SE2'
+            elc = 'SE2'
         else
-            elc='SE3'
-        endif
-    endif
+            elc = 'SE3'
+        end if
+    end if
 !
-    call elrefe_info(elrefe=elc, fami=fpg, nno=nnof, npg=npgf, jpoids=ipoidf,&
+    call elrefe_info(elrefe=elc, fami=fpg, nno=nnof, npg=npgf, jpoids=ipoidf, &
                      jvf=ivff, jdfde=idfdef)
 !
     call tecael(iadzi, iazk24, noms=0)
-    typma=zk24(iazk24-1+3+zi(iadzi-1+2)+3)(1:8)
+    typma = zk24(iazk24-1+3+zi(iadzi-1+2)+3) (1:8)
 !
 !     LISTE DES LAMBDAS ACTIFS
 !
     call xlacti(typma, ninter, jaint, lact, nlact)
-    if (contac .eq. 1) nnol=nno
-    if (contac .eq. 3) nnol=nnos
+    if (contac .eq. 1) nnol = nno
+    if (contac .eq. 3) nnol = nnos
 !
 !     BOUCLE SUR LES FACETTES
     do ifa = 1, nface
@@ -146,51 +146,51 @@ subroutine te0548(option, nomte)
         do ipgf = 1, npgf
 !
 !         INDICE DE CE POINT DE GAUSS DANS PSEUIL
-            isspg=npgf*(ifa-1)+ipgf
+            isspg = npgf*(ifa-1)+ipgf
 !
 !         CALCUL DE JAC (PRODUIT DU JACOBIEN ET DU POIDS)
 !         ET DES FF DE L'ELEMENT PARENT AU POINT DE GAUSS
 !         ET LA NORMALE ND ORIENTÉE DE ESCL -> MAIT
             if (ndim .eq. 3) then
-                call xjacff(elref, elrefc, elc, ndim, fpg,&
-                            jptint, ifa, cface, ipgf, nno,&
-                            nnos, igeom, jbasec, g, rbid,&
-                            ffp, ffpc, dfbid, nd, r3bid,&
+                call xjacff(elref, elrefc, elc, ndim, fpg, &
+                            jptint, ifa, cface, ipgf, nno, &
+                            nnos, igeom, jbasec, g, rbid, &
+                            ffp, ffpc, dfbid, nd, r3bid, &
                             r3bid)
-            else if (ndim.eq.2) then
-                call xjacf2(elref, elrefc, elc, ndim, fpg,&
-                            jptint, ifa, cface, nptf, ipgf,&
-                            nno, nnos, igeom, jbasec, g,&
-                            rbid, ffp, ffpc, dfbid, nd,&
+            else if (ndim .eq. 2) then
+                call xjacf2(elref, elrefc, elc, ndim, fpg, &
+                            jptint, ifa, cface, nptf, ipgf, &
+                            nno, nnos, igeom, jbasec, g, &
+                            rbid, ffp, ffpc, dfbid, nd, &
                             r3bid)
-            endif
+            end if
 !
 !        CALCUL DES FONCTIONS DE FORMES DE CONTACT DANS LE CAS LINEAIRE
             if (contac .eq. 1) then
                 call xmoffc(lact, nlact, nno, ffp, ffc)
-            else if (contac.eq.3) then
+            else if (contac .eq. 3) then
                 call xmoffc(lact, nlact, nnos, ffpc, ffc)
-            else if (contac.eq.4) then
+            else if (contac .eq. 4) then
                 call xmoffc(lact, nlact, nno, ffp, ffc)
-            endif
+            end if
 !
 !         CALCUL DU NOUVEAU SEUIL A PARTIR DES LAMBDA DE DEPPLU
             seuil = 0.d0
             do i = 1, nnol
-                ffi=ffc(i)
-                ni=i
-                call xplmat(ddls, ddlc, ddlm, nno, nnom,&
+                ffi = ffc(i)
+                ni = i
+                call xplmat(ddls, ddlc, ddlm, nno, nnom, &
                             ni, pli)
-                seuil = seuil + ffi * zr(ideppl-1+pli)
+                seuil = seuil+ffi*zr(ideppl-1+pli)
             end do
 !
 !         LORS D'UNE CONVERGENCE FORCEE, IL SE PEUT QUE LES REACTIONS
 !         SOIENT TROP PETITES. LE POINT DOIT ETRE CONSIDERE GLISSANT.
             if (abs(seuil) .lt. 1.d-11) then
-                seuil=0.d0
-            endif
+                seuil = 0.d0
+            end if
 !
-            zr(jseuil-1+isspg)=seuil
+            zr(jseuil-1+isspg) = seuil
 !
         end do
     end do

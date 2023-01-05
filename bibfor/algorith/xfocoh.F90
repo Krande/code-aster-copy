@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine xfocoh(jbas, jconx1, jconx2, jcoor, jfon,&
-                  cnsln, chgrn, chgrt, noma, listpt,&
+subroutine xfocoh(jbas, jconx1, jconx2, jcoor, jfon, &
+                  cnsln, chgrn, chgrt, noma, listpt, &
                   ndim, nfon, nxptff, orient, nbmai)
 !
 !
@@ -90,7 +90,7 @@ subroutine xfocoh(jbas, jconx1, jconx2, jcoor, jfon,&
 !   Recuperation mailles de la liste
     prec = 1.d-4
     lismai = '&&XPTFON.LISMAI'
-    call reliem(' ', noma, 'NU_MAILLE', 'DEFI_FISS', 1,&
+    call reliem(' ', noma, 'NU_MAILLE', 'DEFI_FISS', 1, &
                 1, 'GROUP_MA_BORD', 'GROUP_MA', lismai, nbmai)
     call jeveuo(lismai, 'L', jlism)
     call wkvect(listpt, 'V V I', 2*nbmai, vi=tab_pt)
@@ -114,22 +114,22 @@ subroutine xfocoh(jbas, jconx1, jconx2, jcoor, jfon,&
             call conare(typma, ar, nbar)
             ninter = 0
             autre_lsn = 0.d0
-            nuno=0
+            nuno = 0
             do ia = 1, nbar
-                nuno1 = ar(ia,1)
-                nuno2 = ar(ia,2)
+                nuno1 = ar(ia, 1)
+                nuno2 = ar(ia, 2)
                 lsna = lsnv(nuno1)
                 lsnb = lsnv(nuno2)
                 if (lsna .eq. 0.d0 .or. lsnb .eq. 0.d0) then
                     lsn_precedente = autre_lsn
                     nuno_av = nuno
                     if (lsna .eq. 0) then
-                        nuno=nuno1
-                        autre_lsn=lsnb
-                    else if (lsnb.eq.0) then
-                        nuno=nuno2
-                        autre_lsn=lsna
-                    endif
+                        nuno = nuno1
+                        autre_lsn = lsnb
+                    else if (lsnb .eq. 0) then
+                        nuno = nuno2
+                        autre_lsn = lsna
+                    end if
 !
 !                   Blindage cas un seul point en commun
                     if (lsn_precedente*autre_lsn .gt. 0.d0) goto 188
@@ -139,38 +139,38 @@ subroutine xfocoh(jbas, jconx1, jconx2, jcoor, jfon,&
                     ninter = ninter+1
 !
                     do j = 1, ndim
-                        gln(ninter,j) = gn(ndim*(nuno-1)+j)
-                        glt(ninter,j) = gt(ndim*(nuno-1)+j)
-                        m(ninter,j) = zr(jcoor-1+3*(nuno-1)+j)
+                        gln(ninter, j) = gn(ndim*(nuno-1)+j)
+                        glt(ninter, j) = gt(ndim*(nuno-1)+j)
+                        m(ninter, j) = zr(jcoor-1+3*(nuno-1)+j)
                     end do
 !
-                else if (lsna*lsnb.lt.0.d0) then
+                else if (lsna*lsnb .lt. 0.d0) then
                     ninter = ninter+1
                     beta = lsna/(lsnb-lsna)
                     do j = 1, ndim
-                        a(j)=zr(jcoor-1+3*(nuno1-1)+j)
-                        b(j)=zr(jcoor-1+3*(nuno2-1)+j)
-                        glna(j)=gn(ndim*(nuno1-1)+j)
-                        glnb(j)=gn(ndim*(nuno2-1)+j)
-                        glta(j)=gt(ndim*(nuno1-1)+j)
-                        gltb(j)=gt(ndim*(nuno2-1)+j)
+                        a(j) = zr(jcoor-1+3*(nuno1-1)+j)
+                        b(j) = zr(jcoor-1+3*(nuno2-1)+j)
+                        glna(j) = gn(ndim*(nuno1-1)+j)
+                        glnb(j) = gn(ndim*(nuno2-1)+j)
+                        glta(j) = gt(ndim*(nuno1-1)+j)
+                        gltb(j) = gt(ndim*(nuno2-1)+j)
                     end do
 !
                     do j = 1, ndim
-                        m(ninter,j)=a(j)-beta*(b(j)-a(j))
-                        gln(ninter,j) = glna(j)-beta*(glnb(j)-glna(j))
-                        glt(ninter,j) = glta(j)-beta*(gltb(j)-glta(j))
+                        m(ninter, j) = a(j)-beta*(b(j)-a(j))
+                        gln(ninter, j) = glna(j)-beta*(glnb(j)-glna(j))
+                        glt(ninter, j) = glta(j)-beta*(gltb(j)-glta(j))
                     end do
 !
-                endif
+                end if
 188             continue
             end do
             if (ninter .lt. 2) goto 185
-        endif
+        end if
 !
 !       Cas où on donne directement les mailles 1D
         if (ndime .eq. 1) then
-            nbnoma = zi(jconx2+nmaabs) - zi(jconx2+nmaabs-1)
+            nbnoma = zi(jconx2+nmaabs)-zi(jconx2+nmaabs-1)
 !
 !           On proscrit les elements quadratiques pour l'instant
             ASSERT(nbnoma .eq. 2)
@@ -178,34 +178,34 @@ subroutine xfocoh(jbas, jconx1, jconx2, jcoor, jfon,&
 !           Initialisation compteur local nombre de nouveaux points
             nbptma = 0
 !
-            nuno1=zi(jconx1-1+zi(jconx2+nmaabs-1)+1-1)
-            nuno2=zi(jconx1-1+zi(jconx2+nmaabs-1)+2-1)
+            nuno1 = zi(jconx1-1+zi(jconx2+nmaabs-1)+1-1)
+            nuno2 = zi(jconx1-1+zi(jconx2+nmaabs-1)+2-1)
             do j = 1, ndim
-                a(j)=zr(jcoor-1+3*(nuno1-1)+j)
-                b(j)=zr(jcoor-1+3*(nuno2-1)+j)
+                a(j) = zr(jcoor-1+3*(nuno1-1)+j)
+                b(j) = zr(jcoor-1+3*(nuno2-1)+j)
             end do
-            loncar = padist(ndim,a,b)
+            loncar = padist(ndim, a, b)
 !
             do ino = 1, 2
 !
-                nuno=zi(jconx1-1+zi(jconx2+nmaabs-1)+ino-1)
+                nuno = zi(jconx1-1+zi(jconx2+nmaabs-1)+ino-1)
 !
 !
                 do j = 1, ndim
-                    gln(ino,j) = gn(ndim*(nuno-1)+j)
-                    glt(ino,j) = gt(ndim*(nuno-1)+j)
-                    m(ino,j) = zr(jcoor-1+3*(nuno-1)+j)
+                    gln(ino, j) = gn(ndim*(nuno-1)+j)
+                    glt(ino, j) = gt(ndim*(nuno-1)+j)
+                    m(ino, j) = zr(jcoor-1+3*(nuno-1)+j)
                 end do
             end do
-        endif
+        end if
 !
-        ima_eff=ima_eff+1
+        ima_eff = ima_eff+1
 !
 !           VERIFICATION SI CE POINT A DEJA ETE TROUVE
         do i_inter = 1, 2
 !
             do j = 1, ndim
-                mm(j)=m(i_inter,j)
+                mm(j) = m(i_inter, j)
             end do
 !
             do j = 1, ipt
@@ -213,23 +213,23 @@ subroutine xfocoh(jbas, jconx1, jconx2, jcoor, jfon,&
                 p(2) = zr(jfon-1+11*(j-1)+2)
                 p(3) = zr(jfon-1+11*(j-1)+3)
 !
-                if (padist(ndim,p,mm) .lt. (loncar*prec)) then
+                if (padist(ndim, p, mm) .lt. (loncar*prec)) then
 !               alors le point a déjà été trouvé, on renvoie son in
                     indipt = j
                     goto 402
-                endif
+                end if
             end do
 !
 !           CE POINT N'A PAS DEJA ETE TROUVE, ON LE GARDE
             ipt = ipt+1
 !           AUGMENTER NXPTFF
-            ASSERT(ipt.le.nxptff)
+            ASSERT(ipt .le. nxptff)
 !           STOCKAGE DES COORDONNEES DU POINT M
 !           ET DE LA BASE LOCALE (GRADIENT DE LSN ET LST)
             do k = 1, ndim
-                zr(jfon-1+11*(ipt-1)+k) = m(i_inter,k)
-                zr(jbas-1+2*ndim*(ipt-1)+k) = gln(i_inter,k)
-                zr(jbas-1+2*ndim*(ipt-1)+k+ndim)= glt(i_inter,k)
+                zr(jfon-1+11*(ipt-1)+k) = m(i_inter, k)
+                zr(jbas-1+2*ndim*(ipt-1)+k) = gln(i_inter, k)
+                zr(jbas-1+2*ndim*(ipt-1)+k+ndim) = glt(i_inter, k)
             end do
 !
             indipt = ipt
@@ -241,10 +241,10 @@ subroutine xfocoh(jbas, jconx1, jconx2, jcoor, jfon,&
 !               il faudra mettre sa création plus en amont
                 tab_pt(2*(ima_eff-1)+1) = indipt
                 nbptma = nbptma+1
-            else if ((nbptma.eq.1) .and. (indipt.ne.tab_pt(2*(ima_eff-1)+1))) then
+            else if ((nbptma .eq. 1) .and. (indipt .ne. tab_pt(2*(ima_eff-1)+1))) then
                 tab_pt(2*(ima_eff-1)+2) = indipt
                 nbptma = nbptma+1
-            endif
+            end if
 !
         end do
 !
@@ -266,12 +266,12 @@ subroutine xfocoh(jbas, jconx1, jconx2, jcoor, jfon,&
             tab_pt(2*(ima-1)+1) = tab_pt_temp(2*(ima-1)+1)
             tab_pt(2*(ima-1)+2) = tab_pt_temp(2*(ima-1)+2)
         end do
-    endif
+    end if
 !
 !   nombre de points du fond trouves
     nfon = ipt
 !   on met orient à .TRUE. pour les tests de xenrch à suivre
-    orient=.true.
+    orient = .true.
 !
     call jedetr(lismai)
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,9 +19,9 @@
 !
 subroutine asmari(ds_system, hval_meelem, list_load, matr_rigi)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/asmatr.h"
@@ -32,9 +32,9 @@ implicit none
 #include "asterfort/infdbg.h"
 #include "asterfort/utmess.h"
 !
-type(NL_DS_System), intent(in) :: ds_system
-character(len=19), intent(in) :: hval_meelem(*)
-character(len=19), intent(in) :: list_load, matr_rigi
+    type(NL_DS_System), intent(in) :: ds_system
+    character(len=19), intent(in) :: hval_meelem(*)
+    character(len=19), intent(in) :: list_load, matr_rigi
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -61,18 +61,18 @@ character(len=19), intent(in) :: list_load, matr_rigi
     call infdbg('MECANONLINE', ifm, niv)
     if (niv .ge. 2) then
         call utmess('I', 'MECANONLINE13_70')
-    endif
+    end if
     nb_matr_elem = 0
 !
 ! - Rigidity MATR_ELEM
 !
-    nb_matr_elem = nb_matr_elem + 1
+    nb_matr_elem = nb_matr_elem+1
     list_matr_elem(nb_matr_elem) = ds_system%merigi
 !
 ! - Boundary conditions MATR_ELEM
 !
     call nmchex(hval_meelem, 'MEELEM', 'MEDIRI', mediri)
-    nb_matr_elem = nb_matr_elem + 1
+    nb_matr_elem = nb_matr_elem+1
     list_matr_elem(nb_matr_elem) = mediri
 !
 ! - Contact/friction MATR_ELEM
@@ -80,23 +80,23 @@ character(len=19), intent(in) :: list_load, matr_rigi
     if (ds_system%l_rigi_cont) then
         call nmchex(hval_meelem, 'MEELEM', 'MEELTC', meeltc)
         call jeexin(meeltc//'.RERR', iexi)
-        if (iexi.ne.0) then
-            nb_matr_elem = nb_matr_elem + 1
+        if (iexi .ne. 0) then
+            nb_matr_elem = nb_matr_elem+1
             list_matr_elem(nb_matr_elem) = meeltc
         end if
-    endif
+    end if
 !
 ! - Assembly MATR_ELEM
 !
     ASSERT(nb_matr_elem .le. 8)
-    call asmatr(nb_matr_elem, list_matr_elem, ' ', ds_system%nume_dof,&
-                list_load   , 'ZERO'        , 'V',&
-                1           , matr_rigi)
+    call asmatr(nb_matr_elem, list_matr_elem, ' ', ds_system%nume_dof, &
+                list_load, 'ZERO', 'V', &
+                1, matr_rigi)
 !
 ! - Symmetry of rigidity matrix
 !
     if (ds_system%l_rigi_syme) then
         call matr_asse_syme(matr_rigi)
-    endif
+    end if
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine hsj1f(intsn, xr, epais, vectg, vectt,&
+subroutine hsj1f(intsn, xr, epais, vectg, vectt, &
                  hsf, kwgt, hsj1fx, wgt)
     implicit none
 #include "asterfort/jacbm1.h"
@@ -31,7 +31,7 @@ subroutine hsj1f(intsn, xr, epais, vectg, vectt,&
     integer :: i, j, j1, jb, k, k1
     real(kind=8) :: wgt1
 !-----------------------------------------------------------------------
-    call jacbm1(epais, vectg, vectt, matj, jm1,&
+    call jacbm1(epais, vectg, vectt, matj, jm1, &
                 detj)
 !
 !     CONSTRUCTION DE HFM * S * JTILD-1 AUX PTS D'INTEGRATION NORMAL
@@ -46,11 +46,11 @@ subroutine hsj1f(intsn, xr, epais, vectg, vectt,&
     do jb = 1, 3
         do i = 1, 3
             do j = 1, 3
-                j1=j+3*(jb-1)
-                hsj1fx(i,j1)=0.d0
+                j1 = j+3*(jb-1)
+                hsj1fx(i, j1) = 0.d0
                 do k = 1, 3
-                    k1=k+3*(jb-1)
-                    hsj1fx(i,j1)=hsj1fx(i,j1)+hsf(i,k1)*jm1(k,j)
+                    k1 = k+3*(jb-1)
+                    hsj1fx(i, j1) = hsj1fx(i, j1)+hsf(i, k1)*jm1(k, j)
                 end do
             end do
         end do
@@ -60,13 +60,13 @@ subroutine hsj1f(intsn, xr, epais, vectg, vectt,&
 !      DE GAUSS (NORMAL)  ET DE DETJ
 !
 !
-    wgt1=  xr(127-1+intsn)
+    wgt1 = xr(127-1+intsn)
 !
-    wgt =wgt1*detj
+    wgt = wgt1*detj
 !
 !     STOCKAGE DE WGT DANS XR : A PARTIR DE L'ADRESSE 1181
 !
-    kwgt=kwgt+1
-    xr(1180+kwgt)=wgt
+    kwgt = kwgt+1
+    xr(1180+kwgt) = wgt
 !
 end subroutine

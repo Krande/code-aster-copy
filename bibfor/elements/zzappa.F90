@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -35,6 +35,6 @@ subroutine zzappa(num, liste, n, app)
     do i = 1, n
         if (num .eq. liste(i)) then
             app = .true.
-        endif
+        end if
     end do
 end subroutine

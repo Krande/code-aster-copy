@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine conhex(macor, nbcor, macoc, nbcoc, lface,&
+subroutine conhex(macor, nbcor, macoc, nbcoc, lface, &
                   lomodi, locorr, loreor, ma)
 !
 !  ROUTINE CONHEX
@@ -58,67 +58,67 @@ subroutine conhex(macor, nbcor, macoc, nbcoc, lface,&
     aster_logical :: lomodi, locorr, lface, quadra, loreor
     integer :: i1, i2, i3
 #define face(i1,i2,i3,i4) nococ(1).eq.i1.and.nococ(2).eq.i2.and. \
-    nococ(3).eq.i3.and.nococ(4).eq.i4
+    nococ(3) .eq. i3 .and. nococ(4) .eq. i4
 !
 !     ------------------------------------------------------------------
-    quadra=nbcoc.eq.20
+    quadra = nbcoc .eq. 20
     if (quadra) then
-        if (nbcor .eq. 20) nblir=8
-        if (nbcor .eq. 15) nblir=6
-        if (nbcor .eq. 13) nblir=5
+        if (nbcor .eq. 20) nblir = 8
+        if (nbcor .eq. 15) nblir = 6
+        if (nbcor .eq. 13) nblir = 5
     else
         nblir = nbcor
-    endif
+    end if
     nblic = 8
 !
 !     -----------------------------------------------------------------
 !
-    call concom(macor, nblir, macoc, nblic, nbnoco,&
+    call concom(macor, nblir, macoc, nblic, nbnoco, &
                 nococ)
 !
     if (nbnoco .eq. 4) then
-        if (face(1,2,3,4) .or. face(5,6,7,8)) then
-            lface=face(1,2,3,4)
-            locorr=.true.
-        else if (face(1,2,5,6).or.face(3,4,7,8)) then
+        if (face(1, 2, 3, 4) .or. face(5, 6, 7, 8)) then
+            lface = face(1, 2, 3, 4)
+            locorr = .true.
+        else if (face(1, 2, 5, 6) .or. face(3, 4, 7, 8)) then
 !     -------------------------------------------------------------
 !     SELON LE MODE 1 (ON TOURNE A 90 DEGRES AUTOUR DE AXE 1)
 !     -------------------------------------------------------------
-            lomodi=.true.
-            lface=face(3,4,7,8)
+            lomodi = .true.
+            lface = face(3, 4, 7, 8)
             call conper(macoc, 1, 4, 8, 5)
             call conper(macoc, 2, 3, 7, 6)
             if (quadra) then
                 call conper(macoc, 10, 15, 18, 14)
                 call conper(macoc, 9, 11, 19, 17)
                 call conper(macoc, 12, 16, 20, 13)
-            endif
-        else if (face(1,4,5,8).or.face(2,3,6,7)) then
+            end if
+        else if (face(1, 4, 5, 8) .or. face(2, 3, 6, 7)) then
 !     -------------------------------------------------------------
 !     SELON LE MODE 2 (ON TOURNE A 90 DEGRES AUTOUR DE AXE 2)
 !     -------------------------------------------------------------
-            lomodi=.true.
-            lface=face(2,3,6,7)
+            lomodi = .true.
+            lface = face(2, 3, 6, 7)
             call conper(macoc, 1, 2, 6, 5)
             call conper(macoc, 4, 3, 7, 8)
             if (quadra) then
                 call conper(macoc, 9, 14, 17, 13)
                 call conper(macoc, 12, 10, 18, 20)
                 call conper(macoc, 11, 15, 19, 16)
-            endif
+            end if
         else
             ASSERT(.false.)
-        endif
+        end if
         if (lface) then
-            i1=1
-            i2=2
-            i3=3
+            i1 = 1
+            i2 = 2
+            i3 = 3
         else
-            i1=8
-            i2=7
-            i3=6
-        endif
-        call conors(i1, i2, i3, macoc, nbcoc,&
+            i1 = 8
+            i2 = 7
+            i3 = 6
+        end if
+        call conors(i1, i2, i3, macoc, nbcoc, &
                     macor, nbcor, loreor, ma)
         if (loreor) then
             call conech(macoc, 1, 5)
@@ -130,28 +130,28 @@ subroutine conhex(macor, nbcor, macoc, nbcoc, lface,&
                 call conech(macoc, 10, 18)
                 call conech(macoc, 11, 19)
                 call conech(macoc, 12, 20)
-            endif
-        endif
-        call conjac(1, 2, 4, 5, macoc,&
+            end if
+        end if
+        call conjac(1, 2, 4, 5, macoc, &
                     nbcoc, ma)
-        call conjac(2, 1, 6, 3, macoc,&
+        call conjac(2, 1, 6, 3, macoc, &
                     nbcoc, ma)
-        call conjac(3, 2, 7, 4, macoc,&
+        call conjac(3, 2, 7, 4, macoc, &
                     nbcoc, ma)
-        call conjac(4, 1, 3, 8, macoc,&
+        call conjac(4, 1, 3, 8, macoc, &
                     nbcoc, ma)
-        call conjac(5, 1, 8, 6, macoc,&
+        call conjac(5, 1, 8, 6, macoc, &
                     nbcoc, ma)
-        call conjac(6, 2, 5, 7, macoc,&
+        call conjac(6, 2, 5, 7, macoc, &
                     nbcoc, ma)
-        call conjac(7, 3, 6, 8, macoc,&
+        call conjac(7, 3, 6, 8, macoc, &
                     nbcoc, ma)
-        call conjac(8, 4, 7, 5, macoc,&
+        call conjac(8, 4, 7, 5, macoc, &
                     nbcoc, ma)
 !
-    else if (nbnoco.gt.2) then
+    else if (nbnoco .gt. 2) then
         vali = nbnoco
         call utmess('E', 'ALGORITH12_59', si=vali)
-    endif
+    end if
 !
 end subroutine

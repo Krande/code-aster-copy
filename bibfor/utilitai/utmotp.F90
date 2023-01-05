@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -37,11 +37,11 @@ function utmotp(fonree, motfac, iocc, motcle)
 !-----------------------------------------------------------------------
     if (fonree .eq. 'REEL') then
         call getvr8(motfac, motcle, iocc=iocc, nbval=0, nbret=utmotp)
-    else if (fonree.eq.'FONC') then
+    else if (fonree .eq. 'FONC') then
         call getvid(motfac, motcle, iocc=iocc, nbval=0, nbret=utmotp)
-    else if (fonree.eq.'COMP') then
+    else if (fonree .eq. 'COMP') then
         call getvc8(motfac, motcle, iocc=iocc, nbval=0, nbret=utmotp)
     else
         call utmess('F', 'UTILITAI5_52')
-    endif
+    end if
 end function

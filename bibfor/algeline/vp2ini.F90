@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine vp2ini(ldynam, lmasse, ldynfa, neq, nbvect,&
-                  nborto, prorto, ddlexc, ddllag, alpha,&
-                  beta, signes, vect, prsudg, nstoc,&
+subroutine vp2ini(ldynam, lmasse, ldynfa, neq, nbvect, &
+                  nborto, prorto, ddlexc, ddllag, alpha, &
+                  beta, signes, vect, prsudg, nstoc, &
                   omeshi, solveu)
     implicit none
 #include "jeveux.h"
@@ -101,10 +101,10 @@ subroutine vp2ini(ldynam, lmasse, ldynfa, neq, nbvect,&
     cbid = dcmplx(0.d0, 0.d0)
 !
 ! INIT. OBJETS ASTER
-    matass=zk24(zi(ldynfa+1))(1:19)
-    chcine=' '
-    criter=' '
-    k19bid=' '
+    matass = zk24(zi(ldynfa+1)) (1:19)
+    chcine = ' '
+    criter = ' '
+    k19bid = ' '
 !     -----------------------------------------------------------------
 !     ---------------- ALLOCATION DES ZONES DE TRAVAIL ----------------
 !     -----------------------------------------------------------------
@@ -119,43 +119,43 @@ subroutine vp2ini(ldynam, lmasse, ldynfa, neq, nbvect,&
 !
     ivecd = 1
 !
-    ivecd = ivecd + nstoc
+    ivecd = ivecd+nstoc
 
     rmin = 100.d0*r8miem()
 
 ! TEST DU SHIFT EN CAS DE PRE-DETECTION DE MODES RIGIDES
-    if (nstoc.ge.1) then
-        if (abs(omeshi).lt.rmin) then
-            valr(1)=omeshi
+    if (nstoc .ge. 1) then
+        if (abs(omeshi) .lt. rmin) then
+            valr(1) = omeshi
             call utmess('F', 'ALGELINE4_2', nr=1, valr=valr)
         else
-            invome=1.d0/omeshi
-        endif
-    endif
+            invome = 1.d0/omeshi
+        end if
+    end if
     do isto = 1, nstoc
         alpha(isto) = invome
         alpha(isto) = -alpha(isto)
         beta(isto) = 0.d0
-        lkxsto = lkx + (isto-1)*neq
-        call mrmult('ZERO', ldynam, vect(1, isto), zr(lkxsto), 1,&
+        lkxsto = lkx+(isto-1)*neq
+        call mrmult('ZERO', ldynam, vect(1, isto), zr(lkxsto), 1, &
                     .false._1)
         xikxi = 0.d0
         do ieq = 1, neq
-            xikxi = xikxi + vect(ieq,isto)*zr(lkxsto+ieq-1)
+            xikxi = xikxi+vect(ieq, isto)*zr(lkxsto+ieq-1)
         end do
 ! GARDE-FOU POUR EVITER LA DIVISON PAR ZERO
-        if (abs(xikxi).lt.rmin) xikxi=rmin
-        signes(isto) = sign(1.d0,xikxi)
+        if (abs(xikxi) .lt. rmin) xikxi = rmin
+        signes(isto) = sign(1.d0, xikxi)
         coef = 1.d0/sqrt(abs(xikxi))
         do ieq = 1, neq
-            vect(ieq,isto) = coef*vect(ieq,isto)
+            vect(ieq, isto) = coef*vect(ieq, isto)
             zr(lkxsto+ieq-1) = coef*zr(lkxsto+ieq-1)
         end do
 !
         if (isto .ne. 1) then
-            call vplcor(ldynam, neq, nbvect, nborto, prorto,&
+            call vplcor(ldynam, neq, nbvect, nborto, prorto, &
                         signes, vect, isto, zr(lkx), zr(lx))
-        endif
+        end if
         alpha(isto) = signes(isto)*alpha(isto)
     end do
 !
@@ -171,14 +171,14 @@ subroutine vp2ini(ldynam, lmasse, ldynfa, neq, nbvect,&
 !
 !     --- VECTEUR INITIAL : ALEATOIRE ---
 !
- 60 continue
+60  continue
     dseed = 123457.d0*ivecd
     call ggubs(dseed, neq, zr(lx))
     do ieq = 1, neq
         zr(lx+ieq-1) = zr(lx+ieq-1)*ddllag(ieq)*zr(irdiak+ieq-1)
     end do
-    call resoud(matass, k19bid, solveu, chcine, 1,&
-                k19bid, k19bid, kbid, zr(lx), [cbid],&
+    call resoud(matass, k19bid, solveu, chcine, 1, &
+                k19bid, k19bid, kbid, zr(lx), [cbid], &
                 criter, .false._1, 0, iret)
     do ieq = 1, neq
         zr(lx+ieq-1) = zr(lx+ieq-1)*ddllag(ieq)
@@ -186,49 +186,49 @@ subroutine vp2ini(ldynam, lmasse, ldynfa, neq, nbvect,&
 !
 !     --- CALCUL DE (LDYNAM**-1)*MASSE * X0 ---
 !
-    lkx1 = lkx + neq* (ivecd-1) + neq*nstoc
+    lkx1 = lkx+neq*(ivecd-1)+neq*nstoc
 !
-    call mrmult('ZERO', lmasse, zr(lx), zr(lmx), 1,&
+    call mrmult('ZERO', lmasse, zr(lx), zr(lmx), 1, &
                 .false._1)
     do ieq = 1, neq
-        vect(ieq,ivecd) = zr(lmx+ieq-1)*ddlexc(ieq)
+        vect(ieq, ivecd) = zr(lmx+ieq-1)*ddlexc(ieq)
     end do
-    call resoud(matass, k19bid, solveu, chcine, 1,&
-                k19bid, k19bid, kbid, vect(1, ivecd), [cbid],&
+    call resoud(matass, k19bid, solveu, chcine, 1, &
+                k19bid, k19bid, kbid, vect(1, ivecd), [cbid], &
                 criter, .false._1, 0, iret)
 !
 !     --- K-ORTHONORMALISATION DU 1-ER VECTEUR ---
 !
-    call mrmult('ZERO', ldynam, vect(1, ivecd), zr(lkx1), 1,&
+    call mrmult('ZERO', ldynam, vect(1, ivecd), zr(lkx1), 1, &
                 .false._1)
     xikxi = 0.d0
     do ieq = 1, neq
-        xikxi = xikxi + vect(ieq,ivecd)*zr(lkx1+ieq-1)
+        xikxi = xikxi+vect(ieq, ivecd)*zr(lkx1+ieq-1)
     end do
 
 ! GARDE-FOU POUR EVITER LA DIVISON PAR ZERO
-    if (abs(xikxi).lt.rmin) xikxi=rmin
+    if (abs(xikxi) .lt. rmin) xikxi = rmin
 
-    signes(ivecd) = sign(1.d0,xikxi)
+    signes(ivecd) = sign(1.d0, xikxi)
     coef = 1.d0/sqrt(abs(xikxi))
     do ieq = 1, neq
-        vect(ieq,ivecd) = coef*vect(ieq,ivecd)
+        vect(ieq, ivecd) = coef*vect(ieq, ivecd)
         zr(lkx1+ieq-1) = coef*zr(lkx1+ieq-1)
     end do
 !
     if (ivecd .gt. 1) then
-        call vplcor(ldynam, neq, nbvect, nborto, prorto,&
+        call vplcor(ldynam, neq, nbvect, nborto, prorto, &
                     signes, vect, ivecd, zr(lkx), zr(lx))
-    endif
+    end if
 !
 !
 !     --- CALCUL DE ALPHA(1)
 !
-    call mrmult('ZERO', lmasse, vect(1, ivecd), zr(lx), 1,&
+    call mrmult('ZERO', lmasse, vect(1, ivecd), zr(lx), 1, &
                 .false._1)
     ai = 0.d0
     do ieq = 1, neq
-        ai = ai + vect(ieq,ivecd)*zr(lx+ieq-1)
+        ai = ai+vect(ieq, ivecd)*zr(lx+ieq-1)
     end do
     alpha(ivecd) = ai
     beta(ivecd) = 0.d0
@@ -237,84 +237,84 @@ subroutine vp2ini(ldynam, lmasse, ldynfa, neq, nbvect,&
 !     -------------- CALCUL DES AUTRES VECTEURS DE LANCZOS ------------
 !     -----------------------------------------------------------------
 !
-    do ivec = ivecd, nbvect - 1
+    do ivec = ivecd, nbvect-1
 !
-        ivecp1 = ivec + 1
-        ivecm1 = ivec - 1
-        lkxp1 = lkx + neq*ivec
+        ivecp1 = ivec+1
+        ivecm1 = ivec-1
+        lkxp1 = lkx+neq*ivec
 !
-        call mrmult('ZERO', lmasse, vect(1, ivec), zr(lmx), 1,&
+        call mrmult('ZERO', lmasse, vect(1, ivec), zr(lmx), 1, &
                     .false._1)
         ai = 0.d0
         do ieq = 1, neq
-            ai = ai + vect(ieq,ivec)*zr(lmx+ieq-1)
+            ai = ai+vect(ieq, ivec)*zr(lmx+ieq-1)
         end do
         do ieq = 1, neq
-            vect(ieq,ivecp1) = zr(lmx+ieq-1)*ddlexc(ieq)
+            vect(ieq, ivecp1) = zr(lmx+ieq-1)*ddlexc(ieq)
         end do
-        call resoud(matass, k19bid, solveu, chcine, 1,&
-                    k19bid, k19bid, kbid, vect(1, ivecp1), [cbid],&
+        call resoud(matass, k19bid, solveu, chcine, 1, &
+                    k19bid, k19bid, kbid, vect(1, ivecp1), [cbid], &
                     criter, .false._1, 0, iret)
 !
         if (ivecm1 .eq. (ivecd-1)) then
             do ieq = 1, neq
-                vect(ieq,ivecp1) = vect(ieq,ivecp1) - ai*signes(ivec)* vect(ieq,ivec)
+                vect(ieq, ivecp1) = vect(ieq, ivecp1)-ai*signes(ivec)*vect(ieq, ivec)
             end do
         else
             bi = 0.d0
             do ieq = 1, neq
-                bi = bi + vect(ieq,ivecm1)*zr(lmx+ieq-1)
+                bi = bi+vect(ieq, ivecm1)*zr(lmx+ieq-1)
             end do
             do ieq = 1, neq
-                vect(ieq,ivecp1) = vect(ieq,ivecp1) - ai*signes(ivec)* vect(ieq,ivec) - bi*signes&
-                                   &(ivecm1)*vect(ieq,ivecm1)
+                vect(ieq, ivecp1) = vect(ieq, ivecp1)-ai*signes(ivec)*vect(ieq, ivec)-bi*signes&
+                                   &(ivecm1)*vect(ieq, ivecm1)
             end do
-        endif
+        end if
 !
 !         --- K-NORMALISATION DU VECTEUR IVECP1 ---
 !
-        call mrmult('ZERO', ldynam, vect(1, ivecp1), zr(lkxp1), 1,&
+        call mrmult('ZERO', ldynam, vect(1, ivecp1), zr(lkxp1), 1, &
                     .false._1)
         xikxi = 0.d0
         do ieq = 1, neq
-            xikxi = xikxi + vect(ieq,ivecp1)*zr(lkxp1+ieq-1)
+            xikxi = xikxi+vect(ieq, ivecp1)*zr(lkxp1+ieq-1)
         end do
 
 ! GARDE-FOU POUR EVITER LA DIVISON PAR ZERO
-        if (abs(xikxi).lt.rmin) xikxi=rmin
+        if (abs(xikxi) .lt. rmin) xikxi = rmin
 
-        signes(ivecp1) = sign(1.d0,xikxi)
+        signes(ivecp1) = sign(1.d0, xikxi)
         coef = 1.d0/sqrt(abs(xikxi))
         do ieq = 1, neq
-          vect(ieq,ivecp1) = coef*vect(ieq,ivecp1)
-          zr(lkxp1+ieq-1) = coef*zr(lkxp1+ieq-1)
-        enddo
+            vect(ieq, ivecp1) = coef*vect(ieq, ivecp1)
+            zr(lkxp1+ieq-1) = coef*zr(lkxp1+ieq-1)
+        end do
 !
 !         --- K-REORTHOGONALISATION COMPLETE DU VECTEUR IVECP1
 !
-        call vplcor(ldynam, neq, nbvect, nborto, prorto,&
+        call vplcor(ldynam, neq, nbvect, nborto, prorto, &
                     signes, vect, ivecp1, zr(lkx), zr(lx))
 !
 !
 !         --- CALCUL DE ALPHA ET BETA ---
 !
         do jvec = ivec, ivecp1
-            call mrmult('ZERO', lmasse, vect(1, ivecp1), zr(lx), 1,&
+            call mrmult('ZERO', lmasse, vect(1, ivecp1), zr(lx), 1, &
                         .false._1)
             xjkxi = 0.d0
             do ieq = 1, neq
-                xjkxi = xjkxi + vect(ieq,jvec)*zr(lx+ieq-1)
+                xjkxi = xjkxi+vect(ieq, jvec)*zr(lx+ieq-1)
             end do
             if (jvec .eq. ivec) beta(ivecp1) = xjkxi
         end do
         alpha(ivecp1) = xjkxi
         if (abs(beta(ivecp1)) .le. (prsudg*abs(alpha(ivecp1)))) then
             ivecd = ivecp1
-            valr (1) = beta(ivecp1)
-            valr (2) = alpha(ivecp1)
+            valr(1) = beta(ivecp1)
+            valr(2) = alpha(ivecp1)
             call utmess('I', 'ALGELINE4_64', nr=2, valr=valr)
             goto 60
-        endif
+        end if
 !
     end do
 !

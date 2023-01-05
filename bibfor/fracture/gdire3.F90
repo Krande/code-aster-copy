@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -47,35 +47,35 @@ subroutine gdire3(coord, a, b, c, m)
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    x1 = coord(1,1)
-    y1 = coord(2,1)
-    z1 = coord(3,1)
-    x2 = coord(1,2)
-    y2 = coord(2,2)
-    z2 = coord(3,2)
+    x1 = coord(1, 1)
+    y1 = coord(2, 1)
+    z1 = coord(3, 1)
+    x2 = coord(1, 2)
+    y2 = coord(2, 2)
+    z2 = coord(3, 2)
     if (m .eq. 1) then
-        x3 = coord(1,3)
-        y3 = coord(2,3)
-        z3 = coord(3,3)
+        x3 = coord(1, 3)
+        y3 = coord(2, 3)
+        z3 = coord(3, 3)
     else
-        x3 = coord(1,4)
-        y3 = coord(2,4)
-        z3 = coord(3,4)
-    endif
+        x3 = coord(1, 4)
+        y3 = coord(2, 4)
+        z3 = coord(3, 4)
+    end if
 !
-    x12 = x2 - x1
-    y12 = y2 - y1
-    z12 = z2 - z1
-    x13 = x3 - x1
-    y13 = y3 - y1
-    z13 = z3 - z1
-    norm2 = x12*x12 + y12*y12 + z12*z12
-    norm3 = sqrt(x13*x13 + y13*y13 + z13*z13)
-    pscal = x12*x13 + y12*y13 + z12*z13
-    a = x13 - pscal*x12/norm2
-    b = y13 - pscal*y12/norm2
-    c = z13 - pscal*z12/norm2
-    norm1 = sqrt(a*a + b*b + c*c)
+    x12 = x2-x1
+    y12 = y2-y1
+    z12 = z2-z1
+    x13 = x3-x1
+    y13 = y3-y1
+    z13 = z3-z1
+    norm2 = x12*x12+y12*y12+z12*z12
+    norm3 = sqrt(x13*x13+y13*y13+z13*z13)
+    pscal = x12*x13+y12*y13+z12*z13
+    a = x13-pscal*x12/norm2
+    b = y13-pscal*y12/norm2
+    c = z13-pscal*z12/norm2
+    norm1 = sqrt(a*a+b*b+c*c)
     a = a/norm1
     b = b/norm1
     c = c/norm1
@@ -85,11 +85,11 @@ subroutine gdire3(coord, a, b, c, m)
 !
 ! ORIENTATION DU VECTEUR OBTENU
 !
-    prod = x13*a + y13*b + z13*c
+    prod = x13*a+y13*b+z13*c
     if (prod .ge. r8prem()) then
         a = -a
         b = -b
         c = -c
-    endif
+    end if
 !
 end subroutine

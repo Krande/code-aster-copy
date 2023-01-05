@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine pecap2(chgeoz, iy, iz, s, alpha,&
-                  xg, yg, temp1z, temp2z, ay,&
+subroutine pecap2(chgeoz, iy, iz, s, alpha, &
+                  xg, yg, temp1z, temp2z, ay, &
                   az, ey, ez, pctx, pcty)
 !.======================================================================
     implicit none
@@ -160,32 +160,32 @@ subroutine pecap2(chgeoz, iy, iz, s, alpha,&
     call dismoi('TYPE_RESU', tempe1, 'RESULTAT', repk=typre1)
     if (typre1 .ne. 'EVOL_THER') then
         call utmess('F', 'UTILITAI3_54')
-    endif
+    end if
 !
     call dismoi('TYPE_RESU', tempe2, 'RESULTAT', repk=typre2)
     if (typre2 .ne. 'EVOL_THER') then
         call utmess('F', 'UTILITAI3_55')
-    endif
+    end if
 !
 ! --- RECUPERATION DU NOMBRE D'ORDRES DES RESULTATS :
 !     ---------------------------------------------
-    call rsutnu(tempe1, ' ', 0, knum1, nbordr,&
+    call rsutnu(tempe1, ' ', 0, knum1, nbordr, &
                 prec, crit, iret)
     if (nbordr .ne. 1) then
         call utmess('F', 'UTILITAI3_56', sk=tempe1)
-    endif
+    end if
 !
-    call rsutnu(tempe2, ' ', 0, knum2, nbordr,&
+    call rsutnu(tempe2, ' ', 0, knum2, nbordr, &
                 prec, crit, iret)
     if (nbordr .ne. 1) then
         call utmess('F', 'UTILITAI3_56', sk=tempe2)
-    endif
+    end if
 !
 ! --- RECUPERATION DES CHAMPS DE TEMPERATURES DES RESULTATS :
 !     -----------------------------------------------------
-    call rsexch('F', tempe1, 'TEMP', 0, chtem1,&
+    call rsexch('F', tempe1, 'TEMP', 0, chtem1, &
                 iret)
-    call rsexch('F', tempe2, 'TEMP', 0, chtem2,&
+    call rsexch('F', tempe2, 'TEMP', 0, chtem2, &
                 iret)
 !
 ! --- RECUPERATION DU NUME_DDL ASSOCIE AU CHAMP DE TEMPERATURES :
@@ -217,8 +217,8 @@ subroutine pecap2(chgeoz, iy, iz, s, alpha,&
     lpaout(1) = 'PCASECT'
     lchout(1) = '&&PECAP2.INTEG'
 !
-    call calcul('S', 'CARA_CISA', ligrth, 3, lchin,&
-                lpain, 1, lchout, lpaout, 'V',&
+    call calcul('S', 'CARA_CISA', ligrth, 3, lchin, &
+                lpain, 1, lchout, lpaout, 'V', &
                 'OUI')
 !
 ! --- SOMMATION DES INTEGRALES PRECEDENTES SUR LA SECTION DE LA POUTRE
@@ -241,16 +241,16 @@ subroutine pecap2(chgeoz, iy, iz, s, alpha,&
 ! --- CONSTITUTION DE LA MATRICE DE PASSAGE DU REPERE GLOBAL
 ! --- AU REPERE D'INERTIE :
 !     -------------------
-    p(1,1) = cos(alphar)
-    p(2,1) = -sin(alphar)
-    p(1,2) = sin(alphar)
-    p(2,2) = cos(alphar)
+    p(1, 1) = cos(alphar)
+    p(2, 1) = -sin(alphar)
+    p(1, 2) = sin(alphar)
+    p(2, 2) = cos(alphar)
 !
 ! --- VALEURS DES COORDONNEES DU CENTRE DE TORSION DANS LE REPERE
 ! --- GLOBAL INITIAL :
 !     --------------
-    pctx = p(1,1)*ey + p(2,1)*ez + xg
-    pcty = p(1,2)*ey + p(2,2)*ez + yg
+    pctx = p(1, 1)*ey+p(2, 1)*ez+xg
+    pcty = p(1, 2)*ey+p(2, 2)*ez+yg
 !
     call detrsd('CHAMP_GD', '&&PECAP2.INTEG')
 !.============================ FIN DE LA ROUTINE ======================

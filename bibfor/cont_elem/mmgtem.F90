@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,21 +17,21 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine mmgtem(ndim  , nne   , nnm   ,&
-                  wpg   , ffe   , ddffm ,&
-                  jacobi, coefac, coefff, jeu   , dlagrc,&
-                  mprt11, mprt12, mprt21, mprt22,&
-                  kappa , vech1 , vech2 , h     ,&
+subroutine mmgtem(ndim, nne, nnm, &
+                  wpg, ffe, ddffm, &
+                  jacobi, coefac, coefff, jeu, dlagrc, &
+                  mprt11, mprt12, mprt21, mprt22, &
+                  kappa, vech1, vech2, h, &
                   matrem)
 !
-implicit none
+    implicit none
 !
-integer, intent(in) :: ndim, nne, nnm
-real(kind=8), intent(in) :: wpg, ffe(9), ddffm(3,9)
-real(kind=8), intent(in) :: jacobi, coefac, coefff, jeu, dlagrc
-real(kind=8), intent(in) :: mprt11(3,3), mprt22(3,3), mprt21(3,3), mprt12(3,3)
-real(kind=8), intent(in) :: kappa(2,2), vech1(3), vech2(3), h(2,2)
-real(kind=8), intent(inout) :: matrem(27, 27)
+    integer, intent(in) :: ndim, nne, nnm
+    real(kind=8), intent(in) :: wpg, ffe(9), ddffm(3, 9)
+    real(kind=8), intent(in) :: jacobi, coefac, coefff, jeu, dlagrc
+    real(kind=8), intent(in) :: mprt11(3, 3), mprt22(3, 3), mprt21(3, 3), mprt12(3, 3)
+    real(kind=8), intent(in) :: kappa(2, 2), vech1(3), vech2(3), h(2, 2)
+    real(kind=8), intent(inout) :: matrem(27, 27)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -70,55 +70,55 @@ real(kind=8), intent(inout) :: matrem(27, 27)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: i, j, k,l, ii, jj
+    integer :: i, j, k, l, ii, jj
     real(kind=8) :: g(3, 3), e(3, 3), d(3, 3), f(3, 3)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    e(:,:) = 0.d0
-    d(:,:) = 0.d0
-    g(:,:) = 0.d0
-    f(:,:) = 0.d0
+    e(:, :) = 0.d0
+    d(:, :) = 0.d0
+    g(:, :) = 0.d0
+    f(:, :) = 0.d0
 !
-    e(1,1) = h(1,1)*vech1(1)*vech1(1)
-    e(1,2) = h(1,1)*vech1(1)*vech1(2)
-    e(1,3) = h(1,1)*vech1(1)*vech1(3)
-    e(2,1) = h(1,1)*vech1(2)*vech1(1)
-    e(2,2) = h(1,1)*vech1(2)*vech1(2)
-    e(2,3) = h(1,1)*vech1(2)*vech1(3)
-    e(3,1) = h(1,1)*vech1(3)*vech1(1)
-    e(3,2) = h(1,1)*vech1(3)*vech1(2)
-    e(3,3) = h(1,1)*vech1(3)*vech1(3)
+    e(1, 1) = h(1, 1)*vech1(1)*vech1(1)
+    e(1, 2) = h(1, 1)*vech1(1)*vech1(2)
+    e(1, 3) = h(1, 1)*vech1(1)*vech1(3)
+    e(2, 1) = h(1, 1)*vech1(2)*vech1(1)
+    e(2, 2) = h(1, 1)*vech1(2)*vech1(2)
+    e(2, 3) = h(1, 1)*vech1(2)*vech1(3)
+    e(3, 1) = h(1, 1)*vech1(3)*vech1(1)
+    e(3, 2) = h(1, 1)*vech1(3)*vech1(2)
+    e(3, 3) = h(1, 1)*vech1(3)*vech1(3)
 !
-    d(1,1) = h(1,2)*vech1(1)*vech2(1)
-    d(1,2) = h(1,2)*vech1(1)*vech2(2)
-    d(1,3) = h(1,2)*vech1(1)*vech2(3)
-    d(2,1) = h(1,2)*vech1(2)*vech2(1)
-    d(2,2) = h(1,2)*vech1(2)*vech2(2)
-    d(2,3) = h(1,2)*vech1(2)*vech2(3)
-    d(3,1) = h(1,2)*vech1(3)*vech2(1)
-    d(3,2) = h(1,2)*vech1(3)*vech2(2)
-    d(3,3) = h(1,2)*vech1(3)*vech2(3)
+    d(1, 1) = h(1, 2)*vech1(1)*vech2(1)
+    d(1, 2) = h(1, 2)*vech1(1)*vech2(2)
+    d(1, 3) = h(1, 2)*vech1(1)*vech2(3)
+    d(2, 1) = h(1, 2)*vech1(2)*vech2(1)
+    d(2, 2) = h(1, 2)*vech1(2)*vech2(2)
+    d(2, 3) = h(1, 2)*vech1(2)*vech2(3)
+    d(3, 1) = h(1, 2)*vech1(3)*vech2(1)
+    d(3, 2) = h(1, 2)*vech1(3)*vech2(2)
+    d(3, 3) = h(1, 2)*vech1(3)*vech2(3)
 !
-    g(1,1) = h(2,1)*vech2(1)*vech2(1)
-    g(1,2) = h(2,1)*vech2(1)*vech2(2)
-    g(1,3) = h(2,1)*vech2(1)*vech2(3)
-    g(2,1) = h(2,1)*vech2(2)*vech2(1)
-    g(2,2) = h(2,1)*vech2(2)*vech2(2)
-    g(2,3) = h(2,1)*vech2(2)*vech2(3)
-    g(3,1) = h(2,1)*vech2(3)*vech2(1)
-    g(3,2) = h(2,1)*vech2(3)*vech2(2)
-    g(3,3) = h(2,1)*vech2(3)*vech2(3)
+    g(1, 1) = h(2, 1)*vech2(1)*vech2(1)
+    g(1, 2) = h(2, 1)*vech2(1)*vech2(2)
+    g(1, 3) = h(2, 1)*vech2(1)*vech2(3)
+    g(2, 1) = h(2, 1)*vech2(2)*vech2(1)
+    g(2, 2) = h(2, 1)*vech2(2)*vech2(2)
+    g(2, 3) = h(2, 1)*vech2(2)*vech2(3)
+    g(3, 1) = h(2, 1)*vech2(3)*vech2(1)
+    g(3, 2) = h(2, 1)*vech2(3)*vech2(2)
+    g(3, 3) = h(2, 1)*vech2(3)*vech2(3)
 !
-    f(1,1) = h(2,2)*vech2(1)*vech2(1)
-    f(1,2) = h(2,2)*vech2(1)*vech2(2)
-    f(1,3) = h(2,2)*vech2(1)*vech2(3)
-    f(2,1) = h(2,2)*vech2(2)*vech2(1)
-    f(2,2) = h(2,2)*vech2(2)*vech2(2)
-    f(2,3) = h(2,2)*vech2(2)*vech2(3)
-    f(3,1) = h(2,2)*vech2(3)*vech2(1)
-    f(3,2) = h(2,2)*vech2(3)*vech2(2)
-    f(3,3) = h(2,2)*vech2(3)*vech2(3)
+    f(1, 1) = h(2, 2)*vech2(1)*vech2(1)
+    f(1, 2) = h(2, 2)*vech2(1)*vech2(2)
+    f(1, 3) = h(2, 2)*vech2(1)*vech2(3)
+    f(2, 1) = h(2, 2)*vech2(2)*vech2(1)
+    f(2, 2) = h(2, 2)*vech2(2)*vech2(2)
+    f(2, 3) = h(2, 2)*vech2(2)*vech2(3)
+    f(3, 1) = h(2, 2)*vech2(3)*vech2(1)
+    f(3, 2) = h(2, 2)*vech2(3)*vech2(2)
+    f(3, 3) = h(2, 2)*vech2(3)*vech2(3)
 !
 ! CONTRIBUTION 1 :
 ! -NORM{[d(delta YPR)/delta XI)*DELTA XI]+[(D(DELTA YPR)/DELTA XI)*delta XI]}
@@ -133,25 +133,25 @@ real(kind=8), intent(inout) :: matrem(27, 27)
                 do l = 1, ndim
                     ii = ndim*(i-1)+l
                     jj = ndim*(j-1)+k
-                    matrem(ii,jj) = matrem(ii,jj) + &
-                        (dlagrc-coefac*jeu)*wpg*jacobi*coefff*(&
-                          mprt11(l,k)*ffe(j)*(kappa(1,1)*kappa(1,1)+kappa(1,2)*kappa(2,1))*&
-                             (ddffm(1,i)+ddffm(3,i)) + &
-                          mprt12(l,k)*ffe(j)*(kappa(1,1)*kappa(1,1)+kappa(1,2)*kappa(2,1))*&
-                             (ddffm(2,i)+ddffm(3,i)) + &
-                          mprt21(l,k)*ffe(j)*(kappa(1,2)*kappa(1,1)+kappa(2,2)*kappa(1,2))*&
-                             (ddffm(1,i)+ddffm(3,i)) + &
-                          mprt22(l,k)*ffe(j)*(kappa(1,2)*kappa(1,1)+kappa(2,2)*kappa(1,2))*&
-                             (ddffm(3,i)+ddffm(2,i)) ) + &
-                        (dlagrc-coefac*jeu)*wpg*jacobi *coefff*(&
-                          mprt11(l,k)*ffe(j)*(kappa(2,1)*kappa(1,1)+kappa(2,2)*kappa(2,1))*&
-                             (ddffm(1,i)+ddffm(3,i)) + &
-                          mprt12(l,k)*ffe(j)*(kappa(2,1)*kappa(1,1)+kappa(2,2)*kappa(2,1))*&
-                             (ddffm(2,i)+ddffm(3,i)) + &
-                          mprt21(l,k)*ffe(j)*(kappa(1,2)*kappa(2,1)+kappa(2,2)*kappa(2,2))*&
-                             (ddffm(1,i)+ddffm(3,i)) + &
-                          mprt22(l,k)*ffe(j)*(kappa(1,2)*kappa(2,1)+kappa(2,2)*kappa(2,2))*&
-                             (ddffm(3,i)+ddffm(2,i)))
+                    matrem(ii, jj) = matrem(ii, jj)+ &
+                                     (dlagrc-coefac*jeu)*wpg*jacobi*coefff*( &
+                            mprt11(l, k)*ffe(j)*(kappa(1, 1)*kappa(1, 1)+kappa(1, 2)*kappa(2, 1))* &
+                                     (ddffm(1, i)+ddffm(3, i))+ &
+                            mprt12(l, k)*ffe(j)*(kappa(1, 1)*kappa(1, 1)+kappa(1, 2)*kappa(2, 1))* &
+                                     (ddffm(2, i)+ddffm(3, i))+ &
+                            mprt21(l, k)*ffe(j)*(kappa(1, 2)*kappa(1, 1)+kappa(2, 2)*kappa(1, 2))* &
+                                     (ddffm(1, i)+ddffm(3, i))+ &
+                            mprt22(l, k)*ffe(j)*(kappa(1, 2)*kappa(1, 1)+kappa(2, 2)*kappa(1, 2))* &
+                                     (ddffm(3, i)+ddffm(2, i)))+ &
+                                     (dlagrc-coefac*jeu)*wpg*jacobi*coefff*( &
+                            mprt11(l, k)*ffe(j)*(kappa(2, 1)*kappa(1, 1)+kappa(2, 2)*kappa(2, 1))* &
+                                     (ddffm(1, i)+ddffm(3, i))+ &
+                            mprt12(l, k)*ffe(j)*(kappa(2, 1)*kappa(1, 1)+kappa(2, 2)*kappa(2, 1))* &
+                                     (ddffm(2, i)+ddffm(3, i))+ &
+                            mprt21(l, k)*ffe(j)*(kappa(1, 2)*kappa(2, 1)+kappa(2, 2)*kappa(2, 2))* &
+                                     (ddffm(1, i)+ddffm(3, i))+ &
+                            mprt22(l, k)*ffe(j)*(kappa(1, 2)*kappa(2, 1)+kappa(2, 2)*kappa(2, 2))* &
+                                     (ddffm(3, i)+ddffm(2, i)))
                 end do
             end do
         end do

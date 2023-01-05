@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,14 +17,14 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine nmpilo(sdpilo, deltat, rho            , solalg    , veasse,&
-                  modele, ds_material, ds_constitutive, ds_contact, valinc,&
-                  nbatte, numedd, nbeffe         , eta       , pilcvg,&
+subroutine nmpilo(sdpilo, deltat, rho, solalg, veasse, &
+                  modele, ds_material, ds_constitutive, ds_contact, valinc, &
+                  nbatte, numedd, nbeffe, eta, pilcvg, &
                   carele)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -41,16 +41,16 @@ implicit none
 #include "asterfort/nmpila.h"
 #include "asterfort/nmpipe.h"
 !
-integer :: nbatte, nbeffe
-integer :: pilcvg
-real(kind=8) :: deltat, rho, eta(nbatte)
-character(len=19) :: sdpilo
-type(NL_DS_Constitutive), intent(in) :: ds_constitutive
-character(len=19) :: solalg(*), veasse(*), valinc(*)
-character(len=24) :: modele, carele
-type(NL_DS_Material), intent(in) :: ds_material
-character(len=24) :: numedd
-type(NL_DS_Contact), intent(in) :: ds_contact
+    integer :: nbatte, nbeffe
+    integer :: pilcvg
+    real(kind=8) :: deltat, rho, eta(nbatte)
+    character(len=19) :: sdpilo
+    type(NL_DS_Constitutive), intent(in) :: ds_constitutive
+    character(len=19) :: solalg(*), veasse(*), valinc(*)
+    character(len=24) :: modele, carele
+    type(NL_DS_Material), intent(in) :: ds_material
+    character(len=24) :: numedd
+    type(NL_DS_Contact), intent(in) :: ds_contact
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -110,13 +110,13 @@ type(NL_DS_Contact), intent(in) :: ds_contact
     call jemarq()
     call infdbg('PILOTAGE', ifm, niv)
     call exixfe(modele, ierm)
-    isxfe=(ierm.eq.1)
+    isxfe = (ierm .eq. 1)
 !
 ! --- AFFICHAGE
 !
     if (niv .ge. 2) then
-        write (ifm,*) '<PILOTAGE> ... CALCUL DU ETA_PILOTAGE'
-    endif
+        write (ifm, *) '<PILOTAGE> ... CALCUL DU ETA_PILOTAGE'
+    end if
 !
 ! --- INITIALISATIONS
 !
@@ -141,10 +141,10 @@ type(NL_DS_Contact), intent(in) :: ds_contact
     etrmax = plir(4)
     typpil = pltk(1)
     coef = plir(1)
-    dtau = deltat / coef
-    ligrpi = pltk(2)(1:19)
-    cartyp = pltk(3)(1:19)
-    careta = pltk(4)(1:19)
+    dtau = deltat/coef
+    ligrpi = pltk(2) (1:19)
+    cartyp = pltk(3) (1:19)
+    careta = pltk(4) (1:19)
 !
 ! --- INCREMENTS DE DEPLACEMENT RHO.DU0 ET RHO.DU1
 !
@@ -153,72 +153,72 @@ type(NL_DS_Contact), intent(in) :: ds_contact
     call jeveuo(ddepl0(1:19)//'.VALE', 'E', vr=dep0)
     call jeveuo(ddepl1(1:19)//'.VALE', 'E', vr=dep1)
     do i = 1, neq
-        dep0(i) = rho * du0(i)
+        dep0(i) = rho*du0(i)
         dep1(i) = du1(i)
     end do
 !
     if (niv .ge. 2) then
-        write (ifm,*) '<PILOTAGE> ...... SECOND MEMBRE DTAU : ',dtau
-    endif
+        write (ifm, *) '<PILOTAGE> ...... SECOND MEMBRE DTAU : ', dtau
+    end if
 !
 ! --- PILOTAGE PAR UN DDL IMPOSE
 !
     if (typpil .eq. 'DDL_IMPO' .or. typpil .eq. 'SAUT_IMPO') then
-        call nmpidd(numedd, sdpilo, dtau, depdel, ddepl0,&
+        call nmpidd(numedd, sdpilo, dtau, depdel, ddepl0, &
                     ddepl1, eta(1), pilcvg, nbeffe)
 !
 ! --- PILOTAGE POUR ANALYSE LIMITE : TRAVAIL UNITAIRE
 !
-    else if (typpil.eq.'ANA_LIM') then
-        call nmpial(numedd, depdel, depmoi, cnfepi, ddepl0,&
+    else if (typpil .eq. 'ANA_LIM') then
+        call nmpial(numedd, depdel, depmoi, cnfepi, ddepl0, &
                     ddepl1, eta(1), pilcvg, nbeffe)
 !
 ! --- PILOTAGE PAR LONGUEUR D'ARC
 !
-    else if (typpil.eq.'LONG_ARC'.or. typpil.eq.'SAUT_LONG_ARC') then
-        call nmpila(numedd, sdpilo, isxfe, dtau, depdel,&
+    else if (typpil .eq. 'LONG_ARC' .or. typpil .eq. 'SAUT_LONG_ARC') then
+        call nmpila(numedd, sdpilo, isxfe, dtau, depdel, &
                     ddepl0, ddepl1, nbeffe, eta, pilcvg)
 !
 ! --- PILOTAGE PAR CRITERE
 !
-    else if (typpil.eq.'PRED_ELAS' .or. typpil.eq.'DEFORMATION') then
-        call nmpipe(modele         , ligrpi    , cartyp, careta, ds_material,&
-                    ds_constitutive, ds_contact, valinc, depdel, ddepl0,&
-                    ddepl1         , dtau      , nbeffe, eta   , pilcvg,&
-                    typpil         , carele)
+    else if (typpil .eq. 'PRED_ELAS' .or. typpil .eq. 'DEFORMATION') then
+        call nmpipe(modele, ligrpi, cartyp, careta, ds_material, &
+                    ds_constitutive, ds_contact, valinc, depdel, ddepl0, &
+                    ddepl1, dtau, nbeffe, eta, pilcvg, &
+                    typpil, carele)
     else
         ASSERT(ASTER_FALSE)
-    endif
+    end if
 !
 ! --- LE CALCUL DE PILOTAGE A FORCEMENT ETE REALISE
 !
-    ASSERT(pilcvg.ge.0)
+    ASSERT(pilcvg .ge. 0)
 !
 ! --- RECADRAGE DANS LES BORNES ETA_PILO_R_MIN ET ETA_PILO_R_MAX
 !
     if (pilcvg .ne. 1) then
         if (nbeffe .eq. 2) then
-            if ((eta(1).lt.etrmin) .or. (eta(1).gt.etrmax)) then
+            if ((eta(1) .lt. etrmin) .or. (eta(1) .gt. etrmax)) then
                 nbeffe = nbeffe-1
                 eta(1) = eta(2)
-            endif
-            if ((eta(2).lt.etrmin) .or. (eta(2).gt.etrmax)) then
+            end if
+            if ((eta(2) .lt. etrmin) .or. (eta(2) .gt. etrmax)) then
                 nbeffe = nbeffe-1
-            endif
-        endif
+            end if
+        end if
         if (nbeffe .eq. 1) then
-            if ((eta(1).lt.etrmin) .or. (eta(1).gt.etrmax)) then
+            if ((eta(1) .lt. etrmin) .or. (eta(1) .gt. etrmax)) then
                 nbeffe = nbeffe-1
-            endif
-        endif
+            end if
+        end if
         if (nbeffe .eq. 0) then
             pilcvg = 1
-        endif
-    endif
+        end if
+    end if
 !
 ! --- LE CALCUL DE PILOTAGE A FORCEMENT ETE REALISE
 !
-    ASSERT(pilcvg.ge.0)
+    ASSERT(pilcvg .ge. 0)
 !
     call jedema()
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -83,12 +83,12 @@ subroutine me2zme(modelz, chsigz, vecelz)
     lchout(5) = '&&ME2ZME.VE005'
     lchout(6) = '&&ME2ZME.VE006'
 !
-    call corich('E', lchout(1), ichin_ = -1)
-    call corich('E', lchout(2), ichin_ = -1)
-    call corich('E', lchout(3), ichin_ = -1)
-    call corich('E', lchout(4), ichin_ = -1)
-    call corich('E', lchout(5), ichin_ = -1)
-    call corich('E', lchout(6), ichin_ = -1)
+    call corich('E', lchout(1), ichin_=-1)
+    call corich('E', lchout(2), ichin_=-1)
+    call corich('E', lchout(3), ichin_=-1)
+    call corich('E', lchout(4), ichin_=-1)
+    call corich('E', lchout(5), ichin_=-1)
+    call corich('E', lchout(6), ichin_=-1)
 !
     lpain(1) = 'PGEOMER'
     lchin(1) = chgeom
@@ -98,8 +98,8 @@ subroutine me2zme(modelz, chsigz, vecelz)
 !
     option = 'SECM_ZZ1'
 !
-    call calcul('S', option, ligrmo, 2, lchin,&
-                lpain, 6, lchout, lpaout, 'V',&
+    call calcul('S', option, ligrmo, 2, lchin, &
+                lpain, 6, lchout, lpaout, 'V', &
                 'OUI')
     call reajre(vecel, lchout(1), 'V')
     call reajre(vecel, lchout(2), 'V')

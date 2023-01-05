@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,11 +18,11 @@
 !
 subroutine niMatr(parameters, geom, matr_cont, matr_fric)
 !
-use contact_nitsche_module
-use contact_type
-use contact_module
+    use contact_nitsche_module
+    use contact_type
+    use contact_module
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -32,10 +32,10 @@ implicit none
 #include "blas/dger.h"
 #include "contact_module.h"
 !
-type(ContactParameters), intent(in) :: parameters
-type(ContactGeom), intent(in) :: geom
-real(kind=8), intent(out) :: matr_cont(MAX_NITS_DOFS, MAX_NITS_DOFS)
-real(kind=8), intent(out) :: matr_fric(MAX_NITS_DOFS, MAX_NITS_DOFS)
+    type(ContactParameters), intent(in) :: parameters
+    type(ContactGeom), intent(in) :: geom
+    real(kind=8), intent(out) :: matr_cont(MAX_NITS_DOFS, MAX_NITS_DOFS)
+    real(kind=8), intent(out) :: matr_fric(MAX_NITS_DOFS, MAX_NITS_DOFS)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -74,7 +74,7 @@ real(kind=8), intent(out) :: matr_fric(MAX_NITS_DOFS, MAX_NITS_DOFS)
 ! - Get quadrature (slave side)
 !
     call getQuadCont(geom%elem_dime, geom%l_axis, geom%nb_node_slav, geom%elem_slav_code, &
-                     geom%coor_slav_init, geom%elem_mast_code, nb_qp, coor_qp, weight_qp )
+                     geom%coor_slav_init, geom%elem_mast_code, nb_qp, coor_qp, weight_qp)
 !
 ! - Diameter of slave side
 !
@@ -102,28 +102,28 @@ real(kind=8), intent(out) :: matr_fric(MAX_NITS_DOFS, MAX_NITS_DOFS)
 ! ----- Compute contact quantities
 !
         call niElemCont(parameters, geom, nits, coor_qp_sl, hF, &
-                    stress_nn, gap, gamma_c, projRmVal, l_cont_qp,&
-                    stress_t, vT, gamma_f, projBsVal, l_fric_qp, &
-                    dGap=dGap, d2Gap=d2Gap, dStress_nn=dStress_nn)
+                        stress_nn, gap, gamma_c, projRmVal, l_cont_qp, &
+                        stress_t, vT, gamma_f, projBsVal, l_fric_qp, &
+                        dGap=dGap, d2Gap=d2Gap, dStress_nn=dStress_nn)
 !
 ! ------ CONTACT PART (always computed)
 !
-        if(l_cont_qp) then
+        if (l_cont_qp) then
 !
 ! ------ Compute displacement / displacement (slave and master side)
 !        term: (gamma_c*H*D(gap(u))[v], D(gap(u))[du])
 !
             matr_tmp = 0.d0
-            coeff = weight_sl_qp * gamma_c
+            coeff = weight_sl_qp*gamma_c
             call dger(face_dofs, face_dofs, coeff, dGap, 1, dGap, 1, &
-                        matr_tmp, MAX_LAGA_DOFS)
+                      matr_tmp, MAX_LAGA_DOFS)
 !
 ! ------ Compute displacement / displacement (slave and master side)
 !        term: (H*[stress_nn + gamma_c * gap(u)]_R-, D2(gap(u))[v, du])
 !
-            coeff = weight_sl_qp * projRmVal
+            coeff = weight_sl_qp*projRmVal
             matr_tmp(1:face_dofs, 1:face_dofs) = &
-                matr_tmp(1:face_dofs, 1:face_dofs) + coeff * d2Gap(1:face_dofs, 1:face_dofs)
+                matr_tmp(1:face_dofs, 1:face_dofs)+coeff*d2Gap(1:face_dofs, 1:face_dofs)
 !
 ! ------ Renumbering
 !
@@ -135,34 +135,34 @@ real(kind=8), intent(out) :: matr_fric(MAX_NITS_DOFS, MAX_NITS_DOFS)
             call remappingVect(geom, dofsMap, dGap, dGapRenum, 1.d0)
             coeff = weight_sl_qp
             call dger(total_dofs, slav_dofs, coeff, dGapRenum, 1, dStress_nn, 1, &
-                    matr_cont, MAX_NITS_DOFS)
+                      matr_cont, MAX_NITS_DOFS)
 !
-            if(parameters%vari_cont .ne. CONT_VARI_RAPI) then
+            if (parameters%vari_cont .ne. CONT_VARI_RAPI) then
 !
 ! ------ Compute displacement / displacement
 !        term: \theta * (H * D(stress_nn)[v], D(gap(u))[du])
 !
-                coeff = weight_sl_qp * parameters%vari_cont_coef
+                coeff = weight_sl_qp*parameters%vari_cont_coef
                 call dger(slav_dofs, total_dofs, coeff, dStress_nn, 1, dGapRenum, 1, &
-                        matr_cont, MAX_NITS_DOFS)
-            endif
+                          matr_cont, MAX_NITS_DOFS)
+            end if
 
         else
-            if(parameters%vari_cont .ne. CONT_VARI_RAPI) then
+            if (parameters%vari_cont .ne. CONT_VARI_RAPI) then
 !
 ! ------ Compute displacement / displacement
 !        term: (theta * (H-1) / gamma_c * D(stress_nn)[v], D(stress_nn)[du])
 !
-                coeff = weight_sl_qp * parameters%vari_cont_coef * gamma_c
+                coeff = weight_sl_qp*parameters%vari_cont_coef*gamma_c
                 call dger(slav_dofs, slav_dofs, coeff, dStress_nn, 1, dStress_nn, 1, &
-                    matr_cont, MAX_NITS_DOFS)
+                          matr_cont, MAX_NITS_DOFS)
             end if
         end if
 !
 ! ------ FRICTION PART (computed only if friction)
 !
-        if(parameters%l_fric) then
-            if(l_fric_qp) then
+        if (parameters%l_fric) then
+            if (l_fric_qp) then
                 ASSERT(ASTER_FALSE)
             end if
         end if

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 !
 subroutine nueqch(error, chamno, nume_node, cmp_name, nueq)
 !
-implicit none
+    implicit none
 !
 #include "asterc/ismaem.h"
 #include "asterfort/select_dof.h"
@@ -27,11 +27,11 @@ implicit none
 #include "asterfort/as_allocate.h"
 #include "asterfort/as_deallocate.h"
 !
-character(len=19), intent(in) :: chamno
-character(len=1), intent(in) :: error
-integer, intent(in) :: nume_node
-character(len=8), intent(in) :: cmp_name
-integer, intent(inout) :: nueq
+    character(len=19), intent(in) :: chamno
+    character(len=1), intent(in) :: error
+    integer, intent(in) :: nume_node
+    character(len=8), intent(in) :: cmp_name
+    integer, intent(inout) :: nueq
 !
 ! ----------------------------------------------------------------------
 !
@@ -55,34 +55,34 @@ integer, intent(inout) :: nueq
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    AS_ALLOCATE(vi = tablCmp, size = 1)
-    AS_ALLOCATE(vi = listNodeToSelect, size = 1)
-    AS_ALLOCATE(vk8 = listCmpToSelect, size = 1)
+    AS_ALLOCATE(vi=tablCmp, size=1)
+    AS_ALLOCATE(vi=listNodeToSelect, size=1)
+    AS_ALLOCATE(vk8=listCmpToSelect, size=1)
 !
     listNodeToSelect(1) = nume_node
-    listCmpToSelect(1)  = cmp_name
+    listCmpToSelect(1) = cmp_name
 !
 ! - Find component in list of equations
 !
-    call select_dof(tablCmp_    = tablCmp, &
-                    fieldNodeZ_ = chamno,&
-                    nbNodeToSelect_ = 1, listNodeToSelect_ = listNodeToSelect,&
-                    nbCmpToSelect_  = 1, listCmpToSelect_  = listCmpToSelect)
+    call select_dof(tablCmp_=tablCmp, &
+                    fieldNodeZ_=chamno, &
+                    nbNodeToSelect_=1, listNodeToSelect_=listNodeToSelect, &
+                    nbCmpToSelect_=1, listCmpToSelect_=listCmpToSelect)
 !
 ! - Check
 !
-    if (tablCmp(1).eq.0) then
+    if (tablCmp(1) .eq. 0) then
         if (error .ne. ' ') then
-            call utmess(error, 'MECANONLINE5_50', sk = cmp_name)
-        endif
-    endif
+            call utmess(error, 'MECANONLINE5_50', sk=cmp_name)
+        end if
+    end if
 !
 ! - Copy
 !
     nueq = tablCmp(1)
 !
-    AS_DEALLOCATE(vi = tablCmp)
-    AS_DEALLOCATE(vi = listNodeToSelect)
-    AS_DEALLOCATE(vk8 = listCmpToSelect)
+    AS_DEALLOCATE(vi=tablCmp)
+    AS_DEALLOCATE(vi=listNodeToSelect)
+    AS_DEALLOCATE(vk8=listCmpToSelect)
 !
 end subroutine

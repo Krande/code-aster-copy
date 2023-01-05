@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -82,13 +82,13 @@ subroutine rvgarg(nxdnom, nxdnum, nvchef, nvcodo, nxdvar)
     ifr = iunifi('RESULTAT')
 !
     rbid = 1.0d-6
-    cbid = dcmplx(rbid,rbid)
+    cbid = dcmplx(rbid, rbid)
     call getfac('ACTION', nbpost)
-    call jecrec(nxdnom, 'V V K8', 'NU', 'DISPERSE', 'VARIABLE',&
+    call jecrec(nxdnom, 'V V K8', 'NU', 'DISPERSE', 'VARIABLE', &
                 nbpost)
-    call jecrec(nxdvar, 'V V I ', 'NU', 'DISPERSE', 'VARIABLE',&
+    call jecrec(nxdvar, 'V V I ', 'NU', 'DISPERSE', 'VARIABLE', &
                 nbpost)
-    call jecrec(nxdnum, 'V V I ', 'NU', 'DISPERSE', 'VARIABLE',&
+    call jecrec(nxdnum, 'V V I ', 'NU', 'DISPERSE', 'VARIABLE', &
                 nbpost)
     call wkvect(nvchef, 'V V K24', nbpost, avchef)
     call wkvect(nvcodo, 'V V I', nbpost, avcodo)
@@ -99,18 +99,18 @@ subroutine rvgarg(nxdnom, nxdnum, nvchef, nvcodo, nxdvar)
         call getvtx('ACTION', 'OPERATION', iocc=iocc, nbval=0, nbret=n3)
         n3 = -n3
         call wkvect('&&RVGARG.NOM.OPERATION', 'V V K80', n3, adr)
-        call getvtx('ACTION', 'OPERATION', iocc=iocc, nbval=n3, vect=zk80(adr),&
+        call getvtx('ACTION', 'OPERATION', iocc=iocc, nbval=n3, vect=zk80(adr), &
                     nbret=n4)
         if (n3 .eq. 1) then
-            text1 = zk80(adr + 1-1)
+            text1 = zk80(adr+1-1)
             if (text1(1:1) .eq. 'E') then
-                zi(avcodo + iocc-1) = 1
+                zi(avcodo+iocc-1) = 1
             else
-                zi(avcodo + iocc-1) = 3
-            endif
+                zi(avcodo+iocc-1) = 3
+            end if
         else
-            zi(avcodo + iocc-1) = 2
-        endif
+            zi(avcodo+iocc-1) = 2
+        end if
         call jedetr('&&RVGARG.NOM.OPERATION')
         call getvid('ACTION', 'RESULTAT', iocc=iocc, nbval=0, nbret=nbresu)
         call getvid('ACTION', 'CHAM_GD', iocc=iocc, nbval=0, nbret=nbchgd)
@@ -124,32 +124,32 @@ subroutine rvgarg(nxdnom, nxdnum, nvchef, nvcodo, nxdvar)
             call jenonu(jexnom(nresu//'           .DESC', nchsym), n1)
             if (n1 .ne. 0) then
 !           /* LE CHAMP SYMBOLIQUE EXISTE (POTENTIELLEMENT)*/
-                call rsorac(nresu, 'LONUTI', 0, rbid, k8b,&
-                            cbid, rbid, 'RELATIF', tord, 1,&
+                call rsorac(nresu, 'LONUTI', 0, rbid, k8b, &
+                            cbid, rbid, 'RELATIF', tord, 1, &
                             ibid)
-                n3=tord(1)
+                n3 = tord(1)
                 if (n3 .gt. 0) then
                     call wkvect(kordre, 'V V I', n3, jordr)
-                    call rsorac(nresu, 'TOUT_ORDRE', 0, rbid, k8b,&
-                                cbid, rbid, 'RELATIF', zi(jordr), n3,&
+                    call rsorac(nresu, 'TOUT_ORDRE', 0, rbid, k8b, &
+                                cbid, rbid, 'RELATIF', zi(jordr), n3, &
                                 ibid)
                     do j = 1, n3
-                        call rsexch(' ', nresu, nchsym, zi(jordr+j-1), naux24,&
+                        call rsexch(' ', nresu, nchsym, zi(jordr+j-1), naux24, &
                                     n2)
                         if (n2 .eq. 0) exit
                     end do
                     call jedetr(kordre)
                 else
                     n2 = 1
-                endif
+                end if
             else
 !           /* LE CHAMP SYMBOLIQUE N' EXISTE PAS */
                 n2 = 1
-                write(ifr,*)'CHAMP SYMBOLIQUE >',nchsym,'< NON '//&
-                'AUTORISE POUR LE RESULTAT >',nresu,'<'
-                write(ifr,*)'LES CHAMPS SYMBOLIQUES AUTORISES SONT :'
+                write (ifr, *) 'CHAMP SYMBOLIQUE >', nchsym, '< NON '// &
+                    'AUTORISE POUR LE RESULTAT >', nresu, '<'
+                write (ifr, *) 'LES CHAMPS SYMBOLIQUES AUTORISES SONT :'
                 call jeimpo(ifr, nresu//'           .DESC', ' ')
-            endif
+            end if
             if ((n1 .eq. 0) .or. (n2 .ne. 0)) then
 !           /* ALTERNATIVE :                              */
 !           /* LE CHAMPS SYMBOLIQUE EST ILEGAL OU         */
@@ -158,13 +158,13 @@ subroutine rvgarg(nxdnom, nxdnum, nvchef, nvcodo, nxdvar)
             else
                 existe = .true.
                 nchp19 = naux24(1:19)
-            endif
+            end if
         else
 !        /* CAS D'UN CHAMP_GD */
             call getvid('ACTION', 'CHAM_GD', iocc=iocc, scal=nchgd, nbret=n1)
             existe = .true.
             nchp19 = nchgd//'           '
-        endif
+        end if
         call jecroc(jexnum(nxdnom, iocc))
         call jecroc(jexnum(nxdnum, iocc))
 !
@@ -177,9 +177,9 @@ subroutine rvgarg(nxdnom, nxdnum, nvchef, nvcodo, nxdvar)
             call jeecra(jexnum(nxdnum, iocc), 'LONMAX', 1)
             call jeveuo(jexnum(nxdnum, iocc), 'E', anumcp)
             zi(anumcp) = 0
-            zk24(avchef + iocc-1) = '&NONEXISTEOUNONCREE     '
+            zk24(avchef+iocc-1) = '&NONEXISTEOUNONCREE     '
         else
-            zk24(avchef + iocc-1) = nchp19//'     '
+            zk24(avchef+iocc-1) = nchp19//'     '
             call dismoi('TYPE_CHAMP', nchp19, 'CHAMP', repk=typech)
             call dismoi('NOM_GD', nchp19, 'CHAMP', repk=granch)
             call jeexin(nchp19//'.DESC', ibid)
@@ -187,9 +187,9 @@ subroutine rvgarg(nxdnom, nxdnum, nvchef, nvcodo, nxdvar)
                 call jeveuo(nchp19//'.DESC', 'L', adesc)
             else
                 call jeveuo(nchp19//'.CELD', 'L', adesc)
-            endif
+            end if
 !
-            gd = zi(adesc + 1-1)
+            gd = zi(adesc+1-1)
             call jelira(jexnum('&CATA.GD.NOMCMP', gd), 'LONMAX', nbcpgd)
             call jeveuo(jexnum('&CATA.GD.NOMCMP', gd), 'L', acpgd)
             call getvtx('ACTION', 'NOM_CMP', iocc=iocc, nbval=0, nbret=nbcmp)
@@ -207,12 +207,12 @@ subroutine rvgarg(nxdnom, nxdnum, nvchef, nvcodo, nxdvar)
 !           /* MOT-CLE (NOM_CMP) OU (RESULTANTE ET/OU MOMENT) */
                 if (nbcmp .ne. 0) then
                     call wkvect('&&OP0051.NOMCMP.USER', 'V V K8', nbcmp, ancpu1)
-                    call getvtx('ACTION', 'NOM_CMP', iocc=iocc, nbval=nbcmp, vect=zk8(ancpu1),&
+                    call getvtx('ACTION', 'NOM_CMP', iocc=iocc, nbval=nbcmp, vect=zk8(ancpu1), &
                                 nbret=n1)
                 else
                     if (typech .eq. 'ELNO' .and. granch .eq. 'VARI_R') then
                         call utmess('F', 'POSTRELE_20')
-                    endif
+                    end if
                     call getvtx('ACTION', 'RESULTANTE', iocc=iocc, nbval=0, nbret=n1)
                     call getvtx('ACTION', 'MOMENT', iocc=iocc, nbval=0, nbret=n2)
                     n1 = -n1
@@ -221,9 +221,9 @@ subroutine rvgarg(nxdnom, nxdnum, nvchef, nvcodo, nxdvar)
                     call wkvect('&&OP0051.NOMCMP.USER', 'V V K8', nbcmp, ancpu1)
                     call getvtx('ACTION', 'RESULTANTE', iocc=iocc, nbval=n1, vect=zk8(ancpu1))
                     call getvtx('ACTION', 'MOMENT', iocc=iocc, nbval=n2, vect=zk8(ancpu1+n1))
-                endif
+                end if
                 if (typech .eq. 'ELNO' .and. granch .eq. 'VARI_R') then
-                    call utcmp2(granch, 'ACTION', iocc, 50, nomcp,&
+                    call utcmp2(granch, 'ACTION', iocc, 50, nomcp, &
                                 numecp, nbnc)
                     call jeecra(jexnum(nxdvar, iocc), 'LONMAX', nbnc)
                     call jeecra(jexnum(nxdvar, iocc), 'LONUTI', nbnc)
@@ -236,13 +236,13 @@ subroutine rvgarg(nxdnom, nxdnum, nvchef, nvcodo, nxdvar)
                 else
                     call jeecra(jexnum(nxdvar, iocc), 'LONMAX', nbcmp)
                     call jeecra(jexnum(nxdvar, iocc), 'LONUTI', 0)
-                endif
+                end if
                 call jeecra(jexnum(nxdnom, iocc), 'LONMAX', nbcmp)
                 call jeveuo(jexnum(nxdnom, iocc), 'E', anomcp)
                 call jeecra(jexnum(nxdnum, iocc), 'LONMAX', nbcmp)
                 call jeveuo(jexnum(nxdnum, iocc), 'E', anumcp)
                 do i = 1, nbcmp, 1
-                    zk8(anomcp + i-1) = zk8(ancpu1 + i-1)
+                    zk8(anomcp+i-1) = zk8(ancpu1+i-1)
                 end do
                 call numek8(zk8(acpgd), zk8(anomcp), nbcpgd, nbcmp, zi(anumcp))
                 call jedetr('&&OP0051.NOMCMP.USER')
@@ -252,14 +252,14 @@ subroutine rvgarg(nxdnom, nxdnum, nvchef, nvcodo, nxdvar)
                 call utncmp(nchp19, nbc, nomobj)
                 if (nbc .eq. 0) then
                     call utmess('F', 'POSTRELE_54', si=iocc)
-                endif
+                end if
                 call jeveuo(nomobj, 'L', ancpu2)
                 call jeecra(jexnum(nxdnom, iocc), 'LONMAX', nbc)
                 call jeveuo(jexnum(nxdnom, iocc), 'E', anomcp)
                 call jeecra(jexnum(nxdnum, iocc), 'LONMAX', nbc)
                 call jeveuo(jexnum(nxdnum, iocc), 'E', anumcp)
                 do i = 1, nbc, 1
-                    zk8(anomcp + i-1) = zk8(ancpu2 + i-1)
+                    zk8(anomcp+i-1) = zk8(ancpu2+i-1)
                 end do
                 call numek8(zk8(acpgd), zk8(anomcp), nbcpgd, nbc, zi(anumcp))
                 call jedetr(nomobj)
@@ -270,7 +270,7 @@ subroutine rvgarg(nxdnom, nxdnum, nvchef, nvcodo, nxdvar)
                     zi(jxvar) = -1
                 else
                     call jeecra(jexnum(nxdvar, iocc), 'LONUTI', 0)
-                endif
+                end if
             else
 !           /* PASSAGE DE CMPS IMPLICITES */
                 call jeecra(jexnum(nxdnom, iocc), 'LONMAX', 1)
@@ -278,9 +278,9 @@ subroutine rvgarg(nxdnom, nxdnum, nvchef, nvcodo, nxdvar)
                 call jeecra(jexnum(nxdnum, iocc), 'LONMAX', 1)
                 call jeveuo(jexnum(nxdnum, iocc), 'E', anumcp)
                 zk8(anomcp) = 'IMPLICIT'
-                zi (anumcp) = -1
-            endif
-        endif
+                zi(anumcp) = -1
+            end if
+        end if
     end do
     call jedema()
 end subroutine

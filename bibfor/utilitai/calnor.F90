@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine calnor(chdim, geom, iare, nnos, nnoa,&
-                  orien, nno, npg, noe, ifa,&
-                  tymvol, idfde, jac, nx, ny,&
+subroutine calnor(chdim, geom, iare, nnos, nnoa, &
+                  orien, nno, npg, noe, ifa, &
+                  tymvol, idfde, jac, nx, ny, &
                   nz, tx, ty, hf)
 ! person_in_charge: josselin.delmas at edf.fr
 !
@@ -146,78 +146,78 @@ subroutine calnor(chdim, geom, iare, nnos, nnoa,&
 !
 ! 1.1. ==> PREALABLE
 !
-        if (lteatt('AXIS','OUI')) then
+        if (lteatt('AXIS', 'OUI')) then
             laxi = .true.
         else
             laxi = .false.
-        endif
+        end if
 !
 ! 1.2. ==> COORDONNEES DES 3 NOEUDS
 !
         if (iare .eq. nnos) then
-            jno=1
+            jno = 1
         else
-            jno=iare+1
-        endif
+            jno = iare+1
+        end if
 !
-        x1=geom(2*iare-1)
-        y1=geom(2*iare)
-        x2=geom(2*jno-1)
-        y2=geom(2*jno)
+        x1 = geom(2*iare-1)
+        y1 = geom(2*iare)
+        x2 = geom(2*jno-1)
+        y2 = geom(2*jno)
 !
 ! 1.3. ==> LONGUEUR DE L'ARETE
 !
-        hf=sqrt((x1-x2)**2+(y1-y2)**2)
+        hf = sqrt((x1-x2)**2+(y1-y2)**2)
 !
         if (nnoa .eq. 3) then
-            mno = nnos + iare
+            mno = nnos+iare
             x3 = geom(2*mno-1)
             y3 = geom(2*mno)
 !
 ! 1.2.1. ==> TRAITEMENT ELEMENTS DE BARSOUM
 !
 ! ----- LA NORMALE EST CALCULEE EN UTILISANT LE POINT MILIEU
-            norme=sqrt((x3-x1)**2+(y3-y1)**2)/sqrt((x2-x1)**2+(y2-y1)&
-            **2)
+            norme = sqrt((x3-x1)**2+(y3-y1)**2)/sqrt((x2-x1)**2+(y2-y1) &
+                                                     **2)
 !
-            if ((norme.lt.0.4d0) .or. (norme.gt.0.6d0)) then
+            if ((norme .lt. 0.4d0) .or. (norme .gt. 0.6d0)) then
 !
                 x3 = (x1+x2)*0.5d0
                 y3 = (y1+y2)*0.5d0
 !
-            endif
+            end if
 !
 ! 1.2.2. ==> TRAITEMENT AUTRES ELEMENTS
 !
         else
             x3 = (x1+x2)*0.5d0
             y3 = (y1+y2)*0.5d0
-        endif
+        end if
 !
 ! 1.3. ==> CALCUL NORMALE SORTANTE, TANGENTE ET JACOBIEN PREMIER POINT
 !
-        x(1) = -( (y2-y1)*0.5d0 - (y1+y2-2.d0*y3) )
-        y(1) = (x2-x1)*0.5d0 - (x1+x2-2.d0*x3)
+        x(1) = -((y2-y1)*0.5d0-(y1+y2-2.d0*y3))
+        y(1) = (x2-x1)*0.5d0-(x1+x2-2.d0*x3)
 !
         jac(1) = sqrt(x(1)**2+y(1)**2)
 !
         if (laxi) then
-            jac(1)=jac(1)*x1
-        endif
+            jac(1) = jac(1)*x1
+        end if
 !
         nx(1) = -(x(1)*orien)/(sqrt(x(1)**2+y(1)**2))
         ny(1) = -(y(1)*orien)/(sqrt(x(1)**2+y(1)**2))
 !
 ! 1.4. ==> CALCUL NORMALE SORTANTE, TANGENTE ET JACOBIEN DEUXIEME POINT
 !
-        x(2) = -( (y2-y1)*0.5d0 + (y1+y2-2.d0*y3) )
-        y(2) = (x2-x1)*0.5d0 + (x1+x2-2.d0*x3)
+        x(2) = -((y2-y1)*0.5d0+(y1+y2-2.d0*y3))
+        y(2) = (x2-x1)*0.5d0+(x1+x2-2.d0*x3)
 !
         jac(2) = sqrt(x(2)**2+y(2)**2)
 !
         if (laxi) then
             jac(2) = jac(2)*x2
-        endif
+        end if
 !
         nx(2) = -(x(2)*orien)/(sqrt(x(2)**2+y(2)**2))
         ny(2) = -(y(2)*orien)/(sqrt(x(2)**2+y(2)**2))
@@ -230,120 +230,120 @@ subroutine calnor(chdim, geom, iare, nnos, nnoa,&
 !
             if (laxi) then
                 jac(3) = jac(3)*(x2+x1)*0.5d0
-            endif
+            end if
 !
             nx(3) = -orien*(y1-y2)/hf
             ny(3) = -orien*(x2-x1)/hf
 !
-        endif
+        end if
 !
 ! 1.6. ==> CALCUL DES TANGENTES
 !
-        do 16 , i = 1 , nnoa
-        tx(i) = ny(i)
-        ty(i) = -nx(i)
- 16     continue
+        do 16, i = 1, nnoa
+            tx(i) = ny(i)
+            ty(i) = -nx(i)
+16          continue
 !
 !====
 ! 2. -- CAS DU 3D ------------------------------------------------------
 !====
 !
-    else if (chdim.eq.'3D') then
+            else if (chdim .eq. '3D') then
 !
 ! 2.1. ==> COORDONNEES DES NOEUDS
 !
-        do 21 , numno=1,nno
-        lenoeu=noe(numno,ifa,tymvol)
-        x(numno)=geom(3*lenoeu-2)
-        y(numno)=geom(3*lenoeu-1)
-        z(numno)=geom(3*lenoeu)
- 21     continue
+            do 21, numno = 1, nno
+                lenoeu = noe(numno, ifa, tymvol)
+                x(numno) = geom(3*lenoeu-2)
+                y(numno) = geom(3*lenoeu-1)
+                z(numno) = geom(3*lenoeu)
+21              continue
 !
 ! 2.2. ==> TRAITEMENT ELEMENTS DE BARSOUM
 !
 ! ----- LA NORMALE EST CALCULEE EN UTILISANT LE POINT MILIEU
-        if ((nno.eq.6) .or. (nno.eq.8)) then
+                if ((nno .eq. 6) .or. (nno .eq. 8)) then
 !
-            nnos2=nno/2
+                    nnos2 = nno/2
 !
-            do 22 , ino=1,nnos2
+                    do 22, ino = 1, nnos2
 !
-            if (ino .eq. nnos2) then
-                jno=1
-            else
-                jno=ino+1
-            endif
-            mno=nnos2+ino
+                        if (ino .eq. nnos2) then
+                            jno = 1
+                        else
+                            jno = ino+1
+                        end if
+                        mno = nnos2+ino
 !
-            norme=sqrt( (x(mno) - x(ino) )**2 + (y(mno) - y(ino) )&
-                **2 + (z(mno) - z(ino) )**2 ) /sqrt( (x(jno) - x(ino)&
-                )**2 + (y(jno) - y(ino) )**2 + (z(jno) - z(ino) )**2 )
+                        norme = sqrt((x(mno)-x(ino))**2+(y(mno)-y(ino)) &
+                                     **2+(z(mno)-z(ino))**2)/sqrt((x(jno)-x(ino) &
+                                                         )**2+(y(jno)-y(ino))**2+(z(jno)-z(ino))**2)
 !
-            if ((norme.lt.0.4d0) .or. (norme.gt.0.6d0)) then
-                x(mno)=(x(ino)+x(jno))*0.5d0
-                y(mno)=(y(ino)+y(jno))*0.5d0
-                z(mno)=(z(ino)+z(jno))*0.5d0
-            endif
+                        if ((norme .lt. 0.4d0) .or. (norme .gt. 0.6d0)) then
+                            x(mno) = (x(ino)+x(jno))*0.5d0
+                            y(mno) = (y(ino)+y(jno))*0.5d0
+                            z(mno) = (z(ino)+z(jno))*0.5d0
+                        end if
 !
- 22         continue
-        endif
+22                      continue
+                        end if
 !
 ! 2.3. ==> CALCUL DU PRODUIT VECTORIEL OMI OMJ
 !
-        do 23 , i=1,nno
+                        do 23, i = 1, nno
 !
-        do 231 , j=1,nno
+                            do 231, j = 1, nno
 !
-        sx(i,j)=y(i)*z(j)-z(i)*y(j)
-        sy(i,j)=z(i)*x(j)-x(i)*z(j)
-        sz(i,j)=x(i)*y(j)-y(i)*x(j)
+                                sx(i, j) = y(i)*z(j)-z(i)*y(j)
+                                sy(i, j) = z(i)*x(j)-x(i)*z(j)
+                                sz(i, j) = x(i)*y(j)-y(i)*x(j)
 !
-231     continue
+231                             continue
 !
- 23     continue
+23                              continue
 !
 ! 2.4. ==> SOMMATION DES DERIVEES
 !
-        do 24 , ipg=1,npg
+                                do 24, ipg = 1, npg
 !
-        nx(ipg) = 0.d0
-        ny(ipg) = 0.d0
-        nz(ipg) = 0.d0
+                                    nx(ipg) = 0.d0
+                                    ny(ipg) = 0.d0
+                                    nz(ipg) = 0.d0
 !
-        kdec=2*(ipg-1)*nno
+                                    kdec = 2*(ipg-1)*nno
 !
-        do 241 , i=1,nno
-        idec=2*(i-1)
+                                    do 241, i = 1, nno
+                                        idec = 2*(i-1)
 !
-        do 242 , j=1,nno
-        jdec=2*(j-1)
-        nx(ipg)=nx(ipg)-zr(idfde+kdec+idec) *zr(idfde+&
-                    kdec+jdec+1)*sx(i,j)
-        ny(ipg)=ny(ipg)-zr(idfde+kdec+idec) *zr(idfde+&
-                    kdec+jdec+1)*sy(i,j)
-        nz(ipg)=nz(ipg)-zr(idfde+kdec+idec) *zr(idfde+&
-                    kdec+jdec+1)*sz(i,j)
-242     continue
+                                        do 242, j = 1, nno
+                                            jdec = 2*(j-1)
+                                            nx(ipg) = nx(ipg)-zr(idfde+kdec+idec)*zr(idfde+ &
+                                                                               kdec+jdec+1)*sx(i, j)
+                                            ny(ipg) = ny(ipg)-zr(idfde+kdec+idec)*zr(idfde+ &
+                                                                               kdec+jdec+1)*sy(i, j)
+                                            nz(ipg) = nz(ipg)-zr(idfde+kdec+idec)*zr(idfde+ &
+                                                                               kdec+jdec+1)*sz(i, j)
+242                                         continue
 !
-241     continue
+241                                         continue
 !
 !        CALCUL DU JACOBIEN
 !
-        jac(ipg)=sqrt(nx(ipg)**2+ny(ipg)**2+nz(ipg)**2)
-        nx(ipg)=nx(ipg)/jac(ipg)
-        ny(ipg)=ny(ipg)/jac(ipg)
-        nz(ipg)=nz(ipg)/jac(ipg)
+                                            jac(ipg) = sqrt(nx(ipg)**2+ny(ipg)**2+nz(ipg)**2)
+                                            nx(ipg) = nx(ipg)/jac(ipg)
+                                            ny(ipg) = ny(ipg)/jac(ipg)
+                                            nz(ipg) = nz(ipg)/jac(ipg)
 !
- 24     continue
+24                                          continue
 !
 ! ----- PROBLEME -------------------------------------------------------
 !
-    else
+                                            else
 !
-        call utmess('F', 'UTILITAI_9', sk=chdim)
+                                            call utmess('F', 'UTILITAI_9', sk=chdim)
 !
-    endif
+                                            end if
 !
 ! ----------------------------------------------------------------------
 !
-end subroutine
+                                            end subroutine

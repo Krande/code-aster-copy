@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 subroutine cfimp2(sdcont_defi, sdcont_solv, mesh, iliai, typeou)
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterfort/apinfi.h"
@@ -95,7 +95,7 @@ implicit none
 !
 ! --- INITIALISATIONS
 !
-    aljeu = cfdisr(sdcont_defi,'ALARME_JEU' )
+    aljeu = cfdisr(sdcont_defi, 'ALARME_JEU')
     nomlia = ' '
     etalia = ' '
 !
@@ -121,56 +121,56 @@ implicit none
 !
 ! ----- NOM ET TYPE DU MAITRE
 !
-        call cfnoap(mesh, sdcont_defi, typapp, entapp, nomapp,&
+        call cfnoap(mesh, sdcont_defi, typapp, entapp, nomapp, &
                     type2)
 !
 ! ----- NOM DE LA LIAISON
 !
-        write (nomlia,100) iliai,'( ',nomnoe,type2,nomapp,'): '
+        write (nomlia, 100) iliai, '( ', nomnoe, type2, nomapp, '): '
 !
 ! ----- AFFICHAGE LIAISON
 !
         if (typeou .eq. 'ACT') then
             etalia = ' CONT - AJOUTE  '
-            write (ifm,202) nomlia,etalia
+            write (ifm, 202) nomlia, etalia
 !
-        else if (typeou.eq.'LIB') then
+        else if (typeou .eq. 'LIB') then
             etalia = ' CONT - SUPPRIME'
-            write (ifm,202) nomlia,etalia
+            write (ifm, 202) nomlia, etalia
 !
-        else if (typeou.eq.'NEG') then
+        else if (typeou .eq. 'NEG') then
             etalia = ' PRES. NEGATIVE '
-            write (ifm,200) nomlia,etalia,' - TYPE CONT.'
+            write (ifm, 200) nomlia, etalia, ' - TYPE CONT.'
 !
-        else if (typeou.eq.'PIV') then
+        else if (typeou .eq. 'PIV') then
             etalia = ' PIVOT NUL      '
-            write (ifm,200) nomlia,etalia,' - TYPE CONT.'
+            write (ifm, 200) nomlia, etalia, ' - TYPE CONT.'
 !
-        else if (typeou.eq.'GLI') then
+        else if (typeou .eq. 'GLI') then
             etalia = ' GLIS - SUPPRIME'
-            write (ifm,200) nomlia,etalia,' - TYPE CONT.'
+            write (ifm, 200) nomlia, etalia, ' - TYPE CONT.'
 !
-        else if (typeou.eq.'ADH') then
+        else if (typeou .eq. 'ADH') then
             etalia = ' ADHE - AJOUTE  '
-            write (ifm,200) nomlia,etalia,' - TYPE CONT.'
+            write (ifm, 200) nomlia, etalia, ' - TYPE CONT.'
 !
-        else if (typeou.eq.'ALJ') then
+        else if (typeou .eq. 'ALJ') then
             etalia = ' DECOLLE DU JEU '
-            write (ifm,201) nomlia,etalia,aljeu
+            write (ifm, 201) nomlia, etalia, aljeu
 !
-        else if (typeou.eq.'AGC') then
+        else if (typeou .eq. 'AGC') then
             etalia = ' INTERPENETRE   '
-            write (ifm,202) nomlia,etalia
+            write (ifm, 202) nomlia, etalia
 !
         else
             ASSERT(.false.)
-        endif
-    endif
+        end if
+    end if
 !
-100 format (i5,a2,a16,a4,a8,a3)
-200 format (' <CONTACT><CALC> LIAISON ',a38,a16,a20)
-201 format (' <CONTACT><CALC> LIAISON ',a38,a16,e12.3)
-202 format (' <CONTACT><CALC> LIAISON ',a38,a16)
+100 format(i5, a2, a16, a4, a8, a3)
+200 format(' <CONTACT><CALC> LIAISON ', a38, a16, a20)
+201 format(' <CONTACT><CALC> LIAISON ', a38, a16, e12.3)
+202 format(' <CONTACT><CALC> LIAISON ', a38, a16)
 !
     call jedema()
 !

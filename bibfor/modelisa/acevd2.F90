@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -54,7 +54,7 @@ subroutine acevd2(noma, nomo, mcf, lmax, nbocc)
 #include "asterfort/as_allocate.h"
 !
 ! --------------------------------------------------------------------------------------------------
-    integer, parameter :: nbcar=100
+    integer, parameter :: nbcar = 100
     integer :: ier, i3d, i2d, ndim, ioc, ng, nm, ncar, icar
     integer :: ii, nbma, ialima
     character(len=1) :: foue
@@ -68,41 +68,41 @@ subroutine acevd2(noma, nomo, mcf, lmax, nbocc)
     call getres(nomu, concep, cmd)
     tmpdis = nomu//'.DISCRET'
     mlgnno = noma//'.NOMNOE'
-    grpma  = noma//'.GROUPEMA       '
+    grpma = noma//'.GROUPEMA       '
 !
 !   Vérification des dimensions / modélisations
     ier = 0
     call verdis(nomo, noma, 'F', i3d, i2d, ndim, ier)
-    ASSERT((mcf.eq.'DISCRET_2D').or.(mcf.eq.'DISCRET'))
+    ASSERT((mcf .eq. 'DISCRET_2D') .or. (mcf .eq. 'DISCRET'))
 !
     AS_ALLOCATE(vk24=zjdls, size=lmax)
 !
 !   Boucle sur les occurences
     do ioc = 1, nbocc
         call getvem(noma, 'GROUP_MA', mcf, 'GROUP_MA', ioc, lmax, zjdls, ng)
-        call getvem(noma, 'MAILLE',   mcf, 'MAILLE',   ioc, lmax, zjdls, nm)
-        call getvtx(mcf,  'CARA', iocc=ioc, nbval=nbcar, vect=car, nbret=ncar)
+        call getvem(noma, 'MAILLE', mcf, 'MAILLE', ioc, lmax, zjdls, nm)
+        call getvtx(mcf, 'CARA', iocc=ioc, nbval=nbcar, vect=car, nbret=ncar)
 !
         if (ncar .gt. ncar) then
             ASSERT(.false.)
-        endif
+        end if
         do icar = 1, ncar
-            if (car(icar)(3:4) .eq. 'TR') then
+            if (car(icar) (3:4) .eq. 'TR') then
 !               GROUP_MA = toutes les mailles de tous les groupes de mailles
                 if (ng .gt. 0) then
                     do ii = 1, ng
                         call jelira(jexnom(grpma, zjdls(ii)), 'LONUTI', nbma)
                         call jeveuo(jexnom(grpma, zjdls(ii)), 'L', ialima)
                         call acevtr(noma, nomo, 2, zk24(1), zi(ialima), nbma, ndim)
-                    enddo
-                endif
+                    end do
+                end if
 !               MAILLE = toutes les mailles  de la liste de mailles
                 if (nm .gt. 0) then
                     call acevtr(noma, nomo, 1, zjdls, zi(1), nm, ndim)
-                endif
-            endif
-        enddo
-    enddo
+                end if
+            end if
+        end do
+    end do
 !
     AS_DEALLOCATE(vk24=zjdls)
 end subroutine

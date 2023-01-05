@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -35,8 +35,8 @@ subroutine xthpoc(modele, chtn, chtpg)
 !
 ! ----------------------------------------------------------------------
     integer :: nbin, nbout
-    parameter    (nbin=10)
-    parameter    (nbout=1)
+    parameter(nbin=10)
+    parameter(nbout=1)
     character(len=8) :: lpain(nbin), lpaout(nbout)
     character(len=16) :: option
     character(len=19) :: ligrmo, pintto, cnseto, heavto, loncha, basloc, lsn
@@ -85,8 +85,8 @@ subroutine xthpoc(modele, chtn, chtpg)
 !
 !     RQ : LIGRMO CONTIENT TOUS LES EF DU MODELE, MAIS SEULS LES EF
 !     ---  X-FEM SAVENT CALCULER L'OPTION 'TEMP_ELGA'
-    call calcul('S', option, ligrmo, nbin, lchin,&
-                lpain, nbout, lchout, lpaout, 'V',&
+    call calcul('S', option, ligrmo, nbin, lchin, &
+                lpain, nbout, lchout, lpaout, 'V', &
                 'OUI')
 !
     call jedema()

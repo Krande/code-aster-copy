@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine glrcad(zimat, mp1, mp2, delas, rpara,&
-                  dmax1, dmax2, dam1, dam2, curvcu,&
-                  c1, c2, nbackn, deps, depsp,&
-                  df, ddiss, dsidep, normm, normn,&
+subroutine glrcad(zimat, mp1, mp2, delas, rpara, &
+                  dmax1, dmax2, dam1, dam2, curvcu, &
+                  c1, c2, nbackn, deps, depsp, &
+                  df, ddiss, dsidep, normm, normn, &
                   crit, codret)
 !
 ! aslint: disable=W1504
@@ -111,7 +111,7 @@ subroutine glrcad(zimat, mp1, mp2, delas, rpara,&
     k1 = rpara(4)
     k2 = rpara(5)
 !
-    zerode = zero * norrm6(deps)
+    zerode = zero*norrm6(deps)
 !
     do i = 1, 6
 !     COPIE DU TENSEUR DES EFFORT - EFFORT DE RAPPEL
@@ -120,7 +120,7 @@ subroutine glrcad(zimat, mp1, mp2, delas, rpara,&
 !
 !     CALCUL DES MOMENTS LIMITES DE PLASTICITE
 !     ET DES ZEROS DES CRITERES
-    call mppffn(zimat, nmnbn, nmplas, nmzef, nmzeg,&
+    call mppffn(zimat, nmnbn, nmplas, nmzef, nmzeg, &
                 nmief, normm)
 !
 !     CALCUL DES DERIVEES DES MOMENTS LIMITES DE PLASTICITE
@@ -132,16 +132,16 @@ subroutine glrcad(zimat, mp1, mp2, delas, rpara,&
     newzef = nmzef
     newzeg = nmzeg
 !
-    ASSERT(nmief.le.0)
+    ASSERT(nmief .le. 0)
 !
     do j = 1, 6
         do i = 1, 6
 !     DTG : MATRICE TANGENTE
-            dtg(i,j) = delas(i,j)
+            dtg(i, j) = delas(i, j)
         end do
     end do
 !
-    ddiss=0.d0
+    ddiss = 0.d0
     call r8inir(6, 0.0d0, df, 1)
     call r8inir(6, 0.0d0, depsp, 1)
 !
@@ -161,8 +161,8 @@ subroutine glrcad(zimat, mp1, mp2, delas, rpara,&
         do i = 1, 6
 !     DC1 : MATRICE ELASTIQUE + CONSTANTES DE PRAGER
 !     DC2 : MATRICE ELASTIQUE + CONSTANTES DE PRAGER
-            dc1(i,j) = dtg(i,j)+c1(i,j)
-            dc2(i,j) = dtg(i,j)+c2(i,j)
+            dc1(i, j) = dtg(i, j)+c1(i, j)
+            dc2(i, j) = dtg(i, j)+c2(i, j)
         end do
     end do
 !
@@ -170,7 +170,7 @@ subroutine glrcad(zimat, mp1, mp2, delas, rpara,&
         if (norrm6(reps) .le. zerode) then
 !     TEST DE CV DE L ALGO D INTEGRATION
             goto 230
-        endif
+        end if
 !
         do i = 1, 6
 !     AFFECTATION DE L INCREMENT DE DEFORMATION TEST
@@ -178,25 +178,25 @@ subroutine glrcad(zimat, mp1, mp2, delas, rpara,&
         end do
 !
 !     CALCUL DE L ENDOMMAGEMENT ET DE LA MATRICE TANGENTE
-        call tanmat(alpha, beta, gamma, k1, k2,&
-                    dmax1, dmax2, dam1, dam2, curcup,&
+        call tanmat(alpha, beta, gamma, k1, k2, &
+                    dmax1, dmax2, dam1, dam2, curcup, &
                     depste(4), dff)
 !
         do j = 1, 3
             do i = 1, 3
-                dtg(i+3,j+3) = dff(i,j)
+                dtg(i+3, j+3) = dff(i, j)
             end do
         end do
 !
         do j = 1, 6
             do i = 1, 6
-                dc1(i,j) = dtg(i,j)+c1(i,j)
-                dc2(i,j) = dtg(i,j)+c2(i,j)
+                dc1(i, j) = dtg(i, j)+c1(i, j)
+                dc2(i, j) = dtg(i, j)+c2(i, j)
             end do
         end do
 !
 !     CALCUL DU PREDICTEUR ELASTIQUE ET DU NOMBRE DE CRITERE ATTEINT
-        ncrit = critnu(zimat,nmnbn,depste,dtg,normm)
+        ncrit = critnu(zimat, nmnbn, depste, dtg, normm)
 !
         do kkk = 1, kmax
             do j = 1, 6
@@ -204,13 +204,13 @@ subroutine glrcad(zimat, mp1, mp2, delas, rpara,&
             end do
 !
 !     CALCUL DU PREDICTEUR ELASTIQUE ET DU NOMBRE DE CRITERE ATTEINT
-            ncrit2 = critnu(zimat,nmnbn,depst2,dtg,normm)
+            ncrit2 = critnu(zimat, nmnbn, depst2, dtg, normm)
 !
             if (ncrit2 .ne. ncrit) then
                 do j = 1, 6
                     depste(j) = depst2(j)
                 end do
-                ncrit=ncrit2
+                ncrit = ncrit2
             else
                 newzfg(1) = newzef
                 newzfg(2) = newzeg
@@ -220,9 +220,9 @@ subroutine glrcad(zimat, mp1, mp2, delas, rpara,&
 !
 !     CALCUL DU NOUVEAU MOMENT
 !     DE L INCREMENT DE COURBURE PLASTIQUE ET DE LA DISSIPATION
-                call dndiss(ipara, nmnbn, nmplas, nmdpla, nmddpl,&
-                            nmprox, depste, newnbn, newpla, newdpl,&
-                            newddp, newzfg, depspt, ddisst, dc1,&
+                call dndiss(ipara, nmnbn, nmplas, nmdpla, nmddpl, &
+                            nmprox, depste, newnbn, newpla, newdpl, &
+                            newddp, newzfg, depspt, ddisst, dc1, &
                             dc2, dtg, normm, normn)
 !
                 zimat = ipara(1)
@@ -237,20 +237,20 @@ subroutine glrcad(zimat, mp1, mp2, delas, rpara,&
                     do j = 1, 6
                         depste(j) = depst2(j)
                     end do
-                    ncrit=ncrit2
+                    ncrit = ncrit2
                 else
 !     LE POINT EST DANS LA ZONE G < 0
 !     SI LE NOUVEAU MOMENT EST A L EXTERIEUR DE LA SURFACE DE PLAST
 !     LA METHODE BRINGBACK EST UTILISEE
 !     POUR ESSAYER DE LE RAMENER SUR LA SURFACE
 !
-                    if (fplass(newnbn,newpla,1) .gt. newzef .or. fplass(newnbn,newpla,2)&
+                    if (fplass(newnbn, newpla, 1) .gt. newzef .or. fplass(newnbn, newpla, 2) &
                         .gt. newzef) then
 !
 !     PROCEDURE BRINGBACK
-                        call brbagl(zimat, newnbn, newpla, newdpl, newddp,&
-                                    newzef, newzeg, newief, newpro, depspt,&
-                                    ddisst, dc1, dc2, dtg, bbok,&
+                        call brbagl(zimat, newnbn, newpla, newdpl, newddp, &
+                                    newzef, newzeg, newief, newpro, depspt, &
+                                    ddisst, dc1, dc2, dtg, bbok, &
                                     normm, normn)
 !
 !     BRINGBACK OK : INCREMENT VALIDE
@@ -265,9 +265,9 @@ subroutine glrcad(zimat, mp1, mp2, delas, rpara,&
                         ncrit = ncrit2
                     else
                         goto 123
-                    endif
-                endif
-            endif
+                    end if
+                end if
+            end if
         end do
 !
 !     NON CONVERGENCE DE L ALGO DE DICHOTOMIE
@@ -283,14 +283,14 @@ subroutine glrcad(zimat, mp1, mp2, delas, rpara,&
 !
         do j = 1, 3
             do i = 1, 2
-                nmplas(i,j) = newpla(i,j)
+                nmplas(i, j) = newpla(i, j)
             end do
         end do
 !
         do j = 1, 2
             do i = 1, 2
-                nmdpla(i,j) = newdpl(i,j)
-                nmddpl(i,j) = newddp(i,j)
+                nmdpla(i, j) = newdpl(i, j)
+                nmddpl(i, j) = newddp(i, j)
             end do
         end do
 !
@@ -303,27 +303,27 @@ subroutine glrcad(zimat, mp1, mp2, delas, rpara,&
         end do
 !
         do j = 1, 6
-            depsp(j) = depsp(j) + depspt(j)
+            depsp(j) = depsp(j)+depspt(j)
         end do
 !
-        ddiss = ddiss + ddisst
+        ddiss = ddiss+ddisst
 !
         do j = 1, 3
-            curcup(j) = curcup(j) + depste(j+3) - depspt(j+3)
+            curcup(j) = curcup(j)+depste(j+3)-depspt(j+3)
         end do
 !
         do j = 1, 6
-            dfp2(j) = depste(j) - depspt(j)
+            dfp2(j) = depste(j)-depspt(j)
         end do
 !
         dfp = matmul(dtg, dfp2)
 !
         do j = 1, 6
-            df(j) = df(j) + dfp(j)
+            df(j) = df(j)+dfp(j)
         end do
 !
         do j = 1, 6
-            reps(j) = reps(j) - depste(j)
+            reps(j) = reps(j)-depste(j)
         end do
     end do
 !
@@ -338,15 +338,15 @@ subroutine glrcad(zimat, mp1, mp2, delas, rpara,&
 !
     do i = 1, 3
         do j = 1, 3
-            dcc1(j,i) = dc1(3+j,3+i)
-            dcc2(j,i) = dc2(3+j,3+i)
+            dcc1(j, i) = dc1(3+j, 3+i)
+            dcc2(j, i) = dc2(3+j, 3+i)
         end do
     end do
 !
     call dcopy(36, delas, 1, dsidep, 1)
 !
 !     REALISE LE CALCUL DE LA MATRICE TANGENTE
-    call dxktan(dtg, mp1, mp2, nbackn, ncrit,&
+    call dxktan(dtg, mp1, mp2, nbackn, ncrit, &
                 dcc1, dcc2, dsidep)
 !
 end subroutine

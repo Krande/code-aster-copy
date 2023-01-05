@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,10 +17,10 @@
 ! --------------------------------------------------------------------
 
 subroutine cfaca1(nbliac, ajliai, &
-                  sdcont_defi, sdcont_solv, solveu,&
+                  sdcont_defi, sdcont_solv, solveu, &
                   lmat)
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterfort/calatm.h"
@@ -70,7 +70,7 @@ implicit none
     integer :: lliac, jdecal, nbddl
     integer :: neq, lgbloc, tampon
     integer :: nbsm, npas
-    integer :: nrest, ipas, kk, iliac,  npast
+    integer :: nrest, ipas, kk, iliac, npast
     character(len=19) :: liac, cm1a
     integer :: jliac, jcm1a
     character(len=24) :: appoin, apddl, apcoef
@@ -85,10 +85,10 @@ implicit none
 !
 ! - Get objects
 !
-    cm1a   = sdcont_solv(1:14)//'.CM1A'
+    cm1a = sdcont_solv(1:14)//'.CM1A'
     appoin = sdcont_solv(1:14)//'.APPOIN'
-    apddl  = sdcont_solv(1:14)//'.APDDL'
-    liac   = sdcont_solv(1:14)//'.LIAC'
+    apddl = sdcont_solv(1:14)//'.APDDL'
+    liac = sdcont_solv(1:14)//'.LIAC'
     apcoef = sdcont_solv(1:14)//'.APCOEF'
     call jeveuo(appoin, 'L', japptr)
     call jeveuo(apddl, 'L', japddl)
@@ -102,43 +102,43 @@ implicit none
 ! --- CHARGEMENT CINEMATIQUE NUL
 !
     cncin0 = sdcont_solv(1:14)//'.CIN0'
-    lgbloc = cfdisi(sdcont_defi,'NB_RESOL')
+    lgbloc = cfdisi(sdcont_defi, 'NB_RESOL')
 !
-    nbsm = nbliac - ajliai
+    nbsm = nbliac-ajliai
     if (lgbloc .gt. nbsm) lgbloc = nbsm
-    npas = nbsm / lgbloc
-    nrest = nbsm - lgbloc*npas
+    npas = nbsm/lgbloc
+    nrest = nbsm-lgbloc*npas
 !
     if (nrest .gt. 0) then
-        npast = npas + 1
+        npast = npas+1
     else
         npast = npas
-    endif
-    chsecm='&&CFACA1.TAMPON'
+    end if
+    chsecm = '&&CFACA1.TAMPON'
     call wkvect(chsecm, ' V V R ', neq*lgbloc, tampon)
 !
     do ipas = 1, npast
         lg = lgbloc
-        if (npast .ne. npas .and. (ipas.eq.npast)) lg = nrest
+        if (npast .ne. npas .and. (ipas .eq. npast)) lg = nrest
 !
         do kk = 1, neq*lg
             zr(tampon-1+kk) = 0.0d0
         end do
         do il = 1, lg
-            iliac = lgbloc* (ipas-1) + il + ajliai
+            iliac = lgbloc*(ipas-1)+il+ajliai
             lliac = zi(jliac+iliac-1)
             jdecal = zi(japptr+lliac-1)
-            nbddl = zi(japptr+lliac) - zi(japptr+lliac-1)
-            call calatm(neq, nbddl, 1.d0, zr(japcoe+jdecal), zi(japddl+ jdecal),&
+            nbddl = zi(japptr+lliac)-zi(japptr+lliac-1)
+            call calatm(neq, nbddl, 1.d0, zr(japcoe+jdecal), zi(japddl+jdecal), &
                         zr(tampon+neq*(il-1)))
         end do
         call nmrldb(solveu, lmat, zr(tampon), lg, cncin0)
         do il = 1, lg
-            iliac = lgbloc* (ipas-1) + il + ajliai
+            iliac = lgbloc*(ipas-1)+il+ajliai
             lliac = zi(jliac+iliac-1)
             call jeveuo(jexnum(cm1a, lliac), 'E', jcm1a)
             do kk = 1, neq
-                zr(jcm1a-1+kk) = zr(tampon-1+neq* (il-1)+kk)
+                zr(jcm1a-1+kk) = zr(tampon-1+neq*(il-1)+kk)
             end do
             call jelibe(jexnum(cm1a, lliac))
         end do

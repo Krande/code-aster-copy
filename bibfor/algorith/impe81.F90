@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -75,7 +75,7 @@ subroutine impe81(nomres, impe, basemo)
     character(len=19) :: impini
     character(len=19) :: impk, impm, impc
 !
-    data blanc /'        '/
+    data blanc/'        '/
 !
 !-----------------------------------------------------------------------
 !
@@ -98,9 +98,9 @@ subroutine impe81(nomres, impe, basemo)
     if (nfr .ne. 0) amso = 2.d0*amso
 
     if (nma .ne. 0) then
-      call getvid(' ', 'BASE_MODALE', scal=basemo, nbret=nb)
-      goto 10
-    endif
+        call getvid(' ', 'BASE_MODALE', scal=basemo, nbret=nb)
+        goto 10
+    end if
 !
     call wkvect(nomres//'.MAEL_RAID_REFE', 'G V K24', 2, ldrefr)
     zk24(ldrefr) = basemo
@@ -115,11 +115,11 @@ subroutine impe81(nomres, impe, basemo)
     zk24(ldrefa+1) = blanc
 !
 !
- 10 continue
+10  continue
 
     call dismoi('NB_MODES_DYN', basemo, 'RESULTAT', repi=nbmodd)
     call dismoi('NB_MODES_STA', basemo, 'RESULTAT', repi=nbmods)
-    nbmode = nbmodd + nbmods
+    nbmode = nbmodd+nbmods
 !
 ! --- RECUPERATION DES DIMENSIONS DE LA BASE MODALE
 !
@@ -127,41 +127,41 @@ subroutine impe81(nomres, impe, basemo)
 !
 ! --- ALLOCATION DE LA MATRICE RESULTAT
 !
-    ntail = nbdef* (nbdef+1)/2
+    ntail = nbdef*(nbdef+1)/2
     if (nma .ne. 0) then
-      call jelira(nomres//'.MAEL_RAID_VALE', 'LONMAX', ntail1)
-      if (ntail .ne. ntail1) call utmess('F','ALGORITH_52')
-      goto 11
-    endif
+        call jelira(nomres//'.MAEL_RAID_VALE', 'LONMAX', ntail1)
+        if (ntail .ne. ntail1) call utmess('F', 'ALGORITH_52')
+        goto 11
+    end if
     call jecrec(nomres//'.MAEL_RAID_VALE', 'G V R', 'NU', 'DISPERSE', &
-                'CONSTANT',1)
+                'CONSTANT', 1)
     call jeecra(nomres//'.MAEL_RAID_VALE', 'LONMAX', ntail)
     call jecroc(jexnum(nomres//'.MAEL_RAID_VALE', 1))
- 11 continue
+11  continue
     call jeveuo(jexnum(nomres//'.MAEL_RAID_VALE', 1), 'E', ldresr)
 !
     if (nma .ne. 0) then
-      call jelira(nomres//'.MAEL_MASS_VALE', 'LONMAX', ntail2)
-      if (ntail .ne. ntail2) call utmess('F','ALGORITH_52')
-      goto 12
-    endif
+        call jelira(nomres//'.MAEL_MASS_VALE', 'LONMAX', ntail2)
+        if (ntail .ne. ntail2) call utmess('F', 'ALGORITH_52')
+        goto 12
+    end if
     call jecrec(nomres//'.MAEL_MASS_VALE', 'G V R', 'NU', 'DISPERSE', &
-                'CONSTANT',1)
+                'CONSTANT', 1)
     call jeecra(nomres//'.MAEL_MASS_VALE', 'LONMAX', ntail)
     call jecroc(jexnum(nomres//'.MAEL_MASS_VALE', 1))
- 12 continue
+12  continue
     call jeveuo(jexnum(nomres//'.MAEL_MASS_VALE', 1), 'E', ldresm)
 !
     if (nma .ne. 0) then
-      call jelira(nomres//'.MAEL_AMOR_VALE', 'LONMAX', ntail3)
-      if (ntail .ne. ntail3) call utmess('F','ALGORITH_52')
-      goto 13
-    endif
+        call jelira(nomres//'.MAEL_AMOR_VALE', 'LONMAX', ntail3)
+        if (ntail .ne. ntail3) call utmess('F', 'ALGORITH_52')
+        goto 13
+    end if
     call jecrec(nomres//'.MAEL_AMOR_VALE', 'G V R', 'NU', 'DISPERSE', &
-                'CONSTANT',1)
+                'CONSTANT', 1)
     call jeecra(nomres//'.MAEL_AMOR_VALE', 'LONMAX', ntail)
     call jecroc(jexnum(nomres//'.MAEL_AMOR_VALE', 1))
- 13 continue
+13  continue
     call jeveuo(jexnum(nomres//'.MAEL_AMOR_VALE', 1), 'E', ldresa)
 !
 !
@@ -191,22 +191,22 @@ subroutine impe81(nomres, impe, basemo)
                 if ((nk+nm+nc) .eq. 0) then
                     partr = dble(zc(ldblo+i*(i-1)/2+j-1))
                     parti = dimag(zc(ldblo+i*(i-1)/2+j-1))
-                    zr(ldresr+i*(i-1)/2+j-1)=partr
-                    zr(ldresa+i*(i-1)/2+j-1)=(parti-amso*partr)/(dpi*&
-                    freq)
+                    zr(ldresr+i*(i-1)/2+j-1) = partr
+                    zr(ldresa+i*(i-1)/2+j-1) = (parti-amso*partr)/(dpi* &
+                                                                   freq)
                     if (nim .ne. 0) then
                         partr0 = dble(zc(ldbloi+i*(i-1)/2+j-1))
                         parti0 = dimag(zc(ldbloi+i*(i-1)/2+j-1))
                         zr(ldresr+i*(i-1)/2+j-1) = partr0
-                        zr(ldresa+i*(i-1)/2+j-1) = (parti-parti0)/( dpi*freq)
-                        zr(ldresm+i*(i-1)/2+j-1) = (partr0-partr)/( dpi*freq)**2
-                    endif
+                        zr(ldresa+i*(i-1)/2+j-1) = (parti-parti0)/(dpi*freq)
+                        zr(ldresm+i*(i-1)/2+j-1) = (partr0-partr)/(dpi*freq)**2
+                    end if
                 else
-                    if (nk .ne. 0) zr( ldresr+i*(i-1)/2+j-1)=dble(zc( ldblok+i*(i-1)/2+j-1) )
-                    if (nm .ne. 0) zr( ldresm+i*(i-1)/2+j-1)=dble(zc( ldblom+i*(i-1)/2+j-1) )
-                    if (nc .ne. 0) zr( ldresa+i*(i-1)/2+j-1)=dble(zc( ldbloc+i*(i-1)/2+j-1) )
-                endif
-            endif
+                    if (nk .ne. 0) zr(ldresr+i*(i-1)/2+j-1) = dble(zc(ldblok+i*(i-1)/2+j-1))
+                    if (nm .ne. 0) zr(ldresm+i*(i-1)/2+j-1) = dble(zc(ldblom+i*(i-1)/2+j-1))
+                    if (nc .ne. 0) zr(ldresa+i*(i-1)/2+j-1) = dble(zc(ldbloc+i*(i-1)/2+j-1))
+                end if
+            end if
 !
         end do
     end do
@@ -214,8 +214,8 @@ subroutine impe81(nomres, impe, basemo)
 ! --- CREATION DU .DESC
 !
     if (nma .ne. 0) then
-      goto 14
-    endif
+        goto 14
+    end if
     call wkvect(nomres//'.MAEL_RAID_DESC', 'G V I', 3, lddesr)
     zi(lddesr) = 2
     zi(lddesr+1) = nbdef
@@ -233,7 +233,7 @@ subroutine impe81(nomres, impe, basemo)
     zk24(ldrefr) = basemo
     zk24(ldrefr+1) = blanc
     call wkvect(nomres//'.MAEL_INER_VALE', 'G V R', 3*nbdef, ldresi)
- 14 continue
+14  continue
 !
     call jedema()
 end subroutine

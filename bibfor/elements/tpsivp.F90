@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -40,40 +40,40 @@ subroutine tpsivp(p, sigmav)
     real(kind=8) :: alpha, beta
     real(kind=8), dimension(3, 3) :: sigma, temp
 !     ------------------------------------------------------------------
-    ASSERT(size(p,1)==3)
+    ASSERT(size(p, 1) == 3)
 !      ASSERT(size(sigmav)==6)
 !     On décompacte le tenseur pour le stocker comme une matrice pleine symétrique 'L'
-    sigma(:,:) = 0.d0
-    sigma(1,1) = sigmav(1)
-    sigma(2,2) = sigmav(2)
-    sigma(3,3) = sigmav(3)
-    sigma(2,1) = sigmav(4)
-    sigma(3,1) = sigmav(5)
-    sigma(3,2) = sigmav(6)
+    sigma(:, :) = 0.d0
+    sigma(1, 1) = sigmav(1)
+    sigma(2, 2) = sigmav(2)
+    sigma(3, 3) = sigmav(3)
+    sigma(2, 1) = sigmav(4)
+    sigma(3, 1) = sigmav(5)
+    sigma(3, 2) = sigmav(6)
     !
 ! temp = sigma*P
-    ld=3
+    ld = 3
     alpha = 1.d0
     beta = 0.d0
-    call dsymm('L', 'L', ld, ld, alpha,&
-               sigma, ld, p, ld, beta,&
+    call dsymm('L', 'L', ld, ld, alpha, &
+               sigma, ld, p, ld, beta, &
                temp, ld)
 ! sigma <- P^T*temp
-    call dgemm('T', 'N', 3, 3, 3,&
-               alpha, p, 3, temp, 3,&
+    call dgemm('T', 'N', 3, 3, 3, &
+               alpha, p, 3, temp, 3, &
                beta, sigma(1, 1), 3)
 ! On re-compacte le tenseur
 !xx
-    sigmav(1) = sigma(1,1)
+    sigmav(1) = sigma(1, 1)
 ! yy
-    sigmav(2) = sigma(2,2)
+    sigmav(2) = sigma(2, 2)
 ! zz
-    sigmav(3) = sigma(3,3)
+    sigmav(3) = sigma(3, 3)
 ! xy
-    sigmav(4) = sigma(2,1)
+    sigmav(4) = sigma(2, 1)
 ! xz
-    sigmav(5) = sigma(3,1)
+    sigmav(5) = sigma(3, 1)
 ! yz
-    sigmav(6) = sigma(3,2)
+    sigmav(6) = sigma(3, 2)
     !
 end subroutine tpsivp

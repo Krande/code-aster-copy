@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -80,22 +80,22 @@ subroutine crkucv()
     character(len=24) :: matric(3)
     real(kind=8), pointer :: val(:) => null()
 !
-    data linst,listr8,lcpt/'&&CRKUCV_LINST','&&CRKUCV_LISR8',&
+    data linst, listr8, lcpt/'&&CRKUCV_LINST', '&&CRKUCV_LISR8',&
      &     '&&CPT_CRKUCV'/
 ! --- ------------------------------------------------------------------
     call jemarq()
 !
     blan8 = ' '
     list_load = ' '
-    nboini=10
+    nboini = 10
     modele = ' '
     carele = ' '
     materi = ' '
 !
     call getres(resu, type, oper)
-    resu19=resu
+    resu19 = resu
     call getvtx(' ', 'TYPE_RESU', scal=typres, nbret=n1)
-    iocc=1
+    iocc = 1
     call getvid('KUCV', 'RESU_INIT', iocc=iocc, scal=resui, nbret=n1)
 !
     call rscrsd('G', resu, typres, nboini)
@@ -113,34 +113,34 @@ subroutine crkucv()
     if (nis .ne. 0) then
         typabs = 'INST'
         nbinst = -nis
-    endif
+    end if
 
-    if (nis.ne.0) then
+    if (nis .ne. 0) then
         call wkvect(lcpt, 'V V I', nbinst, jcpt)
         call wkvect(linst, 'V V R', nbinst, jinst)
-        call getvr8('KUCV', typabs, iocc=iocc, nbval=nbinst, vect=zr(jinst),&
+        call getvr8('KUCV', typabs, iocc=iocc, nbval=nbinst, vect=zr(jinst), &
                     nbret=n1)
         call getvr8('KUCV', 'PRECISION', iocc=iocc, scal=prec, nbret=ibid)
         call getvtx('KUCV', 'CRITERE', iocc=iocc, scal=criter, nbret=ibid)
-        call rsorac(resu,'LONUTI',0,rbid,k8b,cbid,rbid,k8b,nbv,1,ibid)
+        call rsorac(resu, 'LONUTI', 0, rbid, k8b, cbid, rbid, k8b, nbv, 1, ibid)
 !
         ivmx = rsmxno(resu)
         do k = 1, nbinst
             if (nbv(1) .gt. 0) then
-                call rsorac(resu, typabs, ibid, zr(jinst+k-1), k8b,&
+                call rsorac(resu, typabs, ibid, zr(jinst+k-1), k8b, &
                             cbid, prec, criter, tnum, 1, nbr)
-                nume=tnum(1)
+                nume = tnum(1)
             else
                 nbr = 0
-            endif
+            end if
             if (nbr .lt. 0) then
                 call utmess('F', 'ALGORITH2_48')
-            else if (nbr.eq.0) then
-                zi(jcpt+k-1) = ivmx + 1
-                ivmx = ivmx + 1
+            else if (nbr .eq. 0) then
+                zi(jcpt+k-1) = ivmx+1
+                ivmx = ivmx+1
             else
                 zi(jcpt+k-1) = nume
-            endif
+            end if
         end do
     else
 !        MOT CLE LIST_INST PRESENT :
@@ -148,7 +148,7 @@ subroutine crkucv()
         call getvid('KUCV', 'LIST_INST', iocc=iocc, scal=listr8, nbret=n1)
         if (n1 .ne. 0) then
             typabs = 'INST'
-        endif
+        end if
 !
         call getvr8('KUCV', 'PRECISION', iocc=iocc, scal=prec, nbret=ibid)
         call getvtx('KUCV', 'CRITERE', iocc=iocc, scal=criter, nbret=ibid)
@@ -158,11 +158,11 @@ subroutine crkucv()
         numini = 1
         numfin = nbinst
 
-        nbinst = min(nbinst,nbval)
+        nbinst = min(nbinst, nbval)
 !
         call wkvect(linst, 'V V R', nbinst, jinst)
         call jeveuo(listr8//'.VALE', 'L', vr=val)
-        call rsorac(resu, 'LONUTI', 0, rbid, k8b,cbid, rbid, k8b, nbv,&
+        call rsorac(resu, 'LONUTI', 0, rbid, k8b, cbid, rbid, k8b, nbv, &
                     1, ibid)
         call wkvect(lcpt, 'V V I', nbinst, jcpt)
         ivmx = rsmxno(resu)
@@ -170,26 +170,26 @@ subroutine crkucv()
         do k = 1, nbval
             if (k .lt. numini) goto 40
             if (k .gt. numfin) goto 40
-            j = j + 1
+            j = j+1
             zr(jinst-1+j) = val(k)
             if (nbv(1) .gt. 0) then
-                call rsorac(resu, typabs, ibid, val(k), k8b, cbid, prec, criter, tnum,&
+                call rsorac(resu, typabs, ibid, val(k), k8b, cbid, prec, criter, tnum, &
                             1, nbr)
-                nume=tnum(1)
+                nume = tnum(1)
             else
                 nbr = 0
-            endif
+            end if
             if (nbr .lt. 0) then
                 call utmess('F', 'ALGORITH2_48')
-            else if (nbr.eq.0) then
-                zi(jcpt+j-1) = ivmx + 1
-                ivmx = ivmx + 1
+            else if (nbr .eq. 0) then
+                zi(jcpt+j-1) = ivmx+1
+                ivmx = ivmx+1
             else
                 zi(jcpt+j-1) = nume
-            endif
- 40         continue
+            end if
+40          continue
         end do
-    endif
+    end if
 !
 !
 !     0. MATRICE :
@@ -204,17 +204,17 @@ subroutine crkucv()
     call dismoi('NB_EQUA', numem, 'NUME_DDL', repi=neq)
     call getvid('KUCV', 'MATR_RIGI', iocc=iocc, scal=mrigi, nbret=nr)
     if (nr .ne. 0) then
-       call mtdscr(mrigi)
-       call jeveuo(mrigi(1:19)//'.&INT', 'E', lma2)
+        call mtdscr(mrigi)
+        call jeveuo(mrigi(1:19)//'.&INT', 'E', lma2)
     end if
-    typmat='R'
-    if ( typres(1:10)  .eq. 'DYNA_TRANS') then
-       nsymb = 'DEPL'
+    typmat = 'R'
+    if (typres(1:10) .eq. 'DYNA_TRANS') then
+        nsymb = 'DEPL'
     else
-       nsymb = 'FORC_NODA'
-    endif
-    chamn2='&&CRKUCV.CHAM_NO'
-    call vtcreb(chamn2, 'V', 'R', nume_ddlz = numem)
+        nsymb = 'FORC_NODA'
+    end if
+    chamn2 = '&&CRKUCV.CHAM_NO'
+    call vtcreb(chamn2, 'V', 'R', nume_ddlz=numem)
     call rsagsd(resu, nbinst)
 !
     do j = 1, nbinst
@@ -224,26 +224,26 @@ subroutine crkucv()
         tps = zr(jinst+j-1)
         call rsexch(' ', resu, nsymb, icompt, nomch, iret)
         if (iret .eq. 0) then
-            call rsadpa(resu, 'L', 1, typabs, icompt,&
+            call rsadpa(resu, 'L', 1, typabs, icompt, &
                         0, sjv=iad, styp=k8b)
         else if (iret .eq. 110) then
             call rsagsd(resu, 0)
             call rsexch(' ', resu, nsymb, icompt, nomch, iret)
         else if (iret .eq. 100) then
-            call vtcreb(nomch, 'G', 'R', nume_ddlz = numem)
-        endif
+            call vtcreb(nomch, 'G', 'R', nume_ddlz=numem)
+        end if
         call jeveuo(nomch//'.VALE', 'E', jchout)
-        call rsorac(resui,typabs,ibid,tps,k8b,cbid,prec,criter,tnum,1,nbr)
-        numei=tnum(1)
+        call rsorac(resui, typabs, ibid, tps, k8b, cbid, prec, criter, tnum, 1, nbr)
+        numei = tnum(1)
         call rsexch(' ', resui, 'VITE', numei, chamno, iret)
         call vtcopy(chamno, chamn2, ' ', ier)
         call jeveuo(chamn2//'.VALE', 'L', jchin)
-        call mrmult('ZERO', lmat, zr(jchin), zr(jchout), 1,.true._1)
-        if (nr.ne.0) then
+        call mrmult('ZERO', lmat, zr(jchin), zr(jchout), 1, .true._1)
+        if (nr .ne. 0) then
             call rsexch(' ', resui, 'DEPL', numei, chamno, iret)
             call vtcopy(chamno, chamn2, ' ', ier)
             call jeveuo(chamn2//'.VALE', 'L', jchin)
-            call mrmult('CUMU', lma2, zr(jchin), zr(jchout), 1,.true._1)
+            call mrmult('CUMU', lma2, zr(jchin), zr(jchout), 1, .true._1)
         end if
         o1 = chamno//'.DESC'
         o2 = nomch//'.DESC'
@@ -268,19 +268,19 @@ subroutine crkucv()
 !
 !     REMPLISSAGE DE .REFD POUR DYNA_*:
     call jelira(resu//'           .ORDR', 'LONUTI', nbordr2)
-    if (nbordr2.gt.nbordr1) then
-        if ( typres(1:10)  .eq. 'DYNA_TRANS') then
+    if (nbordr2 .gt. nbordr1) then
+        if (typres(1:10) .eq. 'DYNA_TRANS') then
             matric(1) = ' '
             matric(2) = ' '
             matric(3) = mamor
             call getvid('KUCV', 'MATR_RIGI', iocc=iocc, scal=matr, nbret=n1)
             if (n1 .eq. 1) then
                 matric(1) = matr
-            endif
-            call refdaj('F', resu19, (nbordr2-nbordr1), numem, 'DYNAMIQUE',&
-                            matric, ier)
+            end if
+            call refdaj('F', resu19, (nbordr2-nbordr1), numem, 'DYNAMIQUE', &
+                        matric, ier)
         end if
-    endif
+    end if
 !
     call jedema()
 end subroutine

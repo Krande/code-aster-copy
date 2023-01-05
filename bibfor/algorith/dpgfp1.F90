@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,12 +24,12 @@ function dpgfp1(biot, betam, pref, p1)
     real(kind=8) :: biot, betam, pref, p1, dpgfp1
     real(kind=8) :: s, rbetam, betamp
 !
-    rbetam=sqrt(betam)
-    betamp=rbetam*rbetam
-    s=p1/pref
+    rbetam = sqrt(betam)
+    betamp = rbetam*rbetam
+    s = p1/pref
     if (s .gt. 0.d0) then
-        dpgfp1=biot*((1.d0+s)*exp(-betamp*s*s))
+        dpgfp1 = biot*((1.d0+s)*exp(-betamp*s*s))
     else
-        dpgfp1=biot
-    endif
+        dpgfp1 = biot
+    end if
 end function

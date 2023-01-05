@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -41,17 +41,17 @@ subroutine juvinn(ojb)
 !
     call jemarq()
     call jelira(ojb, 'TYPE  ', cval=type)
-    ASSERT(type.eq.'R')
+    ASSERT(type .eq. 'R')
 !
     call jeveuo(ojb, 'L', jojb)
     call jelira(ojb, 'LONMAX', n1)
 !
-    rvid=r8vide()
-    rnan=r8nnem()
+    rvid = r8vide()
+    rnan = r8nnem()
     do k = 1, n1
-        if (.not.isnan(zr(jojb-1+k))) then
-            if (zr(jojb-1+k) .eq. rvid) zr(jojb-1+k)=rnan
-        endif
+        if (.not. isnan(zr(jojb-1+k))) then
+            if (zr(jojb-1+k) .eq. rvid) zr(jojb-1+k) = rnan
+        end if
     end do
 !
     call jedema()

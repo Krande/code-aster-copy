@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,9 +18,9 @@
 
 subroutine nmcvgn(sddisc, sderro, valinc, ds_contact)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterfort/nmacto.h"
 #include "asterfort/nmeceb.h"
@@ -62,11 +62,11 @@ implicit none
 !
     if (etnewt .eq. 'STOP') then
         goto 99
-    endif
+    end if
 !
 ! --- DETECTION DU PREMIER EVENEMENT DECLENCHE
 !
-    call nmevev(sddisc, nume_inst, valinc, sderro, ds_contact,&
+    call nmevev(sddisc, nume_inst, valinc, sderro, ds_contact, &
                 'NEWT')
 !
 ! --- UN EVENEMENT SE DECLENCHE
@@ -74,7 +74,7 @@ implicit none
     call nmacto(sddisc, ievdac)
     if (ievdac .gt. 0) then
         call nmeceb(sderro, 'NEWT', 'EVEN')
-    endif
+    end if
 !
 99  continue
 !

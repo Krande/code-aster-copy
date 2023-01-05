@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine cschmi(ca, ndim, cvec, cbas, ndimax,&
+subroutine cschmi(ca, ndim, cvec, cbas, ndimax, &
                   nbbas)
     implicit none
 !
@@ -61,10 +61,10 @@ subroutine cschmi(ca, ndim, cvec, cbas, ndimax,&
         call cvnorm(ca, cvec, ndim, iretou)
         if (iretou .eq. 1) then
             call utmess('F', 'ALGORITH2_22')
-        endif
+        end if
 !
         goto 999
-    endif
+    end if
 !
 !       BOUCLE SUR LES VECTEURS DE REFERENCE
 !
@@ -72,27 +72,27 @@ subroutine cschmi(ca, ndim, cvec, cbas, ndimax,&
 !
 !   MULTIPLICATION ET CALCUL PRODUIT ET NORMES
 !
-        cprod=dcmplx(0.d0,0.d0)
-        cmodu=dcmplx(0.d0,0.d0)
+        cprod = dcmplx(0.d0, 0.d0)
+        cmodu = dcmplx(0.d0, 0.d0)
         do il = 1, ndim
-            ctrav1=dcmplx(0.d0,0.d0)
-            ctrav2=dcmplx(0.d0,0.d0)
+            ctrav1 = dcmplx(0.d0, 0.d0)
+            ctrav2 = dcmplx(0.d0, 0.d0)
             ildiag = il*(il-1)/2+1
             do ic = 1, ndim
-                icdiag=ic*(ic-1)/2+1
+                icdiag = ic*(ic-1)/2+1
                 if (ic .ge. il) then
-                    ctrav1=ctrav1+(ca(icdiag+ic-il)*cvec(ic))
-                    ctrav2=ctrav2+(ca(icdiag+ic-il)*cbas(ic,j))
+                    ctrav1 = ctrav1+(ca(icdiag+ic-il)*cvec(ic))
+                    ctrav2 = ctrav2+(ca(icdiag+ic-il)*cbas(ic, j))
                 else
-                    ctrav1=ctrav1+(dconjg(ca(ildiag+il-ic))*cvec(ic))
-                    ctrav2=ctrav2+(dconjg(ca(ildiag+il-ic))*cbas(ic,j)&
-                    )
-                endif
+                    ctrav1 = ctrav1+(dconjg(ca(ildiag+il-ic))*cvec(ic))
+                    ctrav2 = ctrav2+(dconjg(ca(ildiag+il-ic))*cbas(ic, j) &
+                                     )
+                end if
             end do
             call zconju(cbas(il, j), prea, pima)
-            cconj=dcmplx(prea,-pima)
-            cprod=cprod+(ctrav1*cconj)
-            cmodu=cmodu+(ctrav2*cconj)
+            cconj = dcmplx(prea, -pima)
+            cprod = cprod+(ctrav1*cconj)
+            cmodu = cmodu+(ctrav2*cconj)
         end do
 !
 !
@@ -100,7 +100,7 @@ subroutine cschmi(ca, ndim, cvec, cbas, ndimax,&
 !   ORTHOGONALISATION DE SCHMIT (LE POTE DE GRAM)
 !
         do i = 1, ndim
-            cvec(i)=cvec(i)-(cprod*cbas(i,j)/cmodu)
+            cvec(i) = cvec(i)-(cprod*cbas(i, j)/cmodu)
         end do
 !
     end do
@@ -108,7 +108,7 @@ subroutine cschmi(ca, ndim, cvec, cbas, ndimax,&
     call cvnorm(ca, cvec, ndim, iretou)
     if (iretou .eq. 1) then
         call utmess('F', 'ALGORITH2_22')
-    endif
+    end if
 !
 !
 !

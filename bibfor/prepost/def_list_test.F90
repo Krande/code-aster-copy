@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine def_list_test(nbma, jcninv , lima, liout, nbout)
+subroutine def_list_test(nbma, jcninv, lima, liout, nbout)
     implicit none
 ! person_in_charge: guillaume.drouet at edf.fr
 !     ------------------------------------------------------------------
@@ -35,14 +35,14 @@ subroutine def_list_test(nbma, jcninv , lima, liout, nbout)
     nbin = nbout
     nbout = 1
     nb_doubl = 0
-    liout(1:nbout)=lima(nbin+1:nbin+nbout)
-    do while((nb_doubl .eq. 0) .and. (nbout .le. (nbma-1-nbin)))
-        call utlisi('INTER', zi(jcninv+nbin+nbout), 1, zi(jcninv+nbin),&
+    liout(1:nbout) = lima(nbin+1:nbin+nbout)
+    do while ((nb_doubl .eq. 0) .and. (nbout .le. (nbma-1-nbin)))
+        call utlisi('INTER', zi(jcninv+nbin+nbout), 1, zi(jcninv+nbin), &
                     nbout, res, 1, nb_doubl)
-        if (nb_doubl.eq.0)  then
-           nbout=nbout+1
-           liout(nbout)=lima(nbin+nbout)
-        endif
+        if (nb_doubl .eq. 0) then
+            nbout = nbout+1
+            liout(nbout) = lima(nbin+nbout)
+        end if
     end do
 
 end subroutine

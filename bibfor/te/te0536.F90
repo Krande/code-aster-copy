@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -46,20 +46,20 @@ subroutine te0536(option, nomte)
     integer :: nnos
     integer :: jpintt, jcnset, jheavt, jlonch, jbaslo, jlsn, jlst, jstno, jpmilt
     integer :: nfh, ddlc, nddl, nnom, nfe, ibid, ddls, ddlm, nfiss, jfisno
-    integer :: jheavn, ncompn, heavn(27,5), jtab(7), iret, ifh, ino, imate
+    integer :: jheavn, ncompn, heavn(27, 5), jtab(7), iret, ifh, ino, imate
 !
 !
 ! - FONCTIONS DE FORMES ET POINTS DE GAUSS
     call elref1(elrefp)
-    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, &
+                     npg=npg, jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !      FAMI='RIGI'
 !     MATNS MAL DIMENSIONNEE
-    ASSERT(nno.le.27)
+    ASSERT(nno .le. 27)
 !
 !     INITIALISATION DES DIMENSIONS DES DDLS X-FEM
-    call xteini(nomte, nfh, nfe, ibid, ddlc,&
-                nnom, ddls, nddl, ddlm, nfiss,&
+    call xteini(nomte, nfh, nfe, ibid, ddlc, &
+                nnom, ddls, nddl, ddlm, nfiss, &
                 ibid)
 !
 ! - PARAMETRES EN ENTREE
@@ -75,36 +75,36 @@ subroutine te0536(option, nomte)
     call jevech('PLST', 'L', jlst)
     call jevech('PSTANO', 'L', jstno)
     call teattr('S', 'XFEM', enr, ibid)
-    if (ibid .eq. 0 .and. (enr.eq.'XH'.or.enr.eq.'XHC')&
-        .and. .not.iselli(elrefp)) call jevech('PPMILTO', 'L', jpmilt)
+    if (ibid .eq. 0 .and. (enr .eq. 'XH' .or. enr .eq. 'XHC') &
+        .and. .not. iselli(elrefp)) call jevech('PPMILTO', 'L', jpmilt)
     if (nfiss .gt. 1) call jevech('PFISNO', 'L', jfisno)
 !   IL Y A UN PB DANS LA LECTURE DU MATERIAU POUR CETTE OPTION
 !     ON PREND POUR LE MOMENT UN MATERIAU ARBITRAIRE
-     imate=0
+    imate = 0
 !    if (nfe.gt.0) call jevech('PMATERC', 'L', imate)
 !
     call jevech('PMATUUR', 'E', imatuu)
 !
 !     RECUPERATION DE LA DEFINITION DES DDLS HEAVISIDES
-    if (enr(1:2).eq.'XH') then
-      call jevech('PHEA_NO', 'L', jheavn)
-      call tecach('OOO', 'PHEA_NO', 'L', iret, nval=7,&
-                itab=jtab)
-       ncompn = jtab(2)/jtab(3)
-       ASSERT(ncompn.eq.5)
-       do ino = 1, nno
-         do ifh = 1 , ncompn
-           heavn(ino,ifh) = zi(jheavn-1+ncompn*(ino-1)+ifh)
-         enddo
-       enddo
-    endif
+    if (enr(1:2) .eq. 'XH') then
+        call jevech('PHEA_NO', 'L', jheavn)
+        call tecach('OOO', 'PHEA_NO', 'L', iret, nval=7, &
+                    itab=jtab)
+        ncompn = jtab(2)/jtab(3)
+        ASSERT(ncompn .eq. 5)
+        do ino = 1, nno
+            do ifh = 1, ncompn
+                heavn(ino, ifh) = zi(jheavn-1+ncompn*(ino-1)+ifh)
+            end do
+        end do
+    end if
 !   PRECAUTION :: ON BLOQUE LE MULTIHEAVISIDE POUR L INSTANT CAR FISNO DOIT ETRE
 !                   PRIS EN COMPTE POUR UTILISER HEAVN => A FAIRE
-    ASSERT(nfiss.eq.1)
+    ASSERT(nfiss .eq. 1)
 !
-    call xrigel(nno, nfh*ndim, nfe, ddlc,&
-                igeom, jpintt, zi(jcnset), zi(jheavt), zi(jlonch),&
-                zr(jbaslo), zr(jlsn), zr(jlst), zr(icont), zr(imatuu),&
+    call xrigel(nno, nfh*ndim, nfe, ddlc, &
+                igeom, jpintt, zi(jcnset), zi(jheavt), zi(jlonch), &
+                zr(jbaslo), zr(jlsn), zr(jlst), zr(icont), zr(imatuu), &
                 jpmilt, heavn, jstno, imate)
 !
 !
@@ -112,10 +112,10 @@ subroutine te0536(option, nomte)
     call teattr('C', 'XLAG', lag, ibid)
     if (ibid .eq. 0 .and. lag .eq. 'ARETE') then
         nno = nnos
-    endif
-    call xteddl(ndim, nfh, nfe, ddls, nddl,&
-                nno, nnos, zi(jstno), .false._1, .true._1,&
-                option, nomte, ddlm,&
+    end if
+    call xteddl(ndim, nfh, nfe, ddls, nddl, &
+                nno, nnos, zi(jstno), .false._1, .true._1, &
+                option, nomte, ddlm, &
                 nfiss, jfisno, mat=zr(imatuu))
 !
 !

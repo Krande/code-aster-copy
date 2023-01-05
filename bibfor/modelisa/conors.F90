@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine conors(i1, i2, i3, macoc, nbcoc,&
+subroutine conors(i1, i2, i3, macoc, nbcoc, &
                   macor, nbcor, loreor, mailla)
     implicit none
 !
@@ -98,65 +98,65 @@ subroutine conors(i1, i2, i3, macoc, nbcoc,&
 !     DETERMINATION D'UN VECTEUR NORMAL A LA MAILLE DE FISSURE
 !
     call jenonu(jexnom(nonoma, macoc(2+i1)), no1)
-    x1=zr(jcoor+3*(no1-1)+0)
-    y1=zr(jcoor+3*(no1-1)+1)
-    z1=zr(jcoor+3*(no1-1)+2)
+    x1 = zr(jcoor+3*(no1-1)+0)
+    y1 = zr(jcoor+3*(no1-1)+1)
+    z1 = zr(jcoor+3*(no1-1)+2)
 !
     call jenonu(jexnom(nonoma, macoc(2+i2)), no2)
-    x2=zr(jcoor+3*(no2-1)+0)
-    y2=zr(jcoor+3*(no2-1)+1)
-    z2=zr(jcoor+3*(no2-1)+2)
-    vx1=x2-x1
-    vy1=y2-y1
-    vz1=z2-z1
+    x2 = zr(jcoor+3*(no2-1)+0)
+    y2 = zr(jcoor+3*(no2-1)+1)
+    z2 = zr(jcoor+3*(no2-1)+2)
+    vx1 = x2-x1
+    vy1 = y2-y1
+    vz1 = z2-z1
 !     SI I3 EST NUL NOUS SOMMES EN PRESENCE D'UN QUADRILATERE
     if (i3 .eq. 0) then
-        vnx=-vy1
-        vny= vx1
-        vnz= 0
+        vnx = -vy1
+        vny = vx1
+        vnz = 0
     else
         call jenonu(jexnom(nonoma, macoc(2+i3)), no3)
-        x3=zr(jcoor+3*(no3-1)+0)
-        y3=zr(jcoor+3*(no3-1)+1)
-        z3=zr(jcoor+3*(no3-1)+2)
-        vx2=x3-x1
-        vy2=y3-y1
-        vz2=z3-z1
-        vnx=vy1*vz2-vy2*vz1
-        vny=vz1*vx2-vz2*vx1
-        vnz=vx1*vy2-vx2*vy1
-    endif
+        x3 = zr(jcoor+3*(no3-1)+0)
+        y3 = zr(jcoor+3*(no3-1)+1)
+        z3 = zr(jcoor+3*(no3-1)+2)
+        vx2 = x3-x1
+        vy2 = y3-y1
+        vz2 = z3-z1
+        vnx = vy1*vz2-vy2*vz1
+        vny = vz1*vx2-vz2*vx1
+        vnz = vx1*vy2-vx2*vy1
+    end if
 !
 !     CENTRE DE GRAVITE DE LA MAILLE DE REFERENCE
 !
-    xg=0.d0
-    yg=0.d0
-    zg=0.d0
+    xg = 0.d0
+    yg = 0.d0
+    zg = 0.d0
     do inor = 1, nbcor
         call jenonu(jexnom(nonoma, macor(2+inor)), no)
-        xg=xg+zr(jcoor+3*(no-1)+0)
-        yg=yg+zr(jcoor+3*(no-1)+1)
-        zg=zg+zr(jcoor+3*(no-1)+2)
+        xg = xg+zr(jcoor+3*(no-1)+0)
+        yg = yg+zr(jcoor+3*(no-1)+1)
+        zg = zg+zr(jcoor+3*(no-1)+2)
     end do
-    xg=xg/nbcor
-    yg=yg/nbcor
-    zg=zg/nbcor
+    xg = xg/nbcor
+    yg = yg/nbcor
+    zg = zg/nbcor
 !
 !     VECTEUR NOEUD 1 - CENTRE DE GRAVITE
 !
-    vrx=xg-x1
-    vry=yg-y1
-    vrz=zg-z1
+    vrx = xg-x1
+    vry = yg-y1
+    vrz = zg-z1
 !
 !     VERIFICATION QUE LA NORMALE EST SORTANTE
 !
-    scal=vnx*vrx+vny*vry+vnz*vrz
+    scal = vnx*vrx+vny*vry+vnz*vrz
 !
     if (scal .eq. 0) then
         call utmess('E', 'MODELISA4_36', sk=macoc(1))
-    endif
+    end if
 !
-    loreor=scal.gt.0
+    loreor = scal .gt. 0
 !
     call jedema()
 !

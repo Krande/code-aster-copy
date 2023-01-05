@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -59,12 +59,12 @@ subroutine op0079()
 
 !-----------------------------------------------------------------------
     integer ::   ibid, icod, iadref
-    integer :: iddeeq,   imod, ind, iord, isym
-    integer :: jmod,   n0, n1, n2, n4
+    integer :: iddeeq, imod, ind, iord, isym
+    integer :: jmod, n0, n1, n2, n4
     integer :: nbid, neq, tmod(1)
     real(kind=8) :: bid, ebid, pij
 !-----------------------------------------------------------------------
-    parameter    (nbsym=3)
+    parameter(nbsym=3)
     character(len=1) :: typvec
     character(len=8) :: nomres, basemo, nomtyp, k8bid, res, numgen
     character(len=9) :: nosyin(nbsym)
@@ -82,8 +82,8 @@ subroutine op0079()
     character(len=24), pointer :: refa(:) => null()
     integer, pointer :: ordr(:) => null()
     integer, pointer :: nequ(:) => null()
-    data  nosyin / 'DEPL','VITE','ACCE'/
-    data  nosyou / 'DEPL','VITE','ACCE'/
+    data nosyin/'DEPL', 'VITE', 'ACCE'/
+    data nosyou/'DEPL', 'VITE', 'ACCE'/
 !
 !     ------------------------------------------------------------------
 !     ------------------------------------------------------------------
@@ -112,10 +112,10 @@ subroutine op0079()
 !
 ! --- RECUPERATION DU NB DE MODES
 !
-    call rsorac(basemo, 'LONUTI', ibid, bid, k8bid,&
-                cbid, ebid, 'ABSOLU', tmod, 1,&
+    call rsorac(basemo, 'LONUTI', ibid, bid, k8bid, &
+                cbid, ebid, 'ABSOLU', tmod, 1, &
                 nbid)
-    nbmode=tmod(1)
+    nbmode = tmod(1)
 !
 !
     call jeveuo(numgen//'      .SMOS.SMDE', 'L', jsmde)
@@ -123,10 +123,10 @@ subroutine op0079()
 !
 ! --- RECUPERATION DU NOMBRE DE NUME_ORDRE DE LA SD_RESU
 !
-    call rsorac(res, 'LONUTI', ibid, bid, k8bid,&
-                cbid, ebid, 'ABSOLU', tmod, 1,&
+    call rsorac(res, 'LONUTI', ibid, bid, k8bid, &
+                cbid, ebid, 'ABSOLU', tmod, 1, &
                 nbid)
-    nbo=tmod(1)
+    nbo = tmod(1)
     call jeveuo(res//'           .ORDR', 'L', vi=ordr)
 !
 !
@@ -141,53 +141,53 @@ subroutine op0079()
     if (typbas(1:9) .eq. 'MODE_MECA') then
         call dismoi('NUME_DDL', res, 'RESU_DYNA', repk=nu)
         if (nu(1:1) .ne. ' ') then
-            numdd1=nu
+            numdd1 = nu
         else
             call dismoi('REF_RIGI_PREM', res, 'RESU_DYNA', repk=matric, arret='C')
             call exisd('MATR_ASSE', matric, iret)
             if (iret .ne. 0) then
                 call dismoi('NOM_NUME_DDL', matric, 'MATR_ASSE', repk=nu)
-                numdd1=nu
-            endif
+                numdd1 = nu
+            end if
             if (iret .eq. 0) then
                 call utmess('F', 'ALGORITH17_8', sk=res)
-            endif
-        endif
+            end if
+        end if
         call dismoi('NUME_DDL', basemo, 'RESU_DYNA', repk=nu)
         if (nu(1:1) .ne. ' ') then
-            numdd2=nu
+            numdd2 = nu
         else
             call dismoi('REF_RIGI_PREM', basemo, 'RESU_DYNA', repk=matric, arret='C')
             call exisd('MATR_ASSE', matric, iret)
             if (iret .ne. 0) then
                 call dismoi('NOM_NUME_DDL', matric, 'MATR_ASSE', repk=nu)
-                numdd2=nu
-            endif
+                numdd2 = nu
+            end if
             if (iret .eq. 0) then
                 call utmess('F', 'ALGORITH17_8', sk=basemo)
-            endif
-        endif
+            end if
+        end if
 !
-    else if (typbas(1:9).eq.'MODE_GENE') then
+    else if (typbas(1:9) .eq. 'MODE_GENE') then
         call dismoi('NUME_DDL', res, 'RESU_DYNA', repk=nu)
         call dismoi('REF_RIGI_PREM', basemo, 'RESU_DYNA', repk=matric)
         matri2 = matric(1:16)
         call jeveuo(matri2//'   .REFA', 'L', vk24=refa)
-        numdd2=refa(2)(1:14)
-    endif
+        numdd2 = refa(2) (1:14)
+    end if
 !
     if (numdd1 .ne. numdd2) then
         call utmess('I', 'ALGORITH9_41')
-    endif
+    end if
 !
 ! --- RECUPERATION DU NOMBRE D'EQUATIONS DU SYSTEME PHYSIQUE
 !
-    if ((typbas(1:9).eq.'MODE_MECA')) then
+    if ((typbas(1:9) .eq. 'MODE_MECA')) then
         call dismoi('NB_EQUA', numdd1, 'NUME_DDL', repi=neq)
-    else if (typbas(1:9).eq.'MODE_GENE') then
+    else if (typbas(1:9) .eq. 'MODE_GENE') then
         call jeveuo(numdd1//'.NUME.NEQU', 'L', vi=nequ)
         neq = nequ(1)
-    endif
+    end if
 !
     deeq = nu//'.NUME.DEEQ'
     call jeveuo(deeq, 'L', iddeeq)
@@ -209,10 +209,10 @@ subroutine op0079()
 !
         do iord = 1, nbo
 !
-            nosy=nosyou(isym)
+            nosy = nosyou(isym)
 !
 ! --- RECUP DU CHAMP DE LA SDIN CORRESPONDANT AU NUME_ORDR ET ISYM
-            call rsexch(' ', res, nosyin(isym), ordr(iord), nochno,&
+            call rsexch(' ', res, nosyin(isym), ordr(iord), nochno, &
                         iret)
             if (iret .ne. 0) goto 40
             call jeveuo(nochno//'.VALE', 'L', vr=vale)
@@ -221,7 +221,7 @@ subroutine op0079()
 ! --- LE CAS COMPLEXE (SD HARMONIQUES) N'EST PAS TRAITE
             if (typvec .eq. 'C') then
                 call utmess('F', 'ALGORITH17_19')
-            endif
+            end if
 !
 ! --- INDICE DE STOCKAGE
             call jeveuo(nomres//'           .'//nosy, 'E', ii)
@@ -245,7 +245,7 @@ subroutine op0079()
 ! ------- PRODUIT SCALAIRE VECTASS * MODE
 !
                     ind = ii-1+(iord-1)*nbmode+imod
-                    zr(ind) = ddot(neq,vectasse,1,vale,1)
+                    zr(ind) = ddot(neq, vectasse, 1, vale, 1)
 !
 ! ------- LIBERATION DU VECTEUR TEMP
                 end do
@@ -256,7 +256,7 @@ subroutine op0079()
 !
                 AS_ALLOCATE(vr=vectass1, size=neq)
                 AS_ALLOCATE(vr=vectass2, size=neq)
-                AS_ALLOCATE(vr=matrnorm, size=nbmode* nbmode)
+                AS_ALLOCATE(vr=matrnorm, size=nbmode*nbmode)
 !
 ! ----- CALCUL DE TMODE*MODE
 !
@@ -283,9 +283,9 @@ subroutine op0079()
 !
 ! --------- PRODUIT SCALAIRE MODE(IMOD)*MODE(JMOD)
 !
-                        pij = ddot(neq,vectass1,1,vectass2,1)
-                        matrnorm(1+imod+ (jmod-1)*nbmode-1) = pij
-                        matrnorm(1+jmod+ (imod-1)*nbmode-1) = pij
+                        pij = ddot(neq, vectass1, 1, vectass2, 1)
+                        matrnorm(1+imod+(jmod-1)*nbmode-1) = pij
+                        matrnorm(1+jmod+(imod-1)*nbmode-1) = pij
                     end do
                 end do
 !
@@ -303,10 +303,9 @@ subroutine op0079()
 !
 ! ------- PRODUIT SCALAIRE VECTASS * MODE
 !
-                    vectass2(imod) = ddot(neq,vectass1,1,vale,1)
+                    vectass2(imod) = ddot(neq, vectass1, 1, vale, 1)
 !
                 end do
-
 
 !
 ! ----- FACTORISATION ET RESOLUTION SYSTEME
@@ -315,17 +314,17 @@ subroutine op0079()
                 call trlds(matrnorm, nbmode, nbmode, icod)
                 if (icod .ne. 0) then
                     call utmess('F', 'ALGORITH9_42')
-                endif
+                end if
                 call rrlds(matrnorm, nbmode, nbmode, vectass2, 1)
                 call dcopy(nbmode, vectass2, 1, zr(ind), 1)
                 AS_DEALLOCATE(vr=vectass1)
                 AS_DEALLOCATE(vr=vectass2)
                 AS_DEALLOCATE(vr=matrnorm)
                 if (typvec .eq. 'C') call jedetr('&&OP0079.VECTASC2')
-            endif
+            end if
 !
         end do
- 40     continue
+40      continue
     end do
 !
     call jedema()

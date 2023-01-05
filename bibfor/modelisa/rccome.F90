@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -52,25 +52,25 @@ subroutine rccome(nommat, pheno, icodre, iarret, k11_ind_nomrc)
         iarret_in = iarret
     else
         iarret_in = 0
-    endif
+    end if
 !
-    ASSERT((iarret_in.eq.0) .or. (iarret_in.eq.1))
+    ASSERT((iarret_in .eq. 0) .or. (iarret_in .eq. 1))
 !
     icodre = 1
     ncomp = nommat//'.MATERIAU.NOMRC         '
     call jelira(ncomp, 'LONUTI', nbcomp)
     call jeveuo(ncomp, 'L', icomp)
     do i = 1, nbcomp
-        if (pheno .eq. zk32(icomp+i-1)(1:len(pheno))) then
+        if (pheno .eq. zk32(icomp+i-1) (1:len(pheno))) then
             if (present(k11_ind_nomrc)) then
-               call codent(i,'D0',k6)
-               k11_ind_nomrc='.CPT.'//k6
-            endif
+                call codent(i, 'D0', k6)
+                k11_ind_nomrc = '.CPT.'//k6
+            end if
             icodre = 0
-        endif
+        end if
     end do
-    if (( icodre .eq. 1 ) .and. ( iarret_in .eq. 1 )) then
+    if ((icodre .eq. 1) .and. (iarret_in .eq. 1)) then
         call utmess('F', 'ELEMENTS2_63', sk=pheno)
-    endif
+    end if
 ! FIN ------------------------------------------------------------------
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine mltpas(nbnd, nbsn, supnd, xadj, adjncy,&
-                  anc, nouv, seq, global, adress,&
-                  nblign, lgsn, nbloc, ncbloc, lgbloc,&
+subroutine mltpas(nbnd, nbsn, supnd, xadj, adjncy, &
+                  anc, nouv, seq, global, adress, &
+                  nblign, lgsn, nbloc, ncbloc, lgbloc, &
                   diag, col, lmat, place)
 ! person_in_charge: olivier.boiteau at edf.fr
 !
@@ -45,22 +45,22 @@ subroutine mltpas(nbnd, nbsn, supnd, xadj, adjncy,&
     integer :: ndi, lfac, depart, ad, isn, longb, ib, ic
     isn = 0
     longb = 0
-    lmat=diag(nbnd)
+    lmat = diag(nbnd)
     do ib = 1, nbloc
         lfac = longb
         do ic = 1, ncbloc(ib)
-            isn = isn + 1
+            isn = isn+1
             sni = seq(isn)
-            do i = adress(sni), adress(sni+1) - 1
-                place(global(i)) = i - adress(sni) + 1
+            do i = adress(sni), adress(sni+1)-1
+                place(global(i)) = i-adress(sni)+1
             end do
             haut = nblign(sni)
-            do i = 0, lgsn(sni) - 1
-                ndi = supnd(sni) + i
+            do i = 0, lgsn(sni)-1
+                ndi = supnd(sni)+i
                 andi = anc(ndi)
-                depart = diag(andi-1) + 1
-                col(diag(andi))=lfac + i*haut+i+1 +nbnd
-                do j = xadj(andi), xadj(andi+1) - 1
+                depart = diag(andi-1)+1
+                col(diag(andi)) = lfac+i*haut+i+1+nbnd
+                do j = xadj(andi), xadj(andi+1)-1
                     andj = adjncy(j)
                     ndj = nouv(andj)
                     if (ndj .ge. ndi) then
@@ -73,35 +73,35 @@ subroutine mltpas(nbnd, nbsn, supnd, xadj, adjncy,&
                             code = -1
                             depart = ad
                         else
-                            do ad = diag(andj-1) + 1, diag(andj)
+                            do ad = diag(andj-1)+1, diag(andj)
                                 if (col(ad) .eq. andi) goto 160
                             end do
                             goto 170
 160                         continue
                             code = 1
-                        endif
+                        end if
 !     CHANGTDGEMV                  ADINIT(AD) = LFAC + PLACE(NDJ) - I
 !     ADINIT(AD) = LFAC + I*HAUT + PLACE(NDJ)
-                        col(ad)= lfac + i*haut + place(ndj) +nbnd
+                        col(ad) = lfac+i*haut+place(ndj)+nbnd
 !
                         if (code .lt. 0) then
                             col(ad) = -col(ad)
-                        endif
-                    endif
+                        end if
+                    end if
 170                 continue
                 end do
 !
             end do
-            lfac = lfac + haut*lgsn(sni)
+            lfac = lfac+haut*lgsn(sni)
         end do
-        longb = lgbloc(ib) + longb
+        longb = lgbloc(ib)+longb
     end do
     do i = 1, lmat
         if (col(i) .gt. nbnd) then
-            col(i)=col(i)-nbnd
-        else if (col(i).lt.(-nbnd)) then
-            col(i) = col(i) +nbnd
+            col(i) = col(i)-nbnd
+        else if (col(i) .lt. (-nbnd)) then
+            col(i) = col(i)+nbnd
         else
-        endif
+        end if
     end do
 end subroutine

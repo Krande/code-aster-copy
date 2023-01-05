@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -38,20 +38,20 @@ subroutine te0083(option, nomte)
     real(kind=8) :: mt, mfy, mfz, meq
 !     ------------------------------------------------------------------
 !
-    ASSERT(option.eq.'EFEQ_ELNO')
+    ASSERT(option .eq. 'EFEQ_ELNO')
     call jevech('PEFFONR', 'L', jin)
-    call tecach('OOO', 'PEFFONR', 'L', ibid, nval=7,&
-                    itab=itab)
+    call tecach('OOO', 'PEFFONR', 'L', ibid, nval=7, &
+                itab=itab)
     call jevech('PEFFOENR', 'E', jout)
 
-    jin=itab(1)
-    nbpoin=itab(3)
-    lgcata=itab(2)
-    nbcompin=lgcata/nbpoin
-    ASSERT(nbcompin.eq.6 .or. nbcompin.eq.7)
+    jin = itab(1)
+    nbpoin = itab(3)
+    lgcata = itab(2)
+    nbcompin = lgcata/nbpoin
+    ASSERT(nbcompin .eq. 6 .or. nbcompin .eq. 7)
     nbcompout = 4
-    do i=1, nbpoin
-        mt  = zr(jin+nbcompin*(i-1)-1+4)
+    do i = 1, nbpoin
+        mt = zr(jin+nbcompin*(i-1)-1+4)
         mfy = zr(jin+nbcompin*(i-1)-1+5)
         mfz = zr(jin+nbcompin*(i-1)-1+6)
         meq = sqrt(mt*mt+mfy*mfy+mfz*mfz)
@@ -59,6 +59,6 @@ subroutine te0083(option, nomte)
         zr(jout+nbcompout*(i-1)-1+2) = mfy
         zr(jout+nbcompout*(i-1)-1+3) = mfz
         zr(jout+nbcompout*(i-1)-1+4) = meq
-    enddo
+    end do
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -46,7 +46,7 @@ subroutine te0599(option, nomte)
 !
     integer :: ndim, nfh, nfe, igeom, nnop, jptint, jcface
     integer :: jlonch, jlst, itps, ihechp, jstno, jbasec
-    integer :: heavn(27,5), ino, ig, jheavn, ncompn, jtab(7), iret
+    integer :: heavn(27, 5), ino, ig, jheavn, ncompn, jtab(7), iret
     integer :: itemp, ivectt, nddlno
     character(len=8) :: elrefp
     character(len=4) :: fonree
@@ -69,13 +69,13 @@ subroutine te0599(option, nomte)
         fonree = 'REEL'
         call jevech('PHECHPR', 'L', ihechp)
         if (abs(zr(ihechp)) .lt. r8prem()) goto 999
-    else if (option.eq.'CHAR_THER_PARO_F') then
+    else if (option .eq. 'CHAR_THER_PARO_F') then
         fonree = 'FONC'
         call jevech('PHECHPF', 'L', ihechp)
         if (zk8(ihechp) .eq. '&FOZERO ') goto 999
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 !     CHAMPS IN X-FEM
     call jevech('PPINTER', 'L', jptint)
@@ -90,40 +90,40 @@ subroutine te0599(option, nomte)
 !
 !     ELT DE REF PARENT : RECUP NDIM ET NNOP (NOEUDS PARENT)
 !     -> RQ : 'RIGI' POUR LA FAMILLE DE PG EST DONC SANS CONSQUENCE
-    call elrefe_info(fami='RIGI',ndim=ndim,nno=nnop)
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nnop)
 !
 !     RECUP DE NFH (NBRE FCT HEAVISIDE) ET NFE (NBRE FCT SINGULIER)
     call xthini(nomte, nfh, nfe)
     nddlno = 1+nfh+nfe
 !
 !   RECUPERATION DE LA DEFINITION DES FONCTIONS HEAVISIDES
-    if (nfh.gt.0) then
-      call jevech('PHEA_NO', 'L', jheavn)
-      call tecach('OOO', 'PHEA_NO', 'L', iret, nval=7,&
-                itab=jtab)
-      ncompn = jtab(2)/jtab(3)
-      ASSERT(ncompn.eq.5)
-      do ino = 1, nnop
-        do ig = 1 , ncompn
-          heavn(ino,ig) = zi(jheavn-1+ncompn*(ino-1)+ig)
-        enddo
-      enddo
-    endif
+    if (nfh .gt. 0) then
+        call jevech('PHEA_NO', 'L', jheavn)
+        call tecach('OOO', 'PHEA_NO', 'L', iret, nval=7, &
+                    itab=jtab)
+        ncompn = jtab(2)/jtab(3)
+        ASSERT(ncompn .eq. 5)
+        do ino = 1, nnop
+            do ig = 1, ncompn
+                heavn(ino, ig) = zi(jheavn-1+ncompn*(ino-1)+ig)
+            end do
+        end do
+    end if
 !
 ! ----------------------------------------------------------------------
 ! --- CALCUL DU VECTEUR ELEMENTAIRE DU A ECHANGE_PAROI
 ! ----------------------------------------------------------------------
 !
-    call xvechp(ndim, elrefp, nnop, igeom, itemp,&
-                itps, ihechp, jptint, jcface,&
-                jlonch, jlst, jbasec, nfh, nfe,&
+    call xvechp(ndim, elrefp, nnop, igeom, itemp, &
+                itps, ihechp, jptint, jcface, &
+                jlonch, jlst, jbasec, nfh, nfe, &
                 fonree, ivectt, heavn)
 !
 ! ----------------------------------------------------------------------
 ! --- SUPPRESSION DES DDLS SUPERFLUS
 ! ----------------------------------------------------------------------
 !
-    call xthddl(nfh, nddlno, nnop, zi(jstno), option,&
+    call xthddl(nfh, nddlno, nnop, zi(jstno), option, &
                 nomte, vect=zr(ivectt))
 !
 999 continue

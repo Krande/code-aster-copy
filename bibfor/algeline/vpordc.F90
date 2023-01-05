@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine vpordc(type, iordre, nbpro, valpro, vecpro,&
+subroutine vpordc(type, iordre, nbpro, valpro, vecpro, &
                   neq)
     implicit none
     integer :: type, nbpro, neq
@@ -55,29 +55,29 @@ subroutine vpordc(type, iordre, nbpro, valpro, vecpro,&
                     if (dble(valpro(j)) .le. rperm) then
                         iperm = j
                         rperm = dble(valpro(iperm))
-                    endif
+                    end if
                 end do
             else if (type .eq. 1) then
                 rperm = abs(valpro(i))
                 do j = i+1, nbpro
-                    if (abs(valpro(j)) .lt. (rperm *(1.d0 -eps))) then
+                    if (abs(valpro(j)) .lt. (rperm*(1.d0-eps))) then
                         iperm = j
                         rperm = abs(valpro(iperm))
-                    endif
+                    end if
                     if ((abs(valpro(j))-rperm) .le. (eps*rperm)) then
-                        if ((dble(valpro(j)*valpro(iperm)).ge. 0.d0) .and.&
-                            ( abs(valpro(j)) .lt. rperm )) then
+                        if ((dble(valpro(j)*valpro(iperm)) .ge. 0.d0) .and. &
+                            (abs(valpro(j)) .lt. rperm)) then
                             iperm = j
                             rperm = abs(valpro(iperm))
-                        endif
-                        if ((dble(valpro(j)*valpro(iperm)).lt. 0.d0) .and.&
-                            ( dble(valpro(j)) .lt. 0.d0 )) then
+                        end if
+                        if ((dble(valpro(j)*valpro(iperm)) .lt. 0.d0) .and. &
+                            (dble(valpro(j)) .lt. 0.d0)) then
                             iperm = j
                             rperm = abs(valpro(iperm))
-                        endif
-                    endif
+                        end if
+                    end if
                 end do
-            endif
+            end if
 !
             if (iperm .ne. i) then
                 cperm = valpro(iperm)
@@ -85,15 +85,15 @@ subroutine vpordc(type, iordre, nbpro, valpro, vecpro,&
                 valpro(i) = cperm
                 if (neq .ge. nbpro) then
                     do j = 1, neq
-                        cperm = vecpro(j,i)
-                        vecpro(j,i) = vecpro(j,iperm)
-                        vecpro(j,iperm) = cperm
+                        cperm = vecpro(j, i)
+                        vecpro(j, i) = vecpro(j, iperm)
+                        vecpro(j, iperm) = cperm
                     end do
-                endif
-            endif
+                end if
+            end if
         end do
 !
-    else if (iordre.eq.1) then
+    else if (iordre .eq. 1) then
 !
         do i = 1, nbpro
             iperm = i
@@ -103,7 +103,7 @@ subroutine vpordc(type, iordre, nbpro, valpro, vecpro,&
                     if (dble(valpro(j)) .ge. rperm) then
                         iperm = j
                         rperm = dble(valpro(iperm))
-                    endif
+                    end if
                 end do
             else if (type .eq. 1) then
                 rperm = abs(valpro(i))
@@ -111,21 +111,21 @@ subroutine vpordc(type, iordre, nbpro, valpro, vecpro,&
                     if (abs(valpro(j)) .gt. (rperm*(1.d0+eps))) then
                         iperm = j
                         rperm = abs(valpro(iperm))
-                    endif
+                    end if
                 end do
                 if ((abs(valpro(j))-rperm) .le. (eps*rperm)) then
-                    if ((dble(valpro(j)*valpro(iperm)).ge. 0.d0) .and.&
-                        ( abs(valpro(j)) .gt. rperm )) then
+                    if ((dble(valpro(j)*valpro(iperm)) .ge. 0.d0) .and. &
+                        (abs(valpro(j)) .gt. rperm)) then
                         iperm = j
                         rperm = abs(valpro(iperm))
-                    endif
-                    if ((dble(valpro(j)*valpro(iperm)).lt. 0.d0) .and.&
-                        ( dble(valpro(j)) .lt. 0.d0 )) then
+                    end if
+                    if ((dble(valpro(j)*valpro(iperm)) .lt. 0.d0) .and. &
+                        (dble(valpro(j)) .lt. 0.d0)) then
                         iperm = j
                         rperm = abs(valpro(iperm))
-                    endif
-                endif
-            endif
+                    end if
+                end if
+            end if
 !
             if (iperm .ne. i) then
                 cperm = valpro(iperm)
@@ -133,14 +133,14 @@ subroutine vpordc(type, iordre, nbpro, valpro, vecpro,&
                 valpro(i) = cperm
                 if (neq .ge. nbpro) then
                     do j = 1, neq
-                        cperm = vecpro(j,i)
-                        vecpro(j,i) = vecpro(j,iperm)
-                        vecpro(j,iperm) = cperm
+                        cperm = vecpro(j, i)
+                        vecpro(j, i) = vecpro(j, iperm)
+                        vecpro(j, iperm) = cperm
                     end do
-                endif
-            endif
+                end if
+            end if
         end do
 !
-    endif
+    end if
 !
 end subroutine

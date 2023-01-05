@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -75,60 +75,60 @@ subroutine fun2(xi1, xi2, pp, xkk, qq, vt, n)
     !       xkk = a2*xi1/rho
     !       vt  = 3.0*xi1*a3/(a*a + a + 1.0)
     !
-    if ( n .ge. 4 ) then
-        xx   = xi2/xi1
+    if (n .ge. 4) then
+        xx = xi2/xi1
         pxi1 = pp*xi1
         xx25 = xx**0.25; xx50 = xx**0.50; xx75 = xx**0.75
-        qq   = 0.50*(xx25+2.0)/(xx50+xx25+1.0)
-        xkk  = 4.0*xi1*(          xx75+xx50+xx25     )/ &
-                       (4.0*pxi1*(xx75+xx50+xx25)+1.0)
-        vt   = 3.0*xi1*xx75/(xx50+xx25+1.0)
+        qq = 0.50*(xx25+2.0)/(xx50+xx25+1.0)
+        xkk = 4.0*xi1*(xx75+xx50+xx25)/ &
+              (4.0*pxi1*(xx75+xx50+xx25)+1.0)
+        vt = 3.0*xi1*xx75/(xx50+xx25+1.0)
     else
         !
-        pxi1    = pp*xi1
-        q_lim   = 0.50
+        pxi1 = pp*xi1
+        q_lim = 0.50
         xkk_lim = 12.0*xi1/(12.0*pxi1+1.0)
-        vt_lim  = xi1
+        vt_lim = xi1
         !
         dd = (xi2-xi1)/(xi2+xi1)
-        if      ( abs(dd) <= 1.0E-10 ) then
+        if (abs(dd) <= 1.0E-10) then
             ! On considère que xi2=xi1
-            qq  = q_lim
+            qq = q_lim
             xkk = xkk_lim
-            vt  = vt_lim
-        else if ( abs(dd) <= 1.0E-06 ) then
+            vt = vt_lim
+        else if (abs(dd) <= 1.0E-06) then
             ! Développement limité au 3ème ordre
-            uu  = dd/(12.0*pxi1+1.0)
-            if      (n .le. 1) then
-                qq  = q_lim  *( 1.0 - dd/3.0 - 4.0*(dd**3)/45.0 )
-                xkk = xkk_lim*( 1.0 + uu - ( 48.0*pxi1     -11.0)*(uu**2)/15.0 +  &
-                                        (576.0*(pxi1**2)+11.0)*(uu**3)/15.0 )
-                vt  = vt_lim *( 1.0 + dd + 2.0*(dd**2)/3.0 + 2.0*(dd**3)/3.0 )
+            uu = dd/(12.0*pxi1+1.0)
+            if (n .le. 1) then
+                qq = q_lim*(1.0-dd/3.0-4.0*(dd**3)/45.0)
+                xkk = xkk_lim*(1.0+uu-(48.0*pxi1-11.0)*(uu**2)/15.0+ &
+                               (576.0*(pxi1**2)+11.0)*(uu**3)/15.0)
+                vt = vt_lim*(1.0+dd+2.0*(dd**2)/3.0+2.0*(dd**3)/3.0)
             else if (n .eq. 3) then
-                qq  = xi1**(1.0/3.0)/(xi2**(1.0/3.0)+xi1**(1.0/3.0))
-                vt  = 2.0*((xi1*xi2)**(2.0/3.0))/(xi2**(1.0/3.0)+xi1**(1.0/3.0))
+                qq = xi1**(1.0/3.0)/(xi2**(1.0/3.0)+xi1**(1.0/3.0))
+                vt = 2.0*((xi1*xi2)**(2.0/3.0))/(xi2**(1.0/3.0)+xi1**(1.0/3.0))
                 !
-                xkk = xkk_lim*( 1.0 + uu - ( 24.0*pxi1     -3.0)*(uu**2)/5.0 + &
-                                           (288.0*(pxi1**2)+3.0)*(uu**3)/5.0 )
-            endif
+                xkk = xkk_lim*(1.0+uu-(24.0*pxi1-3.0)*(uu**2)/5.0+ &
+                               (288.0*(pxi1**2)+3.0)*(uu**3)/5.0)
+            end if
         else
-            if      (n .le. 1) then
+            if (n .le. 1) then
                 alg = log(xi2/xi1)
-                di  = xi2-xi1
+                di = xi2-xi1
                 phi = pp*di
-                qq  = 1.0/alg - xi1/di
+                qq = 1.0/alg-xi1/di
                 xkk = di/((xi2+xi1)/(2.0*di)-1.0/alg+phi)
-                vt  = di/alg
+                vt = di/alg
             else if (n .eq. 3) then
-                qq  = xi1**(1.0/3.0)/(xi2**(1.0/3.0)+xi1**(1.0/3.0))
-                vt  = 2.0*((xi1*xi2)**(2.0/3.0))/(xi2**(1.0/3.0)+xi1**(1.0/3.0))
+                qq = xi1**(1.0/3.0)/(xi2**(1.0/3.0)+xi1**(1.0/3.0))
+                vt = 2.0*((xi1*xi2)**(2.0/3.0))/(xi2**(1.0/3.0)+xi1**(1.0/3.0))
                 !
-                xx  = (xi2/xi1)**(1.0/3.0)
-                a3  = (xx-1.0)**3
+                xx = (xi2/xi1)**(1.0/3.0)
+                a3 = (xx-1.0)**3
                 phi = pp*xi1*a3
                 rho = log(xx)-2.0*qq*(xx-1.0)+phi
                 xkk = xi1*a3/rho
-            endif
-        endif
-    endif
+            end if
+        end if
+    end if
 end subroutine

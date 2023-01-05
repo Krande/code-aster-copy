@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 
 subroutine vecini(n, s, x)
-  implicit none
+    implicit none
 !       INITIALISATION DU VECTEUR   X = S
 !       IN  S      :  SCALAIRE
 !       IN  N      :  DIMENSION DE X
@@ -25,9 +25,9 @@ subroutine vecini(n, s, x)
 !       POUR TOUS LES TYPES DE DONNEES VOIR AUSSI VECINI, VECINT, VECINK
 !       ET VECINC.
 !       ----------------------------------------------------------------
-  integer :: n, i
-  real(kind=8) :: x(n), s
-  do i = 1, n
-     x(i) = s
-  end do
+    integer :: n, i
+    real(kind=8) :: x(n), s
+    do i = 1, n
+        x(i) = s
+    end do
 end subroutine

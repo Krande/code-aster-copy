@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,17 +18,17 @@
 !
 subroutine thmCheckPorosity(j_mater, meca, ds_thm)
 !
-use THM_type
+    use THM_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/rcvala.h"
 #include "asterfort/utmess.h"
 !
-integer, intent(in) :: j_mater
-character(len=16), intent(in) :: meca
-type(THM_DS), intent(in) :: ds_thm
+    integer, intent(in) :: j_mater
+    character(len=16), intent(in) :: meca
+    type(THM_DS), intent(in) :: ds_thm
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -56,27 +56,27 @@ type(THM_DS), intent(in) :: ds_thm
 !
     if (meca .eq. 'BARCELONE') then
         poro_tole = 1.D-10
-        call rcvala(j_mater, ' '      , meca,&
-                    0      , ' '      , [0.d0]    ,&
-                    1      , ['PORO'] , para_vale ,&
-                    icodre , 0        )
+        call rcvala(j_mater, ' ', meca, &
+                    0, ' ', [0.d0], &
+                    1, ['PORO'], para_vale, &
+                    icodre, 0)
         poro_meca = para_vale(1)
         poro_diff = abs(poro_meca-poro_init)
         if (abs(poro_diff) .gt. poro_tole) then
-            call utmess('F', 'THM2_60', sk = meca)
-        endif
-    endif
+            call utmess('F', 'THM2_60', sk=meca)
+        end if
+    end if
     if (meca .eq. 'CAM_CLAY') then
         poro_tole = 1.D-6
-        call rcvala(j_mater, ' '      , meca,&
-                    0      , ' '      , [0.d0]    ,&
-                    1      , ['PORO'] , para_vale ,&
-                    icodre , 0        )
+        call rcvala(j_mater, ' ', meca, &
+                    0, ' ', [0.d0], &
+                    1, ['PORO'], para_vale, &
+                    icodre, 0)
         poro_meca = para_vale(1)
         poro_diff = abs(poro_meca-poro_init)
         if (abs(poro_diff) .gt. poro_tole) then
-            call utmess('F', 'THM2_60', sk = meca)
-        endif
-    endif
+            call utmess('F', 'THM2_60', sk=meca)
+        end if
+    end if
 !
 end subroutine

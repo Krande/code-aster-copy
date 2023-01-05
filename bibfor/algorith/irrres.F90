@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine irrres(fami, kpg, ksp, mod, nmat,&
-                  materd, materf, yd, yf, deps,&
+subroutine irrres(fami, kpg, ksp, mod, nmat, &
+                  materd, materf, yd, yf, deps, &
                   dy, r)
     implicit none
 !
@@ -45,10 +45,10 @@ subroutine irrres(fami, kpg, ksp, mod, nmat,&
     real(kind=8) :: etaid, agdi, agfi
     integer :: ndt, ndi
 !     ----------------------------------------------------------------
-    common /tdim/   ndt , ndi
+    common/tdim/ndt, ndi
 !     ----------------------------------------------------------------
 !
-    data id3d /1.0d0, 1.0d0, 1.0d0, 0.0d0, 0.0d0, 0.0d0/
+    data id3d/1.0d0, 1.0d0, 1.0d0, 0.0d0, 0.0d0, 0.0d0/
 !
     sigf(1:ndt) = yf(1:ndt)
     sigd(1:ndt) = yd(1:ndt)
@@ -57,23 +57,23 @@ subroutine irrres(fami, kpg, ksp, mod, nmat,&
     call lcopli('ISOTROPE', mod, materf(1, 1), hookf)
 !
 !     RECUPERATION DES CARACTERISTIQUES MATERIAUX A t+
-    ai0 = materf(4,2)
-    etais = materf(5,2)
-    k = materf(7,2)
-    n = materf(8,2)
-    p0 = materf(9,2)
-    kappa = materf(10,2)
-    r02 = materf(11,2)
-    zetaff= materf(12,2)
-    penpe = materf(13,2)
-    pk = materf(14,2)
-    pe = materf(15,2)
-    spe = materf(16,2)
-    zetag = materf(17,2)
+    ai0 = materf(4, 2)
+    etais = materf(5, 2)
+    k = materf(7, 2)
+    n = materf(8, 2)
+    p0 = materf(9, 2)
+    kappa = materf(10, 2)
+    r02 = materf(11, 2)
+    zetaff = materf(12, 2)
+    penpe = materf(13, 2)
+    pk = materf(14, 2)
+    pe = materf(15, 2)
+    spe = materf(16, 2)
+    zetag = materf(17, 2)
 !     RECUPERATION DES CARACTERISTIQUES MATERIAUX A t-
 !     RECUPERATION GONFLEMENT DEJA INTEGRE
-    agdi = materd(19,2)
-    agfi = materf(19,2)
+    agdi = materd(19, 2)
+    agfi = materf(19, 2)
 !
 !     RECUPERATION DES VARIABLES INTERNES A t+
     p = yf(ndt+1)
@@ -88,95 +88,95 @@ subroutine irrres(fami, kpg, ksp, mod, nmat,&
     dg = dy(ndt+4)
 !
 !     RECUPERATION DE L'IRRADIATION
-    irrad = materd(18,2)
-    irraf = materf(18,2)
-    dphi=irraf-irrad
+    irrad = materd(18, 2)
+    irraf = materf(18, 2)
+    dphi = irraf-irrad
 !
     call lcdevi(sigf, dev)
     seqf = lcnrts(dev)
     if (seqf .eq. 0.0d0) then
         dfds(:) = 0.0d0
     else
-        dfds(1:ndt) = (1.5d0/seqf) * dev(1:ndt)
-    endif
-    epsef(1:ndt) = matmul(fkooh(1:ndt,1:ndt), sigf(1:ndt))
-    epsed(1:ndt) = matmul(dkooh(1:ndt,1:ndt), sigd(1:ndt))
-    depsa(1:ndt) = ((dp+dpi)) * dfds(1:ndt)
-    depsg(1:ndt) = dg * id3d(1:ndt)
+        dfds(1:ndt) = (1.5d0/seqf)*dev(1:ndt)
+    end if
+    epsef(1:ndt) = matmul(fkooh(1:ndt, 1:ndt), sigf(1:ndt))
+    epsed(1:ndt) = matmul(dkooh(1:ndt, 1:ndt), sigd(1:ndt))
+    depsa(1:ndt) = ((dp+dpi))*dfds(1:ndt)
+    depsg(1:ndt) = dg*id3d(1:ndt)
 !
 !   RESIDU EN SIGMA, HOMOGENE A DES DEFORMATIONS
-    rs(1:ndt) = epsef(1:ndt) - epsed(1:ndt)
-    rs(1:ndt) = rs(1:ndt) + depsa(1:ndt)
-    rs(1:ndt) = rs(1:ndt) + depsg(1:ndt)
-    rs(1:ndt) = rs(1:ndt) - deps(1:ndt)
-    rs(1:ndt) = (-1.d0) * rs(1:ndt)
+    rs(1:ndt) = epsef(1:ndt)-epsed(1:ndt)
+    rs(1:ndt) = rs(1:ndt)+depsa(1:ndt)
+    rs(1:ndt) = rs(1:ndt)+depsg(1:ndt)
+    rs(1:ndt) = rs(1:ndt)-deps(1:ndt)
+    rs(1:ndt) = (-1.d0)*rs(1:ndt)
 !
 !  RESIDU EN DEFORMATION PLASTIQUE
     if (p .lt. pk) then
         sf = kappa*r02
     else if (p .lt. pe) then
-        sf = penpe*(p - pe) + spe
+        sf = penpe*(p-pe)+spe
     else
         sf = k*(p+p0)**n
-    endif
-    if (((seqf.ge.sf).and.(dp.ge.0.d0)) .or. (dp.gt.r8prem())) then
-        rp = -(seqf-sf)/hookf(1,1)
+    end if
+    if (((seqf .ge. sf) .and. (dp .ge. 0.d0)) .or. (dp .gt. r8prem())) then
+        rp = -(seqf-sf)/hookf(1, 1)
     else
         rp = -dp
-    endif
+    end if
 !
 !     CONTRAINTE EQUIVALENTE A T-
     call lcdevi(sigd, dev)
     seqd = lcnrts(dev)
 !
 !  RESIDU EN DEFORMATION D IRRADIATION
-    materf(21,2) = 0.0d0
+    materf(21, 2) = 0.0d0
     r8aux = 0.0d0
     if (etaid .gt. etais) then
-        rpi = -( dpi - ai0*detai )
+        rpi = -(dpi-ai0*detai)
         r8aux = zetaff*(seqd+seqf)*dphi*0.5d0
     else if (etaif .le. etais) then
-        rpi = - dpi
+        rpi = -dpi
         r8aux = zetaff*(seqd+seqf)*dphi*0.5d0
     else if (detai .gt. 0.0d0) then
-        rpi = -( dpi - ai0*(etaif-etais) )
+        rpi = -(dpi-ai0*(etaif-etais))
         r8aux = (seqd+seqf)*dphi*0.5d0
         if (seqd .gt. 0.0d0) then
-            r8aux = r8aux - (seqf-seqd)*(etais-etaid)/(2.0d0*seqd)
-        endif
+            r8aux = r8aux-(seqf-seqd)*(etais-etaid)/(2.0d0*seqd)
+        end if
         r8aux = r8aux*zetaff
 !        INDICATEUR DE FRANCHISSEMENT DU SEUIL ETAIS
         if (etais .gt. 0.0d0) then
-            materf(21,2) = (etaif-etais)/etais
-        endif
+            materf(21, 2) = (etaif-etais)/etais
+        end if
     else
-        rpi = - dpi
-    endif
+        rpi = -dpi
+    end if
 !
 !  RESIDU PAR RAPPORT A ETA, HOMOGENE A DES DEFORMATIONS : RE
-    re = -(detai-r8aux)/hookf(1,1)
+    re = -(detai-r8aux)/hookf(1, 1)
 !
 !  RESIDU PAR RAPPORT AU GONFLEMENT
     if (dphi .gt. 0.0d0) then
-        rg= -( dg - zetag*(agfi - agdi) )
+        rg = -(dg-zetag*(agfi-agdi))
     else
-        rg = - dg
-    endif
+        rg = -dg
+    end if
 !
 !  RESIDU PAR RAPPORT A LA DEFORMATION ( C_PLAN )
     if (mod(1:6) .eq. 'C_PLAN') then
-        qf = (&
-             -hookf(3, 3)*epsef(3) -hookf(3, 1)*epsef(1) -hookf(3, 2)* epsef(2) -hookf(3, 4)*epse&
-             &f(4))/hookf(1,&
-             1&
+        qf = ( &
+             -hookf(3, 3)*epsef(3)-hookf(3, 1)*epsef(1)-hookf(3, 2)*epsef(2)-hookf(3, 4)*epse&
+             &f(4))/hookf(1, &
+             1 &
              )
-    endif
+    end if
 !
     r(1:ndt) = rs(1:ndt)
-    r(ndt+1)=rp
-    r(ndt+2)=re
-    r(ndt+3)=rpi
-    r(ndt+4)=rg
+    r(ndt+1) = rp
+    r(ndt+2) = re
+    r(ndt+3) = rpi
+    r(ndt+4) = rg
     if (mod(1:6) .eq. 'C_PLAN') r(ndt+5) = qf
 !
 end subroutine

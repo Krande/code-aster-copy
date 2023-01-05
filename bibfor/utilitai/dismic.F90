@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -66,11 +66,11 @@ subroutine dismic(questi, nomobz, repi, repkz, ierd)
         call jeexin(nomob//'.ORDR', ire5)
         call jeexin(nomob//'.TAVA', ire6)
         call jeexin(nomob//'.TACH', ire7)
-        if (ire3 .gt. 0 .and. ire4 .gt. 0 .and. ire5 .gt. 0 .and. ire6 .gt. 0 .and. ire7&
+        if (ire3 .gt. 0 .and. ire4 .gt. 0 .and. ire5 .gt. 0 .and. ire6 .gt. 0 .and. ire7 &
             .gt. 0) then
             repk = 'OUI'
             goto 9999
-        endif
+        end if
 !
     else if (questi(1:5) .eq. 'TABLE') then
         call jeexin(nomob//'.TBBA', ire3)
@@ -79,7 +79,7 @@ subroutine dismic(questi, nomobz, repi, repkz, ierd)
         if (ire3 .gt. 0 .and. ire4 .gt. 0 .and. ire5 .gt. 0) then
             repk = 'OUI'
             goto 9999
-        endif
+        end if
 !
     else if (questi(1:7) .eq. 'CHAM_NO') then
         call jeexin(nomob//'.DESC', iret)
@@ -88,24 +88,24 @@ subroutine dismic(questi, nomobz, repi, repkz, ierd)
             if (docu .eq. 'CHNO') then
                 repk = 'OUI'
                 goto 9999
-            endif
-        endif
+            end if
+        end if
 !
     else if (questi(1:9) .eq. 'CHAM_ELEM') then
         call jeexin(nomob//'.CELD', iret)
         if (iret .gt. 0) then
             repk = 'OUI'
             goto 9999
-        endif
+        end if
 !
-    else if (questi(1:4).eq.'TYPE') then
+    else if (questi(1:4) .eq. 'TYPE') then
         call jeexin(nomob//'.TYPE', ire1)
         call jeexin(nomob//'.NOPA', ire2)
         call jeexin(nomob//'.NOVA', ire3)
         if (ire1 .gt. 0 .and. ire2 .gt. 0 .and. ire3 .gt. 0) then
             repk = 'TABLE'
             goto 9999
-        endif
+        end if
 !
         call jeexin(nomob//'.DESC', ire1)
         if (ire1 .gt. 0) then
@@ -115,32 +115,32 @@ subroutine dismic(questi, nomobz, repi, repkz, ierd)
                 goto 9999
             else
                 call rsdocu(docu, repk, iret)
-                if (iret .ne. 0) ierd=1
+                if (iret .ne. 0) ierd = 1
                 goto 9999
-            endif
-        endif
+            end if
+        end if
 !
         call jeexin(nomob//'.CELD', ire1)
         if (ire1 .gt. 0) then
-            repk='CHAM_ELEM'
+            repk = 'CHAM_ELEM'
             goto 9999
-        endif
+        end if
 !
         call jeexin(nomob//'.PROL', ire1)
         if (ire1 .gt. 0) then
             call jeveuo(nomob//'.PROL', 'L', vk24=prol)
-            if (prol(1) .eq. 'CONSTANTE' .or. prol(1) .eq. 'FONCTION' .or. prol(1)&
+            if (prol(1) .eq. 'CONSTANTE' .or. prol(1) .eq. 'FONCTION' .or. prol(1) &
                 .eq. 'NAPPE' .or. prol(1) .eq. 'FONCT_C') then
-                repk='FONCTION'
+                repk = 'FONCTION'
                 goto 9999
-            endif
-        endif
+            end if
+        end if
 !
     else
-        ierd=1
-    endif
+        ierd = 1
+    end if
 !
-9999  continue
+9999 continue
     repkz = repk
     call jedema()
 end subroutine

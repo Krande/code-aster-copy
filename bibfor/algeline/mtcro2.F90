@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -44,20 +44,20 @@ subroutine mtcro2(n, a, nmax, x)
 !-----------------------------------------------------------------------
     integer :: i, j
 !-----------------------------------------------------------------------
-    data zero    /0.d0/
+    data zero/0.d0/
 ! ----------------------------------------------------------------------
 !
 !
     if (n .lt. 0 .or. nmax .lt. 1 .or. nmax .lt. n) then
         call utmess('A', 'ALGELINE2_12')
-    endif
+    end if
 !
     do j = n, 1, -1
-        if (x( j ) .ne. zero) then
-            do i = j - 1, 1, -1
-                x( i ) = x( i ) - x( j )*a( i, j )
+        if (x(j) .ne. zero) then
+            do i = j-1, 1, -1
+                x(i) = x(i)-x(j)*a(i, j)
             end do
-        endif
+        end if
     end do
 !
 end subroutine

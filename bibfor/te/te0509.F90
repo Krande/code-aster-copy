@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -136,7 +136,7 @@ subroutine te0509(option, nomte)
     real(kind=8) :: sigmxy, sigmxz, someg2, sphids, u1y, u1z, xgau
     real(kind=8) :: ygau, zero
 !-----------------------------------------------------------------------
-    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg, &
                      jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
     zero = 0.0d0
     sphids = zero
@@ -173,19 +173,19 @@ subroutine te0509(option, nomte)
 !   --- BOUCLE SUR LES POINTS D'INTEGRATION :
 !       -----------------------------------
         do igau = 1, npg
-            k=(igau-1)*nno
+            k = (igau-1)*nno
 !
 !   ---    CALCUL DES DERIVEES DES FONCTIONS DE FORME  ET DU PRODUIT
 !   ---    JACOBIEN*POIDS_INTEGRATION (DANS LA VARIABLE POIDS)
 !   ---    AU POINT D'INTEGRATION COURANT :
 !          ------------------------------
-            call dfdm2d(nno, igau, ipoids, idfde, zr(igeom),&
+            call dfdm2d(nno, igau, ipoids, idfde, zr(igeom), &
                         poids, dfdx, dfdy)
 !
 !   ---    CALCUL DE SOMME/S_ELEMENT(PHI.DS) :
 !          ---------------------------------
             do ino = 1, nno
-                sphids = sphids + zr(ivf+k+ino-1)*zr(itempe+ino-1)* poids
+                sphids = sphids+zr(ivf+k+ino-1)*zr(itempe+ino-1)*poids
             end do
         end do
 !
@@ -199,7 +199,7 @@ subroutine te0509(option, nomte)
 ! --- CALCUL DES COORDONNES DU CENTRE DE CISAILLEMENT/TORSION -
 ! --- ET DES COEFFICIENTS DE CISAILLEMENT                     -
 !--------------------------------------------------------------
-    else if (option.eq.'CARA_CISA') then
+    else if (option .eq. 'CARA_CISA') then
 !
 !   --- RECUPERATION DU CHAMP D'INCONNUES SCALAIRES SOLUTION DE
 !   --- L'EQUATION  : LAPLACIEN(PSI_Y) = -Y    DANS LA SECTION
@@ -218,13 +218,13 @@ subroutine te0509(option, nomte)
 ! --- BOUCLE SUR LES POINTS D'INTEGRATION :
 !     -----------------------------------
         do igau = 1, npg
-            k=(igau-1)*nno
+            k = (igau-1)*nno
 !
 ! ---    CALCUL DES DERIVEES DES FONCTIONS DE FORME  ET DU PRODUIT
 ! ---    JACOBIEN*POIDS_INTEGRATION (DANS LA VARIABLE POIDS)
 ! ---    AU POINT D'INTEGRATION COURANT :
 !        ------------------------------
-            call dfdm2d(nno, igau, ipoids, idfde, zr(igeom),&
+            call dfdm2d(nno, igau, ipoids, idfde, zr(igeom), &
                         poids, dfdx, dfdy)
 !
 ! ---    CALCUL DES CONTRAINTES SIGMA_XY = D(PSI_Y)/DY ET
@@ -236,19 +236,19 @@ subroutine te0509(option, nomte)
             ygau = zero
 !
             do ino = 1, nno
-                i = igeom + 2*(ino-1) -1
+                i = igeom+2*(ino-1)-1
 !
-                xgau = xgau + zr(ivf+k+ino-1)*zr(i+1)
-                ygau = ygau + zr(ivf+k+ino-1)*zr(i+2)
+                xgau = xgau+zr(ivf+k+ino-1)*zr(i+1)
+                ygau = ygau+zr(ivf+k+ino-1)*zr(i+2)
 !
-                sigmxy = sigmxy + dfdx(ino)*zr(itemp1+ino-1)
-                sigmxz = sigmxz + dfdy(ino)*zr(itemp1+ino-1)
+                sigmxy = sigmxy+dfdx(ino)*zr(itemp1+ino-1)
+                sigmxz = sigmxz+dfdy(ino)*zr(itemp1+ino-1)
             end do
 !
 ! ---    CALCUL DE SOMME/S_ELEMENT(SIGMA_XZ*X - SIGMA_XY*Y).DS)
 ! ---    (Y EST DEVENU X ET Z EST DEVENU Y) :
 !        ----------------------------------
-            mx0z = mx0z + (sigmxz*xgau - sigmxy*ygau)*poids
+            mx0z = mx0z+(sigmxz*xgau-sigmxy*ygau)*poids
         end do
 !
 ! --- AFFECTATION DU CHAMP DE SCALAIRES EN SORTIE AVEC LA COORDONNEE
@@ -274,13 +274,13 @@ subroutine te0509(option, nomte)
 ! --- BOUCLE SUR LES POINTS D'INTEGRATION :
 !     -----------------------------------
         do igau = 1, npg
-            k=(igau-1)*nno
+            k = (igau-1)*nno
 !
 ! ---    CALCUL DES DERIVEES DES FONCTIONS DE FORME  ET DU PRODUIT
 ! ---    JACOBIEN*POIDS_INTEGRATION (DANS LA VARIABLE POIDS)
 ! ---    AU POINT D'INTEGRATION COURANT :
 !        ------------------------------
-            call dfdm2d(nno, igau, ipoids, idfde, zr(igeom),&
+            call dfdm2d(nno, igau, ipoids, idfde, zr(igeom), &
                         poids, dfdx, dfdy)
 !
 ! ---    CALCUL DES CONTRAINTES SIGMA_XY = D(PSI_Z)/DY ET
@@ -292,19 +292,19 @@ subroutine te0509(option, nomte)
             ygau = zero
 !
             do ino = 1, nno
-                i = igeom + 2*(ino-1) -1
+                i = igeom+2*(ino-1)-1
 !
-                xgau = xgau + zr(ivf+k+ino-1)*zr(i+1)
-                ygau = ygau + zr(ivf+k+ino-1)*zr(i+2)
+                xgau = xgau+zr(ivf+k+ino-1)*zr(i+1)
+                ygau = ygau+zr(ivf+k+ino-1)*zr(i+2)
 !
-                sigmxy = sigmxy + dfdx(ino)*zr(itemp2+ino-1)
-                sigmxz = sigmxz + dfdy(ino)*zr(itemp2+ino-1)
+                sigmxy = sigmxy+dfdx(ino)*zr(itemp2+ino-1)
+                sigmxz = sigmxz+dfdy(ino)*zr(itemp2+ino-1)
             end do
 !
 ! ---    CALCUL DE SOMME/S_ELEMENT(SIGMA_XZ*X - SIGMA_XY*Y).DS)
 ! ---    (Y EST DEVENU X ET Z EST DEVENU Y) :
 !        ----------------------------------
-            mx0y = mx0y + (sigmxz*xgau - sigmxy*ygau)*poids
+            mx0y = mx0y+(sigmxz*xgau-sigmxy*ygau)*poids
         end do
 !
 ! --- AFFECTATION DU CHAMP DE SCALAIRES EN SORTIE AVEC LA COORDONNEE
@@ -324,13 +324,13 @@ subroutine te0509(option, nomte)
 ! --- BOUCLE SUR LES POINTS D'INTEGRATION :
 !     -----------------------------------
         do igau = 1, npg
-            k=(igau-1)*nno*2
+            k = (igau-1)*nno*2
 !
 ! ---    CALCUL DES DERIVEES DES FONCTIONS DE FORME  ET DU PRODUIT
 ! ---    JACOBIEN*POIDS_INTEGRATION (DANS LA VARIABLE POIDS)
 ! ---    AU POINT D'INTEGRATION COURANT :
 !        ------------------------------
-            call dfdm2d(nno, igau, ipoids, idfde, zr(igeom),&
+            call dfdm2d(nno, igau, ipoids, idfde, zr(igeom), &
                         poids, dfdx, dfdy)
 !
 !
@@ -344,17 +344,17 @@ subroutine te0509(option, nomte)
 !
             do ino = 1, nno
 !
-                dpsydy = dpsydy + dfdx(ino)*zr(itemp1+ino-1)
-                dpsydz = dpsydz + dfdy(ino)*zr(itemp1+ino-1)
+                dpsydy = dpsydy+dfdx(ino)*zr(itemp1+ino-1)
+                dpsydz = dpsydz+dfdy(ino)*zr(itemp1+ino-1)
 !
-                dpszdy = dpszdy + dfdx(ino)*zr(itemp2+ino-1)
-                dpszdz = dpszdz + dfdy(ino)*zr(itemp2+ino-1)
+                dpszdy = dpszdy+dfdx(ino)*zr(itemp2+ino-1)
+                dpszdz = dpszdz+dfdy(ino)*zr(itemp2+ino-1)
             end do
 !
 ! ---    CALCUL DE U1_Y ET U1_Z :
 !        ----------------------
-            u1y = u1y + (dpsydy*dpsydy + dpsydz*dpsydz)*poids
-            u1z = u1z + (dpszdy*dpszdy + dpszdz*dpszdz)*poids
+            u1y = u1y+(dpsydy*dpsydy+dpsydz*dpsydz)*poids
+            u1z = u1z+(dpszdy*dpszdy+dpszdz*dpszdz)*poids
         end do
 !
 ! --- AFFECTATION DU CHAMP DE SCALAIRES EN SORTIE AVEC U1Y ET U1Z
@@ -368,7 +368,7 @@ subroutine te0509(option, nomte)
 ! --- CALCUL DE LA CONSTANTE DE GAUCHISSEMENT -
 ! --- SOMME/S__ELEMENT(OMEGA**2.DS)           -
 !----------------------------------------------
-    else if (option.eq.'CARA_GAUCHI') then
+    else if (option .eq. 'CARA_GAUCHI') then
 !
 !   --- RECUPERATION DU CHAMP D'INCONNUES SCALAIRES SOLUTION DE
 !   --- L'EQUATION  : LAPLACIEN(OMEGA) = 0     DANS LA SECTION
@@ -386,19 +386,19 @@ subroutine te0509(option, nomte)
 !   --- BOUCLE SUR LES POINTS D'INTEGRATION :
 !       -----------------------------------
         do igau = 1, npg
-            k=(igau-1)*nno
+            k = (igau-1)*nno
 !
 !   ---    CALCUL DES DERIVEES DES FONCTIONS DE FORME  ET DU PRODUIT
 !   ---    JACOBIEN*POIDS_INTEGRATION (DANS LA VARIABLE POIDS)
 !   ---    AU POINT D'INTEGRATION COURANT :
 !          ------------------------------
-            call dfdm2d(nno, igau, ipoids, idfde, zr(igeom),&
+            call dfdm2d(nno, igau, ipoids, idfde, zr(igeom), &
                         poids, dfdx, dfdy)
 !
 !   ---    CALCUL DE SOMME/S_ELEMENT(OMEGA**2.DS) :
 !          --------------------------------------
             do ino = 1, nno
-                someg2 = someg2 + zr(ivf+k+ino-1)* zr(itempe+ino-1)* zr(itempe+ino-1)*poids
+                someg2 = someg2+zr(ivf+k+ino-1)*zr(itempe+ino-1)*zr(itempe+ino-1)*poids
             end do
         end do
 !
@@ -406,6 +406,6 @@ subroutine te0509(option, nomte)
 !   --- A LA VALEUR LA VALEUR SOMME/S_ELEMENT(OMEGA**2.DS) :
 !       --------------------------------------------------
         zr(icase+1-1) = someg2
-    endif
+    end if
 !
 end subroutine

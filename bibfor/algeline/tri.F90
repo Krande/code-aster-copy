@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -39,8 +39,8 @@ subroutine tri(clef, tab, ntab, n)
 #include "asterfort/triins.h"
 #include "asterfort/trirap.h"
     integer :: blocmx, npile
-    parameter (blocmx = 14)
-    parameter (npile = 59)
+    parameter(blocmx=14)
+    parameter(npile=59)
 !
 ! --- VARIABLES
     integer :: n, ntab, clef(*), tab(n, *)
@@ -58,18 +58,18 @@ subroutine tri(clef, tab, ntab, n)
 !
 ! --- DECOUPAGE
 !
-    call trirap(clef, tab, ntab, n, g,&
+    call trirap(clef, tab, ntab, n, g, &
                 d, m)
 !
     if ((m-g) .gt. (d-m)) then
         gs = g
-        ds = m - 1
-        g = m + 1
+        ds = m-1
+        g = m+1
     else
-        gs = m + 1
+        gs = m+1
         ds = d
-        d = m - 1
-    endif
+        d = m-1
+    end if
 !
     if ((d-g) .ge. blocmx) then
 !
@@ -80,17 +80,17 @@ subroutine tri(clef, tab, ntab, n)
             if (ipile .le. npile) then
 !
                 pile(ipile) = gs
-                ipile = ipile + 1
+                ipile = ipile+1
                 pile(ipile) = ds
-                ipile = ipile + 1
+                ipile = ipile+1
 !
             else
 !
                 ASSERT(.false.)
 !
-            endif
+            end if
 !
-        endif
+        end if
 !
         goto 10
 !
@@ -100,15 +100,15 @@ subroutine tri(clef, tab, ntab, n)
 !
         if (ipile .gt. 2) then
 !
-            ipile = ipile - 1
+            ipile = ipile-1
             d = pile(ipile)
-            ipile = ipile - 1
+            ipile = ipile-1
             g = pile(ipile)
             goto 10
 !
-        endif
+        end if
 !
-    endif
+    end if
 !
 ! --- TRI PAR INSERTION
 !

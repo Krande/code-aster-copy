@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -80,15 +80,15 @@ subroutine resu60(resu1, resu2)
     call jeexin(resu2//'           .VITE', flagv2)
     call jeexin(resu2//'           .ACCE', flaga2)
 !
-    flagd = ((flagd1.eq.0).and.(flagd2.eq.0)) .or. ((flagd1.ne.0).and.(flagd2.ne.0))
-    flagv = ((flagv1.eq.0).and.(flagv2.eq.0)) .or. ((flagv1.ne.0).and.(flagv2.ne.0))
-    flaga = ((flaga1.eq.0).and.(flaga2.eq.0)) .or. ((flaga1.ne.0).and.(flaga2.ne.0))
+    flagd = ((flagd1 .eq. 0) .and. (flagd2 .eq. 0)) .or. ((flagd1 .ne. 0) .and. (flagd2 .ne. 0))
+    flagv = ((flagv1 .eq. 0) .and. (flagv2 .eq. 0)) .or. ((flagv1 .ne. 0) .and. (flagv2 .ne. 0))
+    flaga = ((flaga1 .eq. 0) .and. (flaga2 .eq. 0)) .or. ((flaga1 .ne. 0) .and. (flaga2 .ne. 0))
 !
 !     CONDITION POUR SAVOIR SI LES FLAGS SONT BIEN TOUS LES 2 ZEROS
 !     OU BIEN DIFFERENTS DE ZERO = COMPATIBILITE DES RESUS
-    if (.not.(flagd.and.flagv.and.flaga)) then
+    if (.not. (flagd .and. flagv .and. flaga)) then
         call utmess('F', 'ALGORITH17_25')
-    endif
+    end if
 !
     call jeveuo(resu1//'           .DESC', 'E', jdesc)
 !
@@ -96,13 +96,13 @@ subroutine resu60(resu1, resu2)
     if (flagd1 .gt. 0) then
         call jelira(resu1//'           .DEPL', 'LONUTI', nbsto1)
         call jelira(resu2//'           .DEPL', 'LONUTI', nbsto2)
-    else if (flagv1.gt.0) then
+    else if (flagv1 .gt. 0) then
         call jelira(resu1//'           .VITE', 'LONUTI', nbsto1)
         call jelira(resu2//'           .VITE', 'LONUTI', nbsto2)
     else
         call jelira(resu1//'           .ACCE', 'LONUTI', nbsto1)
         call jelira(resu2//'           .ACCE', 'LONUTI', nbsto2)
-    endif
+    end if
 !
     nbstoc = nbsto1+nbsto2
 !
@@ -110,10 +110,10 @@ subroutine resu60(resu1, resu2)
     if (flagd1 .ne. 0) then
         call jeveuo(resu1//'           .DEPL', 'E', vc=depl1)
         call jeveuo(resu2//'           .DEPL', 'E', vc=depl2)
-        call wkvect(resu //'           .DEPL', 'G V C', nbstoc, jdepl)
+        call wkvect(resu//'           .DEPL', 'G V C', nbstoc, jdepl)
         call zcopy(nbsto1, depl1, 1, zc(jdepl), 1)
         call zcopy(nbsto2, depl2, 1, zc(jdepl+nbsto1), 1)
-    endif
+    end if
 !                         ^
 !                         |______________
 !       --- VALEURS COMPLEXES = COPIER |2| FOIS PLUS DE REELS
@@ -121,18 +121,18 @@ subroutine resu60(resu1, resu2)
     if (flagv1 .ne. 0) then
         call jeveuo(resu1//'           .VITE', 'E', vc=vite1)
         call jeveuo(resu2//'           .VITE', 'E', vc=vite2)
-        call wkvect(resu //'           .VITE', 'G V C', nbstoc, jvite)
+        call wkvect(resu//'           .VITE', 'G V C', nbstoc, jvite)
         call zcopy(nbsto1, vite1, 1, zc(jvite), 1)
         call zcopy(nbsto2, vite2, 1, zc(jvite+nbsto1), 1)
-    endif
+    end if
 !
     if (flaga1 .ne. 0) then
         call jeveuo(resu1//'           .ACCE', 'E', vc=acce1)
         call jeveuo(resu2//'           .ACCE', 'E', vc=acce2)
-        call wkvect(resu //'           .ACCE', 'G V C', nbstoc, jacce)
+        call wkvect(resu//'           .ACCE', 'G V C', nbstoc, jacce)
         call zcopy(nbsto1, acce1, 1, zc(jacce), 1)
         call zcopy(nbsto2, acce2, 1, zc(jacce+nbsto1), 1)
-    endif
+    end if
 !
 !     --- RECUPERATION DES CHAMPS ORDR
 !
@@ -143,10 +143,10 @@ subroutine resu60(resu1, resu2)
     call jelira(resu2//'           .ORDR', 'LONUTI', nbsau2)
 !     --- CUMULER LES NUMEROS D'ORDRE POUR CONSERVER LA MONOTONIE
     do i = 0, nbsau2-1
-        ordr2(1+i) = ordr2(1+i) + ordr1(nbsau1) + 1
+        ordr2(1+i) = ordr2(1+i)+ordr1(nbsau1)+1
     end do
 !
-    nbsauv = nbsau1 + nbsau2
+    nbsauv = nbsau1+nbsau2
 !
     call wkvect(resu//'           .ORDR', 'G V I', nbsauv, jordr)
     call copvis(nbsau1, ordr1, zi(jordr))
@@ -160,11 +160,11 @@ subroutine resu60(resu1, resu2)
 !
 !     --- DUPLICATION ---
 !
-    if (flagd1 .ne. 0) call jedupo(resu//'           .DEPL', 'G', resu1//'           .DEPL',&
+    if (flagd1 .ne. 0) call jedupo(resu//'           .DEPL', 'G', resu1//'           .DEPL', &
                                    .false._1)
-    if (flagv1 .ne. 0) call jedupo(resu//'           .VITE', 'G', resu1//'           .VITE',&
+    if (flagv1 .ne. 0) call jedupo(resu//'           .VITE', 'G', resu1//'           .VITE', &
                                    .false._1)
-    if (flaga1 .ne. 0) call jedupo(resu//'           .ACCE', 'G', resu1//'           .ACCE',&
+    if (flaga1 .ne. 0) call jedupo(resu//'           .ACCE', 'G', resu1//'           .ACCE', &
                                    .false._1)
     call jedupo(resu//'           .ORDR', 'G', resu1//'           .ORDR', .false._1)
     call jedupo(resu//'           .DISC', 'G', resu1//'           .DISC', .false._1)

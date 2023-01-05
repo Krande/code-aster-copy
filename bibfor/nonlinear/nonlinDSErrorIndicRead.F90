@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,16 +19,16 @@
 !
 subroutine nonlinDSErrorIndicRead(ds_errorindic)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/infdbg.h"
 #include "asterfort/getvtx.h"
 #include "asterfort/utmess.h"
 !
-type(NL_DS_ErrorIndic), intent(inout) :: ds_errorindic
+    type(NL_DS_ErrorIndic), intent(inout) :: ds_errorindic
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -51,11 +51,11 @@ type(NL_DS_ErrorIndic), intent(inout) :: ds_errorindic
     call infdbg('MECANONLINE', ifm, niv)
     if (niv .ge. 2) then
         call utmess('I', 'MECANONLINE12_12')
-    endif
+    end if
 !
 ! - Read parameters for THM error (Meunier)
 !
-    keywf  = 'CRIT_QUALITE'
+    keywf = 'CRIT_QUALITE'
     answer = 'NON'
     call getvtx(keywf, 'ERRE_TEMPS_THM', iocc=1, scal=answer, nbret=nocc)
     ds_errorindic%l_erre_thm = answer .eq. 'OUI'

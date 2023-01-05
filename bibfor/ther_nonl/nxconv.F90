@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,14 +19,14 @@
 !
 subroutine nxconv(ther_crit_i, ther_crit_r, resi_rela, resi_maxi, conver)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 !
-integer, intent(in) :: ther_crit_i(*)
-real(kind=8), intent(in) :: ther_crit_r(*)
-real(kind=8), intent(in) :: resi_rela, resi_maxi
-aster_logical, intent(out) :: conver
+    integer, intent(in) :: ther_crit_i(*)
+    real(kind=8), intent(in) :: ther_crit_r(*)
+    real(kind=8), intent(in) :: resi_rela, resi_maxi
+    aster_logical, intent(out) :: conver
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -44,20 +44,20 @@ aster_logical, intent(out) :: conver
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    conver     = ASTER_FALSE
+    conver = ASTER_FALSE
 !
     if (ther_crit_i(1) .ne. 0) then
         if (resi_maxi .lt. ther_crit_r(1)) then
             conver = ASTER_TRUE
         else
             conver = ASTER_FALSE
-        endif
+        end if
     else
         if (resi_rela .lt. ther_crit_r(2)) then
             conver = ASTER_TRUE
         else
             conver = ASTER_FALSE
-        endif
-    endif
+        end if
+    end if
 !
 end subroutine

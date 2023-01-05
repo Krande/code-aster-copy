@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine elpiv1(xjvmax, indic, nbliac, ajliai, spliai,&
+subroutine elpiv1(xjvmax, indic, nbliac, ajliai, spliai, &
                   spavan, noma, sdcont_defi, sdcont_solv)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -108,9 +108,9 @@ implicit none
 !
 ! --- INITIALISATIONS
 !
-    nbliai = cfdisd(sdcont_solv,'NBLIAI')
+    nbliai = cfdisd(sdcont_solv, 'NBLIAI')
     typesp = 'S'
-    copmax = xjvmax * 1.0d-08
+    copmax = xjvmax*1.0d-08
     pivnul = .false.
     nbbloc = scde(3)
 !
@@ -129,21 +129,21 @@ implicit none
             else
                 kk1f = kk1
                 kk2f = kk2
-            endif
+            end if
             iblc = scib(kk1f)
             dercol = scbl(iblc)
             bloc = dercol*(dercol+1)/2
 !
 ! ------- ON ACCEDE AU BLOC
 !
-            if (.not.zl(jouv-1+iblc)) then
-                if ((iblc.gt.1) .and. (kk1f.ne.(spavan+1))) then
+            if (.not. zl(jouv-1+iblc)) then
+                if ((iblc .gt. 1) .and. (kk1f .ne. (spavan+1))) then
                     call jelibe(jexnum(macont//'.UALF', (iblc-1)))
                     zl(jouv-2+iblc) = .false.
-                endif
+                end if
                 call jeveuo(jexnum(macont//'.UALF', iblc), 'E', jvale)
                 zl(jouv-1+iblc) = .true.
-            endif
+            end if
 !
 ! ------- ACCES A LA DIAGONALE
 !
@@ -156,27 +156,27 @@ implicit none
             else
                 pivnul = .false.
                 goto 10
-            endif
+            end if
         end do
 !
 ! ----- ON SUPPRIME LA LIAISON
 !
         if (pivnul) then
             lliac = zi(jliac-1+kk1)
-            zi(jliot+4*nbliai) = zi(jliot+4*nbliai) + 1
+            zi(jliot+4*nbliai) = zi(jliot+4*nbliai)+1
             nbote = zi(jliot+4*nbliai)
             zi(jliot-1+nbote) = zi(jliac-1+kk1)
             call cftabl(indic, nbliac, ajliai, spliai, &
-                        sdcont_solv, typesp, kk1,&
+                        sdcont_solv, typesp, kk1, &
                         lliac)
-            call cfimp2(sdcont_defi, sdcont_solv, noma, lliac,&
+            call cfimp2(sdcont_defi, sdcont_solv, noma, lliac, &
                         'PIV')
             goto 40
-        endif
- 10     continue
+        end if
+10      continue
     end do
 !
- 40 continue
+40  continue
     call jedetr(ouvert)
     call jedema()
 !

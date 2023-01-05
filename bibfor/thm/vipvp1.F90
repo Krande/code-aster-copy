@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,39 +17,39 @@
 ! --------------------------------------------------------------------
 ! aslint: disable=W1504
 !
-subroutine vipvp1(ds_thm,&
-                  ndim  , nbvari,&
-                  dimcon,&
-                  adcp11, adcp12, advico, vicpvp,&
+subroutine vipvp1(ds_thm, &
+                  ndim, nbvari, &
+                  dimcon, &
+                  adcp11, adcp12, advico, vicpvp, &
                   congem, &
-                  cp11  , cp12  ,&
-                  mamolv, rgaz  , rho11 , signe ,&
-                  temp  , p2    ,&
-                  dtemp , dp1   , dp2   ,&
-                  pvp0  , pvpm  , pvp   ,&
-                  vintm , vintp ,&
+                  cp11, cp12, &
+                  mamolv, rgaz, rho11, signe, &
+                  temp, p2, &
+                  dtemp, dp1, dp2, &
+                  pvp0, pvpm, pvp, &
+                  vintm, vintp, &
                   retcom)
 !
-use THM_type
+    use THM_type
 !
-implicit none
+    implicit none
 !
 #include "asterc/r8prem.h"
 !
-type(THM_DS), intent(in) :: ds_thm
-integer, intent(in) :: ndim, dimcon, nbvari
-integer, intent(in) :: adcp11, adcp12
-integer, intent(in) :: advico, vicpvp
-real(kind=8), intent(in) :: congem(dimcon)
-real(kind=8), intent(in) :: rho11, cp11, cp12, mamolv, rgaz
-real(kind=8), intent(in) :: signe
-real(kind=8), intent(in) :: temp, p2
-real(kind=8), intent(in) :: dtemp, dp1, dp2
-real(kind=8), intent(in) :: vintm(nbvari)
-real(kind=8), intent(inout) :: vintp(nbvari)
-real(kind=8), intent(in) :: pvp0
-real(kind=8), intent(out) :: pvp, pvpm
-integer, intent(out) :: retcom
+    type(THM_DS), intent(in) :: ds_thm
+    integer, intent(in) :: ndim, dimcon, nbvari
+    integer, intent(in) :: adcp11, adcp12
+    integer, intent(in) :: advico, vicpvp
+    real(kind=8), intent(in) :: congem(dimcon)
+    real(kind=8), intent(in) :: rho11, cp11, cp12, mamolv, rgaz
+    real(kind=8), intent(in) :: signe
+    real(kind=8), intent(in) :: temp, p2
+    real(kind=8), intent(in) :: dtemp, dp1, dp2
+    real(kind=8), intent(in) :: vintm(nbvari)
+    real(kind=8), intent(inout) :: vintp(nbvari)
+    real(kind=8), intent(in) :: pvp0
+    real(kind=8), intent(out) :: pvp, pvpm
+    integer, intent(out) :: retcom
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -95,25 +95,25 @@ integer, intent(out) :: retcom
     retcom = 0
     varbio = mamolv/rgaz/temp*(dp2-signe*dp1)/rho11
     if (ds_thm%ds_elem%l_dof_ther) then
-        varbio = varbio+(congem(adcp12+ndim+1) -&
-                 congem(adcp11+ndim+1))*(1.0d0/(temp-dtemp)-1.0d0/temp)*mamolv/rgaz
+        varbio = varbio+(congem(adcp12+ndim+1)- &
+                         congem(adcp11+ndim+1))*(1.0d0/(temp-dtemp)-1.0d0/temp)*mamolv/rgaz
         varbio = varbio+(cp12-cp11)*(log(temp/(temp-dtemp))-(dtemp/temp))*mamolv/rgaz
-    endif
+    end if
     if (varbio .gt. epxmax) then
         retcom = 1
         goto 30
-    endif
-    vintp(advico+vicpvp) = - pvp0 + (vintm(advico+vicpvp)+pvp0)*exp(varbio)
-    pvp  = vintp(advico+vicpvp) + pvp0
-    pvpm = vintm(advico+vicpvp) + pvp0
+    end if
+    vintp(advico+vicpvp) = -pvp0+(vintm(advico+vicpvp)+pvp0)*exp(varbio)
+    pvp = vintp(advico+vicpvp)+pvp0
+    pvpm = vintm(advico+vicpvp)+pvp0
     if ((p2-pvp) .lt. 0.d0) then
         retcom = 1
         goto 30
-    endif
+    end if
     if ((pvp) .lt. r8prem()) then
         retcom = 1
         goto 30
-    endif
+    end if
 !
 30  continue
 !

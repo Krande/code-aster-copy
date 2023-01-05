@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine fgpic2(method, rtrv, point, npoint, pic,&
+subroutine fgpic2(method, rtrv, point, npoint, pic, &
                   npic)
 !       REARRANGEMENT ET EXTRACTION DES PICS
 !       ----------------------------------------------------------------
@@ -41,7 +41,7 @@ subroutine fgpic2(method, rtrv, point, npoint, pic,&
 !     ----------------------------------------------------------------
 ! -   EXTRACTION DES PICS POUR RAINFLOW=PIC LE PLUS GRAND EN DEBUT
 !     ----------------------------------------------------------------
-    if (( method.eq.'RAINFLOW' ) .or. ( method.eq.'RFLO_MAX' )) then
+    if ((method .eq. 'RAINFLOW') .or. (method .eq. 'RFLO_MAX')) then
 !
 ! -     RECHERCHE DU POINT LE PLUS GRAND EN VALEUR ABSOLUE
 !
@@ -51,7 +51,7 @@ subroutine fgpic2(method, rtrv, point, npoint, pic,&
             if (abs(point(i)) .gt. pmax*(1.0d0+epsi)) then
                 pmax = abs(point(i))
                 nmax = i
-            endif
+            end if
         end do
         pmax = point(nmax)
 !
@@ -74,14 +74,14 @@ subroutine fgpic2(method, rtrv, point, npoint, pic,&
 !
 ! -     ON RECHERCHE TOUS LES PICS
         do i = 3, ntrv
-            dp1 = pinter - pic(npic)
-            dp2 = rtrv(i) - pinter
+            dp1 = pinter-pic(npic)
+            dp2 = rtrv(i)-pinter
 !
 ! -         ON CONSERVE LE POINT INTERMEDIAIRE COMME UN PIC
             if (dp2*dp1 .lt. 0.d0) then
                 npic = npic+1
                 pic(npic) = pinter
-            endif
+            end if
 !
 ! -         LE DERNIER POINT DEVIENT POINT INTERMEDIAIRE
             pinter = rtrv(i)
@@ -93,6 +93,6 @@ subroutine fgpic2(method, rtrv, point, npoint, pic,&
     else
         k16b = method(1:16)
         call utmess('F', 'PREPOST_4', sk=k16b)
-    endif
+    end if
 !
 end subroutine

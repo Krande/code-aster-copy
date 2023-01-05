@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -65,7 +65,7 @@ subroutine te0240(option, nomte)
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: nbres
-    parameter  (nbres=2)
+    parameter(nbres=2)
     integer :: codres(nbres)
     real(kind=8) :: valres(nbres)
     character(len=16) ::  nomres(nbres)
@@ -77,26 +77,26 @@ subroutine te0240(option, nomte)
     nbpar = 0
     nompar = '  '
     valpar = 0.0d0
-    fami='FPG1'
-    kpg=1
-    spt=1
-    poum='+'
+    fami = 'FPG1'
+    kpg = 1
+    spt = 1
+    poum = '+'
     valres(1:nbres) = 0.0d0
     nomres(1) = 'E'
     nomres(2) = 'NU'
 !
-    call rcvalb(fami, kpg, spt, poum, zi(imate), ' ', 'ELAS', nbpar, nompar, [valpar],&
+    call rcvalb(fami, kpg, spt, poum, zi(imate), ' ', 'ELAS', nbpar, nompar, [valpar], &
                 nbres, nomres, valres, codres, 1)
     e = valres(1)
     nu = valres(2)
-    g = e / (2.0d0 *(1.0d0+nu))
+    g = e/(2.0d0*(1.0d0+nu))
 !
     valres(1) = 0.0d0
     valres(2) = 0.0d0
     nomres(1) = 'RHO'
     nomres(2) = 'CELE_R'
 !
-    call rcvalb(fami, kpg, spt, poum, zi(imate), ' ', 'FLUIDE', nbpar, nompar, [valpar],&
+    call rcvalb(fami, kpg, spt, poum, zi(imate), ' ', 'FLUIDE', nbpar, nompar, [valpar], &
                 nbres, nomres, valres, codres, 1)
     rho = valres(1)
     celer = valres(2)
@@ -118,7 +118,7 @@ subroutine te0240(option, nomte)
     ai = zr(lsect+12)
 !
 !   SECTION FINALE
-    lsect2 = lsect + 12
+    lsect2 = lsect+12
     a2 = zr(lsect2+1)
     xiy2 = zr(lsect2+2)
     xiz2 = zr(lsect2+3)
@@ -132,7 +132,7 @@ subroutine te0240(option, nomte)
     if (nomte .ne. 'MEFS_POU_D_T') then
         ch16 = nomte
         call utmess('F', 'ELEMENTS2_42', sk=ch16)
-    endif
+    end if
 !
 !   Longueur de l'élément
     xl = lonele()
@@ -141,17 +141,17 @@ subroutine te0240(option, nomte)
     if (option .eq. 'RIGI_MECA') then
         if (itype .eq. 0) then
 !           poutre droite a section constante
-            call ptktuf(mat, e, rho, celer, a,&
-                        ai, xl, xiy, xiz, xjx,&
+            call ptktuf(mat, e, rho, celer, a, &
+                        ai, xl, xiy, xiz, xjx, &
                         g, alfay, alfaz, ey, ez)
         else if (itype .eq. 1 .or. itype .eq. 2) then
 !           poutre droite a section variable (type 1 ou 2)
-            call ptktfv(itype, mat, e, rho, celer,&
-                        a, ai, a2, ai2, xl,&
-                        xiy, xiy2, xiz, xiz2, xjx,&
-                        xjx2, g, alfay, alfay2, alfaz,&
+            call ptktfv(itype, mat, e, rho, celer, &
+                        a, ai, a2, ai2, xl, &
+                        xiy, xiy2, xiz, xiz2, xjx, &
+                        xjx2, g, alfay, alfay2, alfaz, &
                         alfaz2, ey, ez)
-        endif
+        end if
 !       recuperation des orientations alpha,beta,gamma
         call jevech('PCAORIE', 'L', lorien)
 !       passage du repere local au reper global
@@ -161,6 +161,6 @@ subroutine te0240(option, nomte)
     else
         ch16 = option
         call utmess('F', 'ELEMENTS2_47', sk=ch16)
-    endif
+    end if
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -39,13 +39,13 @@ subroutine ibdbgs()
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
     integer :: lundef, idebug
-    common /undfje/  lundef,idebug
+    common/undfje/lundef, idebug
     real(kind=8) :: tbloc, tgrel
-    common /rtblje/  tbloc,tgrel
+    common/rtblje/tbloc, tgrel
 !
 !     -- COMMON MESTP1 POUR MESURE_TEMPS
     integer :: mtpniv, mtpsta
-    common /mestp1/  mtpniv,mtpsta
+    common/mestp1/mtpniv, mtpsta
 !
 ! ----------------------------------------------------------------------
     character(len=3) :: repons
@@ -66,9 +66,9 @@ subroutine ibdbgs()
     repons = ' '
     call getvtx('DEBUG', 'ENVIMA', iocc=1, scal=repons, nbret=l)
     if (l .eq. 1 .and. repons .eq. 'TES') then
-        ifi = iunifi ( 'RESULTAT' )
+        ifi = iunifi('RESULTAT')
         call impvem(ifi)
-    endif
+    end if
 !
 !     -- MESURE_TEMPS:
 !     -----------------------------------------------------
@@ -79,14 +79,14 @@ subroutine ibdbgs()
         mtpsta = 1
     else
         mtpsta = 0
-    endif
+    end if
 !
 !     -- MEMOIRE  :
 !     -----------------------------------------------------
 !
     call getvr8('MEMOIRE', 'TAILLE_BLOC', iocc=1, scal=tbloc)
     call getvis('MEMOIRE', 'TAILLE_GROUP_ELEM', iocc=1, scal=i1)
-    tgrel=dble(i1)
+    tgrel = dble(i1)
 !
     call jedema()
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -88,11 +88,11 @@ subroutine nmchdp(crit, seuil, dp, iret, iter)
     real(kind=8) :: cinf, k, w, c2inf, cm, c2m, kvi, valden, f0, fmax, depsp(6)
     character(len=8) :: nomvar(16)
     character(len=16) :: meth
-    common/fchab/mat,pm,sigedv,epspm,alfam,alfa2m,deuxmu,rpvm,rpvp,&
-     &    qm,qp,ksim,ksip,dt,n1,n2,depsp,&
-     &    beta1,beta2,ndimsi,nbvar,visc,memo,idelta
-    data nomvar/'R0','RINF','B','CINF','K','W','GAMMA0',&
-     &'AINF','C2INF','GAMM20','KVI','N','ETA','QM','Q0','MU'/
+    common/fchab/mat, pm, sigedv, epspm, alfam, alfa2m, deuxmu, rpvm, rpvp,&
+     &    qm, qp, ksim, ksip, dt, n1, n2, depsp,&
+     &    beta1, beta2, ndimsi, nbvar, visc, memo, idelta
+    data nomvar/'R0', 'RINF', 'B', 'CINF', 'K', 'W', 'GAMMA0',&
+     &'AINF', 'C2INF', 'GAMM20', 'KVI', 'N', 'ETA', 'QM', 'Q0', 'MU'/
 !
 !.========================= DEBUT DU CODE EXECUTABLE ==================
 !
@@ -100,23 +100,23 @@ subroutine nmchdp(crit, seuil, dp, iret, iter)
 !     ===============
     zero = 0.0d0
     dix = 10.0d0
-    iret=0
+    iret = 0
 ! --- POUR CHERCHER LA SOLUTION, PREMIERE APPROXIMATION
     cinf = mat(4)
     k = mat(5)
     w = mat(6)
     c2inf = mat(9)
-    cm = cinf * (1.d0 + (k-1.d0)*exp(-w*pm))
-    c2m = c2inf *(1.d0 + (k-1.d0)*exp(-w*pm))
+    cm = cinf*(1.d0+(k-1.d0)*exp(-w*pm))
+    c2m = c2inf*(1.d0+(k-1.d0)*exp(-w*pm))
     dpmax = seuil/(1.5d0*deuxmu+cm+c2m)
     if (visc .eq. 1) then
-        valden=mat(11)
-        kvi =mat(12)
-        dpmax1=dt*(seuil/kvi)**valden
+        valden = mat(11)
+        kvi = mat(12)
+        dpmax1 = dt*(seuil/kvi)**valden
         if (dpmax1 .lt. 1.d0) then
-            dpmax=max(dpmax,dpmax1)
-        endif
-    endif
+            dpmax = max(dpmax, dpmax1)
+        end if
+    end if
 !
 ! --- EXAMEN DE LA SOLUTION DPE = 0 :
 !     =============================
@@ -125,7 +125,7 @@ subroutine nmchdp(crit, seuil, dp, iret, iter)
 ! --- CALCUL DE LA VALEUR F0 DE LA FONCTION DONT ON CHERCHE LA RACINE
 ! --- POUR DP = 0 :
 !     -----------
-    f0=nmchcr(dpe)
+    f0 = nmchcr(dpe)
 !
 ! --- NOMBRE D'ITERATIONS DONT ON DISPOSE POUR CONVERGER ET TOLERANCE
 ! --- SUR LA VALEUR CONVERGEE :
@@ -138,58 +138,58 @@ subroutine nmchdp(crit, seuil, dp, iret, iter)
     if (abs(f0) .le. prec) then
         dp = dpe
         goto 50
-    else if (f0.gt.zero) then
+    else if (f0 .gt. zero) then
         call utmess('A', 'ELEMENTS4_61')
         goto 41
     else
 !
 ! ---   F0 < 0 , ON CHERCHE DPMAX TEL QUE FMAX < 0 :
 !
-        fmax=nmchcr(dpmax)
+        fmax = nmchcr(dpmax)
         if (abs(fmax) .le. prec) then
             dp = dpmax
-            iter=1
+            iter = 1
             goto 50
-        else if (fmax.gt.zero) then
+        else if (fmax .gt. zero) then
 !          FMAX > 0.
 !          VERIFICATION QUE DPMAX N'EST PAS TROP GRAND. BRACKETTING
             do i = 1, niter
                 dpmax = dpmax/dix
-                fmax=nmchcr(dpmax)
+                fmax = nmchcr(dpmax)
                 if (abs(fmax) .le. prec) then
                     dp = dpmax
-                    iter=i
+                    iter = i
                     goto 50
-                else if (fmax.lt.zero) then
+                else if (fmax .lt. zero) then
 !                ON RECALCULE LA VALEUR PRECEDENTE DE DPMAX
                     dpmax = dpmax*dix
-                    fmax=nmchcr(dpmax)
+                    fmax = nmchcr(dpmax)
                     goto 20
-                endif
+                end if
             end do
             goto 20
 !
         else
 !          FMAX <0. On augmente DPMAX jusqu'à ce que F(DPMAX) > 0
             do i = 1, niter
-                fmax=nmchcr(dpmax)
+                fmax = nmchcr(dpmax)
                 if (abs(fmax) .le. prec) then
                     dp = dpmax
-                    iter=i
+                    iter = i
                     goto 50
-                else if (fmax.gt.zero) then
+                else if (fmax .gt. zero) then
                     goto 20
                 else
                     dpmax = dpmax*dix
-                endif
+                end if
             end do
             call utmess('A', 'ALGORITH6_79')
             goto 20
-        endif
+        end if
 !
-    endif
+    end if
 !
- 20 continue
+20  continue
 !
 ! --- CALCUL DE LA SOLUTION DE L'EQUATION F = 0 :
 !     ===========================================
@@ -200,37 +200,37 @@ subroutine nmchdp(crit, seuil, dp, iret, iter)
 !
 !     PREC RELATIVE CAR EQUATION NORMEE
 !     RESOLUTION 1D
-    call zerofr(0, meth, nmchcr, 0.d0, dpmax,&
+    call zerofr(0, meth, nmchcr, 0.d0, dpmax, &
                 prec, niter, dp, iret, iter)
     if (iret .eq. 0) goto 50
 !
- 41 continue
+41  continue
 !
 !     CAS DE NON CONVERGENCE : IMPRESSIONS SI INFO=2
     call infniv(ifm, niv)
     if (niv .eq. 2) then
-        write (ifm,*) 'MODELE CINX_CHAB : ATTENTION'
-        write (ifm,*) 'PAS DE CONVERGENCE A LA PRECISION DEMANDEE',&
-        prec
-        write (ifm,*) 'AU BOUT DU NOMBRE D ITERATION DEMANDE',niter
-        write (ifm,*) 'VALEURS DE DP ',dp
-        write (ifm,*) 'AUGMENTER ITER_INTE_MAXI'
-        write (ifm,*) 'PARAMETRES :'
+        write (ifm, *) 'MODELE CINX_CHAB : ATTENTION'
+        write (ifm, *) 'PAS DE CONVERGENCE A LA PRECISION DEMANDEE', &
+            prec
+        write (ifm, *) 'AU BOUT DU NOMBRE D ITERATION DEMANDE', niter
+        write (ifm, *) 'VALEURS DE DP ', dp
+        write (ifm, *) 'AUGMENTER ITER_INTE_MAXI'
+        write (ifm, *) 'PARAMETRES :'
         do i = 1, 16
-            write (ifm,*) nomvar(i),mat(i)
+            write (ifm, *) nomvar(i), mat(i)
         end do
         nbp = 20
         ddp = dpmax/nbp
-        write (ifm,*) 'DP     -     F(DP)'
-        z=zero
+        write (ifm, *) 'DP     -     F(DP)'
+        z = zero
         do i = 1, nbp
-            zz=nmchcr(z)
-            write (ifm,*) z,zz
-            z = z + ddp
+            zz = nmchcr(z)
+            write (ifm, *) z, zz
+            z = z+ddp
         end do
-    endif
+    end if
     iret = 1
 !
- 50 continue
+50  continue
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 subroutine te0220(option, nomte)
 !
-use calcul_module, only : ca_jvcnom_, ca_nbcvrc_
+    use calcul_module, only: ca_jvcnom_, ca_nbcvrc_
 !
     implicit none
 #include "asterf_types.h"
@@ -58,7 +58,7 @@ use calcul_module, only : ca_jvcnom_, ca_nbcvrc_
     aster_logical :: aniso
 !     ------------------------------------------------------------------
 !
-    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg, &
                      jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
     call jevech('PGEOMER', 'L', igeom)
@@ -66,10 +66,10 @@ use calcul_module, only : ca_jvcnom_, ca_nbcvrc_
     call jevech('PTEMPER', 'L', itempe)
     call jevech('PENERDR', 'E', iener)
 !
-    fami='FPG1'
-    kpg=1
-    spt=1
-    poum='+'
+    fami = 'FPG1'
+    kpg = 1
+    spt = 1
+    poum = '+'
     call tecach('ONO', 'PTEMPSR', 'L', iret, iad=itemp)
     if (itemp .eq. 0) then
         nbpar = 0
@@ -79,68 +79,68 @@ use calcul_module, only : ca_jvcnom_, ca_nbcvrc_
         nbpar = 1
         nompar(1) = 'INST'
         valpar(1) = zr(itemp)
-    endif
+    end if
 !
-    do ipar=1, ca_nbcvrc_
-       novrc=zk8(ca_jvcnom_-1+ipar)
-       nbpar = nbpar + 1
-       nompar(nbpar) = novrc
-       call rcvarc(' ', nompar(nbpar), poum, fami, kpg, spt, valpar(nbpar), iret)
-       ASSERT(iret.eq.0)
-    enddo
+    do ipar = 1, ca_nbcvrc_
+        novrc = zk8(ca_jvcnom_-1+ipar)
+        nbpar = nbpar+1
+        nompar(nbpar) = novrc
+        call rcvarc(' ', nompar(nbpar), poum, fami, kpg, spt, valpar(nbpar), iret)
+        ASSERT(iret .eq. 0)
+    end do
 !
     call rccoma(zi(imate), 'THER', 1, phenom, iret)
     if (phenom .eq. 'THER') then
-        call rcvalb(fami, kpg, spt, poum, zi(imate),&
-                    ' ', 'THER', nbpar, nompar, [valpar],&
+        call rcvalb(fami, kpg, spt, poum, zi(imate), &
+                    ' ', 'THER', nbpar, nompar, [valpar], &
                     1, 'LAMBDA', valres, icodre, 1)
         aniso = .false.
-    else if (phenom.eq.'THER_ORTH') then
+    else if (phenom .eq. 'THER_ORTH') then
         nomres(1) = 'LAMBDA_L'
         nomres(2) = 'LAMBDA_T'
-        call rcvalb(fami, kpg, spt, poum, zi(imate),&
-                    ' ', 'THER_ORTH', nbpar, nompar, [valpar],&
+        call rcvalb(fami, kpg, spt, poum, zi(imate), &
+                    ' ', 'THER_ORTH', nbpar, nompar, [valpar], &
                     2, nomres, valres, icodre, 1)
         aniso = .true.
 !       pas de repere cylindrique en 2d -> rbid
         call rcangm(ndim, rbid, angmas)
-        p(1,1) = cos(angmas(1))
-        p(2,1) = sin(angmas(1))
-        p(1,2) = -sin(angmas(1))
-        p(2,2) = cos(angmas(1))
+        p(1, 1) = cos(angmas(1))
+        p(2, 1) = sin(angmas(1))
+        p(1, 2) = -sin(angmas(1))
+        p(2, 2) = cos(angmas(1))
     else
         call utmess('F', 'ELEMENTS2_68')
-    endif
+    end if
 !
     epot = 0.d0
     do kp = 1, npg
-        call dfdm2d(nno, kp, ipoids, idfde, zr(igeom),&
+        call dfdm2d(nno, kp, ipoids, idfde, zr(igeom), &
                     poids, dfdx, dfdy)
         flux = 0.d0
         fluy = 0.d0
         do j = 1, nno
-            flux = flux + zr(itempe+j-1)*dfdx(j)
-            fluy = fluy + zr(itempe+j-1)*dfdy(j)
-        enddo
-        if (.not.aniso) then
+            flux = flux+zr(itempe+j-1)*dfdx(j)
+            fluy = fluy+zr(itempe+j-1)*dfdy(j)
+        end do
+        if (.not. aniso) then
             fluglo(1) = valres(1)*flux
             fluglo(2) = valres(1)*fluy
         else
             fluglo(1) = flux
             fluglo(2) = fluy
 !
-            fluloc(1) = p(1,1)*fluglo(1) + p(2,1)*fluglo(2)
-            fluloc(2) = p(1,2)*fluglo(1) + p(2,2)*fluglo(2)
+            fluloc(1) = p(1, 1)*fluglo(1)+p(2, 1)*fluglo(2)
+            fluloc(2) = p(1, 2)*fluglo(1)+p(2, 2)*fluglo(2)
 !
             fluloc(1) = valres(1)*fluloc(1)
             fluloc(2) = valres(2)*fluloc(2)
 !
-            fluglo(1) = p(1,1)*fluloc(1) + p(1,2)*fluloc(2)
-            fluglo(2) = p(2,1)*fluloc(1) + p(2,2)*fluloc(2)
-        endif
+            fluglo(1) = p(1, 1)*fluloc(1)+p(1, 2)*fluloc(2)
+            fluglo(2) = p(2, 1)*fluloc(1)+p(2, 2)*fluloc(2)
+        end if
 !
-        epot = epot - (flux*fluglo(1)+fluy*fluglo(2))*poids
-    enddo
-    zr(iener) = epot/ 2.d0
+        epot = epot-(flux*fluglo(1)+fluy*fluglo(2))*poids
+    end do
+    zr(iener) = epot/2.d0
 !
 end subroutine

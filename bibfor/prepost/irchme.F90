@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine irchme(ifichi, chanom, partie, nochmd, noresu,&
-                  nomsym, typech, numord, nbrcmp, nomcmp,&
-                  nbnoec, linoec, nbmaec, limaec, lvarie,&
-                  sdcarm, carael, paraListNb, paraListName,&
+subroutine irchme(ifichi, chanom, partie, nochmd, noresu, &
+                  nomsym, typech, numord, nbrcmp, nomcmp, &
+                  nbnoec, linoec, nbmaec, limaec, lvarie, &
+                  sdcarm, carael, paraListNb, paraListName, &
                   nbCmpDyna, lfichUniq, codret)
 !_______________________________________________________________________
 !        IMPRESSION DU CHAMP CHANOM NOEUD/ELEMENT ENTIER/REEL
@@ -107,9 +107,9 @@ subroutine irchme(ifichi, chanom, partie, nochmd, noresu,&
 ! 0.3. ==> VARIABLES LOCALES
 !
     integer :: ednono
-    parameter (ednono=-1)
+    parameter(ednono=-1)
     integer :: ednopt
-    parameter (ednopt=-1)
+    parameter(ednopt=-1)
 !
     integer :: ifm, nivinf, numpt, iaux, nbgrel, jmaille, j1, n1
     integer :: nbma, igr, iel, ite, ima, codret_vari
@@ -125,18 +125,18 @@ subroutine irchme(ifichi, chanom, partie, nochmd, noresu,&
 !====
 !
     call infniv(ifm, nivinf)
-    codret      = 0
+    codret = 0
     codret_vari = 0
     fauxmodele = ' '
 !
-100 format(/,81('='),/,81('='),/)
+100 format(/, 81('='), /, 81('='),/)
 101 format(81('-'),/)
     if (nivinf .gt. 1) then
         call cpu_time(start_time)
         call utflsh(codret)
-        write (ifm,100)
+        write (ifm, 100)
         call utmess('I', 'MED_90', sk=chanom)
-    endif
+    end if
 !
 ! 1.1. ==> NOM DU CHAMP DANS LE FICHIER MED
 !
@@ -144,111 +144,111 @@ subroutine irchme(ifichi, chanom, partie, nochmd, noresu,&
 !
     if (codret .eq. 0) then
         if (nivinf .gt. 1) then
-            write (ifm,110) saux08
-            write (ifm,111) nomsym
-        endif
+            write (ifm, 110) saux08
+            write (ifm, 111) nomsym
+        end if
         if (nivinf .gt. 1) then
-            write (ifm,113) typech
-            write (ifm,114) nochmd
-        endif
+            write (ifm, 113) typech
+            write (ifm, 114) nochmd
+        end if
     else
         call utmess('A', 'MED_91')
         call utmess('A', 'MED_44', sk=chanom)
         call utmess('A', 'MED_45', sk=noresu)
-    endif
+    end if
 !
-110 format(1x,'RESULTAT           : ',a8)
-111 format(1x,'CHAMP              : ',a16)
-113 format(1x,'TYPE DE CHAMP      : ',a)
-114 format(3x,'==> NOM MED DU CHAMP : ',a64,/)
+110 format(1x, 'RESULTAT           : ', a8)
+111 format(1x, 'CHAMP              : ', a16)
+113 format(1x, 'TYPE DE CHAMP      : ', a)
+114 format(3x, '==> NOM MED DU CHAMP : ', a64,/)
 !
 ! 1.2. ==> INSTANT CORRESPONDANT AU NUMERO D'ORDRE
 !
     if (codret .eq. 0) then
 !
         if (noresu .ne. ' ') then
-            instan=999.999d0
+            instan = 999.999d0
 !         -- DANS UN EVOL_NOLI, IL PEUT EXISTER INST ET FREQ.
 !            ON PREFERE INST :
             call jenonu(jexnom(noresu//'           .NOVA', 'INST'), iret)
             if (iret .ne. 0) then
-                call rsadpa(noresu, 'L', 1, 'INST', numord,&
+                call rsadpa(noresu, 'L', 1, 'INST', numord, &
                             0, sjv=iaux, styp=saux08, istop=0)
                 instan = zr(iaux)
             else
                 call jenonu(jexnom(noresu//'           .NOVA', 'FREQ'), iret)
                 if (iret .ne. 0) then
-                    call rsadpa(noresu, 'L', 1, 'FREQ', numord,&
+                    call rsadpa(noresu, 'L', 1, 'FREQ', numord, &
                                 0, sjv=iaux, styp=saux08, istop=0)
                     instan = zr(iaux)
                 else
                     call jenonu(jexnom(noresu//'           .NOVA', 'CHAR_CRIT'), iret)
                     if (iret .ne. 0) then
-                        call rsadpa(noresu, 'L', 1, 'CHAR_CRIT', numord,&
+                        call rsadpa(noresu, 'L', 1, 'CHAR_CRIT', numord, &
                                     0, sjv=iaux, styp=saux08, istop=0)
                         instan = zr(iaux)
-                    endif
-                endif
-            endif
+                    end if
+                end if
+            end if
             numpt = numord
             if (paraListNb .gt. 0) then
                 call irmpav(noresu, ifichi, paraListNb, paraListName, numpt, numord, instan)
-            endif
+            end if
 !
         else
 !
             numord = ednono
             numpt = ednopt
 !
-        endif
+        end if
 !
-    endif
+    end if
 !
 ! 1.3. ==> recherche du nom du modele (pour les champs ELGA) :
 !
     if (codret .eq. 0) then
 !
-       if (typech(1:4) .ne. 'ELGA' .and. typech(1:4) .ne. 'ELNO') then
-          modele = ' '
-       else
-          nocelk = chanom//'.CELK'
-          call jeveuo(nocelk, 'L', icelk)
-          ligrel = zk24(icelk)(1:19)
-          call jeveuo(ligrel//'.LGRF', 'L', vk8=lgrf)
-          modele = lgrf(2)
+        if (typech(1:4) .ne. 'ELGA' .and. typech(1:4) .ne. 'ELNO') then
+            modele = ' '
+        else
+            nocelk = chanom//'.CELK'
+            call jeveuo(nocelk, 'L', icelk)
+            ligrel = zk24(icelk) (1:19)
+            call jeveuo(ligrel//'.LGRF', 'L', vk8=lgrf)
+            modele = lgrf(2)
 
-          call exisd('MODELE', modele, iret)
-          if (iret .eq. 0) then
-             if (noresu .ne. ' ') then
-                call rsadpa(noresu, 'L', 1, 'MODELE', numord,&
-                     0, sjv=iaux, styp=saux08, istop=0)
-                modele = zk8(iaux)
-                call exisd('MODELE', modele, iret)
-             endif
-          endif
-          if (iret .eq. 0) then
+            call exisd('MODELE', modele, iret)
+            if (iret .eq. 0) then
+                if (noresu .ne. ' ') then
+                    call rsadpa(noresu, 'L', 1, 'MODELE', numord, &
+                                0, sjv=iaux, styp=saux08, istop=0)
+                    modele = zk8(iaux)
+                    call exisd('MODELE', modele, iret)
+                end if
+            end if
+            if (iret .eq. 0) then
 !            -- En absence d'un modele on va en construire un faux pour l'impression.
-             fauxmodele='&&IRCHME'
-             call dismoi('NOM_MAILLA', chanom, 'CHAMP', repk=ma)
-             call dismoi('NB_MA_MAILLA', ma, 'MAILLAGE', repi=nbma)
-             call wkvect(fauxmodele//'.MAILLE', 'V V I', nbma, jmaille)
-             call jelira(ligrel//'.LIEL', 'NUTIOC', nbgrel)
-             do igr = 1, nbgrel
-                call jelira(jexnum(ligrel//'.LIEL', igr), 'LONMAX', n1)
-                call jeveuo(jexnum(ligrel//'.LIEL', igr), 'L', j1)
-                ite=zi(j1-1+n1)
-                do iel = 1, n1-1
-                   ima=zi(j1-1+iel)
-                   ASSERT(ima.ge.0 .and. ima.le.nbma)
-                   if (ima .gt. 0) zi(jmaille-1+ima)=ite
+                fauxmodele = '&&IRCHME'
+                call dismoi('NOM_MAILLA', chanom, 'CHAMP', repk=ma)
+                call dismoi('NB_MA_MAILLA', ma, 'MAILLAGE', repi=nbma)
+                call wkvect(fauxmodele//'.MAILLE', 'V V I', nbma, jmaille)
+                call jelira(ligrel//'.LIEL', 'NUTIOC', nbgrel)
+                do igr = 1, nbgrel
+                    call jelira(jexnum(ligrel//'.LIEL', igr), 'LONMAX', n1)
+                    call jeveuo(jexnum(ligrel//'.LIEL', igr), 'L', j1)
+                    ite = zi(j1-1+n1)
+                    do iel = 1, n1-1
+                        ima = zi(j1-1+iel)
+                        ASSERT(ima .ge. 0 .and. ima .le. nbma)
+                        if (ima .gt. 0) zi(jmaille-1+ima) = ite
+                    end do
                 end do
-             end do
-             call copisd('LIGREL', 'V', ligrel, fauxmodele//'.MODELE')
-             modele = fauxmodele
-          endif
-       endif
+                call copisd('LIGREL', 'V', ligrel, fauxmodele//'.MODELE')
+                modele = fauxmodele
+            end if
+        end if
 !
-    endif
+    end if
 !
 !====
 ! 2. ECRITURE DANS LE FICHIER MED
@@ -258,58 +258,58 @@ subroutine irchme(ifichi, chanom, partie, nochmd, noresu,&
     if (codret .eq. 0) then
 !
         if (typech(1:4) .eq. 'NOEU') then
-            call ircnme(ifichi, nochmd, chanom, typech, modele,&
-                        nbrcmp, nomcmp, partie, numpt, instan,&
-                        numord, nbnoec, linoec, sdcarm, carael,&
+            call ircnme(ifichi, nochmd, chanom, typech, modele, &
+                        nbrcmp, nomcmp, partie, numpt, instan, &
+                        numord, nbnoec, linoec, sdcarm, carael, &
                         nomsym, lfichUniq, codret)
-        else if (typech(1:2).eq.'EL') then
-            if ((nomsym.eq.'VARI_ELGA') .and. lvarie) then
-                call irvari(ifichi, nochmd, chanom, typech, modele,&
-                            nbrcmp, nomcmp, partie, numpt, instan,&
-                            numord, nbmaec, limaec, noresu, sdcarm,&
+        else if (typech(1:2) .eq. 'EL') then
+            if ((nomsym .eq. 'VARI_ELGA') .and. lvarie) then
+                call irvari(ifichi, nochmd, chanom, typech, modele, &
+                            nbrcmp, nomcmp, partie, numpt, instan, &
+                            numord, nbmaec, limaec, noresu, sdcarm, &
                             carael, nbCmpDyna, lfichUniq, codret_vari)
-            endif
-            if ((nomsym.eq.'META_ELNO') .and. lvarie) then
-                call irmeta(ifichi, nochmd, chanom, typech, modele,&
-                            nbrcmp, nomcmp, partie, numpt, instan,&
-                            numord, nbmaec, limaec, noresu, sdcarm,&
+            end if
+            if ((nomsym .eq. 'META_ELNO') .and. lvarie) then
+                call irmeta(ifichi, nochmd, chanom, typech, modele, &
+                            nbrcmp, nomcmp, partie, numpt, instan, &
+                            numord, nbmaec, limaec, noresu, sdcarm, &
                             lfichUniq, codret_vari)
-            endif
-            call irceme(ifichi, nochmd, chanom, typech, modele,&
-                        nbrcmp, nomcmp, ' ', partie, numpt,&
-                        instan, numord, nbmaec, limaec, sdcarm,&
+            end if
+            call irceme(ifichi, nochmd, chanom, typech, modele, &
+                        nbrcmp, nomcmp, ' ', partie, numpt, &
+                        instan, numord, nbmaec, limaec, sdcarm, &
                         carael, nomsym, nbCmpDyna, lfichUniq, codret)
             if (codret_vari .ne. 0 .and. codret .eq. 0) then
                 codret = codret_vari
-            endif
-        else if (typech(1:4).eq.'CART') then
-            call irceme(ifichi, nochmd, chanom, typech, modele,&
-                        nbrcmp, nomcmp, ' ', partie, numpt,&
-                        instan, numord, nbmaec, limaec, sdcarm,&
+            end if
+        else if (typech(1:4) .eq. 'CART') then
+            call irceme(ifichi, nochmd, chanom, typech, modele, &
+                        nbrcmp, nomcmp, ' ', partie, numpt, &
+                        instan, numord, nbmaec, limaec, sdcarm, &
                         carael, nomsym, nbCmpDyna, lfichUniq, codret)
         else
             codret = 1
             call utmess('A', 'MED_92', sk=typech(1:4))
-        endif
+        end if
 !
-    endif
+    end if
 !
 !====
 ! 3. BILAN
 !====
 !
-    if (codret .ne. 0 .and.&
+    if (codret .ne. 0 .and. &
         codret .ne. 100 .and. codret .ne. 200 .and. codret .ne. 300 .and. codret .ne. 400) then
         call utmess('A', 'MED_89', sk=nomsym)
-    endif
+    end if
 !
     if (nivinf .gt. 1) then
         call cpu_time(end_time)
         call utmess('I', 'MED_93', sk=chanom, sr=end_time-start_time)
-        write (ifm,100)
+        write (ifm, 100)
         call utflsh(codret)
-        write (ifm,101)
-    endif
+        write (ifm, 101)
+    end if
 !
     call detrsd('MODELE', fauxmodele)
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine resgra(mat, matf, vcine, niter, epsi,&
-                  criter, nsecm, rsolu, solveu, istop,&
+subroutine resgra(mat, matf, vcine, niter, epsi, &
+                  criter, nsecm, rsolu, solveu, istop, &
                   iret)
     use ldlt_xp_data_module
     implicit none
@@ -96,65 +96,65 @@ subroutine resgra(mat, matf, vcine, niter, epsi,&
 !
 !     0- INITIALISATIONS :
 !     -----------------------------------
-    matas=mat
-    matfac=matf
+    matas = mat
+    matfac = matf
 !
     call jeveuo(solveu//'.SLVK', 'L', vk24=slvk)
-    precon=slvk(2)
+    precon = slvk(2)
 !
 !
 !     1- MATRICE :
 !     -----------------------------------
     call mtdscr(matas)
     call jeveuo(matas//'.&INT', 'L', lmat)
-    neq=zi(lmat+2)
+    neq = zi(lmat+2)
 !
 !
 !     3- SI CHARGE CINEMATIQUE :
 !     -----------------------------
     if (vcine .ne. ' ') then
-        vcin19=vcine
+        vcin19 = vcine
         call jeexin(vcin19//'.VALE', ier)
         if (ier .eq. 0) then
             call utmess('F', 'ALGELINE3_34', sk=vcin19)
-        endif
+        end if
         call jeveuo(vcin19//'.VALE', 'L', vr=vale)
         do k = 1, nsecm
-            kdeb=(k-1)*neq+1
+            kdeb = (k-1)*neq+1
             cbid = dcmplx(0.d0, 0.d0)
-            call csmbgg(lmat, rsolu(kdeb), vale, [cbid], [cbid],&
+            call csmbgg(lmat, rsolu(kdeb), vale, [cbid], [cbid], &
                         'R')
         end do
-    endif
+    end if
 !
 !
 !     4- MISE A L'ECHELLE DES "LAGR" DANS LE SECOND MEMBRE :
 !     ------------------------------------------------------
-    call mrconl('MULT', lmat, 0, 'R', rsolu,&
+    call mrconl('MULT', lmat, 0, 'R', rsolu, &
                 nsecm)
 !
 !
 !     5- RECUPERATION DE LA MATRICE ASSEMBLEE :
 !     ------------------------------------------------
     call jeveuo(matas//'.REFA', 'E', vk24=refa)
-    kstoc=refa(2)(1:14)//'.SMOS'
+    kstoc = refa(2) (1:14)//'.SMOS'
     call jeexin(kstoc//'.SMDI', ier)
     if (ier .eq. 0) then
         call utmess('F', 'ALGELINE3_21', sk=matas)
-    endif
+    end if
     call jeveuo(kstoc//'.SMDI', 'L', vi=in)
     call jeveuo(kstoc//'.SMHC', 'L', idip)
     call jeveuo(kstoc//'.SMDE', 'L', vi=smde)
-    neq=smde(1)
-    if (niter .eq. 0) niter=max(10,neq/2)
-    nblc=smde(3)
+    neq = smde(1)
+    if (niter .eq. 0) niter = max(10, neq/2)
+    nblc = smde(3)
     if (nblc .ne. 1) then
         call utmess('F', 'ALGELINE3_22')
-    endif
+    end if
     call jelira(jexnum(matas//'.VALM', 1), 'TYPE', cval=type)
     if (type .ne. 'R') then
         call utmess('F', 'ALGELINE3_37')
-    endif
+    end if
 !
     call jeveuo(jexnum(matas//'.VALM', 1), 'L', idac)
 !
@@ -165,19 +165,19 @@ subroutine resgra(mat, matf, vcine, niter, epsi,&
         call jeexin(matfac//'.REFA', ier)
         if (ier .eq. 0) then
             call utmess('F', 'ALGELINE3_38')
-        endif
+        end if
 !
         call jeveuo(matfac//'.REFA', 'L', vk24=refaf)
-        kstocf=refaf(2)(1:14)//'.SMOS'
+        kstocf = refaf(2) (1:14)//'.SMOS'
         call jeveuo(kstocf//'.SMDI', 'L', idinpc)
         call jeveuo(kstocf//'.SMHC', 'L', idippc)
         call jeveuo(jexnum(matfac//'.VALM', 1), 'L', idacpc)
         call jeveuo(matfac//'.PERM', 'L', vi=perm)
     else
-        idinpc=1
-        idippc=1
-        idacpc=1
-    endif
+        idinpc = 1
+        idippc = 1
+        idacpc = 1
+    end if
 !
 !
 !     7- CREATION DE 3 VECTEURS DE TRAVAIL
@@ -193,23 +193,23 @@ subroutine resgra(mat, matf, vcine, niter, epsi,&
     do k = 1, nsecm
         AS_ALLOCATE(vr=w4, size=neq)
 !
-        kdeb=(k-1)*neq+1
+        kdeb = (k-1)*neq+1
         istop_solv = istop
 !
         if (precon(1:7) == 'LDLT_SP' .or. precon(1:7) == 'LDLT_DP') then
 !   ACTIVATION DE LA SECONDE CHANCE : stop_singulier = non
             istop_solv = 2
-        endif
+        end if
         !
-        call gcpc(neq, in, zi4(idip), zr(idac), zi(idinpc),&
-                  perm, zi4(idippc), zr(idacpc), rsolu(kdeb), w4,&
-                  w1, w2, w3, 0, niter,&
-                  epsi, criter, solveu, matas, istop_solv,&
+        call gcpc(neq, in, zi4(idip), zr(idac), zi(idinpc), &
+                  perm, zi4(idippc), zr(idacpc), rsolu(kdeb), w4, &
+                  w1, w2, w3, 0, niter, &
+                  epsi, criter, solveu, matas, istop_solv, &
                   iret)
 !
 !     9-1 SECONDE CHANCE AVEC LE PRECONDITIONNEUR LDLT_SP
 !     (cf ap2foi)
-        if (( iret == 1 ) .and. ((precon(1:7) == 'LDLT_SP').or.(precon(1:7) == 'LDLT_DP'))) then
+        if ((iret == 1) .and. ((precon(1:7) == 'LDLT_SP') .or. (precon(1:7) == 'LDLT_DP'))) then
 !       ON ACTUALISE LE PRECONDITIONNEUR
             call utmess('I', 'ALGELINE4_63')
 !   -- bascule pour la mesure du temps CPU : RESOUD -> PRERES :
@@ -228,7 +228,7 @@ subroutine resgra(mat, matf, vcine, niter, epsi,&
             call pcmump(matas, solveu, iret)
             if (iret .ne. 0) then
                 call utmess('F', 'ALGELINE5_76', sk=precon)
-            endif
+            end if
 !
 !
 !   -- bascule pour la mesure du temps CPU : PRERES -> RESOUD :
@@ -236,27 +236,27 @@ subroutine resgra(mat, matf, vcine, niter, epsi,&
             call uttcpu('CPU.RESO.5', 'DEBUT', ' ')
 !
 !       PUIS ON RESOUT A NOUVEAU
-            call gcpc(neq, in, zi4(idip), zr(idac), zi(idinpc),&
-                      perm, zi4(idippc), zr(idacpc), rsolu(kdeb), w4,&
-                      w1, w2, w3, 0, niter,&
-                      epsi, criter, solveu, matas, istop,&
+            call gcpc(neq, in, zi4(idip), zr(idac), zi(idinpc), &
+                      perm, zi4(idippc), zr(idacpc), rsolu(kdeb), w4, &
+                      w1, w2, w3, 0, niter, &
+                      epsi, criter, solveu, matas, istop, &
                       iret)
 !
 !   -- booleen stocké dans ldlt_xp_data_module pour impression
             ap2foi_called = ASTER_TRUE
 !
-        endif
+        end if
 !
         do ieq = 1, neq
-            rsolu(kdeb-1+ieq)=w4(ieq)
-        enddo
+            rsolu(kdeb-1+ieq) = w4(ieq)
+        end do
         AS_DEALLOCATE(vr=w4)
     end do
 !
 !
 !     10- MISE A L'ECHELLE DES LAGRANGES DANS LA SOLUTION :
 !     -----------------------------------------------------
-    call mrconl('MULT', lmat, 0, 'R', rsolu,&
+    call mrconl('MULT', lmat, 0, 'R', rsolu, &
                 nsecm)
 !
 !

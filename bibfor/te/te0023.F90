@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -41,13 +41,13 @@ subroutine te0023(option, nomte)
     call jevech('PCAORIE', 'L', iorien)
     call jevech('PSTRX_R', 'E', istrx)
 !
-    if (nomte .eq. 'MECA_POU_D_TGM' .or. nomte .eq. 'MECA_POU_D_EM' .or. nomte .eq.&
+    if (nomte .eq. 'MECA_POU_D_TGM' .or. nomte .eq. 'MECA_POU_D_EM' .or. nomte .eq. &
         'MECA_POU_D_SQUE') then
         if (nomte .eq. 'MECA_POU_D_EM' .or. nomte .eq. 'MECA_POU_D_SQUE') then
             npg = 2
         else
             npg = 3
-        endif
+        end if
         if (nomte .eq. 'MECA_POU_D_SQUE') then
             ncomp = 21
         else
@@ -55,7 +55,7 @@ subroutine te0023(option, nomte)
         end if
         do kpg = 1, npg
             do i = 1, 15
-                zr(istrx-1+ncomp*(kpg-1) +i) = 0.d0
+                zr(istrx-1+ncomp*(kpg-1)+i) = 0.d0
             end do
             do i = 1, 3
                 zr(istrx-1+ncomp*(kpg-1)+15+i) = zr(iorien-1+i)
@@ -65,5 +65,5 @@ subroutine te0023(option, nomte)
         do i = 1, 3
             zr(istrx-1+i) = zr(iorien-1+i)
         end do
-    endif
+    end if
 end subroutine

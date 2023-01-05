@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -50,11 +50,11 @@ subroutine cgcrio(resu, vecord, nbnume)
     call getvr8(' ', 'PRECISION', scal=prec, nbret=ier)
     call getvtx(' ', 'CRITERE', scal=crit, nbret=ier)
 !
-    call rsutnu(resu, ' ', 0, vecord, nbord,&
+    call rsutnu(resu, ' ', 0, vecord, nbord, &
                 prec, crit, ier)
-    ASSERT(ier.eq.0)
+    ASSERT(ier .eq. 0)
 
-    if(present(nbnume)) then
+    if (present(nbnume)) then
         nbnume = nbord
     end if
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine prere1(solvez, base, iret, matpre, matass,&
+subroutine prere1(solvez, base, iret, matpre, matass, &
                   npvneg, istop)
 ! BUT : FACTORISER UNE MATR_ASSE (LDLT/MULT_FRONT/MUMPS)
 !       OU FABRIQUER UNE MATRICE DE PRECONDITIONNEMENT (GCPC)
@@ -49,7 +49,7 @@ subroutine prere1(solvez, base, iret, matpre, matass,&
 !                        POUR STOP_SINGULIER (VALEUR 0 OU 1 SEULEMENT)
 !                 /AUTRE --> ASSERT
 !-----------------------------------------------------------------------
-use ldlt_xp_data_module
+    use ldlt_xp_data_module
     implicit none
 !
 ! DECLARATION PARAMETRES D'APPELS
@@ -88,63 +88,63 @@ use ldlt_xp_data_module
 !----------------------------------------------------------------------
     call jemarq()
     call jedbg2(idbgav, 0)
-    call infdbg('FACTOR',ifm, niv)
+    call infdbg('FACTOR', ifm, niv)
 
 !     COHERENCE DES VALEURS DE ISTOPZ (NIVEAU DEVELOPPEUR)
-    istopz=istop
-    if ((istopz.ne.0) .and. (istopz.ne.1) .and. (istopz.ne.2) .and. (istopz.ne.-9999)) then
+    istopz = istop
+    if ((istopz .ne. 0) .and. (istopz .ne. 1) .and. (istopz .ne. 2) .and. (istopz .ne. -9999)) then
         ASSERT(.false.)
-    endif
-    dbg=.true.
-    dbg=.false.
+    end if
+    dbg = .true.
+    dbg = .false.
 
-    matas1=matass
+    matas1 = matass
     matas = matass
     maprec = matpre
-    npvneg=-9999
+    npvneg = -9999
 
-    solveu=solvez
-    if (solveu .eq. ' ')  call dismoi('SOLVEUR', matas, 'MATR_ASSE', repk=solveu)
+    solveu = solvez
+    if (solveu .eq. ' ') call dismoi('SOLVEUR', matas, 'MATR_ASSE', repk=solveu)
     call jeveuo(solveu//'.SLVK', 'L', islvk)
     metres = zk24(islvk)
 
 !   -- pour que la destruction des instances mumps et petsc fonctionne,
 !      il faut renseigner le solveur dans la matrice :
     call jeveuo(matas//'.REFA', 'E', vk24=refa)
-    refa(7)=solveu
+    refa(7) = solveu
 !
     if (dbg) then
         call cheksd(matas, 'SD_MATR_ASSE', ibid)
         call cheksd(solveu, 'SD_SOLVEUR', ibid)
-    endif
+    end if
 
     call dismoi('MPI_COMPLET', matas, 'MATR_ASSE', repk=kmpic)
     call dismoi('MATR_DISTR', matas, 'MATR_ASSE', repk=kmatd)
     call dismoi('MATR_HPC', matas, 'MATR_ASSE', repk=khpc)
-    if ( niv == 2 ) then
+    if (niv == 2) then
         call dismoi('TYPE_MATRICE', matas, 'MATR_ASSE', repk=ksym)
-        select case( ksym(1:7) )
-        case( 'SYMETRI' )
-            call utmess( 'I', 'ALGELINE5_2' )
-        case( 'NON_SYM' )
-            call utmess( 'I', 'ALGELINE5_3' )
+        select case (ksym(1:7))
+        case ('SYMETRI')
+            call utmess('I', 'ALGELINE5_2')
+        case ('NON_SYM')
+            call utmess('I', 'ALGELINE5_3')
         case default
-        ASSERT(.false.)
+            ASSERT(.false.)
         end select
-    endif
+    end if
     if (kmpic .eq. 'NON') then
-        if (metres .eq. 'MUMPS' .or. ( metres.eq.'PETSC'.and.kmatd.eq.'OUI')) then
+        if (metres .eq. 'MUMPS' .or. (metres .eq. 'PETSC' .and. kmatd .eq. 'OUI')) then
         else
             call sdmpic('MATR_ASSE', matas)
-        endif
-    endif
+        end if
+    end if
 !
 !
-    if( khpc == "OUI" ) then
+    if (khpc == "OUI") then
         if (metres .eq. 'LDLT' .or. metres .eq. 'MULT_FRONT') then
-            call utmess( 'F', 'FACTOR_93' )
-        endif
-    endif
+            call utmess('F', 'FACTOR_93')
+        end if
+    end if
 !
     call jeveuo(solveu//'.SLVI', 'L', islvi)
 !
@@ -158,49 +158,49 @@ use ldlt_xp_data_module
 
         nprec = zi(islvi-1+1)
         if (istopz .eq. -9999) istopz = zi(islvi-1+3)
-        renum=' '
-        if (metres(1:10) .eq. 'MULT_FRONT') renum=zk24( islvk-1+4)(1:8)
-        if ((metres(1:5).eq.'MUMPS') .and. (istopz.eq.2) .and. (nprec.lt.0)) then
+        renum = ' '
+        if (metres(1:10) .eq. 'MULT_FRONT') renum = zk24(islvk-1+4) (1:8)
+        if ((metres(1:5) .eq. 'MUMPS') .and. (istopz .eq. 2) .and. (nprec .lt. 0)) then
             call utmess('F', 'ALGELINE5_74')
-        endif
-        call tldlg3(metres, renum, istopz, lmat, 1,&
-                    0, nprec, ndeci, isingu, npvneg,&
+        end if
+        call tldlg3(metres, renum, istopz, lmat, 1, &
+                    0, nprec, ndeci, isingu, npvneg, &
                     iret, solveu)
-        if ((nprec.lt.0) .and. (iret.ne.2)) iret=3
+        if ((nprec .lt. 0) .and. (iret .ne. 2)) iret = 3
 !
 !
 !CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
 !                         PETSC                            C
 !CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
-    else if (metres.eq.'PETSC') then
-        call apetsc('DETR_MAT', ' ', matas, [0.d0], ' ',&
+    else if (metres .eq. 'PETSC') then
+        call apetsc('DETR_MAT', ' ', matas, [0.d0], ' ', &
                     0, ibid, iret)
-        call apetsc('PRERES', solveu, matas, [0.d0], ' ',&
+        call apetsc('PRERES', solveu, matas, [0.d0], ' ', &
                     0, ibid, iret)
 !
 !CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
 !                         GCPC                             C
 !CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
-    else if (metres.eq.'GCPC') then
+    else if (metres .eq. 'GCPC') then
 !
         call jeveuo(solveu//'.SLVK', 'L', islvk)
         call jeveuo(solveu//'.SLVI', 'E', islvi)
-        precon=zk24(islvk-1+2)
+        precon = zk24(islvk-1+2)
         call jelira(matas//'.VALM', 'NUTIOC', n1)
-        ASSERT(n1.eq.1 .or. n1.eq.2)
-        if (n1.eq.2) call utmess('F', 'ASSEMBLA_1')
+        ASSERT(n1 .eq. 1 .or. n1 .eq. 2)
+        if (n1 .eq. 2) call utmess('F', 'ASSEMBLA_1')
 !
         if (precon .eq. 'LDLT_INC') then
             niremp = zi(islvi-1+4)
             call pcldlt(maprec, matas, niremp, base)
-        else if ((precon.eq.'LDLT_SP') .or. (precon.eq.'LDLT_DP') )then
+        else if ((precon .eq. 'LDLT_SP') .or. (precon .eq. 'LDLT_DP')) then
             call pcmump(matas, solveu, iretgc, really_factored)
             if (iretgc .ne. 0) then
                 call utmess('F', 'ALGELINE5_76', sk=precon)
-            endif
-        endif
-        iret=0
-    endif
+            end if
+        end if
+        iret = 0
+    end if
 !
 !
 !

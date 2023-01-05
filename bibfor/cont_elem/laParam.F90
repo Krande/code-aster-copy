@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,9 +18,9 @@
 !
 subroutine laParam(parameters)
 !
-use contact_type
+    use contact_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -28,7 +28,7 @@ implicit none
 #include "contact_module.h"
 #include "jeveux.h"
 !
-type(ContactParameters), intent(inout) :: parameters
+    type(ContactParameters), intent(inout) :: parameters
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -48,17 +48,17 @@ type(ContactParameters), intent(inout) :: parameters
     parameters%type_cont = nint(zr(jcont+24))
     parameters%vari_cont = nint(zr(jcont+25))
 !
-    select case( parameters%vari_cont )
-        case(CONT_VARI_NONE)
-            parameters%vari_cont_coef = 0.d0
-        case(CONT_VARI_RAPI)
-            parameters%vari_cont_coef = 0.d0
-        case(CONT_VARI_ROBU)
-            parameters%vari_cont_coef = -1.d0
-        case(CONT_VARI_SYME)
-            parameters%vari_cont_coef = 1.d0
-        case default
-            ASSERT(ASTER_FALSE)
+    select case (parameters%vari_cont)
+    case (CONT_VARI_NONE)
+        parameters%vari_cont_coef = 0.d0
+    case (CONT_VARI_RAPI)
+        parameters%vari_cont_coef = 0.d0
+    case (CONT_VARI_ROBU)
+        parameters%vari_cont_coef = -1.d0
+    case (CONT_VARI_SYME)
+        parameters%vari_cont_coef = 1.d0
+    case default
+        ASSERT(ASTER_FALSE)
     end select
 !
 ! - Friction

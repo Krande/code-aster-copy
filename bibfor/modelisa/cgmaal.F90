@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -71,7 +71,7 @@ subroutine cgmaal(mofaz, iocc, nomaz, lismaz, nbma)
     tymocl(1) = 'NOEUD'
     motcle(2) = 'GROUP_NO'
     tymocl(2) = 'GROUP_NO'
-    call reliem(' ', noma, 'NU_NOEUD', motfac, iocc,&
+    call reliem(' ', noma, 'NU_NOEUD', motfac, iocc, &
                 nbmc, motcle, tymocl, mesnoe, nbno)
     call jeveuo(mesnoe, 'L', jnoeu)
 !
@@ -99,7 +99,7 @@ subroutine cgmaal(mofaz, iocc, nomaz, lismaz, nbma)
 !     -----------------------------------
     do i = 1, nbno
         nuno = zi(jnoeu+i-1)
-        nbma = zi(adrvlc+nuno+1-1) - zi(adrvlc+nuno-1)
+        nbma = zi(adrvlc+nuno+1-1)-zi(adrvlc+nuno-1)
         jadr = zi(adrvlc+nuno-1)
         do j = 1, nbma
             numa = zi(acncin+jadr-1+j-1)
@@ -109,7 +109,7 @@ subroutine cgmaal(mofaz, iocc, nomaz, lismaz, nbma)
 !
     nbma = 0
     do i = 1, nbmat
-        if (zi(idlima+i-1) .eq. 1) nbma = nbma + 1
+        if (zi(idlima+i-1) .eq. 1) nbma = nbma+1
     end do
 !
 ! --- ALLOCATION DU VECTEUR DES NOMS DES MAILLES CONTENANT
@@ -120,9 +120,9 @@ subroutine cgmaal(mofaz, iocc, nomaz, lismaz, nbma)
         nbma = 0
         do i = 1, nbmat
             if (zi(idlima+i-1) .eq. 1) then
-                nbma = nbma + 1
+                nbma = nbma+1
                 zi(idlist+nbma-1) = i
-            endif
+            end if
         end do
     end if
 !

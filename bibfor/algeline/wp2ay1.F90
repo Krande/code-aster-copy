@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine wp2ay1(appr, lmatra, lmasse, lamor, sigma,&
-                  lbloq, yh, yb, zh, zb,&
-                  u1, u2, u3, v, n,&
+subroutine wp2ay1(appr, lmatra, lmasse, lamor, sigma, &
+                  lbloq, yh, yb, zh, zb, &
+                  u1, u2, u3, v, n, &
                   solveu)
     implicit none
 #include "jeveux.h"
@@ -75,10 +75,10 @@ subroutine wp2ay1(appr, lmatra, lmasse, lamor, sigma,&
     si = dimag(sigma)
 !
 ! INIT. OBJETS ASTER
-    matass=zk24(zi(lmatra+1))
-    chcine=' '
-    criter=' '
-    k19bid=' '
+    matass = zk24(zi(lmatra+1))
+    chcine = ' '
+    criter = ' '
+    k19bid = ' '
     call mrmult('ZERO', lamor, yh, u1, 1, .false._1)
     call mrmult('ZERO', lmasse, yb, u2, 1, .false._1)
     call mrmult('ZERO', lmasse, yh, u3, 1, .false._1)
@@ -93,37 +93,37 @@ subroutine wp2ay1(appr, lmatra, lmasse, lamor, sigma,&
 !-RM-FIN
     call dismoi('NOM_NUME_DDL', matass, 'MATR_ASSE', repk=nu)
     call jelira(matass//'.VALM', 'TYPE', cval=rouc)
-    if (rouc.eq.'C') then
+    if (rouc .eq. 'C') then
         do i = 1, n, 1
-            v(i) = dcmplx(u1(i)) + sigma*dcmplx(u3(i)) + dcmplx(u2(i))
+            v(i) = dcmplx(u1(i))+sigma*dcmplx(u3(i))+dcmplx(u2(i))
         end do
-        call resoud(matass, k19bid, solveu, chcine, 1,&
-                    k19bid, k19bid, kbid, [0.d0], v,&
+        call resoud(matass, k19bid, solveu, chcine, 1, &
+                    k19bid, k19bid, kbid, [0.d0], v, &
                     criter, .false._1, 0, iret)
         if (appr .eq. 'R') then
             do i = 1, n, 1
-                zh(i) = - dble(v(i))
-                zb(i) = (yh(i) - dble(sigma*v(i)))*lbloq(i)
+                zh(i) = -dble(v(i))
+                zb(i) = (yh(i)-dble(sigma*v(i)))*lbloq(i)
             end do
         else
             do i = 1, n, 1
-                zh(i) = - dimag(v(i))
-                zb(i) = - dimag(sigma*v(i))*lbloq(i)
+                zh(i) = -dimag(v(i))
+                zb(i) = -dimag(sigma*v(i))*lbloq(i)
             end do
-        endif
-    else if ((si .eq. zero).and.(rouc.eq.'R')) then
+        end if
+    else if ((si .eq. zero) .and. (rouc .eq. 'R')) then
         do i = 1, n, 1
-            u1(i) = u1(i) + sr*u3(i) + u2(i)
+            u1(i) = u1(i)+sr*u3(i)+u2(i)
         end do
-        call resoud(matass, k19bid, solveu, chcine, 1,&
-                    k19bid, k19bid, kbid, u1, [cbid],&
+        call resoud(matass, k19bid, solveu, chcine, 1, &
+                    k19bid, k19bid, kbid, u1, [cbid], &
                     criter, .false._1, 0, iret)
         do i = 1, n, 1
             zh(i) = -u1(i)
-            zb(i) = (yh(i) - sr*u1(i))*lbloq(i)
+            zb(i) = (yh(i)-sr*u1(i))*lbloq(i)
         end do
     else
 ! Cas non prevu, cf wpfopr/wpsorn
         ASSERT(.false.)
-    endif
+    end if
 end subroutine

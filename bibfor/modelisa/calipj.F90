@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -38,9 +38,9 @@ subroutine calipj(load, model)
 ! --------------------------------------------------------------------------------------------------
 ! person_in_charge: jean-luc.flejou at edf.fr
 !
-use LoadKinematic_module
+    use LoadKinematic_module
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "LoadTypes_type.h"
@@ -49,7 +49,7 @@ implicit none
 #include "asterfort/assert.h"
 #include "asterfort/infniv.h"
 !
-character(len=8), intent(in) :: load, model
+    character(len=8), intent(in) :: load, model
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -63,7 +63,7 @@ character(len=8), intent(in) :: load, model
     call getfac(factorKeyword, nbOcc)
     if (nbOcc .ne. 0) then
         call kineLoadLinkProj(model, valeType, listLineRela)
-        call aflrch(listLineRela, load, 'LIN', detr_lisrez = ASTER_TRUE)
-    endif
+        call aflrch(listLineRela, load, 'LIN', detr_lisrez=ASTER_TRUE)
+    end if
 !
 end subroutine calipj

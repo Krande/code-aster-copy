@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -75,16 +75,16 @@ subroutine nmpoel(npg, klv, xl, nno, nc, pgl, ugl, epsthe, e, em, effm, fl, effl
     if (epsthe .ne. 0) then
         ug(:) = 0.d0
         if (epsthe .ne. 0.d0) then
-            ug(1) = -epsthe * xl
+            ug(1) = -epsthe*xl
             ug(7) = -ug(1)
             do ii = 1, 6
                 do jj = 1, 6
-                    fl(ii) = fl(ii) - klc(ii,jj) * ug(jj)
-                    fl(ii+6) = fl(ii+6) - klc(ii+6,jj+6) * ug(jj+6)
-                enddo
-            enddo
-        endif
-    endif
+                    fl(ii) = fl(ii)-klc(ii, jj)*ug(jj)
+                    fl(ii+6) = fl(ii+6)-klc(ii+6, jj+6)*ug(jj+6)
+                end do
+            end do
+        end if
+    end if
 !
 !   Dans le calcul des efforts, il faudrait calculer comme en thermo_plasticite 3d :
 !       (a+)/(a-)*(sigma-) + (a+)deps
@@ -97,19 +97,19 @@ subroutine nmpoel(npg, klv, xl, nno, nc, pgl, ugl, epsthe, e, em, effm, fl, effl
 !   Efforts internes, force nodales repère local
     if (npg .eq. 2) then
         do ii = 1, 6
-            effl(ii) = -fl(ii) + effm(ii)*e/em
-            effl(ii+6) = fl(ii+6) + effm(ii+6)*e/em
+            effl(ii) = -fl(ii)+effm(ii)*e/em
+            effl(ii+6) = fl(ii+6)+effm(ii+6)*e/em
             fl(ii) = -effl(ii)
             fl(ii+6) = effl(ii+6)
-        enddo
+        end do
     else
         do ii = 1, 6
-            effl(ii) = -fl(ii) + effm(ii)*e/em
-            effl(ii+12) = fl(ii+6) + effm(ii+12)*e/em
+            effl(ii) = -fl(ii)+effm(ii)*e/em
+            effl(ii+12) = fl(ii+6)+effm(ii+12)*e/em
 !           si npg=3, le point du milieu c'est la moyenne
-            effl(ii+6) = (effl(ii) + effl(ii+12))*0.5d0
+            effl(ii+6) = (effl(ii)+effl(ii+12))*0.5d0
             fl(ii) = -effl(ii)
             fl(ii+6) = effl(ii+12)
-        enddo
-    endif
+        end do
+    end if
 end subroutine

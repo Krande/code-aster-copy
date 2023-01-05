@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine xtlagf(ndim, nnc, jnn, nddls, jdepde,&
+subroutine xtlagf(ndim, nnc, jnn, nddls, jdepde, &
                   ffc, nfhe, dlagrf)
 !
 ! person_in_charge: mickael.abbas at edf.fr
@@ -65,7 +65,7 @@ subroutine xtlagf(ndim, nnc, jnn, nddls, jdepde,&
 ! --- INITIALISATIONS
 !
     nn = jnn(1)
-    nns= jnn(2)
+    nns = jnn(2)
 !
     dlagrf(1) = 0.d0
     dlagrf(2) = 0.d0
@@ -74,9 +74,9 @@ subroutine xtlagf(ndim, nnc, jnn, nddls, jdepde,&
 !
     do idim = 2, ndim
         do ino = 1, nnc
-            call xplma2(ndim, nn, nns, nddls, ino,&
+            call xplma2(ndim, nn, nns, nddls, ino, &
                         nfhe, pl)
-            dlagrf(idim-1) = dlagrf(idim-1)+ ffc(ino)*zr(jdepde-1+pl+ idim-1)
+            dlagrf(idim-1) = dlagrf(idim-1)+ffc(ino)*zr(jdepde-1+pl+idim-1)
         end do
     end do
 !

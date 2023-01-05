@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -80,21 +80,21 @@ subroutine cnsimp(cnsz, unite)
     ncmpu = 0
     do k = 1, ncmp
         do ino = 1, nbno
-            if (zl(jcnsl-1+ (ino-1)*ncmp+k)) goto 20
+            if (zl(jcnsl-1+(ino-1)*ncmp+k)) goto 20
         end do
         goto 30
- 20     continue
-        ncmpu = ncmpu + 1
-        ASSERT(ncmpu.le.997)
+20      continue
+        ncmpu = ncmpu+1
+        ASSERT(ncmpu .le. 997)
         licmpu(ncmpu) = k
- 30     continue
+30      continue
     end do
 !
 !     -- LE CHAMP EST VIDE : ON SORT
     if (ncmpu .eq. 0) goto 999
 !
     call dismoi('TYPE_SCA', nomgd, 'GRANDEUR', repk=tsca)
-    ASSERT((tsca.eq.'R') .or. (tsca.eq.'K8') .or. (tsca.eq.'I') .or. (tsca.eq.'C'))
+    ASSERT((tsca .eq. 'R') .or. (tsca .eq. 'K8') .or. (tsca .eq. 'I') .or. (tsca .eq. 'C'))
 !
 !
 !     1- ALLOCATION D'UN TABLEAU DE K16 QUI CONTIENDRA LES VALEURS
@@ -104,7 +104,7 @@ subroutine cnsimp(cnsz, unite)
         call wkvect('&&CNSIMP.LVALEURS', 'V V K16', ncmpu, jlval)
     else
         call wkvect('&&CNSIMP.LVALEURS', 'V V K16', 2*ncmpu, jlval)
-    endif
+    end if
 !
 !
 !     2- FORMAT DES LIGNES :
@@ -115,17 +115,17 @@ subroutine cnsimp(cnsz, unite)
     else
         fmt1 = '(A12,XXX(''|'',A25))'
         fmt2 = '(A12,XXX(''|'',A12,'' '',A12))'
-    endif
+    end if
     call codent(ncmpu, 'D', fmt1(6:8))
     call codent(ncmpu, 'D', fmt2(6:8))
 !
 !
 !     3- ECRITURE DE L'ENTETE DU CHAMP :
 !     ---------------------------------------
-    write (unite,*) ' '
-    write (unite,*) ' GRANDEUR: ',nomgd
-    write (unite,*) ' '
-    write (unite,fmt1) 'NOEUD', (cnsc(licmpu(ik)),ik=1,ncmpu)
+    write (unite, *) ' '
+    write (unite, *) ' GRANDEUR: ', nomgd
+    write (unite, *) ' '
+    write (unite, fmt1) 'NOEUD', (cnsc(licmpu(ik)), ik=1, ncmpu)
 !
 !
 !     4- ECRITURE DES VALEURS :
@@ -137,52 +137,52 @@ subroutine cnsimp(cnsz, unite)
         exicmp = .false.
         do ik = 1, ncmpu
             k = licmpu(ik)
-            if (zl(jcnsl-1+ (ino-1)*ncmp+k)) then
+            if (zl(jcnsl-1+(ino-1)*ncmp+k)) then
                 exicmp = .true.
                 goto 50
-            endif
+            end if
         end do
- 50     continue
-        if (.not.exicmp) goto 70
+50      continue
+        if (.not. exicmp) goto 70
 !
 !
 !
 !       -- ON MET LES VALEURS NON AFFECTEES A " " :
         do ik = 1, ncmpu
             k = licmpu(ik)
-            if (zl(jcnsl-1+ (ino-1)*ncmp+k)) then
+            if (zl(jcnsl-1+(ino-1)*ncmp+k)) then
                 if (tsca .eq. 'R') then
-                    write (zk16(jlval-1+ik),'(E12.5,A4)') zr(jcnsv-1+&
-                    (ino-1)*ncmp+k),' '
-                else if (tsca.eq.'K8') then
-                    write (zk16(jlval-1+ik),'(A8,A8)') zk8(jcnsv-1+&
-                    (ino-1)*ncmp+k),' '
-                else if (tsca.eq.'C') then
-                    write (zk16(jlval-1+2*(ik-1)+1),'(E12.5,A4)')&
-                    dble(zc(jcnsv-1+(ino-1)*ncmp+k)),' '
-                    write (zk16(jlval-1+2*(ik-1)+2),'(E12.5,A4)')&
-                    dimag(zc(jcnsv-1+(ino-1)*ncmp+k)),' '
-                else if (tsca.eq.'I') then
-                    write (zk16(jlval-1+ik),'(I12,A4)') zi(jcnsv-1+&
-                    (ino-1)*ncmp+k),' '
-                endif
+                    write (zk16(jlval-1+ik), '(E12.5,A4)') zr(jcnsv-1+ &
+                                                              (ino-1)*ncmp+k), ' '
+                else if (tsca .eq. 'K8') then
+                    write (zk16(jlval-1+ik), '(A8,A8)') zk8(jcnsv-1+ &
+                                                            (ino-1)*ncmp+k), ' '
+                else if (tsca .eq. 'C') then
+                    write (zk16(jlval-1+2*(ik-1)+1), '(E12.5,A4)') &
+                        dble(zc(jcnsv-1+(ino-1)*ncmp+k)), ' '
+                    write (zk16(jlval-1+2*(ik-1)+2), '(E12.5,A4)') &
+                        dimag(zc(jcnsv-1+(ino-1)*ncmp+k)), ' '
+                else if (tsca .eq. 'I') then
+                    write (zk16(jlval-1+ik), '(I12,A4)') zi(jcnsv-1+ &
+                                                            (ino-1)*ncmp+k), ' '
+                end if
             else
                 if (tsca .ne. 'C') then
-                    write (zk16(jlval-1+ik),'(A16)') ' '
+                    write (zk16(jlval-1+ik), '(A16)') ' '
                 else
-                    write (zk16(jlval-1+2*(ik-1)+1),'(A16)') ' '
-                    write (zk16(jlval-1+2*(ik-1)+2),'(A16)') ' '
-                endif
-            endif
+                    write (zk16(jlval-1+2*(ik-1)+1), '(A16)') ' '
+                    write (zk16(jlval-1+2*(ik-1)+2), '(A16)') ' '
+                end if
+            end if
         end do
         if (tsca .ne. 'C') then
-            write (unite,fmt2) nomno, (zk16(jlval-1+ik),ik=1,ncmpu)
+            write (unite, fmt2) nomno, (zk16(jlval-1+ik), ik=1, ncmpu)
         else
-            write (unite,fmt2) nomno, (zk16(jlval-1+2*(ik-1)+1),&
-            zk16(jlval-1+2*(ik-1)+2),ik=1,ncmpu)
-        endif
+            write (unite, fmt2) nomno, (zk16(jlval-1+2*(ik-1)+1), &
+                                        zk16(jlval-1+2*(ik-1)+2), ik=1, ncmpu)
+        end if
 !
- 70     continue
+70      continue
     end do
 !
 999 continue

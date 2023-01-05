@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine assma2(ldistme, lmasym, tt, nu14, ncmp, matel,&
+subroutine assma2(ldistme, lmasym, tt, nu14, ncmp, matel, &
                   c1, jvalm, jtmp2, lgtmp2)
 ! person_in_charge: jacques.pellet at edf.fr
 !
@@ -44,15 +44,15 @@ subroutine assma2(ldistme, lmasym, tt, nu14, ncmp, matel,&
 #include "asterfort/ssvalm.h"
 #include "asterfort/asmpi_info.h"
 !-----------------------------------------------------------------------
-   aster_logical, intent(in) :: ldistme, lmasym
-   character(len=2), intent(in) :: tt
-   character(len=14), intent(in) :: nu14
-   integer, intent(in) :: ncmp
-   character(len=19), intent(in) :: matel
-   real(kind=8), intent(in) :: c1
-   integer :: jvalm(2)
-   integer :: jtmp2
-   integer :: lgtmp2
+    aster_logical, intent(in) :: ldistme, lmasym
+    character(len=2), intent(in) :: tt
+    character(len=14), intent(in) :: nu14
+    integer, intent(in) :: ncmp
+    character(len=19), intent(in) :: matel
+    real(kind=8), intent(in) :: c1
+    integer :: jvalm(2)
+    integer :: jtmp2
+    integer :: lgtmp2
 !-----------------------------------------------------------------------
     character(len=16) :: optio
     aster_logical :: lmesym
@@ -95,13 +95,12 @@ subroutine assma2(ldistme, lmasym, tt, nu14, ncmp, matel,&
 !      Seul le proc 0 le fait
     call asmpi_info(rank=mrank, size=msize)
     rang = to_aster_int(mrank)
-    if (ldistme .and. rang.gt.0) goto 100
+    if (ldistme .and. rang .gt. 0) goto 100
 
-
-    lmesym=.true.
+    lmesym = .true.
     do i = 1, nbecmx
-        icodla(i)=0
-        icodge(i)=0
+        icodla(i) = 0
+        icodge(i) = 0
     end do
 !
     call dismoi('NOM_MODELE', nu14, 'NUME_DDL', repk=mo)
@@ -122,21 +121,21 @@ subroutine assma2(ldistme, lmasym, tt, nu14, ncmp, matel,&
     call dismoi('NOM_GD_SI', nogdco, 'GRANDEUR', repk=nogdsi)
     call dismoi('NB_CMP_MAX', nogdsi, 'GRANDEUR', repi=nmxcmp)
     call dismoi('NUM_GD_SI', nogdsi, 'GRANDEUR', repi=nugd)
-    nec=nbec(nugd)
+    nec = nbec(nugd)
     call jeveuo(jexnom('&CATA.GD.NOMCMP', nogdsi), 'L', iancmp)
     call jelira(jexnom('&CATA.GD.NOMCMP', nogdsi), 'LONMAX', lgncmp)
-    icmp=indik8(zk8(iancmp),'LAGR',1,lgncmp)
+    icmp = indik8(zk8(iancmp), 'LAGR', 1, lgncmp)
     if (icmp .gt. 0) then
-        jec=(icmp-1)/30+1
-        icodla(jec)=lshift(1,icmp-(jec-1)*30)
-    endif
+        jec = (icmp-1)/30+1
+        icodla(jec) = lshift(1, icmp-(jec-1)*30)
+    end if
 !
     call jeveuo('&&ASSMAM.NUMLO1', 'E', jnulo1)
     call jeveuo('&&ASSMAM.POSDD1', 'E', jposd1)
 !
 !
 !
-    call ssvalm('DEBUT', optio, mo, ma, 0,&
+    call ssvalm('DEBUT', optio, mo, ma, 0, &
                 jresl, nbvel)
 !
 !   -- boucle sur les macro-elements :
@@ -147,53 +146,53 @@ subroutine assma2(ldistme, lmasym, tt, nu14, ncmp, matel,&
         call jeveuo(jexnum(ma//'.SUPMAIL', ima), 'L', jsupma)
         call jelira(jexnum(ma//'.SUPMAIL', ima), 'LONMAX', nnoe)
 !
-        nbterm=0
+        nbterm = 0
 !
-        call ssvalm(' ', optio, mo, ma, ima,&
+        call ssvalm(' ', optio, mo, ma, ima, &
                     jresl, nbvel)
 !
-        nomacr=vnomacr(ima)
+        nomacr = vnomacr(ima)
         call dismoi('NOM_NUME_DDL', nomacr, 'MACR_ELEM_STAT', repk=num2)
         call jeveuo(nomacr//'.CONX', 'L', vi=conx)
         call jeveuo(jexnum(num2//'.NUME.PRNO', 1), 'L', jprno)
 !
         do k1 = 1, nnoe
-            n1=zi(jsupma-1+k1)
+            n1 = zi(jsupma-1+k1)
             if (n1 .gt. nm) then
                 do iec = 1, nbecmx
-                    icodge(iec)=icodla(iec)
+                    icodge(iec) = icodla(iec)
                 end do
 !
             else
-                inold=conx(3*(k1-1)+2)
+                inold = conx(3*(k1-1)+2)
                 do iec = 1, nec
-                    icodge(iec)=zi(jprno-1+(nec+2)*(inold-1)+2+iec)
+                    icodge(iec) = zi(jprno-1+(nec+2)*(inold-1)+2+iec)
                 end do
-            endif
+            end if
 !
-            iad1=zzprno(1,n1,1)
-            call cordd2(jprn1, jprn2, 1, icodge, nec,&
+            iad1 = zzprno(1, n1, 1)
+            call cordd2(jprn1, jprn2, 1, icodge, nec, &
                         ncmp, n1, nddl1, zi(jposd1-1+nmxcmp*(k1-1)+1))
-            zi(jnulo1-1+2*(k1-1)+1)=iad1
-            zi(jnulo1-1+2*(k1-1)+2)=nddl1
+            zi(jnulo1-1+2*(k1-1)+1) = iad1
+            zi(jnulo1-1+2*(k1-1)+2) = nddl1
             do i1 = 1, nddl1
                 do k2 = 1, k1-1
-                    iad2=numlo1(k2,1)
-                    nddl2=numlo1(k2,2)
+                    iad2 = numlo1(k2, 1)
+                    nddl2 = numlo1(k2, 2)
                     do i2 = 1, nddl2
-                        iad11=nueq(iad1+posdd1(k1,i1)-1)
-                        iad21=nueq(iad2+posdd1(k2,i2)-1)
-                        call asretm(lmasym, jtmp2, lgtmp2, nbterm, jsmhc,&
+                        iad11 = nueq(iad1+posdd1(k1, i1)-1)
+                        iad21 = nueq(iad2+posdd1(k2, i2)-1)
+                        call asretm(lmasym, jtmp2, lgtmp2, nbterm, jsmhc, &
                                     jsmdi, iad11, iad21)
                     end do
                 end do
-                k2=k1
-                iad2=numlo1(k2,1)
-                nddl2=numlo1(k2,2)
+                k2 = k1
+                iad2 = numlo1(k2, 1)
+                nddl2 = numlo1(k2, 2)
                 do i2 = 1, i1
-                    iad11=nueq(iad1+posdd1(k1,i1)-1)
-                    iad21=nueq(iad2+posdd1(k2,i2)-1)
-                    call asretm(lmasym, jtmp2, lgtmp2, nbterm, jsmhc,&
+                    iad11 = nueq(iad1+posdd1(k1, i1)-1)
+                    iad21 = nueq(iad2+posdd1(k2, i2)-1)
+                    call asretm(lmasym, jtmp2, lgtmp2, nbterm, jsmhc, &
                                 jsmdi, iad11, iad21)
                 end do
             end do
@@ -201,11 +200,11 @@ subroutine assma2(ldistme, lmasym, tt, nu14, ncmp, matel,&
 !
 !
 !       -- pour finir, on recopie effectivement les termes:
-        call ascopr(lmasym, lmesym, 'R'//tt(2:2), jtmp2, nbterm,&
+        call ascopr(lmasym, lmesym, 'R'//tt(2:2), jtmp2, nbterm, &
                     jresl, c1, jvalm)
- 90     continue
+90      continue
     end do
-    call ssvalm('FIN', optio, mo, ma, ima,&
+    call ssvalm('FIN', optio, mo, ma, ima, &
                 jresl, nbvel)
 !
 !

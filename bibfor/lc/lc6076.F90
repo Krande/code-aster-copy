@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,15 +17,15 @@
 ! --------------------------------------------------------------------
 ! aslint: disable=W1504,W0104,C1509
 !
-subroutine lc6076(BEHinteg,&
-                  fami, kpg, ksp, ndim, imate,&
+subroutine lc6076(BEHinteg, &
+                  fami, kpg, ksp, ndim, imate, &
                   compor, carcri, instam, instap, neps, epsm, &
                   deps, nsig, sigm, nvi, vim, option, angmas, &
-                  sigp, vip, typmod, icomp, ndsde,&
+                  sigp, vip, typmod, icomp, ndsde, &
                   dsidep, codret)
-                  
+
     use Behaviour_type
-    use vmis_isot_nl_module, only: CONSTITUTIVE_LAW, Init, InitViscoPlasticity, Integrate, InitGradVari
+ use vmis_isot_nl_module, only: CONSTITUTIVE_LAW, Init, InitViscoPlasticity, Integrate, InitGradVari
     implicit none
 
 #include "asterf_types.h"
@@ -34,60 +34,60 @@ subroutine lc6076(BEHinteg,&
 #include "asterfort/lcgrad.h"
 ! --------------------------------------------------------------------------------------------------
     type(Behaviour_Integ)        :: BEHinteg
-    character(len=*) ,intent(in) :: fami
-    integer          ,intent(in) :: kpg
-    integer          ,intent(in) :: ksp
-    integer          ,intent(in) :: ndim
-    integer          ,intent(in) :: imate
-    character(len=16),intent(in) :: compor(*)
-    real(kind=8)     ,intent(in) :: carcri(*)
-    real(kind=8)     ,intent(in) :: instam
-    real(kind=8)     ,intent(in) :: instap
-    integer          ,intent(in) :: neps
-    real(kind=8)     ,intent(in) :: epsm(neps)
-    real(kind=8)     ,intent(in) :: deps(neps)
-    integer          ,intent(in) :: nsig
-    real(kind=8)     ,intent(in) :: sigm(nsig)
-    integer          ,intent(in) :: nvi
-    real(kind=8)     ,intent(in) :: vim(nvi)
-    character(len=16),intent(in) :: option
-    real(kind=8)     ,intent(in) :: angmas(*)
+    character(len=*), intent(in) :: fami
+    integer, intent(in) :: kpg
+    integer, intent(in) :: ksp
+    integer, intent(in) :: ndim
+    integer, intent(in) :: imate
+    character(len=16), intent(in) :: compor(*)
+    real(kind=8), intent(in) :: carcri(*)
+    real(kind=8), intent(in) :: instam
+    real(kind=8), intent(in) :: instap
+    integer, intent(in) :: neps
+    real(kind=8), intent(in) :: epsm(neps)
+    real(kind=8), intent(in) :: deps(neps)
+    integer, intent(in) :: nsig
+    real(kind=8), intent(in) :: sigm(nsig)
+    integer, intent(in) :: nvi
+    real(kind=8), intent(in) :: vim(nvi)
+    character(len=16), intent(in) :: option
+    real(kind=8), intent(in) :: angmas(*)
     real(kind=8)                 :: sigp(nsig)
     real(kind=8)                 :: vip(nvi)
-    character(len=8) ,intent(in) :: typmod(*)
-    integer          ,intent(in) :: icomp
-    integer          ,intent(in) :: ndsde
+    character(len=8), intent(in) :: typmod(*)
+    integer, intent(in) :: icomp
+    integer, intent(in) :: ndsde
     real(kind=8)                 :: dsidep(merge(nsig,6,nsig*neps.eq.ndsde), merge(neps,6,nsig*neps.eq.ndsde))
-    integer          ,intent(out):: codret
+    integer, intent(out):: codret
 ! --------------------------------------------------------------------------------------------------
 !   RELATION VMIS_ISOT_NL + GRAD_VARI
 ! --------------------------------------------------------------------------------------------------
 !
     aster_logical         :: lMatr, lSigm, lVari
     integer               :: ndimsi
-    real(kind=8)          :: sig(2*ndim),vi(nvi),ka
-    real(kind=8)          :: deps_sig(2*ndim,2*ndim),deps_vi(2*ndim),dphi_sig(2*ndim),dphi_vi
-    real(kind=8)          :: apg,lag,grad(ndim),eps_gene(neps),eps_meca(2*ndim)
+    real(kind=8)          :: sig(2*ndim), vi(nvi), ka
+    real(kind=8)          :: deps_sig(2*ndim, 2*ndim), deps_vi(2*ndim), dphi_sig(2*ndim), dphi_vi
+    real(kind=8)          :: apg, lag, grad(ndim), eps_gene(neps), eps_meca(2*ndim)
     type(CONSTITUTIVE_LAW):: cl
 ! --------------------------------------------------------------------------------------------------
 !
-    ASSERT (neps*nsig .eq. ndsde)
-    ASSERT (neps .eq. nsig)
-    ASSERT (neps .ge. 2*ndim)
-    ASSERT (neps .ge. 3*ndim+2)
+    ASSERT(neps*nsig .eq. ndsde)
+    ASSERT(neps .eq. nsig)
+    ASSERT(neps .ge. 2*ndim)
+    ASSERT(neps .ge. 3*ndim+2)
 !
-    ndimsi   = 2*ndim
-    sig      = 0
-    vi       = 0
+    ndimsi = 2*ndim
+    sig = 0
+    vi = 0
     deps_sig = 0
-    deps_vi  = 0
+    deps_vi = 0
     dphi_sig = 0
-    dphi_vi  = 0
+    dphi_vi = 0
     eps_gene = epsm(1:neps)+deps(1:neps)
     eps_meca = eps_gene(1:ndimsi)
-    apg      = eps_gene(ndimsi+1)
-    lag      = eps_gene(ndimsi+2)
-    grad     = eps_gene(ndimsi+3:ndimsi+2+ndim)
+    apg = eps_gene(ndimsi+1)
+    lag = eps_gene(ndimsi+2)
+    grad = eps_gene(ndimsi+3:ndimsi+2+ndim)
 
     lVari = L_VARI(option)
     lSigm = L_SIGM(option)
@@ -95,23 +95,23 @@ subroutine lc6076(BEHinteg,&
 
     if (lVari) vip = 0
 
-    cl = Init(ndimsi, option, fami, kpg, ksp, imate,&
+    cl = Init(ndimsi, option, fami, kpg, ksp, imate, &
               nint(carcri(ITER_INTE_MAXI)), carcri(RESI_INTE_RELA))
 
-    call InitGradVari(cl,fami,kpg,ksp,imate,lag,apg)
+    call InitGradVari(cl, fami, kpg, ksp, imate, lag, apg)
 
-    if (compor(RELA_NAME)(1:4) .eq. 'VISC') &
-        call InitViscoPlasticity(cl,fami,kpg,ksp,imate,instap-instam)
+    if (compor(RELA_NAME) (1:4) .eq. 'VISC') &
+        call InitViscoPlasticity(cl, fami, kpg, ksp, imate, instap-instam)
 
     call Integrate(cl, eps_meca, vim(1:nvi), sig, &
-            vi, deps_sig, dphi_sig, deps_vi, dphi_vi)
+                   vi, deps_sig, dphi_sig, deps_vi, dphi_vi)
 
     codret = cl%exception
-    if (codret.eq.0) then
+    if (codret .eq. 0) then
         if (lVari) vip(1:nvi) = vi
-        ka = merge(vi(1),vim(1),cl%vari)
+        ka = merge(vi(1), vim(1), cl%vari)
         call lcgrad(lSigm, lMatr, sig, apg, lag, grad, ka, &
-                cl%mat%r, cl%mat%c, deps_sig, dphi_sig, deps_vi, dphi_vi, sigp, dsidep)
-    endif
+                    cl%mat%r, cl%mat%c, deps_sig, dphi_sig, deps_vi, dphi_vi, sigp, dsidep)
+    end if
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 !
 subroutine te0551(option, nomte)
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterfort/assert.h"
@@ -27,7 +27,7 @@ implicit none
 #include "asterfort/rcvalb.h"
 #include "asterfort/tecach.h"
 !
-character(len=16), intent(in) :: option, nomte
+    character(len=16), intent(in) :: option, nomte
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -54,14 +54,14 @@ character(len=16), intent(in) :: option, nomte
 ! --------------------------------------------------------------------------------------------------
 !
     fami = 'FPG1'
-    kpg  = 1
-    spt  = 1
+    kpg = 1
+    spt = 1
     poum = '+'
     call elrefe_info(fami='RIGI', nno=nb_node)
 !
     call tecach('OOO', 'PPHASIN', 'L', iret, nval=6, itab=jtab)
     nb_vari = jtab(6)
-    iphasi  = jtab(1)
+    iphasi = jtab(1)
     call jevech('PMATERC', 'L', imate)
     call jevech('PDURT_R', 'E', idurt)
 !
@@ -72,8 +72,8 @@ character(len=16), intent(in) :: option, nomte
     nomres(3) = 'F3_DURT'
     nomres(4) = 'F4_DURT'
     nomres(5) = 'C_DURT'
-    call rcvalb(fami, kpg, spt, poum, zi(imate),&
-                ' ', 'DURT_META', 1, 'TEMP', [0.d0],&
+    call rcvalb(fami, kpg, spt, poum, zi(imate), &
+                ' ', 'DURT_META', 1, 'TEMP', [0.d0], &
                 5, nomres, valres, icodre, 2)
 !
 ! - Compute
@@ -84,7 +84,7 @@ character(len=16), intent(in) :: option, nomte
         end do
         durtno = 0.d0
         do i = 1, 5
-            durtno = durtno + phase(i) * valres(i)
+            durtno = durtno+phase(i)*valres(i)
         end do
         zr(idurt+(i_node-1)) = durtno
     end do

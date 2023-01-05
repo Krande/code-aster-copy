@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -40,10 +40,10 @@ subroutine diaexp(nno, nddl, ldim, masco, masdi)
         idiag = i*(i+1)/2
         masdi(idiag) = masco(idiag)
         do k = (i0+1), idiag-1
-            masdi(idiag) = masdi(idiag) + masco(k)
-            k0 = k - i0
+            masdi(idiag) = masdi(idiag)+masco(k)
+            k0 = k-i0
             k0 = k0*(k0+1)/2
-            masdi(k0) = masdi(k0) + masco(k)
+            masdi(k0) = masdi(k0)+masco(k)
         end do
     end do
 end subroutine

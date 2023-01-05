@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -34,10 +34,10 @@ subroutine mdtrib(ind, a, n)
     do i = n-1, 1, -1
         do j = 1, i
             if (a(ind(j)) .lt. a(ind(j+1))) then
-                k=ind(j+1)
-                ind(j+1)=ind(j)
-                ind(j)=k
-            endif
+                k = ind(j+1)
+                ind(j+1) = ind(j)
+                ind(j) = k
+            end if
         end do
     end do
 end subroutine

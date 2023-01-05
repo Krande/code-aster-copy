@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -44,15 +44,15 @@ subroutine foattr(motcle, iocc, nomfon)
 !-----------------------------------------------------------------------
     call jemarq()
     temp = nomfon
-    ASSERT(lxlgut(temp).le.24)
+    ASSERT(lxlgut(temp) .le. 24)
     prol = temp//'.PROL'
     call jeveuo(prol, 'E', lpro)
     call jelira(prol, 'LONUTI', nbprol)
 !
     if (zk24(lpro) .eq. 'NAPPE   ') then
-        nbfonc = ( nbprol - 7 ) / 2
+        nbfonc = (nbprol-7)/2
 !
-        call getvtx(motcle, 'INTERPOL', iocc=iocc, nbval=2, vect=interp,&
+        call getvtx(motcle, 'INTERPOL', iocc=iocc, nbval=2, vect=interp, &
                     nbret=l1)
         if (l1 .eq. 1) zk24(lpro+1) = interp(1)//interp(1)
         if (l1 .eq. 2) zk24(lpro+1) = interp(1)//interp(2)
@@ -64,48 +64,48 @@ subroutine foattr(motcle, iocc, nomfon)
         if (l3 .ne. 0) zk24(lpro+3) = nresu
 !
         call getvtx(motcle, 'PROL_GAUCHE', iocc=iocc, scal=prolg, nbret=l4)
-        if (l4 .ne. 0) zk24(lpro+4)(1:1) = prolg(1:1)
+        if (l4 .ne. 0) zk24(lpro+4) (1:1) = prolg(1:1)
 !
         call getvtx(motcle, 'PROL_DROITE', iocc=iocc, scal=prold, nbret=l5)
-        if (l5 .ne. 0) zk24(lpro+4)(2:2) = prold(1:1)
+        if (l5 .ne. 0) zk24(lpro+4) (2:2) = prold(1:1)
 !
         zk24(lpro+5) = temp
 !
         call getvtx(motcle, 'NOM_PARA_FONC', iocc=iocc, scal=npara, nbret=l6)
         if (l6 .ne. 0) zk24(lpro+6) = npara
 !
-        call getvtx(motcle, 'INTERPOL_FONC', iocc=iocc, nbval=2, vect=interp,&
+        call getvtx(motcle, 'INTERPOL_FONC', iocc=iocc, nbval=2, vect=interp, &
                     nbret=l7)
         if (l7 .ne. 0) then
             do if = 1, nbfonc
-                if (l7 .eq. 1) zk24(lpro+7+2*(if-1)) = interp(1)// interp(1)
-                if (l7 .eq. 2) zk24(lpro+7+2*(if-1)) = interp(1)// interp(2)
+                if (l7 .eq. 1) zk24(lpro+7+2*(if-1)) = interp(1)//interp(1)
+                if (l7 .eq. 2) zk24(lpro+7+2*(if-1)) = interp(1)//interp(2)
             end do
-        endif
+        end if
 !
         call getvtx(motcle, 'PROL_GAUCHE_FONC', iocc=iocc, scal=prolg, nbret=l8)
         if (l8 .ne. 0) then
             do if = 1, nbfonc
-                zk24(lpro+8+2*(if-1))(1:1) = prolg(1:1)
+                zk24(lpro+8+2*(if-1)) (1:1) = prolg(1:1)
             end do
-        endif
+        end if
 !
         call getvtx(motcle, 'PROL_DROITE_FONC', iocc=iocc, scal=prold, nbret=l9)
         if (l9 .ne. 0) then
             do if = 1, nbfonc
-                zk24(lpro+8+2*(if-1))(2:2) = prold(1:1)
+                zk24(lpro+8+2*(if-1)) (2:2) = prold(1:1)
             end do
-        endif
+        end if
 !
 !
     else
 !
-        call getvtx(motcle, 'INTERPOL', iocc=iocc, nbval=2, vect=interp,&
+        call getvtx(motcle, 'INTERPOL', iocc=iocc, nbval=2, vect=interp, &
                     nbret=l1)
         if (l1 .ne. 0) then
             if (l1 .eq. 1) zk24(lpro+1) = interp(1)//interp(1)
             if (l1 .eq. 2) zk24(lpro+1) = interp(1)//interp(2)
-        endif
+        end if
 !
         call getvtx(motcle, 'NOM_PARA', iocc=iocc, scal=npara, nbret=l2)
         if (l2 .ne. 0) zk24(lpro+2) = npara
@@ -114,14 +114,14 @@ subroutine foattr(motcle, iocc, nomfon)
         if (l3 .ne. 0) zk24(lpro+3) = nresu
 !
         call getvtx(motcle, 'PROL_GAUCHE', iocc=iocc, scal=prolg, nbret=l4)
-        if (l4 .ne. 0) zk24(lpro+4)(1:1) = prolg(1:1)
+        if (l4 .ne. 0) zk24(lpro+4) (1:1) = prolg(1:1)
 !
         call getvtx(motcle, 'PROL_DROITE', iocc=iocc, scal=prold, nbret=l5)
-        if (l5 .ne. 0) zk24(lpro+4)(2:2) = prold(1:1)
+        if (l5 .ne. 0) zk24(lpro+4) (2:2) = prold(1:1)
 !
         zk24(lpro+5) = temp
 !
-    endif
+    end if
 !
     call jedema()
 end subroutine

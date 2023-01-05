@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -46,9 +46,9 @@ subroutine nxdocn(parcri, parcrr)
         if (parcri(1)+parcri(2) .eq. 0) then
             parcri(2) = 1
             parcrr(2) = 1.d-6
-        endif
+        end if
 !
         call getvis(nomcvg, 'ITER_GLOB_MAXI', iocc=1, scal=parcri(3), nbret=n1)
-    endif
+    end if
 ! FIN ------------------------------------------------------------------
 end subroutine

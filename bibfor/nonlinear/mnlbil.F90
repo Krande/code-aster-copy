@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine mnlbil(x, omega, alpha, eta, h,&
+subroutine mnlbil(x, omega, alpha, eta, h, &
                   hf, nt, sort)
     implicit none
 !
@@ -44,53 +44,53 @@ subroutine mnlbil(x, omega, alpha, eta, h,&
     call wkvect('&&mnlbil.t', 'V V R', nt, it)
     call wkvect('&&mnlbil.xt', 'V V R', nt, ixt)
     call wkvect('&&mnlbil.f', 'V V R', nt, iif)
-    depi=r8depi()
-    zr(it)=0.d0
+    depi = r8depi()
+    zr(it) = 0.d0
     do k = 2, nt
-        zr(it-1+k)=zr(it-1+k-1)+(depi/omega)/nt
+        zr(it-1+k) = zr(it-1+k-1)+(depi/omega)/nt
     end do
 !
     do k = 1, nt
-        zr(ixt-1+k)=x(1)
+        zr(ixt-1+k) = x(1)
         do j = 1, h
-            zr(ixt-1+k)=zr(ixt-1+k)+x(j+1)*dcos(dble(j)*omega*zr(it-1+k))
-            zr(ixt-1+k)=zr(ixt-1+k)+x(h+j+1)*dsin(dble(j)*omega*zr(it-1+k))
+            zr(ixt-1+k) = zr(ixt-1+k)+x(j+1)*dcos(dble(j)*omega*zr(it-1+k))
+            zr(ixt-1+k) = zr(ixt-1+k)+x(h+j+1)*dsin(dble(j)*omega*zr(it-1+k))
         end do
 !
-        a1=1.d0/(alpha**2)
-        b1=-2.d0*zr(ixt-1+k)/alpha
-        c1=zr(ixt-1+k)**2-1.d0
-        d1=eta*zr(ixt-1+k)
+        a1 = 1.d0/(alpha**2)
+        b1 = -2.d0*zr(ixt-1+k)/alpha
+        c1 = zr(ixt-1+k)**2-1.d0
+        d1 = eta*zr(ixt-1+k)
 !
-        h1=-b1/(3.d0*a1)
+        h1 = -b1/(3.d0*a1)
 !
-        p=(3.d0*a1*h1**2+2.d0*b1*h1+c1)/a1
-        q=-(a1*h1**3+b1*h1**2+c1*h1+d1)/a1
+        p = (3.d0*a1*h1**2+2.d0*b1*h1+c1)/a1
+        q = -(a1*h1**3+b1*h1**2+c1*h1+d1)/a1
 !
-        discr1=q**2 + (4.d0*p**3)/27.d0
+        discr1 = q**2+(4.d0*p**3)/27.d0
 !
-        sd=(1.d0-(discr1/abs(discr1)))/2.d0
+        sd = (1.d0-(discr1/abs(discr1)))/2.d0
 !
-        u3=(q - (dcmplx(0.d0,1.d0)**int(sd))*sqrt(abs(discr1)))/2.d0
-        v3=(q + (dcmplx(0.d0,1.d0)**int(sd))*sqrt(abs(discr1)))/2.d0
+        u3 = (q-(dcmplx(0.d0, 1.d0)**int(sd))*sqrt(abs(discr1)))/2.d0
+        v3 = (q+(dcmplx(0.d0, 1.d0)**int(sd))*sqrt(abs(discr1)))/2.d0
 !
-        u=u3**(1/3.d0);
-        v=v3**(1/3.d0);
+        u = u3**(1/3.d0); 
+        v = v3**(1/3.d0); 
 !
-        f1= u + v + h1
+        f1 = u+v+h1
 !
-        a2=a1
-        b2=b1+a1*f1
-        c2=c1+b1*f1 + a1*f1**2
+        a2 = a1
+        b2 = b1+a1*f1
+        c2 = c1+b1*f1+a1*f1**2
 !
-        discr2= b2**2 - 4.d0*a2*c2
+        discr2 = b2**2-4.d0*a2*c2
 !
-        fk= (-b2 + sqrt(b2**2 - 4.d0*a2*c2))/(2.d0*a2)
+        fk = (-b2+sqrt(b2**2-4.d0*a2*c2))/(2.d0*a2)
 !
-        zr(iif-1+k)=dble(fk)
+        zr(iif-1+k) = dble(fk)
     end do
 !
-    call mnlfft(1, sort(1), zr(iif), hf, nt,&
+    call mnlfft(1, sort(1), zr(iif), hf, nt, &
                 1)
 !
     call jedetr('&&mnlbil.t')

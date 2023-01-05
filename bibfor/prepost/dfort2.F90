@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine dfort2(nsommx, icnc, noeu1, tbelzo, nbelt,&
-                  tbnozo, nbnozo, nbnoe, xy, aire,&
+subroutine dfort2(nsommx, icnc, noeu1, tbelzo, nbelt, &
+                  tbnozo, nbnozo, nbnoe, xy, aire, &
                   energi, pe)
 !
 !********************************************************************
@@ -67,34 +67,34 @@ subroutine dfort2(nsommx, icnc, noeu1, tbelzo, nbelt,&
     integer :: i, j, inno, iint, inel, nuef, noeu2, nedep, nefin
     integer :: nsomm, nbint
     integer :: ipoi1, ipoi2, ipoi4, nint, ip1
-    parameter (nbint = 10)
+    parameter(nbint=10)
     real(kind=8) :: coord(2), coor(2, 4), coorin(2, 2)
     real(kind=8) :: delta(3), dist, rayz(nbint), ray
     real(kind=8) :: airtot, sprim
     real(kind=8) :: ener(nbint), epsir
 !---------------------------------------------------------------------------------
-    epsir=1.d0 + 1.d-15
+    epsir = 1.d0+1.d-15
 !
 ! 1 - COORDONNEES DU NOEUD CONSIDERE INNO
 !
     do i = 1, 2
-        coord(i)=xy(i,noeu1)
+        coord(i) = xy(i, noeu1)
     end do
 !
 ! 2 - CALCUL DES RAYONS DES COUCHES 1,2 ET 3
 !
-    nedep=0
+    nedep = 0
     do j = 1, 3
         delta(j) = 1.d+10
-        nefin=nedep+nbnozo(j)
+        nefin = nedep+nbnozo(j)
         do inno = nedep+1, nefin
-            noeu2=tbnozo(inno)
+            noeu2 = tbnozo(inno)
             if (noeu2 .ne. noeu1) then
-                dist = sqrt( (coord(1)-xy(1,noeu2))**2 + (coord(2)-xy( 2,noeu2))**2)
-                delta(j) = min(delta(j),dist)
-            endif
+                dist = sqrt((coord(1)-xy(1, noeu2))**2+(coord(2)-xy(2, noeu2))**2)
+                delta(j) = min(delta(j), dist)
+            end if
         end do
-        nedep=nefin
+        nedep = nefin
     end do
 !
 ! 3 - CALCUL DE L ENERGIE POUR DIFFERENTS RAYONS RAYZ
@@ -118,26 +118,26 @@ subroutine dfort2(nsommx, icnc, noeu1, tbelzo, nbelt,&
         do inel = 1, nbelt
 !
             nuef = tbelzo(inel)
-            nsomm=icnc(1,nuef)
+            nsomm = icnc(1, nuef)
 !
 ! 3.1.1 - NOMBRE DE NOEUD NINTER DE L EF INEL INCLU DANS LE CERCLE
 !
             nint = 0
             ipoi1 = 0
             do inno = 1, nsomm
-                coor(1,inno) = xy(1,icnc(inno+2,nuef))
-                coor(2,inno) = xy(2,icnc(inno+2,nuef))
-                ray = sqrt( (coord(1)-coor(1,inno))**2 +(coord(2)-coor( 2,inno))**2)
+                coor(1, inno) = xy(1, icnc(inno+2, nuef))
+                coor(2, inno) = xy(2, icnc(inno+2, nuef))
+                ray = sqrt((coord(1)-coor(1, inno))**2+(coord(2)-coor(2, inno))**2)
                 if (ray .le. rayz(iint)*epsir) then
-                    nint = nint + 1
+                    nint = nint+1
                     if (ipoi1 .eq. 0) then
                         ipoi1 = inno
                     else
                         ipoi4 = inno
-                    endif
+                    end if
                 else
                     ipoi2 = inno
-                endif
+                end if
             end do
 !
 ! 3.1.2 - AIRE DE L INTERSECTION SPRIM SELON LES CAS
@@ -152,74 +152,74 @@ subroutine dfort2(nsommx, icnc, noeu1, tbelzo, nbelt,&
 ! SI 2 NOEUDS APPARTIENNENT AU CERCLE SPRIM=AIRE - TRIANGLE COUPE
 ! RQ :DINTER CALCULE LES COORDONNEES DES NOEUDS COUPANT LE CERCLE
 !
-            else if (nint.eq.(nsomm-1)) then
-                ip1 = ipoi2 + 1
-                if (ip1 .gt. nsomm) ip1 = ip1 - nsomm
+            else if (nint .eq. (nsomm-1)) then
+                ip1 = ipoi2+1
+                if (ip1 .gt. nsomm) ip1 = ip1-nsomm
                 call dinter(coord, rayz(iint), coor(1, ipoi2), coor(1, ip1), coorin(1, 1))
-                ip1 = ipoi2 - 1
-                if (ip1 .le. 0) ip1 = ip1 + nsomm
+                ip1 = ipoi2-1
+                if (ip1 .le. 0) ip1 = ip1+nsomm
                 call dinter(coord, rayz(iint), coor(1, ipoi2), coor(1, ip1), coorin(1, 2))
 !
                 call dcspri(coor(1, ipoi2), coorin, sprim)
-                sprim = aire(nuef) - sprim
+                sprim = aire(nuef)-sprim
 !
 ! SI 1 NOEUD APPARTIENT AU CERCLE SPRIM=TRIANGLE COUPE
 !
-            else if (nint.eq.1) then
-                ip1 = ipoi1 + 1
-                if (ip1 .gt. 3) ip1 = ip1 - 3
+            else if (nint .eq. 1) then
+                ip1 = ipoi1+1
+                if (ip1 .gt. 3) ip1 = ip1-3
                 call dinter(coord, rayz(iint), coor(1, ipoi1), coor(1, ip1), coorin(1, 1))
-                ip1 = ipoi1 + 2
-                if (ip1 .gt. 3) ip1 = ip1 - 3
+                ip1 = ipoi1+2
+                if (ip1 .gt. 3) ip1 = ip1-3
                 call dinter(coord, rayz(iint), coor(1, ipoi1), coor(1, ip1), coorin(1, 2))
 !
                 call dcspri(coor(1, ipoi1), coorin, sprim)
 !
 ! CAS PARTICULIER DES QUADRILATERES
 !
-            else if (nsomm.eq.4 .and. nint.eq.2) then
+            else if (nsomm .eq. 4 .and. nint .eq. 2) then
                 if (ipoi1 .eq. 1 .and. ipoi4 .eq. 4) then
                     call dinter(coord, rayz(iint), coor(1, 1), coor(1, 2), coorin(1, 1))
                     call dinter(coord, rayz(iint), coor(1, 4), coor(1, 3), coorin(1, 2))
                     call dcqpri(coor(1, 1), coor(1, 4), coorin, sprim)
-                else if (ipoi1.eq.3 .and. ipoi4.eq.4) then
+                else if (ipoi1 .eq. 3 .and. ipoi4 .eq. 4) then
                     call dinter(coord, rayz(iint), coor(1, 4), coor(1, 1), coorin(1, 1))
                     call dinter(coord, rayz(iint), coor(1, 3), coor(1, 2), coorin(1, 2))
                     call dcqpri(coor(1, 4), coor(1, 3), coorin, sprim)
-                else if (ipoi1.eq.2 .and. ipoi4.eq.3) then
+                else if (ipoi1 .eq. 2 .and. ipoi4 .eq. 3) then
                     call dinter(coord, rayz(iint), coor(1, 3), coor(1, 4), coorin(1, 1))
                     call dinter(coord, rayz(iint), coor(1, 2), coor(1, 1), coorin(1, 2))
                     call dcqpri(coor(1, 3), coor(1, 2), coorin, sprim)
-                else if (ipoi1.eq.1 .and. ipoi4.eq.2) then
+                else if (ipoi1 .eq. 1 .and. ipoi4 .eq. 2) then
                     call dinter(coord, rayz(iint), coor(1, 2), coor(1, 3), coorin(1, 1))
                     call dinter(coord, rayz(iint), coor(1, 1), coor(1, 4), coorin(1, 2))
                     call dcqpri(coor(1, 2), coor(1, 1), coorin, sprim)
                 else
 !             IPOI1 et IPOI4 non traité
                     ASSERT(.false.)
-                endif
-            endif
+                end if
+            end if
 !
-            ASSERT(sprim.ge.0.d0)
+            ASSERT(sprim .ge. 0.d0)
 !
 ! 3.1.3 - CALCUL DE L ENERGIE
 !
-            ener(iint) = ener(iint) + energi(nuef) * sprim / aire( nuef)
-            airtot = airtot + sprim
+            ener(iint) = ener(iint)+energi(nuef)*sprim/aire(nuef)
+            airtot = airtot+sprim
 !
 ! 2 - FIN DE LA BOUCLE SUR TOUS LES EF
 !
         end do
 !
-        ASSERT(airtot.gt.0.d0.and.ener(iint).gt.0.d0)
-        ener(iint) = ener(iint) / airtot
+        ASSERT(airtot .gt. 0.d0 .and. ener(iint) .gt. 0.d0)
+        ener(iint) = ener(iint)/airtot
 !
 ! LISSAGE DE LA COURBE ENERGI=F(RAYON) POUR IDENTIFIER PE
 !
         if (iint .ge. 2) then
             i = iint-1
-            ener(iint) = min(ener(iint),ener(i))
-        endif
+            ener(iint) = min(ener(iint), ener(i))
+        end if
 !
 ! 3 - FIN DE LA BOUCLE SUR LE CALCUL DE L ENERGIE
 !

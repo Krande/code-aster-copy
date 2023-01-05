@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine mgauss(cara, a, b, dim, nordre,&
+subroutine mgauss(cara, a, b, dim, nordre, &
                   nb, det, iret)
 !
 !
@@ -99,14 +99,14 @@ subroutine mgauss(cara, a, b, dim, nordre,&
     call matfpe(-1)
 !
     cara2 = cara
-    ASSERT((cara2(1:1).eq.'N') .or. (cara2(1:1).eq.'T'))
-    ASSERT((cara2(2:2).eq.'F') .or. (cara2(2:2).eq.'C'))
-    ASSERT((cara2(3:3).eq.'V') .or. (cara2(3:3).eq.'S') .or. (cara2(3:3).eq.'W'))
-    ASSERT((cara2(4:4).eq.'D') .or. (cara2(4:4).eq.'P'))
+    ASSERT((cara2(1:1) .eq. 'N') .or. (cara2(1:1) .eq. 'T'))
+    ASSERT((cara2(2:2) .eq. 'F') .or. (cara2(2:2) .eq. 'C'))
+    ASSERT((cara2(3:3) .eq. 'V') .or. (cara2(3:3) .eq. 'S') .or. (cara2(3:3) .eq. 'W'))
+    ASSERT((cara2(4:4) .eq. 'D') .or. (cara2(4:4) .eq. 'P'))
 !
-    ltrans = (cara2(1:1).eq.'T')
-    lstop = (cara2(2:2).eq.'F')
-    ldet = (cara2(4:4).eq.'D')
+    ltrans = (cara2(1:1) .eq. 'T')
+    lstop = (cara2(2:2) .eq. 'F')
+    ldet = (cara2(4:4) .eq. 'D')
 !
     det = r8nnem()
 !
@@ -134,17 +134,17 @@ subroutine mgauss(cara, a, b, dim, nordre,&
         aa = a
 !
 ! --- RESOLUTION
-        call dgesvx(fact, trans2, n, nrhs, aa,&
-                    lda, af, ldaf, ipiv4, equed,&
-                    r, c, b, ldb, x,&
-                    ldx, rcond, ferr, berr, work,&
+        call dgesvx(fact, trans2, n, nrhs, aa, &
+                    lda, af, ldaf, ipiv4, equed, &
+                    r, c, b, ldb, x, &
+                    ldx, rcond, ferr, berr, work, &
                     iwork4, inf4)
         iret = inf4
 !
 !       -- RECOPIE DE X DANS B :
         do i = 1, n
             do j = 1, nb
-                b(i,j) = x(i,j)
+                b(i, j) = x(i, j)
             end do
         end do
 !
@@ -154,23 +154,23 @@ subroutine mgauss(cara, a, b, dim, nordre,&
             detc = 1.d0
             do i = 1, n
                 if (ipiv4(i) .ne. i) det = (-1.d0)*det
-                det = det * af(i,i)
-                detr = detr * r(i)
-                detc = detc * c(i)
+                det = det*af(i, i)
+                detr = detr*r(i)
+                detc = detc*c(i)
             end do
             if (equed .eq. 'R') then
-                det = det / detr
-            else if (equed.eq.'C') then
-                det = det / detc
-            else if (equed.eq.'B') then
-                det = det / (detr * detc)
-            endif
-        endif
+                det = det/detr
+            else if (equed .eq. 'C') then
+                det = det/detc
+            else if (equed .eq. 'B') then
+                det = det/(detr*detc)
+            end if
+        end if
 !
 !
 !     -- 2. ON VEUT ALLER VITE :
 !     ---------------------------------------------------------
-    else if (cara2(3:3).eq.'V') then
+    else if (cara2(3:3) .eq. 'V') then
 ! ---   DEFINITION DES PARAMETRES D'ENTREE POUR L'APPEL A LA ROUTINE
 !       LAPACK : DGESV
 !       N : ORDRE DE LA MATRICE A
@@ -183,56 +183,56 @@ subroutine mgauss(cara, a, b, dim, nordre,&
         if (ltrans) then
             do i = 1, n
                 do j = 1, n
-                    af(j,i) = a(i,j)
+                    af(j, i) = a(i, j)
                 end do
             end do
         else
             do i = 1, n
                 do j = 1, n
-                    af(i,j) = a(i,j)
+                    af(i, j) = a(i, j)
                 end do
             end do
-        endif
+        end if
 !
 !       ---   RESOLUTION
-        call dgesv(n, nrhs, af, lda, ipiv4,&
+        call dgesv(n, nrhs, af, lda, ipiv4, &
                    b, ldb, inf4)
         iret = inf4
         if (ldet) then
             det = 1.d0
             do i = 1, n
                 if (ipiv4(i) .ne. i) det = (-1.d0)*det
-                det = det*af(i,i)
+                det = det*af(i, i)
             end do
-        endif
+        end if
 !
 !
 !     -- 3. ON VEUT ALLER ENCORE PLUS VITE :
 !     ---------------------------------------------------------
-    else if (cara2(3:3).eq.'W') then
+    else if (cara2(3:3) .eq. 'W') then
         n = nordre
         if (ltrans) then
             do i = 1, n
                 do j = 1, n
-                    af(j,i) = a(i,j)
+                    af(j, i) = a(i, j)
                 end do
             end do
-        endif
+        end if
         if (ldet) then
             det = 1.d0
         else
             det = 0.d0
-        endif
+        end if
         if (ltrans) then
-            call mgausw(af, b, dim, nordre, nb,&
+            call mgausw(af, b, dim, nordre, nb, &
                         det, lret)
         else
-            call mgausw(a, b, dim, nordre, nb,&
+            call mgausw(a, b, dim, nordre, nb, &
                         det, lret)
-        endif
+        end if
         iret = 0
-        if (.not.lret) iret = 1
-    endif
+        if (.not. lret) iret = 1
+    end if
 !
 !
 !     -- 4. EN CAS DE PROBLEME : IRET > 0
@@ -243,20 +243,20 @@ subroutine mgauss(cara, a, b, dim, nordre,&
                 if (iret .eq. n+1) then
                     call utmess('F', 'CALCULEL3_79')
                 else
-                    vali (1) = iret
-                    vali (2) = iret
-                    valk (1) = ' '
-                    valk (2) = ' '
-                    call utmess('F', 'CALCULEL6_15', nk=2, valk=valk, ni=2,&
+                    vali(1) = iret
+                    vali(2) = iret
+                    valk(1) = ' '
+                    valk(2) = ' '
+                    call utmess('F', 'CALCULEL6_15', nk=2, valk=valk, ni=2, &
                                 vali=vali)
-                endif
+                end if
             else
                 call utmess('F', 'CALCULEL3_79')
-            endif
+            end if
         else
 !         -- ON CONTINUE
-        endif
-    endif
+        end if
+    end if
 !
 !
 !     -- 5. IMPRESSIONS (SI LE MOT CLE 'INFO' = 2): RCOND, BERR, FERR
@@ -264,37 +264,37 @@ subroutine mgauss(cara, a, b, dim, nordre,&
     if (cara2(3:3) .eq. 'S') then
         call infniv(ifm, niv)
 !       JMP : TROP D'IMPRESSIONS EN INFO=2
-        idb=0
+        idb = 0
         if (iret .ne. 0 .or. niv .le. 1 .or. idb .eq. 0) goto 110
-        write (ifm,1001) 'DEBUT DE MGAUSS'
+        write (ifm, 1001) 'DEBUT DE MGAUSS'
         if (equed .eq. 'N') then
-            write (ifm,*) 'L''EQUILIBRAGE DE LA MATRICE ''A'' '//&
-            ' N''A PAS ETE NECESSAIRE'
-        else if (equed.eq.'R') then
-            write (ifm,*) 'LA MATRICE ''A'' A ETE EQUILIBREE SOUS LA'//&
+            write (ifm, *) 'L''EQUILIBRAGE DE LA MATRICE ''A'' '// &
+                ' N''A PAS ETE NECESSAIRE'
+        else if (equed .eq. 'R') then
+            write (ifm, *) 'LA MATRICE ''A'' A ETE EQUILIBREE SOUS LA'//&
      &      ' FORME : DIAG(R)*A'
-        else if (equed.eq.'C') then
-            write (ifm,*) 'LA MATRICE ''A'' A ETE EQUILIBREE SOUS LA'//&
+        else if (equed .eq. 'C') then
+            write (ifm, *) 'LA MATRICE ''A'' A ETE EQUILIBREE SOUS LA'//&
      &      ' FORME : A*DIAG(C)'
-        else if (equed.eq.'B') then
-            write (ifm,*) 'LA MATRICE ''A'' A ETE EQUILIBREE SOUS LA'//&
+        else if (equed .eq. 'B') then
+            write (ifm, *) 'LA MATRICE ''A'' A ETE EQUILIBREE SOUS LA'//&
      &      ' FORME : DIAG(R)*A*DIAG(C)'
-        endif
-        write (ifm,*) 'ESTIMATION DE LA VALEUR DU CONDITIONNEMENT '//&
-        'DE A :',rcond
+        end if
+        write (ifm, *) 'ESTIMATION DE LA VALEUR DU CONDITIONNEMENT '// &
+            'DE A :', rcond
 !       L'ERREUR ARRIERE (BACKWARD ERROR) EST L'ERREUR FAITE EN
 !       ASSIMILANT LA MATRICE 'A' AU PRODUIT 'LU'
-        write (ifm,*) 'ERREUR ARRIERE : ',berr
+        write (ifm, *) 'ERREUR ARRIERE : ', berr
 !       L'ERREUR AVANT (FORWARD ERROR) EST LA DIFFERENCE NORMALISEE
 !       ENTRE LA VALEUR CALCULEE X ET SA VALEUR EXACTE
-        write (ifm,*) 'ERREUR AVANT : ',ferr
-        write (ifm,1001) 'FIN DE MGAUSS'
-    endif
+        write (ifm, *) 'ERREUR AVANT : ', ferr
+        write (ifm, 1001) 'FIN DE MGAUSS'
+    end if
 !
 !
 110 continue
 !
-    1001 format (10 ('='),a,10 ('='))
+1001 format(10('='), a, 10('='))
 !
     call matfpe(1)
 !

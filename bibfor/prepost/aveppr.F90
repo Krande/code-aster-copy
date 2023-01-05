@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine aveppr(nbordr, vwork, tdisp, kwork, sommw,&
+subroutine aveppr(nbordr, vwork, tdisp, kwork, sommw, &
                   tspaq, i, jveppr, jvsipn)
 !
     implicit none
@@ -69,11 +69,11 @@ subroutine aveppr(nbordr, vwork, tdisp, kwork, sommw,&
 !
     decal = 18
     do iordr = 1, nbordr
-        adrs = (iordr-1)*tspaq + kwork*sommw*decal + (i-1)*decal
+        adrs = (iordr-1)*tspaq+kwork*sommw*decal+(i-1)*decal
 !
         do j = 1, 6
-            sig(j) = vwork(adrs + j )
-            epsp(j) = vwork(adrs + j + 6 + 6)
+            sig(j) = vwork(adrs+j)
+            epsp(j) = vwork(adrs+j+6+6)
         end do
 !
         nvp = 3
@@ -95,24 +95,24 @@ subroutine aveppr(nbordr, vwork, tdisp, kwork, sommw,&
         br(5) = 0.d0
         br(6) = 1.d0
 !
-        call jacobi(nvp, nperm, tol, toldyn, ar,&
-                    br, vecpro, valpro, jacaux, nitjac,&
+        call jacobi(nvp, nperm, tol, toldyn, ar, &
+                    br, vecpro, valpro, jacaux, nitjac, &
                     itype, iordre)
 !
         zr(jveppr+iordr) = valpro(1)
 !
-        nm1x = vecpro (1,1)
-        nm1y = vecpro (2,1)
-        nm1z = vecpro (3,1)
+        nm1x = vecpro(1, 1)
+        nm1y = vecpro(2, 1)
+        nm1z = vecpro(3, 1)
 ! CALCvect_F = [SIG].vect_n
 !
-        sxm = sig(1)*nm1x + sig(4)*nm1y + sig(5)*nm1z
-        sym = sig(4)*nm1x + sig(2)*nm1y + sig(6)*nm1z
-        szm = sig(5)*nm1x + sig(6)*nm1y + sig(3)*nm1z
+        sxm = sig(1)*nm1x+sig(4)*nm1y+sig(5)*nm1z
+        sym = sig(4)*nm1x+sig(2)*nm1y+sig(6)*nm1z
+        szm = sig(5)*nm1x+sig(6)*nm1y+sig(3)*nm1z
 !
 ! CALCNORM = vect_F.vect_n
 !
-        zr(jvsipn+iordr) = abs(sxm*nm1x + sym*nm1y + szm*nm1z)
+        zr(jvsipn+iordr) = abs(sxm*nm1x+sym*nm1y+szm*nm1z)
 !
     end do
 !

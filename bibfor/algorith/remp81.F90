@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -62,21 +62,21 @@ subroutine remp81(nomres, lpar, basmod, nbmod)
 !
 ! --- CREATION ET REMPLISSAGE DU _VALE
 !
-    ntail=nbmod*(nbmod+1)/2
+    ntail = nbmod*(nbmod+1)/2
     call jecrec(nomres//'_VALE', 'G V R', 'NU', 'DISPERSE', &
-                   'CONSTANT',1)
+                'CONSTANT', 1)
     call jeecra(nomres//'_VALE', 'LONMAX', ntail)
     call jecroc(jexnum(nomres//'_VALE', 1))
     call jeveuo(jexnum(nomres//'_VALE', 1), 'E', ldres)
 !   call wkvect(nomres//'_VALE', 'G V R', ntail, ldres)
 !
-    do  i = 1, ntail
-        zr(ldres+i-1)=0.0d0
+    do i = 1, ntail
+        zr(ldres+i-1) = 0.0d0
     end do
-    do  imod = 1, nbmod
-        iad=imod*(imod+1)/2
+    do imod = 1, nbmod
+        iad = imod*(imod+1)/2
 !
-        zr(ldres+iad-1)=zr(lpar+imod-1)
+        zr(ldres+iad-1) = zr(lpar+imod-1)
     end do
 !
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,10 +17,10 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine nmreso(fonact, cndonn, cnpilo, cncine, solveu,&
+subroutine nmreso(fonact, cndonn, cnpilo, cncine, solveu, &
                   maprec, matass, depso1, depso2, rescvg)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -33,10 +33,10 @@ implicit none
 #include "asterfort/resoud.h"
 #include "asterfort/vtzero.h"
 !
-integer :: fonact(*)
-character(len=19) :: maprec, matass
-character(len=19) :: solveu, cndonn, cnpilo
-character(len=19) :: cncine, depso1, depso2
+    integer :: fonact(*)
+    character(len=19) :: maprec, matass
+    character(len=19) :: solveu, cndonn, cnpilo
+    character(len=19) :: cncine, depso1, depso2
 !
 ! ----------------------------------------------------------------------
 !
@@ -81,30 +81,30 @@ character(len=19) :: cncine, depso1, depso2
 !
 ! --- FONCTIONNALITES ACTIVEES
 !
-    lpilo = isfonc(fonact,'PILOTAGE')
+    lpilo = isfonc(fonact, 'PILOTAGE')
 !
 ! --- SECOND MEMBRE FIXE
 !
     if (niv .ge. 2) then
         call nmdebg('VECT', cndonn, 6)
-    endif
+    end if
 !
 ! --- SECOND MEMBRE PILOTE
 !
     if (lpilo) then
         if (niv .ge. 2) then
             call nmdebg('VECT', cnpilo, 6)
-        endif
-    endif
+        end if
+    end if
 !
     if (niv .ge. 2) then
         call nmdebg('MATA', matass, 6)
-    endif
+    end if
 !
 ! --- INVERSION DE LA PARTIE FIXE
 !
-    call resoud(matass, maprec, solveu, cncine, 0,&
-                cndonn, depso1, 'V', [0.d0], [c16bid],&
+    call resoud(matass, maprec, solveu, cncine, 0, &
+                cndonn, depso1, 'V', [0.d0], [c16bid], &
                 crgc, .true._1, -9999, rescvg)
 !
 ! --- ERREUR SANS POSSIBILITE DE CONTINUER
@@ -114,11 +114,11 @@ character(len=19) :: cncine, depso1, depso2
 ! --- INVERSION DE LA PARTIE PILOTEE
 !
     if (lpilo) then
-        call resoud(matass, maprec, solveu, cncine, 0,&
-                    cnpilo, depso2, 'V', [0.d0], [c16bid],&
+        call resoud(matass, maprec, solveu, cncine, 0, &
+                    cnpilo, depso2, 'V', [0.d0], [c16bid], &
                     crgc, .true._1, -9999, rescvg)
         if (rescvg .eq. 1) goto 999
-    endif
+    end if
 !
 ! - Print solution
 !
@@ -126,8 +126,8 @@ character(len=19) :: cncine, depso1, depso2
         call nmdebg('VECT', depso1, 6)
         if (lpilo) then
             call nmdebg('VECT', depso2, 6)
-        endif
-    endif
+        end if
+    end if
 !
 999 continue
 !

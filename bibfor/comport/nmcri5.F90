@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -36,8 +36,8 @@ function nmcri5(dp)
 !
 !----- COMMONS NECESSAIRES A VON_MISES ISOTROPE + CINEMATIQUE C_PLAN :
 !      COMMONS COMMUNS A NMCRI1 ET NMECMI
-    common /rconm5/deuxmu,troisk,sigy,rprim,pm,sigel,tp2,line,prag,xm
-    common /kconm1/imate2, jprol2, jvale2,nbval2
+    common/rconm5/deuxmu, troisk, sigy, rprim, pm, sigel, tp2, line, prag, xm
+    common/kconm1/imate2, jprol2, jvale2, nbval2
 !     VARIABLES LOCALES:
 !     ------------------
     integer :: imate2, jprol2, jvale2, nbval2
@@ -49,23 +49,23 @@ function nmcri5(dp)
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
     if (line .ge. 0.5d0) then
-        rpp = sigy +rprim*(pm+dp)
+        rpp = sigy+rprim*(pm+dp)
     else
         call rcfon2('V', jprol2, jvale2, nbval2, &
-                    p = pm+dp, rp = rpp, rprim = drdp,&
-                    c = prag)
-    endif
-    gp=1.d0+1.5d0*prag*dp/rpp
-    hp=gp+1.5d0*deuxmu*dp/rpp
-    hsg=hp/gp
-    demuc=deuxmu+prag
+                    p=pm+dp, rp=rpp, rprim=drdp, &
+                    c=prag)
+    end if
+    gp = 1.d0+1.5d0*prag*dp/rpp
+    hp = gp+1.5d0*deuxmu*dp/rpp
+    hsg = hp/gp
+    demuc = deuxmu+prag
 !
-    dx=  (hsg-1.d0)* sigel(3)
-    dx=dx/( deuxmu/1.5d0 + troisk*hsg/3.d0 )
+    dx = (hsg-1.d0)*sigel(3)
+    dx = dx/(deuxmu/1.5d0+troisk*hsg/3.d0)
 !
-    fp= (sigel(1)-deuxmu/3.d0*dx)**2 + (sigel(2)-deuxmu/3.d0*dx)**2 +&
-     &    (sigel(3)+deuxmu/3.d0*2.d0*dx)**2 + sigel(4)**2
+    fp = (sigel(1)-deuxmu/3.d0*dx)**2+(sigel(2)-deuxmu/3.d0*dx)**2+&
+     &    (sigel(3)+deuxmu/3.d0*2.d0*dx)**2+sigel(4)**2
 !
-    nmcri5= 1.5d0*demuc*dp - sqrt(1.5d0*fp) + rpp
+    nmcri5 = 1.5d0*demuc*dp-sqrt(1.5d0*fp)+rpp
 !
 end function

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,9 +18,9 @@
 
 subroutine lcquga(mode, eps, gameps, dgamde, itemax, precvg, iret)
     implicit none
-    integer,intent(in)      :: mode, itemax
-    real(kind=8),intent(in) :: eps(6), precvg
-    real(kind=8),intent(out):: gameps, dgamde(6)
+    integer, intent(in)      :: mode, itemax
+    real(kind=8), intent(in) :: eps(6), precvg
+    real(kind=8), intent(out):: gameps, dgamde(6)
     integer, intent(out)    :: iret
 ! --------------------------------------------------------------------------------------------------
 !  CALCUL DE GAMMA(EPS) POUR LA LOI ENDO_SCALAIRE AVEC GRAD_VARI
@@ -33,12 +33,12 @@ subroutine lcquga(mode, eps, gameps, dgamde, itemax, precvg, iret)
 !  IN  PRECVG  INUTILISE
 !  OUT IRET    SYSTEMATIQUEMENT A ZERO
 ! --------------------------------------------------------------------------------------------------
-    real(kind=8),parameter,dimension(6):: kr=(/1.d0,1.d0,1.d0,0.d0,0.d0,0.d0/)
+    real(kind=8), parameter, dimension(6):: kr = (/1.d0, 1.d0, 1.d0, 0.d0, 0.d0, 0.d0/)
 ! --------------------------------------------------------------------------------------------------
     real(kind=8) :: epseq2, ueps, heps, coefh, coefs, treps, epsdv(6)
 ! --------------------------------------------------------------------------------------------------
     real(kind=8) :: pct, pch, pcs
-    common /lcmqu/ pch,pct,pcs
+    common/lcmqu/pch, pct, pcs
 ! --------------------------------------------------------------------------------------------------
 !
 !  INITIALISATION
@@ -49,8 +49,8 @@ subroutine lcquga(mode, eps, gameps, dgamde, itemax, precvg, iret)
 !  CALCUL DE LA VALEUR
 !
     treps = eps(1)+eps(2)+eps(3)
-    epsdv = eps - treps/3*kr
-    epseq2 = 1.5d0*dot_product(epsdv,epsdv)
+    epsdv = eps-treps/3*kr
+    epseq2 = 1.5d0*dot_product(epsdv, epsdv)
     ueps = pch*treps**2+pcs*epseq2
     heps = pct*treps+sqrt(ueps)
     gameps = heps*heps
@@ -60,13 +60,13 @@ subroutine lcquga(mode, eps, gameps, dgamde, itemax, precvg, iret)
 !
     if (mode .eq. 1) then
         if (ueps .ne. 0) then
-            coefh = pct + pch*treps/sqrt(ueps)
+            coefh = pct+pch*treps/sqrt(ueps)
             coefs = 1.5d0*pcs/sqrt(ueps)
             dgamde = 2*heps*(coefh*kr+coefs*epsdv)
         else
             dgamde = 0
-        endif
-    endif
+        end if
+    end if
 !
 !
 end subroutine

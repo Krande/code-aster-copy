@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine nmdcex(sddisc, insref, durdec, ievdac, deltac,&
+subroutine nmdcex(sddisc, insref, durdec, ievdac, deltac, &
                   retdex)
 !
 ! person_in_charge: mickael.abbas at edf.fr
@@ -84,7 +84,7 @@ subroutine nmdcex(sddisc, insref, durdec, ievdac, deltac,&
     ratio = 1.d0
     nomlis = '&&NMDCEX.NOMLIS'
     retdex = 0
-    ASSERT(durdec.gt.0.d0)
+    ASSERT(durdec .gt. 0.d0)
     insfin = insref+durdec
 !
 ! --- AFFICHAGE
@@ -95,26 +95,26 @@ subroutine nmdcex(sddisc, insref, durdec, ievdac, deltac,&
 !
     numins = 1
 !
- 10 continue
+10  continue
 !
 ! ----- INFORMATIONS SUR LE PAS DE TEMPS
 !
-    instam = diinst(sddisc,numins-1)
-    instap = diinst(sddisc,numins)
+    instam = diinst(sddisc, numins-1)
+    instap = diinst(sddisc, numins)
     deltat = instap-instam
-    if ((instam.ge.insref) .and. (instam.le.insfin)) then
+    if ((instam .ge. insref) .and. (instam .le. insfin)) then
         if (deltat .gt. deltac) then
             if (instap .gt. insfin) then
                 optdec = 'DEGRESSIF'
                 ratio = (instap-insfin)/deltat
             else
                 optdec = 'UNIFORME'
-            endif
+            end if
 !
 ! --------- DECOUPE
 !
-            call nmdecc(nomlis, .false._1, optdec, deltat, instam,&
-                        ratio, typdec, nbrpas, deltac, dtmin,&
+            call nmdecc(nomlis, .false._1, optdec, deltat, instam, &
+                        ratio, typdec, nbrpas, deltac, dtmin, &
                         retdex)
             if (retdex .eq. 0) goto 999
             if (retdex .eq. 2) goto 888
@@ -130,33 +130,33 @@ subroutine nmdcex(sddisc, insref, durdec, ievdac, deltac,&
             ldeco = .true.
 888         continue
             call jedetr(nomlis)
-        endif
-    endif
+        end if
+    end if
 !
     call nmfinp(sddisc, numins, lstop)
     if (lstop) goto 99
-    numins = numins + 1
+    numins = numins+1
     goto 10
 !
- 99 continue
+99  continue
 !
     if (ldeco) then
         retdex = 1
     else
         retdex = 2
-    endif
+    end if
 !
 999 continue
 !
     if (retdex .eq. 0) then
 !
-    else if (retdex.eq.1) then
+    else if (retdex .eq. 1) then
         call utmess('I', 'SUBDIVISE_14', sr=insfin)
-    else if (retdex.eq.2) then
+    else if (retdex .eq. 2) then
         call utmess('I', 'SUBDIVISE_15', sr=insref)
     else
         ASSERT(.false.)
-    endif
+    end if
 !
     call jedema()
 end subroutine

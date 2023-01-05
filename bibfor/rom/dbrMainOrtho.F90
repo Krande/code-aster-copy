@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,9 +19,9 @@
 !
 subroutine dbrMainOrtho(paraOrtho, baseOut)
 !
-use Rom_Datastructure_type
+    use Rom_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/as_allocate.h"
@@ -34,8 +34,8 @@ implicit none
 #include "asterfort/utmess.h"
 #include "asterfort/vpgskp.h"
 !
-type(ROM_DS_ParaDBR_Ortho), intent(in) :: paraOrtho
-type(ROM_DS_Empi), intent(in) :: baseOut
+    type(ROM_DS_ParaDBR_Ortho), intent(in) :: paraOrtho
+    type(ROM_DS_Empi), intent(in) :: baseOut
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -66,14 +66,14 @@ type(ROM_DS_Empi), intent(in) :: baseOut
     call infniv(ifm, niv)
     if (niv .ge. 2) then
         call utmess('I', 'ROM18_57')
-    endif
+    end if
 !
 ! - Get parameters
 !
     nbMode = baseOut%nbMode
     nbEqua = baseOut%mode%nbEqua
     nbSnap = baseOut%nbSnap
-    alpha  = paraOrtho%alpha
+    alpha = paraOrtho%alpha
 !
 ! - Working vectors
 !
@@ -91,8 +91,8 @@ type(ROM_DS_Empi), intent(in) :: baseOut
 !
 ! - Compute
 !
-    call vpgskp(nbEqua, nbMode, matrPhi, alpha, lmatb,&
-                0     , trav1 , ddlexc , trav3)
+    call vpgskp(nbEqua, nbMode, matrPhi, alpha, lmatb, &
+                0, trav1, ddlexc, trav3)
 !
 ! - Compute base by SVD
 !
@@ -104,11 +104,11 @@ type(ROM_DS_Empi), intent(in) :: baseOut
 !
 ! - Cleaning
 !
-    AS_DEALLOCATE(vr = trav1)
-    AS_DEALLOCATE(vr = trav3)
-    AS_DEALLOCATE(vi = ddlexc)
-    AS_DEALLOCATE(vr = matrPhi)
-    AS_DEALLOCATE(vr = v)
-    AS_DEALLOCATE(vr = s)
+    AS_DEALLOCATE(vr=trav1)
+    AS_DEALLOCATE(vr=trav3)
+    AS_DEALLOCATE(vi=ddlexc)
+    AS_DEALLOCATE(vr=matrPhi)
+    AS_DEALLOCATE(vr=v)
+    AS_DEALLOCATE(vr=s)
 !
 end subroutine

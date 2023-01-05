@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine lecmai(ifl, icl, iv, rv, cv,&
-                  cnl, mcl, nbm, nbg, fmt,&
+subroutine lecmai(ifl, icl, iv, rv, cv, &
+                  cnl, mcl, nbm, nbg, fmt, &
                   dim, nbt, ier, irteti)
     implicit none
 !       PREMIERE LECTURE DES DONNEES POUR UN MOT CLE DE TYPE MAILLE
@@ -68,29 +68,29 @@ subroutine lecmai(ifl, icl, iv, rv, cv,&
         if (irtet .eq. 1) goto 4
         numtcl = i
         goto 7
-  4     continue
+4       continue
     end do
     goto 3
 !
 ! - LIRE ITEM SUIVANT
 !
-  7 continue
-    if (nbg .ge. 1) write(ifm,*)' ----- LECMAI'
+7   continue
+    if (nbg .ge. 1) write (ifm, *) ' ----- LECMAI'
 !
 ! - LECTURE DE L'ENTETE
 !
-    inom=0
-    ilec=1
-    deblig=0
-    call lirtet(ifl, ilec, inom, cnl, nom,&
+    inom = 0
+    ilec = 1
+    deblig = 0
+    call lirtet(ifl, ilec, inom, cnl, nom, &
                 icl, iv, rv, cv, deblig)
     goto 9
-  5 continue
-    call liritm(ifl, icl, iv, rv, cv,&
+5   continue
+    call liritm(ifl, icl, iv, rv, cv, &
                 cnl, deblig, 1)
-    if (nbg .ge. 1) write(ifm, *)'       LIRITM : ICL = ', icl, ' IV = ', iv, ' RV = ', rv,&
-                    ' CV(1:8) = ', cv(1:8), ' DEBLIG =', deblig
-  9 continue
+    if (nbg .ge. 1) write (ifm, *) '       LIRITM : ICL = ', icl, ' IV = ', iv, ' RV = ', rv, &
+        ' CV(1:8) = ', cv(1:8), ' DEBLIG =', deblig
+9   continue
 !
 ! - ITEM EN DEBUT DE LIGNE ?
 !
@@ -104,11 +104,11 @@ subroutine lecmai(ifl, icl, iv, rv, cv,&
         goto 1
     else if (irtet .eq. 2) then
         goto 2
-    endif
+    end if
 !
 ! - ITEM = MOT (# FIN OU FINSF) = NOM DE LA MAILLE ?
 !
-    call vermot(icl, iv, cv, cnl, ier,&
+    call vermot(icl, iv, cv, cnl, ier, &
                 irtet)
     if (irtet .eq. 1) goto 2
 !
@@ -118,32 +118,32 @@ subroutine lecmai(ifl, icl, iv, rv, cv,&
 !
 ! - LIRE ITEM SUIVANT
 !
-        call liritm(ifl, icl, iv, rv, cv,&
+        call liritm(ifl, icl, iv, rv, cv, &
                     cnl, deblig, 1)
-        if (nbg .ge. 1) write(ifm, *)'       LIRITM : ICL = ', icl, ' IV = ', iv, ' RV = ', rv,&
-                        ' CV(1:8) = ', cv(1:8), ' DEBLIG =', deblig
+        if (nbg .ge. 1) write (ifm, *) '       LIRITM : ICL = ', icl, ' IV = ', iv, ' RV = ', rv, &
+            ' CV(1:8) = ', cv(1:8), ' DEBLIG =', deblig
 !
 ! - ITEM = MOT (# FIN OU FINSF) ?
 !
-        call vermot(icl, iv, cv, cnl, ier,&
+        call vermot(icl, iv, cv, cnl, ier, &
                     irtet)
         if (irtet .eq. 1) goto 2
 !
 ! - INCREMENTATION DU NB TOTAL DE NOEUDS LUS
 !
-        nbt(numtcl) = nbt(numtcl) + 1
+        nbt(numtcl) = nbt(numtcl)+1
     end do
 !
-    dim(numtcl) = dim(numtcl) + 1
+    dim(numtcl) = dim(numtcl)+1
     goto 5
 !
-  1 continue
+1   continue
     irteti = 1
     goto 999
-  2 continue
+2   continue
     irteti = 2
     goto 999
-  3 continue
+3   continue
     irteti = 0
     goto 999
 !

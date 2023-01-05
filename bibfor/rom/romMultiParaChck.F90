@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,9 +19,9 @@
 !
 subroutine romMultiParaChck(ds_multipara, l_stab_fsi)
 !
-use Rom_Datastructure_type
+    use Rom_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -29,8 +29,8 @@ implicit none
 #include "asterfort/utmess.h"
 #include "asterfort/romFieldChck.h"
 !
-type(ROM_DS_MultiPara), intent(in) :: ds_multipara
-aster_logical, intent(in) :: l_stab_fsi
+    type(ROM_DS_MultiPara), intent(in) :: ds_multipara
+    aster_logical, intent(in) :: l_stab_fsi
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -53,8 +53,8 @@ aster_logical, intent(in) :: l_stab_fsi
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    nb_matr      = ds_multipara%nb_matr
-    nb_vect      = ds_multipara%nb_vect
+    nb_matr = ds_multipara%nb_matr
+    nb_vect = ds_multipara%nb_vect
     nb_vari_para = ds_multipara%nb_vari_para
 !
 ! - Check numbering in matrix
@@ -64,10 +64,10 @@ aster_logical, intent(in) :: l_stab_fsi
         do i_matr = 2, nb_matr
             call dismoi('NOM_NUME_DDL', ds_multipara%matr_name(i_matr), 'MATR_ASSE', repk=nume_dof)
             if (nume_dof .ne. nume_dof_ref) then
-                call utmess('F','ROM2_21')
-            endif
+                call utmess('F', 'ROM2_21')
+            end if
         end do
-    endif
+    end if
 !
 ! - Check numbering in vector
 !
@@ -76,10 +76,10 @@ aster_logical, intent(in) :: l_stab_fsi
         do i_vect = 2, nb_vect
             call dismoi('PROF_CHNO', ds_multipara%vect_name(i_vect), 'CHAM_NO', repk=prchno)
             if (prchno .ne. prchno_ref) then
-                call utmess('F','ROM2_21')
-            endif
+                call utmess('F', 'ROM2_21')
+            end if
         end do
-    endif
+    end if
 !
 ! - Only symmetric matrix
 !
@@ -87,25 +87,25 @@ aster_logical, intent(in) :: l_stab_fsi
         do i_matr = 1, nb_matr
             call dismoi('TYPE_MATRICE', ds_multipara%matr_name(i_matr), 'MATR_ASSE', repk=syme)
             if (syme .eq. 'NON_SYM') then
-                call utmess('F','ROM2_22')
-            endif
+                call utmess('F', 'ROM2_22')
+            end if
         end do
-    endif
+    end if
 !
 ! - If no definition of variation => no functions !
 !
     if (nb_vari_para .eq. 0) then
         do i_matr = 1, nb_matr
             if (ds_multipara%matr_coef(i_matr)%l_func) then
-                call utmess('F','ROM2_25', sk = ds_multipara%matr_name(i_matr))
-            endif
+                call utmess('F', 'ROM2_25', sk=ds_multipara%matr_name(i_matr))
+            end if
         end do
         do i_vect = 1, nb_vect
             if (ds_multipara%vect_coef(i_vect)%l_func) then
-                call utmess('F','ROM2_31')
-            endif
+                call utmess('F', 'ROM2_31')
+            end if
         end do
-    endif
+    end if
 !
 ! - Same number of values for each parameter
 !
@@ -113,22 +113,22 @@ aster_logical, intent(in) :: l_stab_fsi
         nb_vale_para = ds_multipara%vari_para(1)%nb_vale_para
         do i_vari_para = 2, nb_vari_para
             if (ds_multipara%vari_para(i_vari_para)%nb_vale_para .ne. nb_vale_para) then
-                call utmess('F','ROM2_29')
-            endif
+                call utmess('F', 'ROM2_29')
+            end if
         end do
-    endif
+    end if
 !
 ! - Check components PRES and PHI are in the model if we active l_stab_fsi
 !
     if (l_stab_fsi) then
         call dismoi('DIM_GEOM', ds_multipara%field%model, 'MODELE', repi=ndim)
         if (ndim .eq. 2) then
-            call romFieldChck(ds_multipara%field, fieldName_ = 'UPPHI_2D')
+            call romFieldChck(ds_multipara%field, fieldName_='UPPHI_2D')
         elseif (ndim .eq. 3) then
-            call romFieldChck(ds_multipara%field, fieldName_ = 'UPPHI_3D')
+            call romFieldChck(ds_multipara%field, fieldName_='UPPHI_3D')
         else
             ASSERT(ASTER_FALSE)
-        endif
+        end if
     end if
 !
 end subroutine

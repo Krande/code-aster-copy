@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,17 +19,17 @@
 !
 subroutine nonlinDSPrintCreate(phenom, ds_print)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/nonlinDSPrintCreate_M.h"
 #include "asterfort/nonlinDSPrintCreate_T.h"
 !
-character(len=4), intent(in) :: phenom
-type(NL_DS_Print), intent(out) :: ds_print
+    character(len=4), intent(in) :: phenom
+    type(NL_DS_Print), intent(out) :: ds_print
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -46,10 +46,10 @@ type(NL_DS_Print), intent(out) :: ds_print
 !
     if (phenom .eq. 'MECA') then
         call nonlinDSPrintCreate_M(ds_print)
-    elseif (phenom.eq.'THNL') then
+    elseif (phenom .eq. 'THNL') then
         call nonlinDSPrintCreate_T(ds_print)
     else
         ASSERT(ASTER_FALSE)
-    endif
+    end if
 !
 end subroutine

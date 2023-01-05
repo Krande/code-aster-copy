@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine mdnoch(nochmd, lnochm, lresu, noresu, nomsym,&
+subroutine mdnoch(nochmd, lnochm, lresu, noresu, nomsym, &
                   codret)
 !_____________________________________________________________________
 ! person_in_charge: nicolas.sellenet at edf.fr
@@ -100,14 +100,14 @@ subroutine mdnoch(nochmd, lnochm, lresu, noresu, nomsym,&
 !
 ! 2.1. ==> BLANCHIMENT INITIAL
 !
-        do iaux = 1 , 64
+        do iaux = 1, 64
             nochmd(iaux:iaux) = ' '
         end do
 !
 ! 2.2. ==> NOM DU RESULTAT
 !
         jaux = lxlgut(noresu)
-        ASSERT(jaux.ge.1 .and. jaux.le.8)
+        ASSERT(jaux .ge. 1 .and. jaux .le. 8)
 !
         lnochm = jaux
         nochmd(1:lnochm) = noresu(1:lnochm)
@@ -117,17 +117,17 @@ subroutine mdnoch(nochmd, lnochm, lresu, noresu, nomsym,&
         if (lresu .eq. 1) then
 !
             jaux = lxlgut(nomsym)
-            ASSERT(jaux.ge.1 .and. jaux.le.16)
+            ASSERT(jaux .ge. 1 .and. jaux .le. 16)
 !
-            do iaux = lnochm+1 , 8
+            do iaux = lnochm+1, 8
                 nochmd(iaux:iaux) = '_'
             end do
             lnochm = 8+jaux
             nochmd(9:8+jaux) = nomsym(1:jaux)
 !
-        endif
+        end if
 !
-    endif
+    end if
 !
 !====
 ! 3. BILAN
@@ -135,6 +135,6 @@ subroutine mdnoch(nochmd, lnochm, lresu, noresu, nomsym,&
 !
     if (codret .ne. 0) then
         call utmess('F', 'MED_91')
-    endif
+    end if
 !
 end subroutine

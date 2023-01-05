@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -38,12 +38,12 @@ subroutine vericp(cmpglo, cmp, nbcmp, iret)
         if (cmp .ne. cmpglo(i)) then
             goto 1
         else
-            iret=0
+            iret = 0
             goto 999
-        endif
-  1     continue
+        end if
+1       continue
     end do
 !
-    iret=1
+    iret = 1
 999 continue
 end subroutine

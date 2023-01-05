@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,13 +16,13 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine resuPrintIdeasNode(fileUnit   , dsName       ,&
-                              title      , storeIndx    ,&
-                              fieldType_ , fieldName_   ,&
-                              cmpUserNb_ , cmpUserName_ ,&
+subroutine resuPrintIdeasNode(fileUnit, dsName, &
+                              title, storeIndx, &
+                              fieldType_, fieldName_, &
+                              cmpUserNb_, cmpUserName_, &
                               nodeUserNb_, nodeUserNume_)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -46,14 +46,14 @@ implicit none
 #include "asterfort/utmess.h"
 #include "asterfort/nbec.h"
 !
-integer, intent(in) :: fileUnit
-character(len=*), intent(in) :: title, dsName
-integer, intent(in) :: storeIndx
-character(len=*), optional, intent(in) :: fieldName_, fieldType_
-integer, optional, intent(in) :: cmpUserNb_
-character(len=8), optional, pointer :: cmpUserName_(:)
-integer, optional, intent(in) :: nodeUserNb_
-integer, optional, pointer :: nodeUserNume_(:)
+    integer, intent(in) :: fileUnit
+    character(len=*), intent(in) :: title, dsName
+    integer, intent(in) :: storeIndx
+    character(len=*), optional, intent(in) :: fieldName_, fieldType_
+    integer, optional, intent(in) :: cmpUserNb_
+    character(len=8), optional, pointer :: cmpUserName_(:)
+    integer, optional, intent(in) :: nodeUserNb_
+    integer, optional, pointer :: nodeUserNume_(:)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -110,26 +110,26 @@ integer, optional, pointer :: nodeUserNume_(:)
     fieldName = ' '
     if (present(fieldName_)) then
         fieldName = fieldName_
-    endif
+    end if
     fieldType = ' '
     if (present(fieldType_)) then
         fieldType = fieldType_
-    endif
+    end if
     cmpUserNb = 0
     if (present(cmpUserNb_)) then
         cmpUserNb = cmpUserNb_
         cmpUserName => cmpUserName_
-    endif
+    end if
     nodeUserNb = 0
     if (present(nodeUserNb_)) then
         nodeUserNb = nodeUserNb_
         nodeUserNume => nodeUserNume_
-    endif
+    end if
 !
 ! - Get properties of field
 !
-    call jeveuo(fieldName//'.DESC', 'L', vi = desc)
-    call jeveuo(fieldName//'.REFE', 'L', vk24 = refe)
+    call jeveuo(fieldName//'.DESC', 'L', vi=desc)
+    call jeveuo(fieldName//'.REFE', 'L', vk24=refe)
     call jelira(fieldName//'.VALE', 'TYPE', cval=type)
     call jeveuo(fieldName//'.VALE', 'L', jvVale)
     if (type(1:1) .eq. 'R') then
@@ -142,47 +142,47 @@ integer, optional, pointer :: nodeUserNume_(:)
         fieldScalar = 4
     else
         ASSERT(ASTER_FALSE)
-    endif
+    end if
     quantityIndx = desc(1)
-    fieldRepr    = desc(2)
+    fieldRepr = desc(2)
 !
 ! - "coded" integers
 !
     nec = nbec(quantityIndx)
-    AS_ALLOCATE(vi = codeInte, size = nec)
+    AS_ALLOCATE(vi=codeInte, size=nec)
 !
 ! - Access to mesh
 !
-    meshName = refe(1)(1:8)
-    call dismoi('DIM_GEOM_B', meshName, 'MAILLAGE', repi = meshDime)
-    call dismoi('NB_NO_MAILLA', meshName, 'MAILLAGE', repi = meshNodeNb)
+    meshName = refe(1) (1:8)
+    call dismoi('DIM_GEOM_B', meshName, 'MAILLAGE', repi=meshDime)
+    call dismoi('NB_NO_MAILLA', meshName, 'MAILLAGE', repi=meshNodeNb)
 !
 ! - Access to profile of numbering
 !
     profName = refe(2)
     if (fieldRepr .ge. 0) then
-        call jeveuo(profName(1:19)//'.NUEQ', 'L', vi = nueq)
+        call jeveuo(profName(1:19)//'.NUEQ', 'L', vi=nueq)
         call jenonu(jexnom(profName(1:19)//'.LILI', '&MAILLA'), liliMesh)
-        call jeveuo(jexnum(profName(1:19)//'.PRNO', liliMesh), 'L', vi = prno)
-    endif
+        call jeveuo(jexnum(profName(1:19)//'.PRNO', liliMesh), 'L', vi=prno)
+    end if
 !
 ! - Select list of components
 !
-    call resuSelectCmp(quantityIndx,&
-                       cmpUserNb   , cmpUserName,&
-                       cmpCataNb   , cmpCataName,&
-                       cmpListNb   , cmpListIndx)
-    if (cmpListNb .eq. 0 .and. cmpUserNb .ne.0) then
+    call resuSelectCmp(quantityIndx, &
+                       cmpUserNb, cmpUserName, &
+                       cmpCataNb, cmpCataName, &
+                       cmpListNb, cmpListIndx)
+    if (cmpListNb .eq. 0 .and. cmpUserNb .ne. 0) then
         goto 997
-    endif
+    end if
 !
 ! - Select list of nodes
 !
-    AS_ALLOCATE(vk8=nodeName, size = meshNodeNb)
-    AS_ALLOCATE(vi=nodeNume, size = meshNodeNb)
-    call resuSelectNode(meshName  , meshNodeNb  ,&
-                        nodeUserNb, nodeUserNume,&
-                        nodeName  , nodeNume    ,&
+    AS_ALLOCATE(vk8=nodeName, size=meshNodeNb)
+    AS_ALLOCATE(vi=nodeNume, size=meshNodeNb)
+    call resuSelectNode(meshName, meshNodeNb, &
+                        nodeUserNb, nodeUserNume, &
+                        nodeName, nodeNume, &
                         nodeNb)
 !
 ! - Is an IDEAS mesh ?
@@ -190,49 +190,49 @@ integer, optional, pointer :: nodeUserNume_(:)
     lMeshIdeas = ASTER_FALSE
     call jeexin(meshName//'           .TITR', iret)
     if (iret .ne. 0) then
-        call jeveuo(meshName//'           .TITR', 'L', vk80 = meshTitle)
+        call jeveuo(meshName//'           .TITR', 'L', vk80=meshTitle)
         call jelira(meshName//'           .TITR', 'LONMAX', titleLength)
         if (titleLength .ge. 1) then
-            if (meshTitle(1)(10:31) .eq. 'AUTEUR=INTERFACE_IDEAS') then
+            if (meshTitle(1) (10:31) .eq. 'AUTEUR=INTERFACE_IDEAS') then
                 lMeshIdeas = ASTER_TRUE
-            endif
-        endif
-    endif
+            end if
+        end if
+    end if
 !
 ! - Print nodal field
 !
     if (fieldScalar .eq. 1 .and. fieldRepr .ge. 0) then
-        call irdesr(fileUnit, nodeNb, prno, nueq, nec,&
-                    codeInte, cmpCataNb, zr(jvVale), cmpCataName, title,&
-                    nodeName, dsName, fieldType, storeIndx, nodeNume,&
+        call irdesr(fileUnit, nodeNb, prno, nueq, nec, &
+                    codeInte, cmpCataNb, zr(jvVale), cmpCataName, title, &
+                    nodeName, dsName, fieldType, storeIndx, nodeNume, &
                     lMeshIdeas, cmpListNb, cmpListIndx, cmpUserName)
     else if (fieldScalar .eq. 1 .and. fieldRepr .lt. 0) then
-        call irdrsr(fileUnit, nodeNb, desc, nec, codeInte,&
-                    cmpCataNb, zr(jvVale), cmpCataName, title, nodeName,&
-                    dsName, fieldType, storeIndx, nodeNume, lMeshIdeas,&
+        call irdrsr(fileUnit, nodeNb, desc, nec, codeInte, &
+                    cmpCataNb, zr(jvVale), cmpCataName, title, nodeName, &
+                    dsName, fieldType, storeIndx, nodeNume, lMeshIdeas, &
                     cmpListNb, cmpListIndx, cmpUserName)
     else if (fieldScalar .eq. 2 .and. fieldRepr .ge. 0) then
-        call irdesc(fileUnit, nodeNb, prno, nueq, nec,&
-                    codeInte, cmpCataNb, zc(jvVale), cmpCataName, title,&
-                    nodeName, dsName, fieldType, storeIndx, nodeNume,&
+        call irdesc(fileUnit, nodeNb, prno, nueq, nec, &
+                    codeInte, cmpCataNb, zc(jvVale), cmpCataName, title, &
+                    nodeName, dsName, fieldType, storeIndx, nodeNume, &
                     lMeshIdeas)
     else if (fieldScalar .eq. 2 .and. fieldRepr .lt. 0) then
         call utmess('F', 'RESULT3_35')
-    endif
+    end if
     goto 999
 !
 997 continue
 !
-    call utmess('A', 'RESULT3_40', sk = fieldType)
+    call utmess('A', 'RESULT3_40', sk=fieldType)
 !
 999 continue
 !
 ! - Clean
 !
-    AS_DEALLOCATE(vi  = codeInte)
-    AS_DEALLOCATE(vk8 = nodeName)
-    AS_DEALLOCATE(vi  = nodeNume)
-    AS_DEALLOCATE(vi  = cmpListIndx)
+    AS_DEALLOCATE(vi=codeInte)
+    AS_DEALLOCATE(vk8=nodeName)
+    AS_DEALLOCATE(vi=nodeNume)
+    AS_DEALLOCATE(vi=cmpListIndx)
 !
     call jedema()
 end subroutine

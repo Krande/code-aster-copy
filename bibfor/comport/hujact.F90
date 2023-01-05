@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine hujact(mater, vind, vinf, vins, sigd,&
+subroutine hujact(mater, vind, vinf, vins, sigd, &
                   sigf, negmul, chgmec, indi)
     implicit none
 !
@@ -55,13 +55,13 @@ subroutine hujact(mater, vind, vinf, vins, sigd,&
     aster_logical :: debug, chgmec, negmul(8), miso
     real(kind=8) :: vinm(50), seuilm, c1td, c2td, cmod, deux
 ! --------------------------------------------------------------------
-    common /tdim/   ndt, ndi
-    common /meshuj/ debug
+    common/tdim/ndt, ndi
+    common/meshuj/debug
 ! --------------------------------------------------------------------
-    parameter  (tole1= 1.d-7)
-    parameter  (deux = 2.d0)
-    parameter  (un   = 1.d0)
-    parameter  (zero = 0.d0)
+    parameter(tole1=1.d-7)
+    parameter(deux=2.d0)
+    parameter(un=1.d0)
+    parameter(zero=0.d0)
 !
 ! ====================================================================
 ! --- CONSTRUCTION DES SURFACES CYCLIQUES PRECEDENTES -----------
@@ -69,14 +69,14 @@ subroutine hujact(mater, vind, vinf, vins, sigd,&
 !
     vinm(1:50) = vind(1:50)
     do i = 1, 3
-        if ((vind(5*i+31).ne.zero) .or. (vind(5*i+32).ne.zero)) then
+        if ((vind(5*i+31) .ne. zero) .or. (vind(5*i+32) .ne. zero)) then
             vinm(4*i+5) = vind(5*i+31)
             vinm(4*i+6) = vind(5*i+32)
             vinm(4*i+7) = vind(5*i+33)
             vinm(4*i+8) = vind(5*i+34)
             vinm(i+4) = vind(5*i+35)
-        endif
-    enddo
+        end if
+    end do
 !
 ! ===================================================================
 ! -------------- DETERMINATION DES CRITERES ACTIFS A T+DT -----------
@@ -85,11 +85,11 @@ subroutine hujact(mater, vind, vinf, vins, sigd,&
     do i = 1, 7
         if (indi(i) .eq. 4) miso = .true.
         if (indi(i) .eq. 8) miso = .true.
-    enddo
+    end do
 !
     do i = 1, 50
         vint(i) = vind(i)
-    enddo
+    end do
 !
     do i = 1, 4
 !
@@ -102,10 +102,10 @@ subroutine hujact(mater, vind, vinf, vins, sigd,&
                 chgmec = .true.
                 negmul(i) = .false.
                 if (i .lt. 4) then
-                    if (vind(i) .eq. mater(13,2)) then
+                    if (vind(i) .eq. mater(13, 2)) then
                         vind(23+i) = zero
                     else
-                        if ((vins(4*i+7).ne.zero) .or. (vins(4*i+8) .ne.zero)) then
+                        if ((vins(4*i+7) .ne. zero) .or. (vins(4*i+8) .ne. zero)) then
                             vind(4+i) = vins(4+i)
                             vind(4*i+5) = vins(4*i+5)
                             vind(4*i+6) = vins(4*i+6)
@@ -115,12 +115,12 @@ subroutine hujact(mater, vind, vinf, vins, sigd,&
                         else
                             vind(23+i) = -un
                             call hujmed(i, mater, vind, sigd)
-                            vind(i+4) = mater(18,2)
-                        endif
-                    endif
+                            vind(i+4) = mater(18, 2)
+                        end if
+                    end if
                 else
-                    if (chgmec .and. (.not.miso)) goto 40
-                    if (vind(i) .eq. mater(14,2)) then
+                    if (chgmec .and. (.not. miso)) goto 40
+                    if (vind(i) .eq. mater(14, 2)) then
                         vind(23+i) = zero
                     else
                         if (vins(22) .ne. zero) then
@@ -134,26 +134,26 @@ subroutine hujact(mater, vind, vinf, vins, sigd,&
                             if ((rd-rf) .ge. r8prem()) then
                                 vind(23+i) = -un
                                 call hujmei(vind)
-                                vind(8) = mater(19,2)
+                                vind(8) = mater(19, 2)
                             else
                                 vind(23+i) = zero
-                            endif
-                        endif
-                    endif
-                endif
-            endif
+                            end if
+                        end if
+                    end if
+                end if
+            end if
             goto 40
 !
 ! ==================================================================
 ! ---------- MECANISME MONOTONE SUPPOS  ELASTIQUE ------------------
 ! ==================================================================
-        else if (vind(23+i).eq.zero) then
+        else if (vind(23+i) .eq. zero) then
 !
 ! ************************
 ! --- MECANISME DEVIATOIRE
 ! ************************
             if (i .lt. 4) then
-                call hujcrd(i, mater, sigf, vinf, seuil,&
+                call hujcrd(i, mater, sigf, vinf, seuil, &
                             iret)
                 ASSERT(iret .eq. 0)
                 if (seuil .gt. tole1) then
@@ -163,39 +163,39 @@ subroutine hujact(mater, vind, vinf, vins, sigd,&
                     vind(4*i+6) = zero
                     vind(4*i+7) = zero
                     vind(4*i+8) = zero
-                    vind(4+i) = mater(18,2)
-                endif
+                    vind(4+i) = mater(18, 2)
+                end if
                 goto 40
 !
 ! ******************************
 ! --- MECANISME DE CONSOLIDATION
 ! ******************************
             else
-                if (chgmec .and. (.not.miso)) goto 40
+                if (chgmec .and. (.not. miso)) goto 40
                 call hujcri(mater, sigf, vinf, seuil)
                 mono = 0
                 if (seuil .gt. tole1) then
                     chgmec = .true.
                     vind(27) = un
                     mono = 1
-                endif
+                end if
                 if (mono .ne. 1) then
                     call hujrmo(mater, sigd, vind, rd)
                     call hujrmo(mater, sigf, vinf, rf)
                     if ((rd-rf) .ge. r8prem()) then
                         vind(23+i) = -un
                         call hujmei(vind)
-                        vind(8) = mater(19,2)
+                        vind(8) = mater(19, 2)
                         chgmec = .true.
-                    endif
-                endif
+                    end if
+                end if
                 goto 40
-            endif
+            end if
 !
 ! ====================================================================
 ! ---------- MECANISME MONOTONE SUPPOS  EN DECHARGE ------------------
 ! ====================================================================
-        else if (vind(23+i).eq.-un) then
+        else if (vind(23+i) .eq. -un) then
 !
 ! ***********************************************
 ! --- VERIFICATION DES MULTIPLICATEURS PLASTIQUES
@@ -205,19 +205,19 @@ subroutine hujact(mater, vind, vinf, vins, sigd,&
                 negmul(i+4) = .false.
                 vind(27+i) = zero
                 goto 40
-            endif
+            end if
 !
 ! *************************************
 ! --- VERIFICATION DES SEUILS MONOTONES
 ! *************************************
             if (i .lt. 4) then
-                call hujcrd(i, mater, sigf, vinf, seuil,&
+                call hujcrd(i, mater, sigf, vinf, seuil, &
                             iret)
                 ASSERT(iret .eq. 0)
             else
-                if (chgmec .and. (.not.miso)) goto 40
+                if (chgmec .and. (.not. miso)) goto 40
                 call hujcri(mater, sigf, vinf, seuil)
-            endif
+            end if
             if (seuil .gt. tole1) then
                 chgmec = .true.
                 if (i .lt. 4) then
@@ -227,9 +227,9 @@ subroutine hujact(mater, vind, vinf, vins, sigd,&
                     vind(4*i+6) = zero
                     vind(4*i+7) = zero
                     vind(4*i+8) = zero
-                    vind(i+4) = mater(18,2)
+                    vind(i+4) = mater(18, 2)
                 else
-                    if ((vind(22).eq.un) .and. (vins(22).eq.-un)) then
+                    if ((vind(22) .eq. un) .and. (vins(22) .eq. -un)) then
                         vind(21) = vins(21)
                         vind(22) = vins(22)
                         vind(31) = un
@@ -239,15 +239,15 @@ subroutine hujact(mater, vind, vinf, vins, sigd,&
                         vind(27) = un
                         vind(21) = zero
                         vind(22) = zero
-                    endif
-                endif
+                    end if
+                end if
                 goto 40
-            endif
+            end if
 !
 ! ***********************************************************
 ! --- EMPECHE L INTERSECTION DES CERCLES CYCLIQUE ET MONOTONE
 ! ***********************************************************
-            if ((i.lt.4) .and. (vinf(27+i).eq.un)) then
+            if ((i .lt. 4) .and. (vinf(27+i) .eq. un)) then
                 c1td = (vinf(4*i+5)-vinf(4+i)*vinf(4*i+7))
                 c2td = (vinf(4*i+6)-vinf(4+i)*vinf(4*i+8))
                 cmod = sqrt(c1td**deux+c2td**deux/deux)
@@ -261,11 +261,11 @@ subroutine hujact(mater, vind, vinf, vins, sigd,&
                     vind(5*i+32) = zero
                     vind(5*i+33) = zero
                     vind(5*i+34) = zero
-                    vind(5*i+35) = mater(18,2)
+                    vind(5*i+35) = mater(18, 2)
                     vind(i+4) = vinf(i+4)
                     goto 40
-                endif
-            endif
+                end if
+            end if
 !
 ! ****************************************
 ! --- MECANISME CYCLIQUE SUPPOSE ELASTIQUE
@@ -282,10 +282,10 @@ subroutine hujact(mater, vind, vinf, vins, sigd,&
                         chgmec = .true.
                         vind(27+i) = un
                         call hujdrc(i, mater, sigf, vinf, psf)
-                        if ((vind(5*i+31).ne.zero) .or. (vind(5*i+32) .ne.zero)) then
+                        if ((vind(5*i+31) .ne. zero) .or. (vind(5*i+32) .ne. zero)) then
                             call hujdrc(i, mater, sigf, vinm, psm)
                             call hujcdc(i, mater, sigf, vinm, seuilm)
-                            if ((seuilm.gt.tole1) .and. (psm.lt.zero)) then
+                            if ((seuilm .gt. tole1) .and. (psm .lt. zero)) then
 ! --- REPRISE ANCIENNE SURFACE
                                 vind(4*i+5) = vind(5*i+31)
                                 vind(4*i+6) = vind(5*i+32)
@@ -297,10 +297,10 @@ subroutine hujact(mater, vind, vinf, vins, sigd,&
                                 vind(5*i+32) = zero
                                 vind(5*i+33) = zero
                                 vind(5*i+34) = zero
-                                vind(5*i+35) = mater(18,2)
+                                vind(5*i+35) = mater(18, 2)
                                 goto 40
-                            endif
-                        else if (psf.ge.zero) then
+                            end if
+                        else if (psf .ge. zero) then
 ! --- ENREGISTREMENT SURFACE ACTUELLE
                             vind(5*i+31) = vind(4*i+5)
                             vind(5*i+32) = vind(4*i+6)
@@ -308,15 +308,15 @@ subroutine hujact(mater, vind, vinf, vins, sigd,&
                             vind(5*i+34) = vind(4*i+8)
                             vind(5*i+35) = vind(4+i)
 ! --- MODIFICATION SURFACE PAR POINT TANGENT OPPOSE
-                            vind(4*i+5) = vind(4*i+5)- deux*vind(i+4)* vind(4*i+7)
-                            vind(4*i+6) = vind(4*i+6)- deux*vind(i+4)* vind(4*i+8)
-                            vind(4*i+7) =-vind(4*i+7)
-                            vind(4*i+8) =-vind(4*i+8)
+                            vind(4*i+5) = vind(4*i+5)-deux*vind(i+4)*vind(4*i+7)
+                            vind(4*i+6) = vind(4*i+6)-deux*vind(i+4)*vind(4*i+8)
+                            vind(4*i+7) = -vind(4*i+7)
+                            vind(4*i+8) = -vind(4*i+8)
                             goto 40
-                        endif
-                    endif
-                    if (( (vins(4*i+5).ne.vind(4*i+5)) .and. (vins(4*i+ 5).ne.zero) ) .or.&
-                        ( (vins(4*i+6).ne.vind(4*i+6)) .and. (vins(4*i+6).ne.zero) )) then
+                        end if
+                    end if
+                    if (((vins(4*i+5) .ne. vind(4*i+5)) .and. (vins(4*i+5) .ne. zero)) .or. &
+                        ((vins(4*i+6) .ne. vind(4*i+6)) .and. (vins(4*i+6) .ne. zero))) then
                         call hujdrc(i, mater, sigf, vinf, psf)
 !
                         if (psf .gt. zero) then
@@ -334,12 +334,12 @@ subroutine hujact(mater, vind, vinf, vins, sigd,&
                                 vind(4*i+8) = vins(4*i+8)
                                 vind(4+i) = vins(4+i)
                                 vind(27+i) = un
-                            endif
-                        endif
-                        elseif(((vins(4*i+5).ne.vind(4*i+5)).and.&
-                                (vins(4*i+5).eq.zero)).or.&
-                                ((vins(4*i+6).ne.vind(4*i+6))&
-                                .and. (vins(4*i+6).eq.zero)))then
+                            end if
+                        end if
+                    elseif (((vins(4*i+5) .ne. vind(4*i+5)) .and. &
+                             (vins(4*i+5) .eq. zero)) .or. &
+                            ((vins(4*i+6) .ne. vind(4*i+6)) &
+                             .and. (vins(4*i+6) .eq. zero))) then
 !
                         call hujdrc(i, mater, sigf, vinf, psf)
 !
@@ -348,29 +348,29 @@ subroutine hujact(mater, vind, vinf, vins, sigd,&
                             vinf(4*i+6) = zero
                             vinf(4*i+7) = zero
                             vinf(4*i+8) = zero
-                            vinf(4+i) = mater(18,2)
+                            vinf(4+i) = mater(18, 2)
                             vinf(23+i) = un
                             vinf(27+i) = zero
                             chgmec = .false.
-                        endif
+                        end if
                     else
-                        if (vind(4+i) .ne. mater(18,2)) then
+                        if (vind(4+i) .ne. mater(18, 2)) then
                             call hujmed(i, mater, vinf, sigf)
-                            vinf(4+i) = mater(18,2)
-                        endif
-                    endif
+                            vinf(4+i) = mater(18, 2)
+                        end if
+                    end if
                     goto 40
 !
 ! ------------------------------
 ! --- MECANISME DE CONSOLIDATION
 ! ------------------------------
                 else
-                    if ((chgmec) .and. (.not.miso)) goto 40
+                    if ((chgmec) .and. (.not. miso)) goto 40
                     call hujcic(mater, sigf, vinf, seuil)
                     call hujrmo(mater, sigd, vind, rd)
                     call hujrmo(mater, sigf, vinf, rf)
 !
-                    if ((vind(22).eq.un) .and. ((rd-rf).ge.r8prem())) then
+                    if ((vind(22) .eq. un) .and. ((rd-rf) .ge. r8prem())) then
                         if (seuil .gt. tole1) then
                             chgmec = .true.
                             vind(31) = un
@@ -379,9 +379,9 @@ subroutine hujact(mater, vind, vinf, vins, sigd,&
                             vinf(22) = vins(22)
                             vinf(8) = vins(8)
 !
-                            if (vins(22) .eq. zero) vinf(27)=zero
-                        endif
-                    else if ((vind(22).eq.-un).and.((rd-rf).lt.r8prem())) then
+                            if (vins(22) .eq. zero) vinf(27) = zero
+                        end if
+                    else if ((vind(22) .eq. -un) .and. ((rd-rf) .lt. r8prem())) then
                         if (seuil .gt. tole1) then
                             chgmec = .true.
                             vind(31) = un
@@ -389,9 +389,9 @@ subroutine hujact(mater, vind, vinf, vins, sigd,&
                             vinf(21) = vins(21)
                             vinf(22) = vins(22)
                             vinf(8) = vins(8)
-                        endif
-                        elseif((vind(22).eq.un).and.((rd-rf).lt.r8prem()))&
-                    then
+                        end if
+                    elseif ((vind(22) .eq. un) .and. ((rd-rf) .lt. r8prem())) &
+                        then
 !
                         if (vins(22) .ne. vinf(22)) then
                             vinf(21) = vins(21)
@@ -402,18 +402,18 @@ subroutine hujact(mater, vind, vinf, vins, sigd,&
                                 call hujcic(mater, sigf, vinf, seuil)
                             else
                                 vinf(27) = zero
-                            endif
+                            end if
                             if (seuil .gt. tole1) then
                                 chgmec = .true.
                                 vind(21) = vins(21)
                                 vind(22) = vins(22)
                                 vind(8) = vins(8)
                                 vind(31) = un
-                            endif
+                            end if
                         else
                             call hujmei(vint)
                             vint(23) = vinf(23)
-                            vint(8) = mater(19,2)
+                            vint(8) = mater(19, 2)
                             call hujcic(mater, sigf, vint, seuil)
                             if (seuil .gt. tole1) then
                                 chgmec = .true.
@@ -421,10 +421,10 @@ subroutine hujact(mater, vind, vinf, vins, sigd,&
                                 vind(22) = vint(22)
                                 vind(8) = vint(8)
                                 vind(31) = un
-                            endif
-                        endif
-                        elseif ((vind(22).eq.-un).and.&
-                                ((rd-rf).gt.r8prem())) then
+                            end if
+                        end if
+                    elseif ((vind(22) .eq. -un) .and. &
+                            ((rd-rf) .gt. r8prem())) then
                         if (vins(22) .ne. vinf(22)) then
                             vinf(21) = vins(21)
                             vinf(22) = vins(22)
@@ -436,11 +436,11 @@ subroutine hujact(mater, vind, vinf, vins, sigd,&
                                 vind(22) = vins(22)
                                 vind(8) = vins(8)
                                 vind(31) = un
-                            endif
+                            end if
                         else
                             call hujmei(vint)
                             vint(23) = vinf(23)
-                            vint(8) = mater(19,2)
+                            vint(8) = mater(19, 2)
                             call hujcic(mater, sigf, vint, seuil)
                             if (seuil .gt. tole1) then
                                 chgmec = .true.
@@ -448,15 +448,15 @@ subroutine hujact(mater, vind, vinf, vins, sigd,&
                                 vind(22) = vint(22)
                                 vind(8) = vint(8)
                                 vind(31) = un
-                            endif
-                        endif
-                    endif
+                            end if
+                        end if
+                    end if
                     goto 40
-                endif
-            endif
-        endif
+                end if
+            end if
+        end if
 !
- 40     continue
+40      continue
     end do
 !
 end subroutine

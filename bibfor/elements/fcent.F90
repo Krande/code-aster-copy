@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -39,17 +39,17 @@ subroutine fcent(nomte, xi, nb1, vecl)
     real(kind=8) :: rnormc
 !-----------------------------------------------------------------------
     call jevech('PROTATR', 'L', irota)
-    vomega(1)=zr(irota)*zr(irota+1)
-    vomega(2)=zr(irota)*zr(irota+2)
-    vomega(3)=zr(irota)*zr(irota+3)
+    vomega(1) = zr(irota)*zr(irota+1)
+    vomega(2) = zr(irota)*zr(irota+2)
+    vomega(3) = zr(irota)*zr(irota+3)
 !
-    xa(1)=zr(irota+4)
-    xa(2)=zr(irota+5)
-    xa(3)=zr(irota+6)
+    xa(1) = zr(irota+4)
+    xa(2) = zr(irota+5)
+    xa(3) = zr(irota+6)
 !
     call jevete('&INEL.'//nomte(1:8)//'.DESI', ' ', lzi)
-    nb1  =zi(lzi-1+1)
-    npgsn=zi(lzi-1+4)
+    nb1 = zi(lzi-1+1)
+    npgsn = zi(lzi-1+4)
 !
     call jevete('&INEL.'//nomte(1:8)//'.DESR', ' ', lzr)
 !
@@ -59,13 +59,13 @@ subroutine fcent(nomte, xi, nb1, vecl)
 !
     do intsn = 1, npgsn
         call vectci(intsn, nb1, xi, zr(lzr), rnormc)
-        call forcen(rnormc, intsn, nb1, xi, zr(lzr),&
+        call forcen(rnormc, intsn, nb1, xi, zr(lzr), &
                     rho, epais, vomega, vecl1, xa)
     end do
 !
     call vexpan(nb1, vecl1, vecl)
     do i = 1, 3
-        vecl(6*nb1+i)=0.d0
+        vecl(6*nb1+i) = 0.d0
     end do
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -37,8 +37,8 @@ function ltequa(elref, enr)
     aster_logical :: ltequa
 !
 !----------------------------------------------------------------------
-    ltequa=.false.
-    if ((enr(1:2).eq.'XH' .or. enr(1:3).eq.'XHT' .or. enr(1:2).eq.'XT' .or.&
-         enr(1:3).eq.'XHC'.or. enr(1:3).eq.'XTC'.or. enr(1:4).eq.'XTHC') .and.&
-         .not.iselli(elref)) ltequa=.true.
+    ltequa = .false.
+    if ((enr(1:2) .eq. 'XH' .or. enr(1:3) .eq. 'XHT' .or. enr(1:2) .eq. 'XT' .or. &
+         enr(1:3) .eq. 'XHC' .or. enr(1:3) .eq. 'XTC' .or. enr(1:4) .eq. 'XTHC') .and. &
+        .not. iselli(elref)) ltequa = .true.
 end function

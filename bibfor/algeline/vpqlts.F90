@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine vpqlts(diag, surdia, neq, vecpro, mxcmp,&
+subroutine vpqlts(diag, surdia, neq, vecpro, mxcmp, &
                   mxiter, ier, nitqr)
     implicit none
 #include "asterc/r8prem.h"
@@ -74,11 +74,11 @@ subroutine vpqlts(diag, surdia, neq, vecpro, mxcmp,&
     if (mxcmp .ge. neq) then
         do ieq = 1, neq
             do jeq = 1, neq
-                vecpro(ieq,jeq) = zero
+                vecpro(ieq, jeq) = zero
             end do
-            vecpro(ieq,ieq) = un
+            vecpro(ieq, ieq) = un
         end do
-    endif
+    end if
 !
     surdia(neq) = zero
     b = zero
@@ -90,25 +90,25 @@ subroutine vpqlts(diag, surdia, neq, vecpro, mxcmp,&
 !
 !        --- RECHERCHE DU PLUS PETIT ELEMENT SUR-DIAGONAL ---
         do m = j, neq
-            k=m
+            k = m
             if (abs(surdia(k)) .le. b) goto 15
         end do
- 15     continue
+15      continue
         m = k
         if (m .eq. j) goto 55
- 20     continue
+20      continue
         if (jter .eq. mxiter) goto 999
         jter = jter+1
         if (jter .gt. nitqr) then
             nitqr = jter
-        endif
+        end if
 !
 !        --- PREPARATION DU DECALAGE ---
         g = diag(j)
         p = (diag(j+1)-g)/(deux*surdia(j))
         r = abs(p)
         if (epsmac*abs(p) .lt. un) r = sqrt(p*p+un)
-        diag(j) = surdia(j)/(p+sign(r,p))
+        diag(j) = surdia(j)/(p+sign(r, p))
         h = g-diag(j)
         do i = j+1, neq
             diag(i) = diag(i)-h
@@ -134,23 +134,23 @@ subroutine vpqlts(diag, surdia, neq, vecpro, mxcmp,&
                 surdia(i+1) = s*surdia(i)*r
                 s = un/r
                 c = c*s
-            endif
+            end if
             p = c*diag(i)-s*g
             diag(i+1) = h+s*(c*g+s*diag(i))
             if (mxcmp .ge. neq) then
 !              --- CALCUL DU VECTEUR PROPRE ---
                 do k = 1, neq
-                    h = vecpro(k,i+1)
-                    vecpro(k,i+1) = s*vecpro(k,i)+c*h
-                    vecpro(k,i) = c*vecpro(k,i)-s*h
+                    h = vecpro(k, i+1)
+                    vecpro(k, i+1) = s*vecpro(k, i)+c*h
+                    vecpro(k, i) = c*vecpro(k, i)-s*h
                 end do
-            endif
+            end if
         end do
         surdia(j) = s*p
         diag(j) = c*p
         if (abs(surdia(j)) .gt. b) goto 20
- 55     continue
-        diag(j) = diag(j) + f
+55      continue
+        diag(j) = diag(j)+f
     end do
     goto 99999
 !

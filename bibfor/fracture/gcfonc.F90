@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine gcfonc(ichar, iord, cartei, lfchar, lfmult,&
+subroutine gcfonc(ichar, iord, cartei, lfchar, lfmult, &
                   newfct, lformu)
 !
     implicit none
@@ -68,13 +68,13 @@ subroutine gcfonc(ichar, iord, cartei, lfchar, lfmult,&
     if (lfmult) then
         if (lfchar) then
             nomchf = '&FM00000'
-            if ((ichar.gt.9) .or. (iord.gt.99)) then
+            if ((ichar .gt. 9) .or. (iord .gt. 99)) then
                 call utmess('F', 'RUPTURE2_1')
-            endif
+            end if
             call codent(ichar*10+1, 'D0', nomchf(6:7))
             call codent(iord, 'D0', nomchf(4:5))
-        endif
-    endif
+        end if
+    end if
     newfct = nomchf
 !
 ! - VERIFIE SI LE CHARGEMENT FONCTION EST DE TYPE 'FORMULE'
@@ -82,6 +82,6 @@ subroutine gcfonc(ichar, iord, cartei, lfchar, lfmult,&
     if (lfchar) then
         call gverfo(cartei, iret)
         if (iret .eq. 1) lformu = .true.
-    endif
+    end if
 !
 end subroutine

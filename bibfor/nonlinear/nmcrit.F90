@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine nmcrit(nomsd, nbinst, typsel, nume, inst,&
+subroutine nmcrit(nomsd, nbinst, typsel, nume, inst, &
                   freq, tole, lselec)
 !
 ! person_in_charge: mickael.abbas at edf.fr
@@ -81,22 +81,22 @@ subroutine nmcrit(nomsd, nbinst, typsel, nume, inst,&
 ! --- SELECTION
 !
     if (typsel .eq. 'FREQ') then
-        reste = mod(nume,freq )
+        reste = mod(nume, freq)
         if (reste .eq. 0.d0) then
             lselec = .true.
         else
             lselec = .false.
-        endif
-    else if (typsel.eq.'INST') then
+        end if
+    else if (typsel .eq. 'INST') then
         sdlist = nomsd(1:19)//'.LIST'
         call jeveuo(sdlist, 'L', jlist)
         call utacli(inst, zr(jlist), nbinst, tole, nbindi)
         if (nbindi .ge. 0) then
             lselec = .true.
-        endif
+        end if
     else
         ASSERT(.false.)
-    endif
+    end if
 !
     call jedema()
 !

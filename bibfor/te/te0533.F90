@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 !
 subroutine te0533(option, nomte)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -40,7 +40,7 @@ implicit none
 #include "asterfort/xteini.h"
 #include "asterfort/xkamat.h"
 !
-character(len=16) :: option, nomte
+    character(len=16) :: option, nomte
 !
 !         CALCUL DES MATRICES DE CONTACT FROTTEMENT POUR X-FEM
 !                       (METHODE CONTINUE)
@@ -68,8 +68,8 @@ character(len=16) :: option, nomte
     real(kind=8) :: tau1(3), tau2(3)
     real(kind=8) :: nd(3), seuil, cohes(3), coheo(3)
     real(kind=8) :: rr
-    real(kind=8) :: ka, fk(27,3,3), mu2
-    integer :: jheano, ifiss, jheafa, ncomph,jta2(3)
+    real(kind=8) :: ka, fk(27, 3, 3), mu2
+    integer :: jheano, ifiss, jheafa, ncomph, jta2(3)
     integer :: jtab(7), iret, ncompd, ncompp, ncompa, ncompb, ncompc, ncompn
     integer :: jbaslo
     aster_logical :: matsym, lelim
@@ -88,23 +88,23 @@ character(len=16) :: option, nomte
     ffp(:) = 0.d0
     tau2(:) = 0.d0
     lelim = .false.
-    nbspg=0
+    nbspg = 0
 ! INTIALISATION JMATE POUR DETECTER EVENTUELLES ERREURS JEVEUX
-    jmate=1
+    jmate = 1
     call elref1(elref)
-    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg, &
                      jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
 !     INITIALISATION DES DIMENSIONS DES DDLS X-FEM
-    call xteini(nomte, nfh, nfe, singu, ddlc,&
-                nnom, ddls, nddl, ddlm, nfiss,&
+    call xteini(nomte, nfh, nfe, singu, ddlc, &
+                nnom, ddls, nddl, ddlm, nfiss, &
                 contac)
 !
     call tecael(iadzi, iazk24, noms=0)
-    typma=zk24(iazk24-1+3+zi(iadzi-1+2)+3)
+    typma = zk24(iazk24-1+3+zi(iadzi-1+2)+3)
 !
 !     INITIALISATION DE LA MATRICE DE TRAVAIL
-    mmat(:,:) = 0.d0
+    mmat(:, :) = 0.d0
 !
 ! --- ROUTINE SPECIFIQUE P2P1, A CONSERVER
 !
@@ -127,20 +127,20 @@ character(len=16) :: option, nomte
     call jevech('PCFACE', 'L', jcface)
     call jevech('PLONGCO', 'L', jlonch)
     call jevech('PBASECO', 'L', jbasec)
-    if (nfh.gt.0) then
+    if (nfh .gt. 0) then
         call jevech('PHEA_NO', 'L', jheavn)
-        call tecach('OOO', 'PHEA_NO', 'L', iret, nval=7,&
-                itab=jtab)
+        call tecach('OOO', 'PHEA_NO', 'L', iret, nval=7, &
+                    itab=jtab)
         ncompn = jtab(2)/jtab(3)
-    endif
+    end if
     if (nfiss .gt. 1) then
         call jevech('PFISNO', 'L', jfisno)
         call jevech('PHEAVNO', 'L', jheano)
         call jevech('PHEA_FA', 'L', jheafa)
-        call tecach('OOO', 'PHEA_FA', 'L', iret, nval=2,&
+        call tecach('OOO', 'PHEA_FA', 'L', iret, nval=2, &
                     itab=jtab)
         ncomph = jtab(2)
-    endif
+    end if
 !     NB COMPOSANTES DES MODES LOCAUX
 !     ASSOCIES AUX CHAMPS DANS LE CATALOGUE
     call tecach('OOO', 'PDONCO', 'L', iret, nval=2, itab=jtab)
@@ -153,21 +153,21 @@ character(len=16) :: option, nomte
     ncompb = jtab(2)
     call tecach('OOO', 'PCFACE', 'L', iret, nval=2, itab=jtab)
     ncompc = jtab(2)
-    if (nfe.gt.0) then
-       call jevech('PMATERC', 'L', jmate)
-       call jevech('PBASLOR', 'L', jbaslo)
-       call jevech('PSTANO', 'L', jstno)
-       axi=lteatt('AXIS','OUI')
-       call xkamat(zi(jmate), ndim, axi, ka, mu2)
+    if (nfe .gt. 0) then
+        call jevech('PMATERC', 'L', jmate)
+        call jevech('PBASLOR', 'L', jbaslo)
+        call jevech('PSTANO', 'L', jstno)
+        axi = lteatt('AXIS', 'OUI')
+        call xkamat(zi(jmate), ndim, axi, ka, mu2)
     else
-       ka=3.d0
-       mu2=1.d0
-       axi=.false._1
-       jmate=0
-       jbaslo=0
-       jlsn=0
-       jstno=0
-    endif
+        ka = 3.d0
+        mu2 = 1.d0
+        axi = .false._1
+        jmate = 0
+        jbaslo = 0
+        jlsn = 0
+        jstno = 0
+    end if
 !
 !     STATUT POUR L'ÉLIMINATION DES DDLS DE CONTACT
     do i = 1, max(1, nfh)*nnos
@@ -180,11 +180,11 @@ character(len=16) :: option, nomte
 !
 ! --- RECUPERATION DIVERSES DONNEES CONTACT
 !
-        call xdocon(algocr, algofr, cface, contac, coefcp,&
-                    coeffp, coefcr, coeffr, elc, fpg,&
-                    ifiss, ivff, jcface, jdonco, jlonch,&
-                    mu, nspfis, ncompd, ndim, nface,&
-                    ninter, nnof, nomte, npgf, nptf,&
+        call xdocon(algocr, algofr, cface, contac, coefcp, &
+                    coeffp, coefcr, coeffr, elc, fpg, &
+                    ifiss, ivff, jcface, jdonco, jlonch, &
+                    mu, nspfis, ncompd, ndim, nface, &
+                    ninter, nnof, nomte, npgf, nptf, &
                     rela)
         if (ninter .eq. 0) goto 91
 !
@@ -193,23 +193,23 @@ character(len=16) :: option, nomte
         if (algocr .eq. 3) then
             call jevech('PMATERC', 'L', jmate)
             call jevech('PCOHES', 'L', jcohes)
-            call tecach('OOO', 'PCOHES', 'L', iret, nval=3,&
+            call tecach('OOO', 'PCOHES', 'L', iret, nval=3, &
                         itab=jta2)
 !
 !           CAS COLLOCATION AUX POINTS DE GAUSS
-            if(contac.eq.1.or.contac.eq.3) ncompv = jta2(2)
+            if (contac .eq. 1 .or. contac .eq. 3) ncompv = jta2(2)
 !
 !           CAS CHAMP ELNO
-            if(contac.eq.2) ncompv = jta2(2)/jta2(3)
+            if (contac .eq. 2) ncompv = jta2(2)/jta2(3)
             call jevech('PCOHESO', 'E', jcoheo)
-        endif
+        end if
 !
 ! --- RECUP MULTIPLICATEURS ACTIFS ET LEURS INDICES
 !
-        call xmulco(contac, ddls, ddlc, ddlm, jaint, ifiss,&
-                    jheano, vstnc, lact, .true._1, lelim,&
-                    ndim, nfh, nfiss, ninter,&
-                    nlact, nno, nnol, nnom, nnos,&
+        call xmulco(contac, ddls, ddlc, ddlm, jaint, ifiss, &
+                    jheano, vstnc, lact, .true._1, lelim, &
+                    ndim, nfh, nfiss, ninter, &
+                    nlact, nno, nnol, nnom, nnos, &
                     pla, typma)
 !
 ! --- BOUCLE SUR LES FACETTES
@@ -225,51 +225,51 @@ character(len=16) :: option, nomte
                 isspg = npgf*(ifa-1)+ipgf
                 indco = zi(jindco-1+nbspg+isspg)
                 if (algofr .ne. 0) seuil = zr(jseuil-1+nbspg+isspg)
-                if (algocr .eq. 3.and.contac.ne.2) then
+                if (algocr .eq. 3 .and. contac .ne. 2) then
                     do i = 1, ncompv
-                        cohes(i) = zr(jcohes+ncompv*(nbspg+isspg-1)-1+ i)
+                        cohes(i) = zr(jcohes+ncompv*(nbspg+isspg-1)-1+i)
                     end do
-                endif
+                end if
 !
 ! --- PREPARATION DU CALCUL
 !
-                call xmprep(cface, contac, elref, elrefc, elc,&
-                            ffc, ffp, fpg, jaint, jbasec,&
-                            jptint, ifa, igeom, ipgf, jac,&
-                            jlst, lact, nd, ndim, ninter,&
-                            nlact, nno, nnos, nptf, nvit,&
-                            rr, singu, tau1, tau2, ka, mu2,&
+                call xmprep(cface, contac, elref, elrefc, elc, &
+                            ffc, ffp, fpg, jaint, jbasec, &
+                            jptint, ifa, igeom, ipgf, jac, &
+                            jlst, lact, nd, ndim, ninter, &
+                            nlact, nno, nnos, nptf, nvit, &
+                            rr, singu, tau1, tau2, ka, mu2, &
                             jbaslo, jstno, jlsn, fk)
 !
 ! --- CALCUL DES MATRICES DE CONTACT
 !     ..............................
 !
-                call xmcont(algocr, coefcr, coefcp, cohes, coheo,&
-                            jcohes, jcoheo, ncompv,&
-                            ddlm, ddls, ffc, ffp, idepd,&
-                            idepm, ifa, ifiss, jmate, indco,&
-                            ipgf, jac, jheavn, ncompn, jheafa, mmat,&
-                            lact, ncomph, nd, nddl, ndim,&
-                            nfh, nfiss, nno, nnol, nnos,&
-                            nvit, pla, rela, singu, fk,&
+                call xmcont(algocr, coefcr, coefcp, cohes, coheo, &
+                            jcohes, jcoheo, ncompv, &
+                            ddlm, ddls, ffc, ffp, idepd, &
+                            idepm, ifa, ifiss, jmate, indco, &
+                            ipgf, jac, jheavn, ncompn, jheafa, mmat, &
+                            lact, ncomph, nd, nddl, ndim, &
+                            nfh, nfiss, nno, nnol, nnos, &
+                            nvit, pla, rela, singu, fk, &
                             tau1, tau2)
 
 !
 ! --- SI COHESIF CLASSIQUE ON ACTUALISE LA VARIABLE INTERNE
 !
-                if (algocr .eq. 3.and.(contac.eq.1.or.contac.eq.3)) then
+                if (algocr .eq. 3 .and. (contac .eq. 1 .or. contac .eq. 3)) then
                     do i = 1, ncompv
                         zr(jcoheo+ncompv*(nbspg+isspg-1)-1+i) = coheo(i)
                     end do
-                endif
-                if (rela.eq.0.d0 .or. rela.eq.1.d0 .or. rela.eq.2.d0) then
-                    call xmfrot(algofr, coeffr, coeffp, ddlm, ddls,&
-                                ffc, ffp, idepd, idepm, indco,&
-                                jac, lact, mmat, mu, nd,&
-                                ndim, nfh, nfiss, nno, nnol,&
-                                nnos, nvit, pla, seuil,&
+                end if
+                if (rela .eq. 0.d0 .or. rela .eq. 1.d0 .or. rela .eq. 2.d0) then
+                    call xmfrot(algofr, coeffr, coeffp, ddlm, ddls, &
+                                ffc, ffp, idepd, idepm, indco, &
+                                jac, lact, mmat, mu, nd, &
+                                ndim, nfh, nfiss, nno, nnol, &
+                                nnos, nvit, pla, seuil, &
                                 singu, fk, tau1, tau2)
-                endif
+                end if
 
 !
 ! --- FIN DE BOUCLE SUR LES POINTS DE GAUSS
@@ -278,54 +278,54 @@ character(len=16) :: option, nomte
 ! --- FIN DE BOUCLE SUR LES FACETTES
         end do
 ! --- FIN BOUCLE SUR LES FISSURES : DECALAGE D INDICES
-        nbspg = nbspg + nspfis
- 91     continue
-        jbasec = jbasec + ncompb
-        jptint = jptint + ncompp
-        jaint = jaint + ncompa
-        jcface = jcface + ncompc
+        nbspg = nbspg+nspfis
+91      continue
+        jbasec = jbasec+ncompb
+        jptint = jptint+ncompp
+        jaint = jaint+ncompa
+        jcface = jcface+ncompc
     end do
 !
 !-----------------------------------------------------------------------
 !     COPIE DES CHAMPS DE SORTIES ET FIN
 !-----------------------------------------------------------------------
 !
-    if (algocr .eq. 2 .or. algofr .eq. 2 .or. algocr .eq. 3&
+    if (algocr .eq. 2 .or. algofr .eq. 2 .or. algocr .eq. 3 &
         .and. rela .ne. 5.d0 .and. rela .ne. 4.d0) then
 ! --- RECUPERATION DE LA MATRICE 'OUT' NON SYMETRIQUE
-        matsym=.false.
+        matsym = .false.
         call jevech('PMATUNS', 'E', imatt)
         do j = 1, nddl
             do i = 1, nddl
                 ij = j+nddl*(i-1)
-                zr(imatt+ij-1) = mmat(i,j)
+                zr(imatt+ij-1) = mmat(i, j)
             end do
         end do
     else
 ! --- RECUPERATION DE LA MATRICE 'OUT' SYMETRIQUE
-        matsym=.true.
+        matsym = .true.
         call jevech('PMATUUR', 'E', imatt)
         do j = 1, nddl
             do i = 1, j
-                ij = (j-1)*j/2 + i
-                zr(imatt+ij-1) = mmat(i,j)
+                ij = (j-1)*j/2+i
+                zr(imatt+ij-1) = mmat(i, j)
             end do
         end do
-    endif
+    end if
 ! --- SUPPRESSION DES DDLS DE DEPLACEMENT SEULEMENT POUR LES XHTC
     if (nfh .ne. 0) then
         call jevech('PSTANO', 'L', jstno)
-        call xteddl(ndim, nfh, nfe, ddls, nddl,&
-                    nno, nnos, zi(jstno), .false._1, matsym,&
-                    option, nomte, ddlm, nfiss, jfisno,&
+        call xteddl(ndim, nfh, nfe, ddls, nddl, &
+                    nno, nnos, zi(jstno), .false._1, matsym, &
+                    option, nomte, ddlm, nfiss, jfisno, &
                     mat=zr(imatt))
-    endif
+    end if
 ! --- SUPPRESSION DES DDLS DE CONTACT
     if (lelim) then
-        call xteddl(ndim, nfh, nfe, ddls, nddl,&
-                    nno, nnos, vstnc, .true._1, matsym,&
-                    option, nomte, ddlm, nfiss, jfisno,&
+        call xteddl(ndim, nfh, nfe, ddls, nddl, &
+                    nno, nnos, vstnc, .true._1, matsym, &
+                    option, nomte, ddlm, nfiss, jfisno, &
                     mat=zr(imatt))
-    endif
+    end if
 !
 end subroutine

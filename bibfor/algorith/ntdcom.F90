@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 !
 subroutine ntdcom(result_dry, l_dry)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterc/getfac.h"
@@ -29,8 +29,8 @@ implicit none
 #include "asterfort/getvtx.h"
 #include "asterfort/utmess.h"
 !
-character(len=8), intent(out) :: result_dry
-aster_logical, intent(out) :: l_dry
+    character(len=8), intent(out) :: result_dry
+    aster_logical, intent(out) :: l_dry
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -53,7 +53,7 @@ aster_logical, intent(out) :: l_dry
 ! --------------------------------------------------------------------------------------------------
 !
     result_dry = ' '
-    l_dry      = ASTER_FALSE
+    l_dry = ASTER_FALSE
 !
 ! - Look for behaviour
 !
@@ -63,18 +63,18 @@ aster_logical, intent(out) :: l_dry
         call getvtx(keywfact, 'RELATION', iocc=iocc, scal=comp_rela, nbret=n1)
         if (comp_rela(1:10) .eq. 'SECH_NAPPE') then
             l_dry = ASTER_TRUE
-        endif
+        end if
         if (comp_rela(1:12) .eq. 'SECH_GRANGER') then
             l_dry = ASTER_TRUE
-        endif
+        end if
         if (comp_rela(1:5) .ne. 'SECH_') then
             lrela = ASTER_TRUE
-        endif
+        end if
     end do
 !
     if (l_dry .and. lrela) then
         call utmess('F', 'THERNONLINE4_96')
-    endif
+    end if
 !
     if (l_dry) then
         call getvid(' ', 'EVOL_THER_SECH', nbval=0, nbret=n1)
@@ -89,9 +89,9 @@ aster_logical, intent(out) :: l_dry
                 call dismoi('NB_CHAMP_UTI', result_dry, 'RESULTAT', repi=nbcham)
                 if (nbcham .le. 0) then
                     call utmess('F', 'THERNONLINE4_99', sk=result_dry)
-                endif
-            endif
-        endif
-    endif
+                end if
+            end if
+        end if
+    end if
 !
 end subroutine

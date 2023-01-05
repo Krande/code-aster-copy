@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -39,7 +39,7 @@ subroutine pacou4(a, n, c, d, sing)
     do k = 1, n-1
 !
         do i = k, n
-            scale = max(scale,abs(a(i,k)))
+            scale = max(scale, abs(a(i, k)))
         end do
 !
         if (abs(scale) .le. 1.0d-30) then
@@ -49,36 +49,36 @@ subroutine pacou4(a, n, c, d, sing)
 !
         else
             do i = k, n
-                a(i,k) = a(i,k)/scale
+                a(i, k) = a(i, k)/scale
             end do
 !
             sum = 0.0d0
             do i = k, n
-                sum = sum + a(i,k)**2
+                sum = sum+a(i, k)**2
             end do
 !
-            sigma = sign ( sqrt(sum), a(k,k) )
-            a(k,k) = a(k,k) + sigma
-            c(k) = sigma*a(k,k)
+            sigma = sign(sqrt(sum), a(k, k))
+            a(k, k) = a(k, k)+sigma
+            c(k) = sigma*a(k, k)
             d(k) = -scale*sigma
 !
             do j = k+1, n
 !
                 sum = 0.0d0
                 do i = k, n
-                    sum = sum + a(i,k)*a(i,j)
+                    sum = sum+a(i, k)*a(i, j)
                 end do
 !
                 tau = sum/c(k)
                 do i = k, n
-                    a(i,j) = a(i,j) - tau*a(i,k)
+                    a(i, j) = a(i, j)-tau*a(i, k)
                 end do
             end do
 !
-        endif
+        end if
     end do
 !
-    d(n) = a(n,n)
+    d(n) = a(n, n)
     if (abs(d(n)) .le. 1.0d-30) sing = .true.
 !
 end subroutine

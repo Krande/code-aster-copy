@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -134,7 +134,7 @@ subroutine lisdef(oper, optkz, opti, valkz, vali)
 ! ----------------------------------------------------------------------
 !
     integer :: nbtyth
-    parameter   (nbtyth = 29)
+    parameter(nbtyth=29)
     character(len=6) :: nomob(nbtyth)
     character(len=24) :: motcl(nbtyth)
     character(len=24) :: genre(nbtyth)
@@ -160,169 +160,169 @@ subroutine lisdef(oper, optkz, opti, valkz, vali)
 ! --- PAR UNE CARTE - AUTRES OBJETS: __*
 !
     data nomob/&
-     &     '.CIMPO'          ,'__ELIM'          ,&
-     &     '.FORNO'          ,'.EPSIN'          ,'.SIINT'          ,&
-     &     '.PRESS'          ,'.FLUX'           ,'.VFACE'          ,&
-     &     '.IMPED'          ,'__EVOC'          ,'.PESAN'          ,&
-     &     '.ROTAT'          ,'.SIGIN'          ,'.FELEC'          ,&
-     &     '.FL1'            ,'.ONDE'           ,'.ONDPL'          ,&
-     &     '.VEASS'          ,'.F1D2D'          ,'.F3D3D'          ,&
-     &     '.F2D2D'          ,'.F1D3D'          ,'.F2D3D'          ,&
-     &     '.F1D1D'          ,'.FCO3D'          ,'.FCO2D'          ,&
-     &     '__VEAS'          ,'__VEAG'          ,'.ETHM'          /
+     &     '.CIMPO', '__ELIM',&
+     &     '.FORNO', '.EPSIN', '.SIINT',&
+     &     '.PRESS', '.FLUX', '.VFACE',&
+     &     '.IMPED', '__EVOC', '.PESAN',&
+     &     '.ROTAT', '.SIGIN', '.FELEC',&
+     &     '.FL1', '.ONDE', '.ONDPL',&
+     &     '.VEASS', '.F1D2D', '.F3D3D',&
+     &     '.F2D2D', '.F1D3D', '.F2D3D',&
+     &     '.F1D1D', '.FCO3D', '.FCO2D',&
+     &     '__VEAS', '__VEAG', '.ETHM'/
 !
 ! --- MOT_CLEF DEFINISSANT LE CHARGEMENT DANS AFFE_CHAR_*
 !
-    data motcl /&
-     &     'DIRI_DUAL'       ,'DIRI_ELIM'       ,&
-     &     'FORCE_NODALE'    ,'EPSI_INIT'       ,'SIGM_INTERNE'    ,&
-     &     'PRES_REP'        ,'FLUX_THM_REP'    ,'VITE_FACE'       ,&
-     &     'IMPE_FACE'       ,'EVOL_CHAR'       ,'PESANTEUR'       ,&
-     &     'ROTATION'        ,'RELA_CINE_BP'    ,'FORCE_ELEC'      ,&
-     &     'INTE_ELEC'       ,'ONDE_FLUI'       ,'ONDE_PLANE'      ,&
-     &     'VECT_ASSE_CHAR'  ,'FORCE_CONTOUR'   ,'FORCE_INTERNE#3D',&
-     &     'FORCE_INTERNE#2D','FORCE_ARETE'     ,'FORCE_FACE'      ,&
-     &     'FORCE_POUTRE'    ,'FORCE_COQUE#3D'  ,'FORCE_COQUE#2D'  ,&
-     &     'VECT_ASSE'       ,'VECT_ASSE_GENE'  ,'ECHA_THM' /
+    data motcl/&
+     &     'DIRI_DUAL', 'DIRI_ELIM',&
+     &     'FORCE_NODALE', 'EPSI_INIT', 'SIGM_INTERNE',&
+     &     'PRES_REP', 'FLUX_THM_REP', 'VITE_FACE',&
+     &     'IMPE_FACE', 'EVOL_CHAR', 'PESANTEUR',&
+     &     'ROTATION', 'RELA_CINE_BP', 'FORCE_ELEC',&
+     &     'INTE_ELEC', 'ONDE_FLUI', 'ONDE_PLANE',&
+     &     'VECT_ASSE_CHAR', 'FORCE_CONTOUR', 'FORCE_INTERNE#3D',&
+     &     'FORCE_INTERNE#2D', 'FORCE_ARETE', 'FORCE_FACE',&
+     &     'FORCE_POUTRE', 'FORCE_COQUE#3D', 'FORCE_COQUE#2D',&
+     &     'VECT_ASSE', 'VECT_ASSE_GENE', 'ECHA_THM'/
 !
 ! --- POSITION DANS L'ENTIER CODE POUR LE MOT_CLEF DE LA CHARGE
 !
-    data mcfcod /&
-     &     01                ,02                ,&
-     &     03                ,04                ,05                ,&
-     &     06                ,07                ,08                ,&
-     &     09                ,10                ,11                ,&
-     &     12                ,13                ,14                ,&
-     &     15                ,16                ,17                ,&
-     &     18                ,19                ,20                ,&
-     &     21                ,22                ,23                ,&
-     &     24                ,25                ,26                ,&
-     &     27                ,28                ,29         /
+    data mcfcod/&
+     &     01, 02,&
+     &     03, 04, 05,&
+     &     06, 07, 08,&
+     &     09, 10, 11,&
+     &     12, 13, 14,&
+     &     15, 16, 17,&
+     &     18, 19, 20,&
+     &     21, 22, 23,&
+     &     24, 25, 26,&
+     &     27, 28, 29/
 !
 ! --- GENRE DE LA CHARGE
 !
-    data genre /&
-     &     'DIRI_DUAL'       ,'DIRI_ELIM'       ,&
-     &     'NEUM_MECA'       ,'NEUM_MECA'       ,'SIGM_INTERNE'    ,&
-     &     'NEUM_MECA'       ,'NEUM_MECA'       ,'VITE_FACE'       ,&
-     &     'IMPE_FACE'       ,'EVOL_CHAR'       ,'NEUM_MECA'       ,&
-     &     'NEUM_MECA'       ,'SIGM_CABLE'      ,'FORCE_ELEC'      ,&
-     &     'INTE_ELEC'       ,'ONDE_FLUI'       ,'ONDE_PLANE'      ,&
-     &     'VECT_ASSE_CHAR'  ,'NEUM_MECA'       ,'NEUM_MECA'       ,&
-     &     'NEUM_MECA'       ,'NEUM_MECA'       ,'NEUM_MECA'       ,&
-     &     'NEUM_MECA'       ,'NEUM_MECA'       ,'NEUM_MECA'       ,&
-     &     'VECT_ASSE'       ,'VECT_ASSE_GENE'  , 'NEUM_MECA'         /
+    data genre/&
+     &     'DIRI_DUAL', 'DIRI_ELIM',&
+     &     'NEUM_MECA', 'NEUM_MECA', 'SIGM_INTERNE',&
+     &     'NEUM_MECA', 'NEUM_MECA', 'VITE_FACE',&
+     &     'IMPE_FACE', 'EVOL_CHAR', 'NEUM_MECA',&
+     &     'NEUM_MECA', 'SIGM_CABLE', 'FORCE_ELEC',&
+     &     'INTE_ELEC', 'ONDE_FLUI', 'ONDE_PLANE',&
+     &     'VECT_ASSE_CHAR', 'NEUM_MECA', 'NEUM_MECA',&
+     &     'NEUM_MECA', 'NEUM_MECA', 'NEUM_MECA',&
+     &     'NEUM_MECA', 'NEUM_MECA', 'NEUM_MECA',&
+     &     'VECT_ASSE', 'VECT_ASSE_GENE', 'NEUM_MECA'/
 !
 ! --- POSITION DANS L'ENTIER CODE POUR LE GENRE DE LA CHARGE
 !
-    data gencod /&
-     &     02                ,01                ,&
-     &     03                ,03                ,05                ,&
-     &     03                ,03                ,06                ,&
-     &     07                ,08                ,03                ,&
-     &     03                ,09                ,14                ,&
-     &     10                ,11                ,12                ,&
-     &     13                ,03                ,03                ,&
-     &     03                ,03                ,03                ,&
-     &     03                ,03                ,03                ,&
-     &     04                ,15              ,03                /
+    data gencod/&
+     &     02, 01,&
+     &     03, 03, 05,&
+     &     03, 03, 06,&
+     &     07, 08, 03,&
+     &     03, 09, 14,&
+     &     10, 11, 12,&
+     &     13, 03, 03,&
+     &     03, 03, 03,&
+     &     03, 03, 03,&
+     &     04, 15, 03/
 !
-    data typlig /&
-     &     'LIGRCH'          ,'LIGRCH'          ,&
-     &     'LIGRCH'          ,'LIGRMO'          ,'LIGRMO'          ,&
-     &     'LIGRMO'          ,'LIGRMO'          ,'LIGRMO'          ,&
-     &     'LIGRMO'          ,'LIGRMO'          ,'LIGRMO'          ,&
-     &     'LIGRMO'          ,'LIGRMO'          ,'LIGRMO'          ,&
-     &     'LIGRMO'          ,'LIGRMO'          ,'LIGRMO'          ,&
-     &     'LIGRMO'          ,'LIGRMO'          ,'LIGRMO'          ,&
-     &     'LIGRMO'          ,'LIGRMO'          ,'LIGRMO'          ,&
-     &     'LIGRMO'          ,'LIGRMO'          ,'LIGRMO'          ,&
-     &     ' '               ,' '             , 'LIGRMO'             /
+    data typlig/&
+     &     'LIGRCH', 'LIGRCH',&
+     &     'LIGRCH', 'LIGRMO', 'LIGRMO',&
+     &     'LIGRMO', 'LIGRMO', 'LIGRMO',&
+     &     'LIGRMO', 'LIGRMO', 'LIGRMO',&
+     &     'LIGRMO', 'LIGRMO', 'LIGRMO',&
+     &     'LIGRMO', 'LIGRMO', 'LIGRMO',&
+     &     'LIGRMO', 'LIGRMO', 'LIGRMO',&
+     &     'LIGRMO', 'LIGRMO', 'LIGRMO',&
+     &     'LIGRMO', 'LIGRMO', 'LIGRMO',&
+     &     ' ', ' ', 'LIGRMO'/
 !
 !
 ! --- NOM DE L'OPTION - CAS REEL
 !
-    data optior /&
-     &     'MECA_DDLI_R'     ,' '               ,&
-     &     'CHAR_MECA_FORC_R','CHAR_MECA_EPSI_R',' '               ,&
-     &     'CHAR_MECA_PRES_R','CHAR_MECA_FLUX_R',' '               ,&
-     &     ' '               ,' '               ,'CHAR_MECA_PESA_R',&
-     &     'CHAR_MECA_ROTA_R',' '               ,'CHAR_MECA_FRELEC',&
-     &     ' '               ,' '               ,' '               ,&
-     &     ' '               ,'CHAR_MECA_FR1D2D','CHAR_MECA_FR3D3D',&
-     &     'CHAR_MECA_FR2D2D','CHAR_MECA_FR1D3D','CHAR_MECA_FR2D3D',&
-     &     'CHAR_MECA_FR1D1D','CHAR_MECA_FRCO3D','CHAR_MECA_FRCO2D',&
-     &     ' '               ,' '               , 'CHAR_ECHA_THM_R'/
+    data optior/&
+     &     'MECA_DDLI_R', ' ',&
+     &     'CHAR_MECA_FORC_R', 'CHAR_MECA_EPSI_R', ' ',&
+     &     'CHAR_MECA_PRES_R', 'CHAR_MECA_FLUX_R', ' ',&
+     &     ' ', ' ', 'CHAR_MECA_PESA_R',&
+     &     'CHAR_MECA_ROTA_R', ' ', 'CHAR_MECA_FRELEC',&
+     &     ' ', ' ', ' ',&
+     &     ' ', 'CHAR_MECA_FR1D2D', 'CHAR_MECA_FR3D3D',&
+     &     'CHAR_MECA_FR2D2D', 'CHAR_MECA_FR1D3D', 'CHAR_MECA_FR2D3D',&
+     &     'CHAR_MECA_FR1D1D', 'CHAR_MECA_FRCO3D', 'CHAR_MECA_FRCO2D',&
+     &     ' ', ' ', 'CHAR_ECHA_THM_R'/
 !
 ! --- NOM DE L'OPTION - CAS COMPLEXE
 !
-    data optioc /&
-     &     'MECA_DDLI_C'     ,' '               ,&
-     &     ' '               ,' '               ,' '               ,&
-     &     ' '               ,' '               ,' '               ,&
-     &     ' '               ,' '               ,' '               ,&
-     &     ' '               ,' '               ,' '               ,&
-     &     ' '               ,' '               ,' '               ,&
-     &     ' '               ,' '               ,' '               ,&
-     &     ' '               ,' '               ,' '               ,&
-     &     'CHAR_MECA_FC1D1D',' '               ,' '               ,&
-     &     ' '               ,' '            ,' '            /
+    data optioc/&
+     &     'MECA_DDLI_C', ' ',&
+     &     ' ', ' ', ' ',&
+     &     ' ', ' ', ' ',&
+     &     ' ', ' ', ' ',&
+     &     ' ', ' ', ' ',&
+     &     ' ', ' ', ' ',&
+     &     ' ', ' ', ' ',&
+     &     ' ', ' ', ' ',&
+     &     'CHAR_MECA_FC1D1D', ' ', ' ',&
+     &     ' ', ' ', ' '/
 !
 ! --- NOM DE L'OPTION - CAS FONCTION REELLE
 !
-    data optiof /&
-     &     'MECA_DDLI_F'     ,' '               ,&
-     &     'CHAR_MECA_FORC_F','CHAR_MECA_EPSI_F',' '               ,&
-     &     'CHAR_MECA_PRES_F','CHAR_MECA_FLUX_F',' '               ,&
-     &     ' '               ,' '               ,' '               ,&
-     &     ' '               ,' '               ,' '               ,&
-     &     ' '               ,' '               ,' '               ,&
-     &     ' '               ,'CHAR_MECA_FF1D2D','CHAR_MECA_FF3D3D',&
-     &     'CHAR_MECA_FF2D2D','CHAR_MECA_FF1D3D','CHAR_MECA_FF2D3D',&
-     &     'CHAR_MECA_FF1D1D','CHAR_MECA_FFCO3D','CHAR_MECA_FFCO2D',&
-     &     ' '               ,' '   , 'CHAR_ECHA_THM_F'/
+    data optiof/&
+     &     'MECA_DDLI_F', ' ',&
+     &     'CHAR_MECA_FORC_F', 'CHAR_MECA_EPSI_F', ' ',&
+     &     'CHAR_MECA_PRES_F', 'CHAR_MECA_FLUX_F', ' ',&
+     &     ' ', ' ', ' ',&
+     &     ' ', ' ', ' ',&
+     &     ' ', ' ', ' ',&
+     &     ' ', 'CHAR_MECA_FF1D2D', 'CHAR_MECA_FF3D3D',&
+     &     'CHAR_MECA_FF2D2D', 'CHAR_MECA_FF1D3D', 'CHAR_MECA_FF2D3D',&
+     &     'CHAR_MECA_FF1D1D', 'CHAR_MECA_FFCO3D', 'CHAR_MECA_FFCO2D',&
+     &     ' ', ' ', 'CHAR_ECHA_THM_F'/
 !
 ! --- NOM DU PARAMETRE - CAS REEL
 !
-    data parar /&
-     &     'PDDLIMR'         ,' '               ,&
-     &     'PFORNOR'         ,'PEPSINR'         ,' '               ,&
-     &     'PPRESSR'         ,'PFLUXR'          ,' '               ,&
-     &     ' '               ,' '               ,'PESANR'          ,&
-     &     'PROTATR'         ,' '               ,'PFRELEC'         ,&
-     &     ' '               ,' '               ,' '               ,&
-     &     ' '               ,'PFR1D2D'         ,'PFR3D3D'         ,&
-     &     'PFR2D2D'         ,'PFR1D3D'         ,'PFR2D3D'         ,&
-     &     'PFR1D1D'         ,'PFRCO3D'         ,'PFRCO2D'         ,&
-     &     ' '               ,' '    ,'PECHTHM'            /
+    data parar/&
+     &     'PDDLIMR', ' ',&
+     &     'PFORNOR', 'PEPSINR', ' ',&
+     &     'PPRESSR', 'PFLUXR', ' ',&
+     &     ' ', ' ', 'PESANR',&
+     &     'PROTATR', ' ', 'PFRELEC',&
+     &     ' ', ' ', ' ',&
+     &     ' ', 'PFR1D2D', 'PFR3D3D',&
+     &     'PFR2D2D', 'PFR1D3D', 'PFR2D3D',&
+     &     'PFR1D1D', 'PFRCO3D', 'PFRCO2D',&
+     &     ' ', ' ', 'PECHTHM'/
 !
 ! --- NOM DU PARAMETRE - CAS COMPLEXE
 !
-    data parac /&
-     &     'PDDLIMC'         ,' '               ,&
-     &     ' '               ,' '               ,' '               ,&
-     &     ' '               ,' '               ,' '               ,&
-     &     ' '               ,' '               ,' '               ,&
-     &     ' '               ,' '               ,' '               ,&
-     &     ' '               ,' '               ,' '               ,&
-     &     ' '               ,' '               ,' '               ,&
-     &     ' '               ,' '               ,' '               ,&
-     &     'PFC1D1D'         ,' '               ,' '               ,&
-     &     ' '               ,' '             ,' '              /
+    data parac/&
+     &     'PDDLIMC', ' ',&
+     &     ' ', ' ', ' ',&
+     &     ' ', ' ', ' ',&
+     &     ' ', ' ', ' ',&
+     &     ' ', ' ', ' ',&
+     &     ' ', ' ', ' ',&
+     &     ' ', ' ', ' ',&
+     &     ' ', ' ', ' ',&
+     &     'PFC1D1D', ' ', ' ',&
+     &     ' ', ' ', ' '/
 !
 ! --- NOM DU PARAMETRE - CAS FONCTION REELLE
 !
-    data paraf /&
-     &     'PDDLIMF'         ,' '               ,&
-     &     'PFORNOF'         ,'PEPSINF'         ,' '               ,&
-     &     'PPRESSF'         ,'PFLUXF'          ,' '               ,&
-     &     ' '               ,' '               ,'PPESANR'         ,&
-     &     'PROTATR'         ,' '               ,'PFRELEC'         ,&
-     &     ' '               ,' '               ,' '               ,&
-     &     ' '               ,'PFF1D2D'         ,'PFF3D3D'         ,&
-     &     'PFF2D2D'         ,'PFF1D3D'         ,'PFF2D3D'         ,&
-     &     'PFF1D1D'         ,'PFFCO3D'         ,'PFFCO2D'         ,&
-     &     ' '               ,' '     ,'PECHTHMF'            /
+    data paraf/&
+     &     'PDDLIMF', ' ',&
+     &     'PFORNOF', 'PEPSINF', ' ',&
+     &     'PPRESSF', 'PFLUXF', ' ',&
+     &     ' ', ' ', 'PPESANR',&
+     &     'PROTATR', ' ', 'PFRELEC',&
+     &     ' ', ' ', ' ',&
+     &     ' ', 'PFF1D2D', 'PFF3D3D',&
+     &     'PFF2D2D', 'PFF1D3D', 'PFF2D3D',&
+     &     'PFF1D1D', 'PFFCO3D', 'PFFCO2D',&
+     &     ' ', ' ', 'PECHTHMF'/
 !
 ! ----------------------------------------------------------------------
 !
@@ -345,20 +345,20 @@ subroutine lisdef(oper, optkz, opti, valkz, vali)
 !
 ! --------- CHARGEMENT CINEMATIQUE (AFFE_CHAR_CINE)
 !
-                call dismoi('TYPE_CHARGE', charge, 'CHARGE', repk=typcha, arret='C',&
+                call dismoi('TYPE_CHARGE', charge, 'CHARGE', repk=typcha, arret='C', &
                             ier=iret)
-                if ((typcha(1:4).eq.'CIME') .or. (typcha(1:4) .eq.'CITH') .or.&
-                    (typcha(1:4).eq.'CIAC')) then
+                if ((typcha(1:4) .eq. 'CIME') .or. (typcha(1:4) .eq. 'CITH') .or. &
+                    (typcha(1:4) .eq. 'CIAC')) then
                     iposit = gencod(indxch)
-                endif
-            else if (nomobj.eq.'__EVOC') then
+                end if
+            else if (nomobj .eq. '__EVOC') then
 !
 ! --------- CHARGEMENT EVOL_CHAR
 !
                 nomobj = charge(1:8)//'.CHME.EVOL.CHAR'
                 call jeexin(nomobj, iret)
                 if (iret .ne. 0) iposit = gencod(indxch)
-            else if (nomobj.eq.'__VEAS') then
+            else if (nomobj .eq. '__VEAS') then
 !
 ! --------- CHARGEMENT VECT_ASSE
 !
@@ -366,9 +366,9 @@ subroutine lisdef(oper, optkz, opti, valkz, vali)
                 call jeexin(chamno(1:19)//'.VALE', iret)
                 if (iret .ne. 0) then
                     call gettco(charge, typeco)
-                    if (typeco .eq. 'CHAM_NO_SDASTER') iposit = gencod( indxch)
-                endif
-            else if (nomobj.eq.'__VEAG') then
+                    if (typeco .eq. 'CHAM_NO_SDASTER') iposit = gencod(indxch)
+                end if
+            else if (nomobj .eq. '__VEAG') then
 !
 ! --------- CHARGEMENT VECT_ASSE_GENE
 !
@@ -376,9 +376,9 @@ subroutine lisdef(oper, optkz, opti, valkz, vali)
                 call jeexin(chamno(1:19)//'.VALE', iret)
                 if (iret .ne. 0) then
                     call gettco(charge, typeco)
-                    if (typeco .eq. 'VECT_ASSE_GENE') iposit = gencod( indxch)
-                endif
-            else if (nomobj.eq.'.VEASS') then
+                    if (typeco .eq. 'VECT_ASSE_GENE') iposit = gencod(indxch)
+                end if
+            else if (nomobj .eq. '.VEASS') then
 !
 ! --------- CHARGEMENT VECT_ASSE_CHAR
 !
@@ -391,13 +391,13 @@ subroutine lisdef(oper, optkz, opti, valkz, vali)
                 carte = prefob(1:13)//nomobj
                 call exisd('CARTE', carte, iexi)
                 if (iexi .eq. 1) iposit = gencod(indxch)
-            endif
+            end if
 !
 ! ------- CHARGEMENT IDENTIFIE: ACTIVATION DANS LA TABLE D'ENCODAGE
 !
-            if ((iposit.ge.1) .and. (iposit.le.30)) then
+            if ((iposit .ge. 1) .and. (iposit .le. 30)) then
                 tabcod(iposit) = 1
-            endif
+            end if
         end do
 !
 ! ----- CODAGE DE L'ENTIER
@@ -407,7 +407,7 @@ subroutine lisdef(oper, optkz, opti, valkz, vali)
 ! ----------------------------------------------------------------------
 ! --- IDENTIFICATION DES MOTS-CLEFS D'UNE CHARGE
 ! ----------------------------------------------------------------------
-    else if (oper.eq.'IDMC') then
+    else if (oper .eq. 'IDMC') then
         motclc = 0
         call isdeco(motclc, tabcox, 60)
         prefob = optkz
@@ -422,20 +422,20 @@ subroutine lisdef(oper, optkz, opti, valkz, vali)
 !
 ! --------- CHARGEMENT CINEMATIQUE (AFFE_CHAR_CINE)
 !
-                call dismoi('TYPE_CHARGE', charge, 'CHARGE', repk=typcha, arret='C',&
+                call dismoi('TYPE_CHARGE', charge, 'CHARGE', repk=typcha, arret='C', &
                             ier=iret)
-                if ((typcha(1:4).eq.'CIME') .or. (typcha(1:4) .eq.'CITH') .or.&
-                    (typcha(1:4).eq.'CIAC')) then
+                if ((typcha(1:4) .eq. 'CIME') .or. (typcha(1:4) .eq. 'CITH') .or. &
+                    (typcha(1:4) .eq. 'CIAC')) then
                     iposit = mcfcod(indxch)
-                endif
-            else if (nomobj.eq.'__EVOC') then
+                end if
+            else if (nomobj .eq. '__EVOC') then
 !
 ! --------- CHARGEMENT EVOL_CHAR
 !
                 nomobj = charge(1:8)//'.CHME.EVOL.CHAR'
                 call jeexin(nomobj, iret)
                 if (iret .ne. 0) iposit = mcfcod(indxch)
-            else if (nomobj.eq.'__VEAS') then
+            else if (nomobj .eq. '__VEAS') then
 !
 ! --------- CHARGEMENT VECT_ASSE
 !
@@ -443,9 +443,9 @@ subroutine lisdef(oper, optkz, opti, valkz, vali)
                 call jeexin(chamno(1:19)//'.VALE', iret)
                 if (iret .ne. 0) then
                     call gettco(charge, typeco)
-                    if (typeco .eq. 'CHAM_NO_SDASTER') iposit = mcfcod( indxch)
-                endif
-            else if (nomobj.eq.'__VEAG') then
+                    if (typeco .eq. 'CHAM_NO_SDASTER') iposit = mcfcod(indxch)
+                end if
+            else if (nomobj .eq. '__VEAG') then
 !
 ! --------- CHARGEMENT VECT_ASSE_GENE
 !
@@ -453,9 +453,9 @@ subroutine lisdef(oper, optkz, opti, valkz, vali)
                 call jeexin(chamno(1:19)//'.VALE', iret)
                 if (iret .ne. 0) then
                     call gettco(charge, typeco)
-                    if (typeco .eq. 'VECT_ASSE_GENE') iposit = mcfcod( indxch)
-                endif
-            else if (nomobj.eq.'.VEASS') then
+                    if (typeco .eq. 'VECT_ASSE_GENE') iposit = mcfcod(indxch)
+                end if
+            else if (nomobj .eq. '.VEASS') then
 !
 ! --------- CHARGEMENT VECT_ASSE_CHAR
 !
@@ -468,13 +468,13 @@ subroutine lisdef(oper, optkz, opti, valkz, vali)
                 carte = prefob(1:13)//nomobj
                 call exisd('CARTE', carte, iexi)
                 if (iexi .eq. 1) iposit = mcfcod(indxch)
-            endif
+            end if
 !
 ! ------- CHARGEMENT IDENTIFIE: ACTIVATION DANS LA TABLE D'ENCODAGE
 !
-            if ((iposit.ge.1) .and. (iposit.le.60)) then
+            if ((iposit .ge. 1) .and. (iposit .le. 60)) then
                 tabcox(iposit) = 1
-            endif
+            end if
         end do
 !
 ! ----- CODAGE DE L'ENTIER
@@ -485,7 +485,7 @@ subroutine lisdef(oper, optkz, opti, valkz, vali)
 ! ----------------------------------------------------------------------
 ! --- RETOURNE LE TYPE DE LA CHARGE (REEL, COMP, FONC)
 ! ----------------------------------------------------------------------
-    else if (oper.eq.'TYPC') then
+    else if (oper .eq. 'TYPC') then
         prefob = optkz
         typech = ' '
         lveas = .false.
@@ -500,7 +500,7 @@ subroutine lisdef(oper, optkz, opti, valkz, vali)
 ! ----- DETECTION VECT_ASSE_CHAR
 !
         do indxch = 1, nbtyth
-            if (genre(indxch) .eq. 'VECT_ASSE_CHAR') iposit = gencod( indxch)
+            if (genre(indxch) .eq. 'VECT_ASSE_CHAR') iposit = gencod(indxch)
         end do
         if (tabcod(iposit) .eq. 1) lveac = .true.
 !
@@ -514,7 +514,7 @@ subroutine lisdef(oper, optkz, opti, valkz, vali)
 ! ----- DETECTION VECT_ASSE_GENE
 !
         do indxch = 1, nbtyth
-            if (genre(indxch) .eq. 'VECT_ASSE_GENE') iposit = gencod( indxch)
+            if (genre(indxch) .eq. 'VECT_ASSE_GENE') iposit = gencod(indxch)
         end do
         if (tabcod(iposit) .eq. 1) lveag = .true.
 !
@@ -525,28 +525,28 @@ subroutine lisdef(oper, optkz, opti, valkz, vali)
             call jelira(chamno//'.VALE', 'TYPE', cval=nomgd)
             if (nomgd(1:1) .eq. 'R') then
                 typech = 'REEL'
-            else if (nomgd(1:1).eq.'C') then
+            else if (nomgd(1:1) .eq. 'C') then
                 typech = 'COMP'
             else
                 ASSERT(.false.)
-            endif
+            end if
         else
             charge = prefob(1:8)
-            call dismoi('TYPE_CHARGE', charge, 'CHARGE', repk=typcha, arret='C',&
+            call dismoi('TYPE_CHARGE', charge, 'CHARGE', repk=typcha, arret='C', &
                         ier=iret)
             if (iret .eq. 1) then
                 call utmess('F', 'CHARGES_3')
-            endif
+            end if
             if (typcha(5:7) .eq. '_RE') then
                 typech = 'REEL'
-            else if (typcha(5:7).eq.'_RI') then
+            else if (typcha(5:7) .eq. '_RI') then
                 typech = 'COMP'
-            else if (typcha(5:6).eq.'_F') then
+            else if (typcha(5:6) .eq. '_F') then
                 typech = 'FONC'
             else
                 ASSERT(.false.)
-            endif
-        endif
+            end if
+        end if
 !
 ! ----- CAS D'UNE FONCTION: EST-ELLE FONCTION DU TEMPS ?
 !
@@ -559,80 +559,80 @@ subroutine lisdef(oper, optkz, opti, valkz, vali)
                 if (iexi .eq. 1) then
                     call dismoi('PARA_INST', carte, 'CARTE', repk=parcha)
                     if (parcha .eq. 'OUI') typech = 'FONC_FT'
-                endif
+                end if
             end do
-        endif
+        end if
         valkz = typech
 ! ----------------------------------------------------------------------
 ! --- NOM DE L'OBJET DEFINI DANS AFFE_CHAR_*
 ! ----------------------------------------------------------------------
-    else if (oper.eq.'OBJE') then
+    else if (oper .eq. 'OBJE') then
         indxch = opti
         prefob = optkz
         itypob = -1
         nomobj = ' '
-        if ((indxch.gt.0) .and. (indxch.le.nbtyth)) then
+        if ((indxch .gt. 0) .and. (indxch .le. nbtyth)) then
             nomobj = prefob(1:13)//nomob(indxch)
-            if (nomob(indxch)(1:2) .eq. '__') then
+            if (nomob(indxch) (1:2) .eq. '__') then
                 if (genre(indxch) .eq. 'EVOL_CHAR') then
                     itypob = 0
                     nomobj = prefob(1:13)//'.EVOL.CHAR'
-                else if (genre(indxch).eq.'DIRI_ELIM') then
+                else if (genre(indxch) .eq. 'DIRI_ELIM') then
                     itypob = 0
                     charge = prefob(1:8)
                     nomobj = charge(1:8)//'.TYPE'
-                else if (genre(indxch).eq.'VECT_ASSE') then
+                else if (genre(indxch) .eq. 'VECT_ASSE') then
                     itypob = 0
                     chamno = prefob(1:8)
                     nomobj = chamno(1:19)//'.VALE'
-                else if (genre(indxch).eq.'VECT_ASSE_GENE') then
+                else if (genre(indxch) .eq. 'VECT_ASSE_GENE') then
                     itypob = 0
                     chamno = prefob(1:8)
                     nomobj = chamno(1:19)//'.VALE'
                 else
                     ASSERT(.false.)
-                endif
+                end if
             else
                 carte = prefob(1:13)//nomob(indxch)
                 itypob = 1
                 nomobj = carte
-            endif
+            end if
         else
             ASSERT(.false.)
-        endif
-        ASSERT(itypob.ge.0)
+        end if
+        ASSERT(itypob .ge. 0)
         valkz = nomobj
         vali(1) = itypob
 ! ----------------------------------------------------------------------
 ! --- POSITION DANS L'ENTIER CODE POUR UN GENRE DONNE
 ! ----------------------------------------------------------------------
-    else if (oper.eq.'POSG') then
+    else if (oper .eq. 'POSG') then
         gencha = optkz
         iposit = 0
         do indxch = 1, nbtyth
             if (genre(indxch) .eq. gencha) iposit = gencod(indxch)
         end do
-        if ((iposit.le.0) .or. (iposit.gt.30)) then
+        if ((iposit .le. 0) .or. (iposit .gt. 30)) then
             ASSERT(.false.)
-        endif
+        end if
         vali(1) = iposit
 ! ----------------------------------------------------------------------
 ! --- POSITION DANS L'ENTIER CODE POUR UN MOT-CLEF DONNE
 ! ----------------------------------------------------------------------
-    else if (oper.eq.'POSM') then
+    else if (oper .eq. 'POSM') then
         motcle = optkz
         iposit = 0
         do indxch = 1, nbtyth
             if (motcl(indxch) .eq. motcle) iposit = mcfcod(indxch)
         end do
-        if ((iposit.le.0) .or. (iposit.gt.60)) then
+        if ((iposit .le. 0) .or. (iposit .gt. 60)) then
             ASSERT(.false.)
-        endif
+        end if
         vali(1) = iposit
 ! ----------------------------------------------------------------------
 ! --- NOM DE LA CARTE A PARTIR DU MOT-CLEF
 ! ----------------------------------------------------------------------
-    else if (oper.eq.'CART') then
+    else if (oper .eq. 'CART') then
         motcle = optkz
         nomcar = ' '
         itypob = 1
@@ -643,47 +643,47 @@ subroutine lisdef(oper, optkz, opti, valkz, vali)
         valkz = nomcar
         vali(1) = itypob
 ! ----------------------------------------------------------------------
-    else if (oper.eq.'OPTI') then
+    else if (oper .eq. 'OPTI') then
         indxch = opti
         typech = optkz
         option = ' '
-        if ((indxch.gt.0) .and. (indxch.le.nbtyth)) then
+        if ((indxch .gt. 0) .and. (indxch .le. nbtyth)) then
             if (typech .eq. 'REEL') then
                 option = optior(indxch)
-            else if (typech.eq.'COMP') then
+            else if (typech .eq. 'COMP') then
                 option = optioc(indxch)
-            else if (typech(1:4).eq.'FONC') then
+            else if (typech(1:4) .eq. 'FONC') then
                 option = optiof(indxch)
             else
                 ASSERT(.false.)
-            endif
+            end if
         else
             ASSERT(.false.)
-        endif
+        end if
         valkz = option
 ! ----------------------------------------------------------------------
-    else if (oper.eq.'PARA') then
+    else if (oper .eq. 'PARA') then
         indxch = opti
         typech = optkz
         lpain = ' '
-        if ((indxch.gt.0) .and. (indxch.le.nbtyth)) then
+        if ((indxch .gt. 0) .and. (indxch .le. nbtyth)) then
             if (typech .eq. 'REEL') then
                 lpain = parar(indxch)
-            else if (typech.eq.'COMP') then
+            else if (typech .eq. 'COMP') then
                 lpain = parac(indxch)
-            else if (typech(1:4).eq.'FONC') then
+            else if (typech(1:4) .eq. 'FONC') then
                 lpain = paraf(indxch)
             else
                 ASSERT(.false.)
-            endif
+            end if
         else
             ASSERT(.false.)
-        endif
+        end if
         valkz = lpain
 ! ----------------------------------------------------------------------
 ! --- GENRE A PARTIR DE LA POSITION DANS L'ENTIER CODE
 ! ----------------------------------------------------------------------
-    else if (oper.eq.'GENR') then
+    else if (oper .eq. 'GENR') then
         iposit = opti
         do indxch = 1, nbtyth
             if (iposit .eq. gencod(indxch)) gencha = genre(indxch)
@@ -692,13 +692,13 @@ subroutine lisdef(oper, optkz, opti, valkz, vali)
 ! ----------------------------------------------------------------------
 ! --- MOT-CLEF A PARTIR DE LA POSITION DANS L'ENTIER CODE
 ! ----------------------------------------------------------------------
-    else if (oper.eq.'MOTC') then
+    else if (oper .eq. 'MOTC') then
         indxch = opti
         motcle = motcl(indxch)
         valkz = motcle
 !
 ! ----------------------------------------------------------------------
-    else if (oper.eq.'IDNS') then
+    else if (oper .eq. 'IDNS') then
         liscns = optkz
         iposit = opti
 !
@@ -712,9 +712,9 @@ subroutine lisdef(oper, optkz, opti, valkz, vali)
 !
         nbch = 0
         do indxch = 1, nbtyth
-            if (genre(indxch) .eq. gencha) nbch = nbch + 1
+            if (genre(indxch) .eq. gencha) nbch = nbch+1
         end do
-        ASSERT(nbch.gt.0)
+        ASSERT(nbch .gt. 0)
 !
 ! ----- CREATION DE L'OBJET
 !
@@ -727,22 +727,22 @@ subroutine lisdef(oper, optkz, opti, valkz, vali)
             if (genre(indxch) .eq. gencha) then
                 i = i+1
                 zi(jlisci-1+i) = indxch
-            endif
+            end if
         end do
-        ASSERT(i.eq.nbch)
+        ASSERT(i .eq. nbch)
         vali(1) = nbch
 ! ----------------------------------------------------------------------
-    else if (oper.eq.'LIGC') then
+    else if (oper .eq. 'LIGC') then
         indxch = opti
         ligcal = ' '
-        if ((indxch.gt.0) .and. (indxch.le.nbtyth)) then
+        if ((indxch .gt. 0) .and. (indxch .le. nbtyth)) then
             ligcal = typlig(indxch)
         else
             ASSERT(.false.)
-        endif
+        end if
         valkz = ligcal
 ! ----------------------------------------------------------------------
-    else if (oper.eq.'LISG') then
+    else if (oper .eq. 'LISG') then
         liscns = optkz
         idd = 1
         call wkvect(liscns, 'V V K24', nbtyth, jlisck)
@@ -755,26 +755,26 @@ subroutine lisdef(oper, optkz, opti, valkz, vali)
                     ldoub = .false.
                     do index2 = 1, nbtyth
                         genold = zk24(jlisck-1+index2)
-                        if ((genold.eq.gencha) .and. (genold.ne.' ')) then
+                        if ((genold .eq. gencha) .and. (genold .ne. ' ')) then
                             ldoub = .true.
                             goto 72
-                        endif
+                        end if
                     end do
- 72                 continue
-                    if (.not.ldoub) then
-                        idd = idd + 1
+72                  continue
+                    if (.not. ldoub) then
+                        idd = idd+1
                         zk24(jlisck-1+idd) = gencha
-                    endif
-                endif
-            endif
+                    end if
+                end if
+            end if
         end do
-        ASSERT(idd.le.nbtyth)
+        ASSERT(idd .le. nbtyth)
         vali(1) = idd
 !
     else
         ASSERT(.false.)
 !
-    endif
+    end if
 !
     call jedema()
 end subroutine

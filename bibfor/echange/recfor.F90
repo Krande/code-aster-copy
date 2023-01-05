@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! *   LOGICIEL CODE_ASTER - COUPLAGE ASTER/EDYOS - Copyright EDF 2009  *
 ! This file is part of code_aster.
 !
@@ -17,7 +17,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine recfor(numpas, nbpal, force, typal, finpal,&
+subroutine recfor(numpas, nbpal, force, typal, finpal, &
                   cnpal, prdeff, conv)
 ! person_in_charge: nicolas.greffet at edf.fr
 ! **********************************************************************
@@ -228,23 +228,23 @@ subroutine recfor(numpas, nbpal, force, typal, finpal,&
 !
 !     A SUPPRIMER QUAND REPRIS = FALSE
     integer(kind=4) :: nsmax
-    parameter (nsmax = 24 )
-    real(kind=8) :: mvtpat (6, nsmax), mvtcon (6, nsmax)
+    parameter(nsmax=24)
+    real(kind=8) :: mvtpat(6, nsmax), mvtcon(6, nsmax)
 !
 !
 !     ANCIENS INCLUDE (CALCIUM.H)
 !     ===========================
     integer(kind=4) :: lenvar
-    parameter (lenvar = 144)
+    parameter(lenvar=144)
     character(len=lenvar) :: nomvar
     integer(kind=4) :: cpiter
-    parameter (cpiter= 41)
+    parameter(cpiter=41)
 !
 !
 !     =================================
     integer :: icompo
     integer :: palmax
-    parameter (palmax=20)
+    parameter(palmax=20)
     integer :: iadr
     character(len=3) :: finpal(palmax)
     character(len=6) :: typal(palmax)
@@ -261,7 +261,7 @@ subroutine recfor(numpas, nbpal, force, typal, finpal,&
 !
 !     ASSIGNATION DES NOMS POUR LES ADRESSES DANS LES COMMON ASTER
 !     ------------------------------------------------------------
-    ayacs='&ADR_YACS'
+    ayacs = '&ADR_YACS'
     conv = 1.d0
 !     RECUPERATION DES DONNEES DANS LES "COMMON" ASTER
 !     ================================================
@@ -270,69 +270,69 @@ subroutine recfor(numpas, nbpal, force, typal, finpal,&
 !     RECUPERATION DE L'ADRESSE YACS
 !     ------------------------------
     call jeveuo(ayacs, 'L', iadr)
-    icompo=zi(iadr)
+    icompo = zi(iadr)
 !      BOUCLE SUR LES PALIERS (NOEUDS ASTER)
     do ipal = 1, nbpal
-        force(ipal,1) = 0.d0
-        force(ipal,2) = 0.d0
-        force(ipal,3) = 0.d0
+        force(ipal, 1) = 0.d0
+        force(ipal, 2) = 0.d0
+        force(ipal, 3) = 0.d0
 !
 !        LECTURE DES EFFORTS EN PROVENANCE D'EDYOS
 !        -----------------------------------------
         nomvar = 'FORCETE'//finpal(ipal)
-        tr8=0.d0
+        tr8 = 0.d0
         if (typal(ipal) .ne. 'PACONL') then
-            idim=3
+            idim = 3
         else
-            idim=4
-        endif
+            idim = 4
+        end if
         do ipat = 1, 6
-            paramr(ipat)=0.d0
+            paramr(ipat) = 0.d0
         end do
-        npas=numpas
-        call cpldb(icompo, cpiter, tr8, tr8, npas,&
+        npas = numpas
+        call cpldb(icompo, cpiter, tr8, tr8, npas, &
                    nomvar, idim, nlu, paramr, info)
-        call errcou(nomprg, npas, nomvar, info, idim,&
+        call errcou(nomprg, npas, nomvar, info, idim, &
                     nlu)
 !         ECRITURE DES VALEURS RECUES
         if (niv .ge. 2) then
-            write(ifm,*)'==== ASTEREDYOS :',nomprg,' NUMPAS =======',&
-            numpas
-            write(ifm,*)'ASTEREDYOS: ',nomprg,&
+            write (ifm, *) '==== ASTEREDYOS :', nomprg, ' NUMPAS =======', &
+                numpas
+            write (ifm, *) 'ASTEREDYOS: ', nomprg,&
      &        ' ASTER  LECTURE EFFORTS EDYOS'
-            write(ifm,*)'ASTEREDYOS: ',nomprg,' NUMERO PALIER: ',&
-            ipal
-            write(ifm,*)'ASTEREDYOS: ',nomprg,' TYPE PALIER: ',&
-            typal(ipal)
-            write(ifm,*)'ASTEREDYOS: ',nomprg,' NOEUD PALIER: ',&
-            cnpal(ipal)
-            write(ifm,*)'ASTEREDYOS: ',nomprg,' CONVERGENCE: ',paramr(&
-            1)
-            write(ifm,*)'ASTEREDYOS: ',nomprg,' WX : ',paramr(2)
-            write(ifm,*)'ASTEREDYOS: ',nomprg,' WY : ',paramr(3)
-            write(ifm,*)'ASTEREDYOS: ',nomprg,' PACONL: PARAMR(4): ',&
-            paramr(4)
-            write(ifm,*)'ASTEREDYOS: '
-            write(ifm,*)'=========  ASTEREDYOS :  ',nomprg,'   ========'
-        endif
+            write (ifm, *) 'ASTEREDYOS: ', nomprg, ' NUMERO PALIER: ', &
+                ipal
+            write (ifm, *) 'ASTEREDYOS: ', nomprg, ' TYPE PALIER: ', &
+                typal(ipal)
+            write (ifm, *) 'ASTEREDYOS: ', nomprg, ' NOEUD PALIER: ', &
+                cnpal(ipal)
+            write (ifm, *) 'ASTEREDYOS: ', nomprg, ' CONVERGENCE: ', paramr( &
+                1)
+            write (ifm, *) 'ASTEREDYOS: ', nomprg, ' WX : ', paramr(2)
+            write (ifm, *) 'ASTEREDYOS: ', nomprg, ' WY : ', paramr(3)
+            write (ifm, *) 'ASTEREDYOS: ', nomprg, ' PACONL: PARAMR(4): ', &
+                paramr(4)
+            write (ifm, *) 'ASTEREDYOS: '
+            write (ifm, *) '=========  ASTEREDYOS :  ', nomprg, '   ========'
+        end if
 !
 !         VERIFICATION DE LA CONVERGENCE
 !         ------------------------------
         conv = paramr(1)
         if (conv .le. 0.d0) then
             call utmess('A', 'EDYOS_45')
-        endif
+        end if
 !
 !         AFFECTATION DES EFFORTS RECU D'EDYOS
 !         ------------------------------------
 !
 !         REACTION HYDRAULIQUE EN X (CORRESPOND AU Z DE EDYOS)
 !          ICOMP=N_DDL(IPAL,1)
-        force(ipal,1) = paramr(2)
+        force(ipal, 1) = paramr(2)
 !
 !         REACTION HYDRAULIQUE EN Y
 !          ICOMP=N_DDL(IPAL,2)
-        force(ipal,2) = paramr(3)
+        force(ipal, 2) = paramr(3)
 !          IF(TYPAL(IPAL) .EQ. 'PACONL')THEN
 !            CFRTA = PARAMR(4)
 !          ENDIF
@@ -342,33 +342,33 @@ subroutine recfor(numpas, nbpal, force, typal, finpal,&
 !             CONCORDANCE AVEC EDYOS)
 !
         if (repris) then
-            idim=6*nsmax
+            idim = 6*nsmax
             nomvar = 'REPRISEASTER'//finpal(ipal)
 !            LECTURE DES DONNEES ASSOCIES AUX PATINS (PAPANL)
 !            ------------------------------------------------
             if (typal(ipal) .eq. 'PAPANL') then
                 if (prdeff) then
-                    if (niv .ge. 2) write(ifm, * )'ASTEREDYOS : PAPANL - NOMVAR ', nomvar
-                    npas=numpas
-                    call cpldb(icompo, cpiter, tr8, tr8, npas,&
+                    if (niv .ge. 2) write (ifm, *) 'ASTEREDYOS : PAPANL - NOMVAR ', nomvar
+                    npas = numpas
+                    call cpldb(icompo, cpiter, tr8, tr8, npas, &
                                nomvar, idim, nlu, mvtpat, info)
-                    call errcou(nomprg, npas, nomvar, info, idim,&
+                    call errcou(nomprg, npas, nomvar, info, idim, &
                                 nlu)
-                endif
-            endif
+                end if
+            end if
 !            LECTURE DES DONNEES ASSOCIES A PACONL
 !            -------------------------------------
             if (typal(ipal) .eq. 'PACONL') then
                 if (prdeff) then
-                    if (niv .ge. 2) write(ifm, * )'ASTEREDYOS : PAPANL - NOMVAR ', nomvar
-                    npas=numpas
-                    call cpldb(icompo, cpiter, tr8, tr8, npas,&
+                    if (niv .ge. 2) write (ifm, *) 'ASTEREDYOS : PAPANL - NOMVAR ', nomvar
+                    npas = numpas
+                    call cpldb(icompo, cpiter, tr8, tr8, npas, &
                                nomvar, idim, nlu, mvtcon, info)
-                    call errcou(nomprg, npas, nomvar, info, idim,&
+                    call errcou(nomprg, npas, nomvar, info, idim, &
                                 nlu)
-                endif
-            endif
-        endif
+                end if
+            end if
+        end if
 !         FIN DE CONSTITUTION DU FICHIER EN CAS DE REPRISE
     end do
 !      FIN DE LA BOUCLE SUR LES PALIERS

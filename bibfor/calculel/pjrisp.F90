@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -40,7 +40,7 @@ subroutine pjrisp(moa2, masp, corres, noca)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    implicit   none
+    implicit none
     character(len=8) :: masp, moa2, noca
     character(len=16) :: corres
 !
@@ -88,43 +88,43 @@ subroutine pjrisp(moa2, masp, corres, noca)
     call jeveuo(mail2//'.TYPMAIL', 'L', jtypma)
 !
 !   Récuperation du champ de coordonnées du maillage 2
-    chgeom=mail2//'.COORDO'
+    chgeom = mail2//'.COORDO'
 !
     ligrel = moa2//'.MODELE'
 !
 ! --------------------------------------------------------------------------------------------------
 !   Calcul du champ de coordonnées des ELGA (chamg):
-    nchi=6
-    lchin(1)=chgeom(1:19)
-    lpain(1)='PGEOMER'
-    lchin(2)=noca//'.CARORIEN'
-    lpain(2)='PCAORIE'
-    lchin(3)=noca//'.CAFIBR'
-    lpain(3)='PFIBRES'
-    lchin(4)=noca//'.CANBSP'
-    lpain(4)='PNBSP_I'
-    lchin(5)=noca//'.CARCOQUE'
-    lpain(5)='PCACOQU'
-    lchin(6)=noca//'.CARGEOPO'
-    lpain(6)='PCAGEPO'
-    chamg='&&PJRISP.PGCOOR'
+    nchi = 6
+    lchin(1) = chgeom(1:19)
+    lpain(1) = 'PGEOMER'
+    lchin(2) = noca//'.CARORIEN'
+    lpain(2) = 'PCAORIE'
+    lchin(3) = noca//'.CAFIBR'
+    lpain(3) = 'PFIBRES'
+    lchin(4) = noca//'.CANBSP'
+    lpain(4) = 'PNBSP_I'
+    lchin(5) = noca//'.CARCOQUE'
+    lpain(5) = 'PCACOQU'
+    lchin(6) = noca//'.CARGEOPO'
+    lpain(6) = 'PCAGEPO'
+    chamg = '&&PJRISP.PGCOOR'
     call cesvar(noca, ' ', ligrel, chamg)
-    call calcul('S', 'COOR_ELGA', ligrel, nchi, lchin,&
-                lpain, 1, chamg, 'PCOORPG', 'V',&
+    call calcul('S', 'COOR_ELGA', ligrel, nchi, lchin, &
+                lpain, 1, chamg, 'PCOORPG', 'V', &
                 'OUI')
 !   chamg : 4 composantes X,Y,Z,W
 !   Transformation en CHAM_ELEM_S
-    ces='&&PJRISP.PGCORS'
+    ces = '&&PJRISP.PGCORS'
     call celces(chamg, 'V', ces)
 !
     call jeveuo(ces//'.CESD', 'L', jcesd)
     call jeveuo(ces//'.CESL', 'L', jcesl)
     call jeveuo(ces//'.CESV', 'E', jcesv)
-    nbma=zi(jcesd-1+1)
+    nbma = zi(jcesd-1+1)
 !
 ! --------------------------------------------------------------------------------------------------
 !   Calcul de nbnosp : nombre de noeuds (et de mailles) de masp
-    nbnosp=0
+    nbnosp = 0
     nbpgmx = zi(jcesd-1+3)
     nbspmx = zi(jcesd-1+4)
 !
@@ -136,31 +136,31 @@ subroutine pjrisp(moa2, masp, corres, noca)
 !
     call wkvect(corres//'.PJEF_SP', 'V V I', nbma*nbpgmx*nbspmx*3, jpo2)
 !
-    ipo=1
-    do ima=1,nbma
-        nbpt=zi(jcesd-1+5+4*(ima-1)+1)
-        nbsp=zi(jcesd-1+5+4*(ima-1)+2)
+    ipo = 1
+    do ima = 1, nbma
+        nbpt = zi(jcesd-1+5+4*(ima-1)+1)
+        nbsp = zi(jcesd-1+5+4*(ima-1)+2)
         if (nbsp .lt. 1) goto 100
-        do ipg=1,nbpt
+        do ipg = 1, nbpt
             do isp = 1, nbsp
-                zi(jpo2-1+ipo)   = ima
+                zi(jpo2-1+ipo) = ima
                 zi(jpo2-1+ipo+1) = ipg
                 zi(jpo2-1+ipo+2) = isp
-                ipo=ipo+3
-            enddo
-        enddo
-        nbnosp = nbnosp + nbpt*nbsp
+                ipo = ipo+3
+            end do
+        end do
+        nbnosp = nbnosp+nbpt*nbsp
 100     continue
-    enddo
+    end do
 !
 ! --------------------------------------------------------------------------------------------------
 !   Création du .DIME du nouveau maillage
 !   Il y a autant de mailles que de noeuds car toutes les mailles sont des poi1
 !
     call wkvect(masp//'.DIME', 'V V I', 6, iadime)
-    zi(iadime-1+1)=nbnosp
-    zi(iadime-1+3)=nbnosp
-    zi(iadime-1+6)=3
+    zi(iadime-1+1) = nbnosp
+    zi(iadime-1+3) = nbnosp
+    zi(iadime-1+6) = 3
 !
 !   Création du .nomnoe et du .nommai du nouveau maillage
     call jecreo(masp//'.NOMNOE', 'V N K8')
@@ -168,16 +168,16 @@ subroutine pjrisp(moa2, masp, corres, noca)
     call jecreo(masp//'.NOMMAI', 'V N K8')
     call jeecra(masp//'.NOMMAI', 'NOMMAX', nbnosp)
 !
-    nom(1:1)='N'
-    do k=1,nbnosp
+    nom(1:1) = 'N'
+    do k = 1, nbnosp
         call codent(k, 'G', nom(2:8))
         call jecroc(jexnom(masp//'.NOMNOE', nom))
-    enddo
-    nom(1:1)='M'
-    do k=1,nbnosp
+    end do
+    nom(1:1) = 'M'
+    do k = 1, nbnosp
         call codent(k, 'G', nom(2:8))
         call jecroc(jexnom(masp//'.NOMMAI', nom))
-    enddo
+    end do
 !
 ! --------------------------------------------------------------------------------------------------
 !   Création du .CONNEX et du .TYPMAIL du nouveau maillage
@@ -189,60 +189,60 @@ subroutine pjrisp(moa2, masp, corres, noca)
     call wkvect(masp//'.TYPMAIL', 'V V I', nbnosp, iatypm)
     call jenonu(jexnom('&CATA.TM.NOMTM', 'POI1'), ipoi1)
 !
-    nuno2=0
-    do ima=1,nbnosp
-        zi(iatypm-1+ima)=ipoi1
-        nno2=1
+    nuno2 = 0
+    do ima = 1, nbnosp
+        zi(iatypm-1+ima) = ipoi1
+        nno2 = 1
         call jecroc(jexnum(masp//'.CONNEX', ima))
         call jeecra(jexnum(masp//'.CONNEX', ima), 'LONMAX', nno2)
-        nuno2=nuno2+1
-        zi(ibid-1+nuno2)=nuno2
-    enddo
+        nuno2 = nuno2+1
+        zi(ibid-1+nuno2) = nuno2
+    end do
 !
 ! --------------------------------------------------------------------------------------------------
 !   Création du .REFE du nouveau maillage
 !
     call wkvect(masp//'.COORDO    .REFE', 'V V K24', 4, j4)
-    zk24(j4)='MASP'
+    zk24(j4) = 'MASP'
 !
 !   COORDO.VALE du nouveau maillage
     call wkvect(masp//'.COORDO    .VALE', 'V V R', 3*nbnosp, j1)
 !
-    ino2p=0
-    do ima=1,nbma
-        nbpt=zi(jcesd-1+5+4*(ima-1)+1)
-        nbsp=zi(jcesd-1+5+4*(ima-1)+2)
-        nbcmp=zi(jcesd-1+5+4*(ima-1)+3)
+    ino2p = 0
+    do ima = 1, nbma
+        nbpt = zi(jcesd-1+5+4*(ima-1)+1)
+        nbsp = zi(jcesd-1+5+4*(ima-1)+2)
+        nbcmp = zi(jcesd-1+5+4*(ima-1)+3)
         if (nbpt .eq. 0) goto 160
-        ASSERT(nbcmp.ge.3)
+        ASSERT(nbcmp .ge. 3)
         do ipt = 1, nbpt
             do isp = 1, nbsp
                 ino2p = ino2p+1
                 do icmp = 1, 3
-                    call cesexi('C', jcesd, jcesl, ima, ipt,&
-                        isp, icmp, iad)
+                    call cesexi('C', jcesd, jcesl, ima, ipt, &
+                                isp, icmp, iad)
                     if (iad .gt. 0) then
-                        zr(j1-1+3*(ino2p-1)+icmp)=zr(jcesv-1+iad)
-                    endif
-                enddo
-            enddo
-        enddo
+                        zr(j1-1+3*(ino2p-1)+icmp) = zr(jcesv-1+iad)
+                    end if
+                end do
+            end do
+        end do
 160     continue
-    enddo
-    ASSERT(ino2p.eq.nbnosp)
+    end do
+    ASSERT(ino2p .eq. nbnosp)
 !
 ! --------------------------------------------------------------------------------------------------
 !   Création du .DESC du nouveau maillage
 !
-    coodsc=masp//'.COORDO    .DESC'
+    coodsc = masp//'.COORDO    .DESC'
     call jenonu(jexnom('&CATA.GD.NOMGD', 'GEOM_R'), ntgeo)
     call jecreo(coodsc, 'V V I')
     call jeecra(coodsc, 'LONMAX', 3)
     call jeecra(coodsc, 'DOCU', cval='CHNO')
     call jeveuo(coodsc, 'E', iad)
-    zi(iad)=ntgeo
-    zi(iad+1)=-3
-    zi(iad+2)=14
+    zi(iad) = ntgeo
+    zi(iad+1) = -3
+    zi(iad+2) = 14
 !
     call detrsd('CHAM_ELEM', chamg)
     call detrsd('CHAM_ELEM_S', ces)

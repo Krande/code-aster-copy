@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -36,26 +36,26 @@ subroutine calcn(s, b, vecn)
 ! ======================================================================
 ! --- INITIALISATION DE PARAMETRE --------------------------------------
 ! ======================================================================
-    parameter       ( un      =   1.0d0  )
-    parameter       ( trois   =   3.0d0  )
+    parameter(un=1.0d0)
+    parameter(trois=3.0d0)
 ! ======================================================================
-    common /tdim/   ndt , ndi
+    common/tdim/ndt, ndi
 ! ======================================================================
     call jemarq()
 ! ======================================================================
 ! --- INITIALISATION ---------------------------------------------------
 ! ======================================================================
-    sii=ddot(ndt,s,1,s,1)
+    sii = ddot(ndt, s, 1, s, 1)
     sii = sqrt(sii)
 ! ======================================================================
 ! --- CALCUL DE N ------------------------------------------------------
 ! ======================================================================
-    racine = sqrt(b*b + trois)
+    racine = sqrt(b*b+trois)
     do ii = 1, ndt
         vecn(ii) = b*s(ii)/(sii*racine)
     end do
     do ii = 1, ndi
-        vecn(ii) = vecn(ii) + un / racine
+        vecn(ii) = vecn(ii)+un/racine
     end do
 ! ======================================================================
     call jedema()

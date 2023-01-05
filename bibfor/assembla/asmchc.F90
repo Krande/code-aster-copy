@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -63,25 +63,25 @@ subroutine asmchc(matas)
     mat = matas
 !     CALL CHEKSD('SD_MATR_ASSE',MAT,IRET)
     call jeexin(mat//'.CCVA', ier)
-    ASSERT(ier.eq.0)
+    ASSERT(ier .eq. 0)
     call jeexin(mat//'.CCID', ier)
     if (ier .eq. 0) goto 999
 !
     call jelira(mat//'.REFA', 'CLAS', cval=base)
     call jeveuo(mat//'.REFA', 'E', vk24=refa)
-    nu = refa(2)(1:14)
+    nu = refa(2) (1:14)
     call jeexin(nu//'.NUML.DELG', imatd)
     if (imatd .ne. 0) then
         call jeveuo(nu//'.NUML.NEQU', 'L', jnequ)
         call jeveuo(nu//'.NUML.NULG', 'L', vi=nulg)
     else
         call jeveuo(nu//'.NUME.NEQU', 'L', jnequ)
-    endif
+    end if
     neq = zi(jnequ)
 !
 !
 !     -- ON DETRUIT LES OBJETS S'ILS EXISTENT DEJA :
-    ASSERT(refa(3).ne.'ELIMF')
+    ASSERT(refa(3) .ne. 'ELIMF')
     call jedetr(mat//'.CCLL')
     call jedetr(mat//'.CCVA')
     call jedetr(mat//'.CCII')
@@ -96,35 +96,35 @@ subroutine asmchc(matas)
 !     NELIM   I       : NOMBRE D'EQUATIONS DE LA MATRICE A ELIMINER
     AS_ALLOCATE(vi=elim, size=neq)
     call jeveuo(mat//'.CCID', 'L', vi=ccid)
-    nelim=0
+    nelim = 0
     do ieq = 1, neq
         if (imatd .ne. 0) then
-            keta=ccid(nulg(ieq))
+            keta = ccid(nulg(ieq))
         else
-            keta=ccid(ieq)
-        endif
-        ASSERT(keta.eq.1 .or. keta.eq.0)
+            keta = ccid(ieq)
+        end if
+        ASSERT(keta .eq. 1 .or. keta .eq. 0)
         if (keta .eq. 1) then
-            nelim=nelim+1
-            elim(ieq)=nelim
+            nelim = nelim+1
+            elim(ieq) = nelim
         else
-            elim(ieq)=0
-        endif
+            elim(ieq) = 0
+        end if
     end do
 !
 !
 !
     if (nelim .eq. 0) then
-        refa(3)='ELIMF'
+        refa(3) = 'ELIMF'
         goto 999
-    endif
+    end if
 !     -----------------------------------------------------------------
 !
     nomsto = nu//'.SMOS'
 !
 !
     call jeexin(nomsto//'.SMHC', iret2)
-    ASSERT(iret2.gt.0)
+    ASSERT(iret2 .gt. 0)
     call jeveuo(nomsto//'.SMHC', 'L', jsmhc)
     call jeveuo(nomsto//'.SMDI', 'L', vi=smdi)
 !
@@ -134,39 +134,39 @@ subroutine asmchc(matas)
 !     -----------------------------------------
     call wkvect(mat//'.CCLL', base//' V I ', 3*nelim, jccll)
 !
-    kfin=0
+    kfin = 0
     do jcol = 1, neq
-        kdeb = kfin + 1
+        kdeb = kfin+1
         kfin = smdi(jcol)
         jelim = elim(jcol)
 !
         if (jelim .ne. 0) then
             zi(jccll-1+3*(jelim-1)+1) = jcol
-            do k = kdeb, kfin - 1
+            do k = kdeb, kfin-1
                 ilig = zi4(jsmhc-1+k)
                 ielim = elim(ilig)
-                if (ielim .eq. 0) zi( jccll-1+3*(jelim-1)+2)=zi(jccll-1+ 3*(jelim-1)+2 ) +1
+                if (ielim .eq. 0) zi(jccll-1+3*(jelim-1)+2) = zi(jccll-1+3*(jelim-1)+2)+1
             end do
 !
         else
-            do k = kdeb, kfin - 1
+            do k = kdeb, kfin-1
                 ilig = zi4(jsmhc-1+k)
                 ielim = elim(ilig)
-                if (ielim .ne. 0) zi( jccll-1+3*(ielim-1)+2)=zi(jccll-1+ 3*(ielim-1)+2 ) +1
+                if (ielim .ne. 0) zi(jccll-1+3*(ielim-1)+2) = zi(jccll-1+3*(ielim-1)+2)+1
             end do
-        endif
+        end if
     end do
 !
 !
 !     -- CALCUL DE NCCVA ET .CCLL(3*(I-1)+3) :
 !     -----------------------------------------
-    deciel=0
+    deciel = 0
     do ielim = 1, nelim
-        nterm=zi(jccll-1+3*(ielim-1)+2)
-        zi(jccll-1+3*(ielim-1)+3)=deciel
-        deciel=deciel+nterm
+        nterm = zi(jccll-1+3*(ielim-1)+2)
+        zi(jccll-1+3*(ielim-1)+3) = deciel
+        deciel = deciel+nterm
     end do
-    nccva=max(deciel,1)
+    nccva = max(deciel, 1)
 !
 !
 !     -- RECUPERATION DE .VALM
@@ -175,10 +175,10 @@ subroutine asmchc(matas)
     call jelira(jexnum(mat//'.VALM', 1), 'TYPE', cval=kbid)
     typmat = 1
     if (kbid(1:1) .eq. 'C') typmat = 2
-    nonsym=.false.
+    nonsym = .false.
     call jelira(mat//'.VALM', 'NMAXOC', nblocm)
-    ASSERT(nblocm.eq.1 .or. nblocm.eq.2)
-    if (nblocm .eq. 2) nonsym=.true.
+    ASSERT(nblocm .eq. 1 .or. nblocm .eq. 2)
+    if (nblocm .eq. 2) nonsym = .true.
     call jeveuo(jexnum(mat//'.VALM', 1), 'E', jvalm)
     if (nonsym) call jeveuo(jexnum(mat//'.VALM', 2), 'E', jvalm2)
 !
@@ -193,54 +193,54 @@ subroutine asmchc(matas)
 !     -----------------------------------------
 !
     AS_ALLOCATE(vi=remplis, size=nelim)
-    kfin=0
+    kfin = 0
     do jcol = 1, neq
-        kdeb = kfin + 1
+        kdeb = kfin+1
         kfin = smdi(jcol)
         jelim = elim(jcol)
 !
         if (jelim .ne. 0) then
-            deciel=zi(jccll-1+3*(jelim-1)+3)
-            do k = kdeb, kfin - 1
+            deciel = zi(jccll-1+3*(jelim-1)+3)
+            do k = kdeb, kfin-1
                 ilig = zi4(jsmhc-1+k)
                 ielim = elim(ilig)
                 if (ielim .eq. 0) then
-                    remplis(jelim)=remplis(jelim)+1
-                    iremp=remplis(jelim)
-                    zi(jccii-1+deciel+iremp)=ilig
+                    remplis(jelim) = remplis(jelim)+1
+                    iremp = remplis(jelim)
+                    zi(jccii-1+deciel+iremp) = ilig
                     if (typmat .eq. 1) then
-                        zr(jccva-1+deciel+iremp)= zr(jvalm-1+k)
+                        zr(jccva-1+deciel+iremp) = zr(jvalm-1+k)
                     else
-                        zc(jccva-1+deciel+iremp)= zc(jvalm-1+k)
-                    endif
-                endif
+                        zc(jccva-1+deciel+iremp) = zc(jvalm-1+k)
+                    end if
+                end if
             end do
 !
         else
-            do k = kdeb, kfin - 1
+            do k = kdeb, kfin-1
                 ilig = zi4(jsmhc-1+k)
                 ielim = elim(ilig)
-                decjel=zi(jccll-1+3*(ielim-1)+3)
+                decjel = zi(jccll-1+3*(ielim-1)+3)
                 if (ielim .ne. 0) then
-                    remplis(ielim)=remplis(ielim)+1
-                    iremp=remplis(ielim)
-                    zi(jccii-1+decjel+iremp)=jcol
+                    remplis(ielim) = remplis(ielim)+1
+                    iremp = remplis(ielim)
+                    zi(jccii-1+decjel+iremp) = jcol
                     if (typmat .eq. 1) then
                         if (nonsym) then
-                            zr(jccva-1+decjel+iremp)= zr(jvalm2-1+k)
+                            zr(jccva-1+decjel+iremp) = zr(jvalm2-1+k)
                         else
-                            zr(jccva-1+decjel+iremp)= zr(jvalm-1+k)
-                        endif
+                            zr(jccva-1+decjel+iremp) = zr(jvalm-1+k)
+                        end if
                     else
                         if (nonsym) then
-                            zc(jccva-1+decjel+iremp)= zc(jvalm2-1+k)
+                            zc(jccva-1+decjel+iremp) = zc(jvalm2-1+k)
                         else
-                            zc(jccva-1+decjel+iremp)= zc(jvalm-1+k)
-                        endif
-                    endif
-                endif
+                            zc(jccva-1+decjel+iremp) = zc(jvalm-1+k)
+                        end if
+                    end if
+                end if
             end do
-        endif
+        end if
 !
     end do
 !
@@ -250,52 +250,52 @@ subroutine asmchc(matas)
 !     DANS LE CAS PARALLELE SUR N PROCS, IL EST A NOTER QU'UN N SE
 !     TROUVERA SUR LA DIAGONALE ET QU'UN N L'EQUILIBRERA DANS LE
 !     SECOND MEMBRE
-    kfin=0
+    kfin = 0
     do jcol = 1, neq
-        kdeb = kfin + 1
+        kdeb = kfin+1
         kfin = smdi(jcol)
         jelim = elim(jcol)
 !
         if (jelim .ne. 0) then
             if (typmat .eq. 1) then
-                zr(jvalm-1+kfin)=1.d0
-                if (nonsym) zr(jvalm2-1+kfin)=1.d0
+                zr(jvalm-1+kfin) = 1.d0
+                if (nonsym) zr(jvalm2-1+kfin) = 1.d0
             else
-                zc(jvalm-1+kfin)=dcmplx(1.d0,0.d0)
-                if (nonsym) zc(jvalm2-1+kfin)=dcmplx(1.d0,0.d0)
-            endif
-        endif
+                zc(jvalm-1+kfin) = dcmplx(1.d0, 0.d0)
+                if (nonsym) zc(jvalm2-1+kfin) = dcmplx(1.d0, 0.d0)
+            end if
+        end if
 !
         if (jelim .ne. 0) then
-            do k = kdeb, kfin -1
+            do k = kdeb, kfin-1
                 if (typmat .eq. 1) then
-                    zr(jvalm-1+k)=0.d0
-                    if (nonsym) zr(jvalm2-1+k)=0.d0
+                    zr(jvalm-1+k) = 0.d0
+                    if (nonsym) zr(jvalm2-1+k) = 0.d0
                 else
-                    zc(jvalm-1+k)=dcmplx(0.d0,0.d0)
-                    if (nonsym) zc(jvalm2-1+k)=dcmplx(0.d0,0.d0)
-                endif
+                    zc(jvalm-1+k) = dcmplx(0.d0, 0.d0)
+                    if (nonsym) zc(jvalm2-1+k) = dcmplx(0.d0, 0.d0)
+                end if
             end do
 !
         else
-            do k = kdeb, kfin -1
+            do k = kdeb, kfin-1
                 ilig = zi4(jsmhc-1+k)
                 ielim = elim(ilig)
                 if (ielim .ne. 0) then
                     if (typmat .eq. 1) then
-                        zr(jvalm-1+k)=0.d0
-                        if (nonsym) zr(jvalm2-1+k)=0.d0
+                        zr(jvalm-1+k) = 0.d0
+                        if (nonsym) zr(jvalm2-1+k) = 0.d0
                     else
-                        zc(jvalm-1+k)=dcmplx(0.d0,0.d0)
-                        if (nonsym) zc(jvalm2-1+k)=dcmplx(0.d0,0.d0)
-                    endif
-                endif
+                        zc(jvalm-1+k) = dcmplx(0.d0, 0.d0)
+                        if (nonsym) zc(jvalm2-1+k) = dcmplx(0.d0, 0.d0)
+                    end if
+                end if
             end do
-        endif
+        end if
 !
     end do
 !
-    refa(3)='ELIMF'
+    refa(3) = 'ELIMF'
 !
 !
 !

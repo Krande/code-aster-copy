@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 !
 subroutine dismrs(questionZ, objNameZ, repi, repkz, ierd)
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterfort/assert.h"
@@ -37,9 +37,9 @@ implicit none
 #include "asterfort/rs_get_liststore.h"
 #include "asterfort/utmess.h"
 !
-character(len=*), intent(in) :: questionZ, objNameZ
-character(len=*), intent(out)  :: repkz
-integer, intent(out) :: repi, ierd
+    character(len=*), intent(in) :: questionZ, objNameZ
+    character(len=*), intent(out)  :: repkz
+    integer, intent(out) :: repi, ierd
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -72,9 +72,9 @@ integer, intent(out) :: repi, ierd
     call jemarq()
 !
     result = objNameZ
-    repi   = 0
-    repk   = ' '
-    ierd   = 0
+    repi = 0
+    repk = ' '
+    ierd = 0
 !
     if (questionZ .eq. 'TYPE_RESU') then
 !         ---------------------
@@ -83,7 +83,7 @@ integer, intent(out) :: repi, ierd
             objdes = result//'.DESC'
         else
             objdes = result//'.CELD'
-        endif
+        end if
 !
         call jelira(objdes, 'GENR', cval=answer)
         if (answer(1:1) .eq. 'N') then
@@ -93,120 +93,120 @@ integer, intent(out) :: repi, ierd
                 valk(1) = docu
                 valk(2) = result
                 call utmess('F', 'UTILITAI_68', nk=2, valk=valk)
-                ierd=1
+                ierd = 1
                 goto 999
-            endif
+            end if
         else
             repk = 'CHAMP'
-        endif
+        end if
 
-    else if ((questionZ.eq.'NOM_MODELE').or. (questionZ.eq.'MODELE').or.&
-             (questionZ.eq.'CHAM_MATER').or.&
-             (questionZ.eq.'CARA_ELEM')) then
+    else if ((questionZ .eq. 'NOM_MODELE') .or. (questionZ .eq. 'MODELE') .or. &
+             (questionZ .eq. 'CHAM_MATER') .or. &
+             (questionZ .eq. 'CARA_ELEM')) then
 !     ------------------------------------------
-        if ((questionZ.eq.'NOM_MODELE') .or. (questionZ(1:6).eq.'MODELE')) then
-            call rslipa(result, 'MODELE'  , '&&DISMRS.LIPAR', jvStore, nbStore)
-        else if (questionZ(1:9).eq.'CARA_ELEM') then
+        if ((questionZ .eq. 'NOM_MODELE') .or. (questionZ(1:6) .eq. 'MODELE')) then
+            call rslipa(result, 'MODELE', '&&DISMRS.LIPAR', jvStore, nbStore)
+        else if (questionZ(1:9) .eq. 'CARA_ELEM') then
             call rslipa(result, 'CARAELEM', '&&DISMRS.LIPAR', jvStore, nbStore)
-        else if (questionZ(1:10).eq.'CHAM_MATER') then
+        else if (questionZ(1:10) .eq. 'CHAM_MATER') then
             call rslipa(result, 'CHAMPMAT', '&&DISMRS.LIPAR', jvStore, nbStore)
-        endif
-        ASSERT(nbStore.ge.1)
-        repk    = ' '
+        end if
+        ASSERT(nbStore .ge. 1)
+        repk = ' '
         nbFound = 0
         do iStore = 1, nbStore
             if (zk8(jvStore-1+iStore) .ne. ' ') then
                 if (zk8(jvStore-1+iStore) .ne. repk) then
                     nbFound = nbFound+1
-                    repk    = zk8(jvStore-1+iStore)
-                endif
-            endif
+                    repk = zk8(jvStore-1+iStore)
+                end if
+            end if
         end do
         if (nbFound .eq. 0) then
             repk = '#AUCUN'
-        endif
+        end if
         if (nbFound .gt. 1) then
-            repk ='#PLUSIEURS'
-        endif
+            repk = '#PLUSIEURS'
+        end if
         call jedetr('&&DISMRS.LIPAR')
 
     else if (questionZ .eq. 'NOM_MAILLA') then
 !     ------------------------------------------
         call jelira(jexnum(result//'.TACH', 1), 'LONMAX', nbField)
-        call jeveuo(jexnum(result//'.TACH', 1), 'L', vk24 = tach)
+        call jeveuo(jexnum(result//'.TACH', 1), 'L', vk24=tach)
         do iField = 1, nbField
-            fieldResult = tach(iField)(1:19)
+            fieldResult = tach(iField) (1:19)
             if (fieldResult(1:1) .ne. ' ') then
                 call dismcp(questionZ, fieldResult, repi, repk, ierd)
                 goto 999
-            endif
+            end if
         end do
 !
         call jelira(result//'.TACH', 'NMAXOC', nbFieldName)
         do iFieldName = 2, nbFieldName
             call jelira(jexnum(result//'.TACH', iFieldName), 'LONMAX', nbField)
-            call jeveuo(jexnum(result//'.TACH', iFieldName), 'L', vk24 = tach)
+            call jeveuo(jexnum(result//'.TACH', iFieldName), 'L', vk24=tach)
             do iField = 1, nbField
-                fieldResult = tach(iField)(1:19)
+                fieldResult = tach(iField) (1:19)
                 if (fieldResult(1:1) .ne. ' ') then
                     call dismcp(questionZ, fieldResult, repi, repk, ierd)
                     goto 999
-                endif
+                end if
             end do
         end do
         ierd = 1
 !
-    else if ( (questionZ.eq.'NB_CHAMP_MAX') .or. (questionZ.eq.'NB_CHAMP_UTI')) then
+    else if ((questionZ .eq. 'NB_CHAMP_MAX') .or. (questionZ .eq. 'NB_CHAMP_UTI')) then
 !     ------------------------------------------
-        call jelira(result//'.DESC', 'GENR', cval = answer)
+        call jelira(result//'.DESC', 'GENR', cval=answer)
         if (answer(1:1) .eq. 'N') then
             call dismrc(questionZ, result, repi, repk, ierd)
         else
             repi = 1
-        endif
+        end if
 !
 !
-    else if (questionZ.eq.'NB_MODES_TOT') then
+    else if (questionZ .eq. 'NB_MODES_TOT') then
 !     ------------------------------------------
         call rs_get_liststore(result, nbStore)
         repi = nbStore
         repk = 'NON'
 !
-    else if (questionZ.eq.'NB_MODES_STA') then
+    else if (questionZ .eq. 'NB_MODES_STA') then
 !     ------------------------------------------
         nbModeStat = 0
         call rs_get_liststore(result, nbStore)
 !
         do iStore = 1, nbStore
-            call rsadpa(result, 'L', 1, 'TYPE_MODE', iStore,&
+            call rsadpa(result, 'L', 1, 'TYPE_MODE', iStore, &
                         0, sjv=jvPara, styp=answer)
-            fieldResult = zk16(jvPara)(1:16)
+            fieldResult = zk16(jvPara) (1:16)
             if (fieldResult(1:8) .eq. 'MODE_STA') then
-                nbModeStat = nbModeStat + 1
-            endif
+                nbModeStat = nbModeStat+1
+            end if
         end do
         repi = nbModeStat
         repk = 'NON'
 !
-    else if (questionZ.eq.'NB_MODES_DYN') then
+    else if (questionZ .eq. 'NB_MODES_DYN') then
 !     ------------------------------------------
         nbModeDyna = 0
         call rs_get_liststore(result, nbStore)
 !
-        do iStore =  1, nbStore
-            call rsadpa(result, 'L', 1, 'TYPE_MODE', iStore,&
+        do iStore = 1, nbStore
+            call rsadpa(result, 'L', 1, 'TYPE_MODE', iStore, &
                         0, sjv=jvPara, styp=answer)
-            fieldResult = zk16(jvPara)(1:16)
+            fieldResult = zk16(jvPara) (1:16)
             if ((fieldResult(1:9) .eq. 'MODE_DYN')) then
-                nbModeDyna = nbModeDyna + 1
-            endif
+                nbModeDyna = nbModeDyna+1
+            end if
         end do
         repi = nbModeDyna
         repk = 'NON'
 !
     else
         ierd = 1
-    endif
+    end if
 !
 999 continue
 !

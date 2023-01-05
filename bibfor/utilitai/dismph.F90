@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -52,36 +52,36 @@ subroutine dismph(questi, nomobz, repi, repkz, ierd)
     nomob = nomobz
     if (nomob(1:9) .eq. 'THERMIQUE') then
         repk = 'TEMP_R'
-    else if (nomob(1:9).eq.'MECANIQUE') then
+    else if (nomob(1:9) .eq. 'MECANIQUE') then
         repk = 'DEPL_R'
-    else if (nomob(1:9).eq.'ACOUSTIQU') then
+    else if (nomob(1:9) .eq. 'ACOUSTIQU') then
         repk = 'PRES_C'
-    else if (nomob(1:9).eq.'NON_LOCAL') then
+    else if (nomob(1:9) .eq. 'NON_LOCAL') then
         repk = 'VANL_R'
     else
         call utmess('F', 'UTILITAI_66', sk=nomob)
         ierd = 1
         goto 10
-    endif
+    end if
 !
 !
     if (questi .eq. 'NOM_GD') then
 !        C'EST DEJA FAIT !
-    else if (questi.eq.'NUM_GD') then
+    else if (questi .eq. 'NUM_GD') then
         call dismgd('NUM_GD', repk(1:8), repi, k8bid, ierd)
-    else if (questi.eq.'NOM_MOLOC') then
+    else if (questi .eq. 'NOM_MOLOC') then
         if (nomob(1:9) .eq. 'THERMIQUE') then
             repk = 'DDL_THER'
-        else if (nomob(1:9).eq.'MECANIQUE') then
+        else if (nomob(1:9) .eq. 'MECANIQUE') then
             repk = 'DDL_MECA'
-        else if (nomob(1:9).eq.'ACOUSTIQU') then
+        else if (nomob(1:9) .eq. 'ACOUSTIQU') then
             repk = 'DDL_ACOU'
         else
             ASSERT(.false.)
-        endif
+        end if
     else
         ierd = 1
-    endif
+    end if
 !
 10  continue
     repkz = repk

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine lcmmin(typess, essai, mod, nmat, materf,&
-                  nr, nvi, yd, deps, dy,&
-                  comp, nbcomm, cpmono, pgl, nfs,&
-                  nsg, toutms, timed, timef, vind,&
+subroutine lcmmin(typess, essai, mod, nmat, materf, &
+                  nr, nvi, yd, deps, dy, &
+                  comp, nbcomm, cpmono, pgl, nfs, &
+                  nsg, toutms, timed, timef, vind, &
                   sigd, epstr)
 ! aslint: disable=W1504
     implicit none
@@ -70,7 +70,7 @@ subroutine lcmmin(typess, essai, mod, nmat, materf,&
 !
     character(len=8) :: mod
 !     ----------------------------------------------------------------
-    common /tdim/   ndt , ndi
+    common/tdim/ndt, ndi
 !     ----------------------------------------------------------------
     integer :: i, nbfsys, nbsys, is, nbcomm(nmat, 3), ifa, nums
     real(kind=8) :: evp(6), fe(3, 3), df(3, 3), fe1(3, 3), fe1t(3, 3)
@@ -80,53 +80,53 @@ subroutine lcmmin(typess, essai, mod, nmat, materf,&
     character(len=24) :: nomfam
     real(kind=8) :: timed, timef, vind(*), sigd(6), sigdn(6)
     integer :: irr, decirr, nbsyst, decal, gdef
-    common/polycr/irr,decirr,nbsyst,decal,gdef
+    common/polycr/irr, decirr, nbsyst, decal, gdef
 !
 ! - SOLUTION INITIALE = NUL
 !
-    types0=typess
+    types0 = typess
 !
-    typess=0
+    typess = 0
 !         TYPESS=7
 !
 !     POUR LE CRITERE DE CONVERGENCE CF LCMMCV
-    if (materf(nmat,1) .eq. 0) then
+    if (materf(nmat, 1) .eq. 0) then
         call lcopil('ISOTROPE', mod, materf(1, 1), dkooh)
-    else if (materf(nmat,1).eq.1) then
+    else if (materf(nmat, 1) .eq. 1) then
         call lcopil('ORTHOTRO', mod, materf(1, 1), dkooh)
-    endif
-    epsed(1:ndt) = matmul(dkooh(1:ndt,1:ndt), sigd(1:ndt))
-    epstr(1:ndt) = epsed(1:ndt) + deps(1:ndt)
+    end if
+    epsed(1:ndt) = matmul(dkooh(1:ndt, 1:ndt), sigd(1:ndt))
+    epstr(1:ndt) = epsed(1:ndt)+deps(1:ndt)
 !
     if (typess .eq. 0) then
         dy(:) = 0.d0
         if (mod(1:6) .eq. 'C_PLAN') then
             deps(3) = 0.d0
-        endif
+        end if
 ! Les autres intitialisations ci-dessous ne sont pas utilisées
 ! actuellement pour la loi MONOCRISTAL
 !
 ! - SOLUTION INITIALE = ELASTIQUE
 !
-    else if (typess.eq.1.or.typess.eq.-1) then
-        if (materf(nmat,1) .eq. 0) then
+    else if (typess .eq. 1 .or. typess .eq. -1) then
+        if (materf(nmat, 1) .eq. 0) then
             call lcopli('ISOTROPE', mod, materf(1, 1), hook)
-        else if (materf(nmat,1).eq.1) then
+        else if (materf(nmat, 1) .eq. 1) then
             call lcopli('ORTHOTRO', mod, materf(1, 1), hook)
-        endif
+        end if
 !        GDEF : INITIALISATION PAR FET.DFT.DF.FE
         if (gdef .eq. 1) then
             call dcopy(9, vind(nvi-3-18+10), 1, fe, 1)
             call dcopy(9, deps, 1, df, 1)
-            fe1 = matmul(df,fe)
+            fe1 = matmul(df, fe)
             fe1t = transpose(fe1)
-            fetfe = matmul(fe1t,fe1)
+            fetfe = matmul(fe1t, fe1)
             call tnsvec(3, 3, fetfe, dy, 1.d0)
         else
-            hook(1:ndt,1:ndt) = transpose(hook(1:ndt,1:ndt))
-            dsig(1:ndt) = matmul(hook(1:ndt,1:ndt), deps(1:ndt))
+            hook(1:ndt, 1:ndt) = transpose(hook(1:ndt, 1:ndt))
+            dsig(1:ndt) = matmul(hook(1:ndt, 1:ndt), deps(1:ndt))
             dy(1:ndt) = dsig(1:ndt)
-        endif
+        end if
 !
 ! - SOLUTION INITIALE = EXPLICITE
 !
@@ -139,38 +139,38 @@ subroutine lcmmin(typess, essai, mod, nmat, materf,&
         if (mod(1:6) .eq. 'C_PLAN') then
             deps(3) = essai
             dy(3) = 0.d0
-        endif
+        end if
 !
     else if (typess .eq. 7) then
 !
-        nbfsys=nbcomm(nmat,2)
-        nums=0
+        nbfsys = nbcomm(nmat, 2)
+        nums = 0
 !
         do ifa = 1, nbfsys
 !
-            nomfam=cpmono(5*(ifa-1)+1)
+            nomfam = cpmono(5*(ifa-1)+1)
 !       RECUPERATION DU NOMBRE DE SYSTEME DE GLISSEMENT NBSYS
-            call lcmmsg(nomfam, nbsys, 0, pgl, ms,&
+            call lcmmsg(nomfam, nbsys, 0, pgl, ms, &
                         ng, lg, 0, q)
             if (nbsys .eq. 0) then
                 call utmess('F', 'ALGORITH_70')
-            endif
+            end if
 !
             call r8inir(6, 0.d0, evp, 1)
 !
             do is = 1, nbsys
-                nums=nums+1
-                dy (ndt+6+3*ifa*(is-1)+3) = vind(6+3*ifa*(is-1)+3)&
-                *(timef-timed)/timef
-                dy (ndt+6+3*ifa*(is-1)+2) = abs(vind(6+3*ifa*(is-1)+2)&
-                )*(timef-timed)/timef
-                dy (ndt+6+3*ifa*(is-1)+1) = vind(6+3*ifa*(is-1)+1)&
-                *(timef-timed)/timef
+                nums = nums+1
+                dy(ndt+6+3*ifa*(is-1)+3) = vind(6+3*ifa*(is-1)+3) &
+                                           *(timef-timed)/timef
+                dy(ndt+6+3*ifa*(is-1)+2) = abs(vind(6+3*ifa*(is-1)+2) &
+                                               )*(timef-timed)/timef
+                dy(ndt+6+3*ifa*(is-1)+1) = vind(6+3*ifa*(is-1)+1) &
+                                           *(timef-timed)/timef
 !           RECUPERATION DE MS ET CALCUL DE EVP
-                call lcmmsg(nomfam, nbsys, is, pgl, ms,&
+                call lcmmsg(nomfam, nbsys, is, pgl, ms, &
                             ng, lg, 0, q)
                 do i = 1, 6
-                    evp(i) = evp(i) + ms(i)*dy (ndt+6+3*ifa*(is-1)+2)
+                    evp(i) = evp(i)+ms(i)*dy(ndt+6+3*ifa*(is-1)+2)
                 end do
             end do
         end do
@@ -185,9 +185,9 @@ subroutine lcmmin(typess, essai, mod, nmat, materf,&
 !
         if (mod(1:6) .eq. 'C_PLAN') then
             dy(3) = 0.d0
-        endif
+        end if
 !
-    endif
+    end if
 !
-    typess=types0
+    typess = types0
 end subroutine

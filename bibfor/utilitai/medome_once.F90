@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine medome_once(result, v_list_store, nb_store, nume_user_,&
-                       model_, cara_elem_  , chmate_ , list_load_)
+subroutine medome_once(result, v_list_store, nb_store, nume_user_, &
+                       model_, cara_elem_, chmate_, list_load_)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -57,14 +57,14 @@ implicit none
         nume_store0 = nume_user_
     else
         nume_store0 = v_list_store(1)
-    endif
+    end if
 !
 ! - Get reference datastructures
 !
-    call rslesd(result    , nume_store0, model0, chmate0, cara_elem0,&
+    call rslesd(result, nume_store0, model0, chmate0, cara_elem0, &
                 list_load0, iexcit)
-    model     = model0
-    chmate    = chmate0
+    model = model0
+    chmate = chmate0
     cara_elem = cara_elem0
     list_load = list_load0
 !
@@ -72,33 +72,33 @@ implicit none
 !
     do i_store = 2, nb_store
         nume_store = v_list_store(i_store)
-        call rslesd(result   , nume_store, model, chmate, cara_elem,&
+        call rslesd(result, nume_store, model, chmate, cara_elem, &
                     list_load, iexcit)
         if (present(model_)) then
             if (model .ne. model0) then
                 call utmess('F', 'CALCCHAMP_23')
-            endif
-        endif
+            end if
+        end if
         if (present(list_load_)) then
             if ((list_load .ne. list_load0) .and. (iexcit .eq. 0)) then
                 call utmess('F', 'CALCCHAMP_24')
-            endif
-        endif
+            end if
+        end if
     end do
 !
 ! - Output
 !
     if (present(model_)) then
         model_ = model
-    endif
+    end if
     if (present(chmate_)) then
         chmate_ = chmate
-    endif
+    end if
     if (present(cara_elem_)) then
         cara_elem_ = cara_elem
-    endif
+    end if
     if (present(list_load_)) then
         list_load_ = list_load
-    endif
+    end if
 !
 end subroutine

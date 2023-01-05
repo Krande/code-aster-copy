@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,16 +17,16 @@
 ! --------------------------------------------------------------------
 ! aslint: disable=W1504
 !
-subroutine assma3(lmasym, lmesym, tt, igr, iel,&
-                  c1, rang, jnueq, numsd, jresl,&
-                  nbvel, nnoe, ldist, ldgrel,&
-                  ilima, jadli, jadne, jprn1, jprn2,&
-                  jnulo1, jposd1, admodl,&
-                  lcmodl, mode, nec, nmxcmp, ncmp,&
-                  jsmhc, jsmdi, iconx1, iconx2, jtmp2,&
+subroutine assma3(lmasym, lmesym, tt, igr, iel, &
+                  c1, rang, jnueq, numsd, jresl, &
+                  nbvel, nnoe, ldist, ldgrel, &
+                  ilima, jadli, jadne, jprn1, jprn2, &
+                  jnulo1, jposd1, admodl, &
+                  lcmodl, mode, nec, nmxcmp, ncmp, &
+                  jsmhc, jsmdi, iconx1, iconx2, jtmp2, &
                   lgtmp2, jvalm, ilinu, ellagr, nbeltb, ti1, ti2)
 !
-implicit none
+    implicit none
 !
 !-----------------------------------------------------------------------
 ! BUT : ASSEMBLER UN ELEMENT FINI
@@ -38,20 +38,20 @@ implicit none
 #include "asterfort/assert.h"
 #include "asterfort/corddl.h"
 !
-aster_logical :: lmasym, lmesym
-character(len=2) :: tt
-real(kind=8) :: c1
-integer :: iel, admodl, rang, iconx1, iconx2, jadli, jadne
-integer :: i1, i2, iad1, iad11, iad2, iad21
-integer :: igr, ilima, ilinu, nbterm
-integer :: jnueq, jnulo1, jposd1, jprn1, jprn2
-integer :: jresl, jsmdi, jsmhc, jtmp2, jvalm(2), lgtmp2
-integer :: lcmodl, k1, k2, n2, n3
-integer :: mode, n1, nbvel, ncmp, nddl1, nddl2
-integer :: nec, nmxcmp, nnoe, numa, nk2, decael
-integer :: ti1(*), ti2(*), nbeltb
-aster_logical :: ldist, ldgrel
-integer, pointer :: numsd(:)
+    aster_logical :: lmasym, lmesym
+    character(len=2) :: tt
+    real(kind=8) :: c1
+    integer :: iel, admodl, rang, iconx1, iconx2, jadli, jadne
+    integer :: i1, i2, iad1, iad11, iad2, iad21
+    integer :: igr, ilima, ilinu, nbterm
+    integer :: jnueq, jnulo1, jposd1, jprn1, jprn2
+    integer :: jresl, jsmdi, jsmhc, jtmp2, jvalm(2), lgtmp2
+    integer :: lcmodl, k1, k2, n2, n3
+    integer :: mode, n1, nbvel, ncmp, nddl1, nddl2
+    integer :: nec, nmxcmp, nnoe, numa, nk2, decael
+    integer :: ti1(*), ti2(*), nbeltb
+    aster_logical :: ldist, ldgrel
+    integer, pointer :: numsd(:)
 !
     integer :: nbi1
 !-----------------------------------------------------------------------
@@ -73,16 +73,16 @@ integer, pointer :: numsd(:)
 #define posdd2(kno,kddl) zi(jposd2-1+nmxcmp*(kno-1)+kddl)
 !----------------------------------------------------------------------
 !
-    nbterm=0
-    nbi1=0
+    nbterm = 0
+    nbi1 = 0
 !     NUMA : NUMERO DE LA MAILLE
-    numa=zzliel(ilima,igr,iel)
+    numa = zzliel(ilima, igr, iel)
 !
 !
 !
 !     -- SI LES CALCULS ONT ETE DISTRIBUES :
 !     --------------------------------------
-    if (ldist .and. .not.ldgrel) then
+    if (ldist .and. .not. ldgrel) then
 !       SI ON EST DANS UN CALCUL DISTRIBUE, ON SE POSE
 !       LA QUESTION DE L'APPARTENANCE DE LA MAILLE NUMA AUX
 !       DONNEES ATTRIBUEES AU PROC SI MAILLE PHYSIQUE: CHAQUE PROC
@@ -92,8 +92,8 @@ integer, pointer :: numsd(:)
             if (numsd(numa) .ne. rang) goto 110
         else
             if (rang .ne. 0) goto 110
-        endif
-    endif
+        end if
+    end if
 !
 !
 !     ---------------------------------------------------------------
@@ -118,14 +118,14 @@ integer, pointer :: numsd(:)
     if (numa .gt. 0) then
 !
         do k1 = 1, nnoe
-            n1=zzconx(numa,k1)
-            iad1=zzprno(1,n1,1)
-            call corddl(admodl, lcmodl, jprn1, jprn2, 1,&
-                        mode, nec, ncmp, n1, k1,&
+            n1 = zzconx(numa, k1)
+            iad1 = zzprno(1, n1, 1)
+            call corddl(admodl, lcmodl, jprn1, jprn2, 1, &
+                        mode, nec, ncmp, n1, k1, &
                         nddl1, zi(jposd1-1+nmxcmp*(k1-1)+1))
-            ASSERT(nddl1.le.nmxcmp)
-            zi(jnulo1-1+2*(k1-1)+1)=iad1
-            zi(jnulo1-1+2*(k1-1)+2)=nddl1
+            ASSERT(nddl1 .le. nmxcmp)
+            zi(jnulo1-1+2*(k1-1)+1) = iad1
+            zi(jnulo1-1+2*(k1-1)+2) = nddl1
         end do
 !
 !
@@ -133,7 +133,7 @@ integer, pointer :: numsd(:)
 !     1.2. MAILLE TARDIVE :
 !     ------------------------
     else
-        numa=-numa
+        numa = -numa
 !
 !
 !       MISE A JOUR DE ELLAGR :
@@ -142,56 +142,56 @@ integer, pointer :: numsd(:)
 !         - N1 EST UN NOEUD PHYSIQUE (>0)
 !         - N2 ET N3 SONT DES NOEUDS TARDIFS PORTANT 1 CMP: 'LAGR'
 !       --------------------------------------------------------------
-        if ((ellagr.eq.0) .and. (nnoe.eq.3)) then
-            n1=zznema(ilima,numa,1)
-            n2=zznema(ilima,numa,2)
-            n3=zznema(ilima,numa,3)
-            if ((n1.gt.0) .and. (n2.lt.0) .and. (n3.lt.0)) then
+        if ((ellagr .eq. 0) .and. (nnoe .eq. 3)) then
+            n1 = zznema(ilima, numa, 1)
+            n2 = zznema(ilima, numa, 2)
+            n3 = zznema(ilima, numa, 3)
+            if ((n1 .gt. 0) .and. (n2 .lt. 0) .and. (n3 .lt. 0)) then
 !           -- POUR L'INSTANT ON NE VERIFIE PAS QUE N2 ET N3 NE
 !              PORTENT QUE LA CMP 'LAGR'
-                ellagr=1
-            endif
+                ellagr = 1
+            end if
 !       TRAITEMENT DU CAS DES SIMPLES LAGRANGE
 !       --------------------------------------------------------------
-        else if ((ellagr.eq.0) .and. (nnoe.eq.2)) then
-            n1=zznema(ilima,numa,1)
-            n2=zznema(ilima,numa,2)
-            if ((n1.gt.0) .and. (n2.lt.0)) then
+        else if ((ellagr .eq. 0) .and. (nnoe .eq. 2)) then
+            n1 = zznema(ilima, numa, 1)
+            n2 = zznema(ilima, numa, 2)
+            if ((n1 .gt. 0) .and. (n2 .lt. 0)) then
 !           -- POUR L'INSTANT ON NE VERIFIE PAS QUE N2 ET N3 NE
 !              PORTENT QUE LA CMP 'LAGR'
-                ellagr=1
-            endif
-        endif
+                ellagr = 1
+            end if
+        end if
 !
 !
         do k1 = 1, nnoe
 !         N1 : INDICE DU NOEUDS DS LE .NEMA DU LIGREL
 !              DE CHARGE GLOBAL OU LOCAL
-            n1=zznema(ilima,numa,k1)
+            n1 = zznema(ilima, numa, k1)
             if (n1 .lt. 0) then
 !           NOEUD TARDIF
-                n1=-n1
+                n1 = -n1
 !
 !
 !
 !           -- NUMERO D'EQUATION DU PREMIER DDL DE N1
-                iad1=zzprno(ilinu,n1,1)
-                call corddl(admodl, lcmodl, jprn1, jprn2, ilinu,&
-                            mode, nec, ncmp, n1, k1,&
+                iad1 = zzprno(ilinu, n1, 1)
+                call corddl(admodl, lcmodl, jprn1, jprn2, ilinu, &
+                            mode, nec, ncmp, n1, k1, &
                             nddl1, zi(jposd1-1+nmxcmp*(k1-1)+1))
 !
             else
 !           -- NOEUD PHYSIQUE
-                iad1=zzprno(1,n1,1)
-                call corddl(admodl, lcmodl, jprn1, jprn2, 1,&
-                            mode, nec, ncmp, n1, k1,&
+                iad1 = zzprno(1, n1, 1)
+                call corddl(admodl, lcmodl, jprn1, jprn2, 1, &
+                            mode, nec, ncmp, n1, k1, &
                             nddl1, zi(jposd1-1+nmxcmp*(k1-1)+1))
-            endif
+            end if
 !
-            zi(jnulo1-1+2*(k1-1)+1)=iad1
-            zi(jnulo1-1+2*(k1-1)+2)=nddl1
+            zi(jnulo1-1+2*(k1-1)+1) = iad1
+            zi(jnulo1-1+2*(k1-1)+2) = nddl1
         end do
-    endif
+    end if
 !
 !
 !
@@ -201,30 +201,30 @@ integer, pointer :: numsd(:)
 !     -----------------------------------------------------------
 !
     do k1 = 1, nnoe
-        iad1=numlo1(k1,1)
-        nddl1=numlo1(k1,2)
+        iad1 = numlo1(k1, 1)
+        nddl1 = numlo1(k1, 2)
         if (lmesym) then
-            nk2=k1
+            nk2 = k1
         else
-            nk2=nnoe
-        endif
+            nk2 = nnoe
+        end if
         do i1 = 1, nddl1
             do k2 = 1, nk2
-                iad2=numlo1(k2,1)
-                nddl2=numlo1(k2,2)
-                if (lmesym .and. (k2.eq.k1)) nddl2=i1
+                iad2 = numlo1(k2, 1)
+                nddl2 = numlo1(k2, 2)
+                if (lmesym .and. (k2 .eq. k1)) nddl2 = i1
                 do i2 = 1, nddl2
-                    iad11=zi(jnueq-1+iad1+posdd1(k1,i1)-1)
-                    iad21=zi(jnueq-1+iad2+posdd1(k2,i2)-1)
-                    nbi1=nbi1+1
-                    ti1(nbi1)=iad11
-                    ti2(nbi1)=iad21
+                    iad11 = zi(jnueq-1+iad1+posdd1(k1, i1)-1)
+                    iad21 = zi(jnueq-1+iad2+posdd1(k2, i2)-1)
+                    nbi1 = nbi1+1
+                    ti1(nbi1) = iad11
+                    ti2(nbi1) = iad21
                 end do
             end do
         end do
     end do
-    ASSERT(nbi1.le.nbeltb)
-    call asret2(lmasym, jtmp2, lgtmp2, nbterm, jsmhc,&
+    ASSERT(nbi1 .le. nbeltb)
+    call asret2(lmasym, jtmp2, lgtmp2, nbterm, jsmhc, &
                 jsmdi, nbi1, ti1, ti2)
 !
 !
@@ -235,8 +235,8 @@ integer, pointer :: numsd(:)
 !     3. ON RECOPIE EFFECTIVEMENT LES TERMES:
 !        (NBTERM CONTIENT LE NOMBRE DE TERMES (R/C) A TRAITER)
 !     -----------------------------------------------------------
-    decael=nbvel*(iel-1)
-    call ascopr(lmasym, lmesym, tt, jtmp2, nbterm,&
+    decael = nbvel*(iel-1)
+    call ascopr(lmasym, lmesym, tt, jtmp2, nbterm, &
                 jresl+decael, c1, jvalm)
 !
 110 continue

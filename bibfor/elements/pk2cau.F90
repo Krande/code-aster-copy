@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -67,10 +67,10 @@ subroutine pk2cau(nomte, ncmp, pk2, sigma)
     real(kind=8) :: cof11, cof21, cof31, detf, detfm1, detj, deux
     real(kind=8) :: epais, eptot, un, zic, zmin
 !-----------------------------------------------------------------------
-    parameter (nbinco=51)
-    parameter (npge=3)
+    parameter(nbinco=51)
+    parameter(npge=3)
     integer :: maxpg
-    parameter (maxpg=27*50)
+    parameter(maxpg=27*50)
 !
 !
     real(kind=8) :: vecu(8, 3), vecthe(9, 3), vecta(9, 2, 3)
@@ -96,11 +96,11 @@ subroutine pk2cau(nomte, ncmp, pk2, sigma)
 ! --- NOMBRE DE COUCHES :
 !     -----------------
     call jevech('PNBSP_I', 'L', jnbspi)
-    nbcou=zi(jnbspi-1+1)
+    nbcou = zi(jnbspi-1+1)
 !
     if (nbcou .le. 0) then
         call utmess('F', 'ELEMENTS_12')
-    endif
+    end if
 !
 !
 !
@@ -111,7 +111,7 @@ subroutine pk2cau(nomte, ncmp, pk2, sigma)
 !
     if (zk16(icompo+2) .eq. 'GROT_GDEP') then
         lgreen = .true.
-    endif
+    end if
 !
 ! --- RECUPERATION DU CHAMP DE DEPLACEMENT DANS LE CAS GROT_GDEP :
 !     ---------------------------------------------------------
@@ -119,17 +119,17 @@ subroutine pk2cau(nomte, ncmp, pk2, sigma)
         call tecach('NNO', 'PDEPLAR', 'L', iret, iad=idepl)
         if (iret .ne. 0) then
             call tecach('NNO', 'PDEPPLU', 'L', iret, iad=idepl)
-            ASSERT(iret.eq.0)
-        endif
+            ASSERT(iret .eq. 0)
+        end if
     else
         do i = 1, 6
             do j = 1, maxpg
-                sigma(i,j) = pk2(i,j)
-            enddo
-        enddo
+                sigma(i, j) = pk2(i, j)
+            end do
+        end do
 !
         goto 999
-    endif
+    end if
 !
 ! --- RECUPERATION DES COORDONNEES DES NOEUDS DANS LA GEOMETRIE
 ! --- INITIALE :
@@ -172,13 +172,13 @@ subroutine pk2cau(nomte, ncmp, pk2, sigma)
 !     ------------------------------------------------------
     do in = 1, nb1
         do ii = 1, 3
-            vecu(in,ii) = zr(idepl+6*(in-1)+ii-1)
-            vecthe(in,ii) = zr(idepl+6*(in-1)+ii+3-1)
+            vecu(in, ii) = zr(idepl+6*(in-1)+ii-1)
+            vecthe(in, ii) = zr(idepl+6*(in-1)+ii+3-1)
         end do
     end do
 !
     do ii = 1, 3
-        vecthe(nb2,ii) = zr(idepl+6*nb1+ii-1)
+        vecthe(nb2, ii) = zr(idepl+6*nb1+ii-1)
     end do
 !
 ! --- DETERMINATION DES REPERES LOCAUX AUX NOEUDS DANS LA
@@ -189,7 +189,7 @@ subroutine pk2cau(nomte, ncmp, pk2, sigma)
 ! --- VECTPT DESIGNE LES REPERES LOCAUX ORTHORNORMES EN CHAQUE
 ! --- NOEUD DANS LA CONFIGURATION INITIALE :
 !     ------------------------------------
-    call vectan(nb1, nb2, zr(igeom), zr(lzr), vecta,&
+    call vectan(nb1, nb2, zr(igeom), zr(lzr), vecta, &
                 vectn, vectpt)
 !
 ! --- DETERMINATION AUX NOEUDS DES VECTEURS VECNPH QUI SONT LA
@@ -197,7 +197,7 @@ subroutine pk2cau(nomte, ncmp, pk2, sigma)
 ! --- AU PLAN MOYEN INITIAL ET DES MATRICES DE ROTATION BLAM FAISANT
 ! --- PASSER DES VECTEURS VECTN AUX VECTEURS VECNPH :
 !     ---------------------------------------------
-    call vectrn(nb2, vectpt, vectn, vecthe, vecnph,&
+    call vectrn(nb2, vectpt, vectn, vecthe, vecnph, &
                 blam)
 !
 ! --- DETERMINATION DU VECTEUR DE DEPLACEMENT AUX NOEUDS VECPE
@@ -205,7 +205,7 @@ subroutine pk2cau(nomte, ncmp, pk2, sigma)
 ! --- OU U, V, W SONT LES 3 DDLS DE TRANSLATION
 ! --- NPHI EST LE VECTEUR VECNPH ET N LE VECTEUR VECTN :
 !     ------------------------------------------------
-    call vectpe(nb1, nb2, vecu, vectn, vecnph,&
+    call vectpe(nb1, nb2, vecu, vectn, vecnph, &
                 vecpe)
 !
 ! --- COMPTEUR DES POINTS D'INTEGRATION :
@@ -222,12 +222,12 @@ subroutine pk2cau(nomte, ncmp, pk2, sigma)
 !
 ! ---      POSITION DANS L'EPAISSEUR :
             if (inte .eq. 1) then
-                zic = zmin + (icou-1)*epais
-            else if (inte.eq.2) then
-                zic = zmin + epais/deux + (icou-1)*epais
-            else if (inte.eq.3) then
-                zic = zmin + epais + (icou-1)*epais
-            endif
+                zic = zmin+(icou-1)*epais
+            else if (inte .eq. 2) then
+                zic = zmin+epais/deux+(icou-1)*epais
+            else if (inte .eq. 3) then
+                zic = zmin+epais+(icou-1)*epais
+            end if
 ! ---      COORDONNEE ISOPARAMETRIQUE DANS L'EPAISSEUR DIVISEE PAR 2
             ksi3s2 = zic/epais
 !
@@ -235,7 +235,7 @@ subroutine pk2cau(nomte, ncmp, pk2, sigma)
 !          ------------------------------------------------------
             do intsn = 1, npgsn
 !
-                kpgs = kpgs + 1
+                kpgs = kpgs+1
 !
 ! ---        DETERMINATION DES REPERES LOCAUX AUX POINTS D'INTEGRATION
 ! ---        DANS LA CONFIGURATION INITIALE
@@ -244,25 +244,25 @@ subroutine pk2cau(nomte, ncmp, pk2, sigma)
 ! ---        VECTT DESIGNE LES REPERES LOCAUX ORTHORNORMES EN CHAQUE
 ! ---        POINT D'INTEGRATION DANS LA CONFIGURATION INITIALE :
 !            --------------------------------------------------
-                call vectgt(1, nb1, zr(igeom), ksi3s2, intsn,&
+                call vectgt(1, nb1, zr(igeom), ksi3s2, intsn, &
                             zr(lzr), epais, vectn, vectg, vectt)
 !
 ! ---        CALCUL DE L'INVERSE DE LA MATRICE JACOBIENNE JM1:
 !            ------------------------------------------------
-                call jacbm1(epais, vectg, vectt, bid33, jm1,&
+                call jacbm1(epais, vectg, vectt, bid33, jm1, &
                             detj)
 !
 ! ---        CALCUL DU VECTEUR JDN1NC QUI EST < DU/DQSI> (I.E.
 ! ---        <DU/DQSI1,DU/DQSI2,DU/DQSI3,DV/DQSI1,DV/DQSI2,DV/DQSI3,
 ! ---         DW/DQSI1,DW/DQSI2,DW/DQSI3> ) :
 !             -----------------------------
-                call jm1dn1(1, 1, nb1, nb2, zr(lzr),&
+                call jm1dn1(1, 1, nb1, nb2, zr(lzr), &
                             epais, ksi3s2, intsn, jm1, jdn1nc)
 !
 ! ---        CALCUL DU VECTEUR DUDXNC QUI EST < DU/DX> (I.E.
 ! ---        <DU/DX,DU/DY,DU/DZ,DV/DX,DV/DY,DV/DZ,DW/DX,DW/DY,DW/DZ> ) :
 !             ------------------------------------------------------
-                call promat(jdn1nc, 9, 9, 6*nb1+3, vecpe,&
+                call promat(jdn1nc, 9, 9, 6*nb1+3, vecpe, &
                             6*nb1+3, 6*nb1+3, 1, dudxnc)
 !
                 do i = 1, 3
@@ -281,73 +281,73 @@ subroutine pk2cau(nomte, ncmp, pk2, sigma)
 ! ---         TRANSPOSEE DE [F] :
 !             -----------------
                 do i = 1, 3
-                    ft(1,i) = dudx(i)
-                    ft(2,i) = dudy(i)
-                    ft(3,i) = dudz(i)
+                    ft(1, i) = dudx(i)
+                    ft(2, i) = dudy(i)
+                    ft(3, i) = dudz(i)
                 end do
 !
-                ft(1,1) = ft(1,1) + un
-                ft(2,2) = ft(2,2) + un
-                ft(3,3) = ft(3,3) + un
+                ft(1, 1) = ft(1, 1)+un
+                ft(2, 2) = ft(2, 2)+un
+                ft(3, 3) = ft(3, 3)+un
 !
 ! ---         CONSTRUCTION DU TENSEUR DES CONTRAINTES PK2T A
 ! ---         PARTIR DU VECTEUR PK2 DES COMPOSANTES DE CE TENSEUR :
 !             ---------------------------------------------------
-                pk2t(1,1) = pk2(1,kpgs)
-                pk2t(2,2) = pk2(2,kpgs)
-                pk2t(3,3) = pk2(3,kpgs)
-                pk2t(1,2) = pk2(4,kpgs)
-                pk2t(1,3) = pk2(5,kpgs)
-                pk2t(2,3) = pk2(6,kpgs)
-                pk2t(2,1) = pk2t(1,2)
-                pk2t(3,1) = pk2t(1,3)
-                pk2t(3,2) = pk2t(2,3)
+                pk2t(1, 1) = pk2(1, kpgs)
+                pk2t(2, 2) = pk2(2, kpgs)
+                pk2t(3, 3) = pk2(3, kpgs)
+                pk2t(1, 2) = pk2(4, kpgs)
+                pk2t(1, 3) = pk2(5, kpgs)
+                pk2t(2, 3) = pk2(6, kpgs)
+                pk2t(2, 1) = pk2t(1, 2)
+                pk2t(3, 1) = pk2t(1, 3)
+                pk2t(3, 2) = pk2t(2, 3)
 !
 ! ---         PASSAGE DU PK2 DU REPERE LOCAL A L'ELEMENT AU
 ! ---         REPERE GLOBAL :
 !             -------------
-                call btkb(3, 3, 3, pk2t, vectt,&
+                call btkb(3, 3, 3, pk2t, vectt, &
                           bid33, pk2g)
 !
 ! ---         CALCUL DU TENSEUR DE CAUCHY :
 !             ===========================
 ! ---         D'ABORD CALCUL DE [SIGMAG] = [F]*[PK2]*[FT] :
 !             -------------------------------------------
-                call utbtab('ZERO', 3, 3, pk2g, ft,&
+                call utbtab('ZERO', 3, 3, pk2g, ft, &
                             xab, sigmag)
 !
 ! ---         MATRICE DE PASSAGE DU REPERE GLOBAL AU REPERE LOCAL :
 !             --------------------------------------------------
                 do i = 1, 3
                     do j = 1, 3
-                        vecttt(i,j) = vectt(j,i)
-                    enddo
-                enddo
+                        vecttt(i, j) = vectt(j, i)
+                    end do
+                end do
 !
 ! ---         PASSAGE DU TENSEUR DES CONTRAINTES DE CAUCHY DU
 ! ---         REPERE GLOBAL AU REPERE LOCAL :
 !             -----------------------------
-                call btkb(3, 3, 3, sigmag, vecttt,&
+                call btkb(3, 3, 3, sigmag, vecttt, &
                           bid33, sigmat)
 !
 ! ---         CALCUL DU DETERMINANT DE [F] ( = DET [FT] ) :
 !             -------------------------------------------
-                cof11 = ft(2,2)*ft(3,3) - ft(2,3)*ft(3,2)
-                cof21 = ft(3,1)*ft(2,3) - ft(2,1)*ft(3,3)
-                cof31 = ft(2,1)*ft(3,2) - ft(3,1)*ft(2,2)
+                cof11 = ft(2, 2)*ft(3, 3)-ft(2, 3)*ft(3, 2)
+                cof21 = ft(3, 1)*ft(2, 3)-ft(2, 1)*ft(3, 3)
+                cof31 = ft(2, 1)*ft(3, 2)-ft(3, 1)*ft(2, 2)
 !
-                detf = ft(1,1)*cof11 + ft(1,2)*cof21 + ft(1,3)*cof31
+                detf = ft(1, 1)*cof11+ft(1, 2)*cof21+ft(1, 3)*cof31
                 detfm1 = un/(detf+r8prem())
 !
 ! ---         AFFECTATION DU VECTEUR DES COMPOSANTES DU TENSEUR
 ! ---         DE CAUCHY :
 !             ---------
-                sigma(1,kpgs) = sigmat(1,1)*detfm1
-                sigma(2,kpgs) = sigmat(2,2)*detfm1
-                sigma(3,kpgs) = sigmat(3,3)*detfm1
-                sigma(4,kpgs) = sigmat(1,2)*detfm1
-                sigma(5,kpgs) = sigmat(1,3)*detfm1
-                sigma(6,kpgs) = sigmat(2,3)*detfm1
+                sigma(1, kpgs) = sigmat(1, 1)*detfm1
+                sigma(2, kpgs) = sigmat(2, 2)*detfm1
+                sigma(3, kpgs) = sigmat(3, 3)*detfm1
+                sigma(4, kpgs) = sigmat(1, 2)*detfm1
+                sigma(5, kpgs) = sigmat(1, 3)*detfm1
+                sigma(6, kpgs) = sigmat(2, 3)*detfm1
 !
 !
             end do

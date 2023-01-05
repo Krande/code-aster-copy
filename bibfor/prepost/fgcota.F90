@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -43,7 +43,7 @@ subroutine fgcota(npic, pic, ncyc, sigmin, sigmax)
     do k = 2, npic
         if ((pic(k) .gt. pic(1)) .or. (pic(k) .lt. pic(1))) then
             cyczer = .false.
-        endif
+        end if
     end do
 !
     if (cyczer) then
@@ -54,35 +54,35 @@ subroutine fgcota(npic, pic, ncyc, sigmin, sigmax)
         call utmess('A', 'FATIGUE1_39')
 !
         goto 999
-    endif
+    end if
 !
-  2 continue
+2   continue
     if (i+2 .gt. npic) then
         goto 100
-    endif
-    e1 = abs ( pic(i+1) - pic(i) )
-    e2 = abs ( pic(i+2) - pic(i+1) )
+    end if
+    e1 = abs(pic(i+1)-pic(i))
+    e2 = abs(pic(i+2)-pic(i+1))
 !
     if (e1 .ge. e2) then
-        ncyc = ncyc + 1
+        ncyc = ncyc+1
         if (pic(i) .ge. pic(i+1)) then
             sigmax(ncyc) = pic(i)
             sigmin(ncyc) = pic(i+1)
         else
             sigmax(ncyc) = pic(i+1)
             sigmin(ncyc) = pic(i)
-        endif
+        end if
     else
-        ncyc = ncyc + 1
+        ncyc = ncyc+1
         if (pic(i+1) .ge. pic(i+2)) then
             sigmax(ncyc) = pic(i+1)
             sigmin(ncyc) = pic(i+2)
         else
             sigmax(ncyc) = pic(i+2)
             sigmin(ncyc) = pic(i+1)
-        endif
-    endif
-    i= i+2
+        end if
+    end if
+    i = i+2
     goto 2
 !
 !  --- TRAITEMENT DU RESIDU -------
@@ -96,8 +96,8 @@ subroutine fgcota(npic, pic, ncyc, sigmin, sigmax)
         else
             sigmax(ncyc) = pic(i+1)
             sigmin(ncyc) = pic(i)
-        endif
-    endif
+        end if
+    end if
 !
 999 continue
 !

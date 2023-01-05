@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine stkgrp(ifl, icl, iv, rv, cv,&
-                  cnl, mcl, nbm, numn, numm,&
+subroutine stkgrp(ifl, icl, iv, rv, cv, &
+                  cnl, mcl, nbm, numn, numm, &
                   grn, grm, irteti)
     implicit none
 !       SECONDE LECTURE DES DONNEES POUR UN MOT CLE DE TYPE GROUPE
@@ -62,7 +62,7 @@ subroutine stkgrp(ifl, icl, iv, rv, cv,&
     integer :: irtet, irteti, iv, nbitem, num
     integer :: numm, numn
 !-----------------------------------------------------------------------
-    data b8         /'        '/
+    data b8/'        '/
 !
     call jemarq()
     irteti = 0
@@ -79,18 +79,18 @@ subroutine stkgrp(ifl, icl, iv, rv, cv,&
         else
             grp = grm
             num = numm
-        endif
+        end if
         goto 10
-  4     continue
+4       continue
     end do
     goto 3
 !
- 10 continue
+10  continue
     call jeveuo(grp, 'E', iadg)
 !
 ! ----- LIRE ITEM SUIVANT =  NOM DU GROUPE ?
-    deblig=0
-    call lirtet(ifl, 2, 1, cnl, nomg,&
+    deblig = 0
+    call lirtet(ifl, 2, 1, cnl, nomg, &
                 icl, iv, rv, cv, deblig)
 !
 ! ----- LECTURE NOM DU GROUPE SI IL N Y A PAS D'ENTETE
@@ -98,12 +98,12 @@ subroutine stkgrp(ifl, icl, iv, rv, cv,&
         nomg = ' '
         nomg(1:iv) = cv(1:iv)
         call tesfin(icl, iv, cv, irtet)
-        ASSERT(irtet.eq.0)
+        ASSERT(irtet .eq. 0)
         if (irtet .eq. 1) then
             goto 7
         else if (irtet .eq. 2) then
             goto 8
-        endif
+        end if
     else
 !
 ! -----   STOCKAGE PREMIER NOM DE NOEUD / MAILLE OU FIN APRES L'ENTETE
@@ -112,17 +112,17 @@ subroutine stkgrp(ifl, icl, iv, rv, cv,&
             goto 7
         else if (irtet .eq. 2) then
             goto 8
-        endif
+        end if
         nom = b8
         nom(1:iv) = cv(1:iv)
         zk8(iadg+num) = nom
-        num = num + 1
-    endif
+        num = num+1
+    end if
 !
 ! ----- STOCKAGE DES NOMS DES NOEUDS OU MAILLES DU GROUPE
-  6 continue
+6   continue
 !
-    call liritm(ifl, icl, iv, rv, cv,&
+    call liritm(ifl, icl, iv, rv, cv, &
                 cnl, deblig, 2)
 !
 !
@@ -133,8 +133,8 @@ subroutine stkgrp(ifl, icl, iv, rv, cv,&
             goto 7
         else if (irtet .eq. 2) then
             goto 8
-        endif
-    endif
+        end if
+    end if
 !
 ! ----- STOCKAGE DES NOEUDS OU MAILLES DU GROUPE
     nom = b8
@@ -142,35 +142,35 @@ subroutine stkgrp(ifl, icl, iv, rv, cv,&
     zk8(iadg+num) = nom
 !
 ! ----- INCREMENTATION DU NB D'ITEM LUS
-    num = num + 1
+    num = num+1
 !
 ! ----- NOEUD OU MAILLE SUIVANT
     goto 6
 !
 ! ----- SORTIE EN FIN OU FINSF
-  7 continue
+7   continue
     ifn = 0
     goto 9
-  8 continue
+8   continue
     ifn = 1
 !
 !
 ! ----- CREATION ET DIMENSIONNEMENT DE L OBJET GRP.NOM_DU_GROUPE
-  9 continue
+9   continue
 !
     if (i .eq. 1) then
-        nbitem = num - numn
+        nbitem = num-numn
         numn = num
 !         -- POUR UN GROUPE VIDE, LONMAX=1
-        if (nbitem .eq. 0) numn=numn+1
+        if (nbitem .eq. 0) numn = numn+1
     else
-        nbitem = num - numm
+        nbitem = num-numm
         numm = num
 !         -- POUR UN GROUPE VIDE, LONMAX=1
-        if (nbitem .eq. 0) numm=numm+1
-    endif
+        if (nbitem .eq. 0) numm = numm+1
+    end if
 !
-    ASSERT(nbitem.ge.0)
+    ASSERT(nbitem .ge. 0)
     call jeexin(jexnom(grp, nomg), iret)
     if (iret .eq. 0) then
         call jecroc(jexnom(grp, nomg))
@@ -178,21 +178,21 @@ subroutine stkgrp(ifl, icl, iv, rv, cv,&
         call jeecra(jexnom(grp, nomg), 'LONUTI', nbitem)
     else
         call utmess('F', 'MODELISA7_11', sk=nomg)
-    endif
+    end if
 !
     if (ifn .eq. 0) goto 1
     if (ifn .eq. 1) goto 2
 !
-  1 continue
+1   continue
     irteti = 1
     goto 999
 !
 !       FINSF
-  2 continue
+2   continue
     irteti = 2
     goto 999
 !
-  3 continue
+3   continue
     irteti = 0
     goto 999
 !

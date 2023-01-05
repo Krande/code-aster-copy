@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -58,36 +58,36 @@ subroutine juagrn(nom, long)
         call jelira(nom, 'LTYP', ltyp)
         call codent(ltyp, 'G', type(2:))
         call wkvect('&&JEAGRN.TMP', 'V V '//type, long, jadr)
-    endif
+    end if
     lonma2 = min(lonmax, long)
     if (ltyp .eq. 8) then
         do iaux = 1, lonma2
             call jenuno(jexnum(nom, iaux), no1)
             zk8(jadr+iaux-1) = no1
-        enddo
+        end do
     else if (ltyp .eq. 16) then
         do iaux = 1, lonma2
             call jenuno(jexnum(nom, iaux), no2)
             zk16(jadr+iaux-1) = no2
-        enddo
+        end do
     else if (ltyp .eq. 24) then
         do iaux = 1, lonma2
             call jenuno(jexnum(nom, iaux), no3)
             zk24(jadr+iaux-1) = no3
-        enddo
+        end do
     else if (ltyp .eq. 32) then
         do iaux = 1, lonma2
             call jenuno(jexnum(nom, iaux), no4)
             zk32(jadr+iaux-1) = no4
-        enddo
+        end do
     else if (ltyp .eq. 80) then
         do iaux = 1, lonma2
             call jenuno(jexnum(nom, iaux), no5)
             zk80(jadr+iaux-1) = no5
-        enddo
+        end do
     else
         ASSERT(.false.)
-    endif
+    end if
 !
     call jedetr(nom)
     call jecreo(nom, 'V N '//type)
@@ -96,24 +96,24 @@ subroutine juagrn(nom, long)
     if (ltyp .eq. 8) then
         do iaux = 1, lonma2
             call jecroc(jexnom(nom, zk8(jadr+iaux-1)))
-        enddo
+        end do
     else if (ltyp .eq. 16) then
         do iaux = 1, lonma2
             call jecroc(jexnom(nom, zk16(jadr+iaux-1)))
-        enddo
+        end do
     else if (ltyp .eq. 24) then
         do iaux = 1, lonma2
             call jecroc(jexnom(nom, zk24(jadr+iaux-1)))
-        enddo
+        end do
     else if (ltyp .eq. 32) then
         do iaux = 1, lonma2
             call jecroc(jexnom(nom, zk32(jadr+iaux-1)))
-        enddo
+        end do
     else if (ltyp .eq. 80) then
         do iaux = 1, lonma2
             call jecroc(jexnom(nom, zk80(jadr+iaux-1)))
-        enddo
-    endif
+        end do
+    end if
 !
     call jedetr('&&JEAGRN.TMP')
     call jedema()

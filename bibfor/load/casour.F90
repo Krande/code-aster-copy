@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 !
 subroutine casour(load, mesh, model, geomDime, valeType)
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterc/getfac.h"
@@ -32,16 +32,16 @@ implicit none
 #include "asterfort/jeveuo.h"
 #include "asterfort/nocart.h"
 !
-character(len=8), intent(in) :: load, mesh, model
-character(len=4), intent(in) :: valeType
-integer, intent(in) :: geomDime
+    character(len=8), intent(in) :: load, mesh, model
+    character(len=4), intent(in) :: valeType
+    integer, intent(in) :: geomDime
 !
 !
 ! BUT : STOCKAGE DES SOURCES DANS UNE CARTE ALLOUEE SUR LE
 !       LIGREL DU MODELE
 !
 !-----------------------------------------------------------------------
-    integer :: nsour, jvalv,  n1, ncmp, iocc
+    integer :: nsour, jvalv, n1, ncmp, iocc
     character(len=16) :: motclf
     character(len=19) :: carte
     character(len=19) :: cartes(1)
@@ -57,11 +57,11 @@ integer, intent(in) :: geomDime
 !
     if (valeType .eq. 'REEL') then
         call alcart('G', carte, mesh, 'SOUR_R')
-    else if (valeType.eq.'FONC') then
+    else if (valeType .eq. 'FONC') then
         call alcart('G', carte, mesh, 'SOUR_F')
     else
         ASSERT(.false.)
-    endif
+    end if
 !
     call jeveuo(carte//'.NCMP', 'E', vk8=vncmp)
     call jeveuo(carte//'.VALV', 'E', jvalv)
@@ -74,7 +74,7 @@ integer, intent(in) :: geomDime
         zr(jvalv) = 0.d0
     else
         zk8(jvalv) = '&FOZERO'
-    endif
+    end if
     call nocart(carte, 1, ncmp)
 !
 ! --- STOCKAGE DANS LA CARTE
@@ -85,11 +85,11 @@ integer, intent(in) :: geomDime
             call getvr8(motclf, 'SOUR', iocc=iocc, scal=zr(jvalv), nbret=n1)
         else
             call getvid(motclf, 'SOUR', iocc=iocc, scal=zk8(jvalv), nbret=n1)
-        endif
+        end if
 !
         cartes(1) = carte
         ncmps(1) = ncmp
-        call char_affe_neum(model , mesh, geomDime, motclf, iocc, 1,&
+        call char_affe_neum(model, mesh, geomDime, motclf, iocc, 1, &
                             cartes, ncmps)
 !
     end do

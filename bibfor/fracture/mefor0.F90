@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -50,11 +50,11 @@ subroutine mefor0(nomo, chfor0, fonc)
         nomf(1) = zero
         nomf(2) = zero
         nomf(3) = zero
-        call mecact('V', chfor0, 'MODELE', ligrmo, 'FORC_F',&
+        call mecact('V', chfor0, 'MODELE', ligrmo, 'FORC_F', &
                     ncmp=3, lnomcmp=licmp, vk=nomf)
     else
-        call mecact('V', chfor0, 'MODELE', ligrmo, 'FORC_R',&
+        call mecact('V', chfor0, 'MODELE', ligrmo, 'FORC_R', &
                     ncmp=3, lnomcmp=licmp, vr=rcmp)
-    endif
+    end if
 !
 end subroutine

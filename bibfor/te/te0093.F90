@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 !
 subroutine te0093(option, nomte)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -28,7 +28,7 @@ implicit none
 #include "asterfort/lteatt.h"
 #include "asterfort/tefrep.h"
 !
-character(len=16), intent(in) :: option, nomte
+    character(len=16), intent(in) :: option, nomte
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -62,10 +62,10 @@ character(len=16), intent(in) :: option, nomte
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    call elrefe_info(fami='RIGI',&
-                     nno=nno, npg=npg,&
+    call elrefe_info(fami='RIGI', &
+                     nno=nno, npg=npg, &
                      jpoids=jvWeight, jvf=jvShape, jdfde=jvDShape)
-    lAxis = lteatt('AXIS','OUI')
+    lAxis = lteatt('AXIS', 'OUI')
 
 ! - Get input fields
     call jevech('PGEOMER', 'L', jvGeom)
@@ -86,26 +86,26 @@ character(len=16), intent(in) :: option, nomte
         if (lAxis) then
             r = 0.d0
             do iNode = 1, nno
-                r = r + zr(jvGeom+ndimSpace*(iNode-1))*zr(jvShape+kdec+iNode-1)
+                r = r+zr(jvGeom+ndimSpace*(iNode-1))*zr(jvShape+kdec+iNode-1)
             end do
-            jacWeight = jacWeight * r
-        endif
+            jacWeight = jacWeight*r
+        end if
 
 ! ----- Compute force at Gauss point from node value
         fx = 0.d0
         fy = 0.d0
         do iNode = 1, nno
-            jdec = (iNode-1) * ndimSpace
-            fx = fx + zr(jvShape+kdec+iNode-1) * zr(jvForc+jdec )
-            fy = fy + zr(jvShape+kdec+iNode-1) * zr(jvForc+jdec+1)
+            jdec = (iNode-1)*ndimSpace
+            fx = fx+zr(jvShape+kdec+iNode-1)*zr(jvForc+jdec)
+            fy = fy+zr(jvShape+kdec+iNode-1)*zr(jvForc+jdec+1)
         end do
 
 ! ----- Compute force
         do iNode = 1, nno
-            zr(jvVect+ndimSpace*(iNode-1))   = zr(jvVect+ndimSpace*(iNode-1)) +&
-                                               jacWeight * fx * zr(jvShape+kdec+iNode-1)
-            zr(jvVect+ndimSpace*(iNode-1)+1) = zr(jvVect+ndimSpace*(iNode-1)+1) +&
-                                               jacWeight * fy * zr(jvShape+kdec+iNode-1)
+            zr(jvVect+ndimSpace*(iNode-1)) = zr(jvVect+ndimSpace*(iNode-1))+ &
+                                             jacWeight*fx*zr(jvShape+kdec+iNode-1)
+            zr(jvVect+ndimSpace*(iNode-1)+1) = zr(jvVect+ndimSpace*(iNode-1)+1)+ &
+                                               jacWeight*fy*zr(jvShape+kdec+iNode-1)
         end do
     end do
 !

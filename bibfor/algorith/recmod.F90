@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine recmod(modmec, nbmode, nbamor, bande, tymmec,&
+subroutine recmod(modmec, nbmode, nbamor, bande, tymmec, &
                   grdmod)
     implicit none
 #include "jeveux.h"
@@ -64,60 +64,60 @@ subroutine recmod(modmec, nbmode, nbamor, bande, tymmec,&
 !
     call getvid('BASE_MODALE', 'MODE_MECA', iocc=1, scal=modmec, nbret=ibid)
 !
-    call rsorac(modmec, 'LONUTI', ibid, rbid, k8b,&
-                c16b, 0.0d0, k8b, nbmod1, 1,&
+    call rsorac(modmec, 'LONUTI', ibid, rbid, k8b, &
+                c16b, 0.0d0, k8b, nbmod1, 1, &
                 nbtrou)
     call wkvect('&&RECMOD.NUMERO.ORDRE', 'V V I', nbmod1(1), lnumor)
-    call rsorac(modmec, 'TOUT_ORDRE', ibid, rbid, k8b,&
-                c16b, 0.0d0, k8b, zi(lnumor), nbmod1(1),&
+    call rsorac(modmec, 'TOUT_ORDRE', ibid, rbid, k8b, &
+                c16b, 0.0d0, k8b, zi(lnumor), nbmod1(1), &
                 nbtrou)
 !
     call getvis('BASE_MODALE', 'NUME_ORDRE', iocc=1, nbval=0, nbret=nbmode)
     nbmode = -nbmode
     if (nbmode .eq. 0) then
-        call getvr8('BASE_MODALE', 'BANDE', iocc=1, nbval=2, vect=bande,&
+        call getvr8('BASE_MODALE', 'BANDE', iocc=1, nbval=2, vect=bande, &
                     nbret=ibid)
         call wkvect('&&OP0131.LISTEMODES', 'V V I', nbmod1(1), ilmode)
         do im = 1, nbmod1(1)
             imod1 = zi(lnumor+im-1)
-            call rsadpa(modmec, 'L', 1, 'FREQ', imod1,&
+            call rsadpa(modmec, 'L', 1, 'FREQ', imod1, &
                         0, sjv=iad, styp=k8b)
             freq1 = zr(iad)
             if ((freq1-bande(1))*(freq1-bande(2)) .le. 0.d0) then
-                nbmode = nbmode + 1
+                nbmode = nbmode+1
                 zi(ilmode-1+nbmode) = imod1
-            endif
+            end if
         end do
         if (nbmode .eq. 0) then
             call utmess('F', 'ALGORITH10_31')
-        endif
+        end if
     else
         call wkvect('&&OP0131.LISTEMODES', 'V V I', nbmode, ilmode)
-        call getvis('BASE_MODALE', 'NUME_ORDRE', iocc=1, nbval=nbmode, vect=zi(ilmode),&
+        call getvis('BASE_MODALE', 'NUME_ORDRE', iocc=1, nbval=nbmode, vect=zi(ilmode), &
                     nbret=ibid)
         do im = 1, nbmode
             if (zi(ilmode-1+im) .gt. nbmod1(1)) then
                 call utmess('F', 'ALGORITH10_32')
-            endif
+            end if
         end do
-    endif
+    end if
 !
 !----AMORTISSEMENTS MODAUX RETENUS
 !
     call wkvect('&&OP0131.LISTEAMOR', 'V V R8', nbmode, ilamor)
     call getvr8('BASE_MODALE', 'AMOR_REDUIT', iocc=1, nbval=0, nbret=na1)
-    nbamor = - ( na1 )
+    nbamor = -(na1)
     if (nbamor .ne. 0) then
         if (na1 .ne. 0) then
-            call getvr8('BASE_MODALE', 'AMOR_REDUIT', iocc=1, nbval=nbmode, vect=zr(ilamor),&
+            call getvr8('BASE_MODALE', 'AMOR_REDUIT', iocc=1, nbval=nbmode, vect=zr(ilamor), &
                         nbret=na1)
-        endif
+        end if
     else
         call getvr8('BASE_MODALE', 'AMOR_UNIF', iocc=1, scal=amunif, nbret=ibid)
         do im = 1, nbmode
             zr(ilamor-1+im) = amunif
         end do
-    endif
+    end if
 !
 !------CONSITUTION DE LA LISTE DES ADRESSES DES MODES DYNAMIQUES
 !
@@ -125,7 +125,7 @@ subroutine recmod(modmec, nbmode, nbamor, bande, tymmec,&
     call wkvect('&&OP0131.LISTADRMODE', 'V V I', nbmode, ilamod)
     do im = 1, nbmode
         imod1 = zi(ilmode+im-1)
-        call rsexch('F', modmec, grdmod, imod1, nomcha,&
+        call rsexch('F', modmec, grdmod, imod1, nomcha, &
                     iret)
         call jeveut(nomcha(1:19)//'.VALE', 'L', zi(ilamod+im-1))
     end do
@@ -136,7 +136,7 @@ subroutine recmod(modmec, nbmode, nbamor, bande, tymmec,&
     call wkvect('&&OP0131.MASSEGENE', 'V V R8', nbmode, iadrmg)
     do im = 1, nbmode
         imod1 = zi(ilmode+im-1)
-        call rsadpa(modmec, 'L', 1, 'MASS_GENE', imod1,&
+        call rsadpa(modmec, 'L', 1, 'MASS_GENE', imod1, &
                     0, sjv=iad, styp=k8b)
         zr(iadrmg+im-1) = zr(iad)
     end do

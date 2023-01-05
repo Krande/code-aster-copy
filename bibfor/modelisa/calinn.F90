@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine calinn(prefiz, nomaz, motfaz, iocc, lisi1z,&
+subroutine calinn(prefiz, nomaz, motfaz, iocc, lisi1z, &
                   lonli1, lisi2z, lonli2, modz)
     implicit none
 #include "asterf_types.h"
@@ -113,32 +113,32 @@ subroutine calinn(prefiz, nomaz, motfaz, iocc, lisi1z,&
 !
     if (motfac .ne. 'LIAISON_GROUP') then
         call utmess('F', 'MODELISA2_62')
-    endif
+    end if
 !
-    call getvem(noma, 'GROUP_NO', motfac, 'GROUP_NO_1', iocc,&
+    call getvem(noma, 'GROUP_NO', motfac, 'GROUP_NO_1', iocc, &
                 0, k8bid, ng1)
     if (ng1 .eq. 0) then
-        call getvem(noma, 'NOEUD', motfac, 'NOEUD_1', iocc,&
+        call getvem(noma, 'NOEUD', motfac, 'NOEUD_1', iocc, &
                     0, k8bid, nbno1)
         if (nbno1 .eq. 0) then
-            call getvem(noma, 'GROUP_MA', motfac, 'GROUP_MA_1', iocc,&
+            call getvem(noma, 'GROUP_MA', motfac, 'GROUP_MA_1', iocc, &
                         0, k8bid, ngm1)
             if (ngm1 .eq. 0) then
-                call getvem(noma, 'MAILLE', motfac, 'MAILLE_1', iocc,&
+                call getvem(noma, 'MAILLE', motfac, 'MAILLE_1', iocc, &
                             0, k8bid, nbma1)
                 if (nbma1 .eq. 0) goto 999
-            endif
-        endif
-    endif
+            end if
+        end if
+    end if
 !
     if (iocc .le. 0) then
         ASSERT(.false.)
-    endif
+    end if
 !
     call getfac(motfac, nlino)
     coni = pref19//'.CONI'
     conr = pref19//'.CONR'
-    if ((nlino.eq.0) .or. (iocc.gt.nlino)) goto 999
+    if ((nlino .eq. 0) .or. (iocc .gt. nlino)) goto 999
 !
 ! --- LECTURE DE L'ISOMETRIE DE TRANSFORMATION SI ELLE EXISTE
 !
@@ -148,23 +148,23 @@ subroutine calinn(prefiz, nomaz, motfaz, iocc, lisi1z,&
         centre(i) = 0.0d0
     end do
 !
-    call getvr8(motfac, 'TRAN', iocc=iocc, nbval=3, vect=t,&
+    call getvr8(motfac, 'TRAN', iocc=iocc, nbval=3, vect=t, &
                 nbret=nt)
     if (nt .lt. 0) then
         call utmess('F', 'MODELISA3_9', sk=motfac)
-    endif
+    end if
 !
-    call getvr8(motfac, 'ANGL_NAUT', iocc=iocc, nbval=3, vect=theta,&
+    call getvr8(motfac, 'ANGL_NAUT', iocc=iocc, nbval=3, vect=theta, &
                 nbret=nr)
     if (nr .lt. 0) then
         call utmess('F', 'MODELISA3_10', sk=motfac)
-    endif
+    end if
 !
-    call getvr8(motfac, 'CENTRE', iocc=iocc, nbval=3, vect=centre,&
+    call getvr8(motfac, 'CENTRE', iocc=iocc, nbval=3, vect=centre, &
                 nbret=no)
     if (no .lt. 0) then
         call utmess('F', 'MODELISA3_11', sk=motfac)
-    endif
+    end if
 !
     lisou1 = '&&CALINN.LISOU1'
     lisou2 = '&&CALINN.LISOU2'
@@ -183,34 +183,34 @@ subroutine calinn(prefiz, nomaz, motfaz, iocc, lisi1z,&
         n7 = 0
         n8 = 0
         call getvtx(motfac, 'GROUP_NO_1', iocc=iocc, scal=nom1, nbret=n1)
-        if (n1 .gt. 0) valk(1)='GROUP_NO_1'
+        if (n1 .gt. 0) valk(1) = 'GROUP_NO_1'
         call getvtx(motfac, 'NOEUD_1', iocc=iocc, scal=nom1, nbret=n2)
-        if (n2 .gt. 0) valk(1)='NOEUD_1   '
+        if (n2 .gt. 0) valk(1) = 'NOEUD_1   '
         call getvtx(motfac, 'GROUP_MA_1', iocc=iocc, scal=nom1, nbret=n3)
-        if (n3 .gt. 0) valk(1)='GROUP_MA_1'
+        if (n3 .gt. 0) valk(1) = 'GROUP_MA_1'
         call getvtx(motfac, 'MAILLE_1', iocc=iocc, scal=nom1, nbret=n4)
-        if (n4 .gt. 0) valk(1)='MAILLE_1  '
+        if (n4 .gt. 0) valk(1) = 'MAILLE_1  '
 !
         call getvtx(motfac, 'GROUP_NO_2', iocc=iocc, scal=nom2, nbret=n5)
-        if (n5 .gt. 0) valk(2)='GROUP_NO_2'
+        if (n5 .gt. 0) valk(2) = 'GROUP_NO_2'
         call getvtx(motfac, 'NOEUD_2', iocc=iocc, scal=nom2, nbret=n6)
-        if (n6 .gt. 0) valk(2)='NOEUD_2   '
+        if (n6 .gt. 0) valk(2) = 'NOEUD_2   '
         call getvtx(motfac, 'GROUP_MA_2', iocc=iocc, scal=nom2, nbret=n7)
-        if (n7 .gt. 0) valk(2)='GROUP_MA_2'
+        if (n7 .gt. 0) valk(2) = 'GROUP_MA_2'
         call getvtx(motfac, 'MAILLE_2', iocc=iocc, scal=nom2, nbret=n8)
-        if (n8 .gt. 0) valk(2)='MAILLE_2  '
+        if (n8 .gt. 0) valk(2) = 'MAILLE_2  '
 !
-        vali(1)= lonli1
-        vali(2)= lonli2
-        call utmess('F', 'MODELISA3_12', nk=2, valk=valk, ni=2,&
+        vali(1) = lonli1
+        vali(2) = lonli2
+        call utmess('F', 'MODELISA3_12', nk=2, valk=valk, ni=2, &
                     vali=vali)
 !
-    endif
+    end if
 !
 ! ---    MISE EN VIS-A-VIS DES NOEUDS DES LISTES LISIN1 ET LISIN2
 ! ---    LES LISTES REARRANGEES SONT LISOU1 ET LISOU2
 !
-    call pacoap(lisin1, lisin2, lonli1, centre, theta,&
+    call pacoap(lisin1, lisin2, lonli1, centre, theta, &
                 t, noma, lisou1, lisou2)
 !
     call jeveuo(lisou1, 'L', idlou1)
@@ -242,13 +242,13 @@ subroutine calinn(prefiz, nomaz, motfaz, iocc, lisi1z,&
 !
     if (ddl1 .eq. 'DNOR' .or. ddl2 .eq. 'DNOR') then
         dnor = .true.
-    endif
+    end if
 !
     if (dnor) then
         call dismoi('DIM_GEOM', mod, 'MODELE', repi=ndim)
-        call pacoje(coni, iocc, motfac, noma, conr,&
+        call pacoje(coni, iocc, motfac, noma, conr, &
                     ndim)
-    endif
+    end if
 !
 ! --- MENAGE
 !

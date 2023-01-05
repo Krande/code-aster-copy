@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -74,7 +74,7 @@ subroutine cynupl(prof_chno, indirf, modcyc, mailsk, nbsec)
     integer :: nbddl, nbnot, nbsec, nddlt, neqsec, nsecpr
     integer :: ntail, nugd, numnos, numsec
 !-----------------------------------------------------------------------
-    parameter    (nbcpmx=300)
+    parameter(nbcpmx=300)
     character(len=6) :: pgc
     character(len=8) :: modcyc, mailsk, nomgd
     character(len=19) :: prof_chno_sec, prof_chno, chamno
@@ -86,11 +86,11 @@ subroutine cynupl(prof_chno, indirf, modcyc, mailsk, nbsec)
 !-----------------------------------------------------------------------
 !
     call jemarq()
-    pgc='CYNUPL'
+    pgc = 'CYNUPL'
 !
 !
 !----------------RECUPERATION DU PROF_CHNO:
-    call rsexch('F', modcyc, 'DEPL', 1, chamno,&
+    call rsexch('F', modcyc, 'DEPL', 1, chamno, &
                 ier)
     call dismoi('PROF_CHNO', chamno, 'CHAM_NO', repk=prof_chno_sec)
 !
@@ -101,7 +101,7 @@ subroutine cynupl(prof_chno, indirf, modcyc, mailsk, nbsec)
     call dismoi('NB_CMP_MAX', nomgd, 'GRANDEUR', repi=nbcmp)
     call jenonu(jexnom('&CATA.GD.NOMGD', nomgd), nugd)
     nec = nbec(nugd)
-    ASSERT(nec.le.10)
+    ASSERT(nec .le. 10)
 !
 !
 !-------------RECUPERATION DIMENSION MAILLAGE SQUELETTE-----------------
@@ -126,26 +126,26 @@ subroutine cynupl(prof_chno, indirf, modcyc, mailsk, nbsec)
 !
 !--------------BOUCLE DE COMPTAGE DES DDL FINAUX------------------------
 !
-    nddlt=0
+    nddlt = 0
     do i = 1, nbnot
-        numsec=skeleton(i)
-        numnos=skeleton(1+nbnot+i-1)
-        nddlt=nddlt+zi(llprno+(numnos-1)*(2+nec)+1)
-        zi(lttds+numsec-1)=zi(lttds+numsec-1)+ zi(llprno+(numnos-1)*(&
-        2+nec)+1)
+        numsec = skeleton(i)
+        numnos = skeleton(1+nbnot+i-1)
+        nddlt = nddlt+zi(llprno+(numnos-1)*(2+nec)+1)
+        zi(lttds+numsec-1) = zi(lttds+numsec-1)+zi(llprno+(numnos-1)*( &
+                                                   2+nec)+1)
     end do
 !
 !-----------------ALLOCATION DES DIVERS OBJETS--------------------------
 !
-    lili=prof_chno//'.LILI'
-    prno=prof_chno//'.PRNO'
-    deeq=prof_chno//'.DEEQ'
-    nueq=prof_chno//'.NUEQ'
+    lili = prof_chno//'.LILI'
+    prno = prof_chno//'.PRNO'
+    deeq = prof_chno//'.DEEQ'
+    nueq = prof_chno//'.NUEQ'
 !
 ! - Create PROF_CHNO
 !
-    call profchno_crsd(prof_chno, 'G', nb_equa = nddlt, nb_ligrz = 2,&
-                       prno_lengthz = nbnot*(2+nec))
+    call profchno_crsd(prof_chno, 'G', nb_equa=nddlt, nb_ligrz=2, &
+                       prno_lengthz=nbnot*(2+nec))
     call jeveuo(deeq, 'E', lddeeq)
     call jeveuo(nueq, 'E', ldnueq)
 !
@@ -156,15 +156,15 @@ subroutine cynupl(prof_chno, indirf, modcyc, mailsk, nbsec)
     call jeecra(jexnum(prno, i_ligr_link), 'LONMAX', 1)
 !
 !
-    call jecrec(indirf, 'V V I', 'NU', 'DISPERSE', 'VARIABLE',&
+    call jecrec(indirf, 'V V I', 'NU', 'DISPERSE', 'VARIABLE', &
                 nbsec)
 !
 !
     do i = 1, nbsec
         call jecroc(jexnum(indirf, i))
-        ntail=2*zi(lttds+i-1)
+        ntail = 2*zi(lttds+i-1)
         call jeecra(jexnum(indirf, i), 'LONMAX', ntail)
-        zi(lttds+i-1)=0
+        zi(lttds+i-1) = 0
     end do
 !
 !-------------------------REMPLISSAGE DES OBJETS------------------------
@@ -172,42 +172,42 @@ subroutine cynupl(prof_chno, indirf, modcyc, mailsk, nbsec)
     call jenonu(jexnom(lili, '&MAILLA'), i_ligr_mesh)
     call jeveuo(jexnum(prno, i_ligr_mesh), 'E', ldprno)
 !
-    nsecpr=1
+    nsecpr = 1
     call jeveuo(jexnum(indirf, nsecpr), 'E', ltinse)
-    icomp=0
+    icomp = 0
     do i = 1, nbnot
 !
-        numsec=skeleton(i)
-        numnos=skeleton(1+nbnot+i-1)
-        ieq=zi(llprno+(numnos-1)*(2+nec))
-        nbddl=zi(llprno+(numnos-1)*(2+nec)+1)
+        numsec = skeleton(i)
+        numnos = skeleton(1+nbnot+i-1)
+        ieq = zi(llprno+(numnos-1)*(2+nec))
+        nbddl = zi(llprno+(numnos-1)*(2+nec)+1)
         call isdeco(zi(llprno+(numnos-1)*(2+nec)+2), idec, nbcmp)
 !
-        zi(ldprno+(i-1)*(2+nec))=icomp+1
-        zi(ldprno+(i-1)*(2+nec)+1)=nbddl
+        zi(ldprno+(i-1)*(2+nec)) = icomp+1
+        zi(ldprno+(i-1)*(2+nec)+1) = nbddl
         do iec = 1, nec
-            zi(ldprno+(i-1)*(2+nec)+1+iec)= zi(llprno+(numnos-1)*(2+&
-            nec)+1+iec)
+            zi(ldprno+(i-1)*(2+nec)+1+iec) = zi(llprno+(numnos-1)*(2+ &
+                                                                   nec)+1+iec)
         end do
         if (numsec .ne. nsecpr) then
             call jelibe(jexnum(indirf, nsecpr))
-            nsecpr=numsec
+            nsecpr = numsec
             call jeveuo(jexnum(indirf, nsecpr), 'E', ltinse)
-        endif
-        iad=0
+        end if
+        iad = 0
         do j = 1, nbcmp
             if (idec(j) .gt. 0) then
-                iad=iad+1
-                icomp=icomp+1
-                zi(lddeeq+(icomp-1)*2)=i
-                zi(lddeeq+(icomp-1)*2+1)=j
-                zi(ldnueq+icomp-1)=icomp
-                linueq=vnueq(1+ieq+iad-2)
-                ipoint=ltinse-1+2*zi(lttds+numsec-1)
-                zi(ipoint+1)=linueq
-                zi(ipoint+2)=icomp
-                zi(lttds+numsec-1)=zi(lttds+numsec-1)+1
-            endif
+                iad = iad+1
+                icomp = icomp+1
+                zi(lddeeq+(icomp-1)*2) = i
+                zi(lddeeq+(icomp-1)*2+1) = j
+                zi(ldnueq+icomp-1) = icomp
+                linueq = vnueq(1+ieq+iad-2)
+                ipoint = ltinse-1+2*zi(lttds+numsec-1)
+                zi(ipoint+1) = linueq
+                zi(ipoint+2) = icomp
+                zi(lttds+numsec-1) = zi(lttds+numsec-1)+1
+            end if
         end do
     end do
 !

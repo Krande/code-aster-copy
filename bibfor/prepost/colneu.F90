@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -53,9 +53,9 @@ subroutine colneu(nbnode, typema)
 !     ===========================
     integer(kind=4) :: lenvar, cpiter, taille, ibid4, nbnod4, un, nbnod4t(1)
     integer :: nbnmax, iadr
-    parameter (lenvar = 144)
-    parameter (cpiter= 41)
-    parameter (nbnmax= 100000)
+    parameter(lenvar=144)
+    parameter(cpiter=41)
+    parameter(nbnmax=100000)
     integer(kind=4) :: int4(nbnmax), i4
     integer :: icompo, ifm, niv, vali(2)
     real(kind=4) :: tr4
@@ -74,12 +74,12 @@ subroutine colneu(nbnode, typema)
 !
 !     ASSIGNATION DES NOMS POUR LES ADRESSES DANS LES COMMON ASTER
 !     ------------------------------------------------------------
-    ayacs='&ADR_YACS'
+    ayacs = '&ADR_YACS'
 !
 !     RECUPERATION DE L'ADRESSE YACS
 !     ------------------------------
     call jeveuo(ayacs, 'L', iadr)
-    icompo=zi(iadr)
+    icompo = zi(iadr)
 !
 ! --- LECTURE DU NOMBRE DE NOEUDS :
 !     ---------------------------
@@ -89,7 +89,7 @@ subroutine colneu(nbnode, typema)
     un = 1
     tr4 = 0.d0
     i4 = 0
-    call cplen(icompo, cpiter, tr4, tr4, i4,&
+    call cplen(icompo, cpiter, tr4, tr4, i4, &
                nomvar, un, taille, nbnod4t, ibid4)
     nbnod4 = nbnod4t(1)
     nbnode = nbnod4
@@ -97,7 +97,7 @@ subroutine colneu(nbnode, typema)
         vali(1) = nbnode
         vali(2) = nbnmax
         call utmess('F', 'COUPLAGEIFS_12', ni=2, vali=vali)
-    endif
+    end if
 !
 ! --- CREATION DE VECTEURS DE TRAVAIL :
 !     -------------------------------
@@ -119,15 +119,15 @@ subroutine colneu(nbnode, typema)
         valk(2) = 'NOMVAR'
         valk(3) = nomvar(1:8)
         call utmess('I+', 'COUPLAGEIFS_11', nk=3, valk=valk)
-    endif
-    call cpldb(icompo, cpiter, 0.d0, 0.d0, int(0, 4),&
+    end if
+    call cpldb(icompo, cpiter, 0.d0, 0.d0, int(0, 4), &
                nomvar, int(3*nbnod4, 4), taille, zr(jcoor), ibid4)
     if (niv .eq. 2) then
         valk(1) = 'COLNEU'
         valk(2) = 'IBID'
         ibid = ibid4
         call utmess('I+', 'COUPLAGEIFS_10', nk=2, valk=valk, si=ibid)
-    endif
+    end if
 !
     if (typema(1:7) .eq. 'SOMMET') nomvar = 'COLNOD'
     if (typema(1:7) .eq. 'MILIEU') nomvar = 'COLFAC'
@@ -136,15 +136,15 @@ subroutine colneu(nbnode, typema)
         valk(2) = 'NOMVAR'
         valk(3) = nomvar(1:8)
         call utmess('I+', 'COUPLAGEIFS_11', nk=3, valk=valk)
-    endif
-    call cplen(icompo, cpiter, tr4, tr4, i4,&
+    end if
+    call cplen(icompo, cpiter, tr4, tr4, i4, &
                nomvar, nbnod4, taille, int4(1), ibid4)
     if (niv .eq. 2) then
         valk(1) = 'COLNEU'
         valk(2) = 'IBID'
         ibid = ibid4
         call utmess('I+', 'COUPLAGEIFS_10', nk=2, valk=valk, si=ibid)
-    endif
+    end if
     do inode = 1, nbnode
         zi(jgroma-1+inode) = int4(inode)
     end do
@@ -152,7 +152,7 @@ subroutine colneu(nbnode, typema)
         valk(1) = 'COLNEU'
         valk(2) = 'NBNODE'
         call utmess('I+', 'COUPLAGEIFS_10', nk=2, valk=valk, si=nbnode)
-    endif
+    end if
 !
     ndmax = nbnode
     do inode = 1, nbnode

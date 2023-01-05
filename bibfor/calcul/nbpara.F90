@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,9 +18,9 @@
 
 function nbpara(opt, te, statut)
 
-use calcul_module, only : ca_iaopmo_, ca_iaoptt_, ca_ilopmo_, ca_lgco_
+    use calcul_module, only: ca_iaopmo_, ca_iaoptt_, ca_ilopmo_, ca_lgco_
 
-implicit none
+    implicit none
 
 ! person_in_charge: jacques.pellet at edf.fr
 
@@ -44,11 +44,11 @@ implicit none
     integer ::  nucalc
 !-----------------------------------------------------------------------
 
-    jj = zi(ca_iaoptt_-1+ (te-1)*ca_lgco_+opt)
+    jj = zi(ca_iaoptt_-1+(te-1)*ca_lgco_+opt)
     if (jj .eq. 0) then
         nbpara = 0
     else
-        optmod = ca_iaopmo_ + zi(ca_ilopmo_-1+jj) - 1
+        optmod = ca_iaopmo_+zi(ca_ilopmo_-1+jj)-1
         nucalc = zi(optmod-1+1)
         if (nucalc .le. 0) then
             nbpara = 0
@@ -56,9 +56,9 @@ implicit none
             if (statut .eq. 'IN ') then
                 nbpara = zi(optmod-1+2)
             else
-                ASSERT(statut.eq.'OUT')
+                ASSERT(statut .eq. 'OUT')
                 nbpara = zi(optmod-1+3)
-            endif
-        endif
-    endif
+            end if
+        end if
+    end if
 end function

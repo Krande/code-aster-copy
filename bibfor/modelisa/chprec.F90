@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -57,7 +57,7 @@ subroutine chprec(chou)
 ! 0.3. ==> VARIABLES LOCALES
 !
     character(len=6) :: nompro
-    parameter ( nompro = 'CHPREC' )
+    parameter(nompro='CHPREC')
 !
     integer :: ibid, icoret, iret, jordr, n1, n2, n3, n4, n5, nbordr, nc, np
     integer :: ifm, niv, iexi
@@ -83,10 +83,10 @@ subroutine chprec(chou)
     call getvtx(' ', 'NOEUD_CMP', nbval=0, nbret=n1)
     if (n1 .ne. 0 .and. n1 .ne. -2) then
         call utmess('F', 'MODELISA4_16')
-    endif
-    nomch=' '
+    end if
+    nomch = ' '
     call getvtx(' ', 'NOM_CHAM', scal=nomch, nbret=n2)
-    tychlu=' '
+    tychlu = ' '
     call getvtx(' ', 'TYPE_CHAM', scal=tychlu, nbret=n2)
 !
 !
@@ -96,22 +96,22 @@ subroutine chprec(chou)
         call getvid(' ', 'MAILLAGE', scal=ma, nbret=n1)
         if (n1 .eq. 0) then
             call utmess('F', 'MODELISA4_17')
-        endif
+        end if
 !
 !       ON VERIFIE QUE LE MOT-CLE TYPE_CHAMP EST COHERENT AVEC LE
 !       TYPE DU CHAMP EXTRAIT.
         call dismoi('TYPE_CHAMP', ma//'.COORDO', 'CHAMP', repk=tych)
         call dismoi('NOM_GD', ma//'.COORDO', 'CHAMP', repk=nomgd)
 !
-        if ((tychlu(1:4).ne.tych) .or. (tychlu(6:).ne.nomgd)) then
+        if ((tychlu(1:4) .ne. tych) .or. (tychlu(6:) .ne. nomgd)) then
             valk(1) = tychlu
             valk(2) = tych(1:4)
             valk(3) = nomgd
             call utmess('F', 'MODELISA4_18', nk=3, valk=valk)
-        endif
+        end if
         call copisd('CHAMP_GD', 'G', ma//'.COORDO', noch19)
         goto 20
-    endif
+    end if
 !
 !
 !     1b. CAS DE LA RECUPERATION DU CHAMP D'ABSC_CURV D'UN MAILLAGE
@@ -120,22 +120,22 @@ subroutine chprec(chou)
         call getvid(' ', 'MAILLAGE', scal=ma, nbret=n1)
         if (n1 .eq. 0) then
             call utmess('F', 'MODELISA4_17')
-        endif
+        end if
 !
 !       ON VERIFIE QUE LE MOT-CLE TYPE_CHAMP EST COHERENT AVEC LE
 !       TYPE DU CHAMP EXTRAIT.
         call dismoi('TYPE_CHAMP', ma//'.ABSC_CURV', 'CHAMP', repk=tych)
         call dismoi('NOM_GD', ma//'.ABSC_CURV', 'CHAMP', repk=nomgd)
 !
-        if ((tychlu(1:4).ne.tych) .or. (tychlu(6:).ne.nomgd)) then
+        if ((tychlu(1:4) .ne. tych) .or. (tychlu(6:) .ne. nomgd)) then
             valk(1) = tychlu
             valk(2) = tych(1:4)
             valk(3) = nomgd
             call utmess('F', 'MODELISA4_18', nk=3, valk=valk)
-        endif
+        end if
         call copisd('CHAMP_GD', 'G', ma//'.ABSC_CURV', noch19)
         goto 20
-    endif
+    end if
 !
 !
 !     2. CAS DE LA RECUPERATION D'UN CHAMP DANS UNE SD FISS_XFEM
@@ -146,55 +146,55 @@ subroutine chprec(chou)
 !       VERIFIE SI UNE GRILLE AUXILIAIRE EST DEFINIE POUR LA FISS
         call jeexin(fis//'.GRI.MAILLA', ibid)
         if (ibid .eq. 0) then
-            grille=.false.
+            grille = .false.
         else
-            grille=.true.
-        endif
+            grille = .true.
+        end if
 !
         if (nomch .eq. 'LTNO') then
             chextr = fis//'.LTNO'
-        else if (nomch.eq.'LNNO') then
+        else if (nomch .eq. 'LNNO') then
             chextr = fis//'.LNNO'
-        else if (nomch.eq.'GRLNNO') then
+        else if (nomch .eq. 'GRLNNO') then
             chextr = fis//'.GRLNNO'
-        else if (nomch.eq.'GRLTNO') then
+        else if (nomch .eq. 'GRLTNO') then
             chextr = fis//'.GRLTNO'
-        else if (nomch.eq.'STNO') then
+        else if (nomch .eq. 'STNO') then
             chextr = fis//'.STNO'
-        else if (nomch.eq.'STNOR') then
+        else if (nomch .eq. 'STNOR') then
             chextr = fis//'.STNOR'
-        else if (nomch.eq.'BASLOC') then
+        else if (nomch .eq. 'BASLOC') then
             chextr = fis//'.BASLOC'
         else
             if (grille) then
                 if (nomch .eq. 'GRI.LTNO') then
                     chextr = fis//'.GRI.LTNO'
-                else if (nomch.eq.'GRI.LNNO') then
+                else if (nomch .eq. 'GRI.LNNO') then
                     chextr = fis//'.GRI.LNNO'
-                else if (nomch.eq.'GRI.GRLNNO') then
+                else if (nomch .eq. 'GRI.GRLNNO') then
                     chextr = fis//'.GRI.GRLNNO'
-                else if (nomch.eq.'GRI.GRLTNO') then
+                else if (nomch .eq. 'GRI.GRLTNO') then
                     chextr = fis//'.GRI.GRLTNO'
-                endif
+                end if
             else
                 call utmess('F', 'XFEM2_98')
-            endif
-        endif
+            end if
+        end if
 !
 !       ON VERIFIE QUE LE MOT-CLE TYPE_CHAMP EST COHERENT AVEC LE
 !       TYPE DU CHAMP EXTRAIT.
         call dismoi('TYPE_CHAMP', chextr, 'CHAMP', repk=tych)
         call dismoi('NOM_GD', chextr, 'CHAMP', repk=nomgd)
 !
-        if ((tychlu(1:4).ne.tych) .or. (tychlu(6:).ne.nomgd)) then
+        if ((tychlu(1:4) .ne. tych) .or. (tychlu(6:) .ne. nomgd)) then
             valk(1) = tychlu
             valk(2) = tych(1:4)
             valk(3) = nomgd
             call utmess('F', 'MODELISA4_18', nk=3, valk=valk)
-        endif
+        end if
         call copisd('CHAMP_GD', 'G', chextr, noch19)
         goto 20
-    endif
+    end if
 !
 !
 !     3. CAS DE LA RECUPERATION D'UN CHAMP DANS UNE SD CARA_ELEM
@@ -202,27 +202,27 @@ subroutine chprec(chou)
     call getvid(' ', 'CARA_ELEM', scal=cara, nbret=n1)
     if (n1 .eq. 1) then
 !
-        ASSERT(nomch(1:1).eq.'.')
+        ASSERT(nomch(1:1) .eq. '.')
         chextr = cara//nomch(1:11)
         call exisd('CHAMP', chextr, iexi)
         if (iexi .eq. 0) then
             call utmess('F', 'CALCULEL3_17', sk=chextr)
-        endif
+        end if
 !
 !       ON VERIFIE QUE LE MOT-CLE TYPE_CHAMP EST COHERENT AVEC LE
 !       TYPE DU CHAMP EXTRAIT.
         call dismoi('TYPE_CHAMP', chextr, 'CHAMP', repk=tych)
         call dismoi('NOM_GD', chextr, 'CHAMP', repk=nomgd)
 !
-        if ((tychlu(1:4).ne.tych) .or. (tychlu(6:).ne.nomgd)) then
+        if ((tychlu(1:4) .ne. tych) .or. (tychlu(6:) .ne. nomgd)) then
             valk(1) = tychlu
             valk(2) = tych(1:4)
             valk(3) = nomgd
             call utmess('F', 'MODELISA4_18', nk=3, valk=valk)
-        endif
+        end if
         call copisd('CHAMP_GD', 'G', chextr, noch19)
         goto 20
-    endif
+    end if
 !
 !
 !     4. CAS DE LA RECUPERATION D'UN CHAMP DANS UNE SD CHAR_MECA
@@ -230,50 +230,50 @@ subroutine chprec(chou)
     call getvid(' ', 'CHARGE', scal=charme, nbret=n1)
     if (n1 .eq. 1) then
 !
-        ASSERT(nomch(1:1).eq.'.')
+        ASSERT(nomch(1:1) .eq. '.')
         chextr = charme//nomch(1:11)
         call exisd('CHAMP', chextr, iexi)
         if (iexi .eq. 0) then
             call utmess('F', 'CALCULEL3_17', sk=chextr)
-        endif
+        end if
 !
 !       ON VERIFIE QUE LE MOT-CLE TYPE_CHAMP EST COHERENT AVEC LE
 !       TYPE DU CHAMP EXTRAIT.
         call dismoi('TYPE_CHAMP', chextr, 'CHAMP', repk=tych)
         call dismoi('NOM_GD', chextr, 'CHAMP', repk=nomgd)
 !
-        if ((tychlu(1:4).ne.tych) .or. (tychlu(6:).ne.nomgd)) then
+        if ((tychlu(1:4) .ne. tych) .or. (tychlu(6:) .ne. nomgd)) then
             valk(1) = tychlu
             valk(2) = tych(1:4)
             valk(3) = nomgd
             call utmess('F', 'MODELISA4_18', nk=3, valk=valk)
-        endif
+        end if
         call copisd('CHAMP_GD', 'G', chextr, noch19)
         goto 20
-    endif
+    end if
 !
 !
 !     5. CAS DE LA RECUPERATION D'UN CHAMP D'UNE SD RESULTAT
 !     ==============================================================
     call getvid(' ', 'RESULTAT', scal=resuco, nbret=n1)
-    interp=' '
+    interp = ' '
     call getvtx(' ', 'INTERPOL', scal=interp, nbret=n3)
-    typmax=' '
+    typmax = ' '
     call getvtx(' ', 'TYPE_MAXI', scal=typmax, nbret=n5)
     call gettco(resuco, tysd)
 !
 !     --- ON PEUT FAIRE UNE INTERPOLATION ---
 !         ===============================
-    if (tysd .eq. 'EVOL_THER' .or. tysd .eq. 'EVOL_ELAS' .or. tysd .eq. 'EVOL_NOLI' .or.&
+    if (tysd .eq. 'EVOL_THER' .or. tysd .eq. 'EVOL_ELAS' .or. tysd .eq. 'EVOL_NOLI' .or. &
         tysd .eq. 'DYNA_TRANS' .or. tysd .eq. 'EVOL_VARC') then
 !
         if (interp(1:3) .eq. 'LIN') then
             call getvr8(' ', 'INST', scal=inst, nbret=n4)
-            ASSERT(n4.eq.1)
+            ASSERT(n4 .eq. 1)
             proldr = 'EXCLUS'
             prolga = 'EXCLUS'
             acces = 'INST'
-            call rsinch(resuco, nomch, acces, inst, noch19,&
+            call rsinch(resuco, nomch, acces, inst, noch19, &
                         proldr, prolga, 2, base, icoret)
         else
             if (n5 .ne. 0) then
@@ -282,14 +282,14 @@ subroutine chprec(chou)
                 knum = '&&'//nompro//'.NUME_ORDRE'
                 call getvr8(' ', 'PRECISION', scal=epsi, nbret=np)
                 call getvtx(' ', 'CRITERE', scal=crit, nbret=nc)
-                call rsutnu(resuco, ' ', 0, knum, nbordr,&
+                call rsutnu(resuco, ' ', 0, knum, nbordr, &
                             epsi, crit, iret)
-                if ((iret.ne.0) .or. (nbordr.gt.1)) goto 10
+                if ((iret .ne. 0) .or. (nbordr .gt. 1)) goto 10
                 if (nbordr .eq. 0) then
                     call utmess('F', 'UTILITAI_23')
-                endif
+                end if
                 call jeveuo(knum, 'L', jordr)
-                call rsexch('F', resuco, nomch, zi(jordr), chextr,&
+                call rsexch('F', resuco, nomch, zi(jordr), chextr, &
                             iret)
 !
 !
@@ -299,16 +299,16 @@ subroutine chprec(chou)
                 call dismoi('TYPE_CHAMP', chextr, 'CHAMP', repk=tych)
                 call dismoi('NOM_GD', chextr, 'CHAMP', repk=nomgd)
 !
-                if ((tychlu(1:4).ne.tych) .or. (tychlu(6:).ne.nomgd)) then
+                if ((tychlu(1:4) .ne. tych) .or. (tychlu(6:) .ne. nomgd)) then
                     valk(1) = tychlu
                     valk(2) = tych(1:4)
                     valk(3) = nomgd
                     call utmess('F', 'MODELISA4_18', nk=3, valk=valk)
-                endif
+                end if
                 call copisd('CHAMP_GD', 'G', chextr, noch19)
                 call jedetr(knum)
-            endif
-        endif
+            end if
+        end if
 !
 !     --- ON NE FAIT QU'UNE EXTRACTION ---
 !         ===========================
@@ -322,36 +322,36 @@ subroutine chprec(chou)
             knum = '&&'//nompro//'.NUME_ORDRE'
             call getvr8(' ', 'PRECISION', scal=epsi, nbret=np)
             call getvtx(' ', 'CRITERE', scal=crit, nbret=nc)
-            call rsutnu(resuco, ' ', 0, knum, nbordr,&
+            call rsutnu(resuco, ' ', 0, knum, nbordr, &
                         epsi, crit, iret)
-            if ((iret.ne.0) .or. (nbordr.gt.1)) goto 10
+            if ((iret .ne. 0) .or. (nbordr .gt. 1)) goto 10
             if (nbordr .eq. 0) then
                 call utmess('F', 'UTILITAI_23')
-            endif
+            end if
             call jeveuo(knum, 'L', jordr)
-            call rsexch('F', resuco, nomch, zi(jordr), chextr,&
+            call rsexch('F', resuco, nomch, zi(jordr), chextr, &
                         iret)
             call dismoi('TYPE_CHAMP', chextr, 'CHAMP', repk=tych)
             call dismoi('NOM_GD', chextr, 'CHAMP', repk=nomgd)
 !
-            if ((tychlu(1:4).ne.tych) .or. (tychlu(6:).ne.nomgd)) then
+            if ((tychlu(1:4) .ne. tych) .or. (tychlu(6:) .ne. nomgd)) then
                 valk(1) = tychlu
                 valk(2) = tych(1:4)
                 valk(3) = nomgd
                 call utmess('F', 'MODELISA4_18', nk=3, valk=valk)
-            endif
+            end if
 !
             call copisd('CHAMP_GD', 'G', chextr, noch19)
             call jedetr(knum)
-        endif
-    endif
+        end if
+    end if
 !
 !
     goto 20
- 10 continue
+10  continue
     call utmess('F', 'MODELISA4_19')
 !
- 20 continue
+20  continue
 
     call titre()
 !

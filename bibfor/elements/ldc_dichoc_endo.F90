@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -69,12 +69,12 @@ subroutine ldc_dichoc_endo(ppr, ppi, ppc, yy0, dy0, dyy, decoup)
 !
 #include "asterfort/assert.h"
 !   système d'équations
-    integer, parameter  :: iux=1, ifx=2, ivx=3, ip=4, iuanx=5, ije=6
+    integer, parameter  :: iux = 1, ifx = 2, ivx = 3, ip = 4, iuanx = 5, ije = 6
     real(kind=8)        :: Seuil, DSeuil, Raide, DRaide, Ftilde
     real(kind=8)        :: leseuil, ksif, ksiv, nume, deno, xjeu, legap, Raide0
     real(kind=8)        :: Amort_in, DAmort_in, Amort, DAmort
 !   Paramètres de la loi : jeu
-    integer,parameter   :: ijeu=1
+    integer, parameter   :: ijeu = 1
 ! --------------------------------------------------------------------------------------------------
     decoup = .false.
 !   Les incréments de pilotage
@@ -82,78 +82,78 @@ subroutine ldc_dichoc_endo(ppr, ppi, ppc, yy0, dy0, dyy, decoup)
     dyy(ivx) = dy0(ivx)
     dyy(ije) = dy0(ije)
 !   Par défaut rien ne bouge
-    dyy(ip)    = 0.0
+    dyy(ip) = 0.0
     dyy(iuanx) = 0.0
-    dyy(ifx)   = 0.0
+    dyy(ifx) = 0.0
 !
 !   Soit on intègre le jeu soit on prend sa valeur finale
 !       ppi(8) = 1 : intégration du jeu
 !       ppi(8) = 0 : valeur finale
-    xjeu  = yy0(ije)*ppi(8) + ppr(ijeu)*(1.0 - ppi(8))
-    legap = yy0(iux) + xjeu - yy0(iuanx)
+    xjeu = yy0(ije)*ppi(8)+ppr(ijeu)*(1.0-ppi(8))
+    legap = yy0(iux)+xjeu-yy0(iuanx)
 !
-    if ( legap > 0.0 ) then
+    if (legap > 0.0) then
         goto 999
-    endif
+    end if
 !
 !   Loi complète ou pas
 !       ppi(7) = 1 : loi complète
 !       ppi(7) = 2 : contact direction normale, pas d'amortissement
-    if ( ppi(7) == 2 ) then
-        ASSERT( ppi(8) == 1 )
+    if (ppi(7) == 2) then
+        ASSERT(ppi(8) == 1)
 !       La fonction raideur et sa dérivée
-        call val_fct_dfct(ppi(3),yy0(ip),Raide,DRaide,Raide0)
-        dyy(ifx)   = Raide0*(dyy(iux) + dyy(ije))
-    else if ( ppi(7) == 1 ) then
+        call val_fct_dfct(ppi(3), yy0(ip), Raide, DRaide, Raide0)
+        dyy(ifx) = Raide0*(dyy(iux)+dyy(ije))
+    else if (ppi(7) == 1) then
 !       La fonction seuil et sa dérivée
-        call val_fct_dfct(ppi(1),yy0(ip),Seuil,DSeuil)
+        call val_fct_dfct(ppi(1), yy0(ip), Seuil, DSeuil)
 !       La fonction raideur et sa dérivée
-        call val_fct_dfct(ppi(3),yy0(ip),Raide,DRaide)
+        call val_fct_dfct(ppi(3), yy0(ip), Raide, DRaide)
 !       La fonction amortissement et sa dérivée
-        call val_fct_dfct(ppi(5),yy0(ip),Amort,DAmort)
-        if ( ppi(9).eq. 1 ) then
+        call val_fct_dfct(ppi(5), yy0(ip), Amort, DAmort)
+        if (ppi(9) .eq. 1) then
             Amort_in = Amort; DAmort_in = DAmort
         else
-            Amort_in = 0.0;   DAmort_in = 0.0
-        endif
+            Amort_in = 0.0; DAmort_in = 0.0
+        end if
 !
-        Ftilde  = Raide*(yy0(iux)+xjeu-yy0(iuanx)) - Amort_in*abs(yy0(ivx))
-        leseuil = abs(Ftilde) - Seuil
-        ksiv =  1.0
-        if ( yy0(ivx) < 0.0 ) then
+        Ftilde = Raide*(yy0(iux)+xjeu-yy0(iuanx))-Amort_in*abs(yy0(ivx))
+        leseuil = abs(Ftilde)-Seuil
+        ksiv = 1.0
+        if (yy0(ivx) < 0.0) then
             ksiv = -1.0
-        endif
-        dyy(ifx)   = Raide*(dyy(iux)-dyy(iuanx)) - Amort*ksiv*dyy(ivx)
+        end if
+        dyy(ifx) = Raide*(dyy(iux)-dyy(iuanx))-Amort*ksiv*dyy(ivx)
 !       Sous le seuil ou Pas
-        if ( leseuil >= 0.0 ) then
-            ksif =  1.0
-            if ( Ftilde < 0.0 ) then
+        if (leseuil >= 0.0) then
+            ksif = 1.0
+            if (Ftilde < 0.0) then
                 ksif = -1.0
-            endif
+            end if
 !             nume= ksif*(Raide*dyy(iux) - Amort_in*ksiv*dyy(ivx))
 !             deno= DSeuil + Raide - ksif*DRaide*(yy0(iux)+xjeu-yy0(iuanx)) + &
 !                   ksif*DAmort_in*abs(yy0(ivx))
 
-            nume= ksif*(Raide*dyy(iux) - Amort*ksiv*dyy(ivx))
-            deno= DSeuil + Raide - ksif*DRaide*(yy0(iux)+xjeu-yy0(iuanx)) + &
-                  ksif*DAmort*abs(yy0(ivx))
-            if ( nume*deno > 0.0 ) then
-                dyy(ip)    = nume/deno
+            nume = ksif*(Raide*dyy(iux)-Amort*ksiv*dyy(ivx))
+            deno = DSeuil+Raide-ksif*DRaide*(yy0(iux)+xjeu-yy0(iuanx))+ &
+                   ksif*DAmort*abs(yy0(ivx))
+            if (nume*deno > 0.0) then
+                dyy(ip) = nume/deno
                 dyy(iuanx) = ksif*dyy(ip)
-                dyy(ifx)   = Raide*(dyy(iux)-dyy(iuanx)) + &
-                             DRaide*(yy0(iux)+xjeu-yy0(iuanx))*dyy(ip) - &
-                             Amort*ksiv*dyy(ivx) - &
-                             DAmort*abs(yy0(ivx))*dyy(ip)
-            endif
+                dyy(ifx) = Raide*(dyy(iux)-dyy(iuanx))+ &
+                           DRaide*(yy0(iux)+xjeu-yy0(iuanx))*dyy(ip)- &
+                           Amort*ksiv*dyy(ivx)- &
+                           DAmort*abs(yy0(ivx))*dyy(ip)
+            end if
         else
 !           Fx doit rester négatif ou nul, lorsque dyy(ifx) > 0.0
-            if ((yy0(ifx) >= 0.0).and.(dyy(ifx) > 0.0)) then
-                dyy(ifx)   = 0.0
-            endif
-        endif
+            if ((yy0(ifx) >= 0.0) .and. (dyy(ifx) > 0.0)) then
+                dyy(ifx) = 0.0
+            end if
+        end if
     else
-        ASSERT( .false. )
-    endif
+        ASSERT(.false.)
+    end if
 !
 999 continue
 !
@@ -161,41 +161,41 @@ subroutine ldc_dichoc_endo(ppr, ppi, ppc, yy0, dy0, dyy, decoup)
 !
 contains
 !
-subroutine val_fct_dfct(info_fct,p,vfct,dfct,vfct0)
-    integer     , intent(in)    :: info_fct(2)
-    real(kind=8), intent(in)    :: p
-    real(kind=8), intent(out)           :: vfct, dfct
-    real(kind=8), intent(out), optional :: vfct0
+    subroutine val_fct_dfct(info_fct, p, vfct, dfct, vfct0)
+        integer, intent(in)    :: info_fct(2)
+        real(kind=8), intent(in)    :: p
+        real(kind=8), intent(out)           :: vfct, dfct
+        real(kind=8), intent(out), optional :: vfct0
 !
 #include "jeveux.h"
 #include "asterfort/utmess.h"
 !
-    integer      :: ip, jr, jp, nbvale, i0, i1
-    real(kind=8) :: peq, p0, p1, f0, f1
+        integer      :: ip, jr, jp, nbvale, i0, i1
+        real(kind=8) :: peq, p0, p1, f0, f1
 !
-    nbvale = info_fct(1)
-    jp     = info_fct(2)
-    jr     = jp+nbvale
+        nbvale = info_fct(1)
+        jp = info_fct(2)
+        jr = jp+nbvale
 !   Valeur de la fonction à 0
-    if ( present(vfct0) ) then
-        vfct0  = zr(jr)
-    endif
+        if (present(vfct0)) then
+            vfct0 = zr(jr)
+        end if
 !
-    i0 = 0 ; i1 = 0
-    do ip = 1 , nbvale-1
-        peq = zr(jp+ip)
-        if ( p .lt. peq ) then
-            i0 = ip - 1
-            i1 = ip
-            goto 20
-        endif
-    enddo
-    call utmess('F', 'DISCRETS_61', sk='FxP, RigiP, AmorP', sr=zr(jp+nbvale-1))
-20  continue
-    f0 = zr(jr+i0) ; f1 = zr(jr+i1)
-    p0 = zr(jp+i0) ; p1 = zr(jp+i1)
-    dfct = (f1-f0)/(p1-p0)
-    vfct = f0 + dfct*(p-p0)
-end subroutine val_fct_dfct
+        i0 = 0; i1 = 0
+        do ip = 1, nbvale-1
+            peq = zr(jp+ip)
+            if (p .lt. peq) then
+                i0 = ip-1
+                i1 = ip
+                goto 20
+            end if
+        end do
+        call utmess('F', 'DISCRETS_61', sk='FxP, RigiP, AmorP', sr=zr(jp+nbvale-1))
+20      continue
+        f0 = zr(jr+i0); f1 = zr(jr+i1)
+        p0 = zr(jp+i0); p1 = zr(jp+i1)
+        dfct = (f1-f0)/(p1-p0)
+        vfct = f0+dfct*(p-p0)
+    end subroutine val_fct_dfct
 !
 end subroutine ldc_dichoc_endo

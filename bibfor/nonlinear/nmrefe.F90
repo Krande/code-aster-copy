@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,12 +16,12 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine nmrefe(model  , compor, mate  , cara_elem, nume_dof,&
+subroutine nmrefe(model, compor, mate, cara_elem, nume_dof, &
                   ds_conv, valinc, veelem, veasse)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/as_allocate.h"
@@ -87,12 +87,12 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    chrefe  = '&&NMREFE.SIGERE'
+    chrefe = '&&NMREFE.SIGERE'
     resu_elem = '&&NMREFE.VEREFE'
-    ligrmo = model(1:8) // '.MODELE'
+    ligrmo = model(1:8)//'.MODELE'
     option = 'REFE_FORC_NODA'
     call exixfe(model, ier)
-    l_xfem = ier.ne.0
+    l_xfem = ier .ne. 0
 !
 ! - Get names of fields
 !
@@ -102,22 +102,22 @@ implicit none
 !
 ! - Get parameters from convergence datastructure
 !
-    nb_refe       = ds_conv%nb_refe
-    AS_ALLOCATE(vk8 = list_cmp, size = nb_refe)
-    AS_ALLOCATE(vr  = list_vale, size = nb_refe)
+    nb_refe = ds_conv%nb_refe
+    AS_ALLOCATE(vk8=list_cmp, size=nb_refe)
+    AS_ALLOCATE(vr=list_vale, size=nb_refe)
     do i_refe = 1, nb_refe
-        list_cmp(i_refe)  = ds_conv%list_refe(i_refe)%cmp_name
+        list_cmp(i_refe) = ds_conv%list_refe(i_refe)%cmp_name
         list_vale(i_refe) = ds_conv%list_refe(i_refe)%user_para
     end do
 !
 ! - Init fields
 !
-    call inical(nb_in_maxi, lpain, lchin, nbout, lpaout,&
+    call inical(nb_in_maxi, lpain, lchin, nbout, lpaout, &
                 lchout)
 !
 ! - Field for reference values
 !
-    call mecact('V', chrefe, 'MODELE', ligrmo, 'PREC',&
+    call mecact('V', chrefe, 'MODELE', ligrmo, 'PREC', &
                 ncmp=nb_refe, lnomcmp=list_cmp, vr=list_vale)
 !
 ! - Geometry field
@@ -135,38 +135,38 @@ implicit none
 !
 ! - Input fields
 !
-    lpain(1)  = 'PGEOMER'
-    lchin(1)  = chgeom(1:19)
-    lpain(2)  = 'PREFCO'
-    lchin(2)  = chrefe
-    lpain(3)  = 'PCAORIE'
-    lchin(3)  = chcara(1)(1:19)
-    lpain(4)  = 'PCOMPOR'
-    lchin(4)  = compor(1:19)
-    lpain(5)  = 'PMATERC'
-    lchin(5)  = mate(1:19)
-    lpain(6)  = 'PDEPLMR'
-    lchin(6)  = disp_prev
-    lpain(7)  = 'PCACOQU'
-    lchin(7)  = chcara(7)(1:19)
-    lpain(8)  = 'PCAGEPO'
-    lchin(8)  = chcara(5)(1:19)
-    lpain(9)  = 'PNBSP_I'
-    lchin(9)  = chcara(1) (1:8)//'.CANBSP'
+    lpain(1) = 'PGEOMER'
+    lchin(1) = chgeom(1:19)
+    lpain(2) = 'PREFCO'
+    lchin(2) = chrefe
+    lpain(3) = 'PCAORIE'
+    lchin(3) = chcara(1) (1:19)
+    lpain(4) = 'PCOMPOR'
+    lchin(4) = compor(1:19)
+    lpain(5) = 'PMATERC'
+    lchin(5) = mate(1:19)
+    lpain(6) = 'PDEPLMR'
+    lchin(6) = disp_prev
+    lpain(7) = 'PCACOQU'
+    lchin(7) = chcara(7) (1:19)
+    lpain(8) = 'PCAGEPO'
+    lchin(8) = chcara(5) (1:19)
+    lpain(9) = 'PNBSP_I'
+    lchin(9) = chcara(1) (1:8)//'.CANBSP'
     lpain(10) = 'PCAMASS'
     lchin(10) = chcara(12) (1:19)
     lpain(11) = 'PCAGNBA'
-    lchin(11) = chcara(11)(1:19)
+    lchin(11) = chcara(11) (1:19)
     lpain(12) = 'PCINFDI'
-    lchin(12) = chcara(15)(1:19)
+    lchin(12) = chcara(15) (1:19)
     nb_in_prep = 12
 !
 ! - XFEM fields
 !
     if (l_xfem) then
-        call xajcin(model, 'REFE_FORC_NODA', nb_in_maxi, lchin, lpain,&
+        call xajcin(model, 'REFE_FORC_NODA', nb_in_maxi, lchin, lpain, &
                     nb_in_prep)
-    endif
+    end if
 !
 ! - Output fields
 !
@@ -175,8 +175,8 @@ implicit none
 !
 ! - Computation
 !
-    call calcul('S', option, ligrmo , nb_in_prep, lchin,&
-                lpain, nbout, lchout, lpaout, 'V',&
+    call calcul('S', option, ligrmo, nb_in_prep, lchin, &
+                lpain, nbout, lchout, lpaout, 'V', &
                 'OUI')
 !
 ! - Copying output field
@@ -185,10 +185,10 @@ implicit none
 !
 ! - Assembly
 !
-    call assmiv('V', vect_asse, 1, vect_elem, [1.d0],&
+    call assmiv('V', vect_asse, 1, vect_elem, [1.d0], &
                 nume_dof, ' ', 'ZERO', 1)
 !
-    AS_DEALLOCATE(vk8 = list_cmp)
-    AS_DEALLOCATE(vr  = list_vale)
+    AS_DEALLOCATE(vk8=list_cmp)
+    AS_DEALLOCATE(vr=list_vale)
 !
 end subroutine

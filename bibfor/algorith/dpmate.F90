@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine dpmate(mod, imat, materf, ndt, ndi,&
+subroutine dpmate(mod, imat, materf, ndt, ndi, &
                   nvi, typedp)
     implicit none
 #include "asterc/r8vide.h"
@@ -41,10 +41,10 @@ subroutine dpmate(mod, imat, materf, ndt, ndi,&
     integer :: icodre(8)
     character(len=8) :: nomc(8)
 ! ======================================================================
-    parameter ( six    =  6.0d0 )
-    parameter ( trois  =  3.0d0 )
-    parameter ( deux   =  2.0d0 )
-    parameter ( un     =  1.0d0 )
+    parameter(six=6.0d0)
+    parameter(trois=3.0d0)
+    parameter(deux=2.0d0)
+    parameter(un=1.0d0)
 ! ======================================================================
 ! --- DEFINITION PARAMETRES MATERIAU ELAS ------------------------------
 ! ======================================================================
@@ -54,12 +54,12 @@ subroutine dpmate(mod, imat, materf, ndt, ndi,&
 ! ======================================================================
 ! --- RECUPERATION DONNEES MATERIAU ELAS -------------------------------
 ! ======================================================================
-    materf(3,1) = 0.0d0
-    call rcvala(imat, ' ', 'ELAS', 0, ' ',&
-                [0.d0], 2, nomc(1), materf(1, 1), icodre,&
+    materf(3, 1) = 0.0d0
+    call rcvala(imat, ' ', 'ELAS', 0, ' ', &
+                [0.d0], 2, nomc(1), materf(1, 1), icodre, &
                 1)
-    call rcvala(imat, ' ', 'ELAS', 0, ' ',&
-                [0.d0], 1, nomc(3), materf(3, 1), icodre,&
+    call rcvala(imat, ' ', 'ELAS', 0, ' ', &
+                [0.d0], 1, nomc(3), materf(3, 1), icodre, &
                 0)
 ! ======================================================================
 ! --- DEFINITION PARAMETRES MATERIAU DRUCKER ---------------------------
@@ -71,40 +71,40 @@ subroutine dpmate(mod, imat, materf, ndt, ndi,&
 ! --- RECUPERATION MATERIAU SUIVANT LE TYPE D ECROUISSAGE --------------
 ! ======================================================================
     typed = r8vide()
-    call rcvala(imat, ' ', 'DRUCK_PRAGER', 0, ' ',&
-                [0.d0], 1, 'TYPE_DP', ltyped(1), icodre,&
+    call rcvala(imat, ' ', 'DRUCK_PRAGER', 0, ' ', &
+                [0.d0], 1, 'TYPE_DP', ltyped(1), icodre, &
                 1)
-    typed=ltyped(1)
+    typed = ltyped(1)
     if (nint(typed) .eq. 1) then
 ! ======================================================================
 ! --- CAS LINEAIRE -----------------------------------------------------
 ! ======================================================================
         typedp = 1
         nomc(7) = 'H'
-        call rcvala(imat, ' ', 'DRUCK_PRAGER', 0, ' ',&
-                    [0.d0], 4, nomc(4), tabtmp(1), icodre,&
+        call rcvala(imat, ' ', 'DRUCK_PRAGER', 0, ' ', &
+                    [0.d0], 4, nomc(4), tabtmp(1), icodre, &
                     1)
 ! ======================================================================
 ! --- POUR DES COMMODITES DE PROGRAMMATION ON DEFINIT LES PARAMETRES ---
 ! --- MATERIAU DE LA FACON SUIVANTE ------------------------------------
 ! ======================================================================
-        materf(1,2) = tabtmp(2)
-        materf(2,2) = tabtmp(4)
-        materf(3,2) = tabtmp(1)
-        materf(4,2) = tabtmp(3)
-        coe = materf(2,2) + trois * materf(1,1) * ( un/deux/(un+ materf(2,1)) + materf(3,2)*mater&
-              &f(3,2)/(un-deux*materf(2,1)))
+        materf(1, 2) = tabtmp(2)
+        materf(2, 2) = tabtmp(4)
+        materf(3, 2) = tabtmp(1)
+        materf(4, 2) = tabtmp(3)
+        coe = materf(2, 2)+trois*materf(1, 1)*(un/deux/(un+materf(2, 1))+materf(3, 2)*mater&
+              &f(3, 2)/(un-deux*materf(2, 1)))
         if (coe .le. 0.0d0) then
             call utmess('F', 'ALGORITH3_37')
-        endif
+        end if
     else if (nint(typed) .eq. 2) then
 ! ======================================================================
 ! --- CAS PARABOLIQUE --------------------------------------------------
 ! ======================================================================
         typedp = 2
         nomc(7) = 'SY_ULTM'
-        call rcvala(imat, ' ', 'DRUCK_PRAGER', 0, ' ',&
-                    [0.d0], 4, nomc(4), tabtmp(1), icodre,&
+        call rcvala(imat, ' ', 'DRUCK_PRAGER', 0, ' ', &
+                    [0.d0], 4, nomc(4), tabtmp(1), icodre, &
                     1)
 ! ======================================================================
 ! --- POUR DES COMMODITES DE PROGRAMMATION ON DEFINIT LES PARAMETRES ---
@@ -113,33 +113,33 @@ subroutine dpmate(mod, imat, materf, ndt, ndi,&
         alpha = tabtmp(1)
         sy = tabtmp(2)
         syult = tabtmp(4)
-        phi = atan2 ( (trois*alpha / deux / sqrt(( deux*alpha + 1.0d0 )*(1.0d0-alpha))), 1.0d0 )
+        phi = atan2((trois*alpha/deux/sqrt((deux*alpha+1.0d0)*(1.0d0-alpha))), 1.0d0)
 !           PHI   = ASIN ( TROIS * ALPHA / ( DEUX + ALPHA ) )
-        c = ( trois - sin(phi) ) * sy / six / cos(phi)
-        a = sqrt ( syult / sy )
-        materf(1,2) = a
-        materf(2,2) = phi
-        materf(3,2) = c
-        materf(4,2) = tabtmp(3)
+        c = (trois-sin(phi))*sy/six/cos(phi)
+        a = sqrt(syult/sy)
+        materf(1, 2) = a
+        materf(2, 2) = phi
+        materf(3, 2) = c
+        materf(4, 2) = tabtmp(3)
         nomc(8) = 'DILAT'
-        call rcvala(imat, ' ', 'DRUCK_PRAGER', 0, ' ',&
-                    [0.d0], 1, nomc(8), dilat(1), icodre,&
+        call rcvala(imat, ' ', 'DRUCK_PRAGER', 0, ' ', &
+                    [0.d0], 1, nomc(8), dilat(1), icodre, &
                     1)
-        psi=atan2((trois*dilat(1) / deux / sqrt(( deux*dilat(1) + 1.0d0 )*(1.0d0-dilat(1)))),1.0d0)
-        materf(5,2) = psi
+        psi = atan2((trois*dilat(1)/deux/sqrt((deux*dilat(1)+1.0d0)*(1.0d0-dilat(1)))), 1.0d0)
+        materf(5, 2) = psi
     else
-        ASSERT( .false. )
-    endif
+        ASSERT(.false.)
+    end if
 ! ======================================================================
 ! --- NOMBRE DE COMPOSANTES --------------------------------------------
 ! ======================================================================
     if (mod(1:2) .eq. '3D') then
         ndt = 6
         ndi = 3
-    else if ((mod(1:6).eq.'D_PLAN') .or. (mod(1:4).eq.'AXIS')) then
+    else if ((mod(1:6) .eq. 'D_PLAN') .or. (mod(1:4) .eq. 'AXIS')) then
         ndt = 4
         ndi = 3
-    endif
+    end if
 ! ======================================================================
 ! --- NOMBRE DE VARIABLES INTERNES -------------------------------------
 ! ======================================================================

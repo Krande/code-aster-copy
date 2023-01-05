@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 !
 subroutine nmcrar(result, sddisc, fonact)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterc/getfac.h"
@@ -34,9 +34,9 @@ implicit none
 #include "asterfort/nmdide.h"
 #include "asterfort/wkvect.h"
 !
-character(len=19) :: sddisc
-character(len=8) :: result
-integer :: fonact(*)
+    character(len=19) :: sddisc
+    character(len=8) :: result
+    integer :: fonact(*)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -67,12 +67,12 @@ integer :: fonact(*)
 !
     call infdbg('MECANONLINE', ifm, niv)
     if (niv .ge. 2) then
-        call utmess('I','MECANONLINE13_14')
-    endif
+        call utmess('I', 'MECANONLINE13_14')
+    end if
 !
 ! - Initializations
 !
-    iocc   = 1
+    iocc = 1
     numarc = -1
     numreo = -1
     numrep = -1
@@ -82,7 +82,7 @@ integer :: fonact(*)
 ! - Active functionnalites
 !
     lreuse = isfonc(fonact, 'REUSE')
-    lDyna  = isfonc(fonact, 'DYNAMIQUE')
+    lDyna = isfonc(fonact, 'DYNAMIQUE')
 !
 ! - Name of datastructures to store
 !
@@ -118,7 +118,7 @@ integer :: fonact(*)
     ASSERT(numarc .ge. 0)
     ASSERT(numreo .ge. 0)
     ASSERT(numrep .ge. 0)
-    call wkvect(arcinf, 'V V I', 3, vi = storeArcinf)
+    call wkvect(arcinf, 'V V I', 3, vi=storeArcinf)
     storeArcinf(1) = numarc
     storeArcinf(2) = numreo
     storeArcinf(3) = numrep

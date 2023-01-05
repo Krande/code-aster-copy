@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -46,7 +46,7 @@ subroutine te0111(option, nomte)
     call jevech('PMATERC', 'L', imater)
     r8bid = 0.0d0
     nomres(1) = 'RHO'
-    call rcvalb('RIGI', 1, 1, '+', zi(imater), ' ', 'ELAS',  0, '  ', [r8bid],&
+    call rcvalb('RIGI', 1, 1, '+', zi(imater), ' ', 'ELAS', 0, '  ', [r8bid], &
                 1, nomres, valres, icodre, 1)
     rho = valres(1)
 !
@@ -57,10 +57,10 @@ subroutine te0111(option, nomte)
     xl = lonele(igeom=igeom)
 !
     call jevech('PMASSINE', 'E', lcastr)
-    zr(lcastr) = rho * aire * xl
-    zr(lcastr+1) =( zr(igeom+4) + zr(igeom+1) ) / 2.d0
-    zr(lcastr+2) =( zr(igeom+5) + zr(igeom+2) ) / 2.d0
-    zr(lcastr+3) =( zr(igeom+6) + zr(igeom+3) ) / 2.d0
+    zr(lcastr) = rho*aire*xl
+    zr(lcastr+1) = (zr(igeom+4)+zr(igeom+1))/2.d0
+    zr(lcastr+2) = (zr(igeom+5)+zr(igeom+2))/2.d0
+    zr(lcastr+3) = (zr(igeom+6)+zr(igeom+3))/2.d0
 !
 !   inertie de l'element ---
     zr(lcastr+4) = 0.d0

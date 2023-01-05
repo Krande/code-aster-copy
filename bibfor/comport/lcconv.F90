@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,11 +17,11 @@
 ! --------------------------------------------------------------------
 ! aslint: disable=W1504
 !
-subroutine lcconv(rela_comp, yd, dy, ddy, ye,&
-                  nr, itmax, toler, iter, intg,&
-                  nmat, mater, r, rini, epstr,&
-                  typess, essai, icomp, nvi, vind,&
-                  vinf, vind1, indi, bnews, mtrac,&
+subroutine lcconv(rela_comp, yd, dy, ddy, ye, &
+                  nr, itmax, toler, iter, intg, &
+                  nmat, mater, r, rini, epstr, &
+                  typess, essai, icomp, nvi, vind, &
+                  vinf, vind1, indi, bnews, mtrac, &
                   lreli, iret)
 
     implicit none
@@ -78,53 +78,53 @@ subroutine lcconv(rela_comp, yd, dy, ddy, ye,&
     real(kind=8) :: toler, essai, ddy(*), dy(*), r(*), rini(*), yd(*)
     real(kind=8) :: mater(nmat, 2), epstr(6), vinf(nvi), vind1(nvi)
     real(kind=8) :: ye(nr), vind(nvi)
-character(len=16), intent(in) :: rela_comp
+    character(len=16), intent(in) :: rela_comp
     aster_logical :: bnews(3), mtrac, lreli
 !     ----------------------------------------------------------------
 !
     if (rela_comp .eq. 'VISCOCHAB') then
 !
-        call cvmcvg(dy, ddy, nr, itmax, toler,&
-                    iter, intg, typess, essai, icomp,&
+        call cvmcvg(dy, ddy, nr, itmax, toler, &
+                    iter, intg, typess, essai, icomp, &
                     iret)
 !
     else if (rela_comp .eq. 'MONOCRISTAL') then
 !
-        call lcmmcv(yd, dy, ddy, nr, itmax,&
-                    toler, iter, r, rini, epstr,&
+        call lcmmcv(yd, dy, ddy, nr, itmax, &
+                    toler, iter, r, rini, epstr, &
                     iret)
 !
     else if (rela_comp .eq. 'IRRAD3M') then
 !
-        call irrcvg(dy, ddy, nr, nmat, mater,&
-                    itmax, toler, iter, r, rini,&
+        call irrcvg(dy, ddy, nr, nmat, mater, &
+                    itmax, toler, iter, r, rini, &
                     iret)
 !
     else if (rela_comp .eq. 'LETK') then
 !
-        call lkicvg(nr, itmax, toler, iter, r,&
+        call lkicvg(nr, itmax, toler, iter, r, &
                     nvi, vinf, dy, iret)
 !
     else if (rela_comp .eq. 'LKR') then
 !
-        call sricvg(nr,itmax,toler,iter,r,&
-                    nvi,vinf,dy,iret)
+        call sricvg(nr, itmax, toler, iter, r, &
+                    nvi, vinf, dy, iret)
 !
     else if (rela_comp .eq. 'HUJEUX') then
 !
-        call hujcvg(nmat, mater, nvi, vind, vinf,&
-                    vind1, nr, yd, dy, r,&
-                    indi, iter, itmax, intg, toler,&
+        call hujcvg(nmat, mater, nvi, vind, vinf, &
+                    vind1, nr, yd, dy, r, &
+                    indi, iter, itmax, intg, toler, &
                     bnews, mtrac, ye, lreli, iret)
 !
     else
 !
-        call lccong(nr, itmax, toler, iter, r,&
+        call lccong(nr, itmax, toler, iter, r, &
                     rini, yd, dy, iret)
 !
-    endif
+    end if
 !
-    ASSERT(iret.ge.0)
-    ASSERT(iret.le.3)
+    ASSERT(iret .ge. 0)
+    ASSERT(iret .le. 3)
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,19 +16,19 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine xpoajm(maxfem, jtypm2, itypse, jcnse, im,&
-                  n, nnose, prefno, jdirno, nnm,&
-                  inm, inmtot, nbmac, he, jnivgr,&
-                  iagma, ngrm, jdirgr, opmail, nfiss,&
-                  ndim, ndime, jconx1, jconx2, jconq1,&
-                  jconq2, ima, iad1, nnn, inn,&
-                  inntot, nbnoc, nbnofi, inofi, iacoo1,&
-                  iacoo2, iad9, ninter, iainc, ncompa,&
-                  elrefp, jlsn, jlst, typma, igeom,&
-                  jheavn, ncompn, contac, cmp, nbcmp,&
-                  nfh, nfe, ddlc, jcnsv1, jcnsv2,&
-                  jcnsl2, lmeca, pre1, heavno, fisco,&
-                  nlachm, lacthm, jbaslo, jstno, ka,&
+subroutine xpoajm(maxfem, jtypm2, itypse, jcnse, im, &
+                  n, nnose, prefno, jdirno, nnm, &
+                  inm, inmtot, nbmac, he, jnivgr, &
+                  iagma, ngrm, jdirgr, opmail, nfiss, &
+                  ndim, ndime, jconx1, jconx2, jconq1, &
+                  jconq2, ima, iad1, nnn, inn, &
+                  inntot, nbnoc, nbnofi, inofi, iacoo1, &
+                  iacoo2, iad9, ninter, iainc, ncompa, &
+                  elrefp, jlsn, jlst, typma, igeom, &
+                  jheavn, ncompn, contac, cmp, nbcmp, &
+                  nfh, nfe, ddlc, jcnsv1, jcnsv2, &
+                  jcnsl2, lmeca, pre1, heavno, fisco, &
+                  nlachm, lacthm, jbaslo, jstno, ka, &
                   mu)
 ! person_in_charge: samuel.geniaut at edf.fr
 !
@@ -133,7 +133,7 @@ subroutine xpoajm(maxfem, jtypm2, itypse, jcnse, im,&
     character(len=8) :: valk(2)
     character(len=19) :: ma2con
     aster_logical :: lnoeud
-    data          valk /'MAILLES','XPOAJM'/
+    data valk/'MAILLES', 'XPOAJM'/
 !
 !     ------------------------------------------------------------------
 !
@@ -141,15 +141,15 @@ subroutine xpoajm(maxfem, jtypm2, itypse, jcnse, im,&
 !
     if (inmtot .ge. 999999) then
         call utmess('F', 'XFEM_8', sk=valk(1))
-    endif
+    end if
 !
     if (opmail) then
-        inm = inm + 1
-        inmtot = inmtot + 1
-        ASSERT(inm.le.nnm)
+        inm = inm+1
+        inmtot = inmtot+1
+        ASSERT(inm .le. nnm)
         call codent(inmtot, 'G', chn)
         call jecroc(jexnom(maxfem//'.NOMMAI', prefno(4)//chn))
-        zi(jtypm2-1+nbmac + inmtot) = itypse
+        zi(jtypm2-1+nbmac+inmtot) = itypse
         ma2con = maxfem//'.CONNEX'
         call jeecra(jexnum(ma2con, nbmac+inmtot), 'LONMAX', nnose)
         call jeveuo(jexnum(ma2con, nbmac+inmtot), 'E', iacon2)
@@ -164,11 +164,11 @@ subroutine xpoajm(maxfem, jtypm2, itypse, jcnse, im,&
             if (ig2 .eq. 0) goto 110
             call jeveuo(jexnum(maxfem//'.GROUPEMA', ig2), 'E', iagma2)
 !         NIVEAU DE REMPLISSAGE DU GROUP_MA
-            zi(jnivgr-1+ig2) = zi(jnivgr-1+ig2) + 1
-            zi(iagma2-1+ zi(jnivgr-1+ig2)) = nbmac + inmtot
+            zi(jnivgr-1+ig2) = zi(jnivgr-1+ig2)+1
+            zi(iagma2-1+zi(jnivgr-1+ig2)) = nbmac+inmtot
 110         continue
         end do
-    endif
+    end if
     do j = 1, nnose
         ino = zi(jcnse-1+nnose*(im-1)+j)
 ! --- ON REGARDE SI LE NOEUD APPARTIENT À LA LISTE
@@ -176,50 +176,50 @@ subroutine xpoajm(maxfem, jtypm2, itypse, jcnse, im,&
             if (zi(jdirno-1+(2+nfiss)*(i-1)+1) .eq. ino) then
                 lnoeud = .true.
                 do ifiss = 1, nfiss
-                    lnoeud = lnoeud.and. zi(jdirno-1+(2+nfiss)*(i-1)+ 2+ifiss).eq.he(ifiss)
+                    lnoeud = lnoeud .and. zi(jdirno-1+(2+nfiss)*(i-1)+2+ifiss) .eq. he(ifiss)
                 end do
 ! --- IL APPARTIENT A LA LISTE, ON L'ATTACHE À LA MAILLE
                 if (lnoeud) then
-                    if (opmail) zi(iacon2-1+j)=zi(jdirno-1+(2+nfiss)*( i-1)+2)
+                    if (opmail) zi(iacon2-1+j) = zi(jdirno-1+(2+nfiss)*(i-1)+2)
                     goto 410
-                endif
-            endif
+                end if
+            end if
         end do
         if (ino .lt. 1000) then
             iad = iacoo1
-        else if (ino.gt.1000.and.ino.lt.2000) then
+        else if (ino .gt. 1000 .and. ino .lt. 2000) then
             iad = iad1+ndim*(ino-1001)
-        else if (ino.gt.2000.and.ino.lt.3000) then
+        else if (ino .gt. 2000 .and. ino .lt. 3000) then
             iad = iad9+ndim*(ino-2001)
-        else if (ino.gt.3000) then
+        else if (ino .gt. 3000) then
             iad = iad9+ndim*(ino-3001)
-        endif
+        end if
         if (opmail) then
 ! --- IL N'APPARTIENT PAS A LA LISTE, ON LE CREE AVANT DE L'ATTACHER
-            call xpolsn(elrefp, ino, n, jlsn, jlst,&
-                        ima, iad, igeom, nfiss, ndime,&
-                        ndim, jconx1, jconx2, fisco, co,&
+            call xpolsn(elrefp, ino, n, jlsn, jlst, &
+                        ima, iad, igeom, nfiss, ndime, &
+                        ndim, jconx1, jconx2, fisco, co, &
                         lsn, lst)
-            call xpoajn(maxfem, ino, lsn, jdirno, prefno,&
-                        nfiss, he, nnn, inn, inntot,&
+            call xpoajn(maxfem, ino, lsn, jdirno, prefno, &
+                        nfiss, he, nnn, inn, inntot, &
                         nbnoc, nbnofi, inofi, co, iacoo2)
-            zi(iacon2-1+j)= zi(jdirno-1+(2+nfiss)*(inn-1)+2)
+            zi(iacon2-1+j) = zi(jdirno-1+(2+nfiss)*(inn-1)+2)
         else
 ! --- IL N'APPARTIENT PAS A LA LISTE, ON CALCULE SON DÉPLACEMENT
-            call xpolsn(elrefp, ino, n, jlsn, jlst,&
-                        ima, iad, igeom, nfiss, ndime,&
-                        ndim, jconq1, jconq2, fisco, co,&
+            call xpolsn(elrefp, ino, n, jlsn, jlst, &
+                        ima, iad, igeom, nfiss, ndime, &
+                        ndim, jconq1, jconq2, fisco, co, &
                         lsn, lst)
-            call xpoajd(elrefp, ino, n, lsn, lst,&
-                        ninter, iainc, ncompa, typma, co,&
-                        igeom, jdirno, nfiss, jheavn, ncompn,&
-                        he, ndime, ndim, cmp, nbcmp,&
-                        nfh, nfe, ddlc, ima, jconq1,&
-                        jconq2, jcnsv1, jcnsv2, jcnsl2, nbnoc,&
-                        inntot, inn, nnn, contac, lmeca,&
-                        pre1, heavno, nlachm, lacthm, jbaslo,&
+            call xpoajd(elrefp, ino, n, lsn, lst, &
+                        ninter, iainc, ncompa, typma, co, &
+                        igeom, jdirno, nfiss, jheavn, ncompn, &
+                        he, ndime, ndim, cmp, nbcmp, &
+                        nfh, nfe, ddlc, ima, jconq1, &
+                        jconq2, jcnsv1, jcnsv2, jcnsl2, nbnoc, &
+                        inntot, inn, nnn, contac, lmeca, &
+                        pre1, heavno, nlachm, lacthm, jbaslo, &
                         jlsn, jlst, jstno, ka, mu)
-        endif
+        end if
 !
 410     continue
     end do

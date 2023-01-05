@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,23 +16,23 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine thmGetElemDime(ndim     , nnos   , nnom   ,&
-                          mecani   , press1 , press2 , tempe ,&
-                          nddls    , nddlm  , &
-                          nddl_meca, nddl_p1, nddl_p2,&
-                          dimdep   , dimdef , dimcon , dimuel)
+subroutine thmGetElemDime(ndim, nnos, nnom, &
+                          mecani, press1, press2, tempe, &
+                          nddls, nddlm, &
+                          nddl_meca, nddl_p1, nddl_p2, &
+                          dimdep, dimdef, dimcon, dimuel)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/thmGetGeneDime.h"
 !
-integer, intent(in) :: ndim, nnos, nnom
-integer, intent(in) :: mecani(5), press1(7), press2(7), tempe(5)
-integer, intent(out) :: nddls, nddlm
-integer, intent(out) :: nddl_meca, nddl_p1, nddl_p2
-integer, intent(out) :: dimdep, dimdef, dimcon, dimuel
+    integer, intent(in) :: ndim, nnos, nnom
+    integer, intent(in) :: mecani(5), press1(7), press2(7), tempe(5)
+    integer, intent(out) :: nddls, nddlm
+    integer, intent(out) :: nddl_meca, nddl_p1, nddl_p2
+    integer, intent(out) :: dimdep, dimdef, dimcon, dimuel
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -61,35 +61,35 @@ integer, intent(out) :: dimdep, dimdef, dimcon, dimuel
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    dimuel    = 0
-    dimdep    = 0
-    dimdef    = 0
-    dimcon    = 0
+    dimuel = 0
+    dimdep = 0
+    dimdef = 0
+    dimcon = 0
     nddl_meca = 0
-    nddl_p1   = 0
-    nddl_p2   = 0
-    nddls     = 0
-    nddlm     = 0
+    nddl_p1 = 0
+    nddl_p2 = 0
+    nddls = 0
+    nddlm = 0
     if (mecani(1) .eq. 1) then
         nddl_meca = ndim
-    endif
+    end if
     if (press1(1) .eq. 1) then
-        nddl_p1   = 1
-    endif
+        nddl_p1 = 1
+    end if
     if (press2(1) .eq. 1) then
-        nddl_p2   = 1
-    endif
+        nddl_p2 = 1
+    end if
 !
 ! - Get dimensions of generalized vectors
 !
-    call thmGetGeneDime(ndim  ,&
-                        mecani, press1, press2, tempe,&
+    call thmGetGeneDime(ndim, &
+                        mecani, press1, press2, tempe, &
                         dimdep, dimdef, dimcon)
 !
 ! - Count dof
 !
-    nddls  = mecani(1)*ndim + press1(1) + press2(1) + tempe(1)
-    nddlm  = mecani(1)*ndim
-    dimuel = nnos*nddls + nnom*nddlm
+    nddls = mecani(1)*ndim+press1(1)+press2(1)+tempe(1)
+    nddlm = mecani(1)*ndim
+    dimuel = nnos*nddls+nnom*nddlm
 !
 end subroutine

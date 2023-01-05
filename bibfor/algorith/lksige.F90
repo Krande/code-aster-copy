@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine lksige(mod, nmat, materd, deps, sigd,&
+subroutine lksige(mod, nmat, materd, deps, sigd, &
                   sigf)
     implicit none
 ! person_in_charge: alexandre.foucault at edf.fr
@@ -42,14 +42,14 @@ subroutine lksige(mod, nmat, materd, deps, sigd,&
     real(kind=8) :: deux, trois, un, zero, kron(6)
     real(kind=8) :: i1ml, iel, devsig(6), depsd(6)
     real(kind=8) :: sigdt(6), sigft(6), depst(6)
-    parameter       (trois =  3.d0 )
-    parameter       (deux  =  2.d0 )
-    parameter       (un    =  1.d0 )
-    parameter       (zero  =  0.d0 )
+    parameter(trois=3.d0)
+    parameter(deux=2.d0)
+    parameter(un=1.d0)
+    parameter(zero=0.d0)
 !       --------------------------------------------------------------
-    common /tdim/   ndt  , ndi
+    common/tdim/ndt, ndi
 !       --------------------------------------------------------------
-    data   kron /un , un , un , zero ,zero ,zero/
+    data kron/un, un, un, zero, zero, zero/
 !       --------------------------------------------------------------
 !
 ! --------------------------------------------------------------------
@@ -64,7 +64,7 @@ subroutine lksige(mod, nmat, materd, deps, sigd,&
 ! --------------------------------------------------------------------
 ! --- CONSTRUCTION TENSEUR DE RIGIDITE ELASTIQUE NON LINEAIRE
 ! --------------------------------------------------------------------
-    call lkelas(ndi, ndt, nmat, materd, depst,&
+    call lkelas(ndi, ndt, nmat, materd, depst, &
                 sigdt, dsde, kk, mu)
 !
 ! --------------------------------------------------------------------
@@ -76,7 +76,7 @@ subroutine lksige(mod, nmat, materd, deps, sigd,&
 ! --- DEFINITION DU 1ER INVARIANT DES CONTRAINTES ELASTIQUES: IEL
 ! --------------------------------------------------------------------
     i1ml = sigdt(1)+sigdt(2)+sigdt(3)
-    iel = i1ml + trois*kk*depsv
+    iel = i1ml+trois*kk*depsv
 !
 ! --------------------------------------------------------------------
 ! --- CONSTRUCTION TENSEUR DEVIATOIRE DES CONTRAINTES A T
@@ -92,14 +92,14 @@ subroutine lksige(mod, nmat, materd, deps, sigd,&
 ! --- CONSTRUCTION TENSEUR DEVIATOIRE DES CONTRAINTES ELASTIQUES
 ! --------------------------------------------------------------------
     do i = 1, ndt
-        devsig(i) = devsig(i) + deux* mu *depsd(i)
+        devsig(i) = devsig(i)+deux*mu*depsd(i)
     end do
 !
 ! --------------------------------------------------------------------
 ! --- CONSTRUCTION TENSEUR DES CONTRAINTES ELASTIQUES
 ! --------------------------------------------------------------------
     do i = 1, ndt
-        sigft(i) = devsig(i) + iel/trois*kron(i)
+        sigft(i) = devsig(i)+iel/trois*kron(i)
     end do
 !
 ! --------------------------------------------------------------------

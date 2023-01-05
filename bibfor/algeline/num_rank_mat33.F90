@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 function num_rank_mat33(m, prec, indic)
 !
-      implicit none
+    implicit none
 #include "asterc/r8prem.h"
 #include "asterfort/cubic_root.h"
 #include "asterfort/det_mat.h"
@@ -26,10 +26,10 @@ function num_rank_mat33(m, prec, indic)
 #include "asterfort/mat_com.h"
 #include "asterfort/trace_mat.h"
 !
-      integer :: num_rank_mat33
-      real(kind=8), intent(in) :: m(3,3)
-      real(kind=8), intent(in) :: prec
-      real(kind=8), intent(out) :: indic
+    integer :: num_rank_mat33
+    real(kind=8), intent(in) :: m(3, 3)
+    real(kind=8), intent(in) :: prec
+    real(kind=8), intent(out) :: indic
 !
 !
 !     RANG D UNE MATRICE DE TAILLE 3*3
@@ -39,29 +39,29 @@ function num_rank_mat33(m, prec, indic)
 !           QUE LA MATRICE EST SINGULIERE
 ! OUT INDIC : ESTIMATION DU CONDITIONNEMENT
 !
-      integer :: ndim
-      real(kind=8) :: det_m, norm_m, com_m(3,3), sec_inv
+    integer :: ndim
+    real(kind=8) :: det_m, norm_m, com_m(3, 3), sec_inv
 !
-      ndim = 3
-      indic = 0.d0
-      det_m = det_mat(ndim, m)
-      norm_m = norm_mat(ndim, m)
-      if(norm_m.eq.0.d0) then
-          num_rank_mat33 = 0
-      else if(cubic_root(abs(det_m)).le.prec*norm_m) then
-          com_m = mat_com(ndim, m)
-          sec_inv = trace_mat(ndim, com_m)
-          if(sqrt(abs(sec_inv)).le.prec*norm_m) then
-              num_rank_mat33 = 1
-          else
-              num_rank_mat33 = 2
-          endif
-      else
-          num_rank_mat33 = 3
-      endif
+    ndim = 3
+    indic = 0.d0
+    det_m = det_mat(ndim, m)
+    norm_m = norm_mat(ndim, m)
+    if (norm_m .eq. 0.d0) then
+        num_rank_mat33 = 0
+    else if (cubic_root(abs(det_m)) .le. prec*norm_m) then
+        com_m = mat_com(ndim, m)
+        sec_inv = trace_mat(ndim, com_m)
+        if (sqrt(abs(sec_inv)) .le. prec*norm_m) then
+            num_rank_mat33 = 1
+        else
+            num_rank_mat33 = 2
+        end if
+    else
+        num_rank_mat33 = 3
+    end if
 !
-      if(det_m.ne.0.d0) then
-          indic = norm_m/cubic_root(abs(det_m))
-      endif
+    if (det_m .ne. 0.d0) then
+        indic = norm_m/cubic_root(abs(det_m))
+    end if
 !
 end function

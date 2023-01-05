@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine srcrip(invar,s,vin,nvi,nbmat,mater,tmp,ucrip,seuil)
+subroutine srcrip(invar, s, vin, nvi, nbmat, mater, tmp, ucrip, seuil)
 
 !
 
@@ -38,7 +38,7 @@ subroutine srcrip(invar,s,vin,nvi,nbmat,mater,tmp,ucrip,seuil)
 !     : SEUIL          : VALEUR DE FP
 ! ===================================================================================
 
-    implicit    none
+    implicit none
 
 #include "asterfort/cos3t.h"
 #include "asterfort/srhtet.h"
@@ -49,25 +49,25 @@ subroutine srcrip(invar,s,vin,nvi,nbmat,mater,tmp,ucrip,seuil)
     !!! Variables globales
     !!!
 
-    integer :: nvi,nbmat
-    real(kind=8) :: invar,s(6),vin(nvi),mater(nbmat,2),ucrip,seuil,tmp
+    integer :: nvi, nbmat
+    real(kind=8) :: invar, s(6), vin(nvi), mater(nbmat, 2), ucrip, seuil, tmp
 
     !!!
     !!! Variables locales
     !!!
 
-    real(kind=8) :: sii,sigc,pref
-    real(kind=8) :: rcos3t,r0c,rtheta
-    real(kind=8) :: paraep(3),varpl(4)
+    real(kind=8) :: sii, sigc, pref
+    real(kind=8) :: rcos3t, r0c, rtheta
+    real(kind=8) :: paraep(3), varpl(4)
     integer :: ndi, ndt
-    common /tdim/ ndt, ndi
+    common/tdim/ndt, ndi
 
     !!!
     !!! Recuperation de sparametres materiau
     !!!
 
-    sigc=mater(3,2)
-    pref=mater(1,2)
+    sigc = mater(3, 2)
+    pref = mater(1, 2)
 
     !!!
     !!! Calcul de la norme de s
@@ -79,26 +79,26 @@ subroutine srcrip(invar,s,vin,nvi,nbmat,mater,tmp,ucrip,seuil)
     !!! Appel a h0c et h(theta)
     !!!
 
-    rcos3t=cos3t(s,pref,1.d-8)
-    call srhtet(nbmat,mater,rcos3t,r0c,rtheta)
+    rcos3t = cos3t(s, pref, 1.d-8)
+    call srhtet(nbmat, mater, rcos3t, r0c, rtheta)
 
     !!!
     !!! Recuperation des parametres d'ecrouissage
     !!!
 
-    call srvarp(vin,nvi,nbmat,mater,tmp,paraep)
+    call srvarp(vin, nvi, nbmat, mater, tmp, paraep)
     call srvacp(nbmat, mater, paraep, varpl)
 
     !!!
     !!! Calcul de fp
     !!!
 
-    ucrip=varpl(1)*sii*rtheta+varpl(2)*invar+varpl(3)
+    ucrip = varpl(1)*sii*rtheta+varpl(2)*invar+varpl(3)
 
-    if (ucrip.lt.0.d0) goto 100
+    if (ucrip .lt. 0.d0) goto 100
 
-    seuil=sii*rtheta-sigc*r0c*(ucrip**paraep(1))
+    seuil = sii*rtheta-sigc*r0c*(ucrip**paraep(1))
 
-100  continue
+100 continue
 
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,15 +16,15 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine lcresi(fami, kpg, ksp, rela_comp, typmod,&
-                  imat, nmat, materd, materf,&
-                  nbcomm, cpmono, pgl, nfs, nsg,&
-                  toutms, hsr, nr, nvi, vind,&
-                  vinf, itmax, toler, timed, timef,&
-                  yd, yf, deps, epsd, dy,&
+subroutine lcresi(fami, kpg, ksp, rela_comp, typmod, &
+                  imat, nmat, materd, materf, &
+                  nbcomm, cpmono, pgl, nfs, nsg, &
+                  toutms, hsr, nr, nvi, vind, &
+                  vinf, itmax, toler, timed, timef, &
+                  yd, yf, deps, epsd, dy, &
                   r, iret, crit, indi)
 ! aslint: disable=W1504
-    implicit   none
+    implicit none
 !       CALCUL DES TERMES DU SYSTEME NL A RESOUDRE = R(DY)
 !       IN  FAMI   :  FAMILLE DU POINT DE GAUSS
 !           KPG    :  POINT DE GAUSS
@@ -73,44 +73,44 @@ subroutine lcresi(fami, kpg, ksp, rela_comp, typmod,&
 !
 !       ----------------------------------------------------------------
 !
-    iret=0
+    iret = 0
     if (rela_comp .eq. 'VISCOCHAB') then
-        call cvmres(typmod, nmat, materd, materf, timed,&
-                    timef, yd, yf, epsd, deps,&
+        call cvmres(typmod, nmat, materd, materf, timed, &
+                    timef, yd, yf, epsd, deps, &
                     dy, r)
 !
     else if (rela_comp .eq. 'MONOCRISTAL') then
         call lcmmre(typmod, nmat, materd, materf, &
-                    nbcomm, cpmono, pgl, nfs, nsg,&
-                    toutms, hsr, nr, nvi, vind,&
-                    itmax, toler, timed, timef, yd,&
+                    nbcomm, cpmono, pgl, nfs, nsg, &
+                    toutms, hsr, nr, nvi, vind, &
+                    itmax, toler, timed, timef, yd, &
                     yf, deps, dy, r, iret)
     else if (rela_comp .eq. 'IRRAD3M') then
-        call irrres(fami, kpg, ksp, typmod, nmat,&
-                    materd, materf, yd, yf, deps,&
+        call irrres(fami, kpg, ksp, typmod, nmat, &
+                    materd, materf, yd, yf, deps, &
                     dy, r)
     else if (rela_comp .eq. 'LETK') then
-        call lkresi(typmod, nmat, materf, timed, timef,&
-                    nvi, vind, vinf, yd, yf,&
+        call lkresi(typmod, nmat, materf, timed, timef, &
+                    nvi, vind, vinf, yd, yf, &
                     deps, nr, r)
-    else if (rela_comp.eq.'LKR') then
-        call srresi(nmat,materf,timed,timef,&
-                    nvi,vind,vinf,yd,yf,deps,nr,r)
+    else if (rela_comp .eq. 'LKR') then
+        call srresi(nmat, materf, timed, timef, &
+                    nvi, vind, vinf, yd, yf, deps, nr, r)
     else if (rela_comp .eq. 'HAYHURST') then
-        call hayres(typmod, nmat, materd, materf, timed,&
-                    timef, yd, yf, deps, dy,&
+        call hayres(typmod, nmat, materd, materf, timed, &
+                    timef, yd, yf, deps, dy, &
                     r, crit, iret)
     else if (rela_comp .eq. 'HUJEUX') then
-        call huresi(typmod, nmat, materf, indi, deps,&
-                    nr, yd, yf, nvi, vind,&
+        call huresi(typmod, nmat, materf, indi, deps, &
+                    nr, yd, yf, nvi, vind, &
                     r, iret)
     else
-        call lcresa(fami, kpg, ksp, typmod, imat,&
-                    nmat, materd, materf, rela_comp, nr,&
-                    nvi, timed, timef, deps, epsd,&
-                    yf, dy, r, iret, yd,&
+        call lcresa(fami, kpg, ksp, typmod, imat, &
+                    nmat, materd, materf, rela_comp, nr, &
+                    nvi, timed, timef, deps, epsd, &
+                    yf, dy, r, iret, yd, &
                     crit)
 !
-    endif
+    end if
 !
 end subroutine

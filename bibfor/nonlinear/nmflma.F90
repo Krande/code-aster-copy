@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,18 +18,18 @@
 ! person_in_charge: mickael.abbas at edf.fr
 ! aslint: disable=W1504
 !
-subroutine nmflma(typmat, mod45 , l_hpp  , ds_algopara, modelz,&
-                  ds_material, carele, sddisc, sddyna     , fonact,&
-                  numins, valinc, solalg, lischa     ,&
-                  numedd     , numfix, ds_system,&
-                  ds_constitutive, ds_measure, meelem,&
-                  measse, nddle , ds_posttimestep, modrig,&
+subroutine nmflma(typmat, mod45, l_hpp, ds_algopara, modelz, &
+                  ds_material, carele, sddisc, sddyna, fonact, &
+                  numins, valinc, solalg, lischa, &
+                  numedd, numfix, ds_system, &
+                  ds_constitutive, ds_measure, meelem, &
+                  measse, nddle, ds_posttimestep, modrig, &
                   ldccvg, matass, matgeo)
 !
-use NonLin_Datastructure_type
-use HHO_type
+    use NonLin_Datastructure_type
+    use HHO_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -55,24 +55,24 @@ implicit none
 #include "asterfort/nmxmat.h"
 #include "asterfort/utmess.h"
 !
-character(len=16) :: typmat, modrig
-character(len=4) :: mod45
-aster_logical, intent(in) :: l_hpp
-type(NL_DS_AlgoPara), intent(in) :: ds_algopara
-integer :: fonact(*)
-character(len=*) :: modelz
-character(len=24) :: carele
-type(NL_DS_Material), intent(in) :: ds_material
-type(NL_DS_Constitutive), intent(in) :: ds_constitutive
-type(NL_DS_Measure), intent(inout) :: ds_measure
-integer :: numins, ldccvg, nddle
-character(len=19) :: sddisc, sddyna, lischa
-character(len=24) :: numedd, numfix
-character(len=19) :: meelem(*), measse(*)
-type(NL_DS_System), intent(in) :: ds_system
-character(len=19) :: solalg(*), valinc(*)
-character(len=19) :: matass, matgeo
-type(NL_DS_PostTimeStep), intent(in) :: ds_posttimestep
+    character(len=16) :: typmat, modrig
+    character(len=4) :: mod45
+    aster_logical, intent(in) :: l_hpp
+    type(NL_DS_AlgoPara), intent(in) :: ds_algopara
+    integer :: fonact(*)
+    character(len=*) :: modelz
+    character(len=24) :: carele
+    type(NL_DS_Material), intent(in) :: ds_material
+    type(NL_DS_Constitutive), intent(in) :: ds_constitutive
+    type(NL_DS_Measure), intent(inout) :: ds_measure
+    integer :: numins, ldccvg, nddle
+    character(len=19) :: sddisc, sddyna, lischa
+    character(len=24) :: numedd, numfix
+    character(len=19) :: meelem(*), measse(*)
+    type(NL_DS_System), intent(in) :: ds_system
+    character(len=19) :: solalg(*), valinc(*)
+    character(len=19) :: matass, matgeo
+    type(NL_DS_PostTimeStep), intent(in) :: ds_posttimestep
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -148,25 +148,25 @@ type(NL_DS_PostTimeStep), intent(in) :: ds_posttimestep
     call infdbg('MECANONLINE', ifm, niv)
     if (niv .ge. 2) then
         call utmess('I', 'MECANONLINE13_69')
-    endif
+    end if
 !
 ! - Initializations
 !
-    nb_matr              = 0
+    nb_matr = 0
     list_matr_type(1:20) = ' '
     iterat = 0
 !
 ! --- RECOPIE DU VECTEUR CHAPEAU
 !
     call nmchai('VALINC', 'LONMAX', nmax)
-    ASSERT(nmax.eq.zvalin)
+    ASSERT(nmax .eq. zvalin)
     call nmcha0('VALINC', 'ALLINI', ' ', valin2)
     call nmchcp('VALINC', valinc, valin2)
 !
 ! --- FONCTIONNALITES ACTIVEES
 !
-    l_neum_undead = isfonc(fonact,'NEUM_UNDEAD')
-    lmacr         = isfonc(fonact,'MACR_ELEM_STAT')
+    l_neum_undead = isfonc(fonact, 'NEUM_UNDEAD')
+    lmacr = isfonc(fonact, 'MACR_ELEM_STAT')
 !
 ! --- DECOMPACTION DES VARIABLES CHAPEAUX
 !
@@ -200,27 +200,27 @@ type(NL_DS_PostTimeStep), intent(in) :: ds_posttimestep
 !
 ! --- REASSEMBLAGE DE LA MATRICE GLOBALE
 !
-    if ((reincr.eq.0) .and. (numins.ne.1)) then
+    if ((reincr .eq. 0) .and. (numins .ne. 1)) then
         reasma = .false.
-    endif
+    end if
     if (numins .eq. 1) then
         reasma = .true.
-    endif
-    if ((reincr.ne.0) .and. (numins.ne.1)) then
-        reasma = mod(numins-1,reincr) .eq. 0
-    endif
+    end if
+    if ((reincr .ne. 0) .and. (numins .ne. 1)) then
+        reasma = mod(numins-1, reincr) .eq. 0
+    end if
 !
 ! --- OPTION DE CALCUL DE MERIMO
 !
     if (typmat .eq. 'TANGENTE') then
         optrig = 'RIGI_MECA_TANG'
-    else if (typmat.eq.'SECANTE') then
+    else if (typmat .eq. 'SECANTE') then
         optrig = 'RIGI_MECA_ELAS'
-    else if (typmat.eq.'ELASTIQUE') then
+    else if (typmat .eq. 'ELASTIQUE') then
         optrig = 'RIGI_MECA'
     else
         optrig = 'RIGI_MECA_TANG'
-    endif
+    end if
 !
 ! --- A RECALCULER
 !
@@ -229,51 +229,51 @@ type(NL_DS_PostTimeStep), intent(in) :: ds_posttimestep
 ! --- CALCUL DES MATR-ELEM DE RIGIDITE
 !
     if (lcrigi) then
-        call nmrigi(modelz     , carele         ,&
-                    ds_material, ds_constitutive,&
-                    fonact     , iterat         ,&
-                    sddyna     , ds_measure     ,ds_system,&
-                    valin2     , solalg, hhoField,&
-                    optrig     , ldccvg)
-    endif
+        call nmrigi(modelz, carele, &
+                    ds_material, ds_constitutive, &
+                    fonact, iterat, &
+                    sddyna, ds_measure, ds_system, &
+                    valin2, solalg, hhoField, &
+                    optrig, ldccvg)
+    end if
 !
 ! --- CALCUL DES MATR-ELEM DES CHARGEMENTS SUIVEURS
 !
     if (l_neum_undead) then
-        call nmcmat('MESUIV', ' ', ' ', ASTER_TRUE,&
-                    ASTER_FALSE, nb_matr, list_matr_type, list_calc_opti, list_asse_opti,&
+        call nmcmat('MESUIV', ' ', ' ', ASTER_TRUE, &
+                    ASTER_FALSE, nb_matr, list_matr_type, list_calc_opti, list_asse_opti, &
                     list_l_calc, list_l_asse)
-    endif
+    end if
 !
 ! --- CALCUL DE LA RIGIDITE GEOMETRIQUE DANS LE CAS HPP
 !
     if (mod45 .eq. 'FLAM') then
         if (l_hpp) then
-            call nmcmat('MEGEOM', ' ', ' ', ASTER_TRUE,&
-                        ASTER_FALSE, nb_matr, list_matr_type, list_calc_opti, list_asse_opti,&
+            call nmcmat('MEGEOM', ' ', ' ', ASTER_TRUE, &
+                        ASTER_FALSE, nb_matr, list_matr_type, list_calc_opti, list_asse_opti, &
                         list_l_calc, list_l_asse)
-        endif
-    endif
+        end if
+    end if
 !
 ! --- CALCUL DES MATR-ELEM DES SOUS-STRUCTURES
 !
     if (lmacr) then
-        call nmcmat('MESSTR', ' ', ' ', ASTER_TRUE,&
-                    ASTER_FALSE, nb_matr, list_matr_type, list_calc_opti, list_asse_opti,&
+        call nmcmat('MESSTR', ' ', ' ', ASTER_TRUE, &
+                    ASTER_FALSE, nb_matr, list_matr_type, list_calc_opti, list_asse_opti, &
                     list_l_calc, list_l_asse)
-    endif
+    end if
 !
 ! --- CALCUL ET ASSEMBLAGE DES MATR_ELEM DE LA LISTE
 !
     if (nb_matr .gt. 0) then
-        call nmxmat(modelz         , ds_material   , carele        ,&
-                    ds_constitutive, sddisc        , numins        ,&
-                    valin2         , solalg        , lischa        ,&
-                    numedd         , numfix        , ds_measure    ,&
-                    nb_matr        , list_matr_type, list_calc_opti,&
-                    list_asse_opti , list_l_calc   , list_l_asse   ,&
-                    meelem         , measse        ,  ds_system)
-    endif
+        call nmxmat(modelz, ds_material, carele, &
+                    ds_constitutive, sddisc, numins, &
+                    valin2, solalg, lischa, &
+                    numedd, numfix, ds_measure, &
+                    nb_matr, list_matr_type, list_calc_opti, &
+                    list_asse_opti, list_l_calc, list_l_asse, &
+                    meelem, measse, ds_system)
+    end if
 !
 ! --- ON RECONSTRUIT RIGI2 TOUJOURS SYMETRIQUE
 !
@@ -285,17 +285,17 @@ type(NL_DS_PostTimeStep), intent(in) :: ds_posttimestep
     if (reasma) then
         if (l_neum_undead) then
             call ascoma(meelem, numedd, lischa, matass)
-        endif
-    endif
+        end if
+    end if
 !
 !  --- MODIFICATION EVENTUELLE DE LA MATRICE DE RAIDEUR
 !
     modlag = 'MODI_LAGR_OUI'
     tdiag = 'MAX_ABS'
-    if ((nddle.ne.0) .and. (modrig(1:13).eq.'MODI_RIGI_OUI')) then
-        call matide(matass, nddle, ds_posttimestep%stab_para%list_dof_excl, modlag, tdiag,&
+    if ((nddle .ne. 0) .and. (modrig(1:13) .eq. 'MODI_RIGI_OUI')) then
+        call matide(matass, nddle, ds_posttimestep%stab_para%list_dof_excl, modlag, tdiag, &
                     10.d0)
-    endif
+    end if
 !
 ! --- CALCUL DE LA RIGIDITE GEOMETRIQUE DANS LE CAS HPP
 !
@@ -303,17 +303,17 @@ type(NL_DS_PostTimeStep), intent(in) :: ds_posttimestep
         if (l_hpp) then
             call asmatr(1, megeom, ' ', numedd, &
                         lischa, 'ZERO', 'V', 1, matgeo)
-            if ((nddle.ne.0) .and. (modrig(1:13).eq.'MODI_RIGI_OUI')) then
-                call matide(matgeo, nddle, ds_posttimestep%stab_para%list_dof_excl, modlag, tdiag,&
+            if ((nddle .ne. 0) .and. (modrig(1:13) .eq. 'MODI_RIGI_OUI')) then
+                call matide(matgeo, nddle, ds_posttimestep%stab_para%list_dof_excl, modlag, tdiag, &
                             10.d0)
-            endif
+            end if
         else
             matgeo = matass
-        endif
+        end if
     else if (mod45 .eq. 'VIBR') then
-        call asmama(memass, ' ', numedd, lischa,&
+        call asmama(memass, ' ', numedd, lischa, &
                     matgeo)
-    endif
+    end if
 !
 ! --- VERIFICATION POUR MODE_VIBR QUE LES DEUX MATRICES SONT SYMETRIQUES
 !
@@ -326,9 +326,9 @@ type(NL_DS_PostTimeStep), intent(in) :: ds_posttimestep
             call dismoi('TYPE_MATRICE', matgeo, 'MATR_ASSE', repk=syme)
             if (syme .eq. 'NON_SYM') then
                 call utmess('F', 'MECANONLINE5_56')
-            endif
-        endif
-    endif
+            end if
+        end if
+    end if
 !
     call jedema()
 !

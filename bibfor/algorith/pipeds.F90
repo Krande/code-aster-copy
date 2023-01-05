@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine pipeds(ndim, typmod, tau, mate, vim,&
-                  epsm, epspc, epsdc, etamin, etamax,&
+subroutine pipeds(ndim, typmod, tau, mate, vim, &
+                  epsm, epspc, epsdc, etamin, etamax, &
                   a0, a1, a2, a3, etas)
 !
 !
@@ -65,7 +65,7 @@ subroutine pipeds(ndim, typmod, tau, mate, vim,&
 ! ----------------------------------------------------------------------
 !
     integer :: nbres
-    parameter   (nbres=3)
+    parameter(nbres=3)
     integer :: icodre(nbres)
     character(len=16) :: nomres(nbres)
     character(len=8) :: fami, poum
@@ -89,7 +89,7 @@ subroutine pipeds(ndim, typmod, tau, mate, vim,&
     real(kind=8) :: x1, y1, z1
     real(kind=8) :: x2, y2, z2
     real(kind=8) :: kron(6)
-    data  kron/1.d0,1.d0,1.d0,0.d0,0.d0,0.d0/
+    data kron/1.d0, 1.d0, 1.d0, 0.d0, 0.d0, 0.d0/
 !
 !----- GET INFO=1,2
     call infniv(ifm, niv)
@@ -104,95 +104,95 @@ subroutine pipeds(ndim, typmod, tau, mate, vim,&
 !
 !
 ! -- OPTION ET MODELISATION
-    cplan = (typmod(1).eq.'C_PLAN  ')
+    cplan = (typmod(1) .eq. 'C_PLAN  ')
     ndimsi = 2*ndim
-    rac2=sqrt(2.d0)
+    rac2 = sqrt(2.d0)
 !
 ! -- CAS DE L'ENDOMMAGEMENT SATURE, ON NE PILOTE PAS
     if ((nint(vim(2)) .eq. 2)) then
         if (niv .eq. 2) then
             call utmess('I', 'PILOTAGE_2')
-        endif
+        end if
         goto 666
-    endif
+    end if
 !
 ! -- LECTURE DES CARACTERISTIQUES THERMOELASTIQUES
     nomres(1) = 'E'
     nomres(2) = 'NU'
-    fami='FPG1'
-    kpg=1
-    spt=1
-    poum='+'
-    call rcvalb(fami, kpg, spt, poum, mate,&
-                ' ', 'ELAS', 0, ' ', [0.d0],&
+    fami = 'FPG1'
+    kpg = 1
+    spt = 1
+    poum = '+'
+    call rcvalb(fami, kpg, spt, poum, mate, &
+                ' ', 'ELAS', 0, ' ', [0.d0], &
                 2, nomres, valres, icodre, 1)
     e = valres(1)
     nu = valres(2)
-    lambda = e * nu / (1.d0+nu) / (1.d0 - 2.d0*nu)
+    lambda = e*nu/(1.d0+nu)/(1.d0-2.d0*nu)
     deuxmu = e/(1.d0+nu)
 !
 ! -- LECTURE DES CARACTERISTIQUES D'ENDOMMAGEMENT
     nomres(1) = 'D_SIGM_EPSI'
     nomres(2) = 'SYT'
     nomres(3) = 'SYC'
-    call rcvalb(fami, kpg, spt, poum, mate,&
-                ' ', 'BETON_ECRO_LINE', 0, ' ', [0.d0],&
+    call rcvalb(fami, kpg, spt, poum, mate, &
+                ' ', 'BETON_ECRO_LINE', 0, ' ', [0.d0], &
                 nbres, nomres, valres, icodre, 0)
     dsigm = valres(1)
     syt = valres(2)
     syc = valres(3)
 !
     gamma = -e/dsigm
-    k0 = (syt*syt)*(1.d0+gamma)/(2.d0*e)* (1.d0+nu-2.d0*nu*nu)/(1.d0+nu)
+    k0 = (syt*syt)*(1.d0+gamma)/(2.d0*e)*(1.d0+nu-2.d0*nu*nu)/(1.d0+nu)
     if (nu .eq. 0) then
         if (icodre(3) .eq. 0) then
             call utmess('F', 'ALGORITH4_52')
         else
             seuil = k0
-        endif
+        end if
     else
-        sicr=sqrt((1.d0+nu-2.d0*nu**2)/(2.d0*nu**2))*syt
+        sicr = sqrt((1.d0+nu-2.d0*nu**2)/(2.d0*nu**2))*syt
         if (icodre(3) .eq. 1) then
-            seuil=k0
+            seuil = k0
         else
             if (syc .lt. sicr) then
                 call utmess('F', 'ALGORITH4_53')
             else
-                k1 = syc*(1.d0+gamma)*nu**2/ (1.d0+nu)/(1.d0-2.d0*nu) -k0*e/(1.d0-2.d0*nu)/syc
+                k1 = syc*(1.d0+gamma)*nu**2/(1.d0+nu)/(1.d0-2.d0*nu)-k0*e/(1.d0-2.d0*nu)/syc
                 trepsm = 0.d0
                 do k = 1, ndim
                     trepsm = trepsm+epsm(k)
                 end do
                 if (trepsm .gt. 0.d0) then
                     trepsm = 0.d0
-                endif
+                end if
                 seuil = k0-k1*trepsm
-            endif
-        endif
-    endif
+            end if
+        end if
+    end if
 !
 !    ETAT MECANIQUE EN T-
 !
     dm = vim(1)
     d = dm+tau
-    fpd = (1+gamma) / (1+gamma*d)**2
+    fpd = (1+gamma)/(1+gamma*d)**2
 !
 ! -- CAS DE L'ENDOMMAGEMENT QUI SATURERA, ON NE PILOTE PAS
     if (d .gt. 1.d0) then
         if (niv .eq. 2) then
             call utmess('I', 'PILOTAGE_2')
-        endif
+        end if
         goto 666
-    endif
+    end if
 !
 !
 ! -- CALCUL DES DEFORMATIONS EN PRESENCE DE CONTRAINTES PLANES
 !
     if (cplan) then
-        coplan = - nu/(1.d0-nu)
-        epspc(3) = coplan * (epspc(1)+epspc(2))
-        epsdc(3) = coplan * (epsdc(1)+epsdc(2))
-    endif
+        coplan = -nu/(1.d0-nu)
+        epspc(3) = coplan*(epspc(1)+epspc(2))
+        epsdc(3) = coplan*(epsdc(1)+epsdc(2))
+    end if
 !
     do k = 1, 3
         epsp(k) = epspc(k)
@@ -206,10 +206,10 @@ subroutine pipeds(ndim, typmod, tau, mate, vim,&
 !
     if (ndimsi .lt. 6) then
         do k = ndimsi+1, 6
-            epsp(k)=0.d0
-            epsd(k)=0.d0
+            epsp(k) = 0.d0
+            epsd(k) = 0.d0
         end do
-    endif
+    end if
 !
 ! Calcul du nombre de solutions sur un intervalle raisonnable
 !
@@ -228,7 +228,7 @@ subroutine pipeds(ndim, typmod, tau, mate, vim,&
 !
 !
 ! On prend la valeur absolue max des valeurs propres de EPSD
-    epsmax = max(abs(epm(1)),abs(epm(3)))
+    epsmax = max(abs(epm(1)), abs(epm(3)))
 !
 ! Si les valeurs propres sont trop petites, on ne pilote pas ce point
     if (epsmax .lt. epsvp) goto 666
@@ -239,10 +239,10 @@ subroutine pipeds(ndim, typmod, tau, mate, vim,&
 !
     trepsd = epsd(1)+epsd(2)+epsd(3)
     do k = 1, ndimsi
-        sigeld(k) = lambda*trepsd*kron(k) + deuxmu*epsd(k)
+        sigeld(k) = lambda*trepsd*kron(k)+deuxmu*epsd(k)
     end do
 !
-    epsnor = 1.d0/sqrt(0.5d0 * ddot(ndimsi,epsd,1,sigeld,1))
+    epsnor = 1.d0/sqrt(0.5d0*ddot(ndimsi, epsd, 1, sigeld, 1))
 !
     do k = 1, 6
         epsd(k) = epsd(k)*epsnor
@@ -265,12 +265,12 @@ subroutine pipeds(ndim, typmod, tau, mate, vim,&
 ! pour s'assurer qu'elle ne diverge pas. On fixe une borne tr(eps)<1
     treinf = epsp(1)+epsp(2)+epsp(3)+etainf*(epsd(1)+epsd(2)+epsd(3))
     if (abs(treinf) .gt. 1.d0) then
-        etainf= (treinf/abs(treinf)-(epsp(1)+epsp(2)+epsp(3)))&
-        /(epsd(1)+epsd(2)+epsd(3))
-    endif
+        etainf = (treinf/abs(treinf)-(epsp(1)+epsp(2)+epsp(3))) &
+                 /(epsd(1)+epsd(2)+epsd(3))
+    end if
 !
     eta = etainf
-    call critet(epsp, epsd, eta, lambda, deuxmu,&
+    call critet(epsp, epsd, eta, lambda, deuxmu, &
                 fpd, seuil, crit1, critp1)
 !
 !
@@ -279,12 +279,12 @@ subroutine pipeds(ndim, typmod, tau, mate, vim,&
 !
     tresup = epsp(1)+epsp(2)+epsp(3)+etasup*(epsd(1)+epsd(2)+epsd(3))
     if (abs(tresup) .gt. 1.d0) then
-        etasup=(tresup/abs(tresup)-(epsp(1)+epsp(2)+epsp(3))) /(epsd(&
-        1)+epsd(2)+epsd(3))
-    endif
+        etasup = (tresup/abs(tresup)-(epsp(1)+epsp(2)+epsp(3)))/(epsd( &
+                                                                 1)+epsd(2)+epsd(3))
+    end if
 !
     eta = etasup
-    call critet(epsp, epsd, eta, lambda, deuxmu,&
+    call critet(epsp, epsd, eta, lambda, deuxmu, &
                 fpd, seuil, crit2, critp2)
 !
 !
@@ -302,101 +302,101 @@ subroutine pipeds(ndim, typmod, tau, mate, vim,&
 ! CAS A 0 SOLUTION
 !
 ! on reste en dessous du seuil sur l'intervalle
-    if ((crit1.lt.0.d0) .and. (crit2.lt.0.d0)) then
+    if ((crit1 .lt. 0.d0) .and. (crit2 .lt. 0.d0)) then
         goto 666
-    endif
+    end if
 !
 ! on reste au dessus du seuil sur l'intervalle,
 !        on utilise la convexite pour le voir
 !
-    if (((crit1.gt.0.d0).and.(critp1.gt.(-crit1/linter))) .or.&
-        ((crit2.gt.0.d0).and.(critp2.lt.(crit2/linter)))) then
+    if (((crit1 .gt. 0.d0) .and. (critp1 .gt. (-crit1/linter))) .or. &
+        ((crit2 .gt. 0.d0) .and. (critp2 .lt. (crit2/linter)))) then
         goto 666
-    endif
+    end if
 !
 !
 ! CAS A 1 SOLUTION
 !
-    if ((crit1.lt.0.d0) .and. (crit2.gt.0.d0)) then
-        x(1)=etainf
-        y(1)=crit1
-        z(1)=critp1
-        x(2)=etasup
-        y(2)=crit2
-        z(2)=critp2
+    if ((crit1 .lt. 0.d0) .and. (crit2 .gt. 0.d0)) then
+        x(1) = etainf
+        y(1) = crit1
+        z(1) = critp1
+        x(2) = etasup
+        y(2) = crit2
+        z(2) = critp2
 !
-        x(3)=x(1)
-        y(3)=y(1)
-        z(3)=z(1)
+        x(3) = x(1)
+        y(3) = y(1)
+        z(3) = z(1)
 !
         do iter = 1, nitmax
 !
             if (abs(y(3)) .le. epstol*seuil) goto 201
             if (abs(z(1)-z(2)) .lt. epsto2*abs(z(2))) then
-                x(3)=(-y(3)+z(3)*x(3))/z(3)
+                x(3) = (-y(3)+z(3)*x(3))/z(3)
                 goto 555
-            endif
+            end if
             call zerod2(x, y, z)
 555         continue
 !
-            call critet(epsp, epsd, x(3), lambda, deuxmu,&
+            call critet(epsp, epsd, x(3), lambda, deuxmu, &
                         fpd, seuil, y(3), z(3))
 !
         end do
         call utmess('F', 'PILOTAGE_87')
 201     continue
 !
-        a1 =z(3)/epsnor
+        a1 = z(3)/epsnor
         a0 = tau-x(3)*a1*epsnor
-        a2=r8vide()
-        a3=r8vide()
+        a2 = r8vide()
+        a3 = r8vide()
 !
         goto 999
 !
-    endif
+    end if
 !
-    if ((crit1.gt.0.d0) .and. (crit2.lt.0.d0)) then
-        x(2)=etainf
-        y(2)=crit1
-        z(2)=critp1
-        x(1)=etasup
-        y(1)=crit2
-        z(1)=critp2
+    if ((crit1 .gt. 0.d0) .and. (crit2 .lt. 0.d0)) then
+        x(2) = etainf
+        y(2) = crit1
+        z(2) = critp1
+        x(1) = etasup
+        y(1) = crit2
+        z(1) = critp2
 !
-        x(3)=x(1)
-        y(3)=y(1)
-        z(3)=z(1)
+        x(3) = x(1)
+        y(3) = y(1)
+        z(3) = z(1)
         do iter = 1, nitmax
             if (abs(y(3)) .le. epstol*seuil) goto 203
 !
             if (abs(z(1)-z(2)) .lt. epsto2*abs(z(2))) then
-                x(3)=(-y(3)+z(3)*x(3))/z(3)
+                x(3) = (-y(3)+z(3)*x(3))/z(3)
                 goto 556
-            endif
+            end if
             call zerod2(x, y, z)
 556         continue
 !
-            call critet(epsp, epsd, x(3), lambda, deuxmu,&
+            call critet(epsp, epsd, x(3), lambda, deuxmu, &
                         fpd, seuil, y(3), z(3))
         end do
         call utmess('F', 'PILOTAGE_87')
 203     continue
 !
-        a1 =z(3)/epsnor
+        a1 = z(3)/epsnor
         a0 = tau-x(3)*a1*epsnor
-        a2=r8vide()
-        a3=r8vide()
+        a2 = r8vide()
+        a3 = r8vide()
 !
         goto 999
 !
-    endif
+    end if
 !
 !
 !
 ! CAS A 2 OU 0 SOLUTIONS
 !
-    if (((crit1.gt.0.d0).and.(critp1.lt.(-crit1/linter))) .and.&
-        ((crit2.gt.0.d0).and.(critp2.gt.(crit2/linter)))) then
+    if (((crit1 .gt. 0.d0) .and. (critp1 .lt. (-crit1/linter))) .and. &
+        ((crit2 .gt. 0.d0) .and. (critp2 .gt. (crit2/linter)))) then
 !
 !
 !
@@ -408,47 +408,47 @@ subroutine pipeds(ndim, typmod, tau, mate, vim,&
 ! on s'arrete quand le critere est negatif, on se fiche
 ! de trouver exactement le minimum
 !
-        x1=etainf
-        y1=crit1
-        z1=critp1
-        x2=etasup
-        y2=crit2
-        z2=critp2
+        x1 = etainf
+        y1 = crit1
+        z1 = critp1
+        x2 = etasup
+        y2 = crit2
+        z2 = critp2
 !
-        ys=y1
+        ys = y1
 !
-        iter=0
+        iter = 0
 !
 750     continue
 !
         if (iter .lt. nitmax) then
-            xs=(y2-y1+z1*x1-z2*x2)/(z1-z2)
-            call critet(epsp, epsd, xs, lambda, deuxmu,&
+            xs = (y2-y1+z1*x1-z2*x2)/(z1-z2)
+            call critet(epsp, epsd, xs, lambda, deuxmu, &
                         fpd, seuil, ys, zs)
             if (ys .lt. 0.d0) goto 751
 !
             if (zs .gt. 0.d0) then
-                x2=xs
-                y2=ys
-                z2=zs
-                linter=x2-x1
-                if ((z1.gt.(-y1/linter)) .or. (z2.lt.(y2/linter))) then
+                x2 = xs
+                y2 = ys
+                z2 = zs
+                linter = x2-x1
+                if ((z1 .gt. (-y1/linter)) .or. (z2 .lt. (y2/linter))) then
                     goto 666
-                endif
+                end if
                 goto 750
             else
-                x1=xs
-                y1=ys
-                z1=zs
-                linter=x2-x1
-                if ((z1.gt.(-y1/linter)) .or. (z2.lt.(y2/linter))) then
+                x1 = xs
+                y1 = ys
+                z1 = zs
+                linter = x2-x1
+                if ((z1 .gt. (-y1/linter)) .or. (z2 .lt. (y2/linter))) then
                     goto 666
-                endif
+                end if
                 goto 750
-            endif
+            end if
         else
             goto 666
-        endif
+        end if
 !
 751     continue
 !
@@ -457,74 +457,74 @@ subroutine pipeds(ndim, typmod, tau, mate, vim,&
 !
 !
 ! Calcul de la solution sur [XS,ETASUP]
-        x(1)=xs
-        y(1)=ys
-        z(1)=zs
-        x(2)=etasup
-        y(2)=crit2
-        z(2)=critp2
+        x(1) = xs
+        y(1) = ys
+        z(1) = zs
+        x(2) = etasup
+        y(2) = crit2
+        z(2) = critp2
 !
-        x(3)=x(1)
-        y(3)=y(1)
-        z(3)=z(1)
+        x(3) = x(1)
+        y(3) = y(1)
+        z(3) = z(1)
 !
         do iter = 1, nitmax
             if (abs(y(3)) .le. epstol*seuil) goto 205
 !
             if (abs(z(1)-z(2)) .lt. epsto2*abs(z(2))) then
-                x(3)=(-y(3)+z(3)*x(3))/z(3)
+                x(3) = (-y(3)+z(3)*x(3))/z(3)
                 goto 557
-            endif
+            end if
             call zerod2(x, y, z)
 557         continue
 !
-            call critet(epsp, epsd, x(3), lambda, deuxmu,&
+            call critet(epsp, epsd, x(3), lambda, deuxmu, &
                         fpd, seuil, y(3), z(3))
 !
         end do
         call utmess('F', 'PILOTAGE_87')
 205     continue
 !
-        a1 =z(3)/epsnor
+        a1 = z(3)/epsnor
         a0 = tau-x(3)*a1*epsnor
 !
 !
 !
 ! Calcul de la solution sur [-ETASUP,XS]
-        x(1)=xs
-        y(1)=ys
-        z(1)=zs
-        x(2)=etainf
-        y(2)=crit1
-        z(2)=critp1
+        x(1) = xs
+        y(1) = ys
+        z(1) = zs
+        x(2) = etainf
+        y(2) = crit1
+        z(2) = critp1
 !
-        x(3)=x(1)
-        y(3)=y(1)
-        z(3)=z(1)
+        x(3) = x(1)
+        y(3) = y(1)
+        z(3) = z(1)
 !
         do iter = 1, nitmax
             if (abs(y(3)) .le. epstol*seuil) goto 207
             if (abs(z(1)-z(2)) .lt. epsto2*abs(z(2))) then
-                x(3)=(-y(3)+z(3)*x(3))/z(3)
+                x(3) = (-y(3)+z(3)*x(3))/z(3)
                 goto 558
-            endif
+            end if
             call zerod2(x, y, z)
 558         continue
 !
-            call critet(epsp, epsd, x(3), lambda, deuxmu,&
+            call critet(epsp, epsd, x(3), lambda, deuxmu, &
                         fpd, seuil, y(3), z(3))
 !
         end do
         call utmess('F', 'PILOTAGE_87')
 207     continue
 !
-        a3 =z(3)/epsnor
+        a3 = z(3)/epsnor
         a2 = tau-x(3)*a3*epsnor
 !
         goto 999
 !
 !
-    endif
+    end if
 !
 666 continue
     a0 = 0.d0
@@ -537,7 +537,7 @@ subroutine pipeds(ndim, typmod, tau, mate, vim,&
 !
 ! on "redonne" le vrai EPSD
     do k = 1, 6
-        epsd(k)=epsd(k)/epsnor
+        epsd(k) = epsd(k)/epsnor
     end do
 !
 !

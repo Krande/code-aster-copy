@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -57,7 +57,7 @@ subroutine gicnx2()
     call jeexin('&&GILIRE.NOMOBJ', iret)
     if (iret .eq. 0) then
         call utmess('F', 'PREPOST_46')
-    endif
+    end if
     call jeveuo('&&GILIRE.NOMOBJ', 'L', vk8=vnomobj)
 !
 !     -- RECUPERATION DU NOMBRE D'OBJETS LUS:
@@ -66,39 +66,39 @@ subroutine gicnx2()
     nbobj = nbobj4/4
 !
 !     -- CALCUL DES DIMENSIONS DE L'OBJET .CONNEX2:
-    nbmato=0
-    lont  =0
+    nbmato = 0
+    lont = 0
     do i = 1, nbobj
         if (descobj(4*(i-1)+1) .ne. 0) goto 1
-        nbno=descobj(4*(i-1)+3)
-        nbel=descobj(4*(i-1)+4)
-        nbmato=nbmato+nbel
-        lont= lont+nbel*nbno
-  1     continue
+        nbno = descobj(4*(i-1)+3)
+        nbel = descobj(4*(i-1)+4)
+        nbmato = nbmato+nbel
+        lont = lont+nbel*nbno
+1       continue
     end do
 !
 !     -- CREATION DE L'OBJET .CONNEX2:
-    call jecrec('&&GILIRE.CONNEX2', 'V V I', 'NU', 'CONTIG', 'VARIABLE',&
+    call jecrec('&&GILIRE.CONNEX2', 'V V I', 'NU', 'CONTIG', 'VARIABLE', &
                 nbmato)
     call jeecra('&&GILIRE.CONNEX2', 'LONT', lont)
-    imat=0
+    imat = 0
     do i = 1, nbobj
         if (descobj(4*(i-1)+1) .ne. 0) goto 2
-        nbno=descobj(4*(i-1)+3)
-        nbel=descobj(4*(i-1)+4)
-        nomobj=vnomobj(2*(i-1)+1)
+        nbno = descobj(4*(i-1)+3)
+        nbel = descobj(4*(i-1)+4)
+        nomobj = vnomobj(2*(i-1)+1)
         if (nbel .eq. 0) goto 2
         call jeveuo('&&GILIRE'//nomobj//'.CONNEX', 'L', vi=connex)
         do ima = 1, nbel
-            imat = imat +1
+            imat = imat+1
             call jecroc(jexnum('&&GILIRE.CONNEX2', imat))
             call jeecra(jexnum('&&GILIRE.CONNEX2', imat), 'LONMAX', nbno)
             call jeveuo(jexnum('&&GILIRE.CONNEX2', imat), 'E', iacnx2)
             do ino = 1, nbno
-                zi(iacnx2-1+ino)=connex(nbno*(ima-1)+ino)
+                zi(iacnx2-1+ino) = connex(nbno*(ima-1)+ino)
             end do
         end do
-  2     continue
+2       continue
     end do
 !
     call jedema()

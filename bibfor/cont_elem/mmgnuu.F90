@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,17 +18,17 @@
 ! person_in_charge: mickael.abbas at edf.fr
 ! aslint: disable=W1504
 !
-subroutine mmgnuu(ndim  , nne   , nnm   ,&
-                  wpg   , ffe   , ffm   , dffm  ,&
-                  jacobi, coefac, jeu   , dlagrc,&
-                  mprojn,&
-                  mprt1n, mprt2n, mprnt1, mprnt2,&
-                  mprt11, mprt12, mprt21, mprt22,&
-                  kappa , vech1 , vech2 ,&
-                  h     , hah   , &
+subroutine mmgnuu(ndim, nne, nnm, &
+                  wpg, ffe, ffm, dffm, &
+                  jacobi, coefac, jeu, dlagrc, &
+                  mprojn, &
+                  mprt1n, mprt2n, mprnt1, mprnt2, &
+                  mprt11, mprt12, mprt21, mprt22, &
+                  kappa, vech1, vech2, &
+                  h, hah, &
                   matree, matrmm, matrem, matrme)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/mmgnee.h"
@@ -36,15 +36,15 @@ implicit none
 #include "asterfort/mmgnme.h"
 #include "asterfort/mmgnmm.h"
 !
-integer, intent(in) :: ndim, nnm, nne
-real(kind=8), intent(in) :: wpg, ffe(9), ffm(9), dffm(2, 9)
-real(kind=8), intent(in) :: jacobi, coefac, jeu, dlagrc
-real(kind=8), intent(in) :: mprojn(3,3)
-real(kind=8), intent(in) :: mprt1n(3,3), mprt2n(3,3), mprnt1(3,3), mprnt2(3,3)
-real(kind=8), intent(in) :: mprt11(3,3), mprt12(3,3), mprt21(3,3), mprt22(3,3)
-real(kind=8), intent(in) :: kappa(2,2), vech1(3), vech2(3), h(2,2), hah(2,2)
-real(kind=8), intent(inout) :: matrem(27,27), matrme(27,27)
-real(kind=8), intent(inout) :: matree(27,27), matrmm(27,27)
+    integer, intent(in) :: ndim, nnm, nne
+    real(kind=8), intent(in) :: wpg, ffe(9), ffm(9), dffm(2, 9)
+    real(kind=8), intent(in) :: jacobi, coefac, jeu, dlagrc
+    real(kind=8), intent(in) :: mprojn(3, 3)
+    real(kind=8), intent(in) :: mprt1n(3, 3), mprt2n(3, 3), mprnt1(3, 3), mprnt2(3, 3)
+    real(kind=8), intent(in) :: mprt11(3, 3), mprt12(3, 3), mprt21(3, 3), mprt22(3, 3)
+    real(kind=8), intent(in) :: kappa(2, 2), vech1(3), vech2(3), h(2, 2), hah(2, 2)
+    real(kind=8), intent(inout) :: matrem(27, 27), matrme(27, 27)
+    real(kind=8), intent(inout) :: matree(27, 27), matrmm(27, 27)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -103,31 +103,31 @@ real(kind=8), intent(inout) :: matree(27,27), matrmm(27,27)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    call mmgnee(ndim  , nne   , wpg   , ffe   ,&
-                jacobi, coefac, jeu   , dlagrc,&
-                kappa , vech1 , vech2 , h     , hah   ,&
-                mprt11, mprt12, mprt21, mprt22,&
+    call mmgnee(ndim, nne, wpg, ffe, &
+                jacobi, coefac, jeu, dlagrc, &
+                kappa, vech1, vech2, h, hah, &
+                mprt11, mprt12, mprt21, mprt22, &
                 matree)
 !
-    call mmgnmm(ndim  , nnm   ,&
-                wpg   , ffm   , dffm  ,&
-                jacobi, coefac, jeu   , dlagrc,&
-                mprojn, mprt1n, mprt2n, mprnt1, mprnt2,&
-                kappa , vech1 , vech2 , h     , &
+    call mmgnmm(ndim, nnm, &
+                wpg, ffm, dffm, &
+                jacobi, coefac, jeu, dlagrc, &
+                mprojn, mprt1n, mprt2n, mprnt1, mprnt2, &
+                kappa, vech1, vech2, h, &
                 matrmm)
 !
-    call mmgnem(ndim   ,nnm   , nne   ,&
-                wpg   , ffe   , dffm  ,&
-                jacobi, coefac, jeu   , dlagrc,&
+    call mmgnem(ndim, nnm, nne, &
+                wpg, ffe, dffm, &
+                jacobi, coefac, jeu, dlagrc, &
                 mprt1n, mprt2n, &
-                kappa , vech1 , vech2 , h     ,&
+                kappa, vech1, vech2, h, &
                 matrem)
 !
-    call mmgnme(ndim  , nnm   , nne   ,&
-                wpg   , ffe   , dffm  ,&
-                jacobi, coefac, jeu   , dlagrc,&
-                mprnt1, mprnt2,&
-                kappa , vech1 , vech2 , h     ,&
+    call mmgnme(ndim, nnm, nne, &
+                wpg, ffe, dffm, &
+                jacobi, coefac, jeu, dlagrc, &
+                mprnt1, mprnt2, &
+                kappa, vech1, vech2, h, &
                 matrme)
 !
 end subroutine

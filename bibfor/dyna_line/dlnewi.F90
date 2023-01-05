@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,18 +17,18 @@
 ! --------------------------------------------------------------------
 ! aslint: disable=W1504
 !
-subroutine dlnewi(result, force0, force1, lcrea, lamort,&
-                  iinteg, neq, imat, masse, rigid,&
-                  amort, dep0, vit0, acc0, fexte,&
-                  famor, fliai, t0, nchar, nveca,&
-                  liad, lifo, modele, mate, mateco, carele,&
-                  charge, infoch, fomult, numedd, nume,&
-                  solveu, criter, chondp, nondp, numrep, ds_energy,&
+subroutine dlnewi(result, force0, force1, lcrea, lamort, &
+                  iinteg, neq, imat, masse, rigid, &
+                  amort, dep0, vit0, acc0, fexte, &
+                  famor, fliai, t0, nchar, nveca, &
+                  liad, lifo, modele, mate, mateco, carele, &
+                  charge, infoch, fomult, numedd, nume, &
+                  solveu, criter, chondp, nondp, numrep, ds_energy, &
                   sd_obsv, mesh, kineLoad)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -187,54 +187,54 @@ implicit none
 !
 ! 1.2. ==> NOM DES STRUCTURES
 !
-    maprec       = '&&DLNEWI.MAPREC'
-    valmod       = '&&VALMOD'
-    basmod       = '&&BASMOD'
-    lmodst       = ASTER_FALSE
-    l_harm       = ASTER_FALSE
+    maprec = '&&DLNEWI.MAPREC'
+    valmod = '&&VALMOD'
+    basmod = '&&BASMOD'
+    lmodst = ASTER_FALSE
+    l_harm = ASTER_FALSE
     l_damp_modal = ASTER_FALSE
-    l_matr_impe  = ASTER_FALSE
-    impe         = ' '
-    resu_type    = 'R'
-    nomddl       = ' '
+    l_matr_impe = ASTER_FALSE
+    impe = ' '
+    resu_type = 'R'
+    nomddl = ' '
 !
 ! N: SAISIE DES DONNEES AMOR_MODAL
 !    (  MOT CLE FACTEUR: AMOR_MODAL  )
     call getfac('AMOR_MODAL', nmodam)
     if (nmodam .ne. 0) then
         call nmmoam(k24amo, ibid)
-        valmod=k24amo(1:19)//'.VALM'
-        basmod=k24amo(1:19)//'.BASM'
-    endif
+        valmod = k24amo(1:19)//'.VALM'
+        basmod = k24amo(1:19)//'.BASM'
+    end if
 
 ! - IMPE_ABSO elements in model ?
     limped = ASTER_FALSE
     call dismoi('EXI_IMPE_ABSO', modele, 'MODELE', repk=answer)
     limped = answer .eq. 'OUI'
-    call dismoi('CHAM_MATER', rigid, 'MATR_ASSE', repk=mateFromRigid, arret = 'C', ier = ierc)
+    call dismoi('CHAM_MATER', rigid, 'MATR_ASSE', repk=mateFromRigid, arret='C', ier=ierc)
     if (ierc .ne. 0) then
         mateFromRigid = ' '
-    endif
+    end if
     if (mateFromRigid .eq. ' ') then
         limped = ASTER_FALSE
-    endif
+    end if
     if (limped) then
         call utmess('I', 'DYNALINE1_23')
-    endif
+    end if
 !
 !     --- CHARGEMENT PAR ONDES PLANES
 !
 ! 1.5. ==> CREATION D'UN CHAMP_NO POUR LA VITESSE INITIALE
 !
-    call vtcreb(vitini, 'V', 'R', nume_ddlz = numedd, nb_equa_outz = neq)
+    call vtcreb(vitini, 'V', 'R', nume_ddlz=numedd, nb_equa_outz=neq)
 !
     call jeveuo(vitini(1:19)//'.VALE', 'E', vr=vite)
-    call vtcreb(vitent, 'V', 'R', nume_ddlz = numedd, nb_equa_outz = neq)
+    call vtcreb(vitent, 'V', 'R', nume_ddlz=numedd, nb_equa_outz=neq)
 !
     call jeveuo(vitent(1:19)//'.VALE', 'E', vr=vien)
 !
 ! 1.6. ==> CREATION D'UN CHAMP_NO POUR L'AMORTISSEMENT MODAL
-    call vtcreb(famomo, 'V', 'R', nume_ddlz = numedd, nb_equa_outz = neq)
+    call vtcreb(famomo, 'V', 'R', nume_ddlz=numedd, nb_equa_outz=neq)
     call jeveuo(famomo(1:19)//'.VALE', 'E', vr=fammo)
 !
 ! 1.7. ==> VECTEURS DE TRAVAIL SUR BASE VOLATILE ---
@@ -242,7 +242,7 @@ implicit none
     call wkvect('&&DLNEWI.F1', 'V V R', neq, iwk1)
     call wkvect('&&DLNEWI.F2', 'V V R', neq, iwk2)
     call wkvect('&&DLNEWI.FORCE2', 'V V R', neq, iforc2)
-    call vtcreb('&&DLNEWI.DEPL1', 'V', 'R', nume_ddlz = numedd, nb_equa_outz = neq)
+    call vtcreb('&&DLNEWI.DEPL1', 'V', 'R', nume_ddlz=numedd, nb_equa_outz=neq)
 !
     call jeveuo('&&DLNEWI.DEPL1     '//'.VALE', 'E', vr=epl1)
     call wkvect('&&DLNEWI.VITE1', 'V V R', neq, ivite1)
@@ -264,7 +264,7 @@ implicit none
         call getvtx('EXCIT', 'MULT_APPUI', iocc=iexci, scal=mateFromRigid, nbret=nd)
         if (mateFromRigid .eq. 'OUI' .and. nbv .eq. 0) then
             call utmess('F', 'DYNALINE1_46')
-        endif
+        end if
     end do
 !
 ! 1.8. ==> ???
@@ -287,16 +287,16 @@ implicit none
             call getvtx('EXCIT', 'MULT_APPUI', iocc=iexci, scal=mateFromRigid, nbret=nd)
             if (mateFromRigid .eq. 'OUI') then
                 zi(jmltap+iexci-1) = 1
-                call getvid('EXCIT', 'ACCE', iocc=iexci, scal=zk8(jnoacc+ iexci-1), nbret=na)
-                call getvid('EXCIT', 'VITE', iocc=iexci, scal=zk8(jnovit+ iexci-1), nbret=nv)
-                call getvid('EXCIT', 'DEPL', iocc=iexci, scal=zk8(jnodep+ iexci-1), nbret=nd)
-                call trmult(modsta, iexci, mailla, neq, iddeeq,&
-                            zr(jpsdel+ (iexci-1)*neq), numddl)
+                call getvid('EXCIT', 'ACCE', iocc=iexci, scal=zk8(jnoacc+iexci-1), nbret=na)
+                call getvid('EXCIT', 'VITE', iocc=iexci, scal=zk8(jnovit+iexci-1), nbret=nv)
+                call getvid('EXCIT', 'DEPL', iocc=iexci, scal=zk8(jnodep+iexci-1), nbret=nd)
+                call trmult(modsta, iexci, mailla, neq, iddeeq, &
+                            zr(jpsdel+(iexci-1)*neq), numddl)
 !     --- MISE A ZERO DES DDL DE LAGRANGE
-                call zerlag(neq, zi(iddeeq), vectr=zr(jpsdel+ (iexci-1)*neq))
+                call zerlag(neq, zi(iddeeq), vectr=zr(jpsdel+(iexci-1)*neq))
             else
                 zi(jmltap+iexci-1) = 0
-            endif
+            end if
         end do
     else
         jnodep = 1
@@ -304,35 +304,35 @@ implicit none
         jnoacc = 1
         jmltap = 1
         jpsdel = 1
-    endif
+    end if
 !
 ! 1.9. ==> INTIALISATIONS DIVERSES
 !
     iarchi = nume
     lisins = ' '
-    ener   = ds_energy%l_comp
+    ener = ds_energy%l_comp
 !
 ! 1.10. ==> --- PARAMETRES D'INTEGRATION ---
 !
     if (iinteg .eq. 1) then
         call getvr8('SCHEMA_TEMPS', 'BETA', iocc=1, scal=beta, nbret=n1)
         call getvr8('SCHEMA_TEMPS', 'GAMMA', iocc=1, scal=gamma, nbret=n1)
-        res = 0.25d0* (0.5d0+gamma)* (0.5d0*gamma)
+        res = 0.25d0*(0.5d0+gamma)*(0.5d0*gamma)
         tol = 1.d-8
         if (gamma .lt. (0.5d0-tol) .or. beta .lt. (res-tol)) then
-            write (ifm,*) ' >>> NEWMARK <<<'//&
+            write (ifm, *) ' >>> NEWMARK <<<'//&
      &      'CAS CONDITIONNELLEMENT STABLE.'
-        endif
+        end if
         if (abs(beta) .lt. r8prem()) then
             call utmess('F', 'DYNALINE1_2')
-        endif
+        end if
     else
         call getvr8('SCHEMA_TEMPS', 'THETA', iocc=1, scal=theta, nbret=n1)
-    endif
+    end if
 !
 ! 1.11. ==> --- LISTE DES INSTANTS DE CALCUL ET LES SORTIES ---
 !
-    call dltins(nbgrpa, lispas, libint, linbpa, npatot,&
+    call dltins(nbgrpa, lispas, libint, linbpa, npatot, &
                 t0, lisins)
     call jeveuo(lispas, 'L', jlpas)
     call jeveuo(libint, 'L', jbint)
@@ -342,7 +342,7 @@ implicit none
 ! 1.12. ==> --- ARCHIVAGE ---
 !
     lisarc = '&&DLNEWI.ARCHIVAGE'
-    call dyarch(npatot, lisins, lisarc, nbordr, 1,&
+    call dyarch(npatot, lisins, lisarc, nbordr, 1, &
                 nbexcl, typ1)
     call jeveuo(lisarc, 'E', jstoc)
 !
@@ -357,18 +357,18 @@ implicit none
         typear(4) = '         '
         typear(5) = '         '
         typear(6) = '         '
-    endif
+    end if
     if (nbexcl .eq. nbtyar) then
         call utmess('F', 'ARCHIVAGE_14')
-    endif
+    end if
     do iexcl = 1, nbexcl
         if (typ1(iexcl) .eq. 'DEPL') then
             typear(1) = '    '
-        else if (typ1(iexcl).eq.'VITE') then
+        else if (typ1(iexcl) .eq. 'VITE') then
             typear(2) = '    '
-        else if (typ1(iexcl).eq.'ACCE') then
+        else if (typ1(iexcl) .eq. 'ACCE') then
             typear(3) = '    '
-        endif
+        end if
     end do
 !
 !====
@@ -376,10 +376,10 @@ implicit none
 !====
 !
     t0 = zr(jbint)
-    call dltcrr(result, neq, nbordr, iarchi, ' ',&
-                t0, lcrea, typres, masse, rigid,&
-                amort, dep0, vit0, acc0, fexte,&
-                famor, fliai, numedd, nume, nbtyar,&
+    call dltcrr(result, neq, nbordr, iarchi, ' ', &
+                t0, lcrea, typres, masse, rigid, &
+                amort, dep0, vit0, acc0, fexte, &
+                famor, fliai, numedd, nume, nbtyar, &
                 typear)
 !
 !====
@@ -388,9 +388,9 @@ implicit none
 !
 ! - Prepare matrix container
 !
-    call dl_MatrixPrepare(l_harm , lamort   , l_damp_modal, l_matr_impe, resu_type,&
-                          masse  , rigid    , amort       , impe       ,&
-                          nb_matr, matr_list, coef_type   , coef_vale  ,&
+    call dl_MatrixPrepare(l_harm, lamort, l_damp_modal, l_matr_impe, resu_type, &
+                          masse, rigid, amort, impe, &
+                          nb_matr, matr_list, coef_type, coef_vale, &
                           matr_resu)
     call jeveuo(matr_resu//'           .&INT', 'E', imtres)
 !
@@ -410,13 +410,13 @@ implicit none
         nbptpa = zi(jnbpa-1+igrpa)
         t0 = zr(jbint-1+igrpa)
         if (iinteg .eq. 2) then
-            a0 = 6.d0/ (theta*dt)/ (theta*dt)
+            a0 = 6.d0/(theta*dt)/(theta*dt)
             a1 = 3.d0/theta/dt
             a2 = 2.d0*a1
             a3 = theta*dt/2.d0
             a4 = a0/theta
             a5 = -a2/theta
-            a6 = 1.d0 - 3.d0/theta
+            a6 = 1.d0-3.d0/theta
             a7 = dt/2.d0
             a8 = dt*dt/6.d0
             c0 = a0
@@ -425,14 +425,14 @@ implicit none
             c3 = a1
             c4 = 2.0d0
             c5 = a3
-        else if (iinteg.eq.1) then
+        else if (iinteg .eq. 1) then
             a0 = 1.d0/beta/dt/dt
             a1 = gamma/beta/dt
             a2 = 1.d0/beta/dt
-            a3 = .5d0/beta - 1.d0
-            a4 = gamma/beta - 1.d0
-            a5 = dt/2.d0* (gamma/beta-2.d0)
-            a6 = dt* (1.d0-gamma)
+            a3 = .5d0/beta-1.d0
+            a4 = gamma/beta-1.d0
+            a5 = dt/2.d0*(gamma/beta-2.d0)
+            a6 = dt*(1.d0-gamma)
             a7 = gamma*dt
             c0 = a0
             c1 = a2
@@ -440,17 +440,17 @@ implicit none
             c3 = a1
             c4 = a4
             c5 = a5
-        endif
+        end if
 !
 ! 3.2.2. ==> CALCUL DE LA MATRICE DE PSEUDO-RAIDEUR
 !                  K*  = K + A0*M + A1*C
         coef_vale(2) = a0
         coef_vale(3) = a1
-        call mtcmbl(nb_matr, coef_type, coef_vale, matr_list, matr_resu,&
+        call mtcmbl(nb_matr, coef_type, coef_vale, matr_list, matr_resu, &
                     nomddl, ' ', 'ELIM=')
 !
 ! 3.2.3. ==> DECOMPOSITION OU CALCUL DE LA MATRICE DE PRECONDITIONNEMENT
-        call preres(solveu, 'V', ierr, maprec, matr_resu,&
+        call preres(solveu, 'V', ierr, maprec, matr_resu, &
                     ibid, -9999)
 !
 ! 3.2.4. ==> BOUCLE SUR LES NBPTPA "PETITS" PAS DE TEMPS
@@ -460,38 +460,38 @@ implicit none
         last_prperc = 0
 !
         do ipepa = 1, nbptpa
-            ipas = ipas + 1
+            ipas = ipas+1
             if (ipas .gt. npatot) goto 99
             call uttcpu('CPU.DLNEWI.2', 'DEBUT', ' ')
             istoc = 0
-            temps = t0 + dt*ipepa
-            tempm = t0 + dt* (ipepa-1)
+            temps = t0+dt*ipepa
+            tempm = t0+dt*(ipepa-1)
             archiv = zi(jstoc+ipas-1)
 
-            call dlnew0(result, force0, force1, iinteg, neq,&
-                        istoc, iarchi, nbexci, nondp, nmodam,&
-                        lamort, limped, lmodst, imat, masse,&
-                        rigid, amort, nchar, nveca, liad,&
-                        lifo, modele, mate, mateco, carele, charge,&
-                        infoch, fomult, numedd, zr(idepla), zr(ivitea),&
-                        zr(iaccea), dep0, vit0, acc0, fexte,&
-                        famor, fliai, epl1, zr(ivite1), zr( iacce1),&
-                        zr(jpsdel), fammo, zr(ifimpe), zr(ifonde), vien,&
-                        vite, zr(ivita1), zi(jmltap), a0, a2,&
-                        a3, a4, a5, a6, a7,&
-                        a8, c0, c1, c2, c3,&
-                        c4, c5, zk8(jnodep), zk8(jnovit), zk8(jnoacc),&
-                        matr_resu, maprec, solveu, criter, chondp,&
-                        vitini, vitent, valmod, basmod,&
-                        veanec, vaanec, vaonde, veonde, dt,&
-                        theta, tempm, temps, iforc2, zr(iwk1),&
+            call dlnew0(result, force0, force1, iinteg, neq, &
+                        istoc, iarchi, nbexci, nondp, nmodam, &
+                        lamort, limped, lmodst, imat, masse, &
+                        rigid, amort, nchar, nveca, liad, &
+                        lifo, modele, mate, mateco, carele, charge, &
+                        infoch, fomult, numedd, zr(idepla), zr(ivitea), &
+                        zr(iaccea), dep0, vit0, acc0, fexte, &
+                        famor, fliai, epl1, zr(ivite1), zr(iacce1), &
+                        zr(jpsdel), fammo, zr(ifimpe), zr(ifonde), vien, &
+                        vite, zr(ivita1), zi(jmltap), a0, a2, &
+                        a3, a4, a5, a6, a7, &
+                        a8, c0, c1, c2, c3, &
+                        c4, c5, zk8(jnodep), zk8(jnovit), zk8(jnoacc), &
+                        matr_resu, maprec, solveu, criter, chondp, &
+                        vitini, vitent, valmod, basmod, &
+                        veanec, vaanec, vaonde, veonde, dt, &
+                        theta, tempm, temps, iforc2, zr(iwk1), &
                         zr(iwk2), archiv, nbtyar, typear, numrep, ds_energy, kineLoad)
 !
             if (archiv .eq. 1) lastarch = temps
             perc = int(100.d0*(real(ipas)/real(npatot)))
             if (perc .ne. last_prperc) then
-                if (mod(perc,freqpr) .eq. 0) then
-                    call utmess('I', 'PROGRESS_1', ni=2, vali=[perc, ipas], nr=2,&
+                if (mod(perc, freqpr) .eq. 0) then
+                    call utmess('I', 'PROGRESS_1', ni=2, vali=[perc, ipas], nr=2, &
                                 valr=[temps, lastarch])
                     last_prperc = perc
                 end if
@@ -503,8 +503,8 @@ implicit none
             l_obsv = ASTER_FALSE
             call lobs(sd_obsv, ipas, temps, l_obsv)
             if (l_obsv) then
-                call nmobse(mesh, sd_obsv  , temps)
-            endif
+                call nmobse(mesh, sd_obsv, temps)
+            end if
 
 !
 ! 3.2.5. ==> VERIFICATION DU TEMPS DE CALCUL RESTANT
@@ -518,7 +518,7 @@ implicit none
                 valr(1) = tps2(4)
                 valr(2) = tps2(1)
                 goto 99
-            endif
+            end if
 !
 ! ---------- FIN DE LA BOUCLE SUR LES NBPTPA "PETITS" PAS DE TEMPS
         end do
@@ -532,13 +532,13 @@ implicit none
             valr(1) = tps1(4)
             valr(2) = tps1(1)
             goto 99
-        endif
+        end if
 !
 ! ------- FIN BOUCLE SUR LES GROUPES DE PAS DE TEMPS
 !
     end do
 !
- 99 continue
+99  continue
 !
 !====
 ! 4. ARCHIVAGE DU DERNIER INSTANT DE CALCUL POUR LES CHAMPS QUI ONT
@@ -551,11 +551,11 @@ implicit none
             typear(iexcl) = typ1(iexcl)
         end do
         alarm = 0
-        call dlarch(result, neq, istoc, iarchi, ' ',&
-                    alarm, temps, nbtyar, typear, masse,&
-                    dep0, vit0, acc0, fexte, famor,&
+        call dlarch(result, neq, istoc, iarchi, ' ', &
+                    alarm, temps, nbtyar, typear, masse, &
+                    dep0, vit0, acc0, fexte, famor, &
                     fliai)
-    endif
+    end if
 !
 !====
 ! 5. LA FIN
@@ -565,12 +565,12 @@ implicit none
 !
     if (etausr() .eq. 1) then
         call sigusr()
-    endif
+    end if
 !
     if (istop .eq. 1) then
-        call utmess('Z', 'DYNAMIQUE_10', ni=2, vali=vali, nr=2,&
+        call utmess('Z', 'DYNAMIQUE_10', ni=2, vali=vali, nr=2, &
                     valr=valr, num_except=ASTER_TIMELIMIT_ERROR)
-    endif
+    end if
 !
 !     --- DESTRUCTION DES OBJETS DE TRAVAIL ---
 !
@@ -579,7 +579,7 @@ implicit none
         call jedetr(criter(1:19)//'.CRTI')
         call jedetr(criter(1:19)//'.CRTR')
         call jedetr(criter(1:19)//'.CRDE')
-    endif
+    end if
     call detrsd('MATR_ASSE', matr_resu)
 !
     call jedema()

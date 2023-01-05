@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine gcpc(m, in, ip, ac, inpc, perm,&
-                ippc, acpc, bf, xp, r,&
-                rr, p, irep, niter, epsi,&
-                criter, solveu, matas, istop,&
+subroutine gcpc(m, in, ip, ac, inpc, perm, &
+                ippc, acpc, bf, xp, r, &
+                rr, p, irep, niter, epsi, &
+                criter, solveu, matas, istop, &
                 iret)
 !     RESOLUTION D'UN SYSTEME LINEAIRE SYMETRIQUE PAR UNE METHODE DE
 !     GRADIENT CONJUGUE PRECONDITIONNE
@@ -103,18 +103,18 @@ subroutine gcpc(m, in, ip, ac, inpc, perm,&
     real(kind=8), pointer :: ytrav(:) => null()
 ! -----------------------------------------------------------------
 !
-    cbid=(0.d0,0.d0)
+    cbid = (0.d0, 0.d0)
     call jemarq()
 !
     call matfpe(-1)
-    iter=0
+    iter = 0
 !
 !-----RECUPERATION DU NIVEAU D'IMPRESSION
     call infniv(ifm, niv)
 !
 ! --- GCPC interdit avec un ParallelMesh
     call dismoi('MATR_HPC', matas, 'MATR_ASSE', repk=mathpc)
-    if( mathpc == "OUI") then
+    if (mathpc == "OUI") then
         call utmess('F', 'ALGELINE4_44')
     end if
 !
@@ -125,7 +125,7 @@ subroutine gcpc(m, in, ip, ac, inpc, perm,&
 !-----INITS DIVERS
     iret = 0
     zero = 0.d0
-    ASSERT(irep.eq.0 .or. irep.eq.1)
+    ASSERT(irep .eq. 0 .or. irep .eq. 1)
 !
 !-----RECUPERATION DU PRECONDITIONNEUR
 !  -- CREATION DE LA SD SOLVEUR MUMPS SIMPLE PRECISION/LOW_RANK
@@ -133,41 +133,41 @@ subroutine gcpc(m, in, ip, ac, inpc, perm,&
     call jeveuo(solveu//'.SLVK', 'L', vk24=slvk)
     call jeveuo(solveu//'.SLVI', 'L', vi=slvi)
     call jeveuo(solveu//'.SLVR', 'L', vr=slvr)
-    redmpi=slvi(1)
-    precon=slvk(2)
-    usersm=slvk(9)
-    pcpiv=slvi(7)
-    blreps=slvr(4)
+    redmpi = slvi(1)
+    precon = slvk(2)
+    usersm = slvk(9)
+    pcpiv = slvi(7)
+    blreps = slvr(4)
     solvbd = slvk(3)
     renum = slvk(4)
     if (precon == 'LDLT_SP') then
-        prec='S'
-    else if ( precon == 'LDLT_DP') then
-        prec='D'
-    endif
-    if ( abs(blreps) < r8prem() ) then
-       rank='F'
+        prec = 'S'
+    else if (precon == 'LDLT_DP') then
+        prec = 'D'
+    end if
+    if (abs(blreps) < r8prem()) then
+        rank = 'F'
     else
-       rank='L'
-    endif
-    if (( precon == 'LDLT_SP' ).or.( precon == 'LDLT_DP' )) then
-        call crsvfm(solvbd, matas,prec, rank, pcpiv, usersm, blreps, renum, redmpi )
-    endif
+        rank = 'L'
+    end if
+    if ((precon == 'LDLT_SP') .or. (precon == 'LDLT_DP')) then
+        call crsvfm(solvbd, matas, prec, rank, pcpiv, usersm, blreps, renum, redmpi)
+    end if
 !-----Pour tenir compte de la renumerotation de la matrice de preconditionnement (LDLT):
     if (precon .eq. 'LDLT_INC') then
         AS_ALLOCATE(vr=xtrav, size=m)
         AS_ALLOCATE(vr=ytrav, size=m)
-    endif
+    end if
 !
 !-----CALCULS PRELIMINAIRES
 !
 !      ---- CALCUL DE NORME DE BF
-    bnorm = dnrm2(m,bf,1)
+    bnorm = dnrm2(m, bf, 1)
     if (bnorm .eq. zero) then
         call r8inir(m, zero, xp, 1)
 !        WRITE (IFM,*)'>>>>>>> SECOND MEMBRE = 0 DONC SOLUTION = 0 '
         goto 80
-    endif
+    end if
 !
     if (irep .eq. 0) then
 !       ---- INITIALISATION X1 = 0    ===>   CALCUL DE R1 = A*X0 - B
@@ -176,17 +176,17 @@ subroutine gcpc(m, in, ip, ac, inpc, perm,&
         call dscal(m, -1.d0, r, 1)
         anorm = bnorm
         epsix = epsi*anorm
-        if (niv .eq. 2) write (ifm,101) anorm,epsix,epsi
+        if (niv .eq. 2) write (ifm, 101) anorm, epsix, epsi
     else
 !       ---- INITIALISATION PAR X PRECEDENT: CALCUL DE R1 = A*X1 - B
-        call gcax(m, in, ip, ac, xp,&
+        call gcax(m, in, ip, ac, xp, &
                   r)
-        call daxpy(m, -1.d0, bf, 1, r,&
+        call daxpy(m, -1.d0, bf, 1, r, &
                    1)
-        anorm = dnrm2(m,r,1)
+        anorm = dnrm2(m, r, 1)
         epsix = epsi*anorm
-        if (niv .eq. 2) write (ifm,102) anorm,epsix,epsi
-    endif
+        if (niv .eq. 2) write (ifm, 102) anorm, epsix, epsi
+    end if
 !
     call jeexin(criter//'.CRTI', ier)
     if (ier .eq. 0) then
@@ -197,12 +197,12 @@ subroutine gcpc(m, in, ip, ac, inpc, perm,&
             zk16(jcrk) = 'ITER_GCPC'
             zk16(jcrk+1) = 'RESI_GCPC'
         else
-            jcri=0
-        endif
+            jcri = 0
+        end if
     else
         call jeveuo(criter//'.CRTI', 'E', jcri)
         call jeveuo(criter//'.CRTR', 'E', jcrr)
-    endif
+    end if
 !
 ! ---- ITERATIONS
     anormx = anorm
@@ -215,17 +215,17 @@ subroutine gcpc(m, in, ip, ac, inpc, perm,&
 !                                                  ZK <--- RR()
         if (precon .eq. 'LDLT_INC') then
             call gcldm1(m, inpc, ippc, acpc, r, rr, perm, xtrav, ytrav)
-        else if ((precon.eq.'LDLT_SP').or.(precon.eq.'LDLT_DP')) then
-          call dcopy(m, r, 1, rr, 1)
+        else if ((precon .eq. 'LDLT_SP') .or. (precon .eq. 'LDLT_DP')) then
+            call dcopy(m, r, 1, rr, 1)
 !         ON PASSE ' ' AU LIEU DE VCINE, DEJA PRIS EN COMPTE DANS RESGRA
-            call amumph('RESOUD', solvbd, matas, rr, [cbid],&
+            call amumph('RESOUD', solvbd, matas, rr, [cbid], &
                         ' ', 1, ier, .true._1)
         else
             ASSERT(.false.)
-        endif
+        end if
 !
 !                                             RRRI <--- (RK,ZK)
-        rrri = ddot(m,r,1,rr,1)
+        rrri = ddot(m, r, 1, rr, 1)
 !       ---- NOUVELLE DIRECTION DE DESCENTE:
 !                                    BETAK = (RK,ZK)/(RK-1,ZK-1)
 !                                               BETAK <--- GAMA
@@ -234,11 +234,11 @@ subroutine gcpc(m, in, ip, ac, inpc, perm,&
         if (iter .gt. 1) then
             gama = rrri/rrrim1
             call dscal(m, gama, p, 1)
-            call daxpy(m, 1.d0, rr, 1, p,&
+            call daxpy(m, 1.d0, rr, 1, p, &
                        1)
         else
             call dcopy(m, rr, 1, p, 1)
-        endif
+        end if
         rrrim1 = rrri
 !
 !       ---- NOUVEAUX RESIDU ET DEPLACEMENT:
@@ -247,89 +247,89 @@ subroutine gcpc(m, in, ip, ac, inpc, perm,&
 !                                      RK+1 = RK + ALPHAK * ZZK
 !                                                 ZZK <--- RR()
 !                                                 XK  <--- XP()
-        call gcax(m, in, ip, ac, p,&
+        call gcax(m, in, ip, ac, p, &
                   rr)
-        rau = -rrri/ddot(m,p,1,rr,1)
-        call daxpy(m, rau, p, 1, xp,&
+        rau = -rrri/ddot(m, p, 1, rr, 1)
+        call daxpy(m, rau, p, 1, xp, &
                    1)
-        call daxpy(m, rau, rr, 1, r,&
+        call daxpy(m, rau, rr, 1, r, &
                    1)
 !
 !       ---- CALCUL TEST D'ARRET ET AFFICHAGE
-        anorm = dnrm2(m,r,1)
+        anorm = dnrm2(m, r, 1)
         if (anorm .le. anormx*paraaf) then
-            if (niv .eq. 2) write (*,104) iter,anorm,anorm/anorxx
+            if (niv .eq. 2) write (*, 104) iter, anorm, anorm/anorxx
             anormx = anorm
-        endif
-        if (niv .eq. 3) write (ifm,104) iter,anorm,anorm/anorxx
+        end if
+        if (niv .eq. 3) write (ifm, 104) iter, anorm, anorm/anorxx
 !
 !       --- TEST DE CONVERGENCE
         if (anorm .lt. epsix) then
-            if (niv .eq. 2) write (ifm,103) anorxx,anorm,anorm/anorxx
-            if (niv .eq. 2) write (ifm,105) iter
+            if (niv .eq. 2) write (ifm, 103) anorxx, anorm, anorm/anorxx
+            if (niv .eq. 2) write (ifm, 105) iter
             if (jcri .ne. 0) then
                 zi(jcri) = iter
                 zr(jcrr) = anorm
-            endif
+            end if
             goto 80
-        endif
+        end if
     end do
 !
 !
 
 !        ---  NON CONVERGENCE
     vali = iter
-    valr (1) = anorm/anorxx
-    valr (2) = epsi
-    if ( istop == 0 ) then
+    valr(1) = anorm/anorxx
+    valr(2) = epsi
+    if (istop == 0) then
 !            ERREUR <F>
         select case (precon)
-        case('LDLT_INC')
+        case ('LDLT_INC')
             call utmess('F', 'ALGELINE4_3', si=vali, nr=2, valr=valr)
-        case('LDLT_SP', 'LDLT_DP')
+        case ('LDLT_SP', 'LDLT_DP')
             call utmess('F', 'ALGELINE4_6', si=vali, nr=2, valr=valr)
         case default
             ASSERT(.false.)
         end select
-    elseif ( istop == 2 ) then
+    elseif (istop == 2) then
 !            ON CONTINUE EN RETOURNANT UN CODE D'ERREUR IRET=1
         iret = 1
         goto 80
     else
         ASSERT(.false.)
-    endif
+    end if
 !    -----------
-    101 format (/'   * GCPC   NORME DU RESIDU =',d11.4,&
-     &       '  (INITIALISATION PAR X = ZERO)',/,&
+101 format(/'   * GCPC   NORME DU RESIDU =', d11.4,&
+     &       '  (INITIALISATION PAR X = ZERO)', /,&
      &'   *        NORME DU RESIDU A ATTEINDRE EN ABS/RELA=',&
-     &d11.4,d11.4,/)
-    102 format (/'   * GCPC   NORME DU RESIDU =',d11.4,&
-     &       '  (INITIALISATION PAR X PRECEDENT)',/,&
+     &d11.4, d11.4,/)
+102 format(/'   * GCPC   NORME DU RESIDU =', d11.4,&
+     &       '  (INITIALISATION PAR X PRECEDENT)', /,&
      & '   *        NORME DU RESIDU A ATTEINDRE EN ABS/RELA=',&
-     & d11.4,d11.4)
-    103 format ('   * NORME DU RESIDU INITIAL/FINAL/RELATIF=',&
-     &         d11.4,d11.4,d11.4)
-    104 format ('   * ITERATION',i5,' NORME DU RESIDU EN ABS/RELA =',&
-     &         d11.4,d11.4)
-    105 format (1x,/,2x,32 ('*')/'  * CONVERGENCE EN ',i4,&
-     &       ' ITERATIONS'/2x,32 ('*'),/)
+     & d11.4, d11.4)
+103 format('   * NORME DU RESIDU INITIAL/FINAL/RELATIF=',&
+     &         d11.4, d11.4, d11.4)
+104 format('   * ITERATION', i5, ' NORME DU RESIDU EN ABS/RELA =',&
+     &         d11.4, d11.4)
+105 format(1x, /, 2x, 32('*')/'  * CONVERGENCE EN ', i4,&
+     &       ' ITERATIONS'/2x, 32('*'),/)
 !    -----------
 80  continue
 !
 ! --  DESTRUCTION DE LA SD SOLVEUR MUMPS SIMPLE PRECISION
-    if ((precon .eq. 'LDLT_SP').or.(precon.eq.'LDLT_DP')) then
+    if ((precon .eq. 'LDLT_SP') .or. (precon .eq. 'LDLT_DP')) then
         call detrsd('SOLVEUR', solvbd)
 !       ON STOCKE LE NOMBRE D'ITERATIONS DU GCPC
         call jeveuo(solveu//'.SLVI', 'E', vi=slvi)
-        slvi(5)=iter
-    endif
+        slvi(5) = iter
+    end if
 !
     call matfpe(1)
 !
     if (precon .eq. 'LDLT_INC') then
         AS_DEALLOCATE(vr=xtrav)
         AS_DEALLOCATE(vr=ytrav)
-    endif
+    end if
     call jedema()
 !
 end subroutine

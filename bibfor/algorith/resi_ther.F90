@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,11 +16,11 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine resi_ther(model    , cara_elem, mate     , time     , compor    ,&
-                     temp_prev, temp_iter, hydr_prev, hydr_curr, dry_prev  ,&
-                     dry_curr , varc_curr, resu_elem, vect_elem, base)
+subroutine resi_ther(model, cara_elem, mate, time, compor, &
+                     temp_prev, temp_iter, hydr_prev, hydr_curr, dry_prev, &
+                     dry_curr, varc_curr, resu_elem, vect_elem, base)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/calcul.h"
@@ -30,21 +30,21 @@ implicit none
 #include "asterfort/reajre.h"
 #include "asterfort/inical.h"
 !
-character(len=24), intent(in) :: model
-character(len=24), intent(in) :: cara_elem
-character(len=24), intent(in) :: time
-character(len=24), intent(in) :: mate
-character(len=24), intent(in) :: temp_prev
-character(len=24), intent(in) :: temp_iter
-character(len=24), intent(in) :: hydr_prev
-character(len=24), intent(in) :: hydr_curr
-character(len=24), intent(in) :: dry_prev
-character(len=24), intent(in) :: dry_curr
-character(len=24), intent(in) :: compor
-character(len=19), intent(in) :: varc_curr
-character(len=19), intent(in) :: resu_elem
-character(len=24), intent(in) :: vect_elem
-character(len=1), intent(in) :: base
+    character(len=24), intent(in) :: model
+    character(len=24), intent(in) :: cara_elem
+    character(len=24), intent(in) :: time
+    character(len=24), intent(in) :: mate
+    character(len=24), intent(in) :: temp_prev
+    character(len=24), intent(in) :: temp_iter
+    character(len=24), intent(in) :: hydr_prev
+    character(len=24), intent(in) :: hydr_curr
+    character(len=24), intent(in) :: dry_prev
+    character(len=24), intent(in) :: dry_curr
+    character(len=24), intent(in) :: compor
+    character(len=19), intent(in) :: varc_curr
+    character(len=19), intent(in) :: resu_elem
+    character(len=24), intent(in) :: vect_elem
+    character(len=1), intent(in) :: base
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -72,7 +72,7 @@ character(len=1), intent(in) :: base
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: nbin  = 11
+    integer, parameter :: nbin = 11
     integer, parameter :: nbout = 2
     character(len=8) :: lpain(nbin), lpaout(nbout)
     character(len=19) :: lchin(nbin), lchout(nbout)
@@ -84,13 +84,13 @@ character(len=1), intent(in) :: base
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    stop_calc    = 'S'
-    option       = 'RESI_RIGI_MASS'
+    stop_calc = 'S'
+    option = 'RESI_RIGI_MASS'
     ligrel_model = model(1:8)//'.MODELE'
 !
 ! - Init fields
 !
-    call inical(nbin  , lpain, lchin, nbout, lpaout,&
+    call inical(nbin, lpain, lchin, nbout, lpaout, &
                 lchout)
 !
 ! - Geometry field
@@ -103,28 +103,28 @@ character(len=1), intent(in) :: base
 !
 ! - Input fields
 !
-    lpain(1)  = 'PGEOMER'
-    lchin(1)  = chgeom(1:19)
-    lpain(2)  = 'PMATERC'
-    lchin(2)  = mate(1:19)
-    lpain(3)  = 'PTEMPSR'
-    lchin(3)  = time(1:19)
-    lpain(4)  = 'PTEMPEI'
-    lchin(4)  = temp_iter(1:19)
-    lpain(5)  = 'PHYDRPM'
-    lchin(5)  = hydr_prev(1:19)
-    lpain(6)  = 'PCOMPOR'
-    lchin(6)  = compor(1:19)
-    lpain(7)  = 'PTEMPER'
-    lchin(7)  = temp_prev(1:19)
-    lpain(8)  = 'PTMPCHI'
-    lchin(8)  = dry_prev(1:19)
-    lpain(9)  = 'PTMPCHF'
-    lchin(9)  = dry_curr(1:19)
+    lpain(1) = 'PGEOMER'
+    lchin(1) = chgeom(1:19)
+    lpain(2) = 'PMATERC'
+    lchin(2) = mate(1:19)
+    lpain(3) = 'PTEMPSR'
+    lchin(3) = time(1:19)
+    lpain(4) = 'PTEMPEI'
+    lchin(4) = temp_iter(1:19)
+    lpain(5) = 'PHYDRPM'
+    lchin(5) = hydr_prev(1:19)
+    lpain(6) = 'PCOMPOR'
+    lchin(6) = compor(1:19)
+    lpain(7) = 'PTEMPER'
+    lchin(7) = temp_prev(1:19)
+    lpain(8) = 'PTMPCHI'
+    lchin(8) = dry_prev(1:19)
+    lpain(9) = 'PTMPCHF'
+    lchin(9) = dry_curr(1:19)
     lpain(10) = 'PVARCPR'
     lchin(10) = varc_curr(1:19)
     lpain(11) = 'PCAMASS'
-    lchin(11) = chcara(12)(1:19)
+    lchin(11) = chcara(12) (1:19)
 !
 ! - Output fields
 !
@@ -133,12 +133,12 @@ character(len=1), intent(in) :: base
     lpaout(2) = 'PHYDRPP'
     lchout(2) = hydr_curr(1:19)
 !
-    call corich('E', lchout(1), ichin_ = -1)
+    call corich('E', lchout(1), ichin_=-1)
 !
 ! - Number of fields
 !
-    call calcul(stop_calc, option, ligrel_model, nbin  , lchin,&
-                lpain    , nbout , lchout      , lpaout, base ,&
+    call calcul(stop_calc, option, ligrel_model, nbin, lchin, &
+                lpain, nbout, lchout, lpaout, base, &
                 'OUI')
 !
 ! - Add RESU_ELEM in vect_elem

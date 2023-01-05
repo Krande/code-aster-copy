@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -52,7 +52,7 @@ subroutine bsthco(nomte, bsigth, indith)
 !     ------------------------------------------------------------------
     integer :: icara, icompo, icou, imate, inte, intsn, intsr, jgeom, lzi
     integer :: lzr, nb1, nb2, nbcou, npge, npgsn, npgsr, kwgt, itab(8), iret
-    parameter (npge=3)
+    parameter(npge=3)
     real(kind=8) :: vecta(9, 2, 3), vectn(9, 3), vectpt(9, 2, 3)
     real(kind=8) :: vectg(2, 3), vectt(3, 3)
     real(kind=8) :: hsfm(3, 9), hss(2, 9), hsj1m(3, 9), hsj1s(2, 9)
@@ -115,7 +115,7 @@ subroutine bsthco(nomte, bsigth, indith)
 !
 ! --- RECUPERATION DE LA CARTE DE COMPORTEMENT :
 !     ----------------------------------------
-    call tecach('NNO', 'PCOMPOR', 'L', iret, nval=8,&
+    call tecach('NNO', 'PCOMPOR', 'L', iret, nval=8, &
                 itab=itab)
     icompo = itab(1)
     if (icompo .eq. 0) then
@@ -124,13 +124,13 @@ subroutine bsthco(nomte, bsigth, indith)
 !
 ! ------ NOMBRE DE COUCHES :
 !        -----------------
-        read (zk16(icompo+6-1),'(I3)') nbcou
+        read (zk16(icompo+6-1), '(I3)') nbcou
 !
         if (nbcou .le. 0) then
             call utmess('F', 'ELEMENTS_12')
-        endif
+        end if
 !
-    endif
+    end if
 !
 !
 ! --- CARACTERISTIQUES DE COQUES :
@@ -169,7 +169,7 @@ subroutine bsthco(nomte, bsigth, indith)
 ! --- VECTPT DESIGNE LES REPERES LOCAUX ORTHORNORMES EN CHAQUE
 ! --- NOEUD DANS LA CONFIGURATION INITIALE :
 !     ------------------------------------
-    call vectan(nb1, nb2, zr(jgeom), zr(lzr), vecta,&
+    call vectan(nb1, nb2, zr(jgeom), zr(lzr), vecta, &
                 vectn, vectpt)
 !
 ! --- COMPTEUR SERVANT A L'INTEGRATION :
@@ -186,15 +186,15 @@ subroutine bsthco(nomte, bsigth, indith)
 !
 ! ---      POSITION DANS L'EPAISSEUR :
             if (inte .eq. 1) then
-                zic = zmin + (icou-1)*epais
+                zic = zmin+(icou-1)*epais
                 coef = un/trois
-            else if (inte.eq.2) then
-                zic = zmin + epais/deux + (icou-1)*epais
+            else if (inte .eq. 2) then
+                zic = zmin+epais/deux+(icou-1)*epais
                 coef = quatre/trois
-            else if (inte.eq.3) then
-                zic = zmin + epais + (icou-1)*epais
+            else if (inte .eq. 3) then
+                zic = zmin+epais+(icou-1)*epais
                 coef = un/trois
-            endif
+            end if
 ! ---      COORDONNEE ISOPARAMETRIQUE DANS L'EPAISSEUR DIVISEE PAR 2
             ksi3s2 = zic/epais
 !
@@ -223,22 +223,22 @@ subroutine bsthco(nomte, bsigth, indith)
 ! ---                                [HSS]  = [H] * [S] POUR LA PARTIE
 ! ---                                CISAILLEMENT :
 !           -------------------------------------
-                call mahsms(0, nb1, zr(jgeom), ksi3s2, intsr,&
-                            zr(lzr), epais, vectn, vectg, vectt,&
+                call mahsms(0, nb1, zr(jgeom), ksi3s2, intsr, &
+                            zr(lzr), epais, vectn, vectg, vectt, &
                             hsfm, hss)
 !
 ! ---       MULTIPLICATION DES MATRICES [HSFM] ET [HSS] PAR L'INVERSE
 ! ---       DE LA MATRICE JACOBIENNE [JM1]:
 ! ---       [HSJ1M] = [HSFM]*[JM1] , [HSJ1S] = [HSS]*[JM1] :
 !           ----------------------------------------------
-                call hsj1ms(epais, vectg, vectt, hsfm, hss,&
+                call hsj1ms(epais, vectg, vectt, hsfm, hss, &
                             hsj1m, hsj1s)
 !
 ! ---       CALCUL POUR L'INTEGRATION REDUITE DES PARTIES MEMBRANE
 ! ---       BTDM ET CISAILLEMENT BTDS DE LA MATRICE B :
 !           -----------------------------------------
-                call btdmsr(nb1, nb2, ksi3s2, intsr, zr(lzr),&
-                            epais, vectpt, hsj1m, hsj1s, btdm,&
+                call btdmsr(nb1, nb2, ksi3s2, intsr, zr(lzr), &
+                            epais, vectpt, hsj1m, hsj1s, btdm, &
                             btds)
             end do
 !
@@ -266,15 +266,15 @@ subroutine bsthco(nomte, bsigth, indith)
 ! ---        ON CALCULE LE PRODUIT [HSF] = [H]*[S] POUR LA PARTIE
 ! ---                              FLEXION :
 !           ------------------------------
-                call mahsf(1, nb1, zr(jgeom), ksi3s2, intsn,&
-                           zr(lzr), epais, vectn, vectg, vectt,&
+                call mahsf(1, nb1, zr(jgeom), ksi3s2, intsn, &
+                           zr(lzr), epais, vectn, vectg, vectt, &
                            hsf)
 !
 ! ---       MULTIPLICATION DE LA MATRICE [HSF] PAR L'INVERSE
 ! ---       DE LA MATRICE JACOBIENNE [JM1]:
 ! ---       [HSJ1FX] = [HSF]*[JM1]  :
 !           ----------------------
-                call hsj1f(intsn, zr(lzr), epais, vectg, vectt,&
+                call hsj1f(intsn, zr(lzr), epais, vectg, vectt, &
                            hsf, kwgt, hsj1fx, wgt)
 !
 ! ---       PRODUIT DU POIDS DU POINT DE GAUSS DANS L'EPAISSEUR PAR WGT
@@ -286,21 +286,21 @@ subroutine bsthco(nomte, bsigth, indith)
 ! ---       CALCUL POUR L'INTEGRATION NORMALE DE LA PARTIE FLEXION
 ! ---       BTDF DE LA MATRICE B :
 !           --------------------
-                call btdfn(1, nb1, nb2, ksi3s2, intsn,&
+                call btdfn(1, nb1, nb2, ksi3s2, intsn, &
                            zr(lzr), epais, vectpt, hsj1fx, btdf)
 !
 ! ---       CALCUL DE LA MATRICE B [BTILD] PAR INTEGRATION SELECTIVE
 ! ---       ET INSERTION DES PARTIES [BTDM] ET [BDTS] ET INSERTION
 ! ---       DE LA PARTIE [BTDF]  :
 !           -------------------
-                call btdmsn(1, nb1, intsn, npgsr, zr(lzr),&
+                call btdmsn(1, nb1, intsn, npgsr, zr(lzr), &
                             btdm, btdf, btds, btild)
 !
 ! ---       EVALUATION DES DEFORMATIONS THERMIQUES :
 !           ======================================
-                call verifm('RIGI', inte, 3, '+', zi(imate),&
+                call verifm('RIGI', inte, 3, '+', zi(imate), &
                             epsthe)
-                call moytem('RIGI', inte, 3, '+', valpar,&
+                call moytem('RIGI', inte, 3, '+', valpar, &
                             iret)
 !
                 epsth(1) = epsthe
@@ -308,17 +308,17 @@ subroutine bsthco(nomte, bsigth, indith)
 !
 ! ---       CALCUL DE LA MATRICE DE COMPORTEMENT  MATC(5,5) :
 !           ----------------------------------------------
-                call matrc2(1, 'TEMP    ', [valpar], kappa, matc,&
+                call matrc2(1, 'TEMP    ', [valpar], kappa, matc, &
                             vectt)
 !
 ! ---       CALCUL DES CONTRAINTES THERMIQUES SIGMTH(5) :
 !           -------------------------------------------
-                call promat(matc, 5, 5, 5, epsth,&
+                call promat(matc, 5, 5, 5, epsth, &
                             5, 5, 1, sigmth)
 !
 ! ---       CALCUL DES FORCES INTERNES DUES AUX CONTRAINTES THERMIQUES :
 !           ----------------------------------------------------------
-                call btsig(5*nb1 + 2, 5, wgt, btild, sigmth,&
+                call btsig(5*nb1+2, 5, wgt, btild, sigmth, &
                            bsigt1)
 !
             end do

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,16 +19,16 @@
 !
 subroutine nonlinDSContactRead(ds_contact)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/infniv.h"
 #include "asterfort/utmess.h"
 #include "asterfort/getvid.h"
 !
-type(NL_DS_Contact), intent(inout) :: ds_contact
+    type(NL_DS_Contact), intent(inout) :: ds_contact
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -52,7 +52,7 @@ type(NL_DS_Contact), intent(inout) :: ds_contact
     call infniv(ifm, niv)
     if (niv .ge. 2) then
         call utmess('I', 'MECANONLINE12_10')
-    endif
+    end if
 !
 ! - Initializations
 !
@@ -64,6 +64,6 @@ type(NL_DS_Contact), intent(inout) :: ds_contact
     ds_contact%l_contact = nocc .gt. 0
     if (nocc .ne. 0) then
         ds_contact%sdcont = sdcont
-    endif
+    end if
 !
 end subroutine

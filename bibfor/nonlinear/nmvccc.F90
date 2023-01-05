@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,11 +16,11 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine nmvccc(model    , nbin     , nbout    , lpain    , lchin    ,&
-                  lpaout   , lchout   , exis_temp, exis_hydr, exis_ptot,&
-                  exis_sech, exis_epsa, calc_meta, base     , vect_elem)
+subroutine nmvccc(model, nbin, nbout, lpain, lchin, &
+                  lpaout, lchout, exis_temp, exis_hydr, exis_ptot, &
+                  exis_sech, exis_epsa, calc_meta, base, vect_elem)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/calcul.h"
@@ -78,7 +78,7 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    nbr    = 0
+    nbr = 0
     masque = '.VEXXX'
     ligrmo = model(1:8)//'.MODELE'
 !
@@ -89,75 +89,75 @@ implicit none
         call codent(nbr, 'D0', masque(4:6))
         lchout(1) = vect_elem(1:8)//masque
         option = 'CHAR_MECA_TEMP_R'
-        call calcul('C'  , option, ligrmo, nbin  , lchin,&
-                    lpain, nbout , lchout, lpaout, base,&
+        call calcul('C', option, ligrmo, nbin, lchin, &
+                    lpain, nbout, lchout, lpaout, base, &
                     'OUI')
         call reajre(vect_elem, lchout(1), base)
-    endif
+    end if
 !
 ! - Hydratation
 !
     if (exis_hydr) then
         nbr = nbr+1
         call codent(nbr, 'D0', masque(4:6))
-        lchout(1) = vect_elem(1:8)// masque
+        lchout(1) = vect_elem(1:8)//masque
         option = 'CHAR_MECA_HYDR_R'
-        call calcul('S', option, ligrmo, nbin, lchin,&
-                    lpain, nbout, lchout, lpaout, 'V',&
+        call calcul('S', option, ligrmo, nbin, lchin, &
+                    lpain, nbout, lchout, lpaout, 'V', &
                     'OUI')
         call reajre(vect_elem, lchout(1), 'V')
-    endif
+    end if
 !
 ! - Total pressure (THM)
 !
     if (exis_ptot) then
         nbr = nbr+1
         call codent(nbr, 'D0', masque(4:6))
-        lchout(1) = vect_elem(1:8)// masque
+        lchout(1) = vect_elem(1:8)//masque
         option = 'CHAR_MECA_PTOT_R'
-        call calcul('S', option, ligrmo, nbin, lchin,&
-                    lpain, nbout, lchout, lpaout, 'V',&
+        call calcul('S', option, ligrmo, nbin, lchin, &
+                    lpain, nbout, lchout, lpaout, 'V', &
                     'OUI')
         call reajre(vect_elem, lchout(1), 'V')
-    endif
+    end if
 !
 ! - Drying
 !
     if (exis_sech) then
         nbr = nbr+1
         call codent(nbr, 'D0', masque(4:6))
-        lchout(1) = vect_elem(1:8)// masque
+        lchout(1) = vect_elem(1:8)//masque
         option = 'CHAR_MECA_SECH_R'
-        call calcul('S', option, ligrmo, nbin, lchin,&
-                    lpain, nbout, lchout, lpaout, 'V',&
+        call calcul('S', option, ligrmo, nbin, lchin, &
+                    lpain, nbout, lchout, lpaout, 'V', &
                     'OUI')
         call reajre(vect_elem, lchout(1), 'V')
-    endif
+    end if
 !
 ! - Non-elastic strain
 !
     if (exis_epsa) then
         nbr = nbr+1
         call codent(nbr, 'D0', masque(4:6))
-        lchout(1) = vect_elem(1:8)// masque
+        lchout(1) = vect_elem(1:8)//masque
         option = 'CHAR_MECA_EPSA_R'
-        call calcul('S', option, ligrmo, nbin, lchin,&
-                    lpain, nbout, lchout, lpaout, 'V',&
+        call calcul('S', option, ligrmo, nbin, lchin, &
+                    lpain, nbout, lchout, lpaout, 'V', &
                     'OUI')
         call reajre(vect_elem, lchout(1), 'V')
-    endif
+    end if
 !
 ! - Metallurgy
 !
     if (calc_meta) then
         nbr = 6
         call codent(nbr, 'D0', masque(4:6))
-        lchout(1) = vect_elem(1:8)// masque
+        lchout(1) = vect_elem(1:8)//masque
         option = 'CHAR_MECA_META_Z'
-        call calcul('S', option, ligrmo, nbin, lchin,&
-                    lpain, nbout, lchout, lpaout, 'V',&
+        call calcul('S', option, ligrmo, nbin, lchin, &
+                    lpain, nbout, lchout, lpaout, 'V', &
                     'OUI')
         call reajre(vect_elem, lchout(1), 'V')
-    endif
+    end if
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine dhrc_recup_mate(imate, compor, a0, c0, aa_t, ga_t, ab, gb,&
+subroutine dhrc_recup_mate(imate, compor, a0, c0, aa_t, ga_t, ab, gb, &
                            ac, gc, aa_c, ga_c, cstseu)
 ! person_in_charge: sebastien.fayolle at edf.fr
 !
@@ -62,41 +62,41 @@ subroutine dhrc_recup_mate(imate, compor, a0, c0, aa_t, ga_t, ab, gb,&
     integer :: i, j, l, jadr, n1, icodre1
 ! ----------------------------------------------------------------------
 !
-    if ((.not.( compor(1:4) .eq. 'DHRC'))) then
+    if ((.not. (compor(1:4) .eq. 'DHRC'))) then
         call utmess('F', 'ELEMENTS4_65', sk=compor)
-    endif
+    end if
 !
 !     -----------------------------------------------------------------
 !     MATRICE A0(6,6)
 !     -----------------------------------------------------------------
-    call rcadlv(' ', 1, 1, '+',imate, ' ', 'ELAS_DHRC', 'A0', &
+    call rcadlv(' ', 1, 1, '+', imate, ' ', 'ELAS_DHRC', 'A0', &
                 0, [' '], [0.d0], jadr, n1, icodre1, 1)
-    ASSERT(icodre1.eq.0 .and. n1.eq.21)
+    ASSERT(icodre1 .eq. 0 .and. n1 .eq. 21)
 !
-    l=0
+    l = 0
     do i = 1, 6
         do j = i, 6
-            l=l+1
-            a0(j,i)=zr(jadr-1+l)
-            a0(i,j)=a0(j,i)
+            l = l+1
+            a0(j, i) = zr(jadr-1+l)
+            a0(i, j) = a0(j, i)
         end do
     end do
-    ASSERT(l.eq.21)
+    ASSERT(l .eq. 21)
 !
 !     -----------------------------------------------------------------
 !     MATRICE AA_C(6,6,1)
 !     -----------------------------------------------------------------
 !
-    call rcadlv(' ', 1, 1, '+',imate, ' ', 'DHRC', 'AA_C', &
+    call rcadlv(' ', 1, 1, '+', imate, ' ', 'DHRC', 'AA_C', &
                 0, [' '], [0.d0], jadr, n1, icodre1, 1)
-    ASSERT(icodre1.eq.0 .and. n1.eq.42)
+    ASSERT(icodre1 .eq. 0 .and. n1 .eq. 42)
 !
-    l=0
+    l = 0
     do i = 1, 6
         do j = i, 6
-            l=l+1
-            aa_c(j,i,1)=zr(jadr-1+l)
-            aa_c(i,j,1)=aa_c(j,i,1)
+            l = l+1
+            aa_c(j, i, 1) = zr(jadr-1+l)
+            aa_c(i, j, 1) = aa_c(j, i, 1)
         end do
     end do
 !
@@ -106,9 +106,9 @@ subroutine dhrc_recup_mate(imate, compor, a0, c0, aa_t, ga_t, ab, gb,&
 !
     do i = 1, 6
         do j = i, 6
-            l=l+1
-            aa_c(j,i,2)=zr(jadr-1+l)
-            aa_c(i,j,2)=aa_c(j,i,2)
+            l = l+1
+            aa_c(j, i, 2) = zr(jadr-1+l)
+            aa_c(i, j, 2) = aa_c(j, i, 2)
         end do
     end do
 !
@@ -116,16 +116,16 @@ subroutine dhrc_recup_mate(imate, compor, a0, c0, aa_t, ga_t, ab, gb,&
 !     MATRICE AA_T(6,6,1)
 !     -----------------------------------------------------------------
 !
-    call rcadlv(' ', 1, 1, '+',imate, ' ', 'DHRC', 'AA_T', &
+    call rcadlv(' ', 1, 1, '+', imate, ' ', 'DHRC', 'AA_T', &
                 0, [' '], [0.d0], jadr, n1, icodre1, 1)
-    ASSERT(icodre1.eq.0 .and. n1.eq.42)
+    ASSERT(icodre1 .eq. 0 .and. n1 .eq. 42)
 !
-    l=0
+    l = 0
     do i = 1, 6
         do j = i, 6
-            l=l+1
-            aa_t(j,i,1)=zr(jadr-1+l)
-            aa_t(i,j,1)=aa_t(j,i,1)
+            l = l+1
+            aa_t(j, i, 1) = zr(jadr-1+l)
+            aa_t(i, j, 1) = aa_t(j, i, 1)
         end do
     end do
 !
@@ -135,9 +135,9 @@ subroutine dhrc_recup_mate(imate, compor, a0, c0, aa_t, ga_t, ab, gb,&
 !
     do i = 1, 6
         do j = i, 6
-            l=l+1
-            aa_t(j,i,2)=zr(jadr-1+l)
-            aa_t(i,j,2)=aa_t(j,i,2)
+            l = l+1
+            aa_t(j, i, 2) = zr(jadr-1+l)
+            aa_t(i, j, 2) = aa_t(j, i, 2)
         end do
     end do
 !
@@ -145,16 +145,16 @@ subroutine dhrc_recup_mate(imate, compor, a0, c0, aa_t, ga_t, ab, gb,&
 !     MATRICE GA_C(6,6,1)
 !     -----------------------------------------------------------------
 !
-    call rcadlv(' ', 1, 1, '+',imate, ' ', 'DHRC', 'GA_C', &
+    call rcadlv(' ', 1, 1, '+', imate, ' ', 'DHRC', 'GA_C', &
                 0, [' '], [0.d0], jadr, n1, icodre1, 1)
-    ASSERT(icodre1.eq.0 .and. n1.eq.42)
+    ASSERT(icodre1 .eq. 0 .and. n1 .eq. 42)
 !
-    l=0
+    l = 0
     do i = 1, 6
         do j = i, 6
-            l=l+1
-            ga_c(j,i,1)=zr(jadr-1+l)
-            ga_c(i,j,1)=ga_c(j,i,1)
+            l = l+1
+            ga_c(j, i, 1) = zr(jadr-1+l)
+            ga_c(i, j, 1) = ga_c(j, i, 1)
         end do
     end do
 !
@@ -164,9 +164,9 @@ subroutine dhrc_recup_mate(imate, compor, a0, c0, aa_t, ga_t, ab, gb,&
 !
     do i = 1, 6
         do j = i, 6
-            l=l+1
-            ga_c(j,i,2)=zr(jadr-1+l)
-            ga_c(i,j,2)=ga_c(j,i,2)
+            l = l+1
+            ga_c(j, i, 2) = zr(jadr-1+l)
+            ga_c(i, j, 2) = ga_c(j, i, 2)
         end do
     end do
 !
@@ -174,16 +174,16 @@ subroutine dhrc_recup_mate(imate, compor, a0, c0, aa_t, ga_t, ab, gb,&
 !     MATRICE GA_T(6,6,1)
 !     -----------------------------------------------------------------
 !
-    call rcadlv(' ', 1, 1, '+',imate, ' ', 'DHRC', 'GA_T', &
+    call rcadlv(' ', 1, 1, '+', imate, ' ', 'DHRC', 'GA_T', &
                 0, [' '], [0.d0], jadr, n1, icodre1, 1)
-    ASSERT(icodre1.eq.0 .and. n1.eq.42)
+    ASSERT(icodre1 .eq. 0 .and. n1 .eq. 42)
 !
-    l=0
+    l = 0
     do i = 1, 6
         do j = i, 6
-            l=l+1
-            ga_t(j,i,1)=zr(jadr-1+l)
-            ga_t(i,j,1)=ga_t(j,i,1)
+            l = l+1
+            ga_t(j, i, 1) = zr(jadr-1+l)
+            ga_t(i, j, 1) = ga_t(j, i, 1)
         end do
     end do
 !
@@ -193,9 +193,9 @@ subroutine dhrc_recup_mate(imate, compor, a0, c0, aa_t, ga_t, ab, gb,&
 !
     do i = 1, 6
         do j = i, 6
-            l=l+1
-            ga_t(j,i,2)=zr(jadr-1+l)
-            ga_t(i,j,2)=ga_t(j,i,2)
+            l = l+1
+            ga_t(j, i, 2) = zr(jadr-1+l)
+            ga_t(i, j, 2) = ga_t(j, i, 2)
         end do
     end do
 !
@@ -203,63 +203,63 @@ subroutine dhrc_recup_mate(imate, compor, a0, c0, aa_t, ga_t, ab, gb,&
 !     MATRICE AB(6,2,2)
 !     -----------------------------------------------------------------
 !
-    call rcadlv(' ', 1, 1, '+',imate, ' ', 'DHRC', 'AB', &
+    call rcadlv(' ', 1, 1, '+', imate, ' ', 'DHRC', 'AB', &
                 0, [' '], [0.d0], jadr, n1, icodre1, 1)
-    ASSERT(icodre1.eq.0 .and. n1.eq.24)
-    ab=reshape(source=zr(jadr:jadr+24), shape=(/6,2,2/))
+    ASSERT(icodre1 .eq. 0 .and. n1 .eq. 24)
+    ab = reshape(source=zr(jadr:jadr+24), shape=(/6, 2, 2/))
 !
 !     -----------------------------------------------------------------
 !     MATRICE GB(6,2,2)
 !     -----------------------------------------------------------------
 !
-    call rcadlv(' ', 1, 1, '+',imate, ' ', 'DHRC', 'GB', &
+    call rcadlv(' ', 1, 1, '+', imate, ' ', 'DHRC', 'GB', &
                 0, [' '], [0.d0], jadr, n1, icodre1, 1)
-    ASSERT(icodre1.eq.0 .and. n1.eq.24)
-    gb=reshape(source=zr(jadr:jadr+24), shape=(/6,2,2/))
+    ASSERT(icodre1 .eq. 0 .and. n1 .eq. 24)
+    gb = reshape(source=zr(jadr:jadr+24), shape=(/6, 2, 2/))
 !
 !     -----------------------------------------------------------------
 !     MATRICE C0(2,2,2)
 !     -----------------------------------------------------------------
 !
-    call rcadlv(' ', 1, 1, '+',imate, ' ', 'DHRC', 'C0', &
+    call rcadlv(' ', 1, 1, '+', imate, ' ', 'DHRC', 'C0', &
                 0, [' '], [0.d0], jadr, n1, icodre1, 1)
-    ASSERT(icodre1.eq.0 .and. n1.eq.8)
-    c0=reshape(source=zr(jadr:jadr+8), shape=(/2,2,2/))
+    ASSERT(icodre1 .eq. 0 .and. n1 .eq. 8)
+    c0 = reshape(source=zr(jadr:jadr+8), shape=(/2, 2, 2/))
 !
 !     -----------------------------------------------------------------
 !     MATRICE AC(2,2,2)
 !     -----------------------------------------------------------------
 !
-    call rcadlv(' ', 1, 1, '+',imate, ' ', 'DHRC', 'AC', &
+    call rcadlv(' ', 1, 1, '+', imate, ' ', 'DHRC', 'AC', &
                 0, [' '], [0.d0], jadr, n1, icodre1, 1)
-    ASSERT(icodre1.eq.0 .and. n1.eq.8)
-    ac=reshape(source=zr(jadr:jadr+8), shape=(/2,2,2/))
+    ASSERT(icodre1 .eq. 0 .and. n1 .eq. 8)
+    ac = reshape(source=zr(jadr:jadr+8), shape=(/2, 2, 2/))
 !
 !     -----------------------------------------------------------------
 !     MATRICE GC(2,2,2)
 !     -----------------------------------------------------------------
 !
-    call rcadlv(' ', 1, 1, '+',imate, ' ', 'DHRC', 'GC', &
+    call rcadlv(' ', 1, 1, '+', imate, ' ', 'DHRC', 'GC', &
                 0, [' '], [0.d0], jadr, n1, icodre1, 1)
-    ASSERT(icodre1.eq.0 .and. n1.eq.8)
-    gc=reshape(source=zr(jadr:jadr+8), shape=(/2,2,2/))
+    ASSERT(icodre1 .eq. 0 .and. n1 .eq. 8)
+    gc = reshape(source=zr(jadr:jadr+8), shape=(/2, 2, 2/))
 !
 !     -----------------------------------------------------------------
 !     SEUILS NYD
 !     -----------------------------------------------------------------
 !
-    call rcadlv(' ', 1, 1, '+',imate, ' ', 'DHRC', 'NYD', &
+    call rcadlv(' ', 1, 1, '+', imate, ' ', 'DHRC', 'NYD', &
                 0, [' '], [0.d0], jadr, n1, icodre1, 1)
-    ASSERT(icodre1.eq.0 .and. n1.eq.2)
-    cstseu(1:2)=zr(jadr:jadr+1)
+    ASSERT(icodre1 .eq. 0 .and. n1 .eq. 2)
+    cstseu(1:2) = zr(jadr:jadr+1)
 !
 !     -----------------------------------------------------------------
 !     SEUILS SCRIT
 !     -----------------------------------------------------------------
 !
-    call rcadlv(' ', 1, 1, '+',imate, ' ', 'DHRC', 'SCRIT', &
+    call rcadlv(' ', 1, 1, '+', imate, ' ', 'DHRC', 'SCRIT', &
                 0, [' '], [0.d0], jadr, n1, icodre1, 1)
-    ASSERT(icodre1.eq.0 .and. n1.eq.4)
-    cstseu(3:6)=zr(jadr:jadr+3)
+    ASSERT(icodre1 .eq. 0 .and. n1 .eq. 4)
+    cstseu(3:6) = zr(jadr:jadr+3)
 !
 end subroutine

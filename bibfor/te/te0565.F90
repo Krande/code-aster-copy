@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -80,7 +80,7 @@ subroutine te0565(nomopt, nomte)
     integer :: ipoids, ivf
     integer :: nbsgm, nbsig, nbvari, ndim, nno
     integer :: npg, iret, idim, i, jtab(7)
-    parameter (nbsgm  =   6)
+    parameter(nbsgm=6)
     real(kind=8) :: enelas
     real(kind=8) :: deux, trois
     real(kind=8) :: un, undemi, untier, welas, wtotal
@@ -99,8 +99,8 @@ subroutine te0565(nomopt, nomte)
     integer :: j, in, ino, ise, kpg, n
     aster_logical :: grand, axi
 !
-    data    elrese /'SE2','TR3','TE4','SE3','TR6','T10'/
-    data    fami   /'BID','XINT','XINT','BID','XINT','XINT'/
+    data elrese/'SE2', 'TR3', 'TE4', 'SE3', 'TR6', 'T10'/
+    data fami/'BID', 'XINT', 'XINT', 'BID', 'XINT', 'XINT'/
 !
 !-----------------------------------------------------------------------
 !
@@ -127,17 +127,17 @@ subroutine te0565(nomopt, nomte)
     call elrefe_info(fami='RIGI', ndim=ndim, nno=nnop)
 !
 !     SOUS-ELEMENT DE REFERENCE : RECUP DE NNO, NPG ET IVF
-    if (.not.iselli(elrefp)) then
-        irese=3
+    if (.not. iselli(elrefp)) then
+        irese = 3
     else
-        irese=0
-    endif
-    call elrefe_info(elrefe=elrese(ndim+irese), fami=fami(ndim+irese), nno=nno, npg=npg,&
+        irese = 0
+    end if
+    call elrefe_info(elrefe=elrese(ndim+irese), fami=fami(ndim+irese), nno=nno, npg=npg, &
                      jpoids=ipoids, jvf=ivf, jdfde=idfde)
 !
 ! --- TYPE DE MODELISATION
 !
-    axi = lteatt('AXIS','OUI')
+    axi = lteatt('AXIS', 'OUI')
 !
 ! ---- NOMBRE DE CONTRAINTES ASSOCIE A L'ELEMENT :
 !
@@ -158,8 +158,8 @@ subroutine te0565(nomopt, nomte)
     call jevech('PLONCHA', 'L', jlonch)
 !     PROPRES AUX ELEMENTS 1D ET 2D (QUADRATIQUES)
     call teattr('S', 'XFEM', enr, iret)
-    if ((iret.eq.0) .and. ltequa(elrefp, enr)) &
-    call jevech('PPMILTO', 'L', jpmilt)
+    if ((iret .eq. 0) .and. ltequa(elrefp, enr)) &
+        call jevech('PPMILTO', 'L', jpmilt)
 !
 ! ---- RECUPERATION  DES DONNEEES RELATIVES AU REPERE D'ORTHOTROPIE :
 !     COORDONNEES DU BARYCENTRE ( POUR LE REPRE CYLINDRIQUE )
@@ -196,60 +196,60 @@ subroutine te0565(nomopt, nomte)
 !
 ! ----RECUPERATION DU TYPE DE COMPORTEMENT  :
 !     N'EXISTE PAS EN LINEAIRE
-    call tecach('NNO', 'PCOMPOR', 'L', iret, nval=7,&
+    call tecach('NNO', 'PCOMPOR', 'L', iret, nval=7, &
                 itab=jtab)
-    compor(1)='ELAS'
-    compor(2)=' '
-    compor(3)='PETIT'
+    compor(1) = 'ELAS'
+    compor(2) = ' '
+    compor(3) = 'PETIT'
     if (iret .eq. 0) then
-        compor(1)=zk16(jtab(1))
-        compor(3)=zk16(jtab(1)+2)
-    endif
+        compor(1) = zk16(jtab(1))
+        compor(3) = zk16(jtab(1)+2)
+    end if
 !
 !     GRANDES DEFORMATIONS
 !
-    if ((compor(3).eq.'SIMO_MIEHE') .or. (compor(3).eq.'GDEF_LOG')) then
+    if ((compor(3) .eq. 'SIMO_MIEHE') .or. (compor(3) .eq. 'GDEF_LOG')) then
         grand = .true.
     else
         grand = .false.
-    endif
+    end if
 !
 ! ----   RECUPERATION DU CHAMP DE VARIABLES INTERNES  :
 !        N'EXISTE PAS EN LINEAIRE
-    call tecach('ONO', 'PVARIPR', 'L', iret, nval=7,&
+    call tecach('ONO', 'PVARIPR', 'L', iret, nval=7, &
                 itab=jtab)
     if (iret .eq. 0) then
-        idvari=jtab(1)
-        nbvari = max(jtab(6),1)*jtab(7)
+        idvari = jtab(1)
+        nbvari = max(jtab(6), 1)*jtab(7)
     else
-        idvari=1
-        nbvari=0
-    endif
+        idvari = 1
+        nbvari = 0
+    end if
 !
 ! --- RECUPERATION DU CHAMP POUR STOCKER L'ENERGIE ELSTIQUE
     call jevech('PENERD1', 'E', idene1)
 !
 ! --- RÉCUPÉRATION DE LA SUBDIVISION DE L'ÉLÉMENT EN NSE SOUS ELEMENT
-    nse=zi(jlonch-1+1)
+    nse = zi(jlonch-1+1)
 !
 ! --- BOUCLE D'INTEGRATION SUR LES NSE SOUS-ELEMENTS
     do ise = 1, nse
 !
 !       BOUCLE SUR LES SOMMETS DU SOUS-TRIA (DU SOUS-SEG)
         do in = 1, nno
-            ino=zi(jcnset-1+nno*(ise-1)+in)
+            ino = zi(jcnset-1+nno*(ise-1)+in)
             do j = 1, ndim
                 if (ino .lt. 1000) then
-                    coorse(ndim*(in-1)+j)=zr(igeom-1+ndim*(ino-1)+j)
-                else if (ino.gt.1000 .and. ino.lt.2000) then
-                    coorse(ndim*(in-1)+j)=zr(jpintt-1+ndim*(ino-1000-1)+j)
-                else if (ino.gt.2000 .and. ino.lt.3000) then
-                    coorse(ndim*(in-1)+j)=zr(jpmilt-1+ndim*(ino-2000-1)+j)
-                else if (ino.gt.3000) then
-                    coorse(ndim*(in-1)+j)=zr(jpmilt-1+ndim*(ino-3000-1)+j)
-                endif
-            enddo
-        enddo
+                    coorse(ndim*(in-1)+j) = zr(igeom-1+ndim*(ino-1)+j)
+                else if (ino .gt. 1000 .and. ino .lt. 2000) then
+                    coorse(ndim*(in-1)+j) = zr(jpintt-1+ndim*(ino-1000-1)+j)
+                else if (ino .gt. 2000 .and. ino .lt. 3000) then
+                    coorse(ndim*(in-1)+j) = zr(jpmilt-1+ndim*(ino-2000-1)+j)
+                else if (ino .gt. 3000) then
+                    coorse(ndim*(in-1)+j) = zr(jpmilt-1+ndim*(ino-3000-1)+j)
+                end if
+            end do
+        end do
 !
 !-----------------------------------------------------------------------
 !         BOUCLE SUR LES POINTS DE GAUSS DU SOUS-ELT
@@ -261,67 +261,67 @@ subroutine te0565(nomopt, nomte)
             xg(:) = 0.d0
             do i = 1, ndim
                 do n = 1, nno
-                    xg(i) = xg(i) + zr(ivf-1+nno*(kpg-1)+n)*coorse(ndim*(n-1)+i)
+                    xg(i) = xg(i)+zr(ivf-1+nno*(kpg-1)+n)*coorse(ndim*(n-1)+i)
                 end do
             end do
 !
 !           JUSTE POUR CALCULER LES FF
 !
-            call reeref(elrefp, nnop, zr(igeom), xg, ndim,&
+            call reeref(elrefp, nnop, zr(igeom), xg, ndim, &
                         xe, ff)
 !
 !           CALCULER LE JACOBIEN DE LA TRANSFO SSTET->SSTET REF
 !           AVEC LES COORDONNEES DU SOUS-ELEMENT
             if (ndim .eq. 2) then
-                call dfdm2d(nno, kpg, ipoids, idfde, coorse,&
+                call dfdm2d(nno, kpg, ipoids, idfde, coorse, &
                             jac)
-            else if (ndim.eq.3) then
-                call dfdm3d(nno, kpg, ipoids, idfde, coorse,&
+            else if (ndim .eq. 3) then
+                call dfdm3d(nno, kpg, ipoids, idfde, coorse, &
                             jac)
-            endif
+            end if
 !
 ! -         CALCUL DE LA DISTANCE A L'AXE (AXISYMETRIQUE):
             if (axi) then
                 r = 0.d0
                 do n = 1, nnop
-                    r = r + ff(n)*zr(igeom-1+2*(n-1)+1)
+                    r = r+ff(n)*zr(igeom-1+2*(n-1)+1)
                 end do
 !
-                ASSERT(r.gt.0d0)
+                ASSERT(r .gt. 0d0)
 !               MODIFICATION DU JACOBIEN
-                jac = jac * r
-            endif
+                jac = jac*r
+            end if
 
 !           DEBUT DE LA ZONE MEMOIRE DE SIG ET VI CORRESPONDANTE
-            idecpg = npg * (ise-1)
-            idebs = nbsig * idecpg
-            idebv = nbvari * idecpg
+            idecpg = npg*(ise-1)
+            idebs = nbsig*idecpg
+            idebv = nbvari*idecpg
 
 !     --- TENSEUR DES CONTRAINTES AU POINT D'INTEGRATION COURANT :
 !
             do i = 1, nbsig
                 sigma(i) = zr(idsig+idebs+(kpg-1)*nbsig+i-1)
-            enddo
+            end do
 !
 !           CALCUL DU GRADIENT DE LA TRANSFORMATION
 !
 !           Hypothese : on est en H.P.P.
-            ASSERT(.not.grand)
+            ASSERT(.not. grand)
 !
-            f(1:3, 1:3)=0.d0
-            do i=1, 3
-               f(i, i)=1.d0
-            enddo
+            f(1:3, 1:3) = 0.d0
+            do i = 1, 3
+                f(i, i) = 1.d0
+            end do
 !
-            call enelpg('XFEM', zi(imate), instan, kpg, repere,&
-                        xyz, compor, f, sigma, nbvari,&
+            call enelpg('XFEM', zi(imate), instan, kpg, repere, &
+                        xyz, compor, f, sigma, nbvari, &
                         zr(idvari+idebv+(kpg-1)*nbvari), enelas)
 !
-            welas = welas + enelas*jac
+            welas = welas+enelas*jac
 !
-        enddo
+        end do
 !
-    enddo
+    end do
 !
     zr(idene1) = welas
 !

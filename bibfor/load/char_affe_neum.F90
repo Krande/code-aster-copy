@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,11 +17,11 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine char_affe_neum(model      , mesh, ndim,&
-                          keywordfact, iocc,&
-                          nbMap      , map , nbCmp)
+subroutine char_affe_neum(model, mesh, ndim, &
+                          keywordfact, iocc, &
+                          nbMap, map, nbCmp)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/assert.h"
 #include "asterfort/getelem.h"
@@ -30,12 +30,12 @@ implicit none
 #include "asterfort/nocart.h"
 #include "asterfort/vetyma.h"
 !
-character(len=8), intent(in) :: model, mesh
-integer, intent(in) :: ndim
-character(len=16), intent(in) :: keywordfact
-integer, intent(in) :: iocc, nbMap
-character(len=19), intent(in) :: map(nbMap)
-integer, intent(in) :: nbCmp(nbMap)
+    character(len=8), intent(in) :: model, mesh
+    integer, intent(in) :: ndim
+    character(len=16), intent(in) :: keywordfact
+    integer, intent(in) :: iocc, nbMap
+    character(len=19), intent(in) :: map(nbMap)
+    integer, intent(in) :: nbCmp(nbMap)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -72,22 +72,22 @@ integer, intent(in) :: nbCmp(nbMap)
     if (nbCell .ne. 0) then
 
 ! ----- Check elements
-        call jeveuo(listCell, 'L', vi = cellNume)
+        call jeveuo(listCell, 'L', vi=cellNume)
         do iMap = 1, nbMap
             if (nbCmp(iMap) .ne. 0) then
                 call vetyma(mesh, ndim, keywordfact, listCell, nbCell)
-            endif
+            end if
         end do
 
 ! ----- Apply Neumann loads in <CARTE>
         do iMap = 1, nbMap
             if (nbCmp(iMap) .ne. 0) then
-                call nocart(map(iMap), 3, nbCmp(iMap), mode='NUM', nma=nbCell,&
+                call nocart(map(iMap), 3, nbCmp(iMap), mode='NUM', nma=nbCell, &
                             limanu=cellNume)
-            endif
+            end if
         end do
 !
-    endif
+    end if
 !
     call jedetr(listCell)
 !

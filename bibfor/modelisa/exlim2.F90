@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -62,8 +62,8 @@ subroutine exlim2(lismai, nbmail, ligrmoz, basez, ligrez)
     character(len=19) :: ligrel, ligrmo
     character(len=24) :: cptlie
     integer :: i, j, lont, numvec, numail, igrel, nbmam, k
-    integer :: lcliel,   jdnb, iadm, jdli
-    integer :: jtyp, jnel, typele, typel1, nbtyel, itype, nmel,nbmail_nz
+    integer :: lcliel, jdnb, iadm, jdli
+    integer :: jtyp, jnel, typele, typel1, nbtyel, itype, nmel, nbmail_nz
     integer, pointer :: lismai_nz(:) => null()
     integer, pointer :: liel(:) => null()
     integer, pointer :: repe(:) => null()
@@ -80,42 +80,37 @@ subroutine exlim2(lismai, nbmail, ligrmoz, basez, ligrez)
     call jeveuo(jexatr(ligrmo//'.LIEL', 'LONCUM'), 'L', lcliel)
     call jeveuo(ligrmo//'.LIEL', 'L', vi=liel)
 
-
 !   -- objet .NBNO
 !   --------------
     call wkvect(ligrel//'.NBNO', base//' V I', 1, jdnb)
     zi(jdnb) = 0
 
-
 !   -- objet .LGRF
 !   --------------
     call jedupo(ligrmo//'.LGRF', base, ligrel//'.LGRF', .false._1)
-
 
 !   -- on retire les mailles 0 de lismai ainsi que les mailles qui ne
 !      font pas partie du ligrel :
 !   ------------------------------------------------------------------
     AS_ALLOCATE(vi=lismai_nz, size=nbmail)
-    nbmail_nz=0
-    do k=1,nbmail
-        numail=lismai(k)
-        if (numail.gt.0) then
+    nbmail_nz = 0
+    do k = 1, nbmail
+        numail = lismai(k)
+        if (numail .gt. 0) then
             igrel = repe(1+2*(numail-1))
             if (igrel .eq. 0) then
                 call jenuno(jexnum(noma//'.NOMMAI', numail), nomail)
                 call utmess('A', 'MODELISA4_50', sk=nomail)
                 cycle
-            endif
-            nbmail_nz=nbmail_nz+1
-            lismai_nz(nbmail_nz)=numail
-        endif
-    enddo
+            end if
+            nbmail_nz = nbmail_nz+1
+            lismai_nz(nbmail_nz) = numail
+        end if
+    end do
 
-    if (nbmail_nz.eq.0)then
+    if (nbmail_nz .eq. 0) then
         call utmess('F', 'MODELISA4_51', sk=nomail)
-    endif
-
-
+    end if
 
 !   -- On compte les types d'element et le nombre de mailles par type.
 !      En realite, on ne "groupe" dans un grel que les mailles successives
@@ -123,7 +118,7 @@ subroutine exlim2(lismai, nbmail, ligrmoz, basez, ligrez)
 !      Mais le ligrel sera optimise plus tard (appel a adalig).
 !   -------------------------------------------------------------------
     call wkvect('&&EXLIM1.TYPE_NOMBRE', 'V V I', 2*nbmail_nz, jtyp)
-    jnel = jtyp + nbmail_nz
+    jnel = jtyp+nbmail_nz
 
     typel1 = 0
     nbtyel = 0
@@ -131,31 +126,30 @@ subroutine exlim2(lismai, nbmail, ligrmoz, basez, ligrez)
     do i = 1, nbmail_nz
         numail = lismai_nz(i)
         igrel = repe(1+2*(numail-1))
-        ASSERT(igrel.gt.0)
+        ASSERT(igrel .gt. 0)
         iadm = zi(lcliel+igrel)
         typele = liel(iadm-1)
         if (typele .eq. typel1) then
-            zi(jnel-1+itype) = zi(jnel-1+itype) + 1
+            zi(jnel-1+itype) = zi(jnel-1+itype)+1
         else
-            nbtyel = nbtyel + 1
+            nbtyel = nbtyel+1
             itype = nbtyel
             typel1 = typele
             zi(jnel-1+itype) = 1
             zi(jtyp-1+nbtyel) = typele
-        endif
+        end if
     end do
 
     nbmam = 0
     do i = 1, nbtyel
-        nbmam = max ( nbmam, zi(jnel-1+i) )
+        nbmam = max(nbmam, zi(jnel-1+i))
     end do
-
 
 !   -- objet .LIEL
 !   ==============
     cptlie = ligrel//'.LIEL'
-    lont = nbtyel * (nbmam+1)
-    call jecrec(cptlie, base//' V I', 'NU', 'CONTIG', 'VARIABLE',&
+    lont = nbtyel*(nbmam+1)
+    call jecrec(cptlie, base//' V I', 'NU', 'CONTIG', 'VARIABLE', &
                 nbtyel)
     call jeecra(cptlie, 'LONT', lont)
     call jeveuo(cptlie, 'E', jdli)
@@ -171,18 +165,17 @@ subroutine exlim2(lismai, nbmail, ligrmoz, basez, ligrez)
         call jeecra(jexnum(cptlie, i), 'LONMAX', nmel+1)
 !
         do j = 1, nmel
-            numvec = numvec + 1
-            numail = numail + 1
+            numvec = numvec+1
+            numail = numail+1
             zi(jdli+numvec-1) = lismai_nz(numail)
         end do
 !
-        numvec = numvec + 1
+        numvec = numvec+1
         zi(jdli+numvec-1) = zi(jtyp-1+i)
 !
     end do
 !
     call jedetr('&&EXLIM1.TYPE_NOMBRE')
-
 
 !   --  adaptation de la taille des grels et initialisation des elements
 !   ---------------------------------------------------------------------

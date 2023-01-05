@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine pj2dap(ino2, geom2, geom1, tria3, cobary,&
-                  itr3, nbtrou, btdi, btvr, btnb,&
-                  btlc, btco, l_dmax, dmax, dala,&
+subroutine pj2dap(ino2, geom2, geom1, tria3, cobary, &
+                  itr3, nbtrou, btdi, btvr, btnb, &
+                  btlc, btco, l_dmax, dmax, dala, &
                   loin, dmin)
     implicit none
 #include "asterf_types.h"
@@ -70,35 +70,35 @@ subroutine pj2dap(ino2, geom2, geom1, tria3, cobary,&
     aster_logical :: l_dmax, loin
     real(kind=8) :: dmax, dala
 ! DEB ------------------------------------------------------------------
-    nbtrou=0
-    loin=.false.
-    dmin=0.d0
+    nbtrou = 0
+    loin = .false.
+    dmin = 0.d0
 !
-    nx=btdi(1)
-    dx=btvr(5)
-    dy=btvr(6)
-    xmin=btvr(1)
-    ymin=btvr(3)
+    nx = btdi(1)
+    dx = btvr(5)
+    dy = btvr(6)
+    xmin = btvr(1)
+    ymin = btvr(3)
 !
 !
 !   -- 1. : on cherche un tria3 itr3 qui contienne ino2 :
 !   -------------------------------------------------------
-    p=int((geom2(3*(ino2-1)+1)-xmin)/dx)+1
-    q=int((geom2(3*(ino2-1)+2)-ymin)/dy)+1
-    ntrbt=btnb((q-1)*nx+p)
-    iposi=btlc((q-1)*nx+p)
+    p = int((geom2(3*(ino2-1)+1)-xmin)/dx)+1
+    q = int((geom2(3*(ino2-1)+2)-ymin)/dy)+1
+    ntrbt = btnb((q-1)*nx+p)
+    iposi = btlc((q-1)*nx+p)
     do k = 1, ntrbt
-        i=btco(iposi+k)
-        call pj2da1(ino2, geom2, i, geom1, tria3,&
+        i = btco(iposi+k)
+        call pj2da1(ino2, geom2, i, geom1, tria3, &
                     cobar2, ok)
         if (ok) then
-            itr3=i
-            nbtrou=2
-            cobary(1)=cobar2(1)
-            cobary(2)=cobar2(2)
-            cobary(3)=cobar2(3)
+            itr3 = i
+            nbtrou = 2
+            cobary(1) = cobar2(1)
+            cobary(2) = cobar2(2)
+            cobary(3) = cobar2(3)
             goto 999
-        endif
+        end if
     end do
 !
 !
@@ -106,32 +106,32 @@ subroutine pj2dap(ino2, geom2, geom1, tria3, cobary,&
 !        cherche le tria3 itr3 le plus proche de ino2 :
 !   -------------------------------------------------------
     if (l_dmax) then
-        dmin=dmax
+        dmin = dmax
     else
-        dmin=r8maem()
-    endif
+        dmin = r8maem()
+    end if
 !
 !   -- on recherche la grosse boite candidate :
-    call pj2dgb(ino2, geom2, geom1, tria3, btdi,&
-                btvr, btnb, btlc, btco, p1,&
+    call pj2dgb(ino2, geom2, geom1, tria3, btdi, &
+                btvr, btnb, btlc, btco, p1, &
                 q1, p2, q2)
     do p = p1, p2
         do q = q1, q2
-            ntrbt=btnb((q-1)*nx+p)
-            iposi=btlc((q-1)*nx+p)
+            ntrbt = btnb((q-1)*nx+p)
+            iposi = btlc((q-1)*nx+p)
             do k = 1, ntrbt
-                i=btco(iposi+k)
-                call pj2da2(ino2, geom2, i, geom1, tria3,&
+                i = btco(iposi+k)
+                call pj2da2(ino2, geom2, i, geom1, tria3, &
                             cobar2, d2, surf)
                 if (sqrt(d2) .lt. dmin) then
-                    rtr3=surf
-                    itr3=i
-                    dmin=sqrt(d2)
-                    nbtrou=1
-                    cobary(1)=cobar2(1)
-                    cobary(2)=cobar2(2)
-                    cobary(3)=cobar2(3)
-                endif
+                    rtr3 = surf
+                    itr3 = i
+                    dmin = sqrt(d2)
+                    nbtrou = 1
+                    cobary(1) = cobar2(1)
+                    cobary(2) = cobar2(2)
+                    cobary(3) = cobar2(3)
+                end if
             end do
         end do
     end do
@@ -140,18 +140,18 @@ subroutine pj2dap(ino2, geom2, geom1, tria3, cobary,&
 !   -- calcul de loin :
     if (nbtrou .eq. 1) then
         if (dala .ge. 0.d0) then
-            if (dmin .lt. dala) loin=.false.
+            if (dmin .lt. dala) loin = .false.
         else
             if (rtr3 .eq. 0) then
-                loin=.true.
+                loin = .true.
             else
-                rtr3 = rtr3** (1.d0/2.d0)
-                if (dmin/rtr3 .gt. 1.d-1) loin=.true.
-            endif
-        endif
+                rtr3 = rtr3**(1.d0/2.d0)
+                if (dmin/rtr3 .gt. 1.d-1) loin = .true.
+            end if
+        end if
     else
-        dmin=0.d0
-    endif
+        dmin = 0.d0
+    end if
 !
 999 continue
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,9 +18,9 @@
 
 subroutine afvarc_shrink(chmate, varc_affe)
 !
-use Material_Datastructure_type
+    use Material_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -66,40 +66,40 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    nb_varc_cmp  = varc_affe%nb_varc_cmp
+    nb_varc_cmp = varc_affe%nb_varc_cmp
 !
 ! - Access to main objects
 !
     cvnom = chmate//'.CVRCNOM'
     cvvar = chmate//'.CVRCVARC'
-    cvgd  = chmate//'.CVRCGD'
+    cvgd = chmate//'.CVRCGD'
     cvcmp = chmate//'.CVRCCMP'
-    call jeveuo(cvnom, 'E', vk8 = v_cvnom)
-    call jeveuo(cvvar, 'E', vk8 = v_cvvar)
-    call jeveuo(cvgd , 'E', vk8 = v_cvgd)
-    call jeveuo(cvcmp, 'E', vk8 = v_cvcmp)
+    call jeveuo(cvnom, 'E', vk8=v_cvnom)
+    call jeveuo(cvvar, 'E', vk8=v_cvvar)
+    call jeveuo(cvgd, 'E', vk8=v_cvgd)
+    call jeveuo(cvcmp, 'E', vk8=v_cvcmp)
 !
 ! - POUR NE PAS PENALISER LES CALCULS N'AYANT QUE LA COMPOSANTE
 ! - TEMP (POUR NOM_VARC='TEMP'), ON VA TENTER DE REDUIRE NBCVRC
 !
-    call wkvect('&&AFVARC.ADETR', 'V V I', nb_varc_cmp, vi = v_suppr)
-    nb_suppr=0
+    call wkvect('&&AFVARC.ADETR', 'V V I', nb_varc_cmp, vi=v_suppr)
+    nb_suppr = 0
     do i_varc_cmp = 1, nb_varc_cmp
         varc_name = v_cvvar(i_varc_cmp)
-        varc_cmp  = v_cvnom(i_varc_cmp)
+        varc_cmp = v_cvnom(i_varc_cmp)
         if (varc_name .eq. 'TEMP') then
             if (varc_cmp .ne. 'TEMP') then
-                nb_suppr            = nb_suppr+1
+                nb_suppr = nb_suppr+1
                 v_suppr(i_varc_cmp) = 1
-            endif
-        endif
+            end if
+        end if
     end do
     if (nb_suppr .ne. 0) then
 ! ----- PEUT-ON REELLEMENT SUPPRIMER CES CVRC ?
         l_suppr = .true.
-        cart2   = chmate//'.TEMP    .2'
-        call jeveuo(cart2//'.DESC', 'L', vi   = v_desc)
-        call jeveuo(cart2//'.VALE', 'L', vk16 = v_vale)
+        cart2 = chmate//'.TEMP    .2'
+        call jeveuo(cart2//'.DESC', 'L', vi=v_desc)
+        call jeveuo(cart2//'.VALE', 'L', vk16=v_vale)
         call jelira(jexnom('&CATA.GD.NOMCMP', 'NEUT_K16'), 'LONMAX', nb_cmp)
         nbgdmx = v_desc(2)
         nbgdut = v_desc(3)
@@ -108,35 +108,35 @@ implicit none
 ! ----- ON PARCOURT LES SD STOCKEES DANS LA CARTE ET ON REGARDE S'IL EXISTE D'AUTRES
 ! ----- CMPS QUE TEMP ET LAGR :  LAUTR=.TRUE.
         do i_varc_cmp = 1, nbgdut
-            varc_name = v_vale(nb_cmp*(i_varc_cmp-1)+1)(1:8)
+            varc_name = v_vale(nb_cmp*(i_varc_cmp-1)+1) (1:8)
             ASSERT(varc_name .eq. 'TEMP')
             type_affe = v_vale(nb_cmp*(i_varc_cmp-1)+2)
-            para_1    = v_vale(nb_cmp*(i_varc_cmp-1)+3)
-            para_2    = v_vale(nb_cmp*(i_varc_cmp-1)+4)
+            para_1 = v_vale(nb_cmp*(i_varc_cmp-1)+3)
+            para_2 = v_vale(nb_cmp*(i_varc_cmp-1)+4)
             call afva01(type_affe, para_1, para_2, l_other)
             if (l_other) then
                 l_suppr = .false.
                 exit
-            endif
+            end if
         end do
 ! ----- ON SUPPRIME CE QUI NE SERT A RIEN
         if (l_suppr) then
-            ico=0
+            ico = 0
             do i_varc_cmp = 1, nb_varc_cmp
                 if (v_suppr(i_varc_cmp) .eq. 0) then
-                    ico=ico+1
+                    ico = ico+1
                     v_cvnom(ico) = v_cvnom(i_varc_cmp)
                     v_cvvar(ico) = v_cvvar(i_varc_cmp)
-                    v_cvgd(ico)  = v_cvgd(i_varc_cmp)
+                    v_cvgd(ico) = v_cvgd(i_varc_cmp)
                     v_cvcmp(ico) = v_cvcmp(i_varc_cmp)
-                endif
+                end if
             end do
-            ASSERT(ico.eq.nb_varc_cmp-nb_suppr)
+            ASSERT(ico .eq. nb_varc_cmp-nb_suppr)
             call juveca(cvnom, ico)
             call juveca(cvvar, ico)
-            call juveca(cvgd , ico)
+            call juveca(cvgd, ico)
             call juveca(cvcmp, ico)
-        endif
-    endif
+        end if
+    end if
 !
 end subroutine

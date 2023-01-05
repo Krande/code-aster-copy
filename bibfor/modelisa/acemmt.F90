@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -56,11 +56,11 @@ subroutine acemmt(noma, nmmt)
         call getvtx(motfac, 'MODI_METRIQUE', iocc=iocc, scal=mmt, nbret=ibid)
         if (mmt .eq. 'NON') then
             immt = 0
-        else if (mmt.eq.'OUI') then
+        else if (mmt .eq. 'OUI') then
             immt = 1
-        endif
+        end if
 !
-        call reliem(' ', noma, 'NU_MAILLE', motfac, iocc,&
+        call reliem(' ', noma, 'NU_MAILLE', motfac, iocc, &
                     2, motcls, typmcl, mesmai, nbma)
         if (nbma .ne. 0) then
             call jeveuo(mesmai, 'L', jma)
@@ -69,7 +69,7 @@ subroutine acemmt(noma, nmmt)
                 nmmt(ima) = immt
             end do
             call jedetr(mesmai)
-        endif
+        end if
 !
     end do
 !

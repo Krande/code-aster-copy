@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -51,27 +51,27 @@ function nbno(mode)
     call jeveuo(jexnum('&CATA.TE.MODELOC', mode), 'L', iadm)
 !
     if (zi(iadm) .eq. 4) then
-    else if (zi(iadm).eq.5) then
+    else if (zi(iadm) .eq. 5) then
         ismat = 1
-    else if (zi(iadm).eq.2) then
+    else if (zi(iadm) .eq. 2) then
         ischn = 1
     else
         call utmess('F', 'CALCULEL3_81')
-    endif
+    end if
 !
     if (ischn .eq. 1) then
         nbno = zi(iadm-1+4)
-        if (nbno .gt. 10000) nbno = nbno - 10000
+        if (nbno .gt. 10000) nbno = nbno-10000
         goto 9999
-    endif
+    end if
 !
     m1 = zi(iadm+3)
     call jeveuo(jexnum('&CATA.TE.MODELOC', m1), 'L', iadm1)
     n1 = zi(iadm1+3)
     n1 = abs(n1)
     if (n1 .gt. 10000) then
-        n1 = n1 - 10000
-    endif
+        n1 = n1-10000
+    end if
 !
     if (ismat .eq. 1) then
         m2 = zi(iadm+4)
@@ -79,13 +79,13 @@ function nbno(mode)
         n2 = zi(iadm2+3)
         n2 = abs(n2)
         if (n2 .gt. 10000) then
-            n2 = n2 - 10000
-        endif
+            n2 = n2-10000
+        end if
         if (n1 .ne. n2) then
             call utmess('F', 'CALCULEL3_82')
-        endif
-    endif
+        end if
+    end if
     nbno = n1
-9999  continue
+9999 continue
     call jedema()
 end function

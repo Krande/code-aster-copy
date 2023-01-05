@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine bcoude(igau, icou, isect, l, h,&
-                  a, m, nno, ncou, nsect,&
+subroutine bcoude(igau, icou, isect, l, h, &
+                  a, m, nno, ncou, nsect, &
                   ff, df1, df2, mmt, b)
     implicit none
 #include "asterc/r8pi.h"
@@ -55,93 +55,93 @@ subroutine bcoude(igau, icou, isect, l, h,&
     pi = r8pi()
     deuxpi = 2.d0*pi
 !
-    zeta = (icou-1)*h/ (2.d0*ncou) - h/2.d0
-    fi = (isect-1)*deuxpi/ (2.d0*nsect)
+    zeta = (icou-1)*h/(2.d0*ncou)-h/2.d0
+    fi = (isect-1)*deuxpi/(2.d0*nsect)
     cosfi = cos(fi)
     sinfi = sin(fi)
     if (mmt .eq. 0) then
         r = a
     else
-        r = a + zeta
-    endif
+        r = a+zeta
+    end if
 !
 !  REMLISSAGE DE LA MATRICE
 !
     do k = 1, nno
 !
-        hk = ff(nno* (igau-1)+k)
-        dhk = df1(nno* (igau-1)+k)* (2.d0/l)
-        d2hk = df2(nno* (igau-1)+k)* (2.d0/l)* (2.d0/l)
+        hk = ff(nno*(igau-1)+k)
+        dhk = df1(nno*(igau-1)+k)*(2.d0/l)
+        d2hk = df2(nno*(igau-1)+k)*(2.d0/l)*(2.d0/l)
 !
 ! LE 2/L EST DU AU PASSAGE DE L'ELEMENT DE REFERENCE A L'ELEMENT
 ! REEL
 !
-        ibloc = (9+6* (m-1))* (k-1)
+        ibloc = (9+6*(m-1))*(k-1)
 !
 !  PARTIE POUTRE
 !
 !   1 ERE LIGNE
 !
-        b(1,ibloc+1) = dhk
-        b(1,ibloc+2) = 0.d0
-        b(1,ibloc+3) = 0.d0
-        b(1,ibloc+4) = 0.d0
-        b(1,ibloc+5) = -r*cosfi*dhk
-        b(1,ibloc+6) = r*sinfi*dhk
+        b(1, ibloc+1) = dhk
+        b(1, ibloc+2) = 0.d0
+        b(1, ibloc+3) = 0.d0
+        b(1, ibloc+4) = 0.d0
+        b(1, ibloc+5) = -r*cosfi*dhk
+        b(1, ibloc+6) = r*sinfi*dhk
 !
 !   2 EME LIGNE
 !
-        b(2,ibloc+1) = 0.d0
-        b(2,ibloc+2) = 0.d0
-        b(2,ibloc+3) = 0.d0
-        b(2,ibloc+4) = 0.d0
-        b(2,ibloc+5) = 0.d0
-        b(2,ibloc+6) = 0.d0
+        b(2, ibloc+1) = 0.d0
+        b(2, ibloc+2) = 0.d0
+        b(2, ibloc+3) = 0.d0
+        b(2, ibloc+4) = 0.d0
+        b(2, ibloc+5) = 0.d0
+        b(2, ibloc+6) = 0.d0
 !
 !   3 EME LIGNE
 !
-        b(3,ibloc+1) = 0.d0
-        b(3,ibloc+2) = -cosfi*dhk
-        b(3,ibloc+3) = sinfi*dhk
-        b(3,ibloc+4) = -r*dhk
-        b(3,ibloc+5) = sinfi*hk
-        b(3,ibloc+6) = cosfi*hk
+        b(3, ibloc+1) = 0.d0
+        b(3, ibloc+2) = -cosfi*dhk
+        b(3, ibloc+3) = sinfi*dhk
+        b(3, ibloc+4) = -r*dhk
+        b(3, ibloc+5) = sinfi*hk
+        b(3, ibloc+6) = cosfi*hk
 !
 !   4 EME LIGNE
 !
-        b(4,ibloc+1) = 0.d0
-        b(4,ibloc+2) = -sinfi*dhk
-        b(4,ibloc+3) = -cosfi*dhk
-        b(4,ibloc+4) = 0.d0
-        b(4,ibloc+5) = -cosfi*hk
-        b(4,ibloc+6) = sinfi*hk
+        b(4, ibloc+1) = 0.d0
+        b(4, ibloc+2) = -sinfi*dhk
+        b(4, ibloc+3) = -cosfi*dhk
+        b(4, ibloc+4) = 0.d0
+        b(4, ibloc+5) = -cosfi*hk
+        b(4, ibloc+6) = sinfi*hk
 !
 !  FIN PARTIE POUTRE ET DEBUT PARTIE SUPPLEMENTAIRE
 !
 !      PARTIE IN-PLANE
 !
         do n = 2, m
-            icolon = ibloc + 6 + 3* (n-2)
+            icolon = ibloc+6+3*(n-2)
             cosmfi = cos(n*fi)
             sinmfi = sin(n*fi)
 !
-            b(1,icolon+1) = dhk*cosmfi
-            b(1,icolon+2) = 0.d0
-            b(1,icolon+3) = -zeta*d2hk*cosmfi
+            b(1, icolon+1) = dhk*cosmfi
+            b(1, icolon+2) = 0.d0
+            b(1, icolon+3) = -zeta*d2hk*cosmfi
 !
-            b(2,icolon+1) = 0.d0
-            b(2,icolon+2) = (n/r)*hk*cosmfi* (1.d0+zeta/a)
-            b(2,icolon+3) = (1.d0/r)*hk*cosmfi* (1.d0+zeta*n*n/a)
-!
-!
-            b(3,icolon+1) = - (n/r)*hk*sinmfi
-            b(3,icolon+2) = dhk*sinmfi* (1+zeta/a)
-            b(3,icolon+3) = zeta*n*dhk*sinmfi* (1.d0/a+1.d0/r)
+            b(2, icolon+1) = 0.d0
+            b(2, icolon+2) = (n/r)*hk*cosmfi*(1.d0+zeta/a)
+            b(2, icolon+3) = (1.d0/r)*hk*cosmfi*(1.d0+zeta*n*n/a)
 !
 !
-            b(4,icolon+1) = 0.d0
-            b(4,icolon+2) = 0.d0
-            b(4,icolon+3) = 0.d0
+            b(3, icolon+1) = -(n/r)*hk*sinmfi
+            b(3, icolon+2) = dhk*sinmfi*(1+zeta/a)
+            b(3, icolon+3) = zeta*n*dhk*sinmfi*(1.d0/a+1.d0/r)
+!
+!
+            b(4, icolon+1) = 0.d0
+            b(4, icolon+2) = 0.d0
+            b(4, icolon+3) = 0.d0
 !
 !
         end do
@@ -150,52 +150,52 @@ subroutine bcoude(igau, icou, isect, l, h,&
 !
 !
         do n = 2, m
-            icolon = ibloc + 6 + 3* (m-1) + 3* (n-2)
+            icolon = ibloc+6+3*(m-1)+3*(n-2)
             cosmfi = cos(n*fi)
             sinmfi = sin(n*fi)
 !
-            b(1,icolon+1) = dhk*sinmfi
-            b(1,icolon+2) = 0.d0
-            b(1,icolon+3) = -zeta*d2hk*sinmfi
+            b(1, icolon+1) = dhk*sinmfi
+            b(1, icolon+2) = 0.d0
+            b(1, icolon+3) = -zeta*d2hk*sinmfi
 !
-            b(2,icolon+1) = 0.d0
-            b(2,icolon+2) = - (n/r)*hk*sinmfi* (1.d0+zeta/a)
-            b(2,icolon+3) = (1.d0/r)*hk*sinmfi* (1.d0+zeta*n*n/a)
-!
-!
-            b(3,icolon+1) = (n/r)*hk*cosmfi
-            b(3,icolon+2) = dhk*cosmfi* (1.d0+zeta/a)
-            b(3,icolon+3) = -zeta*n*dhk*cosmfi* (1.d0/a+1.d0/r)
+            b(2, icolon+1) = 0.d0
+            b(2, icolon+2) = -(n/r)*hk*sinmfi*(1.d0+zeta/a)
+            b(2, icolon+3) = (1.d0/r)*hk*sinmfi*(1.d0+zeta*n*n/a)
 !
 !
-            b(4,icolon+1) = 0.d0
-            b(4,icolon+2) = 0.d0
-            b(4,icolon+3) = 0.d0
+            b(3, icolon+1) = (n/r)*hk*cosmfi
+            b(3, icolon+2) = dhk*cosmfi*(1.d0+zeta/a)
+            b(3, icolon+3) = -zeta*n*dhk*cosmfi*(1.d0/a+1.d0/r)
+!
+!
+            b(4, icolon+1) = 0.d0
+            b(4, icolon+2) = 0.d0
+            b(4, icolon+3) = 0.d0
 !
 !
         end do
 !
 !  FIN OUT-OF-PLANE DEBUT PARTIE GONFLEMENT
 !
-        icolon = ibloc + 6* (m-1) + 6
-        b(1,icolon+1) = -zeta*d2hk
-        b(2,icolon+1) = hk/r
-        b(3,icolon+1) = 0.d0
-        b(4,icolon+1) = 0.d0
+        icolon = ibloc+6*(m-1)+6
+        b(1, icolon+1) = -zeta*d2hk
+        b(2, icolon+1) = hk/r
+        b(3, icolon+1) = 0.d0
+        b(4, icolon+1) = 0.d0
 !
 !  FIN PARTIE GONFLEMENT
 !
 !  1ERS MODES EN W
 !
-        b(1,icolon+2) = -zeta*d2hk*cosfi
-        b(2,icolon+2) = (2.d0/r)*hk*cosfi* (1.d0+zeta/a)
-        b(3,icolon+2) = dhk*sinfi* (1.d0+2.d0*zeta/a+zeta/r)
-        b(4,icolon+2) = 0.d0
+        b(1, icolon+2) = -zeta*d2hk*cosfi
+        b(2, icolon+2) = (2.d0/r)*hk*cosfi*(1.d0+zeta/a)
+        b(3, icolon+2) = dhk*sinfi*(1.d0+2.d0*zeta/a+zeta/r)
+        b(4, icolon+2) = 0.d0
 !
-        b(1,icolon+3) = -zeta*d2hk*sinfi
-        b(2,icolon+3) = (2.d0/r)*hk*sinfi* (1.d0+zeta/a)
-        b(3,icolon+3) = -dhk*cosfi* (1.d0+2.d0*zeta/a+zeta/r)
-        b(4,icolon+3) = 0.d0
+        b(1, icolon+3) = -zeta*d2hk*sinfi
+        b(2, icolon+3) = (2.d0/r)*hk*sinfi*(1.d0+zeta/a)
+        b(3, icolon+3) = -dhk*cosfi*(1.d0+2.d0*zeta/a+zeta/r)
+        b(4, icolon+3) = 0.d0
 !
 !
 !  FIN PARTIE GONFLEMENT

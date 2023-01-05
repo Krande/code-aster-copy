@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -36,11 +36,11 @@ subroutine mfront_get_libname(libname)
 !
     libname = ' '
     call get_environment_variable('ASTER_LIBDIR', dir, nchar)
-    if (nchar > len(libname) - 21) then
-        call utmess('F', 'RUNTIME_2', sk='ASTER_LIBDIR', si=len(libname) - 21)
+    if (nchar > len(libname)-21) then
+        call utmess('F', 'RUNTIME_2', sk='ASTER_LIBDIR', si=len(libname)-21)
     else if (nchar == 0) then
         call utmess('F', 'RUNTIME_1', sk='ASTER_LIBDIR')
-    endif
+    end if
     libname = dir(1:lxlgut(dir))//'/lib'//ASTER_BEHAVIOUR_LIB//'.so'
 !
 end

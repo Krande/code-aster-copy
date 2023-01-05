@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine crvloc(dim, adcom0, iatyma, jconnex0, jconnexc, vgeloc,&
+subroutine crvloc(dim, adcom0, iatyma, jconnex0, jconnexc, vgeloc, &
                   nvtot, nvoima, nscoma, touvoi)
 !
 !    CRER LES DONNEES DU VOISINAGE LOCAL VGELOC D UN ELEMENT
@@ -41,7 +41,7 @@ subroutine crvloc(dim, adcom0, iatyma, jconnex0, jconnexc, vgeloc,&
     integer :: ptvois, mv, adcomv, nbnomv, nbsomv, nsco, is, iv, tyvoi
     integer :: nusglo, nuslo0, nuslov
     character(len=8) :: typemv
-    integer, save :: tymas=0, nbsomvs
+    integer, save :: tymas = 0, nbsomvs
 !
 !
 !  IATYME  ADRESSE JEVEUX DES TYPES DE MAILLE
@@ -61,70 +61,70 @@ subroutine crvloc(dim, adcom0, iatyma, jconnex0, jconnexc, vgeloc,&
 !        0D PAR SOMMET  : S0 : 9
 !----------------------------------------------------------------------------------
 
-    vgeloc(1)=nvtot
+    vgeloc(1) = nvtot
     if (nvtot .ge. 1) then
-        vgeloc(2)=2+nvtot
+        vgeloc(2) = 2+nvtot
         do iv = 1, nvtot
-            ptvois=vgeloc(iv+1)
-            mv=touvoi(iv,1)
+            ptvois = vgeloc(iv+1)
+            mv = touvoi(iv, 1)
 !
 !           -- RECUPERAION DONNEES DE LA MAILLE MV :
 !
 !           -- SA CONNECTIVITE
-            adcomv=jconnex0-1+zi(jconnexc-1+mv)
+            adcomv = jconnex0-1+zi(jconnexc-1+mv)
 !           -- SON TYPE
 !           -- SON NOMBRE DE NOEUDS
-            nbnomv=zi(jconnexc-1+mv+1)-zi(jconnexc-1+mv)
+            nbnomv = zi(jconnexc-1+mv+1)-zi(jconnexc-1+mv)
 !           -- SON NOMBRE DE SOMMETS
 !              On cherche a economiser du CPU :
-            if (zi(iatyma-1+mv).ne.tymas) then
+            if (zi(iatyma-1+mv) .ne. tymas) then
                 call jenuno(jexnum('&CATA.TM.NOMTM', zi(iatyma-1+mv)), typemv)
                 call nbsomm(typemv, nbsomv)
-                tymas=zi(iatyma-1+mv)
-                nbsomvs=nbsomv
+                tymas = zi(iatyma-1+mv)
+                nbsomvs = nbsomv
             else
-                nbsomv=nbsomvs
-            endif
+                nbsomv = nbsomvs
+            end if
 !
-            nsco=touvoi(iv,2)
+            nsco = touvoi(iv, 2)
 !
 !           -- DETERMINATION DU TYPE DE VOISINAGE
 !
             if (dim .eq. 3) then
                 if (nsco .gt. 2) then
 !                   -- VOISIN 3D PAR FACE
-                    tyvoi=1
-                else if (nsco.eq.2) then
+                    tyvoi = 1
+                else if (nsco .eq. 2) then
 !                   -- VOISIN 3D PAR ARETE
-                    tyvoi=3
-                else if (nsco.eq.1) then
+                    tyvoi = 3
+                else if (nsco .eq. 1) then
 !                   -- VOISIN 3D PAR SOMMET
-                    tyvoi=6
-                endif
+                    tyvoi = 6
+                end if
             else
                 if (nsco .eq. 2) then
 !                   -- VOISIN 2D PAR ARETE
-                    tyvoi=4
-                else if (nsco.eq.1) then
+                    tyvoi = 4
+                else if (nsco .eq. 1) then
 !                   -- VOISIN 2D PAR SOMMET
-                    tyvoi=7
-                endif
-            endif
-            vgeloc(ptvois)=tyvoi
-            vgeloc(ptvois+1)=mv
-            vgeloc(ptvois+2)=nbnomv
-            vgeloc(ptvois+3)=nsco
+                    tyvoi = 7
+                end if
+            end if
+            vgeloc(ptvois) = tyvoi
+            vgeloc(ptvois+1) = mv
+            vgeloc(ptvois+2) = nbnomv
+            vgeloc(ptvois+3) = nsco
             do is = 1, nsco
-                nuslo0=touvoi(iv,2+is)
-                nusglo=zi(adcom0+nuslo0-1)
-                vgeloc(ptvois+3+2*is-1)=nuslo0
+                nuslo0 = touvoi(iv, 2+is)
+                nusglo = zi(adcom0+nuslo0-1)
+                vgeloc(ptvois+3+2*is-1) = nuslo0
                 call somloc(mv, adcomv, nbsomv, nusglo, nuslov)
-                vgeloc(ptvois+3+2*is)=nuslov
+                vgeloc(ptvois+3+2*is) = nuslov
             end do
             if (iv .lt. nvtot) then
-                vgeloc(iv+2)=ptvois+4+2*nsco
-            endif
+                vgeloc(iv+2) = ptvois+4+2*nsco
+            end if
         end do
-    endif
+    end if
 !
 end subroutine

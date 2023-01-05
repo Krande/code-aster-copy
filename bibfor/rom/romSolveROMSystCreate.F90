@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,12 +16,12 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine romSolveROMSystCreate(syst_matr_type, syst_2mbr_type, syst_type,&
-                                 nb_mode       , ds_solve)
+subroutine romSolveROMSystCreate(syst_matr_type, syst_2mbr_type, syst_type, &
+                                 nb_mode, ds_solve)
 !
-use Rom_Datastructure_type
+    use Rom_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -62,7 +62,7 @@ implicit none
     call infniv(ifm, niv)
     if (niv .ge. 2) then
         call utmess('I', 'ROM2_33')
-    endif
+    end if
 !
 ! - Get parameters
 !
@@ -73,15 +73,15 @@ implicit none
 !
 ! - Create objects
 !
-    call wkvect(syst_matr, 'V V '//syst_matr_type, nb_mode * nb_mode, jv_dummy)
+    call wkvect(syst_matr, 'V V '//syst_matr_type, nb_mode*nb_mode, jv_dummy)
     call wkvect(syst_2mbr, 'V V '//syst_2mbr_type, nb_mode, jv_dummy)
     call wkvect(syst_solu, 'V V '//syst_type, nb_mode, jv_dummy)
     call wkvect(vect_zero, 'V V '//syst_type, nb_mode, jv_dummy)
 !
 ! - Save parameters
 !
-    ds_solve%syst_size      = nb_mode
-    ds_solve%syst_type      = syst_type
+    ds_solve%syst_size = nb_mode
+    ds_solve%syst_type = syst_type
     ds_solve%syst_matr_type = syst_matr_type
     ds_solve%syst_2mbr_type = syst_2mbr_type
 !

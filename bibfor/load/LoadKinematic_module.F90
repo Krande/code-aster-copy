@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,21 +24,21 @@
 !
 module LoadKinematic_module
 ! ==================================================================================================
-use KineListRela_module
-use KineLoadUtility_module
-use KineListRela_type
+    use KineListRela_module
+    use KineLoadUtility_module
+    use KineListRela_type
 ! ==================================================================================================
-implicit none
+    implicit none
 ! ==================================================================================================
-public :: kineLoadGlueMeshMeca, kineLoadGlueMeshTher
-public :: kineLoadLinkProj
-private :: kineLoadMeshProjVoVo, kineLoadMeshProjShVo, kineLoadMeshProjShSh, kineLoadMeshProjVoSh
-private :: kineLoadMeshLinkVoVo, kineLoadMeshLinkShVo, kineLoadMeshLinkShSh, kineLoadMeshLinkVoSh
-private :: kineLoadGlueMeshMecaPara, kineLoadGlueMeshMecaLine
-private :: kineLoadGlueMeshTherPara, kineLoadGlueMeshTherLine
-private :: kineLoadLinkProjPara
+    public :: kineLoadGlueMeshMeca, kineLoadGlueMeshTher
+    public :: kineLoadLinkProj
+   private :: kineLoadMeshProjVoVo, kineLoadMeshProjShVo, kineLoadMeshProjShSh, kineLoadMeshProjVoSh
+   private :: kineLoadMeshLinkVoVo, kineLoadMeshLinkShVo, kineLoadMeshLinkShSh, kineLoadMeshLinkVoSh
+    private :: kineLoadGlueMeshMecaPara, kineLoadGlueMeshMecaLine
+    private :: kineLoadGlueMeshTherPara, kineLoadGlueMeshTherLine
+    private :: kineLoadLinkProjPara
 ! ==================================================================================================
-private
+    private
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "MeshTypes_type.h"
@@ -82,187 +82,186 @@ contains
 ! Out listLineRela     : name of datastructure for list of linear relation
 !
 ! --------------------------------------------------------------------------------------------------
-subroutine kineLoadGlueMeshMeca(loadNameZ, modelZ, valeTypeZ, lVerbose, listLineRela)
+    subroutine kineLoadGlueMeshMeca(loadNameZ, modelZ, valeTypeZ, lVerbose, listLineRela)
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
-    character(len=*), intent(in) :: loadNameZ, modelZ, valeTypeZ
-    aster_logical, intent(in) :: lVerbose
-    character(len=19), intent(out) :: listLineRela
+        character(len=*), intent(in) :: loadNameZ, modelZ, valeTypeZ
+        aster_logical, intent(in) :: lVerbose
+        character(len=19), intent(out) :: listLineRela
 ! - Local
-    character(len=16), parameter :: factorKeyword = 'LIAISON_MAIL'
-    character(len=8), parameter :: meshDebugJv = '&&CALIRC'
-    character(len=24) :: cellMastJv, geomMastJv
-    character(len=24) :: nodeSlavJv, geomSlavJv
-    character(len=8) :: mesh, chnorm, slavTransf(3), mastTransf(3)
-    character(len=16) :: linkType
-    character(len=4) :: valeType
-    character(len=16), parameter :: corres = '&&CALIRC.CORRES'
-    character(len=16), parameter :: corre1 = '&&CALIRC.CORRE1'
-    character(len=16), parameter :: corre2 = '&&CALIRC.CORRE2'
-    character(len=16), parameter :: corre3 = '&&CALIRC.LISV1'
-    integer :: geomDime, meshNbNode
-    integer :: iOcc, nocc
-    aster_logical :: useNormal, lElimMult, lApplyRota, lMastTransf, lSlavTransf, useDisp
-    real(kind=8) :: rotaMatr(3, 3)
-    aster_logical :: lDistMaxi
-    real(kind=8) :: distMaxi, distAlarm, thickness
-    integer :: nbCellMast, nbNodeSlav, nbCellSlav
-    character(len=8), pointer :: dofName(:) => null()
-    integer, pointer :: cellMast(:) => null()
-    integer, pointer :: nodeSlav(:) => null(), cellSlav(:) => null()
-    integer, pointer :: nodeElim(:) => null(), nodeSkinToBody(:) => null()
-    real(kind=8), pointer :: normSlav(:) => null()
+        character(len=16), parameter :: factorKeyword = 'LIAISON_MAIL'
+        character(len=8), parameter :: meshDebugJv = '&&CALIRC'
+        character(len=24) :: cellMastJv, geomMastJv
+        character(len=24) :: nodeSlavJv, geomSlavJv
+        character(len=8) :: mesh, chnorm, slavTransf(3), mastTransf(3)
+        character(len=16) :: linkType
+        character(len=4) :: valeType
+        character(len=16), parameter :: corres = '&&CALIRC.CORRES'
+        character(len=16), parameter :: corre1 = '&&CALIRC.CORRE1'
+        character(len=16), parameter :: corre2 = '&&CALIRC.CORRE2'
+        character(len=16), parameter :: corre3 = '&&CALIRC.LISV1'
+        integer :: geomDime, meshNbNode
+        integer :: iOcc, nocc
+        aster_logical :: useNormal, lElimMult, lApplyRota, lMastTransf, lSlavTransf, useDisp
+        real(kind=8) :: rotaMatr(3, 3)
+        aster_logical :: lDistMaxi
+        real(kind=8) :: distMaxi, distAlarm, thickness
+        integer :: nbCellMast, nbNodeSlav, nbCellSlav
+        character(len=8), pointer :: dofName(:) => null()
+        integer, pointer :: cellMast(:) => null()
+        integer, pointer :: nodeSlav(:) => null(), cellSlav(:) => null()
+        integer, pointer :: nodeElim(:) => null(), nodeSkinToBody(:) => null()
+        real(kind=8), pointer :: normSlav(:) => null()
 !   NOMBRE MAX DE TERMES D'UNE RELATION LINEAIRE EN 3D = 2*27 + 3 = 57 and 165 for COQUE_MASSIF
-    integer, parameter :: nbTermMaxi = 165
-    type(KINE_LIST_RELA) :: kineListRela
+        integer, parameter :: nbTermMaxi = 165
+        type(KINE_LIST_RELA) :: kineListRela
 !   ------------------------------------------------------------------------------------------------
 !
-    valeType = valeTypeZ
-    ASSERT(valeType .eq. 'REEL')
-    call dismoi('NOM_MAILLA', modelZ, 'MODELE', repk = mesh)
-    call dismoi('DIM_GEOM', modelZ, 'MODELE', repi = geomDime)
-    if (.not.(geomDime .eq. 2 .or. geomDime .eq. 3)) then
-        call utmess('F', 'CHARGES7_6')
-    endif
-    call dismoi('NB_NO_MAILLA', mesh, 'MAILLAGE', repi = meshNbNode)
+        valeType = valeTypeZ
+        ASSERT(valeType .eq. 'REEL')
+        call dismoi('NOM_MAILLA', modelZ, 'MODELE', repk=mesh)
+        call dismoi('DIM_GEOM', modelZ, 'MODELE', repi=geomDime)
+        if (.not. (geomDime .eq. 2 .or. geomDime .eq. 3)) then
+            call utmess('F', 'CHARGES7_6')
+        end if
+        call dismoi('NB_NO_MAILLA', mesh, 'MAILLAGE', repi=meshNbNode)
 
 ! - Name of datastructure for list of linear relations
-    listLineRela = '&&CALIRC.RLLISTE'
+        listLineRela = '&&CALIRC.RLLISTE'
 
 ! - Working vectors
-    AS_ALLOCATE(vi=nodeElim, size=meshNbNode)
+        AS_ALLOCATE(vi=nodeElim, size=meshNbNode)
 
 ! - Create object for list of linear relations
-    call kineListRelaCreate('Implicit', nbTermMaxi, listLineRela, kineListRela)
+        call kineListRelaCreate('Implicit', nbTermMaxi, listLineRela, kineListRela)
 
-    if (lVerbose) then
-        call copisd('MAILLAGE', 'V', mesh, meshDebugJv)
-    endif
+        if (lVerbose) then
+            call copisd('MAILLAGE', 'V', mesh, meshDebugJv)
+        end if
 
-    call getfac(factorKeyword, nocc)
-    do iOcc = 1, nocc
+        call getfac(factorKeyword, nocc)
+        do iOcc = 1, nocc
 ! ----- Get main parameters from user
-        call kineLoadGlueMeshMecaPara(factorKeyword, iOcc, geomDime,&
-                                      linkType, useNormal, lElimMult,&
-                                      lMastTransf, mastTransf,&
-                                      lSlavTransf, slavTransf,&
-                                      lDistMaxi, distMaxi, distAlarm,&
-                                      chnorm, thickness,&
-                                      useDisp, dofName)
+            call kineLoadGlueMeshMecaPara(factorKeyword, iOcc, geomDime, &
+                                          linkType, useNormal, lElimMult, &
+                                          lMastTransf, mastTransf, &
+                                          lSlavTransf, slavTransf, &
+                                          lDistMaxi, distMaxi, distAlarm, &
+                                          chnorm, thickness, &
+                                          useDisp, dofName)
 
 ! ----- Get list of master cells
-        call kineLoadGetMasterCells(modelZ, mesh,&
-                                    factorKeyword, iOcc,&
-                                    cellMastJv, nbCellMast, cellMast)
+            call kineLoadGetMasterCells(modelZ, mesh, &
+                                        factorKeyword, iOcc, &
+                                        cellMastJv, nbCellMast, cellMast)
 
 ! ----- Get list of slave nodes
-        if (useNormal) then
-            call kineLoadGetSlaveNodesFromSkin(modelZ, mesh, meshNbNode, geomDime,&
-                                               factorKeyword, iOcc,&
-                                               nodeSlavJv, nbNodeSlav, nodeSlav,&
-                                               nbCellSlav, cellSlav,&
-                                               nodeSkinToBody)
-        else
-            call kineLoadGetSlaveNodes(mesh,&
-                                       factorKeyword, iOcc,&
-                                       nodeSlavJv, nbNodeSlav, nodeSlav)
-        endif
-
+            if (useNormal) then
+                call kineLoadGetSlaveNodesFromSkin(modelZ, mesh, meshNbNode, geomDime, &
+                                                   factorKeyword, iOcc, &
+                                                   nodeSlavJv, nbNodeSlav, nodeSlav, &
+                                                   nbCellSlav, cellSlav, &
+                                                   nodeSkinToBody)
+            else
+                call kineLoadGetSlaveNodes(mesh, &
+                                           factorKeyword, iOcc, &
+                                           nodeSlavJv, nbNodeSlav, nodeSlav)
+            end if
 
 ! ----- Compute normals at slave nodes
-        if (useNormal) then
-            call kineLoadNormFromSkinCells(mesh, geomDime,&
-                                           nbCellSlav, cellSlav,&
-                                           nbNodeSlav, nodeSlav,&
-                                           normSlav)
-        endif
+            if (useNormal) then
+                call kineLoadNormFromSkinCells(mesh, geomDime, &
+                                               nbCellSlav, cellSlav, &
+                                               nbNodeSlav, nodeSlav, &
+                                               normSlav)
+            end if
 
 ! ----- Manage multiple nodes
-        if (lElimMult) then
-            call kineLoadElimMult(iOcc, nodeSlavJv, nbNodeSlav, nodeSlav, nodeElim)
-        endif
+            if (lElimMult) then
+                call kineLoadElimMult(iOcc, nodeSlavJv, nbNodeSlav, nodeSlav, nodeElim)
+            end if
 
 ! ----- Read geometric transformation
-        call kineLoadReadTransf(mesh, geomDime,&
-                                factorKeyword, iOcc,&
-                                nodeSlavJv, nbNodeSlav, geomSlavJv,&
-                                lApplyRota, rotaMatr)
-        if (lApplyRota) then
-            ASSERT(linkType .eq. 'MASSIF')
-        endif
-        geomMastJv = ' '
-        if (linkType .eq. 'COQUE') then
-            call kineLoadApplyTransf(loadNameZ, mesh, meshNbNode,&
-                                     factorKeyword, iOcc,&
-                                     lMastTransf, mastTransf,&
-                                     lSlavTransf, slavTransf,&
-                                     nbNodeSlav, nodeSlav,&
-                                     lVerbose, meshDebugJv,&
-                                     geomSlavJv, geomMastJv)
-        endif
+            call kineLoadReadTransf(mesh, geomDime, &
+                                    factorKeyword, iOcc, &
+                                    nodeSlavJv, nbNodeSlav, geomSlavJv, &
+                                    lApplyRota, rotaMatr)
+            if (lApplyRota) then
+                ASSERT(linkType .eq. 'MASSIF')
+            end if
+            geomMastJv = ' '
+            if (linkType .eq. 'COQUE') then
+                call kineLoadApplyTransf(loadNameZ, mesh, meshNbNode, &
+                                         factorKeyword, iOcc, &
+                                         lMastTransf, mastTransf, &
+                                         lSlavTransf, slavTransf, &
+                                         nbNodeSlav, nodeSlav, &
+                                         lVerbose, meshDebugJv, &
+                                         geomSlavJv, geomMastJv)
+            end if
 
 ! ----- Compute projection of mesh (PROJ_CHAMP)
-        if (linkType .eq. 'MASSIF') then
-            call kineLoadMeshProjVoVo(modelZ, geomDime, meshNbNode,&
-                                      lDistMaxi, distMaxi, distAlarm,&
-                                      nbNodeSlav, geomSlavJv, nodeSlav,&
-                                      nbCellMast, cellMast,&
-                                      corres)
+            if (linkType .eq. 'MASSIF') then
+                call kineLoadMeshProjVoVo(modelZ, geomDime, meshNbNode, &
+                                          lDistMaxi, distMaxi, distAlarm, &
+                                          nbNodeSlav, geomSlavJv, nodeSlav, &
+                                          nbCellMast, cellMast, &
+                                          corres)
 
-        else if (linkType .eq. 'COQUE_MASSIF') then
-            call kineLoadMeshProjShVo(modelZ, meshNbNode,&
-                                      lDistMaxi, distMaxi, distAlarm,&
-                                      chnorm, thickness,&
-                                      nbNodeSlav, geomSlavJv, nodeSlav,&
-                                      nbCellMast, cellMast,&
-                                      corres, corre1, corre2, corre3)
+            else if (linkType .eq. 'COQUE_MASSIF') then
+                call kineLoadMeshProjShVo(modelZ, meshNbNode, &
+                                          lDistMaxi, distMaxi, distAlarm, &
+                                          chnorm, thickness, &
+                                          nbNodeSlav, geomSlavJv, nodeSlav, &
+                                          nbCellMast, cellMast, &
+                                          corres, corre1, corre2, corre3)
 
-        elseif (linkType .eq. 'COQUE') then
-            call kineLoadMeshProjShSh(modelZ, meshNbNode,&
-                                      lDistMaxi, distMaxi, distAlarm,&
-                                      nbNodeSlav, geomSlavJv, nodeSlav,&
-                                      nbCellMast, geomMastJv, cellMast,&
-                                      corres)
+            elseif (linkType .eq. 'COQUE') then
+                call kineLoadMeshProjShSh(modelZ, meshNbNode, &
+                                          lDistMaxi, distMaxi, distAlarm, &
+                                          nbNodeSlav, geomSlavJv, nodeSlav, &
+                                          nbCellMast, geomMastJv, cellMast, &
+                                          corres)
 
-        elseif (linkType .eq. 'MASSIF_COQUE') then
-            call kineLoadMeshProjVoSh(modelZ, meshNbNode,&
-                                      lDistMaxi, distMaxi, distAlarm,&
-                                      nbNodeSlav, geomSlavJv, nodeSlav,&
-                                      nbCellMast, geomMastJv, cellMast,&
-                                      corres)
+            elseif (linkType .eq. 'MASSIF_COQUE') then
+                call kineLoadMeshProjVoSh(modelZ, meshNbNode, &
+                                          lDistMaxi, distMaxi, distAlarm, &
+                                          nbNodeSlav, geomSlavJv, nodeSlav, &
+                                          nbCellMast, geomMastJv, cellMast, &
+                                          corres)
 
-        else
-            ASSERT(ASTER_FALSE)
-        endif
+            else
+                ASSERT(ASTER_FALSE)
+            end if
 
 ! ----- Apply linear relations
-        call kineLoadGlueMeshMecaLine(linkType, mesh, geomDime,&
-                                      useDisp, dofName,&
-                                      lApplyRota, rotaMatr,&
-                                      useNormal, normSlav, nodeSkinToBody,&
-                                      corres, corre1, corre2, corre3,&
-                                      kineListRela)
+            call kineLoadGlueMeshMecaLine(linkType, mesh, geomDime, &
+                                          useDisp, dofName, &
+                                          lApplyRota, rotaMatr, &
+                                          useNormal, normSlav, nodeSkinToBody, &
+                                          corres, corre1, corre2, corre3, &
+                                          kineListRela)
 
 ! ----- Clean
-        call detrsd('CORRESP_2_MAILLA', corres)
-        call detrsd('CORRESP_2_MAILLA', corre1)
-        call detrsd('CORRESP_2_MAILLA', corre2)
-        call jedetr(geomMastJv)
-        call jedetr(geomSlavJv)
-        call jedetr(cellMastJv)
-        call jedetr(nodeSlavJv)
-        call jedetr(corre3)
-        AS_DEALLOCATE(vi=nodeSkinToBody)
-        AS_DEALLOCATE(vk8=dofName)
-    end do
+            call detrsd('CORRESP_2_MAILLA', corres)
+            call detrsd('CORRESP_2_MAILLA', corre1)
+            call detrsd('CORRESP_2_MAILLA', corre2)
+            call jedetr(geomMastJv)
+            call jedetr(geomSlavJv)
+            call jedetr(cellMastJv)
+            call jedetr(nodeSlavJv)
+            call jedetr(corre3)
+            AS_DEALLOCATE(vi=nodeSkinToBody)
+            AS_DEALLOCATE(vk8=dofName)
+        end do
 
 ! - Clean
-    call jedetr(meshDebugJv)
-    AS_DEALLOCATE(vi=nodeElim)
-    call kineListRelaDelete(kineListRela)
+        call jedetr(meshDebugJv)
+        AS_DEALLOCATE(vi=nodeElim)
+        call kineListRelaDelete(kineListRela)
 !
 !   ------------------------------------------------------------------------------------------------
-end subroutine
+    end subroutine
 ! --------------------------------------------------------------------------------------------------
 !
 ! kineLoadGlueMeshTher
@@ -274,97 +273,97 @@ end subroutine
 ! Out listLineRela     : name of datastructure for list of linear relation
 !
 ! --------------------------------------------------------------------------------------------------
-subroutine kineLoadGlueMeshTher(modelZ, valeTypeZ, listLineRela)
+    subroutine kineLoadGlueMeshTher(modelZ, valeTypeZ, listLineRela)
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
-    character(len=*), intent(in) :: modelZ, valeTypeZ
-    character(len=19), intent(out) :: listLineRela
+        character(len=*), intent(in) :: modelZ, valeTypeZ
+        character(len=19), intent(out) :: listLineRela
 ! - Local
-    character(len=16), parameter :: factorKeyword = 'LIAISON_MAIL'
-    character(len=24) :: cellMastJv
-    character(len=24) :: nodeSlavJv, geomSlavJv
-    character(len=8) :: mesh
-    character(len=4) :: valeType
-    character(len=16), parameter :: corres = '&&CALIRC.CORRES'
-    integer :: geomDime, meshNbNode
-    integer :: iOcc, nocc
-    aster_logical :: lElimMult, lDistMaxi
-    real(kind=8) :: distMaxi, distAlarm
-    integer :: nbCellMast, nbNodeSlav
-    integer, pointer :: cellMast(:) => null(), nodeSlav(:) => null()
-    integer, pointer :: nodeElim(:) => null()
+        character(len=16), parameter :: factorKeyword = 'LIAISON_MAIL'
+        character(len=24) :: cellMastJv
+        character(len=24) :: nodeSlavJv, geomSlavJv
+        character(len=8) :: mesh
+        character(len=4) :: valeType
+        character(len=16), parameter :: corres = '&&CALIRC.CORRES'
+        integer :: geomDime, meshNbNode
+        integer :: iOcc, nocc
+        aster_logical :: lElimMult, lDistMaxi
+        real(kind=8) :: distMaxi, distAlarm
+        integer :: nbCellMast, nbNodeSlav
+        integer, pointer :: cellMast(:) => null(), nodeSlav(:) => null()
+        integer, pointer :: nodeElim(:) => null()
 !   NOMBRE MAX DE TERMES D'UNE RELATION LINEAIRE = 2*27 + 3 = 57
-    integer, parameter :: nbTermMaxi = 57
-    type(KINE_LIST_RELA) :: kineListRela
+        integer, parameter :: nbTermMaxi = 57
+        type(KINE_LIST_RELA) :: kineListRela
 !   ------------------------------------------------------------------------------------------------
 !
-    valeType = valeTypeZ
-    ASSERT(valeType .eq. 'REEL')
-    call dismoi('NOM_MAILLA', modelZ, 'MODELE', repk = mesh)
-    call dismoi('DIM_GEOM', modelZ, 'MODELE', repi = geomDime)
-    if (.not.(geomDime .eq. 2 .or. geomDime .eq. 3)) then
-        call utmess('F', 'CHARGES7_6')
-    endif
-    call dismoi('NB_NO_MAILLA', mesh, 'MAILLAGE', repi = meshNbNode)
+        valeType = valeTypeZ
+        ASSERT(valeType .eq. 'REEL')
+        call dismoi('NOM_MAILLA', modelZ, 'MODELE', repk=mesh)
+        call dismoi('DIM_GEOM', modelZ, 'MODELE', repi=geomDime)
+        if (.not. (geomDime .eq. 2 .or. geomDime .eq. 3)) then
+            call utmess('F', 'CHARGES7_6')
+        end if
+        call dismoi('NB_NO_MAILLA', mesh, 'MAILLAGE', repi=meshNbNode)
 
 ! - Name of datastructure for list of linear relations
-    listLineRela = '&&CALIRC.RLLISTE'
+        listLineRela = '&&CALIRC.RLLISTE'
 
 ! - Working vectors
-    AS_ALLOCATE(vi=nodeElim, size=meshNbNode)
+        AS_ALLOCATE(vi=nodeElim, size=meshNbNode)
 
 ! - Create object for list of linear relations
-    call kineListRelaCreate('Implicit', nbTermMaxi, listLineRela, kineListRela)
+        call kineListRelaCreate('Implicit', nbTermMaxi, listLineRela, kineListRela)
 
-    call getfac(factorKeyword, nocc)
-    do iOcc = 1, nocc
+        call getfac(factorKeyword, nocc)
+        do iOcc = 1, nocc
 ! ----- Get main parameters from user
-        call kineLoadGlueMeshTherPara(factorKeyword, iOcc,&
-                                      lElimMult, lDistMaxi, distMaxi, distAlarm)
+            call kineLoadGlueMeshTherPara(factorKeyword, iOcc, &
+                                          lElimMult, lDistMaxi, distMaxi, distAlarm)
 
 ! ----- Get list of master cells
-        call kineLoadGetMasterCells(modelZ, mesh,&
-                                    factorKeyword, iOcc,&
-                                    cellMastJv, nbCellMast, cellMast)
+            call kineLoadGetMasterCells(modelZ, mesh, &
+                                        factorKeyword, iOcc, &
+                                        cellMastJv, nbCellMast, cellMast)
 
 ! ----- Get list of slave nodes
-        call kineLoadGetSlaveNodes(mesh,&
-                                   factorKeyword, iOcc,&
-                                   nodeSlavJv, nbNodeSlav, nodeSlav)
+            call kineLoadGetSlaveNodes(mesh, &
+                                       factorKeyword, iOcc, &
+                                       nodeSlavJv, nbNodeSlav, nodeSlav)
 
 ! ----- Manage multiple nodes
-        if (lElimMult) then
-            call kineLoadElimMult(iOcc, nodeSlavJv, nbNodeSlav, nodeSlav, nodeElim)
-        endif
+            if (lElimMult) then
+                call kineLoadElimMult(iOcc, nodeSlavJv, nbNodeSlav, nodeSlav, nodeElim)
+            end if
 
 ! ----- Apply geometric transformation
-        call kineLoadReadTransf(mesh, geomDime,&
-                                factorKeyword, iOcc,&
-                                nodeSlavJv, nbNodeSlav, geomSlavJv)
+            call kineLoadReadTransf(mesh, geomDime, &
+                                    factorKeyword, iOcc, &
+                                    nodeSlavJv, nbNodeSlav, geomSlavJv)
 
 ! ----- Compute projection of mesh (PROJ_CHAMP)
-        call kineLoadMeshProjVoVo(modelZ, geomDime, meshNbNode,&
-                                  lDistMaxi, distMaxi, distAlarm,&
-                                  nbNodeSlav, geomSlavJv, nodeSlav,&
-                                  nbCellMast, cellMast,&
-                                  corres)
+            call kineLoadMeshProjVoVo(modelZ, geomDime, meshNbNode, &
+                                      lDistMaxi, distMaxi, distAlarm, &
+                                      nbNodeSlav, geomSlavJv, nodeSlav, &
+                                      nbCellMast, cellMast, &
+                                      corres)
 
 ! ----- Apply linear relations
-        call kineLoadGlueMeshTherLine(mesh, corres, kineListRela)
+            call kineLoadGlueMeshTherLine(mesh, corres, kineListRela)
 
 ! ----- Clean
-        call detrsd('CORRESP_2_MAILLA', corres)
-        call jedetr(geomSlavJv)
-        call jedetr(cellMastJv)
-        call jedetr(nodeSlavJv)
-    end do
+            call detrsd('CORRESP_2_MAILLA', corres)
+            call jedetr(geomSlavJv)
+            call jedetr(cellMastJv)
+            call jedetr(nodeSlavJv)
+        end do
 
 ! - Clean
-    AS_DEALLOCATE(vi=nodeElim)
-    call kineListRelaDelete(kineListRela)
+        AS_DEALLOCATE(vi=nodeElim)
+        call kineListRelaDelete(kineListRela)
 !
 !   ------------------------------------------------------------------------------------------------
-end subroutine
+    end subroutine
 ! --------------------------------------------------------------------------------------------------
 !
 ! kineLoadGlueMeshMecaPara
@@ -390,95 +389,95 @@ end subroutine
 ! Ptr dofName          : name of dof to link
 !
 ! --------------------------------------------------------------------------------------------------
-subroutine kineLoadGlueMeshMecaPara(factorKeywordZ, iOcc, geomDime,&
-                                    linkType, useNormal, lElimMult,&
-                                    lMastTransf, mastTransf,&
-                                    lSlavTransf, slavTransf,&
-                                    lDistMaxi, distMaxi, distAlarm,&
-                                    chnorm, thickness,&
-                                    useDisp, dofName)
+    subroutine kineLoadGlueMeshMecaPara(factorKeywordZ, iOcc, geomDime, &
+                                        linkType, useNormal, lElimMult, &
+                                        lMastTransf, mastTransf, &
+                                        lSlavTransf, slavTransf, &
+                                        lDistMaxi, distMaxi, distAlarm, &
+                                        chnorm, thickness, &
+                                        useDisp, dofName)
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
-    character(len=*), intent(in) :: factorKeywordZ
-    integer, intent(in) :: iOcc, geomDime
-    character(len=16), intent(out) :: linkType
-    aster_logical, intent(out) :: useNormal, lElimMult
-    aster_logical, intent(out) :: lMastTransf, lSlavTransf
-    character(len=8), intent(out) :: mastTransf(3), slavTransf(3)
-    aster_logical, intent(out) :: lDistMaxi
-    real(kind=8), intent(out) :: distMaxi, distAlarm
-    character(len=8), intent(out) :: chnorm
-    real(kind=8), intent(out) :: thickness
-    aster_logical, intent(out) :: useDisp
-    character(len=8), pointer :: dofName(:)
+        character(len=*), intent(in) :: factorKeywordZ
+        integer, intent(in) :: iOcc, geomDime
+        character(len=16), intent(out) :: linkType
+        aster_logical, intent(out) :: useNormal, lElimMult
+        aster_logical, intent(out) :: lMastTransf, lSlavTransf
+        character(len=8), intent(out) :: mastTransf(3), slavTransf(3)
+        aster_logical, intent(out) :: lDistMaxi
+        real(kind=8), intent(out) :: distMaxi, distAlarm
+        character(len=8), intent(out) :: chnorm
+        real(kind=8), intent(out) :: thickness
+        aster_logical, intent(out) :: useDisp
+        character(len=8), pointer :: dofName(:)
 ! - Local
-    character(len=8) :: answer
-    integer :: nbRet, nbDof, iDof
+        character(len=8) :: answer
+        integer :: nbRet, nbDof, iDof
 !   ------------------------------------------------------------------------------------------------
 !
-    call getvtx(factorKeywordZ, 'TYPE_RACCORD', iocc=iocc, scal=linkType, nbret=nbRet)
-    if (geomDime .eq. 2) then
-        ASSERT(linkType .eq. 'MASSIF')
-    endif
+        call getvtx(factorKeywordZ, 'TYPE_RACCORD', iocc=iocc, scal=linkType, nbret=nbRet)
+        if (geomDime .eq. 2) then
+            ASSERT(linkType .eq. 'MASSIF')
+        end if
 
-    useDisp = ASTER_FALSE
-    useNormal = ASTER_FALSE
-    call getvtx(factorKeywordZ, 'DDL', iocc=iocc, nbval=0, nbret=nbDof)
-    nbDof = -nbDof
-    if (nbDof .eq. 0) then
-        useDisp = ASTER_TRUE
+        useDisp = ASTER_FALSE
         useNormal = ASTER_FALSE
-    else
-        AS_ALLOCATE(vk8 = dofName, size = nbDof)
-        call getvtx(factorKeywordZ, 'DDL', iocc=iocc, nbval=nbDof, vect=dofName)
-        if (nbDof .eq. 1) then
-            if (dofName(1) .eq. 'DNOR') then
-                useNormal = ASTER_TRUE
-            endif
+        call getvtx(factorKeywordZ, 'DDL', iocc=iocc, nbval=0, nbret=nbDof)
+        nbDof = -nbDof
+        if (nbDof .eq. 0) then
+            useDisp = ASTER_TRUE
+            useNormal = ASTER_FALSE
         else
-            do iDof = 1, nbDof
-                if (dofName(iDof) .eq. 'DNOR') then
-                    call utmess('F', 'CHARGES7_2')
-                endif
-            end do
-        endif
-    endif
+            AS_ALLOCATE(vk8=dofName, size=nbDof)
+            call getvtx(factorKeywordZ, 'DDL', iocc=iocc, nbval=nbDof, vect=dofName)
+            if (nbDof .eq. 1) then
+                if (dofName(1) .eq. 'DNOR') then
+                    useNormal = ASTER_TRUE
+                end if
+            else
+                do iDof = 1, nbDof
+                    if (dofName(iDof) .eq. 'DNOR') then
+                        call utmess('F', 'CHARGES7_2')
+                    end if
+                end do
+            end if
+        end if
 
-    call getvtx(factorKeywordZ, 'ELIM_MULT', iocc=iocc, scal=answer, nbret=nbRet)
-    lElimMult = answer .eq. 'OUI'
-    distMaxi = 0.d0
-    distAlarm = 0.d0
-    call getvr8(factorKeywordZ, 'DISTANCE_MAX', iocc=iocc, scal=distMaxi, nbret=nbRet)
-    lDistMaxi = nbRet .eq. 1
-    call getvr8(factorKeywordZ, 'DISTANCE_ALARME', iocc=iocc, scal=distAlarm, nbret=nbRet)
-    if (nbRet .eq. 0) then
-        distAlarm = -1.d0
-    endif
+        call getvtx(factorKeywordZ, 'ELIM_MULT', iocc=iocc, scal=answer, nbret=nbRet)
+        lElimMult = answer .eq. 'OUI'
+        distMaxi = 0.d0
+        distAlarm = 0.d0
+        call getvr8(factorKeywordZ, 'DISTANCE_MAX', iocc=iocc, scal=distMaxi, nbret=nbRet)
+        lDistMaxi = nbRet .eq. 1
+        call getvr8(factorKeywordZ, 'DISTANCE_ALARME', iocc=iocc, scal=distAlarm, nbret=nbRet)
+        if (nbRet .eq. 0) then
+            distAlarm = -1.d0
+        end if
 
 ! - Get parameters for linkType = 'COQUE'
-    lMastTransf = ASTER_FALSE
-    mastTransf = ' '
-    lSlavTransf = ASTER_FALSE
-    slavTransf = ' '
-    if (linkType .eq. 'COQUE') then
-        call getvid(factorKeywordZ, 'TRANSF_GEOM_MAIT', iocc=iocc, nbval=3,&
-                    vect=mastTransf, nbret=nbRet)
-        lMastTransf = nbret .gt. 0
-        call getvid(factorKeywordZ, 'TRANSF_GEOM_ESCL', iocc=iocc, nbval=3,&
-                    vect=slavTransf, nbret=nbRet)
-        lSlavTransf = nbret .gt. 0
-    endif
+        lMastTransf = ASTER_FALSE
+        mastTransf = ' '
+        lSlavTransf = ASTER_FALSE
+        slavTransf = ' '
+        if (linkType .eq. 'COQUE') then
+            call getvid(factorKeywordZ, 'TRANSF_GEOM_MAIT', iocc=iocc, nbval=3, &
+                        vect=mastTransf, nbret=nbRet)
+            lMastTransf = nbret .gt. 0
+            call getvid(factorKeywordZ, 'TRANSF_GEOM_ESCL', iocc=iocc, nbval=3, &
+                        vect=slavTransf, nbret=nbRet)
+            lSlavTransf = nbret .gt. 0
+        end if
 
 ! - Get parameters for linkType = 'COQUE_MASSIF'
-    chnorm = ' '
-    thickness = 0.d0
-    if (linkType .eq. 'COQUE_MASSIF') then
-        call getvid(factorKeywordZ, 'CHAM_NORMALE', iocc=iocc, scal=chnorm)
-        call getvr8(factorKeywordZ, 'EPAIS', iocc=iocc, scal=thickness)
-    endif
+        chnorm = ' '
+        thickness = 0.d0
+        if (linkType .eq. 'COQUE_MASSIF') then
+            call getvid(factorKeywordZ, 'CHAM_NORMALE', iocc=iocc, scal=chnorm)
+            call getvr8(factorKeywordZ, 'EPAIS', iocc=iocc, scal=thickness)
+        end if
 !
 !   ------------------------------------------------------------------------------------------------
-end subroutine
+    end subroutine
 ! --------------------------------------------------------------------------------------------------
 !
 ! kineLoadGlueMeshTherPara
@@ -493,34 +492,34 @@ end subroutine
 ! Out distAlarm        : value to emit an alarm of distance for projection
 !
 ! --------------------------------------------------------------------------------------------------
-subroutine kineLoadGlueMeshTherPara(factorKeywordZ, iOcc,&
-                                    lElimMult,&
-                                    lDistMaxi, distMaxi, distAlarm)
+    subroutine kineLoadGlueMeshTherPara(factorKeywordZ, iOcc, &
+                                        lElimMult, &
+                                        lDistMaxi, distMaxi, distAlarm)
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
-    character(len=*), intent(in) :: factorKeywordZ
-    integer, intent(in) :: iOcc
-    aster_logical, intent(out) ::  lElimMult
-    aster_logical, intent(out) :: lDistMaxi
-    real(kind=8), intent(out) :: distMaxi, distAlarm
+        character(len=*), intent(in) :: factorKeywordZ
+        integer, intent(in) :: iOcc
+        aster_logical, intent(out) ::  lElimMult
+        aster_logical, intent(out) :: lDistMaxi
+        real(kind=8), intent(out) :: distMaxi, distAlarm
 ! - Local
-    character(len=8) :: answer
-    integer :: nbRet
+        character(len=8) :: answer
+        integer :: nbRet
 !   ------------------------------------------------------------------------------------------------
 !
-    call getvtx(factorKeywordZ, 'ELIM_MULT', iocc=iocc, scal=answer, nbret=nbRet)
-    lElimMult = answer .eq. 'OUI'
-    distMaxi = 0.d0
-    distAlarm = 0.d0
-    call getvr8(factorKeywordZ, 'DISTANCE_MAX', iocc=iocc, scal=distMaxi, nbret=nbRet)
-    lDistMaxi = nbRet .eq. 1
-    call getvr8(factorKeywordZ, 'DISTANCE_ALARME', iocc=iocc, scal=distAlarm, nbret=nbRet)
-    if (nbRet .eq. 0) then
-        distAlarm = -1.d0
-    endif
+        call getvtx(factorKeywordZ, 'ELIM_MULT', iocc=iocc, scal=answer, nbret=nbRet)
+        lElimMult = answer .eq. 'OUI'
+        distMaxi = 0.d0
+        distAlarm = 0.d0
+        call getvr8(factorKeywordZ, 'DISTANCE_MAX', iocc=iocc, scal=distMaxi, nbret=nbRet)
+        lDistMaxi = nbRet .eq. 1
+        call getvr8(factorKeywordZ, 'DISTANCE_ALARME', iocc=iocc, scal=distAlarm, nbret=nbRet)
+        if (nbRet .eq. 0) then
+            distAlarm = -1.d0
+        end if
 !
 !   ------------------------------------------------------------------------------------------------
-end subroutine
+    end subroutine
 ! --------------------------------------------------------------------------------------------------
 !
 ! kineLoadMeshProjVoVo
@@ -541,43 +540,43 @@ end subroutine
 ! In  corres           : name of object for correspondence slave/master
 !
 ! --------------------------------------------------------------------------------------------------
-subroutine kineLoadMeshProjVoVo(modelZ, geomDime, meshNbNode,&
-                                lDistMaxi, distMaxi, distAlarm,&
-                                nbNodeSlav, geomSlavJv, nodeSlav,&
-                                nbCellMast, cellMast,&
-                                corres)
+    subroutine kineLoadMeshProjVoVo(modelZ, geomDime, meshNbNode, &
+                                    lDistMaxi, distMaxi, distAlarm, &
+                                    nbNodeSlav, geomSlavJv, nodeSlav, &
+                                    nbCellMast, cellMast, &
+                                    corres)
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
-    character(len=*), intent(in) :: modelZ
-    integer, intent(in) :: geomDime, meshNbNode
-    aster_logical, intent(inout) :: lDistMaxi
-    real(kind=8), intent(in) :: distMaxi, distAlarm
-    integer, intent(in) :: nbNodeSlav, nbCellMast
-    character(len=24), intent(in) :: geomSlavJv
-    integer, pointer :: nodeSlav(:), cellMast(:)
-    character(len=16), intent(in) :: corres
+        character(len=*), intent(in) :: modelZ
+        integer, intent(in) :: geomDime, meshNbNode
+        aster_logical, intent(inout) :: lDistMaxi
+        real(kind=8), intent(in) :: distMaxi, distAlarm
+        integer, intent(in) :: nbNodeSlav, nbCellMast
+        character(len=24), intent(in) :: geomSlavJv
+        integer, pointer :: nodeSlav(:), cellMast(:)
+        character(len=16), intent(in) :: corres
 ! - Local
-    character(len=8) :: model
-    integer :: nbLink
+        character(len=8) :: model
+        integer :: nbLink
 !   ------------------------------------------------------------------------------------------------
 !
-    model = modelZ
-    if (geomDime .eq. 2) then
-        call pj2dco('PARTIE', model, model, nbCellMast, cellMast,&
-                    nbNodeSlav, nodeSlav, ' ', geomSlavJv, corres,&
-                    lDistMaxi, distMaxi, distAlarm)
-    else if (geomDime .eq. 3) then
-        call pj3dco('PARTIE', model, model, nbCellMast, cellMast,&
-                    nbNodeSlav, nodeSlav, ' ', geomSlavJv, corres,&
-                    lDistMaxi, distMaxi, distAlarm)
-    else
-        ASSERT(ASTER_FALSE)
-    endif
-    call jelira(corres//'.PJEF_NB', 'LONMAX', nbLink)
-    ASSERT(nbLink .eq. meshNbNode)
+        model = modelZ
+        if (geomDime .eq. 2) then
+            call pj2dco('PARTIE', model, model, nbCellMast, cellMast, &
+                        nbNodeSlav, nodeSlav, ' ', geomSlavJv, corres, &
+                        lDistMaxi, distMaxi, distAlarm)
+        else if (geomDime .eq. 3) then
+            call pj3dco('PARTIE', model, model, nbCellMast, cellMast, &
+                        nbNodeSlav, nodeSlav, ' ', geomSlavJv, corres, &
+                        lDistMaxi, distMaxi, distAlarm)
+        else
+            ASSERT(ASTER_FALSE)
+        end if
+        call jelira(corres//'.PJEF_NB', 'LONMAX', nbLink)
+        ASSERT(nbLink .eq. meshNbNode)
 !
 !   ------------------------------------------------------------------------------------------------
-end subroutine
+    end subroutine
 ! --------------------------------------------------------------------------------------------------
 !
 ! kineLoadMeshProjShSh
@@ -598,35 +597,35 @@ end subroutine
 ! In  corres           : name of JEVEUX object for correspondence slave/master
 !
 ! --------------------------------------------------------------------------------------------------
-subroutine kineLoadMeshProjShSh(modelZ, meshNbNode,&
-                                lDistMaxi, distMaxi, distAlarm,&
-                                nbNodeSlav, geomSlavJv, nodeSlav,&
-                                nbCellMast, geomMastJv, cellMast,&
-                                corres)
+    subroutine kineLoadMeshProjShSh(modelZ, meshNbNode, &
+                                    lDistMaxi, distMaxi, distAlarm, &
+                                    nbNodeSlav, geomSlavJv, nodeSlav, &
+                                    nbCellMast, geomMastJv, cellMast, &
+                                    corres)
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
-    character(len=*), intent(in) :: modelZ
-    integer, intent(in) :: meshNbNode
-    aster_logical, intent(inout) :: lDistMaxi
-    real(kind=8), intent(in) :: distMaxi, distAlarm
-    integer, intent(in) :: nbNodeSlav, nbCellMast
-    character(len=24), intent(in) :: geomSlavJv, geomMastJv
-    integer, pointer :: nodeSlav(:), cellMast(:)
-    character(len=16), intent(in) :: corres
+        character(len=*), intent(in) :: modelZ
+        integer, intent(in) :: meshNbNode
+        aster_logical, intent(inout) :: lDistMaxi
+        real(kind=8), intent(in) :: distMaxi, distAlarm
+        integer, intent(in) :: nbNodeSlav, nbCellMast
+        character(len=24), intent(in) :: geomSlavJv, geomMastJv
+        integer, pointer :: nodeSlav(:), cellMast(:)
+        character(len=16), intent(in) :: corres
 ! - Local
-    character(len=8) :: model
-    integer :: nbLink
+        character(len=8) :: model
+        integer :: nbLink
 !   ------------------------------------------------------------------------------------------------
 !
-    model = modelZ
-    call pj4dco('PARTIE', model, model, nbCellMast, cellMast,&
-                nbNodeSlav, nodeSlav, geomMastJv, geomSlavJv, corres,&
-                lDistMaxi, distMaxi, distAlarm)
-    call jelira(corres//'.PJEF_NB', 'LONMAX', nbLink)
-    ASSERT(nbLink .eq. meshNbNode)
+        model = modelZ
+        call pj4dco('PARTIE', model, model, nbCellMast, cellMast, &
+                    nbNodeSlav, nodeSlav, geomMastJv, geomSlavJv, corres, &
+                    lDistMaxi, distMaxi, distAlarm)
+        call jelira(corres//'.PJEF_NB', 'LONMAX', nbLink)
+        ASSERT(nbLink .eq. meshNbNode)
 !
 !   ------------------------------------------------------------------------------------------------
-end subroutine
+    end subroutine
 ! --------------------------------------------------------------------------------------------------
 !
 ! kineLoadMeshProjShVo
@@ -651,51 +650,51 @@ end subroutine
 ! In  corre3           : name of JEVEUX object for normal thickness
 !
 ! --------------------------------------------------------------------------------------------------
-subroutine kineLoadMeshProjShVo(modelZ, meshNbNode,&
-                                lDistMaxi, distMaxi, distAlarm,&
-                                chnormZ, thickness,&
-                                nbNodeSlav, geomSlavJv, nodeSlav,&
-                                nbCellMast, cellMast,&
-                                corres, corre1, corre2, corre3)
+    subroutine kineLoadMeshProjShVo(modelZ, meshNbNode, &
+                                    lDistMaxi, distMaxi, distAlarm, &
+                                    chnormZ, thickness, &
+                                    nbNodeSlav, geomSlavJv, nodeSlav, &
+                                    nbCellMast, cellMast, &
+                                    corres, corre1, corre2, corre3)
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
-    character(len=*), intent(in) :: modelZ
-    integer, intent(in):: meshNbNode
-    aster_logical, intent(inout) :: lDistMaxi
-    real(kind=8), intent(in) :: distMaxi, distAlarm
-    character(len=*), intent(in) :: chnormZ
-    real(kind=8), intent(in) :: thickness
-    integer, intent(in) :: nbNodeSlav, nbCellMast
-    character(len=24), intent(in) :: geomSlavJv
-    integer, pointer :: nodeSlav(:), cellMast(:)
-    character(len=16), intent(in) :: corres, corre1, corre2, corre3
+        character(len=*), intent(in) :: modelZ
+        integer, intent(in):: meshNbNode
+        aster_logical, intent(inout) :: lDistMaxi
+        real(kind=8), intent(in) :: distMaxi, distAlarm
+        character(len=*), intent(in) :: chnormZ
+        real(kind=8), intent(in) :: thickness
+        integer, intent(in) :: nbNodeSlav, nbCellMast
+        character(len=24), intent(in) :: geomSlavJv
+        integer, pointer :: nodeSlav(:), cellMast(:)
+        character(len=16), intent(in) :: corres, corre1, corre2, corre3
 ! - Local
-    character(len=8) :: model
-    integer :: nbLink
+        character(len=8) :: model
+        integer :: nbLink
 !   ------------------------------------------------------------------------------------------------
 !
-    model = modelZ
+        model = modelZ
 
 ! - Compute geometric projection (3D <=> Shell) on medium plane
-    call pj3dco('PARTIE',&
-                model, model,&
-                nbCellMast, cellMast,&
-                nbNodeSlav, nodeSlav,&
-                ' ', geomSlavJv, corres,&
-                lDistMaxi, distMaxi, distAlarm)
+        call pj3dco('PARTIE', &
+                    model, model, &
+                    nbCellMast, cellMast, &
+                    nbNodeSlav, nodeSlav, &
+                    ' ', geomSlavJv, corres, &
+                    lDistMaxi, distMaxi, distAlarm)
 
 ! - Compute geometric projection (3D <=> Shell) on superior and inferior planes
-    call pj3dcoSupInf(model, meshNbNode,&
-                      nbCellMast, cellMast,&
-                      nbNodeSlav, nodeSlav, geomSlavJv,&
-                      corre1, corre2, corre3,&
-                      chnormZ, thickness)
+        call pj3dcoSupInf(model, meshNbNode, &
+                          nbCellMast, cellMast, &
+                          nbNodeSlav, nodeSlav, geomSlavJv, &
+                          corre1, corre2, corre3, &
+                          chnormZ, thickness)
 
-    call jelira(corres//'.PJEF_NB', 'LONMAX', nbLink)
-    ASSERT(nbLink .eq. meshNbNode)
+        call jelira(corres//'.PJEF_NB', 'LONMAX', nbLink)
+        ASSERT(nbLink .eq. meshNbNode)
 !
 !   ------------------------------------------------------------------------------------------------
-end subroutine
+    end subroutine
 ! --------------------------------------------------------------------------------------------------
 !
 ! kineLoadMeshProjVoSh
@@ -716,35 +715,35 @@ end subroutine
 ! In  corres           : name of JEVEUX object for correspondence slave/master
 !
 ! --------------------------------------------------------------------------------------------------
-subroutine kineLoadMeshProjVoSh(modelZ, meshNbNode,&
-                                lDistMaxi, distMaxi, distAlarm,&
-                                nbNodeSlav, geomSlavJv, nodeSlav,&
-                                nbCellMast, geomMastJv, cellMast,&
-                                corres)
+    subroutine kineLoadMeshProjVoSh(modelZ, meshNbNode, &
+                                    lDistMaxi, distMaxi, distAlarm, &
+                                    nbNodeSlav, geomSlavJv, nodeSlav, &
+                                    nbCellMast, geomMastJv, cellMast, &
+                                    corres)
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
-    character(len=*), intent(in) :: modelZ
-    integer, intent(in) :: meshNbNode
-    aster_logical, intent(inout) :: lDistMaxi
-    real(kind=8), intent(in) :: distMaxi, distAlarm
-    integer, intent(in) :: nbNodeSlav, nbCellMast
-    character(len=24), intent(in) :: geomSlavJv, geomMastJv
-    integer, pointer :: nodeSlav(:), cellMast(:)
-    character(len=16), intent(in) :: corres
+        character(len=*), intent(in) :: modelZ
+        integer, intent(in) :: meshNbNode
+        aster_logical, intent(inout) :: lDistMaxi
+        real(kind=8), intent(in) :: distMaxi, distAlarm
+        integer, intent(in) :: nbNodeSlav, nbCellMast
+        character(len=24), intent(in) :: geomSlavJv, geomMastJv
+        integer, pointer :: nodeSlav(:), cellMast(:)
+        character(len=16), intent(in) :: corres
 ! - Local
-    character(len=8) :: model
-    integer :: nbLink
+        character(len=8) :: model
+        integer :: nbLink
 !   ------------------------------------------------------------------------------------------------
 !
-    model = modelZ
-    call pj4dco('PARTIE', model, model, nbCellMast, cellMast,&
-                nbNodeSlav, nodeSlav, geomMastJv, geomSlavJv, corres,&
-                lDistMaxi, distMaxi, distAlarm)
-    call jelira(corres//'.PJEF_NB', 'LONMAX', nbLink)
-    ASSERT(nbLink .eq. meshNbNode)
+        model = modelZ
+        call pj4dco('PARTIE', model, model, nbCellMast, cellMast, &
+                    nbNodeSlav, nodeSlav, geomMastJv, geomSlavJv, corres, &
+                    lDistMaxi, distMaxi, distAlarm)
+        call jelira(corres//'.PJEF_NB', 'LONMAX', nbLink)
+        ASSERT(nbLink .eq. meshNbNode)
 !
 !   ------------------------------------------------------------------------------------------------
-end subroutine
+    end subroutine
 ! --------------------------------------------------------------------------------------------------
 !
 ! kineLoadGlueMeshMecaLine
@@ -768,117 +767,117 @@ end subroutine
 ! IO  kineListRela     : object for list of linear relations
 !
 ! --------------------------------------------------------------------------------------------------
-subroutine kineLoadGlueMeshMecaLine(linkType, meshZ, geomDime,&
-                                    useDisp, dofName,&
-                                    lApplyRota, rotaMatr,&
-                                    useNormal, normSlav, nodeSkinToBody,&
-                                    corres, corre1, corre2, corre3,&
-                                    kineListRela)
+    subroutine kineLoadGlueMeshMecaLine(linkType, meshZ, geomDime, &
+                                        useDisp, dofName, &
+                                        lApplyRota, rotaMatr, &
+                                        useNormal, normSlav, nodeSkinToBody, &
+                                        corres, corre1, corre2, corre3, &
+                                        kineListRela)
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
-    character(len=16), intent(in) :: linkType
-    character(len=*), intent(in) :: meshZ
-    integer, intent(in) :: geomDime
-    aster_logical, intent(in) :: useDisp
-    character(len=8), pointer :: dofName(:)
-    aster_logical, intent(in) :: lApplyRota
-    real(kind=8), intent(in) :: rotaMatr(3, 3)
-    aster_logical, intent(in) :: useNormal
-    real(kind=8), pointer :: normSlav(:)
-    integer, pointer :: nodeSkinToBody(:)
-    character(len=16), intent(in) :: corres, corre1, corre2, corre3
-    type(KINE_LIST_RELA), intent(inout) :: kineListRela
+        character(len=16), intent(in) :: linkType
+        character(len=*), intent(in) :: meshZ
+        integer, intent(in) :: geomDime
+        aster_logical, intent(in) :: useDisp
+        character(len=8), pointer :: dofName(:)
+        aster_logical, intent(in) :: lApplyRota
+        real(kind=8), intent(in) :: rotaMatr(3, 3)
+        aster_logical, intent(in) :: useNormal
+        real(kind=8), pointer :: normSlav(:)
+        integer, pointer :: nodeSkinToBody(:)
+        character(len=16), intent(in) :: corres, corre1, corre2, corre3
+        type(KINE_LIST_RELA), intent(inout) :: kineListRela
 ! - Local
-    integer, parameter :: nbPairMaxi = 3, nbDofMaxi = 4
-    character(len=8) :: mesh
-    integer :: nbDofSlav, nbDofMast, nbEqua, iDof, nbDof
-    character(len=8), dimension(nbPairMaxi, nbDofMaxi) :: dofLinkName
+        integer, parameter :: nbPairMaxi = 3, nbDofMaxi = 4
+        character(len=8) :: mesh
+        integer :: nbDofSlav, nbDofMast, nbEqua, iDof, nbDof
+        character(len=8), dimension(nbPairMaxi, nbDofMaxi) :: dofLinkName
 
 !   ------------------------------------------------------------------------------------------------
 !
-    mesh = meshZ
+        mesh = meshZ
 
 ! - Create list of equations
-    if (linkType .eq. 'MASSIF') then
-        if (useNormal) then
-            nbDofSlav = 1
-            nbDofMast = 1
-            nbEqua = 1
-            dofLinkName(1, 1) = 'DEPL'
-            dofLinkName(1, 2) = 'DEPL'
-        elseif (useDisp) then
-            if (lApplyRota) then
+        if (linkType .eq. 'MASSIF') then
+            if (useNormal) then
+                nbDofSlav = 1
                 nbDofMast = 1
-                nbDofSlav = geomDime
-                nbEqua = geomDime
-                dofLinkName(1, 1) = 'DX' ! Mast
-                dofLinkName(1, 2) = 'DX' ! Slav
-                dofLinkName(1, 3) = 'DY' ! Slav
-                dofLinkName(2, 1) = 'DY' ! Mast
-                dofLinkName(2, 2) = 'DX' ! Slav
-                dofLinkName(2, 3) = 'DY' ! Slav
-                if (geomDime .eq. 3) then
-                    dofLinkName(1, 4) = 'DZ' ! Slav
-                    dofLinkName(2, 4) = 'DZ' ! Slav
-                    dofLinkName(3, 1) = 'DZ' ! Mast
-                    dofLinkName(3, 2) = 'DX' ! Slav
-                    dofLinkName(3, 3) = 'DY' ! Slav
-                    dofLinkName(3, 4) = 'DZ' ! Slav
-                endif
+                nbEqua = 1
+                dofLinkName(1, 1) = 'DEPL'
+                dofLinkName(1, 2) = 'DEPL'
+            elseif (useDisp) then
+                if (lApplyRota) then
+                    nbDofMast = 1
+                    nbDofSlav = geomDime
+                    nbEqua = geomDime
+                    dofLinkName(1, 1) = 'DX' ! Mast
+                    dofLinkName(1, 2) = 'DX' ! Slav
+                    dofLinkName(1, 3) = 'DY' ! Slav
+                    dofLinkName(2, 1) = 'DY' ! Mast
+                    dofLinkName(2, 2) = 'DX' ! Slav
+                    dofLinkName(2, 3) = 'DY' ! Slav
+                    if (geomDime .eq. 3) then
+                        dofLinkName(1, 4) = 'DZ' ! Slav
+                        dofLinkName(2, 4) = 'DZ' ! Slav
+                        dofLinkName(3, 1) = 'DZ' ! Mast
+                        dofLinkName(3, 2) = 'DX' ! Slav
+                        dofLinkName(3, 3) = 'DY' ! Slav
+                        dofLinkName(3, 4) = 'DZ' ! Slav
+                    end if
+                else
+                    nbDofMast = 1
+                    nbDofSlav = 1
+                    nbEqua = geomDime
+                    dofLinkName(1, 1) = 'DX'
+                    dofLinkName(1, 2) = 'DX'
+                    dofLinkName(2, 1) = 'DY'
+                    dofLinkName(2, 2) = 'DY'
+                    if (geomDime .eq. 3) then
+                        dofLinkName(3, 1) = 'DZ'
+                        dofLinkName(3, 2) = 'DZ'
+                    end if
+                end if
             else
+                nbDof = size(dofName)
                 nbDofMast = 1
                 nbDofSlav = 1
-                nbEqua = geomDime
-                dofLinkName(1, 1) = 'DX'
-                dofLinkName(1, 2) = 'DX'
-                dofLinkName(2, 1) = 'DY'
-                dofLinkName(2, 2) = 'DY'
-                if (geomDime .eq. 3) then
-                    dofLinkName(3, 1) = 'DZ'
-                    dofLinkName(3, 2) = 'DZ'
-                endif
-            endif
-        else
-            nbDof = size(dofName)
-            nbDofMast = 1
-            nbDofSlav = 1
-            nbEqua = nbDof
-            do iDof = 1, nbDof
-                dofLinkName(iDof, 1) = dofName(iDof)
-                dofLinkName(iDof, 2) = dofName(iDof)
-            end do
-        endif
-    endif
+                nbEqua = nbDof
+                do iDof = 1, nbDof
+                    dofLinkName(iDof, 1) = dofName(iDof)
+                    dofLinkName(iDof, 2) = dofName(iDof)
+                end do
+            end if
+        end if
 
 ! - Create list of linear relations
-    if (linkType .eq. 'MASSIF') then
-        call kineLoadMeshLinkVoVo(mesh, geomDime,&
-                                  lApplyRota, rotaMatr,&
-                                  useNormal, normSlav, nodeSkinToBody,&
-                                  corres,&
-                                  nbEqua, nbDofSlav, nbDofMast, dofLinkName,&
-                                  kineListRela)
+        if (linkType .eq. 'MASSIF') then
+            call kineLoadMeshLinkVoVo(mesh, geomDime, &
+                                      lApplyRota, rotaMatr, &
+                                      useNormal, normSlav, nodeSkinToBody, &
+                                      corres, &
+                                      nbEqua, nbDofSlav, nbDofMast, dofLinkName, &
+                                      kineListRela)
 
-    elseif (linkType .eq. 'MASSIF_COQUE') then
-        call kineLoadMeshLinkVoSh(mesh, geomDime,&
-                                  corres, kineListRela)
+        elseif (linkType .eq. 'MASSIF_COQUE') then
+            call kineLoadMeshLinkVoSh(mesh, geomDime, &
+                                      corres, kineListRela)
 
-    elseif (linkType .eq. 'COQUE_MASSIF') then
-        call kineLoadMeshLinkShVo(mesh, geomDime,&
-                                  corres, corre1, corre2, corre3,&
-                                  kineListRela)
+        elseif (linkType .eq. 'COQUE_MASSIF') then
+            call kineLoadMeshLinkShVo(mesh, geomDime, &
+                                      corres, corre1, corre2, corre3, &
+                                      kineListRela)
 
-    elseif (linkType .eq. 'COQUE') then
-        call kineLoadMeshLinkShSh(mesh, geomDime,&
-                                  corres, useDisp, dofName, kineListRela)
+        elseif (linkType .eq. 'COQUE') then
+            call kineLoadMeshLinkShSh(mesh, geomDime, &
+                                      corres, useDisp, dofName, kineListRela)
 
-    else
-        ASSERT(ASTER_FALSE)
+        else
+            ASSERT(ASTER_FALSE)
 
-    endif
+        end if
 !
 !   ------------------------------------------------------------------------------------------------
-end subroutine
+    end subroutine
 ! --------------------------------------------------------------------------------------------------
 !
 ! kineLoadGlueMeshTherLine
@@ -890,84 +889,84 @@ end subroutine
 ! IO  kineListRela     : object for list of linear relations
 !
 ! --------------------------------------------------------------------------------------------------
-subroutine kineLoadGlueMeshTherLine(meshZ, corres, kineListRela)
+    subroutine kineLoadGlueMeshTherLine(meshZ, corres, kineListRela)
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
-    character(len=*), intent(in) :: meshZ
-    character(len=16), intent(in) :: corres
-    type(KINE_LIST_RELA), intent(inout) :: kineListRela
+        character(len=*), intent(in) :: meshZ
+        character(len=16), intent(in) :: corres
+        type(KINE_LIST_RELA), intent(inout) :: kineListRela
 ! - Local
-    character(len=80), parameter :: title = 'LIAISON_MAILLE'
-    character(len=8) :: mesh
-    integer :: shifNodeMast, iLink, iNodeMast
-    integer :: nbLink
-    integer :: jvPjefNb, jvPjefNu, jvPjefCf
-    integer :: nodeSlavNume, nodeMastNume, nbNodeMast, nbTerm
-    character(len=8) :: nodeSlavName, nodeMastName
-    real(kind=8) :: nodeMastCoef
-    integer, pointer :: pjefNb(:) => null(), pjefNu(:) => null()
-    real(kind=8), pointer :: pjefCf(:) => null()
+        character(len=80), parameter :: title = 'LIAISON_MAILLE'
+        character(len=8) :: mesh
+        integer :: shifNodeMast, iLink, iNodeMast
+        integer :: nbLink
+        integer :: jvPjefNb, jvPjefNu, jvPjefCf
+        integer :: nodeSlavNume, nodeMastNume, nbNodeMast, nbTerm
+        character(len=8) :: nodeSlavName, nodeMastName
+        real(kind=8) :: nodeMastCoef
+        integer, pointer :: pjefNb(:) => null(), pjefNu(:) => null()
+        real(kind=8), pointer :: pjefCf(:) => null()
 
 !   ------------------------------------------------------------------------------------------------
 !
-    mesh = meshZ
+        mesh = meshZ
 
 ! - Acces to link parameters
-    call jelira(corres//'.PJEF_NB', 'LONMAX', nbLink)
-    call jeveuo(corres//'.PJEF_NB', 'L', jvPjefNb)
-    call jeveuo(corres//'.PJEF_NU', 'L', jvPjefNu)
-    call jeveuo(corres//'.PJEF_CF', 'L', jvPjefCf)
-    call jeveuo(corres//'.PJEF_NB', 'L', vi = pjefNb)
-    call jeveuo(corres//'.PJEF_NU', 'L', vi = pjefNu)
-    call jeveuo(corres//'.PJEF_CF', 'L', vr = pjefCf)
+        call jelira(corres//'.PJEF_NB', 'LONMAX', nbLink)
+        call jeveuo(corres//'.PJEF_NB', 'L', jvPjefNb)
+        call jeveuo(corres//'.PJEF_NU', 'L', jvPjefNu)
+        call jeveuo(corres//'.PJEF_CF', 'L', jvPjefCf)
+        call jeveuo(corres//'.PJEF_NB', 'L', vi=pjefNb)
+        call jeveuo(corres//'.PJEF_NU', 'L', vi=pjefNu)
+        call jeveuo(corres//'.PJEF_CF', 'L', vr=pjefCf)
 
-    shifNodeMast = 0
-    do iLink = 1, nbLink
-        nbNodeMast = pjefNb(iLink)
+        shifNodeMast = 0
+        do iLink = 1, nbLink
+            nbNodeMast = pjefNb(iLink)
 
-        if (nbNodeMast .eq. 0) cycle
+            if (nbNodeMast .eq. 0) cycle
 
 ! ----- Init list of relations
-        call kineListRelaInit(kineListRela)
+            call kineListRelaInit(kineListRela)
 
 ! ----- Current slave node
-        nodeSlavNume = iLink
-        call jenuno(jexnum(mesh//'.NOMNOE', nodeSlavNume), nodeSlavName)
+            nodeSlavNume = iLink
+            call jenuno(jexnum(mesh//'.NOMNOE', nodeSlavNume), nodeSlavName)
 
 ! ----- Coefficient for slave node
-        kineListRela%nodeName(1) = nodeSlavName
-        kineListRela%coefMultReal(1) = -1.d0
+            kineListRela%nodeName(1) = nodeSlavName
+            kineListRela%coefMultReal(1) = -1.d0
 
 ! ----- DOF to link
-        kineListRela%dofName(1: nbNodeMast+1) = 'TEMP'
+            kineListRela%dofName(1:nbNodeMast+1) = 'TEMP'
 
 ! ----- Coefficients for master nodes
-        do iNodeMast = 1, nbNodeMast
-            nodeMastNume = pjefNu(shifNodeMast+iNodeMast)
-            nodeMastCoef = pjefCf(shifNodeMast+iNodeMast)
-            call jenuno(jexnum(mesh//'.NOMNOE', nodeMastNume), nodeMastName)
+            do iNodeMast = 1, nbNodeMast
+                nodeMastNume = pjefNu(shifNodeMast+iNodeMast)
+                nodeMastCoef = pjefCf(shifNodeMast+iNodeMast)
+                call jenuno(jexnum(mesh//'.NOMNOE', nodeMastNume), nodeMastName)
 !           SI LA RELATION EST UNE TAUTOLOGIE, ON NE L'ECRIT PAS :
-            if (nodeMastNume .eq. nodeSlavNume) then
-                if (abs(kineListRela%coefMultReal(iNodeMast+1)-1.0d0) .lt. 1.0d-02) then
-                    call utmess('A', 'CHARGES7_1')
-                    goto 290
-                endif
-            endif
-            kineListRela%nodeName(iNodeMast+1) = nodeMastName
-            kineListRela%coefMultReal(iNodeMast+1) = nodeMastCoef
-        enddo
+                if (nodeMastNume .eq. nodeSlavNume) then
+                    if (abs(kineListRela%coefMultReal(iNodeMast+1)-1.0d0) .lt. 1.0d-02) then
+                        call utmess('A', 'CHARGES7_1')
+                        goto 290
+                    end if
+                end if
+                kineListRela%nodeName(iNodeMast+1) = nodeMastName
+                kineListRela%coefMultReal(iNodeMast+1) = nodeMastCoef
+            end do
 
 ! ----- Affect linear relation
-        nbTerm = nbNodeMast + 1
-        call kineListRelaSave(title, nbTerm, kineListRela, epsiDebg_ = ASTER_TRUE)
+            nbTerm = nbNodeMast+1
+            call kineListRelaSave(title, nbTerm, kineListRela, epsiDebg_=ASTER_TRUE)
 
-290     continue
-        shifNodeMast = shifNodeMast + nbNodeMast
+290         continue
+            shifNodeMast = shifNodeMast+nbNodeMast
 
-    enddo
+        end do
 !
 !   ------------------------------------------------------------------------------------------------
-end subroutine
+    end subroutine
 ! --------------------------------------------------------------------------------------------------
 !
 ! kineLoadGlueMeshSetLCS
@@ -984,55 +983,55 @@ end subroutine
 ! IO  kineListRela     : object for list of linear relations
 !
 ! --------------------------------------------------------------------------------------------------
-subroutine kineLoadGlueMeshSetLCS(geomDime, nbNodeMast,&
-                                  iLink,&
-                                  normSlav, nodeSkinToBody,&
-                                  lApplyRota, rotaMatr,&
-                                  kineListRela)
+    subroutine kineLoadGlueMeshSetLCS(geomDime, nbNodeMast, &
+                                      iLink, &
+                                      normSlav, nodeSkinToBody, &
+                                      lApplyRota, rotaMatr, &
+                                      kineListRela)
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
-    integer, intent(in) :: geomDime, nbNodeMast
-    integer, intent(in) :: iLink
-    real(kind=8), pointer :: normSlav(:)
-    integer, pointer :: nodeSkinToBody(:)
-    aster_logical, intent(in) :: lApplyRota
-    real(kind=8), intent(in) :: rotaMatr(3, 3)
-    type(KINE_LIST_RELA), intent(inout) :: kineListRela
+        integer, intent(in) :: geomDime, nbNodeMast
+        integer, intent(in) :: iLink
+        real(kind=8), pointer :: normSlav(:)
+        integer, pointer :: nodeSkinToBody(:)
+        aster_logical, intent(in) :: lApplyRota
+        real(kind=8), intent(in) :: rotaMatr(3, 3)
+        type(KINE_LIST_RELA), intent(inout) :: kineListRela
 ! - Local
-    integer :: iNodeMast, iGeomDime, jGeomDime
-    real(kind=8) :: normal(3)
+        integer :: iNodeMast, iGeomDime, jGeomDime
+        real(kind=8) :: normal(3)
 !   ------------------------------------------------------------------------------------------------
 !
-    kineListRela%LCSType(1:nbNodeMast+1) = geomDime
-    if (lApplyRota) then
-        normal = 0.d0
-        do iGeomDime = 1, geomDime
-            do jGeomDime = 1, geomDime
-                normal(iGeomDime) = normal(iGeomDime) + &
-                                    rotaMatr(jGeomDime,iGeomDime)*&
-                                    normSlav(geomDime*(nodeSkinToBody(iLink)-1)+jGeomDime)
-            enddo
-        enddo
-        do iGeomDime = 1, geomDime
-            kineListRela%LCSVale(iGeomDime) =&
-                normSlav(geomDime*(nodeSkinToBody(iLink)-1)+iGeomDime)
-        enddo
-        do iNodeMast = 2, nbNodeMast + 1
+        kineListRela%LCSType(1:nbNodeMast+1) = geomDime
+        if (lApplyRota) then
+            normal = 0.d0
             do iGeomDime = 1, geomDime
-                kineListRela%LCSVale(3*(iNodeMast-1)+iGeomDime) = - normal(iGeomDime)
-            enddo
-        enddo
-    else
-        do iNodeMast = 1, nbNodeMast + 1
+                do jGeomDime = 1, geomDime
+                    normal(iGeomDime) = normal(iGeomDime)+ &
+                                        rotaMatr(jGeomDime, iGeomDime)* &
+                                        normSlav(geomDime*(nodeSkinToBody(iLink)-1)+jGeomDime)
+                end do
+            end do
             do iGeomDime = 1, geomDime
-                kineListRela%LCSVale(3*(iNodeMast-1)+iGeomDime) =&
+                kineListRela%LCSVale(iGeomDime) = &
                     normSlav(geomDime*(nodeSkinToBody(iLink)-1)+iGeomDime)
-            enddo
-        enddo
-    endif
+            end do
+            do iNodeMast = 2, nbNodeMast+1
+                do iGeomDime = 1, geomDime
+                    kineListRela%LCSVale(3*(iNodeMast-1)+iGeomDime) = -normal(iGeomDime)
+                end do
+            end do
+        else
+            do iNodeMast = 1, nbNodeMast+1
+                do iGeomDime = 1, geomDime
+                    kineListRela%LCSVale(3*(iNodeMast-1)+iGeomDime) = &
+                        normSlav(geomDime*(nodeSkinToBody(iLink)-1)+iGeomDime)
+                end do
+            end do
+        end if
 !
 !   ------------------------------------------------------------------------------------------------
-end subroutine
+    end subroutine
 ! --------------------------------------------------------------------------------------------------
 !
 ! kineLoadMeshLinkVoVo
@@ -1063,114 +1062,114 @@ end subroutine
 ! IO  kineListRela     : object for list of linear relations
 !
 ! --------------------------------------------------------------------------------------------------
-subroutine kineLoadMeshLinkVoVo(meshZ, geomDime,&
-                                lApplyRota, rotaMatr,&
-                                useNormal, normSlav, nodeSkinToBody,&
-                                corres,&
-                                nbEqua, nbDofSlav, nbDofMast, dofLinkName,&
-                                kineListRela)
+    subroutine kineLoadMeshLinkVoVo(meshZ, geomDime, &
+                                    lApplyRota, rotaMatr, &
+                                    useNormal, normSlav, nodeSkinToBody, &
+                                    corres, &
+                                    nbEqua, nbDofSlav, nbDofMast, dofLinkName, &
+                                    kineListRela)
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
-    character(len=*), intent(in) :: meshZ
-    integer, intent(in) :: geomDime
-    aster_logical, intent(in) :: lApplyRota
-    real(kind=8), intent(in) :: rotaMatr(3, 3)
-    aster_logical, intent(in) :: useNormal
-    real(kind=8), pointer :: normSlav(:)
-    integer, pointer :: nodeSkinToBody(:)
-    character(len=16), intent(in) :: corres
-    integer, intent(in) :: nbEqua, nbDofSlav, nbDofMast
-    character(len=8), dimension(:,:) :: dofLinkName
-    type(KINE_LIST_RELA), intent(inout) :: kineListRela
+        character(len=*), intent(in) :: meshZ
+        integer, intent(in) :: geomDime
+        aster_logical, intent(in) :: lApplyRota
+        real(kind=8), intent(in) :: rotaMatr(3, 3)
+        aster_logical, intent(in) :: useNormal
+        real(kind=8), pointer :: normSlav(:)
+        integer, pointer :: nodeSkinToBody(:)
+        character(len=16), intent(in) :: corres
+        integer, intent(in) :: nbEqua, nbDofSlav, nbDofMast
+        character(len=8), dimension(:, :) :: dofLinkName
+        type(KINE_LIST_RELA), intent(inout) :: kineListRela
 ! - Local
-    character(len=80), parameter :: title = 'LIAISON_MAIL'
-    integer :: iNodeMast, iLink, iTerm
-    integer :: shifNodeMast, nbLink, nodeSlavNume, nodeMastNume
-    character(len=8) :: nodeSlavName, nodeMastName
-    character(len=8) :: mesh, dofSlavName, dofMastName
-    real(kind=8) :: nodeMastCoef
-    integer :: nbNodeMast, nbTerm
-    integer :: iDofMast, iDofSlav, iEqua
-    integer, pointer :: pjefNu(:) => null(), pjefNb(:) => null()
-    real(kind=8), pointer :: pjefCf(:) => null()
+        character(len=80), parameter :: title = 'LIAISON_MAIL'
+        integer :: iNodeMast, iLink, iTerm
+        integer :: shifNodeMast, nbLink, nodeSlavNume, nodeMastNume
+        character(len=8) :: nodeSlavName, nodeMastName
+        character(len=8) :: mesh, dofSlavName, dofMastName
+        real(kind=8) :: nodeMastCoef
+        integer :: nbNodeMast, nbTerm
+        integer :: iDofMast, iDofSlav, iEqua
+        integer, pointer :: pjefNu(:) => null(), pjefNb(:) => null()
+        real(kind=8), pointer :: pjefCf(:) => null()
 !   ------------------------------------------------------------------------------------------------
 !
-    mesh = meshZ
+        mesh = meshZ
 
 ! - Acces to link parameters
-    call jelira(corres//'.PJEF_NB', 'LONMAX', nbLink)
-    call jeveuo(corres//'.PJEF_NB', 'L', vi = pjefNb)
-    call jeveuo(corres//'.PJEF_NU', 'L', vi = pjefNu)
-    call jeveuo(corres//'.PJEF_CF', 'L', vr = pjefCf)
+        call jelira(corres//'.PJEF_NB', 'LONMAX', nbLink)
+        call jeveuo(corres//'.PJEF_NB', 'L', vi=pjefNb)
+        call jeveuo(corres//'.PJEF_NU', 'L', vi=pjefNu)
+        call jeveuo(corres//'.PJEF_CF', 'L', vr=pjefCf)
 
 ! - Create linear relations
-    shifNodeMast = 0
-    do iLink = 1, nbLink
-        nbNodeMast = pjefNb(iLink)
-        if (nbNodeMast .eq. 0) cycle
+        shifNodeMast = 0
+        do iLink = 1, nbLink
+            nbNodeMast = pjefNb(iLink)
+            if (nbNodeMast .eq. 0) cycle
 
 ! ----- Current slave node
-        nodeSlavNume = iLink
-        call jenuno(jexnum(mesh//'.NOMNOE', nodeSlavNume), nodeSlavName)
+            nodeSlavNume = iLink
+            call jenuno(jexnum(mesh//'.NOMNOE', nodeSlavNume), nodeSlavName)
 
 ! ----- Set local coordinate system
-        if (useNormal) then
-            call kineLoadGlueMeshSetLCS(geomDime, nbNodeMast,&
-                                        iLink,&
-                                        normSlav, nodeSkinToBody,&
-                                        lApplyRota, rotaMatr,&
-                                        kineListRela)
-        endif
+            if (useNormal) then
+                call kineLoadGlueMeshSetLCS(geomDime, nbNodeMast, &
+                                            iLink, &
+                                            normSlav, nodeSkinToBody, &
+                                            lApplyRota, rotaMatr, &
+                                            kineListRela)
+            end if
 
 ! ----- Loop on equations
-        do iEqua = 1, nbEqua
-            do iDofMast = 1, nbDofMast
+            do iEqua = 1, nbEqua
+                do iDofMast = 1, nbDofMast
 ! ------------- Number of terms
-                nbTerm = (nbNodeMast + nbDofSlav)
-                ASSERT(nbTerm .le. kineListRela%nbTermMaxi)
+                    nbTerm = (nbNodeMast+nbDofSlav)
+                    ASSERT(nbTerm .le. kineListRela%nbTermMaxi)
 
 ! ------------- Init list of relations
-                call kineListRelaInit(kineListRela)
+                    call kineListRelaInit(kineListRela)
 
 ! ------------- Coefficient for slave node
-                iTerm = 0
-                do iDofSlav = 1, nbDofSlav
-                    iTerm = iTerm + 1
-                    dofSlavName = dofLinkName(iEqua, 1 + iDofSlav)
-                    kineListRela%nodeName(iTerm) = nodeSlavName
-                    if (lApplyRota) then
-                        kineListRela%coefMultReal(iTerm) = -rotaMatr(iDofSlav, iEqua)
-                    else
-                        kineListRela%coefMultReal(iTerm) = -1.d0
-                    endif
-                    kineListRela%dofName(iTerm) = dofSlavName
-                end do
+                    iTerm = 0
+                    do iDofSlav = 1, nbDofSlav
+                        iTerm = iTerm+1
+                        dofSlavName = dofLinkName(iEqua, 1+iDofSlav)
+                        kineListRela%nodeName(iTerm) = nodeSlavName
+                        if (lApplyRota) then
+                            kineListRela%coefMultReal(iTerm) = -rotaMatr(iDofSlav, iEqua)
+                        else
+                            kineListRela%coefMultReal(iTerm) = -1.d0
+                        end if
+                        kineListRela%dofName(iTerm) = dofSlavName
+                    end do
 
 ! ------------- Coefficients for master nodes
-                dofMastName = dofLinkName(iEqua, 1)
-                do iNodeMast = 1, nbNodeMast
-                    iTerm = iTerm + 1
-                    nodeMastNume = pjefNu(shifNodeMast+iNodeMast)
-                    nodeMastCoef = pjefCf(shifNodeMast+iNodeMast)
-                    call jenuno(jexnum(mesh//'.NOMNOE', nodeMastNume), nodeMastName)
-                    kineListRela%nodeName(iTerm) = nodeMastName
-                    kineListRela%coefMultReal(iTerm) = nodeMastCoef
-                    kineListRela%dofName(iTerm) = dofMastName
-                enddo
-                ASSERT(iTerm .eq. nbTerm)
+                    dofMastName = dofLinkName(iEqua, 1)
+                    do iNodeMast = 1, nbNodeMast
+                        iTerm = iTerm+1
+                        nodeMastNume = pjefNu(shifNodeMast+iNodeMast)
+                        nodeMastCoef = pjefCf(shifNodeMast+iNodeMast)
+                        call jenuno(jexnum(mesh//'.NOMNOE', nodeMastNume), nodeMastName)
+                        kineListRela%nodeName(iTerm) = nodeMastName
+                        kineListRela%coefMultReal(iTerm) = nodeMastCoef
+                        kineListRela%dofName(iTerm) = dofMastName
+                    end do
+                    ASSERT(iTerm .eq. nbTerm)
 
 ! ------------- Affect linear relation
-                call kineListRelaSave(title, nbTerm, kineListRela, epsiDebg_ = ASTER_TRUE)
+                    call kineListRelaSave(title, nbTerm, kineListRela, epsiDebg_=ASTER_TRUE)
 
+                end do
             end do
-        end do
 
 ! ----- Next master nodes
-        shifNodeMast = shifNodeMast + nbNodeMast
-    enddo
+            shifNodeMast = shifNodeMast+nbNodeMast
+        end do
 !
 !   ------------------------------------------------------------------------------------------------
-end subroutine
+    end subroutine
 ! --------------------------------------------------------------------------------------------------
 !
 ! kineLoadGlueMeshVoSH
@@ -1183,161 +1182,161 @@ end subroutine
 ! IO  kineListRela     : object for list of linear relations
 !
 ! --------------------------------------------------------------------------------------------------
-subroutine kineLoadMeshLinkVoSh(meshZ, geomDime,&
-                                corres, kineListRela)
+    subroutine kineLoadMeshLinkVoSh(meshZ, geomDime, &
+                                    corres, kineListRela)
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
-    character(len=*), intent(in) :: meshZ
-    integer, intent(in) :: geomDime
-    character(len=16), intent(in) :: corres
-    type(KINE_LIST_RELA), intent(inout) :: kineListRela
+        character(len=*), intent(in) :: meshZ
+        integer, intent(in) :: geomDime
+        character(len=16), intent(in) :: corres
+        type(KINE_LIST_RELA), intent(inout) :: kineListRela
 ! - Local
-    character(len=80), parameter :: title = 'LIAISON_MAIL-MASSIF_COQUE'
-    character(len=8), parameter :: dofDispName(3) = (/'DX', 'DY', 'DZ'/)
-    character(len=8), parameter :: dofRotaName(2, 3) = &
-        reshape((/'DRY', 'DRZ',&
-                  'DRZ', 'DRX',&
-                  'DRX', 'DRY'/),(/2, 3/))
-    integer, parameter :: dofRotaIndx(2, 3) = &
-        reshape((/3, 2,&
-                  1, 3,&
-                  2, 1/),(/2, 3/))
-    aster_logical :: lCoque3d
-    integer :: iNodeMast, iNodeMastDisp, iNodeMastRota, iLink, iDime, iTerm, shiftNodeMast
-    integer :: nbLink, nodeSlavNume, nodeMastNume, cellMastNume
-    character(len=8) :: nodeSlavName, nodeMastName, dofName
-    character(len=8) :: mesh, elrefa
-    real(kind=8) :: nodeMastCoef
-    integer :: nbNodeMast, nbNodeMastDisp, nbNodeMastRota, nbTerm
-    real(kind=8), pointer :: meshVale(:) => null()
-    real(kind=8) :: a(3), n2(3), an2(3), xr3(2), ff(8)
-    integer, pointer :: pjefNu(:) => null(), pjefNb(:) => null(), pjefM1(:) => null()
-    real(kind=8), pointer :: pjefCf(:) => null(), pjefCo(:) => null()
+        character(len=80), parameter :: title = 'LIAISON_MAIL-MASSIF_COQUE'
+        character(len=8), parameter :: dofDispName(3) = (/'DX', 'DY', 'DZ'/)
+        character(len=8), parameter :: dofRotaName(2, 3) = &
+                                       reshape((/'DRY', 'DRZ', &
+                                                 'DRZ', 'DRX', &
+                                                 'DRX', 'DRY'/), (/2, 3/))
+        integer, parameter :: dofRotaIndx(2, 3) = &
+                              reshape((/3, 2, &
+                                        1, 3, &
+                                        2, 1/), (/2, 3/))
+        aster_logical :: lCoque3d
+        integer :: iNodeMast, iNodeMastDisp, iNodeMastRota, iLink, iDime, iTerm, shiftNodeMast
+        integer :: nbLink, nodeSlavNume, nodeMastNume, cellMastNume
+        character(len=8) :: nodeSlavName, nodeMastName, dofName
+        character(len=8) :: mesh, elrefa
+        real(kind=8) :: nodeMastCoef
+        integer :: nbNodeMast, nbNodeMastDisp, nbNodeMastRota, nbTerm
+        real(kind=8), pointer :: meshVale(:) => null()
+        real(kind=8) :: a(3), n2(3), an2(3), xr3(2), ff(8)
+        integer, pointer :: pjefNu(:) => null(), pjefNb(:) => null(), pjefM1(:) => null()
+        real(kind=8), pointer :: pjefCf(:) => null(), pjefCo(:) => null()
 !   ------------------------------------------------------------------------------------------------
 !
-    mesh = meshZ
+        mesh = meshZ
 
 ! - Acces to link parameters
-    call jelira(corres//'.PJEF_NB', 'LONMAX', nbLink)
-    call jeveuo(corres//'.PJEF_M1', 'L', vi = pjefM1)
-    call jeveuo(corres//'.PJEF_NB', 'L', vi = pjefNb)
-    call jeveuo(corres//'.PJEF_NU', 'L', vi = pjefNu)
-    call jeveuo(corres//'.PJEF_CF', 'L', vr = pjefCf)
-    call jeveuo(corres//'.PJEF_CO', 'L', vr = pjefCo)
+        call jelira(corres//'.PJEF_NB', 'LONMAX', nbLink)
+        call jeveuo(corres//'.PJEF_M1', 'L', vi=pjefM1)
+        call jeveuo(corres//'.PJEF_NB', 'L', vi=pjefNb)
+        call jeveuo(corres//'.PJEF_NU', 'L', vi=pjefNu)
+        call jeveuo(corres//'.PJEF_CF', 'L', vr=pjefCf)
+        call jeveuo(corres//'.PJEF_CO', 'L', vr=pjefCo)
 
 ! - Access to mesh
-    call jeveuo(mesh//'.COORDO    .VALE', 'L', vr = meshVale)
-    ASSERT(geomDime .eq. 3)
+        call jeveuo(mesh//'.COORDO    .VALE', 'L', vr=meshVale)
+        ASSERT(geomDime .eq. 3)
 
 ! - Create linear relations
-    shiftNodeMast = 0
-    do iLink = 1, nbLink
+        shiftNodeMast = 0
+        do iLink = 1, nbLink
 ! ----- Master cell
-        cellMastNume = pjefM1(iLink)
-        if (cellMastNume .eq. 0) cycle
+            cellMastNume = pjefM1(iLink)
+            if (cellMastNume .eq. 0) cycle
 
 ! ----- Current slave node
-        nodeSlavNume = iLink
-        call jenuno(jexnum(mesh//'.NOMNOE', nodeSlavNume), nodeSlavName)
+            nodeSlavNume = iLink
+            call jenuno(jexnum(mesh//'.NOMNOE', nodeSlavNume), nodeSlavName)
 
 ! ----- Number of master nodes
-        nbNodeMast = pjefNb(iLink)
-        ASSERT(nbNodeMast .ge. 3 .and. nbNodeMast .le. 9)
-        lCoque3d = (nbNodeMast .eq. 7 .or. nbNodeMast .eq. 9)
+            nbNodeMast = pjefNb(iLink)
+            ASSERT(nbNodeMast .ge. 3 .and. nbNodeMast .le. 9)
+            lCoque3d = (nbNodeMast .eq. 7 .or. nbNodeMast .eq. 9)
 
 ! ----- Number of master nodes with displacement and rotation dof (careful with COQUE_3D !)
-        nbNodeMastDisp = nbNodeMast
-        if (lCoque3d) then
-            nbNodeMastDisp = nbNodeMast - 1
-        endif
-        nbNodeMastRota = nbNodeMast
+            nbNodeMastDisp = nbNodeMast
+            if (lCoque3d) then
+                nbNodeMastDisp = nbNodeMast-1
+            end if
+            nbNodeMastRota = nbNodeMast
 
 ! ----- Get shape functions
-        if (lCoque3d) then
-            xr3(1) = pjefCo(3*(nodeSlavNume-1)+1)
-            xr3(2) = pjefCo(3*(nodeSlavNume-1)+2)
-            if (nbNodeMastDisp .eq. 6) then
-                elrefa = 'TR6'
+            if (lCoque3d) then
+                xr3(1) = pjefCo(3*(nodeSlavNume-1)+1)
+                xr3(2) = pjefCo(3*(nodeSlavNume-1)+2)
+                if (nbNodeMastDisp .eq. 6) then
+                    elrefa = 'TR6'
+                else
+                    elrefa = 'QU8'
+                end if
+                call elrfvf(elrefa, xr3, ff, nbNodeMastDisp)
             else
-                elrefa = 'QU8'
-            endif
-            call elrfvf(elrefa, xr3, ff, nbNodeMastDisp)
-        else
-            do iNodeMast = 1, nbNodeMast
-                ff(iNodeMast) = pjefCf(shiftNodeMast+iNodeMast)
-            end do
-        endif
+                do iNodeMast = 1, nbNodeMast
+                    ff(iNodeMast) = pjefCf(shiftNodeMast+iNodeMast)
+                end do
+            end if
 
 ! ----- Compute vector between shell node and volumic
-        do iDime = 1, 3
-            a(iDime) = 0.d0
-            do iNodeMast = 1, nbNodeMast
-                nodeMastNume = pjefNu(shiftNodeMast + iNodeMast)
-                nodeMastCoef = pjefCf(shiftNodeMast + iNodeMast)
-                a(iDime) = a(iDime) + nodeMastCoef * meshVale(3*(nodeMastNume-1) + iDime)
-            enddo
-            n2(iDime) = meshVale(3*(nodeSlavNume-1) + iDime)
-            an2(iDime) = n2(iDime) - a(iDime)
-        end do
+            do iDime = 1, 3
+                a(iDime) = 0.d0
+                do iNodeMast = 1, nbNodeMast
+                    nodeMastNume = pjefNu(shiftNodeMast+iNodeMast)
+                    nodeMastCoef = pjefCf(shiftNodeMast+iNodeMast)
+                    a(iDime) = a(iDime)+nodeMastCoef*meshVale(3*(nodeMastNume-1)+iDime)
+                end do
+                n2(iDime) = meshVale(3*(nodeSlavNume-1)+iDime)
+                an2(iDime) = n2(iDime)-a(iDime)
+            end do
 
 ! ----- Total number of terms for each link
-        nbTerm = 1 + 2*nbNodeMastRota + nbNodeMastDisp
-        ASSERT(nbTerm .le. kineListRela%nbTermMaxi)
+            nbTerm = 1+2*nbNodeMastRota+nbNodeMastDisp
+            ASSERT(nbTerm .le. kineListRela%nbTermMaxi)
 
 ! ----- Set local coordinate system
-        do iDime = 1, 3
-            dofName = dofDispName(iDime)
+            do iDime = 1, 3
+                dofName = dofDispName(iDime)
 
 ! --------- Init list of relations
-            call kineListRelaInit(kineListRela)
+                call kineListRelaInit(kineListRela)
 
 ! --------- Slave node (displacements only)
-            iTerm = 1
-            kineListRela%dofName(iTerm) = dofName
-            kineListRela%nodeName(iTerm) = nodeSlavName
-            kineListRela%coefMultReal(iTerm) = -1.d0
-            iTerm = iTerm + 1
+                iTerm = 1
+                kineListRela%dofName(iTerm) = dofName
+                kineListRela%nodeName(iTerm) = nodeSlavName
+                kineListRela%coefMultReal(iTerm) = -1.d0
+                iTerm = iTerm+1
 
 ! --------- Loop on master nodes (displacements)
-            do iNodeMastDisp = 1, nbNodeMastDisp
-                nodeMastNume = pjefNu(shiftNodeMast + iNodeMastDisp)
-                nodeMastCoef = ff(iNodeMastDisp)
-                call jenuno(jexnum(mesh//'.NOMNOE', nodeMastNume), nodeMastName)
-                kineListRela%nodeName(iTerm) = nodeMastName
-                kineListRela%dofName(iTerm) = dofName
-                kineListRela%coefMultReal(iTerm) = nodeMastCoef
-                iTerm = iTerm + 1
-            end do
+                do iNodeMastDisp = 1, nbNodeMastDisp
+                    nodeMastNume = pjefNu(shiftNodeMast+iNodeMastDisp)
+                    nodeMastCoef = ff(iNodeMastDisp)
+                    call jenuno(jexnum(mesh//'.NOMNOE', nodeMastNume), nodeMastName)
+                    kineListRela%nodeName(iTerm) = nodeMastName
+                    kineListRela%dofName(iTerm) = dofName
+                    kineListRela%coefMultReal(iTerm) = nodeMastCoef
+                    iTerm = iTerm+1
+                end do
 
 ! --------- Loop on master nodes (rotations)
-            do iNodeMastRota = 1, nbNodeMastRota
-                nodeMastNume = pjefNu(shiftNodeMast + iNodeMastRota)
-                nodeMastCoef = pjefCf(shiftNodeMast + iNodeMastRota)
-                call jenuno(jexnum(mesh//'.NOMNOE', nodeMastNume), nodeMastName)
-                kineListRela%nodeName(iTerm - 1 + 1) = nodeMastName
-                kineListRela%nodeName(iTerm - 1 + 2) = nodeMastName
-                kineListRela%dofName(iTerm - 1 + 1) = dofRotaName(1, iDime)
-                kineListRela%dofName(iTerm - 1 + 2) = dofRotaName(2, iDime)
-                kineListRela%coefMultReal(iTerm - 1 + 1) =&
-                    + nodeMastCoef * an2(dofRotaIndx(1, iDime))
-                kineListRela%coefMultReal(iTerm - 1 + 2) =&
-                    - nodeMastCoef * an2(dofRotaIndx(2, iDime))
-                iTerm = iTerm + 2
-            end do
+                do iNodeMastRota = 1, nbNodeMastRota
+                    nodeMastNume = pjefNu(shiftNodeMast+iNodeMastRota)
+                    nodeMastCoef = pjefCf(shiftNodeMast+iNodeMastRota)
+                    call jenuno(jexnum(mesh//'.NOMNOE', nodeMastNume), nodeMastName)
+                    kineListRela%nodeName(iTerm-1+1) = nodeMastName
+                    kineListRela%nodeName(iTerm-1+2) = nodeMastName
+                    kineListRela%dofName(iTerm-1+1) = dofRotaName(1, iDime)
+                    kineListRela%dofName(iTerm-1+2) = dofRotaName(2, iDime)
+                    kineListRela%coefMultReal(iTerm-1+1) = &
+                        +nodeMastCoef*an2(dofRotaIndx(1, iDime))
+                    kineListRela%coefMultReal(iTerm-1+2) = &
+                        -nodeMastCoef*an2(dofRotaIndx(2, iDime))
+                    iTerm = iTerm+2
+                end do
 
-            ASSERT(iTerm .eq. nbTerm + 1)
+                ASSERT(iTerm .eq. nbTerm+1)
 
 ! --------- Affect linear relation
-            call kineListRelaSave(title, nbTerm, kineListRela)
+                call kineListRelaSave(title, nbTerm, kineListRela)
+
+            end do
+! ----- Next master node
+            shiftNodeMast = shiftNodeMast+nbNodeMast
 
         end do
-! ----- Next master node
-        shiftNodeMast = shiftNodeMast + nbNodeMast
-
-    enddo
 !
 !   ------------------------------------------------------------------------------------------------
-end subroutine
+    end subroutine
 ! --------------------------------------------------------------------------------------------------
 !
 ! kineLoadMeshLinkShVo
@@ -1354,250 +1353,250 @@ end subroutine
 ! IO  kineListRela     : object for list of linear relations
 !
 ! --------------------------------------------------------------------------------------------------
-subroutine kineLoadMeshLinkShVo(meshZ, geomDime,&
-                                corres, corre1, corre2, corre3,&
-                                kineListRela)
+    subroutine kineLoadMeshLinkShVo(meshZ, geomDime, &
+                                    corres, corre1, corre2, corre3, &
+                                    kineListRela)
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
-    character(len=*), intent(in) :: meshZ
-    integer, intent(in) :: geomDime
-    character(len=16), intent(in) :: corres, corre1, corre2, corre3
-    type(KINE_LIST_RELA), intent(inout) :: kineListRela
+        character(len=*), intent(in) :: meshZ
+        integer, intent(in) :: geomDime
+        character(len=16), intent(in) :: corres, corre1, corre2, corre3
+        type(KINE_LIST_RELA), intent(inout) :: kineListRela
 ! - Local
-    character(len=80), parameter :: title = 'LIAISON_MAIL-COQUE_MASSIF'
-    character(len=8), parameter :: dofDispName(3) = (/'DX', 'DY', 'DZ'/)
-    integer :: iNodeMast, iNodeMastSup, iNodeMastInf, iTerm, iDime
-    integer :: shiftNodeMast, shiftNodeMastSup, shiftNodeMastInf, cellMastNume
-    integer :: iLink, nbLink, nodeSlavNume, nodeMastNume
-    character(len=8) :: nodeSlavName, nodeMastName, dofName
-    character(len=8) :: mesh
-    real(kind=8) :: nodeMastCoef, thickness, normalVect(3), mat33(3, 3)
-    integer :: nbNodeMast, nbNodeMastSup, nbNodeMastInf, nbTerm
-    real(kind=8), pointer :: meshVale(:) => null()
-    integer, pointer :: pjefNu(:) => null(), pjefNb(:) => null(), pjefM1(:) => null()
-    real(kind=8), pointer :: pjefCf(:) => null(), pjefCo(:) => null()
-    integer, pointer :: pjef1Nu(:) => null(), pjef1Nb(:) => null()
-    real(kind=8), pointer :: pjef1Cf(:) => null()
-    integer, pointer :: pjef2Nu(:) => null(), pjef2Nb(:) => null()
-    real(kind=8), pointer :: pjef2Cf(:) => null()
-    real(kind=8), pointer :: thickNormal(:) => null()
+        character(len=80), parameter :: title = 'LIAISON_MAIL-COQUE_MASSIF'
+        character(len=8), parameter :: dofDispName(3) = (/'DX', 'DY', 'DZ'/)
+        integer :: iNodeMast, iNodeMastSup, iNodeMastInf, iTerm, iDime
+        integer :: shiftNodeMast, shiftNodeMastSup, shiftNodeMastInf, cellMastNume
+        integer :: iLink, nbLink, nodeSlavNume, nodeMastNume
+        character(len=8) :: nodeSlavName, nodeMastName, dofName
+        character(len=8) :: mesh
+        real(kind=8) :: nodeMastCoef, thickness, normalVect(3), mat33(3, 3)
+        integer :: nbNodeMast, nbNodeMastSup, nbNodeMastInf, nbTerm
+        real(kind=8), pointer :: meshVale(:) => null()
+        integer, pointer :: pjefNu(:) => null(), pjefNb(:) => null(), pjefM1(:) => null()
+        real(kind=8), pointer :: pjefCf(:) => null(), pjefCo(:) => null()
+        integer, pointer :: pjef1Nu(:) => null(), pjef1Nb(:) => null()
+        real(kind=8), pointer :: pjef1Cf(:) => null()
+        integer, pointer :: pjef2Nu(:) => null(), pjef2Nb(:) => null()
+        real(kind=8), pointer :: pjef2Cf(:) => null()
+        real(kind=8), pointer :: thickNormal(:) => null()
 !   ------------------------------------------------------------------------------------------------
 !
-    mesh = meshZ
+        mesh = meshZ
 
 ! - Acces to link parameters
-    call jelira(corres//'.PJEF_NB', 'LONMAX', nbLink)
-    call jeveuo(corres//'.PJEF_M1', 'L', vi = pjefM1)
-    call jeveuo(corres//'.PJEF_NB', 'L', vi = pjefNb)
-    call jeveuo(corres//'.PJEF_NU', 'L', vi = pjefNu)
-    call jeveuo(corres//'.PJEF_CF', 'L', vr = pjefCf)
-    call jeveuo(corres//'.PJEF_CO', 'L', vr = pjefCo)
-    call jeveuo(corre1//'.PJEF_NB', 'L', vi = pjef1Nb)
-    call jeveuo(corre1//'.PJEF_NU', 'L', vi = pjef1Nu)
-    call jeveuo(corre1//'.PJEF_CF', 'L', vr = pjef1Cf)
-    call jeveuo(corre2//'.PJEF_NB', 'L', vi = pjef2Nb)
-    call jeveuo(corre2//'.PJEF_NU', 'L', vi = pjef2Nu)
-    call jeveuo(corre2//'.PJEF_CF', 'L', vr = pjef2Cf)
-    call jeveuo(corre3, 'L', vr = thickNormal)
+        call jelira(corres//'.PJEF_NB', 'LONMAX', nbLink)
+        call jeveuo(corres//'.PJEF_M1', 'L', vi=pjefM1)
+        call jeveuo(corres//'.PJEF_NB', 'L', vi=pjefNb)
+        call jeveuo(corres//'.PJEF_NU', 'L', vi=pjefNu)
+        call jeveuo(corres//'.PJEF_CF', 'L', vr=pjefCf)
+        call jeveuo(corres//'.PJEF_CO', 'L', vr=pjefCo)
+        call jeveuo(corre1//'.PJEF_NB', 'L', vi=pjef1Nb)
+        call jeveuo(corre1//'.PJEF_NU', 'L', vi=pjef1Nu)
+        call jeveuo(corre1//'.PJEF_CF', 'L', vr=pjef1Cf)
+        call jeveuo(corre2//'.PJEF_NB', 'L', vi=pjef2Nb)
+        call jeveuo(corre2//'.PJEF_NU', 'L', vi=pjef2Nu)
+        call jeveuo(corre2//'.PJEF_CF', 'L', vr=pjef2Cf)
+        call jeveuo(corre3, 'L', vr=thickNormal)
 
 ! - Access to mesh
-    call jeveuo(mesh//'.COORDO    .VALE', 'L', vr = meshVale)
-    ASSERT(geomDime .eq. 3)
+        call jeveuo(mesh//'.COORDO    .VALE', 'L', vr=meshVale)
+        ASSERT(geomDime .eq. 3)
 
 ! - Create linear relations
-    shiftNodeMast = 0
-    shiftNodeMastSup = 0
-    shiftNodeMastInf = 0
-    do iLink = 1, nbLink
+        shiftNodeMast = 0
+        shiftNodeMastSup = 0
+        shiftNodeMastInf = 0
+        do iLink = 1, nbLink
 ! ----- Master cell
-        cellMastNume = pjefM1(iLink)
-        if (cellMastNume .eq. 0) cycle
+            cellMastNume = pjefM1(iLink)
+            if (cellMastNume .eq. 0) cycle
 
 ! ----- Current slave node
-        nodeSlavNume = iLink
-        call jenuno(jexnum(mesh//'.NOMNOE', nodeSlavNume), nodeSlavName)
+            nodeSlavNume = iLink
+            call jenuno(jexnum(mesh//'.NOMNOE', nodeSlavNume), nodeSlavName)
 
 ! ----- Number of master nodes
-        nbNodeMast = pjefNb(iLink)
+            nbNodeMast = pjefNb(iLink)
 
 ! ----- Link for DISPLACEMENTS
-        nbTerm = 1 + nbNodeMast
-        ASSERT(nbTerm .le. kineListRela%nbTermMaxi)
+            nbTerm = 1+nbNodeMast
+            ASSERT(nbTerm .le. kineListRela%nbTermMaxi)
 
-        do iDime = 1, 3
-            dofName = dofDispName(iDime)
+            do iDime = 1, 3
+                dofName = dofDispName(iDime)
 
 ! --------- Init list of relations
-            call kineListRelaInit(kineListRela)
+                call kineListRelaInit(kineListRela)
 
 ! --------- Slave node (displacements)
-            iTerm = 1
-            kineListRela%nodeName(iTerm) = nodeSlavName
-            kineListRela%coefMultReal(iTerm) = -1.d0
-            kineListRela%dofName(iTerm) = dofName
+                iTerm = 1
+                kineListRela%nodeName(iTerm) = nodeSlavName
+                kineListRela%coefMultReal(iTerm) = -1.d0
+                kineListRela%dofName(iTerm) = dofName
 
 ! --------- Master nodes (displacements)
-            do iNodeMast = 1, nbNodeMast
-                nodeMastNume = pjefNu(shiftNodeMast+iNodeMast)
-                nodeMastCoef = pjefCf(shiftNodeMast+iNodeMast)
-                call jenuno(jexnum(mesh//'.NOMNOE', nodeMastNume), nodeMastName)
-                if (nodeMastNume .eq. nodeSlavNume) then
-                    if (abs(nodeMastCoef-1.0d0) .lt. 1.0d-02) then
-                        call utmess('A', 'CHARGES7_1')
-                        goto 291
-                    endif
-                endif
-                iTerm = iTerm + 1
-                kineListRela%nodeName(iTerm) = nodeMastName
-                kineListRela%dofName(iTerm) = dofName
-                kineListRela%coefMultReal(iTerm) = nodeMastCoef
-            end do
+                do iNodeMast = 1, nbNodeMast
+                    nodeMastNume = pjefNu(shiftNodeMast+iNodeMast)
+                    nodeMastCoef = pjefCf(shiftNodeMast+iNodeMast)
+                    call jenuno(jexnum(mesh//'.NOMNOE', nodeMastNume), nodeMastName)
+                    if (nodeMastNume .eq. nodeSlavNume) then
+                        if (abs(nodeMastCoef-1.0d0) .lt. 1.0d-02) then
+                            call utmess('A', 'CHARGES7_1')
+                            goto 291
+                        end if
+                    end if
+                    iTerm = iTerm+1
+                    kineListRela%nodeName(iTerm) = nodeMastName
+                    kineListRela%dofName(iTerm) = dofName
+                    kineListRela%coefMultReal(iTerm) = nodeMastCoef
+                end do
 
 ! --------- Affect linear relation
-            call kineListRelaSave(title, nbTerm, kineListRela, epsiDebg_= ASTER_TRUE)
+                call kineListRelaSave(title, nbTerm, kineListRela, epsiDebg_=ASTER_TRUE)
 
- 291        continue
-        end do
+291             continue
+            end do
 
 ! ----- Nodes linked to superior and inferior faces
-        nbNodeMastSup = pjef1Nb(nodeSlavNume)
-        nbNodeMastInf = pjef2Nb(nodeSlavNume)
+            nbNodeMastSup = pjef1Nb(nodeSlavNume)
+            nbNodeMastInf = pjef2Nb(nodeSlavNume)
 
 ! ----- Link for ROTATIONS
-        nbTerm = 3*(1 + nbNodeMastInf + nbNodeMastSup)
-        ASSERT(nbTerm .le. kineListRela%nbTermMaxi)
+            nbTerm = 3*(1+nbNodeMastInf+nbNodeMastSup)
+            ASSERT(nbTerm .le. kineListRela%nbTermMaxi)
 
 ! ----- Init list of relations
-        call kineListRelaInit(kineListRela)
+            call kineListRelaInit(kineListRela)
 
 ! ----- Thickness of shell
-        normalVect = thickNormal(3*(iLink-1)+1:3*(iLink-1)+3)
-        thickness = sqrt(normalVect(1)**2 + normalVect(2)**2 + normalVect(3)**2)
-        call base3n(normalVect, mat33)
+            normalVect = thickNormal(3*(iLink-1)+1:3*(iLink-1)+3)
+            thickness = sqrt(normalVect(1)**2+normalVect(2)**2+normalVect(3)**2)
+            call base3n(normalVect, mat33)
 
 ! ----- Slave node
-        iTerm = 1
-        kineListRela%nodeName(iTerm) = nodeSlavName
-        kineListRela%coefMultReal(iTerm) = -1.d0*mat33(1, 2)
-        kineListRela%dofName(iTerm) = 'DRX'
-        iTerm = iTerm + 1
-        kineListRela%nodeName(iTerm) = nodeSlavName
-        kineListRela%coefMultReal(iTerm) = -1.d0*mat33(2, 2)
-        kineListRela%dofName(iTerm) = 'DRY'
-        iTerm = iTerm + 1
-        kineListRela%nodeName(iTerm) = nodeSlavName
-        kineListRela%coefMultReal(iTerm) = -1.d0*mat33(3, 2)
-        kineListRela%dofName(iTerm) = 'DRZ'
+            iTerm = 1
+            kineListRela%nodeName(iTerm) = nodeSlavName
+            kineListRela%coefMultReal(iTerm) = -1.d0*mat33(1, 2)
+            kineListRela%dofName(iTerm) = 'DRX'
+            iTerm = iTerm+1
+            kineListRela%nodeName(iTerm) = nodeSlavName
+            kineListRela%coefMultReal(iTerm) = -1.d0*mat33(2, 2)
+            kineListRela%dofName(iTerm) = 'DRY'
+            iTerm = iTerm+1
+            kineListRela%nodeName(iTerm) = nodeSlavName
+            kineListRela%coefMultReal(iTerm) = -1.d0*mat33(3, 2)
+            kineListRela%dofName(iTerm) = 'DRZ'
 
 ! ----- Master nodes on superior face (translations)
-        do iNodeMastSup = 1, nbNodeMastSup
-            nodeMastNume = pjef1Nu(shiftNodeMastSup + iNodeMastSup)
-            nodeMastCoef = pjef1Cf(shiftNodeMastSup + iNodeMastSup)
-            call jenuno(jexnum(mesh//'.NOMNOE', nodeMastNume), nodeMastName)
-            iTerm = iTerm + 1
-            kineListRela%nodeName(iTerm) = nodeMastName
-            kineListRela%dofName(iTerm) = 'DX'
-            kineListRela%coefMultReal(iTerm) = -(nodeMastCoef*mat33(1, 3))/thickness
-            iTerm = iTerm + 1
-            kineListRela%nodeName(iTerm) = nodeMastName
-            kineListRela%dofName(iTerm) = 'DY'
-            kineListRela%coefMultReal(iTerm) = -(nodeMastCoef*mat33(2, 3))/thickness
-            iTerm = iTerm + 1
-            kineListRela%nodeName(iTerm) = nodeMastName
-            kineListRela%dofName(iTerm) = 'DZ'
-            kineListRela%coefMultReal(iTerm) = -(nodeMastCoef*mat33(3, 3))/thickness
-        end do
+            do iNodeMastSup = 1, nbNodeMastSup
+                nodeMastNume = pjef1Nu(shiftNodeMastSup+iNodeMastSup)
+                nodeMastCoef = pjef1Cf(shiftNodeMastSup+iNodeMastSup)
+                call jenuno(jexnum(mesh//'.NOMNOE', nodeMastNume), nodeMastName)
+                iTerm = iTerm+1
+                kineListRela%nodeName(iTerm) = nodeMastName
+                kineListRela%dofName(iTerm) = 'DX'
+                kineListRela%coefMultReal(iTerm) = -(nodeMastCoef*mat33(1, 3))/thickness
+                iTerm = iTerm+1
+                kineListRela%nodeName(iTerm) = nodeMastName
+                kineListRela%dofName(iTerm) = 'DY'
+                kineListRela%coefMultReal(iTerm) = -(nodeMastCoef*mat33(2, 3))/thickness
+                iTerm = iTerm+1
+                kineListRela%nodeName(iTerm) = nodeMastName
+                kineListRela%dofName(iTerm) = 'DZ'
+                kineListRela%coefMultReal(iTerm) = -(nodeMastCoef*mat33(3, 3))/thickness
+            end do
 
 ! ----- Master nodes on inferior face (translations)
-        do iNodeMastInf = 1, nbNodeMastInf
-            nodeMastNume = pjef2Nu(shiftNodeMastInf + iNodeMastInf)
-            nodeMastCoef = pjef2Cf(shiftNodeMastInf + iNodeMastInf)
-            call jenuno(jexnum(mesh//'.NOMNOE', nodeMastNume), nodeMastName)
-            iTerm = iTerm + 1
-            kineListRela%nodeName(iTerm) = nodeMastName
-            kineListRela%dofName(iTerm) = 'DX'
-            kineListRela%coefMultReal(iTerm) = +(nodeMastCoef*mat33(1, 3))/thickness
-            iTerm = iTerm + 1
-            kineListRela%nodeName(iTerm) = nodeMastName
-            kineListRela%dofName(iTerm) = 'DY'
-            kineListRela%coefMultReal(iTerm) = +(nodeMastCoef*mat33(2, 3))/thickness
-            iTerm = iTerm + 1
-            kineListRela%nodeName(iTerm) = nodeMastName
-            kineListRela%dofName(iTerm) = 'DZ'
-            kineListRela%coefMultReal(iTerm) = +(nodeMastCoef*mat33(3, 3))/thickness
-        end do
-        ASSERT(nbTerm .eq. iTerm)
+            do iNodeMastInf = 1, nbNodeMastInf
+                nodeMastNume = pjef2Nu(shiftNodeMastInf+iNodeMastInf)
+                nodeMastCoef = pjef2Cf(shiftNodeMastInf+iNodeMastInf)
+                call jenuno(jexnum(mesh//'.NOMNOE', nodeMastNume), nodeMastName)
+                iTerm = iTerm+1
+                kineListRela%nodeName(iTerm) = nodeMastName
+                kineListRela%dofName(iTerm) = 'DX'
+                kineListRela%coefMultReal(iTerm) = +(nodeMastCoef*mat33(1, 3))/thickness
+                iTerm = iTerm+1
+                kineListRela%nodeName(iTerm) = nodeMastName
+                kineListRela%dofName(iTerm) = 'DY'
+                kineListRela%coefMultReal(iTerm) = +(nodeMastCoef*mat33(2, 3))/thickness
+                iTerm = iTerm+1
+                kineListRela%nodeName(iTerm) = nodeMastName
+                kineListRela%dofName(iTerm) = 'DZ'
+                kineListRela%coefMultReal(iTerm) = +(nodeMastCoef*mat33(3, 3))/thickness
+            end do
+            ASSERT(nbTerm .eq. iTerm)
 
 ! ----- Affect linear relation
-        call kineListRelaSave(title, nbTerm, kineListRela, epsiDebg_= ASTER_FALSE)
+            call kineListRelaSave(title, nbTerm, kineListRela, epsiDebg_=ASTER_FALSE)
 
 ! ----- Init list of relations
-        call kineListRelaInit(kineListRela)
+            call kineListRelaInit(kineListRela)
 
 ! ----- Slave node
-        iTerm = 1
-        kineListRela%nodeName(iTerm) = nodeSlavName
-        kineListRela%coefMultReal(iTerm) = -1.d0*mat33(1, 3)
-        kineListRela%dofName(iTerm) = 'DRX'
-        iTerm = iTerm + 1
-        kineListRela%nodeName(iTerm) = nodeSlavName
-        kineListRela%coefMultReal(iTerm) = -1.d0*mat33(2, 3)
-        kineListRela%dofName(iTerm) = 'DRY'
-        iTerm = iTerm + 1
-        kineListRela%nodeName(iTerm) = nodeSlavName
-        kineListRela%coefMultReal(iTerm) = -1.d0*mat33(3, 3)
-        kineListRela%dofName(iTerm) = 'DRZ'
+            iTerm = 1
+            kineListRela%nodeName(iTerm) = nodeSlavName
+            kineListRela%coefMultReal(iTerm) = -1.d0*mat33(1, 3)
+            kineListRela%dofName(iTerm) = 'DRX'
+            iTerm = iTerm+1
+            kineListRela%nodeName(iTerm) = nodeSlavName
+            kineListRela%coefMultReal(iTerm) = -1.d0*mat33(2, 3)
+            kineListRela%dofName(iTerm) = 'DRY'
+            iTerm = iTerm+1
+            kineListRela%nodeName(iTerm) = nodeSlavName
+            kineListRela%coefMultReal(iTerm) = -1.d0*mat33(3, 3)
+            kineListRela%dofName(iTerm) = 'DRZ'
 
 ! ----- Master nodes on superior face (rotations)
-        do iNodeMastSup = 1, nbNodeMastSup
-            nodeMastNume = pjef1Nu(shiftNodeMastSup + iNodeMastSup)
-            nodeMastCoef = pjef1Cf(shiftNodeMastSup + iNodeMastSup)
-            call jenuno(jexnum(mesh//'.NOMNOE', nodeMastNume), nodeMastName)
-            iTerm = iTerm + 1
-            kineListRela%nodeName(iTerm) = nodeMastName
-            kineListRela%dofName(iTerm) = 'DX'
-            kineListRela%coefMultReal(iTerm) = +(nodeMastCoef*mat33(1, 2))/thickness
-            iTerm = iTerm + 1
-            kineListRela%nodeName(iTerm) = nodeMastName
-            kineListRela%dofName(iTerm) = 'DY'
-            kineListRela%coefMultReal(iTerm) = +(nodeMastCoef*mat33(2, 2))/thickness
-            iTerm = iTerm + 1
-            kineListRela%nodeName(iTerm) = nodeMastName
-            kineListRela%dofName(iTerm) = 'DZ'
-            kineListRela%coefMultReal(iTerm) = +(nodeMastCoef*mat33(3, 2))/thickness
-        end do
+            do iNodeMastSup = 1, nbNodeMastSup
+                nodeMastNume = pjef1Nu(shiftNodeMastSup+iNodeMastSup)
+                nodeMastCoef = pjef1Cf(shiftNodeMastSup+iNodeMastSup)
+                call jenuno(jexnum(mesh//'.NOMNOE', nodeMastNume), nodeMastName)
+                iTerm = iTerm+1
+                kineListRela%nodeName(iTerm) = nodeMastName
+                kineListRela%dofName(iTerm) = 'DX'
+                kineListRela%coefMultReal(iTerm) = +(nodeMastCoef*mat33(1, 2))/thickness
+                iTerm = iTerm+1
+                kineListRela%nodeName(iTerm) = nodeMastName
+                kineListRela%dofName(iTerm) = 'DY'
+                kineListRela%coefMultReal(iTerm) = +(nodeMastCoef*mat33(2, 2))/thickness
+                iTerm = iTerm+1
+                kineListRela%nodeName(iTerm) = nodeMastName
+                kineListRela%dofName(iTerm) = 'DZ'
+                kineListRela%coefMultReal(iTerm) = +(nodeMastCoef*mat33(3, 2))/thickness
+            end do
 
 ! ----- Master nodes on inferior face (translations)
-        do iNodeMastInf = 1, nbNodeMastInf
-            nodeMastNume = pjef2Nu(shiftNodeMastInf + iNodeMastInf)
-            nodeMastCoef = pjef2Cf(shiftNodeMastInf + iNodeMastInf)
-            call jenuno(jexnum(mesh//'.NOMNOE', nodeMastNume), nodeMastName)
-            iTerm = iTerm + 1
-            kineListRela%nodeName(iTerm) = nodeMastName
-            kineListRela%dofName(iTerm) = 'DX'
-            kineListRela%coefMultReal(iTerm) = -(nodeMastCoef*mat33(1, 2))/thickness
-            iTerm = iTerm + 1
-            kineListRela%nodeName(iTerm) = nodeMastName
-            kineListRela%dofName(iTerm) = 'DY'
-            kineListRela%coefMultReal(iTerm) = -(nodeMastCoef*mat33(2, 2))/thickness
-            iTerm = iTerm + 1
-            kineListRela%nodeName(iTerm) = nodeMastName
-            kineListRela%dofName(iTerm) = 'DZ'
-            kineListRela%coefMultReal(iTerm) = -(nodeMastCoef*mat33(3, 2))/thickness
-        end do
-        ASSERT(nbTerm .eq. iTerm)
+            do iNodeMastInf = 1, nbNodeMastInf
+                nodeMastNume = pjef2Nu(shiftNodeMastInf+iNodeMastInf)
+                nodeMastCoef = pjef2Cf(shiftNodeMastInf+iNodeMastInf)
+                call jenuno(jexnum(mesh//'.NOMNOE', nodeMastNume), nodeMastName)
+                iTerm = iTerm+1
+                kineListRela%nodeName(iTerm) = nodeMastName
+                kineListRela%dofName(iTerm) = 'DX'
+                kineListRela%coefMultReal(iTerm) = -(nodeMastCoef*mat33(1, 2))/thickness
+                iTerm = iTerm+1
+                kineListRela%nodeName(iTerm) = nodeMastName
+                kineListRela%dofName(iTerm) = 'DY'
+                kineListRela%coefMultReal(iTerm) = -(nodeMastCoef*mat33(2, 2))/thickness
+                iTerm = iTerm+1
+                kineListRela%nodeName(iTerm) = nodeMastName
+                kineListRela%dofName(iTerm) = 'DZ'
+                kineListRela%coefMultReal(iTerm) = -(nodeMastCoef*mat33(3, 2))/thickness
+            end do
+            ASSERT(nbTerm .eq. iTerm)
 
 ! ----- Affect linear relation
-        call kineListRelaSave(title, nbTerm, kineListRela, epsiDebg_= ASTER_FALSE)
+            call kineListRelaSave(title, nbTerm, kineListRela, epsiDebg_=ASTER_FALSE)
 
 ! ----- Next master nodes
-        shiftNodeMast = shiftNodeMast + nbNodeMast
-        shiftNodeMastSup = shiftNodeMastSup + nbNodeMastSup
-        shiftNodeMastInf = shiftNodeMastInf + nbNodeMastInf
-    enddo
+            shiftNodeMast = shiftNodeMast+nbNodeMast
+            shiftNodeMastSup = shiftNodeMastSup+nbNodeMastSup
+            shiftNodeMastInf = shiftNodeMastInf+nbNodeMastInf
+        end do
 !
 !   ------------------------------------------------------------------------------------------------
-end subroutine
+    end subroutine
 ! --------------------------------------------------------------------------------------------------
 !
 ! kineLoadMeshLinkShSh
@@ -1610,183 +1609,182 @@ end subroutine
 ! IO  kineListRela     : object for list of linear relations
 !
 ! --------------------------------------------------------------------------------------------------
-subroutine kineLoadMeshLinkShSh(meshZ, geomDime,&
-                                corres, useDisp, dofName, kineListRela)
+    subroutine kineLoadMeshLinkShSh(meshZ, geomDime, &
+                                    corres, useDisp, dofName, kineListRela)
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
-    character(len=*), intent(in) :: meshZ
-    integer, intent(in)                 :: geomDime
-    character(len=16), intent(in)       :: corres
-    aster_logical, intent(in)           :: useDisp
-    character(len=8), pointer           :: dofName(:)
-    type(KINE_LIST_RELA), intent(inout) :: kineListRela
+        character(len=*), intent(in) :: meshZ
+        integer, intent(in)                 :: geomDime
+        character(len=16), intent(in)       :: corres
+        aster_logical, intent(in)           :: useDisp
+        character(len=8), pointer           :: dofName(:)
+        type(KINE_LIST_RELA), intent(inout) :: kineListRela
 ! - Local
-    character(len=80), parameter :: title = 'LIAISON_MAIL-COQUE'
-    character(len=8), parameter :: dofDispName(3) = (/'DX', 'DY', 'DZ'/)
-    character(len=8), parameter :: dofRotaName(3) = (/'DRX', 'DRY', 'DRZ'/)
-    integer :: iNodeMast, iTerm, iDime, iDof, nbDof
-    integer :: shiftNodeMast
-    integer :: iLink, nbLink, nodeSlavNume, nodeMastNume, cellMastNume
-    character(len=8) :: nodeSlavName, nodeMastName, LocDofName
-    character(len=8) :: mesh
-    real(kind=8) :: nodeMastCoef
-    integer :: nbNodeMast, nbTerm
-    real(kind=8), pointer :: meshVale(:) => null()
-    integer, pointer :: pjefNu(:) => null(), pjefNb(:) => null(), pjefM1(:) => null()
-    real(kind=8), pointer :: pjefCf(:) => null(), pjefCo(:) => null()
-    aster_logical :: TakeDof
+        character(len=80), parameter :: title = 'LIAISON_MAIL-COQUE'
+        character(len=8), parameter :: dofDispName(3) = (/'DX', 'DY', 'DZ'/)
+        character(len=8), parameter :: dofRotaName(3) = (/'DRX', 'DRY', 'DRZ'/)
+        integer :: iNodeMast, iTerm, iDime, iDof, nbDof
+        integer :: shiftNodeMast
+        integer :: iLink, nbLink, nodeSlavNume, nodeMastNume, cellMastNume
+        character(len=8) :: nodeSlavName, nodeMastName, LocDofName
+        character(len=8) :: mesh
+        real(kind=8) :: nodeMastCoef
+        integer :: nbNodeMast, nbTerm
+        real(kind=8), pointer :: meshVale(:) => null()
+        integer, pointer :: pjefNu(:) => null(), pjefNb(:) => null(), pjefM1(:) => null()
+        real(kind=8), pointer :: pjefCf(:) => null(), pjefCo(:) => null()
+        aster_logical :: TakeDof
 !   ------------------------------------------------------------------------------------------------
 !
-    mesh = meshZ
+        mesh = meshZ
 
 ! - Access to link parameters
-    call jelira(corres//'.PJEF_NB', 'LONMAX', nbLink)
-    call jeveuo(corres//'.PJEF_M1', 'L', vi = pjefM1)
-    call jeveuo(corres//'.PJEF_NB', 'L', vi = pjefNb)
-    call jeveuo(corres//'.PJEF_NU', 'L', vi = pjefNu)
-    call jeveuo(corres//'.PJEF_CF', 'L', vr = pjefCf)
-    call jeveuo(corres//'.PJEF_CO', 'L', vr = pjefCo)
+        call jelira(corres//'.PJEF_NB', 'LONMAX', nbLink)
+        call jeveuo(corres//'.PJEF_M1', 'L', vi=pjefM1)
+        call jeveuo(corres//'.PJEF_NB', 'L', vi=pjefNb)
+        call jeveuo(corres//'.PJEF_NU', 'L', vi=pjefNu)
+        call jeveuo(corres//'.PJEF_CF', 'L', vr=pjefCf)
+        call jeveuo(corres//'.PJEF_CO', 'L', vr=pjefCo)
 
 ! - Access to mesh
-    call jeveuo(mesh//'.COORDO    .VALE', 'L', vr = meshVale)
-    ASSERT(geomDime .eq. 3)
+        call jeveuo(mesh//'.COORDO    .VALE', 'L', vr=meshVale)
+        ASSERT(geomDime .eq. 3)
 
 ! - Create linear relations
-    shiftNodeMast = 0
-    do iLink = 1, nbLink
+        shiftNodeMast = 0
+        do iLink = 1, nbLink
 ! ----- Master cell
-        cellMastNume = pjefM1(iLink)
-        if (cellMastNume .eq. 0) cycle
+            cellMastNume = pjefM1(iLink)
+            if (cellMastNume .eq. 0) cycle
 
 ! ----- Current slave node
-        nodeSlavNume = iLink
-        call jenuno(jexnum(mesh//'.NOMNOE', nodeSlavNume), nodeSlavName)
+            nodeSlavNume = iLink
+            call jenuno(jexnum(mesh//'.NOMNOE', nodeSlavNume), nodeSlavName)
 
 ! ----- Number of master nodes
-        nbNodeMast = pjefNb(iLink)
-        ASSERT(nbNodeMast .ge. 3 .and. nbNodeMast .le. 9)
+            nbNodeMast = pjefNb(iLink)
+            ASSERT(nbNodeMast .ge. 3 .and. nbNodeMast .le. 9)
 
 ! ----- Link for DISPLACEMENTS
-        nbTerm = 1 + nbNodeMast
-        ASSERT(nbTerm .le. kineListRela%nbTermMaxi)
+            nbTerm = 1+nbNodeMast
+            ASSERT(nbTerm .le. kineListRela%nbTermMaxi)
 
 ! ----- Number of Dof to consider
-        nbDof = size(dofName)
-        ! Not necessary because the rule is in the catalog, but ...
-        !   useDisp : True, if DDL is not used ==> (not useDisp) DDL is used
-        if ( .not. useDisp ) then
-            ASSERT( (nbDof.ge.1).and.(nbDof.le.6) )
-        endif
+            nbDof = size(dofName)
+            ! Not necessary because the rule is in the catalog, but ...
+            !   useDisp : True, if DDL is not used ==> (not useDisp) DDL is used
+            if (.not. useDisp) then
+                ASSERT((nbDof .ge. 1) .and. (nbDof .le. 6))
+            end if
 
-        do iDime = 1, 3
-            LocDofName = dofDispName(iDime)
+            do iDime = 1, 3
+                LocDofName = dofDispName(iDime)
 ! --------- Is this Dof is taken into account
-            if ( .not. useDisp ) then
-                TakeDof = ASTER_FALSE
-                do iDof = 1, nbDof
-                    if ( LocDofName .eq. dofName(iDof) ) then
-                        TakeDof = ASTER_TRUE
-                        exit
-                    endif
-                enddo
-                if ( .not. TakeDof ) then
-                    cycle
-                endif
-            endif
+                if (.not. useDisp) then
+                    TakeDof = ASTER_FALSE
+                    do iDof = 1, nbDof
+                        if (LocDofName .eq. dofName(iDof)) then
+                            TakeDof = ASTER_TRUE
+                            exit
+                        end if
+                    end do
+                    if (.not. TakeDof) then
+                        cycle
+                    end if
+                end if
 
 ! --------- Init list of relations
-            call kineListRelaInit(kineListRela)
+                call kineListRelaInit(kineListRela)
 
 ! --------- Slave node (displacements)
-            iTerm = 1
-            kineListRela%nodeName(iTerm) = nodeSlavName
-            kineListRela%coefMultReal(iTerm) = -1.d0
-            kineListRela%dofName(iTerm) = LocDofName
+                iTerm = 1
+                kineListRela%nodeName(iTerm) = nodeSlavName
+                kineListRela%coefMultReal(iTerm) = -1.d0
+                kineListRela%dofName(iTerm) = LocDofName
 
 ! --------- Master nodes (displacements)
-            do iNodeMast = 1, nbNodeMast
-                nodeMastNume = pjefNu(shiftNodeMast+iNodeMast)
-                nodeMastCoef = pjefCf(shiftNodeMast+iNodeMast)
-                call jenuno(jexnum(mesh//'.NOMNOE', nodeMastNume), nodeMastName)
-                if (nodeMastNume .eq. nodeSlavNume) then
-                    if (abs(nodeMastCoef-1.0d0) .lt. 1.0d-02) then
-                        call utmess('A', 'CHARGES7_1')
-                        goto 292
-                    endif
-                endif
-                iTerm = iTerm + 1
-                kineListRela%nodeName(iTerm) = nodeMastName
-                kineListRela%dofName(iTerm) = LocDofName
-                kineListRela%coefMultReal(iTerm) = nodeMastCoef
-            end do
+                do iNodeMast = 1, nbNodeMast
+                    nodeMastNume = pjefNu(shiftNodeMast+iNodeMast)
+                    nodeMastCoef = pjefCf(shiftNodeMast+iNodeMast)
+                    call jenuno(jexnum(mesh//'.NOMNOE', nodeMastNume), nodeMastName)
+                    if (nodeMastNume .eq. nodeSlavNume) then
+                        if (abs(nodeMastCoef-1.0d0) .lt. 1.0d-02) then
+                            call utmess('A', 'CHARGES7_1')
+                            goto 292
+                        end if
+                    end if
+                    iTerm = iTerm+1
+                    kineListRela%nodeName(iTerm) = nodeMastName
+                    kineListRela%dofName(iTerm) = LocDofName
+                    kineListRela%coefMultReal(iTerm) = nodeMastCoef
+                end do
 
 ! --------- Affect linear relation
-            call kineListRelaSave(title, nbTerm, kineListRela, epsiDebg_= ASTER_TRUE)
+                call kineListRelaSave(title, nbTerm, kineListRela, epsiDebg_=ASTER_TRUE)
 
-  292       continue
+292             continue
 
-        end do
+            end do
 
 ! ----- Link for ROTATIONS
-        nbTerm = 1 + nbNodeMast
-        ASSERT(nbTerm .le. kineListRela%nbTermMaxi)
+            nbTerm = 1+nbNodeMast
+            ASSERT(nbTerm .le. kineListRela%nbTermMaxi)
 
-
-        do iDime = 1, 3
-            LocDofName = dofRotaName(iDime)
+            do iDime = 1, 3
+                LocDofName = dofRotaName(iDime)
 ! --------- Is this Dof is taken into account
-            if ( .not. useDisp ) then
-                TakeDof = ASTER_FALSE
-                do iDof = 1, nbDof
-                    if ( LocDofName .eq. dofName(iDof) ) then
-                        TakeDof = ASTER_TRUE
-                        exit
-                    endif
-                enddo
-                if ( .not. TakeDof ) then
-                    cycle
-                endif
-            endif
+                if (.not. useDisp) then
+                    TakeDof = ASTER_FALSE
+                    do iDof = 1, nbDof
+                        if (LocDofName .eq. dofName(iDof)) then
+                            TakeDof = ASTER_TRUE
+                            exit
+                        end if
+                    end do
+                    if (.not. TakeDof) then
+                        cycle
+                    end if
+                end if
 
 ! --------- Init list of relations
-            call kineListRelaInit(kineListRela)
+                call kineListRelaInit(kineListRela)
 
 ! --------- Slave node (displacements)
-            iTerm = 1
-            kineListRela%nodeName(iTerm) = nodeSlavName
-            kineListRela%coefMultReal(iTerm) = -1.d0
-            kineListRela%dofName(iTerm) = LocDofName
+                iTerm = 1
+                kineListRela%nodeName(iTerm) = nodeSlavName
+                kineListRela%coefMultReal(iTerm) = -1.d0
+                kineListRela%dofName(iTerm) = LocDofName
 
 ! --------- Master nodes (displacements)
-            do iNodeMast = 1, nbNodeMast
-                nodeMastNume = pjefNu(shiftNodeMast+iNodeMast)
-                nodeMastCoef = pjefCf(shiftNodeMast+iNodeMast)
-                call jenuno(jexnum(mesh//'.NOMNOE', nodeMastNume), nodeMastName)
-                if (nodeMastNume .eq. nodeSlavNume) then
-                    if (abs(nodeMastCoef-1.0d0) .lt. 1.0d-02) then
-                        call utmess('A', 'CHARGES7_1')
-                        goto 293
-                    endif
-                endif
-                iTerm = iTerm + 1
-                kineListRela%nodeName(iTerm) = nodeMastName
-                kineListRela%dofName(iTerm) = LocDofName
-                kineListRela%coefMultReal(iTerm) = nodeMastCoef
-            end do
+                do iNodeMast = 1, nbNodeMast
+                    nodeMastNume = pjefNu(shiftNodeMast+iNodeMast)
+                    nodeMastCoef = pjefCf(shiftNodeMast+iNodeMast)
+                    call jenuno(jexnum(mesh//'.NOMNOE', nodeMastNume), nodeMastName)
+                    if (nodeMastNume .eq. nodeSlavNume) then
+                        if (abs(nodeMastCoef-1.0d0) .lt. 1.0d-02) then
+                            call utmess('A', 'CHARGES7_1')
+                            goto 293
+                        end if
+                    end if
+                    iTerm = iTerm+1
+                    kineListRela%nodeName(iTerm) = nodeMastName
+                    kineListRela%dofName(iTerm) = LocDofName
+                    kineListRela%coefMultReal(iTerm) = nodeMastCoef
+                end do
 
 ! --------- Affect linear relation
-            call kineListRelaSave(title, nbTerm, kineListRela, epsiDebg_= ASTER_TRUE)
+                call kineListRelaSave(title, nbTerm, kineListRela, epsiDebg_=ASTER_TRUE)
 
- 293        continue
+293             continue
 
-        end do
+            end do
 
 ! ----- Next master nodes
-        shiftNodeMast = shiftNodeMast + nbNodeMast
-    enddo
+            shiftNodeMast = shiftNodeMast+nbNodeMast
+        end do
 !
 !   ------------------------------------------------------------------------------------------------
-end subroutine
+    end subroutine
 ! --------------------------------------------------------------------------------------------------
 !
 ! kineLoadLinkProj
@@ -1798,247 +1796,247 @@ end subroutine
 ! Out listLineRela     : name of datastructure for list of linear relation
 !
 ! --------------------------------------------------------------------------------------------------
-subroutine kineLoadLinkProj(modelZ, valeTypeZ, listLineRela)
+    subroutine kineLoadLinkProj(modelZ, valeTypeZ, listLineRela)
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
-    character(len=*), intent(in) :: modelZ, valeTypeZ
-    character(len=19), intent(out) :: listLineRela
+        character(len=*), intent(in) :: modelZ, valeTypeZ
+        character(len=19), intent(out) :: listLineRela
 ! - Local
 !   NOMBRE MAX DE TERMES D'UNE RELATION LINEAIRE EN 3D = 1 + 3*27 (max maille: 27 noeuds)
-    integer, parameter :: nbTermMaxi = 82
-    character(len=80), parameter :: title = 'LIAISON_PROJ'
-    character(len=16), parameter :: factorKeyword = 'LIAISON_PROJ'
-    character(len=8), parameter :: physQuanName = "DEPL_R"
-    character(len=19) :: modelLigrel
-    character(len=8) :: mesh
-    character(len=16) :: meshLink
-    character(len=4) :: valeType
-    integer :: geomDime
-    integer :: iOcc, nocc, nbDof
-    character(len=8), pointer :: dofName(:) => null()
-    integer :: iNode1, iNode2, iDof
-    integer :: nbNode1, nbNode2
-    integer :: cell1Nume, cell1TypeNume, node1Nume, node2Nume
-    integer :: idecal, iTerm, nbTerm
-    character(len=8) :: node1Name, node2Name, dofLocaName
-    aster_logical :: hasExcent, oneDofDoesntExist
-    aster_logical, pointer :: dofExist(:) => null()
-    integer, pointer :: cell1List(:) => null(), cellType(:) => null()
-    integer, pointer :: node1List(:) => null(), node2List(:) => null()
-    real(kind=8), pointer :: nodeCoef(:) => null(), nodeCoor(:) => null()
-    real(kind=8) :: coeffi, xyzom(3), coefZero
-    type(KINE_LIST_RELA) :: kineListRela
-    integer :: physQuanNbCmp, jvPhysQuanCmpName, nbec, jvPrnm
-    character(len=1) :: dofUnknown
-    integer, parameter :: nbDofRota = 3
-    character(len=8), pointer :: dofRotaName(:) => null()
+        integer, parameter :: nbTermMaxi = 82
+        character(len=80), parameter :: title = 'LIAISON_PROJ'
+        character(len=16), parameter :: factorKeyword = 'LIAISON_PROJ'
+        character(len=8), parameter :: physQuanName = "DEPL_R"
+        character(len=19) :: modelLigrel
+        character(len=8) :: mesh
+        character(len=16) :: meshLink
+        character(len=4) :: valeType
+        integer :: geomDime
+        integer :: iOcc, nocc, nbDof
+        character(len=8), pointer :: dofName(:) => null()
+        integer :: iNode1, iNode2, iDof
+        integer :: nbNode1, nbNode2
+        integer :: cell1Nume, cell1TypeNume, node1Nume, node2Nume
+        integer :: idecal, iTerm, nbTerm
+        character(len=8) :: node1Name, node2Name, dofLocaName
+        aster_logical :: hasExcent, oneDofDoesntExist
+        aster_logical, pointer :: dofExist(:) => null()
+        integer, pointer :: cell1List(:) => null(), cellType(:) => null()
+        integer, pointer :: node1List(:) => null(), node2List(:) => null()
+        real(kind=8), pointer :: nodeCoef(:) => null(), nodeCoor(:) => null()
+        real(kind=8) :: coeffi, xyzom(3), coefZero
+        type(KINE_LIST_RELA) :: kineListRela
+        integer :: physQuanNbCmp, jvPhysQuanCmpName, nbec, jvPrnm
+        character(len=1) :: dofUnknown
+        integer, parameter :: nbDofRota = 3
+        character(len=8), pointer :: dofRotaName(:) => null()
 
 !   ------------------------------------------------------------------------------------------------
 !
-    valeType = valeTypeZ
-    ASSERT(valeType .eq. 'REEL')
+        valeType = valeTypeZ
+        ASSERT(valeType .eq. 'REEL')
 
 ! - List of rotation DOF
-    AS_ALLOCATE(vk8 = dofRotaName, size = nbDofRota)
-    dofRotaName(1) = "DRX"
-    dofRotaName(2) = "DRY"
-    dofRotaName(3) = "DRZ"
+        AS_ALLOCATE(vk8=dofRotaName, size=nbDofRota)
+        dofRotaName(1) = "DRX"
+        dofRotaName(2) = "DRY"
+        dofRotaName(3) = "DRZ"
 
 ! - About model
-    call dismoi('NOM_MAILLA', modelZ, 'MODELE', repk = mesh)
-    call dismoi('DIM_GEOM', modelZ, 'MODELE', repi = geomDime)
-    call dismoi('NOM_LIGREL', modelZ, 'MODELE', repk = modelLigrel)
-    call jeveuo(modelLigrel//'.PRNM', 'L', jvPrnm)
+        call dismoi('NOM_MAILLA', modelZ, 'MODELE', repk=mesh)
+        call dismoi('DIM_GEOM', modelZ, 'MODELE', repi=geomDime)
+        call dismoi('NOM_LIGREL', modelZ, 'MODELE', repk=modelLigrel)
+        call jeveuo(modelLigrel//'.PRNM', 'L', jvPrnm)
 
 ! - About mesh
-    call jeveuo(mesh//'.TYPMAIL', 'L', vi = cellType)
-    call jeveuo(mesh//'.COORDO    .VALE', 'L', vr = nodeCoor)
-    if (.not.(geomDime .eq. 2 .or. geomDime .eq. 3)) then
-        call utmess('F', 'CHARGES7_6')
-    endif
+        call jeveuo(mesh//'.TYPMAIL', 'L', vi=cellType)
+        call jeveuo(mesh//'.COORDO    .VALE', 'L', vr=nodeCoor)
+        if (.not. (geomDime .eq. 2 .or. geomDime .eq. 3)) then
+            call utmess('F', 'CHARGES7_6')
+        end if
 
 ! - Name of datastructure for list of linear relations
-    listLineRela = '&&CALIRC.RLLISTE'
+        listLineRela = '&&CALIRC.RLLISTE'
 
 ! - Get information about physical quantity
-    call jeveuo(jexnom('&CATA.GD.NOMCMP', physQuanName), 'L', jvPhysQuanCmpName)
-    call jelira(jexnom('&CATA.GD.NOMCMP', physQuanName), 'LONMAX', physQuanNbCmp)
-    call dismoi('NB_EC', physQuanName, 'GRANDEUR', repi = nbec)
+        call jeveuo(jexnom('&CATA.GD.NOMCMP', physQuanName), 'L', jvPhysQuanCmpName)
+        call jelira(jexnom('&CATA.GD.NOMCMP', physQuanName), 'LONMAX', physQuanNbCmp)
+        call dismoi('NB_EC', physQuanName, 'GRANDEUR', repi=nbec)
 
 ! - Create object for list of linear relations
-    call kineListRelaCreate('Implicit', nbTermMaxi, listLineRela, kineListRela)
-    coefZero = kineListRela%coefMultTole
+        call kineListRelaCreate('Implicit', nbTermMaxi, listLineRela, kineListRela)
+        coefZero = kineListRela%coefMultTole
 
-    call getfac(factorKeyword, nocc)
-    do iOcc = 1, nocc
+        call getfac(factorKeyword, nocc)
+        do iOcc = 1, nocc
 
 ! ----- Get main parameters from user
-        call kineLoadLinkProjPara(factorKeyword, iOcc, mesh,&
-                                  meshLink,  hasExcent,&
-                                  nbDof, dofName, dofUnknown, dofExist)
+            call kineLoadLinkProjPara(factorKeyword, iOcc, mesh, &
+                                      meshLink, hasExcent, &
+                                      nbDof, dofName, dofUnknown, dofExist)
 
 ! ----- Acces to mesh link
-        call jelira(meshLink//'.PJEF_NB', 'LONMAX', nbNode2)
-        call jeveuo(meshLink//'.PJEF_NB', 'L', vi = node2List)
-        call jeveuo(meshLink//'.PJEF_M1', 'L', vi = cell1List)
-        call jeveuo(meshLink//'.PJEF_NU', 'L', vi = node1List)
-        call jeveuo(meshLink//'.PJEF_CF', 'L', vr = nodeCoef)
+            call jelira(meshLink//'.PJEF_NB', 'LONMAX', nbNode2)
+            call jeveuo(meshLink//'.PJEF_NB', 'L', vi=node2List)
+            call jeveuo(meshLink//'.PJEF_M1', 'L', vi=cell1List)
+            call jeveuo(meshLink//'.PJEF_NU', 'L', vi=node1List)
+            call jeveuo(meshLink//'.PJEF_CF', 'L', vr=nodeCoef)
 
 ! ----- Loop on slave nodes
-        idecal = 0
-        do iNode2 = 1, nbNode2
+            idecal = 0
+            do iNode2 = 1, nbNode2
 
 ! --------- Current slave node
-            node2Nume = iNode2
-            call jenuno(jexnum(mesh//'.NOMNOE', node2Nume), node2Name)
-            cell1Nume = cell1List(node2Nume)
-            if (cell1Nume .eq. 0) cycle
-            if (hasExcent) then
-                cell1TypeNume = cellType(cell1Nume)
-                if (cell1TypeNume .ne. MT_TRIA3 .and. cell1TypeNume .ne. MT_QUAD4) then
-                    call utmess('F', 'CHARGES7_12')
-                endif
-                if (geomDime .ne. 3) then
-                    call utmess('F', 'CHARGES7_15')
-                endif
-            endif
+                node2Nume = iNode2
+                call jenuno(jexnum(mesh//'.NOMNOE', node2Nume), node2Name)
+                cell1Nume = cell1List(node2Nume)
+                if (cell1Nume .eq. 0) cycle
+                if (hasExcent) then
+                    cell1TypeNume = cellType(cell1Nume)
+                    if (cell1TypeNume .ne. MT_TRIA3 .and. cell1TypeNume .ne. MT_QUAD4) then
+                        call utmess('F', 'CHARGES7_12')
+                    end if
+                    if (geomDime .ne. 3) then
+                        call utmess('F', 'CHARGES7_15')
+                    end if
+                end if
 
 ! --------- Check components on current slave node
-            call kineLoadCheckCmpOnNode(jvPrnm, node2Nume,&
-                                        physQuanNbCmp, jvPhysQuanCmpName,&
-                                        nbDof, nbec, dofName,&
-                                        dofExist, oneDofDoesntExist)
+                call kineLoadCheckCmpOnNode(jvPrnm, node2Nume, &
+                                            physQuanNbCmp, jvPhysQuanCmpName, &
+                                            nbDof, nbec, dofName, &
+                                            dofExist, oneDofDoesntExist)
 
 ! --------- Relation for current slave node
-            do iDof = 1, nbDof
+                do iDof = 1, nbDof
 ! ------------- Init list of relations
-                call kineListRelaInit(kineListRela)
-                iTerm = 0
-                dofLocaName = dofName(iDof)
+                    call kineListRelaInit(kineListRela)
+                    iTerm = 0
+                    dofLocaName = dofName(iDof)
 
-                if (dofExist(iDof)) then
-                    iTerm = iTerm + 1
-                    kineListRela%nodeName(iTerm) = node2Name
-                    kineListRela%coefMultReal(iTerm) = -1.d0
-                    kineListRela%dofName(iTerm) = dofLocaName
-                else
-                    if (dofUnknown .ne. " ") then
-                        call utmess(dofUnknown, "CHARGES7_14")
-                    endif
-                    cycle
-                endif
+                    if (dofExist(iDof)) then
+                        iTerm = iTerm+1
+                        kineListRela%nodeName(iTerm) = node2Name
+                        kineListRela%coefMultReal(iTerm) = -1.d0
+                        kineListRela%dofName(iTerm) = dofLocaName
+                    else
+                        if (dofUnknown .ne. " ") then
+                            call utmess(dofUnknown, "CHARGES7_14")
+                        end if
+                        cycle
+                    end if
 
 ! ------------- None of the DOF exists on slave node
-                if (iTerm .eq. 0) then
-                    goto 130
-                endif
+                    if (iTerm .eq. 0) then
+                        goto 130
+                    end if
 
 ! ------------- Loop on master nodes
-                nbNode1 = node2List(node2Nume)
-                do iNode1 = 1, nbNode1
+                    nbNode1 = node2List(node2Nume)
+                    do iNode1 = 1, nbNode1
 
 ! ----------------- Current master node
-                    node1Nume = node1List(idecal+iNode1)
-                    call jenuno(jexnum(mesh//'.NOMNOE', node1Nume), node1Name)
-                    coeffi = nodeCoef(idecal + iNode1)
-                    if (node1Nume .eq. node2Nume) then
-                        call utmess("A", "CHARGES7_13")
-                        goto 130
-                    endif
+                        node1Nume = node1List(idecal+iNode1)
+                        call jenuno(jexnum(mesh//'.NOMNOE', node1Nume), node1Name)
+                        coeffi = nodeCoef(idecal+iNode1)
+                        if (node1Nume .eq. node2Nume) then
+                            call utmess("A", "CHARGES7_13")
+                            goto 130
+                        end if
 
 ! ----------------- Check components on current master node
-                    if (hasExcent) then
+                        if (hasExcent) then
 
-                        if (dofExist(iDof)) then
-                            iTerm = iTerm + 1
-                            kineListRela%nodeName(iTerm) = node1Name
-                            kineListRela%coefMultReal(iTerm) = coeffi
-                            kineListRela%dofName(iTerm) = dofLocaName
-                        else
-                            if (dofUnknown .ne. " ") then
-                                call utmess(dofUnknown, "CHARGES7_14")
-                            endif
-                            cycle
-                        endif
-
-! --------------------- Est-ce que les ddl de rotation existent sur le noeud d'en face ?
-                        call kineLoadCheckCmpOnNode(jvPrnm, node1Nume,&
-                                                    physQuanNbCmp, jvPhysQuanCmpName,&
-                                                    nbDofRota, nbec, dofRotaName,&
-                                                    dofExist, oneDofDoesntExist)
-                        if (oneDofDoesntExist) then
-                            call utmess('F', 'CHARGES7_16')
-                        endif
-
-! --------------------- U1 = UI2 + DRI2^O2M ==> -UI2 + U1*al(i) - DRI2^O2M*al(i)
-                        xyzom(1) = nodeCoor(3*(node2Nume-1)+1) - nodeCoor(3*(node1Nume-1)+1)
-                        xyzom(2) = nodeCoor(3*(node2Nume-1)+2) - nodeCoor(3*(node1Nume-1)+2)
-                        xyzom(3) = nodeCoor(3*(node2Nume-1)+3) - nodeCoor(3*(node1Nume-1)+3)
-
-! --------------------- Add relations
-                        if (dofLocaName .eq. 'DX') then
-                            call kineLoadApplyEccentricity(3, node1Name, "DRY",&
-                                                        coeffi, coefZero, xyzom,&
-                                                        iTerm, kineListRela)
-                            call kineLoadApplyEccentricity(2, node1Name, "DRZ",&
-                                                        -coeffi, coefZero, xyzom,&
-                                                            iTerm, kineListRela)
-                        elseif (dofLocaName .eq. 'DY') then
-                            call kineLoadApplyEccentricity(3, node1Name, "DRX",&
-                                                            -coeffi, coefZero, xyzom,&
-                                                            iTerm, kineListRela)
-                            call kineLoadApplyEccentricity(1, node1Name, "DRZ",&
-                                                            coeffi, coefZero, xyzom,&
-                                                            iTerm, kineListRela)
-                        elseif (dofLocaName .eq. 'DZ') then
-                            call kineLoadApplyEccentricity(2, node1Name, "DRX",&
-                                                            coeffi, coefZero, xyzom,&
-                                                            iTerm, kineListRela)
-                            call kineLoadApplyEccentricity(1, node1Name, "DRY",&
-                                                            -coeffi, coefZero, xyzom,&
-                                                            iTerm, kineListRela)
-                        endif
-                    else
-                        if ( abs(coeffi) .gt. coefZero ) then
-                            call kineLoadCheckCmpOnNode(jvPrnm, node1Nume,&
-                                                        physQuanNbCmp, jvPhysQuanCmpName,&
-                                                        nbDof, nbec, dofName,&
-                                                        dofExist, oneDofDoesntExist)
                             if (dofExist(iDof)) then
-                                iTerm = iTerm + 1
+                                iTerm = iTerm+1
                                 kineListRela%nodeName(iTerm) = node1Name
                                 kineListRela%coefMultReal(iTerm) = coeffi
-                                kineListRela%dofName(iTerm) = dofName(iDof)
+                                kineListRela%dofName(iTerm) = dofLocaName
                             else
                                 if (dofUnknown .ne. " ") then
                                     call utmess(dofUnknown, "CHARGES7_14")
-                                endif
+                                end if
                                 cycle
-                            endif
-                        endif
-                    endif
-                end do
+                            end if
+
+! --------------------- Est-ce que les ddl de rotation existent sur le noeud d'en face ?
+                            call kineLoadCheckCmpOnNode(jvPrnm, node1Nume, &
+                                                        physQuanNbCmp, jvPhysQuanCmpName, &
+                                                        nbDofRota, nbec, dofRotaName, &
+                                                        dofExist, oneDofDoesntExist)
+                            if (oneDofDoesntExist) then
+                                call utmess('F', 'CHARGES7_16')
+                            end if
+
+! --------------------- U1 = UI2 + DRI2^O2M ==> -UI2 + U1*al(i) - DRI2^O2M*al(i)
+                            xyzom(1) = nodeCoor(3*(node2Nume-1)+1)-nodeCoor(3*(node1Nume-1)+1)
+                            xyzom(2) = nodeCoor(3*(node2Nume-1)+2)-nodeCoor(3*(node1Nume-1)+2)
+                            xyzom(3) = nodeCoor(3*(node2Nume-1)+3)-nodeCoor(3*(node1Nume-1)+3)
+
+! --------------------- Add relations
+                            if (dofLocaName .eq. 'DX') then
+                                call kineLoadApplyEccentricity(3, node1Name, "DRY", &
+                                                               coeffi, coefZero, xyzom, &
+                                                               iTerm, kineListRela)
+                                call kineLoadApplyEccentricity(2, node1Name, "DRZ", &
+                                                               -coeffi, coefZero, xyzom, &
+                                                               iTerm, kineListRela)
+                            elseif (dofLocaName .eq. 'DY') then
+                                call kineLoadApplyEccentricity(3, node1Name, "DRX", &
+                                                               -coeffi, coefZero, xyzom, &
+                                                               iTerm, kineListRela)
+                                call kineLoadApplyEccentricity(1, node1Name, "DRZ", &
+                                                               coeffi, coefZero, xyzom, &
+                                                               iTerm, kineListRela)
+                            elseif (dofLocaName .eq. 'DZ') then
+                                call kineLoadApplyEccentricity(2, node1Name, "DRX", &
+                                                               coeffi, coefZero, xyzom, &
+                                                               iTerm, kineListRela)
+                                call kineLoadApplyEccentricity(1, node1Name, "DRY", &
+                                                               -coeffi, coefZero, xyzom, &
+                                                               iTerm, kineListRela)
+                            end if
+                        else
+                            if (abs(coeffi) .gt. coefZero) then
+                                call kineLoadCheckCmpOnNode(jvPrnm, node1Nume, &
+                                                            physQuanNbCmp, jvPhysQuanCmpName, &
+                                                            nbDof, nbec, dofName, &
+                                                            dofExist, oneDofDoesntExist)
+                                if (dofExist(iDof)) then
+                                    iTerm = iTerm+1
+                                    kineListRela%nodeName(iTerm) = node1Name
+                                    kineListRela%coefMultReal(iTerm) = coeffi
+                                    kineListRela%dofName(iTerm) = dofName(iDof)
+                                else
+                                    if (dofUnknown .ne. " ") then
+                                        call utmess(dofUnknown, "CHARGES7_14")
+                                    end if
+                                    cycle
+                                end if
+                            end if
+                        end if
+                    end do
 
 ! ------------- Affect linear relation
-                nbTerm = iTerm
-                call kineListRelaSave(title, nbTerm, kineListRela, epsiDebg_= ASTER_TRUE)
+                    nbTerm = iTerm
+                    call kineListRelaSave(title, nbTerm, kineListRela, epsiDebg_=ASTER_TRUE)
 
-            enddo
-    130     continue
-            idecal = idecal + nbNode1
-        enddo
+                end do
+130             continue
+                idecal = idecal+nbNode1
+            end do
 
 ! ----- Clean
-        AS_DEALLOCATE(vk8 = dofName)
-        AS_DEALLOCATE(vl = dofExist)
-    end do
+            AS_DEALLOCATE(vk8=dofName)
+            AS_DEALLOCATE(vl=dofExist)
+        end do
 
 ! - Clean
-    call kineListRelaDelete(kineListRela)
-    AS_DEALLOCATE(vk8 = dofRotaName)
+        call kineListRelaDelete(kineListRela)
+        AS_DEALLOCATE(vk8=dofRotaName)
 !
 !   ------------------------------------------------------------------------------------------------
-end subroutine
+    end subroutine
 ! --------------------------------------------------------------------------------------------------
 !
 ! kineLoadLinkProjPara
@@ -2046,55 +2044,55 @@ end subroutine
 ! Get parameters for LIAISON_PROJ
 !
 ! --------------------------------------------------------------------------------------------------
-subroutine kineLoadLinkProjPara(factorKeywordZ, iOcc, mesh,&
-                                meshLink, hasExcent,&
-                                nbDof, dofName, dofUnknown, dofExist)
+    subroutine kineLoadLinkProjPara(factorKeywordZ, iOcc, mesh, &
+                                    meshLink, hasExcent, &
+                                    nbDof, dofName, dofUnknown, dofExist)
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
-    character(len=*), intent(in) :: factorKeywordZ
-    integer, intent(in) :: iOcc
-    character(len=8), intent(in) :: mesh
-    character(len=16), intent(out) :: meshLink
-    integer, intent(out) :: nbDof
-    character(len=8), pointer :: dofName(:)
-    aster_logical, pointer :: dofExist(:)
-    aster_logical, intent(out) :: hasExcent
-    character(len=1), intent(out) :: dofUnknown
+        character(len=*), intent(in) :: factorKeywordZ
+        integer, intent(in) :: iOcc
+        character(len=8), intent(in) :: mesh
+        character(len=16), intent(out) :: meshLink
+        integer, intent(out) :: nbDof
+        character(len=8), pointer :: dofName(:)
+        aster_logical, pointer :: dofExist(:)
+        aster_logical, intent(out) :: hasExcent
+        character(len=1), intent(out) :: dofUnknown
 ! - Local
-    integer :: iret
-    character(len=16) :: answer
-    character(len=8) :: mesh1, mesh2
-    character(len=24), pointer :: meshLinkPjxx(:)=>null()
+        integer :: iret
+        character(len=16) :: answer
+        character(len=8) :: mesh1, mesh2
+        character(len=24), pointer :: meshLinkPjxx(:) => null()
 !   ------------------------------------------------------------------------------------------------
 !
-    call getvtx(factorKeywordZ, 'DDL', iocc=iOcc, nbval=0, nbret=nbDof)
-    nbDof = -nbDof
-    ASSERT(nbDof .ge. 1)
-    AS_ALLOCATE(size = nbDof, vk8 = dofName)
-    AS_ALLOCATE(size = nbDof, vl = dofExist)
-    call getvtx(factorKeywordZ, 'DDL', iocc=iocc, nbval=nbDof, vect=dofName)
-    call getvid(factorKeywordZ, 'MATR_PROJECTION', iocc=iocc, scal=meshLink)
-    call getvtx(factorKeywordZ, 'TYPE', iocc=iocc, scal=answer, nbret=iret)
-    hasExcent = ASTER_FALSE
-    if (iret .ne. 0) then
-        hasExcent = answer .eq. 'EXCENTREMENT'
-    endif
-    !call getvtx(factorKeywordZ, 'DDL_EXIST', iocc=iocc, scal=answer, nbret=iret)
-    dofUnknown = "F"
-    ! if (iret .ne. 0) then
-    !     if (answer .eq. "ERREUR") dofUnknown = "F"
-    !     if (answer .eq. "ALARME") dofUnknown = "A"
-    !     if (answer .eq. "IGNORE") dofUnknown = " "
-    ! endif
+        call getvtx(factorKeywordZ, 'DDL', iocc=iOcc, nbval=0, nbret=nbDof)
+        nbDof = -nbDof
+        ASSERT(nbDof .ge. 1)
+        AS_ALLOCATE(size=nbDof, vk8=dofName)
+        AS_ALLOCATE(size=nbDof, vl=dofExist)
+        call getvtx(factorKeywordZ, 'DDL', iocc=iocc, nbval=nbDof, vect=dofName)
+        call getvid(factorKeywordZ, 'MATR_PROJECTION', iocc=iocc, scal=meshLink)
+        call getvtx(factorKeywordZ, 'TYPE', iocc=iocc, scal=answer, nbret=iret)
+        hasExcent = ASTER_FALSE
+        if (iret .ne. 0) then
+            hasExcent = answer .eq. 'EXCENTREMENT'
+        end if
+        !call getvtx(factorKeywordZ, 'DDL_EXIST', iocc=iocc, scal=answer, nbret=iret)
+        dofUnknown = "F"
+        ! if (iret .ne. 0) then
+        !     if (answer .eq. "ERREUR") dofUnknown = "F"
+        !     if (answer .eq. "ALARME") dofUnknown = "A"
+        !     if (answer .eq. "IGNORE") dofUnknown = " "
+        ! endif
 
-    call jeveuo(meshLink//'.PJXX_K1', 'L', vk24 = meshLinkPjxx)
-    mesh1 = meshLinkPjxx(1)(1:8)
-    mesh2 = meshLinkPjxx(2)(1:8)
-    if ((mesh.ne.mesh1) .or. (mesh.ne.mesh2)) then
-        call utmess('F', 'CHARGES7_11')
-    endif
+        call jeveuo(meshLink//'.PJXX_K1', 'L', vk24=meshLinkPjxx)
+        mesh1 = meshLinkPjxx(1) (1:8)
+        mesh2 = meshLinkPjxx(2) (1:8)
+        if ((mesh .ne. mesh1) .or. (mesh .ne. mesh2)) then
+            call utmess('F', 'CHARGES7_11')
+        end if
 !
 !   ------------------------------------------------------------------------------------------------
-end subroutine
+    end subroutine
 !
 end module LoadKinematic_module

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 !
 subroutine te0444(option, nomte)
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterc/r8prem.h"
@@ -40,7 +40,7 @@ implicit none
 #include "asterfort/utpvgl.h"
 #include "asterfort/vecma.h"
 !
-character(len=16) :: option, nomte
+    character(len=16) :: option, nomte
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -76,7 +76,7 @@ character(len=16) :: option, nomte
 ! ---   RECUPERATION DES ADRESSES DANS ZR DES POIDS DES PG
 !       DES FONCTIONS DE FORME DES VALEURS DES DERIVEES DES FONCTIONS
 !       DE FORME ET DE LA MATRICE DE PASSAGE GAUSS -> NOEUDS
-    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno)
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno)
 !
     call jevech('PGEOMER', 'L', igeom)
 !
@@ -86,20 +86,20 @@ character(len=16) :: option, nomte
         call dxqpgl(zr(igeom), pgl, 'S', iret)
     else
         ASSERT(ASTER_FALSE)
-    endif
+    end if
 !
     call utpvgl(nno, 3, pgl, zr(igeom), xyzl)
 !
     if (option .eq. 'EPOT_ELEM') then
         if (nomte .eq. 'MEDKTG3') then
             call dktrig(nomte, xyzl, option, pgl, matloc, ener, multic)
-        else if (nomte.eq.'MEDKQG4') then
+        else if (nomte .eq. 'MEDKQG4') then
             call dkqrig(nomte, xyzl, option, pgl, matloc, ener)
-        else if (nomte.eq.'MET3GG3') then
+        else if (nomte .eq. 'MET3GG3') then
             call t3grig(nomte, xyzl, option, pgl, matloc, ener)
-        else if (nomte.eq.'MEQ4GG4') then
+        else if (nomte .eq. 'MEQ4GG4') then
             call q4grig(nomte, xyzl, option, pgl, matloc, ener)
-        endif
+        end if
 !
         call jevech('PENERDR', 'E', jener)
 !
@@ -107,20 +107,20 @@ character(len=16) :: option, nomte
             zr(jener-1+i) = ener(i)
         end do
 !
-    else if (option.eq.'MASS_MECA'       .or. option.eq.'MASS_MECA_DIAG'&
-        .or. option.eq.'MASS_MECA_EXPLI' .or. option.eq.'M_GAMMA'&
-        .or. option.eq.'ECIN_ELEM') then
+    else if (option .eq. 'MASS_MECA' .or. option .eq. 'MASS_MECA_DIAG' &
+             .or. option .eq. 'MASS_MECA_EXPLI' .or. option .eq. 'M_GAMMA' &
+             .or. option .eq. 'ECIN_ELEM') then
 !
         if (nomte .eq. 'MEDKTG3' .or. nomte .eq. 'MET3GG3') then
             call dktmas(xyzl, option, pgl, matloc, ener)
-        else if (nomte.eq.'MEDKQG4'.or. nomte.eq.'MEQ4GG4') then
+        else if (nomte .eq. 'MEDKQG4' .or. nomte .eq. 'MEQ4GG4') then
             call dkqmas(xyzl, option, pgl, matloc, ener)
-        endif
+        end if
 !
         if (option .eq. 'MASS_MECA') then
             call jevech('PMATUUR', 'E', imatuu)
             call utpslg(nno, 6, pgl, matloc, zr(imatuu))
-        else if (option.eq.'ECIN_ELEM') then
+        else if (option .eq. 'ECIN_ELEM') then
             call jevech('PENERCR', 'E', jener)
             call jevech('POMEGA2', 'L', jfreq)
 !
@@ -128,22 +128,22 @@ character(len=16) :: option, nomte
                 zr(jener-1+i) = zr(jfreq)*ener(i)
             end do
 !
-        else if (option.eq.'M_GAMMA') then
+        else if (option .eq. 'M_GAMMA') then
             call jevech('PACCELR', 'L', iacce)
             call jevech('PVECTUR', 'E', ivectu)
 !
             nddl = 6*nno
-            nvec = nddl* (nddl+1)/2
+            nvec = nddl*(nddl+1)/2
 !
             call utpslg(nno, 6, pgl, matloc, matv)
             call vecma(matv, nvec, matp, nddl)
             call pmavec('ZERO', nddl, matp, zr(iacce), zr(ivectu))
 !
-        else if (option.eq.'MASS_MECA_DIAG' .or. option.eq.'MASS_MECA_EXPLI') then
+        else if (option .eq. 'MASS_MECA_DIAG' .or. option .eq. 'MASS_MECA_EXPLI') then
             call jevech('PMATUUR', 'E', imatuu)
 !
             nddl = 6*nno
-            ndim = nddl* (nddl+1)/2
+            ndim = nddl*(nddl+1)/2
 !
             do i = 1, ndim
                 zr(imatuu-1+i) = matloc(i)
@@ -155,22 +155,22 @@ character(len=16) :: option, nomte
 !     UN TERME DIAGONAL NON ZERO EGAL A CELUI DU DDL 5.
 !     CETTE CORRECTION A ETE INSPIRE PAR LA DEMARCHE DANS EUROPLEXUS
                 do j = 1, nno
-                    n1 = 6*(j-1) + 5
-                    n2 = 6*(j-1) + 4
+                    n1 = 6*(j-1)+5
+                    n2 = 6*(j-1)+4
                     ni = 6*j
-                    ndim = (ni + 1)*ni/2
-                    n1 = (n1 + 1)*n1/2
-                    n2 = (n2 + 1)*n2/2
-                    zr(imatuu-1+ndim)=(zr(imatuu-1+n1)+zr(imatuu-1+n2))*0.5d0
+                    ndim = (ni+1)*ni/2
+                    n1 = (n1+1)*n1/2
+                    n2 = (n2+1)*n2/2
+                    zr(imatuu-1+ndim) = (zr(imatuu-1+n1)+zr(imatuu-1+n2))*0.5d0
                 end do
-            endif
-        endif
-    else if (option.eq.'MASS_INER') then
+            end if
+        end if
+    else if (option .eq. 'MASS_INER') then
         call jevech('PMASSINE', 'E', imatuu)
         call dxroep(rho, epais)
         call dxiner(nno, zr(igeom), rho, epais, zr(imatuu), zr(imatuu+1), zr(imatuu+4))
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine gcldm1(m, in, ip, prec, x,&
+subroutine gcldm1(m, in, ip, prec, x, &
                   y, perm, xtrav, ytrav)
     implicit none
 !
@@ -46,8 +46,8 @@ subroutine gcldm1(m, in, ip, prec, x,&
 !   -- on permute x pour qu'il ait la numerotation du preconditionneur :
 !   --------------------------------------------------------------------
     do i = 1, m
-        xtrav(perm(i))=x(i)
-    enddo
+        xtrav(perm(i)) = x(i)
+    end do
 !
 !-----------------------------------------------------------------------
 !     RESOLUTION DU PREMIER SYSTEME L.W = X
@@ -59,7 +59,7 @@ subroutine gcldm1(m, in, ip, prec, x,&
         kdeb = in(i-1)+1
         kfin = in(i)-1
         do ki = kdeb, kfin
-            som = som + prec(ki)*ytrav(ip(ki))
+            som = som+prec(ki)*ytrav(ip(ki))
         end do
         ytrav(i) = (xtrav(i)-som)
     end do
@@ -88,8 +88,8 @@ subroutine gcldm1(m, in, ip, prec, x,&
 !   -- on permute ytrav pour qu'il ait la numerotation du syteme :
 !   --------------------------------------------------------------
     do i = 1, m
-        y(i)=ytrav(perm(i))
-    enddo
+        y(i) = ytrav(perm(i))
+    end do
 !
 !
 end subroutine

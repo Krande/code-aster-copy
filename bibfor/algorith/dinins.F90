@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 function dinins(sddisc, nume_inst)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/assert.h"
 #include "asterfort/jeveuo.h"
@@ -53,18 +53,18 @@ implicit none
 !
 ! --- LA NOTION DE SOUS-NIVEAU N'EXISTE PAS EN GESTION AUTO
 !
-    call utdidt('L', sddisc, 'LIST', 'METHODE',&
-                valk_ = metlis)
+    call utdidt('L', sddisc, 'LIST', 'METHODE', &
+                valk_=metlis)
     if (metlis .eq. 'AUTO') then
         dinins = 1
         goto 999
-    endif
+    end if
 !
 ! --- ACCES SD LISTE D'INSTANTS
 !
     sddisc_dini = sddisc(1:19)//'.DINI'
-    call jeveuo(sddisc_dini, 'L', vi = v_sddisc_dini)
-    ASSERT(nume_inst.ge.1)
+    call jeveuo(sddisc_dini, 'L', vi=v_sddisc_dini)
+    ASSERT(nume_inst .ge. 1)
     dinins = v_sddisc_dini(nume_inst)
 !
 999 continue

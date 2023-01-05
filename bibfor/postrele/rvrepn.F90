@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -79,9 +79,9 @@ subroutine rvrepn(mailla, nlsnac, repere, sdnewr)
 !
     call jeveuo(mailla//'.COORDO    .VALE', 'L', vr=vale)
 !
-    call jecrec(sdnewr//'.VEC1', 'V V R', 'NU', 'DISPERSE', 'VARIABLE',&
+    call jecrec(sdnewr//'.VEC1', 'V V R', 'NU', 'DISPERSE', 'VARIABLE', &
                 1)
-    call jecrec(sdnewr//'.VEC2', 'V V R', 'NU', 'DISPERSE', 'VARIABLE',&
+    call jecrec(sdnewr//'.VEC2', 'V V R', 'NU', 'DISPERSE', 'VARIABLE', &
                 1)
     call jecroc(jexnum(sdnewr//'.VEC1', 1))
     call jecroc(jexnum(sdnewr//'.VEC2', 1))
@@ -90,7 +90,7 @@ subroutine rvrepn(mailla, nlsnac, repere, sdnewr)
     call jeveuo(jexnum(sdnewr//'.VEC1', 1), 'E', avec1)
     call jeveuo(jexnum(sdnewr//'.VEC2', 1), 'E', avec2)
 !
-    call rvrlln(vale, zi(alsnac), nbn, repere, zr(avec1),&
+    call rvrlln(vale, zi(alsnac), nbn, repere, zr(avec1), &
                 zr(avec2))
 !
     call jedema()

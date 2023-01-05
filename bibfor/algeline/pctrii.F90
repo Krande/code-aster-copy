@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,16 +25,16 @@ subroutine pctrii(tab, ltab)
 !-----------------------------------------------------------------------
     do k = ltab, 2, -1
         indic = 0
-        do i = 1, k - 1
-            ip1 = i + 1
+        do i = 1, k-1
+            ip1 = i+1
             if (tab(i) .gt. tab(ip1)) then
                 indic = 1
                 itab = tab(i)
                 tab(i) = tab(ip1)
                 tab(ip1) = itab
-            endif
+            end if
         end do
         if (indic .eq. 0) goto 30
     end do
- 30 continue
+30  continue
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine rvpost(mcf, iocc, dim, i1, i2,&
-                  ncheff, xnomcp, nresu, nch19, nlsmac,&
+subroutine rvpost(mcf, iocc, dim, i1, i2, &
+                  ncheff, xnomcp, nresu, nch19, nlsmac, &
                   nlsnac, nomtab, xnovar)
 !     PILOTAGE DU POST-TRAITEMENT
 !     ------------------------------------------------------------------
@@ -91,11 +91,11 @@ subroutine rvpost(mcf, iocc, dim, i1, i2,&
 !
     call getvtx(mcf, 'OPERATION', iocc=iocc, nbval=0, nbret=nboper)
     nboper = -nboper
-    call getvtx(mcf, 'OPERATION', iocc=iocc, nbval=nboper, vect=operat,&
+    call getvtx(mcf, 'OPERATION', iocc=iocc, nbval=nboper, vect=operat, &
                 nbret=n0)
 !
     if (nch19(1:1) .eq. '&') then
-        if (niv .gt. 1) call rvinfo(ifm, iocc, i1, i2, 'E',&
+        if (niv .gt. 1) call rvinfo(ifm, iocc, i1, i2, 'E', &
                                     ncheff)
     else
         lscpcd = '&&RVPOST.NOM.CMP.CAND.OC'
@@ -107,20 +107,20 @@ subroutine rvpost(mcf, iocc, dim, i1, i2,&
         else
             call jelira(nch19//'.CELD', 'DOCU', cval=docu)
             call jeveuo(nch19//'.CELD', 'L', n1)
-        endif
+        end if
         call jeveuo(jexnum(xnomcp, iocc), 'L', jnomcp)
         call jelira(jexnum(xnomcp, iocc), 'LONMAX', nbcac)
         call wkvect(lscpcd, 'V V K8', nbcac, jcmpcd)
         call wkvect('&&RVPOST.VAL.DIR', 'V V R', 3, jdir)
         do i = 1, nbcac, 1
-            zk8(jcmpcd + i-1) = zk8(jnomcp + i-1)
+            zk8(jcmpcd+i-1) = zk8(jnomcp+i-1)
         end do
-        gd = zi(n1 + 1-1)
-        if (niv .gt. 1) call rvinfo(ifm, iocc, i1, i2, 'B',&
+        gd = zi(n1+1-1)
+        if (niv .gt. 1) call rvinfo(ifm, iocc, i1, i2, 'B', &
                                     ncheff)
         if (nresu(1:1) .eq. ' ') nresu = nch19(1:8)
-        call rvcpnc(mcf, iocc, nch19, gd, docu,&
-                    nbcac, lscpcd, lscpnc, repere, option,&
+        call rvcpnc(mcf, iocc, nch19, gd, docu, &
+                    nbcac, lscpcd, lscpnc, repere, option, &
                     quant, idir, zr(jdir), iret)
 !        /* POSSIBILITE AGRANDISSEMENT DE LSCPCD => ON REFAIT JEVEUO */
         call jeveuo(lscpcd, 'L', jcmpcd)
@@ -133,7 +133,7 @@ subroutine rvpost(mcf, iocc, dim, i1, i2,&
             if (docu .eq. 'CHNO') then
                 call jelira(nlsnac, 'LONMAX', nbnac)
                 call jeveuo(nlsnac, 'L', jlsnac)
-                call extchn(nch19, k8b, zi(jlsnac), zk8(jcmpnc), nbnac,&
+                call extchn(nch19, k8b, zi(jlsnac), zk8(jcmpnc), nbnac, &
                             nbcpn, 'NUMERO', ssch19, mcf, iocc)
 !
             else
@@ -144,17 +144,17 @@ subroutine rvpost(mcf, iocc, dim, i1, i2,&
                 else
                     jlsnac = 1
                     nbnac = 0
-                endif
+                end if
                 call jelira(nlsmac, 'LONMAX', nbmac)
                 call jeveuo(nlsmac, 'L', jlsmac)
-                call extche(nch19, k8b, zi(jlsmac), zk8(jcmpnc), nbmac,&
-                            nbcpn, 'NUMERO', ssch19, mcf, iocc,&
-                            nbnac, zi( jlsnac))
-            endif
+                call extche(nch19, k8b, zi(jlsmac), zk8(jcmpnc), nbmac, &
+                            nbcpn, 'NUMERO', ssch19, mcf, iocc, &
+                            nbnac, zi(jlsnac))
+            end if
 !
-            call getvr8('ACTION', 'VECT_Y', iocc=iocc, nbval=3, vect=vecty,&
+            call getvr8('ACTION', 'VECT_Y', iocc=iocc, nbval=3, vect=vecty, &
                         nbret=ny)
-            tridim=ny.ne.0
+            tridim = ny .ne. 0
 !
             if (chok) then
                 call dismoi('NOM_MAILLA', nch19, 'CHAMP', repk=mailla)
@@ -168,7 +168,7 @@ subroutine rvpost(mcf, iocc, dim, i1, i2,&
                     ca = 'N'
                 else
                     ca = 'E'
-                endif
+                end if
 !
                 call rvlieu(mailla, typco, nlsnac, sdlieu)
                 call rvpste(sdlieu, ssch19, sdeval, ca)
@@ -177,29 +177,29 @@ subroutine rvpost(mcf, iocc, dim, i1, i2,&
                 call jeveuo(sdeval, 'L', jsdev)
                 call getvtx(mcf, 'RESULTANTE', iocc=iocc, nbval=0, nbret=nr)
                 sdnewr = '&&RVPOST.NEW.REPERE'
-                if (repere(1:1) .ne. 'G' .and. .not.tridim) then
-                    call rvchgr(mailla, nlsnac, repere, sdnewr,&
+                if (repere(1:1) .ne. 'G' .and. .not. tridim) then
+                    call rvchgr(mailla, nlsnac, repere, sdnewr, &
                                 iret)
                 else
                     iret = 1
-                endif
+                end if
 !
                 if (iret .ne. 0) then
                     sdpost = '&&RVPOST.FINAL.POST'
                     do isd = 1, nbsd, 1
-                        if (repere(1:1) .ne. 'G' .and. .not.tridim) then
+                        if (repere(1:1) .ne. 'G' .and. .not. tridim) then
                             call jeveuo(jexnum(sdnewr//'.VEC1', isd), 'L', jvec1)
                             call jeveuo(jexnum(sdnewr//'.VEC2', isd), 'L', jvec2)
                         else
                             jvec1 = 0
                             jvec2 = 0
-                        endif
+                        end if
 !
-                        sdev = zk24(jsdev + isd-1)
-                        sdli = zk24(jsdli + isd-1)
+                        sdev = zk24(jsdev+isd-1)
+                        sdli = zk24(jsdli+isd-1)
 !
-                        call rvcalq(iocc, sdev, zr(jvec1), zr(jvec2), repere,&
-                                    zk8(jcmpcd), nbcpn, nbcac, option, quant,&
+                        call rvcalq(iocc, sdev, zr(jvec1), zr(jvec2), repere, &
+                                    zk8(jcmpcd), nbcpn, nbcac, option, quant, &
                                     sdli, idir, zr(jdir), sdpost, courbe)
 !
                         if (nr .eq. 0) then
@@ -207,12 +207,12 @@ subroutine rvpost(mcf, iocc, dim, i1, i2,&
                                 sdmail = sdev(1:19)//'.MAIL'
                                 sdmoye = '&&RVPOST.MOYENNE'
                                 call rvpstm(sdli, sdpost, sdmoye)
-                                call rvaffe(mcf, iocc, sdli, sdpost, sdmail,&
-                                            ca, quant, option, repere, nomtab,&
+                                call rvaffe(mcf, iocc, sdli, sdpost, sdmail, &
+                                            ca, quant, option, repere, nomtab, &
                                             xnovar, ncheff, i1, isd)
                                 oper = 'MOYENNE'
-                                call rvaffm(mcf, iocc, sdli, sdpost, sdmoye,&
-                                            oper, quant, option, repere, nomtab,&
+                                call rvaffm(mcf, iocc, sdli, sdpost, sdmoye, &
+                                            oper, quant, option, repere, nomtab, &
                                             xnovar, ncheff, i1, isd)
                                 call jedetr(sdmoye)
 !
@@ -220,30 +220,30 @@ subroutine rvpost(mcf, iocc, dim, i1, i2,&
                                 oper = operat(1)
                                 if (oper .eq. 'EXTRACTION') then
                                     sdmail = sdev(1:19)//'.MAIL'
-                                    call rvaffe(mcf, iocc, sdli, sdpost, sdmail,&
-                                                ca, quant, option, repere, nomtab,&
+                                    call rvaffe(mcf, iocc, sdli, sdpost, sdmail, &
+                                                ca, quant, option, repere, nomtab, &
                                                 xnovar, ncheff, i1, isd)
 !
                                 else
                                     sdmoye = '&&RVPOST.MOYENNE'
                                     call rvpstm(sdli, sdpost, sdmoye)
-                                    call rvaffm(mcf, iocc, sdli, sdpost, sdmoye,&
-                                                oper, quant, option, repere, nomtab,&
+                                    call rvaffm(mcf, iocc, sdli, sdpost, sdmoye, &
+                                                oper, quant, option, repere, nomtab, &
                                                 xnovar, ncheff, i1, isd)
                                     call jedetr(sdmoye)
-                                endif
-                            endif
+                                end if
+                            end if
                         else
                             sdmoye = '&&RVPOST.SOMME'
                             call rvpsts(iocc, sdli, sdpost, sdmoye)
-                            call rvaffs(mcf, iocc, sdli, sdpost, sdmoye,&
-                                        quant, option, repere, nomtab, ncheff,&
+                            call rvaffs(mcf, iocc, sdli, sdpost, sdmoye, &
+                                        quant, option, repere, nomtab, ncheff, &
                                         i1, isd)
                             sdmoye(20:24) = '.VALE'
                             call jedetr(sdmoye)
                             sdmoye(20:24) = '.NOCP'
                             call jedetr(sdmoye)
-                        endif
+                        end if
 !
                         call jedetr(sdpost//'.VALE')
                         call jedetr(sdpost//'.PADR')
@@ -253,18 +253,18 @@ subroutine rvpost(mcf, iocc, dim, i1, i2,&
                         call jedetr(sdpost//'.PNSP')
                     end do
 !
-                endif
+                end if
                 call jeexin(sdnewr//'.VEC1', n1)
                 if (n1 .ne. 0) then
                     call jedetr(sdnewr//'.VEC1')
                     call jedetr(sdnewr//'.VEC2')
-                endif
+                end if
                 call jelira(sdlieu, 'LONMAX', n)
                 call jeveuo(sdlieu, 'L', n1)
                 call jeveuo(sdeval, 'L', n2)
                 do i = 1, n, 1
-                    lieu = zk24(n1 + i-1)(1:19)
-                    eval = zk24(n2 + i-1)(1:19)
+                    lieu = zk24(n1+i-1) (1:19)
+                    eval = zk24(n2+i-1) (1:19)
                     call jedetr(lieu//'.ABSC')
                     call jedetr(lieu//'.REFE')
                     call jedetr(lieu//'.DESC')
@@ -274,17 +274,17 @@ subroutine rvpost(mcf, iocc, dim, i1, i2,&
                     call jeexin(eval//'.MAIL', n3)
                     if (n3 .ne. 0) then
                         call jedetr(eval//'.MAIL')
-                    endif
+                    end if
                 end do
                 call jedetr(sdlieu)
                 call jedetr(sdeval)
-            endif
+            end if
             call jedetr(lscpnc)
             call tuesch(ssch19)
-        endif
+        end if
         call jedetr(lscpcd)
         call jedetr('&&RVPOST.VAL.DIR')
-    endif
+    end if
 !
     call jedema()
 end subroutine

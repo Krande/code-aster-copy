@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine lcrksg(rela_comp, nvi, vinf, fd, df,&
+subroutine lcrksg(rela_comp, nvi, vinf, fd, df, &
                   nmat, coefl, sigi)
     implicit none
 !     INTEGRATION DE LOIS DE COMPORTEMENT PAR UNE METHODE DE RUNGE KUTTA
@@ -41,22 +41,22 @@ subroutine lcrksg(rela_comp, nvi, vinf, fd, df,&
     real(kind=8) :: hook(6, 6), sigi(6), fd(9), df(9), coefl(nmat)
     real(kind=8) :: vinf(*), fp(3, 3), fpm(3, 3), fe(3, 3), detp, f(3, 3)
     real(kind=8) :: epsgl(6)
-    integer :: irr, decirr, nbsyst, decal, gdef, ndi,ndt
-    common/polycr/irr,decirr,nbsyst,decal,gdef
-    common /tdim/ ndt, ndi
+    integer :: irr, decirr, nbsyst, decal, gdef, ndi, ndt
+    common/polycr/irr, decirr, nbsyst, decal, gdef
+    common/tdim/ndt, ndi
 !     ----------------------------------------------------------------
 !
 !     PAS DE CONTRAINTES PLANES NI DE 1D. 3D = D_PLAN = AXIS
-    mod='3D'
+    mod = '3D'
     if (rela_comp .eq. 'MONOCRISTAL') then
         if (gdef .eq. 1) then
 !
 !           OPERATEUR D'ELASTICITE DE HOOKE
             if (coefl(nmat) .eq. 0) then
                 call lcopli('ISOTROPE', mod, coefl, hook)
-            else if (coefl(nmat).eq.1) then
+            else if (coefl(nmat) .eq. 1) then
                 call lcopli('ORTHOTRO', mod, coefl, hook)
-            endif
+            end if
 !           SPECIFIQUE MONICRISTAL : RECUP DE FP
 !           Attention, NVI represente ici 6+3*NS+9
             call dcopy(9, vinf(nvi-9+1), 1, fp, 1)
@@ -64,11 +64,11 @@ subroutine lcrksg(rela_comp, nvi, vinf, fd, df,&
 !
 !           F=FE.FP  => FP = DF.F-.(FP)**-1
             f = matmul(reshape(df, (/3, 3/)), reshape(fd, (/3, 3/)))
-            fe = matmul(f,fpm)
+            fe = matmul(f, fpm)
             call lcgrla(fe, epsgl)
-            sigi(1:ndt) = matmul(hook(1:ndt,1:ndt), epsgl(1:ndt))
+            sigi(1:ndt) = matmul(hook(1:ndt, 1:ndt), epsgl(1:ndt))
 !
-        endif
-    endif
+        end if
+    end if
 !
 end subroutine

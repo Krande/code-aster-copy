@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,12 +16,12 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine nmaffi(list_func_acti, ds_conv, ds_print, sderro, sddisc,&
-                  loop_name     )
+subroutine nmaffi(list_func_acti, ds_conv, ds_print, sderro, sddisc, &
+                  loop_name)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/isfonc.h"
@@ -74,8 +74,8 @@ implicit none
 !
 ! - Active functionnalites
 !
-    l_loop_cont = isfonc(list_func_acti,'BOUCLE_EXTERNE')
-    l_dyna_expl = isfonc(list_func_acti,'EXPLICITE')
+    l_loop_cont = isfonc(list_func_acti, 'BOUCLE_EXTERNE')
+    l_dyna_expl = isfonc(list_func_acti, 'EXPLICITE')
 !
 ! - Convergence state of loops
 !
@@ -98,43 +98,43 @@ implicit none
                 l_line_print = .false.
             else
                 l_line_print = .true.
-            endif
+            end if
         else
             l_line_print = .true.
-        endif
-    else if (loop_name.eq.'FIXE') then
+        end if
+    else if (loop_name .eq. 'FIXE') then
         if (l_loop_cont) then
             l_line_print = .true.
-        endif
-        if (.not.cvnewt) then
+        end if
+        if (.not. cvnewt) then
             l_line_print = .false.
-        endif
-    else if (loop_name.eq.'INST') then
+        end if
+    else if (loop_name .eq. 'INST') then
         l_line_print = .false.
-    endif
+    end if
 !
 ! - Print line in convergence table
 !
     if (l_line_print) then
         call nmimpr(ds_print)
-    endif
+    end if
 !
 ! - Print separator line in convergence table
 !
     if (l_line_print) then
-        if (cvnewt .and. .not.(l_error)) then
+        if (cvnewt .and. .not. (l_error)) then
             if (ds_print%l_print) then
                 call nmimpx(ds_print)
-            endif
-        endif
-    endif
+            end if
+        end if
+    end if
 !
 ! - Print error
 !
     if (l_error) then
         call nmimpx(ds_print)
         call nmerim(sderro)
-    endif
+    end if
 !
 ! - Print event messages
 !
@@ -142,8 +142,8 @@ implicit none
 !
 ! - Print residuals summary at end of step
 !
-    if (cvinst .and. .not.l_dyna_expl) then
+    if (cvinst .and. .not. l_dyna_expl) then
         call nmimps(ds_print, ds_conv, sderro)
-    endif
+    end if
 !
 end subroutine

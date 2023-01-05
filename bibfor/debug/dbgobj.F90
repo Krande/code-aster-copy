@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -44,41 +44,41 @@ subroutine dbgobj(ojbz, perm, iunit, mess)
     real(kind=8) :: sommr
 !
 ! DEB-------------------------------------------------------------------
-    ojb=ojbz
+    ojb = ojbz
     call jeexin(ojb, iret)
     if (iret .eq. 0) goto 9999
 !
-    call tstobj(ojb, perm, resume, sommi, sommr,&
+    call tstobj(ojb, perm, resume, sommi, sommr, &
                 lonuti, lonmax, type, iret, ni)
     if (type(1:1) .eq. 'K') then
-        write (iunit,1002) mess,ojb,lonmax,lonuti,type,iret,sommi
-    else if (type(1:1).eq.'I') then
-        write (iunit,1002) mess,ojb,lonmax,lonuti,type,iret,sommi
-    else if (type(1:1).eq.'L') then
-        write (iunit,1002) mess,ojb,lonmax,lonuti,type,iret,sommi
-    else if (type(1:1).eq.'R') then
-        write (iunit,1003) mess,ojb,lonmax,lonuti,type,iret,ni,sommr
-    else if (type(1:1).eq.'C') then
-        write (iunit,1003) mess,ojb,lonmax,lonuti,type,iret,ni,sommr
-    else if (type(1:1).eq.'?') then
+        write (iunit, 1002) mess, ojb, lonmax, lonuti, type, iret, sommi
+    else if (type(1:1) .eq. 'I') then
+        write (iunit, 1002) mess, ojb, lonmax, lonuti, type, iret, sommi
+    else if (type(1:1) .eq. 'L') then
+        write (iunit, 1002) mess, ojb, lonmax, lonuti, type, iret, sommi
+    else if (type(1:1) .eq. 'R') then
+        write (iunit, 1003) mess, ojb, lonmax, lonuti, type, iret, ni, sommr
+    else if (type(1:1) .eq. 'C') then
+        write (iunit, 1003) mess, ojb, lonmax, lonuti, type, iret, ni, sommr
+    else if (type(1:1) .eq. '?') then
         if (iret .ne. 0) then
-            write (iunit,1004) mess,ojb,type,iret
+            write (iunit, 1004) mess, ojb, type, iret
         else
             ASSERT(.false.)
-        endif
+        end if
     else
         ASSERT(.false.)
-    endif
+    end if
 !
-9999  continue
+9999 continue
 !
-    1002 format (a,' | ',a24,' | LONMAX=',i12,' | LONUTI=',i12,&
-     &        ' | TYPE=',a4,' | IRET=',i7, ' | SOMMI=',i24 )
+1002 format(a, ' | ', a24, ' | LONMAX=', i12, ' | LONUTI=', i12,&
+    &        ' | TYPE=', a4, ' | IRET=', i7, ' | SOMMI=', i24)
 !
-    1003 format (a,' | ',a24,' | LONMAX=',i12,' | LONUTI=',i12,&
-     &        ' | TYPE=',a4,' | IRET=',i7,' | IGNORE=',i7,&
-     &        ' | SOMMR=',e20.11)
+1003 format(a, ' | ', a24, ' | LONMAX=', i12, ' | LONUTI=', i12,&
+    &        ' | TYPE=', a4, ' | IRET=', i7, ' | IGNORE=', i7,&
+    &        ' | SOMMR=', e20.11)
 !
-    1004 format (a,' | ',a24, ' | TYPE=',a4,' | IRET=',i7)
+1004 format(a, ' | ', a24, ' | TYPE=', a4, ' | IRET=', i7)
 !
 end subroutine

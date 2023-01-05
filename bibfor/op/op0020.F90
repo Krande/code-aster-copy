@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -35,15 +35,15 @@ subroutine op0020()
     impr = 0
     fichie = ' '
     call getvis(' ', 'UNITE', scal=impr, nbret=n1)
-    if (.not. ulexis( impr )) then
+    if (.not. ulexis(impr)) then
         call ulopen(impr, ' ', fichie, 'NEW', 'O')
-    endif
+    end if
     call getfac('ELEMENT ', ouielt)
 !
 !     ---------- COMPILATION DES CATATLOGUES ---------------------------
     if (ouielt .ne. 0) then
         call ibcael('ECRIRE')
-    endif
+    end if
 !
 !     ---------- TRAITEMENT DE CE QUI EST RELATIF A LA COMPLETUDE ------
     call getfac('TYPE_ELEM', nbocc)

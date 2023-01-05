@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine fonbpa(nomf, vec, typfon, mxpf, nbpf,&
+subroutine fonbpa(nomf, vec, typfon, mxpf, nbpf, &
                   nompf)
     implicit none
 #include "jeveux.h"
@@ -50,24 +50,24 @@ subroutine fonbpa(nomf, vec, typfon, mxpf, nbpf,&
 !
     typfon = vec(1)
 !
-    if (vec(1)(1:8) .eq. 'CONSTANT') then
+    if (vec(1) (1:8) .eq. 'CONSTANT') then
         nbpf = 0
         nompf(1) = vec(3)
 !
-    else if (vec(1)(1:8).eq.'FONCTION') then
+    else if (vec(1) (1:8) .eq. 'FONCTION') then
         nbpf = 1
         nompf(1) = vec(3)
 !
-    else if (vec(1)(1:7).eq.'FONCT_C') then
+    else if (vec(1) (1:7) .eq. 'FONCT_C') then
         nbpf = 1
         nompf(1) = vec(3)
 !
-    else if (vec(1)(1:5).eq.'NAPPE') then
+    else if (vec(1) (1:5) .eq. 'NAPPE') then
         nbpf = 2
         nompf(1) = vec(3)
         nompf(2) = vec(7)
 !
-    else if (vec(1)(1:8).eq.'INTERPRE') then
+    else if (vec(1) (1:8) .eq. 'INTERPRE') then
         nomfon = nomf
         call jelira(nomfon//'.NOVA', 'LONUTI', nbpf)
         call jeveuo(nomfon//'.NOVA', 'L', vk24=nova)
@@ -77,15 +77,15 @@ subroutine fonbpa(nomf, vec, typfon, mxpf, nbpf,&
 !
     else
         ASSERT(.false.)
-    endif
+    end if
 !
     if (nbpf .gt. mxpf) then
         nomfon = nomf
         valk = nomfon
-        vali (1) = nbpf
-        vali (2) = mxpf
+        vali(1) = nbpf
+        vali(2) = mxpf
         call utmess('F', 'UTILITAI6_37', sk=valk, ni=2, vali=vali)
-    endif
+    end if
 !
     call jedema()
 end subroutine

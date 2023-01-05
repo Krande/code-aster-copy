@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,12 +16,12 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine xminit(mesh  , model , ds_contact, nume_inst, ds_measure,&
+subroutine xminit(mesh, model, ds_contact, nume_inst, ds_measure, &
                   sddyna, hat_valinc, list_func_acti)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -73,9 +73,9 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    l_dyna         = ndynlo(sddyna,'DYNAMIQUE')
-    l_cont_xfem_gg = cfdisl(ds_contact%sdcont_defi,'CONT_XFEM_GG')
-    ASSERT(.not.l_dyna)
+    l_dyna = ndynlo(sddyna, 'DYNAMIQUE')
+    l_cont_xfem_gg = cfdisl(ds_contact%sdcont_defi, 'CONT_XFEM_GG')
+    ASSERT(.not. l_dyna)
 !
 ! - Using *_INIT options (like SEUIL_INIT)
 !
@@ -89,7 +89,7 @@ implicit none
 !
     if (l_cont_xfem_gg) then
         call xmiszl(disp_prev, ds_contact, mesh)
-    endif
+    end if
 !
 ! - Management of status for time cut
 !
@@ -128,13 +128,13 @@ implicit none
 !
     if (l_cont_xfem_gg) then
         call xmapin(mesh, model, ds_contact, ds_measure)
-    endif
+    end if
 !
 ! - Initial options
 !
-    if (l_cont_xfem_gg.and.l_step_first) then
+    if (l_cont_xfem_gg .and. l_step_first) then
         call xoptin(mesh, model, ds_contact)
-    endif
+    end if
 !
 ! - Create fields
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine utno3d(ifm, niv, nsomm, ifa, tymvol,&
-                  igeom, xn, yn, zn, jac,&
-                  idfdx, idfdy, hf, poids3, npgf,&
+subroutine utno3d(ifm, niv, nsomm, ifa, tymvol, &
+                  igeom, xn, yn, zn, jac, &
+                  idfdx, idfdy, hf, poids3, npgf, &
                   noe)
 ! person_in_charge: olivier.boiteau at edf.fr
 !-----------------------------------------------------------------------
@@ -73,14 +73,14 @@ subroutine utno3d(ifm, niv, nsomm, ifa, tymvol,&
 !
 !  CALCUL DES PRODUITS VECTORIELS OMI VECTORIEL OMJ
     do in = 1, nsomm
-        iino = noe(in,ifa,tymvol)
-        i = igeom + 3*(iino-1)
+        iino = noe(in, ifa, tymvol)
+        i = igeom+3*(iino-1)
         do jn = 1, nsomm
-            jjno = noe(jn,ifa,tymvol)
-            j = igeom + 3*(jjno-1)
-            sx(in,jn) = zr(i+1) * zr(j+2) - zr(i+2) * zr(j+1)
-            sy(in,jn) = zr(i+2) * zr(j) - zr(i) * zr(j+2)
-            sz(in,jn) = zr(i) * zr(j+1) - zr(i+1) * zr(j)
+            jjno = noe(jn, ifa, tymvol)
+            j = igeom+3*(jjno-1)
+            sx(in, jn) = zr(i+1)*zr(j+2)-zr(i+2)*zr(j+1)
+            sy(in, jn) = zr(i+2)*zr(j)-zr(i)*zr(j+2)
+            sz(in, jn) = zr(i)*zr(j+1)-zr(i+1)*zr(j)
         end do
     end do
 !
@@ -99,17 +99,17 @@ subroutine utno3d(ifm, niv, nsomm, ifa, tymvol,&
             idec = 2*(i-1)
             do j = 1, nsomm
                 jdec = 2*(j-1)
-                xn(ipg)=xn(ipg)+zr(ixk+idec)*zr(iyk+jdec)*sx(i,j)
-                yn(ipg)=yn(ipg)+zr(ixk+idec)*zr(iyk+jdec)*sy(i,j)
-                zn(ipg)=zn(ipg)+zr(ixk+idec)*zr(iyk+jdec)*sz(i,j)
+                xn(ipg) = xn(ipg)+zr(ixk+idec)*zr(iyk+jdec)*sx(i, j)
+                yn(ipg) = yn(ipg)+zr(ixk+idec)*zr(iyk+jdec)*sy(i, j)
+                zn(ipg) = zn(ipg)+zr(ixk+idec)*zr(iyk+jdec)*sz(i, j)
             end do
         end do
 !   JACOBIEN
-        aux = sqrt(xn(ipg)*xn(ipg)+yn(ipg)*yn(ipg)+ zn(ipg)*zn(ipg))
+        aux = sqrt(xn(ipg)*xn(ipg)+yn(ipg)*yn(ipg)+zn(ipg)*zn(ipg))
         jac(ipg) = aux*poids3(ipg)
 !
 ! NORMALISATION A L'UNITE DES COMPOSANTES DE LA NORMALE
-        ASSERT(abs(aux).gt.ovfl)
+        ASSERT(abs(aux) .gt. ovfl)
         aux = -1.d0/aux
         xn(ipg) = xn(ipg)*aux
         yn(ipg) = yn(ipg)*aux
@@ -117,18 +117,18 @@ subroutine utno3d(ifm, niv, nsomm, ifa, tymvol,&
     end do
 !
 ! DIAMETRE DE LA FACE
-    if (niv .eq. 2) write(ifm,*)
-    call uthk(nomteb, zr(igeom), hf, 0, niv,&
+    if (niv .eq. 2) write (ifm, *)
+    call uthk(nomteb, zr(igeom), hf, 0, niv, &
               noe=noe, nsomm=nsomm, tymvol=tymvol, ifa=ifa)
 !
 ! AFFICHAGES
     if (niv .eq. 2) then
-        write(ifm,*)'NUMERO DE FACE ',ifa
-        write(ifm,*)'NOMBRE DE SOMMETS/PGAUSS ',nsomm,npgf
-        write(ifm,*)'CONNECTIQUE ',(noe(i,ifa,tymvol),i=1,nsomm)
-        write(ifm,*)'XN  ',(xn(i),i=1,npgf)
-        write(ifm,*)'YN  ',(yn(i),i=1,npgf)
-        write(ifm,*)'ZN  ',(zn(i),i=1,npgf)
-        write(ifm,*)'JAC ',(jac(i),i=1,npgf)
-    endif
+        write (ifm, *) 'NUMERO DE FACE ', ifa
+        write (ifm, *) 'NOMBRE DE SOMMETS/PGAUSS ', nsomm, npgf
+        write (ifm, *) 'CONNECTIQUE ', (noe(i, ifa, tymvol), i=1, nsomm)
+        write (ifm, *) 'XN  ', (xn(i), i=1, npgf)
+        write (ifm, *) 'YN  ', (yn(i), i=1, npgf)
+        write (ifm, *) 'ZN  ', (zn(i), i=1, npgf)
+        write (ifm, *) 'JAC ', (jac(i), i=1, npgf)
+    end if
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine load_neum_spec(load_name    , load_nume  , load_type  , ligrel_calc, i_type_neum,&
-                          nb_type_neumz, nb_in_maxi , nb_in_prep , lchin      , lpain      ,&
-                          nb_in_add    , load_ligrel, load_option, matr_type  , iden_direct,&
+subroutine load_neum_spec(load_name, load_nume, load_type, ligrel_calc, i_type_neum, &
+                          nb_type_neumz, nb_in_maxi, nb_in_prep, lchin, lpain, &
+                          nb_in_add, load_ligrel, load_option, matr_type, iden_direct, &
                           name_inputz)
 !
     implicit none
@@ -83,7 +83,7 @@ subroutine load_neum_spec(load_name    , load_nume  , load_type  , ligrel_calc, 
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: nb_type_neum
-    parameter (nb_type_neum=19)
+    parameter(nb_type_neum=19)
     character(len=6) :: object(nb_type_neum)
     character(len=7) :: para_r(nb_type_neum), para_f(nb_type_neum)
     character(len=16) :: option_f(nb_type_neum), option_r(nb_type_neum)
@@ -104,130 +104,130 @@ subroutine load_neum_spec(load_name    , load_nume  , load_type  , ligrel_calc, 
 !
 ! - Object name construct in AFFE_CHAR_MECA
 !
-    data object   /'.FORNO','.F3D3D','.F2D3D','.F1D3D',&
-                   '.F2D2D','.F1D2D','.F1D1D','.PESAN',&
-                   '.ROTAT','.PRESS','.FELEC','.FCO3D',&
-                   '.FCO2D','.EPSIN','.FLUX' ,'.VEASS',&
-                   '.SIINT','.EFOND','.ETHM'/
+    data object/'.FORNO', '.F3D3D', '.F2D3D', '.F1D3D', &
+        '.F2D2D', '.F1D2D', '.F1D1D', '.PESAN', &
+        '.ROTAT', '.PRESS', '.FELEC', '.FCO3D', &
+        '.FCO2D', '.EPSIN', '.FLUX', '.VEASS', &
+        '.SIINT', '.EFOND', '.ETHM'/
 !
 ! - Name of input parameter field (real coefficient)
 !
-    data para_r   /'PFORNOR','PFR3D3D','PFR2D3D','PFR1D3D',&
-                   'PFR2D2D','PFR1D2D','PFR1D1D','PPESANR',&
-                   'PROTATR','PPRESSR','PFRELEC','PFRCO3D',&
-                   'PFRCO2D','PEPSINR','PFLUXR' ,'       ',&
-                   '       ','PEFOND', 'PECHTHM'/
+    data para_r/'PFORNOR', 'PFR3D3D', 'PFR2D3D', 'PFR1D3D', &
+        'PFR2D2D', 'PFR1D2D', 'PFR1D1D', 'PPESANR', &
+        'PROTATR', 'PPRESSR', 'PFRELEC', 'PFRCO3D', &
+        'PFRCO2D', 'PEPSINR', 'PFLUXR', '       ', &
+        '       ', 'PEFOND', 'PECHTHM'/
 !
 ! - Name of option for dead load (real coefficient)
 !
-    data option_r /'CHAR_MECA_FORC_R','CHAR_MECA_FR3D3D','CHAR_MECA_FR2D3D','CHAR_MECA_FR1D3D',&
-                   'CHAR_MECA_FR2D2D','CHAR_MECA_FR1D2D','CHAR_MECA_FR1D1D','CHAR_MECA_PESA_R',&
-                   'CHAR_MECA_ROTA_R','CHAR_MECA_PRES_R','CHAR_MECA_FRELEC','CHAR_MECA_FRCO3D',&
-                   'CHAR_MECA_FRCO2D','CHAR_MECA_EPSI_R','CHAR_MECA_FLUX_R','Copy_Load'       ,&
-                   'FORC_NODA       ','CHAR_MECA_EFON_R','CHAR_ECHA_THM_R'/
+    data option_r/'CHAR_MECA_FORC_R', 'CHAR_MECA_FR3D3D', 'CHAR_MECA_FR2D3D', 'CHAR_MECA_FR1D3D', &
+        'CHAR_MECA_FR2D2D', 'CHAR_MECA_FR1D2D', 'CHAR_MECA_FR1D1D', 'CHAR_MECA_PESA_R', &
+        'CHAR_MECA_ROTA_R', 'CHAR_MECA_PRES_R', 'CHAR_MECA_FRELEC', 'CHAR_MECA_FRCO3D', &
+        'CHAR_MECA_FRCO2D', 'CHAR_MECA_EPSI_R', 'CHAR_MECA_FLUX_R', 'Copy_Load', &
+        'FORC_NODA       ', 'CHAR_MECA_EFON_R', 'CHAR_ECHA_THM_R'/
 !
 ! - Name of option for undead load (real coefficient)
 !
-    data optsui_r /'No_Load         ','No_Load         ','No_Load         ','No_Load         ',&
-                   'No_Load         ','No_Load         ','CHAR_MECA_SR1D1D','CHAR_MECA_PESA_R',&
-                   'CHAR_MECA_ROTA_R','CHAR_MECA_PRSU_R','No_Load         ','CHAR_MECA_SRCO3D',&
-                   'No_Load         ','No_Load         ','No_Load         ','No_Load         ',&
-                   'No_Load         ','CHAR_MECA_EFON_R','CHAR_ECHA_THM_R'/
+    data optsui_r/'No_Load         ', 'No_Load         ', 'No_Load         ', 'No_Load         ', &
+        'No_Load         ', 'No_Load         ', 'CHAR_MECA_SR1D1D', 'CHAR_MECA_PESA_R', &
+        'CHAR_MECA_ROTA_R', 'CHAR_MECA_PRSU_R', 'No_Load         ', 'CHAR_MECA_SRCO3D', &
+        'No_Load         ', 'No_Load         ', 'No_Load         ', 'No_Load         ', &
+        'No_Load         ', 'CHAR_MECA_EFON_R', 'CHAR_ECHA_THM_R'/
 !
 ! - Name of option for undead load matrix (real coefficient)
 !
-    data optmat_r /'No_Load         ','No_Load         ','No_Load         ','No_Load         ',&
-                   'No_Load         ','No_Load         ','No_Load         ','No_Load         ',&
-                   'RIGI_MECA_RO    ','RIGI_MECA_PRSU_R','No_Load         ','RIGI_MECA_SRCO3D',&
-                   'No_Load         ','No_Load         ','No_Load         ','No_Load         ',&
-                   'No_Load         ','RIGI_MECA_EFON_R','No_Load         '/
+    data optmat_r/'No_Load         ', 'No_Load         ', 'No_Load         ', 'No_Load         ', &
+        'No_Load         ', 'No_Load         ', 'No_Load         ', 'No_Load         ', &
+        'RIGI_MECA_RO    ', 'RIGI_MECA_PRSU_R', 'No_Load         ', 'RIGI_MECA_SRCO3D', &
+        'No_Load         ', 'No_Load         ', 'No_Load         ', 'No_Load         ', &
+        'No_Load         ', 'RIGI_MECA_EFON_R', 'No_Load         '/
 !
 ! - Name of input parameter field (function coefficient)
 !
-    data para_f   /'PFORNOF','PFF3D3D','PFF2D3D','PFF1D3D',&
-                   'PFF2D2D','PFF1D2D','PFF1D1D','PPESANR',&
-                   'PROTATR','PPRESSF','PFRELEC','PFFCO3D',&
-                   'PFFCO2D','PEPSINF','PFLUXF' ,'       ',&
-                   '       ','PEFOND', 'PCHTHMF'/
+    data para_f/'PFORNOF', 'PFF3D3D', 'PFF2D3D', 'PFF1D3D', &
+        'PFF2D2D', 'PFF1D2D', 'PFF1D1D', 'PPESANR', &
+        'PROTATR', 'PPRESSF', 'PFRELEC', 'PFFCO3D', &
+        'PFFCO2D', 'PEPSINF', 'PFLUXF', '       ', &
+        '       ', 'PEFOND', 'PCHTHMF'/
 !
 ! - Name of option for dead load (function coefficient)
 !
-    data option_f /'CHAR_MECA_FORC_F','CHAR_MECA_FF3D3D','CHAR_MECA_FF2D3D','CHAR_MECA_FF1D3D',&
-                   'CHAR_MECA_FF2D2D','CHAR_MECA_FF1D2D','CHAR_MECA_FF1D1D','CHAR_MECA_PESA_R',&
-                   'CHAR_MECA_ROTA_R','CHAR_MECA_PRES_F','CHAR_MECA_FRELEC','CHAR_MECA_FFCO3D',&
-                   'CHAR_MECA_FFCO2D','CHAR_MECA_EPSI_F','CHAR_MECA_FLUX_F','Copy_Load',&
-                   'FORC_NODA       ','CHAR_MECA_EFON_F','CHAR_ECHA_THM_F'/
+    data option_f/'CHAR_MECA_FORC_F', 'CHAR_MECA_FF3D3D', 'CHAR_MECA_FF2D3D', 'CHAR_MECA_FF1D3D', &
+        'CHAR_MECA_FF2D2D', 'CHAR_MECA_FF1D2D', 'CHAR_MECA_FF1D1D', 'CHAR_MECA_PESA_R', &
+        'CHAR_MECA_ROTA_R', 'CHAR_MECA_PRES_F', 'CHAR_MECA_FRELEC', 'CHAR_MECA_FFCO3D', &
+        'CHAR_MECA_FFCO2D', 'CHAR_MECA_EPSI_F', 'CHAR_MECA_FLUX_F', 'Copy_Load', &
+        'FORC_NODA       ', 'CHAR_MECA_EFON_F', 'CHAR_ECHA_THM_F'/
 !
 ! - Name of option for undead load (function coefficient)
 !
-    data optsui_f /'No_Load         ','No_Load         ','No_Load         ','No_Load         ',&
-                   'No_Load         ','No_Load         ','CHAR_MECA_SF1D1D','No_Load         ',&
-                   'No_Load         ','CHAR_MECA_PRSU_F','No_Load         ','CHAR_MECA_SFCO3D',&
-                   'No_Load         ','No_Load         ','No_Load         ','No_Load         ',&
-                   'No_Load         ','CHAR_MECA_EFON_F','CHAR_ECHA_THM_F'/
+    data optsui_f/'No_Load         ', 'No_Load         ', 'No_Load         ', 'No_Load         ', &
+        'No_Load         ', 'No_Load         ', 'CHAR_MECA_SF1D1D', 'No_Load         ', &
+        'No_Load         ', 'CHAR_MECA_PRSU_F', 'No_Load         ', 'CHAR_MECA_SFCO3D', &
+        'No_Load         ', 'No_Load         ', 'No_Load         ', 'No_Load         ', &
+        'No_Load         ', 'CHAR_MECA_EFON_F', 'CHAR_ECHA_THM_F'/
 !
 ! - Name of option for undead load matrix (function coefficient)
 !
-    data optmat_f /'No_Load         ','No_Load         ','No_Load         ','No_Load         ',&
-                   'No_Load         ','No_Load         ','No_Load         ','No_Load         ',&
-                   'No_Load         ','RIGI_MECA_PRSU_F','No_Load         ','RIGI_MECA_SFCO3D',&
-                   'No_Load         ','No_Load         ','No_Load         ','No_Load         ',&
-                   'No_Load         ','RIGI_MECA_EFON_F','No_Load         '/
+    data optmat_f/'No_Load         ', 'No_Load         ', 'No_Load         ', 'No_Load         ', &
+        'No_Load         ', 'No_Load         ', 'No_Load         ', 'No_Load         ', &
+        'No_Load         ', 'RIGI_MECA_PRSU_F', 'No_Load         ', 'RIGI_MECA_SFCO3D', &
+        'No_Load         ', 'No_Load         ', 'No_Load         ', 'No_Load         ', &
+        'No_Load         ', 'RIGI_MECA_EFON_F', 'No_Load         '/
 !
 ! - Flag if load can been undead load type
 !
-    data l_suiv   /.false.,.false.,.false.,.false.,&
-                   .false.,.false.,.true. ,.true. ,&
-                   .true. ,.true. ,.false.,.true. ,&
-                   .false.,.false.,.false.,.false.,&
-                   .false.,.true.,.true. /
+    data l_suiv/.false., .false., .false., .false., &
+        .false., .false., .true., .true., &
+        .true., .true., .false., .true., &
+        .false., .false., .false., .false., &
+        .false., .true., .true./
 !
 ! - Flag if load can been used for continuation methods
 !
-    data l_pilo   /.true. ,.true. ,.true. ,.true. ,&
-                   .true. ,.true. ,.true. ,.true. ,&
-                   .false.,.true. ,.false.,.true. ,&
-                   .true. ,.false.,.true. ,.true. ,&
-                   .false.,.true.,.false./
+    data l_pilo/.true., .true., .true., .true., &
+        .true., .true., .true., .true., &
+        .false., .true., .false., .true., &
+        .true., .false., .true., .true., &
+        .false., .true., .false./
 !
 ! - Type of matrix for undead load
 !
-    data para_matr/'       ','       ','       ','       ',&
-                   '       ','       ','       ','       ',&
-                   'PMATUUR','PMATUNS','       ','PMATUNS',&
-                   '       ','       ','       ','       ',&
-                   '       ','PMATUUR','       '/
+    data para_matr/'       ', '       ', '       ', '       ', &
+        '       ', '       ', '       ', '       ', &
+        'PMATUUR', 'PMATUNS', '       ', 'PMATUNS', &
+        '       ', '       ', '       ', '       ', &
+        '       ', 'PMATUUR', '       '/
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    ligrel_load  = load_name(1:8)//'.CHME.LIGRE'
-    load_ligrel  = ' '
-    load_option  = 'No_Load'
-    l_constant   = .false.
-    l_fonct_0    = .false.
-    l_fonct_t    = .false.
-    l_sigm_int   = .false.
-    i_field_in   = nb_in_prep
-    ASSERT(i_type_neum.le.nb_type_neum)
-    ASSERT(nb_type_neumz.eq.nb_type_neum)
+    ligrel_load = load_name(1:8)//'.CHME.LIGRE'
+    load_ligrel = ' '
+    load_option = 'No_Load'
+    l_constant = .false.
+    l_fonct_0 = .false.
+    l_fonct_t = .false.
+    l_sigm_int = .false.
+    i_field_in = nb_in_prep
+    ASSERT(i_type_neum .le. nb_type_neum)
+    ASSERT(nb_type_neumz .eq. nb_type_neum)
 !
 ! - Identify current load
 !
     iret = 0
     if (present(iden_direct)) then
-        if (iden_direct.eq.object(i_type_neum)) then
+        if (iden_direct .eq. object(i_type_neum)) then
             iret = 1
-        endif
+        end if
         name_input = name_inputz
     else
         if (object(i_type_neum) .eq. '.VEASS') then
             identify = load_name(1:8)//'.CHME'//object(i_type_neum)
         else
             identify = load_name(1:8)//'.CHME'//object(i_type_neum)//'.DESC'
-        endif
+        end if
         name_input = load_name(1:8)//'.CHME'//object(i_type_neum)
         call jeexin(identify, iret)
-    endif
+    end if
 !
     if (iret .ne. 0) then
 !
@@ -238,14 +238,14 @@ subroutine load_neum_spec(load_name    , load_nume  , load_type  , ligrel_calc, 
         elseif (load_nume .eq. 5) then
             l_constant = .true.
         elseif (load_nume .eq. 8) then
-            l_fonct_0  = .true.
+            l_fonct_0 = .true.
         else if (load_nume .eq. 2) then
-            l_fonct_0  = .true.
+            l_fonct_0 = .true.
         else if (load_nume .eq. 3) then
-            l_fonct_t  = .true.
+            l_fonct_t = .true.
         else if (load_nume .eq. 55) then
             l_sigm_int = .true.
-        endif
+        end if
 !
 ! ----- Special for undeads loads
 !
@@ -254,38 +254,38 @@ subroutine load_neum_spec(load_name    , load_nume  , load_type  , ligrel_calc, 
             call dismoi('TYPE_CHARGE', load_name, 'CHARGE', repk=affcha)
             if (affcha(5:7) .eq. '_FO') then
                 l_constant = .false.
-                l_fonct_0  = .true.
-            endif
-        endif
+                l_fonct_0 = .true.
+            end if
+        end if
 !
 ! ----- Name of option
 !
         if (l_constant) then
-            if (load_type.eq.'Suiv') then
+            if (load_type .eq. 'Suiv') then
                 if (present(matr_type)) then
                     load_option = optmat_r(i_type_neum)
                 else
                     load_option = optsui_r(i_type_neum)
-                endif
+                end if
             else
                 load_option = option_r(i_type_neum)
-            endif
-        else if (l_fonct_0.or.l_fonct_t) then
-            if (load_type.eq.'Suiv') then
+            end if
+        else if (l_fonct_0 .or. l_fonct_t) then
+            if (load_type .eq. 'Suiv') then
                 if (present(matr_type)) then
                     load_option = optmat_f(i_type_neum)
                 else
                     load_option = optsui_f(i_type_neum)
-                endif
+                end if
             else
                 load_option = option_f(i_type_neum)
-            endif
+            end if
         else if (l_sigm_int) then
             load_option = option_r(i_type_neum)
-            ASSERT(load_option.eq.'FORC_NODA')
+            ASSERT(load_option .eq. 'FORC_NODA')
         else
             ASSERT(.false.)
-        endif
+        end if
 !
 ! ----- Name of input fields
 !
@@ -294,31 +294,31 @@ subroutine load_neum_spec(load_name    , load_nume  , load_type  , ligrel_calc, 
             lpain(i_field_in) = para_r(i_type_neum)
             lchin(i_field_in) = name_input(1:19)
 !
-            if (lpain(i_field_in).eq.'PEPSINR')then
+            if (lpain(i_field_in) .eq. 'PEPSINR') then
                 call jeveuo(ligrel_load(1:13)//'.EPSIN.DESC', 'L', vi=desc)
                 ig = desc(1)
                 call jenuno(jexnum('&CATA.GD.NOMGD', ig), ng)
 !               recuperation du nom du champ stocké dans la carte "bidon"
-                if (ng.eq.'NEUT_K8')then
+                if (ng .eq. 'NEUT_K8') then
                     call jeveuo(ligrel_load(1:13)//'.EPSIN.VALE', 'L', vk8=p_vale_sigm)
                     lchin(i_field_in) = p_vale_sigm(1)
-                endif
-            endif
+                end if
+            end if
 
             if (load_option .eq. 'CHAR_MECA_EFON_R') then
                 i_field_in = i_field_in+1
                 lpain(i_field_in) = 'PPREFFR'
                 lchin(i_field_in) = load_name//'.CHME.PREFF'
-            else if  (load_option .eq. 'CHAR_ECHA_THM_R') then
+            else if (load_option .eq. 'CHAR_ECHA_THM_R') then
                 i_field_in = i_field_in+1
                 lpain(i_field_in) = 'PDEPLMR'
                 lchin(i_field_in) = load_name//'.CHME.DEPL_R'
-            else if  (load_option .eq. 'CHAR_ECHA_THM_F') then
+            else if (load_option .eq. 'CHAR_ECHA_THM_F') then
                 i_field_in = i_field_in+1
                 lpain(i_field_in) = 'PDEPLMR'
                 lchin(i_field_in) = load_name//'.CHME.DEPL_R'
-            endif
-        else if (l_fonct_0.or.l_fonct_t) then
+            end if
+        else if (l_fonct_0 .or. l_fonct_t) then
             i_field_in = i_field_in+1
             lpain(i_field_in) = para_f(i_type_neum)
             lchin(i_field_in) = name_input(1:19)
@@ -326,7 +326,7 @@ subroutine load_neum_spec(load_name    , load_nume  , load_type  , ligrel_calc, 
                 i_field_in = i_field_in+1
                 lpain(i_field_in) = 'PPREFFF'
                 lchin(i_field_in) = load_name//'.CHME.PREFF'
-            endif
+            end if
         else if (l_sigm_int) then
             call jeveuo(ligrel_load(1:13)//'.SIINT.VALE', 'L', vk8=p_vale_sigm)
             i_field_in = i_field_in+1
@@ -334,15 +334,15 @@ subroutine load_neum_spec(load_name    , load_nume  , load_type  , ligrel_calc, 
             lchin(i_field_in) = p_vale_sigm(1)
         else
             ASSERT(.false.)
-        endif
+        end if
 !
 ! ----- Parameter name of output field for matrix (undead loads)
 !
-        if (load_type.eq.'Suiv') then
+        if (load_type .eq. 'Suiv') then
             if (present(matr_type)) then
                 matr_type = para_matr(i_type_neum)
-            endif
-        endif
+            end if
+        end if
 !
 ! ----- Select LIGREL
 !
@@ -350,40 +350,40 @@ subroutine load_neum_spec(load_name    , load_nume  , load_type  , ligrel_calc, 
             load_ligrel = ligrel_load
         else
             load_ligrel = ligrel_calc
-        endif
+        end if
         if (load_option .eq. 'Copy_Load') then
-            ASSERT((load_nume.ge.1.and.load_nume.le.3).or.load_nume.eq.5)
-            call jeveuo(lchin(i_field_in), 'L', vk8 = p_vect_asse)
+            ASSERT((load_nume .ge. 1 .and. load_nume .le. 3) .or. load_nume .eq. 5)
+            call jeveuo(lchin(i_field_in), 'L', vk8=p_vect_asse)
             load_ligrel = p_vect_asse(1)
-        endif
+        end if
 !
 ! ----- Checking for undead loads
 !
-        if (load_type.eq.'Suiv') then
-            if (.not.l_suiv(i_type_neum)) then
+        if (load_type .eq. 'Suiv') then
+            if (.not. l_suiv(i_type_neum)) then
                 call utmess('F', 'CHARGES_23', sk=load_name)
-            endif
-            if ((load_option.eq.'No_Load').and.(.not.present(matr_type))) then
+            end if
+            if ((load_option .eq. 'No_Load') .and. (.not. present(matr_type))) then
                 call utmess('F', 'CHARGES_23', sk=load_name)
-            endif
-        endif
+            end if
+        end if
 !
 ! ----- Checking for continuation type loads
 !
-        if (load_type.eq.'Pilo') then
-            if (.not.l_pilo(i_type_neum)) then
+        if (load_type .eq. 'Pilo') then
+            if (.not. l_pilo(i_type_neum)) then
                 call utmess('F', 'CHARGES_26', sk=load_name)
-            endif
+            end if
             if (l_fonct_t) then
                 call utmess('F', 'CHARGES_28', sk=load_name)
-            endif
-        endif
+            end if
+        end if
 !
 ! ----- Number of input fields which been added
 !
-        nb_in_add = i_field_in - nb_in_prep
+        nb_in_add = i_field_in-nb_in_prep
 !
-        ASSERT(i_field_in.le.nb_in_maxi)
-    endif
+        ASSERT(i_field_in .le. nb_in_maxi)
+    end if
 !
 end subroutine

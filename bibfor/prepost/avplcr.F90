@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,11 +16,11 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine avplcr(nbvec, vectn, vectu, vectv, nbordr,&
-                  kwork, somnow, vwork, tdisp, tspaq,&
-                  i, nomcri, nomfor, grdvie, forvie,&
-                  fordef, fatsoc, proaxe, nommat, vala,&
-                  coefpa, post, cudomx, nxm, nym,&
+subroutine avplcr(nbvec, vectn, vectu, vectv, nbordr, &
+                  kwork, somnow, vwork, tdisp, tspaq, &
+                  i, nomcri, nomfor, grdvie, forvie, &
+                  fordef, fatsoc, proaxe, nommat, vala, &
+                  coefpa, post, cudomx, nxm, nym, &
                   nzm)
 ! aslint: disable=W1306,W1504
     implicit none
@@ -103,7 +103,7 @@ subroutine avplcr(nbvec, vectn, vectu, vectv, nbordr,&
     epsilo = 1.0d-7
     pi = r8pi()
 !
-    prec=100.d0*r8prem()
+    prec = 100.d0*r8prem()
 !
     nbvec1 = 209
 !
@@ -119,18 +119,18 @@ subroutine avplcr(nbvec, vectn, vectu, vectv, nbordr,&
     call wkvect('&&AVPLCR.VECT_VMIN', 'V V R', nbvec*(nbordr+2), jvmin)
     call wkvect('&&AVPLCR.VECT_VMAX', 'V V R', nbvec*(nbordr+2), jvmax)
 !
-    call avcipr(nbvec1, vectn, vectu, vectv, nbordr,&
-                kwork, somnow, vwork, tdisp, tspaq,&
-                i, nomcri, nomfor, fordef, fatsoc,&
-                proaxe, pseuil, method, ncycl, jvmin,&
+    call avcipr(nbvec1, vectn, vectu, vectv, nbordr, &
+                kwork, somnow, vwork, tdisp, tspaq, &
+                i, nomcri, nomfor, fordef, fatsoc, &
+                proaxe, pseuil, method, ncycl, jvmin, &
                 jvmax, jomin, jomax)
 !
 ! REMPACER PAR SUBROUTINE AVGRDO
 !
-    call avgrdo(nbvec1, nbordr, vectn, vwork, tdisp,&
-                kwork, somnow, tspaq, i, nommat,&
-                nomcri, nomfor, grdvie, forvie, vala,&
-                coefpa, ncycl, jvmin, jvmax, jomin,&
+    call avgrdo(nbvec1, nbordr, vectn, vwork, tdisp, &
+                kwork, somnow, tspaq, i, nommat, &
+                nomcri, nomfor, grdvie, forvie, vala, &
+                coefpa, ncycl, jvmin, jvmax, jomin, &
                 jomax, post, cudomx, vnorm, nbplan)
 !
 !
@@ -138,8 +138,8 @@ subroutine avplcr(nbvec, vectn, vectu, vectv, nbordr,&
 !    CORRESPONDANT AU MAX DES CUMULS DE DOMMAGE.
 !
     if ((post) .and. (nbplan .gt. 2)) then
-        write(6,*) 'IL EXISTE  PLUS DE 2 PLANS DU MAX DOMMAGE'
-    endif
+        write (6, *) 'IL EXISTE  PLUS DE 2 PLANS DU MAX DOMMAGE'
+    end if
 !
 !      IF (NBPLAN .EQ. 2) THEN
 !
@@ -151,23 +151,23 @@ subroutine avplcr(nbvec, vectn, vectu, vectv, nbordr,&
 !
     do kp = 1, 2
 !
-        nxm(kp) = vectn((vnorm(kp)-1)*3 + 1)
-        nym(kp) = vectn((vnorm(kp)-1)*3 + 2)
-        nzm(kp) = vectn((vnorm(kp)-1)*3 + 3)
+        nxm(kp) = vectn((vnorm(kp)-1)*3+1)
+        nym(kp) = vectn((vnorm(kp)-1)*3+2)
+        nzm(kp) = vectn((vnorm(kp)-1)*3+3)
 !
-        gammam = atan2(sqrt(abs(1.0d0-nzm(kp)**2)),nzm(kp))
+        gammam = atan2(sqrt(abs(1.0d0-nzm(kp)**2)), nzm(kp))
         if (gammam .lt. 0.0d0) then
-            gammam = gammam + pi
-        endif
+            gammam = gammam+pi
+        end if
 !
         if ((abs(nym(kp)) .lt. epsilo) .and. (abs(nxm(kp)) .lt. epsilo)) then
             phim = 0.0d0
         else
-            phim = atan2(abs(nym(kp)),nxm(kp))
-        endif
+            phim = atan2(abs(nym(kp)), nxm(kp))
+        end if
         if (phim .lt. 0.0d0) then
-            phim = phim + pi
-        endif
+            phim = phim+pi
+        end if
 !
         if (abs(gammam) .lt. epsilo) then
             gamma = 5.0d0*(pi/180.0d0)
@@ -179,8 +179,8 @@ subroutine avplcr(nbvec, vectn, vectu, vectv, nbordr,&
             dim = 27
             phi0 = 0.0d0
 !
-            call vecnuv(ideb, ifin, gamma, phi0, dphi2,&
-                        n, k, dim, vecn2, vecu2,&
+            call vecnuv(ideb, ifin, gamma, phi0, dphi2, &
+                        n, k, dim, vecn2, vecu2, &
                         vecv2)
             gamma = 0.0d0
             phi0 = pi
@@ -188,18 +188,18 @@ subroutine avplcr(nbvec, vectn, vectu, vectv, nbordr,&
             ifin = 1
             k = 1
 !
-            call vecnuv(ideb, ifin, gamma, phi0, dphi2,&
-                        n, k, dim, vecn2, vecu2,&
+            call vecnuv(ideb, ifin, gamma, phi0, dphi2, &
+                        n, k, dim, vecn2, vecu2, &
                         vecv2)
 !
 ! 9.1 PROJECTION DE L'HISTORIQUE DU CISAILLEMENT SUR UN PLAN
 !
             nbvec1 = 7
 !
-            call avcipr(nbvec1, vecn2, vecu2, vecv2, nbordr,&
-                        kwork, somnow, vwork, tdisp, tspaq,&
-                        i, nomcri, nomfor, fordef, fatsoc,&
-                        proaxe, pseuil, method, ncycl, jvmin,&
+            call avcipr(nbvec1, vecn2, vecu2, vecv2, nbordr, &
+                        kwork, somnow, vwork, tdisp, tspaq, &
+                        i, nomcri, nomfor, fordef, fatsoc, &
+                        proaxe, pseuil, method, ncycl, jvmin, &
                         jvmax, jomin, jomax)
 !
 !
@@ -212,28 +212,28 @@ subroutine avplcr(nbvec, vectn, vectu, vectv, nbordr,&
             ideb = 1
             ifin = 3
             do j = 1, 3
-                gamma = gammam + (j-k)*dgam2
-                call vecnuv(ideb, ifin, gamma, phim, dphi2,&
-                            n, k, dim, vecn2, vecu2,&
+                gamma = gammam+(j-k)*dgam2
+                call vecnuv(ideb, ifin, gamma, phim, dphi2, &
+                            n, k, dim, vecn2, vecu2, &
                             vecv2)
             end do
 !
             nbvec1 = 9
 !
-            call avcipr(nbvec1, vecn2, vecu2, vecv2, nbordr,&
-                        kwork, somnow, vwork, tdisp, tspaq,&
-                        i, nomcri, nomfor, fordef, fatsoc,&
-                        proaxe, pseuil, method, ncycl, jvmin,&
+            call avcipr(nbvec1, vecn2, vecu2, vecv2, nbordr, &
+                        kwork, somnow, vwork, tdisp, tspaq, &
+                        i, nomcri, nomfor, fordef, fatsoc, &
+                        proaxe, pseuil, method, ncycl, jvmin, &
                         jvmax, jomin, jomax)
 !
-        endif
+        end if
 !
 ! REMPACER PAR SUBROUTINE AVGRDO
 !
-        call avgrdo(nbvec1, nbordr, vecn2, vwork, tdisp,&
-                    kwork, somnow, tspaq, i, nommat,&
-                    nomcri, nomfor, grdvie, forvie, vala,&
-                    coefpa, ncycl, jvmin, jvmax, jomin,&
+        call avgrdo(nbvec1, nbordr, vecn2, vwork, tdisp, &
+                    kwork, somnow, tspaq, i, nommat, &
+                    nomcri, nomfor, grdvie, forvie, vala, &
+                    coefpa, ncycl, jvmin, jvmax, jomin, &
                     jomax, post, cudomx, vnormx, ibid)
 !
 !
@@ -245,19 +245,19 @@ subroutine avplcr(nbvec, vectn, vectu, vectv, nbordr,&
         nym(kp) = vecn2((vnormx(kp)-1)*3+2)
         nzm(kp) = vecn2((vnormx(kp)-1)*3+3)
 !
-        gammam = atan2(sqrt(abs(1.0d0-nzm(kp)**2)),nzm(kp))
+        gammam = atan2(sqrt(abs(1.0d0-nzm(kp)**2)), nzm(kp))
         if (gammam .lt. 0.0d0) then
-            gammam = gammam + pi
-        endif
+            gammam = gammam+pi
+        end if
 !
         if ((abs(nym(kp)) .lt. epsilo) .and. (abs(nxm(kp)) .lt. epsilo)) then
             phim = 0.0d0
         else
-            phim = atan2(abs(nym(kp)),nxm(kp))
-        endif
+            phim = atan2(abs(nym(kp)), nxm(kp))
+        end if
         if (phim .lt. 0.0d0) then
-            phim = phim + pi
-        endif
+            phim = phim+pi
+        end if
 !
         if (abs(gammam) .lt. epsilo) then
             gamma = 5.0d0*(pi/180.0d0)
@@ -268,8 +268,8 @@ subroutine avplcr(nbvec, vectn, vectu, vectv, nbordr,&
             k = 1
             dim = 27
             phi0 = 0.0d0
-            call vecnuv(ideb, ifin, gamma, phi0, dphi2,&
-                        n, k, dim, vecn1, vecu1,&
+            call vecnuv(ideb, ifin, gamma, phi0, dphi2, &
+                        n, k, dim, vecn1, vecu1, &
                         vecv1)
 !
             gamma = 0.0d0
@@ -277,8 +277,8 @@ subroutine avplcr(nbvec, vectn, vectu, vectv, nbordr,&
             ideb = 1
             ifin = 1
             k = 1
-            call vecnuv(ideb, ifin, gamma, phi0, dphi2,&
-                        n, k, dim, vecn1, vecu1,&
+            call vecnuv(ideb, ifin, gamma, phi0, dphi2, &
+                        n, k, dim, vecn1, vecu1, &
                         vecv1)
 !
 ! 10.1 PROJECTION DE L'HISTORIQUE DU CISAILLEMENT SUR UN PLAN
@@ -286,10 +286,10 @@ subroutine avplcr(nbvec, vectn, vectu, vectv, nbordr,&
             nbvec1 = 7
 !
 !
-            call avcipr(nbvec1, vecn1, vecu1, vecv1, nbordr,&
-                        kwork, somnow, vwork, tdisp, tspaq,&
-                        i, nomcri, nomfor, fordef, fatsoc,&
-                        proaxe, pseuil, method, ncycl, jvmin,&
+            call avcipr(nbvec1, vecn1, vecu1, vecv1, nbordr, &
+                        kwork, somnow, vwork, tdisp, tspaq, &
+                        i, nomcri, nomfor, fordef, fatsoc, &
+                        proaxe, pseuil, method, ncycl, jvmin, &
                         jvmax, jomin, jomax)
 !
         else
@@ -301,27 +301,27 @@ subroutine avplcr(nbvec, vectn, vectu, vectv, nbordr,&
             ideb = 1
             ifin = 3
             do j = 1, 3
-                gamma = gammam + (j-k)*dgam2
-                call vecnuv(ideb, ifin, gamma, phim, dphi2,&
-                            n, k, dim, vecn1, vecu1,&
+                gamma = gammam+(j-k)*dgam2
+                call vecnuv(ideb, ifin, gamma, phim, dphi2, &
+                            n, k, dim, vecn1, vecu1, &
                             vecv1)
             end do
 !
             nbvec1 = 9
 !
-            call avcipr(nbvec1, vecn1, vecu1, vecv1, nbordr,&
-                        kwork, somnow, vwork, tdisp, tspaq,&
-                        i, nomcri, nomfor, fordef, fatsoc,&
-                        proaxe, pseuil, method, ncycl, jvmin,&
+            call avcipr(nbvec1, vecn1, vecu1, vecv1, nbordr, &
+                        kwork, somnow, vwork, tdisp, tspaq, &
+                        i, nomcri, nomfor, fordef, fatsoc, &
+                        proaxe, pseuil, method, ncycl, jvmin, &
                         jvmax, jomin, jomax)
-        endif
+        end if
 !
 ! REMPACER PAR SUBROUTINE AVGRDO
 !
-        call avgrdo(nbvec1, nbordr, vecn1, vwork, tdisp,&
-                    kwork, somnow, tspaq, i, nommat,&
-                    nomcri, nomfor, grdvie, forvie, vala,&
-                    coefpa, ncycl, jvmin, jvmax, jomin,&
+        call avgrdo(nbvec1, nbordr, vecn1, vwork, tdisp, &
+                    kwork, somnow, tspaq, i, nommat, &
+                    nomcri, nomfor, grdvie, forvie, vala, &
+                    coefpa, ncycl, jvmin, jvmax, jomin, &
                     jomax, post, cudomx, vnormx, ibid)
 !
 !
@@ -332,19 +332,19 @@ subroutine avplcr(nbvec, vectn, vectu, vectv, nbordr,&
         nym(kp) = vecn1((vnormx(kp)-1)*3+2)
         nzm(kp) = vecn1((vnormx(kp)-1)*3+3)
 !
-        gammam = atan2(sqrt(abs(1.0d0-nzm(kp)**2)),nzm(kp))
+        gammam = atan2(sqrt(abs(1.0d0-nzm(kp)**2)), nzm(kp))
         if (gammam .lt. 0.0d0) then
-            gammam = gammam + pi
-        endif
+            gammam = gammam+pi
+        end if
 !
         if ((abs(nym(kp)) .lt. epsilo) .and. (abs(nxm(kp)) .lt. epsilo)) then
             phim = 0.0d0
         else
-            phim = atan2(abs(nym(kp)),nxm(kp))
-        endif
+            phim = atan2(abs(nym(kp)), nxm(kp))
+        end if
         if (phim .lt. 0.0d0) then
-            phim = phim + pi
-        endif
+            phim = phim+pi
+        end if
 !
         if (abs(gammam) .lt. epsilo) then
             gamma = 5.0d0*(pi/180.0d0)
@@ -355,8 +355,8 @@ subroutine avplcr(nbvec, vectn, vectu, vectv, nbordr,&
             k = 1
             dim = 27
             phi0 = 0.0d0
-            call vecnuv(ideb, ifin, gamma, phi0, dphi2,&
-                        n, k, dim, vecn2, vecu2,&
+            call vecnuv(ideb, ifin, gamma, phi0, dphi2, &
+                        n, k, dim, vecn2, vecu2, &
                         vecv2)
 !
             gamma = 0.0d0
@@ -364,8 +364,8 @@ subroutine avplcr(nbvec, vectn, vectu, vectv, nbordr,&
             ideb = 1
             ifin = 1
             k = 1
-            call vecnuv(ideb, ifin, gamma, phi0, dphi2,&
-                        n, k, dim, vecn2, vecu2,&
+            call vecnuv(ideb, ifin, gamma, phi0, dphi2, &
+                        n, k, dim, vecn2, vecu2, &
                         vecv2)
 !
 ! 11.1 PROJECTION DE L'HISTORIQUE DU CISAILLEMENT SUR UN PLAN
@@ -373,10 +373,10 @@ subroutine avplcr(nbvec, vectn, vectu, vectv, nbordr,&
             nbvec1 = 7
 !
 !
-            call avcipr(nbvec1, vecn2, vecu2, vecv2, nbordr,&
-                        kwork, somnow, vwork, tdisp, tspaq,&
-                        i, nomcri, nomfor, fordef, fatsoc,&
-                        proaxe, pseuil, method, ncycl, jvmin,&
+            call avcipr(nbvec1, vecn2, vecu2, vecv2, nbordr, &
+                        kwork, somnow, vwork, tdisp, tspaq, &
+                        i, nomcri, nomfor, fordef, fatsoc, &
+                        proaxe, pseuil, method, ncycl, jvmin, &
                         jvmax, jomin, jomax)
 !
         else
@@ -388,27 +388,27 @@ subroutine avplcr(nbvec, vectn, vectu, vectv, nbordr,&
             ideb = 1
             ifin = 3
             do j = 1, 3
-                gamma = gammam + (j-k)*dgam2
-                call vecnuv(ideb, ifin, gamma, phim, dphi2,&
-                            n, k, dim, vecn2, vecu2,&
+                gamma = gammam+(j-k)*dgam2
+                call vecnuv(ideb, ifin, gamma, phim, dphi2, &
+                            n, k, dim, vecn2, vecu2, &
                             vecv2)
             end do
 !
             nbvec1 = 9
 !
-            call avcipr(nbvec1, vecn2, vecu2, vecv2, nbordr,&
-                        kwork, somnow, vwork, tdisp, tspaq,&
-                        i, nomcri, nomfor, fordef, fatsoc,&
-                        proaxe, pseuil, method, ncycl, jvmin,&
+            call avcipr(nbvec1, vecn2, vecu2, vecv2, nbordr, &
+                        kwork, somnow, vwork, tdisp, tspaq, &
+                        i, nomcri, nomfor, fordef, fatsoc, &
+                        proaxe, pseuil, method, ncycl, jvmin, &
                         jvmax, jomin, jomax)
-        endif
+        end if
 !
 ! REMPACER PAR SUBROUTINE AVGRDO
 !
-        call avgrdo(nbvec1, nbordr, vecn2, vwork, tdisp,&
-                    kwork, somnow, tspaq, i, nommat,&
-                    nomcri, nomfor, grdvie, forvie, vala,&
-                    coefpa, ncycl, jvmin, jvmax, jomin,&
+        call avgrdo(nbvec1, nbordr, vecn2, vwork, tdisp, &
+                    kwork, somnow, tspaq, i, nommat, &
+                    nomcri, nomfor, grdvie, forvie, vala, &
+                    coefpa, ncycl, jvmin, jvmax, jomin, &
                     jomax, post, cudomx, vnormx, ibid)
 !
 ! 12. 4E RAFFINEMENT CONCERNANT LA DETERMINATION DU VECTEUR NORMAL
@@ -418,19 +418,19 @@ subroutine avplcr(nbvec, vectn, vectu, vectv, nbordr,&
         nym(kp) = vecn2((vnormx(kp)-1)*3+2)
         nzm(kp) = vecn2((vnormx(kp)-1)*3+3)
 !
-        gammam = atan2(sqrt(abs(1.0d0-nzm(kp)**2)),nzm(kp))
+        gammam = atan2(sqrt(abs(1.0d0-nzm(kp)**2)), nzm(kp))
         if (gammam .lt. 0.0d0) then
-            gammam = gammam + pi
-        endif
+            gammam = gammam+pi
+        end if
 !
         if ((abs(nym(kp)) .lt. epsilo) .and. (abs(nxm(kp)) .lt. epsilo)) then
             phim = 0.0d0
         else
-            phim = atan2(abs(nym(kp)),nxm(kp))
-        endif
+            phim = atan2(abs(nym(kp)), nxm(kp))
+        end if
         if (phim .lt. 0.0d0) then
-            phim = phim + pi
-        endif
+            phim = phim+pi
+        end if
 !
         if (abs(gammam) .lt. epsilo) then
             gamma = 5.0d0*(pi/180.0d0)
@@ -441,8 +441,8 @@ subroutine avplcr(nbvec, vectn, vectu, vectv, nbordr,&
             k = 1
             dim = 27
             phi0 = 0.0d0
-            call vecnuv(ideb, ifin, gamma, phi0, dphi2,&
-                        n, k, dim, vecn1, vecu1,&
+            call vecnuv(ideb, ifin, gamma, phi0, dphi2, &
+                        n, k, dim, vecn1, vecu1, &
                         vecv1)
 !
             gamma = 0.0d0
@@ -450,8 +450,8 @@ subroutine avplcr(nbvec, vectn, vectu, vectv, nbordr,&
             ideb = 1
             ifin = 1
             k = 1
-            call vecnuv(ideb, ifin, gamma, phi0, dphi2,&
-                        n, k, dim, vecn1, vecu1,&
+            call vecnuv(ideb, ifin, gamma, phi0, dphi2, &
+                        n, k, dim, vecn1, vecu1, &
                         vecv1)
 !
 ! 12.1 PROJECTION DE L'HISTORIQUE DU CISAILLEMENT SUR UN PLAN
@@ -459,10 +459,10 @@ subroutine avplcr(nbvec, vectn, vectu, vectv, nbordr,&
             nbvec1 = 7
 !
 !
-            call avcipr(nbvec1, vecn1, vecu1, vecv1, nbordr,&
-                        kwork, somnow, vwork, tdisp, tspaq,&
-                        i, nomcri, nomfor, fordef, fatsoc,&
-                        proaxe, pseuil, method, ncycl, jvmin,&
+            call avcipr(nbvec1, vecn1, vecu1, vecv1, nbordr, &
+                        kwork, somnow, vwork, tdisp, tspaq, &
+                        i, nomcri, nomfor, fordef, fatsoc, &
+                        proaxe, pseuil, method, ncycl, jvmin, &
                         jvmax, jomin, jomax)
 !
         else
@@ -474,27 +474,27 @@ subroutine avplcr(nbvec, vectn, vectu, vectv, nbordr,&
             ideb = 1
             ifin = 3
             do j = 1, 3
-                gamma = gammam + (j-k)*dgam2
-                call vecnuv(ideb, ifin, gamma, phim, dphi2,&
-                            n, k, dim, vecn1, vecu1,&
+                gamma = gammam+(j-k)*dgam2
+                call vecnuv(ideb, ifin, gamma, phim, dphi2, &
+                            n, k, dim, vecn1, vecu1, &
                             vecv1)
             end do
 !
             nbvec1 = 9
 !
-            call avcipr(nbvec1, vecn1, vecu1, vecv1, nbordr,&
-                        kwork, somnow, vwork, tdisp, tspaq,&
-                        i, nomcri, nomfor, fordef, fatsoc,&
-                        proaxe, pseuil, method, ncycl, jvmin,&
+            call avcipr(nbvec1, vecn1, vecu1, vecv1, nbordr, &
+                        kwork, somnow, vwork, tdisp, tspaq, &
+                        i, nomcri, nomfor, fordef, fatsoc, &
+                        proaxe, pseuil, method, ncycl, jvmin, &
                         jvmax, jomin, jomax)
-        endif
+        end if
 !
 ! REMPACER PAR SUBROUTINE AVGRDO
 !
-        call avgrdo(nbvec1, nbordr, vecn1, vwork, tdisp,&
-                    kwork, somnow, tspaq, i, nommat,&
-                    nomcri, nomfor, grdvie, forvie, vala,&
-                    coefpa, ncycl, jvmin, jvmax, jomin,&
+        call avgrdo(nbvec1, nbordr, vecn1, vwork, tdisp, &
+                    kwork, somnow, tspaq, i, nommat, &
+                    nomcri, nomfor, grdvie, forvie, vala, &
+                    coefpa, ncycl, jvmin, jvmax, jomin, &
                     jomax, post, cudomx, vnormx, nbp)
 !  VECTEUR NORMAL ASSOCIE AUX PLAN CRITIQUE  TROUVE
 !
@@ -510,32 +510,32 @@ subroutine avplcr(nbvec, vectn, vectu, vectv, nbordr,&
 !      ENDIF
     if (abs(cudom1-cudom2) .lt. prec) then
         if ((post) .and. (nbplan .eq. 2)) then
-            write(6,*) 'IL EXISTE  2 PLANS DU DOMMAGE MAXIMUM'
-        endif
+            write (6, *) 'IL EXISTE  2 PLANS DU DOMMAGE MAXIMUM'
+        end if
 !
-    endif
+    end if
 !
     if ((cudom1-cudom2) .gt. prec) then
         if ((post) .and. (nbplan .eq. 2)) then
-            write(6,*) 'IL EXISTE  1 PLAN DU DOMMAGE MAXIMUM'
-        endif
+            write (6, *) 'IL EXISTE  1 PLAN DU DOMMAGE MAXIMUM'
+        end if
 !
         nxm(2) = nxm(1)
         nym(2) = nym(1)
         nzm(2) = nzm(1)
         cudomx = cudom1
-    endif
+    end if
 !
     if ((cudom2-cudom1) .gt. prec) then
         if ((post) .and. (nbplan .eq. 2)) then
-            write(6,*) 'IL EXISTE  1 PLAN DU DOMMAGE MAXIMUM'
-        endif
+            write (6, *) 'IL EXISTE  1 PLAN DU DOMMAGE MAXIMUM'
+        end if
 !
         nxm(1) = nxm(2)
         nym(1) = nym(2)
         nzm(1) = nzm(2)
         cudomx = cudom2
-    endif
+    end if
 !
     call jedetr('&&AVPLCR.VECT_OMIN')
     call jedetr('&&AVPLCR.VECT_OMAX')

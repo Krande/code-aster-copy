@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -80,28 +80,28 @@ subroutine asmael(ma1, ma2, mag)
 !CC              4       DE SUPER MAILLES
 !CC              5       DU MAJORANT DE SUPER MAILLES
     do i = 1, 5
-        zi(iadime-1+i)=dim1(i)+dim2(i)
+        zi(iadime-1+i) = dim1(i)+dim2(i)
     end do
     if (dim1(6) .ne. dim2(6)) then
         call utmess('A', 'SOUSTRUC_1')
-    endif
+    end if
 !
-    ncoor=dim1(6)
-    zi(iadime-1+6)=ncoor
+    ncoor = dim1(6)
+    zi(iadime-1+6) = ncoor
 !
-    nbsma=zi(iadime-1+4)
-    nbsm1=dim1(4)
-    nbsm2=dim2(4)
+    nbsma = zi(iadime-1+4)
+    nbsm1 = dim1(4)
+    nbsm2 = dim2(4)
 !
-    nbma=zi(iadime-1+3)
-    nbm1=dim1(3)
-    nbm2=dim2(3)
+    nbma = zi(iadime-1+3)
+    nbm1 = dim1(3)
+    nbm2 = dim2(3)
 !
-    nbno=zi(iadime-1+1)
-    nbn1=dim1(1)
-    nbn2=dim2(1)
+    nbno = zi(iadime-1+1)
+    nbn1 = dim1(1)
+    nbn2 = dim2(1)
 !
-    nbl1=dim1(2)
+    nbl1 = dim1(2)
 !
 !
 !     --OBJET .NOMACR :
@@ -111,33 +111,33 @@ subroutine asmael(ma1, ma2, mag)
         if (nbsm1 .gt. 0) call jeveuo(ma1//'.NOMACR', 'L', vk8=nmc1)
         if (nbsm2 .gt. 0) call jeveuo(ma2//'.NOMACR', 'L', vk8=nmc2)
         do i = 1, nbsm1
-            zk8(ianmcr-1+i)=nmc1(i)
+            zk8(ianmcr-1+i) = nmc1(i)
         end do
         do i = 1, nbsm2
-            zk8(ianmcr-1+nbsm1+i)=nmc2(i)
+            zk8(ianmcr-1+nbsm1+i) = nmc2(i)
         end do
-    endif
+    end if
 !
 !
 !     --OBJET .DIME_2 (V):
 !     -----------------
     if (nbsma .gt. 0) then
         call wkvect(mag//'.DIME_2', 'V V I', 4*nbsma, iadimp)
-        i1noe= 0
-        i1nol= 0
+        i1noe = 0
+        i1nol = 0
         do i = 1, nbsma
-            nomacr=zk8(ianmcr-1+i)
+            nomacr = zk8(ianmcr-1+i)
             call jeveuo(nomacr//'.DESM', 'L', vi=desm)
-            nbnoe= desm(2)
-            nbnol= desm(8)+desm(9)
-            zi(iadimp-1+4*(i-1)+1)=nbnoe
-            zi(iadimp-1+4*(i-1)+2)=nbnol
-            zi(iadimp-1+4*(i-1)+3)=i1noe
-            zi(iadimp-1+4*(i-1)+4)=i1nol
-            i1noe= i1noe+nbnoe
-            i1nol= i1nol+nbnol
+            nbnoe = desm(2)
+            nbnol = desm(8)+desm(9)
+            zi(iadimp-1+4*(i-1)+1) = nbnoe
+            zi(iadimp-1+4*(i-1)+2) = nbnol
+            zi(iadimp-1+4*(i-1)+3) = i1noe
+            zi(iadimp-1+4*(i-1)+4) = i1nol
+            i1noe = i1noe+nbnoe
+            i1nol = i1nol+nbnol
         end do
-    endif
+    end if
 !
 !
 !     --OBJET .PARA_R :
@@ -147,18 +147,18 @@ subroutine asmael(ma1, ma2, mag)
         if (nbsm1 .gt. 0) call jeveuo(ma1//'.PARA_R', 'L', vr=par1)
         if (nbsm2 .gt. 0) call jeveuo(ma2//'.PARA_R', 'L', vr=par2)
         do i = 1, 14*nbsm1
-            zr(iaparr-1+i)=par1(i)
+            zr(iaparr-1+i) = par1(i)
         end do
         do i = 1, 14*nbsm2
-            zr(iaparr-1+nbsm1+i)=par2(i)
+            zr(iaparr-1+nbsm1+i) = par2(i)
         end do
-    endif
+    end if
 !
 !
 !     --OBJET .SUPMAIL:
 !     -----------------
     if (nbsma .gt. 0) then
-        call jecrec(mag//'.SUPMAIL', 'G V I', 'NO', 'DISPERSE', 'VARIABLE',&
+        call jecrec(mag//'.SUPMAIL', 'G V I', 'NO', 'DISPERSE', 'VARIABLE', &
                     nbsma)
         do i = 1, nbsm1
             call jeveuo(jexnum(ma1//'.SUPMAIL', i), 'L', iasup1)
@@ -169,72 +169,72 @@ subroutine asmael(ma1, ma2, mag)
             call jeveuo(jexnum(mag//'.SUPMAIL', i), 'E', iasupm)
             do ii = 1, n
                 if (zi(iasup1-1+ii) .le. nbn1) then
-                    zi(iasupm-1+ii)=zi(iasup1-1+ii)
+                    zi(iasupm-1+ii) = zi(iasup1-1+ii)
                 else
-                    zi(iasupm-1+ii)=zi(iasup1-1+ii)+nbn2
-                endif
+                    zi(iasupm-1+ii) = zi(iasup1-1+ii)+nbn2
+                end if
             end do
         end do
         do i = 1, nbsm2
-            i1= i+nbsm1
+            i1 = i+nbsm1
             call jeveuo(jexnum(ma2//'.SUPMAIL', i), 'L', iasup2)
             call jelira(jexnum(ma2//'.SUPMAIL', i), 'LONMAX', n)
             call jenuno(jexnum(ma2//'.SUPMAIL', i), nosma)
             call jeexin(jexnom(mag//'.SUPMAIL', nosma), iret)
             if (iret .gt. 0) then
                 call utmess('F', 'SOUSTRUC_2', sk=nosma)
-            endif
+            end if
             call jecroc(jexnom(mag//'.SUPMAIL', nosma))
             call jeecra(jexnum(mag//'.SUPMAIL', i1), 'LONMAX', n)
             call jeveuo(jexnum(mag//'.SUPMAIL', i1), 'E', iasupm)
             do ii = 1, n
                 if (zi(iasup2-1+ii) .le. nbn2) then
-                    zi(iasupm-1+ii)=zi(iasup2-1+ii)+nbn1
+                    zi(iasupm-1+ii) = zi(iasup2-1+ii)+nbn1
                 else
-                    zi(iasupm-1+ii)=zi(iasup2-1+ii)+nbn1+nbl1
-                endif
+                    zi(iasupm-1+ii) = zi(iasup2-1+ii)+nbn1+nbl1
+                end if
             end do
         end do
-    endif
+    end if
 !
 !
 !     --OBJET .NOMMAI:
 !     ----------------
-    ico=0
+    ico = 0
     if (nbma .gt. 0) then
         call jecreo(mag//'.NOMMAI', 'G N K8')
         call jeecra(mag//'.NOMMAI', 'NOMMAX', nbma)
         do i = 1, nbm1
             call jenuno(jexnum(ma1//'.NOMMAI', i), noma)
             call jecroc(jexnom(mag//'.NOMMAI', noma))
-            ico=ico+1
+            ico = ico+1
         end do
         do i = 1, nbm2
             call jenuno(jexnum(ma2//'.NOMMAI', i), noma)
             if (ico .eq. 0) then
-                iret=0
+                iret = 0
             else
                 call jenonu(jexnom(mag//'.NOMMAI', noma), iret)
-            endif
+            end if
             if (iret .gt. 0) then
                 call utmess('F', 'SOUSTRUC_3', sk=noma)
-            endif
+            end if
             call jecroc(jexnom(mag//'.NOMMAI', noma))
         end do
-    endif
+    end if
 !
 !
 !     --OBJET .CONNEX:
 !     -----------------
     if (nbma .gt. 0) then
-        call jecrec(mag//'.CONNEX', 'G V I', 'NU', 'CONTIG', 'VARIABLE',&
+        call jecrec(mag//'.CONNEX', 'G V I', 'NU', 'CONTIG', 'VARIABLE', &
                     nbma)
-        call jeecra(mag//'.CONNEX','NUTIOC',nbma)
-        l1=0
-        l2=0
+        call jeecra(mag//'.CONNEX', 'NUTIOC', nbma)
+        l1 = 0
+        l2 = 0
         if (nbm1 .gt. 0) call jelira(ma1//'.CONNEX', 'LONT', l1)
         if (nbm2 .gt. 0) call jelira(ma2//'.CONNEX', 'LONT', l2)
-        l3= l1+l2
+        l3 = l1+l2
         call jeecra(mag//'.CONNEX', 'LONT', l3)
         do i = 1, nbm1
             call jeveuo(jexnum(ma1//'.CONNEX', i), 'L', iacon1)
@@ -242,20 +242,20 @@ subroutine asmael(ma1, ma2, mag)
             call jeecra(jexnum(mag//'.CONNEX', i), 'LONMAX', n)
             call jeveuo(jexnum(mag//'.CONNEX', i), 'E', iaconx)
             do ii = 1, n
-                zi(iaconx-1+ii)=zi(iacon1-1+ii)
+                zi(iaconx-1+ii) = zi(iacon1-1+ii)
             end do
         end do
         do i = 1, nbm2
-            i1= i+nbm1
+            i1 = i+nbm1
             call jeveuo(jexnum(ma2//'.CONNEX', i), 'L', iacon2)
             call jelira(jexnum(ma2//'.CONNEX', i), 'LONMAX', n)
             call jeecra(jexnum(mag//'.CONNEX', i1), 'LONMAX', n)
             call jeveuo(jexnum(mag//'.CONNEX', i1), 'E', iaconx)
             do ii = 1, n
-                zi(iaconx-1+ii)=zi(iacon2-1+ii)+nbn1
+                zi(iaconx-1+ii) = zi(iacon2-1+ii)+nbn1
             end do
         end do
-    endif
+    end if
 !
 !
 !     --OBJET .TYPMAIL:
@@ -264,20 +264,20 @@ subroutine asmael(ma1, ma2, mag)
         call wkvect(mag//'.TYPMAIL', 'G V I', nbma, ibid)
         do i = 1, nbm1
             call jeveuo(ma1//'.TYPMAIL', 'L', iatyma)
-            iatyp1=iatyma-1+i
+            iatyp1 = iatyma-1+i
             call jeveuo(mag//'.TYPMAIL', 'E', iatyma)
-            iatypx=iatyma-1+i
-            zi(iatypx)=zi(iatyp1)
+            iatypx = iatyma-1+i
+            zi(iatypx) = zi(iatyp1)
         end do
         do i = 1, nbm2
-            i1=i+nbm1
+            i1 = i+nbm1
             call jeveuo(ma2//'.TYPMAIL', 'L', iatyma)
-            iatyp2=iatyma-1+i
+            iatyp2 = iatyma-1+i
             call jeveuo(mag//'.TYPMAIL', 'E', iatyma)
-            iatypx=iatyma-1+i1
-            zi(iatypx)=zi(iatyp2)
+            iatypx = iatyma-1+i1
+            zi(iatypx) = zi(iatyp2)
         end do
-    endif
+    end if
 !
 !
 !     --OBJET .GROUPEMA:
@@ -288,11 +288,11 @@ subroutine asmael(ma1, ma2, mag)
     nbgm2 = 0
     if (iret1 .gt. 0) call jelira(ma1//'.GROUPEMA', 'NUTIOC', nbgm1)
     if (iret2 .gt. 0) call jelira(ma2//'.GROUPEMA', 'NUTIOC', nbgm2)
-    nbgma = nbgm1 + nbgm2
+    nbgma = nbgm1+nbgm2
     if (nbgma .gt. 0) then
         call jecreo(mag//'.PTRNOMMAI', 'G N K24')
         call jeecra(mag//'.PTRNOMMAI', 'NOMMAX', nbgma)
-        call jecrec(mag//'.GROUPEMA', 'G V I', 'NO '//mag//'.PTRNOMMAI', 'DISPERSE', 'VARIABLE',&
+        call jecrec(mag//'.GROUPEMA', 'G V I', 'NO '//mag//'.PTRNOMMAI', 'DISPERSE', 'VARIABLE', &
                     nbgma)
         do i = 1, nbgm1
             call jeveuo(jexnum(ma1//'.GROUPEMA', i), 'L', iagma1)
@@ -303,7 +303,7 @@ subroutine asmael(ma1, ma2, mag)
             call jeecra(jexnum(mag//'.GROUPEMA', i), 'LONUTI', n)
             call jeveuo(jexnum(mag//'.GROUPEMA', i), 'E', iagmax)
             do ii = 1, n
-                zi(iagmax-1+ii)=zi(iagma1-1+ii)
+                zi(iagmax-1+ii) = zi(iagma1-1+ii)
             end do
         end do
         icompt = 0
@@ -315,19 +315,19 @@ subroutine asmael(ma1, ma2, mag)
             if (iret .gt. 0) then
                 call utmess('A', 'SOUSTRUC_4', sk=nogma)
                 goto 32
-            endif
-            icompt = icompt + 1
-            i1 = nbgm1 + icompt
+            end if
+            icompt = icompt+1
+            i1 = nbgm1+icompt
             call jecroc(jexnom(mag//'.GROUPEMA', nogma))
             call jeecra(jexnum(mag//'.GROUPEMA', i1), 'LONMAX', max(1, n))
             call jeecra(jexnum(mag//'.GROUPEMA', i1), 'LONUTI', n)
             call jeveuo(jexnum(mag//'.GROUPEMA', i1), 'E', iagmax)
             do ii = 1, n
-                zi(iagmax-1+ii)=zi(iagma2-1+ii)+nbm1
+                zi(iagmax-1+ii) = zi(iagma2-1+ii)+nbm1
             end do
- 32         continue
+32          continue
         end do
-    endif
+    end if
 !
 !
 !     --OBJET .GROUPENO:
@@ -338,11 +338,11 @@ subroutine asmael(ma1, ma2, mag)
     nbgn2 = 0
     if (iret1 .gt. 0) call jelira(ma1//'.GROUPENO', 'NUTIOC', nbgn1)
     if (iret2 .gt. 0) call jelira(ma2//'.GROUPENO', 'NUTIOC', nbgn2)
-    nbgno = nbgn1 + nbgn2
+    nbgno = nbgn1+nbgn2
     if (nbgno .gt. 0) then
         call jecreo(mag//'.PTRNOMNOE', 'G N K24')
         call jeecra(mag//'.PTRNOMNOE', 'NOMMAX', nbgno)
-        call jecrec(mag//'.GROUPENO', 'G V I', 'NO '//mag//'.PTRNOMNOE', 'DISPERSE', 'VARIABLE',&
+        call jecrec(mag//'.GROUPENO', 'G V I', 'NO '//mag//'.PTRNOMNOE', 'DISPERSE', 'VARIABLE', &
                     nbgno)
         do i = 1, nbgn1
             call jeveuo(jexnum(ma1//'.GROUPENO', i), 'L', iagno1)
@@ -353,7 +353,7 @@ subroutine asmael(ma1, ma2, mag)
             call jeecra(jexnum(mag//'.GROUPENO', i), 'LONUTI', n)
             call jeveuo(jexnum(mag//'.GROUPENO', i), 'E', iagnox)
             do ii = 1, n
-                zi(iagnox-1+ii)=zi(iagno1-1+ii)
+                zi(iagnox-1+ii) = zi(iagno1-1+ii)
             end do
         end do
         icompt = 0
@@ -365,19 +365,19 @@ subroutine asmael(ma1, ma2, mag)
             if (iret .gt. 0) then
                 call utmess('A', 'SOUSTRUC_5', sk=nogno)
                 goto 34
-            endif
-            icompt = icompt + 1
-            i1 = nbgn1 + icompt
+            end if
+            icompt = icompt+1
+            i1 = nbgn1+icompt
             call jecroc(jexnom(mag//'.GROUPENO', nogno))
             call jeecra(jexnum(mag//'.GROUPENO', i1), 'LONMAX', max(1, n))
             call jeecra(jexnum(mag//'.GROUPENO', i1), 'LONUTI', n)
             call jeveuo(jexnum(mag//'.GROUPENO', i1), 'E', iagnox)
             do ii = 1, n
-                zi(iagnox-1+ii)=zi(iagno2-1+ii)+nbn1
+                zi(iagnox-1+ii) = zi(iagno2-1+ii)+nbn1
             end do
- 34         continue
+34          continue
         end do
-    endif
+    end if
 !
 !
 !     --OBJET .COORDO_2 (V):
@@ -385,11 +385,11 @@ subroutine asmael(ma1, ma2, mag)
     call wkvect(mag//'.COORDO_2', 'V V R', 3*nbno, iacoo2)
     call jeveuo(ma1//'.COORDO    .VALE', 'L', iacoor)
     do i = 1, 3*nbn1
-        zr(iacoo2-1+i)=zr(iacoor-1+i)
+        zr(iacoo2-1+i) = zr(iacoor-1+i)
     end do
     call jeveuo(ma2//'.COORDO    .VALE', 'L', iacoor)
     do i = 1, 3*nbn2
-        zr(iacoo2-1+3*nbn1+i)=zr(iacoor-1+i)
+        zr(iacoo2-1+3*nbn1+i) = zr(iacoor-1+i)
     end do
 !
 !
@@ -398,45 +398,45 @@ subroutine asmael(ma1, ma2, mag)
     call wkvect(mag//'.NOEUD_CONF', 'V V I', nbno, iancnf)
     call wkvect(mag//'.NOMNOE_2', 'V V K8', nbno, ianon2)
     do i = 1, nbno
-        zi(iancnf-1+i)=i
+        zi(iancnf-1+i) = i
     end do
     do i = 1, nbn1
         call jenuno(jexnum(ma1//'.NOMNOE', i), nono)
-        zk8(ianon2-1+i)=nono
+        zk8(ianon2-1+i) = nono
     end do
     do i = 1, nbn2
         call jenuno(jexnum(ma2//'.NOMNOE', i), nono)
-        zk8(ianon2-1+nbn1+i)=nono
+        zk8(ianon2-1+nbn1+i) = nono
         call jenonu(jexnom(ma1//'.NOMNOE', nono), itrou)
         if (itrou .gt. 0) then
-            zi(iancnf-1+nbn1+i)=itrou
-        endif
+            zi(iancnf-1+nbn1+i) = itrou
+        end if
     end do
 !
 !
 !     --ON VERIFIE QUE LES NOEUDS CONFONDUS NE SONT PAS TROP DISTANTS:
 !     ----------------------------------------------------------------
-    drefe=0.0d0
+    drefe = 0.0d0
     do i = 1, nbno
-        x=zr(iacoo2-1+3*(i-1)+1)-zr(iacoo2-1+1)
-        y=zr(iacoo2-1+3*(i-1)+2)-zr(iacoo2-1+2)
-        z=zr(iacoo2-1+3*(i-1)+3)-zr(iacoo2-1+3)
-        drefe= max(drefe,sqrt(x**2+y**2+z**2))
+        x = zr(iacoo2-1+3*(i-1)+1)-zr(iacoo2-1+1)
+        y = zr(iacoo2-1+3*(i-1)+2)-zr(iacoo2-1+2)
+        z = zr(iacoo2-1+3*(i-1)+3)-zr(iacoo2-1+3)
+        drefe = max(drefe, sqrt(x**2+y**2+z**2))
     end do
     do i = 1, nbno
-        j=zi(iancnf-1+i)
+        j = zi(iancnf-1+i)
         if (j .ne. i) then
-            x=zr(iacoo2-1+3*(i-1)+1)-zr(iacoo2-1+3*(j-1)+1)
-            y=zr(iacoo2-1+3*(i-1)+2)-zr(iacoo2-1+3*(j-1)+2)
-            z=zr(iacoo2-1+3*(i-1)+3)-zr(iacoo2-1+3*(j-1)+3)
-            dij= sqrt(x**2+y**2+z**2)
+            x = zr(iacoo2-1+3*(i-1)+1)-zr(iacoo2-1+3*(j-1)+1)
+            y = zr(iacoo2-1+3*(i-1)+2)-zr(iacoo2-1+3*(j-1)+2)
+            z = zr(iacoo2-1+3*(i-1)+3)-zr(iacoo2-1+3*(j-1)+3)
+            dij = sqrt(x**2+y**2+z**2)
             if (dij .gt. 1.0d-6*drefe) then
                 valk(1) = zk8(ianon2-1+i)
                 valk(2) = ma1
                 valk(3) = ma2
                 call utmess('A', 'SOUSTRUC_6', nk=3, valk=valk)
-            endif
-        endif
+            end if
+        end if
     end do
 !
 !

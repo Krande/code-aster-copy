@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -48,8 +48,8 @@ subroutine upletr(ndim, mple, mcol)
 ! SYMETRIE)
     do i = 1, ndim
         do j = 1, i
-            mple(j,i)=mcol(int(i*(i-1)/2)+j)
-            mple(i,j) = - mple(j,i)
+            mple(j, i) = mcol(int(i*(i-1)/2)+j)
+            mple(i, j) = -mple(j, i)
         end do
     end do
 !

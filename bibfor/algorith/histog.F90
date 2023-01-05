@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine histog(nbpt, v, vmin, vmax, x,&
+subroutine histog(nbpt, v, vmin, vmax, x, &
                   y, ndec)
 !        CACUL DE L'HISTOGRAMME AMV
 !
@@ -39,8 +39,8 @@ subroutine histog(nbpt, v, vmin, vmax, x,&
 !-----------------------------------------------------------------------
 !
     do i = 1, ndec
-        x(i)=0.d0
-        y(i)=0.d0
+        x(i) = 0.d0
+        y(i) = 0.d0
     end do
     do i = 1, nbpt
         if (v(i) .ge. vmax) vmax = v(i)
@@ -50,22 +50,22 @@ subroutine histog(nbpt, v, vmin, vmax, x,&
         dx = (vmax-vmin)/ndec
         coef = 1.d0/nbpt
     else
-        dx =0.d0
+        dx = 0.d0
         coef = 1.d0
         vmin = 0.d0
         vmax = 0.d0
-    endif
+    end if
     do i = 1, nbpt
         if (dx .ne. 0.d0) then
             icel = int((v(i)-vmin)/dx)+1
         else
             icel = 1
-        endif
+        end if
         if (icel .gt. ndec) icel = ndec
-        y(icel)=y(icel)+1
+        y(icel) = y(icel)+1
     end do
     do i = 1, ndec
-        x(i)=vmin+i*dx
-        y(i)=y(i)*coef
+        x(i) = vmin+i*dx
+        y(i) = y(i)*coef
     end do
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -48,23 +48,23 @@ subroutine asmpi_status(istat, resp0)
 !
     mpi_int :: term
     mpi_int :: rank, ist4(1), irp0(1), req, mpicou, nbv
-    mpi_int, parameter :: pr0=0
+    mpi_int, parameter :: pr0 = 0
     real(kind=8) :: tres, timout, t0, tf
 !   Current communicator
     call asmpi_comm('GET', mpicou)
 
     call asmpi_info(mpicou, rank=rank)
     ASSERT(rank .ne. 0)
-    ASSERT(istat.eq.ST_OK .or. istat.eq.ST_ER)
+    ASSERT(istat .eq. ST_OK .or. istat .eq. ST_ER)
 
     call uttrst(tres)
-    timout = tres * 0.2d0
+    timout = tres*0.2d0
 
 !   Send ST_OK or ST_ERR to processor #0
     ist4(1) = istat
     nbv = 1
     DEBUG_MPI('mpi_status', 'isend to proc #0:', istat)
-    call asmpi_isend_i4(ist4, nbv, pr0, ST_TAG_CHK, mpicou,&
+    call asmpi_isend_i4(ist4, nbv, pr0, ST_TAG_CHK, mpicou, &
                         req)
     t0 = asmpi_wtime()
     term = 0
@@ -72,18 +72,18 @@ subroutine asmpi_status(istat, resp0)
         call asmpi_test(req, term)
 !       Timeout
         tf = asmpi_wtime()
-        if ((tf - t0) .gt. timout) then
+        if ((tf-t0) .gt. timout) then
             call utmess('E+', 'APPELMPI_96', si=0)
             call utmess('E', 'APPELMPI_83', sk='MPI_ISEND')
             call asmpi_stop(1)
             goto 999
-        endif
+        end if
     end do
     DEBUG_MPI('mpi_status', 'isend ', 'done')
 
 !   Answer of processor #0
     irp0(1) = ST_ER
-    call asmpi_irecv_i4(irp0, nbv, pr0, ST_TAG_CNT, mpicou,&
+    call asmpi_irecv_i4(irp0, nbv, pr0, ST_TAG_CNT, mpicou, &
                         req)
     t0 = asmpi_wtime()
     term = 0
@@ -91,12 +91,12 @@ subroutine asmpi_status(istat, resp0)
         call asmpi_test(req, term)
 !       Timeout
         tf = asmpi_wtime()
-        if ((tf - t0) .gt. timout * 1.2) then
+        if ((tf-t0) .gt. timout*1.2) then
             call utmess('E+', 'APPELMPI_96', si=0)
             call utmess('E', 'APPELMPI_83', sk='MPI_IRECV')
             call asmpi_stop(1)
             goto 999
-        endif
+        end if
     end do
 
     resp0 = irp0(1)

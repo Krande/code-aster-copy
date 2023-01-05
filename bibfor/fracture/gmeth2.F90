@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 subroutine gmeth2(nnoff, ndeg, gthi, gs, objcur, xl, gi, norfon)
 
-implicit none
+    implicit none
 
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -72,10 +72,10 @@ implicit none
     do i = 1, nnoff
         som = 0.d0
         do j = 1, ndeg+1
-            som = som + gi(j)*zr(iadrt3+(j-1)*nnoff+i-1)
+            som = som+gi(j)*zr(iadrt3+(j-1)*nnoff+i-1)
         end do
         gs(i) = som
-    enddo
+    end do
 !
 !   DESTRUCTION DES OBJETS DE TRAVAIL
     call jedetr('&&METHO2.THETA')

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine prosmo(matrez, limat, nbmat, basez, numedd,&
+subroutine prosmo(matrez, limat, nbmat, basez, numedd, &
                   lsym, rouc)
 !.======================================================================
     implicit none
@@ -112,7 +112,7 @@ subroutine prosmo(matrez, limat, nbmat, basez, numedd,&
 !
     else
         numddl = numedd
-    endif
+    end if
 !
 ! --- NOM DE LA PREMIERE MATR_ASSE :
 !     ----------------------------
@@ -160,9 +160,9 @@ subroutine prosmo(matrez, limat, nbmat, basez, numedd,&
                 nbter = 1
 !
             else
-                nbter = zi(iadi-1+jeq) - zi(iadi-1+jeq-1)
-            endif
-            zi(jhtc-1+jeq) = zi(jhtc-1+jeq) + nbter
+                nbter = zi(iadi-1+jeq)-zi(iadi-1+jeq-1)
+            end if
+            zi(jhtc-1+jeq) = zi(jhtc-1+jeq)+nbter
         end do
         call jelibe(numddi//'.SMOS.SMDI')
     end do
@@ -175,22 +175,22 @@ subroutine prosmo(matrez, limat, nbmat, basez, numedd,&
     ibl1 = 1
     lcumu = 0
     do jeq = 1, neq
-        htc=zi(jhtc-1+jeq)
-        ASSERT(htc.le.lgbl)
+        htc = zi(jhtc-1+jeq)
+        ASSERT(htc .le. lgbl)
 !       -- SI ON CHANGE DE BLOC :
-        if (lcumu + htc .gt. lgbl) then
-            ibl1 = ibl1 + 1
+        if (lcumu+htc .gt. lgbl) then
+            ibl1 = ibl1+1
             lcumu = 0
-        endif
+        end if
         ibl(jeq) = ibl1
         pbl(jeq) = lcumu
-        lcumu = lcumu + htc
+        lcumu = lcumu+htc
     end do
 !
 !     7-3) ALLOCATION DE KLISTE :
 !     ------------------------------------------------------------
     if (ibl1 .eq. 1) lgbl = lcumu
-    call jecrec(kliste, 'V V I', 'NU', 'DISPERSE', 'CONSTANT',&
+    call jecrec(kliste, 'V V I', 'NU', 'DISPERSE', 'CONSTANT', &
                 ibl1)
     call jeecra(kliste, 'LONMAX', lgbl)
     do kbl = 1, ibl1
@@ -215,8 +215,8 @@ subroutine prosmo(matrez, limat, nbmat, basez, numedd,&
                 nbter = 1
 !
             else
-                nbter = zi(iadi-1+jeq) - zi(iadi-1+jeq-1)
-            endif
+                nbter = zi(iadi-1+jeq)-zi(iadi-1+jeq-1)
+            end if
 !
 !         LE BLOC CONTENANT J DOIT-IL ETRE RAMENE EN MEMOIRE ?
             ibl1 = ibl(jeq)
@@ -224,13 +224,13 @@ subroutine prosmo(matrez, limat, nbmat, basez, numedd,&
                 call jelibe(jexnum(kliste, iblav))
                 call jeveuo(jexnum(kliste, ibl1), 'E', jbl1)
                 iblav = ibl1
-            endif
+            end if
             do k = 1, nbter
-                zi(jbl1+pbl(jeq)+zi(jhtc-1+jeq)+k-1)=zi4(idhcoi+&
-                icum+ (k-1))
+                zi(jbl1+pbl(jeq)+zi(jhtc-1+jeq)+k-1) = zi4(idhcoi+ &
+                                                           icum+(k-1))
             end do
-            icum = icum + nbter
-            zi(jhtc-1+jeq) = zi(jhtc-1+jeq) + nbter
+            icum = icum+nbter
+            zi(jhtc-1+jeq) = zi(jhtc-1+jeq)+nbter
         end do
         call jelibe(numddi//'.SMOS.SMDI')
         call jelibe(numddi//'.SMOS.SMHC')
@@ -254,20 +254,20 @@ subroutine prosmo(matrez, limat, nbmat, basez, numedd,&
             call jelibe(jexnum(kliste, iblav))
             call jeveuo(jexnum(kliste, ibl1), 'E', jbl1)
             iblav = ibl1
-        endif
+        end if
 !
 !       ON TRIE ET ORDONNE LA COLONNE (EN PLACE)
         nterm = zi(jhtc-1+jeq)
         call uttrii(zi(jbl1+pbl(jeq)), nterm)
         zi(jhtc-1+jeq) = nterm
         if (jeq .eq. 1) then
-            ASSERT(nterm.eq.1)
+            ASSERT(nterm .eq. 1)
             zi(ismdi+1-1) = nterm
 !
         else
-            zi(ismdi+jeq-1) = zi(ismdi+ (jeq-1)-1) + nterm
-        endif
-        lsmhc = lsmhc + nterm
+            zi(ismdi+jeq-1) = zi(ismdi+(jeq-1)-1)+nterm
+        end if
+        lsmhc = lsmhc+nterm
     end do
     call jelibe(jexnum(kliste, iblav))
 !
@@ -286,11 +286,11 @@ subroutine prosmo(matrez, limat, nbmat, basez, numedd,&
             call jelibe(jexnum(kliste, iblav))
             call jeveuo(jexnum(kliste, ibl1), 'E', jbl1)
             iblav = ibl1
-        endif
+        end if
 !
         nterm = zi(jhtc-1+jeq)
         do k = 1, nterm
-            l = l + 1
+            l = l+1
             zi4(idsmhc-1+l) = zi(jbl1+pbl(jeq)-1+k)
         end do
     end do
@@ -328,8 +328,8 @@ subroutine prosmo(matrez, limat, nbmat, basez, numedd,&
 !
     else
         nbloc = 2
-    endif
-    call jecrec(kvalm, base//' V '//rouc, 'NU', 'DISPERSE', 'CONSTANT',&
+    end if
+    call jecrec(kvalm, base//' V '//rouc, 'NU', 'DISPERSE', 'CONSTANT', &
                 nbloc)
     call jeecra(kvalm, 'LONMAX', itbloc)
     do kbloc = 1, nbloc
@@ -347,14 +347,14 @@ subroutine prosmo(matrez, limat, nbmat, basez, numedd,&
 !
     else
         call jeveuo(krefa, 'E', jrefa)
-    endif
+    end if
     zk24(jrefa-1+2) = numddl
     if (lsym) then
         zk24(jrefa-1+9) = 'MS'
 !
     else
         zk24(jrefa-1+9) = 'MR'
-    endif
+    end if
     zk24(jrefa-1+10) = 'NOEU'
 !
     do i = 1, nbmat
@@ -365,7 +365,7 @@ subroutine prosmo(matrez, limat, nbmat, basez, numedd,&
             zk24(jrefa-1+1) = zk24(idrefi+1-1)
             goto 130
 !
-        endif
+        end if
     end do
 130 continue
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -61,8 +61,8 @@ subroutine orth99(nomres, ritz)
 !
 !
     integer :: ifm, niv, n1, ier, ibid, imatra, nbmode, jordm, iddeeq
-    integer ::  neq, idmode,    iorol, iorne, iad
-    integer :: jiad,  ieq, i, nindep, ir, tmod(1)
+    integer ::  neq, idmode, iorol, iorne, iad
+    integer :: jiad, ieq, i, nindep, ir, tmod(1)
     real(kind=8) :: alpha, rbid
     complex(kind=8) :: cbid
     character(len=8) :: k8b, matras, base, ortho, intf
@@ -93,65 +93,65 @@ subroutine orth99(nomres, ritz)
 !
     if (ritz .eq. 1) then
 !
-        call getvtx('  ', 'ORTHO', iocc=1, nbval=8, vect=ortho,&
+        call getvtx('  ', 'ORTHO', iocc=1, nbval=8, vect=ortho, &
                     nbret=ibid)
 !
         if (ortho .eq. 'OUI     ') then
             call getvid(' ', 'MATRICE', scal=matras, nbret=n1)
         else
             goto 999
-        endif
+        end if
     else
         call getvid('ORTHO_BASE', 'MATRICE', iocc=1, scal=matras, nbret=n1)
-    endif
+    end if
 !
     if (n1 .ne. 0) then
         call dismoi('NOM_NUME_DDL', matras, 'MATR_ASSE', repk=numdda)
         call mtdscr(matras)
-        matr=matras
+        matr = matras
         call jeveuo(matr//'.&INT', 'E', imatra)
         call dismoi('NOM_NUME_DDL', matras, 'MATR_ASSE', repk=numdda)
     else
-        matr=' '
-    endif
+        matr = ' '
+    end if
 !
 !----------------------------------------------------------------------
 ! --- RECUPERATION DES MODES PROPRES
 !-----------------------------------------------------------------------
 !
     if (ritz .eq. 1) then
-        base=nomres
+        base = nomres
     else
         call getvid('ORTHO_BASE', 'BASE', iocc=1, scal=base, nbret=n1)
-    endif
+    end if
 !
 ! RECUPERATION DU TYPE ET DU NBRE DE MODES DES BASES
     call gettco(base, typbas)
-    call rsorac(base, 'LONUTI', 0, rbid, k8b,&
-                cbid, rbid, 'ABSOLU', tmod, 1,&
+    call rsorac(base, 'LONUTI', 0, rbid, k8b, &
+                cbid, rbid, 'ABSOLU', tmod, 1, &
                 ibid)
-    nbmode=tmod(1)
+    nbmode = tmod(1)
 !
 !
     call jeveuo(base//'           .ORDR', 'L', jordm)
 ! RECUPERATION DE LA NUMEROTATION DES BASES
-    if ((typbas.eq.'MODE_MECA') .or. (typbas.eq.'MODE_GENE')) then
+    if ((typbas .eq. 'MODE_MECA') .or. (typbas .eq. 'MODE_GENE')) then
         call dismoi('REF_RIGI_PREM', base, 'RESU_DYNA', repk=matri1, arret='C')
     else
         call dismoi('REF_AMOR_PREM', base, 'RESU_DYNA', repk=matri1, arret='C')
-    endif
+    end if
     if (matri1 .ne. ' ') then
         call dismoi('NOM_NUME_DDL', matri1, 'MATR_ASSE', repk=numdd1)
     else
         call dismoi('NUME_DDL', base, 'RESU_DYNA', repk=numdd1)
-    endif
+    end if
 !
-    call dismoi('REF_INTD_PREM', base, 'RESU_DYNA', repk=intf, arret='C',&
+    call dismoi('REF_INTD_PREM', base, 'RESU_DYNA', repk=intf, arret='C', &
                 ier=ir)
 !
     if (numdd1 .ne. numdda) then
         call utmess('I', 'ALGELINE2_81')
-    endif
+    end if
     nu = numdda(1:14)
     call jeveuo(nu//'.NUME.DEEQ', 'L', iddeeq)
     call jeveuo(nu//'.NUME.NEQU', 'L', vi=nequ)
@@ -171,15 +171,15 @@ subroutine orth99(nomres, ritz)
 !
     if (matr .eq. ' ') then
 ! ORTHONORMALISATION L2
-        call vpgskp(neq, nbmode, zr(idmode), alpha, imatra,&
-                    0, trav1, trav4,trav3)
+        call vpgskp(neq, nbmode, zr(idmode), alpha, imatra, &
+                    0, trav1, trav4, trav3)
     else
 ! ORTHONORMALISATION PAR RAPPORT A LA MATRICE
-        call vpgskp(neq, nbmode, zr(idmode), alpha, imatra,&
-                    2, trav1, trav4,trav3)
-    endif
+        call vpgskp(neq, nbmode, zr(idmode), alpha, imatra, &
+                    2, trav1, trav4, trav3)
+    end if
 ! MISE A ZEROS DES VECTEURS NON INDEPENDANTS
-    call vecind(matr, idmode, neq, nbmode, 0,&
+    call vecind(matr, idmode, neq, nbmode, 0, &
                 nindep)
 !
 !-- GESTION DES CONCEPTS REENTRANTS
@@ -188,18 +188,18 @@ subroutine orth99(nomres, ritz)
     if (ier .ne. 0) then
         call wkvect('&&ORTH99.VECT_TEMP', 'V V I', nbmode, ibid)
         do i = 1, nbmode
-            zi(ibid+i-1)=zi(jordm+i-1)
+            zi(ibid+i-1) = zi(jordm+i-1)
         end do
-        jordm=ibid
+        jordm = ibid
 !
 !       Save the old REFD information in a temporary location
-        call rscopi('V',nomres,'&&ORTH99')
+        call rscopi('V', nomres, '&&ORTH99')
         call refdcp(nomres, '&&ORTH99')
 !
 !       Delete the old result concept
         call jedetc('G', nomres, 1)
         rewrite = .true.
-    endif
+    end if
     call rscrsd('G', nomres, 'MODE_MECA', nbmode)
     call settco(nomres, typeco)
 !
@@ -214,12 +214,12 @@ subroutine orth99(nomres, ritz)
 !    endif
 !
 !
-    iorne =0
+    iorne = 0
     do i = 1, nbmode
         iorol = zi(jordm+i-1)
         iorne = iorne+1
 !
-        call rsexch(' ', nomres, 'DEPL', iorne, chamol,&
+        call rsexch(' ', nomres, 'DEPL', iorne, chamol, &
                     ier)
         call vtcrem(chamol, matras, 'G', 'R')
         call jeveuo(chamol//'.VALE', 'E', vr=vale)
@@ -228,83 +228,83 @@ subroutine orth99(nomres, ritz)
         end do
         call rsnoch(nomres, 'DEPL', iorne)
 !
-        call rsadpa(base, 'L', 1, 'NUME_MODE', iorol,&
+        call rsadpa(base, 'L', 1, 'NUME_MODE', iorol, &
                     0, sjv=iad, styp=k8b, istop=0)
-        call rsadpa(nomres, 'E', 1, 'NUME_MODE', iorne,&
+        call rsadpa(nomres, 'E', 1, 'NUME_MODE', iorne, &
                     0, sjv=jiad, styp=k8b)
         zi(jiad) = zi(iad)
 !
-        call rsadpa(base, 'L', 1, 'FREQ', iorol,&
+        call rsadpa(base, 'L', 1, 'FREQ', iorol, &
                     0, sjv=iad, styp=k8b, istop=0)
-        call rsadpa(nomres, 'E', 1, 'FREQ', iorne,&
+        call rsadpa(nomres, 'E', 1, 'FREQ', iorne, &
                     0, sjv=jiad, styp=k8b)
         zr(jiad) = zr(iad)
 !
-        call rsadpa(base, 'L', 1, 'NORME', iorol,&
+        call rsadpa(base, 'L', 1, 'NORME', iorol, &
                     0, sjv=iad, styp=k8b)
-        call rsadpa(nomres, 'E', 1, 'NORME', iorne,&
+        call rsadpa(nomres, 'E', 1, 'NORME', iorne, &
                     0, sjv=jiad, styp=k8b)
         zk24(jiad) = zk24(iad)
 !
-        call rsadpa(base, 'L', 1, 'OMEGA2', iorol,&
+        call rsadpa(base, 'L', 1, 'OMEGA2', iorol, &
                     0, sjv=iad, styp=k8b, istop=0)
-        call rsadpa(nomres, 'E', 1, 'OMEGA2', iorne,&
+        call rsadpa(nomres, 'E', 1, 'OMEGA2', iorne, &
                     0, sjv=jiad, styp=k8b)
         zr(jiad) = zr(iad)
 !
-        call rsadpa(base, 'L', 1, 'MASS_GENE', iorol,&
+        call rsadpa(base, 'L', 1, 'MASS_GENE', iorol, &
                     0, sjv=iad, styp=k8b, istop=0)
-        call rsadpa(nomres, 'E', 1, 'MASS_GENE', iorne,&
+        call rsadpa(nomres, 'E', 1, 'MASS_GENE', iorne, &
                     0, sjv=jiad, styp=k8b)
         zr(jiad) = zr(iad)
 !
-        call rsadpa(base, 'L', 1, 'RIGI_GENE', iorol,&
+        call rsadpa(base, 'L', 1, 'RIGI_GENE', iorol, &
                     0, sjv=iad, styp=k8b, istop=0)
-        call rsadpa(nomres, 'E', 1, 'RIGI_GENE', iorne,&
+        call rsadpa(nomres, 'E', 1, 'RIGI_GENE', iorne, &
                     0, sjv=jiad, styp=k8b)
         zr(jiad) = zr(iad)
 !
-        call rsadpa(base, 'L', 1, 'TYPE_MODE', iorol,&
+        call rsadpa(base, 'L', 1, 'TYPE_MODE', iorol, &
                     0, sjv=iad, styp=k8b, istop=0)
-        call rsadpa(nomres, 'E', 1, 'TYPE_MODE', iorne,&
+        call rsadpa(nomres, 'E', 1, 'TYPE_MODE', iorne, &
                     0, sjv=jiad, styp=k8b)
         zk16(jiad) = zk16(iad)
 !
-        call rsadpa(base, 'L', 1, 'TYPE_DEFO', iorol,&
+        call rsadpa(base, 'L', 1, 'TYPE_DEFO', iorol, &
                     0, sjv=iad, styp=k8b, istop=0)
-        call rsadpa(nomres, 'E', 1, 'TYPE_DEFO', iorne,&
+        call rsadpa(nomres, 'E', 1, 'TYPE_DEFO', iorne, &
                     0, sjv=jiad, styp=k8b)
         zk16(jiad) = zk16(iad)
-        if(rewrite) then
-            call rsadpa('&&ORTH99', 'L', 1, 'MODELE', iorol,&
+        if (rewrite) then
+            call rsadpa('&&ORTH99', 'L', 1, 'MODELE', iorol, &
                         0, sjv=iad, styp=k8b, istop=0)
         else
-            call rsadpa(base, 'L', 1, 'MODELE', iorol,&
+            call rsadpa(base, 'L', 1, 'MODELE', iorol, &
                         0, sjv=iad, styp=k8b, istop=0)
-        endif
-        call rsadpa(nomres, 'E', 1, 'MODELE', iorne,&
+        end if
+        call rsadpa(nomres, 'E', 1, 'MODELE', iorne, &
                     0, sjv=jiad, styp=k8b)
         zk8(jiad) = zk8(iad)
 
-        if(rewrite) then
-             call rsadpa('&&ORTH99', 'L', 1, 'CHAMPMAT', iorol,&
-                         0, sjv=iad, styp=k8b, istop=0)
-        else
-            call rsadpa(base, 'L', 1, 'CHAMPMAT', iorol,&
+        if (rewrite) then
+            call rsadpa('&&ORTH99', 'L', 1, 'CHAMPMAT', iorol, &
                         0, sjv=iad, styp=k8b, istop=0)
-        endif
-        call rsadpa(nomres, 'E', 1, 'CHAMPMAT', iorne,&
+        else
+            call rsadpa(base, 'L', 1, 'CHAMPMAT', iorol, &
+                        0, sjv=iad, styp=k8b, istop=0)
+        end if
+        call rsadpa(nomres, 'E', 1, 'CHAMPMAT', iorne, &
                     0, sjv=jiad, styp=k8b)
         zk8(jiad) = zk8(iad)
 
-        if(rewrite) then
-            call rsadpa('&&ORTH99', 'L', 1, 'CARAELEM', iorol,&
+        if (rewrite) then
+            call rsadpa('&&ORTH99', 'L', 1, 'CARAELEM', iorol, &
                         0, sjv=iad, styp=k8b, istop=0)
         else
-            call rsadpa(base, 'L', 1, 'CARAELEM', iorol,&
+            call rsadpa(base, 'L', 1, 'CARAELEM', iorol, &
                         0, sjv=iad, styp=k8b, istop=0)
-        endif
-        call rsadpa(nomres, 'E', 1, 'CARAELEM', iorne,&
+        end if
+        call rsadpa(nomres, 'E', 1, 'CARAELEM', iorne, &
                     0, sjv=jiad, styp=k8b)
         zk8(jiad) = zk8(iad)
     end do

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,10 +18,10 @@
 !
 function majpas(p2, pvp)
 !
-implicit none
+    implicit none
 !
-real(kind=8), intent(in) :: p2, pvp
-real(kind=8) :: majpas
+    real(kind=8), intent(in) :: p2, pvp
+    real(kind=8) :: majpas
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -37,6 +37,6 @@ real(kind=8) :: majpas
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    majpas = p2 - pvp
+    majpas = p2-pvp
 !
 end function

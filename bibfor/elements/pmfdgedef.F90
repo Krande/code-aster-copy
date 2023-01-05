@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -59,7 +59,7 @@ subroutine pmfdgedef(typfib, b, gg, depl, alicom, nbfibr, nbcarm, &
 ! --------------------------------------------------------------------------------------------------
 !
 
- implicit none
+    implicit none
 #include "asterfort/utmess.h"
 #include "asterfort/pmfdge.h"
 #include "asterfort/pmfdef.h"
@@ -73,72 +73,72 @@ subroutine pmfdgedef(typfib, b, gg, depl, alicom, nbfibr, nbcarm, &
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: ii, i, pos, posfib
-    real(kind=8) :: dege2(6), deffibasse(*), vfv(7,*)
+    real(kind=8) :: dege2(6), deffibasse(*), vfv(7, *)
     real(kind=8) :: yj(*), zj(*), depl2(12)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    if ( typfib .eq. 1 ) then
+    if (typfib .eq. 1) then
 !       3 caractéristiques utiles par fibre : y z aire
         call pmfdge(b, gg, depl, alicom, dege)
         call pmfdef(typfib, nbfibr, nbcarm, vf, dege, deffib)
 
-    elseif (( typfib .eq. 2 ).or.(typfib .eq. 3))  then
-        depl2(:)=0
-        dege2(:)=0
+    elseif ((typfib .eq. 2) .or. (typfib .eq. 3)) then
+        depl2(:) = 0
+        dege2(:) = 0
         call r8inir(nbassepou, 0.d0, yj, 1)
         call r8inir(nbassepou, 0.d0, zj, 1)
-        pos=1
-        posfib=0
+        pos = 1
+        posfib = 0
         call r8inir(maxfipoutre, 0.d0, deffibasse, 1)
         do i = 1, nbassepou
-           call r8inir(maxfipoutre*7, 0.d0, vfv, 1)
-           yj(i)=vf(4,pos)
-           zj(i)=vf(5,pos)
-           !Construction champ des DDLs sur poutres
-           if ( typfib .eq. 2 ) then
-               depl2(1)=depl(1) + depl(5) * zj(i) -depl(6)*yj(i)
-               depl2(2)=depl(2) - depl(4) * zj(i)
-               depl2(3)=depl(3) + depl(4) * yj(i)
-               depl2(4)=depl(4)
-               depl2(5)=depl(5)
-               depl2(6)=depl(6)
-               depl2(7)=depl(7) + depl(11) * zj(i) -depl(12)*yj(i)
-               depl2(8)=depl(8) - depl(10) * zj(i)
-               depl2(9)=depl(9) + depl(10) * yj(i)
-               depl2(10)=depl(10)
-               depl2(11)=depl(11)
-               depl2(12)=depl(12)
-           else
-               depl2(1)=depl(1) + depl(8) * zj(i) -depl(9)*yj(i)
-               depl2(2)=depl(2) - depl(7) * zj(i)
-               depl2(3)=depl(3) + depl(7) * yj(i)
-               depl2(4)=depl(4)
-               depl2(5)=depl(5)
-               depl2(6)=depl(6)
-               depl2(7)=depl(10) + depl(17) * zj(i) -depl(18)*yj(i)
-               depl2(8)=depl(11) - depl(16) * zj(i)
-               depl2(9)=depl(12) + depl(16) * yj(i)
-               depl2(10)=depl(13)
-               depl2(11)=depl(14)
-               depl2(12)=depl(15)
-           end if
-           do ii = 1, nbfipoutre(i)
-             posfib=pos+ii-1
-             vfv(1,ii)=vf(1,posfib)-yj(i)
-             vfv(2,ii)=vf(2,posfib)-zj(i)
-             vfv(3,ii)=vf(3,posfib)
-           enddo
-           call pmfdge(b, gg, depl2, alicom, dege2)
-           call pmfdef(1, maxfipoutre, nbcarm, vfv, dege2, deffibasse)
-           do ii = 1, nbfipoutre(i)
-             deffib(pos+ii-1)=deffibasse(ii)
-           enddo
-           pos=pos+nbfipoutre(i)
-        enddo
+            call r8inir(maxfipoutre*7, 0.d0, vfv, 1)
+            yj(i) = vf(4, pos)
+            zj(i) = vf(5, pos)
+            !Construction champ des DDLs sur poutres
+            if (typfib .eq. 2) then
+                depl2(1) = depl(1)+depl(5)*zj(i)-depl(6)*yj(i)
+                depl2(2) = depl(2)-depl(4)*zj(i)
+                depl2(3) = depl(3)+depl(4)*yj(i)
+                depl2(4) = depl(4)
+                depl2(5) = depl(5)
+                depl2(6) = depl(6)
+                depl2(7) = depl(7)+depl(11)*zj(i)-depl(12)*yj(i)
+                depl2(8) = depl(8)-depl(10)*zj(i)
+                depl2(9) = depl(9)+depl(10)*yj(i)
+                depl2(10) = depl(10)
+                depl2(11) = depl(11)
+                depl2(12) = depl(12)
+            else
+                depl2(1) = depl(1)+depl(8)*zj(i)-depl(9)*yj(i)
+                depl2(2) = depl(2)-depl(7)*zj(i)
+                depl2(3) = depl(3)+depl(7)*yj(i)
+                depl2(4) = depl(4)
+                depl2(5) = depl(5)
+                depl2(6) = depl(6)
+                depl2(7) = depl(10)+depl(17)*zj(i)-depl(18)*yj(i)
+                depl2(8) = depl(11)-depl(16)*zj(i)
+                depl2(9) = depl(12)+depl(16)*yj(i)
+                depl2(10) = depl(13)
+                depl2(11) = depl(14)
+                depl2(12) = depl(15)
+            end if
+            do ii = 1, nbfipoutre(i)
+                posfib = pos+ii-1
+                vfv(1, ii) = vf(1, posfib)-yj(i)
+                vfv(2, ii) = vf(2, posfib)-zj(i)
+                vfv(3, ii) = vf(3, posfib)
+            end do
+            call pmfdge(b, gg, depl2, alicom, dege2)
+            call pmfdef(1, maxfipoutre, nbcarm, vfv, dege2, deffibasse)
+            do ii = 1, nbfipoutre(i)
+                deffib(pos+ii-1) = deffibasse(ii)
+            end do
+            pos = pos+nbfipoutre(i)
+        end do
 
     else
         call utmess('F', 'ELEMENTS2_40', si=typfib)
-    endif
+    end if
 
 end subroutine

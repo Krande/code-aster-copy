@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -89,36 +89,36 @@ subroutine aceinc(noma, nomo, ntyele, nbocc, ivr, &
 !
     cmcl1: do mcl = 1, ACE_NB_MCLEF
         if (mcl .eq. ACE_RIGI_MISS_3D) cycle cmcl1
-        if (mcl .eq. ACE_MULTIFIBRE)   cycle cmcl1
+        if (mcl .eq. ACE_MULTIFIBRE) cycle cmcl1
         do ioc = 1, nbocc(mcl)
             call codent(ioc, 'G', kioc)
             ng = 0
             nm = 0
-            if ( mcl.eq.ACE_RIGI_PARASOL .or. &
-                 mcl.eq.ACE_MASS_AJOU ) then
-                call getvem(noma, 'GROUP_MA_POI1', ACE_MCLEF(mcl), 'GROUP_MA_POI1', ioc,&
+            if (mcl .eq. ACE_RIGI_PARASOL .or. &
+                mcl .eq. ACE_MASS_AJOU) then
+                call getvem(noma, 'GROUP_MA_POI1', ACE_MCLEF(mcl), 'GROUP_MA_POI1', ioc, &
                             lmax, zk24(jdls), ng)
                 if (ng .eq. 0) then
-                    call getvem(noma, 'GROUP_MA_SEG2', ACE_MCLEF(mcl), 'GROUP_MA_SEG2', ioc,&
+                    call getvem(noma, 'GROUP_MA_SEG2', ACE_MCLEF(mcl), 'GROUP_MA_SEG2', ioc, &
                                 lmax, zk24(jdls), ng)
-                endif
-            else if ( mcl.eq.ACE_MASS_REP ) then
+                end if
+            else if (mcl .eq. ACE_MASS_REP) then
                 call getvtx(ACE_MCLEF(mcl), 'GROUP_MA_POI1', iocc=ioc, nbval=lmax, &
-                            vect=zk24(jdls), nbret= ng )
+                            vect=zk24(jdls), nbret=ng)
             else
-                call getvem(noma,'GROUP_MA',ACE_MCLEF(mcl),'GROUP_MA',ioc,lmax,zk24(jdls),ng)
-                call getvem(noma,'MAILLE',  ACE_MCLEF(mcl),'MAILLE',  ioc,lmax,zk24(jdls),nm)
-            endif
-            if (mcl.eq.ACE_POUTRE     .or. mcl.eq.ACE_DISCRET .or. mcl.eq.ACE_ORIENTATION .or. &
-                mcl.eq.ACE_DISCRET_2D .or. mcl.eq.ACE_RIGI_PARASOL) then
+                call getvem(noma, 'GROUP_MA', ACE_MCLEF(mcl), 'GROUP_MA', ioc, lmax, zk24(jdls), ng)
+                call getvem(noma, 'MAILLE', ACE_MCLEF(mcl), 'MAILLE', ioc, lmax, zk24(jdls), nm)
+            end if
+            if (mcl .eq. ACE_POUTRE .or. mcl .eq. ACE_DISCRET .or. mcl .eq. ACE_ORIENTATION .or. &
+                mcl .eq. ACE_DISCRET_2D .or. mcl .eq. ACE_RIGI_PARASOL) then
                 call getvtx(ACE_MCLEF(mcl), 'CARA', iocc=ioc, nbval=nbcar, vect=car, nbret=ncar)
                 if (ncar .gt. 0) ncara = ncar
-            endif
+            end if
 !           GROUP_MA = mailles dans la liste des groupes de mailles
             if (ng .gt. 0) then
-                if (mcl.eq.ACE_COQUE)    locaco = .true.
-                if (mcl.eq.ACE_GRILLE)   locagb = .true.
-                if (mcl.eq.ACE_MEMBRANE) locamb = .true.
+                if (mcl .eq. ACE_COQUE) locaco = .true.
+                if (mcl .eq. ACE_GRILLE) locagb = .true.
+                if (mcl .eq. ACE_MEMBRANE) locamb = .true.
                 do ii = 1, ng
                     call jeveuo(jexnom(mlggma, zk24(jdls+ii-1)), 'L', jdgm)
                     call jelira(jexnom(mlggma, zk24(jdls+ii-1)), 'LONUTI', nbmagr)
@@ -126,29 +126,29 @@ subroutine aceinc(noma, nomo, ntyele, nbocc, ivr, &
                         nummai = zi(jdgm+jj-1)
                         call jenuno(jexnum(mlgnma, nummai), nommai)
                         nutyel = zi(jdme+nummai-1)
-                        if (mcl.ne.ACE_ORIENTATION) zjdlm(nummai) = -abs(zjdlm(nummai))
-                        call vafcar('MAILLE', mcl, nommai, nutyel, ntyele, car, ncara,&
+                        if (mcl .ne. ACE_ORIENTATION) zjdlm(nummai) = -abs(zjdlm(nummai))
+                        call vafcar('MAILLE', mcl, nommai, nutyel, ntyele, car, ncara, &
                                     ivr, kioc, ier)
-                    enddo
-                enddo
-            endif
+                    end do
+                end do
+            end if
 !           MAILLE = mailles de la liste de mailles
             if (nm .gt. 0) then
-                if (mcl.eq.ACE_COQUE)    locaco = .true.
-                if (mcl.eq.ACE_GRILLE)   locagb = .true.
-                if (mcl.eq.ACE_MEMBRANE) locamb = .true.
+                if (mcl .eq. ACE_COQUE) locaco = .true.
+                if (mcl .eq. ACE_GRILLE) locagb = .true.
+                if (mcl .eq. ACE_MEMBRANE) locamb = .true.
                 do ii = 1, nm
                     nommai = zk24(jdls+ii-1)
                     call jenonu(jexnom(mlgnma, nommai), nummai)
                     nutyel = zi(jdme+nummai-1)
-                    if (mcl.ne.ACE_ORIENTATION) zjdlm(nummai) = -abs(zjdlm(nummai))
-                    call vafcar('MAILLE', mcl, nommai, nutyel, ntyele, car, ncara,&
+                    if (mcl .ne. ACE_ORIENTATION) zjdlm(nummai) = -abs(zjdlm(nummai))
+                    call vafcar('MAILLE', mcl, nommai, nutyel, ntyele, car, ncara, &
                                 ivr, kioc, ier)
-                enddo
-            endif
+                end do
+            end if
 !
-        enddo
-    enddo cmcl1
+        end do
+    end do cmcl1
 !
 ! --- VERIFICATION QUE TOUS LES ELEMENTS SONT AFFECTES :
 !     --------------------------------------------------
@@ -160,48 +160,48 @@ subroutine aceinc(noma, nomo, ntyele, nbocc, ivr, &
             do ii = iid, iif
                 if (zjdlm(nummai) .eq. ntyele(ii)) then
                     call utmess('A', 'MODELISA_38', sk=nommai)
-                endif
-            enddo
-        endif
-        if (nbocc(ACE_DISCRET).ne.0 .or. nbocc(ACE_RIGI_PARASOL).ne.0 .or. &
-            nbocc(ACE_MASS_AJOU).ne.0 .or. nbocc(ACE_DISCRET_2D).ne.0 .or. &
-            nbocc(ACE_MASS_REP).ne.0 ) then
+                end if
+            end do
+        end if
+        if (nbocc(ACE_DISCRET) .ne. 0 .or. nbocc(ACE_RIGI_PARASOL) .ne. 0 .or. &
+            nbocc(ACE_MASS_AJOU) .ne. 0 .or. nbocc(ACE_DISCRET_2D) .ne. 0 .or. &
+            nbocc(ACE_MASS_REP) .ne. 0) then
             iid = ACE_NB_POUTRE+1
             iif = ACE_NB_POUTRE+ACE_NB_DISCRET
             do ii = iid, iif
                 if (zjdlm(nummai) .eq. ntyele(ii)) then
                     call utmess('A', 'MODELISA_39', sk=nommai)
-                endif
-            enddo
-        endif
-        if (nbocc(ACE_CABLE).ne.0) then
+                end if
+            end do
+        end if
+        if (nbocc(ACE_CABLE) .ne. 0) then
             iid = ACE_NB_POUTRE+ACE_NB_DISCRET+ACE_NB_COQUE+1
             iif = ACE_NB_POUTRE+ACE_NB_DISCRET+ACE_NB_COQUE+ACE_NB_CABLE
             do ii = iid, iif
                 if (zjdlm(nummai) .eq. ntyele(ii)) then
                     call utmess('A', 'MODELISA_40', sk=nommai)
-                endif
-            enddo
-        endif
-        if (nbocc(ACE_BARRE).ne.0) then
+                end if
+            end do
+        end if
+        if (nbocc(ACE_BARRE) .ne. 0) then
             iid = ACE_NB_POUTRE+ACE_NB_DISCRET+ACE_NB_COQUE+ACE_NB_CABLE+1
-            iif = ACE_NB_POUTRE+ACE_NB_DISCRET+ACE_NB_COQUE+ ACE_NB_CABLE+ACE_NB_BARRE
+            iif = ACE_NB_POUTRE+ACE_NB_DISCRET+ACE_NB_COQUE+ACE_NB_CABLE+ACE_NB_BARRE
             do ii = iid, iif
                 if (zjdlm(nummai) .eq. ntyele(ii)) then
                     call utmess('A', 'MODELISA_41', sk=nommai)
-                endif
-            enddo
-        endif
-        if (nbocc(ACE_RIGI_MISS_3D).ne.0) then
-            iid=ACE_NB_POUTRE+ACE_NB_DISCRET+ACE_NB_COQUE+ACE_NB_CABLE+ACE_NB_BARRE+ACE_NB_MASSIF+1
-            iif=ACE_NB_TYPE_ELEM
+                end if
+            end do
+        end if
+        if (nbocc(ACE_RIGI_MISS_3D) .ne. 0) then
+           iid = ACE_NB_POUTRE+ACE_NB_DISCRET+ACE_NB_COQUE+ACE_NB_CABLE+ACE_NB_BARRE+ACE_NB_MASSIF+1
+            iif = ACE_NB_TYPE_ELEM
             do ii = iid, iif
                 if (zjdlm(nummai) .eq. ntyele(ii)) then
                     call utmess('A', 'MODELISA_42', sk=nommai)
-                endif
-            enddo
-        endif
-    enddo
+                end if
+            end do
+        end if
+    end do
 !
     call jedetr('&&TMPINC')
 !

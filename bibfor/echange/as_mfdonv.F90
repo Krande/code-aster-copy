@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine as_mfdonv(fid, cha, typent, typgeo, noma,&
-                     numdt, numo, pit, nompro, stm,&
+subroutine as_mfdonv(fid, cha, typent, typgeo, noma, &
+                     numdt, numo, pit, nompro, stm, &
                      npr, nomloc, nip, n, cret)
 ! person_in_charge: nicolas.sellenet at edf.fr
 !
@@ -45,16 +45,16 @@ subroutine as_mfdonv(fid, cha, typent, typgeo, noma,&
     numo4 = numo
     stm4 = stm
     pit4 = pit
-    call mfdonv(fidm, cha, numdt4, numo4, typen4,&
-                typge4, noma, pit4, stm4, nompro,&
+    call mfdonv(fidm, cha, numdt4, numo4, typen4, &
+                typge4, noma, pit4, stm4, nompro, &
                 npr4, nomloc, nip4, n4, cret4)
     npr = npr4
     nip = nip4
     n = n4
     cret = cret4
 #else
-    call mfdonv(fid, cha, numdt, numo, typent,&
-                typgeo, noma, pit, stm, nompro,&
+    call mfdonv(fid, cha, numdt, numo, typent, &
+                typgeo, noma, pit, stm, nompro, &
                 npr, nomloc, nip, n, cret)
 #endif
 !

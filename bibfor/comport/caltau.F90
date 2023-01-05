@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine caltau(ifa, is, sigf, fkooh,&
-                  nfs, nsg, toutms, taus, mus,&
+subroutine caltau(ifa, is, sigf, fkooh, &
+                  nfs, nsg, toutms, taus, mus, &
                   msns)
     implicit none
 !
@@ -40,9 +40,9 @@ subroutine caltau(ifa, is, sigf, fkooh,&
     real(kind=8) :: fesig(3, 3), s(3, 3), fetfe(3, 3), fetfe6(6)
     real(kind=8) :: toutms(nfs, nsg, 6), fkooh(6, 6)
     integer :: irr, decirr, nbsyst, decal, gdef
-    common/polycr/irr,decirr,nbsyst,decal,gdef
+    common/polycr/irr, decirr, nbsyst, decal, gdef
 !     ----------------------------------------------------------------
-    data id6/1.d0,1.d0,1.d0,0.d0,0.d0,0.d0/
+    data id6/1.d0, 1.d0, 1.d0, 0.d0, 0.d0, 0.d0/
 !
 !
     if (gdef .eq. 0) then
@@ -52,11 +52,11 @@ subroutine caltau(ifa, is, sigf, fkooh,&
 !        TAU      : SCISSION REDUITE TAU=SIG:MUS
 !
         do i = 1, 6
-            mus(i)=toutms(ifa,is,i)
+            mus(i) = toutms(ifa, is, i)
         end do
-        taus=0.d0
+        taus = 0.d0
         do i = 1, 6
-            taus=taus+sigf(i)*mus(i)
+            taus = taus+sigf(i)*mus(i)
         end do
     else
 !
@@ -64,32 +64,32 @@ subroutine caltau(ifa, is, sigf, fkooh,&
 ! Y contient : SIGF=PK2 (sans les SQRT(2) !), puis les alpha_s
         fetfe6 = matmul(fkooh, sigf)
         call dscal(6, 2.d0, fetfe6, 1)
-        call daxpy(6, 1.d0, id6, 1, fetfe6,&
+        call daxpy(6, 1.d0, id6, 1, fetfe6, &
                    1)
 !
         do i = 1, 3
-            ms(i)=toutms(ifa,is,i)
-            ns(i)=toutms(ifa,is,i+3)
+            ms(i) = toutms(ifa, is, i)
+            ns(i) = toutms(ifa, is, i+3)
         end do
 !
         do i = 1, 3
             do j = 1, 3
-                msns(i,j)=ms(i)*ns(j)
+                msns(i, j) = ms(i)*ns(j)
             end do
         end do
 !
         call tnsvec(6, 3, fetfe, fetfe6, 1.d0)
         call tnsvec(6, 3, s, sigf, 1.d0)
 !
-        fesig = matmul(fetfe,s)
+        fesig = matmul(fetfe, s)
 !
-        taus=0.d0
+        taus = 0.d0
         do i = 1, 3
             do j = 1, 3
-                taus=taus + fesig(i,j)*msns(i,j)
+                taus = taus+fesig(i, j)*msns(i, j)
             end do
         end do
 !
-    endif
+    end if
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -59,7 +59,7 @@ subroutine initia(neq, lgrot, indro, chamro, chamin)
 ! ----------------------------------------------------------------------
 !
     zero = 0.d0
-    if (.not.lgrot) then
+    if (.not. lgrot) then
         do i = 1, neq
             chamin(i) = zero
         end do
@@ -67,11 +67,11 @@ subroutine initia(neq, lgrot, indro, chamro, chamin)
         do i = 1, neq
             if (indro(i) .eq. 0) then
                 chamin(i) = zero
-            else if (indro(i).eq.1) then
+            else if (indro(i) .eq. 1) then
                 chamin(i) = chamro(i)
             else
                 ASSERT(.false.)
-            endif
+            end if
         end do
-    endif
+    end if
 end subroutine

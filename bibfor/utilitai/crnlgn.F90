@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -84,12 +84,12 @@ subroutine crnlgn(numddl)
     call jemarq()
     call asmpi_comm('GET', mpicou)
 !
-    call asmpi_info(rank = mrank, size = msize)
+    call asmpi_info(rank=mrank, size=msize)
     rang = to_aster_int(mrank)
     nbproc = to_aster_int(msize)
 !
     call jeveuo(numddl//'.NUME.REFN', 'L', jrefn)
-    mesh = zk24(jrefn)(1:8)
+    mesh = zk24(jrefn) (1:8)
 !
     call dismoi('NUM_GD_SI', numddl, 'NUME_DDL', repi=gd)
     nec = nbec(gd)
@@ -107,27 +107,27 @@ subroutine crnlgn(numddl)
 !   Creation de la numerotation globale
     call wkvect(numddl//'.NUME.NULG', 'G V I', nbddll, vi=v_nugll)
     call wkvect(numddl//'.NUME.PDDL', 'G V I', nbddll, vi=v_posdd)
-    call wkvect('&&CRNUGL.MULT_DDL', 'V V I' , nbddll, vi=v_mult)
+    call wkvect('&&CRNUGL.MULT_DDL', 'V V I', nbddll, vi=v_mult)
     call wkvect('&&CRNUGL.MULT_DDL2', 'V V I', nbddll, vi=v_mults)
 !
 ! --- Il ne faut pas changer la valeur d'initialisation car on s'en sert pour detecter
 !     qui est propriétaire d'un noeud (-1 si pas propriétaire)
     v_nugll(1:nbddll) = -1
     v_posdd(1:nbddll) = -1
-    v_mult(1:nbddll)  = -1
+    v_mult(1:nbddll) = -1
     v_mults(1:nbddll) = -1
     numloc = 0
 ! --- On numérote les ddls physiques si le noeud est propriétaire
     do i_ddl = 1, nbddll
-        numero_noeud = v_deeq((i_ddl-1)*2 + 1)
-        numero_cmp   = v_deeq((i_ddl-1)*2 + 2)
-        if( numero_noeud.gt.0 .and. numero_cmp.gt.0 ) then
+        numero_noeud = v_deeq((i_ddl-1)*2+1)
+        numero_cmp = v_deeq((i_ddl-1)*2+2)
+        if (numero_noeud .gt. 0 .and. numero_cmp .gt. 0) then
             if (v_noext(numero_noeud) == rang) then
                 v_nugll(i_ddl) = numloc
                 v_posdd(i_ddl) = rang
-                numloc = numloc + 1
-            endif
-        endif
+                numloc = numloc+1
+            end if
+        end if
     end do
 !
 !   RECHERCHE DES ADRESSES DU .PRNO DE .NUME
@@ -139,7 +139,7 @@ subroutine crnlgn(numddl)
     nbddl_lag = 0
     do ili = 2, ntot
         call jeexin(jexnum(numddl//'.NUME.PRNO', ili), iret)
-        if( iret.ne.0 ) then
+        if (iret .ne. 0) then
             call jelira(jexnum(numddl//'.NUME.PRNO', ili), 'LONMAX', lonmax)
             nbno_prno = lonmax/(nec+2)
             call jenuno(jexnum(numddl//'.NUME.LILI', ili), nomlig)
@@ -151,24 +151,24 @@ subroutine crnlgn(numddl)
             call jeveuo(mult2, 'L', vi=v_mult2)
             do ino = 1, nbno_prno
                 ! Le proc est proprio du noeud
-                if( v_owner(ino) == rang ) then
+                if (v_owner(ino) == rang) then
                     i_ddl = zzprno(ili, ino, 1)
                     nbcmp = zzprno(ili, ino, 2)
-                    ASSERT(nbcmp.eq.1)
+                    ASSERT(nbcmp .eq. 1)
                     ASSERT(v_nugll(i_ddl) == -1)
                     ASSERT(v_posdd(i_ddl) == -1)
                     ASSERT(v_mult(i_ddl) == -1)
                     ASSERT(v_mults(i_ddl) == -1)
                     v_nugll(i_ddl) = numloc
                     v_posdd(i_ddl) = rang
-                    v_mult(i_ddl)  = v_mult2(ino)
+                    v_mult(i_ddl) = v_mult2(ino)
                     v_mults(i_ddl) = v_mult1(ino)
-                    nbddl_lag = nbddl_lag + 1
-                    numloc = numloc + 1
-                endif
-            enddo
-        endif
-    enddo
+                    nbddl_lag = nbddl_lag+1
+                    numloc = numloc+1
+                end if
+            end do
+        end if
+    end do
 !
     call wkvect('&&CRNULG.NBDDLL', 'V V I', nbproc, jnbddl)
 !
@@ -179,7 +179,7 @@ subroutine crnlgn(numddl)
     call asmpi_allgather_i([numloc], one4, zi(jnbddl), one4, mpicou)
 
     do i_proc = 2, nbproc
-        zi(jnbddl-1+i_proc) = zi(jnbddl-1+i_proc) + zi(jnbddl-1+i_proc-1)
+        zi(jnbddl-1+i_proc) = zi(jnbddl-1+i_proc)+zi(jnbddl-1+i_proc-1)
     end do
 !   Nombre total de degré de liberté
     v_nequ(2) = zi(jnbddl-1+nbproc)
@@ -188,35 +188,35 @@ subroutine crnlgn(numddl)
     end do
     zi(jnbddl-1+1) = 0
 !
-    if( nbddl_lag.ne.0 ) then
+    if (nbddl_lag .ne. 0) then
         call wkvect(numddl//'.NUME.MDLA', 'G V I', 3*nbddl_lag, vi=v_mdlag)
-    endif
+    end if
 
     pos = 0
 !   Decalage de la numerotation
     do i_ddl = 1, nbddll
-        if( v_delg(i_ddl) .ne. 0 .and. v_posdd(i_ddl) == rang ) then
-            v_mdlag(3*pos + 1) = i_ddl
-            v_mdlag(3*pos + 2) = v_mult(i_ddl)
-            v_mdlag(3*pos + 3) = v_mults(i_ddl)
-            pos = pos + 1
-        endif
-        if( v_nugll(i_ddl) .ne. -1 ) then
-            v_nugll(i_ddl) = v_nugll(i_ddl) + zi(jnbddl-1+rang+1)
-        endif
+        if (v_delg(i_ddl) .ne. 0 .and. v_posdd(i_ddl) == rang) then
+            v_mdlag(3*pos+1) = i_ddl
+            v_mdlag(3*pos+2) = v_mult(i_ddl)
+            v_mdlag(3*pos+3) = v_mults(i_ddl)
+            pos = pos+1
+        end if
+        if (v_nugll(i_ddl) .ne. -1) then
+            v_nugll(i_ddl) = v_nugll(i_ddl)+zi(jnbddl-1+rang+1)
+        end if
     end do
-    ASSERT(nbddl_lag.eq.pos)
+    ASSERT(nbddl_lag .eq. pos)
 !
 ! --- Pour debuggage en hpc
-    if(ASTER_FALSE) then
-        print*, "DEBUG IN CRNLGN"
+    if (ASTER_FALSE) then
+        print *, "DEBUG IN CRNLGN"
         do i_ddl = 1, nbddll
 ! numero ddl local, numéro noeud local,  num composante du noeud,
 !            num ddl global, num proc proprio
-            write(120+rang, *) i_ddl, v_deeq((i_ddl-1)*2 + 1) , &
-            v_deeq((i_ddl-1)*2 + 2), v_nugll(i_ddl), v_posdd(i_ddl)
+            write (120+rang, *) i_ddl, v_deeq((i_ddl-1)*2+1), &
+                v_deeq((i_ddl-1)*2+2), v_nugll(i_ddl), v_posdd(i_ddl)
         end do
-        flush(120+rang)
+        flush (120+rang)
     end if
 !
     call jedetr("&&CRNUGL.MULT_DDL")

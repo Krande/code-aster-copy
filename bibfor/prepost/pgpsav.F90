@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine pgpsav(sd_pgp, param, lonvec, iobs, kscal,&
-                  iscal, rscal, cscal, kvect, ivect,&
+subroutine pgpsav(sd_pgp, param, lonvec, iobs, kscal, &
+                  iscal, rscal, cscal, kvect, ivect, &
                   rvect, cvect, savejv)
     implicit none
 ! Save a parameter in the temporary data structure for the command
@@ -86,32 +86,32 @@ subroutine pgpsav(sd_pgp, param, lonvec, iobs, kscal,&
 !   --- For general usage
     aster_logical :: input_test
     integer :: nbparams
-    parameter (nbparams=24)
+    parameter(nbparams=24)
     integer :: parind(nbparams), ip, i, jvect, jscal
     character(len=3) :: partyp(nbparams)
     character(len=6) :: k_iobs
     character(len=8) :: params(nbparams)
 !
 !   -0.3- Initialization
-    data  params /'RESU_OUT','RESU_IN ','TYP_RESU','BASE    ','MODELE  ',&
-                  'MAILLAGE','NB_OBSER','NOM_CHAM','TYP_CHAM','NOM_CMP ',&
-                  'TYP_SCAL','NUM_NOEU','NUM_MAIL','NUM_ORDR','DISC    ',&
-                  'ADD_CORR','ACC_MO_A','ACC_DIR ','VEC_PR_R',&
-                  'VEC_PR_C','REF_SUP1','REF_SUP2','REF_COMP','REF_INDI'/
+    data params/'RESU_OUT', 'RESU_IN ', 'TYP_RESU', 'BASE    ', 'MODELE  ', &
+        'MAILLAGE', 'NB_OBSER', 'NOM_CHAM', 'TYP_CHAM', 'NOM_CMP ', &
+        'TYP_SCAL', 'NUM_NOEU', 'NUM_MAIL', 'NUM_ORDR', 'DISC    ', &
+        'ADD_CORR', 'ACC_MO_A', 'ACC_DIR ', 'VEC_PR_R', &
+        'VEC_PR_C', 'REF_SUP1', 'REF_SUP2', 'REF_COMP', 'REF_INDI'/
 !
-    data  partyp /'K24','K24','K24','K24','K24',&
-                  'K24','I','K24','K24','K24',&
-                  'K24','I','I','I','R8', &
-                  'I','K24','R8','R8',&
-                  'C8','K24','K24','K24','I'/
+    data partyp/'K24', 'K24', 'K24', 'K24', 'K24', &
+        'K24', 'I', 'K24', 'K24', 'K24', &
+        'K24', 'I', 'I', 'I', 'R8', &
+        'I', 'K24', 'R8', 'R8', &
+        'C8', 'K24', 'K24', 'K24', 'I'/
 !
 !   parind = -2 : vector global          ; = -1 : scalar global ;
 !          =  2 : vector per observation ; =  1 : scalar per observation
-    data  parind  / -1, -1, -1, -1, -1,&
-                    -1, -1,  1,  1,  2,&
-                     1,  2,  2,  2,  2,&
-                     1,  2,  2,  2,&
-                     2,  2,  2,  2,  2/
+    data parind/-1, -1, -1, -1, -1, &
+        -1, -1, 1, 1, 2, &
+        1, 2, 2, 2, 2, &
+        1, 2, 2, 2, &
+        2, 2, 2, 2, 2/
 !
     call jemarq()
     savejv_ = '                        '
@@ -123,7 +123,7 @@ subroutine pgpsav(sd_pgp, param, lonvec, iobs, kscal,&
     if (present(kvect)) then
         AS_ALLOCATE(vk24=kvect_, size=lonvec)
         do i = 1, lonvec
-            kvect_(i)=kvect(i)
+            kvect_(i) = kvect(i)
         end do
     end if
 !
@@ -137,26 +137,26 @@ subroutine pgpsav(sd_pgp, param, lonvec, iobs, kscal,&
 !
     if (lonvec .gt. 1) then
         ASSERT(UN_PARMI4(kvect, ivect, rvect, cvect))
-    endif
+    end if
 !
     do ip = 1, nbparams
         if (params(ip) .eq. param_) goto 10
     end do
- 10 continue
+10  continue
 !
 !   The parameter to be saved was not found in the predefined list
     if (ip .eq. nbparams+1) then
         ASSERT(.false.)
-    endif
+    end if
 !
     savejv_(1:8) = sd_pgp_
     if (present(iobs)) then
 !       The parameter to be saved is global but an observation index was given
-        ASSERT(parind(ip).gt.0)
+        ASSERT(parind(ip) .gt. 0)
         call codent(iobs, 'G', k_iobs)
         savejv_(9:15) = '.'//k_iobs(1:6)
-    endif
-    savejv_(16:24)='.'//param_
+    end if
+    savejv_(16:24) = '.'//param_
 !
 !   ====================================================================
 !   = 2 = Saving data
@@ -167,25 +167,25 @@ subroutine pgpsav(sd_pgp, param, lonvec, iobs, kscal,&
 !
 !       The parameter to be saved is a vector but no vector input was found
         ASSERT(UN_PARMI4(kvect, ivect, rvect, cvect))
-        ASSERT(lonvec.ge.1)
+        ASSERT(lonvec .ge. 1)
 !
         call wkvect(savejv_, 'V V '//partyp(ip), lonvec, jvect)
         if (partyp(ip) .eq. 'K24') then
             do i = 1, lonvec
                 zk24(jvect+i-1) = kvect_(i)
             end do
-        else if (partyp(ip).eq.'R8') then
+        else if (partyp(ip) .eq. 'R8') then
             call dcopy(lonvec, rvect, 1, zr(jvect), 1)
-        else if (partyp(ip).eq.'C8') then
+        else if (partyp(ip) .eq. 'C8') then
             call zcopy(lonvec, cvect, 1, zc(jvect), 1)
-        else if (partyp(ip).eq.'I') then
+        else if (partyp(ip) .eq. 'I') then
             do i = 1, lonvec
                 zi(jvect+i-1) = ivect(i)
             end do
         end if
 !
 !   --- Scalars
-    else if (abs(parind(ip)).eq.1) then
+    else if (abs(parind(ip)) .eq. 1) then
 !
 !       The parameter to be saved is a scalar but no scalar input was found
         ASSERT(UN_PARMI4(kscal, iscal, rscal, cscal))
@@ -193,11 +193,11 @@ subroutine pgpsav(sd_pgp, param, lonvec, iobs, kscal,&
         call wkvect(savejv_, 'V V '//partyp(ip), 1, jscal)
         if (partyp(ip) .eq. 'K24') then
             zk24(jscal) = kscal_
-        else if (partyp(ip).eq.'R8') then
+        else if (partyp(ip) .eq. 'R8') then
             zr(jscal) = rscal
-        else if (partyp(ip).eq.'C8') then
+        else if (partyp(ip) .eq. 'C8') then
             zc(jscal) = cscal
-        else if (partyp(ip).eq.'I') then
+        else if (partyp(ip) .eq. 'I') then
             zi(jscal) = iscal
         end if
 !

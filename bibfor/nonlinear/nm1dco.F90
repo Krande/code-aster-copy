@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine nm1dco(fami, kpg, ksp, option, imate,&
-                  materi, e, sigm, epsm, deps,&
-                  vim, sigp, vip, dsde, crildc,&
+subroutine nm1dco(fami, kpg, ksp, option, imate, &
+                  materi, e, sigm, epsm, deps, &
+                  vim, sigp, vip, dsde, crildc, &
                   codret)
 !
 !
@@ -71,43 +71,43 @@ subroutine nm1dco(fami, kpg, ksp, option, imate,&
     pm = vim(1)
     epspm = vim(1)
     d = vim(2)
-    codret=0
-    indi=0.d0
+    codret = 0
+    indi = 0.d0
 !
 !
 ! --- CARACTERISTIQUES ECROUISSAGE LINEAIRE
-    call rcvalb(fami, kpg, ksp, '+', imate,&
-                materi, 'CORR_ACIER', 0, ' ', [0.d0],&
+    call rcvalb(fami, kpg, ksp, '+', imate, &
+                materi, 'CORR_ACIER', 0, ' ', [0.d0], &
                 1, 'D_CORR', val, codres, 1)
-    dc=val(1)
-    call rcvalb(fami, kpg, ksp, '+', imate,&
-                materi, 'CORR_ACIER', 0, ' ', [0.d0],&
+    dc = val(1)
+    call rcvalb(fami, kpg, ksp, '+', imate, &
+                materi, 'CORR_ACIER', 0, ' ', [0.d0], &
                 1, 'ECRO_K', val, codres, 1)
-    k=val(1)
-    call rcvalb(fami, kpg, ksp, '+', imate,&
-                materi, 'CORR_ACIER', 0, ' ', [0.d0],&
+    k = val(1)
+    call rcvalb(fami, kpg, ksp, '+', imate, &
+                materi, 'CORR_ACIER', 0, ' ', [0.d0], &
                 1, 'ECRO_M', val, codres, 1)
-    m=val(1)
-    call rcvalb(fami, kpg, ksp, '+', imate,&
-                materi, 'CORR_ACIER', 0, ' ', [0.d0],&
+    m = val(1)
+    call rcvalb(fami, kpg, ksp, '+', imate, &
+                materi, 'CORR_ACIER', 0, ' ', [0.d0], &
                 1, 'SY', val, codres, 1)
-    sy=val(1)
-    call rcvalb(fami, kpg, ksp, '+', imate,&
-                materi, 'ELAS', 0, ' ', [0.d0],&
+    sy = val(1)
+    call rcvalb(fami, kpg, ksp, '+', imate, &
+                materi, 'ELAS', 0, ' ', [0.d0], &
                 1, 'NU', val, codres, 1)
-    v=val(1)
+    v = val(1)
 !
 ! --- PARAMETRES DE CONVERGENCE
     resi = crildc(3)
     itemax = nint(crildc(1))
 !
-    call rcvarc('F', 'CORR', '-', fami, kpg,&
+    call rcvarc('F', 'CORR', '-', fami, kpg, &
                 ksp, corrm, ibid)
     if (corrm .le. 15.d0) then
         epsc = 2.345d-1-(1.11d-2*corrm)
     else
         epsc = 5.1d-2-(6.d-4*corrm)
-    endif
+    end if
 !       ENDIF
 !
 !    DEFORMATION PLASTIQUE DE DEBUT D'ENDOMMAGMENT
@@ -120,11 +120,11 @@ subroutine nm1dco(fami, kpg, ksp, option, imate,&
     epsilf = epsm+deps
     epsp = epspm
     p = pm
-    sigp=sigm
-    dconv=.false.
-    melas=(option.eq.'RIGI_MECA_ELAS').or.&
-     &      (option.eq.'FULL_MECA_ELAS')
-    if ((option.eq.'FULL_MECA') .or. (option.eq.'RAPH_MECA')) then
+    sigp = sigm
+    dconv = .false.
+    melas = (option .eq. 'RIGI_MECA_ELAS') .or.&
+     &      (option .eq. 'FULL_MECA_ELAS')
+    if ((option .eq. 'FULL_MECA') .or. (option .eq. 'RAPH_MECA')) then
 !
         iter = 0
         do i = 1, itemax
@@ -151,27 +151,27 @@ subroutine nm1dco(fami, kpg, ksp, option, imate,&
                             dfds = (1.d0/(1.d0-d))
                             dfpds = (1.d0/(1.d0-d))
                             dfdecr = -1.d0
-                            difecr = ( (k/m)* ((sigp/((1.d0-d)*k))-(sy/ k))**(1.d0-m) )
-                            lambp = (fplas/((dfds*e*dfpds)-(dfdecr* difecr)))
+                            difecr = ((k/m)*((sigp/((1.d0-d)*k))-(sy/k))**(1.d0-m))
+                            lambp = (fplas/((dfds*e*dfpds)-(dfdecr*difecr)))
                             epsp = epsp+lambp*dfpds
                             p = p+(lambp/(1.d0-d))
                             sigp = sigp-((e*lambp)/(1.d0-d))
                             ecr = k*(p**(1.d0/m))
                             fplas = ((abs(sigp)/(1.d0-d))-ecr-sy)
-                            pconv = (abs(fplas/sy).le.resi)
+                            pconv = (abs(fplas/sy) .le. resi)
                         else
                             goto 141
-                        endif
+                        end if
                     end do
 141                 continue
                     if (j .ge. itemax) then
                         call utmess('I', 'MODELISA5_40')
-                        codret=1
+                        codret = 1
                         goto 999
-                    endif
-                endif
+                    end if
+                end if
 !
-            endif
+            end if
 !
 !    *****ENDOMMAGEMENT*********************
             fd = epsp-epsd
@@ -185,67 +185,67 @@ subroutine nm1dco(fami, kpg, ksp, option, imate,&
                     fd = fplas2
 !  CHANGEMENT DE CRITERE
 !              DCONV = (ABS(FD/FDINI) .LE. RESI)
-                    dconv = (abs(fd/sy).le.resi)
+                    dconv = (abs(fd/sy) .le. resi)
                     if (dconv) goto 142
-                endif
-            endif
+                end if
+            end if
             if (d .gt. 0.99d0) then
                 dconv = .true.
                 sigp = 0.d0
                 goto 142
-            endif
+            end if
         end do
 142     continue
 !
         if (i .ge. itemax) then
             call utmess('I', 'MODELISA5_41')
-            codret=1
+            codret = 1
             goto 999
-        endif
+        end if
         vip(1) = p
         vip(2) = d
-    endif
+    end if
 !
     if (option .eq. 'RIGI_MECA_TANG') then
         p = vim(1)
         d = vim(2)
         indi = vim(3)
-    else if (option.eq.'FULL_MECA') then
+    else if (option .eq. 'FULL_MECA') then
         indi = vip(3)
-    endif
+    end if
 !
     if (indi .lt. 0.5d0) then
         dsde = e
     else
         if (d .gt. 0.d0) then
             if (option .eq. 'RIGI_MECA_TANG') then
-                b = e+k/m*(1.d0-d)*p**((1.d0/m)-1.d0)- sigm/(1.d0-d)*( dc*rv/(epsc-epsd))
-                dsde = e/b*(k/m*(1.d0-d)*p**((1.d0/m)-1.d0)- sigm/( 1.d0-d)*(dc*rv/(epsc-epsd)))
+                b = e+k/m*(1.d0-d)*p**((1.d0/m)-1.d0)-sigm/(1.d0-d)*(dc*rv/(epsc-epsd))
+                dsde = e/b*(k/m*(1.d0-d)*p**((1.d0/m)-1.d0)-sigm/(1.d0-d)*(dc*rv/(epsc-epsd)))
             else
-                b = e+k/m*(1.d0-d)*p**((1.d0/m)-1.d0)- sigp/(1.d0-d)*( dc*rv/(epsc-epsd))
-                dsde = e/b*(k/m*(1.d0-d)*p**((1.d0/m)-1.d0)- sigp/( 1.d0-d)*(dc*rv/(epsc-epsd)))
-            endif
+                b = e+k/m*(1.d0-d)*p**((1.d0/m)-1.d0)-sigp/(1.d0-d)*(dc*rv/(epsc-epsd))
+                dsde = e/b*(k/m*(1.d0-d)*p**((1.d0/m)-1.d0)-sigp/(1.d0-d)*(dc*rv/(epsc-epsd)))
+            end if
         else
             if (option .eq. 'RIGI_MECA_TANG') then
-                dsde = (&
-                       (&
-                       k*(1.d0/m)*(p**((1.d0/m)-1.d0)))/ (1.d0+(((k* (1.d0/m))/e)*(p**((1.d0/m)-1&
-                       &.d0)))&
-                       )&
+                dsde = ( &
+                       ( &
+                       k*(1.d0/m)*(p**((1.d0/m)-1.d0)))/(1.d0+(((k*(1.d0/m))/e)*(p**((1.d0/m)-1&
+                       &.d0))) &
+                       ) &
                        )
             else
-                dsde = (&
-                       (&
-                       k*(1.d0/m)*(p**((1.d0/m)-1.d0)))/ (1.d0+(((k* (1.d0/m))/e)*(p**((1.d0/m)-1&
-                       &.d0)))&
-                       )&
+                dsde = ( &
+                       ( &
+                       k*(1.d0/m)*(p**((1.d0/m)-1.d0)))/(1.d0+(((k*(1.d0/m))/e)*(p**((1.d0/m)-1&
+                       &.d0))) &
+                       ) &
                        )
-            endif
-        endif
+            end if
+        end if
 !
 !     CAS RIGI_MECA_ELAS ET FULL_MECA_ELAS AVEC ENDOMMAGEMENT
-    endif
-    if (melas) dsde=(1.d0-d)*dsde
+    end if
+    if (melas) dsde = (1.d0-d)*dsde
 !
 999 continue
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,8 +21,8 @@ subroutine elg_allocvr(vect1, n1)
 #include "asterf_types.h"
 #include "asterf_petsc.h"
 !
-use aster_petsc_module
-implicit none
+    use aster_petsc_module
+    implicit none
 ! person_in_charge: natacha.bereux@edf.fr
 !
 ! BUT : allouer un vecteur PETSc réel de longueur n1
@@ -39,9 +39,9 @@ implicit none
     PetscInt :: bs
     mpi_int :: mpicomm
 !----------------------------------------------------------------
-    bs=1
+    bs = 1
 !    call asmpi_comm('GET_WORLD', mpicomm)
-    mpicomm=PETSC_COMM_SELF
+    mpicomm = PETSC_COMM_SELF
     call VecCreate(mpicomm, vect1, ierr)
     call VecSetBlockSize(vect1, bs, ierr)
     call VecSetType(vect1, VECSEQ, ierr)
@@ -50,6 +50,6 @@ implicit none
     integer :: vect1, n1
     integer :: idummy
     call utmess('F', 'ELIMLAGR_1')
-    idummy = vect1 + n1
+    idummy = vect1+n1
 #endif
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,13 +17,13 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine nmible(loop_exte     , model     , mesh      , ds_contact,&
-                  list_func_acti, ds_measure, ds_print  , ds_algorom)
+subroutine nmible(loop_exte, model, mesh, ds_contact, &
+                  list_func_acti, ds_measure, ds_print, ds_algorom)
 !
-use NonLin_Datastructure_type
-use Rom_Datastructure_type
+    use NonLin_Datastructure_type
+    use Rom_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/cfdisl.h"
@@ -33,14 +33,14 @@ implicit none
 #include "asterfort/nmimci.h"
 #include "asterfort/nmimck.h"
 !
-integer, intent(inout) :: loop_exte
-character(len=24), intent(in) :: model
-character(len=8), intent(in) :: mesh
-type(NL_DS_Contact), intent(inout) :: ds_contact
-integer, intent(in):: list_func_acti(*)
-type(NL_DS_Measure), intent(inout) :: ds_measure
-type(NL_DS_Print), intent(inout) :: ds_print
-type(ROM_DS_AlgoPara), intent(in) :: ds_algorom
+    integer, intent(inout) :: loop_exte
+    character(len=24), intent(in) :: model
+    character(len=8), intent(in) :: mesh
+    type(NL_DS_Contact), intent(inout) :: ds_contact
+    integer, intent(in):: list_func_acti(*)
+    type(NL_DS_Measure), intent(inout) :: ds_measure
+    type(NL_DS_Print), intent(inout) :: ds_print
+    type(ROM_DS_AlgoPara), intent(in) :: ds_algorom
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -77,12 +77,12 @@ type(ROM_DS_AlgoPara), intent(in) :: ds_algorom
 ! ----- Print geometric loop iteration
 !
         call mmbouc(ds_contact, 'Geom', 'Read_Counter', loop_geom_count)
-        call nmimci(ds_print  , 'BOUC_GEOM', loop_geom_count, .true._1)
+        call nmimci(ds_print, 'BOUC_GEOM', loop_geom_count, .true._1)
 !
 ! ----- Update pairing ?
 !
         l_geom_sans = cfdisl(ds_contact%sdcont_defi, 'REAC_GEOM_SANS')
-        l_pair      = (loop_geom_count .gt. 1) .and. (.not.l_geom_sans)
+        l_pair = (loop_geom_count .gt. 1) .and. (.not. l_geom_sans)
 !
 ! ----- Contact loops
 !
@@ -97,40 +97,40 @@ type(ROM_DS_AlgoPara), intent(in) :: ds_algorom
                 loop_exte = 3
                 if (l_pair) then
                     call nmctcg(model, mesh, ds_contact, ds_measure)
-                endif
-            endif
+                end if
+            end if
             call mmbouc(ds_contact, 'Fric', 'Init_Counter')
             call mmbouc(ds_contact, 'Fric', 'Incr_Counter')
             call mmbouc(ds_contact, 'Fric', 'Read_Counter', loop_fric_count)
-            call nmimci(ds_print  , 'BOUC_FROT', loop_fric_count, .true._1)
-        endif
+            call nmimci(ds_print, 'BOUC_FROT', loop_fric_count, .true._1)
+        end if
 !
 ! ----- <2> - Friction loop
 !
         if (loop_exte .ge. 2) then
             if (l_loop_frot) then
                 loop_exte = 2
-            endif
+            end if
             call mmbouc(ds_contact, 'Cont', 'Init_Counter')
             call mmbouc(ds_contact, 'Cont', 'Incr_Counter')
             call mmbouc(ds_contact, 'Cont', 'Read_Counter', loop_cont_count)
-            call nmimci(ds_print  , 'BOUC_CONT', loop_cont_count, .true._1)
-        endif
+            call nmimci(ds_print, 'BOUC_CONT', loop_cont_count, .true._1)
+        end if
 !
 ! ----- <1> - Contact loop
 !
         if (loop_exte .ge. 1) then
             if (l_loop_cont) then
                 loop_exte = 1
-            endif
-        endif
+            end if
+        end if
 
     elseif (loop_exte .eq. 10) then
         if (ds_algorom%phase .eq. 'HROM') then
             call nmimck(ds_print, 'BOUC_HROM', '  HROM', .true._1)
         else if (ds_algorom%phase .eq. 'CORR_EF') then
             call nmimck(ds_print, 'BOUC_HROM', '  CORRECTION EF', .true._1)
-        endif
-    endif
+        end if
+    end if
 !
 end subroutine

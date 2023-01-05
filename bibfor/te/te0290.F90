@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -40,7 +40,7 @@ subroutine te0290(option, nomte)
     integer :: ndim, nno, npg, nsom
 !-----------------------------------------------------------------------
 !
-    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nsom, npg=npg,&
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nsom, npg=npg, &
                      jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
     call jevech('PGEOMER', 'L', igeom)
@@ -75,19 +75,19 @@ subroutine te0290(option, nomte)
             nx(i) = dy(i-nsom)
             ny(i) = -dx(i-nsom)
         end do
-    endif
+    end if
 !
 !   VERIFICATION DU SENS DE L'ELEMENT
 !
     sens = dy(1)*dx(nsom)-dx(1)*dy(nsom)
     if (sens .eq. 0.d0) then
         call utmess('F', 'ELEMENTS3_67')
-    else if (sens.lt.0.d0) then
+    else if (sens .lt. 0.d0) then
         do i = 1, nno
             nx(i) = -nx(i)
             ny(i) = -ny(i)
         end do
-    endif
+    end if
 !
     do i = 1, nno
         zr(ivectu+2*i-2) = nx(i)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine xmmsa3(ndim, nno, nnos, ffp, nddl,&
-                  nvec, v1, v2, v3, nfh,&
-                  singu, fk, ddls, ddlm, jheavn,&
-                  ncompn, nfiss, ifiss, jheafa, ncomph,&
+subroutine xmmsa3(ndim, nno, nnos, ffp, nddl, &
+                  nvec, v1, v2, v3, nfh, &
+                  singu, fk, ddls, ddlm, jheavn, &
+                  ncompn, nfiss, ifiss, jheafa, ncomph, &
                   ifa, saut)
 !
 ! aslint: disable=W1504
@@ -70,40 +70,40 @@ subroutine xmmsa3(ndim, nno, nnos, ffp, nddl,&
 !
 ! ----------------------------------------------------------------------
 !
-    ASSERT(nvec.gt.0.and.nvec.le.3)
-    lmultc = nfiss.gt.1
+    ASSERT(nvec .gt. 0 .and. nvec .le. 3)
+    lmultc = nfiss .gt. 1
     saut(:) = 0.d0
-    coefi = xcalc_saut(1,0,1)
-    if (.not.lmultc) then
-        hea_fa(1)=xcalc_code(1,he_inte=[-1])
-        hea_fa(2)=xcalc_code(1,he_inte=[+1])
-    endif
+    coefi = xcalc_saut(1, 0, 1)
+    if (.not. lmultc) then
+        hea_fa(1) = xcalc_code(1, he_inte=[-1])
+        hea_fa(2) = xcalc_code(1, he_inte=[+1])
+    end if
     do i = 1, nno
         call indent(i, ddls, ddlm, nnos, in)
         do ifh = 1, nfh
             if (lmultc) then
-                coefi = xcalc_saut(&
-                        zi(jheavn-1+ncompn*(i-1)+ifh), zi(jheafa-1+ncomph*(ifiss-1)+2*ifa-1),&
-                        zi(jheafa-1+ncomph*(ifiss-1)+2*ifa), zi(jheavn-1+ncompn*(i-1)+ncompn)&
+                coefi = xcalc_saut( &
+                        zi(jheavn-1+ncompn*(i-1)+ifh), zi(jheafa-1+ncomph*(ifiss-1)+2*ifa-1), &
+                        zi(jheafa-1+ncomph*(ifiss-1)+2*ifa), zi(jheavn-1+ncompn*(i-1)+ncompn) &
                         )
             else
-                coefi = xcalc_saut(&
-                        zi(jheavn-1+ncompn*(i-1)+ifh), hea_fa(1), hea_fa(2),&
-                        zi(jheavn-1+ncompn*(i-1)+ncompn)&
+                coefi = xcalc_saut( &
+                        zi(jheavn-1+ncompn*(i-1)+ifh), hea_fa(1), hea_fa(2), &
+                        zi(jheavn-1+ncompn*(i-1)+ncompn) &
                         )
-            endif
+            end if
             do j = 1, ndim
-                saut(j) = saut(j) - coefi*ffp(i)*v1(in+ndim*ifh+j)
-                if (nvec .ge. 2) saut(j) = saut(j) - coefi*ffp(i)*v2(in+ ndim*ifh+j)
-                if (nvec .eq. 3) saut(j) = saut(j) - coefi*ffp(i)*v3(in+ ndim*ifh+j)
+                saut(j) = saut(j)-coefi*ffp(i)*v1(in+ndim*ifh+j)
+                if (nvec .ge. 2) saut(j) = saut(j)-coefi*ffp(i)*v2(in+ndim*ifh+j)
+                if (nvec .eq. 3) saut(j) = saut(j)-coefi*ffp(i)*v3(in+ndim*ifh+j)
             end do
         end do
         do j = 1, singu*ndim
             do alpi = 1, ndim
-                saut(j) = saut(j)-2.d0*fk(i,alpi,j)*v1(in+ndim*(1+nfh)+alpi)
-                if (nvec .ge. 2) saut(j) = saut(j)-2.d0*fk(i,alpi,j)*v2(in+ ndim*(1+nfh)+alpi)
-                if (nvec .eq. 3) saut(j) = saut(j)-2.d0*fk(i,alpi,j)*v3(in+ ndim*(1+nfh)+alpi)
-            enddo
+                saut(j) = saut(j)-2.d0*fk(i, alpi, j)*v1(in+ndim*(1+nfh)+alpi)
+                if (nvec .ge. 2) saut(j) = saut(j)-2.d0*fk(i, alpi, j)*v2(in+ndim*(1+nfh)+alpi)
+                if (nvec .eq. 3) saut(j) = saut(j)-2.d0*fk(i, alpi, j)*v3(in+ndim*(1+nfh)+alpi)
+            end do
         end do
     end do
 !

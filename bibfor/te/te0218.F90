@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -56,7 +56,7 @@ subroutine te0218(option, nomte)
 !
     real(kind=8) :: enthth, epot, undemi, zero
 !-----------------------------------------------------------------------
-    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg1,&
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg1, &
                      jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
 ! --- INITIALISATIONS :
@@ -107,20 +107,20 @@ subroutine te0218(option, nomte)
 ! ---- CALCUL DES CONTRAINTES 'VRAIES' SUR L'ELEMENT
 ! ---- (I.E.  1/2*SIGMA_MECA - SIGMA_THERMIQUES)
 !      ------------------------------------
-    call simtep('RIGI', nno, ndim, nbsig, npg1,&
-                ipoids, ivf, idfde, zr(igeom), zr(idepl),&
+    call simtep('RIGI', nno, ndim, nbsig, npg1, &
+                ipoids, ivf, idfde, zr(igeom), zr(idepl), &
                 instan, repere, zi(imate), nharm, sigma)
 !
 ! ---- CALCUL DU VECTEUR DES FORCES INTERNES (BT*SIGMA)
 !      ------------------------------------------------
-    call bsigmc(nno, ndim, nbsig, npg1, ipoids,&
-                ivf, idfde, zr(igeom), nharm, sigma,&
+    call bsigmc(nno, ndim, nbsig, npg1, ipoids, &
+                ivf, idfde, zr(igeom), nharm, sigma, &
                 bsigma)
 !
 ! ---- CALCUL DU TERME EPSTH_T*D*EPSTH
 !      -------------------------------
-    call ethdst('RIGI', nno, ndim, nbsig, npg1,&
-                ipoids, ivf, idfde, zr(igeom), zr(idepl),&
+    call ethdst('RIGI', nno, ndim, nbsig, npg1, &
+                ipoids, ivf, idfde, zr(igeom), zr(idepl), &
                 instan, repere, zi(imate), option, enthth)
 !
 ! ---- CALCUL DE L'ENERGIE POTENTIELLE :
@@ -129,10 +129,10 @@ subroutine te0218(option, nomte)
     epot = zero
 !
     do i = 1, ndim*nno
-        epot = epot + bsigma(i)*zr(idepl+i-1)
+        epot = epot+bsigma(i)*zr(idepl+i-1)
     end do
 !
-    epot = epot + undemi*enthth
+    epot = epot+undemi*enthth
 !
 ! ---- RECUPERATION ET AFFECTATION DU REEL EN SORTIE
 ! ---- AVEC L'ENERGIE DE DEFORMATION

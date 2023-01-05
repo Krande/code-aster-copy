@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine cal152(option, max, may, maz, model,&
-                  phib24, iphi1, iphi2, imade, modmec,&
-                  chamno, num, vrai, i, j,&
+subroutine cal152(option, max, may, maz, model, &
+                  phib24, iphi1, iphi2, imade, modmec, &
+                  chamno, num, vrai, i, j, &
                   mij, cij, kij)
     implicit none
 ! AUTEUR : G.ROUSSEAU
@@ -45,26 +45,26 @@ subroutine cal152(option, max, may, maz, model,&
     character(len=24) :: phib24
 ! -----------------------------------------------------------------
     if (option .eq. 'MASS_AJOU') then
-        call calmaj(option, max, may, maz, model,&
-                    zk24(iphi1+j-1)(1:19), modmec, chamno, num, vrai,&
+        call calmaj(option, max, may, maz, model, &
+                    zk24(iphi1+j-1) (1:19), modmec, chamno, num, vrai, &
                     i, j, mij)
-    endif
+    end if
 !
     if (option .eq. 'AMOR_AJOU') then
-        call calmaj(option, max, may, maz, model,&
-                    zk24(iphi2+j-1)(1:19), modmec, chamno, num, vrai,&
+        call calmaj(option, max, may, maz, model, &
+                    zk24(iphi2+j-1) (1:19), modmec, chamno, num, vrai, &
                     i, j, cij1)
-        call calamr(phib24, zk24(iphi1+j-1)(1:19), zk24(imade+i-1), num, j,&
+        call calamr(phib24, zk24(iphi1+j-1) (1:19), zk24(imade+i-1), num, j, &
                     cij2)
-        cij=cij1+cij2
-        valr (1) = cij1
-        valr (2) = cij2
+        cij = cij1+cij2
+        valr(1) = cij1
+        valr(2) = cij2
         call utmess('I', 'ALGORITH14_80', nr=2, valr=valr)
-    endif
+    end if
 !
     if (option .eq. 'RIGI_AJOU') then
-        call calamr(phib24, zk24(iphi2+j-1)(1:19), zk24(imade+i-1), num, j,&
+        call calamr(phib24, zk24(iphi2+j-1) (1:19), zk24(imade+i-1), num, j, &
                     kij1)
-        kij=kij1
-    endif
+        kij = kij1
+    end if
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -64,7 +64,7 @@ subroutine xgecfi(modele, depgeo)
 !
 !
     integer :: nbout, nbin
-    parameter    (nbout=2, nbin=13)
+    parameter(nbout=2, nbin=13)
     character(len=8) :: lpaout(nbout), lpain(nbin), licmp(2), noma, materi
     character(len=19) :: lchout(nbout), lchin(nbin)
 !
@@ -91,13 +91,13 @@ subroutine xgecfi(modele, depgeo)
         debug = .true.
     else
         debug = .false.
-    endif
+    end if
     base = 'V'
     option = 'GEOM_FAC'
 !
 ! --- INITIALISATION DES CHAMPS POUR CALCUL
 !
-    call inical(nbin, lpain, lchin, nbout, lpaout,&
+    call inical(nbin, lpain, lchin, nbout, lpaout, &
                 lchout)
     ligrel = modele//'.MODELE'
     pinter = modele//'.TOPOFAC.PI'
@@ -118,10 +118,10 @@ subroutine xgecfi(modele, depgeo)
     materi = ' '
     call getvid(' ', 'CHAM_MATER', scal=materi, nbret=n1)
     if (n1 .ne. 0) then
-       call rcmfmc(materi, mate, l_ther_ = ASTER_FALSE)
+        call rcmfmc(materi, mate, l_ther_=ASTER_FALSE)
     else
-       mate = ' '
-    endif
+        mate = ' '
+    end if
 
 !
     call jeexin(newges//'.CESD', iret)
@@ -136,20 +136,20 @@ subroutine xgecfi(modele, depgeo)
         call jeveuo('&&XGECFI.GESCLO    .CESD', 'L', vi=cesd2)
         licmp(1) = 'NPG_DYN'
         licmp(2) = 'NCMP_DYN'
-        call cescre('V', newges, 'ELEM', noma, 'DCEL_I',&
+        call cescre('V', newges, 'ELEM', noma, 'DCEL_I', &
                     2, licmp, [0], [-1], [-2])
         call jeveuo(newges//'.CESD', 'L', jcesd)
         call jeveuo(newges//'.CESV', 'E', vi=cesv)
         call jeveuo(newges//'.CESL', 'E', jcesl)
         do ima = 1, nbma
-            call cesexi('S', jcesd, jcesl, ima, 1,&
+            call cesexi('S', jcesd, jcesl, ima, 1, &
                         1, 1, iad)
             zl(jcesl-1-iad) = .true.
             cesv(1-1-iad) = cesd2(5+4*(ima-1)+2)
         end do
         call copisd('CHAM_ELEM_S', 'V', newges, newgem)
         call detrsd('CHAM_ELEM_S', '&&XGECFI.GESCLO')
-    endif
+    end if
 !
 ! --- CREATION DES LISTES DES CHAMPS IN ET OUT
 !
@@ -187,13 +187,13 @@ subroutine xgecfi(modele, depgeo)
 !
 ! --- APPEL A CALCUL
 !
-    call calcul('C', option, ligrel, nbin, lchin,&
-                lpain, nbout, lchout, lpaout, base,&
+    call calcul('C', option, ligrel, nbin, lchin, &
+                lpain, nbout, lchout, lpaout, base, &
                 'OUI')
     if (debug) then
-        call dbgcal(option, ifmdbg, nbin, lpain, lchin,&
+        call dbgcal(option, ifmdbg, nbin, lpain, lchin, &
                     nbout, lpaout, lchout)
-    endif
+    end if
 !
     call jedema()
 end subroutine

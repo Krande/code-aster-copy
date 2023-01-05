@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -47,7 +47,7 @@ subroutine mmmtdb(valr, typmat, ii, jj)
 ! ----------------------------------------------------------------------
 !
     if (valr .ne. 0.d0) then
-        write(6,*) 'MATR-ELEM-'//typmat,'(',ii,',',jj,'): ',valr
-    endif
+        write (6, *) 'MATR-ELEM-'//typmat, '(', ii, ',', jj, '): ', valr
+    end if
 !
 end subroutine

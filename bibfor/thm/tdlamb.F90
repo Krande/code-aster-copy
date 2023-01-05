@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,19 +18,19 @@
 !
 subroutine tdlamb(ds_thm, angl_naut, ndim, tdlamt)
 !
-use THM_type
+    use THM_type
 !
-implicit none
+    implicit none
 !
 #include "asterfort/assert.h"
 #include "asterfort/matrot.h"
 #include "asterfort/utbtab.h"
 #include "asterfort/THM_type.h"
 !
-type(THM_DS), intent(in) :: ds_thm
-real(kind=8), intent(in) :: angl_naut(3)
-integer, intent(in) :: ndim
-real(kind=8), intent(out) :: tdlamt(ndim, ndim)
+    type(THM_DS), intent(in) :: ds_thm
+    real(kind=8), intent(in) :: angl_naut(3)
+    integer, intent(in) :: ndim
+    real(kind=8), intent(out) :: tdlamt(ndim, ndim)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -54,38 +54,38 @@ real(kind=8), intent(out) :: tdlamt(ndim, ndim)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    work(:,:)    = 0.d0
-    passag(:,:)  = 0.d0
-    tdlamti(:,:) = 0.d0
-    tk2(:,:)     = 0.d0
-    tdlamt(:,:)  = 0.d0
+    work(:, :) = 0.d0
+    passag(:, :) = 0.d0
+    tdlamti(:, :) = 0.d0
+    tk2(:, :) = 0.d0
+    tdlamt(:, :) = 0.d0
 !
     if (ds_thm%ds_material%ther%cond_type .eq. THER_COND_ISOT) then
-        tdlamt(1,1) = ds_thm%ds_material%ther%dlambda
-        tdlamt(2,2) = ds_thm%ds_material%ther%dlambda
+        tdlamt(1, 1) = ds_thm%ds_material%ther%dlambda
+        tdlamt(2, 2) = ds_thm%ds_material%ther%dlambda
         if (ndim .eq. 3) then
-            tdlamt(3,3) = ds_thm%ds_material%ther%dlambda
-        endif
+            tdlamt(3, 3) = ds_thm%ds_material%ther%dlambda
+        end if
     else if (ds_thm%ds_material%ther%cond_type .eq. THER_COND_ISTR) then
         if (ndim .eq. 3) then
-            tdlamti(1,1) = ds_thm%ds_material%ther%dlambda_tl
-            tdlamti(2,2) = ds_thm%ds_material%ther%dlambda_tl
-            tdlamti(3,3) = ds_thm%ds_material%ther%dlambda_tn
+            tdlamti(1, 1) = ds_thm%ds_material%ther%dlambda_tl
+            tdlamti(2, 2) = ds_thm%ds_material%ther%dlambda_tl
+            tdlamti(3, 3) = ds_thm%ds_material%ther%dlambda_tn
             call matrot(angl_naut, passag)
             call utbtab('ZERO', 3, 3, tdlamti, passag, work, tk2)
             tdlamt = tk2
-        endif
+        end if
     else if (ds_thm%ds_material%ther%cond_type .eq. THER_COND_ORTH) then
-        tdlamti(1,1) = ds_thm%ds_material%ther%dlambda_tl
-        tdlamti(2,2) = ds_thm%ds_material%ther%dlambda_tt
+        tdlamti(1, 1) = ds_thm%ds_material%ther%dlambda_tl
+        tdlamti(2, 2) = ds_thm%ds_material%ther%dlambda_tt
         call matrot(angl_naut, passag)
         call utbtab('ZERO', 3, 3, tdlamti, passag, work, tk2)
-        tdlamt(1,1) = tk2(1,1)
-        tdlamt(2,2) = tk2(2,2)
-        tdlamt(1,2) = tk2(1,2)
-        tdlamt(2,1) = tk2(2,1)
+        tdlamt(1, 1) = tk2(1, 1)
+        tdlamt(2, 2) = tk2(2, 2)
+        tdlamt(1, 2) = tk2(1, 2)
+        tdlamt(2, 1) = tk2(2, 1)
     else
 ! ----- No thermic
-    endif
+    end if
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine exchem(modloc, tcmp, nbc, nbsp, tvale,&
+subroutine exchem(modloc, tcmp, nbc, nbsp, tvale, &
                   valcmp, taberr)
     implicit none
 !
@@ -93,7 +93,7 @@ subroutine exchem(modloc, tcmp, nbc, nbsp, tvale,&
 !
     call jeveuo(jexnum('&CATA.GD.DESCRIGD', gd), 'L', adesgd)
 !
-    nbec = zi(adesgd + 3-1)
+    nbec = zi(adesgd+3-1)
     nbpt = modloc(4)
 !
 !     /* PAR HYP. D' APPEL : LE CHAMP EST REPRESENTE AUX NOEUDS */
@@ -105,34 +105,34 @@ subroutine exchem(modloc, tcmp, nbc, nbsp, tvale,&
 !
 !        /* CAS D' UNE REPRESENTATION VARIANT AVEC  LES NOEUDS */
 !
-        nbnmai = nbpt - 10000
+        nbnmai = nbpt-10000
 !
         call wkvect('&&EXCHEM.NBRCMPACTIVE', 'V V I', nbnmai, acpact)
         call wkvect('&&EXCHEM.ADRSGTNOEUD', 'V V I', nbnmai, asgtnd)
         call wkvect('&&EXCHEM.POSCMP', 'V V I', nbc*nbnmai, aposcp)
 !
-        zi(asgtnd + 1-1) = 1
-        zi(acpact + 1-1) = nbrcpa
+        zi(asgtnd+1-1) = 1
+        zi(acpact+1-1) = nbrcpa
 !
         do k = 1, nbc, 1
-            i=1
-            zi(aposcp+k-1) = iposdg(modloc(5+(i-1)*nbec),tcmp(k))
+            i = 1
+            zi(aposcp+k-1) = iposdg(modloc(5+(i-1)*nbec), tcmp(k))
 !
         end do
 !
         do i = 2, nbnmai, 1
 !
-            call ncpact(modloc(5 + nbec*(i-1)), nbec, nbrcpa)
+            call ncpact(modloc(5+nbec*(i-1)), nbec, nbrcpa)
 !
-            zi(asgtnd + i-1) = zi(asgtnd + i-1-1) + nbrcpa*nbsp
-            zi(acpact + i-1) = nbrcpa
+            zi(asgtnd+i-1) = zi(asgtnd+i-1-1)+nbrcpa*nbsp
+            zi(acpact+i-1) = nbrcpa
 !
             adrnd = (i-1)*nbc
 !
             do k = 1, nbc, 1
 !
-                zi(aposcp+adrnd+k-1)=iposdg(modloc(5+(i-1)*nbec),tcmp(&
-                k))
+                zi(aposcp+adrnd+k-1) = iposdg(modloc(5+(i-1)*nbec), tcmp( &
+                                              k))
 !
             end do
 !
@@ -150,45 +150,45 @@ subroutine exchem(modloc, tcmp, nbc, nbsp, tvale,&
 !
         do i = 1, nbnmai, 1
 !
-            zi(asgtnd + i-1) = (i-1)*nbrcpa*nbsp + 1
-            zi(acpact + i-1) = nbrcpa
+            zi(asgtnd+i-1) = (i-1)*nbrcpa*nbsp+1
+            zi(acpact+i-1) = nbrcpa
 !
             adrnd = (i-1)*nbc
 !
             do k = 1, nbc, 1
 !
-                zi(aposcp + adrnd + k-1) = iposdg(modloc(5),tcmp(k))
+                zi(aposcp+adrnd+k-1) = iposdg(modloc(5), tcmp(k))
 !
             end do
 !
         end do
 !
-    endif
+    end if
 !
     do i = 1, nbnmai, 1
 !
-        adrnd = zi(asgtnd + i-1)
-        nbrcpa = zi(acpact + i-1)
+        adrnd = zi(asgtnd+i-1)
+        nbrcpa = zi(acpact+i-1)
 !
         do j = 1, nbsp, 1
 !
             do k = 1, nbc, 1
 !
-                poscmp = zi(aposcp + (i-1)*nbc + k-1)
+                poscmp = zi(aposcp+(i-1)*nbc+k-1)
 !
                 if (poscmp .gt. 0) then
 !
-                    valcmp(((i-1)*nbsp + j-1)*nbc+k) = tvale( adrnd + ( j-1)*nbrcpa + poscmp-1)
+                    valcmp(((i-1)*nbsp+j-1)*nbc+k) = tvale(adrnd+(j-1)*nbrcpa+poscmp-1)
 !
                     taberr(k) = 1
 !
                 else
 !
-                    valcmp(((i-1)*nbsp + j-1)*nbc+k) = r8vide()
+                    valcmp(((i-1)*nbsp+j-1)*nbc+k) = r8vide()
 !
                     taberr(k) = 0
 !
-                endif
+                end if
 !
             end do
 !

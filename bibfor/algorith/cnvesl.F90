@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine cnvesl(lischa, typres, neq, nompar, valpar,&
+subroutine cnvesl(lischa, typres, neq, nompar, valpar, &
                   cnvass)
 !
 !
@@ -83,11 +83,11 @@ subroutine cnvesl(lischa, typres, neq, nompar, valpar,&
 !
 ! --- INITIALISATIONS
 !
-    ASSERT(typres.eq.'C')
+    ASSERT(typres .eq. 'C')
     omega = r8depi()*valpar
     call jeveuo(cnvass(1:19)//'.VALE', 'E', vc=resu)
     do ieq = 1, neq
-        resu(ieq) = dcmplx(0.d0,0.d0)
+        resu(ieq) = dcmplx(0.d0, 0.d0)
     end do
 !
 ! --- NOMBRE DE CHARGEMENTS
@@ -96,8 +96,8 @@ subroutine cnvesl(lischa, typres, neq, nompar, valpar,&
 !
 ! --- NOMBRE DE CHARGES DE TYPE VECT_ASSE
 !
-    nbveas = lisnbg(lischa,'VECT_ASSE' )
-    nbveag = lisnbg(lischa,'VECT_ASSE_GENE')
+    nbveas = lisnbg(lischa, 'VECT_ASSE')
+    nbveag = lisnbg(lischa, 'VECT_ASSE_GENE')
     nbtot = nbveas+nbveag
     if (nbtot .eq. 0) goto 999
 !
@@ -118,8 +118,8 @@ subroutine cnvesl(lischa, typres, neq, nompar, valpar,&
 !
         call liscpp(lischa, ichar, phase, npuis)
 !
-        lveas = lisico('VECT_ASSE' ,genrec)
-        lveag = lisico('VECT_ASSE_GENE',genrec)
+        lveas = lisico('VECT_ASSE', genrec)
+        lveag = lisico('VECT_ASSE_GENE', genrec)
         if (lveas .or. lveag) then
             call lislch(lischa, ichar, charge)
             call lisltc(lischa, ichar, typech)
@@ -128,34 +128,34 @@ subroutine cnvesl(lischa, typres, neq, nompar, valpar,&
             valre = 1.d0
             valim = 0.d0
             if (nomfct .ne. ' ') then
-                tval(1)=valpar
+                tval(1) = valpar
                 if (typfct(7:10) .eq. 'REEL') then
-                    call fointe('F', nomfct, 1, nompar, tval,&
+                    call fointe('F', nomfct, 1, nompar, tval, &
                                 valre, iret)
                     valim = 0.d0
-                else if (typfct(7:10).eq.'COMP') then
-                    call fointc('F', nomfct, 1, nompar, tval,&
+                else if (typfct(7:10) .eq. 'COMP') then
+                    call fointc('F', nomfct, 1, nompar, tval, &
                                 valre, valim, iret)
                 else
                     ASSERT(.false.)
-                endif
-            endif
-            calp = dcmplx(valre,valim)
-            calpha = calp*exp(dcmplx(0.d0,phase*r8dgrd()))
+                end if
+            end if
+            calp = dcmplx(valre, valim)
+            calpha = calp*exp(dcmplx(0.d0, phase*r8dgrd()))
             if (npuis .ne. 0) then
-                calpha = calpha * omega**npuis
-            endif
+                calpha = calpha*omega**npuis
+            end if
             call jeveuo(chamno(1:19)//'.VALE', 'L', jvale)
             if (typech .eq. 'COMP') then
                 do ieq = 1, neq
-                    resu(ieq) = resu(ieq) + calpha*zc( jvale-1+ieq)
+                    resu(ieq) = resu(ieq)+calpha*zc(jvale-1+ieq)
                 end do
             else
                 do ieq = 1, neq
-                    resu(ieq) = resu(ieq) + calpha*zr( jvale-1+ieq)
+                    resu(ieq) = resu(ieq)+calpha*zr(jvale-1+ieq)
                 end do
-            endif
-        endif
+            end if
+        end if
     end do
 !
 999 continue

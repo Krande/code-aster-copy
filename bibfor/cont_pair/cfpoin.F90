@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,9 +19,9 @@
 !
 subroutine cfpoin(mesh, ds_contact)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterfort/mminfi.h"
 #include "asterfort/assert.h"
@@ -37,8 +37,8 @@ implicit none
 #include "asterfort/jerazo.h"
 #include "asterfort/jelira.h"
 !
-character(len=8), intent(in) :: mesh
-type(NL_DS_Contact), intent(in) :: ds_contact
+    character(len=8), intent(in) :: mesh
+    type(NL_DS_Contact), intent(in) :: ds_contact
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -90,13 +90,13 @@ type(NL_DS_Contact), intent(in) :: ds_contact
     sdappa_poin = sdappa(1:19)//'.POIN'
     sdappa_infp = sdappa(1:19)//'.INFP'
     sdappa_noms = sdappa(1:19)//'.NOMS'
-    call jeveuo(sdappa_poin, 'E', vr   = v_sdappa_poin)
-    call jeveuo(sdappa_infp, 'E', vi   = v_sdappa_infp)
-    call jeveuo(sdappa_noms, 'E', vk16 = v_sdappa_noms)
+    call jeveuo(sdappa_poin, 'E', vr=v_sdappa_poin)
+    call jeveuo(sdappa_infp, 'E', vi=v_sdappa_infp)
+    call jeveuo(sdappa_noms, 'E', vk16=v_sdappa_noms)
 !
 ! - Get parameters
 !
-    nb_cont_zone = cfdisi(ds_contact%sdcont_defi,'NZOCO')
+    nb_cont_zone = cfdisi(ds_contact%sdcont_defi, 'NZOCO')
 !
 ! - Loop on contact zones
 !
@@ -105,9 +105,9 @@ type(NL_DS_Contact), intent(in) :: ds_contact
 !
 ! ----- Get parameters on current zone
 !
-        nb_poin      = mminfi(ds_contact%sdcont_defi, 'NBPT'  , i_zone)
-        nb_node_slav = mminfi(ds_contact%sdcont_defi, 'NBNOE' , i_zone)
-        jdecne       = mminfi(ds_contact%sdcont_defi, 'JDECNE', i_zone)
+        nb_poin = mminfi(ds_contact%sdcont_defi, 'NBPT', i_zone)
+        nb_node_slav = mminfi(ds_contact%sdcont_defi, 'NBNOE', i_zone)
+        jdecne = mminfi(ds_contact%sdcont_defi, 'JDECNE', i_zone)
         ASSERT(nb_poin .eq. nb_node_slav)
 !
 ! ----- Loop on contact nodes
@@ -116,7 +116,7 @@ type(NL_DS_Contact), intent(in) :: ds_contact
 !
 ! --------- Current contact point
 !
-            node_slav_indx(1) = jdecne + i_node_slav
+            node_slav_indx(1) = jdecne+i_node_slav
             call cfnumn(ds_contact%sdcont_defi, 1, node_slav_indx(1), node_slav_nume(1))
 !
 ! --------- Coordinates of contact point
@@ -139,7 +139,7 @@ type(NL_DS_Contact), intent(in) :: ds_contact
 !
 ! --------- Next point
 !
-            i_poin = i_poin + 1
+            i_poin = i_poin+1
         end do
     end do
 !
@@ -152,33 +152,33 @@ type(NL_DS_Contact), intent(in) :: ds_contact
     sdappa_proj = sdappa(1:19)//'.PROJ'
     sdappa_tgel = sdappa(1:19)//'.TGEL'
     sdappa_tgno = sdappa(1:19)//'.TGNO'
-    call jerazo(sdappa_appa,4*(i_poin-1),1)
-    call jerazo(sdappa_dist,4*(i_poin-1),1)
-    call jerazo(sdappa_tau1,3*(i_poin-1),1)
-    call jerazo(sdappa_tau2,3*(i_poin-1),1)
-    call jerazo(sdappa_proj,2*(i_poin-1),1)
-    call jerazo(sdappa_tgno,6*(i_poin-1),1)
+    call jerazo(sdappa_appa, 4*(i_poin-1), 1)
+    call jerazo(sdappa_dist, 4*(i_poin-1), 1)
+    call jerazo(sdappa_tau1, 3*(i_poin-1), 1)
+    call jerazo(sdappa_tau2, 3*(i_poin-1), 1)
+    call jerazo(sdappa_proj, 2*(i_poin-1), 1)
+    call jerazo(sdappa_tgno, 6*(i_poin-1), 1)
     call jelira(sdappa_tgel, 'LONT', length)
-    call jerazo(sdappa_tgel, length ,1)
+    call jerazo(sdappa_tgel, length, 1)
 
     sdappa_mpia = sdappa(1:19)//'.MPIA'
     sdappa_mpib = sdappa(1:19)//'.MPIB'
     sdappa_mpic = sdappa(1:19)//'.MPIC'
-    call jeexin(sdappa_mpia,iret)
+    call jeexin(sdappa_mpia, iret)
     if (iret .eq. 0) then
-        call wkvect(sdappa_mpia,'V V K16',1,vk16=valk)
-        valk(1)='MPI_INCOMPLET'
-        call wkvect(sdappa_mpib,'V V K16',1,vk16=valk)
-        valk(1)='MPI_INCOMPLET'
-        call wkvect(sdappa_mpic,'V V K16',1,vk16=valk)
-        valk(1)='MPI_INCOMPLET'
+        call wkvect(sdappa_mpia, 'V V K16', 1, vk16=valk)
+        valk(1) = 'MPI_INCOMPLET'
+        call wkvect(sdappa_mpib, 'V V K16', 1, vk16=valk)
+        valk(1) = 'MPI_INCOMPLET'
+        call wkvect(sdappa_mpic, 'V V K16', 1, vk16=valk)
+        valk(1) = 'MPI_INCOMPLET'
     else
-        call jeveuo(sdappa_mpia, 'E',vk16=valk)
-        valk(1)='MPI_INCOMPLET'
-        call jeveuo(sdappa_mpib, 'E',vk16=valk)
-        valk(1)='MPI_INCOMPLET'
-        call jeveuo(sdappa_mpic, 'E',vk16=valk)
-        valk(1)='MPI_INCOMPLET'
-    endif
+        call jeveuo(sdappa_mpia, 'E', vk16=valk)
+        valk(1) = 'MPI_INCOMPLET'
+        call jeveuo(sdappa_mpib, 'E', vk16=valk)
+        valk(1) = 'MPI_INCOMPLET'
+        call jeveuo(sdappa_mpic, 'E', vk16=valk)
+        valk(1) = 'MPI_INCOMPLET'
+    end if
 !
 end subroutine

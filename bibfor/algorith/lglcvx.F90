@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 subroutine lglcvx(sig, vin, nbmat, mater, seuil)
 !
-    implicit    none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/cos3t.h"
 #include "asterfort/domrev.h"
@@ -52,9 +52,9 @@ subroutine lglcvx(sig, vin, nbmat, mater, seuil)
 ! =================================================================
 ! --- INITIALISATION DE PARAMETRES --------------------------------
 ! =================================================================
-    parameter       ( lgleps  = 1.0d-8 )
+    parameter(lgleps=1.0d-8)
 ! =================================================================
-    common /tdim/   ndt , ndi
+    common/tdim/ndt, ndi
 ! =================================================================
     call jemarq()
 ! =================================================================
@@ -65,21 +65,21 @@ subroutine lglcvx(sig, vin, nbmat, mater, seuil)
 ! =================================================================
 ! --- RECUPERATION DES DONNEES MATERIAU ---------------------------
 ! =================================================================
-    sigc = mater( 9,2)
-    gamcjs = mater(12,2)
-    pref = mater(15,2)
+    sigc = mater(9, 2)
+    gamcjs = mater(12, 2)
+    pref = mater(15, 2)
 ! =================================================================
 ! --- CALCUL DU DEVIATEUR ET DU PREMIER INVARIANT DES CONTRAINTES -
 ! =================================================================
     call lcdevi(sig, dev)
-    invar1 = trace (ndi, sig)
+    invar1 = trace(ndi, sig)
 ! =================================================================
 ! --- CALCUL DE G(S) ----------------------------------------------
 ! =================================================================
     sii = norm2(dev(1:ndt))
-    rcos3t = cos3t (dev, pref, lgleps)
-    rhlode = hlode (gamcjs, rcos3t)
-    rgdev = gdev (sii , rhlode)
+    rcos3t = cos3t(dev, pref, lgleps)
+    rhlode = hlode(gamcjs, rcos3t)
+    rgdev = gdev(sii, rhlode)
 ! =================================================================
 ! --- CALCUL DE U(SIG, GAMP) --------------------------------------
 ! =================================================================

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,8 +24,8 @@ subroutine irgmor(tord, vers)
 #include "asterfort/jexnom.h"
 !
     integer :: ntyele, neletr
-    parameter (ntyele = 28)
-    parameter (neletr =  8)
+    parameter(ntyele=28)
+    parameter(neletr=8)
 !
     integer :: tord(neletr)
     integer :: vers
@@ -58,7 +58,7 @@ subroutine irgmor(tord, vers)
 !     (IDENTIQUE EN VERSION 1.0 ET 1.2 PUISQUE ON AURA ZERO ELEMENT SUR
 !      LES TYPES QUE LA VERSION 1.0 NE CONNAIT PAS)
     character(len=8) :: formgm(neletr)
-    data formgm/'POI1',  'SEG2',   'TRIA3', 'QUAD4', 'TETRA4',&
+    data formgm/'POI1', 'SEG2', 'TRIA3', 'QUAD4', 'TETRA4',&
      &            'HEXA8', 'PENTA6', 'PYRAM5'/
 !     ------------------------------------------------------------------
 ! --- VERIF
@@ -68,7 +68,7 @@ subroutine irgmor(tord, vers)
     do i = 1, neletr
         call jenonu(jexnom('&CATA.TM.NOMTM', formgm(i)), ind)
         if (ind .gt. ntyele) goto 999
-        tord(i)=ind
+        tord(i) = ind
     end do
     goto 9000
 !

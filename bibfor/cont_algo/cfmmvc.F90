@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,12 +16,12 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine cfmmvc(ds_contact   , v_ncomp_jeux, v_ncomp_loca, v_ncomp_enti, v_ncomp_zone,&
+subroutine cfmmvc(ds_contact, v_ncomp_jeux, v_ncomp_loca, v_ncomp_enti, v_ncomp_zone, &
                   nt_ncomp_poin)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterfort/assert.h"
 #include "asterfort/as_allocate.h"
@@ -57,14 +57,14 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    nt_poin      = cfdisi(ds_contact%sdcont_defi,'NTPT' )
-    nt_cont_poin = cfdisi(ds_contact%sdcont_defi,'NTPC' )
+    nt_poin = cfdisi(ds_contact%sdcont_defi, 'NTPT')
+    nt_cont_poin = cfdisi(ds_contact%sdcont_defi, 'NTPC')
     nt_ncomp_poin = nt_poin-nt_cont_poin
-    ASSERT(nt_ncomp_poin.ge.1)
+    ASSERT(nt_ncomp_poin .ge. 1)
 !
-    AS_ALLOCATE(vr   = v_ncomp_jeux, size = nt_ncomp_poin)
-    AS_ALLOCATE(vi   = v_ncomp_loca, size = nt_ncomp_poin)
-    AS_ALLOCATE(vk16 = v_ncomp_enti, size = nt_ncomp_poin*2)
-    AS_ALLOCATE(vi   = v_ncomp_zone, size = nt_ncomp_poin)
+    AS_ALLOCATE(vr=v_ncomp_jeux, size=nt_ncomp_poin)
+    AS_ALLOCATE(vi=v_ncomp_loca, size=nt_ncomp_poin)
+    AS_ALLOCATE(vk16=v_ncomp_enti, size=nt_ncomp_poin*2)
+    AS_ALLOCATE(vi=v_ncomp_zone, size=nt_ncomp_poin)
 !
 end subroutine

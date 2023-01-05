@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine immeno(ncncin, nmabet, mailla, x3dca, noebe,&
-                  numail, nbcnx, cxma, xyzma, itetra,&
+subroutine immeno(ncncin, nmabet, mailla, x3dca, noebe, &
+                  numail, nbcnx, cxma, xyzma, itetra, &
                   xbar, immer)
     implicit none
 !  DESCRIPTION : TENTATIVE D'IMMERSION D'UN NOEUD CABLE DANS LES MAILLES
@@ -130,8 +130,8 @@ subroutine immeno(ncncin, nmabet, mailla, x3dca, noebe,&
 !.... BOUCLE SUR LES MAILLES APPARTENANT A LA STRUCTURE BETON, POUR
 !.... RETROUVER LE NOEUD BETON LE PLUS PROCHE DANS LES CONNECTIVITES
 !
-    nbm = zi(jdrvlc + noebe+1-1) - zi(jdrvlc + noebe-1)
-    iadr = zi(jdrvlc + noebe-1)
+    nbm = zi(jdrvlc+noebe+1-1)-zi(jdrvlc+noebe-1)
+    iadr = zi(jdrvlc+noebe-1)
     do imail = 1, nbm
         numai0 = zi(jcncin+iadr-1+imail-1)
         numail = zi(jlimab+numai0-1)
@@ -144,27 +144,27 @@ subroutine immeno(ncncin, nmabet, mailla, x3dca, noebe,&
         do inoma = 1, nbcnx
             noe = zi(jcxma+inoma-1)
             cxma(inoma) = noe
-            xyzma(1,inoma) = zr(jcoor+3*(noe-1) )
-            xyzma(2,inoma) = zr(jcoor+3*(noe-1)+1)
-            xyzma(3,inoma) = zr(jcoor+3*(noe-1)+2)
+            xyzma(1, inoma) = zr(jcoor+3*(noe-1))
+            xyzma(2, inoma) = zr(jcoor+3*(noe-1)+1)
+            xyzma(3, inoma) = zr(jcoor+3*(noe-1)+2)
         end do
 !
 !........TEST D'APPARTENANCE DU NOEUD CABLE AU DOMAINE GEOMETRIQUE
 !........DEFINI PAR LA MAILLE
 !
-        if ((nbcnx.eq.4) .or. (nbcnx.eq.10)) then
-            call immett(nbcnx, xyzma(1, 1), x3dca(1), itetra, xbar(1),&
+        if ((nbcnx .eq. 4) .or. (nbcnx .eq. 10)) then
+            call immett(nbcnx, xyzma(1, 1), x3dca(1), itetra, xbar(1), &
                         immer)
-        else if ((nbcnx.eq.5).or.(nbcnx.eq.13)) then
-            call immepy(nbcnx, xyzma(1, 1), x3dca(1), itetra, xbar(1),&
+        else if ((nbcnx .eq. 5) .or. (nbcnx .eq. 13)) then
+            call immepy(nbcnx, xyzma(1, 1), x3dca(1), itetra, xbar(1), &
                         immer)
-        else if ((nbcnx.eq.6).or.(nbcnx.eq.15)) then
-            call immepn(nbcnx, xyzma(1, 1), x3dca(1), itetra, xbar(1),&
+        else if ((nbcnx .eq. 6) .or. (nbcnx .eq. 15)) then
+            call immepn(nbcnx, xyzma(1, 1), x3dca(1), itetra, xbar(1), &
                         immer)
         else
-            call immehx(nbcnx, xyzma(1, 1), x3dca(1), itetra, xbar(1),&
+            call immehx(nbcnx, xyzma(1, 1), x3dca(1), itetra, xbar(1), &
                         immer)
-        endif
+        end if
 !
         if (immer .ge. 0) goto 999
 !

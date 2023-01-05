@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine pjelga(nomo2, cham1, ligre1, prol0, corres,&
+subroutine pjelga(nomo2, cham1, ligre1, prol0, corres, &
                   leres1, ligre2, iret)
 ! person_in_charge: jacques.pellet at edf.fr
 !
@@ -78,8 +78,8 @@ subroutine pjelga(nomo2, cham1, ligre1, prol0, corres,&
     call infmaj()
     call titre()
 !
-    chbid=cham1
-    nomfpg='&&OP0166.NOMFPG'
+    chbid = cham1
+    nomfpg = '&&OP0166.NOMFPG'
     call celfpg(cham1, nomfpg, iret)
 !
 !     -- ON RECUPERE LE NOM DE L'OPTION ET LE NOM DU PARAMETRE
@@ -90,16 +90,16 @@ subroutine pjelga(nomo2, cham1, ligre1, prol0, corres,&
 !
 !     -- ECLATEMENT DU CHAMP VIVANT SUR LE MAILLAGE 1
 !        EN UN CHAMP VIVANT SUR LE MAILLAGE 1 PRIME (MAILLAGE ECLATE)
-    ma1p='&&PJELC1'
-    cham1e='&&PJELGA'//'.CHAM1E'
+    ma1p = '&&PJELC1'
+    cham1e = '&&PJELGA'//'.CHAM1E'
 !
     prfchn = '&&PJELGA.PRFCHN'
-    call eclpgc(cham1, cham1e, ligre1, ma1p, prfchn,&
+    call eclpgc(cham1, cham1e, ligre1, ma1p, prfchn, &
                 nomfpg)
 !
     chauxs = '&&PJELGA'//'.CHAS'
-    tycha2= ' '
-    call pjxxch(corres, cham1e, chauxs, tycha2, ' ',&
+    tycha2 = ' '
+    call pjxxch(corres, cham1e, chauxs, tycha2, ' ', &
                 prol0, ' ', 'G', iret)
 !
 !     -- ON TRANSFORME LE CHAM_NO PROJETE EN UN CHAM_NO_S
@@ -110,7 +110,7 @@ subroutine pjelga(nomo2, cham1, ligre1, prol0, corres,&
 !
 !     -- IL FAUT MAINTENANT REVENIR AUX CHAM_ELEM (ELGA)
     ch2s = '&&OP0166'//'.CH2S'
-    call pjcorr(nomo2, chbid, cns1, ch2s, ligre2,&
+    call pjcorr(nomo2, chbid, cns1, ch2s, ligre2, &
                 corres, option, nompar, iret)
 !
 !   construction du CHAM_ELEM_S conteant le nombre de points
@@ -119,16 +119,16 @@ subroutine pjelga(nomo2, cham1, ligre1, prol0, corres,&
     chsnpg = '&&CHPCHD.CHSNPG'
     call xnpgxx(nomo2, ligre2, option, nompar, chsnpg, exixfm)
 !
-    if (exixfm.eq.'OUI') then
+    if (exixfm .eq. 'OUI') then
 !        si le champ ELGA s'appuie sur la famille "XFEM", on
 !        annule toutes les composantes associees aux points
 !        de Gauss inutilises
-         call xcesrd(ch2s, chsnpg)
-    endif
+        call xcesrd(ch2s, chsnpg)
+    end if
 !
     call detrsd('CHAM_ELEM_S', chsnpg)
 !
-    call cescel(ch2s, ligre2, option, nompar, prol0,&
+    call cescel(ch2s, ligre2, option, nompar, prol0, &
                 nncp, 'G', leres1, 'A', iret)
 !
 !

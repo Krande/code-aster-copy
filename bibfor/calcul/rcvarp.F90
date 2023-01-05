@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,10 +18,10 @@
 
 subroutine rcvarp(arret, varc_name_, poum, varc_vale, iret)
 !
-use calcul_module, only : ca_iredec_, ca_jvcnom_, ca_jvcval_, ca_nbcvrc_,&
-                          ca_td1_, ca_tf1_, ca_timed1_, ca_timef1_
+    use calcul_module, only: ca_iredec_, ca_jvcnom_, ca_jvcval_, ca_nbcvrc_, &
+                             ca_td1_, ca_tf1_, ca_timed1_, ca_timef1_
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterc/indik8.h"
@@ -71,7 +71,7 @@ implicit none
     if (iprem .eq. 0) then
         rundf = r8nnem()
         iprem = 1
-    endif
+    end if
     tdef = rundf
     iret = 0
 !
@@ -83,64 +83,64 @@ implicit none
 ! - Not found: NaN
 !
     if (varc_indx .eq. 0) then
-        iret=1
+        iret = 1
         if (arret .eq. ' ') then
             varc_vale = rundf
             goto 999
         else
-            call utmess('F', 'CALCUL_50', sk = varc_name)
-        endif
-    endif
+            call utmess('F', 'CALCUL_50', sk=varc_name)
+        end if
+    end if
 !
 ! - Get value
 !
     if (poum .eq. 'REF') then
-        varc_vale = zr(ca_jvcval_-1+ 3*(varc_indx-1)+3)
+        varc_vale = zr(ca_jvcval_-1+3*(varc_indx-1)+3)
 
     else if (poum .eq. '+' .and. ca_iredec_ .eq. 0) then
-        varc_vale = zr(ca_jvcval_-1+ 3*(varc_indx-1)+2)
+        varc_vale = zr(ca_jvcval_-1+3*(varc_indx-1)+2)
 
     else if (poum .eq. '-' .and. ca_iredec_ .eq. 0) then
-        varc_vale = zr(ca_jvcval_-1+ 3*(varc_indx-1)+1)
+        varc_vale = zr(ca_jvcval_-1+3*(varc_indx-1)+1)
 
     else if (ca_iredec_ .eq. 1) then
-        valvrm    = zr(ca_jvcval_-1+ 3*(varc_indx-1)+1)
-        valvrp    = zr(ca_jvcval_-1+ 3*(varc_indx-1)+2)
-        if ((.not.isnan(valvrm)) .and. (.not.isnan(valvrp))) then
+        valvrm = zr(ca_jvcval_-1+3*(varc_indx-1)+1)
+        valvrp = zr(ca_jvcval_-1+3*(varc_indx-1)+2)
+        if ((.not. isnan(valvrm)) .and. (.not. isnan(valvrp))) then
             if (poum .eq. '-') then
                 varc_vale = valvrm+(ca_td1_-ca_timed1_)*(valvrp-valvrm)/(ca_timef1_-ca_timed1_)
-            else if (poum.eq.'+') then
+            else if (poum .eq. '+') then
                 varc_vale = valvrm+(ca_tf1_-ca_timed1_)*(valvrp-valvrm)/(ca_timef1_-ca_timed1_)
             else
                 ASSERT(.false.)
-            endif
+            end if
         else
             varc_vale = rundf
-        endif
+        end if
 
     else
         ASSERT(.false.)
-    endif
+    end if
 !
     iret = 0
     if (isnan(varc_vale)) then
         iret = 1
-    endif
+    end if
 !
 ! - Manage error
 !
     if (iret .eq. 1) then
         if (varc_name .eq. 'TEMP') then
             varc_vale = tdef
-            iret      = 1
+            iret = 1
             goto 999
-        endif
+        end if
         if (arret .eq. ' ') then
             varc_vale = rundf
         else
-            call utmess('F', 'CALCUL_50', sk = varc_name)
-        endif
-    endif
+            call utmess('F', 'CALCUL_50', sk=varc_name)
+        end if
+    end if
 !
 999 continue
 !

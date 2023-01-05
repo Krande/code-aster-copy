@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine lcmatt(fami, kpg, ksp, mod, imat,&
-                  nmat, poum, rela_comp, coefel, coefpl,&
+subroutine lcmatt(fami, kpg, ksp, mod, imat, &
+                  nmat, poum, rela_comp, coefel, coefpl, &
                   typma, ndt, ndi, nr, nvi)
     implicit none
 !     ROUTINE GENERIQUE DE RECUPERATION DU MATERIAU A T ET T+DT
@@ -45,31 +45,31 @@ subroutine lcmatt(fami, kpg, ksp, mod, imat,&
     character(len=16) :: rela_comp
     character(len=8) :: mod, typma
     character(len=11) :: meting
-    common /meti/   meting
+    common/meti/meting
 !     ----------------------------------------------------------------
 !
 ! -   NB DE COMPOSANTES DES TENSEURS
 !
     if (meting(1:11) .eq. 'RUNGE_KUTTA') then
         ndt = 6
-    else if (mod(1:2).eq.'3D') then
+    else if (mod(1:2) .eq. '3D') then
         ndt = 6
-    else if (mod(1:6).eq.'D_PLAN'.or.mod(1:4).eq.'AXIS') then
+    else if (mod(1:6) .eq. 'D_PLAN' .or. mod(1:4) .eq. 'AXIS') then
         ndt = 4
-    else if (mod(1:6).eq.'C_PLAN') then
+    else if (mod(1:6) .eq. 'C_PLAN') then
         ndt = 4
     else
         ASSERT(.false.)
-    endif
+    end if
     ndi = 3
     typma = 'COHERENT'
 !
     if (rela_comp .eq. 'NORTON') then
-        call matnor(fami, kpg, ksp, imat, nmat,&
-                    poum, coefel, coefpl, ndt, nvi,&
+        call matnor(fami, kpg, ksp, imat, nmat, &
+                    poum, coefel, coefpl, ndt, nvi, &
                     nr)
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 end subroutine

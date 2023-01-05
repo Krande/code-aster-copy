@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine nudeeq(mesh, nb_node_mesh, nb_node_subs, nume_ddl, nb_equa,&
+subroutine nudeeq(mesh, nb_node_mesh, nb_node_subs, nume_ddl, nb_equa, &
                   igds, iddlag)
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterfort/assert.h"
@@ -92,7 +92,7 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: nb_cmp_chck
-    parameter (nb_cmp_chck=10)
+    parameter(nb_cmp_chck=10)
 !
     character(len=8) :: nono, nocmp
     character(len=19) :: prof_chno
@@ -115,27 +115,27 @@ implicit none
     call jemarq()
 !
     nume_equa = nume_ddl//'.NUME'
-    delg      = nume_equa(1:19)//'.DELG'
+    delg = nume_equa(1:19)//'.DELG'
     prof_chno = nume_ddl//'.NUME'
-    prno      = prof_chno(1:19)//'.PRNO'
-    nueq      = prof_chno(1:19)//'.NUEQ'
-    deeq      = prof_chno(1:19)//'.DEEQ'
+    prno = prof_chno(1:19)//'.PRNO'
+    nueq = prof_chno(1:19)//'.NUEQ'
+    deeq = prof_chno(1:19)//'.DEEQ'
     if (nb_node_subs .gt. 0) then
         call jeveuo(mesh//'.TYPL', 'L', jtypl)
-    endif
+    end if
 !
 ! - Information about GRANDEUR
 !
     call jelira(jexnum('&CATA.GD.NOMCMP', igds), 'LONMAX', ncmpmx)
-    nec     = nbec(igds)
+    nec = nbec(igds)
     ASSERT(ncmpmx .ne. 0)
     ASSERT(nec .ne. 0)
 !
 ! - Access to NUEQ/DEEQ/DELG objects
 !
-    call jeveuo(delg, 'E', vi = p_delg)
-    call jeveuo(nueq, 'L', vi = p_nueq)
-    call jeveuo(deeq, 'E', vi = p_deeq)
+    call jeveuo(delg, 'E', vi=p_delg)
+    call jeveuo(nueq, 'L', vi=p_nueq)
+    call jeveuo(deeq, 'E', vi=p_deeq)
     nb_lagr = 0
 !
     call jelira(prno, 'NMAXOC', nb_ligr)
@@ -149,67 +149,67 @@ implicit none
 ! ---------  i_ligr > 1 => from other LIGREL (loads)
 !
             nb_node = length_prno/(nec+2)
-            if ((i_ligr.eq.1) .and. (nb_node.ne.(nb_node_mesh+nb_node_subs))) then
+            if ((i_ligr .eq. 1) .and. (nb_node .ne. (nb_node_mesh+nb_node_subs))) then
                 ASSERT(.false.)
-            endif
+            end if
             do i_node = 1, nb_node
-                i_dof = zi(jprno-1+ (i_node-1)*(nec+2)+1) - 1
-                iadg  = jprno - 1 + (i_node-1)*(nec+2) + 3
+                i_dof = zi(jprno-1+(i_node-1)*(nec+2)+1)-1
+                iadg = jprno-1+(i_node-1)*(nec+2)+3
                 do i_cmp_glob = 1, ncmpmx
-                    if (exisdg(zi(iadg),i_cmp_glob)) then
-                        i_dof  = i_dof + 1
-                        i_equ  = p_nueq(i_dof)
+                    if (exisdg(zi(iadg), i_cmp_glob)) then
+                        i_dof = i_dof+1
+                        i_equ = p_nueq(i_dof)
                         if (i_ligr .eq. 1) then
-                            if (p_deeq(2*(i_equ-1)+1).eq.0) then
+                            if (p_deeq(2*(i_equ-1)+1) .eq. 0) then
                                 p_deeq(2*(i_equ-1)+1) = i_node
                                 p_deeq(2*(i_equ-1)+2) = i_cmp_glob
-                            endif
+                            end if
                             p_delg(i_equ) = 0
                         else
-                            ilag  = nb_lagr + i_node
-                            nob   = zi(iddlag+ (ilag-1)*3)
-                            nddlb = zi(iddlag+ (ilag-1)*3+1)
+                            ilag = nb_lagr+i_node
+                            nob = zi(iddlag+(ilag-1)*3)
+                            nddlb = zi(iddlag+(ilag-1)*3+1)
                             p_deeq(2*(i_equ-1)+1) = nob
                             p_deeq(2*(i_equ-1)+2) = nddlb
-                            p_delg(i_equ) = -zi(iddlag+ (ilag-1)*3+ 2)
-                        endif
-                    endif
+                            p_delg(i_equ) = -zi(iddlag+(ilag-1)*3+2)
+                        end if
+                    end if
                 end do
             end do
             if (i_ligr .gt. 1) then
-                nb_lagr = nb_lagr + nb_node
-            endif
-        endif
+                nb_lagr = nb_lagr+nb_node
+            end if
+        end if
     end do
 !
 ! - Check if dof are only once 'blocked'
 !
     AS_ALLOCATE(vi=lnobloq, size=nb_node_mesh*nb_cmp_chck)
     do i_equ = 1, nb_equa
-        i_node     = p_deeq(2*(i_equ-1)+1)
+        i_node = p_deeq(2*(i_equ-1)+1)
         i_cmp_glob = p_deeq(2*(i_equ-1)+2)
-        if ((i_node.gt.0) .and. (i_cmp_glob.lt.0) .and. (i_cmp_glob.ge.-nb_cmp_chck)) then
+        if ((i_node .gt. 0) .and. (i_cmp_glob .lt. 0) .and. (i_cmp_glob .ge. -nb_cmp_chck)) then
             i_cmp_glob = -i_cmp_glob
             lnobloq((i_node-1)*nb_cmp_chck+i_cmp_glob) = &
-                lnobloq((i_node-1)*nb_cmp_chck+i_cmp_glob) + 1
-        endif
+                lnobloq((i_node-1)*nb_cmp_chck+i_cmp_glob)+1
+        end if
     end do
 !
     ier = 0
     do i_node = 1, nb_node_mesh
         do i_cmp_chck = 1, nb_cmp_chck
             if (lnobloq((i_node-1)*nb_cmp_chck+i_cmp_chck) .gt. 2) then
-                ier = ier + 1
+                ier = ier+1
                 call jenuno(jexnum(mesh//'.NOMNOE', i_node), nono)
                 call jeveuo(jexnum('&CATA.GD.NOMCMP', igds), 'L', jncmp)
                 nocmp = zk8(jncmp-1+i_cmp_chck)
                 valk(1) = nono
                 valk(2) = nocmp
                 call utmess('E', 'ASSEMBLA_26', nk=2, valk=valk)
-            endif
+            end if
         end do
     end do
-    ASSERT(ier.le.0)
+    ASSERT(ier .le. 0)
     AS_DEALLOCATE(vi=lnobloq)
 !
     call jedema()

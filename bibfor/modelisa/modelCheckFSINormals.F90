@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,10 +18,10 @@
 !
 subroutine modelCheckFSINormals(model)
 !
-use mesh_module, only: getPropertiesOfListOfCells, getSkinCellSupport, checkNormalOnSkinCell
-use model_module, only: getFSICell, getFluidCell
+    use mesh_module, only: getPropertiesOfListOfCells, getSkinCellSupport, checkNormalOnSkinCell
+    use model_module, only: getFSICell, getFluidCell
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/as_allocate.h"
@@ -32,7 +32,7 @@ implicit none
 #include "asterfort/utmess.h"
 #include "asterfort/jexnum.h"
 !
-character(len=8), intent(in) :: model
+    character(len=8), intent(in) :: model
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -62,9 +62,9 @@ character(len=8), intent(in) :: model
 !
     call infniv(ifm, niv)
 
-    call dismoi('NOM_MAILLA', model, 'MODELE', repk = mesh)
-    call dismoi('NB_MA_MAILLA', mesh, 'MAILLAGE', repi = nbCell)
-    call dismoi('DIM_GEOM', model, 'MODELE', repi = modelDime)
+    call dismoi('NOM_MAILLA', model, 'MODELE', repk=mesh)
+    call dismoi('NB_MA_MAILLA', mesh, 'MAILLAGE', repi=nbCell)
+    call dismoi('DIM_GEOM', model, 'MODELE', repi=modelDime)
 !
 ! - Get list of cells with FSI model
 !
@@ -72,54 +72,54 @@ character(len=8), intent(in) :: model
 
     if (nbCellFSI .gt. 0) then
         if (niv .ge. 2) then
-            call utmess('I', 'MODELE1_80', si = nbCellFSI)
-        endif
+            call utmess('I', 'MODELE1_80', si=nbCellFSI)
+        end if
 ! ----- Get list of cells with fluid model
         call getFluidCell(model, nbCellFluid, cellFluid)
 ! ----- Get properties of FSI cells
         AS_ALLOCATE(vi=cellFSINbNode, size=nbCellFSI)
         AS_ALLOCATE(vi=cellFSINodeIndx, size=nbCellFSI)
-        call getPropertiesOfListOfCells(mesh         ,&
-                                        nbCellFSI    , cellFSI        ,&
-                                        cellFSINbNode, cellFSINodeIndx,&
-                                        lCellSurf    , lCellLine)
+        call getPropertiesOfListOfCells(mesh, &
+                                        nbCellFSI, cellFSI, &
+                                        cellFSINbNode, cellFSINodeIndx, &
+                                        lCellSurf, lCellLine)
         ASSERT(lCellLine .or. lCellSurf)
         if (lCellLine) then
-            ASSERT(.not.lCellSurf)
+            ASSERT(.not. lCellSurf)
             if (niv .ge. 2) then
                 call utmess('I', 'MODELE1_81')
-            endif
-        endif
+            end if
+        end if
         if (lCellSurf) then
-            ASSERT(.not.lCellLine)
+            ASSERT(.not. lCellLine)
             if (niv .ge. 2) then
                 call utmess('I', 'MODELE1_82')
-            endif
-        endif
+            end if
+        end if
 
 ! ----- Get "volumic" cells support of skin cells
         AS_ALLOCATE(vi=cellFSISupport, size=nbCellFSI)
-        call getSkinCellSupport(mesh          ,&
-                                nbCellFSI     , cellFSI,&
-                                lCellSurf       , lCellLine,&
-                                cellFSISupport,&
-                                nbCellFluid   , cellFluid)
+        call getSkinCellSupport(mesh, &
+                                nbCellFSI, cellFSI, &
+                                lCellSurf, lCellLine, &
+                                cellFSISupport, &
+                                nbCellFluid, cellFluid)
 ! ----- Check normals
-        call checkNormalOnSkinCell(mesh          , modelDime      ,&
-                                   nbCellFSI     , cellFSI        ,&
-                                   cellFSINbNode , cellFSINodeIndx,&
+        call checkNormalOnSkinCell(mesh, modelDime, &
+                                   nbCellFSI, cellFSI, &
+                                   cellFSINbNode, cellFSINodeIndx, &
                                    cellFSISupport, lMisoriented)
         if (lMisoriented) then
             call utmess('A', 'FLUID1_4')
-        endif
+        end if
 !
         AS_DEALLOCATE(vi=cellFSINbNode)
         AS_DEALLOCATE(vi=cellFSINodeIndx)
         AS_DEALLOCATE(vi=cellFSISupport)
-    endif
+    end if
 
 !
-    AS_DEALLOCATE(vi = cellFSI)
-    AS_DEALLOCATE(vi = cellFluid)
+    AS_DEALLOCATE(vi=cellFSI)
+    AS_DEALLOCATE(vi=cellFluid)
 !
 end subroutine

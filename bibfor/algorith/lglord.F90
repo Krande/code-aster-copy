@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 subroutine lglord(sig1, sig2, sig3)
 !
-    implicit    none
+    implicit none
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
     real(kind=8) :: sig1, sig2, sig3
@@ -37,17 +37,17 @@ subroutine lglord(sig1, sig2, sig3)
         tmp = sig1
         sig1 = sig3
         sig3 = tmp
-    endif
+    end if
     if (abs(sig2) .gt. abs(sig1)) then
         tmp = sig1
         sig1 = sig2
         sig2 = tmp
-    endif
+    end if
     if (abs(sig3) .gt. abs(sig2)) then
         tmp = sig2
         sig2 = sig3
         sig3 = tmp
-    endif
+    end if
 ! =================================================================
     call jedema()
 ! =================================================================

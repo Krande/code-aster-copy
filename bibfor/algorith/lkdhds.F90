@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine lkdhds(nbmat, mater, invar, s, dhds,&
+subroutine lkdhds(nbmat, mater, invar, s, dhds, &
                   retcom)
 !
     implicit none
@@ -49,18 +49,18 @@ subroutine lkdhds(nbmat, mater, invar, s, dhds,&
 ! =================================================================
 ! --- INITIALISATION DE PARAMETRES --------------------------------
 ! =================================================================
-    parameter       ( deux    =  2.0d0   )
-    parameter       ( cinq    =  5.0d0   )
-    parameter       ( six     =  6.0d0   )
-    parameter       ( lgleps  =  1.0d-8  )
+    parameter(deux=2.0d0)
+    parameter(cinq=5.0d0)
+    parameter(six=6.0d0)
+    parameter(lgleps=1.0d-8)
 ! -----------------------------------------------------------------
-    common /tdim/   ndt  , ndi
+    common/tdim/ndt, ndi
 ! -----------------------------------------------------------------
 ! =================================================================
 ! --- RECUPERATION DE PARAMETRES DU MODELE ------------------------
 ! =================================================================
-    gamcjs = mater(5,2)
-    pref = mater(1,2)
+    gamcjs = mater(5, 2)
+    pref = mater(1, 2)
 ! =================================================================
 ! --- CALCUL DU DEVIATEUR ET DU PREMIER INVARIANT DES CONTRAINTES -
 ! =================================================================
@@ -71,12 +71,12 @@ subroutine lkdhds(nbmat, mater, invar, s, dhds,&
         call utmess('A', 'COMPOR1_29')
         retcom = 1
         goto 1000
-    endif
+    end if
 ! =================================================================
 ! --- CALCUL DE h(THETA) ------------------------------------------
 ! =================================================================
-    rcos3t = cos3t (s, pref, lgleps)
-    rhlode = lkhlod (gamcjs, rcos3t)
+    rcos3t = cos3t(s, pref, lgleps)
+    rhlode = lkhlod(gamcjs, rcos3t)
     h5 = (rhlode)**cinq
 !
     call cjst(s, t)

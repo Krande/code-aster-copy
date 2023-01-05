@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine tresu_carte(cham19, nomail, nocmp, tbtxt, refi,&
-                       refr, refc, typres, epsi, crit,&
+subroutine tresu_carte(cham19, nomail, nocmp, tbtxt, refi, &
+                       refr, refc, typres, epsi, crit, &
                        llab, ignore, compare)
     implicit none
 #include "asterf_types.h"
@@ -63,27 +63,27 @@ subroutine tresu_carte(cham19, nomail, nocmp, tbtxt, refi,&
     skip = .false.
     if (present(ignore)) then
         skip = ignore
-    endif
+    end if
 !
     ordgrd = 1.d0
     if (present(compare)) then
         ordgrd = compare
-    endif
+    end if
 !
     call dismoi('TYPE_CHAMP', cham19, 'CHAMP', repk=tych)
     if (tych .ne. 'CART') then
         call utmess('F', 'CALCULEL3_90', sk=cham19)
-    endif
+    end if
 !
     call dismoi('NOM_MAILLA', cham19, 'CARTE', repk=nomma)
 !
-    call utchca(cham19, nomma, nomail, nocmp, typres,&
+    call utchca(cham19, nomma, nomail, nocmp, typres, &
                 valr, vali, valc, ier)
     ASSERT(ier .eq. 0)
 
-    call tresu_print_all(tbtxt(1), tbtxt(2), llab, typres, 1,&
-                         crit, epsi, 'NON', [refr], valr,&
-                         [refi], vali, [refc], valc, ignore=skip,&
+    call tresu_print_all(tbtxt(1), tbtxt(2), llab, typres, 1, &
+                         crit, epsi, 'NON', [refr], valr, &
+                         [refi], vali, [refc], valc, ignore=skip, &
                          compare=ordgrd)
 !
 end subroutine

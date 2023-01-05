@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine cpnno(main,numa,coor,inc,nbno,nomnoe)
+subroutine cpnno(main, numa, coor, inc, nbno, nomnoe)
 !
 !
     implicit none
@@ -38,7 +38,6 @@ subroutine cpnno(main,numa,coor,inc,nbno,nomnoe)
     character(len=8) :: main
     character(len=24) :: nomnoe
 
-
 !
 !
 ! ----------------------------------------------------------------------
@@ -55,66 +54,66 @@ subroutine cpnno(main,numa,coor,inc,nbno,nomnoe)
     integer :: inc1, inc2, aux
     real(kind=8) ::xe(3), xp(3), tabar(6*3), tole
 !
-    character(len=8) :: nomnd,eletyp, mailut
+    character(len=8) :: nomnd, eletyp, mailut
     character(len=24) :: valk
     character(len=16) :: knume
 ! ----------------------------------------------------------------------
 !
 !
 !
-    tole=1.d-9
+    tole = 1.d-9
 
-    nbso=3
-    eletyp='TR3'
-    mailut=main
-    call jeveuo(jexnum(mailut//'.CONNEX',numa),'L',jtab)
+    nbso = 3
+    eletyp = 'TR3'
+    mailut = main
+    call jeveuo(jexnum(mailut//'.CONNEX', numa), 'L', jtab)
 
 ! - INSERTION DU NOUVEAU NOEUD
 !
 !      NOM DU NOEUD CREE
-     call codent(nbno+inc, 'G', knume)
-     if (knume(1:1)=='*') then
-         ASSERT(.false.)
-     endif
-     lgnd = lxlgut(knume)
-     if (lgnd+1 .gt. 8) then
-         call utmess('F', 'ALGELINE_16')
-     endif
-     nomnd = 'C' // knume(1:lgnd)
+    call codent(nbno+inc, 'G', knume)
+    if (knume(1:1) == '*') then
+        ASSERT(.false.)
+    end if
+    lgnd = lxlgut(knume)
+    if (lgnd+1 .gt. 8) then
+        call utmess('F', 'ALGELINE_16')
+    end if
+    nomnd = 'C'//knume(1:lgnd)
 !
 !      DECLARATION DU NOEUD CREE
-     call jeexin(jexnom(nomnoe, nomnd), iret)
-     if (iret .eq. 0) then
-         call jecroc(jexnom(nomnoe, nomnd))
-     else
-         valk = nomnd
-         call utmess('F', 'ALGELINE4_5', sk=valk)
-     endif
+    call jeexin(jexnom(nomnoe, nomnd), iret)
+    if (iret .eq. 0) then
+        call jecroc(jexnom(nomnoe, nomnd))
+    else
+        valk = nomnd
+        call utmess('F', 'ALGELINE4_5', sk=valk)
+    end if
 
 ! --- Preparation de la geometrie
-    do  inc1=1, nbso
-        lino(inc1)= zi(jtab+inc1-1)
+    do inc1 = 1, nbso
+        lino(inc1) = zi(jtab+inc1-1)
     end do
-    aux=1
-    do inc1=1,nbso
-        do inc2=1,3
-            tabar(aux+inc2-1) =  coor(inc2,lino(inc1))
+    aux = 1
+    do inc1 = 1, nbso
+        do inc2 = 1, 3
+            tabar(aux+inc2-1) = coor(inc2, lino(inc1))
         end do
-        aux=aux+3
+        aux = aux+3
     end do
 !
 ! - CALCUL DES COORDONNEES DU NOUVEAU NOEUD
 ! --- CENTRE DE GRAVITE
-    xp(1)=0.d0
-    xp(2)=0.d0
-    xp(3)=0.d0
-    xe(1)=1.d0/3.d0
-    xe(2)=1.d0/3.d0
-    xe(3)=0.d0
+    xp(1) = 0.d0
+    xp(2) = 0.d0
+    xp(3) = 0.d0
+    xe(1) = 1.d0/3.d0
+    xe(2) = 1.d0/3.d0
+    xe(3) = 0.d0
     call reerel(eletyp, nbso, 3, tabar, xe, xp)
-    coor(1,nbno+inc) = xp(1)
-    coor(2,nbno+inc) = xp(2)
-    coor(3,nbno+inc) = xp(3)
+    coor(1, nbno+inc) = xp(1)
+    coor(2, nbno+inc) = xp(2)
+    coor(3, nbno+inc) = xp(3)
 
 !
 end subroutine

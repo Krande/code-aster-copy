@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine traint(resgen, modgen, numlia, sst1, sst2,&
+subroutine traint(resgen, modgen, numlia, sst1, sst2, &
                   intf1, intf2, nbmod, nl, nc)
     implicit none
 !
@@ -65,12 +65,12 @@ subroutine traint(resgen, modgen, numlia, sst1, sst2,&
     character(len=8) :: rest2, mraid
     character(len=19) :: nume91
     character(len=24) :: indin1, indin2
-    integer :: i1, ibid, nbsst,  j1, k1, l1, imast1, nbeq, lmast, imast2
-    integer :: nbeq1, nbeq2, numlia, lefi1, lefi2, nbmod,  lnusst, isst1
+    integer :: i1, ibid, nbsst, j1, k1, l1, imast1, nbeq, lmast, imast2
+    integer :: nbeq1, nbeq2, numlia, lefi1, lefi2, nbmod, lnusst, isst1
     integer :: isst2, llint1, lobs2, lobs1, llint2, nbddl1, nbddl2, tach1
-    integer ::  nc, tach2, lomeg, lmod1, lmod2,  lbid, lag1, lag2
-    integer :: lesc,  leff1, leff2,  ideeq, nbddl, llint
-    integer :: lcopy1, lcopy2, unit,  ldepma, ldepsl, nl
+    integer ::  nc, tach2, lomeg, lmod1, lmod2, lbid, lag1, lag2
+    integer :: lesc, leff1, leff2, ideeq, nbddl, llint
+    integer :: lcopy1, lcopy2, unit, ldepma, ldepsl, nl
     real(kind=8) :: travm, travk, trvint
     integer, pointer :: num_sst_maitre(:) => null()
     real(kind=8), pointer :: trav_interf(:) => null()
@@ -82,7 +82,7 @@ subroutine traint(resgen, modgen, numlia, sst1, sst2,&
     integer, pointer :: matrice_raid(:) => null()
 !
     call getvis(' ', 'UNITE', scal=unit, nbret=ibid)
-    i1=numlia
+    i1 = numlia
 !
     call jelira(modgen//'      .MODG.SSNO', 'NOMMAX', nbsst)
 !
@@ -104,86 +104,86 @@ subroutine traint(resgen, modgen, numlia, sst1, sst2,&
 !
 !-- L'INTERFACE MAITRE EST CELLE DONT LE NUMERO EST NEGATIF
     if (int(zr(ibid)) .eq. -2) then
-        imast1=1
-        imast2=-2
+        imast1 = 1
+        imast2 = -2
     else
-        imast2=2
-        imast1=-1
-    endif
+        imast2 = 2
+        imast1 = -1
+    end if
 !
 !-- SOUS STRUCTURE 1
-    indin1='&&VEC_DDL_INTF_'//intf1
-    nbeq1=lipr(1+(i1-1)*9+1)
+    indin1 = '&&VEC_DDL_INTF_'//intf1
+    nbeq1 = lipr(1+(i1-1)*9+1)
 !-- SOUS STRUCTURE 2
-    indin2='&&VEC_DDL_INTF_'//intf2
-    nbeq2=lipr(1+(i1-1)*9+4)
+    indin2 = '&&VEC_DDL_INTF_'//intf2
+    nbeq2 = lipr(1+(i1-1)*9+4)
 !
 !-- RESTITUTION DES MODES SUR LES DIFFERENTES SOUS STRUCTURES
 !
     if (i1 .eq. 1) then
-        nom_sst(1)=sst1
-        nom_sst(2)=sst2
-        zi(lnusst)=2
-        zi(lnusst+1)=1
-        zi(lnusst+2)=2
-        rest1='&&910001'
-        rest2='&&910002'
+        nom_sst(1) = sst1
+        nom_sst(2) = sst2
+        zi(lnusst) = 2
+        zi(lnusst+1) = 1
+        zi(lnusst+2) = 2
+        rest1 = '&&910001'
+        rest2 = '&&910002'
         call regeec(rest1, resgen, sst1)
         call jedetr('&&MODE_ETENDU_REST_ELIM')
         call regeec(rest2, resgen, sst2)
         call jedetr('&&MODE_ETENDU_REST_ELIM')
     else
-        ibid=zi(lnusst)
-        isst1=0
-        isst2=0
+        ibid = zi(lnusst)
+        isst1 = 0
+        isst2 = 0
         do j1 = 1, ibid
-            if (sst1 .eq. nom_sst(j1)) isst1=j1
-            if (sst2 .eq. nom_sst(j1)) isst2=j1
+            if (sst1 .eq. nom_sst(j1)) isst1 = j1
+            if (sst2 .eq. nom_sst(j1)) isst2 = j1
         end do
         if (isst1 .eq. 0) then
-            zi(lnusst)=zi(lnusst)+1
-            zi(lnusst+zi(lnusst))=zi(lnusst)
-            nom_sst(1+zi(lnusst)-1)=sst1
+            zi(lnusst) = zi(lnusst)+1
+            zi(lnusst+zi(lnusst)) = zi(lnusst)
+            nom_sst(1+zi(lnusst)-1) = sst1
             call codent(zi(lnusst), 'D0', k4bid)
-            rest1='&&91'//k4bid
+            rest1 = '&&91'//k4bid
             call regeec(rest1, resgen, sst1)
             call jedetr('&&MODE_ETENDU_REST_ELIM')
         else
             call codent(zi(lnusst+isst1), 'D0', k4bid)
-            rest1='&&91'//k4bid
-        endif
+            rest1 = '&&91'//k4bid
+        end if
         if (isst2 .eq. 0) then
-            zi(lnusst)=zi(lnusst)+1
-            zi(lnusst+zi(lnusst))=zi(lnusst)
-            nom_sst(1+zi(lnusst)-1)=sst2
+            zi(lnusst) = zi(lnusst)+1
+            zi(lnusst+zi(lnusst)) = zi(lnusst)
+            nom_sst(1+zi(lnusst)-1) = sst2
             call codent(zi(lnusst), 'D0', k4bid)
-            rest2='&&91'//k4bid
+            rest2 = '&&91'//k4bid
             call regeec(rest2, resgen, sst2)
             call jedetr('&&MODE_ETENDU_REST_ELIM')
         else
             call codent(zi(lnusst+isst2), 'D0', k4bid)
-            rest2='&&91'//k4bid
-        endif
-    endif
+            rest2 = '&&91'//k4bid
+        end if
+    end if
 !
 !-- RECUPERATION DE LA SST ESCLAVE EN FONCTION DU NUMERO DE LA LIAISON
     do j1 = 1, zi(lnusst)
         if (imast1 .eq. 1) then
             if (sst1 .eq. nom_sst(j1)) then
-                num_sst_esclave(i1)=zi(lnusst+j1)
-            endif
+                num_sst_esclave(i1) = zi(lnusst+j1)
+            end if
             if (sst2 .eq. nom_sst(j1)) then
-                num_sst_maitre(i1)=zi(lnusst+j1)
-            endif
-        endif
+                num_sst_maitre(i1) = zi(lnusst+j1)
+            end if
+        end if
         if (imast2 .eq. 2) then
             if (sst2 .eq. nom_sst(j1)) then
-                num_sst_esclave(i1)=zi(lnusst+j1)
-            endif
+                num_sst_esclave(i1) = zi(lnusst+j1)
+            end if
             if (sst1 .eq. nom_sst(j1)) then
-                num_sst_maitre(i1)=zi(lnusst+j1)
-            endif
-        endif
+                num_sst_maitre(i1) = zi(lnusst+j1)
+            end if
+        end if
     end do
 !
 !-- OBSERVATION DE L'INTERFACE MAITRE
@@ -197,8 +197,8 @@ subroutine traint(resgen, modgen, numlia, sst1, sst2,&
     call jeveuo(indin2, 'L', llint2)
     call jeveuo(jexnum(rest1//'           .TACH', 1), 'L', tach1)
     call jeveuo(jexnum(rest2//'           .TACH', 1), 'L', tach2)
-    call jelira(zk24(tach1)(1:19)//'.VALE', 'LONMAX', nbeq1)
-    call jelira(zk24(tach2)(1:19)//'.VALE', 'LONMAX', nbeq2)
+    call jelira(zk24(tach1) (1:19)//'.VALE', 'LONMAX', nbeq1)
+    call jelira(zk24(tach2) (1:19)//'.VALE', 'LONMAX', nbeq2)
 !
 !-- ALLOCATION DES OBJETS TEMPORAIRE POUR LE CALCUL DES TRAVAUX
     call codent(i1, 'D0', k4bid)
@@ -212,33 +212,33 @@ subroutine traint(resgen, modgen, numlia, sst1, sst2,&
     if (imast1 .eq. 1) then
         call wkvect('&&OP0091.DEPL_IMPO_'//k4bid, 'V V R', nbmod*nbeq1, ldepsl)
         call wkvect('&&OP0091.MAST_IMPO_'//k4bid, 'V V R', nbmod*nbeq2, ldepma)
-        llint=llint1
-        nbddl=nbddl1
-        nbeq=nbeq1
+        llint = llint1
+        nbddl = nbddl1
+        nbeq = nbeq1
         call jenonu(jexnom(modgen//'      .MODG.SSNO', sst1), isst1)
 !
     else
         call wkvect('&&OP0091.DEPL_IMPO_'//k4bid, 'V V R', nbmod*nbeq2, ldepsl)
         call wkvect('&&OP0091.MAST_IMPO_'//k4bid, 'V V R', nbmod*nbeq1, ldepma)
 !
-        llint=llint2
-        nbddl=nbddl2
-        nbeq=nbeq2
+        llint = llint2
+        nbddl = nbddl2
+        nbeq = nbeq2
         call jenonu(jexnom(modgen//'      .MODG.SSNO', sst2), isst1)
 !
-    endif
+    end if
 !
     call wkvect('&&OP0091.LAGRANGES_1', 'V V I', nbddl, lag1)
     call wkvect('&&OP0091.LAGRANGES_2', 'V V I', nbddl, lag2)
 !
     call jeveuo(jexnum(modgen//'      .MODG.SSME', isst1), 'L', ibid)
     call jeveuo(zk8(ibid)//'.MAEL_RAID_REFE', 'L', lbid)
-    mraid=zk24(lbid+1)(1:8)
+    mraid = zk24(lbid+1) (1:8)
     call dismoi('NOM_NUME_DDL', mraid, 'MATR_ASSE', repk=nume91)
     do k1 = 1, nbddl
         if (zi(llint+k1-1) .gt. 0) then
             call ddllag(nume91, zi(llint+k1-1), nbeq, zi(lag1+k1-1), zi(lag2+k1-1))
-        endif
+        end if
     end do
 !
 !  STOCKAGES DES EFFORTS
@@ -260,19 +260,19 @@ subroutine traint(resgen, modgen, numlia, sst1, sst2,&
 !-- SST1
     call jeveuo(jexnum(modgen//'      .MODG.SSME', isst1), 'L', ibid)
     call jeveuo(zk8(ibid)//'.MAEL_RAID_REFE', 'L', lbid)
-    call mtdscr(zk24(lbid+1)(1:19))
-    call jeveuo(zk24(lbid+1)(1:19)//'.&INT', 'L', matrice_raid(isst1))
+    call mtdscr(zk24(lbid+1) (1:19))
+    call jeveuo(zk24(lbid+1) (1:19)//'.&INT', 'L', matrice_raid(isst1))
     call jeveuo(zk8(ibid)//'.MAEL_MASS_REFE', 'L', lbid)
-    call mtdscr(zk24(lbid+1)(1:19))
-    call jeveuo(zk24(lbid+1)(1:19)//'.&INT', 'L', matrice_mass(isst1))
+    call mtdscr(zk24(lbid+1) (1:19))
+    call jeveuo(zk24(lbid+1) (1:19)//'.&INT', 'L', matrice_mass(isst1))
 !-- SST2
     call jeveuo(jexnum(modgen//'      .MODG.SSME', isst2), 'L', ibid)
     call jeveuo(zk8(ibid)//'.MAEL_RAID_REFE', 'L', lbid)
-    call mtdscr(zk24(lbid+1)(1:19))
-    call jeveuo(zk24(lbid+1)(1:19)//'.&INT', 'L', matrice_raid(isst2))
+    call mtdscr(zk24(lbid+1) (1:19))
+    call jeveuo(zk24(lbid+1) (1:19)//'.&INT', 'L', matrice_raid(isst2))
     call jeveuo(zk8(ibid)//'.MAEL_MASS_REFE', 'L', lbid)
-    call mtdscr(zk24(lbid+1)(1:19))
-    call jeveuo(zk24(lbid+1)(1:19)//'.&INT', 'L', matrice_mass(isst2))
+    call mtdscr(zk24(lbid+1) (1:19))
+    call jeveuo(zk24(lbid+1) (1:19)//'.&INT', 'L', matrice_mass(isst2))
 !
 !
 !--
@@ -283,7 +283,7 @@ subroutine traint(resgen, modgen, numlia, sst1, sst2,&
 !-- SST1
 !--
 !-- RECUPERATION DU MODE RESTITUE
-        call jeveuo(zk24(tach1+j1-1)(1:19)//'.VALE', 'L', ibid)
+        call jeveuo(zk24(tach1+j1-1) (1:19)//'.VALE', 'L', ibid)
 !
 !-- RECOPIE DANS UN VECTEUR DE TRAVAIL
         call lceqvn(nbeq1, zr(ibid), zr(lcopy1))
@@ -296,30 +296,30 @@ subroutine traint(resgen, modgen, numlia, sst1, sst2,&
         call zerlag(nbeq1, zi(ideeq), vectr=zr(lcopy1))
 !
 !-- EXTRACTION DES COMPOSANTES ASSOCIEES A L'INTERFACE
-        ibid=0
+        ibid = 0
         do k1 = 1, nbddl1
             if (zi(llint1+k1-1) .gt. 0) then
-                zr(lmod1+zi(llint1+k1-1)-1)=zr(lcopy1+zi(llint1+k1-1)-&
-                1)
-                zr(lobs1+ibid)=zr(lcopy1+zi(llint1+k1-1)-1)
-                ibid=ibid+1
-            endif
+                zr(lmod1+zi(llint1+k1-1)-1) = zr(lcopy1+zi(llint1+k1-1)- &
+                                                 1)
+                zr(lobs1+ibid) = zr(lcopy1+zi(llint1+k1-1)-1)
+                ibid = ibid+1
+            end if
         end do
 !
 !-- CALCUL DU TRAVAIL
-        call mrmult('ZERO', matrice_mass(isst1), zr(lcopy1), zr(leff1), 1,&
+        call mrmult('ZERO', matrice_mass(isst1), zr(lcopy1), zr(leff1), 1, &
                     .true._1)
         call lceqvn(nbeq1, zr(leff1), zr(lefi1))
-        travm=ddot(nbeq1,zr(lmod1),1,zr(leff1),1)
-        call mrmult('ZERO', matrice_raid(isst1), zr(lcopy1), zr(leff1), 1,&
+        travm = ddot(nbeq1, zr(lmod1), 1, zr(leff1), 1)
+        call mrmult('ZERO', matrice_raid(isst1), zr(lcopy1), zr(leff1), 1, &
                     .true._1)
-        travk=ddot(nbeq1,zr(lmod1),1,zr(leff1),1)
-        trvint=travk-(zr(lomeg+j1-1)**2)*travm
+        travk = ddot(nbeq1, zr(lmod1), 1, zr(leff1), 1)
+        trvint = travk-(zr(lomeg+j1-1)**2)*travm
 !--
 !-- SST2
 !--
 !-- RECUPERATION DU MODE RESTITUE
-        call jeveuo(zk24(tach2+j1-1)(1:19)//'.VALE', 'L', ibid)
+        call jeveuo(zk24(tach2+j1-1) (1:19)//'.VALE', 'L', ibid)
 !
 !-- RECOPIE DANS UN VECTEUR DE TRAVAIL
         call lceqvn(nbeq2, zr(ibid), zr(lcopy2))
@@ -332,66 +332,66 @@ subroutine traint(resgen, modgen, numlia, sst1, sst2,&
         call zerlag(nbeq2, zi(ideeq), vectr=zr(lcopy2))
 !
 !-- EXTRACTION DES COMPOSANTES ASSOCIEES A L'INTERFACE
-        ibid=0
+        ibid = 0
         do k1 = 1, nbddl2
             if (zi(llint2+k1-1) .gt. 0) then
-                zr(lmod2+zi(llint2+k1-1)-1)=zr(lcopy2+zi(llint2+k1-1)-&
-                1)
-                zr(lobs2+ibid)=zr(lcopy2+zi(llint2+k1-1)-1)
-                ibid=ibid+1
-            endif
+                zr(lmod2+zi(llint2+k1-1)-1) = zr(lcopy2+zi(llint2+k1-1)- &
+                                                 1)
+                zr(lobs2+ibid) = zr(lcopy2+zi(llint2+k1-1)-1)
+                ibid = ibid+1
+            end if
         end do
 !
 !--
 !-- CALCUL DE L'EFFORT RESIDUEL
 !--
-        call mrmult('ZERO', matrice_mass(isst2), zr(lcopy2), zr(leff2), 1,&
+        call mrmult('ZERO', matrice_mass(isst2), zr(lcopy2), zr(leff2), 1, &
                     .true._1)
         call lceqvn(nbeq2, zr(leff2), zr(lefi2))
-        travm=ddot(nbeq2,zr(lmod2),1,zr(leff2),1)
+        travm = ddot(nbeq2, zr(lmod2), 1, zr(leff2), 1)
 !
-        call mrmult('ZERO', matrice_raid(isst2), zr(lcopy2), zr(leff2), 1,&
+        call mrmult('ZERO', matrice_raid(isst2), zr(lcopy2), zr(leff2), 1, &
                     .true._1)
-        travk=ddot(nbeq2,zr(lmod2),1,zr(leff2),1)
+        travk = ddot(nbeq2, zr(lmod2), 1, zr(leff2), 1)
 !
-        trvint=trvint+travk-(zr(lomeg+j1-1)**2)*travm
-        if (zr(lomeg+j1-1) .gt. 1) trvint=trvint/zr(lomeg+j1-1)
+        trvint = trvint+travk-(zr(lomeg+j1-1)**2)*travm
+        if (zr(lomeg+j1-1) .gt. 1) trvint = trvint/zr(lomeg+j1-1)
 !
-        trav_interf(1+nbmod*(i1-1)+j1-1)=trvint
-        write(unit,*)'MODE ',j1,' - TRAVAIL INTERFACE =',trvint
+        trav_interf(1+nbmod*(i1-1)+j1-1) = trvint
+        write (unit, *) 'MODE ', j1, ' - TRAVAIL INTERFACE =', trvint
 !
 !--
 !-- PROJECTION DES MOUVEMENTS DE L'INTERFACE MAITRE
 !--
         if (imast1 .eq. -1) then
-            lbid=lobs1
-            ibid=lobs2
+            lbid = lobs1
+            ibid = lobs2
         else
-            lbid=lobs2
-            ibid=lobs1
-        endif
+            lbid = lobs2
+            ibid = lobs1
+        end if
 !
         do k1 = 1, nl
 !-- STOCKAGE DE LA PROJECTION DES MVTS MAITRES SUR L'INT. ESCLAVE
             do l1 = 1, nc
-                zr(lesc+(k1-1)+(j1-1)*nl)=zr(lesc+(k1-1)+(j1-1)*nl)+&
-                tr_mod_mast_pro(1+(k1-1)+(l1-1)*nl)*zr(lbid+l1-1)
+                zr(lesc+(k1-1)+(j1-1)*nl) = zr(lesc+(k1-1)+(j1-1)*nl)+ &
+                                            tr_mod_mast_pro(1+(k1-1)+(l1-1)*nl)*zr(lbid+l1-1)
             end do
 !-- STOCKAGE DES MVTS DE L'INT. ESCLAVE POUR EXPANSION
-            zr(lmast+(k1-1)+(j1-1)*nl)=zr(ibid+k1-1)
+            zr(lmast+(k1-1)+(j1-1)*nl) = zr(ibid+k1-1)
         end do
 !
 !-- DEPLACEMENT IMPOSE DE L'INTERFACE ESCLAVE
 !
-        l1=0
+        l1 = 0
         do k1 = 1, nbddl
             if (zi(llint+k1-1) .gt. 0) then
-                zr(ldepsl+zi(lag1+k1-1)-1+nbeq*(j1-1))= zr(lesc+l1+(&
-                j1-1)*nl)
-                zr(ldepsl+zi(lag2+k1-1)-1+nbeq*(j1-1))= zr(lesc+l1+(&
-                j1-1)*nl)
-                l1=l1+1
-            endif
+                zr(ldepsl+zi(lag1+k1-1)-1+nbeq*(j1-1)) = zr(lesc+l1+( &
+                                                            j1-1)*nl)
+                zr(ldepsl+zi(lag2+k1-1)-1+nbeq*(j1-1)) = zr(lesc+l1+( &
+                                                            j1-1)*nl)
+                l1 = l1+1
+            end if
         end do
 !
 !--
@@ -401,36 +401,36 @@ subroutine traint(resgen, modgen, numlia, sst1, sst2,&
 !-- JE COMMENTE TANT QUE J'AI PAS TROUVE
 !
         if (1 .gt. 2) then
-            travk=0.d0
-            l1=0
+            travk = 0.d0
+            l1 = 0
             if (imast1 .eq. -1) then
 !
                 do k1 = 1, nbddl
                     if (zi(llint+k1-1) .gt. 0) then
-                        travk=travk +( zr(lobs2+l1) - zr(lesc+l1+(j1-&
-                        1)*nl) )* (zr(leff2+zi(llint+k1-1)-1)-zr(&
-                        lomeg+j1-1)* zr(lefi2+zi(llint+k1-1)-1))
-                        l1=l1+1
-                    endif
+                        travk = travk+(zr(lobs2+l1)-zr(lesc+l1+(j1- &
+                                                           1)*nl))*(zr(leff2+zi(llint+k1-1)-1)-zr( &
+                                                             lomeg+j1-1)*zr(lefi2+zi(llint+k1-1)-1))
+                        l1 = l1+1
+                    end if
                 end do
 !
             else
                 do k1 = 1, nbddl
                     if (zi(llint+k1-1) .gt. 0) then
-                        travk=travk +( zr(lobs1+l1) - zr(lesc+l1+(j1-&
-                        1)*nl) )* (zr(leff1+zi(llint+k1-1)-1)-zr(&
-                        lomeg+j1-1)* zr(lefi1+zi(llint+k1-1)-1))
-                        l1=l1+1
-                    endif
+                        travk = travk+(zr(lobs1+l1)-zr(lesc+l1+(j1- &
+                                                           1)*nl))*(zr(leff1+zi(llint+k1-1)-1)-zr( &
+                                                             lomeg+j1-1)*zr(lefi1+zi(llint+k1-1)-1))
+                        l1 = l1+1
+                    end if
                 end do
 !
-            endif
-            if (zr(lomeg+j1-1) .gt. 1) travk=travk/zr(lomeg+j1-1)
+            end if
+            if (zr(lomeg+j1-1) .gt. 1) travk = travk/zr(lomeg+j1-1)
 !
-            write(unit,*)'                - DECOLLEMENT =',travk
-            write(unit,*)' '
+            write (unit, *) '                - DECOLLEMENT =', travk
+            write (unit, *) ' '
 !
-        endif
+        end if
 !
 !
     end do

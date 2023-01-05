@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine mlncld(n, frontl, frontu, adper, t1,&
+subroutine mlncld(n, frontl, frontu, adper, t1, &
                   t2, ad, eps, ier)
     implicit none
 #include "asterfort/sspmvc.h"
@@ -26,49 +26,49 @@ subroutine mlncld(n, frontl, frontu, adper, t1,&
     complex(kind=8) :: frontl(*), t1(*), frontu(*), t2(*), alpha, beta
     integer :: i, k, incx, incy
     integer :: seuin, seuik
-    parameter(seuin=1500,seuik=300)
+    parameter(seuin=1500, seuik=300)
     integer :: nn, kk, lda
     character(len=1) :: tra
 !
 !     MLTFLD TRAITE UNIQUEMENT LES BLOCS DIAGONAUX
-    tra='N'
-    alpha= dcmplx(-1.d0,0.d0)
-    beta = dcmplx( 1.d0,0.d0)
+    tra = 'N'
+    alpha = dcmplx(-1.d0, 0.d0)
+    beta = dcmplx(1.d0, 0.d0)
     incx = 1
     incy = 1
     lda = n
     do k = 1, n
-        do i = 1, k - 1
-            ad(i) = adper(i) + k - i
+        do i = 1, k-1
+            ad(i) = adper(i)+k-i
             t1(i) = frontu(ad(i))
             t2(i) = frontl(ad(i))
         end do
         if (k .gt. 1) then
 !
-            nn= n-k+1
-            kk= k-1
+            nn = n-k+1
+            kk = k-1
             if (nn .lt. seuin .or. kk .lt. seuik) then
-                call sspmvc(n-k+1, k-1, frontl, ad, t1,&
+                call sspmvc(n-k+1, k-1, frontl, ad, t1, &
                             frontl(adper(k)))
-                call sspmvc(n-k+1, k-1, frontu, ad, t2,&
+                call sspmvc(n-k+1, k-1, frontu, ad, t2, &
                             frontu(adper(k)))
             else
-                call zgemv(tra, nn, kk, alpha, frontl(k),&
-                           lda, t1, incx, beta, frontl(adper(k)),&
+                call zgemv(tra, nn, kk, alpha, frontl(k), &
+                           lda, t1, incx, beta, frontl(adper(k)), &
                            incy)
-                call zgemv(tra, nn, kk, alpha, frontu(k),&
-                           lda, t2, incx, beta, frontu(adper(k)),&
+                call zgemv(tra, nn, kk, alpha, frontu(k), &
+                           lda, t2, incx, beta, frontu(adper(k)), &
                            incy)
-            endif
-        endif
+            end if
+        end if
 !         DIVISION PAR LE TERME DIAGONAL DE FRONTL (PAS FRONTU)
         if (abs(frontl(adper(k))) .le. eps) then
             ier = k
             goto 40
-        endif
-        do i = 1, n - k
+        end if
+        do i = 1, n-k
             frontl(adper(k)+i) = frontl(adper(k)+i)/frontl(adper(k))
         end do
     end do
- 40 continue
+40  continue
 end subroutine

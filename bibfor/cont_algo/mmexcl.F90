@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine mmexcl(type_inte  , pair_type  , i_poin_elem, ndexfr,&
+subroutine mmexcl(type_inte, pair_type, i_poin_elem, ndexfr, &
                   l_node_excl, l_excl_frot)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -65,28 +65,28 @@ implicit none
 !
     if (pair_type .eq. -2) then
         l_tole_appa = .false.
-    else if (pair_type.eq.-3) then
+    else if (pair_type .eq. -3) then
         l_tole_exte = .false.
-    endif
+    end if
 !
 ! - SANS_GROUP_NO nodes
 !
     if (pair_type .eq. -1) then
-        ASSERT(type_inte.eq.1)
+        ASSERT(type_inte .eq. 1)
         l_node_excl = .true.
-    endif
+    end if
 !
 ! - TOLE_APPA projection
 !
-    if (.not.l_tole_appa) then
+    if (.not. l_tole_appa) then
         l_node_excl = .true.
-    endif
+    end if
 !
 ! - TOLE_EXTE projection
 !
     if (.not. l_tole_exte) then
         l_node_excl = .true.
-    endif
+    end if
 !
 ! - Excluded for friction
 !
@@ -94,7 +94,7 @@ implicit none
         call isdeco([ndexfr], lnexfr, 9)
         if (lnexfr(i_poin_elem) .eq. 1) then
             l_excl_frot = .true.
-        endif
-    endif
+        end if
+    end if
 !
 end subroutine

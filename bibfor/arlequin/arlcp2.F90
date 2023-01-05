@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine arlcp2(iocc, mail, nomo, typmai, nom1,&
-                  nom2, marlel, modarl, jma1, jma2,&
+subroutine arlcp2(iocc, mail, nomo, typmai, nom1, &
+                  nom2, marlel, modarl, jma1, jma2, &
                   tabcor, mailar, proj)
 !
 !
@@ -57,13 +57,13 @@ subroutine arlcp2(iocc, mail, nomo, typmai, nom1,&
 ! OUT MODARL : PSEUDO-MODELE
 !
     integer :: nbchel
-    parameter    (nbchel = 6)
+    parameter(nbchel=6)
     character(len=19) :: chames(nbchel), chamel(nbchel)
     character(len=19) :: ligarl
     integer :: nncp, iret, jma1, jma2
 !
     character(len=6) :: nompro
-    parameter   (nompro='ARLCP2')
+    parameter(nompro='ARLCP2')
 !
 ! ----------------------------------------------------------------------
 !
@@ -78,8 +78,8 @@ subroutine arlcp2(iocc, mail, nomo, typmai, nom1,&
     chames(5) = '&&'//nompro//'.ESREF2'
     chames(6) = '&&'//nompro//'.ESCOO2'
 !
-    call arlchi(iocc, mail, nomo, nom1, nom2,&
-                mailar, typmai, nbchel, chames, jma1,&
+    call arlchi(iocc, mail, nomo, nom1, nom2, &
+                mailar, typmai, nbchel, chames, jma1, &
                 jma2, tabcor, proj)
 !
 ! --- CREATION DES CHAM_ELEM
@@ -95,27 +95,27 @@ subroutine arlcp2(iocc, mail, nomo, typmai, nom1,&
 ! --- DESTRUCTION DES CHAM_ELEM_S CORRESPONDANT DES QU'ILS NE SONT PLUS
 ! --- UTILES
 !
-    call cescel(chames(1), ligarl, 'ARLQ_MATR', 'PFAMILK', 'OUI',&
+    call cescel(chames(1), ligarl, 'ARLQ_MATR', 'PFAMILK', 'OUI', &
                 nncp, 'V', chamel(1), 'F', iret)
     call detrsd('CHAM_ELEM_S', chames(1))
 !
-    call cescel(chames(2), ligarl, 'ARLQ_MATR', 'PINFORR', 'OUI',&
+    call cescel(chames(2), ligarl, 'ARLQ_MATR', 'PINFORR', 'OUI', &
                 nncp, 'V', chamel(2), 'F', iret)
     call detrsd('CHAM_ELEM_S', chames(2))
 !
-    call cescel(chames(3), ligarl, 'ARLQ_MATR', 'PREFE1K', 'OUI',&
+    call cescel(chames(3), ligarl, 'ARLQ_MATR', 'PREFE1K', 'OUI', &
                 nncp, 'V', chamel(3), 'F', iret)
     call detrsd('CHAM_ELEM_S', chames(3))
 !
-    call cescel(chames(4), ligarl, 'ARLQ_MATR', 'PCOOR1R', 'OUI',&
+    call cescel(chames(4), ligarl, 'ARLQ_MATR', 'PCOOR1R', 'OUI', &
                 nncp, 'V', chamel(4), 'F', iret)
     call detrsd('CHAM_ELEM_S', chames(4))
 !
-    call cescel(chames(5), ligarl, 'ARLQ_MATR', 'PREFE2K', 'OUI',&
+    call cescel(chames(5), ligarl, 'ARLQ_MATR', 'PREFE2K', 'OUI', &
                 nncp, 'V', chamel(5), 'F', iret)
     call detrsd('CHAM_ELEM_S', chames(5))
 !
-    call cescel(chames(6), ligarl, 'ARLQ_MATR', 'PCOOR2R', 'OUI',&
+    call cescel(chames(6), ligarl, 'ARLQ_MATR', 'PCOOR2R', 'OUI', &
                 nncp, 'V', chamel(6), 'F', iret)
     call detrsd('CHAM_ELEM_S', chames(6))
 !
@@ -123,7 +123,7 @@ subroutine arlcp2(iocc, mail, nomo, typmai, nom1,&
 !
     if (proj) then
         call arlclc(modarl, nbchel, chamel, marlel)
-    endif
+    end if
 !
 ! --- MENAGE
 !

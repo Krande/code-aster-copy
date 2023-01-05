@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine ecpuis(e, sigy, alfafa, unsurn, pm,&
+subroutine ecpuis(e, sigy, alfafa, unsurn, pm, &
                   dp, rp, rprim)
     implicit none
 !
@@ -33,15 +33,15 @@ subroutine ecpuis(e, sigy, alfafa, unsurn, pm,&
 !     ------------------
     real(kind=8) :: p0, rp0, coef
 !
-    p0=1.d-10
+    p0 = 1.d-10
     if ((pm+dp) .le. p0) then
-        rp0= sigy*(e/alfafa/sigy*(p0))**unsurn + sigy
-        rp= sigy+(pm+dp)*(rp0-sigy)/p0
-        rprim=(rp0-sigy)/p0
+        rp0 = sigy*(e/alfafa/sigy*(p0))**unsurn+sigy
+        rp = sigy+(pm+dp)*(rp0-sigy)/p0
+        rprim = (rp0-sigy)/p0
     else
         coef = e/alfafa/sigy
-        rp= sigy*(e/alfafa/sigy*(pm+dp))**unsurn + sigy
-        rprim= unsurn * sigy * coef * (coef*(pm+dp))**(unsurn-1.d0)
-    endif
+        rp = sigy*(e/alfafa/sigy*(pm+dp))**unsurn+sigy
+        rprim = unsurn*sigy*coef*(coef*(pm+dp))**(unsurn-1.d0)
+    end if
 !
 end subroutine

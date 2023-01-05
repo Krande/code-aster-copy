@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,18 +19,18 @@
 ! person_in_charge: daniele.colombo at ifpen.fr
 !
 subroutine xhmsat(ds_thm, option, &
-                  ndim, dimenr,&
-                  dimcon, nbvari, addeme,&
+                  ndim, dimenr, &
+                  dimcon, nbvari, addeme, &
                   adcome, &
-                  addep1, adcp11, congem, congep, vintm,&
+                  addep1, adcp11, congem, congep, vintm, &
                   vintp, dsde, epsv, depsv, &
-                  dp1, phi, rho11,&
-                  satur, retcom, tbiot, angl_naut,&
+                  dp1, phi, rho11, &
+                  satur, retcom, tbiot, angl_naut, &
                   yaenrh, adenhy, nfh)
 !
-use THM_type
+    use THM_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/appmas.h"
@@ -44,18 +44,18 @@ implicit none
 #include "asterfort/viporo.h"
 #include "asterfort/virhol.h"
 !
-type(THM_DS), intent(in) :: ds_thm
-integer :: ndim, dimcon, nbvari
-integer :: adcome, adcp11, nfh
-integer :: addeme, addep1, retcom
-real(kind=8) :: congem(dimcon), congep(dimcon)
-real(kind=8) :: vintm(nbvari), vintp(nbvari)
-real(kind=8) :: epsv, depsv, dp1, dt
-real(kind=8) :: phi, rho11
-real(kind=8) :: angl_naut(3)
-character(len=16) :: option
-integer :: dimenr
-real(kind=8) :: dsde(dimcon, dimenr)
+    type(THM_DS), intent(in) :: ds_thm
+    integer :: ndim, dimcon, nbvari
+    integer :: adcome, adcp11, nfh
+    integer :: addeme, addep1, retcom
+    real(kind=8) :: congem(dimcon), congep(dimcon)
+    real(kind=8) :: vintm(nbvari), vintp(nbvari)
+    real(kind=8) :: epsv, depsv, dp1, dt
+    real(kind=8) :: phi, rho11
+    real(kind=8) :: angl_naut(3)
+    character(len=16) :: option
+    integer :: dimenr
+    real(kind=8) :: dsde(dimcon, dimenr)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -83,36 +83,36 @@ real(kind=8) :: dsde(dimcon, dimenr)
     real(kind=8) :: dmdeps(6), dsdp1(6), sigmp(6)
     aster_logical :: emmag
     integer :: advico, advihy, vicphi, vihrho
-    real(kind=8) :: ep,surf,shut,sbjh,wbjh,dpi
+    real(kind=8) :: ep, surf, shut, sbjh, wbjh, dpi
 
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    dpi    = 0.d0
-    ep     = 0.d0
-    surf   = 0.d0
-    shut   = 0.d0
-    sbjh   = 0.d0
-    wbjh   = 0.d0
+    dpi = 0.d0
+    ep = 0.d0
+    surf = 0.d0
+    shut = 0.d0
+    sbjh = 0.d0
+    wbjh = 0.d0
 !
 ! - Get material parameters
 !
-    phi0   = ds_thm%ds_parainit%poro_init
+    phi0 = ds_thm%ds_parainit%poro_init
     rho110 = ds_thm%ds_material%liquid%rho
-    cliq   = ds_thm%ds_material%liquid%unsurk
+    cliq = ds_thm%ds_material%liquid%unsurk
     alpliq = ds_thm%ds_material%liquid%alpha
 !
 ! - Get storage parameters for behaviours
 !
-    advico    = ds_thm%ds_behaviour%advico
-    advihy    = ds_thm%ds_behaviour%advihy
-    vihrho    = ds_thm%ds_behaviour%vihrho
-    vicphi    = ds_thm%ds_behaviour%vicphi
+    advico = ds_thm%ds_behaviour%advico
+    advihy = ds_thm%ds_behaviour%advihy
+    vihrho = ds_thm%ds_behaviour%vihrho
+    vicphi = ds_thm%ds_behaviour%vicphi
 !
 ! - Evaluation of initial saturation
 !
-    satur      = 1.d0
-    saturm     = 1.d0
+    satur = 1.d0
+    saturm = 1.d0
     dsatur_dp1 = 0.d0
 ! ======================================================================
 ! --- INITIALISATIONS --------------------------------------------------
@@ -122,94 +122,94 @@ real(kind=8) :: dsde(dimcon, dimenr)
     dt = 0.0d0
     dpad = 0.0d0
     signe = -1.0d0
-    dpi =0.0d0
+    dpi = 0.0d0
     alpha0 = 0.d0
     alphfi = 0.d0
     m11m = congem(adcp11)
     retcom = 0
-    rho11 = vintm(advihy+vihrho) + rho110
-    rho11m = vintm(advihy+vihrho) + rho110
-    phi = vintm(advico+vicphi) + phi0
-    phim = vintm(advico+vicphi) + phi0
+    rho11 = vintm(advihy+vihrho)+rho110
+    rho11m = vintm(advihy+vihrho)+rho110
+    phi = vintm(advico+vicphi)+phi0
+    phim = vintm(advico+vicphi)+phi0
 !
 ! - Prepare initial parameters for coupling law
 !
-    call inithm(ds_thm   ,&
-                angl_naut, tbiot , phi0 ,&
-                epsv     , depsv ,&
-                epsvm    , cs    , mdal , dalal,&
-                alpha0   , alphfi, cbiot, unsks)
+    call inithm(ds_thm, &
+                angl_naut, tbiot, phi0, &
+                epsv, depsv, &
+                epsvm, cs, mdal, dalal, &
+                alpha0, alphfi, cbiot, unsks)
 ! *********************************************************************
 ! *** LES VARIABLES INTERNES ******************************************
 ! *********************************************************************
-    if ((option.eq.'RAPH_MECA') .or. (option.eq.'FORC_NODA') .or.&
-        (option(1:9).eq.'FULL_MECA')) then
+    if ((option .eq. 'RAPH_MECA') .or. (option .eq. 'FORC_NODA') .or. &
+        (option(1:9) .eq. 'FULL_MECA')) then
 ! ----- Compute porosity and save it in internal state variables
         if (ds_thm%ds_elem%l_dof_meca) then
-            call viporo(ds_thm, nbvari,&
-                        advico, vicphi,&
-                        dt    , dp1   , dp2   ,&
-                        deps  , depsv ,&
-                        signe , satur , unsks , phi0,&
-                        cs    , tbiot , cbiot ,&
-                        alpha0, alphfi,&
-                        vintm , vintp ,&
-                        phi   , phim  , retcom)
-        endif
+            call viporo(ds_thm, nbvari, &
+                        advico, vicphi, &
+                        dt, dp1, dp2, &
+                        deps, depsv, &
+                        signe, satur, unsks, phi0, &
+                        cs, tbiot, cbiot, &
+                        alpha0, alphfi, &
+                        vintm, vintp, &
+                        phi, phim, retcom)
+        end if
 ! ----- Compute volumic mass for water
         if (ds_thm%ds_elem%l_dof_ther) then
-            call virhol(nbvari, vintm , vintp ,&
-                        advihy, vihrho,&
-                        dt    , dp1   , dp2   , dpad,&
-                        cliq  , alpliq, signe ,&
-                        rho110, rho11 , rho11m,&
+            call virhol(nbvari, vintm, vintp, &
+                        advihy, vihrho, &
+                        dt, dp1, dp2, dpad, &
+                        cliq, alpliq, signe, &
+                        rho110, rho11, rho11m, &
                         retcom)
         else
-            call virhol(nbvari, vintm , vintp ,&
-                        advihy, vihrho,&
-                        dt    , dp1   , dp2   , dpad,&
-                        cliq  , 0.d0  , signe ,&
-                        rho110, rho11 , rho11m,&
+            call virhol(nbvari, vintm, vintp, &
+                        advihy, vihrho, &
+                        dt, dp1, dp2, dpad, &
+                        cliq, 0.d0, signe, &
+                        rho110, rho11, rho11m, &
                         retcom)
-        endif
-    endif
+        end if
+    end if
 ! =====================================================================
 ! --- PROBLEME DANS LE CALCUL DES VARIABLES INTERNES ? ----------------
 ! =====================================================================
     if (retcom .ne. 0) then
         goto 30
-    endif
+    end if
 ! =====================================================================
 ! --- ACTUALISATION DE CS ET ALPHFI -----------------------------------
 ! =====================================================================
     if (ds_thm%ds_elem%l_dof_meca) then
         call dilata(ds_thm, angl_naut, phi, tbiot, alphfi)
         call unsmfi(ds_thm, phi, tbiot, cs)
-    endif
+    end if
 ! **********************************************************************
 ! *** LES CONTRAINTES GENERALISEES *************************************
 ! **********************************************************************
 ! ======================================================================
 ! --- CALCUL SI PAS RIGI_MECA_TANG -------------------------------------
 ! ======================================================================
-    if ((option.eq.'RAPH_MECA') .or. (option(1:9).eq.'FULL_MECA')) then
+    if ((option .eq. 'RAPH_MECA') .or. (option(1:9) .eq. 'FULL_MECA')) then
 ! ======================================================================
 ! --- CALCUL DES CONTRAINTES DE PRESSIONS ------------------------------
 ! ======================================================================
         if (ds_thm%ds_elem%l_dof_meca) then
-            call sigmap(ds_thm, satur, signe, tbiot, dp2, dp1,dpi, sigmp)
+            call sigmap(ds_thm, satur, signe, tbiot, dp2, dp1, dpi, sigmp)
             do i = 1, 3
-                congep(adcome+6+i-1)=congep(adcome+6+i-1)+sigmp(i)
+                congep(adcome+6+i-1) = congep(adcome+6+i-1)+sigmp(i)
             end do
             do i = 4, 6
-                congep(adcome+6+i-1)=congep(adcome+6+i-1)+sigmp(i)*rac2
+                congep(adcome+6+i-1) = congep(adcome+6+i-1)+sigmp(i)*rac2
             end do
-        endif
+        end if
 ! ======================================================================
 ! --- CALCUL DES APPORTS MASSIQUES SELON FORMULE DOCR ------------------
 ! ======================================================================
-        congep(adcp11) = appmas(m11m,phi,phim,satur,saturm,rho11, rho11m, epsv,epsvm)
-    endif
+        congep(adcp11) = appmas(m11m, phi, phim, satur, saturm, rho11, rho11m, epsv, epsvm)
+    end if
 ! **********************************************************************
 ! *** CALCUL DES DERIVEES **********************************************
 ! **********************************************************************
@@ -217,59 +217,59 @@ real(kind=8) :: dsde(dimcon, dimenr)
 ! --- CALCUL DES DERIVEES PARTIELLES DES PRESSIONS SELON FORMULES DOCR -
 ! --- UNIQUEMENT POUR LES OPTIONS RIGI_MECA ET FULL_MECA ---------------
 ! ======================================================================
-    if ((option(1:9).eq.'RIGI_MECA') .or. (option(1:9).eq.'FULL_MECA')) then
+    if ((option(1:9) .eq. 'RIGI_MECA') .or. (option(1:9) .eq. 'FULL_MECA')) then
         if (ds_thm%ds_elem%l_dof_meca) then
 ! ======================================================================
 ! --- CALCUL DES DERIVEES DE SIGMAP ------------------------------------
 ! ======================================================================
-            call dspdp1(ds_thm,signe, tbiot, satur, dsdp1,phi0,ep,surf,sbjh,wbjh)
+            call dspdp1(ds_thm, signe, tbiot, satur, dsdp1, phi0, ep, surf, sbjh, wbjh)
             do i = 1, 3
-                dsde(adcome+6+i-1,addep1)=dsde(adcome+6+i-1,addep1) + dsdp1(i)
+                dsde(adcome+6+i-1, addep1) = dsde(adcome+6+i-1, addep1)+dsdp1(i)
             end do
 !
             do i = 4, 6
-                dsde(adcome+6+i-1,addep1)=dsde(adcome+6+i-1,addep1) + dsdp1(i)*rac2
+                dsde(adcome+6+i-1, addep1) = dsde(adcome+6+i-1, addep1)+dsdp1(i)*rac2
             end do
 ! ======================================================================
 ! --- CALCUL DES DERIVEES DES APPORTS MASSIQUES ------------------------
 ! ======================================================================
             call dmdepv(rho11, satur, tbiot, dmdeps)
             do i = 1, 6
-                dsde(adcp11,addeme+ndim-1+i) = dsde(adcp11,addeme+ ndim-1+i) + dmdeps(i)
+                dsde(adcp11, addeme+ndim-1+i) = dsde(adcp11, addeme+ndim-1+i)+dmdeps(i)
             end do
-        endif
+        end if
         if (yaenrh .eq. 1) then
 ! ======================================================================
 ! --- CALCUL DES DERIVEES DE SIGMAP AVEC XFEM --------------------------
 ! ======================================================================
-          do ifh = 1, nfh
-            do i = 1, 3
-            dsde(adcome+6-1+i,adenhy+(ifh-1)*(ndim+1))=dsde(adcome+6-1+i,adenhy+&
-                                                       (ifh-1)*(ndim+1))+dsdp1(i)
-            end do
+            do ifh = 1, nfh
+                do i = 1, 3
+                    dsde(adcome+6-1+i, adenhy+(ifh-1)*(ndim+1)) = dsde(adcome+6-1+i, adenhy+ &
+                                                                       (ifh-1)*(ndim+1))+dsdp1(i)
+                end do
 !
-            do i = 4, 6
-            dsde(adcome+6-1+i,adenhy+(ifh-1)*(ndim+1))=dsde(adcome+6-1+i,adenhy+&
-                                                       (ifh-1)*(ndim+1))+dsdp1(i)*rac2
+                do i = 4, 6
+                    dsde(adcome+6-1+i, adenhy+(ifh-1)*(ndim+1)) = dsde(adcome+6-1+i, adenhy+ &
+                                                                     (ifh-1)*(ndim+1))+dsdp1(i)*rac2
+                end do
             end do
-          end do
-        endif
+        end if
 ! ======================================================================
 ! --- CALCUL DES DERIVEES DES APPORTS MASSIQUES ------------------------
 ! ======================================================================
-        dsde(adcp11,addep1) = dsde(adcp11,addep1) +&
-                              dmwdp1(rho11, signe,satur,dsatur_dp1,phi,cs,cliq,1.d0, emmag,bid)
-        if (yaenrh.eq.1) then
+        dsde(adcp11, addep1) = dsde(adcp11, addep1)+ &
+                            dmwdp1(rho11, signe, satur, dsatur_dp1, phi, cs, cliq, 1.d0, emmag, bid)
+        if (yaenrh .eq. 1) then
 ! ======================================================================
 ! --- CALCUL DES DERIVEES DES APPORTS MASSIQUES AVEC XFEM --------------
 ! ======================================================================
-          do ifh = 1, nfh
-            dsde(adcp11,adenhy+(ifh-1)*(ndim+1)) = dsde(adcp11,adenhy+(ifh-1)*(ndim+1))+&
-                dmwdp1(rho11, signe,satur,dsatur_dp1,phi,cs,cliq,1.d0, emmag,bid)
-          end do
-        endif
-    endif
+            do ifh = 1, nfh
+                dsde(adcp11, adenhy+(ifh-1)*(ndim+1)) = dsde(adcp11, adenhy+(ifh-1)*(ndim+1))+ &
+                            dmwdp1(rho11, signe, satur, dsatur_dp1, phi, cs, cliq, 1.d0, emmag, bid)
+            end do
+        end if
+    end if
 ! ======================================================================
- 30 continue
+30  continue
 ! =====================================================================
 end subroutine

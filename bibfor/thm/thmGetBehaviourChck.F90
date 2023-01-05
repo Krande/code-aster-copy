@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,9 +18,9 @@
 !
 subroutine thmGetBehaviourChck(ds_thm)
 !
-use THM_type
+    use THM_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -28,7 +28,7 @@ implicit none
 #include "asterfort/THM_type.h"
 #include "asterfort/Behaviour_type.h"
 !
-type(THM_DS), intent(in) :: ds_thm
+    type(THM_DS), intent(in) :: ds_thm
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -51,77 +51,77 @@ type(THM_DS), intent(in) :: ds_thm
         if (ds_thm%ds_behaviour%nb_pres .ne. 2) then
             vali(1) = 2
             vali(2) = ds_thm%ds_behaviour%nb_pres
-            call utmess('F', 'THM1_60', sk   = ds_thm%ds_behaviour%rela_thmc,&
-                                        ni   = 2,&
-                                        vali = vali)
-        endif
+            call utmess('F', 'THM1_60', sk=ds_thm%ds_behaviour%rela_thmc, &
+                        ni=2, &
+                        vali=vali)
+        end if
         if (ds_thm%ds_behaviour%nb_phase(1) .ne. ds_thm%ds_elem%nb_phase(1)) then
             vali(1) = ds_thm%ds_elem%nb_phase(1)
             vali(2) = ds_thm%ds_behaviour%nb_phase(1)
-            call utmess('F', 'THM1_61', sk   = ds_thm%ds_behaviour%rela_thmc,&
-                                        ni   = 2,&
-                                        vali = vali)
-        endif
+            call utmess('F', 'THM1_61', sk=ds_thm%ds_behaviour%rela_thmc, &
+                        ni=2, &
+                        vali=vali)
+        end if
         if (ds_thm%ds_behaviour%nb_phase(2) .ne. ds_thm%ds_elem%nb_phase(2)) then
             vali(1) = ds_thm%ds_elem%nb_phase(2)
             vali(2) = ds_thm%ds_behaviour%nb_phase(2)
-            call utmess('F', 'THM1_62', sk   = ds_thm%ds_behaviour%rela_thmc,&
-                                        ni   = 2,&
-                                        vali = vali)
-        endif
-    endif
+            call utmess('F', 'THM1_62', sk=ds_thm%ds_behaviour%rela_thmc, &
+                        ni=2, &
+                        vali=vali)
+        end if
+    end if
     if (ds_thm%ds_elem%l_dof_pre1 .and. .not. ds_thm%ds_elem%l_dof_pre2) then
         if (ds_thm%ds_behaviour%nb_pres .ne. 1) then
             vali(1) = 2
             vali(2) = ds_thm%ds_behaviour%nb_pres
-            call utmess('F', 'THM1_60', sk   = ds_thm%ds_behaviour%rela_thmc,&
-                                        ni   = 2,&
-                                        vali = vali)
-        endif
+            call utmess('F', 'THM1_60', sk=ds_thm%ds_behaviour%rela_thmc, &
+                        ni=2, &
+                        vali=vali)
+        end if
         if (ds_thm%ds_behaviour%nb_phase(1) .ne. ds_thm%ds_elem%nb_phase(1)) then
             vali(1) = ds_thm%ds_elem%nb_phase(1)
             vali(2) = ds_thm%ds_behaviour%nb_phase(1)
-            call utmess('F', 'THM1_61', sk   = ds_thm%ds_behaviour%rela_thmc,&
-                                        ni   = 2,&
-                                        vali = vali)
-        endif
-    endif
+            call utmess('F', 'THM1_61', sk=ds_thm%ds_behaviour%rela_thmc, &
+                        ni=2, &
+                        vali=vali)
+        end if
+    end if
     if (.not. ds_thm%ds_elem%l_dof_pre1 .and. .not. ds_thm%ds_elem%l_dof_pre2) then
         if (ds_thm%ds_behaviour%nb_pres .ne. 0) then
             vali(1) = 2
             vali(2) = ds_thm%ds_behaviour%nb_pres
-            call utmess('F', 'THM1_60', sk   = ds_thm%ds_behaviour%rela_thmc,&
-                                        ni   = 2,&
-                                        vali = vali)
-        endif
-    endif
+            call utmess('F', 'THM1_60', sk=ds_thm%ds_behaviour%rela_thmc, &
+                        ni=2, &
+                        vali=vali)
+        end if
+    end if
 !
     if (ds_thm%ds_behaviour%l_meca) then
         if (.not. ds_thm%ds_elem%l_dof_meca) then
-            call utmess('F', 'THM1_63', sk = ds_thm%ds_behaviour%rela_thmc)
-        endif
-    endif
-    if (.not.ds_thm%ds_behaviour%l_meca) then
+            call utmess('F', 'THM1_63', sk=ds_thm%ds_behaviour%rela_thmc)
+        end if
+    end if
+    if (.not. ds_thm%ds_behaviour%l_meca) then
         if (ds_thm%ds_elem%l_dof_meca) then
-            call utmess('F', 'THM1_64', sk = ds_thm%ds_behaviour%rela_thmc)
-        endif
-    endif
+            call utmess('F', 'THM1_64', sk=ds_thm%ds_behaviour%rela_thmc)
+        end if
+    end if
 !
     if (ds_thm%ds_behaviour%l_temp) then
         if (.not. ds_thm%ds_elem%l_dof_ther) then
-            call utmess('F', 'THM1_65', sk = ds_thm%ds_behaviour%rela_thmc)
-        endif
-    endif
-    if (.not.ds_thm%ds_behaviour%l_temp) then
+            call utmess('F', 'THM1_65', sk=ds_thm%ds_behaviour%rela_thmc)
+        end if
+    end if
+    if (.not. ds_thm%ds_behaviour%l_temp) then
         if (ds_thm%ds_elem%l_dof_ther) then
-            call utmess('F', 'THM1_66', sk = ds_thm%ds_behaviour%rela_thmc)
-        endif
-    endif
+            call utmess('F', 'THM1_66', sk=ds_thm%ds_behaviour%rela_thmc)
+        end if
+    end if
 !
-    if (.not.ds_thm%ds_elem%l_dof_pre2) then
+    if (.not. ds_thm%ds_elem%l_dof_pre2) then
         if (ds_thm%ds_behaviour%rela_meca .eq. 'GONF_ELAS') then
             call utmess('F', 'THM1_67')
-        endif
-    endif
+        end if
+    end if
 !
 end subroutine

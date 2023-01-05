@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine tgveri(option, carcri, compor, nno, geom,&
-                  ndim, nddl, deplp, sdepl, vectu,&
-                  svect, ncont, contp, scont, nvari,&
-                  varip, svari, matuu, smatr, matsym,&
+subroutine tgveri(option, carcri, compor, nno, geom, &
+                  ndim, nddl, deplp, sdepl, vectu, &
+                  svect, ncont, contp, scont, nvari, &
+                  varip, svari, matuu, smatr, matsym, &
                   epsilo, varia, iret)
 ! person_in_charge: jean-michel.proix at edf.fr
 ! aslint: disable=W1504
@@ -72,28 +72,28 @@ subroutine tgveri(option, carcri, compor, nno, geom,&
     integer :: i, j, k, indi, nvar, init, pos
     real(kind=8) :: v, epsilo, fp, fm, pertu, maxdep, maxgeo
     real(kind=8) :: matper(3*27*3*27)
-    save init,pos
-    data matra  /'PYTHON.TANGENT.MATA'/
-    data matrc  /'PYTHON.TANGENT.MATC'/
-    data init,pos /1,0/
+    save init, pos
+    data matra/'PYTHON.TANGENT.MATA'/
+    data matrc/'PYTHON.TANGENT.MATC'/
+    data init, pos/1, 0/
 ! ----------------------------------------------------------------------
 !
     call jemarq()
 !
 !     Calcul de la matrice TGTE par PERTURBATION
 !
-    iret=0
+    iret = 0
     if (abs(carcri(2)) .lt. 0.1d0) then
         goto 999
     else
 ! INCOMATIBILITE AVEC LES COMPORTEMENTS QUI UTILISENT PVARIMP
-        if (compor(5)(1:7) .eq. 'DEBORST') then
+        if (compor(5) (1:7) .eq. 'DEBORST') then
             goto 999
-        endif
-    endif
+        end if
+    end if
     if (option(1:9) .eq. 'RIGI_MECA') then
         goto 999
-    endif
+    end if
 !
 ! --  INITIALISATION (PREMIER APPEL)
 !
@@ -102,29 +102,29 @@ subroutine tgveri(option, carcri, compor, nno, geom,&
 !       PERTURBATION OU VERIFICATION => FULL_MECA
         if (option .ne. 'FULL_MECA') then
             goto 999
-        endif
+        end if
 !
 !       CALCUL de la valeur de la perturbation
 !       Ici on est en mecanique seule, les DDL sont
 !       seulement des deplacements
 !
-        maxdep=0.d0
-        maxgeo=0.d0
+        maxdep = 0.d0
+        maxgeo = 0.d0
         do i = 1, nddl
-            maxdep=max(maxdep,abs(deplp(i)))
+            maxdep = max(maxdep, abs(deplp(i)))
         end do
         do i = 1, nno*ndim
-            maxgeo=max(maxgeo,abs(geom(i)))
+            maxgeo = max(maxgeo, abs(geom(i)))
         end do
-        pertu=carcri(7)
+        pertu = carcri(7)
         if (maxdep .gt. pertu*maxgeo) then
-            epsilo=pertu*maxdep
+            epsilo = pertu*maxdep
         else
-            epsilo=pertu*maxgeo
-        endif
+            epsilo = pertu*maxgeo
+        end if
         if (epsilo .lt. r8miem()) then
             call utmess('F', 'ALGORITH11_86')
-        endif
+        end if
 !
 !      ARCHIVAGE DES VALEURS DE REFERENCE
 !
@@ -139,14 +139,14 @@ subroutine tgveri(option, carcri, compor, nno, geom,&
             do i = 1, nddl
                 do j = 1, i
                     v = matuu(k+1)
-                    k = k + 1
+                    k = k+1
                     smatr((i-1)*nddl+j) = v
                     smatr((j-1)*nddl+i) = v
                 end do
             end do
         else
             call dcopy(nddl*nddl, matuu, 1, smatr, 1)
-        endif
+        end if
 !
 !      PREPARATION DES ITERATIONS
 !
@@ -155,7 +155,7 @@ subroutine tgveri(option, carcri, compor, nno, geom,&
         init = 0
         pos = 0
 !
-    endif
+    end if
 !
 ! -- TRAITEMENT DES VARIATIONS
 !
@@ -166,22 +166,22 @@ subroutine tgveri(option, carcri, compor, nno, geom,&
 !
     if (nvar .gt. 0) then
         call dcopy(nddl, vectu, 1, varia(1+(pos-1)*nddl), 1)
-    endif
+    end if
 !
-    pos = pos + 1
+    pos = pos+1
     nvar = int((pos+1)/2)
-    indi = 1-2*mod(pos,2)
+    indi = 1-2*mod(pos, 2)
 !
     if (nvar .le. nddl) then
         call dcopy(nddl, sdepl, 1, deplp, 1)
-        deplp(nvar) = sdepl(nvar) + indi*epsilo
+        deplp(nvar) = sdepl(nvar)+indi*epsilo
 !
 !      INITIALISATION DES CHAMPS 'E'
         call r8inir(ncont, 0.d0, contp, 1)
         call r8inir(nddl, 0.d0, vectu, 1)
-        iret=1
+        iret = 1
         goto 999
-    endif
+    end if
 !
 !    CALCUL DE LA MATRICE TANGENTE
 !
@@ -214,16 +214,16 @@ subroutine tgveri(option, carcri, compor, nno, geom,&
             call mavec(matper, nddl, matuu, nddl*(nddl+1)/2)
         else
             call dcopy(nddl*nddl, matper, 1, matuu, 1)
-        endif
+        end if
 !
 !     VERIFICATION
 !
-    else if (abs(carcri(2)-2.d0).lt.0.1d0) then
+    else if (abs(carcri(2)-2.d0) .lt. 0.1d0) then
         if (matsym) then
             call mavec(smatr, nddl, matuu, nddl*(nddl+1)/2)
         else
             call dcopy(nddl*nddl, smatr, 1, matuu, 1)
-        endif
+        end if
 !
 !      CREATION DES OBJETS
 !      CE N'EST PAS LA PREMIERE FOIS QU'ON CALCULE LA MATRICE TANGENTE
@@ -232,7 +232,7 @@ subroutine tgveri(option, carcri, compor, nno, geom,&
         if (exi .ne. 0) then
             call jedetr(matra)
             call jedetr(matrc)
-        endif
+        end if
 !        ON CONSERVE L'ALLOCATION DYNAMIQUE AU DETRIMENT DE L'ALLOCATION
 !        STATIQUE, CAR MATRA ET MATRB SONT UTILIES A L'EXTERIEUR DES
 !        ROUTINES ELEMENTAIRES
@@ -242,7 +242,7 @@ subroutine tgveri(option, carcri, compor, nno, geom,&
         call dcopy(nddl*nddl, matper, 1, zr(ematrc), 1)
 !         CALL JELIBE(MATRA)
 !         CALL JELIBE(MATRC)
-    endif
+    end if
 !
 999 continue
 !

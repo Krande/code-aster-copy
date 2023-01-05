@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -65,11 +65,11 @@ subroutine calamo(nomres, classe, basmod)
     integer :: nbdef, nbmod, ntail
     real(kind=8) :: coeff
 !-----------------------------------------------------------------------
-    data blanc /'        '/
+    data blanc/'        '/
 !-----------------------------------------------------------------------
 !
     call jemarq()
-    pi=4.d0*atan(1.d0)
+    pi = 4.d0*atan(1.d0)
 !
 ! --- CREATION DU .REFE
 !
@@ -95,9 +95,9 @@ subroutine calamo(nomres, classe, basmod)
 !
 ! --- ALLOCATION DE LA MATRICE RESULTAT
 !
-    ntail = nbdef* (nbdef+1)/2
+    ntail = nbdef*(nbdef+1)/2
     call jecrec(nomres(1:18)//'_VALE', classe//' V R', 'NU', 'DISPERSE', &
-                   'CONSTANT',1)
+                'CONSTANT', 1)
     call jeecra(nomres(1:18)//'_VALE', 'LONMAX', ntail)
     call jecroc(jexnum(nomres(1:18)//'_VALE', 1))
     call jeveuo(jexnum(nomres(1:18)//'_VALE', 1), 'E', ldres)
@@ -108,22 +108,22 @@ subroutine calamo(nomres, classe, basmod)
     call getvr8(blanc, 'AMOR_REDUIT', iocc=1, nbval=0, nbret=ioc)
     nbamor = -ioc
     if (nbamor .gt. nbmod) then
-        vali (1) = nbmod
-        vali (2) = nbamor
-        vali (3) = nbmod
+        vali(1) = nbmod
+        vali(2) = nbamor
+        vali(3) = nbmod
         call utmess('A', 'ALGORITH15_90', ni=3, vali=vali)
         call wkvect('&&CALAMO.COEFF', 'V V R', nbmod, lamor)
-        call getvr8(blanc, 'AMOR_REDUIT', iocc=1, nbval=nbmod, vect=zr(lamor),&
+        call getvr8(blanc, 'AMOR_REDUIT', iocc=1, nbval=nbmod, vect=zr(lamor), &
                     nbret=ioc)
 !
-    else if (nbamor.lt.nbmod) then
+    else if (nbamor .lt. nbmod) then
         call wkvect('&&CALAMO.COEFF', 'V V R', nbamor, lamor)
-        call getvr8(blanc, 'AMOR_REDUIT', iocc=1, nbval=nbamor, vect=zr(lamor),&
+        call getvr8(blanc, 'AMOR_REDUIT', iocc=1, nbval=nbamor, vect=zr(lamor), &
                     nbret=ioc)
-        idiff = nbmod - nbamor
-        vali (1) = idiff
-        vali (2) = nbmod
-        vali (3) = idiff
+        idiff = nbmod-nbamor
+        vali(1) = idiff
+        vali(2) = nbmod
+        vali(3) = idiff
         call utmess('A', 'ALGORITH15_91', ni=3, vali=vali)
         call wkvect('&&CALAMO.COEFF2', 'V V R', nbmod, lamo2)
         do iam = 1, nbamor
@@ -134,17 +134,17 @@ subroutine calamo(nomres, classe, basmod)
         end do
         lamor = lamo2
 !
-    else if (nbamor.eq.nbmod) then
+    else if (nbamor .eq. nbmod) then
         call wkvect('&&CALAMO.COEFF', 'V V R', nbmod, lamor)
-        call getvr8(blanc, 'AMOR_REDUIT', iocc=1, nbval=nbmod, vect=zr(lamor),&
+        call getvr8(blanc, 'AMOR_REDUIT', iocc=1, nbval=nbmod, vect=zr(lamor), &
                     nbret=ioc)
-    endif
+    end if
 !
     do i = 1, nbmod
-        iad = i* (i+1)/2
-        call rsadpa(basmod, 'L', 1, 'FREQ', i,&
+        iad = i*(i+1)/2
+        call rsadpa(basmod, 'L', 1, 'FREQ', i, &
                     0, sjv=lfreq, styp=k8bid)
-        call rsadpa(basmod, 'L', 1, 'MASS_GENE', i,&
+        call rsadpa(basmod, 'L', 1, 'MASS_GENE', i, &
                     0, sjv=lmgen, styp=k8bid)
         coeff = 4.d0*pi*zr(lfreq)*zr(lamor+i-1)*zr(lmgen)
         zr(ldres+iad-1) = coeff

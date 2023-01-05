@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 !
 function ischar(list_load, load_type_1, load_type_2, i_load_)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -29,11 +29,11 @@ implicit none
 #include "asterfort/jeveuo.h"
 #include "asterfort/ischar_iden.h"
 !
-aster_logical :: ischar
-character(len=19), intent(in) :: list_load
-character(len=4), intent(in) :: load_type_1
-character(len=4), intent(in) :: load_type_2
-integer, optional, intent(in) :: i_load_
+    aster_logical :: ischar
+    character(len=19), intent(in) :: list_load
+    character(len=4), intent(in) :: load_type_1
+    character(len=4), intent(in) :: load_type_2
+    integer, optional, intent(in) :: i_load_
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -84,8 +84,8 @@ integer, optional, intent(in) :: i_load_
 !
     lload_name = list_load(1:19)//'.LCHA'
     lload_info = list_load(1:19)//'.INFC'
-    call jeveuo(lload_name, 'L', vk24 = v_load_name)
-    call jeveuo(lload_info, 'L', vi   = v_load_info)
+    call jeveuo(lload_name, 'L', vk24=v_load_name)
+    call jeveuo(lload_info, 'L', vi=v_load_info)
 !
 ! - Exist ?
 !
@@ -93,17 +93,17 @@ integer, optional, intent(in) :: i_load_
     if (iret .eq. 0) then
         ischar = .false.
         goto 99
-    endif
+    end if
     nb_load = v_load_info(1)
     if (nb_load .eq. 0) then
         ischar = .false.
         goto 99
-    endif
+    end if
 !
 ! - Choice: all loads or not ?
 !
     if (present(i_load_)) then
-        ischar_iload = ischar_iden(v_load_info, i_load_, nb_load, load_type_1, load_type_2,&
+        ischar_iload = ischar_iden(v_load_info, i_load_, nb_load, load_type_1, load_type_2, &
                                    load_name=v_load_name(i_load_))
         ischar = ischar_iload
     else
@@ -111,7 +111,7 @@ integer, optional, intent(in) :: i_load_
 !
 ! --------- Identify type of load
 !
-            ischar_iload = ischar_iden(v_load_info, i_load, nb_load, load_type_1, load_type_2,&
+            ischar_iload = ischar_iden(v_load_info, i_load, nb_load, load_type_1, load_type_2, &
                                        load_name=v_load_name(i_load))
 !
 ! --------- Flag for function
@@ -119,11 +119,11 @@ integer, optional, intent(in) :: i_load_
             if (ischar_iload) then
                 ischar = ischar_iload
                 goto 99
-            endif
+            end if
         end do
-    endif
+    end if
 !
- 99 continue
+99  continue
 !
     call jedema()
 end function

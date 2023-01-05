@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine arlini(mail  ,base  ,dime  ,nbno  , &
-                  nbma  ,nbnoma)
-
+subroutine arlini(mail, base, dime, nbno, &
+                  nbma, nbnoma)
 
     implicit none
 
@@ -39,7 +38,7 @@ subroutine arlini(mail  ,base  ,dime  ,nbno  , &
     character(len=8) :: mail
     character(len=1) :: base
     integer :: dime
-    integer :: nbma,nbno,nbnoma
+    integer :: nbma, nbno, nbnoma
 
 ! ----------------------------------------------------------------------
 
@@ -48,7 +47,6 @@ subroutine arlini(mail  ,base  ,dime  ,nbno  , &
 
 ! ----------------------------------------------------------------------
 
-
 ! IN  MAIL   : NOM DU MAILLAGE
 ! IN  BASE   : BASE DE CREATION 'G' OU 'V'
 ! IN  DIME   : DIMENSION DE L'ESPACE (2 OU 3)
@@ -56,12 +54,11 @@ subroutine arlini(mail  ,base  ,dime  ,nbno  , &
 ! IN  NBMA   : NOMBRE DE MAILLES DU MAILLAGE
 ! IN  NBNOMA : LONGUEUR DU VECTEUR CONNECTIVITE DES MAILLES
 
-
-    character(len=24) :: maidim,cooref,cooval,coodsc
-    integer :: jdime ,jrefe ,jcoor ,jcods
+    character(len=24) :: maidim, cooref, cooval, coodsc
+    integer :: jdime, jrefe, jcoor, jcods
     character(len=24) :: typmai
     integer :: jtypm
-    character(len=24) :: nomnoe,nommai,connex
+    character(len=24) :: nomnoe, nommai, connex
     integer :: ntgeo
 
 ! ----------------------------------------------------------------------
@@ -83,60 +80,60 @@ subroutine arlini(mail  ,base  ,dime  ,nbno  , &
 
     if ((dime < 2) .or. (dime > 3)) then
         ASSERT(.false.)
-    endif
+    end if
 
     if ((nbma <= 0) .or. (nbno <= 0) .or. (nbnoma <= 0)) then
         ASSERT(.false.)
-    endif
+    end if
 
 ! --- RECUPERATION DU NUMERO IDENTIFIANT LE TYPE DE CHAM_NO GEOMETRIE
 
-    call jenonu(jexnom('&CATA.GD.NOMGD','GEOM_R'),ntgeo)
+    call jenonu(jexnom('&CATA.GD.NOMGD', 'GEOM_R'), ntgeo)
 
 ! --- DIMENSIONS
 
-    call wkvect(maidim,base//' V I'  ,6,jdime)
-    zi(jdime    ) = nbno
-    zi(jdime + 1) = 0
-    zi(jdime + 2) = nbma
-    zi(jdime + 3) = 0
-    zi(jdime + 4) = 0
-    zi(jdime + 5) = dime
+    call wkvect(maidim, base//' V I', 6, jdime)
+    zi(jdime) = nbno
+    zi(jdime+1) = 0
+    zi(jdime+2) = nbma
+    zi(jdime+3) = 0
+    zi(jdime+4) = 0
+    zi(jdime+5) = dime
 
 ! --- CHAM_NO DES COORDONNEES DES NOEUDS
 
-    call wkvect(cooref,base//' V K24',2,jrefe)
-    zk24(jrefe  ) = mail
+    call wkvect(cooref, base//' V K24', 2, jrefe)
+    zk24(jrefe) = mail
     zk24(jrefe+1) = ' '
 
-    call wkvect(cooval,base//' V R',3*nbno,jcoor)
+    call wkvect(cooval, base//' V R', 3*nbno, jcoor)
 
-    call jecreo(coodsc,base//' V I')
-    call jeecra(coodsc,'LONMAX',3,' ')
-    call jeecra(coodsc,'DOCU',0,'CHNO')
-    call jeveuo(coodsc,'E',jcods)
-    zi(jcods)   =  ntgeo
+    call jecreo(coodsc, base//' V I')
+    call jeecra(coodsc, 'LONMAX', 3, ' ')
+    call jeecra(coodsc, 'DOCU', 0, 'CHNO')
+    call jeveuo(coodsc, 'E', jcods)
+    zi(jcods) = ntgeo
     zi(jcods+1) = -3
     zi(jcods+2) = 14
 
 ! --- NOMS DES NOEUDS
 
-    call jecreo(nomnoe,base//' N K8')
-    call jeecra(nomnoe,'NOMMAX',nbno,' ')
+    call jecreo(nomnoe, base//' N K8')
+    call jeecra(nomnoe, 'NOMMAX', nbno, ' ')
 
 ! --- TYPE DES MAILLES
 
-    call wkvect(typmai,base//' V I',nbma,jtypm)
+    call wkvect(typmai, base//' V I', nbma, jtypm)
 
 ! --- NOM DES MAILLES
 
-    call jecreo(nommai,base//' N K8')
-    call jeecra(nommai,'NOMMAX',nbma,' ')
+    call jecreo(nommai, base//' N K8')
+    call jeecra(nommai, 'NOMMAX', nbma, ' ')
 
 ! --- CONNECTIVITES DES MAILLES
 
-    call jecrec(connex,base//' V I','NU','CONTIG','VARIABLE',nbma)
-    call jeecra(connex,'LONT',nbnoma,' ')
+    call jecrec(connex, base//' V I', 'NU', 'CONTIG', 'VARIABLE', nbma)
+    call jeecra(connex, 'LONT', nbnoma, ' ')
 
     call jedema()
 

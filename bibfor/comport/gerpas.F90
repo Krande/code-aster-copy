@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,12 +16,12 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine gerpas(fami, kpg, ksp, rela_comp, mod,&
-                  imat, matcst, nbcomm, cpmono, nbphas,&
-                  nvi, nmat, y, pas, itmax,&
-                  eps, toly, cothe, coeff, dcothe,&
-                  dcoeff, coel, pgl, angmas, neps,&
-                  epsd, detot, x, nfs, nsg,&
+subroutine gerpas(fami, kpg, ksp, rela_comp, mod, &
+                  imat, matcst, nbcomm, cpmono, nbphas, &
+                  nvi, nmat, y, pas, itmax, &
+                  eps, toly, cothe, coeff, dcothe, &
+                  dcoeff, coel, pgl, angmas, neps, &
+                  epsd, detot, x, nfs, nsg, &
                   nhsr, numhsr, hsr, iret)
 ! aslint: disable=W1306,W1504
     implicit none
@@ -79,100 +79,100 @@ subroutine gerpas(fami, kpg, ksp, rela_comp, mod,&
     real(kind=8) :: toutms(nbphas*nfs*nsg*7)
 !
     if (rela_comp .eq. 'POLYCRISTAL') then
-        call calcms(nbphas, nbcomm, cpmono, nmat, pgl,&
+        call calcms(nbphas, nbcomm, cpmono, nmat, pgl, &
                     coeff, angmas, nfs, nsg, toutms)
-    endif
+    end if
     if (rela_comp .eq. 'MONOCRISTAL') then
-        irota=0
-        call calcmm(nbcomm, cpmono, nmat, pgl, nfs,&
-                    nsg, toutms, nvi, y,&
+        irota = 0
+        call calcmm(nbcomm, cpmono, nmat, pgl, nfs, &
+                    nsg, toutms, nvi, y, &
                     irota)
-    endif
+    end if
 !
-    iret=0
+    iret = 0
 !
-    ne=0
-    ny=nvi
-    na=ny+nvi
-    kpok=1
-    x=0.0d0
+    ne = 0
+    ny = nvi
+    na = ny+nvi
+    kpok = 1
+    x = 0.0d0
 !
-    h=pas
+    h = pas
 !
-    ip=0
+    ip = 0
 !
     do i = 1, nvi
-        ymfs(i)=max(toly,abs(y(i)))
+        ymfs(i) = max(toly, abs(y(i)))
     end do
 !
 40  continue
     if ((x+h) .ge. pas) then
-        h=pas-x
-        ip=1
-    endif
+        h = pas-x
+        ip = 1
+    end if
 !
 !     WK(3*NVI) CONTIENT EE, PUIS Y, PUIS A=F(Y)
     do i = 1, nvi
-        wk(ny+i)=y(i)
+        wk(ny+i) = y(i)
     end do
 !
-    xr=x
+    xr = x
 60  continue
 !
 !
-    call rk21co(fami, kpg, ksp, rela_comp, mod,&
-                imat, matcst, nbcomm, cpmono, nfs,&
-                nsg, toutms, nvi, nmat, y,&
-                kpok, wk(ne+1), wk(na+1), h, pgl,&
-                nbphas, cothe, coeff, dcothe, dcoeff,&
-                coel, x, pas, neps, epsd,&
-                detot, nhsr, numhsr, hsr, itmax,&
+    call rk21co(fami, kpg, ksp, rela_comp, mod, &
+                imat, matcst, nbcomm, cpmono, nfs, &
+                nsg, toutms, nvi, nmat, y, &
+                kpok, wk(ne+1), wk(na+1), h, pgl, &
+                nbphas, cothe, coeff, dcothe, dcoeff, &
+                coel, x, pas, neps, epsd, &
+                detot, nhsr, numhsr, hsr, itmax, &
                 eps, iret)
     if (iret .gt. 0) then
         goto 999
-    endif
+    end if
 !
-    w=abs(wk(1))/ymfs(1)
+    w = abs(wk(1))/ymfs(1)
     do i = 2, nvi
-        wz=abs(wk(i))/ymfs(i)
-        if (wz .gt. w) w=wz
+        wz = abs(wk(i))/ymfs(i)
+        if (wz .gt. w) w = wz
     end do
 !
     if (w .le. eps) then
 !        CONVERGENCE DU PAS DE TEMPS COURANT
-        kpok=1
+        kpok = 1
         if (ip .eq. 1) then
 !           PAS DE TEMPS FINAL ATTEINT, SOLUTION OK
             goto 999
         else
 !           CALCUL DU NOUVEAU PAS DE TEMPS H (AUGMENTATION)
-            call rkcah1(rela_comp, y, pas, nvi, w,&
+            call rkcah1(rela_comp, y, pas, nvi, w, &
                         wk, h, eps, iret)
             if (iret .gt. 0) then
                 goto 999
             else
                 goto 40
-            endif
-        endif
+            end if
+        end if
     else
 !        W.GT.EPS : NON CV
-        kpok=0
+        kpok = 0
 !        ON REPART DE LA SOLUTION Y PRECEDENTE
         do i = 1, nvi
-            y(i)=wk(ny+i)
+            y(i) = wk(ny+i)
         end do
-        x=xr
-        ip=0
+        x = xr
+        ip = 0
 !        CALCUL DU NOUVEAU PAS DE TEMPS H (DIMINUTION)
-        call rkcah2(rela_comp, y, pas, nvi, w,&
+        call rkcah2(rela_comp, y, pas, nvi, w, &
                     wk, h, eps, iret)
         if (iret .gt. 0) then
             goto 999
         else
             goto 60
-        endif
+        end if
 !
-    endif
+    end if
 !
 999 continue
 !

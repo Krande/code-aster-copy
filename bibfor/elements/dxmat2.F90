@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine dxmat2(pgl, icou, npg, ordi, epi,&
+subroutine dxmat2(pgl, icou, npg, ordi, epi, &
                   epais, dm, indith)
     implicit none
 #include "jeveux.h"
@@ -101,7 +101,7 @@ subroutine dxmat2(pgl, icou, npg, ordi, epi,&
 !
     if (phenom .eq. 'ELAS_COQMU') then
 !
-        call coqrep(pgl, alpha, beta, r8bid4, r8bid4,&
+        call coqrep(pgl, alpha, beta, r8bid4, r8bid4, &
                     c, s)
 !       CALCUL DE LA MATRICE T1VE DE PASSAGE D'UNE MATRICE
 !       (3,3) DU REPERE DE LA VARIETE AU REPERE ELEMENT
@@ -111,9 +111,9 @@ subroutine dxmat2(pgl, icou, npg, ordi, epi,&
         t1ve(2) = t1ve(4)
         t1ve(5) = t1ve(1)
         t1ve(8) = -t1ve(7)
-        t1ve(3) = -t1ve(7) - t1ve(7)
-        t1ve(6) = t1ve(7) + t1ve(7)
-        t1ve(9) = t1ve(1) - t1ve(4)
+        t1ve(3) = -t1ve(7)-t1ve(7)
+        t1ve(6) = t1ve(7)+t1ve(7)
+        t1ve(9) = t1ve(1)-t1ve(4)
         nbv = 56
         do i = 1, nbv
             call codent(i, 'G', num)
@@ -125,15 +125,15 @@ subroutine dxmat2(pgl, icou, npg, ordi, epi,&
             nomres(56+i) = 'C'//num//'_V'//val
         end do
 !
-    else if (phenom.eq.'ELAS') then
+    else if (phenom .eq. 'ELAS') then
         nbv = 3
         nomres(1) = 'E'
         nomres(2) = 'NU'
         nomres(3) = 'ALPHA'
 !
-    else if (phenom.eq.'ELAS_COQUE') then
+    else if (phenom .eq. 'ELAS_COQUE') then
 !
-        call coqrep(pgl, alpha, beta, r8bid4, r8bid4,&
+        call coqrep(pgl, alpha, beta, r8bid4, r8bid4, &
                     c, s)
 !
 !       CALCUL DE LA MATRICE T1VE DE PASSAGE D'UNE MATRICE
@@ -145,9 +145,9 @@ subroutine dxmat2(pgl, icou, npg, ordi, epi,&
         t1ve(2) = t1ve(4)
         t1ve(5) = t1ve(1)
         t1ve(8) = -t1ve(7)
-        t1ve(3) = -t1ve(7) - t1ve(7)
-        t1ve(6) = t1ve(7) + t1ve(7)
-        t1ve(9) = t1ve(1) - t1ve(4)
+        t1ve(3) = -t1ve(7)-t1ve(7)
+        t1ve(6) = t1ve(7)+t1ve(7)
+        t1ve(9) = t1ve(1)-t1ve(4)
 !
         nbv = 10
         nomres(1) = 'MEMB_L  '
@@ -163,13 +163,13 @@ subroutine dxmat2(pgl, icou, npg, ordi, epi,&
         nomres(11) = 'ALPHA   '
     else
         call utmess('F', 'ELEMENTS_44', sk=phenom)
-    endif
+    end if
 !
 !===============================================================
 !     -- RECUPERATION DE LA TEMPERATURE POUR LE MATERIAU:
     call jevech('PNBSP_I', 'L', jcou)
-    nbcou=zi(jcou)
-    call moytem('RIGI', npg, 3*nbcou, '+', valpar,&
+    nbcou = zi(jcou)
+    call moytem('RIGI', npg, 3*nbcou, '+', valpar, &
                 iret)
     nbpar = 1
     nompar = 'TEMP'
@@ -179,123 +179,123 @@ subroutine dxmat2(pgl, icou, npg, ordi, epi,&
 !        ------ MATERIAU ISOTROPE ------------------------------------
 !
 !
-        call rcvalb('RIGI', 1, 1, '+', zi(jmate),&
-                    ' ', phenom, nbpar, nompar, [valpar],&
+        call rcvalb('RIGI', 1, 1, '+', zi(jmate), &
+                    ' ', phenom, nbpar, nompar, [valpar], &
                     2, nomres, valres, icodre, 1)
-        call rcvalb('RIGI', 1, 1, '+', zi(jmate),&
-                    ' ', phenom, nbpar, nompar, [valpar],&
+        call rcvalb('RIGI', 1, 1, '+', zi(jmate), &
+                    ' ', phenom, nbpar, nompar, [valpar], &
                     1, nomres(3), valres(3), icodre(3), 0)
-        if ((icodre(3).ne.0) .or. (valres(3).eq.0.d0)) then
+        if ((icodre(3) .ne. 0) .or. (valres(3) .eq. 0.d0)) then
             indith = -1
             goto 70
-        else if ((iret.eq.1).and.(icodre(3).ne.0)) then
+        else if ((iret .eq. 1) .and. (icodre(3) .ne. 0)) then
             call utmess('F', 'CALCULEL_15')
-        endif
+        end if
         young = valres(1)
         nu = valres(2)
         alphat = valres(3)
         young = young*alphat
 !      ------------------------------------------------------------
 !      ---- CALCUL DE LA MATRICE DE RIGIDITE EN FLEXION --------------
-        cdf = young*epais*epais*epais/12.d0/ (1.d0-nu*nu)
-        df(1,1) = cdf
-        df(1,2) = cdf*nu
-        df(2,1) = df(1,2)
-        df(2,2) = df(1,1)
+        cdf = young*epais*epais*epais/12.d0/(1.d0-nu*nu)
+        df(1, 1) = cdf
+        df(1, 2) = cdf*nu
+        df(2, 1) = df(1, 2)
+        df(2, 2) = df(1, 1)
 !      ---- CALCUL DE LA MATRICE DE RIGIDITE EN MEMBRANE -------------
-        cdm = epais*young/ (1.d0-nu*nu)
-        dm(1,1) = cdm
-        dm(1,2) = cdm*nu
-        dm(2,1) = dm(1,2)
-        dm(2,2) = dm(1,1)
+        cdm = epais*young/(1.d0-nu*nu)
+        dm(1, 1) = cdm
+        dm(1, 2) = cdm*nu
+        dm(2, 1) = dm(1, 2)
+        dm(2, 2) = dm(1, 1)
 !        ---------------------------------------------------------------
 !
-    else if (phenom.eq.'ELAS_COQUE') then
-        call rcvalb('RIGI', 1, 1, '+', zi(jmate),&
-                    ' ', phenom, nbpar, nompar, [valpar],&
+    else if (phenom .eq. 'ELAS_COQUE') then
+        call rcvalb('RIGI', 1, 1, '+', zi(jmate), &
+                    ' ', phenom, nbpar, nompar, [valpar], &
                     nbv, nomres, valres, icodre, 1)
-        call rcvalb('RIGI', 1, 1, '+', zi(jmate),&
-                    ' ', phenom, nbpar, nompar, [valpar],&
+        call rcvalb('RIGI', 1, 1, '+', zi(jmate), &
+                    ' ', phenom, nbpar, nompar, [valpar], &
                     1, nomres(11), valres(11), icodre(11), 0)
-        if ((icodre(11).ne.0) .or. (valres(11).eq.0.d0)) then
+        if ((icodre(11) .ne. 0) .or. (valres(11) .eq. 0.d0)) then
             indith = -1
             goto 70
-        else if ((iret.eq.1).and.(icodre(11).ne.0)) then
+        else if ((iret .eq. 1) .and. (icodre(11) .ne. 0)) then
             call utmess('F', 'CALCULEL_15')
-        endif
+        end if
         alphat = valres(11)
 !        ---- CALCUL DE LA MATRICE DE RIGIDITE EN MEMBRANE -------------
-        dm(1,1) = valres(1)*alphat
-        dm(1,2) = valres(2)*alphat
-        dm(2,1) = dm(1,2)
-        dm(2,2) = valres(3)*alphat
+        dm(1, 1) = valres(1)*alphat
+        dm(1, 2) = valres(2)*alphat
+        dm(2, 1) = dm(1, 2)
+        dm(2, 2) = valres(3)*alphat
 !        ---- CALCUL DE LA MATRICE DE RIGIDITE EN FLEXION --------------
-        df(1,1) = valres(5)*alphat
-        df(1,2) = valres(6)*alphat
-        df(2,1) = df(1,2)
-        df(2,2) = valres(7)*alphat
+        df(1, 1) = valres(5)*alphat
+        df(1, 2) = valres(6)*alphat
+        df(2, 1) = df(1, 2)
+        df(2, 2) = valres(7)*alphat
 !        ----------- MATRICES DANS LE REPERE INTRINSEQUE DE L'ELEMENT --
-        call utbtab('ZERO', 3, 3, dm, t1ve,&
+        call utbtab('ZERO', 3, 3, dm, t1ve, &
                     xab1, dm)
-        call utbtab('ZERO', 3, 3, df, t1ve,&
+        call utbtab('ZERO', 3, 3, df, t1ve, &
                     xab1, df)
-        call utbtab('ZERO', 3, 3, dmf, t1ve,&
+        call utbtab('ZERO', 3, 3, dmf, t1ve, &
                     xab1, dmf)
 !
-    else if (phenom.eq.'ELAS_COQMU') then
+    else if (phenom .eq. 'ELAS_COQMU') then
 !        ------ MATERIAU MULTICOUCHE -----------------------------------
-        call rcvalb('RIGI', 1, 1, '+', zi(jmate),&
-                    ' ', phenom, nbpar, nompar, [valpar],&
+        call rcvalb('RIGI', 1, 1, '+', zi(jmate), &
+                    ' ', phenom, nbpar, nompar, [valpar], &
                     1, nomres(19), valres(19), icodre(19), 1)
         epais = valres(19)
-        call rcvalb('RIGI', 1, 1, '+', zi(jmate),&
-                    ' ', phenom, nbpar, nompar, [valpar],&
+        call rcvalb('RIGI', 1, 1, '+', zi(jmate), &
+                    ' ', phenom, nbpar, nompar, [valpar], &
                     1, nomres(57), valres(57), icodre(57), 1)
         epi = valres(57)
-        call rcvalb('RIGI', 1, 1, '+', zi(jmate),&
-                    ' ', phenom, nbpar, nompar, [valpar],&
+        call rcvalb('RIGI', 1, 1, '+', zi(jmate), &
+                    ' ', phenom, nbpar, nompar, [valpar], &
                     1, nomres(59), valres(59), icodre(59), 1)
         ordi = valres(59)
-        call rcvalb('RIGI', 1, 1, '+', zi(jmate),&
-                    ' ', phenom, nbpar, nompar, [valpar],&
+        call rcvalb('RIGI', 1, 1, '+', zi(jmate), &
+                    ' ', phenom, nbpar, nompar, [valpar], &
                     27, nomres(102), valres(102), icodre(102), 1)
-        dm(1,1) = valres(102)
-        dm(1,2) = valres(103)
-        dm(1,3) = valres(104)
-        dm(2,1) = valres(105)
-        dm(2,2) = valres(106)
-        dm(2,3) = valres(107)
-        dm(3,1) = valres(108)
-        dm(3,2) = valres(109)
-        dm(3,3) = valres(110)
-        dmf(1,1) = valres(111)
-        dmf(1,2) = valres(112)
-        dmf(1,3) = valres(113)
-        dmf(2,1) = valres(114)
-        dmf(2,2) = valres(115)
-        dmf(2,3) = valres(116)
-        dmf(3,1) = valres(117)
-        dmf(3,2) = valres(118)
-        dmf(3,3) = valres(119)
-        df(1,1) = valres(120)
-        df(1,2) = valres(121)
-        df(1,3) = valres(122)
-        df(2,1) = valres(123)
-        df(2,2) = valres(124)
-        df(2,3) = valres(125)
-        df(3,1) = valres(126)
-        df(3,2) = valres(127)
-        df(3,3) = valres(128)
+        dm(1, 1) = valres(102)
+        dm(1, 2) = valres(103)
+        dm(1, 3) = valres(104)
+        dm(2, 1) = valres(105)
+        dm(2, 2) = valres(106)
+        dm(2, 3) = valres(107)
+        dm(3, 1) = valres(108)
+        dm(3, 2) = valres(109)
+        dm(3, 3) = valres(110)
+        dmf(1, 1) = valres(111)
+        dmf(1, 2) = valres(112)
+        dmf(1, 3) = valres(113)
+        dmf(2, 1) = valres(114)
+        dmf(2, 2) = valres(115)
+        dmf(2, 3) = valres(116)
+        dmf(3, 1) = valres(117)
+        dmf(3, 2) = valres(118)
+        dmf(3, 3) = valres(119)
+        df(1, 1) = valres(120)
+        df(1, 2) = valres(121)
+        df(1, 3) = valres(122)
+        df(2, 1) = valres(123)
+        df(2, 2) = valres(124)
+        df(2, 3) = valres(125)
+        df(3, 1) = valres(126)
+        df(3, 2) = valres(127)
+        df(3, 3) = valres(128)
 !
 !        ----------- MATRICES DANS LE REPERE INTRINSEQUE DE L'ELEMENT --
 !
-        call utbtab('ZERO', 3, 3, dm, t1ve,&
+        call utbtab('ZERO', 3, 3, dm, t1ve, &
                     xab1, dm)
-        call utbtab('ZERO', 3, 3, df, t1ve,&
+        call utbtab('ZERO', 3, 3, df, t1ve, &
                     xab1, df)
-        call utbtab('ZERO', 3, 3, dmf, t1ve,&
+        call utbtab('ZERO', 3, 3, dmf, t1ve, &
                     xab1, dmf)
 !
-    endif
- 70 continue
+    end if
+70  continue
 end subroutine

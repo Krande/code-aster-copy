@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@ subroutine cfzonn(defico, posno, izone)
 !
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/cfmmvd.h"
 #include "asterfort/jedema.h"
@@ -62,7 +62,7 @@ subroutine cfzonn(defico, posno, izone)
 !
 ! --- REPONSE
 !
-    izone = zi(jtypno+ztypn*(posno -1)+2-1)
+    izone = zi(jtypno+ztypn*(posno-1)+2-1)
 !
     call jedema()
 !

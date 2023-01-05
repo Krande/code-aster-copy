@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -37,10 +37,10 @@ subroutine mdgepc(neq, nbmode, bmodal, xgene, u)
     real(kind=8) :: bmodal(neq, nbmode)
 !-----------------------------------------------------------------------
     do i = 1, neq
-        u(i)=dcmplx(0.d0,0.d0)
+        u(i) = dcmplx(0.d0, 0.d0)
 !        U(I)=0.D0
         do j = 1, nbmode
-            u(i) = u(i) + bmodal(i,j)*xgene(j)
+            u(i) = u(i)+bmodal(i, j)*xgene(j)
         end do
     end do
 end subroutine

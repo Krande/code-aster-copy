@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -42,9 +42,9 @@ subroutine lcroma(fami, kpg, ksp, poum, mate)
 !
     integer :: itemax, jprolp, jvalep, nbvalp, iret
     real(kind=8) :: prec, young, nu, sigy, sig1, rousd, f0, fcr, acce
-    real(kind=8) :: pm, rpm, fonc, fcd, dfcddj, dpmaxi,typoro
-    common /lcrou/ prec,young,nu,sigy,sig1,rousd,f0,fcr,acce,&
-     &               pm,rpm,fonc,fcd,dfcddj,dpmaxi,typoro,&
+    real(kind=8) :: pm, rpm, fonc, fcd, dfcddj, dpmaxi, typoro
+    common/lcrou/prec, young, nu, sigy, sig1, rousd, f0, fcr, acce,&
+     &               pm, rpm, fonc, fcd, dfcddj, dpmaxi, typoro,&
      &               itemax, jprolp, jvalep, nbvalp
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
@@ -58,26 +58,26 @@ subroutine lcroma(fami, kpg, ksp, poum, mate)
 !
 ! 1 - CARACTERISTIQUE ELASTIQUE E ET NU => CALCUL DE MU - K
 !
-    call rcvalb(fami, kpg, ksp, poum, mate,&
-                ' ', 'ELAS', 0, ' ', [0.d0],&
+    call rcvalb(fami, kpg, ksp, poum, mate, &
+                ' ', 'ELAS', 0, ' ', [0.d0], &
                 1, 'NU', val, icodre(1), 2)
-    nu=val(1)
+    nu = val(1)
     call rcvarc(' ', 'TEMP', poum, fami, kpg, ksp, temp, iret)
     call rctype(mate, 1, 'TEMP', [temp], para_vale, para_type)
-    if ((para_type.eq.'TEMP') .and. (iret.eq.1)) then
-        call utmess('F', 'COMPOR5_5', sk = para_type)
-    endif
-    call rctrac(mate, 1, 'SIGM', para_vale, jprolp,&
+    if ((para_type .eq. 'TEMP') .and. (iret .eq. 1)) then
+        call utmess('F', 'COMPOR5_5', sk=para_type)
+    end if
+    call rctrac(mate, 1, 'SIGM', para_vale, jprolp, &
                 jvalep, nbvalp, young)
 !
 !
 ! 2 - SIGY ET ECROUISSAGE EN P-
 !
-    call rcfonc('S', 1, jprolp, jvalep, nbvalp,&
-                sigy = sigy)
+    call rcfonc('S', 1, jprolp, jvalep, nbvalp, &
+                sigy=sigy)
 !
-    call rcfonc('V', 1, jprolp, jvalep, nbvalp,&
-                p = pm, rp = rpm, rprim = pente, airerp = aire)
+    call rcfonc('V', 1, jprolp, jvalep, nbvalp, &
+                p=pm, rp=rpm, rprim=pente, airerp=aire)
 !
 !
 ! 3 - PARAMETRES DE CROISSANCE DE CAVITES ET CONTROLE INCR. PLASTIQUE
@@ -90,15 +90,15 @@ subroutine lcroma(fami, kpg, ksp, poum, mate)
     nomres(6) = 'DP_MAXI'
     nomres(7) = 'PORO_TYPE'
 !
-    call rcvalb(fami, kpg, ksp, poum, mate,&
-                ' ', 'ROUSSELIER', 0, ' ', [0.d0],&
+    call rcvalb(fami, kpg, ksp, poum, mate, &
+                ' ', 'ROUSSELIER', 0, ' ', [0.d0], &
                 7, nomres, valres, icodre, 2)
     rousd = valres(1)
     sig1 = valres(2)
     f0 = valres(3)
     fcr = valres(4)
     acce = valres(5)
-    dpmaxi= valres(6)
+    dpmaxi = valres(6)
     typoro = valres(7)
 !
 end subroutine

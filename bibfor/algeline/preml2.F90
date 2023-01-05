@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,13 +16,13 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine preml2(n1, diag, col, delg, xadj1,&
-                  adjnc1, estim, adress, parend, fils,&
-                  frere, anc, nouv, supnd, dhead,&
-                  qsize, llist, marker, invsup, local,&
-                  global, lfront, nblign, decal, lgsn,&
-                  debfac, debfsn, seq, lmat, adpile,&
-                  chaine, suiv, place, nbass, ncbloc,&
+subroutine preml2(n1, diag, col, delg, xadj1, &
+                  adjnc1, estim, adress, parend, fils, &
+                  frere, anc, nouv, supnd, dhead, &
+                  qsize, llist, marker, invsup, local, &
+                  global, lfront, nblign, decal, lgsn, &
+                  debfac, debfsn, seq, lmat, adpile, &
+                  chaine, suiv, place, nbass, ncbloc, &
                   lgbloc, nbloc, lgind, nbsnd, ier)
 ! person_in_charge: olivier.boiteau at edf.fr
 ! aslint: disable=W1504
@@ -84,10 +84,10 @@ subroutine preml2(n1, diag, col, delg, xadj1,&
     diag(0) = 0
 !*************************************************************
 !*************************************************************
-    call facsmb(n1, nbsnd, supnd, invsup, parend,&
-                xadj1, adjnc1, anc, nouv, fils,&
-                frere, local, global, adress, lfront,&
-                nblign, lgsn, debfac, debfsn, chaine,&
+    call facsmb(n1, nbsnd, supnd, invsup, parend, &
+                xadj1, adjnc1, anc, nouv, fils, &
+                frere, local, global, adress, lfront, &
+                nblign, lgsn, debfac, debfsn, chaine, &
                 place, nbass, delg, lgind, ier)
     if (ier .ne. 0) goto 999
 !*************************************************************
@@ -103,20 +103,20 @@ subroutine preml2(n1, diag, col, delg, xadj1,&
 !     *  ' + TEMPS CPU SYSTEME ',TEMPS(6)
 !     ENDIF
     if (niv .eq. 2) then
-        write(ifm,*)'RESULTATS DE FACSMB '//&
-     &        'LONGUEUR DE LA FACTORISEE ',(debfac(n1+1)-1)
-    endif
+        write (ifm, *) 'RESULTATS DE FACSMB '//&
+     &        'LONGUEUR DE LA FACTORISEE ', (debfac(n1+1)-1)
+    end if
 !     EVALUATION DE MXFACT
     mxfact = 0
     do i = 1, nbsnd
-        long = debfsn(1+i) - debfsn(i)
-        mxfact = max(long,mxfact)
+        long = debfsn(1+i)-debfsn(i)
+        mxfact = max(long, mxfact)
     end do
 !-------------------------------ESTIMATION DE LA PILE
 !*************************************************************
 !*************************************************************
-    call mltpos(nbsnd, parend, fils, frere, adpile,&
-                lfront, seq, dhead, estim, qsize,&
+    call mltpos(nbsnd, parend, fils, frere, adpile, &
+                lfront, seq, dhead, estim, qsize, &
                 suiv, marker, llist)
 !*************************************************************
 !*************************************************************
@@ -126,27 +126,27 @@ subroutine preml2(n1, diag, col, delg, xadj1,&
 !     +            'NATION:'//
 !     *  'TEMPS CPU',TEMPS(3),
 !     *  ' + TEMPS CPU SYSTEME ',TEMPS(6)
-        write(ifm,*)'RESULTATS DE MLTPOS '// ' LONGUEUR DE LA PILE ',&
-        estim
-    endif
+        write (ifm, *) 'RESULTATS DE MLTPOS '//' LONGUEUR DE LA PILE ', &
+            estim
+    end if
 !-----------------------------------CALCUL DE LA REPARTITION
 !     EN BLOCS
-    call mltblc(nbsnd, debfsn, mxfact, seq, nbloc,&
+    call mltblc(nbsnd, debfsn, mxfact, seq, nbloc, &
                 decal, lgbloc, ncbloc)
 !--------------------------------CALCUL DES ADRESSES DES
     if (niv .eq. 2) then
-        write(ifm,*)'RESULTATS DE MLTBLC '// 'NBRE DE BLOCS ',nbloc
+        write (ifm, *) 'RESULTATS DE MLTBLC '//'NBRE DE BLOCS ', nbloc
         do i = 1, nbloc
-            write(ifm,*)'LONGUEUR DU BLOC ',i, ': ',lgbloc(i),&
-            'NOMBRE DE SUPERNOEUDS DU BLOC ',i, ': ',ncbloc(i)
+            write (ifm, *) 'LONGUEUR DU BLOC ', i, ': ', lgbloc(i), &
+                'NOMBRE DE SUPERNOEUDS DU BLOC ', i, ': ', ncbloc(i)
         end do
-    endif
+    end if
 !     COEFFICIENTS INITIAUX
 !*************************************************************
 !*************************************************************
-    call mltpas(n1, nbsnd, supnd, xadj1, adjnc1,&
-                anc, nouv, seq, global, adress,&
-                nblign, lgsn, nbloc, ncbloc, lgbloc,&
+    call mltpas(n1, nbsnd, supnd, xadj1, adjnc1, &
+                anc, nouv, seq, global, adress, &
+                nblign, lgsn, nbloc, ncbloc, lgbloc, &
                 diag, col, lmat, place)
 !     PRNO,DEEQ,NEC,LBD2,NRL,RL,MARKER)
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -89,16 +89,16 @@ subroutine cmtref(chmat, nomail)
     nbcm1 = dcm1(3)
     igd = dcm1(1)
     call jenuno(jexnum('&CATA.GD.NOMGD', igd), nomgd)
-    ASSERT(nomgd.eq.'NOMMATER')
+    ASSERT(nomgd .eq. 'NOMMATER')
     call jelira(jexnom('&CATA.GD.NOMCMP', nomgd), 'LONMAX', nccm1)
-    ASSERT(nccm1.ge.30)
+    ASSERT(nccm1 .ge. 30)
 !
     call jeveuo(cartrf//'.DESC', 'L', vi=dtrf)
     call jeveuo(cartrf//'.VALE', 'L', vr=vtrf)
     nbtrf = dtrf(3)
     igd = dtrf(1)
     call jenuno(jexnum('&CATA.GD.NOMGD', igd), nomgd)
-    ASSERT(nomgd.eq.'NEUT_R')
+    ASSERT(nomgd .eq. 'NEUT_R')
     call jelira(jexnom('&CATA.GD.NOMCMP', nomgd), 'LONMAX', nctrf)
 !
 !     3) ALLOCATION DE CARCM2 :
@@ -110,29 +110,28 @@ subroutine cmtref(chmat, nomail)
 !     4) REMPLISSAGE DE CARCM2 :
 !     ---------------------------------------------------------------
     do kcm1 = 1, nbcm1
-        codcm1 = dcm1(3+2* (kcm1-1)+1)
-        ASSERT(codcm1.eq.1 .or. codcm1.eq.3)
-        nucm1 = dcm1(3+2* (kcm1-1)+2)
+        codcm1 = dcm1(3+2*(kcm1-1)+1)
+        ASSERT(codcm1 .eq. 1 .or. codcm1 .eq. 3)
+        nucm1 = dcm1(3+2*(kcm1-1)+2)
 !        -- ON STOCKE LES NOMS DES MATERIAUX AFFECTES (26 MAX) :
         ico = 0
-        nocp='MATXX'
+        nocp = 'MATXX'
         do kk = 1, 26
-            mater = vcm1(nccm1* (kcm1-1)+kk)
+            mater = vcm1(nccm1*(kcm1-1)+kk)
             if (mater .eq. ' ') goto 20
-            ico = ico + 1
+            ico = ico+1
             valv(ico) = mater
             call codent(ico, 'G', nocp(4:5))
             ncmp(ico) = nocp
- 20         continue
+20          continue
         end do
         nm = ico
-        ASSERT(nm.gt.0 .and. nm.le.26)
+        ASSERT(nm .gt. 0 .and. nm .le. 26)
         ncmp(nm+1) = 'LREF'
         valv(nm+1) = 'TREF=>'
         ncmp(nm+2) = 'VREF1'
         ncmp(nm+3) = 'VREF2'
         ncmp(nm+4) = 'VREF3'
-
 
 !       -- liste des mailles concernees par kcm1 :
 !       --------------------------------------------
@@ -142,8 +141,7 @@ subroutine cmtref(chmat, nomail)
         else
             jlcm1 = 1
             ncm1 = 0
-        endif
-
+        end if
 
 !       -- POUR NE PAS PERDRE LES MAILLES QUI NE SONT
 !          CONCERNEES PAR AUCUN KTRF :
@@ -154,21 +152,20 @@ subroutine cmtref(chmat, nomail)
         if (codcm1 .eq. 1) then
             call nocart(carcm2, 1, nm+4)
         else
-            call nocart(carcm2, 3, nm+4, mode='NUM', nma=ncm1,&
+            call nocart(carcm2, 3, nm+4, mode='NUM', nma=ncm1, &
                         limanu=zi(jlcm1))
-        endif
-
+        end if
 
         do ktrf = 1, nbtrf
-            codtrf = dtrf(3+2* (ktrf-1)+1)
-            ASSERT(codtrf.eq.1 .or. codtrf.eq.3)
-            nutrf = dtrf(3+2* (ktrf-1)+2)
-            tref = vtrf(nctrf* (ktrf-1)+1)
+            codtrf = dtrf(3+2*(ktrf-1)+1)
+            ASSERT(codtrf .eq. 1 .or. codtrf .eq. 3)
+            nutrf = dtrf(3+2*(ktrf-1)+2)
+            tref = vtrf(nctrf*(ktrf-1)+1)
             if (tref .eq. r8vide()) then
-                ktref='NAN'
+                ktref = 'NAN'
             else
-                write (ktref,'(1PE22.15)') tref
-            endif
+                write (ktref, '(1PE22.15)') tref
+            end if
             valv(nm+2) = ktref(1:8)
             valv(nm+3) = ktref(9:16)
             valv(nm+4) = ktref(17:24)
@@ -179,22 +176,22 @@ subroutine cmtref(chmat, nomail)
             else
                 jltrf = 1
                 ntrf = 0
-            endif
+            end if
 !           -- CALCUL DE LA LISTE DES MAILLES CONCERNEES PAR KCM1/KTRF:
-            call cmtrf2(codcm1, codtrf, ncm1, zi(jlcm1), ntrf,&
+            call cmtrf2(codcm1, codtrf, ncm1, zi(jlcm1), ntrf, &
                         zi(jltrf), nbma, codint, lismail, ninter)
-            ASSERT(codint.eq.1 .or. codint.eq.3)
+            ASSERT(codint .eq. 1 .or. codint .eq. 3)
             if (ninter .eq. 0) goto 30
 !
             if (codint .eq. 1) then
                 call nocart(carcm2, 1, nm+4)
 !
             else
-                call nocart(carcm2, 3, nm+4, mode='NUM', nma=ninter,&
+                call nocart(carcm2, 3, nm+4, mode='NUM', nma=ninter, &
                             limanu=lismail)
-            endif
+            end if
 !
- 30         continue
+30          continue
         end do
     end do
 !
@@ -209,18 +206,18 @@ subroutine cmtref(chmat, nomail)
 !        POUR CELA, ON APPELLE TECART :
     call tecart(carcm2)
 !
-    dbg=.false.
+    dbg = .false.
     if (dbg) then
-        call utimsd(6, 2, .false._1, .true._1, carcm1,&
+        call utimsd(6, 2, .false._1, .true._1, carcm1, &
                     1, ' ')
-        call utimsd(6, 2, .false._1, .true._1, carcm2,&
+        call utimsd(6, 2, .false._1, .true._1, carcm2, &
                     1, ' ')
-        call utimsd(6, 2, .false._1, .true._1, cartrf,&
+        call utimsd(6, 2, .false._1, .true._1, cartrf, &
                     1, ' ')
         call imprsd('CHAMP', carcm1, 6, 'CHAM_MATER:'//carcm1)
         call imprsd('CHAMP', carcm2, 6, 'CHAM_MATER:'//carcm2)
         call imprsd('CHAMP', carcm2, 6, 'CHAM_MATER:'//cartrf)
-    endif
+    end if
     call detrsd('CHAMP', carcm1)
     call copisd('CHAMP', 'G', carcm2, carcm1)
     call detrsd('CHAMP', carcm2)
@@ -229,6 +226,6 @@ subroutine cmtref(chmat, nomail)
 !     ---------------------------------------------------------------
     AS_DEALLOCATE(vi=lismail)
 !
- 50 continue
+50  continue
     call jedema()
 end subroutine

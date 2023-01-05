@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine vpfopc(lmasse, lraide, fmin, sigma, matopa,&
+subroutine vpfopc(lmasse, lraide, fmin, sigma, matopa, &
                   raide, lqz, solveu)
     implicit none
 #include "asterf_types.h"
@@ -65,7 +65,7 @@ subroutine vpfopc(lmasse, lraide, fmin, sigma, matopa,&
 !
     call jemarq()
 !
-    matpre=' '
+    matpre = ' '
     lmat(1) = lmasse
     nmat(1) = zk24(zi(lmat(1)+1))
     lmat(2) = lraide
@@ -78,14 +78,14 @@ subroutine vpfopc(lmasse, lraide, fmin, sigma, matopa,&
 !
     if (abs(ashift) .ge. 1.d0) then
         ashift = 0.95d0
-        valr (1) = 1.d0
-        valr (2) = 0.95d0
+        valr(1) = 1.d0
+        valr(2) = 0.95d0
         call utmess('I+', 'ALGELINE4_93')
         call utmess('I', 'ALGELINE4_96', nr=2, valr=valr)
-    endif
+    end if
 !
-    ashift = (ashift*fshift) / 2.0d0
-    sigma = dcmplx(fshift,ashift)
+    ashift = (ashift*fshift)/2.0d0
+    sigma = dcmplx(fshift, ashift)
 !
 ! --- POUR QZ CALCUL DE LA MATRICE SHIFTEE ET DE SA FACTORISEE INUTILE
     if (lqz) goto 999
@@ -93,19 +93,19 @@ subroutine vpfopc(lmasse, lraide, fmin, sigma, matopa,&
 !        --- DECALAGE COMPLEXE ---
     call mtdefs(matopa, raide, 'V', 'C')
     call mtdscr(matopa)
-    nmatra=matopa(1:19)//'.&INT'
+    nmatra = matopa(1:19)//'.&INT'
     call jeveuo(matopa(1:19)//'.&INT', 'E', lmatra)
     typcst(1) = 'C'
     typcst(2) = 'R'
     constc(1) = -dble(sigma)
     constc(2) = -dimag(sigma)
     constc(3) = 1.d0
-    call mtcmbl(2, typcst, constc, nmat, nmatra,&
+    call mtcmbl(2, typcst, constc, nmat, nmatra, &
                 namddl, ' ', 'ELIM=')
 !
 !     --- FACTORISATION DES MATRICES ---
-    matass=zk24(zi(lmatra+1))
-    call preres(solveu, 'V', ibid, matpre, matass,&
+    matass = zk24(zi(lmatra+1))
+    call preres(solveu, 'V', ibid, matpre, matass, &
                 ibid, 2)
 !
 999 continue

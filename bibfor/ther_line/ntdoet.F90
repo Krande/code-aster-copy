@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,9 +18,9 @@
 
 subroutine ntdoet(model, nume_dof, l_stat, ds_inout)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterc/r8vide.h"
@@ -80,35 +80,35 @@ implicit none
     call dismoi('CALC_RIGI', model, 'MODELE', repk=calcri)
     if (calcri .ne. 'OUI') then
         call utmess('F', 'CALCULEL2_65', sk=model)
-    endif
+    end if
 !
 ! - Parameters from input/output datastructure
 !
-    nb_field     = ds_inout%nb_field
-    l_reuse      = ds_inout%l_reuse
-    l_init_stat  = ds_inout%l_init_stat
-    l_init_vale  = ds_inout%l_init_vale
-    temp_init    = ds_inout%temp_init
+    nb_field = ds_inout%nb_field
+    l_reuse = ds_inout%l_reuse
+    l_init_stat = ds_inout%l_init_stat
+    l_init_vale = ds_inout%l_init_vale
+    temp_init = ds_inout%temp_init
     l_state_init = ds_inout%l_state_init
 !
 ! - PAS D'ETAT INITIAL EN PRESENCE D'UN CONCEPT REENTRANT
 !
     if (l_state_init) then
         if (niv .ge. 2) then
-            write (ifm,*) '<THER> LECTURE ETAT INITIAL'
-        endif
+            write (ifm, *) '<THER> LECTURE ETAT INITIAL'
+        end if
     else
         if (l_reuse) then
             call utmess('A', 'ETATINIT_1')
         else
             call utmess('I', 'ETATINIT_20')
-        endif
-    endif
+        end if
+    end if
 !
 ! - Get name of result datastructure in ETAT_INIT
 !
     l_stin_evol = ds_inout%l_stin_evol
-    stin_evol   = ds_inout%stin_evol
+    stin_evol = ds_inout%stin_evol
 !
 ! - Initial storing index and time
 !
@@ -119,21 +119,21 @@ implicit none
 ! - Print
 !
     if (niv .ge. 2) then
-        write (ifm,*) '<THER> ... INSTANT INITIAL'
-        if (init_nume.eq.-1) then
-            write (ifm,*) '<THER> ...... NON DEFINI PAR ETAT_INIT'
+        write (ifm, *) '<THER> ... INSTANT INITIAL'
+        if (init_nume .eq. -1) then
+            write (ifm, *) '<THER> ...... NON DEFINI PAR ETAT_INIT'
         else
-            write (ifm,*) '<THER> ...... VALEUR    : ',init_time
-            write (ifm,*) '<THER> ...... NUME_ORDRE: ',init_nume
-        endif
-    endif
+            write (ifm, *) '<THER> ...... VALEUR    : ', init_time
+            write (ifm, *) '<THER> ...... NUME_ORDRE: ', init_nume
+        end if
+    end if
 !
 ! - No initial state => stationnary
 !
-    if (.not.l_state_init) then
-        l_stat    = .true.
+    if (.not. l_state_init) then
+        l_stat = .true.
         goto 99
-    endif
+    end if
 !
 ! - Loop on fields
 !
@@ -154,12 +154,12 @@ implicit none
 !
 ! --------- Name of field in algorithm
 !
-            algo_name  = ds_inout%field(i_field)%algo_name
+            algo_name = ds_inout%field(i_field)%algo_name
             call nmetnc(algo_name, field_algo)
 !
 ! --------- Informations about initial state
 !
-            l_field_read  = ds_inout%l_field_read(i_field)
+            l_field_read = ds_inout%l_field_read(i_field)
             if (field_type .eq. 'TEMP') then
                 call jeveuo(field_algo(1:19)//'.VALE', 'E', vr=vale)
 !
@@ -167,32 +167,32 @@ implicit none
 !
                 if (l_field_read) then
                     call nmetl2(model, i_field, ds_inout)
-                endif
+                end if
 !
 ! ------------- Initial temperature: stationnary computation
 !
                 if (l_init_stat) then
                     l_stat = .true.
                     ds_inout%field(i_field)%init_type = 'STAT'
-                endif
+                end if
 !
 ! ------------- Initial temperature: constant
 !
                 if (l_init_vale) then
                     vale(1:neq) = temp_init
                     ds_inout%field(i_field)%init_type = 'VALE'
-                endif
+                end if
             else
                 call nmetl2(model, i_field, ds_inout)
-            endif
-        endif
+            end if
+        end if
 !
 ! ----- Read field for ETAT_INIT - Some checks
 !
         call ntetl3(i_field, ds_inout, temp_init)
     end do
 !
- 99 continue
+99  continue
 !
     call jedema()
 !

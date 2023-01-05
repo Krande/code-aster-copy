@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,9 +18,9 @@
 
 subroutine nmetl1(i_field, ds_inout)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterfort/assert.h"
 #include "asterfort/copisd.h"
@@ -66,7 +66,7 @@ implicit none
 !
 ! - Field to read ?
 !
-    if (ds_inout%l_field_acti(i_field).and.ds_inout%field(i_field)%l_read_init) then
+    if (ds_inout%l_field_acti(i_field) .and. ds_inout%field(i_field)%l_read_init) then
 !
 ! ----- Name of field (type) in results datastructure
 !
@@ -74,20 +74,20 @@ implicit none
 !
 ! ----- Name of field for initial state
 !
-        init_name  = ds_inout%field(i_field)%init_name
+        init_name = ds_inout%field(i_field)%init_name
 !
 ! ----- Spatial discretization of field
 !
-        disc_type  = ds_inout%field(i_field)%disc_type
+        disc_type = ds_inout%field(i_field)%disc_type
 !
 ! ----- Name of field in algorithm
 !
-        algo_name  = ds_inout%field(i_field)%algo_name
+        algo_name = ds_inout%field(i_field)%algo_name
         call nmetnc(algo_name, field_algo)
 !
 ! ----- Get field in resultats datastructure
 !
-        call rsexch(' '  , stin_evol, field_type, init_nume, field_resu,&
+        call rsexch(' ', stin_evol, field_type, init_nume, field_resu, &
                     ievol)
 !
 ! ----- Copy field
@@ -99,22 +99,22 @@ implicit none
                     valk(1) = field_resu
                     valk(2) = field_algo
                     call utmess('A', 'MECANONLINE_2', nk=2, valk=valk)
-                endif
-            elseif ((disc_type.eq.'ELGA').or.&
-                    (disc_type.eq.'ELNO').or.&
-                    (disc_type.eq.'ELEM')) then
+                end if
+            elseif ((disc_type .eq. 'ELGA') .or. &
+                    (disc_type .eq. 'ELNO') .or. &
+                    (disc_type .eq. 'ELEM')) then
                 call copisd('CHAMP_GD', 'V', field_resu, field_algo)
             else
-                write(6,*) 'LOCCHA: ',disc_type
+                write (6, *) 'LOCCHA: ', disc_type
                 ASSERT(.false.)
-            endif
+            end if
             ds_inout%field(i_field)%init_type = 'RESU'
         else
-            if (init_name .ne. ' '.and.ds_inout%field(i_field)%init_type.eq.' ') then
+            if (init_name .ne. ' ' .and. ds_inout%field(i_field)%init_type .eq. ' ') then
                 call copisd('CHAMP', 'V', init_name, field_algo)
                 ds_inout%field(i_field)%init_type = 'ZERO'
-            endif
-        endif
-    endif
+            end if
+        end if
+    end if
 !
 end subroutine

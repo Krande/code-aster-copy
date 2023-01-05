@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -40,7 +40,7 @@ subroutine te0507(option, nomte)
 ! ......................................................................
 !
     integer :: nbres
-    parameter (nbres=3)
+    parameter(nbres=3)
     character(len=8) :: nompar(nbres), elrefe, alias8
     real(kind=8) :: valpar(nbres), poids, r, z, coefh, nx, ny
     real(kind=8) :: mrigt(9, 9), coorse(18)
@@ -52,16 +52,16 @@ subroutine te0507(option, nomte)
 !
     call elref1(elrefe)
 !
-    if (lteatt('LUMPE','OUI')) then
+    if (lteatt('LUMPE', 'OUI')) then
         call teattr('S', 'ALIAS8', alias8, ibid)
-        if (alias8(6:8) .eq. 'SE3') elrefe='SE2'
-    endif
+        if (alias8(6:8) .eq. 'SE3') elrefe = 'SE2'
+    end if
 !
-    call elrefe_info(elrefe=elrefe, fami='RIGI', ndim=ndim, nno=nno, nnos=nnos,&
+    call elrefe_info(elrefe=elrefe, fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, &
                      npg=npg, jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
     laxi = .false.
-    if (lteatt('AXIS','OUI')) laxi = .true.
+    if (lteatt('AXIS', 'OUI')) laxi = .true.
 !
     call jevech('PGEOMER', 'L', igeom)
     call jevech('PTEMPSR', 'L', itemps)
@@ -72,7 +72,7 @@ subroutine te0507(option, nomte)
 !
     do i = 1, nnop2
         do j = 1, nnop2
-            mrigt(i,j) = 0.d0
+            mrigt(i, j) = 0.d0
         end do
     end do
 !
@@ -82,19 +82,19 @@ subroutine te0507(option, nomte)
 !
         do i = 1, nno
             do j = 1, 2
-                coorse(2* (i-1)+j) = zr(igeom-1+2* (c(ise,i)-1)+j)
+                coorse(2*(i-1)+j) = zr(igeom-1+2*(c(ise, i)-1)+j)
             end do
         end do
 !
         do kp = 1, npg
-            call vff2dn(ndim, nno, kp, ipoids, idfde,&
+            call vff2dn(ndim, nno, kp, ipoids, idfde, &
                         coorse, nx, ny, poids)
             r = 0.d0
             z = 0.d0
             do i = 1, nno
-                l = (kp-1)*nno + i
-                r = r + coorse(2* (i-1)+1)*zr(ivf+l-1)
-                z = z + coorse(2* (i-1)+2)*zr(ivf+l-1)
+                l = (kp-1)*nno+i
+                r = r+coorse(2*(i-1)+1)*zr(ivf+l-1)
+                z = z+coorse(2*(i-1)+2)*zr(ivf+l-1)
             end do
             if (laxi) poids = poids*r
             valpar(1) = r
@@ -103,16 +103,16 @@ subroutine te0507(option, nomte)
             nompar(2) = 'Y'
             valpar(3) = zr(itemps)
             nompar(3) = 'INST'
-            call fointe('FM', zk8(icoefh), 3, nompar, valpar,&
+            call fointe('FM', zk8(icoefh), 3, nompar, valpar, &
                         coefh, icode)
-            ij = imattt - 1
+            ij = imattt-1
             do i = 1, nno
-                li = ivf + (kp-1)*nno + i - 1
+                li = ivf+(kp-1)*nno+i-1
                 do j = 1, i
-                    lj = ivf + (kp-1)*nno + j - 1
-                    ij = ij + 1
-                    mrigt(c(ise,i),c(ise,j)) = mrigt(c(ise, i), c(ise, j) ) + poids*zr(li)*zr(lj&
-                                               )*coefh
+                    lj = ivf+(kp-1)*nno+j-1
+                    ij = ij+1
+                    mrigt(c(ise, i), c(ise, j)) = mrigt(c(ise, i), c(ise, j))+poids*zr(li)*zr(lj &
+                                                                                             )*coefh
                 end do
             end do
         end do
@@ -121,11 +121,11 @@ subroutine te0507(option, nomte)
 !
 ! MISE SOUS FORME DE VECTEUR
 !
-    ij = imattt - 1
+    ij = imattt-1
     do i = 1, nnop2
         do j = 1, i
-            ij = ij + 1
-            zr(ij) = mrigt(i,j)
+            ij = ij+1
+            zr(ij) = mrigt(i, j)
         end do
     end do
 !

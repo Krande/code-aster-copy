@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine irgmm3(nomain, nomaou, nbmat, nummai, basz,&
+subroutine irgmm3(nomain, nomaou, nbmat, nummai, basz, &
                   nobj, nbel, versio)
     implicit none
 #include "asterf_types.h"
@@ -62,12 +62,12 @@ subroutine irgmm3(nomain, nomaou, nbmat, nummai, basz,&
     character(len=24) :: valk(2)
     integer :: ind, numel, nbcr, nbp
     integer :: nbmmax
-    parameter   (nbmmax = 9999999)
+    parameter(nbmmax=9999999)
 !     --- TABLEAU DE DECOUPAGE
     integer :: ntyele, maxel, maxno
-    parameter (ntyele = 28)
-    parameter (maxel  = 48)
-    parameter (maxno  =  8)
+    parameter(ntyele=28)
+    parameter(maxel=48)
+    parameter(maxno=8)
     integer :: tdec(ntyele, maxel, maxno)
     integer :: typd(ntyele, 3)
     integer :: vali(3)
@@ -131,52 +131,52 @@ subroutine irgmm3(nomain, nomaou, nbmat, nummai, basz,&
         do ima = 1, nbmac
             zi(jmail+ima-1) = ima
         end do
-    endif
+    end if
 !
 ! --- COMBIEN D'ELEMENTS DE CHAQUE TYPE VA-T-ON CREER ?
     do im = 1, nbmac
         ima = zi(jmail+im-1)
 !
-        ind=zi(jtypm+ima-1)
+        ind = zi(jtypm+ima-1)
         call jenuno(jexnum('&CATA.TM.NOMTM', ind), typm)
 !
 ! ---    NUMEL = EN QUOI ON DECOUPE, NBCR = COMBIEN ON EN CREER
-        numel = typd(ind,1)
-        nbcr = typd(ind,2)
+        numel = typd(ind, 1)
+        nbcr = typd(ind, 2)
         if (numel .ne. 0) then
-            nbel(numel)=nbel(numel)+nbcr
+            nbel(numel) = nbel(numel)+nbcr
         else
             call utmess('A', 'ALGELINE_64', sk=typm)
-        endif
+        end if
     end do
 !
     nbmail = 0
     impr = 0
     do i = 1, ntyele
-        nbmail = nbmail + nbel(i)
+        nbmail = nbmail+nbel(i)
 !
         if (nobj(i) .ne. ' ') then
             call wkvect(nobj(i), 'V V I', max(1, nbel(i)), jel(i))
             if (niv .ge. 1) then
                 call jenuno(jexnum('&CATA.TM.NOMTM', i), typm)
                 call jenuno(jexnum('&CATA.TM.NOMTM', typd(i, 1)), typm2)
-                nbcr=typd(i,2)
-                nbp =typd(i,3)
+                nbcr = typd(i, 2)
+                nbp = typd(i, 3)
                 if (nbel(i) .gt. 0) then
                     if (impr .eq. 0) then
                         call utmess('I', 'ALGELINE5_54')
-                        impr=1
-                    endif
+                        impr = 1
+                    end if
                     valk(1) = typm
                     valk(2) = typm2
                     vali(1) = nbel(i)
                     vali(2) = nbcr
                     vali(3) = nbp
-                    call utmess('I', 'ALGELINE5_55', nk=2, valk=valk, ni=3,&
+                    call utmess('I', 'ALGELINE5_55', nk=2, valk=valk, ni=3, &
                                 vali=vali)
-                endif
-            endif
-        endif
+                end if
+            end if
+        end if
     end do
 !
     call wkvect(numold, 'V V I', max(1, nbmail), jnumol)
@@ -202,13 +202,13 @@ subroutine irgmm3(nomain, nomaou, nbmat, nummai, basz,&
 !
     call wkvect(typmai, base//' V I', nbmail, iatyma)
 !
-    call jecrec(connex, base//' V I', 'NU', 'CONTIG', 'VARIABLE',&
+    call jecrec(connex, base//' V I', 'NU', 'CONTIG', 'VARIABLE', &
                 nbmail)
 !#MC  1*NBMAIL NE SUFFIT PAS ?
     call jeecra(connex, 'LONT', ntyele*nbmail)
 !
     call jedetr('&&IRMGMS.LISMA')
-    call jecrec('&&IRMGMS.LISMA', 'V V I', 'NU', 'CONTIG', 'VARIABLE',&
+    call jecrec('&&IRMGMS.LISMA', 'V V I', 'NU', 'CONTIG', 'VARIABLE', &
                 nbmail)
     call jeecra('&&IRMGMS.LISMA', 'LONT', nbmail)
 !
@@ -220,44 +220,44 @@ subroutine irgmm3(nomain, nomaou, nbmat, nummai, basz,&
     do im = 1, nbmac
         ima = zi(jmail+im-1)
 !
-        ind=zi(jtypm+ima-1)
+        ind = zi(jtypm+ima-1)
         call jenuno(jexnum('&CATA.TM.NOMTM', ind), typm)
         call jeveuo(jexnum(connev, ima), 'L', jopt)
 !
 ! ---    NUMEL = EN QUOI ON DECOUPE, NBCR = COMBIEN ON EN CREER
 !        NBP = NBRE DE POINTS PAR ELEMENTS CREES
-        numel = typd(ind,1)
-        nbcr = typd(ind,2)
-        nbp = typd(ind,3)
-        call jecroc(jexnum( '&&IRMGMS.LISMA', ima ))
-        call jeecra(jexnum( '&&IRMGMS.LISMA', ima ), 'LONMAX', nbcr)
-        call jeveuo(jexnum( '&&IRMGMS.LISMA', ima), 'E', idlima)
+        numel = typd(ind, 1)
+        nbcr = typd(ind, 2)
+        nbp = typd(ind, 3)
+        call jecroc(jexnum('&&IRMGMS.LISMA', ima))
+        call jeecra(jexnum('&&IRMGMS.LISMA', ima), 'LONMAX', nbcr)
+        call jeveuo(jexnum('&&IRMGMS.LISMA', ima), 'E', idlima)
 !
         do i = 1, nbcr
-            imav = imav + 1
+            imav = imav+1
             if (imav .gt. nbmmax) then
                 call codent(nbmmax, 'G', k8b)
                 call utmess('F', 'ALGELINE_65', sk=k8b)
-            endif
+            end if
             nomg = 'M       '
             call codent(imav, 'G', nomg(2:8))
-            call jecroc(jexnom( nommai, nomg ))
+            call jecroc(jexnom(nommai, nomg))
 !
             call jenonu(jexnom(nommai, nomg), ima2)
             zi(idlima+i-1) = ima2
             zi(iatyma-1+ima2) = numel
 !    STOCKAGE DU NUMERO DE LA MAILLE INITIALE DANS NUMOLD POUR IRGMCE
-            zi(jnumol-1+ima2)=ima
+            zi(jnumol-1+ima2) = ima
 !
             call jeecra(jexnum(connex, ima2), 'LONMAX', nbp)
             call jeveuo(jexnum(connex, ima2), 'E', jnpt)
             do ino = 1, nbp
-                zi(jnpt-1+ino) = zi(jopt-1+tdec(ind,i,ino))
+                zi(jnpt-1+ino) = zi(jopt-1+tdec(ind, i, ino))
             end do
-            nbel(numel) = nbel(numel) + 1
+            nbel(numel) = nbel(numel)+1
             zi(jel(numel)-1+nbel(numel)) = imav
         end do
-        zi(jnbnun-1+ima )=nbcr
+        zi(jnbnun-1+ima) = nbcr
 !
     end do
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -63,9 +63,9 @@ subroutine op0178()
     ific = 0
     nomfi = ' '
     call getvis(' ', 'UNITE', scal=ific, nbret=n1)
-    if (.not. ulexis( ific )) then
+    if (.not. ulexis(ific)) then
         call ulopen(ific, ' ', nomfi, 'NEW', 'O')
-    endif
+    end if
 !
     call getvtx(' ', 'FORMAT', scal=form0)
 !
@@ -77,36 +77,36 @@ subroutine op0178()
 !
     if (form0 .eq. 'ASTER') then
         call getvid(' ', 'CO', nbval=0, nbret=n1)
-        nco =-n1
+        nco = -n1
         call wkvect('&&OP0178.LCO', 'V V K8', nco, ialico)
         call getvid(' ', 'CO', nbval=nco, vect=zk8(ialico))
 !
         do ico = 1, nco
-            nomsd = zk8(ialico+ico-1)(1:8)//'           '
+            nomsd = zk8(ialico+ico-1) (1:8)//'           '
 !
             call exisd('RESULTAT', nomsd, iret)
             if (iret .eq. 1) then
                 call engtrs(ific, nomsd, typtes, preci, formr)
                 goto 100
-            endif
+            end if
 !
             call exisd('TABLE', nomsd, iret)
             if (iret .eq. 1) then
                 call engttb(ific, nomsd, typtes, preci, formr)
                 goto 100
-            endif
+            end if
 !
             call exisd('CHAM_ELEM', nomsd, iret)
             if (iret .eq. 1) then
                 call engtce(ific, nomsd, typtes, preci, formr)
                 goto 100
-            endif
+            end if
 !
             call exisd('CHAM_NO', nomsd, iret)
             if (iret .eq. 1) then
                 call engtcn(ific, nomsd, typtes, preci, formr)
                 goto 100
-            endif
+            end if
 100         continue
         end do
         call jedetr('&&OP0178.LCO')
@@ -116,40 +116,40 @@ subroutine op0178()
     else
 !
         form1 = "(&
-                '_F(&
-                NOM=''', a24, ''', VALE_CALC=', " //formr// ", ',&
-                TOLE_MACHINE="//preci(1:lxlgut(preci)) //"&
-                ),'&
-                )"
-        902     format('_F(NOM=''',a24,''',VALE_CALC_I=',i15,',TOLE_MACHINE=0.,),')
+&                '_F(&
+&                NOM=''', a24, ''', VALE_CALC=', "//formr//", ',&
+&                TOLE_MACHINE="//preci(1:lxlgut(preci))//"&
+&                ),'&
+&                )"
+902     format('_F(NOM=''', a24, ''',VALE_CALC_I=', i15, ',TOLE_MACHINE=0.,),')
 !
 !     -- CAS : TOUT:'OUI'
 !    -----------------------------------------
         call getvtx(' ', 'TOUT', scal=kbid, nbret=n1)
         if (n1 .eq. 1) then
-            call jelstc('G', ' ', 0, 0, kbid,&
+            call jelstc('G', ' ', 0, 0, kbid, &
                         nbval)
             nbobj = -nbval
             call wkvect('&&OP0178.LISTE', 'V V K24', nbobj, ialiob)
-            call jelstc('G', ' ', 0, nbobj, zk24(ialiob),&
+            call jelstc('G', ' ', 0, nbobj, zk24(ialiob), &
                         nbval)
 !
             do i = 1, nbobj
                 obj = zk24(ialiob-1+i)
                 if (obj(1:1) .eq. '&') goto 10
-                call tstobj(obj, 'NON', resume, sommi, sommr,&
+                call tstobj(obj, 'NON', resume, sommi, sommr, &
                             lonuti, lonmax, type, iret, ni)
                 if (iret .eq. 0) then
 !             -- TEST_RESU/VALE_CALC_I (OU VALE_CALC) :
-                    if ((type.eq.'R') .or. (type.eq.'C')) then
-                        write (ific,form1) obj,sommr
-                    else if (type.eq.'I') then
-                        write (ific,902) obj,sommi
-                    endif
-                endif
- 10             continue
+                    if ((type .eq. 'R') .or. (type .eq. 'C')) then
+                        write (ific, form1) obj, sommr
+                    else if (type .eq. 'I') then
+                        write (ific, 902) obj, sommi
+                    end if
+                end if
+10              continue
             end do
-        endif
+        end if
 !
 !     -- CAS : CO: L_CO
 !    -----------------------------------------
@@ -160,32 +160,32 @@ subroutine op0178()
             call getvid(' ', 'CO', nbval=nco, vect=zk8(ialico))
 !
             do ico = 1, nco
-                call jelstc('G', zk8(ialico-1+ico), 1, 0, kbid,&
+                call jelstc('G', zk8(ialico-1+ico), 1, 0, kbid, &
                             nbval)
                 if (nbval .eq. 0) goto 30
                 nbobj = -nbval
                 call wkvect('&&OP0178.LISTE', 'V V K24', nbobj, ialiob)
-                call jelstc('G', zk8(ialico-1+ico), 1, nbobj, zk24(ialiob),&
+                call jelstc('G', zk8(ialico-1+ico), 1, nbobj, zk24(ialiob), &
                             nbval)
 !
                 do i = 1, nbobj
                     obj = zk24(ialiob-1+i)
-                    call tstobj(obj, 'NON', resume, sommi, sommr,&
+                    call tstobj(obj, 'NON', resume, sommi, sommr, &
                                 lonuti, lonmax, type, iret, ni)
                     if (iret .eq. 0) then
 !               -- TEST_RESU/VALE_CALC_I (OU VALE_CALC) :
-                        if ((type.eq.'R') .or. (type.eq.'C')) then
-                            write (ific,form1) obj,sommr
-                        else if (type.eq.'I') then
-                            write (ific,902) obj,sommi
-                        endif
-                    endif
+                        if ((type .eq. 'R') .or. (type .eq. 'C')) then
+                            write (ific, form1) obj, sommr
+                        else if (type .eq. 'I') then
+                            write (ific, 902) obj, sommi
+                        end if
+                    end if
                 end do
                 call jedetr('&&OP0178.LISTE')
- 30             continue
+30              continue
             end do
-        endif
-    endif
+        end if
+    end if
 !
 !
     call jedema()

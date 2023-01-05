@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine defdda(nbec, nbcmp, numgd, ioc, motcle,&
+subroutine defdda(nbec, nbcmp, numgd, ioc, motcle, &
                   iopt, icod)
 !    P. RICHARD     DATE 18/02/91
 !-----------------------------------------------------------------------
@@ -73,7 +73,7 @@ subroutine defdda(nbec, nbcmp, numgd, ioc, motcle,&
     else
         call getvtx('INTERFACE', motcle, iocc=ioc, nbval=0, nbret=nbval)
         nbval = -nbval
-    endif
+    end if
 !
 !----------ALLOCATION DU VECTEUR DES ENTIERS DE DECODAGE----------------
 !
@@ -88,14 +88,14 @@ subroutine defdda(nbec, nbcmp, numgd, ioc, motcle,&
         end do
         call iscode(zi(ltidec), icod, nbcmp)
         goto 999
-    endif
+    end if
 !
     if (nbval .eq. 0 .and. iopt .eq. 0) then
         do iec = 1, nbec
             icod(iec) = 0
         end do
         goto 999
-    endif
+    end if
 !
 !---------RECUPERATION DU VECTEUR DES NOMS DE COMPOSANTES---------------
 !
@@ -107,9 +107,9 @@ subroutine defdda(nbec, nbcmp, numgd, ioc, motcle,&
     if (motcle(1:9) .eq. 'DDL_ACTIF') then
         ibid = 0
     else
-        call getvtx('INTERFACE', motcle, iocc=ioc, nbval=nbval, vect=zk80(ltddl),&
+        call getvtx('INTERFACE', motcle, iocc=ioc, nbval=nbval, vect=zk80(ltddl), &
                     nbret=ibid)
-    endif
+    end if
 !
     do i = 1, nbval
         nomcou = zk80(ltddl+i-1)
@@ -118,7 +118,7 @@ subroutine defdda(nbec, nbcmp, numgd, ioc, motcle,&
             if (nomcou .eq. zk8(llncmp+j-1)) then
                 zi(ltidec+j-1) = 1
                 ok = .false.
-            endif
+            end if
         end do
 !
         if (ok) then
@@ -126,13 +126,13 @@ subroutine defdda(nbec, nbcmp, numgd, ioc, motcle,&
             valk = nomcou
             call utmess('E+', 'ALGORITH15_8', sk=valk)
             call utmess('E', 'VIDE_1')
-        endif
+        end if
 !
     end do
 !
     if (okg) then
         call utmess('F', 'ALGORITH15_10')
-    endif
+    end if
 !
     call iscode(zi(ltidec), icod, nbcmp)
 !

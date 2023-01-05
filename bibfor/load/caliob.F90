@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 !
 subroutine caliob(load, mesh, model, valeType)
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterc/getfac.h"
@@ -42,8 +42,8 @@ implicit none
 #include "asterfort/matrot.h"
 #include "asterfort/utmess.h"
 !
-character(len=8), intent(in) :: load, mesh, model
-character(len=4), intent(in) :: valeType
+    character(len=8), intent(in) :: load, mesh, model
+    character(len=4), intent(in) :: valeType
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -100,7 +100,7 @@ character(len=4), intent(in) :: valeType
 !
     lisrel = '&&CALIOB.RLLISTE'
     zero = 0.d0
-    coefc = (1.0d0,0.0d0)
+    coefc = (1.0d0, 0.0d0)
     coefr = 1.0d0
     coeff = ' '
     rdgd = r8dgrd()
@@ -108,7 +108,7 @@ character(len=4), intent(in) :: valeType
     typcoe = 'REEL'
     if (valeType .eq. 'COMP') then
         ASSERT(.false.)
-    endif
+    end if
 !
 ! - Create list of excluded keywords for using in char_read_keyw
 !
@@ -119,13 +119,13 @@ character(len=4), intent(in) :: valeType
 !
     nomg = 'DEPL_R'
     call dismoi('NB_EC', nomg, 'GRANDEUR', repi=nbec)
-    ASSERT(nbec.le.10)
+    ASSERT(nbec .le. 10)
 
 ! - Model informations
     call dismoi('DIM_GEOM', model, 'MODELE', repi=geomDime)
-    if (.not.(geomDime.eq.2.or.geomDime.eq.3)) then
+    if (.not. (geomDime .eq. 2 .or. geomDime .eq. 3)) then
         call utmess('F', 'CHARGES2_6')
-    endif
+    end if
 !
 ! - Loop on factor keyword
 !
@@ -134,7 +134,7 @@ character(len=4), intent(in) :: valeType
 ! ----- Read mesh affectation
 !
         list_node = '&&CALIOB.LIST_NODE'
-        call getnode(mesh, keywordfact, iocc, 'F', list_node,&
+        call getnode(mesh, keywordfact, iocc, 'F', list_node, &
                      nb_node)
         call jeveuo(list_node, 'L', jlino)
 !
@@ -143,17 +143,17 @@ character(len=4), intent(in) :: valeType
         angl_naut(1) = zero
         angl_naut(2) = zero
         angl_naut(3) = zero
-        call getvr8(keywordfact, 'ANGL_NAUT', iocc=iocc, nbval=3, vect=angl_naut,&
+        call getvr8(keywordfact, 'ANGL_NAUT', iocc=iocc, nbval=3, vect=angl_naut, &
                     nbret=n_angle)
         do i_angle = 1, min(3, abs(n_angle))
             angl_naut(i_angle) = rdgd*angl_naut(i_angle)
-        enddo
+        end do
         call matrot(angl_naut, matr_rota)
 !
 ! ----- Read affected components and their values
 !
-        call char_read_keyw(keywordfact, iocc, valeType, n_keyexcl, keywordexcl,&
-                            n_max_keyword, n_keyword, keywordlist, ddlimp, valimr,&
+        call char_read_keyw(keywordfact, iocc, valeType, n_keyexcl, keywordexcl, &
+                            n_max_keyword, n_keyword, keywordlist, ddlimp, valimr, &
                             valimf, valimc)
 !
         do i_keyword = 1, n_keyword
@@ -164,46 +164,46 @@ character(len=4), intent(in) :: valeType
             val_r = valimr(i_keyword)
             val_c = valimc(i_keyword)
             val_f = valimf(i_keyword)
-            ASSERT(ddlimp(i_keyword).eq.1)
+            ASSERT(ddlimp(i_keyword) .eq. 1)
 !
 ! --------- Which direction ?
 !
-            if ((keyword.eq.'DX') .or. (keyword.eq.'DRX')) then
+            if ((keyword .eq. 'DX') .or. (keyword .eq. 'DRX')) then
                 i_direct = 1
-            else if ((keyword.eq.'DY').or.(keyword.eq.'DRY')) then
+            else if ((keyword .eq. 'DY') .or. (keyword .eq. 'DRY')) then
                 i_direct = 2
-            else if ((keyword.eq.'DZ').or.(keyword.eq.'DRZ')) then
+            else if ((keyword .eq. 'DZ') .or. (keyword .eq. 'DRZ')) then
                 i_direct = 3
             else
                 ASSERT(.false.)
-            endif
-            direct(1) = matr_rota(i_direct,1)
-            direct(2) = matr_rota(i_direct,2)
-            direct(3) = matr_rota(i_direct,3)
+            end if
+            direct(1) = matr_rota(i_direct, 1)
+            direct(2) = matr_rota(i_direct, 2)
+            direct(3) = matr_rota(i_direct, 3)
 !
 ! --------- Which kind of dof ?
 !
-            if ((keyword.eq.'DX') .or. (keyword.eq.'DY') .or. (keyword.eq.'DZ')) then
+            if ((keyword .eq. 'DX') .or. (keyword .eq. 'DY') .or. (keyword .eq. 'DZ')) then
                 ddl = 'DEPL'
-            else if ((keyword.eq.'DRX').or.(keyword.eq.'DRY').or.(keyword.eq.'DRZ')) then
+            else if ((keyword .eq. 'DRX') .or. (keyword .eq. 'DRY') .or. (keyword .eq. 'DRZ')) then
                 ddl = 'ROTA'
             else
                 ASSERT(.false.)
-            endif
+            end if
 !
 ! --------- Affect in direction
 !
             do ino = 1, nb_node
                 nume_node = zi(jlino+ino-1)
                 call jenuno(jexnum(mesh//'.NOMNOE', nume_node), name_node)
-                call afrela([coefr], [coefc], ddl, name_node, [geomDime],&
-                            direct, 1, val_r, val_c, val_f,&
+                call afrela([coefr], [coefc], ddl, name_node, [geomDime], &
+                            direct, 1, val_r, val_c, val_f, &
                             typcoe, valeType, 0.d0, lisrel)
-            enddo
-        enddo
+            end do
+        end do
 !
         call jedetr(list_node)
-    enddo
+    end do
 !
 ! - Final linear relation affectation
 !

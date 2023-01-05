@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -50,7 +50,7 @@ subroutine fgrccm(nbextr, ext, ncyc, sigmin, sigmax)
     do i = 2, nbextr
         if ((ext(i) .gt. ext(1)) .or. (ext(i) .lt. ext(1))) then
             cyczer = .false.
-        endif
+        end if
     end do
 !
     if (cyczer) then
@@ -61,10 +61,10 @@ subroutine fgrccm(nbextr, ext, ncyc, sigmin, sigmax)
         call utmess('A', 'FATIGUE1_39')
 !
         goto 999
-    endif
+    end if
 !
     do i = 1, nbextr
-        moyext = moyext + ext(i)
+        moyext = moyext+ext(i)
     end do
     moyext = moyext/nbextr
 !
@@ -77,15 +77,15 @@ subroutine fgrccm(nbextr, ext, ncyc, sigmin, sigmax)
         sigmin(i) = ext(i)
     end do
     if (nbextr .ne. (2*ncyc)) then
-        ncyc = ncyc + 1
+        ncyc = ncyc+1
         if (ext(ncyc) .ge. moyext) then
             sigmax(ncyc) = ext(ncyc)
-            sigmin(ncyc) = -ext(ncyc) + 2 * moyext
+            sigmin(ncyc) = -ext(ncyc)+2*moyext
         else
-            sigmax(ncyc) = -ext(ncyc) + 2 * moyext
+            sigmax(ncyc) = -ext(ncyc)+2*moyext
             sigmin(ncyc) = ext(ncyc)
-        endif
-    endif
+        end if
+    end if
 !
 999 continue
 !

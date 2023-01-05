@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine matdn(nb1, xr, intsn, madn, nks1,&
+subroutine matdn(nb1, xr, intsn, madn, nks1, &
                  nks2)
 !
 !
@@ -34,10 +34,10 @@ subroutine matdn(nb1, xr, intsn, madn, nks1,&
     implicit none
 !
 #include "asterfort/r8inir.h"
-    real(kind=8) :: madn ( 3 , 51 )
-    real(kind=8) :: nks1 ( 3 , 51 )
-    real(kind=8) :: nks2 ( 3 , 51 )
-    real(kind=8) :: xr ( * )
+    real(kind=8) :: madn(3, 51)
+    real(kind=8) :: nks1(3, 51)
+    real(kind=8) :: nks2(3, 51)
+    real(kind=8) :: xr(*)
 !
     integer :: jn
 !
@@ -50,9 +50,9 @@ subroutine matdn(nb1, xr, intsn, madn, nks1,&
 !
 !---- INITIALISATION
 !
-    call r8inir(3 * 51, 0.d0, madn, 1)
-    call r8inir(3 * 51, 0.d0, nks1, 1)
-    call r8inir(3 * 51, 0.d0, nks2, 1)
+    call r8inir(3*51, 0.d0, madn, 1)
+    call r8inir(3*51, 0.d0, nks1, 1)
+    call r8inir(3*51, 0.d0, nks2, 1)
 !
 !---- LES ADRESSES DES FONCTIONS DE FORME ET DE LEURS DERIVEES
 !     DECALAGE DE 8 NOEUDS DE SERENDIP ET 9 NOEUDS DE LAGRANGE
@@ -65,14 +65,14 @@ subroutine matdn(nb1, xr, intsn, madn, nks1,&
 !
         do ii = 1, 3
 !
-            madn ( ii , ( jn - 1 ) * 6 + ii ) = xr ( 135 + 8 * (&
-            intsn - 1 ) + jn )
+            madn(ii, (jn-1)*6+ii) = xr(135+8*( &
+                                       intsn-1)+jn)
 !
-            nks1 ( ii , ( jn - 1 ) * 6 + ii ) = xr ( 207 + 8 * (&
-            intsn - 1 ) + jn )
+            nks1(ii, (jn-1)*6+ii) = xr(207+8*( &
+                                       intsn-1)+jn)
 !
-            nks2 ( ii , ( jn - 1 ) * 6 + ii ) = xr ( 279 + 8 * (&
-            intsn - 1 ) + jn )
+            nks2(ii, (jn-1)*6+ii) = xr(279+8*( &
+                                       intsn-1)+jn)
 !
         end do
 !

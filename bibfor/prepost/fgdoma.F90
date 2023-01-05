@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -54,7 +54,7 @@ subroutine fgdoma(nommat, nbcycl, epsmin, epsmax, dom)
 !
     do i = 1, nbcycl
         delta = (abs(epsmax(i)-epsmin(i)))/2.d0
-        call rcvale(nommat, pheno, nbpar, nompar, [delta],&
+        call rcvale(nommat, pheno, nbpar, nompar, [delta], &
                     1, nomres, nrupt(1), icodre(1), 2)
         dom(i) = 1.d0/nrupt(1)
     end do

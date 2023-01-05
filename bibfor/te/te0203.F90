@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -43,7 +43,7 @@ subroutine te0203(option, nomte)
     character(len=8) :: typmod(2)
 !
 !    PARAMETRES DE L'ELEMENT FINI
-    npg=2
+    npg = 2
 !
 ! - PARAMETRES EN ENTREE
     call jevech('PGEOMER', 'L', igeom)
@@ -56,24 +56,24 @@ subroutine te0203(option, nomte)
     call jevech('PCDTAU', 'L', ictau)
     call jevech('PCOMPOR', 'L', icompo)
 !
-    if (lteatt('AXIS','OUI')) then
+    if (lteatt('AXIS', 'OUI')) then
         typmod(1) = 'AXIS'
     else
         typmod(1) = 'PLAN'
-    endif
+    end if
     typmod(2) = 'ELEMJOIN'
 !
 ! RECUPERATION DU NOMBRE DE VARIABLES INTERNES PAR POINTS DE GAUSS :
-    call tecach('OOO', 'PVARIMR', 'L', iret, nval=7,&
+    call tecach('OOO', 'PVARIMR', 'L', iret, nval=7, &
                 itab=jtab)
-    lgpg = max(jtab(6),1)*jtab(7)
+    lgpg = max(jtab(6), 1)*jtab(7)
 !
 ! PARAMETRE EN SORTIE
 !
     call jevech('PCOPILO', 'E', icopil)
 !
-    call pipefi(npg, lgpg, zi(imater), zr(igeom), zr(ivarim),&
-                zr(iddepl), zr(ideplm), zr(idepl0), zr(idepl1), zr(ictau),&
+    call pipefi(npg, lgpg, zi(imater), zr(igeom), zr(ivarim), &
+                zr(iddepl), zr(ideplm), zr(idepl0), zr(idepl1), zr(ictau), &
                 typmod, zk16(icompo), zr(icopil))
 !
 end subroutine

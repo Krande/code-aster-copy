@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,23 +28,23 @@ subroutine dxtbm(jacob, bm)
     vj21 = jacob(3)
     vj22 = jacob(4)
 !
-    bm(1,1) = - vj11 - vj12
-    bm(1,2) = 0.d0
-    bm(1,3) = vj11
-    bm(1,4) = 0.d0
-    bm(1,5) = vj12
-    bm(1,6) = 0.d0
-    bm(2,1) = 0.d0
-    bm(2,2) = - vj21 - vj22
-    bm(2,3) = 0.d0
-    bm(2,4) = vj21
-    bm(2,5) = 0.d0
-    bm(2,6) = vj22
-    bm(3,1) = bm(2,2)
-    bm(3,2) = bm(1,1)
-    bm(3,3) = bm(2,4)
-    bm(3,4) = bm(1,3)
-    bm(3,5) = bm(2,6)
-    bm(3,6) = bm(1,5)
+    bm(1, 1) = -vj11-vj12
+    bm(1, 2) = 0.d0
+    bm(1, 3) = vj11
+    bm(1, 4) = 0.d0
+    bm(1, 5) = vj12
+    bm(1, 6) = 0.d0
+    bm(2, 1) = 0.d0
+    bm(2, 2) = -vj21-vj22
+    bm(2, 3) = 0.d0
+    bm(2, 4) = vj21
+    bm(2, 5) = 0.d0
+    bm(2, 6) = vj22
+    bm(3, 1) = bm(2, 2)
+    bm(3, 2) = bm(1, 1)
+    bm(3, 3) = bm(2, 4)
+    bm(3, 4) = bm(1, 3)
+    bm(3, 5) = bm(2, 6)
+    bm(3, 6) = bm(1, 5)
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -37,7 +37,7 @@ subroutine xfem_precond(action, matass, base)
 #include "asterfort/xfem_pc_detr.h"
 !
     character(len=*) :: matass
-    character(len=1),optional :: base
+    character(len=1), optional :: base
     character(len=*) :: action
 !
 !-----------------------------------------------------------------------
@@ -46,22 +46,22 @@ subroutine xfem_precond(action, matass, base)
 !
     call jemarq()
 !
-    ASSERT((action .eq. 'PRE_COND').or.(action .eq. 'FIN'))
+    ASSERT((action .eq. 'PRE_COND') .or. (action .eq. 'FIN'))
 !
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     if (action .eq. 'PRE_COND') then
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-       ASSERT(present(base))
+        ASSERT(present(base))
 !    PRE_CONDITIONNEMENT DE LA MATRICE
-       call xfem_pc(matass, base)
+        call xfem_pc(matass, base)
 !
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     elseif (action .eq. 'FIN') then
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !    DESTRUCTION DU PRECONDITIONNEUR ET RETOUR A L ETAT INITIAL
-       call xfem_pc_detr(matass)
+        call xfem_pc_detr(matass)
 !
-    endif
+    end if
 !
     call jedema()
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,29 +17,29 @@
 ! --------------------------------------------------------------------
 ! aslint: disable=W1504
 !
-subroutine dplvga(ds_thm,&
-                  ndim  , dimcon,&
-                  rho11 , rho12 , rgaz  , kh,&
-                  congem, adcp11, adcp12,&
-                  temp  , pad   ,&
-                  dp11p1, dp11p2,&
-                  dp12p1, dp12p2,&
-                  dp21p1, dp21p2,&
-                  dp11t , dp12t , dp21t)
+subroutine dplvga(ds_thm, &
+                  ndim, dimcon, &
+                  rho11, rho12, rgaz, kh, &
+                  congem, adcp11, adcp12, &
+                  temp, pad, &
+                  dp11p1, dp11p2, &
+                  dp12p1, dp12p2, &
+                  dp21p1, dp21p2, &
+                  dp11t, dp12t, dp21t)
 !
-use THM_type
+    use THM_type
 !
-implicit none
+    implicit none
 !
-type(THM_DS), intent(in) :: ds_thm
-integer, intent(in) :: ndim, dimcon
-real(kind=8), intent(in) :: rho11, rho12, rgaz, kh
-integer, intent(in) :: adcp11, adcp12
-real(kind=8), intent(in) :: congem(dimcon), temp, pad
-real(kind=8), intent(out) :: dp11p1, dp11p2
-real(kind=8), intent(out) :: dp12p1, dp12p2
-real(kind=8), intent(out) :: dp21p1, dp21p2
-real(kind=8), intent(out) :: dp11t, dp12t, dp21t
+    type(THM_DS), intent(in) :: ds_thm
+    integer, intent(in) :: ndim, dimcon
+    real(kind=8), intent(in) :: rho11, rho12, rgaz, kh
+    integer, intent(in) :: adcp11, adcp12
+    real(kind=8), intent(in) :: congem(dimcon), temp, pad
+    real(kind=8), intent(out) :: dp11p1, dp11p2
+    real(kind=8), intent(out) :: dp12p1, dp12p2
+    real(kind=8), intent(out) :: dp21p1, dp21p2
+    real(kind=8), intent(out) :: dp11t, dp12t, dp21t
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -75,16 +75,16 @@ real(kind=8), intent(out) :: dp11t, dp12t, dp21t
 ! --------------------------------------------------------------------------------------------------
 !
     dp11p1 = 1/((rho12*rgaz*temp/rho11/kh)-1)
-    dp11p2 = (rgaz*temp/kh - 1)/((rho12*rgaz*temp/rho11/kh)-1)
+    dp11p2 = (rgaz*temp/kh-1)/((rho12*rgaz*temp/rho11/kh)-1)
     dp12p1 = 1/(rgaz*temp/kh-(rho11/rho12))
     dp12p2 = (rgaz*temp/kh-1)*dp12p1
-    dp21p1 = - dp12p1
-    dp21p2 = 1 - dp12p2
+    dp21p1 = -dp12p1
+    dp21p2 = 1-dp12p2
     if (ds_thm%ds_elem%l_dof_ther) then
         l = (congem(adcp12+ndim+1)-congem(adcp11+ndim+1))
         dp11t = (-l*rgaz*rho12/kh+pad/temp)/((rho12*rgaz*temp/rho11/kh)-1)
         dp12t = (-l*rho11+pad)/temp*dp12p1
-        dp21t = - dp12t
-    endif
+        dp21t = -dp12t
+    end if
 !
 end subroutine

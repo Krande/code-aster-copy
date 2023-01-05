@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine pemain(resu, modele, mate, mateco, cara, nh,&
+subroutine pemain(resu, modele, mate, mateco, cara, nh, &
                   nbocc, deform)
     implicit none
 #include "jeveux.h"
@@ -54,11 +54,11 @@ subroutine pemain(resu, modele, mate, mateco, cara, nh,&
 !     TRAITEMENT DU MOT CLE-FACTEUR "MASS_INER"
 !     ------------------------------------------------------------------
 !
-    integer :: mxvale, nbparr, ibid, iret,  iocc, nt, ng, nr, nm, nbgrma, jgr, ig, nbma, jad
+    integer :: mxvale, nbparr, ibid, iret, iocc, nt, ng, nr, nm, nbgrma, jgr, ig, nbma, jad
     integer :: nbmail, jma, im, nume, nb, ifm, niv, mxval1, nbpar1, mxval2, nbpar2, iorig, nre
     integer :: icage, nbtot
-    parameter (mxval1=16,nbpar1=18)
-    parameter (mxval2=25,nbpar2=27)
+    parameter(mxval1=16, nbpar1=18)
+    parameter(mxval2=25, nbpar2=27)
     real(kind=8) :: zero, orig(3), r8b
     character(len=8) :: k8b, noma, lpain(16), lpaout(5), typarr(nbpar2), valk(2)
     character(len=16) :: noparr(nbpar2)
@@ -69,17 +69,17 @@ subroutine pemain(resu, modele, mate, mateco, cara, nh,&
     real(kind=8), pointer :: trav1(:) => null()
     integer, pointer :: v_allma(:) => null()
 !
-    data noparr/'LIEU','ENTITE','MASSE','CDG_X','CDG_Y','CDG_Z', &
-            'IX_G','IY_G','IZ_G','IXY_G','IXZ_G','IYZ_G','IX_PRIN_G', &
-            'IY_PRIN_G','IZ_PRIN_G','ALPHA','BETA','GAMMA','X_P','Y_P', &
-            'Z_P','IX_P','IY_P','IZ_P','IXY_P','IXZ_P','IYZ_P'/
-    data typarr/'K24','K8','R','R','R','R','R','R','R','R','R','R', &
-            'R','R','R','R','R','R','R','R','R','R','R','R','R','R','R'/
+    data noparr/'LIEU', 'ENTITE', 'MASSE', 'CDG_X', 'CDG_Y', 'CDG_Z', &
+        'IX_G', 'IY_G', 'IZ_G', 'IXY_G', 'IXZ_G', 'IYZ_G', 'IX_PRIN_G', &
+        'IY_PRIN_G', 'IZ_PRIN_G', 'ALPHA', 'BETA', 'GAMMA', 'X_P', 'Y_P', &
+        'Z_P', 'IX_P', 'IY_P', 'IZ_P', 'IXY_P', 'IXZ_P', 'IYZ_P'/
+    data typarr/'K24', 'K8', 'R', 'R', 'R', 'R', 'R', 'R', 'R', 'R', 'R', 'R', &
+        'R', 'R', 'R', 'R', 'R', 'R', 'R', 'R', 'R', 'R', 'R', 'R', 'R', 'R', 'R'/
 !     ------------------------------------------------------------------
 !
     call jemarq()
-    ibid=0
-    c16b=(0.d0,0.d0)
+    ibid = 0
+    c16b = (0.d0, 0.d0)
 !
 ! --- RECUPERATION DU NIVEAU D'IMPRESSION
     call infniv(ifm, niv)
@@ -88,7 +88,7 @@ subroutine pemain(resu, modele, mate, mateco, cara, nh,&
     zero = 0.0d0
     r8b = 0.0d0
     chdef = deform
-    call mecham('MASS_INER', modele, cara, nh, chgeom,&
+    call mecham('MASS_INER', modele, cara, nh, chgeom, &
                 chcara, chharm, iret)
     if (iret .ne. 0) goto 60
     noma = chgeom(1:8)
@@ -102,12 +102,12 @@ subroutine pemain(resu, modele, mate, mateco, cara, nh,&
     lpain(1) = 'PGEOMER'
     if (chdef .ne. ' ') then
         chgeo2 = '&&PEMAIN.CH_GEOMER'
-        call vtgpld('CUMU',  1.d0, chgeom, chdef, 'V',&
+        call vtgpld('CUMU', 1.d0, chgeom, chdef, 'V', &
                     chgeo2)
         lchin(1) = chgeo2
     else
         lchin(1) = chgeom
-    endif
+    end if
     lpain(2) = 'PMATERC'
     lchin(2) = mateco
     lpain(3) = 'PCAORIE'
@@ -143,8 +143,8 @@ subroutine pemain(resu, modele, mate, mateco, cara, nh,&
     lpaout(1) = 'PMASSINE'
     lchout(1) = chelem
 !
-    call calcul('S', 'MASS_INER', ligrel, nb, lchin,&
-                lpain, 1, lchout, lpaout, 'V',&
+    call calcul('S', 'MASS_INER', ligrel, nb, lchin, &
+                lpain, 1, lchout, lpaout, 'V', &
                 'OUI')
 !
     mxvale = mxval1
@@ -155,7 +155,7 @@ subroutine pemain(resu, modele, mate, mateco, cara, nh,&
             mxvale = mxval2
             nbparr = nbpar2
             goto 20
-        endif
+        end if
     end do
 20  continue
 !
@@ -170,30 +170,30 @@ subroutine pemain(resu, modele, mate, mateco, cara, nh,&
         orig(2) = zero
         orig(3) = zero
         call getvtx('MASS_INER', 'TOUT', iocc=iocc, nbval=0, nbret=nt)
-        call getvem(noma, 'GROUP_MA', 'MASS_INER', 'GROUP_MA', iocc,&
+        call getvem(noma, 'GROUP_MA', 'MASS_INER', 'GROUP_MA', iocc, &
                     0, k8b, ng)
-        call getvem(noma, 'MAILLE', 'MASS_INER', 'MAILLE', iocc,&
+        call getvem(noma, 'MAILLE', 'MASS_INER', 'MAILLE', iocc, &
                     0, k8b, nm)
 
         call getvr8('MASS_INER', 'ORIG_INER', iocc=iocc, nbval=0, nbret=nr)
         if (nr .ne. 0) then
             iorig = 1
             nre = -nr
-            call getvr8('MASS_INER', 'ORIG_INER', iocc=iocc, nbval=nre, vect=orig,&
+            call getvr8('MASS_INER', 'ORIG_INER', iocc=iocc, nbval=nre, vect=orig, &
                         nbret=nr)
-        endif
+        end if
         if (nt .ne. 0) then
-            call pemica(chelem, mxvale, trav1, 0, [ibid],&
+            call pemica(chelem, mxvale, trav1, 0, [ibid], &
                         orig, iorig, icage)
             valk(1) = noma
             valk(2) = 'TOUT'
-            call tbajli(resu, nbparr, noparr, [ibid], trav1,&
+            call tbajli(resu, nbparr, noparr, [ibid], trav1, &
                         [c16b], valk, 0)
-        endif
+        end if
         if (ng .ne. 0) then
             nbgrma = -ng
             call wkvect('&&PEMAIN_GROUPM', 'V V K24', nbgrma, jgr)
-            call getvem(noma, 'GROUP_MA', 'MASS_INER', 'GROUP_MA', iocc,&
+            call getvem(noma, 'GROUP_MA', 'MASS_INER', 'GROUP_MA', iocc, &
                         nbgrma, zk24(jgr), ng)
             valk2(2) = 'GROUP_MA'
             do ig = 1, nbgrma
@@ -201,39 +201,39 @@ subroutine pemain(resu, modele, mate, mateco, cara, nh,&
                 if (iret .eq. 0) then
                     call utmess('A', 'UTILITAI3_46', sk=zk24(jgr+ig-1))
                     goto 30
-                endif
+                end if
                 call jelira(jexnom(mlggma, zk24(jgr+ig-1)), 'LONUTI', nbma)
                 if (nbma .eq. 0) then
                     call utmess('A', 'UTILITAI3_47', sk=zk24(jgr+ig-1))
                     goto 30
-                endif
+                end if
                 call jeveuo(jexnom(noma//'.GROUPEMA', zk24(jgr+ig-1)), 'L', jad)
-                call pemica(chelem, mxvale, trav1, nbma, zi(jad),&
+                call pemica(chelem, mxvale, trav1, nbma, zi(jad), &
                             orig, iorig, icage)
                 valk2(1) = zk24(jgr+ig-1)
-                call tbajli(resu, nbparr, noparr, [ibid], trav1,&
+                call tbajli(resu, nbparr, noparr, [ibid], trav1, &
                             [c16b], valk2, 0)
-30  continue
+30              continue
             end do
 !
 !
 ! --- UNION
-            if(nbgrma > 1) then
+            if (nbgrma > 1) then
                 call umalma(noma, zk24(jgr), nbgrma, v_allma, nbtot)
-                ASSERT(nbtot>0)
-    !
+                ASSERT(nbtot > 0)
+                !
                 call pemica(chelem, mxvale, trav1, nbtot, v_allma, orig, iorig, icage)
                 valk2(1) = "UNION_GROUP_MA"
                 call tbajli(resu, nbparr, noparr, [ibid], trav1, [c16b], valk2, 0)
-    !
+                !
                 AS_DEALLOCATE(vi=v_allma)
             end if
             call jedetr('&&PEMAIN_GROUPM')
-        endif
+        end if
         if (nm .ne. 0) then
             nbmail = -nm
             call wkvect('&&PEMAIN_MAILLE', 'V V K8', nbmail, jma)
-            call getvem(noma, 'MAILLE', 'MASS_INER', 'MAILLE', iocc,&
+            call getvem(noma, 'MAILLE', 'MASS_INER', 'MAILLE', iocc, &
                         nbmail, zk8(jma), nm)
             valk(2) = 'MAILLE'
             do im = 1, nbmail
@@ -241,17 +241,17 @@ subroutine pemain(resu, modele, mate, mateco, cara, nh,&
                 if (iret .eq. 0) then
                     call utmess('A', 'UTILITAI3_49', sk=zk8(jma+im-1))
                     goto 40
-                endif
+                end if
                 call jenonu(jexnom(mlgnma, zk8(jma+im-1)), nume)
-                call pemica(chelem, mxvale, trav1, 1, [nume],&
+                call pemica(chelem, mxvale, trav1, 1, [nume], &
                             orig, iorig, icage)
                 valk(1) = zk8(jma+im-1)
-                call tbajli(resu, nbparr, noparr, [ibid], trav1,&
+                call tbajli(resu, nbparr, noparr, [ibid], trav1, &
                             [c16b], valk, 0)
-40  continue
+40              continue
             end do
             call jedetr('&&PEMAIN_MAILLE')
-        endif
+        end if
     end do
 !
 ! --- MENAGE

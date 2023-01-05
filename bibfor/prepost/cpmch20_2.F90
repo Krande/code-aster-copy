@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -46,7 +46,7 @@ subroutine cpmch20_2(conloc, jmacsu, indno, indma, conneo)
 ! IN        INDNO   INDICE DU PREMIER NOEUD AJOUTE
 ! IN        INDMA   INDICE DE LA PREMIERE MAILLE AJOUTEE
 ! -------------------------------------------------------------------------------------------------
-   integer :: lino(20), jconloc
+    integer :: lino(20), jconloc
 ! -------------------------------------------------------------------------------------------------
     call jemarq()
 ! -------------------------------------------------------------------------------------------------
@@ -74,7 +74,7 @@ subroutine cpmch20_2(conloc, jmacsu, indno, indma, conneo)
         lino(20) = 20
         !write(*,*) '1'
 ! -------------------------------------------------------------------------------------------------
-    elseif (conneo(1) .ne. 0 .and. conneo(2) .ne. 0 .and.&
+    elseif (conneo(1) .ne. 0 .and. conneo(2) .ne. 0 .and. &
             conneo(6) .ne. 0 .and. conneo(5) .ne. 0) then
 !--------------------------------------------------------------------------------------------------
         lino(1) = 1
@@ -96,10 +96,10 @@ subroutine cpmch20_2(conloc, jmacsu, indno, indma, conneo)
         lino(17) = 11
         lino(18) = 15
         lino(19) = 19
-        lino(20) =16
+        lino(20) = 16
         !write(*,*) '2'
 ! -------------------------------------------------------------------------------------------------
-    elseif (conneo(2) .ne. 0 .and. conneo(3) .ne. 0 .and.&
+    elseif (conneo(2) .ne. 0 .and. conneo(3) .ne. 0 .and. &
             conneo(7) .ne. 0 .and. conneo(6) .ne. 0) then
 !--------------------------------------------------------------------------------------------------
         lino(1) = 2
@@ -121,10 +121,10 @@ subroutine cpmch20_2(conloc, jmacsu, indno, indma, conneo)
         lino(17) = 12
         lino(18) = 16
         lino(19) = 20
-        lino(20) =13
+        lino(20) = 13
         !write(*,*) '3'
 ! -------------------------------------------------------------------------------------------------
-    elseif (conneo(3) .ne. 0 .and. conneo(4) .ne. 0 .and.&
+    elseif (conneo(3) .ne. 0 .and. conneo(4) .ne. 0 .and. &
             conneo(8) .ne. 0 .and. conneo(7) .ne. 0) then
 !--------------------------------------------------------------------------------------------------
         lino(1) = 3
@@ -147,9 +147,9 @@ subroutine cpmch20_2(conloc, jmacsu, indno, indma, conneo)
         lino(18) = 13
         lino(19) = 17
         lino(20) = 14
-       !write(*,*) '4'
+        !write(*,*) '4'
 ! -------------------------------------------------------------------------------------------------
-    elseif (conneo(1) .ne. 0 .and. conneo(5) .ne. 0 .and.&
+    elseif (conneo(1) .ne. 0 .and. conneo(5) .ne. 0 .and. &
             conneo(8) .ne. 0 .and. conneo(4) .ne. 0) then
 !--------------------------------------------------------------------------------------------------
         lino(1) = 1
@@ -174,7 +174,7 @@ subroutine cpmch20_2(conloc, jmacsu, indno, indma, conneo)
         lino(20) = 10
         !write(*,*) '5'
 ! -------------------------------------------------------------------------------------------------
-    elseif (conneo(5) .ne. 0 .and. conneo(6) .ne. 0 .and.&
+    elseif (conneo(5) .ne. 0 .and. conneo(6) .ne. 0 .and. &
             conneo(7) .ne. 0 .and. conneo(8) .ne. 0) then
 !--------------------------------------------------------------------------------------------------
         lino(1) = 5
@@ -201,11 +201,11 @@ subroutine cpmch20_2(conloc, jmacsu, indno, indma, conneo)
 ! -------------------------------------------------------------------------------------------------
     else
         ASSERT(.false.)
-    endif
+    end if
 ! -------------------------------------------------------------------------------------------------
-    call jeecra(jexnum(conloc,indma), 'LONMAX', ival=13)
-    call jeecra(jexnum(conloc,indma), 'LONUTI', ival=13)
-    call jeveuo(jexnum(conloc,indma), 'E', jconloc)
+    call jeecra(jexnum(conloc, indma), 'LONMAX', ival=13)
+    call jeecra(jexnum(conloc, indma), 'LONUTI', ival=13)
+    call jeveuo(jexnum(conloc, indma), 'E', jconloc)
     zi(jconloc+1-1) = zi(jmacsu+lino(4)-1)
     zi(jconloc+2-1) = zi(jmacsu+lino(1)-1)
     zi(jconloc+3-1) = zi(jmacsu+lino(5)-1)
@@ -215,14 +215,14 @@ subroutine cpmch20_2(conloc, jmacsu, indno, indma, conneo)
     zi(jconloc+7-1) = zi(jmacsu+lino(13)-1)
     zi(jconloc+8-1) = zi(jmacsu+lino(20)-1)
     zi(jconloc+9-1) = zi(jmacsu+lino(16)-1)
-    zi(jconloc+10-1) = indno + conneo(lino(4))
-    zi(jconloc+11-1) = indno + conneo(lino(1))
-    zi(jconloc+12-1) = indno + 4 +conneo(lino(1))
-    zi(jconloc+13-1) = indno + 4 +conneo(lino(4))
+    zi(jconloc+10-1) = indno+conneo(lino(4))
+    zi(jconloc+11-1) = indno+conneo(lino(1))
+    zi(jconloc+12-1) = indno+4+conneo(lino(1))
+    zi(jconloc+13-1) = indno+4+conneo(lino(4))
 
-    call jeecra(jexnum(conloc,indma+1), 'LONMAX', ival=13)
-    call jeecra(jexnum(conloc,indma+1), 'LONUTI', ival=13)
-    call jeveuo(jexnum(conloc,indma+1), 'E', jconloc)
+    call jeecra(jexnum(conloc, indma+1), 'LONMAX', ival=13)
+    call jeecra(jexnum(conloc, indma+1), 'LONUTI', ival=13)
+    call jeveuo(jexnum(conloc, indma+1), 'E', jconloc)
     zi(jconloc+1-1) = zi(jmacsu+lino(1)-1)
     zi(jconloc+2-1) = zi(jmacsu+lino(2)-1)
     zi(jconloc+3-1) = zi(jmacsu+lino(6)-1)
@@ -232,14 +232,14 @@ subroutine cpmch20_2(conloc, jmacsu, indno, indma, conneo)
     zi(jconloc+7-1) = zi(jmacsu+lino(14)-1)
     zi(jconloc+8-1) = zi(jmacsu+lino(17)-1)
     zi(jconloc+9-1) = zi(jmacsu+lino(13)-1)
-    zi(jconloc+10-1) = indno + conneo(lino(1))
-    zi(jconloc+11-1) = indno + conneo(lino(2))
-    zi(jconloc+12-1) = indno + 4 +conneo(lino(2))
-    zi(jconloc+13-1) = indno + 4 +conneo(lino(1))
+    zi(jconloc+10-1) = indno+conneo(lino(1))
+    zi(jconloc+11-1) = indno+conneo(lino(2))
+    zi(jconloc+12-1) = indno+4+conneo(lino(2))
+    zi(jconloc+13-1) = indno+4+conneo(lino(1))
 
-    call jeecra(jexnum(conloc,indma+2), 'LONMAX', ival=13)
-    call jeecra(jexnum(conloc,indma+2), 'LONUTI', ival=13)
-    call jeveuo(jexnum(conloc,indma+2), 'E', jconloc)
+    call jeecra(jexnum(conloc, indma+2), 'LONMAX', ival=13)
+    call jeecra(jexnum(conloc, indma+2), 'LONUTI', ival=13)
+    call jeveuo(jexnum(conloc, indma+2), 'E', jconloc)
     zi(jconloc+1-1) = zi(jmacsu+lino(2)-1)
     zi(jconloc+2-1) = zi(jmacsu+lino(3)-1)
     zi(jconloc+3-1) = zi(jmacsu+lino(7)-1)
@@ -249,14 +249,14 @@ subroutine cpmch20_2(conloc, jmacsu, indno, indma, conneo)
     zi(jconloc+7-1) = zi(jmacsu+lino(15)-1)
     zi(jconloc+8-1) = zi(jmacsu+lino(18)-1)
     zi(jconloc+9-1) = zi(jmacsu+lino(14)-1)
-    zi(jconloc+10-1) = indno + conneo(lino(2))
-    zi(jconloc+11-1) = indno + conneo(lino(3))
-    zi(jconloc+12-1) = indno + 4 + conneo(lino(3))
-    zi(jconloc+13-1) = indno + 4 + conneo(lino(2))
+    zi(jconloc+10-1) = indno+conneo(lino(2))
+    zi(jconloc+11-1) = indno+conneo(lino(3))
+    zi(jconloc+12-1) = indno+4+conneo(lino(3))
+    zi(jconloc+13-1) = indno+4+conneo(lino(2))
 
-    call jeecra(jexnum(conloc,indma+3), 'LONMAX', ival=13)
-    call jeecra(jexnum(conloc,indma+3), 'LONUTI', ival=13)
-    call jeveuo(jexnum(conloc,indma+3), 'E', jconloc)
+    call jeecra(jexnum(conloc, indma+3), 'LONMAX', ival=13)
+    call jeecra(jexnum(conloc, indma+3), 'LONUTI', ival=13)
+    call jeveuo(jexnum(conloc, indma+3), 'E', jconloc)
     zi(jconloc+1-1) = zi(jmacsu+lino(3)-1)
     zi(jconloc+2-1) = zi(jmacsu+lino(4)-1)
     zi(jconloc+3-1) = zi(jmacsu+lino(8)-1)
@@ -266,14 +266,14 @@ subroutine cpmch20_2(conloc, jmacsu, indno, indma, conneo)
     zi(jconloc+7-1) = zi(jmacsu+lino(16)-1)
     zi(jconloc+8-1) = zi(jmacsu+lino(19)-1)
     zi(jconloc+9-1) = zi(jmacsu+lino(15)-1)
-    zi(jconloc+10-1) = indno + conneo(lino(3))
-    zi(jconloc+11-1) = indno + conneo(lino(4))
-    zi(jconloc+12-1) = indno + 4 +conneo(lino(4))
-    zi(jconloc+13-1) = indno + 4 +conneo(lino(3))
+    zi(jconloc+10-1) = indno+conneo(lino(3))
+    zi(jconloc+11-1) = indno+conneo(lino(4))
+    zi(jconloc+12-1) = indno+4+conneo(lino(4))
+    zi(jconloc+13-1) = indno+4+conneo(lino(3))
 
-    call jeecra(jexnum(conloc,indma+4), 'LONMAX', ival=13)
-    call jeecra(jexnum(conloc,indma+4), 'LONUTI', ival=13)
-    call jeveuo(jexnum(conloc,indma+4), 'E', jconloc)
+    call jeecra(jexnum(conloc, indma+4), 'LONMAX', ival=13)
+    call jeecra(jexnum(conloc, indma+4), 'LONUTI', ival=13)
+    call jeveuo(jexnum(conloc, indma+4), 'E', jconloc)
     zi(jconloc+1-1) = zi(jmacsu+lino(5)-1)
     zi(jconloc+2-1) = zi(jmacsu+lino(6)-1)
     zi(jconloc+3-1) = zi(jmacsu+lino(7)-1)
@@ -283,10 +283,10 @@ subroutine cpmch20_2(conloc, jmacsu, indno, indma, conneo)
     zi(jconloc+7-1) = zi(jmacsu+lino(18)-1)
     zi(jconloc+8-1) = zi(jmacsu+lino(19)-1)
     zi(jconloc+9-1) = zi(jmacsu+lino(20)-1)
-    zi(jconloc+10-1) = indno + 4 +conneo(lino(1))
-    zi(jconloc+11-1) = indno + 4 +conneo(lino(2))
-    zi(jconloc+12-1) = indno + 4 +conneo(lino(3))
-    zi(jconloc+13-1) = indno + 4 +conneo(lino(4))
+    zi(jconloc+10-1) = indno+4+conneo(lino(1))
+    zi(jconloc+11-1) = indno+4+conneo(lino(2))
+    zi(jconloc+12-1) = indno+4+conneo(lino(3))
+    zi(jconloc+13-1) = indno+4+conneo(lino(4))
 
 ! -------------------------------------------------------------------------------------------------
     call jedema()

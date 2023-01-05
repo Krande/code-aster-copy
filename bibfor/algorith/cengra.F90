@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -66,13 +66,13 @@ subroutine cengra(noma, nmaabs, coorg)
     do ino = 1, nbnott(1)
         nuno = connex(zi(jconx2+nmaabs-1)+ino-1)
 !
-        coorg(1) = coorg(1) + vale(3*(nuno-1)+1)
-        coorg(2) = coorg(2) + vale(3*(nuno-1)+2)
-        coorg(3) = coorg(3) + vale(3*(nuno-1)+3)
+        coorg(1) = coorg(1)+vale(3*(nuno-1)+1)
+        coorg(2) = coorg(2)+vale(3*(nuno-1)+2)
+        coorg(3) = coorg(3)+vale(3*(nuno-1)+3)
     end do
-    coorg(1) = coorg(1) / nbnott(1)
-    coorg(2) = coorg(2) / nbnott(1)
-    coorg(3) = coorg(3) / nbnott(1)
+    coorg(1) = coorg(1)/nbnott(1)
+    coorg(2) = coorg(2)/nbnott(1)
+    coorg(3) = coorg(3)/nbnott(1)
 !
     call jedema()
 end subroutine

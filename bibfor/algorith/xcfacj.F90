@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine xcfacj(ptint, ptmax, ipt, ainter, lsn,&
-                  igeom, nno, ndim, nfiss, ifiss,&
+subroutine xcfacj(ptint, ptmax, ipt, ainter, lsn, &
+                  igeom, nno, ndim, nfiss, ifiss, &
                   fisco, nfisc, typma)
 !
 ! aslint: disable=W1306
@@ -75,91 +75,91 @@ subroutine xcfacj(ptint, ptmax, ipt, ainter, lsn,&
 ! ----------------------------------------------------------------------
 !
     call elref1(elref)
-    prec=100.d0*r8prem()
+    prec = 100.d0*r8prem()
     call confac(typma, ibid3, ibid, fa, nbf)
 !
 !     BOUCLE SUR LES FACES
     do ifq = 1, nbf
 !
         lajpf = .false.
-        if (fa(ifq,4) .eq. 0) then
+        if (fa(ifq, 4) .eq. 0) then
             nnof = 3
             alias = 'TR3'
         else
             nnof = 4
-            alias='QU4'
-        endif
-        ASSERT(nnof.le.4)
+            alias = 'QU4'
+        end if
+        ASSERT(nnof .le. 4)
 !
 !       RECHERCHE DES INTERSECTION ENTRE LSN ET LES LSJ SUR LA FACE
 !
         somlsn = 0.d0
         do i = 1, nnof
-            somlsn = somlsn + abs( lsn(fa(ifq,i)) )
+            somlsn = somlsn+abs(lsn(fa(ifq, i)))
         end do
         if (somlsn .eq. 0.d0) goto 200
 !
         do ifisc = 1, nfisc
             chgsgn = .false.
             do i = 1, nnof
-                na = fa(ifq,i)
+                na = fa(ifq, i)
                 if (i .eq. 1) then
                     j = nnof
                 else
                     j = i-1
-                endif
-                nb = fa(ifq,j)
-                lsna=lsn((na-1)*nfiss+ifiss)
-                lsnb=lsn((nb-1)*nfiss+ifiss)
-                lsja=lsn((na-1)*nfiss+fisco(2*ifisc-1))*fisco(2*ifisc)
-                lsjb=lsn((nb-1)*nfiss+fisco(2*ifisc-1))*fisco(2*ifisc)
-                coorma(2*i-1)=lsja
-                coorma(2*i)=lsna
+                end if
+                nb = fa(ifq, j)
+                lsna = lsn((na-1)*nfiss+ifiss)
+                lsnb = lsn((nb-1)*nfiss+ifiss)
+                lsja = lsn((na-1)*nfiss+fisco(2*ifisc-1))*fisco(2*ifisc)
+                lsjb = lsn((nb-1)*nfiss+fisco(2*ifisc-1))*fisco(2*ifisc)
+                coorma(2*i-1) = lsja
+                coorma(2*i) = lsna
 !           SI LE FOND COINCIDE AVEC UN COTE DE LA FACE, ON SORT
-                if (lsna .eq. 0.d0 .and. lsnb .eq. 0.d0 .and. lsja .eq. 0.d0 .and. lsjb .eq.&
+                if (lsna .eq. 0.d0 .and. lsnb .eq. 0.d0 .and. lsja .eq. 0.d0 .and. lsjb .eq. &
                     0.d0) goto 110
 !           ON ACCEPTE SI LE FRONT EST SUR UN NOEUD OU UN PT DE L'ARETE
-                if (lsna .eq. 0.d0 .and. lsja .eq. 0.d0 .or. lsna .eq. 0.d0 .and. lsnb .eq.&
+                if (lsna .eq. 0.d0 .and. lsja .eq. 0.d0 .or. lsna .eq. 0.d0 .and. lsnb .eq. &
                     0.d0 .and. (lsja*lsjb) .lt. r8prem()) chgsgn = .true.
 !           ON ACCEPTE SI UNE ARETE DE LA FACETTE EST COUPÉE
-                if (abs(lsna-lsnb) .gt. r8prem() .and. (lsjb-lsnb*(lsja- lsjb)/(lsna-lsnb))&
+                if (abs(lsna-lsnb) .gt. r8prem() .and. (lsjb-lsnb*(lsja-lsjb)/(lsna-lsnb)) &
                     .lt. prec .or. abs(lsna-lsnb) .le. r8prem() .and. (lsja*lsjb) .lt. r8prem()) &
-                chgsgn = .true.
+                    chgsgn = .true.
             end do
             if (.not. chgsgn) goto 110
 !
 !         ON CHERCHE SUR LA MAILLE LE POINT CORRESPONDANT À LSN=LSJ=0
-            mp(1)=0.d0
-            mp(2)=0.d0
-            call reereg('C', alias, nnof, coorma, mp,&
+            mp(1) = 0.d0
+            mp(2) = 0.d0
+            call reereg('C', alias, nnof, coorma, mp, &
                         2, epsi, iret)
             if (iret .eq. 1) goto 110
 !         ON NE PREND PAS EN COMPTE LES POINTS QUI SORTENT DU DOMAINE
             if (alias .eq. 'QU4') then
                 if (abs(epsi(1)) .gt. 1.d0) goto 110
                 if (abs(epsi(2)) .gt. 1.d0) goto 110
-            else if (alias.eq.'TR3') then
+            else if (alias .eq. 'TR3') then
                 if (epsi(1) .lt. 0.d0) goto 110
                 if (epsi(2) .lt. 0.d0) goto 110
                 if (epsi(1)+epsi(2) .gt. 1.d0) goto 110
-            endif
-            mp(1)=epsi(1)
-            mp(2)=epsi(2)
+            end if
+            mp(1) = epsi(1)
+            mp(2) = epsi(2)
             call elrfvf(alias, mp, ff)
             do jfisc = ifisc+1, nfisc
                 lsj = 0
                 do j = 1, nnof
-                    ino = fa(ifq,j)
-                    lsj = lsj + lsn( (ino-1)*nfiss+fisco(2*jfisc-1))* fisco(2*jfisc)*ff(j)
+                    ino = fa(ifq, j)
+                    lsj = lsj+lsn((ino-1)*nfiss+fisco(2*jfisc-1))*fisco(2*jfisc)*ff(j)
                 end do
                 if (lsj .gt. 0) goto 110
             end do
             lajpf = .true.
             do i = 1, ndim
-                m(i)=0
+                m(i) = 0
                 do j = 1, nnof
-                    ino = fa(ifq,j)
-                    m(i) = m(i) + zr(igeom-1+ndim*(ino-1)+i) * ff(j)
+                    ino = fa(ifq, j)
+                    m(i) = m(i)+zr(igeom-1+ndim*(ino-1)+i)*ff(j)
                 end do
             end do
 !
@@ -170,23 +170,23 @@ subroutine xcfacj(ptint, ptmax, ipt, ainter, lsn,&
 !       POUR IGNORER LES POINTS CONFONDUS AVEC CEUX
 !       DETECTES DANS XCFACE LORSQUE LE PT EST EXACT SUR UNE ARETE
             do j = 1, ipt
-                dst=padist(ndim,m,ptint(ndim*(j-1)+1))
+                dst = padist(ndim, m, ptint(ndim*(j-1)+1))
                 if (dst .le. r8prem()) lajpf = .false.
             end do
-        endif
+        end if
 !
         if (lajpf) then
 !       ON AJOUTE A LA LISTE LE POINT M
             do i = 1, ndim
-                a(i) = zr(igeom-1+ndim*(fa(ifq,1)-1)+i)
-                b(i) = zr(igeom-1+ndim*(fa(ifq,2)-1)+i)
-                c(i) = zr(igeom-1+ndim*(fa(ifq,3)-1)+i)
+                a(i) = zr(igeom-1+ndim*(fa(ifq, 1)-1)+i)
+                b(i) = zr(igeom-1+ndim*(fa(ifq, 2)-1)+i)
+                c(i) = zr(igeom-1+ndim*(fa(ifq, 3)-1)+i)
             end do
-            loncar=(padist(ndim,a,b)+padist(ndim,a,c))/2.d0
-            call xajpin(ndim, ptint, ptmax, ipt, ibid,&
-                        m, loncar, ainter, 0, 0,&
+            loncar = (padist(ndim, a, b)+padist(ndim, a, c))/2.d0
+            call xajpin(ndim, ptint, ptmax, ipt, ibid, &
+                        m, loncar, ainter, 0, 0, &
                         0.d0, ajout)
-        endif
+        end if
 200     continue
     end do
 !

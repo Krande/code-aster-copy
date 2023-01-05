@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -42,7 +42,7 @@ subroutine te0073(option, nomte)
 !
     character(len=16) :: option, nomte
     integer :: nbres
-    parameter (nbres=3)
+    parameter(nbres=3)
     character(len=8) :: nompar(nbres), elrefe, alias8
     real(kind=8) :: valpar(nbres), poids, r, z, nx, ny, tpg, coen, coenp1, texn
     real(kind=8) :: texnp1, coorse(18), vectt(9), theta, sigm1, sigmn, eps1
@@ -55,12 +55,12 @@ subroutine te0073(option, nomte)
 !
     call elref1(elrefe)
 !
-    if (lteatt('LUMPE','OUI')) then
+    if (lteatt('LUMPE', 'OUI')) then
         call teattr('S', 'ALIAS8', alias8, ibid)
-        if (alias8(6:8) .eq. 'SE3') elrefe='SE2'
-    endif
+        if (alias8(6:8) .eq. 'SE3') elrefe = 'SE2'
+    end if
 !
-    call elrefe_info(elrefe=elrefe, fami='RIGI', ndim=ndim, nno=nno, nnos=nnos,&
+    call elrefe_info(elrefe=elrefe, fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, &
                      npg=npg, jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
 !====
@@ -68,16 +68,16 @@ subroutine te0073(option, nomte)
 !====
     tz0 = r8t0()
     laxi = .false.
-    if (lteatt('AXIS','OUI')) laxi = .true.
+    if (lteatt('AXIS', 'OUI')) laxi = .true.
 !
     if (option(11:14) .eq. 'TEXT') then
         ltext = .true.
-    else if (option(11:14).eq.'RAYO') then
+    else if (option(11:14) .eq. 'RAYO') then
         ltext = .false.
     else
 !C OPTION DE CALCUL INVALIDE
         ASSERT(.false.)
-    endif
+    end if
 !====
 ! 1.2 PREALABLES LIES AUX RECHERCHES DE DONNEES GENERALES
 !====
@@ -92,7 +92,7 @@ subroutine te0073(option, nomte)
         call jevech('PRAYONF', 'L', iray)
         call jevech('PTEMPER', 'L', itemp)
 ! FIN DU IF LTEXT
-    endif
+    end if
 !
 ! TRONC COMMUN
     call jevech('PGEOMER', 'L', igeom)
@@ -121,12 +121,12 @@ subroutine te0073(option, nomte)
 !
         do i = 1, nno
             do j = 1, 2
-                coorse(2* (i-1)+j) = zr(igeom-1+2* (c(ise,i)-1)+j)
+                coorse(2*(i-1)+j) = zr(igeom-1+2*(c(ise, i)-1)+j)
             end do
         end do
 !
         do kp = 1, npg
-            call vff2dn(ndim, nno, kp, ipoids, idfde,&
+            call vff2dn(ndim, nno, kp, ipoids, idfde, &
                         coorse, nx, ny, poids)
             r = 0.d0
             z = 0.d0
@@ -134,15 +134,15 @@ subroutine te0073(option, nomte)
             if (itemp .ne. 0) then
                 do i = 1, nno
 ! CALCUL DE T-
-                    l = (kp-1)*nno + i
-                    tpg = tpg + zr(itemp-1+c(ise,i))*zr(ivf+l-1)
+                    l = (kp-1)*nno+i
+                    tpg = tpg+zr(itemp-1+c(ise, i))*zr(ivf+l-1)
                 end do
-            endif
+            end if
 !
             do i = 1, nno
-                l = (kp-1)*nno + i
-                r = r + coorse(2* (i-1)+1)*zr(ivf+l-1)
-                z = z + coorse(2* (i-1)+2)*zr(ivf+l-1)
+                l = (kp-1)*nno+i
+                r = r+coorse(2*(i-1)+1)*zr(ivf+l-1)
+                z = z+coorse(2*(i-1)+2)*zr(ivf+l-1)
             end do
             if (laxi) poids = poids*r
             valpar(1) = r
@@ -154,35 +154,35 @@ subroutine te0073(option, nomte)
 !====
             if (ltext) then
 !
-                call fointe('FM', zk8(icoefh), 3, nompar, valpar,&
+                call fointe('FM', zk8(icoefh), 3, nompar, valpar, &
                             coenp1, icode)
-                ASSERT(icode.eq.0)
+                ASSERT(icode .eq. 0)
                 if (theta .ne. 1.0d0) then
-                    valpar(3) = zr(itemps) - zr(itemps+1)
-                    call fointe('FM', zk8(icoefh), 3, nompar, valpar,&
+                    valpar(3) = zr(itemps)-zr(itemps+1)
+                    call fointe('FM', zk8(icoefh), 3, nompar, valpar, &
                                 coen, icode)
-                    ASSERT(icode.eq.0)
+                    ASSERT(icode .eq. 0)
                 else
                     coen = 0.d0
-                endif
+                end if
 !
                 valpar(3) = zr(itemps)
-                call fointe('FM', zk8(itex), 3, nompar, valpar,&
+                call fointe('FM', zk8(itex), 3, nompar, valpar, &
                             texnp1, icode)
-                ASSERT(icode.eq.0)
+                ASSERT(icode .eq. 0)
                 if (theta .ne. 1.0d0) then
-                    valpar(3) = zr(itemps) - zr(itemps+1)
-                    call fointe('FM', zk8(itex), 3, nompar, valpar,&
+                    valpar(3) = zr(itemps)-zr(itemps+1)
+                    call fointe('FM', zk8(itex), 3, nompar, valpar, &
                                 texn, icode)
-                    ASSERT(icode.eq.0)
+                    ASSERT(icode .eq. 0)
                 else
                     texn = 0.d0
-                endif
+                end if
                 do i = 1, nno
-                    li = ivf + (kp-1)*nno + i - 1
-                    vectt(c(ise,i)) = vectt(&
-                                      c(ise,i)) + poids*zr(li)* (theta*coenp1*texnp1+ (1.0d0-thet&
-                                      &a)*coen* (texn- tpg)&
+                    li = ivf+(kp-1)*nno+i-1
+                    vectt(c(ise, i)) = vectt( &
+                                      c(ise, i))+poids*zr(li)*(theta*coenp1*texnp1+(1.0d0-thet&
+                                      &a)*coen*(texn-tpg) &
                                       )
                 end do
 !====
@@ -190,53 +190,53 @@ subroutine te0073(option, nomte)
 !====
             else
 !
-                call fointe('FM', zk8(iray), 3, nompar, valpar,&
+                call fointe('FM', zk8(iray), 3, nompar, valpar, &
                             sigm1, ier)
-                ASSERT(ier.eq.0)
+                ASSERT(ier .eq. 0)
                 if (theta .ne. 1.0d0) then
-                    valpar(3) = zr(itemps) - zr(itemps+1)
-                    call fointe('FM', zk8(iray), 3, nompar, valpar,&
+                    valpar(3) = zr(itemps)-zr(itemps+1)
+                    call fointe('FM', zk8(iray), 3, nompar, valpar, &
                                 sigmn, ier)
-                    ASSERT(ier.eq.0)
+                    ASSERT(ier .eq. 0)
                 else
                     sigmn = 0.d0
-                endif
+                end if
 !
                 valpar(3) = zr(itemps)
-                call fointe('FM', zk8(iray+1), 3, nompar, valpar,&
+                call fointe('FM', zk8(iray+1), 3, nompar, valpar, &
                             eps1, ier)
-                ASSERT(ier.eq.0)
+                ASSERT(ier .eq. 0)
                 if (theta .ne. 1.0d0) then
-                    valpar(3) = zr(itemps) - zr(itemps+1)
-                    call fointe('FM', zk8(iray+1), 3, nompar, valpar,&
+                    valpar(3) = zr(itemps)-zr(itemps+1)
+                    call fointe('FM', zk8(iray+1), 3, nompar, valpar, &
                                 epsn, ier)
-                    ASSERT(ier.eq.0)
+                    ASSERT(ier .eq. 0)
                 else
                     epsn = 0.d0
-                endif
+                end if
 !
                 valpar(3) = zr(itemps)
-                call fointe('FM', zk8(iray+2), 3, nompar, valpar,&
+                call fointe('FM', zk8(iray+2), 3, nompar, valpar, &
                             tpf1, ier)
-                ASSERT(ier.eq.0)
+                ASSERT(ier .eq. 0)
                 if (theta .ne. 1.0d0) then
-                    valpar(3) = zr(itemps) - zr(itemps+1)
-                    call fointe('FM', zk8(iray+2), 3, nompar, valpar,&
+                    valpar(3) = zr(itemps)-zr(itemps+1)
+                    call fointe('FM', zk8(iray+2), 3, nompar, valpar, &
                                 tpfn, ier)
-                    ASSERT(ier.eq.0)
+                    ASSERT(ier .eq. 0)
                 else
                     tpfn = 0.d0
-                endif
+                end if
                 do i = 1, nno
-                    li = ivf + (kp-1)*nno + i - 1
-                    vectt(c(ise,i)) = vectt(&
-                                      c(ise,i)) + poids*zr(li)* (theta*sigm1*eps1* (tpf1+tz0)**4+&
-                                      & (1.0d0-theta)* sigmn* epsn* ((tpfn+tz0)**4- (tpg+tz0)**4)&
+                    li = ivf+(kp-1)*nno+i-1
+                    vectt(c(ise, i)) = vectt( &
+                                      c(ise, i))+poids*zr(li)*(theta*sigm1*eps1*(tpf1+tz0)**4+&
+                                      & (1.0d0-theta)*sigmn*epsn*((tpfn+tz0)**4-(tpg+tz0)**4) &
                                       )
                 end do
 !
 ! FIN DU IF LTEXT
-            endif
+            end if
 !
 ! FIN DE BOUCLE SUR LES PTS DE GAUSS
         end do

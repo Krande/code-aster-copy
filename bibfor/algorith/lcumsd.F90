@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine lcumsd(vari, nvari, cmat, nmat, nstrs,&
-                  isph, tdt, hini, hfin, afp,&
+subroutine lcumsd(vari, nvari, cmat, nmat, nstrs, &
+                  isph, tdt, hini, hfin, afp, &
                   bfp, cfp, cfps, cfpd)
 !
 !
@@ -77,8 +77,8 @@ subroutine lcumsd(vari, nvari, cmat, nmat, nstrs,&
 ! CALCUL DE LA MATRICE DES DEFORMATIONS DE FLUAGE PROPRE SPHERIQUE
 !          INCREMENTALES
 !
-    call lcumfs(vari, nvari, cmat, nmat, 0,&
-                isph, tdt, hini, hfin, afps,&
+    call lcumfs(vari, nvari, cmat, nmat, 0, &
+                isph, tdt, hini, hfin, afps, &
                 bfps, cfps)
 !
 !
@@ -86,8 +86,8 @@ subroutine lcumsd(vari, nvari, cmat, nmat, nstrs,&
 !          INCREMENTALES
 !
 !
-    call lcumfd(vari, nvari, nstrs, cmat, nmat,&
-                0, tdt, hini, hfin, afpd,&
+    call lcumfd(vari, nvari, nstrs, cmat, nmat, &
+                0, tdt, hini, hfin, afpd, &
                 bfpd, cfpd)
 !
 !
@@ -97,49 +97,49 @@ subroutine lcumsd(vari, nvari, cmat, nmat, nstrs,&
 !   EQUATION (3.5-2)
 !
     do i = 1, 2
-        afp(i) = afps + afpd(i)
-        bfp(i,i) = (bfps + 2.d0 * bfpd)/3.d0
-        cfp(i,i) = (cfps + 2.d0 * cfpd)/3.d0
+        afp(i) = afps+afpd(i)
+        bfp(i, i) = (bfps+2.d0*bfpd)/3.d0
+        cfp(i, i) = (cfps+2.d0*cfpd)/3.d0
     end do
-    bfp(1,2) = (bfps - bfpd) / 3.d0
-    bfp(2,1) = bfp(1,2)
-    cfp(1,2) = (cfps - cfpd) / 3.d0
-    cfp(2,1) = cfp(1,2)
+    bfp(1, 2) = (bfps-bfpd)/3.d0
+    bfp(2, 1) = bfp(1, 2)
+    cfp(1, 2) = (cfps-cfpd)/3.d0
+    cfp(2, 1) = cfp(1, 2)
 !
-    if ((ifou.eq.0) .or. (ifou.eq.-1) .or. (ifou.eq.2)) then
-        afp(3) = afps + afpd(3)
+    if ((ifou .eq. 0) .or. (ifou .eq. -1) .or. (ifou .eq. 2)) then
+        afp(3) = afps+afpd(3)
         afp(4) = afpd(4)
-        bfp(3,3) = bfp(1,1)
-        bfp(1,3) = bfp(1,2)
-        bfp(2,3) = bfp(1,2)
-        bfp(3,1) = bfp(1,2)
-        bfp(3,2) = bfp(1,2)
-        bfp(4,4) = bfpd
-        cfp(3,3) = cfp(1,1)
-        cfp(1,3) = cfp(1,2)
-        cfp(2,3) = cfp(1,2)
-        cfp(3,1) = cfp(1,2)
-        cfp(3,2) = cfp(1,2)
-        cfp(4,4) = cfpd
+        bfp(3, 3) = bfp(1, 1)
+        bfp(1, 3) = bfp(1, 2)
+        bfp(2, 3) = bfp(1, 2)
+        bfp(3, 1) = bfp(1, 2)
+        bfp(3, 2) = bfp(1, 2)
+        bfp(4, 4) = bfpd
+        cfp(3, 3) = cfp(1, 1)
+        cfp(1, 3) = cfp(1, 2)
+        cfp(2, 3) = cfp(1, 2)
+        cfp(3, 1) = cfp(1, 2)
+        cfp(3, 2) = cfp(1, 2)
+        cfp(4, 4) = cfpd
 ! MODIFI DU 6 JANVIER 2003 - YLP AJOUT DES AFFECTATIONS
         afp(5) = 0.0d0
         afp(6) = 0.0d0
-        bfp(5,5) = 0.0d0
-        bfp(6,6) = 0.0d0
-        cfp(5,5) = 0.0d0
-        cfp(6,6) = 0.0d0
+        bfp(5, 5) = 0.0d0
+        bfp(6, 6) = 0.0d0
+        cfp(5, 5) = 0.0d0
+        cfp(6, 6) = 0.0d0
         if (ifou .eq. 2) then
             afp(5) = afpd(5)
             afp(6) = afpd(6)
-            bfp(5,5) = bfpd
-            bfp(6,6) = bfpd
-            cfp(5,5) = cfpd
-            cfp(6,6) = cfpd
-        endif
+            bfp(5, 5) = bfpd
+            bfp(6, 6) = bfpd
+            cfp(5, 5) = cfpd
+            cfp(6, 6) = cfpd
+        end if
     else
         afp(3) = afpd(3)
-        bfp(3,3) = bfpd
-        cfp(3,3) = cfpd
-    endif
+        bfp(3, 3) = bfpd
+        cfp(3, 3) = cfpd
+    end if
 !
 end subroutine

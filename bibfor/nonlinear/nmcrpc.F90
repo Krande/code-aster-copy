@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,16 +19,16 @@
 !
 subroutine nmcrpc(ds_inout, nume_reuse, time_curr)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterfort/assert.h"
 #include "asterfort/tbajli.h"
 !
-type(NL_DS_InOut), intent(in) :: ds_inout
-integer, intent(in) :: nume_reuse
-real(kind=8), intent(in) :: time_curr
+    type(NL_DS_InOut), intent(in) :: ds_inout
+    integer, intent(in) :: nume_reuse
+    real(kind=8), intent(in) :: time_curr
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -46,7 +46,7 @@ real(kind=8), intent(in) :: time_curr
 !
     integer :: vali(1)
     character(len=8) :: k8bid
-    complex(kind=8), parameter :: c16bid =(0.d0,0.d0)
+    complex(kind=8), parameter :: c16bid = (0.d0, 0.d0)
     real(kind=8) :: valr(1)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -57,8 +57,8 @@ real(kind=8), intent(in) :: time_curr
 !
 ! - Add line in table
 !
-    call tbajli(ds_inout%table_io%tablName,&
-                ds_inout%table_io%nbPara, ds_inout%table_io%paraName,&
+    call tbajli(ds_inout%table_io%tablName, &
+                ds_inout%table_io%nbPara, ds_inout%table_io%paraName, &
                 vali, valr, [c16bid], k8bid, 0)
 !
 end subroutine

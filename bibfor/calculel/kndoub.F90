@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -38,21 +38,21 @@ subroutine kndoub(long, lkn, nbkn, iret)
     integer :: k1, k2
 ! DEB
 !
-    ASSERT((long.eq.8).or.(long.eq.16).or.(long.eq.24))
+    ASSERT((long .eq. 8) .or. (long .eq. 16) .or. (long .eq. 24))
 !
     iret = 0
 !
-    do k1 = 1, nbkn - 1
-        k2 = knindi(long,lkn(k1),lkn(k1+1),nbkn-k1)
+    do k1 = 1, nbkn-1
+        k2 = knindi(long, lkn(k1), lkn(k1+1), nbkn-k1)
         if (k2 .gt. 0) then
             iret = k1
             goto 20
-        endif
+        end if
     end do
 !
 !
 !
- 20 continue
+20  continue
 !
 !
 end subroutine

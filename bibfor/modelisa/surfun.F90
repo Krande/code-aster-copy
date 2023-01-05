@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -66,14 +66,14 @@ subroutine surfun(char, noma)
 ! --- INITIALISATIONS
 !
     deficu = char(1:8)//'.UNILATE'
-    noeuma = noma // '.NOMNOE'
-    lgbloc = cudisi(deficu,'NB_RESOL')
-    nnocu = cudisi(deficu,'NNOCU')
-    ncmpg = cudisi(deficu,'NCMPG')
+    noeuma = noma//'.NOMNOE'
+    lgbloc = cudisi(deficu, 'NB_RESOL')
+    nnocu = cudisi(deficu, 'NNOCU')
+    ncmpg = cudisi(deficu, 'NCMPG')
 !
 ! --- ACCES SD
 !
-    noeuma = noma // '.NOMNOE'
+    noeuma = noma//'.NOMNOE'
     noeucu = deficu(1:16)//'.LISNOE'
     poincu = deficu(1:16)//'.POINOE'
     cmpgcu = deficu(1:16)//'.CMPGCU'
@@ -94,18 +94,18 @@ subroutine surfun(char, noma)
 !
 ! --- IMPRESSIONS POUR L'UTILISATEUR
 !
-        write (ifm,*)
-        write (ifm,*) '<LIA_UNIL> INFOS GENERALES'
-        write (ifm,*)
+        write (ifm, *)
+        write (ifm, *) '<LIA_UNIL> INFOS GENERALES'
+        write (ifm, *)
 !
-        write (ifm,1070) 'NB_RESOL        ',lgbloc
+        write (ifm, 1070) 'NB_RESOL        ', lgbloc
 !
 ! --- INFOS GENERALES
 !
-        write (ifm,*)
-        write (ifm,1070) 'NNOCU           ',nnocu
-        write (ifm,1070) 'NCMPG           ',ncmpg
-        write (ifm,*)
+        write (ifm, *)
+        write (ifm, 1070) 'NNOCU           ', nnocu
+        write (ifm, 1070) 'NCMPG           ', ncmpg
+        write (ifm, *)
 !
 !
         do ino = 1, nnocu
@@ -114,33 +114,33 @@ subroutine surfun(char, noma)
             call jenuno(jexnum(noeuma, numno), nomno)
 !
 !
-            write (ifm,1030) nomno
-            write (ifm,1031) ' --> INEGALITE ai.Ai<C : '
+            write (ifm, 1030) nomno
+            write (ifm, 1031) ' --> INEGALITE ai.Ai<C : '
 !
-            nbcmp = zi(jpoin+ino) - zi(jpoin+ino-1)
+            nbcmp = zi(jpoin+ino)-zi(jpoin+ino-1)
             jdecal = zi(jpoin+ino-1)
 !
-            write (ifm,1040) '     (ai,Ai)'
+            write (ifm, 1040) '     (ai,Ai)'
 !
             do icmp = jdecal, jdecal+nbcmp-1
-                write (ifm,1042) '     ( ',zk8(jcoefg-1+icmp),' , ',&
-     &                         zk8(jcmpg-1+icmp),' )'
+                write (ifm, 1042) '     ( ', zk8(jcoefg-1+icmp), ' , ',&
+     &                         zk8(jcmpg-1+icmp), ' )'
             end do
-            write (ifm,1060) '     (C)'
-            write (ifm,1062) '     ( ',zk8(jcoefd-1+ino),' )'
+            write (ifm, 1060) '     (C)'
+            write (ifm, 1062) '     ( ', zk8(jcoefd-1+ino), ' )'
         end do
 !
-    endif
+    end if
 !
-    1070 format (' <LIA_UNIL> ...... PARAM. : ',a16,' - VAL. : ',i5)
+1070 format(' <LIA_UNIL> ...... PARAM. : ', a16, ' - VAL. : ', i5)
 !
 !
-    1031 format ('<LIA_UNIL> ',a25)
-    1030 format ('<LIA_UNIL> NOEUD: ',a18,a8)
-    1040 format ('<LIA_UNIL>',a12)
-    1042 format ('<LIA_UNIL>',a7,a8,a3,a8,a2)
-    1060 format ('<LIA_UNIL>',a8)
-    1062 format ('<LIA_UNIL>',a7,a8,a2)
+1031 format('<LIA_UNIL> ', a25)
+1030 format('<LIA_UNIL> NOEUD: ', a18, a8)
+1040 format('<LIA_UNIL>', a12)
+1042 format('<LIA_UNIL>', a7, a8, a3, a8, a2)
+1060 format('<LIA_UNIL>', a8)
+1062 format('<LIA_UNIL>', a7, a8, a2)
 !
     call jedetr('&&SURFUN.TRAV')
 ! ======================================================================

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,9 +19,9 @@
 !
 subroutine nmimpt(nume_inst, sddisc, ds_print)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -34,9 +34,9 @@ implicit none
 #include "asterfort/utmess.h"
 #include "asterfort/jeexin.h"
 !
-integer, intent(in) :: nume_inst
-character(len=19), intent(in) :: sddisc
-type(NL_DS_Print), intent(inout) :: ds_print
+    integer, intent(in) :: nume_inst
+    character(len=19), intent(in) :: sddisc
+    type(NL_DS_Print), intent(inout) :: ds_print
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -70,19 +70,19 @@ type(NL_DS_Print), intent(inout) :: ds_print
     elseif (nume_inst .eq. 0) then
         lenivo = 0
     else
-        call utdidt('L', sddisc, 'LIST', 'METHODE', valk_ = metlis)
+        call utdidt('L', sddisc, 'LIST', 'METHODE', valk_=metlis)
         if (metlis .eq. 'MANUEL') then
             lenivo = dinins(sddisc, nume_inst)
-        else if (metlis.eq.'AUTO') then
+        else if (metlis .eq. 'AUTO') then
             lenivo = 0
         else
             ASSERT(ASTER_FALSE)
-        endif
-    endif
+        end if
+    end if
 !
 ! - Get current time and set in row
 !
-    curr_inst = diinst(sddisc,nume_inst)
+    curr_inst = diinst(sddisc, nume_inst)
     call nmimcr(ds_print, 'INCR_INST', curr_inst, .true._1)
 !
 ! - Set values are not affected on rows for time loop
@@ -95,7 +95,7 @@ type(NL_DS_Print), intent(inout) :: ds_print
         call utmess('I', 'MECANONLINE6_6', sr=curr_inst)
     else
         call utmess('I', 'MECANONLINE6_1', si=lenivo, sr=curr_inst)
-    endif
+    end if
 !
 ! - Print head of convergence table
 !

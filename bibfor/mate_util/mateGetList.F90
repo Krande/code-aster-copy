@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,13 +16,13 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine mateGetList(mate_nb_read , v_mate_read  ,&
-                       l_mfront_elas,&
-                       l_elas       , l_elas_func  , l_elas_istr,&
-                       l_elas_orth  , l_elas_meta  ,&
-                       i_mate_elas  , i_mate_mfront)
+subroutine mateGetList(mate_nb_read, v_mate_read, &
+                       l_mfront_elas, &
+                       l_elas, l_elas_func, l_elas_istr, &
+                       l_elas_orth, l_elas_meta, &
+                       i_mate_elas, i_mate_mfront)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterc/getmat.h"
@@ -33,12 +33,12 @@ implicit none
 #include "asterfort/utmess.h"
 #include "asterfort/mateMFrontToAsterProperties.h"
 !
-integer, intent(out) :: mate_nb_read
-character(len=32), pointer, intent(out) :: v_mate_read(:)
-aster_logical, intent(out) :: l_mfront_elas
-aster_logical, intent(out) :: l_elas, l_elas_func
-aster_logical, intent(out) :: l_elas_istr, l_elas_orth, l_elas_meta
-integer, intent(out) :: i_mate_elas, i_mate_mfront
+    integer, intent(out) :: mate_nb_read
+    character(len=32), pointer, intent(out) :: v_mate_read(:)
+    aster_logical, intent(out) :: l_mfront_elas
+    aster_logical, intent(out) :: l_elas, l_elas_func
+    aster_logical, intent(out) :: l_elas_istr, l_elas_orth, l_elas_meta
+    integer, intent(out) :: i_mate_elas, i_mate_mfront
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -71,11 +71,11 @@ integer, intent(out) :: i_mate_elas, i_mate_mfront
 ! --------------------------------------------------------------------------------------------------
 !
     i_mate_mfront = 0
-    i_mate_elas   = 0
-    l_elas        = ASTER_FALSE
-    l_elas_func   = ASTER_FALSE
-    l_elas_istr   = ASTER_FALSE
-    l_elas_orth   = ASTER_FALSE
+    i_mate_elas = 0
+    l_elas = ASTER_FALSE
+    l_elas_func = ASTER_FALSE
+    l_elas_istr = ASTER_FALSE
+    l_elas_orth = ASTER_FALSE
     l_mfront_elas = ASTER_FALSE
 !
 ! - Get parameters from _catalog_
@@ -83,73 +83,73 @@ integer, intent(out) :: i_mate_elas, i_mate_mfront
     mate_nb_read = -1
     call getmat(mate_nb_read, k16dummy)
     ASSERT(mate_nb_read .gt. 0)
-    AS_ALLOCATE(vk32 = v_mate_read, size = mate_nb_read)
+    AS_ALLOCATE(vk32=v_mate_read, size=mate_nb_read)
     call getmat(mate_nb_read, v_mate_read)
 !
 ! - Get special material
 !
     do i_mate = 1, mate_nb_read
 ! ----- Get properties
-        nomrc   = v_mate_read(i_mate)
+        nomrc = v_mate_read(i_mate)
         call getmjm(nomrc, 1, 0, k16dummy, k16dummy, prop_nb)
         prop_nb = -prop_nb
         ASSERT(prop_nb .gt. 0)
-        AS_ALLOCATE(vk8=prop_type , size=prop_nb)
+        AS_ALLOCATE(vk8=prop_type, size=prop_nb)
         AS_ALLOCATE(vk16=prop_name, size=prop_nb)
         call getmjm(nomrc, 1, prop_nb, prop_name, prop_type, idummy)
 ! ----- Detect ELAS MFront properties
         l_mfront_prop = ASTER_FALSE
         do i_prop = 1, prop_nb
-            call mateMFrontToAsterProperties(prop_name(i_prop), index_ = index)
+            call mateMFrontToAsterProperties(prop_name(i_prop), index_=index)
             if (index .gt. 0) then
                 l_mfront_prop = ASTER_TRUE
                 i_mate_mfront = i_mate
-            endif
+            end if
         end do
         if (l_mfront_prop) then
             if (l_mfront_elas) then
                 call utmess('F', 'MATERIAL2_2')
             else
                 l_mfront_elas = ASTER_TRUE
-            endif
-        endif
+            end if
+        end if
 ! ----- Detect elasticity properties
         if (nomrc .eq. 'ELAS') then
-            l_elas      = ASTER_TRUE
+            l_elas = ASTER_TRUE
             i_mate_elas = i_mate
-        endif
+        end if
         if (nomrc .eq. 'ELAS_FO') then
-            l_elas      = ASTER_TRUE
+            l_elas = ASTER_TRUE
             l_elas_func = ASTER_TRUE
             i_mate_elas = i_mate
-        endif
+        end if
         if (nomrc .eq. 'ELAS_ISTR') then
             l_elas_istr = ASTER_TRUE
             i_mate_elas = i_mate
-        endif
+        end if
         if (nomrc .eq. 'ELAS_ISTR_FO') then
             l_elas_istr = ASTER_TRUE
             l_elas_func = ASTER_TRUE
             i_mate_elas = i_mate
-        endif
+        end if
         if (nomrc .eq. 'ELAS_ORTH') then
             l_elas_orth = ASTER_TRUE
             i_mate_elas = i_mate
-        endif
+        end if
         if (nomrc .eq. 'ELAS_ORTH_FO') then
             l_elas_orth = ASTER_TRUE
             l_elas_func = ASTER_TRUE
             i_mate_elas = i_mate
-        endif
+        end if
         if (nomrc .eq. 'ELAS_META') then
             l_elas_meta = ASTER_TRUE
             i_mate_elas = i_mate
-        endif
+        end if
         if (nomrc .eq. 'ELAS_META_FO') then
             l_elas_meta = ASTER_TRUE
             l_elas_func = ASTER_TRUE
             i_mate_elas = i_mate
-        endif
+        end if
 ! ----- Clean
         AS_DEALLOCATE(vk8=prop_type)
         AS_DEALLOCATE(vk16=prop_name)

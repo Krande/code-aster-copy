@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -69,14 +69,14 @@ subroutine op0081()
     integer :: nbmod, iocm, iocf, ioca, vali(2)
     integer :: lmass, lrigi, lamor, ldref, ldres
 !
-    data blanc /'        '/
+    data blanc/'        '/
 !
 !-----------------------------------------------------------------------
 !
     call infmaj()
     call getres(nomres, nomcon, nomope)
 !
-    pi=r8pi()
+    pi = r8pi()
 !
 ! --- MACR_ELEM_DYNA OBTENU PAR MODELE NUMERIQUE OU EXPERIMENTAL
     call getfac('MODELE_MESURE', nbvam)
@@ -88,12 +88,12 @@ subroutine op0081()
 !     ET DETERMINATION OPTION DE CALCUL
 !
     if (nma .eq. 0) then
-      call refe81(nomres, basmod, raid, mass, amor, mailla)
+        call refe81(nomres, basmod, raid, mass, amor, mailla)
     else
-      basmod = blanc
-      call getvid(' ', 'MACR_ELEM_DYNA', scal=macrin, nbret=nma)
-      if (macrin .ne. nomres) call utmess('F','ASSEMBLA_21')
-    endif
+        basmod = blanc
+        call getvid(' ', 'MACR_ELEM_DYNA', scal=macrin, nbret=nma)
+        if (macrin .ne. nomres) call utmess('F', 'ASSEMBLA_21')
+    end if
 !
 ! --- CALCUL DES MATRICES PROJETEES (SI PAS DE MOT-CLE MODELE_MESURE)
 !
@@ -102,58 +102,58 @@ subroutine op0081()
         call getvid(' ', 'MATR_IMPE', scal=impe, nbret=n1)
         if (impe .ne. blanc) then
             call impe81(nomres, impe, basmod)
-            typmat='MATR_ASSE_DEPL_R'
+            typmat = 'MATR_ASSE_DEPL_R'
             goto 10
-        endif
+        end if
         call getvid(' ', 'MATR_IMPE_RIGI', scal=impe, nbret=n1)
         if (impe .ne. blanc) then
             call impe81(nomres, impe, basmod)
-            typmat='MATR_ASSE_DEPL_R'
+            typmat = 'MATR_ASSE_DEPL_R'
             goto 10
-        endif
+        end if
         call getvid(' ', 'MATR_IMPE_MASS', scal=impe, nbret=n1)
         if (impe .ne. blanc) then
             call impe81(nomres, impe, basmod)
-            typmat='MATR_ASSE_DEPL_R'
+            typmat = 'MATR_ASSE_DEPL_R'
             goto 10
-        endif
+        end if
         call getvid(' ', 'MATR_IMPE_AMOR', scal=impe, nbret=n1)
         if (impe .ne. blanc) then
             call impe81(nomres, impe, basmod)
-            typmat='MATR_ASSE_DEPL_R'
+            typmat = 'MATR_ASSE_DEPL_R'
             goto 10
-        endif
+        end if
 !
         nommat = nomres//'.MAEL_RAID'
         call gettco(raid, typmat)
 !
         if (typmat .eq. 'MATR_ASSE_DEPL_R') then
             call calpro(nommat, 'G', basmod, raid)
-        else if (typmat.eq.'MATR_ASSE_DEPL_C') then
+        else if (typmat .eq. 'MATR_ASSE_DEPL_C') then
             call calprc(nommat, 'G', basmod, raid)
         else
             call utmess('F', 'ALGORITH14_17', sk=typmat)
-        endif
+        end if
 !
         nommat = nomres//'.MAEL_MASS'
         call calpro(nommat, 'G', basmod, mass)
 !
         if (amor .ne. blanc) then
-            nommat=nomres//'.MAEL_AMOR'
+            nommat = nomres//'.MAEL_AMOR'
             call calpro(nommat, 'G', basmod, amor)
         else
             call getvr8(blanc, 'AMOR_REDUIT', iocc=1, nbval=0, nbret=ioc)
             if (ioc .lt. 0) then
-                nommat=nomres//'.MAEL_AMOR'
+                nommat = nomres//'.MAEL_AMOR'
                 call calamo(nommat, 'G', basmod)
-            endif
-        endif
+            end if
+        end if
 !
 ! ---   CALCUL DES FORCES D'INERTIES
 !
         nommat = nomres//'.MAEL_INER'
         call iner81(nommat, 'G', basmod, mass)
- 10     continue
+10      continue
 !
 ! ------------------------------------------------------------------- C
 !
@@ -168,18 +168,18 @@ subroutine op0081()
 !
 ! ---   MASSE GENERALISEE
         call wkvect('&&OP0081.MASS', 'V V R', nbmod, lmass)
-        call getvr8('MODELE_MESURE', 'MASS_GENE', iocc=1, nbval=nbmod, vect=zr( lmass),&
+        call getvr8('MODELE_MESURE', 'MASS_GENE', iocc=1, nbval=nbmod, vect=zr(lmass), &
                     nbret=iocm)
         if (iocm .ne. nbmod) then
             vali(1) = nbmod
             vali(2) = iocm
             if (iocm .lt. 0) vali(2) = -iocm
             call utmess('F', 'ALGORITH17_31', sk='MASSE_GENE', ni=2, vali=vali)
-        endif
+        end if
 !
 ! ---   FREQUENCES PROPRES
         call wkvect('&&OP0081.RIGI', 'V V R', nbmod, lrigi)
-        call getvr8('MODELE_MESURE ', 'FREQ', iocc=1, nbval=nbmod, vect=zr(lrigi),&
+        call getvr8('MODELE_MESURE ', 'FREQ', iocc=1, nbval=nbmod, vect=zr(lrigi), &
                     nbret=iocf)
 !
         if (iocf .ne. nbmod) then
@@ -187,18 +187,18 @@ subroutine op0081()
             vali(2) = iocf
             if (iocf .lt. 0) vali(2) = -iocm
             call utmess('F', 'ALGORITH17_31', sk='FREQ', ni=2, vali=vali)
-        endif
+        end if
 !
 ! ---   AMORTISSEMENTS REDUITS
         call wkvect('&&OP0081.AMOR', 'V V R', nbmod, lamor)
-        call getvr8('MODELE_MESURE', 'AMOR_REDUIT', iocc=1, nbval=nbmod, vect=zr( lamor),&
+        call getvr8('MODELE_MESURE', 'AMOR_REDUIT', iocc=1, nbval=nbmod, vect=zr(lamor), &
                     nbret=ioca)
         if (ioca .ne. 0 .and. ioca .ne. nbmod) then
             vali(1) = nbmod
             vali(2) = ioca
             if (iocf .lt. 0) vali(2) = -iocm
             call utmess('F', 'ALGORITH17_31', sk='FREQ', ni=2, vali=vali)
-        endif
+        end if
 !
 ! ----- REMPLISSAGE
 !
@@ -207,23 +207,23 @@ subroutine op0081()
 !
 ! ---   RIGI_GENE : LES CALCULER A PARTIR DE MASSE_GENE ET FREQ
         do imod = 1, nbmod
-            zr(lrigi-1+imod) = 4*pi**2*zr(lrigi-1+imod)**2 *zr(lmass- 1+imod)
+            zr(lrigi-1+imod) = 4*pi**2*zr(lrigi-1+imod)**2*zr(lmass-1+imod)
         end do
         call remp81(nomres//'.MAEL_RAID', lrigi, basmod, nbmod)
 !
 ! ---   AMOR_GENE : LES CALCULER APARTIR D'AMOR_REDUIT, MASSE ET RIGI
         if (ioca .ne. 0) then
             do imod = 1, nbmod
-                zr(lamor-1+imod) = 2*zr(lamor-1+imod)*sqrt(zr(lrigi-1+ imod)* zr(lmass-1+imod))
+                zr(lamor-1+imod) = 2*zr(lamor-1+imod)*sqrt(zr(lrigi-1+imod)*zr(lmass-1+imod))
             end do
             call remp81(nomres//'.MAEL_AMOR', lamor, basmod, nbmod)
-        endif
+        end if
 !
 ! ---   REMPLLISSAGE DES FORCES D'INERTIES
 !
         call wkvect(nomres//'.MAEL_INER_REFE', 'G V K24', 2, ldref)
-        zk24(ldref)=basmod
-        zk24(ldref+1)='        '
+        zk24(ldref) = basmod
+        zk24(ldref+1) = '        '
         call wkvect(nomres//'.MAEL_INER_VALE', 'G V R', 3*nbmod, ldres)
 !
 ! ---   LE VEC DES MASSES EFFE EST REMPLI A 0, ON EMET UNE ALARME
@@ -234,13 +234,13 @@ subroutine op0081()
         end do
 !
 !
-    endif
+    end if
 !
 ! --- COMPATIBILITE AVEC SD MACR_ELEM_STAT
 !
     if (nma .eq. 0) then
-      call comp81(nomres, basmod, raid, mailla)
-    endif
+        call comp81(nomres, basmod, raid, mailla)
+    end if
 !
 ! --- MENAGE
     call jedetr('&&OP0081.MASS')

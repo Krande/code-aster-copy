@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -72,10 +72,10 @@ subroutine chcsur(chcinez, chamnosz, type, modelz, gran_name)
     call gettco(nommai, sdtyp)
     call jeveuo(model//'.MODELE    .PRNM', 'L', iaprnm)
 !
-    chcine      = chcinez
-    chamnos     = chamnosz
-    cafci       = chcine(1:19)//'.AFCI'
-    cafcv       = chcine(1:19)//'.AFCV'
+    chcine = chcinez
+    chamnos = chamnosz
+    cafci = chcine(1:19)//'.AFCI'
+    cafcv = chcine(1:19)//'.AFCV'
 !
 ! - Access to CHAM_NO_S
 !
@@ -84,17 +84,17 @@ subroutine chcsur(chcinez, chamnosz, type, modelz, gran_name)
     call jeveuo(chamnos//'.CNSV', 'L', jcnsv)
     call jeveuo(chamnos//'.CNSL', 'L', jcnsl)
 !
-    nb_node      = zi(jcnsd)
-    nb_cmp_chmx  = zi(jcnsd+1)
+    nb_node = zi(jcnsd)
+    nb_cmp_chmx = zi(jcnsd+1)
 !
 ! - Set bijection between local component index in CHAM_NO_S and global component index in GRANDEUR
 !
-    call jeveuo(jexnom('&CATA.GD.NOMCMP', gran_name), 'L', vk8 = cata_gd_nomcmp)
+    call jeveuo(jexnom('&CATA.GD.NOMCMP', gran_name), 'L', vk8=cata_gd_nomcmp)
     call jelira(jexnom('&CATA.GD.NOMCMP', gran_name), 'LONMAX', nb_cmp_mx)
     AS_ALLOCATE(vi=corres, size=nb_cmp_mx)
     do i_cmp_mx = 1, nb_cmp_mx
-        cmp_name         = cata_gd_nomcmp(i_cmp_mx)
-        i_cmp_chmx       = indik8(zk8(jcnsc),cmp_name,1,nb_cmp_chmx)
+        cmp_name = cata_gd_nomcmp(i_cmp_mx)
+        i_cmp_chmx = indik8(zk8(jcnsc), cmp_name, 1, nb_cmp_chmx)
         corres(i_cmp_mx) = i_cmp_chmx
     end do
 !
@@ -104,21 +104,21 @@ subroutine chcsur(chcinez, chamnosz, type, modelz, gran_name)
     do i_cmp_chmx = 1, nb_cmp_chmx
         do i_node = 1, nb_node
             if (zl(jcnsl+(i_node-1)*nb_cmp_chmx+i_cmp_chmx-1)) then
-                nb_affe_cine = nb_affe_cine + 1
-            endif
+                nb_affe_cine = nb_affe_cine+1
+            end if
         end do
     end do
 !
 ! - Create datastructure
 !
-    call wkvect(cafci, 'G V I', (3*nb_affe_cine+1), vi = afci)
+    call wkvect(cafci, 'G V I', (3*nb_affe_cine+1), vi=afci)
     if (type .eq. 'R') then
-        call wkvect(cafcv, 'G V R', max(nb_affe_cine, 1), vr = afcv_r)
-    else if (type.eq.'C') then
-        call wkvect(cafcv, 'G V C', max(nb_affe_cine, 1), vc = afcv_c)
-    else if (type.eq.'F') then
-        call wkvect(cafcv, 'G V K8', max(nb_affe_cine, 1), vk8 = afcv_f)
-    endif
+        call wkvect(cafcv, 'G V R', max(nb_affe_cine, 1), vr=afcv_r)
+    else if (type .eq. 'C') then
+        call wkvect(cafcv, 'G V C', max(nb_affe_cine, 1), vc=afcv_c)
+    else if (type .eq. 'F') then
+        call wkvect(cafcv, 'G V K8', max(nb_affe_cine, 1), vk8=afcv_f)
+    end if
 !
 ! - Set datastructure
 !
@@ -126,32 +126,32 @@ subroutine chcsur(chcinez, chamnosz, type, modelz, gran_name)
     do i_node = 1, nb_node
         i_cmp = 0
         do i_cmp_mx = 1, nb_cmp_mx
-            if (exisdg(zi(iaprnm-1+nbec*(i_node-1)+1),i_cmp_mx)) then
-                i_cmp = i_cmp + 1
+            if (exisdg(zi(iaprnm-1+nbec*(i_node-1)+1), i_cmp_mx)) then
+                i_cmp = i_cmp+1
                 i_cmp_chmx = corres(i_cmp_mx)
                 if (i_cmp_chmx .ne. 0) then
                     if (zl(jcnsl+(i_node-1)*nb_cmp_chmx+i_cmp_chmx-1)) then
-                        i_affe_cine = i_affe_cine + 1
+                        i_affe_cine = i_affe_cine+1
                         afci(3*(i_affe_cine-1)+2) = i_node
                         afci(3*(i_affe_cine-1)+3) = i_cmp
                         if (type .eq. 'R') then
                             afcv_r(i_affe_cine) = zr(jcnsv+(i_node-1)*nb_cmp_chmx+i_cmp_chmx-1)
-                        else if (type.eq.'C') then
+                        else if (type .eq. 'C') then
                             afcv_c(i_affe_cine) = zc(jcnsv+(i_node-1)*nb_cmp_chmx+i_cmp_chmx-1)
-                        else if (type.eq.'F') then
+                        else if (type .eq. 'F') then
                             afcv_f(i_affe_cine) = zk8(jcnsv+(i_node-1)*nb_cmp_chmx+i_cmp_chmx-1)
                         else
                             ASSERT(.false.)
-                        endif
-                    endif
-                endif
-            endif
+                        end if
+                    end if
+                end if
+            end if
         end do
     end do
 !
     if (i_affe_cine .eq. 0 .and. sdtyp .ne. 'MAILLAGE_P') then
         call utmess('F', 'CALCULEL_9')
-    endif
+    end if
     afci(1) = i_affe_cine
 !
     AS_DEALLOCATE(vi=corres)

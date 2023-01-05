@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine mecgme(modelz   , cara_elemz    , matez    , matecoz  ,list_load, inst_curr,&
-                  disp_prev, disp_cumu_inst, inst_prev, compor   , matr_elem)
+subroutine mecgme(modelz, cara_elemz, matez, matecoz, list_load, inst_curr, &
+                  disp_prev, disp_cumu_inst, inst_prev, compor, matr_elem)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -75,7 +75,7 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: nb_in_maxi, nbout
-    parameter (nb_in_maxi = 42, nbout = 1)
+    parameter(nb_in_maxi=42, nbout=1)
     character(len=8) :: lpain(nb_in_maxi), lpaout(nbout)
     character(len=19) :: lchin(nb_in_maxi), lchout(nbout)
 !
@@ -100,78 +100,78 @@ implicit none
 !
 ! - Initializations
 !
-    model        = modelz
-    cara_elem    = cara_elemz
-    mate         = matez
-    mateco       = matecoz
+    model = modelz
+    cara_elem = cara_elemz
+    mate = matez
+    mateco = matecoz
     ligrel_model = model(1:8)//'.MODELE'
-    nb_load      = 0
-    list_coef    = matr_elem(1:15)//'.COEF'
+    nb_load = 0
+    list_coef = matr_elem(1:15)//'.COEF'
 !
 ! - Init fields
 !
-    call inical(nb_in_maxi, lpain, lchin, nbout, lpaout,&
+    call inical(nb_in_maxi, lpain, lchin, nbout, lpaout, &
                 lchout)
 !
 ! - Loads
 !
-    call load_list_info(load_empty, nb_load  , v_load_name, v_load_info,&
-                        list_load_ = list_load )
+    call load_list_info(load_empty, nb_load, v_load_name, v_load_info, &
+                        list_load_=list_load)
     if (load_empty) then
         goto 99
-    endif
+    end if
 !
 ! - Allocate result
 !
     call jeexin(matr_elem//'.RELR', iret)
     if (iret .eq. 0) then
         l_first_matr = .true.
-        call memare('V', matr_elem, model(1:8), mate, cara_elem,&
+        call memare('V', matr_elem, model(1:8), mate, cara_elem, &
                     'CHAR_MECA')
         call reajre(matr_elem, ' ', 'V')
     else
         l_first_matr = .false.
         call jelira(matr_elem//'.RELR', 'LONUTI', nbchme)
         if (nbchme .gt. 0) then
-            call jeveuo(matr_elem//'.RELR', 'L', vk24 = v_relr)
-        endif
-    endif
+            call jeveuo(matr_elem//'.RELR', 'L', vk24=v_relr)
+        end if
+    end if
 !
 ! - Preparing input fields
 !
-    call load_neum_prep(model    , cara_elem , mate      , matecoz   , 'Suiv'   , inst_prev,&
-                        inst_curr, inst_theta, nb_in_maxi, nb_in_prep, lchin    ,&
-                        lpain    , disp_prev = disp_prev , disp_cumu_inst = disp_cumu_inst,&
-                        compor = compor)
+    call load_neum_prep(model, cara_elem, mate, matecoz, 'Suiv', inst_prev, &
+                        inst_curr, inst_theta, nb_in_maxi, nb_in_prep, lchin, &
+                        lpain, disp_prev=disp_prev, disp_cumu_inst=disp_cumu_inst, &
+                        compor=compor)
 !
 ! - Computation
 !
     if (l_first_matr) then
         do i_load = 1, nb_load
-            idx_matr  = 0
-            load_name = v_load_name(i_load)(1:8)
+            idx_matr = 0
+            load_name = v_load_name(i_load) (1:8)
             load_nume = v_load_info(nb_load+i_load+1)
             if (load_nume .eq. 4) then
-                call load_neum_matr(i_load      , idx_matr  , load_name , load_nume, 'Suiv',&
-                                    ligrel_model, nb_in_maxi, nb_in_prep, lpain    , lchin ,&
-                                    matr_elem  )
-            endif
+                call load_neum_matr(i_load, idx_matr, load_name, load_nume, 'Suiv', &
+                                    ligrel_model, nb_in_maxi, nb_in_prep, lpain, lchin, &
+                                    matr_elem)
+            end if
         end do
     else
         do ichme = 1, nbchme
-            if (v_relr(ichme)(10:10) .eq. 'G') then
-                call lxliis(v_relr(ichme)(7:8), i_load, ier)
-                idx_matr  = -ichme
-                load_name = v_load_name(i_load)(1:8)
+            if (v_relr(ichme) (10:10) .eq. 'G') then
+                call lxliis(v_relr(ichme) (7:8), i_load, ier)
+                idx_matr = -ichme
+                load_name = v_load_name(i_load) (1:8)
                 load_nume = v_load_info(nb_load+i_load+1)
                 if (load_nume .eq. 4) then
-                    call load_neum_matr(i_load      , idx_matr  , load_name , load_nume, 'Suiv',&
-                                        ligrel_model, nb_in_maxi, nb_in_prep, lpain    , lchin ,&
-                                        matr_elem   )
-                endif
-            endif
+                    call load_neum_matr(i_load, idx_matr, load_name, load_nume, 'Suiv', &
+                                        ligrel_model, nb_in_maxi, nb_in_prep, lpain, lchin, &
+                                        matr_elem)
+                end if
+            end if
         end do
-    endif
+    end if
 !
 ! - Get number of resu_elem for undead loads
 !
@@ -182,13 +182,13 @@ implicit none
             goto 99
         else
             call jeveuo(matr_elem(1:19)//'.RELR', 'L', vk24=v_relr)
-            if (v_relr(1)(7:8) .eq. '00') then
+            if (v_relr(1) (7:8) .eq. '00') then
                 goto 99
-            endif
-        endif
+            end if
+        end if
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 ! - Access to function
 !
@@ -197,29 +197,29 @@ implicit none
         l_func = .false.
     else
         l_func = .true.
-        call jeveuo(list_load(1:19)//'.FCHA', 'L', vk24 = v_load_func)
-    endif
+        call jeveuo(list_load(1:19)//'.FCHA', 'L', vk24=v_load_func)
+    end if
 !
 ! - Create list of coefficients
 !
     call jedetr(list_coef)
-    call wkvect(list_coef, 'V V R', nbchme, vr = v_list_coef)
+    call wkvect(list_coef, 'V V R', nbchme, vr=v_list_coef)
     do i_load = 1, nbchme
         if (l_func) then
-            call lxliis(v_relr(i_load)(7:8), icha, iret)
-            load_func = v_load_func(icha)(1:8)
+            call lxliis(v_relr(i_load) (7:8), icha, iret)
+            load_func = v_load_func(icha) (1:8)
             if (icha .gt. 0) then
                 call fointe('F ', load_func, 1, ['INST'], [inst_curr], vale, iret)
             else
                 ASSERT(.false.)
-            endif
+            end if
         else
             vale = 1.d0
-        endif
+        end if
         v_list_coef(i_load) = vale
     end do
 !
- 99 continue
+99  continue
 !
     call jedema()
 end subroutine

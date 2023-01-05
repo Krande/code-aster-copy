@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -78,29 +78,29 @@ subroutine assgcy(nomres, nugene)
     call jemarq()
 !
     resu = nomres
-    stomor=nugene//'.SMOS'
+    stomor = nugene//'.SMOS'
 !
 !--------------------RECUPERATION DU MODE_GENE AMONT--------------------
 !
     call jeveuo(nugene//'.NUME.REFN', 'L', vk24=refn)
-    modgen=refn(1)(1:8)
+    modgen = refn(1) (1:8)
 !
 !--------------------------CREATION DU .LIME----------------------------
 !   POUR L'INSTANT ON DONNE LE NOM DU MODELE GENERALISE
 !
     call wkvect(resu//'.LIME', 'G V K24', 1, ldlim)
-    zk24(ldlim)=modgen
+    zk24(ldlim) = modgen
 !
 !--------------------RECUPERATION DES CARACTERISTIQUES BLOCS------------
 !
     call jeveuo(stomor//'.SMDE', 'L', vi=smde)
-    neq=smde(1)
-    ntbloc=smde(2)
-    nbloc=smde(3)
+    neq = smde(1)
+    ntbloc = smde(2)
+    nbloc = smde(3)
 !
     call jelibe(stomor//'.SMDE')
 !
-    call jecrec(resu//'.UALF', 'G V R', 'NU', 'DISPERSE', 'CONSTANT',&
+    call jecrec(resu//'.UALF', 'G V R', 'NU', 'DISPERSE', 'CONSTANT', &
                 nbloc)
     call jeecra(resu//'.UALF', 'LONMAX', ntbloc)
 !
@@ -110,9 +110,9 @@ subroutine assgcy(nomres, nugene)
     end do
 !
     call wkvect(resu//'.REFA', 'G V K24', 20, jrefa)
-    zk24(jrefa-1+11)='MPI_COMPLET'
-    zk24(jrefa-1+1)=' '
-    zk24(jrefa-1+2)=nugene
+    zk24(jrefa-1+11) = 'MPI_COMPLET'
+    zk24(jrefa-1+1) = ' '
+    zk24(jrefa-1+2) = nugene
     zk24(jrefa-1+8) = 'ASSE'
     zk24(jrefa-1+9) = 'MS'
     zk24(jrefa-1+10) = 'GENE'
@@ -138,7 +138,7 @@ subroutine assgcy(nomres, nugene)
 !    INITIALISATION DE LA MATRICE GENERALISEE
         do i = n1bloc, n2bloc
             hc = smdi(i)
-            if (i .gt. 1) hc = hc - smdi(i-1)
+            if (i .gt. 1) hc = hc-smdi(i-1)
             do j = (i-hc+1), i
                 zr(ldblo+smdi(i)+j-i-1) = 0.d0
             end do

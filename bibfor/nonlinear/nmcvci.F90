@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,13 +16,13 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine nmcvci(model , hhoField,&
-                  charge, infoch  , fomult, numedd, depmoi,&
-                  instap, cncine  )
+subroutine nmcvci(model, hhoField, &
+                  charge, infoch, fomult, numedd, depmoi, &
+                  instap, cncine)
 !
-use HHO_type
+    use HHO_type
 !
-implicit none
+    implicit none
 !
 !
 ! BUT : CALCULER LE CHAM_NO CNCINE QUI CONTIENT  L'INCREMENT DE
@@ -47,8 +47,8 @@ implicit none
 #include "asterfort/vtcmbl.h"
 #include "asterfort/vtcreb.h"
 
-character(len=24), intent(in) :: model
-type(HHO_Field), intent(in) :: hhoField
+    character(len=24), intent(in) :: model
+    type(HHO_Field), intent(in) :: hhoField
     character(len=24) :: charge, infoch, fomult, numedd
     character(len=19) :: depmoi, cncine
     character(len=24) :: l2cnci(2), cncinm, cncinp, dlci
@@ -72,20 +72,20 @@ type(HHO_Field), intent(in) :: hhoField
 !     --------------------------------------
     call exisd('CHAMP_GD', cncine, iret)
     if (iret .eq. 0) then
-        call vtcreb(cncine, 'V', 'R', nume_ddlz = numedd, nb_equa_outz = neq)
-    endif
+        call vtcreb(cncine, 'V', 'R', nume_ddlz=numedd, nb_equa_outz=neq)
+    end if
     call jelira(cncine(1:19)//'.VALE', 'LONMAX', ival=neq)
     call jelira(depmoi(1:19)//'.VALE', 'LONMAX', ival=neq2)
-    ASSERT(neq.eq.neq2)
+    ASSERT(neq .eq. neq2)
     call jeveuo(cncine(1:19)//'.VALE', 'E', vr=vale)
 !
 !
 !     -- Y-A-T-IL DES CHARGES CINEMATIQUES ?
 !     -----------------------------------------------------------------
-    lvcine=.false.
+    lvcine = .false.
     call jeveuo(infoch, 'L', jinfc)
     do ichar = 1, zi(jinfc)
-        if (zi(jinfc+ichar) .lt. 0) lvcine=.true.
+        if (zi(jinfc+ichar) .lt. 0) lvcine = .true.
     end do
 !
 !     -- Y-A-T-IL DES CHARGES CONTENANT DES CHARGES CINEMATIQUES ?
@@ -93,29 +93,29 @@ type(HHO_Field), intent(in) :: hhoField
     call jeveuo(charge, 'L', jlchar)
     call jelira(charge, 'LONMAX', ival=nbchar)
     do ichar = 1, nbchar
-        char1=zk24(jlchar-1+ichar)(1:8)
+        char1 = zk24(jlchar-1+ichar) (1:8)
     end do
 !
 !     -- S'IL N'Y A PAS DE CHARGES CINEMATIQUES, IL N'Y A RIEN A FAIRE:
 !     -----------------------------------------------------------------
-    if (.not.lvcine) goto 999
+    if (.not. lvcine) goto 999
 !
 !
 !     -- S'IL Y A DES CHARGES CINEMATIQUES :
 !     -----------------------------------------------------------------
-    cncinm='&&NMCHAR.CNCIMM'
-    cncinp='&&NMCHAR.CNCIMP'
-    dlci  ='&&NMCHAR.DLCI'
+    cncinm = '&&NMCHAR.CNCIMM'
+    cncinp = '&&NMCHAR.CNCIMP'
+    dlci = '&&NMCHAR.DLCI'
 !
 !
 !     CALCUL DE UIMP+ :
 !     ---------------------
     if (l_hho) then
-        call ascavc(charge, infoch  , fomult, numedd, instap, cncinp, dlci, &
-                    l_hho , hhoField)
+        call ascavc(charge, infoch, fomult, numedd, instap, cncinp, dlci, &
+                    l_hho, hhoField)
     else
         call ascavc(charge, infoch, fomult, numedd, instap, cncinp, dlci_=dlci)
-    endif
+    end if
     call jeveuo(dlci, 'L', vi=v_dlci)
 !
 !
@@ -126,19 +126,19 @@ type(HHO_Field), intent(in) :: hhoField
     call jeveuo(cncinm(1:19)//'.VALE', 'E', vr=cncim)
     do ieq = 1, neq
         if (v_dlci(ieq) .eq. 0) then
-            cncim(ieq)=0.d0
-        endif
+            cncim(ieq) = 0.d0
+        end if
     end do
 !
 !     DIFFERENCE UIMP+ - UIMP- :
 !     ---------------------------
-    coefr(1)=-1.d0
-    coefr(2)=+1.d0
-    l2cnci(1)=cncinm
-    l2cnci(2)=cncinp
-    typch(1)='R'
-    typch(2)='R'
-    call vtcmbl(2, typch, coefr, typch, l2cnci,&
+    coefr(1) = -1.d0
+    coefr(2) = +1.d0
+    l2cnci(1) = cncinm
+    l2cnci(2) = cncinp
+    typch(1) = 'R'
+    typch(2) = 'R'
+    call vtcmbl(2, typch, coefr, typch, l2cnci, &
                 typch(1), cncine)
 !
 !     MENAGE :

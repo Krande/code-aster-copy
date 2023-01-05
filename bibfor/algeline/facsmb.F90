@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine facsmb(nbnd, nbsn, supnd, invsup, parent,&
-                  xadj, adjncy, anc, nouv, fils,&
-                  frere, local, global, adress, lfront,&
-                  nblign, lgsn, debfac, debfsn, chaine,&
+subroutine facsmb(nbnd, nbsn, supnd, invsup, parent, &
+                  xadj, adjncy, anc, nouv, fils, &
+                  frere, local, global, adress, lfront, &
+                  nblign, lgsn, debfac, debfsn, chaine, &
                   place, nbass, delg, lgind, ier)
 ! person_in_charge: olivier.boiteau at edf.fr
 ! aslint: disable=W1504
@@ -78,14 +78,14 @@ subroutine facsmb(nbnd, nbsn, supnd, invsup, parent,&
 !
 !-----------------------------------------------------------------------
     call infniv(ifm, niv)
-    ier =0
+    ier = 0
 !     CALCUL DE INVSUP FILS ET FRERE
     do i = 1, nbsn
         place(i) = 0
         fils(i) = 0
         frere(i) = 0
-        lgsn(i) = supnd(i+1) - supnd(i)
-        do j = supnd(i), supnd(i+1) - 1
+        lgsn(i) = supnd(i+1)-supnd(i)
+        do j = supnd(i), supnd(i+1)-1
             invsup(j) = i
         end do
     end do
@@ -98,8 +98,8 @@ subroutine facsmb(nbnd, nbsn, supnd, invsup, parent,&
             else
                 frere(place(p)) = nd
                 place(p) = nd
-            endif
-        endif
+            end if
+        end if
     end do
 !
 !
@@ -107,7 +107,7 @@ subroutine facsmb(nbnd, nbsn, supnd, invsup, parent,&
     adress(1) = 1
     debfac(1) = 1
     do sni = 1, nbsn
-        lgsn(sni) = supnd(sni+1) - supnd(sni)
+        lgsn(sni) = supnd(sni+1)-supnd(sni)
     end do
 !
     adress(1) = 1
@@ -116,7 +116,7 @@ subroutine facsmb(nbnd, nbsn, supnd, invsup, parent,&
 !     CORRECTION DE NOV 2006 CETTE BOUCLE 311 REMPLACE LA PRECEDENTE
 !     INTERNE A LA BOUCLE 310 CELA ENTRAINAIT BEAUCOUP DE TEMPS CPU
     do i = 1, nbnd
-        place(i)=0
+        place(i) = 0
     end do
     do ndi = 1, nbsn
         chaine(ndi) = nbnd1
@@ -125,11 +125,11 @@ subroutine facsmb(nbnd, nbsn, supnd, invsup, parent,&
         ndi = supnd(sni)
         andi = anc(ndi)
         chaine(ndi) = nbnd1
-        dli=ndi
-        debut=ndi
+        dli = ndi
+        debut = ndi
 !        LES TERMES INITIAUX DE LA MATRICE SONT MIS DANS LA CHAINE
 !        QUE LE DDL ORDINAIRE OU LAGRANGE
-        call inschn(andi, dli, xadj, adjncy, chaine,&
+        call inschn(andi, dli, xadj, adjncy, chaine, &
                     nouv, place, debut)
         if (delg(andi) .eq. 0) then
 !--------------------------------------------------------------
@@ -143,12 +143,12 @@ subroutine facsmb(nbnd, nbsn, supnd, invsup, parent,&
             do dli = ndi+1, supnd(sni+1)-1
                 andi = anc(dli)
                 if (delg(andi) .ne. 0) goto 151
-                call inschn(andi, dli, xadj, adjncy, chaine,&
+                call inschn(andi, dli, xadj, adjncy, chaine, &
                             nouv, place, debut)
 !
             end do
 151         continue
-        endif
+        end if
 !-------------------------------------------------------------
 !
 !     LES NOEUDS VOISINS DES FILS SONT MIS DANS LA CHAINE
@@ -158,7 +158,7 @@ subroutine facsmb(nbnd, nbsn, supnd, invsup, parent,&
 !        DO WHILE (SN.NE.0)
         if (sn .ne. 0) then
 !           K = ADRESS(SN) + LGSN(SN) + 1 CORRECTION DU 15/03/02
-            k = adress(sn) + lgsn(sn)
+            k = adress(sn)+lgsn(sn)
             ind = 1
             nd = ndi
 240         continue
@@ -166,29 +166,29 @@ subroutine facsmb(nbnd, nbsn, supnd, invsup, parent,&
             if (k .lt. adress(sn+1)) then
                 ndk = global(k)
                 if (ndk .gt. ndi) then
-                    suiv= nd
+                    suiv = nd
 235                 continue
                     if (suiv .lt. ndk) then
 !     DO WHILE(SUIV.LT.NDK)
                         cour = suiv
                         suiv = chaine(cour)
                         goto 235
-                    endif
+                    end if
                     if (suiv .gt. ndk) then
                         chaine(cour) = ndk
                         chaine(ndk) = suiv
                         place(ndk) = 1
-                    endif
+                    end if
                     nd = ndk
-                endif
-                k = k + 1
+                end if
+                k = k+1
                 goto 240
 !     FIN DO WHILE
-            endif
+            end if
             sn = frere(sn)
             goto 230
 !     FIN DO WHILE
-        endif
+        end if
         k = 0
         ind = ndi
 !     DO WHILE (IND.NE.NBND1) ( FIN DE LA CHAINE)
@@ -200,35 +200,35 @@ subroutine facsmb(nbnd, nbsn, supnd, invsup, parent,&
             if ((adress(sni)+k) .gt. lgind) then
                 ier = lgind*2
                 if (niv .ge. 2) then
-                    write(ifm,*)&
+                    write (ifm, *)&
      &             'LONGUEUR DE GLOBAL PEUT ETRE INSUFFISANTE '
-                    write(ifm,*)'LONGUEUR ALLOUEE :',lgind
-                    write(ifm,*)'ON REITERE AVEC :',ier
-                endif
+                    write (ifm, *) 'LONGUEUR ALLOUEE :', lgind
+                    write (ifm, *) 'ON REITERE AVEC :', ier
+                end if
                 goto 999
-            endif
+            end if
             global(k+adress(sni)) = int(ind, 4)
-            place(global(k+adress(sni))) = k + 1
-            k = k + 1
+            place(global(k+adress(sni))) = k+1
+            k = k+1
             ind = chaine(ind)
             goto 280
 !     FIN DO WHILE
-        endif
-        adress(sni+1) = k + adress(sni)
+        end if
+        adress(sni+1) = k+adress(sni)
 !...........................................
         sn = fils(sni)
 !     DO WHILE (SN.NE.0)
 290     continue
         if (sn .ne. 0) then
-            call mltalc(local, global, adress, sn, lgsn,&
+            call mltalc(local, global, adress, sn, lgsn, &
                         place, sni, supnd, nbass(sn))
 !
             sn = frere(sn)
             goto 290
 !     FIN DO WHILE
-        endif
-        nblign(sni) = adress(sni+1) - adress(sni)
-        lfront(sni) = nblign(sni) - lgsn(sni)
+        end if
+        nblign(sni) = adress(sni+1)-adress(sni)
+        lfront(sni) = nblign(sni)-lgsn(sni)
         long = nblign(sni)
 !     ANCIENNE VERSION SANS DGEMV
 !     DO 300 K = SUPND(SNI),SUPND(SNI+1) - 1
@@ -237,23 +237,23 @@ subroutine facsmb(nbnd, nbsn, supnd, invsup, parent,&
 !     300     CONTINUE
 !     MODIFS POUR DGEMV
         do k = 1, lgsn(sni)
-            nd=supnd(sni) + k-1
-            debfac( nd ) = decal +k
+            nd = supnd(sni)+k-1
+            debfac(nd) = decal+k
             decal = decal+long
         end do
         debfsn(sni) = debfac(supnd(sni))
 !   ON REMET LE TABLEAU PLACE A ZERO ICI AU LIEU DE 311
-        do k = adress(sni), (adress(sni+1) - 1)
-            place(global(k))=0
+        do k = adress(sni), (adress(sni+1)-1)
+            place(global(k)) = 0
         end do
 !
     end do
 !
-    debfac(nbnd+1)=decal+1
+    debfac(nbnd+1) = decal+1
     debfsn(nbsn+1) = debfac(nbnd+1)
     if (niv .ge. 2) then
-        write(ifm,*)'   --- LONGUEUR DE LA MATRICE FACTORISEE ',decal
-    endif
+        write (ifm, *) '   --- LONGUEUR DE LA MATRICE FACTORISEE ', decal
+    end if
 !
 !
 999 continue

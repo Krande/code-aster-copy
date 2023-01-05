@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine xcopco(jcesd, jcesv, jcesl, ifiss, alias,&
-                  ndim, nummae, iface, ksi1, ksi2,&
+subroutine xcopco(jcesd, jcesv, jcesl, ifiss, alias, &
+                  ndim, nummae, iface, ksi1, ksi2, &
                   npte, geom)
 !
 !
@@ -78,9 +78,9 @@ subroutine xcopco(jcesd, jcesv, jcesl, ifiss, alias,&
 !     DE LA FACETTE DANS LA MAILLE
 !
     do i = 1, npte
-        call cesexi('S', jcesd(4), jcesl(4), nummae, 1,&
-                    ifiss, (iface-1)* ndim+i, iad)
-        ASSERT(iad.gt.0)
+        call cesexi('S', jcesd(4), jcesl(4), nummae, 1, &
+                    ifiss, (iface-1)*ndim+i, iad)
+        ASSERT(iad .gt. 0)
         numpi(i) = zi(jcesv(4)-1+iad)
     end do
 !
@@ -89,20 +89,20 @@ subroutine xcopco(jcesd, jcesv, jcesl, ifiss, alias,&
 !
     do i = 1, npte
         do j = 1, ndim
-            call cesexi('S', jcesd(5), jcesl(5), nummae, 1,&
-                        ifiss, ndim*( numpi(i)-1)+j, iad)
-            ASSERT(iad.gt.0)
-            coor(ndim*(i-1)+j)=zr(jcesv(5)-1+iad)
+            call cesexi('S', jcesd(5), jcesl(5), nummae, 1, &
+                        ifiss, ndim*(numpi(i)-1)+j, iad)
+            ASSERT(iad .gt. 0)
+            coor(ndim*(i-1)+j) = zr(jcesv(5)-1+iad)
         end do
     end do
 !
 ! --- CALCUL DU POINT
 !
-    call mmnonf(ndim, npte, alias, ksi1, ksi2,&
+    call mmnonf(ndim, npte, alias, ksi1, ksi2, &
                 ff)
     do i = 1, ndim
         do j = 1, npte
-            geom(i) = ff(j)*coor((j-1)*ndim+i) + geom(i)
+            geom(i) = ff(j)*coor((j-1)*ndim+i)+geom(i)
         end do
     end do
 !

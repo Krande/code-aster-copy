@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -43,34 +43,34 @@ function ioriv1(num, noeud, vect, coor)
 !-----------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    ioriv1=0
+    ioriv1 = 0
     do i = 1, 2
         if (num(i) .eq. noeud) then
-            n1=num(1)
-            n2=num(2)
-            x1=x(n1)
-            y1=y(n1)
-            x2=x(n2)
-            y2=y(n2)
+            n1 = num(1)
+            n2 = num(2)
+            x1 = x(n1)
+            y1 = y(n1)
+            x2 = x(n2)
+            y2 = y(n2)
 !     VECTEUR NORMAL AU SEGMENT
-            xn=y2-y1
-            yn=x1-x2
-            scal=xn*vect(1)+yn*vect(2)
+            xn = y2-y1
+            yn = x1-x2
+            scal = xn*vect(1)+yn*vect(2)
             if (scal .gt. 0) then
-                ioriv1= 1
-            else if (scal.lt.0) then
-                ioriv1=-1
+                ioriv1 = 1
+            else if (scal .lt. 0) then
+                ioriv1 = -1
             else
                 call utmess('F', 'MODELISA4_76')
-            endif
-        endif
+            end if
+        end if
     end do
     if (ioriv1 .lt. 0) then
 !       ON PERMUTE LES SOMMETS
-        k=num(1)
-        l=num(2)
-        num(1)=l
-        num(2)=k
-    endif
+        k = num(1)
+        l = num(2)
+        num(1) = l
+        num(2) = k
+    end if
 !
 end function

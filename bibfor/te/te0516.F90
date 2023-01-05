@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -29,11 +29,11 @@ subroutine te0516(option, nomte)
 ! --------------------------------------------------------------------------------------------------
 !
 !
-use Behaviour_module, only : behaviourOption
+    use Behaviour_module, only: behaviourOption
 !
-implicit none
+    implicit none
 !
-character(len=16) :: option, nomte
+    character(len=16) :: option, nomte
 !
 #include "jeveux.h"
 #include "asterf_types.h"
@@ -75,7 +75,7 @@ character(len=16) :: option, nomte
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: nc, nno, dimklv, npg, iret, codrep
-    parameter (nc=7 , dimklv= 2*nc*(2*nc+1)/2 , nno=2 , npg=3)
+    parameter(nc=7, dimklv=2*nc*(2*nc+1)/2, nno=2, npg=3)
     real(kind=8) :: hoel(nc), fl(2*nc), hota(nc, nc), d1b(nc, 2*nc)
     real(kind=8) :: rg0(2*nc, 2*nc), eps(nc), deps(nc), u(2*nc), du(2*nc)
     real(kind=8) :: klv(dimklv), work(nc, 2*nc), co(npg)
@@ -115,26 +115,26 @@ character(len=16) :: option, nomte
 ! --------------------------------------------------------------------------------------------------
     integer, parameter :: nb_cara = 8
     real(kind=8) :: vale_cara(nb_cara)
-    character(len=8), parameter :: noms_cara(nb_cara) = (/'AY1  ','AZ1  ','EY1  ','EZ1  ',&
-                                                          'JX1  ','JG1  ','IYR21','IZR21'/)
+    character(len=8), parameter :: noms_cara(nb_cara) = (/'AY1  ', 'AZ1  ', 'EY1  ', 'EZ1  ', &
+                                                          'JX1  ', 'JG1  ', 'IYR21', 'IZR21'/)
 ! --------------------------------------------------------------------------------------------------
 !
 !
     fami = 'RIGI'
     call elrefe_info(fami=fami, npg=npge, jpoids=ipoids)
-    ASSERT( npg.ge.npge )
-    co(1:npg)=zr(ipoids:ipoids+npg-1)
+    ASSERT(npg .ge. npge)
+    co(1:npg) = zr(ipoids:ipoids+npg-1)
 !
     hoel(:) = 0.0d0
     fl(:) = 0.0d0
-    rg0(:,:) = 0.0d0
-    rigge0(:,:) = 0.0d0
+    rg0(:, :) = 0.0d0
+    rigge0(:, :) = 0.0d0
     mflex(:) = 0.d0
-    codret=0
-    codrep=0
+    codret = 0
+    codrep = 0
 !
 !   Récupération des caractéristiques des fibres
-    call pmfinfo(nbfibr,nbgrfi,tygrfi,nbcarm,nug,jacf=jacf)
+    call pmfinfo(nbfibr, nbgrfi, tygrfi, nbcarm, nug, jacf=jacf)
 !
 !   Nombre de composantes du champs PSTRX?? par points de gauss
 !   La 15eme composante ne concerne pas les POU_D_TGM
@@ -179,24 +179,24 @@ character(len=16) :: option, nomte
     mult_comp = zk16(icompo-1+MULTCOMP)
     rigi_geom = zk16(icompo-1+RIGI_GEOM)
     type_comp = zk16(icompo-1+INCRELAS)
-    read(zk16(icompo-1+NVAR),'(I16)') nbvalc
+    read (zk16(icompo-1+NVAR), '(I16)') nbvalc
 !
 ! - Select objects to construct from option name
-    call behaviourOption(option, zk16(icompo),&
-                         lMatr , lVect ,&
-                         lVari , lSigm ,&
+    call behaviourOption(option, zk16(icompo), &
+                         lMatr, lVect, &
+                         lVari, lSigm, &
                          codret)
     if (option .eq. 'RIGI_MECA_TANG') then
         lVect = ASTER_FALSE
         lSigm = ASTER_FALSE
         lVari = ASTER_FALSE
-    endif
+    end if
 !
 !   verification que c'est bien des multifibres
     call jeexin(mult_comp, iret)
     if (iret .eq. 0) then
         call utmess('F', 'POUTRE0_14', sk=nomte)
-    endif
+    end if
 !
 !   Récupération de la SD_COMPOR ou le comportement des groupes de fibres est stocké
 !   pour chaque groupe : (nom, mater, loi, ... ) dans l'ordre croissant des numéros de groupes.
@@ -210,40 +210,40 @@ character(len=16) :: option, nomte
 !  Paramètres en sortie
     if (lMatr) then
         call jevech('PMATUUR', 'E', imat)
-    endif
+    end if
     if (lVect) then
         call jevech('PVECTUR', 'E', ivectu)
-    endif
+    end if
     if (lSigm) then
         call jevech('PCONTPR', 'E', icontp)
         call jevech('PCODRET', 'E', jcret)
-    endif
+    end if
     if (lVari) then
         call tecach('OOO', 'PVARIMP', 'L', iret, nval=7, itab=jtab)
         ivarmp = jtab(1)
         call jevech('PSTRXMP', 'L', istrmp)
         call jevech('PVARIPR', 'E', ivarip)
         call jevech('PSTRXPR', 'E', istrxp)
-    endif
+    end if
 !
 !   Calcul des matrices de changement de repère
 !
     if (type_comp .eq. 'COMP_ELAS') then
         call utmess('F', 'POUTRE0_90')
-    else if ((defo_comp .ne. 'PETIT').and.(defo_comp.ne.'GROT_GDEP')) then
-        call utmess('F', 'POUTRE0_40', sk = defo_comp)
-    endif
+    else if ((defo_comp .ne. 'PETIT') .and. (defo_comp .ne. 'GROT_GDEP')) then
+        call utmess('F', 'POUTRE0_40', sk=defo_comp)
+    end if
 !
 !   Géometrie éventuellement reactualisée
 !
-    reactu = defo_comp .eq. 'GROT_GDEP' .or. rigi_geom .eq.'OUI'
+    reactu = defo_comp .eq. 'GROT_GDEP' .or. rigi_geom .eq. 'OUI'
     isgrot = defo_comp .eq. 'GROT_GDEP'
 !
 !   Calcul des matrices de changement de repère
 !
-    if ((defo_comp .ne. 'PETIT').and.(defo_comp.ne.'GROT_GDEP')) then
-        call utmess('F', 'POUTRE0_40', sk = defo_comp)
-    endif
+    if ((defo_comp .ne. 'PETIT') .and. (defo_comp .ne. 'GROT_GDEP')) then
+        call utmess('F', 'POUTRE0_40', sk=defo_comp)
+    end if
 !
     if (reactu) then
 !       recuperation du 3eme angle nautique au temps t-
@@ -251,30 +251,30 @@ character(len=16) :: option, nomte
 !       calcul de PGL,XL et ANGP
         if (isgrot) then
 !           Rotation sur iteration non convergee
-            call porea1(nno, nc, zr(ideplm), zr(ideplp), zr(igeom+1),&
+            call porea1(nno, nc, zr(ideplm), zr(ideplp), zr(igeom+1), &
                         gamma, lVect, pgl, xl, angp)
         else
 !          Rotation sur dernier pas convergee
-            call porea3(nno, nc, zr(ideplm), zr(ideplp), zr(igeom+1),&
+            call porea3(nno, nc, zr(ideplm), zr(ideplp), zr(igeom+1), &
                         gamma, pgl, xl, angp)
-        endif
+        end if
 !       sauvegarde des angles nautiques
         if (lVect) then
             zr(istrxp+16-1) = angp(1)
             zr(istrxp+17-1) = angp(2)
             zr(istrxp+18-1) = angp(3)
-        endif
+        end if
     else
         ang1(1) = zr(iorien-1+1)
         ang1(2) = zr(iorien-1+2)
         ang1(3) = zr(iorien-1+3)
         call matrot(ang1, pgl)
-    endif
-    xls2 = xl / 2.d0
+    end if
+    xls2 = xl/2.d0
 !
 !   recuperation des caracteristiques de la section
     call pmfitg(tygrfi, nbfibr, nbcarm, zr(jacf), carsec)
-    aa  = carsec(1)
+    aa = carsec(1)
     xiy = carsec(5)
     xiz = carsec(4)
 !
@@ -282,10 +282,10 @@ character(len=16) :: option, nomte
 !
     alfay = vale_cara(1)
     alfaz = vale_cara(2)
-    ey    = vale_cara(3)
-    ez    = vale_cara(4)
-    xjx   = vale_cara(5)
-    xjg   = vale_cara(6)
+    ey = vale_cara(3)
+    ez = vale_cara(4)
+    xjx = vale_cara(5)
+    xjg = vale_cara(6)
     xiyr2 = vale_cara(7)
     xizr2 = vale_cara(8)
 !   calcul des deplacements et de leurs increments passage dans le repere local
@@ -294,21 +294,21 @@ character(len=16) :: option, nomte
     call utpvgl(nno, nc, pgl, zr(idepla), ddu)
 !   prise en compte de la position du centre de torsion
     do i = 1, 2
-        u(7*(i-1)+2) = u(7*(i-1)+2) - ez* u(7*(i-1)+4)
-        u(7*(i-1)+3) = u(7*(i-1)+3) + ey* u(7*(i-1)+4)
-        du(7*(i-1)+2) = du(7*(i-1)+2) - ez*du(7*(i-1)+4)
-        du(7*(i-1)+3) = du(7*(i-1)+3) + ey*du(7*(i-1)+4)
-        ddu(7*(i-1)+2) = ddu(7*(i-1)+2) - ez*ddu(7*(i-1)+4)
-        ddu(7*(i-1)+3) = ddu(7*(i-1)+3) + ey*ddu(7*(i-1)+4)
-    enddo
+        u(7*(i-1)+2) = u(7*(i-1)+2)-ez*u(7*(i-1)+4)
+        u(7*(i-1)+3) = u(7*(i-1)+3)+ey*u(7*(i-1)+4)
+        du(7*(i-1)+2) = du(7*(i-1)+2)-ez*du(7*(i-1)+4)
+        du(7*(i-1)+3) = du(7*(i-1)+3)+ey*du(7*(i-1)+4)
+        ddu(7*(i-1)+2) = ddu(7*(i-1)+2)-ez*ddu(7*(i-1)+4)
+        ddu(7*(i-1)+3) = ddu(7*(i-1)+3)+ey*ddu(7*(i-1)+4)
+    end do
 !   coefficient dependant de la temperature moyenne
     call moytem(fami, npg, 1, '+', temp, iret)
 !   caracteristiques elastiques (pas de temperature pour l'instant)
 !   on prend le E et NU du materiau torsion (voir op0059)
     call pmfmats(imate, mator)
-    ASSERT( mator.ne.' ' )
+    ASSERT(mator .ne. ' ')
     call matela(zi(imate), mator, 1, temp, e, nu)
-    g = e / (2.d0*(1.d0+nu))
+    g = e/(2.d0*(1.d0+nu))
 !   matrice de raideur elastique : materiau integre sur la section
     hoel(1) = e*aa
     hoel(2) = g*aa/alfay
@@ -317,8 +317,8 @@ character(len=16) :: option, nomte
     hoel(5) = e*xiy
     hoel(6) = e*xiz
     hoel(7) = e*xjg
-    phiy = e*xiz*12.d0*alfay/ (xl*xl*g*aa)
-    phiz = e*xiy*12.d0*alfaz/ (xl*xl*g*aa)
+    phiy = e*xiz*12.d0*alfay/(xl*xl*g*aa)
+    phiz = e*xiy*12.d0*alfaz/(xl*xl*g*aa)
 !   deformatiions moins et increment de deformation pour chaque fibre
     AS_ALLOCATE(vr=defmfib, size=nbfibr)
     AS_ALLOCATE(vr=defpfib, size=nbfibr)
@@ -339,44 +339,44 @@ character(len=16) :: option, nomte
 !             precedente (si iterat=1, c'est 0)
 !           - apres calcul de deps, on le stocke dans strxpr
 !       les deformations sont stockes a partir de la 8eme position
-        kk=ncomp*(kp-1)+ncomp2
+        kk = ncomp*(kp-1)+ncomp2
         if (.not. reactu) then
 !           calcul classique des deformations à partir de DU
             do i = 1, nc
                 do j = 1, 2*nc
-                    eps(i) = eps(i) + d1b(i,j)* u(j)
-                    deps(i) = deps(i) + d1b(i,j)*du(j)
-                enddo
-            enddo
+                    eps(i) = eps(i)+d1b(i, j)*u(j)
+                    deps(i) = deps(i)+d1b(i, j)*du(j)
+                end do
+            end do
         else
 !           calcul ameliore tenant compte de la reactualisation
 !           on cumule les increments de def de chaque iteration
             if (.not. lVect) then
                 do i = 1, nc
                     do j = 1, 2*nc
-                        eps(i) = eps(i) + d1b(i,j)* u(j)
-                    enddo
+                        eps(i) = eps(i)+d1b(i, j)*u(j)
+                    end do
                     deps(i) = 0.d0
-                enddo
+                end do
             else if (iterat .ge. 2) then
                 do i = 1, nc
                     deps(i) = zr(istrmp+kk+i)
                     do j = 1, 2*nc
-                        eps(i) = eps(i) + d1b(i,j)* u(j)
-                        deps(i) = deps(i) + d1b(i,j)* ddu(j)
-                    enddo
+                        eps(i) = eps(i)+d1b(i, j)*u(j)
+                        deps(i) = deps(i)+d1b(i, j)*ddu(j)
+                    end do
                     zr(istrxp+kk+i) = deps(i)
-                enddo
+                end do
             else
                 do i = 1, nc
                     do j = 1, 2*nc
-                        eps(i) = eps(i) + d1b(i,j)* u(j)
-                        deps(i) = deps(i) + d1b(i,j)* ddu(j)
-                    enddo
+                        eps(i) = eps(i)+d1b(i, j)*u(j)
+                        deps(i) = deps(i)+d1b(i, j)*ddu(j)
+                    end do
                     zr(istrxp+kk+i) = deps(i)
-                enddo
-            endif
-        endif
+                end do
+            end if
+        end if
 !       calcul des deformations et des increments de def sur les fibres
         call pmfdef(tygrfi, nbfibr, nbcarm, zr(jacf), eps, defmfib)
         call pmfdef(tygrfi, nbfibr, nbcarm, zr(jacf), deps, defpfib)
@@ -389,13 +389,13 @@ character(len=16) :: option, nomte
                     vsigfib, varfib, codrep)
 !
         if (codrep .ne. 0) then
-            codret=codrep
+            codret = codrep
 !           code 3: on continue et on le renvoie a la fin. autres codes: sortie immediate
             if (codrep .ne. 3) goto 900
-        endif
+        end if
 !       calcul de BT*H*B :
         if (lMatr) then
-            hota(1:nc,1:nc)= 0.0d0
+            hota(1:nc, 1:nc) = 0.0d0
 !           calcul de la matrice tangente au comportement global
 !           seuls 3 efforts sont concernés, les autres ==> élastique
 !              effort normal X : composante 1
@@ -405,94 +405,94 @@ character(len=16) :: option, nomte
             call pmfite(tygrfi, nbfibr, nbcarm, zr(jacf), modufib, matsct)
 !           MATSCT(1:3) : INT(E.DS)     INT(E.Y.DS)   INT(E.Z.DS)
 !           MATSCT(4:6) : INT(E.Y.Y.DS) INT(E.Z.Z.DS) INT(E.Y.Z.DS)
-            hota(2,2) = hoel(2)
-            hota(3,3) = hoel(3)
-            hota(4,4) = hoel(4)
-            hota(7,7) = hoel(7)
+            hota(2, 2) = hoel(2)
+            hota(3, 3) = hoel(3)
+            hota(4, 4) = hoel(4)
+            hota(7, 7) = hoel(7)
 !
-            hota(1,1) =  matsct(1)
-            hota(1,5) =  matsct(3)
-            hota(1,6) = -matsct(2)
-            hota(5,1) =  matsct(3)
-            hota(5,5) =  matsct(5)
-            hota(5,6) = -matsct(6)
-            hota(6,1) = -matsct(2)
-            hota(6,5) = -matsct(6)
-            hota(6,6) =  matsct(4)
+            hota(1, 1) = matsct(1)
+            hota(1, 5) = matsct(3)
+            hota(1, 6) = -matsct(2)
+            hota(5, 1) = matsct(3)
+            hota(5, 5) = matsct(5)
+            hota(5, 6) = -matsct(6)
+            hota(6, 1) = -matsct(2)
+            hota(6, 5) = -matsct(6)
+            hota(6, 6) = matsct(4)
             call dscal(nc*nc, xls2, hota, 1)
             call dscal(nc*nc, co(kp), hota, 1)
-            call utbtab('CUMU', nc, 2*nc, hota, d1b,&
+            call utbtab('CUMU', nc, 2*nc, hota, d1b, &
                         work, rg0)
-        endif
+        end if
 !       On stocke a "+" : contraintes, fl, vari
         if (lSigm) then
 !           Contraintes
             do i = 1, nbfibr
                 zr(icontp-1+nbfibr*(kp-1)+i) = vsigfib(i)
-            enddo
-        endif
+            end do
+        end if
         if (lVari) then
 !           Variables internes
             do i = 1, nbfibr*nbvalc*npg
                 zr(ivarip-1+i) = varfib(i)
-            enddo
-        endif
+            end do
+        end if
         if (lVect) then
             ASSERT(lSigm)
 !           Efforts généralisés à "+" :
 !               ffp : < int(sig.ds) int(sig.y.ds)  int(sig.z.ds) >
 !               ffp : <     Nx          -Mz             My       >
             call pmfits(tygrfi, nbfibr, nbcarm, zr(jacf), vsigfib, ffp)
-            Nx =  ffp(1)
-            My =  ffp(3)
+            Nx = ffp(1)
+            My = ffp(3)
             Mz = -ffp(2)
 !           Calcul des efforts généralisés
-            ifgp=ncomp*(kp-1)-1
+            ifgp = ncomp*(kp-1)-1
             zr(istrxp+ifgp+1) = Nx
-            zr(istrxp+ifgp+2) = zr(istrxm+ifgp+2) + hoel(2)*deps(2)
-            zr(istrxp+ifgp+3) = zr(istrxm+ifgp+3) + hoel(3)*deps(3)
+            zr(istrxp+ifgp+2) = zr(istrxm+ifgp+2)+hoel(2)*deps(2)
+            zr(istrxp+ifgp+3) = zr(istrxm+ifgp+3)+hoel(3)*deps(3)
 !           On rajoute l'effet WAGNER dû au gauchissement
-            zr(istrxp+ifgp+4) = zr(istrxm+ifgp+4) + hoel(4)*deps(4) + &
-                               (Nx*((xiy+xiz)/aa+ey**2+ez**2))*deps(4) + &
-                               (My*(xizr2/xiy-2.0d0*ez))*deps(4) - &
-                               (Mz*(xiyr2/xiz-2.0d0*ey))*deps(4)
+            zr(istrxp+ifgp+4) = zr(istrxm+ifgp+4)+hoel(4)*deps(4)+ &
+                                (Nx*((xiy+xiz)/aa+ey**2+ez**2))*deps(4)+ &
+                                (My*(xizr2/xiy-2.0d0*ez))*deps(4)- &
+                                (Mz*(xiyr2/xiz-2.0d0*ey))*deps(4)
 !
             zr(istrxp+ifgp+5) = My
             zr(istrxp+ifgp+6) = Mz
-            zr(istrxp+ifgp+7) = zr(istrxm+ifgp+7) + hoel(7)*deps(7)
+            zr(istrxp+ifgp+7) = zr(istrxm+ifgp+7)+hoel(7)*deps(7)
 !
             do k = 1, 2*nc
                 do i = 1, nc
-                    fl(k)=fl(k) + xls2*zr(istrxp+ifgp+i)*d1b(i,k)*co(kp)
-                enddo
-            enddo
-        endif
+                    fl(k) = fl(k)+xls2*zr(istrxp+ifgp+i)*d1b(i, k)*co(kp)
+                end do
+            end do
+        end if
 !       Calcul de la matrice de rigidite geometrique
         if (lMatr .and. reactu) then
-            hotage(:,:) = 0.0d0
-            ifgp=ncomp*(kp-1)-1
+            hotage(:, :) = 0.0d0
+            ifgp = ncomp*(kp-1)-1
             do i = 1, ncomp2
                 effgep(i) = zr(istrxp+ifgp+i)
-            enddo
-            hotage(1,2) = -effgep(3)
-            hotage(1,3) = effgep(2)
-            hotage(1,4) = -(ey*effgep(2)+ez*effgep(3)) + (0.5d0*(xiyr2/ xiz)*effgep(2)) + &
+            end do
+            hotage(1, 2) = -effgep(3)
+            hotage(1, 3) = effgep(2)
+            hotage(1, 4) = -(ey*effgep(2)+ez*effgep(3))+(0.5d0*(xiyr2/xiz)*effgep(2))+ &
                            (0.5d0*(xizr2/xiy)*effgep(3))
 !           Terme non calcule exactement (on fait l'hypothese d'une torsion de saint-venant)
-            hotage(2,1) = hotage(1,2)
-            hotage(2,2) = effgep(1)
-            hotage(2,4) = (ez*effgep(1)-effgep(5))
+            hotage(2, 1) = hotage(1, 2)
+            hotage(2, 2) = effgep(1)
+            hotage(2, 4) = (ez*effgep(1)-effgep(5))
 !
-            hotage(3,1) = hotage(1,3)
-            hotage(3,3) = effgep(1)
-            hotage(3,4) =-(ey*effgep(1)+effgep(6))
+            hotage(3, 1) = hotage(1, 3)
+            hotage(3, 3) = effgep(1)
+            hotage(3, 4) = -(ey*effgep(1)+effgep(6))
 !
-            hotage(4,1) = hotage(1,4)
-            hotage(4,2) = hotage(2,4)
-            hotage(4,3) = hotage(3,4)
+            hotage(4, 1) = hotage(1, 4)
+            hotage(4, 2) = hotage(2, 4)
+            hotage(4, 3) = hotage(3, 4)
 !           Moment de WAGNER
-            hotage(4,4) = (effgep(1)*((xiy+xiz)/aa+ey**2+ez**2)) + &
-                          (effgep(5)*(xizr2/xiy-2.0d0*ez)) - (effgep(6)*(xiyr2/xiz-2.0d0*ey))
+            hotage(4, 4) = (effgep(1)*((xiy+xiz)/aa+ey**2+ez**2))+ &
+                           (effgep(5)*(xizr2/xiy-2.0d0*ez))-(effgep(6)*(xiyr2/xiz-2.0d0*ey))
 !           Terme non calcule actuellement car xiwr2 n'est pas fourni par l'utilisateur
 !               XIWR2 = INT(W*(Y*Y+Z*Z)*DS) + (EFFGEP(7)*(XIWR2/XJG))
             call dscal(4*4, xls2, hotage, 1)
@@ -503,12 +503,12 @@ character(len=16) :: option, nomte
 !               cubique flexion-torsion(1)
             call bsigma(kp, xl, phiy, phiz, d1bsig, 1)
             call utbtab('CUMU', 4, 2*nc, hotage, d1bsig, work, rigge0)
-        endif
-    enddo
+        end if
+    end do
 !
     if (lMatr) then
-       if (reactu) then
-          if (isgrot) then
+        if (reactu) then
+            if (isgrot) then
 !           Calcul de la matrice de correction des GR
 !           rappel :
 !               le calcul de la matrice de correction kc est fait a part, on tient compte à
@@ -520,61 +520,61 @@ character(len=16) :: option, nomte
 !
 !           On projette avec des fcts de forme sur les noeuds debut et fin de l'élément
 !           pour le point 1
-            ksi1 = -sqrt( 5.d0 / 3.d0 )
-            d1b3(1,1) = ksi1*(ksi1-1.d0)/2.0d0
-            d1b3(1,2) = 1.d0-ksi1*ksi1
-            d1b3(1,3) = ksi1*(ksi1+1.d0)/2.0d0
+                ksi1 = -sqrt(5.d0/3.d0)
+                d1b3(1, 1) = ksi1*(ksi1-1.d0)/2.0d0
+                d1b3(1, 2) = 1.d0-ksi1*ksi1
+                d1b3(1, 3) = ksi1*(ksi1+1.d0)/2.0d0
 !           pour le point 2
-            ksi1 = sqrt( 5.d0 / 3.d0 )
-            d1b3(2,1) = ksi1*(ksi1-1.d0)/2.0d0
-            d1b3(2,2) = 1.d0-ksi1*ksi1
-            d1b3(2,3) = ksi1*(ksi1+1.d0)/2.0d0
+                ksi1 = sqrt(5.d0/3.d0)
+                d1b3(2, 1) = ksi1*(ksi1-1.d0)/2.0d0
+                d1b3(2, 2) = 1.d0-ksi1*ksi1
+                d1b3(2, 3) = ksi1*(ksi1+1.d0)/2.0d0
 !
 !           pour les noeuds 1 et 2 :
 !               calcul des contraintes
 !               calcul des efforts generalises a partir des contraintes
-            do ne = 1, 2
-                do i = 1, nbfibr
-                    sigfib = 0.d0
-                    do kp = 1, 3
-                        kk = icontp+nbfibr*(kp-1) + i - 1
-                        sigfib = sigfib + zr(kk)*d1b3(ne,kp)
-                    enddo
-                    kk = 2*(ne-1)
-                    cara = jacf+(i-1)*nbcarm
-                    mflex(1+kk)=mflex(1+kk)+sigfib*zr(cara+2)*zr(cara+1)
-                    mflex(2+kk)=mflex(2+kk)-sigfib*zr(cara+2)*zr(cara)
-                enddo
-            enddo
+                do ne = 1, 2
+                    do i = 1, nbfibr
+                        sigfib = 0.d0
+                        do kp = 1, 3
+                            kk = icontp+nbfibr*(kp-1)+i-1
+                            sigfib = sigfib+zr(kk)*d1b3(ne, kp)
+                        end do
+                        kk = 2*(ne-1)
+                        cara = jacf+(i-1)*nbcarm
+                        mflex(1+kk) = mflex(1+kk)+sigfib*zr(cara+2)*zr(cara+1)
+                        mflex(2+kk) = mflex(2+kk)-sigfib*zr(cara+2)*zr(cara)
+                    end do
+                end do
 !           on calcule la matrice tangente en sommant les termes de :
 !               rigidité matérielle RG0
 !               rigidité géométrique RIGGE0
 !               matrice de correction pour la prise en compte de rotations modérées
-            rigge0(4,5) = rigge0(4,5) + mflex(2)*0.5d0
-            rigge0(4,6) = rigge0(4,6) - mflex(1)*0.5d0
-            rigge0(5,4) = rigge0(5,4) + mflex(2)*0.5d0
-            rigge0(6,4) = rigge0(6,4) - mflex(1)*0.5d0
+                rigge0(4, 5) = rigge0(4, 5)+mflex(2)*0.5d0
+                rigge0(4, 6) = rigge0(4, 6)-mflex(1)*0.5d0
+                rigge0(5, 4) = rigge0(5, 4)+mflex(2)*0.5d0
+                rigge0(6, 4) = rigge0(6, 4)-mflex(1)*0.5d0
 !
-            rigge0(11,12) = rigge0(11,12) - mflex(4)*0.5d0
-            rigge0(11,13) = rigge0(11,13) + mflex(3)*0.5d0
-            rigge0(12,11) = rigge0(12,11) - mflex(4)*0.5d0
-            rigge0(13,11) = rigge0(13,11) + mflex(3)*0.5d0
-            endif
+                rigge0(11, 12) = rigge0(11, 12)-mflex(4)*0.5d0
+                rigge0(11, 13) = rigge0(11, 13)+mflex(3)*0.5d0
+                rigge0(12, 11) = rigge0(12, 11)-mflex(4)*0.5d0
+                rigge0(13, 11) = rigge0(13, 11)+mflex(3)*0.5d0
+            end if
 !       On remet tout dans rg0
-        rg0 = rg0 + rigge0
-        endif
+            rg0 = rg0+rigge0
+        end if
         call mavec(rg0, 2*nc, klv, dimklv)
-    endif
+    end if
 !
 !   On rend le FL dans le repere global
     if (lVect) then
 !       Prise en compte du centre de torsion
         do i = 1, 2
-            fl(7*(i-1)+4) = fl(7*(i-1)+4) - ez*fl(7*(i-1)+2) + ey*fl( 7*(i-1)+3 )
-        enddo
+            fl(7*(i-1)+4) = fl(7*(i-1)+4)-ez*fl(7*(i-1)+2)+ey*fl(7*(i-1)+3)
+        end do
 !        passage local -> global
         call utpvlg(nno, nc, pgl, fl, zr(ivectu))
-    endif
+    end if
 !
 !   On sort la matrice tangente
     if (lMatr) then
@@ -582,12 +582,12 @@ character(len=16) :: option, nomte
         call pouex7(klv, ey, ez)
 !       Passage local -> global
         call utpslg(nno, nc, pgl, klv, zr(imat))
-    endif
+    end if
 !
 900 continue
     if (lSigm) then
         zi(jcret) = codret
-    endif
+    end if
     AS_DEALLOCATE(vr=defmfib)
     AS_DEALLOCATE(vr=defpfib)
     AS_DEALLOCATE(vr=modufib)

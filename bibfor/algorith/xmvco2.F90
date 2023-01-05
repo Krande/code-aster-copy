@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,11 +16,11 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine xmvco2(ndim, nno, nnol, nnos, lamb,&
-                  am, delta, pla, lact, nfh,&
-                  ddls, ddlm, nfiss, ifiss, jheafa,&
-                  ifa, ncomph, jheavn, ncompn, jac,&
-                  ffc, ffp, singu, r, fk,&
+subroutine xmvco2(ndim, nno, nnol, nnos, lamb, &
+                  am, delta, pla, lact, nfh, &
+                  ddls, ddlm, nfiss, ifiss, jheafa, &
+                  ifa, ncomph, jheavn, ncompn, jac, &
+                  ffc, ffp, singu, r, fk, &
                   vtmp, p)
 !
 ! aslint: disable=W1504
@@ -69,57 +69,57 @@ subroutine xmvco2(ndim, nno, nnol, nnos, lamb,&
 !
 ! INITIALISATIONS
 !
-    lmultc = nfiss.gt.1
+    lmultc = nfiss .gt. 1
     h(:) = 0.d0
     hfix(:) = 0.d0
-    ptr(:,:) = 0.d0
-    if (.not.lmultc) then
-        hea_fa(1)=xcalc_code(1,he_inte=[-1])
-        hea_fa(2)=xcalc_code(1,he_inte=[+1])
-    endif
+    ptr(:, :) = 0.d0
+    if (.not. lmultc) then
+        hea_fa(1) = xcalc_code(1, he_inte=[-1])
+        hea_fa(2) = xcalc_code(1, he_inte=[+1])
+    end if
 !
 ! CALCUL DE H = R*DELTA - FORCE COHESIVE AUGMENTEE EN BASE COVARIANTE
 ! RAPPEL : AM INVERSE PAR RAPPORT AUX CONVENTIONS X-FEM
 !
     do i = 1, ndim
-        h(i) = - lamb(i) - r*am(i) + r*delta(i)
+        h(i) = -lamb(i)-r*am(i)+r*delta(i)
     end do
 !
 ! CONVERSION DE H EN BASE FIXE : {HFIX} = [P]T {H}
 ! RAPPEL : P MATRICE DE PASSAGE BASE FIXE --> BASE COVARIANTE
 !
-    call transp(p, 3, ndim, ndim, ptr,&
+    call transp(p, 3, ndim, ndim, ptr, &
                 3)
-    call prmave(0, ptr, 3, ndim, ndim,&
+    call prmave(0, ptr, 3, ndim, ndim, &
                 h, ndim, hfix, ndim, ier)
 !
 ! ON STOCKE DANS LE VECTEUR SECOND MEMBRE ELEMENTAIRE DE L EQUILIBRE
 ! ! IL Y A DEJA UN MOINS DU AUX CONVENTIONS POUR LE SAUT
 !
-    coefi = xcalc_saut(1,0,1)
+    coefi = xcalc_saut(1, 0, 1)
     do i = 1, nno
         call indent(i, ddls, ddlm, nnos, in)
         do ifh = 1, nfh
             if (lmultc) then
-                coefi = xcalc_saut(&
-                        zi(jheavn-1+ncompn*(i-1)+ifh), zi(jheafa-1+ncomph*(ifiss-1)+2*ifa-1),&
-                        zi(jheafa-1+ncomph*(ifiss-1)+2*ifa), zi(jheavn-1+ncompn*(i-1)+ncompn)&
+                coefi = xcalc_saut( &
+                        zi(jheavn-1+ncompn*(i-1)+ifh), zi(jheafa-1+ncomph*(ifiss-1)+2*ifa-1), &
+                        zi(jheafa-1+ncomph*(ifiss-1)+2*ifa), zi(jheavn-1+ncompn*(i-1)+ncompn) &
                         )
             else
-                coefi = xcalc_saut(&
-                        zi(jheavn-1+ncompn*(i-1)+ifh), hea_fa(1), hea_fa(2),&
-                        zi(jheavn-1+ncompn*(i-1)+ncompn)&
+                coefi = xcalc_saut( &
+                        zi(jheavn-1+ncompn*(i-1)+ifh), hea_fa(1), hea_fa(2), &
+                        zi(jheavn-1+ncompn*(i-1)+ncompn) &
                         )
-            endif
+            end if
             do j = 1, ndim
-                vtmp(in+ndim*ifh+j) = vtmp(in+ndim*ifh+j) - coefi*ffp( i)*hfix(j)*jac
+                vtmp(in+ndim*ifh+j) = vtmp(in+ndim*ifh+j)-coefi*ffp(i)*hfix(j)*jac
             end do
         end do
         do alp = 1, singu*ndim
             do j = 1, ndim
-                vtmp(in+ndim*(1+nfh)+alp) = vtmp(in+ndim*(1+nfh)+alp) - 2.d0 *fk(i,alp,j)*hfix(j&
-                                            )*jac
-            enddo
+                vtmp(in+ndim*(1+nfh)+alp) = vtmp(in+ndim*(1+nfh)+alp)-2.d0*fk(i, alp, j)*hfix(j &
+                                                                                              )*jac
+            end do
         end do
     end do
 !
@@ -127,14 +127,14 @@ subroutine xmvco2(ndim, nno, nnol, nnos, lamb,&
 ! ATTENTION INVERSION DE CONVENTIONS
 !
     do i = 1, nnol
-        pli=pla(i)
-        ffi=ffc(i)
-        nli=lact(i)
+        pli = pla(i)
+        ffi = ffc(i)
+        nli = lact(i)
         if (nli .eq. 0) goto 20
         do k = 1, ndim
-            vtmp(pli-1+k) = vtmp(pli-1+k) + (am(k)-delta(k))*ffi*jac
+            vtmp(pli-1+k) = vtmp(pli-1+k)+(am(k)-delta(k))*ffi*jac
         end do
- 20     continue
+20      continue
     end do
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 !
 subroutine caddli(keywordfact, load, mesh, model, valeType)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -49,9 +49,9 @@ implicit none
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
-character(len=16), intent(in) :: keywordfact
-character(len=8), intent(in) :: load, mesh, model
-character(len=4), intent(in) :: valeType
+    character(len=16), intent(in) :: keywordfact
+    character(len=8), intent(in) :: load, mesh, model
+    character(len=4), intent(in) :: valeType
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -102,7 +102,7 @@ character(len=4), intent(in) :: valeType
     character(len=24) :: keywordexcl
     integer :: n_keyexcl, itypblc
     character(len=16) :: typblc(3), lec_typ_blc
-    aster_logical :: istypblc (3)
+    aster_logical :: istypblc(3)
     integer :: cmp_nb_depl, cmp_nb_rota, cmp_nb_fourier
     integer :: pointer
 !
@@ -133,29 +133,29 @@ character(len=4), intent(in) :: valeType
 !
     if (keywordfact .eq. 'DDL_IMPO') then
         coef_type = 'REEL'
-    else if (keywordfact.eq. 'TEMP_IMPO') then
+    else if (keywordfact .eq. 'TEMP_IMPO') then
         coef_type = 'REEL'
-    else if (keywordfact.eq. 'PRES_IMPO') then
+    else if (keywordfact .eq. 'PRES_IMPO') then
         coef_type = 'COMP'
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 ! - Information about <GRANDEUR>
 !
     if (keywordfact .eq. 'DDL_IMPO') then
         nomg = 'DEPL_R'
-    else if (keywordfact.eq. 'TEMP_IMPO') then
+    else if (keywordfact .eq. 'TEMP_IMPO') then
         nomg = 'TEMP_R'
-    else if (keywordfact.eq. 'PRES_IMPO') then
+    else if (keywordfact .eq. 'PRES_IMPO') then
         nomg = 'PRES_C'
     else
         ASSERT(.false.)
-    endif
+    end if
     call jeveuo(jexnom('&CATA.GD.NOMCMP', nomg), 'L', jnom)
     call jelira(jexnom('&CATA.GD.NOMCMP', nomg), 'LONMAX', nbcmp)
     call dismoi('NB_EC', nomg, 'GRANDEUR', repi=nbec)
-    ASSERT(nbec.le.10)
+    ASSERT(nbec .le. 10)
 !
 ! - Local coordinate system (dummy)
 !
@@ -164,12 +164,12 @@ character(len=4), intent(in) :: valeType
 !
 ! - Xfem fields
 !
-    call char_xfem(mesh, model, lxfem, connex_inv, ch_xfem_stat,&
+    call char_xfem(mesh, model, lxfem, connex_inv, ch_xfem_stat, &
                    ch_xfem_node, ch_xfem_lnno, ch_xfem_ltno, ch_xfem_heav)
     if (lxfem) then
         call jeveuo(ch_xfem_node//'.CNSL', 'L', jnoxfl)
         call jeveuo(ch_xfem_node//'.CNSV', 'L', jnoxfv)
-    endif
+    end if
 !
 ! - Loop on factor keyword
 !
@@ -178,7 +178,7 @@ character(len=4), intent(in) :: valeType
 ! ----- Read mesh affectation
 !
         list_node = '&&CADDLI.LIST_NODE'
-        call getnode(mesh, keywordfact, iocc, ' ', list_node,&
+        call getnode(mesh, keywordfact, iocc, ' ', list_node, &
                      nb_node)
 !
 ! ----- No nodes (empty groups)
@@ -188,8 +188,8 @@ character(len=4), intent(in) :: valeType
 !
 ! ----- Detection of BLOCAGE
 !
-        call getvtx(keywordfact, 'BLOCAGE', iocc=iocc, nbval=3, vect= val_t_bloc, nbret=nb_typ_bloc)
-        l_bloc = nb_typ_bloc.gt.0
+        call getvtx(keywordfact, 'BLOCAGE', iocc=iocc, nbval=3, vect=val_t_bloc, nbret=nb_typ_bloc)
+        l_bloc = nb_typ_bloc .gt. 0
 ! ----- BLOCAGE case
 !
         cmp_nb = 0
@@ -197,20 +197,20 @@ character(len=4), intent(in) :: valeType
         if (l_bloc) then
 ! --------- Counting components
             do itypblc = 1, nb_typ_bloc
-                lec_typ_blc = val_t_bloc(itypblc)(1:lxlgut(val_t_bloc(itypblc)))
+                lec_typ_blc = val_t_bloc(itypblc) (1:lxlgut(val_t_bloc(itypblc)))
                 if (typblc(1) .eq. lec_typ_blc) then
                     istypblc(1) = .true.
-                else if(lec_typ_blc .eq. typblc(2)) then
+                else if (lec_typ_blc .eq. typblc(2)) then
                     istypblc(2) = .true.
-                else if(lec_typ_blc .eq. typblc(3)) then
+                else if (lec_typ_blc .eq. typblc(3)) then
                     istypblc(3) = .true.
-                endif
-            enddo
+                end if
+            end do
 !
 ! --------- Data preparation for BLOCAGE
 !
 !            ASSERT(nb_typ_bloc.eq.1)
-            call char_impo_bloc(nomg, istypblc, bloc_cmp_nb, bloc_cmp_name, bloc_cmp_index,&
+            call char_impo_bloc(nomg, istypblc, bloc_cmp_nb, bloc_cmp_name, bloc_cmp_index, &
                                 bloc_vale_real, bloc_vale_cplx, bloc_vale_fonc)
             call wkvect('&&CADDLI.ICOMPT', 'V V I', bloc_cmp_nb, jcompt)
 
@@ -228,72 +228,71 @@ character(len=4), intent(in) :: valeType
 ! ---------------- Components of DEPLACEMENT of the node to be blocked
                 if (istypblc(1)) then
                     do icmp = 1, 3
-                        if (exisdg(zi(jprnm-1+(nume_node-1)*nbec+1),bloc_cmp_index(icmp))) then
-                            cmp_nb = cmp_nb + 1
-                            cmp_nb_depl = cmp_nb_depl + 1
+                        if (exisdg(zi(jprnm-1+(nume_node-1)*nbec+1), bloc_cmp_index(icmp))) then
+                            cmp_nb = cmp_nb+1
+                            cmp_nb_depl = cmp_nb_depl+1
                             cmp_acti(cmp_nb) = 1
                             cmp_name(cmp_nb) = bloc_cmp_name(icmp)
                             vale_real(cmp_nb) = bloc_vale_real
                             vale_cplx(cmp_nb) = bloc_vale_cplx
                             vale_func(cmp_nb) = bloc_vale_fonc
-                        endif
-                    enddo
-                    pointer = pointer + 3
-                endif
+                        end if
+                    end do
+                    pointer = pointer+3
+                end if
 ! ---------------- Components of ROTATION of the node to be blocked
                 if (istypblc(2)) then
                     do icmp = pointer+1, pointer+3
-                        if (exisdg(zi(jprnm-1+(nume_node-1)*nbec+1),bloc_cmp_index(icmp))) then
-                            cmp_nb = cmp_nb + 1
-                            cmp_nb_rota = cmp_nb_rota + 1
+                        if (exisdg(zi(jprnm-1+(nume_node-1)*nbec+1), bloc_cmp_index(icmp))) then
+                            cmp_nb = cmp_nb+1
+                            cmp_nb_rota = cmp_nb_rota+1
                             cmp_acti(cmp_nb) = 1
                             cmp_name(cmp_nb) = bloc_cmp_name(icmp)
                             vale_real(cmp_nb) = bloc_vale_real
                             vale_cplx(cmp_nb) = bloc_vale_cplx
                             vale_func(cmp_nb) = bloc_vale_fonc
-                        endif
-                    enddo
-                    pointer = pointer + 3
-                endif
+                        end if
+                    end do
+                    pointer = pointer+3
+                end if
 
 ! ---------------- Components of TUYAU_FOURIER of the node to be blocked
 
                 if (istypblc(3)) then
                     do icmp = pointer+1, bloc_cmp_nb
-                        if (exisdg(zi(jprnm-1+(nume_node-1)*nbec+1),bloc_cmp_index(icmp))) then
-                            cmp_nb = cmp_nb + 1
-                            cmp_nb_fourier = cmp_nb_fourier + 1
+                        if (exisdg(zi(jprnm-1+(nume_node-1)*nbec+1), bloc_cmp_index(icmp))) then
+                            cmp_nb = cmp_nb+1
+                            cmp_nb_fourier = cmp_nb_fourier+1
                             cmp_acti(cmp_nb) = 1
                             cmp_name(cmp_nb) = bloc_cmp_name(icmp)
                             vale_real(cmp_nb) = bloc_vale_real
                             vale_cplx(cmp_nb) = bloc_vale_cplx
                             vale_func(cmp_nb) = bloc_vale_fonc
-                        endif
-                    enddo
+                        end if
+                    end do
 !!!---------------- Check if the node has ddl of TUYAU_FOURIER
                     if (cmp_nb_fourier .eq. 0) then
                         call utmess('F', 'CHARGES2_92', sk=typblc(3))
-                    endif
-                endif
+                    end if
+                end if
 
-
-                call afddli(model, geomDime, nbcmp, zk8(jnom), nume_node, name_node,&
-                            zi(jprnm-1+ (nume_node-1)*nbec+1), 0, zr(jdirec+3*(nume_node-1)),&
-                            coef_type, cmp_nb, cmp_name, cmp_acti, valeType,&
-                            vale_real, vale_func, vale_cplx, zi(jcompt), list_rela,&
-                            lxfem, jnoxfl, jnoxfv, ch_xfem_stat, ch_xfem_lnno,&
+                call afddli(model, geomDime, nbcmp, zk8(jnom), nume_node, name_node, &
+                            zi(jprnm-1+(nume_node-1)*nbec+1), 0, zr(jdirec+3*(nume_node-1)), &
+                            coef_type, cmp_nb, cmp_name, cmp_acti, valeType, &
+                            vale_real, vale_func, vale_cplx, zi(jcompt), list_rela, &
+                            lxfem, jnoxfl, jnoxfv, ch_xfem_stat, ch_xfem_lnno, &
                             ch_xfem_ltno, connex_inv, mesh, ch_xfem_heav)
-            enddo
+            end do
 !
             call jedetr('&&CADDLI.ICOMPT')
-        endif
+        end if
 !
 ! ----- Read affected components and their values
 !
-        call char_read_keyw(keywordfact, iocc, valeType, n_keyexcl, keywordexcl,&
-                            n_max_cmp, cmp_nb, cmp_name, cmp_acti, vale_real,&
+        call char_read_keyw(keywordfact, iocc, valeType, n_keyexcl, keywordexcl, &
+                            n_max_cmp, cmp_nb, cmp_name, cmp_acti, vale_real, &
                             vale_func, vale_cplx)
-        l_ocmp = cmp_nb.gt.0
+        l_ocmp = cmp_nb .gt. 0
 
 !
 ! ----- Other cases
@@ -309,21 +308,21 @@ character(len=4), intent(in) :: valeType
             do ino = 1, nb_node
                 nume_node = zi(jlino-1+ino)
                 call jenuno(jexnum(mesh//'.NOMNOE', nume_node), name_node)
-                call afddli(model, geomDime, nbcmp, zk8(jnom), nume_node, name_node,&
-                            zi(jprnm-1+ (nume_node-1)*nbec+1), 0, zr(jdirec+3*(nume_node-1)),&
-                            coef_type, cmp_nb, cmp_name, cmp_acti, valeType,&
-                            vale_real, vale_func, vale_cplx, zi(jcompt), list_rela,&
-                            lxfem, jnoxfl, jnoxfv, ch_xfem_stat, ch_xfem_lnno,&
+                call afddli(model, geomDime, nbcmp, zk8(jnom), nume_node, name_node, &
+                            zi(jprnm-1+(nume_node-1)*nbec+1), 0, zr(jdirec+3*(nume_node-1)), &
+                            coef_type, cmp_nb, cmp_name, cmp_acti, valeType, &
+                            vale_real, vale_func, vale_cplx, zi(jcompt), list_rela, &
+                            lxfem, jnoxfl, jnoxfv, ch_xfem_stat, ch_xfem_lnno, &
                             ch_xfem_ltno, connex_inv, mesh, ch_xfem_heav)
-            enddo
+            end do
             do icmp = 1, cmp_nb
                 if (zi(jcompt-1+icmp) .eq. 0) then
                     call utmess('F', 'CHARGES2_45', sk=cmp_name(icmp))
-                endif
-            enddo
-        endif
+                end if
+            end do
+        end if
 !
- 60     continue
+60      continue
 !
         call jedetr('&&CADDLI.ICOMPT')
         call jedetr(list_node)
@@ -332,8 +331,8 @@ character(len=4), intent(in) :: valeType
 !
 ! - Final linear relation affectation
 !
-    if (keywordfact.eq.'DDL_IMPO') then
-    endif
+    if (keywordfact .eq. 'DDL_IMPO') then
+    end if
     call aflrch(list_rela, load, 'LIN')
 !
     call jedetr('&&CADDLI.DIRECT')
@@ -344,7 +343,7 @@ character(len=4), intent(in) :: valeType
         call detrsd('CHAM_ELEM_S', ch_xfem_stat)
         call detrsd('CHAM_ELEM_S', ch_xfem_lnno)
         call detrsd('CHAM_ELEM_S', ch_xfem_ltno)
-    endif
+    end if
 !
 999 continue
     call jedema()

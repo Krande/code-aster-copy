@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine cjsela(mod, crit, materf, deps, sigd,&
+subroutine cjsela(mod, crit, materf, deps, sigd, &
                   sigf, nvi, vind, vinf, iret)
     implicit none
 !       INTEGRATION ELASTIQUE NON LINEAIRE DE LA LOI CJS
@@ -43,22 +43,22 @@ subroutine cjsela(mod, crit, materf, deps, sigd,&
     aster_logical :: tract
     integer :: i, j
 !
-    common /tdim/   ndt  , ndi
+    common/tdim/ndt, ndi
 !
-    data          zero  / 0.d0 /
-    data          d12   / .5d0 /
-    data          un    / 1.d0 /
-    data          deux  / 2.d0 /
-    data          trois / 3.d0 /
+    data zero/0.d0/
+    data d12/.5d0/
+    data un/1.d0/
+    data deux/2.d0/
+    data trois/3.d0/
 !
 !       ---------------------------------------------------------------
-    pa = materf(12,2)
-    qinit = materf(13,2)
+    pa = materf(12, 2)
+    qinit = materf(13, 2)
 !
 !--->   CALCUL DE I1=TR(SIG) A T+DT PAR METHODE DE LA SECANTE
 !       OU EXPLICITEMENT SI NIVEAU CJS1
 !
-    call cjsci1(crit, materf, deps, sigd, i1,&
+    call cjsci1(crit, materf, deps, sigd, i1, &
                 tract, iret)
     if (iret .eq. 1) goto 9999
 !
@@ -67,14 +67,14 @@ subroutine cjsela(mod, crit, materf, deps, sigd,&
 !       ( EGALES A PA/100.0 SOIT -1 KPA )
 !
     if (tract) then
-       do i = 1, ndi
-          sigf(i) = -qinit/3.d0+pa/100.0d0
-       end do
-       do i = ndi+1, ndt
-          sigf(i) = zero
-       end do
-       goto 9999
-    endif
+        do i = 1, ndi
+            sigf(i) = -qinit/3.d0+pa/100.0d0
+        end do
+        do i = ndi+1, ndt
+            sigf(i) = zero
+        end do
+        goto 9999
+    end if
 !
 !
 !                         I1+QINIT
@@ -82,41 +82,41 @@ subroutine cjsela(mod, crit, materf, deps, sigd,&
 !                        3 PA
 !
 !
-    coef = ((i1+qinit)/trois/pa)**materf(3,2)
-    e = materf(1,1)* coef
-    nu = materf(2,1)
-    al = e * (un-nu) / (un+nu) / (un-deux*nu)
-    la = nu * e / (un+nu) / (un-deux*nu)
-    mu = e * d12 / (un+nu)
+    coef = ((i1+qinit)/trois/pa)**materf(3, 2)
+    e = materf(1, 1)*coef
+    nu = materf(2, 1)
+    al = e*(un-nu)/(un+nu)/(un-deux*nu)
+    la = nu*e/(un+nu)/(un-deux*nu)
+    mu = e*d12/(un+nu)
 !
 !--->   OPERATEUR DE RIGIDITE
 !
-    hook(:,:) = zero
+    hook(:, :) = zero
 !
 ! - 3D/DP/AX
     if (mod(1:2) .eq. '3D' .or. mod(1:6) .eq. 'D_PLAN' .or. mod(1:4) .eq. 'AXIS') then
-       do i = 1, ndi
-          do j = 1, ndi
-             if (i .eq. j) hook(i,j) = al
-             if (i .ne. j) hook(i,j) = la
-          end do
-       end do
-       do i = ndi+1, ndt
-          do j = ndi+1, ndt
-             if (i .eq. j) hook(i,j) = deux* mu
-          end do
-       end do
+        do i = 1, ndi
+            do j = 1, ndi
+                if (i .eq. j) hook(i, j) = al
+                if (i .ne. j) hook(i, j) = la
+            end do
+        end do
+        do i = ndi+1, ndt
+            do j = ndi+1, ndt
+                if (i .eq. j) hook(i, j) = deux*mu
+            end do
+        end do
 !
 ! - CP/1D
     else if (mod(1:6) .eq. 'C_PLAN' .or. mod(1:2) .eq. '1D') then
         call utmess('F', 'ALGORITH2_15')
-    endif
+    end if
 !
 !
 !--->   INCREMENTATION DES CONTRAINTES  SIGF = SIGD + HOOK DEPS
 !
-    dsig(1:ndt) = matmul(hook(1:ndt,1:ndt), deps(1:ndt))
-    sigf(1:ndt) = sigd(1:ndt) + dsig(1:ndt)
+    dsig(1:ndt) = matmul(hook(1:ndt, 1:ndt), deps(1:ndt))
+    sigf(1:ndt) = sigd(1:ndt)+dsig(1:ndt)
 !
 !
 9999 continue

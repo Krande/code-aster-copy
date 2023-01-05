@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -51,7 +51,7 @@ subroutine rc36f3(nbsigr, nocc, saltij, nupass)
             saltij(i1+4*(l-1)+1) = 0.d0
             saltij(i1+4*(l-1)+3) = 0.d0
         end do
-    endif
+    end if
 !
     if (colonb) then
         do k = 1, nbsigr
@@ -64,7 +64,7 @@ subroutine rc36f3(nbsigr, nocc, saltij, nupass)
             saltij(i1+4*(l-1)+2) = 0.d0
             saltij(i1+4*(l-1)+4) = 0.d0
         end do
-    endif
+    end if
 !
     if (lignea) then
         do k = 1, nbsigr
@@ -77,7 +77,7 @@ subroutine rc36f3(nbsigr, nocc, saltij, nupass)
             saltij(i1+4*(l-1)+1) = 0.d0
             saltij(i1+4*(l-1)+3) = 0.d0
         end do
-    endif
+    end if
 !
     if (ligneb) then
         do k = 1, nbsigr
@@ -90,6 +90,6 @@ subroutine rc36f3(nbsigr, nocc, saltij, nupass)
             saltij(i1+4*(l-1)+2) = 0.d0
             saltij(i1+4*(l-1)+4) = 0.d0
         end do
-    endif
+    end if
 !
 end subroutine

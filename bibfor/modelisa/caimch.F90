@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 subroutine caimch(chargz)
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterc/getfac.h"
@@ -64,8 +64,8 @@ implicit none
     character(len=24) :: noeuma
     real(kind=8) :: beta, coef_impo
     complex(kind=8) :: betac
-    integer :: idcoec, idcoer, idddl,  idimen, idirec
-    integer :: idnoeu,  iequa, ino, inocmp, iocc
+    integer :: idcoec, idcoer, idddl, idimen, idirec
+    integer :: idnoeu, iequa, ino, inocmp, iocc
     integer :: iret, k, nb, nbcmp, nbec, nbnoeu, nbterm
     integer :: nequa, nliai, nucmp
     real(kind=8) :: vale, zero
@@ -88,7 +88,7 @@ implicit none
 ! --- UNE FONCTION, DANS NOTRE CAS C'EST UN REEL
 !
     beta = zero
-    betac = (0.0d0,0.0d0)
+    betac = (0.0d0, 0.0d0)
     betaf = '&FOZERO'
 !
     cham19 = '                   '
@@ -115,7 +115,7 @@ implicit none
         call getvid(motfac, 'CHAM_NO', iocc=iocc, scal=chamno, nbret=nb)
         if (nb .eq. 0) then
             call utmess('F', 'MODELISA2_83')
-        endif
+        end if
 !
         cham19(1:8) = chamno
 !
@@ -124,7 +124,7 @@ implicit none
         call jeexin(cham19//'.VALE', iret)
         if (iret .eq. 0) then
             call utmess('F', 'MODELISA2_84')
-        endif
+        end if
 !
 ! ---   VERIFICATION DU TYPE DU CHAMP
 !       -----------------------------
@@ -132,7 +132,7 @@ implicit none
 !
         if (tych .ne. 'NOEU') then
             call utmess('F', 'MODELISA2_85')
-        endif
+        end if
 !
 ! ---   RECUPERATION DE LA VALEUR DU SECOND MEMBRE DE LA RELATION
 ! ---   LINEAIRE
@@ -140,7 +140,7 @@ implicit none
         call getvr8(motfac, 'COEF_IMPO', iocc=iocc, scal=coef_impo, nbret=nb)
         if (nb .eq. 0) then
             call utmess('F', 'MODELISA2_86')
-        endif
+        end if
 !
 ! ---   RECUPERATION DE LA GRANDEUR ASSOCIEE AU CHAMNO :
 !       ----------------------------------------------
@@ -152,7 +152,7 @@ implicit none
         call dismoi('NB_EC', nomgd, 'GRANDEUR', repi=nbec)
         if (nbec .gt. 10) then
             call utmess('F', 'MODELISA2_87', sk=nomgd)
-        endif
+        end if
 !
 ! ---   RECUPERATION DU MAILLAGE ASSOCIE AU CHAM_NO
 !       -------------------------------------------
@@ -218,11 +218,11 @@ implicit none
 !
 ! ---     INO  : NUMERO DU NOEUD INO CORRESPONDANT AU DDL IEQUA
 !
-            ino = deeq(1+2* (iequa-1)+1-1)
+            ino = deeq(1+2*(iequa-1)+1-1)
 !
 ! ---     NUCMP  : NUMERO DE COMPOSANTE CORRESPONDANTE AU DDL IEQUA
 !
-            nucmp = deeq(1+2* (iequa-1)+2-1)
+            nucmp = deeq(1+2*(iequa-1)+2-1)
 !
 ! ---     ON NE PREND PAS EN COMPTE LES MULTIPLICATEURS DE LAGRANGE
 ! ---     (CAS OU NUCMP < 0)
@@ -235,19 +235,19 @@ implicit none
 !
                 vale = vvale(iequa)
 !
-                k = k + 1
+                k = k+1
                 nomcmp = zk8(inocmp+nucmp-1)
                 zk8(idnoeu+k-1) = nomnoe
                 zk8(idddl+k-1) = nomcmp
                 zr(idcoer+k-1) = 1.
-                beta = coef_impo * vale
+                beta = coef_impo*vale
 !
 ! ---       AFFECTATION DE LA RELATION A LA LISTE_RELA  :
 !
-                call afrela(zr(idcoer+k-1), zc(idcoec+k-1), zk8(idddl+k- 1), zk8(idnoeu+k-1),&
-                            zi(idimen+k-1), [0.d0], 1, beta, betac,&
+                call afrela(zr(idcoer+k-1), zc(idcoec+k-1), zk8(idddl+k-1), zk8(idnoeu+k-1), &
+                            zi(idimen+k-1), [0.d0], 1, beta, betac, &
                             betaf, typcoe, typval, 0.d0, lisrel)
-            endif
+            end if
 !
         end do
 !
@@ -272,7 +272,7 @@ implicit none
 !     ------
     call jedetr(lisrel)
 !
- 30 continue
+30  continue
 !
     call jedema()
 !

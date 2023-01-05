@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -56,7 +56,7 @@ subroutine ssdeu2(nval, iliste, nvalap)
     call jemarq()
     call jeexin('&&SSDEU2.WK1', iret)
     if (iret .eq. 0) then
-        ndim=max(1000,2*nval)
+        ndim = max(1000, 2*nval)
         call wkvect('&&SSDEU2.WK1', 'V V I', ndim, iawk1)
     else
         call jelira('&&SSDEU2.WK1', 'LONMAX', ndim)
@@ -65,51 +65,51 @@ subroutine ssdeu2(nval, iliste, nvalap)
             call wkvect('&&SSDEU2.WK1', 'V V I', 2*nval, iawk1)
         else
             call jeveuo('&&SSDEU2.WK1', 'E', iawk1)
-        endif
-    endif
+        end if
+    end if
 !
 !     -- MISE A ZERO DE "&&SSDEU2.WK1":
 !     ---------------------------------
     do i = 1, nval
-        zi(iawk1-1+i)=0
+        zi(iawk1-1+i) = 0
     end do
 !
 !     -- MISE A "1" PARTIELLE DE  "&&SSDEU2.WK1":
 !     -------------------------------------------
-    nvalap= nval
-    do 1 , i=1,nval
+    nvalap = nval
+    do 1, i = 1, nval
     if (iliste(i) .eq. 0) then
-        zi(iawk1-1+i)=1
-        nvalap= nvalap-1
+        zi(iawk1-1+i) = 1
+        nvalap = nvalap-1
         goto 1
-    endif
-    do 2 , j=1,i-1
+    end if
+    do 2, j = 1, i-1
     if (iliste(j) .eq. iliste(i)) then
-        zi(iawk1-1+i)=1
-        nvalap= nvalap-1
+        zi(iawk1-1+i) = 1
+        nvalap = nvalap-1
         goto 1
-    endif
-  2 continue
-    1 end do
+    end if
+2   continue
+1   end do
 !
 !
 !     -- RETASSAGE DE LA LISTE:
 !     -------------------------
-    idecal=0
-    do 3 , i=1,nval
+    idecal = 0
+    do 3, i = 1, nval
     if (zi(iawk1-1+i) .eq. 1) then
-        idecal= idecal+1
+        idecal = idecal+1
     else
-        iliste(i-idecal)=iliste(i)
-    endif
-    3 end do
+        iliste(i-idecal) = iliste(i)
+    end if
+3   end do
 !
 !     -- ON COMPLETE PAR DES ZERO:
 !     ----------------------------
-    do 4 , i=nvalap+1,nval
-    iliste(i)=0
-    4 end do
+    do 4, i = nvalap+1, nval
+        iliste(i) = 0
+4   end do
 !
 !
     call jedema()
-end subroutine
+    end subroutine

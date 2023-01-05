@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -47,7 +47,7 @@ subroutine te0501(option, nomte)
 !-----------------------------------------------------------------------
     integer :: ij, itemp, itempi
 !-----------------------------------------------------------------------
-    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg, &
                      jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
     call jevech('PGEOMER', 'L', igeom)
@@ -60,25 +60,25 @@ subroutine te0501(option, nomte)
     aniso = .false.
     call ntfcma(' ', zi(imate), aniso, ifon)
     do kp = 1, npg
-        k=(kp-1)*nno
-        call dfdm2d(nno, kp, ipoids, idfde, zr(igeom),&
+        k = (kp-1)*nno
+        call dfdm2d(nno, kp, ipoids, idfde, zr(igeom), &
                     poids, dfdx, dfdy)
         r = 0.d0
         tpg = 0.d0
         do i = 1, nno
-            r = r + zr(igeom+2*(i-1))*zr(ivf+k+i-1)
-            tpg =tpg + zr(itempi+i-1)*zr(ivf+k+i-1)
+            r = r+zr(igeom+2*(i-1))*zr(ivf+k+i-1)
+            tpg = tpg+zr(itempi+i-1)*zr(ivf+k+i-1)
         end do
-        if (lteatt('AXIS','OUI')) poids = poids*r
+        if (lteatt('AXIS', 'OUI')) poids = poids*r
 !
         call rcfode(ifon(2), tpg, alpha, xkpt)
 !
-        ij = imattt - 1
+        ij = imattt-1
         do i = 1, nno
 !
             do j = 1, i
-                ij = ij + 1
-                zr(ij) = zr(ij) + poids*(alpha*(dfdx(i)*dfdx(j)+dfdy(i)*dfdy(j)))
+                ij = ij+1
+                zr(ij) = zr(ij)+poids*(alpha*(dfdx(i)*dfdx(j)+dfdy(i)*dfdy(j)))
 !
             end do
         end do

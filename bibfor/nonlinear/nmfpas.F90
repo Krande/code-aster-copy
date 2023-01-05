@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,13 +17,13 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine nmfpas(fonact, sddyna, sdpilo, sddisc, nbiter,&
-                  numins, eta   , valinc, solalg, veasse, ds_system,&
+subroutine nmfpas(fonact, sddyna, sdpilo, sddisc, nbiter, &
+                  numins, eta, valinc, solalg, veasse, ds_system, &
                   ds_contact)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -40,13 +40,13 @@ implicit none
 #include "asterfort/nmpiac.h"
 #include "asterfort/setTimeListProgressBar.h"
 !
-character(len=19) :: solalg(*), valinc(*), veasse(*)
-character(len=19) :: sddyna, sdpilo, sddisc
-real(kind=8) :: eta
-integer :: nbiter, numins
-integer :: fonact(*)
-type(NL_DS_System), intent(in) :: ds_system
-type(NL_DS_Contact), intent(in) :: ds_contact
+    character(len=19) :: solalg(*), valinc(*), veasse(*)
+    character(len=19) :: sddyna, sdpilo, sddisc
+    real(kind=8) :: eta
+    integer :: nbiter, numins
+    integer :: fonact(*)
+    type(NL_DS_System), intent(in) :: ds_system
+    type(NL_DS_Contact), intent(in) :: ds_contact
 !
 ! ----------------------------------------------------------------------
 !
@@ -84,9 +84,9 @@ type(NL_DS_Contact), intent(in) :: ds_contact
 !
 ! --- FONCTIONNALITES ACTIVEES
 !
-    ldyna = ndynlo(sddyna,'DYNAMIQUE')
-    lpilo = isfonc(fonact,'PILOTAGE')
-    lmpas = ndynlo(sddyna,'MULTI_PAS')
+    ldyna = ndynlo(sddyna, 'DYNAMIQUE')
+    lpilo = isfonc(fonact, 'PILOTAGE')
+    lmpas = ndynlo(sddyna, 'MULTI_PAS')
 !
 ! --- DECOMPACTION DES VARIABLES CHAPEAUX
 !
@@ -128,27 +128,27 @@ type(NL_DS_Contact), intent(in) :: ds_contact
     if (ldyna) then
         call copisd('CHAMP_GD', 'V', vitplu, vitmoi)
         call copisd('CHAMP_GD', 'V', accplu, accmoi)
-    endif
+    end if
 !
 ! --- REACTUALISATION DES BORNES DE PILOTAGE SI DEMANDE
 !
     if (lpilo) then
         call nmpiac(sdpilo, eta)
-    endif
+    end if
 !
 ! --- SAUVEGARDE DU SECOND MEMBRE SI MULTI_PAS EN DYNAMIQUE
 !
     if (lmpas) then
         call nmchsv(fonact, veasse, sddyna, ds_system, ds_contact)
-    endif
+    end if
 !
 ! - Save previous time
 !
     if (ldyna) then
         cfsc = sddyna(1:15)//'.COEF_SCH'
         call jeveuo(cfsc, 'E', vr=coef_sch)
-        coef_sch(24) = diinst(sddisc,numins-1)
-    endif
+        coef_sch(24) = diinst(sddisc, numins-1)
+    end if
 !
 ! - Progress bar
 !

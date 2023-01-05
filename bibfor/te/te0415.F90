@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -41,7 +41,7 @@ subroutine te0415(optioz, nomtz)
     integer :: nso
     real(kind=8) :: s
 !-----------------------------------------------------------------------
-    parameter (npge=3)
+    parameter(npge=3)
     integer :: icou, jmat, jnbspi
     integer :: nb2, npgsn, jtab(7)
 !
@@ -53,23 +53,23 @@ subroutine te0415(optioz, nomtz)
     call jevete('&INEL.'//nomte(1:8)//'.DESR', ' ', lzr)
     if (nomte .eq. 'MEC3QU9H') then
         nso = 4
-    else if (nomte.eq.'MEC3TR7H') then
+    else if (nomte .eq. 'MEC3TR7H') then
         nso = 3
-    endif
+    end if
 !
     if (option .eq. 'VARI_ELNO') then
 !
         call jevech('PVARIGR', 'L', ichg)
         call jevech('PCOMPOR', 'L', icompo)
-        read (zk16(icompo-1+2),'(I16)') nbvari
-        call tecach('OOO', 'PVARIGR', 'L', iret, nval=7,&
+        read (zk16(icompo-1+2), '(I16)') nbvari
+        call tecach('OOO', 'PVARIGR', 'L', iret, nval=7, &
                     itab=jtab)
-        lgpg = max(jtab(6),1)*jtab(7)
+        lgpg = max(jtab(6), 1)*jtab(7)
         call jevech('PNBSP_I', 'L', jnbspi)
-        nbcou=zi(jnbspi-1+1)
+        nbcou = zi(jnbspi-1+1)
         if (nbcou .le. 0) then
             call utmess('F', 'ELEMENTS_12')
-        endif
+        end if
 !
 !
 !
@@ -86,37 +86,37 @@ subroutine te0415(optioz, nomtz)
         do icou = 1, nbcou
             do ic = 1, nbvari
                 do i = 1, npge*nso
-                    l = npge*npgsn* (i-1)
+                    l = npge*npgsn*(i-1)
                     s = 0.d0
                     do j = 1, npge*npgsn
 ! -- DETERMINATION DU PT DE GAUSS A PARTIR DE LA POSITION JJ
                         do k1 = 1, npgsn
                             do k2 = 1, npge
-                                j1 = (k1-1)*npge + k2
+                                j1 = (k1-1)*npge+k2
                                 if (j1 .eq. j) then
                                     inp = k1
-                                    nep = k2 - 1
-                                endif
+                                    nep = k2-1
+                                end if
                             end do
                         end do
                         npp = (inp-1)*lgpg
-                        npp = npp + ic + nbvari* ((icou-1)*npge+nep)
+                        npp = npp+ic+nbvari*((icou-1)*npge+nep)
 ! -- ZR(ICHG-1+NPP) = VARI(IC,JJ)
 !                JJ = (ICOU-1)*NPGE*NPGSN + J
-                        s = s + zr(jmat-1+l+j)*zr(ichg-1+npp)
+                        s = s+zr(jmat-1+l+j)*zr(ichg-1+npp)
                     end do
 ! -- DETERMINATION DU NOEUD SOMMET A PARTIR DE LA POSITION II
                     do k1 = 1, nso
                         do k2 = 1, npge
-                            i1 = (k1-1)*npge + k2
+                            i1 = (k1-1)*npge+k2
                             if (i1 .eq. i) then
                                 ino = k1
-                                nep = k2 - 1
-                            endif
+                                nep = k2-1
+                            end if
                         end do
                     end do
                     npo = (ino-1)*lgpg
-                    npo = npo + ic + nbvari* ((icou-1)*npge+nep)
+                    npo = npo+ic+nbvari*((icou-1)*npge+nep)
                     zr(jvari-1+npo) = s
                 end do
             end do
@@ -132,68 +132,68 @@ subroutine te0415(optioz, nomtz)
                 if (ic .eq. 5) then
                     np1 = 0
                     np2 = lgpg
-                else if (ic.eq.6) then
+                else if (ic .eq. 6) then
                     np1 = lgpg
                     np2 = 2*lgpg
-                else if (ic.eq.7) then
+                else if (ic .eq. 7) then
                     np1 = 2*lgpg
                     np2 = 3*lgpg
-                else if (ic.eq.8) then
+                else if (ic .eq. 8) then
                     np1 = 3*lgpg
                     np2 = 0
-                else if (ic.eq.9) then
+                else if (ic .eq. 9) then
                     np1 = 0
                     np2 = lgpg
                     np3 = 2*lgpg
                     np4 = 3*lgpg
-                endif
+                end if
                 if (ic .ne. 9) then
                     do i = 1, lgpg
-                        zr(jvari-1+npo+i) = zr(jvari-1+np1+i) + zr(jvari-1+np2+i)
+                        zr(jvari-1+npo+i) = zr(jvari-1+np1+i)+zr(jvari-1+np2+i)
                         zr(jvari-1+npo+i) = zr(jvari-1+npo+i)/2.d0
                     end do
                 else
                     do i = 1, lgpg
-                        zr(jvari-1+npo+i) = zr(jvari-1+np1+i) + zr(jvari-1+np2+i)
-                        zr(jvari-1+npo+i) = zr(jvari-1+npo+i) + zr(jvari-1+np3+i)
-                        zr(jvari-1+npo+i) = zr(jvari-1+npo+i) + zr(jvari-1+np4+i)
+                        zr(jvari-1+npo+i) = zr(jvari-1+np1+i)+zr(jvari-1+np2+i)
+                        zr(jvari-1+npo+i) = zr(jvari-1+npo+i)+zr(jvari-1+np3+i)
+                        zr(jvari-1+npo+i) = zr(jvari-1+npo+i)+zr(jvari-1+np4+i)
                         zr(jvari-1+npo+i) = zr(jvari-1+npo+i)/4.d0
                     end do
-                endif
+                end if
             end do
-        else if (nomte.eq.'MEC3TR7H') then
+        else if (nomte .eq. 'MEC3TR7H') then
             do ic = 4, nb2
                 npo = (ic-1)*lgpg
                 if (ic .eq. 4) then
                     np1 = 0
                     np2 = lgpg
-                else if (ic.eq.5) then
+                else if (ic .eq. 5) then
                     np1 = lgpg
                     np2 = 2*lgpg
-                else if (ic.eq.6) then
+                else if (ic .eq. 6) then
                     np1 = 2*lgpg
                     np2 = 0
-                else if (ic.eq.7) then
+                else if (ic .eq. 7) then
                     np1 = 0
                     np2 = lgpg
                     np3 = 2*lgpg
-                endif
+                end if
                 if (ic .ne. 7) then
                     do i = 1, lgpg
-                        zr(jvari-1+npo+i) = zr(jvari-1+np1+i) + zr(jvari-1+np2+i)
+                        zr(jvari-1+npo+i) = zr(jvari-1+np1+i)+zr(jvari-1+np2+i)
                         zr(jvari-1+npo+i) = zr(jvari-1+npo+i)/2.d0
                     end do
                 else
                     do i = 1, lgpg
-                        zr(jvari-1+npo+i) = zr(jvari-1+np1+i) + zr(jvari-1+np2+i)
-                        zr(jvari-1+npo+i) = zr(jvari-1+npo+i) + zr(jvari-1+np3+i)
+                        zr(jvari-1+npo+i) = zr(jvari-1+np1+i)+zr(jvari-1+np2+i)
+                        zr(jvari-1+npo+i) = zr(jvari-1+npo+i)+zr(jvari-1+np3+i)
                         zr(jvari-1+npo+i) = zr(jvari-1+npo+i)/3.d0
                     end do
-                endif
+                end if
             end do
-        endif
+        end if
 !
 ! ------------------------------------------------------------
 !
-    endif
+    end if
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -35,51 +35,51 @@ subroutine jeimpr(unit, clas, cmess)
     integer :: jiadm, jlong, jlono, jltyp, jluti, jmarq, jorig
     integer :: jrnom, jtype, k, n, ncla1, ncla2
 !-----------------------------------------------------------------------
-    parameter  ( n = 5 )
-    common /jiatje/  jltyp(n), jlong(n), jdate(n), jiadd(n), jiadm(n),&
+    parameter(n=5)
+    common/jiatje/jltyp(n), jlong(n), jdate(n), jiadd(n), jiadm(n),&
      &                 jlono(n), jhcod(n), jcara(n), jluti(n), jmarq(n)
 !
-    common /jkatje/  jgenr(n), jtype(n), jdocu(n), jorig(n), jrnom(n)
+    common/jkatje/jgenr(n), jtype(n), jdocu(n), jorig(n), jrnom(n)
 !
     integer :: nrhcod, nremax, nreuti
-    common /icodje/  nrhcod(n) , nremax(n) , nreuti(n)
+    common/icodje/nrhcod(n), nremax(n), nreuti(n)
 !
     character(len=2) :: dn2
     character(len=5) :: classe
     character(len=8) :: nomfic, kstout, kstini
-    common /kficje/  classe    , nomfic(n) , kstout(n) , kstini(n) ,&
+    common/kficje/classe, nomfic(n), kstout(n), kstini(n),&
      &                 dn2(n)
 ! ----------------------------------------------------------------------
     character(len=1) :: kclas, cgenr, ctype, clasi
     character(len=32) :: crnom
 ! DEB ------------------------------------------------------------------
 !
-    kclas = clas ( 1: min(1,len(clas)))
+    kclas = clas(1:min(1, len(clas)))
     if (unit .le. 0) goto 999
     if (kclas .eq. ' ') then
         ncla1 = 1
-        ncla2 = index ( classe , '$' ) - 1
+        ncla2 = index(classe, '$')-1
         if (ncla2 .lt. 0) ncla2 = n
     else
-        ncla1 = index ( classe , kclas)
+        ncla1 = index(classe, kclas)
         ncla2 = ncla1
-    endif
+    end if
     do i = ncla1, ncla2
         clasi = classe(i:i)
         if (clasi .ne. ' ') then
-            write (unit,'(4A)' ) ('---------------------',k=1,4)
-            write (unit,'(2A)' )&
-     &          '------     CATALOGUE CLASSE ',clasi     ,&
-     &          '------    ', cmess(1:min(72,len(cmess)))
-            write (unit,'(4A)' ) ('---------------------',k=1,4)
+            write (unit, '(4A)') ('---------------------', k=1, 4)
+            write (unit, '(2A)')&
+     &          '------     CATALOGUE CLASSE ', clasi,&
+     &          '------    ', cmess(1:min(72, len(cmess)))
+            write (unit, '(4A)') ('---------------------', k=1, 4)
             do j = 1, nremax(i)
                 crnom = rnom(jrnom(i)+j)
                 if (crnom(1:1) .eq. '?') goto 5
-                if (mod(j,25) .eq. 1) then
-                    write ( unit , '(/,A,A/)' )&
+                if (mod(j, 25) .eq. 1) then
+                    write (unit, '(/,A,A/)')&
      &      '--- NUM  -------------- NOM ---------------- G T L- --LONG'&
-     &      ,'--- -LOTY- -IADD- --------KADM------- --------KDYN-------'
-                endif
+     &      , '--- -LOTY- -IADD- --------KADM------- --------KDYN-------'
+                end if
                 cgenr = genr(jgenr(i)+j)
                 ctype = type(jtype(i)+j)
                 iltyp = ltyp(jltyp(i)+j)
@@ -87,15 +87,15 @@ subroutine jeimpr(unit, clas, cmess)
                 ilono = lono(jlono(i)+j)
                 iiadd = iadd(jiadd(i)+2*j-1)
                 iibas = iadm(jiadm(i)+2*j-1)
-                iibdy = iadm(jiadm(i)+2*j )
-                write(unit , 1001) j,crnom,cgenr,ctype,iltyp, ilong,&
-                ilono,iiadd,iibas,iibdy
-  5             continue
+                iibdy = iadm(jiadm(i)+2*j)
+                write (unit, 1001) j, crnom, cgenr, ctype, iltyp, ilong, &
+                    ilono, iiadd, iibas, iibdy
+5               continue
             end do
-            write ( unit , '(/)' )
-        endif
+            write (unit, '(/)')
+        end if
     end do
 999 continue
-    1001 format(i8,2x,a,'  -',2(a,'-'),i2,1x,i8,1x,i7,i7,i20,i20)
+1001 format(i8, 2x, a, '  -', 2(a, '-'), i2, 1x, i8, 1x, i7, i7, i20, i20)
 ! FIN ------------------------------------------------------------------
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,9 +18,9 @@
 
 subroutine ntetl3(i_field, ds_inout, tempct)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterfort/assert.h"
 #include "asterfort/chpver.h"
@@ -68,24 +68,24 @@ implicit none
 !
 ! ----- Name of field in algorithm
 !
-        algo_name  = ds_inout%field(i_field)%algo_name
+        algo_name = ds_inout%field(i_field)%algo_name
         call nmetnc(algo_name, field_algo)
 !
 ! ----- Spatial discretization of field
 !
-        disc_type  = ds_inout%field(i_field)%disc_type
+        disc_type = ds_inout%field(i_field)%disc_type
 !
 ! ----- Type of GRANDEUR of field
 !
-        gran_name  = ds_inout%field(i_field)%gran_name
+        gran_name = ds_inout%field(i_field)%gran_name
 !
 ! ----- Actual state of field
 !
-        init_type  = ds_inout%field(i_field)%init_type
+        init_type = ds_inout%field(i_field)%init_type
 !
 ! ----- Is field should been active ?
 !
-        l_acti     = ds_inout%l_field_acti(i_field)
+        l_acti = ds_inout%l_field_acti(i_field)
 !
 ! ----- Informations about field
 !
@@ -97,25 +97,25 @@ implicit none
                 valk(2) = ds_inout%result
                 if (init_type .eq. 'ZERO') then
                     call utmess('I', 'ETATINIT_31', sk=field_type)
-                else if (init_type.eq.'RESU') then
+                else if (init_type .eq. 'RESU') then
                     call utmess('I', 'ETATINIT_32', nk=2, valk=valk)
-                else if (init_type.eq.'READ') then
+                else if (init_type .eq. 'READ') then
                     call utmess('I', 'ETATINIT_33', sk=field_type)
-                else if (init_type.eq.'STAT') then
+                else if (init_type .eq. 'STAT') then
                     call utmess('I', 'ETATINIT_34')
-                else if (init_type.eq.'VALE') then
+                else if (init_type .eq. 'VALE') then
                     call utmess('I', 'ETATINIT_35', sr=tempct)
                 else
                     ASSERT(.false.)
-                endif
-            endif
+                end if
+            end if
 !
 ! --------- Check GRANDEUR and discretization
 !
             if (gran_name .ne. ' ') then
                 call chpver('F', field_algo, disc_type, gran_name, iret)
-            endif
-        endif
-    endif
+            end if
+        end if
+    end if
 !
 end subroutine

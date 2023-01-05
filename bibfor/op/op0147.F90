@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -79,15 +79,15 @@ subroutine op0147()
         val = zr(ivite-1+i3)-vitef
         if (abs(val) .lt. epsi) then
             ivitef = i3
-        endif
+        end if
     end do
     if (ivitef .eq. 0) then
         call utmess('F', 'ALGELINE3_25', sr=vitef)
-    endif
+    end if
 !
     call jeveuo(freq, 'L', ifreq)
     call jelira(freq, 'LONUTI', nbm)
-    nbm = nbm / ( 2 * npv )
+    nbm = nbm/(2*npv)
 !
     call jeveuo(numo, 'L', inumo)
 !
@@ -112,19 +112,19 @@ subroutine op0147()
     zi(inuor) = zi(jnuor)
     do i = 2, nbmr
         if (zi(jnuor+i-1) .eq. zi(inuor+nnn-1)) goto 20
-        nnn = nnn + 1
+        nnn = nnn+1
         zi(inuor+nnn-1) = zi(jnuor+i-1)
- 20     continue
+20      continue
     end do
     nbmr = nnn
     do im = 1, nbm
         if (zi(inumo+im-1) .eq. zi(inuor)) then
             imod1 = im
             goto 31
-        endif
+        end if
     end do
     call utmess('F', 'MODELISA5_78')
- 31 continue
+31  continue
 !
 ! --- 3.RECUPERATION DE L'OPTION DE CALCUL ---
 !
@@ -133,9 +133,9 @@ subroutine op0147()
     if (option(1:4) .eq. 'DIAG') casint = .false.
 !
     call jeveuo(table//'.REFE', 'L', vk16=refe)
-    if (refe(2)(1:4) .eq. 'DIAG' .and. casint) then
+    if (refe(2) (1:4) .eq. 'DIAG' .and. casint) then
         call utmess('F', 'MODELISA5_79')
-    endif
+    end if
 !
 ! --- 4.CREATION DE LA STRUCTURE RESULTAT ET CALCUL DE LA REPONSE ---
 ! ---   PAR CALCSP                                                ---
@@ -145,7 +145,7 @@ subroutine op0147()
     zk16(lrefes+1) = option
     zk16(lrefes+2) = 'FREQ'
 !
-    call calcsp(casint, nomu, table, zr(ifreq), zr(imasg),&
+    call calcsp(casint, nomu, table, zr(ifreq), zr(imasg), &
                 nbm, nbmr, imod1, zi(inuor), ivitef)
 !
     call titre()

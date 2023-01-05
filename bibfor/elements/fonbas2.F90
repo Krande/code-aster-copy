@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine fonbas2(noma, basnof, typm, fonoeu, coorfond, nbnoff, absfon,&
-                  basloc, abscur, lnno, ltno)
+subroutine fonbas2(noma, basnof, typm, fonoeu, coorfond, nbnoff, absfon, &
+                   basloc, abscur, lnno, ltno)
 !
     implicit none
 #include "jeveux.h"
@@ -63,7 +63,7 @@ subroutine fonbas2(noma, basnof, typm, fonoeu, coorfond, nbnoff, absfon,&
 !
     integer :: ibid, indica, indicb, ina, inb, ino, jnoe
     integer :: iseg, jbas, jabsf, jabscur, coorfd
-    integer :: jgsl,   jlnsl,  jltsl
+    integer :: jgsl, jlnsl, jltsl
     integer :: k, nbno, ndim, nseg
     real(kind=8) :: d, dmin, eps, norm2, s, sn, xln, xlt
     real(kind=8) :: xa, ya, za, xb, yb, zb, xm, ym, zm
@@ -78,9 +78,9 @@ subroutine fonbas2(noma, basnof, typm, fonoeu, coorfond, nbnoff, absfon,&
     real(kind=8), pointer :: ltsv(:) => null()
     real(kind=8), pointer :: vale(:) => null()
 !
-    data licmp / 'X1','X2','X3',&
-     &             'X4','X5','X6',&
-     &             'X7','X8','X9'/
+    data licmp/'X1', 'X2', 'X3',&
+     &             'X4', 'X5', 'X6',&
+     &             'X7', 'X8', 'X9'/
 !
 !     -----------------------------------------------------------------
 !
@@ -99,22 +99,22 @@ subroutine fonbas2(noma, basnof, typm, fonoeu, coorfond, nbnoff, absfon,&
     if (ndim .eq. 2) then
         nseg = 1
         casfon = ' '
-    else if (ndim.eq.3) then
+    else if (ndim .eq. 3) then
         casfon = 'LINEAIRE'
         nseg = nbnoff-1
 !       CAS QUADRATIQUE
-        if ( typm .eq. 'SEG3') then
+        if (typm .eq. 'SEG3') then
             casfon = 'QUADRATIQUE'
             nseg = (nbnoff-1)/2
-        endif
-    endif
+        end if
+    end if
 !
 !     INITIALISATION DES CHAMPS SIMPLES DES LEVEL-SETS
     cnslt = '&&FONBAS2.CNSLT'
     cnsln = '&&FONBAS2.CNSLN'
-    call cnscre(noma, 'NEUT_R', 1, 'X1', 'V',&
+    call cnscre(noma, 'NEUT_R', 1, 'X1', 'V', &
                 cnslt)
-    call cnscre(noma, 'NEUT_R', 1, 'X1', 'V',&
+    call cnscre(noma, 'NEUT_R', 1, 'X1', 'V', &
                 cnsln)
 !
     call jeveuo(cnslt//'.CNSV', 'E', vr=ltsv)
@@ -124,7 +124,7 @@ subroutine fonbas2(noma, basnof, typm, fonoeu, coorfond, nbnoff, absfon,&
 !
 !     INITIALISATION DU CHAMP SIMPLE DE LA BASE LOCALE
     cnsbas = '&&FONBAS2.CNSBAS'
-    call cnscre(noma, 'NEUT_R', ndim*3, licmp, 'V',&
+    call cnscre(noma, 'NEUT_R', ndim*3, licmp, 'V', &
                 cnsbas)
     call jeveuo(cnsbas//'.CNSV', 'E', vr=gsv)
     call jeveuo(cnsbas//'.CNSL', 'E', jgsl)
@@ -181,15 +181,15 @@ subroutine fonbas2(noma, basnof, typm, fonoeu, coorfond, nbnoff, absfon,&
             end do
 !
 !         STOCKAGE DES LEVEL-SETS
-            lnsv((ino-1)+1)=nm(1)*zr(jbas-1+1)+nm(2)*zr(jbas-1+&
-            2)
-            ltsv((ino-1)+1)=nm(1)*zr(jbas-1+3)+nm(2)*zr(jbas-1+&
-            4)
-            zl(jlnsl-1+(ino-1)+1)=.true.
-            zl(jltsl-1+(ino-1)+1)=.true.
+            lnsv((ino-1)+1) = nm(1)*zr(jbas-1+1)+nm(2)*zr(jbas-1+ &
+                                                          2)
+            ltsv((ino-1)+1) = nm(1)*zr(jbas-1+3)+nm(2)*zr(jbas-1+ &
+                                                          4)
+            zl(jlnsl-1+(ino-1)+1) = .true.
+            zl(jltsl-1+(ino-1)+1) = .true.
 !
 !       CAS 3D : RECHERCHE DU PROJETE PUIS STOCKAGE DES VECTEURS
-        else if (ndim.eq.3) then
+        else if (ndim .eq. 3) then
 !
 !         RECHERCHE DU PROJETE DE INO SUR LE FOND DE FISSURE
 !         --------------------------------------------------
@@ -201,10 +201,10 @@ subroutine fonbas2(noma, basnof, typm, fonoeu, coorfond, nbnoff, absfon,&
                 if (casfon .eq. 'LINEAIRE') then
                     ina = iseg
                     inb = iseg+1
-                else if (casfon.eq.'QUADRATIQUE') then
+                else if (casfon .eq. 'QUADRATIQUE') then
                     ina = 2*iseg-1
                     inb = 2*iseg+1
-                endif
+                end if
 !
 !           COORD DES POINTS A ET B, EXTREMITES DU SEGMENT ISEG
                 xa = zr(coorfd-1+3*(ina-1)+1)
@@ -223,8 +223,8 @@ subroutine fonbas2(noma, basnof, typm, fonoeu, coorfond, nbnoff, absfon,&
                 zam = zm-za
 !
 !           PARAM S (PRODUIT SCALAIRE...)
-                s = xab*xam + yab*yam + zab*zam
-                norm2 = xab*xab + yab*yab + zab*zab
+                s = xab*xam+yab*yam+zab*zam
+                norm2 = xab*xab+yab*yab+zab*zab
                 s = s/norm2
 !
 !           SI N EN DEHORS DU SEGMENT AB
@@ -232,14 +232,14 @@ subroutine fonbas2(noma, basnof, typm, fonoeu, coorfond, nbnoff, absfon,&
                 if (s .le. eps) s = 0.d0
 !
 !           COORD DU PROJETE DE M SUR ISEG: N
-                xnm = xm - (s*xab+xa)
-                ynm = ym - (s*yab+ya)
-                znm = zm - (s*zab+za)
+                xnm = xm-(s*xab+xa)
+                ynm = ym-(s*yab+ya)
+                znm = zm-(s*zab+za)
 !
 !           DISTANCE MN
-                d = sqrt(xnm*xnm + ynm*ynm + znm*znm)
+                d = sqrt(xnm*xnm+ynm*ynm+znm*znm)
 !
-                if (d .lt. (dmin*(1-abs(r8prem())*1.d04) )) then
+                if (d .lt. (dmin*(1-abs(r8prem())*1.d04))) then
                     dmin = d
                     sn = s
                     indica = ina
@@ -248,11 +248,11 @@ subroutine fonbas2(noma, basnof, typm, fonoeu, coorfond, nbnoff, absfon,&
                     n(1) = s*xab+xa
                     n(2) = s*yab+ya
                     n(3) = s*zab+za
-                endif
+                end if
 !
             end do
 !           ABSCISSE CURVILIGNE DU NOEUD N SUR LE FRONT DE FISSURE
-            zr(jabscur-1+ino) = (1-sn)*zr(jabsf-1+indica) + sn*zr(jabsf-1+indicb)
+            zr(jabscur-1+ino) = (1-sn)*zr(jabsf-1+indica)+sn*zr(jabsf-1+indicb)
 !
 !         CALCUL DES VECTEURS DE LA BASE LOCALE AU POINT PROJETE
 !         ------------------------------------------------------
@@ -296,7 +296,7 @@ subroutine fonbas2(noma, basnof, typm, fonoeu, coorfond, nbnoff, absfon,&
 !
             ASSERT(.false.)
 !
-        endif
+        end if
 !
     end do
 !
@@ -304,11 +304,11 @@ subroutine fonbas2(noma, basnof, typm, fonoeu, coorfond, nbnoff, absfon,&
 ! --- CREATION DES CHAM_NO
 !
 !     ENREGISTREMENT DE .LTNO, .LNNO ET .BASLOC DANS LA SD FOND_FISS
-    call cnscno(cnslt, ltno(1:13)//'.PRCHN', 'NON', 'G', ltno,&
+    call cnscno(cnslt, ltno(1:13)//'.PRCHN', 'NON', 'G', ltno, &
                 'F', ibid)
-    call cnscno(cnsln, ltno(1:13)//'.PRCHN', 'NON', 'G', lnno,&
+    call cnscno(cnsln, ltno(1:13)//'.PRCHN', 'NON', 'G', lnno, &
                 'F', ibid)
-    call cnscno(cnsbas, basloc(1:13)//'.PRCHN', 'NON', 'G', basloc,&
+    call cnscno(cnsbas, basloc(1:13)//'.PRCHN', 'NON', 'G', basloc, &
                 'F', ibid)
 !
 !

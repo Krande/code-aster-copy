@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine mrmtmv(cumul, lmat, smdi, smhc, lmatd,&
-                  neq, neql, vect, xsol, nbvect,&
+subroutine mrmtmv(cumul, lmat, smdi, smhc, lmatd, &
+                  neq, neql, vect, xsol, nbvect, &
                   vectmp, prepos)
 !
     implicit none
@@ -62,25 +62,25 @@ subroutine mrmtmv(cumul, lmat, smdi, smhc, lmatd,&
 !
 !
     call jemarq()
-    nom19=zk24(zi(lmat+1))(1:19)
+    nom19 = zk24(zi(lmat+1)) (1:19)
 !
     call dismoi('XFEM', nom19, 'MATR_ASSE', repk=kxfem)
     if (kxfem .eq. 'XFEM_PRECOND') call utmess('A', 'XFEMPRECOND_4', nk=1, valk=nom19)
 !
-    valm=nom19//'.VALM'
+    valm = nom19//'.VALM'
     call jelira(valm, 'NMAXOC', nbloc)
-    ASSERT(nbloc.eq.1 .or. nbloc.eq.2)
-    nonsym=(nbloc.eq.2)
+    ASSERT(nbloc .eq. 1 .or. nbloc .eq. 2)
+    nonsym = (nbloc .eq. 2)
 !
-    zero=0.d0
-    ASSERT(cumul.eq.'ZERO' .or. cumul.eq.'CUMU')
+    zero = 0.d0
+    ASSERT(cumul .eq. 'ZERO' .or. cumul .eq. 'CUMU')
     if (cumul .eq. 'ZERO') then
         do jvec = 1, nbvect
             do ilig = 1, neq
-                xsol(ilig,jvec)=zero
+                xsol(ilig, jvec) = zero
             end do
         end do
-    endif
+    end if
 !
 !
 !     -- VALM(1) : AU DESSUS DE LA DIAGONALE
@@ -89,36 +89,36 @@ subroutine mrmtmv(cumul, lmat, smdi, smhc, lmatd,&
 !        -- VALM(2) : AU DESSOUS DE LA DIAGONALE
         call jeveuo(jexnum(valm, 2), 'L', jvalmi)
     else
-        jvalmi=jvalms
-    endif
+        jvalmi = jvalms
+    end if
 !
 !
 !     -- CAS D'UNE MATRICE NON DISTRIBUEE :
 !     ----------------------------------------
-    if (.not.lmatd) then
+    if (.not. lmatd) then
         do jvec = 1, nbvect
             do k = 1, neq
-                vectmp(k)=vect(k,jvec)
+                vectmp(k) = vect(k, jvec)
             end do
 !         -- LES LAGRANGE DOIVENT ETRE MIS A L'ECHELLE AVANT LA
 !            MULTIPLICATION :
-            if (prepos) call mrconl('DIVI', lmat, 0, 'R', vectmp,&
+            if (prepos) call mrconl('DIVI', lmat, 0, 'R', vectmp, &
                                     1)
-            xsol(1,jvec)=xsol(1,jvec)+zr(jvalms-1+1)*vectmp(1)
+            xsol(1, jvec) = xsol(1, jvec)+zr(jvalms-1+1)*vectmp(1)
             do ilig = 2, neq
-                kdeb=smdi(ilig-1)+1
-                kfin=smdi(ilig)-1
+                kdeb = smdi(ilig-1)+1
+                kfin = smdi(ilig)-1
                 do ki = kdeb, kfin
-                    jcol=smhc(ki)
-                    xsol(jcol,jvec)=xsol(jcol,jvec)+ zr(jvalmi-1+ki)*&
-                    vectmp(ilig)
-                    xsol(ilig,jvec)=xsol(ilig,jvec)+ zr(jvalms-1+ki)*&
-                    vectmp(jcol)
+                    jcol = smhc(ki)
+                    xsol(jcol, jvec) = xsol(jcol, jvec)+zr(jvalmi-1+ki)* &
+                                       vectmp(ilig)
+                    xsol(ilig, jvec) = xsol(ilig, jvec)+zr(jvalms-1+ki)* &
+                                       vectmp(jcol)
                 end do
-                xsol(ilig,jvec)=xsol(ilig,jvec)+zr(jvalms+kfin)*&
-                vectmp(ilig)
+                xsol(ilig, jvec) = xsol(ilig, jvec)+zr(jvalms+kfin)* &
+                                   vectmp(ilig)
             end do
-            if (prepos) call mrconl('DIVI', lmat, 0, 'R', xsol(1, jvec),&
+            if (prepos) call mrconl('DIVI', lmat, 0, 'R', xsol(1, jvec), &
                                     1)
         end do
 !
@@ -126,38 +126,38 @@ subroutine mrmtmv(cumul, lmat, smdi, smhc, lmatd,&
 !     -- CAS D'UNE MATRICE DISTRIBUEE :
 !     ----------------------------------------
     else
-        refa=nom19//'.REFA'
+        refa = nom19//'.REFA'
         call jeveuo(refa, 'L', jrefa)
-        numddl=zk24(jrefa+2-1)(1:14)
+        numddl = zk24(jrefa+2-1) (1:14)
         call jeveuo(numddl//'.NUML.NULG', 'L', jnulg)
         do jvec = 1, nbvect
             do k = 1, neq
-                vectmp(k)=vect(k,jvec)
+                vectmp(k) = vect(k, jvec)
             end do
-            if (prepos) call mrconl('DIVI', lmat, 0, 'R', vectmp,&
+            if (prepos) call mrconl('DIVI', lmat, 0, 'R', vectmp, &
                                     1)
-            numglo=zi(jnulg+1-1)
-            xsol(numglo,jvec)=xsol(numglo,jvec)+ zr(jvalms-1+1)*&
-            vectmp(numglo)
+            numglo = zi(jnulg+1-1)
+            xsol(numglo, jvec) = xsol(numglo, jvec)+zr(jvalms-1+1)* &
+                                 vectmp(numglo)
             do ilig = 2, neql
-                iligg=zi(jnulg+ilig-1)
-                kdeb=smdi(ilig-1)+1
-                kfin=smdi(ilig)-1
+                iligg = zi(jnulg+ilig-1)
+                kdeb = smdi(ilig-1)+1
+                kfin = smdi(ilig)-1
                 do ki = kdeb, kfin
-                    jcol=smhc(ki)
-                    jcolg=zi(jnulg+jcol-1)
-                    xsol(jcolg,jvec)=xsol(jcolg,jvec)+ zr(jvalmi-1+ki)&
-                    *vectmp(iligg)
-                    xsol(iligg,jvec)=xsol(iligg,jvec)+ zr(jvalms-1+ki)&
-                    *vectmp(jcolg)
+                    jcol = smhc(ki)
+                    jcolg = zi(jnulg+jcol-1)
+                    xsol(jcolg, jvec) = xsol(jcolg, jvec)+zr(jvalmi-1+ki) &
+                                        *vectmp(iligg)
+                    xsol(iligg, jvec) = xsol(iligg, jvec)+zr(jvalms-1+ki) &
+                                        *vectmp(jcolg)
                 end do
-                xsol(iligg,jvec)=xsol(iligg,jvec)+ zr(jvalms+kfin)*&
-                vectmp(iligg)
+                xsol(iligg, jvec) = xsol(iligg, jvec)+zr(jvalms+kfin)* &
+                                    vectmp(iligg)
             end do
-            if (prepos) call mrconl('DIVI', lmat, 0, 'R', xsol(1, jvec),&
+            if (prepos) call mrconl('DIVI', lmat, 0, 'R', xsol(1, jvec), &
                                     1)
         end do
-    endif
+    end if
 !
 !
 !     -- POUR LES DDLS ELIMINES PAR AFFE_CHAR_CINE, ON NE PEUT PAS
@@ -169,15 +169,15 @@ subroutine mrmtmv(cumul, lmat, smdi, smhc, lmatd,&
         do jvec = 1, nbvect
             do ieq = 1, neql
                 if (lmatd) then
-                    keta=zi(jccid-1+zi(jnulg+ieq-1))
+                    keta = zi(jccid-1+zi(jnulg+ieq-1))
                 else
-                    keta=zi(jccid-1+ieq)
-                endif
-                ASSERT(keta.eq.1 .or. keta.eq.0)
-                if (keta .eq. 1) xsol(ieq,jvec)=0.d0
-            enddo
-        enddo
-    endif
+                    keta = zi(jccid-1+ieq)
+                end if
+                ASSERT(keta .eq. 1 .or. keta .eq. 0)
+                if (keta .eq. 1) xsol(ieq, jvec) = 0.d0
+            end do
+        end do
+    end if
 !
 !
 !

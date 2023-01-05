@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine pgpget(sd_pgp, param, iobs, lonvec, savejv,&
-                  kscal, iscal, rscal, cscal, kvect,&
+subroutine pgpget(sd_pgp, param, iobs, lonvec, savejv, &
+                  kscal, iscal, rscal, cscal, kvect, &
                   ivect, rvect, cvect)
     implicit none
 ! Extract the value of a parameter in the temporary data structure for the
@@ -84,7 +84,7 @@ subroutine pgpget(sd_pgp, param, iobs, lonvec, savejv,&
 !
 !   --- For general usage
     integer :: nbparams
-    parameter (nbparams=24)
+    parameter(nbparams=24)
 !
     aster_logical :: output_test
     integer :: parind(nbparams), ip, i, jvect, jscal, lvec
@@ -94,25 +94,25 @@ subroutine pgpget(sd_pgp, param, iobs, lonvec, savejv,&
     character(len=24) :: savename
 !
 !   -0.3- Initialization
-    data  params /'RESU_OUT','RESU_IN ','TYP_RESU','BASE    ','MODELE  ',&
-                  'MAILLAGE','NB_OBSER','NOM_CHAM','TYP_CHAM','NOM_CMP ',&
-                  'TYP_SCAL','NUM_NOEU','NUM_MAIL','NUM_ORDR','DISC    ',&
-                  'ADD_CORR','ACC_MO_A','ACC_DIR ','VEC_PR_R',&
-                  'VEC_PR_C','REF_SUP1','REF_SUP2','REF_COMP','REF_INDI'/
+    data params/'RESU_OUT', 'RESU_IN ', 'TYP_RESU', 'BASE    ', 'MODELE  ', &
+        'MAILLAGE', 'NB_OBSER', 'NOM_CHAM', 'TYP_CHAM', 'NOM_CMP ', &
+        'TYP_SCAL', 'NUM_NOEU', 'NUM_MAIL', 'NUM_ORDR', 'DISC    ', &
+        'ADD_CORR', 'ACC_MO_A', 'ACC_DIR ', 'VEC_PR_R', &
+        'VEC_PR_C', 'REF_SUP1', 'REF_SUP2', 'REF_COMP', 'REF_INDI'/
 !
-    data  partyp /'K24','K24','K24','K24','K24',&
-                  'K24','I','K24','K24','K24',&
-                  'K24','I','I','I','R8', &
-                  'I','K24','R8','R8',&
-                  'C8','K24','K24','K24','I'/
+    data partyp/'K24', 'K24', 'K24', 'K24', 'K24', &
+        'K24', 'I', 'K24', 'K24', 'K24', &
+        'K24', 'I', 'I', 'I', 'R8', &
+        'I', 'K24', 'R8', 'R8', &
+        'C8', 'K24', 'K24', 'K24', 'I'/
 !
 !   parind = -2 : vector global          ; = -1 : scalar global ;
 !          =  2 : vector per observation ; =  1 : scalar per observation
-    data  parind  / -1, -1, -1, -1, -1,&
-                    -1, -1,  1,  1,  2,&
-                     1,  2,  2,  2,  2,&
-                     1,  2,  2,  2,&
-                     2,  2,  2,  2,  2/
+    data parind/-1, -1, -1, -1, -1, &
+        -1, -1, 1, 1, 2, &
+        1, 2, 2, 2, 2, &
+        1, 2, 2, 2, &
+        2, 2, 2, 2, 2/
 !
     savename = '                        '
 !
@@ -126,8 +126,8 @@ subroutine pgpget(sd_pgp, param, iobs, lonvec, savejv,&
 !   = 1 = Validation of the input arguments, distinguishing global vars
 !   ====================================================================
 !
-    if ((.not.present(lonvec)) .and. (.not.present(savejv))) then
-        output_test = UN_PARMI4(kscal, iscal, rscal, cscal) .or.&
+    if ((.not. present(lonvec)) .and. (.not. present(savejv))) then
+        output_test = UN_PARMI4(kscal, iscal, rscal, cscal) .or. &
                       UN_PARMI4(kvect, ivect, rvect, cvect)
 !
         ASSERT(output_test)
@@ -136,23 +136,23 @@ subroutine pgpget(sd_pgp, param, iobs, lonvec, savejv,&
     do ip = 1, nbparams
         if (params(ip) .eq. param_) goto 10
     end do
- 10 continue
+10  continue
 !
 !   The parameter to be saved was not found in the predefined list
     if (ip .eq. nbparams+1) then
         ASSERT(.false.)
-    endif
+    end if
 !
     savename(1:8) = sd_pgp_
     if (present(iobs)) then
 !       The parameter to be extracted is global but an observation index was given
-        ASSERT(parind(ip).gt.0)
+        ASSERT(parind(ip) .gt. 0)
         call codent(iobs, 'G', k_iobs)
         savename(9:15) = '.'//k_iobs(1:6)
     else
-        ASSERT(parind(ip).lt.0)
+        ASSERT(parind(ip) .lt. 0)
     end if
-    savename(16:24)='.'//param_
+    savename(16:24) = '.'//param_
 !
 !   ====================================================================
 !   = 2 = Extracting data
@@ -161,7 +161,7 @@ subroutine pgpget(sd_pgp, param, iobs, lonvec, savejv,&
 !   --- Length of vectors
     if (present(savejv)) savejv = savename
 !
-    if (present(lonvec) .or. UN_PARMI4(kscal, iscal, rscal, cscal) .or.&
+    if (present(lonvec) .or. UN_PARMI4(kscal, iscal, rscal, cscal) .or. &
         UN_PARMI4(kvect, ivect, rvect, cvect)) then
         call jelira(savename, 'LONMAX', lvec)
     end if
@@ -181,11 +181,11 @@ subroutine pgpget(sd_pgp, param, iobs, lonvec, savejv,&
                     do i = 1, lvec
                         kvect(i) = zk24(jvect+i-1)
                     end do
-                else if (partyp(ip).eq.'R8') then
+                else if (partyp(ip) .eq. 'R8') then
                     call dcopy(lvec, zr(jvect), 1, rvect, 1)
-                else if (partyp(ip).eq.'C16') then
+                else if (partyp(ip) .eq. 'C16') then
                     call zcopy(lvec, zc(jvect), 1, cvect, 1)
-                else if (partyp(ip).eq.'I') then
+                else if (partyp(ip) .eq. 'I') then
                     do i = 1, lvec
                         ivect(i) = zi(jvect+i-1)
                     end do
@@ -193,7 +193,7 @@ subroutine pgpget(sd_pgp, param, iobs, lonvec, savejv,&
             end if
 !
 !   --- Scalars
-        else if (abs(parind(ip)).eq.1) then
+        else if (abs(parind(ip)) .eq. 1) then
 !
 !           The parameter to get is a scalar but no scalar output was found
             ASSERT(UN_PARMI3(kscal, iscal, rscal))
@@ -201,11 +201,11 @@ subroutine pgpget(sd_pgp, param, iobs, lonvec, savejv,&
             call jeveuo(savename, 'L', jscal)
             if (partyp(ip) .eq. 'K24') then
                 kscal = zk24(jscal)
-            else if (partyp(ip).eq.'R8') then
+            else if (partyp(ip) .eq. 'R8') then
                 rscal = zr(jscal)
-            else if (partyp(ip).eq.'C8') then
+            else if (partyp(ip) .eq. 'C8') then
                 cscal = zc(jscal)
-            else if (partyp(ip).eq.'I') then
+            else if (partyp(ip) .eq. 'I') then
                 iscal = zi(jscal)
             end if
 !

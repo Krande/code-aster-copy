@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,37 +18,37 @@
 ! person_in_charge: sylvie.granet at edf.fr
 ! aslint: disable=W1504
 !
-subroutine thmFlh004(ds_thm, lMatr , lSigm , perman, ndim  , j_mater,&
-                     dimdef, dimcon,&
-                     addep1, addep2, adcp11, adcp12, adcp21 ,&
+subroutine thmFlh004(ds_thm, lMatr, lSigm, perman, ndim, j_mater, &
+                     dimdef, dimcon, &
+                     addep1, addep2, adcp11, adcp12, adcp21, &
                      addeme, addete, &
-                     t     , p2    , pvp    ,&
-                     grat  , grap1 , grap2  ,&
-                     rho11 , h11   , h12    ,&
-                     satur , dsatur, gravity, tperm,&
+                     t, p2, pvp, &
+                     grat, grap1, grap2, &
+                     rho11, h11, h12, &
+                     satur, dsatur, gravity, tperm, &
                      congep, dsde)
 !
-use THM_type
+    use THM_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/thmEvalPermLiquGaz.h"
 #include "asterfort/thmEvalFickSteam.h"
 !
-type(THM_DS), intent(in) :: ds_thm
-aster_logical, intent(in) :: lMatr, lSigm, perman
-integer, intent(in) :: j_mater
-integer, intent(in) :: ndim, dimdef, dimcon
-integer, intent(in) :: addeme, addep1, addep2, addete, adcp11, adcp12, adcp21
-real(kind=8), intent(in) :: rho11, satur, dsatur
-real(kind=8), intent(in) :: grat(3), grap1(3), grap2(3)
-real(kind=8), intent(in) :: p2, pvp, t
-real(kind=8), intent(in) :: gravity(3), tperm(ndim, ndim)
-real(kind=8), intent(in) :: h11, h12
-real(kind=8), intent(inout) :: congep(1:dimcon)
-real(kind=8), intent(inout) :: dsde(1:dimcon, 1:dimdef)
+    type(THM_DS), intent(in) :: ds_thm
+    aster_logical, intent(in) :: lMatr, lSigm, perman
+    integer, intent(in) :: j_mater
+    integer, intent(in) :: ndim, dimdef, dimcon
+    integer, intent(in) :: addeme, addep1, addep2, addete, adcp11, adcp12, adcp21
+    real(kind=8), intent(in) :: rho11, satur, dsatur
+    real(kind=8), intent(in) :: grat(3), grap1(3), grap2(3)
+    real(kind=8), intent(in) :: p2, pvp, t
+    real(kind=8), intent(in) :: gravity(3), tperm(ndim, ndim)
+    real(kind=8), intent(in) :: h11, h12
+    real(kind=8), intent(inout) :: congep(1:dimcon)
+    real(kind=8), intent(inout) :: dsde(1:dimcon, 1:dimdef)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -118,39 +118,39 @@ real(kind=8), intent(inout) :: dsde(1:dimcon, 1:dimdef)
 !
     lambd1(:) = 0.d0
     lambd2(:) = 0.d0
-    fv(:)     = 0.d0
-    cvp       = 0.d0
-    gp(:)     = 0.d0
-    gc(:)     = 0.d0
-    dp12p1    = 0.d0
-    dp12p2    = 0.d0
-    dp12t     = 0.d0
-    dcvp1     = 0.d0
-    dcvp2     = 0.d0
-    dcvt      = 0.d0
-    dr11p1    = 0.d0
-    dr11p2    = 0.d0
-    dr11t     = 0.d0
-    dr12p1    = 0.d0
-    dr12p2    = 0.d0
-    dr12t     = 0.d0
-    dr22t     = 0.d0
-    dr21p1    = 0.d0
-    dr21p2    = 0.d0
-    dr21t     = 0.d0
-    dauxp1    = 0.d0
-    dauxp2    = 0.d0
-    dauxt     = 0.d0
+    fv(:) = 0.d0
+    cvp = 0.d0
+    gp(:) = 0.d0
+    gc(:) = 0.d0
+    dp12p1 = 0.d0
+    dp12p2 = 0.d0
+    dp12t = 0.d0
+    dcvp1 = 0.d0
+    dcvp2 = 0.d0
+    dcvt = 0.d0
+    dr11p1 = 0.d0
+    dr11p2 = 0.d0
+    dr11t = 0.d0
+    dr12p1 = 0.d0
+    dr12p2 = 0.d0
+    dr12t = 0.d0
+    dr22t = 0.d0
+    dr21p1 = 0.d0
+    dr21p2 = 0.d0
+    dr21t = 0.d0
+    dauxp1 = 0.d0
+    dauxp2 = 0.d0
+    dauxt = 0.d0
     dgpvp1(:) = 0.d0
     dgpvp2(:) = 0.d0
-    dgpvt(:)  = 0.d0
+    dgpvt(:) = 0.d0
     dgcvp1(:) = 0.d0
     dgcvp2(:) = 0.d0
-    dgcvt(:)  = 0.d0
-    dgpgt(:)  = 0.d0
+    dgcvt(:) = 0.d0
+    dgpgt(:) = 0.d0
     dgcgp1(:) = 0.d0
     dgcgp2(:) = 0.d0
-    dgcgt(:)  = 0.d0
+    dgcgt(:) = 0.d0
     dgpgp1(:) = 0.d0
     dgpgp2(:) = 0.d0
 !
@@ -160,39 +160,39 @@ real(kind=8), intent(inout) :: dsde(1:dimcon, 1:dimdef)
         bdcp11 = adcp11-1
     else
         bdcp11 = adcp11
-    endif
+    end if
 !
 ! - Evaluate permeability for liquid and gaz
 !
-    call thmEvalPermLiquGaz(ds_thm ,&
-                            j_mater, satur, p2, t,&
-                            permli , dperml ,&
-                            permgz , dperms , dpermp)
+    call thmEvalPermLiquGaz(ds_thm, &
+                            j_mater, satur, p2, t, &
+                            permli, dperml, &
+                            permgz, dperms, dpermp)
 !
 ! - Evaluate Fick coefficients for steam in gaz
 !
-    call thmEvalFickSteam(j_mater,&
-                          satur, p2    , pvp   , t,&
-                          fick , dfickt, dfickg)
+    call thmEvalFickSteam(j_mater, &
+                          satur, p2, pvp, t, &
+                          fick, dfickt, dfickg)
 !
 ! - Get parameters
 !
-    krel1  = permli
+    krel1 = permli
     dkrel1 = dperml*dsatur
-    krel2  = permgz
-    rgaz   = ds_thm%ds_material%solid%r_gaz
-    cliq   = ds_thm%ds_material%liquid%unsurk
+    krel2 = permgz
+    rgaz = ds_thm%ds_material%solid%r_gaz
+    cliq = ds_thm%ds_material%liquid%unsurk
     alpliq = ds_thm%ds_material%liquid%alpha
-    viscl  = ds_thm%ds_material%liquid%visc
+    viscl = ds_thm%ds_material%liquid%visc
     dviscl = ds_thm%ds_material%liquid%dvisc_dtemp
     mamolv = ds_thm%ds_material%steam%mass_mol
-    viscg  = ds_thm%ds_material%steam%visc
+    viscg = ds_thm%ds_material%steam%visc
     dviscg = ds_thm%ds_material%steam%dvisc_dtemp
     mamolg = ds_thm%ds_material%gaz%mass_mol
-    rho12  = mamolv*pvp/rgaz/t
-    rho21  = mamolg*(p2-pvp)/rgaz/t
-    masrt  = mamolg/rgaz/t
-    cvp    = pvp/p2
+    rho12 = mamolv*pvp/rgaz/t
+    rho21 = mamolg*(p2-pvp)/rgaz/t
+    masrt = mamolg/rgaz/t
+    cvp = pvp/p2
 !
 ! - Fick
 !
@@ -221,7 +221,7 @@ real(kind=8), intent(inout) :: dsde(1:dimcon, 1:dimdef)
         gp(i) = rho12/rho11*(grap2(i)-grap1(i))
         if (ds_thm%ds_elem%l_dof_ther) then
             gp(i) = gp(i)+rho12*(h12-h11)/t*grat(i)
-        endif
+        end if
         gc(i) = gp(i)/p2-pvp/p2/p2*grap2(i)
     end do
     if (lMatr) then
@@ -229,13 +229,13 @@ real(kind=8), intent(inout) :: dsde(1:dimcon, 1:dimdef)
         dp12p2 = rho12/rho11
         if (ds_thm%ds_elem%l_dof_ther) then
             dp12t = rho12*(h12-h11)/t
-        endif
+        end if
         dcvp1 = dp12p1/p2
         dcvp2 = dp12p2/p2-pvp/p2/p2
         if (ds_thm%ds_elem%l_dof_ther) then
             dcvt = dp12t/p2
-        endif
-    endif
+        end if
+    end if
 !
 ! - Volumic mass - Derivative
 !
@@ -250,17 +250,17 @@ real(kind=8), intent(inout) :: dsde(1:dimcon, 1:dimdef)
             dr11t = -3.d0*alpliq*rho11
             dr12t = rho12*(dp12t/pvp-1.d0/t)
             dr21t = -masrt*dp12t-rho21/t
-            dauxp1 = (h12-h11)/t*dr12p1 +&
-                     rho12/t*(dsde(adcp12+ndim+1,addep1)-&
-                     dsde(adcp11+ndim+1,addep1))
-            dauxp2 = (h12-h11)/t*dr12p2 +&
-                     rho12/t*(dsde(adcp12+ndim+1,addep2)-&
-                     dsde(adcp11+ndim+1,addep2))
-            dauxt  = (h12-h11)/t*dr12t +&
-                     rho12/t*(dsde(adcp12+ndim+1,addete)-&
-                     dsde(adcp11+ndim+1,addete))-&
-                     rho12*(h12-h11)/t/t
-        endif
+            dauxp1 = (h12-h11)/t*dr12p1+ &
+                     rho12/t*(dsde(adcp12+ndim+1, addep1)- &
+                              dsde(adcp11+ndim+1, addep1))
+            dauxp2 = (h12-h11)/t*dr12p2+ &
+                     rho12/t*(dsde(adcp12+ndim+1, addep2)- &
+                              dsde(adcp11+ndim+1, addep2))
+            dauxt = (h12-h11)/t*dr12t+ &
+                    rho12/t*(dsde(adcp12+ndim+1, addete)- &
+                             dsde(adcp11+ndim+1, addete))- &
+                    rho12*(h12-h11)/t/t
+        end if
 ! ----- GRADPVP and GRADCVP - Derivative
         do i = 1, ndim
 ! --------- GRADPVP - Derivative
@@ -271,29 +271,29 @@ real(kind=8), intent(inout) :: dsde(1:dimcon, 1:dimdef)
             if (ds_thm%ds_elem%l_dof_ther) then
                 dgpvp1(i) = dgpvp1(i)+dauxp1*grat(i)
                 dgpvp2(i) = dgpvp2(i)+dauxp2*grat(i)
-                dgpvt(i)  = (grap2(i)-grap1(i))/rho11*dr12t+dauxt*grat(i)
-                dgpvt(i)  = dgpvt(i)-(grap2(i)-grap1(i))*rho12/rho11/rho11*dr11t
-            endif
+                dgpvt(i) = (grap2(i)-grap1(i))/rho11*dr12t+dauxt*grat(i)
+                dgpvt(i) = dgpvt(i)-(grap2(i)-grap1(i))*rho12/rho11/rho11*dr11t
+            end if
             dgpgp1(1) = -rho12/rho11
             dgpgp2(1) = rho12/rho11
             if (ds_thm%ds_elem%l_dof_ther) then
-                dgpgt(1)=rho12*(h12-h11)/t
-            endif
+                dgpgt(1) = rho12*(h12-h11)/t
+            end if
 ! --------- GRADCVP - Derivative
             dgcvp1(i) = dgpvp1(i)/p2-grap2(i)/p2/p2*dp12p1
-            dgcvp2(i) = dgpvp2(i)/p2-gp(i)/p2/p2-&
-                        grap2(i)/p2/p2*dp12p2 +&
+            dgcvp2(i) = dgpvp2(i)/p2-gp(i)/p2/p2- &
+                        grap2(i)/p2/p2*dp12p2+ &
                         2.d0*pvp*grap2(i)/p2/p2/p2
             if (ds_thm%ds_elem%l_dof_ther) then
                 dgcvt(i) = dgpvt(i)/p2-grap2(i)/p2/p2*dp12t
-            endif
+            end if
             dgcgp1(1) = dgpgp1(1)/p2
             dgcgp2(1) = dgpgp2(1)/p2-pvp/p2/p2
             if (ds_thm%ds_elem%l_dof_ther) then
                 dgcgt(1) = dgpgt(1)/p2
-            endif
+            end if
         end do
-    endif
+    end if
 !
 ! - Hydraulic flux
 !
@@ -303,188 +303,188 @@ real(kind=8), intent(inout) :: dsde(1:dimcon, 1:dimdef)
             congep(adcp12+i) = 0.d0
             congep(adcp21+i) = 0.d0
             do j = 1, ndim
-                congep(adcp11+i) = congep(adcp11+i)+&
-                    rho11*lambd1(1)*tperm(i,j)*(-grap2(j)+grap1(j)+rho11*gravity(j))
-                congep(adcp12+i) = congep(adcp12+i)+&
-                    rho12*lambd2(1)*tperm(i,j)*(-grap2(j)+(rho12+rho21)*gravity(j))-&
-                    rho12*(1.d0-cvp)*fv(1)*gc(i)
-                congep(adcp21+i) = congep(adcp21+i)+&
-                    rho21*lambd2(1)*tperm(i,j)*(-grap2(j)+(rho12+rho21)*gravity(j))+&
-                    rho21*cvp*fv(1)*gc(i)
+                congep(adcp11+i) = congep(adcp11+i)+ &
+                                   rho11*lambd1(1)*tperm(i, j)*(-grap2(j)+grap1(j)+rho11*gravity(j))
+                congep(adcp12+i) = congep(adcp12+i)+ &
+                                 rho12*lambd2(1)*tperm(i, j)*(-grap2(j)+(rho12+rho21)*gravity(j))- &
+                                   rho12*(1.d0-cvp)*fv(1)*gc(i)
+                congep(adcp21+i) = congep(adcp21+i)+ &
+                                 rho21*lambd2(1)*tperm(i, j)*(-grap2(j)+(rho12+rho21)*gravity(j))+ &
+                                   rho21*cvp*fv(1)*gc(i)
             end do
         end do
-    endif
+    end if
 !
 ! - Update matrix
 !
     if (lMatr) then
         do i = 1, ndim
             do j = 1, ndim
-                dsde(adcp11+i,addep1)   = dsde(adcp11+i,addep1) +&
-                    dr11p1*lambd1(1)*tperm(i,j)*(-grap2(j)+grap1(j)+rho11*gravity(j))
-                dsde(adcp11+i,addep1)   = dsde(adcp11+i,addep1) +&
-                    rho11*lambd1(3)*tperm(i,j)*(-grap2(j)+grap1(j)+rho11*gravity(j))
-                dsde(adcp11+i,addep1)   = dsde(adcp11+i,addep1) +&
-                    rho11*lambd1(1)*tperm(i,j)*(dr11p1*gravity(j))
-                dsde(adcp11+i,addep2)   = dsde(adcp11+i,addep2) +&
-                    dr11p2*lambd1(1)*tperm(i,j)*(-grap2(j)+grap1(j)+rho11*gravity(j))
-                dsde(adcp11+i,addep2)   = dsde(adcp11+i,addep2) +&
-                    rho11*lambd1(4)*tperm(i,j)*(-grap2(j)+grap1(j)+rho11*gravity(j))
-                dsde(adcp11+i,addep2)   = dsde(adcp11+i,addep2) +&
-                    rho11*lambd1(1)*tperm(i,j)*(dr11p2*gravity(j))
-                dsde(adcp11+i,addep1+j) = dsde(adcp11+i,addep1+j) +&
-                    rho11*lambd1(1)*tperm(i,j)
-                dsde(adcp11+i,addep2+j) = dsde(adcp11+i,addep2+j) -&
-                    rho11*lambd1(1)*tperm(i,j)
+                dsde(adcp11+i, addep1) = dsde(adcp11+i, addep1)+ &
+                                  dr11p1*lambd1(1)*tperm(i, j)*(-grap2(j)+grap1(j)+rho11*gravity(j))
+                dsde(adcp11+i, addep1) = dsde(adcp11+i, addep1)+ &
+                                   rho11*lambd1(3)*tperm(i, j)*(-grap2(j)+grap1(j)+rho11*gravity(j))
+                dsde(adcp11+i, addep1) = dsde(adcp11+i, addep1)+ &
+                                         rho11*lambd1(1)*tperm(i, j)*(dr11p1*gravity(j))
+                dsde(adcp11+i, addep2) = dsde(adcp11+i, addep2)+ &
+                                  dr11p2*lambd1(1)*tperm(i, j)*(-grap2(j)+grap1(j)+rho11*gravity(j))
+                dsde(adcp11+i, addep2) = dsde(adcp11+i, addep2)+ &
+                                   rho11*lambd1(4)*tperm(i, j)*(-grap2(j)+grap1(j)+rho11*gravity(j))
+                dsde(adcp11+i, addep2) = dsde(adcp11+i, addep2)+ &
+                                         rho11*lambd1(1)*tperm(i, j)*(dr11p2*gravity(j))
+                dsde(adcp11+i, addep1+j) = dsde(adcp11+i, addep1+j)+ &
+                                           rho11*lambd1(1)*tperm(i, j)
+                dsde(adcp11+i, addep2+j) = dsde(adcp11+i, addep2+j)- &
+                                           rho11*lambd1(1)*tperm(i, j)
             end do
             do j = 1, ndim
-                dsde(adcp12+i,addep1)   = dsde(adcp12+i,addep1)+&
-                    dr12p1*lambd2(1)*tperm(i,j)*(-grap2(j)+(rho12+rho21)*gravity(j))
-                dsde(adcp12+i,addep1)   = dsde(adcp12+i,addep1)+&
-                    rho12*lambd2(3)*tperm(i,j)*(-grap2(j)+(rho12+rho21)*gravity(j))
-                dsde(adcp12+i,addep1)   = dsde(adcp12+i,addep1)+&
-                    rho12*lambd2(1)*tperm(i,j)*((dr12p1+dr21p1)*gravity(j))
+                dsde(adcp12+i, addep1) = dsde(adcp12+i, addep1)+ &
+                                   dr12p1*lambd2(1)*tperm(i, j)*(-grap2(j)+(rho12+rho21)*gravity(j))
+                dsde(adcp12+i, addep1) = dsde(adcp12+i, addep1)+ &
+                                    rho12*lambd2(3)*tperm(i, j)*(-grap2(j)+(rho12+rho21)*gravity(j))
+                dsde(adcp12+i, addep1) = dsde(adcp12+i, addep1)+ &
+                                         rho12*lambd2(1)*tperm(i, j)*((dr12p1+dr21p1)*gravity(j))
             end do
-            dsde(adcp12+i,addep1) = dsde(adcp12+i,addep1)-&
-                dr12p1*(1.d0-cvp)*fv(1)*gc(i)
-            dsde(adcp12+i,addep1) = dsde(adcp12+i,addep1)+&
-                rho12*dcvp1*fv(1)*gc(i)
-            dsde(adcp12+i,addep1) = dsde(adcp12+i,addep1)-&
-                rho12*(1.d0-cvp)*fv(3)*gc(i)
-            dsde(adcp12+i,addep1)  =dsde(adcp12+i,addep1)-&
-                rho12*(1.d0-cvp)*fv(1)*dgcvp1(i)
+            dsde(adcp12+i, addep1) = dsde(adcp12+i, addep1)- &
+                                     dr12p1*(1.d0-cvp)*fv(1)*gc(i)
+            dsde(adcp12+i, addep1) = dsde(adcp12+i, addep1)+ &
+                                     rho12*dcvp1*fv(1)*gc(i)
+            dsde(adcp12+i, addep1) = dsde(adcp12+i, addep1)- &
+                                     rho12*(1.d0-cvp)*fv(3)*gc(i)
+            dsde(adcp12+i, addep1) = dsde(adcp12+i, addep1)- &
+                                     rho12*(1.d0-cvp)*fv(1)*dgcvp1(i)
             do j = 1, ndim
-                dsde(adcp12+i,addep2) = dsde(adcp12+i,addep2) +&
-                    dr12p2*lambd2(1)*tperm(i,j)*(-grap2(j)+(rho12+rho21)*gravity(j))
-                dsde(adcp12+i,addep2) = dsde(adcp12+i,addep2) +&
-                    rho12*lambd2(4)*tperm(i,j)*(-grap2(j)+(rho12+rho21)*gravity(j))
-                dsde(adcp12+i,addep2) = dsde(adcp12+i,addep2) +&
-                    rho12*lambd2(1)*tperm(i,j)*((dr12p2+dr21p2)*gravity(j))
+                dsde(adcp12+i, addep2) = dsde(adcp12+i, addep2)+ &
+                                   dr12p2*lambd2(1)*tperm(i, j)*(-grap2(j)+(rho12+rho21)*gravity(j))
+                dsde(adcp12+i, addep2) = dsde(adcp12+i, addep2)+ &
+                                    rho12*lambd2(4)*tperm(i, j)*(-grap2(j)+(rho12+rho21)*gravity(j))
+                dsde(adcp12+i, addep2) = dsde(adcp12+i, addep2)+ &
+                                         rho12*lambd2(1)*tperm(i, j)*((dr12p2+dr21p2)*gravity(j))
             end do
-            dsde(adcp12+i,addep2)   = dsde(adcp12+i,addep2)-&
-                dr12p2*(1.d0-cvp)*fv(1)*gc(i)
-            dsde(adcp12+i,addep2)   = dsde(adcp12+i,addep2)+&
-                rho12*dcvp2*fv(1)*gc(i)
-            dsde(adcp12+i,addep2)   = dsde(adcp12+i,addep2)-&
-                rho12*(1.d0-cvp)*fv(4)*gc(i)
-            dsde(adcp12+i,addep2)   = dsde(adcp12+i,addep2)-&
-                rho12*(1.d0-cvp)*fv(1)*dgcvp2(i)
-            dsde(adcp12+i,addep1+i) = dsde(adcp12+i,addep1+i)-&
-                rho12*(1.d0-cvp)*fv(1)*dgcgp1(1)
+            dsde(adcp12+i, addep2) = dsde(adcp12+i, addep2)- &
+                                     dr12p2*(1.d0-cvp)*fv(1)*gc(i)
+            dsde(adcp12+i, addep2) = dsde(adcp12+i, addep2)+ &
+                                     rho12*dcvp2*fv(1)*gc(i)
+            dsde(adcp12+i, addep2) = dsde(adcp12+i, addep2)- &
+                                     rho12*(1.d0-cvp)*fv(4)*gc(i)
+            dsde(adcp12+i, addep2) = dsde(adcp12+i, addep2)- &
+                                     rho12*(1.d0-cvp)*fv(1)*dgcvp2(i)
+            dsde(adcp12+i, addep1+i) = dsde(adcp12+i, addep1+i)- &
+                                       rho12*(1.d0-cvp)*fv(1)*dgcgp1(1)
             do j = 1, ndim
-                dsde(adcp12+i,addep2+j) = dsde(adcp12+i,addep2+j)-&
-                    rho12*lambd2(1)*tperm(i,j)
+                dsde(adcp12+i, addep2+j) = dsde(adcp12+i, addep2+j)- &
+                                           rho12*lambd2(1)*tperm(i, j)
             end do
-            dsde(adcp12+i,addep2+i) = dsde(adcp12+i,addep2+i)-&
-                rho12*(1.d0-cvp)*fv(1)*dgcgp2(1)
+            dsde(adcp12+i, addep2+i) = dsde(adcp12+i, addep2+i)- &
+                                       rho12*(1.d0-cvp)*fv(1)*dgcgp2(1)
             do j = 1, ndim
-                dsde(adcp21+i,addep1) = dsde(adcp21+i,addep1)+&
-                    dr21p1*lambd2(1)*tperm(i,j)*(-grap2(j)+(rho12+rho21)*gravity(j))
-                dsde(adcp21+i,addep1) = dsde(adcp21+i,addep1)+&
-                    rho21*lambd2(3)*tperm(i,j)*(-grap2(j)+(rho12+rho21)*gravity(j))
-                dsde(adcp21+i,addep1) = dsde(adcp21+i,addep1)+&
-                    rho21*lambd2(1)*tperm(i,j)*((dr12p1+dr21p1)*gravity(j))
+                dsde(adcp21+i, addep1) = dsde(adcp21+i, addep1)+ &
+                                   dr21p1*lambd2(1)*tperm(i, j)*(-grap2(j)+(rho12+rho21)*gravity(j))
+                dsde(adcp21+i, addep1) = dsde(adcp21+i, addep1)+ &
+                                    rho21*lambd2(3)*tperm(i, j)*(-grap2(j)+(rho12+rho21)*gravity(j))
+                dsde(adcp21+i, addep1) = dsde(adcp21+i, addep1)+ &
+                                         rho21*lambd2(1)*tperm(i, j)*((dr12p1+dr21p1)*gravity(j))
             end do
-            dsde(adcp21+i,addep1) = dsde(adcp21+i,addep1)+&
-                dr21p1*cvp*fv(1)*gc(i)
-            dsde(adcp21+i,addep1) = dsde(adcp21+i,addep1)+&
-                rho21*dcvp1*fv(1)*gc(i)
-            dsde(adcp21+i,addep1) = dsde(adcp21+i,addep1)+&
-                rho21*cvp*fv(3)*gc(i)
-            dsde(adcp21+i,addep1) = dsde(adcp21+i,addep1)+&
-                rho21*cvp*fv(1)*dgcvp1(i)
+            dsde(adcp21+i, addep1) = dsde(adcp21+i, addep1)+ &
+                                     dr21p1*cvp*fv(1)*gc(i)
+            dsde(adcp21+i, addep1) = dsde(adcp21+i, addep1)+ &
+                                     rho21*dcvp1*fv(1)*gc(i)
+            dsde(adcp21+i, addep1) = dsde(adcp21+i, addep1)+ &
+                                     rho21*cvp*fv(3)*gc(i)
+            dsde(adcp21+i, addep1) = dsde(adcp21+i, addep1)+ &
+                                     rho21*cvp*fv(1)*dgcvp1(i)
             do j = 1, ndim
-                dsde(adcp21+i,addep2) = dsde(adcp21+i,addep2)+&
-                    dr21p2*lambd2(1)*tperm(i,j)*(-grap2(j)+(rho12+rho21)*gravity(j))
-                dsde(adcp21+i,addep2) = dsde(adcp21+i,addep2)+&
-                    rho21*lambd2(4)*tperm(i,j)*(-grap2(j)+(rho12+rho21)*gravity(j))
-                dsde(adcp21+i,addep2) = dsde(adcp21+i,addep2)+&
-                    rho21*lambd2(1)*tperm(i,j)*((dr12p2+dr21p2)*gravity(j))
+                dsde(adcp21+i, addep2) = dsde(adcp21+i, addep2)+ &
+                                   dr21p2*lambd2(1)*tperm(i, j)*(-grap2(j)+(rho12+rho21)*gravity(j))
+                dsde(adcp21+i, addep2) = dsde(adcp21+i, addep2)+ &
+                                    rho21*lambd2(4)*tperm(i, j)*(-grap2(j)+(rho12+rho21)*gravity(j))
+                dsde(adcp21+i, addep2) = dsde(adcp21+i, addep2)+ &
+                                         rho21*lambd2(1)*tperm(i, j)*((dr12p2+dr21p2)*gravity(j))
             end do
-            dsde(adcp21+i,addep2)   = dsde(adcp21+i,addep2)+ &
-                dr21p2*cvp*fv(1)*gc(i)
-            dsde(adcp21+i,addep2)   = dsde(adcp21+i,addep2)+&
-                rho21*dcvp2*fv(1)*gc(i)
-            dsde(adcp21+i,addep2)   = dsde(adcp21+i,addep2)+&
-                rho21*cvp*fv(4)*gc(i)
-            dsde(adcp21+i,addep2)   = dsde(adcp21+i,addep2)+&
-                rho21*cvp*fv(1)*dgcvp2(i)
-            dsde(adcp21+i,addep1+i) = dsde(adcp21+i,addep1+i)+&
-                rho21*cvp*fv(1)*dgcgp1(1)
+            dsde(adcp21+i, addep2) = dsde(adcp21+i, addep2)+ &
+                                     dr21p2*cvp*fv(1)*gc(i)
+            dsde(adcp21+i, addep2) = dsde(adcp21+i, addep2)+ &
+                                     rho21*dcvp2*fv(1)*gc(i)
+            dsde(adcp21+i, addep2) = dsde(adcp21+i, addep2)+ &
+                                     rho21*cvp*fv(4)*gc(i)
+            dsde(adcp21+i, addep2) = dsde(adcp21+i, addep2)+ &
+                                     rho21*cvp*fv(1)*dgcvp2(i)
+            dsde(adcp21+i, addep1+i) = dsde(adcp21+i, addep1+i)+ &
+                                       rho21*cvp*fv(1)*dgcgp1(1)
             do j = 1, ndim
-                dsde(adcp21+i,addep2+j) = dsde(adcp21+i,addep2+j)-&
-                    rho21*lambd2(1)*tperm(i,j)
+                dsde(adcp21+i, addep2+j) = dsde(adcp21+i, addep2+j)- &
+                                           rho21*lambd2(1)*tperm(i, j)
             end do
-            dsde(adcp21+i,addep2+i) = dsde(adcp21+i,addep2+i)+&
-                rho21*cvp*fv(1)*dgcgp2(1)
+            dsde(adcp21+i, addep2+i) = dsde(adcp21+i, addep2+i)+ &
+                                       rho21*cvp*fv(1)*dgcgp2(1)
             if (ds_thm%ds_elem%l_dof_meca) then
                 do j = 1, 3
                     do k = 1, ndim
-                        dsde(adcp11+i,addeme+ndim-1+j)=&
-                            dsde(adcp11+i,addeme+ndim-1+j)+&
-                            rho11*lambd1(2)*tperm(i,k)*&
+                        dsde(adcp11+i, addeme+ndim-1+j) = &
+                            dsde(adcp11+i, addeme+ndim-1+j)+ &
+                            rho11*lambd1(2)*tperm(i, k)* &
                             (-grap2(k)+grap1(k)+rho11*gravity(k))
-                        dsde(adcp12+i,addeme+ndim-1+j)=&
-                            dsde(adcp12+i,addeme+ndim-1+j)+&
-                            rho12*lambd2(2)*tperm(i,k)*(-grap2(k)+(rho12+rho21)*gravity(k))
+                        dsde(adcp12+i, addeme+ndim-1+j) = &
+                            dsde(adcp12+i, addeme+ndim-1+j)+ &
+                            rho12*lambd2(2)*tperm(i, k)*(-grap2(k)+(rho12+rho21)*gravity(k))
                     end do
-                    dsde(adcp12+i,addeme+ndim-1+j) = dsde(adcp12+i,addeme+ndim-1+j)-&
-                        rho12*(1.d0-cvp)*fv(2)*gc(i)
+                    dsde(adcp12+i, addeme+ndim-1+j) = dsde(adcp12+i, addeme+ndim-1+j)- &
+                                                      rho12*(1.d0-cvp)*fv(2)*gc(i)
                     do k = 1, ndim
-                        dsde(adcp21+i,addeme+ndim-1+j) =&
-                            dsde(adcp21+i,addeme+ndim-1+j)+&
-                            rho21*lambd2(2)*tperm(i,k)*(-grap2(k)+(rho12+rho21)*gravity(k))
+                        dsde(adcp21+i, addeme+ndim-1+j) = &
+                            dsde(adcp21+i, addeme+ndim-1+j)+ &
+                            rho21*lambd2(2)*tperm(i, k)*(-grap2(k)+(rho12+rho21)*gravity(k))
                     end do
-                    dsde(adcp21+i,addeme+ndim-1+j) = &
-                        dsde(adcp21+i,addeme+ndim-1+j)+&
+                    dsde(adcp21+i, addeme+ndim-1+j) = &
+                        dsde(adcp21+i, addeme+ndim-1+j)+ &
                         rho21*cvp*fv(2)*gc(i)
                 end do
-            endif
+            end if
             if (ds_thm%ds_elem%l_dof_ther) then
                 do j = 1, ndim
-                    dsde(adcp11+i,addete) = dsde(adcp11+i,addete) +&
-                        dr11t*lambd1(1)*tperm(i,j)*(-grap2(j)+grap1(j)+rho11*gravity(j))
-                    dsde(adcp11+i,addete) = dsde(adcp11+i,addete) +&
-                        rho11*lambd1(5)*tperm(i,j)*(-grap2(j)+grap1(j)+rho11*gravity(j))
-                    dsde(adcp11+i,addete) = dsde(adcp11+i,addete) +&
-                        rho11*lambd1(1)*tperm(i,j)*((dr22t+dr11t)*gravity(j))
-                    dsde(adcp12+i,addete) = dsde(adcp12+i,addete) +&
-                        dr12t*lambd2(1)*tperm(i,j)*(-grap2(j)+(rho12+rho21)*gravity(j))
-                    dsde(adcp12+i,addete) = dsde(adcp12+i,addete) +&
-                        rho12*lambd2(5)*tperm(i,j)*(-grap2(j)+(rho12+rho21)*gravity(j))
-                    dsde(adcp12+i,addete) = dsde(adcp12+i,addete) +&
-                        rho12*lambd2(1)*tperm(i,j)*((dr12t+dr21t)*gravity(j))
+                    dsde(adcp11+i, addete) = dsde(adcp11+i, addete)+ &
+                                   dr11t*lambd1(1)*tperm(i, j)*(-grap2(j)+grap1(j)+rho11*gravity(j))
+                    dsde(adcp11+i, addete) = dsde(adcp11+i, addete)+ &
+                                   rho11*lambd1(5)*tperm(i, j)*(-grap2(j)+grap1(j)+rho11*gravity(j))
+                    dsde(adcp11+i, addete) = dsde(adcp11+i, addete)+ &
+                                             rho11*lambd1(1)*tperm(i, j)*((dr22t+dr11t)*gravity(j))
+                    dsde(adcp12+i, addete) = dsde(adcp12+i, addete)+ &
+                                    dr12t*lambd2(1)*tperm(i, j)*(-grap2(j)+(rho12+rho21)*gravity(j))
+                    dsde(adcp12+i, addete) = dsde(adcp12+i, addete)+ &
+                                    rho12*lambd2(5)*tperm(i, j)*(-grap2(j)+(rho12+rho21)*gravity(j))
+                    dsde(adcp12+i, addete) = dsde(adcp12+i, addete)+ &
+                                             rho12*lambd2(1)*tperm(i, j)*((dr12t+dr21t)*gravity(j))
                 end do
-                dsde(adcp12+i,addete)   = dsde(adcp12+i,addete)-&
-                    dr12t*(1.d0-cvp)*fv(1)*gc(i)
-                dsde(adcp12+i,addete)   = dsde(adcp12+i,addete)+&
-                    rho12*dcvt*fv(1)*gc(i)
-                dsde(adcp12+i,addete)   = dsde(adcp12+i,addete)-&
-                    rho12*(1.d0-cvp)*fv(5)*gc(i)
-                dsde(adcp12+i,addete)   = dsde(adcp12+i,addete)-&
-                    rho12*(1.d0-cvp)*fv(1)*dgcvt(i)
-                dsde(adcp12+i,addete+i) = dsde(adcp12+i,addete+i)-&
-                    rho12*(1.d0-cvp)*fv(1)*dgcgt(1)
+                dsde(adcp12+i, addete) = dsde(adcp12+i, addete)- &
+                                         dr12t*(1.d0-cvp)*fv(1)*gc(i)
+                dsde(adcp12+i, addete) = dsde(adcp12+i, addete)+ &
+                                         rho12*dcvt*fv(1)*gc(i)
+                dsde(adcp12+i, addete) = dsde(adcp12+i, addete)- &
+                                         rho12*(1.d0-cvp)*fv(5)*gc(i)
+                dsde(adcp12+i, addete) = dsde(adcp12+i, addete)- &
+                                         rho12*(1.d0-cvp)*fv(1)*dgcvt(i)
+                dsde(adcp12+i, addete+i) = dsde(adcp12+i, addete+i)- &
+                                           rho12*(1.d0-cvp)*fv(1)*dgcgt(1)
                 do j = 1, ndim
-                    dsde(adcp21+i,addete) = dsde(adcp21+i,addete) +&
-                        dr21t*lambd2(1)*tperm(i,j)*(-grap2(j)+(rho12+rho21)*gravity(j))
-                    dsde(adcp21+i,addete) = dsde(adcp21+i,addete) +&
-                        rho21*lambd2(5)*tperm(i,j)*(-grap2(j)+(rho12+rho21)*gravity(j))
-                    dsde(adcp21+i,addete) = dsde(adcp21+i,addete) +&
-                        rho21*lambd2(1)*tperm(i,j)*((dr12t+dr21t)*gravity(j))
+                    dsde(adcp21+i, addete) = dsde(adcp21+i, addete)+ &
+                                    dr21t*lambd2(1)*tperm(i, j)*(-grap2(j)+(rho12+rho21)*gravity(j))
+                    dsde(adcp21+i, addete) = dsde(adcp21+i, addete)+ &
+                                    rho21*lambd2(5)*tperm(i, j)*(-grap2(j)+(rho12+rho21)*gravity(j))
+                    dsde(adcp21+i, addete) = dsde(adcp21+i, addete)+ &
+                                             rho21*lambd2(1)*tperm(i, j)*((dr12t+dr21t)*gravity(j))
                 end do
-                dsde(adcp21+i,addete)   = dsde(adcp21+i,addete)+&
-                    dr21t*cvp*fv(1)*gc(i)
-                dsde(adcp21+i,addete)   = dsde(adcp21+i,addete)+&
-                    rho21*dcvt*fv(1)*gc(i)
-                dsde(adcp21+i,addete)   = dsde(adcp21+i,addete)+&
-                    rho21*cvp*fv(5)*gc(i)
-                dsde(adcp21+i,addete)   = dsde(adcp21+i,addete)+&
-                    rho21*cvp*fv(1)*dgcvt(i)
-                dsde(adcp21+i,addete+i) = dsde(adcp21+i,addete+i)+&
-                    rho21*cvp*fv(1)*dgcgt(1)
-            endif
+                dsde(adcp21+i, addete) = dsde(adcp21+i, addete)+ &
+                                         dr21t*cvp*fv(1)*gc(i)
+                dsde(adcp21+i, addete) = dsde(adcp21+i, addete)+ &
+                                         rho21*dcvt*fv(1)*gc(i)
+                dsde(adcp21+i, addete) = dsde(adcp21+i, addete)+ &
+                                         rho21*cvp*fv(5)*gc(i)
+                dsde(adcp21+i, addete) = dsde(adcp21+i, addete)+ &
+                                         rho21*cvp*fv(1)*dgcvt(i)
+                dsde(adcp21+i, addete+i) = dsde(adcp21+i, addete+i)+ &
+                                           rho21*cvp*fv(1)*dgcgt(1)
+            end if
         end do
-    endif
+    end if
 !
 end subroutine

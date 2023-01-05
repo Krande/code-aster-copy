@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -49,9 +49,9 @@ subroutine dkqrge(nomte, xyzl, pgl, rig)
 !     ------------------------------------------------------------------
 !
     integer :: nbsig
-    parameter (nbsig=6)
+    parameter(nbsig=6)
     integer :: nbcon
-    parameter (nbcon=8)
+    parameter(nbcon=8)
 !
     integer :: ndim, nno, nnos, npg, ipoids, icoopg, ivf, idfdx, idfd2, jgano
     integer :: j2, jtab(7), nbcou, iret, jsigm, nbsp, npgh
@@ -75,8 +75,8 @@ subroutine dkqrge(nomte, xyzl, pgl, rig)
 !
 ! deb ------------------------------------------------------------------
 !
-    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
-                     jpoids=ipoids, jcoopg=icoopg, jvf=ivf, jdfde=idfdx, jdfd2=idfd2,&
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg, &
+                     jpoids=ipoids, jcoopg=icoopg, jvf=ivf, jdfde=idfdx, jdfd2=idfd2, &
                      jgano=jgano)
 !
 !     ----- mise a zero des matrices : flex ,memb et mefl :
@@ -89,20 +89,20 @@ subroutine dkqrge(nomte, xyzl, pgl, rig)
 !
     call jevech('PCACOQU', 'L', jcoqu)
     h = zr(jcoqu)
-    alpha = zr(jcoqu+1) * r8dgrd()
-    beta = zr(jcoqu+2) * r8dgrd()
+    alpha = zr(jcoqu+1)*r8dgrd()
+    beta = zr(jcoqu+2)*r8dgrd()
     ctor = zr(jcoqu+3)
 !
 ! ------- nombre des couches
 !
     if (nomte .eq. 'MEDKQU4') then
         call jevech('PNBSP_I', 'L', j2)
-        nbcou=zi(j2)
-    endif
+        nbcou = zi(j2)
+    end if
 !
 !     -- contraintes dans les couches :
 !     ----------------------------------
-    call tecach('OOO', 'PCONTRR', 'L', iret, nval=7,&
+    call tecach('OOO', 'PCONTRR', 'L', iret, nval=7, &
                 itab=jtab)
     jsigm = jtab(1)
     npg = jtab(3)
@@ -110,26 +110,26 @@ subroutine dkqrge(nomte, xyzl, pgl, rig)
     npgh = 3
 !
     if (nomte .eq. 'MEDKQU4') then
-        ASSERT(nbsp.eq.nbcou*npgh)
-        ASSERT(jtab(2).eq.nbsig*npg)
-    endif
+        ASSERT(nbsp .eq. nbcou*npgh)
+        ASSERT(jtab(2) .eq. nbsig*npg)
+    end if
 !
 ! ---     passage des contraintes dans le repere intrinseque :
 !
     if (nomte .eq. 'MEDKQU4') then
-        call cosiro(nomte, 'PCONTRR', 'L', 'UI', 'G',&
+        call cosiro(nomte, 'PCONTRR', 'L', 'UI', 'G', &
                     jsigm, 'S')
-    else if (nomte.eq.'MEDKQG4') then
-        call tecach('OOO', 'PCONTRR', 'L', iret, nval=7,&
+    else if (nomte .eq. 'MEDKQG4') then
+        call tecach('OOO', 'PCONTRR', 'L', iret, nval=7, &
                     itab=jtab)
-        jsigm=jtab(1)
+        jsigm = jtab(1)
         do i = 1, nbcon*npg
-            effgt(i)=zr(jsigm-1+i)
+            effgt(i) = zr(jsigm-1+i)
         end do
-        call coqrep(pgl, alpha, beta, t2ev, t2ve,&
+        call coqrep(pgl, alpha, beta, t2ev, t2ve, &
                     c, s)
         call dxefro(npg, t2ev, effgt, effint)
-    endif
+    end if
 !
 !     ----- calcul des grandeurs geometriques sur le quadrangle --------
 !
@@ -146,65 +146,65 @@ subroutine dkqrge(nomte, xyzl, pgl, rig)
 !
 ! ------- calcul des efforts ed membrane
 !
-        nxx=0.d0
-        nyy=0.d0
-        nxy=0.d0
+        nxx = 0.d0
+        nyy = 0.d0
+        nxy = 0.d0
 !
         if (nomte .eq. 'MEDKQU4') then
 !
 !       -- boucle sur les couches :
-            hb=-h/2
+            hb = -h/2
             do icou = 1, nbcou
-                idec=((ipg-1)*nbcou+(icou-1))*npgh*nbsig
-                epi=h/nbcou
-                hm=hb+epi/2.d0
-                hh=hm+epi/2.d0
+                idec = ((ipg-1)*nbcou+(icou-1))*npgh*nbsig
+                epi = h/nbcou
+                hm = hb+epi/2.d0
+                hh = hm+epi/2.d0
 !         -- sixxb, siyyb, ... : contraintes au bas de la couche
-                sixxb=zr(jsigm-1+idec+1)
-                siyyb=zr(jsigm-1+idec+2)
-                sixyb=zr(jsigm-1+idec+4)
+                sixxb = zr(jsigm-1+idec+1)
+                siyyb = zr(jsigm-1+idec+2)
+                sixyb = zr(jsigm-1+idec+4)
 !         -- sixxm, siyym, ... : contraintes au milieu de la couche
-                sixxm=zr(jsigm-1+idec+1+nbsig)
-                siyym=zr(jsigm-1+idec+2+nbsig)
-                sixym=zr(jsigm-1+idec+4+nbsig)
+                sixxm = zr(jsigm-1+idec+1+nbsig)
+                siyym = zr(jsigm-1+idec+2+nbsig)
+                sixym = zr(jsigm-1+idec+4+nbsig)
 !         -- sixxh, siyyh, ... : contraintes en haut de la couche
-                sixxh=zr(jsigm-1+idec+1+2*nbsig)
-                siyyh=zr(jsigm-1+idec+2+2*nbsig)
-                sixyh=zr(jsigm-1+idec+4+2*nbsig)
+                sixxh = zr(jsigm-1+idec+1+2*nbsig)
+                siyyh = zr(jsigm-1+idec+2+2*nbsig)
+                sixyh = zr(jsigm-1+idec+4+2*nbsig)
 !         -- on integre dans l'epaisseur de chaque couche
 !            avec une forrmule de newton-cotes a 3 points
 !            les coefficients sont 1/6, 4/6 et 1/6
-                cb=epi/6
-                cm=4.d0*epi/6
-                ch=epi/6
+                cb = epi/6
+                cm = 4.d0*epi/6
+                ch = epi/6
 !         -- nxx, nyy, nxy = somme de sixx, siyy, sixy :
-                nxx=nxx+cb*sixxb+cm*sixxm+ch*sixxh
-                nyy=nyy+cb*siyyb+cm*siyym+ch*siyyh
-                nxy=nxy+cb*sixyb+cm*sixym+ch*sixyh
+                nxx = nxx+cb*sixxb+cm*sixxm+ch*sixxh
+                nyy = nyy+cb*siyyb+cm*siyym+ch*siyyh
+                nxy = nxy+cb*sixyb+cm*sixym+ch*sixyh
 !         -- mise a jour de hb pour la couche suivante :
-                hb=hb+epi
+                hb = hb+epi
 !
 ! --- fin de la boucle sur les couches
 !
             end do
 !
-        else if (nomte.eq.'MEDKQG4') then
+        else if (nomte .eq. 'MEDKQG4') then
             nxx = effint((ipg-1)*nbcon+1)
             nyy = effint((ipg-1)*nbcon+2)
             nxy = effint((ipg-1)*nbcon+3)
-        endif
+        end if
 !
-        normal(1,1)=nxx * poids
-        normal(2,2)=nyy * poids
-        normal(1,2)=nxy * poids
-        normal(2,1)=normal(1,2)
+        normal(1, 1) = nxx*poids
+        normal(2, 2) = nyy*poids
+        normal(1, 2) = nxy*poids
+        normal(2, 1) = normal(1, 2)
 !
 ! --- calcul de la matrice bnl deformations non-lineaires de membrane
 !
         call dkqbnl(qsi, eta, jacob(2), bnl)
 !
-        call prmama(3, bnl, 2, 2, 12,&
-                    normal, 2, 2, 2, bnli,&
+        call prmama(3, bnl, 2, 2, 12, &
+                    normal, 2, 2, 2, bnli, &
                     12, 12, 2, ier)
         flexi = matmul(bnli, bnl)
 !
@@ -212,7 +212,7 @@ subroutine dkqrge(nomte, xyzl, pgl, rig)
 !
         do i = 1, 12
             do j = 1, 12
-                flex(i,j)=flex(i,j)+flexi(i,j)
+                flex(i, j) = flex(i, j)+flexi(i, j)
             end do
         end do
 !

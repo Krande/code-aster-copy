@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,9 +19,9 @@
 !
 subroutine romFieldGetInfo(model, fieldName, fieldRefe, field, l_chck_)
 !
-use Rom_Datastructure_type
+    use Rom_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -32,10 +32,10 @@ implicit none
 #include "asterfort/romFieldChck.h"
 #include "asterfort/utmess.h"
 !
-character(len=8), intent(in)        :: model
-character(len=24), intent(in)       :: fieldRefe, fieldName
-type(ROM_DS_Field), intent(inout)   :: field
-aster_logical, optional, intent(in) :: l_chck_
+    character(len=8), intent(in)        :: model
+    character(len=24), intent(in)       :: fieldRefe, fieldName
+    type(ROM_DS_Field), intent(inout)   :: field
+    aster_logical, optional, intent(in) :: l_chck_
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -63,25 +63,25 @@ aster_logical, optional, intent(in) :: l_chck_
     l_chck = ASTER_TRUE
     if (present(l_chck_)) then
         l_chck = l_chck_
-    endif
+    end if
 !
 ! - Initializations
 !
-    lLagr     = ASTER_FALSE
+    lLagr = ASTER_FALSE
     fieldSupp = ' '
-    nbEqua    = 0
+    nbEqua = 0
 !
 ! - Get main parameters
 !
-    call dismoi('NOM_MAILLA', model, 'MODELE' , repk = mesh)
-    call dismoi('TYPE_CHAMP', fieldRefe, 'CHAMP', repk = fieldSupp)
+    call dismoi('NOM_MAILLA', model, 'MODELE', repk=mesh)
+    call dismoi('TYPE_CHAMP', fieldRefe, 'CHAMP', repk=fieldSupp)
     if (fieldSupp .eq. 'NOEU') then
-        call dismoi('NB_EQUA', fieldRefe, 'CHAM_NO', repi = nbEqua)
+        call dismoi('NB_EQUA', fieldRefe, 'CHAM_NO', repi=nbEqua)
     elseif (fieldSupp .eq. 'ELGA') then
         call jelira(fieldRefe(1:19)//'.CELV', 'LONUTI', nbEqua)
     else
-        call utmess('F', 'ROM11_1', sk = fieldSupp)
-    endif
+        call utmess('F', 'ROM11_1', sk=fieldSupp)
+    end if
 !
 ! - Check if number of components is constant by entity
 !
@@ -89,19 +89,19 @@ aster_logical, optional, intent(in) :: l_chck_
         call fieldNodeHasConstantProfile(fieldRefe, lConst)
         if (.not. lConst .and. l_chck) then
             call utmess('F', 'ROM11_35')
-        endif
+        end if
     elseif (fieldSupp .eq. 'ELGA') then
 ! ----- Cannot check number of physical components on each element for the moment
-    endif
+    end if
 !
 ! - Save informations
 !
     field%fieldName = fieldName
     field%fieldRefe = fieldRefe
     field%fieldSupp = fieldSupp
-    field%nbEqua    = nbEqua
-    field%mesh      = mesh
-    field%model     = model
+    field%nbEqua = nbEqua
+    field%mesh = mesh
+    field%model = model
 !
 ! - Get list of components in field
 !
@@ -111,6 +111,6 @@ aster_logical, optional, intent(in) :: l_chck_
 !
     if (l_chck) then
         call romFieldChck(field)
-    endif
+    end if
 !
 end subroutine

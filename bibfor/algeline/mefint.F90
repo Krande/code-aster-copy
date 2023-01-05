@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine mefint(nbz, nbgrp, nbmod, nbnoe, nbddl,&
-                  irot, numnog, nbnog, zint, defm,&
+subroutine mefint(nbz, nbgrp, nbmod, nbnoe, nbddl, &
+                  irot, numnog, nbnog, zint, defm, &
                   phix, phiy, z, num)
     implicit none
 !
@@ -72,24 +72,24 @@ subroutine mefint(nbz, nbgrp, nbmod, nbnoe, nbddl,&
     integer :: nno1, nno2
     real(kind=8) :: wmax, wmin, z0, zmax, zmin
 !-----------------------------------------------------------------------
-    zmax = zint(1,1)
-    zmin = zint(1,1)
+    zmax = zint(1, 1)
+    zmin = zint(1, 1)
     do j = 2, nbnog(1)
-        if (zint(j,1) .gt. zmax) zmax = zint(j,1)
-        if (zint(j,1) .lt. zmin) zmin = zint(j,1)
+        if (zint(j, 1) .gt. zmax) zmax = zint(j, 1)
+        if (zint(j, 1) .lt. zmin) zmin = zint(j, 1)
     end do
     do i = 2, nbgrp
-        wmax = zint(1,i)
-        wmin = zint(1,i)
+        wmax = zint(1, i)
+        wmin = zint(1, i)
         do j = 2, nbnog(i)
-            if (zint(j,i) .gt. wmax) wmax = zint(j,i)
-            if (zint(j,i) .lt. wmin) wmin = zint(j,i)
+            if (zint(j, i) .gt. wmax) wmax = zint(j, i)
+            if (zint(j, i) .lt. wmin) wmin = zint(j, i)
         end do
         if (wmin .gt. zmin) zmin = wmin
         if (wmax .lt. zmax) zmax = wmax
     end do
     do i = 1, nbz
-        z(i) = zmin + (zmax-zmin)*(i-1)/(nbz-1)
+        z(i) = zmin+(zmax-zmin)*(i-1)/(nbz-1)
     end do
 !
 !
@@ -104,14 +104,14 @@ subroutine mefint(nbz, nbgrp, nbmod, nbnoe, nbddl,&
             num(j) = j
         end do
         do j = 1, nbnog(i)
-            z0 = zint(num(j),i)
+            z0 = zint(num(j), i)
             ind = j
-            icomp = icomp + 1
+            icomp = icomp+1
             do k = icomp+1, nbnog(i)
-                if (z0 .gt. zint(num(k),i)) then
-                    z0 = zint(num(k),i)
+                if (z0 .gt. zint(num(k), i)) then
+                    z0 = zint(num(k), i)
                     ind = k
-                endif
+                end if
             end do
             if (ind .ne. j) then
                 nn = num(ind)
@@ -119,29 +119,29 @@ subroutine mefint(nbz, nbgrp, nbmod, nbnoe, nbddl,&
                     num(ind-k+1) = num(ind-k)
                 end do
                 num(icomp) = nn
-            endif
+            end if
         end do
 !
 ! ---    BOUCLE SUR LES POINTS DE DISCRETISATION DU CYLINDRE I
         do j = 1, nbz
 ! ---       RECHERCHE DU NOEUDS REEL LE PLUS PROCHE DU POINT DE
 ! ---       DISCRETISATION DE COTE J
-            if (zint(num(1),i) .gt. z(j)) then
+            if (zint(num(1), i) .gt. z(j)) then
                 ind1 = num(1)
                 ind2 = num(1+1)
                 goto 140
-            endif
+            end if
             do k = 2, nbnog(i)
-                if (zint(num(k),i) .gt. z(j)) then
+                if (zint(num(k), i) .gt. z(j)) then
                     if (k .gt. 1) then
                         ind1 = num(k-1)
                         ind2 = num(k)
                     else
                         ind1 = num(k)
                         ind2 = num(k+1)
-                    endif
+                    end if
                     goto 140
-                endif
+                end if
             end do
             ind1 = num(nbnog(i)-1)
             ind2 = num(nbnog(i))
@@ -153,24 +153,24 @@ subroutine mefint(nbz, nbgrp, nbmod, nbnoe, nbddl,&
 ! ---       INTERPOLATION DES DEFORMEES MODALES
 ! ---       DEBUT BES BOUCLES SUR LES MODES
             do nm = 1, nbmod
-                phix(j,i,nm) = defm(&
-                               nbddl*(nno1-1)+irot(1),&
-                               nm) +(&
-                               defm(&
-                               nbddl*(nno2-1)+irot(1), nm) - defm(nbddl*(nno1- 1)+irot(1),&
-                               nm) ) *( z(j)-zint(ind1, i) ) / (zint(ind2, i&
-                               )-zint(ind1, i&
-                               )&
-                               )
-                phiy(j,i,nm) = defm(&
-                               nbddl*(nno1-1)+irot(2),&
-                               nm) +(&
-                               defm(&
-                               nbddl*(nno2-1)+irot(2), nm) - defm(nbddl*(nno1- 1)+irot(2),&
-                               nm) ) *( z(j)-zint(ind1, i) ) / (zint(ind2, i&
-                               )-zint(ind1, i&
-                               )&
-                               )
+                phix(j, i, nm) = defm( &
+                                 nbddl*(nno1-1)+irot(1), &
+                                 nm)+( &
+                                 defm( &
+                                 nbddl*(nno2-1)+irot(1), nm)-defm(nbddl*(nno1-1)+irot(1), &
+                                                           nm))*(z(j)-zint(ind1, i))/(zint(ind2, i &
+                                                                                    )-zint(ind1, i &
+                                                                                                 ) &
+                                                                                             )
+                phiy(j, i, nm) = defm( &
+                                 nbddl*(nno1-1)+irot(2), &
+                                 nm)+( &
+                                 defm( &
+                                 nbddl*(nno2-1)+irot(2), nm)-defm(nbddl*(nno1-1)+irot(2), &
+                                                           nm))*(z(j)-zint(ind1, i))/(zint(ind2, i &
+                                                                                    )-zint(ind1, i &
+                                                                                                 ) &
+                                                                                             )
 !
 !
 ! ---       FIN BES BOUCLES SUR LES MODES

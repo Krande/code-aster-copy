@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,12 +16,12 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine xprfastmarching(cmnd, noma, cnxinv, noesom,&
-                           lcmin, cnsln, grln, cnslt, grlt,&
-                           isozro, nodtor,eletor, liggrd,&
-                           vpoint, cnsbl ,cnsbet ,listp)
+subroutine xprfastmarching(cmnd, noma, cnxinv, noesom, &
+                           lcmin, cnsln, grln, cnslt, grlt, &
+                           isozro, nodtor, eletor, liggrd, &
+                           vpoint, cnsbl, cnsbet, listp)
 
-   implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterc/r8gaem.h"
@@ -47,7 +47,7 @@ subroutine xprfastmarching(cmnd, noma, cnxinv, noesom,&
     character(len=8)  :: cmnd, noma
     character(len=19) :: cnsln, grln, cnslt, grlt, noesom, isozro
     character(len=19) :: nodtor, eletor, liggrd, cnxinv
-    character(len=19) :: cnsbl ,cnsbet ,listp , vpoint
+    character(len=19) :: cnsbl, cnsbet, listp, vpoint
     real(kind=8)      :: lcmin
 !
 ! person_in_charge: patrick.massin at edf.fr
@@ -105,7 +105,7 @@ subroutine xprfastmarching(cmnd, noma, cnxinv, noesom,&
 
 !     MESH INFORMATION RETREIVING AND GENERAL PURPOSE VARIABLES
     integer      :: nbno, nbnoma, jcnsls, jgrls
-    integer      :: node , ndim
+    integer      :: node, ndim
     integer      :: jbl, jbeta, jlistp, jvp, jltno
     integer      :: ifm, niv, jnodto, ibid
     integer      :: inar, jconx1, jconx2
@@ -144,16 +144,16 @@ subroutine xprfastmarching(cmnd, noma, cnxinv, noesom,&
     else
         cnsls = cnslt
         grls = grlt
-    endif
+    end if
 !
 !  RETRIEVE THE LEVEL SET AND ITS GRADIENT FOR THE INTEGRATION AT t=0
     call jeveuo(cnsls//'.CNSV', 'E', jcnsls)
     call jeveuo(grls//'.CNSV', 'E', jgrls)
 
     if (niv .ge. 0) then
-        write(ifm,*) '   REINITIALISATION DE LA LEVEL SET ',levset,&
-                       ' PAR LA METHODE FAST MARCHING'
-    endif
+        write (ifm, *) '   REINITIALISATION DE LA LEVEL SET ', levset, &
+            ' PAR LA METHODE FAST MARCHING'
+    end if
 
 !     RETRIEVE THE NUMBER OF NODES AND ELEMENTS IN THE MESH
     call dismoi('NB_NO_MAILLA', noma, 'MAILLAGE', repi=nbnoma)
@@ -175,7 +175,7 @@ subroutine xprfastmarching(cmnd, noma, cnxinv, noesom,&
 
     call wkvect(isozro, 'V V L', nbnoma, jzero)
 
-    call xprls0(noma, noesom, lcmin, cnsln,&
+    call xprls0(noma, noesom, lcmin, cnsln, &
                 cnslt, isozro, levset, nodtor, eletor)
 
 !----------------------------------------------------------------------
@@ -195,7 +195,7 @@ subroutine xprfastmarching(cmnd, noma, cnxinv, noesom,&
     call wkvect(calculs, 'V V R', nbnoma, jcalculs)
 
 !multiplie par -1 pour calculer les valeurs negatives de ls
-    zr(jcnsls:jcnsls+nbnoma-1) = -1 * zr(jcnsls:jcnsls+nbnoma-1)
+    zr(jcnsls:jcnsls+nbnoma-1) = -1*zr(jcnsls:jcnsls+nbnoma-1)
 
 !copie de ls
     zr(jcopiels:jcopiels+nbnoma-1) = zr(jcnsls:jcnsls+nbnoma-1)
@@ -203,24 +203,24 @@ subroutine xprfastmarching(cmnd, noma, cnxinv, noesom,&
 !-----------------------------------------------------------------------
 !            INITIALISATION AUTOUR DU FOND DE FISURE
 !-----------------------------------------------------------------------
-    do inar = 1 , nbnoma
+    do inar = 1, nbnoma
         zl(jvtemp-1+inar) = .false.
-        zr(jcalculs-1+inar)= r8gaem()
-    enddo
+        zr(jcalculs-1+inar) = r8gaem()
+    end do
 
-    do inar = 1 ,nbno
+    do inar = 1, nbno
         node = zi(jnodto-1+inar)
-        if ( zr(jcopiels-1+node) .ge. 0 ) then
+        if (zr(jcopiels-1+node) .ge. 0) then
             zl(jvtemp-1+node) = .true.
             if (zl(jzero-1+node)) then
                 zr(jcalculs-1+node) = zr(jcopiels-1+node)
-            endif
-        endif
+            end if
+        end if
     end do
 
 !  Propagation des valeurs a tout le domaine
-   call xprfastcalcul(jvtemp, nbnoma, jcalculs, jnodto, nbno, jcnsls, &
-                      cnxinv, jconx1, jconx2, ndim, jcopiels, noma)
+    call xprfastcalcul(jvtemp, nbnoma, jcalculs, jnodto, nbno, jcnsls, &
+                       cnxinv, jconx1, jconx2, ndim, jcopiels, noma)
 
 !----------------------------------------------------------------------
 !                    BOUCLE LS SUPERIEUR
@@ -228,30 +228,30 @@ subroutine xprfastmarching(cmnd, noma, cnxinv, noesom,&
 !----------------------------------------------------------------------
 
 !   On inverse les valeurs pour calculer l'autre cote de l'iso zero!
-    zr(jcnsls:jcnsls+nbnoma-1)     = -1 * zr(jcnsls:jcnsls+nbnoma-1)
-    zr(jcopiels:jcopiels+nbnoma-1) = -1 * zr(jcopiels:jcopiels+nbnoma-1)
+    zr(jcnsls:jcnsls+nbnoma-1) = -1*zr(jcnsls:jcnsls+nbnoma-1)
+    zr(jcopiels:jcopiels+nbnoma-1) = -1*zr(jcopiels:jcopiels+nbnoma-1)
 
 !-----------------------------------------------------------------------
 !              INITIALISATION AUTOUR DU FOND DE FISURE
 !-----------------------------------------------------------------------
-    do inar = 1 , nbnoma
+    do inar = 1, nbnoma
         zl(jvtemp-1+inar) = .false.
-        zr(jcalculs-1+inar)= r8gaem()
-    enddo
+        zr(jcalculs-1+inar) = r8gaem()
+    end do
 
-    do inar = 1 ,nbno
+    do inar = 1, nbno
         node = zi(jnodto-1+inar)
-        if ( zr(jcopiels-1+node) .ge. 0 ) then
+        if (zr(jcopiels-1+node) .ge. 0) then
             zl(jvtemp-1+node) = .true.
             if (zl(jzero-1+node)) then
                 zr(jcalculs-1+node) = zr(jcopiels-1+node)
-            endif
-        endif
+            end if
+        end if
     end do
 
 !  Propagation des valeurs a tout le domaine
-   call xprfastcalcul(jvtemp, nbnoma, jcalculs, jnodto, nbno, jcnsls, &
-                      cnxinv, jconx1, jconx2, ndim, jcopiels, noma)
+    call xprfastcalcul(jvtemp, nbnoma, jcalculs, jnodto, nbno, jcnsls, &
+                       cnxinv, jconx1, jconx2, ndim, jcopiels, noma)
 
 !-----------------------------------------------------------------------
 !     CALCUL DES GRADIENTS DES LEVEL SETS RESULTANTES
@@ -263,21 +263,21 @@ subroutine xprfastmarching(cmnd, noma, cnxinv, noesom,&
     chams = '&&XPRFMM.CHAMS'
 
 !   EVALUATION OF THE GRADIENT OF THE NEW LEVEL SET
-    call cnscno(cnsls, ' ', 'NON', 'V', cnols,&
+    call cnscno(cnsls, ' ', 'NON', 'V', cnols, &
                 'F', ibid)
-    lpain(1)='PGEOMER'
-    lchin(1)=noma//'.COORDO'
-    lpain(2)='PNEUTER'
-    lchin(2)=cnols
-    lpaout(1)='PGNEUTR'
-    lchout(1)=celgls
+    lpain(1) = 'PGEOMER'
+    lchin(1) = noma//'.COORDO'
+    lpain(2) = 'PNEUTER'
+    lchin(2) = cnols
+    lpaout(1) = 'PGNEUTR'
+    lchout(1) = celgls
 !
-    call calcul('S', 'GRAD_NEUT_R', liggrd, 2, lchin,&
-                lpain, 1, lchout, lpaout, 'V',&
+    call calcul('S', 'GRAD_NEUT_R', liggrd, 2, lchin, &
+                lpain, 1, lchout, lpaout, 'V', &
                 'OUI')
 !
     call celces(celgls, 'V', chams)
-    call cescns(chams, ' ', 'V', grls, ' ',&
+    call cescns(chams, ' ', 'V', grls, ' ', &
                 ibid)
     call jeveuo(grls//'.CNSV', 'E', jgrls)
 !  DESTRUCTION DES OBJETS VOLATILES

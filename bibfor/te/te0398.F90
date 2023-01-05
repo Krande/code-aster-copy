@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -47,7 +47,7 @@ subroutine te0398(option, nomte)
 ! DEB ------------------------------------------------------------------
 !
 !
-    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg, &
                      jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
 !
@@ -62,19 +62,19 @@ subroutine te0398(option, nomte)
 !
 !       BOUCLE SUR LES POINTS DE GAUSS
         do kp = 1, npg
-            call dfdm3d(nno, kp, ipoids, idfde, zr(igeom),&
+            call dfdm3d(nno, kp, ipoids, idfde, zr(igeom), &
                         jac, dfdx, dfdy, dfdz)
             gradx = 0.0d0
             grady = 0.0d0
             gradz = 0.0d0
             do ino = 1, nno
-                gradx = gradx + zr(ineut-1+9*(ino-1)+i) * dfdx(ino)
-                grady = grady + zr(ineut-1+9*(ino-1)+i) * dfdy(ino)
-                gradz = gradz + zr(ineut-1+9*(ino-1)+i) * dfdz(ino)
+                gradx = gradx+zr(ineut-1+9*(ino-1)+i)*dfdx(ino)
+                grady = grady+zr(ineut-1+9*(ino-1)+i)*dfdy(ino)
+                gradz = gradz+zr(ineut-1+9*(ino-1)+i)*dfdz(ino)
             end do
-            zr(igr-1+27*(kp-1)+3*(i-1)+1)= gradx
-            zr(igr-1+27*(kp-1)+3*(i-1)+2)= grady
-            zr(igr-1+27*(kp-1)+3*(i-1)+3)= gradz
+            zr(igr-1+27*(kp-1)+3*(i-1)+1) = gradx
+            zr(igr-1+27*(kp-1)+3*(i-1)+2) = grady
+            zr(igr-1+27*(kp-1)+3*(i-1)+3) = gradz
         end do
 !
     end do

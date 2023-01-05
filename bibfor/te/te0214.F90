@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -39,8 +39,8 @@ subroutine te0214(nomopt, nomte)
 ! ......................................................................
 !
     integer :: nbres, nbpar
-    parameter         ( nbres=4 )
-    parameter         ( nbpar=3 )
+    parameter(nbres=4)
+    parameter(nbpar=3)
 !
     integer :: iret, nbval, nbddl
     integer :: i, j, irigi, jma, i2, i3
@@ -58,30 +58,30 @@ subroutine te0214(nomopt, nomte)
 !
 !     -- RECUPERATION DES CHAMPS PARAMETRES ET DE LEURS LONGUEURS:
 !     ------------------------------------------------------------
-    ins=0
-    irns=0
+    ins = 0
+    irns = 0
     if (nomopt .eq. 'AMOR_MECA') then
         call tecach('NNO', 'PRIGIEL', 'L', ins, iad=idrigi(1))
         if (ins .eq. 0) then
-            call tecach('ONO', 'PMATUUR', 'E', iret, nval=5,&
+            call tecach('ONO', 'PMATUUR', 'E', iret, nval=5, &
                         itab=idresu)
         else
-            call tecach('NNO', 'PMATUNS', 'E', irns, nval=5,&
+            call tecach('NNO', 'PMATUNS', 'E', irns, nval=5, &
                         itab=idresu)
-            if (irns .ne. 0) call tecach('ONO', 'PMATUUR', 'E', iret, 5,&
+            if (irns .ne. 0) call tecach('ONO', 'PMATUUR', 'E', iret, 5, &
                                          itab=idresu)
-        endif
-    else if (nomopt.eq.'RIGI_MECA_HYST') then
-        call tecach('ONO', 'PMATUUC', 'E', iret, nval=5,&
+        end if
+    else if (nomopt .eq. 'RIGI_MECA_HYST') then
+        call tecach('ONO', 'PMATUUC', 'E', iret, nval=5, &
                     itab=idresu)
     else
         ASSERT(.false.)
-    endif
-    nbval= idresu(2)
+    end if
+    nbval = idresu(2)
 !
-    ljfr=.false.
+    ljfr = .false.
     call tecach('NNO', 'PMATERC', 'L', iret, iad=jma)
-    if ((jma.eq.0) .or. (iret.ne.0)) goto 1
+    if ((jma .eq. 0) .or. (iret .ne. 0)) goto 1
     nomres(1) = 'K_N'
     nomres(2) = 'AMOR_NOR'
     nomres(3) = 'AMOR_TAN'
@@ -90,16 +90,16 @@ subroutine te0214(nomopt, nomte)
     valres(2) = 0.d0
     valres(3) = 0.d0
     valres(4) = 0.d0
-    call rcvala(zi(jma), ' ', 'JOINT_MECA_FROT', 0, ' ',&
-                [valpar], 4, nomres, valres, icodre,&
+    call rcvala(zi(jma), ' ', 'JOINT_MECA_FROT', 0, ' ', &
+                [valpar], 4, nomres, valres, icodre, &
                 0)
     if (icodre(1) .eq. 0) then
         ljfr = .true.
-    endif
+    end if
     do i = 2, 4
-       if (icodre(i) .ne. 0) then
-         valres(i) = 0.d0
-       endif
+        if (icodre(i) .ne. 0) then
+            valres(i) = 0.d0
+        end if
     end do
 !
     call jevech('PGEOMER', 'L', igeom)
@@ -111,25 +111,25 @@ subroutine te0214(nomopt, nomte)
     end do
     c2(1) = x(2)-x(1)
     c2(2) = y(2)-y(1)
-    surf=ddot(2,c2,1,c2,1)
-    c2(1)=c2(1)/sqrt(surf)
-    c2(2)=c2(2)/sqrt(surf)
+    surf = ddot(2, c2, 1, c2, 1)
+    c2(1) = c2(1)/sqrt(surf)
+    c2(2) = c2(2)/sqrt(surf)
     surf = sqrt(surf)
-    c1(1)=-c2(2)
-    c1(2)=c2(1)
+    c1(1) = -c2(2)
+    c1(2) = c2(1)
 !
 !
 !     -- CALCUL PROPREMENT DIT :
 !     --------------------------
-    iresu= idresu(1)
-    irigi= idrigi(1)
+    iresu = idresu(1)
+    irigi = idrigi(1)
     if (nomopt .eq. 'AMOR_MECA') then
         if (ljfr) then
             if (ins .eq. 0) then
                 call tecach('ONO', 'PRIGINS', 'L', irns, iad=idrigi(1))
                 call tecach('ONO', 'PRIGIEL', 'L', iret, nval=2, itab=idrigi)
                 nbddl = int(-1.0d0+sqrt(1.0d0+8.d0*dble(idrigi(2))))/2
-                nbval=idrigi(2)
+                nbval = idrigi(2)
                 call tecach('ONO', 'PMATUUR', 'E', iret, nval=2, itab=idresu)
             else
                 call tecach('ONO', 'PRIGINS', 'L', iret, nval=2, itab=idrigi)
@@ -139,35 +139,35 @@ subroutine te0214(nomopt, nomte)
                     nbddl = int(-1.0d0+sqrt(1.0d0+8.d0*dble(idresu(2))))/2
                 else
                     nbddl = int(sqrt(dble(idresu(2))))
-                endif
-                nbval=idresu(2)
-            endif
-            irigi= idrigi(1)
-            iresu= idresu(1)
+                end if
+                nbval = idresu(2)
+            end if
+            irigi = idrigi(1)
+            iresu = idresu(1)
             call jevech('PVARIPG', 'L', ivari)
             if (irigi .ne. 0) then
                 if (ins .ne. 0 .and. irns .ne. 0) then
                     do i3 = 1, 2
                         do j = 1, 2
-                            i=2*(i3-1)+j
-                            i2=i+10-4*i3
-                            zr(iresu-1+i*(i+1)/2)=valres(2)*c1(j)**2+valres(3)*c2(j)**2
-                            zr(iresu-1+i*(i+1)/2)=zr(iresu-1+i*(i+1)/2)*surf/2.0d0
+                            i = 2*(i3-1)+j
+                            i2 = i+10-4*i3
+                            zr(iresu-1+i*(i+1)/2) = valres(2)*c1(j)**2+valres(3)*c2(j)**2
+                            zr(iresu-1+i*(i+1)/2) = zr(iresu-1+i*(i+1)/2)*surf/2.0d0
                             if (zr(ivari-1+7) .ge. 0.d0) then
-                                zr(iresu-1+i*(i+1)/2)=zr(iresu-1+i*(i+1)/2)*valres(4)
-                            endif
-                            zr(iresu-1+i2*(i2+1)/2)=zr(iresu-1+i*(i+1)/2)
-                            zr(iresu-1+i+i2*(i2-1)/2)=-zr(iresu-1+i*(i+1)/2)
+                                zr(iresu-1+i*(i+1)/2) = zr(iresu-1+i*(i+1)/2)*valres(4)
+                            end if
+                            zr(iresu-1+i2*(i2+1)/2) = zr(iresu-1+i*(i+1)/2)
+                            zr(iresu-1+i+i2*(i2-1)/2) = -zr(iresu-1+i*(i+1)/2)
                         end do
                     end do
                 else
                     do i = 1, nbval
-                        zr(iresu-1+i)=zr(irigi-1+i)*valres(2)/valres(1)
+                        zr(iresu-1+i) = zr(irigi-1+i)*valres(2)/valres(1)
                     end do
-                endif
-            endif
+                end if
+            end if
             goto 1
-        endif
-    endif
-  1 continue
+        end if
+    end if
+1   continue
 end subroutine

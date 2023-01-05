@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -57,11 +57,11 @@ subroutine dismdy(questi, nomobz, repi, repkz, ierd)
     integer, pointer :: indi(:) => null()
 !
 !     --- TYPE DE REFERENCES QUE NOUS POUVONS RECUPERER [REF_XXXX_****]
-    data  accref /  'RIGI'    ,   'MASS'    ,   'AMOR'    ,    'INTD'    ,    'INTS'    ,  'MESU' /
+    data accref/'RIGI', 'MASS', 'AMOR', 'INTD', 'INTS', 'MESU'/
 !     --- CORRESPONDANCE AVEC LES TYPE DE REF DANS LA COLLECT. REFD
-    data  cortre /'DYNAMIQUE' , 'DYNAMIQUE' , 'DYNAMIQUE' , 'INTERF_DYNA', 'INTERF_STAT', 'MESURE'/
+    data cortre/'DYNAMIQUE', 'DYNAMIQUE', 'DYNAMIQUE', 'INTERF_DYNA', 'INTERF_STAT', 'MESURE'/
 !     --- CORRESPONDANCE AVEC LE NUMERO D'ENTREE DANS UN OBJ DU REFD
-    data  corent /    2       ,     3       ,     4       ,       2      ,       2      ,     2   /
+    data corent/2, 3, 4, 2, 2, 2/
 !
     call jemarq()
     repi = 0
@@ -91,20 +91,20 @@ subroutine dismdy(questi, nomobz, repi, repkz, ierd)
 !     --- QUESTION 2 ---
 !     ------------------------------------------------------------------
 !     --- NOM DE LA BASE DE PROJECTION
-    else if (questl(1:11).eq.'BASE_MODALE') then
-        call dismoi('NUME_DDL', resdyn, 'RESU_DYNA', repk=numddl, arret='C',&
+    else if (questl(1:11) .eq. 'BASE_MODALE') then
+        call dismoi('NUME_DDL', resdyn, 'RESU_DYNA', repk=numddl, arret='C', &
                     ier=ir)
         if ((ir .eq. 0) .and. (numddl .ne. ' ')) then
             call jeveuo(numddl(1:14)//'.NUME.REFN', 'L', jref)
             repk = zk24(jref)
             goto 88
         else if (numddl .eq. ' ') then
-            call dismoi('REF_MESU_PREM', resdyn, 'RESU_DYNA', repk=repk, arret='C',&
+            call dismoi('REF_MESU_PREM', resdyn, 'RESU_DYNA', repk=repk, arret='C', &
                         ier=ir)
             goto 88
         else
             goto 99
-        endif
+        end if
 !
 !     ------------------
 !     --- QUESTION 3 ---
@@ -129,7 +129,7 @@ subroutine dismdy(questi, nomobz, repi, repkz, ierd)
 !     REF_MASS_NOMB          MASS      : NOMBRE D'ENTREES AVEC MATR MASS
 !                             .
 !                             .
-    else if (questl(1:3).eq.'REF') then
+    else if (questl(1:3) .eq. 'REF') then
         typref = questl(5:8)
 !
 !       --- VERIFIER LA VALIDITE DE LA REQUETE
@@ -138,9 +138,9 @@ subroutine dismdy(questi, nomobz, repi, repkz, ierd)
             if (typref .eq. accref(ibid)) then
                 oktref = .true.
                 intyre = ibid
-            endif
+            end if
         end do
-        if (.not.(oktref)) goto 99
+        if (.not. (oktref)) goto 99
 !
 !       --- LIRE ET VERIFIER LA VALIDITE DE L'INDICE D'OCCURENCE
         call jelira(resdyn//'           .REFD', 'NUTIOC', nbrefs, k8bid)
@@ -159,9 +159,9 @@ subroutine dismdy(questi, nomobz, repi, repkz, ierd)
             senpar = -1
             numocc = 1
         else
-            read(indref,'(i4)') numocc
-            if ((numocc.gt.nbrefs) .or. (numocc.le.0)) goto 99
-        endif
+            read (indref, '(i4)') numocc
+            if ((numocc .gt. nbrefs) .or. (numocc .le. 0)) goto 99
+        end if
 !
 !       --- CHERCHER L'ENTREE DE REFERENCE DANS LA COLLECTION REFD
         repi = 0
@@ -174,15 +174,15 @@ subroutine dismdy(questi, nomobz, repi, repkz, ierd)
 !                   --- RETOURNER EGALEMENT L'INDICE ABSOLUE DE L'ENTREE
                     repi = ibid
                     if (repk .eq. ' ') then
-                        numocc = numocc + senpar
-                        if ((numocc.gt.nbrefs) .or. (numocc.eq.0)) then
+                        numocc = numocc+senpar
+                        if ((numocc .gt. nbrefs) .or. (numocc .eq. 0)) then
                             goto 99
                         end if
                     else
                         goto 88
                     end if
-                endif
-            endif
+                end if
+            end if
         end do
 !
 !       --- TRAITEMENT SPECIAL POUR LA QUESTION : REF_****_NOMB
@@ -197,26 +197,26 @@ subroutine dismdy(questi, nomobz, repi, repkz, ierd)
 !         QUESTION = NUME_CHAM_[INDICE DU CHAMP]
 !                                 /K8/ --> call codent(INDI,'D0',INDIK8)
 !     --- EXEMPLES : 'NUME_CHAM_00000001', 'NUME_CHAM_00003842', ...
-    else if (questl(1:9).eq.'NUME_CHAM') then
+    else if (questl(1:9) .eq. 'NUME_CHAM') then
         call jeveuo(resdyn//'           .INDI', 'L', vi=indi)
         call jelira(resdyn//'           .INDI', 'LONUTI', nbrefs, k8bid)
         numcha = questl(11:18)
         indcha = 1
-        read(numcha,'(i8)') indcha
+        read (numcha, '(i8)') indcha
         index = 0
         do ibid = 1, nbrefs
             if (indcha .le. indi(ibid)) then
                 index = ibid
                 goto 41
-            endif
+            end if
         end do
- 41     continue
+41      continue
 !       --- SI LE NUMERO DU CHAMP N'EST PAS VALIDE PAR RAPPORT AU .INDI
         if ((index .eq. 0) .and. (indi(1) .eq. -1)) then
             index = 1
-        else if (index.eq.0) then
+        else if (index .eq. 0) then
             goto 99
-        endif
+        end if
 !
 !       --- RECUPERER LE NUMEDDL DANS LE .REFD ET LE RENVOYER
         call jeveuo(jexnum(resdyn//'           .REFD', index), 'L', jref)
@@ -231,7 +231,7 @@ subroutine dismdy(questi, nomobz, repi, repkz, ierd)
 !       --- 1) ENTIER DONNANT LE NOMBRE DE NUME_DDL DIFFERENTS TROUVES
 !       --- 2) LE NOM DU 1ER NUMEDDL DE REFERENCE (OU PROF_CHNO SELON LE CAS)
 !
-    else if (questl(1:8).eq.'NUME_DDL') then
+    else if (questl(1:8) .eq. 'NUME_DDL') then
         call jelira(resdyn//'           .REFD', 'NUTIOC', nbrefs, k8bid)
         if (nbrefs .eq. 0) goto 99
 !
@@ -241,7 +241,7 @@ subroutine dismdy(questi, nomobz, repi, repkz, ierd)
         repi = 1
         do ibid = 1, nbrefs
             call jeveuo(jexnum(resdyn//'           .REFD', ibid), 'L', jref)
-            if (numddl .ne. zk24(jref+1)) repi = repi +1
+            if (numddl .ne. zk24(jref+1)) repi = repi+1
         end do
         repk = numddl
         goto 88
@@ -253,48 +253,48 @@ subroutine dismdy(questi, nomobz, repi, repkz, ierd)
 !       --- RENVOI UNE CHAINE K24 AVEC :
 !         - 1)  OU 2) CLASSIQUE  OU 3) CYCLIQUE OU 3) RITZ
 !
-    else if (questl(1:9).eq.'TYPE_BASE') then
+    else if (questl(1:9) .eq. 'TYPE_BASE') then
 !       TESTER D'ABORD LE TYPE DES CHAMPS DEPL PRESENTS DANS LA SD (COMPLEXE / REEL)
-        call rsexch(' ', resdyn, 'DEPL', 1, nomcha,&
+        call rsexch(' ', resdyn, 'DEPL', 1, nomcha, &
                     ir)
         if (ir .eq. 0) then
             call dismoi('NOM_GD', nomcha, 'CHAMP', repk=nomgd)
             if (nomgd(1:6) .eq. 'DEPL_C') then
                 repk = ' '
                 goto 88
-            endif
+            end if
         else if (ir .eq. 100) then
             repk = ' '
             goto 88
-        endif
+        end if
 !       IL N'EXISTE QUE DE DEPL_R
         call jelira(resdyn//'           .REFD', 'NUTIOC', nbrefs, k8bid)
-        call dismoi('NB_CHAMP_UTI', resdyn, 'RESULTAT', repi=nbcham, arret='C',&
+        call dismoi('NB_CHAMP_UTI', resdyn, 'RESULTAT', repi=nbcham, arret='C', &
                     ier=ir)
         if ((nbrefs .eq. 0) .or. (nbcham .eq. 0)) goto 99
         repk = ' '
         if (nbrefs .gt. 1) then
             repk = 'RITZ'
             if (nbrefs .eq. 2) then
-                call dismoi('REF_INTD_PREM', resdyn, 'RESU_DYNA', repk=intf, arret='C',&
+                call dismoi('REF_INTD_PREM', resdyn, 'RESU_DYNA', repk=intf, arret='C', &
                             ier=ir)
                 if (ir .eq. 0) then
                     repk = 'CLASSIQUE'
                     call dismoi('NOM_MODE_CYCL', intf, 'INTERF_DYNA', repk=k8bid)
                     if (k8bid .ne. ' ') repk = 'CYCLIQUE'
-                endif
-            endif
+                end if
+            end if
         else
-            call dismoi('REF_RIGI_PREM', resdyn, 'RESU_DYNA', repk=k8bid, arret='C',&
+            call dismoi('REF_RIGI_PREM', resdyn, 'RESU_DYNA', repk=k8bid, arret='C', &
                         ier=ir)
             if (ir .eq. 1) then
                 repk = 'RITZ'
             else
-                call rsvpar(resdyn, 1, 'FACT_PARTICI_DX', ibid, r8vide(),&
+                call rsvpar(resdyn, 1, 'FACT_PARTICI_DX', ibid, r8vide(), &
                             k8bid, l1)
-                call rsvpar(resdyn, 1, 'FACT_PARTICI_DY', ibid, r8vide(),&
+                call rsvpar(resdyn, 1, 'FACT_PARTICI_DY', ibid, r8vide(), &
                             k8bid, l2)
-                call rsvpar(resdyn, 1, 'FACT_PARTICI_DZ', ibid, r8vide(),&
+                call rsvpar(resdyn, 1, 'FACT_PARTICI_DZ', ibid, r8vide(), &
                             k8bid, l3)
                 if ((l1+l2+l3) .eq. 300) repk = 'RITZ'
             end if
@@ -306,7 +306,7 @@ subroutine dismdy(questi, nomobz, repi, repkz, ierd)
 !     --- QUESTION 7 ---
 !     ------------------------------------------------------------------
 !     --- COMBIEN DE CHAMPS SONT STOCKES (ARCHIVES) DANS LE RESULTAT DYNAMIQUE ?
-    else if (questl(1:9).eq.'NB_CHAMPS') then
+    else if (questl(1:9) .eq. 'NB_CHAMPS') then
 !       --- RESULTATS DYNA_GENE ET DYNA_PHYS ONT TOUS LES DEUX CET OBJET
         call jeexin(resdyn//'           .ORDR', l1)
         if (l1 .eq. 0) goto 99
@@ -320,7 +320,7 @@ subroutine dismdy(questi, nomobz, repi, repkz, ierd)
 !     ------------------------------------------------------------------
 !     --- POUR UN RESULTAT SUR BASE GENERALISE, S'AGIT IL D'UNE PROJECTION SIMPLE
 !         OU NON ?
-    else if (questl(1:11).eq.'PROJ_SIMPLE') then
+    else if (questl(1:11) .eq. 'PROJ_SIMPLE') then
         repk = 'OUI'
         call dismoi('BASE_MODALE', resdyn, 'RESU_DYNA', repk=basemo)
         typrep = 'MODE_MECA'
@@ -333,23 +333,23 @@ subroutine dismdy(questi, nomobz, repi, repkz, ierd)
 !     ------------------------------------------------------------------
 !     --- POUR UN RESULTAT SUR BASE GENERALISE, PRENONS NOUS EN COMPTE UNE CORRECTION
 !         STATIQUE AUX CHARGEMENTS ?
-    else if (questl(1:9).eq.'CORR_STAT') then
+    else if (questl(1:9) .eq. 'CORR_STAT') then
         repk = 'NON'
-        call jeveuo(resdyn//'           .DESC','L',jdesc)
-        if (zi(jdesc+7-1).eq.1) repk = 'OUI'
+        call jeveuo(resdyn//'           .DESC', 'L', jdesc)
+        if (zi(jdesc+7-1) .eq. 1) repk = 'OUI'
         goto 88
 !
 !
-    endif
+    end if
 !
 !     <<--- RENVOYER ICI EN CAS DE PROBLEME DANS LA REQUETE
- 99 continue
+99  continue
     repi = 0
     repk = ' '
     ierd = 1
 !
 !     <<--- RENVOYER ICI EN CAS DE SUCCES DE LA REQUETE
- 88 continue
+88  continue
     repkz = repk
 !
     call jedema()

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 !
 subroutine crcoch_getloads(list_load, nb_load, nb_ondp, v_ondp)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -35,9 +35,9 @@ implicit none
 #include "asterfort/loadGetNeumannType.h"
 #include "asterfort/focste.h"
 !
-character(len=19), intent(in) :: list_load
-integer, intent(out) :: nb_ondp, nb_load
-character(len=8), pointer :: v_ondp(:)
+    character(len=19), intent(in) :: list_load
+    integer, intent(out) :: nb_ondp, nb_load
+    character(len=8), pointer :: v_ondp(:)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -74,37 +74,37 @@ character(len=8), pointer :: v_ondp(:)
 !
 ! - Output parameters
 !
-    nb_ondp      = 0
-    nb_load      = 0
+    nb_ondp = 0
+    nb_load = 0
 !
 ! - General parameters for loads
 !
-    l_stat       = ASTER_FALSE
+    l_stat = ASTER_FALSE
     load_keyword = 'CONV_CHAR'
-    load_apply   = 'FIXE_CSTE'
+    load_apply = 'FIXE_CSTE'
 !
 ! - Get loads for loads datastructure
 !
     iocc = 1
     call getvid(load_keyword, 'CHARGE', iocc=iocc, nbval=0, nbret=nocc)
     nb_load = -nocc
-    AS_ALLOCATE(vk8 = v_list_load, size = nb_load)
-    call getvid(load_keyword, 'CHARGE', iocc=iocc, nbval = nb_load, vect = v_list_load)
+    AS_ALLOCATE(vk8=v_list_load, size=nb_load)
+    call getvid(load_keyword, 'CHARGE', iocc=iocc, nbval=nb_load, vect=v_list_load)
 !
 ! - Create load datastructure
 !
     call lisccr('MECA', list_load, nb_load, 'V')
-    AS_ALLOCATE(vk8 = v_ondp, size = nb_load)
+    AS_ALLOCATE(vk8=v_ondp, size=nb_load)
 !
 ! - Count loads and sort by type
 !
     if (nocc .ne. 0) then
         nb_load = -nocc
 ! ----- List of loads to avoid same loads
-        AS_ALLOCATE(vk8 = v_list_dble, size = nb_load)
+        AS_ALLOCATE(vk8=v_list_dble, size=nb_load)
 ! ----- Analyze list of loads
         do i_load = 1, nb_load
-            nb_info_type      = 0
+            nb_info_type = 0
             list_info_type(:) = ' '
 ! --------- Get load
             load_name = v_list_load(i_load)
@@ -114,51 +114,51 @@ character(len=8), pointer :: v_ondp(:)
             do i_load_dble = 1, nb_load
                 if (load_name .eq. v_list_dble(i_load_dble)) then
                     call utmess('F', 'CHARGES_1', sk=load_name)
-                endif
+                end if
             end do
 ! --------- No CHAR_CINE
             if (load_type(1:5) .eq. 'CIME_') then
                 call utmess('A', 'CREARESU1_1')
-            endif
+            end if
 ! --------- NO CHAR_MECA with Dirichlet
             lchin = ligrch(1:13)//'.CIMPO'
             call jeexin(lchin//'.DESC', iret)
             if (iret .ne. 0) then
                 call utmess('A', 'CREARESU1_2')
-            endif
+            end if
 ! --------- Detect ONDE_PLANE loads
             lchin = ligrch(1:13)//'.ONDPL'
             call jeexin(lchin//'.DESC', iret)
             if (iret .ne. 0) then
-                nb_ondp  = nb_ondp + 1
+                nb_ondp = nb_ondp+1
                 v_ondp(nb_ondp) = load_name
-            endif
+            end if
 ! --------- Get NEUMANN loads
-            call loadGetNeumannType(l_stat      , load_name   , ligrch        ,&
-                                    load_apply  , load_type   ,&
-                                    nb_info_type, nb_info_maxi, list_info_type,&
-                                    i_neum_lapl )
+            call loadGetNeumannType(l_stat, load_name, ligrch, &
+                                    load_apply, load_type, &
+                                    nb_info_type, nb_info_maxi, list_info_type, &
+                                    i_neum_lapl)
 ! --------- Create constant function
             nomf19 = const_func
             call jeexin(nomf19//'.PROL', iret)
             if (iret .eq. 0) then
                 coef_r = 1.d0
                 call focste(const_func, 'TOUTRESU', coef_r, 'V')
-            endif
+            end if
             load_func = const_func
             load_func = ' '
 ! --------- Add new load(s) in list
             if (nb_info_type .gt. 0) then
-                call liscad('MECA'      , list_load     , i_load, load_name, load_func,&
-                            nb_info_type, list_info_type, i_neum_laplz = i_neum_lapl)
-            endif
+                call liscad('MECA', list_load, i_load, load_name, load_func, &
+                            nb_info_type, list_info_type, i_neum_laplz=i_neum_lapl)
+            end if
         end do
-    endif
+    end if
 !
 ! - Clean
 !
-    AS_DEALLOCATE(vk8 = v_list_dble)
-    AS_DEALLOCATE(vk8 = v_list_load)
+    AS_DEALLOCATE(vk8=v_list_dble)
+    AS_DEALLOCATE(vk8=v_list_load)
 !
     call jedema()
 end subroutine

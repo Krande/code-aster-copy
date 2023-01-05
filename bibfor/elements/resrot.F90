@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine resrot(rota, coor, ff, rho, nno,&
+subroutine resrot(rota, coor, ff, rho, nno, &
                   npg, frx, fry)
     implicit none
 !
@@ -47,24 +47,24 @@ subroutine resrot(rota, coor, ff, rho, nno,&
 !-----------------------------------------------------------------------
     real(kind=8) :: rho
 !-----------------------------------------------------------------------
-    omm = rota(1) ** 2
-    om1 = rota(1) * rota(2)
-    om2 = rota(1) * rota(3)
+    omm = rota(1)**2
+    om1 = rota(1)*rota(2)
+    om2 = rota(1)*rota(3)
     do i = 1, nno
-        omo = om1 * coor(2*i-1) + om2 * coor(2*i)
-        fx(i) = omm * coor(2*i-1) - omo * om1
-        fy(i) = omm * coor(2*i) - omo * om2
+        omo = om1*coor(2*i-1)+om2*coor(2*i)
+        fx(i) = omm*coor(2*i-1)-omo*om1
+        fy(i) = omm*coor(2*i)-omo*om2
     end do
 !
     do kp = 1, npg
-        k=(kp-1)*nno
+        k = (kp-1)*nno
         frx(kp) = 0.d0
         fry(kp) = 0.d0
         do i = 1, nno
-            frx(kp) = frx(kp) + fx(i) * ff(k+i)
-            fry(kp) = fry(kp) + fy(i) * ff(k+i)
+            frx(kp) = frx(kp)+fx(i)*ff(k+i)
+            fry(kp) = fry(kp)+fy(i)*ff(k+i)
         end do
-        frx(kp) = rho * frx(kp)
-        fry(kp) = rho * fry(kp)
+        frx(kp) = rho*frx(kp)
+        fry(kp) = rho*fry(kp)
     end do
 end subroutine

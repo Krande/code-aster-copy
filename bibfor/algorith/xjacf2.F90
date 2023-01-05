@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine xjacf2(elrefp, elrefc, elc, ndim, fpg,&
-                  jinter, ifa, cface, nptf, ipg,&
-                  nnop, nnops, igeom, jbasec,xg, jac,&
+subroutine xjacf2(elrefp, elrefc, elc, ndim, fpg, &
+                  jinter, ifa, cface, nptf, ipg, &
+                  nnop, nnops, igeom, jbasec, xg, jac, &
                   ffp, ffpc, dfdi, nd, tau1, dfdic)
     implicit none
 !
@@ -36,7 +36,7 @@ subroutine xjacf2(elrefp, elrefc, elc, ndim, fpg,&
     real(kind=8) :: jac, ffp(27), ffpc(27), dfdi(27, 3)
     real(kind=8) :: nd(3), tau1(3), xg(3)
     character(len=8) :: elrefp, fpg, elc, elrefc
-    real(kind=8), intent(out), optional :: dfdic(nnops,3)
+    real(kind=8), intent(out), optional :: dfdic(nnops, 3)
 !
 !
 !
@@ -74,18 +74,18 @@ subroutine xjacf2(elrefp, elrefc, elc, ndim, fpg,&
     real(kind=8) :: dfdx(3), rbid2, cosa, sina
     character(len=8) :: k8bid
 !
-    parameter       (nptfmx=4)
+    parameter(nptfmx=4)
     real(kind=8) :: coor2d(nptfmx*3)
 ! ----------------------------------------------------------------------
 !
 !
-    call elrefe_info(elrefe=elc,fami=fpg,ndim=ndimf,nno=nno,&
-                     jpoids=ipoidf,jvf=ivff,jdfde=idfdef)
+    call elrefe_info(elrefe=elc, fami=fpg, ndim=ndimf, nno=nno, &
+                     jpoids=ipoidf, jvf=ivff, jdfde=idfdef)
 !
-    axi = lteatt('AXIS','OUI')
+    axi = lteatt('AXIS', 'OUI')
 !
-    ASSERT(ndim.eq.2)
-    ASSERT(nptf.le.nptfmx)
+    ASSERT(ndim .eq. 2)
+    ASSERT(nptf .le. nptfmx)
 !
 ! --- INITIALISATION
     nd(:) = 0.d0
@@ -94,26 +94,26 @@ subroutine xjacf2(elrefp, elrefc, elc, ndim, fpg,&
     tau1(:) = 0.d0
 !
 ! --- COORDONNÉES DES NOEUDS DE LA FACETTE DANS LE REPERE GLOBAL NDIM
-    nn=3*nptfmx
+    nn = 3*nptfmx
     do i = 1, nn
-        coor2d(i)=0.d0
+        coor2d(i) = 0.d0
     end do
     do i = 1, nptf
         do j = 1, ndim
-            coor2d((i-1)*ndim+j)=zr(jinter-1+ndim*(cface(ifa,i)-1)+j)
+            coor2d((i-1)*ndim+j) = zr(jinter-1+ndim*(cface(ifa, i)-1)+j)
         end do
     end do
 !
 ! --- CALCUL DE JAC EN 2D
     k = (ipg-1)*nno
-    call dfdm1d(nno, zr(ipoidf-1+ipg), zr(idfdef+k), coor2d, dfdx,&
+    call dfdm1d(nno, zr(ipoidf-1+ipg), zr(idfdef+k), coor2d, dfdx, &
                 rbid2, jac, cosa, sina)
 !
 ! --- COORDONNEES REELLES 2D DU POINT DE GAUSS IPG
     xg(:) = 0.d0
     do j = 1, nno
         do i = 1, ndim
-          xg(i)=xg(i)+zr(ivff-1+nno*(ipg-1)+j)*coor2d(ndim*(j-1)+i)
+            xg(i) = xg(i)+zr(ivff-1+nno*(ipg-1)+j)*coor2d(ndim*(j-1)+i)
         end do
     end do
 !
@@ -123,37 +123,37 @@ subroutine xjacf2(elrefp, elrefc, elc, ndim, fpg,&
     nd(2) = -sina
     do j = 1, ndim
         do k = 1, nno
-            grln(j) = grln(j) + zr(ivff-1+nno*(ipg-1)+k)*zr(jbasec-1+&
-                      ndim*ndim*(k-1)+j)
-            grlt(j) = grlt(j) + zr(ivff-1+nno*(ipg-1)+k)*zr(jbasec-1+&
-                      ndim*ndim*(k-1)+j+ndim)
+            grln(j) = grln(j)+zr(ivff-1+nno*(ipg-1)+k)*zr(jbasec-1+ &
+                                                          ndim*ndim*(k-1)+j)
+            grlt(j) = grlt(j)+zr(ivff-1+nno*(ipg-1)+k)*zr(jbasec-1+ &
+                                                          ndim*ndim*(k-1)+j+ndim)
         end do
     end do
 !
-    ps=ddot(ndim,nd,1,grln,1)
-    if (ps.lt.0.d0) then
-       nd(1:2) = -nd(1:2)
-    endif
+    ps = ddot(ndim, nd, 1, grln, 1)
+    if (ps .lt. 0.d0) then
+        nd(1:2) = -nd(1:2)
+    end if
     call normev(nd, norme)
-    ps=ddot(ndim,grlt,1,nd,1)
+    ps = ddot(ndim, grlt, 1, nd, 1)
     do j = 1, ndim
-        tau1(j)=grlt(j)-ps*nd(j)
+        tau1(j) = grlt(j)-ps*nd(j)
     end do
     call normev(tau1, norme)
 !
     if (norme .lt. 1.d-12) then
 !       ESSAI AVEC LE PROJETE DE OX
-        tau1(1)=1.d0-nd(1)*nd(1)
-        tau1(2)=0.d0-nd(1)*nd(2)
+        tau1(1) = 1.d0-nd(1)*nd(1)
+        tau1(2) = 0.d0-nd(1)*nd(2)
         call normev(tau1, norm2)
         if (norm2 .lt. 1.d-12) then
 !         ESSAI AVEC LE PROJETE DE OY
-            tau1(1)=0.d0-nd(2)*nd(1)
-            tau1(2)=1.d0-nd(2)*nd(2)
+            tau1(1) = 0.d0-nd(2)*nd(1)
+            tau1(2) = 1.d0-nd(2)*nd(2)
             call normev(tau1, norm2)
-        endif
-        ASSERT(norm2.gt.1.d-12)
-    endif
+        end if
+        ASSERT(norm2 .gt. 1.d-12)
+    end if
 !
 !     CALCUL DES FF DE L'ÉLÉMENT PARENT EN CE POINT DE GAUSS
     call reeref(elrefp, nnop, zr(igeom), xg, ndim, xe, ffp, dfdi=dfdi)

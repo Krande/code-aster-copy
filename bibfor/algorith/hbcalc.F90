@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine hbcalc(fmoins, gamma, dg, nbmat, materf,&
-                  i1e, sigeqe, vp, etap, vh,&
+subroutine hbcalc(fmoins, gamma, dg, nbmat, materf, &
+                  i1e, sigeqe, vp, etap, vh, &
                   vg, parame, derive, incrg)
     implicit none
 #include "asterfort/utmess.h"
@@ -44,15 +44,15 @@ subroutine hbcalc(fmoins, gamma, dg, nbmat, materf,&
     real(kind=8) :: vm, ds, dm
     real(kind=8) :: a1, a2, a3, a4, sigbd, mu, un, deux, trois, eps
 ! ======================================================================
-    parameter       ( un     =  1.0d0  )
-    parameter       ( deux   =  2.0d0  )
-    parameter       ( trois  =  3.0d0  )
-    parameter       ( eps    =  1.0d-12 )
+    parameter(un=1.0d0)
+    parameter(deux=2.0d0)
+    parameter(trois=3.0d0)
+    parameter(eps=1.0d-12)
 ! ======================================================================
 ! --- INITIALISATION DES PARAMETRES ------------------------------------
 ! ======================================================================
-    sigbd = materf(14,2)
-    mu = materf(4,1)
+    sigbd = materf(14, 2)
+    mu = materf(4, 1)
     a1 = vp(3)+i1e/trois
     a2 = vp(3)-vp(1)
     a3 = un/sigbd
@@ -65,12 +65,12 @@ subroutine hbcalc(fmoins, gamma, dg, nbmat, materf,&
     aux1 = -a2*a4*(derh*dg+vh)
     aux2 = -derive(3)*(un+a3*(a1-vg*dg))+parame(3)*a3*(derg*dg+vg)
     aux3 = a2*(un-a4*vh*dg)-parame(3)*(un+a3*(a1-vg*dg))
-    aux4 = ds -dm*(a1-vg*dg) +vm*(derg*dg+vg)
+    aux4 = ds-dm*(a1-vg*dg)+vm*(derg*dg+vg)
 ! ======================================================================
-    dfdga = deux*aux3*(aux1 + aux2) - aux4
+    dfdga = deux*aux3*(aux1+aux2)-aux4
     if (abs(dfdga) .lt. eps) then
         call utmess('F', 'ALGORITH3_87')
-    endif
+    end if
     incrg = -fmoins/dfdga
 ! ======================================================================
 end subroutine

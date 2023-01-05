@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine getcon(nomres, iob, ishf, ilng, ctype,&
+subroutine getcon(nomres, iob, ishf, ilng, ctype, &
                   lcon, iadvar, nomob)
 ! aslint: disable=
     implicit none
@@ -55,122 +55,122 @@ subroutine getcon(nomres, iob, ishf, ilng, ctype,&
 !     ------------------------------------------------------------------
     ctype = -1
 !             123456789.123456789.12
-    noml32='                      '
-    noml32=nomres
+    noml32 = '                      '
+    noml32 = nomres
 !     AU DELA DE 24 : RESERVE JEVEUX &&xxxx
-    ASSERT(lxlgut(noml32).le.24)
+    ASSERT(lxlgut(noml32) .le. 24)
     call jjvern(noml32, 0, iret)
     if (iret .eq. 0) then
 !     CET OBJET N'EXISTE PAS
         goto 999
-    endif
+    end if
     call jelira(noml32, 'XOUS', cval=xous)
     call jelira(noml32, 'GENR', cval=genr)
-    nomob=' '
+    nomob = ' '
     if (xous .eq. 'X') then
 !     ------------------------------------------------------------------
 !     CET OBJET EST UNE COLLECTION, ON VEUT SON ELEMENT NUMERO IOB
 !     ------------------------------------------------------------------
-        ctype=0
+        ctype = 0
         call jeexin(jexnum(noml32, iob), iret)
         if (iret .le. 0) goto 999
         call jelira(noml32, 'ACCES', cval=acces)
         if (acces .eq. 'NO') then
             call jenuno(jexnum(noml32, iob), nomob)
-        endif
+        end if
         call jeveuo(jexnum(noml32, iob), 'L', jres)
         call jelira(jexnum(noml32, iob), 'LONMAX', lobj)
         call jelira(jexnum(noml32, iob), 'TYPELONG', cval=type)
         lcon = lobj
         if (type .eq. 'R') then
 !     LES VALEURS SONT REELLES
-            ctype=1
-            iadvar=loc(zr(jres))
-        else if (type.eq.'I') then
+            ctype = 1
+            iadvar = loc(zr(jres))
+        else if (type .eq. 'I') then
 !     LES VALEURS SONT ENTIERES
-            ctype=2
-            iadvar=loc(zi(jres))
-        else if (type.eq.'IS') then
+            ctype = 2
+            iadvar = loc(zi(jres))
+        else if (type .eq. 'IS') then
 !     LES VALEURS SONT ENTIERES
-            ctype=9
-            iadvar=loc(zi4(jres))
-        else if (type.eq.'C') then
+            ctype = 9
+            iadvar = loc(zi4(jres))
+        else if (type .eq. 'C') then
 !     LES VALEURS SONT COMPLEXES
-            ctype=3
-            iadvar=loc(zc(jres))
-        else if (type.eq.'K8') then
+            ctype = 3
+            iadvar = loc(zc(jres))
+        else if (type .eq. 'K8') then
 !     LES VALEURS SONT DES CHAINES
-            ctype=4
-            iadvar=loc(zk8(jres))
-        else if (type.eq.'K16') then
+            ctype = 4
+            iadvar = loc(zk8(jres))
+        else if (type .eq. 'K16') then
 !     LES VALEURS SONT DES CHAINES
-            ctype=5
-            iadvar=loc(zk16(jres))
-        else if (type.eq.'K24') then
+            ctype = 5
+            iadvar = loc(zk16(jres))
+        else if (type .eq. 'K24') then
 !     LES VALEURS SONT DES CHAINES
-            ctype=6
-            iadvar=loc(zk24(jres))
-        else if (type.eq.'K32') then
+            ctype = 6
+            iadvar = loc(zk24(jres))
+        else if (type .eq. 'K32') then
 !     LES VALEURS SONT DES CHAINES
-            ctype=7
-            iadvar=loc(zk32(jres))
-        else if (type.eq.'K80') then
+            ctype = 7
+            iadvar = loc(zk32(jres))
+        else if (type .eq. 'K80') then
 !     LES VALEURS SONT DES CHAINES
-            ctype=8
-            iadvar=loc(zk80(jres))
+            ctype = 8
+            iadvar = loc(zk80(jres))
         else
 !     TYPE INCONNU
-            ctype=0
-        endif
-    else if ((xous.eq.'S').and.(genr.ne.'N')) then
+            ctype = 0
+        end if
+    else if ((xous .eq. 'S') .and. (genr .ne. 'N')) then
 !     ------------------------------------------------------------------
 !     CET OBJET EXISTE ET EST SIMPLE. ON PEUT AVOIR SA VALEUR
 !     ------------------------------------------------------------------
         call jeveuo(noml32, 'L', jres)
         call jelira(noml32, 'LONMAX', lcon)
-        if (ilng .ne. 0) lcon=ilng
+        if (ilng .ne. 0) lcon = ilng
         call jelira(noml32, 'TYPELONG', cval=type)
         if (type .eq. 'R') then
 !     LES VALEURS SONT REELLES
-            ctype=1
-            iadvar=loc(zr(jres+ishf))
-        else if (type.eq.'I') then
+            ctype = 1
+            iadvar = loc(zr(jres+ishf))
+        else if (type .eq. 'I') then
 !     LES VALEURS SONT ENTIERES
-            ctype=2
-            iadvar=loc(zi(jres+ishf))
-        else if (type.eq.'S') then
+            ctype = 2
+            iadvar = loc(zi(jres+ishf))
+        else if (type .eq. 'S') then
 !     LES VALEURS SONT ENTIERES
-            ctype=9
-            iadvar=loc(zi4(jres+ishf))
-        else if (type.eq.'C') then
+            ctype = 9
+            iadvar = loc(zi4(jres+ishf))
+        else if (type .eq. 'C') then
 !     LES VALEURS SONT COMPLEXES
-            ctype=3
-            iadvar=loc(zc(jres+ishf))
-        else if (type.eq.'K8') then
+            ctype = 3
+            iadvar = loc(zc(jres+ishf))
+        else if (type .eq. 'K8') then
 !     LES VALEURS SONT DES CHAINES
-            ctype=4
-            iadvar=loc(zk8(jres+ishf))
-        else if (type.eq.'K16') then
+            ctype = 4
+            iadvar = loc(zk8(jres+ishf))
+        else if (type .eq. 'K16') then
 !     LES VALEURS SONT DES CHAINES
-            ctype=5
-            iadvar=loc(zk16(jres+ishf))
-        else if (type.eq.'K24') then
+            ctype = 5
+            iadvar = loc(zk16(jres+ishf))
+        else if (type .eq. 'K24') then
 !     LES VALEURS SONT DES CHAINES
-            ctype=6
-            iadvar=loc(zk24(jres+ishf))
-        else if (type.eq.'K32') then
+            ctype = 6
+            iadvar = loc(zk24(jres+ishf))
+        else if (type .eq. 'K32') then
 !     LES VALEURS SONT DES CHAINES
-            ctype=7
-            iadvar=loc(zk32(jres+ishf))
-        else if (type.eq.'K80') then
+            ctype = 7
+            iadvar = loc(zk32(jres+ishf))
+        else if (type .eq. 'K80') then
 !     LES VALEURS SONT DES CHAINES
-            ctype=8
-            iadvar=loc(zk80(jres+ishf))
+            ctype = 8
+            iadvar = loc(zk80(jres+ishf))
         else
 !     TYPE INCONNU
-            ctype=0
-        endif
-    else if ((xous.eq.'S').and.(genr.eq.'N')) then
+            ctype = 0
+        end if
+    else if ((xous .eq. 'S') .and. (genr .eq. 'N')) then
 !     ------------------------------------------------------------------
 !     CET OBJET EST SIMPLE MAIS C EST UN REPERTOIRE DE NOMS
 !     ------------------------------------------------------------------
@@ -182,22 +182,22 @@ subroutine getcon(nomres, iob, ishf, ilng, ctype,&
             do kk = 1, lcon
                 call jenuno(jexnum(noml32, kk), zk8(iad-1+kk))
             end do
-            ctype=4
-            iadvar=loc(zk8(iad))
-        else if (type.eq.'K16') then
+            ctype = 4
+            iadvar = loc(zk8(iad))
+        else if (type .eq. 'K16') then
             do kk = 1, lcon
                 call jenuno(jexnum(noml32, kk), zk16(iad-1+kk))
             end do
-            ctype=5
-            iadvar=loc(zk16(iad))
-        else if (type.eq.'K24') then
+            ctype = 5
+            iadvar = loc(zk16(iad))
+        else if (type .eq. 'K24') then
             do kk = 1, lcon
                 call jenuno(jexnum(noml32, kk), zk24(iad-1+kk))
             end do
-            ctype=6
-            iadvar=loc(zk24(iad))
-        endif
-    endif
+            ctype = 6
+            iadvar = loc(zk24(iad))
+        end if
+    end if
 !
 999 continue
 end subroutine

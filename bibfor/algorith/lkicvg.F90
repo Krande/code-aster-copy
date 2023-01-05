@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine lkicvg(nr, itmax, toler, iter, r,&
+subroutine lkicvg(nr, itmax, toler, iter, r, &
                   nvi, vinf, dy, irtet)
 ! person_in_charge: alexandre.foucault at edf.fr
 !     ------------------------------------------------------------------
@@ -42,21 +42,21 @@ subroutine lkicvg(nr, itmax, toler, iter, r,&
 !     ------------------------------------------------------------------
     implicit none
 !     ------------------------------------------------------------------
-    common /tdim/   ndt ,ndi
+    common/tdim/ndt, ndi
 !     ------------------------------------------------------------------
     integer :: nr, itmax, iter, irtet, ndt, ndi, nvi
     real(kind=8) :: toler, r(nr), vinf(nvi), dy(nr)
 !
     integer :: i
     real(kind=8) :: er, zero
-    parameter       (zero  =  0.d0 )
+    parameter(zero=0.d0)
 !     ------------------------------------------------------------------
 ! === ==================================================================
 ! --- CALCUL DE LA NORME DE RINI ET DE R(Y)
 ! === ==================================================================
     er = zero
     do i = 1, nr
-        er = er + r(i)*r(i)
+        er = er+r(i)*r(i)
     end do
     er = sqrt(er)
 !
@@ -64,9 +64,9 @@ subroutine lkicvg(nr, itmax, toler, iter, r,&
 ! --- TEST DE CONVERGENCE PAR RAPPORT A TOLER
 ! === =================================================================
     if (er .lt. toler) then
-        if ((dy(ndt+1).ge.zero) .and. (vinf(7).gt.zero)) then
+        if ((dy(ndt+1) .ge. zero) .and. (vinf(7) .gt. zero)) then
             irtet = 0
-        else if (vinf(7).eq.zero) then
+        else if (vinf(7) .eq. zero) then
             irtet = 0
         else
             irtet = 2
@@ -74,9 +74,9 @@ subroutine lkicvg(nr, itmax, toler, iter, r,&
             do i = 1, nr
                 dy(i) = zero
             end do
-        endif
+        end if
         goto 999
-    endif
+    end if
 !
 ! === ==================================================================
 ! --- SI NON CONVERGENCE: TEST DU N°ITERATION
@@ -85,7 +85,7 @@ subroutine lkicvg(nr, itmax, toler, iter, r,&
         irtet = 1
     else
         irtet = 3
-    endif
+    end if
 !
 999 continue
 !

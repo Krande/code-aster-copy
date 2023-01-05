@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 subroutine nmvcle(modelz, matez, cara_elemz, time, varcz)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/detrsd.h"
@@ -57,10 +57,10 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    varc          = varcz
-    model         = modelz
-    cara_elem     = cara_elemz
-    mate          = matez
+    varc = varcz
+    model = modelz
+    cara_elem = cara_elemz
+    mate = matez
 !
 ! - Old object deleted
 !
@@ -72,13 +72,13 @@ implicit none
 !
 ! - Construct command variables fields
 !
-    call vrcins(model, mate, cara_elem, time, varc_list,&
+    call vrcins(model, mate, cara_elem, time, varc_list, &
                 codret)
 !
 ! - Construct current time <CARTE>
 !
     varc_time = varc//'.INST'
-    call mecact('V', varc_time, 'MODELE', model(1:8)//'.MODELE', 'INST_R',&
+    call mecact('V', varc_time, 'MODELE', model(1:8)//'.MODELE', 'INST_R', &
                 ncmp=1, nomcmp='INST', sr=time)
 !
 end subroutine

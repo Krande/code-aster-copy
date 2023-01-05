@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,9 +18,9 @@
 
 subroutine geomco(noma, ds_contact, depplu)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterfort/infdbg.h"
 #include "asterfort/vtgpld.h"
@@ -50,12 +50,12 @@ implicit none
 !
     call infdbg('CONTACT', ifm, niv)
     if (niv .ge. 2) then
-        write (ifm,*) '<CONTACT> ...... REACTUALISATION DE LA GEOMETRIE'
-    endif
+        write (ifm, *) '<CONTACT> ...... REACTUALISATION DE LA GEOMETRIE'
+    end if
 !
     oldgeo = noma(1:8)//'.COORDO'
     newgeo = ds_contact%sdcont_solv(1:14)//'.NEWG'
-    call vtgpld('CUMU', 1.d0, oldgeo,  depplu, 'V',&
+    call vtgpld('CUMU', 1.d0, oldgeo, depplu, 'V', &
                 newgeo)
 !
 end subroutine

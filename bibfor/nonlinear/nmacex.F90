@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -112,8 +112,8 @@ subroutine nmacex(sddisc, iterat, lextra, valext)
             regres = 1
         else if (vmaxi(1) .gt. cmaxi) then
             regres = 2
-        endif
-    endif
+        end if
+    end if
 !
 ! --- LES CRITERES D'ERREUR SONT OK, MAIS PAS DETECTE DANS LE
 ! --- STAT_NON_LINE -> NI GLOB_RELA, NI GLOB_MAXI !
@@ -122,7 +122,7 @@ subroutine nmacex(sddisc, iterat, lextra, valext)
         call utmess('A', 'EXTRAPOLATION_2')
         lextra = .false.
         goto 999
-    endif
+    end if
 !
 ! --- PARAMETRES DE LA METHODE D'EXTRAPOLATION
 !
@@ -136,7 +136,7 @@ subroutine nmacex(sddisc, iterat, lextra, valext)
         lextra = .false.
         call utmess('I', 'EXTRAPOLATION_3')
         goto 999
-    endif
+    end if
 !
 ! --- TOUTES LES RESIDUS AU COURS DES ITERATIONS [0,ITERAT]
 !
@@ -149,11 +149,11 @@ subroutine nmacex(sddisc, iterat, lextra, valext)
         call nmlere(sddisc, 'L', 'VMAXI_TOUS', iterat, erreurs)
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 ! --- CALCUL DE L'EXTRAPOLATION LINEAIRE
 !
-    call nmdcrg(depart, iterat, erreurs, xa0, xa1,&
+    call nmdcrg(depart, iterat, erreurs, xa0, xa1, &
                 xdet)
     AS_DEALLOCATE(vr=erreurs)
 !
@@ -168,7 +168,7 @@ subroutine nmacex(sddisc, iterat, lextra, valext)
         valext(3) = xdet
         valext(4) = cresi
         lextra = .true.
-    endif
+    end if
 !
 999 continue
 !

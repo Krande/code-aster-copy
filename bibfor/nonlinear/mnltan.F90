@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine mnltan(lcal, imat, numdrv, matdrv, xcdl,&
-                  parcho, adime, xvect, ninc, nd,&
+subroutine mnltan(lcal, imat, numdrv, matdrv, xcdl, &
+                  parcho, adime, xvect, ninc, nd, &
                   nchoc, h, hf, xtang)
     implicit none
 !
@@ -68,7 +68,7 @@ subroutine mnltan(lcal, imat, numdrv, matdrv, xcdl,&
     aster_logical :: lcal
     integer :: imat(2), ninc, nd, nchoc, h, hf
     character(len=14) :: numdrv, xcdl, parcho, adime, xvect, xtang
-    character(len=19) :: matdrv,solveu
+    character(len=19) :: matdrv, solveu
 ! ----------------------------------------------------------------------
 ! --- DECLARATION DES VARIABLES LOCALES
 ! ----------------------------------------------------------------------
@@ -99,8 +99,8 @@ subroutine mnltan(lcal, imat, numdrv, matdrv, xcdl,&
 ! ----------------------------------------------------------------------
 ! --- CALCUL (OU RECUPERATION) DE LA MATRICE JACOBIENNE
 ! ----------------------------------------------------------------------
-    call mnldrv(lcal, imat, numdrv, matdrv, xcdl,&
-                parcho, adime, xvect, zr(ivplu), ninc,&
+    call mnldrv(lcal, imat, numdrv, matdrv, xcdl, &
+                parcho, adime, xvect, zr(ivplu), ninc, &
                 nd, nchoc, h, hf)
 ! ----------------------------------------------------------------------
 ! --- ON CREE UN VECTEUR [0 ... 0 1]
@@ -109,14 +109,14 @@ subroutine mnltan(lcal, imat, numdrv, matdrv, xcdl,&
 ! ----------------------------------------------------------------------
 ! --- ON RESOUD TANGENTE=DRDV\[0 ... 0 1]
 ! ----------------------------------------------------------------------
-    call resoud(matdrv, ' ', solveu, ' ', 1,&
-                ' ', ' ', 'v', zr(ib), [cbid],&
+    call resoud(matdrv, ' ', solveu, ' ', 1, &
+                ' ', ' ', 'v', zr(ib), [cbid], &
                 ' ', .false._1, 0, iret)
     call dcopy(ninc, zr(ib), 1, zr(itang), 1)
 ! ----------------------------------------------------------------------
 ! --- ON NORMALISE LE VECTEUR TANGENT
 ! ----------------------------------------------------------------------
-    norme = dnrm2(ninc,zr(itang),1)
+    norme = dnrm2(ninc, zr(itang), 1)
     call dscal(ninc, -1.d0/norme, zr(itang), 1)
 ! ----------------------------------------------------------------------
 ! --- ON DETRUIT LE VECTEUR TEMPORAIRE

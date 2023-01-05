@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine as_mfdrpw(fid, cha, val, intlac, n,&
-                     locname, numco, profil, pflmod, typent,&
+subroutine as_mfdrpw(fid, cha, val, intlac, n, &
+                     locname, numco, profil, pflmod, typent, &
                      typgeo, numdt, dt, numo, cret)
 ! person_in_charge: nicolas.sellenet at edf.fr
 !
@@ -50,13 +50,13 @@ subroutine as_mfdrpw(fid, cha, val, intlac, n,&
     numco4 = numco
     numdt4 = numdt
     numo4 = numo
-    call mfdrpw(fidm, cha, numdt4, numo4, dt,&
-                typen4, typge4, pflmo4, profil, locname,&
+    call mfdrpw(fidm, cha, numdt4, numo4, dt, &
+                typen4, typge4, pflmo4, profil, locname, &
                 intla4, numco4, n4, val, cret4)
     cret = cret4
 #else
-    call mfdrpw(fid, cha, numdt, numo, dt,&
-                typent, typgeo, pflmod, profil, locname,&
+    call mfdrpw(fid, cha, numdt, numo, dt, &
+                typent, typgeo, pflmod, profil, locname, &
                 intlac, numco, n, val, cret)
 #endif
 !

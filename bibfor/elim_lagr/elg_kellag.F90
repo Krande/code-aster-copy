@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -47,14 +47,14 @@ subroutine elg_kellag(matass, solveu, kellag)
 !
 !     1. CALCUL DE KELLAG :
 !     -------------------------------------
-    matas1=matass
-    solve1=solveu
+    matas1 = matass
+    solve1 = solveu
     if (solve1 .eq. ' ') call dismoi('SOLVEUR', matas1, 'MATR_ASSE', repk=solve1)
     call jeveuo(solve1//'.SLVK', 'L', vk24=slvk)
     call jelira(solve1//'.SLVK', 'LONMAX', n1, kbid)
-    ASSERT(n1.eq.14)
-    kellag=slvk(13)(1:3)
-    ASSERT(kellag.eq.' '.or.kellag.eq.'OUI'.or.kellag.eq.'NON')
+    ASSERT(n1 .eq. 14)
+    kellag = slvk(13) (1:3)
+    ASSERT(kellag .eq. ' ' .or. kellag .eq. 'OUI' .or. kellag .eq. 'NON')
 !
     call jedema()
 end

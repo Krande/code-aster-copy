@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -48,32 +48,32 @@ subroutine gilig1(nfic, ndim, nbval, nbpoin)
 !
 !     -- ON LIT LES COORDONNEES DES NOEUDS:
 !
-    nbfois = nbval / 3
-    nbrest = nbval - 3*nbfois
+    nbfois = nbval/3
+    nbrest = nbval-3*nbfois
     icoj = 0
     do i = 1, nbfois
-        read(nfic,1000) ( rbid(j), j=1,3 )
-        zr(iacoo1-1+ icoj +1) = rbid(1)
-        zr(iacoo1-1+ icoj +2) = rbid(2)
-        zr(iacoo1-1+ icoj +3) = rbid(3)
-        icoj = icoj + 3
+        read (nfic, 1000) (rbid(j), j=1, 3)
+        zr(iacoo1-1+icoj+1) = rbid(1)
+        zr(iacoo1-1+icoj+2) = rbid(2)
+        zr(iacoo1-1+icoj+3) = rbid(3)
+        icoj = icoj+3
     end do
     if (nbrest .gt. 0) then
-        read(nfic,1000) ( rbid(j), j=1,nbrest )
+        read (nfic, 1000) (rbid(j), j=1, nbrest)
         do i = 1, nbrest
-            zr(iacoo1-1+ icoj +i) = rbid(i)
+            zr(iacoo1-1+icoj+i) = rbid(i)
         end do
-    endif
+    end if
 !
 !     -- ON RECOPIE LES COORDONNEES EN OTANT LES DENSITES:
     do i = 1, nbpoin
         do j = 1, ndim
-            zr(iacoor-1+ndim*(i-1)+j)=zr(iacoo1-1+(ndim+1)*(i-1)+j)
+            zr(iacoor-1+ndim*(i-1)+j) = zr(iacoo1-1+(ndim+1)*(i-1)+j)
         end do
     end do
     call jedetr('&&GILIRE.COORD1')
 !
-    1000 format( 3(1x,d21.14) )
+1000 format(3(1x, d21.14))
 !
     call jedema()
 !

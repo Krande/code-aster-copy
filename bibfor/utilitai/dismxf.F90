@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -44,13 +44,13 @@ subroutine dismxf(questi, nomobz, repi, repkz, ierd)
 ! ----------------------------------------------------------------------
 !     VARIABLES LOCALES:
 !     ------------------
-    integer :: jinfo,  long
+    integer :: jinfo, long
     character(len=8), pointer :: mailla(:) => null()
 !
 !
     call jemarq()
-    nomob=nomobz
-    repk=' '
+    nomob = nomobz
+    repk = ' '
     ierd = 0
 !
     if (questi .eq. 'TYPE_DISCONTINUITE') then
@@ -58,36 +58,36 @@ subroutine dismxf(questi, nomobz, repi, repkz, ierd)
         call jeveuo(nomob//'.INFO', 'L', jinfo)
         repk = zk16(jinfo-1+1)
 !
-    else if (questi.eq.'CHAM_DISCONTINUITE') then
+    else if (questi .eq. 'CHAM_DISCONTINUITE') then
 !
         call jeveuo(nomob//'.INFO', 'L', jinfo)
         repk = zk16(jinfo-1+2)
 !
-    else if (questi.eq.'TYPE_FOND') then
+    else if (questi .eq. 'TYPE_FOND') then
 !
         call jeveuo(nomob//'.INFO', 'L', jinfo)
         repk = zk16(jinfo-1+3)
 !
-    else if (questi.eq.'NOM_MAILLA') then
+    else if (questi .eq. 'NOM_MAILLA') then
 !
         call jeveuo(nomob//'.MAILLAGE', 'L', vk8=mailla)
         repk = mailla(1)
 !
-    else if (questi.eq.'NB_FOND') then
+    else if (questi .eq. 'NB_FOND') then
 !
         call jelira(nomob//'.FONDMULT', 'LONMAX', long)
         repi = long/2
 !
-    else if (questi.eq.'NB_POINT_FOND') then
+    else if (questi .eq. 'NB_POINT_FOND') then
 !
         call jelira(nomob//'.FONDFISS', 'LONMAX', long)
         repi = long/4
 !
     else
 !
-        ierd=1
+        ierd = 1
 !
-    endif
+    end if
 !
     repkz = repk
     call jedema()

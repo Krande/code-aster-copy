@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -35,13 +35,13 @@ function xcalc_digit(id)
     integer :: xcalc_digit, id
 !-----------------------------------------------------------------------
     integer :: base_codage
-    parameter (base_codage=4)
+    parameter(base_codage=4)
 !-----------------------------------------------------------------------
 !
-    if ( id .le. 1) then
-      xcalc_digit=1
+    if (id .le. 1) then
+        xcalc_digit = 1
     else
-      xcalc_digit=int(log(real(id,8))/log(real(base_codage,8)))+1
-    endif
+        xcalc_digit = int(log(real(id, 8))/log(real(base_codage, 8)))+1
+    end if
 !
 end function

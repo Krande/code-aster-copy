@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -59,60 +59,60 @@ subroutine rotati(euler, rot)
     real(kind=8) :: rotb(3, 3), rotc(3, 3), rotd(3, 3), rot(3, 3)
     integer :: i1, j1, k1
 !
-    rota(1,1)=cos(euler(1))
-    rota(1,2)=-sin(euler(1))
-    rota(1,3)=0.d0
-    rota(2,1)=-rota(1,2)
-    rota(2,2)=rota(1,1)
-    rota(2,3)=0.d0
-    rota(3,1)=0.d0
-    rota(3,2)=0.d0
-    rota(3,3)=1.d0
+    rota(1, 1) = cos(euler(1))
+    rota(1, 2) = -sin(euler(1))
+    rota(1, 3) = 0.d0
+    rota(2, 1) = -rota(1, 2)
+    rota(2, 2) = rota(1, 1)
+    rota(2, 3) = 0.d0
+    rota(3, 1) = 0.d0
+    rota(3, 2) = 0.d0
+    rota(3, 3) = 1.d0
 !
-    rotb(1,1)=cos(euler(2))
-    rotb(1,2)=0.d0
-    rotb(1,3)=sin(euler(2))
-    rotb(2,1)=0.d0
-    rotb(2,2)=1.d0
-    rotb(2,3)=0.d0
-    rotb(3,1)=-rotb(1,3)
-    rotb(3,2)=0.d0
-    rotb(3,3)=rotb(1,1)
+    rotb(1, 1) = cos(euler(2))
+    rotb(1, 2) = 0.d0
+    rotb(1, 3) = sin(euler(2))
+    rotb(2, 1) = 0.d0
+    rotb(2, 2) = 1.d0
+    rotb(2, 3) = 0.d0
+    rotb(3, 1) = -rotb(1, 3)
+    rotb(3, 2) = 0.d0
+    rotb(3, 3) = rotb(1, 1)
 !
-    rotc(1,1)=1.d0
-    rotc(1,2)=0.d0
-    rotc(1,3)=0.d0
-    rotc(2,1)=0.d0
-    rotc(2,2)=cos(euler(3))
-    rotc(2,3)=-sin(euler(3))
-    rotc(3,1)=0.d0
-    rotc(3,2)= -rotc(2,3)
-    rotc(3,3)=rotc(2,2)
+    rotc(1, 1) = 1.d0
+    rotc(1, 2) = 0.d0
+    rotc(1, 3) = 0.d0
+    rotc(2, 1) = 0.d0
+    rotc(2, 2) = cos(euler(3))
+    rotc(2, 3) = -sin(euler(3))
+    rotc(3, 1) = 0.d0
+    rotc(3, 2) = -rotc(2, 3)
+    rotc(3, 3) = rotc(2, 2)
 !
-    rotd(1,1)=0.d0
-    rotd(1,2)=0.d0
-    rotd(1,3)=0.d0
-    rotd(2,1)=0.d0
-    rotd(2,2)=0.d0
-    rotd(2,3)=0.d0
-    rotd(3,1)=0.d0
-    rotd(3,2)=0.d0
-    rotd(3,3)=0.d0
+    rotd(1, 1) = 0.d0
+    rotd(1, 2) = 0.d0
+    rotd(1, 3) = 0.d0
+    rotd(2, 1) = 0.d0
+    rotd(2, 2) = 0.d0
+    rotd(2, 3) = 0.d0
+    rotd(3, 1) = 0.d0
+    rotd(3, 2) = 0.d0
+    rotd(3, 3) = 0.d0
 !
-    rot(1,1)=0.d0
-    rot(1,2)=0.d0
-    rot(1,3)=0.d0
-    rot(2,1)=0.d0
-    rot(2,2)=0.d0
-    rot(2,3)=0.d0
-    rot(3,1)=0.d0
-    rot(3,2)=0.d0
-    rot(3,3)=0.d0
+    rot(1, 1) = 0.d0
+    rot(1, 2) = 0.d0
+    rot(1, 3) = 0.d0
+    rot(2, 1) = 0.d0
+    rot(2, 2) = 0.d0
+    rot(2, 3) = 0.d0
+    rot(3, 1) = 0.d0
+    rot(3, 2) = 0.d0
+    rot(3, 3) = 0.d0
 !
     do j1 = 1, 3
         do i1 = 1, 3
             do k1 = 1, 3
-                rotd(i1,j1)=rotd(i1,j1)+rotb(i1,k1)*rota(k1,j1)
+                rotd(i1, j1) = rotd(i1, j1)+rotb(i1, k1)*rota(k1, j1)
             end do
         end do
     end do
@@ -120,7 +120,7 @@ subroutine rotati(euler, rot)
     do j1 = 1, 3
         do i1 = 1, 3
             do k1 = 1, 3
-                rot(i1,j1)=rot(i1,j1)+rotc(i1,k1)*rotd(k1,j1)
+                rot(i1, j1) = rot(i1, j1)+rotc(i1, k1)*rotd(k1, j1)
             end do
         end do
     end do

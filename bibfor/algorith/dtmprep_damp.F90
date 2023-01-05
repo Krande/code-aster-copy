@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -41,7 +41,7 @@ subroutine dtmprep_damp(sd_dtm_)
 #include "asterfort/utmess.h"
 !
 !   -0.1- Input/output arguments
-    character(len=*)          , intent(in) :: sd_dtm_
+    character(len=*), intent(in) :: sd_dtm_
 !
 !   -0.2- Local variables
     integer           :: n1, n2, n, nbamor, nbmode
@@ -57,7 +57,7 @@ subroutine dtmprep_damp(sd_dtm_)
 !   0 - Initializations
     sd_dtm = sd_dtm_
     rundef = r8vide()
-    epsi   = r8prem()
+    epsi = r8prem()
 !
 !   1 - Retrieval of some necessary information
     call dtmget(sd_dtm, _NB_MODES, iscal=nbmode)
@@ -74,67 +74,67 @@ subroutine dtmprep_damp(sd_dtm_)
     call getvid('AMOR_MODAL', 'LIST_AMOR', iocc=1, nbval=0, nbret=n2)
 !
 !   3 - Filling up the diagonal damping matrix given the user entries
-    if ((n1.ne.0) .or. (n2.ne.0)) then
+    if ((n1 .ne. 0) .or. (n2 .ne. 0)) then
         if (n1 .ne. 0) then
             nbamor = -n1
         else
             call getvid('AMOR_MODAL', 'LIST_AMOR', iocc=1, scal=listam)
             call jelira(listam//'           .VALE', 'LONMAX', nbamor)
-        endif
+        end if
         if (nbamor .gt. nbmode) then
 !
-            vali (1) = nbmode
-            vali (2) = nbamor
-            vali (3) = nbmode
-            valk (1) = 'PREMIERS COEFFICIENTS'
+            vali(1) = nbmode
+            vali(2) = nbamor
+            vali(3) = nbmode
+            valk(1) = 'PREMIERS COEFFICIENTS'
             call utmess('A', 'ALGORITH16_18', sk=valk(1), ni=3, vali=vali)
             if (n1 .ne. 0) then
-                call getvr8('AMOR_MODAL', 'AMOR_REDUIT', iocc=1, nbval=nbmode,&
+                call getvr8('AMOR_MODAL', 'AMOR_REDUIT', iocc=1, nbval=nbmode, &
                             vect=amogen)
             else
                 call jeveuo(listam//'           .VALE', 'L', iamog)
                 do iam = 1, nbmode
                     amogen(iam) = zr(iamog+iam-1)
-                enddo
-            endif
-        else if (nbamor.lt.nbmode) then
+                end do
+            end if
+        else if (nbamor .lt. nbmode) then
 !
             if (n1 .ne. 0) then
-                call getvr8('AMOR_MODAL', 'AMOR_REDUIT', iocc=1, nbval=nbamor,&
+                call getvr8('AMOR_MODAL', 'AMOR_REDUIT', iocc=1, nbval=nbamor, &
                             vect=amogen, nbret=n)
             else
                 call jeveuo(listam//'           .VALE', 'L', iamog)
                 do iam = 1, nbamor
                     amogen(iam) = zr(iamog+iam-1)
-                enddo
-            endif
-            idiff = nbmode - nbamor
-            vali (1) = idiff
-            vali (2) = nbmode
-            vali (3) = idiff
+                end do
+            end if
+            idiff = nbmode-nbamor
+            vali(1) = idiff
+            vali(2) = nbmode
+            vali(3) = idiff
             call utmess('I', 'ALGORITH16_19', ni=3, vali=vali)
-            do iam = nbamor + 1, nbmode
+            do iam = nbamor+1, nbmode
                 amogen(iam) = amogen(nbamor)
-            enddo
-        else if (nbamor.eq.nbmode) then
+            end do
+        else if (nbamor .eq. nbmode) then
 !
             if (n1 .ne. 0) then
-                call getvr8('AMOR_MODAL', 'AMOR_REDUIT', iocc=1, nbval=nbamor,&
+                call getvr8('AMOR_MODAL', 'AMOR_REDUIT', iocc=1, nbval=nbamor, &
                             vect=amogen, nbret=n)
             else
                 call jeveuo(listam//'           .VALE', 'L', iamog)
                 do iam = 1, nbamor
                     amogen(iam) = zr(iamog+iam-1)
-                enddo
-            endif
-        endif
+                end do
+            end if
+        end if
     else
         if (typeba(1:9) .eq. 'MODE_MECA') then
-            call rsadpa(basemo, 'L', 1, 'AMOR_REDUIT', 1,&
+            call rsadpa(basemo, 'L', 1, 'AMOR_REDUIT', 1, &
                         0, sjv=lamre, istop=0)
-            if (zr(lamre).ne.rundef) then
+            if (zr(lamre) .ne. rundef) then
                 do im = 1, nbmode
-                    call rsadpa(basemo, 'L', 1, 'AMOR_REDUIT', im,&
+                    call rsadpa(basemo, 'L', 1, 'AMOR_REDUIT', im, &
                                 0, sjv=lamre)
                     amogen(im) = zr(lamre)
                 end do
@@ -144,14 +144,14 @@ subroutine dtmprep_damp(sd_dtm_)
         else
             call r8inir(nbmode, 0.d0, amogen, 1)
         end if
-    endif
+    end if
 !
     do im = 1, nbmode
 !       --- Static modes : critical damping to avoid artifical dynamics
 !           Note : dynamics of static modes are set as follows
 !       M = k/omega^2    K = k   C = 2*sqrt(k*M) = Cc   M-1*C = 2*omega
-        if (abs(masgen(im)).lt.epsi) amogen(im)= 1.d0
+        if (abs(masgen(im)) .lt. epsi) amogen(im) = 1.d0
         amogen(im) = 2.0d0*puls(im)*amogen(im)
-    enddo
+    end do
 !
 end subroutine

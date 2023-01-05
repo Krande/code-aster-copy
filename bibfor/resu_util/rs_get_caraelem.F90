@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 subroutine rs_get_caraelem(result_, nume, cara_elem, codret)
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterc/getexm.h"
@@ -57,25 +57,25 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    result     = result_
-    cara_elem  = ' '
-    nocc       = 0
-    codret     = -1
+    result = result_
+    cara_elem = ' '
+    nocc = 0
+    codret = -1
 !
 ! - Get from command file
 !
     cara_elem_comm = ' '
-    if (getexm(' ','CARA_ELEM') .eq. 1) then
+    if (getexm(' ', 'CARA_ELEM') .eq. 1) then
         call getvid(' ', 'CARA_ELEM', scal=cara_elem_comm, nbret=nocc)
     else
         cara_elem_comm = ' '
-        nocc           = 0
-    endif
+        nocc = 0
+    end if
 !
 ! - Get from results datastructure
 !
     cara_elem_resu = ' '
-    call rsadpa(result, 'L', 1, 'CARAELEM', nume,&
+    call rsadpa(result, 'L', 1, 'CARAELEM', nume, &
                 0, sjv=jv_para)
     cara_elem_resu = zk8(jv_para)
 !
@@ -83,23 +83,23 @@ implicit none
 !
     if (cara_elem_resu .eq. ' ') then
         if (nocc .eq. 0) then
-            cara_elem  = ' '
-            codret     = -1
+            cara_elem = ' '
+            codret = -1
         else
-            cara_elem  = cara_elem_comm
-            codret     = 1
-        endif
+            cara_elem = cara_elem_comm
+            codret = 1
+        end if
     else
         if (nocc .eq. 0) then
-            cara_elem  = cara_elem_resu
-            codret     = 2
+            cara_elem = cara_elem_resu
+            codret = 2
         else if (cara_elem_resu .eq. cara_elem_comm) then
-            cara_elem  = cara_elem_comm
-            codret     = 3
+            cara_elem = cara_elem_comm
+            codret = 3
         else
-            cara_elem  = cara_elem_comm
-            codret     = 4
-        endif
-    endif
+            cara_elem = cara_elem_comm
+            codret = 4
+        end if
+    end if
 !
 end subroutine

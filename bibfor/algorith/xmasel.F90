@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine xmasel(nnop, nfh, nfe, ddlc, igeom,&
-                  imate, pintt, cnset, heavt, lonch,&
-                  basloc, lsn, lst, matuu, heavn,&
+subroutine xmasel(nnop, nfh, nfe, ddlc, igeom, &
+                  imate, pintt, cnset, heavt, lonch, &
+                  basloc, lsn, lst, matuu, heavn, &
                   jpmilt, jstno, nnops, ddlm)
     implicit none
 #include "jeveux.h"
@@ -70,8 +70,8 @@ subroutine xmasel(nnop, nfh, nfe, ddlc, igeom,&
 !
     character(len=8) :: elrefp, elrese(6), fami(6)
 !
-    data    elrese /'SE2','TR3','TE4','SE3','TR6','T10'/
-    data    fami   /'BID','XINT','XINT','BID','XINT','XINT'/
+    data elrese/'SE2', 'TR3', 'TE4', 'SE3', 'TR6', 'T10'/
+    data fami/'BID', 'XINT', 'XINT', 'BID', 'XINT', 'XINT'/
 !
 ! ----------------------------------------------------------------------
 !
@@ -80,11 +80,11 @@ subroutine xmasel(nnop, nfh, nfe, ddlc, igeom,&
 !
     call elref1(elrefp)
 !
-    if (.not.iselli(elrefp)) then
-        irese=3
+    if (.not. iselli(elrefp)) then
+        irese = 3
     else
-        irese=0
-    endif
+        irese = 0
+    end if
 !
 !     ELEMENT DE REFERENCE PARENT : RECUP DE NDIM
     call elrefe_info(fami='RIGI', ndim=ndim)
@@ -93,24 +93,24 @@ subroutine xmasel(nnop, nfh, nfe, ddlc, igeom,&
     call elrefe_info(elrefe=elrese(ndim+irese), fami=fami(ndim+irese), npg=npg, nno=nno)
 !
 !     RÉCUPÉRATION DE LA SUBDIVISION DE L'ÉLÉMENT EN NSE SOUS ELEMENT
-    nse=lonch(1)
+    nse = lonch(1)
 !
 !       BOUCLE D'INTEGRATION SUR LES NSE SOUS-ELEMENTS
     do ise = 1, nse
 !
 !       BOUCLE SUR LES 4/3 SOMMETS DU SOUS-TETRA/TRIA
         do in = 1, nno
-            ino=cnset((ndim+1)*(ise-1)+in)
+            ino = cnset((ndim+1)*(ise-1)+in)
             do j = 1, ndim
                 if (ino .lt. 1000) then
-                    coorse(ndim*(in-1)+j)=zr(igeom-1+ndim*(ino-1)+j)
+                    coorse(ndim*(in-1)+j) = zr(igeom-1+ndim*(ino-1)+j)
                 else if (ino .gt. 1000 .and. ino .lt. 2000) then
-                    coorse(ndim*(in-1)+j)=pintt(ndim*(ino-1000-1)+j)
+                    coorse(ndim*(in-1)+j) = pintt(ndim*(ino-1000-1)+j)
                 else if (ino .gt. 2000 .and. ino .lt. 3000) then
-                    coorse(ndim*(in-1)+j)=zr(jpmilt-1+ndim*(ino-2000-1)+j)
+                    coorse(ndim*(in-1)+j) = zr(jpmilt-1+ndim*(ino-2000-1)+j)
                 else if (ino .gt. 3000) then
-                    coorse(ndim*(in-1)+j)=zr(jpmilt-1+ndim*(ino-3000-1)+j)
-                endif
+                    coorse(ndim*(in-1)+j) = zr(jpmilt-1+ndim*(ino-3000-1)+j)
+                end if
             end do
         end do
 !
@@ -121,19 +121,19 @@ subroutine xmasel(nnop, nfh, nfe, ddlc, igeom,&
 !
         if (ndim .eq. 3) then
 !
-            call xmase3(elrefp, ndim, coorse, igeom, he,&
-                        nfh, ddlc, nfe, basloc, nnop,&
-                        npg, imate, lsn, lst, matuu,&
+            call xmase3(elrefp, ndim, coorse, igeom, he, &
+                        nfh, ddlc, nfe, basloc, nnop, &
+                        npg, imate, lsn, lst, matuu, &
                         heavn, jstno, nnops, ddlm)
 !
-        else if (ndim.eq.2) then
+        else if (ndim .eq. 2) then
 !
-            call xmase2(elrefp, ndim, coorse, igeom, he,&
-                        nfh, ddlc, nfe, basloc, nnop,&
-                        npg, imate, lsn, lst, matuu,&
+            call xmase2(elrefp, ndim, coorse, igeom, he, &
+                        nfh, ddlc, nfe, basloc, nnop, &
+                        npg, imate, lsn, lst, matuu, &
                         heavn, jstno, nnops, ddlm)
 !
-        endif
+        end if
 !
 !
     end do

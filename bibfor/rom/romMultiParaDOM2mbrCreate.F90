@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,9 +19,9 @@
 !
 subroutine romMultiParaDOM2mbrCreate(ds_multipara, i_coef, ds_solve)
 !
-use Rom_Datastructure_type
+    use Rom_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -29,9 +29,9 @@ implicit none
 #include "asterfort/infniv.h"
 #include "asterfort/vtcmbl.h"
 !
-type(ROM_DS_MultiPara), intent(in) :: ds_multipara
-integer, intent(in) :: i_coef
-type(ROM_DS_Solve), intent(in) :: ds_solve
+    type(ROM_DS_MultiPara), intent(in) :: ds_multipara
+    integer, intent(in) :: i_coef
+    type(ROM_DS_Solve), intent(in) :: ds_solve
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -64,40 +64,40 @@ type(ROM_DS_Solve), intent(in) :: ds_solve
     call infniv(ifm, niv)
     if (niv .ge. 2) then
         call utmess('I', 'ROM5_62')
-    endif
+    end if
 !
 ! - Initializations
 !
-    syst_2mbr         = ds_solve%syst_2mbr
-    syst_2mbr_type    = ds_solve%syst_2mbr_type
-    nb_vect           = ds_multipara%nb_vect
+    syst_2mbr = ds_solve%syst_2mbr
+    syst_2mbr_type = ds_solve%syst_2mbr_type
+    nb_vect = ds_multipara%nb_vect
     ASSERT(nb_vect .le. nb_vect_maxi)
-    type_comb(:)      = ''
-    vect_comb(:)      = ''
-    coef_comb(:)      = 0.d0
+    type_comb(:) = ''
+    vect_comb(:) = ''
+    coef_comb(:) = 0.d0
     type_vect_comb(:) = ''
 !
 ! - Compute second member
 !
     i_coef_comb = 0
     do i_vect = 1, nb_vect
-        vect_name              = ds_multipara%vect_name(i_vect)
-        vect_comb(i_vect)      = vect_name(1:8)//'           .VALE'
+        vect_name = ds_multipara%vect_name(i_vect)
+        vect_comb(i_vect) = vect_name(1:8)//'           .VALE'
         type_vect_comb(i_vect) = ds_multipara%vect_type(i_vect)
-        l_coefv_cplx           = ds_multipara%vect_coef(i_vect)%l_cplx
+        l_coefv_cplx = ds_multipara%vect_coef(i_vect)%l_cplx
         if (l_coefv_cplx) then
             type_comb(i_vect) = 'C'
-            i_coef_comb = i_coef_comb +1
+            i_coef_comb = i_coef_comb+1
             coef_comb(i_coef_comb) = real(ds_multipara%vect_coef(i_vect)%coef_cplx(i_coef))
-            i_coef_comb = i_coef_comb +1
+            i_coef_comb = i_coef_comb+1
             coef_comb(i_coef_comb) = dimag(ds_multipara%vect_coef(i_vect)%coef_cplx(i_coef))
         else
             type_comb(i_vect) = 'R'
-            i_coef_comb = i_coef_comb +1
+            i_coef_comb = i_coef_comb+1
             coef_comb(i_coef_comb) = ds_multipara%vect_coef(i_vect)%coef_real(i_coef)
-        endif
+        end if
     end do
-    call vtcmbl(nb_vect, type_comb, coef_comb, type_vect_comb, vect_comb,&
+    call vtcmbl(nb_vect, type_comb, coef_comb, type_vect_comb, vect_comb, &
                 syst_2mbr_type, syst_2mbr//'.VALE')
 !
 end subroutine

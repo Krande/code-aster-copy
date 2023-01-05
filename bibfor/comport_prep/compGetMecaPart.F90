@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,14 +19,14 @@
 !
 subroutine compGetMecaPart(rela_comp, kit_comp, meca_comp)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/comp_meca_l.h"
 !
-character(len=16), intent(in) :: rela_comp, kit_comp(4)
-character(len=16), intent(out) :: meca_comp
+    character(len=16), intent(in) :: rela_comp, kit_comp(4)
+    character(len=16), intent(out) :: meca_comp
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -58,6 +58,6 @@ character(len=16), intent(out) :: meca_comp
     else
         meca_comp = rela_comp
 
-    endif
+    end if
 !
 end subroutine

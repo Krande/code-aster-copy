@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -52,53 +52,53 @@ subroutine utnbnv(typmav, nbsv, nbnv)
 ! DETERMINATION DE NBNV ET NBSV (EN 2D)
 !
 ! TRIANGLE
-    if ((formv.eq.'TR') .or. (formv.eq.'TL')) then
+    if ((formv .eq. 'TR') .or. (formv .eq. 'TL')) then
         nbsv = 3
-        ASSERT(noeuv.eq.'3'.or.noeuv.eq.'6')
+        ASSERT(noeuv .eq. '3' .or. noeuv .eq. '6')
         if (noeuv .eq. '3') then
             nbnv = 3
-        else if (noeuv.eq.'6') then
+        else if (noeuv .eq. '6') then
             nbnv = 6
-        endif
+        end if
 ! QUADRANGLE
-    else if ((formv.eq.'QU').or.(formv.eq.'QL')) then
+    else if ((formv .eq. 'QU') .or. (formv .eq. 'QL')) then
         nbsv = 4
-        ASSERT(noeuv.eq.'4'.or.noeuv.eq.'8'.or.noeuv.eq.'9')
+        ASSERT(noeuv .eq. '4' .or. noeuv .eq. '8' .or. noeuv .eq. '9')
         if (noeuv .eq. '4') then
             nbnv = 4
-        else if (noeuv.eq.'8') then
+        else if (noeuv .eq. '8') then
             nbnv = 8
-        else if (noeuv.eq.'9') then
+        else if (noeuv .eq. '9') then
             nbnv = 9
-        endif
+        end if
 ! HEXAEDRE
-    else if (formv.eq.'HE') then
+    else if (formv .eq. 'HE') then
         ASSERT(typmav(5:5) .eq. '8' .or. typmav(5:6) .eq. '20' .or. typmav(5:6) .eq. '27')
         if (typmav(5:5) .eq. '8') then
             nbnv = 8
-        else if (typmav(5:6).eq.'20') then
+        else if (typmav(5:6) .eq. '20') then
             nbnv = 20
-        else if (typmav(5:6).eq.'27') then
+        else if (typmav(5:6) .eq. '27') then
             nbnv = 27
-        endif
+        end if
 ! PENTAEDRE
-    else if (formv.eq.'PE') then
-        ASSERT(typmav(6:6).eq.'6'.or.typmav(6:7).eq.'15')
+    else if (formv .eq. 'PE') then
+        ASSERT(typmav(6:6) .eq. '6' .or. typmav(6:7) .eq. '15')
         if (typmav(6:6) .eq. '6') then
             nbnv = 6
-        else if (typmav(6:7).eq.'15') then
+        else if (typmav(6:7) .eq. '15') then
             nbnv = 15
-        endif
+        end if
 ! TETRAEDRE
-    else if (formv.eq.'TE') then
-        ASSERT(typmav(6:6).eq.'4'.or.typmav(6:7).eq.'10')
+    else if (formv .eq. 'TE') then
+        ASSERT(typmav(6:6) .eq. '4' .or. typmav(6:7) .eq. '10')
         if (typmav(6:6) .eq. '4') then
             nbnv = 4
-        else if (typmav(6:7).eq.'10') then
+        else if (typmav(6:7) .eq. '10') then
             nbnv = 10
-        endif
+        end if
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -49,7 +49,7 @@ subroutine vriale()
     nbmode = -nbmode
     if (nbamor .ne. 0 .and. nbamor .ne. nbmode) then
         call utmess('E', 'ALGORITH11_29')
-    endif
+    end if
 !
     call getvtx('EXCIT', 'MODAL', iocc=1, scal=excmod, nbret=ibid)
     call getvis('EXCIT', 'NUME_ORDRE_I', iocc=1, nbval=0, nbret=nindex)
@@ -62,7 +62,7 @@ subroutine vriale()
     nindex = -nindex
     if (excmod .eq. 'OUI' .and. nbmode .ne. nindex) then
         call utmess('A', 'ALGORITH11_30')
-    endif
+    end if
 !
 !---NNOEEX=NINDEX OU NNOEEX=2*NINDEX
 !
@@ -71,8 +71,8 @@ subroutine vriale()
         call getvtx('EXCIT', 'NOM_CMP_I', iocc=1, nbval=0, nbret=nbcmpi)
         if (nbcmpi .ne. nbindi) then
             call utmess('E', 'PREPOST3_85')
-        endif
-    endif
+        end if
+    end if
 
     nindex = -nbindi
 !
@@ -81,23 +81,23 @@ subroutine vriale()
     if (nnoeex .ne. 0) then
         napexc = nnoeex
     else
-        napexc=0
-    endif
+        napexc = 0
+    end if
 !
     call getvid('EXCIT', 'CHAM_NO', iocc=1, nbval=0, nbret=nvasex)
     nvasex = -nvasex
     if (nvasex .ne. 0) then
         napexc = nvasex
         graexc = 'EFFO'
-    endif
+    end if
 !
-    if ((graexc.eq.'SOUR_PRESS') .or. (graexc.eq.'SOUR_FORCE')) then
+    if ((graexc .eq. 'SOUR_PRESS') .or. (graexc .eq. 'SOUR_FORCE')) then
         if (nnoeex .ne. 2*nindex) then
             call utmess('E', 'ALGORITH11_32')
-        endif
-    else if ((napexc.ne.nindex).and.(excmod.eq.'NON')) then
+        end if
+    else if ((napexc .ne. nindex) .and. (excmod .eq. 'NON')) then
         call utmess('E', 'ALGORITH11_33')
-    endif
+    end if
 !
 !------NNOEEX=NCMPEX
 !
@@ -105,29 +105,29 @@ subroutine vriale()
     ncmpex = -ncmpex
     if (nnoeex .ne. ncmpex) then
         call utmess('E', 'ALGORITH11_34')
-    endif
+    end if
 !
 !---PRESENCE DE MODE STATIQUE QUAND ON EST EN DEPL IMPOSE
 !
     call getvid(' ', 'MODE_STAT', nbval=0, nbret=nmost1)
-    if ((graexc.eq.'DEPL_R') .and. (nmost1.eq.0) .and. (nvasex.eq.0)) then
+    if ((graexc .eq. 'DEPL_R') .and. (nmost1 .eq. 0) .and. (nvasex .eq. 0)) then
         call utmess('E', 'ALGORITH11_35')
-    else if ((graexc.ne.'DEPL_R').and.(nmost1.ne.0)) then
+    else if ((graexc .ne. 'DEPL_R') .and. (nmost1 .ne. 0)) then
         call utmess('E', 'ALGORITH11_36')
-    endif
+    end if
 !
 !---FREMIN < FREMAX
 !
     call getvr8('REPONSE', 'FREQ_MIN', iocc=1, nbval=0, nbret=ibid)
     if (ibid .ne. 0) then
         call getvr8('REPONSE', 'FREQ_MIN', iocc=1, scal=fremin, nbret=ibid)
-    endif
+    end if
     call getvr8('REPONSE', 'FREQ_MAX', iocc=1, nbval=0, nbret=ibid)
     if (ibid .ne. 0) then
         call getvr8('REPONSE', 'FREQ_MAX', iocc=1, scal=fremax, nbret=ibid)
         if (fremin .ge. fremax) then
             call utmess('E', 'ALGORITH11_37')
-        endif
-    endif
+        end if
+    end if
 !
 end subroutine

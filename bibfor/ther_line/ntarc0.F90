@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine ntarc0(result, model     , mate     , cara_elem   , list_load_resu,&
-                  para  , nume_store, time_curr, sdcrit_nonl_)
+subroutine ntarc0(result, model, mate, cara_elem, list_load_resu, &
+                  para, nume_store, time_curr, sdcrit_nonl_)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -80,21 +80,21 @@ implicit none
 !
     call rsadpa(result, 'E', 1, 'PARM_THETA', nume_store, 0, sjv=jv_para)
     zr(jv_para) = para(1)
-    call rsadpa(result, 'E', 1, 'DELTAT'    , nume_store, 0, sjv=jv_para)
+    call rsadpa(result, 'E', 1, 'DELTAT', nume_store, 0, sjv=jv_para)
     zr(jv_para) = para(2)
 !
 ! - Store non-linear criteria
 !
     if (present(sdcrit_nonl_)) then
-        call jeveuo(sdcrit_nonl_(1:19)//'.CRTR', 'L', vr   = v_crit_crtr)
-        call jeveuo(sdcrit_nonl_(1:19)//'.CRDE', 'L', vk16 = v_crit_crde)
+        call jeveuo(sdcrit_nonl_(1:19)//'.CRTR', 'L', vr=v_crit_crtr)
+        call jeveuo(sdcrit_nonl_(1:19)//'.CRDE', 'L', vk16=v_crit_crde)
         call rsadpa(result, 'E', 1, v_crit_crde(1), nume_store, 0, sjv=jv_para)
         zi(jv_para) = nint(v_crit_crtr(1))
-    endif
+    end if
 !
 ! - Store others
 !
-    call rssepa(result, nume_store, model, mate, cara_elem,&
+    call rssepa(result, nume_store, model, mate, cara_elem, &
                 list_load_resu)
 !
     call jedema()

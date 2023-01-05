@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine lglini(yd, nbmat, mater, f0, sigd,&
-                  deps, devg, devgii, traceg, dy,&
+subroutine lglini(yd, nbmat, mater, f0, sigd, &
+                  deps, devg, devgii, traceg, dy, &
                   codret)
 !
     implicit none
@@ -66,9 +66,9 @@ subroutine lglini(yd, nbmat, mater, f0, sigd,&
 ! ======================================================================
 ! --- INITIALISATION DE PARAMETRES -------------------------------------
 ! ======================================================================
-    parameter       ( epssig  = 1.0d-8 )
+    parameter(epssig=1.0d-8)
 ! ======================================================================
-    common /tdim/   ndt , ndi
+    common/tdim/ndt, ndi
 ! ======================================================================
     call jemarq()
 ! ======================================================================
@@ -81,12 +81,12 @@ subroutine lglini(yd, nbmat, mater, f0, sigd,&
 ! ======================================================================
 ! --- INITIALISATION DE DONNEES ----------------------------------------
 ! ======================================================================
-    gamcjs = mater(12,2)
-    pref = mater(15,2)
+    gamcjs = mater(12, 2)
+    pref = mater(15, 2)
     se(1:ndt) = yd(1:ndt)
-    ie=   yd(ndt+1)
-    gamp= yd(ndt+2)
-    delta=yd(ndt+4)
+    ie = yd(ndt+1)
+    gamp = yd(ndt+2)
+    delta = yd(ndt+4)
 ! ======================================================================
 ! --- CALCUL DES VARIABLES D'ECROUISSAGES ------------------------------
 ! ======================================================================
@@ -94,11 +94,11 @@ subroutine lglini(yd, nbmat, mater, f0, sigd,&
 ! ======================================================================
 ! --- CALCUL DES VARIABLES ELASTIQUES INITIALES ------------------------
 ! ======================================================================
-    siie=ddot(ndt,se,1,se,1)
-    siie = sqrt (siie)
-    rcos3t = cos3t (se, pref, epssig)
-    re = hlode (gamcjs, rcos3t)
-    ge = gdev (siie, re)
+    siie = ddot(ndt, se, 1, se, 1)
+    siie = sqrt(siie)
+    rcos3t = cos3t(se, pref, epssig)
+    re = hlode(gamcjs, rcos3t)
+    ge = gdev(siie, re)
 ! ======================================================================
 ! --- CALCUL DE Q ET DE N ----------------------------------------------
 ! ======================================================================
@@ -108,13 +108,13 @@ subroutine lglini(yd, nbmat, mater, f0, sigd,&
     end do
     if (teste) then
         call lcdevi(sigd, si)
-        invn = trace (ndi,sigd)
-        call solrei(gamp, si, invn, zr(jpara), nbmat,&
+        invn = trace(ndi, sigd)
+        call solrei(gamp, si, invn, zr(jpara), nbmat, &
                     mater, q, vecn, codret)
     else
-        call solrei(gamp, se, ie, zr(jpara), nbmat,&
+        call solrei(gamp, se, ie, zr(jpara), nbmat, &
                     mater, q, vecn, codret)
-    endif
+    end if
     if (codret .ne. 0) goto 100
 ! ======================================================================
 ! --- INITIALISATION ---------------------------------------------------
@@ -123,18 +123,18 @@ subroutine lglini(yd, nbmat, mater, f0, sigd,&
 ! ======================================================================
 ! --- PREMIERE INITIALISATION POUR GAMP = 0 ----------------------------
 ! ======================================================================
-        call lglind(nbmat, mater, zr(jpara), ge, q,&
-                    vecn, deps, devg, devgii, traceg,&
+        call lglind(nbmat, mater, zr(jpara), ge, q, &
+                    vecn, deps, devg, devgii, traceg, &
                     dy)
     else
 ! ======================================================================
 ! --- INITIALISATION DE NEWTON -----------------------------------------
 ! ======================================================================
         call dervar(gamp, nbmat, mater, zr(jpara), zr(jderiv))
-        call lglinn(nbmat, mater, zr(jpara), zr(jderiv), ge,&
-                    ie, q, vecn, f0, delta,&
+        call lglinn(nbmat, mater, zr(jpara), zr(jderiv), ge, &
+                    ie, q, vecn, f0, delta, &
                     devg, devgii, traceg, dy)
-    endif
+    end if
 ! ======================================================================
 ! --- DESTRUCTION DES VECTEURS INUTILES --------------------------------
 ! ======================================================================

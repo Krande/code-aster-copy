@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,9 +19,9 @@
 !
 subroutine romMultiParaROM2mbrCreate(base, ds_multipara, i_coef, syst_2mbrROM)
 !
-use Rom_Datastructure_type
+    use Rom_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -30,10 +30,10 @@ implicit none
 #include "asterfort/utmess.h"
 #include "blas/zdotc.h"
 !
-type(ROM_DS_Empi), intent(in) :: base
-type(ROM_DS_MultiPara), intent(inout) :: ds_multipara
-integer, intent(in) :: i_coef
-character(len=19), intent(in) :: syst_2mbrROM
+    type(ROM_DS_Empi), intent(in) :: base
+    type(ROM_DS_MultiPara), intent(inout) :: ds_multipara
+    integer, intent(in) :: i_coef
+    character(len=19), intent(in) :: syst_2mbrROM
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -66,7 +66,7 @@ character(len=19), intent(in) :: syst_2mbrROM
     call infniv(ifm, niv)
     if (niv .ge. 2) then
         call utmess('I', 'ROM5_66')
-    endif
+    end if
 !
 ! - Initializations
 !
@@ -76,47 +76,47 @@ character(len=19), intent(in) :: syst_2mbrROM
 !
 ! - Get second member
 !
-    if (ds_multipara%syst_type .eq.'R') then
-       call jeveuo(syst_2mbrROM, 'E', vr = vr_syst_2mbp)
-       vr_syst_2mbp(:) = 0.d0
-    else if (ds_multipara%syst_type .eq.'C') then
-       call jeveuo(syst_2mbrROM, 'E', vc = vc_syst_2mbp)
-       vc_syst_2mbp(:) = dcmplx(0.d0,0.d0)
+    if (ds_multipara%syst_type .eq. 'R') then
+        call jeveuo(syst_2mbrROM, 'E', vr=vr_syst_2mbp)
+        vr_syst_2mbp(:) = 0.d0
+    else if (ds_multipara%syst_type .eq. 'C') then
+        call jeveuo(syst_2mbrROM, 'E', vc=vc_syst_2mbp)
+        vc_syst_2mbp(:) = dcmplx(0.d0, 0.d0)
     else
-       ASSERT(ASTER_FALSE)
+        ASSERT(ASTER_FALSE)
     end if
 !
 ! - Compute second member
 !
-    if (ds_multipara%syst_type .eq.'R') then
+    if (ds_multipara%syst_type .eq. 'R') then
         do iVect = 1, nbVect
             l_coef_cplx = ds_multipara%vect_coef(iVect)%l_cplx
             l_coef_real = ds_multipara%vect_coef(iVect)%l_real
             ASSERT(l_coef_real)
             coef_r = ds_multipara%vect_coef(iVect)%coef_real(i_coef)
-            call jeveuo(ds_multipara%vect_redu(iVect), 'L', vr = vr_vect_redu)
+            call jeveuo(ds_multipara%vect_redu(iVect), 'L', vr=vr_vect_redu)
             do iMode = 1, nbMode
-                vr_syst_2mbp(iMode)=vr_syst_2mbp(iMode)+vr_vect_redu(iMode)*coef_r
+                vr_syst_2mbp(iMode) = vr_syst_2mbp(iMode)+vr_vect_redu(iMode)*coef_r
             end do
         end do
-    else if (ds_multipara%syst_type .eq.'C') then
+    else if (ds_multipara%syst_type .eq. 'C') then
         do iVect = 1, nbVect
             l_coef_cplx = ds_multipara%vect_coef(iVect)%l_cplx
             l_coef_real = ds_multipara%vect_coef(iVect)%l_real
             if (l_coef_cplx) then
-                coef_c    = ds_multipara%vect_coef(iVect)%coef_cplx(i_coef)
+                coef_c = ds_multipara%vect_coef(iVect)%coef_cplx(i_coef)
                 coef_cplx = coef_c
             else
-                coef_r    = ds_multipara%vect_coef(iVect)%coef_real(i_coef)
+                coef_r = ds_multipara%vect_coef(iVect)%coef_real(i_coef)
                 coef_cplx = dcmplx(coef_r)
-            endif
-            call jeveuo(ds_multipara%vect_redu(iVect), 'L', vc = vc_vect_redu)
+            end if
+            call jeveuo(ds_multipara%vect_redu(iVect), 'L', vc=vc_vect_redu)
             do iMode = 1, nbMode
-                vc_syst_2mbp(iMode)=vc_syst_2mbp(iMode)+vc_vect_redu(iMode)*coef_cplx
+                vc_syst_2mbp(iMode) = vc_syst_2mbp(iMode)+vc_vect_redu(iMode)*coef_cplx
             end do
         end do
     else
-       ASSERT(ASTER_FALSE)
+        ASSERT(ASTER_FALSE)
     end if
 !
 end subroutine

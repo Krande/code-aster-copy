@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine ttprsm(ndim, ddeple, ddeplm, dlagrf, coeffr,&
-                  tau1, tau2, mprojt, inadh, rese,&
+subroutine ttprsm(ndim, ddeple, ddeplm, dlagrf, coeffr, &
+                  tau1, tau2, mprojt, inadh, rese, &
                   nrese, coeffp, lpenaf, dvitet)
 !
 ! person_in_charge: mickael.abbas at edf.fr
@@ -78,14 +78,14 @@ subroutine ttprsm(ndim, ddeple, ddeplm, dlagrf, coeffr,&
 ! --- CALCUL DU SAUT DE "VITESSE" [[DELTA X]]
 !
     do i = 1, ndim
-        dvite(i) = ddeple(i) - ddeplm(i)
+        dvite(i) = ddeple(i)-ddeplm(i)
     end do
 !
 ! --- PROJECTION DU SAUT SUR LE PLAN TANGENT
 !
     do i = 1, ndim
         do k = 1, ndim
-            dvitet(i) = mprojt(i,k)*dvite(k)+dvitet(i)
+            dvitet(i) = mprojt(i, k)*dvite(k)+dvitet(i)
         end do
     end do
 !
@@ -100,19 +100,19 @@ subroutine ttprsm(ndim, ddeple, ddeplm, dlagrf, coeffr,&
             do i = 1, 2
                 rese(i) = dlagrf(1)*tau1(i)+coeffr*dvitet(i)
             end do
-        else if (ndim.eq.3) then
+        else if (ndim .eq. 3) then
             do i = 1, 3
-                rese(i) = dlagrf(1)*tau1(i)+ dlagrf(2)*tau2(i)+ coeffr*dvitet(i)
+                rese(i) = dlagrf(1)*tau1(i)+dlagrf(2)*tau2(i)+coeffr*dvitet(i)
             end do
         else
             ASSERT(.false.)
-        endif
-    endif
+        end if
+    end if
 !
 ! -- CALCUL DU COEF D'ADHERENCE
 !
     do i = 1, 3
-        nrese = rese(i)*rese(i) + nrese
+        nrese = rese(i)*rese(i)+nrese
     end do
     nrese = sqrt(nrese)
 !
@@ -123,6 +123,6 @@ subroutine ttprsm(ndim, ddeple, ddeplm, dlagrf, coeffr,&
         inadh = 1
     else
         inadh = 0
-    endif
+    end if
 !
 end subroutine

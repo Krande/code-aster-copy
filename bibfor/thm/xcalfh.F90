@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,27 +17,27 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: daniele.colombo at ifpen.fr
 !
-subroutine xcalfh(ds_thm,&
-                  option, ndim, dimcon,&
-                  addep1, adcp11, addeme, congep, dsde,&
+subroutine xcalfh(ds_thm, &
+                  option, ndim, dimcon, &
+                  addep1, adcp11, addeme, congep, dsde, &
                   grap1, rho11, gravity, tperm, &
-                  dimenr,&
+                  dimenr, &
                   adenhy, nfh)
 !
-use THM_type
+    use THM_type
 !
-implicit none
+    implicit none
 !
 #include "asterfort/THM_type.h"
 !
-type(THM_DS), intent(in) :: ds_thm
-integer :: ndim,  nfh
-integer :: addeme, addep1, adcp11, adenhy
-integer :: dimcon, dimenr
-real(kind=8) :: congep(1:dimcon)
-real(kind=8) :: dsde(1:dimcon, 1:dimenr), grap1(3)
-real(kind=8) :: rho11, gravity(3), tperm(ndim,ndim)
-character(len=16) :: option
+    type(THM_DS), intent(in) :: ds_thm
+    integer :: ndim, nfh
+    integer :: addeme, addep1, adcp11, adenhy
+    integer :: dimcon, dimenr
+    real(kind=8) :: congep(1:dimcon)
+    real(kind=8) :: dsde(1:dimcon, 1:dimenr), grap1(3)
+    real(kind=8) :: rho11, gravity(3), tperm(ndim, ndim)
+    character(len=16) :: option
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -56,7 +56,7 @@ character(len=16) :: option
 ! --------------------------------------------------------------------------------------------------
 !
     cliq = ds_thm%ds_material%liquid%unsurk
-    viscl  = ds_thm%ds_material%liquid%visc
+    viscl = ds_thm%ds_material%liquid%visc
     dviscl = ds_thm%ds_material%liquid%dvisc_dtemp
     dr11p1 = 0.d0
 !
@@ -72,7 +72,7 @@ character(len=16) :: option
         dkrel1 = 0.d0
         visco = viscl
         dvisco = dviscl
-    endif
+    end if
 ! ======================================================================
 ! --- CALCUL DE LAMBDA1 ------------------------------------------------
 ! ======================================================================
@@ -87,71 +87,71 @@ character(len=16) :: option
 ! ======================================================================
 ! CALCUL DES DERIVEES DES MASSES VOLUMIQUES
 !
-    if ((option(1:9).eq.'RIGI_MECA') .or. (option(1:9).eq.'FULL_MECA')) then
+    if ((option(1:9) .eq. 'RIGI_MECA') .or. (option(1:9) .eq. 'FULL_MECA')) then
         if (nume_thmc .eq. LIQU_SATU) then
-            dr11p1=rho11*cliq
-        endif
-    endif
+            dr11p1 = rho11*cliq
+        end if
+    end if
 !
 ! ======================================================================
 ! CALCUL DES FLUX HYDRAULIQUES
 !
-    if ((option(1:9).eq.'RAPH_MECA') .or. (option(1:9).eq.'FULL_MECA')) then
+    if ((option(1:9) .eq. 'RAPH_MECA') .or. (option(1:9) .eq. 'FULL_MECA')) then
         if (nume_thmc .eq. LIQU_SATU) then
             do i = 1, ndim
-                congep(adcp11+i)=0.d0
+                congep(adcp11+i) = 0.d0
                 do j = 1, ndim
-                    congep(adcp11+i) = congep(adcp11+i)+&
-                                       rho11*lambd1(1) *tperm(i,j)*(-grap1(j)+rho11*gravity(j))
+                    congep(adcp11+i) = congep(adcp11+i)+ &
+                                       rho11*lambd1(1)*tperm(i, j)*(-grap1(j)+rho11*gravity(j))
                 end do
             end do
-        endif
-    endif
+        end if
+    end if
 !
-    if ((option(1:9).eq.'RIGI_MECA') .or. (option(1:9).eq.'FULL_MECA')) then
+    if ((option(1:9) .eq. 'RIGI_MECA') .or. (option(1:9) .eq. 'FULL_MECA')) then
         if (nume_thmc .eq. LIQU_SATU) then
-            do i=1,ndim
+            do i = 1, ndim
                 do j = 1, ndim
-                    dsde(adcp11+i,addep1) = dsde(adcp11+i,addep1) +&
-                                            dr11p1*lambd1(1)*tperm(i,j)*(-grap1(j)+rho11*gravity(j))
-                    dsde(adcp11+i,addep1) = dsde(adcp11+i, addep1) +&
-                                            rho11*lambd1(3)*tperm(i,j)*(-grap1(j)+rho11*gravity(j))
-                    dsde(adcp11+i,addep1) = dsde(adcp11+i,addep1) +&
-                                            rho11*lambd1(1)*tperm(i,j)*(dr11p1*gravity(j))
-                    dsde(adcp11+i,addep1+j) = dsde(adcp11+i,addep1+j)-&
-                                              rho11*lambd1(1)*tperm(i,j)
+                    dsde(adcp11+i, addep1) = dsde(adcp11+i, addep1)+ &
+                                           dr11p1*lambd1(1)*tperm(i, j)*(-grap1(j)+rho11*gravity(j))
+                    dsde(adcp11+i, addep1) = dsde(adcp11+i, addep1)+ &
+                                            rho11*lambd1(3)*tperm(i, j)*(-grap1(j)+rho11*gravity(j))
+                    dsde(adcp11+i, addep1) = dsde(adcp11+i, addep1)+ &
+                                             rho11*lambd1(1)*tperm(i, j)*(dr11p1*gravity(j))
+                    dsde(adcp11+i, addep1+j) = dsde(adcp11+i, addep1+j)- &
+                                               rho11*lambd1(1)*tperm(i, j)
                 end do
                 if (ds_thm%ds_elem%l_dof_meca) then
-                    do j=1, 3
+                    do j = 1, 3
                         do k = 1, ndim
-                            dsde(adcp11+i,addeme+ndim-1+i) = dsde(adcp11+i,addeme+ndim-1+i)+&
-                                         rho11*lambd1(2)*tperm(i,k)*(-grap1(k)+rho11*gravity(k))
+                            dsde(adcp11+i, addeme+ndim-1+i) = dsde(adcp11+i, addeme+ndim-1+i)+ &
+                                            rho11*lambd1(2)*tperm(i, k)*(-grap1(k)+rho11*gravity(k))
                         end do
                     end do
-               endif
+                end if
             end do
-        endif
-    endif
+        end if
+    end if
 ! ======================================================================
 ! CALCUL DES FLUX HYDRAULIQUES POUR XFEM
 !
-    if ((option(1:9).eq.'RIGI_MECA') .or. (option(1:9) .eq.'FULL_MECA')) then
+    if ((option(1:9) .eq. 'RIGI_MECA') .or. (option(1:9) .eq. 'FULL_MECA')) then
         if (nume_thmc .eq. LIQU_SATU) then
             do i = 1, ndim
                 do ifh = 1, nfh
                     do j = 1, ndim
-                        dsde(adcp11+i,adenhy+(ifh-1)*(ndim+1)) = &
-                            dsde(adcp11+i,adenhy+(ifh-1)*(ndim+1))+&
-                            dr11p1*lambd1(1)*(-grap1(j)+rho11*gravity(j))*tperm(i,j)
-                        dsde(adcp11+i,adenhy+(ifh-1)*(ndim+1)) =&
-                            dsde(adcp11+i,adenhy+(ifh-1)*(ndim+1))+&
-                            rho11*lambd1(3)*(-grap1(j)+rho11*gravity(j))*tperm(i,j)
-                        dsde(adcp11+i,adenhy+(ifh-1)*(ndim+1)) =&
-                            dsde(adcp11+i,adenhy+(ifh-1)*(ndim+1))+&
-                            rho11*lambd1(1)*(dr11p1*gravity(j))*tperm(i,j)
+                        dsde(adcp11+i, adenhy+(ifh-1)*(ndim+1)) = &
+                            dsde(adcp11+i, adenhy+(ifh-1)*(ndim+1))+ &
+                            dr11p1*lambd1(1)*(-grap1(j)+rho11*gravity(j))*tperm(i, j)
+                        dsde(adcp11+i, adenhy+(ifh-1)*(ndim+1)) = &
+                            dsde(adcp11+i, adenhy+(ifh-1)*(ndim+1))+ &
+                            rho11*lambd1(3)*(-grap1(j)+rho11*gravity(j))*tperm(i, j)
+                        dsde(adcp11+i, adenhy+(ifh-1)*(ndim+1)) = &
+                            dsde(adcp11+i, adenhy+(ifh-1)*(ndim+1))+ &
+                            rho11*lambd1(1)*(dr11p1*gravity(j))*tperm(i, j)
                     end do
                 end do
             end do
-        endif
-    endif
+        end if
+    end if
 end subroutine

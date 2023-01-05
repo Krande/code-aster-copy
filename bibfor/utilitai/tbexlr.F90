@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -61,10 +61,10 @@ subroutine tbexlr(nomta, listr, basout)
     call jeexin(nomtab//'.TBBA', iret)
     if (iret .eq. 0) then
         call utmess('F', 'UTILITAI4_64')
-    endif
+    end if
     if (nomtab(18:19) .ne. '  ') then
         call utmess('F', 'UTILITAI4_68')
-    endif
+    end if
     base = basout(1:1)
 !
     call jeveuo(nomtab//'.TBNP', 'E', vi=tbnp)
@@ -72,10 +72,10 @@ subroutine tbexlr(nomta, listr, basout)
     nblign = tbnp(2)
     if (nbpara .eq. 0) then
         call utmess('F', 'UTILITAI4_65')
-    endif
+    end if
     if (nblign .eq. 0) then
         call utmess('F', 'UTILITAI4_76')
-    endif
+    end if
 !
     call jeveuo(nomtab//'.TBLP', 'L', vk24=tblp)
 !
@@ -86,16 +86,16 @@ subroutine tbexlr(nomta, listr, basout)
     do i = 1, nbpara
         type = tblp(1+4*(i-1)+1)
         if (type(1:1) .eq. 'I') then
-            nbpr = nbpr + 1
+            nbpr = nbpr+1
             nume_para(nbpr) = i
         else if (type(1:1) .eq. 'R') then
-            nbpr = nbpr + 1
+            nbpr = nbpr+1
             nume_para(nbpr) = i
-        endif
+        end if
     end do
     if (nbpr .eq. 0) then
         call utmess('F', 'UTILITAI4_81')
-    endif
+    end if
 !
 !     --- ON NE RETIENT QUE LES LIGNES NON VIDES ---
 !
@@ -107,20 +107,20 @@ subroutine tbexlr(nomta, listr, basout)
             ipar = nume_para(j)
             nomjvl = tblp(1+4*(ipar-1)+3)
             call jeveuo(nomjvl, 'L', jlogq)
-            if (zi(jlogq+i-1) .eq. 1) nbcl = nbcl + 1
+            if (zi(jlogq+i-1) .eq. 1) nbcl = nbcl+1
         end do
         if (nbcl .ne. 0) then
-            nblg = nblg + 1
+            nblg = nblg+1
             nume_lign(nblg) = i
-        endif
+        end if
     end do
     if (nblg .eq. 0) then
         call utmess('F', 'UTILITAI4_82')
-    endif
+    end if
 !
 !     --- RECHERCHE DE BLOCS ---
 !
-    nbvale = nbpr * nblg
+    nbvale = nbpr*nblg
     AS_ALLOCATE(vr=vale_r, size=nbvale)
     AS_ALLOCATE(vi=colonn, size=nbpr)
     AS_ALLOCATE(vi=lignes, size=nblg)
@@ -142,38 +142,38 @@ subroutine tbexlr(nomta, listr, basout)
             call jeveuo(nomjvl, 'L', jlogq)
             if (zi(jlogq+ilig-1) .eq. 1) then
                 if (ideb1 .eq. 0) ideb1 = ipar
-                kcol1 = kcol1 + 1
+                kcol1 = kcol1+1
                 if (ivide .eq. 1) then
                     call utmess('F', 'UTILITAI4_83')
-                endif
+                end if
                 if (type(1:1) .eq. 'I') then
-                    k1 = k1 + 1
+                    k1 = k1+1
                     vale_r(k1) = zi(jvale+ilig-1)
                 else if (type(1:1) .eq. 'R') then
-                    k1 = k1 + 1
+                    k1 = k1+1
                     vale_r(k1) = zr(jvale+ilig-1)
-                endif
+                end if
             else
                 if (ideb1 .ne. 0) then
                     ivide = 1
                     if (ifin1 .eq. nbpr) ifin1 = nume_para(1+j-1-1)
-                endif
+                end if
 !               IF ( IFIN1 .EQ. 0 ) IFIN1 = ZI(KPARA+J-1-1)
-            endif
+            end if
         end do
         if (i .eq. 1) then
             klig = 1
         else
             if (ideb1 .eq. ideb2 .and. ifin1 .eq. ifin2) then
-                klig = klig + 1
+                klig = klig+1
             else
 !              --- NOUVEAU BLOC ---
                 colonn(ibloc) = kcol2
                 lignes(ibloc) = klig
-                ibloc = ibloc + 1
+                ibloc = ibloc+1
                 klig = 1
-            endif
-        endif
+            end if
+        end if
         ideb2 = ideb1
         ifin2 = ifin1
         kcol2 = kcol1
@@ -183,15 +183,15 @@ subroutine tbexlr(nomta, listr, basout)
 !
 !     --- ON STOCKE ---
 !
-    nbvale = 1 + ( 2 * ibloc )
+    nbvale = 1+(2*ibloc)
     do i = 1, ibloc
         kcol = colonn(i)
         klig = lignes(i)
-        nbvale = nbvale + ( kcol * klig )
+        nbvale = nbvale+(kcol*klig)
     end do
 !
     listr8 = listr
-    ndim = max( 1 , nbvale-1 )
+    ndim = max(1, nbvale-1)
     call wkvect(listr8//'.LPAS', base//' V R', ndim, jpas)
     call wkvect(listr8//'.NBPA', base//' V I', ndim, jnbp)
     call wkvect(listr8//'.BINT', base//' V R', nbvale, jbor)
@@ -202,21 +202,21 @@ subroutine tbexlr(nomta, listr, basout)
     k1 = 0
     do i = 1, ibloc
         kcol = colonn(i)
-        j = j + 1
+        j = j+1
         zr(jvale+j-1) = kcol
         klig = lignes(i)
-        j = j + 1
+        j = j+1
         zr(jvale+j-1) = klig
-        ndim = kcol * klig
+        ndim = kcol*klig
         do k = 1, ndim
-            k1 = k1 + 1
-            j = j + 1
+            k1 = k1+1
+            j = j+1
             zr(jvale+j-1) = vale_r(k1)
         end do
     end do
 !
     do i = 1, nbvale-1
-        zr(jpas+i-1) = zr(jvale+i) - zr(jvale+i-1)
+        zr(jpas+i-1) = zr(jvale+i)-zr(jvale+i-1)
         zi(jnbp+i-1) = 1
         zr(jbor+i-1) = zr(jvale+i-1)
     end do

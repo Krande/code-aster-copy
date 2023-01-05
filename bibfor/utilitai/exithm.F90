@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -67,13 +67,13 @@ subroutine exithm(modele, yathm, perman)
     if (repons .eq. 'OUI') then
         yathm = .true.
         perman = .false.
-    else if (repons.eq.'OUI_P') then
+    else if (repons .eq. 'OUI_P') then
         yathm = .true.
         perman = .true.
-    else if (repons.eq.'NON') then
+    else if (repons .eq. 'NON') then
         yathm = .false.
     else
         call utmess('F', 'UTILITAI_75', sk=repons)
-    endif
+    end if
 !
 end subroutine

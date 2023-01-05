@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine t3grig(nomte, xyzl, option, pgl, rig,&
+subroutine t3grig(nomte, xyzl, option, pgl, rig, &
                   ener)
     implicit none
 #include "asterf_types.h"
@@ -71,8 +71,8 @@ subroutine t3grig(nomte, xyzl, option, pgl, rig,&
     integer :: ndim, nno, nnos, npg, ipoids, icoopg, ivf, idfdx, idfd2, jgano
 !     ------------------------------------------------------------------
 !
-    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
-                     jpoids=ipoids, jcoopg=icoopg, jvf=ivf, jdfde=idfdx, jdfd2=idfd2,&
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg, &
+                     jpoids=ipoids, jcoopg=icoopg, jvf=ivf, jdfde=idfdx, jdfd2=idfd2, &
                      jgano=jgano)
 !
     zero = 0.0d0
@@ -87,7 +87,7 @@ subroutine t3grig(nomte, xyzl, option, pgl, rig,&
 !     ------------------------------------------
     if (excent .ne. zero) then
         call utmess('F', 'ELEMENTS2_57')
-    endif
+    end if
 !
     call r8inir(81, zero, kc, 1)
     call r8inir(81, zero, flex, 1)
@@ -96,8 +96,8 @@ subroutine t3grig(nomte, xyzl, option, pgl, rig,&
 !
 !     ----- CALCUL DES MATRICES DE RIGIDITE DU MATERIAU EN FLEXION,
 !           MEMBRANE ET CISAILLEMENT INVERSEE --------------------------
-    call dxmate('RIGI', df, dm, dmf, dc,&
-                dci, dmc, dfc, nno, pgl,&
+    call dxmate('RIGI', df, dm, dmf, dc, &
+                dci, dmc, dfc, nno, pgl, &
                 multic, coupmf, t2iu, t2ui, t1ve)
 !
 !     ----- CALCUL DES GRANDEURS GEOMETRIQUES SUR LE TRIANGLE --------
@@ -109,11 +109,11 @@ subroutine t3grig(nomte, xyzl, option, pgl, rig,&
 !     ------ CALCUL DE LA MATRICE BM -----------------------------------
     call dxtbm(carat3(9), bm)
 !     ------ CALCUL DU PRODUIT BMT.DM.BM -------------------------------
-    call utbtab('ZERO', 3, 6, dm, bm,&
+    call utbtab('ZERO', 3, 6, dm, bm, &
                 xab1, memb)
     aire = carat3(8)
     do k = 1, 36
-        memb(k) = memb(k)* aire
+        memb(k) = memb(k)*aire
     end do
 !
 !     ------------------------------------------------------------------
@@ -125,7 +125,7 @@ subroutine t3grig(nomte, xyzl, option, pgl, rig,&
     call dstbfb(carat3(9), bfb)
 !
 !     ------- CALCUL DU PRODUIT BFBT.DF.BFB --------------------------
-    call utbtab('ZERO', 3, 9, df, bfb,&
+    call utbtab('ZERO', 3, 9, df, bfb, &
                 xab2, flex)
 !
 !        ---- CALCUL DE LA MATRICE BC ----------------------------------
@@ -134,27 +134,27 @@ subroutine t3grig(nomte, xyzl, option, pgl, rig,&
     call t3gbc(xyzl, qsi, eta, bc)
 !
 !        ---- CALCUL DU PRODUIT BCT.DC.BC -----------------------------
-    call utbtab('ZERO', 2, 9, dc, bc,&
+    call utbtab('ZERO', 2, 9, dc, bc, &
                 xab3, kc)
 !
     do k = 1, 81
-        flexi(k) = (flex(k)+ kc(k))*aire
+        flexi(k) = (flex(k)+kc(k))*aire
     end do
 !
     if (option .eq. 'RIGI_MECA') then
         call dxtloc(flexi, memb, mefl, ctor, rig)
-    else if (option.eq.'EPOT_ELEM') then
+    else if (option .eq. 'EPOT_ELEM') then
         call jevech('PDEPLAR', 'L', jdepg)
         call utpvgl(3, 6, pgl, zr(jdepg), depl)
-        call dxtloe(flex, memb, mefl, ctor, coupmf,&
+        call dxtloe(flex, memb, mefl, ctor, coupmf, &
                     depl, ener)
         call bsthpl(nomte, bsigth, indith)
         if (indith) then
             do i = 1, 18
-                enerth = enerth + depl(i)*bsigth(i)
+                enerth = enerth+depl(i)*bsigth(i)
             end do
-            ener(1) = ener(1) - enerth
-        endif
-    endif
+            ener(1) = ener(1)-enerth
+        end if
+    end if
 !
 end subroutine

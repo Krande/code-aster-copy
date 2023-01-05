@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -51,50 +51,50 @@ subroutine op0049()
     call infmaj()
     call getvis(' ', 'UNITE_GIBI', scal=nfigi, nbret=n1)
     call getvis(' ', 'UNITE_MAILLAGE', scal=nfias, nbret=n1)
-    k16nom ='                '
-    if (ulisop ( nfigi, k16nom ) .eq. 0) then
+    k16nom = '                '
+    if (ulisop(nfigi, k16nom) .eq. 0) then
         call ulopen(nfigi, ' ', ' ', 'NEW', 'O')
-    endif
-    if (ulisop ( nfias, k16nom ) .eq. 0) then
+    end if
+    if (ulisop(nfias, k16nom) .eq. 0) then
         call ulopen(nfias, ' ', ' ', 'NEW', 'O')
-    endif
+    end if
 !
 ! -- TEST SUR LA PROCEDURE GIBI DE SAUVEGARDE ( SORT OU SAUVER)
 !
-    read (nfigi,1001,end=100) kbid14
-    read (nfigi,1002) kbid1,kbid9,kbid4
-    if ((kbid1.eq.'MAILLAGE') .and. (kbid9.eq.'PROVENANT') .and. (kbid4.eq.'GIBI')) then
+    read (nfigi, 1001, end=100) kbid14
+    read (nfigi, 1002) kbid1, kbid9, kbid4
+    if ((kbid1 .eq. 'MAILLAGE') .and. (kbid9 .eq. 'PROVENANT') .and. (kbid4 .eq. 'GIBI')) then
         call utmess('F', 'PREPOST3_75')
         goto 99999
-    else if (kbid14.eq.'ENREGISTREMENT') then
-        rewind(nfigi)
-        read (nfigi,1001) kbid14
-        read (nfigi,1003) kbid6,ibid
-        if (kbid6 .eq. 'NIVEAU' .and. ibid .ne. 3 .and. ibid .ne. 4 .and. ibid .ne. 5 .and.&
-            ibid .ne. 6 .and. ibid .ne. 8 .and. ibid .ne. 9 .and. ibid .ne. 10 .and. ibid&
+    else if (kbid14 .eq. 'ENREGISTREMENT') then
+        rewind (nfigi)
+        read (nfigi, 1001) kbid14
+        read (nfigi, 1003) kbid6, ibid
+        if (kbid6 .eq. 'NIVEAU' .and. ibid .ne. 3 .and. ibid .ne. 4 .and. ibid .ne. 5 .and. &
+            ibid .ne. 6 .and. ibid .ne. 8 .and. ibid .ne. 9 .and. ibid .ne. 10 .and. ibid &
             .ne. 11 .and. ibid .ne. 13) then
             call utmess('A', 'PREPOST3_76')
-        endif
-        rewind( nfigi )
+        end if
+        rewind (nfigi)
         call gilir2(nfigi, ibid, ndim, nbobj)
     else
         call utmess('F', 'PREPOST3_77')
-    endif
+    end if
 !
     call giecas(nfias, ndim, nbobj)
 !
-    if (ulisop ( nfigi, k16nom ) .ne. 0) then
+    if (ulisop(nfigi, k16nom) .ne. 0) then
         call ulopen(-nfigi, ' ', ' ', 'NEW', 'O')
-    endif
+    end if
     call fclose(nfias)
 !
     goto 99999
 !
-100  continue
+100 continue
     call utmess('F', 'PREPOST3_78')
-99999  continue
+99999 continue
 !
-    1001 format(1x,a14)
-    1002 format(a8,1x,a9,4x,a4)
-    1003 format(1x,a6,i4)
+1001 format(1x, a14)
+1002 format(a8, 1x, a9, 4x, a4)
+1003 format(1x, a6, i4)
 end subroutine

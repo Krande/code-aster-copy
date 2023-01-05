@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,17 +20,17 @@
 !
 subroutine dbr_paraDSInit(paraPod, paraGreedy, paraTrunc, paraOrtho, cmdPara)
 !
-use Rom_Datastructure_type
+    use Rom_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 !
-type(ROM_DS_ParaDBR_POD), intent(in) :: paraPod
-type(ROM_DS_ParaDBR_Greedy), intent(in) :: paraGreedy
-type(ROM_DS_ParaDBR_Trunc), intent(in) :: paraTrunc
-type(ROM_DS_ParaDBR_ORTHO), intent(in) :: paraOrtho
-type(ROM_DS_ParaDBR), intent(out) :: cmdPara
+    type(ROM_DS_ParaDBR_POD), intent(in) :: paraPod
+    type(ROM_DS_ParaDBR_Greedy), intent(in) :: paraGreedy
+    type(ROM_DS_ParaDBR_Trunc), intent(in) :: paraTrunc
+    type(ROM_DS_ParaDBR_ORTHO), intent(in) :: paraOrtho
+    type(ROM_DS_ParaDBR), intent(out) :: cmdPara
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -48,9 +48,9 @@ type(ROM_DS_ParaDBR), intent(out) :: cmdPara
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    cmdPara%paraPod    = paraPod
+    cmdPara%paraPod = paraPod
     cmdPara%paraGreedy = paraGreedy
-    cmdPara%paraTrunc  = paraTrunc
-    cmdPara%paraOrtho  = paraOrtho
+    cmdPara%paraTrunc = paraTrunc
+    cmdPara%paraOrtho = paraOrtho
 !
 end subroutine

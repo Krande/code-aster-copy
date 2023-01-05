@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -41,8 +41,8 @@ subroutine assde1(tych, champ)
 ! -DEB------------------------------------------------------------------
     champ2 = champ
 !
-    dbg=.true.
-    dbg=.false.
+    dbg = .true.
+    dbg = .false.
     if (dbg) call chlici(champ2, 19)
 !
 !
@@ -53,12 +53,12 @@ subroutine assde1(tych, champ)
         call jedetr(champ2//'.CELV')
         call jedetr(champ2//'.CELK')
 !
-    else if (tych.eq.'CHAM_NO') then
+    else if (tych .eq. 'CHAM_NO') then
         call jedetr(champ2//'.VALE')
         call jedetr(champ2//'.REFE')
         call jedetr(champ2//'.DESC')
 !
-    else if (tych.eq.'CARTE') then
+    else if (tych .eq. 'CARTE') then
         call jedetr(champ2//'.DESC')
         call jedetr(champ2//'.NOMA')
         call jedetr(champ2//'.VALE')
@@ -69,12 +69,12 @@ subroutine assde1(tych, champ)
         call jedetr(champ2//'.PTMA')
         call jedetr(champ2//'.PTMS')
 !
-    else if (tych.eq.'RESUELEM') then
+    else if (tych .eq. 'RESUELEM') then
         call jedetr(champ2//'.NOLI')
         call jedetr(champ2//'.DESC')
         call jedetr(champ2//'.RESL')
 !
-    else if (tych.eq.'CHAMP') then
+    else if (tych .eq. 'CHAMP') then
         call jedetr(champ2//'.CELD')
         call jedetr(champ2//'.CELK')
         call jedetr(champ2//'.CELV')
@@ -91,7 +91,7 @@ subroutine assde1(tych, champ)
         call jedetr(champ2//'.VALV')
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 !
 !

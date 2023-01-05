@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 
 subroutine dtmclean_noli_yacs(sd_dtm_, sd_nl_)
-    use yacsnl_module , only : finalize
+    use yacsnl_module, only: finalize
     implicit none
 !
 !
@@ -33,13 +33,13 @@ subroutine dtmclean_noli_yacs(sd_dtm_, sd_nl_)
 #include "asterfort/jemarq.h"
 #include "asterfort/jedema.h"
 
-      character(len=*), intent(in):: sd_dtm_
-      character(len=*), intent(in):: sd_nl_
+    character(len=*), intent(in):: sd_dtm_
+    character(len=*), intent(in):: sd_nl_
 
-      call jemarq()
+    call jemarq()
 
-      call finalize()
+    call finalize()
 
-      call jedema()
+    call jedema()
 
 end subroutine

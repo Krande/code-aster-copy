@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -40,9 +40,9 @@ subroutine vff3d(nno, poids, dfde, coor, jac)
     dyds = 0.d0
     dzds = 0.d0
     do i = 1, nno
-        dxds = dxds + dfde(i) * coor(3*i-2)
-        dyds = dyds + dfde(i) * coor(3*i-1)
-        dzds = dzds + dfde(i) * coor(3*i)
+        dxds = dxds+dfde(i)*coor(3*i-2)
+        dyds = dyds+dfde(i)*coor(3*i-1)
+        dzds = dzds+dfde(i)*coor(3*i)
     end do
-    jac = poids * sqrt(dxds**2 + dyds**2 + dzds**2)
+    jac = poids*sqrt(dxds**2+dyds**2+dzds**2)
 end subroutine

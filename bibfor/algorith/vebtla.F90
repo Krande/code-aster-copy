@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine vebtla(base     , model_    , mate, cara_elem, disp_,&
+subroutine vebtla(base, model_, mate, cara_elem, disp_, &
                   list_load, vect_elemz)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/calcul.h"
@@ -62,7 +62,7 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: nbout, nbin
-    parameter    (nbout=1, nbin=2)
+    parameter(nbout=1, nbin=2)
     character(len=8) :: lpaout(nbout), lpain(nbin)
     character(len=19) :: lchout(nbout), lchin(nbin)
 !
@@ -82,35 +82,35 @@ implicit none
 !
 ! - Initializations
 !
-    model     = model_
-    disp      = disp_
+    model = model_
+    disp = disp_
     vect_elem = vect_elemz
-    newnom    = '.0000000'
+    newnom = '.0000000'
     resu_elem = vect_elem(1:8)//'.???????'
-    option    = 'MECA_BTLA_R'
+    option = 'MECA_BTLA_R'
 !
 ! - Init fields
 !
-    call inical(nbin, lpain, lchin, nbout, lpaout,&
+    call inical(nbin, lpain, lchin, nbout, lpaout, &
                 lchout)
 !
 ! - Loads
 !
-    call load_list_info(load_empty, nb_load    , v_load_name, v_load_info,&
-                        list_load_ = list_load)
+    call load_list_info(load_empty, nb_load, v_load_name, v_load_info, &
+                        list_load_=list_load)
     if (load_empty) then
         goto 99
-    endif
+    end if
 !
 ! - Allocate result
 !
     call jeexin(vect_elem//'.RELR', iret)
     if (iret .eq. 0) then
-        call memare(base, vect_elem, model, mate, cara_elem,&
+        call memare(base, vect_elem, model, mate, cara_elem, &
                     'CHAR_MECA')
     else
         call jedetr(vect_elem//'.RELR')
-    endif
+    end if
     call reajre(vect_elem, ' ', base)
 !
 ! - Input fields
@@ -121,10 +121,10 @@ implicit none
 ! - Computation
 !
     do i_load = 1, nb_load
-        load_name = v_load_name(i_load)(1:8)
+        load_name = v_load_name(i_load) (1:8)
         load_nume = v_load_info(i_load+1)
-        if (load_nume.gt.0) then
-            ligrch = load_name // '.CHME.LIGRE'
+        if (load_nume .gt. 0) then
+            ligrch = load_name//'.CHME.LIGRE'
 !
 ! --------- Input field
 !
@@ -143,14 +143,14 @@ implicit none
 !
 ! --------- Computation
 !
-            call calcul('S'  , option, ligrch, nbin  , lchin,&
-                        lpain, nbout , lchout, lpaout, base ,&
+            call calcul('S', option, ligrch, nbin, lchin, &
+                        lpain, nbout, lchout, lpaout, base, &
                         'OUI')
 !
 ! --------- Copying output field
 !
             call reajre(vect_elem, lchout(1), 'V')
-        endif
+        end if
     end do
 !
 99  continue

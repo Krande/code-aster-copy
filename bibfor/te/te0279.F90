@@ -1,6 +1,6 @@
 ! --------------------------------------------------------------------
 ! Copyright (C) 2019 Christophe Durand - www.code-aster.org
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -49,7 +49,7 @@ subroutine te0279(option, nomte)
 ! THERMIQUE NON LINEAIRE
 !
     integer :: nbres
-    parameter (nbres=3)
+    parameter(nbres=3)
     integer :: icodre(nbres)
     character(len=2) :: typgeo
     character(len=32) :: phenom
@@ -69,14 +69,14 @@ subroutine te0279(option, nomte)
 ! 1.1 PREALABLES: RECUPERATION ADRESSES FONCTIONS DE FORMES...
 !====
     call uttgel(nomte, typgeo)
-    if ((lteatt('LUMPE','OUI')) .and. (typgeo.ne.'PY')) then
-        call elrefe_info(fami='NOEU', ndim=ndim, nno=nno, nnos=nnos, npg=npg2,&
+    if ((lteatt('LUMPE', 'OUI')) .and. (typgeo .ne. 'PY')) then
+        call elrefe_info(fami='NOEU', ndim=ndim, nno=nno, nnos=nnos, npg=npg2, &
                          jpoids=ipoid2, jvf=ivf2, jdfde=idfde2, jgano=jgano)
     else
-        call elrefe_info(fami='MASS', ndim=ndim, nno=nno, nnos=nnos, npg=npg2,&
+        call elrefe_info(fami='MASS', ndim=ndim, nno=nno, nnos=nnos, npg=npg2, &
                          jpoids=ipoid2, jvf=ivf2, jdfde=idfde2, jgano=jgano)
-    endif
-    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+    end if
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg, &
                      jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
 !====
@@ -93,7 +93,7 @@ subroutine te0279(option, nomte)
     theta = zr(itemps+2)
     khi = zr(itemps+3)
 !
-    if (zk16(icomp)(1:5) .eq. 'THER_') then
+    if (zk16(icomp) (1:5) .eq. 'THER_') then
 !====
 ! --- THERMIQUE
 !====
@@ -101,7 +101,7 @@ subroutine te0279(option, nomte)
         aniso = .false.
         if (phenom(1:12) .eq. 'THER_NL_ORTH') then
             aniso = .true.
-        endif
+        end if
         call ntfcma(zk16(icomp), zi(imate), aniso, ifon)
 !
 ! ---   TRAITEMENT DE L ANISOTROPIE
@@ -124,21 +124,21 @@ subroutine te0279(option, nomte)
                 orig(1) = zr(icamas+4)
                 orig(2) = zr(icamas+5)
                 orig(3) = zr(icamas+6)
-            endif
-        endif
+            end if
+        end if
 !
 ! ---   CALCUL DU PREMIER TERME
 !
         do kp = 1, npg
             l = (kp-1)*nno
-            call dfdm3d(nno, kp, ipoids, idfde, zr(igeom),&
+            call dfdm3d(nno, kp, ipoids, idfde, zr(igeom), &
                         poids, dfdx, dfdy, dfdz)
 !
 ! ---       EVALUATION DE LA CONDUCTIVITE LAMBDA
 !
             tpgi = 0.d0
             do i = 1, nno
-                tpgi = tpgi + zr(itempi+i-1)*zr(ivf+l+i-1)
+                tpgi = tpgi+zr(itempi+i-1)*zr(ivf+l+i-1)
             end do
             if (aniso) then
                 call rcfode(ifon(4), tpgi, lambor(1), r8bid)
@@ -146,24 +146,24 @@ subroutine te0279(option, nomte)
                 call rcfode(ifon(6), tpgi, lambor(3), r8bid)
             else
                 call rcfode(ifon(2), tpgi, lambda, r8bid)
-            endif
+            end if
 !
 ! ---       TRAITEMENT DE L ANISOTROPIE
 !
-            if (.not.global .and. aniso) then
+            if (.not. global .and. aniso) then
                 point(1) = 0.d0
                 point(2) = 0.d0
                 point(3) = 0.d0
                 do nuno = 1, nno
-                    point(1) = point(1) + zr(ivf+l+nuno-1)*zr(igeom+3* nuno-3)
-                    point(2) = point(2) + zr(ivf+l+nuno-1)*zr(igeom+3* nuno-2)
-                    point(3) = point(3) + zr(ivf+l+nuno-1)*zr(igeom+3* nuno-1)
+                    point(1) = point(1)+zr(ivf+l+nuno-1)*zr(igeom+3*nuno-3)
+                    point(2) = point(2)+zr(ivf+l+nuno-1)*zr(igeom+3*nuno-2)
+                    point(3) = point(3)+zr(ivf+l+nuno-1)*zr(igeom+3*nuno-1)
                 end do
                 call utrcyl(point, dire, orig, p)
-            endif
+            end if
 !
             do i = 1, nno
-                if (.not.aniso) then
+                if (.not. aniso) then
                     fluglo(1) = lambda*dfdx(i)
                     fluglo(2) = lambda*dfdy(i)
                     fluglo(3) = lambda*dfdz(i)
@@ -180,13 +180,13 @@ subroutine te0279(option, nomte)
                     n1 = 1
                     n2 = 3
                     call utpvlg(n1, n2, p, fluloc, fluglo)
-                endif
+                end if
 !
 ! ---       CALCUL DE LA PREMIERE COMPOSANTE DU TERME ELEMENTAIRE
 !
                 do j = 1, i
-                    ij = (i-1)*i/2 + j
-                    zr(imattt+ij-1) = zr(imattt+ij-1) + poids*theta*(fluglo(1)*dfdx(j)+fluglo(2)*&
+                    ij = (i-1)*i/2+j
+                    zr(imattt+ij-1) = zr(imattt+ij-1)+poids*theta*(fluglo(1)*dfdx(j)+fluglo(2)*&
                                       &dfdy(j)+fluglo(3)*dfdz(j))
                 end do
             end do
@@ -196,7 +196,7 @@ subroutine te0279(option, nomte)
 !
         do kp = 1, npg2
             l = (kp-1)*nno
-            call dfdm3d(nno, kp, ipoid2, idfde2, zr(igeom),&
+            call dfdm3d(nno, kp, ipoid2, idfde2, zr(igeom), &
                         poids, dfdx, dfdy, dfdz)
 !
 ! ---       EVALUATION DE LA CAPACITE CALORIFIQUE
@@ -204,7 +204,7 @@ subroutine te0279(option, nomte)
 !
             tpgi = 0.d0
             do i = 1, nno
-                tpgi = tpgi + zr(itempi+i-1)*zr(ivf2+l+i-1)
+                tpgi = tpgi+zr(itempi+i-1)*zr(ivf2+l+i-1)
             end do
             call rcfode(ifon(1), tpgi, r8bid, rhocp)
 !
@@ -212,18 +212,18 @@ subroutine te0279(option, nomte)
 !
             do i = 1, nno
                 do j = 1, i
-                    ij = (i-1)*i/2 + j
-                    zr(imattt+ij-1) = zr(imattt+ij-1)+ poids*khi*rhocp*zr(ivf2+l+i-1)*zr(ivf2+l+j&
+                    ij = (i-1)*i/2+j
+                    zr(imattt+ij-1) = zr(imattt+ij-1)+poids*khi*rhocp*zr(ivf2+l+i-1)*zr(ivf2+l+j&
                                       &-1)/deltat
                 end do
             end do
         end do
 !
-    else if (zk16(icomp) (1:5).eq.'SECH_') then
+    else if (zk16(icomp) (1:5) .eq. 'SECH_') then
 !====
 ! --- SECHAGE
 !====
-        if (zk16(icomp) (1:12) .eq. 'SECH_GRANGER' .or. zk16(icomp) (1: 10) .eq.&
+        if (zk16(icomp) (1:12) .eq. 'SECH_GRANGER' .or. zk16(icomp) (1:10) .eq. &
             'SECH_NAPPE') then
             call jevech('PTMPCHI', 'L', isechi)
             call jevech('PTMPCHF', 'L', isechf)
@@ -232,42 +232,42 @@ subroutine te0279(option, nomte)
 !          ISECHI ET ISECHF SONT FICTIFS
             isechi = itempi
             isechf = itempi
-        endif
+        end if
         do kp = 1, npg
             l = (kp-1)*nno
-            call dfdm3d(nno, kp, ipoids, idfde, zr(igeom),&
+            call dfdm3d(nno, kp, ipoids, idfde, zr(igeom), &
                         poids, dfdx, dfdy, dfdz)
             tpgi = 0.d0
             tpsec = 0.d0
             do i = 1, nno
-                tpgi = tpgi + zr(itempi+i-1)*zr(ivf+l+i-1)
-                tpsec = tpsec + zr(isechf+i-1)*zr(ivf+l+i-1)
+                tpgi = tpgi+zr(itempi+i-1)*zr(ivf+l+i-1)
+                tpsec = tpsec+zr(isechf+i-1)*zr(ivf+l+i-1)
             end do
             call rcdiff(zi(imate), zk16(icomp), tpsec, tpgi, diff)
             do i = 1, nno
 !
                 do j = 1, i
-                    ij = (i-1)*i/2 + j
-                    zr(imattt+ij-1) = zr(imattt+ij-1) + poids* ( theta* diff* (dfdx(i)*dfdx(j)+df&
-                                      &dy(i)*dfdy(j)+dfdz(i)*dfdz(j)) )
+                    ij = (i-1)*i/2+j
+                    zr(imattt+ij-1) = zr(imattt+ij-1)+poids*(theta*diff*(dfdx(i)*dfdx(j)+df&
+                                      &dy(i)*dfdy(j)+dfdz(i)*dfdz(j)))
                 end do
             end do
         end do
         do kp = 1, npg2
             l = (kp-1)*nno
-            call dfdm3d(nno, kp, ipoid2, idfde2, zr(igeom),&
+            call dfdm3d(nno, kp, ipoid2, idfde2, zr(igeom), &
                         poids, dfdx, dfdy, dfdz)
             do i = 1, nno
 !
                 do j = 1, i
-                    ij = (i-1)*i/2 + j
-                    zr(imattt+ij-1) = zr(imattt+ij-1) + poids* (khi*zr(ivf2+l+i-1)*zr(ivf2+l+j-1)&
+                    ij = (i-1)*i/2+j
+                    zr(imattt+ij-1) = zr(imattt+ij-1)+poids*(khi*zr(ivf2+l+i-1)*zr(ivf2+l+j-1)&
                                       &/deltat)
                 end do
             end do
         end do
 !
-    endif
+    end if
 !
 ! FIN ------------------------------------------------------------------
 end subroutine

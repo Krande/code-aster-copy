@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 
 subroutine rc32rt(pi, pj, simpij)
-    implicit   none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/jeveuo.h"
     real(kind=8) :: pi, pj, simpij
@@ -32,9 +32,9 @@ subroutine rc32rt(pi, pj, simpij)
 
 ! DEB ------------------------------------------------------------------
 !
-    simpij=0.d0
-    s1=0.d0
-    s2=0.d0
+    simpij = 0.d0
+    s1 = 0.d0
+    s2 = 0.d0
 !
 ! --- CONTRAINTE MOYENNE DUE A LA PRESSION : partie ze200a
 !
@@ -43,6 +43,6 @@ subroutine rc32rt(pi, pj, simpij)
     ep = zr(jvalin+7)
     s1 = rayon*abs(pi)/ep
     s2 = rayon*abs(pj)/ep
-    simpij = max(s1,s2)
+    simpij = max(s1, s2)
 !
 end subroutine

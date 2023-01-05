@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -46,13 +46,13 @@ subroutine xderfe(r, theta, dfedp)
     c2 = cos(theta/2.d0)
 !
 !     DÉRIVÉES DES FONCTIONS D'ENRICHISSEMENT DANS LA BASE POLAIRE
-    dfedp(1,1) = 1.d0/(2.d0*rr) * s2
-    dfedp(1,2) = rr/2.d0 * c2
-    dfedp(2,1) = 1.d0/(2.d0*rr) * c2
-    dfedp(2,2) = -rr/2.d0 * s2
-    dfedp(3,1) = 1.d0/(2.d0*rr) * s2 * s
-    dfedp(3,2) = rr * (c2*s/2.d0 + s2*c)
-    dfedp(4,1) = 1.d0/(2.d0*rr) *c2 * s
-    dfedp(4,2) = rr * (-s2*s/2.d0 + c2*c)
+    dfedp(1, 1) = 1.d0/(2.d0*rr)*s2
+    dfedp(1, 2) = rr/2.d0*c2
+    dfedp(2, 1) = 1.d0/(2.d0*rr)*c2
+    dfedp(2, 2) = -rr/2.d0*s2
+    dfedp(3, 1) = 1.d0/(2.d0*rr)*s2*s
+    dfedp(3, 2) = rr*(c2*s/2.d0+s2*c)
+    dfedp(4, 1) = 1.d0/(2.d0*rr)*c2*s
+    dfedp(4, 2) = rr*(-s2*s/2.d0+c2*c)
 !
 end subroutine

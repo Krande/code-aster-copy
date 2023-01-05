@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 subroutine add_ineq_conditions_matrix(matass, matr, nume_ddl)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -72,14 +72,14 @@ implicit none
     call dismoi('MPI_COMPLET', matass, 'MATR_ASSE', repk=kmpic1)
     if (kmpic1 .eq. 'NON') then
         call sdmpic('MATR_ASSE', matass)
-    endif
+    end if
 
     call dismoi('MPI_COMPLET', matr, 'MATR_ASSE', repk=kmpic1)
     if (kmpic1 .eq. 'NON') then
         call sdmpic('MATR_ASSE', matr)
-    endif
+    end if
 
-    call mtcmbl(2, typcst, coefmu, limat, matass,&
+    call mtcmbl(2, typcst, coefmu, limat, matass, &
                 ' ', nume_ddl, 'ELIM1')
     call infbav()
     call dismoi('NOM_NUME_DDL', matr, 'MATR_ASSE', repk=nume_ddl)

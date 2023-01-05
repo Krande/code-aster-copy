@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine ircmpn(nofimd, ncmprf, ncmpve, numcmp, exicmp,&
-                  nbvato, nbnoec, linoec, adsl, caimpi,&
+subroutine ircmpn(nofimd, ncmprf, ncmpve, numcmp, exicmp, &
+                  nbvato, nbnoec, linoec, adsl, caimpi, &
                   caimpk, profas, innoce, nosdfu)
 !
 ! person_in_charge: nicolas.sellenet at edf.fr
@@ -94,18 +94,18 @@ subroutine ircmpn(nofimd, ncmprf, ncmpve, numcmp, exicmp,&
 ! 0.3. ==> VARIABLES LOCALES
 !
     character(len=6) :: nompro
-    parameter ( nompro = 'IRCMPN' )
+    parameter(nompro='IRCMPN')
 !
     character(len=80) :: ednopf
-    parameter ( ednopf=' ' )
+    parameter(ednopf=' ')
     character(len=80) :: ednoga
-    parameter ( ednoga=' ' )
+    parameter(ednoga=' ')
 !                         12345678901234567890123456789012
 !
     integer :: typnoe
-    parameter (typnoe=0)
+    parameter(typnoe=0)
     integer :: ednopg
-    parameter (ednopg=1)
+    parameter(ednopg=1)
 !
     character(len=64) :: noprof
 !
@@ -126,9 +126,9 @@ subroutine ircmpn(nofimd, ncmprf, ncmpve, numcmp, exicmp,&
 !
     if (nivinf .gt. 1) then
         call cpu_time(start_time)
-        write (ifm,1001) 'DEBUT DE '//nompro
-    endif
-    1001 format(/,4x,10('='),a,10('='),/)
+        write (ifm, 1001) 'DEBUT DE '//nompro
+    end if
+1001 format(/, 4x, 10('='), a, 10('='),/)
 !
 !====
 ! 2. ON REMPLIT UN PREMIER TABLEAU PAR NOEUD :
@@ -140,22 +140,22 @@ subroutine ircmpn(nofimd, ncmprf, ncmpve, numcmp, exicmp,&
 !               2- SI LE NOEUD EST UN NOEUD CENTRE, ON L'OUBLIE
 !====
 !
-    do iaux = 0 , nbvato-1
+    do iaux = 0, nbvato-1
 !
         if (innoce(iaux+1) .eq. 1) then
             exicmp(iaux+1) = .false.
             goto 21
-        endif
+        end if
 !
         jaux = adsl-1+iaux*ncmprf
-        do nrcmp = 1 , ncmpve
+        do nrcmp = 1, ncmpve
             if (zl(jaux+numcmp(nrcmp))) then
                 exicmp(iaux+1) = .true.
                 goto 21
-            endif
-        enddo
+            end if
+        end do
 !
- 21 end do
+21  end do
 !
 !====
 ! 3. PROFAS : LISTE DES NOEUDS POUR LESQUELS ON AURA IMPRESSION
@@ -165,8 +165,8 @@ subroutine ircmpn(nofimd, ncmprf, ncmpve, numcmp, exicmp,&
 !
     nval = 0
     lficUniq = .false._1
-    if(nosdfu.ne.' ') then
-        call asmpi_info(rank = mrank, size = msize)
+    if (nosdfu .ne. ' ') then
+        call asmpi_info(rank=mrank, size=msize)
         rang = to_aster_int(mrank)
         nbproc = to_aster_int(msize)
 !
@@ -176,54 +176,54 @@ subroutine ircmpn(nofimd, ncmprf, ncmpve, numcmp, exicmp,&
         lficUniq = .true._1
     else
         nbnov = nbvato
-    endif
+    end if
 !
 ! 3.1. ==> SANS FILTRAGE : C'EST LA LISTE DES NOEUDS AVEC UNE COMPOSANTE
 !          VALIDE
 !
-    if(lficUniq) then
+    if (lficUniq) then
         nbnoect(1) = nbnoec
         call asmpi_comm_vect('MPI_SUM', 'I', nbval=1, vi=nbnoect)
         lnoec = nbnoect(1) .eq. 0
     else
         lnoec = nbnoec .eq. 0
-    endif
+    end if
     if (lnoec) then
 !
-        do iaux = 1 , nbvato
+        do iaux = 1, nbvato
             if (exicmp(iaux)) then
-                if(lficUniq) then
-                    if(zi(jno+iaux-1).gt.0) then
-                        nval = nval + 1
+                if (lficUniq) then
+                    if (zi(jno+iaux-1) .gt. 0) then
+                        nval = nval+1
                         profas(nval) = iaux
-                    endif
+                    end if
                 else
-                    nval = nval + 1
+                    nval = nval+1
                     profas(nval) = iaux
-                endif
-            endif
-        enddo
+                end if
+            end if
+        end do
 !
 ! 3.2. ==> AVEC FILTRAGE
 !
     else
 !
-        do jaux = 1 , nbnoec
+        do jaux = 1, nbnoec
             iaux = linoec(jaux)
             if (exicmp(iaux)) then
-                if(lficUniq) then
-                    if(zi(jno+iaux-1).gt.0) then
-                        nval = nval + 1
+                if (lficUniq) then
+                    if (zi(jno+iaux-1) .gt. 0) then
+                        nval = nval+1
                         profas(nval) = iaux
-                    endif
+                    end if
                 else
-                    nval = nval + 1
+                    nval = nval+1
                     profas(nval) = iaux
-                endif
-            endif
-        enddo
+                end if
+            end if
+        end do
 !
-    endif
+    end if
 !
 !====
 ! 4. CARACTERISATIONS DES IMPRESSIONS
@@ -263,12 +263,12 @@ subroutine ircmpn(nofimd, ncmprf, ncmpve, numcmp, exicmp,&
 !GN     >       ', TYPE GEO MED =',I4,', NBVAL TOT =',I8)
 !
     if (nivinf .gt. 1) then
-        write (ifm,3301) nompro, ' : NOMBRE TOTAL DE VALEURS    : ',&
+        write (ifm, 3301) nompro, ' : NOMBRE TOTAL DE VALEURS    : ',&
      &                   nbvato
-        write (ifm,3301) nompro, ' : NOMBRE DE VALEURS A ECRIRE : ',&
-        nval
-    endif
-    3301 format(4x,a6,a,i8)
+        write (ifm, 3301) nompro, ' : NOMBRE DE VALEURS A ECRIRE : ', &
+            nval
+    end if
+3301 format(4x, a6, a, i8)
 !
 !====
 ! 5. STOCKAGE DU PROFIL DANS LE FICHIER MED
@@ -278,32 +278,32 @@ subroutine ircmpn(nofimd, ncmprf, ncmpve, numcmp, exicmp,&
 !
     iaux = 0
     lnbnol = .false._1
-    if(lficUniq) then
-        if ( nval.ne.nbnov .and. nval.ne.0 ) then
+    if (lficUniq) then
+        if (nval .ne. nbnov .and. nval .ne. 0) then
             iaux = 1
-        endif
+        end if
         call asmpi_comm_vect('MPI_MAX', 'I', 1, 0, sci=iaux)
-        if (iaux.eq.1) lnbnol = .true._1
+        if (iaux .eq. 1) lnbnol = .true._1
     else
-        if ( nval.ne.nbnov .and. nval.ne.0 ) lnbnol = .true._1
-    endif
-    if ( lnbnol ) then
+        if (nval .ne. nbnov .and. nval .ne. 0) lnbnol = .true._1
+    end if
+    if (lnbnol) then
 !
-        call ircmpf(nofimd, nval, profas, noprof, nosdfu,&
+        call ircmpf(nofimd, nval, profas, noprof, nosdfu, &
                     0, 0)
 !
         caimpk(2) = noprof
 !
-    endif
+    end if
 !
 !====
 ! 6. LA FIN
 !====
 !
     if (nivinf .gt. 1) then
-        write (ifm,1001) 'FIN DE '//nompro
+        write (ifm, 1001) 'FIN DE '//nompro
         call cpu_time(end_time)
-        write(ifm,*) "=========== EN ", end_time - start_time, "sec"
-    endif
+        write (ifm, *) "=========== EN ", end_time-start_time, "sec"
+    end if
 !
 end subroutine

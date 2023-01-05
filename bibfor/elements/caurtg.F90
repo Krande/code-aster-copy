@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -77,7 +77,7 @@ subroutine caurtg(nomte, ncmp, sigmau, sigrtg)
 !
     if (zk16(icompo+2) .eq. 'GROT_GDEP') then
         lgreen = .true.
-    endif
+    end if
 !
 ! --- RECUPERATION DU CHAMP DE DEPLACEMENT DANS LE CAS GROT_GDEP :
 !     ---------------------------------------------------------
@@ -85,7 +85,7 @@ subroutine caurtg(nomte, ncmp, sigmau, sigrtg)
         call tecach('OOO', 'PDEPLAR', 'L', iret, iad=idepl)
     else
         goto 999
-    endif
+    end if
 !
 ! --- RECUPERATION DES COORDONNEES DES NOEUDS DANS LA GEOMETRIE
 ! --- INITIALE :
@@ -107,12 +107,12 @@ subroutine caurtg(nomte, ncmp, sigmau, sigrtg)
 !     ------------------------------------------------------
     do in = 1, nb1
         do ii = 1, 3
-            vecthe(in,ii) = zr(idepl+6*(in-1)+ii+3-1)
+            vecthe(in, ii) = zr(idepl+6*(in-1)+ii+3-1)
         end do
     end do
 !
     do ii = 1, 3
-        vecthe(nb2,ii) = zr(idepl+6*nb1+ii-1)
+        vecthe(nb2, ii) = zr(idepl+6*nb1+ii-1)
     end do
 !
 ! --- DETERMINATION DES REPERES LOCAUX AUX NOEUDS DANS LA
@@ -123,7 +123,7 @@ subroutine caurtg(nomte, ncmp, sigmau, sigrtg)
 ! --- VECTPT DESIGNE LES REPERES LOCAUX ORTHORNORMES EN CHAQUE
 ! --- NOEUD DANS LA CONFIGURATION INITIALE :
 !     ------------------------------------
-    call vectan(nb1, nb2, zr(igeom), zr(lzr), vecta,&
+    call vectan(nb1, nb2, zr(igeom), zr(lzr), vecta, &
                 vectn, vectpt)
 !
 ! ---   MISE DU VECTEUR DES CONTRAINTES DANS LE REPERE UTILISATEUR
@@ -131,40 +131,40 @@ subroutine caurtg(nomte, ncmp, sigmau, sigrtg)
 !       ------------------------------
     do i = 1, nb2
 !
-        tetag(1) = vecthe(i,1)
-        tetag(2) = vecthe(i,2)
-        tetag(3) = vecthe(i,3)
+        tetag(1) = vecthe(i, 1)
+        tetag(2) = vecthe(i, 2)
+        tetag(3) = vecthe(i, 3)
         call marota(tetag, drot)
 !
-        sigmat(1,1) = sigmau(1,i)
-        sigmat(2,2) = sigmau(2,i)
-        sigmat(3,3) = sigmau(3,i)
-        sigmat(1,2) = sigmau(4,i)
-        sigmat(2,1) = sigmat(1,2)
+        sigmat(1, 1) = sigmau(1, i)
+        sigmat(2, 2) = sigmau(2, i)
+        sigmat(3, 3) = sigmau(3, i)
+        sigmat(1, 2) = sigmau(4, i)
+        sigmat(2, 1) = sigmat(1, 2)
         if (ncmp .eq. 6) then
-            sigmat(1,3) = sigmau(5,i)
-            sigmat(2,3) = sigmau(6,i)
-            sigmat(3,1) = sigmat(1,3)
-            sigmat(3,2) = sigmat(2,3)
-        endif
+            sigmat(1, 3) = sigmau(5, i)
+            sigmat(2, 3) = sigmau(6, i)
+            sigmat(3, 1) = sigmat(1, 3)
+            sigmat(3, 2) = sigmat(2, 3)
+        end if
 !
 ! ---   ROTATION DU TENSEUR DES CONTRAINTES DE CAUCHY DE LA
 ! ---   ROTATION FAISANT PASSER DE L'ETAT INITAL A L'ETAT DEFORME :
 !       ---------------------------------------------------------
-        call utbtab('ZERO', 3, 3, sigmat, drot,&
+        call utbtab('ZERO', 3, 3, sigmat, drot, &
                     xab, sigmad)
 !
 ! ---   AFFECTATION DU VECTEUR EN SORTIE DES CONTRAINTES
 ! ---   DE CAUCHY DANS LE REPERE UTILISATEUR TOURNE :
 !       -------------------------------------------
-        sigrtg(1,i) = sigmad(1,1)
-        sigrtg(2,i) = sigmad(2,2)
-        sigrtg(3,i) = sigmad(3,3)
-        sigrtg(4,i) = sigmad(1,2)
+        sigrtg(1, i) = sigmad(1, 1)
+        sigrtg(2, i) = sigmad(2, 2)
+        sigrtg(3, i) = sigmad(3, 3)
+        sigrtg(4, i) = sigmad(1, 2)
         if (ncmp .eq. 6) then
-            sigrtg(5,i) = sigmad(1,3)
-            sigrtg(6,i) = sigmad(2,3)
-        endif
+            sigrtg(5, i) = sigmad(1, 3)
+            sigrtg(6, i) = sigmad(2, 3)
+        end if
 !
     end do
 !

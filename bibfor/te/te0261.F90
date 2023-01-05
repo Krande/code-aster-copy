@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -56,19 +56,19 @@ subroutine te0261(option, nomte)
 !      ------------------------
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    option=option
+    option = option
 !
-    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg1,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, &
+                     npg=npg1, jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
     call elref1(elrefp)
 !
 ! ---- NOMBRE DE CONTRAINTES ASSOCIE A L'ELEMENT
 !      -----------------------------------------
 !     MATNS MAL DIMENSIONNEE
-    ASSERT(nno.le.27)
+    ASSERT(nno .le. 27)
 !     INITIALISATION DES DIMENSIONS DES DDLS X-FEM
-    call xteini(nomte, nfh, nfe, ibid, ddlc,&
-                nnom, ddls, nddl, ddlm, nfiss,&
+    call xteini(nomte, nfh, nfe, ibid, ddlc, &
+                nnom, ddls, nddl, ddlm, nfiss, &
                 ibid)
 !
 ! - TYPE DE MODELISATION
@@ -76,27 +76,27 @@ subroutine te0261(option, nomte)
         typmod(1) = '3D'
         typmod(2) = '  '
     else
-        if (lteatt('AXIS','OUI')) then
+        if (lteatt('AXIS', 'OUI')) then
             typmod(1) = 'AXIS'
-        else if (lteatt('C_PLAN','OUI')) then
+        else if (lteatt('C_PLAN', 'OUI')) then
             typmod(1) = 'C_PLAN'
-        else if (lteatt('D_PLAN','OUI')) then
+        else if (lteatt('D_PLAN', 'OUI')) then
             typmod(1) = 'D_PLAN'
         else
             ASSERT(.false.)
-        endif
+        end if
         typmod(2) = ' '
-    endif
+    end if
 !
 !
 ! - PARAMETRES EN ENTREE
     call jevech('PGEOMER', 'L', igeom)
     call jevech('PMATERC', 'L', imate)
     call jevech('PDEPLAR', 'L', idepl)
-    compor(1)=' '
-    compor(2)=' '
-    compor(3)=' '
-    compor(4)=' '
+    compor(1) = ' '
+    compor(2) = ' '
+    compor(3) = ' '
+    compor(4) = ' '
 !
 !
 !     PARAMETRES PROPRES A X-FEM
@@ -109,16 +109,16 @@ subroutine te0261(option, nomte)
     call jevech('PLST', 'L', jlst)
     call jevech('PSTANO', 'L', jstno)
     call teattr('S', 'XFEM', enr, ibid)
-    if (enr(1:2).eq.'XH' .or. enr(1:2).eq.'XT') call jevech('PHEA_NO', 'L', jheavn)
+    if (enr(1:2) .eq. 'XH' .or. enr(1:2) .eq. 'XT') call jevech('PHEA_NO', 'L', jheavn)
 !     PROPRES AUX ELEMENTS 1D ET 2D (QUADRATIQUES)
-    if ((ibid.eq.0) .and. ltequa(elrefp,enr))&
-    call jevech('PPMILTO', 'L', jpmilt)
+    if ((ibid .eq. 0) .and. ltequa(elrefp, enr)) &
+        call jevech('PPMILTO', 'L', jpmilt)
 !
     call jevech('PCONTRR', 'E', icont)
 !
-    call xsidep(nno, nfh, nfe, ddlc, ddlm,&
-                igeom, typmod, zi(imate), compor, jpintt,&
-                zi(jcnset), zi(jheavt), zi(jlonch), zr(jbaslo), idepl,&
-                zr(jlsn), zr(jlst), zr(icont), jpmilt, nfiss,&
+    call xsidep(nno, nfh, nfe, ddlc, ddlm, &
+                igeom, typmod, zi(imate), compor, jpintt, &
+                zi(jcnset), zi(jheavt), zi(jlonch), zr(jbaslo), idepl, &
+                zr(jlsn), zr(jlst), zr(icont), jpmilt, nfiss, &
                 jheavn, jstno)
 end subroutine

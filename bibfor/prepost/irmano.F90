@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,11 +16,11 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine irmano(meshNameZ   , &
-                  nbCellSelect, cellSelect  ,&
+subroutine irmano(meshNameZ, &
+                  nbCellSelect, cellSelect, &
                   nodeFlag)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/assert.h"
 #include "asterfort/jedema.h"
@@ -28,10 +28,10 @@ implicit none
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexatr.h"
 !
-character(len=*), intent(in) :: meshNameZ
-integer, intent(in) :: nbCellSelect
-integer, pointer :: cellSelect(:)
-aster_logical, pointer :: nodeFlag(:)
+    character(len=*), intent(in) :: meshNameZ
+    integer, intent(in) :: nbCellSelect
+    integer, pointer :: cellSelect(:)
+    aster_logical, pointer :: nodeFlag(:)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -57,20 +57,20 @@ aster_logical, pointer :: nodeFlag(:)
 !
 ! - Access to connectivity
 !
-    call jeveuo(meshName //'.CONNEX', 'L', vi=connex)
-    call jeveuo(jexatr(meshName //'.CONNEX', 'LONCUM'), 'L', vi = conxLong)
+    call jeveuo(meshName//'.CONNEX', 'L', vi=connex)
+    call jeveuo(jexatr(meshName//'.CONNEX', 'LONCUM'), 'L', vi=conxLong)
 !
 ! - Loop on cells
 !
     do iCell = 1, nbCellSelect
-        cellNume   = cellSelect(iCell)
-        nodeFirst  = conxLong(cellNume)
+        cellNume = cellSelect(iCell)
+        nodeFirst = conxLong(cellNume)
         cellNbNode = conxLong(cellNume+1)-nodeFirst
         do iNode = 1, cellNbNode
             nodeNume = connex(nodeFirst-1+iNode)
-            if (.not.nodeFlag(nodeNume)) then
+            if (.not. nodeFlag(nodeNume)) then
                 nodeFlag(nodeNume) = ASTER_TRUE
-            endif
+            end if
         end do
     end do
 !

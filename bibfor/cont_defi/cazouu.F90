@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine cazouu(keywf, nb_cont_zone, keyw_,keyw_type_)
+subroutine cazouu(keywf, nb_cont_zone, keyw_, keyw_type_)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterc/getmjm.h"
@@ -65,65 +65,64 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     l_error = .false.
-    i_zone  = 1
-    keyw    = keyw_
-    keyw_type=keyw_type_
+    i_zone = 1
+    keyw = keyw_
+    keyw_type = keyw_type_
 !
 ! ----- Loop on contact zones
 !
-        do i_zone = 1, nb_cont_zone
+    do i_zone = 1, nb_cont_zone
 !
 ! ----------------- Read value (depends on type)
 !
 
-                    vale_i         = 0
-                    vale_r         = 0.d0
-                    vale_k         = ' '
+        vale_i = 0
+        vale_r = 0.d0
+        vale_k = ' '
 !                    write (6,*)  keyw_type
-                    if (keyw_type .eq. 'I') then
-                        call getvis(keywf, keyw, iocc=i_zone, scal=vale_i, nbret=noc)
-                    else if (keyw_type .eq.'T') then
-                        call getvtx(keywf, keyw, iocc=i_zone, scal=vale_k, nbret=noc)
-                    else if (keyw_type .eq.'R') then
-                        call getvr8(keywf, keyw, iocc=i_zone, scal=vale_r, nbret=noc)
-                    else
-                        ASSERT(.false.)
-                    endif
+        if (keyw_type .eq. 'I') then
+            call getvis(keywf, keyw, iocc=i_zone, scal=vale_i, nbret=noc)
+        else if (keyw_type .eq. 'T') then
+            call getvtx(keywf, keyw, iocc=i_zone, scal=vale_k, nbret=noc)
+        else if (keyw_type .eq. 'R') then
+            call getvr8(keywf, keyw, iocc=i_zone, scal=vale_r, nbret=noc)
+        else
+            ASSERT(.false.)
+        end if
 
-                    if (noc .ne. 0) then
+        if (noc .ne. 0) then
 
-
-                        if (i_zone .eq. 1) then
-                            vale_refe_i = vale_i
-                            vale_refe_r = vale_r
-                            vale_refe_k = vale_k
-                        else
-                            if (keyw_type .eq. 'I') then
-                                if (vale_i .ne. vale_refe_i) then
-                                    l_error = .true.
-                                    goto 99
-                                endif
-                            else if (keyw_type.eq.'R') then
-                                if (abs(vale_r - vale_refe_r).le.r8prem()) then
-                                    l_error = .true.
-                                    goto 99
-                                endif
-                            else if (keyw_type.eq.'T') then
-                                if (vale_k .ne. vale_refe_k) then
-                                    l_error = .true.
-                                    goto 99
-                                endif
-                            else
-                                ASSERT(.false.)
-                            endif
-                        endif
-                    endif
-        end do
+            if (i_zone .eq. 1) then
+                vale_refe_i = vale_i
+                vale_refe_r = vale_r
+                vale_refe_k = vale_k
+            else
+                if (keyw_type .eq. 'I') then
+                    if (vale_i .ne. vale_refe_i) then
+                        l_error = .true.
+                        goto 99
+                    end if
+                else if (keyw_type .eq. 'R') then
+                    if (abs(vale_r-vale_refe_r) .le. r8prem()) then
+                        l_error = .true.
+                        goto 99
+                    end if
+                else if (keyw_type .eq. 'T') then
+                    if (vale_k .ne. vale_refe_k) then
+                        l_error = .true.
+                        goto 99
+                    end if
+                else
+                    ASSERT(.false.)
+                end if
+            end if
+        end if
+    end do
 !
- 99 continue
+99  continue
 !
     if (l_error) then
         call utmess('F', 'CONTACT3_4', sk=keyw)
-    endif
+    end if
 !
 end subroutine

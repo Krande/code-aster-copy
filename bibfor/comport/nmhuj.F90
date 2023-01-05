@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine nmhuj(fami, kpg, ksp, typmod, imat,&
-                 carcri, angmas, epsd,&
-                 deps, sigd, vind, opt, sigf,&
+subroutine nmhuj(fami, kpg, ksp, typmod, imat, &
+                 carcri, angmas, epsd, &
+                 deps, sigd, vind, opt, sigf, &
                  vinf, dsde, iret)
     implicit none
 !  INTEGRATION DE LA LOI DE COMPORTEMENT ELASTO PLASTIQUE DE HUJEUX
@@ -128,21 +128,21 @@ subroutine nmhuj(fami, kpg, ksp, typmod, imat,&
     real(kind=8) :: depsth(6), alpha(3), tempm, tempf, tref
     real(kind=8) :: det, bid16(6), bid66(6, 6)
     real(kind=8) :: materf(22, 2)
-    real(kind=8), parameter :: zero = 0.d0, un=1.d0, deux=2.d0, trois=3.d0
-    real(kind=8), parameter :: degr  = 0.0174532925199d0, tole = 0.1d0
+    real(kind=8), parameter :: zero = 0.d0, un = 1.d0, deux = 2.d0, trois = 3.d0
+    real(kind=8), parameter :: degr = 0.0174532925199d0, tole = 0.1d0
     real(kind=8) :: neps, nsig, ptrac, rtrac
     real(kind=8) :: crit, dpiso
     aster_logical:: debug, conv, reorie, tract, lVari
 !
 !     ----------------------------------------------------------------
-    common /tdim/   ndt, ndi
+    common/tdim/ndt, ndi
 !
-    iret  = 0
+    iret = 0
 ! --- DEBUG = ASTER_TRUE : MODE AFFICHAGE ENRICHI
     debug = ASTER_FALSE
     tract = ASTER_FALSE
-    conv  = ASTER_TRUE
-    reorie= ASTER_FALSE
+    conv = ASTER_TRUE
+    reorie = ASTER_FALSE
 
 ! - Flag to modify internal state variable
     lVari = L_VARI(opt)
@@ -181,36 +181,36 @@ subroutine nmhuj(fami, kpg, ksp, typmod, imat,&
     dsde = 0.d0
 !
     if (debug) then
-       write(6,*)
-       write(6,'(A)') '!!!!(@_@)!!!!                        !!!!(@_@)!!!!'
-       write(6,'(A)') '!!!!(@_@)!!!!    MODE DEBUG ACTIF    !!!!(@_@)!!!!'
-       write(6,'(A)') '!!!!(@_@)!!!!                        !!!!(@_@)!!!!'
-    endif
+        write (6, *)
+        write (6, '(A)') '!!!!(@_@)!!!!                        !!!!(@_@)!!!!'
+        write (6, '(A)') '!!!!(@_@)!!!!    MODE DEBUG ACTIF    !!!!(@_@)!!!!'
+        write (6, '(A)') '!!!!(@_@)!!!!                        !!!!(@_@)!!!!'
+    end if
 !
     mod = typmod(1)
 !
 ! - Get temperatures
 !
-    call get_varc(fami , kpg  , ksp , 'T', tempm, tempf, tref)
+    call get_varc(fami, kpg, ksp, 'T', tempm, tempf, tref)
 !
 ! ---> RECUPERATION COEF DE LA LOI HUJEUX
 !      (INDEPENDANTS DE LA TEMPERATURE)
 !      NB DE CMP DIRECTES/CISAILLEMENT
 !      NB VARIABLES INTERNES
-    call hujmat(fami, kpg, ksp, mod, imat,&
+    call hujmat(fami, kpg, ksp, mod, imat, &
                 tempf, materf, ndt, ndi, nvi)
 !
-    ptrac = materf(21,2)
-    rtrac = abs(1.d-6*materf(8,2))
+    ptrac = materf(21, 2)
+    rtrac = abs(1.d-6*materf(8, 2))
 !
 ! --- REORIENTATION DES PLANS DE GLISSEMENT SUR LES AXES DU
 !     REPERE LOCAL DONNE PAR LES ANGLES NAUTIQUES (ANGMAS)
     if (angmas(1) .eq. r8vide()) then
         call utmess('F', 'ALGORITH8_20')
-    endif
+    end if
 !
-    reorie =(angmas(1).ne.zero) .or. (angmas(2).ne.zero) .or. &
-            (angmas(3).ne.zero)
+    reorie = (angmas(1) .ne. zero) .or. (angmas(2) .ne. zero) .or. &
+             (angmas(3) .ne. zero)
 !
     call hujori('LOCAL', 1, reorie, angmas, sigd, bid66)
     call hujori('LOCAL', 1, reorie, angmas, epsd, bid66)
@@ -221,60 +221,60 @@ subroutine nmhuj(fami, kpg, ksp, typmod, imat,&
 !
     ndtt = 6
     if (ndt .lt. 6) then
-       ndtt = 4
-       ndt  = 6
-    endif
+        ndtt = 4
+        ndt = 6
+    end if
 !
 !     CALCUL DE DEPSTH ET EPSDTH
 !     --------------------------
 ! ---> COEF DE DILATATION LE MEME A TPLUS ET TMOINS
-    if (materf(17,1) .eq. un) then
+    if (materf(17, 1) .eq. un) then
 !
-        if ((isnan(tempm) .or. isnan(tref)) .and.&
-           materf(3,1).ne.zero) then
+        if ((isnan(tempm) .or. isnan(tref)) .and. &
+            materf(3, 1) .ne. zero) then
             call utmess('F', 'CALCULEL_15')
-        endif
+        end if
 !
-        alpha(1) = materf(3,1)
-        alpha(2) = materf(3,1)
-        alpha(3) = materf(3,1)
+        alpha(1) = materf(3, 1)
+        alpha(2) = materf(3, 1)
+        alpha(3) = materf(3, 1)
 !
-    else if (materf(17,1).eq.deux) then
+    else if (materf(17, 1) .eq. deux) then
 !
-        alpha(1) = materf(10,1)
-        alpha(2) = materf(11,1)
-        alpha(3) = materf(12,1)
-        if ( (isnan(tempm).or.isnan(tref)) .and. &
-             (alpha(1).ne.zero .or. alpha(2).ne.zero .or. &
-             alpha(3).ne.zero) ) then
+        alpha(1) = materf(10, 1)
+        alpha(2) = materf(11, 1)
+        alpha(3) = materf(12, 1)
+        if ((isnan(tempm) .or. isnan(tref)) .and. &
+            (alpha(1) .ne. zero .or. alpha(2) .ne. zero .or. &
+             alpha(3) .ne. zero)) then
             call utmess('F', 'CALCULEL_15')
-        endif
+        end if
 !
     else
         ASSERT(ASTER_FALSE)
-    endif
+    end if
 !
     if (isnan(tempm) .or. isnan(tempf) .or. isnan(tref)) then
-       do i = 1, ndi
-         depsth(i) = deps(i)
-       enddo
+        do i = 1, ndi
+            depsth(i) = deps(i)
+        end do
     else
-       do i = 1, ndi
-         depsth(i) = deps(i) - &
-         alpha(i)*(tempf-tref) + alpha(i)*(tempm-tref)
-       enddo
-    endif
+        do i = 1, ndi
+            depsth(i) = deps(i)- &
+                        alpha(i)*(tempf-tref)+alpha(i)*(tempm-tref)
+        end do
+    end if
 !
     do i = ndi+1, ndt
         depsth(i) = deps(i)
-    enddo
+    end do
 !
     if (ndtt .lt. 6) then
-       do i = ndtt+1, 6
-         depsth(i) = zero
-         sigd(i)   = zero
-       enddo
-    endif
+        do i = ndtt+1, 6
+            depsth(i) = zero
+            sigd(i) = zero
+        end do
+    end if
 !
 ! ---> INITIALISATION SEUIL DEVIATOIRE SI NUL
 !
@@ -284,13 +284,13 @@ subroutine nmhuj(fami, kpg, ksp, typmod, imat,&
             if (materf(13, 2) .eq. zero) then
                 vind(i) = 1.d-3
             else
-                vind(i) = materf(13,2)
-            endif
+                vind(i) = materf(13, 2)
+            end if
 !
             call hujcrd(i, materf, sigd, vind, seuil, iret)
             if (iret .ne. 0) then
                 goto 999
-            endif
+            end if
 !
 ! --- SI LE SEUIL EST DESEQUILIBRE A L'ETAT INITIAL
 !     ON EQUILIBRE LE SEUIL EN CALCULANT LA VALEUR DE R
@@ -298,25 +298,25 @@ subroutine nmhuj(fami, kpg, ksp, typmod, imat,&
 !
             if (seuil .gt. zero) then
                 call hujprj(i, sigd, tin, piso, q)
-                piso = piso - ptrac
-                b    = materf(4,2)
-                phi  = materf(5,2)
-                m    = sin(degr*phi)
-                pc0  = materf(7,2)
-                vind(i)    = -q/(m*piso*(un-b*log(piso/pc0)))
+                piso = piso-ptrac
+                b = materf(4, 2)
+                phi = materf(5, 2)
+                m = sin(degr*phi)
+                pc0 = materf(7, 2)
+                vind(i) = -q/(m*piso*(un-b*log(piso/pc0)))
                 vind(23+i) = un
-            endif
+            end if
 !
-        endif
-    enddo
+        end if
+    end do
 !
 ! ---> INITIALISATION SEUIL ISOTROPE SI NUL
     if (vind(4) .eq. zero) then
         if (materf(14, 2) .eq. zero) then
             vind(4) = 1.d-3
         else
-            vind(4) = materf(14,2)
-        endif
+            vind(4) = materf(14, 2)
+        end if
 !
         call hujcri(materf, sigd, vind, seuil)
 !
@@ -325,17 +325,17 @@ subroutine nmhuj(fami, kpg, ksp, typmod, imat,&
 !     APPROPRIEE
 !
         if (seuil .gt. zero) then
-            piso    = trace(3,sigd)/trois
-            d       = materf(3,2)
-            pc0     = materf(7,2)
+            piso = trace(3, sigd)/trois
+            d = materf(3, 2)
+            pc0 = materf(7, 2)
             vind(4) = piso/(d*pc0)
             if (vind(4) .gt. 1.d0) then
                 call utmess('F', 'COMPOR1_83')
-            endif
-            vind(27)= un
-        endif
+            end if
+            vind(27) = un
+        end if
 !
-    endif
+    end if
 !
 ! ---> INITIALISATION SEUIL CYCLIQUE SI NUL
     do i = 1, ndi
@@ -343,59 +343,59 @@ subroutine nmhuj(fami, kpg, ksp, typmod, imat,&
             if (materf(18, 2) .eq. zero) then
                 vind(4+i) = 1.d-3
             else
-                vind(4+i) = materf(18,2)
-            endif
-        endif
-    enddo
+                vind(4+i) = materf(18, 2)
+            end if
+        end if
+    end do
 !
     if (vind(8) .eq. zero) then
         if (materf(19, 2) .eq. zero) then
             vind(8) = 1.d-3
         else
-            vind(8) = materf(19,2)
-        endif
-    endif
+            vind(8) = materf(19, 2)
+        end if
+    end if
 !
 !ONTROLE DES INDICATEURS DE PLASTICITE
     do i = 1, 4
-        if (abs(vind(27+i)-un) .lt. r8prem()) vind(23+i)=-un
-    enddo
+        if (abs(vind(27+i)-un) .lt. r8prem()) vind(23+i) = -un
+    end do
 !
     if (opt(1:9) .ne. 'RIGI_MECA') then
         variTmp(1:50) = vind(1:50)
-    endif
+    end if
 !
 ! ---> ETAT ELASTIQUE OU PLASTIQUE A T
-    if (( (vind(24) .eq. zero) .or. &
-          (vind(24) .eq. -un .and. vind(28) .eq. zero) ) .and.&
-        ( (vind(25) .eq. zero) .or. &
-          (vind(25) .eq. -un .and. vind(29) .eq. zero) ) .and.&
-        ( (vind(26) .eq. zero) .or. &
-          (vind(26) .eq. -un .and. vind(30) .eq. zero) ) .and.&
-        ( (vind(27) .eq. zero) .or. &
-          (vind(27) .eq. -un .and. vind(31) .eq. zero) )) then
+    if (((vind(24) .eq. zero) .or. &
+         (vind(24) .eq. -un .and. vind(28) .eq. zero)) .and. &
+        ((vind(25) .eq. zero) .or. &
+         (vind(25) .eq. -un .and. vind(29) .eq. zero)) .and. &
+        ((vind(26) .eq. zero) .or. &
+         (vind(26) .eq. -un .and. vind(30) .eq. zero)) .and. &
+        ((vind(27) .eq. zero) .or. &
+         (vind(27) .eq. -un .and. vind(31) .eq. zero))) then
         etatd = 'ELASTIC'
     else
         etatd = 'PLASTIC'
-    endif
+    end if
 !
 ! -------------------------------------------------------------
 ! OPTIONS 'FULL_MECA' ET 'RAPH_MECA' = CALCUL DE SIG(T+DT)
 ! -------------------------------------------------------------
     if (opt(1:9) .eq. 'RAPH_MECA' .or. opt(1:9) .eq. 'FULL_MECA') then
 !
-        if (debug) write(6,*) ' * DEPS =',(depsth(i),i=1,3)
+        if (debug) write (6, *) ' * DEPS =', (depsth(i), i=1, 3)
 !
         do i = 1, 3
             call hujprj(i, sigd, tin, piso, q)
             if (abs(piso+deux*rtrac-ptrac) .lt. r8prem()) &
-              tract = ASTER_TRUE
-        enddo
+                tract = ASTER_TRUE
+        end do
 !
 ! INTEGRATION ELASTIQUE SUR DT
         do i = 1, ndt
             depsq(i) = zero
-        enddo
+        end do
 !
 ! -----------------------------------------------
 ! ---> INCREMENT TOTAL DE DEFORMATION A APPLIQUER
@@ -416,64 +416,64 @@ subroutine nmhuj(fami, kpg, ksp, typmod, imat,&
 ! -----------------------------------------------------
 ! ---> PREDICTION VIA TENSEUR ELASTIQUE DES CONTRAINTES
 ! -----------------------------------------------------
-        inc    = 0
+        inc = 0
         incmax = 1
-        limsup = int(max(20.d0,abs(carcri(1))))
+        limsup = int(max(20.d0, abs(carcri(1))))
 !
 100     continue
 !
-        inc = inc + 1
+        inc = inc+1
         depsr(1:ndt) = depsq(1:ndt)
-        call hujpre(fami, kpg, ksp, etatd, mod,&
-                    imat, materf, depsr, sigd,&
+        call hujpre(fami, kpg, ksp, etatd, mod, &
+                    imat, materf, depsr, sigd, &
                     sigf, vind0, iret)
 !
-        if (iret.eq.1) then
-           if (debug) &
-           write (6, '(A)' ) &
-           '!!!@_@!!! NMHUJ :: ARRET DANS HUJPRE !!!@_@!!!'
-           goto 999
-        endif
+        if (iret .eq. 1) then
+            if (debug) &
+                write (6, '(A)') &
+                '!!!@_@!!! NMHUJ :: ARRET DANS HUJPRE !!!@_@!!!'
+            goto 999
+        end if
 !
 ! ----------------------------------------------------
 ! ---> CONTROLE DE L EVOLUTION DE LA PRESSION ISOTROPE
 ! ----------------------------------------------------
-        iret1 =0
-        call hujdp(mod, depsr, sigd, sigf, materf,&
+        iret1 = 0
+        call hujdp(mod, depsr, sigd, sigf, materf, &
                    vind, incmax, iret1)
 
-        if (iret1.eq.1) then
-           if (debug) &
-           write (6, '(A)' ) &
-  '!!!@_@!!! NMHUJ :: ARRET DANS HUJDP :: PAS DE RESUBDIVISION !!!@_@!!!'
+        if (iret1 .eq. 1) then
+            if (debug) &
+                write (6, '(A)') &
+                '!!!@_@!!! NMHUJ :: ARRET DANS HUJDP :: PAS DE RESUBDIVISION !!!@_@!!!'
 !           goto 999
-        endif
+        end if
 !
 ! --- ON LIMITE LE REDECOUPAGE LOCAL A MAX(20,ITER_INTE_MAXI)
         if (incmax .ge. limsup) then
             incmax = limsup
-        else if (incmax.le.1) then
-            incmax =1
-        endif
+        else if (incmax .le. 1) then
+            incmax = 1
+        end if
 !
         if (inc .eq. 1 .and. incmax .gt. 1) then
             do i = 1, ndt
-                depsq(i)=deps0(i) /incmax
-                depsr(i)=deps0(i) /incmax
-            enddo
-            call hujpre(fami, kpg, ksp, etatd, mod,&
-                        imat, materf, depsr, sigd,&
+                depsq(i) = deps0(i)/incmax
+                depsr(i) = deps0(i)/incmax
+            end do
+            call hujpre(fami, kpg, ksp, etatd, mod, &
+                        imat, materf, depsr, sigd, &
                         sigf, vind0, iret)
-        endif
+        end if
 !
 ! ---------------------------------------------
 ! CALCUL DE L'ETAT DE CONTRAINTES CORRESPONDANT
 ! ---------------------------------------------
-        if (debug) write(6,*)&
-        '!!!@_@!!! NMHUJ -- VINF =',(variTmp(i),i=24,31),' !!!@_@!!!'
+        if (debug) write (6, *) &
+            '!!!@_@!!! NMHUJ -- VINF =', (variTmp(i), i=24, 31), ' !!!@_@!!!'
 !
-        call hujres(fami, kpg, ksp, mod, carcri,&
-                    materf, imat, nvi, depsr, sigd,&
+        call hujres(fami, kpg, ksp, mod, carcri, &
+                    materf, imat, nvi, depsr, sigd, &
                     vind, sigf, variTmp, iret, etatf)
         if (iret .eq. 1) goto 999
 !
@@ -481,36 +481,36 @@ subroutine nmhuj(fami, kpg, ksp, typmod, imat,&
 ! - CONTROLE DES DEFORMATIONS DEJA APPLIQUEES
 ! -------------------------------------------
         if (inc .lt. incmax) then
-            conv =ASTER_FALSE
+            conv = ASTER_FALSE
         else
-            conv =ASTER_TRUE
-        endif
+            conv = ASTER_TRUE
+        end if
 !
-        if (.not.conv) then
+        if (.not. conv) then
             sigd(1:ndt) = sigf(1:ndt)
             vind(1:nvi) = variTmp(1:nvi)
             goto 100
-        endif
+        end if
 !
 ! --- CALCUL DU CRITERE DE HILL: DSIG*DEPS
         hill = zero
         nsig = zero
         neps = zero
         do i = 1, ndt
-            dsig(i) = sigf(i) - sigd0(i)
-            hill = hill + dsig(i)*deps0(i)
-            nsig = nsig + dsig(i)**2
-            neps = neps + deps0(i)**2
-        enddo
+            dsig(i) = sigf(i)-sigd0(i)
+            hill = hill+dsig(i)*deps0(i)
+            nsig = nsig+dsig(i)**2
+            neps = neps+deps0(i)**2
+        end do
 !
 ! --- NORMALISATION DU CRITERE : VARIE ENTRE -1 ET 1
-        if (neps.gt.r8prem() .and. nsig.gt.r8prem()) then
+        if (neps .gt. r8prem() .and. nsig .gt. r8prem()) then
             variTmp(32) = hill/sqrt(neps*nsig)
         else
             variTmp(32) = zero
-        endif
+        end if
 !
-    endif
+    end if
 !af 07/05/07 fin <IF RAPH_MECA et FULL_MECA>
 !
 !       ----------------------------------------------------------------
@@ -521,7 +521,7 @@ subroutine nmhuj(fami, kpg, ksp, typmod, imat,&
 !       ----------------------------------------------------------------
     if (opt .eq. 'RIGI_MECA_TANG') then
 !
-        dsde(:,:) = zero
+        dsde(:, :) = zero
 !
 ! REMARQUE: CALCUL DE DSDE A T AVEC MATERF CAR PARAMETRES HUJEUX
 ! --------  INDEPENDANTS DE LA TEMPERATURE
@@ -529,143 +529,143 @@ subroutine nmhuj(fami, kpg, ksp, typmod, imat,&
 ! ---> CALCUL MATRICE DE RIGIDITE ELASTIQUE
         if (etatd .eq. 'ELASTIC') then
             call hujtel(mod, materf, sigd, dsde)
-        endif
+        end if
 !
 ! ---> CALCUL MATRICE TANGENTE DU PROBLEME CONTINU
         if (etatd .eq. 'PLASTIC') then
-            call hujtid(fami, kpg, ksp, mod, imat,&
+            call hujtid(fami, kpg, ksp, mod, imat, &
                         sigd, vind, dsde, iret)
             if (iret .eq. 1) goto 999
-        endif
+        end if
 !
         call hujori('GLOBA', 2, reorie, angmas, bid16, dsde)
 !
     else if (opt .eq. 'FULL_MECA') then
 !
-        dsde(:,:) = zero
+        dsde(:, :) = zero
 !
 ! ---> CALCUL MATRICE DE RIGIDITE ELASTIQUE
         if (etatf .eq. 'ELASTIC') then
             call hujtel(mod, materf, sigf, dsde)
-        endif
+        end if
 !
 ! ---> CALCUL MATRICE TANGENTE DU PROBLEME CONTINU
         if (etatf .eq. 'PLASTIC') then
-            call hujtid(fami, kpg, ksp, mod, imat,&
+            call hujtid(fami, kpg, ksp, mod, imat, &
                         sigf, variTmp, dsde, iret)
-            if (iret.eq.1) goto 999
-        endif
+            if (iret .eq. 1) goto 999
+        end if
 !
     else if (opt .eq. 'FULL_MECA_ELAS') then
 !
-        dsde(:,:) = zero
+        dsde(:, :) = zero
         call hujtel(mod, materf, sigf, dsde)
 !
     else if (opt .eq. 'RIGI_MECA_ELAS') then
 !
-        dsde(:,:) = zero
+        dsde(:, :) = zero
         call hujtel(mod, materf, sigd, dsde)
         call hujori('GLOBA', 2, reorie, angmas, bid16, dsde)
 !
-    endif
+    end if
 ! fin <IF RIGI_MECA_TANG>
 !
 ! ---> CALCUL DETERMINANT DE LA MATRICE TANGENTE + INDICATEUR
 ! --- RELIE AUX MECANISMES ACTIFS
     if (opt(1:9) .ne. 'RIGI_MECA') then
 !
-        call hujori('GLOBA', 2, reorie, angmas, bid16,&
+        call hujori('GLOBA', 2, reorie, angmas, bid16, &
                     dsde)
 !
         if (opt .eq. 'FULL_MECA') then
-            call mgauss('NCSD', dsde, sigd, 6, 6,&
+            call mgauss('NCSD', dsde, sigd, 6, 6, &
                         1, det, iret)
             if (iret .eq. 1) then
                 variTmp(33) = un
-                iret     = 0
+                iret = 0
             else
                 variTmp(33) = det
-            endif
-        endif
+            end if
+        end if
 !
-    endif
+    end if
 ! --- ON RENVOIE LA VALEUR ADEQUATE DE NDT
 !     POUR MODELISATION D_PLAN
     if (ndtt .eq. 4) ndt = 4
 !
     if (opt .eq. 'RAPH_MECA' .or. opt(1:9) .eq. 'FULL_MECA') &
-       call hujori('GLOBA', 1, reorie, angmas, sigf, bid66)
+        call hujori('GLOBA', 1, reorie, angmas, sigf, bid66)
 !
-999  continue
+999 continue
 !
     if (opt(1:9) .eq. 'RAPH_MECA' .or. opt(1:9) .eq. 'FULL_MECA' &
         .or. opt(1:14) .eq. 'RIGI_MECA_ELAS') then
         if (iret .eq. 1) then
-            if (.not.tract) then
-                dsde(:,:) = zero
-                call hujtid(fami, kpg, ksp, mod, imat,&
+            if (.not. tract) then
+                dsde(:, :) = zero
+                call hujtid(fami, kpg, ksp, mod, imat, &
                             sigd, vind, dsde, iret1)
                 if (iret1 .eq. 1) then
-                   dsde(:,:) = zero
-                   call hujtel(mod, materf, sigd, dsde)
-                endif
+                    dsde(:, :) = zero
+                    call hujtel(mod, materf, sigd, dsde)
+                end if
 ! debut ---new dvp 23/01/2019---
-                dsig(1:ndt) = matmul(dsde(1:ndt,1:ndt), deps0(1:ndt))
+                dsig(1:ndt) = matmul(dsde(1:ndt, 1:ndt), deps0(1:ndt))
 !
 ! on limite la variation de dsig a 2% par rapport a piso
-                piso =trace(3,sigd0)
-                dpiso=trace(3,dsig)
-                if (piso.lt.-100. .and. abs(dpiso/piso).le.tole) then
-                   det=1.
-                elseif (piso.lt.-100.) then
-                   det=tole*abs(piso/dpiso)
+                piso = trace(3, sigd0)
+                dpiso = trace(3, dsig)
+                if (piso .lt. -100. .and. abs(dpiso/piso) .le. tole) then
+                    det = 1.
+                elseif (piso .lt. -100.) then
+                    det = tole*abs(piso/dpiso)
                 else
-                   det=0.
-                endif
-                dsig(1:ndt) = det * dsig(1:ndt)
+                    det = 0.
+                end if
+                dsig(1:ndt) = det*dsig(1:ndt)
 
-                sigf = sigd0 + dsig
+                sigf = sigd0+dsig
 !
 ! y-a-t-il traction?
                 conv = ASTER_TRUE
                 do i = 1, 3
-                  call hujprj(i, sigf, tin, piso, q)
-                  if (abs(piso+deux*rtrac-ptrac) .lt. r8prem()) &
-                    conv = ASTER_FALSE
-                enddo
+                    call hujprj(i, sigf, tin, piso, q)
+                    if (abs(piso+deux*rtrac-ptrac) .lt. r8prem()) &
+                        conv = ASTER_FALSE
+                end do
 !
-                if (.not.conv) then
-                   do i = 1, 3
-                    sigf(i)  = -deux*rtrac+ptrac
-                    sigf(i+3)= zero
-                   enddo
-                   dsde(:,:) = zero
-                   call hujtel(mod, materf, sigd, dsde)
-                endif
+                if (.not. conv) then
+                    do i = 1, 3
+                        sigf(i) = -deux*rtrac+ptrac
+                        sigf(i+3) = zero
+                    end do
+                    dsde(:, :) = zero
+                    call hujtel(mod, materf, sigd, dsde)
+                end if
 !
                 variTmp(1:50) = vind0(1:50)
 ! fin   ---new dvp 23/01/2019---
                 if (debug) then
-                    write(6,'(A)') ' ----------- FIN NMHUJ -----------------'
-                    write(6,*) ' * DEPS =',(deps0(i),i=1,ndt)
-                    write(6,*) ' * SIGD =',(sigd0(i),i=1,ndt)
-                    write(6,*) ' * VIND =',(vind0(i),i=1,50)
-                    write(6,*) ' * SIGF =',(sigf(i),i=1,ndt)
-                    write(6,*) ' * VINF =',(variTmp(i),i=1,50)
-                    write(6,'(A)')' ----------------------------------------'
-                endif
+                    write (6, '(A)') ' ----------- FIN NMHUJ -----------------'
+                    write (6, *) ' * DEPS =', (deps0(i), i=1, ndt)
+                    write (6, *) ' * SIGD =', (sigd0(i), i=1, ndt)
+                    write (6, *) ' * VIND =', (vind0(i), i=1, 50)
+                    write (6, *) ' * SIGF =', (sigf(i), i=1, ndt)
+                    write (6, *) ' * VINF =', (variTmp(i), i=1, 50)
+                    write (6, '(A)') ' ----------------------------------------'
+                end if
             else
 !
-                dsde(:,:) = zero
+                dsde(:, :) = zero
                 call hujtel(mod, materf, sigd, dsde)
                 do i = 1, 3
                     sigf(i) = -deux*rtrac+ptrac
                     sigf(i+3) = zero
-                enddo
+                end do
                 variTmp(1:50) = vind0(1:50)
                 iret = 0
-            endif
-        endif
+            end if
+        end if
         sigd(1:ndt) = sigd0(1:ndt)
         deps(1:ndt) = deps0(1:ndt)
         vind(1:50) = vind0(1:50)
@@ -673,10 +673,10 @@ subroutine nmhuj(fami, kpg, ksp, typmod, imat,&
 ! sauvegarde d'une estimation de l'erreur cumulee
 ! L'erreur est mesuree sur F=(sigm, vari_interne)=0
 !
-        crit =zero
+        crit = zero
 !
         if (conv) then
-            det  =abs(trace(3,deps0))
+            det = abs(trace(3, deps0))
             do i = 1, 3
 !
 ! On normalise les seuils de la meme facon que dans hujjid
@@ -685,61 +685,61 @@ subroutine nmhuj(fami, kpg, ksp, typmod, imat,&
                 call hujcrd(i, materf, sigf, variTmp, seuil, iret)
                 if (iret .ne. 0) then
                     goto 999
-                endif
-                seuil   = seuil*det
+                end if
+                seuil = seuil*det
 
-                if (seuil.gt.zero) then
-                    bid16(i)=un
+                if (seuil .gt. zero) then
+                    bid16(i) = un
                 else
-                    bid16(i)=zero
-                endif
-                crit = max(seuil,crit)
+                    bid16(i) = zero
+                end if
+                crit = max(seuil, crit)
 !
-            enddo
+            end do
 !
 ! On normalise les seuils de la meme facon que dans hujjid
 ! i.e. par le module d'Young materf(1,1)/Pcr0
 ! pour assurer la coherence du controle avec RESI_INTE_RELA
 !
             call hujcri(materf, sigf, variTmp, seuil)
-            seuil   = seuil/materf(1,1)*abs(materf(7,2))
+            seuil = seuil/materf(1, 1)*abs(materf(7, 2))
 
-            if (seuil.gt.zero) then
-                bid16(4)=un
+            if (seuil .gt. zero) then
+                bid16(4) = un
             else
-                bid16(4)=zero
-            endif
-            crit = max(seuil,crit)
+                bid16(4) = zero
+            end if
+            crit = max(seuil, crit)
 !
-           do i = 5, 8
+            do i = 5, 8
 !
 ! On normalise les seuils de la meme facon que dans hujjid
 ! i.e. par le module d'Young materf(1,1)/Pcr0
 ! pour assurer la coherence du controle avec RESI_INTE_RELA
 !
-              if (i.lt.8 .and. bid16(i-4).eq.zero) then
+                if (i .lt. 8 .and. bid16(i-4) .eq. zero) then
 
-                 call hujcdc(i-4, materf, sigf, variTmp, seuil)
-                 seuil = seuil*det
+                    call hujcdc(i-4, materf, sigf, variTmp, seuil)
+                    seuil = seuil*det
 
-              elseif (bid16(4).eq.zero) then
+                elseif (bid16(4) .eq. zero) then
 
-                 call hujcic(materf, sigf, variTmp, seuil)
-                 seuil = seuil/materf(1,1)*abs(materf(7,2))
-              endif
-              crit = max(seuil,crit)
+                    call hujcic(materf, sigf, variTmp, seuil)
+                    seuil = seuil/materf(1, 1)*abs(materf(7, 2))
+                end if
+                crit = max(seuil, crit)
 !
-           enddo
-        endif
+            end do
+        end if
 !
-        variTmp(34)=crit
-        variTmp(35)=zero
+        variTmp(34) = crit
+        variTmp(35) = zero
 ! fin   ---new dvp 23/01/2019---
-    endif
+    end if
 
 ! - Copy internal state variables
     if (lVari) then
         vinf = variTmp
-    endif
+    end if
 !
 end subroutine

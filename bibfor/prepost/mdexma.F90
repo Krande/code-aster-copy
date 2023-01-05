@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine mdexma(nofimd, idfimd, nomamd, option, existm,&
+subroutine mdexma(nofimd, idfimd, nomamd, option, existm, &
                   ndim, codret)
 !_____________________________________________________________________
 ! person_in_charge: nicolas.sellenet at edf.fr
@@ -65,9 +65,9 @@ subroutine mdexma(nofimd, idfimd, nomamd, option, existm,&
 ! 0.3. ==> VARIABLES LOCALES
 !
     integer :: edlect
-    parameter (edlect=0)
+    parameter(edlect=0)
     integer :: ednstr
-    parameter (ednstr=0)
+    parameter(ednstr=0)
 !
 !
     integer :: lnomam, nbmaie
@@ -90,7 +90,7 @@ subroutine mdexma(nofimd, idfimd, nomamd, option, existm,&
 !
     existm = .false.
     codret = 0
-    inquire(file=nofimd,exist=ficexi)
+    inquire (file=nofimd, exist=ficexi)
 !
     if (.not. ficexi) then
 !
@@ -104,7 +104,7 @@ subroutine mdexma(nofimd, idfimd, nomamd, option, existm,&
         else
             dejouv = .true.
             iaux = 0
-        endif
+        end if
         if (iaux .eq. 0) then
 !
 !====
@@ -115,9 +115,9 @@ subroutine mdexma(nofimd, idfimd, nomamd, option, existm,&
 !
             call as_mmhnmh(idfimd, nbmaie, codret)
             if (codret .ne. 0) then
-                saux08='mmhnmh'
+                saux08 = 'mmhnmh'
                 call utmess('F', 'DVP_97', sk=saux08, si=codret)
-            endif
+            end if
 !
 ! 2.2. ==> RECHERCHE DU NUMERO ET DE LA DIMENSION DU MAILLAGE VOULU
 !
@@ -128,23 +128,23 @@ subroutine mdexma(nofimd, idfimd, nomamd, option, existm,&
 !
             do iaux = 1, nbmaie
                 saux64 = ' '
-                call as_mmhmii(idfimd, iaux, saux64, kaux, tyaux,&
+                call as_mmhmii(idfimd, iaux, saux64, kaux, tyaux, &
                                daux, codret)
                 if (codret .ne. 0) then
-                    saux08='mmhmii'
+                    saux08 = 'mmhmii'
                     call utmess('F', 'DVP_97', sk=saux08, si=codret)
-                endif
+                end if
                 if (tyaux .ne. ednstr) then
                     call utmess('A', 'MED_79')
-                endif
+                end if
                 jaux = lxlgut(saux64)
                 if (jaux .eq. lnomam) then
                     if (saux64 .eq. noma64) then
                         ndim = kaux
                         existm = .true.
                         goto 221
-                    endif
-                endif
+                    end if
+                end if
             end do
 !
             existm = .false.
@@ -154,37 +154,37 @@ subroutine mdexma(nofimd, idfimd, nomamd, option, existm,&
             if (option .ne. 0) then
 !
                 valk = nofimd
-                vali (1) = nbmaie
+                vali(1) = nbmaie
                 call utmess('A+', 'MED_88', sk=valk, si=vali(1))
                 do iaux = 1, nbmaie
                     saux64 = ' '
-                    call as_mmhmii(idfimd, iaux, saux64, kaux, tyaux,&
+                    call as_mmhmii(idfimd, iaux, saux64, kaux, tyaux, &
                                    daux, codret)
                     jaux = lxlgut(saux64)
                     valk = saux64(1:jaux)
                     call utmess('A+', 'MED_85', sk=valk)
                     if (tyaux .ne. ednstr) then
                         call utmess('A', 'MED_79')
-                    endif
+                    end if
                 end do
                 call utmess('A', 'MED_80', sk=noma64(1:lnomam))
 !
-            endif
+            end if
 !
 221         continue
 !
 ! 2.3. ==> FERMETURE DU FICHIER
 !
-            if (.not.dejouv) then
+            if (.not. dejouv) then
                 call as_mficlo(idfimd, codret)
                 if (codret .ne. 0) then
-                    saux08='mficlo'
+                    saux08 = 'mficlo'
                     call utmess('F', 'DVP_97', sk=saux08, si=codret)
-                endif
+                end if
                 idfimd = 0
-            endif
+            end if
 !
-        endif
-    endif
+        end if
+    end if
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,9 +19,9 @@
 !
 subroutine nonlinDSPrintRead(ds_print)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -30,7 +30,7 @@ implicit none
 #include "asterfort/infdbg.h"
 #include "asterfort/utmess.h"
 !
-type(NL_DS_Print), intent(inout) :: ds_print
+    type(NL_DS_Print), intent(inout) :: ds_print
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -54,28 +54,28 @@ type(NL_DS_Print), intent(inout) :: ds_print
     call infdbg('MECANONLINE', ifm, niv)
     if (niv .ge. 2) then
         call utmess('I', 'MECANONLINE12_14')
-    endif
+    end if
 !
 ! - Initializations
 !
-    keywf       = 'AFFICHAGE'
+    keywf = 'AFFICHAGE'
     l_info_resi = ASTER_FALSE
     l_info_time = ASTER_FALSE
-    unit_csv    = 0
-    reac_print  = 1
-    l_csv       = ASTER_FALSE
-    repk        = 'NON'
+    unit_csv = 0
+    reac_print = 1
+    l_csv = ASTER_FALSE
+    repk = 'NON'
 !
 ! - Read parameters
 !
     call getvtx(keywf, 'INFO_RESIDU', iocc=1, scal=repk, nbret=noc)
     if (noc .ne. 0) then
         l_info_resi = repk .eq. 'OUI'
-    endif
+    end if
     call getvtx(keywf, 'INFO_TEMPS', iocc=1, scal=repk, nbret=noc)
     if (noc .ne. 0) then
         l_info_time = repk .eq. 'OUI'
-    endif
+    end if
     call getvis(keywf, 'UNITE', iocc=1, scal=unit_csv, nbret=noc)
     if (noc .eq. 0) then
         l_csv = ASTER_FALSE
@@ -84,19 +84,19 @@ type(NL_DS_Print), intent(inout) :: ds_print
             l_csv = ASTER_FALSE
         else
             l_csv = ASTER_TRUE
-        endif
-    endif
+        end if
+    end if
     call getvis(keywf, 'PAS', iocc=1, scal=reac_print, nbret=noc)
     if (noc .eq. 0) then
         reac_print = 1
-    endif
+    end if
 !
 ! - Save parameters
 !
     ds_print%l_info_resi = l_info_resi
     ds_print%l_info_time = l_info_time
-    ds_print%l_tcvg_csv  = l_csv
-    ds_print%tcvg_unit   = unit_csv
-    ds_print%reac_print  = reac_print
+    ds_print%l_tcvg_csv = l_csv
+    ds_print%tcvg_unit = unit_csv
+    ds_print%reac_print = reac_print
 !
 end subroutine

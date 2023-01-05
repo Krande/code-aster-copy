@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -32,38 +32,38 @@ subroutine jjlidy(iadyn, iadmi)
 !
 ! ----------------------------------------------------------------------
     integer :: lk1zon, jk1zon, liszon, jiszon
-    common /izonje/  lk1zon , jk1zon , liszon , jiszon
+    common/izonje/lk1zon, jk1zon, liszon, jiszon
 ! ----------------------------------------------------------------------
     real(kind=8) :: mxdyn, mcdyn, mldyn, vmxdyn, vmet, lgio, cuvtrav
-    common /r8dyje/ mxdyn ,mcdyn, mldyn, vmxdyn, vmet, lgio(2), cuvtrav
+    common/r8dyje/mxdyn, mcdyn, mldyn, vmxdyn, vmet, lgio(2), cuvtrav
     integer :: ldyn, lgdyn, nbdyn, nbfree
-    common /idynje/  ldyn , lgdyn , nbdyn , nbfree
+    common/idynje/ldyn, lgdyn, nbdyn, nbfree
     integer :: istat
-    common /istaje/  istat(4)
+    common/istaje/istat(4)
     integer :: lbis, lois, lols, lor8, loc8
-    common /ienvje/  lbis , lois , lols , lor8 , loc8
+    common/ienvje/lbis, lois, lols, lor8, loc8
     real(kind=8) :: svuse, smxuse
-    common /statje/  svuse,smxuse
+    common/statje/svuse, smxuse
     integer :: lundef, idebug
-    common /undfje/  lundef,idebug
+    common/undfje/lundef, idebug
 ! ----------------------------------------------------------------------
     integer :: iet, lgs, lgsv, k
 ! DEB ------------------------------------------------------------------
     if (iadyn .ne. 0) then
         iet = iszon(jiszon+iadmi-1)
-        lgs = iszon(jiszon+iadmi-4) - iadmi + 4
-        lgsv= iszon(jiszon+iadmi-4) - iadmi - 4
+        lgs = iszon(jiszon+iadmi-4)-iadmi+4
+        lgsv = iszon(jiszon+iadmi-4)-iadmi-4
         do k = 1, lgsv
             iszon(jiszon+iadmi+k-1) = lundef
         end do
         if (iet .eq. istat(2)) then
-            svuse = svuse - lgs
+            svuse = svuse-lgs
             ASSERT(lgs .gt. 0)
-            smxuse = max(smxuse,svuse)
-        endif
-        mcdyn = mcdyn - lgs
-        mldyn = mldyn + lgs
+            smxuse = max(smxuse, svuse)
+        end if
+        mcdyn = mcdyn-lgs
+        mldyn = mldyn+lgs
         call hpdeallc(iadyn, nbfree)
-    endif
+    end if
 ! FIN ------------------------------------------------------------------
 end subroutine

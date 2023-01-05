@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -83,9 +83,9 @@ subroutine rsrusd(nomsd, iordr)
 !        QUE IORDR > DERNIER NUMERO D'ORDRE
 !        ET ON RESSORT SANS RIEN FAIRE :
     if (irang .eq. 0) then
-        ASSERT(iordr.gt.ordr(nbordr))
+        ASSERT(iordr .gt. ordr(nbordr))
         goto 999
-    endif
+    end if
 !
 !
 !     -- ON DETRUIT ET ON EFFACE LES CHAMPS :
@@ -95,7 +95,7 @@ subroutine rsrusd(nomsd, iordr)
         call jenonu(jexnom(noms2//'.DESC', nomsy), ibid)
         call jeveuo(jexnum(noms2//'.TACH', ibid), 'E', jtach)
         do krang = irang, nbordr
-            kordr=ordr(krang)
+            kordr = ordr(krang)
             call rsutch(nomsd, nomsy, kordr, chextr, .true._1)
             call detrsd('CHAMP_GD', chextr)
             zk24(jtach-1+krang) = ' '
@@ -105,106 +105,106 @@ subroutine rsrusd(nomsd, iordr)
 !
 !     -- ON EFFACE LES PARAMETRES :
 !     ------------------------------
-    nomobj=noms2//'.RSPR'
+    nomobj = noms2//'.RSPR'
     call jeexin(nomobj, ier1)
     if (ier1 .gt. 0) then
         call jelira(nomobj, 'LONMAX', n1)
-        n2=n1/nbormx
-        ASSERT(n1.eq.n2*nbormx)
+        n2 = n1/nbormx
+        ASSERT(n1 .eq. n2*nbormx)
         call jeveuo(nomobj, 'E', jpara)
-        do kk=n2*irang, n2*nbormx
-            zr(jpara-1+kk)=rundef
+        do kk = n2*irang, n2*nbormx
+            zr(jpara-1+kk) = rundef
         end do
-    endif
+    end if
 !
 !
-    nomobj=noms2//'.RSPC'
+    nomobj = noms2//'.RSPC'
     call jeexin(nomobj, ier1)
     if (ier1 .gt. 0) then
         call jelira(nomobj, 'LONMAX', n1)
-        n2=n1/nbormx
+        n2 = n1/nbormx
         call jeveuo(nomobj, 'E', jpara)
-        do kk=n2*irang, n2*nbormx
-            zc(jpara-1+kk) = dcmplx(rundef,rundef)
+        do kk = n2*irang, n2*nbormx
+            zc(jpara-1+kk) = dcmplx(rundef, rundef)
         end do
-    endif
+    end if
 !
 !
-    nomobj=noms2//'.RSPI'
+    nomobj = noms2//'.RSPI'
     call jeexin(nomobj, ier1)
     if (ier1 .gt. 0) then
         call jelira(nomobj, 'LONMAX', n1)
-        n2=n1/nbormx
+        n2 = n1/nbormx
         call jeveuo(nomobj, 'E', jpara)
-        do kk=n2*irang, n2*nbormx
-            zi(jpara-1+kk)=iundef
+        do kk = n2*irang, n2*nbormx
+            zi(jpara-1+kk) = iundef
         end do
-    endif
+    end if
 !
 !
-    nomobj=noms2//'.RSP8'
+    nomobj = noms2//'.RSP8'
     call jeexin(nomobj, ier1)
     if (ier1 .gt. 0) then
         call jelira(nomobj, 'LONMAX', n1)
-        n2=n1/nbormx
+        n2 = n1/nbormx
         call jeveuo(nomobj, 'E', jpara)
-        do kk=n2*irang, n2*nbormx
-            zk8(jpara-1+kk)=' '
+        do kk = n2*irang, n2*nbormx
+            zk8(jpara-1+kk) = ' '
         end do
-    endif
+    end if
 !
 !
-    nomobj=noms2//'.RS16'
+    nomobj = noms2//'.RS16'
     call jeexin(nomobj, ier1)
     if (ier1 .gt. 0) then
         call jelira(nomobj, 'LONMAX', n1)
-        n2=n1/nbormx
+        n2 = n1/nbormx
         call jeveuo(nomobj, 'E', jpara)
-        do kk=n2*irang, n2*nbormx
-            zk16(jpara-1+kk)=' '
+        do kk = n2*irang, n2*nbormx
+            zk16(jpara-1+kk) = ' '
         end do
-    endif
+    end if
 !
 !
-    nomobj=noms2//'.RS24'
+    nomobj = noms2//'.RS24'
     call jeexin(nomobj, ier1)
     if (ier1 .gt. 0) then
         call jelira(nomobj, 'LONMAX', n1)
-        n2=n1/nbormx
+        n2 = n1/nbormx
         call jeveuo(nomobj, 'E', jpara)
-        do kk=n2*irang, n2*nbormx
-            zk24(jpara-1+kk)=' '
+        do kk = n2*irang, n2*nbormx
+            zk24(jpara-1+kk) = ' '
         end do
-    endif
+    end if
 !
 !
-    nomobj=noms2//'.RS32'
+    nomobj = noms2//'.RS32'
     call jeexin(nomobj, ier1)
     if (ier1 .gt. 0) then
         call jelira(nomobj, 'LONMAX', n1)
-        n2=n1/nbormx
+        n2 = n1/nbormx
         call jeveuo(nomobj, 'E', jpara)
-        do kk=n2*irang, n2*nbormx
-            zk32(jpara-1+kk)=' '
+        do kk = n2*irang, n2*nbormx
+            zk32(jpara-1+kk) = ' '
         end do
-    endif
+    end if
 !
 !
-    nomobj=noms2//'.RS80'
+    nomobj = noms2//'.RS80'
     call jeexin(nomobj, ier1)
     if (ier1 .gt. 0) then
         call jelira(nomobj, 'LONMAX', n1)
-        n2=n1/nbormx
+        n2 = n1/nbormx
         call jeveuo(nomobj, 'E', jpara)
-        do kk=n2*irang, n2*nbormx
-            zk80(jpara-1+kk)=' '
+        do kk = n2*irang, n2*nbormx
+            zk80(jpara-1+kk) = ' '
         end do
-    endif
+    end if
 !
 !     -- ON EFFACE .ORDR :
     call jeecra(noms2//'.ORDR', 'LONUTI', irang-1)
     do krang = irang, nbormx
-        ordr(krang)=0
+        ordr(krang) = 0
     end do
 !
 999 continue

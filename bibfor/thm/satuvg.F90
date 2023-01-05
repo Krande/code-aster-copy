@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,18 +18,18 @@
 !
 subroutine satuvg(ds_thm, pc, satur, dsatur_)
 !
-use THM_type
+    use THM_type
 !
-implicit none
+    implicit none
 !
 #include "asterfort/pcapvg.h"
 #include "asterfort/reguh1.h"
 #include "asterfort/satfvg.h"
 !
-type(THM_DS), intent(in) :: ds_thm
-real(kind=8), intent(in) :: pc
-real(kind=8), intent(out) :: satur
-real(kind=8), optional, intent(out) :: dsatur_
+    type(THM_DS), intent(in) :: ds_thm
+    real(kind=8), intent(in) :: pc
+    real(kind=8), intent(out) :: satur
+    real(kind=8), optional, intent(out) :: dsatur_
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -47,25 +47,25 @@ real(kind=8), optional, intent(out) :: dsatur_
 ! --------------------------------------------------------------------------------------------------
 !
     real(kind=8) :: satuma, n, m, pr, smax, sr
-    real(kind=8) :: s1max, pcmax, dpcmax,pentree
+    real(kind=8) :: s1max, pcmax, dpcmax, pentree
     real(kind=8) :: usn, usm, b1, c1, dsatur
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    n      = ds_thm%ds_material%hydr%n
-    pr     = ds_thm%ds_material%hydr%pr
-    sr     = ds_thm%ds_material%hydr%sr
-    smax   = ds_thm%ds_material%hydr%smax
+    n = ds_thm%ds_material%hydr%n
+    pr = ds_thm%ds_material%hydr%pr
+    sr = ds_thm%ds_material%hydr%sr
+    smax = ds_thm%ds_material%hydr%smax
     satuma = ds_thm%ds_material%hydr%satuma
     pentree = ds_thm%ds_material%hydr%pentree
-    m      = 1.d0-1.d0/n
-    usn    = 1.d0/n
-    usm    = 1.d0/m
-    s1max  = (smax-sr)/(1.d0-sr)
+    m = 1.d0-1.d0/n
+    usn = 1.d0/n
+    usm = 1.d0/m
+    s1max = (smax-sr)/(1.d0-sr)
 !
 ! - Compute capillary pressure (and its derivative)
 !
-    call pcapvg(sr   , pr, pentree, usm, usn, s1max,&
+    call pcapvg(sr, pr, pentree, usm, usn, s1max, &
                 pcmax, dpcmax)
 !
 ! - Regularization by first order hyperbola
@@ -75,12 +75,12 @@ real(kind=8), optional, intent(out) :: dsatur_
 ! - Compute saturation (and its derivative)
 !
     if ((pc .gt. pcmax)) then
-        call satfvg(sr , pr, n, m,pentree, pc,&
+        call satfvg(sr, pr, n, m, pentree, pc, &
                     satur, dsatur)
     else
-        satur  = 1.d0-b1/(c1-pc)
+        satur = 1.d0-b1/(c1-pc)
         dsatur = -b1/((c1-pc)**2.d0)
-    endif
+    end if
 !
 ! - Corrective factor
 !
@@ -88,6 +88,6 @@ real(kind=8), optional, intent(out) :: dsatur_
 !
     if (present(dsatur_)) then
         dsatur_ = dsatur
-    endif
+    end if
 !
 end subroutine

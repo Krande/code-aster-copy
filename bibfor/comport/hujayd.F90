@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine hujayd(nmat, mater, nvi, vind, vinf,&
+subroutine hujayd(nmat, mater, nvi, vind, vinf, &
                   nr, yd, bnews, mtrac)
 ! person_in_charge: alexandre.foucault at edf.fr
     implicit none
@@ -41,17 +41,17 @@ subroutine hujayd(nmat, mater, nvi, vind, vinf,&
     integer :: i, ii, nbmeca, ndt
     real(kind=8) :: zero, un
 !
-    parameter (zero = 0.d0)
-    parameter (un   = 1.d0)
-    parameter (ndt  = 6)
+    parameter(zero=0.d0)
+    parameter(un=1.d0)
+    parameter(ndt=6)
 !     ----------------------------------------------------------------
 ! ---  DEFINITION DU NOMBRE DE MECANISMES POTENTIELS ACTIFS
     nbmeca = 0
     do i = 1, 8
-        if (vinf(23+i) .eq. un) nbmeca = nbmeca + 1
+        if (vinf(23+i) .eq. un) nbmeca = nbmeca+1
     end do
 ! ---  DIMENSION DU SYSTEME NL A RESOUDRE FONCTION DE NBMECA
-    nr = ndt + 1 + 2*nbmeca
+    nr = ndt+1+2*nbmeca
 !
 ! --- AFFECTATION DE VIND A VINF
 !    (COHERENCE AVEC SCHEMA D'INTEGRATION SPECIFIQUE)
@@ -68,23 +68,23 @@ subroutine hujayd(nmat, mater, nvi, vind, vinf,&
             if (i .ne. 4) then
                 yd(ndt+1+ii) = vind(i)
                 yd(ndt+1+nbmeca+ii) = zero
-                ii = ii + 1
+                ii = ii+1
             else
                 yd(ndt+1+nbmeca) = vind(i)
                 yd(ndt+1+2*nbmeca) = zero
-            endif
+            end if
 !
-        endif
-    enddo
+        end if
+    end do
 !
 ! --- REDIMENSIONNEMENT DE YD ET YF POUR S'ADAPTER A HUJJID
 ! --- SIGMA/E0, R * PREF/ E0
     do i = 1, 6
-        yd(i) = yd(i)/mater(1,1)
+        yd(i) = yd(i)/mater(1, 1)
     end do
 !
     do i = 1, nbmeca
-        yd(ndt+1+i) = yd(ndt+1+i)/mater(1,1)*abs(mater(8,2))
+        yd(ndt+1+i) = yd(ndt+1+i)/mater(1, 1)*abs(mater(8, 2))
     end do
 !
 ! --- VARIABLE DE GESTION DES MECANISMES DE TRACTION

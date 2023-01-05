@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 !
 subroutine nmcadt(sddisc, i_adap, nume_inst, hval_incr, dtp)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "event_def.h"
@@ -34,11 +34,11 @@ implicit none
 #include "asterfort/utdidt.h"
 #include "asterfort/getAdapAction.h"
 !
-character(len=19), intent(in) :: sddisc
-integer, intent(in) :: i_adap
-integer, intent(in) :: nume_inst
-character(len=19), intent(in) :: hval_incr(*)
-real(kind=8), intent(out) :: dtp
+    character(len=19), intent(in) :: sddisc
+    integer, intent(in) :: i_adap
+    integer, intent(in) :: nume_inst
+    character(len=19), intent(in) :: hval_incr(*)
+    real(kind=8), intent(out) :: dtp
 !
 ! ----------------------------------------------------------------------
 !
@@ -81,26 +81,26 @@ real(kind=8), intent(out) :: dtp
 !
 ! --- PAS DE TEMPS PAR DEFAUT (LE DERNIER, SAUF SI JALON)
 !
-    call utdidt('L', sddisc, 'LIST', 'DT-', valr_ = dtm)
+    call utdidt('L', sddisc, 'LIST', 'DT-', valr_=dtm)
 !
 !     ------------------------------------------------------------------
     if (action_type .eq. ADAP_ACT_FIXE) then
 !     ------------------------------------------------------------------
 !
-        call utdidt('L', sddisc, 'ADAP', 'PCENT_AUGM', index_ = i_adap,&
-                    valr_ = pcent)
-        dtp = dtm * (1.d0 + pcent / 100.d0)
+        call utdidt('L', sddisc, 'ADAP', 'PCENT_AUGM', index_=i_adap, &
+                    valr_=pcent)
+        dtp = dtm*(1.d0+pcent/100.d0)
 !
 !     ------------------------------------------------------------------
     else if (action_type .eq. ADAP_ACT_INCR_QUANT) then
 !     ------------------------------------------------------------------
 !
-        call utdidt('L', sddisc, 'ADAP', 'NOM_CHAM', index_ = i_adap,&
-                    valk_ = nocham)
-        call utdidt('L', sddisc, 'ADAP', 'NOM_CMP', index_ = i_adap,&
-                    valk_ = nocmp)
-        call utdidt('L', sddisc, 'ADAP', 'VALE_REF', index_ = i_adap,&
-                    valr_ = valref)
+        call utdidt('L', sddisc, 'ADAP', 'NOM_CHAM', index_=i_adap, &
+                    valk_=nocham)
+        call utdidt('L', sddisc, 'ADAP', 'NOM_CMP', index_=i_adap, &
+                    valk_=nocmp)
+        call utdidt('L', sddisc, 'ADAP', 'VALE_REF', index_=i_adap, &
+                    valr_=valref)
         typext = 'MAX_ABS'
 !
 ! ----- CALCUL DE C = MIN (VREF / |DELTA(CHAMP+CMP)| )
@@ -114,17 +114,17 @@ real(kind=8), intent(out) :: dtp
         if (dval .eq. 0.d0) then
             dtp = r8vide()
         else
-            dtp = dtm * valref/dval
-        endif
+            dtp = dtm*valref/dval
+        end if
 !
 !     ------------------------------------------------------------------
     else if (action_type .eq. ADAP_ACT_ITER) then
 !     ------------------------------------------------------------------
 !
-        call utdidt('L', sddisc, 'ADAP', 'NB_ITER_NEWTON_REF', index_ = i_adap,&
-                    vali_ = nit)
+        call utdidt('L', sddisc, 'ADAP', 'NB_ITER_NEWTON_REF', index_=i_adap, &
+                    vali_=nit)
         nbiter = zi(jiter-1+nume_inst)
-        dtp = dtm * sqrt( dble(nit) / dble(nbiter+1) )
+        dtp = dtm*sqrt(dble(nit)/dble(nbiter+1))
 !
 !     ------------------------------------------------------------------
     else if (action_type .eq. ADAP_ACT_IMPLEX) then
@@ -149,20 +149,20 @@ real(kind=8), intent(out) :: dtp
 !
 ! ----- LE CHAMP DE VARIATION EST IDENTIQUEMENT NUL : ON SORT
 !
-        if (dval .ge. r8maem()) dval=eta
-        dtp = dtm * dval
+        if (dval .ge. r8maem()) dval = eta
+        dtp = dtm*dval
 !
 ! ----- ON IMPOSE QUE LE DT SOIT COMPRIS ENTRE ETAD*DTM ET ETA*DTM
 !
         if (dtp/dtm .ge. eta) then
-            dtp = eta * dtm
-        else if (dtp/dtm.le.etad) then
-            dtp = etad * dtm
-        endif
+            dtp = eta*dtm
+        else if (dtp/dtm .le. etad) then
+            dtp = etad*dtm
+        end if
 !
     else
         ASSERT(.false.)
-    endif
+    end if
 !
     call jedema()
 end subroutine

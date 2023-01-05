@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine tensca(tablca, icabl, nbnoca, nbf0, f0,&
-                  delta, typrel, trelax, xflu, xret,&
-                  ea, rh1000, mu0, fprg, frco,&
+subroutine tensca(tablca, icabl, nbnoca, nbf0, f0, &
+                  delta, typrel, trelax, xflu, xret, &
+                  ea, rh1000, mu0, fprg, frco, &
                   frli, sa, regl, analy)
     implicit none
 !  DESCRIPTION : CALCUL DE LA TENSION LE LONG D'UN CABLE
@@ -126,15 +126,15 @@ subroutine tensca(tablca, icabl, nbnoca, nbf0, f0,&
     character(len=24) :: param, parcr(2)
     integer, pointer :: tbnp(:) => null()
     character(len=24), pointer :: tblp(:) => null()
-    data          param /'TENSION                 '/
-    data          parcr /'ABSC_CURV               ',&
+    data param/'TENSION                 '/
+    data parcr/'ABSC_CURV               ',&
      &                     'ALPHA                   '/
 !
 !-------------------   DEBUT DU CODE EXECUTABLE    ---------------------
 !
     call jemarq()
-    cbid=(0.d0,0.d0)
-    ibid=0
+    cbid = (0.d0, 0.d0)
+    ibid = 0
 !
 !%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 ! 1   TRAITEMENT DES CAS PARTICULIERS F0 = 0 OU PAS D'ANCRAGE ACTIF
@@ -145,15 +145,15 @@ subroutine tensca(tablca, icabl, nbnoca, nbf0, f0,&
 !
     call jeveuo(tablca//'.TBNP', 'L', vi=tbnp)
     nblign = tbnp(2)
-    idecno = nblign - nbnoca
+    idecno = nblign-nbnoca
 !
-    if ((f0.eq.0.0d0) .or. (nbf0.eq.0)) then
+    if ((f0 .eq. 0.0d0) .or. (nbf0 .eq. 0)) then
         do ino = 1, nbnoca
-            call tbajli(tablca, 1, param, [ibid], [0.d0],&
+            call tbajli(tablca, 1, param, [ibid], [0.d0], &
                         [cbid], k3b, idecno+ino)
         end do
         goto 999
-    endif
+    end if
 !
 !
 !%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -170,16 +170,16 @@ subroutine tensca(tablca, icabl, nbnoca, nbf0, f0,&
             trouv1 = .true.
             abscca = tblp(1+4*(ipara-1)+2)
             call jeveuo(abscca, 'L', jabsc)
-        endif
+        end if
         if (tblp(1+4*(ipara-1)) .eq. parcr(2)) then
             trouv2 = .true.
             alphca = tblp(1+4*(ipara-1)+2)
             call jeveuo(alphca, 'L', jalph)
-        endif
+        end if
         if (trouv1 .and. trouv2) goto 30
     end do
 !
- 30 continue
+30  continue
 !
 !%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 ! 3   VERIFICATION DE LA DONNEE DE LA TENSION POUR
@@ -187,45 +187,45 @@ subroutine tensca(tablca, icabl, nbnoca, nbf0, f0,&
 !%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     call wkvect('&&TENSCA.F', 'V V R', nbnoca, jf)
 !
-    if ((analy.eq.'RUPT') .or. (analy.eq.'ETCC')) then
+    if ((analy .eq. 'RUPT') .or. (analy .eq. 'ETCC')) then
         call getvid('DEFI_CABLE', 'TENSION', iocc=icabl, scal=ntable, nbret=n1)
         if (n1 .eq. 0) then
             call utmess('F', 'CABLE0_8')
-        endif
+        end if
 !
-        newtab=ntable
+        newtab = ntable
         tabx = '&&TENSCA_TABREF_CURV'
         taby = '&&TENSCA_TABREF_TENS'
 !
         call jeexin(newtab//'.TBBA', irt)
         if (irt .eq. 0) then
             call utmess('F', 'UTILITAI4_64')
-        endif
+        end if
 !     VERIFICATION DE LA PRESENCE DES BONS PARAMETRES
         call tbexip(newtab, 'ABSC_CURV', exi1, k8b)
         call tbexip(newtab, 'N', exi2, k8b)
 !
-        if (.not.exi1 .and. .not.exi2) then
+        if (.not. exi1 .and. .not. exi2) then
             call utmess('F', 'CABLE0_9')
-        endif
+        end if
 !
-        call tbexve(newtab, 'ABSC_CURV', tabx, 'V', nbval,&
+        call tbexve(newtab, 'ABSC_CURV', tabx, 'V', nbval, &
                     k8b)
         call jeveuo(tabx, 'L', jtabx)
-        call tbexve(newtab, 'N', taby, 'V', nbval,&
+        call tbexve(newtab, 'N', taby, 'V', nbval, &
                     k8b)
         call jeveuo(taby, 'L', jtaby)
         if (nbval .ne. nbnoca) then
             call utmess('F', 'CABLE0_10')
-        endif
+        end if
 !     ON VERIFIE A MINIMA QUE LES ABSCISSES CURVILIGNES SONT IDENTIQUES
 !     (MAIS PAS LES COORDONNES EXACTES)
         do ino = 1, nbnoca
             if (zr(jtabx+ino-1)-zr(jabsc+ino-1) .ge. r8prem()) then
                 call utmess('F', 'CABLE0_11')
-            endif
+            end if
         end do
-    endif
+    end if
 !
 !
 !%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -242,65 +242,65 @@ subroutine tensca(tablca, icabl, nbnoca, nbf0, f0,&
 !    PAS DE DIFFERENCE ENTRE ETCC ET BPEL
 !
         if (nbf0 .eq. 1) then
-            call tensk1(icabl, nbnoca, zr(jabsc+idecno), zr(jalph+idecno), f0,&
-                        delta, ea, frco, frli, sa,&
+            call tensk1(icabl, nbnoca, zr(jabsc+idecno), zr(jalph+idecno), f0, &
+                        delta, ea, frco, frli, sa, &
                         zr(jf))
         else
-            call tensk2(icabl, nbnoca, zr(jabsc+idecno), zr(jalph+idecno), f0,&
-                        delta, ea, frco, frli, sa,&
+            call tensk2(icabl, nbnoca, zr(jabsc+idecno), zr(jalph+idecno), f0, &
+                        delta, ea, frco, frli, sa, &
                         zr(jf))
-        endif
+        end if
 !
 !
 ! 4.1.2 PRISE EN COMPTE LE CAS ECHEANT DES PERTES DE TENSION PAR
 ! --- RELAXATION DE L'ACIER
 !
 !    Verification que le parametre de relaxation n'est pas nul
-        if ((typrel .ne. 'SANS') .or. (analy.eq.'ETCC')) then
+        if ((typrel .ne. 'SANS') .or. (analy .eq. 'ETCC')) then
             if (rh1000 .le. r8prem()) then
                 call utmess('A', 'CABLE0_12')
-            endif
-        endif
+            end if
+        end if
 !
         if (typrel .eq. 'BPEL') then
 !----------------------------------
 !     4.1.2.1 CAS DU BPEL
 !-----------------------
-            flim = fprg * sa
-            krelax = trelax * 5.0d-02 * rh1000
+            flim = fprg*sa
+            krelax = trelax*5.0d-02*rh1000
 !
             do ino = 1, nbnoca
-                zr(jf+ino-1) = zr(jf+ino-1) * ( 1.0d0 - krelax * (zr(jf+ ino-1)/flim-mu0) )
+                zr(jf+ino-1) = zr(jf+ino-1)*(1.0d0-krelax*(zr(jf+ino-1)/flim-mu0))
             end do
 !
-        else if (typrel.eq.'ETCC_DIRECT') then
+        else if (typrel .eq. 'ETCC_DIRECT') then
 !
 !----------------------------------
 !     4.1.2.2   CAS ETCC_DIRECT
 !----------------------------------
-            flim = fprg * sa
+            flim = fprg*sa
             do ino = 1, nbnoca
                 fi = zr(jf+ino-1)
-                zr(jf+ino-1) = fi - 0.8d0 * fi * 0.66d-05 *rh1000*exp( 9.1d0*fi/flim)* (trelax/10&
-                               &00.d0)**(0.75d0*(1.d0-(fi/flim) ))
+                zr(jf+ino-1) = fi-0.8d0*fi*0.66d-05*rh1000*exp(9.1d0*fi/flim)*(trelax/10&
+                               &00.d0)**(0.75d0*(1.d0-(fi/flim)))
 !
             end do
-        else if (analy.eq.'ETCC') then
+        else if (analy .eq. 'ETCC') then
 !----------------------------------
 !     4.1.2.3   CAS ETCC_INDIRECT (MODI_CABLE_ETCC)
 !----------------------------------
-            flim = fprg * sa
+            flim = fprg*sa
             do ino = 1, nbnoca
                 f2 = zr(jtaby+ino-1)
-                zr(jf+ino-1) = zr(jf+ino-1) - 0.8d0 * 0.66d-05 *rh1000* exp(9.1d0*f2/flim)* (trel&
-                               &ax/1000.d0)**(0.75d0*(1.d0-( f2/flim) ))*f2
+                zr(jf+ino-1) = zr(jf+ino-1)-0.8d0*0.66d-05*rh1000*exp(9.1d0*f2/flim)*(trel&
+                               &ax/1000.d0)**(0.75d0*(1.d0-(f2/flim)))*f2
             end do
 !
             call jedetr(tabx)
             call jedetr(taby)
 !
 !
-        endif
+        end if
 !
 ! 4.1.3 PRISE EN COMPTE LE CAS ECHEANT DES PERTES DE TENSION PAR
 ! --- FLUAGE ET RETRAIT DU BETON - UNIQUEMENT POUR BPEL
@@ -308,13 +308,13 @@ subroutine tensca(tablca, icabl, nbnoca, nbf0, f0,&
         if (regl .eq. 'BPEL') then
 !
             if (xflu+xret .ne. 0.0d0) then
-                df = ( xflu + xret ) * f0
+                df = (xflu+xret)*f0
                 do ino = 1, nbnoca
-                    zr(jf+ino-1) = zr(jf+ino-1) - df
+                    zr(jf+ino-1) = zr(jf+ino-1)-df
                 end do
-            endif
+            end if
 !
-        endif
+        end if
 !
     else
 !%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -329,14 +329,14 @@ subroutine tensca(tablca, icabl, nbnoca, nbf0, f0,&
         call jedetr(tabx)
         call jedetr(taby)
 !
-    endif
+    end if
 !%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 ! 5   MISE A JOUR DES OBJETS DE SORTIE
 !%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 !
     do ino = 1, nbnoca
-        call tbajli(tablca, 1, param, [ibid], zr(jf+ino-1),&
-                    [cbid], k3b, idecno+ ino)
+        call tbajli(tablca, 1, param, [ibid], zr(jf+ino-1), &
+                    [cbid], k3b, idecno+ino)
     end do
 !
 999 continue

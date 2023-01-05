@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,17 +16,17 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine apinte_weight(elem_dime  , nb_poin_inte, poin_inte,&
+subroutine apinte_weight(elem_dime, nb_poin_inte, poin_inte, &
                          inte_weight)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 !
-integer, intent(in) :: elem_dime
-integer, intent(in) :: nb_poin_inte
-real(kind=8), intent(in) :: poin_inte(elem_dime-1,16)
-real(kind=8), intent(out) :: inte_weight
+    integer, intent(in) :: elem_dime
+    integer, intent(in) :: nb_poin_inte
+    real(kind=8), intent(in) :: poin_inte(elem_dime-1, 16)
+    real(kind=8), intent(out) :: inte_weight
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -48,25 +48,25 @@ real(kind=8), intent(out) :: inte_weight
 ! --------------------------------------------------------------------------------------------------
 !
     inte_weight = 0.d0
-    if ((nb_poin_inte .gt. 2 .and. elem_dime .eq. 3) .or.&
+    if ((nb_poin_inte .gt. 2 .and. elem_dime .eq. 3) .or. &
         (nb_poin_inte .ge. 2 .and. elem_dime .eq. 2)) then
         if (elem_dime .eq. 3) then
             do i_inte_poin = 2, nb_poin_inte
                 list_next(i_inte_poin-1) = i_inte_poin
             end do
-            list_next(nb_poin_inte)=1
-            do i_inte_poin = 1,nb_poin_inte
-                inte_weight = inte_weight + &
-                        poin_inte(1,i_inte_poin)*&
-                        poin_inte(2,list_next(i_inte_poin))-&
-                        poin_inte(1,list_next(i_inte_poin))*&
-                        poin_inte(2,i_inte_poin)
+            list_next(nb_poin_inte) = 1
+            do i_inte_poin = 1, nb_poin_inte
+                inte_weight = inte_weight+ &
+                              poin_inte(1, i_inte_poin)* &
+                              poin_inte(2, list_next(i_inte_poin))- &
+                              poin_inte(1, list_next(i_inte_poin))* &
+                              poin_inte(2, i_inte_poin)
             end do
             inte_weight = 1.d0/2.d0*inte_weight
             inte_weight = sqrt(inte_weight**2)
         else
-            inte_weight = sqrt((poin_inte(1,2)-poin_inte(1,1))**2)
+            inte_weight = sqrt((poin_inte(1, 2)-poin_inte(1, 1))**2)
         end if
-    endif
+    end if
 !
 end subroutine

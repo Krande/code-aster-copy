@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -45,8 +45,8 @@ subroutine tail_reel(l3, vss33, dim3, ndim, ifour)
 ! Recherche du nom du maillage, du numéro pour y accéder, du numéro
 ! de la maille, et du nombre de noeuds
     call tecael(iadzi, iazk24, 1)
-    nbno=zi(iadzi-1+2)
-    ima=zi(iadzi-1+1)
+    nbno = zi(iadzi-1+2)
+    ima = zi(iadzi-1+1)
 !
 ! Routine visant à remplir un vecteur avec les coordonnées des points d'une maille
     call jevech('PGEOMER', 'L', IGEOM)
@@ -55,26 +55,26 @@ subroutine tail_reel(l3, vss33, dim3, ndim, ifour)
 !PRINCIPALES AVEC LES COORDONNEES POUR PROJECTION
 ! Il y a 3 vecteurs propres quel que soit la dimension du maillage
     do i = 1, 3
-        l3(i)=0.d0
+        l3(i) = 0.d0
 !
 ! nbno points à projeter par maille
         do j = 1, nbno
-            s=0.d0
+            s = 0.d0
             do k = 1, ndim
                 a = ndim*(j-1)+k-1
-                s = vss33(k,i)*zr(IGEOM+a) + s
+                s = vss33(k, i)*zr(IGEOM+a)+s
             end do
             coorproj(j) = s
             if (j .eq. 1) then
-                maxi=s
-                mini=s
-            endif
+                maxi = s
+                mini = s
+            end if
             if (s .gt. maxi) then
-                maxi=s
-            endif
+                maxi = s
+            end if
             if (s .lt. mini) then
-                mini=s
-            endif
+                mini = s
+            end if
         end do
 !
         l3(i) = maxi-mini
@@ -89,14 +89,14 @@ subroutine tail_reel(l3, vss33, dim3, ndim, ifour)
                 do j = 1, nbno
                     if (j .eq. 1) then
                         maximu = abs(zr(IGEOM))
-                    endif
+                    end if
                     a = ndim*(j-1)
-                    maximu = max(abs(zr(IGEOM+a)),maximu)
+                    maximu = max(abs(zr(IGEOM+a)), maximu)
                 end do
                 l3(i) = (maximu)*dim3
             else
-                l3(i)= dim3
-            endif
-        endif
+                l3(i) = dim3
+            end if
+        end if
     end do
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -53,16 +53,16 @@ subroutine pjma1p(moa1, ma1p, cham1, corres)
 !
     call jemarq()
 !
-    shrink=1.d0
-    lonmin=0.d0
-    ASSERT(cham1.ne.' ')
+    shrink = 1.d0
+    lonmin = 0.d0
+    ASSERT(cham1 .ne. ' ')
     call dismoi('NOM_LIGREL', cham1, 'CHAM_ELEM', repk=ligrel)
 !
-    call eclpgm(ma1p, moa1, cham1, ligrel, shrink,&
+    call eclpgm(ma1p, moa1, cham1, ligrel, shrink, &
                 lonmin, 0, lisch)
 !
     call wkvect(corres//'.PJEF_MP', 'V V K8', 1, jcorre)
-    zk8(jcorre+1-1)=ma1p
+    zk8(jcorre+1-1) = ma1p
 !
     call jedema()
 !

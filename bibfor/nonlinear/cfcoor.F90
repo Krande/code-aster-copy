@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine cfcoor(noma, defico, newgeo, posmam, ksi1,&
+subroutine cfcoor(noma, defico, newgeo, posmam, ksi1, &
                   ksi2, coordp)
 !
 ! person_in_charge: mickael.abbas at edf.fr
@@ -74,16 +74,16 @@ subroutine cfcoor(noma, defico, newgeo, posmam, ksi1,&
 !
 ! --- CARACTERISTIQUES DE LA MAILLE MAITRE
 !
-    call cfcarm(noma, defico, newgeo, posmam, typmai,&
-                nummam, alias, nommam, ndim, nnomam,&
+    call cfcarm(noma, defico, newgeo, posmam, typmai, &
+                nummam, alias, nommam, ndim, nnomam, &
                 coorma)
     if (typmai .ne. 'MAIT') then
         ASSERT(.false.)
-    endif
+    end if
 !
 ! --- COORDONNEES DU PROJETE
 !
-    call mmcoor(alias, nnomam, ndim, coorma, ksi1,&
+    call mmcoor(alias, nnomam, ndim, coorma, ksi1, &
                 ksi2, coordp)
 !
     call jedema()

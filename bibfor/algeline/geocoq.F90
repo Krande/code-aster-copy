@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -89,7 +89,7 @@ subroutine geocoq(noma, nomgrp, caelem, iaxe, geom)
         idir1 = 1
         idir2 = 2
         idir3 = 3
-    else if (iaxe.eq.2) then
+    else if (iaxe .eq. 2) then
         idir1 = 2
         idir2 = 3
         idir3 = 1
@@ -97,7 +97,7 @@ subroutine geocoq(noma, nomgrp, caelem, iaxe, geom)
         idir1 = 3
         idir2 = 1
         idir3 = 2
-    endif
+    end if
 !
     coquei = nomgrp(1)
     coquex = nomgrp(2)
@@ -112,11 +112,11 @@ subroutine geocoq(noma, nomgrp, caelem, iaxe, geom)
 !
 ! --- 2.1.BORNE INF ET BORNE SUP ASSOCIEES A LA COQUE INTERNE
 !
-    grpno='&&MEFGMN.00000001       '
+    grpno = '&&MEFGMN.00000001       '
     call jelira(grpno, 'LONMAX', nbnoin)
     if (nbnoin .lt. 4) then
         call utmess('F', 'ALGELINE_49')
-    endif
+    end if
     call jeveuo(grpno, 'L', inunoi)
     nunoi = zi(inunoi)
     z0int = zr(icoor+3*(nunoi-1)+idir1-1)
@@ -130,15 +130,15 @@ subroutine geocoq(noma, nomgrp, caelem, iaxe, geom)
     difz = dble(abs(z1int-z0int))
     if (difz .lt. tole) then
         call utmess('F', 'ALGELINE_50')
-    endif
+    end if
 !
 ! --- 2.2.BORNE INF ET BORNE SUP ASSOCIEES A LA COQUE EXTERNE
 !
-    grpno='&&MEFGMN.00000002       '
+    grpno = '&&MEFGMN.00000002       '
     call jelira(grpno, 'LONMAX', nbnoex)
     if (nbnoex .lt. 4) then
         call utmess('F', 'ALGELINE_51')
-    endif
+    end if
     call jeveuo(grpno, 'L', inunoe)
     nunoe = zi(inunoe)
     z0ext = zr(icoor+3*(nunoe-1)+idir1-1)
@@ -152,7 +152,7 @@ subroutine geocoq(noma, nomgrp, caelem, iaxe, geom)
     difz = dble(abs(z1ext-z0ext))
     if (difz .lt. tole) then
         call utmess('F', 'ALGELINE_52')
-    endif
+    end if
 !
 ! --- 2.3.SORTIE EN ERREUR SI NON RECOUVREMENT DES DOMAINES ASSOCIES
 !         AUX DEUX COQUES
@@ -161,7 +161,7 @@ subroutine geocoq(noma, nomgrp, caelem, iaxe, geom)
     difz2 = dble(abs(z1ext-z0int))
     if (z1int .lt. z0ext .or. z1ext .lt. z0int .or. difz1 .lt. tole .or. difz2 .lt. tole) then
         call utmess('F', 'ALGELINE_53')
-    endif
+    end if
 !
 ! --- 2.4.DEDUCTION DES BORNES DU DOMAINE DE RECOUVREMENT
 !         ET DE LA LONGUEUR DU DOMAINE
@@ -170,7 +170,7 @@ subroutine geocoq(noma, nomgrp, caelem, iaxe, geom)
     if (z0ext .gt. z0int) z0 = z0ext
     z1 = z1int
     if (z1ext .lt. z1int) z1 = z1ext
-    long = z1 - z0
+    long = z1-z0
     geom(3) = long
     geom(4) = z0
     geom(5) = z1
@@ -186,7 +186,7 @@ subroutine geocoq(noma, nomgrp, caelem, iaxe, geom)
     call jeexin(cadesc, iret)
     if (iret .eq. 0) then
         call utmess('F', 'ALGELINE_54')
-    endif
+    end if
 !     NOMBRE D'ENTIERS CODES DANS LA CARTE
     call dismoi('NB_EC', 'CACOQU_R', 'GRANDEUR', repi=nbec)
     call jeveuo(cadesc, 'L', idesc)
@@ -205,75 +205,75 @@ subroutine geocoq(noma, nomgrp, caelem, iaxe, geom)
             nuenti = zi(idesc+3+2*(ias-1)+1)
             if (nuenti .eq. nucoqi) iascqi = ias
             if (nuenti .eq. nucoqx) iascqx = ias
-        endif
+        end if
     end do
     if (iascqi .eq. 0 .or. iascqx .eq. 0) then
         call utmess('F', 'ALGELINE_56')
-    endif
+    end if
 !
 ! --- 3.3. RANG DE LA COMPOSANTE <EP> DANS LA GRANDEUR
-    kjexn = jexnom('&CATA.GD.NOMCMP','CACOQU_R')
+    kjexn = jexnom('&CATA.GD.NOMCMP', 'CACOQU_R')
     call jelira(kjexn, 'LONMAX', nbcmp)
     call jeveuo(kjexn, 'L', inomcp)
     nomcmp = 'EP'
-    irang = indik8( zk8(inomcp) , nomcmp , 1 , nbcmp )
+    irang = indik8(zk8(inomcp), nomcmp, 1, nbcmp)
     if (irang .eq. 0) then
         call utmess('F', 'ALGELINE_57')
-    endif
+    end if
 !
 ! --- 3.4. VALEUR DE L'EPAISSEUR DE LA COQUE INTERNE
     icode = zi(idesc-1+3+2*iasmax+nbec*(iascqi-1)+1)
     iranv = 0
     do icmp = 1, irang
-        if (exisdg([icode],icmp)) iranv = iranv + 1
+        if (exisdg([icode], icmp)) iranv = iranv+1
     end do
     if (iranv .eq. 0) then
         call utmess('F', 'ALGELINE_58')
-    endif
+    end if
     epint = zr(ivale-1+nbcmp*(iascqi-1)+iranv)
     if (epint .eq. 0.d0) then
         call utmess('F', 'ALGELINE_59')
-    endif
+    end if
     geom(6) = epint
 !
 ! --- 3.5. VALEUR DE L'EPAISSEUR DE LA COQUE EXTERNE
     icode = zi(idesc-1+3+2*iasmax+nbec*(iascqx-1)+1)
     iranv = 0
     do icmp = 1, irang
-        if (exisdg([icode],icmp)) iranv = iranv + 1
+        if (exisdg([icode], icmp)) iranv = iranv+1
     end do
     if (iranv .eq. 0) then
         call utmess('F', 'ALGELINE_60')
-    endif
+    end if
     epext = zr(ivale-1+nbcmp*(iascqx-1)+iranv)
     if (epext .eq. 0.d0) then
         call utmess('F', 'ALGELINE_61')
-    endif
+    end if
     geom(7) = epext
 !
 ! --- 4.DETERMINATION DE RINT, REXT, RMOY ET HMOY
     nunoin = zi(inunoi)
     x2 = zr(icoor+3*(nunoin-1)+idir2-1)
     x3 = zr(icoor+3*(nunoin-1)+idir3-1)
-    rint = dble(sqrt(x2*x2 + x3*x3))
+    rint = dble(sqrt(x2*x2+x3*x3))
 !
     nunoex = zi(inunoe)
     x2 = zr(icoor+3*(nunoex-1)+idir2-1)
     x3 = zr(icoor+3*(nunoex-1)+idir3-1)
-    rext = dble(sqrt(x2*x2 + x3*x3))
+    rext = dble(sqrt(x2*x2+x3*x3))
 !
     if (rint .eq. 0.d0 .or. rext .eq. 0.d0) then
         call utmess('F', 'ALGELINE_62')
-    endif
+    end if
 !
     geom(8) = rint
     geom(9) = rext
 !
     rmoy = ((rint+epint/2.d0)+(rext-epext/2.d0))/2.d0
-    hmoy = (rext-epext/2.d0) - (rint+epint/2.d0)
+    hmoy = (rext-epext/2.d0)-(rint+epint/2.d0)
     if (hmoy .le. 0.d0) then
         call utmess('F', 'ALGELINE_63')
-    endif
+    end if
 !
     geom(1) = hmoy
     geom(2) = rmoy

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine irgme2(numold, ima, connex, nbord2, tabd,&
-                  tabl, tabv, partie, jtype, nbno,&
+subroutine irgme2(numold, ima, connex, nbord2, tabd, &
+                  tabl, tabv, partie, jtype, nbno, &
                   listno, nbcmp, ifi, iadmax)
     implicit none
 #include "jeveux.h"
@@ -70,8 +70,8 @@ subroutine irgme2(numold, ima, connex, nbord2, tabd,&
 ! --- ON NE TRAITE QUE LES CHAMPS A 1 SOUS-POINT,
 !     ET UNE SEULE VALEUR SCALAIRE (COMPOSANTE K DE LA BOUCLE 51)
 !
-    isp=1
-    iadmax=0
+    isp = 1
+    iadmax = 0
     k = 0
     call r8inir(6, 0.d0, val2, 1)
     do ior = 1, nbord2
@@ -82,80 +82,80 @@ subroutine irgme2(numold, ima, connex, nbord2, tabd,&
         nbsp = zi(jcesd-1+5+4*(imaold-1)+2)
         if (nbsp .ne. 1) then
             call utmess('F', 'PREPOST2_57')
-        endif
+        end if
 !
-        itrou=0
+        itrou = 0
         if (zk8(jtype-1+ior) .eq. 'R') then
             do j = 1, nbno
-                ino=listno(j)
-                itrou=0
+                ino = listno(j)
+                itrou = 0
                 do ipt = 1, nbpt
-                    inold=zi(jcnold-1+ipt)
+                    inold = zi(jcnold-1+ipt)
                     if (ino .eq. inold) then
-                        itrou=1
+                        itrou = 1
                         do k = 1, nbcmp
-                            call cesexi('C', jcesd, jcesl, imaold, ipt,&
+                            call cesexi('C', jcesd, jcesl, imaold, ipt, &
                                         isp, k, iad)
                             if (iad .gt. 0) then
                                 vale = zr(jcesv-1+iad)
                                 if (abs(vale) .le. 1.d-99) vale = 0.d0
                                 val2(k) = vale
-                                iadmax=iad
+                                iadmax = iad
                             else
                                 vale = 0.d0
                                 val2(k) = vale
-                            endif
+                            end if
                         end do
-                    endif
-                    write(ifi,1010) val2(1),val2(4),val2(5),val2(4),&
-                    val2(2), val2(6),val2(5),val2(6),val2(3)
+                    end if
+                    write (ifi, 1010) val2(1), val2(4), val2(5), val2(4), &
+                        val2(2), val2(6), val2(5), val2(6), val2(3)
                     goto 15
                 end do
                 if (itrou .eq. 0) then
                     call utmess('F', 'PREPOST2_58')
-                endif
- 15             continue
+                end if
+15              continue
             end do
-        else if (zk8(jtype-1+ior).eq.'C') then
+        else if (zk8(jtype-1+ior) .eq. 'C') then
             do j = 1, nbno
-                ino=listno(j)
-                itrou=0
+                ino = listno(j)
+                itrou = 0
                 do ipt = 1, nbpt
-                    inold=zi(jcnold-1+ipt)
+                    inold = zi(jcnold-1+ipt)
                     if (ino .eq. inold) then
-                        itrou=1
+                        itrou = 1
                         do k = 1, nbcmp
-                            call cesexi('C', jcesd, jcesl, imaold, ipt,&
+                            call cesexi('C', jcesd, jcesl, imaold, ipt, &
                                         isp, k, iad)
                             if (iad .gt. 0) then
                                 if (partie .eq. 'REEL') then
                                     vale = dble(zc(jcesv-1+iad))
-                                else if (partie.eq.'IMAG') then
+                                else if (partie .eq. 'IMAG') then
                                     vale = dimag(zc(jcesv-1+iad))
-                                endif
+                                end if
                                 if (abs(vale) .le. 1.d-99) vale = 0.d0
                                 val2(k) = vale
-                                iadmax=iad
+                                iadmax = iad
                             else
                                 vale = 0.d0
                                 val2(k) = vale
-                            endif
+                            end if
                         end do
-                    endif
-                    write(ifi,1010) val2(1),val2(4),val2(5),val2(4),&
-                    val2(2), val2(6),val2(5),val2(6),val2(3)
+                    end if
+                    write (ifi, 1010) val2(1), val2(4), val2(5), val2(4), &
+                        val2(2), val2(6), val2(5), val2(6), val2(3)
                     goto 25
                 end do
                 if (itrou .eq. 0) then
                     call utmess('F', 'PREPOST2_58')
-                endif
- 25             continue
+                end if
+25              continue
             end do
-        endif
+        end if
     end do
 !
     call jedema()
 !
-    1010 format(1p,9(e15.7e3))
+1010 format(1p, 9(e15.7e3))
 !
 end subroutine

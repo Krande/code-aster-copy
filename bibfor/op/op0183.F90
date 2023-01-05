@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 !
 subroutine op0183()
 !
-implicit none
+    implicit none
 !
 !-----------------------------------------------------------------------
 !     COMMANDE :  CALC_FORC_NONL
@@ -115,145 +115,145 @@ implicit none
 ! --- OPTIONS A CALCULER
 !
     call getres(resuc1, type, oper)
-    ASSERT(type.eq.'DYNA_TRANS')
+    ASSERT(type .eq. 'DYNA_TRANS')
     call getvid(' ', 'RESULTAT', scal=resuco, nbret=n0)
-    ASSERT(resuco.ne.resuc1)
+    ASSERT(resuco .ne. resuc1)
 !
 !
 !
-    knum='&&'//nompro//'.NUME_ORDRE'
+    knum = '&&'//nompro//'.NUME_ORDRE'
 
     call getvr8(' ', 'PRECISION', scal=prec, nbret=np)
     call getvtx(' ', 'CRITERE', scal=crit, nbret=nc)
-    call rsutnu(resuco, ' ', 0, knum, nbordr,&
+    call rsutnu(resuco, ' ', 0, knum, nbordr, &
                 prec, crit, iret)
     if (iret .eq. 10) then
         call utmess('F', 'CALCULEL4_8', sk=resuco)
         goto 60
-    endif
+    end if
     if (iret .ne. 0) then
         call utmess('F', 'ALGORITH3_41')
         goto 60
-    endif
+    end if
     call jeveuo(knum, 'L', jordr)
 !
-    exitim=.true.
+    exitim = .true.
     mateco = ' '
     call rscrsd('G', resuc1, type, nbordr)
     call getvid(' ', 'MODELE', scal=model, nbret=n0)
-    ligrel=model(1:8)//'.MODELE'
-    ASSERT(n0.eq.1)
+    ligrel = model(1:8)//'.MODELE'
+    ASSERT(n0 .eq. 1)
     call getvid(' ', 'CHAM_MATER', scal=materi, nbret=n0)
     if (n0 .gt. 0) then
-        call rcmfmc(materi, mateco, l_ther_ = ASTER_FALSE)
+        call rcmfmc(materi, mateco, l_ther_=ASTER_FALSE)
     else
-        mateco=' '
-    endif
-    caraElem=' '
+        mateco = ' '
+    end if
+    caraElem = ' '
     call getvid(' ', 'CARA_ELEM', scal=caraElem, nbret=n0)
 !
 !
 !
-    time   = 0.d0
+    time = 0.d0
     partps = 0.d0
     l_etat_init = .false.
 !
-    numref=' '
+    numref = ' '
     call refdcp(resuco, resuc1)
     call dismoi('REF_RIGI_PREM', resuc1, 'RESU_DYNA', repk=raide, arret='C')
     if (raide .ne. ' ') then
         call dismoi('NOM_NUME_DDL', raide, 'MATR_ASSE', repk=numref)
-    endif
+    end if
 !
     do i = 1, nbordr
         call jemarq()
-        iordr  = zi(jordr+i-1)
+        iordr = zi(jordr+i-1)
         vafono = ' '
-        nh=0
+        nh = 0
 !
-        call rsexch(' ', resuco, 'SIEF_ELGA', iordr, sigma,&
+        call rsexch(' ', resuco, 'SIEF_ELGA', iordr, sigma, &
                     iret)
         if (iret .ne. 0) then
-            call rsexch(' ', resuco, 'SIEF_ELGA', iordr, sigma,&
+            call rsexch(' ', resuco, 'SIEF_ELGA', iordr, sigma, &
                         iret2)
             if (iret2 .ne. 0 .and. option .ne. 'FONL_NOEU') then
                 call codent(iordr, 'G', kiord)
-                valk(1)=kiord
-                valk(2)=option
+                valk(1) = kiord
+                valk(2) = option
                 call utmess('A', 'PREPOST5_2', nk=2, valk=valk)
                 goto 40
 !
-            endif
+            end if
             if (iret2 .ne. 0 .and. option .eq. 'FONL_NOEU') then
-                sigma=' '
-            endif
-        endif
+                sigma = ' '
+            end if
+        end if
 !
-        call rsexch(' ', resuco, 'DEPL', iordr, chdepl,&
+        call rsexch(' ', resuco, 'DEPL', iordr, chdepl, &
                     iret)
         if (iret .ne. 0) then
             call codent(iordr, 'G', kiord)
-            valk(1)=kiord
-            valk(2)=option
+            valk(1) = kiord
+            valk(2) = option
             call utmess('A', 'PREPOST5_3', nk=2, valk=valk)
             goto 40
         else
 !         CREATION D'UN VECTEUR ACCROISSEMENT DE DEPLACEMENT NUL
 !         POUR LE CALCUL DE FORC_NODA DANS LES POU_D_T_GD
 !
-            chdep2='&&'//nompro//'.CHDEP_NUL'
+            chdep2 = '&&'//nompro//'.CHDEP_NUL'
             call copisd('CHAMP_GD', 'V', chdepl, chdep2)
             call jelira(chdep2//'.VALE', 'LONMAX', nbddl)
             call jerazo(chdep2//'.VALE', nbddl, 1)
-        endif
+        end if
 !
 !       -- CALCUL D'UN NUME_DDL "MINIMUM" POUR ASASVE :
-        nume=numref(1:14)//'.NUME'
+        nume = numref(1:14)//'.NUME'
 !
-        call rsexch(' ', resuco, 'VITE', iordr, chvive,&
+        call rsexch(' ', resuco, 'VITE', iordr, chvive, &
                     iret)
         if (iret .eq. 0) then
-            chvive='&&'//nompro//'.CHVIT_NUL'
+            chvive = '&&'//nompro//'.CHVIT_NUL'
             call copisd('CHAMP_GD', 'V', chdepl, chvive)
             call jelira(chvive(1:19)//'.VALE', 'LONMAX', nbddl)
             call jerazo(chvive(1:19)//'.VALE', nbddl, 1)
-        endif
-        call rsexch(' ', resuco, 'ACCE', iordr, chacve,&
+        end if
+        call rsexch(' ', resuco, 'ACCE', iordr, chacve, &
                     iret)
         if (iret .eq. 0) then
-            chacve='&&'//nompro//'.CHACC_NUL'
+            chacve = '&&'//nompro//'.CHACC_NUL'
             call copisd('CHAMP_GD', 'V', chdepl, chacve)
             call jelira(chacve(1:19)//'.VALE', 'LONMAX', nbddl)
             call jerazo(chacve(1:19)//'.VALE', nbddl, 1)
-        endif
+        end if
 !
         if (exitim) then
-            call rsadpa(resuco, 'L', 1, 'INST', iordr,&
+            call rsadpa(resuco, 'L', 1, 'INST', iordr, &
                         0, sjv=iad, styp=ctyp)
-            time=zr(iad)
-        endif
+            time = zr(iad)
+        end if
 !
-        call vrcins(model, materi, caraElem, time, chvarc(1:19),&
+        call vrcins(model, materi, caraElem, time, chvarc(1:19), &
                     codret)
 !
 !       --- CALCUL DES VECTEURS ELEMENTAIRES ---
         if (i .eq. 1) then
-            compor='&&OP0183.COMPOR'
+            compor = '&&OP0183.COMPOR'
             call nmdocc(model(1:8), materi, l_etat_init, compor, 'V')
             if (niv .ge. 2) then
                 call comp_info(model(1:8), compor)
-            endif
-        endif
+            end if
+        end if
 !
-        call vefnme(option, model, mateco, caraElem,&
-                    compor, partps, nh, ligrel, chvarc,&
-                    sigma, ' ', chdepl, chdep2, 'V',&
+        call vefnme(option, model, mateco, caraElem, &
+                    compor, partps, nh, ligrel, chvarc, &
+                    sigma, ' ', chdepl, chdep2, 'V', &
                     vefnod)
 !
 !       --- ASSEMBLAGE DES VECTEURS ELEMENTAIRES ---
         call asasve(vefnod, nume, 'R', vafono)
 !
-        call rsexch(' ', resuc1, 'DEPL', iordr, chamno,&
+        call rsexch(' ', resuc1, 'DEPL', iordr, chamno, &
                     iret)
         call rsadpa(resuc1, 'E', 1, 'INST', iordr, 0, sjv=ltps2)
         call rsadpa(resuco, 'L', 1, 'INST', iordr, 0, sjv=ltps)
@@ -263,30 +263,30 @@ implicit none
         call jeexin(chamno(1:19)//'.REFE', iret)
         if (iret .ne. 0) then
             call codent(iordr, 'G', kiord)
-            valk(1)=option
-            valk(2)=kiord
+            valk(1) = option
+            valk(2) = kiord
             call utmess('I', 'PREPOST5_1', nk=2, valk=valk)
             call detrsd('CHAM_NO', chamno(1:19))
-        endif
+        end if
         call vtcreb(chamno, 'G', 'R', nume_ddlz=nume)
         call jeveuo(chamno(1:19)//'.VALE', 'E', vr=noch)
 !
         call jeveuo(vafono, 'L', jfo)
-        call jeveuo(zk24(jfo)(1:19)//'.VALE', 'L', vr=fono)
-        call jelira(zk24(jfo)(1:19)//'.VALE', 'LONMAX', lvafon)
+        call jeveuo(zk24(jfo) (1:19)//'.VALE', 'L', vr=fono)
+        call jelira(zk24(jfo) (1:19)//'.VALE', 'LONMAX', lvafon)
         call jelira(chamno(1:19)//'.VALE', 'LONMAX', lonch)
 !
         do j = 0, lonch-1
-            noch(1+j)=fono(1+j)
+            noch(1+j) = fono(1+j)
         end do
 !
         call rsnoch(resuc1, 'DEPL', iordr)
-        call nmdome(model, materi, mateco, caraElem, list_load, resuc1(1:8),&
+        call nmdome(model, materi, mateco, caraElem, list_load, resuc1(1:8), &
                     iordr)
 !
         call detrsd('CHAMP_GD', '&&'//nompro//'.SIEF')
         call detrsd('VECT_ELEM', vefnod)
- 40     continue
+40      continue
         call jedema()
     end do
 !
@@ -295,7 +295,7 @@ implicit none
 ! --- ON REMET LE MECANISME D'EXCEPTION A SA VALEUR INITIALE
     call onerrf(compex, k16bid, ibid)
 !
- 60 continue
+60  continue
     call infbav()
     call jedema()
 !

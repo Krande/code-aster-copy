@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -41,16 +41,16 @@ subroutine vpshif(lmatk, valshi, lmatm, lmatsh)
     integer :: nbcmb
 !-----------------------------------------------------------------------
     data typcst/'R', 'R'/
-    data nomddl /'        '/
+    data nomddl/'        '/
 !     ------------------------------------------------------------------
 !
 !     --- DECALAGE SPECTRAL  K - W * M    (W ETANT LE SHIFT) ---
     coef(1) = 1.d0
     coef(2) = -valshi
-    nmat (1) = zk24(zi(lmatk+1))
-    nmat (2) = zk24(zi(lmatm+1))
-    nmatsh=zk24(zi(lmatsh+1))
+    nmat(1) = zk24(zi(lmatk+1))
+    nmat(2) = zk24(zi(lmatm+1))
+    nmatsh = zk24(zi(lmatsh+1))
     nbcmb = 2
-    call mtcmbl(nbcmb, typcst, coef, nmat, nmatsh,&
+    call mtcmbl(nbcmb, typcst, coef, nmat, nmatsh, &
                 nomddl, ' ', 'ELIM=')
 end subroutine

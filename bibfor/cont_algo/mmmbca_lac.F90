@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,9 +19,9 @@
 !
 subroutine mmmbca_lac(mesh, disp_curr, ds_contact)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -44,9 +44,9 @@ implicit none
 #include "asterfort/mmfield_prep.h"
 #include "asterfort/lac_gapi.h"
 !
-character(len=8), intent(in) :: mesh
-character(len=19), intent(in) :: disp_curr
-type(NL_DS_Contact), intent(inout) :: ds_contact
+    character(len=8), intent(in) :: mesh
+    character(len=19), intent(in) :: disp_curr
+    type(NL_DS_Contact), intent(inout) :: ds_contact
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -84,7 +84,7 @@ type(NL_DS_Contact), intent(inout) :: ds_contact
     character(len=24) :: sdappa_coef
     real(kind=8), pointer :: v_sdappa_coef(:) => null()
     integer :: jv_geom
-    real(kind=8), pointer :: v_disp_curr(:)  => null()
+    real(kind=8), pointer :: v_disp_curr(:) => null()
     integer, pointer :: v_mesh_lpatch(:) => null()
     real(kind=8), pointer :: v_cnscon_cnsv(:) => null()
 !
@@ -93,8 +93,8 @@ type(NL_DS_Contact), intent(inout) :: ds_contact
     call jemarq()
     call infdbg('CONTACT', ifm, niv)
     if (niv .ge. 2) then
-        write (ifm,*) '<CONTACT> ... ACTIVATION/DESACTIVATION'
-    endif
+        write (ifm, *) '<CONTACT> ... ACTIVATION/DESACTIVATION'
+    end if
 !
 ! - Initializations
 !
@@ -103,12 +103,12 @@ type(NL_DS_Contact), intent(inout) :: ds_contact
 !
 ! - Get parameters
 !
-    tole_inter   = 1.d-5
-    nb_cont_zone = cfdisi(ds_contact%sdcont_defi,'NZOCO')
+    tole_inter = 1.d-5
+    nb_cont_zone = cfdisi(ds_contact%sdcont_defi, 'NZOCO')
 !
 ! - Access to mesh (patches)
 !
-    call jeveuo(jexnum(mesh//'.PATCH',1), 'L', vi = v_mesh_lpatch)
+    call jeveuo(jexnum(mesh//'.PATCH', 1), 'L', vi=v_mesh_lpatch)
 !
 ! - Update geometry
 !
@@ -123,32 +123,32 @@ type(NL_DS_Contact), intent(inout) :: ds_contact
 !
     sdcont_stat = ds_contact%sdcont_solv(1:14)//'.STAT'
     sdcont_lagc = ds_contact%sdcont_solv(1:14)//'.LAGC'
-    call jeveuo(sdcont_stat, 'E', vi = v_sdcont_stat)
-    call jeveuo(sdcont_lagc, 'E', vr = v_sdcont_lagc)
+    call jeveuo(sdcont_stat, 'E', vi=v_sdcont_stat)
+    call jeveuo(sdcont_lagc, 'E', vr=v_sdcont_lagc)
 !
 ! - Get pairing datastructure
 !
     sdappa = ds_contact%sdcont_solv(1:14)//'.APPA'
     sdappa_gapi = sdappa(1:19)//'.GAPI'
     sdappa_coef = sdappa(1:19)//'.COEF'
-    call jeveuo(sdappa_gapi, 'E', vr = v_sdappa_gapi)
-    call jeveuo(sdappa_coef, 'E', vr = v_sdappa_coef)
+    call jeveuo(sdappa_gapi, 'E', vr=v_sdappa_gapi)
+    call jeveuo(sdappa_coef, 'E', vr=v_sdappa_coef)
 !
 ! - Access to displacement field to get contact Lagrangien multiplier
 !
-    call jeveuo(disp_curr(1:19)//'.VALE', 'E', vr = v_disp_curr)
+    call jeveuo(disp_curr(1:19)//'.VALE', 'E', vr=v_disp_curr)
 !
 ! - Prepare displacement field to get contact Lagrangien multiplier
 !
     cnscon = '&&MMMBCA.CNSCON'
-    call mmfield_prep(disp_curr, cnscon,&
-                      l_sort_ = .true._1, nb_cmp_ = 1, list_cmp_ = ['LAGS_C  '])
-    call jeveuo(cnscon//'.CNSV', 'L', vr = v_cnscon_cnsv)
+    call mmfield_prep(disp_curr, cnscon, &
+                      l_sort_=.true._1, nb_cmp_=1, list_cmp_=['LAGS_C  '])
+    call jeveuo(cnscon//'.CNSV', 'L', vr=v_cnscon_cnsv)
 !
 ! - Get current patch
 
-    call jeveuo(mesh//'.PATCH', 'L', vi = v_mesh_patch)
-    call jeveuo(jexatr(mesh//'.PATCH', 'LONCUM'), 'L', vi = v_pa_lcum)
+    call jeveuo(mesh//'.PATCH', 'L', vi=v_mesh_patch)
+    call jeveuo(jexatr(mesh//'.PATCH', 'LONCUM'), 'L', vi=v_pa_lcum)
 !
 ! - Get status of loops
 !
@@ -164,31 +164,31 @@ type(NL_DS_Contact), intent(inout) :: ds_contact
     do i_cont_zone = 1, nb_cont_zone
 ! ----- Access to patch
         nb_patch = v_mesh_lpatch((i_cont_zone-1)*2+2)
-        j_patch  = v_mesh_lpatch((i_cont_zone-1)*2+1)
+        j_patch = v_mesh_lpatch((i_cont_zone-1)*2+1)
 ! ----- Get parameters on current zone
         jacobian_type = mminfi(ds_contact%sdcont_defi, 'TYPE_JACOBIEN', i_cont_zone)
 ! ----- Loop on patches
         do i_patch = 1, nb_patch
 ! --------- Get/Set LAGS_C
             node_nume = v_mesh_patch(v_pa_lcum(j_patch+i_patch-1)+2-1)
-            lagc      = v_cnscon_cnsv(node_nume)
+            lagc = v_cnscon_cnsv(node_nume)
             v_sdcont_lagc(j_patch-2+i_patch) = lagc
 ! --------- Get parameters
-            coefint        = v_sdappa_coef(j_patch-2+i_patch)
-            gap            = v_sdappa_gapi(j_patch-2+i_patch)
+            coefint = v_sdappa_coef(j_patch-2+i_patch)
+            gap = v_sdappa_gapi(j_patch-2+i_patch)
             indi_cont_prev = v_sdcont_stat(j_patch-2+i_patch)
 ! --------- Compute new status
             if (isnan(gap)) then
                 indi_cont_curr = -1
             else
-                if ((lagc+gap) .le. r8prem() .and.&
-                    v_sdappa_coef(j_patch-2+i_patch).ge.tole_inter) then
+                if ((lagc+gap) .le. r8prem() .and. &
+                    v_sdappa_coef(j_patch-2+i_patch) .ge. tole_inter) then
                     indi_cont_curr = 1
                 else
                     indi_cont_curr = 0
-                endif
+                end if
                 v_sdcont_stat(j_patch-2+i_patch) = indi_cont_curr
-            endif
+            end if
 ! --------- Save new status
             v_sdcont_stat(j_patch-2+i_patch) = indi_cont_curr
 ! --------- Change status ?
@@ -208,17 +208,17 @@ type(NL_DS_Contact), intent(inout) :: ds_contact
         call mmbouc(ds_contact, 'Cont', 'Set_Convergence')
     else
         call mmbouc(ds_contact, 'Cont', 'Set_Divergence')
-    endif
+    end if
     loop_cont_vale = real(loop_cont_vali, kind=8)
-    call mmbouc(ds_contact, 'Cont', 'Set_Vale' , loop_vale_ = loop_cont_vale)
+    call mmbouc(ds_contact, 'Cont', 'Set_Vale', loop_vale_=loop_cont_vale)
 !
 ! - Is contact stabilized ?
 !
     if (loop_cont_vali .eq. 0) then
-        ds_contact%iContStab = ds_contact%iContStab + 1
+        ds_contact%iContStab = ds_contact%iContStab+1
     else
         ds_contact%iContStab = 0
-    endif
+    end if
 ! - Cleaning
 !
     call jedetr(newgeo)

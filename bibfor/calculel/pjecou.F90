@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -67,7 +67,7 @@ subroutine pjecou(ma1, ma2, nomgma, nomgno, corres)
     call jeexin(jexnom(grpma, nomgma), iret)
     if (iret .eq. 0) then
         call utmess('F', 'ELEMENTS_62', sk=nomgma)
-    endif
+    end if
     call jelira(jexnom(grpma, nomgma), 'LONMAX', nbmag1)
     call jeveuo(jexnom(grpma, nomgma), 'L', ialim1)
 !
@@ -78,7 +78,7 @@ subroutine pjecou(ma1, ma2, nomgma, nomgno, corres)
     call jeexin(jexnom(grpno, nomgno), iret)
     if (iret .eq. 0) then
         call utmess('F', 'ELEMENTS_62', sk=nomgno)
-    endif
+    end if
     call jelira(jexnom(grpno, nomgno), 'LONMAX', nbnog2)
     call jeveuo(jexnom(grpno, nomgno), 'L', ialin2)
 !
@@ -94,7 +94,7 @@ subroutine pjecou(ma1, ma2, nomgma, nomgno, corres)
 ! PJEF_NO : DEVIENT PJXX_K1 DEPUIS 10.1.9
 !      CALL WKVECT(CORRES//'.PJEF_NO','V V K8',2,       IACONO)
     call wkvect(corres//'.PJXX_K1', 'V V K24', 5, iacono)
-    zk24(iacono-1+3)='COUPLAGE'
+    zk24(iacono-1+3) = 'COUPLAGE'
     call wkvect(corres//'.PJEF_NB', 'V V I', nbnog2, iaconb)
     call wkvect(corres//'.PJEF_M1', 'V V I', nbnog2, iacom1)
     call wkvect(corres//'.PJEF_NU', 'V V I', 9*nbnog2, iaconu)
@@ -103,8 +103,8 @@ subroutine pjecou(ma1, ma2, nomgma, nomgno, corres)
 !
 !     AFFECTATION DES NOMS DES MAILLAGES
 !     ==================================
-    zk24(iacono-1+1)=ma1
-    zk24(iacono-1+2)=ma2
+    zk24(iacono-1+1) = ma1
+    zk24(iacono-1+2) = ma2
 !
 !
 !     CALCUL DES FONCTIONS DE FORMES DES NOEUDS DU MAILLAGE 2
@@ -132,13 +132,13 @@ subroutine pjecou(ma1, ma2, nomgma, nomgno, corres)
             call jeveuo(ma1//'.TYPMAIL', 'L', vi=typmail)
             itypma = typmail(ima)
             call jenuno(jexnum('&CATA.TM.NOMTM', itypma), ntypma)
-            ii=5
-            if (ntypma(1:3) .eq. 'SEG') ii=4
-            elref(1:2)=ntypma(1:2)
-            elref(3:3)=ntypma(ii:ii)
-            elref(4:8)='     '
+            ii = 5
+            if (ntypma(1:3) .eq. 'SEG') ii = 4
+            elref(1:2) = ntypma(1:2)
+            elref(3:3) = ntypma(ii:ii)
+            elref(4:8) = '     '
 !
-            call elrfno(elref, nno = nbpg, nodeCoor = crrefe)
+            call elrfno(elref, nno=nbpg, nodeCoor=crrefe)
 !
 !         CAS OU LA MAILLE EST LINEIQUE (SEG)
 !         -----------------------------------
@@ -151,16 +151,16 @@ subroutine pjecou(ma1, ma2, nomgma, nomgno, corres)
                 end do
 ! VERSION ORIGINALE
 !            CALL PJ3D4C(CON1M2,CON1M1,CON2M1,INMAIL,COBARY,NORMLO)
-                call pj3da4(con1m2, con1m1, con2m1, cobary(1), cobary(2),&
+                call pj3da4(con1m2, con1m1, con2m1, cobary(1), cobary(2), &
                             normlo)
                 ksi(1) = 0
                 do ii = 1, 2
-                    ksi(1) = ksi(1) + cobary(ii)* crrefe(1, ii)
+                    ksi(1) = ksi(1)+cobary(ii)*crrefe(1, ii)
                 end do
 !
 !         CAS OU LA MAILLE EST SURFACIQUE (TRIA)
 !         --------------------------------------
-            else if (ntypma(1:4).eq.'TRIA') then
+            else if (ntypma(1:4) .eq. 'TRIA') then
                 inom1 = zi(icxma1-1+1)
                 inom2 = zi(icxma1-1+2)
                 inom3 = zi(icxma1-1+3)
@@ -171,19 +171,19 @@ subroutine pjecou(ma1, ma2, nomgma, nomgno, corres)
                 end do
 !            CALL PJ3D3C(CON1M2,CON1M1,CON2M1,CON3M1,INMAIL,
 !     &                  COBARY,NORMLO)
-                call pj3da3(con1m2, con1m1, con2m1, con3m1, inmail,&
+                call pj3da3(con1m2, con1m1, con2m1, con3m1, inmail, &
                             cobary(1), cobary(2), cobary(3), normlo)
                 inmail = .true.
                 ksi(1) = 0
                 ksi(2) = 0
                 do ii = 1, 3
-                    ksi(1) = ksi(1) + cobary(ii)* crrefe(1, ii)
-                    ksi(2) = ksi(2) + cobary(ii)* crrefe(2, ii)
+                    ksi(1) = ksi(1)+cobary(ii)*crrefe(1, ii)
+                    ksi(2) = ksi(2)+cobary(ii)*crrefe(2, ii)
                 end do
 !
 !         CAS OU LA MAILLE EST SURFACIQUE (QUAD)
 !         --------------------------------------
-            else if (ntypma(1:4).eq.'QUAD') then
+            else if (ntypma(1:4) .eq. 'QUAD') then
 !
 !           On teste le premier triangle de l'element
 !           -----------------------------------------
@@ -198,13 +198,13 @@ subroutine pjecou(ma1, ma2, nomgma, nomgno, corres)
 !  VERSION ORIGINALE
 !            CALL PJ3D3C(CON1M2,CON1M1,CON2M1,CON3M1,INMAIL,
 !     &                  COBARY,NORMLO)
-                call pj3da3(con1m2, con1m1, con2m1, con3m1, inmail,&
+                call pj3da3(con1m2, con1m1, con2m1, con3m1, inmail, &
                             cobary(1), cobary(2), cobary(3), normlo)
 !
 !
 !           On teste le second triangle de l'element
 !           ----------------------------------------
-                if (.not.(inmail)) then
+                if (.not. (inmail)) then
                     inom2 = zi(icxma1-1+3)
                     inom3 = zi(icxma1-1+4)
                     do ii = 1, 3
@@ -214,31 +214,31 @@ subroutine pjecou(ma1, ma2, nomgma, nomgno, corres)
 !  VERSION ORIGINALE
 !            CALL PJ3D3C(CON1M2,CON1M1,CON2M1,CON3M1,INMAIL,
 !     &                  COBARY,NORMLO)
-                    call pj3da3(con1m2, con1m1, con2m1, con3m1, inmail,&
+                    call pj3da3(con1m2, con1m1, con2m1, con3m1, inmail, &
                                 cobary(1), cobary(2), cobary(3), normlo)
                     ksi(1) = cobary(1)*crrefe(1, 1)
                     ksi(2) = cobary(1)*crrefe(2, 1)
                     do ii = 2, 3
-                        ksi(1) = ksi(1) + cobary(ii)* crrefe(1, ii)
-                        ksi(2) = ksi(2) + cobary(ii)* crrefe(2, ii)
+                        ksi(1) = ksi(1)+cobary(ii)*crrefe(1, ii)
+                        ksi(2) = ksi(2)+cobary(ii)*crrefe(2, ii)
                     end do
                 else
                     ksi(1) = 0.d0
                     ksi(2) = 0.d0
                     do ii = 1, 3
-                        ksi(1) = ksi(1) + cobary(ii)* crrefe(1, ii)
-                        ksi(2) = ksi(2) + cobary(ii)* crrefe(2, ii)
+                        ksi(1) = ksi(1)+cobary(ii)*crrefe(1, ii)
+                        ksi(2) = ksi(2)+cobary(ii)*crrefe(2, ii)
                     end do
-                endif
+                end if
             else
 !            WRITE (6,*) 'TYPE DE MAILLE NON RECONNUE : ',NTYPMA
                 call utmess('F', 'COUPLAGEIFS_9', sk=ntypma)
-            endif
+            end if
 !
 !   SI LE POINT EST DANS LA MAILLE
 !   ET SI LA DISTANCE EST INFERIEURE A LA REFERENCE ALORS SAUVEGARDE
 !-----------------------------------------------------------------------
-            if (inmail .and. (normlo.lt.normgl)) then
+            if (inmail .and. (normlo .lt. normgl)) then
                 normgl = normlo
                 call elrfvf(elref, ksi, ff, nbpg)
                 nbpgrf = nbpg
@@ -247,7 +247,7 @@ subroutine pjecou(ma1, ma2, nomgma, nomgno, corres)
                     listno(ii) = zi(icxma1-1+ii)
                     coefno(ii) = ff(ii)
                 end do
-            endif
+            end if
         end do
 !
 !       AFFECTATION DU NOEUD LE PLUS PROCHE EN CAS DE PROBLEME
@@ -263,19 +263,19 @@ subroutine pjecou(ma1, ma2, nomgma, nomgno, corres)
                     inol = jcoor1-1+3*(zi(icxma1-1+inom1)-1)
                     normlo = 0.d0
                     do ii = 1, 3
-                        normlo = normlo + (zr(inol+ii)-con1m2(ii))**2
+                        normlo = normlo+(zr(inol+ii)-con1m2(ii))**2
                     end do
                     if (normlo .lt. normgl) then
                         normgl = normlo
                         nodegl = zi(icxma1-1+inom1)
-                    endif
+                    end if
                 end do
             end do
             mailrf = 0
             nbpgrf = 1
             listno(1) = nodegl
             coefno(1) = 1.d0
-        endif
+        end if
 !
 !       AFFECTATION DU NOEUD DANS LA STRUCTURE CORRES
 !       =============================================
@@ -285,7 +285,7 @@ subroutine pjecou(ma1, ma2, nomgma, nomgno, corres)
             zi(iaconu-1+flag+ii) = listno(ii)
             zr(iacocf-1+flag+ii) = coefno(ii)
         end do
-        flag = flag + nbpgrf
+        flag = flag+nbpgrf
     end do
 ! ======================================================================
 ! IMPRESSIONS POUR VERIFICATION

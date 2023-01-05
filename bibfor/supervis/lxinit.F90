@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -34,18 +34,18 @@ subroutine lxinit()
 #include "asterfort/lxdeli.h"
     integer :: i, mxchar, mxclas, mxcols, mxdeli, nbdeli
 !-----------------------------------------------------------------------
-    parameter ( mxclas = 10 , mxchar = 255 , mxdeli = 15 )
+    parameter(mxclas=10, mxchar=255, mxdeli=15)
     integer :: clnum, cllet, clsig, clpnt, clexp, clquo, clbls, clbl, clill
     integer :: cleor
 !
-    common /lxcn01/   clnum , cllet , clsig , clpnt , clexp , clquo ,&
-     &                  clbls , clbl  , clill , cleor , nbdeli
+    common/lxcn01/clnum, cllet, clsig, clpnt, clexp, clquo,&
+     &                  clbls, clbl, clill, cleor, nbdeli
 !
     character(len=1) :: class(0:mxchar), cldeli(mxdeli)
-    common /lxcc01/    class          , cldeli
+    common/lxcc01/class, cldeli
 !
 !     ------------------------------------------------------------------
-    parameter  ( mxcols = 80 )
+    parameter(mxcols=80)
     character(len=mxcols) :: chaine
     character(len=1) :: kclass
 !     ------------------------------------------------------------------
@@ -87,7 +87,7 @@ subroutine lxinit()
     end do
 !
 !     INITIALISATION DE LA CLASSE ALPHABETIQUE
-    chaine = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'// 'abcdefghijklmnopqrstuvwxyz'
+    chaine = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'//'abcdefghijklmnopqrstuvwxyz'
     kclass = char(cllet)
     do i = 1, 52
         class(ichar(chaine(i:i))) = kclass
@@ -105,12 +105,12 @@ subroutine lxinit()
 !
 !     INITIALISATION DE LA CLASSE QUOTE BLANC BLANC_SOULIGNE ET POINT
     class(ichar('''')) = char(clquo)
-    class(ichar(' ')) = char(clbl )
+    class(ichar(' ')) = char(clbl)
     class(ichar('_')) = char(clbls)
     class(ichar('.')) = char(clpnt)
 !
 !     TABULATION
-    class(9) = char(clbl )
+    class(9) = char(clbl)
 !
 !     INITIALISATION DE LA CLASSE 'DELIMITEUR'
     nbdeli = mxdeli
@@ -119,7 +119,7 @@ subroutine lxinit()
     do i = 1, nbdeli
         if (class(ichar(cldeli(i))) .eq. kclass) then
             class(ichar(cldeli(i))) = char(mxclas+i)
-        endif
+        end if
     end do
 !
 !     ------------------------------------------------------------------

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,9 +18,9 @@
 
 subroutine nd_mstp_time(ds_inout, list_func_acti, time_prev_step, l_comp_mstp)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -61,61 +61,61 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     time_prev_step = r8vide()
-    l_comp_mstp    = .false.
-    result         = ds_inout%result
-    init_nume      = ds_inout%init_nume
+    l_comp_mstp = .false.
+    result = ds_inout%result
+    init_nume = ds_inout%init_nume
 !
 ! - Does ETAT_INIT (initial state) exist ?
 !
-    l_init_state = isfonc(list_func_acti,'ETAT_INIT')
+    l_init_state = isfonc(list_func_acti, 'ETAT_INIT')
 !
 ! - Reuse previous results ?
 !
-    l_reuse      = isfonc(list_func_acti,'REUSE')
+    l_reuse = isfonc(list_func_acti, 'REUSE')
 !
 ! - Get name of result datastructure in ETAT_INIT
 !
-    l_stin_evol  = ds_inout%l_stin_evol
-    stin_evol    = ds_inout%stin_evol
+    l_stin_evol = ds_inout%l_stin_evol
+    stin_evol = ds_inout%stin_evol
 !
 ! - Initial state: get time if possible
 !
     if (l_init_state) then
 !
-        nume_prev_step = init_nume - 1
+        nume_prev_step = init_nume-1
 !
 ! ----- Get previous time
 !
         if (l_stin_evol) then
-            if (nume_prev_step.le.0) then
-                call utmess('I','DYNAMIQUE_50')
+            if (nume_prev_step .le. 0) then
+                call utmess('I', 'DYNAMIQUE_50')
             else
-                call rsadpa(stin_evol, 'L', 1, 'INST_PREC', nume_prev_step,&
-                            0, sjv=jv_para, istop = 0)
+                call rsadpa(stin_evol, 'L', 1, 'INST_PREC', nume_prev_step, &
+                            0, sjv=jv_para, istop=0)
                 time_prev_step = zr(jv_para)
                 if (time_prev_step .eq. r8vide()) then
-                    call utmess('I','DYNAMIQUE_51')
+                    call utmess('I', 'DYNAMIQUE_51')
                 else
-                    l_comp_mstp    = .true.
-                endif
-            endif
+                    l_comp_mstp = .true.
+                end if
+            end if
         else
-            call utmess('I','DYNAMIQUE_53')
-        endif
-    endif
+            call utmess('I', 'DYNAMIQUE_53')
+        end if
+    end if
 !
 ! - Reuse old results: get time if possible
 !
     if (l_reuse) then
         call rs_getlast(result, nume_last)
-        call rsadpa(result, 'L', 1, 'INST_PREC', nume_last,&
-                    0, sjv=jv_para, istop = 0)
+        call rsadpa(result, 'L', 1, 'INST_PREC', nume_last, &
+                    0, sjv=jv_para, istop=0)
         time_prev_step = zr(jv_para)
         if (time_prev_step .eq. r8vide()) then
-            call utmess('I','DYNAMIQUE_51')
+            call utmess('I', 'DYNAMIQUE_51')
         else
-            l_comp_mstp    = .true.
-        endif
-    endif
+            l_comp_mstp = .true.
+        end if
+    end if
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -39,12 +39,12 @@ subroutine wprest(a, x, n, m, y)
 !-----------------------------------------------------------------------
     integer :: k
 !-----------------------------------------------------------------------
-    czero = dcmplx(0.0d0,0.0d0)
+    czero = dcmplx(0.0d0, 0.0d0)
     do i = 1, n, 1
         cval = czero
         k = 1
         do j = 1, m, 1
-            cval = cval + a(i,j)*dcmplx(x(k),x(k+1))
+            cval = cval+a(i, j)*dcmplx(x(k), x(k+1))
             k = k+2
         end do
         y(i) = cval

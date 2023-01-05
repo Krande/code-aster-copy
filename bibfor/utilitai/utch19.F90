@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine utch19(cham19, nomma, nomail, nonoeu, nupo,&
-                  nusp, ivari, nocmp, typres, valr,&
+subroutine utch19(cham19, nomma, nomail, nonoeu, nupo, &
+                  nusp, ivari, nocmp, typres, valr, &
                   valc, vali, ier)
     implicit none
 #include "jeveux.h"
@@ -68,48 +68,48 @@ subroutine utch19(cham19, nomma, nomail, nonoeu, nupo,&
     typrez = typres(1:1)
     call jelira(chm19z//'.CELV', 'TYPE', cval=type)
 !
-    ASSERT(type.eq.typrez)
+    ASSERT(type .eq. typrez)
     call dismoi('MPI_COMPLET', cham19, 'CHAM_ELEM', repk=kmpic)
-    ASSERT(kmpic.eq.'OUI'.or.kmpic.eq.'NON')
+    ASSERT(kmpic .eq. 'OUI' .or. kmpic .eq. 'NON')
 !
     if (type .ne. 'R' .and. type .ne. 'C' .and. type .ne. 'I') then
         call utmess('E', 'UTILITAI5_29', sk=type)
-    endif
+    end if
 !
-    call utchdl(cham19, nomma, nomail, nonoeu, nupo,&
+    call utchdl(cham19, nomma, nomail, nonoeu, nupo, &
                 nusp, ivari, nocmp, icmp)
 !
 !     SI TEST_RESU, ICMP PEUT ETRE = 0 :
     if (icmp .eq. 0) then
-        ier=1
-        valr=r8vide()
-        valc=dcmplx(r8vide(),r8vide())
+        ier = 1
+        valr = r8vide()
+        valc = dcmplx(r8vide(), r8vide())
         goto 10
-    endif
+    end if
 !
     call jeveuo(chm19z//'.CELV', 'L', jcelv)
     if (typrez .eq. 'R') then
         valr = zr(jcelv-1+icmp)
-    else if (typrez.eq.'C') then
+    else if (typrez .eq. 'C') then
         valc = zc(jcelv-1+icmp)
-    else if (typrez.eq.'I') then
+    else if (typrez .eq. 'I') then
         vali = zi(jcelv-1+icmp)
-    endif
+    end if
 !
 !     -- SI LE CHAMP N'EST PAS MPI_COMPLET, IL FAUT COMMUNIQUER
 !        LA VALEUR EXTRAITE :
     if (kmpic .eq. 'NON') then
         if (typrez .eq. 'R') then
             call asmpi_comm_vect('MPI_SUM', 'R', scr=valr)
-        else if (typrez.eq.'C') then
-            r1=dble(valc)
-            r2=dimag(valc)
+        else if (typrez .eq. 'C') then
+            r1 = dble(valc)
+            r2 = dimag(valc)
             call asmpi_comm_vect('MPI_SUM', 'R', scr=r1)
             call asmpi_comm_vect('MPI_SUM', 'R', scr=r2)
-            valc=dcmplx(r1,r2)
-        endif
-    endif
+            valc = dcmplx(r1, r2)
+        end if
+    end if
 !
- 10 continue
+10  continue
     call jedema()
 end subroutine

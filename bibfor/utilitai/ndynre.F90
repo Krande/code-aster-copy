@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -59,72 +59,72 @@ function ndynre(sddyna, chaine)
 !
     if (chaine .eq. 'BETA') then
         ndynre = para_sch(1)
-    else if (chaine.eq.'GAMMA') then
+    else if (chaine .eq. 'GAMMA') then
         ndynre = para_sch(2)
-    else if (chaine.eq.'PHI') then
+    else if (chaine .eq. 'PHI') then
         ndynre = para_sch(3)
-    else if (chaine.eq.'COEF_MASS_SHIFT') then
+    else if (chaine .eq. 'COEF_MASS_SHIFT') then
         ndynre = para_sch(6)
-    else if (chaine.eq.'ALPHA') then
+    else if (chaine .eq. 'ALPHA') then
         ndynre = para_sch(7)
 !
-    else if (chaine.eq.'COEF_MATR_RIGI') then
+    else if (chaine .eq. 'COEF_MATR_RIGI') then
         ndynre = coef_sch(1)
-    else if (chaine.eq.'COEF_MATR_AMOR') then
+    else if (chaine .eq. 'COEF_MATR_AMOR') then
         ndynre = coef_sch(2)
-    else if (chaine.eq.'COEF_MATR_MASS') then
+    else if (chaine .eq. 'COEF_MATR_MASS') then
         ndynre = coef_sch(3)
 !
-    else if (chaine.eq.'COEF_DEPL_DEPL') then
+    else if (chaine .eq. 'COEF_DEPL_DEPL') then
         ndynre = coef_sch(4)
-    else if (chaine.eq.'COEF_DEPL_VITE') then
+    else if (chaine .eq. 'COEF_DEPL_VITE') then
         ndynre = coef_sch(5)
-    else if (chaine.eq.'COEF_DEPL_ACCE') then
+    else if (chaine .eq. 'COEF_DEPL_ACCE') then
         ndynre = coef_sch(6)
-    else if (chaine.eq.'COEF_VITE_DEPL') then
+    else if (chaine .eq. 'COEF_VITE_DEPL') then
         ndynre = coef_sch(7)
-    else if (chaine.eq.'COEF_VITE_VITE') then
+    else if (chaine .eq. 'COEF_VITE_VITE') then
         ndynre = coef_sch(8)
-    else if (chaine.eq.'COEF_VITE_ACCE') then
+    else if (chaine .eq. 'COEF_VITE_ACCE') then
         ndynre = coef_sch(9)
-    else if (chaine.eq.'COEF_ACCE_DEPL') then
+    else if (chaine .eq. 'COEF_ACCE_DEPL') then
         ndynre = coef_sch(10)
-    else if (chaine.eq.'COEF_ACCE_VITE') then
+    else if (chaine .eq. 'COEF_ACCE_VITE') then
         ndynre = coef_sch(11)
-    else if (chaine.eq.'COEF_ACCE_ACCE') then
+    else if (chaine .eq. 'COEF_ACCE_ACCE') then
         ndynre = coef_sch(12)
 !
-    else if (chaine.eq.'COEF_DEPL') then
+    else if (chaine .eq. 'COEF_DEPL') then
         ndynre = coef_sch(13)
-    else if (chaine.eq.'COEF_VITE') then
+    else if (chaine .eq. 'COEF_VITE') then
         ndynre = coef_sch(14)
-    else if (chaine.eq.'COEF_ACCE') then
+    else if (chaine .eq. 'COEF_ACCE') then
         ndynre = coef_sch(15)
 !
-    else if (chaine.eq.'COEF_MPAS_FEXT_PREC') then
+    else if (chaine .eq. 'COEF_MPAS_FEXT_PREC') then
         ndynre = coef_sch(16)
-    else if (chaine.eq.'COEF_MPAS_EQUI_COUR') then
+    else if (chaine .eq. 'COEF_MPAS_EQUI_COUR') then
         ndynre = coef_sch(17)
-    else if (chaine.eq.'COEF_MPAS_FINT_PREC') then
+    else if (chaine .eq. 'COEF_MPAS_FINT_PREC') then
         ndynre = coef_sch(18)
-    else if (chaine.eq.'COEF_MPAS_FEXT_COUR') then
+    else if (chaine .eq. 'COEF_MPAS_FEXT_COUR') then
         ndynre = coef_sch(19)
 !
-    else if (chaine.eq.'COEF_FDYN_MASSE') then
+    else if (chaine .eq. 'COEF_FDYN_MASSE') then
         ndynre = coef_sch(20)
-    else if (chaine.eq.'COEF_FDYN_AMORT') then
+    else if (chaine .eq. 'COEF_FDYN_AMORT') then
         ndynre = coef_sch(21)
-    else if (chaine.eq.'COEF_FDYN_RIGID') then
+    else if (chaine .eq. 'COEF_FDYN_RIGID') then
         ndynre = coef_sch(22)
 !
-    else if (chaine.eq.'COEF_FORC_INER') then
+    else if (chaine .eq. 'COEF_FORC_INER') then
         ndynre = coef_sch(23)
-    else if (chaine.eq.'INST_PREC') then
+    else if (chaine .eq. 'INST_PREC') then
         ndynre = coef_sch(24)
 !
     else
         ASSERT(.false.)
-    endif
+    end if
 !
     call jedema()
 !

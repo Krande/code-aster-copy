@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 subroutine nmdivr(sddisc, sderro, iter_newt)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/nmcrel.h"
@@ -71,10 +71,10 @@ implicit none
 !
 ! ----- Check evolution of RESI_GLOB_MAXI
 !
-        if (min(r(1),rm1(1)) .gt. rm2(1)) then
+        if (min(r(1), rm1(1)) .gt. rm2(1)) then
             l_resi_dive = .true.
-        endif
-    endif
+        end if
+    end if
 !
 ! - Save event
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -63,34 +63,34 @@ subroutine dismcn(questi, nomobz, repi, repkz, ierd)
 !
     if (questl .eq. 'NB_EQUA') then
         call jelira(nomob//'.VALE', 'LONMAX', repi)
-    else if (questl.eq.'NOM_MAILLA') then
+    else if (questl .eq. 'NOM_MAILLA') then
         call jeveuo(nomob//'.REFE', 'L', iarefe)
         repk = zk24(iarefe-1+1) (1:8)
-    else if (questl.eq.'NB_DDLACT') then
+    else if (questl .eq. 'NB_DDLACT') then
         call jeveuo(nomob//'.REFE', 'L', iarefe)
-        call dismpn(questl, zk24(iarefe-1+2)(1:8)//'.NUME      ', repi, repk, ierd)
-    else if (questl.eq.'TYPE_CHAMP') then
+        call dismpn(questl, zk24(iarefe-1+2) (1:8)//'.NUME      ', repi, repk, ierd)
+    else if (questl .eq. 'TYPE_CHAMP') then
         repk = 'NOEU'
-    else if (questl(1:7).eq.'NUM_GD ') then
+    else if (questl(1:7) .eq. 'NUM_GD ') then
         call jeveuo(nomob//'.DESC', 'L', iadesc)
         repi = zi(iadesc)
-    else if (questl(1:7).eq.'NOM_GD ') then
+    else if (questl(1:7) .eq. 'NOM_GD ') then
         call jeveuo(nomob//'.DESC', 'L', iadesc)
         call jenuno(jexnum('&CATA.GD.NOMGD', zi(iadesc)), repk)
-    else if (questl.eq.'TYPE_SUPERVIS' .or. questl.eq.'TYPE_SCA') then
+    else if (questl .eq. 'TYPE_SUPERVIS' .or. questl .eq. 'TYPE_SCA') then
         call jeveuo(nomob//'.DESC', 'L', iadesc)
         call jenuno(jexnum('&CATA.GD.NOMGD', zi(iadesc)), nogd)
-        if (questl.eq.'TYPE_SUPERVIS') then
-            repk='CHAM_NO_'//nogd
+        if (questl .eq. 'TYPE_SUPERVIS') then
+            repk = 'CHAM_NO_'//nogd
         else
             call dismgd(questl, nogd, repi, repk, ierd)
-        endif
-    else if (questl.eq.'PROF_CHNO') then
+        end if
+    else if (questl .eq. 'PROF_CHNO') then
         call jeveuo(nomob//'.REFE', 'L', iarefe)
         repk = zk24(iarefe+1)
     else
-        ierd=1
-    endif
+        ierd = 1
+    end if
 !
     repkz = repk
     call jedema()

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,9 +18,9 @@
 
 subroutine cfdism(ds_contact, l_dist_beam, l_dist_shell, node_slav_indx, gap_structural)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/cfinvm.h"
@@ -60,14 +60,14 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     gap_structural = 0.d0
-    gap_elem       = 0.d0
+    gap_elem = 0.d0
 !
 ! - Access to contact datastructures
 !
     sdcont_jeucoq = ds_contact%sdcont_defi(1:16)//'.JEUCOQ'
     sdcont_jeupou = ds_contact%sdcont_defi(1:16)//'.JEUPOU'
-    call jeveuo(sdcont_jeupou, 'L', vr = v_sdcont_jeupou)
-    call jeveuo(sdcont_jeucoq, 'L', vr = v_sdcont_jeucoq)
+    call jeveuo(sdcont_jeupou, 'L', vr=v_sdcont_jeupou)
+    call jeveuo(sdcont_jeucoq, 'L', vr=v_sdcont_jeucoq)
 !
     call cfnben(ds_contact%sdcont_defi, node_slav_indx, 'CONINV', nt_elem_slav, jdeciv)
 !
@@ -77,10 +77,10 @@ implicit none
         call cfinvm(ds_contact%sdcont_defi, jdeciv, i_elem_slav, elem_slav_indx)
         if (l_dist_beam) then
             gap_elem = gap_elem+v_sdcont_jeupou(elem_slav_indx)
-        endif
+        end if
         if (l_dist_shell) then
             gap_elem = gap_elem+v_sdcont_jeucoq(elem_slav_indx)
-        endif
+        end if
     end do
 !
 ! - Mean value

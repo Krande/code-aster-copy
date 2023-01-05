@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,11 +16,11 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine xdocon(algocr, algofr, cface, contac, coefcp,&
-                  coeffp, coefcr, coeffr, elc, fpg,&
-                  ifiss, ivff, jcface, jdonco, jlonch,&
-                  mu, nspfis, ncompd, ndim, nface,&
-                  ninter, nnof, nomte, npgf, nptf,&
+subroutine xdocon(algocr, algofr, cface, contac, coefcp, &
+                  coeffp, coefcr, coeffr, elc, fpg, &
+                  ifiss, ivff, jcface, jdonco, jlonch, &
+                  mu, nspfis, ncompd, ndim, nface, &
+                  ninter, nnof, nomte, npgf, nptf, &
                   rela)
 ! aslint: disable=W1504
     implicit none
@@ -78,9 +78,9 @@ subroutine xdocon(algocr, algofr, cface, contac, coefcp,&
 ! --- DECALAGE D INDICE POUR TOPOFAC (MULTIFISSURATION)
 !
 !   INITIALISATION
-    rela=0.d0
+    rela = 0.d0
 !
-    ninter=zi(jlonch+3*(ifiss-1)-1+1)
+    ninter = zi(jlonch+3*(ifiss-1)-1+1)
     if (ninter .eq. 0) goto 99
 !
 ! --- SCHEMA D'INTEGRATION NUMERIQUE ET ELEMENT
@@ -90,18 +90,18 @@ subroutine xdocon(algocr, algofr, cface, contac, coefcp,&
 !
     if (ndim .eq. 3) then
         if (contac .le. 2) then
-            elc='TR3'
+            elc = 'TR3'
         else
-            elc='TR3'
-        endif
-    else if (ndim.eq.2) then
+            elc = 'TR3'
+        end if
+    else if (ndim .eq. 2) then
         if (contac .le. 2) then
-            elc='SE2'
+            elc = 'SE2'
         else
-            elc='SE3'
-        endif
-    endif
-    call elrefe_info(elrefe=elc, fami=fpg, nno=nnof, npg=npgf, jpoids=ipoidf,&
+            elc = 'SE3'
+        end if
+    end if
+    call elrefe_info(elrefe=elc, fami=fpg, nno=nnof, npg=npgf, jpoids=ipoidf, &
                      jvf=ivff, jdfde=idfdef)
 !
 ! --- RECUPERATIONS DONNEES ET COEFFS DU CONTACT
@@ -114,41 +114,41 @@ subroutine xdocon(algocr, algofr, cface, contac, coefcp,&
     coefcp = zr(jdonco-1+(ifiss-1)*ncompd+8)
     coeffp = zr(jdonco-1+(ifiss-1)*ncompd+9)
 !     VERIFICATIONS
-    rela=0.d0
+    rela = 0.d0
     if (algocr .eq. 1) then
-        ASSERT(coefcr.ne.0.d0.and.coefcp.eq.0.d0)
-    else if (algocr.eq.2) then
-        ASSERT(coefcr.eq.0.d0.and.coefcp.ne.0.d0)
-    else if (algocr.eq.3) then
+        ASSERT(coefcr .ne. 0.d0 .and. coefcp .eq. 0.d0)
+    else if (algocr .eq. 2) then
+        ASSERT(coefcr .eq. 0.d0 .and. coefcp .ne. 0.d0)
+    else if (algocr .eq. 3) then
         call teattr('S', 'XFEM', enr, ibid, typel=nomte)
-        ASSERT(enr(1:3).eq.'XHC')
+        ASSERT(enr(1:3) .eq. 'XHC')
         rela = zr(jdonco-1+(ifiss-1)*ncompd+10)
-        ASSERT(rela .gt.0.d0)
+        ASSERT(rela .gt. 0.d0)
         coefcr = 1.d0
     else
         ASSERT(.false.)
-    endif
+    end if
 !
     if (algofr .eq. 1) then
-        ASSERT(coeffr.ne.0.d0.and.coeffp.eq.0.d0)
-    else if (algofr.eq.2) then
-        ASSERT(coeffr.eq.0.d0.and.coeffp.ne.0.d0)
+        ASSERT(coeffr .ne. 0.d0 .and. coeffp .eq. 0.d0)
+    else if (algofr .eq. 2) then
+        ASSERT(coeffr .eq. 0.d0 .and. coeffp .ne. 0.d0)
     else
-        ASSERT(algofr.eq.0)
-    endif
+        ASSERT(algofr .eq. 0)
+    end if
 !
 ! --- DECALAGE INDICE POUR LA MULTIFISSURATION
 !
-    nface=zi(jlonch+3*(ifiss-1)-1+2)
-    nptf=zi(jlonch+3*(ifiss-1)-1+3)
+    nface = zi(jlonch+3*(ifiss-1)-1+2)
+    nptf = zi(jlonch+3*(ifiss-1)-1+3)
     do i = 1, nface
         do j = 1, nptf
-            cface(i,j)=zi(jcface-1+nptf*(i-1)+j)
+            cface(i, j) = zi(jcface-1+nptf*(i-1)+j)
         end do
     end do
 !
     nspfis = npgf*nface
 !
- 99 continue
+99  continue
 !
 end subroutine

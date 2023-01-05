@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,35 +16,35 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine rcvalb(fami, kpg, ksp, poum, jmat, nomat,&
-                  phenom, nbpar, nompar, valpar,&
-                  nbres, nomres, valres, codret, iarret,nan)
+subroutine rcvalb(fami, kpg, ksp, poum, jmat, nomat, &
+                  phenom, nbpar, nompar, valpar, &
+                  nbres, nomres, valres, codret, iarret, nan)
 !
-use calcul_module, only : ca_jvcnom_, ca_nbcvrc_
+    use calcul_module, only: ca_jvcnom_, ca_nbcvrc_
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/rcvala.h"
 #include "asterfort/rcvarc.h"
 !
-integer, intent(in) :: nbres
-integer, intent(in) :: nbpar
-character(len=*), intent(in) :: fami
-integer, intent(in) :: kpg
-integer, intent(in) :: ksp
-character(len=*), intent(in) :: poum
-integer, intent(in) :: jmat
-character(len=*), intent(in) :: nomat
-character(len=*), intent(in) :: phenom
-character(len=*), intent(in) :: nompar(nbpar)
-real(kind=8), intent(in) :: valpar(nbpar)
-character(len=*), intent(in) :: nomres(nbres)
-real(kind=8), intent(out) :: valres(nbres)
-integer, intent(out) :: codret(nbres)
-integer, intent(in) :: iarret
-character(len=3), intent(in), optional :: nan
+    integer, intent(in) :: nbres
+    integer, intent(in) :: nbpar
+    character(len=*), intent(in) :: fami
+    integer, intent(in) :: kpg
+    integer, intent(in) :: ksp
+    character(len=*), intent(in) :: poum
+    integer, intent(in) :: jmat
+    character(len=*), intent(in) :: nomat
+    character(len=*), intent(in) :: phenom
+    character(len=*), intent(in) :: nompar(nbpar)
+    real(kind=8), intent(in) :: valpar(nbpar)
+    character(len=*), intent(in) :: nomres(nbres)
+    real(kind=8), intent(out) :: valres(nbres)
+    integer, intent(out) :: codret(nbres)
+    integer, intent(in) :: iarret
+    character(len=3), intent(in), optional :: nan
 
 ! ----------------------------------------------------------------------
 ! But : Recuperation des valeurs d'une liste de coefficients d'une relation de
@@ -75,7 +75,7 @@ character(len=3), intent(in), optional :: nan
 !        icodre(*) : pour chaque resultat, 0 si on a trouve, 1 sinon
 ! ----------------------------------------------------------------------
 
-    integer, parameter :: nbpamx=20
+    integer, parameter :: nbpamx = 20
     integer :: nbpar2, ipar, nbpart, ier
     real(kind=8) :: valpa2(nbpamx), valvrc
     character(len=8) :: nompa2(nbpamx), novrc
@@ -84,48 +84,46 @@ character(len=3), intent(in), optional :: nan
 !   -- s'il n'y a pas de varc, il n'y a qu'a appeler  rcvala :
     if (ca_nbcvrc_ .eq. 0) then
         if (present(nan)) then
-            call rcvala(jmat, nomat, phenom, nbpar, nompar,&
-                    valpar, nbres, nomres, valres, codret,&
-                    iarret, nan)
+            call rcvala(jmat, nomat, phenom, nbpar, nompar, &
+                        valpar, nbres, nomres, valres, codret, &
+                        iarret, nan)
         else
-            call rcvala(jmat, nomat, phenom, nbpar, nompar,&
-                    valpar, nbres, nomres, valres, codret,&
-                    iarret)
-        endif
+            call rcvala(jmat, nomat, phenom, nbpar, nompar, &
+                        valpar, nbres, nomres, valres, codret, &
+                        iarret)
+        end if
         goto 999
-    endif
-
+    end if
 
 !   -- sinon, on ajoute les varc au debut de la liste des parametres
 !      car fointa donne priorite aux derniers :
     nbpar2 = 0
-    do ipar=1,ca_nbcvrc_
-        novrc=zk8(ca_jvcnom_-1+ipar)
-        call rcvarc(' ', novrc, poum, fami, kpg,&
+    do ipar = 1, ca_nbcvrc_
+        novrc = zk8(ca_jvcnom_-1+ipar)
+        call rcvarc(' ', novrc, poum, fami, kpg, &
                     ksp, valvrc, ier)
         if (ier .eq. 0) then
-            nbpar2=nbpar2+1
-            nompa2(nbpar2)=novrc
-            valpa2(nbpar2)=valvrc
-        endif
-    enddo
-    nbpart=nbpar+nbpar2
+            nbpar2 = nbpar2+1
+            nompa2(nbpar2) = novrc
+            valpa2(nbpar2) = valvrc
+        end if
+    end do
+    nbpart = nbpar+nbpar2
     ASSERT(nbpart .le. nbpamx)
-    do ipar=1,nbpar
+    do ipar = 1, nbpar
         nompa2(nbpar2+ipar) = nompar(ipar)
         valpa2(nbpar2+ipar) = valpar(ipar)
-    enddo
-
+    end do
 
     if (present(nan)) then
-        call rcvala(jmat, nomat, phenom, nbpart, nompa2,&
-                valpa2, nbres, nomres, valres, codret,&
-                iarret,nan)
+        call rcvala(jmat, nomat, phenom, nbpart, nompa2, &
+                    valpa2, nbres, nomres, valres, codret, &
+                    iarret, nan)
     else
-        call rcvala(jmat, nomat, phenom, nbpart, nompa2,&
-                valpa2, nbres, nomres, valres, codret,&
-                iarret)
-    endif
+        call rcvala(jmat, nomat, phenom, nbpart, nompa2, &
+                    valpa2, nbres, nomres, valres, codret, &
+                    iarret)
+    end if
 
 999 continue
 end subroutine

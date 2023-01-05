@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 subroutine te0413(option, nomte)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -52,7 +52,7 @@ implicit none
 !.......................................................................
 !
     integer :: npgmx
-    parameter (npgmx=4)
+    parameter(npgmx=4)
 !
     real(kind=8) :: pgl(3, 3)
     real(kind=8) :: qsi, eta, xyzl(3, 4), jacob(5), poids, cara(25)
@@ -69,28 +69,28 @@ implicit none
 !
     if (nomte .eq. 'MEDKQG4') then
         dkq = .true.
-    else if (nomte.eq.'MEDKTG3') then
+    else if (nomte .eq. 'MEDKTG3') then
         dkq = .false.
     else
         call utmess('F', 'ELEMENTS_34', sk=nomte)
-    endif
+    end if
 !
-    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnoel, npg=npg,&
-                     jpoids=ipoids, jcoopg=icoopg, jvf=ivf, jdfde=idfdx, jdfd2=idfd2,&
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnoel, npg=npg, &
+                     jpoids=ipoids, jcoopg=icoopg, jvf=ivf, jdfde=idfdx, jdfd2=idfd2, &
                      jgano=jgano)
 !
     call jevech('PGEOMER', 'L', jgeom)
     call jevech('PCOMPOR', 'L', icompo)
     if (nno .eq. 3) then
         call dxtpgl(zr(jgeom), pgl)
-    else if (nno.eq.4) then
+    else if (nno .eq. 4) then
         call dxqpgl(zr(jgeom), pgl, 'S', iret)
-    endif
+    end if
 !
-    lkit = zk16(icompo-1+RELA_NAME)(1:7).eq.'KIT_DDI'
+    lkit = zk16(icompo-1+RELA_NAME) (1:7) .eq. 'KIT_DDI'
 !
-    if ((zk16(icompo-1+RELA_NAME)(1:7).eq.'GLRC_DM') .or.&
-       (lkit.and.(zk16(icompo-1+CREEP_NAME)(1:7).eq.'GLRC_DM'))) then
+    if ((zk16(icompo-1+RELA_NAME) (1:7) .eq. 'GLRC_DM') .or. &
+        (lkit .and. (zk16(icompo-1+CREEP_NAME) (1:7) .eq. 'GLRC_DM'))) then
 !
         call jevech('PCACOQU', 'L', icacoq)
 !
@@ -100,16 +100,16 @@ implicit none
             call gquad4(xyzl, cara)
         else
             call gtria3(xyzl, cara)
-        endif
+        end if
 !
-        read (zk16(icompo-1+NVAR),'(I16)') nbvar
+        read (zk16(icompo-1+NVAR), '(I16)') nbvar
         ep = zr(icacoq)
 !
         if (option .eq. 'DISS_ELGA') then
             call jevech('PVARIGR', 'L', jvari)
-        else if (option.eq.'DISS_ELEM') then
+        else if (option .eq. 'DISS_ELEM') then
             call jevech('PVARIPR', 'L', jvari)
-        endif
+        end if
 !
         call r8inir(npgmx, 0.d0, disse, 1)
         dse = 0.0d0
@@ -125,7 +125,7 @@ implicit none
                 poids = zr(ipoids+ipg-1)*jacob(1)
             else
                 poids = zr(ipoids+ipg-1)*cara(7)
-            endif
+            end if
 !
             call jevech('PMATERC', 'L', imate)
 !
@@ -133,12 +133,12 @@ implicit none
 !
 !  --    CALCUL DE LA DENSITE D'ENERGIE POTENTIELLE ELASTIQUE :
 !        ==========================================================
-            if ((option.eq.'DISS_ELGA') .or. (option.eq.'DISS_ELEM')) then
+            if ((option .eq. 'DISS_ELGA') .or. (option .eq. 'DISS_ELEM')) then
 !
-                disse(ipg)=(zr(jvari-1+(ipg-1)*nbvar+1)+zr(jvari-1+(ipg-1)*nbvar+2))*seuil
-                dse = dse + disse(ipg)*poids
+                disse(ipg) = (zr(jvari-1+(ipg-1)*nbvar+1)+zr(jvari-1+(ipg-1)*nbvar+2))*seuil
+                dse = dse+disse(ipg)*poids
 !
-            endif
+            end if
         end do
 !
 ! ---- RECUPERATION DU CHAMP DES DENSITES D'ENERGIE DE DEFORMATION
@@ -146,38 +146,38 @@ implicit none
 !      -------------------
         if (option .eq. 'DISS_ELGA') then
             call jevech('PDISSPG', 'E', idener)
-        else if (option.eq.'DISS_ELEM') then
+        else if (option .eq. 'DISS_ELEM') then
             call jevech('PDISSD1', 'E', idener)
-        endif
+        end if
 !
 ! --- OPTIONS DISS_ELGA
 !     ==============================
         if (option .eq. 'DISS_ELGA') then
             do ipg = 1, npg
-                zr(idener-1+(ipg-1)*1 +1) = disse(ipg)
+                zr(idener-1+(ipg-1)*1+1) = disse(ipg)
             end do
 !
 ! --- OPTION DISS_ELEM
 !     ================
-        else if (option.eq.'DISS_ELEM') then
+        else if (option .eq. 'DISS_ELEM') then
             zr(idener-1+1) = dse
-        endif
-    elseif ( zk16(icompo-1+RELA_NAME)(1:4) .eq. 'DHRC' ) then
+        end if
+    elseif (zk16(icompo-1+RELA_NAME) (1:4) .eq. 'DHRC') then
         call jevech('PCACOQU', 'L', icacoq)
         call utpvgl(nno, 3, pgl, zr(jgeom), xyzl)
         if (dkq) then
             call gquad4(xyzl, cara)
         else
             call gtria3(xyzl, cara)
-        endif
+        end if
 !
-        read (zk16(icompo-1+NVAR),'(I16)') nbvar
+        read (zk16(icompo-1+NVAR), '(I16)') nbvar
 !
         if (option .eq. 'DISS_ELGA') then
             call jevech('PVARIGR', 'L', jvari)
-        else if (option.eq.'DISS_ELEM') then
+        else if (option .eq. 'DISS_ELEM') then
             call jevech('PVARIPR', 'L', jvari)
-        endif
+        end if
 !
         call r8inir(npgmx, 0.d0, disse, 1)
         dse = 0.0d0
@@ -193,16 +193,16 @@ implicit none
                 poids = zr(ipoids+ipg-1)*jacob(1)
             else
                 poids = zr(ipoids+ipg-1)*cara(7)
-            endif
+            end if
 !
 !  --    CALCUL DE LA DENSITE D'ENERGIE POTENTIELLE ELASTIQUE :
 !        ==========================================================
-            if ((option.eq.'DISS_ELGA') .or. (option.eq.'DISS_ELEM')) then
+            if ((option .eq. 'DISS_ELGA') .or. (option .eq. 'DISS_ELEM')) then
 !
-                disse(ipg)=zr(jvari-1+(ipg-1)*nbvar+9)
-                dse = dse + disse(ipg)*poids
+                disse(ipg) = zr(jvari-1+(ipg-1)*nbvar+9)
+                dse = dse+disse(ipg)*poids
 !
-            endif
+            end if
         end do
 !
 ! ---- RECUPERATION DU CHAMP DES DENSITES D'ENERGIE DE DEFORMATION
@@ -210,27 +210,27 @@ implicit none
 !      -------------------
         if (option .eq. 'DISS_ELGA') then
             call jevech('PDISSPG', 'E', idener)
-        else if (option.eq.'DISS_ELEM') then
+        else if (option .eq. 'DISS_ELEM') then
             call jevech('PDISSD1', 'E', idener)
-        endif
+        end if
 !
 ! --- OPTIONS DISS_ELGA
 !     ==============================
         if (option .eq. 'DISS_ELGA') then
             do ipg = 1, npg
-                zr(idener-1+(ipg-1)*1 +1) = disse(ipg)
+                zr(idener-1+(ipg-1)*1+1) = disse(ipg)
             end do
 !
 ! --- OPTION DISS_ELEM
 !     ================
-        else if (option.eq.'DISS_ELEM') then
+        else if (option .eq. 'DISS_ELEM') then
             zr(idener-1+1) = dse
-        endif
+        end if
     else
 !      RELATION NON PROGRAMMEE
         valk(1) = option
-        valk(2) = zk16(icompo-1+RELA_NAME)(1:7)
+        valk(2) = zk16(icompo-1+RELA_NAME) (1:7)
         call utmess('A', 'ELEMENTS4_63', nk=2, valk=valk)
-    endif
+    end if
 !
 end subroutine

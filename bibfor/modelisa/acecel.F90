@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -62,7 +62,7 @@ subroutine acecel(noma, nomo, nbocc, ele_sup_num, ele_sup_typ, nb_ty_el, zjdlm, 
     mlgnma = noma//'.NOMMAI'
     call jeexin(modmai, ixma)
     call jelira(mlgnma, 'NOMMAX', nbmail)
-    ASSERT( ixma .ne. 0 )
+    ASSERT(ixma .ne. 0)
     call jeveuo(modmai, 'L', jdme)
 !
     l_pmesh = isParallelMesh(noma)
@@ -75,125 +75,125 @@ subroutine acecel(noma, nomo, nbocc, ele_sup_num, ele_sup_typ, nb_ty_el, zjdlm, 
         nutyel = zi(jdme+nummai-1)
         zjdlm(nummai) = nutyel
 !
-        do ii = 1 , ACE_NB_TYPE_ELEM
-            if ( nutyel .eq. ele_sup_num(ii) ) then
+        do ii = 1, ACE_NB_TYPE_ELEM
+            if (nutyel .eq. ele_sup_num(ii)) then
                 tt = ele_sup_typ(ii)
-                nb_ty_el(tt) = nb_ty_el(tt) + 1
+                nb_ty_el(tt) = nb_ty_el(tt)+1
                 exit
-            endif
-        enddo
-    enddo
+            end if
+        end do
+    end do
 !
-    write(ifm,100) nomo
-    do ii=1 ,ACE_NB_ELEMENT
-        if ( nb_ty_el(ii) .gt. 0 ) then
-            write(ifm,110) nb_ty_el(ii),ACE_NM_ELEMENT(ii)
-        endif
-    enddo
-100 format(/,5x,'LE MODELE ',a8,' CONTIENT : ')
-110 format(35x,i6,' ELEMENT(S) ',A16)
+    write (ifm, 100) nomo
+    do ii = 1, ACE_NB_ELEMENT
+        if (nb_ty_el(ii) .gt. 0) then
+            write (ifm, 110) nb_ty_el(ii), ACE_NM_ELEMENT(ii)
+        end if
+    end do
+100 format(/, 5x, 'LE MODELE ', a8, ' CONTIENT : ')
+110 format(35x, i6, ' ELEMENT(S) ', A16)
 !
 !   Vérification de la cohérence des affectations
-    if (nbocc(ACE_POUTRE).ne.0) then
+    if (nbocc(ACE_POUTRE) .ne. 0) then
         nb_elem_p = nb_ty_el(ACE_NU_POUTRE)
-        if(l_pmesh) then
+        if (l_pmesh) then
             call asmpi_comm_vect('MPI_MAX', 'I', sci=nb_elem_p)
         end if
-        if(nb_elem_p.eq.0) then
+        if (nb_elem_p .eq. 0) then
             call utmess('E', 'MODELISA_29', sk=nomo)
-            ier = ier + 1
+            ier = ier+1
         end if
-    endif
-    if (nbocc(ACE_COQUE).ne.0) then
+    end if
+    if (nbocc(ACE_COQUE) .ne. 0) then
         nb_elem_p = nb_ty_el(ACE_NU_COQUE)
-        if(l_pmesh) then
+        if (l_pmesh) then
             call asmpi_comm_vect('MPI_MAX', 'I', sci=nb_elem_p)
         end if
-        if(nb_elem_p.eq.0) then
+        if (nb_elem_p .eq. 0) then
             call utmess('E', 'MODELISA_30', sk=nomo)
-            ier = ier + 1
+            ier = ier+1
         end if
-    endif
-    if ((nbocc(ACE_DISCRET)+nbocc(ACE_DISCRET_2D)).ne.0) then
+    end if
+    if ((nbocc(ACE_DISCRET)+nbocc(ACE_DISCRET_2D)) .ne. 0) then
         nb_elem_p = nb_ty_el(ACE_NU_DISCRET)
-        if(l_pmesh) then
+        if (l_pmesh) then
             call asmpi_comm_vect('MPI_MAX', 'I', sci=nb_elem_p)
         end if
-        if(nb_elem_p.eq.0) then
+        if (nb_elem_p .eq. 0) then
             call utmess('E', 'MODELISA_31', sk=nomo)
-            ier = ier + 1
+            ier = ier+1
         end if
-    endif
-    if (nbocc(ACE_ORIENTATION).ne.0) then
-        nb_elem_p = nb_ty_el(ACE_NU_POUTRE) + nb_ty_el(ACE_NU_DISCRET)+nb_ty_el(ACE_NU_BARRE)
-        if(l_pmesh) then
+    end if
+    if (nbocc(ACE_ORIENTATION) .ne. 0) then
+        nb_elem_p = nb_ty_el(ACE_NU_POUTRE)+nb_ty_el(ACE_NU_DISCRET)+nb_ty_el(ACE_NU_BARRE)
+        if (l_pmesh) then
             call asmpi_comm_vect('MPI_MAX', 'I', sci=nb_elem_p)
         end if
-        if(nb_elem_p.eq.0) then
+        if (nb_elem_p .eq. 0) then
             call utmess('E', 'MODELISA_32', sk=nomo)
-            ier = ier + 1
+            ier = ier+1
         end if
-    endif
-    if (nbocc(ACE_CABLE).ne.0) then
+    end if
+    if (nbocc(ACE_CABLE) .ne. 0) then
         nb_elem_p = nb_ty_el(ACE_NU_CABLE)
-        if(l_pmesh) then
+        if (l_pmesh) then
             call asmpi_comm_vect('MPI_MAX', 'I', sci=nb_elem_p)
         end if
-        if(nb_elem_p.eq.0) then
+        if (nb_elem_p .eq. 0) then
             call utmess('E', 'MODELISA_33', sk=nomo)
-            ier = ier + 1
+            ier = ier+1
         end if
-    endif
-    if (nbocc(ACE_BARRE).ne.0) then
+    end if
+    if (nbocc(ACE_BARRE) .ne. 0) then
         nb_elem_p = nb_ty_el(ACE_NU_BARRE)
-        if(l_pmesh) then
+        if (l_pmesh) then
             call asmpi_comm_vect('MPI_MAX', 'I', sci=nb_elem_p)
         end if
-        if(nb_elem_p.eq.0) then
+        if (nb_elem_p .eq. 0) then
             call utmess('E', 'MODELISA_34', sk=nomo)
-            ier = ier + 1
+            ier = ier+1
         end if
-    endif
-    if (nbocc(ACE_MASSIF).ne.0) then
+    end if
+    if (nbocc(ACE_MASSIF) .ne. 0) then
         nb_elem_p = nb_ty_el(ACE_NU_MASSIF)+nb_ty_el(ACE_NU_THHMM)
-        if(l_pmesh) then
+        if (l_pmesh) then
             call asmpi_comm_vect('MPI_MAX', 'I', sci=nb_elem_p)
         end if
-        if(nb_elem_p.eq.0) then
+        if (nb_elem_p .eq. 0) then
             call utmess('E', 'MODELISA_35', sk=nomo)
-            ier = ier + 1
+            ier = ier+1
         end if
-    endif
-    if (nbocc(ACE_GRILLE).ne.0) then
+    end if
+    if (nbocc(ACE_GRILLE) .ne. 0) then
         nb_elem_p = nb_ty_el(ACE_NU_GRILLE)
-        if(l_pmesh) then
+        if (l_pmesh) then
             call asmpi_comm_vect('MPI_MAX', 'I', sci=nb_elem_p)
         end if
-        if(nb_elem_p.eq.0) then
+        if (nb_elem_p .eq. 0) then
             call utmess('E', 'MODELISA_36', sk=nomo)
-            ier = ier + 1
+            ier = ier+1
         end if
-    endif
-    if (nbocc(ACE_MEMBRANE).ne.0) then
+    end if
+    if (nbocc(ACE_MEMBRANE) .ne. 0) then
         nb_elem_p = nb_ty_el(ACE_NU_MEMBRANE)
-        if(l_pmesh) then
+        if (l_pmesh) then
             call asmpi_comm_vect('MPI_MAX', 'I', sci=nb_elem_p)
         end if
-        if(nb_elem_p.eq.0) then
+        if (nb_elem_p .eq. 0) then
             call utmess('E', 'MODELISA_55', sk=nomo)
-            ier = ier + 1
+            ier = ier+1
         end if
-    endif
-    if (nbocc(ACE_MASS_REP).ne.0) then
+    end if
+    if (nbocc(ACE_MASS_REP) .ne. 0) then
         nb_elem_p = nb_ty_el(ACE_NU_DISCRET)
-        if(l_pmesh) then
+        if (l_pmesh) then
             call asmpi_comm_vect('MPI_MAX', 'I', sci=nb_elem_p)
         end if
-        if(nb_elem_p.eq.0) then
+        if (nb_elem_p .eq. 0) then
             call utmess('E', 'MODELISA_31', sk=nomo)
-            ier = ier + 1
+            ier = ier+1
         end if
-    endif
+    end if
 !
     call jedema()
 end subroutine

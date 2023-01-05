@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine memoy(champa, ncpa, champb, ncpb, vr,&
+subroutine memoy(champa, ncpa, champb, ncpb, vr, &
                  nbmail, numail)
     implicit none
 #include "asterf_types.h"
@@ -74,27 +74,27 @@ subroutine memoy(champa, ncpa, champb, ncpb, vr,&
     champ1 = champa
     champ2 = champb
     rzero = 0.0d0
-    if ((ncpa.le.0) .or. (ncpb.le.0)) then
+    if ((ncpa .le. 0) .or. (ncpb .le. 0)) then
         call utmess('F', 'CALCULEL3_57')
-    endif
+    end if
 !
 !     -- ON RETROUVE LE NOM DU LIGREL:
 !     --------------------------------
     call jeveuo(champ1//'.CELK', 'L', iacelk)
-    ligre1 = zk24(iacelk-1+1)(1:19)
+    ligre1 = zk24(iacelk-1+1) (1:19)
 !
     call jeveuo(champ2//'.CELK', 'L', iacelk)
-    ligre2 = zk24(iacelk-1+1)(1:19)
+    ligre2 = zk24(iacelk-1+1) (1:19)
 !
     if (ligre1 .ne. ligre2) then
         call utmess('F', 'CALCULEL3_58')
-    endif
+    end if
     ligrel = ligre1
 !
     call jeexin(champ1//'.CELD', ibid)
     if (ibid .eq. 0) then
         call utmess('F', 'CALCULEL3_59', sk=champ1)
-    endif
+    end if
 !
 !     -- ON VERIFIE QUE LE CHAM_ELEM N'EST PAS TROP DYNAMIQUE :
     call celver(champ1, 'NBVARI_CST', 'STOP', ibid)
@@ -105,12 +105,12 @@ subroutine memoy(champa, ncpa, champb, ncpb, vr,&
     scal1 = scalai(igd1)
     if (scal1(1:1) .ne. 'R') then
         call utmess('F', 'CALCULEL3_53')
-    endif
+    end if
 !
     call jeexin(champ2//'.CELD', ibid)
     if (ibid .eq. 0) then
         call utmess('F', 'CALCULEL3_59', sk=champ2)
-    endif
+    end if
 !
 !     -- ON VERIFIE QUE LE CHAM_ELEM N'EST PAS TROP DYNAMIQUE :
     call celver(champ2, 'NBVARI_CST', 'STOP', ibid)
@@ -121,49 +121,49 @@ subroutine memoy(champa, ncpa, champb, ncpb, vr,&
     scal2 = scalai(igd2)
     if (scal2(1:1) .ne. 'R') then
         call utmess('F', 'CALCULEL3_53')
-    endif
+    end if
 !
 !     -- ON VERIFIE LES LONGUEURS DE CHAQUE CHAMP:
 !     --------------------------------------------
     first = .true.
     nbgr = nbgrel(ligrel)
-    do 1 ,j = 1,nbgr
-    mode=celd1(celd1(4+j) +2)
-    if (mode .eq. 0) goto 1
-    ncmpel = digdel(mode)
-    icoef=max(1,celd1(4))
-    ncmpel = ncmpel * icoef
-    if (first) then
-        longt1 = ncmpel
-    else
-        if (longt1 .ne. ncmpel) then
-            call utmess('F', 'CALCULEL3_60')
-        endif
-    endif
-    first = .false.
-    1 end do
+    do 1, j = 1, nbgr
+        mode = celd1(celd1(4+j)+2)
+        if (mode .eq. 0) goto 1
+        ncmpel = digdel(mode)
+        icoef = max(1, celd1(4))
+        ncmpel = ncmpel*icoef
+        if (first) then
+            longt1 = ncmpel
+        else
+            if (longt1 .ne. ncmpel) then
+                call utmess('F', 'CALCULEL3_60')
+            end if
+        end if
+        first = .false.
+1   end do
 !
     first = .true.
     nbgr = nbgrel(ligrel)
-    do 100 ,j = 1,nbgr
-    mode=celd2(celd2(4+j) +2)
-    if (mode .eq. 0) goto 100
-    ncmpel = digdel(mode)
-    icoef=max(1,celd2(4))
-    ncmpel = ncmpel * icoef
-    if (first) then
-        longt2 = ncmpel
-    else
-        if (longt2 .ne. ncmpel) then
-            call utmess('F', 'CALCULEL3_61')
-        endif
-    endif
-    first = .false.
-    100 end do
+    do 100, j = 1, nbgr
+        mode = celd2(celd2(4+j)+2)
+        if (mode .eq. 0) goto 100
+        ncmpel = digdel(mode)
+        icoef = max(1, celd2(4))
+        ncmpel = ncmpel*icoef
+        if (first) then
+            longt2 = ncmpel
+        else
+            if (longt2 .ne. ncmpel) then
+                call utmess('F', 'CALCULEL3_61')
+            end if
+        end if
+        first = .false.
+100 end do
 !
-    if ((ncpa.gt.longt1) .or. (ncpb.gt.longt2)) then
+    if ((ncpa .gt. longt1) .or. (ncpb .gt. longt2)) then
         call utmess('F', 'CALCULEL3_62')
-    endif
+    end if
 !
 !     -- ON MET A ZERO LE VECTEUR "VSCAL":
 !     ------------------------------------
@@ -177,50 +177,50 @@ subroutine memoy(champa, ncpa, champb, ncpb, vr,&
     call jeveuo(champ1//'.CELV', 'L', vr=val1)
     call jeveuo(champ2//'.CELV', 'L', vr=val2)
     if (nbmail .le. 0) then
-        do 2 ,j = 1,nbgr
-        mode1 = celd1(celd1(4+j) +2)
-        mode2 = celd2(celd2(4+j) +2)
-        if ((mode1.eq.0 ) .or. (mode2.eq.0)) goto 2
-        nel = nbelem(ligrel,j)
-        idecg1 = celd1(celd1(4+j)+8)
-        idecg2 = celd2(celd2(4+j)+8)
-        do 3 , k = 1,nel
-        vr(1) = vr(1) + val1(idecg1+(k-1)*longt1+ncpa- 1) *val2(idecg2+(k-1)*longt2+ncpb-1)
-        vr(2) = vr(2) + val2(idecg2+(k-1)*longt2+ncpb- 1)
-  3     continue
-  2     continue
-        vr(1) = vr(1)/vr(2)
-    else
-        call jeveuo(ligrel//'.LIEL', 'L', vi=liel)
-        do im = 1, nbmail
-            inum = 0
-            do j = 1, nbgr
-                mode1 = celd1(celd1(4+j) +2)
-                mode2 = celd2(celd2(4+j) +2)
-                nel = nbelem(ligrel,j)
-                if ((mode1.eq.0 ) .or. (mode2.eq.0)) then
-                    inum = inum + nel + 1
-                    goto 20
-                endif
-                idecg1 = celd1(celd1(4+j)+8)
-                idecg2 = celd2(celd2(4+j)+8)
-                do k = 1, nel
-                    iel = liel(1+inum+k-1)
-                    if (iel .ne. numail(im)) goto 22
-                    vr(1) =vr(1) + val1(idecg1+(k-1)*longt1+&
-                    ncpa-1) *val2(idecg2+(k-1)*longt2+ncpb-1)
-                    vr(2)= vr(2) + val2(idecg2+(k-1)*longt2+&
-                    ncpb-1)
-                    goto 30
- 22                 continue
+        do 2, j = 1, nbgr
+            mode1 = celd1(celd1(4+j)+2)
+            mode2 = celd2(celd2(4+j)+2)
+            if ((mode1 .eq. 0) .or. (mode2 .eq. 0)) goto 2
+            nel = nbelem(ligrel, j)
+            idecg1 = celd1(celd1(4+j)+8)
+            idecg2 = celd2(celd2(4+j)+8)
+            do 3, k = 1, nel
+                vr(1) = vr(1)+val1(idecg1+(k-1)*longt1+ncpa-1)*val2(idecg2+(k-1)*longt2+ncpb-1)
+                vr(2) = vr(2)+val2(idecg2+(k-1)*longt2+ncpb-1)
+3               continue
+2               continue
+                vr(1) = vr(1)/vr(2)
+                else
+                call jeveuo(ligrel//'.LIEL', 'L', vi=liel)
+                do im = 1, nbmail
+                    inum = 0
+                    do j = 1, nbgr
+                        mode1 = celd1(celd1(4+j)+2)
+                        mode2 = celd2(celd2(4+j)+2)
+                        nel = nbelem(ligrel, j)
+                        if ((mode1 .eq. 0) .or. (mode2 .eq. 0)) then
+                            inum = inum+nel+1
+                            goto 20
+                        end if
+                        idecg1 = celd1(celd1(4+j)+8)
+                        idecg2 = celd2(celd2(4+j)+8)
+                        do k = 1, nel
+                            iel = liel(1+inum+k-1)
+                            if (iel .ne. numail(im)) goto 22
+                            vr(1) = vr(1)+val1(idecg1+(k-1)*longt1+ &
+                                               ncpa-1)*val2(idecg2+(k-1)*longt2+ncpb-1)
+                            vr(2) = vr(2)+val2(idecg2+(k-1)*longt2+ &
+                                               ncpb-1)
+                            goto 30
+22                          continue
+                        end do
+                        inum = inum+nel+1
+20                      continue
+                    end do
+30                  continue
                 end do
-                inum = inum + nel + 1
- 20             continue
-            end do
- 30         continue
-        end do
-        vr(1) = vr(1)/vr(2)
-    endif
+                vr(1) = vr(1)/vr(2)
+                end if
 !
-    call jedema()
-end subroutine
+                call jedema()
+                end subroutine

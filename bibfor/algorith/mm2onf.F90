@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine mm2onf(ndim, nno, alias, ksi1, ksi2,&
+subroutine mm2onf(ndim, nno, alias, ksi1, ksi2, &
                   ddff)
 !
 ! person_in_charge: mickael.abbas at edf.fr
@@ -58,26 +58,26 @@ subroutine mm2onf(ndim, nno, alias, ksi1, ksi2,&
 !
 ! --- INITIALISATIONS
 !
-    ddff(:,:) = 0.d0
-    d2ff(:,:,:) = 0.d0
+    ddff(:, :) = 0.d0
+    d2ff(:, :, :) = 0.d0
 !
     ksi(1) = ksi1
     ksi(2) = ksi2
 
-    if ((nno.lt.1) .or. (nno.gt.9) .or. (ndim.lt.1) .or. (ndim.gt.3)) then
+    if ((nno .lt. 1) .or. (nno .gt. 9) .or. (ndim .lt. 1) .or. (ndim .gt. 3)) then
         ASSERT(.false.)
-    endif
+    end if
 ! --- RECUP DERIVEES SECONDES DES FONCTIONS DE FORME
 !
-    call elrfd2(alias, ksi, nno*ndim*ndim, d2ff, ibid1,&
+    call elrfd2(alias, ksi, nno*ndim*ndim, d2ff, ibid1, &
                 ibid2)
 !
 ! --- CONVERSION XI-YI/YI-XI -> KSI1-KSI2
 !
 
-    ddff(1,:) = d2ff(1,1,:)
-    ddff(2,:) = d2ff(2,2,:)
-    ddff(3,:) = d2ff(1,2,:)
+    ddff(1, :) = d2ff(1, 1, :)
+    ddff(2, :) = d2ff(2, 2, :)
+    ddff(3, :) = d2ff(1, 2, :)
 
 !
 end subroutine

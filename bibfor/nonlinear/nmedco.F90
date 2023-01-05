@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine nmedco(compor, option, imate, npg, lgpg,&
-                  s, q, vim, vip, alphap,&
+subroutine nmedco(compor, option, imate, npg, lgpg, &
+                  s, q, vim, vip, alphap, &
                   dalfs)
 !
     implicit none
@@ -58,12 +58,12 @@ subroutine nmedco(compor, option, imate, npg, lgpg,&
 !
     if (compor(1) .eq. 'CZM_EXP') then
 !
-        call lcedex(option, imate, npg, lgpg, s,&
+        call lcedex(option, imate, npg, lgpg, s, &
                     q, vim, vip, alphap, dalfs)
 !
     else
 !
         call utmess('F', 'ALGORITH7_69', sk=compor(1))
-    endif
+    end if
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine hujcvx(mod, nmat, materf, vinf, deps,&
+subroutine hujcvx(mod, nmat, materf, vinf, deps, &
                   sigd, sigf, seuil, iret)
 ! person_in_charge: alexandre.foucault at edf.fr
     implicit none
@@ -48,8 +48,8 @@ subroutine hujcvx(mod, nmat, materf, vinf, deps,&
     character(len=7) :: etatf
     real(kind=8) :: un, zero, somme, matert(22, 2)
 !
-    parameter     ( zero = 0.d0 )
-    parameter     ( un   = 1.d0 )
+    parameter(zero=0.d0)
+    parameter(un=1.d0)
 ! ======================================================================
 ! --- INTIALISATION ETATF
     etatf = 'ELASTIC'
@@ -57,23 +57,23 @@ subroutine hujcvx(mod, nmat, materf, vinf, deps,&
 ! --- CONTROLE DE LA NORME DE DEFORMATION
     somme = zero
     do i = 1, 6
-        somme = somme + abs(deps(i))
+        somme = somme+abs(deps(i))
     end do
     if (somme .lt. r8prem()) goto 999
 !
     do i = 1, 22
-        matert(i,1) = materf(i,1)
-        matert(i,2) = materf(i,2)
+        matert(i, 1) = materf(i, 1)
+        matert(i, 2) = materf(i, 2)
     end do
 !
 ! --- DEFINITION DU DOMAINE POTENTIEL DES MECANISMES ACTIFS
-    call hujpot(mod, matert, vinf, deps, sigd,&
+    call hujpot(mod, matert, vinf, deps, sigd, &
                 sigf, etatf, rdctps, iret, .true._1)
 !
 ! --- SI ETATF = 'ELASTIC' --> SEUIL < 0
 !
 999 continue
-    if(etatf.eq.'ELASTIC')seuil = - un
+    if (etatf .eq. 'ELASTIC') seuil = -un
 !
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -47,7 +47,7 @@ subroutine iredmi(macr)
 !
 !-----------------------------------------------------------------------
     integer :: i, i2, iam, icamor, icmass, icrigi
-    integer :: iret, isamor, ismass, isrigi,   ival3
+    integer :: iret, isamor, ismass, isrigi, ival3
     integer :: j, j2, jamo2, jamor, jfreq, jmass, jordr
     integer :: jrefe, jrigi, k, lamor, n1, n2
     integer :: nbamor, nbmode, nbmods, nbmodt, ntriam, ntriar
@@ -65,14 +65,14 @@ subroutine iredmi(macr)
 !
 !     ----- RECUPERATION DES MODES -----
     call jeveuo(mael//'.MAEL_REFE', 'L', jrefe)
-    basemo = zk24(jrefe)(1:8)
-    noma = zk24(jrefe+1)(1:8)
+    basemo = zk24(jrefe) (1:8)
+    noma = zk24(jrefe+1) (1:8)
     call jelira(basemo//'           .ORDR', 'LONMAX', nbmodt)
     call jeveuo(basemo//'           .ORDR', 'L', jordr)
 !
     call dismoi('NB_MODES_DYN', basemo, 'RESULTAT', repi=nbmode)
     call dismoi('NB_MODES_STA', basemo, 'RESULTAT', repi=nbmods)
-    nbmodt = nbmode + nbmods
+    nbmodt = nbmode+nbmods
 !
     call jeveuo(mael//'.MAEL_MASS_REFE', 'L', jrefe)
     masse = zk24(jrefe+1)
@@ -91,7 +91,7 @@ subroutine iredmi(macr)
         call wkvect('&&IREDMI.DMASS', 'V V R', nbmode*nbmode, jmass)
         call wkvect('&&IREDMI.DRIGI', 'V V R', nbmode*nbmode, jrigi)
         call wkvect('&&IREDMI.DAMOR', 'V V R', nbmode*nbmode, lamor)
-    endif
+    end if
     if (nbmods .eq. 0) then
         call wkvect('&&IREDMI.SMASS', 'V V R', 1, ismass)
         call wkvect('&&IREDMI.SRIGI', 'V V R', 1, isrigi)
@@ -100,7 +100,7 @@ subroutine iredmi(macr)
         call wkvect('&&IREDMI.SMASS', 'V V R', nbmods*nbmods, ismass)
         call wkvect('&&IREDMI.SRIGI', 'V V R', nbmods*nbmods, isrigi)
         call wkvect('&&IREDMI.SAMOR', 'V V R', nbmods*nbmods, isamor)
-    endif
+    end if
     if (nbmode .eq. 0 .or. nbmods .eq. 0) then
         call wkvect('&&IREDMI.CMASS', 'V V R', 1, icmass)
         call wkvect('&&IREDMI.CRIGI', 'V V R', 1, icrigi)
@@ -109,48 +109,48 @@ subroutine iredmi(macr)
         call wkvect('&&IREDMI.CMASS', 'V V R', nbmode*nbmods, icmass)
         call wkvect('&&IREDMI.CRIGI', 'V V R', nbmode*nbmods, icrigi)
         call wkvect('&&IREDMI.CAMOR', 'V V R', nbmode*nbmods, icamor)
-    endif
-!
-    call jelira(mael//'.MAEL_MASS_VALE','NMAXOC',ntriam)
-    call jeveuo(jexnum(mael//'.MAEL_MASS_VALE', 1), 'L', vr=mael_mass_vale)
-    if (ntriam.gt.1) then
-     call jeveuo(jexnum(mael//'.MAEL_MASS_VALE', 2), 'L', vr=mael_mass_vali)
-    else
-     call jeveuo(jexnum(mael//'.MAEL_MASS_VALE', 1), 'L', vr=mael_mass_vali)
     end if
 !
-    call jelira(mael//'.MAEL_RAID_VALE','NMAXOC',ntriar)
-    call jeveuo(jexnum(mael//'.MAEL_RAID_VALE', 1), 'L', vr=mael_raid_vale)
-    if (ntriar.gt.1) then
-     call jeveuo(jexnum(mael//'.MAEL_RAID_VALE', 2), 'L', vr=mael_raid_vali)
+    call jelira(mael//'.MAEL_MASS_VALE', 'NMAXOC', ntriam)
+    call jeveuo(jexnum(mael//'.MAEL_MASS_VALE', 1), 'L', vr=mael_mass_vale)
+    if (ntriam .gt. 1) then
+        call jeveuo(jexnum(mael//'.MAEL_MASS_VALE', 2), 'L', vr=mael_mass_vali)
     else
-     call jeveuo(jexnum(mael//'.MAEL_RAID_VALE', 1), 'L', vr=mael_raid_vali)
+        call jeveuo(jexnum(mael//'.MAEL_MASS_VALE', 1), 'L', vr=mael_mass_vali)
+    end if
+!
+    call jelira(mael//'.MAEL_RAID_VALE', 'NMAXOC', ntriar)
+    call jeveuo(jexnum(mael//'.MAEL_RAID_VALE', 1), 'L', vr=mael_raid_vale)
+    if (ntriar .gt. 1) then
+        call jeveuo(jexnum(mael//'.MAEL_RAID_VALE', 2), 'L', vr=mael_raid_vali)
+    else
+        call jeveuo(jexnum(mael//'.MAEL_RAID_VALE', 1), 'L', vr=mael_raid_vali)
     end if
 !
     do j = 1, nbmode
         do i = 1, j
-            k =j*(j-1)/2 + i
-            zr(jmass+i-1+(j-1)*nbmode) = mael_mass_vale(k) + petir8
-            zr(jmass+j-1+(i-1)*nbmode) = mael_mass_vale(k) + petir8
-            zr(jrigi+i-1+(j-1)*nbmode) = mael_raid_vale(k) + petir8
-            zr(jrigi+j-1+(i-1)*nbmode) = mael_raid_vale(k) + petir8
+            k = j*(j-1)/2+i
+            zr(jmass+i-1+(j-1)*nbmode) = mael_mass_vale(k)+petir8
+            zr(jmass+j-1+(i-1)*nbmode) = mael_mass_vale(k)+petir8
+            zr(jrigi+i-1+(j-1)*nbmode) = mael_raid_vale(k)+petir8
+            zr(jrigi+j-1+(i-1)*nbmode) = mael_raid_vale(k)+petir8
         end do
     end do
     do j = nbmode+1, nbmodt
         do i = 1, nbmode
-            k = j*(j-1)/2 + i
-            j2 = j - nbmode
-            zr(icmass+j2-1+(i-1)*nbmods) = mael_mass_vale(k) + petir8
-            zr(icrigi+j2-1+(i-1)*nbmods) = mael_raid_vale(k) + petir8
+            k = j*(j-1)/2+i
+            j2 = j-nbmode
+            zr(icmass+j2-1+(i-1)*nbmods) = mael_mass_vale(k)+petir8
+            zr(icrigi+j2-1+(i-1)*nbmods) = mael_raid_vale(k)+petir8
         end do
         do i = nbmode+1, j
-            k = j*(j-1)/2 + i
-            i2 = i - nbmode
-            j2 = j - nbmode
-            zr(ismass+i2-1+(j2-1)*nbmods) = mael_mass_vale(k) + petir8
-            zr(ismass+j2-1+(i2-1)*nbmods) = mael_mass_vale(k) + petir8
-            zr(isrigi+i2-1+(j2-1)*nbmods) = mael_raid_vale(k) + petir8
-            zr(isrigi+j2-1+(i2-1)*nbmods) = mael_raid_vale(k) + petir8
+            k = j*(j-1)/2+i
+            i2 = i-nbmode
+            j2 = j-nbmode
+            zr(ismass+i2-1+(j2-1)*nbmods) = mael_mass_vale(k)+petir8
+            zr(ismass+j2-1+(i2-1)*nbmods) = mael_mass_vale(k)+petir8
+            zr(isrigi+i2-1+(j2-1)*nbmods) = mael_raid_vale(k)+petir8
+            zr(isrigi+j2-1+(i2-1)*nbmods) = mael_raid_vale(k)+petir8
         end do
     end do
 !
@@ -159,28 +159,28 @@ subroutine iredmi(macr)
         call jeveuo(mael//'.MAEL_AMOR_VALE', 'L', ival3)
         do j = 1, nbmode
             do i = 1, j
-                k =j*(j-1)/2 + i
-                zr(lamor+i-1+(j-1)*nbmode) = zr(ival3+k-1) + petir8
-                zr(lamor+j-1+(i-1)*nbmode) = zr(ival3+k-1) + petir8
+                k = j*(j-1)/2+i
+                zr(lamor+i-1+(j-1)*nbmode) = zr(ival3+k-1)+petir8
+                zr(lamor+j-1+(i-1)*nbmode) = zr(ival3+k-1)+petir8
             end do
         end do
         do j = nbmode+1, nbmodt
             do i = 1, nbmode
-                k = j*(j-1)/2 + i
-                j2 = j - nbmode
-                zr(icamor+j2-1+(i-1)*nbmods) = zr(ival3+k-1) + petir8
+                k = j*(j-1)/2+i
+                j2 = j-nbmode
+                zr(icamor+j2-1+(i-1)*nbmods) = zr(ival3+k-1)+petir8
             end do
             do i = nbmode+1, j
-                k = j*(j-1)/2 + i
-                i2 = i - nbmode
-                j2 = j - nbmode
-                zr(isamor+i2-1+(j2-1)*nbmods) = zr(ival3+k-1) + petir8
-                zr(isamor+j2-1+(i2-1)*nbmods) = zr(ival3+k-1) + petir8
+                k = j*(j-1)/2+i
+                i2 = i-nbmode
+                j2 = j-nbmode
+                zr(isamor+i2-1+(j2-1)*nbmods) = zr(ival3+k-1)+petir8
+                zr(isamor+j2-1+(i2-1)*nbmods) = zr(ival3+k-1)+petir8
             end do
         end do
     else
         ival3 = 0
-    endif
+    end if
 !
 !     ----- RECUPERATION DES AMORTISSEMENTS -----
     call getvr8(' ', 'AMOR_REDUIT', nbval=0, nbret=n1)
@@ -189,7 +189,7 @@ subroutine iredmi(macr)
         call wkvect('&&IREDMI.AMORTISSEMENT', 'V V R', 1, jamor)
     else
         call wkvect('&&IREDMI.AMORTISSEMENT', 'V V R', nbmode, jamor)
-    endif
+    end if
     if (n1 .ne. 0 .or. n2 .ne. 0) then
         if (n1 .ne. 0) then
             nbamor = -n1
@@ -198,12 +198,12 @@ subroutine iredmi(macr)
             call getvid(' ', 'LIST_AMOR', scal=listam, nbret=n2)
             call jelira(listam//'           .VALE', 'LONMAX', nbamor)
             call jeveuo(listam//'           .VALE', 'L', jamor)
-        endif
+        end if
         if (nbamor .gt. nbmode) then
-            vali (1) = nbamor
-            vali (2) = nbmode
+            vali(1) = nbamor
+            vali(2) = nbmode
             call utmess('F', 'UTILITAI6_44', ni=2, vali=vali)
-        endif
+        end if
         if (nbamor .lt. nbmode) then
             call wkvect('&&IREDMI.AMORTISSEMEN2', 'V V R', nbmode, jamo2)
             do iam = 1, nbamor
@@ -214,19 +214,19 @@ subroutine iredmi(macr)
             end do
             nbamor = nbmode
             jamor = jamo2
-        endif
+        end if
     else
         do k = 1, nbmode
-            zr(jamor+k-1) = zr(&
-                            lamor+(k-1)*(nbmode+1))/ (4.d0*pi*zr( jfreq+k-1)*zr(jmass+(k-1)*(nbmo&
-                            &de+1))&
+            zr(jamor+k-1) = zr( &
+                            lamor+(k-1)*(nbmode+1))/(4.d0*pi*zr(jfreq+k-1)*zr(jmass+(k-1)*(nbmo&
+                            &de+1)) &
                             )
         end do
-    endif
+    end if
 !
-    call iredm1(masse, noma, basemo, nbmode, nbmods,&
-                ival3, zr(jmass), zr(jrigi), zr(jamor), zr(jfreq),&
-                zr(ismass), zr(isrigi), zr(isamor), zr(icmass), zr(icrigi),&
+    call iredm1(masse, noma, basemo, nbmode, nbmods, &
+                ival3, zr(jmass), zr(jrigi), zr(jamor), zr(jfreq), &
+                zr(ismass), zr(isrigi), zr(isamor), zr(icmass), zr(icrigi), &
                 zr(icamor))
 !
 !

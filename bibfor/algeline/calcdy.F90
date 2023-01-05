@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine calcdy(mu, k, f0, devg, devgii,&
+subroutine calcdy(mu, k, f0, devg, devgii, &
                   traceg, dfdl, delta, dy)
 !
     implicit none
@@ -43,32 +43,32 @@ subroutine calcdy(mu, k, f0, devg, devgii,&
 ! ======================================================================
 ! --- INITIALISATION DE PARAMETRES -------------------------------------
 ! ======================================================================
-    parameter       ( mun    =  -1.0d0  )
-    parameter       ( deux   =   2.0d0  )
-    parameter       ( trois  =   3.0d0  )
+    parameter(mun=-1.0d0)
+    parameter(deux=2.0d0)
+    parameter(trois=3.0d0)
 ! ======================================================================
-    common /tdim/   ndt , ndi
+    common/tdim/ndt, ndi
 ! ======================================================================
     call jemarq()
 ! ======================================================================
 ! --- CALCUL DES INCREMENTS --------------------------------------------
 ! ======================================================================
-    ddelta = mun * f0 / dfdl
-    delta = delta + ddelta
-    dgamp = delta * sqrt(deux/trois) * devgii
+    ddelta = mun*f0/dfdl
+    delta = delta+ddelta
+    dgamp = delta*sqrt(deux/trois)*devgii
     do ii = 1, ndt
-        dsn(ii) = mun * deux * mu * delta * devg(ii)
+        dsn(ii) = mun*deux*mu*delta*devg(ii)
     end do
-    dinv = mun * trois * k * delta * traceg
-    devp = delta * traceg
+    dinv = mun*trois*k*delta*traceg
+    devp = delta*traceg
 ! ======================================================================
 ! --- STOCKAGE ---------------------------------------------------------
 ! ======================================================================
     dy(1:ndt) = dsn(1:ndt)
-    dy(ndt+1)=dinv
-    dy(ndt+2)=dgamp
-    dy(ndt+3)=devp
-    dy(ndt+4)=ddelta
+    dy(ndt+1) = dinv
+    dy(ndt+2) = dgamp
+    dy(ndt+3) = devp
+    dy(ndt+4) = ddelta
 !
 !
 ! ======================================================================

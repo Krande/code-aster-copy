@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -46,12 +46,12 @@ subroutine op0086()
 !
     call getres(nomu, kbi1, kbi2)
 
-    call getvid(' ', 'MACR_ELEM', scal = macrelem_reuse, nbret = nocc)
+    call getvid(' ', 'MACR_ELEM', scal=macrelem_reuse, nbret=nocc)
     if (nocc .ne. 0) then
         if (nomu .ne. macrelem_reuse) then
             call utmess('F', 'SUPERVIS2_79', sk='MACR_ELEM')
-        endif
-    endif
+        end if
+    end if
 !
 !
 !     --TRAITEMENT DES MOTS CLEFS 'DEFINITION' ET 'EXTERIEUR'
@@ -63,8 +63,8 @@ subroutine op0086()
             call utmess('F', 'SOUSTRUC_9', sk=nomu)
         else
             call ssdege(nomu)
-        endif
-    endif
+        end if
+    end if
 !
 !
 !     --TRAITEMENT DU MOT CLEF 'RIGI_MECA'
@@ -74,14 +74,14 @@ subroutine op0086()
         call jeexin(nomu//'.REFM', iret)
         if (iret .eq. 0) then
             call utmess('F', 'SOUSTRUC_10')
-        endif
+        end if
         call jeveuo(nomu//'.REFM', 'L', iarefm)
         if (zk8(iarefm-1+6) .eq. 'OUI_RIGI') then
             call utmess('F', 'SOUSTRUC_11', sk=nomu)
         else
             call ssrige(nomu)
-        endif
-    endif
+        end if
+    end if
 !
 !
 !     --TRAITEMENT DU MOT CLEF 'MASS_MECA':
@@ -91,17 +91,17 @@ subroutine op0086()
         call jeexin(nomu//'.REFM', iret)
         if (iret .eq. 0) then
             call utmess('F', 'SOUSTRUC_12')
-        endif
+        end if
         call jeveuo(nomu//'.REFM', 'L', iarefm)
         if (zk8(iarefm-1+6) .ne. 'OUI_RIGI') then
             call utmess('F', 'SOUSTRUC_12')
-        endif
+        end if
         if (zk8(iarefm-1+7) .eq. 'OUI_MASS') then
             call utmess('F', 'SOUSTRUC_13')
         else
             call ssmage(nomu, 'MASS_MECA')
-        endif
-    endif
+        end if
+    end if
 !
 !
 !     --TRAITEMENT DU MOT CLEF 'AMOR_MECA':
@@ -111,14 +111,14 @@ subroutine op0086()
         call jeexin(nomu//'.REFM', iret)
         if (iret .eq. 0) then
             call utmess('F', 'SOUSTRUC2_4')
-        endif
+        end if
         call jeveuo(nomu//'.REFM', 'L', iarefm)
         if (zk8(iarefm-1+8) .eq. 'OUI_AMOR') then
             call utmess('F', 'SOUSTRUC2_5', sk=nomu)
         else
             call ssmage(nomu, 'AMOR_MECA')
-        endif
-    endif
+        end if
+    end if
 !
 !
 !     --TRAITEMENT DU MOT CLEF 'CAS_CHARGE'
@@ -128,13 +128,13 @@ subroutine op0086()
         call jeexin(nomu//'.REFM', iret)
         if (iret .eq. 0) then
             call utmess('F', 'SOUSTRUC_14')
-        endif
+        end if
         call jeveuo(nomu//'.REFM', 'L', iarefm)
         if (zk8(iarefm-1+6) .ne. 'OUI_RIGI') then
             call utmess('F', 'SOUSTRUC_14')
-        endif
+        end if
         call sschge(nomu)
-    endif
+    end if
 !
 !
     call jedema()

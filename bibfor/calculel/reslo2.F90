@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -71,12 +71,12 @@ subroutine reslo2(modele, ligrel, chvois, cvoisx, tabido)
 !
 !
     character(len=6) :: nompro
-    parameter ( nompro = 'RESLO2' )
+    parameter(nompro='RESLO2')
 !
     integer :: nbpin
-    parameter ( nbpin = 2 )
+    parameter(nbpin=2)
     integer :: nbpout
-    parameter ( nbpout = 1 )
+    parameter(nbpout=1)
 !
     integer :: iret, nbtm, ity, nbgd, igd, ncmp
     integer :: iacmp, iagd, iatyma, iconx1, iconx2
@@ -105,11 +105,11 @@ subroutine reslo2(modele, ligrel, chvois, cvoisx, tabido)
     chvois = '&&'//nompro//'.CH_VOISIN'
     lchout(1) = chvois
     opt = 'INIT_MAIL_VOIS'
-    call alchml(ligrel,opt,'PVOISIN',base,lchout(1),iret,' ')
+    call alchml(ligrel, opt, 'PVOISIN', base, lchout(1), iret, ' ')
     call exisd('CHAMP_GD', lchout(1), iret)
     if (iret .eq. 0) then
         call utmess('F', 'CALCULEL2_88', sk=opt)
-    endif
+    end if
 !
     call dismoi('NOM_MAILLA', modele, 'MODELE', repk=ma)
     call resvoi(modele, ma, chvois)
@@ -133,17 +133,17 @@ subroutine reslo2(modele, ligrel, chvois, cvoisx, tabido)
         lpaout(1) = 'PCVOISX'
         lchout(1) = cvoisx
 !
-        call calcul('C', opt, ligrel, 2, lchin,&
-                    lpain, 1, lchout, lpaout, base,&
+        call calcul('C', opt, ligrel, 2, lchin, &
+                    lpain, 1, lchout, lpaout, base, &
                     'OUI')
 !
         call exisd('CHAMP_GD', lchout(1), iret)
 !
         if (iret .eq. 0) then
             call utmess('F', 'CALCULEL2_88', sk=opt)
-        endif
+        end if
 !
-    endif
+    end if
 !
 ! ----- CALCUL DE 5 ADRESSES : -----------------------------------------
 !      IATYMA : ADRESSE DU VECTEUR TYPE MAILLE (NUMERO <-> NOM)

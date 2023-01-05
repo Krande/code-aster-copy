@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine rlduc8(nommat, hcol, adia, ablo, neq,&
+subroutine rlduc8(nommat, hcol, adia, ablo, neq, &
                   nbbloc, xsol, nbsol)
     implicit none
 !
@@ -33,7 +33,7 @@ subroutine rlduc8(nommat, hcol, adia, ablo, neq,&
     character(len=*) :: nommat
     integer :: neq
     integer :: hcol(*), adia(*), ablo(*)
-    complex(kind=8) :: xsol (neq, *)
+    complex(kind=8) :: xsol(neq, *)
 !
 ! BUT : RESOLUTION DU SYSTEME A COEFFICIENTS COMPLEXES :  A * X = B
 !       ELLE CORRESPOND AU SOLVEUR 'LDLT' + COMPLEXE + NON SYM
@@ -112,8 +112,8 @@ subroutine rlduc8(nommat, hcol, adia, ablo, neq,&
     integer :: isol, ixx, ldiag, lmat, nbbloc, nbsol
 !
 !-----------------------------------------------------------------------
-    data  ualf  /'                   .UALF'/
-    data  nomdia/'                   .&VDI'/
+    data ualf/'                   .UALF'/
+    data nomdia/'                   .&VDI'/
 !     ------------------------------------------------------------------
 !
     call jemarq()
@@ -136,27 +136,27 @@ subroutine rlduc8(nommat, hcol, adia, ablo, neq,&
 !
 !-     ACCES EN LECTURE AU BLOC INF COURANT
 !
-        iderbl=ibloc+nbbloc
+        iderbl = ibloc+nbbloc
         call jeveuo(jexnum(ualf, ibloc+nbbloc), 'L', lmat)
         do iequa = ablo(ibloc)+1, ablo(ibloc+1)
             if (iequa .gt. neq) goto 111
-            ilong = hcol (iequa)
+            ilong = hcol(iequa)
 !-  ADRESSE DANS LE BLOC INF DU TERME DIAGONAL CORRESPONDANT A
 !-  L'EQUATION IEQUA
-            iadia = lmat + adia(iequa) - 1
+            iadia = lmat+adia(iequa)-1
 !-  ADRESSE DANS LE BLOC INF DU PREMIER TERME NON NUL SUR LA
 !-  LIGNE IEQUA
-            ide = iadia - ilong + 1
+            ide = iadia-ilong+1
 !-  INDICE DU PREMIER TERME NON NUL SUR LA LIGNE IEQUA
-            ixx = iequa - ilong + 1
+            ixx = iequa-ilong+1
             zc(ldiag+iequa-1) = zc(iadia)
             do isol = 1, nbsol
-                c8val = (0.d0 , 0.d0)
-                do i = 0, ilong - 2
-                    c8val = c8val + xsol(ixx+i,isol) * zc(ide+i)
+                c8val = (0.d0, 0.d0)
+                do i = 0, ilong-2
+                    c8val = c8val+xsol(ixx+i, isol)*zc(ide+i)
                 end do
-                xsol(iequa,isol) = xsol(iequa,isol) - c8val
-                xsol(iequa,isol) = xsol(iequa,isol)/zc(ldiag+iequa-1)
+                xsol(iequa, isol) = xsol(iequa, isol)-c8val
+                xsol(iequa, isol) = xsol(iequa, isol)/zc(ldiag+iequa-1)
             end do
         end do
 111     continue
@@ -167,7 +167,7 @@ subroutine rlduc8(nommat, hcol, adia, ablo, neq,&
 !
 !     --- DEUXIEME  PARTIE : RESOLUTION REMONTANTE ---
 !     --- UTILISATION DES BLOCS SUP DE LA MATRICE   ---
-    iderbl = nbbloc + nbbloc
+    iderbl = nbbloc+nbbloc
     do ibloc = iderbl, nbbloc+1, -1
         call jeveuo(jexnum(ualf, ibloc-nbbloc), 'L', lmat)
         do iequa = ablo(ibloc-nbbloc+1), ablo(ibloc-nbbloc)+1, -1
@@ -175,22 +175,22 @@ subroutine rlduc8(nommat, hcol, adia, ablo, neq,&
             ilong = hcol(iequa)
 !-  ADRESSE DANS LE BLOC SUP DU TERME DIAGONAL CORRESPONDANT A
 !-  L'EQUATION IEQUA
-            iadia = lmat + adia(iequa) - 1
+            iadia = lmat+adia(iequa)-1
 !-  ADRESSE DANS LE BLOC SUP DU PREMIER TERME NON NUL SUR LA
 !-  COLONNE IEQUA
-            ide = iadia - ilong + 1
+            ide = iadia-ilong+1
 !-  INDICE DU PREMIER TERME NON NUL SUR LA COLONNE IEQUA
-            ixx = iequa - ilong + 1
+            ixx = iequa-ilong+1
             do isol = 1, nbsol
-                c8val = - xsol(iequa,isol)
+                c8val = -xsol(iequa, isol)
                 if (c8val .ne. 0) then
-                    do i = 0, ilong - 2
-                        xsol(ixx+i,isol)=xsol(ixx+i,isol)+c8val*zc(&
-                        ide+i)
+                    do i = 0, ilong-2
+                        xsol(ixx+i, isol) = xsol(ixx+i, isol)+c8val*zc( &
+                                            ide+i)
 !                    XSOL(IXX+I,ISOL)=XSOL(IXX+I,ISOL)+C8VAL*ZC(IDE+I)/
 !     1              ZC(LDIAG+IXX+I-1)
                     end do
-                endif
+                end if
             end do
 310         continue
         end do

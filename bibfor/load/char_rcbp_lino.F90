@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -75,20 +75,20 @@ subroutine char_rcbp_lino(mesh, name_ancr, list_node, nb_node)
     indnoe = 0
     do ino = 1, nbno
         numnoe = zi(jgro+ino-1)
-        indnoe = indnoe + 1
+        indnoe = indnoe+1
         zi(jlino_old+indnoe-1) = numnoe
-    enddo
+    end do
 !
 ! - No double
 !
     call wkvect('&&CAPREC.INDICE', 'V V I', nbno, jind)
     do ino = 1, nbno
-        do ino_1 = ino + 1, nbno
+        do ino_1 = ino+1, nbno
             if (zi(jlino_old+ino_1-1) .eq. zi(jlino_old+ino-1)) then
                 zi(jind+ino_1-1) = 1
-            endif
-        enddo
-    enddo
+            end if
+        end do
+    end do
     call wkvect(list_node, 'V V I', nbno, jlino_new)
 !
 ! - Re-create list of nodes
@@ -96,10 +96,10 @@ subroutine char_rcbp_lino(mesh, name_ancr, list_node, nb_node)
     indlis = 0
     do ino = 1, nbno
         if (zi(jind+ino-1) .eq. 0) then
-            indlis = indlis + 1
+            indlis = indlis+1
             zi(jlino_new+indlis-1) = zi(jlino_old+ino-1)
-        endif
-    enddo
+        end if
+    end do
     nb_node = indlis
 !
     call jedetr('&&CAPREC.INDICE')

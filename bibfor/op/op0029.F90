@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -38,15 +38,15 @@ subroutine op0029()
     call getvtx(' ', 'TYPE_CALCUL', iocc=1, scal=typcal)
     call getvtx(' ', 'BASE_CALCUL', iocc=1, scal=bascal)
 
-    if (typcal.eq.'HARM') then
+    if (typcal .eq. 'HARM') then
         call comdlh()
     else
-        if (bascal.eq.'PHYS') then
+        if (bascal .eq. 'PHYS') then
             call comdlt()
         else
             call comdtm()
         end if
     end if
-    call utmess('I','DYNAMIQUE_97')
+    call utmess('I', 'DYNAMIQUE_97')
     call jedema()
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine dinon3(neq, ul, dul, utl, nno,&
-                  nbcomp, varimo, raide, nbpar, param,&
+subroutine dinon3(neq, ul, dul, utl, nno, &
+                  nbcomp, varimo, raide, nbpar, param, &
                   okdire, varipl)
 ! ----------------------------------------------------------------------
     implicit none
@@ -91,24 +91,24 @@ subroutine dinon3(neq, ul, dul, utl, nno,&
         varipl(iener) = varimo(iener)
 !        SI LE COMPORTEMENT EST CINEMATIQUE
         if (okdire(ii)) then
-            mel = param(ii,4)
+            mel = param(ii, 4)
             if (nno .eq. 1) then
                 dulel = dul(ii)
                 ulel = ul(ii)
                 utlel = utl(ii)
             else
-                dulel = dul(ii+nbcomp) - dul(ii)
-                ulel = ul(ii+nbcomp) - ul(ii)
-                utlel = utl(ii+nbcomp) - utl(ii)
-            endif
+                dulel = dul(ii+nbcomp)-dul(ii)
+                ulel = ul(ii+nbcomp)-ul(ii)
+                utlel = utl(ii+nbcomp)-utl(ii)
+            end if
             if (abs(dulel) .gt. r8min) then
                 ke = raide(ii)
-                mu = param(ii,1)
-                puis = param(ii,2)
-                kr = param(ii,3)
+                mu = param(ii, 1)
+                puis = param(ii, 2)
+                kr = param(ii, 3)
 !              CALCUL DE DEPASSEMENT DU SEUIL
-                momm = ke*( ulel - varimo(iplas))
-                momp = ke*(utlel - varimo(iplas))
+                momm = ke*(ulel-varimo(iplas))
+                momp = ke*(utlel-varimo(iplas))
 !              CALCUL DE MX(-)
                 if (puis .le. zero) then
                     mxmoin = varimo(icumu)*kr
@@ -116,12 +116,12 @@ subroutine dinon3(neq, ul, dul, utl, nno,&
                     xxx = abs(varimo(icumu))*kr/mu
                     deno = (un+xxx**puis)**(un/puis)
                     mxmoin = varimo(icumu)*kr/deno
-                endif
-                if (abs(momp - mxmoin) .gt. mel) then
+                end if
+                if (abs(momp-mxmoin) .gt. mel) then
                     if (dulel .ge. zero) then
 !                    ACTUALISATION DE LA ROTATION CINEMATIQUE CUMULEE
-                        drotxc = dulel - (mel - (momm - mxmoin))/ke
-                        varipl(icumu) = varimo(icumu) + drotxc
+                        drotxc = dulel-(mel-(momm-mxmoin))/ke
+                        varipl(icumu) = varimo(icumu)+drotxc
 !                    CALCUL DE MX(+)
                         if (puis .lt. zero) then
                             mxplus = varipl(icumu)*kr
@@ -129,14 +129,14 @@ subroutine dinon3(neq, ul, dul, utl, nno,&
                             xxx = abs(varipl(icumu))*kr/mu
                             deno = (un+xxx**puis)**(un/puis)
                             mxplus = varipl(icumu)*kr/deno
-                        endif
+                        end if
 !                    ACTUALISATION DE LA ROTATION CINEMATIQUE
-                        drotx = drotxc - abs(mxplus - mxmoin)/ke
-                        varipl(iplas) = varimo(iplas) + drotx
+                        drotx = drotxc-abs(mxplus-mxmoin)/ke
+                        varipl(iplas) = varimo(iplas)+drotx
                     else
 !                    ACTUALISATION DE LA ROTATION CINEMATIQUE CUMULEE
-                        drotxc = dulel + (mel + (momm - mxmoin))/ke
-                        varipl(icumu) = varimo(icumu) + drotxc
+                        drotxc = dulel+(mel+(momm-mxmoin))/ke
+                        varipl(icumu) = varimo(icumu)+drotxc
 !                    CALCUL DE MX(+)
                         if (puis .lt. zero) then
                             mxplus = varipl(icumu)*kr
@@ -144,24 +144,24 @@ subroutine dinon3(neq, ul, dul, utl, nno,&
                             xxx = abs(varipl(icumu))*kr/mu
                             deno = (un+xxx**puis)**(un/puis)
                             mxplus = varipl(icumu)*kr/deno
-                        endif
+                        end if
 !                    ACTUALISATION DE LA ROTATION CINEMATIQUE
-                        drotx = drotxc + abs(mxplus - mxmoin)/ke
-                        varipl(iplas) = varimo(iplas) + drotx
-                    endif
+                        drotx = drotxc+abs(mxplus-mxmoin)/ke
+                        varipl(iplas) = varimo(iplas)+drotx
+                    end if
 !                 CALCUL DU MOMENT +
-                    momp = ke*(utlel - varipl(iplas))
+                    momp = ke*(utlel-varipl(iplas))
 !                 TANGENTE AU COMPORTEMENT
-                    raide(ii) = abs((momp - momm) / dulel)
+                    raide(ii) = abs((momp-momm)/dulel)
 !                 CALCUL DE L'ENERGIE DISSIPEE
 !                 Si petits pas : ABS(MEL*DROTX)+MXPLUS*DROTX
 !                 Pour minimiser l'erreur, on utilise une intégration
 !                 de degré 1. Pour un écrouissage cinématique linéaire
 !                 cela donne la solution exacte.
-                    varipl(iener) = varimo(iener) + abs(mel*drotx) + (mxplus+mxmoin)*drotx*0.5d0
-                endif
-            endif
-        endif
+                    varipl(iener) = varimo(iener)+abs(mel*drotx)+(mxplus+mxmoin)*drotx*0.5d0
+                end if
+            end if
+        end if
     end do
 !
 end subroutine

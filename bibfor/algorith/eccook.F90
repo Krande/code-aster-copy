@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine eccook(acook, bcook, ccook, npuis, mpuis,&
-                  epsp0, troom, tmelt, tp, dinst,&
+subroutine eccook(acook, bcook, ccook, npuis, mpuis, &
+                  epsp0, troom, tmelt, tp, dinst, &
                   pm, dp, rp, rprim)
 ! person_in_charge: sebastien.fayolle at edf.fr
     implicit none
@@ -37,21 +37,21 @@ subroutine eccook(acook, bcook, ccook, npuis, mpuis,&
 !     ------------------
     real(kind=8) :: p0
 !
-    p0=1.d-9
+    p0 = 1.d-9
     if ((pm+dp) .le. p0) then
-        rp= (acook+bcook*(p0)**npuis)
-        rprim=npuis*bcook*(p0)**(npuis-1.d0)
+        rp = (acook+bcook*(p0)**npuis)
+        rprim = npuis*bcook*(p0)**(npuis-1.d0)
     else
-        rp=(acook+bcook*(pm+dp)**npuis)
-        rprim=npuis*bcook*(pm+dp)**(npuis-1.d0)
+        rp = (acook+bcook*(pm+dp)**npuis)
+        rprim = npuis*bcook*(pm+dp)**(npuis-1.d0)
         if (dp/dinst .gt. epsp0) then
-            rprim=rprim+ccook*(rprim*log(dp/dinst/epsp0)+rp/dp)
-            rp=rp*(1.d0+ccook*log(dp/dinst/epsp0))
-        endif
-        if ((tp.gt.troom) .and. (troom.ge.-0.5d0)) then
-            rp=rp*(1.d0-((tp-troom)/(tmelt-troom))**mpuis)
-            rprim=rprim*(1.d0-((tp-troom)/(tmelt-troom))**mpuis)
-        endif
-    endif
+            rprim = rprim+ccook*(rprim*log(dp/dinst/epsp0)+rp/dp)
+            rp = rp*(1.d0+ccook*log(dp/dinst/epsp0))
+        end if
+        if ((tp .gt. troom) .and. (troom .ge. -0.5d0)) then
+            rp = rp*(1.d0-((tp-troom)/(tmelt-troom))**mpuis)
+            rprim = rprim*(1.d0-((tp-troom)/(tmelt-troom))**mpuis)
+        end if
+    end if
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine chnucn(chno1, numdd2, ncorr, tcorr, base,&
+subroutine chnucn(chno1, numdd2, ncorr, tcorr, base, &
                   chno2)
     implicit none
 #include "jeveux.h"
@@ -144,7 +144,7 @@ subroutine chnucn(chno1, numdd2, ncorr, tcorr, base,&
     character(len=19) :: cn1, cn2, pchno1, pchno2
 !-----------------------------------------------------------------------
     integer :: i, i1, i2, iacmp1, iacmp2, iadg1, iadg2, i_ligr_mesh
-    integer :: iaval2, ico1, ico2,  ieq1
+    integer :: iaval2, ico1, ico2, ieq1
     integer :: ieq2, ino, iprn1, iprn2
     integer :: iret, ival1, ival2, j1, j2, nbno, ncmmx1
     integer :: ncmmx2, ncmp1, ncmp2, nec1, nec2, nugd2, nval1
@@ -164,17 +164,17 @@ subroutine chnucn(chno1, numdd2, ncorr, tcorr, base,&
 !
     call dismoi('NOM_GD', cn1, 'CHAM_NO', repk=gd1)
     call dismoi('PROF_CHNO', cn1, 'CHAM_NO', repk=pchno1)
-    pchno2=nu2//'.NUME'
+    pchno2 = nu2//'.NUME'
     call dismoi('NOM_GD', nu2, 'NUME_DDL', repk=gd2)
 !
     call dismoi('TYPE_SCA', gd1, 'GRANDEUR', repk=tysca1)
     call dismoi('TYPE_SCA', gd2, 'GRANDEUR', repk=tysca2)
     if (tysca1 .ne. 'R') then
         call utmess('F', 'CALCULEL_92', sk=cn1)
-    endif
+    end if
     if (tysca2 .ne. 'R') then
         call utmess('F', 'CALCULEL_93', sk=nu2)
-    endif
+    end if
 !
 !
     call dismoi('NB_EQUA', cn1, 'CHAM_NO', repi=nval1)
@@ -187,7 +187,7 @@ subroutine chnucn(chno1, numdd2, ncorr, tcorr, base,&
 !
     call wkvect(cn2//'.REFE', base2//' V K24', 4, i1)
     call jeveuo(nu2//'.NUME.REFN', 'L', i2)
-    zk24(i1 ) = zk24(i2)
+    zk24(i1) = zk24(i2)
     zk24(i1+1) = nu2//'.NUME'
 !
 ! ------------------------------- DESC --------------------------------
@@ -195,7 +195,7 @@ subroutine chnucn(chno1, numdd2, ncorr, tcorr, base,&
     call wkvect(cn2//'.DESC', base2//' V I', 2, i1)
     call jeecra(cn2//'.DESC', 'DOCU', cval='CHNO')
     call dismoi('NUM_GD', gd2, 'GRANDEUR', repi=nugd2)
-    zi(i1 ) = nugd2
+    zi(i1) = nugd2
     zi(i1+1) = 1
 !
 ! ------------------------------- VALE --------------------------------
@@ -218,7 +218,7 @@ subroutine chnucn(chno1, numdd2, ncorr, tcorr, base,&
 !
     call dismoi('NOM_MAILLA', cn1, 'CHAM_NO', repk=ma)
     call dismoi('NOM_MAILLA', nu2, 'NUME_DDL', repk=repk)
-    ASSERT(ma.eq.repk)
+    ASSERT(ma .eq. repk)
     call dismoi('NB_NO_MAILLA', ma, 'MAILLAGE', repi=nbno)
 !
     call dismoi('NB_EC', gd1, 'GRANDEUR', repi=nec1)
@@ -234,54 +234,54 @@ subroutine chnucn(chno1, numdd2, ncorr, tcorr, base,&
     AS_ALLOCATE(vi=corr2, size=ncmmx2)
     if (ncorr .eq. 0) then
 !       LES GRANDEURS G1 ET G2 DOIVENT ETRE IDENTIQUES
-        ASSERT(gd1.eq.gd2)
+        ASSERT(gd1 .eq. gd2)
         do i2 = 1, ncmmx2
-            corr2(i2)=i2
+            corr2(i2) = i2
         end do
     else
-        ASSERT(ncorr.eq.2*(ncorr/2))
+        ASSERT(ncorr .eq. 2*(ncorr/2))
         do i = 1, ncorr/2
-            cmp1=tcorr(2*(i-1)+1)
-            cmp2=tcorr(2*(i-1)+2)
-            j1=indik8(zk8(iacmp1),cmp1,1,ncmmx1)
-            j2=indik8(zk8(iacmp2),cmp2,1,ncmmx2)
-            if (j2 .ne. 0) corr2(j2)=j1
+            cmp1 = tcorr(2*(i-1)+1)
+            cmp2 = tcorr(2*(i-1)+2)
+            j1 = indik8(zk8(iacmp1), cmp1, 1, ncmmx1)
+            j2 = indik8(zk8(iacmp2), cmp2, 1, ncmmx2)
+            if (j2 .ne. 0) corr2(j2) = j1
         end do
-    endif
+    end if
 !
     do ino = 1, nbno
-        ival1 = zi(iprn1-1+ (ino-1)* (nec1+2)+1)
-        ival2 = zi(iprn2-1+ (ino-1)* (nec2+2)+1)
-        ncmp1 = zi(iprn1-1+ (ino-1)* (nec1+2)+2)
-        ncmp2 = zi(iprn2-1+ (ino-1)* (nec2+2)+2)
-        iadg1 = iprn1 - 1 + (ino-1)* (nec1+2) + 3
-        iadg2 = iprn2 - 1 + (ino-1)* (nec2+2) + 3
+        ival1 = zi(iprn1-1+(ino-1)*(nec1+2)+1)
+        ival2 = zi(iprn2-1+(ino-1)*(nec2+2)+1)
+        ncmp1 = zi(iprn1-1+(ino-1)*(nec1+2)+2)
+        ncmp2 = zi(iprn2-1+(ino-1)*(nec2+2)+2)
+        iadg1 = iprn1-1+(ino-1)*(nec1+2)+3
+        iadg2 = iprn2-1+(ino-1)*(nec2+2)+3
         if (ncmp1*ncmp2 .eq. 0) goto 1
-        ico2=0
+        ico2 = 0
         do i2 = 1, ncmmx2
-            if (exisdg(zi(iadg2),i2)) then
-                ico2=ico2+1
-                i1=corr2(i2)
+            if (exisdg(zi(iadg2), i2)) then
+                ico2 = ico2+1
+                i1 = corr2(i2)
 !
-                if (.not.(exisdg(zi(iadg1),i1))) then
-                    ico1=0
+                if (.not. (exisdg(zi(iadg1), i1))) then
+                    ico1 = 0
                 else
-                    ico1=0
+                    ico1 = 0
                     do j1 = 1, i1
-                        if (exisdg(zi(iadg1),j1)) ico1=ico1+1
+                        if (exisdg(zi(iadg1), j1)) ico1 = ico1+1
                     end do
-                endif
+                end if
 !
                 if (ico1 .gt. 0) then
 !             --RECOPIE D'UNE VALEUR :
                     ieq1 = nueq1(ival1-1+ico1)
                     ieq2 = nueq2(ival2-1+ico2)
-                    zr(iaval2-1+ieq2)=vale(ieq1)
-                endif
+                    zr(iaval2-1+ieq2) = vale(ieq1)
+                end if
 !
-            endif
+            end if
         end do
-  1     continue
+1       continue
     end do
 !
     AS_DEALLOCATE(vi=corr2)

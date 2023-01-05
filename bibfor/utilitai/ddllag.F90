@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -49,12 +49,12 @@ subroutine ddllag(nume, iddl, neq, lagr1, lagr2)
     nomnu(15:19) = '.NUME'
     call jeveuo(nomnu(1:19)//'.DEEQ', 'L', vi=deeq)
 !
-    inoe = deeq(1+ (2*(iddl-1)) + 1 - 1 )
-    icmp = -deeq(1+ (2*(iddl-1)) + 2 - 1 )
+    inoe = deeq(1+(2*(iddl-1))+1-1)
+    icmp = -deeq(1+(2*(iddl-1))+2-1)
     icas = 1
     do i = 1, neq
-        nn = deeq(1+ (2*(i-1)) + 1 - 1 )
-        nc = deeq(1+ (2*(i-1)) + 2 - 1 )
+        nn = deeq(1+(2*(i-1))+1-1)
+        nc = deeq(1+(2*(i-1))+2-1)
         if (nn .eq. inoe .and. nc .eq. icmp) then
             if (icas .eq. 1) then
                 lagr1 = i
@@ -62,8 +62,8 @@ subroutine ddllag(nume, iddl, neq, lagr1, lagr2)
             else
                 lagr2 = i
                 goto 999
-            endif
-        endif
+            end if
+        end if
     end do
 !
 999 continue

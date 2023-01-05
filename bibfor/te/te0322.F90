@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,9 +18,9 @@
 !
 subroutine te0322(option, nomte)
 !
-use Behaviour_module, only : behaviourOption
+    use Behaviour_module, only: behaviourOption
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -33,7 +33,7 @@ implicit none
 #include "asterfort/nmfihm.h"
 #include "asterfort/tecach.h"
 !
-character(len=16), intent(in) :: option, nomte
+    character(len=16), intent(in) :: option, nomte
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -66,21 +66,21 @@ character(len=16), intent(in) :: option, nomte
 !
     ivarip = 1
     icontp = 1
-    ivect  = 1
+    ivect = 1
 !
 ! - Get element parameters
 !
     call elref2(nomte, 2, lielrf, ntrou)
-    call elrefe_info(elrefe=lielrf(1), fami='RIGI', ndim=ndim, nno=nno1,&
+    call elrefe_info(elrefe=lielrf(1), fami='RIGI', ndim=ndim, nno=nno1, &
                      jvf=ivf1)
-    call elrefe_info(elrefe=lielrf(1), fami='RIGI', ndim=ndim, nno=nno2,&
+    call elrefe_info(elrefe=lielrf(1), fami='RIGI', ndim=ndim, nno=nno2, &
                      npg=npg, jpoids=iw, jvf=ivf2, jdfde=idf2)
 !
 ! LA DIMENSION DE L'ESPACE EST CELLE DE L'ELEM DE REF SURFACIQUE PLUS 1
-    ndim = ndim + 1
+    ndim = ndim+1
 !
 ! NB DE DDL = NDIM PAR NOEUD DE DEPL + UN PAR NOEUD DE PRES
-    nddl = ndim*2*nno1 + nno2
+    nddl = ndim*2*nno1+nno2
 !
 ! DECALAGE D'INDICE POUR LES ELEMENTS DE JOINT
     call ejinit(nomte, iu, ip)
@@ -93,14 +93,14 @@ character(len=16), intent(in) :: option, nomte
         typmod(1) = 'PLAN'
     else
         ASSERT(ndim .eq. 2 .or. ndim .eq. 3)
-    endif
-    if (lteatt('TYPMOD2','EJ_HYME')) then
+    end if
+    if (lteatt('TYPMOD2', 'EJ_HYME')) then
         typmod(2) = 'EJ_HYME'
-    elseif (lteatt('TYPMOD2','ELEMJOIN')) then
+    elseif (lteatt('TYPMOD2', 'ELEMJOIN')) then
         typmod(2) = 'ELEMJOIN'
     else
         ASSERT(ASTER_FALSE)
-    endif
+    end if
 !
 ! - Get input fields
 !
@@ -115,38 +115,38 @@ character(len=16), intent(in) :: option, nomte
     call jevech('PINSTPR', 'L', iinstp)
     call jevech('PCONTMR', 'L', icontm)
     call tecach('OOO', 'PVARIMR', 'L', iret, nval=7, itab=jtab)
-    lgpg = max(jtab(6),1)*jtab(7)
+    lgpg = max(jtab(6), 1)*jtab(7)
 !
 ! - Select objects to construct from option name
 !
-    call behaviourOption(option, zk16(icomp),&
-                         lMatr , lVect ,&
-                         lVari , lSigm ,&
+    call behaviourOption(option, zk16(icomp), &
+                         lMatr, lVect, &
+                         lVari, lSigm, &
                          codret)
 !
 ! - Get output fields
 !
     if (lMatr) then
         call jevech('PMATUNS', 'E', imatr)
-    endif
+    end if
     if (lVect) then
         call jevech('PVECTUR', 'E', ivect)
-    endif
+    end if
     if (lSigm) then
         call jevech('PCONTPR', 'E', icontp)
-    endif
+    end if
     if (lVari) then
         call jevech('PVARIPR', 'E', ivarip)
-    endif
+    end if
 !
 ! - Compute
 !
-    call nmfihm(ndim, nddl, nno1, nno2, npg,&
-                lgpg, iw, zr(iw), zr(ivf1), zr(ivf2),&
-                idf2, zr(idf2), zi(imater), option, zr(igeom),&
-                zr(iddlm), zr(iddld), iu, ip, zr(icontm),&
-                zr(icontp), zr(ivect), zr(imatr), zr(ivarim), zr(ivarip),&
-                zr(iinstm), zr(iinstp), zr(icarcr), zk16(icomp), typmod,&
+    call nmfihm(ndim, nddl, nno1, nno2, npg, &
+                lgpg, iw, zr(iw), zr(ivf1), zr(ivf2), &
+                idf2, zr(idf2), zi(imater), option, zr(igeom), &
+                zr(iddlm), zr(iddld), iu, ip, zr(icontm), &
+                zr(icontp), zr(ivect), zr(imatr), zr(ivarim), zr(ivarip), &
+                zr(iinstm), zr(iinstp), zr(icarcr), zk16(icomp), typmod, &
                 lVect, lMatr, lSigm, codret)
 !
 ! - Save return code
@@ -154,6 +154,6 @@ character(len=16), intent(in) :: option, nomte
     if (lSigm) then
         call jevech('PCODRET', 'E', jv_codret)
         zi(jv_codret) = codret
-    endif
+    end if
 !
 end subroutine

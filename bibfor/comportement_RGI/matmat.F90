@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine matmat(a, b, nl, nc1, nc2,&
+subroutine matmat(a, b, nl, nc1, nc2, &
                   c)
 ! person_in_charge: etienne.grimal@edf.fr
 !=====================================================================
@@ -33,11 +33,11 @@ subroutine matmat(a, b, nl, nc1, nc2,&
     real(kind=8) :: c(nl, *)
     do i = 1, nl
         do j = 1, nc2
-            xx= 0.d0
+            xx = 0.d0
             do k = 1, nc1
-                xx = a(i,k)*b(k,j) + xx
+                xx = a(i, k)*b(k, j)+xx
             end do
-            c(i,j)=xx
+            c(i, j) = xx
         end do
     end do
 end subroutine

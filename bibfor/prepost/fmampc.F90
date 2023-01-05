@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -46,16 +46,16 @@ subroutine fmampc(nbfonc, nbptot, sigm, rampmx)
     do i1 = 1, nbptot-1
         do i2 = i1+1, nbptot
             do j = 1, nbfonc
-                sig(j) = dev(1+(i2-1)*nbfonc+j-1)- dev(1+(i1-1)* nbfonc+j-1 )
+                sig(j) = dev(1+(i2-1)*nbfonc+j-1)-dev(1+(i1-1)*nbfonc+j-1)
             end do
             if (nbfonc .eq. 6) then
-                rampc = (&
-                        sig(1)*sig(1)+sig(2)*sig(2)+sig(3)*sig(3))/ 2.d0 + sig(4)*sig(4) + sig(5)&
-                        &*sig(5) + sig(6)*sig(6&
-                        )
+                rampc = ( &
+                        sig(1)*sig(1)+sig(2)*sig(2)+sig(3)*sig(3))/2.d0+sig(4)*sig(4)+sig(5)&
+                       &*sig(5)+sig(6)*sig(6 &
+                                           )
             else if (nbfonc .eq. 4) then
-                rampc = ( sig(1)*sig(1)+sig(2)*sig(2)+sig(3)*sig(3))/ 2.d0 + sig(4)*sig(4 )
-            endif
+                rampc = (sig(1)*sig(1)+sig(2)*sig(2)+sig(3)*sig(3))/2.d0+sig(4)*sig(4)
+            end if
             if (rampc .gt. rampmx) rampmx = rampc
         end do
     end do

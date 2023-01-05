@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine exprli(basmdz, lintfz, nmintz, numint, famprz,&
+subroutine exprli(basmdz, lintfz, nmintz, numint, famprz, &
                   ii, ordo)
 !    P. RICHARD     DATE 23/05/91
 !-----------------------------------------------------------------------
@@ -66,7 +66,7 @@ subroutine exprli(basmdz, lintfz, nmintz, numint, famprz,&
 !
     integer :: idec(30), llint4, nbcmpm, nbec, nbcmp, nbddl, ordo
     integer :: ii, llact, iec, ldmap, numint, nbdef, nbnoe, icomp, i, j
-    parameter   (nbcmpm=10)
+    parameter(nbcmpm=10)
     character(len=*) :: basmdz, nmintz, lintfz, famprz
     character(len=4) :: nliai
     character(len=8) :: basmod, nomint, lintf, kbid, blanc, nomg, temp
@@ -74,7 +74,7 @@ subroutine exprli(basmdz, lintfz, nmintz, numint, famprz,&
     character(len=32) :: famprl
 !
 !-----------------------------------------------------------------------
-    data blanc /'        '/
+    data blanc/'        '/
 !-----------------------------------------------------------------------
 !
 !-------------RECUPERATION LIST_INTERFACE AMONT SI BASE MODALE----------
@@ -88,7 +88,7 @@ subroutine exprli(basmdz, lintfz, nmintz, numint, famprz,&
 !
     if (basmod .ne. blanc) then
         call dismoi('REF_INTD_PREM', basmod, 'RESU_DYNA', repk=lintf)
-    endif
+    end if
 !
 !-----RECUPERATION DU NOMBRE DU NOMBRE D'ENTIERS CODES ASSOCIE A DEPL_R
 !
@@ -96,14 +96,14 @@ subroutine exprli(basmdz, lintfz, nmintz, numint, famprz,&
     call dismoi('NB_EC', nomg, 'GRANDEUR', repi=nbec)
     if (nbec .gt. 10) then
         call utmess('F', 'MODELISA_94')
-    endif
+    end if
     call jelira(jexnom('&CATA.GD.NOMCMP', nomg), 'LONMAX', nbcmp)
 !
 !----------------RECUPERATION EVENTUELLE DU NUMERO INTERFACE------------
 !
     if (nomint .ne. '             ') then
         call jenonu(jexnom(lintf//'.IDC_NOMS', nomint), numint)
-    endif
+    end if
 !
 !----------------RECUPERATION DU NOMBRE DE DDL GENERALISES--------------
 !
@@ -111,11 +111,11 @@ subroutine exprli(basmdz, lintfz, nmintz, numint, famprz,&
 !
 !----RECUPERATION DU NOMBRE DE DDL  ET NOEUDS ASSOCIES A L'INTERFACE----
 !
-    kbid=' '
-    call bmrdda(basmod, kbid, nomint, numint, 0,&
+    kbid = ' '
+    call bmrdda(basmod, kbid, nomint, numint, 0, &
                 [0], nbddl, ordo, ii)
-    kbid=' '
-    call bmnoin(basmod, kbid, nomint, numint, 0,&
+    kbid = ' '
+    call bmnoin(basmod, kbid, nomint, numint, 0, &
                 [0], nbnoe)
 !
 !-------ALLOCATION DU MINI PROFNO LIAISON INTERFACE COURANTE------------
@@ -127,33 +127,33 @@ subroutine exprli(basmdz, lintfz, nmintz, numint, famprz,&
 !
     call jeveuo(jexnum(lintf//'.IDC_DDAC', numint), 'L', llact)
 !
-    icomp=0
+    icomp = 0
     do i = 1, nbnoe
         do iec = 1, nbec
             if (ordo .eq. 0) then
-                zi(ldmap+(1+nbec)*(i-1)+iec)=zi(llact+(i-1)*nbec+iec-&
-                1)
+                zi(ldmap+(1+nbec)*(i-1)+iec) = zi(llact+(i-1)*nbec+iec- &
+                                                  1)
             else
-                temp='&&OP0126'
+                temp = '&&OP0126'
                 call codent(ii, 'D', nliai)
-                ordod=temp//'      .LDAC.'//nliai
+                ordod = temp//'      .LDAC.'//nliai
                 call jeveuo(ordod, 'L', llint4)
-                zi(ldmap+(1+nbec)*(i-1)+iec)=zi(llint4+(i-1)*nbec+iec-&
-                1)
-            endif
+                zi(ldmap+(1+nbec)*(i-1)+iec) = zi(llint4+(i-1)*nbec+iec- &
+                                                  1)
+            end if
         end do
-        zi(ldmap+(1+nbec)*(i-1))=icomp+1
+        zi(ldmap+(1+nbec)*(i-1)) = icomp+1
         if (ordo .eq. 0) then
             call isdeco(zi(llact+(i-1)*nbec+1-1), idec, nbcmpm)
         else
-            temp='&&OP0126'
+            temp = '&&OP0126'
             call codent(ii, 'D', nliai)
-            ordod=temp//'      .LDAC.'//nliai
+            ordod = temp//'      .LDAC.'//nliai
             call jeveuo(ordod, 'L', llint4)
             call isdeco(zi(llint4+(i-1)*nbec+1-1), idec, nbcmpm)
-        endif
+        end if
         do j = 1, 6
-            icomp=icomp+idec(j)
+            icomp = icomp+idec(j)
         end do
     end do
 !

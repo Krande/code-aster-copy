@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -52,7 +52,7 @@ subroutine rcangm(ndim, coor, angmas)
                 angmas(2) = zr(icamas+2)*r8dgrd()
                 angmas(3) = zr(icamas+3)*r8dgrd()
                 angmas(4) = 1.d0
-            endif
+            end if
 !           ECRITURE DES ANGLES D'EULER A LA FIN LE CAS ECHEANT
             if (abs(zr(icamas)-2.d0) .lt. 1.d-3) then
                 if (ndim .eq. 3) then
@@ -61,42 +61,42 @@ subroutine rcangm(ndim, coor, angmas)
                     angmas(7) = zr(icamas+6)*r8dgrd()
                 else
                     angmas(5) = zr(icamas+1)*r8dgrd()
-                endif
+                end if
                 angmas(4) = 2.d0
-            endif
+            end if
 !
-        else if (abs(zr(icamas)+1.d0).lt.1.d-3) then
+        else if (abs(zr(icamas)+1.d0) .lt. 1.d-3) then
 !
 ! ON TRANSFORME LA DONNEE DU REPERE CYLINDRIQUE EN ANGLE NAUTIQUE
 ! (EN 3D, EN 2D ON MET A 0)
 !
             if (ndim .eq. 3) then
-                alpha=zr(icamas+1)*r8dgrd()
-                beta =zr(icamas+2)*r8dgrd()
+                alpha = zr(icamas+1)*r8dgrd()
+                beta = zr(icamas+2)*r8dgrd()
                 dire(1) = cos(alpha)*cos(beta)
                 dire(2) = sin(alpha)*cos(beta)
                 dire(3) = -sin(beta)
-                orig(1)=zr(icamas+4)
-                orig(2)=zr(icamas+5)
-                orig(3)=zr(icamas+6)
+                orig(1) = zr(icamas+4)
+                orig(2) = zr(icamas+5)
+                orig(3) = zr(icamas+6)
                 call utrcyl(coor, dire, orig, p)
                 do i = 1, 3
-                    xg(i)=p(1,i)
-                    yg(i)=p(2,i)
+                    xg(i) = p(1, i)
+                    yg(i) = p(2, i)
                 end do
                 call angvxy(xg, yg, angmas)
             else
                 call utmess('F', 'ELEMENTS2_38')
                 call r8inir(7, 0.d0, angmas, 1)
-            endif
-        endif
+            end if
+        end if
 !
-    else if (iret.eq.1) then
+    else if (iret .eq. 1) then
         call r8inir(7, r8nnem(), angmas, 1)
 !
-    else if (iret.eq.2) then
+    else if (iret .eq. 2) then
         call r8inir(7, 0.d0, angmas, 1)
 !
-    endif
+    end if
 !
 end subroutine

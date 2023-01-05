@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -34,6 +34,6 @@ subroutine nmamab(modele, carele, lamor)
     call dismoi('EXI_AMOR', modele, 'MODELE', repk=rep1)
     call dismoi('EXI_AMOR', carele, 'CARA_ELEM', repk=rep2)
 !
-    if (rep1 .eq. 'OUI' .or. rep2 .eq. 'OUI') lamor=.true.
+    if (rep1 .eq. 'OUI' .or. rep2 .eq. 'OUI') lamor = .true.
 !
 end subroutine

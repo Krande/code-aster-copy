@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -57,7 +57,7 @@ function arlelt(nomte, mod, cin)
 !
     if (nomte(1:5) == 'MECA_') then
         mod = '3D'
-        if ((nomte(6:10) == 'PENTA') .or. (nomte(6:9) == 'HEXA') .or.&
+        if ((nomte(6:10) == 'PENTA') .or. (nomte(6:9) == 'HEXA') .or. &
             (nomte(6:10) == 'TETRA')) then
             cin = 'SOLIDE'
             arlelt = .true.
@@ -66,9 +66,9 @@ function arlelt(nomte, mod, cin)
             arlelt = .true.
         else
             arlelt = .false.
-        endif
+        end if
     else
         arlelt = .false.
-    endif
+    end if
 !
 end function

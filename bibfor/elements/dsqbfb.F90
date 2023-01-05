@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -29,32 +29,32 @@ subroutine dsqbfb(qsi, eta, jacob, bfb)
     vj21 = jacob(3)
     vj22 = jacob(4)
 !
-    peta = (1.d0 + eta) / 4.d0
-    meta = (1.d0 - eta) / 4.d0
-    pqsi = (1.d0 + qsi) / 4.d0
-    mqsi = (1.d0 - qsi) / 4.d0
+    peta = (1.d0+eta)/4.d0
+    meta = (1.d0-eta)/4.d0
+    pqsi = (1.d0+qsi)/4.d0
+    mqsi = (1.d0-qsi)/4.d0
 !
     do k = 1, 3
         do j = 1, 12
-            bfb(k,j) = 0.d0
+            bfb(k, j) = 0.d0
         end do
     end do
 !
-    bfb(1, 2) = - meta * vj11 - mqsi * vj12
-    bfb(1, 5) = meta * vj11 - pqsi * vj12
-    bfb(1, 8) = peta * vj11 + pqsi * vj12
-    bfb(1,11) = - peta * vj11 + mqsi * vj12
-    bfb(2, 3) = - meta * vj21 - mqsi * vj22
-    bfb(2, 6) = meta * vj21 - pqsi * vj22
-    bfb(2, 9) = peta * vj21 + pqsi * vj22
-    bfb(2,12) = - peta * vj21 + mqsi * vj22
+    bfb(1, 2) = -meta*vj11-mqsi*vj12
+    bfb(1, 5) = meta*vj11-pqsi*vj12
+    bfb(1, 8) = peta*vj11+pqsi*vj12
+    bfb(1, 11) = -peta*vj11+mqsi*vj12
+    bfb(2, 3) = -meta*vj21-mqsi*vj22
+    bfb(2, 6) = meta*vj21-pqsi*vj22
+    bfb(2, 9) = peta*vj21+pqsi*vj22
+    bfb(2, 12) = -peta*vj21+mqsi*vj22
     bfb(3, 2) = bfb(2, 3)
     bfb(3, 3) = bfb(1, 2)
     bfb(3, 5) = bfb(2, 6)
     bfb(3, 6) = bfb(1, 5)
     bfb(3, 8) = bfb(2, 9)
     bfb(3, 9) = bfb(1, 8)
-    bfb(3,11) = bfb(2,12)
-    bfb(3,12) = bfb(1,11)
+    bfb(3, 11) = bfb(2, 12)
+    bfb(3, 12) = bfb(1, 11)
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine patrma(llist1, llist2, t, nbtymx, nomma,&
+subroutine patrma(llist1, llist2, t, nbtymx, nomma, &
                   llistt, ntypm)
     implicit none
 #include "asterf_types.h"
@@ -87,8 +87,8 @@ subroutine patrma(llist1, llist2, t, nbtymx, nomma,&
 !
     real(kind=8) :: d, dmin
 !-----------------------------------------------------------------------
-    data centre /0.d0,0.d0,0.d0/
-    data mrot   /1.d0,0.d0,0.d0,0.d0,1.d0,0.d0,0.d0,0.d0,1.d0/
+    data centre/0.d0, 0.d0, 0.d0/
+    data mrot/1.d0, 0.d0, 0.d0, 0.d0, 1.d0, 0.d0, 0.d0, 0.d0, 1.d0/
 !
 ! --- DEBUT
     call jemarq()
@@ -115,13 +115,13 @@ subroutine patrma(llist1, llist2, t, nbtymx, nomma,&
         valk(1) = l1
         valk(2) = l2
         call utmess('F', 'MODELISA6_22', nk=2, valk=valk)
-    endif
+    end if
     nbma = nbma1
     call wkvect(biject, 'V V I', nbma, idbij)
 !
 !     CREATION DE LLISTT
 !
-    call jecrec(lt, 'V V I', 'NU', 'DISPERSE', 'VARIABLE',&
+    call jecrec(lt, 'V V I', 'NU', 'DISPERSE', 'VARIABLE', &
                 nbtymx)
     fintyp = .false.
     ntypm = 0
@@ -140,12 +140,12 @@ subroutine patrma(llist1, llist2, t, nbtymx, nomma,&
                 call jedetr(coor2)
                 call jedetr(wcpl)
                 call jedetr(couple)
-            endif
-            ima= 0
+            end if
+            ima = 0
             ntypm = ntypm+1
             ityp1 = ityp
             call panbno(ityp1, nbnott)
-            nbntot= nbnott(1)+nbnott(2)+nbnott(3)
+            nbntot = nbnott(1)+nbnott(2)+nbnott(3)
 ! --- NUM DU TYPE_MAILLE DE COUPLAGE : NUMTMC
 !
             jdeb = 1
@@ -157,8 +157,8 @@ subroutine patrma(llist1, llist2, t, nbtymx, nomma,&
             call wkvect(coor2, 'V V R', 3*nbnott(1), idcoo2)
             call wkvect(wcpl, 'V V I', nbntot, idwcpl)
             call wkvect(couple, 'V V I', nbntot, idcopl)
-        endif
-        call parotr(nomma, iageom, numa1, nbnott(1), centre,&
+        end if
+        call parotr(nomma, iageom, numa1, nbnott(1), centre, &
                     mrot, t, zr(idcoo1))
         dmin = 999999999999.d0
         tot_error = 0
@@ -172,15 +172,15 @@ subroutine patrma(llist1, llist2, t, nbtymx, nomma,&
                 else
                     idtyp = j+1
                     goto 2
-                endif
+                end if
             else
                 fintyp = .true.
                 ima2 = zi(idl2+2*j-1)
                 call jenuno(jexnum(nomma//'.NOMMAI', ima2), nomma2)
                 call pacoor(nomma, ima2, nbnott(1), zr(idcoo2))
-                call padtma(zr(idcoo1), zr(idcoo2), nbnott, zi(idwcpl), d,&
+                call padtma(zr(idcoo1), zr(idcoo2), nbnott, zi(idwcpl), d, &
                             err)
-                tot_error= tot_error + err
+                tot_error = tot_error+err
                 if (d .lt. dmin .and. err .eq. 0) then
                     dmin = d
                     numa2 = ima2
@@ -188,9 +188,9 @@ subroutine patrma(llist1, llist2, t, nbtymx, nomma,&
                     do ino = 1, nbntot
                         zi(idcopl-1+ino) = zi(idwcpl-1+ino)
                     end do
-                endif
-            endif
-  2         continue
+                end if
+            end if
+2           continue
         end do
         if (tot_error .eq. jfin) then
             call utmess('F', 'MODELISA6_8')
@@ -198,8 +198,8 @@ subroutine patrma(llist1, llist2, t, nbtymx, nomma,&
         if (idtyp .eq. nbma+1) then
             vali = ityp
             call utmess('F', 'MODELISA8_89', si=vali)
-        endif
- 21     continue
+        end if
+21      continue
         ima = ima+1
         jdeb = idtyp
         jfin = iftyp
@@ -208,14 +208,14 @@ subroutine patrma(llist1, llist2, t, nbtymx, nomma,&
         if (ima .eq. 1) then
             if (ntypm .gt. 1) call jelibe(jexnum(lt, ntypm-1))
             call jecroc(jexnum(lt, ntypm))
-            lonmx =3+nbmaty*(2+2*nbntot)
+            lonmx = 3+nbmaty*(2+2*nbntot)
             call jeecra(jexnum(lt, ntypm), 'LONMAX', lonmx)
             call jeveuo(jexnum(lt, ntypm), 'E', idlt)
             zi(idlt) = ityp1
             zi(idlt+1) = nbmaty
             zi(idlt+2) = nbntot
-            idlt =idlt+2
-        endif
+            idlt = idlt+2
+        end if
         zi(idlt+1) = numa1
         zi(idlt+2) = numa2
         if (zi(idbij-1+j2) .eq. 0) then
@@ -224,12 +224,12 @@ subroutine patrma(llist1, llist2, t, nbtymx, nomma,&
             call jenuno(jexnum(nomma//'.NOMMAI', numa1), nomma1)
             call jenuno(jexnum(nomma//'.NOMMAI', numa2), nomma2)
             numa3 = zi(idbij+j2-1)
-            call jenuno(jexnum(nomma//'.NOMMAI' , numa3), nomma3)
-            valk (1) = nomma1
-            valk (2) = nomma3
-            valk (3) = nomma2
+            call jenuno(jexnum(nomma//'.NOMMAI', numa3), nomma3)
+            valk(1) = nomma1
+            valk(2) = nomma3
+            valk(3) = nomma2
             call utmess('F', 'MODELISA8_90', nk=3, valk=valk)
-        endif
+        end if
         call jeveuo(jexnum(connex, numa1), 'L', idno1)
         call jeveuo(jexnum(connex, numa2), 'L', idno2)
         do k = 1, nbntot

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine evala1(fami, kpg, ksp, mod, relcom,&
+subroutine evala1(fami, kpg, ksp, mod, relcom, &
                   sig, vin, imat, module, icode)
 ! person_in_charge: alexandre.foucault at edf.fr
 ! =====================================================================
@@ -47,8 +47,8 @@ subroutine evala1(fami, kpg, ksp, mod, relcom,&
     character(len=*) :: fami
     character(len=8) :: mod
     character(len=16) :: relcom
-    parameter   ( degr = 0.0174532925199d0 )
-    parameter   ( pi = 3.14159265358979d0 )
+    parameter(degr=0.0174532925199d0)
+    parameter(pi=3.14159265358979d0)
 !
 ! =====================================================================
 ! DEFINITION DES ELEMENTS NECESSAIRES A L'EVALUATION DU MODULE
@@ -73,17 +73,17 @@ subroutine evala1(fami, kpg, ksp, mod, relcom,&
 ! =====================================================================
     do i = 1, 2
         do j = 1, 2
-            rot(i,j) = 0.d0
+            rot(i, j) = 0.d0
         end do
     end do
 ! =====================================================================
 ! --- EXPRESSION DU TENSEUR DES CONTRAINTES SOUS FORME MATRICIEL
 ! --- LIMITE AU 2D POUR L'INSTANT
 ! =====================================================================
-    sigt(1,1) = sig(1)
-    sigt(1,2) = sig(4)/sqrt(2.0d0)
-    sigt(2,1) = sigt(1,2)
-    sigt(2,2) = sig(2)
+    sigt(1, 1) = sig(1)
+    sigt(1, 2) = sig(4)/sqrt(2.0d0)
+    sigt(2, 1) = sigt(1, 2)
+    sigt(2, 2) = sig(2)
 ! =====================================================================
 ! --- INITIALISATION A ZERO DE LA VALEUR DU MODULE
 ! --- UNIQUE VARIABLE DE SORTIE
@@ -106,10 +106,10 @@ subroutine evala1(fami, kpg, ksp, mod, relcom,&
 ! CONSTRUCTION MATRICE DE ROTATION
 ! =====================================================================
             angle = iang*incang(disc)*degr+angref
-            rot(1,1) = cos(angle)
-            rot(1,2) = -sin(angle)
-            rot(2,1) = sin(angle)
-            rot(2,2) = cos(angle)
+            rot(1, 1) = cos(angle)
+            rot(1, 2) = -sin(angle)
+            rot(2, 1) = sin(angle)
+            rot(2, 2) = cos(angle)
 ! =====================================================================
 ! CALCUL DE L'ETAT DE CONTRAINTES SUITE A LA ROTATION
 ! --- SIGF = TRANSPOSE(ROT)*SIG*ROT
@@ -118,36 +118,36 @@ subroutine evala1(fami, kpg, ksp, mod, relcom,&
                 do j = 1, 2
                     temp = 0.d0
                     do k = 1, 2
-                        temp = temp + sigt(i,k)*rot(k,j)
+                        temp = temp+sigt(i, k)*rot(k, j)
                     end do
-                    sigr1(i,j) = temp
+                    sigr1(i, j) = temp
                 end do
             end do
 !
 ! =====================================================================
 ! --- TRANSPOSE(ROT) = ROT
 ! =====================================================================
-            temp = rot(2,1)
-            rot(2,1) = rot(1,2)
-            rot(1,2) = temp
+            temp = rot(2, 1)
+            rot(2, 1) = rot(1, 2)
+            rot(1, 2) = temp
 !
             do i = 1, 2
                 do j = 1, 2
                     temp = 0.d0
                     do k = 1, 2
-                        temp = temp + rot(i,k)*sigr1(k,j)
+                        temp = temp+rot(i, k)*sigr1(k, j)
                     end do
-                    sigr2(i,j) = temp
+                    sigr2(i, j) = temp
                 end do
             end do
 !
 ! =====================================================================
 ! --- EXPRESSION DES CONTRAINTES SOUS FORME VECTORIELLE
 ! =====================================================================
-            sigf(1) = sigr2(1,1)
-            sigf(2) = sigr2(2,2)
+            sigf(1) = sigr2(1, 1)
+            sigf(2) = sigr2(2, 2)
             sigf(3) = sig(3)
-            sigf(4) = sigr2(1,2)*sqrt(2.0d0)
+            sigf(4) = sigr2(1, 2)*sqrt(2.0d0)
             sigf(5) = sig(5)
             sigf(6) = sig(6)
 !
@@ -159,14 +159,14 @@ subroutine evala1(fami, kpg, ksp, mod, relcom,&
 ! =====================================================================
 ! --- LOI DE TYPE DRUCKER_PRAGER --------------------------------------
 ! =====================================================================
-                call redrpr(mod, imat, sigf, vin, dsde,&
+                call redrpr(mod, imat, sigf, vin, dsde, &
                             icode)
 ! =====================================================================
 ! ----------- LOI DE TYPE HUJEUX --------------------------------------
 ! =====================================================================
-            else if (relcom.eq.'HUJEUX') then
+            else if (relcom .eq. 'HUJEUX') then
 !
-                call hujtid(fami, kpg, ksp, mod, imat,&
+                call hujtid(fami, kpg, ksp, mod, imat, &
                             sigf, vin, dsde, icode)
 !
             else
@@ -174,14 +174,14 @@ subroutine evala1(fami, kpg, ksp, mod, relcom,&
 !C RELATION DE COMPORTEMENT INVALIDE
 ! =====================================================================
                 ASSERT(.false.)
-            endif
+            end if
 ! =====================================================================
 ! ----------- EVALUATION DU MODULE ------------------------------------
 ! =====================================================================
-            if (abs(dsde(4,4)) .gt. r8prem()) then
-                ratio1 = ( dsde(4,1)*dsde(1,4)-dsde(4,4)*dsde(1,1)) /(3*dsde(4,4) )
+            if (abs(dsde(4, 4)) .gt. r8prem()) then
+                ratio1 = (dsde(4, 1)*dsde(1, 4)-dsde(4, 4)*dsde(1, 1))/(3*dsde(4, 4))
                 value1 = (1.0d0/(2.0d0*pi))**2*ratio1
-                ratio2 = ( dsde(4,2)*dsde(2,4)-dsde(4,4)*dsde(2,2)) /(3*dsde(4,4) )
+                ratio2 = (dsde(4, 2)*dsde(2, 4)-dsde(4, 4)*dsde(2, 2))/(3*dsde(4, 4))
                 value2 = (1.0d0/(2.0d0*pi))**2*ratio2
 !
                 if (iang .eq. 1) then
@@ -189,19 +189,19 @@ subroutine evala1(fami, kpg, ksp, mod, relcom,&
                     if (disc .eq. 1) then
                         valeur = value1
                     else
-                        valmax = max(value1,value2)
+                        valmax = max(value1, value2)
                         if (valmax .ge. valeur) then
                             valeur = valmax
-                        endif
-                    endif
+                        end if
+                    end if
                 else
-                    valmax = max(value1,value2)
+                    valmax = max(value1, value2)
                     if (valmax .ge. valeur) then
                         valeur = valmax
                         iangmx(disc) = iang
-                    endif
-                endif
-            endif
+                    end if
+                end if
+            end if
 !
         end do
 ! =====================================================================
@@ -217,6 +217,6 @@ subroutine evala1(fami, kpg, ksp, mod, relcom,&
 ! ------ FIN DE LA BOUCLE POUR OBTENIR LE MAX DE VALUE1 ---------
 ! =====================================================================
 !
-    module = max(module,valeur)
+    module = max(module, valeur)
 !
 end subroutine

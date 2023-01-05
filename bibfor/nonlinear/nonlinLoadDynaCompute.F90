@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,15 +17,15 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine nonlinLoadDynaCompute(mode       , sddyna     ,&
-                                 model      , nume_dof   ,&
-                                 ds_material, ds_measure , ds_inout,&
-                                 time_prev  , time_curr  ,&
+subroutine nonlinLoadDynaCompute(mode, sddyna, &
+                                 model, nume_dof, &
+                                 ds_material, ds_measure, ds_inout, &
+                                 time_prev, time_curr, &
                                  hval_veelem, hval_veasse)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -40,14 +40,14 @@ implicit none
 #include "asterfort/infdbg.h"
 #include "asterfort/utmess.h"
 !
-character(len=4), intent(in) :: mode
-character(len=19), intent(in) :: sddyna
-character(len=24), intent(in) :: model, nume_dof
-type(NL_DS_Material), intent(in) :: ds_material
-type(NL_DS_Measure), intent(inout) :: ds_measure
-type(NL_DS_InOut), intent(in) :: ds_inout
-real(kind=8), intent(in) :: time_prev, time_curr
-character(len=19), intent(in) :: hval_veelem(*), hval_veasse(*)
+    character(len=4), intent(in) :: mode
+    character(len=19), intent(in) :: sddyna
+    character(len=24), intent(in) :: model, nume_dof
+    type(NL_DS_Material), intent(in) :: ds_material
+    type(NL_DS_Measure), intent(inout) :: ds_measure
+    type(NL_DS_InOut), intent(in) :: ds_inout
+    real(kind=8), intent(in) :: time_prev, time_curr
+    character(len=19), intent(in) :: hval_veelem(*), hval_veasse(*)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -83,16 +83,16 @@ character(len=19), intent(in) :: hval_veelem(*), hval_veasse(*)
     call infdbg('MECANONLINE', ifm, niv)
     if (niv .ge. 2) then
         call utmess('I', 'MECANONLINE11_5')
-    endif
+    end if
 !
 ! - Active functionnalities
 !
-    l_wave = ndynlo(sddyna,'ONDE_PLANE')
-    l_viss = ndynlo(sddyna,'VECT_ISS')
+    l_wave = ndynlo(sddyna, 'ONDE_PLANE')
+    l_viss = ndynlo(sddyna, 'VECT_ISS')
 !
 ! - Launch timer
 !
-    call nmtime(ds_measure, 'Init'  , '2nd_Member')
+    call nmtime(ds_measure, 'Init', '2nd_Member')
     call nmtime(ds_measure, 'Launch', '2nd_Member')
 !
 ! - Wave (ONDE_PLANE)
@@ -102,28 +102,28 @@ character(len=19), intent(in) :: hval_veelem(*), hval_veasse(*)
             call nmchex(hval_veelem, 'VEELEM', 'CNONDP', vect_elem)
             call nmchex(hval_veasse, 'VEASSE', 'CNONDP', vect_asse)
             call veondp(model, ds_material%mater, ds_material%mateco, &
-                            sddyna, time_curr, vect_elem)
+                        sddyna, time_curr, vect_elem)
             call asasve(vect_elem, nume_dof, 'R', vect_alem)
-            call ascova('D', vect_alem, ' ', 'INST', time_curr,&
+            call ascova('D', vect_alem, ' ', 'INST', time_curr, &
                         'R', vect_asse)
             if (niv .ge. 2) then
                 call nmdebg('VECT', vect_asse, 6)
-            endif
-        endif
-    endif
+            end if
+        end if
+    end if
 !
 ! - FORCE_SOL
 !
     if (l_viss) then
         if (mode .eq. 'FIXE' .or. mode .eq. 'ACCI') then
             call nmchex(hval_veasse, 'VEASSE', 'CNVISS', vect_asse)
-            call nmviss(nume_dof, sddyna, ds_inout, time_prev, time_curr,&
+            call nmviss(nume_dof, sddyna, ds_inout, time_prev, time_curr, &
                         vect_asse)
             if (niv .ge. 2) then
                 call nmdebg('VECT', vect_asse, 6)
-            endif
-        endif
-    endif
+            end if
+        end if
+    end if
 !
 ! - Stop timer
 !

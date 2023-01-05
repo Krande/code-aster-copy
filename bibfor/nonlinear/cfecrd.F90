@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -73,23 +73,23 @@ subroutine cfecrd(resoco, questz, ival)
 !
     if (questi .eq. 'NDIM') then
         zi(jcoco+1-1) = ival
-    else if (questi.eq.'NEQ') then
+    else if (questi .eq. 'NEQ') then
         zi(jcoco+2-1) = ival
-    else if (questi.eq.'NBLIAC') then
+    else if (questi .eq. 'NBLIAC') then
         zi(jcoco+3-1) = ival
-    else if (questi.eq.'LLF') then
+    else if (questi .eq. 'LLF') then
         zi(jcoco+4-1) = ival
-    else if (questi.eq.'LLF1') then
+    else if (questi .eq. 'LLF1') then
         zi(jcoco+5-1) = ival
-    else if (questi.eq.'LLF2') then
+    else if (questi .eq. 'LLF2') then
         zi(jcoco+6-1) = ival
-    else if (questi.eq.'NESMAX') then
+    else if (questi .eq. 'NESMAX') then
         zi(jcoco+7-1) = ival
-    else if (questi.eq.'NBLIAI') then
+    else if (questi .eq. 'NBLIAI') then
         zi(jcoco+8-1) = ival
     else
         ASSERT(.false.)
-    endif
+    end if
 !
     call jedema()
 end subroutine

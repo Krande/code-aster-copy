@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -70,12 +70,12 @@ subroutine nmcha0(tychap, tyvarz, novarz, vachap)
         end do
     else
         call nmchai(tychap, tyvari, index)
-        if ((index.le.0) .or. (index.gt.nbvar)) then
+        if ((index .le. 0) .or. (index .gt. nbvar)) then
             ASSERT(.false.)
         else
             vachap(index) = novari
-        endif
+        end if
 !
-    endif
+    end if
 !
 end subroutine

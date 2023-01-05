@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,17 +18,17 @@
 ! person_in_charge: mickael.abbas at edf.fr
 ! aslint: disable=W1504
 !
-subroutine ndxprm(modelz, ds_material, carele    , ds_constitutive, ds_algopara   ,&
-                  lischa, numedd     , numfix    , solveu         , ds_system     ,&
-                  sddisc, sddyna     , ds_measure, nume_inst      , list_func_acti,&
-                  valinc, solalg     , meelem    , measse     ,&
-                  maprec, matass     , faccvg    , ldccvg)
+subroutine ndxprm(modelz, ds_material, carele, ds_constitutive, ds_algopara, &
+                  lischa, numedd, numfix, solveu, ds_system, &
+                  sddisc, sddyna, ds_measure, nume_inst, list_func_acti, &
+                  valinc, solalg, meelem, measse, &
+                  maprec, matass, faccvg, ldccvg)
 !
-use NonLin_Datastructure_type
-use HHO_type
-use NonLinear_module, only : isDampMatrCompute
+    use NonLin_Datastructure_type
+    use HHO_type
+    use NonLinear_module, only: isDampMatrCompute
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/infdbg.h"
@@ -45,20 +45,20 @@ implicit none
 #include "asterfort/asmari.h"
 #include "asterfort/nmchex.h"
 !
-type(NL_DS_AlgoPara), intent(in) :: ds_algopara
-integer, intent(in) :: list_func_acti(*), nume_inst
-character(len=*) :: modelz
-type(NL_DS_Material), intent(in) :: ds_material
-character(len=24) :: carele
-type(NL_DS_Measure), intent(inout) :: ds_measure
-character(len=24) :: numedd, numfix
-type(NL_DS_Constitutive), intent(in) :: ds_constitutive
-type(NL_DS_System), intent(in) :: ds_system
-character(len=19) :: sddisc, sddyna, lischa, solveu
-character(len=19) :: solalg(*), valinc(*)
-character(len=19) :: meelem(*), measse(*)
-character(len=19) :: maprec, matass
-integer :: faccvg, ldccvg
+    type(NL_DS_AlgoPara), intent(in) :: ds_algopara
+    integer, intent(in) :: list_func_acti(*), nume_inst
+    character(len=*) :: modelz
+    type(NL_DS_Material), intent(in) :: ds_material
+    character(len=24) :: carele
+    type(NL_DS_Measure), intent(inout) :: ds_measure
+    character(len=24) :: numedd, numfix
+    type(NL_DS_Constitutive), intent(in) :: ds_constitutive
+    type(NL_DS_System), intent(in) :: ds_system
+    character(len=19) :: sddisc, sddyna, lischa, solveu
+    character(len=19) :: solalg(*), valinc(*)
+    character(len=19) :: meelem(*), measse(*)
+    character(len=19) :: maprec, matass
+    integer :: faccvg, ldccvg
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -122,13 +122,13 @@ integer :: faccvg, ldccvg
 !
     call infdbg('MECANONLINE', ifm, niv)
     if (niv .ge. 2) then
-        write (ifm,*) '<MECANONLINE> ... CALCUL MATRICE'
-    endif
+        write (ifm, *) '<MECANONLINE> ... CALCUL MATRICE'
+    end if
 !
 ! - Initializations
 !
     call nmchex(measse, 'MEASSE', 'MERIGI', rigid)
-    nb_matr              = 0
+    nb_matr = 0
     list_matr_type(1:20) = ' '
     faccvg = -1
     ldccvg = -1
@@ -139,9 +139,9 @@ integer :: faccvg, ldccvg
 !
 ! - Active functionnalities
 !
-    lprmo         = ndynlo(sddyna,'PROJ_MODAL')
-    l_neum_undead = isfonc(list_func_acti,'NEUM_UNDEAD')
-    lshima        = ndynlo(sddyna,'COEF_MASS_SHIFT')
+    lprmo = ndynlo(sddyna, 'PROJ_MODAL')
+    l_neum_undead = isfonc(list_func_acti, 'NEUM_UNDEAD')
+    lshima = ndynlo(sddyna, 'COEF_MASS_SHIFT')
 !
 ! - First step ?
 !
@@ -152,7 +152,7 @@ integer :: faccvg, ldccvg
     explMatrType = ds_algopara%matrix_pred
     if (explMatrType .ne. 'TANGENTE') then
         call utmess('F', 'MECANONLINE5_1')
-    endif
+    end if
 !
 ! - Update global matrix ?
 !
@@ -162,8 +162,8 @@ integer :: faccvg, ldccvg
             l_update_matr = ASTER_FALSE
         else
             l_update_matr = ASTER_TRUE
-        endif
-    endif
+        end if
+    end if
 !
 ! - Do the damping matrices have to be calculated ?
 !
@@ -179,70 +179,70 @@ integer :: faccvg, ldccvg
     l_asse_rigi = ASTER_FALSE
     if (l_comp_damp) then
         l_comp_rigi = ASTER_TRUE
-    endif
+    end if
     if (lshima .and. l_first_step) then
         l_comp_rigi = ASTER_TRUE
         l_asse_rigi = ASTER_TRUE
-    endif
+    end if
 !
 ! - Compute rigidity elementary matrices / internal forces elementary vectors
 !
     if (l_comp_rigi) then
-        call nmrigi(modelz        , carele,&
-                    ds_material   , ds_constitutive,&
-                    list_func_acti, iter_newt      , sddyna, ds_measure, ds_system,&
-                    valinc        , solalg         , hhoField, &
-                    option_nonlin , ldccvg)
+        call nmrigi(modelz, carele, &
+                    ds_material, ds_constitutive, &
+                    list_func_acti, iter_newt, sddyna, ds_measure, ds_system, &
+                    valinc, solalg, hhoField, &
+                    option_nonlin, ldccvg)
         if (l_asse_rigi) then
             call asmari(ds_system, meelem, lischa, rigid)
-        endif
-    endif
+        end if
+    end if
 !
 ! - Compute damping (Rayleigh) elementary matrices
 !
     if (l_comp_damp) then
-        call nmcmat('MEAMOR', ' ', ' ', ASTER_TRUE,&
-                    ASTER_TRUE, nb_matr, list_matr_type, list_calc_opti, list_asse_opti,&
+        call nmcmat('MEAMOR', ' ', ' ', ASTER_TRUE, &
+                    ASTER_TRUE, nb_matr, list_matr_type, list_calc_opti, list_asse_opti, &
                     list_l_calc, list_l_asse)
-    endif
+    end if
 !
 ! --- CALCUL DES MATR-ELEM DES CHARGEMENTS
 !
     if (l_neum_undead) then
-        call nmcmat('MESUIV', ' ', ' ', ASTER_TRUE,&
-                    ASTER_FALSE, nb_matr, list_matr_type, list_calc_opti, list_asse_opti,&
+        call nmcmat('MESUIV', ' ', ' ', ASTER_TRUE, &
+                    ASTER_FALSE, nb_matr, list_matr_type, list_calc_opti, list_asse_opti, &
                     list_l_calc, list_l_asse)
-    endif
+    end if
 !
 ! --- CALCUL ET ASSEMBLAGE DES MATR_ELEM DE LA LISTE
 !
     if (nb_matr .gt. 0) then
-        call nmxmat(modelz         , ds_material   , carele        ,&
-                    ds_constitutive, sddisc        , nume_inst        ,&
-                    valinc         , solalg        , lischa        ,&
-                    numedd         , numfix        , ds_measure    ,&
-                    nb_matr        , list_matr_type, list_calc_opti,&
-                    list_asse_opti , list_l_calc   , list_l_asse   ,&
-                    meelem         , measse        , ds_system)
-    endif
+        call nmxmat(modelz, ds_material, carele, &
+                    ds_constitutive, sddisc, nume_inst, &
+                    valinc, solalg, lischa, &
+                    numedd, numfix, ds_measure, &
+                    nb_matr, list_matr_type, list_calc_opti, &
+                    list_asse_opti, list_l_calc, list_l_asse, &
+                    meelem, measse, ds_system)
+    end if
 !
 ! - No error => continue
 !
     if (ldccvg .ne. 1) then
 ! ----- Compute global matrix of system
         if (l_update_matr) then
-            call ndxmat(list_func_acti, lischa, numedd, sddyna, nume_inst,&
+            call ndxmat(list_func_acti, lischa, numedd, sddyna, nume_inst, &
                         meelem, measse, matass)
-        endif
+        end if
 ! ----- Factorization of global matrix of system
         if (l_update_matr) then
-            call nmtime(ds_measure, 'Init'  , 'Factor')
+            call nmtime(ds_measure, 'Init', 'Factor')
             call nmtime(ds_measure, 'Launch', 'Factor')
-            call preres(solveu, 'V', faccvg, maprec, matass,&
+            call preres(solveu, 'V', faccvg, maprec, matass, &
                         ibid, -9999)
             call nmtime(ds_measure, 'Stop', 'Factor')
             call nmrinc(ds_measure, 'Factor')
-        endif
-    endif
+        end if
+    end if
 !
 end subroutine

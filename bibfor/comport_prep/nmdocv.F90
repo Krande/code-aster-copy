@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,18 +19,18 @@
 !
 subroutine nmdocv(keywordfact, iocc, algo_inte, keyword, value)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/assert.h"
 #include "asterfort/getvis.h"
 #include "asterfort/getvr8.h"
 #include "asterfort/utmess.h"
 !
-character(len=16), intent(in) :: keywordfact
-integer, intent(in) :: iocc
-character(len=16), intent(in) :: algo_inte
-character(len=14), intent(in) :: keyword
-real(kind=8), intent(out) :: value
+    character(len=16), intent(in) :: keywordfact
+    integer, intent(in) :: iocc
+    character(len=16), intent(in) :: algo_inte
+    character(len=14), intent(in) :: keyword
+    real(kind=8), intent(out) :: value
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -53,7 +53,7 @@ real(kind=8), intent(out) :: value
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    ASSERT(keyword(1:9).eq.'RESI_INTE'.or.keyword.eq.'ITER_INTE_MAXI')
+    ASSERT(keyword(1:9) .eq. 'RESI_INTE' .or. keyword .eq. 'ITER_INTE_MAXI')
     value = 0.d0
 !
 ! - Get Values
@@ -62,24 +62,24 @@ real(kind=8), intent(out) :: value
         call getvr8(keywordfact, keyword, iocc=iocc, scal=value, nbret=iret)
         if (iret .le. 0) then
             value = 1.d-6
-        endif
+        end if
     else if (keyword .eq. 'RESI_INTE_MAXI') then
         call getvr8(keywordfact, keyword, iocc=iocc, scal=value, nbret=iret)
         if (iret .le. 0) then
             value = 1.d-6
-        endif
-    else if (keyword.eq.'ITER_INTE_MAXI') then
+        end if
+    else if (keyword .eq. 'ITER_INTE_MAXI') then
         call getvis(keywordfact, keyword, iocc=iocc, scal=vali, nbret=iret)
         if (iret .le. 0) then
-            value      = 20
+            value = 20
             iter_cplan = 20
         else
-            value      = vali
+            value = vali
             iter_cplan = vali
-        endif
-    endif
+        end if
+    end if
 !
-    ASSERT(iret.ne.0)
+    ASSERT(iret .ne. 0)
 !
 ! - Number of iterations for plane stress
 !
@@ -90,13 +90,13 @@ real(kind=8), intent(out) :: value
     if (algo_inte .eq. 'ANALYTIQUE') then
         if (keyword .eq. 'ITER_INTE_MAXI') then
             value = inte_rela_anal
-        endif
-    endif
+        end if
+    end if
 !
     if (keyword .eq. 'RESI_INTE_RELA') then
         if (value .gt. 1.0001d-6) then
             call utmess('A', 'COMPOR4_62')
-        endif
-    endif
+        end if
+    end if
 !
 end subroutine

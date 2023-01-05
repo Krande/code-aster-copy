@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,13 +17,13 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine nmunil(mesh  , disp_curr, disp_iter, solver    , matr_asse,&
-                  cncine, iter_newt, time_curr, ds_contact, nume_dof ,&
+subroutine nmunil(mesh, disp_curr, disp_iter, solver, matr_asse, &
+                  cncine, iter_newt, time_curr, ds_contact, nume_dof, &
                   ctccvg)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterf_types.h"
@@ -38,18 +38,18 @@ implicit none
 #include "asterfort/dismoi.h"
 #include "asterfort/utmess.h"
 !
-character(len=8), intent(in) :: mesh
-character(len=14), intent(in) :: nume_dof
-character(len=19), intent(in) :: disp_curr
-character(len=19), intent(in) :: disp_iter
-character(len=19), intent(in) :: solver
-character(len=19), intent(in) :: matr_asse
-character(len=19), intent(in) :: cncine
-integer, intent(in) :: iter_newt
-real(kind=8), intent(in) :: time_curr
-type(NL_DS_Contact), intent(in) :: ds_contact
-integer, intent(out) :: ctccvg
-aster_logical :: l_unil_pena
+    character(len=8), intent(in) :: mesh
+    character(len=14), intent(in) :: nume_dof
+    character(len=19), intent(in) :: disp_curr
+    character(len=19), intent(in) :: disp_iter
+    character(len=19), intent(in) :: solver
+    character(len=19), intent(in) :: matr_asse
+    character(len=19), intent(in) :: cncine
+    integer, intent(in) :: iter_newt
+    real(kind=8), intent(in) :: time_curr
+    type(NL_DS_Contact), intent(in) :: ds_contact
+    integer, intent(out) :: ctccvg
+    aster_logical :: l_unil_pena
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -85,8 +85,8 @@ aster_logical :: l_unil_pena
 !
     call infniv(ifm, niv)
     if (niv .ge. 2) then
-        write (ifm,*) '<CONTACT> DEBUT DU TRAITEMENT DES CONDITIONS UNILATERALes'
-    endif
+        write (ifm, *) '<CONTACT> DEBUT DU TRAITEMENT DES CONDITIONS UNILATERALes'
+    end if
 !
 ! - Get "contact" matrix
 !
@@ -106,10 +106,10 @@ aster_logical :: l_unil_pena
 !
     l_unil_pena = cfdisl(ds_contact%sdcont_defi, 'UNIL_PENA')
 !
-    if ((iter_newt.eq.0) .or. l_unil_pena) then
-       nb_equa = zi(lmat+2)
-       call cuprep(mesh, nb_equa, ds_contact, disp_curr, disp_iter, time_curr)
-    endif
+    if ((iter_newt .eq. 0) .or. l_unil_pena) then
+        nb_equa = zi(lmat+2)
+        call cuprep(mesh, nb_equa, ds_contact, disp_curr, disp_iter, time_curr)
+    end if
 !
 ! - Type of matrix
 !
@@ -119,19 +119,19 @@ aster_logical :: l_unil_pena
 ! - Solve
 !
     if (l_unil_pena) then
-       call algocup(ds_contact, nume_dof, matr_asse)
-       ctccvg = 0
+        call algocup(ds_contact, nume_dof, matr_asse)
+        ctccvg = 0
     else
         if (.not. l_matr_syme) then
             call utmess('F', 'UNILATER_1')
         else
-            call algocu(ds_contact, solver, lmat, ldscon, cncine,&
-                        disp_iter , ctccvg)
-        endif
-    endif
+            call algocu(ds_contact, solver, lmat, ldscon, cncine, &
+                        disp_iter, ctccvg)
+        end if
+    end if
 !
 ! - Yes for computation
 !
-    ASSERT(ctccvg.ge.0)
+    ASSERT(ctccvg .ge. 0)
 !
 end subroutine

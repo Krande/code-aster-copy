@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine wp1dft(lmat, imode, zeropo, z, detnor,&
+subroutine wp1dft(lmat, imode, zeropo, z, detnor, &
                   det, idet, isturm)
     implicit none
 #include "jeveux.h"
@@ -36,7 +36,7 @@ subroutine wp1dft(lmat, imode, zeropo, z, detnor,&
 !-----------------------------------------------------------------------
     integer :: i, iret, isturm, ldiag, neq
 !-----------------------------------------------------------------------
-    data  nomdia/'                   .DIGS'/
+    data nomdia/'                   .DIGS'/
 !
     call jemarq()
     un = 1.d0
@@ -44,19 +44,19 @@ subroutine wp1dft(lmat, imode, zeropo, z, detnor,&
 !
 !     --- PRELIMINAIRE ---
     nomdia(1:19) = zk24(zi(lmat+1))
-    neq = zi(lmat+2 )
+    neq = zi(lmat+2)
     call jeexin(nomdia, iret)
     if (iret .eq. 0) then
         call utmess('F', 'MODELISA2_9', sk=nomdia)
-    endif
+    end if
     call jeveuo(nomdia, 'L', ldiag)
-    ldiag=ldiag+neq
+    ldiag = ldiag+neq
 !
 !
 !     --- CALCUL DE LA DEFLATION ---
-    detnor = dcmplx(un,zero)
+    detnor = dcmplx(un, zero)
     do i = 1, imode-1
-        detnor = detnor / ( (z-zeropo(i))*(z-dconjg(zeropo(i))) )
+        detnor = detnor/((z-zeropo(i))*(z-dconjg(zeropo(i))))
     end do
 !
 !     --- CALCUL DU DETERMINANT DE LA MATRICE DEFLATEE ---
@@ -65,8 +65,8 @@ subroutine wp1dft(lmat, imode, zeropo, z, detnor,&
     isturm = 0
     do i = ldiag, ldiag+neq-1
         dist = sqrt(dble(zc(i)*dconjg(zc(i))))
-        detnor = detnor * zc(i) / dist
-        if (dble(zc(i)) .lt. zero) isturm = isturm + 1
+        detnor = detnor*zc(i)/dist
+        if (dble(zc(i)) .lt. zero) isturm = isturm+1
         call almulr('CUMUL', [dist], 1, det, idet)
     end do
     call jedetr(nomdia)

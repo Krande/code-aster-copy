@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -31,21 +31,21 @@ subroutine matect(materd, materf, nmat, macst)
     real(kind=8) :: materd(nmat, 2), materf(nmat, 2), epsi
     character(len=3) :: macst
 !     ----------------------------------------------------------------
-    epsi=r8prem()
+    epsi = r8prem()
 !
 ! -   MATERIAU CONSTANT ?
     macst = 'OUI'
     do i = 1, nmat
-        if (abs(materd(i,1)-materf(i,1)) .gt. epsi*materd(i,1)) then
+        if (abs(materd(i, 1)-materf(i, 1)) .gt. epsi*materd(i, 1)) then
             macst = 'NON'
             goto 999
-        endif
+        end if
     end do
     do i = 1, nmat
-        if (abs(materd(i,2)-materf(i,2)) .gt. epsi*materd(i,2)) then
+        if (abs(materd(i, 2)-materf(i, 2)) .gt. epsi*materd(i, 2)) then
             macst = 'NON'
             goto 999
-        endif
+        end if
     end do
 999 continue
 end subroutine

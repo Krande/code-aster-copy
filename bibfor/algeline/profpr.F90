@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine profpr(icoq, rki, r1, r2, coepr1,&
+subroutine profpr(icoq, rki, r1, r2, coepr1, &
                   coepr2, wpr)
     implicit none
 ! COUPLAGE FLUIDELASTIQUE, CONFIGURATIONS DU TYPE "COQUE_COAX"
@@ -45,7 +45,7 @@ subroutine profpr(icoq, rki, r1, r2, coepr1,&
     real(kind=8) :: z, z1, z2
 !-----------------------------------------------------------------------
     r0 = (r1+r2)/2.d0
-    h0 = r2 - r1
+    h0 = r2-r1
 !
     rc = r2
     if (icoq .eq. 2) rc = r1
@@ -55,18 +55,18 @@ subroutine profpr(icoq, rki, r1, r2, coepr1,&
 ! --- 2.CALCUL DES COEFFICIENTS PONDERATEURS
 !
     if (ki .eq. 1) then
-        x = r0 + rc*rc*dble(log(r2/r1))/h0
+        x = r0+rc*rc*dble(log(r2/r1))/h0
         a = 1.d0/x
     else
-        x = r2**(rki+1.d0) - r1**(rki+1.d0)
+        x = r2**(rki+1.d0)-r1**(rki+1.d0)
         x = x/(rki+1.d0)
         y = rc**(rki)
         y = y*y/(rki-1.d0)
-        z1= r1**(rki-1.d0)
-        z2= r2**(rki-1.d0)
-        z = 1.d0/z1 - 1.d0/z2
+        z1 = r1**(rki-1.d0)
+        z2 = r2**(rki-1.d0)
+        z = 1.d0/z1-1.d0/z2
         a = h0/(x+y*z)
-    endif
+    end if
 !
     if (icoq .eq. 1) then
         t = (r2/r1)**(rki)
@@ -76,7 +76,7 @@ subroutine profpr(icoq, rki, r1, r2, coepr1,&
         t = (r1/r2)**(rki)
         coepr1 = 2.d0*a*r1**(rki)
         coepr2 = a*(1.d0+t*t)*r2**(rki)
-    endif
+    end if
 !
 ! --- 3.CALCUL DE LA VALEUR MOYENNE
 !
@@ -86,14 +86,14 @@ subroutine profpr(icoq, rki, r1, r2, coepr1,&
         y = y*y*dble(log(r2/r1))/(r0*h0)
         wpr = a*(x+y)
     else
-        x = r2**(rki+2.d0) - r1**(rki+2.d0)
+        x = r2**(rki+2.d0)-r1**(rki+2.d0)
         x = x/(rki+2.d0)
         y = rc**(rki)
         y = y*y/(rki-2.d0)
-        z1= r1**(rki-2.d0)
-        z2= r2**(rki-2.d0)
-        z = 1.d0/z1 - 1.d0/z2
+        z1 = r1**(rki-2.d0)
+        z2 = r2**(rki-2.d0)
+        z = 1.d0/z1-1.d0/z2
         wpr = a*(x+y*z)/(r0*h0)
-    endif
+    end if
 !
 end subroutine

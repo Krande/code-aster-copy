@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -68,9 +68,9 @@ subroutine dtmprep_noli_choc(sd_dtm_, sd_nl_, icomp)
 #include "asterfort/locglo.h"
 !
 !   -0.1- Input/output arguments
-    character(len=*) , intent(in) :: sd_dtm_
-    character(len=*) , intent(in) :: sd_nl_
-    integer          , intent(in) :: icomp
+    character(len=*), intent(in) :: sd_dtm_
+    character(len=*), intent(in) :: sd_nl_
+    integer, intent(in) :: icomp
 !
 !   -0.2- Local variables
     aster_logical     :: lnoeu2, friction
@@ -104,29 +104,29 @@ subroutine dtmprep_noli_choc(sd_dtm_, sd_nl_, icomp)
 !
     complex(kind=8)   :: cbid
 
-    integer     , pointer       :: ddlcho(:)         => null()
-    integer     , pointer       :: elems(:)          => null()
-    real(kind=8), pointer       :: coor_no1(:)       => null()
-    real(kind=8), pointer       :: coor_no2(:)       => null()
-    real(kind=8), pointer       :: bc_norm(:)       => null()
-    real(kind=8), pointer       :: vale(:)           => null()
-    real(kind=8), pointer       :: omega2(:)         => null()
-    real(kind=8), pointer       :: amogen(:)         => null()
-    real(kind=8), pointer       :: masgen(:)         => null()
+    integer, pointer       :: ddlcho(:) => null()
+    integer, pointer       :: elems(:) => null()
+    real(kind=8), pointer       :: coor_no1(:) => null()
+    real(kind=8), pointer       :: coor_no2(:) => null()
+    real(kind=8), pointer       :: bc_norm(:) => null()
+    real(kind=8), pointer       :: vale(:) => null()
+    real(kind=8), pointer       :: omega2(:) => null()
+    real(kind=8), pointer       :: amogen(:) => null()
+    real(kind=8), pointer       :: masgen(:) => null()
     real(kind=8), pointer       :: sincos_angle_a(:) => null()
     real(kind=8), pointer       :: sincos_angle_b(:) => null()
     real(kind=8), pointer       :: sincos_angle_g(:) => null()
-    real(kind=8), pointer       :: defmod1(:)        => null()
-    real(kind=8), pointer       :: defmod2(:)        => null()
-    real(kind=8), pointer       :: dplcho(:)         => null()
-    real(kind=8), pointer       :: ps2del1(:)        => null()
-    real(kind=8), pointer       :: ps2del2(:)        => null()
-    real(kind=8), pointer       :: origob(:)         => null()
-    real(kind=8), pointer       :: bmodal_v(:)       => null()
-    real(kind=8), pointer       :: ps1del_v(:)       => null()
-    real(kind=8), pointer       :: mass_normed(:)    => null()
-    character(len=8) , pointer  :: noeud(:)          => null()
-    character(len=24), pointer  :: refn(:)           => null()
+    real(kind=8), pointer       :: defmod1(:) => null()
+    real(kind=8), pointer       :: defmod2(:) => null()
+    real(kind=8), pointer       :: dplcho(:) => null()
+    real(kind=8), pointer       :: ps2del1(:) => null()
+    real(kind=8), pointer       :: ps2del2(:) => null()
+    real(kind=8), pointer       :: origob(:) => null()
+    real(kind=8), pointer       :: bmodal_v(:) => null()
+    real(kind=8), pointer       :: ps1del_v(:) => null()
+    real(kind=8), pointer       :: mass_normed(:) => null()
+    character(len=8), pointer  :: noeud(:) => null()
+    character(len=24), pointer  :: refn(:) => null()
 !
 #define ps1del(m,n) ps1del_v((n-1)*neq+m)
 #define bmodal(m,n) bmodal_v((n-1)*neq+m)
@@ -135,19 +135,19 @@ subroutine dtmprep_noli_choc(sd_dtm_, sd_nl_, icomp)
     call jemarq()
 !
     sd_dtm = sd_dtm_
-    sd_nl  = sd_nl_
+    sd_nl = sd_nl_
 !
     lnoeu2 = .false.
     one = 1.d0
- !
+    !
     motfac = 'COMPORTEMENT'
     call nlget(sd_nl, _MAX_LEVEL, iscal=mxlevel)
-    i = mxlevel + 1
+    i = mxlevel+1
 !
     call infmaj()
     call infniv(ibid, info)
 !
-    start  = i
+    start = i
     finish = i
 !
 !   --- 1 - Basic information about the mesh and numbering
@@ -159,7 +159,7 @@ subroutine dtmprep_noli_choc(sd_dtm_, sd_nl_, icomp)
 !
 !   --- 1.1 - Case with a simple modal projection (direct calculation)
     if (typnum(1:16) .eq. 'NUME_DDL_SDASTER') then
-        call dismoi('NOM_MAILLA' , nume , 'NUME_DDL' , repk=mesh)
+        call dismoi('NOM_MAILLA', nume, 'NUME_DDL', repk=mesh)
         mesh1 = mesh
         nume1 = nume
         mesh2 = mesh
@@ -168,7 +168,7 @@ subroutine dtmprep_noli_choc(sd_dtm_, sd_nl_, icomp)
         call nlsav(sd_nl, _MESH_1, 1, iocc=i, kscal=mesh1)
 
 !   --- 1.2 - Case with double (or triple) projections (sub-structuring case)
-    else if (typnum(1:13).eq.'NUME_DDL_GENE') then
+    else if (typnum(1:13) .eq. 'NUME_DDL_GENE') then
         call jeveuo(nume//'      .NUME.REFN', 'L', vk24=refn)
         mdgene = refn(1)
 
@@ -188,7 +188,7 @@ subroutine dtmprep_noli_choc(sd_dtm_, sd_nl_, icomp)
 
         mesh2 = mesh1
         nume2 = nume1
-        sst2  = sst1
+        sst2 = sst1
         call getvtx(motfac, 'SOUS_STRUC_2', iocc=icomp, scal=sst2, nbret=n1)
         if (n1 .ne. 0) then
             call jenonu(jexnom(mdssno, sst2), iret)
@@ -196,7 +196,7 @@ subroutine dtmprep_noli_choc(sd_dtm_, sd_nl_, icomp)
 
             call mgutdm(mdgene, sst2, ibid, 'NOM_NUME_DDL', ibid, nume2)
             call mgutdm(mdgene, sst2, ibid, 'NOM_MAILLAGE', ibid, mesh2)
-    !
+            !
         end if
         call nlsav(sd_nl, _SS2_NAME, 1, iocc=i, kscal=sst2)
         call nlsav(sd_nl, _NUMDDL_2, 1, iocc=i, kscal=nume2(1:8))
@@ -215,22 +215,22 @@ subroutine dtmprep_noli_choc(sd_dtm_, sd_nl_, icomp)
     nbmcl = 2
     limocl(1) = 'GROUP_MA'
     limocl(2) = 'MAILLE'
-    call reliem(' ', mesh1, typem, motfac, icomp,&
+    call reliem(' ', mesh1, typem, motfac, icomp, &
                 nbmcl, limocl, limocl, sd_nl//'.INDI_SUPP.TEMP', nbma)
 !
-    if (nbma.gt.0) then
-        ASSERT(mesh2.eq.mesh1)
-        call jeveuo(sd_nl//'.INDI_SUPP.TEMP','L', vi=elems)
+    if (nbma .gt. 0) then
+        ASSERT(mesh2 .eq. mesh1)
+        call jeveuo(sd_nl//'.INDI_SUPP.TEMP', 'L', vi=elems)
         ind = i
         do im = 1, nbma
             call jeveuo(jexnum(mesh1//'.CONNEX', elems(im)), 'L', jmama)
             call jelira(jexnum(mesh1//'.CONNEX', elems(im)), 'LONMAX', nbnma)
             if (nbnma .ne. 2) then
                 call jenuno(jexnum(mesh1//'.NOMMAI', elems(im)), nomma)
-                valk (1) = nomma
-                valk (2) = 'SEG2'
+                valk(1) = nomma
+                valk(2) = 'SEG2'
                 call utmess('F', 'ALGORITH13_39', nk=2, valk=valk)
-            endif
+            end if
             call jenuno(jexnum(mesh1//'.NOMNOE', zi(jmama)), no1_name)
             call jenuno(jexnum(mesh1//'.NOMNOE', zi(jmama+1)), no2_name)
             call nlsav(sd_nl, _NO1_NAME, 1, iocc=ind, kscal=no1_name)
@@ -242,7 +242,7 @@ subroutine dtmprep_noli_choc(sd_dtm_, sd_nl_, icomp)
             call nlsav(sd_nl, _NUMDDL_2, 1, iocc=ind, kscal=nume1(1:8))
             call nlsav(sd_nl, _MESH_2, 1, iocc=ind, kscal=mesh1)
 !
-            ind = ind + 1
+            ind = ind+1
         end do
         call jedetr(sd_nl//'.INDI_SUPP.TEMP')
         finish = ind-1
@@ -258,12 +258,12 @@ subroutine dtmprep_noli_choc(sd_dtm_, sd_nl_, icomp)
     limocl(2) = 'NOEUD_1'
     tymocl(1) = 'GROUP_NO'
     tymocl(2) = 'NOEUD'
-    call reliem(' ', mesh1, typem, motfac, icomp,&
+    call reliem(' ', mesh1, typem, motfac, icomp, &
                 nbmcl, limocl, tymocl, sd_nl//'.INDI_NO1.TEMP', nbno1)
 !
-    if (nbno1.gt.0) then
-        ASSERT(nbno1.eq.1)
-        call jeveuo(sd_nl//'.INDI_NO1.TEMP','L', vk8=noeud)
+    if (nbno1 .gt. 0) then
+        ASSERT(nbno1 .eq. 1)
+        call jeveuo(sd_nl//'.INDI_NO1.TEMP', 'L', vk8=noeud)
         no1_name = noeud(1)
         call nlsav(sd_nl, _NO1_NAME, 1, iocc=i, kscal=no1_name)
         call jedetr(sd_nl//'.INDI_NO1.TEMP')
@@ -272,12 +272,12 @@ subroutine dtmprep_noli_choc(sd_dtm_, sd_nl_, icomp)
         nbmcl = 2
         limocl(1) = 'GROUP_NO_2'
         limocl(2) = 'NOEUD_2'
-        call reliem(' ', mesh2, typem, motfac, icomp,&
+        call reliem(' ', mesh2, typem, motfac, icomp, &
                     nbmcl, limocl, tymocl, sd_nl//'.INDI_NO2.TEMP', nbno2)
 
-        if (nbno2.gt.0) then
-            ASSERT (nbno2.eq.1)
-            call jeveuo(sd_nl//'.INDI_NO2.TEMP','L', vk8=noeud)
+        if (nbno2 .gt. 0) then
+            ASSERT(nbno2 .eq. 1)
+            call jeveuo(sd_nl//'.INDI_NO2.TEMP', 'L', vk8=noeud)
             no2_name = noeud(1)
             call nlsav(sd_nl, _NO2_NAME, 1, iocc=i, kscal=no2_name)
             call jedetr(sd_nl//'.INDI_NO2.TEMP')
@@ -288,18 +288,16 @@ subroutine dtmprep_noli_choc(sd_dtm_, sd_nl_, icomp)
         call nlsav(sd_nl, _MESH_2, 1, iocc=i, kscal=mesh2)
     end if
 
-
-
 !   --- 2.3 - Check whether this stop/choc nonlinearity(ies) conflicts
 !             with a buckling one for the same support node, if yes, stop
 !             the treatment immediately
     call nlget(sd_nl, _NB_FLAMB, iscal=nbbuck)
-    if (nbbuck.gt.0) then
+    if (nbbuck .gt. 0) then
         do j = 1, mxlevel
             call nlget(sd_nl, _NL_TYPE, iocc=j, iscal=nl_type)
-            if (nl_type.eq.NL_BUCKLING) then
+            if (nl_type .eq. NL_BUCKLING) then
                 call nlget(sd_nl, _NO1_NAME, iocc=j, kscal=node)
-                if (node.eq.no1_name) then
+                if (node .eq. no1_name) then
                     call utmess('A', 'ALGORITH5_38')
                     call nlget(sd_nl, 1, iocc=i, savejv=jvname)
                     call detrsd(' ', jvname(1:15))
@@ -318,7 +316,7 @@ subroutine dtmprep_noli_choc(sd_dtm_, sd_nl_, icomp)
 !       occurence
     do i = start, finish
 !
-        call nlsav(sd_nl, _NL_TYPE , 1, iocc=i, iscal=NL_CHOC)
+        call nlsav(sd_nl, _NL_TYPE, 1, iocc=i, iscal=NL_CHOC)
 !
 !       --- 3.1 - DOF numbering localisation index for the concerned nodes
         call mdchdl(lnoeu2, i, ddlcho, ier)
@@ -339,9 +337,9 @@ subroutine dtmprep_noli_choc(sd_dtm_, sd_nl_, icomp)
                 call jenonu(jexnom(mesh2//'.NOMNOE', no2_name), ino2)
                 ind1 = 1+3*(ino2-1)
                 ind2 = ind1+2
-                 call nlsav(sd_nl, _COOR_NO2, 3, iocc=i, rvect=vale(ind1:ind2))
+                call nlsav(sd_nl, _COOR_NO2, 3, iocc=i, rvect=vale(ind1:ind2))
             end if
-        else if (typnum(1:13).eq.'NUME_DDL_GENE') then
+        else if (typnum(1:13) .eq. 'NUME_DDL_GENE') then
             call jeveuo(mesh1//'.COORDO    .VALE', 'L', jcoor)
             call nlget(sd_nl, _NO1_NAME, iocc=i, kscal=no1_name)
             call jenonu(jexnom(mesh1//'.NOMNOE', no1_name), ino1)
@@ -360,7 +358,7 @@ subroutine dtmprep_noli_choc(sd_dtm_, sd_nl_, icomp)
 !
 !       --- 3.3 - Other information are read from the user input
         call getvtx(motfac, 'INTITULE', iocc=icomp, scal=nl_title, nbret=n1)
-        if (n1.ne.0) then
+        if (n1 .ne. 0) then
             call nlsav(sd_nl, _NL_TITLE, 1, iocc=i, kscal=nl_title)
         else
             call codent(i, 'D0', intk)
@@ -370,46 +368,46 @@ subroutine dtmprep_noli_choc(sd_dtm_, sd_nl_, icomp)
 
         call nlsav(sd_nl, _GAP, 1, iocc=i, rscal=0.d0)
         call getvr8(motfac, 'JEU', iocc=icomp, scal=gap, nbret=n1)
-        if (n1.gt.0)call nlsav(sd_nl, _GAP, 1, iocc=i, rscal=gap)
+        if (n1 .gt. 0) call nlsav(sd_nl, _GAP, 1, iocc=i, rscal=gap)
 
         call nlsav(sd_nl, _DIST_NO1, 1, iocc=i, rscal=0.d0)
         call getvr8(motfac, 'DIST_1', iocc=icomp, scal=dist_no1, nbret=n1)
-        if (n1.gt.0) call nlsav(sd_nl, _DIST_NO1, 1, iocc=i, rscal=dist_no1)
+        if (n1 .gt. 0) call nlsav(sd_nl, _DIST_NO1, 1, iocc=i, rscal=dist_no1)
 
         call nlsav(sd_nl, _DIST_NO2, 1, iocc=i, rscal=0.d0)
         call getvr8(motfac, 'DIST_2', iocc=icomp, scal=dist_no2, nbret=n1)
-        if (n1.gt.0) call nlsav(sd_nl, _DIST_NO2, 1, iocc=i, rscal=dist_no2)
+        if (n1 .gt. 0) call nlsav(sd_nl, _DIST_NO2, 1, iocc=i, rscal=dist_no2)
 
         call nlsav(sd_nl, _STIF_NORMAL, 1, iocc=i, rscal=0.d0)
         call getvr8(motfac, 'RIGI_NOR', iocc=icomp, scal=stif_normal, nbret=n1)
-        if (n1.gt.0) call nlsav(sd_nl, _STIF_NORMAL, 1, iocc=i, rscal=stif_normal)
+        if (n1 .gt. 0) call nlsav(sd_nl, _STIF_NORMAL, 1, iocc=i, rscal=stif_normal)
 
         call nlsav(sd_nl, _DAMP_NORMAL, 1, iocc=i, rscal=0.d0)
         call getvr8(motfac, 'AMOR_NOR', iocc=icomp, scal=damp_normal, nbret=n1)
-        if (n1.gt.0) call nlsav(sd_nl, _DAMP_NORMAL, 1, iocc=i, rscal=damp_normal)
+        if (n1 .gt. 0) call nlsav(sd_nl, _DAMP_NORMAL, 1, iocc=i, rscal=damp_normal)
 
         call nlsav(sd_nl, _RIGI_TANGENTIAL, 1, iocc=i, rscal=0.d0)
         call getvr8(motfac, 'RIGI_TAN', iocc=icomp, scal=ktang, nbret=n1)
-        if (n1.gt.0) call nlsav(sd_nl, _RIGI_TANGENTIAL, 1, iocc=i, rscal=ktang)
+        if (n1 .gt. 0) call nlsav(sd_nl, _RIGI_TANGENTIAL, 1, iocc=i, rscal=ktang)
 
         friction = .true.
         unidir = 0
         call getvtx(motfac, 'FROTTEMENT', iocc=icomp, scal=typfro, nbret=n1)
         if (typfro(1:10) .eq. 'COULOMB   ') then
-            call getvr8(motfac, 'COULOMB'        , iocc=icomp, scal=fric_dynamic, nbret=n1)
+            call getvr8(motfac, 'COULOMB', iocc=icomp, scal=fric_dynamic, nbret=n1)
             call getvtx(motfac, 'UNIDIRECTIONNEL', iocc=icomp, scal=unidirk, nbret=n1)
-            if (unidirk.eq.'OUI') unidir = 1
+            if (unidirk .eq. 'OUI') unidir = 1
             call nlsav(sd_nl, _FRIC_DYNAMIC, 1, iocc=i, rscal=fric_dynamic)
-            call nlsav(sd_nl, _FRIC_STATIC , 1, iocc=i, rscal=fric_dynamic)
-            call nlsav(sd_nl, _FRIC_UNIDIR , 1, iocc=i, iscal=unidir)
+            call nlsav(sd_nl, _FRIC_STATIC, 1, iocc=i, rscal=fric_dynamic)
+            call nlsav(sd_nl, _FRIC_UNIDIR, 1, iocc=i, iscal=unidir)
         else if (typfro(1:16) .eq. 'COULOMB_STAT_DYN') then
             call getvr8(motfac, 'COULOMB_DYNA', iocc=icomp, scal=fric_dynamic, nbret=n1)
             call getvr8(motfac, 'COULOMB_STAT', iocc=icomp, scal=fric_static, nbret=n1)
             call getvtx(motfac, 'UNIDIRECTIONNEL', iocc=icomp, scal=unidirk, nbret=n1)
-            if (unidirk.eq.'OUI') unidir = 1
+            if (unidirk .eq. 'OUI') unidir = 1
             call nlsav(sd_nl, _FRIC_DYNAMIC, 1, iocc=i, rscal=fric_dynamic)
             call nlsav(sd_nl, _FRIC_STATIC, 1, iocc=i, rscal=fric_static)
-            call nlsav(sd_nl, _FRIC_UNIDIR , 1, iocc=i, iscal=unidir)
+            call nlsav(sd_nl, _FRIC_UNIDIR, 1, iocc=i, iscal=unidir)
         else
             call nlsav(sd_nl, _FRIC_DYNAMIC, 1, iocc=i, rscal=0.d0)
             call nlsav(sd_nl, _FRIC_STATIC, 1, iocc=i, rscal=0.d0)
@@ -418,44 +416,44 @@ subroutine dtmprep_noli_choc(sd_dtm_, sd_nl_, icomp)
 !
         ctang = 0.d0
         call getvr8(motfac, 'AMOR_TAN', iocc=icomp, nbret=namtan)
-        if (namtan.gt.0) call getvr8(motfac, 'AMOR_TAN', iocc=icomp, scal=ctang)
+        if (namtan .gt. 0) call getvr8(motfac, 'AMOR_TAN', iocc=icomp, scal=ctang)
 
         call getvid(motfac, 'OBSTACLE', iocc=icomp, scal=obst_typ, nbret=n1)
 !       --- 3.4 - Obstacle type
         call tbliva(obst_typ, 1, 'LIEU', [ibid], [r8bid], &
-                    [cbid], 'DEFIOBST', kbid, [r8bid], 'TYPE',&
-                    k8typ, ibid, r8bid, cbid, refo,&
+                    [cbid], 'DEFIOBST', kbid, [r8bid], 'TYPE', &
+                    k8typ, ibid, r8bid, cbid, refo, &
                     irett)
-        ASSERT(irett.eq.0)
+        ASSERT(irett .eq. 0)
         if (refo(1:9) .eq. 'BI_PLAN_Y') then
             obst_typ = 'BI_PLANY'
-        else if (refo(1:9).eq.'BI_PLAN_Z') then
+        else if (refo(1:9) .eq. 'BI_PLAN_Z') then
             obst_typ = 'BI_PLANZ'
-        else if (refo(1:11).eq.'BI_CERC_INT') then
+        else if (refo(1:11) .eq. 'BI_CERC_INT') then
             obst_typ = 'BI_CERCI'
-        else if (refo(1:7).ne.'DISCRET') then
+        else if (refo(1:7) .ne. 'DISCRET') then
             obst_typ = refo(1:8)
-        endif
+        end if
         call nlsav(sd_nl, _OBST_TYP, 1, iocc=i, kscal=obst_typ)
-        if ((obst_typ(1:8).eq.'BI_CERCI').and.(dist_no2.lt.dist_no1)) then
+        if ((obst_typ(1:8) .eq. 'BI_CERCI') .and. (dist_no2 .lt. dist_no1)) then
             call utmess('F', 'ALGORITH5_35')
-        endif
+        end if
 !
 !       --- 3.5 - Calculation of geometrical properties :
 !                 play, orientation, local coordinates, distances
         call nlget(sd_nl, _COOR_NO1, iocc=i, vr=coor_no1)
         xjeu = 0.d0
-        if (obst_typ(1:2).eq.'BI') then
+        if (obst_typ(1:2) .eq. 'BI') then
             call nlget(sd_nl, _COOR_NO2, iocc=i, vr=coor_no2)
-            xjeu = (coor_no2(1)-coor_no1(1))**2 +&
-                   (coor_no2(2)-coor_no1(2))**2 +&
+            xjeu = (coor_no2(1)-coor_no1(1))**2+ &
+                   (coor_no2(2)-coor_no1(2))**2+ &
                    (coor_no2(3)-coor_no1(3))**2
-        endif
+        end if
 !
-        call mdchre('DIS_CHOC  ', icomp, i, mdgene, typnum,&
+        call mdchre('DIS_CHOC  ', icomp, i, mdgene, typnum, &
                     repere, lnoeu2)
 !
-        call mdchan('DIS_CHOC  ', icomp, i, mdgene, typnum,&
+        call mdchan('DIS_CHOC  ', icomp, i, mdgene, typnum, &
                     repere, xjeu)
 
         call nlget(sd_nl, _COOR_ORIGIN_OBSTACLE, iocc=i, vr=origob)
@@ -474,27 +472,27 @@ subroutine dtmprep_noli_choc(sd_dtm_, sd_nl_, icomp)
         dpiglo(1) = coor_no1(1)
         dpiglo(2) = coor_no1(2)
         dpiglo(3) = coor_no1(3)
-        call gloloc(dpiglo, origob, sina, cosa, sinb,&
+        call gloloc(dpiglo, origob, sina, cosa, sinb, &
                     cosb, sing, cosg, dpiloc)
 !       --- Differential distance given a single node
         ddpilo(1) = dpiloc(1)
         ddpilo(2) = dpiloc(2)
         ddpilo(3) = dpiloc(3)
 !
-        if (obst_typ(1:2).eq.'BI') then
+        if (obst_typ(1:2) .eq. 'BI') then
 !           --- Initial position of node 2 in the local (obstacle) reference
             call nlget(sd_nl, _COOR_NO2, iocc=i, vr=coor_no2)
             dpiglo(4) = coor_no2(1)
             dpiglo(5) = coor_no2(2)
             dpiglo(6) = coor_no2(3)
-            call gloloc(dpiglo(4), origob, sina, cosa, sinb,&
+            call gloloc(dpiglo(4), origob, sina, cosa, sinb, &
                         cosb, sing, cosg, dpiloc(4))
 !       --- Differential coordinates (distance) for the binodal system
             ddpilo(1) = dpiloc(1)-dpiloc(4)
             ddpilo(2) = dpiloc(2)-dpiloc(5)
             ddpilo(3) = dpiloc(3)-dpiloc(6)
-        endif
-        call nlsav(sd_nl, _SIGN_DYZ, 2, iocc=i, rvect=[-sign(one,ddpilo(2)), -sign(one,ddpilo(3))])
+        end if
+       call nlsav(sd_nl, _SIGN_DYZ, 2, iocc=i, rvect=[-sign(one, ddpilo(2)), -sign(one, ddpilo(3))])
 !
 !
 !       --- 3.6 - Printing out user information
@@ -504,48 +502,48 @@ subroutine dtmprep_noli_choc(sd_dtm_, sd_nl_, icomp)
             if (typnum(1:13) .eq. 'NUME_DDL_GENE') then
                 call nlget(sd_nl, _SS1_NAME, iocc=i, kscal=valk(1))
                 call utmess('I', 'ALGORITH16_3', sk=valk(1))
-            endif
+            end if
             call nlget(sd_nl, _COOR_NO1, iocc=i, rvect=valr)
             call utmess('I', 'ALGORITH16_4', nr=3, valr=valr)
 
-            if (obst_typ(1:2).eq.'BI') then
+            if (obst_typ(1:2) .eq. 'BI') then
                 call nlget(sd_nl, _NO2_NAME, iocc=i, kscal=valk(1))
                 call utmess('I', 'ALGORITH16_5', sk=valk(1))
                 if (typnum(1:13) .eq. 'NUME_DDL_GENE') then
                     call nlget(sd_nl, _SS2_NAME, iocc=i, kscal=valk(1))
                     call utmess('I', 'ALGORITH16_3', sk=valk(1))
-                endif
+                end if
                 call nlget(sd_nl, _COOR_NO2, iocc=i, rvect=valr)
                 call utmess('I', 'ALGORITH16_4', nr=3, valr=valr)
-            endif
+            end if
             valr(1) = ctang
-            valr(2)  = origob(1)
-            valr(3)  = origob(2)
-            valr(4)  = origob(3)
-            valr(5)  = sincos_angle_a(1)
-            valr(6)  = sincos_angle_a(2)
-            valr(7)  = sincos_angle_b(1)
-            valr(8)  = sincos_angle_b(2)
-            valr(9)  = sincos_angle_g(1)
+            valr(2) = origob(1)
+            valr(3) = origob(2)
+            valr(4) = origob(3)
+            valr(5) = sincos_angle_a(1)
+            valr(6) = sincos_angle_a(2)
+            valr(7) = sincos_angle_b(1)
+            valr(8) = sincos_angle_b(2)
+            valr(9) = sincos_angle_g(1)
             valr(10) = sincos_angle_g(2)
             call utmess('I', 'ALGORITH16_8', nr=10, valr=valr)
 
             VectIN(1) = 1.0d0
             VectIN(2) = 0.0d0
             VectIN(3) = 0.0d0
-            call locglo(VectIN, sina, cosa, sinb,&
+            call locglo(VectIN, sina, cosa, sinb, &
                         cosb, sing, cosg, VectOUT)
             if (unidir .eq. 1) then
-                call utmess('I', 'ALGORITH16_97',nr=3, valr=VectOUT)
-            endif
+                call utmess('I', 'ALGORITH16_97', nr=3, valr=VectOUT)
+            end if
 
-            if (obst_typ(1:2).eq.'BI') then
+            if (obst_typ(1:2) .eq. 'BI') then
                 xjeu = sqrt(xjeu)-(dist_no1+dist_no2)
-                valr (1) = xjeu
+                valr(1) = xjeu
                 call utmess('I', 'ALGORITH16_9', sr=valr(1))
-            endif
+            end if
             call utmess('I', 'VIDE_1')
-        endif
+        end if
 !
 !       -- 3.7 - Modal displacements of the node(s)
 !                Note : if a single node is used, we fill with zeros the
@@ -554,85 +552,83 @@ subroutine dtmprep_noli_choc(sd_dtm_, sd_nl_, icomp)
         call dtmget(sd_dtm, _BASE_VEC, vr=bmodal_v)
         call dtmget(sd_dtm, _NB_PHYEQ, iscal=neq)
         call nlinivec(sd_nl, _MODAL_DEPL_NO1, 3*nbmode, iocc=i, vr=defmod1)
-        if (obst_typ(1:2).eq.'BI') then
+        if (obst_typ(1:2) .eq. 'BI') then
             call nlinivec(sd_nl, _MODAL_DEPL_NO2, 3*nbmode, iocc=i, vr=defmod2)
         end if
 
-
         if (typnum(1:16) .eq. 'NUME_DDL_SDASTER') then
             do j = 1, nbmode
-                defmod1(3*(j-1)+1) = bmodal(ddlcho(1),j)
-                defmod1(3*(j-1)+2) = bmodal(ddlcho(2),j)
-                defmod1(3*(j-1)+3) = bmodal(ddlcho(3),j)
+                defmod1(3*(j-1)+1) = bmodal(ddlcho(1), j)
+                defmod1(3*(j-1)+2) = bmodal(ddlcho(2), j)
+                defmod1(3*(j-1)+3) = bmodal(ddlcho(3), j)
             end do
-            if (obst_typ(1:2).eq.'BI') then
+            if (obst_typ(1:2) .eq. 'BI') then
                 do j = 1, nbmode
-                    defmod2(3*(j-1)+1) = bmodal(ddlcho(4),j)
-                    defmod2(3*(j-1)+2) = bmodal(ddlcho(5),j)
-                    defmod2(3*(j-1)+3) = bmodal(ddlcho(6),j)
+                    defmod2(3*(j-1)+1) = bmodal(ddlcho(4), j)
+                    defmod2(3*(j-1)+2) = bmodal(ddlcho(5), j)
+                    defmod2(3*(j-1)+3) = bmodal(ddlcho(6), j)
                 end do
             end if
 !
-        else if (typnum(1:13).eq.'NUME_DDL_GENE') then
+        else if (typnum(1:13) .eq. 'NUME_DDL_GENE') then
             numero = nume
             AS_ALLOCATE(vr=dplcho, size=nbmode*6)
             AS_ALLOCATE(vk8=noeud, size=3)
             call nlget(sd_nl, _NO1_NAME, iocc=i, kscal=noeud(1))
             call nlget(sd_nl, _SS1_NAME, iocc=i, kscal=noeud(2))
             call nlget(sd_nl, _NUMDDL_1, iocc=i, kscal=noeud(3))
-            call resmod(bmodal_v, nbmode, neq, numero, mdgene,&
+            call resmod(bmodal_v, nbmode, neq, numero, mdgene, &
                         noeud, dplcho)
             do j = 1, nbmode
                 defmod1(3*(j-1)+1) = dplcho(j)
                 defmod1(3*(j-1)+2) = dplcho(j+nbmode)
                 defmod1(3*(j-1)+3) = dplcho(j+2*nbmode)
-            enddo
+            end do
 
-            if (obst_typ(1:2).eq.'BI') then
+            if (obst_typ(1:2) .eq. 'BI') then
                 call nlget(sd_nl, _NO2_NAME, iocc=i, kscal=noeud(1))
                 call nlget(sd_nl, _SS2_NAME, iocc=i, kscal=noeud(2))
                 call nlget(sd_nl, _NUMDDL_2, iocc=i, kscal=noeud(3))
-                call resmod(bmodal_v, nbmode, neq, numero, mdgene,&
+                call resmod(bmodal_v, nbmode, neq, numero, mdgene, &
                             noeud, dplcho)
                 do j = 1, nbmode
                     defmod2(3*(j-1)+1) = dplcho(j)
                     defmod2(3*(j-1)+2) = dplcho(j+nbmode)
                     defmod2(3*(j-1)+3) = dplcho(j+2*nbmode)
                 end do
-            endif
+            end if
             AS_DEALLOCATE(vr=dplcho)
             AS_DEALLOCATE(vk8=noeud)
-        endif
+        end if
 !
 !       --- 3.8 - Multi supported systems, filling up of psixdelta for the
 !                 concerned nodes
         call dtmget(sd_dtm, _MULTI_AP, kscal=monmot)
         if (monmot(1:3) .eq. 'OUI') then
 
-            call dtmget(sd_dtm, _CALC_SD , kscal=nomres)
+            call dtmget(sd_dtm, _CALC_SD, kscal=nomres)
             call dtmget(sd_dtm, _NB_EXC_T, iscal=nexcit)
             call jeveuo(nomres//'.IPSD', 'E', vr=ps1del_v)
 
             if (typnum(1:16) .eq. 'NUME_DDL_SDASTER') then
                 call nlinivec(sd_nl, _PSI_DELT_NO1, 3*nexcit, iocc=i, vr=ps2del1)
                 do j = 1, nexcit
-                    ps2del1(3*(j-1)+1) = ps1del(ddlcho(1),j)
-                    ps2del1(3*(j-1)+2) = ps1del(ddlcho(2),j)
-                    ps2del1(3*(j-1)+3) = ps1del(ddlcho(3),j)
-                enddo
-                if (obst_typ(1:2).eq.'BI') then
+                    ps2del1(3*(j-1)+1) = ps1del(ddlcho(1), j)
+                    ps2del1(3*(j-1)+2) = ps1del(ddlcho(2), j)
+                    ps2del1(3*(j-1)+3) = ps1del(ddlcho(3), j)
+                end do
+                if (obst_typ(1:2) .eq. 'BI') then
                     call nlinivec(sd_nl, _PSI_DELT_NO2, 3*nexcit, iocc=i, vr=ps2del2)
                     do j = 1, nexcit
-                        ps2del2(3*(j-1)+1) = ps1del(ddlcho(4),j)
-                        ps2del2(3*(j-1)+2) = ps1del(ddlcho(5),j)
-                        ps2del2(3*(j-1)+3) = ps1del(ddlcho(6),j)
+                        ps2del2(3*(j-1)+1) = ps1del(ddlcho(4), j)
+                        ps2del2(3*(j-1)+2) = ps1del(ddlcho(5), j)
+                        ps2del2(3*(j-1)+3) = ps1del(ddlcho(6), j)
                     end do
-                endif
-            else if (typnum(1:13).eq.'NUME_DDL_GENE') then
+                end if
+            else if (typnum(1:13) .eq. 'NUME_DDL_GENE') then
                 call utmess('E', 'ALGORITH5_37')
-            endif
-        endif
-
+            end if
+        end if
 
 !       --- 3.9 - Special treatment for the tangential damping
 !           If no value is given, an optimized value is calculated and
@@ -657,32 +653,32 @@ subroutine dtmprep_noli_choc(sd_dtm_, sd_nl_, icomp)
                     gdepl(1) = defmod1(3*(j-1)+1)
                     gdepl(2) = defmod1(3*(j-1)+2)
                     gdepl(3) = defmod1(3*(j-1)+3)
-                    if (obst_typ(1:2).eq.'BI') then
-                        gdepl(1) = defmod2(3*(j-1)+1) - gdepl(1)
-                        gdepl(2) = defmod2(3*(j-1)+2) - gdepl(2)
-                        gdepl(3) = defmod2(3*(j-1)+3) - gdepl(3)
-                    endif
-                    call gloloc(gdepl, [0.d0, 0.d0, 0.d0], sina, cosa, sinb,&
+                    if (obst_typ(1:2) .eq. 'BI') then
+                        gdepl(1) = defmod2(3*(j-1)+1)-gdepl(1)
+                        gdepl(2) = defmod2(3*(j-1)+2)-gdepl(2)
+                        gdepl(3) = defmod2(3*(j-1)+3)-gdepl(3)
+                    end if
+                    call gloloc(gdepl, [0.d0, 0.d0, 0.d0], sina, cosa, sinb, &
                                 cosb, sing, cosg, ldepl)
                     if (obst_typ .eq. 'BI_PLANY' .or. obst_typ .eq. 'PLAN_Y') then
                         tdepl2 = ldepl(1)*ldepl(1)+ldepl(3)*ldepl(3)
-                    else if (obst_typ.eq.'BI_PLANZ' .or. obst_typ.eq.'PLAN_Z') then
+                    else if (obst_typ .eq. 'BI_PLANZ' .or. obst_typ .eq. 'PLAN_Z') then
                         tdepl2 = ldepl(1)*ldepl(1)+ldepl(2)*ldepl(2)
-                    else if (obst_typ.eq.'BI_CERCLE') then
-                        bc_norm = coor_no1 - coor_no2
-                        bc_norm = bc_norm /  sqrt(dot_product(bc_norm, bc_norm))
+                    else if (obst_typ .eq. 'BI_CERCLE') then
+                        bc_norm = coor_no1-coor_no2
+                        bc_norm = bc_norm/sqrt(dot_product(bc_norm, bc_norm))
                         ldepl_norm = dot_product(ldepl, bc_norm)
-                        tdepl2 =dot_product(ldepl, ldepl) - ldepl_norm**2
+                        tdepl2 = dot_product(ldepl, ldepl)-ldepl_norm**2
                     else
                         tdepl2 = ldepl(1)*ldepl(1)
-                    endif
+                    end if
 
 !                   --- Detect (and skip) non dynamic modes => fictional mass
                     mass_normed(j) = 0.d0
 !                    if ((tdepl2*tdepl2) .gt. 1.d-10) then
                     mass_normed(j) = masgen(j)*sqrt(tdepl2)
 !                    endif
-                endif
+                end if
             end do
 
 !           --- Determine the mode with the maximum mass, relevant to the
@@ -691,25 +687,25 @@ subroutine dtmprep_noli_choc(sd_dtm_, sd_nl_, icomp)
 !               ind_mmax : index of the mode with the greatest mass
             mmax = mass_normed(1)
             ind_mmax = 1
-            if (nbmode.gt.1) then
+            if (nbmode .gt. 1) then
                 do im = 2, nbmode
                     if (mass_normed(im) .gt. mmax) then
                         mmax = mass_normed(im)
                         ind_mmax = im
-                    endif
-                enddo
-            endif
+                    end if
+                end do
+            end if
             mmax = masgen(ind_mmax)
             AS_DEALLOCATE(vr=mass_normed)
 
 !           --- Access index of the corresponding modal damping (ksi)
 !               (depending whether the damping matrix is diagonal or no)
             call dtmget(sd_dtm, _AMOR_FUL, lonvec=iret)
-            if (iret.gt.0) then
+            if (iret .gt. 0) then
 !               --- amogen = C (full matrix)
 !               --- Acrit (critical damping) = 2*sqrt(k*m) = 2*omega*m
                 call dtmget(sd_dtm, _AMOR_FUL, vr=amogen)
-                amor = amogen(ind_mmax + nbmode*(ind_mmax-1))
+                amor = amogen(ind_mmax+nbmode*(ind_mmax-1))
                 amor = amor/(2.d0*sqrt(omega2(ind_mmax))*masgen(ind_mmax))
             else
 !               --- amogen = 2*omega*ksi (diagonal matrix)
@@ -720,8 +716,8 @@ subroutine dtmprep_noli_choc(sd_dtm_, sd_nl_, icomp)
 !
 !           --- The stiffness (k) is calculated based on mmax which is normed.
 !               Hence (k) itself is also normed to local choc displacement = 1
-            k = omega2(ind_mmax) * mmax
-            ctang = 2.d0*sqrt(mmax*(k+ktang)) - 2.d0*amor*sqrt(k*mmax)
+            k = omega2(ind_mmax)*mmax
+            ctang = 2.d0*sqrt(mmax*(k+ktang))-2.d0*amor*sqrt(k*mmax)
 
 !           --- Insure that the optimized tangential damping is not negative
             ctang = max(0.d0, ctang)
@@ -734,22 +730,22 @@ subroutine dtmprep_noli_choc(sd_dtm_, sd_nl_, icomp)
                 valr(3) = k
                 valr(4) = amor
                 valr(5) = ktang
-                call utmess('I', 'ALGORITH16_10', ni=2, vali=vali, nr=5,&
+                call utmess('I', 'ALGORITH16_10', ni=2, vali=vali, nr=5, &
                             valr=valr)
-            endif
-        endif
+            end if
+        end if
         call nlsav(sd_nl, _DAMP_TANGENTIAL, 1, iocc=i, rscal=ctang)
     end do
 !
 !   --- 4 - Updating indices for sd_nl and sd_dtm
-    call nlget(sd_nl, _MAX_LEVEL, iscal = mxlevel)
-    mxlevel = mxlevel + finish - start + 1
+    call nlget(sd_nl, _MAX_LEVEL, iscal=mxlevel)
+    mxlevel = mxlevel+finish-start+1
     call nlsav(sd_nl, _MAX_LEVEL, 1, iscal=mxlevel)
     call dtmsav(sd_dtm, _NB_NONLI, 1, iscal=mxlevel)
 !
-    call nlget(sd_nl, _NB_CHOC, iscal = nbchoc)
-    nbchoc = nbchoc + finish - start + 1
-    call nlsav(sd_nl, _NB_CHOC, 1, iscal = nbchoc)
+    call nlget(sd_nl, _NB_CHOC, iscal=nbchoc)
+    nbchoc = nbchoc+finish-start+1
+    call nlsav(sd_nl, _NB_CHOC, 1, iscal=nbchoc)
 !
     AS_DEALLOCATE(vi=ddlcho)
 !

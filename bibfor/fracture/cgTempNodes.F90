@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@
 !
 subroutine cgTempNodes(cgStudy, cgTable)
 !
-use calcG_type
+    use calcG_type
 !
     implicit none
 !
@@ -51,7 +51,7 @@ use calcG_type
 ! IO compor    : name of <CARTE> COMPORTEMENT
 ! --------------------------------------------------------------------------------------------------
 !
- !   character(len=19), parameter :: celvrc = '&&TABLEG.CELVRC'
+    !   character(len=19), parameter :: celvrc = '&&TABLEG.CELVRC'
     ! character(len=19), parameter :: cesvrc = '&&TABLEG.CESVRC'
     ! character(len=19), parameter :: redvrc = '&&TABLEG.REDVRC'
 !    character(len=19), parameter :: cnovrc = '&&TABLEG.CNOVRC'
@@ -76,7 +76,7 @@ use calcG_type
     ! end if
 
 ! pour le moment on oublie la suite
-    print*, cgTable%table_g
+    print *, cgTable%table_g
     go to 999
 
 ! On n'a un problème avec les éléments tardifs - passez par un TE ?

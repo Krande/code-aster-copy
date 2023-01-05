@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine extche(nchme2, nmaile, nummai, ncmp, nbm,&
-                  nbc, indic, nssche, mcf, iocc,&
+subroutine extche(nchme2, nmaile, nummai, ncmp, nbm, &
+                  nbc, indic, nssche, mcf, iocc, &
                   nbnac, nnoeud)
     implicit none
 #include "asterf_types.h"
@@ -228,19 +228,19 @@ subroutine extche(nchme2, nmaile, nummai, ncmp, nbm,&
 !   ---------------------------------------------------------------
 !
     call jemarq()
-    nchmel=nchme2
+    nchmel = nchme2
 !
 !
 !     -- ON VERIFIE QUE LE CHAM_ELEM N'EST PAS TROP DYNAMIQUE :
     call celcel('NBVARI_CST', nchmel, 'V', '&&EXTCHE.CHAMEL1')
-    nchmel= '&&EXTCHE.CHAMEL1'
+    nchmel = '&&EXTCHE.CHAMEL1'
     call celver(nchmel, 'NBSPT_1', 'COOL', kk)
     if (kk .eq. 1) then
         call dismoi('NOM_GD', nchmel, 'CHAMP', repk=nomgd)
         call utmess('I', 'PREPOST_36', sk=nomgd)
         call celcel('PAS_DE_SP', nchmel, 'V', '&&EXTCHE.CHAMEL2')
-        nchmel= '&&EXTCHE.CHAMEL2'
-    endif
+        nchmel = '&&EXTCHE.CHAMEL2'
+    end if
 !
 !
     ndesc = nchmel//'.CELD'
@@ -261,17 +261,17 @@ subroutine extche(nchme2, nmaile, nummai, ncmp, nbm,&
 !
         end do
 !
-    endif
+    end if
 !
     call jelira(nvale, 'TYPE', cval=type)
-    ASSERT((type(1:1).eq.'R').or.(type(1:1).eq.'C'))
+    ASSERT((type(1:1) .eq. 'R') .or. (type(1:1) .eq. 'C'))
     if (type(1:1) .eq. 'R') then
         call jeveuo(nvale, 'L', avale)
     else
         nomvec = 'EXTCHE.VECTEUR'
         call rvrecu(mcf, iocc, nchmel, nomvec)
         call jeveuo(nomvec, 'L', avale)
-    endif
+    end if
     call jeveuo(ndesc, 'L', jceld)
     call jeveuo(ncelk, 'L', acelk)
 !
@@ -284,7 +284,7 @@ subroutine extche(nchme2, nmaile, nummai, ncmp, nbm,&
         if (repere .eq. 'UTILISAT') then
             utili = .true.
             nomjv = '&&EXTCHE.NEW_CHAMP'
-            call getvr8(mcf, 'ANGL_NAUT', iocc=iocc, nbval=3, vect=angl,&
+            call getvr8(mcf, 'ANGL_NAUT', iocc=iocc, nbval=3, vect=angl, &
                         nbret=n1)
             angl(1) = angl(1)*r8dgrd()
             angl(2) = angl(2)*r8dgrd()
@@ -292,29 +292,29 @@ subroutine extche(nchme2, nmaile, nummai, ncmp, nbm,&
             call matrot(angl, pgl)
             call rvche1(nchmel, nomjv, nbm, nummai, pgl)
             call jeveuo(nomjv, 'L', avale)
-        else if (repere.eq.'CYLINDRI') then
+        else if (repere .eq. 'CYLINDRI') then
             utili = .true.
             nomjv = '&&EXTCHE.NEW_CHAMP'
-            call getvr8(mcf, 'ORIGINE', iocc=iocc, nbval=3, vect=orig,&
+            call getvr8(mcf, 'ORIGINE', iocc=iocc, nbval=3, vect=orig, &
                         nbret=n1)
-            call getvr8(mcf, 'AXE_Z', iocc=iocc, nbval=3, vect=axez,&
+            call getvr8(mcf, 'AXE_Z', iocc=iocc, nbval=3, vect=axez, &
                         nbret=n1)
             xnormz = zero
             do i = 1, 3
-                xnormz = xnormz + axez(i)*axez(i)
+                xnormz = xnormz+axez(i)*axez(i)
             end do
             if (xnormz .lt. epsi) then
                 call utmess('F', 'PREPOST_38')
-            endif
+            end if
             xnormz = 1.0d0/sqrt(xnormz)
             do i = 1, 3
                 axez(i) = axez(i)*xnormz
             end do
-            call rvche2(nchmel, nomjv, nbm, nummai, orig,&
+            call rvche2(nchmel, nomjv, nbm, nummai, orig, &
                         axez, nbnac, nnoeud)
             call jeveuo(nomjv, 'L', avale)
-        endif
-    endif
+        end if
+    end if
 !
     nnugd = nssche//'.NUGD'
     npnbn = nssche//'.PNBN'
@@ -386,7 +386,7 @@ subroutine extche(nchme2, nmaile, nummai, ncmp, nbm,&
     do m = 1, nbm, 1
 !
         numm = nummai(m)
-        grel = zi(arepe+2* (numm-1)+1-1)
+        grel = zi(arepe+2*(numm-1)+1-1)
         agrel = zi(jceld-1+zi(jceld-1+4+grel)+8)
         mod = zi(jceld-1+zi(jceld-1+4+grel)+2)
 !
@@ -398,9 +398,9 @@ subroutine extche(nchme2, nmaile, nummai, ncmp, nbm,&
             call jeveuo(jexnum('&CATA.TE.MODELOC', mod), 'L', amodlo)
 !
             nbco = zi(amodlo+4-1)
-            nbco = max(nbco,nbco-10000)/nbn
-            nbco = max(1,nbco)
-            nbsp = max(1,zi(jceld-1+4))
+            nbco = max(nbco, nbco-10000)/nbn
+            nbco = max(1, nbco)
+            nbsp = max(1, zi(jceld-1+4))
 !
         else
 !
@@ -408,12 +408,12 @@ subroutine extche(nchme2, nmaile, nummai, ncmp, nbm,&
             nbco = 0
             nbsp = 0
 !
-        endif
+        end if
 !
         zi(apnbn+numm-1) = nbn
         zi(apnco+numm-1) = nbco
         zi(apnsp+numm-1) = nbsp
-        nbval = nbval + nbn*nbc*nbco*nbsp
+        nbval = nbval+nbn*nbc*nbco*nbsp
 !
     end do
 !
@@ -430,7 +430,7 @@ subroutine extche(nchme2, nmaile, nummai, ncmp, nbm,&
 !
         numm = nummai(m-1)
 !
-        zi(apadr+nummai(m)-1) = zi(apadr+numm-1) + nbc*zi(apnbn+numm- 1)*zi(apnsp+numm-1)* zi(apn&
+        zi(apadr+nummai(m)-1) = zi(apadr+numm-1)+nbc*zi(apnbn+numm-1)*zi(apnsp+numm-1)*zi(apn&
                                 &co+numm-1)
 !
     end do
@@ -441,7 +441,7 @@ subroutine extche(nchme2, nmaile, nummai, ncmp, nbm,&
     call wkvect(nvalcp, 'V V R', nbval, avalcp)
     call jeecra(nvalcp, 'DOCU', cval='CHLM')
 !
-    call jecrec(nperr, 'V V I', 'NU', 'DISPERSE', 'VARIABLE',&
+    call jecrec(nperr, 'V V I', 'NU', 'DISPERSE', 'VARIABLE', &
                 nbm)
 !
     do m = 1, nbm, 1
@@ -452,8 +452,8 @@ subroutine extche(nchme2, nmaile, nummai, ncmp, nbm,&
 !
         numm = nummai(m)
 !
-        grel = zi(arepe+2* (numm-1)+1-1)
-        posm = zi(arepe+2* (numm-1)+2-1)
+        grel = zi(arepe+2*(numm-1)+1-1)
+        posm = zi(arepe+2*(numm-1)+2-1)
 !
         agrel = zi(jceld-1+zi(jceld-1+4+grel)+8)
         mod = zi(jceld-1+zi(jceld-1+4+grel)+2)
@@ -464,12 +464,12 @@ subroutine extche(nchme2, nmaile, nummai, ncmp, nbm,&
 !
             nbscal = zi(amodlo+3-1)
             nbsp = zi(apnsp+numm-1)
-            asgtm = agrel + (posm-1)*nbscal*nbsp - 1
+            asgtm = agrel+(posm-1)*nbscal*nbsp-1
 !
-            call exchem(zi(amodlo), zi(anumcp), nbc, nbsp, zr(avale+asgtm),&
+            call exchem(zi(amodlo), zi(anumcp), nbc, nbsp, zr(avale+asgtm), &
                         zr(avalcp+zi(apadr+numm-1)-1), zi(aperr))
 !
-        endif
+        end if
 !
     end do
 !

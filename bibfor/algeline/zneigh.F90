@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine zneigh(rnorm, n, h, ldh, ritz,&
-                  bounds, q, ldq, workl, rwork,&
+subroutine zneigh(rnorm, n, h, ldh, ritz, &
+                  bounds, q, ldq, workl, rwork, &
                   ierr)
 !
 !     SUBROUTINE ARPACK CALCULANT LES MODES PROPRES DE LA MATRICE DE
@@ -141,7 +141,7 @@ subroutine zneigh(rnorm, n, h, ldh, ritz,&
 #include "blas/zlaset.h"
     integer :: logfil, ndigit, mgetv0, mnaupd, mnaup2, mnaitr, mneigh, mnapps
     integer :: mngets, mneupd
-    common /debug/&
+    common/debug/&
      &  logfil, ndigit, mgetv0,&
      &  mnaupd, mnaup2, mnaitr, mneigh, mnapps, mngets, mneupd
 !
@@ -166,8 +166,8 @@ subroutine zneigh(rnorm, n, h, ldh, ritz,&
 !
     complex(kind=8) :: one, zero
     real(kind=8) :: rone
-    parameter  (one = (1.0d+0, 0.0d+0), zero = (0.0d+0, 0.0d+0),&
-     &           rone = 1.0d+0)
+    parameter(one=(1.0d+0, 0.0d+0), zero=(0.0d+0, 0.0d+0),&
+     &           rone=1.0d+0)
 !
 !     %------------------------%
 !     | LOCAL SCALARS & ARRAYS |
@@ -197,9 +197,9 @@ subroutine zneigh(rnorm, n, h, ldh, ritz,&
     msglvl = mneigh
 !
     if (msglvl .gt. 2) then
-        call zmout(logfil, n, n, h, ldh,&
+        call zmout(logfil, n, n, h, ldh, &
                    ndigit, '_NEIGH: ENTERING UPPER HESSENBERG MATRIX H ')
-    endif
+    end if
 !
 !     %----------------------------------------------------------%
 !     | 1. COMPUTE THE EIGENVALUES, THE LAST COMPONENTS OF THE   |
@@ -209,20 +209,20 @@ subroutine zneigh(rnorm, n, h, ldh, ritz,&
 !     |    IN WORKL(1:N**2), AND THE SCHUR VECTORS IN Q.         |
 !     %----------------------------------------------------------%
 !
-    call zlacpy('A', n, n, h, ldh,&
+    call zlacpy('A', n, n, h, ldh, &
                 workl, n)
-    call zlaset('A', n, n, zero, one,&
+    call zlaset('A', n, n, zero, one, &
                 q, ldq)
 !
-    call zlahqr(.true._1, .true._1, n, 1, n,&
-                workl, ldh, ritz, 1, n,&
+    call zlahqr(.true._1, .true._1, n, 1, n, &
+                workl, ldh, ritz, 1, n, &
                 q, ldq, ierr4)
     if (ierr4 .ne. 0) goto 9000
 !
     call zcopy(n, q(n-1, 1), ldq, bounds, 1)
     if (msglvl .gt. 1) then
         call zvout(logfil, n, bounds, ndigit, '_NEIGH: LAST ROW OF THE SCHUR MATRIX FOR H')
-    endif
+    end if
 !
 !     %----------------------------------------------------------%
 !     | 2. COMPUTE THE EIGENVECTORS OF THE FULL SCHUR FORM T AND |
@@ -230,8 +230,8 @@ subroutine zneigh(rnorm, n, h, ldh, ritz,&
 !     |    EIGENVECTORS.                                         |
 !     %----------------------------------------------------------%
 !
-    call ar_ztrevc('R', 'B', select, n, workl,&
-                   n, vl, n, q, ldq,&
+    call ar_ztrevc('R', 'B', select, n, workl, &
+                   n, vl, n, q, ldq, &
                    n, n, workl(n*n+1), rwork, ierr)
 !
     if (ierr .ne. 0) goto 9000
@@ -246,14 +246,14 @@ subroutine zneigh(rnorm, n, h, ldh, ritz,&
 !     %------------------------------------------------%
 !
     do j = 1, n
-        temp = dznrm2( n, q(1,j), 1 )
-        call zdscal(n, rone / temp, q(1, j), 1)
+        temp = dznrm2(n, q(1, j), 1)
+        call zdscal(n, rone/temp, q(1, j), 1)
     end do
 !
     if (msglvl .gt. 1) then
         call zcopy(n, q(n, 1), ldq, workl, 1)
         call zvout(logfil, n, workl, ndigit, '_NEIGH: LAST ROW OF THE EIGENVECTOR MATRIX FOR H')
-    endif
+    end if
 !
 !     %----------------------------%
 !     | COMPUTE THE RITZ ESTIMATES |
@@ -265,7 +265,7 @@ subroutine zneigh(rnorm, n, h, ldh, ritz,&
     if (msglvl .gt. 2) then
         call zvout(logfil, n, ritz, ndigit, '_NEIGH: THE EIGENVALUES OF H')
         call zvout(logfil, n, bounds, ndigit, '_NEIGH: RITZ ESTIMATES FOR THE EIGENVALUES OF H')
-    endif
+    end if
 !
 !
 9000 continue

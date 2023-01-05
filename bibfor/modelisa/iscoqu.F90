@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -72,7 +72,7 @@ subroutine iscoqu(nomo, numail, lcoque)
     call jeexin(ligrmo//'.LIEL', iret)
     if (iret .eq. 0) then
         ASSERT(.false.)
-    endif
+    end if
 !
 ! --- NOMBRE DE GREL
 !
@@ -91,19 +91,19 @@ subroutine iscoqu(nomo, numail, lcoque)
 !
 ! --- CAS DES COQUES_3D
 !
-        if ((nomte.eq.'MEC3QU9H') .or. (nomte.eq.'MEC3TR7H')) then
+        if ((nomte .eq. 'MEC3QU9H') .or. (nomte .eq. 'MEC3TR7H')) then
 !
 ! --- BOUCLE DANS LE GREL
 !
-            do iel = 1, nel - 1
+            do iel = 1, nel-1
                 numai2 = zi(ialiel-1+iel)
                 if (numai2 .eq. numail) then
                     lcoque = .true.
                     goto 40
-                endif
+                end if
             end do
-        endif
- 40     continue
+        end if
+40      continue
     end do
 !
     call jedema()
