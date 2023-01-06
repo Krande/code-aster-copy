@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -98,7 +98,7 @@ TEST_RESU(
         RESULTAT=resnonl,
         NOM_CHAM="HHO_DEPL",
         NOM_CMP="DY",
-        VALE_CALC=7.005811697000991,
+        VALE_CALC=7.008553295062805,
         VALE_REFE=7.00031,
         CRITERE="RELATIF",
         PRECISION=2.0e-3,
@@ -113,7 +113,7 @@ TEST_RESU(
         RESULTAT=resnonl,
         NOM_CHAM="HHO_DEPL",
         NOM_CMP="DX",
-        VALE_CALC=-6.231166381040881,
+        VALE_CALC=-6.213903011405943,
         VALE_REFE=-6.23907,
         CRITERE="RELATIF",
         PRECISION=1.0e-2,
@@ -127,7 +127,7 @@ TEST_RESU(
         RESULTAT=resnonl,
         NOM_CHAM="SIEQ_NOEU",
         NOM_CMP="TRSIG",
-        VALE_CALC=-0.009251328964082269,
+        VALE_CALC=-0.014150088452215288,
         CRITERE="RELATIF",
     )
 )
@@ -139,7 +139,7 @@ TEST_RESU(
         RESULTAT=resnonl,
         NOM_CHAM="HHO_DEPL",
         NOM_CMP="DY",
-        VALE_CALC=1.4822186631086611,
+        VALE_CALC=1.4776466721085686,
         CRITERE="RELATIF",
     )
 )
@@ -151,7 +151,7 @@ TEST_RESU(
         RESULTAT=resnonl,
         NOM_CHAM="HHO_DEPL",
         NOM_CMP="DX",
-        VALE_CALC=-0.21139883668206133,
+        VALE_CALC=-0.19904136283793836,
         CRITERE="RELATIF",
     )
 )
@@ -163,7 +163,7 @@ TEST_RESU(
         RESULTAT=resnonl,
         NOM_CHAM="SIEQ_NOEU",
         NOM_CMP="TRSIG",
-        VALE_CALC=0.8170984349463106,
+        VALE_CALC=0.8171074604834494,
         CRITERE="RELATIF",
     )
 )

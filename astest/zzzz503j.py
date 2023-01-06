@@ -104,12 +104,12 @@ mySolver = code_aster.MumpsSolver()
 mySolver.factorize(lhs)
 solution = mySolver.solve(rhs, diriBCs)
 
-sol_ref = 28.67843514759691
+sol_ref = 28.527986741454132
 test.assertAlmostEqual((solution.norm("NORM_2") - sol_ref) / sol_ref, 0.0, delta=5e-5)
 
 # project HHO solution
 hho_field = hho.projectOnLagrangeSpace(solution)
-hho_ref = 32.197725321514774
+hho_ref = 32.400164138793706
 test.assertAlmostEqual((hho_field.norm("NORM_2") - hho_ref) / hho_ref, 0.0, delta=1e-6)
 
 # save result
@@ -135,7 +135,7 @@ for i in range(100):
     u_hho += du_hho
 
 test.assertAlmostEqual(
-    (u_hho.norm("NORM_2") - 28.062005519735614) / 28.062005519735614, 0.0, delta=5e-5
+    (u_hho.norm("NORM_2") - 27.915444480224167) / 27.915444480224167, 0.0, delta=5e-5
 )
 
 test.printSummary()

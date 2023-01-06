@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -98,7 +98,7 @@ TEST_RESU(
             NOM_CHAM="HHO_TEMP",
             NOM_CMP="TEMP",
             TYPE_TEST="MAX",
-            VALE_CALC=2.000325309888204,
+            VALE_CALC=2.0004183304253194,
             VALE_REFE=2.0000000000000018,
             INST=1.2,
             REFERENCE="NON_DEFINI",
@@ -109,7 +109,7 @@ TEST_RESU(
             NOM_CHAM="HHO_TEMP",
             NOM_CMP="TEMP",
             TYPE_TEST="MIN",
-            VALE_CALC=1.9827857485396587,
+            VALE_CALC=1.982561750180342,
             VALE_REFE=1.9828164948013618,
             INST=1.2,
             REFERENCE="NON_DEFINI",
@@ -120,7 +120,7 @@ TEST_RESU(
             NOM_CHAM="HHO_TEMP",
             NOM_CMP="TEMP",
             TYPE_TEST="SOMM_ABS",
-            VALE_CALC=7837.365296861128,
+            VALE_CALC=7837.27836931722,
             VALE_REFE=7837.350333179525,
             INST=1.2,
             REFERENCE="NON_DEFINI",

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -58,12 +58,12 @@ times = DEFI_LIST_INST(
 
 FY = FORMULE(NOM_PARA=("INST"), VALE="0.3125")
 
-AY = [6.919495507531248]
-AX = [-6.160774780150184]
-AT = [-0.07915384780154855]
-CY = [1.4353978624958306]
-CX = [-0.18782702800005405]
-CT = [0.8261660673437589]
+AY = [6.879453170351336]
+AX = [-6.108150292203356]
+AT = [-0.12324260901062581]
+CY = [1.4254317346662682]
+CX = [-0.17758460599751516]
+CT = [0.824978291538437]
 
 model = AFFE_MODELE(
     AFFE=_F(MODELISATION=("3D_HHO",), FORMULATION="LINEAIRE", PHENOMENE="MECANIQUE", TOUT="OUI"),

@@ -29,12 +29,7 @@ from cataelem.Options.options import OP
 # Modes locaux :
 # ----------------
 
-DDL_THER = LocatedComponents(
-    phys=PHY.TEMP_R,
-    type="ELNO",
-    diff=True,
-    components=(("EN1", ("HHO_T[3]",)), ("EN2", ()), ("EN3", ("HHO_T[10]"))),
-)
+
 CCAMASS = LocatedComponents(
     phys=PHY.CAMASS, type="ELEM", components=("C", "ALPHA", "BETA", "KAPPA", "X", "Y", "Z")
 )
@@ -45,35 +40,38 @@ CCOMPOR = LocatedComponents(
 )
 
 
-NVITESR = LocatedComponents(phys=PHY.DEPL_R, type="ELNO", components=("DX", "DY", "DZ"))
+NVITESR = LocatedComponents(phys=PHY.DEPL_R, type="ELNO", components=("DX", "DY"))
 
 
 EENERR = LocatedComponents(phys=PHY.ENER_R, type="ELEM", components=("TOTALE",))
 
 
-CGRAINF = LocatedComponents(phys=PHY.FLUX_F, type="ELEM", components=("FLUX", "FLUY", "FLUZ"))
+CGRAINF = LocatedComponents(phys=PHY.FLUX_F, type="ELEM", components=("FLUX", "FLUY"))
 
 
-CGRAINR = LocatedComponents(phys=PHY.FLUX_R, type="ELEM", components=("FLUX", "FLUY", "FLUZ"))
+CGRAINR = LocatedComponents(phys=PHY.FLUX_R, type="ELEM", components=("FLUX", "FLUY"))
 
 
 EFLUXPG = LocatedComponents(
-    phys=PHY.FLUX_R, type="ELGA", location="RIGI", components=("FLUX", "FLUY", "FLUZ")
+    phys=PHY.FLUX_R, type="ELGA", location="RIGI", components=("FLUX", "FLUY")
 )
 
 
-EFLUXNO = LocatedComponents(phys=PHY.FLUX_R, type="ELNO", components=("FLUX", "FLUY", "FLUZ"))
+EFLUXNO = LocatedComponents(phys=PHY.FLUX_R, type="ELNO", components=("FLUX", "FLUY"))
 
 
-NGEOMER = LocatedComponents(phys=PHY.GEOM_R, type="ELNO", components=("X", "Y", "Z"))
+NGEOMER = LocatedComponents(phys=PHY.GEOM_R, type="ELNO", components=("X", "Y"))
 
-NGEOMGR = LocatedComponents(
-    phys=PHY.GEOM_R, type="ELGA", location="RIGI", components=("X", "Y", "Z")
-)
 
 EGGEOP_R = LocatedComponents(
-    phys=PHY.GEOM_R, type="ELGA", location="RIGI", components=("X", "Y", "Z", "W")
+    phys=PHY.GEOM_R, type="ELGA", location="RIGI", components=("X", "Y", "W")
 )
+
+
+EGGEOM_R = LocatedComponents(phys=PHY.GEOM_R, type="ELGA", location="RIGI", components=("X", "Y"))
+
+
+ENGEOM_R = LocatedComponents(phys=PHY.GEOM_R, type="ELNO", components=("X", "Y"))
 
 
 CTEMPSR = LocatedComponents(
@@ -84,6 +82,9 @@ CTEMPSR = LocatedComponents(
 EGNEUT_F = LocatedComponents(phys=PHY.NEUT_F, type="ELGA", location="RIGI", components=("X[30]",))
 
 
+ECASECT = LocatedComponents(phys=PHY.NEUT_R, type="ELEM", components=("X[9]",))
+
+
 EGNEUT_R = LocatedComponents(phys=PHY.NEUT_R, type="ELGA", location="RIGI", components=("X[30]",))
 
 
@@ -92,14 +93,19 @@ EMNEUT_R = LocatedComponents(phys=PHY.NEUT_R, type="ELEM", components=("X[30]",)
 
 ESOURCR = LocatedComponents(phys=PHY.SOUR_R, type="ELGA", location="RIGI", components=("SOUR",))
 
-
-NSOURCR = LocatedComponents(phys=PHY.SOUR_R, type="ELNO", components=("SOUR",))
-
-TEMPHHO = LocatedComponents(phys=PHY.TEMP_R, type="ELNO", components=("TEMP",))
-
 PFONC = LocatedComponents(phys=PHY.NEUT_K8, type="ELEM", components=("Z[2]",))
 
 CINSTR = LocatedComponents(phys=PHY.INST_R, type="ELEM", components=("INST",))
+
+DDL_THER = LocatedComponents(
+    phys=PHY.TEMP_R,
+    type="ELNO",
+    diff=True,
+    components=(("EN1", ("HHO_T[2]",)), ("EN2", ()), ("EN3", ("HHO_T[3]"))),
+)
+
+TEMPHHO = LocatedComponents(phys=PHY.TEMP_R, type="ELNO", components=("TEMP",))
+
 
 MVECTTR = ArrayOfComponents(phys=PHY.VTEM_R, locatedComponents=DDL_THER)
 
@@ -107,25 +113,23 @@ MMATTTR = ArrayOfComponents(phys=PHY.MTEM_R, locatedComponents=DDL_THER)
 
 MMATTSR = ArrayOfComponents(phys=PHY.MTNS_R, locatedComponents=DDL_THER)
 
+
 # ------------------------------------------------------------
 
 
-class THER3DH27_HHO121(Element):
+class THER2DQ9_HHO111(Element):
     """Please document this element"""
 
-    meshType = MT.HEXA27
+    meshType = MT.QUAD9
     nodes = (
-        SetOfNodes("EN1", (21, 22, 23, 24, 25, 26)),
-        SetOfNodes("EN2", (1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20)),
-        SetOfNodes("EN3", (27,)),
+        SetOfNodes("EN1", (5, 6, 7, 8)),
+        SetOfNodes("EN2", (1, 2, 3, 4)),
+        SetOfNodes("EN3", (9,)),
     )
     elrefe = (
         ElrefeLoc(
-            MT.H27,
-            gauss=("RIGI=FPG8", "FPG1=FPG1", "MASS=FPG27", "MTGA=FPG8"),
-            mater=("RIGI", "FPG1", "MTGA", "MASS"),
+            MT.QU9, gauss=("RIGI=FPG4", "FPG1=FPG1", "MASS=FPG4"), mater=("RIGI", "FPG1", "MASS")
         ),
-        ElrefeLoc(MT.QU9, gauss=("RIGI=FPG4",)),
     )
     calculs = (
         OP.CHAR_THER_EVOL(
@@ -158,6 +162,11 @@ class THER3DH27_HHO121(Element):
         OP.COOR_ELGA(
             te=488, para_in=((SP.PGEOMER, NGEOMER),), para_out=((OP.COOR_ELGA.PCOORPG, EGGEOP_R),)
         ),
+        OP.HHO_TEMP_THER(
+            te=456,
+            para_in=((SP.PGEOMER, NGEOMER), (SP.PTMPCHF, DDL_THER)),
+            para_out=((OP.HHO_TEMP_THER.PTEMP_R, TEMPHHO),),
+        ),
         OP.HHO_PROJ_THER(
             te=473,
             para_in=(
@@ -166,11 +175,6 @@ class THER3DH27_HHO121(Element):
                 (SP.PINSTPR, CINSTR),
             ),
             para_out=((OP.HHO_PROJ_THER.PTEMP_R, DDL_THER),),
-        ),
-        OP.HHO_TEMP_THER(
-            te=456,
-            para_in=((SP.PGEOMER, NGEOMER), (SP.PTMPCHF, DDL_THER)),
-            para_out=((OP.HHO_TEMP_THER.PTEMP_R, TEMPHHO),),
         ),
         OP.MASS_THER(
             te=449,
@@ -207,7 +211,7 @@ class THER3DH27_HHO121(Element):
             te=99,
             para_out=(
                 (OP.TOU_INI_ELGA.PFLUX_R, EFLUXPG),
-                (OP.TOU_INI_ELGA.PGEOM_R, NGEOMGR),
+                (OP.TOU_INI_ELGA.PGEOM_R, EGGEOM_R),
                 (OP.TOU_INI_ELGA.PNEUT_F, EGNEUT_F),
                 (OP.TOU_INI_ELGA.PNEUT_R, LC.EGNEUT1R),
                 (OP.TOU_INI_ELGA.PSOUR_R, ESOURCR),
@@ -219,12 +223,11 @@ class THER3DH27_HHO121(Element):
             te=99,
             para_out=(
                 (OP.TOU_INI_ELNO.PFLUX_R, EFLUXNO),
-                (OP.TOU_INI_ELNO.PGEOM_R, NGEOMER),
+                (OP.TOU_INI_ELNO.PGEOM_R, ENGEOM_R),
                 (OP.TOU_INI_ELNO.PHYDRPM, LC.EHYDRNO),
                 (OP.TOU_INI_ELNO.PINST_R, LC.ENINST_R),
                 (OP.TOU_INI_ELNO.PNEUT_F, LC.ENNEUT_F),
                 (OP.TOU_INI_ELNO.PNEUT_R, LC.ENNEUT_R),
-                (OP.TOU_INI_ELNO.PSOUR_R, NSOURCR),
                 (OP.TOU_INI_ELNO.PVARI_R, LC.EPHASNO_),
             ),
         ),
@@ -237,20 +240,13 @@ class THER3DH27_HHO121(Element):
 # ------------------------------------------------------------
 
 
-class THER3DT15_HHO121(THER3DH27_HHO121):
+class THER2DT7_HHO111(THER2DQ9_HHO111):
     """Please document this element"""
 
-    meshType = MT.TETRA15
-    nodes = (
-        SetOfNodes("EN1", (11, 12, 13, 14)),
-        SetOfNodes("EN2", (1, 2, 3, 4, 5, 6, 7, 8, 9, 10)),
-        SetOfNodes("EN3", (15,)),
-    )
+    meshType = MT.TRIA7
+    nodes = (SetOfNodes("EN1", (4, 5, 6)), SetOfNodes("EN2", (1, 2, 3)), SetOfNodes("EN3", (7,)))
     elrefe = (
         ElrefeLoc(
-            MT.T15,
-            gauss=("RIGI=FPG4", "FPG1=FPG1", "MASS=FPG11", "MTGA=FPG4"),
-            mater=("RIGI", "FPG1", "MTGA", "MASS"),
+            MT.TR7, gauss=("RIGI=FPG3", "FPG1=FPG1", "MASS=FPG3"), mater=("RIGI", "FPG1", "MASS")
         ),
-        ElrefeLoc(MT.TR7, gauss=("RIGI=FPG3",)),
     )

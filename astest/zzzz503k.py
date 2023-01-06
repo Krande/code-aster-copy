@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -97,8 +97,8 @@ cs = CoupledSolver(MECA, THER)
 
 sol = cs.solve(l_inst)
 
-u_ref = 1028.577291151862
-dx_ref = 1175.794430261763
+u_ref = 1029.9525015650959
+dx_ref = 1151.4747014413276
 d_ref = 800.0000000000003
 
 test.assertAlmostEqual((sol.u.norm("NORM_2") - u_ref) / u_ref, 0, delta=1e-4)

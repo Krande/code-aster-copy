@@ -586,7 +586,7 @@ contains
         ASSERT(lteatt('TYPMOD2', 'HHO') .or. lteatt('TYPMOD2', 'HHO_GRAD'))
         if (lteatt('FORMULATION', 'HHO_LINE')) then
             face_deg = 1
-            cell_deg = 2
+            cell_deg = 1
             grad_deg = 1
         elseif (lteatt('FORMULATION', 'HHO_QUAD')) then
             face_deg = 2

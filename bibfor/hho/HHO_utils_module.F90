@@ -88,7 +88,7 @@ contains
             else
                 call dismoi('EXI_HHO_LINE', model, 'MODELE', repk=answer)
                 if (answer .eq. 'OUI') then
-                    call hhoData%initialize(1, 2, 1, ASTER_FALSE, 0.d0, ASTER_FALSE, ASTER_FALSE, &
+                    call hhoData%initialize(1, 1, 1, ASTER_FALSE, 0.d0, ASTER_FALSE, ASTER_FALSE, &
                                             ASTER_FALSE)
                 else
                     ASSERT(ASTER_FALSE)

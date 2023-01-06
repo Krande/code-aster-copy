@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -144,7 +144,7 @@ TEST_RESU(
             NOM_CHAM="HHO_DEPL",
             NOM_CMP="DZ",
             REFERENCE="SOURCE_EXTERNE",
-            VALE_CALC=0.10054812011958975,
+            VALE_CALC=0.10054112571540293,
             VALE_REFE=deplRefe,
             PRECISION=deplTole,
         ),
@@ -162,7 +162,7 @@ TEST_RESU(
             NOM_CHAM="EPVC_ELNO",
             NOM_CMP="EPTHER_L",
             REFERENCE="ANALYTIQUE",
-            VALE_CALC=-0.0004514850149511043,
+            VALE_CALC=-0.0004514766884730514,
             VALE_REFE=epvcRefe,
             PRECISION=epvcTole,
         ),

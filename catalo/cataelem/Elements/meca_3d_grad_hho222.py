@@ -391,7 +391,6 @@ class MECA3DGVH_HHO222(Element):
             gauss=("RIGI=FPG27", "FPG1=FPG1", "MTGA=FPG27", "MASS=FPG27"),
             mater=("RIGI", "FPG1", "MTGA", "MASS"),
         ),
-        ElrefeLoc(MT.QU9, gauss=("RIGI=FPG9",)),
     )
     calculs = (
         OP.AMOR_MECA(
@@ -729,7 +728,6 @@ class MECA3DGVT_HHO222(MECA3DGVH_HHO222):
             gauss=("RIGI=FPG11", "FPG1=FPG1", "MTGA=FPG11", "MASS=FPG11"),
             mater=("RIGI", "FPG1", "MTGA", "MASS"),
         ),
-        ElrefeLoc(MT.TR7, gauss=("RIGI=FPG6",)),
     )
 
     calculs = (

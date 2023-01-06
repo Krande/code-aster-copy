@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -42,11 +42,11 @@ INSTANTS = DEFI_LIST_REEL(
 
 RAMPE = DEFI_FONCTION(NOM_PARA="INST", VALE=(0.0, 0.0, 1.0, 1.0))
 
-Test1 = [233.879213632]
-Test2 = [239.96183980601143]
-Test3 = [296.2395938759544]
-Test4 = [421.048209121]
-Test5 = [-2.13315509212]
+Test1 = [229.1635999027875]
+Test2 = [239.98955694487393]
+Test3 = [295.93615088106617]
+Test4 = [413.58766399726113]
+Test5 = [-19.26290985541598]
 
 
 MO = AFFE_MODELE(

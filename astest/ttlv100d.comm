@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -109,7 +109,7 @@ TEST_RESU(
             GROUP_NO="M1",
             PRECISION=0.02,
             CHAM_GD=TEMP_1,
-            VALE_CALC=288.641166735928,
+            VALE_CALC=288.82118413265357,
             VALE_REFE=288.63999999999999,
         ),
         _F(
@@ -118,7 +118,7 @@ TEST_RESU(
             GROUP_NO="M1",
             CHAM_GD=TEMP_2,
             PRECISION=0.05,
-            VALE_CALC=203.28464382206454,
+            VALE_CALC=203.78921777161406,
             VALE_REFE=202.75999999999999,
         ),
         _F(
@@ -127,7 +127,7 @@ TEST_RESU(
             GROUP_NO="M1",
             CHAM_GD=TEMP_3,
             PRECISION=0.02,
-            VALE_CALC=93.29340860411058,
+            VALE_CALC=93.33719810010824,
             VALE_REFE=93.027000000000001,
         ),
         _F(
@@ -136,7 +136,7 @@ TEST_RESU(
             GROUP_NO="M1",
             CHAM_GD=TEMP_4,
             PRECISION=0.02,
-            VALE_CALC=29.45215692982734,
+            VALE_CALC=29.453637456945046,
             VALE_REFE=29.419,
         ),
         _F(
@@ -144,7 +144,7 @@ TEST_RESU(
             NOM_CMP="TEMP",
             GROUP_NO="M2",
             CHAM_GD=TEMP_1,
-            VALE_CALC=288.9999844863532,
+            VALE_CALC=288.9999890080512,
             VALE_REFE=289.0,
         ),
         _F(
@@ -153,7 +153,7 @@ TEST_RESU(
             GROUP_NO="M2",
             PRECISION=0.02,
             CHAM_GD=TEMP_2,
-            VALE_CALC=275.0686185917982,
+            VALE_CALC=275.3378997673184,
             VALE_REFE=275.04000000000002,
         ),
         _F(
@@ -162,7 +162,7 @@ TEST_RESU(
             GROUP_NO="M2",
             CHAM_GD=TEMP_3,
             PRECISION=0.02,
-            VALE_CALC=143.02113464280126,
+            VALE_CALC=143.13939565546815,
             VALE_REFE=143.0,
         ),
         _F(
@@ -171,7 +171,7 @@ TEST_RESU(
             GROUP_NO="M2",
             PRECISION=0.02,
             CHAM_GD=TEMP_4,
-            VALE_CALC=35.85837699879449,
+            VALE_CALC=35.86632653212273,
             VALE_REFE=35.857999999999997,
         ),
         _F(
@@ -180,7 +180,7 @@ TEST_RESU(
             GROUP_NO="M1P",
             PRECISION=0.02,
             CHAM_GD=TEMP_1,
-            VALE_CALC=288.64116673592815,
+            VALE_CALC=288.82118413265334,
             VALE_REFE=288.63999999999999,
         ),
         _F(
@@ -189,7 +189,7 @@ TEST_RESU(
             GROUP_NO="M1P",
             CHAM_GD=TEMP_2,
             PRECISION=0.04,
-            VALE_CALC=203.28464382206377,
+            VALE_CALC=203.7892177716138,
             VALE_REFE=202.75999999999999,
         ),
         _F(
@@ -198,7 +198,7 @@ TEST_RESU(
             GROUP_NO="M1P",
             CHAM_GD=TEMP_3,
             PRECISION=0.02,
-            VALE_CALC=93.29340860410812,
+            VALE_CALC=93.3371981001071,
             VALE_REFE=93.027000000000001,
         ),
         _F(
@@ -207,7 +207,7 @@ TEST_RESU(
             GROUP_NO="M1P",
             CHAM_GD=TEMP_4,
             PRECISION=0.02,
-            VALE_CALC=29.452156929826742,
+            VALE_CALC=29.453637456944932,
             VALE_REFE=29.419,
         ),
         _F(
@@ -216,7 +216,7 @@ TEST_RESU(
             GROUP_NO="M2P",
             CHAM_GD=TEMP_1,
             PRECISION=0.03,
-            VALE_CALC=288.99998448635085,
+            VALE_CALC=288.99998900805247,
             VALE_REFE=289.0,
         ),
         _F(
@@ -225,7 +225,7 @@ TEST_RESU(
             GROUP_NO="M2P",
             PRECISION=0.02,
             CHAM_GD=TEMP_2,
-            VALE_CALC=275.0686185917913,
+            VALE_CALC=275.33789976731737,
             VALE_REFE=275.04000000000002,
         ),
         _F(
@@ -234,7 +234,7 @@ TEST_RESU(
             GROUP_NO="M2P",
             CHAM_GD=TEMP_3,
             PRECISION=0.02,
-            VALE_CALC=143.0211346427966,
+            VALE_CALC=143.13939565546912,
             VALE_REFE=143.0,
         ),
         _F(
@@ -243,7 +243,7 @@ TEST_RESU(
             GROUP_NO="M2P",
             PRECISION=0.02,
             CHAM_GD=TEMP_4,
-            VALE_CALC=35.85837699879521,
+            VALE_CALC=35.86632653212281,
             VALE_REFE=35.857999999999997,
         ),
     )

@@ -124,7 +124,6 @@ class THER3DH27_HHO222(Element):
             gauss=("RIGI=FPG27", "FPG1=FPG1", "MASS=FPG27", "MTGA=FPG27"),
             mater=("RIGI", "FPG1", "MTGA", "MASS"),
         ),
-        ElrefeLoc(MT.QU9, gauss=("RIGI=FPG9",)),
     )
     calculs = (
         OP.CHAR_THER_EVOL(
@@ -251,5 +250,4 @@ class THER3DT15_HHO222(THER3DH27_HHO222):
             gauss=("RIGI=FPG11", "FPG1=FPG1", "MASS=FPG11", "MTGA=FPG11"),
             mater=("RIGI", "FPG1", "MTGA", "MASS"),
         ),
-        ElrefeLoc(MT.TR7, gauss=("RIGI=FPG6",)),
     )

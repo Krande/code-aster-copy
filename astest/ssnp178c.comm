@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -48,12 +48,12 @@ times = DEFI_LIST_INST(
 
 FY = FORMULE(NOM_PARA=("X", "Y", "INST"), VALE="0.1125")
 
-AY = [2.12537332819]
-AX = [-1.60812747638]
-AT = [-0.0461839413768]
-CY = [0.353650820982]
-CX = [-0.0282822391384]
-CT = [0.423421678989]
+AY = [2.1174266527435135]
+AX = [-1.6020495893172657]
+AT = [-0.043635303082320484]
+CY = [0.34961416852804517]
+CX = [-0.024161133837544792]
+CT = [0.423087616122653]
 
 model = AFFE_MODELE(
     AFFE=_F(MODELISATION="D_PLAN_HHO", FORMULATION="LINEAIRE", PHENOMENE="MECANIQUE", TOUT="OUI"),
@@ -179,7 +179,7 @@ TEST_RESU(
         RESULTAT=resnonl,
         NOM_CHAM="EPSI_ELGA",
         NOM_CMP="EPXY",
-        VALE_CALC=0.02516231910487949,
+        VALE_CALC=0.024796920052966215,
         CRITERE="RELATIF",
     )
 )

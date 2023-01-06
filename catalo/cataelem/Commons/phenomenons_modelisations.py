@@ -7051,8 +7051,8 @@ phen.add(
             (AT.TYPMOD, "3D"),
         ),
         elements=(
-            (MT.HEXA27, EL.MECA3DH27_HHO121),
-            (MT.TETRA15, EL.MECA3DT15_HHO121),
+            (MT.HEXA27, EL.MECA3DH27_HHO111),
+            (MT.TETRA15, EL.MECA3DT15_HHO111),
             (MT.QUAD9, EL.MECA3DQU9_HHO1_F),
             (MT.TRIA7, EL.MECA3DTR7_HHO1_F),
         ),
@@ -7093,8 +7093,8 @@ phen.add(
             (AT.NBSIGM, "4"),
         ),
         elements=(
-            (MT.QUAD9, EL.MECA_DPQ9_HHO121),
-            (MT.TRIA7, EL.MECA_DPT7_HHO121),
+            (MT.QUAD9, EL.MECA_DPQ9_HHO111),
+            (MT.TRIA7, EL.MECA_DPT7_HHO111),
             (MT.SEG3, EL.MECA_2D_HHO1_F),
         ),
     ),
@@ -7114,8 +7114,8 @@ phen.add(
             (AT.NBSIGM, "4"),
         ),
         elements=(
-            (MT.QUAD9, EL.MECA_DGVQ_HHO121),
-            (MT.TRIA7, EL.MECA_DGVT_HHO121),
+            (MT.QUAD9, EL.MECA_DGVQ_HHO111),
+            (MT.TRIA7, EL.MECA_DGVT_HHO111),
             (MT.SEG3, EL.MECA_2D_HHO1_F),
         ),
     ),
@@ -7153,8 +7153,8 @@ phen.add(
             (AT.NBSIGM, "6"),
         ),
         elements=(
-            (MT.HEXA27, EL.MECA3DGVH_HHO121),
-            (MT.TETRA15, EL.MECA3DGVT_HHO121),
+            (MT.HEXA27, EL.MECA3DGVH_HHO111),
+            (MT.TETRA15, EL.MECA3DGVT_HHO111),
             (MT.QUAD9, EL.MECA3DQU9_HHO1_F),
             (MT.TRIA7, EL.MECA3DTR7_HHO1_F),
         ),
@@ -7175,8 +7175,8 @@ phen.add(
         elements=(
             (MT.HEXA27, EL.MECA3DGVH_HHO222),
             (MT.TETRA15, EL.MECA3DGVT_HHO222),
-            (MT.QUAD9, EL.MECA3DQU9_HHO1_F),
-            (MT.TRIA7, EL.MECA3DTR7_HHO1_F),
+            (MT.QUAD9, EL.MECA3DQU9_HHO2_F),
+            (MT.TRIA7, EL.MECA3DTR7_HHO2_F),
         ),
     ),
 )
@@ -7524,8 +7524,8 @@ phen.add(
         code="HT2",
         attrs=((AT.FORMULATION, "HHO_LINE"), (AT.TYPMOD2, "HHO"), (AT.TYPMOD, "3D")),
         elements=(
-            (MT.HEXA27, EL.THER3DH27_HHO121),
-            (MT.TETRA15, EL.THER3DT15_HHO121),
+            (MT.HEXA27, EL.THER3DH27_HHO111),
+            (MT.TETRA15, EL.THER3DT15_HHO111),
             (MT.QUAD9, EL.THER3DQU9_HHO1_F),
             (MT.TRIA7, EL.THER3DTR7_HHO1_F),
         ),
@@ -7554,8 +7554,8 @@ phen.add(
         code="PT4",
         attrs=((AT.FORMULATION, "HHO_LINE"), (AT.TYPMOD2, "HHO"), (AT.TYPMOD, "PLAN")),
         elements=(
-            (MT.QUAD9, EL.THER2DQ9_HHO121),
-            (MT.TRIA7, EL.THER2DT7_HHO121),
+            (MT.QUAD9, EL.THER2DQ9_HHO111),
+            (MT.TRIA7, EL.THER2DT7_HHO111),
             (MT.SEG3, EL.THER_2D_HHO1_F),
         ),
     ),
