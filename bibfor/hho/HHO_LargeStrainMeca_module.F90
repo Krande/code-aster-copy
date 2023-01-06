@@ -293,7 +293,7 @@ contains
 ! ----- step1: TMP = AT * gradrec
 !
         if (l_lhs) then
-            call dgemm('N', 'N', gbs, total_dofs, total_dofs, 1.d0, AT, MSIZE_CELL_MAT, &
+            call dgemm('N', 'N', gbs, total_dofs, gbs, 1.d0, AT, MSIZE_CELL_MAT, &
                        gradrec, MSIZE_CELL_MAT, 0.d0, TMP, MSIZE_CELL_MAT)
 !
 ! ----- step2: lhs += gradrec**T * TMP

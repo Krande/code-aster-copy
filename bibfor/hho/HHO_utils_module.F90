@@ -211,7 +211,7 @@ contains
 !
         write (6, *) "matrix of", nrows, "rows x ", ncols, "cols"
         do i = 1, nrows
-            write (6, '(50F13.6)') mat(i, 1:ncols)
+            write (6, '(50ES13.6)') mat(i, 1:ncols)
         end do
 !
     end subroutine

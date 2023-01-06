@@ -233,7 +233,7 @@ contains
 ! ----- Copy symetric part of AT
             call hhoCopySymPartMat('U', AT, gbs_sym)
 ! ----- step1: TMP = AT * gradrec
-            call dgemm('N', 'N', gbs_sym, total_dofs, total_dofs, 1.d0, AT, MSIZE_CELL_MAT, &
+            call dgemm('N', 'N', gbs_sym, total_dofs, gbs_sym, 1.d0, AT, MSIZE_CELL_MAT, &
                        gradrec, MSIZE_CELL_MAT, 0.d0, TMP, MSIZE_CELL_MAT)
 !
 ! ----- step2: lhs += gradrec**T * TMP
