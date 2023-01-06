@@ -17,7 +17,6 @@
 ! --------------------------------------------------------------------
 !
 subroutine engttb(ific, nomsd, typtes, preci, formr)
-! aslint: disable=W0007
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -59,9 +58,8 @@ subroutine engttb(ific, nomsd, typtes, preci, formr)
     lg1 = lxlgut(formr)
     lg2 = lxlgut(typtes)
     form1 = '(&
-&            '' TYPE_TEST= '''''//typtes(1:lg2)//''''', VALE_CALC= '', '//formr(1:lg1)//',&
-&            '' )''&
-&            )'
+&            '' TYPE_TEST= '''''//typtes(1:lg2)//''''', VALE_CALC= '', '//formr(1:lg1)// &
+            ', '' )''  )'
     form2 = '( '' TYPE_TEST= '''''//typtes(1:lg2)//''''', VALE_CALC_I = '', I9, '' )'' )'
 !
     call jeveuo(nomsd//'.TBLP', 'L', vk24=tblp)
@@ -84,7 +82,7 @@ subroutine engttb(ific, nomsd, typtes, preci, formr)
         if (type .eq. 'I') then
 !             -------------
             write (ific, form3) nomsd(1:8)
-            write (ific, 4020) preci
+            write (ific, 402) preci
 !
             if (typtes .eq. 'SOMM_ABS') then
                 vali = 0
@@ -107,13 +105,13 @@ subroutine engttb(ific, nomsd, typtes, preci, formr)
                     if (zi(jvall+i-1) .eq. 1) vali = min(vali, zi(jvale+i-1))
                 end do
             end if
-            if (vali .eq. 0) write (ific, 4010)
+            if (vali .eq. 0) write (ific, 401)
             write (ific, form2) vali
 !
         else if (type .eq. 'R') then
 !                 -------------
             write (ific, form3) nomsd(1:8)
-            write (ific, 4020) preci
+            write (ific, 402) preci
 !
             if (typtes .eq. 'SOMM_ABS') then
                 valr = 0.d0
@@ -136,7 +134,7 @@ subroutine engttb(ific, nomsd, typtes, preci, formr)
                     if (zi(jvall+i-1) .eq. 1) valr = min(valr, zr(jvale+i-1))
                 end do
             end if
-            if (abs(valr) .le. r8prem()) write (ific, 4010)
+            if (abs(valr) .le. r8prem()) write (ific, 401)
             write (ific, form1) valr
         end if
 400     continue
@@ -144,8 +142,8 @@ subroutine engttb(ific, nomsd, typtes, preci, formr)
 !
     call jedema()
 !
-4010 format('            CRITERE= ''ABSOLU'', ')
+401 format('            CRITERE= ''ABSOLU'', ')
 !
-4020 format('            TOLE_MACHINE= ', a10, ',')
+402 format('            TOLE_MACHINE= ', a10, ',')
 !
 end subroutine

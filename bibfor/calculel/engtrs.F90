@@ -66,12 +66,11 @@ subroutine engtrs(ific, nomsd, typtes, preci, formr)
     lg1 = lxlgut(formr)
     lg2 = lxlgut(typtes)
     form1 = '(&
-&            '' TYPE_TEST= '''''//typtes(1:lg2)//''''', VALE_CALC= '', '//formr(1:lg1)//',&
-&            '' ), ''&
-&            )'
+&            '' TYPE_TEST= '''''//typtes(1:lg2)//''''', VALE_CALC= '', '//formr(1:lg1)//&
+&           ', '' ), '' )'
     form2 = '( '' TYPE_TEST= '''''//typtes(1:lg2)//''''', VALE_CALC_I = '', I9, '' ), '' )'
 !
-    write (ific, 1000)
+    write (ific, 100)
 !
 ! --- NUMEROS D'ORDRE
 !
@@ -93,9 +92,8 @@ subroutine engtrs(ific, nomsd, typtes, preci, formr)
         lg = lxlgut(nomsym)
 !
         form3 = '(&
-&                '' _F(RESULTAT= '',A8,'', NOM_CHAM= '''''//nomsym(1:lg &
-                )//''''', NUME_ORDRE= '',I6,'',''&
-&                )'
+&                '' _F(RESULTAT= '',A8,'', NOM_CHAM= '''''//nomsym(1:lg) &
+                //''''', NUME_ORDRE= '',I6,'','' )'
 !
         do j = 1, nbordt(1)
             iord = zi(jordr+j-1)
@@ -123,7 +121,7 @@ subroutine engtrs(ific, nomsd, typtes, preci, formr)
 120             continue
 !
                 write (ific, form3) nomsd(1:8), iord
-                write (ific, 1020) preci
+                write (ific, 102) preci
 !
                 if (type .eq. 'I') then
                     if (typtes .eq. 'SOMM_ABS') then
@@ -147,7 +145,7 @@ subroutine engtrs(ific, nomsd, typtes, preci, formr)
                             vali = min(vali, zi(jvale+i-1))
                         end do
                     end if
-                    if (vali .eq. 0) write (ific, 1010)
+                    if (vali .eq. 0) write (ific, 101)
                     write (ific, form2) vali
 !
                 else if (type .eq. 'R') then
@@ -172,7 +170,7 @@ subroutine engtrs(ific, nomsd, typtes, preci, formr)
                             valr = min(valr, zr(jvale+i-1))
                         end do
                     end if
-                    if (abs(valr) .le. r8prem()) write (ific, 1010)
+                    if (abs(valr) .le. r8prem()) write (ific, 101)
                     write (ific, form1) valr
                 end if
 !
@@ -181,15 +179,15 @@ subroutine engtrs(ific, nomsd, typtes, preci, formr)
         end do
     end do
 !
-    write (ific, 1030)
+    write (ific, 103)
 !
     call jedetr('&&ENGTRS.NUME_ORDRE')
 !
     call jedema()
 !
-1000 format('TEST_RESU(RESU=( ')
-1010 format('              CRITERE= ''ABSOLU'', ')
-1020 format('              TOLE_MACHINE= ', a10, ',')
-1030 format('          ),)')
+100 format('TEST_RESU(RESU=( ')
+101 format('              CRITERE= ''ABSOLU'', ')
+102 format('              TOLE_MACHINE= ', a10, ',')
+103 format('          ),)')
 !
 end subroutine

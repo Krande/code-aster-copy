@@ -52,19 +52,18 @@ subroutine engtcn(ific, chamno, typtes, preci, formr)
     lg1 = lxlgut(formr)
     lg2 = lxlgut(typtes)
     form1 = '(&
-&            '' TYPE_TEST= '''''//typtes(1:lg2)//''''', VALE_CALC= '', '//formr(1:lg1)//',&
-&            '' ), ''&
-&            )'
+&            '' TYPE_TEST= '''''//typtes(1:lg2)//''''', VALE_CALC= '', '//formr(1:lg1)// &
+            ', '' ), '' )'
     form2 = '( '' TYPE_TEST= '''''//typtes(1:lg2)//''''', VALE_CALC_I = '', I9, '' ), '' )'
 !
-    write (ific, 1000)
+    write (ific, 100)
 !
     call jeveuo(chamno//'.VALE', 'L', jvale)
     call jelira(chamno//'.VALE', 'LONMAX', long)
     call jelira(chamno//'.VALE', 'TYPE', cval=type)
 !
-    write (ific, 1010) chamno(1:8)
-    write (ific, 1020) preci
+    write (ific, 101) chamno(1:8)
+    write (ific, 102) preci
 !
     if (type .eq. 'I') then
         if (typtes .eq. 'SOMM_ABS') then
@@ -88,7 +87,7 @@ subroutine engtcn(ific, chamno, typtes, preci, formr)
                 vali = min(vali, zi(jvale+i-1))
             end do
         end if
-        if (vali .eq. 0) write (ific, 1022)
+        if (vali .eq. 0) write (ific, 112)
         write (ific, form2) vali
 !
     else if (type .eq. 'R') then
@@ -113,21 +112,21 @@ subroutine engtcn(ific, chamno, typtes, preci, formr)
                 valr = min(valr, zr(jvale+i-1))
             end do
         end if
-        if (abs(valr) .le. r8prem()) write (ific, 1022)
+        if (abs(valr) .le. r8prem()) write (ific, 112)
         write (ific, form1) valr
     end if
 !
-    write (ific, 1030)
+    write (ific, 103)
 !
     call jedema()
 !
-1000 format('TEST_RESU(CHAM_NO= ')
+100 format('TEST_RESU(CHAM_NO= ')
 !
-1010 format('          _F( CHAM_GD= ', a8, ', ')
+101 format('          _F( CHAM_GD= ', a8, ', ')
 !
-1022 format('              CRITERE= ''ABSOLU'', ')
-1020 format('              TOLE_MACHINE= ', a10, ',')
+112 format('              CRITERE= ''ABSOLU'', ')
+102 format('              TOLE_MACHINE= ', a10, ',')
 !
-1030 format('          )')
+103 format('          )')
 !
 end subroutine

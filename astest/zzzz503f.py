@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -92,6 +92,10 @@ test.assertAlmostEqual(fieldOnElem3[0], 2 * fieldOnElem1[0])
 
 fieldOnElem3 = fieldOnElem2.duplicate()
 fieldOnElem3 -= fieldOnElem1
+
+# this force "fieldOnElem2._values->updateValuePointer()"
+fieldOnElem2.norm("NORM_INFINITY")
+
 test.assertAlmostEqual(fieldOnElem3[0], fieldOnElem2[0] - fieldOnElem1[0])
 
 fieldOnElem3 = 10 * fieldOnElem2

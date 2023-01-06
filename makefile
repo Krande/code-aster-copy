@@ -85,7 +85,7 @@ fast:
 doc:
 	@( \
 		if [ $(BUILD) = "std" ]; then \
-			echo "skipped, only available in parallel" ; \
+			echo "doc skipped, only available in parallel" ; \
 			exit 0 ; \
 		fi ; \
 		./waf_$(BUILD) doc $(OPTS) ; \
