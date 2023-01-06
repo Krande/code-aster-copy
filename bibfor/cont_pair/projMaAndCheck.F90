@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -116,7 +116,6 @@ subroutine projMaAndCheck(proj_tole, dist_ratio, elem_dime, &
                       mast_norm, slav_norm, &
                       proj_coor, l_inter)
     if (.not. l_inter) then
-        print *, 'problemo'
         iret = 1
         goto 99
     end if

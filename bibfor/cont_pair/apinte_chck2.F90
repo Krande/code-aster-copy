@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -153,7 +153,7 @@ subroutine apinte_chck2(proj_tole, elem_dime, &
 ! ----- check sign, negative => no intersection
         if (sig .lt. 0-proj_tole) then
             l_inter = ASTER_FALSE
-            print *, 'Problème check 1'
+            !print *, 'Problème check 1'
             exit
         elseif (sp_ns_vsp .lt. 0-proj_tole .and. sp_np_vsp .lt. 0-proj_tole) then
             !print*, "check"
@@ -165,7 +165,7 @@ subroutine apinte_chck2(proj_tole, elem_dime, &
             !print*, "sp_ns_vsp", sp_ns_vsp
             !print*, "sp_np_vsp", sp_np_vsp
             !print*, "sig", sig
-            print *, 'Problème check 2'
+            !print *, 'Problème check 2'
             l_inter = ASTER_FALSE
             exit
         elseif (sp_ns_vsp .gt. 0+proj_tole .and. sp_np_vsp .gt. 0+proj_tole) then
@@ -178,7 +178,7 @@ subroutine apinte_chck2(proj_tole, elem_dime, &
             !print*, "sp_ns_vsp", sp_ns_vsp
             !print*, "sp_np_vsp", sp_np_vsp
             !print*, "sig", sig
-            print *, 'Problème check 2'
+            !print *, 'Problème check 2'
             l_inter = ASTER_FALSE
             exit
         end if

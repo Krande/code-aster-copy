@@ -63,7 +63,7 @@ subroutine aplcno(mesh, newgeo, sdcont_defi, sdappa)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    epsi_maxi = 1.d-12
+    epsi_maxi = 1.d-8
     iter_maxi = 100
 !
 ! - Get parameters
