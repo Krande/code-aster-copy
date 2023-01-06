@@ -19,7 +19,7 @@
 
 # person_in_charge: natacha.bereux@edf.fr
 
-from ..Objects import GeneralizedModeResult, HarmoGeneralizedResult, TransientGeneralizedResult
+from ..Objects import GeneralizedModeResult, HarmoGeneralizedResult, TransientGeneralizedResult, GeneralizedDOFNumbering
 from ..Supervis import ExecuteCommand
 
 
@@ -60,6 +60,7 @@ class ProjMesuModal(ExecuteCommand):
         else:
             self._result.setDOFNumbering(base.getDOFNumbering())
             self._result.setMesh(base.getMesh())
+        self._result.setGeneralizedDOFNumbering(GeneralizedDOFNumbering(self._result.getName() + ".NUGEN"))
 
 
 PROJ_MESU_MODAL = ProjMesuModal.run
