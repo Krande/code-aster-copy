@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -172,6 +172,7 @@ integer, intent(out) :: nb_equa
         AS_ALLOCATE(vr = l_damp_read, size = nb_damp_read)
         if (n1 .eq. 0) then
             call jeveuo(list_damp//'           .VALE', 'L', vr = v_list)
+            l_damp_read(:) = v_list(:)
         else
             call getvr8('AMOR_MODAL', 'AMOR_REDUIT', iocc=1, nbval=nb_damp_read, vect=l_damp_read,&
                         nbret=n)
