@@ -57,6 +57,7 @@ module HHO_GV_module
 #include "asterfort/poslog.h"
 #include "asterfort/prelog.h"
 #include "asterfort/readVector.h"
+#include "asterfort/rcvalb.h"
 #include "blas/daxpy.h"
 #include "blas/dcopy.h"
 #include "blas/dsymv.h"
@@ -78,7 +79,7 @@ module HHO_GV_module
     public :: HHO_GV_State
     public :: hhoGradVariLC, hhoCalcOpGv
     private :: check_behavior, gdef_log, hhoAssGVRhs, hhoAssGVLhs, numGVMap
-    private :: initialize_gv
+    private :: initialize_gv, hhoCalcStabCoeffGV
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -150,7 +151,7 @@ contains
         real(kind=8) :: var_prev, var_curr, lag_prev, lag_curr
         real(kind=8) :: sig_vari, sig_lagv, sig_gv(3), dsv_dv, dsv_dl, dsl_dl, dsgv_dgv(3, 3)
         real(kind=8) :: dPK1_dF(3, 3, 3, 3), dPK1_dv(3, 3), dPK1_dl(3, 3)
-        real(kind=8) :: jac_prev, jac_curr, coorpg(3), weight, coeff, c_stab
+        real(kind=8) :: jac_prev, jac_curr, coorpg(3), weight, coeff, mk_stab, gv_stab
         real(kind=8) :: BSCEvalG(MSIZE_CELL_SCAL), BSCEval(MSIZE_CELL_SCAL)
         real(kind=8) :: mk_AT(MSIZE_CELL_MAT, MSIZE_CELL_MAT)
         real(kind=8) :: mk_TMP(MSIZE_CELL_MAT, MSIZE_TDOFS_VEC)
@@ -353,7 +354,8 @@ contains
         call numGVMap(hhoCell, hhoData, mapMeca, mapVari, mapLagv)
         call hhoCalcStabCoeffMeca(hhoData, hhoComporState%fami, hhoMecaState%time_curr, &
                                   hhoQuadCellRigi)
-        c_stab = 100.d0
+        mk_stab = hhoData%coeff_stab()
+        gv_stab = hhoCalcStabCoeffGV(hhoComporState%fami, hhoQuadCellRigi%nbQuadPoints)
 !
 ! ------- Compute rhs
 !
@@ -362,13 +364,13 @@ contains
             call dgemv('T', mk_gbs, mk_total_dofs, 1.d0, hhoMecaState%grad, MSIZE_CELL_MAT, &
                        mk_bT, 1, 1.d0, rhs_mk, 1)
 ! ----- compute rhs += stab
-            call dsymv('U', mk_total_dofs, hhoData%coeff_stab(), hhoMecaState%stab, &
+            call dsymv('U', mk_total_dofs, mk_stab, hhoMecaState%stab, &
                        MSIZE_TDOFS_VEC, hhoMecaState%depl_curr, 1, 1.d0, rhs_mk, 1)
 ! ----- compute rhs += Gradrec**T * bT
             call dgemv('T', gv_gbs, gv_total_dofs, 1.d0, hhoGVState%grad, MSIZE_CELL_VEC, &
                        gv_bT, 1, 1.d0, rhs_vari, 1)
 ! ----- compute rhs += stab
-            call dsymv('U', gv_total_dofs, c_stab, hhoGVState%stab, MSIZE_TDOFS_SCAL, &
+            call dsymv('U', gv_total_dofs, gv_stab, hhoGVState%stab, MSIZE_TDOFS_SCAL, &
                        hhoGVState%vari_curr, 1, 1.d0, rhs_vari, 1)
 ! ----- assembly
             call hhoAssGVRhs(hhoCell, hhoData, mapMeca, mapVari, mapLagv, &
@@ -407,12 +409,12 @@ contains
 ! ----- Add stabilization
 ! ----- += coeff * stab_mk
             do j = 1, mk_total_dofs
-                call daxpy(mk_total_dofs, hhoData%coeff_stab(), hhoMecaState%stab(1, j), 1, &
+                call daxpy(mk_total_dofs, mk_stab, hhoMecaState%stab(1, j), 1, &
                            lhs_mm(1, j), 1)
             end do
 ! ----- += coeff * stab_vv
             do j = 1, gv_total_dofs
-                call daxpy(gv_total_dofs, c_stab, hhoGVState%stab(1, j), 1, lhs_vv(1, j), 1)
+                call daxpy(gv_total_dofs, gv_stab, hhoGVState%stab(1, j), 1, lhs_vv(1, j), 1)
             end do
 !
 ! ----- assembly
@@ -1059,5 +1061,41 @@ contains
         end if
 !
     end subroutine
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+    real(kind=8) function hhoCalcStabCoeffGV(fami, npg)
+!
+        implicit none
+!
+        character(len=4) :: fami
+        integer, intent(in) :: npg
+!
+! --------------------------------------------------------------------------------------------------
+!  HHO
+!  GRAD_VARI - Evaluate stabilzation coefficient
+! --------------------------------------------------------------------------------------------------
+!
+! --- Local variables
+!
+        integer :: jmate, imate
+        integer :: ipg, iok(1)
+        real(kind=8) :: vale(1)
+!
+        call jevech('PMATERC', 'L', jmate)
+        imate = zi(jmate-1+1)
+        hhoCalcStabCoeffGV = 0.d0
+!
+        do ipg = 1, npg
+            call rcvalb(fami, ipg, 1, '+', imate, ' ', 'NON_LOCAL', &
+                        0, ' ', [0.d0], 1, ['C_GRAD_VARI'], vale, iok, 1)
+            hhoCalcStabCoeffGV = hhoCalcStabCoeffGV+vale(1)
+        end do
+!
+        hhoCalcStabCoeffGV = hhoCalcStabCoeffGV/real(npg, kind=8)
+!
+    end function
 !
 end module
