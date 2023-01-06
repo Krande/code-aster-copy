@@ -95,8 +95,8 @@ module HHO_GV_module
         real(kind=8), dimension(MSIZE_CELL_SCAL) :: lagv_curr = 0.d0
         real(kind=8), dimension(MSIZE_CELL_SCAL) :: lagv_incr = 0.d0
 ! ----- Gradient reconstruction and stabilisation
-        real(kind=8) :: grad(MSIZE_CELL_VEC, MSIZE_TDOFS_SCAL)
-        real(kind=8) :: stab(MSIZE_TDOFS_SCAL, MSIZE_TDOFS_SCAL)
+        real(kind=8) :: grad(MSIZE_CELL_VEC, MSIZE_TDOFS_SCAL) = 0.d0
+        real(kind=8) :: stab(MSIZE_TDOFS_SCAL, MSIZE_TDOFS_SCAL) = 0.d0
 ! ----- member function
     contains
         procedure, pass :: initialize => initialize_gv
@@ -947,7 +947,7 @@ contains
 ! Out stab            : stabilization for mechanics
 ! --------------------------------------------------------------------------------------------------
 !
-        integer :: jgrad, jstab
+        integer :: jgrad, jstab, gv_cbs, gv_fbs, gv_total_dofs, gv_gbs, j
 !
         if (hhoData%precompute()) then
             call jevech('PCHHOGT', 'L', jgrad)
@@ -955,11 +955,24 @@ contains
 !
             call hhoReloadPreCalcMeca(hhoCell, hhoData, l_largestrains, zr(jgrad), zr(jstab), &
                                       hhoMecaState%grad, hhoMecaState%stab)
+
+            call hhoTherNLDofs(hhoCell, hhoData, gv_cbs, gv_fbs, gv_total_dofs, gv_gbs)
+            if (l_largestrains) then
+                do j = 1, gv_total_dofs
+                    call dcopy(gv_gbs, zr(jgrad+(j-1)*gv_gbs), 1, hhoGVState%grad(1, j), 1)
+                end do
+            else
+                call hhoCalcOpTher(hhoCell, hhoData, hhoGVState%grad)
+            end if
+            do j = 1, gv_total_dofs
+                call dcopy(gv_total_dofs, zr(jstab+(j-1)*gv_total_dofs), 1, &
+                           hhoGVState%stab(1, j), 1)
+            end do
         else
             call hhoCalcOpMeca(hhoCell, hhoData, l_largestrains, &
                                hhoMecaState%grad, hhoMecaState%stab)
+            call hhoCalcOpTher(hhoCell, hhoData, hhoGVState%grad, hhoGVState%stab)
         end if
-        call hhoCalcOpTher(hhoCell, hhoData, hhoGVState%grad, hhoGVState%stab)
 !
     end subroutine
 !
