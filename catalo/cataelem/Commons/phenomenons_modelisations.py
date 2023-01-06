@@ -7141,6 +7141,46 @@ phen.add(
     ),
 )
 
+phen.add(
+    "3D_GRAD_HHO#1",
+    Modelisation(
+        dim=(3, 3),
+        code="3GL",
+        attrs=(
+            (AT.FORMULATION, "HHO_LINE"),
+            (AT.TYPMOD2, "HHO_GRAD"),
+            (AT.TYPMOD, "3D"),
+            (AT.NBSIGM, "6"),
+        ),
+        elements=(
+            (MT.HEXA27, EL.MECA3DGVH_HHO121),
+            (MT.TETRA15, EL.MECA3DGVT_HHO121),
+            (MT.QUAD9, EL.MECA3DQU9_HHO1_F),
+            (MT.TRIA7, EL.MECA3DTR7_HHO1_F),
+        ),
+    ),
+)
+
+phen.add(
+    "3D_GRAD_HHO#2",
+    Modelisation(
+        dim=(3, 3),
+        code="3GQ",
+        attrs=(
+            (AT.FORMULATION, "HHO_QUAD"),
+            (AT.TYPMOD2, "HHO_GRAD"),
+            (AT.TYPMOD, "3D"),
+            (AT.NBSIGM, "6"),
+        ),
+        elements=(
+            (MT.HEXA27, EL.MECA3DGVH_HHO222),
+            (MT.TETRA15, EL.MECA3DGVT_HHO222),
+            (MT.QUAD9, EL.MECA3DQU9_HHO1_F),
+            (MT.TRIA7, EL.MECA3DTR7_HHO1_F),
+        ),
+    ),
+)
+
 ############################################################
 # Pour le phenomene : THERMIQUE :
 ############################################################
