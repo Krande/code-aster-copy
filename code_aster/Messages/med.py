@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -99,25 +99,6 @@ de préciser un chemin absolu vers ce fichier (doit commencer par '/').
 Risque & Conseil : Utiliser DEFI_FICHIER pour associer l'unité logique à un chemin absolu.
     """
     ),
-    12: _(
-        """
-  -> Erreur, code retour = %(k1)s
-  -> Risque & Conseil :
-     Vérifier l'intégrité du fichier MED avec medconforme/mdump.
-     Si le maillage a été produit par un code externe, vérifier que les
-     noms de maillage, de groupes, de familles ne contiennent pas de
-     blancs à la fin.
-     Dans SALOME, on peut renommer ces entités et supprimer les espaces
-     invalides.
-"""
-    ),
-    17: _(
-        """
-  -> Aucune famille n'est présente dans ce fichier MED.
-  -> Risque & Conseil :
-     Vérifier l'intégrité du fichier MED avec medconforme/mdump.
-"""
-    ),
     18: _(
         """
   Vous essayer de partitionner le maillage alors que le calcul est séquentiel.
@@ -126,27 +107,12 @@ Risque & Conseil : Utiliser DEFI_FICHIER pour associer l'unité logique à un ch
      Pour enlever cette alarme, utiliser le mot-clé SANS dans PARTITIONNEUR
 """
     ),
-    19: _(
-        """
-  -> Les mailles  %(k1)s ne sont pas nommées dans le fichier MED.
-"""
-    ),
     20: _(
         """
   Le partitionneur de maillage n'est compatible qu'avec une version de MED >= %(k1)s. La version de MED du maillage utilisé est %(k2)s, d'où l'incompatibilité.
 
   -> Conseil :
      Convertissez votre maillage vers une version plus récente.
-"""
-    ),
-    21: _(
-        """
-  -> Il manque les coordonnées !
-"""
-    ),
-    23: _(
-        """
-  -> Mailles  %(k1)s
 """
     ),
     24: _(
@@ -176,11 +142,6 @@ Risque & Conseil : Utiliser DEFI_FICHIER pour associer l'unité logique à un ch
         """
 
    Un utilitaire vous permet peut-être de convertir votre fichier (medimport)
-"""
-    ),
-    29: _(
-        """
-  -> Il manque les mailles !
 """
     ),
     30: _(
@@ -260,11 +221,6 @@ Contactez le support technique.
     40: _(
         """
   -> Ouverture du fichier MED en mode  %(k1)s  %(k2)s
-"""
-    ),
-    41: _(
-        """
-  -> Incohérence de version détectée.
 """
     ),
     42: _(

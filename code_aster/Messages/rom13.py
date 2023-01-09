@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -25,9 +25,6 @@ from ..Utilities import _
 
 cata_msg = {
     1: _("""Lecture des paramètres de la structure de données des résultats."""),
-    2: _(
-        """Le champ de type %(k1)s et de numéro d'ordre %(i1)d dans la structure de données des résultats est mis à zéro."""
-    ),
     3: _("""Création du résultat de type %(k1)s et avec %(i1)d numéros d'ordre."""),
     10: _(
         """On ne trouve pas de champ de type %(k1)s dans la structure de données des résultats."""

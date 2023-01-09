@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -37,16 +37,6 @@ cata_msg = {
     10: _(
         """RGI_BETON_BA : Le taux d'armature est inférieur ou égal à 1.
  La somme des paramètres %(k1)s à %(k2)s doit être supérieure à 1."""
-    ),
-    11: _(
-        """
- Produit scalaire presque nul entre les vecteurs :
-                %(r1)f
-                %(r2)f
-            et
-                %(r3)f
-                %(r4)f
-"""
     ),
     12: _(
         """

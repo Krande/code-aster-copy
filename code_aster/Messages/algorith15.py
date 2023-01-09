@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -157,61 +157,6 @@ On a %(i1)d. Il faudrait un nombre supérieur à :  %(r1)f
   la matrice (PHI)T*PHI + ALPHA n'est pas inversible
   pas      =   %(i1)d
   abscisse =    %(r1)f
-"""
-    ),
-    45: _(
-        """
-  on ne trouve pas
-Ce message est un message d'erreur développeur.
-Contactez le support technique.
-"""
-    ),
-    46: _(
-        """
-  nombre d'itérations insuffisant
-"""
-    ),
-    47: _(
-        """
-Ce message est un message d'erreur développeur.
-Contactez le support technique.
-"""
-    ),
-    48: _(
-        """
-  maille :  %(k1)s
-  nombre d itérations =  %(i1)d
-  ITER_INTE_MAXI =  %(i2)d
-"""
-    ),
-    49: _(
-        """
-  DP    actuel =  %(r1)f
-  F(DP) actuel =  %(r2)f
-"""
-    ),
-    50: _(
-        """
-  DP    initial   =  %(r1)f
-  F(DP) initial   =  %(r2)f
-"""
-    ),
-    51: _(
-        """
-  DP    maximum   =  %(r1)f
-  F(DP) maximum   =  %(r2)f
-"""
-    ),
-    52: _(
-        """
-  allure de la fonction
-  nombre points :  %(i1)d
-"""
-    ),
-    53: _(
-        """
-  DP     =  %(r1)f
-  F(DP)  =  %(r2)f
 """
     ),
     55: _(

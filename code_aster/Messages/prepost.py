@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -351,16 +351,6 @@ Contactez le support technique.
     60: _(
         """
  arrêt sur erreur(s)
-"""
-    ),
-    69: _(
-        """
- problème à l'ouverture du fichier
-"""
-    ),
-    70: _(
-        """
- problème à la fermeture du fichier
 """
     ),
     74: _(

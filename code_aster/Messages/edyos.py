@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -257,14 +257,6 @@ cata_msg = {
     45: _(
         """
       Non convergence du code EDYOS
-"""
-    ),
-    49: _(
-        """
-      Erreur de syntaxe pour le couplage avec EDYOS :
-      Pour le mot-clé PALIERS_EDYOS dans le cas où l'on utilise TYPE_EDYOS,
-      il faut donner à chaque occurrence soit le GROUP_NO du palier, soit son NOEUD.
-
 """
     ),
 }

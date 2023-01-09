@@ -40,11 +40,6 @@ cata_msg = {
  type de base inconnu:  %(k1)s
 """
     ),
-    10: _(
-        """
- Soit le fichier n'existe pas, soit c'est une mauvaise version de HDF (utilisé par MED).
-"""
-    ),
     31: _(
         """
  on n'a pas trouvé le numéro d'ordre à l'adresse indiquée

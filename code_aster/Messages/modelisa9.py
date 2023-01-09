@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -253,23 +253,6 @@ Conseil :
     43: _(
         """
  il y a  %(i1)d  valeurs pour le mot clé  %(k1)s il en faut  %(i2)d
-"""
-    ),
-    44: _(
-        """
- Fichier MED :  %(k1)s
- Nom du maillage :  %(k2)s
- Erreur numéro  %(i1)d
-"""
-    ),
-    51: _(
-        """
- fichier MED :  %(k1)s maillage :  %(k2)s erreur numéro  %(i1)d
-"""
-    ),
-    52: _(
-        """
- fichier MED :  %(k1)s maillage :  %(k2)s erreur numéro  %(i1)d
 """
     ),
     59: _(

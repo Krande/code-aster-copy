@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -333,13 +333,6 @@ Ce message est un message d'erreur développeur.
 Contactez le support technique.
 """
     ),
-    48: _(
-        """
-Une erreur d'écriture de l'attribut %(k1)s au format HDF s'est produite, l'exécution continue.
-Ce message est un message d'erreur développeur.
-Contactez le support technique.
-"""
-    ),
     49: _(
         """
 Un écrasement de l'identificateur de l'objet est détecté, sa valeur ne peut pas être nulle.
@@ -357,13 +350,6 @@ Contactez le support technique.
     51: _(
         """
 Un écrasement de la classe de l'objet est détecté, sa valeur %(k1)s est invalide.
-Ce message est un message d'erreur développeur.
-Contactez le support technique.
-"""
-    ),
-    52: _(
-        """
-Il est impossible d'accéder au DATASET HDF associé à %(k1)s.
 Ce message est un message d'erreur développeur.
 Contactez le support technique.
 """

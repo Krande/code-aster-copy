@@ -1,5 +1,5 @@
 /* -------------------------------------------------------------------- */
-/* Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org             */
+/* Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org             */
 /* This file is part of code_aster.                                     */
 /*                                                                      */
 /* code_aster is free software: you can redistribute it and/or modify   */
@@ -45,7 +45,7 @@ void DEFSPP( MATASS2PETSC, matass2petsc, const char *, STRING_SIZE, Mat *, Petsc
 void DEFSS( AP_ON_OFF, ap_on_off, const char *, STRING_SIZE, const char *, STRING_SIZE );
 
 #define CALLO_VECT_ASSE_FROM_PETSC( a, b, c, d )                                                   \
-    CALLOOPP( CALLO_VECT_ASSE_FROM_PETSC, vect_asse_from_petsc, a, b, c, d )
+    CALLOOPP( VECT_ASSE_FROM_PETSC, vect_asse_from_petsc, a, b, c, d )
 extern void DEFSSPP( VECT_ASSE_FROM_PETSC, vect_asse_from_petsc, const char *, STRING_SIZE,
                      const char *, STRING_SIZE, const Vec *, const ASTERDOUBLE * );
 

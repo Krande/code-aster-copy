@@ -42,9 +42,9 @@
 #:You may add options to the 'waf' commands by using the OPTS environment variable
 #:on the command line (example: with a progress bar):
 #:      make safe OPTS='-p'
-#:or by setting them before (example: sequential build, limit to 4 tasks):
-#:      export BUILD=std OPTS='-j 4'
-#:      make
+#:The number of jobs is directly passed to make (example: sequential build, limit to 4 tasks):
+#:      export BUILD=std
+#:      make -j 16
 #:
 #:Execute a testcase:
 #:      make test n=ssll112a
@@ -53,6 +53,7 @@
 
 BUILD ?= mpi
 OPTS ?=
+JOBS = $(shell j=$$( sed -e 's/.*-j\([0-9]\+\).*/\1/' <<< "$(MAKEFLAGS)" ) ; [ -z "$$j" ] && j=$$(nproc); echo $$j )
 DEFAULT ?= safe
 
 SHELL = /bin/bash
@@ -77,10 +78,10 @@ configure:
 install: safe
 
 safe:
-	./waf_$(BUILD) install $(OPTS) --safe -j $$(nproc)
+	./waf_$(BUILD) install $(OPTS) --safe -j $(JOBS)
 
 fast:
-	./waf_$(BUILD) install $(OPTS) --fast -j $$(nproc)
+	./waf_$(BUILD) install $(OPTS) --fast -j $(JOBS)
 
 doc:
 	@( \
@@ -134,6 +135,8 @@ test_debug:
 	@make BUILD=debug test n=$(n)
 
 help : makefile
+	echo jobs: $(JOBS) && false
+	echo options: $(OPTS) $$(jobs) && false
 	@sed -n 's/^#://p' $< | \
 		sed -e 's/%BUILD%/$(BUILD)/g' -e 's/%DEFAULT%/$(DEFAULT)/g'
 

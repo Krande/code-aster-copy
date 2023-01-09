@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,6 @@
 from ..Utilities import _
 
 cata_msg = {
-    2: _("""Il ne peut y avoir qu'un seul matériau de type MFront dans DEFI_MATERIAU."""),
     4: _("""Paramètres des propriétés %(k1)s:"""),
     5: _(
         """
@@ -44,12 +43,6 @@ Il n'est pas possible de vérifier la cohérence des caractéristiques.
         """
 Les caractéristiques élastiques de MFront sont des scalaires, mais pas celles du mot-clef ELAS.
 Il n'est pas possible de vérifier la cohérence des caractéristiques.
-"""
-    ),
-    9: _(
-        """
-Pour le matériau %(k1)s, on cherche à redéfinir un mot clé déjà défini : %(k2)s
-L'utilisation de DEFI_MATERIAU en mode enrichissement ne permet que d'ajouter de nouvelles données.
 """
     ),
     10: _(
