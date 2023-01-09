@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -122,6 +122,16 @@ G0_C_LI = CALC_G(
     THETA=_F(FISSURE=FISS1, NB_COUCHE_INF=1, NB_COUCHE_SUP=3, DISCRETISATION="LINEAIRE"),
 )
 
+##Test de KJ = 0 quand G negatif
+G0_C_LI_NEG = CALC_G(
+    RESULTAT=CHAMDEPL,
+    OPTION="KJ",
+    THETA=_F(
+        FISSURE=FISS1, NB_COUCHE_INF=1, NB_COUCHE_SUP=3, NB_POINT_FOND=35, DISCRETISATION="LINEAIRE"
+    ),
+)
+
+
 # ----------------------------------------------------------------------
 #                           COURONNE 2
 # ----------------------------------------------------------------------
@@ -171,6 +181,7 @@ IMPR_TABLE(TABLE=GLOC0_C, UNITE=6)
 IMPR_TABLE(TABLE=GLOC1_C, UNITE=6)
 IMPR_TABLE(TABLE=G0_C_LI, UNITE=6)
 IMPR_TABLE(TABLE=G1_C_LI, UNITE=6)
+IMPR_TABLE(TABLE=G0_C_LI_NEG, UNITE=6)
 
 # ~ IMPR_RESU(FORMAT='MED',UNITE=81,RESU=_F(CHAM_GD=cham_theta_no0))
 # ~ IMPR_RESU(FORMAT='MED',UNITE=82,RESU=_F(CHAM_GD=cham_theta_no1))
@@ -324,6 +335,15 @@ TEST_TABLE(
     NOM_PARA="G_IRWIN",
     TABLE=G1_C_LI,
     FILTRE=_F(NOM_PARA="ABSC_CURV", VALE=0.0),
+)
+
+TEST_TABLE(
+    REFERENCE="ANALYTIQUE",
+    VALE_CALC=0.0,
+    VALE_REFE=0.0,
+    NOM_PARA="KJ",
+    TABLE=G0_C_LI_NEG,
+    FILTRE=_F(NOM_PARA="NUM_PT", VALE_I=5),
 )
 
 # ----------------------------------------------------------------------

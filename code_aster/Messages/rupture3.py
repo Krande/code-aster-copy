@@ -91,11 +91,4 @@ Cette division est réalisée automatiquement par CALC_G.
 Seule la relation ELAS du calcul mécanique est supportée avec le mot-clé ETAT_INIT.
 """
     ),
-    12: _(
-        """
-Valeur de G ou G_EPSI négative au noeud %(i1)d. On ne peut pas calculer K avec la formule d'Irwin.
-
-G   =   %(r1)f
-"""
-    ),
 }

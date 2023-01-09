@@ -527,7 +527,7 @@ contains
 !   In this     : calG stat
 ! --------------------------------------------------------------------------------------------------
 !
-       print *, "----------------------------------------------------------------------------------"
+        print *, "---------------------------------------------------------------------------------"
         print *, "Informations about CalcG_Stat"
         print *, "Level of informations: ", this%level_info
         print *, "Total time of OP: ", this%time, "s"
@@ -558,7 +558,7 @@ contains
             this%nb_cgCmpGtheta_disc, "calls"
         print *, "***mesomm():       ", this%cgCmpGtheta_mes, "s with ", &
             this%nb_cgCmpGtheta_mes, "calls"
-       print *, "----------------------------------------------------------------------------------"
+        print *, "---------------------------------------------------------------------------------"
 !
     end subroutine
 !
@@ -1561,16 +1561,14 @@ contains
             if (cgStudy%gth(2) .ge. 0) then
                 this%v_KJ(node_id) = sqrt(cgStudy%gth(2))
             else
-                call utmess('F', 'RUPTURE3_12', ni=1, vali=[node_id], &
-                            nr=1, valr=[cgStudy%gth(2)])
+                this%v_KJ(node_id) = 0.d0
             end if
             this%v_G(node_id) = cgStudy%gth(1)
         elseif (cgStudy%option == "KJ_EPSI") then
             if (cgStudy%gth(2) .ge. 0) then
                 this%v_KJ_EPSI(node_id) = sqrt(cgStudy%gth(2))
             else
-                call utmess('F', 'RUPTURE3_12', ni=1, vali=[node_id], &
-                            nr=1, valr=[cgStudy%gth(2)])
+                this%v_KJ_EPSI(node_id) = 0.d0
             end if
             this%v_G_EPSI(node_id) = cgStudy%gth(1)
         elseif (cgStudy%option == "G_EPSI") then
@@ -1667,8 +1665,6 @@ contains
                 elseif (option == "KJ_EPSI") then
                     call tbajvr(this%table_g, this%nb_para, 'KJ_EPSI', this%v_KJ_EPSI(i_node), livr)
                     call tbajvr(this%table_g, this%nb_para, 'G_EPSI', this%v_G_EPSI(i_node), livr)
-                elseif (option == "KJ_EPSI") then
-
                 elseif (option == "G_EPSI") then
                     call tbajvr(this%table_g, this%nb_para, 'G_EPSI', this%v_G_EPSI(i_node), livr)
                 else
@@ -1724,7 +1720,8 @@ contains
         real(kind=8) :: xm, ym, zm, xa, ya, za, xb, yb, zb, d
         real(kind=8) :: xab, yab, zab, xam, yam, zam, norm2, xnm, ynm, znm
         real(kind=8) :: vnora(3), vnorb(3), vdira(3), vdirb(3), vnorn(3), vdirn(3)
-    character(len=8), parameter :: licmp(9) = ['X1', 'X2', 'X3', 'X4', 'X5', 'X6', 'X7', 'X8', 'X9']
+        character(len=8), parameter :: licmp(9) = ['X1', 'X2', 'X3', 'X4', 'X5', &
+                                                   'X6', 'X7', 'X8', 'X9']
 !
         call jemarq()
         call jeveuo(this%crack//'.FOND.NOEU', 'L', vk8=fondNoeud)
