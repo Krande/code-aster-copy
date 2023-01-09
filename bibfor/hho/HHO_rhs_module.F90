@@ -42,7 +42,7 @@ module HHO_rhs_module
 ! --------------------------------------------------------------------------------------------------
 !
     public :: hhoMakeRhsFaceScal, hhoMakeRhsFaceVec
-    public :: hhoMakeRhsCellScal, hhoMakeRhsCellVec, hhoMakeRhsCellMat
+    public :: hhoMakeRhsCellScal, hhoMakeRhsCellVec
 !    private  ::
 !
 contains
@@ -238,56 +238,6 @@ contains
                 Values(i) = ValuesQP(idir, i)
             end do
             call hhoMakeRhsCellScal(hhoCell, hhoQuad, Values, degree, rhs(begin))
-        end do
-!
-    end subroutine
-!
-!===================================================================================================
-!
-!===================================================================================================
-!
-    subroutine hhoMakeRhsCellMat(hhoCell, hhoQuad, ValuesQP, degree, rhs)
-!
-        implicit none
-!
-        type(HHO_Cell), intent(in)          :: hhoCell
-        type(HHO_Quadrature), intent(in)    :: hhoQuad
-        real(kind=8), intent(in)            :: ValuesQP(3, 3, MAX_QP_CELL)
-        integer, intent(in)                 :: degree
-        real(kind=8), intent(out)           :: rhs(MSIZE_CELL_MAT)
-!
-! --------------------------------------------------------------------------------------------------
-!   HHO
-!
-!   Compute the term (f, vT)_T
-!   In hhoCell      : the current HHO Cell
-!   In hhoQuad      : Quadrature for the face
-!   In ValuesQP : Values of vectorial function f at the quadrature points
-!   Out rhs         : term (f, vT)_T (rhs member)
-!   In,     degree  : degree of the basis
-!
-! --------------------------------------------------------------------------------------------------
-!
-        type(HHO_basis_cell) :: hhoBasisCell
-        integer :: size, idir1, idir2, begin, ipg
-        real(kind=8) :: Values(MAX_QP_CELL)
-!
-! -- init face basis
-        call hhoBasisCell%initialize(hhoCell)
-        size = hhoBasisCell%BSSize(0, degree)
-!
-        rhs = 0.d0
-        Values = 0.d0
-!
-        begin = 1
-        do idir1 = 1, hhoCell%ndim
-            do idir2 = 1, hhoCell%ndim
-                do ipg = 1, hhoQuad%nbQuadPoints
-                    Values(ipg) = ValuesQP(idir1, idir2, ipg)
-                end do
-                call hhoMakeRhsCellScal(hhoCell, hhoQuad, Values, degree, rhs(begin))
-                begin = begin+size
-            end do
         end do
 !
     end subroutine

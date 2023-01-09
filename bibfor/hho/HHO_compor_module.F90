@@ -170,8 +170,6 @@ contains
             bool = ASTER_FALSE
         elseif (defo_comp .eq. 'GDEF_LOG') then
             bool = ASTER_TRUE
-        elseif (defo_comp .eq. 'SIMO_MIEHE') then
-            bool = ASTER_TRUE
         elseif (defo_comp .eq. 'GREEN_LAGRANGE') then
             bool = ASTER_TRUE
         else

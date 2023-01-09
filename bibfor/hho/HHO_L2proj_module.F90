@@ -43,7 +43,7 @@ module HHO_L2proj_module
 !
 ! --------------------------------------------------------------------------------------------------
     public :: hhoL2ProjFaceScal, hhoL2ProjFaceVec, hhoL2ProjScal, hhoL2ProjVec
-    public :: hhoL2ProjCellScal, hhoL2ProjCellVec, hhoL2ProjCellMat
+    public :: hhoL2ProjCellScal, hhoL2ProjCellVec
 !    private  ::
 !
 contains
@@ -261,63 +261,6 @@ contains
 ! ---- Solve the system
 !
         call dposv('U', mbs, hhoCell%ndim, cellMass, MSIZE_CELL_SCAL, coeff_L2Proj, mbs, info)
-!
-! ---- Sucess ?
-!
-        if (info .ne. 0) then
-            call utmess('F', 'HHO1_4')
-        end if
-!
-    end subroutine
-!
-!===================================================================================================
-!
-!===================================================================================================
-!
-    subroutine hhoL2ProjCellMat(hhoCell, hhoQuad, FuncValuesQP, degree, coeff_L2Proj)
-!
-        implicit none
-!
-        type(HHO_Cell), intent(in)          :: hhoCell
-        type(HHO_Quadrature), intent(in)    :: hhoQuad
-        real(kind=8), intent(in)            :: FuncValuesQP(3, 3, MAX_QP_CELL)
-        integer, intent(in)                 :: degree
-        real(kind=8), intent(out)           :: coeff_L2Proj(MSIZE_CELL_MAT)
-!
-! --------------------------------------------------------------------------------------------------
-!   HHO
-!
-!   Compute the L2-prjoection of a matricial given function on a cell
-!   In hhoCell      : the current HHO Cell
-!   In hhoQuad      : Quadrature for the cace
-!   In FuncValuesQP : Values of the function to project at the quadrature points
-!   In degree       : degree of the projection k
-!   Out coeff_L2Proj: coefficient after projection
-!
-! --------------------------------------------------------------------------------------------------
-!
-        real(kind=8) :: cellMass(MSIZE_CELL_SCAL, MSIZE_CELL_SCAL)
-        integer :: info, ndim2, mbs
-!
-! --------------------------------------------------------------------------------------------------
-!
-        info = 0
-        if (2*degree > hhoQuad%order) then
-            call utmess('F', 'HHO1_12')
-        end if
-!
-! ----- Compute cell mass matrix
-!
-        call hhoMassMatCellScal(hhoCell, 0, degree, cellMass, mbs)
-!
-! ---- Compute rhs
-!
-        call hhoMakeRhsCellMat(hhoCell, hhoQuad, FuncValuesQP, degree, coeff_L2Proj)
-!
-! ---- Solve the system
-!
-        ndim2 = hhoCell%ndim*hhoCell%ndim
-        call dposv('U', mbs, ndim2, cellMass, MSIZE_CELL_SCAL, coeff_L2Proj, mbs, info)
 !
 ! ---- Sucess ?
 !

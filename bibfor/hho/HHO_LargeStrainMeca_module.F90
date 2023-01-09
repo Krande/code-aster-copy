@@ -151,7 +151,7 @@ contains
         real(kind=8) :: jac_prev, jac_curr, coorpg(3), weight
         integer :: cbs, fbs, total_dofs, faces_dofs, gbs, ipg, gbs_cmp, gbs_sym
         integer :: cod(27), nbsig
-        aster_logical :: l_gdeflog, l_green_lagr, l_simo_miehe, l_lhs, l_rhs
+        aster_logical :: l_gdeflog, l_green_lagr, l_lhs, l_rhs
 ! --------------------------------------------------------------------------------------------------
 !
         cod = 0
@@ -171,7 +171,7 @@ contains
 !
 ! ----- Type of behavior
 !
-        call select_behavior(compor, l_gdeflog, l_green_lagr, l_simo_miehe)
+        call select_behavior(compor, l_gdeflog, l_green_lagr)
 !
 ! ----- Initialisation of behaviour datastructure
 !
@@ -180,7 +180,7 @@ contains
         l_lhs = L_MATR(option)
         l_rhs = L_VECT(option)
 !
-        if (cplan .and. (l_simo_miehe .or. l_green_lagr)) then
+        if (cplan .and. l_green_lagr) then
             ASSERT(ASTER_FALSE)
         end if
 !
@@ -572,13 +572,12 @@ contains
 !
 !===================================================================================================
 !
-    subroutine hhoCalculGreenLagrange(ndim, F, GL, GLvec)
+    subroutine hhoCalculGreenLagrange(ndim, F, GLvec)
 !
         implicit none
 !
         integer, intent(in)             :: ndim
         real(kind=8), intent(in)        :: F(3, 3)
-        real(kind=8), intent(out), optional :: GL(3, 3)
         real(kind=8), intent(out), optional :: GLvec(6)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -619,10 +618,6 @@ contains
             GL_(1:2, 3) = 0.d0
         end if
 !
-        if (present(GL)) then
-            GL = GL_
-        end if
-!
 ! ---- convert GL in (XX, YY, ZZ, XY*rac2, XZ*rac2, YZ*rac2)
 !
         if (present(GLvec)) then
@@ -643,14 +638,13 @@ contains
 !
 !===================================================================================================
 !
-    subroutine select_behavior(behavior, l_gdeflog, l_green_lagr, l_simo_miehe)
+    subroutine select_behavior(behavior, l_gdeflog, l_green_lagr)
 !
         implicit none
 !
         character(len=16), intent(in)   :: behavior(*)
         aster_logical, intent(out)      :: l_gdeflog
         aster_logical, intent(out)      :: l_green_lagr
-        aster_logical, intent(out)      :: l_simo_miehe
 !
 ! --------------------------------------------------------------------------------------------------
 !   HHO - mechanics
@@ -659,20 +653,16 @@ contains
 !   In behavior     : type of behavior
 !   Out l_gdeflog   : use GDEF_LOG ?
 !   Out l_green_lagr: use GREEN_LAGRANGE ?
-!   Out l_simo_miehe: use SIMO_MIEHE ?
 ! --------------------------------------------------------------------------------------------------
 !
         l_gdeflog = ASTER_FALSE
         l_green_lagr = ASTER_FALSE
-        l_simo_miehe = ASTER_FALSE
 !
         select case (behavior(DEFO))
         case ('GDEF_LOG')
             l_gdeflog = ASTER_TRUE
         case ('GREEN_LAGRANGE')
             l_green_lagr = ASTER_TRUE
-        case ('SIMO_MIEHE')
-            l_simo_miehe = ASTER_TRUE
         case default
             ASSERT(ASTER_FALSE)
         end select

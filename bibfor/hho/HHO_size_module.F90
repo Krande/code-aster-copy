@@ -39,7 +39,6 @@ module HHO_size_module
 !
     public :: hhoTherDofs, hhoTherNLDofs, hhoMecaDofs, hhoMecaNLDofs, hhoMecaGradDofs
     public :: hhoTherFaceDofs, hhoMecaFaceDofs, hhoTherCellDofs, hhoMecaCellDofs
-    public :: hhoContactDofs
 !
 contains
 !
@@ -347,57 +346,6 @@ contains
         else
             ASSERT(ASTER_FALSE)
         end if
-!
-    end subroutine
-!
-!
-!===================================================================================================
-!
-!===================================================================================================
-!
-    subroutine hhoContactDofs(hhoCellSlav, hhoDataSlav, hhoFaceMast, hhoDataMast, &
-                              cbsSlav, fbsSlav, total_fbsSlav, fbsMast, &
-                              total_cont_dofs, total_face_dofs)
-!
-        implicit none
-!
-        type(HHO_Cell), intent(in)    :: hhoCellSlav
-        type(HHO_Data), intent(in)    :: hhoDataSlav
-        type(HHO_Face), intent(in)    :: hhoFaceMast
-        type(HHO_Data), intent(in)    :: hhoDataMast
-        integer, intent(out)          :: cbsSlav
-        integer, intent(out)          :: fbsSlav
-        integer, intent(out)          :: total_fbsSlav
-        integer, intent(out)          :: fbsMast
-        integer, intent(out)          :: total_cont_dofs
-        integer, intent(out)          :: total_face_dofs
-!
-! --------------------------------------------------------------------------------------------------
-!   HHO - mechanics
-!
-!   Compute the number of dofs for non-linear mechanics
-!   In hhoCellSlav      : the current HHO Cell (Slave side)
-!   In hhoDataSlav      : information on HHO methods (Slave side)
-!   In hhoFaceMast      : the current HHO Face (Master side)
-!   In hhoDataMast      : information on HHO methods (Master side)
-!   Out cbsSlav         : number of cell dofs (Slave side)
-!   Out fbsSlav         : number of face dofs (Slave side)
-!   Out total_fbsSlav   : number of total faces dofs (Slave side)
-!   Out fbsMast         : number of face dofs (Master side)
-!   Out total_cont_dofs : number of total dofs (faces + cell)
-!   Out total_face_dofs : number of total faces dofs
-! --------------------------------------------------------------------------------------------------
-!
-        integer :: total_dofs_Slav
-! --------------------------------------------------------------------------------------------------
-!
-! ---- number of dofs
-        call hhoMecaDofs(hhoCellSlav, hhoDataSlav, cbsSlav, fbsSlav, total_dofs_Slav)
-        call hhoMecaFaceDofs(hhoFaceMast, hhoDataMast, fbsMast)
-!
-        total_fbsSlav = total_dofs_Slav-cbsSlav
-        total_cont_dofs = total_dofs_Slav+fbsMast
-        total_face_dofs = total_fbsSlav+fbsMast
 !
     end subroutine
 !

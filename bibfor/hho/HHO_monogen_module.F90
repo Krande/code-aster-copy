@@ -53,11 +53,10 @@ module HHO_monogen_module
         procedure, pass :: initialize => hhoMonomialsInit
         procedure, pass :: eval => hhoMonomialsEval
         procedure, pass :: maxOrder
-        procedure, pass :: dim => dim_mono
     end type HHO_monomials
 !
     public   :: HHO_monomials
-    private  :: hhoMonomialsInit, hhoMonomialsEval, dim_mono, maxOrder
+    private  :: hhoMonomialsInit, hhoMonomialsEval, maxOrder
 !
 contains
 !---------------------------------------------------------------------------------------------------
@@ -244,24 +243,6 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
         degree = this%max_order
-!
-    end function
-!
-    function dim_mono(this) result(ndim)
-!
-        implicit none
-!
-        class(HHO_monomials), intent(in) :: this
-        integer                          :: ndim
-!
-! --------------------------------------------------------------------------------------------------
-!
-!   return the dimension of a HHO_monomials type
-!   In this     : a HHo Data
-!   Out degree  : ndim
-! --------------------------------------------------------------------------------------------------
-!
-        ndim = this%ndim
 !
     end function
 !
