@@ -92,6 +92,10 @@ subroutine apldlt(kptsc, action, prepost, rsolu, vcine, nbsol)
     if (matd == 'OUI') then
         call utmess('F', 'PETSC_17')
     end if
+    call dismoi('MATR_HPC', nomat_courant, 'MATR_ASSE', repk=matd)
+    if (matd == 'OUI') then
+        call utmess('F', 'PETSC_25')
+    end if
 
 !   2. Calcul de la nouvelle matrice, du nouveau nume_ddl et de kprem :
 !   -------------------------------------------------------------------
