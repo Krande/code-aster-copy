@@ -81,7 +81,7 @@ class GeneralizedResult : public DataStructure {
           _displacement( JeveuxVector< ValueType >( getName() + ".DEPL" ) ),
           _velocity( JeveuxVector< ValueType >( getName() + ".VITE" ) ),
           _acceleration( JeveuxVector< ValueType >( getName() + ".ACCE" ) ),
-          _projM( new ProjMesu( getName() + ".PROJM" ) ),
+          _projM( new ProjMesu( ljust( getName(), 8 ) + ".PROJM" ) ),
           _genDOFNum( nullptr ),
           _DOFNum( nullptr ){};
 
