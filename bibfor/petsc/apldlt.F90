@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -94,6 +94,10 @@ use petsc_data_module
     if ( matd == 'OUI' ) then
        call utmess( 'F', 'PETSC_17')
     endif
+    call dismoi('MATR_HPC', nomat_courant, 'MATR_ASSE', repk=matd)
+    if (matd == 'OUI') then
+        call utmess('F', 'PETSC_25')
+    end if
 
 !   2. Calcul de la nouvelle matrice, du nouveau nume_ddl et de kprem :
 !   -------------------------------------------------------------------

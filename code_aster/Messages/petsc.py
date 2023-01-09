@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -182,9 +182,21 @@ Solveur PETSc :
 24 : _("""
 Solveur PETSc :
   La résolution du système linéaire précédent s'est effectuée en %(i1)d itérations.
-  """),
+  """
+    ),
+    25: _(
+        """
+Solveur PETSC : 
+   Vous utilisez le préconditionneur LDLT_INC : ce préconditionneur n'est pas disponible 
+   en mode parallèle distribué.
 
-26 : _("""
+Conseils :
+   Vous pouvez remplacer le préconditionneur LDLT_INC par LDLT_SP, qui est disponible 
+   en mode parallèle distribué.
+  """
+    ),
+    26: _(
+        """
 Solveur PETSc :
   On construit un nouveau préconditionneur de second niveau à partir des éléments de Ritz calculés au cours de la résolution du système linéaire précédent.
   """),
