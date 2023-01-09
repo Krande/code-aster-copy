@@ -141,7 +141,7 @@ subroutine te0450(nomopt, nomte)
 !
 ! -------- tranform sigm in symmetric form
 !
-        Cauchy_curr(1:ncomp) = hhoCS%sig_prev((ipg-1)*ncomp+1:ipg*ncomp)
+        call tranfoMatToSym(hhoCell%ndim, hhoCS%sig_prev((ipg-1)*ncomp+1:ipg*ncomp), Cauchy_curr)
 !
 ! --------- Eval basis function at the quadrature point
 !
