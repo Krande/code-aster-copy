@@ -30,6 +30,7 @@
 #include "Numbering/GeneralizedDOFNumbering.h"
 #include "Results/FullResult.h"
 #include "Supervis/ResultNaming.h"
+#include "Modal/StaticMacroElement.h"
 
 /**
  * @class GeneralizedModeResult
@@ -46,6 +47,8 @@ class GeneralizedModeResult : public FullResult {
     GeneralizedAssemblyMatrixComplexPtr _rigidityComplexMatrix;
     /** @brief generalized DOFNumbering */
     GeneralizedDOFNumberingPtr _genDOFNum;
+    /** @brief Objet PROJ_MESU */
+    ProjMesuPtr _projM;
 
   public:
     /**
@@ -54,6 +57,7 @@ class GeneralizedModeResult : public FullResult {
      */
     GeneralizedModeResult( const std::string &name )
         : FullResult( name, "MODE_GENE" ),
+          _projM( new ProjMesu( ljust( getName(), 8 ) + ".PROJM") ),
           _rigidityRealMatrix( nullptr ),
           _rigidityComplexMatrix( nullptr ),
           _genDOFNum( nullptr ){};
