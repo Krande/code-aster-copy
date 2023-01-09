@@ -54,8 +54,9 @@ module HHO_SmallStrainMeca_module
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    public   :: hhoSmallStrainLCMeca, hhoComputeRhsSmall, tranfoMatToSym, hhoMatrElasMeca
-    private  :: hhoComputeCgphi, hhoComputeLhsSmall, tranfoSymToMat
+    public :: hhoSmallStrainLCMeca, tranfoMatToSym, hhoMatrElasMeca
+    public :: hhoComputeRhsSmall, hhoComputeLhsSmall
+    public :: hhoComputeCgphi, tranfoSymToMat
 !
 contains
 !
@@ -64,10 +65,10 @@ contains
 !===================================================================================================
 !
     subroutine hhoSmallStrainLCMeca(hhoCell, hhoData, hhoQuadCellRigi, gradrec, &
-                                    & fami, typmod, imate, compor, option, carcri, lgpg, ncomp,&
-                                    & time_prev, time_curr, depl_prev, depl_incr, &
-                                    & sigm, vim, angmas, mult_comp, &
-                                    & lhs, rhs, sigp, vip, codret)
+                                    fami, typmod, imate, compor, option, carcri, lgpg, ncomp, &
+                                    time_prev, time_curr, depl_prev, depl_incr, &
+                                    sigm, vim, angmas, mult_comp, &
+                                    lhs, rhs, sigp, vip, codret)
 !
         implicit none
 !
@@ -166,18 +167,17 @@ contains
 !
 ! ----- compute E_prev = gradrec_sym * depl_prev
         call dgemv('N', gbs_sym, total_dofs, 1.d0, gradrec, MSIZE_CELL_MAT, &
-                  & depl_prev, 1, 0.d0, E_prev_coeff, 1)
+                   depl_prev, 1, 0.d0, E_prev_coeff, 1)
 !
 ! ----- compute E_incr = gradrec_sym * depl_incr
         call dgemv('N', gbs_sym, total_dofs, 1.d0, gradrec, MSIZE_CELL_MAT, &
-                  & depl_incr, 1, 0.d0, E_incr_coeff, 1)
+                   depl_incr, 1, 0.d0, E_incr_coeff, 1)
 !
 ! ----- Loop on quadrature point
 !
         do ipg = 1, hhoQuadCellRigi%nbQuadPoints
             coorpg(1:3) = hhoQuadCellRigi%points(1:3, ipg)
             weight = hhoQuadCellRigi%weights(ipg)
-            !print*, "qp", coorpg(1:3)
 ! --------- Eval basis function at the quadrature point
             call hhoBasisCell%BSEval(hhoCell, coorpg(1:3), 0, hhoData%grad_degree(), BSCEval)
 !
@@ -600,8 +600,8 @@ contains
 !
 !   tranform a matrix to matrix symmetrix form
 !   In ndim        : dimension of the problem
-!   Out matrix     : symmetrix matrix to transform (XX, YY, ZZ, XY, XZ, YZ)
 !   In mat_sym     : matrix in form (XX YY ZZ SQRT(2)*XY SQRT(2)*XZ SQRT(2)*YZ)
+!   Out matrix     : symmetrix matrix to transform (XX, YY, ZZ, XY, XZ, YZ)
 ! --------------------------------------------------------------------------------------------------
 !
         real(kind=8), parameter :: rac2 = sqrt(2.d0)

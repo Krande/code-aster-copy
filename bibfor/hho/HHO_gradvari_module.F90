@@ -151,8 +151,10 @@ contains
         real(kind=8) :: F_prev(3, 3), F_curr(3, 3), Pk1(3, 3)
         real(kind=8) :: var_prev, var_curr, lag_prev, lag_curr
         real(kind=8) :: sig_vari, sig_lagv, sig_gv(3), dsv_dv, dsv_dl, dsl_dl, dsgv_dgv(3, 3)
-        real(kind=8) :: dsv_dF(3, 3), dsl_dF(3, 3)
+        real(kind=8) :: dsv_dF(3, 3), dsl_dF(3, 3), dsv_dEps(6), dsl_dEps(6)
+        real(kind=8) :: Eps_prev(6), Eps_curr(6), Cauchy(6)
         real(kind=8) :: dPK1_dF(3, 3, 3, 3), dPK1_dv(3, 3), dPK1_dl(3, 3)
+        real(kind=8) :: dSig_dEps(6, 6), dSig_dv(6), dSig_dl(6)
         real(kind=8) :: jac_prev, jac_curr, coorpg(3), weight, coeff, mk_stab, gv_stab
         real(kind=8) :: BSCEvalG(MSIZE_CELL_SCAL), BSCEval(MSIZE_CELL_SCAL)
         real(kind=8) :: mk_AT(MSIZE_CELL_MAT, MSIZE_CELL_MAT)
@@ -175,9 +177,9 @@ contains
         real(kind=8) :: lhs_lv(MSIZE_CELL_SCAL, MSIZE_TDOFS_SCAL)
         real(kind=8) :: lhs_ll(MSIZE_CELL_SCAL, MSIZE_CELL_SCAL)
         integer :: mapMeca(MSIZE_TDOFS_VEC), mapVari(MSIZE_TDOFS_SCAL), mapLagv(MSIZE_CELL_SCAL)
-        integer :: mk_cbs, mk_fbs, mk_total_dofs, mk_gbs, mk_gbs_sym
+        integer :: mk_cbs, mk_fbs, mk_total_dofs, mk_gbs, mk_gbs_sym, mk_gbs_cmp
         integer :: gv_cbs, gv_fbs, gv_total_dofs, gv_gbs
-        integer :: cod(27), ipg, j
+        integer :: cod(27), ipg, j, mk_gbs_tot
         aster_logical :: l_lhs, l_rhs, forc_noda
 ! --------------------------------------------------------------------------------------------------
 !
@@ -189,6 +191,12 @@ contains
 !
         call hhoMecaNLDofs(hhoCell, hhoData, mk_cbs, mk_fbs, mk_total_dofs, mk_gbs, mk_gbs_sym)
         call hhoTherNLDofs(hhoCell, hhoData, gv_cbs, gv_fbs, gv_total_dofs, gv_gbs)
+        if (hhoComporState%l_largestrain) then
+            mk_gbs_tot = mk_gbs
+        else
+            mk_gbs_tot = mk_gbs_sym
+        end if
+        mk_gbs_cmp = gv_gbs
 !
 ! ------ initialization
 !
@@ -236,14 +244,14 @@ contains
 !
         call hhoBasisCell%initialize(hhoCell)
 !
-! ----- compute G_prev = gradrec * depl_prev
+! ----- compute G_prev = gradrec * depl_prev (sym or not)
 !
-        call dgemv('N', mk_gbs, mk_total_dofs, 1.d0, hhoMecaState%grad, MSIZE_CELL_MAT, &
+        call dgemv('N', mk_gbs_tot, mk_total_dofs, 1.d0, hhoMecaState%grad, MSIZE_CELL_MAT, &
                    hhoMecaState%depl_prev, 1, 0.d0, G_prev_coeff, 1)
 !
-! ----- compute G_curr = gradrec * depl_curr
+! ----- compute G_curr = gradrec * depl_curr (sym or not)
 !
-        call dgemv('N', mk_gbs, mk_total_dofs, 1.d0, hhoMecaState%grad, MSIZE_CELL_MAT, &
+        call dgemv('N', mk_gbs_tot, mk_total_dofs, 1.d0, hhoMecaState%grad, MSIZE_CELL_MAT, &
                    hhoMecaState%depl_curr, 1, 0.d0, G_curr_coeff, 1)
 !
 ! ----- compute GV_prev = gradrec * vari_prev
@@ -269,10 +277,33 @@ contains
 !
 ! --------- Eval gradient at T- and T+
 !
-            G_prev = hhoEvalMatCell(hhoCell, hhoBasisCell, hhoData%grad_degree(), &
-                                    coorpg(1:3), G_prev_coeff, mk_gbs)
-            G_curr = hhoEvalMatCell(hhoCell, hhoBasisCell, hhoData%grad_degree(), &
-                                    coorpg(1:3), G_curr_coeff, mk_gbs)
+            if (hhoComporState%l_largestrain) then
+                G_prev = hhoEvalMatCell(hhoCell, hhoBasisCell, hhoData%grad_degree(), &
+                                        coorpg(1:3), G_prev_coeff, mk_gbs)
+                G_curr = hhoEvalMatCell(hhoCell, hhoBasisCell, hhoData%grad_degree(), &
+                                        coorpg(1:3), G_curr_coeff, mk_gbs)
+!
+! --------- Eval gradient of the deformation at T- and T+
+!
+                call hhoCalculF(hhoCell%ndim, G_prev, F_prev)
+                call hhoCalculF(hhoCell%ndim, G_curr, F_curr)
+!
+! -------- Check the jacobian jac >= r8prem
+! -------- be carrefull with c_plan, I don't know the result
+!
+                call lcdetf(hhoCell%ndim, F_prev, jac_prev)
+                cod(ipg) = merge(1, 0, jac_prev .le. r8prem())
+                if (cod(ipg) .ne. 0) goto 999
+!
+                call lcdetf(hhoCell%ndim, F_curr, jac_curr)
+                cod(ipg) = merge(1, 0, jac_curr .le. r8prem())
+                if (cod(ipg) .ne. 0) goto 999
+            else
+                Eps_prev = hhoEvalSymMatCell(hhoCell, hhoBasisCell, hhoData%grad_degree(), &
+                                             coorpg(1:3), G_prev_coeff, mk_gbs_sym)
+                Eps_curr = hhoEvalSymMatCell(hhoCell, hhoBasisCell, hhoData%grad_degree(), &
+                                             coorpg(1:3), G_curr_coeff, mk_gbs_sym)
+            end if
 !
             GV_prev = hhoEvalVecCell(hhoCell, hhoBasisCell, hhoData%grad_degree(), &
                                      coorpg(1:3), GV_prev_coeff, gv_gbs)
@@ -289,27 +320,11 @@ contains
             lag_curr = hhoEvalScalCell(hhoCell, hhoBasisCell, hhoData%cell_degree(), &
                                        coorpg(1:3), hhoGVState%lagv_curr, gv_cbs)
 !
-! --------- Eval gradient of the deformation at T- and T+
-!
-            call hhoCalculF(hhoCell%ndim, G_prev, F_prev)
-            call hhoCalculF(hhoCell%ndim, G_curr, F_curr)
-!
-! -------- Check the jacobian jac >= r8prem
-! -------- be carrefull with c_plan, I don't know the result
-!
-            call lcdetf(hhoCell%ndim, F_prev, jac_prev)
-            cod(ipg) = merge(1, 0, jac_prev .le. r8prem())
-            if (cod(ipg) .ne. 0) goto 999
-!
-            call lcdetf(hhoCell%ndim, F_curr, jac_curr)
-            cod(ipg) = merge(1, 0, jac_curr .le. r8prem())
-            if (cod(ipg) .ne. 0) goto 999
-!
 ! ------- Compute behavior
 !
             if (forc_noda) then
                 call forc_noda_stress(hhoComporState, hhoCell%ndim, ipg, F_curr, &
-                                      Pk1, sig_vari, sig_lagv, sig_gv)
+                                      Pk1, Cauchy, sig_vari, sig_lagv, sig_gv)
             elseif (hhoComporState%l_largestrain) then
                 call gdef_log(BEHinteg, hhoComporState, &
                               hhoCell%ndim, ipg, hhoMecaState%time_prev, hhoMecaState%time_curr, &
@@ -320,7 +335,13 @@ contains
                               dsv_dF, dsv_dv, dsv_dl, &
                               dsl_dF, dsl_dl, dsgv_dgv, cod(ipg))
             else
-                ASSERT(ASTER_FALSE)
+                call petit(BEHinteg, hhoComporState, &
+                           hhoCell%ndim, ipg, hhoMecaState%time_prev, hhoMecaState%time_curr, &
+                           Eps_prev, Eps_curr, var_prev, var_curr, lag_prev, lag_curr, &
+                           GV_prev, GV_curr, &
+                           Cauchy, sig_vari, sig_lagv, sig_gv, &
+                           dSig_dEps, dSig_dv, dSig_dl, dsv_dEps, dsv_dv, dsv_dl, &
+                           dsl_dEps, dsl_dl, dsgv_dgv, cod(ipg))
             end if
 !
 ! -------- Test the code of the LDC
@@ -330,8 +351,14 @@ contains
 ! ------- Compute rhs
 !
             if (l_rhs) then
+                if (hhoComporState%l_largestrain) then
 ! ---------- += weight * (PK1, g_phi)
-                call hhoComputeRhsLarge(hhoCell, Pk1, weight, BSCEvalG, mk_gbs, mk_bT)
+                    call hhoComputeRhsLarge(hhoCell, Pk1, weight, BSCEvalG, mk_gbs, mk_bT)
+                else
+! ---------- += weight * (Cauchy, gs_phi)
+                    call hhoComputeRhsSmall(hhoCell, Cauchy, weight, BSCEvalG, &
+                                            mk_gbs_cmp, mk_bT)
+                end if
 ! ---------- += weight * (sig_gv, g_phi)
                 call hhoComputeRhsRigiTher(hhoCell, sig_gv, weight, BSCEvalG, gv_gbs, gv_bT)
 ! ---------- += weight * (sig_vari, c_phi)
@@ -343,17 +370,38 @@ contains
 ! ------- Compute lhs
 !
             if (l_lhs) then
+                if (hhoComporState%l_largestrain) then
 ! ---------- += weight * (dPK1_dF : g_phi, g_phi)
-                call hhoComputeLhsLarge(hhoCell, dPK1_dF, weight, BSCEvalG, mk_gbs, mk_AT)
+                    call hhoComputeLhsLarge(hhoCell, dPK1_dF, weight, BSCEvalG, mk_gbs, mk_AT)
 ! ---------- += weight * (g_phi, dPK1_dv : c_phi) -> lhs_mv
-                call hhoComputeLhsLargeMG(hhoCell, dPK1_dv, weight, BSCEval, gv_cbs, &
-                                          BSCEvalG, mk_gbs, mv_AT)
+                    call hhoComputeLhsLargeMG(hhoCell, dPK1_dv, weight, BSCEval, gv_cbs, &
+                                              BSCEvalG, mk_gbs, mv_AT)
 ! ---------- += weight * (g_phi, dPK1_dl : c_phi) -> lhs_ml
-                call hhoComputeLhsLargeMG(hhoCell, dPK1_dl, weight, BSCEval, gv_cbs, &
-                                          BSCEvalG, mk_gbs, ml_AT)
+                    call hhoComputeLhsLargeMG(hhoCell, dPK1_dl, weight, BSCEval, gv_cbs, &
+                                              BSCEvalG, mk_gbs, ml_AT)
 ! ---------- += weight * (dsv_dF : g_phi, c_phi) -> lhs_vm
-                call hhoComputeLhsLargeGM(hhoCell, dsv_dF, weight, BSCEval, gv_cbs, &
-                                          BSCEvalG, mk_gbs, vm_AT)
+                    call hhoComputeLhsLargeGM(hhoCell, dsv_dF, weight, BSCEval, gv_cbs, &
+                                              BSCEvalG, mk_gbs, vm_AT)
+! ---------- += weight * (dsl_dF : g_phi, c_phi) -> lhs_lm
+                    call hhoComputeLhsLargeGM(hhoCell, dsl_dF, weight, BSCEval, gv_cbs, &
+                                              BSCEvalG, mk_gbs, lm_AT)
+                else
+! ---------- += weight * (dSig_deps : gs_phi, gs_phi)
+                    call hhoComputeLhsSmall(hhoCell, dSig_deps, weight, BSCEvalG, &
+                                            mk_gbs_sym, mk_gbs_cmp, mk_AT)
+! ---------- += weight * (gs_phi, dSig_dv : c_phi) -> lhs_mv
+!                     call hhoComputeLhsSmallMG(hhoCell, dSig_dv, weight, BSCEval, gv_cbs, &
+!                                             BSCEvalG, mk_gbs, mv_AT)
+! ! ---------- += weight * (gs_phi, dSig_dl : c_phi) -> lhs_ml
+!                     call hhoComputeLhsSmallMG(hhoCell, dSig_dl, weight, BSCEval, gv_cbs, &
+!                                             BSCEvalG, mk_gbs, ml_AT)
+! ! ---------- += weight * (dsv_dEps : gs_phi, c_phi) -> lhs_vm
+!                     call hhoComputeLhsSmallGM(hhoCell, dsv_dEps, weight, BSCEval, gv_cbs, &
+!                                             BSCEvalG, mk_gbs, vm_AT)
+! ! ---------- += weight * (dsl_dEps : g_phi, c_phi) -> lhs_lm
+!                     call hhoComputeLhsSmallGM(hhoCell, dsl_dEps, weight, BSCEval, gv_cbs, &
+!                                             BSCEvalG, mk_gbs, lm_AT)
+                end if
 ! ---------- += weight * (dgv_dv : g_phi, g_phi)
                 call hhoComputeLhsRigiTher(hhoCell, dsgv_dgv, weight, BSCEvalG, gv_gbs, gv_AT)
 ! ---------- += weight * (dsv_dv : c_phi, c_phi)
@@ -362,9 +410,6 @@ contains
 ! ---------- += weight * (dsv_dl : c_phi, c_phi)
                 coeff = weight*dsv_dl
                 call dsyr('U', gv_cbs, coeff, BSCEval, 1, lhs_vl, MSIZE_TDOFS_SCAL)
-! ---------- += weight * (dsl_dF : g_phi, c_phi) -> lhs_lm
-                call hhoComputeLhsLargeGM(hhoCell, dsl_dF, weight, BSCEval, gv_cbs, &
-                                          BSCEvalG, mk_gbs, lm_AT)
 ! ---------- += weight * (dsl_dl : c_phi, c_phi)
                 call hhoComputeLhsMassTher(dsl_dl, weight, BSCEval, gv_cbs, lhs_ll)
             end if
@@ -381,7 +426,7 @@ contains
 !
         if (l_rhs) then
 ! ----- compute rhs += Gradrec**T * bT
-            call dgemv('T', mk_gbs, mk_total_dofs, 1.d0, hhoMecaState%grad, MSIZE_CELL_MAT, &
+            call dgemv('T', mk_gbs_tot, mk_total_dofs, 1.d0, hhoMecaState%grad, MSIZE_CELL_MAT, &
                        mk_bT, 1, 1.d0, rhs_mk, 1)
 ! ----- compute rhs += stab
             call dsymv('U', mk_total_dofs, mk_stab, hhoMecaState%stab, &
@@ -405,32 +450,38 @@ contains
             call hhoCopySymPartMat('U', lhs_vv(1:gv_cbs, 1:gv_cbs))
             call hhoCopySymPartMat('U', lhs_vl(1:gv_cbs, 1:gv_cbs))
             call hhoCopySymPartMat('U', lhs_ll(1:gv_cbs, 1:gv_cbs))
+!
+! Pour rendre le bloc inversible tout le temps
+! Ca converge très mal sans
+            do j = 1, gv_gbs
+                lhs_ll(j, j) = lhs_ll(j, j)+1.d0
+            end do
 ! ----- Add gradient: += gradrec**T * AT * gradrec
 ! ----- step1: TMP = AT * gradrec
-            call dgemm('N', 'N', mk_gbs, mk_total_dofs, mk_gbs, 1.d0, &
+            call dgemm('N', 'N', mk_gbs_tot, mk_total_dofs, mk_gbs_tot, 1.d0, &
                        mk_AT, MSIZE_CELL_MAT, &
                        hhoMecaState%grad, MSIZE_CELL_MAT, 0.d0, mk_TMP, MSIZE_CELL_MAT)
             call dgemm('N', 'N', gv_gbs, gv_total_dofs, gv_gbs, 1.d0, &
                        gv_AT, MSIZE_CELL_VEC, &
                        hhoGVState%grad, MSIZE_CELL_VEC, 0.d0, gv_TMP, MSIZE_CELL_VEC)
 ! ----- step2: lhs += gradrec**T * TMP
-            call dgemm('T', 'N', mk_total_dofs, mk_total_dofs, mk_gbs, 1.d0, &
+            call dgemm('T', 'N', mk_total_dofs, mk_total_dofs, mk_gbs_tot, 1.d0, &
                        hhoMecaState%grad, MSIZE_CELL_MAT, &
                        mk_TMP, MSIZE_CELL_MAT, 0.d0, lhs_mm, MSIZE_TDOFS_VEC)
             call dgemm('T', 'N', gv_total_dofs, gv_total_dofs, gv_gbs, 1.d0, &
                        hhoGVState%grad, MSIZE_CELL_VEC, &
                        gv_TMP, MSIZE_CELL_VEC, 1.d0, lhs_vv, MSIZE_TDOFS_SCAL)
 !
-            call dgemm('T', 'N', mk_total_dofs, gv_cbs, mk_gbs, 1.d0, &
+            call dgemm('T', 'N', mk_total_dofs, gv_cbs, mk_gbs_tot, 1.d0, &
                        hhoMecaState%grad, MSIZE_CELL_MAT, &
                        mv_AT, MSIZE_CELL_MAT, 0.d0, lhs_mv, MSIZE_TDOFS_VEC)
-            call dgemm('T', 'N', mk_total_dofs, gv_cbs, mk_gbs, 1.d0, &
+            call dgemm('T', 'N', mk_total_dofs, gv_cbs, mk_gbs_tot, 1.d0, &
                        hhoMecaState%grad, MSIZE_CELL_MAT, &
                        ml_AT, MSIZE_CELL_MAT, 0.d0, lhs_ml, MSIZE_TDOFS_VEC)
-            call dgemm('N', 'N', gv_cbs, mk_total_dofs, mk_gbs, 1.d0, &
+            call dgemm('N', 'N', gv_cbs, mk_total_dofs, mk_gbs_tot, 1.d0, &
                        vm_AT, MSIZE_CELL_SCAL, hhoMecaState%grad, MSIZE_CELL_MAT, &
                        0.d0, lhs_vm, MSIZE_TDOFS_SCAL)
-            call dgemm('N', 'N', gv_cbs, mk_total_dofs, mk_gbs, 1.d0, &
+            call dgemm('N', 'N', gv_cbs, mk_total_dofs, mk_gbs_tot, 1.d0, &
                        lm_AT, MSIZE_CELL_SCAL, hhoMecaState%grad, MSIZE_CELL_MAT, &
                        0.d0, lhs_lm, MSIZE_TDOFS_SCAL)
 ! ----- Add stabilization
@@ -454,6 +505,9 @@ contains
                              lhs_lm, lhs_lv, lhs_ll, lhs)
 
             ! call hhoPrintMat(lhs_vv(1:gv_total_dofs, 1:gv_total_dofs))
+            ! do j=mk_total_dofs+gv_total_dofs+1,mk_total_dofs+gv_total_dofs+gv_gbs
+            !     lhs(j,j)=lhs(j,j)+1.d0
+            ! end do
         end if
 !
 999     continue
@@ -484,6 +538,8 @@ contains
         select case (hhoComporState%compor(DEFO))
         case ('GDEF_LOG')
             ASSERT(hhoComporState%l_largestrain)
+        case ('PETIT')
+            ASSERT(.not. hhoComporState%l_largestrain)
         case default
             ASSERT(ASTER_FALSE)
         end select
@@ -724,6 +780,191 @@ contains
         ! print *, sig_vari, sig_lagv, sig_gv
         ! print *, dsv_dv, dsv_dl, dsl_dl, dsgv_dgv
         !if (abs(dsl_dl) < 1d-8) dsl_dl = 1.d0
+!
+999     continue
+!
+    end subroutine
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+    subroutine petit(BEHinteg, hhoCS, ndim, ipg, &
+                     time_prev, time_curr, &
+                     Eps_prev, Eps_curr, var_prev, var_curr, &
+                     lag_prev, lag_curr, GV_prev, GV_curr, &
+                     Sig_curr, sig_vari, sig_lagv, sig_gv, &
+                     dSig_dEps, dSig_dv, dSig_dl, dsv_dEps, dsv_dv, dsv_dl, &
+                     dsl_dEps, dsl_dl, dsgv_dgv, cod)
+!
+        implicit none
+!
+        type(Behaviour_Integ), intent(inout) :: BEHinteg
+        type(HHO_Compor_State), intent(inout) :: hhoCS
+        integer, intent(in)             :: ndim
+        integer, intent(in)             :: ipg
+        real(kind=8), intent(in)        :: time_prev
+        real(kind=8), intent(in)        :: time_curr
+        real(kind=8), intent(in)        :: Eps_prev(6)
+        real(kind=8), intent(in)        :: Eps_curr(6)
+        real(kind=8), intent(in)        :: var_prev, var_curr
+        real(kind=8), intent(in)        :: lag_prev, lag_curr
+        real(kind=8), intent(in)        :: GV_prev(3), GV_curr(3)
+        real(kind=8), intent(out)       :: Sig_curr(6)
+        real(kind=8), intent(out)       :: sig_vari, sig_lagv, sig_gv(3)
+        real(kind=8), intent(out)       :: dsv_dv, dsv_dl, dsl_dl, dsgv_dgv(3, 3)
+        real(kind=8), intent(out)       :: dSig_dEps(6, 6), dSig_dv(6), dSig_dl(6)
+        real(kind=8), intent(out)       :: dsv_dEps(6), dsl_dEps(6)
+        integer, intent(out)            :: cod
+!
+! --------------------------------------------------------------------------------------------------
+!   HHO - mechanics
+!
+!   Compute the behavior laws for GDEF_LOF
+!   IO BEHinteg     : integration informations
+!   In ndim         : dimension of the problem
+!   In fami         : familly of quadrature points
+!   In typmod       : type of modelization
+!   In imate        : materiau code
+!   In compor       : type of behavior
+!   In option       : option of computations
+!   In carcri       : local criterion of convergence
+!   In lgpg         : size of internal variables for 1 pg
+!   In ipg          : i-th quadrature point
+!   In time_prev    : previous time T-
+!   In time_curr    : current time T+
+!   In angmas       : LES TROIS ANGLES DU MOT_CLEF MASSIF
+!   In multcomp     : ?
+!   In cplan        : plane stress hypothesis
+!   In F_prev       : previous deformation gradient at T-
+!   In F_curr       : curr deformation gradient at T+
+!   In sig_prev_pg  : cauchy stress at T-  (XX, YY, ZZ, XY, XZ, YZ)
+!   In vi_prev_pg   : internal variables at T-
+!   Out sig_curr    : cauchy stress at T+  (XX, YY, ZZ, XY, XZ, YZ)
+!   Out vi_curr     : internal variables at T+
+!   Out Pk1_curr    : piola-kirschooff 1 at T+
+!   Out module_tang : tangent modulus dPK1/dF(Fp)
+!   Out cod         : info on integration of the LDC
+! --------------------------------------------------------------------------------------------------
+!
+        real(kind=8) :: Cauchy_prev(6), Cauchy_curr(6), sig(6)
+        real(Kind=8) :: eplcm(3*ndim+2), eplci(3*ndim+2)
+        real(Kind=8) :: silcm(3*ndim+2), silcp(3*ndim+2), dsde(3*ndim+2, 3*ndim+2)
+        real(kind=8) :: sigPrev(11), viPrev(hhoCS%lgpg), viCurr(hhoCS%lgpg)
+        real(kind=8) :: dsl_dv
+        integer :: lgpg, imate, neu, neg, ntot
+        aster_logical :: lCorr, lMatr, lSigm, lVari
+!
+        lCorr = L_CORR(hhoCS%option)
+        lMatr = L_MATR(hhoCS%option)
+        lSigm = L_SIGM(hhoCS%option)
+        lVari = L_VARI(hhoCS%option)
+!
+        neu = 2*ndim
+        neg = 2+ndim
+        ntot = neu+neg
+!
+        lgpg = hhoCS%lgpg
+        imate = hhoCS%imater
+        sigPrev(1:ntot) = hhoCS%sig_prev((ipg-1)*ntot+1:ipg*ntot)
+        call tranfoMatToSym(ndim, sigPrev(1:neu), Cauchy_prev)
+        viPrev = hhoCS%vari_prev((ipg-1)*lgpg+1:ipg*lgpg)
+! Preparation des deformations generalisees de ldc en t- et t+
+        eplcm(1:neu) = Eps_prev(1:neu)
+        eplci(1:neu) = Eps_curr(1:neu)-Eps_prev(1:neu)
+        eplcm(neu+1) = var_prev
+        eplci(neu+1) = var_curr-var_prev
+        eplcm(neu+2) = lag_prev
+        eplci(neu+2) = lag_curr-lag_prev
+        eplcm(neu+2+1:neu+2+ndim) = GV_prev(1:ndim)
+        eplci(neu+2+1:neu+2+ndim) = GV_curr(1:ndim)-GV_prev(1:ndim)
+! Preparation des contraintes generalisees de ldc en t-
+        silcm(1:neu) = Cauchy_prev(1:neu)
+        silcm(neu+1:ntot) = sigPrev(neu+1:ntot)
+!
+! ----- Compute Stress and module_tangent
+!
+        silcp = 0.d0
+        viCurr = 0.d0
+        dsde = 0.d0
+        call nmcomp(BEHinteg, &
+                    hhoCS%fami, ipg, 1, ndim, hhoCS%typmod, &
+                    imate, hhoCS%compor, hhoCS%carcri, &
+                    time_prev, time_curr, &
+                    ntot, eplcm, eplci, ntot, silcm, &
+                    viPrev, hhoCS%option, hhoCS%angl_naut, &
+                    silcp, viCurr, ntot*ntot, dsde, cod, hhoCS%mult_comp)
+!
+! ----- Test the code of the LDC
+!
+        if (cod .eq. 1) goto 999
+
+! Archivage des contraintes mecaniques en t+ (tau tilda) dans les vi
+        if (lVari) then
+            hhoCS%vari_curr((ipg-1)*lgpg+1:ipg*lgpg) = viCurr
+        end if
+!
+! ----- Compute post-processing Elog
+!
+        Cauchy_curr = 0.d0
+        Cauchy_curr(1:neu) = silcp(1:neu)
+!
+!
+! --------- For new prediction and nmisot.F90
+        if (L_PRED(hhoCS%option)) then
+            Cauchy_curr = 0.d0
+        end if
+
+        if (.not. lCorr) then
+            Cauchy_curr = Cauchy_prev
+        end if
+!
+        if (lSigm) then
+            call tranfoSymToMat(ndim, Cauchy_curr, sig)
+            hhoCS%sig_curr((ipg-1)*ntot+1:(ipg-1)*ntot+neu) = sig(1:neu)
+            hhoCS%sig_curr((ipg-1)*ntot+neu+1:ipg*ntot) = silcp(neu+1:ntot)
+        end if
+!
+! ----- Compute stress
+!
+        Sig_curr = 0.d0
+        Sig_curr(1:neu) = Cauchy_curr(1:neu)
+        sig_vari = silcp(neu+1)
+        sig_lagv = silcp(neu+2)
+        sig_gv = 0.d0
+        sig_gv(1:ndim) = silcp(neu+2+1:ntot)
+!
+        dSig_dEps = 0.d0
+        dSig_dv = 0.d0
+        dSig_dl = 0.d0
+        dsv_dEps = 0.d0
+        dsv_dv = 0.d0
+        dsv_dl = 0.d0
+        dsl_dEps = 0.d0
+        dsl_dl = 0.d0
+        dsgv_dgv = 0.d0
+!
+        if (lMatr) then
+!
+            dSig_dEps(1:neu, 1:neu) = dsde(1:neu, 1:neu)
+            dsv_dv = dsde(neu+1, neu+1)
+            dsv_dl = dsde(neu+1, neu+2)
+            dsl_dv = dsde(neu+2, neu+1)
+            dsl_dl = dsde(neu+2, neu+2)
+            dSig_dv(1:neu) = dsde(1:neu, neu+1)
+            dSig_dl(1:neu) = dsde(1:neu, neu+2)
+            dsv_dEps(1:neu) = dsde(neu+1, 1:neu)
+            dsl_dEps(1:neu) = dsde(neu+2, 1:neu)
+            dsgv_dgv(1:ndim, 1:ndim) = dsde(neu+3:ntot, neu+3:ntot)
+
+            ! print *, hhoCS%option
+            ! print *, ipg, lgpg, ntot
+            ! print *, eplcm
+            ! print *, eplci
+            ! print *, sig_vari, sig_lagv, sig_gv
+            ! print *, dsv_dv, dsv_dl, dsl_dl, dsgv_dgv
+            !if (abs(dsl_dl) < 1d-8) dsl_dl = 1.d0
+        end if
 !
 999     continue
 !
@@ -1158,7 +1399,174 @@ contains
 !
 !===================================================================================================
 !
-    subroutine forc_noda_stress(hhoCS, ndim, ipg, F_curr, PK1_curr, sig_vari, sig_lagv, sig_gv)
+    subroutine hhoComputeLhsSmallMG(hhoCell, module_tang, weight, BSCEval, &
+                                    gv_cbs, BSCEvalG, mk_gbs, AT)
+!
+        implicit none
+!
+        type(HHO_Cell), intent(in)      :: hhoCell
+        real(kind=8), intent(in)        :: module_tang(6)
+        real(kind=8), intent(in)        :: weight
+        real(kind=8), intent(in)        :: BSCEval(MSIZE_CELL_SCAL)
+        real(kind=8), intent(in)        :: BSCEvalG(MSIZE_CELL_SCAL)
+        integer, intent(in)             :: gv_cbs, mk_gbs
+        real(kind=8), intent(inout)     :: AT(MSIZE_CELL_MAT, MSIZE_CELL_SCAL)
+!
+! --------------------------------------------------------------------------------------------------
+!   HHO - mechanics
+!
+!   Compute the scalar product AT += (module_tang:cphi, gsphi)_T at a quadrature point
+!   In hhoCell      : the current HHO Cell
+!   In module_tang  : elasto-plastic tangent moduli
+!   In weight       : quadrature weight
+!   In BSCEval      : Basis of one composant gphi
+!   In gbs_cmp      : size of BSCEval
+!   In gbs          : number of rows of AT
+!   Out AT          : contribution of At
+! --------------------------------------------------------------------------------------------------
+!
+        real(kind=8) :: qp_Acphi(6, MSIZE_CELL_SCAL)
+        integer:: i, j, k, row, gbs_cmp
+! --------------------------------------------------------------------------------------------------
+!
+! --------- Eval (module_tang : scphi)_T
+        do i = 1, gv_cbs
+            qp_Acphi(:, i) = weight*module_tang*BSCEval(i)
+        end do
+        gbs_cmp = mk_gbs/(hhoCell%ndim*hhoCell%ndim)
+!
+! -------- Compute scalar_product of (C_sgphi(j), sgphi(j))_T
+        do j = 1, gv_cbs
+            row = 1
+! ---------- diagonal term
+            do i = 1, hhoCell%ndim
+                do k = 1, gbs_cmp
+                    AT(row, j) = AT(row, j)+qp_Acphi(i, j)*BSCEvalG(k)
+                    row = row+1
+                    if (row > j) then
+                        go to 100
+                    end if
+                end do
+            end do
+!
+! --------- non-diagonal terms
+            select case (hhoCell%ndim)
+            case (3)
+                do i = 1, 3
+                    do k = 1, gbs_cmp
+                        AT(row, j) = AT(row, j)+qp_Acphi(3+i, j)*BSCEvalG(k)
+                        row = row+1
+                        if (row > j) then
+                            go to 100
+                        end if
+                    end do
+                end do
+            case (2)
+                do k = 1, gbs_cmp
+                    AT(row, j) = AT(row, j)+qp_Acphi(4, j)*BSCEvalG(k)
+                    row = row+1
+                    if (row > j) then
+                        go to 100
+                    end if
+                end do
+            case default
+                ASSERT(ASTER_FALSE)
+            end select
+!
+100         continue
+        end do
+    end subroutine
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+    subroutine hhoComputeLhsSmallGM(hhoCell, module_tang, weight, BSCEval, &
+                                    gv_cbs, BSCEvalG, mk_gbs, AT)
+!
+        implicit none
+!
+        type(HHO_Cell), intent(in)      :: hhoCell
+        real(kind=8), intent(in)        :: module_tang(6)
+        real(kind=8), intent(in)        :: weight
+        real(kind=8), intent(in)        :: BSCEval(MSIZE_CELL_SCAL)
+        real(kind=8), intent(in)        :: BSCEvalG(MSIZE_CELL_SCAL)
+        integer, intent(in)             :: gv_cbs, mk_gbs
+        real(kind=8), intent(inout)     :: AT(MSIZE_CELL_SCAL, MSIZE_CELL_MAT)
+!
+! --------------------------------------------------------------------------------------------------
+!   HHO - mechanics
+!
+!   Compute the scalar product AT += (cphi, module_tang:gsphi)_T at a quadrature point
+!   In hhoCell      : the current HHO Cell
+!   In module_tang  : elasto-plastic tangent moduli
+!   In weight       : quadrature weight
+!   In BSCEval      : Basis of one composant gphi
+!   In gbs_cmp      : size of BSCEval
+!   In gbs          : number of rows of AT
+!   Out AT          : contribution of At
+! --------------------------------------------------------------------------------------------------
+!
+        real(kind=8) :: qp_Agphi(6, MSIZE_CELL_SCAL)
+        integer:: i, j, k, col, gbs_cmp
+! --------------------------------------------------------------------------------------------------
+!
+! --------- Eval (module_tang : sgphi)_T
+        gbs_cmp = mk_gbs/(hhoCell%ndim*hhoCell%ndim)
+
+        do i = 1, gbs_cmp
+            qp_Agphi(:, i) = weight*module_tang*BSCEvalG(i)
+        end do
+!
+! -------- Compute scalar_product of (C_sgphi(j), gphi(j))_T
+        do j = 1, gv_cbs
+            col = 1
+! ---------- diagonal term
+            do i = 1, hhoCell%ndim
+                do k = 1, gbs_cmp
+                    AT(j, col) = AT(j, col)+qp_Agphi(i, j)*BSCEval(k)
+                    col = col+1
+                    if (col > j) then
+                        go to 100
+                    end if
+                end do
+            end do
+!
+! --------- non-diagonal terms
+            select case (hhoCell%ndim)
+            case (3)
+                do i = 1, 3
+                    do k = 1, gbs_cmp
+                        AT(j, col) = AT(j, col)+qp_Agphi(3+i, j)*BSCEval(k)
+                        col = col+1
+                        if (col > j) then
+                            go to 100
+                        end if
+                    end do
+                end do
+            case (2)
+                do k = 1, gbs_cmp
+                    AT(j, col) = AT(j, col)+qp_Agphi(4, j)*BSCEval(k)
+                    col = col+1
+                    if (col > j) then
+                        go to 100
+                    end if
+                end do
+            case default
+                ASSERT(ASTER_FALSE)
+            end select
+!
+100         continue
+        end do
+    end subroutine
+
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+    subroutine forc_noda_stress(hhoCS, ndim, ipg, F_curr, PK1_curr, Cauchy_curr, &
+                                sig_vari, sig_lagv, sig_gv)
 !
         implicit none
 !
@@ -1166,7 +1574,7 @@ contains
         integer, intent(in)             :: ndim
         integer, intent(in)             :: ipg
         real(kind=8), intent(in)       :: F_curr(3, 3)
-        real(kind=8), intent(out)       :: PK1_curr(3, 3)
+        real(kind=8), intent(out)       :: PK1_curr(3, 3), Cauchy_curr(6)
         real(kind=8), intent(out)       :: sig_vari, sig_lagv, sig_gv(3)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -1176,7 +1584,7 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
         integer :: neu, neg, ntot
-        real(kind=8) :: sigPrev(11), sig(6)
+        real(kind=8) :: sigPrev(11)
 ! --------------------------------------------------------------------------------------------------
 !
         neu = 2*ndim
@@ -1184,16 +1592,16 @@ contains
         ntot = neu+neg
 !
         sigPrev(1:ntot) = hhoCS%sig_prev((ipg-1)*ntot+1:ipg*ntot)
-        sig(1:neu) = sigPrev(1:neu)
         sig_vari = sigPrev(neu+1)
         sig_lagv = sigPrev(neu+2)
         sig_gv = 0.d0
         sig_gv(1:ndim) = sigPrev(neu+2+1:ntot)
+
+        call tranfoMatToSym(ndim, sigPrev(1:neu), Cauchy_curr)
 !
+        PK1_curr = 0.d0
         if (hhoCS%l_largestrain) then
-            call sigtopk1(ndim, sig, F_curr, PK1_curr)
-        else
-            ASSERT(ASTER_FALSE)
+            call sigtopk1(ndim, Cauchy_curr, F_curr, PK1_curr)
         end if
 !
     end subroutine
