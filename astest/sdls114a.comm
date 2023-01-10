@@ -112,6 +112,17 @@ GLMO1 = CALC_G(
     TOUT_MODE="OUI",
     THETA=_F(FISSURE=FF1, R_INF=5.0e-6, R_SUP=5.0e-5, CHAM_THETA=CO("cham_theta_no1")),
 )
+# duplication du calcul pour valider LIST_FREQ (sur les 5 modes testés)
+LISTFREQ = DEFI_LIST_REEL(VALE=(3.46913e03, 1.24806e04, 1.30529e04, 2.78202e04, 3.55667e04))
+GLMO2 = CALC_G(
+    OPTION="K",
+    RESULTAT=MODE,
+    LIST_FREQ=LISTFREQ,
+    CRITERE="ABSOLU",
+    PRECISION=1,
+    THETA=_F(FISSURE=FF1, R_INF=5.0e-6, R_SUP=5.0e-5, CHAM_THETA=CO("cham_theta_no2")),
+)
+
 
 IMPR_TABLE(TABLE=GLMO1)
 
@@ -141,6 +152,13 @@ for i in range(0, 5):
     imode = i + 1
     TEST_TABLE(
         TABLE=GLMO1,
+        NOM_PARA="K1",
+        FILTRE=_F(NOM_PARA="NUME_MODE", VALE_I=imode),
+        VALE_CALC=Kg_ref[i],
+    )
+
+    TEST_TABLE(
+        TABLE=GLMO2,
         NOM_PARA="K1",
         FILTRE=_F(NOM_PARA="NUME_MODE", VALE_I=imode),
         VALE_CALC=Kg_ref[i],

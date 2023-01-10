@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -195,9 +195,12 @@ UTOT = CALC_CHAMP(reuse=UTOT, CONTRAINTE=("SIGM_ELNO"), RESULTAT=UTOT)
 
 UTOT = CALC_CHAMP(reuse=UTOT, CONTRAINTE="SIGM_NOEU", RESULTAT=UTOT)
 
+LISTi = DEFI_LIST_ENTI(VALE=1)
+
 GLOC1 = CALC_G(
+    TITRE="CALC_G : NUME_ORDRE 1",
     RESULTAT=UTOT,
-    NUME_ORDRE=1,
+    LIST_ORDRE=LISTi,
     OPTION=("K"),
     THETA=_F(FISSURE=FISS, R_INF=0.004, R_SUP=0.013, DISCRETISATION="LINEAIRE"),
 )

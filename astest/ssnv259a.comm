@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -95,7 +95,14 @@ LISTG = (0, 3, 7, 10)
 LISTI = 1.0
 
 # CALC_G
-G = CALC_G(RESULTAT=RESUIMP, OPTION="G", INST=LISTI, THETA=_F(FISSURE=FISS))
+G = CALC_G(
+    RESULTAT=RESUIMP,
+    OPTION="G",
+    INST=LISTI,
+    CRITERE="ABSOLU",
+    PRECISION=1e-6,
+    THETA=_F(FISSURE=FISS),
+)
 
 IMPR_TABLE(TABLE=G, UNITE=6)
 

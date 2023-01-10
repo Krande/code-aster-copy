@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -98,11 +98,12 @@ NFF1 = DEFI_FOND_FISS(
     LEVRE_INF=_F(GROUP_MA="LEV_INF"),
 )
 
+LISTi = DEFI_LIST_ENTI(VALE=list(range(1, 16)))
 
 GLMO1 = CALC_G(
     OPTION="K",
     RESULTAT=MODE,
-    TOUT_MODE="OUI",
+    LIST_MODE=LISTi,
     THETA=_F(FISSURE=NFF1, R_INF=9.0e-5, R_SUP=3.0e-4, DISCRETISATION="LINEAIRE"),
 )
 
