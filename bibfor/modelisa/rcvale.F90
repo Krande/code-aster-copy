@@ -126,8 +126,6 @@ subroutine rcvale(nommaz, phenom, nbpar, nompar, valpar, &
                             valres(ires), ier)
                 ASSERT(ier .eq. 0)
                 icodre(ires) = 0
-            else
-                icodre(ires) = 1
             end if
         end do
 !
