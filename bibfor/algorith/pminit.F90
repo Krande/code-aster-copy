@@ -57,6 +57,7 @@ implicit none
 #include "asterfort/tbcrsd.h"
 #include "asterfort/utmess.h"
 #include "asterfort/vrcinp.h"
+#include "asterfort/fointe.h"
 #include "blas/dcopy.h"
 #include "blas/dscal.h"
 !
@@ -103,7 +104,7 @@ type(NL_DS_AlgoPara), intent(inout) :: ds_algopara
     integer :: ndim, n1, nbvari, nbpar, i, j, k, imate, kpg, ksp, nbocc, n2
     integer :: iepsi, icont, igrad, irota, defimp, indimp(9), ncmp
     integer :: pred, matrel, ic1c2, iforta, imptgt, nbvita, imes(2)
-    integer :: iligne, icolon, nbcol, numins
+    integer :: iligne, icolon, nbcol, numins, ier
     character(len=4), parameter :: nomeps(6) = (/'EPXX','EPYY','EPZZ','EPXY','EPXZ','EPYZ'/)
     character(len=4), parameter :: nomsig(6) = (/'SIXX','SIYY','SIZZ','SIXY','SIXZ','SIYZ'/)
     character(len=4), parameter :: nomgrd(9) = (/'F11','F12','F13',&
@@ -123,7 +124,7 @@ type(NL_DS_AlgoPara), intent(inout) :: ds_algopara
     real(kind=8) :: sigi, rep(7), kel(6, 6), cimpo(6, 12)
     real(kind=8) :: angd(3), ang1(1), pgl(3, 3), xyzgau(3), coef, instin
     real(kind=8) :: angeul(3), dsidep(36)
-    real(kind=8) :: sigini(6), epsini(6)
+    real(kind=8) :: sigini(6), epsini(6), valimp(9)
     aster_logical :: limpex
 !
 ! --------------------------------------------------------------------------------------------------
@@ -135,6 +136,7 @@ type(NL_DS_AlgoPara), intent(inout) :: ds_algopara
     solveu = '&&OP0033'
     rac2=sqrt(2.d0)
     pgl(:,:) = 0.d0
+    valimp = 0.d0
 !
 ! - Read parameters for convergence
 !
@@ -408,6 +410,13 @@ type(NL_DS_AlgoPara), intent(inout) :: ds_algopara
         end do
         defimp=-1
     endif
+
+!  RECUPERER LES VALEURS INITIALES DE F "GRAD_IMPOSE"
+    if (igrad .eq. 9) then
+        do i = 1, 9
+            call fointe('F', fonimp(i), 1, ['INST'], [instam], valimp(i), ier)
+        end do
+    endif
 !
 !     ----------------------------------------
 !     ECRITURE ETAT INITIAL DANS TABLE
@@ -415,12 +424,18 @@ type(NL_DS_AlgoPara), intent(inout) :: ds_algopara
     if (iforta .eq. 0) then
 ! CONSTRUCTION DES VECTEURS DE DEFORMATION ET CONTRAINTES
 ! RETIRE LE TERME EN RAC2 SUR COMPOSANTES DE CISAILLEMENT
-        call lceqvn(6, epsm, epsini)
-        call lceqvn(6, sigm, sigini)
-        call dscal(3, 1.d0/rac2, epsini(4), 1)
+! PUIS RECOPIE DANS LA TABLE DES VECTEURS SIGINI ET EPSINI
+
+        if (igrad .eq. 9) then
+            call dcopy(ncmp, valimp, 1, vr(2), 1)
+        else
+            epsini(1:6) = epsm(1:6)
+            call dscal(3, 1.d0/rac2, epsini(4), 1)
+            call dcopy(ncmp, epsini, 1, vr(2), 1)
+        endif
+
+        sigini(1:6) = sigm(1:6)
         call dscal(3, 1.d0/rac2, sigini(4), 1)
-! RECOPIE DANS LA TABLE DES VECTEURS SIGINI ET EPSINI
-        call dcopy(ncmp, epsini, 1, vr(2), 1)
         call dcopy(6, sigini, 1, vr(ncmp+2), 1)
         vr(1+ncmp+6+1)=0.d0
         vr(1+ncmp+6+2)=0.d0
