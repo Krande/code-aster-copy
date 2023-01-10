@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -60,9 +60,16 @@ NU = DEFI_FONCTION(
 
 ALPHA = DEFI_CONSTANTE(VALE=0.0)
 
+EPSD0 = DEFI_CONSTANTE(VALE=5.6e-5)
+AT = DEFI_CONSTANTE(VALE=0.831)
+BT = DEFI_CONSTANTE(VALE=21330.0)
+AC = DEFI_CONSTANTE(VALE=1.15)
+BC = DEFI_CONSTANTE(VALE=1390.0)
+K = DEFI_CONSTANTE(VALE=0.7)
+
 BETON = DEFI_MATERIAU(
     ELAS_FO=_F(E=E, NU=NU, FONC_DESORP=FONC1, ALPHA=ALPHA, TEMP_DEF_ALPHA=20.0),
-    MAZARS=_F(EPSD0=5.6e-5, AT=0.831, BT=21330.0, AC=1.15, BC=1390.0, K=0.7, CHI=0.6),
+    MAZARS_FO=_F(EPSD0=EPSD0, AT=AT, BT=BT, AC=AC, BC=BC, K=K, CHI=0.6),
     BETON_UMLV=_F(
         K_RS=6.0e4,
         ETA_RS=1.0e10,

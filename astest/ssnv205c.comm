@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -34,20 +34,33 @@ g = 60.0e6
 e = 9.0 * k * g / (3.0 * k + g)
 nu = (3.0 * k - 2.0 * g) / 2.0 / (3.0 * k + g)
 
+
+kf = DEFI_CONSTANTE(VALE=k)
+gf = DEFI_CONSTANTE(VALE=g)
+SwellingIndex = DEFI_CONSTANTE(VALE=200.0)
+InitPreconsPress = DEFI_CONSTANTE(VALE=5.0e4)
+InitTensionPress = DEFI_CONSTANTE(VALE=5.0e3)
+CamClayCSS = DEFI_CONSTANTE(VALE=1.0)
+YieldSurfLinCoef = DEFI_CONSTANTE(VALE=1.0)
+YieldSurfCapCoef = DEFI_CONSTANTE(VALE=2.0)
+PlastCompIndex = DEFI_CONSTANTE(VALE=50.0)
+KHModulus = DEFI_CONSTANTE(VALE=60.0e6)
+KHIndex = DEFI_CONSTANTE(VALE=1.0)
+
 MATER = DEFI_MATERIAU(
     ELAS=_F(E=e, NU=nu, ALPHA=0.0),
-    KH_CSSM=_F(
-        BulkModulus=k,
-        ShearModulus=g,
-        SwellingIndex=200.0,
-        InitPreconsPress=5.0e4,
-        InitTensionPress=5.0e3,
-        CamClayCSS=1.0,
-        YieldSurfLinCoef=1.0,
-        YieldSurfCapCoef=2.0,
-        PlastCompIndex=50.0,
-        KHModulus=60.0e6,
-        KHIndex=1.0,
+    KH_CSSM_FO=_F(
+        BulkModulus=kf,
+        ShearModulus=gf,
+        SwellingIndex=SwellingIndex,
+        InitPreconsPress=InitPreconsPress,
+        InitTensionPress=InitTensionPress,
+        CamClayCSS=CamClayCSS,
+        YieldSurfLinCoef=YieldSurfLinCoef,
+        YieldSurfCapCoef=YieldSurfCapCoef,
+        PlastCompIndex=PlastCompIndex,
+        KHModulus=KHModulus,
+        KHIndex=KHIndex,
     ),
 )
 

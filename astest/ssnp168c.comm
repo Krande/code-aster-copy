@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -82,9 +82,16 @@ coef = (fc + ft) * tau * (1 + NU) * 3**0.5 / (2 * ft * fc * (1 + NU))
 volu = (coef**2 - 1) * 2 * (1 + NU) / (1 - 2 * NU)
 
 # DEFINITION DU BETON AU CENTRE DE L4EPROUVETTE
+
+mmf = DEFI_CONSTANTE(VALE=mm)
+ppf = DEFI_CONSTANTE(VALE=pp)
+kkf = DEFI_CONSTANTE(VALE=kk)
+voluf = DEFI_CONSTANTE(VALE=volu)
+compf = DEFI_CONSTANTE(VALE=comp)
+
 BETON = DEFI_MATERIAU(
     ELAS=_F(E=EE, NU=NU),
-    ENDO_SCALAIRE=_F(M=mm, P=pp, K=kk, C_VOLU=volu, C_COMP=comp),
+    ENDO_SCALAIRE_FO=_F(M=mmf, P=ppf, K=kkf, C_VOLU=voluf, C_COMP=compf),
     NON_LOCAL=_F(C_GRAD_VARI=CC, PENA_LAGR=pena),
 )
 

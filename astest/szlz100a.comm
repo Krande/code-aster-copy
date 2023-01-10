@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -110,7 +110,9 @@ MANS = DEFI_FONCTION(
     ),
 )
 
-MAT0 = DEFI_MATERIAU(FATIGUE=_F(WOHLER=WHOL), RCCM=_F(SU=850.0))
+SUf = DEFI_CONSTANTE(VALE=850.0)
+
+MAT0 = DEFI_MATERIAU(FATIGUE=_F(WOHLER=WHOL), RCCM_FO=_F(SU=SUf))
 
 MAT1 = DEFI_MATERIAU(FATIGUE=_F(MANSON_COFFIN=MANS))
 

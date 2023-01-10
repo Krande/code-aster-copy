@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -70,7 +70,24 @@ MAT = DEFI_MATERIAU(
     GLRC_DM=_F(GAMMA_T=0.02, GAMMA_F=0.05, NYT=4.7e5, MYF=1.6e4, GAMMA_C=1.0, NYC=0.0, ALPHA_C=1.0),
 )
 
-CHMAT = AFFE_MATERIAU(MAILLAGE=MAIL, AFFE=(_F(TOUT="OUI", MATER=MAT),))
+EGMf = DEFI_CONSTANTE(VALE=EGM)
+NUf = DEFI_CONSTANTE(VALE=NU)
+EGFf = DEFI_CONSTANTE(VALE=EGF)
+NUFf = DEFI_CONSTANTE(VALE=NUF)
+Rhof = DEFI_CONSTANTE(VALE=2500.0)
+alphaf = DEFI_CONSTANTE(VALE=alpha)
+zero = DEFI_CONSTANTE(VALE=0.0)
+
+MAT_FO = DEFI_MATERIAU(
+    ELAS_GLRC_FO=_F(
+        E_M=EGMf, NU_M=NUf, E_F=EGFf, NU_F=NUFf, RHO=Rhof, AMOR_ALPHA=alphaf, AMOR_BETA=zero
+    ),
+    GLRC_DM=_F(GAMMA_T=0.02, GAMMA_F=0.05, NYT=4.7e5, MYF=1.6e4, GAMMA_C=1.0, NYC=0.0, ALPHA_C=1.0),
+)
+
+CHMAT = AFFE_MATERIAU(
+    MAILLAGE=MAIL, AFFE=(_F(TOUT="OUI", MATER=MAT), _F(GROUP_MA="GRMABID", MATER=MAT_FO))
+)
 
 CARA_ELE = AFFE_CARA_ELEM(
     MODELE=MOD, COQUE=_F(GROUP_MA="MESH", EPAIS=EP, INER_ROTA="OUI", ANGL_REP=(0.0, 0.0))

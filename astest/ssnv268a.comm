@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -33,9 +33,24 @@ sc = 8.0  # limite d'elasticite (
 prag = 80.0  # constante de Prager (fictive)
 
 
+scf = DEFI_CONSTANTE(VALE=sc)
+pragf = DEFI_CONSTANTE(VALE=prag)
+zero = DEFI_CONSTANTE(VALE=0.0)
+un = DEFI_CONSTANTE(VALE=1.0)
+scf = DEFI_CONSTANTE(VALE=sc)
+ETA_AMORf = DEFI_CONSTANTE(VALE=4.0e3)
+
 MATE = DEFI_MATERIAU(
     ELAS=_F(E=Ep, NU=nup),
-    KICHENIN_NL=_F(SIGC=sc, PRAGER=prag, E_VISC=0, NU_VISC=0, NU_AMOR=0, ETA_AMOR=4.0e3, N_AMOR=1),
+    KICHENIN_NL_FO=_F(
+        SIGC=scf,
+        PRAGER=pragf,
+        E_VISC=zero,
+        NU_VISC=zero,
+        NU_AMOR=zero,
+        ETA_AMOR=ETA_AMORf,
+        N_AMOR=un,
+    ),
     ECRO_LINE=_F(SY=sc, D_SIGM_EPSI=1 / (1 / Ep + 2 / (3 * prag))),
 )
 

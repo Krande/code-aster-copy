@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -35,7 +35,11 @@ MODELE = AFFE_MODELE(
     ),
 )
 
-mat1 = DEFI_MATERIAU(ELAS=_F(E=7.00e7, NU=0.4, RHO=2400.0, AMOR_HYST=0.1))
+Ef = DEFI_CONSTANTE(VALE=7.00e7)
+Nuf = DEFI_CONSTANTE(VALE=0.4)
+Rhof = DEFI_CONSTANTE(VALE=2400.0)
+Amof = DEFI_CONSTANTE(VALE=0.1)
+mat1 = DEFI_MATERIAU(ELAS_FO=_F(E=Ef, NU=Nuf, RHO=Rhof, AMOR_HYST=Amof))
 
 champmat = AFFE_MATERIAU(MAILLAGE=MAILLAGE, AFFE=_F(GROUP_MA="SHAUT", MATER=mat1))
 

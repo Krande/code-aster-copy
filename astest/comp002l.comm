@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -90,21 +90,34 @@ ACIER[1] = DEFI_MATERIAU(
 )
 
 # unite en MPa
+ep0valf = DEFI_CONSTANTE(VALE=ep0val)
+Kcoef_Paf = DEFI_CONSTANTE(VALE=Kcoef_Pa)
+H1_Paf = DEFI_CONSTANTE(VALE=H1_Pa)
+H2_Paf = DEFI_CONSTANTE(VALE=H2_Pa)
+un = DEFI_CONSTANTE(VALE=1.0)
+zero = DEFI_CONSTANTE(VALE=0.0)
+kcf = DEFI_CONSTANTE(VALE=kc)
+A0f = DEFI_CONSTANTE(VALE=A0)
+sig0Paf = DEFI_CONSTANTE(VALE=sig0Pa)
+
+h1stf = DEFI_CONSTANTE(VALE=0.33)
+alphadf = DEFI_CONSTANTE(VALE=0.5)
+
 ACIER[0] = DEFI_MATERIAU(
     ELAS=_F(E=YOUNG_Pa, NU=0.3),
-    HAYHURST=_F(
-        EPS0=ep0val,
-        K=Kcoef_Pa,
-        H1=H1_Pa,
-        H2=H2_Pa,
-        DELTA1=1.0,
-        DELTA2=0.0,
-        H1ST=0.33,
-        H2ST=1.0,
-        KC=kc,
-        BIGA=A0,
-        SIG0=sig0Pa,
-        ALPHAD=0.5,
+    HAYHURST_FO=_F(
+        EPS0=ep0valf,
+        K=Kcoef_Paf,
+        H1=H1_Paf,
+        H2=H2_Paf,
+        DELTA1=un,
+        DELTA2=zero,
+        H1ST=h1stf,
+        H2ST=un,
+        KC=kcf,
+        BIGA=A0f,
+        SIG0=sig0Paf,
+        ALPHAD=alphadf,
         S_EQUI_D=1.0,
     ),
 )

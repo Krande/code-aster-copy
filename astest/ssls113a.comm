@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -160,69 +160,71 @@ EP3 = AFFE_CARA_ELEM(
         ),
     ),
 )
-AC1111 = 7.74928774929
+AC1111 = DEFI_CONSTANTE(VALE=7.74928774929)
 
-AC1122 = 2.71225071225
+AC1122 = DEFI_CONSTANTE(VALE=2.71225071225)
 
-AC2222 = 7.74928774929
+AC2222 = DEFI_CONSTANTE(VALE=7.74928774929)
 
-AC1212 = 2.53
+AC1212 = DEFI_CONSTANTE(VALE=2.53)
 
-AD1111 = 6.45773981243e-07
+AD1111 = DEFI_CONSTANTE(VALE=6.45773981243e-07)
 
-AD1122 = 2.26020893435e-07
+AD1122 = DEFI_CONSTANTE(VALE=2.26020893435e-07)
 
-AD2222 = 6.45773981243e-07
+AD2222 = DEFI_CONSTANTE(VALE=6.45773981243e-07)
 
-AD1212 = 2.1083333333e-07
+AD1212 = DEFI_CONSTANTE(VALE=2.1083333333e-07)
 
-AB1111 = 0.0
+AB1111 = DEFI_CONSTANTE(VALE=0.0)
 
-AB1122 = 0.0
+AB1122 = DEFI_CONSTANTE(VALE=0.0)
 
-AB2222 = 0.0
+AB2222 = DEFI_CONSTANTE(VALE=0.0)
 
-AB1212 = 0.0
+AB1212 = DEFI_CONSTANTE(VALE=0.0)
 
-AG11 = 2.53
+AG11 = DEFI_CONSTANTE(VALE=2.53)
 
-AG22 = 2.53
+AG22 = DEFI_CONSTANTE(VALE=2.53)
+
+ZERO = DEFI_CONSTANTE(VALE=0)
 
 
 MU31 = DEFI_MATERIAU(
-    ELAS_COQUE=_F(
+    ELAS_COQUE_FO=_F(
         M_LLLL=AC1111,
         M_LLTT=AC1122,
-        M_LLLT=0.0,
+        M_LLLT=ZERO,
         M_TTTT=AC2222,
-        M_TTLT=0.0,
+        M_TTLT=ZERO,
         M_LTLT=AC1212,
         F_LLLL=AD1111,
         F_LLTT=AD1122,
-        F_LLLT=0.0,
+        F_LLLT=ZERO,
         F_TTTT=AD2222,
-        F_TTLT=0.0,
+        F_TTLT=ZERO,
         F_LTLT=AD1212,
         MF_LLLL=AB1111,
         MF_LLTT=AB1122,
-        MF_LLLT=0.0,
+        MF_LLLT=ZERO,
         MF_TTTT=AB2222,
-        MF_TTLT=0.0,
+        MF_TTLT=ZERO,
         MF_LTLT=AB1212,
-        MC_LLLZ=0.0,
-        MC_LLTZ=0.0,
-        MC_TTLZ=0.0,
-        MC_TTTZ=0.0,
-        MC_LTLZ=0.0,
-        MC_LTTZ=0.0,
-        FC_LLLZ=0.0,
-        FC_LLTZ=0.0,
-        FC_TTLZ=0.0,
-        FC_TTTZ=0.0,
-        FC_LTLZ=0.0,
-        FC_LTTZ=0.0,
+        MC_LLLZ=ZERO,
+        MC_LLTZ=ZERO,
+        MC_TTLZ=ZERO,
+        MC_TTTZ=ZERO,
+        MC_LTLZ=ZERO,
+        MC_LTTZ=ZERO,
+        FC_LLLZ=ZERO,
+        FC_LLTZ=ZERO,
+        FC_TTLZ=ZERO,
+        FC_TTTZ=ZERO,
+        FC_LTLZ=ZERO,
+        FC_LTTZ=ZERO,
         C_LZLZ=AG11,
-        C_LZTZ=0.0,
+        C_LZTZ=ZERO,
         C_TZTZ=AG22,
     )
 )

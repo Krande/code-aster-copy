@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -102,7 +102,11 @@ sol = DEFI_MATERIAU(ELAS=_F(E=Esol, NU=Nusol, RHO=Msol))
 
 sol1 = DEFI_MATERIAU(ELAS=_F(E=Esol, NU=Nusol, RHO=Msol))
 
-sol2 = DEFI_MATERIAU(ELAS=_F(E=Esol, NU=Nusol, RHO=Msol, LONG_CARA=lcara, COEF_AMOR=beta))
+Esolf = DEFI_CONSTANTE(VALE=Esol)
+Nusolf = DEFI_CONSTANTE(VALE=Nusol)
+Msolf = DEFI_CONSTANTE(VALE=Msol)
+
+sol2 = DEFI_MATERIAU(ELAS_FO=_F(E=Esolf, NU=Nusolf, RHO=Msolf, LONG_CARA=lcara, COEF_AMOR=beta))
 
 CHMAT = AFFE_MATERIAU(
     MAILLAGE=mail,

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -52,12 +52,12 @@ ACIER = [None] * 2
 # unite en Pa
 C_Pa = 1.0e6
 YOUNG_Pa = YOUNG / C_Pa
-A_Pa = A / C_Pa
-B_Pa = B / C_Pa
+A_Pa = DEFI_CONSTANTE(VALE=A / C_Pa)
+B_Pa = DEFI_CONSTANTE(VALE=B / C_Pa)
 
 ACIER[1] = DEFI_MATERIAU(
     ELAS=_F(E=YOUNG_Pa, NU=POISSON, ALPHA=1.7e-5),
-    ECRO_COOK=_F(
+    ECRO_COOK_FO=_F(
         A=A_Pa, B=B_Pa, C=C, N_PUIS=N_PUIS, M_PUIS=M_PUIS, EPSP0=EPSP0, TROOM=TROOM, TMELT=TMELT
     ),
 )

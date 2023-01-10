@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -41,10 +41,14 @@ sigc = 3.0339580553333283
 sig0 = 0.8271021337402532
 rest = 8532.280654329064
 
+kappaf = DEFI_CONSTANTE(VALE=kappa)
+pf = DEFI_CONSTANTE(VALE=p)
+sigcf = DEFI_CONSTANTE(VALE=sigc * 1.5)
+sig0f = DEFI_CONSTANTE(VALE=sig0 * 1.5)
 
 BETON = DEFI_MATERIAU(
     ELAS=_F(E=young, NU=nu),
-    ENDO_LOCA_EXP=_F(KAPPA=kappa, P=p, SIGC=sigc * 1.5, SIG0=sig0 * 1.5, REST_RIGIDITE=rest),
+    ENDO_LOCA_EXP_FO=_F(KAPPA=kappaf, P=pf, SIGC=sigcf, SIG0=sig0f, REST_RIGIDITE=rest),
 )
 
 

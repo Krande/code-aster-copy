@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -59,17 +59,26 @@ lodeT = 29.9
 a = 0.25 * cohe / tan(phi * pi / 180.0)
 hC = 0.0
 
+youngf = DEFI_CONSTANTE(VALE=young)
+nuf = DEFI_CONSTANTE(VALE=nu)
+phif = DEFI_CONSTANTE(VALE=phi)
+psif = DEFI_CONSTANTE(VALE=psi)
+cohef = DEFI_CONSTANTE(VALE=cohe)
+lodeTf = DEFI_CONSTANTE(VALE=lodeT)
+af = DEFI_CONSTANTE(VALE=a)
+hCf = DEFI_CONSTANTE(VALE=hC)
+
 SOL = DEFI_MATERIAU(
     ELAS=_F(E=young, NU=nu, ALPHA=0.0),
-    MohrCoulombAS=_F(
-        YoungModulus=young,
-        PoissonRatio=nu,
-        FrictionAngle=phi,
-        DilatancyAngle=psi,
-        Cohesion=cohe,
-        TransitionAngle=lodeT,
-        TensionCutOff=a,
-        HardeningCoef=hC,
+    MohrCoulombAS_FO=_F(
+        YoungModulus=youngf,
+        PoissonRatio=nuf,
+        FrictionAngle=phif,
+        DilatancyAngle=psif,
+        Cohesion=cohef,
+        TransitionAngle=lodeTf,
+        TensionCutOff=af,
+        HardeningCoef=hCf,
     ),
 )
 

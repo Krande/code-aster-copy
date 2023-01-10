@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -112,6 +112,8 @@ MO = AFFE_MODELE(
     MAILLAGE=MA, AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="3D_GRAD_VARI")
 )
 
+Kf = DEFI_CONSTANTE(VALE=visco.K)
+Nf = DEFI_CONSTANTE(VALE=visco.N)
 
 ACIER = DEFI_MATERIAU(
     ELAS=_F(E=E, NU=NU),
@@ -134,7 +136,7 @@ ACIER = DEFI_MATERIAU(
 MAT_ELAS = DEFI_MATERIAU(
     ELAS=_F(E=E, NU=NU),
     ECRO_NL=_F(R0=10 * ecro.R0),
-    NORTON=_F(K=visco.K, N=visco.N),
+    NORTON_FO=_F(K=Kf, N=Nf),
     NON_LOCAL=_F(C_GRAD_VARI=ecro.R0 * (L / 5.0) ** 2, PENA_LAGR=ecro.R0),
 )
 

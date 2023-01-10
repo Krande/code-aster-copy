@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -103,10 +103,15 @@ SIGM_F = DEFI_FONCTION(
     PROL_DROITE="LINEAIRE",
 )
 
+
+SIGM_0 = DEFI_CONSTANTE(VALE=6176)
+EPSI_0 = DEFI_CONSTANTE(VALE=3.31131121483e13)
+Mf = DEFI_CONSTANTE(VALE=6.76)
+
 MA_EPR = DEFI_MATERIAU(
     ELAS=_F(E=198000, NU=0.3, ALPHA=0.0),
     TRACTION=_F(SIGM=SIGM_F),
-    VISC_SINH=_F(SIGM_0=6176, EPSI_0=3.31131121483e13, M=6.76),
+    VISC_SINH_FO=_F(SIGM_0=SIGM_0, EPSI_0=EPSI_0, M=Mf),
     ROUSSELIER=_F(D=0.0001, SIGM_1=1575.0, PORO_INIT=0.000000005),
 )
 
