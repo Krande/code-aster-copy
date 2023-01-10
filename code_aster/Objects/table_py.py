@@ -657,6 +657,7 @@ class Table(TableBase):
             if typ == "R":
                 try:
                     check_nan(vals)
+                    check_inf(vals)
                 except ValueError as err:
                     UTMESS("F", "TABLE0_33", valk=(self.para[i], str(err)))
             if vals.count(None) == 0:
@@ -1165,6 +1166,14 @@ def _func_test_rela(v, VALE, PRECISION):
 
 def check_nan(values):
     """Raise ValueError exception if nan is found in values."""
-    for i, v in enumerate(values):
-        if str(v) == "nan":
-            raise ValueError("NaN present at index %d" % i)
+    bool_val = numpy.isnan([p if p is not None else 0.0 for p in values])
+    if bool_val.any():
+        indexes = [str(idx[0]) for idx in numpy.argwhere(bool_val)]
+        raise ValueError("NaN present at indexes %s" % ','.join(indexes))
+
+def check_inf(values):
+    """Raise ValueError exception if inf is found in values."""
+    bool_val = numpy.isinf([p if p is not None else 0.0 for p in values])
+    if bool_val.any():
+        indexes = [str(idx[0]) for idx in numpy.argwhere(bool_val)]
+        raise ValueError("Inf present at indexes %s" % ','.join(indexes))
