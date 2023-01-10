@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -26,11 +26,12 @@ def C_RELATION(COMMAND):
         return ("ELAS", "ELAS_VMIS_TRAC")
     elif COMMAND == "DEFI_COMPOR":
         return (
-            "ELAS",  # uniquement ce qui a du sens (cf doc) et qui fait l'objet d'un test
+            # uniquement ce qui a du sens (cf doc) et qui fait l'objet d'un test
+            "ELAS",
             "CORR_ACIER",
             "BETON_GRANGER",
             "GRAN_IRRA_LOG",
-            "MAZARS_GC",
+            "MAZARS_UNIL",
             "VISC_IRRA_LOG",
             "VMIS_CINE_GC",
             "VMIS_CINE_LINE",
@@ -142,7 +143,7 @@ def C_RELATION(COMMAND):
             "VISC_MAXWELL",
             "VISC_MAXWELL_MT",
             "MAZARS",
-            "MAZARS_GC",
+            "MAZARS_UNIL",
             "META_LEMA_ANI",
             "META_P_CL",
             "META_P_CL_PT",

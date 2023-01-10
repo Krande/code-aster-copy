@@ -1617,7 +1617,10 @@ DEFI_MATERIAU = MACRO(
     ),
     MAZARS=FACT(
         statut="f",
-        EPSD0=SIMP(statut="o", typ="R"),
+        regles=(UN_PARMI("EPSD0", "EPST0"),),
+        b_espi=BLOC(condition="""exists("EPST0")""", EPSC0=SIMP(statut="o", typ="R")),
+        EPSD0=SIMP(statut="f", typ="R"),
+        EPST0=SIMP(statut="f", typ="R"),
         K=SIMP(statut="o", typ="R"),
         AC=SIMP(statut="o", typ="R"),
         BC=SIMP(statut="o", typ="R"),
@@ -1629,7 +1632,13 @@ DEFI_MATERIAU = MACRO(
     ),
     MAZARS_FO=FACT(
         statut="f",
-        EPSD0=SIMP(statut="o", typ=(fonction_sdaster, nappe_sdaster, formule)),
+        regles=(UN_PARMI("EPSD0", "EPST0"),),
+        b_espi=BLOC(
+            condition="""exists("EPST0")""",
+            EPSC0=SIMP(statut="o", typ=(fonction_sdaster, nappe_sdaster, formule)),
+        ),
+        EPSD0=SIMP(statut="f", typ=(fonction_sdaster, nappe_sdaster, formule)),
+        EPST0=SIMP(statut="f", typ=(fonction_sdaster, nappe_sdaster, formule)),
         K=SIMP(statut="o", typ=(fonction_sdaster, nappe_sdaster, formule)),
         AC=SIMP(statut="o", typ=(fonction_sdaster, nappe_sdaster, formule)),
         BC=SIMP(statut="o", typ=(fonction_sdaster, nappe_sdaster, formule)),
@@ -2009,7 +2018,6 @@ DEFI_MATERIAU = MACRO(
         TAUK=SIMP(statut="o", typ="R"),
         TAUM=SIMP(statut="o", typ="R"),
         EKFL=SIMP(statut="o", typ="R"),
-        #       NRJM doit être donné en J
         NRJM=SIMP(statut="o", typ="R", val_min=1.0),
         DT80=SIMP(statut="o", typ="R"),
         BSHR=SIMP(statut="f", typ="R", defaut=0.0),
@@ -2058,7 +2066,6 @@ DEFI_MATERIAU = MACRO(
         XFLU=SIMP(statut="o", typ="R"),
         TAUK=SIMP(statut="o", typ="R"),
         TAUM=SIMP(statut="o", typ="R"),
-        #       NRJM doit être donné en J
         NRJM=SIMP(statut="o", typ="R", val_min=1.0),
         DT80=SIMP(statut="o", typ="R"),
         BSHR=SIMP(statut="f", typ="R", defaut=0.0),
@@ -2095,7 +2102,6 @@ DEFI_MATERIAU = MACRO(
         XFLU=SIMP(statut="o", typ="R"),
         TAUK=SIMP(statut="o", typ="R"),
         TAUM=SIMP(statut="o", typ="R"),
-        #       NRJM doit être donné en J
         NRJM=SIMP(statut="o", typ="R", val_min=1.0),
         DT80=SIMP(statut="o", typ="R"),
         BSHR=SIMP(statut="f", typ="R", defaut=0.0),
@@ -2156,7 +2162,6 @@ DEFI_MATERIAU = MACRO(
         XFLU=SIMP(statut="o", typ="R"),
         TAUK=SIMP(statut="o", typ="R"),
         TAUM=SIMP(statut="o", typ="R"),
-        #       NRJM doit être donné en J
         NRJM=SIMP(statut="o", typ="R", val_min=1.0),
         DT80=SIMP(statut="o", typ="R"),
         BSHR=SIMP(statut="f", typ="R", defaut=0.0),

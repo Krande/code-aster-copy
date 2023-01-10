@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -29,9 +29,9 @@ def FaitMessage(Dico):
     message = ""
     cpt = 1
     for xk, xv in Dico.items():
-        message += " %s = %15.8E," % (xk, xv)
+        message += "%s = %15.8E; " % (xk, xv)
         if len(message) > 80 * cpt:
-            message += "\n  "
+            message += "\n"
             cpt += 1
     return message
 
@@ -43,7 +43,7 @@ def BetonEC2(Classe):
     #
     Dico["fck"] = float(sfck)
     Dico["fckc"] = float(sfckc)
-    # Contrainte en MPa et déformation en ‰
+    # Contrainte en MPa et déformation en "pour mille"
     Dico["fcm"] = Dico["fck"] + 8.0
     Dico["nu"] = 0.20
     #
@@ -121,8 +121,25 @@ def Mazars_Unil(DMATER, args):
     Regle = MATER["CODIFICATION"]
     # Liste des paramètres matériaux facultatifs mais nécessaires pour calculer
     # les valeurs des paramètres de MAZARS
-    listepara = ["NU", "EPSD0", "K", "BT", "AT", "BC", "AC", "SIGM_LIM", "EPSI_LIM"]
+    listepara = [
+        "NU",
+        "EPSD0",
+        "EPST0",
+        "EPSC0",
+        "BT",
+        "K",
+        "AT",
+        "BC",
+        "AC",
+        "SIGM_LIM",
+        "EPSI_LIM",
+    ]
     #
+    # Les paramètres
+    #  Obligatoire   : FCJ , EIJ, FTJ, EPSI_C
+    #  Donnée ou pas avec des valeurs par défaut : NU , EPSI_LIM
+    NU = None
+    EPSI_LIM = None
     if Regle == "BAEL91":
         # Obligatoire : FCJ UNITE_CONTRAINTE
         if MATER["UNITE_CONTRAINTE"] == "MPa":
@@ -136,8 +153,6 @@ def Mazars_Unil(DMATER, args):
         FTJ = beton["ftj"] * coeff
         EPSI_C = beton["epsi_c"]
         NU = beton["nu"]
-        SIGM_LIM = 0.6 * FCJ
-        EPSI_LIM = 3.5 / 1000.0
         #
         for xx in listepara:
             MATER[xx] = None
@@ -155,8 +170,7 @@ def Mazars_Unil(DMATER, args):
         FTJ = beton["fctm"] * coeff
         EPSI_C = beton["epsi_c1"] / 1000.0
         NU = beton["nu"]
-        SIGM_LIM = 0.6 * FCJ
-        EPSI_LIM = beton["epsi_cu1"]
+        EPSI_LIM = beton["epsi_cu1"] / 1000.0
         #
         for xx in listepara:
             MATER[xx] = None
@@ -171,28 +185,34 @@ def Mazars_Unil(DMATER, args):
     # L'ordre dans la liste est important à cause des dépendances des relations
     # Les coefficients FCJ , EIJ, FTJ, EPSI_C doivent déjà être définis
     # Optional keywords
-    def mater_value(name, default):
-        return MATER[name] if MATER.get(name) is not None else default
+    def mater_value(name, default, value=None):
+        if MATER.get(name) is not None:
+            return MATER[name]
+        else:
+            if value is not None:
+                return value
+        return default
 
-    NU = mater_value("NU", 0.2)
+    #
+    NU = mater_value("NU", 0.2, NU)
+    NUB = NU * (2.0**0.5)
     EPSD0 = mater_value("EPSD0", FTJ / EIJ)
-    K = mater_value("K", 0.7)
-    BT = mater_value("BT", EIJ / FTJ)
+    EPST0 = mater_value("EPST0", FTJ / EIJ)
+    EPSC0 = mater_value("EPSC0", EPST0 / NUB)
+    K = mater_value("K", 0.70)
+    BT = mater_value("BT", 1.00 / EPST0)
     AT = mater_value("AT", 0.90)
-    BC = mater_value("BC", 1.0 / (NU * (2.0 ** 0.5) * EPSI_C))
-    NUB = NU * (2.0 ** 0.5)
-    ECNUB = EPSI_C * NUB
-    AC = mater_value(
-        "AC", (FCJ * NUB / EIJ - EPSD0) / (ECNUB * NP.exp(BC * EPSD0 - BC * ECNUB) - EPSD0)
-    )
-    SIGM_LIM = mater_value("SIGM_LIM", 0.6 * FCJ)
-    EPSI_LIM = mater_value("EPSI_LIM", 3.5 / 1000.0)
-
+    BC = mater_value("BC", 1.00 / EPSI_C)
+    AC = mater_value("AC", (FCJ / EIJ - EPSC0) / (EPSI_C * NP.exp(BC * (EPSC0 - EPSI_C)) - EPSC0))
+    SIGM_LIM = mater_value("SIGM_LIM", 0.60 * FCJ)
+    EPSI_LIM = mater_value("EPSI_LIM", 3.5 / 1000.0, EPSI_LIM)
+    #
     # Mot clef MATER
     mclef = elastic_properties(EIJ, NU, args)
     mclef["MAZARS"] = {
         "K": K,
-        "EPSD0": EPSD0,
+        "EPSC0": EPSC0,
+        "EPST0": EPST0,
         "AC": AC,
         "AT": AT,
         "BC": BC,
@@ -209,7 +229,7 @@ def Mazars_Unil(DMATER, args):
     #
     message1 = FaitMessage(mclef["ELAS"])
     message2 = FaitMessage(mclef["MAZARS"])
-    Dico = {"FCJ": FCJ, "FTJ": FTJ, "EPSI_C": EPSI_C}
+    Dico = {"FCJ": FCJ, "FTJ": FTJ, "EPSI_C": EPSI_C, "EPSD0": EPSD0}
     message3 = FaitMessage(Dico)
     #
     UTMESS("I", "COMPOR1_75", valk=(message0, message1, message2, message3))
@@ -330,14 +350,14 @@ def Acier_Cine_Line(DMATER, args):
 
 def Ident_Endo_Fiss_Exp(ft, fc, beta, prec=1e-10, itemax=100):
     # Estimation initiale
-    A = (2.0 / 3.0 + 3 * beta ** 2) ** 0.5
+    A = (2.0 / 3.0 + 3 * beta**2) ** 0.5
     r = fc / ft
-    C = 3 ** 0.5
+    C = 3**0.5
     L = A * (r - 1)
     p0 = 2 * (1 - C)
     pp = 1 - L
-    delta = pp ** 2 - p0
-    x = -pp + delta ** 0.5
+    delta = pp**2 - p0
+    x = -pp + delta**0.5
 
     # Resolution de l'equation par methode de Newton
     for i in range(itemax):
@@ -361,9 +381,9 @@ def Ident_Endo_Fiss_Exp(ft, fc, beta, prec=1e-10, itemax=100):
 def ConfinedTension(nu, sig0, tau, beta, prec=1e-10, itemax=100):
     # Initialisation
     s = NP.array((1 - nu, nu, nu))
-    L = (2.0 / 3.0 * (1 - 2 * nu) ** 2 + 3 * beta ** 2 * (1 + nu) ** 2) ** 0.5
+    L = (2.0 / 3.0 * (1 - 2 * nu) ** 2 + 3 * beta**2 * (1 + nu) ** 2) ** 0.5
     # Estimation initiale
-    xe = NP.log(tau ** 2 - 2) / (2 * s[0])
+    xe = NP.log(tau**2 - 2) / (2 * s[0])
     xl = tau / L
     x = min(xe, xl)
     # Résolution de l'équation par méthode de Newton
@@ -427,7 +447,7 @@ def Endo_Fiss_Exp(DMATER, args):
     if MATER["Q"] is not None:
         Q = float(MATER["Q"])
     elif MATER["Q_REL"] is not None:
-        qmax = (1.11375 + 0.565239 * P - 0.003322 * P ** 2) * (1 - NP.exp(-1.98935 * P)) - 0.01
+        qmax = (1.11375 + 0.565239 * P - 0.003322 * P**2) * (1 - NP.exp(-1.98935 * P)) - 0.01
         Q = qmax * float(MATER["Q_REL"])
     else:
         Q = 0.0
@@ -436,7 +456,7 @@ def Endo_Fiss_Exp(DMATER, args):
     rig = E * (1 - NU) / ((1 + NU) * (1 - 2 * NU))
     K = 0.75 * GF / D
     C = 0.375 * GF * D
-    M = 1.5 * rig * GF / (D * sigc ** 2)
+    M = 1.5 * rig * GF / (D * sigc**2)
     #
     if M < P + 2:
         UTMESS("F", "COMPOR1_94", valr=(float(M), float(P)))
@@ -504,7 +524,7 @@ def Endo_Loca_Exp(DMATER, args):
 
     # Paramètres internes au modèle
     Ec = E * (1 - NU) / ((1 + NU) * (1 - 2 * NU))
-    wc = sigc ** 2 / (2 * Ec)
+    wc = sigc**2 / (2 * Ec)
     kappa = GF / (D * wc)
     if rrc == 0.0:
         gamma = 0

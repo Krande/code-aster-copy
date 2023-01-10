@@ -1,0 +1,200 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+#
+#  BENCHMARK SUR L EVALUATION DES MODELES POUR LE BETON (2001)
+#  LOI DE MAZARS_UNIL
+#
+#  CHARGEMENT : 1 - direction (DEPSxx,DEPSyy,DEPSxy)=(1, -NU, 0)
+#               2 - direction (DEPSxx,DEPSyy,DEPSxy)=(1, 1.5, 1) jusqu'à EPSxx=0.0015
+#
+
+#
+# SDVERI='NON' car la verification est trop couteuse en CPU
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="NON"))
+MAIL = LIRE_MAILLAGE(FORMAT="ASTER")
+
+MODELE = AFFE_MODELE(MAILLAGE=MAIL, AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="3D"))
+
+MATERIAU = DEFI_MATERIAU(
+    MAZARS=_F(
+        K=0.7,
+        EPSD0=9.375e-5,
+        AC=1.15,
+        AT=0.8,
+        BC=393.52,
+        BT=10000.0,
+        SIGM_LIM=22.56e06,
+        EPSI_LIM=3.5e-03,
+    ),
+    ELAS=_F(NU=0.2, E=3.20e10),
+)
+
+CAR_MAT = AFFE_MATERIAU(MAILLAGE=MAIL, AFFE=_F(MATER=MATERIAU, TOUT="OUI"))
+
+CLIM = AFFE_CHAR_MECA(
+    MODELE=MODELE,
+    DDL_IMPO=(
+        _F(DX=0.0, GROUP_NO="COTEG"),
+        _F(DZ=0.0, GROUP_NO="N1", DY=0.0),
+        _F(GROUP_NO="N5", DY=0.0),
+    ),
+)
+
+CHAR1 = AFFE_CHAR_MECA(
+    MODELE=MODELE,
+    DDL_IMPO=(
+        _F(GROUP_NO=("N2", "N6"), DY=0.0),
+        _F(DX=1.0, GROUP_NO="COTED"),
+        _F(DY=-0.2, GROUP_NO="HAUT"),
+    ),
+)
+
+CHAR2 = AFFE_CHAR_MECA(
+    MODELE=MODELE,
+    DDL_IMPO=(
+        _F(DX=1.0, GROUP_NO="COTED"),
+        _F(GROUP_NO="N4", DY=1.5),
+        _F(GROUP_NO="N8", DY=1.5),
+        _F(GROUP_NO="N3", DY=3.5),
+        _F(GROUP_NO="N7", DY=3.5),
+        _F(GROUP_NO="N2", DY=2.0),
+        _F(GROUP_NO="N6", DY=2.0),
+    ),
+)
+
+L_INS1 = DEFI_LIST_REEL(
+    DEBUT=0.0, INTERVALLE=(_F(JUSQU_A=1.0, NOMBRE=10), _F(JUSQU_A=5.0, NOMBRE=300))
+)
+
+FCT_MUL1 = DEFI_FONCTION(INTERPOL=("LIN", "LIN"), NOM_PARA="INST", VALE=(0.0, 0.0, 1.0, 5.25e-05))
+
+FCT_MUL2 = DEFI_FONCTION(INTERPOL=("LIN", "LIN"), NOM_PARA="INST", VALE=(1.0, 0.0, 5.0, 7.88e-4))
+
+RES1 = STAT_NON_LINE(
+    CHAM_MATER=CAR_MAT,
+    MODELE=MODELE,
+    TITRE="BENCH-B LOI MAZARS",
+    CONVERGENCE=_F(ITER_GLOB_MAXI=20, RESI_GLOB_RELA=1.0e-06),
+    COMPORTEMENT=_F(RELATION="MAZARS_UNIL"),
+    INCREMENT=_F(LIST_INST=L_INS1, INST_FIN=1.0),
+    NEWTON=_F(MATRICE="TANGENTE"),
+    EXCIT=(_F(CHARGE=CLIM), _F(CHARGE=CHAR1, FONC_MULT=FCT_MUL1)),
+)
+
+RES1 = STAT_NON_LINE(
+    reuse=RES1,
+    CHAM_MATER=CAR_MAT,
+    MODELE=MODELE,
+    TITRE="BENCH-A LOI MAZARS",
+    CONVERGENCE=_F(ITER_GLOB_MAXI=30, RESI_GLOB_RELA=1.0e-4),
+    COMPORTEMENT=_F(RELATION="MAZARS_UNIL"),
+    INCREMENT=_F(LIST_INST=L_INS1),
+    NEWTON=_F(MATRICE="TANGENTE", REAC_ITER=1, REAC_INCR=1),
+    EXCIT=(_F(CHARGE=CLIM), _F(CHARGE=CHAR2, TYPE_CHARGE="DIDI", FONC_MULT=FCT_MUL2)),
+    ETAT_INIT=_F(EVOL_NOLI=RES1),
+    ARCHIVAGE=_F(LIST_INST=L_INS1),
+)
+
+
+RES1 = CALC_CHAMP(
+    reuse=RES1,
+    RESULTAT=RES1,
+    NUME_ORDRE=(10, 25, 310),
+    CONTRAINTE=("SIGM_ELNO"),
+    VARI_INTERNE=("VARI_ELNO"),
+    DEFORMATION=("EPSI_ELNO"),
+)
+
+RES1 = CALC_CHAMP(
+    reuse=RES1,
+    RESULTAT=RES1,
+    NUME_ORDRE=(10, 25, 310),
+    DEFORMATION="EPSI_NOEU",
+    CONTRAINTE="SIGM_NOEU",
+    VARI_INTERNE="VARI_NOEU",
+)
+
+
+PourTest = [
+    (1.0, "EPSI_NOEU", "EPXX", 9.375e-05),
+    (1.0, "EPSI_NOEU", "EPYY", -1.875e-05),
+    (1.0, "EPSI_NOEU", "EPXY", 0.0),
+    (1.2, "EPSI_NOEU", "EPXX", 0.000164107143),
+    (1.2, "EPSI_NOEU", "EPYY", 8.67857143e-05),
+    (1.2, "EPSI_NOEU", "EPXY", 7.03571429e-05),
+    (5.0, "EPSI_NOEU", "EPXX", 0.00150089286),
+    (5.0, "EPSI_NOEU", "EPYY", 0.00209196429),
+    (5.0, "EPSI_NOEU", "EPXY", 0.00140714286),
+    (1.0, "SIGM_NOEU", "SIXX", 3000000.0),
+    (1.0, "SIGM_NOEU", "SIYY", 0.0),
+    (1.0, "SIGM_NOEU", "SIXY", 0.0),
+    (1.2, "SIGM_NOEU", "SIXX", 1417667.16),
+    (1.2, "SIGM_NOEU", "SIYY", 934415.924),
+    (1.2, "SIGM_NOEU", "SIXY", 439725.141),
+    (5.0, "SIGM_NOEU", "SIXX", 317814.466),
+    (5.0, "SIGM_NOEU", "SIYY", 396114.867),
+    (5.0, "SIGM_NOEU", "SIXY", 186406.996),
+    (1.0, "VARI_NOEU", "V1", 0.132978723),
+    (1.0, "VARI_NOEU", "V2", 0.0278365308),
+    (1.2, "VARI_NOEU", "V1", 0.0801512295),
+    (1.2, "VARI_NOEU", "V2", 0.0627904654),
+    (5.0, "VARI_NOEU", "V1", 0.0253632939),
+    (5.0, "VARI_NOEU", "V2", 0.964508329),
+]
+
+prela = 1.0e-05
+prabs = 1.0e-08
+for inst, champ, compo, vale in PourTest:
+    if abs(vale) > 1.0e-10:
+        TEST_RESU(
+            RESU=_F(
+                INST=inst,
+                REFERENCE="AUTRE_ASTER",
+                RESULTAT=RES1,
+                NOM_CHAM=champ,
+                GROUP_MA="M1",
+                GROUP_NO="N1",
+                NOM_CMP=compo,
+                VALE_CALC=vale,
+                VALE_REFE=vale,
+                CRITERE="RELATIF",
+                PRECISION=prela,
+            )
+        )
+    else:
+        TEST_RESU(
+            RESU=_F(
+                INST=inst,
+                REFERENCE="AUTRE_ASTER",
+                RESULTAT=RES1,
+                NOM_CHAM=champ,
+                GROUP_MA="M1",
+                GROUP_NO="N1",
+                NOM_CMP=compo,
+                ORDRE_GRANDEUR=1.0,
+                VALE_CALC=vale,
+                VALE_REFE=vale,
+                CRITERE="ABSOLU",
+                PRECISION=prabs,
+            )
+        )
+
+
+FIN()

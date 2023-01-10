@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -36,9 +36,7 @@ DEFI_MATER_GC = MACRO(
     MAZARS=FACT(
         statut="f",
         max=1,
-        fr=tr(
-            "Paramètres matériaux de MAZARS unilatéral en 1D à partir des caractéristiques du béton"
-        ),
+        fr=tr("Paramètres matériaux de MAZARS unilatéral à partir des caractéristiques du béton"),
         CODIFICATION=SIMP(statut="o", typ="TXM", into=("ESSAI", "BAEL91", "EC2")),
         b_BAEL91=BLOC(
             condition=""" equal_to("CODIFICATION", 'BAEL91')""",
@@ -87,6 +85,16 @@ DEFI_MATER_GC = MACRO(
         ),
         b_ESSAI=BLOC(
             condition=""" equal_to("CODIFICATION", 'ESSAI')""",
+            regles=(PRESENT_ABSENT("EPSD0", "EPST0"),),
+            b_espi=BLOC(
+                condition="""exists('EPST0')""",
+                EPSC0=SIMP(
+                    statut="f",
+                    typ="R",
+                    val_min=0.0e0,
+                    fr=tr("Déformation, seuil d'endommagement en compression"),
+                ),
+            ),
             FCJ=SIMP(
                 statut="o",
                 typ="R",
@@ -104,7 +112,16 @@ DEFI_MATER_GC = MACRO(
                 statut="f", typ="R", val_min=0.0e0, val_max=0.5e0, fr=tr("Coefficient de poisson")
             ),
             EPSD0=SIMP(
-                statut="f", typ="R", val_min=0.0e0, fr=tr("Déformation, seuil d'endommagement")
+                statut="f",
+                typ="R",
+                val_min=0.0e0,
+                fr=tr("Déformation, seuil d'endommagement en traction et compression"),
+            ),
+            EPST0=SIMP(
+                statut="f",
+                typ="R",
+                val_min=0.0e0,
+                fr=tr("Déformation, seuil d'endommagement en traction"),
             ),
             K=SIMP(statut="f", typ="R", val_min=0.0e0, fr=tr("Asymptote en cisaillement pur")),
             AC=SIMP(
@@ -133,8 +150,12 @@ DEFI_MATER_GC = MACRO(
                 fr=tr("Paramètre de décroissance post-pic en traction"),
             ),
             # Pour post-traitement ELS et ELU
-            SIGM_LIM=SIMP(statut="f", typ="R", fr=tr("Contrainte limite, post-traitement")),
-            EPSI_LIM=SIMP(statut="f", typ="R", fr=tr("Déformation limite, post-traitement")),
+            SIGM_LIM=SIMP(
+                statut="f", typ="R", val_min=0.0e0, fr=tr("Contrainte  limite, post-traitement")
+            ),
+            EPSI_LIM=SIMP(
+                statut="f", typ="R", val_min=0.0e0, fr=tr("Déformation limite, post-traitement")
+            ),
         ),
     ),
     # ============================================================================
@@ -204,12 +225,16 @@ DEFI_MATER_GC = MACRO(
         max=1,
         fr=tr("Définir les paramètres matériaux de l'acier pour le Génie Civil"),
         E=SIMP(statut="o", typ="R", val_min=0.0e0, fr=tr("Module d'Young")),
-        SY=SIMP(statut="o", typ="R", fr=tr("Limite élastique")),
+        SY=SIMP(statut="o", typ="R", val_min=0.0e0, fr=tr("Limite élastique")),
         NU=SIMP(statut="f", typ="R", val_min=0.0e0, val_max=0.5e0, fr=tr("Coefficient de poisson")),
-        D_SIGM_EPSI=SIMP(statut="f", typ="R", fr=tr("Module plastique")),
+        D_SIGM_EPSI=SIMP(statut="f", typ="R", val_min=0.0e0, fr=tr("Module plastique")),
         # Pour post-traitement ELS et ELU
-        SIGM_LIM=SIMP(statut="f", typ="R", fr=tr("Contrainte limite, post-traitement")),
-        EPSI_LIM=SIMP(statut="f", typ="R", fr=tr("Déformation limite, post-traitement")),
+        SIGM_LIM=SIMP(
+            statut="f", typ="R", val_min=0.0e0, fr=tr("Contrainte limite, post-traitement")
+        ),
+        EPSI_LIM=SIMP(
+            statut="f", typ="R", val_min=0.0e0, fr=tr("Déformation limite, post-traitement")
+        ),
     ),
     # ============================================================================
     ENDO_FISS_EXP=FACT(
@@ -226,26 +251,26 @@ DEFI_MATER_GC = MACRO(
             statut="f",
             typ="R",
             val_min=1.0e0,
-            fr=tr("Parametre dominant de la loi cohésive asymptotique"),
+            fr=tr("Paramètre dominant de la loi cohésive asymptotique"),
         ),
         G_INIT=SIMP(
             statut="f",
             typ="R",
             val_min=0.0,
-            fr=tr("Energie de fissuration initiale de la loi cohesive asymptotique"),
+            fr=tr("Energie de fissuration initiale de la loi cohésive asymptotique"),
         ),
         Q=SIMP(
             statut="f",
             typ="R",
             val_min=0.0e0,
-            fr=tr("Parametre secondaire de la loi cohesive asymptotique"),
+            fr=tr("Paramètre secondaire de la loi cohésive asymptotique"),
         ),
         Q_REL=SIMP(
             statut="f",
             typ="R",
             val_min=0.0e0,
             val_max=1.0,
-            fr=tr("Parametre Q exprime de maniere relative par rapport a Qmax(P)"),
+            fr=tr("Paramètre Q exprime de manière relative par rapport a Qmax(P)"),
         ),
         LARG_BANDE=SIMP(
             statut="o", typ="R", val_min=0.0e0, fr=tr("Largeur de bande d'endommagement (2*D)")
@@ -263,7 +288,7 @@ DEFI_MATER_GC = MACRO(
             typ="R",
             val_min=0.0,
             defaut=0.0,
-            fr=tr("Rigidite minimale dans la matrice tangente"),
+            fr=tr("Rigidité minimale dans la matrice tangente"),
         ),
     ),
     # ============================================================================
@@ -277,7 +302,7 @@ DEFI_MATER_GC = MACRO(
         FC=SIMP(statut="o", typ="R", val_min=0.0e0, fr=tr("Limite en compression simple")),
         GF=SIMP(statut="o", typ="R", val_min=0.0e0, fr=tr("Energie de fissuration")),
         P=SIMP(
-            statut="f", typ="R", val_min=1.0e0, fr=tr("Parametre de forme de la reponse cohesive")
+            statut="f", typ="R", val_min=1.0e0, fr=tr("Paramètre de forme de la réponse cohésive")
         ),
         DIST_FISSURE=SIMP(
             statut="o", typ="R", val_min=0.0e0, fr=tr("Distance moyenne inter-fissures")

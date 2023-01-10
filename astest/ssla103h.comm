@@ -1,0 +1,253 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
+
+M = LIRE_MAILLAGE(FORMAT="MED")
+
+MO = AFFE_MODELE(MAILLAGE=M, AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="AXIS"))
+
+
+E = DEFI_FONCTION(NOM_PARA="SECH", VALE=(80.0, 3.0e10, 100.0, 1.0e10))
+NU = DEFI_FONCTION(NOM_PARA="HYDR", VALE=(0.0, 0.15, 1.0, 0.25))
+
+ALPHA = DEFI_CONSTANTE(VALE=1.0e-5)
+EPSD0 = DEFI_CONSTANTE(VALE=1.0e-4)
+
+AT = DEFI_FONCTION(NOM_PARA="SECH", VALE=(80.0, 1.0, 100.0, 0.80))
+BT = DEFI_FONCTION(NOM_PARA="HYDR", VALE=(0.0, 10000.0, 1.0, 11000.0))
+AC = DEFI_CONSTANTE(VALE=1.40)
+BC = DEFI_CONSTANTE(VALE=565.7)
+K = DEFI_CONSTANTE(VALE=0.70)
+SIGL = DEFI_CONSTANTE(VALE=22.8e06)
+EPSL = DEFI_CONSTANTE(VALE=3.5e-03)
+
+
+BETON = DEFI_MATERIAU(
+    ELAS_FO=_F(E=E, NU=NU, K_DESSIC=1.66e-5, B_ENDOGE=1.5e-5, TEMP_DEF_ALPHA=20.0, ALPHA=ALPHA),
+    MAZARS_FO=_F(K=K, EPSD0=EPSD0, AC=AC, AT=AT, BC=BC, BT=BT, SIGM_LIM=SIGL, EPSI_LIM=EPSL),
+)
+
+SECHI = CREA_CHAMP(
+    TYPE_CHAM="NOEU_TEMP_R",
+    OPERATION="AFFE",
+    MAILLAGE=M,
+    AFFE=_F(TOUT="OUI", NOM_CMP="TEMP", VALE=100.0),
+)
+
+SECHF = CREA_CHAMP(
+    TYPE_CHAM="NOEU_TEMP_R",
+    OPERATION="AFFE",
+    MAILLAGE=M,
+    AFFE=_F(TOUT="OUI", NOM_CMP="TEMP", VALE=80.0),
+)
+
+SECH1 = CREA_RESU(
+    OPERATION="AFFE",
+    TYPE_RESU="EVOL_THER",
+    NOM_CHAM="TEMP",
+    AFFE=(_F(CHAM_GD=SECHI, INST=0.0), _F(CHAM_GD=SECHF, INST=3600.0)),
+)
+
+TEMPI = CREA_CHAMP(
+    TYPE_CHAM="NOEU_TEMP_R",
+    OPERATION="AFFE",
+    MAILLAGE=M,
+    AFFE=_F(TOUT="OUI", NOM_CMP="TEMP", VALE=20.0),
+)
+
+TEMPF = CREA_CHAMP(
+    TYPE_CHAM="NOEU_TEMP_R",
+    OPERATION="AFFE",
+    MAILLAGE=M,
+    AFFE=_F(TOUT="OUI", NOM_CMP="TEMP", VALE=120.0),
+)
+
+TEMP1 = CREA_RESU(
+    OPERATION="AFFE",
+    TYPE_RESU="EVOL_THER",
+    NOM_CHAM="TEMP",
+    AFFE=(_F(CHAM_GD=TEMPI, INST=0.0), _F(CHAM_GD=TEMPF, INST=3600.0)),
+)
+
+HYDRI = CREA_CHAMP(
+    TYPE_CHAM="NOEU_HYDR_R",
+    OPERATION="AFFE",
+    MODELE=MO,
+    AFFE=_F(TOUT="OUI", NOM_CMP="HYDR", VALE=0.0),
+)
+
+HYDRF = CREA_CHAMP(
+    TYPE_CHAM="NOEU_HYDR_R",
+    OPERATION="AFFE",
+    MODELE=MO,
+    AFFE=_F(TOUT="OUI", NOM_CMP="HYDR", VALE=1.0),
+)
+
+HYDR1 = CREA_RESU(
+    OPERATION="AFFE",
+    TYPE_RESU="EVOL_THER",
+    NOM_CHAM="HYDR_NOEU",
+    AFFE=(_F(CHAM_GD=HYDRI, INST=0.0), _F(CHAM_GD=HYDRF, INST=3600.0)),
+)
+
+CM = AFFE_MATERIAU(
+    MAILLAGE=M,
+    AFFE=_F(TOUT="OUI", MATER=BETON),
+    AFFE_VARC=(
+        _F(TOUT="OUI", EVOL=HYDR1, NOM_VARC="HYDR", NOM_CHAM="HYDR_NOEU"),
+        _F(TOUT="OUI", EVOL=SECH1, NOM_VARC="SECH", NOM_CHAM="TEMP", VALE_REF=100),
+        _F(TOUT="OUI", EVOL=TEMP1, NOM_VARC="TEMP", NOM_CHAM="TEMP", VALE_REF=20),
+    ),
+)
+
+CH1 = AFFE_CHAR_MECA(MODELE=MO, FACE_IMPO=_F(GROUP_MA="D1", DY=0.0))
+
+#  ATTENTION :METTRE  SUFFISAMMENT DE PAS DE TEMPS QUAND E VARIE AVEC LE
+#  SECHAGE SINON RESULTATS APPROXIMATIFS OU PROBLEME DE CONVERGENCE
+L_INST = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=_F(JUSQU_A=3600.0, NOMBRE=20))
+
+U = STAT_NON_LINE(
+    MODELE=MO,
+    CHAM_MATER=CM,
+    EXCIT=_F(CHARGE=CH1),
+    COMPORTEMENT=_F(RELATION="MAZARS_UNIL"),
+    INCREMENT=_F(LIST_INST=L_INST),
+    NEWTON=_F(MATRICE="TANGENTE", REAC_ITER=1),
+    CONVERGENCE=_F(RESI_GLOB_MAXI=1e-06, ITER_GLOB_MAXI=25),
+)
+
+U = CALC_CHAMP(
+    reuse=U,
+    RESULTAT=U,
+    CONTRAINTE=("SIGM_ELNO"),
+    VARI_INTERNE=("VARI_ELNO"),
+    DEFORMATION=("EPSI_ELNO", "EPSP_ELNO"),
+)
+
+U = CALC_CHAMP(
+    reuse=U,
+    RESULTAT=U,
+    DEFORMATION=("EPSI_NOEU", "EPSP_NOEU"),
+    CONTRAINTE="SIGM_NOEU",
+    VARI_INTERNE="VARI_NOEU",
+)
+
+inst = 3600.0
+prela = 5.0e-03
+pabs = 1.0e-06
+TEST_RESU(
+    RESU=(
+        _F(
+            INST=inst,
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=U,
+            NOM_CHAM="EPSI_NOEU",
+            GROUP_NO="N5",
+            NOM_CMP="EPXX",
+            VALE_CALC=6.53000000e-04,
+            VALE_REFE=6.53000000e-04,
+            CRITERE="RELATIF",
+            PRECISION=prela,
+        ),
+        _F(
+            INST=inst,
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=U,
+            NOM_CHAM="EPSI_NOEU",
+            GROUP_NO="N5",
+            NOM_CMP="EPYY",
+            VALE_CALC=6.53000000e-04,
+            VALE_REFE=6.53000000e-04,
+            CRITERE="RELATIF",
+            PRECISION=prela,
+        ),
+        #
+        _F(
+            INST=inst,
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=U,
+            NOM_CHAM="EPSP_NOEU",
+            GROUP_NO="N5",
+            NOM_CMP="EPXX",
+            ORDRE_GRANDEUR=1.0,
+            VALE_CALC=0.0,
+            VALE_REFE=0.0,
+            CRITERE="ABSOLU",
+            PRECISION=pabs,
+        ),
+        _F(
+            INST=inst,
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=U,
+            NOM_CHAM="EPSP_NOEU",
+            GROUP_NO="N5",
+            NOM_CMP="EPYY",
+            ORDRE_GRANDEUR=1.0,
+            VALE_CALC=0.0,
+            VALE_REFE=0.0,
+            CRITERE="ABSOLU",
+            PRECISION=pabs,
+        ),
+        #
+        _F(
+            INST=inst,
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=U,
+            NOM_CHAM="SIGM_NOEU",
+            GROUP_NO="N5",
+            NOM_CMP="SIXX",
+            ORDRE_GRANDEUR=1.0,
+            VALE_CALC=0.0,
+            VALE_REFE=0.0,
+            CRITERE="ABSOLU",
+            PRECISION=pabs,
+        ),
+        _F(
+            INST=inst,
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=U,
+            NOM_CHAM="SIGM_NOEU",
+            GROUP_NO="N5",
+            NOM_CMP="SIYY",
+            ORDRE_GRANDEUR=1.0,
+            VALE_CALC=0.0,
+            VALE_REFE=0.0,
+            CRITERE="ABSOLU",
+            PRECISION=pabs,
+        ),
+        #
+        _F(
+            INST=inst,
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=U,
+            NOM_CHAM="VARI_NOEU",
+            GROUP_NO="N5",
+            NOM_CMP="V1",
+            ORDRE_GRANDEUR=1.0,
+            VALE_CALC=0.0,
+            VALE_REFE=0.0,
+            CRITERE="ABSOLU",
+            PRECISION=pabs,
+        ),
+    )
+)
+
+FIN()
+#

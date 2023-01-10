@@ -1,0 +1,127 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"))
+
+MAIL = LIRE_MAILLAGE(FORMAT="MED")
+
+
+MAIL = DEFI_GROUP(reuse=MAIL, MAILLAGE=MAIL, CREA_GROUP_NO=_F(GROUP_MA="haut", NOM="depno"))
+
+MA = DEFI_MATERIAU(
+    ELAS=_F(E=34000.0e06, NU=0.19, RHO=2400.0),
+    MAZARS=_F(
+        AT=1.0,
+        BT=9000.0,
+        AC=1.25,
+        BC=528.0,
+        K=0.7,
+        EPST0=1.10000e-04,
+        EPSC0=4.09378e-04,
+        SIGM_LIM=1.99662e07,
+        EPSI_LIM=3.50000e-03,
+    ),
+)
+
+MODE = AFFE_MODELE(MAILLAGE=MAIL, AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="C_PLAN"))
+
+MATE = AFFE_MATERIAU(MAILLAGE=MAIL, AFFE=_F(TOUT="OUI", MATER=MA))
+
+BLO = AFFE_CHAR_MECA(MODELE=MODE, DDL_IMPO=(_F(GROUP_MA="gau", DX=0.0), _F(GROUP_MA="bas", DY=0.0)))
+
+CHAR = AFFE_CHAR_MECA(MODELE=MODE, PRES_REP=_F(GROUP_MA="droi", PRES=-1560000.0))
+
+PRESS = AFFE_CHAR_MECA(MODELE=MODE, PRES_REP=_F(GROUP_MA="haut", PRES=30000000.0))
+
+List = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=_F(JUSQU_A=0.46, PAS=0.01))
+
+Fonc = DEFI_FONCTION(NOM_PARA="INST", VALE=(0.0, 0.0, 1.0, 2.0), INTERPOL=("LIN", "LIN"))
+
+STAT = STAT_NON_LINE(
+    MODELE=MODE,
+    CHAM_MATER=MATE,
+    EXCIT=(_F(CHARGE=BLO), _F(CHARGE=CHAR, FONC_MULT=Fonc), _F(CHARGE=PRESS, FONC_MULT=Fonc)),
+    COMPORTEMENT=_F(RELATION="MAZARS_UNIL"),
+    INCREMENT=_F(LIST_INST=List),
+    CONVERGENCE=_F(RESI_GLOB_RELA=9.0e-5, ITER_GLOB_MAXI=100, ARRET="OUI"),
+    NEWTON=_F(MATRICE="TANGENTE", REAC_ITER=1),
+)
+
+STAT = CALC_CHAMP(
+    reuse=STAT,
+    RESULTAT=STAT,
+    NUME_ORDRE=(6, 46),
+    CONTRAINTE=("SIGM_NOEU"),
+    DEFORMATION=("EPSI_NOEU"),
+    VARI_INTERNE=("VARI_NOEU"),
+)
+
+PourTest = [
+    (0.06, "VARI_NOEU", "V1", -0.180548322),
+    (0.06, "VARI_NOEU", "V2", -0.0318849799),
+    (0.46, "VARI_NOEU", "V1", -1.38410664),
+    (0.46, "VARI_NOEU", "V2", -0.343034197),
+    (0.06, "EPSI_NOEU", "EPXX", 2.56235294e-05),
+    (0.06, "EPSI_NOEU", "EPYY", -0.000106928471),
+    (0.46, "EPSI_NOEU", "EPXX", 0.000275670452),
+    (0.46, "EPSI_NOEU", "EPYY", -0.00115038875),
+    (0.06, "SIGM_NOEU", "SIXX", 187200.0),
+    (0.06, "SIGM_NOEU", "SIYY", -3600000.0),
+    (0.46, "SIGM_NOEU", "SIXX", 1435099.25),
+    (0.46, "SIGM_NOEU", "SIYY", -27598062.5),
+]
+
+prela = 1.0e-05
+prabs = 1.0e-08
+for inst, champ, compo, vale in PourTest:
+    if abs(vale) > 1.0e-10:
+        TEST_RESU(
+            RESU=_F(
+                INST=inst,
+                REFERENCE="AUTRE_ASTER",
+                RESULTAT=STAT,
+                NOM_CHAM=champ,
+                GROUP_MA="M1",
+                GROUP_NO="N1",
+                NOM_CMP=compo,
+                VALE_CALC=vale,
+                VALE_REFE=vale,
+                CRITERE="RELATIF",
+                PRECISION=prela,
+            )
+        )
+    else:
+        TEST_RESU(
+            RESU=_F(
+                INST=inst,
+                REFERENCE="AUTRE_ASTER",
+                RESULTAT=STAT,
+                NOM_CHAM=champ,
+                GROUP_MA="M1",
+                GROUP_NO="N1",
+                NOM_CMP=compo,
+                ORDRE_GRANDEUR=1.0,
+                VALE_CALC=vale,
+                VALE_REFE=vale,
+                CRITERE="ABSOLU",
+                PRECISION=prabs,
+            )
+        )
+
+FIN()

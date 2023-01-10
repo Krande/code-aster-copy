@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,10 +17,8 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-from code_aster import ConvergenceError, NonLinearResult
-from code_aster.Commands import *
 
-DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"), ERREUR=_F(ERREUR_F="EXCEPTION"))
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
 
 Sbeton = "10x25"
 CBeton = "C30/37"
@@ -92,7 +90,7 @@ PMFMAZAR = DEFI_COMPOR(
     MATER_SECT=MATOR,
     MULTIFIBRE=(
         _F(GROUP_FIBRE="SACIER", MATER=ACIER, RELATION="VMIS_CINE_GC"),
-        _F(GROUP_FIBRE="SBETON", MATER=BETON, RELATION="MAZARS_GC"),
+        _F(GROUP_FIBRE="SBETON", MATER=BETON, RELATION="MAZARS_UNIL"),
     ),
 )
 
@@ -130,13 +128,14 @@ FOMULT = DEFI_FONCTION(
 )
 
 
+inst_fin = 3.37
 LINSTD = DEFI_LIST_REEL(
     DEBUT=0.0,
     INTERVALLE=(
         _F(JUSQU_A=0.10, NOMBRE=2),
         _F(JUSQU_A=1.40, NOMBRE=10),
         _F(JUSQU_A=3.00, NOMBRE=10),
-        _F(JUSQU_A=5.00, NOMBRE=10),
+        _F(JUSQU_A=inst_fin, NOMBRE=10),
     ),
 )
 
@@ -153,106 +152,151 @@ LINST1 = DEFI_LIST_INST(
     ),
 )
 
-LINST2 = DEFI_LIST_INST(
-    METHODE="MANUEL",
-    DEFI_LIST=_F(LIST_INST=LINSTD),
-    ECHEC=_F(
-        EVENEMENT="ERREUR",
-        ACTION="DECOUPE",
-        SUBD_METHODE="MANUEL",
-        SUBD_PAS=10,
-        SUBD_PAS_MINI=1.0e-10,
-        SUBD_NIVEAU=10,
-    ),
+U1MAZAR = STAT_NON_LINE(
+    MODELE=MOPOU,
+    CHAM_MATER=MATMAZAR,
+    CARA_ELEM=POUCA,
+    EXCIT=(_F(CHARGE=BLOCAGE), _F(CHARGE=DEPIMP, FONC_MULT=FOMULT)),
+    COMPORTEMENT=_F(RELATION="MULTIFIBRE"),
+    INCREMENT=_F(LIST_INST=LINST1, INST_FIN=inst_fin),
+    NEWTON=_F(MATRICE="TANGENTE", REAC_ITER=1),
+    CONVERGENCE=_F(RESI_GLOB_RELA=1.0e-5, ITER_GLOB_MAXI=10),
 )
-
-ok_poursuite = 0
-U1MAZAR = NonLinearResult()
-try:
-    U1MAZAR = STAT_NON_LINE(
-        reuse=U1MAZAR,
-        RESULTAT=U1MAZAR,
-        MODELE=MOPOU,
-        CHAM_MATER=MATMAZAR,
-        CARA_ELEM=POUCA,
-        EXCIT=(_F(CHARGE=BLOCAGE), _F(CHARGE=DEPIMP, FONC_MULT=FOMULT)),
-        COMPORTEMENT=_F(RELATION="MULTIFIBRE"),
-        INCREMENT=_F(LIST_INST=LINST1, INST_FIN=5.0),
-        NEWTON=_F(MATRICE="TANGENTE", REAC_ITER=1),
-        CONVERGENCE=_F(RESI_GLOB_RELA=1.0e-5, ITER_GLOB_MAXI=10),
-    )
-except ConvergenceError as err:
-    if err.id_message == "MECANONLINE9_7":
-        ok_poursuite = 1
-
-if ok_poursuite == 1:
-    try:
-        U1MAZAR = STAT_NON_LINE(
-            reuse=U1MAZAR,
-            MODELE=MOPOU,
-            CHAM_MATER=MATMAZAR,
-            CARA_ELEM=POUCA,
-            ETAT_INIT=_F(EVOL_NOLI=U1MAZAR),
-            EXCIT=(_F(CHARGE=BLOCAGE), _F(CHARGE=DEPIMP, FONC_MULT=FOMULT)),
-            COMPORTEMENT=_F(RELATION="MULTIFIBRE"),
-            INCREMENT=_F(LIST_INST=LINST2, INST_FIN=5.0),
-            NEWTON=_F(MATRICE="TANGENTE"),
-            CONVERGENCE=_F(RESI_GLOB_RELA=2.0e-4, ITER_GLOB_MAXI=20),
-        )
-    except ConvergenceError as err:
-        if err.id_message == "MECANONLINE9_7":
-            ok_poursuite = 2
 
 
 U1MAZAR = CALC_CHAMP(FORCE="REAC_NODA", reuse=U1MAZAR, RESULTAT=U1MAZAR)
 U1MAZAR = CALC_CHAMP(reuse=U1MAZAR, RESULTAT=U1MAZAR, DEFORMATION=("EPSI_ELGA"))
 
 # Réaction
-DEPCY = RECU_FONCTION(RESULTAT=U1MAZAR, NOM_CHAM="DEPL", NOM_CMP="DY", GROUP_NO="C")
-DEPBX = RECU_FONCTION(RESULTAT=U1MAZAR, NOM_CHAM="DEPL", NOM_CMP="DX", GROUP_NO="B")
-REACA = RECU_FONCTION(RESULTAT=U1MAZAR, NOM_CHAM="REAC_NODA", NOM_CMP="DY", GROUP_NO="A")
+DEPCY = RECU_FONCTION(
+    RESULTAT=U1MAZAR, NOM_CHAM="DEPL", NOM_CMP="DY", GROUP_NO="C", NOM_RESU="Depl_Cy"
+)
+DEPBX = RECU_FONCTION(
+    RESULTAT=U1MAZAR, NOM_CHAM="DEPL", NOM_CMP="DX", GROUP_NO="B", NOM_RESU="Depl_Bx"
+)
+REACA = RECU_FONCTION(
+    RESULTAT=U1MAZAR, NOM_CHAM="REAC_NODA", NOM_CMP="DY", GROUP_NO="A", NOM_RESU="Reac_Dy"
+)
 # Déformation acier tendu
 DEFAT = RECU_FONCTION(
-    RESULTAT=U1MAZAR, NOM_CHAM="EPSI_ELGA", NOM_CMP="EPXX", GROUP_MA="M9", POINT=1, SOUS_POINT=spat
+    RESULTAT=U1MAZAR,
+    NOM_CHAM="EPSI_ELGA",
+    NOM_CMP="EPXX",
+    NOM_RESU="EPXX_At",
+    GROUP_MA="M9",
+    POINT=1,
+    SOUS_POINT=spat,
 )
 # Déformation acier comprimé
 DEFAC = RECU_FONCTION(
-    RESULTAT=U1MAZAR, NOM_CHAM="EPSI_ELGA", NOM_CMP="EPXX", GROUP_MA="M9", POINT=1, SOUS_POINT=spac
+    RESULTAT=U1MAZAR,
+    NOM_CHAM="EPSI_ELGA",
+    NOM_CMP="EPXX",
+    NOM_RESU="EPXX_Ac",
+    GROUP_MA="M9",
+    POINT=1,
+    SOUS_POINT=spac,
 )
 # Déformation béton tendu
 DEFBT = RECU_FONCTION(
-    RESULTAT=U1MAZAR, NOM_CHAM="EPSI_ELGA", NOM_CMP="EPXX", GROUP_MA="M9", POINT=1, SOUS_POINT=spbt
+    RESULTAT=U1MAZAR,
+    NOM_CHAM="EPSI_ELGA",
+    NOM_CMP="EPXX",
+    NOM_RESU="EPXX_Bt",
+    GROUP_MA="M9",
+    POINT=1,
+    SOUS_POINT=spbt,
 )
 # Déformation béton comprimé
 DEFBC = RECU_FONCTION(
-    RESULTAT=U1MAZAR, NOM_CHAM="EPSI_ELGA", NOM_CMP="EPXX", GROUP_MA="M9", POINT=1, SOUS_POINT=spbc
+    RESULTAT=U1MAZAR,
+    NOM_CHAM="EPSI_ELGA",
+    NOM_CMP="EPXX",
+    NOM_RESU="EPXX_Bc",
+    GROUP_MA="M9",
+    POINT=1,
+    SOUS_POINT=spbc,
 )
 #
 # Contrainte acier tendu
 CONAT = RECU_FONCTION(
-    RESULTAT=U1MAZAR, NOM_CHAM="SIEF_ELGA", NOM_CMP="SIXX", GROUP_MA="M9", POINT=1, SOUS_POINT=spat
+    RESULTAT=U1MAZAR,
+    NOM_CHAM="SIEF_ELGA",
+    NOM_CMP="SIXX",
+    NOM_RESU="SIXX_At",
+    GROUP_MA="M9",
+    POINT=1,
+    SOUS_POINT=spat,
 )
 # Contrainte acier comprime
 CONAC = RECU_FONCTION(
-    RESULTAT=U1MAZAR, NOM_CHAM="SIEF_ELGA", NOM_CMP="SIXX", GROUP_MA="M9", POINT=1, SOUS_POINT=spac
+    RESULTAT=U1MAZAR,
+    NOM_CHAM="SIEF_ELGA",
+    NOM_CMP="SIXX",
+    NOM_RESU="SIXX_Ac",
+    GROUP_MA="M9",
+    POINT=1,
+    SOUS_POINT=spac,
 )
 # Contrainte beton tendu
 CONBT = RECU_FONCTION(
-    RESULTAT=U1MAZAR, NOM_CHAM="SIEF_ELGA", NOM_CMP="SIXX", GROUP_MA="M9", POINT=1, SOUS_POINT=spbt
+    RESULTAT=U1MAZAR,
+    NOM_CHAM="SIEF_ELGA",
+    NOM_CMP="SIXX",
+    NOM_RESU="SIXX_Bt",
+    GROUP_MA="M9",
+    POINT=1,
+    SOUS_POINT=spbt,
 )
 # Contrainte beton comprime
 CONBC = RECU_FONCTION(
-    RESULTAT=U1MAZAR, NOM_CHAM="SIEF_ELGA", NOM_CMP="SIXX", GROUP_MA="M9", POINT=1, SOUS_POINT=spbc
+    RESULTAT=U1MAZAR,
+    NOM_CHAM="SIEF_ELGA",
+    NOM_CMP="SIXX",
+    NOM_RESU="SIXX_Bc",
+    GROUP_MA="M9",
+    POINT=1,
+    SOUS_POINT=spbc,
+)
+# Endommagement beton tendu
+DOMBT = RECU_FONCTION(
+    RESULTAT=U1MAZAR,
+    NOM_CHAM="VARI_ELGA",
+    NOM_CMP="V3",
+    NOM_RESU="Domm_Bt",
+    GROUP_MA="M9",
+    POINT=1,
+    SOUS_POINT=spbt,
+)
+# Endommagement beton comprime
+DOMBC = RECU_FONCTION(
+    RESULTAT=U1MAZAR,
+    NOM_CHAM="VARI_ELGA",
+    NOM_CMP="V3",
+    NOM_RESU="Domm_Bc",
+    GROUP_MA="M9",
+    POINT=1,
+    SOUS_POINT=spbc,
 )
 
+DeplBx = 3.096377298027e-03
+ReacAy = 1.076353521137e05
+DefoAt = 1.847874482439e-03
+DefoAc = -9.338660501787e-04
+DefoBt = 2.070938581753e-03
+DefoBc = -1.078201643852e-03
+SigmAt = 3.695748933666e08
+SigmAc = -1.867732131569e08
+SigmBt = 2.728539838478e05
+SigmBc = -2.976228866464e07
 TEST_FONCTION(
     VALEUR=_F(
         FONCTION=DEPCY,
         NOM_PARA="INST",
-        VALE_PARA=3.480,
-        VALE_CALC=-3.48000e-02,
-        VALE_REFE=-3.48000e-02,
-        REFERENCE="AUTRE_ASTER",
+        VALE_PARA=inst_fin,
+        VALE_CALC=-inst_fin * 1.0e-02,
+        VALE_REFE=-inst_fin * 1.0e-02,
+        REFERENCE="ANALYTIQUE",
     )
 )
 
@@ -260,9 +304,9 @@ TEST_FONCTION(
     VALEUR=_F(
         FONCTION=DEPBX,
         NOM_PARA="INST",
-        VALE_PARA=3.480,
-        VALE_CALC=2.090441092963e-03,
-        VALE_REFE=2.090441092963e-03,
+        VALE_PARA=inst_fin,
+        VALE_CALC=DeplBx,
+        VALE_REFE=DeplBx,
         REFERENCE="AUTRE_ASTER",
     )
 )
@@ -271,9 +315,9 @@ TEST_FONCTION(
     VALEUR=_F(
         FONCTION=REACA,
         NOM_PARA="INST",
-        VALE_PARA=3.480,
-        VALE_CALC=80282.98908234,
-        VALE_REFE=80282.98908234,
+        VALE_PARA=inst_fin,
+        VALE_CALC=ReacAy,
+        VALE_REFE=ReacAy,
         REFERENCE="AUTRE_ASTER",
     )
 )
@@ -282,9 +326,9 @@ TEST_FONCTION(
     VALEUR=_F(
         FONCTION=DEFAT,
         NOM_PARA="INST",
-        VALE_PARA=3.480,
-        VALE_CALC=1.378291805849e-03,
-        VALE_REFE=1.378291805849e-03,
+        VALE_PARA=inst_fin,
+        VALE_CALC=DefoAt,
+        VALE_REFE=DefoAt,
         REFERENCE="AUTRE_ASTER",
     )
 )
@@ -293,9 +337,9 @@ TEST_FONCTION(
     VALEUR=_F(
         FONCTION=DEFAC,
         NOM_PARA="INST",
-        VALE_PARA=3.480,
-        VALE_CALC=-6.965511197817e-04,
-        VALE_REFE=-6.965511197817e-04,
+        VALE_PARA=inst_fin,
+        VALE_CALC=DefoAc,
+        VALE_REFE=DefoAc,
         REFERENCE="AUTRE_ASTER",
     )
 )
@@ -304,9 +348,9 @@ TEST_FONCTION(
     VALEUR=_F(
         FONCTION=DEFBT,
         NOM_PARA="INST",
-        VALE_PARA=3.480,
-        VALE_CALC=1.544670719697e-03,
-        VALE_REFE=1.544670719697e-03,
+        VALE_PARA=inst_fin,
+        VALE_CALC=DefoBt,
+        VALE_REFE=DefoBt,
         REFERENCE="AUTRE_ASTER",
     )
 )
@@ -315,9 +359,9 @@ TEST_FONCTION(
     VALEUR=_F(
         FONCTION=DEFBC,
         NOM_PARA="INST",
-        VALE_PARA=3.480,
-        VALE_CALC=-8.042080640361e-04,
-        VALE_REFE=-8.042080640361e-04,
+        VALE_PARA=inst_fin,
+        VALE_CALC=DefoBc,
+        VALE_REFE=DefoBc,
         REFERENCE="AUTRE_ASTER",
     )
 )
@@ -326,9 +370,9 @@ TEST_FONCTION(
     VALEUR=_F(
         FONCTION=CONAT,
         NOM_PARA="INST",
-        VALE_PARA=3.480,
-        VALE_CALC=2.756583519881e08,
-        VALE_REFE=2.756583519881e08,
+        VALE_PARA=inst_fin,
+        VALE_CALC=SigmAt,
+        VALE_REFE=SigmAt,
         REFERENCE="AUTRE_ASTER",
     )
 )
@@ -337,9 +381,9 @@ TEST_FONCTION(
     VALEUR=_F(
         FONCTION=CONAC,
         NOM_PARA="INST",
-        VALE_PARA=3.480,
-        VALE_CALC=-1.393102331381e08,
-        VALE_REFE=-1.393102331381e08,
+        VALE_PARA=inst_fin,
+        VALE_CALC=SigmAc,
+        VALE_REFE=SigmAc,
         REFERENCE="AUTRE_ASTER",
     )
 )
@@ -348,9 +392,9 @@ TEST_FONCTION(
     VALEUR=_F(
         FONCTION=CONBT,
         NOM_PARA="INST",
-        VALE_PARA=3.480,
-        VALE_CALC=2.035162067382e05,
-        VALE_REFE=2.035162067382e05,
+        VALE_PARA=inst_fin,
+        VALE_CALC=SigmBt,
+        VALE_REFE=SigmBt,
         REFERENCE="AUTRE_ASTER",
     )
 )
@@ -359,12 +403,13 @@ TEST_FONCTION(
     VALEUR=_F(
         FONCTION=CONBC,
         NOM_PARA="INST",
-        VALE_PARA=3.480,
-        VALE_CALC=-2.219906862094e07,
-        VALE_REFE=-2.219906862094e07,
+        VALE_PARA=inst_fin,
+        VALE_CALC=SigmBc,
+        VALE_REFE=SigmBc,
         REFERENCE="AUTRE_ASTER",
     )
 )
+
 
 """
 Les commandes ci-dessous : trace les courbes et font les sorties MED pour la formation.
@@ -405,9 +450,11 @@ IMPR_FONCTION(UNITE=unite,FORMAT='TABLEAU',
       _F(FONCTION=REACA),
       _F(FONCTION=DEFAT), _F(FONCTION=DEFAC), _F(FONCTION=DEFBT), _F(FONCTION=DEFBC),
       _F(FONCTION=CONAT), _F(FONCTION=CONAC), _F(FONCTION=CONBT), _F(FONCTION=CONBC),
+      _F(FONCTION=DOMBT), _F(FONCTION=DOMBC),
    )
 )
 DEFI_FICHIER(UNITE = unite, ACTION='LIBERER',)
 """
+
 
 FIN()

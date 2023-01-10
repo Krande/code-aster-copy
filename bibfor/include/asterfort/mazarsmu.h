@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,18 +18,18 @@
 
 !
 !
+#include "asterf_types.h"
+!
 interface
-    subroutine mazu1d(ee, mazars, sigm, varm, epsm,&
-                      deps, esout, sigp, varp, option)
-        real(kind=8) :: ee
-        real(kind=8) :: mazars(*)
-        real(kind=8) :: sigm
-        real(kind=8) :: varm(*)
-        real(kind=8) :: epsm
-        real(kind=8) :: deps
-        real(kind=8) :: esout
-        real(kind=8) :: sigp
-        real(kind=8) :: varp(*)
-        character(len=*) :: option
-    end subroutine mazu1d
+    subroutine mazarsmu(option, epsela, deps, dimloc, mazars, varm, varp, sigp, dsidep)
+        character(len=16)   :: option
+        real(kind=8)        :: epsela(6)
+        real(kind=8)        :: deps(6)
+        integer             :: dimloc
+        real(kind=8)        :: mazars(*)
+        real(kind=8)        :: varm(*)
+        real(kind=8)        :: varp(*)
+        real(kind=8)        :: sigp(*)
+        real(kind=8)        :: dsidep(6, 6)
+    end subroutine mazarsmu
 end interface

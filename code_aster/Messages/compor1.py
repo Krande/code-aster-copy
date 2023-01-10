@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -404,14 +404,14 @@ Pour ne pas prendre en compte l'effet de %(k3)s, déformation correspondante nul
 """
     ),
     75: _(
-        """ == Paramètres de la loi %(k1)s ==
- Partie élasticité :
-   %(k2)s
- Partie non-linéaire :
-   %(k3)s
- Pour information :
-   %(k4)s
- =================================================="""
+        """# == Paramètres de la loi %(k1)s ==
+# Partie élasticité :
+%(k2)s
+# Partie non-linéaire :
+%(k3)s
+# Pour information :
+%(k4)s
+# =================================================="""
     ),
     76: _(
         """

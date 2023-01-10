@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,19 +19,20 @@
 !
 !
 interface
-    subroutine mazacp(option, ndimsi, epsm, deps, epsane,&
-                      ee, mazars, varm, varp, sigp,&
-                      dsidep)
-        character(len=16) :: option
-        integer :: ndimsi
-        real(kind=8) :: epsm(*)
-        real(kind=8) :: deps(*)
-        real(kind=8) :: epsane
-        real(kind=8) :: ee
-        real(kind=8) :: mazars(*)
-        real(kind=8) :: varm(*)
-        real(kind=8) :: varp(*)
-        real(kind=8) :: sigp(*)
-        real(kind=8) :: dsidep(6, 6)
-    end subroutine mazacp
+    subroutine lcmazarsmu(fami, kpg, ksp, dimpb, imate, model, epsm, &
+                          deps, vim,  option, sig, vip, dsidep)
+        character(len=*)    :: fami
+        integer             :: kpg
+        integer             :: ksp
+        integer             :: dimpb
+        integer             :: imate
+        character(len=6)    :: model
+        real(kind=8)        :: epsm(*)
+        real(kind=8)        :: deps(*)
+        real(kind=8)        :: vim(*)
+        character(len=16)   :: option
+        real(kind=8)        :: sig(*)
+        real(kind=8)        :: vip(*)
+        real(kind=8)        :: dsidep(6, 6)
+    end subroutine lcmazarsmu
 end interface

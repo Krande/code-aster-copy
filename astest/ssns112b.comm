@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -27,29 +27,29 @@ MPa = 1e6
 ## BETON
 # epaisseur et hauteur de la plaque
 ht = 0.15
-# module de Young  beton
+# module d'Young béton
 E_beton = 28500 * MPa
-# coefficient de poisson  beton
+# coefficient de poisson  béton
 Nu_beton = 0.2
-# masse volumique beton
-Rho_beton = 2500
+# masse volumique béton
+Rho_beton = 2500.0
 # contrainte limite de traction
-ft = 1.6 * MPa
+ft = 2.94 * MPa
 # deformation au pic de compression
-eps_c = 2.3e-03
-# contrainte limite en compressio
-fc = -25 * MPa
+eps_c = 2.25e-03
+# contrainte limite en compression
+fc = 25 * MPa
 # parametre de la MAZARS: pour le post-pic en traction
 AT = 0.5
-# aire de la fibre de beton
+# aire de la fibre de béton
 a_fibre = ht**2 / 4.0
 
 ## ACIER
-# aire de la fibre de beton
+# aire de la fibre acier
 a_acier = math.pi * (0.014 * 0.5) ** 2
-# module de Young acier
+# module d'Young acier
 E_acier = 195000 * MPa
-# limite elastique acier
+# limite élastique acier
 sy_acier = 610 * MPa
 # masse volumique acier
 Rho_acier = 7500
@@ -73,13 +73,13 @@ MO = AFFE_MODELE(
 # -----------------------------------------------
 GF = DEFI_GEOM_FIBRE(
     FIBRE=(
-        _F(GROUP_FIBRE="SBET", COOR_AXE_POUTRE=(0.0, 0.0), VALE=(0, 0, 4 * (a_fibre - a_acier))),
-        _F(GROUP_FIBRE="SACI", COOR_AXE_POUTRE=(0.0, 0.0), VALE=(0, 0, 4 * a_acier)),
+        _F(GROUP_FIBRE="SBET", COOR_AXE_POUTRE=(0.0, 0.0), VALE=(0, 0, 4.0 * (a_fibre - a_acier))),
+        _F(GROUP_FIBRE="SACI", COOR_AXE_POUTRE=(0.0, 0.0), VALE=(0, 0, 4.0 * a_acier)),
     )
 )
 
 BETON = DEFI_MATER_GC(
-    MAZARS=_F(CODIFICATION="ESSAI", FCJ=-fc, EIJ=E_beton, EPSI_C=eps_c, FTJ=ft, AT=AT),
+    MAZARS=_F(CODIFICATION="ESSAI", FCJ=fc, EIJ=E_beton, EPSI_C=eps_c, FTJ=ft, AT=AT),
     RHO=Rho_beton,
     INFO=2,
 )
@@ -91,7 +91,7 @@ COMPF = DEFI_COMPOR(
     MATER_SECT=BETON,
     MULTIFIBRE=(
         _F(GROUP_FIBRE="SACI", MATER=ACIER, RELATION="VMIS_CINE_GC"),
-        _F(GROUP_FIBRE="SBET", MATER=BETON, RELATION="MAZARS_GC"),
+        _F(GROUP_FIBRE="SBET", MATER=BETON, RELATION="MAZARS_UNIL"),
     ),
 )
 
@@ -122,18 +122,46 @@ CL = AFFE_CHAR_MECA(
     ),
 )
 
+
+CLDX = AFFE_CHAR_MECA(
+    MODELE=MO,
+    DDL_IMPO=(
+        _F(GROUP_NO="A", DX=0.0, DY=0.0, DZ=0.0, DRX=0.0, DRY=0.0, DRZ=0.0),
+        _F(GROUP_NO="B", DX=1.0e-03, DY=0.0, DZ=0.0, DRX=0.0, DRY=0.0, DRZ=0.0),
+    ),
+)
+
+
 CHARGE = AFFE_CHAR_MECA(MODELE=MO, FORCE_NODALE=_F(GROUP_NO="B", FX=1000.0))
 
-t1 = 1.0
-t2 = 3.0
-t3 = 5.0
-t4 = 7.0
-t5 = 9.0
-t6 = 11.0
-t7 = 13.0
-t8 = 15.0
-t9 = 17.0
+
+from ssns112a import val_exp
+
+
+# Pti : Points de l'essai dans val_exp !!! commence à 0
+#       Déformation       Effort [kN]
+#       val_exp[2*pti ]   val_exp[2*pti+1]
+#
+t01 = 1.0
+pt01 = 247
+t02 = 3.0
+pt02 = 344
+t03 = 5.0
+pt03 = 171
+t04 = 7.0
+pt04 = 482
+t05 = 9.0
+pt05 = 113
+t06 = 11.0
+pt06 = 568
+t07 = 13.0
+pt07 = 26
+t08 = 15.0
+pt08 = 602
+t09 = 17.0
+pt09 = 1
 t10 = 19.0
+pt10 = 604
 
 dt = 0.05
 
@@ -142,26 +170,26 @@ FOFO = DEFI_FONCTION(
     VALE=(
         0.0,
         0.0,
-        t1,
-        -250.0,
-        t2,
-        55.0,
-        t3,
-        -365.0,
-        t4,
-        176.0,
-        t5,
-        -490.0,
-        t6,
-        298.0,
-        t7,
-        -675.0,
-        t8,
-        368.0,
-        t9,
-        -790.0,
+        t01,
+        val_exp[2 * pt01 + 1],  #    20
+        t02,
+        val_exp[2 * pt02 + 1],  #    60
+        t03,
+        val_exp[2 * pt03 + 1],  #   100
+        t04,
+        val_exp[2 * pt04 + 1],  #   140
+        t05,
+        val_exp[2 * pt05 + 1],  #   180
+        t06,
+        val_exp[2 * pt06 + 1],  #   220
+        t07,
+        val_exp[2 * pt07 + 1],  #   260
+        t08,
+        val_exp[2 * pt08 + 1],  #   300
+        t09,
+        val_exp[2 * pt09 + 1],  #   340
         t10,
-        376.0,
+        val_exp[2 * pt10 + 1],  #   380
     ),
     PROL_DROITE="CONSTANT",
     PROL_GAUCHE="CONSTANT",
@@ -189,128 +217,165 @@ RESU = STAT_NON_LINE(
     NEWTON=_F(REAC_ITER=1),
 )
 
+RESU = CALC_CHAMP(reuse=RESU, RESULTAT=RESU, FORCE="REAC_NODA")
+
+DEPBX = RECU_FONCTION(RESULTAT=RESU, NOM_CHAM="DEPL", NOM_CMP="DX", GROUP_NO="B", NOM_RESU="DeplBx")
+REAFX = RECU_FONCTION(
+    RESULTAT=RESU, NOM_CHAM="REAC_NODA", NOM_CMP="DX", GROUP_NO="A", NOM_RESU="ReacAx"
+)
+
+DEPBX2 = RECU_FONCTION(
+    RESULTAT=RESU,
+    NOM_CHAM="DEPL",
+    NOM_CMP="DX",
+    GROUP_NO="B",
+    NOM_RESU="DeplBx",
+    INST=(0.0, t01, t02, t03, t04, t05, t06, t07, t08, t09, t10),
+)
+REAFX2 = RECU_FONCTION(
+    RESULTAT=RESU,
+    NOM_CHAM="REAC_NODA",
+    NOM_CMP="DX",
+    GROUP_NO="A",
+    NOM_RESU="ReacAx",
+    INST=(0.0, t01, t02, t03, t04, t05, t06, t07, t08, t09, t10),
+)
+"""
+IMPR_FONCTION(UNITE=8,FORMAT='TABLEAU',
+   COURBE=(
+      _F(FONCTION=DEPBX), _F(FONCTION=REAFX),
+   )
+)
+IMPR_FONCTION(UNITE=8,FORMAT='TABLEAU',
+   COURBE=(
+      _F(FONCTION=DEPBX2), _F(FONCTION=REAFX2),
+   )
+)
+"""
+# IMPR_RESU(UNITE=8,FORMAT='RESULTAT', RESU=_F(RESULTAT=RESU), )
+
 # -----------------------------------------------
 # CALCUL DES TEST_RESU
 # -----------------------------------------------
-# les resultats experimentaux sont donnees dans le fichier joint
-# il s'agit des points de la numerisation de la courbe de reponse du specimen: deformation (-) et force (kN)
-
-from ssns112a import val_exp
-
-
-# on a identifie les points numerises les plus proches des pic de chaque cycle pour la comparaison avec la solution numerique
-# les deformations sont converties en deplacement par la multiplication par la longueur du speciment l= 0.7m
+# Les resultats experimentaux sont donnees dans val_exp
+# Il s'agit des points de la numérisation de la courbe de réponse du specimen :
+#       deformation (-) et force (kN)
+# On a identifié les points numerisés les plus proches des pic de chaque cycle
+# pour la comparaison avec la solution numérique.
+# Les déformations sont converties en déplacement en multipliant par la
+#   longueur du speciment l= 0.7m
+#
+Long = 0.7
+precis = 5.0 / 100.0
 TEST_RESU(
     RESU=(
         _F(
             NOM_CMP="DX",
             GROUP_NO=("B",),
-            INST=t1,
+            INST=t01,
             NOM_CHAM="DEPL",
             RESULTAT=RESU,
             CRITERE=("RELATIF", "ABSOLU"),
             REFERENCE="SOURCE_EXTERNE",
-            VALE_CALC=(-2.5539432345647e-04,),
-            VALE_REFE=(val_exp[2 * 247] * 0.7,),
-            PRECISION=0.05,
+            VALE_CALC=DEPBX(t01),
+            VALE_REFE=(val_exp[2 * pt01] * Long,),
+            PRECISION=precis,
         ),
         _F(
             NOM_CMP="DX",
             GROUP_NO=("B",),
-            INST=t2,
+            INST=t02,
             NOM_CHAM="DEPL",
             RESULTAT=RESU,
             CRITERE=("RELATIF", "ABSOLU"),
             REFERENCE="SOURCE_EXTERNE",
-            VALE_CALC=(2.1174381169126e-04,),
-            VALE_REFE=(val_exp[2 * 367] * 0.7),
-            PRECISION=0.3,
+            VALE_CALC=DEPBX(t02),
+            VALE_REFE=(val_exp[2 * pt02] * Long),
+            PRECISION=precis,
         ),
         _F(
             NOM_CMP="DX",
             GROUP_NO=("B",),
-            INST=t3,
+            INST=t03,
             NOM_CHAM="DEPL",
             RESULTAT=RESU,
             CRITERE=("RELATIF", "ABSOLU"),
             REFERENCE="SOURCE_EXTERNE",
-            VALE_CALC=(-4.0643863738269e-04,),
-            VALE_REFE=(val_exp[2 * 171] * 0.7,),
-            PRECISION=0.05,
-            VALE_ABS="NON",
+            VALE_CALC=DEPBX(t03),
+            VALE_REFE=(val_exp[2 * pt03] * Long,),
+            PRECISION=precis,
         ),
         _F(
             NOM_CMP="DX",
             GROUP_NO=("B",),
-            INST=t4,
+            INST=t04,
             NOM_CHAM="DEPL",
             RESULTAT=RESU,
             CRITERE=("RELATIF", "ABSOLU"),
             REFERENCE="SOURCE_EXTERNE",
-            VALE_CALC=(9.2398831493911e-04,),
-            VALE_REFE=(val_exp[2 * 501] * 0.7,),
-            PRECISION=0.02,
+            VALE_CALC=DEPBX(t04),
+            VALE_REFE=(val_exp[2 * pt04] * Long,),
+            PRECISION=precis,
         ),
         _F(
             NOM_CMP="DX",
             GROUP_NO=("B",),
-            INST=t5,
+            INST=t05,
             NOM_CHAM="DEPL",
             RESULTAT=RESU,
             CRITERE=("RELATIF", "ABSOLU"),
             REFERENCE="SOURCE_EXTERNE",
-            VALE_CALC=(-6.0521888594909e-04,),
-            VALE_REFE=(val_exp[2 * 113] * 0.7,),
-            PRECISION=0.09,
-            VALE_ABS="NON",
+            VALE_CALC=DEPBX(t05),
+            VALE_REFE=(val_exp[2 * pt05] * Long,),
+            PRECISION=precis,
         ),
         _F(
             NOM_CMP="DX",
             GROUP_NO=("B",),
-            INST=t6,
+            INST=t06,
             NOM_CHAM="DEPL",
             RESULTAT=RESU,
             CRITERE=("RELATIF", "ABSOLU"),
             REFERENCE="SOURCE_EXTERNE",
-            VALE_CALC=(1.6352301855578e-03,),
-            VALE_REFE=(val_exp[2 * 568] * 0.7,),
-            PRECISION=0.06,
+            VALE_CALC=DEPBX(t06),
+            VALE_REFE=(val_exp[2 * pt06] * Long,),
+            PRECISION=precis,
         ),
         _F(
             NOM_CMP="DX",
             GROUP_NO=("B",),
-            INST=t7,
+            INST=t07,
             NOM_CHAM="DEPL",
             RESULTAT=RESU,
             CRITERE=("RELATIF", "ABSOLU"),
             REFERENCE="SOURCE_EXTERNE",
-            VALE_CALC=(-1.0181145532455e-03,),
-            VALE_REFE=(val_exp[2 * 14] * 0.7,),
-            PRECISION=0.1,
+            VALE_CALC=DEPBX(t07),
+            VALE_REFE=(val_exp[2 * pt07] * Long,),
+            PRECISION=precis,
         ),
         _F(
             NOM_CMP="DX",
             GROUP_NO=("B",),
-            INST=t8,
+            INST=t08,
             NOM_CHAM="DEPL",
             RESULTAT=RESU,
             CRITERE=("RELATIF", "ABSOLU"),
             REFERENCE="SOURCE_EXTERNE",
-            VALE_CALC=(2.0433197832292e-03,),
-            VALE_REFE=(val_exp[2 * 602] * 0.7,),
-            PRECISION=0.04,
+            VALE_CALC=DEPBX(t08),
+            VALE_REFE=(val_exp[2 * pt08] * Long,),
+            PRECISION=precis,
         ),
         _F(
             NOM_CMP="DX",
             GROUP_NO=("B",),
-            INST=t9,
+            INST=t09,
             NOM_CHAM="DEPL",
             RESULTAT=RESU,
             CRITERE=("RELATIF", "ABSOLU"),
             REFERENCE="SOURCE_EXTERNE",
-            VALE_CALC=(-1.4358195645233e-03,),
-            VALE_REFE=(val_exp[2 * 1] * 0.7,),
-            PRECISION=0.05,
+            VALE_CALC=DEPBX(t09),
+            VALE_REFE=(val_exp[2 * pt09] * Long,),
+            PRECISION=precis,
         ),
         _F(
             NOM_CMP="DX",
@@ -320,29 +385,26 @@ TEST_RESU(
             RESULTAT=RESU,
             CRITERE=("RELATIF", "ABSOLU"),
             REFERENCE="SOURCE_EXTERNE",
-            VALE_CALC=(2.0899585943919e-03,),
-            VALE_REFE=(val_exp[2 * 604] * 0.7,),
-            PRECISION=0.06,
+            VALE_CALC=DEPBX(t10),
+            VALE_REFE=(val_exp[2 * pt10] * Long,),
+            PRECISION=precis,
         ),
     )
 )
 
 # CALC_CHAMP(reuse=RESU,RESULTAT=RESU,FORCE = ('FORC_NODA'))
-
 # tb_f=CREA_TABLE(RESU=_F(TOUT_CMP='OUI',
 #                RESULTAT=RESU,
 #                NOM_CHAM='FORC_NODA',
 #                GROUP_NO='B',),)
-
 # tb_db=CREA_TABLE(RESU=_F(TOUT_CMP='OUI',
 #                         RESULTAT=RESU,
 #                         NOM_CHAM='DEPL',
 #                         GROUP_NO ='B',),)
-
 # DX=tb_db.EXTR_TABLE().values()['DX']
 # FX= tb_f.EXTR_TABLE().values()['DX']
-
 # for i in range(len(FX)):
 #    print DX[i], FX[i]
+
 
 FIN()

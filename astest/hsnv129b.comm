@@ -1,0 +1,217 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+#
+#  MODELE ENDOMMAGEMENT MAZARS UNILATERAL ET THERMIQUE
+#
+#   CAS TEST ELEMENTAIRE 3D POUR ETUDIER LE COUPLAGE
+#       THERMIQUE-FISSURATION
+#
+#
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
+
+MAIL = LIRE_MAILLAGE(FORMAT="ASTER")
+
+MOTHER = AFFE_MODELE(MAILLAGE=MAIL, AFFE=_F(TOUT="OUI", PHENOMENE="THERMIQUE", MODELISATION="3D"))
+
+MOMECA = AFFE_MODELE(MAILLAGE=MAIL, AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="3D"))
+
+# DEFINITION DES CARACTERISTIQUES MATERIAUX
+EIJ = DEFI_FONCTION(NOM_PARA="TEMP", VALE=(0.0, 3.28e10, 200.0, 1.64e10))
+
+BC = DEFI_FONCTION(NOM_PARA="TEMP", VALE=(0.0, 462.56, 200.0, 231.8))
+NU = DEFI_CONSTANTE(VALE=0.2)
+EPSD0 = DEFI_CONSTANTE(VALE=8.82086140e-05)
+AT = DEFI_CONSTANTE(VALE=0.90)
+BT = DEFI_CONSTANTE(VALE=1.13367613e04)
+AC = DEFI_CONSTANTE(VALE=1.39303823e00)
+K = DEFI_CONSTANTE(VALE=0.7)
+SIGL = DEFI_FONCTION(NOM_PARA="TEMP", VALE=(0.0, 22.8e06, 500.0, 18.4e06))
+EPSL = DEFI_FONCTION(NOM_PARA="TEMP", VALE=(0.0, 3.5e-03, 500.0, 3.0e-03))
+
+ALPHA = DEFI_CONSTANTE(VALE=1.2e-05)
+
+MAT = DEFI_MATERIAU(
+    ELAS_FO=_F(E=EIJ, NU=NU, ALPHA=ALPHA, TEMP_DEF_ALPHA=0.0),
+    THER=_F(LAMBDA=2.2, RHO_CP=2.2e6),
+    MAZARS_FO=_F(K=K, EPSD0=EPSD0, AC=AC, AT=AT, BC=BC, BT=BT, SIGM_LIM=SIGL, EPSI_LIM=EPSL),
+)
+
+CHMAT = AFFE_MATERIAU(MAILLAGE=MAIL, AFFE=_F(TOUT="OUI", MATER=MAT))
+
+
+#  CHARGEMENT THERMIQUE
+T0 = CREA_CHAMP(
+    TYPE_CHAM="NOEU_TEMP_R",
+    OPERATION="AFFE",
+    MAILLAGE=MAIL,
+    AFFE=_F(TOUT="OUI", NOM_CMP="TEMP", VALE=0.0),
+)
+
+L_INST = DEFI_LIST_REEL(
+    DEBUT=0.0,
+    INTERVALLE=(_F(JUSQU_A=100, NOMBRE=10), _F(JUSQU_A=200, NOMBRE=20), _F(JUSQU_A=300, NOMBRE=10)),
+)
+
+TVAR = DEFI_FONCTION(
+    NOM_PARA="INST", NOM_RESU="TEMP", VALE=(0.0, 0.0, 100.0, 0.0, 200.0, 200.0, 300.0, 0.0)
+)
+
+CHTHER = AFFE_CHAR_THER_F(MODELE=MOTHER, TEMP_IMPO=(_F(TOUT="OUI", TEMP=TVAR),))
+
+T = THER_LINEAIRE(
+    MODELE=MOTHER,
+    CHAM_MATER=CHMAT,
+    EXCIT=_F(CHARGE=CHTHER),
+    INCREMENT=_F(LIST_INST=L_INST),
+    ETAT_INIT=_F(CHAM_NO=T0),
+)
+
+#  CHARGEMENT MECANIQUE
+CLMECA = AFFE_CHAR_MECA(
+    MODELE=MOMECA,
+    DDL_IMPO=(
+        _F(GROUP_MA="BAS", DZ=0.0),
+        _F(GROUP_MA="COTEG", DY=0.0),
+        _F(GROUP_MA="ARRIERE", DX=0.0),
+    ),
+)
+
+CHMECA = AFFE_CHAR_MECA(MODELE=MOMECA, DDL_IMPO=_F(GROUP_MA="HAUT", DZ=-0.001))
+
+FCT = DEFI_FONCTION(NOM_PARA="INST", VALE=(0.0, 0.0, 100.0, 1.0, 300.0, 1.0))
+
+CHMTM = AFFE_MATERIAU(
+    MAILLAGE=MAIL,
+    AFFE=_F(TOUT="OUI", MATER=MAT),
+    AFFE_VARC=_F(TOUT="OUI", EVOL=T, NOM_VARC="TEMP", NOM_CHAM="TEMP", VALE_REF=0.0),
+)
+
+U = STAT_NON_LINE(
+    MODELE=MOMECA,
+    CHAM_MATER=CHMTM,
+    EXCIT=(_F(CHARGE=CLMECA), _F(CHARGE=CHMECA, FONC_MULT=FCT)),
+    COMPORTEMENT=_F(RELATION="MAZARS_UNIL"),
+    INCREMENT=_F(LIST_INST=L_INST),
+    NEWTON=_F(MATRICE="TANGENTE"),
+    SOLVEUR=_F(METHODE="MUMPS"),
+    CONVERGENCE=_F(RESI_GLOB_RELA=1.0e-6, ITER_GLOB_MAXI=20),
+)
+#  POSTTRAITEMENT
+
+U = CALC_CHAMP(reuse=U, CONTRAINTE=("SIGM_ELNO"), VARI_INTERNE=("VARI_ELNO"), RESULTAT=U)
+
+# Inst      compo   vale
+vari_elno = [
+    (50.0, "V1", -0.719298246),
+    (50.0, "V2", -0.148461498),
+    (100.0, "V1", -1.28135185),
+    (100.0, "V2", -0.296922996),
+    (150.0, "V1", -1.6480642),
+    (150.0, "V2", -0.672443255),
+    (200.0, "V1", -1.70896633),
+    (200.0, "V2", -1.07072232),
+    (250.0, "V1", -1.08820627),
+    (250.0, "V2", -0.672443255),
+    (300.0, "V1", -0.428461374),
+    (300.0, "V2", -0.296922996),
+]
+
+sigm_elno = [
+    (50.0, "SIZZ", -16400000.0),
+    (100.0, "SIZZ", -29214822.1),
+    (150.0, "SIZZ", -36125567.3),
+    (200.0, "SIZZ", -35956651.5),
+    (250.0, "SIZZ", -23853481.4),
+    (300.0, "SIZZ", -9768919.33),
+]
+
+prela = 1.0e-05
+pabs = 1.0e-10
+for inst, compo, vale in vari_elno:
+    if abs(vale) > pabs:
+        TEST_RESU(
+            RESU=_F(
+                INST=inst,
+                REFERENCE="AUTRE_ASTER",
+                RESULTAT=U,
+                NOM_CHAM="VARI_ELNO",
+                GROUP_MA="M1",
+                GROUP_NO="N3",
+                NOM_CMP=compo,
+                VALE_CALC=vale,
+                VALE_REFE=vale,
+                CRITERE="RELATIF",
+                PRECISION=prela,
+            )
+        )
+    else:
+        TEST_RESU(
+            RESU=_F(
+                INST=inst,
+                REFERENCE="AUTRE_ASTER",
+                RESULTAT=U,
+                NOM_CHAM="VARI_ELNO",
+                GROUP_MA="M1",
+                GROUP_NO="N3",
+                NOM_CMP=compo,
+                ORDRE_GRANDEUR=1.0,
+                VALE_CALC=vale,
+                VALE_REFE=vale,
+                CRITERE="ABSOLU",
+                PRECISION=prabs * 10,
+            )
+        )
+
+for inst, compo, vale in sigm_elno:
+    if abs(vale) > pabs:
+        TEST_RESU(
+            RESU=_F(
+                INST=inst,
+                REFERENCE="AUTRE_ASTER",
+                RESULTAT=U,
+                NOM_CHAM="SIGM_ELNO",
+                GROUP_MA="M1",
+                GROUP_NO="N3",
+                NOM_CMP=compo,
+                VALE_CALC=vale,
+                VALE_REFE=vale,
+                CRITERE="RELATIF",
+                PRECISION=prela,
+            )
+        )
+    else:
+        TEST_RESU(
+            RESU=_F(
+                INST=inst,
+                REFERENCE="AUTRE_ASTER",
+                RESULTAT=U,
+                NOM_CHAM="SIGM_ELNO",
+                GROUP_MA="M1",
+                GROUP_NO="N3",
+                NOM_CMP=compo,
+                ORDRE_GRANDEUR=1.0,
+                VALE_CALC=vale,
+                VALE_REFE=vale,
+                CRITERE="ABSOLU",
+                PRECISION=prabs * 10,
+            )
+        )
+
+FIN()

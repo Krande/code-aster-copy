@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -28,7 +28,7 @@ Fcj = [40.0, 35.0, 35.0, 30.0]
 
 # Calcul des paramètres de MAZARS en utilisant DEFI_MATER_GC
 nomresELAS = ["E", "NU", "ALPHA"]
-nomresMAZARS = ["K", "EPSD0", "AC", "AT", "BC", "BT", "SIGM_LIM", "EPSI_LIM"]
+nomresMAZARS = ["K", "EPSD0", "AC", "AT", "BC", "BT", "SIGM_LIM", "EPSI_LIM", "EPSC0", "EPST0"]
 
 valCara = {}
 for jj in range(len(nomresELAS)):
@@ -46,12 +46,15 @@ for ii in range(len(Temp)):
     for jj in range(len(nomresELAS)):
         valCara[nomresELAS[jj]].append(valres[jj])
     #
-    valres, codret = DBETON.RCVALE("MAZARS", [""], [0.0], nomresMAZARS, 2)
+    valres, codret = DBETON.RCVALE("MAZARS", [""], [0.0], nomresMAZARS, 0)
     for jj in range(len(nomresMAZARS)):
-        valCara[nomresMAZARS[jj]].append(valres[jj])
-    #
+        if codret[jj] == 0:
+            valCara[nomresMAZARS[jj]].append(valres[jj])
     DETRUIRE(NOM=DBETON)
-
+#
+# C'est soit EPSD0 soit EPST0, EPSC0
+if len(valCara["EPSD0"]) == 0:
+    valCara["EPSD0"] = valCara["EPST0"]
 
 lesCara = nomresELAS + nomresMAZARS
 
@@ -100,7 +103,7 @@ GF = DEFI_GEOM_FIBRE(
 COMPF = DEFI_COMPOR(
     GEOM_FIBRE=GF,
     MATER_SECT=BETON,
-    MULTIFIBRE=_F(GROUP_FIBRE="SECF", MATER=BETON, RELATION="MAZARS_GC"),
+    MULTIFIBRE=_F(GROUP_FIBRE="SECF", MATER=BETON, RELATION="MAZARS_UNIL"),
 )
 
 POUCA = AFFE_CARA_ELEM(

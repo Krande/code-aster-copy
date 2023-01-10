@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -75,22 +75,15 @@ GF = DEFI_GEOM_FIBRE(
         CARA="SURFACE",
         GROUP_FIBRE="ACIER",
         COOR_AXE_POUTRE=(0.0, 0.0),
-        VALE=(
-            0.056,
-            -0.218,
-            0.804e-3,
-            -0.056,
-            -0.218,
-            0.804e-3,
-            0.056,
-            0.218,
-            0.804e-3,
-            -0.056,
-            0.218,
-            0.804e-3,
-        ),
+        # fmt: off
+        VALE =(   0.056, -0.218, 0.804E-3,
+                 -0.056, -0.218, 0.804E-3,
+                  0.056,  0.218, 0.804E-3,
+                 -0.056,  0.218, 0.804E-3, ),
+        # fmt: on
     ),
 )
+
 #
 # ORIENTATIONS ET RIGIDITE DE TORSION
 POUCA = AFFE_CARA_ELEM(
@@ -108,7 +101,7 @@ COMP1 = DEFI_COMPOR(
     GEOM_FIBRE=GF,
     MATER_SECT=BETON,
     MULTIFIBRE=(
-        _F(GROUP_FIBRE="BETON", MATER=BETON, RELATION="MAZARS_GC"),
+        _F(GROUP_FIBRE="BETON", MATER=BETON, RELATION="MAZARS_UNIL"),
         _F(GROUP_FIBRE="ACIER", MATER=ACIER, RELATION="VMIS_CINE_GC"),
     ),
 )
@@ -193,7 +186,7 @@ TEST_RESU(
             RESULTAT=RERE,
             NOM_CHAM="FORC_NODA",
             NOM_CMP="DY",
-            VALE_CALC=-3.8515766763984e4,
+            VALE_CALC=-3.8515767e04,
         ),
         _F(
             GROUP_NO="C",
@@ -201,7 +194,7 @@ TEST_RESU(
             RESULTAT=RERE,
             NOM_CHAM="DEPL",
             NOM_CMP="DY",
-            VALE_CALC=1.4170139074950001e-3,
+            VALE_CALC=1.4170139075e-03,
         ),
         _F(
             GROUP_NO="A",
@@ -209,7 +202,7 @@ TEST_RESU(
             RESULTAT=RERE,
             NOM_CHAM="FORC_NODA",
             NOM_CMP="DY",
-            VALE_CALC=2.8814150604268001e4,
+            VALE_CALC=2.88385e04,
         ),
         _F(
             GROUP_NO="C",
@@ -217,7 +210,7 @@ TEST_RESU(
             RESULTAT=RERE,
             NOM_CHAM="DEPL",
             NOM_CMP="DY",
-            VALE_CALC=-9.3311630121311999e-4,
+            VALE_CALC=-9.337474837420983e-04,
         ),
         _F(
             GROUP_NO="A",
@@ -225,7 +218,7 @@ TEST_RESU(
             RESULTAT=RERE,
             NOM_CHAM="FORC_NODA",
             NOM_CMP="DY",
-            VALE_CALC=-7.5182532664141996e4,
+            VALE_CALC=-7.426040e04,
         ),
         _F(
             GROUP_NO="C",
@@ -233,7 +226,7 @@ TEST_RESU(
             RESULTAT=RERE,
             NOM_CHAM="DEPL",
             NOM_CMP="DY",
-            VALE_CALC=4.8174375448133003e-3,
+            VALE_CALC=4.770639559602838e-03,
         ),
         _F(
             GROUP_NO="A",
@@ -241,7 +234,7 @@ TEST_RESU(
             RESULTAT=RERE,
             NOM_CHAM="FORC_NODA",
             NOM_CMP="DY",
-            VALE_CALC=4.4564360755135996e4,
+            VALE_CALC=4.049115e04,
         ),
         _F(
             GROUP_NO="C",
@@ -249,7 +242,7 @@ TEST_RESU(
             RESULTAT=RERE,
             NOM_CHAM="DEPL",
             NOM_CMP="DY",
-            VALE_CALC=-1.8912620053437e-3,
+            VALE_CALC=-1.630774033692753e-03,
         ),
     )
 )

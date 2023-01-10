@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -98,7 +98,7 @@ PMFMAZAR = DEFI_COMPOR(
     MULTIFIBRE=(
         _F(GROUP_FIBRE="SACI", MATER=ACIER, RELATION="VMIS_CINE_GC"),
         _F(GROUP_FIBRE="SACIT", MATER=ACIERT, RELATION="VMIS_ISOT_TRAC"),
-        _F(GROUP_FIBRE="SBET", MATER=BETON, RELATION="MAZARS_GC"),
+        _F(GROUP_FIBRE="SBET", MATER=BETON, RELATION="MAZARS_UNIL"),
     ),
 )
 
