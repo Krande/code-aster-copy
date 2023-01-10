@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -49,16 +49,27 @@ MODEMECA=AFFE_MODELE(MAILLAGE=MAILLAGE,
                              MODELISATION='D_PLAN',),);
 
 rayon = 0.046
-MAT=DEFI_MATERIAU(  ELAS=_F( E = 200000.,  NU = 0.3,  ALPHA = 1.0E-5),
-                    RCCM=_F(  M_KE = 1.7,
-                              N_KE = 0.3,
-                              SM = 200.,
-                              SY_02 = 200.,
-                              A_AMORC = 7091,
-                              B_AMORC = -0.1823,
-                              R_AMORC = 1.63,
-                              D_AMORC = rayon,
-                              ), )
+
+M_KE = DEFI_CONSTANTE(VALE=1.7)
+N_KE = DEFI_CONSTANTE(VALE=0.3)
+SM = DEFI_CONSTANTE(VALE=200.0)
+SY_02 = DEFI_CONSTANTE(VALE=200.0)
+A_AMORC = DEFI_CONSTANTE(VALE=7091)
+B_AMORC = DEFI_CONSTANTE(VALE=-0.1823)
+R_AMORC = DEFI_CONSTANTE(VALE=1.63)
+MAT = DEFI_MATERIAU(
+    ELAS=_F(E=200000.0, NU=0.3, ALPHA=1.0e-5),
+    RCCM_FO=_F(
+        D_AMORC=rayon,
+        M_KE=M_KE,
+        N_KE=N_KE,
+        SM=SM,
+        SY_02=SY_02,
+        A_AMORC=A_AMORC,
+        B_AMORC=B_AMORC,
+        R_AMORC=R_AMORC,
+    ),
+)
 
 MATERIO=AFFE_MATERIAU (MAILLAGE=MAILLAGE,
                        AFFE=_F(GROUP_MA = 'SCYL',
