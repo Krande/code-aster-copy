@@ -40,7 +40,7 @@ DDL_MECA = LocatedComponents(
     components=(
         ("EN1", ("HHO_DX[3]", "HHO_DY[3]", "HHO_VR[3]")),
         ("EN2", ()),
-        ("EN3", ("HHO_DX[6]", "HHO_DY[6]", "HHO_VR[6]", "HHO_GV[6]")),
+        ("EN3", ("HHO_DX[6]", "HHO_DY[6]", "HHO_VR[6]", "HHO_LG[6]")),
     ),
 )
 

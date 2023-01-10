@@ -246,11 +246,11 @@ AFFE_MODELE = OPER(
                     "3D_HHO",  # person_in_charge: nicolas.pignet at edf.fr
                     "D_PLAN_HHO",  # person_in_charge: nicolas.pignet at edf.fr
                     "3D_GRAD_HHO",  # person_in_charge: nicolas.pignet at edf.fr
-                    "D_PLAN_GRAD_H",  # person_in_charge: nicolas.pignet at edf.fr
+                    "D_PLAN_GRAD_HHO",  # person_in_charge: nicolas.pignet at edf.fr
                 ),
             ),
             b_formu_hho=BLOC(
-                condition="""equal_to('MODELISATION', ('3D_HHO', 'D_PLAN_HHO', "D_PLAN_GRAD_H", "3D_GRAD_HHO" ))""",
+                condition="""equal_to('MODELISATION', ('3D_HHO', 'D_PLAN_HHO', "D_PLAN_GRAD_HHO", "3D_GRAD_HHO" ))""",
                 fr=tr("HHO formulation"),
                 FORMULATION=SIMP(
                     statut="f",

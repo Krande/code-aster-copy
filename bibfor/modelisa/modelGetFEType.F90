@@ -74,15 +74,15 @@ subroutine modelGetFEType(iocc, phenom, modeli_in, idx_modelisa, modeli)
 ! - New modelisation
 !
     if (formul .eq. 'LINEAIRE') then
-        modeli = modeli_in(1:lxlgut(modeli_in))//'#1'
+        modeli = modeli_in(1:min(lxlgut(modeli_in), 14))//'#1'
     elseif (formul .eq. 'QUADRATIQUE') then
-        modeli = modeli_in(1:lxlgut(modeli_in))//'#2'
+        modeli = modeli_in(1:min(lxlgut(modeli_in), 14))//'#2'
     elseif (formul .eq. 'U_P_PHI') then
-        modeli = modeli_in(1:lxlgut(modeli_in))//'#1'
+        modeli = modeli_in(1:min(lxlgut(modeli_in), 14))//'#1'
     elseif (formul .eq. 'U_P') then
-        modeli = modeli_in(1:lxlgut(modeli_in))//'#2'
+        modeli = modeli_in(1:min(lxlgut(modeli_in), 14))//'#2'
     elseif (formul .eq. 'U_PSI') then
-        modeli = modeli_in(1:lxlgut(modeli_in))//'#3'
+        modeli = modeli_in(1:min(lxlgut(modeli_in), 14))//'#3'
     elseif (formul .ne. ' ') then
         ASSERT(ASTER_FALSE)
     end if

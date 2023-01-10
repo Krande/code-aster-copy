@@ -7102,7 +7102,7 @@ phen.add(
 
 
 phen.add(
-    "D_PLAN_GRAD_H#1",
+    "D_PLAN_GRAD_HH#1",
     Modelisation(
         dim=(2, 2),
         code="DGL",
@@ -7122,7 +7122,7 @@ phen.add(
 )
 
 phen.add(
-    "D_PLAN_GRAD_H#2",
+    "D_PLAN_GRAD_HH#2",
     Modelisation(
         dim=(2, 2),
         code="DGQ",

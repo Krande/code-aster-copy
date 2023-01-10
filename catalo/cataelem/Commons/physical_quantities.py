@@ -846,7 +846,7 @@ list_cmp_depl = (
     "HHO_DY[10]",
     "HHO_DZ[10]",
     "HHO_VR[10]",
-    "HHO_GV[10]",
+    "HHO_LG[10]",
     "PINCH",
     "PSI",
 )
@@ -921,7 +921,7 @@ comment_depl = """  DEPL_R/_C/_F  Deplacement reel, complexe ou fonction
        HHO_DY : degres de liberté HHO: 1, X, Y, Z, X2, Y2, Z2,.. (cell + faces)
        HHO_DZ : degres de liberté HHO: 1, X, Y, Z, X2, Y2, Z2,.. (cell + faces)
        HHO_VR : degres de liberté HHO: VARI (cell + faces)
-       HHO_GV : degres de liberté HHO: LAG_GV (cell)
+       HHO_LG : degres de liberté HHO: LAG_GV (cell)
        PINCH   : pinch dof for solid-shell elements
        PSI   : potentiel de vitesse de deplacement du fluid
 """

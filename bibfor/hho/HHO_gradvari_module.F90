@@ -456,6 +456,9 @@ contains
             do j = 1, gv_gbs
                 lhs_ll(j, j) = lhs_ll(j, j)+1.d0
             end do
+            do j = 1, gv_total_dofs
+                lhs_vv(j, j) = lhs_vv(j, j)+1.d0
+            end do
 ! ----- Add gradient: += gradrec**T * AT * gradrec
 ! ----- step1: TMP = AT * gradrec
             call dgemm('N', 'N', mk_gbs_tot, mk_total_dofs, mk_gbs_tot, 1.d0, &
