@@ -128,7 +128,7 @@ subroutine te0460(nomopt, nomte)
         ASSERT(ASTER_FALSE)
     end if
 !
-    call hhoTherNLDofs(hhoCell, hhoData, cbs, fbs, total_dofs, gbs2)
+    call hhoTherDofs(hhoCell, hhoData, cbs, fbs, total_dofs)
     do j = 1, total_dofs
         call dcopy(total_dofs, stabvec(1, j), 1, zr(jstab+(j-1)*total_dofs), 1)
     end do

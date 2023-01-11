@@ -749,6 +749,7 @@ contains
             call prodmt(dT_dv, pe, dPK1_dv)
             call prodmt(dT_dl, pe, dPK1_dl)
 !
+!           da_dF = da_dElog * dElog_dF
             call prodmt(dsv_de, pe, dsv_dF)
             call prodmt(dsl_de, pe, dsl_dF)
 !
@@ -763,10 +764,10 @@ contains
         ! print *, sig_vari, sig_lagv, sig_gv
         ! print *, dsv_dv, dsv_dl, dsl_dl, dsgv_dgv
         ! print*, ipg, dsv_dv, dsv_dl, dsl_dl
-        ! print*, dT_dv
-        ! print*, dT_dl
-        ! print*, dsv_de
-        ! print*, dsv_de
+        ! print*, dPK1_dv
+        ! print*, dPK1_dl
+        ! print*, dsv_dF
+        ! print*, dsl_dF
         !if (abs(dsl_dl) < 1d-8) dsl_dl = 1.d0
 !
 999     continue
