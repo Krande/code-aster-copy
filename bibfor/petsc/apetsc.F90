@@ -172,6 +172,7 @@ subroutine apetsc(action, solvez, matasz, rsolu, vcinez, &
             nosols(k) = ' '
             nonus(k) = ' '
             tblocs(k) = -1
+            options(k) = ' '
         end do
         xlocal = PETSC_NULL_VEC
         xglobal = PETSC_NULL_VEC
@@ -181,14 +182,7 @@ subroutine apetsc(action, solvez, matasz, rsolu, vcinez, &
         spsolv = ' '
         iprem = 1
     end if
-
-!   Si PETSc est déjà initialisé (éventuellement avec d'autres options),
-!   on ajoute les options courantes de la commande
-    if (action .ne. 'DETR_MAT') then
-        call PetscOptionsInsertString(PETSC_NULL_OPTIONS, myopt, ierr)
-        ASSERT(ierr .eq. 0)
-    end if
-
+!
 !   1. On ne veut pas de matrice complexe :
 !   ----------------------------------------
     call jelira(matas//'.VALM', 'TYPE', cval=rouc)
@@ -221,8 +215,7 @@ subroutine apetsc(action, solvez, matasz, rsolu, vcinez, &
 !   ----------------------------------------------
 !
     if (action .eq. 'PRERES') then
-        call mat_record(matas, solveu, kptsc)
-!
+        call mat_record(matas, solveu, kptsc, myopt)
     else if (action .eq. 'RESOUD') then
         kptsc = get_mat_id(matas)
         ASSERT(nbsol .ge. 1)

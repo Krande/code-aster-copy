@@ -129,6 +129,9 @@ subroutine apksp(kptsc)
 !
     call KSPSetTolerances(ksp, rtol, atol, dtol, maxits, ierr)
     ASSERT(ierr .eq. 0)
+!   on insert les options utilisateur juste avant l'appel à xxSetFromOptions
+    call PetscOptionsInsertString(PETSC_NULL_OPTIONS, options(kptsc), ierr)
+    ASSERT(ierr .eq. 0)
     call KSPSetFromOptions(ksp, ierr)
     ASSERT(ierr == 0)
     call KSPSetUp(ksp, ierr)

@@ -58,7 +58,7 @@ subroutine appcpr(kptsc)
 #ifdef ASTER_HAVE_PETSC
 !----------------------------------------------------------------
 !
-!     VARIABLES LOCALES
+!   VARIABLES LOCALES
     integer :: rang, nbproc
     integer :: dimgeo, dimgeo_b, niremp
     integer :: jnequ, jnequl
@@ -89,7 +89,7 @@ subroutine appcpr(kptsc)
     aster_logical :: lmd, lmhpc, lmp_is_active
 !
 !----------------------------------------------------------------
-!     Variables PETSc
+!   Variables PETSc
     PetscInt :: low, high, bs, nterm, nsmooth
     PetscErrorCode :: ierr
     PetscReal :: fillp
@@ -110,7 +110,7 @@ subroutine appcpr(kptsc)
 !   -- COMMUNICATEUR MPI DE TRAVAIL
     call asmpi_comm('GET', mpicomm)
 !
-!     -- LECTURE DU COMMUN
+!  -- LECTURE DU COMMUN
     nomat = nomat_courant
     nonu = nonu_courant
     nosolv = nosols(kptsc)
@@ -141,26 +141,26 @@ subroutine appcpr(kptsc)
     bs = 1
 !
 !   -- RECUPERE DES INFORMATIONS SUR LE MAILLAGE POUR
-!      LE CALCUL DES MODES RIGIDES
+!   LE CALCUL DES MODES RIGIDES
     call dismoi('NOM_MAILLA', nomat, 'MATR_ASSE', repk=nomail)
     call dismoi('DIM_GEOM_B', nomail, 'MAILLAGE', repi=dimgeo_b)
     call dismoi('DIM_GEOM', nomail, 'MAILLAGE', repi=dimgeo)
 !
-!     -- RECUPERE LE RANG DU PROCESSUS ET LE NB DE PROCS
+!  -- RECUPERE LE RANG DU PROCESSUS ET LE NB DE PROCS
     call asmpi_info(rank=mrank, size=msize)
     rang = to_aster_int(mrank)
     nbproc = to_aster_int(msize)
 !
-!     -- CAS PARTICULIER (LDLT_INC/SOR)
-!     -- CES PC NE SONT PAS PARALLELISES
-!     -- ON UTILISE DONC DES VERSIONS PAR BLOC
+!  -- CAS PARTICULIER (LDLT_INC/SOR)
+!  -- CES PC NE SONT PAS PARALLELISES
+!  -- ON UTILISE DONC DES VERSIONS PAR BLOC
 !   -- QUE L'ON CREERA AU MOMENT DE LA RESOLUTION (DANS APPCRS)
-!     -----------------------------------------------------------
+!  -----------------------------------------------------------
     if ((precon == 'LDLT_INC') .or. (precon == 'SOR')) then
         if (nbproc .gt. 1) then
-!           EN PARALLELE, ON NE PREPARE PAS LE PRECONDITIONNEUR
-!           TOUT DE SUITE CAR ON NE VEUT PAS ETRE OBLIGE
-!           D'APPELER KSPSetUp
+!        EN PARALLELE, ON NE PREPARE PAS LE PRECONDITIONNEUR
+!        TOUT DE SUITE CAR ON NE VEUT PAS ETRE OBLIGE
+!        D'APPELER KSPSetUp
             goto 999
         end if
     end if
@@ -169,14 +169,14 @@ subroutine appcpr(kptsc)
 !   -- DEFINITION DU NOYAU UNIQUEMENT EN MODELISATION SOLIDE (2D OU 3D)
 !   -------------------------------------------------------------------------
     if ((precon == 'ML') .or. (precon == 'BOOMER') .or. (precon == 'GAMG')) then
-!       -- PAS DE LAGRANGE
+!  -- PAS DE LAGRANGE
         call dismoi('EXIS_LAGR', nomat, 'MATR_ASSE', repk=exilag, arret='C', ier=iret)
         if (iret == 0) then
             if (exilag == 'OUI') then
                 call utmess('F', 'PETSC_18')
             end if
         end if
-!       -- NOMBRE CONSTANT DE DDLS PAR NOEUD
+!  -- NOMBRE CONSTANT DE DDLS PAR NOEUD
         bs = tblocs(kptsc)
         if (bs .le. 0) then
             call utmess('A', 'PETSC_18')
@@ -186,12 +186,12 @@ subroutine appcpr(kptsc)
     end if
 
     if ((precon == 'ML') .or. (precon == 'BOOMER') .or. (precon == 'GAMG')) then
-!       -- CREATION DES MOUVEMENTS DE CORPS RIGIDE --
-!           * VECTEUR RECEPTABLE DES COORDONNEES AVEC TAILLE DE BLOC
+!  -- CREATION DES MOUVEMENTS DE CORPS RIGIDE --
+!      * VECTEUR RECEPTABLE DES COORDONNEES AVEC TAILLE DE BLOC
 !
-!       dimgeo = 3 signifie que le maillage est 3D et que les noeuds ne sont pas
-!       tous dans le plan z=0
-!       c'est une condition nécessaire au pré-calcul des modes de corps rigides
+!     dimgeo = 3 signifie que le maillage est 3D et que les noeuds ne sont pas
+!     tous dans le plan z=0
+!     c'est une condition nécessaire au pré-calcul des modes de corps rigides
         if (dimgeo == 3) then
             call jeveuo(nonu//'.NUME.NEQU', 'L', jnequ)
             call jeveuo(nonu//'.NUME.DEEQ', 'L', vi=deeq)
@@ -234,9 +234,9 @@ subroutine appcpr(kptsc)
             end if
             !
             call VecSetType(coords, VECMPI, ierr)
-            !           * REMPLISSAGE DU VECTEUR
-            !             coords: vecteur PETSc des coordonnées des noeuds du maillage,
-            !             dans l'ordre de la numérotation PETSc des équations
+            ! * REMPLISSAGE DU VECTEUR
+            !   coords: vecteur PETSc des coordonnées des noeuds du maillage,
+            !   dans l'ordre de la numérotation PETSc des équations
             if (lmd) then
                 call jeveuo(nonu//'.NUML.NULG', 'L', vi=nulg)
                 call jeveuo(nonu//'.NUML.NLGP', 'L', vi=nlgp)
@@ -305,7 +305,7 @@ subroutine appcpr(kptsc)
             end if
             !
             !
-            !           * CALCUL DES MODES A PARTIR DES COORDONNEES
+            !      * CALCUL DES MODES A PARTIR DES COORDONNEES
             if (bs .le. 3) then
                 call MatNullSpaceCreateRigidBody(coords, sp, ierr)
                 ASSERT(ierr == 0)
@@ -321,8 +321,8 @@ subroutine appcpr(kptsc)
     end if
 
 !
-!     -- CHOIX DU PRECONDITIONNEUR :
-!     ------------------------------
+!  -- CHOIX DU PRECONDITIONNEUR :
+!  ------------------------------
     call KSPGetPC(ksp, pc, ierr)
     ASSERT(ierr == 0)
 !-----------------------------------------------------------------------
@@ -345,7 +345,7 @@ subroutine appcpr(kptsc)
         ASSERT(ierr == 0)
         call PCShellSetDestroy(pc, augmented_lagrangian_destroy, ierr)
         ASSERT(ierr == 0)
-!       Si LMP, on définit un préconditionneur à gauche et à droite
+!     Si LMP, on définit un préconditionneur à gauche et à droite
         if (lmp_is_active) then
             ASSERT(ierr == 0)
             call PCShellSetName(pc, "Symmetric Preconditionner: Left BLOC_LAGR, right LMP", ierr)
@@ -366,10 +366,10 @@ subroutine appcpr(kptsc)
     else if ((precon == 'LDLT_SP') .or. (precon .eq. 'LDLT_DP')) then
         call PCSetType(pc, PCSHELL, ierr)
         ASSERT(ierr == 0)
-!       LDLT_SP/LDLT_DP FAIT APPEL A DEUX ROUTINES EXTERNES
+!     LDLT_SP/LDLT_DP FAIT APPEL A DEUX ROUTINES EXTERNES
         call PCShellSetSetUp(pc, ldsp1, ierr)
         ASSERT(ierr == 0)
-!       Si LMP, on définit un préconditionneur à gauche et à droite
+!     Si LMP, on définit un préconditionneur à gauche et à droite
         if (lmp_is_active) then
             ASSERT(ierr == 0)
             call PCShellSetName(pc, "Symmetric Preconditionner: Left LDLT_XP, right LMP", ierr)
@@ -380,7 +380,7 @@ subroutine appcpr(kptsc)
             ASSERT(ierr == 0)
             call KSPSetPCSide(ksp, PC_SYMMETRIC, ierr)
             ASSERT(ierr == 0)
-!       Pour le préconditionneur LDLT_XP, on définit reac_lmp à partir de reac_precond
+!        Pour le préconditionneur LDLT_XP, on définit reac_lmp à partir de reac_precond
             reac_lmp = reacpr/2
         else
             call PCShellSetName(pc, "LDLT_XP Preconditionner", ierr)
@@ -404,6 +404,8 @@ subroutine appcpr(kptsc)
     else if (precon == 'FIELDSPLIT') then
         call PCSetType(pc, PCFIELDSPLIT, ierr)
         ASSERT(ierr == 0)
+        call PetscOptionsInsertString(PETSC_NULL_OPTIONS, options(kptsc), ierr)
+        ASSERT(ierr .eq. 0)
         call mfield_setup(kptsc, nonu)
         call PCSetFromOptions(pc, ierr)
         ASSERT(ierr == 0)
@@ -414,12 +416,14 @@ subroutine appcpr(kptsc)
             call utmess('F', 'PETSC_19', sk=precon)
         end if
         ASSERT(ierr == 0)
-!        CHOIX DE LA RESTRICTION (UNCOUPLED UNIQUEMENT ACTUELLEMENT)
+!     CHOIX DE LA RESTRICTION (UNCOUPLED UNIQUEMENT ACTUELLEMENT)
         call PetscOptionsSetValue(PETSC_NULL_OPTIONS, '-pc_ml_CoarsenScheme', 'Uncoupled', ierr)
         ASSERT(ierr == 0)
         call PetscOptionsSetValue(PETSC_NULL_OPTIONS, '-pc_ml_PrintLevel', '0', ierr)
         ASSERT(ierr == 0)
-!        APPEL OBLIGATOIRE POUR PRENDRE EN COMPTE LES AJOUTS CI-DESSUS
+        call PetscOptionsInsertString(PETSC_NULL_OPTIONS, options(kptsc), ierr)
+        ASSERT(ierr .eq. 0)
+!     APPEL OBLIGATOIRE POUR PRENDRE EN COMPTE LES AJOUTS CI-DESSUS
         call PCSetFromOptions(pc, ierr)
         ASSERT(ierr == 0)
 !-----------------------------------------------------------------------
@@ -430,18 +434,20 @@ subroutine appcpr(kptsc)
         end if
         call PetscOptionsSetValue(PETSC_NULL_OPTIONS, '-pc_hypre_type', 'boomeramg', ierr)
         ASSERT(ierr == 0)
-!        CHOIX DE LA RESTRICTION (PMIS UNIQUEMENT ACTUELLEMENT)
+!     CHOIX DE LA RESTRICTION (PMIS UNIQUEMENT ACTUELLEMENT)
         call PetscOptionsSetValue(PETSC_NULL_OPTIONS, &
-             &   '-pc_hypre_boomeramg_coarsen_type', 'HMIS', ierr)
+        &   '-pc_hypre_boomeramg_coarsen_type', 'HMIS', ierr)
         ASSERT(ierr == 0)
-!        CHOIX DU LISSAGE (SOR UNIQUEMENT POUR LE MOMENT)
+!     CHOIX DU LISSAGE (SOR UNIQUEMENT POUR LE MOMENT)
         call PetscOptionsSetValue(PETSC_NULL_OPTIONS, &
-             &   '-pc_hypre_boomeramg_relax_type_all', 'SOR/Jacobi', ierr)
+        &   '-pc_hypre_boomeramg_relax_type_all', 'SOR/Jacobi', ierr)
         ASSERT(ierr == 0)
         call PetscOptionsSetValue(PETSC_NULL_OPTIONS, &
-             & '-pc_hypre_boomeramg_print_statistics', '0', ierr)
+        & '-pc_hypre_boomeramg_print_statistics', '0', ierr)
         ASSERT(ierr == 0)
-!        APPEL OBLIGATOIRE POUR PRENDRE EN COMPTE LES AJOUTS CI-DESSUS
+        call PetscOptionsInsertString(PETSC_NULL_OPTIONS, options(kptsc), ierr)
+        ASSERT(ierr .eq. 0)
+!     APPEL OBLIGATOIRE POUR PRENDRE EN COMPTE LES AJOUTS CI-DESSUS
         call PCSetFromOptions(pc, ierr)
         ASSERT(ierr == 0)
 !-----------------------------------------------------------------------
@@ -450,44 +456,47 @@ subroutine appcpr(kptsc)
         if (ierr .ne. 0) then
             call utmess('F', 'PETSC_19', 1, precon)
         end if
-!       CHOIX DE LA VARIANTE AGGREGATED
-!        call PCGAMGSetType(pc, "agg", ierr)
-!        ASSERT(ierr == 0)
-!       CHOIX DU NOMBRE DE LISSAGES
+!  CHOIX DE LA VARIANTE AGGREGATED
+!   call PCGAMGSetType(pc, "agg", ierr)
+!   ASSERT(ierr == 0)
+!  CHOIX DU NOMBRE DE LISSAGES
         nsmooth = 1
         call PCGAMGSetNSmooths(pc, nsmooth, ierr)
         ASSERT(ierr == 0)
 !
         call PetscOptionsSetValue(PETSC_NULL_OPTIONS, '-pc_gamg_verbose', '2', ierr)
         ASSERT(ierr == 0)
-!       APPEL OBLIGATOIRE POUR PRENDRE EN COMPTE LES AJOUTS CI-DESSUS
+        call PetscOptionsInsertString(PETSC_NULL_OPTIONS, options(kptsc), ierr)
+        ASSERT(ierr .eq. 0)
+!     APPEL OBLIGATOIRE POUR PRENDRE EN COMPTE LES AJOUTS CI-DESSUS
         call PCSetFromOptions(pc, ierr)
         ASSERT(ierr == 0)
 
 !-----------------------------------------------------------------------
     else if (precon == 'UTILISATEUR') then
-!       It should be defined by the user
-        ! call PCSetType(pc, PCNONE, ierr)
+!     It should be defined by the user
+        call PetscOptionsInsertString(PETSC_NULL_OPTIONS, options(kptsc), ierr)
+        ASSERT(ierr .eq. 0)
         call PCSetFromOptions(pc, ierr)
 
 !-----------------------------------------------------------------------
     else if (precon == 'HPDDM') then
-!       HPDDM works only in hpc mode
+!     HPDDM works only in hpc mode
         if (.not. lmhpc) call utmess('F', 'PETSC_23')
-!       Set HPPDM pc
+!     Set HPPDM pc
         call PCSetType(pc, PCHPDDM, ierr)
         ASSERT(ierr == 0)
-!       Create the auxiliary matrix usefull for the coarse problem
+!     Create the auxiliary matrix usefull for the coarse problem
         call MatCreate(PETSC_COMM_SELF, auxMat, ierr)
         ASSERT(ierr == 0)
-!       Set the block size here because we have it easily
+!     Set the block size here because we have it easily
         bs = tblocs(kptsc)
         call MatSetBlockSize(auxMat, bs, ierr)
         ASSERT(ierr == 0)
-!       Transfer the local code_aster matrix to the PETSc one
+!     Transfer the local code_aster matrix to the PETSc one
         call apmams(nomat, auxMat)
         ASSERT(ierr == 0)
-!       Get the local dof in the global numbering
+!     Get the local dof in the global numbering
         call jeveuo(nonu//'.NUME.NULG', 'L', vi=nulg)
 
 #if ASTER_PETSC_INT_SIZE == 4
@@ -501,13 +510,13 @@ subroutine appcpr(kptsc)
         ASSERT(ierr == 0)
 
         if (ASTER_FALSE) call PCHPDDMDumpAuxiliaryMat(pc, auxIS, auxMat)
-!       Set the Neumann matrix
+!     Set the Neumann matrix
        call PCHPDDMSetAuxiliaryMat(pc, auxIS, auxMat, PETSC_NULL_FUNCTION, PETSC_NULL_INTEGER, ierr)
         ASSERT(ierr == 0)
         call ISDestroy(auxIS, ierr)
         call MatDestroy(auxMat, ierr)
         ASSERT(ierr == 0)
-!       Set the PC definition
+!     Set the PC definition
         call dismoi('TYPE_MATRICE', nomat, 'MATR_ASSE', repk=syme)
         factor = 'lu'
         if (syme .eq. 'SYMETRI') factor = 'cholesky'
@@ -542,6 +551,8 @@ subroutine appcpr(kptsc)
                 '-prefix_pop '
         call PetscOptionsInsertString(PETSC_NULL_OPTIONS, myopt, ierr)
         ASSERT(ierr == 0)
+        call PetscOptionsInsertString(PETSC_NULL_OPTIONS, options(kptsc), ierr)
+        ASSERT(ierr .eq. 0)
         call PCSetFromOptions(pc, ierr)
         ASSERT(ierr == 0)
 #if ASTER_PETSC_INT_SIZE == 4
@@ -553,7 +564,6 @@ subroutine appcpr(kptsc)
 !-----------------------------------------------------------------------
     else if (precon == 'SANS') then
         call PCSetType(pc, PCNONE, ierr)
-        call PCSetFromOptions(pc, ierr)
         ASSERT(ierr == 0)
 !-----------------------------------------------------------------------
     else
@@ -561,12 +571,12 @@ subroutine appcpr(kptsc)
     end if
 !-----------------------------------------------------------------------
 !
-!     CREATION EFFECTIVE DU PRECONDITIONNEUR
+!  CREATION EFFECTIVE DU PRECONDITIONNEUR
     call PCSetUp(pc, ierr)
-!     ANALYSE DU CODE RETOUR
+!  ANALYSE DU CODE RETOUR
     if (ierr .ne. 0) then
         if ((precon == 'LDLT_SP') .or. (precon == 'LDLT_DP')) then
-!           ERREUR : PCENT_PIVOT PAS SUFFISANT
+!        ERREUR : PCENT_PIVOT PAS SUFFISANT
             call utmess('F', 'PETSC_15')
         else
             call utmess('F', 'PETSC_14')

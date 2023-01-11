@@ -567,6 +567,7 @@ if ((indic .eq. KSP_DIVERGED_ITS) .and. ((precon .eq. 'LDLT_SP') .or. (precon .e
         nomats(kptsc) = ' '
         nosols(kptsc) = ' '
         nonus(kptsc) = ' '
+        options(kptsc) = ' '
         ap(kptsc) = PETSC_NULL_MAT
         kp(kptsc) = PETSC_NULL_KSP
         tblocs(kptsc) = -1

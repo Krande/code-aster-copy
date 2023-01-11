@@ -51,6 +51,7 @@ module petsc_data_module
     integer, parameter, public :: nmxins = 5
     character(len=19), public  :: nomats(nmxins), nosols(nmxins), nomat_courant
     character(len=14), public  :: nonus(nmxins), nonu_courant
+    character(len=2500), public  :: options(nmxins)
     Mat, public :: ap(nmxins)
     KSP, public :: kp(nmxins)
     Vec, public :: b, x
@@ -140,10 +141,11 @@ contains
 ! La routine mat_record enregistre la matrice matas
 ! i.e. determine son identifiant kptsc
 ! et note son nom dans les tableaux
-    subroutine mat_record(matas, solveu, kptsc)
+    subroutine mat_record(matas, solveu, kptsc, user_opt)
         ! Dummy arguments
         character(len=19), intent(in) :: matas, solveu
         integer, intent(out)          :: kptsc
+        character(len=2500), intent(in), optional :: user_opt
         ! Local variables
         character(len=19) :: nu
         !
@@ -160,10 +162,14 @@ contains
             ASSERT(nomats(kptsc) .eq. ' ')
             ASSERT(nosols(kptsc) .eq. ' ')
             ASSERT(nonus(kptsc) .eq. ' ')
+            ASSERT(options(kptsc) .eq. ' ')
             !
             nomats(kptsc) = matas
             nonus(kptsc) = nu(1:14)
             nosols(kptsc) = solveu
+            if (present(user_opt)) then
+                options(kptsc) = user_opt
+            end if
         end if
 !
     end subroutine mat_record

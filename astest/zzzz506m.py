@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -33,6 +33,8 @@
 # --------------------------------------------------------------------
 
 DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"), INFO=1)
+
+from code_aster import LinearAlgebra
 
 test = code_aster.TestCase()
 
@@ -93,9 +95,12 @@ RES = STAT_NON_LINE(
         METHODE="PETSC",
         PRE_COND="HPDDM",
         RESI_RELA=1e-10,
-        OPTION_PETSC="-ksp_monitor_true_residual -options_view",
+        OPTION_PETSC="-ksp_monitor_true_residual -log_view -pc_hpddm_levels_1_eps_nev 50",
     ),
 )
+
+# force PETSc to dump the log
+LinearAlgebra.petscFinalize()
 
 RES_NEW = MECA_NON_LINE(
     CHAM_MATER=AFFE,
