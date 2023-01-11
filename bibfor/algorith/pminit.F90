@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -105,13 +105,13 @@ type(NL_DS_AlgoPara), intent(inout) :: ds_algopara
     integer :: iepsi, icont, igrad, irota, defimp, indimp(9), ncmp
     integer :: pred, matrel, ic1c2, iforta, imptgt, nbvita, imes(2)
     integer :: iligne, icolon, nbcol, numins, ier
-    character(len=4), parameter :: nomeps(6) = (/'EPXX','EPYY','EPZZ','EPXY','EPXZ','EPYZ'/)
-    character(len=4), parameter :: nomsig(6) = (/'SIXX','SIYY','SIZZ','SIXY','SIXZ','SIYZ'/)
-    character(len=4), parameter :: nomgrd(9) = (/'F11','F12','F13',&
-                                                 'F21','F22','F23',&
-                                                 'F31','F32','F33'/)
-    real(kind=8), parameter :: id(9) = (/1.d0, 0.d0, 0.d0,&
-                                         0.d0, 1.d0, 0.d0,&
+    character(len=4), parameter :: nomeps(6) = (/'EPXX', 'EPYY', 'EPZZ', 'EPXY', 'EPXZ', 'EPYZ'/)
+    character(len=4), parameter :: nomsig(6) = (/'SIXX', 'SIYY', 'SIZZ', 'SIXY', 'SIXZ', 'SIYZ'/)
+    character(len=4), parameter :: nomgrd(9) = (/'F11', 'F12', 'F13', &
+                                                 'F21', 'F22', 'F23', &
+                                                 'F31', 'F32', 'F33'/)
+    real(kind=8), parameter :: id(9) = (/1.d0, 0.d0, 0.d0, &
+                                         0.d0, 1.d0, 0.d0, &
                                          0.d0, 0.d0, 1.d0/)
     character(len=4) :: optgt
     character(len=8) :: typmod(2), k8b, table, fonimp(9), fongrd(9), f0, vk8(2)
@@ -134,8 +134,8 @@ type(NL_DS_AlgoPara), intent(inout) :: ds_algopara
     typmod(1)='3D'
     typmod(2)=' '
     solveu = '&&OP0033'
-    rac2=sqrt(2.d0)
-    pgl(:,:) = 0.d0
+    rac2 = sqrt(2.d0)
+    pgl(:, :) = 0.d0
     valimp = 0.d0
 !
 ! - Read parameters for convergence
@@ -408,15 +408,15 @@ type(NL_DS_AlgoPara), intent(inout) :: ds_algopara
                 cimpo(i,i)=1.d0
             endif
         end do
-        defimp=-1
-    endif
+        defimp = -1
+    end if
 
 !  RECUPERER LES VALEURS INITIALES DE F "GRAD_IMPOSE"
     if (igrad .eq. 9) then
         do i = 1, 9
             call fointe('F', fonimp(i), 1, ['INST'], [instam], valimp(i), ier)
         end do
-    endif
+    end if
 !
 !     ----------------------------------------
 !     ECRITURE ETAT INITIAL DANS TABLE
@@ -432,7 +432,7 @@ type(NL_DS_AlgoPara), intent(inout) :: ds_algopara
             epsini(1:6) = epsm(1:6)
             call dscal(3, 1.d0/rac2, epsini(4), 1)
             call dcopy(ncmp, epsini, 1, vr(2), 1)
-        endif
+        end if
 
         sigini(1:6) = sigm(1:6)
         call dscal(3, 1.d0/rac2, sigini(4), 1)
