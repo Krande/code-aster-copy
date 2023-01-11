@@ -303,6 +303,7 @@ bool TableContainer::build() {
             } else if ( type == "CHAM_NO" ) {
                 if ( _mapFOND[name] == nullptr ) {
                     _mapFOND[name] = std::make_shared< FieldOnNodesReal >( dsName );
+                    _mapFOND[name]->build();
                 }
                 // } else if ( type == "CARTE" ) {
                 //     _mapPCFOMD[name] = std::make_shared< ConstantFieldOnCellsReal >( dsName );
