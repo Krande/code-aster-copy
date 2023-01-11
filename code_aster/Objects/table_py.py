@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -1169,11 +1169,12 @@ def check_nan(values):
     bool_val = numpy.isnan([p if p is not None else 0.0 for p in values])
     if bool_val.any():
         indexes = [str(idx[0]) for idx in numpy.argwhere(bool_val)]
-        raise ValueError("NaN present at indexes %s" % ','.join(indexes))
+        raise ValueError("NaN present at indexes %s" % ",".join(indexes))
+
 
 def check_inf(values):
     """Raise ValueError exception if inf is found in values."""
     bool_val = numpy.isinf([p if p is not None else 0.0 for p in values])
     if bool_val.any():
         indexes = [str(idx[0]) for idx in numpy.argwhere(bool_val)]
-        raise ValueError("Inf present at indexes %s" % ','.join(indexes))
+        raise ValueError("Inf present at indexes %s" % ",".join(indexes))
