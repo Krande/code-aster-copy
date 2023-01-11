@@ -466,11 +466,6 @@ class BaseDOFNumbering : public DataStructure {
     FieldOnNodesDescriptionPtr getDescription() const { return _dofDescription; };
 
     /**
-     * @brief Get FieldOnNodesDescription
-     */
-    void setDescription( const FieldOnNodesDescriptionPtr dofd ) { _dofDescription = dofd; };
-
-    /**
      * @brief Get all FiniteElementDescriptors
      * @return vector of all FiniteElementDescriptors
      */
