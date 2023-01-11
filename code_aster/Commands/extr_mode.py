@@ -63,6 +63,7 @@ class ExtrMode(ExecuteCommand):
                 self._result.addFiniteElementDescriptor(fED)
             for fOND in mode.getFieldOnNodesDescriptions():
                 self._result.addFieldOnNodesDescription(fOND)
-
+            self._result.setDOFNumbering(mode.getDOFNumbering())
+            self._result.build()
 
 EXTR_MODE = ExtrMode.run

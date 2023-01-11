@@ -48,6 +48,7 @@ class StaticModeCalculation(ExecuteCommand):
         for i in dofNum.getFiniteElementDescriptors():
             self._result.addFiniteElementDescriptor(i)
         self._result.setDOFNumbering(dofNum)
+        self._result.build()
 
 
 MODE_STATIQUE = StaticModeCalculation.run

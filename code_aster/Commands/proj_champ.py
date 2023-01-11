@@ -19,7 +19,7 @@
 
 # person_in_charge: nicolas.sellenet@edf.fr
 
-from ..Objects import FieldOnCellsReal, MeshesMapping
+from ..Objects import FieldOnCellsReal, MeshesMapping, FullResult
 from ..Supervis import ExecuteCommand
 
 
@@ -59,7 +59,10 @@ class FieldProjector(ExecuteCommand):
         """
         dofNum = keywords.get("NUME_DDL")
         if dofNum is not None:
-            self._result.addFieldOnNodesDescription(dofNum.getDescription())
+            if isinstance(self._result, FullResult):
+                self._result.setDOFNumbering(dofNum)
+            else:
+                self._result.addFieldOnNodesDescription(dofNum.getDescription())
 
         if "RESULTAT" in keywords:
             if "MODELE_2" in keywords:
