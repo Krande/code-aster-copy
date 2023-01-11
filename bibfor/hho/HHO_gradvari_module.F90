@@ -51,20 +51,18 @@ module HHO_GV_module
 #include "asterfort/lagmodtonommod.h"
 #include "asterfort/lcdetf.h"
 #include "asterfort/nmcomp.h"
-#include "asterfort/pk2sig.h"
-#include "asterfort/pk2topk1.h"
 #include "asterfort/sigtopk1.h"
 #include "asterfort/poslog.h"
 #include "asterfort/prelog.h"
 #include "asterfort/readVector.h"
 #include "asterfort/rcvalb.h"
-#include "asterfort/deflg2.h"
+#include "asterfort/deflg4.h"
+#include "asterfort/prodmt.h"
 #include "blas/daxpy.h"
 #include "blas/dcopy.h"
 #include "blas/dsymv.h"
 #include "blas/dgemm.h"
 #include "blas/dgemv.h"
-#include "blas/dger.h"
 #include "blas/dsyr.h"
 #include "jeveux.h"
 !
@@ -389,6 +387,7 @@ contains
 ! ---------- += weight * (dSig_deps : gs_phi, gs_phi)
                     call hhoComputeLhsSmall(hhoCell, dSig_deps, weight, BSCEvalG, &
                                             mk_gbs_sym, mk_gbs_cmp, mk_AT)
+! ---------- TODO: Add missing terms
 ! ---------- += weight * (gs_phi, dSig_dv : c_phi) -> lhs_mv
 !                     call hhoComputeLhsSmallMG(hhoCell, dSig_dv, weight, BSCEval, gv_cbs, &
 !                                             BSCEvalG, mk_gbs, mv_AT)
@@ -451,14 +450,6 @@ contains
             call hhoCopySymPartMat('U', lhs_vl(1:gv_cbs, 1:gv_cbs))
             call hhoCopySymPartMat('U', lhs_ll(1:gv_cbs, 1:gv_cbs))
 !
-! Pour rendre le bloc inversible tout le temps
-! Ca converge très mal sans
-            do j = 1, gv_gbs
-                lhs_ll(j, j) = lhs_ll(j, j)+1.d0
-            end do
-            do j = 1, gv_total_dofs
-                lhs_vv(j, j) = lhs_vv(j, j)+1.d0
-            end do
 ! ----- Add gradient: += gradrec**T * AT * gradrec
 ! ----- step1: TMP = AT * gradrec
             call dgemm('N', 'N', mk_gbs_tot, mk_total_dofs, mk_gbs_tot, 1.d0, &
@@ -486,7 +477,7 @@ contains
                        0.d0, lhs_vm, MSIZE_TDOFS_SCAL)
             call dgemm('N', 'N', gv_cbs, mk_total_dofs, mk_gbs_tot, 1.d0, &
                        lm_AT, MSIZE_CELL_SCAL, hhoMecaState%grad, MSIZE_CELL_MAT, &
-                       0.d0, lhs_lm, MSIZE_TDOFS_SCAL)
+                       0.d0, lhs_lm, MSIZE_CELL_SCAL)
 ! ----- Add stabilization
 ! ----- += coeff * stab_mk
             do j = 1, mk_total_dofs
@@ -506,11 +497,6 @@ contains
                              lhs_mm, lhs_mv, lhs_ml, &
                              lhs_vm, lhs_vv, lhs_vl, &
                              lhs_lm, lhs_lv, lhs_ll, lhs)
-
-            ! call hhoPrintMat(lhs_vv(1:gv_total_dofs, 1:gv_total_dofs))
-            ! do j=mk_total_dofs+gv_total_dofs+1,mk_total_dofs+gv_total_dofs+gv_gbs
-            !     lhs(j,j)=lhs(j,j)+1.d0
-            ! end do
         end if
 !
 999     continue
@@ -542,6 +528,7 @@ contains
         case ('GDEF_LOG')
             ASSERT(hhoComporState%l_largestrain)
         case ('PETIT')
+            ASSERT(ASTER_FALSE)
             ASSERT(.not. hhoComporState%l_largestrain)
         case default
             ASSERT(ASTER_FALSE)
@@ -619,11 +606,10 @@ contains
         real(Kind=8) :: eplcm(3*ndim+2), eplci(3*ndim+2)
         real(Kind=8) :: silcm(3*ndim+2), silcp(3*ndim+2), dsde(3*ndim+2, 3*ndim+2)
         real(kind=8) :: sigPrev(11), viPrev(hhoCS%lgpg), viCurr(hhoCS%lgpg)
-        real(kind=8) :: dT_dv(6), dT_dl(6), dPK2_dv(6), dPK2_dl(6)
-        real(kind=8) :: dsv_de(2*ndim), dsl_de(2*ndim)
-        real(kind=8) :: dsl_dv, norm
-        real(kind=8) :: feta(4), xi(3, 3), me(3, 3, 3, 3), pes(6, 6)
-        integer :: lgpg, imate, neu, neg, ntot, i, j
+        real(kind=8) :: dT_dv(6), dT_dl(6)
+        real(kind=8) :: dsv_de(6), dsl_de(6)
+        real(kind=8) :: dsl_dv, norm, pe(3, 3, 3, 3)
+        integer :: lgpg, imate, neu, neg, ntot
         aster_logical :: lCorr, lMatr, lSigm, lVari
 !
         lCorr = L_CORR(hhoCS%option)
@@ -705,6 +691,7 @@ contains
 !
         if (.not. lCorr) then
             PK2_curr = PK2_prev
+            tlogCurr = tlogPrev
         end if
 !
         if (lSigm) then
@@ -714,7 +701,8 @@ contains
 !
 ! ----- Compute PK1
 !
-        call pk2topk1(ndim, PK2_curr, F_curr, Pk1_curr)
+        call deflg4(gn, lamb, logl, F_curr, pe)
+        call prodmt(tlogCurr, pe, Pk1_curr)
         sig_vari = silcp(neu+1)
         sig_lagv = silcp(neu+2)
         sig_gv = 0.d0
@@ -742,6 +730,8 @@ contains
 !
             dT_dv = 0.d0
             dT_dl = 0.d0
+            dsv_de = 0.d0
+            dsl_de = 0.d0
 !
             dsv_dv = dsde(neu+1, neu+1)
             dsv_dl = dsde(neu+1, neu+2)
@@ -749,28 +739,18 @@ contains
             dsl_dl = dsde(neu+2, neu+2)
             dT_dv(1:neu) = dsde(1:neu, neu+1)
             dT_dl(1:neu) = dsde(1:neu, neu+2)
-            dsv_de = dsde(neu+1, 1:neu)
-            dsl_de = dsde(neu+2, 1:neu)
+            dsv_de(1:neu) = dsde(neu+1, 1:neu)
+            dsl_de(1:neu) = dsde(neu+2, 1:neu)
             dsgv_dgv(1:ndim, 1:ndim) = dsde(neu+3:ntot, neu+3:ntot)
 
             !call hhoPrintMat(dsde)
 
-! dP_da = F dS_da = F dT_da * 2 * dC_dF
-! - Tensor to change stress(log) to stress(PK2)
-            call deflg2(gn, lamb, logl, pes, feta, xi, me)
-            do i = 1, 6
-                do j = 1, 6
-                    dPK2_dv(i) = dPK2_dv(i)+dT_dv(j)*pes(j, i)
-                    dPK2_dl(i) = dPK2_dl(i)+dT_dl(j)*pes(j, i)
-                end do
-            end do
-            call pk2topk1(ndim, dPK2_dv, F_curr, dPK1_dv)
-            call pk2topk1(ndim, dPK2_dl, F_curr, dPK1_dl)
-
-            ! call SigVec2Mat(ndim, dT_dv, dPK1_dv)
-            ! call SigVec2Mat(ndim, dT_dl, dPK1_dl)
-            call SigVec2Mat(ndim, dsv_de, dsv_dF)
-            call SigVec2Mat(ndim, dsv_de, dsl_dF)
+!           dP_da = dT_da * dElog_dF
+            call prodmt(dT_dv, pe, dPK1_dv)
+            call prodmt(dT_dl, pe, dPK1_dl)
+!
+            call prodmt(dsv_de, pe, dsv_dF)
+            call prodmt(dsl_de, pe, dsl_dF)
 !
 ! ----- Verify symmetry
             norm = max(1.d0, dsv_dl)
@@ -782,6 +762,11 @@ contains
         ! print *, eplci
         ! print *, sig_vari, sig_lagv, sig_gv
         ! print *, dsv_dv, dsv_dl, dsl_dl, dsgv_dgv
+        ! print*, ipg, dsv_dv, dsv_dl, dsl_dl
+        ! print*, dT_dv
+        ! print*, dT_dl
+        ! print*, dsv_de
+        ! print*, dsv_de
         !if (abs(dsl_dl) < 1d-8) dsl_dl = 1.d0
 !
 999     continue
@@ -1402,172 +1387,6 @@ contains
 !
 !===================================================================================================
 !
-    subroutine hhoComputeLhsSmallMG(hhoCell, module_tang, weight, BSCEval, &
-                                    gv_cbs, BSCEvalG, mk_gbs, AT)
-!
-        implicit none
-!
-        type(HHO_Cell), intent(in)      :: hhoCell
-        real(kind=8), intent(in)        :: module_tang(6)
-        real(kind=8), intent(in)        :: weight
-        real(kind=8), intent(in)        :: BSCEval(MSIZE_CELL_SCAL)
-        real(kind=8), intent(in)        :: BSCEvalG(MSIZE_CELL_SCAL)
-        integer, intent(in)             :: gv_cbs, mk_gbs
-        real(kind=8), intent(inout)     :: AT(MSIZE_CELL_MAT, MSIZE_CELL_SCAL)
-!
-! --------------------------------------------------------------------------------------------------
-!   HHO - mechanics
-!
-!   Compute the scalar product AT += (module_tang:cphi, gsphi)_T at a quadrature point
-!   In hhoCell      : the current HHO Cell
-!   In module_tang  : elasto-plastic tangent moduli
-!   In weight       : quadrature weight
-!   In BSCEval      : Basis of one composant gphi
-!   In gbs_cmp      : size of BSCEval
-!   In gbs          : number of rows of AT
-!   Out AT          : contribution of At
-! --------------------------------------------------------------------------------------------------
-!
-        real(kind=8) :: qp_Acphi(6, MSIZE_CELL_SCAL)
-        integer:: i, j, k, row, gbs_cmp
-! --------------------------------------------------------------------------------------------------
-!
-! --------- Eval (module_tang : scphi)_T
-        do i = 1, gv_cbs
-            qp_Acphi(:, i) = weight*module_tang*BSCEval(i)
-        end do
-        gbs_cmp = mk_gbs/(hhoCell%ndim*hhoCell%ndim)
-!
-! -------- Compute scalar_product of (C_sgphi(j), sgphi(j))_T
-        do j = 1, gv_cbs
-            row = 1
-! ---------- diagonal term
-            do i = 1, hhoCell%ndim
-                do k = 1, gbs_cmp
-                    AT(row, j) = AT(row, j)+qp_Acphi(i, j)*BSCEvalG(k)
-                    row = row+1
-                    if (row > j) then
-                        go to 100
-                    end if
-                end do
-            end do
-!
-! --------- non-diagonal terms
-            select case (hhoCell%ndim)
-            case (3)
-                do i = 1, 3
-                    do k = 1, gbs_cmp
-                        AT(row, j) = AT(row, j)+qp_Acphi(3+i, j)*BSCEvalG(k)
-                        row = row+1
-                        if (row > j) then
-                            go to 100
-                        end if
-                    end do
-                end do
-            case (2)
-                do k = 1, gbs_cmp
-                    AT(row, j) = AT(row, j)+qp_Acphi(4, j)*BSCEvalG(k)
-                    row = row+1
-                    if (row > j) then
-                        go to 100
-                    end if
-                end do
-            case default
-                ASSERT(ASTER_FALSE)
-            end select
-!
-100         continue
-        end do
-    end subroutine
-!
-!===================================================================================================
-!
-!===================================================================================================
-!
-    subroutine hhoComputeLhsSmallGM(hhoCell, module_tang, weight, BSCEval, &
-                                    gv_cbs, BSCEvalG, mk_gbs, AT)
-!
-        implicit none
-!
-        type(HHO_Cell), intent(in)      :: hhoCell
-        real(kind=8), intent(in)        :: module_tang(6)
-        real(kind=8), intent(in)        :: weight
-        real(kind=8), intent(in)        :: BSCEval(MSIZE_CELL_SCAL)
-        real(kind=8), intent(in)        :: BSCEvalG(MSIZE_CELL_SCAL)
-        integer, intent(in)             :: gv_cbs, mk_gbs
-        real(kind=8), intent(inout)     :: AT(MSIZE_CELL_SCAL, MSIZE_CELL_MAT)
-!
-! --------------------------------------------------------------------------------------------------
-!   HHO - mechanics
-!
-!   Compute the scalar product AT += (cphi, module_tang:gsphi)_T at a quadrature point
-!   In hhoCell      : the current HHO Cell
-!   In module_tang  : elasto-plastic tangent moduli
-!   In weight       : quadrature weight
-!   In BSCEval      : Basis of one composant gphi
-!   In gbs_cmp      : size of BSCEval
-!   In gbs          : number of rows of AT
-!   Out AT          : contribution of At
-! --------------------------------------------------------------------------------------------------
-!
-        real(kind=8) :: qp_Agphi(6, MSIZE_CELL_SCAL)
-        integer:: i, j, k, col, gbs_cmp
-! --------------------------------------------------------------------------------------------------
-!
-! --------- Eval (module_tang : sgphi)_T
-        gbs_cmp = mk_gbs/(hhoCell%ndim*hhoCell%ndim)
-
-        do i = 1, gbs_cmp
-            qp_Agphi(:, i) = weight*module_tang*BSCEvalG(i)
-        end do
-!
-! -------- Compute scalar_product of (C_sgphi(j), gphi(j))_T
-        do j = 1, gv_cbs
-            col = 1
-! ---------- diagonal term
-            do i = 1, hhoCell%ndim
-                do k = 1, gbs_cmp
-                    AT(j, col) = AT(j, col)+qp_Agphi(i, j)*BSCEval(k)
-                    col = col+1
-                    if (col > j) then
-                        go to 100
-                    end if
-                end do
-            end do
-!
-! --------- non-diagonal terms
-            select case (hhoCell%ndim)
-            case (3)
-                do i = 1, 3
-                    do k = 1, gbs_cmp
-                        AT(j, col) = AT(j, col)+qp_Agphi(3+i, j)*BSCEval(k)
-                        col = col+1
-                        if (col > j) then
-                            go to 100
-                        end if
-                    end do
-                end do
-            case (2)
-                do k = 1, gbs_cmp
-                    AT(j, col) = AT(j, col)+qp_Agphi(4, j)*BSCEval(k)
-                    col = col+1
-                    if (col > j) then
-                        go to 100
-                    end if
-                end do
-            case default
-                ASSERT(ASTER_FALSE)
-            end select
-!
-100         continue
-        end do
-    end subroutine
-
-!
-!===================================================================================================
-!
-!===================================================================================================
-!
     subroutine forc_noda_stress(hhoCS, ndim, ipg, F_curr, PK1_curr, Cauchy_curr, &
                                 sig_vari, sig_lagv, sig_gv)
 !
@@ -1641,7 +1460,8 @@ contains
             hhoCalcStabCoeffGV = hhoCalcStabCoeffGV+vale(1)
         end do
 !
-        hhoCalcStabCoeffGV = hhoCalcStabCoeffGV/real(npg, kind=8)
+        hhoCalcStabCoeffGV = 10.d0*hhoCalcStabCoeffGV/real(npg, kind=8)
+        ASSERT(hhoCalcStabCoeffGV > 0.d0)
 !
     end function
 !
