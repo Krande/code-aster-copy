@@ -49,14 +49,15 @@ class ModiRepere(ExecuteCommand):
         Arguments:
             keywords (dict): User's keywords.
         """
-        modele = None
-        try:
-            modele = keywords["RESULTAT"].getModel()
-            if modele is not None:
-                self._result.setModel(modele)
-                self._result.build()
-        except:
-            pass
+        if "RESULTAT" in keywords:
+            if "reuse" not in keywords:
+                modele = keywords["RESULTAT"].getModel()
+                if modele is not None:
+                    self._result.setModel(modele)
+                else:
+                    mesh = keywords["RESULTAT"].getMesh()
+                    self._result.setMesh(mesh)
+            self._result.build()
 
     def add_dependencies(self, keywords):
         """Register input *DataStructure* objects as dependencies.
