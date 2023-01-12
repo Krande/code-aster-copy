@@ -64,6 +64,7 @@ vect_elem = CALC_VECT_ELEM(OPTION="CHAR_MECA", CHARGE=CHT1)
 study = code_aster.PhysicalProblem(MODT, affectMat)
 study.addDirichletBC(charCine)
 study.addLoad(CHT1)
+study.computeDOFNumbering()
 dComputation = code_aster.DiscreteComputation(study)
 matr_elem = dComputation.getElasticStiffnessMatrix()
 
