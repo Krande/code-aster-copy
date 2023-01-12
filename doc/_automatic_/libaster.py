@@ -1280,7 +1280,7 @@ class DOFNumbering(BaseDOFNumbering):
 
         2. __init__(self: libaster.DOFNumbering, arg0: str) -> None
 
-        3. __init__(self: libaster.DOFNumbering, arg0: str, arg1: libaster.FieldOnNodesDescription) -> None
+        3. __init__(self: libaster.DOFNumbering, arg0: str, arg1: libaster.FieldOnNodesDescription, arg2: libaster.Mesh) -> None
         """
 
     def getComponentAssociatedToRow(self, row, local= False):
