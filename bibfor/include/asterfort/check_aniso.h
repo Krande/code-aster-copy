@@ -18,8 +18,7 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine aniver(mate, v_mate_func)
-        character(len=8), intent(in) :: mate
-        aster_logical, pointer :: v_mate_func(:)
-    end subroutine aniver
+    subroutine check_aniso(propname, objname)
+        character(len=*) :: propname, objname
+    end subroutine check_aniso
 end interface

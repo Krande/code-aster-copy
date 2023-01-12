@@ -80,15 +80,15 @@ subroutine op9999(options)
 
 !    call lcdiscard(" ")
 
+    if (iand(options, OnlyProc0) .eq. 0) then
+!       Check warning messages in parallel
+        call asmpi_checkalarm()
+    end if
+
+!   Check error messages of type 'E' not followed by 'F' message
+    call chkmsg(1, iret)
+
     if (close_base) then
-        if (iand(options, OnlyProc0) .eq. 0) then
-!           Check warning messages in parallel
-            call asmpi_checkalarm()
-        end if
-
-!       Check error messages of type 'E' not followed by 'F' message
-        call chkmsg(1, iret)
-
 !       Remove temporay objects from macro-commands
         call jedetc('G', '.', 1)
 

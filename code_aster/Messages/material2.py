@@ -92,12 +92,12 @@ ELAS   - Caractéristique: %(k2)s utilisant la valeur %(r2)19.12e.
     ),
     20: _(
         """
- La matrice d'élasticité orthotrope ou isotrope transverse est non définie positive
-  (au moins une valeur propre négative). Si vous êtes sur une modélisation
-  isoparamétrique (pas d'éléments de structure), vous avez probablement fait une erreur.
+La matrice d'élasticité orthotrope ou isotrope transverse est non définie positive
+(au moins une valeur propre négative). Si vous êtes sur une modélisation
+isoparamétrique (pas d'éléments de structure), vous avez probablement fait une erreur.
 
- Conseil :
-  Vérifiez vos données matériau.
+Conseil :
+    Vérifiez vos données matériau.
 """
     ),
     50: _(

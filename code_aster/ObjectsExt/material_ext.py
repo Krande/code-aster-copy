@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -34,17 +34,6 @@ from ..Cata.SyntaxUtils import old_complex
 from ..Messages import UTMESS
 from ..Supervis.visitors import EnumVisitor
 from ..Utilities import deprecated, injector, logger
-
-#     def __getinitargs__(self):
-#         """Returns the argument required to reinitialize a Material
-#         object during unpickling.
-#         """
-#         toReturn = (self.getName(),)
-#         state = []
-#         for kwf in self.getVectorOfMaterialProperties():
-#             state.append(kwf.getNumberOfListOfPropertiesReal())
-#         toReturn = toReturn + (state,)
-#         return toReturn
 
 
 @injector(Material)

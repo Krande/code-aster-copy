@@ -2,7 +2,7 @@
  * @file Material.cxx
  * @brief Implementation of material datastructure.
  * @section LICENCE
- * Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+ * Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
  * This file is part of code_aster.
  *
  * code_aster is free software: you can redistribute it and/or modify
@@ -21,6 +21,7 @@
 
 #include "Materials/Material.h"
 
+#include "aster_fort_material.h"
 #include "astercxx.h"
 
 #include "Utilities/Tools.h"
@@ -201,15 +202,19 @@ std::string Material::_storeListFunc( VectorString vect ) {
     return name;
 }
 
-void Material::_addProperties( std::string name, int nbParam, VectorReal valR, VectorComplex valC,
-                               VectorString valK, VectorString ordr, VectorLong kord ) {
+void Material::_addProperties( const std::string name, int nbParam, VectorReal valR,
+                               VectorComplex valC, VectorString valK, VectorString ordr,
+                               VectorLong kord ) {
     if ( _names->exists() && std::find( _names.begin(), _names.end(), name ) != _names.end() ) {
         throw std::runtime_error( "Properties for '" + name + "' are already defined" );
     }
     _names->push_back( name );
-
-    _prop.push_back( std::make_shared< MaterialProperties >( _cptName( _names->size() ), nbParam,
-                                                             valR, valC, valK, ordr, kord ) );
+    std::string cpt = _cptName( _names->size() );
+    _prop.push_back(
+        std::make_shared< MaterialProperties >( cpt, nbParam, valR, valC, valK, ordr, kord ) );
+    if ( name == "ELAS_ISTR" || name == "ELAS_ORTH" ) {
+        CALLO_CHECK_ANISO( name, cpt );
+    }
 }
 
 void Material::_setTractionFunction( std::string name, std::string keyword,

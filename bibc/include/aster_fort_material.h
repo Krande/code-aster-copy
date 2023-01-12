@@ -1,5 +1,5 @@
 /* -------------------------------------------------------------------- */
-/* Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org             */
+/* Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org             */
 /* This file is part of code_aster.                                     */
 /*                                                                      */
 /* code_aster is free software: you can redistribute it and/or modify   */
@@ -32,14 +32,17 @@
 extern "C" {
 #endif
 
+#define CALLO_CHECK_ANISO( a, b ) CALLOO( CHECK_ANISO, check_aniso, a, b )
+extern void DEFSS( CHECK_ANISO, check_aniso, const char *, STRING_SIZE, const char *, STRING_SIZE );
+
 #define CALLO_CREATE_ENTHALPY( a, b ) CALLOO( CREATE_ENTHALPY, create_enthalpy, a, b )
-void DEFSS( CREATE_ENTHALPY, create_enthalpy, const char *, STRING_SIZE, const char *,
-            STRING_SIZE );
+extern void DEFSS( CREATE_ENTHALPY, create_enthalpy, const char *, STRING_SIZE, const char *,
+                   STRING_SIZE );
 
 #define CALLO_RCMFMC( a, b, c, d, e, f ) CALLOOPPOO( RCMFMC, rcmfmc, a, b, c, d, e, f )
-void DEFSSPPSS( RCMFMC, rcmfmc, const char *, STRING_SIZE, const char *, STRING_SIZE,
-                ASTERLOGICAL *, ASTERLOGICAL *, const char *, STRING_SIZE, const char *,
-                STRING_SIZE );
+extern void DEFSSPPSS( RCMFMC, rcmfmc, const char *, STRING_SIZE, const char *, STRING_SIZE,
+                       ASTERLOGICAL *, ASTERLOGICAL *, const char *, STRING_SIZE, const char *,
+                       STRING_SIZE );
 
 #define CALL_RCVALE_WRAP( a, b, c, d, e, f, g, h, i, j )                                           \
     CALLSSPSPPSPPP( RCVALE_WRAP, rcvale_wrap, a, b, c, d, e, f, g, h, i, j )

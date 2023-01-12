@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -19,8 +19,9 @@
 
 import code_aster
 from code_aster.Commands import *
+from code_aster.Messages import MessageLog
 
-code_aster.init("--test")
+code_aster.init("--test", IGNORE_ALARM="MATERIAL2_20")
 
 test = code_aster.TestCase()
 
@@ -711,6 +712,61 @@ test.assertEqual(matcmplx.getValueComplex("ELAS_VISCO", "NU"), nu, msg="get valu
 
 with test.assertRaisesRegex(RuntimeError, "property not found"):
     matcmplx.getValueReal("ELAS_VISCO", "G")
+
+EL = 2.1e5
+ET = 4.0e5
+EN = 2.1e5
+GLT = 0.45e5
+GTN = 0.45e5
+GLN = 0.35e5
+NULT = 0.075
+NULN = 0.075
+NUTN = 0.0142857143
+
+matorth = code_aster.Material()
+matorth.addProperties(
+    "ELAS_ORTH",
+    E_L=EL,
+    E_T=ET,
+    E_N=EN,
+    G_LT=GLT,
+    G_TN=GTN,
+    G_LN=GLN,
+    NU_LT=NULT,
+    NU_LN=NULN,
+    NU_TN=NUTN,
+)
+
+test.assertEqual(matorth.size(), 1, msg="number of material properties")
+test.assertCountEqual(matorth.getMaterialNames(), ["ELAS_ORTH"])
+
+infos = MessageLog.get_info_alarm()
+emitted = [alr[1] for alr in infos if alr[0] == "MATERIAL2_20"]
+test.assertEqual(len(emitted), 0, msg="check for warning MATERIAL2_20: off")
+
+# this will raised a warning on checking eigen value of the Hooke matrix
+NULN = 0.075 + 1
+
+matorth = code_aster.Material()
+matorth.addProperties(
+    "ELAS_ORTH",
+    E_L=EL,
+    E_T=ET,
+    E_N=EN,
+    G_LT=GLT,
+    G_TN=GTN,
+    G_LN=GLN,
+    NU_LT=NULT,
+    NU_LN=NULN,
+    NU_TN=NUTN,
+)
+
+test.assertEqual(matorth.size(), 1, msg="number of material properties")
+test.assertCountEqual(matorth.getMaterialNames(), ["ELAS_ORTH"])
+
+infos = MessageLog.get_info_alarm()
+emitted = [alr[1] for alr in infos if alr[0] == "MATERIAL2_20"]
+test.assertEqual(emitted[0] if emitted else 0, 1, msg="check for warning MATERIAL2_20: on")
 
 test.printSummary()
 

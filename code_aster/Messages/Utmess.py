@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -488,7 +488,7 @@ Exception : %s
         self.print_buffer_content()
         if not_seen:
             code = "A"
-            if self._mpi_nbcpu is None:
+            if self._mpi_rank == 0:
                 self.print_message(code, "CATAMESS_87", valk=list(not_seen), exception=True)
 
     def update_counter(self, code, idmess):
