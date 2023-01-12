@@ -330,8 +330,7 @@ void add_automatic_names( NamesMapChar8 &map, int size, std::string prefix ) {
         for ( auto i = 0; i < size; ++i ) {
             std::ostringstream oss;
             oss << std::hex << i + 1;
-            std::string name( prefix + oss.str() );
-            std::transform( name.begin(), name.end(), name.begin(), ::toupper );
+            std::string name = prefix + toUpper( oss.str() );
             map->add( i + 1, name );
         }
     } else {

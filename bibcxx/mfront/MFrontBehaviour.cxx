@@ -1,5 +1,5 @@
 /* -------------------------------------------------------------------- */
-/* Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org             */
+/* Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org             */
 /* This file is part of code_aster.                                     */
 /*                                                                      */
 /* code_aster is free software: you can redistribute it and/or modify   */
@@ -19,6 +19,8 @@
 #include "MFrontBehaviour.h"
 
 #include "asterc_config.h"
+
+#include "Utilities/Tools.h"
 
 #include <stdlib.h>
 #include <string.h>
@@ -168,8 +170,7 @@ char **getMaterialPropertiesNames( const char *hyp, const char *lib, const char 
 
 char **getTridimMaterialPropertiesNames( const char *behav, unsigned int *size ) {
     char **res;
-    std::string bname( behav );
-    transform( bname.begin(), bname.end(), bname.begin(), ::tolower );
+    std::string bname = toLower( behav );
     bname.insert( 0, "aster" );
 
     MFrontBehaviour behaviour( "Tridimensional", "lib" + std::string( ASTER_BEHAVIOUR_LIB ) + ".so",

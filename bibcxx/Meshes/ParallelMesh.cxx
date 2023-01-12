@@ -391,11 +391,12 @@ void ParallelMesh::create_joints( const VectorLong &domains, const VectorLong &g
     for ( auto dom : domains ) {
         std::ostringstream oss;
         oss << std::hex << dom;
+        std::string nhex = toUpper( oss.str() );
 
-        JeveuxVectorLong jointE( getName() + ".E." + oss.str() );
+        JeveuxVectorLong jointE( getName() + ".E." + nhex );
         ( *jointE ) = joints[2 * i];
 
-        JeveuxVectorLong jointR( getName() + ".R." + oss.str() );
+        JeveuxVectorLong jointR( getName() + ".R." + nhex );
         ( *jointR ) = joints[2 * i + 1];
 
         _joints[dom] = std::make_pair( jointE, jointR );

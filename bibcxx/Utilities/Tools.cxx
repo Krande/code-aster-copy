@@ -3,7 +3,7 @@
  * @brief Implementation des outils
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -34,13 +34,25 @@ std::string trim( const std::string &str, const std::string &whitespace ) {
     const std::size_t strRange = strEnd - strBegin + 1;
 
     return str.substr( strBegin, strRange );
-};
+}
 
 std::string ljust( const std::string &str, const ASTERINTEGER &length, char fillchar ) {
     std::string tmp = str;
     tmp.resize( length, fillchar );
     return tmp;
-};
+}
+
+std::string toUpper( const std::string &in_str ) {
+    std::string str( in_str );
+    std::transform( str.begin(), str.end(), str.begin(), ::toupper );
+    return str;
+}
+
+std::string toLower( const std::string &in_str ) {
+    std::string str( in_str );
+    std::transform( str.begin(), str.end(), str.begin(), ::tolower );
+    return str;
+}
 
 char *vectorStringAsFStrArray( const VectorString &vector, const int size ) {
     char *tabFStr = MakeTabFStr( vector.size(), size );

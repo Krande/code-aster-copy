@@ -6,7 +6,7 @@
  * @brief Fichier entete des outils
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -29,7 +29,12 @@
 #include <algorithm>
 
 std::string trim( const std::string &str, const std::string &whitespace = " \t" );
+
 std::string ljust( const std::string &str, const ASTERINTEGER &length, char fillchar = ' ' );
+
+std::string toUpper( const std::string &in_str );
+
+std::string toLower( const std::string &in_str );
 
 /**
  * @brief irange Create a vector of integer from begin to end (included).
