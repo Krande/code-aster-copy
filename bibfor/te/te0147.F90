@@ -201,9 +201,6 @@ subroutine te0147(option, nomte)
         call jevech('PLST', 'L', jlst)
     end if
 !
-    if (option .eq. 'CALC_KJ_G' .or. option .eq. 'CALC_KJ_G_F') then
-        call jevech('PMATERC', 'L', imate)
-    end if
 !
     if (option .eq. 'CALC_G_F' .or. option .eq. 'CALC_K_G_F' .or. option .eq. 'CALC_KJ_G_F') then
         fonc = ASTER_TRUE

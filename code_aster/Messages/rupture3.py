@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -89,6 +89,21 @@ Cette division est réalisée automatiquement par CALC_G.
     11: _(
         """
 Seule la relation ELAS du calcul mécanique est supportée avec le mot-clé ETAT_INIT.
+"""
+    ),
+    12: _(
+        """
+Vous réalisez un calcul de G en grandes transformations (formalisme GREEN_LAGRANGE). 
+
+Ce calcul n'est valable qu'en petites déformations.
+"""
+    ),
+    13: _(
+        """
+Vous réalisez un calcul de G en grandes transformations (formalisme GREEN_LAGRANGE). 
+
+Ce calcul n'est pas compatible avec la discrétisation LEGENDRE. 
+Veuillez utiliser la discrétisation LINEAIRE.
 """
     ),
 }

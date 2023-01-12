@@ -30,8 +30,6 @@ subroutine te0222(option, nomte)
 !               'CALC_G_F'        (LOCAL,CHARGES FONCTIONS)
 !               'CALC_K_G'        (LOCAL,CHARGES REELLES)
 !               'CALC_K_G_F'      (LOCAL,CHARGES FONCTIONS)
-!               'CALC_KJ_G'       (LOCAL, CHARGES REELES)
-!               'CALC_KJ_G_F'     (LOCAL, CHARGES FONCTIONS)
 
 !
 ! ENTREES  ---> OPTION : OPTION DE CALCUL
@@ -52,6 +50,7 @@ subroutine te0222(option, nomte)
 #include "asterfort/cgverho.h"
 #include "asterfort/chauxi.h"
 #include "asterfort/coor_cyl.h"
+#include "asterfort/det_mat.h"
 #include "asterfort/elrefe_info.h"
 #include "asterfort/fointe.h"
 #include "asterfort/gbil3d.h"
@@ -61,6 +60,7 @@ subroutine te0222(option, nomte)
 #include "asterfort/nmelnl.h"
 #include "asterfort/nmgeom.h"
 #include "asterfort/nmplru.h"
+#include "asterfort/pk2sig.h"
 #include "asterfort/rccoma.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/rcvarc.h"
@@ -95,7 +95,7 @@ subroutine te0222(option, nomte)
     real(kind=8)      :: dtdm(3, 4), dfdm(3, 4), dudm(3, 4), dvdm(3, 4)
     real(kind=8)      :: rbid, rho, om, omo, epsref(6), depsin(6, 3), u1(2), u2(2)
     real(kind=8)      :: tgd(20), nu, eps(6), epsin(6), epsp(6)
-    real(kind=8)      :: tgdm(3), sr(3, 3), sigl(6), sigin(6), r_axi
+    real(kind=8)      :: tgdm(3), sr(3, 3), sigl(6), pk2(6), sigin(6), r_axi
     real(kind=8)      :: c1, c2, c3, k1, k2, k3, guv1, guv2, guv3
     real(kind=8)      :: p(3, 3), invp(3, 3), du1dm(3, 4), du2dm(3, 4), du3dm(3, 4)
     real(kind=8)      :: courb(3, 3, 3), valres(4), alpha, coeff_K1K2, coeff_K3
@@ -253,7 +253,7 @@ subroutine te0222(option, nomte)
 !
 !-- Recuperation du champ local (carte) associe au pre-epsi
 !-- Ce champ est issu d un chargement pre epsi
-    if (option == 'CALC_G_F' .or. option == 'CALC_K_G_F' .or. option == 'CALC_KJ_G_F') then
+    if (option == 'CALC_G_F' .or. option == 'CALC_K_G_F') then
         fonc = ASTER_TRUE
         call jevech('PFFVOLU', 'L', iforf)
         call jevech('PTEMPSR', 'L', itemps)
@@ -288,7 +288,7 @@ subroutine te0222(option, nomte)
     do i = 1, 4
         compor(i) = zk16(icomp+i-1)
     end do
-    grand = compor(3) == 'GROT_GDEP'
+    grand = compor(3) == 'GREEN_LAGRANGE'
     incr = compor(4) (1:9) == 'COMP_INCR'
     notelas = compor(1) .ne. 'ELAS'
 !
@@ -296,8 +296,7 @@ subroutine te0222(option, nomte)
     call tecach('ONO', 'PROTATR', 'L', iret, iad=irota)
     call tecach('ONO', 'PSIGINR', 'L', iret, iad=isigi)
 !
-    if (option == 'CALC_G' .or. option == 'CALC_G_F' &
-        .or. option == 'CALC_KJ_G' .or. option == 'CALC_KJ_G_F') then
+    if (option == 'CALC_G' .or. option == 'CALC_G_F') then
         call tecach('ONO', 'PVITESS', 'L', iret, iad=ivites)
         call tecach('ONO', 'PACCELE', 'L', iret, iad=iaccel)
         if (incr) then
@@ -622,6 +621,23 @@ subroutine te0222(option, nomte)
             else
                 sigl(4) = zr(isigm+ncmp*(kp-1)+3)*rac2
             end if
+            !En grandes transformations,
+            !conversion contraintes de Cauchy en contraintes de Piola Kirchoff 2
+            if (grand) then
+                pk2 = 0.0
+                !Suppression rac2
+                do i = 1, 3
+                    sigl(i+3) = sigl(i+3)/rac2
+                end do
+                !Conversion
+                call pk2sig(ndim, f, det_mat(3, f), pk2, sigl, -1)
+                sigl(1:2*ndim) = pk2(1:2*ndim)
+                !Rajout rac2
+                do i = 1, 3
+                    sigl(i+3) = sigl(i+3)*rac2
+                end do
+            end if
+
         else
 !
             call nmelnl(BEHinteg, &
@@ -641,6 +657,23 @@ subroutine te0222(option, nomte)
                 else
                     sigl(4) = zr(isigm+ncmp*(kp-1)+3)*rac2
                 end if
+                !En grandes transformations,
+                !conversion contraintes de Cauchy en contraintes de Piola Kirchoff 2
+                if (grand) then
+                    pk2 = 0.0
+                    !Suppression rac2
+                    do i = 1, 3
+                        sigl(i+3) = sigl(i+3)/rac2
+                    end do
+                    !Conversion
+                    call pk2sig(ndim, f, det_mat(3, f), pk2, sigl, -1)
+                    sigl(1:2*ndim) = pk2(1:2*ndim)
+                    !Rajout rac2
+                    do i = 1, 3
+                        sigl(i+3) = sigl(i+3)*rac2
+                    end do
+                end if
+
             end if
         end if
 !

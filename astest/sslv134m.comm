@@ -1,0 +1,188 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+import numpy as np
+
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"))
+
+
+##Angle de rotation
+Theta = 10
+Theta_rad = Theta * np.pi / 180
+#
+# --------------------------------------------------------------------
+
+M = LIRE_MAILLAGE(FORMAT="MED")
+
+MO = AFFE_MODELE(MAILLAGE=M, AFFE=_F(GROUP_MA="MAIL", PHENOMENE="MECANIQUE", MODELISATION="3D"))
+
+M = MODI_MAILLAGE(reuse=M, MAILLAGE=M, ORIE_PEAU=_F(GROUP_MA_PEAU=("SINF_2", "SINF_4")))
+
+# Barsoum
+M = MODI_MAILLAGE(reuse=M, MAILLAGE=M, MODI_MAILLE=_F(OPTION="NOEUD_QUART", GROUP_MA_FOND="LFF"))
+
+MA = DEFI_MATERIAU(ELAS=_F(E=2.0e11, NU=0.3))
+
+CM = AFFE_MATERIAU(MAILLAGE=M, AFFE=_F(TOUT="OUI", MATER=MA))
+
+M = DEFI_GROUP(reuse=M, MAILLAGE=M, CREA_GROUP_NO=(_F(GROUP_MA="SSUP_F"), _F(GROUP_MA="SINF_F")))
+
+##Blocage DZ ligament
+CH_DZ_LIG = AFFE_CHAR_MECA(MODELE=MO, DDL_IMPO=_F(GROUP_MA="SSUP_F", DZ=0.0))
+
+##Chargement pour la rotation
+ROTA_X = FORMULE(
+    VALE="X*cos(Theta_rad)-Y*sin(Theta_rad)-X", Theta_rad=Theta_rad, NOM_PARA=["X", "Y"]
+)
+
+ROTA_Y = FORMULE(
+    VALE="X*sin(Theta_rad)+Y*cos(Theta_rad)-Y", Theta_rad=Theta_rad, NOM_PARA=["X", "Y"]
+)
+
+CH_ROTA = AFFE_CHAR_MECA_F(MODELE=MO, DDL_IMPO=(_F(TOUT="OUI", DX=ROTA_X, DY=ROTA_Y),))
+
+ROT_MULT = DEFI_FONCTION(
+    NOM_PARA="INST",
+    ABSCISSE=[-1.0, 0],
+    ORDONNEE=[0.0, 1.0],
+    PROL_GAUCHE="CONSTANT",
+    PROL_DROITE="CONSTANT",
+)
+
+##Chargement après rotation
+CH = AFFE_CHAR_MECA(MODELE=MO, FORCE_FACE=_F(GROUP_MA="SINF_F", FZ=1.0e6))
+
+##Blocage après rotation
+CH_BLOC = AFFE_CHAR_MECA(
+    MODELE=MO,
+    DDL_IMPO=(
+        _F(GROUP_NO="N9957", DX=0.0),
+        _F(GROUP_NO="N10021", DX=0.0),
+        _F(GROUP_NO="N9966", DY=0.0),
+        _F(GROUP_NO="N10094", DY=0.0),
+    ),
+)
+
+##Liste d'instants de calcul
+inst = np.linspace(-1.0, 1.0, 3)
+TEMPS = DEFI_LIST_REEL(VALE=tuple(inst))
+
+LINST = DEFI_LIST_INST(METHODE="MANUEL", DEFI_LIST=_F(LIST_INST=TEMPS))
+
+##Calcul en petites déformations, grandes transformations
+##Rotation
+RESUGRAN = STAT_NON_LINE(
+    MODELE=MO,
+    CHAM_MATER=CM,
+    EXCIT=(_F(CHARGE=CH_DZ_LIG), _F(CHARGE=CH_ROTA, FONC_MULT=ROT_MULT)),
+    COMPORTEMENT=_F(TOUT="OUI", DEFORMATION="GREEN_LAGRANGE", RELATION="ELAS"),
+    INCREMENT=_F(LIST_INST=LINST, INST_FIN=0.0),
+    NEWTON=_F(MATRICE="ELASTIQUE"),
+)
+
+##Chargement selon Z après rotation
+RESUGRAN = STAT_NON_LINE(
+    reuse=RESUGRAN,
+    MODELE=MO,
+    CHAM_MATER=CM,
+    EXCIT=(_F(CHARGE=CH_DZ_LIG), _F(CHARGE=CH), _F(CHARGE=CH_BLOC, TYPE_CHARGE="DIDI")),
+    ETAT_INIT=_F(EVOL_NOLI=RESUGRAN),
+    COMPORTEMENT=_F(TOUT="OUI", DEFORMATION="GREEN_LAGRANGE", RELATION="ELAS"),
+    INCREMENT=_F(LIST_INST=LINST),
+)
+
+FF = DEFI_FOND_FISS(
+    MAILLAGE=M,
+    FOND_FISS=_F(TYPE_FOND="FERME", GROUP_MA="LFF", GROUP_NO_ORIG="N49", GROUP_MA_ORIG="M3233"),
+    SYME="OUI",
+    LEVRE_SUP=_F(GROUP_MA="LEVINF"),
+)
+
+GLOC0 = CALC_G(
+    RESULTAT=RESUGRAN,
+    INFO=2,
+    OPTION=("G_EPSI"),
+    THETA=_F(FISSURE=FF, R_INF=0.24, R_SUP=0.53, DISCRETISATION="LINEAIRE"),
+)
+
+TEST_TABLE(
+    REFERENCE="ANALYTIQUE",
+    PRECISION=0.029999999999999999,
+    VALE_CALC=11.692704198995807,
+    VALE_REFE=11.58648,
+    NOM_PARA="G_EPSI",
+    TABLE=GLOC0,
+    FILTRE=(_F(NOM_PARA="NOEUD", VALE_K="N373"), _F(NOM_PARA="NUME_ORDRE", VALE_I=2)),
+)
+
+TEST_TABLE(
+    REFERENCE="ANALYTIQUE",
+    PRECISION=0.02,
+    VALE_CALC=11.687422567231877,
+    VALE_REFE=11.58648,
+    NOM_PARA="G_EPSI",
+    TABLE=GLOC0,
+    FILTRE=(_F(NOM_PARA="NOEUD", VALE_K="N2670"), _F(NOM_PARA="NUME_ORDRE", VALE_I=2)),
+)
+
+TEST_TABLE(
+    REFERENCE="ANALYTIQUE",
+    PRECISION=0.029999999999999999,
+    VALE_CALC=11.687964486144466,
+    VALE_REFE=11.58648,
+    NOM_PARA="G_EPSI",
+    TABLE=GLOC0,
+    FILTRE=(_F(NOM_PARA="NOEUD", VALE_K="N345"), _F(NOM_PARA="NUME_ORDRE", VALE_I=2)),
+)
+
+TEST_TABLE(
+    REFERENCE="ANALYTIQUE",
+    PRECISION=0.03,
+    VALE_CALC=11.69152587168246,
+    VALE_REFE=11.58648,
+    NOM_PARA="G_EPSI",
+    TABLE=GLOC0,
+    FILTRE=(_F(NOM_PARA="NOEUD", VALE_K="N277"), _F(NOM_PARA="NUME_ORDRE", VALE_I=2)),
+)
+
+TEST_TABLE(
+    REFERENCE="ANALYTIQUE",
+    PRECISION=0.03,
+    VALE_CALC=11.805427374438898,
+    VALE_REFE=11.58648,
+    NOM_PARA="G_EPSI",
+    TYPE_TEST="MAX",
+    TABLE=GLOC0,
+    FILTRE=_F(NOM_PARA="NUME_ORDRE", VALE_I=2),
+)
+
+TEST_TABLE(
+    REFERENCE="ANALYTIQUE",
+    PRECISION=0.02,
+    VALE_CALC=11.686595968208541,
+    VALE_REFE=11.58648,
+    NOM_PARA="G_EPSI",
+    TYPE_TEST="MIN",
+    TABLE=GLOC0,
+    FILTRE=_F(NOM_PARA="NUME_ORDRE", VALE_I=2),
+)
+
+
+IMPR_TABLE(TABLE=GLOC0, UNITE=6)
+
+FIN()

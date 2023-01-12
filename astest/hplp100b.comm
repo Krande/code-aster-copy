@@ -1,0 +1,205 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+import numpy as np
+
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
+
+sigma = 10.0e6
+E = 200000.0e6
+nu = 0.3
+
+##Angle de rotation
+Theta = 45
+Theta_rad = Theta * np.pi / 180
+
+# -----------------------------------------------------------------------
+# Maillage
+# -----------------------------------------------------------------------
+
+MALINE = LIRE_MAILLAGE(FORMAT="MED")
+
+MALINE = MODI_MAILLAGE(
+    reuse=MALINE, MAILLAGE=MALINE, ORIE_PEAU=_F(GROUP_MA_PEAU=("haut", "lev", "LEV_INF", "BAS"))
+)
+
+MA = CREA_MAILLAGE(MAILLAGE=MALINE, LINE_QUAD=_F(TOUT="OUI", PREF_NOEUD="Z"))
+
+# Barsoum
+MA = MODI_MAILLAGE(
+    reuse=MA, MAILLAGE=MA, MODI_MAILLE=_F(OPTION="NOEUD_QUART", GROUP_NO_FOND="FRONT")
+)
+
+# -----------------------------------------------------------------------
+# Modèle
+# -----------------------------------------------------------------------
+
+MO = AFFE_MODELE(MAILLAGE=MA, AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="D_PLAN"))
+
+# -----------------------------------------------------------------------
+# Matériau
+# -----------------------------------------------------------------------
+
+ACIER = DEFI_MATERIAU(ELAS=_F(E=E, NU=nu))
+
+CHMAT = AFFE_MATERIAU(MAILLAGE=MA, AFFE=_F(TOUT="OUI", MATER=ACIER))
+
+# -----------------------------------------------------------------------
+# CL et Chargements
+# -----------------------------------------------------------------------
+
+##Chargement pour la rotation
+ROTA_X = FORMULE(
+    VALE="X*cos(Theta_rad)-Y*sin(Theta_rad)-X", Theta_rad=Theta_rad, NOM_PARA=["X", "Y"]
+)
+
+ROTA_Y = FORMULE(
+    VALE="X*sin(Theta_rad)+Y*cos(Theta_rad)-Y", Theta_rad=Theta_rad, NOM_PARA=["X", "Y"]
+)
+
+CH_ROTA = AFFE_CHAR_MECA_F(MODELE=MO, DDL_IMPO=(_F(TOUT="OUI", DX=ROTA_X, DY=ROTA_Y),))
+##Chargement apres la rotation
+BLOC = AFFE_CHAR_MECA(
+    MODELE=MO,
+    ##Blocage deplacement corps rigides
+    DDL_IMPO=(_F(GROUP_NO="HAUT_G", DX=0.0, DY=0.0), _F(GROUP_NO="HAUT_D", DY=0.0)),
+    INFO=2,
+)
+
+FONC_CHAR = DEFI_FONCTION(
+    NOM_PARA="INST",
+    ABSCISSE=[-1.0, 0, 1],
+    ORDONNEE=[0.0, 0.0, 1.0],
+    PROL_GAUCHE="CONSTANT",
+    PROL_DROITE="CONSTANT",
+)
+
+CHAR = AFFE_CHAR_MECA(
+    MODELE=MO,
+    FORCE_CONTOUR=(
+        _F(GROUP_MA=("haut"), FX=-sigma * np.sin(Theta_rad), FY=sigma * np.cos(Theta_rad)),
+        _F(GROUP_MA=("BAS"), FX=sigma * np.sin(Theta_rad), FY=-sigma * np.cos(Theta_rad)),
+    ),
+    INFO=2,
+)
+
+##Liste d'instants de calcul
+inst = np.linspace(-1.0, 1.0, 3)
+TEMPS = DEFI_LIST_REEL(VALE=tuple(inst.tolist()))
+
+LINST = DEFI_LIST_INST(METHODE="MANUEL", DEFI_LIST=_F(LIST_INST=TEMPS))
+
+# -----------------------------------------------------------------------
+# Résolution
+# -----------------------------------------------------------------------
+##Grandes transformations
+##Rotation
+RESUGRAN = STAT_NON_LINE(
+    MODELE=MO,
+    CHAM_MATER=CHMAT,
+    EXCIT=(_F(CHARGE=CH_ROTA),),
+    COMPORTEMENT=_F(TOUT="OUI", DEFORMATION="GREEN_LAGRANGE", RELATION="ELAS"),
+    INCREMENT=_F(LIST_INST=LINST, INST_FIN=0.0),
+)
+
+##Chargement selon Z après rotation
+RESUGRAN = STAT_NON_LINE(
+    reuse=RESUGRAN,
+    MODELE=MO,
+    CHAM_MATER=CHMAT,
+    EXCIT=(_F(CHARGE=CHAR, FONC_MULT=FONC_CHAR), _F(CHARGE=BLOC, TYPE_CHARGE="DIDI")),
+    ETAT_INIT=_F(EVOL_NOLI=RESUGRAN),
+    COMPORTEMENT=_F(TOUT="OUI", DEFORMATION="GREEN_LAGRANGE", RELATION="ELAS"),
+    INCREMENT=_F(LIST_INST=LINST),
+)
+
+# -----------------------------------------------------------------------
+# Post-traitements en Mécanique de la Rupture
+# -----------------------------------------------------------------------
+
+FISS = DEFI_FOND_FISS(
+    MAILLAGE=MA,
+    SYME="NON",
+    FOND_FISS=_F(GROUP_NO="FRONT"),
+    LEVRE_INF=_F(GROUP_MA="LEV_INF"),
+    LEVRE_SUP=_F(GROUP_MA="lev"),
+)
+
+h = 0.625
+RINF_1 = 2 * h
+RSUP_1 = 5 * h
+
+RINF_2 = 1 * h
+RSUP_2 = 3 * h
+
+RINF_3 = 3 * h
+RSUP_3 = 6 * h
+
+# Méthode G-thêta
+
+G1_GRAND = CALC_G(
+    OPTION=("G", "G_EPSI"), RESULTAT=RESUGRAN, THETA=_F(FISSURE=FISS, R_INF=RINF_1, R_SUP=RSUP_1)
+)
+
+G2_GRAND = CALC_G(
+    OPTION=("G", "G_EPSI"), RESULTAT=RESUGRAN, THETA=_F(FISSURE=FISS, R_INF=RINF_2, R_SUP=RSUP_2)
+)
+
+G3_GRAND = CALC_G(
+    OPTION=("G", "G_EPSI"), RESULTAT=RESUGRAN, THETA=_F(FISSURE=FISS, R_INF=RINF_3, R_SUP=RSUP_3)
+)
+
+
+IMPR_TABLE(TABLE=G1_GRAND, TITRE="GREEN-LAGRANGE, LINEAIRE, COURONNE 2-5", UNITE=6)
+IMPR_TABLE(TABLE=G2_GRAND, TITRE="GREEN-LAGRANGE, LINEAIRE, COURONNE 1-3", UNITE=6)
+IMPR_TABLE(TABLE=G3_GRAND, TITRE="GREEN-LAGRANGE, LINEAIRE, COURONNE 3-6", UNITE=6)
+
+TEST_TABLE(
+    PRECISION=0.02,
+    VALE_CALC=565926.5012962708,
+    VALE_REFE=572052.050365,
+    REFERENCE="ANALYTIQUE",
+    NOM_PARA="G",
+    TABLE=G1_GRAND,
+    FILTRE=(_F(NOM_PARA="NUME_ORDRE", VALE_I=2),),
+)
+
+
+TEST_TABLE(
+    PRECISION=0.02,
+    VALE_CALC=565802.9153063488,
+    VALE_REFE=572052.050365,
+    REFERENCE="ANALYTIQUE",
+    NOM_PARA="G",
+    TABLE=G2_GRAND,
+    FILTRE=(_F(NOM_PARA="NUME_ORDRE", VALE_I=2),),
+)
+
+
+TEST_TABLE(
+    PRECISION=0.02,
+    VALE_CALC=565936.5027881013,
+    VALE_REFE=572052.050365,
+    REFERENCE="ANALYTIQUE",
+    NOM_PARA="G",
+    TABLE=G3_GRAND,
+    FILTRE=(_F(NOM_PARA="NUME_ORDRE", VALE_I=2),),
+)
+
+FIN()

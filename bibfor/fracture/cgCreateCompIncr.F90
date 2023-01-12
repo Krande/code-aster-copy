@@ -85,7 +85,7 @@ subroutine cgCreateCompIncr(compor, l_etat_init)
                 call utmess("F", "RUPTURE3_8", sk=rela_comp)
             end if
         end if
-        if (defo_comp .ne. "PETIT") then
+        if ((defo_comp .ne. "PETIT") .and. (defo_comp .ne. "GREEN_LAGRANGE")) then
             call utmess("F", "RUPTURE3_9", sk=defo_comp)
         end if
     end do

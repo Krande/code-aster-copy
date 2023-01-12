@@ -29,6 +29,7 @@ subroutine cgReadCompor(result_in, compor, iord0, l_incr)
 #include "asterfort/comp_meca_elas.h"
 #include "asterfort/cgCreateCompIncr.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/rsexch.h"
@@ -51,11 +52,11 @@ subroutine cgReadCompor(result_in, compor, iord0, l_incr)
 ! Out l_incr   : Incremental behavior or not ?
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: iret, nbetin
+    integer :: iret, nbetin, ier
     integer :: nb_vale, nb_zone, nb_cmp_max, i_zone
-    character(len=8) :: mesh, repk, model
+    character(len=8) :: mesh, repk, model, discretization
     character(len=16) :: defo_comp
-    aster_logical :: l_etat_init, l_impel
+    aster_logical :: l_etat_init, l_impel, l_disc
     integer, pointer :: v_compor_desc(:) => null()
     character(len=16), pointer :: v_compor_vale(:) => null()
 !
@@ -109,8 +110,20 @@ subroutine cgReadCompor(result_in, compor, iord0, l_incr)
 !
     do i_zone = 1, nb_zone
         defo_comp = v_compor_vale(nb_cmp_max*(i_zone-1)+DEFO)
-        if (defo_comp .ne. "PETIT") then
+        if ((defo_comp .ne. "PETIT") .and. (defo_comp .ne. "GREEN_LAGRANGE")) then
             call utmess("F", "RUPTURE3_9", sk=defo_comp)
+        end if
+        if (defo_comp .eq. "GREEN_LAGRANGE") then
+            call utmess("I", "RUPTURE3_12")
+
+            call getvtx('THETA', 'DISCRETISATION', iocc=1, scal=discretization, nbret=ier)
+            l_disc = (discretization == "LINEAIRE") .or. (discretization == "LEGENDRE")
+            ASSERT(l_disc)
+
+            if (discretization .eq. "LEGENDRE") then
+                call utmess("F", "RUPTURE3_13")
+            end if
+
         end if
     end do
 !

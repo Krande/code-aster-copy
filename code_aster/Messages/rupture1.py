@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -205,7 +205,7 @@ plus petites que le rayon du fond de fissure.
     24: _(
         """
 L'option CALC_K_G est incompatible avec les comportements incrémentaux,
-avec les comportements non linéaires et avec la déformation GROT_GDEP.
+avec les comportements non linéaires et avec la déformation GREEN_LAGRANGE.
 """
     ),
     25: _(
