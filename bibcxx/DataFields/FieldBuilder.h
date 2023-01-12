@@ -6,7 +6,7 @@
  * @brief Header of class FieldBuilder
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -39,153 +39,154 @@
  * @author Nicolas Sellenet
  */
 class FieldBuilder {
-  private:
-    std::map< std::string, FieldOnNodesDescriptionPtr > _mapProfChno;
-    std::map< std::string, FiniteElementDescriptorPtr > _mapLigrel;
+private:
+  std::map<std::string, FieldOnNodesDescriptionPtr> _mapProfChno;
+  std::map<std::string, FiniteElementDescriptorPtr> _mapLigrel;
 
-    // I use them to debug easily mutiple creation
-    // I don't use map directly to avoid to keep in memory unnecessary objects
-    static std::set< std::string > _setProfChno;
-    static std::set< std::string > _setLigrel;
+  // I use them to debug easily mutiple creation
+  // I don't use map directly to avoid to keep in memory unnecessary objects
+  static std::set<std::string> _setProfChno;
+  static std::set<std::string> _setLigrel;
 
-    /**
-     * @brief Add a existing FiniteElementDescriptor in FieldBuilder
-     */
-    FiniteElementDescriptorPtr newFiniteElementDescriptor( const std::string &name,
-                                                           const BaseMeshPtr mesh ) {
-        if ( _setLigrel.count( trim( name ) ) > 0 ) {
-            raiseAsterError( "LIGREL already exists: " + name );
-        }
+  /**
+   * @brief Add a existing FiniteElementDescriptor in FieldBuilder
+   */
+  FiniteElementDescriptorPtr
+  newFiniteElementDescriptor(const std::string &name, const BaseMeshPtr mesh) {
+    if (_setLigrel.count(trim(name)) > 0) {
+      raiseAsterError("LIGREL already exists: " + name);
+    }
 
-        auto curDesc = std::make_shared< FiniteElementDescriptor >( name, mesh );
+    auto curDesc = std::make_shared<FiniteElementDescriptor>(name, mesh);
 
-        addFiniteElementDescriptor( curDesc );
+    addFiniteElementDescriptor(curDesc);
 
-        return curDesc;
-    };
+    return curDesc;
+  };
 
-    /**
-     * @brief Add a existing FieldOnNodesDescription in FieldBuilder
-     */
-    FieldOnNodesDescriptionPtr newFieldOnNodesDescription( const std::string &name ) {
-        if ( _setProfChno.count( trim( name ) ) > 0 ) {
-            raiseAsterError( "PROF_CHNO already exists: " + name );
-        }
+  /**
+   * @brief Add a existing FieldOnNodesDescription in FieldBuilder
+   */
+  FieldOnNodesDescriptionPtr
+  newFieldOnNodesDescription(const std::string &name) {
+    if (_setProfChno.count(trim(name)) > 0) {
+      raiseAsterError("PROF_CHNO already exists: " + name);
+    }
 
-        auto curDesc = std::make_shared< FieldOnNodesDescription >( name );
-        addFieldOnNodesDescription( curDesc );
+    auto curDesc = std::make_shared<FieldOnNodesDescription>(name);
+    addFieldOnNodesDescription(curDesc);
 
-        return curDesc;
-    };
+    return curDesc;
+  };
 
-  public:
-    /**
-     * @brief Constructor
-     */
-    FieldBuilder(){};
+public:
+  /**
+   * @brief Constructor
+   */
+  FieldBuilder(){};
 
-    /**
-     * @brief Add a existing FieldOnNodesDescription in FieldBuilder
-     */
-    void addFieldOnNodesDescription( const FieldOnNodesDescriptionPtr &fond ) {
-        AS_ASSERT( fond );
+  /**
+   * @brief Add a existing FieldOnNodesDescription in FieldBuilder
+   */
+  void addFieldOnNodesDescription(const FieldOnNodesDescriptionPtr &fond) {
+    AS_ASSERT(fond);
 
-        _mapProfChno[trim( fond->getName() )] = fond;
-        _setProfChno.insert( trim( fond->getName() ) );
-    };
+    _mapProfChno[trim(fond->getName())] = fond;
+    _setProfChno.insert(trim(fond->getName()));
+  };
 
-    /**
-     * @brief Add a existing FiniteElementDescriptor in FieldBuilder
-     */
-    void addFiniteElementDescriptor( const FiniteElementDescriptorPtr &fed ) {
-        AS_ASSERT( fed );
+  /**
+   * @brief Add a existing FiniteElementDescriptor in FieldBuilder
+   */
+  void addFiniteElementDescriptor(const FiniteElementDescriptorPtr &fed) {
+    AS_ASSERT(fed);
 
-        _mapLigrel[trim( fed->getName() )] = fed;
-        _setLigrel.insert( trim( fed->getName() ) );
-    };
+    _mapLigrel[trim(fed->getName())] = fed;
+    _setLigrel.insert(trim(fed->getName()));
+  };
 
-    /**
-     * @brief Build a FieldOnCells with a FiniteElementDescriptor
-     */
-    template < typename ValueType >
-    std::shared_ptr< FieldOnCells< ValueType > > buildFieldOnCells( const std::string &name,
-                                                                    const BaseMeshPtr mesh ) {
-        std::shared_ptr< FieldOnCells< ValueType > > field =
-            std::make_shared< FieldOnCells< ValueType > >( name );
-        field->updateValuePointers();
+  /**
+   * @brief Build a FieldOnCells with a FiniteElementDescriptor
+   */
+  template <typename ValueType>
+  std::shared_ptr<FieldOnCells<ValueType>>
+  buildFieldOnCells(const std::string &name, const BaseMeshPtr mesh) {
+    std::shared_ptr<FieldOnCells<ValueType>> field =
+        std::make_shared<FieldOnCells<ValueType>>(name);
+    field->updateValuePointers();
 
-        const std::string ligrel = trim( ( *( *field )._reference )[0].toString() );
+    const std::string ligrel = trim((*(*field)._reference)[0].toString());
 
-        if ( !ligrel.empty() ) {
-            auto curIter = _mapLigrel.find( ligrel );
-            FiniteElementDescriptorPtr curDesc;
-            if ( curIter != _mapLigrel.end() ) {
-                curDesc = curIter->second;
-            } else {
-                curDesc = newFiniteElementDescriptor( ligrel, mesh );
-            }
+    if (!ligrel.empty()) {
+      auto curIter = _mapLigrel.find(ligrel);
+      FiniteElementDescriptorPtr curDesc;
+      if (curIter != _mapLigrel.end()) {
+        curDesc = curIter->second;
+      } else {
+        curDesc = newFiniteElementDescriptor(ligrel, mesh);
+      }
 
-            field->setDescription( curDesc );
-        }
-        return field;
-    };
+      field->setDescription(curDesc);
+    }
+    return field;
+  };
 
-    /**
-     * @brief Build a ConstantFieldOnCells with a FiniteElementDescriptor
-     */
-    template < typename ValueType >
-    std::shared_ptr< ConstantFieldOnCells< ValueType > >
-    buildConstantFieldOnCells( const std::string &name, const BaseMeshPtr mesh ) {
+  /**
+   * @brief Build a ConstantFieldOnCells with a FiniteElementDescriptor
+   */
+  template <typename ValueType>
+  std::shared_ptr<ConstantFieldOnCells<ValueType>>
+  buildConstantFieldOnCells(const std::string &name, const BaseMeshPtr mesh) {
 
-        std::shared_ptr< ConstantFieldOnCells< ValueType > > field =
-            std::make_shared< ConstantFieldOnCells< ValueType > >( name, mesh );
-        field->updateValuePointers();
+    std::shared_ptr<ConstantFieldOnCells<ValueType>> field =
+        std::make_shared<ConstantFieldOnCells<ValueType>>(name, mesh);
+    field->updateValuePointers();
 
-        return field;
-    };
+    return field;
+  };
 
-    /**
-     * @brief Build a FieldOnNodes with a FieldOnNodesDescription
-     */
-    template < typename ValueType >
-    std::shared_ptr< FieldOnNodes< ValueType > > buildFieldOnNodes( std::string name ) {
-        std::shared_ptr< FieldOnNodes< ValueType > > field =
-            std::make_shared< FieldOnNodes< ValueType > >( name );
-        field->updateValuePointers();
+  /**
+   * @brief Build a FieldOnNodes with a FieldOnNodesDescription
+   */
+  template <typename ValueType>
+  std::shared_ptr<FieldOnNodes<ValueType>> buildFieldOnNodes(std::string name) {
+    std::shared_ptr<FieldOnNodes<ValueType>> field =
+        std::make_shared<FieldOnNodes<ValueType>>(name);
+    field->updateValuePointers();
 
-        const std::string profchno = trim( ( *( *field )._reference )[1].toString() );
-        if ( !profchno.empty() ) {
+    const std::string profchno = trim((*(*field)._reference)[1].toString());
+    if (!profchno.empty()) {
 
-            auto curIter = _mapProfChno.find( profchno );
-            FieldOnNodesDescriptionPtr curDesc;
-            if ( curIter != _mapProfChno.end() )
-                curDesc = curIter->second;
-            else {
-                curDesc = newFieldOnNodesDescription( profchno );
-            }
-            field->setDescription( curDesc );
-        }
+      auto curIter = _mapProfChno.find(profchno);
+      FieldOnNodesDescriptionPtr curDesc;
+      if (curIter != _mapProfChno.end())
+        curDesc = curIter->second;
+      else {
+        curDesc = newFieldOnNodesDescription(profchno);
+      }
+      field->setDescription(curDesc);
+    }
 
-        return field;
-    };
+    return field;
+  };
 
-    std::vector< FiniteElementDescriptorPtr > getFiniteElementDescriptors() const {
-        std::vector< FiniteElementDescriptorPtr > ret;
+  std::vector<FiniteElementDescriptorPtr> getFiniteElementDescriptors() const {
+    std::vector<FiniteElementDescriptorPtr> ret;
 
-        for ( auto &[name, fed] : _mapLigrel )
-            ret.push_back( fed );
+    for (auto &[name, fed] : _mapLigrel)
+      ret.push_back(fed);
 
-        return ret;
-    };
+    return ret;
+  };
 
-    std::vector< FieldOnNodesDescriptionPtr > getFieldOnNodesDescriptions() const {
-        std::vector< FieldOnNodesDescriptionPtr > ret;
+  std::vector<FieldOnNodesDescriptionPtr> getFieldOnNodesDescriptions() const {
+    std::vector<FieldOnNodesDescriptionPtr> ret;
 
-        for ( auto &[name, fnd] : _mapProfChno )
-            ret.push_back( fnd );
+    for (auto &[name, fnd] : _mapProfChno)
+      ret.push_back(fnd);
 
-        return ret;
-    };
+    return ret;
+  };
 };
 
 #endif /* FIELDBUILDER_H_ */

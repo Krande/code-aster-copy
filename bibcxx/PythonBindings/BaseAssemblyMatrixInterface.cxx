@@ -3,7 +3,7 @@
  * @brief Interface python de AssemblyMatrix
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -42,13 +42,6 @@ void exportBaseAssemblyMatrixToPython( py::module_ &mod ) {
               py::arg( "currentLoad" ), py::arg( "func" ) = emptyRealFunction )
         // -----------------------------------------------------------------------------------------
         .def( "getDOFNumbering", &BaseAssemblyMatrix::getDOFNumbering )
-        // -----------------------------------------------------------------------------------------
-        .def( "getModel", &BaseAssemblyMatrix::getModel, R"(
-Return the model.
-
-Returns:
-    Model: a pointer to the model
-        )" )
         // -----------------------------------------------------------------------------------------
         .def( "getMesh", &BaseAssemblyMatrix::getMesh, R"(
 Return the mesh.

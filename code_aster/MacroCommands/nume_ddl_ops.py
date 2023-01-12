@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -20,7 +20,7 @@
 from libaster import deleteTemporaryObjects, setFortranLoggingLevel, resetFortranLoggingLevel
 
 from ..Cata.Syntax import _F
-from ..Objects import DOFNumbering, ParallelDOFNumbering
+from ..Objects import DOFNumbering, ParallelDOFNumbering, ListOfLoads
 
 
 def meshIsParallel(args):
@@ -56,17 +56,15 @@ def nume_ddl_ops(self, **args):
 
     model = args.get("MODELE")
     if model is not None:
-        nume_ddl.setModel(model)
         charge = args.get("CHARGE")
+        listOfLoads = ListOfLoads(model)
         if charge is not None:
             for curLoad in charge:
-                nume_ddl.addLoad(curLoad)
+                listOfLoads.addLoad(curLoad)
+        nume_ddl.computeNumbering(model, listOfLoads)
     else:
         matrRigi = args["MATR_RIGI"]
-        for matr in matrRigi:
-            nume_ddl.setElementaryMatrix(matr)
-
-    nume_ddl.computeNumbering()
+        nume_ddl.computeNumbering(matrRigi)
 
     resetFortranLoggingLevel()
     deleteTemporaryObjects()

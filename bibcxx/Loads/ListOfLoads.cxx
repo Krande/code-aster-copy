@@ -3,7 +3,7 @@
  * @brief Implementation de ListOfLoads
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -82,10 +82,12 @@ bool ListOfLoads::build( ModelPtr model ) {
         return true;
 
     int physic;
-    if ( model )
+    if ( model ) {
         physic = model->getPhysics();
-    else
+        _model = model;
+    } else {
         physic = this->getPhysics();
+    }
 
     ASTERINTEGER iexcit = 1;
     ASTERINTEGER icalc = 0;

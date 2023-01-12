@@ -1,5 +1,5 @@
 /* -------------------------------------------------------------------- */
-/* Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org             */
+/* Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org             */
 /* This file is part of code_aster.                                     */
 /*                                                                      */
 /* code_aster is free software: you can redistribute it and/or modify   */
@@ -21,7 +21,7 @@
  * @brief Fichier entete de la classe BaseDOFNumbering
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+ *   Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
  *   This file is part of code_aster.
  *
  *   code_aster is free software: you can redistribute it and/or modify
@@ -77,12 +77,13 @@ using ElementaryMatrixPressureComplexPtr =
  * @author Nicolas Sellenet
  */
 class BaseDOFNumbering : public DataStructure {
-  private:
+  public:
     typedef std::variant< ElementaryMatrixDisplacementRealPtr,
                           ElementaryMatrixDisplacementComplexPtr,
                           ElementaryMatrixTemperatureRealPtr, ElementaryMatrixPressureComplexPtr >
         MatrElem;
 
+  private:
     class ElementaryMatrixGetModel {
       public:
         template < typename T >
@@ -104,6 +105,14 @@ class BaseDOFNumbering : public DataStructure {
         template < typename T >
         std::vector< FiniteElementDescriptorPtr > operator()( const T &operand ) const {
             return operand->getFiniteElementDescriptors();
+        };
+    };
+
+    class ElementaryMatrixGetMesh {
+      public:
+        template < typename T >
+        BaseMeshPtr operator()( const T &operand ) const {
+            return operand->getMesh();
         };
     };
 
@@ -208,6 +217,7 @@ class BaseDOFNumbering : public DataStructure {
          * @brief Returns a vector of information of the Lagrange multipliers
          */
         const JeveuxVectorLong getLagrangianInformations() const { return _lagrangianInformations; }
+
         /**
          * @brief Returns a vector of information on the numer of equations
          */
@@ -286,13 +296,9 @@ class BaseDOFNumbering : public DataStructure {
     /** @brief Objet Jeveux '.NSLV' */
     JeveuxVectorChar24 _nameOfSolverDataStructure;
     /** @brief Objet prof_chno */
+    BaseMeshPtr _mesh;
+    /** @brief Objet prof_chno */
     FieldOnNodesDescriptionPtr _dofDescription;
-    /** @brief Modele */
-    ModelPtr _model;
-    /** @brief Matrices elementaires */
-    std::vector< MatrElem > _matrix;
-    /** @brief Chargements */
-    ListOfLoadsPtr _listOfLoads;
     /** @brief Objet Jeveux '.SMOS' */
     MorseStoragePtr _smos;
     /** @brief Objet Jeveux '.SLCS' */
@@ -311,8 +317,8 @@ class BaseDOFNumbering : public DataStructure {
      * @brief Constructeur
      * @param name nom souhaité de la sd (utile pour le BaseDOFNumbering d'une sd_resu)
      */
-    BaseDOFNumbering( const std::string name, const std::string &type, const ModelPtr model,
-                      const ListOfLoadsPtr loads, const FieldOnNodesDescriptionPtr fdof );
+    BaseDOFNumbering( const std::string name, const std::string &type,
+                      const FieldOnNodesDescriptionPtr fdof, const MeshPtr mesh );
 
     BaseDOFNumbering( const std::string name, const std::string &type );
 
@@ -335,15 +341,6 @@ class BaseDOFNumbering : public DataStructure {
      */
     bool addFiniteElementDescriptors( const std::vector< FiniteElementDescriptorPtr > &curFEDs );
 
-    /**
-     * @brief Function d'ajout d'un chargement
-     * @param Args... Liste d'arguments template
-     */
-    template < typename... Args >
-    void addLoad( const Args &... a ) {
-        _listOfLoads->addLoad( a... );
-    };
-
     void setEmpty( const bool &empty ) { _isEmpty = empty; };
 
     /**
@@ -354,17 +351,22 @@ class BaseDOFNumbering : public DataStructure {
     /**
      * @brief Build the Numbering of DOFs
      */
-    bool computeNumbering();
-
-    /**
-     * @brief renumbering of DOFs
-     */
-    bool computeRenumbering();
+    virtual bool computeNumbering( const ModelPtr model, const ListOfLoadsPtr listOfLoads );
 
     /**
      * @brief Build the Numbering of DOFs
      */
-    bool computeNumberingWithLocalMode( const std::string &localMode );
+    virtual bool computeNumbering( const std::vector< MatrElem > matrix );
+
+    /**
+     * @brief renumbering of DOFs
+     */
+    virtual bool computeRenumbering( const ModelPtr model, const ListOfLoadsPtr listOfLoads );
+
+    /**
+     * @brief Build the Numbering of DOFs
+     */
+    virtual bool computeNumberingWithLocalMode( const std::string &localMode );
 
     /**
      * @brief Get Physical Quantity
@@ -459,11 +461,6 @@ class BaseDOFNumbering : public DataStructure {
     std::vector< FiniteElementDescriptorPtr > getFiniteElementDescriptors() { return _FEDVector; };
 
     /**
-     * @brief Get model
-     */
-    ModelPtr getModel() const;
-
-    /**
      * @brief Get mesh
      * @return Internal mesh
      */
@@ -480,48 +477,6 @@ class BaseDOFNumbering : public DataStructure {
      * @return false
      */
     virtual bool isParallel() { return false; };
-
-    /**
-     * @brief Methode permettant de definir les matrices elementaires
-     * @param currentMatrix objet ElementaryMatrix
-     */
-    void setElementaryMatrix( const ElementaryMatrixDisplacementRealPtr &currentMatrix );
-
-    /**
-     * @brief Methode permettant de definir les matrices elementaires
-     * @param currentMatrix objet ElementaryMatrix
-     */
-    void setElementaryMatrix( const ElementaryMatrixDisplacementComplexPtr &currentMatrix );
-
-    /**
-     * @brief Methode permettant de definir les matrices elementaires
-     * @param currentMatrix objet ElementaryMatrix
-     */
-    void setElementaryMatrix( const ElementaryMatrixTemperatureRealPtr &currentMatrix );
-
-    /**
-     * @brief Methode permettant de definir les matrices elementaires
-     * @param currentMatrix objet ElementaryMatrix
-     */
-    void setElementaryMatrix( const ElementaryMatrixPressureComplexPtr &currentMatrix );
-
-    /**
-     * @brief Methode permettant de definir la liste de charge
-     * @param currentList Liste charge
-     */
-    void setListOfLoads( const ListOfLoadsPtr &currentList ) { _listOfLoads = currentList; };
-
-    ListOfLoadsPtr getListOfLoads( void ) const { return _listOfLoads; };
-
-    VectorLong getDirichletBCDOFs( void ) const;
-
-    /**
-     * @brief Methode permettant de definir le modele
-     * @param currentModel Modele de la numerotation
-     */
-    virtual void setModel( const ModelPtr &currentModel );
-
-    bool hasDirichletBC() const { return _listOfLoads->hasDirichletBC(); }
 };
 
 /**

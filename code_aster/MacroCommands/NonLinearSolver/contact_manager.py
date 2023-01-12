@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -62,7 +62,9 @@ class ContactManager:
             fed_defi = self.defi.getFiniteElementDescriptor()
             fed_pair = self.pair.getFiniteElementDescriptor()
             phys_pb.getListOfLoads().addContactLoadDescriptor(fed_defi, fed_pair)
-            phys_pb.getDOFNumbering().computeRenumbering()
+            model = phys_pb.getModel()
+            loads = phys_pb.getListOfLoads()
+            phys_pb.getDOFNumbering().computeRenumbering(model, loads)
 
     @profile
     def getPairingCoordinates(self):

@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -73,6 +73,14 @@ class ComputeAdditionalField(ExecuteCommand):
                 if keywords["RESULTAT"].hasListOfLoads(rank):
                     list_of_load = keywords["RESULTAT"].getListOfLoads(rank)
                     self._result.setListOfLoads(list_of_load, rank)
+
+            for fED in keywords["RESULTAT"].getFiniteElementDescriptors():
+                self._result.addFiniteElementDescriptor(fED)
+            for fOND in keywords["RESULTAT"].getFieldOnNodesDescriptions():
+                self._result.addFieldOnNodesDescription(fOND)
+            mesh = keywords["RESULTAT"].getMesh()
+            if mesh is not None:
+                self._result.setMesh(mesh)
         else:
             try:
                 modele = self._result.getModel()

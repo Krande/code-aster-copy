@@ -71,14 +71,17 @@ class RestGenePhys(ExecuteCommand):
             fnds += keywords["MODE_MECA"].getFieldOnNodesDescriptions()
 
         resu_gene = keywords["RESU_GENE"]
-        if isinstance(resu_gene, (TransientGeneralizedResult, HarmoGeneralizedResult)):
+        if isinstance(
+            resu_gene, (TransientGeneralizedResult, HarmoGeneralizedResult, GeneralizedModeResult)
+        ):
             dofNum = resu_gene.getDOFNumbering()
+            for fED in resu_gene.getFiniteElementDescriptors():
+                self._result.addFiniteElementDescriptor(fED)
 
             if dofNum is not None:
                 self._result.setDOFNumbering(dofNum)
-                modele = dofNum.getModel()
-                if modele is not None:
-                    self._result.setModel(modele)
+                for i in dofNum.getFiniteElementDescriptors():
+                    self._result.addFiniteElementDescriptor(i)
             else:
                 geneDofNum = resu_gene.getGeneralizedDOFNumbering()
                 mesh = None
@@ -90,10 +93,9 @@ class RestGenePhys(ExecuteCommand):
                             mesh = basis.getMesh()
                         if dofNum is not None:
                             self._result.setDOFNumbering(dofNum)
-                            modele = dofNum.getModel()
-                            if modele is not None:
-                                self._result.setModel(modele)
-                            elif mesh is None:
+                            for i in dofNum.getFiniteElementDescriptors():
+                                self._result.addFiniteElementDescriptor(i)
+                            if mesh is None:
                                 mesh = dofNum.getMesh()
 
                 if mesh is None:

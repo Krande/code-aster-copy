@@ -3,7 +3,7 @@
  * @brief Implementation de ParallelDOFNumbering
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -274,40 +274,6 @@ VectorString ParallelDOFNumbering::getComponentsAssociatedToNode( const ASTERINT
     }
     FreeStr( stringArray );
     return stringVector;
-};
-
-void ParallelDOFNumbering::setElementaryMatrix(
-    const ElementaryMatrixDisplacementRealPtr &currentMatrix ) {
-    if ( !currentMatrix->getModel()->getMesh()->isParallel() )
-        throw std::runtime_error( "Mesh must be parallel" );
-    BaseDOFNumbering::setElementaryMatrix( currentMatrix );
-};
-
-void ParallelDOFNumbering::setElementaryMatrix(
-    const ElementaryMatrixDisplacementComplexPtr &currentMatrix ) {
-    if ( !currentMatrix->getModel()->getMesh()->isParallel() )
-        throw std::runtime_error( "Mesh must be parallel" );
-    BaseDOFNumbering::setElementaryMatrix( currentMatrix );
-};
-
-void ParallelDOFNumbering::setElementaryMatrix(
-    const ElementaryMatrixTemperatureRealPtr &currentMatrix ) {
-    if ( !currentMatrix->getModel()->getMesh()->isParallel() )
-        throw std::runtime_error( "Mesh must be parallel" );
-    BaseDOFNumbering::setElementaryMatrix( currentMatrix );
-};
-
-void ParallelDOFNumbering::setElementaryMatrix(
-    const ElementaryMatrixPressureComplexPtr &currentMatrix ) {
-    if ( !currentMatrix->getModel()->getMesh()->isParallel() )
-        throw std::runtime_error( "Mesh must be parallel" );
-    BaseDOFNumbering::setElementaryMatrix( currentMatrix );
-};
-
-void ParallelDOFNumbering::setModel( const ModelPtr &currentModel ) {
-    if ( !currentModel->getMesh()->isParallel() )
-        throw std::runtime_error( "Mesh must be parallel" );
-    BaseDOFNumbering::setModel( currentModel );
 };
 
 const JeveuxVectorLong ParallelDOFNumbering::getLocalToGlobalMapping() const {

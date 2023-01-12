@@ -2,7 +2,7 @@
  * @file DiscreteComputation.cxx
  * @brief Implementation of class DiscreteComputation
  * @section LICENCE
- *   Copyright (C) 1991 2022  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 2023  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -40,7 +40,9 @@ FieldOnNodesRealPtr DiscreteComputation::getImposedDualBC( const ASTERDOUBLE tim
 
     bool has_load = false;
 
-    auto elemVect = std::make_shared< ElementaryVectorReal >( _phys_problem );
+    auto elemVect = std::make_shared< ElementaryVectorReal >(
+        _phys_problem->getModel(), _phys_problem->getMaterialField(),
+        _phys_problem->getElementaryCharacteristics(), _phys_problem->getListOfLoads() );
 
     if ( _phys_problem->getModel()->isThermal() ) {
         has_load = this->addTherImposedTerms( elemVect, time, time_delta, time_theta );
@@ -69,7 +71,9 @@ DiscreteComputation::getNeumannForces( const ASTERDOUBLE time, const ASTERDOUBLE
 
     bool has_load = false;
 
-    auto elemVect = std::make_shared< ElementaryVectorReal >( _phys_problem );
+    auto elemVect = std::make_shared< ElementaryVectorReal >(
+        _phys_problem->getModel(), _phys_problem->getMaterialField(),
+        _phys_problem->getElementaryCharacteristics(), _phys_problem->getListOfLoads() );
 
     if ( _phys_problem->getModel()->isThermal() ) {
         has_load = this->addTherNeumannTerms( elemVect, time, time_delta, time_theta,
@@ -93,7 +97,9 @@ DiscreteComputation::getNeumannForces( const ASTERDOUBLE time, const ASTERDOUBLE
 
 FieldOnNodesRealPtr DiscreteComputation::getDualForces( FieldOnNodesRealPtr lagr_curr ) const {
 
-    auto elemVect = std::make_shared< ElementaryVectorReal >( _phys_problem );
+    auto elemVect = std::make_shared< ElementaryVectorReal >(
+        _phys_problem->getModel(), _phys_problem->getMaterialField(),
+        _phys_problem->getElementaryCharacteristics(), _phys_problem->getListOfLoads() );
 
     if ( _phys_problem->getModel()->isThermal() ) {
         AS_ABORT( "Not implemented for thermic" );
@@ -128,7 +134,9 @@ FieldOnNodesRealPtr DiscreteComputation::getDualForces( FieldOnNodesRealPtr lagr
 FieldOnNodesRealPtr DiscreteComputation::getDualDisplacement( FieldOnNodesRealPtr disp_curr,
                                                               ASTERDOUBLE scaling ) const {
 
-    auto elemVect = std::make_shared< ElementaryVectorReal >( _phys_problem );
+    auto elemVect = std::make_shared< ElementaryVectorReal >(
+        _phys_problem->getModel(), _phys_problem->getMaterialField(),
+        _phys_problem->getElementaryCharacteristics(), _phys_problem->getListOfLoads() );
 
     if ( _phys_problem->getModel()->isThermal() ) {
         AS_ABORT( "Not implemented for thermic" );
@@ -179,7 +187,7 @@ FieldOnNodesRealPtr DiscreteComputation::getDirichletBC( const ASTERDOUBLE time 
 
     // Get JEVEUX names of objects to call Fortran
     std::string vectAsseName = vectAsse->getName();
-    std::string dofNumName = _phys_problem->getDOFNumbering()->getName();
+    std::string dofNumName = dofNume->getName();
     std::string base( "G" );
 
     // Wrapper FORTRAN
@@ -197,13 +205,14 @@ DiscreteComputation::getIncrementalDirichletBC( const ASTERDOUBLE &time,
                                                 const FieldOnNodesRealPtr disp_curr ) const {
     auto dofNume = _phys_problem->getDOFNumbering();
 
-    if ( dofNume->hasDirichletBC() ) {
+    const auto listOfLoads = _phys_problem->getListOfLoads();
+    if ( listOfLoads->hasDirichletBC() ) {
         auto diri_curr = getDirichletBC( time );
         auto diri_impo = *( diri_curr ) - *( disp_curr );
         diri_impo.updateValuePointers();
 
         // Set to zero terms not imposed
-        auto eliminatedDofs = dofNume->getDirichletBCDOFs();
+        auto eliminatedDofs = _phys_problem->getDirichletBCDOFs();
         auto nbElimination = eliminatedDofs.size();
 
         for ( ASTERINTEGER ieq = 0; ieq < nbElimination; ieq++ ) {
@@ -251,7 +260,9 @@ DiscreteComputation::getExternalStateVariablesForces( const ASTERDOUBLE time ) c
     }
 
     // Create elementary vectors
-    auto elemVect = std::make_shared< ElementaryVectorReal >( _phys_problem );
+    auto elemVect = std::make_shared< ElementaryVectorReal >(
+        _phys_problem->getModel(), _phys_problem->getMaterialField(),
+        _phys_problem->getElementaryCharacteristics(), _phys_problem->getListOfLoads() );
     elemVect->prepareCompute( "CHAR_VARC" );
 
     int nbExternVar = static_cast< int >( externVarEnumInt::NumberOfExternVarTypes );

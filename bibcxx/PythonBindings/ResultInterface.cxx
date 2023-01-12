@@ -572,5 +572,6 @@ Get list of field's description to build internal FieldOnNodes
 
 Returns:
     list[FieldOnNodesDescription]: list of field's description
-        )" );
+        )" )
+        .def( "addFiniteElementDescriptor", &Result::addFiniteElementDescriptor );
 };

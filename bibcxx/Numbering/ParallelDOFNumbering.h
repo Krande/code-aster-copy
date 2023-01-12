@@ -11,7 +11,7 @@
  * @brief Fichier entete de la classe ParallelDOFNumbering
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -117,36 +117,6 @@ class ParallelDOFNumbering : public BaseDOFNumbering {
      * @return true
      */
     bool isParallel() { return true; };
-
-    /**
-     * @brief Methode permettant de definir les matrices elementaires
-     * @param currentMatrix objet ElementaryMatrix
-     */
-    void setElementaryMatrix( const ElementaryMatrixDisplacementRealPtr &currentMatrix );
-
-    /**
-     * @brief Methode permettant de definir les matrices elementaires
-     * @param currentMatrix objet ElementaryMatrix
-     */
-    void setElementaryMatrix( const ElementaryMatrixDisplacementComplexPtr &currentMatrix );
-
-    /**
-     * @brief Methode permettant de definir les matrices elementaires
-     * @param currentMatrix objet ElementaryMatrix
-     */
-    void setElementaryMatrix( const ElementaryMatrixTemperatureRealPtr &currentMatrix );
-
-    /**
-     * @brief Methode permettant de definir les matrices elementaires
-     * @param currentMatrix objet ElementaryMatrix
-     */
-    void setElementaryMatrix( const ElementaryMatrixPressureComplexPtr &currentMatrix );
-
-    /**
-     * @brief Methode permettant de definir le modele
-     * @param currentModel Modele de la numerotation
-     */
-    void setModel( const ModelPtr &currentModel );
 
     /**
      * @brief Are Lagrange Multipliers used for BC or MPC

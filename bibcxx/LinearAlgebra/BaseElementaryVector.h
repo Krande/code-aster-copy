@@ -3,7 +3,7 @@
  * @brief Definition of elementary vectors
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -33,7 +33,6 @@
 #include "Loads/ListOfLoads.h"
 #include "Materials/MaterialField.h"
 #include "Numbering/DOFNumbering.h"
-#include "Studies/PhysicalProblem.h"
 #include "Supervis/ResultNaming.h"
 
 /**
@@ -81,8 +80,10 @@ class BaseElementaryVector : public DataStructure {
     BaseElementaryVector() : BaseElementaryVector( ResultNaming::getNewResultName() ){};
 
     /** @brief Constructor with automatic name */
-    BaseElementaryVector( const PhysicalProblemPtr phys_pb ) : BaseElementaryVector() {
-        this->setPhysicalProblem( phys_pb );
+    BaseElementaryVector( const ModelPtr model, const MaterialFieldPtr mater,
+                          const ElementaryCharacteristicsPtr caraElem, const ListOfLoadsPtr lLoads )
+        : BaseElementaryVector() {
+        this->setPhysicalProblem( model, mater, caraElem, lLoads );
     };
 
   public:
@@ -133,11 +134,13 @@ class BaseElementaryVector : public DataStructure {
     /**
      * @brief Set physical problem
      */
-    void setPhysicalProblem( const PhysicalProblemPtr phys_pb ) {
-        _model = phys_pb->getModel();
-        _materialField = phys_pb->getMaterialField();
-        _elemChara = phys_pb->getElementaryCharacteristics();
-        _listOfLoads = phys_pb->getListOfLoads();
+    void setPhysicalProblem( const ModelPtr model, const MaterialFieldPtr mater,
+                             const ElementaryCharacteristicsPtr caraElem,
+                             const ListOfLoadsPtr lLoads ) {
+        _model = model;
+        _materialField = mater;
+        _elemChara = caraElem;
+        _listOfLoads = lLoads;
     };
 
     /**

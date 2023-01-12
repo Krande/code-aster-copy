@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -75,15 +75,15 @@ class ConvergenceManager:
         Returns:
             FieldOnNodesReal: Residual changed in place.
         """
-        dofNume = self.phys_pb.getDOFNumbering()
+        loads = self.phys_pb.getListOfLoads()
 
         # maybe not really efficient
-        if dofNume.hasDirichletBC():
+        if loads.hasDirichletBC():
             time_curr = self.phys_state.time + self.phys_state.time_step
             primal_curr = self.phys_state.primal + self.phys_state.primal_step
             disc_comp = DiscreteComputation(self.phys_pb)
             diriBCs = disc_comp.getIncrementalDirichletBC(time_curr, primal_curr)
-            eliminatedDofs = dofNume.getDirichletBCDOFs()
+            eliminatedDofs = self.phys_pb.getDirichletBCDOFs()
             nbElimination = len(eliminatedDofs)
             assert residual.size() == nbElimination
 
@@ -108,9 +108,7 @@ class ConvergenceManager:
 
         scaling = 0.0
 
-        dofNume = self.phys_pb.getDOFNumbering()
-
-        eliminatedDofs = dofNume.getDirichletBCDOFs()
+        eliminatedDofs = self.phys_pb.getDirichletBCDOFs()
         nb_dofs = len(eliminatedDofs)
 
         residuals.update()

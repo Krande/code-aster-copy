@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -121,17 +121,17 @@ class ResultCreator(ExecuteCommand):
                         feds.append(fed)
 
         if keywords.get("MATR_RIGI"):
-            self._result.setModel(keywords["MATR_RIGI"].getModel())
+            self._result.setMesh(keywords["MATR_RIGI"].getMesh())
             self._result.setDOFNumbering(keywords["MATR_RIGI"].getDOFNumbering())
         elif keywords.get("MATR_MASS"):
-            self._result.setModel(keywords["MATR_MASS"].getModel())
+            self._result.setMesh(keywords["MATR_MASS"].getMesh())
             self._result.setDOFNumbering(keywords["MATR_MASS"].getDOFNumbering())
 
         if keywords.get("ECLA_PG"):
             self._result.setModel(keywords["ECLA_PG"]["MODELE_INIT"])
         if keywords.get("CONV_CHAR"):
             matr_rigi = keywords["CONV_CHAR"]["MATR_RIGI"]
-            self._result.setModel(matr_rigi.getModel())
+            self._result.setMesh(matr_rigi.getMesh())
             dofNum = matr_rigi.getDOFNumbering()
             if dofNum:
                 if keywords["TYPE_RESU"] == "DYNA_TRANS":

@@ -625,6 +625,11 @@ void Result::printMedFile( const std::string fileName, std::string medName, bool
     CALL_EXECOP( &op );
 };
 
+bool Result::addFiniteElementDescriptor( const FiniteElementDescriptorPtr curFED ) {
+    _fieldBuidler.addFiniteElementDescriptor( curFED );
+    return true;
+}
+
 bool Result::build( const std::vector< FiniteElementDescriptorPtr > feds,
                     const std::vector< FieldOnNodesDescriptionPtr > fnds ) {
     CALL_JEMARQ();

@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -59,7 +59,8 @@ class RestCondTran(ExecuteCommand):
             if keywords["TYPE_RESU"] == "DYNA_TRANS":
                 self._result.setDOFNumbering(dofNum)
             else:
-                self._result.setModel(dofNum.getModel())
+                for i in dofNum.getFiniteElementDescriptors():
+                    self._result.addFiniteElementDescriptor(i)
                 fnds.append(dofNum.getDescription())
 
         self._result.build(fnds=fnds)

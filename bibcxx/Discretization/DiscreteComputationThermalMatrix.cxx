@@ -2,7 +2,7 @@
  * @file DiscreteComputation.cxx
  * @brief Implementation of class DiscreteComputation
  * @section LICENCE
- *   Copyright (C) 1991 2022  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 2023  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -42,7 +42,9 @@ ElementaryMatrixTemperatureRealPtr DiscreteComputation::getLinearConductivityMat
     AS_ASSERT( _phys_problem->getModel()->isThermal() );
     const std::string option( "RIGI_THER" );
 
-    auto elemMatr = std::make_shared< ElementaryMatrixTemperatureReal >( _phys_problem );
+    auto elemMatr = std::make_shared< ElementaryMatrixTemperatureReal >(
+        _phys_problem->getModel(), _phys_problem->getMaterialField(),
+        _phys_problem->getElementaryCharacteristics() );
     elemMatr->prepareCompute( option );
 
     // Get main parameters
@@ -107,7 +109,9 @@ DiscreteComputation::getLinearCapacityMatrix( const ASTERDOUBLE time,
     AS_ASSERT( _phys_problem->getModel()->isThermal() );
     const std::string option( "MASS_THER" );
 
-    auto elemMatr = std::make_shared< ElementaryMatrixTemperatureReal >( _phys_problem );
+    auto elemMatr = std::make_shared< ElementaryMatrixTemperatureReal >(
+        _phys_problem->getModel(), _phys_problem->getMaterialField(),
+        _phys_problem->getElementaryCharacteristics() );
     elemMatr->prepareCompute( option );
 
     // Get main parameters
@@ -202,7 +206,9 @@ ElementaryMatrixTemperatureRealPtr DiscreteComputation::getDualLinearConductivit
 
     const std::string option( "THER_DDLM_R" );
 
-    auto elemMatr = std::make_shared< ElementaryMatrixTemperatureReal >( _phys_problem );
+    auto elemMatr = std::make_shared< ElementaryMatrixTemperatureReal >(
+        _phys_problem->getModel(), _phys_problem->getMaterialField(),
+        _phys_problem->getElementaryCharacteristics() );
     elemMatr->prepareCompute( option );
 
     // Prepare computing
@@ -221,7 +227,9 @@ DiscreteComputation::getExchangeThermalMatrix( const ASTERDOUBLE &time ) const {
 
     const std::string option( "RIGI_THER" );
 
-    auto elemMatr = std::make_shared< ElementaryMatrixTemperatureReal >( _phys_problem );
+    auto elemMatr = std::make_shared< ElementaryMatrixTemperatureReal >(
+        _phys_problem->getModel(), _phys_problem->getMaterialField(),
+        _phys_problem->getElementaryCharacteristics() );
     elemMatr->prepareCompute( option );
 
     // Prepare computing

@@ -2,7 +2,7 @@
  * @file DiscreteComputation.cxx
  * @brief Implementation of class DiscreteComputation
  * @section LICENCE
- *   Copyright (C) 1991 2022  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 2023  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -74,7 +74,9 @@ DiscreteComputation::getInternalForces( const FieldOnNodesRealPtr displ,
     calcul->addInputField( "PVARIMP", vari_iter );
 
     // Create output vector
-    auto elemVect = std::make_shared< ElementaryVectorReal >( _phys_problem );
+    auto elemVect = std::make_shared< ElementaryVectorReal >(
+        _phys_problem->getModel(), _phys_problem->getMaterialField(),
+        _phys_problem->getElementaryCharacteristics(), _phys_problem->getListOfLoads() );
     elemVect->prepareCompute( option );
 
     // Create output fields

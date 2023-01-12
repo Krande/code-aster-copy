@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -23,7 +23,7 @@ import sys
 
 import aster
 from ...Cata.Syntax import _F
-from ...Objects import GeneralizedModeResult, ModeResult
+from ...Objects import GeneralizedModeResult, ModeResult, BaseAssemblyMatrix
 from .calc_modes_amelioration import calc_modes_amelioration
 from .calc_modes_inv import calc_modes_inv
 from .calc_modes_multi_bandes import calc_modes_multi_bandes
@@ -157,8 +157,13 @@ def calc_modes_ops(self, TYPE_RESU, OPTION, AMELIORATION, INFO, **args):
 
             if model is not None:
                 modes.setModel(model)
-        else:
-            modes.setDOFNumbering(matrRigi.getDOFNumbering())
+        if isinstance(matrRigi, BaseAssemblyMatrix):
+            dofNum = matrRigi.getDOFNumbering()
+            if dofNum is not None:
+                modes.setDOFNumbering(dofNum)
+                for fed in dofNum.getFiniteElementDescriptors():
+                    modes.addFiniteElementDescriptor(fed)
+
         modes.setStiffnessMatrix(matrRigi)
     matrAmor = args.get("MATR_AMOR")
     if matrAmor is not None:

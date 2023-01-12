@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -59,6 +59,10 @@ class ExtrMode(ExecuteCommand):
             stiffMat = mode.getStiffnessMatrix()
             if stiffMat is not None:
                 self._result.setStiffnessMatrix(stiffMat)
+            for fED in mode.getFiniteElementDescriptors():
+                self._result.addFiniteElementDescriptor(fED)
+            for fOND in mode.getFieldOnNodesDescriptions():
+                self._result.addFieldOnNodesDescription(fOND)
 
 
 EXTR_MODE = ExtrMode.run

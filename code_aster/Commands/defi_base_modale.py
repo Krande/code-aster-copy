@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -51,9 +51,13 @@ class ModalBasisDef(ExecuteCommand):
             mode_meca = classique[0]["MODE_MECA"][0]
             self._result.setStructureInterface(classique[0]["INTERF_DYNA"])
             self._result.setDOFNumbering(mode_meca.getDOFNumbering())
-            model = mode_meca.getModel()
-            if model is not None:
-                self._result.setModel(model)
+            mesh = mode_meca.getMesh()
+            if mesh is not None:
+                self._result.setMesh(mesh)
+            for fED in mode_meca.getFiniteElementDescriptors():
+                self._result.addFiniteElementDescriptor(fED)
+            for fOND in mode_meca.getFieldOnNodesDescriptions():
+                self._result.addFieldOnNodesDescription(fOND)
         elif ritz is not None:
             if "INTERF_DYNA" in ritz[0]:
                 self._result.setStructureInterface(ritz[0]["INTERF_DYNA"])
@@ -66,11 +70,15 @@ class ModalBasisDef(ExecuteCommand):
                 self._result.setDOFNumbering(nume_ddl)
             if "MODE_MECA" in ritz[0]:
                 mode_meca = ritz[0]["MODE_MECA"][0]
-                model = mode_meca.getModel()
-                if model is not None:
-                    self._result.setModel(model)
+                mesh = mode_meca.getMesh()
+                if mesh is not None:
+                    self._result.setMesh(mesh)
                 else:
                     self._result.setMesh(mode_meca.getMesh())
+                for fED in mode_meca.getFiniteElementDescriptors():
+                    self._result.addFiniteElementDescriptor(fED)
+                for fOND in mode_meca.getFieldOnNodesDescriptions():
+                    self._result.addFieldOnNodesDescription(fOND)
                 if self._result.getDOFNumbering() is None:
                     nume_ddl = mode_meca.getDOFNumbering()
                     self._result.setDOFNumbering(nume_ddl)

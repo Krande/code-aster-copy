@@ -63,8 +63,7 @@ vect_elem = CALC_VECT_ELEM(OPTION="CHAR_THER", CHARGE=CHT1)
 matr_elem = CALC_MATR_ELEM(OPTION="RIGI_THER", MODELE=MODT, CHAM_MATER=affectMat)
 
 numeDDL = code_aster.ParallelDOFNumbering()
-numeDDL.setElementaryMatrix(matr_elem)
-numeDDL.computeNumbering()
+numeDDL.computeNumbering([matr_elem])
 test.assertEqual(numeDDL.getType(), "NUME_DDL_P")
 # numeDDL.debugPrint()
 
@@ -109,8 +108,7 @@ vect_elem = CALC_VECT_ELEM(OPTION="CHAR_THER", CHARGE=CHT1)
 matr_elem = CALC_MATR_ELEM(OPTION="RIGI_THER", CHARGE=charTher, MODELE=MODT, CHAM_MATER=affectMat)
 
 numeDDL = code_aster.ParallelDOFNumbering()
-numeDDL.setElementaryMatrix(matr_elem)
-numeDDL.computeNumbering()
+numeDDL.computeNumbering([matr_elem])
 test.assertEqual(numeDDL.getType(), "NUME_DDL_P")
 
 matrAsse = code_aster.AssemblyMatrixTemperatureReal()

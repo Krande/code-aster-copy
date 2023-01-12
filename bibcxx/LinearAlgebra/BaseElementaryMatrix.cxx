@@ -1,5 +1,5 @@
 /* -------------------------------------------------------------------- */
-/* Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org             */
+/* Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org             */
 /* This file is part of code_aster.                                     */
 /*                                                                      */
 /* code_aster is free software: you can redistribute it and/or modify   */
@@ -30,9 +30,10 @@ BaseElementaryMatrix::BaseElementaryMatrix( const std::string name, const std::s
 BaseElementaryMatrix::BaseElementaryMatrix( const std::string type )
     : BaseElementaryMatrix( ResultNaming::getNewResultName(), type ){};
 
-BaseElementaryMatrix::BaseElementaryMatrix( const PhysicalProblemPtr phys_pb )
+BaseElementaryMatrix::BaseElementaryMatrix( const ModelPtr model, const MaterialFieldPtr mater,
+                                            const ElementaryCharacteristicsPtr caraElem )
     : BaseElementaryMatrix() {
-    this->setPhysicalProblem( phys_pb );
+    this->setPhysicalProblem( model, mater, caraElem );
 };
 
 BaseMeshPtr BaseElementaryMatrix::getMesh( void ) const {
@@ -46,7 +47,6 @@ BaseMeshPtr BaseElementaryMatrix::getMesh( void ) const {
     if ( _materialField ) {
         return _materialField->getMesh();
     }
-
     return nullptr;
 };
 /** @brief  Prepare compute */
@@ -79,8 +79,9 @@ ASTERINTEGER BaseElementaryMatrix::numberOfSuperElement() const {
     return repi;
 };
 
-void BaseElementaryMatrix::setPhysicalProblem( const PhysicalProblemPtr phys_pb ) {
-    _model = phys_pb->getModel();
-    _materialField = phys_pb->getMaterialField();
-    _elemChara = phys_pb->getElementaryCharacteristics();
+void BaseElementaryMatrix::setPhysicalProblem( const ModelPtr model, const MaterialFieldPtr mater,
+                                               const ElementaryCharacteristicsPtr caraElem ) {
+    _model = model;
+    _materialField = mater;
+    _elemChara = caraElem;
 };

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -109,24 +109,20 @@ test.assertEqual(matr_elem.getType(), "MATR_ELEM_DEPL_R")
 monSolver = code_aster.MumpsSolver()
 
 numeDDL = code_aster.DOFNumbering()
-numeDDL.setElementaryMatrix(matr_elem)
-numeDDL.setElementaryMatrix(matr_elem_dual)
-numeDDL.computeNumbering()
-print(numeDDL.getListOfLoads(), flush=True)
-study.setDOFNumbering(numeDDL)
-# numeDDL.debugPrint(6)
+numeDDL.computeNumbering([matr_elem, matr_elem_dual])
 test.assertEqual(numeDDL.getType(), "NUME_DDL_SDASTER")
-test.assertFalse(numeDDL.hasDirichletBC())
-
-ccid = numeDDL.getDirichletBCDOFs()
-test.assertEqual(sum(ccid), 0)
-test.assertEqual(len(ccid), numeDDL.getNumberOfDofs())
+# test.assertFalse(numeDDL.hasDirichletBC())
 
 matrAsse = code_aster.AssemblyMatrixDisplacementReal()
 matrAsse.addElementaryMatrix(matr_elem)
 matrAsse.addElementaryMatrix(matr_elem_dual)
 matrAsse.setDOFNumbering(numeDDL)
+test.assertFalse(listLoads.hasDirichletBC())
 matrAsse.assemble()
+
+ccid = matrAsse.getDirichletBCDOFs()
+test.assertEqual(sum(ccid), 0)
+test.assertEqual(len(ccid), numeDDL.getNumberOfDofs())
 
 x = matrAsse.EXTR_MATR(sparse=True)
 test.assertTrue("numpy" in str(type(x[0])))

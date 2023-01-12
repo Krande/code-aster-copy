@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -112,9 +112,8 @@ class FieldCreator(ExecuteCommand):
                     if isinstance(resultat, (FullResult, ModeResult)):
                         dofNum = resultat.getDOFNumbering()
                         if dofNum is not None:
-                            model = dofNum.getModel()
-                            if model is not None:
-                                self._result.setDescription(model.getFiniteElementDescriptor())
+                            fed = dofNum.getFiniteElementDescriptors()
+                            self._result.setDescription(fed[0])
 
                     if resultat.getModel() is not None:
                         model = resultat.getModel()

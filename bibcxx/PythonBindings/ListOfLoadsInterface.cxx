@@ -2,7 +2,7 @@
  * @file ListOfLoadsInterface.cxx
  * @brief Interface python de ListOfLoads
  * @section LICENCE
- *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -113,4 +113,12 @@ Returns:
     (FiniteElementDescriptor): Finite Element Descriptor defining
         list of contact pair
         )" );
+    addDirichletBCToInterface( c1 );
+    addMechanicalLoadToInterface( c1 );
+    addThermalLoadToInterface( c1 );
+    addAcousticLoadToInterface( c1 );
+#ifdef ASTER_HAVE_MPI
+    addParallelMechanicalLoadToInterface( c1 );
+    addParallelThermalLoadToInterface( c1 );
+#endif
 };

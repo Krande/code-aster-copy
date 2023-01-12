@@ -78,8 +78,7 @@ listLoads = study.getListOfLoads()
 monSolver = code_aster.MumpsSolver()
 
 numeDDL = code_aster.ParallelDOFNumbering()
-numeDDL.setElementaryMatrix(matr_elem)
-numeDDL.computeNumbering()
+numeDDL.computeNumbering([matr_elem])
 numeDDL.debugPrint(rank + 30)
 
 matrAsse = code_aster.AssemblyMatrixDisplacementReal()

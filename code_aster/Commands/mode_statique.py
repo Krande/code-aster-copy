@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -44,7 +44,8 @@ class StaticModeCalculation(ExecuteCommand):
         """
         matrRigi = keywords["MATR_RIGI"]
         dofNum = matrRigi.getDOFNumbering()
-        self._result.setModel(dofNum.getModel())
+        for i in dofNum.getFiniteElementDescriptors():
+            self._result.addFiniteElementDescriptor(i)
         self._result.setDOFNumbering(dofNum)
 
 

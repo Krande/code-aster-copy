@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe AssemblyMatrix
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -164,17 +164,6 @@ class BaseAssemblyMatrix : public DataStructure {
     BaseDOFNumberingPtr getDOFNumbering() const { return _dofNum; };
 
     /**
-     * @brief Get model
-     * @return Internal Model
-     */
-    ModelPtr getModel() {
-        if ( _dofNum ) {
-            return _dofNum->getModel();
-        }
-        return nullptr;
-    };
-
-    /**
      * @brief Get mesh
      * @return Internal mesh
      */
@@ -305,13 +294,14 @@ class BaseAssemblyMatrix : public DataStructure {
     /**
      * @brief Return CCID object if exists for DirichletElimination
      */
-    JeveuxVectorLong getDirichletBCDOFs() const {
-        if ( hasDirichletEliminationDOFs() )
-            return _ccid;
-
-        raiseAsterError( "JeveuxError: CCID not existing" );
-
-        return JeveuxVectorLong();
+    VectorLong getDirichletBCDOFs( void ) const {
+        if ( _ccid->exists() ) {
+            _ccid->updateValuePointer();
+            return _ccid->toVector();
+        } else {
+            ASTERINTEGER shape = _dofNum->getNumberOfDofs( true );
+            return VectorLong( shape, 0 );
+        }
     }
 
     ASTERDOUBLE

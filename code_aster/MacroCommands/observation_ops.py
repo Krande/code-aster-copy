@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -116,10 +116,6 @@ def observation_ops(
         if MATR_RIGI is not None or MATR_MASS is not None:
             # recherche du nume_ddl associe
             NUME_DDL = MATR_RIGI.getDOFNumbering()
-            # coherence avec le nom associe a MODELE_2 :
-            modele_matr_rigi = NUME_DDL.getModel()
-            if modele_matr_rigi.getName() != modele_matr_rigi.getName():
-                UTMESS("F", "CALCESSAI0_10")
         else:
             UTMESS("A", "CALCESSAI0_9")
             NUME_DDL = None

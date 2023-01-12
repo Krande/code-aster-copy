@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe ListOfLoads
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -127,12 +127,16 @@ class ListOfLoads : public DataStructure {
      */
     ListOfLoads( const std::string &name, const ModelPtr model );
 
+    void addLoad( const DirichletBCPtr &currentLoad ) {
+        addLoad( currentLoad, emptyRealFunction );
+    };
+
     /**
      * @brief Function d'ajout d'une charge cinematique
      * @param currentLoad charge a ajouter a la sd
      * @param func multiplier function
      */
-    void addLoad( const DirichletBCPtr &currentLoad, const FunctionPtr &func = emptyRealFunction ) {
+    void addLoad( const DirichletBCPtr &currentLoad, const FunctionPtr &func ) {
         _isEmpty = true;
         this->setModel( currentLoad->getModel() );
         _listOfDirichletBCs.push_back( currentLoad );
@@ -163,13 +167,16 @@ class ListOfLoads : public DataStructure {
         _listOfDiriFun.push_back( func );
     };
 
+    void addLoad( const MechanicalLoadRealPtr &currentLoad ) {
+        addLoad( currentLoad, emptyRealFunction );
+    };
+
     /**
      * @brief Function d'ajout d'une charge mécanique
      * @param currentLoad charge a ajouter a la sd
      * @param func multiplier function
      */
-    void addLoad( const MechanicalLoadRealPtr &currentLoad,
-                  const FunctionPtr &func = emptyRealFunction ) {
+    void addLoad( const MechanicalLoadRealPtr &currentLoad, const FunctionPtr &func ) {
         _isEmpty = true;
         this->setModel( currentLoad->getModel() );
         _listOfMechanicalLoadsReal.push_back( currentLoad );
@@ -200,13 +207,16 @@ class ListOfLoads : public DataStructure {
         _listOfMechaFuncReal.push_back( func );
     };
 
+    void addLoad( const MechanicalLoadComplexPtr &currentLoad ) {
+        addLoad( currentLoad, emptyRealFunction );
+    };
+
     /**
      * @brief Function d'ajout d'une charge mécanique
      * @param currentLoad charge a ajouter a la sd
      * @param func multiplier function
      */
-    void addLoad( const MechanicalLoadComplexPtr &currentLoad,
-                  const FunctionPtr &func = emptyRealFunction ) {
+    void addLoad( const MechanicalLoadComplexPtr &currentLoad, const FunctionPtr &func ) {
         _isEmpty = true;
         this->setModel( currentLoad->getModel() );
         _listOfMechanicalLoadsComplex.push_back( currentLoad );
@@ -237,13 +247,16 @@ class ListOfLoads : public DataStructure {
         _listOfMechaFuncComplex.push_back( func );
     };
 
+    void addLoad( const MechanicalLoadFunctionPtr &currentLoad ) {
+        addLoad( currentLoad, emptyRealFunction );
+    };
+
     /**
      * @brief Function d'ajout d'une charge mécanique
      * @param currentLoad charge a ajouter a la sd
      * @param func multiplier function
      */
-    void addLoad( const MechanicalLoadFunctionPtr &currentLoad,
-                  const FunctionPtr &func = emptyRealFunction ) {
+    void addLoad( const MechanicalLoadFunctionPtr &currentLoad, const FunctionPtr &func ) {
         _isEmpty = true;
         this->setModel( currentLoad->getModel() );
         _listOfMechanicalLoadsFunction.push_back( currentLoad );
@@ -275,13 +288,16 @@ class ListOfLoads : public DataStructure {
     };
 
 #ifdef ASTER_HAVE_MPI
+    void addLoad( const ParallelMechanicalLoadRealPtr &currentLoad ) {
+        addLoad( currentLoad, emptyRealFunction );
+    };
+
     /**
      * @brief Function d'ajout d'une charge mécanique
      * @param currentLoad charge a ajouter a la sd
      * @param func multiplier function
      */
-    void addLoad( const ParallelMechanicalLoadRealPtr &currentLoad,
-                  const FunctionPtr &func = emptyRealFunction ) {
+    void addLoad( const ParallelMechanicalLoadRealPtr &currentLoad, const FunctionPtr &func ) {
         _isEmpty = true;
         this->setModel( currentLoad->getModel() );
         _listOfParallelMechanicalLoadsReal.push_back( currentLoad );
@@ -312,13 +328,16 @@ class ListOfLoads : public DataStructure {
         _listOfParaMechaFuncReal.push_back( func );
     };
 
+    void addLoad( const ParallelMechanicalLoadFunctionPtr &currentLoad ) {
+        addLoad( currentLoad, emptyRealFunction );
+    };
+
     /**
      * @brief Function d'ajout d'une charge mécanique
      * @param currentLoad charge a ajouter a la sd
      * @param func multiplier function
      */
-    void addLoad( const ParallelMechanicalLoadFunctionPtr &currentLoad,
-                  const FunctionPtr &func = emptyRealFunction ) {
+    void addLoad( const ParallelMechanicalLoadFunctionPtr &currentLoad, const FunctionPtr &func ) {
         _isEmpty = true;
         this->setModel( currentLoad->getModel() );
         _listOfParallelMechanicalLoadsFunction.push_back( currentLoad );
@@ -351,13 +370,16 @@ class ListOfLoads : public DataStructure {
     };
 #endif /* ASTER_HAVE_MPI */
 
+    void addLoad( const ThermalLoadRealPtr &currentLoad ) {
+        addLoad( currentLoad, emptyRealFunction );
+    };
+
     /**
      * @brief Function d'ajout d'une charge thermique
      * @param currentLoad charge a ajouter a la sd
      * @param func multiplier function
      */
-    void addLoad( const ThermalLoadRealPtr &currentLoad,
-                  const FunctionPtr &func = emptyRealFunction ) {
+    void addLoad( const ThermalLoadRealPtr &currentLoad, const FunctionPtr &func ) {
         _isEmpty = true;
         this->setModel( currentLoad->getModel() );
         _listOfThermalLoadsReal.push_back( currentLoad );
@@ -388,13 +410,16 @@ class ListOfLoads : public DataStructure {
         _listOfTherFuncReal.push_back( func );
     };
 
+    void addLoad( const ThermalLoadFunctionPtr &currentLoad ) {
+        addLoad( currentLoad, emptyRealFunction );
+    };
+
     /**
      * @brief Function d'ajout d'une charge thermique
      * @param currentLoad charge a ajouter a la sd
      * @param func multiplier function
      */
-    void addLoad( const ThermalLoadFunctionPtr &currentLoad,
-                  const FunctionPtr &func = emptyRealFunction ) {
+    void addLoad( const ThermalLoadFunctionPtr &currentLoad, const FunctionPtr &func ) {
         _isEmpty = true;
         this->setModel( currentLoad->getModel() );
         _listOfThermalLoadsFunction.push_back( currentLoad );
@@ -427,13 +452,16 @@ class ListOfLoads : public DataStructure {
 
 #ifdef ASTER_HAVE_MPI
 
+    void addLoad( const ParallelThermalLoadRealPtr &currentLoad ) {
+        addLoad( currentLoad, emptyRealFunction );
+    };
+
     /**
      * @brief Function d'ajout d'une charge thermique
      * @param currentLoad charge a ajouter a la sd
      * @param func multiplier function
      */
-    void addLoad( const ParallelThermalLoadRealPtr &currentLoad,
-                  const FunctionPtr &func = emptyRealFunction ) {
+    void addLoad( const ParallelThermalLoadRealPtr &currentLoad, const FunctionPtr &func ) {
         _isEmpty = true;
         this->setModel( currentLoad->getModel() );
         _listOfParallelThermalLoadsReal.push_back( currentLoad );
@@ -464,13 +492,16 @@ class ListOfLoads : public DataStructure {
         _listOfParaTherFuncReal.push_back( func );
     };
 
+    void addLoad( const ParallelThermalLoadFunctionPtr &currentLoad ) {
+        addLoad( currentLoad, emptyRealFunction );
+    };
+
     /**
      * @brief Function d'ajout d'une charge thermique
      * @param currentLoad charge a ajouter a la sd
      * @param func multiplier function
      */
-    void addLoad( const ParallelThermalLoadFunctionPtr &currentLoad,
-                  const FunctionPtr &func = emptyRealFunction ) {
+    void addLoad( const ParallelThermalLoadFunctionPtr &currentLoad, const FunctionPtr &func ) {
         _isEmpty = true;
         this->setModel( currentLoad->getModel() );
         _listOfParallelThermalLoadsFunction.push_back( currentLoad );
@@ -503,13 +534,16 @@ class ListOfLoads : public DataStructure {
 
 #endif /* ASTER_HAVE_MPI */
 
+    void addLoad( const AcousticLoadComplexPtr &currentLoad ) {
+        addLoad( currentLoad, emptyRealFunction );
+    };
+
     /**
      * @brief Function d'ajout d'une charge mécanique
      * @param currentLoad charge a ajouter a la sd
      * @param func multiplier function
      */
-    void addLoad( const AcousticLoadComplexPtr &currentLoad,
-                  const FunctionPtr &func = emptyRealFunction ) {
+    void addLoad( const AcousticLoadComplexPtr &currentLoad, const FunctionPtr &func ) {
         _isEmpty = true;
         this->setModel( currentLoad->getModel() );
         _listOfAcousticLoadsComplex.push_back( currentLoad );

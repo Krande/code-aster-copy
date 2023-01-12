@@ -1,5 +1,5 @@
 /* -------------------------------------------------------------------- */
-/* Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org             */
+/* Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org             */
 /* This file is part of code_aster.                                     */
 /*                                                                      */
 /* code_aster is free software: you can redistribute it and/or modify   */
@@ -24,7 +24,7 @@
  * @brief Fichier entete de la classe DOFNumbering
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+ *   Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
  *   This file is part of code_aster.
  *
  *   code_aster is free software: you can redistribute it and/or modify
@@ -80,8 +80,8 @@ class DOFNumbering : public BaseDOFNumbering {
      */
     DOFNumbering();
 
-    DOFNumbering( const std::string name, const ModelPtr model, const ListOfLoadsPtr loads,
-                  const FieldOnNodesDescriptionPtr fdof );
+    DOFNumbering( const std::string name, const FieldOnNodesDescriptionPtr fdof,
+                  const MeshPtr mesh );
 
     /**
      * @brief Constructeur
@@ -98,36 +98,6 @@ class DOFNumbering : public BaseDOFNumbering {
      * @brief Get Physical Quantity
      */
     std::string getPhysicalQuantity() const;
-
-    /**
-     * @brief Methode permettant de definir les matrices elementaires
-     * @param currentMatrix objet ElementaryMatrix
-     */
-    void setElementaryMatrix( const ElementaryMatrixDisplacementRealPtr &currentMatrix );
-
-    /**
-     * @brief Methode permettant de definir les matrices elementaires
-     * @param currentMatrix objet ElementaryMatrix
-     */
-    void setElementaryMatrix( const ElementaryMatrixDisplacementComplexPtr &currentMatrix );
-
-    /**
-     * @brief Methode permettant de definir les matrices elementaires
-     * @param currentMatrix objet ElementaryMatrix
-     */
-    void setElementaryMatrix( const ElementaryMatrixTemperatureRealPtr &currentMatrix );
-
-    /**
-     * @brief Methode permettant de definir les matrices elementaires
-     * @param currentMatrix objet ElementaryMatrix
-     */
-    void setElementaryMatrix( const ElementaryMatrixPressureComplexPtr &currentMatrix );
-
-    /**
-     * @brief Methode permettant de definir le modele
-     * @param currentModel Modele de la numerotation
-     */
-    void setModel( const ModelPtr &currentModel );
 
     /**
      * @brief Are Lagrange Multipliers used for BC or MPC

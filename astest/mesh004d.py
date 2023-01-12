@@ -65,10 +65,8 @@ matr_elem = CALC_MATR_ELEM(OPTION="RIGI_THER", MODELE=MODT, CHAM_MATER=affectMat
 monSolver = code_aster.PetscSolver(RENUM="SANS", PRE_COND="SANS")
 
 numeDDL = code_aster.ParallelDOFNumbering()
-numeDDL.setElementaryMatrix(matr_elem)
-numeDDL.computeNumbering()
+numeDDL.computeNumbering([matr_elem])
 test.assertEqual(numeDDL.getType(), "NUME_DDL_P")
-# numeDDL.debugPrint()
 
 matrAsse = code_aster.AssemblyMatrixTemperatureReal()
 matrAsse.addElementaryMatrix(matr_elem)
@@ -76,7 +74,6 @@ matrAsse.setDOFNumbering(numeDDL)
 matrAsse.addDirichletBC(charCine)
 matrAsse.assemble()
 test.assertEqual(matrAsse.getType(), "MATR_ASSE_TEMP_R")
-# matrAsse.debugPrint()
 
 # retour = vect_elem.assembleWithLoadFunctions( numeDDL )
 vecass = ASSE_VECTEUR(VECT_ELEM=vect_elem, NUME_DDL=numeDDL)

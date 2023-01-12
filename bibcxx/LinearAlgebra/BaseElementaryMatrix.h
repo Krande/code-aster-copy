@@ -6,7 +6,7 @@
  * @brief Definition of elementary matrices
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -36,7 +36,6 @@
 #include "MemoryManager/JeveuxVector.h"
 #include "Modeling/FiniteElementDescriptor.h"
 #include "Modeling/Model.h"
-#include "Studies/PhysicalProblem.h"
 #include "Supervis/ResultNaming.h"
 
 /**
@@ -67,7 +66,8 @@ class BaseElementaryMatrix : public DataStructure {
     /** @brief Constructor with automatic name */
     BaseElementaryMatrix( const std::string type = "MATR_ELEM" );
 
-    BaseElementaryMatrix( const PhysicalProblemPtr phys_pb );
+    BaseElementaryMatrix( const ModelPtr model, const MaterialFieldPtr mater,
+                          const ElementaryCharacteristicsPtr caraElem );
 
     /** @brief Get the field of material parameters */
     MaterialFieldPtr getMaterialField() const { return _materialField; };
@@ -117,7 +117,8 @@ class BaseElementaryMatrix : public DataStructure {
      */
     void setModel( const ModelPtr &currModel ) { _model = currModel; };
 
-    void setPhysicalProblem( const PhysicalProblemPtr phys_pb );
+    void setPhysicalProblem( const ModelPtr model, const MaterialFieldPtr mater,
+                             const ElementaryCharacteristicsPtr caraElem );
 
     /** @brief  Prepare compute */
     void prepareCompute( const std::string option );

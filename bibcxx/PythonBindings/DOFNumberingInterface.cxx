@@ -3,7 +3,7 @@
  * @brief Interface python de DOFNumbering
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -32,8 +32,8 @@ void exportDOFNumberingToPython( py::module_ &mod ) {
                                                                                  "DOFNumbering" )
         .def( py::init( &initFactoryPtr< DOFNumbering > ) )
         .def( py::init( &initFactoryPtr< DOFNumbering, std::string > ) )
-        .def( py::init( &initFactoryPtr< DOFNumbering, std::string, ModelPtr, ListOfLoadsPtr,
-                                         FieldOnNodesDescriptionPtr > ) )
+        .def( py::init(
+            &initFactoryPtr< DOFNumbering, std::string, FieldOnNodesDescriptionPtr, MeshPtr > ) )
         // ----------------------------------------------------------------------
         .def( "useLagrangeMultipliers", &DOFNumbering::useLagrangeMultipliers, R"(
 Lagrange multipliers are used for BC or MPC.

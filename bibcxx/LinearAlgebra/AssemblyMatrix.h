@@ -35,7 +35,6 @@
 #include "Loads/PhysicalQuantity.h"
 #include "MemoryManager/JeveuxCollection.h"
 #include "MemoryManager/JeveuxVector.h"
-#include "Modeling/Model.h"
 #include "Numbering/DOFNumbering.h"
 #include "Numbering/ParallelDOFNumbering.h"
 #include "Studies/PhysicalProblem.h"

@@ -3,7 +3,7 @@
  * @brief Implementation de DOFNumbering
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -29,13 +29,11 @@
 #include "Supervis/ResultNaming.h"
 
 BaseDOFNumbering::BaseDOFNumbering( const std::string name, const std::string &type,
-                                    const ModelPtr model, const ListOfLoadsPtr loads,
-                                    const FieldOnNodesDescriptionPtr fdof )
+                                    const FieldOnNodesDescriptionPtr fdof, const MeshPtr mesh )
     : DataStructure( name, 14, type ),
       _nameOfSolverDataStructure( JeveuxVectorChar24( getName() + ".NSLV" ) ),
       _dofDescription( fdof ),
-      _model( model ),
-      _listOfLoads( loads ),
+      _mesh( mesh ),
       _smos( new MorseStorage( getName() + ".SMOS" ) ),
       _slcs( new LigneDeCiel( getName() + ".SLCS" ) ),
       _mltf( new MultFrontGarbage( getName() + ".MLTF" ) ),
@@ -45,63 +43,78 @@ BaseDOFNumbering::BaseDOFNumbering( const std::string name, const std::string &t
     : DataStructure( name, 14, type ),
       _nameOfSolverDataStructure( JeveuxVectorChar24( getName() + ".NSLV" ) ),
       _dofDescription( new FieldOnNodesDescription( getName() + ".NUME" ) ),
-      _model( nullptr ),
-      _listOfLoads( new ListOfLoads() ),
+      _mesh( nullptr ),
       _smos( new MorseStorage( getName() + ".SMOS" ) ),
       _slcs( new LigneDeCiel( getName() + ".SLCS" ) ),
       _mltf( new MultFrontGarbage( getName() + ".MLTF" ) ),
       _isEmpty( true ){};
 
-bool BaseDOFNumbering::computeNumbering() {
-    if ( _model ) {
-        if ( _model->isEmpty() )
-            throw std::runtime_error( "Model is empty" );
+bool BaseDOFNumbering::computeNumbering( const std::vector< MatrElem > matrix ) {
+    ASTERINTEGER nb_matr = matrix.size();
+    JeveuxVectorChar24 jvListOfMatr( ResultNaming::getNewResultName() );
+    jvListOfMatr->allocate( nb_matr );
 
-        _listOfLoads->build( _model );
-
-        const std::string base( "GG" );
-        const std::string null( " " );
-        CALLO_NUMERO_WRAP( getName(), base, null, null, _model->getName(),
-                           _listOfLoads->getName() );
-
-        const auto FEDescs = _listOfLoads->getFiniteElementDescriptors();
-        this->addFiniteElementDescriptors( FEDescs );
-
-    } else if ( _matrix.size() != 0 ) {
-        _model = this->getModel();
-
-        ASTERINTEGER nb_matr = _matrix.size();
-        JeveuxVectorChar24 jvListOfMatr( ResultNaming::getNewResultName() );
-        jvListOfMatr->allocate( nb_matr );
-
-        int ind = 0;
-        for ( const auto &mat : _matrix ) {
-            ( *jvListOfMatr )[ind++] = std::visit( ElementaryMatrixGetName(), mat );
-            auto FEDescs = std::visit( ElementaryMatrixGetFEDescrp(), mat );
-            this->addFiniteElementDescriptors( FEDescs );
+    int ind = 0;
+    BaseMeshPtr savedMesh( nullptr );
+    for ( const auto &mat : matrix ) {
+        ( *jvListOfMatr )[ind++] = std::visit( ElementaryMatrixGetName(), mat );
+        auto FEDescs = std::visit( ElementaryMatrixGetFEDescrp(), mat );
+        if ( FEDescs.size() > 0 ) {
+            _mesh = FEDescs[0]->getMesh();
         }
+        this->addFiniteElementDescriptors( FEDescs );
+        if ( ind == 1 ) {
+            savedMesh = std::visit( ElementaryMatrixGetMesh(), mat );
+            if ( savedMesh == nullptr )
+                throw std::runtime_error( "No mesh in ElementaryMatrix" );
+            _mesh = savedMesh;
+        } else {
+            auto tmp = std::visit( ElementaryMatrixGetMesh(), mat );
+            if ( savedMesh != nullptr && tmp != nullptr ) {
+                if ( savedMesh->getName() != tmp->getName() )
+                    throw std::runtime_error( "Inconsistent mesh in list of ElementaryMatrix" );
+            }
+        }
+    }
 
-        CALLO_NUME_DDL_MATR( getName(), jvListOfMatr->getName(), &nb_matr );
+    CALLO_NUME_DDL_MATR( getName(), jvListOfMatr->getName(), &nb_matr );
 
-        _matrix.clear();
-    } else
-        throw std::runtime_error( "No matrix or model defined" );
     _isEmpty = false;
 
     return true;
 };
 
-bool BaseDOFNumbering::computeRenumbering() {
-    if ( !_model || _model->isEmpty() ) {
+bool BaseDOFNumbering::computeNumbering( const ModelPtr model, const ListOfLoadsPtr listOfLoads ) {
+    if ( model->isEmpty() )
+        throw std::runtime_error( "Model is empty" );
+    _mesh = model->getMesh();
+
+    listOfLoads->build( model );
+
+    const std::string base( "GG" );
+    const std::string null( " " );
+    CALLO_NUMERO_WRAP( getName(), base, null, null, model->getName(), listOfLoads->getName() );
+
+    const auto FEDescs = listOfLoads->getFiniteElementDescriptors();
+    this->addFiniteElementDescriptors( FEDescs );
+    _isEmpty = false;
+
+    return true;
+};
+
+bool BaseDOFNumbering::computeRenumbering( const ModelPtr model,
+                                           const ListOfLoadsPtr listOfLoads ) {
+    if ( !model || model->isEmpty() ) {
         throw std::runtime_error( "Model is empty" );
     }
+    _mesh = model->getMesh();
 
-    _listOfLoads->build( _model );
+    listOfLoads->build( model );
 
     const std::string base( "GG" );
     const std::string null( " " );
 
-    CALLO_NUMER3( _model->getName(), _listOfLoads->getName(), getName(), null, base );
+    CALLO_NUMER3( model->getName(), listOfLoads->getName(), getName(), null, base );
 
     return true;
 };
@@ -121,106 +134,11 @@ bool BaseDOFNumbering::computeNumberingWithLocalMode( const std::string &localMo
     return true;
 };
 
-VectorLong BaseDOFNumbering::getDirichletBCDOFs( void ) const {
-    JeveuxVectorLong ccid( "&&NUME_CCID" );
-    std::string base( "V" );
-
-    // Il faudrait eventuellement rajouter une liste de charge en plus donné par le user
-    CALLO_NUMCIMA( _listOfLoads->getName(), getName(), ccid->getName(), base );
-
-    ccid->updateValuePointer();
-    return ccid->toVector();
-};
-
-ModelPtr BaseDOFNumbering::getModel() const {
-    if ( _model != nullptr )
-        return _model;
-
-    for ( auto &matr : _matrix ) {
-        auto model = std::visit( ElementaryMatrixGetModel(), matr );
-        if ( model != nullptr ) {
-            return model;
-        }
-    }
-
-    for ( auto &FED : _FEDVector ) {
-        if ( FED && FED->getModel() ) {
-            return FED->getModel();
-        }
-    }
-
-    return nullptr;
-};
-
 /**
  * @brief Get mesh
  * @return Internal mesh
  */
-BaseMeshPtr BaseDOFNumbering::getMesh() const {
-    const auto model = this->getModel();
-    if ( model != nullptr ) {
-        return model->getMesh();
-    } else {
-        for ( auto &FED : _FEDVector ) {
-            if ( FED && FED->getMesh() ) {
-                return FED->getMesh();
-            }
-        }
-    }
-    return nullptr;
-};
-
-void BaseDOFNumbering::setElementaryMatrix(
-    const ElementaryMatrixDisplacementRealPtr &currentMatrix ) {
-    if ( _model )
-        throw std::runtime_error(
-            "It is not allowed to defined Model and ElementaryMatrix together" );
-    _matrix.push_back( currentMatrix );
-};
-
-/**
- * @brief Methode permettant de definir les matrices elementaires
- * @param currentMatrix objet ElementaryMatrix
- */
-void BaseDOFNumbering::setElementaryMatrix(
-    const ElementaryMatrixDisplacementComplexPtr &currentMatrix ) {
-    if ( _model )
-        throw std::runtime_error(
-            "It is not allowed to defined Model and ElementaryMatrix together" );
-    _matrix.push_back( currentMatrix );
-};
-
-/**
- * @brief Methode permettant de definir les matrices elementaires
- * @param currentMatrix objet ElementaryMatrix
- */
-void BaseDOFNumbering::setElementaryMatrix(
-    const ElementaryMatrixTemperatureRealPtr &currentMatrix ) {
-    if ( _model )
-        throw std::runtime_error(
-            "It is not allowed to defined Model and ElementaryMatrix together" );
-    _matrix.push_back( currentMatrix );
-};
-
-/**
- * @brief Methode permettant de definir les matrices elementaires
- * @param currentMatrix objet ElementaryMatrix
- */
-void BaseDOFNumbering::setElementaryMatrix(
-    const ElementaryMatrixPressureComplexPtr &currentMatrix ) {
-    if ( _model )
-        throw std::runtime_error(
-            "It is not allowed to defined Model and ElementaryMatrix together" );
-    _matrix.push_back( currentMatrix );
-};
-
-void BaseDOFNumbering::setModel( const ModelPtr &currentModel ) {
-    if ( !_matrix.empty() )
-        throw std::runtime_error(
-            "It is not allowed to defined Model and ElementaryMatrix together" );
-    _model = currentModel;
-    this->addFiniteElementDescriptor( _model->getFiniteElementDescriptor() );
-};
+BaseMeshPtr BaseDOFNumbering::getMesh() const { return _mesh; };
 
 bool BaseDOFNumbering::addFiniteElementDescriptor( const FiniteElementDescriptorPtr &curFED ) {
     if ( curFED ) {

@@ -180,6 +180,12 @@ class Result : public DataStructure, public ListOfTables {
           _fieldBuidler( FieldBuilder() ){};
 
     /**
+     * @brief Add a FiniteElementDescriptor to elementary matrix
+     * @param FiniteElementDescriptorPtr FiniteElementDescriptor
+     */
+    bool addFiniteElementDescriptor( const FiniteElementDescriptorPtr curFED );
+
+    /**
      * @brief Allouer une sd_resultat
      * @param nbIndexes nombre de numéro d'ordre
      * @return true si l'allocation s'est bien passée

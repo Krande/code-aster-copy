@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -72,11 +72,6 @@ Cela peut empêcher certains calculs de se dérouler normalement.
 Les mots-clés MATR_RIGI et MATR_MASS n'ont pas été renseignés dans OBSERVATION.
 Sans ces matrices, certains calculs (par exemple : calcul d'expansion, de MAC, etc.)
 ne seront pas possibles.
-"""
-    ),
-    10: _(
-        """
-Le modèle associé aux matrices MATR_RIGI et MATR_MASS doit être le même que MODELE_2.
 """
     ),
     11: _(

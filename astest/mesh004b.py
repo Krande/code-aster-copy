@@ -70,15 +70,12 @@ matr_elem = dComputation.getElasticStiffnessMatrix()
 monSolver = code_aster.PetscSolver(RENUM="SANS", PRE_COND="SANS")
 
 numeDDL = code_aster.ParallelDOFNumbering()
-numeDDL.setElementaryMatrix(matr_elem)
-numeDDL.computeNumbering()
+numeDDL.computeNumbering(MODT, study.getListOfLoads())
 test.assertEqual(numeDDL.getType(), "NUME_DDL_P")
-# numeDDL.debugPrint()
 
 # compute Neumman
 vecass = ASSE_VECTEUR(VECT_ELEM=vect_elem, NUME_DDL=numeDDL)
 print("vecass=", vecass.getValues())
-study.setDOFNumbering(numeDDL)
 retour = dComputation.getNeumannForces(0, 0, 0)
 
 
@@ -88,7 +85,6 @@ matrAsse.setDOFNumbering(numeDDL)
 matrAsse.addDirichletBC(charCine)
 matrAsse.assemble()
 test.assertEqual(matrAsse.getType(), "MATR_ASSE_DEPL_R")
-# matrAsse.debugPrint()
 
 print("retour=", retour.getValues())
 

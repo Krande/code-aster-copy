@@ -3,7 +3,7 @@
  * @brief Interface python de PhysicalProblem
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -71,13 +71,6 @@ Return the DOF numbering
 Returns:
     BaseDOFNumberingPtr: a pointer to the DOF numbering
         )" );
-    c1.def( "setDOFNumbering", &PhysicalProblem::setDOFNumbering, R"(
-Set the DOF numbering
-
-Arguments:
-    BaseDOFNumberingPtr: a pointer to the DOF numbering
-        )",
-            py::arg( "dofNume" ) );
     c1.def( "getBehaviourProperty", &PhysicalProblem::getBehaviourProperty, R"(
 Return the behaviour properties
 
@@ -136,6 +129,16 @@ Returns:
     Returns:
         FieldOnCells: field for external state variables reference values
             )" );
+    // -----------------------------------------------------------------------------------------
+    c1.def( "getDirichletBCDOFs", &PhysicalProblem::getDirichletBCDOFs, R"(
+    Return a vector with DOFs eliminated by Dirichlet boundaries conditions (if it exists)
+
+    Returns:
+        tuple(int): a vector with DOFs eliminated by Dirichlet boundaries conditions of
+            size = neq + 1,
+            tuple(ieq = 0, neq - 1) = 1 then DOF eliminated else 0,
+            tuple(neq) = number of DOFs eliminated.
+        )" );
     addDirichletBCToInterface( c1 );
     addMechanicalLoadToInterface( c1 );
 #ifdef ASTER_HAVE_MPI

@@ -1212,130 +1212,24 @@ class BaseDOFNumbering(DataStructure):
         """Initialize self.  See help(type(self)) for accurate signature.
         """
 
-    def addDirichletBC(self, *args, **kwargs):
-        """Overloaded function.
-
-        1. addDirichletBC(self: libaster.BaseDOFNumbering, arg0: DirichletBC) -> None
-
-        2. addDirichletBC(self: libaster.BaseDOFNumbering, arg0: DirichletBC, arg1: Function) -> None
-
-        3. addDirichletBC(self: libaster.BaseDOFNumbering, arg0: DirichletBC, arg1: Formula) -> None
-
-        4. addDirichletBC(self: libaster.BaseDOFNumbering, arg0: DirichletBC, arg1: Function2D) -> None
-        """
-
     def addFiniteElementDescriptor(self, arg0):
         pass
 
-    def addLoad(self, *args, **kwargs):
+    def computeNumbering(self, *args, **kwargs):
         """Overloaded function.
 
-        1. addLoad(self: libaster.BaseDOFNumbering, arg0: MechanicalLoad<ConstantFieldOnCells<double> >) -> None
+        1. computeNumbering(self: libaster.BaseDOFNumbering, arg0: Model, arg1: ListOfLoads) -> bool
 
-        2. addLoad(self: libaster.BaseDOFNumbering, arg0: MechanicalLoad<ConstantFieldOnCells<double> >, arg1: Function) -> None
-
-        3. addLoad(self: libaster.BaseDOFNumbering, arg0: MechanicalLoad<ConstantFieldOnCells<double> >, arg1: Formula) -> None
-
-        4. addLoad(self: libaster.BaseDOFNumbering, arg0: MechanicalLoad<ConstantFieldOnCells<double> >, arg1: Function2D) -> None
-
-        5. addLoad(self: libaster.BaseDOFNumbering, arg0: MechanicalLoad<ConstantFieldOnCells<JeveuxString<24> > >) -> None
-
-        6. addLoad(self: libaster.BaseDOFNumbering, arg0: MechanicalLoad<ConstantFieldOnCells<JeveuxString<24> > >, arg1: Function) -> None
-
-        7. addLoad(self: libaster.BaseDOFNumbering, arg0: MechanicalLoad<ConstantFieldOnCells<JeveuxString<24> > >, arg1: Formula) -> None
-
-        8. addLoad(self: libaster.BaseDOFNumbering, arg0: MechanicalLoad<ConstantFieldOnCells<JeveuxString<24> > >, arg1: Function2D) -> None
-
-        9. addLoad(self: libaster.BaseDOFNumbering, arg0: MechanicalLoad<ConstantFieldOnCells<std::complex<double> > >) -> None
-
-        10. addLoad(self: libaster.BaseDOFNumbering, arg0: MechanicalLoad<ConstantFieldOnCells<std::complex<double> > >, arg1: Function) -> None
-
-        11. addLoad(self: libaster.BaseDOFNumbering, arg0: MechanicalLoad<ConstantFieldOnCells<std::complex<double> > >, arg1: Formula) -> None
-
-        12. addLoad(self: libaster.BaseDOFNumbering, arg0: MechanicalLoad<ConstantFieldOnCells<std::complex<double> > >, arg1: Function2D) -> None
-
-        13. addLoad(self: libaster.BaseDOFNumbering, arg0: ThermalLoad<ConstantFieldOnCells<double> >) -> None
-
-        14. addLoad(self: libaster.BaseDOFNumbering, arg0: ThermalLoad<ConstantFieldOnCells<double> >, arg1: Function) -> None
-
-        15. addLoad(self: libaster.BaseDOFNumbering, arg0: ThermalLoad<ConstantFieldOnCells<double> >, arg1: Formula) -> None
-
-        16. addLoad(self: libaster.BaseDOFNumbering, arg0: ThermalLoad<ConstantFieldOnCells<double> >, arg1: Function2D) -> None
-
-        17. addLoad(self: libaster.BaseDOFNumbering, arg0: ThermalLoad<ConstantFieldOnCells<JeveuxString<24> > >) -> None
-
-        18. addLoad(self: libaster.BaseDOFNumbering, arg0: ThermalLoad<ConstantFieldOnCells<JeveuxString<24> > >, arg1: Function) -> None
-
-        19. addLoad(self: libaster.BaseDOFNumbering, arg0: ThermalLoad<ConstantFieldOnCells<JeveuxString<24> > >, arg1: Formula) -> None
-
-        20. addLoad(self: libaster.BaseDOFNumbering, arg0: ThermalLoad<ConstantFieldOnCells<JeveuxString<24> > >, arg1: Function2D) -> None
-
-        21. addLoad(self: libaster.BaseDOFNumbering, arg0: AcousticLoad<ConstantFieldOnCells<std::complex<double> > >) -> None
-
-        22. addLoad(self: libaster.BaseDOFNumbering, arg0: AcousticLoad<ConstantFieldOnCells<std::complex<double> > >, arg1: Function) -> None
-
-        23. addLoad(self: libaster.BaseDOFNumbering, arg0: AcousticLoad<ConstantFieldOnCells<std::complex<double> > >, arg1: Formula) -> None
-
-        24. addLoad(self: libaster.BaseDOFNumbering, arg0: AcousticLoad<ConstantFieldOnCells<std::complex<double> > >, arg1: Function2D) -> None
-
-        25. addLoad(self: libaster.BaseDOFNumbering, arg0: ParallelMechanicalLoad<ConstantFieldOnCells<double> >) -> None
-
-        26. addLoad(self: libaster.BaseDOFNumbering, arg0: ParallelMechanicalLoad<ConstantFieldOnCells<double> >, arg1: Function) -> None
-
-        27. addLoad(self: libaster.BaseDOFNumbering, arg0: ParallelMechanicalLoad<ConstantFieldOnCells<double> >, arg1: Formula) -> None
-
-        28. addLoad(self: libaster.BaseDOFNumbering, arg0: ParallelMechanicalLoad<ConstantFieldOnCells<double> >, arg1: Function2D) -> None
-
-        29. addLoad(self: libaster.BaseDOFNumbering, arg0: ParallelMechanicalLoad<ConstantFieldOnCells<JeveuxString<24> > >) -> None
-
-        30. addLoad(self: libaster.BaseDOFNumbering, arg0: ParallelMechanicalLoad<ConstantFieldOnCells<JeveuxString<24> > >, arg1: Function) -> None
-
-        31. addLoad(self: libaster.BaseDOFNumbering, arg0: ParallelMechanicalLoad<ConstantFieldOnCells<JeveuxString<24> > >, arg1: Formula) -> None
-
-        32. addLoad(self: libaster.BaseDOFNumbering, arg0: ParallelMechanicalLoad<ConstantFieldOnCells<JeveuxString<24> > >, arg1: Function2D) -> None
-
-        33. addLoad(self: libaster.BaseDOFNumbering, arg0: ParallelThermalLoad<ConstantFieldOnCells<double> >) -> None
-
-        34. addLoad(self: libaster.BaseDOFNumbering, arg0: ParallelThermalLoad<ConstantFieldOnCells<double> >, arg1: Function) -> None
-
-        35. addLoad(self: libaster.BaseDOFNumbering, arg0: ParallelThermalLoad<ConstantFieldOnCells<double> >, arg1: Formula) -> None
-
-        36. addLoad(self: libaster.BaseDOFNumbering, arg0: ParallelThermalLoad<ConstantFieldOnCells<double> >, arg1: Function2D) -> None
-
-        37. addLoad(self: libaster.BaseDOFNumbering, arg0: ParallelThermalLoad<ConstantFieldOnCells<JeveuxString<24> > >) -> None
-
-        38. addLoad(self: libaster.BaseDOFNumbering, arg0: ParallelThermalLoad<ConstantFieldOnCells<JeveuxString<24> > >, arg1: Function) -> None
-
-        39. addLoad(self: libaster.BaseDOFNumbering, arg0: ParallelThermalLoad<ConstantFieldOnCells<JeveuxString<24> > >, arg1: Formula) -> None
-
-        40. addLoad(self: libaster.BaseDOFNumbering, arg0: ParallelThermalLoad<ConstantFieldOnCells<JeveuxString<24> > >, arg1: Function2D) -> None
+        2. computeNumbering(self: libaster.BaseDOFNumbering, arg0: List[Union[ElementaryMatrix<double, (PhysicalQuantityEnum)4>, ElementaryMatrix<std::complex<double>, (PhysicalQuantityEnum)4>, ElementaryMatrix<double, (PhysicalQuantityEnum)6>, ElementaryMatrix<std::complex<double>, (PhysicalQuantityEnum)5>]]) -> bool
         """
 
-    def computeNumbering(self):
-        pass
-
-    def computeRenumbering(self):
+    def computeRenumbering(self, arg0, arg1):
         pass
 
     def getDescription(self):
         pass
 
-    def getDirichletBCDOFs(self):
-        """Return a vector which describes DOFs that are imposed by Dirichlet BC.
-
-        The vector has a size equals to the number of DOFs. For each dof, the value is equal to one
-        if Dirichel BC is imposed to this DOF else zero
-
-        Be carefull all Dirichlet BC have to be added before to call this function.
-
-        Returns:
-            tuple(int): a list with dirichlet imposition.
-        """
-
     def getFiniteElementDescriptors(self):
-        pass
-
-    def getListOfLoads(self):
         pass
 
     def getMesh(self):
@@ -1345,25 +1239,11 @@ class BaseDOFNumbering(DataStructure):
             MeshPtr: a pointer to the mesh
         """
 
-    def getModel(self):
-        """Return the model
-
-        Returns:
-            ModelPtr: a pointer to the model
-        """
-
     def getPhysicalQuantity(self):
         """Returns the name of the physical quantity that is numbered.
 
         Returns:
             str: physical quantity name.
-        """
-
-    def hasDirichletBC(self):
-        """The list of loads used to build numbering contains Dirichlet BC.
-
-        Returns:
-            bool: *True* if Dirichlet BC are present, *False* otherwise.
         """
 
     def isParallel(self):
@@ -1376,22 +1256,7 @@ class BaseDOFNumbering(DataStructure):
     def setDescription(self, arg0):
         pass
 
-    def setElementaryMatrix(self, *args, **kwargs):
-        """Overloaded function.
-
-        1. setElementaryMatrix(self: libaster.BaseDOFNumbering, arg0: ElementaryMatrix<double, (PhysicalQuantityEnum)4>) -> None
-
-        2. setElementaryMatrix(self: libaster.BaseDOFNumbering, arg0: ElementaryMatrix<std::complex<double>, (PhysicalQuantityEnum)4>) -> None
-
-        3. setElementaryMatrix(self: libaster.BaseDOFNumbering, arg0: ElementaryMatrix<double, (PhysicalQuantityEnum)6>) -> None
-
-        4. setElementaryMatrix(self: libaster.BaseDOFNumbering, arg0: ElementaryMatrix<std::complex<double>, (PhysicalQuantityEnum)5>) -> None
-        """
-
     def setEmpty(self, arg0):
-        pass
-
-    def setModel(self, arg0):
         pass
 
 # class DOFNumbering in libaster
@@ -1415,7 +1280,7 @@ class DOFNumbering(BaseDOFNumbering):
 
         2. __init__(self: libaster.DOFNumbering, arg0: str) -> None
 
-        3. __init__(self: libaster.DOFNumbering, arg0: str, arg1: Model, arg2: ListOfLoads, arg3: libaster.FieldOnNodesDescription) -> None
+        3. __init__(self: libaster.DOFNumbering, arg0: str, arg1: libaster.FieldOnNodesDescription) -> None
         """
 
     def getComponentAssociatedToRow(self, row, local= False):
@@ -3293,6 +3158,102 @@ class ListOfLoads(DataStructure):
                 list of contact pair
         """
 
+    def addDirichletBC(self, *args, **kwargs):
+        """Overloaded function.
+
+        1. addDirichletBC(self: libaster.ListOfLoads, arg0: DirichletBC) -> None
+
+        2. addDirichletBC(self: libaster.ListOfLoads, arg0: DirichletBC, arg1: Function) -> None
+
+        3. addDirichletBC(self: libaster.ListOfLoads, arg0: DirichletBC, arg1: Formula) -> None
+
+        4. addDirichletBC(self: libaster.ListOfLoads, arg0: DirichletBC, arg1: Function2D) -> None
+        """
+
+    def addLoad(self, *args, **kwargs):
+        """Overloaded function.
+
+        1. addLoad(self: libaster.ListOfLoads, arg0: MechanicalLoad<ConstantFieldOnCells<double> >) -> None
+
+        2. addLoad(self: libaster.ListOfLoads, arg0: MechanicalLoad<ConstantFieldOnCells<double> >, arg1: Function) -> None
+
+        3. addLoad(self: libaster.ListOfLoads, arg0: MechanicalLoad<ConstantFieldOnCells<double> >, arg1: Formula) -> None
+
+        4. addLoad(self: libaster.ListOfLoads, arg0: MechanicalLoad<ConstantFieldOnCells<double> >, arg1: Function2D) -> None
+
+        5. addLoad(self: libaster.ListOfLoads, arg0: MechanicalLoad<ConstantFieldOnCells<JeveuxString<24> > >) -> None
+
+        6. addLoad(self: libaster.ListOfLoads, arg0: MechanicalLoad<ConstantFieldOnCells<JeveuxString<24> > >, arg1: Function) -> None
+
+        7. addLoad(self: libaster.ListOfLoads, arg0: MechanicalLoad<ConstantFieldOnCells<JeveuxString<24> > >, arg1: Formula) -> None
+
+        8. addLoad(self: libaster.ListOfLoads, arg0: MechanicalLoad<ConstantFieldOnCells<JeveuxString<24> > >, arg1: Function2D) -> None
+
+        9. addLoad(self: libaster.ListOfLoads, arg0: MechanicalLoad<ConstantFieldOnCells<std::complex<double> > >) -> None
+
+        10. addLoad(self: libaster.ListOfLoads, arg0: MechanicalLoad<ConstantFieldOnCells<std::complex<double> > >, arg1: Function) -> None
+
+        11. addLoad(self: libaster.ListOfLoads, arg0: MechanicalLoad<ConstantFieldOnCells<std::complex<double> > >, arg1: Formula) -> None
+
+        12. addLoad(self: libaster.ListOfLoads, arg0: MechanicalLoad<ConstantFieldOnCells<std::complex<double> > >, arg1: Function2D) -> None
+
+        13. addLoad(self: libaster.ListOfLoads, arg0: ThermalLoad<ConstantFieldOnCells<double> >) -> None
+
+        14. addLoad(self: libaster.ListOfLoads, arg0: ThermalLoad<ConstantFieldOnCells<double> >, arg1: Function) -> None
+
+        15. addLoad(self: libaster.ListOfLoads, arg0: ThermalLoad<ConstantFieldOnCells<double> >, arg1: Formula) -> None
+
+        16. addLoad(self: libaster.ListOfLoads, arg0: ThermalLoad<ConstantFieldOnCells<double> >, arg1: Function2D) -> None
+
+        17. addLoad(self: libaster.ListOfLoads, arg0: ThermalLoad<ConstantFieldOnCells<JeveuxString<24> > >) -> None
+
+        18. addLoad(self: libaster.ListOfLoads, arg0: ThermalLoad<ConstantFieldOnCells<JeveuxString<24> > >, arg1: Function) -> None
+
+        19. addLoad(self: libaster.ListOfLoads, arg0: ThermalLoad<ConstantFieldOnCells<JeveuxString<24> > >, arg1: Formula) -> None
+
+        20. addLoad(self: libaster.ListOfLoads, arg0: ThermalLoad<ConstantFieldOnCells<JeveuxString<24> > >, arg1: Function2D) -> None
+
+        21. addLoad(self: libaster.ListOfLoads, arg0: AcousticLoad<ConstantFieldOnCells<std::complex<double> > >) -> None
+
+        22. addLoad(self: libaster.ListOfLoads, arg0: AcousticLoad<ConstantFieldOnCells<std::complex<double> > >, arg1: Function) -> None
+
+        23. addLoad(self: libaster.ListOfLoads, arg0: AcousticLoad<ConstantFieldOnCells<std::complex<double> > >, arg1: Formula) -> None
+
+        24. addLoad(self: libaster.ListOfLoads, arg0: AcousticLoad<ConstantFieldOnCells<std::complex<double> > >, arg1: Function2D) -> None
+
+        25. addLoad(self: libaster.ListOfLoads, arg0: ParallelMechanicalLoad<ConstantFieldOnCells<double> >) -> None
+
+        26. addLoad(self: libaster.ListOfLoads, arg0: ParallelMechanicalLoad<ConstantFieldOnCells<double> >, arg1: Function) -> None
+
+        27. addLoad(self: libaster.ListOfLoads, arg0: ParallelMechanicalLoad<ConstantFieldOnCells<double> >, arg1: Formula) -> None
+
+        28. addLoad(self: libaster.ListOfLoads, arg0: ParallelMechanicalLoad<ConstantFieldOnCells<double> >, arg1: Function2D) -> None
+
+        29. addLoad(self: libaster.ListOfLoads, arg0: ParallelMechanicalLoad<ConstantFieldOnCells<JeveuxString<24> > >) -> None
+
+        30. addLoad(self: libaster.ListOfLoads, arg0: ParallelMechanicalLoad<ConstantFieldOnCells<JeveuxString<24> > >, arg1: Function) -> None
+
+        31. addLoad(self: libaster.ListOfLoads, arg0: ParallelMechanicalLoad<ConstantFieldOnCells<JeveuxString<24> > >, arg1: Formula) -> None
+
+        32. addLoad(self: libaster.ListOfLoads, arg0: ParallelMechanicalLoad<ConstantFieldOnCells<JeveuxString<24> > >, arg1: Function2D) -> None
+
+        33. addLoad(self: libaster.ListOfLoads, arg0: ParallelThermalLoad<ConstantFieldOnCells<double> >) -> None
+
+        34. addLoad(self: libaster.ListOfLoads, arg0: ParallelThermalLoad<ConstantFieldOnCells<double> >, arg1: Function) -> None
+
+        35. addLoad(self: libaster.ListOfLoads, arg0: ParallelThermalLoad<ConstantFieldOnCells<double> >, arg1: Formula) -> None
+
+        36. addLoad(self: libaster.ListOfLoads, arg0: ParallelThermalLoad<ConstantFieldOnCells<double> >, arg1: Function2D) -> None
+
+        37. addLoad(self: libaster.ListOfLoads, arg0: ParallelThermalLoad<ConstantFieldOnCells<JeveuxString<24> > >) -> None
+
+        38. addLoad(self: libaster.ListOfLoads, arg0: ParallelThermalLoad<ConstantFieldOnCells<JeveuxString<24> > >, arg1: Function) -> None
+
+        39. addLoad(self: libaster.ListOfLoads, arg0: ParallelThermalLoad<ConstantFieldOnCells<JeveuxString<24> > >, arg1: Formula) -> None
+
+        40. addLoad(self: libaster.ListOfLoads, arg0: ParallelThermalLoad<ConstantFieldOnCells<JeveuxString<24> > >, arg1: Function2D) -> None
+        """
+
     def getContactLoadDescriptor(self):
         """Get contact load descriptors.
 
@@ -5122,13 +5083,6 @@ class BaseAssemblyMatrix(DataStructure):
             Mesh: a pointer to the mesh
         """
 
-    def getModel(self):
-        """Return the model.
-
-        Returns:
-            Model: a pointer to the model
-        """
-
     def hasDirichletEliminationDOFs(self):
         """Tell if matrix has some DOFs eliminated by Dirichlet boundaries conditions.
 
@@ -5821,9 +5775,6 @@ class BaseElementaryMatrix(DataStructure):
     def setModel(self, arg0):
         pass
 
-    def setPhysicalProblem(self, arg0):
-        pass
-
 # class ElementaryMatrixDisplacementReal in libaster
 
 class ElementaryMatrixDisplacementReal(BaseElementaryMatrix):
@@ -6018,7 +5969,7 @@ class BaseElementaryVector(DataStructure):
 
         2. __init__(self: libaster.BaseElementaryVector, arg0: str) -> None
 
-        3. __init__(self: libaster.BaseElementaryVector, arg0: PhysicalProblem) -> None
+        3. __init__(self: libaster.BaseElementaryVector, arg0: Model, arg1: MaterialField, arg2: libaster.ElementaryCharacteristics, arg3: libaster.ListOfLoads) -> None
         """
 
     def addLoad(self, arg0):
@@ -6045,13 +5996,6 @@ class BaseElementaryVector(DataStructure):
     def setModel(self, arg0):
         pass
 
-    def setPhysicalProblem(self, phys_pb):
-        """Set the physical problem
-
-        Arguments:
-            phys_pb (PhysicalProblem): the physical problem.
-        """
-
     def setType(self, arg0):
         pass
 
@@ -6076,7 +6020,7 @@ class ElementaryVectorReal(BaseElementaryVector):
 
         2. __init__(self: libaster.ElementaryVectorReal, arg0: str) -> None
 
-        3. __init__(self: libaster.ElementaryVectorReal, arg0: PhysicalProblem) -> None
+        3. __init__(self: libaster.ElementaryVectorReal, arg0: Model, arg1: MaterialField, arg2: libaster.ElementaryCharacteristics, arg3: libaster.ListOfLoads) -> None
         """
 
     def assemble(self, arg0):
@@ -6106,7 +6050,7 @@ class ElementaryVectorComplex(BaseElementaryVector):
 
         2. __init__(self: libaster.ElementaryVectorComplex, arg0: str) -> None
 
-        3. __init__(self: libaster.ElementaryVectorComplex, arg0: PhysicalProblem) -> None
+        3. __init__(self: libaster.ElementaryVectorComplex, arg0: Model, arg1: MaterialField, arg2: libaster.ElementaryCharacteristics, arg3: libaster.ListOfLoads) -> None
         """
 
     def assemble(self, arg0):
@@ -6137,7 +6081,7 @@ class ElementaryVectorDisplacementReal(ElementaryVectorReal):
 
         2. __init__(self: libaster.ElementaryVectorDisplacementReal, arg0: str) -> None
 
-        3. __init__(self: libaster.ElementaryVectorDisplacementReal, arg0: PhysicalProblem) -> None
+        3. __init__(self: libaster.ElementaryVectorDisplacementReal, arg0: Model, arg1: MaterialField, arg2: libaster.ElementaryCharacteristics, arg3: libaster.ListOfLoads) -> None
         """
 
 # class ElementaryVectorTemperatureReal in libaster
@@ -6162,7 +6106,7 @@ class ElementaryVectorTemperatureReal(ElementaryVectorReal):
 
         2. __init__(self: libaster.ElementaryVectorTemperatureReal, arg0: str) -> None
 
-        3. __init__(self: libaster.ElementaryVectorTemperatureReal, arg0: PhysicalProblem) -> None
+        3. __init__(self: libaster.ElementaryVectorTemperatureReal, arg0: Model, arg1: MaterialField, arg2: libaster.ElementaryCharacteristics, arg3: libaster.ListOfLoads) -> None
         """
 
 # class ElementaryVectorPressureComplex in libaster
@@ -6187,7 +6131,7 @@ class ElementaryVectorPressureComplex(ElementaryVectorComplex):
 
         2. __init__(self: libaster.ElementaryVectorPressureComplex, arg0: str) -> None
 
-        3. __init__(self: libaster.ElementaryVectorPressureComplex, arg0: PhysicalProblem) -> None
+        3. __init__(self: libaster.ElementaryVectorPressureComplex, arg0: Model, arg1: MaterialField, arg2: libaster.ElementaryCharacteristics, arg3: libaster.ListOfLoads) -> None
         """
 
 # class GeneralizedAssemblyMatrix in libaster
@@ -9521,6 +9465,9 @@ class Result(DataStructure):
     def addFieldOnNodesDescription(self, arg0):
         pass
 
+    def addFiniteElementDescriptor(self, arg0):
+        pass
+
     def allocate(self, nb_index):
         """Allocate result
 
@@ -10473,6 +10420,16 @@ class PhysicalProblem:
             BaseDOFNumberingPtr: a pointer to the DOF numbering
         """
 
+    def getDirichletBCDOFs(self):
+        """Return a vector with DOFs eliminated by Dirichlet boundaries conditions (if it exists)
+
+        Returns:
+            tuple(int): a vector with DOFs eliminated by Dirichlet boundaries conditions of
+                size = neq + 1,
+                tuple(ieq = 0, neq - 1) = 1 then DOF eliminated else 0,
+                tuple(neq) = number of DOFs eliminated.
+        """
+
     def getElementaryCharacteristics(self):
         """Return the elementary charateristics
 
@@ -10523,13 +10480,6 @@ class PhysicalProblem:
 
         Returns:
             FieldOnCellsRealPtr : field of reference values
-        """
-
-    def setDOFNumbering(self, dofNume):
-        """Set the DOF numbering
-
-        Arguments:
-            BaseDOFNumberingPtr: a pointer to the DOF numbering
         """
 
 # class Glossary in libaster

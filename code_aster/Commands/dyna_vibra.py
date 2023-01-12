@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -69,9 +69,13 @@ class VibrationDynamics(ExecuteCommand):
         """
         if keywords["BASE_CALCUL"] == "PHYS":
             massMatrix = keywords["MATR_MASS"]
-            dofn = massMatrix.getDOFNumbering()
-            self._result.setModel(dofn.getModel())
-            self._result.setDOFNumbering(dofn)
+            dofNum = massMatrix.getDOFNumbering()
+            for i in dofNum.getFiniteElementDescriptors():
+                self._result.addFiniteElementDescriptor(i)
+            self._result.setDOFNumbering(dofNum)
+            mesh = massMatrix.getMesh()
+            if mesh is not None:
+                self._result.setMesh(mesh)
             self._result.build()
         if keywords["BASE_CALCUL"] == "GENE":
             stiffnessMatrix = keywords["MATR_RIGI"]

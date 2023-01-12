@@ -3,7 +3,7 @@
  * @brief Interface python de ElementaryMatrix
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -35,7 +35,6 @@ void exportElementaryMatrixToPython( py::module_ &mod ) {
         .def( "getElementaryCharacteristics", &BaseElementaryMatrix::getElementaryCharacteristics )
         .def( "getModel", &BaseElementaryMatrix::getModel )
         .def( "getMesh", &BaseElementaryMatrix::getMesh )
-        .def( "setPhysicalProblem", &BaseElementaryMatrix::setPhysicalProblem )
         .def( "setMaterialField", &BaseElementaryMatrix::setMaterialField )
         .def( "setElementaryCharacteristics", &BaseElementaryMatrix::setElementaryCharacteristics )
         .def( "setModel", &BaseElementaryMatrix::setModel );

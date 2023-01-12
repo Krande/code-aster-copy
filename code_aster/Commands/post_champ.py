@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -44,14 +44,22 @@ class PostChamp(ExecuteCommand):
         Arguments:
             keywords (dict): User's keywords.
         """
+        resu = keywords["RESULTAT"]
         modele = keywords.get("MODELE")
         if modele is None:
             try:
-                modele = keywords["RESULTAT"].getModel()
+                modele = resu.getModel()
             except:
                 pass
         if modele is not None:
             self._result.setModel(modele)
+        mesh = resu.getMesh()
+        if mesh is not None:
+            self._result.setMesh(mesh)
+        for fED in resu.getFiniteElementDescriptors():
+            self._result.addFiniteElementDescriptor(fED)
+        for fOND in resu.getFieldOnNodesDescriptions():
+            self._result.addFieldOnNodesDescription(fOND)
         self._result.build()
 
 

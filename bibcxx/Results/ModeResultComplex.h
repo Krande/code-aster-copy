@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe ModeResultComplex
  * @author Natacha Béreux
  * @section LICENCE
- *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -220,9 +220,7 @@ class ModeResultComplex : public ModeResult {
             numeDdl = _rigidityPressDMatrix->getDOFNumbering();
 
         if ( numeDdl != nullptr ) {
-            const auto model = numeDdl->getModel();
-            if ( model != nullptr )
-                _mesh = model->getMesh();
+            _mesh = numeDdl->getMesh();
         }
         return Result::build();
     };

@@ -2,7 +2,7 @@
  * @file PhysicalProblem.cxx
  * @brief Implementation of class PhysicalProblem
  * @section LICENCE
- *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -36,7 +36,6 @@ PhysicalProblem::PhysicalProblem( const ModelPtr curModel, const MaterialFieldPt
       _materialField( curMat ),
       _elemChara( cara ),
       _listOfLoads( std::make_shared< ListOfLoads >( _model ) ),
-      _dofNume( nullptr ),
       _codedMater( nullptr ),
       _behavProp( nullptr ),
       _externVarRefe( nullptr ) {
@@ -68,45 +67,6 @@ CodedMaterialPtr PhysicalProblem::getCodedMaterial() const {
     }
 
     return _codedMater;
-};
-
-void PhysicalProblem::setDOFNumbering( const BaseDOFNumberingPtr dofNume ) {
-    if ( dofNume->getMesh() != _mesh ) {
-        const std::string msg =
-            "Inconsistent mesh: " + _mesh->getName() + " vs " + dofNume->getMesh()->getName();
-        AS_ABORT( msg );
-    }
-
-    auto model = dofNume->getModel();
-    if ( model && model != _model ) {
-        const std::string msg =
-            "Inconsistent models: " + _model->getName() + " vs " + model->getName();
-        AS_ABORT( msg );
-    }
-
-    auto listOfLoads = dofNume->getListOfLoads();
-    if ( listOfLoads && !listOfLoads->isEmpty() && listOfLoads != _listOfLoads ) {
-        const std::string msg = "Inconsistent list of loads: " + _listOfLoads->getName() + " vs " +
-                                listOfLoads->getName();
-        AS_ABORT( msg );
-    }
-
-    _dofNume = dofNume;
-};
-
-bool PhysicalProblem::computeDOFNumbering() {
-    // create dofNume
-#ifdef ASTER_HAVE_MPI
-    if ( _mesh->isParallel() )
-        _dofNume = std::make_shared< ParallelDOFNumbering >();
-    else
-#endif /* ASTER_HAVE_MPI */
-        _dofNume = std::make_shared< DOFNumbering >();
-
-    _dofNume->setModel( _model );
-    _dofNume->setListOfLoads( _listOfLoads );
-
-    return _dofNume->computeNumbering();
 };
 
 void PhysicalProblem::computeBehaviourProperty( py::object &keywords,
@@ -176,3 +136,26 @@ void PhysicalProblem::computeReferenceExternalStateVariables() {
     // Call Fortran WRAPPER
     CALLO_VRCREF( modelName, materialFieldName, elemCharaName, fieldName, base );
 }
+
+bool PhysicalProblem::computeDOFNumbering() {
+    // create dofNume
+#ifdef ASTER_HAVE_MPI
+    if ( getMesh()->isParallel() )
+        _dofNume = std::make_shared< ParallelDOFNumbering >();
+    else
+#endif /* ASTER_HAVE_MPI */
+        _dofNume = std::make_shared< DOFNumbering >();
+
+    return _dofNume->computeNumbering( getModel(), getListOfLoads() );
+};
+
+VectorLong PhysicalProblem::getDirichletBCDOFs( void ) const {
+    JeveuxVectorLong ccid( "&&NUME_CCID" );
+    std::string base( "V" );
+
+    // Il faudrait eventuellement rajouter une liste de charge en plus donné par le user
+    CALLO_NUMCIMA( getListOfLoads()->getName(), _dofNume->getName(), ccid->getName(), base );
+
+    ccid->updateValuePointer();
+    return ccid->toVector();
+};

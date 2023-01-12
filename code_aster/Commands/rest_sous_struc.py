@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -92,13 +92,11 @@ class RestSousStrucOper(ExecuteCommand):
                     if mat is None:
                         mat = macroElem.getStiffnessMatrixReal()
                     if mat is not None:
-                        modele = mat.getModel()
-                        if modele is not None:
-                            mesh = modele.getMesh()
-                            self._result.setModel(modele)
-                        else:
-                            mesh = mat.getMesh()
-                            self._result.setMesh(mat.getMesh())
+                        mesh = mat.getMesh()
+                        self._result.setMesh(mat.getMesh())
+                        dofNum = mat.getDOFNumbering()
+                        for fed in dofNum.getFiniteElementDescriptors():
+                            self._result.addFiniteElementDescriptor(fed)
 
                 if mesh is None:
                     if geneDofNum is not None:
@@ -107,11 +105,10 @@ class RestSousStrucOper(ExecuteCommand):
                             dofNum = basis.getDOFNumbering()
                             mesh = basis.getMesh()
                             if dofNum is not None:
+                                for i in dofNum.getFiniteElementDescriptors():
+                                    self._result.addFiniteElementDescriptor(i)
                                 self._result.setDOFNumbering(dofNum)
-                                modele = dofNum.getModel()
-                                if modele is not None:
-                                    self._result.setModel(modele)
-                                elif mesh is None:
+                                if mesh is None:
                                     mesh = dofNum.getMesh()
 
                     if mesh is not None:

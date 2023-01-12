@@ -2,7 +2,7 @@
  * @file DiscreteComputation.cxx
  * @brief Implementation of class DiscreteComputation
  * @section LICENCE
- *   Copyright (C) 1991 2022  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 2023  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -108,7 +108,9 @@ FieldOnNodesRealPtr DiscreteComputation::getTransientThermalForces(
     AS_ASSERT( _phys_problem->getModel()->isThermal() );
     AS_ASSERT( _previousNodalField->exists() );
 
-    auto elemVect = std::make_shared< ElementaryVectorReal >( _phys_problem );
+    auto elemVect = std::make_shared< ElementaryVectorReal >(
+        _phys_problem->getModel(), _phys_problem->getMaterialField(),
+        _phys_problem->getElementaryCharacteristics(), _phys_problem->getListOfLoads() );
 
     // Setup
     const std::string calcul_option( "CHAR_THER_EVOL" );

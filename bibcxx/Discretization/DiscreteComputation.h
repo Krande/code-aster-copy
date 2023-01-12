@@ -5,7 +5,7 @@
  * @file DiscreteComputation.h
  * @brief Header of class DiscreteComputation
  * @section LICENCE
- *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -29,7 +29,6 @@
 #include "Discretization/Calcul.h"
 #include "LinearAlgebra/ElementaryMatrix.h"
 #include "LinearAlgebra/ElementaryVector.h"
-#include "Numbering/DOFNumbering.h"
 #include "Studies/PhysicalProblem.h"
 
 /**
@@ -106,7 +105,6 @@ class DiscreteComputation {
     ~DiscreteComputation(){};
 
     /** @brief Compute nodal field for external state variables RHS */
-
     FieldOnNodesRealPtr getExternalStateVariablesForces( const ASTERDOUBLE time ) const;
 
     /**
