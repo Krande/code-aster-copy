@@ -75,8 +75,9 @@ class RestGenePhys(ExecuteCommand):
             resu_gene, (TransientGeneralizedResult, HarmoGeneralizedResult, GeneralizedModeResult)
         ):
             dofNum = resu_gene.getDOFNumbering()
-            for fED in resu_gene.getFiniteElementDescriptors():
-                self._result.addFiniteElementDescriptor(fED)
+            if isinstance(resu_gene, (GeneralizedModeResult)):
+                for fED in resu_gene.getFiniteElementDescriptors():
+                    self._result.addFiniteElementDescriptor(fED)
 
             if dofNum is not None:
                 self._result.setDOFNumbering(dofNum)
