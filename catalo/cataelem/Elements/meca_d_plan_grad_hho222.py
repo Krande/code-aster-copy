@@ -44,6 +44,17 @@ DDL_MECA = LocatedComponents(
     ),
 )
 
+DDL_LOAD = LocatedComponents(
+    phys=PHY.DEPL_R,
+    type="ELNO",
+    diff=True,
+    components=(
+        ("EN1", ("HHO_DX[3]", "HHO_DY[3]")),
+        ("EN2", ()),
+        ("EN3", ("HHO_DX[6]", "HHO_DY[6]")),
+    ),
+)
+
 EDEPLPG = LocatedComponents(phys=PHY.DEPL_R, type="ELGA", location="RIGI", components=("DX", "DY"))
 
 
@@ -251,14 +262,13 @@ ESOURCR = LocatedComponents(phys=PHY.SOUR_R, type="ELGA", location="RIGI", compo
 
 ZVARIPG = LocatedComponents(phys=PHY.VARI_R, type="ELGA", location="RIGI", components=("VARI",))
 
+CHHOGTQ = LocatedComponents(phys=PHY.N1920R, type="ELEM", components=("X[864]",))
 
-CHHOGTQ = LocatedComponents(phys=PHY.N1920R, type="ELEM", components=("X[336]",))
+CHHOGTT = LocatedComponents(phys=PHY.N1920R, type="ELEM", components=("X[720]",))
 
-CHHOGTT = LocatedComponents(phys=PHY.N1920R, type="ELEM", components=("X[288]",))
+CHHOSTQ = LocatedComponents(phys=PHY.N2448R, type="ELEM", components=("X[324]",))
 
-CHHOSTQ = LocatedComponents(phys=PHY.N2448R, type="ELEM", components=("X[196]",))
-
-CHHOSTT = LocatedComponents(phys=PHY.N2448R, type="ELEM", components=("X[144]",))
+CHHOSTT = LocatedComponents(phys=PHY.N2448R, type="ELEM", components=("X[225]",))
 
 DEPLHHO = LocatedComponents(phys=PHY.DEPL_R, type="ELNO", components=("DX", "DY"))
 
@@ -274,6 +284,8 @@ HHOCINE = LocatedComponents(
         ("EN3", ("HHO_DX[6]", "HHO_DY[6]")),
     ),
 )
+
+MVECTLR = ArrayOfComponents(phys=PHY.VDEP_R, locatedComponents=DDL_LOAD)
 
 MVECTUR = ArrayOfComponents(phys=PHY.VDEP_R, locatedComponents=DDL_MECA)
 
@@ -301,6 +313,16 @@ class MECA_DGVQ_HHO222(Element):
         ),
     )
     calculs = (
+        OP.CHAR_MECA_FF2D2D(
+            te=476,
+            para_in=((SP.PFF2D2D, CFORCEF), (SP.PGEOMER, NGEOMER), (SP.PTEMPSR, CTEMPSR)),
+            para_out=((SP.PVECTUR, MVECTLR),),
+        ),
+        OP.CHAR_MECA_FR2D2D(
+            te=476,
+            para_in=((SP.PFR2D2D, NFORCER), (SP.PGEOMER, NGEOMER)),
+            para_out=((SP.PVECTUR, MVECTLR),),
+        ),
         OP.COOR_ELGA(
             te=479, para_in=((SP.PGEOMER, NGEOMER),), para_out=((OP.COOR_ELGA.PCOORPG, EGGEOP_R),)
         ),

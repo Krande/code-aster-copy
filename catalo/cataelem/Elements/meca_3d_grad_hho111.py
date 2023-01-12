@@ -46,6 +46,17 @@ DDL_MECA = LocatedComponents(
     ),
 )
 
+DDL_LOAD = LocatedComponents(
+    phys=PHY.DEPL_R,
+    type="ELNO",
+    diff=True,
+    components=(
+        ("EN1", ("HHO_DX[3]", "HHO_DY[3]", "HHO_DZ[3]")),
+        ("EN2", ()),
+        ("EN3", ("HHO_DX[4]", "HHO_DY[4]", "HHO_DZ[4]")),
+    ),
+)
+
 EDEPLPG = LocatedComponents(
     phys=PHY.DEPL_R, type="ELGA", location="RIGI", components=("DX", "DY", "DZ")
 )
@@ -365,6 +376,8 @@ HHOCINE = LocatedComponents(
     ),
 )
 
+MVECTLR = ArrayOfComponents(phys=PHY.VDEP_R, locatedComponents=DDL_LOAD)
+
 MVECTUR = ArrayOfComponents(phys=PHY.VDEP_R, locatedComponents=DDL_MECA)
 
 MMATUUR = ArrayOfComponents(phys=PHY.MDEP_R, locatedComponents=DDL_MECA)
@@ -405,12 +418,12 @@ class MECA3DGVH_HHO111(Element):
         OP.CHAR_MECA_FF3D3D(
             te=476,
             para_in=((SP.PFF3D3D, CFORCEF), (SP.PGEOMER, NGEOMER), (SP.PTEMPSR, CTEMPSR)),
-            para_out=((SP.PVECTUR, MVECTUR),),
+            para_out=((SP.PVECTUR, MVECTLR),),
         ),
         OP.CHAR_MECA_FR3D3D(
             te=476,
             para_in=((SP.PFR3D3D, NFORCER), (SP.PGEOMER, NGEOMER)),
-            para_out=((SP.PVECTUR, MVECTUR),),
+            para_out=((SP.PVECTUR, MVECTLR),),
         ),
         OP.COOR_ELGA(
             te=488, para_in=((SP.PGEOMER, NGEOMER),), para_out=((OP.COOR_ELGA.PCOORPG, EGGEOP_R),)

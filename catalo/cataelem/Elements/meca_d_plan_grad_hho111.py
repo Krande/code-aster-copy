@@ -44,6 +44,18 @@ DDL_MECA = LocatedComponents(
     ),
 )
 
+DDL_LOAD = LocatedComponents(
+    phys=PHY.DEPL_R,
+    type="ELNO",
+    diff=True,
+    components=(
+        ("EN1", ("HHO_DX[2]", "HHO_DY[2]")),
+        ("EN2", ()),
+        ("EN3", ("HHO_DX[3]", "HHO_DY[3]")),
+    ),
+)
+
+
 EDEPLPG = LocatedComponents(phys=PHY.DEPL_R, type="ELGA", location="RIGI", components=("DX", "DY"))
 
 
@@ -275,6 +287,8 @@ HHOCINE = LocatedComponents(
     ),
 )
 
+MVECTLR = ArrayOfComponents(phys=PHY.VDEP_R, locatedComponents=DDL_LOAD)
+
 MVECTUR = ArrayOfComponents(phys=PHY.VDEP_R, locatedComponents=DDL_MECA)
 
 MVEFORC = ArrayOfComponents(phys=PHY.VDEP_R, locatedComponents=DEPLHHO)
@@ -301,6 +315,16 @@ class MECA_DGVQ_HHO111(Element):
         ),
     )
     calculs = (
+        OP.CHAR_MECA_FF2D2D(
+            te=476,
+            para_in=((SP.PFF2D2D, CFORCEF), (SP.PGEOMER, NGEOMER), (SP.PTEMPSR, CTEMPSR)),
+            para_out=((SP.PVECTUR, MVECTLR),),
+        ),
+        OP.CHAR_MECA_FR2D2D(
+            te=476,
+            para_in=((SP.PFR2D2D, NFORCER), (SP.PGEOMER, NGEOMER)),
+            para_out=((SP.PVECTUR, MVECTLR),),
+        ),
         OP.COOR_ELGA(
             te=479, para_in=((SP.PGEOMER, NGEOMER),), para_out=((OP.COOR_ELGA.PCOORPG, EGGEOP_R),)
         ),
