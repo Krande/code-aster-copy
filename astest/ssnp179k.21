@@ -1,0 +1,194 @@
+# Fit curve from traction curve to VMIS_ISOT_NL
+# R(p) = R0 + RH*p + R1*(1-exp(-GAMMA_1*p)) + R2*(1-exp(-GAMMA_2*p)) + RK*(p0+p)**GAMMA_K
+
+# manage data and fit
+import argparse
+import numpy as np
+
+from scipy import optimize
+
+import matplotlib.pyplot as plt
+
+# 0. Read data and shifting (eps_tot, R(p)) -> (p, R(p))
+def read_data(filename):
+    """
+    Read traction curve in code_aster format
+
+    Arguments:
+        filename [str]: filename
+
+    Returns:
+        p [numpy.array] : value of p
+        Rp [numpy.array] : value of R(p)
+    """
+    l_Rp, l_p = [], []
+    eps0 = None
+    f = open(filename, "r")
+    for line in f:
+        sline = line.replace("\t", " ").strip().strip("\n").split()
+
+        if eps0 is None:
+            eps0 = float(sline[0])
+
+        p = float(sline[0]) - eps0
+        Rp = float(sline[1])
+        l_p.append(p)
+        l_Rp.append(Rp)
+    f.close()
+
+    return np.array(l_p), np.array(l_Rp)
+
+
+# 1. Define function
+def Rp_nl(parameters, p):
+    """Analytical Hardening curve
+    R(p) = R0 + RH*p + R1*(1-exp(-GAMMA_1*p)) + R2*(1-exp(-GAMMA_2*p)) + RK*(p0+p)**GAMMA_K
+
+    Arguments:
+        parameter (list(float)) : [R0, RH, R1, GAMMA_1, R2, GAMMA_2, RK, P0, GAMMA_K]
+    """
+    Rch = parameters[1] * p
+    Rc1 = parameters[2] * (1.0 - np.exp(-parameters[3] * p))
+    Rc2 = parameters[4] * (1.0 - np.exp(-parameters[5] * p))
+    Rck = parameters[6] * ((parameters[7] + p) ** parameters[8])
+    return parameters[0] + Rch + Rc1 + Rc2 + Rck
+
+
+def dRp_nl(parameters, p, *args, **kwargs):
+    """Derivative of hardening curve
+    Arguments:
+        parameter (list(float)) : [R0, RH, R1, GAMMA_1, R2, GAMMA_2, RK, P0, GAMMA_K]
+    """
+    dR0 = np.ones(len(p))
+    dRH = p
+    dR1 = 1.0 - np.exp(-parameters[3] * p)
+    dG1 = parameters[2] * p * np.exp(-parameters[3] * p)
+    dR2 = 1.0 - np.exp(-parameters[5] * p)
+    dG2 = parameters[4] * p * np.exp(-parameters[5] * p)
+    dRK = (parameters[7] + p) ** parameters[8]
+    dP0 = parameters[8] * parameters[6] * ((parameters[7] + p) ** (parameters[8] - 1))
+    dGK = (
+        parameters[6]
+        * np.log(parameters[7] + p)
+        * ((parameters[7] + p) ** parameters[8])
+    )
+    return np.transpose([dR0, dRH, dR1, dG1, dR2, dG2, dRK, dP0, dGK])
+
+
+def fitting(args):
+    """
+    Fitting of traction curbe by non-linear hardening function.
+    It prints ECRO_NL keyword
+
+    Arguments:
+        args: arguments
+    """
+    np_p, np_Rp = read_data(args.fileNameInput)
+
+    # 2. Define the objective function for the least squares algorithm
+    # The scipy.optimize.least_square requires the following inputs
+
+    # A) Objective function that computes the residuals of the
+    #     predicted data vs the observed data using the following syntaxis:
+    #     f = fun(parameters, *args, **kwargs),
+    def residuals(parameters, xdata, ydata, func):
+        """
+        Compute residuals of y_predicted - ydata
+        where:
+        y_predicted = func(parameters,xdata)
+        """
+        return func(parameters, xdata) - ydata
+
+    # 3. Perform curve fitting
+    #    Initial guess for the parameters to be estimated
+    #    The parameters follow the same order than Rp_nl
+    x0 = np.ones(9)
+    x0[0] = np_Rp[0]
+
+    # estimate parameters in Rp_nl
+    OptimizeResult = optimize.least_squares(
+        residuals,
+        x0,
+        args=(np_p, np_Rp, Rp_nl),
+        jac=dRp_nl,
+        verbose=args.verbose,
+        max_nfev=args.max_iter,
+        gtol=args.tole,
+        ftol=args.tole,
+    )
+    assert OptimizeResult.success
+    parameters_estimated = OptimizeResult.x
+
+    # print ECRO_NL keyword
+    print("To copy in code_aster command file")
+    print(
+        "ECRO_NL=_F(R0=%f, RH=%f, R1=%f, GAMMA_1=%f, R2=%f, GAMMA_2=%f, RK=%f, P0=%f, GAMMA_M=%f)"
+        % (
+            parameters_estimated[0],
+            parameters_estimated[1],
+            parameters_estimated[2],
+            parameters_estimated[3],
+            parameters_estimated[4],
+            parameters_estimated[5],
+            parameters_estimated[6],
+            parameters_estimated[7],
+            parameters_estimated[8],
+        )
+    )
+
+    # Estimate data based on the solution found
+    if args.show_plt:
+        line_p = np.linspace(np_p[0], np_p[len(np_p) - 1], 500)
+        np_Rp_est = Rp_nl(parameters_estimated, line_p)
+        plt.plot(np_p, np_Rp, color="tab:blue", marker="o")
+        plt.plot(line_p, np_Rp_est, color="tab:orange")
+        plt.legend(("R(p) given", "R(p) fitted"))
+        plt.title("Fitting curve R(p) for VMIS_ISOT_NL")
+        plt.xlabel("p")
+        plt.ylabel("R(p)")
+        plt.show()
+
+
+# How to use: python3 fit_curve_isot_nl.py --fi myTractionCurve.txt
+if __name__ == "__main__":
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "--fi",
+        dest="fileNameInput",
+        required=True,
+        help="traction curve",
+    )
+    parser.add_argument(
+        "--tole",
+        dest="tole",
+        type=float,
+        default=1e-8,
+        help="tolerence criteria for convergence",
+    )
+    parser.add_argument(
+        "--iter",
+        dest="max_iter",
+        type=int,
+        default=10000,
+        help="maxinum number of iteration",
+    )
+    parser.add_argument(
+        "-v",
+        "--verbosity",
+        dest="verbose",
+        type=int,
+        choices=[0, 1, 2],
+        help="increase output verbosity",
+        default=1,
+    )
+    parser.add_argument(
+        "--show",
+        dest="show_plt",
+        required=False,
+        action="store_true",
+        help="show plot",
+    )
+
+    args = parser.parse_args()
+    fitting(args)

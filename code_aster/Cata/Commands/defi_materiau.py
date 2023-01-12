@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -4604,14 +4604,14 @@ DEFI_MATERIAU = MACRO(
     ECRO_NL=FACT(
         statut="f",
         R0=SIMP(statut="o", typ="R"),
-        RH=SIMP(statut="f", typ="R"),
-        R1=SIMP(statut="f", typ="R"),
-        GAMMA_1=SIMP(statut="f", typ="R"),
-        R2=SIMP(statut="f", typ="R"),
-        GAMMA_2=SIMP(statut="f", typ="R"),
-        RK=SIMP(statut="f", typ="R"),
-        P0=SIMP(statut="f", typ="R"),
-        GAMMA_M=SIMP(statut="f", typ="R"),
+        RH=SIMP(statut="f", typ="R", defaut=0.0),
+        R1=SIMP(statut="f", typ="R", defaut=0.0),
+        GAMMA_1=SIMP(statut="f", typ="R", defaut=0.0),
+        R2=SIMP(statut="f", typ="R", defaut=0.0),
+        GAMMA_2=SIMP(statut="f", typ="R", defaut=0.0),
+        RK=SIMP(statut="f", typ="R", defaut=0.0),
+        P0=SIMP(statut="f", typ="R", defaut=0.0),
+        GAMMA_M=SIMP(statut="f", typ="R", defaut=1.0),
     ),
     ECRO_NL_FO=FACT(
         statut="f",
