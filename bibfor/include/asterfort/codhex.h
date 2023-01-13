@@ -15,10 +15,12 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-#include "asterf_types.h"
-!
+
 interface
-    subroutine check_aniso(propname, objname)
-        character(len=*) :: propname, objname
-    end subroutine check_aniso
+    subroutine codhex(entier, cadre, chaine, kstop)
+        integer, intent(in) :: entier
+        character(len=*), intent(in) :: cadre
+        character(len=*), intent(out) :: chaine
+        character(len=*), optional :: kstop
+    end subroutine codhex
 end interface

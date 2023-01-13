@@ -37,7 +37,7 @@ subroutine lrm_clean_joint(mesh, v_noex)
 #include "asterfort/jeveuo.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/create_graph_comm.h"
-#include "asterfort/codlet.h"
+#include "asterfort/codhex.h"
 #include "MeshTypes_type.h"
 !
     character(len=8) :: mesh
@@ -96,7 +96,7 @@ subroutine lrm_clean_joint(mesh, v_noex)
 
     do i_comm = 1, nb_comm
         domdis = v_comm(i_comm)
-        call codlet(domdis, 'G', chdomdis)
+        call codhex(domdis, 'G', chdomdis)
 !
 ! --- Il faut préparer les noeuds à envoyer et à recevoir
 !

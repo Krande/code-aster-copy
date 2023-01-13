@@ -368,7 +368,7 @@ class MEDCouplingMeshHelper:
                     d_in,
                     d_out,
                 ), f"inconsistent domains: {rank} not in ({d_in}, {d_out})"
-                key = ("R" if d_in == rank else "E") + f"{remote:x}"
+                key = ("R" if d_in == rank else "E") + f"{remote:x}".upper()
                 assert joint.getNumberOfSteps() == 1, "unexpected value"
                 assert joint[0].getNumberOfCorrespondences() == 1, "unexpected value"
                 values = joint[0][0].getCorrespondence().toNumPyArray().ravel()
@@ -395,7 +395,7 @@ class MEDCouplingMeshHelper:
         retlist = []
         for dom in self._domains:
             for typ in "ER":
-                key = f"{typ}{dom:x}"
+                key = f"{typ}{dom:x}".upper()
                 retlist.append(self._djoints[key])
         return retlist
 
