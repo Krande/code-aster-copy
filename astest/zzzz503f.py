@@ -69,8 +69,8 @@ fieldOnElem1 = U2.getFieldOnCellsReal("SIEF_ELGA", 32)
 fieldOnElem2 = U2.getFieldOnCellsReal("SIEF_ELGA", 31)
 
 # subscript operator __getitem__
-val0 = fieldOnElem1.getValues()[0]
-test.assertAlmostEqual(fieldOnElem1[0], val0)
+valElem1 = fieldOnElem1.getValues()
+test.assertAlmostEqual(fieldOnElem1[0], valElem1[0])
 
 # __len__ and size()
 test.assertAlmostEqual(len(fieldOnElem1), 192)
@@ -94,9 +94,9 @@ fieldOnElem3 = fieldOnElem2.duplicate()
 fieldOnElem3 -= fieldOnElem1
 
 # this force "fieldOnElem2._values->updateValuePointer()"
-fieldOnElem2.norm("NORM_INFINITY")
+valElem2 = fieldOnElem2.getValues()
 
-test.assertAlmostEqual(fieldOnElem3[0], fieldOnElem2[0] - fieldOnElem1[0])
+test.assertAlmostEqual(fieldOnElem3[0], valElem2[0] - valElem1[0])
 
 fieldOnElem3 = 10 * fieldOnElem2
 test.assertAlmostEqual(fieldOnElem3[0], 10 * fieldOnElem2[0])
