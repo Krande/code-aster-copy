@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -450,7 +450,7 @@ class SubStructure(WithEmbeddedObjects):
             # pour ne pas avoir deux valeurs propres strictement egal
             if precision:
                 if eig == prevEig:
-                    eig += 10 ** -precision
+                    eig += 10**-precision
                 prevEig = eig
             print("frequence = %s" % eig)
             Cham = CREA_CHAMP(
@@ -738,10 +738,11 @@ def macPlot(
     """
 
     interactive_is_possible = True
-    try:
-        plt.switch_backend("TkAgg")  # switch to interactive plot
-    except ImportError:
-        interactive_is_possible = False
+    if interactive_plot:
+        try:
+            plt.switch_backend("TkAgg")  # switch to interactive plot
+        except ImportError:
+            interactive_is_possible = False
     if HAS_MATPLOTLIB and os.getenv("DISPLAY"):
         plt.figure()
         plt.jet()
@@ -847,7 +848,7 @@ def macPlot(
                 MAC1[idx2, idx1] += np.real(np.dot(v1_left, Mv2))
                 MAC2[idx2, idx1] += np.real(np.dot(v1_left, Mv1))
                 MAC3[idx2, idx1] += np.real(np.dot(v2_left, Mv2))
-    mac = MAC1 ** 2 / MAC2 / MAC3
+    mac = MAC1**2 / MAC2 / MAC3
     print(" " * 100, end="\r")  # in order to clean the progress print
     if normalize:
         mac = np.dot(mac, np.linalg.inv(np.diag(np.amax(mac, axis=0))))
