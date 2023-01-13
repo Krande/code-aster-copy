@@ -24,10 +24,10 @@ POURSUITE(CODE="OUI")
 # Valeurs de référence: calcul avec Rayleigh classique
 timeTest1 = 0.5
 timeTest2 = 1.0
-deplTest1 = 4.035147353641e-04
-deplTest2 = 7.957954638239e-04
-viteTest1 = 1.599384200905e-03
-viteTest2 = 2.943843700632e-05
+deplTest1 = 4.035110057163e-04
+deplTest2 = 7.957888374354e-04
+viteTest1 = 1.599368450821e-03
+viteTest2 = 2.943958037642e-05
 
 # Tests en non-régression sur Rayleigh classique
 TEST_FONCTION(

@@ -276,7 +276,7 @@ class MECA_DPQ9_HHO111(Element):
     )
     calculs = (
         OP.AMOR_MECA(
-            te=111,
+            te=121,
             para_in=(
                 (SP.PGEOMER, NGEOMER),
                 (SP.PMASSEL, MMATUUR),
