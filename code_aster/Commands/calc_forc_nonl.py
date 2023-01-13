@@ -43,6 +43,8 @@ class CalcForcNonl(ExecuteCommand):
             keywords (dict): User's keywords.
         """
         self._result.setModel(keywords["RESULTAT"].getModel())
+        self._result.setDOFNumbering(keywords["RESULTAT"].getDOFNumbering())
+        self._result.build()
 
 
 CALC_FORC_NONL = CalcForcNonl.run

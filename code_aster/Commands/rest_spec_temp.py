@@ -66,6 +66,7 @@ class FourierTransformation(ExecuteCommand):
             if model is not None:
                 self._result.setModel(model)
             self._result.setDOFNumbering(resultat.getDOFNumbering())
+            self._result.build()
         else:
             self._result.setGeneralizedDOFNumbering(
                 keywords["RESU_GENE"].getGeneralizedDOFNumbering()
