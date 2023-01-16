@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -50,7 +50,7 @@ BETON = DEFI_MATERIAU(
 
 BET_FAIB = DEFI_MATERIAU(
     ELAS=_F(E=young, NU=nu),
-    ENDO_LOCA_EXP=_F(KAPPA=kappa, P=p, SIGC=sigc, SIG0=sig0, REST_RIGIDITE=rest),
+    ENDO_LOCA_EXP=_F(KAPPA=kappa, P=p, SIGC=sigc, SIG0=sig0, REST_RIGIDITE=rest, BETA0=0.1),
 )
 
 
