@@ -120,6 +120,11 @@ public:
     _setLigrel.insert(trim(fed->getName()));
   };
 
+  void clear(){
+      _mapProfChno.clear();
+      _mapLigrel.clear();
+  };
+
   /**
    * @brief Build a FieldOnCells with a FiniteElementDescriptor
    */

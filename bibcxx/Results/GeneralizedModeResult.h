@@ -141,6 +141,12 @@ class GeneralizedModeResult : public FullResult {
     };
 
     bool build() { return Result::build(); };
+
+    ~GeneralizedModeResult(){
+        _fieldBuidler.clear();
+        _dictOfMapOfFieldOnNodesReal.clear();
+    };
+
 };
 
 /**
