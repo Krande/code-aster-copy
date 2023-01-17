@@ -781,12 +781,11 @@ bool Result::build( const std::vector< FiniteElementDescriptorPtr > feds,
     }
 
     // add of listofloads
-    auto indexes = getIndexes();
     std::string type = "EXCIT";
-    std::string cel( "L" );
-    for ( auto &index : indexes ) {
-        auto rschex = _getNewFieldName( type, index );
-        if ( rschex.first == 0 || rschex.first == 100 || rschex.first == 110 ) {
+    if ( _accessVariables->getIndexFromString( type ) > 0 ){
+        auto indexes = getIndexes();
+        std::string cel( "L" );
+        for ( auto &index : indexes ) {
             std::string value( 24, ' ' );
             CALLO_RSADPA_ZK24_WRAP( &index, getName(), value, type, cel );
             std::string name = value.substr( 0, 19 );
