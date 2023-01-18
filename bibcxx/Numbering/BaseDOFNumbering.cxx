@@ -136,7 +136,13 @@ bool BaseDOFNumbering::computeNumberingWithLocalMode( const std::string &localMo
  * @brief Get mesh
  * @return Internal mesh
  */
-BaseMeshPtr BaseDOFNumbering::getMesh() const { return getModel()->getMesh(); };
+BaseMeshPtr BaseDOFNumbering::getMesh() const {
+    const auto model = this->getModel();
+    if ( model != nullptr ) {
+        return model->getMesh();
+    }
+    return nullptr;
+};
 
 bool BaseDOFNumbering::addFiniteElementDescriptor( const FiniteElementDescriptorPtr &curFED ) {
     if ( curFED ) {
