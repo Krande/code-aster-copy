@@ -206,7 +206,7 @@ public:
     dofNume->computeNumberingWithLocalMode(localMode);
 
     _dofDescription = dofNume->getDescription();
-    _mesh = dofNume->getMesh();
+    _mesh = fed->getMesh();
 
     const auto intType = AllowedFieldType<ValueType>::numTypeJeveux;
     CALLO_VTCREB_WRAP(getName(), JeveuxMemoryTypesNames[Permanent],
