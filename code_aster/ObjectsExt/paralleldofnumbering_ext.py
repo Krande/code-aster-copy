@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -37,7 +37,7 @@ class ExtendedParallelDOFNumbering:
         """Returns the argument required to reinitialize a
         ParallelDOFNumbering object during unpickling.
         """
-        return (self.getName(), self.getModel(), self.getListOfLoads(), self.getDescription())
+        return (self.getName(), self.getDescription(), self.getModel())
 
     @functools.lru_cache()
     def __Components2Rows(self, local=True):

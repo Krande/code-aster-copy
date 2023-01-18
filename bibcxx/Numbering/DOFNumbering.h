@@ -81,7 +81,7 @@ class DOFNumbering : public BaseDOFNumbering {
     DOFNumbering();
 
     DOFNumbering( const std::string name, const FieldOnNodesDescriptionPtr fdof,
-                  const MeshPtr mesh );
+                  const ModelPtr model );
 
     /**
      * @brief Constructeur
@@ -156,6 +156,16 @@ class DOFNumbering : public BaseDOFNumbering {
      * @brief Get Assigned Components
      */
     VectorString getComponents() const;
+
+    /**
+     * @brief Get model
+     */
+    ModelPtr getModel() const { return _globalNumbering->getModel(); };
+
+    /**
+     * @brief Set model
+     */
+    bool setModel( const ModelPtr &model ) { return _globalNumbering->setModel( model ); };
 };
 
 /**

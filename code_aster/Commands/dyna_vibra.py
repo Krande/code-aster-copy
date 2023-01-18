@@ -70,9 +70,12 @@ class VibrationDynamics(ExecuteCommand):
         if keywords["BASE_CALCUL"] == "PHYS":
             massMatrix = keywords["MATR_MASS"]
             dofNum = massMatrix.getDOFNumbering()
+            self._result.setModel(dofNum.getModel())
+            self._result.setDOFNumbering(dofNum)
             for i in dofNum.getFiniteElementDescriptors():
                 self._result.addFiniteElementDescriptor(i)
             self._result.setDOFNumbering(dofNum)
+            self._result.setModel(dofNum.getModel())
             mesh = massMatrix.getMesh()
             if mesh is not None:
                 self._result.setMesh(mesh)

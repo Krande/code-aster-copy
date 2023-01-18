@@ -67,9 +67,6 @@ class ParallelDOFNumbering : public BaseDOFNumbering {
         friend class ParallelDOFNumbering;
     };
 
-    /** @brief Objet '.NUME' */
-    GlobalEquationNumberingPtr _globalNumbering;
-
     std::unordered_map< ASTERINTEGER, ASTERINTEGER > _global2localMap;
 
     /**
@@ -95,6 +92,9 @@ class ParallelDOFNumbering : public BaseDOFNumbering {
      * @brief Constructeur
      */
     ParallelDOFNumbering();
+
+    ParallelDOFNumbering( const std::string name, const FieldOnNodesDescriptionPtr fdof,
+                          const ModelPtr model );
 
     /**
      * @brief Constructeur
@@ -199,6 +199,16 @@ class ParallelDOFNumbering : public BaseDOFNumbering {
      * raise an exception
      */
     const ASTERINTEGER localToGlobalRow( const ASTERINTEGER );
+
+    /**
+     * @brief Get model
+     */
+    ModelPtr getModel() const { return _globalNumbering->getModel(); };
+
+    /**
+     * @brief Set model
+     */
+    bool setModel( const ModelPtr &model ) { return _globalNumbering->setModel( model ); };
 };
 
 /**

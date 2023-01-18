@@ -49,7 +49,6 @@ void exportBaseDOFNumberingToPython( py::module_ &mod ) {
     c1.def( "getDescription", &BaseDOFNumbering::getDescription );
     c1.def( "setDescription", &BaseDOFNumbering::setDescription );
     c1.def( "getFiniteElementDescriptors", &BaseDOFNumbering::getFiniteElementDescriptors );
-    c1.def( "setEmpty", &BaseDOFNumbering::setEmpty );
     c1.def( "getPhysicalQuantity", &BaseDOFNumbering::getPhysicalQuantity, R"(
 Returns the name of the physical quantity that is numbered.
 
@@ -69,4 +68,6 @@ Return the mesh
 Returns:
     MeshPtr: a pointer to the mesh
         )" );
+    c1.def( "getModel", &BaseDOFNumbering::getModel );
+    c1.def( "setModel", &BaseDOFNumbering::setModel );
 };

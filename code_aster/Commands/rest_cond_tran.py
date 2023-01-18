@@ -59,6 +59,7 @@ class RestCondTran(ExecuteCommand):
             if keywords["TYPE_RESU"] == "DYNA_TRANS":
                 self._result.setDOFNumbering(dofNum)
             else:
+                self._result.setModel(dofNum.getModel())
                 for i in dofNum.getFiniteElementDescriptors():
                     self._result.addFiniteElementDescriptor(i)
                 fnds.append(dofNum.getDescription())

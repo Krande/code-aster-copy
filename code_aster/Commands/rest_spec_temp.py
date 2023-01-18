@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -61,7 +61,10 @@ class FourierTransformation(ExecuteCommand):
         """
         resultat = keywords.get("RESULTAT")
         if resultat:
-            self._result.setModel(resultat.getModel())
+            model = resultat.getModel()
+            self._result.setModel(model)
+            if model is not None:
+                self._result.setModel(model)
             self._result.setDOFNumbering(resultat.getDOFNumbering())
         else:
             self._result.setGeneralizedDOFNumbering(

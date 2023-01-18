@@ -99,7 +99,7 @@ subroutine caliel(fonrez, chargz)
     list_ligr(1) = ligrmo
 
     numddl = '&&CALIEL.NUMED'
-    call nueffe(nb_ligr, list_ligr, 'VV', numddl, 'SANS')
+    call nueffe(nb_ligr, list_ligr, 'VV', numddl, 'SANS', mod)
 !
     do iocc = 1, nliai
         call getvtx(motfac, 'OPTION', iocc=iocc, scal=option, nbret=iop)

@@ -1239,6 +1239,9 @@ class BaseDOFNumbering(DataStructure):
             MeshPtr: a pointer to the mesh
         """
 
+    def getModel(self):
+        pass
+
     def getPhysicalQuantity(self):
         """Returns the name of the physical quantity that is numbered.
 
@@ -1256,7 +1259,7 @@ class BaseDOFNumbering(DataStructure):
     def setDescription(self, arg0):
         pass
 
-    def setEmpty(self, arg0):
+    def setModel(self, arg0):
         pass
 
 # class DOFNumbering in libaster
@@ -1280,7 +1283,7 @@ class DOFNumbering(BaseDOFNumbering):
 
         2. __init__(self: libaster.DOFNumbering, arg0: str) -> None
 
-        3. __init__(self: libaster.DOFNumbering, arg0: str, arg1: libaster.FieldOnNodesDescription, arg2: libaster.Mesh) -> None
+        3. __init__(self: libaster.DOFNumbering, arg0: str, arg1: libaster.FieldOnNodesDescription, arg2: Model) -> None
         """
 
     def getComponentAssociatedToRow(self, row, local= False):
@@ -11256,6 +11259,8 @@ class ParallelDOFNumbering(BaseDOFNumbering):
         1. __init__(self: libaster.ParallelDOFNumbering) -> None
 
         2. __init__(self: libaster.ParallelDOFNumbering, arg0: str) -> None
+
+        3. __init__(self: libaster.ParallelDOFNumbering, arg0: str, arg1: libaster.FieldOnNodesDescription, arg2: libaster.Model) -> None
         """
 
     def getComponentAssociatedToRow(self, row, local= False):

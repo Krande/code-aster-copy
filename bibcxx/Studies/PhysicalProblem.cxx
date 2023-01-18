@@ -36,6 +36,7 @@ PhysicalProblem::PhysicalProblem( const ModelPtr curModel, const MaterialFieldPt
       _materialField( curMat ),
       _elemChara( cara ),
       _listOfLoads( std::make_shared< ListOfLoads >( _model ) ),
+      _dofNume( nullptr ),
       _codedMater( nullptr ),
       _behavProp( nullptr ),
       _externVarRefe( nullptr ) {

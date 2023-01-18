@@ -29,11 +29,10 @@
 #include "Supervis/ResultNaming.h"
 
 BaseDOFNumbering::BaseDOFNumbering( const std::string name, const std::string &type,
-                                    const FieldOnNodesDescriptionPtr fdof, const MeshPtr mesh )
+                                    const FieldOnNodesDescriptionPtr fdof )
     : DataStructure( name, 14, type ),
       _nameOfSolverDataStructure( JeveuxVectorChar24( getName() + ".NSLV" ) ),
       _dofDescription( fdof ),
-      _mesh( mesh ),
       _smos( new MorseStorage( getName() + ".SMOS" ) ),
       _slcs( new LigneDeCiel( getName() + ".SLCS" ) ),
       _mltf( new MultFrontGarbage( getName() + ".MLTF" ) ),
@@ -43,7 +42,6 @@ BaseDOFNumbering::BaseDOFNumbering( const std::string name, const std::string &t
     : DataStructure( name, 14, type ),
       _nameOfSolverDataStructure( JeveuxVectorChar24( getName() + ".NSLV" ) ),
       _dofDescription( new FieldOnNodesDescription( getName() + ".NUME" ) ),
-      _mesh( nullptr ),
       _smos( new MorseStorage( getName() + ".SMOS" ) ),
       _slcs( new LigneDeCiel( getName() + ".SLCS" ) ),
       _mltf( new MultFrontGarbage( getName() + ".MLTF" ) ),
@@ -59,15 +57,11 @@ bool BaseDOFNumbering::computeNumbering( const std::vector< MatrElem > matrix ) 
     for ( const auto &mat : matrix ) {
         ( *jvListOfMatr )[ind++] = std::visit( ElementaryMatrixGetName(), mat );
         auto FEDescs = std::visit( ElementaryMatrixGetFEDescrp(), mat );
-        if ( FEDescs.size() > 0 ) {
-            _mesh = FEDescs[0]->getMesh();
-        }
         this->addFiniteElementDescriptors( FEDescs );
         if ( ind == 1 ) {
             savedMesh = std::visit( ElementaryMatrixGetMesh(), mat );
             if ( savedMesh == nullptr )
                 throw std::runtime_error( "No mesh in ElementaryMatrix" );
-            _mesh = savedMesh;
         } else {
             auto tmp = std::visit( ElementaryMatrixGetMesh(), mat );
             if ( savedMesh != nullptr && tmp != nullptr ) {
@@ -75,6 +69,8 @@ bool BaseDOFNumbering::computeNumbering( const std::vector< MatrElem > matrix ) 
                     throw std::runtime_error( "Inconsistent mesh in list of ElementaryMatrix" );
             }
         }
+        const auto model = std::visit( ElementaryMatrixGetModel(), mat );
+        setModel( model );
     }
 
     CALLO_NUME_DDL_MATR( getName(), jvListOfMatr->getName(), &nb_matr );
@@ -97,6 +93,7 @@ bool BaseDOFNumbering::computeNumbering( const ModelPtr model, const ListOfLoads
 
     const auto FEDescs = listOfLoads->getFiniteElementDescriptors();
     this->addFiniteElementDescriptors( FEDescs );
+    setModel( model );
     _isEmpty = false;
 
     return true;
@@ -115,6 +112,7 @@ bool BaseDOFNumbering::computeRenumbering( const ModelPtr model,
     const std::string null( " " );
 
     CALLO_NUMER3( model->getName(), listOfLoads->getName(), getName(), null, base );
+    setModel( model );
 
     return true;
 };
@@ -138,7 +136,7 @@ bool BaseDOFNumbering::computeNumberingWithLocalMode( const std::string &localMo
  * @brief Get mesh
  * @return Internal mesh
  */
-BaseMeshPtr BaseDOFNumbering::getMesh() const { return _mesh; };
+BaseMeshPtr BaseDOFNumbering::getMesh() const { return getModel()->getMesh(); };
 
 bool BaseDOFNumbering::addFiniteElementDescriptor( const FiniteElementDescriptorPtr &curFED ) {
     if ( curFED ) {
@@ -160,5 +158,16 @@ bool BaseDOFNumbering::addFiniteElementDescriptors(
             return false;
     }
 
+    return true;
+};
+
+bool BaseDOFNumbering::GlobalEquationNumbering::setModel( const ModelPtr &model ) {
+    if ( _informations->exists() ) {
+        _informations->updateValuePointer();
+        const auto modelName = std::string( ( *_informations )[2].toString(), 0, 8 );
+        if ( modelName != model->getName() )
+            return false;
+    }
+    _model = model;
     return true;
 };

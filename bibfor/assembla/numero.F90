@@ -124,7 +124,7 @@ subroutine numero(nume_ddlz, base, &
 ! - Create numbering
 !
     call numer2(nb_ligr, list_ligr, base, nume_ddlz, &
-                old_nume_ddl, modeloc, sd_iden_rela)
+                old_nume_ddl, modeloc, modelz, sd_iden_rela)
 !
     if (present(modelz)) then
         call dismoi('NOM_MAILLA', modelz, 'MODELE', repk=nommai)

@@ -84,9 +84,9 @@ subroutine numddl(nume_ddlz, base, nb_matr, list_matr)
         renum = 'SANS'
     end if
 
-    call nueffe(nb_ligr, list_ligr, base, nume_ddlz, renum)
-!
     call dismoi('NOM_MODELE', list_matr_elem(1), 'MATR_ELEM', repk=nommod)
+    call nueffe(nb_ligr, list_ligr, base, nume_ddlz, renum, nommod)
+!
     call dismoi('NOM_MAILLA', nommod, 'MODELE', repk=nommai)
     call gettco(nommai, typsd)
     if (typsd .eq. 'MAILLAGE_P') then

@@ -126,7 +126,7 @@ subroutine numecn(modele, champ, nume)
         nu14 = noojb(1:14)
 !
         k19bid = ' '
-        call nueffe(nb_ligr, list_ligr, 'VG', nu14, 'SANS')
+        call nueffe(nb_ligr, list_ligr, 'VG', nu14, 'SANS', modele)
         nu19 = nu14
         call jedetr(nu19//'.ADLI')
         call jedetr(nu19//'.ADNE')

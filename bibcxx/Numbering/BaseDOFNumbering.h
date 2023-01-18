@@ -205,12 +205,15 @@ class BaseDOFNumbering : public DataStructure {
         JeveuxVectorChar24 _informations;
         /** @brief Objet Jeveux '.DELG' */
         JeveuxVectorLong _lagrangianInformations;
+        /** @brief Model */
+        ModelPtr _model;
 
         GlobalEquationNumbering( const std::string &baseName )
             : DataStructure( baseName + ".NUME", 19, "NUME_EQUA" ),
               _numberOfEquations( getName() + ".NEQU" ),
               _informations( getName() + ".REFN" ),
-              _lagrangianInformations( getName() + ".DELG" ){};
+              _lagrangianInformations( getName() + ".DELG" ),
+              _model( nullptr ){};
 
       public:
         /**
@@ -238,6 +241,16 @@ class BaseDOFNumbering : public DataStructure {
             throw std::runtime_error( "Vector LocalToRank doesn't exist in sequential" );
             return JeveuxVectorLong( "RIEN" );
         };
+
+        /**
+         * @brief Get model
+         */
+        ModelPtr getModel() { return _model; };
+
+        /**
+         * @brief Set model
+         */
+        bool setModel( const ModelPtr &model );
 
         friend class BaseDOFNumbering;
         friend class DOFNumbering;
@@ -295,7 +308,7 @@ class BaseDOFNumbering : public DataStructure {
   private:
     /** @brief Objet Jeveux '.NSLV' */
     JeveuxVectorChar24 _nameOfSolverDataStructure;
-    /** @brief Objet prof_chno */
+    /** @brief Objet maillage */
     BaseMeshPtr _mesh;
     /** @brief Objet prof_chno */
     FieldOnNodesDescriptionPtr _dofDescription;
@@ -318,9 +331,12 @@ class BaseDOFNumbering : public DataStructure {
      * @param name nom souhaité de la sd (utile pour le BaseDOFNumbering d'une sd_resu)
      */
     BaseDOFNumbering( const std::string name, const std::string &type,
-                      const FieldOnNodesDescriptionPtr fdof, const MeshPtr mesh );
+                      const FieldOnNodesDescriptionPtr fdof );
 
     BaseDOFNumbering( const std::string name, const std::string &type );
+
+    /** @brief Objet '.NUME' */
+    GlobalEquationNumberingPtr _globalNumbering;
 
   public:
     /**
@@ -477,6 +493,16 @@ class BaseDOFNumbering : public DataStructure {
      * @return false
      */
     virtual bool isParallel() { return false; };
+
+    /**
+     * @brief Get model
+     */
+    virtual ModelPtr getModel() const = 0;
+
+    /**
+     * @brief Set model
+     */
+    virtual bool setModel( const ModelPtr & ) = 0;
 };
 
 /**

@@ -32,19 +32,23 @@
 
 DOFNumbering::DOFNumbering()
     : BaseDOFNumbering( ResultNaming::getNewResultName(), "NUME_DDL" ),
-      _globalNumbering( new GlobalEquationNumbering( getName() ) ),
-      _localNumbering( new LocalEquationNumbering( getName() ) ){};
+      _localNumbering( new LocalEquationNumbering( getName() ) ) {
+    _globalNumbering = GlobalEquationNumberingPtr( new GlobalEquationNumbering( getName() ) );
+};
 
 DOFNumbering::DOFNumbering( const std::string name, const FieldOnNodesDescriptionPtr fdof,
-                            const MeshPtr mesh )
-    : BaseDOFNumbering( name, "NUME_DDL", fdof, mesh ),
-      _globalNumbering( new GlobalEquationNumbering( getName() ) ),
-      _localNumbering( new LocalEquationNumbering( getName() ) ){};
+                            const ModelPtr model )
+    : BaseDOFNumbering( name, "NUME_DDL", fdof ),
+      _localNumbering( new LocalEquationNumbering( getName() ) ) {
+    _globalNumbering = GlobalEquationNumberingPtr( new GlobalEquationNumbering( getName() ) );
+    setModel( model );
+};
 
 DOFNumbering::DOFNumbering( const std::string name )
     : BaseDOFNumbering( name, "NUME_DDL" ),
-      _globalNumbering( new GlobalEquationNumbering( getName() ) ),
-      _localNumbering( new LocalEquationNumbering( getName() ) ){};
+      _localNumbering( new LocalEquationNumbering( getName() ) ) {
+    _globalNumbering = GlobalEquationNumberingPtr( new GlobalEquationNumbering( getName() ) );
+};
 
 std::string DOFNumbering::getPhysicalQuantity() const {
     _globalNumbering->_informations->updateValuePointer();

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,12 +20,13 @@
 !
 interface
     subroutine nueffe_lag1(nb_ligr, list_ligr, base, nume_ddlz, renumz,&
-                           modelocz, sd_iden_relaz)
+                           modele, modelocz, sd_iden_relaz)
         integer, intent(in) :: nb_ligr
         character(len=24), pointer :: list_ligr(:)
         character(len=2), intent(in) :: base
         character(len=*), intent(in) :: nume_ddlz
         character(len=*), intent(in) :: renumz
+        character(len=*), intent(in) :: modele
         character(len=*), optional, intent(in) :: modelocz
         character(len=*), optional, intent(in) :: sd_iden_relaz
     end subroutine nueffe_lag1

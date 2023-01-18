@@ -51,6 +51,9 @@ class ModalBasisDef(ExecuteCommand):
             mode_meca = classique[0]["MODE_MECA"][0]
             self._result.setStructureInterface(classique[0]["INTERF_DYNA"])
             self._result.setDOFNumbering(mode_meca.getDOFNumbering())
+            model = mode_meca.getModel()
+            if model is not None:
+                self._result.setModel(model)
             mesh = mode_meca.getMesh()
             if mesh is not None:
                 self._result.setMesh(mesh)
@@ -70,6 +73,9 @@ class ModalBasisDef(ExecuteCommand):
                 self._result.setDOFNumbering(nume_ddl)
             if "MODE_MECA" in ritz[0]:
                 mode_meca = ritz[0]["MODE_MECA"][0]
+                model = mode_meca.getModel()
+                if model is not None:
+                    self._result.setModel(model)
                 mesh = mode_meca.getMesh()
                 if mesh is not None:
                     self._result.setMesh(mesh)

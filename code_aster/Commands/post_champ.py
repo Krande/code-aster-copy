@@ -48,7 +48,7 @@ class PostChamp(ExecuteCommand):
         modele = keywords.get("MODELE")
         if modele is None:
             try:
-                modele = resu.getModel()
+                modele = keywords["RESULTAT"].getModel()
             except:
                 pass
         if modele is not None:

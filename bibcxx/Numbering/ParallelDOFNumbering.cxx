@@ -33,12 +33,24 @@
 #ifdef ASTER_HAVE_MPI
 
 ParallelDOFNumbering::ParallelDOFNumbering()
-    : BaseDOFNumbering( ResultNaming::getNewResultName(), "NUME_DDL_P" ),
-      _globalNumbering( new ParallelGlobalEquationNumbering( getName() ) ){};
+    : BaseDOFNumbering( ResultNaming::getNewResultName(), "NUME_DDL_P" ) {
+    _globalNumbering =
+        GlobalEquationNumberingPtr( new ParallelGlobalEquationNumbering( getName() ) );
+};
+
+ParallelDOFNumbering::ParallelDOFNumbering( const std::string name,
+                                            const FieldOnNodesDescriptionPtr fdof,
+                                            const ModelPtr model )
+    : BaseDOFNumbering( name, "NUME_DDL_P", fdof ) {
+    _globalNumbering = GlobalEquationNumberingPtr( new GlobalEquationNumbering( getName() ) );
+    setModel( model );
+};
 
 ParallelDOFNumbering::ParallelDOFNumbering( const std::string &name )
-    : BaseDOFNumbering( name, "NUME_DDL_P" ),
-      _globalNumbering( new ParallelGlobalEquationNumbering( getName() ) ){};
+    : BaseDOFNumbering( name, "NUME_DDL_P" ) {
+    _globalNumbering =
+        GlobalEquationNumberingPtr( new ParallelGlobalEquationNumbering( getName() ) );
+};
 
 std::string ParallelDOFNumbering::getPhysicalQuantity() const {
     _globalNumbering->_informations->updateValuePointer();

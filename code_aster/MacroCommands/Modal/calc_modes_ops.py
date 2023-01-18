@@ -151,12 +151,14 @@ def calc_modes_ops(self, TYPE_RESU, OPTION, AMELIORATION, INFO, **args):
                         modes.setMesh(mesh)
         elif isinstance(modes, ModeResult):
             try:
-                model = matrRigi.getModel()
+                model = matrRigi.getDOFNumbering().getModel()
             except:
                 model = None
 
             if model is not None:
                 modes.setModel(model)
+        else:
+            modes.setDOFNumbering(matrRigi.getDOFNumbering())
         if isinstance(matrRigi, BaseAssemblyMatrix):
             dofNum = matrRigi.getDOFNumbering()
             if dofNum is not None:

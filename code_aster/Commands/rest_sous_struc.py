@@ -92,6 +92,13 @@ class RestSousStrucOper(ExecuteCommand):
                     if mat is None:
                         mat = macroElem.getStiffnessMatrixReal()
                     if mat is not None:
+                        modele = mat.getModel()
+                        if modele is not None:
+                            mesh = modele.getMesh()
+                            self._result.setModel(modele)
+                        else:
+                            mesh = mat.getMesh()
+                            self._result.setMesh(mat.getMesh())
                         mesh = mat.getMesh()
                         self._result.setMesh(mat.getMesh())
                         dofNum = mat.getDOFNumbering()
@@ -108,7 +115,10 @@ class RestSousStrucOper(ExecuteCommand):
                                 for i in dofNum.getFiniteElementDescriptors():
                                     self._result.addFiniteElementDescriptor(i)
                                 self._result.setDOFNumbering(dofNum)
-                                if mesh is None:
+                                modele = dofNum.getModel()
+                                if modele is not None:
+                                    self._result.setModel(modele)
+                                elif mesh is None:
                                     mesh = dofNum.getMesh()
 
                     if mesh is not None:

@@ -44,6 +44,7 @@ class StaticModeCalculation(ExecuteCommand):
         """
         matrRigi = keywords["MATR_RIGI"]
         dofNum = matrRigi.getDOFNumbering()
+        self._result.setModel(dofNum.getModel())
         for i in dofNum.getFiniteElementDescriptors():
             self._result.addFiniteElementDescriptor(i)
         self._result.setDOFNumbering(dofNum)

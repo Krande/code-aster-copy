@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 
 subroutine numer2(nb_ligr, list_ligr, base, nume_ddlz, &
-                  nume_ddl_oldz, modelocz, sd_iden_relaz)
+                  nume_ddl_oldz, modelocz, modele, sd_iden_relaz)
 !
     implicit none
 !
@@ -42,6 +42,7 @@ subroutine numer2(nb_ligr, list_ligr, base, nume_ddlz, &
     character(len=*), intent(inout) :: nume_ddlz
     character(len=*), intent(in) :: nume_ddl_oldz
     character(len=*), intent(in) :: modelocz
+    character(len=*), intent(in) :: modele
     character(len=*), optional, intent(in) :: sd_iden_relaz
 !
 ! --------------------------------------------------------------------------------------------------
@@ -106,7 +107,7 @@ subroutine numer2(nb_ligr, list_ligr, base, nume_ddlz, &
 ! - Create NUME_EQUA objects
 !
     call nueffe(nb_ligr, list_ligr, base, nume_ddl, 'SANS', &
-                modelocz=moloc, sd_iden_relaz=sd_iden_rela)
+                modele, modelocz=moloc, sd_iden_relaz=sd_iden_rela)
 !
 ! - Create NUML_EQUA objects
 !

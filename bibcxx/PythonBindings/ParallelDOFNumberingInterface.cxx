@@ -3,7 +3,7 @@
  * @brief Interface python de ParallelDOFNumbering
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -34,6 +34,8 @@ void exportParallelDOFNumberingToPython( py::module_ &mod ) {
                 BaseDOFNumbering >( mod, "ParallelDOFNumbering" )
         .def( py::init( &initFactoryPtr< ParallelDOFNumbering > ) )
         .def( py::init( &initFactoryPtr< ParallelDOFNumbering, std::string > ) )
+        .def( py::init( &initFactoryPtr< ParallelDOFNumbering, std::string,
+                                         FieldOnNodesDescriptionPtr, ModelPtr > ) )
         // ---------------------------------------------------------------------
         .def( "useLagrangeMultipliers", &ParallelDOFNumbering::useLagrangeMultipliers, R"(
 Lagrange multipliers are used for BC or MPC.

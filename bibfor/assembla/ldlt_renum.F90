@@ -87,7 +87,7 @@ subroutine ldlt_renum(nu1z, nu2z, perm, basp)
     character(len=24), pointer :: list_ligr(:) => null()
     character(len=24), pointer :: refn(:) => null()
     character(len=19) :: nomligr
-    character(len=8) :: modelo, nomres
+    character(len=8) :: modelo, nomres, modele
     character(len=16) :: nomcom, typres
     logical :: non_renum, limpr
     integer, pointer :: prno1(:) => null()
@@ -187,7 +187,8 @@ subroutine ldlt_renum(nu1z, nu2z, perm, basp)
     end do
     call jedetr(nutrav//'     .ADNE')
     call jedetr(nutrav//'     .ADLI')
-    call nueffe(nb_ligr, list_ligr, 'VV', nutrav, 'RCMK', modelocz=modelo)
+    modele = refn(4)
+    call nueffe(nb_ligr, list_ligr, 'VV', nutrav, 'RCMK', modele, modelocz=modelo)
     AS_DEALLOCATE(vk24=list_ligr)
 
 !   -- Pour etablir la correspondance entre les deux numerotations,

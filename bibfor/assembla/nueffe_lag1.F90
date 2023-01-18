@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 
 subroutine nueffe_lag1(nb_ligr, list_ligr, base, nume_ddlz, renumz, &
-                       modelocz, sd_iden_relaz)
+                       modele, modelocz, sd_iden_relaz)
 !
     implicit none
 !
@@ -53,6 +53,7 @@ subroutine nueffe_lag1(nb_ligr, list_ligr, base, nume_ddlz, renumz, &
     character(len=2), intent(in) :: base
     character(len=*), intent(in) :: nume_ddlz
     character(len=*), intent(in) :: renumz
+    character(len=*), intent(in) :: modele
     character(len=*), optional, intent(in) :: modelocz
     character(len=*), optional, intent(in) :: sd_iden_relaz
 !
@@ -618,6 +619,7 @@ subroutine nueffe_lag1(nb_ligr, list_ligr, base, nume_ddlz, renumz, &
     call wkvect(refn, base(1:1)//' V K24', 4, idref)
     zk24(idref) = mesh
     zk24(idref+1) = gran_name
+    zk24(idref+2) = modele
 !
 ! - Create NUEQ object
 !
