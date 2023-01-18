@@ -54,6 +54,8 @@ from .datastructure_py import (
     NamedTuple,
     PyDataStructure,
     ThermalResultDict,
+    ElasticResultDict,
+    NonLinearResultDict,
     UnavailableObject,
 )
 from .Serialization import InternalStateBuilder
