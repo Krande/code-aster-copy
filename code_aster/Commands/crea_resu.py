@@ -121,11 +121,11 @@ class ResultCreator(ExecuteCommand):
                         feds.append(fed)
 
         if keywords.get("MATR_RIGI"):
-            self._result.setModel(keywords["MATR_RIGI"].getModel())
+            self._result.setModel(keywords["MATR_RIGI"].getDOFNumbering().getModel())
             self._result.setMesh(keywords["MATR_RIGI"].getMesh())
             self._result.setDOFNumbering(keywords["MATR_RIGI"].getDOFNumbering())
         elif keywords.get("MATR_MASS"):
-            self._result.setModel(keywords["MATR_MASS"].getModel())
+            self._result.setModel(keywords["MATR_MASS"].getDOFNumbering().getModel())
             self._result.setMesh(keywords["MATR_MASS"].getMesh())
             self._result.setDOFNumbering(keywords["MATR_MASS"].getDOFNumbering())
 

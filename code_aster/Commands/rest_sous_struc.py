@@ -92,7 +92,8 @@ class RestSousStrucOper(ExecuteCommand):
                     if mat is None:
                         mat = macroElem.getStiffnessMatrixReal()
                     if mat is not None:
-                        modele = mat.getModel()
+                        dofNum = mat.getDOFNumbering()
+                        modele = dofNum.getModel()
                         if modele is not None:
                             mesh = modele.getMesh()
                             self._result.setModel(modele)
