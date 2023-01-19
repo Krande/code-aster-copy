@@ -24,7 +24,7 @@
 #:  <testname>      An unknown target is treated as a testname, same 'make test n=testname'
 #:
 #:Environment variables:
-#:  BUILD           Build variant 'mpi', 'debug', 'std'... (default: %BUILD%)
+#:  BUILD           Build variant 'mpi', 'debug' (default: %BUILD%)
 #:  DEFAULT         Default selected target (default: %DEFAULT%)
 #:  OPTS            Options passed to waf commands, example OPTS='-p'
 #:
@@ -37,7 +37,8 @@
 #:Build both optimized and debug versions:
 #:      make all
 #:
-#:To build a sequential version, you must explicitly set BUILD=std.
+#:To build a sequential version, you must explicitly set BUILD=std (but you
+#:can not build std+debug using this makefile).
 #:
 #:You may add options to the 'waf' commands by using the OPTS environment variable
 #:on the command line (example: with a progress bar):
@@ -53,7 +54,14 @@
 
 BUILD ?= mpi
 OPTS ?=
-JOBS = $(shell j=$$( sed -e 's/.*-j\([0-9]\+\).*/\1/' <<< "$(MAKEFLAGS)" ) ; [ -z "$$j" ] && j=$$(nproc); echo $$j )
+# extract '-j' option to be passed to waf
+JOBS ?= $(shell \
+	j="-j"; \
+	if grep -q -- "-j" <<< "$(MAKEFLAGS)"; then \
+		j=-j$$( sed -e 's/.*-j\([0-9]\+\).*/\1/' <<< "$(MAKEFLAGS)" ) ; \
+	fi; \
+	[ "$$j" = "-j" ] && j="-j$$(nproc)"; \
+	echo $$j )
 DEFAULT ?= safe
 
 SHELL = /bin/bash
@@ -67,8 +75,8 @@ SHELL = /bin/bash
 default: $(DEFAULT)
 
 all:
-	@make BUILD=mpi bootstrap
-	@make BUILD=debug bootstrap
+	$(MAKE) BUILD=mpi bootstrap
+	$(MAKE) BUILD=debug bootstrap
 
 bootstrap: configure safe doc
 
@@ -78,10 +86,10 @@ configure:
 install: safe
 
 safe:
-	./waf_$(BUILD) install $(OPTS) --safe -j $(JOBS)
+	./waf_$(BUILD) install $(OPTS) --safe $(JOBS)
 
 fast:
-	./waf_$(BUILD) install $(OPTS) --fast -j $(JOBS)
+	./waf_$(BUILD) install $(OPTS) --fast $(JOBS)
 
 doc:
 	@( \
@@ -96,7 +104,7 @@ distclean: ##- perform a distclean of the build directory.
 	./waf_$(BUILD) distclean
 
 install-tests:
-	@make fast OPTS="$(OPTS) --install-tests"
+	$(MAKE) fast OPTS="$(OPTS) --install-tests"
 
 n ?=
 test:
@@ -111,28 +119,28 @@ test:
 bootstrap_debug: configure_debug safe_debug doc_debug
 
 configure_debug:
-	@make BUILD=debug configure
+	$(MAKE) BUILD=debug configure
 
 install_debug:
-	@make BUILD=debug install
+	$(MAKE) BUILD=debug install
 
 safe_debug:
-	@make BUILD=debug safe
+	$(MAKE) BUILD=debug safe
 
 fast_debug:
-	@make BUILD=debug fast
+	$(MAKE) BUILD=debug fast
 
 doc_debug:
-	@make BUILD=debug doc
+	$(MAKE) BUILD=debug doc
 
 distclean_debug:
-	@make BUILD=debug distclean
+	$(MAKE) BUILD=debug distclean
 
 install-tests_debug:
-	@make BUILD=debug install-tests"
+	$(MAKE) BUILD=debug install-tests"
 
 test_debug:
-	@make BUILD=debug test n=$(n)
+	$(MAKE) BUILD=debug test n=$(n)
 
 help : makefile
 	echo jobs: $(JOBS) && false
@@ -141,4 +149,4 @@ help : makefile
 		sed -e 's/%BUILD%/$(BUILD)/g' -e 's/%DEFAULT%/$(DEFAULT)/g'
 
 %:
-	@make --no-print-directory test n="$@"
+	$(MAKE) --no-print-directory test n="$@"

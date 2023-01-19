@@ -104,7 +104,8 @@ subroutine utmess_core(typ, idmess, nk, valk, ni, &
 !
     lerror = idf .eq. 2 .or. idf .eq. 6 .or. idf .eq. 7
 !     DOIT-ON VALIDER LE CONCEPT ?
- lvalid = (idf .eq. 6 .or. idf .eq. 7) .or. (idf .eq. 2 .and. compex(1:lout) .eq. 'EXCEPTION+VALID')
+    lvalid = (idf .eq. 6 .or. idf .eq. 7) .or. &
+             (idf .eq. 2 .and. compex(1:lout) .eq. 'EXCEPTION+VALID')
 !     DOIT-ON S'ARRETER BRUTALEMENT (POUR DEBUG) ?
     labort = idf .eq. 2 .and. compex(1:lout) .eq. 'ABORT'
 !     AFFICHER LE TRACEBACK SI DISPONIBLE

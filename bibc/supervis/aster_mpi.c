@@ -1158,6 +1158,8 @@ void DEFP( ASABRT, asabrt, _IN ASTERINTEGER *iret ) {
      */
     gErrFlg = 1;
 #ifdef ASTER_HAVE_MPI
+    printf( "calling MPI_Abort with errorcode %d...\n", (int)*iret );
+    fflush( stdout );
     MPI_Abort( aster_mpi_world.id, (int)( *iret ) );
 #else
     CALL_ABORTF();
