@@ -38,8 +38,10 @@ module calcG_type
 #include "asterfort/cnscno.h"
 #include "asterfort/cnscre.h"
 #include "asterfort/comp_info.h"
+#include "asterfort/copisd.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/exisd.h"
 #include "asterfort/fointe.h"
 #include "asterfort/gcncon.h"
 #include "asterfort/gettco.h"
@@ -57,10 +59,13 @@ module calcG_type
 #include "asterfort/jemarq.h"
 #include "asterfort/jenonu.h"
 #include "asterfort/jenuno.h"
+#include "jeveux.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
+#include "asterfort/lteatt.h"
 #include "asterfort/medomg.h"
+#include "asterfort/nbgrel.h"
 #include "asterfort/rsadpa.h"
 #include "asterfort/rsexch.h"
 #include "asterfort/rsmena.h"
@@ -71,12 +76,11 @@ module calcG_type
 #include "asterfort/tbajvk.h"
 #include "asterfort/tbajvr.h"
 #include "asterfort/tbcrsd.h"
+#include "asterfort/typele.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/xcourb.h"
-#include "jeveux.h"
-#include "asterfort/copisd.h"
-#include "asterfort/exisd.h"
+
 !
     public :: CalcG_Field, CalcG_Study, CalcG_Theta, CalcG_Table, CalcG_Stat
 !
@@ -742,8 +746,11 @@ contains
 !   In nume_index : index nume
 ! --------------------------------------------------------------------------------------------------
 !
-        character(len=8) :: typmo
+        integer :: nbgrmo, igrel, itypel
         real(kind=8) :: start, finish
+        character(len=8) :: typmo
+        character(len=16) :: elemTypeName
+        character(len=19) :: ligrmo
 !
         call cpu_time(start)
 !
@@ -754,8 +761,23 @@ contains
         call dismoi('CARA_ELEM', result_in, 'RESULTAT', repk=this%carael)
         call dismoi('NOM_MAILLA', this%model, 'MODELE', repk=this%mesh)
         call dismoi('MODELISATION', this%model, 'MODELE', repk=typmo)
+
+!       Cas axisymétrique (gestion du cas de plusieurs modélisations)
         if (typmo(1:4) == "AXIS") then
             this%l_axis = ASTER_TRUE
+        elseif (typmo(1:4) == "#PLU") then
+            this%l_axis = ASTER_FALSE
+            ligrmo = this%model//'.MODELE'
+            nbgrmo = nbgrel(ligrmo)
+
+            do igrel = 1, nbgrmo
+                itypel = typele(ligrmo, igrel)
+                call jenuno(jexnum('&CATA.TE.NOMTE', itypel), elemTypeName)
+                if (lteatt('AXIS', 'OUI', typel=elemTypeName)) then
+                    this%l_axis = ASTER_TRUE
+                    exit
+                end if
+            end do
         else
             this%l_axis = ASTER_FALSE
         end if
