@@ -364,15 +364,14 @@ test.assertSequenceEqual(builder.getNodesFromCells("VOLUME"), [0, 1, 2, 3, 4, 5,
 builder = code_aster.Mesh.buildCylinder(refine=3)
 test.assertFalse(builder.isParallel())
 test.assertEqual(builder.getDimension(), 3)
-test.assertEqual(builder.getNumberOfNodes(), 13617)
-test.assertEqual(builder.getNumberOfCells(), 16384)
+test.assertEqual(builder.getNumberOfNodes(), 9225)
+test.assertEqual(builder.getNumberOfCells(), 10752)
 test.assertSequenceEqual(sorted(builder.getGroupsOfNodes()), [])
 test.assertSequenceEqual(sorted(builder.getGroupsOfCells()), ["BOTTOM", "SURFEXT", "TOP", "VOLUME"])
-test.assertEqual(code_aster.Mesh.buildCylinder(refine=2).getNumberOfNodes(), 1881)
+test.assertEqual(code_aster.Mesh.buildCylinder(refine=2).getNumberOfNodes(), 1285)
 builder = code_aster.Mesh.buildCylinder()
 test.assertSequenceEqual(
-    builder.getNodesFromCells("BOTTOM"),
-    [0, 3, 4, 7, 9, 10, 13, 14, 19, 23, 24, 26, 29, 34, 35, 39, 44],
+    builder.getNodesFromCells("BOTTOM"), [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]
 )
 
 # from mesh builder -Square
@@ -385,87 +384,100 @@ test.assertSequenceEqual(sorted(builder.getGroupsOfNodes()), ["N1", "N2", "N3", 
 test.assertSequenceEqual(
     sorted(builder.getGroupsOfCells()), ["BOTTOM", "LEFT", "RIGHT", "SURFACE", "TOP"]
 )
-test.assertSequenceEqual(builder.getNodesFromCells("BOTTOM"), [2, 3, 5, 14, 20, 41, 48, 58, 67])
+test.assertSequenceEqual(builder.getNodesFromCells("BOTTOM"), [0, 1, 2, 3, 4, 5, 6, 7, 8])
 test.assertEqual(code_aster.Mesh.buildSquare(refine=2).getNumberOfNodes(), 25)
 
 # from mesh builder -  Disk
 builder = code_aster.Mesh.buildDisk(refine=3)
 test.assertFalse(builder.isParallel())
 test.assertEqual(builder.getDimension(), 2)
-test.assertEqual(builder.getNumberOfNodes(), 801)
-test.assertEqual(builder.getNumberOfCells(), 832)
+test.assertEqual(builder.getNumberOfNodes(), 1025)
+test.assertEqual(builder.getNumberOfCells(), 1088)
 test.assertSequenceEqual(sorted(builder.getGroupsOfNodes()), [])
-test.assertSequenceEqual(sorted(builder.getGroupsOfCells()), ["CIRCLE", "SURFACE"])
+test.assertSequenceEqual(sorted(builder.getGroupsOfCells()), ["REXT", "SURFACE"])
 test.assertSequenceEqual(
-    builder.getNodesFromCells("CIRCLE"),
+    builder.getNodesFromCells("REXT"),
     [
-        4,
-        5,
-        6,
-        7,
-        12,
-        13,
-        14,
-        15,
-        29,
-        30,
-        31,
+        16,
         32,
-        33,
-        34,
-        35,
-        36,
-        69,
-        70,
-        72,
-        73,
-        75,
-        76,
-        78,
-        79,
-        97,
-        98,
-        100,
-        101,
-        103,
-        104,
-        106,
-        107,
-        221,
-        222,
+        48,
+        64,
+        80,
+        96,
+        112,
+        128,
+        144,
+        160,
+        176,
+        192,
+        208,
         224,
-        225,
-        227,
-        228,
-        230,
-        231,
-        249,
-        250,
-        252,
-        253,
-        255,
+        240,
         256,
-        258,
-        259,
-        313,
-        314,
-        316,
-        317,
-        319,
+        272,
+        288,
+        304,
         320,
-        322,
-        323,
-        325,
-        326,
-        328,
-        329,
-        331,
-        332,
-        334,
-        335,
+        336,
+        352,
+        368,
+        384,
+        400,
+        416,
+        432,
+        448,
+        464,
+        480,
+        496,
+        512,
+        528,
+        544,
+        560,
+        576,
+        592,
+        608,
+        624,
+        640,
+        656,
+        672,
+        688,
+        704,
+        720,
+        736,
+        752,
+        768,
+        784,
+        800,
+        816,
+        832,
+        848,
+        864,
+        880,
+        896,
+        912,
+        928,
+        944,
+        960,
+        976,
+        992,
+        1008,
+        1024,
     ],
 )
-test.assertEqual(code_aster.Mesh.buildDisk(refine=2).getNumberOfNodes(), 209)
+test.assertEqual(code_aster.Mesh.buildDisk(refine=2).getNumberOfNodes(), 257)
+
+# from mesh builder -  Disk
+builder = code_aster.Mesh.buildRing(refine=3)
+test.assertSequenceEqual(sorted(builder.getGroupsOfCells()), ["REXT", "RINT", "SURFACE"])
+test.assertEqual(len(builder.getCells("RINT")), 64)
+test.assertEqual(len(builder.getCells("REXT")), 64)
+
+builder = code_aster.Mesh.buildTube(refine=2)
+test.assertSequenceEqual(
+    sorted(builder.getGroupsOfCells()), ["BOTTOM", "SURFEXT", "SURFINT", "TOP", "VOLUME"]
+)
+test.assertEqual(len(builder.getCells("SURFEXT")), 128)
+test.assertEqual(len(builder.getCells("SURFINT")), 128)
 
 test.printSummary()
 

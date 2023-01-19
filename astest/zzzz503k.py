@@ -97,8 +97,8 @@ cs = CoupledSolver(MECA, THER)
 
 sol = cs.solve(l_inst)
 
-u_ref = 1029.9525015650959
-dx_ref = 1151.4747014413276
+u_ref = 1030.2170760734057
+dx_ref = 1151.9260656472518
 d_ref = 800.0000000000003
 
 test.assertAlmostEqual((sol.u.norm("NORM_2") - u_ref) / u_ref, 0, delta=1e-4)

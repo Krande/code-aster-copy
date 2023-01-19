@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -80,14 +80,14 @@ loadAsse2 = loadElem.assembleWithMask(numeDof, maskField, 0)
 nodalField2 = loadAsse2.exportToSimpleFieldOnNodes()
 nodalField2.updateValuePointers()
 
-test.assertAlmostEqual(nodalField2.getValue(1, 2), -0.15328124999999998)
+test.assertAlmostEqual(nodalField2.getValue(2, 2), -0.15328124999999998)
 test.assertAlmostEqual(nodalField2.getValue(23, 2), 0)
 
 loadAsse3 = loadElem.assembleWithMask(numeDof, maskField, 1)
 nodalField3 = loadAsse3.exportToSimpleFieldOnNodes()
 nodalField3.updateValuePointers()
 
-test.assertAlmostEqual(nodalField3.getValue(23, 2), -0.6131250000000001)
+test.assertAlmostEqual(nodalField3.getValue(22, 2), -0.6131250000000001)
 test.assertAlmostEqual(nodalField3.getValue(1, 2), 0)
 
 

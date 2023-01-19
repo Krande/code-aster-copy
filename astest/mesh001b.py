@@ -483,13 +483,13 @@ test.assertEqual(
     code_aster.ParallelMesh.buildSquare(refine=4).getNumberOfNodes(), [114, 115, 120][rank]
 )
 test.assertEqual(
-    code_aster.ParallelMesh.buildCube(refine=4).getNumberOfNodes(), [2014, 1983, 1944][rank]
+    code_aster.ParallelMesh.buildCube(refine=4).getNumberOfNodes(), [2014, 1956, 1971][rank]
 )
 test.assertEqual(
-    code_aster.ParallelMesh.buildDisk(refine=5).getNumberOfNodes(), [4089, 4388, 4458][rank]
+    code_aster.ParallelMesh.buildDisk(refine=5).getNumberOfNodes(), [5620, 5993, 5367][rank]
 )
 test.assertEqual(
-    code_aster.ParallelMesh.buildCylinder(refine=3).getNumberOfNodes(), [5202, 5559, 5202][rank]
+    code_aster.ParallelMesh.buildCylinder(refine=3).getNumberOfNodes(), [3321, 3321, 3825][rank]
 )
 
 test.printSummary()
