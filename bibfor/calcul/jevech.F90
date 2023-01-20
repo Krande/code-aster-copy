@@ -65,11 +65,11 @@ subroutine jevech(nmparz, louez, itab, vl, vi, &
     integer :: iachlo, jtab
     integer :: ilchlo, k, kk, debugr
     integer :: iparg, lgcata
-    integer :: jceld, adiel
+    integer :: jceld, adiel, numCell
     integer :: debgr2, lonchl, decael, iadzi, iazk24
     integer :: opt, iaopd2, iaoplo, iapara, ipara, npari2
     aster_logical :: etendu
-    character(len=8) :: nompar, nommai
+    character(len=8) :: nompar
     character(len=1) :: loue
     character(len=24) :: valk(5)
     type(c_ptr) :: pc
@@ -179,29 +179,28 @@ subroutine jevech(nmparz, louez, itab, vl, vi, &
         do k = 1, lonchl
             if (.not. zl(ilchlo+debugr-1+decael-1+k)) then
                 call tecael(iadzi, iazk24)
-                nommai = zk24(iazk24-1+3) (1:8)
                 valk(1) = nompar
                 valk(2) = ca_option_
                 valk(3) = ca_nomte_
-                valk(4) = nommai
+                numCell = zi(iadzi)
 !
 !               -- pour certains parametres "courants" on emet
 !                  un message plus clair :
                 if (nompar .eq. 'PMATERC') then
-                    call utmess('F', 'CALCUL_20', nk=4, valk=valk)
+                    call utmess('F', 'CALCUL_20', nk=3, valk=valk, si=numCell)
                 else if (nompar .eq. 'PCACOQU') then
-                    call utmess('F', 'CALCUL_21', nk=4, valk=valk)
+                    call utmess('F', 'CALCUL_21', nk=3, valk=valk, si=numCell)
                 else if (nompar .eq. 'PCAGNPO') then
-                    call utmess('F', 'CALCUL_22', nk=4, valk=valk)
+                    call utmess('F', 'CALCUL_22', nk=3, valk=valk, si=numCell)
                 else if (nompar .eq. 'PCAORIE') then
-                    call utmess('F', 'CALCUL_23', nk=4, valk=valk)
+                    call utmess('F', 'CALCUL_23', nk=3, valk=valk, si=numCell)
 !
                 else
 !
                     write (6, *) 'ERREUR JEVECH ZL :', nompar, (zl(ilchlo+debugr-1+decael-1+kk), &
                                                                 kk=1, lonchl)
                     write (6, *) 'MAILLE: ', zk24(iazk24-1+3)
-                    call utmess('E', 'CALCUL_19', nk=4, valk=valk)
+                    call utmess('E', 'CALCUL_19', nk=3, valk=valk, si=numCell)
                     call contex_param(ca_option_, nompar)
                 end if
             end if

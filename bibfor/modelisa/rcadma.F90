@@ -47,7 +47,6 @@ subroutine rcadma(jmat, phenom, nomres, valres, icodre, &
     integer :: lfct, imate, nbmat
     parameter(lmat=9, lfct=10)
     character(len=24) :: valk
-    character(len=8) :: nomail
     character(len=32) :: nomphe
 ! DEB ------------------------------------------------------------------
 !
@@ -67,13 +66,11 @@ subroutine rcadma(jmat, phenom, nomres, valres, icodre, &
 !
 !     -- SELON LA VALEUR DE IARRET ON ARRETE OU NON :
     if (iarret .ge. 1) then
-        valk = nomphe
+        valk = nomphe(1:24)
         call utmess('F+', 'CALCUL_46', sk=valk)
         if (iarret .eq. 1) then
             call tecael(iadzi, iazk24)
-            nomail = zk24(iazk24-1+3) (1:8)
-            valk = nomail
-            call utmess('F+', 'CALCUL_47', sk=valk)
+            call utmess('F+', 'CALCUL_47', si=zi(iadzi))
         end if
         call utmess('F', 'VIDE_1')
     end if

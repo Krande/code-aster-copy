@@ -16,20 +16,21 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine mmctan(nommai, alias, nno, ndim, coorma, &
-                  coorno, itemax, epsmax, tau1, tau2)
+subroutine mmctan(numema, alias, nno, ndim, coorma, &
+                  coorno, epsmax, tau1, tau2)
 !
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
 #include "jeveux.h"
 #include "asterfort/infdbg.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/mmnewt.h"
+#include "asterfort/reereg.h"
+#include "asterfort/mmdonf.h"
+#include "asterfort/mmtang.h"
 #include "asterfort/utmess.h"
-    character(len=8) :: nommai, alias
-    integer :: itemax, ndim, nno
+    integer :: numema
+    character(len=8) :: alias
+    integer :: ndim, nno
     real(kind=8) :: epsmax, coorno(3), coorma(27)
     real(kind=8) :: tau1(3), tau2(3)
 !
@@ -54,16 +55,13 @@ subroutine mmctan(nommai, alias, nno, ndim, coorma, &
 ! OUT TAU2   : SECONDE TANGENTE (NON NORMALISEE)
 !
 !
-!
-!
-!
     integer :: ifm, niv
     integer :: niverr
-    real(kind=8) :: ksi1, ksi2
+    real(kind=8) :: ksi(2)
+    real(kind=8) :: dff(2, 9)
 !
 ! ----------------------------------------------------------------------
 !
-    call jemarq()
     call infdbg('APPARIEMENT', ifm, niv)
 !
 ! --- INITIALISATIONS
@@ -72,15 +70,18 @@ subroutine mmctan(nommai, alias, nno, ndim, coorma, &
 !
 ! --- CALCUL DES VECTEURS TANGENTS DE LA MAILLE EN CE NOEUD
 !
-    call mmnewt(alias, nno, ndim, coorma, coorno, &
-                itemax, epsmax, ksi1, ksi2, tau1, &
-                tau2, niverr)
+    call reereg('C', alias, nno, coorma, coorno, ndim, ksi, niverr, epsmax, 3)
 !
 ! --- GESTION DES ERREURS LORS DU NEWTON LOCAL POUR LA PROJECTION
 !
     if (niverr .eq. 1) then
-        call utmess('F', 'APPARIEMENT_13', sk=nommai, nr=3, valr=coorno)
+        call utmess('F', 'APPARIEMENT_13', si=numema, nr=3, valr=coorno)
     end if
 !
-    call jedema()
+    call mmdonf(ndim, nno, alias, ksi(1), ksi(2), dff)
+!
+    tau1 = 0.d0
+    tau2 = 0.d0
+    call mmtang(ndim, nno, coorma, dff, tau1, tau2)
+!
 end subroutine

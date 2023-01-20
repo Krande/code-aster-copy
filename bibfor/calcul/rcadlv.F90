@@ -80,7 +80,7 @@ subroutine rcadlv(fami, kpg, ksp, poum, jmat, nomat, mfact, msimp, &
     character(len=8) :: nompa2(nbpamx), novrc
     parameter(lmat=9, lfct=10)
     character(len=32) :: valk
-    character(len=8) :: nomail, nomi
+    character(len=8) :: nomi
     character(len=32) :: nomphe
 !   --------------------------------------------------------------------------
 
@@ -125,9 +125,7 @@ subroutine rcadlv(fami, kpg, ksp, poum, jmat, nomat, mfact, msimp, &
         call utmess('F+', 'CALCUL_46', sk=valk)
         if (iarret .eq. 1) then
             call tecael(iadzi, iazk24)
-            nomail = zk24(iazk24-1+3) (1:8)
-            valk = nomail
-            call utmess('F+', 'CALCUL_47', sk=valk)
+            call utmess('F+', 'CALCUL_47', si=zi(iadzi))
         end if
         call utmess('F', 'VIDE_1')
     end if

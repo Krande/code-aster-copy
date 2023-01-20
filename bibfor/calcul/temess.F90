@@ -49,7 +49,7 @@ subroutine temess(typ)
     integer :: ima, iexi, k, n1, k1, jgrma, nbgrma, nbgrmt
     integer :: nno, ino, nuno, jcoor
     character(len=24) :: valkc(9), ligrma(4), nomgrm, grpmav
-    character(len=8) :: ma, nomail
+    character(len=8) :: ma
     character(len=256) :: ufname
     real(kind=8) :: valrc(3)
 !-----------------------------------------------------------------------------------
@@ -59,11 +59,9 @@ subroutine temess(typ)
 
     nbgrma = 0
     nno = 0
-    nomail = 'XXX'
     ufname = ' '
     ima = zi(ca_ialiel_-1+zi(ca_illiel_+ca_igr_-1)+ca_iel_-1)
     if (ima .gt. 0) then
-        call jenuno(jexnum(ma//'.NOMMAI', ima), nomail)
         nno = zi(ca_ilmaco_-1+ima+1)-zi(ca_ilmaco_-1+ima)
     end if
 
@@ -105,15 +103,14 @@ subroutine temess(typ)
     valkc(1) = ca_option_
     valkc(2) = ca_nomte_
     valkc(3) = ma
-    valkc(4) = nomail
-    valkc(5) = ca_nomtm_
+    valkc(4) = ca_nomtm_
     do k = 1, nbgrma
-        valkc(5+k) = ligrma(k)
+        valkc(4+k) = ligrma(k)
     end do
-    if (nbgrma .eq. 4) valkc(5+4) = '...'
+    if (nbgrma .eq. 4) valkc(4+4) = '...'
 
-    call utmess_core(typ, 'CALCUL_49', 9, valkc, 0, &
-                     [0], 3, valrc, 0, ufname)
+    call utmess_core(typ, 'CALCUL_49', 9, valkc, 1, &
+                     [ima], 3, valrc, 0, ufname)
 
     call jedema()
 end subroutine temess

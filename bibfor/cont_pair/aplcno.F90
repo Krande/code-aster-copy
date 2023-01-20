@@ -53,7 +53,6 @@ subroutine aplcno(mesh, newgeo, sdcont_defi, sdappa)
 !
     integer :: model_ndim, nb_cont_zone, nt_node, nt_node_slav, nt_node_mast
     integer :: nb_node_mast, nb_node_slav, nb_elem_mast, nb_elem_slav
-    integer :: iter_maxi
     integer :: i_zone
     integer :: jdecnm, jdecmm, jdecne, jdecme
     character(len=4) :: zone_type
@@ -63,8 +62,7 @@ subroutine aplcno(mesh, newgeo, sdcont_defi, sdappa)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    epsi_maxi = 1.d-8
-    iter_maxi = 100
+    epsi_maxi = 1.d-12
 !
 ! - Get parameters
 !
@@ -101,14 +99,14 @@ subroutine aplcno(mesh, newgeo, sdcont_defi, sdappa)
 !
         zone_type = 'MAIT'
         call aptgem(sdappa, mesh, newgeo, sdcont_defi, model_ndim, &
-                    i_zone, zone_type, iter_maxi, epsi_maxi, jdecmm, &
+                    i_zone, zone_type, epsi_maxi, jdecmm, &
                     nb_elem_mast)
 !
 ! ----- Compute tangents at each node for each slave element
 !
         zone_type = 'ESCL'
         call aptgem(sdappa, mesh, newgeo, sdcont_defi, model_ndim, &
-                    i_zone, zone_type, iter_maxi, epsi_maxi, jdecme, &
+                    i_zone, zone_type, epsi_maxi, jdecme, &
                     nb_elem_slav)
         call sdmpic('SD_APPA_TGEL', sdappa)
 !

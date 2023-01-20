@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,15 +19,14 @@
 !
 !
 interface
-    subroutine mmctan(nommai, alias, nno, ndim, coorma,&
-                      coorno, itemax, epsmax, tau1, tau2)
-        character(len=8) :: nommai
+    subroutine mmctan(numema, alias, nno, ndim, coorma,&
+                      coorno, epsmax, tau1, tau2)
+        integer :: numema
         character(len=8) :: alias
         integer :: nno
         integer :: ndim
         real(kind=8) :: coorma(27)
         real(kind=8) :: coorno(3)
-        integer :: itemax
         real(kind=8) :: epsmax
         real(kind=8) :: tau1(3)
         real(kind=8) :: tau2(3)

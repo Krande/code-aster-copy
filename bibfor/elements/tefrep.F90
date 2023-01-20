@@ -46,7 +46,7 @@ subroutine tefrep(option, fieldTypeName, jvForc)
 !
     integer :: itab(8), iCmp, iret, iNode, ico
     integer :: iadzi, iazk24, nbValue, jad, nbNode, nbCmp
-    character(len=24) :: valk(3)
+    character(len=24) :: valk(2)
     character(len=8) :: cellName
 !
 ! --------------------------------------------------------------------------------------------------
@@ -87,8 +87,7 @@ subroutine tefrep(option, fieldTypeName, jvForc)
         cellName = zk24(iazk24-1+3) (1:8)
         valk(1) = fieldTypeName
         valk(2) = option
-        valk(3) = cellName
-        call utmess('F', 'CALCUL_18', nk=3, valk=valk)
+        call utmess('F', 'CALCUL_18', nk=2, valk=valk, si=zi(iadzi))
     end if
 !
 999 continue

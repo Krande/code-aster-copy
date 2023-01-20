@@ -24,7 +24,8 @@ subroutine rcvarc(arret, varc_name_, poum, &
     use calcul_module, only: ca_decala_, ca_iactif_, ca_iel_, ca_iredec_, &
                              ca_jfpgl_, ca_jvcnom_, ca_km_, ca_kp_, &
                              ca_kr_, ca_nbcvrc_, ca_nfpg_, ca_nomte_, ca_option_, &
-            ca_td1_, ca_tf1_, ca_timed1_, ca_timef1_, ca_ctempl_, ca_ctempr_, ca_ctempm_, ca_ctempp_
+                             ca_td1_, ca_tf1_, ca_timed1_, ca_timef1_, &
+                             ca_ctempl_, ca_ctempr_, ca_ctempm_, ca_ctempp_
 !
     implicit none
 !
@@ -78,7 +79,6 @@ subroutine rcvarc(arret, varc_name_, poum, &
     integer, save :: iprem = 0
     integer, save :: itabm(7), itabp(7), itabr(7)
     character(len=24) :: valk(4)
-    character(len=8) :: nomail
     real(kind=8) :: valvrm, valvrp
     real(kind=8), save :: rundf
 !
@@ -133,11 +133,9 @@ subroutine rcvarc(arret, varc_name_, poum, &
             goto 999
         else
             call tecael(iadzi, iazk24)
-            nomail = zk24(iazk24-1+3) (1:8)
             valk(1) = varc_name
-            valk(2) = nomail
-            valk(3) = poum
-            call utmess('F', 'CALCUL_26', nk=3, valk=valk)
+            valk(2) = poum
+            call utmess('F', 'CALCUL_26', nk=2, valk=valk, si=zi(iadzi))
         end if
     end if
 !
@@ -252,10 +250,9 @@ subroutine rcvarc(arret, varc_name_, poum, &
             varc_vale = rundf
         else
             call tecael(iadzi, iazk24)
-            nomail = zk24(iazk24-1+3) (1:8)
             valk(1) = varc_name
-            valk(2) = nomail
-            call utmess('F', 'CALCUL_26', nk=2, valk=valk)
+            valk(2) = "+"
+            call utmess('F', 'CALCUL_26', nk=2, valk=valk, si=zi(iadzi))
         end if
     end if
     goto 999

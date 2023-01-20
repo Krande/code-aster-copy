@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -134,7 +134,7 @@ dans la structure de données résultat pour le calcul de l'option %(k2)s.
 Erreur utilisateur dans un calcul élémentaire de forces réparties :
   On n'a pas trouvé toutes les composantes voulues du champ pour le paramètre : %(k1)s
    - option        : %(k2)s
-   - maille        : %(k3)s
+   - maille        : %(i1)s
   On a trouvé un noeud sur lequel il existe des composantes mais pas toutes.
   On ne peut pas continuer
 
@@ -148,7 +148,7 @@ Erreur dans un calcul élémentaire :
   On n'a pas trouvé toutes les composantes voulues du champ pour le paramètre : %(k1)s
    - option        : %(k2)s
    - type_élément  : %(k3)s
-   - maille        : %(k4)s
+   - maille        : %(i1)s
 
 Remarque :
   On a imprimé ci-dessus, une liste de booléens indiquant les composantes trouvées
@@ -158,7 +158,7 @@ Remarque :
     20: _(
         """
 Erreur utilisateur dans un calcul élémentaire :
-  Le matériau est nécessaire sur la maille : %(k4)s
+  Le matériau est nécessaire sur la maille : %(i1)s
   - option de calcul élémentaire : %(k2)s
   - type_élément                 : %(k3)s
 
@@ -170,7 +170,7 @@ Conseils :
     21: _(
         """
 Erreur utilisateur dans un calcul élémentaire :
-  Des caractéristiques de "coque" sont nécessaires sur la maille : %(k4)s
+  Des caractéristiques de "coque" sont nécessaires sur la maille : %(i1)s
   - option de calcul élémentaire : %(k2)s
   - type_élément                 : %(k3)s
 
@@ -183,7 +183,7 @@ Conseils :
     22: _(
         """
 Erreur utilisateur dans un calcul élémentaire :
-  Des caractéristiques de "poutre" sont nécessaires sur la maille : %(k4)s
+  Des caractéristiques de "poutre" sont nécessaires sur la maille : %(i1)s
   - option de calcul élémentaire : %(k2)s
   - type_élément                 : %(k3)s
 
@@ -196,7 +196,7 @@ Conseils :
     23: _(
         """
 Erreur utilisateur dans un calcul élémentaire :
-  Des caractéristiques d'"orientation" sont nécessaires sur la maille : %(k4)s
+  Des caractéristiques d'"orientation" sont nécessaires sur la maille : %(i1)s
   - option de calcul élémentaire : %(k2)s
   - type_élément                 : %(k3)s
 
@@ -222,8 +222,8 @@ Conseils :
         """
  Erreur utilisateur :
     On ne trouve pas la variable de commande :  %(k1)s
-    pour la maille                : %(k2)s
-    pour l'instant de calcul      : '%(k3)s'
+    pour la maille                : %(i1)s
+    pour l'instant de calcul      : '%(k2)s'
 
  Conseils :
     Les variables de commande sont des variables connues a priori qui influencent
@@ -416,12 +416,12 @@ Conseils :
     ),
     47: _(
         """
- pour la maille %(k1)s.
+ pour la maille %(i1)s.
 
  Conseils :
     Vérifiez la mise en données de la commande DEFI_MATERIAU : il faut définir
     les paramètres matériau pour la relation utilisée.
-    Vérifiez que la maille %(k1)s est bien affectée par le matériau.
+    Vérifiez que la maille %(i1)s est bien affectée par le matériau.
 """
     ),
     48: _(
@@ -437,10 +437,10 @@ Contexte du message :
    Option         : %(k1)s
    Type d'élément : %(k2)s
    Maillage       : %(k3)s
-   Maille         : %(k4)s
-   Type de maille : %(k5)s
+   Maille         : %(i1)s
+   Type de maille : %(k4)s
    Cette maille appartient aux groupes de mailles suivants :
-      %(k6)s %(k7)s %(k8)s %(k9)s
+      %(k5)s %(k6)s %(k7)s %(k8)s
    Position du centre de gravité de la maille :
       x=%(r1)f y=%(r2)f z=%(r3)f
 """

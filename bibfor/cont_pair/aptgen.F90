@@ -97,7 +97,7 @@ subroutine aptgen(sdappa, mesh, sdcont_defi, newgeo)
         apcald = cfcald(sdcont_defi, i_zone, 'MAIT')
         if (apcald) then
             call aptgem(sdappa, mesh, newgeo, sdcont_defi, model_ndim, &
-                        i_zone, zone_type, iter_maxi, epsi_maxi, jdecmm, &
+                        i_zone, zone_type, epsi_maxi, jdecmm, &
                         nb_elem_mast)
         end if
 !
@@ -112,7 +112,7 @@ subroutine aptgen(sdappa, mesh, sdcont_defi, newgeo)
         apcald = cfcald(sdcont_defi, i_zone, 'ESCL')
         if (apcald) then
             call aptgem(sdappa, mesh, newgeo, sdcont_defi, model_ndim, &
-                        i_zone, zone_type, iter_maxi, epsi_maxi, jdecme, &
+                        i_zone, zone_type, epsi_maxi, jdecme, &
                         nb_elem_slav)
         end if
     end do

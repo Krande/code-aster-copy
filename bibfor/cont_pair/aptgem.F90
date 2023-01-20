@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 
 subroutine aptgem(sdappa, mesh, newgeo, sdcont_defi, model_ndim, &
-                  i_zone, zone_type, iter_maxi, epsi_maxi, jdecma, &
+                  i_zone, zone_type, epsi_maxi, jdecma, &
                   nb_elem)
 !
     implicit none
@@ -54,7 +54,6 @@ subroutine aptgem(sdappa, mesh, newgeo, sdcont_defi, model_ndim, &
     integer, intent(in) :: jdecma
     integer, intent(in) :: nb_elem
     character(len=4), intent(in) :: zone_type
-    integer, intent(in) :: iter_maxi
     real(kind=8), intent(in) :: epsi_maxi
 !
 ! --------------------------------------------------------------------------------------------------
@@ -76,7 +75,6 @@ subroutine aptgem(sdappa, mesh, newgeo, sdcont_defi, model_ndim, &
 ! In  zone_type        : type of zone
 !                        'MAIT' for master
 !                        'ESCL' for slave
-! In  iter_maxi        : maximum number of Newton iterations
 ! In  epsi_maxi        : maximum tolerance for Newton algorithm
 !
 ! --------------------------------------------------------------------------------------------------
@@ -173,8 +171,6 @@ subroutine aptgem(sdappa, mesh, newgeo, sdcont_defi, model_ndim, &
 !
             call apcond(newgeo, node_nume(i_node), node_coor)
             call jenuno(jexnum(mesh//'.NOMNOE', node_nume(i_node)), node_name)
-            valk(1) = elem_name
-            valk(2) = node_name
 !
 ! --------- Compute local basis for these node
 !
@@ -182,8 +178,8 @@ subroutine aptgem(sdappa, mesh, newgeo, sdcont_defi, model_ndim, &
                 call apcpoi(sdcont_defi, model_ndim, i_zone, elem_name, &
                             zone_type, tau1, tau2)
             else
-                call mmctan(elem_name, elem_type, elem_nbnode, elem_ndim, elem_coor, &
-                            node_coor, iter_maxi, epsi_maxi, tau1, tau2)
+                call mmctan(elem_nume, elem_type, elem_nbnode, elem_ndim, elem_coor, &
+                            node_coor, epsi_maxi, tau1, tau2)
                 if (l_beam) then
                     call apcpou(sdcont_defi, i_zone, elem_name, zone_type, &
                                 tau1, tau2)
@@ -194,6 +190,8 @@ subroutine aptgem(sdappa, mesh, newgeo, sdcont_defi, model_ndim, &
 !
             call mmtann(model_ndim, tau1, tau2, niverr)
             if (niverr .eq. 1) then
+                valk(1) = elem_name
+                valk(2) = node_name
                 call utmess('F', 'APPARIEMENT_14', nk=2, valk=valk)
             end if
 !
