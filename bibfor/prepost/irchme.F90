@@ -267,7 +267,7 @@ subroutine irchme(ifichi, chanom, partie, nochmd, noresu, &
                 call irvari(ifichi, nochmd, chanom, typech, modele, &
                             nbrcmp, nomcmp, partie, numpt, instan, &
                             numord, nbmaec, limaec, noresu, sdcarm, &
-                            carael, nbCmpDyna, lfichUniq, codret_vari)
+                            carael, lfichUniq, codret_vari)
             end if
             if ((nomsym .eq. 'META_ELNO') .and. lvarie) then
                 call irmeta(ifichi, nochmd, chanom, typech, modele, &

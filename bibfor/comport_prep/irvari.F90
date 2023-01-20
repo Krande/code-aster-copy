@@ -20,7 +20,7 @@
 subroutine irvari(ifi, field_med, vari_elga, field_loca, model, &
                   nb_cmp_sele, cmp_name_sele, partie, numpt, instan, &
                   nume_store, nbmaec, limaec, result, cara_elem, &
-                  carael, nbCmpDyna, lfichUniq, codret)
+                  carael, lfichUniq, codret)
 !
     implicit none
 !
@@ -61,7 +61,6 @@ subroutine irvari(ifi, field_med, vari_elga, field_loca, model, &
     integer, intent(in) :: limaec(*)
     character(len=8), intent(in) :: result
     character(len=8), intent(in) :: cara_elem, carael
-    integer, intent(inout) :: nbCmpDyna
     aster_logical, intent(in) :: lfichUniq
     integer, intent(out) :: codret
 !
@@ -99,7 +98,7 @@ subroutine irvari(ifi, field_med, vari_elga, field_loca, model, &
     integer :: iMapZone, iCell, i_pt, i_vari, i_vari_redu, i_spt
     integer :: nb_vari, nb_pt, nb_spt, nb_vari_zone
     integer :: nb_vari_redu, nbMapZone, nbCell, nb_vari_maxi, nbCellMesh, nb_elem_zone
-    integer :: nt_vari, codret_dummy
+    integer :: nt_vari, codret_dummy, nbCmpDyna
     integer :: posit, iret, affe_type, affe_indx, nume_elem
     integer :: jv_elga_cesd, jv_elga_cesl, jv_elgr_cesd, jv_elgr_cesl, jv_elga, jv_elgr
     character(len=7) :: saux07
@@ -276,10 +275,12 @@ subroutine irvari(ifi, field_med, vari_elga, field_loca, model, &
 !
 ! - Write in MED file
 !
+    nbCmpDyna = 0
     call irceme(ifi, nomres, vari_elgr, field_loca, model, &
                 nb_cmp_sele, cmp_name_sele, label_med, partie, numpt, &
                 instan, nume_store, nbmaec, limaec, cara_elem, &
                 carael, field_type, nbCmpDyna, lfichUniq, codret)
+
 !
 999 continue
 !
