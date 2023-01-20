@@ -133,7 +133,7 @@ class ResultCreator(ExecuteCommand):
             self._result.setModel(keywords["ECLA_PG"]["MODELE_INIT"])
         if keywords.get("CONV_CHAR"):
             matr_rigi = keywords["CONV_CHAR"]["MATR_RIGI"]
-            self._result.setModel(matr_rigi.getModel())
+            self._result.setModel(matr_rigi.getDOFNumbering().getModel())
             self._result.setMesh(matr_rigi.getMesh())
             dofNum = matr_rigi.getDOFNumbering()
             if dofNum:

@@ -365,7 +365,7 @@ class SubStructure(WithEmbeddedObjects):
         interfModes : interface modes packaged in a code_aster's result
         """
 
-        model = self.stiffness.getModel()
+        model = self.stiffness.getDOFNumbering().getModel()
         dofNumbering = self.dofNumbering
         FACTORISER(reuse=self.stiffness, PCENT_PIVOT=150, MATR_ASSE=self.stiffness)
 
@@ -438,7 +438,7 @@ class SubStructure(WithEmbeddedObjects):
         MODE_MECA DataStructure
         """
 
-        model = self.stiffness.getModel()
+        model = self.stiffness.getDOFNumbering().getModel()
         dofNumbering = self.dofNumbering
 
         prevEig = -1
