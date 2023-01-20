@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -18,6 +18,10 @@
 # --------------------------------------------------------------------
 
 #       METHODE PAR SYMETRIE CYCLIQUE DYNAMIQUE
+import code_aster
+import numpy as np
+
+test = code_aster.TestCase()
 
 DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
 
@@ -261,7 +265,6 @@ MODES = CALC_MODES(
     MATR_RIGI=KASTOT, OPTION="PLUS_PETITE", CALC_FREQ=_F(NMAX_FREQ=6), MATR_MASS=MASS
 )
 
-
 TEST_RESU(
     RESU=(
         _F(PARA="FREQ", NUME_MODE=1, RESULTAT=MODES, VALE_CALC=33.4833),
@@ -271,6 +274,37 @@ TEST_RESU(
         _F(PARA="FREQ", NUME_MODE=5, RESULTAT=MODES, VALE_CALC=80.2363),
     )
 )
+
+# Résolution avec élimination
+rigi_elim = ELIM_LAGR(MATR_RIGI=KASTOT)
+mass_elim = ELIM_LAGR(MATR_ASSE=MASS, MATR_RIGI=KASTOT)
+
+MODES_elim = CALC_MODES(
+    MATR_RIGI=rigi_elim, OPTION="PLUS_PETITE", CALC_FREQ=_F(NMAX_FREQ=6), MATR_MASS=mass_elim
+)
+
+TEST_RESU(
+    RESU=(
+        _F(PARA="FREQ", NUME_MODE=1, RESULTAT=MODES_elim, VALE_CALC=33.4833),
+        _F(PARA="FREQ", NUME_MODE=2, RESULTAT=MODES_elim, VALE_CALC=33.4833),
+        _F(PARA="FREQ", NUME_MODE=3, RESULTAT=MODES_elim, VALE_CALC=44.899700000000003),
+        _F(PARA="FREQ", NUME_MODE=4, RESULTAT=MODES_elim, VALE_CALC=44.899700000000003),
+        _F(PARA="FREQ", NUME_MODE=5, RESULTAT=MODES_elim, VALE_CALC=80.2363),
+    )
+)
+
+modes_reconstruit = REST_GENE_PHYS(RESU_GENE=MODES_elim)
+
+# Comparaison des 2 modes (on supprime le déplacement moyen car les modes
+# peuvent être identiques à Pi prêt)
+v6 = MODES.getField("DEPL", 6)
+v6_r = modes_reconstruit.getField("DEPL", 6)
+mean6 = v6.EXTR_COMP().valeurs - np.mean(np.abs(v6.EXTR_COMP().valeurs))
+mean6_r = v6_r.EXTR_COMP().valeurs - np.mean(np.abs(v6_r.EXTR_COMP().valeurs))
+diff = np.max(np.abs(mean6 - mean6))
+test.assertTrue(diff < 1.0e-12)
+test.assertEqual(rigi_elim.getType(), "MATR_ASSE_ELIM_R")
+test.assertEqual(mass_elim.getType(), "MATR_ASSE_ELIM_R")
 
 SKEL = DEFI_SQUELETTE(CYCLIQUE=_F(NB_SECTEUR=16, MAILLAGE=MAYAS), SECTEUR=_F(TOUT="OUI"))
 

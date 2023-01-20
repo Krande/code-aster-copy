@@ -170,7 +170,7 @@ contains
                 kpos = kpos+1
             end do
             if (kpos <= nmax_ctxt) then
-                ke = kpos
+                ke = to_petsc_int(kpos)
 !          On vérifie que la matrice de rigidité enregistrée a bien le même nom
 !          que la matrice rigi1 fournie en entrée de la routine
                 ASSERT(elg_context(ke)%k_matas == rigi1)
@@ -188,7 +188,7 @@ contains
                 end do
 1               continue
                 ASSERT(ktrou .gt. 0)
-                ke = ktrou
+                ke = to_petsc_int(ktrou)
                 elg_context(ke)%full_matas = mat1
                 elg_context(ke)%reduced_matas = mat2
                 elg_context(ke)%k_matas = rigi1
@@ -204,10 +204,12 @@ contains
                     goto 2
                 end if
             end do
-            ASSERT(ktrou .gt. 0)
-            ASSERT(elg_context(ktrou)%reduced_matas .eq. mat2)
-            ke = ktrou
 2           continue
+            ASSERT(ktrou .gt. 0)
+            if (mat2 .ne. ' ') then
+                ASSERT(elg_context(ktrou)%reduced_matas .eq. mat2)
+            end if
+            ke = to_petsc_int(ktrou)
         end if
 !
         if (action .eq. 'EFFACE') then

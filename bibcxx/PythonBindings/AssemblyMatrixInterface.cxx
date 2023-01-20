@@ -3,7 +3,7 @@
  * @brief Interface python de AssemblyMatrix
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -101,6 +101,12 @@ Arguments:
         .def( "__mul__", +[]( const AssemblyMatrixDisplacementReal &M, const FieldOnNodesReal &v ) {
             return M * v;
         } );
+
+    py::class_< AssemblyMatrixEliminatedReal, AssemblyMatrixEliminatedRealPtr,
+                AssemblyMatrixDisplacementReal >( mod, "AssemblyMatrixEliminatedReal" )
+        // -----------------------------------------------------------------------------------------
+        .def( py::init( &initFactoryPtr< AssemblyMatrixEliminatedReal > ) )
+        .def( py::init( &initFactoryPtr< AssemblyMatrixEliminatedReal, std::string > ) );
 
     py::class_< AssemblyMatrixDisplacementComplex, AssemblyMatrixDisplacementComplexPtr,
                 BaseAssemblyMatrix >( mod, "AssemblyMatrixDisplacementComplex" )

@@ -325,7 +325,8 @@ subroutine apmain(action, kptsc, rsolu, vcine, istop, &
 !
 !       -- si LDLT_SP/DP et its > maxits, on essaye une 2eme fois
 !       -- apres avoir actualise le preconditionneur :
-if ((indic .eq. KSP_DIVERGED_ITS) .and. ((precon .eq. 'LDLT_SP') .or. (precon .eq. 'LDLT_DP'))) then
+        if ((indic .eq. KSP_DIVERGED_ITS) .and. ((precon .eq. 'LDLT_SP') &
+                                                 .or. (precon .eq. 'LDLT_DP'))) then
             call ap2foi(kptsc, mpicomm, nosolv, lmd, indic, its)
 !           -- ksp a ete modifie par ap2foi :
             ksp = kp(kptsc)

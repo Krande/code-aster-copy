@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -31,6 +31,8 @@ def rest_gene_phys_prod(RESU_GENE, **args):
         return dyna_trans
     if AsType(RESU_GENE) == mode_gene:
         return mode_meca
+    if AsType(RESU_GENE) == mode_meca:
+        return mode_meca
     if AsType(RESU_GENE) == harm_gene:
         return dyna_harmo
 
@@ -53,7 +55,7 @@ REST_GENE_PHYS = OPER(
         EXCLUS("MAILLE", "GROUP_MA"),
         PRESENT_PRESENT("ACCE_MONO_APPUI", "DIRECTION"),
     ),
-    RESU_GENE=SIMP(statut="o", typ=(tran_gene, mode_gene, harm_gene)),
+    RESU_GENE=SIMP(statut="o", typ=(tran_gene, mode_gene, harm_gene, mode_meca)),
     MODE_MECA=SIMP(statut="f", typ=mode_meca),
     NUME_DDL=SIMP(statut="f", typ=nume_ddl_sdaster),
     TOUT_INST=SIMP(statut="f", typ="TXM", into=("OUI",)),

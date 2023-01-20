@@ -40,6 +40,7 @@ subroutine elg_calc_matm_red(matas1, matas2, bas1)
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
+#include "asterfort/settco.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     character(len=19) :: matas1, matas2
@@ -64,11 +65,12 @@ subroutine elg_calc_matm_red(matas1, matas2, bas1)
     character(len=8) :: ma, nomgds
     character(len=14) :: nu1, nu2
     character(len=19) :: ligrmo
-    integer :: ibid, ico, kdiag, neq2, nnz2
+    integer :: iterm, ico, kdiag, neq2, nnz2, n1
     integer :: ilig, jcol, jnzcol, jsmdi2, ndiag, k, jsmhc2
-    integer :: jvalm2, j1, ier, ieq1, ieq2, nbnl, nbno
-    integer :: nbnom, jdeeq2, jprno2, nec, icmp, icmpav, ino, inoav
-    PetscInt :: n1, nterm, mm, nn
+    integer :: jvalm, jvalm2, j1, nbnl, nbno
+    integer :: nbnom, jdeeq2, nec
+    aster_logical :: lsym
+    PetscInt :: nterm, mm, nn
     PetscErrorCode :: ierr
     PetscInt, allocatable :: irow(:)
     real(kind=8), allocatable :: vrow(:)
@@ -96,10 +98,10 @@ subroutine elg_calc_matm_red(matas1, matas2, bas1)
     call jeveuo(matas2//'.REFA', 'E', vk24=refa)
     refa(2) = nu2
     ASSERT(refa(8) .eq. 'ASSE')
-!     -- pour l'instant, on ne traite que les matrices symétriques :
-    if (refa(9) .ne. 'MS') call utmess('F', 'ELIMLAGR_5')
+    lsym = (refa(9) .eq. 'MS')
     if (refa(10) .ne. 'NOEU') call utmess('F', 'ELIMLAGR_6')
     ASSERT(refa(11) .eq. 'MPI_COMPLET')
+    call settco(matas2, 'MATR_ASSE_ELIM_R')
 !
 !     -- la matrice MATAS2 n'est pas concernée par ELIM_LAGR :
     refa(19) = ' '
@@ -146,11 +148,23 @@ subroutine elg_calc_matm_red(matas1, matas2, bas1)
 !     -- allocation de MATAS2.VALM :
 !     ------------------------------
     call jedetr(matas2//'.VALM')
-    call jecrec(matas2//'.VALM', bas1//' V R', 'NU', 'DISPERSE', 'CONSTANT', &
-                1)
-    call jecroc(jexnum(matas2//'.VALM', 1))
-    call jeecra(matas2//'.VALM', 'LONMAX', nnz2, kbid)
-    call jeveuo(jexnum(matas2//'.VALM', 1), 'E', jvalm2)
+    if (lsym) then
+!       cas symétrique
+        call jecrec(matas2//'.VALM', bas1//' V R', 'NU', 'DISPERSE', 'CONSTANT', &
+                    1)
+        call jecroc(jexnum(matas2//'.VALM', 1))
+        call jeecra(matas2//'.VALM', 'LONMAX', nnz2, kbid)
+        call jeveuo(jexnum(matas2//'.VALM', 1), 'E', jvalm)
+    else
+!       cas non-symétrique
+        call jecrec(matas2//'.VALM', bas1//' V R', 'NU', 'DISPERSE', 'CONSTANT', &
+                    2)
+        call jeecra(matas2//'.VALM', 'LONMAX', nnz2, kbid)
+        call jecroc(jexnum(matas2//'.VALM', 1))
+        call jeveuo(jexnum(matas2//'.VALM', 1), 'E', jvalm)
+        call jecroc(jexnum(matas2//'.VALM', 2))
+        call jeveuo(jexnum(matas2//'.VALM', 2), 'E', jvalm2)
+    end if
 !
 !     -- calcul de NU2.SMOS.SMDI :
 !     ----------------------------
@@ -167,12 +181,14 @@ subroutine elg_calc_matm_red(matas1, matas2, bas1)
     call jedetr(nu2//'.SMOS.SMHC')
     call wkvect(nu2//'.SMOS.SMHC', bas1//' V S', nnz2, jsmhc2)
     call jerazo('&&ELG_CALC_MATM_RED.NZCO', neq2, 1)
+    iterm = 0
     do ilig = 0, neq2-1
         call MatGetRow(elg_context(ke)%kproj, to_petsc_int(ilig), nterm, irow(1), vrow(1), &
                        ierr)
         ASSERT(ierr == 0)
         do k = 1, nterm
             jcol = irow(k)
+!           partie triangulaire supérieure dans tous les cas
             if (jcol .ge. ilig) then
                 n1 = zi(jnzcol-1+jcol+1)+1
                 if (jcol .eq. 0) then
@@ -180,9 +196,14 @@ subroutine elg_calc_matm_red(matas1, matas2, bas1)
                 else
                     kdiag = zi(jsmdi2-1+jcol)
                 end if
-                zi4(jsmhc2-1+kdiag+n1) = ilig+1
-                zr(jvalm2-1+kdiag+n1) = vrow(k)
+                zi4(jsmhc2-1+kdiag+n1) = to_petsc_int(ilig+1)
+                zr(jvalm-1+kdiag+n1) = vrow(k)
                 zi(jnzcol-1+jcol+1) = n1
+            end if
+!           partie triangulaire inférieure dans tous le cas non-symétrique
+            if (jcol .le. ilig .and. .not. lsym) then
+                zr(jvalm2+iterm) = vrow(k)
+                iterm = iterm+1
             end if
         end do
         call MatRestoreRow(elg_context(ke)%kproj, to_petsc_int(ilig), nterm, irow(1), vrow(1), &

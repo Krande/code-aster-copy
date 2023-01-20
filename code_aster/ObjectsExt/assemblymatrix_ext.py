@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -27,6 +27,7 @@ import numpy as NP
 from libaster import (
     AssemblyMatrixDisplacementComplex,
     AssemblyMatrixDisplacementReal,
+    AssemblyMatrixEliminatedReal,
     AssemblyMatrixPressureComplex,
     AssemblyMatrixPressureReal,
     AssemblyMatrixTemperatureComplex,
@@ -326,6 +327,11 @@ _orig_DisplReal_getType = AssemblyMatrixDisplacementReal.getType
 
 @injector(AssemblyMatrixDisplacementReal)
 class ExtendedAssemblyMatrixDisplacementReal(BaseAssemblyMatrixReal):
+    pass
+
+
+@injector(AssemblyMatrixEliminatedReal)
+class ExtendedAssemblyMatrixEliminatedReal(BaseAssemblyMatrixReal):
     pass
 
 

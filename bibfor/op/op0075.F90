@@ -28,6 +28,7 @@ subroutine op0075()
 #include "asterfort/gettco.h"
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/elim75.h"
 #include "asterfort/getvid.h"
 #include "asterfort/getvtx.h"
 #include "asterfort/harm75.h"
@@ -43,7 +44,7 @@ subroutine op0075()
 #include "asterfort/wkvect.h"
 !     ------------------------------------------------------------------
     character(len=8) :: k8bid, nomres, resin, mode, blanc8, param(3), val_param(3)
-    character(len=16) :: concep, nomcmd, typres, typrep, champ(4)
+    character(len=16) :: concep, nomcmd, typres, typrep, champ(4), typmat
     character(len=19) :: profno
     character(len=24) :: matgen, numgen, basemo
     aster_logical :: prsimp
@@ -106,16 +107,22 @@ subroutine op0075()
         if (basemo(1:8) .ne. blanc8) call gettco(basemo, typrep)
 !       --- LA BASE REFERENCEE DANS LE .REFD N'EST PAS UN MODE_MECA
         if (typrep(1:9) .ne. 'MODE_MECA') then
-            prsimp = .false.
-!         --- CHERCHER ALORS LE NUME_DDL_GENE POUR Y TROUVER DES INFOS
-!           - SUR UN POTENTIEL MODE_GENE (CAS D'UNE DOUBLE-RESTITUTION)
-            if (numgen(1:8) .eq. blanc8) then
-!           --- PAS D'ENTREE DANS LE .REFD => CHERCHER DANS LA MATRICE K
-                call jeveuo(matgen(1:8)//'           .REFA', 'L', vk24=refa)
-                numgen = refa(2) (1:14)
+!           --- TRAITEMENT DE ELIM_LAGR
+            if (typrep(1:16) .eq. 'MAILLAGE_SDASTER') then
+                call gettco(matgen, typmat)
+                ASSERT(typmat .eq. 'MATR_ASSE_ELIM_R')
+            else
+                prsimp = .false.
+!             --- CHERCHER ALORS LE NUME_DDL_GENE POUR Y TROUVER DES INFOS
+!               - SUR UN POTENTIEL MODE_GENE (CAS D'UNE DOUBLE-RESTITUTION)
+                if (numgen(1:8) .eq. blanc8) then
+!               --- PAS D'ENTREE DANS LE .REFD => CHERCHER DANS LA MATRICE K
+                    call jeveuo(matgen(1:8)//'           .REFA', 'L', vk24=refa)
+                    numgen = refa(2) (1:14)
+                end if
+                call jeveuo(numgen(1:14)//'.NUME.REFN', 'L', j3refe)
+                call gettco(zk24(j3refe), typrep)
             end if
-            call jeveuo(numgen(1:14)//'.NUME.REFN', 'L', j3refe)
-            call gettco(zk24(j3refe), typrep)
         end if
     end if
 !
@@ -144,6 +151,10 @@ subroutine op0075()
             ASSERT(.false.)
         end if
 !
+!     --- CALCUL MODAL AVEC ELIM_LAGR='OUI'
+    else if (concep(1:9) .eq. 'MODE_MECA') then
+        call elim75(nomres, resin, matgen)
+!
 !     --- CALCUL MODAL SANS SOUS-STRUCTURATION
     else if (concep(1:9) .eq. 'MODE_GENE') then
         call regene(nomres, resin, profno)
@@ -171,7 +182,7 @@ subroutine op0075()
 !
 !     --- STOCKAGE DES RESULTATS
     call gettco(resin, concep)
-    if ((concep(1:9) .eq. 'MODE_GENE')) then
+    if (concep(1:9) .eq. 'MODE_GENE' .or. concep(1:9) .eq. 'MODE_MECA') then
         call jeveuo(nomres//'           .ORDR', 'L', vi=ordr)
         call jelira(nomres//'           .ORDR', 'LONUTI', nbord)
         do iord = 1, nbord

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -62,16 +62,6 @@ cata_msg = {
    C'est interdit pour l'instant.
  Risques & conseils :
    Il faut remplacer AFFE_CHAR_CINE par AFFE_CHAR_MECA..
-"""
-    ),
-    5: _(
-        """
- Erreur d'utilisation :
-   On veut utiliser la fonctionnalité SOLVEUR / ELIM_LAGR='OUI'
-   Mais la matrice n'est pas symétrique.
-   C'est interdit pour l'instant.
- Risques & conseils :
-   Il ne faut pas utiliser SOLVEUR / ELIM_LAGR='OUI'.
 """
     ),
     6: _(

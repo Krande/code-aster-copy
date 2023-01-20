@@ -65,6 +65,15 @@ Subclasses of :py:class:`~code_aster.Objects.DataStructure`
 
 
 ********************************************************************************
+:py:class:`~code_aster.Objects.AssemblyMatrixEliminatedReal` object
+********************************************************************************
+
+.. autoclass:: code_aster.Objects.AssemblyMatrixEliminatedReal
+   :show-inheritance:
+   :members:
+
+
+********************************************************************************
 :py:class:`~code_aster.Objects.AssemblyMatrixPressureComplex` object
 ********************************************************************************
 

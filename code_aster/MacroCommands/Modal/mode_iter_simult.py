@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -26,6 +26,7 @@ from ...Supervis import ExecuteCommand
 from ...Objects import (
     AssemblyMatrixDisplacementComplex,
     AssemblyMatrixDisplacementReal,
+    AssemblyMatrixEliminatedReal,
     AssemblyMatrixPressureReal,
     AssemblyMatrixTemperatureReal,
     BucklingModeResult,
@@ -342,6 +343,8 @@ class ModalCalculationSimult(ExecuteCommand):
         vale_amor = keywords.get("MATR_AMOR")
         if vale_amor is not None and isinstance(vale_amor, AssemblyMatrixDisplacementReal):
             self._result = ModeResultComplex()
+        elif isinstance(vale_rigi, AssemblyMatrixEliminatedReal):
+            self._result = ModeResult()
         elif isinstance(vale_rigi, AssemblyMatrixDisplacementReal):
             self._result = ModeResult()
         elif isinstance(vale_rigi, AssemblyMatrixTemperatureReal):

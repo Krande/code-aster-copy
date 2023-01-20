@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -16,12 +16,15 @@
 # You should have received a copy of the GNU General Public License
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
+import code_aster
+import numpy as np
+
+test = code_aster.TestCase()
 
 DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
 
 
 mesh = LIRE_MAILLAGE(UNITE=20, FORMAT="MED", INFO=2)
-meshColle = LIRE_MAILLAGE(UNITE=30, FORMAT="MED", INFO=2)
 
 mesh = MODI_MAILLAGE(
     reuse=mesh,
@@ -31,16 +34,6 @@ mesh = MODI_MAILLAGE(
         _F(GROUP_MA=("IFS2",), GROUP_NO=("N14",), VECT_NORM=(1.0, 0.0, 0.0)),
     ),
 )
-
-meshColle = MODI_MAILLAGE(
-    reuse=meshColle,
-    MAILLAGE=meshColle,
-    ORIE_NORM_COQUE=(
-        _F(GROUP_MA=("IFS1",), GROUP_NO=("N2",), VECT_NORM=(1.0, 0.0, 0.0)),
-        _F(GROUP_MA=("IFS2",), GROUP_NO=("N14",), VECT_NORM=(1.0, 0.0, 0.0)),
-    ),
-)
-
 
 model = AFFE_MODELE(
     AFFE=(
@@ -62,27 +55,6 @@ model = AFFE_MODELE(
     INFO=2,
 )
 
-
-modelColle = AFFE_MODELE(
-    AFFE=(
-        _F(GROUP_MA=("Sol1", "Sol2"), MODELISATION="3D", PHENOMENE="MECANIQUE"),
-        _F(
-            FORMULATION="U_P",
-            GROUP_MA=("Flu1", "Flu2"),
-            MODELISATION="3D_FLUIDE",
-            PHENOMENE="MECANIQUE",
-        ),
-        _F(
-            FORMULATION="U_P",
-            GROUP_MA=("IFS1", "IFS2"),
-            MODELISATION="FLUI_STRU",
-            PHENOMENE="MECANIQUE",
-        ),
-    ),
-    MAILLAGE=meshColle,
-    INFO=2,
-)
-
 scaling = 1.0e6
 acier = DEFI_MATERIAU(
     ELAS=_F(COEF_AMOR=1.0, E=197000000000.0 / scaling, NU=0.3, RHO=7800.0 / scaling)
@@ -97,15 +69,6 @@ fieldmat = AFFE_MATERIAU(
     ),
     MODELE=model,
 )
-
-fieldmatColle = AFFE_MATERIAU(
-    AFFE=(
-        _F(GROUP_MA=("Sol1", "Sol2"), MATER=(acier,)),
-        _F(GROUP_MA=("Flu1", "Flu2", "IFS1", "IFS2"), MATER=(eau,)),
-    ),
-    MODELE=modelColle,
-)
-
 
 load = AFFE_CHAR_MECA(
     INFO=1,
@@ -130,12 +93,94 @@ ASSEMBLAGE(
     NUME_DDL=CO("NUMEDDL"),
 )
 
+# Résolution avec élimination
+rigi_elim = ELIM_LAGR(MATR_RIGI=rigi)
+mass_elim = ELIM_LAGR(MATR_ASSE=mass, MATR_RIGI=rigi)
+
+modes_elim = CALC_MODES(
+    CALC_FREQ=_F(FREQ=3.0, NMAX_FREQ=8, NMAX_ITER_SHIFT=3, PREC_SHIFT=0.05, SEUIL_FREQ=0.01),
+    MATR_MASS=mass_elim,
+    MATR_RIGI=rigi_elim,
+    OPTION="CENTRE",
+    VERI_MODE=_F(PREC_SHIFT=0.005, SEUIL=1e-06, STOP_ERREUR="NON", STURM="OUI"),
+)
+
+modes_reconstruit = REST_GENE_PHYS(RESU_GENE=modes_elim)
+
+IMPR_RESU(
+    FICHIER_UNIQUE="OUI",
+    FORMAT="MED",
+    RESU=_F(NOM_CHAM="DEPL", PARTIE="REEL", RESULTAT=modes_reconstruit),
+    VERSION_MED="3.3.1",
+)
+
+
 modes = CALC_MODES(
     CALC_FREQ=_F(FREQ=3.0, NMAX_FREQ=8, NMAX_ITER_SHIFT=3, PREC_SHIFT=0.05, SEUIL_FREQ=0.01),
     MATR_MASS=mass,
     MATR_RIGI=rigi,
     OPTION="CENTRE",
     VERI_MODE=_F(PREC_SHIFT=0.005, SEUIL=1e-06, STOP_ERREUR="NON", STURM="OUI"),
+)
+
+IMPR_RESU(
+    FICHIER_UNIQUE="OUI",
+    FORMAT="MED",
+    RESU=_F(NOM_CHAM="DEPL", PARTIE="REEL", RESULTAT=modes),
+    VERSION_MED="3.3.1",
+)
+
+# Comparaison des 2 modes (on utilise des valeurs absolues car les modes
+# peuvent être identiques à Pi près)
+v8 = modes.getField("DEPL", 8)
+v8_r = modes_reconstruit.getField("DEPL", 8)
+diff = np.max(np.abs(np.abs(v8.EXTR_COMP().valeurs) - np.abs(v8_r.EXTR_COMP().valeurs)))
+
+test.assertTrue(diff < 1.0e-9)
+test.assertEqual(rigi_elim.getType(), "MATR_ASSE_ELIM_R")
+test.assertEqual(mass_elim.getType(), "MATR_ASSE_ELIM_R")
+
+# --------------------------------------------------------------------------------------------
+
+# Maillage collé (sans relations linéaires)
+
+meshColle = LIRE_MAILLAGE(UNITE=30, FORMAT="MED", INFO=2)
+
+meshColle = MODI_MAILLAGE(
+    reuse=meshColle,
+    MAILLAGE=meshColle,
+    ORIE_NORM_COQUE=(
+        _F(GROUP_MA=("IFS1",), GROUP_NO=("N2",), VECT_NORM=(1.0, 0.0, 0.0)),
+        _F(GROUP_MA=("IFS2",), GROUP_NO=("N14",), VECT_NORM=(1.0, 0.0, 0.0)),
+    ),
+)
+
+modelColle = AFFE_MODELE(
+    AFFE=(
+        _F(GROUP_MA=("Sol1", "Sol2"), MODELISATION="3D", PHENOMENE="MECANIQUE"),
+        _F(
+            FORMULATION="U_P",
+            GROUP_MA=("Flu1", "Flu2"),
+            MODELISATION="3D_FLUIDE",
+            PHENOMENE="MECANIQUE",
+        ),
+        _F(
+            FORMULATION="U_P",
+            GROUP_MA=("IFS1", "IFS2"),
+            MODELISATION="FLUI_STRU",
+            PHENOMENE="MECANIQUE",
+        ),
+    ),
+    MAILLAGE=meshColle,
+    INFO=2,
+)
+
+fieldmatColle = AFFE_MATERIAU(
+    AFFE=(
+        _F(GROUP_MA=("Sol1", "Sol2"), MATER=(acier,)),
+        _F(GROUP_MA=("Flu1", "Flu2", "IFS1", "IFS2"), MATER=(eau,)),
+    ),
+    MODELE=modelColle,
 )
 
 
@@ -157,7 +202,7 @@ modesColle = CALC_MODES(
     VERI_MODE=_F(PREC_SHIFT=0.005, SEUIL=1e-06, STOP_ERREUR="NON", STURM="OUI"),
 )
 
-# Reference: maillge collé (non_régression)
+# Reference: maillage collé (non_régression)
 freq1Refe = 9.34491e01
 freq2Refe = 5.41082e02
 

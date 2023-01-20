@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -20,6 +20,7 @@
 # person_in_charge: nicolas.sellenet@edf.fr
 
 from ..Objects import (
+    AssemblyMatrixDisplacementReal,
     FullHarmonicResult,
     FullTransientResult,
     GeneralizedModeResult,
@@ -46,6 +47,8 @@ class RestGenePhys(ExecuteCommand):
         elif isinstance(keywords["RESU_GENE"], HarmoGeneralizedResult):
             self._result = FullHarmonicResult()
         elif isinstance(keywords["RESU_GENE"], GeneralizedModeResult):
+            self._result = ModeResult()
+        elif isinstance(keywords["RESU_GENE"], ModeResult):
             self._result = ModeResult()
         else:
             raise Exception("Unknown result type")
@@ -118,6 +121,13 @@ class RestGenePhys(ExecuteCommand):
                 dofNum = resu_gene.getDOFNumbering()
                 if dofNum is not None:
                     self._result.setDOFNumbering(dofNum)
+        elif isinstance(resu_gene, ModeResult):
+            matrRigiElim = resu_gene.getDependencies()[0]
+            assert isinstance(matrRigiElim, AssemblyMatrixDisplacementReal)
+            matrRigi = matrRigiElim.getDependencies()[0]
+            self._result.setMesh(matrRigi.getMesh())
+            self._result.setDOFNumbering(matrRigi.getDOFNumbering())
+            self._result.setModel(matrRigi.getModel())
         else:
             raise Exception("Unknown result type")
 

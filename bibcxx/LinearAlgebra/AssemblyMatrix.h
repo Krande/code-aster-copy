@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe AssemblyMatrix
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -333,6 +333,11 @@ void AssemblyMatrix< ASTERDOUBLE, Displacement >::scale( const VectorReal &lvect
                                                          const VectorReal &rvect );
 typedef AssemblyMatrix< ASTERDOUBLE, Displacement > AssemblyMatrixDisplacementReal;
 
+class AssemblyMatrixEliminatedReal : public AssemblyMatrixDisplacementReal {
+  public:
+    using AssemblyMatrixDisplacementReal::AssemblyMatrixDisplacementReal;
+};
+
 /** @typedef Definition d'une matrice assemblee de complexe */
 template class AssemblyMatrix< ASTERCOMPLEX, Displacement >;
 typedef AssemblyMatrix< ASTERCOMPLEX, Displacement > AssemblyMatrixDisplacementComplex;
@@ -365,6 +370,7 @@ typedef std::shared_ptr< AssemblyMatrixTemperatureReal > AssemblyMatrixTemperatu
 typedef std::shared_ptr< AssemblyMatrixTemperatureComplex > AssemblyMatrixTemperatureComplexPtr;
 typedef std::shared_ptr< AssemblyMatrixPressureReal > AssemblyMatrixPressureRealPtr;
 typedef std::shared_ptr< AssemblyMatrixPressureComplex > AssemblyMatrixPressureComplexPtr;
+typedef std::shared_ptr< AssemblyMatrixEliminatedReal > AssemblyMatrixEliminatedRealPtr;
 
 template < class ValueType, PhysicalQuantityEnum PhysicalQuantity >
 AssemblyMatrix< ValueType, PhysicalQuantity >::AssemblyMatrix( const std::string &name )

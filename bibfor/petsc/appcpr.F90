@@ -505,13 +505,14 @@ subroutine appcpr(kptsc)
         AS_ALLOCATE(size=size(nulg), vi=nulg_ip)
 #endif
         nulg_ip(1:size(nulg)) = (/(to_petsc_int(nulg(i)), i=1, size(nulg))/)
-       call ISCreateGeneral(PETSC_COMM_SELF, to_petsc_int(size(nulg)), nulg_ip, PETSC_COPY_VALUES, &
-                             auxIS, ierr)
+        call ISCreateGeneral(PETSC_COMM_SELF, to_petsc_int(size(nulg)), nulg_ip, &
+                             PETSC_COPY_VALUES, auxIS, ierr)
         ASSERT(ierr == 0)
 
         if (ASTER_FALSE) call PCHPDDMDumpAuxiliaryMat(pc, auxIS, auxMat)
 !     Set the Neumann matrix
-       call PCHPDDMSetAuxiliaryMat(pc, auxIS, auxMat, PETSC_NULL_FUNCTION, PETSC_NULL_INTEGER, ierr)
+        call PCHPDDMSetAuxiliaryMat(pc, auxIS, auxMat, PETSC_NULL_FUNCTION, &
+                                    PETSC_NULL_INTEGER, ierr)
         ASSERT(ierr == 0)
         call ISDestroy(auxIS, ierr)
         call MatDestroy(auxMat, ierr)

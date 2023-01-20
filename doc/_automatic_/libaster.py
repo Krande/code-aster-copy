@@ -5281,6 +5281,29 @@ class AssemblyMatrixDisplacementReal(BaseAssemblyMatrix):
             local (bool) local or global size
         """
 
+# class AssemblyMatrixEliminatedReal in libaster
+
+class AssemblyMatrixEliminatedReal(AssemblyMatrixDisplacementReal):
+    pass
+
+    # Method resolution order:
+    #     AssemblyMatrixEliminatedReal
+    #     AssemblyMatrixDisplacementReal
+    #     BaseAssemblyMatrix
+    #     DataStructure
+    #     pybind11_builtins.pybind11_object
+    #     builtins.object
+
+    # Methods defined here:
+
+    def __init__(self, *args, **kwargs):
+        """Overloaded function.
+
+        1. __init__(self: libaster.AssemblyMatrixEliminatedReal) -> None
+
+        2. __init__(self: libaster.AssemblyMatrixEliminatedReal, arg0: str) -> None
+        """
+
 # class AssemblyMatrixDisplacementComplex in libaster
 
 class AssemblyMatrixDisplacementComplex(BaseAssemblyMatrix):
