@@ -224,6 +224,8 @@ def main(argv=None):
         argv (list): List of command line arguments.
     """
     args, ctest_args = parse_args(argv or sys.argv[1:])
+    # options passed through environment
+    os.environ["FACMTPS"] = str(args.timefactor)
 
     use_tmp = args.resutest.lower() == "none"
     if use_tmp:
@@ -257,8 +259,6 @@ def main(argv=None):
     if args.label_exclude:
         ctest_args.extend(["-LE", "|".join(sorted(args.label_exclude))])
 
-    # options passed through environment
-    os.environ["FACMTPS"] = str(args.timefactor)
     # execute ctest
     os.chdir(resutest)
     proc = _run(["ctest"] + ctest_args)
@@ -306,7 +306,8 @@ set(TEST_NAME ${{COMPONENT_NAME}}_{testname})
 add_test(${{TEST_NAME}} {BINDIR}/run_aster --ctest {ASTERDATADIR}/tests/{testname}.export)
 set_tests_properties(${{TEST_NAME}} PROPERTIES
                      LABELS "${{COMPONENT_NAME}} {labels}"
-                     PROCESSORS {processors})
+                     PROCESSORS {processors}
+                     TIMEOUT {timeout})
 """
 
 TEST_FILES_INTEGR = """
@@ -326,6 +327,7 @@ def _build_def(bindir, datadir, lexport):
     re_nod = re.compile("P +mpi_nbnoeud +([0-9]+)", re.M)
     re_mpi = re.compile("P +mpi_nbcpu +([0-9]+)", re.M)
     re_thr = re.compile("P +ncpus +([0-9]+)", re.M)
+    re_time = re.compile("P +time_limit +([0-9]+)", re.M)
     text = []
     for exp in lexport:
         if not osp.isfile(exp):
@@ -336,6 +338,7 @@ def _build_def(bindir, datadir, lexport):
         nod = 1
         mpi = 1
         thr = 1
+        tim = 86400
         with open(exp, "r") as fobj:
             export = fobj.read()
         mat = re_list.search(export)
@@ -350,6 +353,9 @@ def _build_def(bindir, datadir, lexport):
         mat = re_thr.search(export)
         if mat:
             thr = int(mat.group(1))
+        mat = re_time.search(export)
+        if mat:
+            tim = int(mat.group(1))
         lab.append(f"nodes={nod:02d}")
         if testname in TEST_FILES_INTEGR:
             lab.append("SMECA_INTEGR")
@@ -358,6 +364,7 @@ def _build_def(bindir, datadir, lexport):
                 testname=testname,
                 labels=" ".join(sorted(lab)),
                 processors=mpi * thr,
+                timeout=int(tim * 1.1 * float(os.environ["FACMTPS"])),
                 ASTERDATADIR=datadir,
                 BINDIR=bindir,
             )
