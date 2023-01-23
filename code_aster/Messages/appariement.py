@@ -44,7 +44,7 @@ dans le plan x-O-y.
         """
 L'algorithme de Newton a échoué lors de la projection du point de coordonnées
   (%(r1)f,%(r2)f,%(r3)f)
-sur la maille %(i1)s.
+sur la maille %(i1)i.
 Erreur de définition de la maille ou projection difficile.
 """
     ),

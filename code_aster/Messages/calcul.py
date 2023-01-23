@@ -134,7 +134,7 @@ dans la structure de données résultat pour le calcul de l'option %(k2)s.
 Erreur utilisateur dans un calcul élémentaire de forces réparties :
   On n'a pas trouvé toutes les composantes voulues du champ pour le paramètre : %(k1)s
    - option        : %(k2)s
-   - maille        : %(i1)s
+   - maille        : %(i1)i
   On a trouvé un noeud sur lequel il existe des composantes mais pas toutes.
   On ne peut pas continuer
 
@@ -148,7 +148,7 @@ Erreur dans un calcul élémentaire :
   On n'a pas trouvé toutes les composantes voulues du champ pour le paramètre : %(k1)s
    - option        : %(k2)s
    - type_élément  : %(k3)s
-   - maille        : %(i1)s
+   - maille        : %(i1)i
 
 Remarque :
   On a imprimé ci-dessus, une liste de booléens indiquant les composantes trouvées
@@ -158,7 +158,7 @@ Remarque :
     20: _(
         """
 Erreur utilisateur dans un calcul élémentaire :
-  Le matériau est nécessaire sur la maille : %(i1)s
+  Le matériau est nécessaire sur la maille : %(i1)i
   - option de calcul élémentaire : %(k2)s
   - type_élément                 : %(k3)s
 
@@ -170,7 +170,7 @@ Conseils :
     21: _(
         """
 Erreur utilisateur dans un calcul élémentaire :
-  Des caractéristiques de "coque" sont nécessaires sur la maille : %(i1)s
+  Des caractéristiques de "coque" sont nécessaires sur la maille : %(i1)i
   - option de calcul élémentaire : %(k2)s
   - type_élément                 : %(k3)s
 
@@ -183,7 +183,7 @@ Conseils :
     22: _(
         """
 Erreur utilisateur dans un calcul élémentaire :
-  Des caractéristiques de "poutre" sont nécessaires sur la maille : %(i1)s
+  Des caractéristiques de "poutre" sont nécessaires sur la maille : %(i1)i
   - option de calcul élémentaire : %(k2)s
   - type_élément                 : %(k3)s
 
@@ -196,7 +196,7 @@ Conseils :
     23: _(
         """
 Erreur utilisateur dans un calcul élémentaire :
-  Des caractéristiques d'"orientation" sont nécessaires sur la maille : %(i1)s
+  Des caractéristiques d'"orientation" sont nécessaires sur la maille : %(i1)i
   - option de calcul élémentaire : %(k2)s
   - type_élément                 : %(k3)s
 
@@ -222,7 +222,7 @@ Conseils :
         """
  Erreur utilisateur :
     On ne trouve pas la variable de commande :  %(k1)s
-    pour la maille                : %(i1)s
+    pour la maille                : %(i1)i
     pour l'instant de calcul      : '%(k2)s'
 
  Conseils :
@@ -308,7 +308,7 @@ Contactez le support technique.
     35: _(
         """
 Erreur utilisateur concernant le parallélisme des calculs élémentaires :
-  La partition des éléments du modèle a été faite sur %(i1)d processeurs.
+  La partition des éléments du modèle a été faite sur %(i1)i processeurs.
   Mais maintenant, le nombre de processeurs disponibles est de %(i2)d.
 
 Conseil :
@@ -416,12 +416,12 @@ Conseils :
     ),
     47: _(
         """
- pour la maille %(i1)s.
+ pour la maille %(i1)i.
 
  Conseils :
     Vérifiez la mise en données de la commande DEFI_MATERIAU : il faut définir
     les paramètres matériau pour la relation utilisée.
-    Vérifiez que la maille %(i1)s est bien affectée par le matériau.
+    Vérifiez que la maille %(i1)i est bien affectée par le matériau.
 """
     ),
     48: _(
@@ -437,7 +437,7 @@ Contexte du message :
    Option         : %(k1)s
    Type d'élément : %(k2)s
    Maillage       : %(k3)s
-   Maille         : %(i1)s
+   Maille         : %(i1)i
    Type de maille : %(k4)s
    Cette maille appartient aux groupes de mailles suivants :
       %(k5)s %(k6)s %(k7)s %(k8)s
