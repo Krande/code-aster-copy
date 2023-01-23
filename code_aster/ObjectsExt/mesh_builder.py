@@ -35,6 +35,7 @@ import math
 import medcoupling as medc
 
 from .medctoaster import MEDCouplingMeshHelper
+from ..MacroCommands.macr_adap_mail_ops import HOMARD_INFOS
 
 MEDCTOL = 1.0e-12
 
