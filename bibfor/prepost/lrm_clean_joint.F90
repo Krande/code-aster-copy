@@ -26,18 +26,18 @@ subroutine lrm_clean_joint(mesh, v_noex)
 #include "asterf_types.h"
 #include "jeveux.h"
 !
-#include "asterfort/asmpi_info.h"
 #include "asterc/asmpi_comm.h"
 #include "asterc/asmpi_sendrecv_i.h"
+#include "asterfort/asmpi_info.h"
 #include "asterfort/assert.h"
+#include "asterfort/codlet.h"
+#include "asterfort/create_graph_comm.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/wkvect.h"
-#include "asterfort/create_graph_comm.h"
-#include "asterfort/codhex.h"
 #include "MeshTypes_type.h"
 !
     character(len=8) :: mesh
@@ -96,7 +96,7 @@ subroutine lrm_clean_joint(mesh, v_noex)
 
     do i_comm = 1, nb_comm
         domdis = v_comm(i_comm)
-        call codhex(domdis, 'G', chdomdis)
+        call codlet(domdis, 'G', chdomdis)
 !
 ! --- Il faut préparer les noeuds à envoyer et à recevoir
 !

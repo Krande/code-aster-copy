@@ -3,7 +3,7 @@
  * @brief Interface python de ParallelFiniteElementDescriptor
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -36,12 +36,13 @@ void exportParallelFiniteElementDescriptorToPython( py::module_ &mod ) {
                 FiniteElementDescriptor >( mod, "ParallelFiniteElementDescriptor" )
         // fake initFactoryPtr: not directly created by user
         // fake initFactoryPtr: not directly created by user
-        .def( "getJoins", &ParallelFiniteElementDescriptor::getJoins, py::return_value_policy::copy,
+        .def( "getJoints", &ParallelFiniteElementDescriptor::getJoints,
+              py::return_value_policy::copy,
               R"(
-Return the vector of joins between the curent domain and the others subdomains.
+Return the vector of joints between the curent domain and the others subdomains.
 
 Returns:
-    list: joins between subdomains.
+    list: joints between subdomains.
         )" );
 };
 #endif /* ASTER_HAVE_MPI */

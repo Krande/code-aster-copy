@@ -65,20 +65,19 @@ subroutine crnustd(numddl)
 #ifdef ASTER_HAVE_MPI
 #include "mpif.h"
 !
-    integer :: ili, nunoel, idprn1, idprn2, ntot, lonmax, nbno_prno
-    integer :: nbddll, i_proc, ino, iret, nbcmp, iec, iret1, iret2, jjoin, jjoine
+    integer :: ili, idprn1, idprn2, ntot, lonmax, nbno_prno
+    integer :: nbddll, ino, iret, nbcmp, iec, iret1, iret2, jjoine
     integer :: numero_noeud, numero_cmp, rang, nbproc, jrefn
     integer :: nec, numloc, dime, nbddl_lag, i_ddl, nddl, nddlg, nddll
     integer :: nbno, nbno_lc, nbno_gl, nbno_max, nbddll_gl, numnoe
-    integer :: nbddl_phys_gl, nbddl_lag_gl, iproc, nbjoin, i_join, jnujoi1, jnujoi2
+    integer :: nbddl_phys_gl, nbddl_lag_gl, i_join, jnujoi1, jnujoi2
     integer :: numpro, nbnoee, nbnoer, jjoinr, poscom, numno1, numno2
     integer :: lgenve1, lgenvr1, jencod, jenco2, lgenve2, lgenvr2
     integer :: jaux, nb_ddl_envoi, jrecep1, jenvoi1, jenvoi2, jrecep2
     integer :: nbddl, ncmpmx, iad, jcpnec, jcpne2, ico2, icmp, curpos
     integer :: nbno_lili_lc, nbno_lili_gl, nb_comm
     mpi_int :: mrank, msize, mpicou, nbno4
-    mpi_int :: iaux4, tag4, numpr4, n4e, n4r
-    mpi_int, parameter :: one4 = to_mpi_int(1)
+    mpi_int :: tag4, numpr4, n4e, n4r
     integer, pointer :: v_noext(:) => null()
     integer, pointer :: v_deeq(:) => null()
     integer, pointer :: v_nequ(:) => null()
@@ -98,7 +97,7 @@ subroutine crnustd(numddl)
     character(len=4) :: chnbjo
     character(len=8) :: k8bid, mesh, nomgdr
     character(len=19) :: nomlig, tag_name, comm_name
-    character(len=24) :: owner, nojoie, nojoir, join, linulg
+    character(len=24) :: owner, nojoie, nojoir, linulg
 !
 !----------------------------------------------------------------------
 !
@@ -401,7 +400,7 @@ subroutine crnustd(numddl)
 ! -- Verif nb ddl total
     ASSERT(nbddll_gl == nbddl_phys_gl+nbddl_lag_gl)
 !
-! -- On complete avec les joins
+! -- On complete avec les joints
     do ili = 2, ntot
         ! call jeexin(jexnum(numddl//'.NUME.PRNO', ili), iret)
         ! if( iret.ne.0 ) then

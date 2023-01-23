@@ -11,7 +11,7 @@
  * @brief Fichier entete de la classe ParallelFiniteElementDescriptor
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -46,8 +46,8 @@ class ParallelFiniteElementDescriptor : public FiniteElementDescriptor {
     std::vector< JeveuxVectorLong > _joinToSend;
     /** @brief Join to receive */
     std::vector< JeveuxVectorLong > _joinToReceive;
-    /** @brief All joins */
-    JeveuxVectorLong _joins;
+    /** @brief All joints */
+    JeveuxVectorLong _joints;
     /** @brief Delayed nodes owner */
     JeveuxVectorLong _owner;
     /** @brief Number of elements in which a given node is located */
@@ -72,12 +72,12 @@ class ParallelFiniteElementDescriptor : public FiniteElementDescriptor {
     const VectorLong &getVirtualCellsToKeep() const { return _virtualCellToKeep; };
 
     /**
-     * @brief Get vector of joins between subdomains
+     * @brief Get vector of joints between subdomains
      * @return reference on VectorLong
      */
-    const JeveuxVectorLong &getJoins() const {
-        _joins->updateValuePointer();
-        return _joins;
+    const JeveuxVectorLong &getJoints() const {
+        _joints->updateValuePointer();
+        return _joints;
     };
 
     /**

@@ -3,7 +3,7 @@
  * @brief Implementation de ParallelFiniteElementDescriptor
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -36,7 +36,7 @@ ParallelFiniteElementDescriptor::ParallelFiniteElementDescriptor(
     const std::string &name, const FiniteElementDescriptorPtr &FEDesc,
     const ConnectionMeshPtr &mesh, const ModelPtr &model )
     : FiniteElementDescriptor( name, model->getMesh() ),
-      _joins( JeveuxVectorLong( getName() + ".DOMJ" ) ),
+      _joints( JeveuxVectorLong( getName() + ".DOMJ" ) ),
       _owner( JeveuxVectorLong( getName() + ".PNOE" ) ),
       _multiplicity( JeveuxVectorLong( getName() + ".MULT" ) ),
       _outerMultiplicity( JeveuxVectorLong( getName() + ".MUL2" ) ),
@@ -166,7 +166,7 @@ ParallelFiniteElementDescriptor::ParallelFiniteElementDescriptor(
         const std::string cadre( "G" );
         const std::string error( "F" );
         AS_ASSERT( nbProcs <= 46656 );
-        VectorLong joins;
+        VectorLong joints;
         for ( i = 0; i < nbProcs; ++i ) {
             const auto &taille1 = toSend[i].size();
             std::string chdomdis( 3, ' ' );
@@ -176,17 +176,17 @@ ParallelFiniteElementDescriptor::ParallelFiniteElementDescriptor(
                 auto vec = JeveuxVectorLong( getName() + ".E" + chdomdis );
                 _joinToSend.push_back( vec );
                 ( *vec ) = toSend[i];
-                joins.push_back( i );
+                joints.push_back( i );
             }
             const auto &taille2 = toReceive[i].size();
             if ( taille2 != 0 ) {
                 auto vec = JeveuxVectorLong( getName() + ".R" + chdomdis );
                 _joinToReceive.push_back( vec );
                 ( *vec ) = toReceive[i];
-                joins.push_back( i );
+                joints.push_back( i );
             }
         }
-        *( _joins ) = unique( joins );
+        *( _joints ) = unique( joints );
 
         // Allocation du .NEMA
         _virtualCellsDescriptor->allocateContiguousNumbered( -nbElemToKeep,

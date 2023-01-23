@@ -4,6 +4,7 @@ Generate fake libaster.
 
 import os.path as osp
 import sys
+from subprocess import PIPE, CalledProcessError, run
 
 sys.path.insert(0, osp.dirname(__file__))
 
@@ -37,6 +38,12 @@ def build_pylibaster(filename):
     with open(filename, "w") as flib:
         flib.write("\n".join(lines))
     print("output written:", filename)
+    try:
+        cmd = ["black", filename]
+        run(cmd, check=True, stderr=PIPE)
+        print("black formatter passed with success")
+    except CalledProcessError:
+        print("black formatter failed!")
 
 
 if __name__ == "__main__":
