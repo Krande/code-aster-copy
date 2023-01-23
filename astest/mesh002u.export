@@ -4,7 +4,7 @@ P memory_limit 1024
 P ncpus 1
 P mpi_nbcpu 4
 P mpi_nbnoeud 1
-P testlist ci verification parallel
+P testlist verification parallel
 
 F comm mesh002s.py D 1
 F nom ssnv189a.mmed D 0

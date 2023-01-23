@@ -3,6 +3,6 @@ P memory_limit 1024
 P ncpus 1
 P mpi_nbcpu 4
 P mpi_nbnoeud 1
-P testlist submit ci verification parallel
+P testlist submit verification parallel
 
 F comm mesh001k.py D 1
