@@ -136,8 +136,10 @@ class RestGenePhys(ExecuteCommand):
             assert isinstance(matrRigiElim, AssemblyMatrixDisplacementReal)
             matrRigi = matrRigiElim.getDependencies()[0]
             self._result.setMesh(matrRigi.getMesh())
-            self._result.setDOFNumbering(matrRigi.getDOFNumbering())
-            self._result.setModel(matrRigi.getModel())
+            dofNum = matrRigi.getDOFNumbering()
+            if dofNum:
+                self._result.setDOFNumbering(dofNum)
+                self._result.setModel(dofNum.getModel())
         else:
             raise Exception("Unknown result type")
 
