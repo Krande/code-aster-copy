@@ -52,10 +52,176 @@ class ExtendedMesh:
     cata_sdj = "SD.sd_maillage.sd_maillage"
     internalStateBuilder = MeshStateBuilder
 
-    buildSquare = classmethod(mesh_builder.buildSquare)
-    buildDisk = classmethod(mesh_builder.buildDisk)
-    buildCube = classmethod(mesh_builder.buildCube)
-    buildCylinder = classmethod(mesh_builder.buildCylinder)
+    @classmethod
+    def buildRectangle(cls, lx=1.0, ly=1.0, refine=0, info=1):
+        """Build the quadrilateral mesh of a rectangle.
+
+        Arguments:
+            lx [float] : length along the x axis (default 1.).
+            ly [float] : length along the y axis (default 1.).
+            refine [int] : number of mesh refinement iterations (default 0).
+            info [int] : verbosity mode (0|1|2). (default 1).
+        """
+
+        assert info in (0, 1, 2), "Invalid parameter"
+        assert isinstance(refine, int), "Invalid parameter"
+
+        # Take into account refine level before creating mesh
+        nb_seg_x = 1 * (2**refine)
+        nb_seg_y = 1 * (2**refine)
+
+        mcmesh = mesh_builder.rectangle(
+            xmin=0.0, xmax=lx, ymin=0.0, ymax=ly, nx=nb_seg_x, ny=nb_seg_y
+        )
+
+        # Convert to aster mesh
+        mesh = cls()
+        mesh.buildFromMedCouplingMesh(mcmesh, verbose=info)
+
+        return mesh
+
+    @classmethod
+    def buildSquare(cls, l=1, refine=0, info=1):
+        """Build the quadrilateral mesh of a square.
+
+        Arguments:
+            l [float] : size of the cube (default 1.).
+            refine [int] : number of mesh refinement iterations (default 0).
+            info [int] : verbosity mode (0|1|2). (default 1).
+        """
+        return cls.buildRectangle(lx=l, ly=l, refine=refine, info=info)
+
+    @classmethod
+    def buildRing(cls, rint=0.1, rext=1, refine=0, info=1):
+        """Build the mesh of a ring.
+
+        Arguments:
+            rint [float] : internal radius (default 0.1).
+            rext [float] : external radius (default 1).
+            refine [int] : number of mesh refinement iterations (default 0).
+            info [int] : verbosity mode (0|1|2). (default 1).
+        """
+        assert info in (0, 1, 2), "Invalid parameter"
+        assert isinstance(refine, int), "Invalid parameter"
+
+        # Take into account refine level before creating mesh
+        nb_seg_orth = 8 * (2**refine)
+        nb_seg_radial = 2 * (2**refine)
+
+        mcmesh = mesh_builder.ring(rmin=rint, rmax=rext, no=nb_seg_orth, nr=nb_seg_radial)
+
+        # Convert to aster mesh
+        mesh = cls()
+        mesh.buildFromMedCouplingMesh(mcmesh, verbose=info)
+
+        return mesh
+
+    @classmethod
+    def buildDisk(cls, radius=1, refine=0, info=1):
+        """Build the mesh of a disk.
+
+        Arguments:
+            radius [float] : radius of the disk (default 1).
+            refine [int] : number of mesh refinement iterations (default 0).
+            info [int] : verbosity mode (0|1|2). (default 1).
+        """
+        return cls.buildRing(rint=0.0, rext=radius, refine=refine, info=info)
+
+    @classmethod
+    def buildParallelepiped(cls, lx=1, ly=1, lz=1, refine=0, info=1):
+        """Build the quadrilateral mesh of a parallelepiped.
+
+        Arguments:
+            lx [float] : length along the x axis (default 1.).
+            ly [float] : length along the y axis (default 1.).
+            lz [float] : length along the z axis (default 1.).
+            refine [int] : number of mesh refinement iterations (default 0).
+            info [int] : verbosity mode (0|1|2). (default 1).
+        """
+
+        assert info in (0, 1, 2), "Invalid parameter"
+        assert isinstance(refine, int), "Invalid parameter"
+
+        # Take into account refine level before creating mesh
+        nb_seg_x = 1 * (2**refine)
+        nb_seg_y = 1 * (2**refine)
+        nb_seg_z = 1 * (2**refine)
+
+        mcmesh = mesh_builder.parallelepiped(
+            xmin=0.0,
+            xmax=lx,
+            ymin=0.0,
+            ymax=ly,
+            zmin=0.0,
+            zmax=lz,
+            nx=nb_seg_x,
+            ny=nb_seg_y,
+            nz=nb_seg_z,
+        )
+
+        # Convert to aster mesh
+        mesh = cls()
+        mesh.buildFromMedCouplingMesh(mcmesh, verbose=info)
+
+        return mesh
+
+    @classmethod
+    def buildCube(cls, l=1, refine=0, info=1):
+        """Build the quadrilateral mesh of a cube.
+
+        Arguments:
+            l [float] : size of the cube (default 1.).
+            refine [int] : number of mesh refinement iterations (default 0).
+            info [int] : verbosity mode (0|1|2). (default 1).
+        """
+        return cls.buildParallelepiped(lx=l, ly=l, lz=l, refine=refine, info=info)
+
+    @classmethod
+    def buildTube(cls, height=3, rint=0.1, rext=1, refine=0, info=1):
+        """Build the mesh of a tube.
+
+        Arguments:
+            height [float] : height along the z axis (default 3).
+            rint [float] : internal radius (default 0.1).
+            rext [float] : external radius (default 1).
+            refine [int] : number of mesh refinement iterations (default 0).
+            info [int] : verbosity mode (1 or 2). (default 1).
+        """
+        assert info in (0, 1, 2), "Invalid parameter"
+        assert isinstance(refine, int), "Invalid parameter"
+
+        # Take into account refine level before creating mesh
+        nb_seg_orth = 8 * (2**refine)
+        nb_seg_radial = 2 * (2**refine)
+        nb_seg_axial = 1 * (2**refine)
+
+        mcmesh = mesh_builder.tube(
+            rmin=rint,
+            rmax=rext,
+            zmin=0,
+            zmax=height,
+            no=nb_seg_orth,
+            nr=nb_seg_radial,
+            nz=nb_seg_axial,
+        )
+
+        # Convert to aster mesh
+        mesh = cls()
+        mesh.buildFromMedCouplingMesh(mcmesh, verbose=info)
+
+        return mesh
+
+    @classmethod
+    def buildCylinder(cls, height=3, radius=1, refine=0, info=1):
+        """Build the mesh of a cylinder.
+
+        Arguments:
+            height [float] : height of the cylinder along the z axis (default 0).
+            radius [float] : radius of the cylinder (default 1).
+            refine [int] : number of mesh refinement iterations (default 0).
+            info [int] : verbosity mode (1 or 2). (default 1).
+        """
+        return cls.buildTube(height=height, rint=0, rext=radius, refine=refine, info=info)
 
     def LIST_GROUP_NO(self):
         """Retourne la liste des groupes de noeuds sous la forme :

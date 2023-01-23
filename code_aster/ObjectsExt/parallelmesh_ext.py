@@ -160,73 +160,61 @@ class ExtendedParallelMesh:
         return CREA_MAILLAGE(MAILLAGE=self, RAFFINEMENT=_F(TOUT="OUI", NIVEAU=ntimes), INFO=info)
 
     @classmethod
-    def buildSquare(self, lx=1.0, ly=1.0, refine=0, info=1):
+    def buildSquare(cls, l=1, refine=0, info=1):
         """Build the quadrilateral mesh of a square.
 
         Arguments:
-            lx [float] : length of the square along the x axis (default 1.).
-            ly [float] : length of the square along the y axis (default 1.).
+            l [float] : size of the cube (default 1.).
             refine [int] : number of mesh refinement iterations (default 0).
             info [int] : verbosity mode (1 or 2). (default 1).
         """
+
+        ### Refine some levels on whole mesh, the remaining after partitioning
+        min_level = 6
+        refine_0 = min(min_level, refine)
+        refine_1 = refine - refine_0
 
         with shared_tmpdir("buildSquare") as tmpdir:
             filename = osp.join(tmpdir, "buildSquare.med")
-            # nrefine is added to create a mesh with enougth cells
-            # to be partitioned equally and not generated a too big file
-            nrefine = min(9, refine)
             if MPI.ASTER_COMM_WORLD.Get_rank() == 0:
-                mesh = Mesh.buildSquare(lx=lx, ly=ly, refine=nrefine, info=info)
+                mesh = Mesh.buildSquare(l=l, refine=refine_0, info=info)
                 mesh.printMedFile(filename)
             ResultNaming.syncCounter()
 
             # Mesh creation
-            mesh_p = ParallelMesh()
+            mesh_p = cls()
             mesh_p.readMedFile(filename, verbose=info - 1)
-
-            # Mesh refinement
-            nrefinep = refine - nrefine
-            return CREA_MAILLAGE(
-                MAILLAGE=mesh_p, RAFFINEMENT=_F(TOUT="OUI", NIVEAU=nrefinep), INFO=info
-            )
+            return mesh_p.refine(refine_1, info)
 
     @classmethod
-    def buildCube(self, lx=1.0, ly=1.0, lz=1.0, refine=0, info=1):
-        """Build the hexaedral mesh of a cube.
+    def buildCube(cls, l=1, refine=0, info=1):
+        """Build the quadrilateral mesh of a cube.
 
         Arguments:
-            lx [float] : length of the cube along the x axis (default 1.).
-            ly [float] : length of the cube along the y axis (default 1.).
-            lz [float] : length of the cube along the z axis (default 1.).
+            l [float] : size of the cube (default 1.).
             refine [int] : number of mesh refinement iterations (default 0).
             info [int] : verbosity mode (1 or 2). (default 1).
         """
 
+        ### Refine some levels on whole mesh, the remaining after partitioning
+        min_level = 7 if MPI.ASTER_COMM_WORLD.Get_size() > 512 else 6
+        refine_0 = min(min_level, refine)
+        refine_1 = refine - refine_0
+
         with shared_tmpdir("buildCube") as tmpdir:
             filename = osp.join(tmpdir, "buildCube.med")
-            # nrefine is added to create a mesh with enough cells
-            # to be partitioned equally and not generated a too big file
-            min_level = 6
-            if MPI.ASTER_COMM_WORLD.Get_size() > 512:
-                min_level = 7
-            nrefine = min(min_level, refine)
             if MPI.ASTER_COMM_WORLD.Get_rank() == 0:
-                mesh = Mesh.buildCube(lx=lx, ly=ly, lz=lz, refine=nrefine, info=info)
+                mesh = Mesh.buildCube(l=l, refine=refine_0, info=info)
                 mesh.printMedFile(filename)
             ResultNaming.syncCounter()
 
             # Mesh creation
-            mesh_p = ParallelMesh()
+            mesh_p = cls()
             mesh_p.readMedFile(filename, verbose=info - 1)
-
-            # Mesh refinement
-            nrefinep = refine - nrefine
-            return CREA_MAILLAGE(
-                MAILLAGE=mesh_p, RAFFINEMENT=_F(TOUT="OUI", NIVEAU=nrefinep), INFO=info
-            )
+            return mesh_p.refine(refine_1, info)
 
     @classmethod
-    def buildDisk(self, radius=1, refine=0, info=1):
+    def buildDisk(cls, radius=1, refine=0, info=1):
         """Build the quadrilateral mesh of a disk.
 
         Arguments:
@@ -235,20 +223,25 @@ class ExtendedParallelMesh:
             info [int] : verbosity mode (1 or 2). (default 1).
         """
 
+        ### Refine some levels on whole mesh, the remaining after partitioning
+        min_level = 6
+        refine_0 = min(min_level, refine)
+        refine_1 = refine - refine_0
+
         with shared_tmpdir("buildDisk") as tmpdir:
             filename = osp.join(tmpdir, "buildDisk.med")
             if MPI.ASTER_COMM_WORLD.Get_rank() == 0:
-                mesh = Mesh.buildDisk(radius, refine, info)
+                mesh = Mesh.buildDisk(radius=radius, refine=refine_0, info=info)
                 mesh.printMedFile(filename)
             ResultNaming.syncCounter()
 
             # Mesh creation
-            mesh_p = ParallelMesh()
+            mesh_p = cls()
             mesh_p.readMedFile(filename, verbose=info - 1)
-            return mesh_p
+            return mesh_p.refine(refine_1, info)
 
     @classmethod
-    def buildCylinder(self, height=3, radius=1, refine=0, info=1):
+    def buildCylinder(cls, height=3, radius=1, refine=0, info=1):
         """Build the hexaedral mesh of a cylinder.
 
         Arguments:
@@ -258,17 +251,22 @@ class ExtendedParallelMesh:
             info [int] : verbosity mode (1 or 2). (default 1).
         """
 
+        ### Refine some levels on whole mesh, the remaining after partitioning
+        min_level = 6
+        refine_0 = min(min_level, refine)
+        refine_1 = refine - refine_0
+
         with shared_tmpdir("buildCylinder") as tmpdir:
             filename = osp.join(tmpdir, "buildCylinder.med")
             if MPI.ASTER_COMM_WORLD.Get_rank() == 0:
-                mesh = Mesh.buildCylinder(height, radius, refine, info)
+                mesh = Mesh.buildCylinder(height=height, radius=radius, refine=refine_0, info=info)
                 mesh.printMedFile(filename)
             ResultNaming.syncCounter()
 
             # Mesh creation
-            mesh_p = ParallelMesh()
+            mesh_p = cls()
             mesh_p.readMedFile(filename, verbose=info - 1)
-            return mesh_p
+            return mesh_p.refine(refine_1, info)
 
     def getNodes(self, group_name="", localNumbering=True, same_rank=None):
         """Return the list of the indexes of the nodes that belong to a group of nodes.

@@ -134,9 +134,8 @@ for i in range(100):
     du_hho = mySolver.solve(-Resi, diriBCs)
     u_hho += du_hho
 
-test.assertAlmostEqual(
-    (u_hho.norm("NORM_2") - 27.915444480224167) / 27.915444480224167, 0.0, delta=5e-5
-)
+u_hho_ref = 27.915444480224167
+test.assertAlmostEqual((u_hho.norm("NORM_2") - u_hho_ref) / u_hho_ref, 0.0, delta=5e-5)
 
 test.printSummary()
 
