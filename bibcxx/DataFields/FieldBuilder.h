@@ -31,6 +31,7 @@
 #include "Meshes/BaseMesh.h"
 #include "Modeling/FiniteElementDescriptor.h"
 #include "Numbering/DOFNumbering.h"
+#include "Numbering/GeneralizedFieldOnNodesDescription.h"
 
 /**
  * @class FieldBuilder
@@ -77,6 +78,20 @@ private:
     addFieldOnNodesDescription(curDesc);
 
     return curDesc;
+  };
+
+  /**
+   * @brief Add a existing generalizedFieldOnNodesDescription in FieldBuilder
+  */
+  FieldOnNodesDescriptionPtr newGeneralizedFieldOnNodesDescription( const std::string &name ) {
+      if ( _setProfChno.count( trim( name ) ) > 0 ) {
+          raiseAsterError( "PROF_GENE already exists: " + name );
+      }
+
+      auto curDesc = std::make_shared< GeneralizedFieldOnNodesDescription >( name );
+      addFieldOnNodesDescription( curDesc );
+
+      return curDesc;
   };
 
 public:
@@ -157,14 +172,18 @@ public:
     const std::string profchno = trim((*(*field)._reference)[1].toString());
     if (!profchno.empty()) {
 
-      auto curIter = _mapProfChno.find(profchno);
-      FieldOnNodesDescriptionPtr curDesc;
-      if (curIter != _mapProfChno.end())
-        curDesc = curIter->second;
-      else {
-        curDesc = newFieldOnNodesDescription(profchno);
-      }
-      field->setDescription(curDesc);
+        auto curIter = _mapProfChno.find( profchno );
+        FieldOnNodesDescriptionPtr curDesc;
+        if ( curIter != _mapProfChno.end() )
+            curDesc = curIter->second;
+        else {
+            // .REFE de taille 2 pour les VGEN, voir vpstor.F90
+            if (field->_reference->size() == 2)
+                curDesc = newGeneralizedFieldOnNodesDescription( profchno );
+            else
+                curDesc = newFieldOnNodesDescription( profchno );
+        }
+        field->setDescription( curDesc );
     }
 
     return field;

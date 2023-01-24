@@ -28,7 +28,7 @@
 
 #include "astercxx.h"
 
-#include "DataStructures/DataStructure.h"
+#include "Numbering/FieldOnNodesDescription.h"
 #include "MemoryManager/JeveuxCollection.h"
 #include "MemoryManager/JeveuxVector.h"
 #include "Supervis/ResultNaming.h"
@@ -38,23 +38,15 @@
  * @brief This class describes the structure of dof stored in a field on nodes
  * @author Nicolas Sellenet
  */
-class GeneralizedFieldOnNodesDescription : public DataStructure {
+class GeneralizedFieldOnNodesDescription : public FieldOnNodesDescription {
     /** @brief Objet Jeveux '.DESC' */
     JeveuxVectorLong _desc;
     /** @brief Objet Jeveux '.NEQU' */
     JeveuxVectorLong _nequ;
     /** @brief Objet Jeveux '.REFN' */
     JeveuxVectorChar24 _refn;
-    /** @brief Objet Jeveux '.DEEQ' */
-    JeveuxVectorLong _deeq;
     /** @brief Objet Jeveux '.DELG' */
     JeveuxVectorLong _delg;
-    /** @brief Objet Jeveux '.LILI' */
-    JeveuxVectorChar24 _lili;
-    /** @brief Objet Jeveux '.NUEQ' */
-    JeveuxVectorLong _nueq;
-    /** @brief Objet Jeveux '.PRNO' */
-    JeveuxCollectionLong _prno;
     /** @brief Objet Jeveux '.ORIG' */
     JeveuxCollectionLong _orig;
 
@@ -65,16 +57,13 @@ class GeneralizedFieldOnNodesDescription : public DataStructure {
      * d'une sd_resu)
      */
     GeneralizedFieldOnNodesDescription( const std::string name )
-        : DataStructure( name, 19, "PROF_GENE" ),
+        : FieldOnNodesDescription( name, "PROF_GENE" ),
           _desc( JeveuxVectorLong( getName() + ".DESC" ) ),
           _nequ( JeveuxVectorLong( getName() + ".NEQU" ) ),
           _refn( JeveuxVectorChar24( getName() + ".REFN" ) ),
-          _deeq( JeveuxVectorLong( getName() + ".DEEQ" ) ),
           _delg( JeveuxVectorLong( getName() + ".DELG" ) ),
-          _lili( JeveuxVectorChar24( getName() + ".LILI" ) ),
-          _nueq( JeveuxVectorLong( getName() + ".NUEQ" ) ),
-          _prno( JeveuxCollectionLong( getName() + ".PRNO" ) ),
-          _orig( JeveuxCollectionLong( getName() + ".ORIG" ) ){};
+          _orig( JeveuxCollectionLong( getName() + ".ORIG" ) )
+          {};
 
     /**
      * @brief Constructeur

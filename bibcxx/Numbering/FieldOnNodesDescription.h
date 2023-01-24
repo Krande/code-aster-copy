@@ -56,7 +56,7 @@ class FieldOnNodesDescription : public DataStructure {
      * @param name nom souhaité de la sd (utile pour le FieldOnNodesDescription d'une
      * sd_resu)
      */
-    FieldOnNodesDescription( const std::string name );
+    FieldOnNodesDescription( const std::string name, const std::string type = "PROF_CHNO" );
 
     /**
      * @brief Constructeur

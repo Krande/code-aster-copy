@@ -96,6 +96,8 @@ class GeneralizedDOFNumbering : public DataStructure {
      */
     GeneralizedModelPtr getGeneralizedModel() const { return _model; };
 
+    GeneralizedFieldOnNodesDescriptionPtr getDescription() const {return _nume; };
+
     /**
      * @brief Get modal basis
      */

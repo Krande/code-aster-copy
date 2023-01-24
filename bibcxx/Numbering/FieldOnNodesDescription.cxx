@@ -23,8 +23,8 @@
 
 #include "Numbering/FieldOnNodesDescription.h"
 
-FieldOnNodesDescription::FieldOnNodesDescription( const std::string name )
-    : DataStructure( name, 19, "PROF_CHNO" ),
+FieldOnNodesDescription::FieldOnNodesDescription( const std::string name, const std::string type)
+    : DataStructure( name, 19, type ),
       _componentsOnNodes( getName() + ".PRNO" ),
       _namesOfGroupOfCells( getName() + ".LILI" ),
       _indexationVector( getName() + ".NUEQ" ),

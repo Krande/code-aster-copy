@@ -52,6 +52,7 @@ class ProjMesuModal(ExecuteCommand):
         Arguments:
             keywords (dict): User's keywords.
         """
+        self._result.setGeneralizedDOFNumbering(GeneralizedDOFNumbering(self._result.getName() + ".NUGEN"))
         base = keywords["MODELE_CALCUL"]["BASE"]
         if isinstance(self._result, TransientGeneralizedResult) or isinstance(
             self._result, HarmoGeneralizedResult
@@ -61,7 +62,6 @@ class ProjMesuModal(ExecuteCommand):
             self._result.setDOFNumbering(base.getDOFNumbering())
             self._result.setMesh(base.getMesh())
             self._result.build()
-        self._result.setGeneralizedDOFNumbering(GeneralizedDOFNumbering(self._result.getName() + ".NUGEN"))
 
 
 PROJ_MESU_MODAL = ProjMesuModal.run
