@@ -60,6 +60,7 @@ class ProjMesuModal(ExecuteCommand):
         else:
             self._result.setDOFNumbering(base.getDOFNumbering())
             self._result.setMesh(base.getMesh())
+            self._result.build()
         self._result.setGeneralizedDOFNumbering(GeneralizedDOFNumbering(self._result.getName() + ".NUGEN"))
 
 

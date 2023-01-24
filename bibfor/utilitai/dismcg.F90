@@ -90,6 +90,10 @@ subroutine dismcg(questi, nomobz, repi, repkz, ierd)
             ierd = 1
             goto 9999
         end if
+    else if (questl.eq.'TYPE_SCA') then
+        call jeveuo(nomob//'.DESC', 'L', iadesc)
+        call jenuno(jexnum('&CATA.GD.NOMGD', zi(iadesc)), nogd)
+        call dismgd(questl, nogd, repi, repk, ierd)
     else
         ierd = 1
     end if

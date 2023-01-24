@@ -673,17 +673,19 @@ bool Result::build( const std::vector< FiniteElementDescriptorPtr > feds,
                 CALLO_DISMOI( questi, name, typeco, &repi, repk, arret, &ier );
                 const std::string scalaire( trim( repk.toString() ) );
 
-                if ( resu == "NOEU" ) {
+                if ( resu == "NOEU" or resu == "VGEN" ) {
                     if ( scalaire == "R" ) {
                         if ( _dictOfMapOfFieldOnNodesReal.count( nomSymb ) == 0 ) {
                             _dictOfMapOfFieldOnNodesReal[nomSymb] = MapOfFieldOnNodesReal();
                         }
 
                         if ( _dictOfMapOfFieldOnNodesReal[nomSymb].count( index ) == 0 ) {
-                            AS_ASSERT( _mesh != nullptr );
                             FieldOnNodesRealPtr result =
                                 _fieldBuidler.buildFieldOnNodes< ASTERDOUBLE >( name );
-                            result->setMesh( _mesh );
+                            if ( resu == "NOEU" ){
+                                AS_ASSERT( _mesh != nullptr );
+                                result->setMesh( _mesh );
+                            }
                             _dictOfMapOfFieldOnNodesReal[nomSymb][index] = result;
                         }
                     } else if ( scalaire == "C" ) {
@@ -692,10 +694,12 @@ bool Result::build( const std::vector< FiniteElementDescriptorPtr > feds,
                         }
 
                         if ( _dictOfMapOfFieldOnNodesComplex[nomSymb].count( index ) == 0 ) {
-                            AS_ASSERT( _mesh != nullptr );
                             FieldOnNodesComplexPtr result =
                                 _fieldBuidler.buildFieldOnNodes< ASTERCOMPLEX >( name );
-                            result->setMesh( _mesh );
+                            if ( resu == "NOEU" ){
+                                AS_ASSERT( _mesh != nullptr );
+                                result->setMesh( _mesh );
+                            }
                             _dictOfMapOfFieldOnNodesComplex[nomSymb][index] = result;
                         }
                     } else {
