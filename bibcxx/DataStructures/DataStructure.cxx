@@ -50,6 +50,15 @@ DataStructure::DataStructure( const std::string name, const int nameLength, cons
             ( *_tco )[0] = std::string( trim( type ) + "_SDASTER" );
         else
             ( *_tco )[0] = type;
+#ifdef ASTER_DEBUG_CXX
+    }
+    else{
+        if (get_sh_jeveux_status() == 1){
+            _tco->updateValuePointer();
+            std::cout << "DEBUG: error with object " << name << ", and type " << type
+            << ", _tco jeveux object already exists with type " << ( *_tco )[0] << std::endl;
+        }
+#endif
     }
 
     // title
