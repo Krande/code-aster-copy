@@ -44,10 +44,8 @@
  * @author Natacha Béreux
  */
 template < class ValueType >
-class GeneralizedResult : public DataStructure {
+class GeneralizedResult : public DataStructure, DynamicResultsIndexing {
   private:
-    /** @brief DynamicResultsIndexing */
-    DynamicResultsIndexingPtr _index;
     /** @brief Vecteur Jeveux '.DESC' */
     JeveuxVectorLong _desc;
     /** @brief Vecteur Jeveux '.DISC' */
@@ -74,7 +72,7 @@ class GeneralizedResult : public DataStructure {
      */
     GeneralizedResult( const std::string &name, const std::string &resuTyp )
         : DataStructure( name, 19, resuTyp ),
-          _index( new DynamicResultsIndexing( getName(), resuTyp ) ),
+          DynamicResultsIndexing( getName() ),
           _desc( JeveuxVectorLong( getName() + ".DESC" ) ),
           _abscissasOfSamples( JeveuxVectorReal( getName() + ".DISC" ) ),
           _indicesOfSamples( JeveuxVectorLong( getName() + ".ORDR" ) ),

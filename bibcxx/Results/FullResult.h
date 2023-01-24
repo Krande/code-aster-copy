@@ -36,10 +36,8 @@
  * @brief Cette classe correspond à un sd_dyna_phys
  * @author Natacha Béreux
  */
-class FullResult : public Result {
+class FullResult : public Result, DynamicResultsIndexing {
   protected:
-    /** @brief indexage des résultats de calcul dynamiques */
-    DynamicResultsIndexingPtr _index;
     /** @brief the DOFNumbering */
     BaseDOFNumberingPtr _dofNum;
 
@@ -50,7 +48,7 @@ class FullResult : public Result {
      */
     FullResult( const std::string &name, const std::string &resuTyp )
         : Result( name, resuTyp ),
-          _index( new DynamicResultsIndexing( name, resuTyp ) ),
+          DynamicResultsIndexing( getName() ),
           _dofNum( nullptr ){};
 
     FullResult( const std::string &resuTyp )

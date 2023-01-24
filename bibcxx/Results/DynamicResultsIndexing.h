@@ -28,17 +28,15 @@
 
 #include "astercxx.h"
 
-#include "DataStructures/DataStructure.h"
 #include "MemoryManager/JeveuxCollection.h"
 #include "MemoryManager/JeveuxVector.h"
-#include "Supervis/ResultNaming.h"
 /**
  * @class DynamicResultsIndexing
  * @brief Cette classe correspond aux objets Aster permettant d'indexer les résultats "généralisés"
  * i.e. les résultats sur base modale.
  * @author Natacha Béreux
  */
-class DynamicResultsIndexing : public DataStructure {
+class DynamicResultsIndexing {
   private:
     /** @brief Collection '.REFD' */
     /** Collection de vecteurs contenant les informations sur les matrices de masse, amortissement
@@ -54,26 +52,12 @@ class DynamicResultsIndexing : public DataStructure {
 
   public:
     /**
-     * @typedef DynamicResultsIndexingPtr
-     * @brief Pointeur intelligent vers un DynamicResultsIndexing
-     */
-    typedef std::shared_ptr< DynamicResultsIndexing > DynamicResultsIndexingPtr;
-
-    /**
      * @brief Constructeur
      */
-    DynamicResultsIndexing( const std::string resuTyp )
-        : DynamicResultsIndexing( ResultNaming::getNewResultName(), resuTyp ){};
-
-    /**
-     * @brief Constructeur
-     */
-    DynamicResultsIndexing( const std::string &name, std::string resuTyp )
-        : DataStructure( name, 19, resuTyp ),
-          _refd( JeveuxCollectionChar24( getName() + ".REFD" ) ),
-          _indi( JeveuxVectorLong( getName() + ".INDI" ) ){};
+    DynamicResultsIndexing( const std::string &name )
+        : 
+          _refd( JeveuxCollectionChar24( name + ".REFD" ) ),
+          _indi( JeveuxVectorLong( name + ".INDI" ) ){};
 };
-
-typedef std::shared_ptr< DynamicResultsIndexing > DynamicResultsIndexingPtr;
 
 #endif /* DYNAMICRESULTSINDEXING_H_ */
