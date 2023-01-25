@@ -231,13 +231,9 @@ ESOURCR = LocatedComponents(phys=PHY.SOUR_R, type="ELGA", location="RIGI", compo
 
 ZVARIPG = LocatedComponents(phys=PHY.VARI_R, type="ELGA", location="RIGI", components=("VARI",))
 
-CHHOGTQ = LocatedComponents(phys=PHY.N1920R, type="ELEM", components=("X[864]",))
+CHHOGT = LocatedComponents(phys=PHY.N1920R, type="ELEM", components=("X[864]",))
 
-CHHOGTT = LocatedComponents(phys=PHY.N1920R, type="ELEM", components=("X[720]",))
-
-CHHOSTQ = LocatedComponents(phys=PHY.N2448R, type="ELEM", components=("X[324]",))
-
-CHHOSTT = LocatedComponents(phys=PHY.N2448R, type="ELEM", components=("X[225]",))
+CHHOST = LocatedComponents(phys=PHY.N2448R, type="ELEM", components=("X[324]",))
 
 DEPLHHO = LocatedComponents(phys=PHY.DEPL_R, type="ELNO", components=("DX", "DY"))
 
@@ -336,8 +332,8 @@ class MECA_DPQ9_HHO222(Element):
                 (SP.PVARCRR, LC.ZVARCPG),
                 (SP.PVARIMP, ZVARIPG),
                 (OP.FULL_MECA.PVARIMR, ZVARIPG),
-                (OP.FULL_MECA.PCHHOGT, CHHOGTQ),
-                (OP.FULL_MECA.PCHHOST, CHHOSTQ),
+                (OP.FULL_MECA.PCHHOGT, CHHOGT),
+                (OP.FULL_MECA.PCHHOST, CHHOST),
             ),
             para_out=(
                 (SP.PCODRET, LC.ECODRET),
@@ -351,10 +347,7 @@ class MECA_DPQ9_HHO222(Element):
         OP.HHO_PRECALC_MECA(
             te=460,
             para_in=((SP.PGEOMER, NGEOMER), (OP.HHO_PRECALC_MECA.PCOMPOR, LC.CCOMPOR)),
-            para_out=(
-                (OP.HHO_PRECALC_MECA.PCHHOGT, CHHOGTQ),
-                (OP.HHO_PRECALC_MECA.PCHHOST, CHHOSTQ),
-            ),
+            para_out=((OP.HHO_PRECALC_MECA.PCHHOGT, CHHOGT), (OP.HHO_PRECALC_MECA.PCHHOST, CHHOST)),
         ),
         OP.HHO_PROJ_MECA(
             te=473,
@@ -433,8 +426,8 @@ class MECA_DPQ9_HHO222(Element):
                 (OP.RAPH_MECA.PVARCPR, LC.ZVARCPG),
                 (SP.PVARCRR, LC.ZVARCPG),
                 (OP.RAPH_MECA.PVARIMR, ZVARIPG),
-                (OP.RAPH_MECA.PCHHOGT, CHHOGTQ),
-                (OP.RAPH_MECA.PCHHOST, CHHOSTQ),
+                (OP.RAPH_MECA.PCHHOGT, CHHOGT),
+                (OP.RAPH_MECA.PCHHOST, CHHOST),
             ),
             para_out=(
                 (SP.PCODRET, LC.ECODRET),
@@ -494,8 +487,8 @@ class MECA_DPQ9_HHO222(Element):
                 (OP.RIGI_MECA_TANG.PVARCPR, LC.ZVARCPG),
                 (SP.PVARCRR, LC.ZVARCPG),
                 (OP.RIGI_MECA_TANG.PVARIMR, ZVARIPG),
-                (OP.RIGI_MECA_TANG.PCHHOGT, CHHOGTQ),
-                (OP.RIGI_MECA_TANG.PCHHOST, CHHOSTQ),
+                (OP.RIGI_MECA_TANG.PCHHOGT, CHHOGT),
+                (OP.RIGI_MECA_TANG.PCHHOST, CHHOST),
             ),
             para_out=(
                 (SP.PMATUNS, MMATUNS),
@@ -590,107 +583,5 @@ class MECA_DPT7_HHO222(MECA_DPQ9_HHO222):
             MT.TR7,
             gauss=("RIGI=FPG6", "FPG1=FPG1", "MTGA=FPG6", "MASS=FPG6"),
             mater=("RIGI", "FPG1", "MTGA", "MASS"),
-        ),
-    )
-    calculs = (
-        OP.FULL_MECA(
-            te=455,
-            para_in=(
-                (SP.PCAMASS, CCAMASS),
-                (SP.PCARCRI, LC.CCARCRI),
-                (SP.PMULCOM, LC.CMLCOMP),
-                (OP.FULL_MECA.PCOMPOR, LC.CCOMPOR),
-                (OP.FULL_MECA.PCONTMR, ECONTPG),
-                (SP.PDEPLMR, DDL_MECA),
-                (SP.PDEPLPR, DDL_MECA),
-                (SP.PGEOMER, NGEOMER),
-                (SP.PINSTMR, CTEMPSR),
-                (SP.PINSTPR, CTEMPSR),
-                (SP.PITERAT, LC.CITERAT),
-                (SP.PMATERC, LC.CMATERC),
-                (SP.PVARCMR, LC.ZVARCPG),
-                (OP.FULL_MECA.PVARCPR, LC.ZVARCPG),
-                (SP.PVARCRR, LC.ZVARCPG),
-                (SP.PVARIMP, ZVARIPG),
-                (OP.FULL_MECA.PVARIMR, ZVARIPG),
-                (OP.FULL_MECA.PCHHOGT, CHHOGTT),
-                (OP.FULL_MECA.PCHHOST, CHHOSTT),
-            ),
-            para_out=(
-                (SP.PCODRET, LC.ECODRET),
-                (OP.FULL_MECA.PCONTPR, ECONTPG),
-                (SP.PMATUNS, MMATUNS),
-                (SP.PMATUUR, MMATUUR),
-                (OP.FULL_MECA.PVARIPR, ZVARIPG),
-                (SP.PVECTUR, MVECTUR),
-            ),
-        ),
-        OP.HHO_PRECALC_MECA(
-            te=460,
-            para_in=((SP.PGEOMER, NGEOMER), (OP.HHO_PRECALC_MECA.PCOMPOR, LC.CCOMPOR)),
-            para_out=(
-                (OP.HHO_PRECALC_MECA.PCHHOGT, CHHOGTT),
-                (OP.HHO_PRECALC_MECA.PCHHOST, CHHOSTT),
-            ),
-        ),
-        OP.RAPH_MECA(
-            te=455,
-            para_in=(
-                (SP.PCAMASS, CCAMASS),
-                (SP.PCARCRI, LC.CCARCRI),
-                (SP.PMULCOM, LC.CMLCOMP),
-                (OP.RAPH_MECA.PCOMPOR, LC.CCOMPOR),
-                (OP.RAPH_MECA.PCONTMR, ECONTPG),
-                (SP.PDEPLMR, DDL_MECA),
-                (SP.PDEPLPR, DDL_MECA),
-                (SP.PGEOMER, NGEOMER),
-                (SP.PINSTMR, CTEMPSR),
-                (SP.PINSTPR, CTEMPSR),
-                (SP.PITERAT, LC.CITERAT),
-                (SP.PMATERC, LC.CMATERC),
-                (SP.PVARCMR, LC.ZVARCPG),
-                (OP.RAPH_MECA.PVARCPR, LC.ZVARCPG),
-                (SP.PVARCRR, LC.ZVARCPG),
-                (OP.RAPH_MECA.PVARIMR, ZVARIPG),
-                (OP.RAPH_MECA.PCHHOGT, CHHOGTT),
-                (OP.RAPH_MECA.PCHHOST, CHHOSTT),
-            ),
-            para_out=(
-                (SP.PCODRET, LC.ECODRET),
-                (OP.RAPH_MECA.PCONTPR, ECONTPG),
-                (OP.RAPH_MECA.PVARIPR, ZVARIPG),
-                (SP.PVECTUR, MVECTUR),
-            ),
-        ),
-        OP.RIGI_MECA_TANG(
-            te=455,
-            para_in=(
-                (SP.PCAMASS, CCAMASS),
-                (SP.PCARCRI, LC.CCARCRI),
-                (SP.PMULCOM, LC.CMLCOMP),
-                (OP.RIGI_MECA_TANG.PCOMPOR, LC.CCOMPOR),
-                (OP.RIGI_MECA_TANG.PCONTMR, ECONTPG),
-                (SP.PDEPLMR, DDL_MECA),
-                (SP.PDEPLPR, DDL_MECA),
-                (SP.PGEOMER, NGEOMER),
-                (SP.PINSTMR, CTEMPSR),
-                (SP.PINSTPR, CTEMPSR),
-                (SP.PITERAT, LC.CITERAT),
-                (SP.PMATERC, LC.CMATERC),
-                (SP.PVARCMR, LC.ZVARCPG),
-                (OP.RIGI_MECA_TANG.PVARCPR, LC.ZVARCPG),
-                (SP.PVARCRR, LC.ZVARCPG),
-                (OP.RIGI_MECA_TANG.PVARIMR, ZVARIPG),
-                (OP.RIGI_MECA_TANG.PCHHOGT, CHHOGTT),
-                (OP.RIGI_MECA_TANG.PCHHOST, CHHOSTT),
-            ),
-            para_out=(
-                (SP.PMATUNS, MMATUNS),
-                (SP.PMATUUR, MMATUUR),
-                (SP.PVECTUR, MVECTUR),
-                (OP.RIGI_MECA_TANG.PCONTPR, ECONTPG),
-                (SP.PCODRET, LC.ECODRET),
-                (SP.PCOPRED, LC.ECODRET),
-            ),
         ),
     )
