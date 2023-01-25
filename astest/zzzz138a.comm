@@ -31,12 +31,11 @@ DEBUT(CODE="OUI", DEBUG=_F(SDVERI="OUI"))
 # ------------------
 # Lecture du maillage dans le fichier de maillage et creation du concept mail
 mail = LIRE_MAILLAGE(FORMAT="MED", NOM_MED="Plaque_Quad", UNITE=20)
+mail = DEFI_GROUP(CREA_GROUP_MA=_F(NOM="droite_haut", UNION=("droite", "haut")), MAILLAGE=mail)
 table = LIRE_TABLE(FORMAT="TABLEAU", SEPARATEUR=",", UNITE=10)
 coupes = CREA_COUPE(
-    COUPE=table, MAILLAGE=mail, NOM_AUTO="OUI", PREFIX="section", PAS_NUME=100, PREM_NUME=1000
+    COUPE=table, MAILLAGE=mail, NOM_AUTO="OUI", PREFIXE="section", PAS_NUME=100, PREM_NUME=1000
 )
-print(coupes)
-
 keyw = TableCoupes.ALL_KEYWORDS[:6]
 result = [
     [7.6821, 6.40173, 0.0, 100.0, 100 - 100 / 6, 0.0],
@@ -58,12 +57,134 @@ for ipath in range(3):
             CRITERE="ABSOLU",
         )
 
+        TEST_TABLE(
+            REFERENCE="AUTRE_ASTER",
+            VALE_REFE=1.0e-12 + res,
+            VALE_CALC=1.0e-12 + res,
+            NOM_PARA=key,
+            TABLE=coupes,
+            FILTRE=_F(NOM_PARA="NOM", VALE_K="section_%d" % num),
+            PRECISION=0.001,
+            TOLE_MACHINE=1e-04,
+            CRITERE="ABSOLU",
+        )
+
+# test REVO
+coupes = CREA_COUPE(
+    COUPE=table,
+    MAILLAGE=mail,
+    NOM_AUTO="OUI",
+    PREFIXE="section",
+    PAS_NUME=100,
+    PREM_NUME=1000,
+    REVO=_F(
+        AXE=(0, 0, 1),
+        CENTRE=(0, 0, 0),
+        NOMBRE=7,
+        ANGLE_MAX=90,
+        PREFIXE="PLAN",
+        GROUP_MA_ORIG="trou",
+        GROUP_MA_EXTR="droite_haut",
+        NOM_COUPE="section_1300",
+    ),
+)
+keyw = TableCoupes.ALL_KEYWORDS[:9]
+result = [
+    [10.0, 0.0, 0.0, 100.0, 0.0, 0.0, 53.9, 10.8, 21.7],  # P1 - 0°  # P2 - 0°  # P3 - 0°
+    [
+        9.6591,
+        2.5881,
+        0.0,  # P1 - 15°
+        100.0,
+        100.0 * tan(radians(15)),
+        0.0,  # P2 - 15°
+        53.9 * cos(radians(15)) - 10.8 * sin(radians(15)),
+        53.9 * sin(radians(15)) + 10.8 * cos(radians(15)),
+        21.7,
+    ],  # P3 - 15°
+    [
+        8.6602,
+        5.0000,
+        0.0,  # P1 - 30°
+        100.0,
+        100.0 * tan(radians(30)),
+        0.0,  # P2 - 30°
+        53.9 * cos(radians(30)) - 10.8 * sin(radians(30)),
+        53.9 * sin(radians(30)) + 10.8 * cos(radians(30)),
+        21.7,
+    ],  # P3 - 30°
+    [
+        7.0711,
+        7.0711,
+        0.0,  # P1 - 45°
+        100.0,
+        100.0 * tan(radians(45)),
+        0.0,  # P2 - 45°
+        53.9 * cos(radians(45)) - 10.8 * sin(radians(45)),
+        53.9 * sin(radians(45)) + 10.8 * cos(radians(45)),
+        21.7,
+    ],  # P3 - 45°
+    [
+        5.0000,
+        8.6602,
+        0.0,  # P1 - 60°
+        150.0 / tan(radians(60)),
+        150.0,
+        0.0,  # P2 - 60°
+        53.9 * cos(radians(60)) - 10.8 * sin(radians(60)),
+        53.9 * sin(radians(60)) + 10.8 * cos(radians(60)),
+        21.7,
+    ],  # P3 - 60°
+    [
+        2.5881,
+        9.6591,
+        0.0,  # P1 - 75°
+        150.0 / tan(radians(75)),
+        150.0,
+        0.0,  # P2 - 75°
+        53.9 * cos(radians(75)) - 10.8 * sin(radians(75)),
+        53.9 * sin(radians(75)) + 10.8 * cos(radians(75)),
+        21.7,
+    ],  # P3 - 75°
+    [
+        0.0,
+        10.0,
+        0.0,  # P1 - 90°
+        150.0 / tan(radians(90)),
+        150.0,
+        0.0,  # P2 - 90°
+        53.9 * cos(radians(90)) - 10.8 * sin(radians(90)),
+        53.9 * sin(radians(90)) + 10.8 * cos(radians(90)),
+        21.7,
+    ],
+]  # P3 - 90°
+angles = [0, 15, 30, 45, 60, 75, 90]
+for i, angle in enumerate(angles):
+    if i == 0:
+        prefixe = ""
+    else:
+        prefixe = f"PLAN{int(angle)}-"
+
+    for key, res in zip(keyw, result[i]):
+        TEST_TABLE(
+            REFERENCE="AUTRE_ASTER",
+            VALE_REFE=1.0e-12 + res,
+            VALE_CALC=1.0e-12 + res,
+            NOM_PARA=key,
+            TABLE=coupes,
+            FILTRE=_F(NOM_PARA="NOM", VALE_K=f"{prefixe}section_1300"),
+            PRECISION=0.001,
+            TOLE_MACHINE=1e-04,
+            CRITERE="ABSOLU",
+        )
+
+
 mail = LIRE_MAILLAGE(FORMAT="MED", NOM_MED="Plaque_Lin", UNITE=20)
+mail = DEFI_GROUP(CREA_GROUP_MA=_F(NOM="droite_haut", UNION=("droite", "haut")), MAILLAGE=mail)
 table = LIRE_TABLE(FORMAT="TABLEAU", SEPARATEUR=",", UNITE=10)
 coupes = CREA_COUPE(
-    COUPE=table, MAILLAGE=mail, NOM_AUTO="OUI", PREFIX="section", PAS_NUME=100, PREM_NUME=1000
+    COUPE=table, MAILLAGE=mail, NOM_AUTO="OUI", PREFIXE="section", PAS_NUME=100, PREM_NUME=1000
 )
-IMPR_TABLE(TABLE=coupes, UNITE=8)
 keyw = TableCoupes.ALL_KEYWORDS[:6]
 result = [
     [7.6204, 6.3503, 0.0, 100.0, 100 - 100 / 6, 0.0],
@@ -80,6 +201,114 @@ for ipath in range(3):
             NOM_PARA=key,
             TABLE=coupes,
             FILTRE=_F(NOM_PARA="NOM", VALE_K="section_%d" % num),
+            PRECISION=0.001,
+            TOLE_MACHINE=1e-04,
+            CRITERE="ABSOLU",
+        )
+
+# test REVO
+coupes = CREA_COUPE(
+    COUPE=table,
+    MAILLAGE=mail,
+    NOM_AUTO="OUI",
+    PREFIXE="section",
+    PAS_NUME=100,
+    PREM_NUME=1000,
+    REVO=_F(
+        AXE=(0, 0, 1),
+        CENTRE=(0, 0, 0),
+        NOMBRE=7,
+        ANGLE_MAX=90,
+        PREFIXE="PLAN",
+        GROUP_MA_ORIG="trou",
+        GROUP_MA_EXTR="droite_haut",
+        NOM_COUPE="section_1300",
+    ),
+)
+keyw = TableCoupes.ALL_KEYWORDS[:9]
+result = [
+    [10.0, 0.0, 0.0, 100.0, 0.0, 0.0, 53.9, 10.8, 21.7],  # P1 - 0°  # P2 - 0°  # P3 - 0°
+    [
+        9.5837,
+        2.5679,
+        0.0,  # P1 - 15°
+        100.0,
+        100.0 * tan(radians(15)),
+        0.0,  # P2 - 15°
+        53.9 * cos(radians(15)) - 10.8 * sin(radians(15)),
+        53.9 * sin(radians(15)) + 10.8 * cos(radians(15)),
+        21.7,
+    ],  # P3 - 15°
+    [
+        8.5660,
+        4.9456,
+        0.0,  # P1 - 30°
+        100.0,
+        100.0 * tan(radians(30)),
+        0.0,  # P2 - 30°
+        53.9 * cos(radians(30)) - 10.8 * sin(radians(30)),
+        53.9 * sin(radians(30)) + 10.8 * cos(radians(30)),
+        21.7,
+    ],  # P3 - 30°
+    [
+        6.9826,
+        6.9826,
+        0.0,  # P1 - 45°
+        100.0,
+        100.0 * tan(radians(45)),
+        0.0,  # P2 - 45°
+        53.9 * cos(radians(45)) - 10.8 * sin(radians(45)),
+        53.9 * sin(radians(45)) + 10.8 * cos(radians(45)),
+        21.7,
+    ],  # P3 - 45°
+    [
+        4.9491,
+        8.5721,
+        0.0,  # P1 - 60°
+        150.0 / tan(radians(60)),
+        150.0,
+        0.0,  # P2 - 60°
+        53.9 * cos(radians(60)) - 10.8 * sin(radians(60)),
+        53.9 * sin(radians(60)) + 10.8 * cos(radians(60)),
+        21.7,
+    ],  # P3 - 60°
+    [
+        2.5692,
+        9.5883,
+        0,  # P1 - 75°
+        150.0 / tan(radians(75)),
+        150.0,
+        0.0,  # P2 - 75°
+        53.9 * cos(radians(75)) - 10.8 * sin(radians(75)),
+        53.9 * sin(radians(75)) + 10.8 * cos(radians(75)),
+        21.7,
+    ],  # P3 - 75°
+    [
+        0.0,
+        10.0,
+        0.0,  # P1 - 90°
+        0.0,
+        150.0,
+        0.0,  # P2 - 90°
+        53.9 * cos(radians(90)) - 10.8 * sin(radians(90)),
+        53.9 * sin(radians(90)) + 10.8 * cos(radians(90)),
+        21.7,
+    ],
+]  # P3 - 90°
+angles = [0, 15, 30, 45, 60, 75, 90]
+for i, angle in enumerate(angles):
+    if i == 0:
+        prefixe = ""
+    else:
+        prefixe = f"PLAN{int(angle)}-"
+    for key, res in zip(keyw, result[i]):
+        TEST_TABLE(
+            REFERENCE="AUTRE_ASTER",
+            VALE_REFE=1.0e-12 + res,
+            VALE_CALC=1.0e-12 + res,
+            NOM_PARA=key,
+            TABLE=coupes,
+            FILTRE=_F(NOM_PARA="NOM", VALE_K=f"{prefixe}section_1300"),
             PRECISION=0.001,
             TOLE_MACHINE=1e-04,
             CRITERE="ABSOLU",

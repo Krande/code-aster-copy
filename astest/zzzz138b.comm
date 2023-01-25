@@ -33,9 +33,8 @@ DEBUT(CODE="OUI", DEBUG=_F(SDVERI="OUI"))
 mail = LIRE_MAILLAGE(FORMAT="MED", NOM_MED="MeshCoude_Quad", UNITE=20)
 table = LIRE_TABLE(FORMAT="TABLEAU", SEPARATEUR=",", UNITE=10)
 coupes = CREA_COUPE(
-    COUPE=table, MAILLAGE=mail, NOM_AUTO="OUI", PREFIX="section", PAS_NUME=100, PREM_NUME=1000
+    COUPE=table, MAILLAGE=mail, NOM_AUTO="OUI", PREFIXE="section", PAS_NUME=100, PREM_NUME=1000
 )
-
 keyw = TableCoupes.ALL_KEYWORDS[:6]
 result = [
     [0.00000e00, 1.80000e00, 1.80000e-01, 0.00000e00, 1.80000e00, 2.00000e-01],
@@ -57,12 +56,152 @@ for ipath in range(3):
             CRITERE="ABSOLU",
         )
 
+        TEST_TABLE(
+            REFERENCE="AUTRE_ASTER",
+            VALE_REFE=1.0e-12 + res,
+            VALE_CALC=1.0e-12 + res,
+            NOM_PARA=key,
+            TABLE=coupes,
+            FILTRE=_F(NOM_PARA="NOM", VALE_K="section_%d" % num),
+            PRECISION=0.001,
+            TOLE_MACHINE=1e-05,
+            CRITERE="ABSOLU",
+        )
+# test REVO
+coupes = CREA_COUPE(
+    COUPE=table,
+    MAILLAGE=mail,
+    NOM_AUTO="OUI",
+    PREFIXE="section",
+    PAS_NUME=100,
+    PREM_NUME=1000,
+    REVO=_F(
+        AXE=(1, 1, 0),
+        CENTRE=(0.1757, 3.4243, 0.0),
+        ANGLE_AUTO="NON",
+        LISTE_ANGLE=[15, 30, 45],
+        PREFIXE="PLAN",
+        GROUP_MA_ORIG="SURFINT",
+        GROUP_MA_EXTR="SURFEXT",
+        GROUPE_COUPE="P_1",
+    ),
+)
+keyw = TableCoupes.ALL_KEYWORDS[:9]
+x_p3_15 = (
+    (27.0 - 0.1757) * 0.5 * (1 + cos(radians(15)))
+    + (42.0 - 3.4243) * 0.5 * (1 - cos(radians(15)))
+    + 16.7 * 2 ** (-0.5) * sin(radians(15))
+) + 0.1757
+y_p3_15 = (
+    (27.0 - 0.1757) * 0.5 * (1 - cos(radians(15)))
+    + (42.0 - 3.4243) * 0.5 * (1 + cos(radians(15)))
+    - 16.7 * 2 ** (-0.5) * sin(radians(15))
+) + 3.4243
+z_p3_15 = (
+    -(27.0 - 0.1757) * 2 ** (-0.5) * sin(radians(15))
+    + (42.0 - 3.4243) * 2 ** (-0.5) * sin(radians(15))
+    + 16.7 * cos(radians(15))
+)
+x_p3_30 = (
+    (27.0 - 0.1757) * 0.5 * (1 + cos(radians(30)))
+    + (42.0 - 3.4243) * 0.5 * (1 - cos(radians(30)))
+    + 16.7 * 2 ** (-0.5) * sin(radians(30))
+) + 0.1757
+y_p3_30 = (
+    (27.0 - 0.1757) * 0.5 * (1 - cos(radians(30)))
+    + (42.0 - 3.4243) * 0.5 * (1 + cos(radians(30)))
+    - 16.7 * 2 ** (-0.5) * sin(radians(30))
+) + 3.4243
+z_p3_30 = (
+    -(27.0 - 0.1757) * 2 ** (-0.5) * sin(radians(30))
+    + (42.0 - 3.4243) * 2 ** (-0.5) * sin(radians(30))
+    + 16.7 * cos(radians(30))
+)
+x_p3_45 = (
+    (27.0 - 0.1757) * 0.5 * (1 + cos(radians(45)))
+    + (42.0 - 3.4243) * 0.5 * (1 - cos(radians(45)))
+    + 16.7 * 2 ** (-0.5) * sin(radians(45))
+) + 0.1757
+y_p3_45 = (
+    (27.0 - 0.1757) * 0.5 * (1 - cos(radians(45)))
+    + (42.0 - 3.4243) * 0.5 * (1 + cos(radians(45)))
+    - 16.7 * 2 ** (-0.5) * sin(radians(45))
+) + 3.4243
+z_p3_45 = (
+    -(27.0 - 0.1757) * 2 ** (-0.5) * sin(radians(45))
+    + (42.0 - 3.4243) * 2 ** (-0.5) * sin(radians(45))
+    + 16.7 * cos(radians(45))
+)
+result = [
+    [
+        0.1757,
+        3.4243,
+        0.1800,  # P1 - 0°
+        0.1757,
+        3.4243,
+        0.2000,  # P2 - 0°
+        27.0,
+        42.0,
+        16.7,
+    ],  # P3 - 0°
+    [
+        0.2086,
+        3.3914,
+        0.1739,  # P1 - 15°
+        0.2123,
+        3.3877,
+        0.1932,  # P2 - 15°
+        x_p3_15,
+        y_p3_15,
+        z_p3_15,
+    ],  # P3 - 15°
+    [
+        0.2393,
+        3.3607,
+        0.1559,  # P1 - 30°
+        0.2464,
+        3.3536,
+        0.1732,  # P2 - 30°
+        x_p3_30,
+        y_p3_30,
+        z_p3_30,
+    ],  # P3 - 30°
+    [
+        0.2657,
+        3.3343,
+        0.1273,  # P1 - 45°
+        0.2757,
+        3.3243,
+        0.1414,  # P2 - 45°
+        x_p3_45,
+        y_p3_45,
+        z_p3_45,
+    ],
+]  # P3 - 45°
+angles = [0, 15, 30, 45]
+for i, angle in enumerate(angles):
+    if i == 0:
+        prefixe = ""
+    else:
+        prefixe = f"PLAN{int(angle)}-"
+    for key, res in zip(keyw, result[i]):
+        TEST_TABLE(
+            REFERENCE="AUTRE_ASTER",
+            VALE_REFE=1.0e-12 + res,
+            VALE_CALC=1.0e-12 + res,
+            NOM_PARA=key,
+            TABLE=coupes,
+            FILTRE=_F(NOM_PARA="NOM", VALE_K=f"{prefixe}section_1300"),
+            PRECISION=0.001,
+            TOLE_MACHINE=1e-04,
+            CRITERE="ABSOLU",
+        )
+
 mail = LIRE_MAILLAGE(FORMAT="MED", NOM_MED="MeshCoude_Lin", UNITE=20)
 table = LIRE_TABLE(FORMAT="TABLEAU", SEPARATEUR=",", UNITE=10)
 coupes = CREA_COUPE(
-    COUPE=table, MAILLAGE=mail, NOM_AUTO="OUI", PREFIX="section", PAS_NUME=100, PREM_NUME=1000
+    COUPE=table, MAILLAGE=mail, NOM_AUTO="OUI", PREFIXE="section", PAS_NUME=100, PREM_NUME=1000
 )
-IMPR_TABLE(TABLE=coupes, UNITE=8)
 keyw = TableCoupes.ALL_KEYWORDS[:6]
 result = [
     [0.00000e00, 1.80000e00, 1.80000e-01, 0.00000e00, 1.80000e00, 2.00000e-01],
@@ -83,6 +222,134 @@ for ipath in range(3):
             TOLE_MACHINE=1e-05,
             CRITERE="ABSOLU",
         )
-
+# test REVO
+coupes = CREA_COUPE(
+    COUPE=table,
+    MAILLAGE=mail,
+    NOM_AUTO="OUI",
+    PREFIXE="section",
+    PAS_NUME=100,
+    PREM_NUME=1000,
+    REVO=_F(
+        AXE=(1, 1, 0),
+        CENTRE=(0.1757, 3.4243, 0.0),
+        ANGLE_AUTO="NON",
+        LISTE_ANGLE=[15, 30, 45],
+        PREFIXE="PLAN",
+        GROUP_MA_ORIG="SURFINT",
+        GROUP_MA_EXTR="SURFEXT",
+        GROUPE_COUPE="P_1",
+    ),
+)
+keyw = TableCoupes.ALL_KEYWORDS[:9]
+x_p3_15 = (
+    (27.0 - 0.1757) * 0.5 * (1 + cos(radians(15)))
+    + (42.0 - 3.4243) * 0.5 * (1 - cos(radians(15)))
+    + 16.7 * 2 ** (-0.5) * sin(radians(15))
+) + 0.1757
+y_p3_15 = (
+    (27.0 - 0.1757) * 0.5 * (1 - cos(radians(15)))
+    + (42.0 - 3.4243) * 0.5 * (1 + cos(radians(15)))
+    - 16.7 * 2 ** (-0.5) * sin(radians(15))
+) + 3.4243
+z_p3_15 = (
+    -(27.0 - 0.1757) * 2 ** (-0.5) * sin(radians(15))
+    + (42.0 - 3.4243) * 2 ** (-0.5) * sin(radians(15))
+    + 16.7 * cos(radians(15))
+)
+x_p3_30 = (
+    (27.0 - 0.1757) * 0.5 * (1 + cos(radians(30)))
+    + (42.0 - 3.4243) * 0.5 * (1 - cos(radians(30)))
+    + 16.7 * 2 ** (-0.5) * sin(radians(30))
+) + 0.1757
+y_p3_30 = (
+    (27.0 - 0.1757) * 0.5 * (1 - cos(radians(30)))
+    + (42.0 - 3.4243) * 0.5 * (1 + cos(radians(30)))
+    - 16.7 * 2 ** (-0.5) * sin(radians(30))
+) + 3.4243
+z_p3_30 = (
+    -(27.0 - 0.1757) * 2 ** (-0.5) * sin(radians(30))
+    + (42.0 - 3.4243) * 2 ** (-0.5) * sin(radians(30))
+    + 16.7 * cos(radians(30))
+)
+x_p3_45 = (
+    (27.0 - 0.1757) * 0.5 * (1 + cos(radians(45)))
+    + (42.0 - 3.4243) * 0.5 * (1 - cos(radians(45)))
+    + 16.7 * 2 ** (-0.5) * sin(radians(45))
+) + 0.1757
+y_p3_45 = (
+    (27.0 - 0.1757) * 0.5 * (1 - cos(radians(45)))
+    + (42.0 - 3.4243) * 0.5 * (1 + cos(radians(45)))
+    - 16.7 * 2 ** (-0.5) * sin(radians(45))
+) + 3.4243
+z_p3_45 = (
+    -(27.0 - 0.1757) * 2 ** (-0.5) * sin(radians(45))
+    + (42.0 - 3.4243) * 2 ** (-0.5) * sin(radians(45))
+    + 16.7 * cos(radians(45))
+)
+result = [
+    [
+        0.1757,
+        3.4243,
+        0.1799,  # P1 - 0°
+        0.1757,
+        3.4243,
+        0.1999,  # P2 - 0°
+        27.0,
+        42.0,
+        16.7,
+    ],  # P3 - 0°
+    [
+        0.2084,
+        3.3916,
+        0.1728,  # P1 - 15°
+        0.2121,
+        3.3879,
+        0.1920,  # P2 - 15°
+        x_p3_15,
+        y_p3_15,
+        z_p3_15,
+    ],  # P3 - 15°
+    [
+        0.2388,
+        3.3612,
+        0.1545,  # P1 - 30°
+        0.2458,
+        3.3542,
+        0.1716,  # P2 - 30°
+        x_p3_30,
+        y_p3_30,
+        z_p3_30,
+    ],  # P3 - 30°
+    [
+        0.2648,
+        3.3352,
+        0.1261,  # P1 - 45°
+        0.2747,
+        3.3253,
+        0.1400,  # P2 - 45°
+        x_p3_45,
+        y_p3_45,
+        z_p3_45,
+    ],
+]
+angles = [0, 15, 30, 45]
+for i, angle in enumerate(angles):
+    if i == 0:
+        prefixe = ""
+    else:
+        prefixe = f"PLAN{int(angle)}-"
+    for key, res in zip(keyw, result[i]):
+        TEST_TABLE(
+            REFERENCE="AUTRE_ASTER",
+            VALE_REFE=1.0e-12 + res,
+            VALE_CALC=1.0e-12 + res,
+            NOM_PARA=key,
+            TABLE=coupes,
+            FILTRE=_F(NOM_PARA="NOM", VALE_K=f"{prefixe}section_1300"),
+            PRECISION=0.001,
+            TOLE_MACHINE=1e-04,
+            CRITERE="ABSOLU",
+        )
 
 FIN()

@@ -27,30 +27,37 @@ from ..Commands import LIRE_TABLE, IMPR_TABLE, CREA_TABLE
 from ..Objects.table_py import Table
 
 import numpy as np
+from math import cos, sin
 
 
-def crea_coupe_ops(self, COUPE, MAILLAGE, NOM_AUTO, PREFIX=None, PREM_NUME=None, PAS_NUME=None):
+def crea_coupe_ops(
+    self, COUPE, MAILLAGE, NOM_AUTO, PREFIXE=None, PREM_NUME=None, PAS_NUME=None, REVO=None
+):
     """Execute the command.
 
     Arguments:
         COUPE (sd_table)        : input table
         MAILLAGE(sd_maillage)   : input mesh
         NOM_AUTO(bool)          : automatic naming of paths
-        PREFIX(str)             : common prefix of the path names
+        PREFIXE(str)            : common prefix of the path names
         PREM_NUME(int)          : first id of the name of the path
         PAS_NUME(int)           : progression in the numerotation between two successive paths
+        REVO(list)              : structure contenant les paramètres pour obtenir des coupes en révolution
 
     Returns:
         sd_table which descibes paths that begin/end on the skin of the mesh
     """
-
     table_coupes_py = COUPE.EXTR_TABLE()
     table_coupes = TableCoupes(table_coupes_py)
     table_coupes.change_names(
-        auto_name=NOM_AUTO, prefix=PREFIX, first_num=PREM_NUME, progression=PAS_NUME
+        auto_name=NOM_AUTO, prefix=PREFIXE, first_num=PREM_NUME, progression=PAS_NUME
     )
     table_coupes.check_integrity()
     table_coupes._check_group_maill(MAILLAGE)
+    if REVO:
+        table_coupes.check_parameters_revol(REVO, MAILLAGE)
+        table_coupes.create_coupes_revol(REVO)
+        table_coupes.check_path_name(msg="REVO")
     table_coupes.update_position_on_structure_skin(MAILLAGE)
     dic_table = table_coupes.dict_CREA_TABLE()
     table_coupes_aster = CREA_TABLE(**dic_table)
@@ -131,13 +138,16 @@ class TableCoupes(Table):
                     valk=[dico_types[TableCoupes.ATTEMPTED_TYPES[i]], dico_types[typ]],
                 )
 
-    def check_path_name(self):
+    def check_path_name(self, msg=""):
         """Check if a name is used several times in the table"""
         already_set_name = []
         for line in self.rows:
             name = line[TableCoupes.ALL_KEYWORDS[TableCoupes.NAMES_ID]]
             if name in already_set_name:
-                UTMESS("F", "COUPE_7", valk=name)
+                if msg == "REVO":
+                    UTMESS("A", "COUPE_12", valk=name)
+                else:
+                    UTMESS("F", "COUPE_7", valk=name)
             else:
                 already_set_name.append(name)
 
@@ -299,8 +309,8 @@ class TableCoupes(Table):
         Check if all defined inner skin and outer skin mesh groups
         are well defined on the mesh
         """
+        lgrma = [gr[0] for gr in mesh.LIST_GROUP_MA()]
         for path in self.rows:
-            lgrma = [gr[0] for gr in mesh.LIST_GROUP_MA()]
             surf_in = path[TableCoupes.ALL_KEYWORDS[TableCoupes.MAIL_IN_ID]]
             surf_out = path[TableCoupes.ALL_KEYWORDS[TableCoupes.MAIL_OUT_ID]]
             path_name = path[TableCoupes.ALL_KEYWORDS[TableCoupes.NAMES_ID]]
@@ -329,6 +339,107 @@ class TableCoupes(Table):
             on_element = False
             UTMESS("F", "COUPE_4", valk=elem_type)
         return on_element
+
+    def create_coupes_revol(self, revol_list):
+        points_ids = [
+            TableCoupes.FIRST_POINT_ID,
+            TableCoupes.SECOND_POINT_ID,
+            TableCoupes.THIRD_POINT_ID,
+        ]
+        points_keys = [self.para[point_id : point_id + 3] for point_id in points_ids]
+        name_key = TableCoupes.ALL_KEYWORDS[TableCoupes.NAMES_ID]
+        gr_in_key = TableCoupes.ALL_KEYWORDS[TableCoupes.MAIL_IN_ID]
+        gr_out_key = TableCoupes.ALL_KEYWORDS[TableCoupes.MAIL_OUT_ID]
+        coupes_dico = {i: [] for i in range(len(self.rows))}
+
+        for revol in revol_list:
+            filtre, filter_key = self._get_filter(revol["NOM_COUPE"], revol["GROUPE_COUPE"])
+
+            if revol["ANGLE_AUTO"] == "OUI":
+                nombre_intervalles = (
+                    revol["NOMBRE"] if abs(revol["ANGLE_MAX"]) == 360.0 else revol["NOMBRE"] - 1
+                )
+                angles = [
+                    revol["ANGLE_MAX"] / nombre_intervalles * i for i in range(revol["NOMBRE"])
+                ][1:]
+            else:
+                angles = revol["LISTE_ANGLE"]
+
+            axe = revol["AXE"] / np.linalg.norm(revol["AXE"])
+
+            for j, line in enumerate(self.rows):
+                if filtre and line[filter_key] not in filtre:
+                    continue
+
+                section_name = line[name_key]
+
+                # retrieve points' coordinates
+                points = [[line[c] for c in point_keys] for point_keys in points_keys]
+
+                # translate points to center of rotation
+                points_transl = np.subtract(points, revol["CENTRE"])
+
+                for angle in angles:
+                    line = line.copy()
+                    rot_matrix = get_rotation_matrix(axe, np.radians(angle))
+                    # rotate and translate back points
+                    points_rot = np.add(
+                        [np.matmul(rot_matrix, point) for point in points_transl], revol["CENTRE"]
+                    )
+                    line.update(zip(np.concatenate(points_keys), np.concatenate(points_rot)))
+                    angle = abs(angle)
+                    angle_str = (
+                        str(int(angle))
+                        if float(angle).is_integer()
+                        else str(round(angle, 1)).replace(".", "-")
+                    )
+                    line[name_key] = f"{revol['PREFIXE']}{angle_str}-{section_name}"
+                    line[gr_in_key] = revol["GROUP_MA_ORIG"]
+                    line[gr_out_key] = revol["GROUP_MA_EXTR"]
+                    coupes_dico[j].append(line)
+
+        index = 0
+        for j in range(len(self.rows)):
+            index += 1
+            for new_line in coupes_dico[j]:
+                self.rows.insert(index, new_line)
+                index += 1
+
+    def _get_filter(self, name_filter, group_filter):
+        if name_filter is None and group_filter is None:
+            return None, None
+        if name_filter:
+            return name_filter, self.para[TableCoupes.NAMES_ID]
+        else:
+            return group_filter, self.para[TableCoupes.GROUPS_ID]
+
+    def check_parameters_revol(self, revol_list, mesh):
+        group_mail_list = mesh.getGroupsOfCells()
+        missing_name, missing_group = None, None
+        name_list = [line[self.para[TableCoupes.NAMES_ID]] for line in self.rows]
+        group_list = [line[self.para[TableCoupes.GROUPS_ID]] for line in self.rows]
+        for revol in revol_list:
+            if revol["ANGLE_MAX"] is not None and revol["ANGLE_MAX"] == 0:
+                UTMESS("F", "COUPE_13", valk="ANGLE_MAX")
+            elif revol["LISTE_ANGLE"] and 0 in revol["LISTE_ANGLE"]:
+                UTMESS("F", "COUPE_13", valk="LISTE_ANGLE")
+
+            missing_mail_group = [
+                n
+                for n in [revol["GROUP_MA_ORIG"], revol["GROUP_MA_EXTR"]]
+                if n not in group_mail_list
+            ]
+            if missing_mail_group:
+                UTMESS("F", "COUPE_9", valk=missing_mail_group[0])
+
+            if revol["NOM_COUPE"]:
+                missing_name = [n for n in revol["NOM_COUPE"] if n not in name_list]
+                if missing_name:
+                    UTMESS("F", "COUPE_10", valk=missing_name[0])
+            elif revol["GROUPE_COUPE"]:
+                missing_group = [n for n in revol["GROUPE_COUPE"] if n not in group_list]
+                if missing_group:
+                    UTMESS("F", "COUPE_11", valk=missing_group[0])
 
 
 def _check_if_not_null_jacobian(coords, vect, dim, tole=1.0e-9):
@@ -363,3 +474,30 @@ def _compute_elem_size(node_coords, dim):
             elem_size = max(elem_size, np.linalg.norm(node_i - node_j))
 
     return elem_size
+
+
+def get_rotation_matrix(vector, teta):
+    """https://en.wikipedia.org/wiki/Rotation_matrix#Rotation_matrix_from_axis_and_angle
+    Arguments:
+        vector(list(float)) : normalized vector for axis rotation
+        teta(float)         : angle of rotation around axis in radians
+    """
+    ux, uy, uz = vector
+    R = [
+        [
+            cos(teta) + ux**2 * (1 - cos(teta)),
+            ux * uy * (1 - cos(teta)) - uz * sin(teta),
+            ux * uz * (1 - cos(teta)) + uy * sin(teta),
+        ],
+        [
+            uy * ux * (1 - cos(teta)) + uz * sin(teta),
+            cos(teta) + uy**2 * (1 - cos(teta)),
+            uy * uz * (1 - cos(teta)) - ux * sin(teta),
+        ],
+        [
+            uz * ux * (1 - cos(teta)) - uy * sin(teta),
+            uz * uy * (1 - cos(teta)) + ux * sin(teta),
+            cos(teta) + uz**2 * (1 - cos(teta)),
+        ],
+    ]
+    return R
