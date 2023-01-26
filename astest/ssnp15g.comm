@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -31,9 +31,10 @@ MA = LIRE_MAILLAGE(FORMAT="ASTER")
 
 MO = AFFE_MODELE(MAILLAGE=MA, AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="3D"))
 
-ACIER = DEFI_MATERIAU(
-    ELAS=_F(E=195000.0, NU=0.3), ECRO_LINE=_F(D_SIGM_EPSI=1930.0, SY=181.0), PRAGER=_F(C=0.0)
-)
+E = 195000.0
+ET = 1930.0
+RH = (ET * E) / (E - ET)
+ACIER = DEFI_MATERIAU(ELAS=_F(E=E, NU=0.3), ECRO_NL=_F(RH=RH, R0=181.0), PRAGER=_F(C=0.0))
 
 CM = AFFE_MATERIAU(MAILLAGE=MA, AFFE=_F(TOUT="OUI", MATER=ACIER))
 
@@ -98,7 +99,7 @@ U1 = STAT_NON_LINE(
         _F(CHARGE=TRACTION, FONC_MULT=SIGMA_F),
         _F(CHARGE=CISAIL, FONC_MULT=TAU_F),
     ),
-    COMPORTEMENT=_F(RELATION="VMIS_ISOT_LINE"),
+    COMPORTEMENT=_F(RELATION="VMIS_ISOT_NL"),
     INCREMENT=_F(LIST_INST=DEFLIST1),
     NEWTON=_F(MATRICE="TANGENTE", REAC_ITER=3),
     RECH_LINEAIRE=_F(RHO_MAX=150),
@@ -188,7 +189,7 @@ U2 = STAT_NON_LINE(
         _F(CHARGE=TRACTION, FONC_MULT=SIGMA_F),
         _F(CHARGE=CISAIL, FONC_MULT=TAU_F),
     ),
-    COMPORTEMENT=_F(RELATION="VMIS_ISOT_LINE"),
+    COMPORTEMENT=_F(RELATION="VMIS_ISOT_NL"),
     INCREMENT=_F(LIST_INST=DEFLIST2),
     NEWTON=_F(MATRICE="TANGENTE", REAC_ITER=3),
     RECH_LINEAIRE=_F(RHO_MAX=150),

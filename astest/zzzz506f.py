@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -36,7 +36,7 @@ FTRACTUB = DEFI_FONCTION(
 )
 
 # Very high elasticity limit to simulate elasticity
-acier = DEFI_MATERIAU(ELAS=_F(E=200000.0, NU=0.3), ECRO_LINE=_F(D_SIGM_EPSI=2000.0, SY=200000.0))
+acier = DEFI_MATERIAU(ELAS=_F(E=200000.0, NU=0.3), ECRO_NL=_F(RH=2000.0, R0=200000.0))
 
 mater = AFFE_MATERIAU(MAILLAGE=mesh, AFFE=_F(TOUT="OUI", MATER=acier))
 
@@ -54,7 +54,7 @@ SOLUT = STAT_NON_LINE(
     MODELE=model,
     CHAM_MATER=mater,
     EXCIT=(_F(CHARGE=encast, FONC_MULT=RAMPE), _F(CHARGE=depl, FONC_MULT=RAMPE)),
-    COMPORTEMENT=_F(RELATION="VMIS_ISOT_LINE"),
+    COMPORTEMENT=_F(RELATION="VMIS_ISOT_NL"),
     CONVERGENCE=_F(RESI_GLOB_MAXI=1e-8),
     NEWTON=_F(REAC_INCR=1, PREDICTION="ELASTIQUE", MATRICE="TANGENTE", REAC_ITER=1),
     INCREMENT=_F(LIST_INST=LIST),
@@ -69,7 +69,7 @@ SOLUN = MECA_NON_LINE(
     MODELE=model,
     CHAM_MATER=mater,
     EXCIT=(_F(CHARGE=encast, FONC_MULT=RAMPE), _F(CHARGE=depl, FONC_MULT=RAMPE)),
-    COMPORTEMENT=_F(RELATION="VMIS_ISOT_LINE"),
+    COMPORTEMENT=_F(RELATION="VMIS_ISOT_NL"),
     CONVERGENCE=_F(RESI_GLOB_MAXI=1e-8),
     NEWTON=_F(REAC_INCR=1, PREDICTION="ELASTIQUE", MATRICE="TANGENTE", REAC_ITER=1),
     INCREMENT=_F(LIST_INST=LIST),

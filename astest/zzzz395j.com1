@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -35,7 +35,7 @@ TEST_RESU(
             NOM_CHAM="DEPL",
             GROUP_NO="N7",
             NOM_CMP="DX",
-            VALE_CALC=-0.208992921588,
+            VALE_CALC=-0.2089933567116083,
         ),
         _F(
             RESULTAT=stnl,
@@ -43,7 +43,7 @@ TEST_RESU(
             NOM_CHAM="DEPL",
             GROUP_NO="N7",
             NOM_CMP="DY",
-            VALE_CALC=-0.208992921588,
+            VALE_CALC=-0.20899335671161204,
         ),
         _F(
             RESULTAT=stnl,
@@ -51,7 +51,7 @@ TEST_RESU(
             NOM_CHAM="DEPL",
             GROUP_NO="N7",
             NOM_CMP="DZ",
-            VALE_CALC=0.547254495773,
+            VALE_CALC=0.5472557723473103,
         ),
     )
 )
@@ -64,7 +64,7 @@ TEST_RESU(
             NOM_CHAM="SIEF_NOEU",
             GROUP_NO="N2",
             NOM_CMP="SIXX",
-            VALE_CALC=13992.3974341,
+            VALE_CALC=13992.433041723494,
         ),
         _F(
             RESULTAT=stnl,
@@ -72,7 +72,7 @@ TEST_RESU(
             NOM_CHAM="SIEF_NOEU",
             GROUP_NO="N2",
             NOM_CMP="SIYY",
-            VALE_CALC=13992.3974341,
+            VALE_CALC=13992.433041723494,
         ),
         _F(
             RESULTAT=stnl,
@@ -80,7 +80,7 @@ TEST_RESU(
             NOM_CHAM="SIEF_NOEU",
             GROUP_NO="N2",
             NOM_CMP="SIZZ",
-            VALE_CALC=14047.6477194,
+            VALE_CALC=14047.683293300466,
         ),
     )
 )
@@ -94,7 +94,7 @@ TEST_RESU(
             NOM_CHAM="DEPL",
             GROUP_NO="N27",
             NOM_CMP="DX",
-            VALE_CALC=0.0696319525128,
+            VALE_CALC=0.06963209236812266,
         ),
         _F(
             RESULTAT=stnl,
@@ -102,7 +102,7 @@ TEST_RESU(
             NOM_CHAM="DEPL",
             GROUP_NO="N27",
             NOM_CMP="DY",
-            VALE_CALC=0.199062276741,
+            VALE_CALC=0.19906216738040397,
         ),
         _F(
             RESULTAT=stnl,
@@ -110,7 +110,7 @@ TEST_RESU(
             NOM_CHAM="DEPL",
             GROUP_NO="N27",
             NOM_CMP="DZ",
-            VALE_CALC=0.529606351907,
+            VALE_CALC=0.5296067393359486,
         ),
     )
 )
