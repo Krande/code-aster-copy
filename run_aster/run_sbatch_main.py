@@ -83,7 +83,7 @@ TEMPLATE = """#!/bin/bash
 #SBATCH {opt_exclusive}
 
 # redirect output in the current directory
-#SBATCH --output=run_aster-%j.txt
+#SBATCH --output={name}-%j.txt
 
 {RUNASTER_ROOT}/bin/run_aster {study}
 """

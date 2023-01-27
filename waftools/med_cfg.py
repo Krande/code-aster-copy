@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -324,13 +324,7 @@ def check_med_python(self):
 def check_medcoupling(self):
     if not self.env["PYTHON"]:
         self.fatal("load python tool first")
-    try:
-        self.env.stash()
-        self.check_python_module("medcoupling")
-    except Errors.ConfigurationError:
-        self.env.revert()
-        if self.env.BUILD_MPI and self.options.with_py_medcoupling:
-            raise
+    self.check_python_module("medcoupling")
 
 
 @Configure.conf
