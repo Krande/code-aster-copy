@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -29,12 +29,8 @@ system command execution, templates...
 import gzip
 import os
 import os.path as osp
-import re
 import shutil
 import stat
-import string
-import sys
-import time
 from glob import glob
 
 try:

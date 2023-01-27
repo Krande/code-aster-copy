@@ -30,6 +30,7 @@ Build some data files (dest: share/aster)
 - 'profile.sh': environment script.
 - 'run_aster': script that executes code_aster.
 - 'run_ctest': script that executes a list of testcases using 'ctest'.
+- 'run_sbatch': script that executes code_aster through sbatch.
 """
 
 import getpass
@@ -248,10 +249,11 @@ def build(self):
         self.symlink_as("${PREFIX}/share/aster/image", self.env.singularityimage)
 
     # without substitution
+    scripts = ["run_aster", "run_ctest"]
+    if self.env.PROG_sbatch:
+        scripts.append("run_sbatch")
     self.install_files(
-        self.env.BINDIR,
-        [self.path.get_src().find_node(src) for src in ("run_aster", "run_ctest")],
-        chmod=Utils.O755,
+        self.env.BINDIR, [self.path.get_src().find_node(src) for src in scripts], chmod=Utils.O755
     )
     self.install_files(
         self.env.ASTERDATADIR,
@@ -628,6 +630,8 @@ def check_external_programs(self):
     _check_prog(self, "gracebat", ["gracebat"], mandatory=self.options.with_prog_gracebat)
 
     _check_prog(self, "mdump", ["mdump"], mandatory=self.options.with_prog_mdump)
+
+    _check_prog(self, "sbatch", ["sbatch"], mandatory=False)
 
     dict_ext = self._extract_keys("PROG_")
     self.env["EXTERNAL_PROGRAMS"] = dict_ext
