@@ -1,0 +1,6 @@
+name: waf-ca-build
+channels:
+  - conda-forge
+dependencies:
+  - waf
+  - python=3.11

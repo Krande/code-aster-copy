@@ -25,6 +25,7 @@ from waflib import Configure, Errors
 
 def options(self):
     self.load("python")  # --nopyc/--nopyo are enabled below
+    self.load('clang_compilation_database', tooldir='waftools')
 
 
 def configure(self):
@@ -32,6 +33,7 @@ def configure(self):
     self.check_numpy()
     self.check_asrun()
     self.check_mpi4py()
+    self.load('clang_compilation_database', tooldir='waftools')
 
 
 ###############################################################################
