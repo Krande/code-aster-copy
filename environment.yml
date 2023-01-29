@@ -5,8 +5,8 @@ dependencies:
   - waf
   - python=3.11
   - numpy
-  #- hdf5=1.10.5
-  - libmed
+  - hdf5
+  #- libmed
   - metis
   #- parmetis
   #- mumps-mpi
