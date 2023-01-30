@@ -66,4 +66,5 @@ class ExtrMode(ExecuteCommand):
             self._result.setDOFNumbering(mode.getDOFNumbering())
             self._result.build()
 
+
 EXTR_MODE = ExtrMode.run

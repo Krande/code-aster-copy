@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe GeneralizedDOFNumbering
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -96,7 +96,7 @@ class GeneralizedDOFNumbering : public DataStructure {
      */
     GeneralizedModelPtr getGeneralizedModel() const { return _model; };
 
-    GeneralizedFieldOnNodesDescriptionPtr getDescription() const {return _nume; };
+    GeneralizedFieldOnNodesDescriptionPtr getDescription() const { return _nume; };
 
     /**
      * @brief Get modal basis

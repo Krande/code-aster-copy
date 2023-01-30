@@ -3,7 +3,7 @@
  * @brief Implementation des fonctions membres de DataStructure
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -51,12 +51,12 @@ DataStructure::DataStructure( const std::string name, const int nameLength, cons
         else
             ( *_tco )[0] = type;
 #ifdef ASTER_DEBUG_CXX
-    }
-    else{
-        if (get_sh_jeveux_status() == 1){
+    } else {
+        if ( get_sh_jeveux_status() == 1 ) {
             _tco->updateValuePointer();
             std::cout << "DEBUG: error with object " << name << ", and type " << type
-            << ", _tco jeveux object already exists with type " << ( *_tco )[0] << std::endl;
+                      << ", _tco jeveux object already exists with type " << ( *_tco )[0]
+                      << std::endl;
         }
 #endif
     }

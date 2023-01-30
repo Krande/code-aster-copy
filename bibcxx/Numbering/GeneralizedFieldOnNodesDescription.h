@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe GeneralizedFieldOnNodesDescription
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -28,9 +28,9 @@
 
 #include "astercxx.h"
 
-#include "Numbering/FieldOnNodesDescription.h"
 #include "MemoryManager/JeveuxCollection.h"
 #include "MemoryManager/JeveuxVector.h"
+#include "Numbering/FieldOnNodesDescription.h"
 #include "Supervis/ResultNaming.h"
 
 /**
@@ -62,8 +62,7 @@ class GeneralizedFieldOnNodesDescription : public FieldOnNodesDescription {
           _nequ( JeveuxVectorLong( getName() + ".NEQU" ) ),
           _refn( JeveuxVectorChar24( getName() + ".REFN" ) ),
           _delg( JeveuxVectorLong( getName() + ".DELG" ) ),
-          _orig( JeveuxCollectionLong( getName() + ".ORIG" ) )
-          {};
+          _orig( JeveuxCollectionLong( getName() + ".ORIG" ) ){};
 
     /**
      * @brief Constructeur

@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe FullResult
  * @author Natacha Béreux
  * @section LICENCE
- *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -47,9 +47,7 @@ class FullResult : public Result, DynamicResultsIndexing {
      * @todo  Ajouter les objets Jeveux de la SD
      */
     FullResult( const std::string &name, const std::string &resuTyp )
-        : Result( name, resuTyp ),
-          DynamicResultsIndexing( getName() ),
-          _dofNum( nullptr ){};
+        : Result( name, resuTyp ), DynamicResultsIndexing( getName() ), _dofNum( nullptr ){};
 
     FullResult( const std::string &resuTyp )
         : FullResult( ResultNaming::getNewResultName(), resuTyp ){};

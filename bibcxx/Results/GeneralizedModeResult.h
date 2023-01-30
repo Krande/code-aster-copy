@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe GeneralizedModeResult
  * @author Nicolas Tardieu
  * @section LICENCE
- *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -27,10 +27,10 @@
 #include "astercxx.h"
 
 #include "LinearAlgebra/GeneralizedAssemblyMatrix.h"
+#include "Modal/StaticMacroElement.h"
 #include "Numbering/GeneralizedDOFNumbering.h"
 #include "Results/FullResult.h"
 #include "Supervis/ResultNaming.h"
-#include "Modal/StaticMacroElement.h"
 
 /**
  * @class GeneralizedModeResult
@@ -57,7 +57,7 @@ class GeneralizedModeResult : public FullResult {
      */
     GeneralizedModeResult( const std::string &name )
         : FullResult( name, "MODE_GENE" ),
-          _projM( new ProjMesu( ljust( getName(), 8 ) + ".PROJM") ),
+          _projM( new ProjMesu( ljust( getName(), 8 ) + ".PROJM" ) ),
           _rigidityRealMatrix( nullptr ),
           _rigidityComplexMatrix( nullptr ),
           _genDOFNum( nullptr ){};
@@ -142,11 +142,10 @@ class GeneralizedModeResult : public FullResult {
 
     bool build() { return Result::build(); };
 
-    ~GeneralizedModeResult(){
+    ~GeneralizedModeResult() {
         _fieldBuidler.clear();
         _dictOfMapOfFieldOnNodesReal.clear();
     };
-
 };
 
 /**

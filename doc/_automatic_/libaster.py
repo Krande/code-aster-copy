@@ -1297,9 +1297,6 @@ class BaseDOFNumbering(DataStructure):
             bool: *True* if used, *False* otherwise.
         """
 
-    def setDescription(self, arg0):
-        pass
-
     def setModel(self, arg0):
         pass
 

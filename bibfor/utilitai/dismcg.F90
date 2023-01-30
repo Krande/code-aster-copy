@@ -22,6 +22,7 @@ subroutine dismcg(questi, nomobz, repi, repkz, ierd)
 !     ARGUMENTS:
 !     ----------
 #include "jeveux.h"
+#include "asterfort/dismgd.h"
 #include "asterfort/dismpn.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jeexin.h"
@@ -90,7 +91,7 @@ subroutine dismcg(questi, nomobz, repi, repkz, ierd)
             ierd = 1
             goto 9999
         end if
-    else if (questl.eq.'TYPE_SCA') then
+    else if (questl .eq. 'TYPE_SCA') then
         call jeveuo(nomob//'.DESC', 'L', iadesc)
         call jenuno(jexnum('&CATA.GD.NOMGD', zi(iadesc)), nogd)
         call dismgd(questl, nogd, repi, repk, ierd)

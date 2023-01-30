@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -19,7 +19,12 @@
 
 # person_in_charge: natacha.bereux@edf.fr
 
-from ..Objects import GeneralizedModeResult, HarmoGeneralizedResult, TransientGeneralizedResult, GeneralizedDOFNumbering
+from ..Objects import (
+    GeneralizedModeResult,
+    HarmoGeneralizedResult,
+    TransientGeneralizedResult,
+    GeneralizedDOFNumbering,
+)
 from ..Supervis import ExecuteCommand
 
 
@@ -52,7 +57,9 @@ class ProjMesuModal(ExecuteCommand):
         Arguments:
             keywords (dict): User's keywords.
         """
-        self._result.setGeneralizedDOFNumbering(GeneralizedDOFNumbering(self._result.getName() + ".NUGEN"))
+        self._result.setGeneralizedDOFNumbering(
+            GeneralizedDOFNumbering(self._result.getName() + ".NUGEN")
+        )
         base = keywords["MODELE_CALCUL"]["BASE"]
         if isinstance(self._result, TransientGeneralizedResult) or isinstance(
             self._result, HarmoGeneralizedResult

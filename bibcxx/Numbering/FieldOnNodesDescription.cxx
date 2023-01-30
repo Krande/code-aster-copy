@@ -3,7 +3,7 @@
  * @brief Implementation de DOFNumbering
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -23,7 +23,7 @@
 
 #include "Numbering/FieldOnNodesDescription.h"
 
-FieldOnNodesDescription::FieldOnNodesDescription( const std::string name, const std::string type)
+FieldOnNodesDescription::FieldOnNodesDescription( const std::string name, const std::string type )
     : DataStructure( name, 19, type ),
       _componentsOnNodes( getName() + ".PRNO" ),
       _namesOfGroupOfCells( getName() + ".LILI" ),

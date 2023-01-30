@@ -682,7 +682,7 @@ bool Result::build( const std::vector< FiniteElementDescriptorPtr > feds,
                         if ( _dictOfMapOfFieldOnNodesReal[nomSymb].count( index ) == 0 ) {
                             FieldOnNodesRealPtr result =
                                 _fieldBuidler.buildFieldOnNodes< ASTERDOUBLE >( name );
-                            if ( resu == "NOEU" ){
+                            if ( resu == "NOEU" ) {
                                 AS_ASSERT( _mesh != nullptr );
                                 result->setMesh( _mesh );
                             }
@@ -696,7 +696,7 @@ bool Result::build( const std::vector< FiniteElementDescriptorPtr > feds,
                         if ( _dictOfMapOfFieldOnNodesComplex[nomSymb].count( index ) == 0 ) {
                             FieldOnNodesComplexPtr result =
                                 _fieldBuidler.buildFieldOnNodes< ASTERCOMPLEX >( name );
-                            if ( resu == "NOEU" ){
+                            if ( resu == "NOEU" ) {
                                 AS_ASSERT( _mesh != nullptr );
                                 result->setMesh( _mesh );
                             }
@@ -782,7 +782,7 @@ bool Result::build( const std::vector< FiniteElementDescriptorPtr > feds,
 
     // add of listofloads
     std::string type = "EXCIT";
-    if ( _accessVariables->getIndexFromString( type ) > 0 ){
+    if ( _accessVariables->getIndexFromString( type ) > 0 ) {
         auto indexes = getIndexes();
         std::string cel( "L" );
         for ( auto &index : indexes ) {
