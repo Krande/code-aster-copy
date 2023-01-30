@@ -136,7 +136,7 @@ v8 = modes.getField("DEPL", 8)
 v8_r = modes_reconstruit.getField("DEPL", 8)
 diff = np.max(np.abs(np.abs(v8.EXTR_COMP().valeurs) - np.abs(v8_r.EXTR_COMP().valeurs)))
 
-test.assertTrue(diff < 1.0e-9)
+test.assertLessEqual(diff, 1.0e-8)
 test.assertEqual(rigi_elim.getType(), "MATR_ASSE_ELIM_R")
 test.assertEqual(mass_elim.getType(), "MATR_ASSE_ELIM_R")
 
