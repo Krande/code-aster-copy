@@ -33,7 +33,7 @@ subroutine nmcine(fami, kpg, ksp, ndim, imate, &
     character(len=16) :: compor(*), option
     real(kind=8) :: crit(10), instam, instap, radi
     real(kind=8) :: epsm(6), deps(6)
-    real(kind=8) :: sigm(6), vim(8), sigp(6), vip(8), dsidep(6, 6)
+    real(kind=8) :: sigm(6), vim(7), sigp(6), vip(7), dsidep(6, 6)
 ! ----------------------------------------------------------------------
 !     REALISE LA LOI DE VON MISES CINEMATIQUE POUR LES
 !     ELEMENTS ISOPARAMETRIQUES EN PETITES DEFORMATIONS
@@ -175,13 +175,11 @@ subroutine nmcine(fami, kpg, ksp, ndim, imate, &
             sieleq = 1.d0
             a1 = 0.d0
             a2 = 0.d0
-            vip(8) = 0.0
         else
             vip(7) = 1.d0
             dp = seuil/(1.5d0*(deuxmu+cpragp))
             a1 = (deuxmu/(deuxmu+cpragp))*(seuil/sieleq)
             a2 = (cpragp/(deuxmu+cpragp))*(seuil/sieleq)
-            vip(8) = 0.0
         end if
         plasti = vip(7)
         do k = 1, ndimsi

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -25,8 +25,8 @@ loi = LoiComportement(
     lc_type=("MECANIQUE",),
     doc="""Loi de Von Mises - avec écrouissage cinématique linéaire""",
     num_lc=3,
-    nb_vari=8,
-    nom_vari=("XCINXX", "XCINYY", "XCINZZ", "XCINXY", "XCINXZ", "XCINYZ", "INDIPLAS", "EPSPEQ"),
+    nb_vari=7,
+    nom_vari=("XCINXX", "XCINYY", "XCINZZ", "XCINXY", "XCINXZ", "XCINYZ", "INDIPLAS"),
     mc_mater=("ELAS", "ECRO_LINE"),
     modelisation=("3D", "AXIS", "D_PLAN", "1D", "C_PLAN"),
     deformation=("PETIT", "PETIT_REAC", "GROT_GDEP", "GDEF_LOG"),

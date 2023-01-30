@@ -210,7 +210,7 @@ subroutine te0489(option, nomte)
 ! ----   LES TENSEURS DE RAPPEL RESPECTIVEMENT AUX INSTANTS T
 ! ----   ET T+DT :
 !        -------
-        nbvarint = 8
+        nbvarint = 7
 !
         do igau = 1, npg
             do i = 1, nbsig

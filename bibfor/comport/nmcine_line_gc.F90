@@ -151,9 +151,9 @@ subroutine nmcine_line_gc(fami, kpg, ksp, ndim, typmod, &
 !       Pour VMIS_CINE_LINE
 !           'XCINXX', 'XCINYY', 'XCINZZ', 'XCINXY', 'XCINXZ', 'XCINYZ',
 !           'INDIPLAS', 'EPSPEQ'
-        icels = 0; icelu = 0; iepsq = 8; iplas = 7; idiss = 0; iwthe = 0
+        icels = 0; icelu = 0; iepsq = 0; iplas = 7; idiss = 0; iwthe = 0
         ixxm = 1; iyym = 2; izzm = 3; ixym = 4; ixzm = 5; iyzm = 6
-        ivari = 8
+        ivari = 7
     else
         call utmess('F', 'ALGORITH4_50', sk=compor(1))
         icels = 0; icelu = 0; iepsq = 0; iplas = 0; idiss = 0; iwthe = 0
@@ -167,8 +167,13 @@ subroutine nmcine_line_gc(fami, kpg, ksp, ndim, typmod, &
     iret = 0
 !
 !   mise au format des contraintes de rappel
-    pm = vim(iepsq)
-    pp = vim(iepsq)
+    if (iepsq .ne. 0) then
+        pm = vim(iepsq)
+        pp = vim(iepsq)
+    else
+        pm = 0.d0
+        pp = 0.d0
+    end if
     plast = vim(iplas)
 !   Cinématique
     xm(1) = vim(ixxm)
@@ -423,7 +428,7 @@ subroutine nmcine_line_gc(fami, kpg, ksp, ndim, typmod, &
 !   Mise à jour des variables internes
     if ((option(1:9) .eq. 'RAPH_MECA') .or. (option(1:9) .eq. 'FULL_MECA')) then
         vip(1:ivari) = vim(1:ivari)
-        vip(iepsq) = pp
+        if (iepsq .ne. 0) vip(iepsq) = pp
         vip(iplas) = plast
         vip(ixxm) = xp(1)
         vip(iyym) = xp(2)
