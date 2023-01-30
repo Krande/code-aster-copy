@@ -68,7 +68,7 @@ subroutine ntcrch(model, nume_dof, vhydr_, hydr_init_)
                     ncmp=1, nomcmp='HYDR', sr=0.d0)
         call carces(hydric, 'ELNO', ' ', 'V', hydris, &
                     'A', iret)
-        call cescel(hydris, ligrmo, 'RESI_RIGI_MASS', 'PHYDRPP', 'NON', &
+        call cescel(hydris, ligrmo, 'MASS_THER_RESI', 'PHYDRPP', 'NON', &
                     nncp, 'V', hydr_init_, 'F', ibid)
         call copisd('CHAMP_GD', 'V', hydr_init_, vhydr_)
     end if

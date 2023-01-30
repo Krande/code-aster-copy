@@ -19,7 +19,7 @@
 ! aslint: disable=W1504
 !
 subroutine nxpred(model, mate, mateco, cara_elem, list_load, nume_dof, &
-                  solver, lostat, tpsthe, time, matass, &
+                  solver, l_stat, tpsthe, time, matass, &
                   lonch, maprec, varc_curr, temp_prev, temp_iter, &
                   cn2mbr, hydr_prev, hydr_curr, dry_prev, dry_curr, &
                   compor, cndirp, cnchci, vec2nd, vec2ni, &
@@ -50,7 +50,7 @@ subroutine nxpred(model, mate, mateco, cara_elem, list_load, nume_dof, &
     character(len=19), intent(in) :: list_load
     character(len=24), intent(in) :: nume_dof
     character(len=19), intent(in) :: solver
-    real(kind=8) :: tpsthe(6)
+    real(kind=8), intent(in) :: tpsthe(6)
     character(len=24), intent(in) :: time
     character(len=19), intent(in) :: varc_curr
     integer :: lonch
@@ -58,7 +58,7 @@ subroutine nxpred(model, mate, mateco, cara_elem, list_load, nume_dof, &
     character(len=24) :: matass, cndirp, cnchci, cnresi
     character(len=24) :: temp_iter, temp_prev, vec2nd, vec2ni
     character(len=24) :: hydr_prev, hydr_curr, compor, dry_prev, dry_curr
-    aster_logical :: lostat
+    aster_logical :: l_stat
     character(len=24), intent(in) :: cn2mbr
     type(ROM_DS_AlgoPara), intent(in) :: ds_algorom
 !
@@ -117,7 +117,7 @@ subroutine nxpred(model, mate, mateco, cara_elem, list_load, nume_dof, &
     call jeveuo(vec2ni(1:19)//'.VALE', 'L', vr=v_vec2ni)
     call jeveuo(cndirp(1:19)//'.VALE', 'L', vr=v_cndirp)
 !
-    if (lostat) then
+    if (l_stat) then
 !
 !=======================================================================
 !  INITIALISATION POUR LE PREMIER PAS DE CALCUL
@@ -126,8 +126,8 @@ subroutine nxpred(model, mate, mateco, cara_elem, list_load, nume_dof, &
 ! ----- Neumann loads elementary vectors (residuals)
 !
         call verstp(model, lload_name, lload_info, cara_elem, mateco, &
-                    time_curr, time, compor, temp_prev, temp_iter, &
-                    varc_curr, veresi, 'V', &
+                    tpsthe, time, compor, temp_prev, temp_iter, &
+                    varc_curr, veresi, 'V', l_stat, &
                     hydr_prev, hydr_curr, dry_prev, dry_curr)
 !
 ! ----- Neumann loads vector (residuals)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,7 +23,7 @@
 !
 interface
     subroutine nxpred(model     , mate     , mateco   , cara_elem, list_load, nume_dof ,&
-                      solver    , lostat   , tpsthe   , time     , matass   ,&
+                      solver    , l_stat   , tpsthe   , time     , matass   ,&
                       lonch     , maprec   , varc_curr, temp_prev, temp_iter,&
                       cn2mbr    , hydr_prev, hydr_curr, dry_prev , dry_curr ,&
                       compor    , cndirp   , cnchci   , vec2nd   , vec2ni   ,&
@@ -35,10 +35,10 @@ interface
         character(len=19), intent(in) :: list_load
         character(len=24), intent(in) :: nume_dof
         character(len=19), intent(in) :: solver
-        real(kind=8) :: tpsthe(6)
+        real(kind=8), intent(in) :: tpsthe(6)
         character(len=24), intent(in) :: time
         character(len=19), intent(in) :: varc_curr
-        aster_logical :: lostat
+        aster_logical :: l_stat
         integer :: lonch
         character(len=24) :: matass
         character(len=19) :: maprec

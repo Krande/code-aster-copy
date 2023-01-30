@@ -18,15 +18,18 @@
 !
 subroutine resi_ther(model, cara_elem, mate, time, compor, &
                      temp_prev, temp_iter, hydr_prev, hydr_curr, dry_prev, &
-                     dry_curr, varc_curr, resu_elem, vect_elem, base)
+                     dry_curr, varc_curr, resu_elem, vect_elem, base, &
+                     l_stat, para)
 !
     implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/calcul.h"
 #include "asterfort/corich.h"
+#include "asterfort/gcnco2.h"
 #include "asterfort/mecara.h"
 #include "asterfort/megeom.h"
+#include "asterfort/multResuElem.h"
 #include "asterfort/reajre.h"
 #include "asterfort/inical.h"
 !
@@ -42,9 +45,12 @@ subroutine resi_ther(model, cara_elem, mate, time, compor, &
     character(len=24), intent(in) :: dry_curr
     character(len=24), intent(in) :: compor
     character(len=19), intent(in) :: varc_curr
-    character(len=19), intent(in) :: resu_elem
+    character(len=19), intent(inout) :: resu_elem
     character(len=24), intent(in) :: vect_elem
     character(len=1), intent(in) :: base
+    aster_logical, intent(in) :: l_stat
+    real(kind=8), intent(in) :: para(2)
+
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -69,24 +75,30 @@ subroutine resi_ther(model, cara_elem, mate, time, compor, &
 ! In  resu_elem        : name of resu_elem
 ! In  vect_elem        : name of vect_elem result
 ! In  base             : JEVEUX base for object
+! In  para             : para(1) = theta
+!                        para(2) = deltat
 !
 ! --------------------------------------------------------------------------------------------------
 !
     integer, parameter :: nbin = 11
     integer, parameter :: nbout = 2
-    character(len=8) :: lpain(nbin), lpaout(nbout)
+    character(len=8) :: lpain(nbin), lpaout(nbout), newnom
     character(len=19) :: lchin(nbin), lchout(nbout)
 !
     character(len=1) :: stop_calc
-    character(len=16) :: option
+    character(len=16) :: option1, option2
     character(len=24) :: ligrel_model
     character(len=24) :: chgeom, chcara(18)
+    real(kind=8) :: theta, deltat
 !
 ! --------------------------------------------------------------------------------------------------
 !
     stop_calc = 'S'
-    option = 'RESI_RIGI_MASS'
+    option1 = 'RAPH_THER'
+    option2 = 'MASS_THER_RESI'
     ligrel_model = model(1:8)//'.MODELE'
+    theta = para(1)
+    deltat = para(2)
 !
 ! - Init fields
 !
@@ -126,23 +138,63 @@ subroutine resi_ther(model, cara_elem, mate, time, compor, &
     lpain(11) = 'PCAMASS'
     lchin(11) = chcara(12) (1:19)
 !
+! - Rigidity
+!
+
+!
 ! - Output fields
 !
     lpaout(1) = 'PRESIDU'
     lchout(1) = resu_elem(1:19)
-    lpaout(2) = 'PHYDRPP'
-    lchout(2) = hydr_curr(1:19)
 !
     call corich('E', lchout(1), ichin_=-1)
 !
 ! - Number of fields
 !
-    call calcul(stop_calc, option, ligrel_model, nbin, lchin, &
-                lpain, nbout, lchout, lpaout, base, &
+    call calcul(stop_calc, option1, ligrel_model, nbin, lchin, &
+                lpain, 1, lchout, lpaout, base, &
                 'OUI')
+!
+! - Multiply values by theta
+!
+    call multResuElem(resu_elem, theta)
 !
 ! - Add RESU_ELEM in vect_elem
 !
-    call reajre(vect_elem, lchout(1), base)
+    call reajre(vect_elem, resu_elem, base)
+
+    if (.not. l_stat) then
+!
+! - --- Mass
+!
+
+!
+! - --- Output fields
+!
+        newnom = resu_elem(9:16)
+        call gcnco2(newnom)
+        resu_elem(10:16) = newnom(2:8)
+
+        lpaout(1) = 'PRESIDU'
+        lchout(1) = resu_elem(1:19)
+        lpaout(2) = 'PHYDRPP'
+        lchout(2) = hydr_curr(1:19)
+!
+        call corich('E', lchout(1), ichin_=-1)
+!
+! - --- Number of fields
+!
+        call calcul(stop_calc, option2, ligrel_model, nbin, lchin, &
+                    lpain, nbout, lchout, lpaout, base, &
+                    'OUI')
+!
+! - --- Multiply values by 1/dt
+!
+        call multResuElem(resu_elem, 1.d0/deltat)
+!
+! - --- Add RESU_ELEM in vect_elem
+!
+        call reajre(vect_elem, resu_elem, base)
+    end if
 !
 end subroutine

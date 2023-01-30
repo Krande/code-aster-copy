@@ -133,8 +133,8 @@ subroutine nxnewt(model, mate, mateco, cara_elem, list_load, nume_dof, &
 ! - Neumann loads elementary vectors (residuals)
 !
     call verstp(model, lload_name, lload_info, cara_elem, mateco, &
-                time_curr, time, compor, temp_prev, temp_iter, &
-                varc_curr, veresi, 'V', &
+                tpsthe, time, compor, temp_prev, temp_iter, &
+                varc_curr, veresi, 'V', l_stat, &
                 hydr_prev, hydr_curr, dry_prev, dry_curr)
 !
 ! - Neumann loads vector (residuals)

@@ -22,13 +22,14 @@ subroutine nxrech(model, mate, mateco, cara_elem, list_load, nume_dof, &
                   tpsthe, time, lonch, compor, varc_curr, &
                   temp_iter, vtempp, vtempr, temp_prev, hydr_prev, &
                   hydr_curr, dry_prev, dry_curr, vec2nd, cnvabt, &
-                  cnresi, rho, iterho, ds_algopara)
+                  cnresi, rho, iterho, ds_algopara, l_stat)
 !
     use NonLin_Datastructure_type
 !
     implicit none
 !
 #include "jeveux.h"
+#include "asterf_types.h"
 #include "asterc/r8prem.h"
 #include "asterfort/asasve.h"
 #include "asterfort/ascova.h"
@@ -44,13 +45,14 @@ subroutine nxrech(model, mate, mateco, cara_elem, list_load, nume_dof, &
     character(len=19), intent(in) :: list_load
     character(len=24), intent(in) :: nume_dof
     type(NL_DS_AlgoPara), intent(in) :: ds_algopara
-    real(kind=8) :: tpsthe(6)
+    real(kind=8), intent(in) :: tpsthe(6)
     character(len=24), intent(in) :: time
     character(len=19), intent(in) :: varc_curr
     integer :: lonch
     real(kind=8) :: rho
     character(len=24) :: temp_prev, vtempr, vtempp, temp_iter, cnvabt, cnresi, vec2nd
     character(len=24) :: hydr_prev, hydr_curr, compor, dry_prev, dry_curr
+    aster_logical, intent(in) :: l_stat
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -117,8 +119,8 @@ subroutine nxrech(model, mate, mateco, cara_elem, list_load, nume_dof, &
 ! ----- Neumann loads elementary vectors (residuals)
 !
         call verstp(model, lload_name, lload_info, cara_elem, mateco, &
-                    time_curr, time, compor, temp_prev, vtempr, &
-                    varc_curr, veresi, 'V', &
+                    tpsthe, time, compor, temp_prev, vtempr, &
+                    varc_curr, veresi, 'V', l_stat, &
                     hydr_prev, hydr_curr, dry_prev, dry_curr)
 !
 ! ----- Neumann loads vector (residuals)

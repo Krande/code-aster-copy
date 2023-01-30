@@ -42,7 +42,7 @@ subroutine te0283(option, nomte)
 ! ----------------------------------------------------------------------
 !
 !    - FONCTION REALISEE:  CALCUL DES VECTEURS RESIDUS
-!                          OPTION : 'RESI_RIGI_MASS'
+!                          OPTION : 'RAPH_THER'
 !                          ELEMENTS 3D ISO PARAMETRIQUES
 !
 !    - ARGUMENTS:
@@ -56,20 +56,17 @@ subroutine te0283(option, nomte)
     integer :: nbres
     parameter(nbres=3)
     integer :: icodre(nbres)
-    character(len=2) :: typgeo
     character(len=32) :: phenom
-    real(kind=8) :: beta, lambda, theta, deltat, khi, tpg, tpgm, r8bid
-    real(kind=8) :: p(3, 3), dfdx(27), dfdy(27), dfdz(27), poids, hydrgm(27)
-    real(kind=8) :: dtpgdx, dtpgdy, dtpgdz, rbid, chal(1), hydrgp(27)
-    real(kind=8) :: tpsec, diff, err, lambor(3), orig(3), dire(3)
+    real(kind=8) :: lambda, tpg, r8bid
+    real(kind=8) :: p(3, 3), dfdx(27), dfdy(27), dfdz(27), poids
+    real(kind=8) :: dtpgdx, dtpgdy, dtpgdz, rbid
+    real(kind=8) :: tpsec, diff, lambor(3), orig(3), dire(3)
     real(kind=8) :: point(3), angl(3), fluloc(3), fluglo(3)
     real(kind=8) :: aalpha, abeta
     integer :: ipoids, ivf, idfde, igeom, imate, icamas
-    integer :: jgano, nno, kp, npg1, i, itemps, ifon(6), l, ndim
-    integer :: ihydr, ihydrp, itempr
-    integer :: isechi, isechf, jgano2
+    integer :: jgano, nno, kp, npg1, i, ifon(6), l, ndim
+    integer :: isechf
     integer :: icomp, itempi, iveres, nnos, nuno, n1, n2
-    integer :: npg2, ipoid2, ivf2, idfde2
     aster_logical :: aniso, global
 ! ----------------------------------------------------------------------
 ! PARAMETER ASSOCIE AU MATERIAU CODE
@@ -79,14 +76,6 @@ subroutine te0283(option, nomte)
 !====
 ! 1.1 PREALABLES: RECUPERATION ADRESSES FONCTIONS DE FORMES...
 !====
-    call uttgel(nomte, typgeo)
-    if ((lteatt('LUMPE', 'OUI')) .and. (typgeo .ne. 'PY')) then
-        call elrefe_info(fami='NOEU', ndim=ndim, nno=nno, nnos=nnos, npg=npg2, &
-                         jpoids=ipoid2, jvf=ivf2, jdfde=idfde2, jgano=jgano2)
-    else
-        call elrefe_info(fami='MASS', ndim=ndim, nno=nno, nnos=nnos, npg=npg2, &
-                         jpoids=ipoid2, jvf=ivf2, jdfde=idfde2, jgano=jgano2)
-    end if
     call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg1, &
                      jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
@@ -95,14 +84,9 @@ subroutine te0283(option, nomte)
 !====
     call jevech('PGEOMER', 'L', igeom)
     call jevech('PMATERC', 'L', imate)
-    call jevech('PTEMPSR', 'L', itemps)
     call jevech('PTEMPEI', 'L', itempi)
     call jevech('PCOMPOR', 'L', icomp)
     call jevech('PRESIDU', 'E', iveres)
-!
-    deltat = zr(itemps+1)
-    theta = zr(itemps+2)
-    khi = zr(itemps+3)
 !
     if (zk16(icomp) (1:5) .eq. 'THER_') then
 !====
@@ -136,24 +120,6 @@ subroutine te0283(option, nomte)
                 orig(2) = zr(icamas+5)
                 orig(3) = zr(icamas+6)
             end if
-        end if
-!----
-!   INITIALISATION THER_HYDR
-!----
-        if (zk16(icomp) (1:9) .eq. 'THER_HYDR') then
-            call jevech('PHYDRPM', 'L', ihydr)
-            call jevech('PHYDRPP', 'E', ihydrp)
-            call jevech('PTEMPER', 'L', itempr)
-            call rcvalb('FPG1', 1, 1, '+', zi(imate), &
-                        ' ', 'THER_HYDR', 0, ' ', [0.d0], &
-                        1, 'CHALHYDR', chal, icodre(1), 1)
-            do kp = 1, npg2
-                l = nno*(kp-1)
-                hydrgm(kp) = 0.d0
-                do i = 1, nno
-                    hydrgm(kp) = hydrgm(kp)+zr(ihydr)*zr(ivf2+l+i-1)
-                end do
-            end do
         end if
 !
 ! ---   CALCUL DU PREMIER TERME
@@ -211,51 +177,9 @@ subroutine te0283(option, nomte)
             end if
 !
             do i = 1, nno
-                zr(iveres+i-1) = zr(iveres+i-1)+poids*theta*(dfdx(i)*fluglo(1)+dfdy(i)*fluglo&
+                zr(iveres+i-1) = zr(iveres+i-1)+poids*(dfdx(i)*fluglo(1)+dfdy(i)*fluglo&
                                  &(2)+dfdz(i)*fluglo(3))
             end do
-        end do
-!
-! ---   CALCUL DU DEUXIEME TERME
-!
-        do kp = 1, npg2
-            l = (kp-1)*nno
-            call dfdm3d(nno, kp, ipoid2, idfde2, zr(igeom), &
-                        poids, dfdx, dfdy, dfdz)
-            tpg = 0.d0
-            do i = 1, nno
-                tpg = tpg+zr(itempi+i-1)*zr(ivf2+l+i-1)
-            end do
-!
-! ---       RESOLUTION DE L EQUATION D HYDRATATION
-!
-            if (zk16(icomp) (1:9) .eq. 'THER_HYDR') then
-                tpgm = 0.d0
-                hydrgp(kp) = 0.d0
-                do i = 1, nno
-                    tpgm = tpgm+zr(itempr+i-1)*zr(ivf2+l+i-1)
-                end do
-                call runge6(ifon(3), deltat, tpg, tpgm, hydrgm(kp), &
-                            hydrgp(kp), err)
-            end if
-!
-            call rcfode(ifon(1), tpg, beta, rbid)
-            if (zk16(icomp) (1:9) .eq. 'THER_HYDR') then
-!
-! ---           THERMIQUE NON LINEAIRE AVEC HYDRATATION
-!
-                do i = 1, nno
-                    zr(iveres+i-1) = zr(iveres+i-1)+poids*((beta-chal(1)*hydrgp(kp))/deltat&
-                                                          &*khi*zr(ivf2+l+i-1))
-                end do
-            else
-!
-! ---           THERMIQUE NON LINEAIRE SEULE
-!
-                do i = 1, nno
-                    zr(iveres+i-1) = zr(iveres+i-1)+poids*beta/deltat*khi*zr(ivf2+l+i-1)
-                end do
-            end if
         end do
 !
     else if (zk16(icomp) (1:5) .eq. 'SECH_') then
@@ -264,12 +188,10 @@ subroutine te0283(option, nomte)
 !====
         if (zk16(icomp) (1:12) .eq. 'SECH_GRANGER' .or. zk16(icomp) (1:10) .eq. &
             'SECH_NAPPE') then
-            call jevech('PTMPCHI', 'L', isechi)
             call jevech('PTMPCHF', 'L', isechf)
         else
 !          POUR LES AUTRES LOIS, PAS DE CHAMP DE TEMPERATURE
 !          ISECHI ET ISECHF SONT FICTIFS
-            isechi = itempi
             isechf = itempi
         end if
 !
@@ -293,28 +215,11 @@ subroutine te0283(option, nomte)
             end do
             call rcdiff(zi(imate), zk16(icomp), tpsec, tpg, diff)
             do i = 1, nno
-                zr(iveres+i-1) = zr(iveres+i-1)+poids*(theta*diff*(dfdx(i)*dtpgdx+dfdy(i)*dtp&
+                zr(iveres+i-1) = zr(iveres+i-1)+poids*(diff*(dfdx(i)*dtpgdx+dfdy(i)*dtp&
                                  &gdy+dfdz(i)*dtpgdz))
             end do
         end do
-!
-! ---   CALCUL DU DEUXIEME TERME
-!
-        do kp = 1, npg2
-            l = (kp-1)*nno
-            call dfdm3d(nno, kp, ipoid2, idfde2, zr(igeom), &
-                        poids, dfdx, dfdy, dfdz)
-            tpg = 0.d0
-            do i = 1, nno
-                tpg = tpg+zr(itempi+i-1)*zr(ivf2+l+i-1)
-            end do
-            do i = 1, nno
-                zr(iveres+i-1) = zr(iveres+i-1)+poids*(1.d0/deltat*khi*zr(ivf2+l+i-1)*tpg)
-            end do
-        end do
     end if
-!
-    if (zk16(icomp) (1:9) .eq. 'THER_HYDR') call ppgan2(jgano2, 1, 1, hydrgp, zr(ihydrp))
 !
 ! FIN ------------------------------------------------------------------
 end subroutine

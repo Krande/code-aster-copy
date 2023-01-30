@@ -100,6 +100,7 @@ subroutine calcCalcTher(nb_option, list_option, &
     lload_info = list_load(1:19)//'.INFC'
 
     time_curr = tpsthe(1)
+    l_stat = ASTER_FALSE
 !
 ! - Prepare command variables
 !
@@ -124,7 +125,6 @@ subroutine calcCalcTher(nb_option, list_option, &
 ! - Physical dof computation
 !
     if (l_mtan_ther) then
-        l_stat = ASTER_FALSE
         call merxth(model, lload_name, lload_info, cara_elem, mate, mateco, &
                     tpsthe, time, temp_curr, compor_ther, varc_curr, &
                     me_mtanther, 'G', l_stat)
@@ -150,8 +150,8 @@ subroutine calcCalcTher(nb_option, list_option, &
 !
     if (l_resi_ther) then
         call verstp(model, lload_name, lload_info, cara_elem, mateco, &
-                    time_curr, time, compor_ther, temp_prev, incr_temp, &
-                    varc_curr, ve_resither, 'G')
+                    tpsthe, time, compor_ther, temp_prev, incr_temp, &
+                    varc_curr, ve_resither, 'G', l_stat)
     end if
 !
 ! - New objects in table

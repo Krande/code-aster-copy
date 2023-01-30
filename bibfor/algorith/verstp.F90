@@ -17,8 +17,8 @@
 ! --------------------------------------------------------------------
 
 subroutine verstp(model, lload_name, lload_info, cara_elem, mate, &
-                  time_curr, time, compor_ther, temp_prev, temp_iter, &
-                  varc_curr, vect_elem, base, &
+                  tpsthe, time, compor_ther, temp_prev, temp_iter, &
+                  varc_curr, vect_elem, base, l_stat, &
                   hydr_prev_, hydr_curr_, dry_prev_, dry_curr_)
 !
     implicit none
@@ -39,7 +39,7 @@ subroutine verstp(model, lload_name, lload_info, cara_elem, mate, &
     character(len=24), intent(in) :: lload_info
     character(len=24), intent(in) :: cara_elem
     character(len=24), intent(in) :: mate
-    real(kind=8), intent(in) :: time_curr
+    real(kind=8), intent(in) :: tpsthe(6)
     character(len=24), intent(in) :: time
     character(len=24), intent(in) :: compor_ther
     character(len=24), intent(in) :: temp_prev
@@ -47,6 +47,7 @@ subroutine verstp(model, lload_name, lload_info, cara_elem, mate, &
     character(len=19), intent(in) :: varc_curr
     character(len=24), intent(in) :: vect_elem
     character(len=1), intent(in) :: base
+    aster_logical, intent(in) :: l_stat
     character(len=24), optional, intent(in) :: hydr_prev_
     character(len=24), optional, intent(in) :: hydr_curr_
     character(len=24), optional, intent(in) :: dry_prev_
@@ -93,11 +94,17 @@ subroutine verstp(model, lload_name, lload_info, cara_elem, mate, &
     character(len=24), pointer :: v_load_name(:) => null()
     integer, pointer :: v_load_info(:) => null()
     character(len=24) :: hydr_prev, hydr_curr, dry_prev, dry_curr
+    real(kind=8) :: time_curr, para(2)
 !
 ! --------------------------------------------------------------------------------------------------
 !
     resu_elem = vect_elem(1:8)//'.0000000'
     stop_calc = 'S'
+    time_curr = tpsthe(1)
+!   theta
+    para(1) = tpsthe(3)
+!   deltat
+    para(2) = tpsthe(2)
 !
 ! - Get fields
 !
@@ -136,15 +143,16 @@ subroutine verstp(model, lload_name, lload_info, cara_elem, mate, &
 !
 ! - Generate new RESU_ELEM name
 !
-    newnom = resu_elem(10:16)
+    newnom = resu_elem(9:16)
     call gcnco2(newnom)
-    lchout(1) (10:16) = newnom(2:8)
+    resu_elem(10:16) = newnom(2:8)
 !
 ! - Residuals from non-linear laws
 !
     call resi_ther(model, cara_elem, mate, time, compor_ther, &
                    temp_prev, temp_iter, hydr_prev, hydr_curr, dry_prev, &
-                   dry_curr, varc_curr, resu_elem, vect_elem, base)
+                   dry_curr, varc_curr, resu_elem, vect_elem, base, &
+                   l_stat, para)
 !
 ! - Preparing input fields
 !

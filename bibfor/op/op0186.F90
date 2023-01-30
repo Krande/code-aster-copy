@@ -308,7 +308,7 @@ subroutine op0186()
                         tpsthe, time, neq, compor, varc_curr, &
                         vtempm, vtempp, vtempr, vtemp, vhydr, &
                         vhydrp, dry_prev, dry_curr, cn2mbr_stat, vabtla, &
-                        cnresi, rho, iterho, ds_algopara)
+                        cnresi, rho, iterho, ds_algopara, l_stat)
             call nmimci(ds_print, 'RELI_NBIT', iterho, l_affe=ASTER_TRUE)
             call nmimcr(ds_print, 'RELI_COEF', rho, l_affe=ASTER_TRUE)
         else

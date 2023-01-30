@@ -39,7 +39,7 @@ subroutine te0243(option, nomte)
     character(len=16) :: option, nomte
 ! ......................................................................
 !    - FONCTION REALISEE:  CALCUL DES VECTEURS RESIDUS
-!                          OPTION : 'RESI_RIGI_MASS'
+!                          OPTION : 'RAPH_THER'
 !                          ELEMENTS 2D LUMPES
 !
 !    - ARGUMENTS:
@@ -52,20 +52,18 @@ subroutine te0243(option, nomte)
     parameter(nbres=3)
     integer :: icodre(nbres)
     character(len=32) :: phenom
-    real(kind=8) :: beta, lambda, theta, deltat, khi, tpg, tpsec
+    real(kind=8) :: lambda, tpg, tpsec
     real(kind=8) :: dfdx(9), dfdy(9), poids, r, r8bid, diff
-    real(kind=8) :: dtpgdx, dtpgdy, hydrgm(9), hydrgp(9)
-    real(kind=8) :: coorse(18), vectt(9), err
-    real(kind=8) :: chal(1), tpgm
+    real(kind=8) :: dtpgdx, dtpgdy
+    real(kind=8) :: coorse(18), vectt(9)
     real(kind=8) :: fluloc(2), fluglo(2), lambor(2), orig(2), p(2, 2), point(2)
     real(kind=8) :: alpha, xnorm, xu, yu
     character(len=8) :: elrefe, alias8
-    integer :: ndim, nno, nnos, kp, npg, i, j, k, itemps, ifon(6)
+    integer :: ndim, nno, nnos, kp, npg, i, j, k, ifon(6)
     integer :: ipoids, ivf, idfde, igeom, imate
-    integer :: icomp, itempi, iveres, jgano, ipoid2, npg2
-    integer :: c(6, 9), ise, nse, nnop2, ivf2, idfde2
-    integer :: isechi, isechf, ibid, jgano2
-    integer :: ihydr, ihydrp, itempr
+    integer :: icomp, itempi, iveres, jgano
+    integer :: c(6, 9), ise, nse, nnop2
+    integer :: isechf, ibid
     aster_logical :: aniso, global
 ! ----------------------------------------------------------------------
 ! PARAMETER ASSOCIE AU MATERIAU CODE
@@ -85,11 +83,6 @@ subroutine te0243(option, nomte)
         call teattr('S', 'ALIAS8', alias8, ibid)
         if (alias8(6:8) .eq. 'QU9') elrefe = 'QU4'
         if (alias8(6:8) .eq. 'TR6') elrefe = 'TR3'
-        call elrefe_info(elrefe=elrefe, fami='NOEU', ndim=ndim, nno=nno, nnos=nnos, &
-                         npg=npg2, jpoids=ipoid2, jvf=ivf2, jdfde=idfde2, jgano=jgano2)
-    else
-        call elrefe_info(elrefe=elrefe, fami='MASS', ndim=ndim, nno=nno, nnos=nnos, &
-                         npg=npg2, jpoids=ipoid2, jvf=ivf2, jdfde=idfde2, jgano=jgano2)
     end if
 !
     call elrefe_info(elrefe=elrefe, fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, &
@@ -100,26 +93,19 @@ subroutine te0243(option, nomte)
 !====
     call jevech('PGEOMER', 'L', igeom)
     call jevech('PMATERC', 'L', imate)
-    call jevech('PTEMPSR', 'L', itemps)
     call jevech('PTEMPEI', 'L', itempi)
     call jevech('PCOMPOR', 'L', icomp)
     call jevech('PRESIDU', 'E', iveres)
-!
-    deltat = zr(itemps+1)
-    theta = zr(itemps+2)
-    khi = zr(itemps+3)
 !
 !====
 ! 1.3 PREALABLES LIES AU SECHAGE
 !====
     if ((zk16(icomp) (1:5) .eq. 'SECH_')) then
         if (zk16(icomp) (1:12) .eq. 'SECH_GRANGER' .or. zk16(icomp) (1:10) .eq. 'SECH_NAPPE') then
-            call jevech('PTMPCHI', 'L', isechi)
             call jevech('PTMPCHF', 'L', isechf)
         else
 !          POUR LES AUTRES LOIS, PAS DE CHAMP DE TEMPERATURE
-!          ISECHI ET ISECHF SONT FICTIFS
-            isechi = itempi
+!          ISECHF EST FICTIF
             isechf = itempi
         end if
 !
@@ -151,24 +137,6 @@ subroutine te0243(option, nomte)
         end if
     end if
 !
-!====
-! 1.5 PREALABLES LIES A L'HYDRATATION
-!====
-    if (zk16(icomp) (1:9) .eq. 'THER_HYDR') then
-        call jevech('PHYDRPM', 'L', ihydr)
-        call jevech('PHYDRPP', 'E', ihydrp)
-        call jevech('PTEMPER', 'L', itempr)
-        call rcvalb('FPG1', 1, 1, '+', zi(imate), &
-                    ' ', 'THER_HYDR', 0, ' ', [r8bid], &
-                    1, 'CHALHYDR', chal, icodre(1), 1)
-        do kp = 1, npg2
-            k = nno*(kp-1)
-            hydrgm(kp) = 0.d0
-            do i = 1, nno
-                hydrgm(kp) = hydrgm(kp)+zr(ihydr)*zr(ivf2+k+i-1)
-            end do
-        end do
-    end if
 !====
 ! 1.6 PREALABLES LIES AUX ELEMENTS LUMPES
 !====
@@ -267,61 +235,9 @@ subroutine te0243(option, nomte)
 !
                 do i = 1, nno
                     vectt(c(ise, i)) = vectt(c(ise, i))+&
-                                      & poids*theta*&
+                                      & poids*&
                                       & (fluglo(1)*dfdx(i)+fluglo(2)*dfdy(i))
                 end do
-            end do
-!
-!====
-! 3. CALCULS DU TERME DE MASSE DE L'OPTION
-!====
-! ------- TERME DE MASSE : 3EME FAMILLE DE PTS DE GAUSS -----------
-!
-            do i = 1, nno
-                do j = 1, 2
-                    coorse(2*(i-1)+j) = zr(igeom-1+2*(c(ise, i)-1)+j)
-                end do
-            end do
-!
-            do kp = 1, npg2
-                k = (kp-1)*nno
-                call dfdm2d(nno, kp, ipoid2, idfde2, coorse, &
-                            poids, dfdx, dfdy)
-                r = 0.d0
-                tpg = 0.d0
-                do i = 1, nno
-                    r = r+coorse(2*(i-1)+1)*zr(ivf2+k+i-1)
-                    tpg = tpg+zr(itempi-1+c(ise, i))*zr(ivf2+k+i-1)
-                end do
-!
-! ---  RESOLUTION DE L EQUATION D HYDRATATION
-!
-                if (zk16(icomp) (1:9) .eq. 'THER_HYDR') then
-                    tpgm = 0.d0
-                    do i = 1, nno
-                        tpgm = tpgm+zr(itempr+i-1)*zr(ivf2+k+i-1)
-                    end do
-                    call runge6(ifon(3), deltat, tpg, tpgm, hydrgm(kp), &
-                                hydrgp(kp), err)
-                end if
-!
-                call rcfode(ifon(1), tpg, beta, r8bid)
-                if (lteatt('AXIS', 'OUI')) poids = poids*r
-                if (zk16(icomp) (1:9) .eq. 'THER_HYDR') then
-! --- THERMIQUE NON LINEAIRE AVEC HYDRATATION
-                    do i = 1, nno
-                        k = (kp-1)*nno
-                        vectt(c(ise, i)) = vectt(c(ise, i))+&
-                                          & poids*(beta-chal(1)*hydrgp(kp))/deltat*&
-                                          & khi*zr(ivf2+k+i-1)
-                    end do
-                else
-! --- THERMIQUE NON LINEAIRE SEULE
-                    do i = 1, nno
-                        vectt(c(ise, i)) = vectt(c(ise, i))+&
-                                          & poids*beta/deltat*khi*zr(ivf2+k+i-1)
-                    end do
-                end if
             end do
 !
         else if (zk16(icomp) (1:5) .eq. 'SECH_') then
@@ -348,29 +264,8 @@ subroutine te0243(option, nomte)
                 do i = 1, nno
                     k = (kp-1)*nno
                     vectt(c(ise, i)) = vectt(c(ise, i))+&
-                                      & poids*theta*diff*&
+                                      & poids*diff*&
                                       & (dfdx(i)*dtpgdx+dfdy(i)*dtpgdy)
-                end do
-            end do
-!
-! ------- TERME DE MASSE : 3EME FAMILLE DE PTS DE GAUSS -----------
-!
-            do kp = 1, npg2
-                k = (kp-1)*nno
-                call dfdm2d(nno, kp, ipoid2, idfde2, coorse, &
-                            poids, dfdx, dfdy)
-                r = 0.d0
-                tpg = 0.d0
-                do i = 1, nno
-                    r = r+coorse(2*(i-1)+1)*zr(ivf2+k+i-1)
-                    tpg = tpg+zr(itempi-1+c(ise, i))*zr(ivf2+k+i-1)
-                end do
-                if (lteatt('AXIS', 'OUI')) poids = poids*r
-!
-                do i = 1, nno
-                    k = (kp-1)*nno
-                    vectt(c(ise, i)) = vectt( &
-                                       c(ise, i))+poids*(1.d0/deltat*khi*zr(ivf2+k+i-1)*tpg)
                 end do
             end do
 !
@@ -382,6 +277,5 @@ subroutine te0243(option, nomte)
     do i = 1, nnop2
         zr(iveres-1+i) = vectt(i)
     end do
-    if (zk16(icomp) (1:9) .eq. 'THER_HYDR') call ppgan2(jgano2, 1, 1, hydrgp, zr(ihydrp))
 ! FIN ------------------------------------------------------------------
 end subroutine

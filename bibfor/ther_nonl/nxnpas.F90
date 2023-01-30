@@ -80,7 +80,7 @@ subroutine nxnpas(sddisc, solver, nume_inst, ds_print, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    real(kind=8) :: theta, khi, timet, timtdt, theta_read, time_prev
+    real(kind=8) :: theta, timet, timtdt, theta_read, time_prev
     integer :: icoret, nbcham
     character(len=1) :: base
 !
@@ -95,19 +95,16 @@ subroutine nxnpas(sddisc, solver, nume_inst, ds_print, &
             time_curr = diinst(sddisc, nume_inst)
             deltat = -1.d150
             theta = 1.d0
-            khi = 0.d0
         else
             time_curr = 0.d0
             deltat = -1.d150
             theta = 1.d0
-            khi = 0.d0
         end if
     else
         time_curr = diinst(sddisc, nume_inst)
         time_prev = diinst(sddisc, nume_inst-1)
         deltat = time_curr-time_prev
         theta = theta_read
-        khi = 1.d0
     end if
     para(2) = deltat
 !
@@ -126,7 +123,7 @@ subroutine nxnpas(sddisc, solver, nume_inst, ds_print, &
     tpsthe(1) = time_curr
     tpsthe(2) = deltat
     tpsthe(3) = theta
-    tpsthe(4) = khi
+    tpsthe(4) = r8vide()
     tpsthe(5) = r8vide()
     tpsthe(6) = r8vide()
 !

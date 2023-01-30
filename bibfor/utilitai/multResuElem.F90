@@ -56,13 +56,13 @@ subroutine multResuElem(resu_elem, coef_mult)
     ASSERT(iret .ne. 0)
     call jeveuo(resu_elem(1:19)//'.DESC', 'L', vi=v_desc)
     nb_gr = v_desc(2)
-    
+
     do igr = 1, nb_gr
         call jaexin(jexnum(resu_elem(1:19)//'.RESL', igr), iret)
         if (iret .eq. 0) cycle
         call jeveuo(jexnum(resu_elem(1:19)//'.RESL', igr), 'E', vr=v_vale)
         call jelira(jexnum(resu_elem(1:19)//'.RESL', igr), 'LONMAX', nb_vale)
         v_vale(1:nb_vale) = coef_mult*v_vale(1:nb_vale)
-    enddo
+    end do
 !
 end subroutine

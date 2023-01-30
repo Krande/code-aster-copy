@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,14 +24,14 @@ interface
                       tpsthe   , time    , lonch    , compor     , varc_curr  ,&
                       temp_iter, vtempp  , vtempr   , temp_prev  , hydr_prev  ,&
                       hydr_curr, dry_prev, dry_curr , vec2nd     , cnvabt     ,&
-                      cnresi   , rho     , iterho   , ds_algopara)
+                      cnresi   , rho     , iterho   , ds_algopara, l_stat)
         use NonLin_Datastructure_type
         character(len=24), intent(in) :: model
         character(len=24), intent(in) :: mate, mateco
         character(len=24), intent(in) :: cara_elem
         character(len=19), intent(in) :: list_load
         character(len=24), intent(in) :: nume_dof
-        real(kind=8) :: tpsthe(6)
+        real(kind=8), intent(in) :: tpsthe(6)
         character(len=24), intent(in) :: time
         character(len=19), intent(in) :: varc_curr
         type(NL_DS_AlgoPara), intent(in) :: ds_algopara
@@ -50,5 +50,6 @@ interface
         character(len=24) :: cnresi
         real(kind=8) :: rho
         integer :: iterho
+        aster_logical, intent(in) :: l_stat
     end subroutine nxrech
 end interface
