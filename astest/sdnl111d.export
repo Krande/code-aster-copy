@@ -6,4 +6,4 @@ P mpi_nbnoeud 1
 P testlist verification sequential
 
 F comm sdnl111d.comm D 1
-F mmed sdnl111c.mmed D 20
+F mmed sdnl111d.mmed D 20

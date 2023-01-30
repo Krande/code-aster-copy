@@ -6,4 +6,4 @@ P mpi_nbnoeud 1
 P testlist verification sequential
 
 F comm ssnp139b.comm D 1
-F msh ssnp139a.msh D 19
+F msh ssnp139b.msh D 19
