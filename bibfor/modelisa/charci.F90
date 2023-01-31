@@ -75,7 +75,7 @@ subroutine charci(chcine, mfact, mo, valeType)
     integer, parameter :: mxcmp = 100
     character(len=8) :: k8b, mesh, nomgd, nogdsi, gdcns, answer
     character(len=8) :: evoim, licmp(20), chcity(mxcmp)
-    character(len=16), parameter :: motcle(5) = (/'GROUP_MA', 'MAILLE  ', &
+    character(len=16), parameter :: motcle(4) = (/'GROUP_MA',&
                                                   'GROUP_NO', 'NOEUD   ', &
                                                   'TOUT    '/)
     character(len=16) :: keywordFact, phenom, typco, userDOFName(mxcmp)
@@ -209,7 +209,7 @@ subroutine charci(chcine, mfact, mo, valeType)
 !
 ! ----- NOEUDS A CONTRAINDRE :
         call reliem(' ', mesh, 'NU_NOEUD', keywordFact, ioc, &
-                    5, motcle, motcle, userNodeName, userNodeNb)
+                    4, motcle, motcle, userNodeName, userNodeNb)
         if (userNodeNb .eq. 0) goto 100
         call jeveuo(userNodeName, 'L', idino)
 !

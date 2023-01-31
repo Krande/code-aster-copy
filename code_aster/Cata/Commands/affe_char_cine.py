@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -59,7 +59,7 @@ AFFE_CHAR_CINE = OPER(
         statut="f",
         max="**",
         regles=(
-            UN_PARMI("TOUT", "GROUP_MA", "MAILLE", "GROUP_NO", "NOEUD"),
+            UN_PARMI("TOUT", "GROUP_MA", "GROUP_NO", "NOEUD"),
             AU_MOINS_UN(
                 "DX",
                 "DY",
@@ -139,7 +139,6 @@ AFFE_CHAR_CINE = OPER(
         ),
         TOUT=SIMP(statut="f", typ="TXM", into=("OUI",)),
         GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
-        MAILLE=SIMP(statut="c", typ=ma, validators=NoRepeat(), max="**"),
         GROUP_NO=SIMP(statut="f", typ=grno, validators=NoRepeat(), max="**"),
         NOEUD=SIMP(statut="c", typ=no, validators=NoRepeat(), max="**"),
         DX=SIMP(statut="f", typ="R"),
@@ -221,7 +220,7 @@ AFFE_CHAR_CINE = OPER(
         statut="f",
         max="**",
         regles=(
-            UN_PARMI("TOUT", "GROUP_MA", "MAILLE", "GROUP_NO", "NOEUD"),
+            UN_PARMI("TOUT", "GROUP_MA", "GROUP_NO"),
             AU_MOINS_UN("TEMP", "TEMP_MIL", "TEMP_INF", "TEMP_SUP"),
         ),
         TOUT=SIMP(statut="f", typ="TXM", into=("OUI",)),
@@ -237,12 +236,10 @@ AFFE_CHAR_CINE = OPER(
     ACOU_IMPO=FACT(
         statut="f",
         max="**",
-        regles=(UN_PARMI("TOUT", "GROUP_MA", "MAILLE", "GROUP_NO", "NOEUD"),),
+        regles=(UN_PARMI("TOUT", "GROUP_MA", "GROUP_NO"),),
         TOUT=SIMP(statut="f", typ="TXM", into=("OUI",)),
         GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
-        MAILLE=SIMP(statut="c", typ=ma, validators=NoRepeat(), max="**"),
         GROUP_NO=SIMP(statut="f", typ=grno, validators=NoRepeat(), max="**"),
-        NOEUD=SIMP(statut="c", typ=no, validators=NoRepeat(), max="**"),
         PRES=SIMP(statut="o", typ="C"),
     ),
     EVOL_IMPO=SIMP(
