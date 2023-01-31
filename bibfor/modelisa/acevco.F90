@@ -16,14 +16,14 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine acevco(nbocc, nlm, nlg, ier)
+subroutine acevco(nbocc, nlg, ier)
     implicit none
 #include "asterc/getres.h"
 #include "asterfort/getvid.h"
 #include "asterfort/getvr8.h"
 #include "asterfort/getvtx.h"
 #include "asterfort/utmess.h"
-    integer :: nbocc, nlm, nlg, ier
+    integer :: nbocc, nlg, ier
 !                          AFFE_CARA_ELEM
 !
 !        VERIFICATION DES MOTS CLES POUR L'ELEMENT COQUE
@@ -32,23 +32,20 @@ subroutine acevco(nbocc, nlm, nlg, ier)
 !  IN
 !     NBOCC  : NOMBRE D'OCCURENCE
 !  OUT
-!     NLM    : NOMBRE TOTAL DE MAILLE
 !     NLG    : NOMBRE TOTAL DE GROUPE DE MAILLE
 !  IN/OUT
 !     IER    : CUMUL DES ERREURS
 ! ----------------------------------------------------------------------
     integer :: ioc, nco, ne, nef, nex, nexf, ng, nin
-    integer :: nk, nm, nsom
+    integer :: nk
     character(len=8) :: k8b, nomu
     character(len=16) :: concep, cmd
 !-----------------------------------------------------------------------
     call getres(nomu, concep, cmd)
 !
-    nlm = 0
     nlg = 0
     do ioc = 1, nbocc
         call getvtx('COQUE', 'GROUP_MA', iocc=ioc, nbval=0, nbret=ng)
-        call getvtx('COQUE', 'MAILLE', iocc=ioc, nbval=0, nbret=nm)
         call getvr8('COQUE', 'EPAIS', iocc=ioc, nbval=0, nbret=ne)
         call getvid('COQUE', 'EPAIS_FO', iocc=ioc, nbval=0, nbret=nef)
         call getvr8('COQUE', 'A_CIS', iocc=ioc, nbval=0, nbret=nk)
@@ -70,11 +67,7 @@ subroutine acevco(nbocc, nlm, nlg, ier)
             end if
         end if
 !
-        nsom = ng+nm
-        if (nsom .eq. ng .or. nsom .eq. nm) then
-            nlm = max(nlm, -nm)
-            nlg = max(nlg, -ng)
-        end if
+        nlg = max(nlg, -ng)
     end do
 !
 end subroutine

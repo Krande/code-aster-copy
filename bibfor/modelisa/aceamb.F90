@@ -57,7 +57,7 @@ subroutine aceamb(nomu, noma, lmax, nbocc)
 !     LMAX   : LONGUEUR
 !     NBOCC  : NOMBRE D'OCCURENCES DU MOT CLE MEMBRANE
 ! ----------------------------------------------------------------------
-    integer :: jdcc, jdvc, jdls, ioc, ng, nm, iret, jdls2
+    integer :: jdcc, jdvc, jdls, ioc, ng, iret
     integer :: n1, n2, n3, n4, n5, n6
     integer :: i, nbmat, nbma, ncomp
     integer :: ima, nbno, adrm, numa, jgrma, igr, nbmat0
@@ -95,7 +95,6 @@ subroutine aceamb(nomu, noma, lmax, nbocc)
     epsi = 1.0d-6
 !
     call wkvect('&&TMPMEMBRANE', 'V V K24', lmax, jdls)
-    call wkvect('&&TMPMEMBRANE2', 'V V K8', lmax, jdls2)
 !
     zk8(jdcc) = 'EP'
     zk8(jdcc+1) = 'ALPHA'
@@ -112,8 +111,6 @@ subroutine aceamb(nomu, noma, lmax, nbocc)
 !
         call getvem(noma, 'GROUP_MA', 'MEMBRANE', 'GROUP_MA', ioc, &
                     lmax, zk24(jdls), ng)
-        call getvem(noma, 'MAILLE', 'MEMBRANE', 'MAILLE', ioc, &
-                    lmax, zk8(jdls2), nm)
 !
         call getvr8('MEMBRANE', 'ANGL_REP_1', iocc=ioc, nbval=2, vect=ang, &
                     nbret=n1)
@@ -157,11 +154,6 @@ subroutine aceamb(nomu, noma, lmax, nbocc)
                     call nocart(cartgr, 2, ncomp, groupma=zk24(jdls+i-1))
                 end do
             end if
-! ---       "MAILLE" = TOUTES LES MAILLES DE LA LISTE DE MAILLES
-            if (nm .gt. 0) then
-                call nocart(cartgr, 3, ncomp, mode='NOM', nma=nm, &
-                            limano=zk8(jdls2))
-            end if
 !
 !       SI ANGL_REP_2 OU VECT_2 SONT RENSEIGNES
         else
@@ -177,12 +169,6 @@ subroutine aceamb(nomu, noma, lmax, nbocc)
                         numa = numa+1
                         nume_ma(numa+1) = zi(jgrma+ima)
                     end do
-                end do
-            else
-                nbmat = nm
-                do ima = 0, nm-1
-                    kjexn = jexnom(nomama, zk8(jdls2+ima))
-                    call jenonu(kjexn, nume_ma(ima+1))
                 end do
             end if
 !
@@ -241,7 +227,6 @@ subroutine aceamb(nomu, noma, lmax, nbocc)
 !
     AS_DEALLOCATE(vi=nume_ma)
     call jedetr('&&TMPMEMBRANE')
-    call jedetr('&&TMPMEMBRANE2')
     call jedetr(tmpngr)
     call jedetr(tmpvgr)
 !

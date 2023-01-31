@@ -66,7 +66,7 @@ subroutine aceatu(noma, nomo, nbepo, ntyele, ivr, nbocc)
 !
     integer :: iext1, iext2, ima, inn, ioc, jcozk, jdco, jdgn, jdno, jdme
     integer ::   jma, jnozk
-    integer :: nbext2, nbpart, nbtuy, ncar, ni1, ni2, nj, nj1, nj2, nn, nng
+    integer :: nbext2, nbpart, nbtuy, ncar, ni1, ni2, nj, nj1, nj2, nng
     integer :: numnoe, nutyel, nval, ixma, j
     integer ::  nno, nbtuy4, nbext1, jzkpar, ibid
     integer :: ier, nbmail
@@ -233,7 +233,6 @@ subroutine aceatu(noma, nomo, nbepo, ntyele, ivr, nbocc)
         do ioc = 1, nbocc(ACE_ORIENTATION)
 !           Un seul noeud permis
             call getvem(noma, 'GROUP_NO', 'ORIENTATION', 'GROUP_NO', ioc, 1, nomlu, nj)
-            call getvem(noma, 'NOEUD', 'ORIENTATION', 'NOEUD', ioc, 1, nomlu, nn)
             call getvtx('ORIENTATION', 'CARA', iocc=ioc, scal=car, nbret=ncar)
             call getvr8('ORIENTATION', 'VALE', iocc=ioc, nbval=3, vect=val, nbret=nval)
             call getvr8('ORIENTATION', 'PRECISION', iocc=ioc, scal=epsi, nbret=ibid)
@@ -257,20 +256,6 @@ subroutine aceatu(noma, nomo, nbepo, ntyele, ivr, nbocc)
                             ier = 1
                             goto 999
                         end if
-                    else
-                        ier = 1
-                        goto 999
-                    end if
-                end if
-                if (nn .gt. 0) then
-                    if (nn .eq. 1) then
-                        nomnoe = nomlu
-                        call jenonu(jexnom(mlgnno, nomnoe), numnoe)
-                        inn = inn+1
-                        zi(jnozk-1+inn) = numnoe
-                        zr(jcozk-1+3*inn-2) = val(1)
-                        zr(jcozk-1+3*inn-1) = val(2)
-                        zr(jcozk-1+3*inn) = val(3)
                     else
                         ier = 1
                         goto 999

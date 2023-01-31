@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine acevba(nbocc, nlm, nlg, ier)
+subroutine acevba(nbocc, nlg, ier)
     implicit none
 #include "jeveux.h"
 #include "asterc/getres.h"
@@ -30,12 +30,11 @@ subroutine acevba(nbocc, nlm, nlg, ier)
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/utmess.h"
-    integer :: nbocc, nlm, nlg, ier
+    integer :: nbocc, nlg, ier
 !     AFFE_CARA_ELEM
 !     VERIFICATION DES MOTS CLES POUR L'ELEMENT BARRE
 ! ----------------------------------------------------------------------
 ! IN  : NBOCC  : NOMBRE D'OCCURENCE
-! OUT : NLM    : NOMBRE TOTAL DE MAILLE
 ! OUT : NLG    : NOMBRE TOTAL DE GROUPE DE MAILLE
 ! ----------------------------------------------------------------------
 !     NSECBA : NOMBRE DE SECTIONS PAR BARRE
@@ -51,7 +50,7 @@ subroutine acevba(nbocc, nlm, nlg, ier)
     integer :: i, ioc, irece, irech
     integer :: l, nbcar
     integer :: nbo, nbval, nc, ncar, ncara, ncmax, ndim
-    integer :: ng, nm, ns, nsec, nsecba, nsom, ntypse
+    integer :: ng, ns, nsec, nsecba, ntypse
     integer :: nv, nval
     character(len=8), pointer :: cara(:) => null()
     character(len=8), pointer :: carbar(:) => null()
@@ -88,12 +87,10 @@ subroutine acevba(nbocc, nlm, nlg, ier)
     AS_ALLOCATE(vr=vale, size=nbval)
 !
     tst = r8maem()
-    nlm = 0
     nlg = 0
     do ioc = 1, nbocc
         call codent(ioc, 'G', kioc)
         call getvtx('BARRE', 'GROUP_MA', iocc=ioc, nbval=0, nbret=ng)
-        call getvtx('BARRE', 'MAILLE', iocc=ioc, nbval=0, nbret=nm)
         call getvtx('BARRE', 'SECTION', iocc=ioc, nbval=0, nbret=ns)
         call getvtx('BARRE', 'SECTION', iocc=ioc, scal=sec, nbret=nsec)
         call getvtx('BARRE', 'CARA', iocc=ioc, nbval=0, nbret=nc)
@@ -191,12 +188,7 @@ subroutine acevba(nbocc, nlm, nlg, ier)
             end if
         end if
 !
-! ---    GROUP_MA + GROUP_NO + NOEUD + MAILLE
-        nsom = ng+nm
-        if (nsom .eq. ng .or. nsom .eq. nm) then
-            nlm = max(nlm, -nm)
-            nlg = max(nlg, -ng)
-        end if
+        nlg = max(nlg, -ng)
 !
     end do
 !

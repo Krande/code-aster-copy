@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -616,9 +616,7 @@ AFFE_CARA_ELEM = OPER(
     BARRE=FACT(
         statut="f",
         max="**",
-        regles=(UN_PARMI("MAILLE", "GROUP_MA"),),
-        MAILLE=SIMP(statut="c", typ=ma, validators=NoRepeat(), max="**"),
-        GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
+        GROUP_MA=SIMP(statut="o", typ=grma, validators=NoRepeat(), max="**"),
         SECTION=SIMP(statut="o", typ="TXM", into=("GENERALE", "RECTANGLE", "CERCLE")),
         b_generale=BLOC(
             condition="""equal_to("SECTION", 'GENERALE')""",
@@ -678,15 +676,13 @@ AFFE_CARA_ELEM = OPER(
         statut="f",
         max="**",
         regles=(
-            UN_PARMI("MAILLE", "GROUP_MA"),
             EXCLUS("ANGL_REP", "VECTEUR"),
             PRESENT_PRESENT("EXCENTREMENT", "INER_ROTA"),
             PRESENT_PRESENT("EXCENTREMENT_FO", "INER_ROTA"),
             UN_PARMI("EPAIS", "EPAIS_FO"),
             EXCLUS("EXCENTREMENT", "EXCENTREMENT_FO"),
         ),
-        MAILLE=SIMP(statut="c", typ=ma, validators=NoRepeat(), max="**"),
-        GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
+        GROUP_MA=SIMP(statut="o", typ=grma, validators=NoRepeat(), max="**"),
         EPAIS=SIMP(statut="f", typ="R"),
         EPAIS_FO=SIMP(statut="f", typ=(fonction_sdaster, nappe_sdaster, formule)),
         ANGL_REP=SIMP(statut="f", typ="R", min=2, max=2),
@@ -704,9 +700,7 @@ AFFE_CARA_ELEM = OPER(
     CABLE=FACT(
         statut="f",
         max="**",
-        regles=(UN_PARMI("MAILLE", "GROUP_MA"),),
-        MAILLE=SIMP(statut="c", typ=ma, validators=NoRepeat(), max="**"),
-        GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
+        GROUP_MA=SIMP(statut="o", typ=grma, validators=NoRepeat(), max="**"),
         N_INIT=SIMP(statut="o", typ="R"),
         SECTION=SIMP(statut="o", typ="R"),
         FCX=SIMP(statut="f", typ=(fonction_sdaster, nappe_sdaster, formule)),
@@ -968,82 +962,62 @@ AFFE_CARA_ELEM = OPER(
             b_AK_T_D_N=BLOC(
                 condition="""((equal_to("CARA", 'K_T_D_N')or(equal_to("CARA", 'A_T_D_N'))))""",
                 fr=tr("POI1: 2 valeurs (triangulaire supérieure par colonne)"),
-                regles=(UN_PARMI("MAILLE", "GROUP_MA"),),
-                MAILLE=SIMP(statut="c", typ=ma, validators=NoRepeat(), max="**"),
-                GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
+                GROUP_MA=SIMP(statut="o", typ=grma, validators=NoRepeat(), max="**"),
                 VALE=SIMP(statut="o", typ="R", min=2, max=2),
             ),
             b_AK_T_D_L=BLOC(
                 condition="""((equal_to("CARA", 'K_T_D_L')or(equal_to("CARA", 'A_T_D_L'))))""",
                 fr=tr("SEGMENT: 2 valeurs (triangulaire supérieure par colonne)"),
-                regles=(UN_PARMI("MAILLE", "GROUP_MA"),),
-                MAILLE=SIMP(statut="c", typ=ma, validators=NoRepeat(), max="**"),
-                GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
+                GROUP_MA=SIMP(statut="o", typ=grma, validators=NoRepeat(), max="**"),
                 VALE=SIMP(statut="o", typ="R", min=2, max=2),
             ),
             b_AK_TR_D_N=BLOC(
                 condition="""((equal_to("CARA", 'K_TR_D_N')or(equal_to("CARA", 'A_TR_D_N'))))""",
                 fr=tr("POI1: 3 valeurs (triangulaire supérieure par colonne)"),
-                regles=(UN_PARMI("MAILLE", "GROUP_MA"),),
-                MAILLE=SIMP(statut="c", typ=ma, validators=NoRepeat(), max="**"),
-                GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
+                GROUP_MA=SIMP(statut="o", typ=grma, validators=NoRepeat(), max="**"),
                 VALE=SIMP(statut="o", typ="R", min=3, max=3),
             ),
             b_AK_TR_D_L=BLOC(
                 condition="""((equal_to("CARA", 'K_TR_D_L')or(equal_to("CARA", 'A_TR_D_L'))))""",
                 fr=tr("SEGMENT: 3 valeurs (triangulaire supérieure par colonne)"),
-                regles=(UN_PARMI("MAILLE", "GROUP_MA"),),
-                MAILLE=SIMP(statut="c", typ=ma, validators=NoRepeat(), max="**"),
-                GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
+                GROUP_MA=SIMP(statut="o", typ=grma, validators=NoRepeat(), max="**"),
                 VALE=SIMP(statut="o", typ="R", min=3, max=3),
             ),
             b_MAK_T_N=BLOC(
                 condition="""((equal_to("CARA", 'K_T_N')or(equal_to("CARA", 'A_T_N')or(equal_to("CARA", 'M_T_N')))))""",
                 fr=tr("POI1: 3 valeurs (triangulaire supérieure par colonne)"),
-                regles=(UN_PARMI("MAILLE", "GROUP_MA"),),
-                MAILLE=SIMP(statut="c", typ=ma, validators=NoRepeat(), max="**"),
-                GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
+                GROUP_MA=SIMP(statut="o", typ=grma, validators=NoRepeat(), max="**"),
                 VALE=SIMP(statut="o", typ="R", min=3, max=3),
             ),
             b_MAK_T_L=BLOC(
                 condition="""((equal_to("CARA", 'K_T_L')or(equal_to("CARA", 'A_T_L')or(equal_to("CARA", 'M_T_L')))))""",
                 fr=tr("SEGMENT: 10 valeurs (triangulaire supérieure par colonne)"),
-                regles=(UN_PARMI("MAILLE", "GROUP_MA"),),
-                MAILLE=SIMP(statut="c", typ=ma, validators=NoRepeat(), max="**"),
-                GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
+                GROUP_MA=SIMP(statut="o", typ=grma, validators=NoRepeat(), max="**"),
                 VALE=SIMP(statut="o", typ="R", min=10, max=10),
             ),
             b_MAK_TR_N=BLOC(
                 condition="""((equal_to("CARA", 'K_TR_N')or(equal_to("CARA", 'A_TR_N')or(equal_to("CARA", 'M_TR_N')))))""",
                 fr=tr("POI1: 6 valeurs (triangulaire supérieure par colonne)"),
-                regles=(UN_PARMI("MAILLE", "GROUP_MA"),),
-                MAILLE=SIMP(statut="c", typ=ma, validators=NoRepeat(), max="**"),
-                GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
+                GROUP_MA=SIMP(statut="o", typ=grma, validators=NoRepeat(), max="**"),
                 VALE=SIMP(statut="o", typ="R", min=6, max=6),
             ),
             b_MAK_TR_L=BLOC(
                 condition="""((equal_to("CARA", 'K_TR_L')or(equal_to("CARA", 'A_TR_L')or(equal_to("CARA", 'M_TR_L')))))""",
                 fr=tr("SEGMENT: 21 valeurs (triangulaire supérieure par colonne)"),
-                regles=(UN_PARMI("MAILLE", "GROUP_MA"),),
-                MAILLE=SIMP(statut="c", typ=ma, validators=NoRepeat(), max="**"),
-                GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
+                GROUP_MA=SIMP(statut="o", typ=grma, validators=NoRepeat(), max="**"),
                 VALE=SIMP(statut="o", typ="R", min=21, max=21),
             ),
             #  Affection des caractéristiques de MASSE
             b_M_T_D_N=BLOC(
                 condition="""(equal_to("CARA", 'M_T_D_N'))""",
                 fr=tr("POI1: 1 valeur de masse"),
-                regles=(UN_PARMI("MAILLE", "GROUP_MA"),),
-                MAILLE=SIMP(statut="c", typ=ma, validators=NoRepeat(), max="**"),
-                GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
+                GROUP_MA=SIMP(statut="o", typ=grma, validators=NoRepeat(), max="**"),
                 VALE=SIMP(statut="o", typ="R", min=1, max=1),
             ),
             b_M_T_D_L=BLOC(
                 condition="""(equal_to("CARA", 'M_T_D_L'))""",
                 fr=tr("SEGMENT: 1 valeur de masse"),
-                regles=(UN_PARMI("MAILLE", "GROUP_MA"),),
-                MAILLE=SIMP(statut="c", typ=ma, validators=NoRepeat(), max="**"),
-                GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
+                GROUP_MA=SIMP(statut="o", typ=grma, validators=NoRepeat(), max="**"),
                 VALE=SIMP(statut="o", typ="R", min=1, max=1),
             ),
             b_M_TR_D_N=BLOC(
@@ -1051,17 +1025,13 @@ AFFE_CARA_ELEM = OPER(
                 fr=tr(
                     "POI1: 1 valeur de masse, 1 valeur d'inertie, 2 composantes du vecteur d'excentrement"
                 ),
-                regles=(UN_PARMI("MAILLE", "GROUP_MA"),),
-                MAILLE=SIMP(statut="c", typ=ma, validators=NoRepeat(), max="**"),
-                GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
+                GROUP_MA=SIMP(statut="o", typ=grma, validators=NoRepeat(), max="**"),
                 VALE=SIMP(statut="o", typ="R", min=4, max=4),
             ),
             b_M_TR_D_L=BLOC(
                 condition="""(equal_to("CARA", 'M_TR_D_L'))""",
                 fr=tr("SEGMENT: 1 valeur de masse, 1 valeur d'inertie"),
-                regles=(UN_PARMI("MAILLE", "GROUP_MA"),),
-                MAILLE=SIMP(statut="c", typ=ma, validators=NoRepeat(), max="**"),
-                GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
+                GROUP_MA=SIMP(statut="o", typ=grma, validators=NoRepeat(), max="**"),
                 VALE=SIMP(statut="o", typ="R", min=2, max=2),
             ),
         ),
@@ -1098,33 +1068,25 @@ AFFE_CARA_ELEM = OPER(
             b_MAK_T_N_NS=BLOC(
                 condition="""((equal_to("CARA", 'K_T_N')or(equal_to("CARA", 'A_T_N')or(equal_to("CARA", 'M_T_N')))))""",
                 fr=tr("POI1: 4 valeurs (matrice pleine par colonne)"),
-                regles=(UN_PARMI("MAILLE", "GROUP_MA"),),
-                MAILLE=SIMP(statut="c", typ=ma, validators=NoRepeat(), max="**"),
-                GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
+                GROUP_MA=SIMP(statut="o", typ=grma, validators=NoRepeat(), max="**"),
                 VALE=SIMP(statut="o", typ="R", min=4, max=4),
             ),
             b_MAK_T_L_NS=BLOC(
                 condition="""((equal_to("CARA", 'K_T_L')or(equal_to("CARA", 'A_T_L')or(equal_to("CARA", 'M_T_L')))))""",
                 fr=tr("SEGMENT: 16 valeurs (matrice pleine par colonne)"),
-                regles=(UN_PARMI("MAILLE", "GROUP_MA"),),
-                MAILLE=SIMP(statut="c", typ=ma, validators=NoRepeat(), max="**"),
-                GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
+                GROUP_MA=SIMP(statut="o", typ=grma, validators=NoRepeat(), max="**"),
                 VALE=SIMP(statut="o", typ="R", min=16, max=16),
             ),
             b_MAK_TR_N_NS=BLOC(
                 condition="""((equal_to("CARA", 'K_TR_N')or(equal_to("CARA", 'A_TR_N')or(equal_to("CARA", 'M_TR_N')))))""",
                 fr=tr("POI1: 9 valeurs (matrice pleine par colonne)"),
-                regles=(UN_PARMI("MAILLE", "GROUP_MA"),),
-                MAILLE=SIMP(statut="c", typ=ma, validators=NoRepeat(), max="**"),
-                GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
+                GROUP_MA=SIMP(statut="o", typ=grma, validators=NoRepeat(), max="**"),
                 VALE=SIMP(statut="o", typ="R", min=9, max=9),
             ),
             b_MAK_TR_L_NS=BLOC(
                 condition="""((equal_to("CARA", 'K_TR_L')or(equal_to("CARA", 'A_TR_L')or(equal_to("CARA", 'M_TR_L')))))""",
                 fr=tr("SEGMENT: 36 valeurs (matrice pleine par colonne)"),
-                regles=(UN_PARMI("MAILLE", "GROUP_MA"),),
-                MAILLE=SIMP(statut="c", typ=ma, validators=NoRepeat(), max="**"),
-                GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
+                GROUP_MA=SIMP(statut="o", typ=grma, validators=NoRepeat(), max="**"),
                 VALE=SIMP(statut="o", typ="R", min=36, max=36),
             ),
         ),
@@ -1142,9 +1104,7 @@ AFFE_CARA_ELEM = OPER(
         b_cara_vect_y=BLOC(
             condition="""(equal_to("CARA", 'VECT_Y'))""",
             fr=tr("Maille de longueur non nulle."),
-            regles=(UN_PARMI("MAILLE", "GROUP_MA"),),
-            MAILLE=SIMP(statut="c", typ=ma, validators=NoRepeat(), max="**"),
-            GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
+            GROUP_MA=SIMP(statut="o", typ=grma, validators=NoRepeat(), max="**"),
             VALE=SIMP(
                 statut="o",
                 typ="R",
@@ -1165,9 +1125,7 @@ AFFE_CARA_ELEM = OPER(
         b_cara_angl_vril=BLOC(
             condition="""(equal_to("CARA", 'ANGL_VRIL'))""",
             fr=tr("Maille de longueur non nulle."),
-            regles=(UN_PARMI("MAILLE", "GROUP_MA"),),
-            MAILLE=SIMP(statut="c", typ=ma, validators=NoRepeat(), max="**"),
-            GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
+            GROUP_MA=SIMP(statut="o", typ=grma, validators=NoRepeat(), max="**"),
             VALE=SIMP(
                 statut="o", typ="R", fr=tr("Angle de rotation du repère autour de l'axe X local.")
             ),
@@ -1182,9 +1140,7 @@ AFFE_CARA_ELEM = OPER(
         b_cara_vect_x_y=BLOC(
             condition="""(equal_to("CARA", 'VECT_X_Y'))""",
             fr=tr("Maille de longueur nulle."),
-            regles=(UN_PARMI("MAILLE", "GROUP_MA"),),
-            MAILLE=SIMP(statut="c", typ=ma, validators=NoRepeat(), max="**"),
-            GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
+            GROUP_MA=SIMP(statut="o", typ=grma, validators=NoRepeat(), max="**"),
             VALE=SIMP(
                 statut="o",
                 typ="R",
@@ -1203,9 +1159,7 @@ AFFE_CARA_ELEM = OPER(
         b_cara_angl_naut=BLOC(
             condition="""(equal_to("CARA", 'ANGL_NAUT'))""",
             fr=tr("Maille de longueur nulle."),
-            regles=(UN_PARMI("MAILLE", "GROUP_MA"),),
-            MAILLE=SIMP(statut="c", typ=ma, validators=NoRepeat(), max="**"),
-            GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
+            GROUP_MA=SIMP(statut="o", typ=grma, validators=NoRepeat(), max="**"),
             VALE=SIMP(
                 statut="o",
                 typ="R",
@@ -1224,9 +1178,7 @@ AFFE_CARA_ELEM = OPER(
         b_cara_gene_tuyau=BLOC(
             condition="""(equal_to("CARA", 'GENE_TUYAU'))""",
             fr=tr("Orientation des tuyaux."),
-            regles=(UN_PARMI("NOEUD", "GROUP_NO"),),
-            NOEUD=SIMP(statut="c", typ=no, validators=NoRepeat(), max="**"),
-            GROUP_NO=SIMP(statut="f", typ=grno, validators=NoRepeat(), max="**"),
+            GROUP_NO=SIMP(statut="o", typ=grno, validators=NoRepeat(), max="**"),
             VALE=SIMP(
                 statut="o",
                 typ="R",
@@ -1244,15 +1196,13 @@ AFFE_CARA_ELEM = OPER(
         statut="f",
         max="**",
         regles=(
-            UN_PARMI("MAILLE", "GROUP_MA"),
             UN_PARMI("ANGL_REP", "ANGL_AXE", "ANGL_EULER"),
             EXCLUS("ANGL_REP", "ANGL_EULER"),
             EXCLUS("ANGL_REP", "ANGL_AXE"),
             EXCLUS("ANGL_REP", "ORIG_AXE"),
             PRESENT_PRESENT("ANGL_AXE", "ORIG_AXE"),
         ),
-        MAILLE=SIMP(statut="c", typ=ma, validators=NoRepeat(), max="**"),
-        GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
+        GROUP_MA=SIMP(statut="o", typ=grma, validators=NoRepeat(), max="**"),
         ANGL_REP=SIMP(statut="f", typ="R", min=1, max=3, fr=tr("Un angle en 2D, 3 angles en 3D.")),
         ANGL_EULER=SIMP(
             statut="f", typ="R", min=1, max=3, fr=tr("Un angle en 2D, 3 angles en 3D.")
@@ -1267,9 +1217,7 @@ AFFE_CARA_ELEM = OPER(
     POUTRE_FLUI=FACT(
         statut="f",
         max="**",
-        regles=(UN_PARMI("MAILLE", "GROUP_MA"),),
-        MAILLE=SIMP(statut="c", typ=ma, validators=NoRepeat(), max="**"),
-        GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
+        GROUP_MA=SIMP(statut="o", typ=grma, validators=NoRepeat(), max="**"),
         B_T=SIMP(statut="o", typ="R"),
         B_N=SIMP(statut="o", typ="R"),
         B_TN=SIMP(statut="f", typ="R", defaut=0.0e0),
@@ -1330,11 +1278,9 @@ AFFE_CARA_ELEM = OPER(
         statut="f",
         max="**",
         regles=(
-            UN_PARMI("MAILLE", "GROUP_MA"),
             EXCLUS("ANGL_REP_1", "ANGL_REP_2", "VECT_1", "VECT_2"),
         ),
-        MAILLE=SIMP(statut="c", typ=ma, validators=NoRepeat(), max="**"),
-        GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
+        GROUP_MA=SIMP(statut="o", typ=grma, validators=NoRepeat(), max="**"),
         EPAIS=SIMP(
             statut="o",
             typ="R",
@@ -1510,9 +1456,7 @@ AFFE_CARA_ELEM = OPER(
     MULTIFIBRE=FACT(
         statut="f",
         max="**",
-        regles=(AU_MOINS_UN("GROUP_MA", "MAILLE"),),
-        GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
-        MAILLE=SIMP(statut="c", typ=ma, validators=NoRepeat(), max="**"),
+        GROUP_MA=SIMP(statut="o", typ=grma, validators=NoRepeat(), max="**"),
         GROUP_FIBRE=SIMP(statut="o", typ="TXM", max="**"),
         PREC_AIRE=SIMP(statut="f", typ="R", defaut=0.01),
         PREC_INERTIE=SIMP(statut="f", typ="R", defaut=0.1),

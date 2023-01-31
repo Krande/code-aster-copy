@@ -47,7 +47,7 @@ subroutine aceama(nomu, noma, lmax, nbocc)
 ! --- CONSTRUCTION DES CARTES ET ALLOCATION
 !-----------------------------------------------------------------------
     integer :: i, ioc, jdcc, jdls, jdvc, naxe, neul
-    integer :: ng, nm, norig, nrep, jdls2
+    integer :: ng, norig, nrep
 !-----------------------------------------------------------------------
     call jemarq()
     cartma = nomu//'.CARMASSI'
@@ -59,7 +59,6 @@ subroutine aceama(nomu, noma, lmax, nbocc)
     call jeveuo(tmpvma, 'E', jdvc)
 !
     call wkvect('&&TMPMASSIF', 'V V K24', lmax, jdls)
-    call wkvect('&&TMPMASSIF2', 'V V K8', lmax, jdls2)
 !
 !     STOCKAGE DE VALEURS NULLES SUR TOUT LE MAILLAGE
 !
@@ -91,8 +90,6 @@ subroutine aceama(nomu, noma, lmax, nbocc)
         orig(3) = 0.d0
         call getvem(noma, 'GROUP_MA', 'MASSIF', 'GROUP_MA', ioc, &
                     lmax, zk24(jdls), ng)
-        call getvem(noma, 'MAILLE', 'MASSIF', 'MAILLE', ioc, &
-                    lmax, zk8(jdls2), nm)
         call getvr8('MASSIF', 'ANGL_REP', iocc=ioc, nbval=3, vect=ang(1), &
                     nbret=nrep)
         call getvr8('MASSIF', 'ANGL_EULER', iocc=ioc, nbval=3, vect=angeul(1), &
@@ -136,17 +133,9 @@ subroutine aceama(nomu, noma, lmax, nbocc)
             end do
         end if
 !
-! ---    "MAILLE" = TOUTES LES MAILLES DE LA LISTE DE MAILLES
-!
-        if (nm .gt. 0) then
-            call nocart(cartma, 3, 7, mode='NOM', nma=nm, &
-                        limano=zk8(jdls2))
-        end if
-!
     end do
 !
     call jedetr('&&TMPMASSIF')
-    call jedetr('&&TMPMASSIF2')
     call jedetr(tmpnma)
     call jedetr(tmpvma)
 !

@@ -45,7 +45,7 @@ subroutine aceapf(nomu, noma, lmax, nbocc)
 ! --- CONSTRUCTION DES CARTES ET ALLOCATION
 !-----------------------------------------------------------------------
     integer :: i, ioc, jdcc, jdls, jdvc, nace, nafl
-    integer :: nb1, nb2, nb3, ng, nm, nr, jdls2
+    integer :: nb1, nb2, nb3, ng, nm, nr
 !-----------------------------------------------------------------------
     call jemarq()
     cartpf = nomu//'.CARPOUFL'
@@ -56,7 +56,6 @@ subroutine aceapf(nomu, noma, lmax, nbocc)
     call jeveuo(tmpvpf, 'E', jdvc)
 !
     call wkvect('&&TMPPOUFL', 'V V K24', lmax, jdls)
-    call wkvect('&&TMPPOUFL2', 'V V K8', lmax, jdls2)
 !
     zk8(jdcc) = 'B_T'
     zk8(jdcc+1) = 'B_N'
@@ -75,8 +74,6 @@ subroutine aceapf(nomu, noma, lmax, nbocc)
         rapp = 0.d0
         call getvem(noma, 'GROUP_MA', 'POUTRE_FLUI', 'GROUP_MA', ioc, &
                     lmax, zk24(jdls), ng)
-        call getvem(noma, 'MAILLE', 'POUTRE_FLUI', 'MAILLE', ioc, &
-                    lmax, zk8(jdls2), nm)
         call getvr8('POUTRE_FLUI', 'B_T', iocc=ioc, scal=b(1), nbret=nb1)
         call getvr8('POUTRE_FLUI', 'B_N', iocc=ioc, scal=b(2), nbret=nb2)
         call getvr8('POUTRE_FLUI', 'B_TN', iocc=ioc, scal=b(3), nbret=nb3)
@@ -99,17 +96,9 @@ subroutine aceapf(nomu, noma, lmax, nbocc)
             end do
         end if
 !
-! ---    "MAILLE" = TOUTES LES MAILLES DE LA LISTE DE MAILLES
-!
-        if (nm .gt. 0) then
-            call nocart(cartpf, 3, 6, mode='NOM', nma=nm, &
-                        limano=zk8(jdls2))
-        end if
-!
     end do
 !
     call jedetr('&&TMPPOUFL')
-    call jedetr('&&TMPPOUFL2')
     call jedetr(tmpnpf)
     call jedetr(tmpvpf)
 !

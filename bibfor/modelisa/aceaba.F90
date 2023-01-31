@@ -28,7 +28,7 @@ subroutine aceaba(noma, nomo, lmax, nbarre, nbocc, &
 ! IN  :
 !       NOMA    : Nom du maillage
 !       NOMO    : Nom du modèle
-!       LMAX    : Nombre max de maille ou groupe de maille
+!       LMAX    : Nombre max groupe de maille
 !       NBARRE  : Nombre de barre du modele
 !       NBOCC   : Nombre d'occurences du mot clef BARRE
 !       MCLF    : Ici c'est 'BARRE'
@@ -82,7 +82,7 @@ subroutine aceaba(noma, nomo, lmax, nbarre, nbocc, &
     integer :: jdme, jdvba, jdvbaf
     integer :: k, nbaaff, nbcar, nbcolo, nblign
     integer :: nbmagr, nbmail, nbo, nbval, ncar, ndim, nfcx
-    integer :: ng, nm, nnosec, nsec, ntab, ntypse, nummai
+    integer :: ng, nnosec, nsec, ntab, ntypse, nummai
     integer :: nutyel, nval
 ! --------------------------------------------------------------------------------------------------
     character(len=6) :: kioc
@@ -101,7 +101,6 @@ subroutine aceaba(noma, nomo, lmax, nbarre, nbocc, &
     character(len=8), pointer :: expbar(:) => null()
     character(len=8), pointer :: carbar(:) => null()
     character(len=8), pointer :: cara(:) => null()
-    character(len=8), pointer :: barre2(:) => null()
     character(len=8), pointer :: tabbar(:) => null()
     character(len=16), pointer :: typ_sect(:) => null()
     character(len=24), pointer :: barre(:) => null()
@@ -158,7 +157,6 @@ subroutine aceaba(noma, nomo, lmax, nbarre, nbocc, &
     call jecrec(tmpgef, 'V V K8', 'NO', 'CONTIG', 'CONSTANT', nbarre)
     call jeecra(tmpgef, 'LONMAX', 1)
     AS_ALLOCATE(vk24=barre, size=lmax)
-    AS_ALLOCATE(vk8=barre2, size=lmax)
 !
 ! --------------------------------------------------------------------------------------------------
     iisec = 0
@@ -166,7 +164,6 @@ subroutine aceaba(noma, nomo, lmax, nbarre, nbocc, &
     do ioc = 1, nbocc
         call codent(ioc, 'G', kioc)
         call getvem(noma, 'GROUP_MA', 'BARRE', 'GROUP_MA', ioc, lmax, barre, ng)
-        call getvem(noma, 'MAILLE', 'BARRE', 'MAILLE', ioc, lmax, barre2, nm)
         call getvtx('BARRE', 'SECTION', iocc=ioc, scal=sec, nbret=nsec)
         call getvid('BARRE', 'TABLE_CARA', iocc=ioc, scal=tabcar, nbret=ntab)
         if (ntab .eq. 1) then
@@ -253,26 +250,6 @@ subroutine aceaba(noma, nomo, lmax, nbarre, nbocc, &
             end do
         end if
 !
-!       "MAILLE" = TOUTES LES MAILLES POSSIBLES DE LA LISTE DE MAILLES
-        if (nm .gt. 0) then
-            maille: do i = 1, nm
-                nommai = barre2(i)
-                call jenonu(jexnom(mlgnma, nommai), nummai)
-                nutyel = zi(jdme+nummai-1)
-                do j = 1, nbtel
-                    if (nutyel .eq. ntyele(j)) then
-                        call affbar(tmpgen, tmpgef, fcx, nommai, isec, &
-                                    cara, vale, expbar, nbcar, kioc, &
-                                    ier)
-                        cycle maille
-                    end if
-                end do
-                vmessk(1) = mclf
-                vmessk(2) = nommai
-                call utmess('F', 'MODELISA_8', nk=2, valk=vmessk)
-            end do maille
-        end if
-!
     end do
     if (ier .ne. 0) then
         call utmess('F', 'MODELISA_7')
@@ -355,7 +332,6 @@ subroutine aceaba(noma, nomo, lmax, nbarre, nbocc, &
 !
 !   NETTOYAGE
     AS_DEALLOCATE(vk24=barre)
-    AS_DEALLOCATE(vk8=barre2)
     AS_DEALLOCATE(vi=tab_para)
     AS_DEALLOCATE(vk16=typ_sect)
     AS_DEALLOCATE(vk8=expbar)

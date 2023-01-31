@@ -331,29 +331,29 @@ subroutine op0019()
 !   VERIFICATION DE LA SYNTAXE DES ELEMENTS COQUE
     lxc = 0
     if (nbocc(ACE_COQUE) .ne. 0) then
-        call acevco(nbocc(ACE_COQUE), nlm, nlg, iret)
-        lxc = max(nlm, nlg)
+        call acevco(nbocc(ACE_COQUE), nlg, iret)
+        lxc = nlg
     end if
 ! --------------------------------------------------------------------------------------------------
 !   VERIFICATION DE LA SYNTAXE DES ORIENTATIONS DES ELEMENTS
     lxo = 0
     if (nbocc(ACE_ORIENTATION) .ne. 0) then
-        call acevor(nbocc(ACE_ORIENTATION), nlm, nlg, nln, nlj, iret)
-        lxo = max(nlm, nln, nlj, nlg)
+        call acevor(nbocc(ACE_ORIENTATION), nlg, iret)
+        lxo = nlg
     end if
 ! --------------------------------------------------------------------------------------------------
 !   VERIFICATION DE LA SYNTAXE DES ELEMENTS BARRE
     lxb = 0
     if (nbocc(ACE_BARRE) .ne. 0) then
-        call acevba(nbocc(ACE_BARRE), nlm, nlg, iret)
-        lxb = max(nlm, nlg)
+        call acevba(nbocc(ACE_BARRE), nlg, iret)
+        lxb = nlg
     end if
 ! --------------------------------------------------------------------------------------------------
 !   VERIFICATION DE LA SYNTAXE DES ELEMENTS MASSIF :
     lxm = 0
     if (nbocc(ACE_MASSIF) .ne. 0) then
-        call acevma(nbocc(ACE_MASSIF), nlm, nlg)
-        lxm = max(nlm, nlg)
+        call acevma(nbocc(ACE_MASSIF), nlg)
+        lxm = nlg
     end if
 ! --------------------------------------------------------------------------------------------------
 !   VERIFICATION DE LA SYNTAXE DES ELEMENTS POUTRE_FLUI
@@ -362,8 +362,8 @@ subroutine op0019()
         if (nbocc(ACE_POUTRE) .eq. 0) then
             call utmess('F', 'MODELISA5_56')
         end if
-        call acevpf(nbocc(ACE_POUTRE_FLUI), nlm, nlg)
-        lxpf = max(nlm, nlg)
+        call acevpf(nbocc(ACE_POUTRE_FLUI), nlg)
+        lxpf = nlg
     end if
 ! --------------------------------------------------------------------------------------------------
 !   VERIFICATION DE LA SYNTAXE DES ELEMENTS "GRILLE"
@@ -376,8 +376,8 @@ subroutine op0019()
 !   VERIFICATION DE LA SYNTAXE DES ELEMENTS "MEMBRANE"
     lxmb = 0
     if (nbocc(ACE_MEMBRANE) .ne. 0) then
-        call acevmb(nbocc(ACE_MEMBRANE), nlm, nlg)
-        lxmb = max(nlm, nlg)
+        call acevmb(nbocc(ACE_MEMBRANE), nlg)
+        lxmb = nlg
     end if
 ! --------------------------------------------------------------------------------------------------
 !   LONGUEUR MAXIMUM D UNE LISTE DE MAILLE/NOEUD/GROUP_MA/GROUP_NO

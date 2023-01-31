@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,13 +19,9 @@
 !
 !
 interface
-    subroutine acevor(nbocc, nlm, nlg, nln, nlj,&
-                      ier)
+    subroutine acevor(nbocc, nlg, ier)
         integer :: nbocc
-        integer :: nlm
         integer :: nlg
-        integer :: nln
-        integer :: nlj
         integer :: ier
     end subroutine acevor
 end interface

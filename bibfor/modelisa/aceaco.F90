@@ -53,8 +53,8 @@ subroutine aceaco(nomu, noma, lmax, locagb, locamb, &
 !     LOCAMB : EXISTANCE DE MEMBRANE
 !     NBOCC  : NOMBRE D'OCCURENCES DU MOT CLE COQUE
 ! ----------------------------------------------------------------------
-    integer :: nvec, i, ioc, jdcc, jdls, jdvc, jdccf, jdvcf, jdls2
-    integer :: na, nco, ncr, nex, ng, nin, nk, nm, nv, nvf, nexf
+    integer :: nvec, i, ioc, jdcc, jdls, jdvc, jdccf, jdvcf
+    integer :: na, nco, ncr, nex, ng, nin, nk, nv, nvf, nexf
     integer :: iret
     aster_logical :: lcartf
     real(kind=8) :: ang(2), epa, kappa, correc, rigi, excent
@@ -125,7 +125,6 @@ subroutine aceaco(nomu, noma, lmax, locagb, locamb, &
     end if
 !
     call wkvect('&&TMPCOQUE', 'V V K24', lmax, jdls)
-    call wkvect('&&TMPCOQUE2', 'V V K8', lmax, jdls2)
 !
 ! --- LECTURE DES VALEURS ET AFFECTATION DANS : CARTCO OU CARTCF
     do ioc = 1, nbocc
@@ -138,8 +137,6 @@ subroutine aceaco(nomu, noma, lmax, locagb, locamb, &
         inert = 'NON'
         call getvem(noma, 'GROUP_MA', 'COQUE', 'GROUP_MA', ioc, &
                     lmax, zk24(jdls), ng)
-        call getvem(noma, 'MAILLE', 'COQUE', 'MAILLE', ioc, &
-                    lmax, zk8(jdls2), nm)
         call getvr8('COQUE', 'EPAIS', iocc=ioc, scal=epa, nbret=nv)
         call getvid('COQUE', 'EPAIS_FO', iocc=ioc, scal=epaf, nbret=nvf)
         call getvr8('COQUE', 'ANGL_REP', iocc=ioc, nbval=2, vect=ang, &
@@ -197,20 +194,9 @@ subroutine aceaco(nomu, noma, lmax, locagb, locamb, &
             end if
         end if
 !
-! ---    "MAILLE" = TOUTES LES MAILLES DE LA LISTE DE MAILLES
-        if (nm .gt. 0) then
-            call nocart(cartco, 3, 8, mode='NOM', nma=nm, &
-                        limano=zk8(jdls2))
-            if (lcartf) then
-                call nocart(cartcf, 3, 2, mode='NOM', nma=nm, &
-                            limano=zk8(jdls2))
-            end if
-        end if
-!
     end do
 !
     call jedetr('&&TMPCOQUE')
-    call jedetr('&&TMPCOQUE2')
 !     SI NI GRILLE NI MEMBRANE
     if ((.not. locagb) .and. (.not. locamb)) then
         call jedetr(tmpnco)

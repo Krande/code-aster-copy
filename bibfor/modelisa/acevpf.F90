@@ -16,33 +16,26 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine acevpf(nbocc, nlm, nlg)
+subroutine acevpf(nbocc, nlg)
     implicit none
 #include "asterfort/getvtx.h"
-    integer :: nbocc, nlm, nlg
+    integer :: nbocc, nlg
 !     AFFE_CARA_ELEM
 !     VERIFICATION DES MOTS CLES POUR L'ELEMENT POUTRE_FLUI
 ! ----------------------------------------------------------------------
 ! IN  : NBOCC  : NOMBRE D'OCCURENCE
-! OUT : NLM    : NOMBRE TOTAL DE MAILLE
 ! OUT : NLG    : NOMBRE TOTAL DE GROUPE DE MAILLE
 ! ----------------------------------------------------------------------
 !     ------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: ioc, ng, nm, nsom
+    integer :: ioc, ng
 !-----------------------------------------------------------------------
-    nlm = 0
     nlg = 0
     do ioc = 1, nbocc
         call getvtx('POUTRE_FLUI', 'GROUP_MA', iocc=ioc, nbval=0, nbret=ng)
-        call getvtx('POUTRE_FLUI', 'MAILLE', iocc=ioc, nbval=0, nbret=nm)
 !
-        nsom = ng+nm
-        if (nsom .eq. ng .or. nsom .eq. nm) then
-            nlm = max(nlm, -nm)
-            nlg = max(nlg, -ng)
-        end if
+        nlg = max(nlg, -ng)
 !
     end do
 !

@@ -16,11 +16,11 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine acevor(nbocc, nlm, nlg, nln, nlj, ier)
+subroutine acevor(nbocc, nlg, ier)
 !
 !
     implicit none
-    integer :: nbocc, nlm, nlg, nln, nlj, ier
+    integer :: nbocc, nlg, ier
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -30,11 +30,7 @@ subroutine acevor(nbocc, nlm, nlg, nln, nlj, ier)
 ! --------------------------------------------------------------------------------------------------
 !
 ! IN  : NBOCC  : NOMBRE D'OCCURENCE
-! OUT : NLM    : NOMBRE TOTAL DE MAILLE
 ! OUT : NLG    : NOMBRE TOTAL DE GROUPE DE MAILLE
-! OUT : NLN    :
-! OUT : NLJ    :
-!
 ! --------------------------------------------------------------------------------------------------
 ! person_in_charge: jean-luc.flejou at edf.fr
 !
@@ -45,7 +41,7 @@ subroutine acevor(nbocc, nlm, nlg, nln, nlj, ier)
 #include "asterfort/utmess.h"
 ! --------------------------------------------------------------------------------------------------
     integer :: ioc, jj, kk, nbcar, nbval, nc, ncar
-    integer :: nco, ng, nj, nm, nn, nsom, nv
+    integer :: nco, ng, nv
     integer :: nval
 ! --------------------------------------------------------------------------------------------------
     parameter(nbcar=100, nbval=1000, nco=4)
@@ -58,17 +54,11 @@ subroutine acevor(nbocc, nlm, nlg, nln, nlj, ier)
 ! --------------------------------------------------------------------------------------------------
 !
     call getres(nomu, concep, cmd)
-    nlm = 0
     nlg = 0
-    nln = 0
-    nlj = 0
 !
-    nj = 0
-    nn = 0
     do ioc = 1, nbocc
         call codent(ioc, 'G', kioc)
         call getvtx('ORIENTATION', 'GROUP_MA', iocc=ioc, nbval=0, nbret=ng)
-        call getvtx('ORIENTATION', 'MAILLE', iocc=ioc, nbval=0, nbret=nm)
         call getvtx('ORIENTATION', 'CARA', iocc=ioc, nbval=0, nbret=nc)
         call getvtx('ORIENTATION', 'CARA', iocc=ioc, nbval=nbcar, vect=car, nbret=ncar)
         call getvr8('ORIENTATION', 'VALE', iocc=ioc, nbval=0, nbret=nv)
@@ -106,13 +96,7 @@ subroutine acevor(nbocc, nlm, nlg, nln, nlj, ier)
             end if
         end if
 !
-        nsom = ng+nm+nj+nn
-        if (nsom .eq. ng .or. nsom .eq. nm .or. nsom .eq. nj .or. nsom .eq. nn) then
-            nlm = max(nlm, -nm)
-            nlg = max(nlg, -ng)
-            nln = max(nln, -nn)
-            nlj = max(nlj, -nj)
-        end if
+        nlg = max(nlg, -ng)
     end do
 !
 end subroutine

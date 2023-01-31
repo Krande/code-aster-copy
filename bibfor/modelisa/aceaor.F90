@@ -70,7 +70,7 @@ subroutine aceaor(noma, nomo, lmax, nbepo, ntyele, nomele, ivr, nbocc)
     integer :: jdls, jdme, jdno, jdori, jdtm, jinit
     integer :: jdvlvo, nbmagr, nbmail
     integer :: nbval, ncar, ng
-    integer :: nm, no1, no2, nocaor, ntpoi, ntseg, ntseg3, ntseg4
+    integer :: no1, no2, nocaor, ntpoi, ntseg, ntseg3, ntseg4
     integer :: nummai, nutyel, nutyma, nbalarme
     integer :: nval
     parameter(nbval=6)
@@ -167,7 +167,6 @@ subroutine aceaor(noma, nomo, lmax, nbepo, ntyele, nomele, ivr, nbocc)
         do ioc = 1, nbocc(ACE_ORIENTATION)
 !           Pour les MAILLES
             call getvem(noma, 'GROUP_MA', 'ORIENTATION', 'GROUP_MA', ioc, lmax, zk24(jdls), ng)
-            call getvem(noma, 'MAILLE', 'ORIENTATION', 'MAILLE', ioc, lmax, zk24(jdls), nm)
 !           Seuil correspondant à la longueur nulle pour une maille :
 !               si seglong .LT. longseuil ==> maille de taille nulle
             call getvr8('ORIENTATION', 'PRECISION', iocc=ioc, scal=longseuil, nbret=nbid)
@@ -194,21 +193,6 @@ subroutine aceaor(noma, nomo, lmax, nbepo, ntyele, nomele, ivr, nbocc)
                                         lseuil=longseuil, nbseuil=nbalarme)
                         end if
                     end do
-                end do
-            else if (nm .gt. 0) then
-!               MAILLE = toutes les mailles possibles de la liste de mailles
-                do ii = 1, nm
-                    nommai = zk24(jdls+ii-1)
-                    call jenonu(jexnom(mlgnma, nommai), nummai)
-                    call jeveuo(jexnum(mlgcnx, nummai), 'L', jdno)
-                    nutyma = zi(jdtm+nummai-1)
-                    jad = jdori+(nummai-1)*3
-                    jin = jinit+(nummai-1)*3
-                    if ((nutyma .ne. ntseg3) .and. (nutyma .ne. ntseg4)) then
-                        call affori('MAILLE', nommai, oricara, val, jad, jin, &
-                                    jdno, jdco, nutyma, ntseg, &
-                                    lseuil=longseuil, nbseuil=nbalarme)
-                    end if
                 end do
             end if
         end do

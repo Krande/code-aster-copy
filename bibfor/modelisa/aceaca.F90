@@ -47,8 +47,8 @@ subroutine aceaca(nomu, noma, lmax, nbocc)
 !
 ! --- CONSTRUCTION DES CARTES ET ALLOCATION
 !-----------------------------------------------------------------------
-    integer :: i, ioc, jdcc, jdccf, jdls, jdvc, jdvcf, jdls2
-    integer :: nfcx, ng, nm, nt, nv
+    integer :: i, ioc, jdcc, jdccf, jdls, jdvc, jdvcf
+    integer :: nfcx, ng, nt, nv
 !-----------------------------------------------------------------------
     call jemarq()
     cartca = nomu//'.CARCABLE'
@@ -65,7 +65,6 @@ subroutine aceaca(nomu, noma, lmax, nbocc)
     call jeveuo(tmpvcf, 'E', jdvcf)
 !
     call wkvect('&&TMPCABLE', 'V V K24', lmax, jdls)
-    call wkvect('&&TMPCABLE2', 'V V K8', lmax, jdls2)
 !
     zk8(jdcc) = 'SECT'
     zk8(jdcc+1) = 'TENS'
@@ -78,8 +77,6 @@ subroutine aceaca(nomu, noma, lmax, nbocc)
         sct = 0.d0
         call getvem(noma, 'GROUP_MA', 'CABLE', 'GROUP_MA', ioc, &
                     lmax, zk24(jdls), ng)
-        call getvem(noma, 'MAILLE', 'CABLE', 'MAILLE', ioc, &
-                    lmax, zk8(jdls2), nm)
 !
         call getvr8('CABLE', 'SECTION', iocc=ioc, scal=sct, nbret=nv)
         if (nv .eq. 0) then
@@ -101,19 +98,9 @@ subroutine aceaca(nomu, noma, lmax, nbocc)
             end do
         end if
 !
-! -      "MAILLE" = TOUTES LES MAILLES DE LA LISTE DE MAILLES
-!
-        if (nm .gt. 0) then
-            call nocart(cartca, 3, 2, mode='NOM', nma=nm, &
-                        limano=zk8(jdls2))
-            call nocart(cartcf, 3, 1, mode='NOM', nma=nm, &
-                        limano=zk8(jdls2))
-        end if
-!
     end do
 !
     call jedetr('&&TMPCABLE')
-    call jedetr('&&TMPCABLE2')
     call jedetr(tmpnca)
     call jedetr(tmpvca)
 !

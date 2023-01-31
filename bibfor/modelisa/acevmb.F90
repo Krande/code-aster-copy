@@ -16,31 +16,24 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine acevmb(nbocc, nlm, nlg)
+subroutine acevmb(nbocc, nlg)
     implicit none
 #include "asterfort/getvtx.h"
-    integer :: nbocc, nlm, nlg
+    integer :: nbocc, nlg
 !     AFFE_CARA_ELEM
 !     VERIFICATION DES MOTS CLES POUR L'ELEMENT "MEMBRANE"
 ! ----------------------------------------------------------------------
 ! IN  : NBOCC  : NOMBRE D'OCCURENCE
-! OUT : NLM    : NOMBRE TOTAL DE MAILLE
 ! OUT : NLG    : NOMBRE TOTAL DE GROUPE DE MAILLE
 ! ----------------------------------------------------------------------
-    integer :: ioc, ng, nm, nsom
+    integer :: ioc, ng
 !     ------------------------------------------------------------------
 !
-    nlm = 0
     nlg = 0
     do ioc = 1, nbocc
         call getvtx('MEMBRANE', 'GROUP_MA', iocc=ioc, nbval=0, nbret=ng)
-        call getvtx('MEMBRANE', 'MAILLE', iocc=ioc, nbval=0, nbret=nm)
 !
-        nsom = ng+nm
-        if (nsom .eq. ng .or. nsom .eq. nm) then
-            nlm = max(nlm, -nm)
-            nlg = max(nlg, -ng)
-        end if
+        nlg = max(nlg, -ng)
     end do
 !
 end subroutine
