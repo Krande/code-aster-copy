@@ -32,6 +32,19 @@ Note:
 import os
 import os.path as osp
 import sys
+import shutil
+import pathlib
+
+waf_loc = pathlib.Path(shutil.which("waf"))  # check that waf is in the PATH
+waf_dir = None
+for f in waf_loc.parent.iterdir():
+    if f.name.startswith("waf") and f.is_dir():
+        waf_dir = str(f)
+        break
+if waf_dir is None:
+    raise RuntimeError("waf directory not found")
+
+sys.path.insert(0, waf_dir)
 
 from waflib import Build, Configure, Logs, Utils
 from waflib.Tools.c_config import DEFKEYS
@@ -163,6 +176,7 @@ def options(self):
         default=os.environ.get("ENABLE_ALL"),
         help="activate all 'enable-*' options (same as " "ENABLE_ALL environment variable)",
     )
+    self.load('clang_compilation_database', tooldir='waftools')
 
 
 @Configure.conf
@@ -270,6 +284,7 @@ def configure(self):
     # variants
     self.check_optimization_options()
     self.write_config_headers()
+    self.load('clang_compilation_database', tooldir='waftools')
 
 
 def build(self):
@@ -568,3 +583,7 @@ def get_config_h(self, cfg):
             lst.append(cfg.undefine(x))
     lst.append("")
     return lst
+
+
+if __name__ == '__main__':
+    configure(Build())

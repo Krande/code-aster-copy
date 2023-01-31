@@ -67,7 +67,7 @@ default: $(DEFAULT)
 
 all:
 	@make BUILD=mpi bootstrap
-	@make BUILD=debug bootstrap
+	@make BUILD=debug bootstra1p
 
 bootstrap: configure safe doc
 
