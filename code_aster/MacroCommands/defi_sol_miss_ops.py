@@ -21,7 +21,6 @@
 
 import os
 
-import aster
 from ..Cata.Syntax import _F
 from ..Commands import CREA_TABLE
 from ..Objects.table_py import Table
@@ -29,49 +28,37 @@ from ..Messages import UTMESS
 
 
 # Creation de la liste des coordonnees en Z d'un groupe de noeuds ou mailles :
-def recu_coor_z(noma, group, typ_group, tole_r):
+def recu_coor_z(mesh, group, typ_group, tole_r):
 
-    collcnx = aster.getcolljev(noma.getName().ljust(8) + ".CONNEX")
-    coord = aster.getvectjev(noma.getName().ljust(8) + ".COORDO    .VALE")
+    connect = mesh.getConnectivity()
+    coord = mesh.getCoordinates()
 
     coor_z = []
 
     if typ_group == "group_ma":
-        nomgrma = group
-        collgrma = aster.getcolljev(noma.getName().ljust(8) + ".GROUPEMA")
-        if nomgrma.ljust(24) not in collgrma:
+        if not mesh.hasGroupOfCells(group):
             UTMESS("F", "MISS0_26", valk=group)
         else:
-            numa = collgrma[nomgrma.ljust(24)]
-            for ima in numa:
-                n = collcnx[ima][0]
-                uzmin = round(coord[3 * (n - 1) + 2], tole_r)
-                uzmax = round(coord[3 * (n - 1) + 2], tole_r)
-                for i in range(len(collcnx[ima])):
-                    n = collcnx[ima][i]
-                    uzmin = min(uzmin, round(coord[3 * (n - 1) + 2], tole_r))
-                    uzmax = max(uzmax, round(coord[3 * (n - 1) + 2], tole_r))
+            cells = mesh.getCells(group)
+            for cell in cells:
+                nodes = connect[cell]
+                n = nodes[0]
+                uzmin = uzmax = round(coord[3 * (n - 1) + 2], tole_r)
+                for n in nodes[1:]:
+                    uz = round(coord[3 * (n - 1) + 2], tole_r)
+                    uzmin = min(uzmin, uz)
+                    uzmax = max(uzmax, uz)
                 if uzmin not in coor_z:
                     coor_z.append(uzmin)
                 if uzmax not in coor_z:
                     coor_z.append(uzmax)
     elif typ_group == "group_no":
-        collgrno = aster.getcolljev(noma.getName().ljust(8) + ".GROUPENO")
-        nomgrno = group
-        if nomgrno.ljust(24) not in collgrno:
+        if not mesh.hasGroupOfNodes(group):
             UTMESS("F", "MISS0_26", valk=group)
         else:
-            grpn = collgrno[nomgrno.ljust(24)]
-            l_coor_group = []
-            i = 0
-            for node in grpn:
-                l_coor_group.append(
-                    aster.getvectjev(
-                        noma.getName().ljust(8) + ".COORDO    .VALE", 3 * (node - 1), 3
-                    )
-                )
-                uz = round(l_coor_group[i][2], tole_r)
-                i += 1
+            nodes = mesh.getNodes(group)
+            for n in nodes:
+                uz = round(coord[3 * n + 2], tole_r)
                 if uz not in coor_z:
                     coor_z.append(uz)
     else:
@@ -136,17 +123,17 @@ def defi_sol_miss_ops(self, MATERIAU, COUCHE=None, COUCHE_AUTO=None, TITRE=None,
         if COUCHE_AUTO.get("HOMOGENE") == "OUI":
             homogene = True
         if COUCHE_AUTO.get("MAILLAGE"):
-            noma = COUCHE_AUTO.get("MAILLAGE")
+            mesh = COUCHE_AUTO.get("MAILLAGE")
         if COUCHE_AUTO.get("SURF") == "NON":
             enfonce = True
         if COUCHE_AUTO.get("GROUP_MA") or COUCHE_AUTO.get("GROUP_NO"):
             if COUCHE_AUTO.get("GROUP_MA"):
                 arg_grma = True
                 nomgrma = COUCHE_AUTO.get("GROUP_MA")
-                coor_z_input = recu_coor_z(noma, nomgrma, "group_ma", tole_r)
+                coor_z_input = recu_coor_z(mesh, nomgrma, "group_ma", tole_r)
             else:
                 nomgrno = COUCHE_AUTO.get("GROUP_NO")
-                coor_z_input = recu_coor_z(noma, nomgrno, "group_no", tole_r)
+                coor_z_input = recu_coor_z(mesh, nomgrno, "group_no", tole_r)
             max_z_input = coor_z_input[0]
             min_z_input = coor_z_input[-1]
         if COUCHE_AUTO.get("NUME_MATE"):
@@ -179,7 +166,7 @@ def defi_sol_miss_ops(self, MATERIAU, COUCHE=None, COUCHE_AUTO=None, TITRE=None,
         if COUCHE_AUTO.get("GROUP_MA_CONTROL"):
             nomgrmactrl = COUCHE_AUTO.get("GROUP_MA_CONTROL")
             l_pt_ctrl = True
-            coor_z_ctrl = recu_coor_z(noma, nomgrmactrl, "group_ma", tole_r)
+            coor_z_ctrl = recu_coor_z(mesh, nomgrmactrl, "group_ma", tole_r)
             print("Cotes verticales des points de controle=", coor_z_ctrl)
             if coor_z_ctrl[0] > Z0:
                 UTMESS("F", "MISS0_28", valr=Z0)
@@ -239,7 +226,7 @@ def defi_sol_miss_ops(self, MATERIAU, COUCHE=None, COUCHE_AUTO=None, TITRE=None,
     nb_noeud = 0
     verif = False
     if (grma_interf is not None) and enfonce and (COUCHE_AUTO is not None):
-        coor_z_interf = recu_coor_z(noma, grma_interf, "group_ma", tole_r)
+        coor_z_interf = recu_coor_z(mesh, grma_interf, "group_ma", tole_r)
         max_z_interf = coor_z_interf[0]
         min_z_interf = coor_z_interf[-1]
         l_z_sol = [max_z_interf]
