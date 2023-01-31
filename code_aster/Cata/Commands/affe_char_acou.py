@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -33,12 +33,10 @@ AFFE_CHAR_ACOU = OPER(
     PRES_IMPO=FACT(
         statut="f",
         max="**",
-        regles=(AU_MOINS_UN("TOUT", "GROUP_MA", "MAILLE", "GROUP_NO", "NOEUD"),),
+        regles=(AU_MOINS_UN("TOUT", "GROUP_MA", "GROUP_NO"),),
         TOUT=SIMP(statut="f", typ="TXM", into=("OUI",)),
         GROUP_NO=SIMP(statut="f", typ=grno, validators=NoRepeat(), max="**"),
-        NOEUD=SIMP(statut="c", typ=no, validators=NoRepeat(), max="**"),
         GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
-        MAILLE=SIMP(statut="c", typ=ma, validators=NoRepeat(), max="**"),
         SANS_GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
         SANS_GROUP_NO=SIMP(statut="f", typ=grno, validators=NoRepeat(), max="**"),
         PRES=SIMP(statut="o", typ="C"),
@@ -47,34 +45,27 @@ AFFE_CHAR_ACOU = OPER(
         statut="f",
         max="**",
         regles=(
-            AU_MOINS_UN("GROUP_MA", "MAILLE"),
-            PRESENT_ABSENT("GROUP_MA", "MAILLE"),
             UN_PARMI("VNOR", "DIRECTION"),
         ),
-        GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
-        MAILLE=SIMP(statut="c", typ=ma, validators=NoRepeat(), max="**"),
+        GROUP_MA=SIMP(statut="o", typ=grma, validators=NoRepeat(), max="**"),
         VNOR=SIMP(statut="o", typ="C"),
     ),
     IMPE_FACE=FACT(
         statut="f",
         max="**",
         regles=(
-            AU_MOINS_UN("TOUT", "GROUP_MA", "MAILLE"),
-            PRESENT_ABSENT("TOUT", "GROUP_MA", "MAILLE"),
+            UN_PARMI("TOUT", "GROUP_MA"),
         ),
         TOUT=SIMP(statut="f", typ="TXM", into=("OUI",)),
         GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
-        MAILLE=SIMP(statut="c", typ=ma, validators=NoRepeat(), max="**"),
         IMPE=SIMP(statut="o", typ="C"),
     ),
     LIAISON_UNIF=FACT(
         statut="f",
         max="**",
-        regles=(UN_PARMI("GROUP_NO", "NOEUD", "GROUP_MA", "MAILLE"),),
+        regles=(UN_PARMI("GROUP_NO", "GROUP_MA",),),
         GROUP_NO=SIMP(statut="f", typ=grno, validators=NoRepeat(), max="**"),
-        NOEUD=SIMP(statut="c", typ=no, validators=NoRepeat(), max="**"),
         GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
-        MAILLE=SIMP(statut="c", typ=ma, validators=NoRepeat(), max="**"),
         DDL=SIMP(statut="o", typ="TXM", max="**"),
     ),
 )
