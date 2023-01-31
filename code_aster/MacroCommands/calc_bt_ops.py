@@ -2173,7 +2173,7 @@ def calc_bt_ops(self, **args):
     def input_results(BASE, __STRESS):
         """ """
         b = BASE.getCoordinates().getValues()  # Nodal list
-        c = BASE.sdj.CONNEX.get()  # Connectivity matrix
+        connect = BASE.getConnectivity()  # Connectivity matrix
 
         __Nodes = np.zeros((int(len(b) / 3), 4))
 
@@ -2183,12 +2183,12 @@ def calc_bt_ops(self, **args):
             # print(b[i*3: i*3 + 3])
             __Nodes[i, 1::] = b[i * 3 : i * 3 + 3]
 
-        __Elements = np.zeros((len(c.keys()), 10))
+        __Elements = np.zeros((len(connect), 10))
         __i = 0
 
-        for key in c.keys():
-            if len(c[key][:]) == 4:
-                __Elements[__i, 6::] = c[key][:]
+        for nodes in connect:
+            if len(nodes) == 4:
+                __Elements[__i, 6::] = nodes
                 __Elements[__i, 0] = __i + 1
                 __i = __i + 1
 
