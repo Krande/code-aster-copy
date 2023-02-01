@@ -21,7 +21,6 @@ import math
 import os
 from math import asin, atan2, cos, pi, sin, sqrt
 
-import aster
 from ..Cata.Syntax import _F
 from ..Commands import (
     COPIER,
@@ -753,14 +752,7 @@ def macr_lign_coupe_ops(
             UTMESS("F", "POST0_10")
 
         # récupération de la grandeur du champ
-        n_cham = CHAM_GD.getName()
-        catagd = aster.getvectjev("&CATA.GD.NOMGD")
-        desc = aster.getvectjev("%-19s.DESC" % n_cham)
-        if desc is not None:
-            nomgd = catagd[desc[0] - 1]
-        else:
-            celd = aster.getvectjev("%-19s.CELD" % n_cham)
-            nomgd = catagd[celd[0] - 1]
+        nomgd = CHAM_GD.getPhysicalQuantity()
 
         # détermination du type de résultat à créer
         if nomgd[:6] == "TEMP_R":
@@ -808,8 +800,6 @@ def macr_lign_coupe_ops(
     n_mailla = mesh.getName()
     dime = mesh.getDimension()
     coord = mesh.getCoordinates()
-    typma = aster.getvectjev(n_mailla.ljust(8) + ".TYPMAIL")
-    ltyma = aster.getvectjev("&CATA.TM.NOMTM")
     lignes = []
     groups = []
     arcs = []
@@ -849,7 +839,7 @@ def macr_lign_coupe_ops(
             if not mesh.hasGroupOfCells(group):
                 UTMESS("F", "POST0_14", valk=[group, mesh.getName()])
             for cell in mesh.getCells(group):
-                if ltyma[typma[cell] - 1][:3] != "SEG":
+                if mesh.getCellTypeName(cell)[:3] != "SEG":
                     UTMESS("F", "POST0_15", valk=[group, mesh.getCellName(cell)])
             __mailla = COPIER(CONCEPT=m["MAILLAGE"])
 

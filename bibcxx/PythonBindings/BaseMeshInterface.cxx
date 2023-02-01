@@ -96,6 +96,16 @@ Returns:
     str : name of the cell (stripped)
         )",
               py::arg( "index" ) )
+        .def( "getCellTypeName", &BaseMesh::getCellTypeName, R"(
+Return the type name of the given cell
+
+Arguments:
+    index (int) : index of the cell (0-based)
+
+Returns:
+    str : name of the cell type (stripped)
+        )",
+              py::arg( "index" ) )
         .def( "getMedConnectivity", &BaseMesh::getMedConnectivity, R"(
 Return the connectivity of the mesh as Python lists following the Med numbering.
 
