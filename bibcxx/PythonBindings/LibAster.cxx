@@ -41,6 +41,7 @@
 #include "PythonBindings/BucklingModeResultInterface.h"
 #include "PythonBindings/CodedMaterialInterface.h"
 #include "PythonBindings/CombinedFourierResultInterface.h"
+#include "PythonBindings/CommGraphInterface.h"
 #include "PythonBindings/ConnectionMeshInterface.h"
 #include "PythonBindings/ConstantFieldOnCellsInterface.h"
 #include "PythonBindings/ContactComputationInterface.h"
@@ -118,6 +119,7 @@
 #include "PythonBindings/ModelInterface.h"
 #include "PythonBindings/MultipleElasticResultInterface.h"
 #include "PythonBindings/NonLinearResultInterface.h"
+#include "PythonBindings/ObjectBalancerInterface.h"
 #include "PythonBindings/ParallelDOFNumberingInterface.h"
 #include "PythonBindings/ParallelEquationNumberingInterface.h"
 #include "PythonBindings/ParallelFiniteElementDescriptorInterface.h"
@@ -300,4 +302,6 @@ PYBIND11_MODULE( libaster, mod ) {
     exportSetLoggingLevelToPython( mod );
     exportPostProcessingToPython( mod );
     exportHHOToPython( mod );
+    exportCommGraphToPython( mod );
+    exportObjectBalancerToPython( mod );
 };
