@@ -59,6 +59,8 @@ def crea_grp_matiere(self, groupe, newgrp, iocc, m, __remodr, NOM_CHAM, LIGN_COU
         )
     )
 
+    node_by_name = {__macou.getNodeName(node):node for node in __macou.getNodes(groupe)}
+
     # dictb=table initiale (contenant éventuellement des noeuds hors matière)
     dictb = __tab.EXTR_TABLE()
     # listenoe_b=liste ordonnee des noeuds de la ligne de coupe (avec doublons)
@@ -106,30 +108,28 @@ def crea_grp_matiere(self, groupe, newgrp, iocc, m, __remodr, NOM_CHAM, LIGN_COU
     if len(l_horsmat) > 0:
 
         nderh = l_horsmat.index(l_horsmat[len(l_horsmat) - 1])
-        cnom = aster.getvectjev(__macou.getName().ljust(8) + ".NOMNOE")
-        l_coor = aster.getvectjev(__macou.getName().ljust(8) + ".COORDO    .VALE")
+        coord = __macou.getCoordinates()
         indent = os.linesep + " " * 12
         l_surlig = []
         l_horslig = []
         for j in l_matiere[: nderm + 1]:
-            nuno = cnom.index(j.ljust(8))
-            text_coordo = "(%f, %f, %f)" % tuple(l_coor[3 * nuno : 3 * nuno + 3])
+            node = node_by_name[j]
+            text_coordo = "(%f, %f, %f)"%(coord[3*node], coord[3*node+1], coord[3*node+2])
             l_surlig.append(text_coordo)
         for j in l_horsmat[: nderh + 1]:
-            nuno = cnom.index(j.ljust(8))
-            text_coordo = "(%f, %f, %f)" % tuple(l_coor[3 * nuno : 3 * nuno + 3])
+            node = node_by_name[j]
+            text_coordo = "(%f, %f, %f)"%(coord[3*node], coord[3*node+1], coord[3*node+2])
             l_horslig.append(text_coordo)
         UTMESS("A", "POST0_8", valk=[indent.join(l_surlig), indent.join(l_horslig)])
 
     elif reste > 0:
 
-        cnom = aster.getvectjev(__macou.getName().ljust(8) + ".NOMNOE")
-        l_coor = aster.getvectjev(__macou.getName().ljust(8) + ".COORDO    .VALE")
+        coord = __macou.getCoordinates()
         indent = os.linesep + " " * 12
         l_surlig = []
         for j in l_matiere[: nderm + 1]:
-            nuno = cnom.index(j.ljust(8))
-            text_coordo = "(%f, %f, %f)" % tuple(l_coor[3 * nuno : 3 * nuno + 3])
+            node = node_by_name[j]
+            text_coordo = "(%f, %f, %f)"%(coord[3*node], coord[3*node+1], coord[3*node+2])
             l_surlig.append(text_coordo)
         UTMESS("A", "POST0_24", vali=[iocc, reste], valk=[indent.join(l_surlig)])
 
@@ -284,26 +284,23 @@ def crea_resu_local(self, dime, NOM_CHAM, m, resin, mail, nomgrma):
         if m["TYPE"][:5] == "GROUP" and m["REPERE"] == "LOCAL":
             # determination du repère local (v1,v2,v3)
             # ---------------------------------------
-            noma = mail.getName()
-            collgrma = aster.getcolljev(noma.ljust(8) + ".GROUPEMA")
-            collcnx = aster.getcolljev(noma.ljust(8) + ".CONNEX")
-            coord = aster.getvectjev(noma.ljust(8) + ".COORDO    .VALE")
-            cnom = aster.getvectjev(noma.ljust(8) + ".NOMNOE")
+            connex = mail.getConnectivity()
+            coord = mail.getCoordinates()
 
-            numa = collgrma[nomgrma.ljust(24)]
+            cells = mail.getCells(nomgrma)
             dictu = {}
             #     initialisations
-            for ima in numa:
-                n1 = collcnx[ima][0]
-                n2 = collcnx[ima][1]
+            for cell in cells:
+                n1 = connex[cell][0]
+                n2 = connex[cell][1]
                 dictu[n1] = []
                 dictu[n2] = []
             #     determination du vecteur tangent (v1) + normalisation
-            for ima in numa:
+            for cell in cells:
                 vectu1 = []
                 vectu2 = []
-                n1 = collcnx[ima][0]
-                n2 = collcnx[ima][1]
+                n1 = connex[cell][0]
+                n2 = connex[cell][1]
                 ux = coord[3 * (n2 - 1)] - coord[3 * (n1 - 1)]
                 uy = coord[3 * (n2 - 1) + 1] - coord[3 * (n1 - 1) + 1]
                 vectu1.append(ux)
@@ -400,7 +397,6 @@ def crea_resu_local(self, dime, NOM_CHAM, m, resin, mail, nomgrma):
                 motscles = {}
                 motscles["MODI_CHAM"] = []
                 motscles["AFFE"] = []
-                noeu = list(dictu.keys())
                 motscles["MODI_CHAM"].append(
                     _F(NOM_CHAM=NOM_CHAM, NOM_CMP=LCMP, TYPE_CHAM=TYPE_CHAM)
                 )
@@ -409,7 +405,7 @@ def crea_resu_local(self, dime, NOM_CHAM, m, resin, mail, nomgrma):
                 if dime == 3:
                     ANGL_NAUT.append(beta)
                     ANGL_NAUT.append(gamma)
-                motscles["AFFE"].append(_F(ANGL_NAUT=ANGL_NAUT, NOEUD=cnom[noeu[j - 1] - 1]))
+                motscles["AFFE"].append(_F(ANGL_NAUT=ANGL_NAUT, NOEUD=mail.getNodeName(i - 1)))
                 __resu[j] = MODI_REPERE(RESULTAT=__resu[j - 1], REPERE="UTILISATEUR", **motscles)
             __remodr = __resu[j]
 
@@ -478,12 +474,13 @@ def crea_noeu_lig_coup(dimension, pt1, pt2, anglj, dnor):
 
 
 def dist_min_deux_points(mail):
-    nno = aster.getvectjev(mail.getName().ljust(8) + ".DIME")[0]
+    nno = mail.getNumberOfNodes()
+    coordinates = mail.getCoordinates()
     l_coor1 = []
     l_coor2 = []
     for i in range(nno - 1):
-        l_coor1 = aster.getvectjev(mail.getName().ljust(8) + ".COORDO    .VALE", 3 * (i), 3)
-        l_coor2 = aster.getvectjev(mail.getName().ljust(8) + ".COORDO    .VALE", 3 * (i + 1), 3)
+        l_coor1 = coordinates[ 3 * (i): 3* (i)+3]
+        l_coor2 = coordinates[ 3 * (i+1): 3* (i+1)+3]
         d = sqrt(
             (l_coor1[0] - l_coor2[0]) ** 2
             + (l_coor1[1] - l_coor2[1]) ** 2
@@ -656,16 +653,17 @@ def crea_mail_lig_coup(dimension, lignes, groups, arcs):
 
 # extrait les coordonnées du noeud ORIG ou EXTR à partir des coordonnées
 # ou bien d'un groupe de noeuds ne contenant qu'un seul noeud.
-def get_coor(LIGN_COUPE, position, collgrno, n_mailla):
+def get_coor(LIGN_COUPE, position, coord, mesh):
     assert position in ("ORIG", "EXTR")
     if "GROUP_NO_" + position in LIGN_COUPE:
-        ngrno = LIGN_COUPE["GROUP_NO_" + position]
-        if ngrno.ljust(24) not in list(collgrno.keys()):
-            UTMESS("F", "POST0_13", valk=[ngrno, n_mailla])
-        if len(collgrno[ngrno.ljust(24)]) != 1:
-            UTMESS("F", "POST0_27", valk=ngrno, vali=len(collgrno[ngrno.ljust(24)]))
-        node = collgrno[ngrno.ljust(24)][0]
-        coor = aster.getvectjev(n_mailla.ljust(8) + ".COORDO    .VALE", 3 * (node - 1), 3)
+        group = LIGN_COUPE["GROUP_NO_" + position]
+        if not mesh.hasGroupOfNodes(group):
+            UTMESS("F", "POST0_13", valk=[group, mesh.getName()])
+        nodes = mesh.getNodes(group)
+        if len(nodes) != 1:
+            UTMESS("F", "POST0_27", valk=group, vali=len(nodes))
+        node = nodes[0]
+        coor = [coord[3*node], coord[3*node+1], coord[3*node+2]]
     elif "COOR_" + position in LIGN_COUPE:
         coor = LIGN_COUPE["COOR_" + position]
     else:
@@ -703,7 +701,7 @@ def macr_lign_coupe_ops(
     mcORDR = {}
 
     Model = MODELE
-    Mesh = None
+    mesh = None
 
     l_mode_meca_sans_modele = False
 
@@ -737,16 +735,16 @@ def macr_lign_coupe_ops(
                 # maillage (ou squelette)
                 else:
                     l_mode_meca_sans_modele = True
-                    Mesh = RESULTAT.getMesh()
+                    mesh = RESULTAT.getMesh()
                     UTMESS("I", "POST0_23", valk=RESULTAT.getName())
             else:
-                Mesh = Model.getMesh()
+                mesh = Model.getMesh()
         else:
-            Mesh = model.getMesh()
+            mesh = model.getMesh()
             if Model is None:
                 Model = model
 
-        if Mesh is None:
+        if mesh is None:
             raise Exception("Empty mesh")
 
     elif CHAM_GD is not None:
@@ -804,13 +802,12 @@ def macr_lign_coupe_ops(
         RESULTAT = __resuch
 
     # Maillage sur lequel s'appuie le résultat à projeter
-    if Mesh is None:
-        Mesh = Model.getMesh()
+    if mesh is None:
+        mesh = Model.getMesh()
     # le maillage est-il 2D ou 3D ?
-    n_mailla = Mesh.getName()
-    dime = Mesh.getDimension()
-    collgrma = aster.getcolljev(n_mailla.ljust(8) + ".GROUPEMA")
-    collgrno = aster.getcolljev(n_mailla.ljust(8) + ".GROUPENO")
+    n_mailla = mesh.getName()
+    dime = mesh.getDimension()
+    coord = mesh.getCoordinates()
     typma = aster.getvectjev(n_mailla.ljust(8) + ".TYPMAIL")
     ltyma = aster.getvectjev("&CATA.TM.NOMTM")
     lignes = []
@@ -820,8 +817,8 @@ def macr_lign_coupe_ops(
 
     for m in LIGN_COUPE:
         if m["TYPE"] == "SEGMENT":
-            coor_orig = get_coor(m, "ORIG", collgrno, n_mailla)
-            coor_extr = get_coor(m, "EXTR", collgrno, n_mailla)
+            coor_orig = get_coor(m, "ORIG", coord, mesh)
+            coor_extr = get_coor(m, "EXTR", coord, mesh)
             lignes.append((coor_orig, coor_extr, m["NB_POINTS"]))
             minidim = min(minidim, len(coor_orig), len(coor_extr))
             if minidim != dime:
@@ -839,27 +836,21 @@ def macr_lign_coupe_ops(
                 arcs.append((m["COOR_ORIG"], m["CENTRE"], m["NB_POINTS"], m["ANGLE"], m["DNOR"]))
 
         elif m["TYPE"] == "GROUP_NO":
-            ngrno = m["GROUP_NO"].ljust(24)
-            collgrno = aster.getcolljev(n_mailla.ljust(8) + ".GROUPENO")
-            if ngrno not in list(collgrno.keys()):
-                UTMESS("F", "POST0_13", valk=[ngrno, n_mailla])
-            grpn = collgrno[ngrno]
-            l_coor_group = [ngrno]
-            for node in grpn:
-                l_coor_group.append(
-                    aster.getvectjev(n_mailla.ljust(8) + ".COORDO    .VALE", 3 * (node - 1), 3)
-                )
+            group = m["GROUP_NO"]
+            if not mesh.hasGroupOfNodes(group):
+                UTMESS("F", "POST0_13", valk=[group, mesh.getName()])
+            l_coor_group = [group]
+            for node in mesh.getNodes(group):
+                l_coor_group.append([coord[3*node], coord[3*node+1], coord[3*node+2]])
             groups.append(l_coor_group)
 
         elif m["TYPE"] == "GROUP_MA":
-            ngrma = m["GROUP_MA"].ljust(24)
-            if ngrma not in list(collgrma.keys()):
-                UTMESS("F", "POST0_14", valk=[ngrma, n_mailla])
-            grpm = collgrma[ngrma]
-            for ma in grpm:
-                if ltyma[typma[ma - 1] - 1][:3] != "SEG":
-                    nomma = aster.getvectjev(n_mailla.ljust(8) + ".NOMMAI")
-                    UTMESS("F", "POST0_15", valk=[ngrma, nomma[ma - 1]])
+            group = m["GROUP_MA"]
+            if not mesh.hasGroupOfCells(group):
+                UTMESS("F", "POST0_14", valk=[group, mesh.getName()])
+            for cell in mesh.getCells(group):
+                if ltyma[typma[cell] - 1][:3] != "SEG":
+                    UTMESS("F", "POST0_15", valk=[group, mesh.getCellName(cell)])
             __mailla = COPIER(CONCEPT=m["MAILLAGE"])
 
             m2 = m.cree_dict_valeurs(m.mc_liste)
@@ -884,13 +875,9 @@ def macr_lign_coupe_ops(
                 ),
             )
 
-            collgrno = aster.getcolljev(__mailla.getName().ljust(8) + ".GROUPENO")
-            grpn = collgrno[str(m["GROUP_MA"]).ljust(24)]
-            l_coor_group = [ngrma]
-            for node in grpn:
-                l_coor_group.append(
-                    aster.getvectjev(n_mailla.ljust(8) + ".COORDO    .VALE", 3 * (node - 1), 3)
-                )
+            l_coor_group = [group]
+            for node in __mailla.getNodes(group):
+                l_coor_group.append([coord[3*node], coord[3*node+1], coord[3*node+2]])
             groups.append(l_coor_group)
 
     if arcs != [] and (lignes != [] or groups != []):
@@ -959,7 +946,7 @@ def macr_lign_coupe_ops(
         __recou = PROJ_CHAMP(
             METHODE="COLLOCATION",
             RESULTAT=RESULTAT,
-            MAILLAGE_1=Mesh,
+            MAILLAGE_1=mesh,
             DISTANCE_MAX=m["DISTANCE_MAX"],
             # issue27543 #MODELE_2=__mocou,
             MAILLAGE_2=__macou,
