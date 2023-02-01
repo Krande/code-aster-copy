@@ -37,19 +37,15 @@ subroutine nmcomp(BEHinteg, &
 #include "asterfort/nmcpl2.h"
 #include "asterfort/nmcpl3.h"
 #include "asterfort/redece.h"
-#include "asterfort/lcidbg.h"
 !
     type(Behaviour_Integ) :: BEHinteg
-!
     integer :: kpg, ksp, ndim, imate, codret, neps, nsig, ndsde
-!
     character(len=*)    :: fami
     character(len=8)    :: typmod(*)
     character(len=16)   :: compor(*), option
-!
     real(kind=8) :: instam, instap
- real(kind=8) :: epsm(*), deps(*), dsidep(*), carcri(*), sigm(*), vim(*), sigp(*), vip(*), angmas(*)
-!
+    real(kind=8) :: epsm(*), deps(*), dsidep(*)
+    real(kind=8) :: carcri(*), sigm(*), vim(*), sigp(*), vip(*), angmas(*)
     character(len=8), optional, intent(in) :: materi_
     character(len=16), optional, intent(in) :: mult_comp_
     aster_logical, optional, intent(in) :: l_epsi_varc_
@@ -190,7 +186,7 @@ subroutine nmcomp(BEHinteg, &
         end if
         !
     end do
-!
+
 !   Contraintes planes méthode DE BORST
     if (cp) then
         if (codret .eq. 0) then
@@ -202,15 +198,12 @@ subroutine nmcomp(BEHinteg, &
             option = optio2
         end if
     end if
+
 !   Examen du domaine de validité
     if (codret .eq. 0) then
         call lcvali(fami, kpg, ksp, imate, materi, &
                     compor, ndim, epsm, deps, instam, &
                     instap, codret)
-    else if (codret .eq. 1) then
-        call lcidbg(fami, kpg, ksp, typmod, compor, &
-                    carcri, instam, instap, neps, epsm, &
-                    deps, nsig, sigm, vim, option)
     end if
 !
 end subroutine

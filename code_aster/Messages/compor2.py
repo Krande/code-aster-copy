@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -284,124 +284,6 @@ Assurez-vous que cette valeur par défaut correspond bien au cas que vous voulez
 Erreur lors de la vérification de la cohérence entre les champs de contrainte.
 
 On a affiché ci-dessus la liste des mailles pour lesquelles le nombre de sous-points est différent.
-"""
-    ),
-    70: _(
-        """
-#---------------------------------------------------------------------------------------------------------------------------
-# test pour analyser à l'aide de SIMU_POINT_MAT l'échec d'intégration du comportement sur la maille <%(k1)s>, point <%(i1)d>
-#---------------------------------------------------------------------------------------------------------------------------
-DEBUT()
-# recopier MAT=DEFI_MATERIAU(...), DEFI_COMPOR(...),...
-
-LIST=DEFI_LIST_REEL(DEBUT= %(r1).15E , INTERVALLE=_F(JUSQU_A= %(r2).15E , NOMBRE=1))
-# liste = DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST=LIST,),ECHEC=_F(SUBD_NIVEAU=10,SUBD_PAS=4),)
-"""
-    ),
-    71: _(
-        """
-%(k1)s=DEFI_FONCTION(NOM_PARA='INST',VALE=( %(r1).15E , %(r2).15E, %(r3).15E,  %(r4).15E))
-"""
-    ),
-    72: _(
-        """
-RESU=SIMU_POINT_MAT ( INFO=1, MATER=MAT, INCREMENT=_F(LIST_INST=LIST),
-                      EPSI_IMPOSE=_F(EPXX=EXX, EPYY=EYY,EPZZ=EPZZ,EPXY=EXY),
-"""
-    ),
-    73: _(
-        """
-                      SUPPORT='ELEMENT', MODELISATION='C_PLAN',
-"""
-    ),
-    74: _(
-        """
-RESU=SIMU_POINT_MAT ( INFO=1, MATER=MAT, INCREMENT=_F(LIST_INST=LIST),
-                      EPSI_IMPOSE=_F(EPXX=EXX, EPYY=EYY,EPZZ=EPZZ,EPXY=EXY,EPXZ=EPXZ,EPYZ=EPYZ),
-"""
-    ),
-    75: _(
-        """
-                      EPSI_INIT=_F(EPXX= %(r1).15E , EPYY= %(r2).15E,  EPZZ= %(r3).15E,  EPXY= %(r4).15E,  EPXZ= %(r5).15E,  EPYZ= %(r6).15E ),
-"""
-    ),
-    76: _(
-        """
-                      SIGM_INIT=_F(SIXX= %(r1).15E , SIYY= %(r2).15E,  SIZZ= %(r3).15E,  SIXY= %(r4).15E,  SIXZ= %(r5).15E,  SIYZ= %(r6).15E ),
-                      VARI_INIT=_F(VALE=(
-"""
-    ),
-    77: _(
-        """
-                      %(r1).15E,
-"""
-    ),
-    78: _(
-        """
-                      COMPORTEMENT=_F(RELATION= '%(k1)s',
-"""
-    ),
-    79: _(
-        """
-                      NEWTON=_F(REAC_ITER=1),
-)
-FIN()
-"""
-    ),
-    80: _(
-        """
-)
-FIN()
-"""
-    ),
-    81: _(
-        """
-%(k1)s=DEFI_FONCTION(NOM_PARA='INST',VALE=( %(r1).15E, %(r2).15E, %(r3).15E, %(r4).15E))
-"""
-    ),
-    82: _(
-        """
-                  AFFE_VARC=(
-"""
-    ),
-    83: _(
-        """
-                              _F(NOM_VARC='%(k1)s',VALE_FONC=%(k2)s,VALE_REF=%(r1).15E),
-"""
-    ),
-    84: _(
-        """
-                              _F(NOM_VARC='%(k1)s',VALE_FONC=%(k2)s),
-"""
-    ),
-    85: _(
-        """
-                  ),
-"""
-    ),
-    86: _(
-        """
-                      )),
-"""
-    ),
-    87: _(
-        """
-                      COMPOR=%(k1)s,
-"""
-    ),
-    88: _(
-        """
-                      ITER_INTE_MAXI=%(i1)d, RESI_INTE_RELA=%(r1).15E, ALGO_INTE='%(k1)s',
-"""
-    ),
-    89: _(
-        """
-                      ITER_INTE_PAS=%(i1)d, PARM_THETA=%(r1).15E,
-"""
-    ),
-    90: _(
-        """
-                      DEFORMATION='%(k1)s',
 """
     ),
     91: _(

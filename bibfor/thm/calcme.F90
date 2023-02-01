@@ -33,7 +33,6 @@ subroutine calcme(option, j_mater, ndim, typmod, angl_naut, &
 !
 #include "asterf_types.h"
 #include "asterfort/nmcomp.h"
-#include "asterfort/lcidbg.h"
 !
     character(len=16), intent(in) :: option, compor(*)
     integer, intent(in) :: j_mater
@@ -109,13 +108,5 @@ subroutine calcme(option, j_mater, ndim, typmod, angl_naut, &
                 neps, defgem(addeme+ndim), deps, nsig, congem(adcome), &
                 vintm, option, angl_naut, &
                 congep(adcome), vintp, ndsdeme, dsdeme, retcom)
-!
-! - If integration has failed
-!
-    if (retcom .eq. 1) then
-        call lcidbg(fami, kpg, ksp, typmod, compor, &
-                    carcri, instam, instap, neps, defgem(addeme+ndim), &
-                    deps, nsig, congem(adcome), vintm, option)
-    end if
 !
 end subroutine
