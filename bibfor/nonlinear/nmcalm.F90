@@ -131,18 +131,10 @@ subroutine nmcalm(typmat, modelz, lischa, ds_material, carele, &
         call nmchex(meelem, 'MEELEM', 'MEMASS', memass)
     end if
 !
-    if (typmat .eq. 'MEDIRI') then
-!
-! --- MATR_ELEM DES CL DE DIRICHLET B
-!
-        if (niv .ge. 2) then
-            call utmess('I', 'MECANONLINE13_80')
-        end if
-        call medime('V', 'ZERO', model, lischa, matele)
 !
 ! --- MATR_ELEM RIGIDITE GEOMETRIQUE
 !
-    else if (typmat .eq. 'MEGEOM') then
+    if (typmat .eq. 'MEGEOM') then
         if (niv .ge. 2) then
             call utmess('I', 'MECANONLINE13_81')
         end if
@@ -171,15 +163,6 @@ subroutine nmcalm(typmat, modelz, lischa, ds_material, carele, &
                     instam, base, &
                     ds_system%merigi, memass, &
                     matele, varplu, ds_constitutive%compor)
-!
-! --- MATR_ELEM POUR CHARGES SUIVEUSES
-!
-    else if (typmat .eq. 'MESUIV') then
-        if (niv .ge. 2) then
-            call utmess('I', 'MECANONLINE13_84')
-        end if
-        call mecgme(model, carele, ds_material%mater, ds_material%mateco, lischa, instap, &
-                    disp_prev, disp_cumu_inst, instam, ds_constitutive%compor, matele)
 
     else
         ASSERT(ASTER_FALSE)

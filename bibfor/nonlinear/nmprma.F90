@@ -37,7 +37,7 @@ subroutine nmprma(listFuncActi, &
     use HHO_type
     use NonLinear_module, only: getOption, getMatrType, isMatrUpdate, &
                                 isDampMatrCompute, isMassMatrCompute, isRigiMatrCompute, &
-                                factorSystem
+                                factorSystem, updateLoadBCMatrix
 !
     implicit none
 !
@@ -59,7 +59,6 @@ subroutine nmprma(listFuncActi, &
 #include "asterfort/nmrenu.h"
 #include "asterfort/nmrigi.h"
 #include "asterfort/nmxmat.h"
-#include "asterfort/NonLinear_type.h"
 #include "asterfort/NonLinear_type.h"
 #include "asterfort/utmess.h"
 !
@@ -146,7 +145,7 @@ subroutine nmprma(listFuncActi, &
     integer :: ifm, niv
     aster_logical :: l_update_matr, l_renumber
     aster_logical :: l_comp_rigi, l_comp_damp, l_asse_rigi
-    aster_logical :: l_neum_undead, l_diri_undead, l_comp_cont, lMassAssemble
+    aster_logical :: l_comp_cont, lMassAssemble
     character(len=16) :: matrType, option_nonlin
     character(len=19) :: contElem, rigid
     integer :: nb_matr, reac_incr
@@ -175,8 +174,6 @@ subroutine nmprma(listFuncActi, &
     condcvg = -1
 
 ! - Active functionnalites
-    l_neum_undead = isfonc(listFuncActi, 'NEUM_UNDEAD')
-    l_diri_undead = isfonc(listFuncActi, 'DIRI_UNDEAD')
     l_comp_cont = isfonc(listFuncActi, 'ELT_CONTACT')
     l_cont_cont = isfonc(listFuncActi, 'CONT_CONTINU')
 
@@ -205,7 +202,7 @@ subroutine nmprma(listFuncActi, &
     call isMassMatrCompute(sddyna, l_update_matr, lMassAssemble)
 
 ! - Do the rigidity matrices have to be calculated/assembled ?
-    call isRigiMatrCompute(phaseType, listFuncActi, &
+    call isRigiMatrCompute(phaseType, &
                            sddyna, numeTime, &
                            l_update_matr, l_comp_damp, &
                            l_comp_rigi, l_asse_rigi)
@@ -235,24 +232,20 @@ subroutine nmprma(listFuncActi, &
 ! - No error => continue
     if (ldccvg .ne. 1) then
 
-! ----- Update dualized matrix for non-linear Dirichlet boundary conditions (undead)
-        if (l_diri_undead .and. (matrType .ne. 'EXTRAPOLE')) then
-            call nmcmat('MEDIRI', ' ', ' ', ASTER_TRUE, &
-                        ASTER_FALSE, nb_matr, list_matr_type, list_calc_opti, list_asse_opti, &
-                        list_l_calc, list_l_asse)
+! ----- Update elementary matrices for loads and boundary conditions (undead cases)
+        if (matrType .ne. 'EXTRAPOLE') then
+            call updateLoadBCMatrix(listFuncActi, listLoad, &
+                                    sddisc, numeTime, &
+                                    modelZ, caraElem, &
+                                    ds_material, ds_constitutive, &
+                                    hval_incr, hval_algo, &
+                                    hval_meelem)
         end if
 
 ! ----- Compute damping (Rayleigh) elementary matrices
         if (l_comp_damp) then
             call nmcmat('MEAMOR', ' ', ' ', ASTER_TRUE, &
                         ASTER_TRUE, nb_matr, list_matr_type, list_calc_opti, list_asse_opti, &
-                        list_l_calc, list_l_asse)
-        end if
-
-! --- CALCUL DES MATR-ELEM DES CHARGEMENTS
-        if (l_neum_undead .and. (matrType .ne. 'EXTRAPOLE')) then
-            call nmcmat('MESUIV', ' ', ' ', ASTER_TRUE, &
-                        ASTER_FALSE, nb_matr, list_matr_type, list_calc_opti, list_asse_opti, &
                         list_l_calc, list_l_asse)
         end if
 

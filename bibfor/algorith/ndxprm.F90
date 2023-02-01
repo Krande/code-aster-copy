@@ -27,6 +27,7 @@ subroutine ndxprm(modelz, ds_material, carele, ds_constitutive, ds_algopara, &
     use NonLin_Datastructure_type
     use HHO_type
     use NonLinear_module, only: isDampMatrCompute
+    use NonLinear_module, only: updateLoadBCMatrix
 !
     implicit none
 !
@@ -197,20 +198,20 @@ subroutine ndxprm(modelz, ds_material, carele, ds_constitutive, ds_algopara, &
             call asmari(ds_system, meelem, lischa, rigid)
         end if
     end if
+
+! - Update elementary matrices for loads and boundary conditions (undead cases)
+    call updateLoadBCMatrix(list_func_acti, lischa, &
+                            sddisc, nume_inst, &
+                            modelZ, carele, &
+                            ds_material, ds_constitutive, &
+                            valinc, solalg, &
+                            meelem)
 !
 ! - Compute damping (Rayleigh) elementary matrices
 !
     if (l_comp_damp) then
         call nmcmat('MEAMOR', ' ', ' ', ASTER_TRUE, &
                     ASTER_TRUE, nb_matr, list_matr_type, list_calc_opti, list_asse_opti, &
-                    list_l_calc, list_l_asse)
-    end if
-!
-! --- CALCUL DES MATR-ELEM DES CHARGEMENTS
-!
-    if (l_neum_undead) then
-        call nmcmat('MESUIV', ' ', ' ', ASTER_TRUE, &
-                    ASTER_FALSE, nb_matr, list_matr_type, list_calc_opti, list_asse_opti, &
                     list_l_calc, list_l_asse)
     end if
 !

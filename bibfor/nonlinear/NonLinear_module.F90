@@ -649,7 +649,6 @@ contains
 ! Do the rigidity matrices have to be calculated/assembled ?
 !
 ! In  phaseType        : name of current phase (prediction/correction/internal forces)
-! In  listFuncActi     : list of active functionnalities
 ! In  sddyna           : name of dynamic parameters datastructure
 ! In  numeTime         : index of current time step
 ! In  l_update_matr    : flag to update matrix
@@ -658,12 +657,12 @@ contains
 ! Out l_asse_rigi      : flag if rigidity elementary matrices have to be assembled
 !
 ! --------------------------------------------------------------------------------------------------
-    subroutine isRigiMatrCompute(phaseType, listFuncActi, &
+    subroutine isRigiMatrCompute(phaseType, &
                                  sddyna, numeTime, &
                                  l_update_matr, l_comp_damp, &
                                  l_comp_rigi, l_asse_rigi)
 ! - Parameters
-        integer, intent(in) :: phaseType, listFuncActi(*)
+        integer, intent(in) :: phaseType
         character(len=19), intent(in) :: sddyna
         integer, intent(in) :: numeTime
         aster_logical, intent(in) :: l_update_matr, l_comp_damp

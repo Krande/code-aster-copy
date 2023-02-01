@@ -38,7 +38,7 @@ subroutine nmcoma(listFuncActi, &
     use NonLinear_module, only: getOption, getMatrType, isMatrUpdate, &
                                 isDampMatrCompute, isMassMatrCompute, &
                                 isRigiMatrCompute, isInteVectCompute, &
-                                factorSystem
+                                factorSystem, updateLoadBCMatrix
 !
     implicit none
 !
@@ -135,8 +135,8 @@ subroutine nmcoma(listFuncActi, &
 ! --------------------------------------------------------------------------------------------------
 !
     integer, parameter :: phaseType = CORR_NEWTON
-    aster_logical :: l_update_matr, l_comp_damp, l_diri_undead, l_comp_mass
-    aster_logical :: l_neum_undead, l_comp_fint, l_asse_rigi, l_comp_rigi, l_comp_cont
+    aster_logical :: l_update_matr, l_comp_damp, l_comp_mass
+    aster_logical :: l_comp_fint, l_asse_rigi, l_comp_rigi, l_comp_cont
     character(len=16) :: matrType, option_nonlin
     character(len=19) :: contElem, rigid
     character(len=24) :: model
@@ -165,8 +165,6 @@ subroutine nmcoma(listFuncActi, &
     condcvg = -1
 
 ! - Active functionnalites
-    l_neum_undead = isfonc(listFuncActi, 'NEUM_UNDEAD')
-    l_diri_undead = isfonc(listFuncActi, 'DIRI_UNDEAD')
     l_comp_cont = isfonc(listFuncActi, 'ELT_CONTACT')
 
 ! - Renumbering equations ?
@@ -194,7 +192,7 @@ subroutine nmcoma(listFuncActi, &
     call isMassMatrCompute(sddyna, l_update_matr, l_comp_mass)
 
 ! - Do the rigidity matrices have to be calculated/assembled ?
-    call isRigiMatrCompute(phaseType, listFuncActi, &
+    call isRigiMatrCompute(phaseType, &
                            sddyna, numeTime, &
                            l_update_matr, l_comp_damp, &
                            l_comp_rigi, l_asse_rigi)
@@ -229,12 +227,13 @@ subroutine nmcoma(listFuncActi, &
                         contElem)
         end if
 
-! ----- Update dualized matrix for non-linear Dirichlet boundary conditions (undead)
-        if (l_neum_undead) then
-            call nmcmat('MESUIV', ' ', ' ', ASTER_TRUE, &
-                        ASTER_FALSE, nb_matr, list_matr_type, list_calc_opti, list_asse_opti, &
-                        list_l_calc, list_l_asse)
-        end if
+! ----- Update elementary matrices for loads and boundary conditions (undead cases)
+        call updateLoadBCMatrix(listFuncActi, listLoad, &
+                                sddisc, numeTime, &
+                                modelZ, caraElem, &
+                                ds_material, ds_constitutive, &
+                                hval_incr, hval_algo, &
+                                hval_meelem)
 
 ! ----- Assembly rigidity matrix
         if (l_asse_rigi) then
@@ -246,13 +245,6 @@ subroutine nmcoma(listFuncActi, &
         if (l_comp_damp) then
             call nmcmat('MEAMOR', ' ', ' ', ASTER_TRUE, &
                         ASTER_TRUE, nb_matr, list_matr_type, list_calc_opti, list_asse_opti, &
-                        list_l_calc, list_l_asse)
-        end if
-
-! ----- Update dualized relations for non-linear Dirichlet boundary conditions (undead)
-        if (l_diri_undead) then
-            call nmcmat('MEDIRI', ' ', ' ', ASTER_TRUE, &
-                        ASTER_FALSE, nb_matr, list_matr_type, list_calc_opti, list_asse_opti, &
                         list_l_calc, list_l_asse)
         end if
 
