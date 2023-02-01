@@ -90,17 +90,6 @@ subroutine nmassm(lischa, numedd, numfix, typmat, optasz, &
         end if
         call asmaam(meamor, numedd, lischa, matass)
         call mtdscr(matass)
-    else if (typmat .eq. 'MEMASS') then
-        if (niv .ge. 2) then
-            call utmess('I', 'MECANONLINE13_72')
-        end if
-        if (optass .eq. ' ') then
-            call asmama(memass, ' ', numfix, lischa, &
-                        matass)
-        else if (optass .eq. 'AVEC_DIRICHLET') then
-            call asmama(memass, mediri, numedd, lischa, &
-                        matass)
-        end if
 
     else if (typmat .eq. 'MERIGI') then
 ! ----- Direct with asmari

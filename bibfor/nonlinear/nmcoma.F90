@@ -39,6 +39,8 @@ subroutine nmcoma(listFuncActi, &
                                 isDampMatrCompute, isMassMatrCompute, &
                                 isRigiMatrCompute, isInteVectCompute, &
                                 factorSystem, updateLoadBCMatrix
+    use NonLinearDyna_module, only: isMassMatrAssemble, &
+                                    asseMassMatrix
 !
     implicit none
 !
@@ -135,8 +137,9 @@ subroutine nmcoma(listFuncActi, &
 ! --------------------------------------------------------------------------------------------------
 !
     integer, parameter :: phaseType = CORR_NEWTON
-    aster_logical :: l_update_matr, l_comp_damp, l_comp_mass
+    aster_logical :: l_update_matr, l_comp_damp
     aster_logical :: l_comp_fint, l_asse_rigi, l_comp_rigi, l_comp_cont
+    aster_logical :: lMassAssemble
     character(len=16) :: matrType, option_nonlin
     character(len=19) :: contElem, rigid
     character(len=24) :: model
@@ -189,7 +192,7 @@ subroutine nmcoma(listFuncActi, &
     call isDampMatrCompute(sddyna, l_renumber, l_comp_damp)
 
 ! - Do the mass matrices have to be calculated ?
-    call isMassMatrCompute(sddyna, l_update_matr, l_comp_mass)
+    call isMassMatrCompute(sddyna, l_update_matr, lMassAssemble)
 
 ! - Do the rigidity matrices have to be calculated/assembled ?
     call isRigiMatrCompute(phaseType, &
@@ -241,19 +244,19 @@ subroutine nmcoma(listFuncActi, &
             call asmari(ds_system, hval_meelem, listLoad, rigid)
         end if
 
+! ----- Assemble mass matrix
+        if (lMassAssemble) then
+            call asseMassMatrix(listLoad, &
+                                numeDof, numeDofFixe, &
+                                hval_meelem, hval_measse)
+            ASSERT(l_update_matr)
+        end if
+
 ! ----- Compute damping (Rayleigh) elementary matrices
         if (l_comp_damp) then
             call nmcmat('MEAMOR', ' ', ' ', ASTER_TRUE, &
                         ASTER_TRUE, nb_matr, list_matr_type, list_calc_opti, list_asse_opti, &
                         list_l_calc, list_l_asse)
-        end if
-
-! ----- Compute mass elementary matrices
-        if (l_comp_mass) then
-            call nmcmat('MEMASS', ' ', ' ', ASTER_FALSE, &
-                        ASTER_TRUE, nb_matr, list_matr_type, list_calc_opti, list_asse_opti, &
-                        list_l_calc, list_l_asse)
-            ASSERT(l_update_matr)
         end if
 
 ! ----- Compute and assemble matrices

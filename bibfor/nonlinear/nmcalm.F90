@@ -97,7 +97,6 @@ subroutine nmcalm(typmat, modelz, lischa, ds_material, carele, &
     character(len=19) :: disp_cumu_inst, disp_newt_curr, varplu, time_curr
     character(len=19) :: varc_prev, varc_curr, time_prev
     character(len=8) :: mesh
-    character(len=24) :: modelLigrel
 !
 ! ----------------------------------------------------------------------
 !
@@ -140,17 +139,6 @@ subroutine nmcalm(typmat, modelz, lischa, ds_material, carele, &
         end if
         call merige(model(1:8), carele(1:8), sigplu, strplu, matele, &
                     'V', 0, mateco=ds_material%mateco)
-!
-! --- MATR_ELEM MASSES
-!
-    else if (typmat .eq. 'MEMASS') then
-        if (niv .ge. 2) then
-            call utmess('I', 'MECANONLINE13_82')
-        end if
-        call dismoi('NOM_LIGREL', model, 'MODELE', repk=modelLigrel)
-        call memame(optmat, model, ds_material%mater, ds_material%mateco, &
-                    carele, instam, ds_constitutive%compor, matele, &
-                    base, modelLigrel)
 !
 ! --- MATR_ELEM AMORTISSEMENT
 !

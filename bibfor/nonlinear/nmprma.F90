@@ -38,6 +38,8 @@ subroutine nmprma(listFuncActi, &
     use NonLinear_module, only: getOption, getMatrType, isMatrUpdate, &
                                 isDampMatrCompute, isMassMatrCompute, isRigiMatrCompute, &
                                 factorSystem, updateLoadBCMatrix
+    use NonLinearDyna_module, only: isMassMatrAssemble, &
+                                    asseMassMatrix
 !
     implicit none
 !
@@ -251,9 +253,9 @@ subroutine nmprma(listFuncActi, &
 
 ! ----- Assemble mass matrix
         if (lMassAssemble) then
-            call nmcmat('MEMASS', ' ', ' ', ASTER_FALSE, &
-                        ASTER_TRUE, nb_matr, list_matr_type, list_calc_opti, list_asse_opti, &
-                        list_l_calc, list_l_asse)
+            call asseMassMatrix(listLoad, &
+                                numeDof, numeDofFixe, &
+                                hval_meelem, hval_measse)
             ASSERT(l_update_matr)
         end if
 
