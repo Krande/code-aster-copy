@@ -127,8 +127,9 @@ subroutine nmprta(mesh, model, nume_dof, numfix, ds_material, cara_elem, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
+    integer, parameter :: phaseType = PRED_EULER
+    integer, parameter :: iterNewtPred = 0
     integer :: ifm, niv
-    integer :: iter_newt
     real(kind=8) :: time_prev, time_curr
     character(len=19) :: cncine, cndonn, cnpilo
     aster_logical :: leltc
@@ -154,13 +155,12 @@ subroutine nmprta(mesh, model, nume_dof, numfix, ds_material, cara_elem, &
     cnpilo = '&&CNCHAR.PILO'
     call vtzero(cndonn)
     call vtzero(cnpilo)
-!
+
 ! - Get time
-!
     ASSERT(nume_inst .gt. 0)
     time_prev = diinst(sddisc, nume_inst-1)
     time_curr = diinst(sddisc, nume_inst)
-    iter_newt = 0
+
 !
 ! --- DECOMPACTION DES VARIABLES CHAPEAUX
 !
@@ -214,9 +214,9 @@ subroutine nmprta(mesh, model, nume_dof, numfix, ds_material, cara_elem, &
 !
 ! - Compute internal forces
 !
-    call nonlinIntForce(PRED_EULER, &
+    call nonlinIntForce(phaseType, &
                         model, cara_elem, &
-                        list_func_acti, iter_newt, sdnume, &
+                        list_func_acti, iterNewtPred, sdnume, &
                         ds_material, ds_constitutive, &
                         ds_system, ds_measure, &
                         hval_incr, hval_algo, &

@@ -134,10 +134,11 @@ subroutine nmcoma(listFuncActi, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    aster_logical :: l_update_matr, l_comp_damp, l_diri_undead, l_rom, l_comp_mass
+    integer, parameter :: phaseType = CORR_NEWTON
+    aster_logical :: l_update_matr, l_comp_damp, l_diri_undead, l_comp_mass
     aster_logical :: l_neum_undead, l_comp_fint, l_asse_rigi, l_comp_rigi, l_comp_cont
-    character(len=16) :: corrMatrType, option_nonlin
-    character(len=19) :: matr_elem, rigid
+    character(len=16) :: matrType, option_nonlin
+    character(len=19) :: contElem, rigid
     character(len=24) :: model
     aster_logical :: l_renumber
     integer :: ifm, niv
@@ -156,7 +157,6 @@ subroutine nmcoma(listFuncActi, &
     end if
 
 ! - Initializations
-    call nmchex(hval_measse, 'MEASSE', 'MERIGI', rigid)
     nb_matr = 0
     list_matr_type = ' '
     model = modelz
@@ -167,7 +167,6 @@ subroutine nmcoma(listFuncActi, &
 ! - Active functionnalites
     l_neum_undead = isfonc(listFuncActi, 'NEUM_UNDEAD')
     l_diri_undead = isfonc(listFuncActi, 'DIRI_UNDEAD')
-    l_rom = isfonc(listFuncActi, 'ROM')
     l_comp_cont = isfonc(listFuncActi, 'ELT_CONTACT')
 
 ! - Renumbering equations ?
@@ -176,17 +175,17 @@ subroutine nmcoma(listFuncActi, &
                 l_renumber)
 
 ! - Get type of matrix
-    call getMatrType(CORR_NEWTON, listFuncActi, sddisc, numeTime, ds_algopara, &
-                     corrMatrType, reac_iter_=reac_iter)
+    call getMatrType(phaseType, listFuncActi, sddisc, numeTime, ds_algopara, &
+                     matrType, reac_iter_=reac_iter)
 
 ! - Update global matrix ?
-    call isMatrUpdate(CORR_NEWTON, corrMatrType, listFuncActi, &
+    call isMatrUpdate(phaseType, matrType, listFuncActi, &
                       sddyna, ds_system, &
                       l_update_matr, &
                       iter_newt_=iterNewt, reac_iter_=reac_iter)
 
 ! - Select non-linear option for compute matrices
-    call getOption(CORR_NEWTON, listFuncActi, corrMatrType, option_nonlin, l_update_matr)
+    call getOption(CORR_NEWTON, listFuncActi, matrType, option_nonlin, l_update_matr)
 
 ! - Do the damping matrices have to be calculated ?
     call isDampMatrCompute(sddyna, l_renumber, l_comp_damp)
@@ -195,20 +194,19 @@ subroutine nmcoma(listFuncActi, &
     call isMassMatrCompute(sddyna, l_update_matr, l_comp_mass)
 
 ! - Do the rigidity matrices have to be calculated/assembled ?
-    call isRigiMatrCompute(CORR_NEWTON, listFuncActi, &
+    call isRigiMatrCompute(phaseType, listFuncActi, &
                            sddyna, numeTime, &
                            l_update_matr, l_comp_damp, &
                            l_comp_rigi, l_asse_rigi)
 
 ! - Do the internal forces vectors have to be calculated ?
-    call isInteVectCompute(CORR_NEWTON, listFuncActi, &
+    call isInteVectCompute(phaseType, listFuncActi, &
                            option_nonlin, iterNewt, &
                            l_comp_rigi, l_comp_fint)
-!
+
 ! - Compute internal forces elementary vectors
-!
     if (l_comp_fint) then
-        call nonlinIntForce(CORR_NEWTON, &
+        call nonlinIntForce(phaseType, &
                             model, caraElem, &
                             listFuncActi, iterNewt, sdnume, &
                             ds_material, ds_constitutive, &
@@ -218,41 +216,46 @@ subroutine nmcoma(listFuncActi, &
                             hhoField_=hhoField, &
                             sddyna_=sddyna)
     end if
-!
+
 ! - No error => continue
-!
     if (ldccvg .ne. 1) then
 ! ----- Compute contact elementary matrices
         if (l_comp_cont) then
-            call nmchex(hval_meelem, 'MEELEM', 'MEELTC', matr_elem)
+            call nmchex(hval_meelem, 'MEELEM', 'MEELTC', contElem)
             call nmelcm(mesh, model, &
                         ds_material, ds_contact, &
                         ds_constitutive, ds_measure, &
                         hval_incr, hval_algo, &
-                        matr_elem)
+                        contElem)
         end if
+
 ! ----- Update dualized matrix for non-linear Dirichlet boundary conditions (undead)
         if (l_neum_undead) then
             call nmcmat('MESUIV', ' ', ' ', ASTER_TRUE, &
                         ASTER_FALSE, nb_matr, list_matr_type, list_calc_opti, list_asse_opti, &
                         list_l_calc, list_l_asse)
         end if
+
 ! ----- Assembly rigidity matrix
         if (l_asse_rigi) then
+            call nmchex(hval_measse, 'MEASSE', 'MERIGI', rigid)
             call asmari(ds_system, hval_meelem, listLoad, rigid)
         end if
+
 ! ----- Compute damping (Rayleigh) elementary matrices
         if (l_comp_damp) then
             call nmcmat('MEAMOR', ' ', ' ', ASTER_TRUE, &
                         ASTER_TRUE, nb_matr, list_matr_type, list_calc_opti, list_asse_opti, &
                         list_l_calc, list_l_asse)
         end if
+
 ! ----- Update dualized relations for non-linear Dirichlet boundary conditions (undead)
         if (l_diri_undead) then
             call nmcmat('MEDIRI', ' ', ' ', ASTER_TRUE, &
                         ASTER_FALSE, nb_matr, list_matr_type, list_calc_opti, list_asse_opti, &
                         list_l_calc, list_l_asse)
         end if
+
 ! ----- Compute mass elementary matrices
         if (l_comp_mass) then
             call nmcmat('MEMASS', ' ', ' ', ASTER_FALSE, &
@@ -260,6 +263,7 @@ subroutine nmcoma(listFuncActi, &
                         list_l_calc, list_l_asse)
             ASSERT(l_update_matr)
         end if
+
 ! ----- Compute and assemble matrices
         if (nb_matr .gt. 0) then
             call nmxmat(modelz, ds_material, caraElem, &
@@ -270,26 +274,25 @@ subroutine nmcoma(listFuncActi, &
                         list_asse_opti, list_l_calc, list_l_asse, &
                         hval_meelem, hval_measse, ds_system)
         end if
+
 ! ----- Compute global matrix of system
         if (l_update_matr) then
-            call nmmatr('CORRECTION', listFuncActi, listLoad, numeDof, sddyna, &
+            call nmmatr(phaseType, listFuncActi, listLoad, numeDof, sddyna, &
                         numeTime, ds_contact, hval_meelem, hval_measse, matass)
-        end if
-! ----- Set matrix type in convergence table
-        if (l_update_matr) then
             call dismoi('TYPE_MATRICE', matass, 'MATR_ASSE', repk=ksym)
             select case (ksym(1:7))
             case ('SYMETRI')
-                corrMatrType(12:16) = '(SYM)'
+                matrType(12:16) = '(SYM)'
             case ('NON_SYM')
-                corrMatrType(10:16) = '(NOSYM)'
+                matrType(10:16) = '(NOSYM)'
             case default
                 ASSERT(.false.)
             end select
-            call nmimck(ds_print, 'MATR_ASSE', corrMatrType, ASTER_TRUE)
+            call nmimck(ds_print, 'MATR_ASSE', matrType, ASTER_TRUE)
         else
             call nmimck(ds_print, 'MATR_ASSE', ' ', ASTER_FALSE)
         end if
+
 ! ----- Factorization of global matrix of system
         if (l_update_matr) then
             call factorSystem(listFuncActi, ds_measure, ds_algorom, &

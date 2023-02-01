@@ -87,6 +87,7 @@ subroutine nmchht(model, ds_material, cara_elem, ds_constitutive, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
+    integer, parameter :: phaseType = CORR_NEWTON
     integer, parameter:: zveass = 19, zveelm = 13
     character(len=19) :: hval_veelem(zveelm)
     character(len=19) :: hval_veasse(zveass)
@@ -196,7 +197,7 @@ subroutine nmchht(model, ds_material, cara_elem, ds_constitutive, &
                                       hval_measse, cnsstr)
         end if
 ! ----- Compute internal forces
-        call nonlinIntForce(CORR_NEWTON, &
+        call nonlinIntForce(phaseType, &
                             model, cara_elem, &
                             list_func_acti, iter_newt, sdnume, &
                             ds_material, ds_constitutive, &

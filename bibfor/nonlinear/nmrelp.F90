@@ -103,6 +103,7 @@ subroutine nmrelp(model, nume_dof, ds_material, cara_elem, ds_system, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
+    integer, parameter :: phaseType = CORR_NEWTON
     integer :: ifm, niv
     integer, parameter :: zsolal = 17, zvalin = 28
     character(len=19) :: solalt(zsolal), valint(zvalin, 2)
@@ -277,7 +278,7 @@ subroutine nmrelp(model, nume_dof, ds_material, cara_elem, ds_system, &
 ! ----- Update internal forces
         ds_system2%cnfint = cnfint2(act)
         ds_system2%veinte = ds_system%veinte
-        call nonlinIntForce(CORR_NEWTON, &
+        call nonlinIntForce(phaseType, &
                             model, cara_elem, &
                             list_func_acti, iter_newt, sdnume, &
                             ds_material, ds_constitutive, &

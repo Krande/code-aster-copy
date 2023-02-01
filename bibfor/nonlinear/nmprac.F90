@@ -27,6 +27,8 @@ subroutine nmprac(fonact, lischa, numedd, solveu, &
 !
 #include "asterf_types.h"
 #include "jeveux.h"
+#include "asterc/r8prem.h"
+#include "asterfort/asmama.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/infdbg.h"
 #include "asterfort/isfonc.h"
@@ -39,9 +41,9 @@ subroutine nmprac(fonact, lischa, numedd, solveu, &
 #include "asterfort/nmmatr.h"
 #include "asterfort/nmrinc.h"
 #include "asterfort/nmtime.h"
+#include "asterfort/NonLinear_type.h"
 #include "asterfort/preres.h"
 #include "asterfort/utmess.h"
-#include "asterfort/asmama.h"
 !
     integer :: fonact(*)
     character(len=19) :: sddyna, lischa
@@ -79,6 +81,7 @@ subroutine nmprac(fonact, lischa, numedd, solveu, &
 !
 ! ----------------------------------------------------------------------
 !
+    integer, parameter :: phaseType = ACCEL_INIT
     aster_logical :: lctcc
     integer :: ieq, ibid, numins
     integer :: iadia, neq, lres, neql
@@ -95,15 +98,13 @@ subroutine nmprac(fonact, lischa, numedd, solveu, &
     if (niv .ge. 2) then
         call utmess('I', 'MECANONLINE13_76')
     end if
-!
-! --- INITIALISATIONS
-!
+
+! - Initializations
     faccvg = -1
     numins = 1
     call dismoi('NB_EQUA', numedd, 'NUME_DDL', repi=neq)
-!
-! --- FONCTIONNALITES ACTIVEES
-!
+
+! - Active functionnalites
     lctcc = isfonc(fonact, 'CONT_CONTINU')
 !
 ! --- DECOMPACTION DES VARIABLES CHAPEAUX
@@ -118,7 +119,7 @@ subroutine nmprac(fonact, lischa, numedd, solveu, &
 !
 ! --- CALCUL DE LA MATRICE ASSEMBLEE GLOBALE
 !
-    call nmmatr('ACCEL_INIT', fonact, lischa, numedd, sddyna, &
+    call nmmatr(phaseType, fonact, lischa, numedd, sddyna, &
                 numins, ds_contact, meelem, measse, matass)
 !
 ! --- SI METHODE CONTINUE ON REMPLACE LES TERMES DIAGONAUX NULS PAR
@@ -135,7 +136,7 @@ subroutine nmprac(fonact, lischa, numedd, solveu, &
         end if
         call jeveuo(jexnum(matass//'.VALM', 1), 'E', jvalm)
         do ieq = 1, neql
-            if (zr(jvalm-1+zi(iadia-1+ieq)) .eq. 0.d0) then
+            if (abs(zr(jvalm-1+zi(iadia-1+ieq))) .le. r8prem()) then
                 zr(jvalm-1+zi(iadia-1+ieq)) = 1.d0
             end if
         end do
@@ -154,8 +155,7 @@ subroutine nmprac(fonact, lischa, numedd, solveu, &
 !
     call nmtime(ds_measure, 'Init', 'Factor')
     call nmtime(ds_measure, 'Launch', 'Factor')
-    call preres(solveu, 'V', faccvg, maprec, matass, &
-                ibid, -9999)
+    call preres(solveu, 'V', faccvg, maprec, matass, ibid, -9999)
     call nmtime(ds_measure, 'Stop', 'Factor')
     call nmrinc(ds_measure, 'Factor')
 !

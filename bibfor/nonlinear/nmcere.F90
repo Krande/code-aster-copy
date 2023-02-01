@@ -102,6 +102,7 @@ subroutine nmcere(model, nume_dof, ds_material, cara_elem, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
+    integer, parameter :: phaseType = CORR_NEWTON
     integer :: ifm, niv
     integer, parameter :: zvalin = 28, zsolal = 17
     aster_logical :: lgrot, lendo
@@ -186,7 +187,7 @@ subroutine nmcere(model, nume_dof, ds_material, cara_elem, &
 !
 ! - Compute internal forces
 !
-    call nonlinIntForce(CORR_NEWTON, &
+    call nonlinIntForce(phaseType, &
                         model, cara_elem, &
                         list_func_acti, iter_newt, sdnume, &
                         ds_material, ds_constitutive, &
@@ -224,7 +225,8 @@ subroutine nmcere(model, nume_dof, ds_material, cara_elem, &
 ! - Compute maximum of out-of-balance force
 !
     if (ldccvg .eq. 0) then
-       call nmpilr(list_func_acti, nume_dof, matr_asse, hval_veasse, ds_contact, ds_system%cnfint, &
+        call nmpilr(list_func_acti, nume_dof, matr_asse, &
+                    hval_veasse, ds_contact, ds_system%cnfint, &
                     eta, residu)
     end if
 !

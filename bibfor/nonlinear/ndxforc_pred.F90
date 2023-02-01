@@ -91,13 +91,14 @@ subroutine ndxforc_pred(list_func_acti, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
+    integer, parameter :: phaseType = PRED_EULER
+    integer, parameter :: iterNewtPred = 0
     integer :: ifm, niv
     character(len=19) :: cndyna, cnsstr
     character(len=19) :: disp_prev, vite_prev, acce_prev
     character(len=19) :: disp_curr, vite_curr, acce_curr
     real(kind=8) :: time_prev, time_curr
     aster_logical :: l_impe, l_ammo, l_macr
-    integer :: iter_newt
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -105,14 +106,11 @@ subroutine ndxforc_pred(list_func_acti, &
     if (niv .ge. 2) then
         call utmess('I', 'MECANONLINE11_21')
     end if
-!
+
 ! - Initializations
-!
     ldccvg = 0
-    iter_newt = 0
-!
+
 ! - Get time
-!
     ASSERT(nume_inst .gt. 0)
     time_prev = diinst(sddisc, nume_inst-1)
     time_curr = diinst(sddisc, nume_inst)
@@ -181,9 +179,9 @@ subroutine ndxforc_pred(list_func_acti, &
 !
 ! - Compute internal forces
 !
-    call nonlinIntForce(PRED_EULER, &
+    call nonlinIntForce(phaseType, &
                         model, cara_elem, &
-                        list_func_acti, iter_newt, sdnume, &
+                        list_func_acti, iterNewtPred, sdnume, &
                         ds_material, ds_constitutive, &
                         ds_system, ds_measure, &
                         hval_incr, hval_algo, &

@@ -141,13 +141,14 @@ subroutine nmprma(listFuncActi, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
+    integer, parameter :: phaseType = PRED_EULER
     integer, parameter :: iterNewtPred = 0
+    integer :: ifm, niv
     aster_logical :: l_update_matr, l_renumber
     aster_logical :: l_comp_rigi, l_comp_damp, l_asse_rigi
     aster_logical :: l_neum_undead, l_diri_undead, l_comp_cont, lMassAssemble
-    character(len=16) :: predMatrType, option_nonlin
+    character(len=16) :: matrType, option_nonlin
     character(len=19) :: contElem, rigid
-    integer :: ifm, niv
     integer :: nb_matr, reac_incr
     character(len=6) :: list_matr_type(20)
     character(len=8) :: ksym
@@ -185,17 +186,17 @@ subroutine nmprma(listFuncActi, &
                 l_renumber)
 
 ! - Get type of matrix
-    call getMatrType(PRED_EULER, listFuncActi, sddisc, numeTime, ds_algopara, &
-                     predMatrType, reac_incr_=reac_incr)
+    call getMatrType(phaseType, listFuncActi, sddisc, numeTime, ds_algopara, &
+                     matrType, reac_incr_=reac_incr)
 
 ! - Update global matrix ?
-    call isMatrUpdate(PRED_EULER, predMatrType, listFuncActi, &
+    call isMatrUpdate(phaseType, matrType, listFuncActi, &
                       sddyna, ds_system, &
                       l_update_matr, &
                       nume_inst_=numeTime, reac_incr_=reac_incr)
 
 ! - Select non-linear option for compute matrices
-    call getOption(PRED_EULER, listFuncActi, predMatrType, option_nonlin)
+    call getOption(phaseType, listFuncActi, matrType, option_nonlin)
 
 ! - Do the damping matrices have to be calculated ?
     call isDampMatrCompute(sddyna, l_renumber, l_comp_damp)
@@ -204,7 +205,7 @@ subroutine nmprma(listFuncActi, &
     call isMassMatrCompute(sddyna, l_update_matr, lMassAssemble)
 
 ! - Do the rigidity matrices have to be calculated/assembled ?
-    call isRigiMatrCompute(PRED_EULER, listFuncActi, &
+    call isRigiMatrCompute(phaseType, listFuncActi, &
                            sddyna, numeTime, &
                            l_update_matr, l_comp_damp, &
                            l_comp_rigi, l_asse_rigi)
@@ -235,7 +236,7 @@ subroutine nmprma(listFuncActi, &
     if (ldccvg .ne. 1) then
 
 ! ----- Update dualized matrix for non-linear Dirichlet boundary conditions (undead)
-        if (l_diri_undead .and. (predMatrType .ne. 'EXTRAPOLE')) then
+        if (l_diri_undead .and. (matrType .ne. 'EXTRAPOLE')) then
             call nmcmat('MEDIRI', ' ', ' ', ASTER_TRUE, &
                         ASTER_FALSE, nb_matr, list_matr_type, list_calc_opti, list_asse_opti, &
                         list_l_calc, list_l_asse)
@@ -249,7 +250,7 @@ subroutine nmprma(listFuncActi, &
         end if
 
 ! --- CALCUL DES MATR-ELEM DES CHARGEMENTS
-        if (l_neum_undead .and. (predMatrType .ne. 'EXTRAPOLE')) then
+        if (l_neum_undead .and. (matrType .ne. 'EXTRAPOLE')) then
             call nmcmat('MESUIV', ' ', ' ', ASTER_TRUE, &
                         ASTER_FALSE, nb_matr, list_matr_type, list_calc_opti, list_asse_opti, &
                         list_l_calc, list_l_asse)
@@ -276,18 +277,18 @@ subroutine nmprma(listFuncActi, &
 
 ! ----- Compute global matrix of system
         if (l_update_matr) then
-            call nmmatr('PREDICTION', listFuncActi, listLoad, numeDof, sddyna, &
+            call nmmatr(phaseType, listFuncActi, listLoad, numeDof, sddyna, &
                         numeTime, ds_contact, hval_meelem, hval_measse, matass)
             call dismoi('TYPE_MATRICE', matass, 'MATR_ASSE', repk=ksym)
             select case (ksym(1:7))
             case ('SYMETRI')
-                predMatrType(12:16) = '(SYM)'
+                matrType(12:16) = '(SYM)'
             case ('NON_SYM')
-                predMatrType(10:16) = '(NOSYM)'
+                matrType(10:16) = '(NOSYM)'
             case default
                 ASSERT(.false.)
             end select
-            call nmimck(ds_print, 'MATR_ASSE', predMatrType, ASTER_TRUE)
+            call nmimck(ds_print, 'MATR_ASSE', matrType, ASTER_TRUE)
         else
             call nmimck(ds_print, 'MATR_ASSE', ' ', ASTER_FALSE)
         end if

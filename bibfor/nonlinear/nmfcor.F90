@@ -107,6 +107,7 @@ subroutine nmfcor(model, nume_dof, ds_material, cara_elem, ds_system, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
+    integer, parameter :: phaseType = CORR_NEWTON
     integer :: ifm, niv
     character(len=24) :: mate, mateco, varc_refe
     aster_logical :: l_comp_fint, l_comp_rigi
@@ -165,19 +166,19 @@ subroutine nmfcor(model, nume_dof, ds_material, cara_elem, ds_system, &
 !
 ! - Get type of matrix
 !
-    call getMatrType(CORR_NEWTON, list_func_acti, sddisc, nume_inst, ds_algopara, &
+    call getMatrType(phaseType, list_func_acti, sddisc, nume_inst, ds_algopara, &
                      corrMatrType, reac_iter_=reac_iter)
 !
 ! - Update global matrix ?
 !
-    call isMatrUpdate(CORR_NEWTON, corrMatrType, list_func_acti, &
+    call isMatrUpdate(phaseType, corrMatrType, list_func_acti, &
                       sddyna, ds_system, &
                       l_update_matr, &
                       iter_newt_=iter_newt, reac_iter_=reac_iter)
 !
 ! - Select option for compute matrices
 !
-    call getOption(CORR_NEWTON, list_func_acti, corrMatrType, option_nonlin, l_update_matr)
+    call getOption(phaseType, list_func_acti, corrMatrType, option_nonlin, l_update_matr)
 !
 ! - Do the rigidity matrices have to be calculated/assembled ?
 !
@@ -203,7 +204,7 @@ subroutine nmfcor(model, nume_dof, ds_material, cara_elem, ds_system, &
                                         ds_material, ds_constitutive, ds_system)
             end if
         else
-            call nonlinIntForce(CORR_NEWTON, &
+            call nonlinIntForce(phaseType, &
                                 model, cara_elem, &
                                 list_func_acti, iter_newt, sdnume, &
                                 ds_material, ds_constitutive, &
