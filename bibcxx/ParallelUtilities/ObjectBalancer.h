@@ -71,8 +71,8 @@ class ObjectBalancer {
     void prepareCommunications();
 
     /** @brief Balance a object over processes by following elementary sends */
-    // template< typename T >
-    VectorReal balanceObjectOverProcesses( const VectorReal & ) const;
+    template < typename T >
+    T balanceObjectOverProcesses( const T & ) const;
 };
 
 using ObjectBalancerPtr = std::shared_ptr< ObjectBalancer >;
@@ -146,6 +146,24 @@ void ObjectBalancer::balanceSimpleVectorOverProcesses( const T *in, int sizeIn, 
         }
         ++tag;
     }
+};
+
+template < typename T >
+T ObjectBalancer::balanceObjectOverProcesses( const T &obj ) const {
+    const auto rank = getMPIRank();
+    const auto nbProcs = getMPISize();
+    int sizeDelta = 0;
+    const auto vecSize = obj.size();
+    for ( int iProc = 0; iProc < nbProcs; ++iProc ) {
+        const auto curSendList = _sendList[iProc];
+        const auto curSize = curSendList.size();
+        sizeDelta -= curSize;
+        sizeDelta += _recvSize[iProc];
+    }
+
+    T toReturn( vecSize + sizeDelta, 0 );
+    balanceSimpleVectorOverProcesses< typename T::value_type >( &obj[0], vecSize, &toReturn[0] );
+    return toReturn;
 };
 
 #endif /* COMMGRAPH_H */

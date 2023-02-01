@@ -27,6 +27,9 @@
 
 #include "aster_pybind.h"
 
+// Not DataStructures
+// aslint: disable=C3006
+
 void exportCommGraphToPython( py::module_ &mod ) {
 
     py::class_< CommGraph, CommGraphPtr >( mod, "CommGraph" )

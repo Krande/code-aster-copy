@@ -27,11 +27,17 @@
 
 #include "aster_pybind.h"
 
+// Not DataStructures
+// aslint: disable=C3006
+
 void exportObjectBalancerToPython( py::module_ &mod ) {
 
     py::class_< ObjectBalancer, ObjectBalancerPtr >( mod, "ObjectBalancer" )
         .def( py::init( &initFactoryPtr< ObjectBalancer > ) )
         .def( "addElementarySend", &ObjectBalancer::addElementarySend )
         .def( "prepareCommunications", &ObjectBalancer::prepareCommunications )
-        .def( "balanceObjectOverProcesses", &ObjectBalancer::balanceObjectOverProcesses );
+        .def( "balanceObjectOverProcesses",
+              &ObjectBalancer::balanceObjectOverProcesses< VectorReal > )
+        .def( "balanceObjectOverProcesses",
+              &ObjectBalancer::balanceObjectOverProcesses< VectorInt > );
 };

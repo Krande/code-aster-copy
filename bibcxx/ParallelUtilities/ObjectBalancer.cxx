@@ -51,21 +51,3 @@ void ObjectBalancer::prepareCommunications() {
         ++tag;
     }
 };
-
-// template< typename T >
-VectorReal ObjectBalancer::balanceObjectOverProcesses( const VectorReal &obj ) const {
-    const auto rank = getMPIRank();
-    const auto nbProcs = getMPISize();
-    int sizeDelta = 0;
-    const auto vecSize = obj.size();
-    for ( int iProc = 0; iProc < nbProcs; ++iProc ) {
-        const auto curSendList = _sendList[iProc];
-        const auto curSize = curSendList.size();
-        sizeDelta -= curSize;
-        sizeDelta += _recvSize[iProc];
-    }
-
-    VectorReal toReturn( vecSize + sizeDelta, 0 );
-    balanceSimpleVectorOverProcesses< VectorReal::value_type >( &obj[0], vecSize, &toReturn[0] );
-    return toReturn;
-};
