@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -20,11 +20,11 @@
 DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"))
 
 # Read mesh
-MESH0 = LIRE_MAILLAGE(FORMAT="MED", UNITE=20)
+mesh3D = LIRE_MAILLAGE(FORMAT="MED", UNITE=20)
 
 # Prepare mesh
 mesh = CREA_MAILLAGE(
-    MAILLAGE=MESH0, INFO=2, COQUE_SOLIDE=_F(GROUP_MA="AllVoluCells", GROUP_MA_SURF="FaceSup")
+    MAILLAGE=mesh3D, INFO=2, COQUE_SOLIDE=_F(GROUP_MA="AllVoluCells", GROUP_MA_SURF="FaceSup")
 )
 
 # Select finite elements
@@ -42,7 +42,7 @@ clamp = AFFE_CHAR_MECA(DDL_IMPO=_F(DX=0.0, DY=0.0, DZ=0.0, GROUP_MA=("FaceLeft",
 
 load = AFFE_CHAR_MECA(FORCE_FACE=_F(FX=10000000, GROUP_MA=("FaceRight",)), MODELE=model)
 
-# Calcul élastique linéaire
+# Calcul plastique non-linéaire
 rampUnit = DEFI_FONCTION(NOM_PARA="INST", VALE=(0.0, 0.0, 1.0, 1.0))
 
 timeStepper = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=_F(JUSQU_A=1.0, NOMBRE=3))
@@ -51,41 +51,50 @@ times = DEFI_LIST_INST(
     DEFI_LIST=_F(LIST_INST=timeStepper), ECHEC=_F(ACTION="DECOUPE", EVENEMENT="ERREUR")
 )
 
-resuElas = STAT_NON_LINE(
+resuNoli = STAT_NON_LINE(
     MODELE=model,
     CHAM_MATER=matfield,
     COMPORTEMENT=_F(DEFORMATION="PETIT", RELATION="VMIS_ISOT_LINE", TOUT="OUI"),
     EXCIT=(_F(CHARGE=clamp), _F(CHARGE=load, FONC_MULT=rampUnit)),
     INCREMENT=_F(LIST_INST=times),
-    CONVERGENCE=_F(ITER_GLOB_MAXI=15, RESI_GLOB_RELA=1.0e-6),
+    CONVERGENCE=_F(ITER_GLOB_MAXI=15, SIGM_REFE=1.0e6, RESI_REFE_RELA=1.0e-6),
     SOLVEUR=_F(METHODE="MUMPS", NPREC=9),
 )
 
 # Post-traitement
-resuElas = CALC_CHAMP(
-    reuse=resuElas,
-    RESULTAT=resuElas,
+resuNoli = CALC_CHAMP(
+    reuse=resuNoli,
+    RESULTAT=resuNoli,
     CONTRAINTE=("SIEF_NOEU"),
     FORCE=("FORC_NODA"),
     CRITERES=("SIEQ_ELGA", "SIEQ_NOEU"),
 )
 
-IMPR_RESU(RESU=_F(RESULTAT=resuElas), UNITE=80)
+# IMPR_RESU(RESU=_F(RESULTAT=resuNoli), UNITE=80)
 
 # Test des valeurs du calcul
 # Valeurs de référence (référence: 3D overkill)
-nodeISup_DEPLDX_Refe = 0.03489645635982178
-nodeCSup_SIEQVMIS_Refe = 10000092.329454899
-nodeESup_SIEQVMIS_Refe = 10000000.001754683
-nodeGSup_SIEQVMIS_Refe = 9999999.999999916
+nodeISup_DEPLDX_Refe = 0.034896456359821706
+nodeCSup_SIEFSIXX_Refe = 10000151.573926885
+nodeESup_SIEFSIXX_Refe = 9999999.993816108
+nodeGSup_SIEFSIXX_Refe = 10000000.000001721
+nodeCSup_SIEQVMIS_Refe = 10000092.329454882
+nodeESup_SIEQVMIS_Refe = 10000000.00175478
+nodeGSup_SIEQVMIS_Refe = 9999999.999999538
 
 # Valeurs calculées
-nodeISup_DEPLDX_Calc = 0.03471874891009209
-nodeCSup_SIEQVMIS_Calc = 9990170.340859191
-nodeESup_SIEQVMIS_Calc = 9999774.12367115
-nodeGSup_SIEQVMIS_Calc = 10000051.619106723
+nodeISup_DEPLDX_Calc = 0.03471874902748597
+nodeCSup_SIEFSIXX_Calc = 9987335.767238185
+nodeESup_SIEFSIXX_Calc = 10001981.796097092
+nodeGSup_SIEFSIXX_Calc = 9999479.152238205
+nodeCSup_SIEQVMIS_Calc = 9990170.33817451
+nodeESup_SIEQVMIS_Calc = 9999774.123608932
+nodeGSup_SIEQVMIS_Calc = 10000051.619119396
 
 nodeISup_DEPLDX_Tole = 0.01 * 5.1e-1
+nodeCSup_SIEFSIXX_Tole = 0.01 * 1.3e-1
+nodeESup_SIEFSIXX_Tole = 0.01 * 2.0e-2
+nodeGSup_SIEFSIXX_Tole = 0.01 * 5.3e-3
 nodeCSup_SIEQVMIS_Tole = 0.01 * 1.0e-1
 nodeESup_SIEQVMIS_Tole = 0.01 * 2.3e-3
 nodeGSup_SIEQVMIS_Tole = 0.01 * 5.2e-4
@@ -96,7 +105,7 @@ TEST_RESU(
         INST=1.0,
         NOM_CHAM="DEPL",
         NOM_CMP="DX",
-        RESULTAT=resuElas,
+        RESULTAT=resuNoli,
         VALE_CALC=nodeISup_DEPLDX_Calc,
         REFERENCE="AUTRE_ASTER",
         PRECISION=nodeISup_DEPLDX_Tole,
@@ -109,9 +118,47 @@ TEST_RESU(
         _F(
             GROUP_NO=("NodeCSup",),
             INST=1.0,
+            NOM_CHAM="SIEF_NOEU",
+            NOM_CMP="SIXX",
+            RESULTAT=resuNoli,
+            REFERENCE="AUTRE_ASTER",
+            VALE_CALC=nodeCSup_SIEFSIXX_Calc,
+            PRECISION=nodeCSup_SIEFSIXX_Tole,
+            VALE_REFE=nodeCSup_SIEFSIXX_Refe,
+        ),
+        _F(
+            GROUP_NO=("NodeESup",),
+            INST=1.0,
+            NOM_CHAM="SIEF_NOEU",
+            NOM_CMP="SIXX",
+            RESULTAT=resuNoli,
+            REFERENCE="AUTRE_ASTER",
+            VALE_CALC=nodeESup_SIEFSIXX_Calc,
+            PRECISION=nodeESup_SIEFSIXX_Tole,
+            VALE_REFE=nodeESup_SIEFSIXX_Refe,
+        ),
+        _F(
+            GROUP_NO=("NodeGSup",),
+            INST=1.0,
+            NOM_CHAM="SIEF_NOEU",
+            NOM_CMP="SIXX",
+            RESULTAT=resuNoli,
+            REFERENCE="AUTRE_ASTER",
+            VALE_CALC=nodeGSup_SIEFSIXX_Calc,
+            PRECISION=nodeGSup_SIEFSIXX_Tole,
+            VALE_REFE=nodeGSup_SIEFSIXX_Refe,
+        ),
+    )
+)
+
+TEST_RESU(
+    RESU=(
+        _F(
+            GROUP_NO=("NodeCSup",),
+            INST=1.0,
             NOM_CHAM="SIEQ_NOEU",
             NOM_CMP="VMIS",
-            RESULTAT=resuElas,
+            RESULTAT=resuNoli,
             REFERENCE="AUTRE_ASTER",
             VALE_CALC=nodeCSup_SIEQVMIS_Calc,
             PRECISION=nodeCSup_SIEQVMIS_Tole,
@@ -122,7 +169,7 @@ TEST_RESU(
             INST=1.0,
             NOM_CHAM="SIEQ_NOEU",
             NOM_CMP="VMIS",
-            RESULTAT=resuElas,
+            RESULTAT=resuNoli,
             REFERENCE="AUTRE_ASTER",
             VALE_CALC=nodeESup_SIEQVMIS_Calc,
             PRECISION=nodeESup_SIEQVMIS_Tole,
@@ -133,7 +180,7 @@ TEST_RESU(
             INST=1.0,
             NOM_CHAM="SIEQ_NOEU",
             NOM_CMP="VMIS",
-            RESULTAT=resuElas,
+            RESULTAT=resuNoli,
             REFERENCE="AUTRE_ASTER",
             VALE_CALC=nodeGSup_SIEQVMIS_Calc,
             PRECISION=nodeGSup_SIEQVMIS_Tole,

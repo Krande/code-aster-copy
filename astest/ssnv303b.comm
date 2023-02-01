@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -20,11 +20,11 @@
 DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"))
 
 # Read mesh
-MESH0 = LIRE_MAILLAGE(FORMAT="MED", UNITE=20)
+mesh3D = LIRE_MAILLAGE(FORMAT="MED", UNITE=20)
 
 # Prepare mesh
 mesh = CREA_MAILLAGE(
-    MAILLAGE=MESH0, INFO=2, COQUE_SOLIDE=_F(GROUP_MA="AllVoluCells", GROUP_MA_SURF="FaceSup")
+    MAILLAGE=mesh3D, INFO=2, COQUE_SOLIDE=_F(GROUP_MA="AllVoluCells", GROUP_MA_SURF="FaceSup")
 )
 
 # Select finite elements
@@ -42,7 +42,7 @@ clamp = AFFE_CHAR_MECA(DDL_IMPO=_F(DX=0.0, DY=0.0, DZ=0.0, GROUP_MA=("FaceLeft",
 
 load = AFFE_CHAR_MECA(FORCE_FACE=_F(FZ=400.0, GROUP_MA=("FaceRight",)), MODELE=model)
 
-# Calcul élastique linéaire
+# Calcul plastique non-linéaire
 rampUnit = DEFI_FONCTION(NOM_PARA="INST", VALE=(0.0, 0.0, 1.0, 1.0))
 
 timeStepper = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=_F(JUSQU_A=1.0, NOMBRE=10))
@@ -51,32 +51,32 @@ times = DEFI_LIST_INST(
     DEFI_LIST=_F(LIST_INST=timeStepper), ECHEC=_F(ACTION="DECOUPE", EVENEMENT="ERREUR")
 )
 
-resuElas = STAT_NON_LINE(
+resuNoli = STAT_NON_LINE(
     MODELE=model,
     CHAM_MATER=matfield,
     COMPORTEMENT=_F(DEFORMATION="GDEF_LOG", RELATION="VMIS_ISOT_LINE", TOUT="OUI"),
     EXCIT=(_F(CHARGE=clamp), _F(CHARGE=load, FONC_MULT=rampUnit)),
     INCREMENT=_F(LIST_INST=times),
-    CONVERGENCE=_F(ITER_GLOB_MAXI=15, RESI_GLOB_RELA=1.0e-6),
+    CONVERGENCE=_F(ITER_GLOB_MAXI=15, SIGM_REFE=1.0e6, RESI_REFE_RELA=1.0e-6),
 )
 
 # Post-traitement
-resuElas = CALC_CHAMP(
-    reuse=resuElas,
-    RESULTAT=resuElas,
+resuNoli = CALC_CHAMP(
+    reuse=resuNoli,
+    RESULTAT=resuNoli,
     CONTRAINTE=("SIEF_NOEU"),
     FORCE=("FORC_NODA"),
     CRITERES=("SIEQ_ELGA", "SIEQ_NOEU"),
 )
 
-IMPR_RESU(RESU=_F(RESULTAT=resuElas), UNITE=80)
+# IMPR_RESU(RESU=_F(RESULTAT=resuNoli), UNITE=80)
 
 # Test des valeurs du calcul
 # Valeurs de référence (référence: 3D overkill)
-nodeISup_DEPLDZ_Refe = 6.984100151756534
-nodeCSup_SIEQVMIS_Refe = 96136.88288957067
-nodeESup_SIEQVMIS_Refe = 53026.95940282758
-nodeGSup_SIEQVMIS_Refe = 22960.427189762704
+nodeISup_DEPLDZ_Refe = 6.984100443436589
+nodeCSup_SIEQVMIS_Refe = 96136.8888929188
+nodeESup_SIEQVMIS_Refe = 53026.966418772834
+nodeGSup_SIEQVMIS_Refe = 22960.43346639048
 
 # Valeurs calculées
 nodeISup_DEPLDZ_Calc = 6.979847929406603
@@ -95,7 +95,7 @@ TEST_RESU(
         INST=1.0,
         NOM_CHAM="DEPL",
         NOM_CMP="DZ",
-        RESULTAT=resuElas,
+        RESULTAT=resuNoli,
         VALE_CALC=nodeISup_DEPLDZ_Calc,
         REFERENCE="AUTRE_ASTER",
         PRECISION=nodeISup_DEPLDZ_Tole,
@@ -110,7 +110,7 @@ TEST_RESU(
             INST=1.0,
             NOM_CHAM="SIEQ_NOEU",
             NOM_CMP="VMIS",
-            RESULTAT=resuElas,
+            RESULTAT=resuNoli,
             REFERENCE="AUTRE_ASTER",
             VALE_CALC=nodeCSup_SIEQVMIS_Calc,
             PRECISION=nodeCSup_SIEQVMIS_Tole,
@@ -121,7 +121,7 @@ TEST_RESU(
             INST=1.0,
             NOM_CHAM="SIEQ_NOEU",
             NOM_CMP="VMIS",
-            RESULTAT=resuElas,
+            RESULTAT=resuNoli,
             REFERENCE="AUTRE_ASTER",
             VALE_CALC=nodeESup_SIEQVMIS_Calc,
             PRECISION=nodeESup_SIEQVMIS_Tole,
@@ -132,7 +132,7 @@ TEST_RESU(
             INST=1.0,
             NOM_CHAM="SIEQ_NOEU",
             NOM_CMP="VMIS",
-            RESULTAT=resuElas,
+            RESULTAT=resuNoli,
             REFERENCE="AUTRE_ASTER",
             VALE_CALC=nodeGSup_SIEQVMIS_Calc,
             PRECISION=nodeGSup_SIEQVMIS_Tole,
