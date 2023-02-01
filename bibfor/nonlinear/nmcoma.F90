@@ -36,7 +36,7 @@ subroutine nmcoma(listFuncActi, &
     use Rom_Datastructure_type
     use HHO_type
     use NonLinear_module, only: getOption, getMatrType, isMatrUpdate, &
-                                isDampMatrCompute, isMassMatrCompute, &
+                                isDampMatrCompute, &
                                 isRigiMatrCompute, isInteVectCompute, &
                                 factorSystem, updateLoadBCMatrix
     use NonLinearDyna_module, only: isMassMatrAssemble, &
@@ -138,11 +138,12 @@ subroutine nmcoma(listFuncActi, &
 !
     integer, parameter :: phaseType = CORR_NEWTON
     aster_logical :: l_update_matr, l_comp_damp
-    aster_logical :: l_comp_fint, l_asse_rigi, l_comp_rigi, l_comp_cont
+    aster_logical :: lRigiCompute, lRigiAssemble
     aster_logical :: lMassAssemble
-    character(len=16) :: matrType, option_nonlin
+    aster_logical :: lFintCompute
+    aster_logical :: lContCompute
+    character(len=16) :: matrType, nonLinearOption
     character(len=19) :: contElem, rigid
-    character(len=24) :: model
     aster_logical :: l_renumber
     integer :: ifm, niv
     integer :: nb_matr, reac_iter
@@ -162,13 +163,12 @@ subroutine nmcoma(listFuncActi, &
 ! - Initializations
     nb_matr = 0
     list_matr_type = ' '
-    model = modelz
     faccvg = -1
     ldccvg = -1
     condcvg = -1
 
 ! - Active functionnalites
-    l_comp_cont = isfonc(listFuncActi, 'ELT_CONTACT')
+    lContCompute = isfonc(listFuncActi, 'ELT_CONTACT')
 
 ! - Renumbering equations ?
     call nmrenu(modelz, listFuncActi, listLoad, &
@@ -186,29 +186,29 @@ subroutine nmcoma(listFuncActi, &
                       iter_newt_=iterNewt, reac_iter_=reac_iter)
 
 ! - Select non-linear option for compute matrices
-    call getOption(CORR_NEWTON, listFuncActi, matrType, option_nonlin, l_update_matr)
+    call getOption(phaseType, listFuncActi, matrType, nonLinearOption, l_update_matr)
 
 ! - Do the damping matrices have to be calculated ?
     call isDampMatrCompute(sddyna, l_renumber, l_comp_damp)
 
-! - Do the mass matrices have to be calculated ?
-    call isMassMatrCompute(sddyna, l_update_matr, lMassAssemble)
+! - Do the mass matrices have to be assemble ?
+    call isMassMatrAssemble(sddyna, l_update_matr, lMassAssemble)
 
 ! - Do the rigidity matrices have to be calculated/assembled ?
     call isRigiMatrCompute(phaseType, &
                            sddyna, numeTime, &
                            l_update_matr, l_comp_damp, &
-                           l_comp_rigi, l_asse_rigi)
+                           lRigiCompute, lRigiAssemble)
 
-! - Do the internal forces vectors have to be calculated ?
+! - Do the internal forces vectors have to be compute ?
     call isInteVectCompute(phaseType, listFuncActi, &
-                           option_nonlin, iterNewt, &
-                           l_comp_rigi, l_comp_fint)
+                           nonLinearOption, iterNewt, &
+                           lRigiCompute, lFintCompute)
 
 ! - Compute internal forces elementary vectors
-    if (l_comp_fint) then
+    if (lFintCompute) then
         call nonlinIntForce(phaseType, &
-                            model, caraElem, &
+                            modelZ, caraElem, &
                             listFuncActi, iterNewt, sdnume, &
                             ds_material, ds_constitutive, &
                             ds_system, ds_measure, &
@@ -221,9 +221,9 @@ subroutine nmcoma(listFuncActi, &
 ! - No error => continue
     if (ldccvg .ne. 1) then
 ! ----- Compute contact elementary matrices
-        if (l_comp_cont) then
+        if (lContCompute) then
             call nmchex(hval_meelem, 'MEELEM', 'MEELTC', contElem)
-            call nmelcm(mesh, model, &
+            call nmelcm(mesh, modelZ, &
                         ds_material, ds_contact, &
                         ds_constitutive, ds_measure, &
                         hval_incr, hval_algo, &
@@ -239,7 +239,7 @@ subroutine nmcoma(listFuncActi, &
                                 hval_meelem)
 
 ! ----- Assembly rigidity matrix
-        if (l_asse_rigi) then
+        if (lRigiAssemble) then
             call nmchex(hval_measse, 'MEASSE', 'MERIGI', rigid)
             call asmari(ds_system, hval_meelem, listLoad, rigid)
         end if
@@ -261,7 +261,7 @@ subroutine nmcoma(listFuncActi, &
 
 ! ----- Compute and assemble matrices
         if (nb_matr .gt. 0) then
-            call nmxmat(modelz, ds_material, caraElem, &
+            call nmxmat(modelZ, ds_material, caraElem, &
                         ds_constitutive, sddisc, numeTime, &
                         hval_incr, hval_algo, listLoad, &
                         numeDof, numeDofFixe, ds_measure, &

@@ -112,7 +112,7 @@ subroutine nmfcor(model, nume_dof, ds_material, cara_elem, ds_system, &
     character(len=24) :: mate, mateco, varc_refe
     aster_logical :: l_comp_fint, l_comp_rigi
     character(len=19) :: disp_curr, vite_curr, acce_curr, vect_lagr
-    character(len=16) :: corrMatrType, option_nonlin
+    character(len=16) :: corrMatrType, nonLinearOption
     aster_logical :: l_cont_disc, l_unil, l_comp_cont
     aster_logical :: l_disp, l_vite, l_acce, l_dyna, l_update_matr
     integer :: ldccvg, reac_iter
@@ -178,16 +178,16 @@ subroutine nmfcor(model, nume_dof, ds_material, cara_elem, ds_system, &
 !
 ! - Select option for compute matrices
 !
-    call getOption(phaseType, list_func_acti, corrMatrType, option_nonlin, l_update_matr)
+    call getOption(phaseType, list_func_acti, corrMatrType, nonLinearOption, l_update_matr)
 !
 ! - Do the rigidity matrices have to be calculated/assembled ?
 !
-    l_comp_rigi = option_nonlin .ne. 'RAPH_MECA'
+    l_comp_rigi = nonLinearOption .ne. 'RAPH_MECA'
 !
 ! - Do the internal forces vectors have to be calculated ?
 !
     call isInteVectCompute(INTE_FORCE, list_func_acti, &
-                           option_nonlin, iter_newt, &
+                           nonLinearOption, iter_newt, &
                            l_comp_rigi, l_comp_fint)
 !
 ! - Compute internal forces / matrix rigidity
@@ -198,7 +198,7 @@ subroutine nmfcor(model, nume_dof, ds_material, cara_elem, ds_system, &
                         ds_material, ds_constitutive, &
                         list_func_acti, iter_newt, sddyna, ds_measure, ds_system, &
                         hval_incr, hval_algo, hhoField, &
-                        option_nonlin, ldccvg)
+                        nonLinearOption, ldccvg)
             if (ldccvg .ne. 1) then
                 call nonlinIntForceAsse(INTE_FORCE_INTE, list_func_acti, sdnume, &
                                         ds_material, ds_constitutive, ds_system)

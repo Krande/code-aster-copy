@@ -36,7 +36,7 @@ subroutine nmprma(listFuncActi, &
     use Rom_Datastructure_type
     use HHO_type
     use NonLinear_module, only: getOption, getMatrType, isMatrUpdate, &
-                                isDampMatrCompute, isMassMatrCompute, isRigiMatrCompute, &
+                                isDampMatrCompute, isRigiMatrCompute, &
                                 factorSystem, updateLoadBCMatrix
     use NonLinearDyna_module, only: isMassMatrAssemble, &
                                     asseMassMatrix
@@ -62,6 +62,7 @@ subroutine nmprma(listFuncActi, &
 #include "asterfort/nmrigi.h"
 #include "asterfort/nmxmat.h"
 #include "asterfort/NonLinear_type.h"
+#include "asterfort/contMatrModi.h"
 #include "asterfort/utmess.h"
 !
     integer, intent(in) :: listFuncActi(*)
@@ -146,20 +147,16 @@ subroutine nmprma(listFuncActi, &
     integer, parameter :: iterNewtPred = 0
     integer :: ifm, niv
     aster_logical :: l_update_matr, l_renumber
-    aster_logical :: l_comp_rigi, l_comp_damp, l_asse_rigi
-    aster_logical :: l_comp_cont, lMassAssemble
-    character(len=16) :: matrType, option_nonlin
+    aster_logical :: lRigiCompute, l_comp_damp, lRigiAssemble
+    aster_logical :: lMassAssemble
+    aster_logical :: lContCompute, lContContinu
+    character(len=16) :: matrType, nonLinearOption
     character(len=19) :: contElem, rigid
     integer :: nb_matr, reac_incr
     character(len=6) :: list_matr_type(20)
     character(len=8) :: ksym
     character(len=16) :: list_calc_opti(20), list_asse_opti(20)
     aster_logical :: list_l_asse(20), list_l_calc(20)
-    character(len=3) :: mathpc
-    character(len=19) :: partit
-    aster_logical :: l_contact_adapt, l_cont_cont, lmhpc
-    real(kind=8) :: minmat, maxmat, exponent_val
-    aster_logical :: ldist
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -176,8 +173,8 @@ subroutine nmprma(listFuncActi, &
     condcvg = -1
 
 ! - Active functionnalites
-    l_comp_cont = isfonc(listFuncActi, 'ELT_CONTACT')
-    l_cont_cont = isfonc(listFuncActi, 'CONT_CONTINU')
+    lContCompute = isfonc(listFuncActi, 'ELT_CONTACT')
+    lContContinu = isfonc(listFuncActi, 'CONT_CONTINU')
 
 ! - Renumbering equations ?
     call nmrenu(modelz, listFuncActi, listLoad, &
@@ -195,37 +192,38 @@ subroutine nmprma(listFuncActi, &
                       nume_inst_=numeTime, reac_incr_=reac_incr)
 
 ! - Select non-linear option for compute matrices
-    call getOption(phaseType, listFuncActi, matrType, option_nonlin)
+    call getOption(phaseType, listFuncActi, matrType, nonLinearOption)
 
 ! - Do the damping matrices have to be calculated ?
     call isDampMatrCompute(sddyna, l_renumber, l_comp_damp)
 
-! - Do the mass matrices have to be calculated ?
-    call isMassMatrCompute(sddyna, l_update_matr, lMassAssemble)
+! - Do the mass matrices have to be assemble ?
+    call isMassMatrAssemble(sddyna, l_update_matr, lMassAssemble)
 
 ! - Do the rigidity matrices have to be calculated/assembled ?
     call isRigiMatrCompute(phaseType, &
                            sddyna, numeTime, &
                            l_update_matr, l_comp_damp, &
-                           l_comp_rigi, l_asse_rigi)
+                           lRigiCompute, lRigiAssemble)
 
 ! - Compute contact elementary matrices
-    if (l_comp_cont) then
+    if (lContCompute) then
         call nmchex(hval_meelem, 'MEELEM', 'MEELTC', contElem)
         call nmelcm(mesh, modelz, &
-                    ds_material, ds_contact, ds_constitutive, ds_measure, &
+                    ds_material, ds_contact, &
+                    ds_constitutive, ds_measure, &
                     hval_incr, hval_algo, &
                     contElem)
     end if
 
 ! - Compute rigidity elementary matrices / internal forces elementary vectors
-    if (l_comp_rigi) then
+    if (lRigiCompute) then
         call nmrigi(modelz, caraElem, &
                     ds_material, ds_constitutive, &
                     listFuncActi, iterNewtPred, sddyna, ds_measure, ds_system, &
                     hval_incr, hval_algo, hhoField, &
-                    option_nonlin, ldccvg)
-        if (l_asse_rigi) then
+                    nonLinearOption, ldccvg)
+        if (lRigiAssemble) then
             call nmchex(hval_measse, 'MEASSE', 'MERIGI', rigid)
             call asmari(ds_system, hval_meelem, listLoad, rigid)
         end if
@@ -289,47 +287,8 @@ subroutine nmprma(listFuncActi, &
         end if
 
 ! ----- Change matrix for contact (BEURK)
-        if (l_cont_cont) then
-            minmat = 0.0
-            maxmat = 0.0
-            exponent_val = 0.0
-!   -- Avant la factorisation et pour le cas ou il y a du contact continu avec adaptation de
-!      coefficient
-!   -- On cherche le coefficient optimal pour eviter une possible singularite de matrice
-!   -- La valeur est estimee une seule fois a la premiere prediction du premier pas de
-!      temps pour l'etape de calcul
-!   -- Cette valeur estimee est passee directement a mmchml_c sans passer par mmalgo car
-!   -- a la premiere iteration on ne passe pas par mmalgo
-            l_contact_adapt = cfdisl(ds_contact%sdcont_defi, 'EXIS_ADAP')
-!            write (6,*) "l_contact_adapt", &
-!                l_contact_adapt,ds_contact%update_init_coefficient
-            if ((nint(ds_contact%update_init_coefficient) .eq. 0) .and. l_contact_adapt) then
-                call dismoi('MATR_HPC', matass, 'MATR_ASSE', repk=mathpc)
-                lmhpc = mathpc .eq. 'OUI'
-                call dismoi('PARTITION', modelz, 'MODELE', repk=partit)
-                ldist = partit .ne. ' '
-                call echmat(matass, ldist, lmhpc, minmat, maxmat)
-                ds_contact%max_coefficient = maxmat
-                if (abs(log(minmat)) .ge. r8prem()) then
-
-                    if (abs(log(maxmat))/abs(log(minmat)) .lt. 4.0d0) then
-!                     Le rapport d'arete max/min est
-!  un bon compromis pour initialiser le coefficient
-                        ds_contact%estimated_coefficient = &
-                            ((1.D3*ds_contact%arete_max)/(1.D-2*ds_contact%arete_min))
-                        ds_contact%update_init_coefficient = 1.0d0
-                    else
-                        exponent_val = min(abs(log(minmat)), abs(log(maxmat)))/10.d0
-                        ds_contact%estimated_coefficient = 10.d0**(exponent_val)
-                        ds_contact%update_init_coefficient = 1.0d0
-                    end if
-                else
-                    ds_contact%estimated_coefficient = 1.d16*ds_contact%arete_min
-                    ds_contact%update_init_coefficient = 1.0d0
-                end if
-!             write (6,*) "min,max,coef estime,abs(log(maxmat))/abs(log(minmat))", &
-!                 minmat,maxmat,ds_contact%estimated_coefficient,abs(log(maxmat))/abs(log(minmat))
-            end if
+        if (lContContinu) then
+            call contMatrModi(modelZ, ds_contact, matass)
         end if
 
 ! ----- Factorization of global matrix of system
