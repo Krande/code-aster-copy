@@ -39,7 +39,7 @@ subroutine te0420(option, nomte)
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: iret
-    character(len=16) :: fsi_form
+    character(len=16) :: FEForm
     integer :: nno, ino, ndofbynode
     integer :: jv_prme, jv_pres
 !
@@ -49,14 +49,14 @@ subroutine te0420(option, nomte)
 !
 ! - Get element parameters
 !
-    call teattr('S', 'FORMULATION', fsi_form, iret)
+    call teattr('S', 'FORMULATION', FEForm, iret)
     call elrefe_info(fami='RIGI', nno=nno)
-    if (fsi_form .eq. 'FSI_UPPHI') then
+    if (FEForm .eq. 'U_P_PHI') then
         ndofbynode = 2
-    elseif (fsi_form .eq. 'FSI_UP') then
+    elseif (FEForm .eq. 'U_P') then
         ndofbynode = 1
     else
-        call utmess('F', 'FLUID1_2', sk=fsi_form)
+        call utmess('F', 'FLUID1_2', sk=FEForm)
     end if
 !
 ! - Input field

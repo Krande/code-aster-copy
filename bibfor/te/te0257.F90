@@ -53,7 +53,7 @@ subroutine te0257(option, nomte)
     integer :: ino1, ino2, k, l, ipg, ind1, ind2, idim
     integer :: ldec
     integer :: j_mater, iret
-    character(len=16) :: fsi_form
+    character(len=16) :: FEForm
     aster_logical :: l_axis
     real(kind=8) :: r
 !
@@ -69,7 +69,7 @@ subroutine te0257(option, nomte)
 !
 ! - Get element parameters
 !
-    call teattr('S', 'FORMULATION', fsi_form, iret)
+    call teattr('S', 'FORMULATION', FEForm, iret)
     l_axis = (lteatt('AXIS', 'OUI'))
     call elrefe_info(fami='RIGI', &
                      nno=nno, npg=npg, ndim=ndim, &
@@ -96,7 +96,7 @@ subroutine te0257(option, nomte)
             end do
             poids = poids*r
         end if
-        if (fsi_form .eq. 'FSI_UPPHI') then
+        if (FEForm .eq. 'U_P_PHI') then
             do ino1 = 1, nno
                 do ino2 = 1, ino1
                     do idim = 1, 2
@@ -106,7 +106,7 @@ subroutine te0257(option, nomte)
                     end do
                 end do
             end do
-        elseif (fsi_form .eq. 'FSI_UP') then
+        elseif (FEForm .eq. 'U_P') then
             do ino1 = 1, nno
                 do ino2 = 1, nno
                     do idim = 1, 2
@@ -119,13 +119,13 @@ subroutine te0257(option, nomte)
                 end do
             end do
         else
-            call utmess('F', 'FLUID1_2', sk=fsi_form)
+            call utmess('F', 'FLUID1_2', sk=FEForm)
         end if
     end do
 !
 ! - Output field
 !
-    if (fsi_form .eq. 'FSI_UPPHI') then
+    if (FEForm .eq. 'U_P_PHI') then
         call jevech('PMATUUR', 'E', jv_matr)
         do ino1 = 1, nno
             do ino2 = 1, ino1
@@ -145,7 +145,7 @@ subroutine te0257(option, nomte)
                 end do
             end do
         end do
-    elseif (fsi_form .eq. 'FSI_UP') then
+    elseif (FEForm .eq. 'U_P') then
         call jevech('PMATUNS', 'E', jv_matr)
         do ino2 = 1, 3*nno
             do ino1 = 1, 3*nno
@@ -154,7 +154,7 @@ subroutine te0257(option, nomte)
             end do
         end do
     else
-        call utmess('F', 'FLUID1_2', sk=fsi_form)
+        call utmess('F', 'FLUID1_2', sk=FEForm)
     end if
 !
 end subroutine

@@ -57,7 +57,7 @@ subroutine te0204(option, nomte)
     integer :: i, ipg
     aster_logical :: l_axis
     real(kind=8) :: r
-    character(len=16) :: fsi_form
+    character(len=16) :: FEForm
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -85,7 +85,7 @@ subroutine te0204(option, nomte)
 ! - Get element parameters
 !
     l_axis = (lteatt('AXIS', 'OUI'))
-    call teattr('S', 'FORMULATION', fsi_form, iret)
+    call teattr('S', 'FORMULATION', FEForm, iret)
     call elrefe_info(fami='RIGI', &
                      nno=nno, npg=npg, ndim=ndim, &
                      jpoids=ipoids, jvf=ivf, jdfde=idfde)
@@ -93,12 +93,12 @@ subroutine te0204(option, nomte)
 ! - Pressure are on skin elements but DOF are surfacic + FSI
 !
     ASSERT(ndim .eq. 1)
-    if (fsi_form .eq. 'FSI_UPPHI') then
+    if (FEForm .eq. 'U_P_PHI') then
         ndofbynode = 3
-    elseif (fsi_form .eq. 'FSI_UP' .or. fsi_form .eq. 'FSI_UPSI') then
+    elseif (FEForm .eq. 'U_P' .or. FEForm .eq. 'U_PSI') then
         ndofbynode = 3
     else
-        call utmess('F', 'FLUID1_2', sk=fsi_form)
+        call utmess('F', 'FLUID1_2', sk=FEForm)
     end if
 !
 ! - Output field

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -150,9 +150,9 @@ RIGI_MECA = Option(
     para_out=(PCACO3D, SP.PMATUNS, SP.PMATUUR, SP.PVECTUR, SP.PCODRET, PCONTPR, PVARIPR),
     condition=(
         CondCalcul("+", ((AT.PHENO, "ME"), (AT.BORD, "0"))),
-        CondCalcul("+", ((AT.FSI, "OUI"), (AT.BORD, "-1"), (AT.FORMULATION, "FSI_UP"))),
+        CondCalcul("+", ((AT.FSI, "OUI"), (AT.BORD, "-1"), (AT.FORMULATION, "U_P"))),
         CondCalcul("-", ((AT.FLUIDE, "OUI"), (AT.ABSO, "OUI"))),
-        CondCalcul("-", ((AT.FLUIDE, "OUI"), (AT.FSI, "OUI"), (AT.FORMULATION, "FSI_UPPHI"))),
+        CondCalcul("-", ((AT.FLUIDE, "OUI"), (AT.FSI, "OUI"), (AT.FORMULATION, "U_P_PHI"))),
         CondCalcul("+", ((AT.POUTRE, "OUI"), (AT.FSI, "OUI"))),
     ),
 )

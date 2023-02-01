@@ -74,7 +74,7 @@ phen.add(
     Modelisation(
         dim=(2, 2),
         code="2FL",
-        attrs=((AT.TYPMOD, "PLAN"), (AT.FLUIDE, "OUI"), (AT.FORMULATION, "FSI_UPPHI")),
+        attrs=((AT.TYPMOD, "PLAN"), (AT.FLUIDE, "OUI"), (AT.FORMULATION, "U_P_PHI")),
         elements=(
             (MT.TRIA3, EL.MEFLTR3),
             (MT.QUAD4, EL.MEFLQU4),
@@ -92,7 +92,7 @@ phen.add(
     Modelisation(
         dim=(2, 2),
         code="2FP",
-        attrs=((AT.TYPMOD, "PLAN"), (AT.FLUIDE, "OUI"), (AT.FORMULATION, "FSI_UP")),
+        attrs=((AT.TYPMOD, "PLAN"), (AT.FLUIDE, "OUI"), (AT.FORMULATION, "U_P")),
         elements=(
             (MT.TRIA3, EL.MEFLTR3P),
             (MT.QUAD4, EL.MEFLQU4P),
@@ -110,7 +110,7 @@ phen.add(
     Modelisation(
         dim=(2, 2),
         code="2FI",
-        attrs=((AT.TYPMOD, "PLAN"), (AT.FLUIDE, "OUI"), (AT.FORMULATION, "FSI_UPSI")),
+        attrs=((AT.TYPMOD, "PLAN"), (AT.FLUIDE, "OUI"), (AT.FORMULATION, "U_PSI")),
         elements=(
             (MT.TRIA3, EL.MEFLTR3PSI),
             (MT.QUAD4, EL.MEFLQU4PSI),
@@ -132,7 +132,7 @@ phen.add(
             (AT.TYPMOD, "PLAN"),
             (AT.FLUIDE, "OUI"),
             (AT.ABSO, "OUI"),
-            (AT.FORMULATION, "FSI_UPPHI"),
+            (AT.FORMULATION, "U_P_PHI"),
         ),
         elements=((MT.SEG2, EL.MEFASE2), (MT.SEG3, EL.MEFASE3)),
     ),
@@ -147,7 +147,7 @@ phen.add(
             (AT.TYPMOD, "PLAN"),
             (AT.FLUIDE, "OUI"),
             (AT.PESA, "OUI"),
-            (AT.FORMULATION, "FSI_UPPHI"),
+            (AT.FORMULATION, "U_P_PHI"),
         ),
         elements=(
             (MT.TRIA3, EL.MEFP_FACE3),
@@ -168,7 +168,7 @@ phen.add(
             (AT.TYPMOD, "PLAN"),
             (AT.FLUIDE, "OUI"),
             (AT.FSI, "OUI"),
-            (AT.FORMULATION, "FSI_UPPHI"),
+            (AT.FORMULATION, "U_P_PHI"),
         ),
         elements=((MT.SEG2, EL.MEFSSE2), (MT.SEG3, EL.MEFSSE3)),
     ),
@@ -179,12 +179,7 @@ phen.add(
     Modelisation(
         dim=(1, 2),
         code="FP2",
-        attrs=(
-            (AT.TYPMOD, "PLAN"),
-            (AT.FLUIDE, "OUI"),
-            (AT.FSI, "OUI"),
-            (AT.FORMULATION, "FSI_UP"),
-        ),
+        attrs=((AT.TYPMOD, "PLAN"), (AT.FLUIDE, "OUI"), (AT.FSI, "OUI"), (AT.FORMULATION, "U_P")),
         elements=((MT.SEG2, EL.MEFSSE2P), (MT.SEG3, EL.MEFSSE3P)),
     ),
 )
@@ -194,12 +189,7 @@ phen.add(
     Modelisation(
         dim=(1, 2),
         code="FI2",
-        attrs=(
-            (AT.TYPMOD, "PLAN"),
-            (AT.FLUIDE, "OUI"),
-            (AT.FSI, "OUI"),
-            (AT.FORMULATION, "FSI_UPSI"),
-        ),
+        attrs=((AT.TYPMOD, "PLAN"), (AT.FLUIDE, "OUI"), (AT.FSI, "OUI"), (AT.FORMULATION, "U_PSI")),
         elements=((MT.SEG2, EL.MEFSSE2PSI), (MT.SEG3, EL.MEFSSE3PSI)),
     ),
 )
@@ -601,7 +591,7 @@ phen.add(
     Modelisation(
         dim=(3, 3),
         code="3FL",
-        attrs=((AT.TYPMOD, "3D"), (AT.FLUIDE, "OUI"), (AT.FORMULATION, "FSI_UPPHI")),
+        attrs=((AT.TYPMOD, "3D"), (AT.FLUIDE, "OUI"), (AT.FORMULATION, "U_P_PHI")),
         elements=(
             (MT.HEXA8, EL.MEFL_HEXA8),
             (MT.HEXA20, EL.MEFL_HEXA20),
@@ -626,7 +616,7 @@ phen.add(
     Modelisation(
         dim=(3, 3),
         code="3FP",
-        attrs=((AT.TYPMOD, "3D"), (AT.FLUIDE, "OUI"), (AT.FORMULATION, "FSI_UP")),
+        attrs=((AT.TYPMOD, "3D"), (AT.FLUIDE, "OUI"), (AT.FORMULATION, "U_P")),
         elements=(
             (MT.HEXA8, EL.MEFL_HEXA8P),
             (MT.HEXA20, EL.MEFL_HEXA20P),
@@ -651,7 +641,7 @@ phen.add(
     Modelisation(
         dim=(3, 3),
         code="3FI",
-        attrs=((AT.TYPMOD, "3D"), (AT.FLUIDE, "OUI"), (AT.FORMULATION, "FSI_UPSI")),
+        attrs=((AT.TYPMOD, "3D"), (AT.FLUIDE, "OUI"), (AT.FORMULATION, "U_PSI")),
         elements=(
             (MT.HEXA8, EL.MEFL_HEXA8PSI),
             (MT.HEXA20, EL.MEFL_HEXA20PSI),
@@ -676,7 +666,7 @@ phen.add(
     Modelisation(
         dim=(2, 3),
         code="3FA",
-        attrs=((AT.FLUIDE, "OUI"), (AT.ABSO, "OUI"), (AT.FORMULATION, "FSI_UPPHI")),
+        attrs=((AT.FLUIDE, "OUI"), (AT.ABSO, "OUI"), (AT.FORMULATION, "U_P_PHI")),
         elements=(
             (MT.TRIA3, EL.MEFA_FACE3),
             (MT.QUAD4, EL.MEFA_FACE4),
@@ -1942,7 +1932,7 @@ phen.add(
             (AT.TYPMOD, "AXIS"),
             (AT.FLUIDE, "OUI"),
             (AT.AXIS, "OUI"),
-            (AT.FORMULATION, "FSI_UPPHI"),
+            (AT.FORMULATION, "U_P_PHI"),
         ),
         elements=(
             (MT.TRIA3, EL.MEAXFLT3),
@@ -1961,12 +1951,7 @@ phen.add(
     Modelisation(
         dim=(2, 2),
         code="AX2",
-        attrs=(
-            (AT.TYPMOD, "AXIS"),
-            (AT.FLUIDE, "OUI"),
-            (AT.AXIS, "OUI"),
-            (AT.FORMULATION, "FSI_UP"),
-        ),
+        attrs=((AT.TYPMOD, "AXIS"), (AT.FLUIDE, "OUI"), (AT.AXIS, "OUI"), (AT.FORMULATION, "U_P")),
         elements=(
             (MT.TRIA3, EL.MEAXFLT3P),
             (MT.QUAD4, EL.MEAXFLQ4P),
@@ -1988,7 +1973,7 @@ phen.add(
             (AT.TYPMOD, "AXIS"),
             (AT.FLUIDE, "OUI"),
             (AT.AXIS, "OUI"),
-            (AT.FORMULATION, "FSI_UPSI"),
+            (AT.FORMULATION, "U_PSI"),
         ),
         elements=(
             (MT.TRIA3, EL.MEAXFLT3PSI),
@@ -2012,7 +1997,7 @@ phen.add(
             (AT.FLUIDE, "OUI"),
             (AT.AXIS, "OUI"),
             (AT.FSI, "OUI"),
-            (AT.FORMULATION, "FSI_UPPHI"),
+            (AT.FORMULATION, "U_P_PHI"),
         ),
         elements=((MT.SEG2, EL.MEAXFSS2), (MT.SEG3, EL.MEAXFSS3)),
     ),
@@ -2028,7 +2013,7 @@ phen.add(
             (AT.FLUIDE, "OUI"),
             (AT.AXIS, "OUI"),
             (AT.FSI, "OUI"),
-            (AT.FORMULATION, "FSI_UP"),
+            (AT.FORMULATION, "U_P"),
         ),
         elements=((MT.SEG2, EL.MEAXFSS2P), (MT.SEG3, EL.MEAXFSS3P)),
     ),
@@ -2044,7 +2029,7 @@ phen.add(
             (AT.FLUIDE, "OUI"),
             (AT.AXIS, "OUI"),
             (AT.FSI, "OUI"),
-            (AT.FORMULATION, "FSI_UPSI"),
+            (AT.FORMULATION, "U_PSI"),
         ),
         elements=((MT.SEG2, EL.MEAXFSS2PSI), (MT.SEG3, EL.MEAXFSS3PSI)),
     ),
@@ -5532,12 +5517,7 @@ phen.add(
     Modelisation(
         dim=(3, 3),
         code="FLS",
-        attrs=(
-            (AT.TYPMOD, "3D"),
-            (AT.FLUIDE, "OUI"),
-            (AT.FSI, "OUI"),
-            (AT.FORMULATION, "FSI_UPPHI"),
-        ),
+        attrs=((AT.TYPMOD, "3D"), (AT.FLUIDE, "OUI"), (AT.FSI, "OUI"), (AT.FORMULATION, "U_P_PHI")),
         elements=(
             (MT.TRIA3, EL.MEFS_FACE3),
             (MT.QUAD4, EL.MEFS_FACE4),
@@ -5553,7 +5533,7 @@ phen.add(
     Modelisation(
         dim=(3, 3),
         code="FLP",
-        attrs=((AT.TYPMOD, "3D"), (AT.FLUIDE, "OUI"), (AT.FSI, "OUI"), (AT.FORMULATION, "FSI_UP")),
+        attrs=((AT.TYPMOD, "3D"), (AT.FLUIDE, "OUI"), (AT.FSI, "OUI"), (AT.FORMULATION, "U_P")),
         elements=(
             (MT.TRIA3, EL.MEFS_FACE3P),
             (MT.QUAD4, EL.MEFS_FACE4P),
@@ -5569,12 +5549,7 @@ phen.add(
     Modelisation(
         dim=(3, 3),
         code="FLI",
-        attrs=(
-            (AT.TYPMOD, "3D"),
-            (AT.FLUIDE, "OUI"),
-            (AT.FSI, "OUI"),
-            (AT.FORMULATION, "FSI_UPSI"),
-        ),
+        attrs=((AT.TYPMOD, "3D"), (AT.FLUIDE, "OUI"), (AT.FSI, "OUI"), (AT.FORMULATION, "U_PSI")),
         elements=(
             (MT.TRIA3, EL.MEFS_FACE3PSI),
             (MT.QUAD4, EL.MEFS_FACE4PSI),

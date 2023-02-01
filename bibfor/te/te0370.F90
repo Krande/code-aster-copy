@@ -65,7 +65,7 @@ subroutine te0370(option, nomte)
     real(kind=8) :: dxde, dxdk, dyde, dydk
     integer :: nno, npg
     integer :: j_mater, iret, codret
-    character(len=16) :: fsi_form
+    character(len=16) :: FEForm
     aster_logical :: lVect, lMatr, lVari, lSigm
 !
 ! --------------------------------------------------------------------------------------------------
@@ -100,7 +100,7 @@ subroutine te0370(option, nomte)
 !
 ! - Get element parameters
 !
-    call teattr('S', 'FORMULATION', fsi_form, iret)
+    call teattr('S', 'FORMULATION', FEForm, iret)
     call elrefe_info(fami='RIGI', &
                      nno=nno, npg=npg, &
                      jpoids=ipoids, jvf=ivf, jdfde=idfde)
@@ -127,7 +127,7 @@ subroutine te0370(option, nomte)
         end do
         jac = dxde*dydk-dxdk*dyde
         poids = abs(jac)*zr(ipoids+ipg-1)
-        if (fsi_form .eq. 'FSI_UPPHI') then
+        if (FEForm .eq. 'U_P_PHI') then
             do i = 1, nno
                 do j = 1, i
                     a(2, 2, i, j) = a(2, 2, i, j)+ &
@@ -135,7 +135,7 @@ subroutine te0370(option, nomte)
                 end do
             end do
         else
-            call utmess('F', 'FLUID1_2', sk=fsi_form)
+            call utmess('F', 'FLUID1_2', sk=FEForm)
         end if
     end do
 !

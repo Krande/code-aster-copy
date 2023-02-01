@@ -68,7 +68,7 @@ subroutine te0253(option, nomte)
     integer :: ipoids, ivf, idfde
     integer :: nno, npg
     integer :: j_mater, iret
-    character(len=16) :: fsi_form
+    character(len=16) :: FEForm
     aster_logical :: l_axis
     real(kind=8) :: r
     aster_logical :: lVect, lMatr, lVari, lSigm
@@ -106,7 +106,7 @@ subroutine te0253(option, nomte)
 !
 ! - Get element parameters
 !
-    call teattr('S', 'FORMULATION', fsi_form, iret)
+    call teattr('S', 'FORMULATION', FEForm, iret)
     l_axis = (lteatt('AXIS', 'OUI'))
     call elrefe_info(fami='RIGI', &
                      nno=nno, npg=npg, &
@@ -133,7 +133,7 @@ subroutine te0253(option, nomte)
             end do
             poids = poids*r
         end if
-        if (fsi_form .eq. 'FSI_UPPHI') then
+        if (FEForm .eq. 'U_P_PHI') then
             do i = 1, nno
                 do j = 1, i
                     if (celer .eq. 0.d0 .or. rho .eq. 0.d0) then
@@ -144,7 +144,7 @@ subroutine te0253(option, nomte)
                     end if
                 end do
             end do
-        elseif (fsi_form .eq. 'FSI_UP') then
+        elseif (FEForm .eq. 'U_P') then
             do j = 1, nno
                 do i = 1, j
                     if (celer .eq. 0.d0 .or. rho .eq. 0.d0) then
@@ -155,7 +155,7 @@ subroutine te0253(option, nomte)
                     end if
                 end do
             end do
-        elseif (fsi_form .eq. 'FSI_UPSI') then
+        elseif (FEForm .eq. 'U_PSI') then
             do j = 1, nno
                 do i = 1, j
                     if (celer .eq. 0.d0 .or. rho .eq. 0.d0) then
@@ -167,13 +167,13 @@ subroutine te0253(option, nomte)
                 end do
             end do
         else
-            call utmess('F', 'FLUID1_2', sk=fsi_form)
+            call utmess('F', 'FLUID1_2', sk=FEForm)
         end if
     end do
 !
 ! - Compute result
 !
-    if (fsi_form .eq. 'FSI_UPPHI') then
+    if (FEForm .eq. 'U_P_PHI') then
         do k = 1, 2
             do l = 1, 2
                 do i = 1, nno
@@ -191,11 +191,11 @@ subroutine te0253(option, nomte)
 !
     if (option .eq. 'RIGI_MECA_HYST') then
         call jevech('PMATUUC', 'E', jv_matr)
-        if (fsi_form .eq. 'FSI_UPPHI') then
+        if (FEForm .eq. 'U_P_PHI') then
             do i = 1, nt2
                 zc(jv_matr+i-1) = dcmplx(c(i), 0.d0)
             end do
-        elseif (fsi_form .eq. 'FSI_UP' .or. fsi_form .eq. 'FSI_UPSI') then
+        elseif (FEForm .eq. 'U_P' .or. FEForm .eq. 'U_PSI') then
             do j = 1, nno
                 do i = 1, j
                     ij = (j-1)*j/2+i
@@ -203,24 +203,24 @@ subroutine te0253(option, nomte)
                 end do
             end do
         else
-            call utmess('F', 'FLUID1_2', sk=fsi_form)
+            call utmess('F', 'FLUID1_2', sk=FEForm)
         end if
     elseif (option(1:9) .eq. 'FULL_MECA') then
         call jevech('PMATUUR', 'E', jv_matr)
-        if (fsi_form .eq. 'FSI_UPPHI') then
+        if (FEForm .eq. 'U_P_PHI') then
             do i = 1, nt2
                 zr(jv_matr+i-1) = c(i)
             end do
         else
-            call utmess('F', 'FLUID1_2', sk=fsi_form)
+            call utmess('F', 'FLUID1_2', sk=FEForm)
         end if
     elseif (option(1:9) .eq. 'RIGI_MECA') then
         call jevech('PMATUUR', 'E', jv_matr)
-        if (fsi_form .eq. 'FSI_UPPHI') then
+        if (FEForm .eq. 'U_P_PHI') then
             do i = 1, nt2
                 zr(jv_matr+i-1) = c(i)
             end do
-        elseif (fsi_form .eq. 'FSI_UP' .or. fsi_form .eq. 'FSI_UPSI') then
+        elseif (FEForm .eq. 'U_P' .or. FEForm .eq. 'U_PSI') then
             do j = 1, nno
                 do i = 1, j
                     ij = (j-1)*j/2+i
@@ -228,14 +228,14 @@ subroutine te0253(option, nomte)
                 end do
             end do
         else
-            call utmess('F', 'FLUID1_2', sk=fsi_form)
+            call utmess('F', 'FLUID1_2', sk=FEForm)
         end if
     end if
 !
 ! - Save vector
 !
     if (lVect .or. option .eq. 'FORC_NODA') then
-        if (fsi_form .eq. 'FSI_UPPHI') then
+        if (FEForm .eq. 'U_P_PHI') then
             call jevech('PVECTUR', 'E', jv_vect)
             call jevech('PDEPLMR', 'L', jv_deplm)
             call jevech('PDEPLPR', 'L', jv_deplp)
@@ -257,18 +257,18 @@ subroutine te0253(option, nomte)
                 end do
             end do
         else
-            call utmess('F', 'FLUID1_2', sk=fsi_form)
+            call utmess('F', 'FLUID1_2', sk=FEForm)
         end if
     end if
 !
 ! - Save return code
 !
     if (lSigm) then
-        if (fsi_form .eq. 'FSI_UPPHI') then
+        if (FEForm .eq. 'U_P_PHI') then
             call jevech('PCODRET', 'E', jv_codret)
             zi(jv_codret) = 0
         else
-            call utmess('F', 'FLUID1_2', sk=fsi_form)
+            call utmess('F', 'FLUID1_2', sk=FEForm)
         end if
     end if
 !

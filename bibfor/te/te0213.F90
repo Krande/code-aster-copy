@@ -55,7 +55,7 @@ subroutine te0213(option, nomte)
     integer :: idec, jdec, kdec, ldec
     integer :: i, ii, ino, j, jno, ipg
     integer :: j_mater, iret
-    character(len=16) :: fsi_form
+    character(len=16) :: FEForm
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -81,18 +81,18 @@ subroutine te0213(option, nomte)
     end if
 
 ! - Get element parameters
-    call teattr('S', 'FORMULATION', fsi_form, iret)
+    call teattr('S', 'FORMULATION', FEForm, iret)
     call elrefe_info(fami='RIGI', &
                      nno=nbNode, npg=npg, ndim=cellDime, &
                      jpoids=jvWeight, jvf=jvShape, jdfde=jvDShapeX)
     ASSERT(nbNode .le. 9)
     jvDShapeY = jvDShapeX+1
-    if (fsi_form .eq. 'FSI_UPPHI') then
+    if (FEForm .eq. 'U_P_PHI') then
         ndofbynode = 4
-    elseif (fsi_form .eq. 'FSI_UP' .or. fsi_form .eq. 'FSI_UPSI') then
+    elseif (FEForm .eq. 'U_P' .or. FEForm .eq. 'U_PSI') then
         ndofbynode = 4
     else
-        call utmess('F', 'FLUID1_2', sk=fsi_form)
+        call utmess('F', 'FLUID1_2', sk=FEForm)
     end if
 
 ! - Get material properties for fluid
@@ -145,8 +145,8 @@ subroutine te0213(option, nomte)
                                speedVale, x, y, z)
 
 ! ----- Get direction of speed
-        call evalFaceSpeedDire(fsi_form, cellDime, jvLoad, speedDire, &
-                               ipg, nx, ny, &
+        call evalFaceSpeedDire(FEForm, cellDime, jvLoad, speedDire, &
+                               nx, ny, &
                                lFunc_=lFunc, lReal_=lReal, &
                                lTime_=lTime, time_=time, &
                                x_=x, y_=y, &

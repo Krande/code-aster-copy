@@ -48,7 +48,7 @@ subroutine te0369(option, nomte)
     integer :: idec, jdec, kdec, ldec
     integer :: i, ii, ino, j, jno, ipg
     integer :: j_mater, iret
-    character(len=16) :: fsi_form
+    character(len=16) :: FEForm
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -62,18 +62,18 @@ subroutine te0369(option, nomte)
 !
 ! - Get element parameters
 !
-    call teattr('S', 'FORMULATION', fsi_form, iret)
+    call teattr('S', 'FORMULATION', FEForm, iret)
     call elrefe_info(fami='RIGI', &
                      nno=nno, npg=npg, ndim=ndim, &
                      jpoids=ipoids, jvf=ivf, jdfde=idfdx)
     ASSERT(nno .le. 9)
     idfdy = idfdx+1
-    if (fsi_form .eq. 'FSI_UPPHI') then
+    if (FEForm .eq. 'U_P_PHI') then
         ndofbynode = 2
-    elseif (fsi_form .eq. 'FSI_UP' .or. fsi_form .eq. 'FSI_UPSI') then
+    elseif (FEForm .eq. 'U_P' .or. FEForm .eq. 'U_PSI') then
         ndofbynode = 1
     else
-        call utmess('F', 'FLUID1_2', sk=fsi_form)
+        call utmess('F', 'FLUID1_2', sk=FEForm)
     end if
 !
 ! - Get material properties for fluid

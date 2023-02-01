@@ -53,7 +53,7 @@ subroutine te0171(option, nomte)
     integer :: ipg, ino1, ino2, k, l
     integer :: ldec
     integer :: j_mater, iret
-    character(len=16) :: fsi_form
+    character(len=16) :: FEForm
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -67,7 +67,7 @@ subroutine te0171(option, nomte)
 !
 ! - Get element parameters
 !
-    call teattr('S', 'FORMULATION', fsi_form, iret)
+    call teattr('S', 'FORMULATION', FEForm, iret)
     call elrefe_info(fami='RIGI', &
                      nno=nno, npg=npg, &
                      jpoids=ipoids, jvf=ivf, jdfde=idfde)
@@ -84,7 +84,7 @@ subroutine te0171(option, nomte)
         ldec = (ipg-1)*nno
         call dfdm3d(nno, ipg, ipoids, idfde, zr(jv_geom), &
                     poids, dfdx, dfdy, dfdz)
-        if (fsi_form .eq. 'FSI_UPPHI') then
+        if (FEForm .eq. 'U_P_PHI') then
             do ino1 = 1, nno
                 do ino2 = 1, ino1
 ! ----------------- Compute -RHO*(GRAD(PHI)**2)
@@ -98,41 +98,44 @@ subroutine te0171(option, nomte)
                         a(1, 2, ino1, ino2) = 0.d0
                     else
                         a(1, 2, ino1, ino2) = a(1, 2, ino1, ino2)+ &
-                                           poids*zr(ivf+ldec+ino1-1)*zr(ivf+ldec+ino2-1)/celer/celer
+                                              poids*zr(ivf+ldec+ino1-1)* &
+                                              zr(ivf+ldec+ino2-1)/celer/celer
                     end if
                 end do
             end do
-        elseif (fsi_form .eq. 'FSI_UP') then
+        elseif (FEForm .eq. 'U_P') then
             do ino2 = 1, nno
                 do ino1 = 1, ino2
                     if (celer .eq. 0.d0) then
                         mmat(ino1, ino2) = 0.d0
                     else
                         mmat(ino1, ino2) = mmat(ino1, ino2)+ &
-                                           poids*zr(ivf+ldec+ino1-1)*zr(ivf+ldec+ino2-1)/celer/celer
+                                           poids*zr(ivf+ldec+ino1-1)* &
+                                           zr(ivf+ldec+ino2-1)/celer/celer
                     end if
                 end do
             end do
-        elseif (fsi_form .eq. 'FSI_UPSI') then
+        elseif (FEForm .eq. 'U_PSI') then
             do ino2 = 1, nno
                 do ino1 = 1, ino2
                     if (celer .eq. 0.d0) then
                         mmat(ino1, ino2) = 0.d0
                     else
                         mmat(ino1, ino2) = mmat(ino1, ino2)-rho* &
-                                           poids*zr(ivf+ldec+ino1-1)*zr(ivf+ldec+ino2-1)/celer/celer
+                                           poids*zr(ivf+ldec+ino1-1)* &
+                                           zr(ivf+ldec+ino2-1)/celer/celer
                     end if
                 end do
             end do
         else
-            call utmess('F', 'FLUID1_2', sk=fsi_form)
+            call utmess('F', 'FLUID1_2', sk=FEForm)
         end if
     end do
 !
 ! - Output field
 !
     call jevech('PMATUUR', 'E', jv_matr)
-    if (fsi_form .eq. 'FSI_UPPHI') then
+    if (FEForm .eq. 'U_P_PHI') then
         do ino1 = 1, nno
             do ino2 = 1, ino1
                 a(2, 1, ino1, ino2) = a(1, 2, ino1, ino2)
@@ -149,7 +152,7 @@ subroutine te0171(option, nomte)
                 end do
             end do
         end do
-    elseif (fsi_form .eq. 'FSI_UP' .or. fsi_form .eq. 'FSI_UPSI') then
+    elseif (FEForm .eq. 'U_P' .or. FEForm .eq. 'U_PSI') then
         do ino2 = 1, nno
             do ino1 = 1, ino2
                 ij = (ino2-1)*ino2/2+ino1
@@ -157,7 +160,7 @@ subroutine te0171(option, nomte)
             end do
         end do
     else
-        call utmess('F', 'FLUID1_2', sk=fsi_form)
+        call utmess('F', 'FLUID1_2', sk=FEForm)
     end if
 !
 end subroutine

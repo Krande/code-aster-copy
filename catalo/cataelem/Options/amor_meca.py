@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -55,9 +55,9 @@ AMOR_MECA = Option(
     para_out=(SP.PMATUNS, SP.PMATUUR),
     condition=(
         CondCalcul("+", ((AT.PHENO, "ME"), (AT.BORD, "0"))),
-        CondCalcul("-", ((AT.FLUIDE, "OUI"), (AT.FORMULATION, "FSI_UP"))),
-        CondCalcul("-", ((AT.FLUIDE, "OUI"), (AT.FORMULATION, "FSI_UPPHI"))),
-        CondCalcul("+", ((AT.FSI, "OUI"), (AT.BORD, "-1"), (AT.FORMULATION, "FSI_UPSI"))),
+        CondCalcul("-", ((AT.FLUIDE, "OUI"), (AT.FORMULATION, "U_P"))),
+        CondCalcul("-", ((AT.FLUIDE, "OUI"), (AT.FORMULATION, "U_P_PHI"))),
+        CondCalcul("+", ((AT.FSI, "OUI"), (AT.BORD, "-1"), (AT.FORMULATION, "U_PSI"))),
         CondCalcul("-", ((AT.PHENO, "ME"), (AT.MODELI, "D2D"))),
         CondCalcul("-", ((AT.PHENO, "ME"), (AT.MODELI, "D3D"))),
     ),

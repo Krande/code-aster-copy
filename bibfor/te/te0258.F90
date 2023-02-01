@@ -59,13 +59,13 @@ subroutine te0258(option, nomte)
     integer :: ldec
     integer :: i, ii, ij, j, jj
     integer :: j_mater, iret
-    character(len=16) :: fsi_form
+    character(len=16) :: FEForm
     aster_logical :: l_axis
     real(kind=8) :: r
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    call teattr('S', 'FORMULATION', fsi_form, iret)
+    call teattr('S', 'FORMULATION', FEForm, iret)
     l_axis = (lteatt('AXIS', 'OUI'))
 !
 ! - Get parameters of element
@@ -74,12 +74,12 @@ subroutine te0258(option, nomte)
                      ndim=ndim, nno=nno, npg=npg, &
                      jpoids=ipoids, jvf=ivf, jdfde=idfde)
     ASSERT(nno .le. 3)
-    if (fsi_form .eq. 'FSI_UPPHI') then
+    if (FEForm .eq. 'U_P_PHI') then
         ndi = nno*(2*nno+1)
-    elseif (fsi_form .eq. 'FSI_UP' .or. fsi_form .eq. 'FSI_UPSI') then
+    elseif (FEForm .eq. 'U_P' .or. FEForm .eq. 'U_PSI') then
         ndi = nno*(nno+1)/2
     else
-        call utmess('F', 'FLUID1_2', sk=fsi_form)
+        call utmess('F', 'FLUID1_2', sk=FEForm)
     end if
 !
 ! - Input fields
@@ -120,7 +120,7 @@ subroutine te0258(option, nomte)
                 poids = poids*r
             end if
 ! --------- Compute matrix
-            if (fsi_form .eq. 'FSI_UPPHI') then
+            if (FEForm .eq. 'U_P_PHI') then
                 do i = 1, nno
                     do j = 1, i
                         ii = 2*i
@@ -132,7 +132,7 @@ subroutine te0258(option, nomte)
                                            zr(ivf+ldec+i-1)*zr(ivf+ldec+j-1)
                     end do
                 end do
-            elseif (fsi_form .eq. 'FSI_UP') then
+            elseif (FEForm .eq. 'U_P') then
                 do i = 1, nno
                     do j = 1, i
                         ij = (i-1)*i/2+j
@@ -142,7 +142,7 @@ subroutine te0258(option, nomte)
                                            zr(ivf+ldec+i-1)*zr(ivf+ldec+j-1)
                     end do
                 end do
-            elseif (fsi_form .eq. 'FSI_UPSI') then
+            elseif (FEForm .eq. 'U_PSI') then
                 do i = 1, nno
                     do j = 1, i
                         ij = (i-1)*i/2+j
@@ -153,7 +153,7 @@ subroutine te0258(option, nomte)
                     end do
                 end do
             else
-                call utmess('F', 'FLUID1_2', sk=fsi_form)
+                call utmess('F', 'FLUID1_2', sk=FEForm)
             end if
         end do
     end if

@@ -301,13 +301,13 @@ FLUIDE = Attribute(
 )
 
 FORMULATION = Attribute(
-    value=("HHO_LINE", "HHO_QUAD", "FSI_UPPHI", "FSI_UP", "FSI_UPSI"),
+    value=("HHO_LINE", "HHO_QUAD", "U_P_PHI", "U_P", "U_PSI"),
     comment="""
   FORMULATION =  'HHO_LINE'  : formulation linear for HHO (1/2/1)
   FORMULATION =  'HHO_QUAD'  : formulation quadratic for HHO (2/2/2)
-  FORMULATION =  'FSI_UPPHI' : formulation displacement/pressure/disp potential
-  FORMULATION =  'FSI_UP'    : formulation displacement/pressure
-  FORMULATION =  'FSI_UPSI'  : formulation displacement/speed potential
+  FORMULATION =  'U_P_PHI' : formulation displacement/pressure/disp potential
+  FORMULATION =  'U_P'    : formulation displacement/pressure
+  FORMULATION =  'U_PSI'  : formulation displacement/speed potential
 """,
 )
 

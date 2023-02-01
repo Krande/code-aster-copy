@@ -57,11 +57,11 @@ subroutine te0010(option, nomte)
     integer :: idec, jdec, kdec, ldec
     integer :: i, ii, ij, ino, j, jj, jno
     integer :: j_mater, iret
-    character(len=16) :: fsi_form
+    character(len=16) :: FEForm
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    call teattr('S', 'FORMULATION', fsi_form, iret)
+    call teattr('S', 'FORMULATION', FEForm, iret)
 !
 ! - Get parameters of element
 !
@@ -70,12 +70,12 @@ subroutine te0010(option, nomte)
                      jpoids=ipoids, jvf=ivf, jdfde=idfdx)
     ASSERT(nno .le. 9)
     idfdy = idfdx+1
-    if (fsi_form .eq. 'FSI_UPPHI') then
+    if (FEForm .eq. 'U_P_PHI') then
         ndi = nno*(2*nno+1)
-    elseif (fsi_form .eq. 'FSI_UP' .or. fsi_form .eq. 'FSI_UPSI') then
+    elseif (FEForm .eq. 'U_P' .or. FEForm .eq. 'U_PSI') then
         ndi = nno*(nno+1)/2
     else
-        call utmess('F', 'FLUID1_2', sk=fsi_form)
+        call utmess('F', 'FLUID1_2', sk=FEForm)
     end if
 !
 ! - Input fields
@@ -128,7 +128,7 @@ subroutine te0010(option, nomte)
 ! --------- Compute jacobian
             jac = sqrt(nx*nx+ny*ny+nz*nz)
 ! --------- Compute matrix
-            if (fsi_form .eq. 'FSI_UPPHI') then
+            if (FEForm .eq. 'U_P_PHI') then
                 do i = 1, nno
                     do j = 1, i
                         ii = 2*i
@@ -140,7 +140,7 @@ subroutine te0010(option, nomte)
                                            zr(ivf+ldec+i-1)*zr(ivf+ldec+j-1)
                     end do
                 end do
-            elseif (fsi_form .eq. 'FSI_UP') then
+            elseif (FEForm .eq. 'U_P') then
                 do i = 1, nno
                     do j = 1, i
                         ij = (i-1)*i/2+j
@@ -150,7 +150,7 @@ subroutine te0010(option, nomte)
                                            zr(ivf+ldec+i-1)*zr(ivf+ldec+j-1)
                     end do
                 end do
-            elseif (fsi_form .eq. 'FSI_UPSI') then
+            elseif (FEForm .eq. 'U_PSI') then
                 do i = 1, nno
                     do j = 1, i
                         ij = (i-1)*i/2+j
@@ -161,7 +161,7 @@ subroutine te0010(option, nomte)
                     end do
                 end do
             else
-                call utmess('F', 'FLUID1_2', sk=fsi_form)
+                call utmess('F', 'FLUID1_2', sk=FEForm)
             end if
         end do
     end if

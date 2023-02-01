@@ -50,7 +50,7 @@ subroutine te0172(option, nomte)
     integer :: ino1, ino2, k, l, ipg, ino, jno, ind1, ind2, idim
     integer :: idec, jdec, ldec, kdec
     integer :: j_mater, iret
-    character(len=16) :: fsi_form
+    character(len=16) :: FEForm
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -64,7 +64,7 @@ subroutine te0172(option, nomte)
 !
 ! - Get element parameters
 !
-    call teattr('S', 'FORMULATION', fsi_form, iret)
+    call teattr('S', 'FORMULATION', FEForm, iret)
     call elrefe_info(fami='RIGI', &
                      ndim=ndim, nno=nno, npg=npg, &
                      jpoids=ipoids, jvf=ivf, jdfde=idfdx)
@@ -105,7 +105,7 @@ subroutine te0172(option, nomte)
                 norm(3) = norm(3)+zr(idfdx+kdec+idec)*zr(idfdy+kdec+jdec)*sz(ino1, ino2)
             end do
         end do
-        if (fsi_form .eq. 'FSI_UPPHI') then
+        if (FEForm .eq. 'U_P_PHI') then
             do ino1 = 1, nno
                 do ino2 = 1, ino1
                     do idim = 1, 3
@@ -115,7 +115,7 @@ subroutine te0172(option, nomte)
                     end do
                 end do
             end do
-        elseif (fsi_form .eq. 'FSI_UP') then
+        elseif (FEForm .eq. 'U_P') then
             do ino1 = 1, nno
                 do ino2 = 1, nno
                     do idim = 1, 3
@@ -128,13 +128,13 @@ subroutine te0172(option, nomte)
                 end do
             end do
         else
-            call utmess('F', 'FLUID1_2', sk=fsi_form)
+            call utmess('F', 'FLUID1_2', sk=FEForm)
         end if
     end do
 !
 ! - Output field
 !
-    if (fsi_form .eq. 'FSI_UPPHI') then
+    if (FEForm .eq. 'U_P_PHI') then
         call jevech('PMATUUR', 'E', jv_matr)
         do ino1 = 1, nno
             do ino2 = 1, ino1
@@ -154,7 +154,7 @@ subroutine te0172(option, nomte)
                 end do
             end do
         end do
-    elseif (fsi_form .eq. 'FSI_UP') then
+    elseif (FEForm .eq. 'U_P') then
         call jevech('PMATUNS', 'E', jv_matr)
         do ino2 = 1, 4*nno
             do ino1 = 1, 4*nno
@@ -163,7 +163,7 @@ subroutine te0172(option, nomte)
             end do
         end do
     else
-        call utmess('F', 'FLUID1_2', sk=fsi_form)
+        call utmess('F', 'FLUID1_2', sk=FEForm)
     end if
 !
 end subroutine

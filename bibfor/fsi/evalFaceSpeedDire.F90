@@ -17,8 +17,8 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine evalFaceSpeedDire(fsi_form, cellDime, jvLoad, speedDire, &
-                             ipg, nx, ny, &
+subroutine evalFaceSpeedDire(FEForm, cellDime, jvLoad, speedDire, &
+                             nx, ny, &
                              lFunc_, lReal_, lCplx_, &
                              lTime_, time_, &
                              x_, y_, &
@@ -33,10 +33,9 @@ subroutine evalFaceSpeedDire(fsi_form, cellDime, jvLoad, speedDire, &
 #include "asterfort/fointe.h"
 #include "asterfort/utmess.h"
 !
-    character(len=16), intent(in) :: fsi_form
+    character(len=16), intent(in) :: FEForm
     integer, intent(in) :: cellDime, jvLoad
     real(kind=8), intent(out) :: speedDire
-    integer, intent(in) :: ipg
     real(kind=8), intent(in) :: nx, ny
     aster_logical, optional, intent(in) :: lFunc_, lReal_, lCplx_, lTime_
     real(kind=8), optional, intent(in) :: time_, x_, y_
@@ -50,7 +49,7 @@ subroutine evalFaceSpeedDire(fsi_form, cellDime, jvLoad, speedDire, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  fsi_form         : type of FORMULATION
+! In  FEForm           : type of FORMULATION
 ! In  cellDime         : dimension of cell (2 or 3)
 ! In  jvLoad           : JEVEUX adress for field with parameters for load
 ! Out speedDire        : direction of speed (dot product with normal)
@@ -125,8 +124,8 @@ subroutine evalFaceSpeedDire(fsi_form, cellDime, jvLoad, speedDire, &
         speedDire = 1.d0
 
     else
-        if (fsi_form .ne. 'FSI_UPSI') then
-            call utmess('F', 'CHARGES6_7', sk=fsi_form)
+        if (FEForm .ne. 'U_PSI') then
+            call utmess('F', 'CHARGES6_7', sk=FEForm)
         end if
         nvx = 0.d0
         nvy = 0.d0
