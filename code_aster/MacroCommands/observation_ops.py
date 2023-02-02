@@ -23,8 +23,6 @@ import copy
 
 import numpy
 
-import aster
-
 from ..Cata.DataStructure import dyna_harmo, dyna_trans, evol_elas, mode_meca
 from ..Cata.Syntax import _F
 from ..Commands import CREA_CHAMP, CREA_RESU, DEFI_GROUP
@@ -527,7 +525,7 @@ def observation_ops(
                         modele = MODELE_2
                         chnormx = chnorm.EXTR_COMP("DX", [], 1)
                         ind_noeuds = chnormx.noeud
-                        nom_allno = [mayaexp.sdj.NOMNOE.get()[k - 1] for k in ind_noeuds]
+                        nom_allno = [mayaexp.getNodeName(k - 1) for k in ind_noeuds]
 
                         # on met les noeuds conernes sous forme de liste et on va
                         # chercher les noeuds des mailles pour 'MAILLE' et
@@ -931,11 +929,12 @@ def find_no(maya, mcsimp):
     """Si on demande une liste de noeuds, c'est simple, on retourne les noeuds
     Si on demande une liste de groupes de noeuds, on va chercher les noeuds
       dans ces groupes, en faisant attention a ne pas etre redondant
-    Si on demande un liste de mailles, on va chercher dans le .CONNEX
+    Si on demande un liste de mailles, on va chercher dans la connectivité
       du maillage les indices, puis les noms des noeuds concernes
     etc...
     """
     list_no = []
+    connect = maya.getConnectivity()
     if "GROUP_NO" in mcsimp and type(mcsimp["GROUP_NO"]) not in (tuple, list):
         mcsimp["GROUP_NO"] = [mcsimp["GROUP_NO"]]
     if "MAILLE" in mcsimp and type(mcsimp["MAILLE"]) not in (tuple, list):
@@ -947,26 +946,24 @@ def find_no(maya, mcsimp):
         list_no = list(mcsimp["NOEUD"])
     elif "GROUP_NO" in mcsimp:
         for group in mcsimp["GROUP_NO"]:
-            list_ind_no = list(numpy.array(maya.sdj.GROUPENO.get()[group.ljust(24)]) - 1)
+            list_ind_no = maya.getNodes(group)
             for ind_no in list_ind_no:
-                nomnoe = maya.sdj.NOMNOE.get()[ind_no]
+                nomnoe = maya.getNodeName(ind_no)
                 if nomnoe not in list_no:
                     list_no.append(nomnoe)
     elif "MAILLE" in mcsimp:
-        for mail in mcsimp["MAILLE"]:
-            for index in range(len(maya.sdj.NOMMAI.get())):
-                if maya.sdj.NOMMAI.get()[index].strip() == mail:
-                    nu_ma = index
-            for ind_no in maya.sdj.CONNEX.get()[nu_ma + 1]:
-                nomnoe = maya.sdj.NOMNOE.get()[ind_no - 1]
-                if nomnoe not in list_no:
-                    list_no.append(nomnoe)
+        for nu_ma in maya.getCells():
+            if maya.getCellName(nu_ma) in mcsimp["MAILLE"]:
+                for ind_no in connect[nu_ma]:
+                    nomnoe = maya.getNodeName(ind_no-1)
+                    if nomnoe not in list_no:
+                        list_no.append(nomnoe)
     elif "GROUP_MA" in mcsimp:
         for group in mcsimp["GROUP_MA"]:
-            list_nu_ma = list(numpy.array(maya.sdj.GROUPEMA.get()[group.ljust(24)]) - 1)
+            list_nu_ma = maya.getCells(group)
             for nu_ma in list_nu_ma:
-                for ind_no in maya.sdj.CONNEX.get()[nu_ma + 1]:
-                    nomnoe = maya.sdj.NOMNOE.get()[ind_no - 1]
+                for ind_no in connect[nu_ma]:
+                    nomnoe = maya.getNodeName(ind_no-1)
                     if nomnoe not in list_no:
                         list_no.append(nomnoe)
 
@@ -993,9 +990,9 @@ def find_ma(maya, mcsimp):
             list_ma.append(mail)
     elif "GROUP_MA" in mcsimp:
         for group in mcsimp["GROUP_MA"]:
-            list_ind_ma = list(numpy.array(maya.sdj.GROUPEMA.get()[group.ljust(24)]) - 1)
+            list_ind_ma = maya.getCells(group)
             for ind_ma in list_ind_ma:
-                nommail = maya.sdj.NOMMAI.get()[ind_ma]
+                nommail = maya.getCellName(ind_ma)
                 if nommail not in list_ma:
                     list_ma.append(nommail)
 
