@@ -201,8 +201,8 @@ def char_grad_impo_ops(
     champ = NP.zeros(nbrvale)
     bidon = NP.zeros(nbrvale)
 
-    connex = mesh.sdj.CONNEX.get()
-    groupma = mesh.sdj.GROUPEMA.get()[GRMAVOL.ljust(24)]
+    connex = mesh.getConnectivity()
+    cells = mesh.getCells(GRMAVOL)
     #   print "tabdesc",tabdesc
     #   print "tablima",dicolima
 
@@ -212,10 +212,10 @@ def char_grad_impo_ops(
         for index, ima in enumerate(dicolima[izone]):
             if ima == 0:
                 break
-            if ima in groupma:
+            if ima-1 in cells:
                 # ATTENTION : dans Python, les tableaux commencent a 0
                 # mais dans la connectivite, les noeuds commencent a 1!
-                lnoeu = NP.array(connex[ima]) - 1
+                lnoeu = NP.array(connex[ima-1]) - 1
                 nbno = len(lnoeu)
 
                 # calcul de la moyenne par maille de fx
