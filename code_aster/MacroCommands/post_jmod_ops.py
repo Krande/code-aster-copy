@@ -397,29 +397,6 @@ def na_lips(self, MAIL__, FOND_FISS, symeType):
 
     return (lipSupName, lipInfName)
 
-
-# -----------------------------------------------------------------------------
-
-
-def check_hexa_type(self, MAIL, nameMa):
-    """
-    Check hexa element type of mail group nameMa
-    """
-
-    lMailType = aster.getvectjev("&CATA.TM.NOMTM")
-
-    meshGroupMa = MAIL.sdj.GROUPEMA.get()[nameMa.ljust(24)]
-    meshType = MAIL.sdj.TYPMAIL.get()
-
-    for iMa in range(len(meshGroupMa)):
-        if lMailType[meshType[meshGroupMa[iMa]]][0:4] == "HEXA":
-            hexaType = "OUI"
-        else:
-            hexaType = "NON"
-
-    return hexaType
-
-
 # -----------------------------------------------------------------------------
 
 
@@ -1445,20 +1422,11 @@ def grad_elno(self, MAIL, MODE, MATE, listElemTMAIL, __EPSI_ELGA, __FIELD_CAL, i
                 value.append(lValues[jMail])
         dicElemValue["M" + str(iMailR)] = value
 
-    nom = aster.getvectjev("&CATA.TM.NOMTM")
-    if type(MAIL) != types.StringType:
-        nom_maillage = MAIL.nom
-    else:
-        nom_maillage = MAIL
-    nom_maillage = S.ljust(nom_maillage, 8)
-
-    tm = np.array(aster.getvectjev(nom_maillage + ".TYPMAIL"))
-    nom_mailles = [None] + [tm.strip() for tm in aster.getvectjev("&CATA.TM.NOMTM")]
-    dico_connexite = aster.getcolljev(nom_maillage + ".CONNEX")
+    connect = MAIL.getConnectivity()
 
     dicAllElems = {}
-    for i in dico_connexite.keys():
-        dicAllElems["M" + str(i)] = ["N" + str(j) for j in dico_connexite[i]]
+    for i, cell in enumerate(connect):
+        dicAllElems[MAIL.getCellName(i)] = [MAIL.getNodeName(j-1) for j in cell]
 
     dicElemNode = {}
     for iElem in dicAllElems.keys():
@@ -4684,8 +4652,8 @@ def post_jmod_ops(
             if j_correction == "OUI":
                 diff_group_ma(self, MAIL, "TMAIL_IMPR", "TMAIL", "TMAIL_CONT3")
 
-            ElemsTMAIL = MAIL.sdj.GROUPEMA.get()["TMAIL".ljust(24)]
-            listElemTMAIL = ["M" + str(iElem) for iElem in ElemsTMAIL]
+            ElemsTMAIL = MAIL.getCells("TMAIL")
+            listElemTMAIL = [MAIL.getCellName(iElem) for iElem in ElemsTMAIL]
 
             post_j_marker2 = time.time()
 
@@ -5541,22 +5509,20 @@ def post_jmod_ops(
 
         # help(MAIL.sdj.GROUPENO)
         if GROUP_NO is not None:
-            collgrno = MAIL.sdj.GROUPENO.get()
-            cnom = MAIL.sdj.NOMNOE.get()
             # print("collgrno keys",collgrno.keys())
             # print("collgrno ",collgrno)
             # print("cnom ",cnom)
 
-            for knodes in collgrno.keys():
+            for knodes in MAIL.getGroupsOfNodes:
 
                 for incr_gno in range(len(GROUP_NO)):
                     # print("GROUP_NO",GROUP_NO[incr_gno], knodes.strip())
                     # print("incr_gno",incr_gno)
 
-                    if GROUP_NO[incr_gno] == knodes.strip():
+                    if GROUP_NO[incr_gno] == knodes:
                         # print("collgrno[knodes]  ",collgrno[knodes])
 
-                        LIST_NODE__ = [cnom[node - 1].strip() for node in collgrno[knodes]]
+                        LIST_NODE__ = [MAIL.getNodeName(node) for node in MAIL.getNodes(knodes)]
                         # print("LIST_NODE__  ",LIST_NODE__)
 
                         if incr_gno == 0:
