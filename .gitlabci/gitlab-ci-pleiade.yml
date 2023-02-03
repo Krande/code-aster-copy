@@ -1,0 +1,129 @@
+workflow:
+  rules:
+    - if: $CI_MERGE_REQUEST_IID
+    - if: $CI_COMMIT_TAG
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+
+stages:
+  - setup
+  - build
+  - test
+
+variables:
+  MINIO_URL: https://minio.retd.edf.fr
+  SIF: runner.sif
+  BUILD: mpi
+  GIT_SSL_NO_VERIFY: "true"
+  DEVTOOLS_ROOT: '$CI_PROJECT_DIR/devtools'
+
+image:
+  name: nexus.retd.edf.fr/singularity/singularity:v3.7.3
+  entrypoint: ["/bin/sh", "-c"]
+
+prepare:
+  stage: setup
+  script:
+    - .gitlabci/prepare.sh
+  artifacts:
+    paths:
+      - ${SIF}
+      - devtools/*
+    expire_in: 6 hours
+
+compile:
+  stage: build
+  needs: ["prepare"]
+  script:
+    - singularity exec --bind $(pwd) --pwd $(pwd) ${SIF} .gitlabci/compile.sh
+  artifacts:
+    paths:
+      - .lock*
+      - build/mpi*/config.log
+      - build/mpi*/c4che/*
+      - build/mpi*/*/*.h
+      - build/mpi*/*/*.py
+      - build/mpi*/*/code_aster/*.py
+      - build/mpi*/*/*/*.so
+      - build/mpi*/*/*.mod
+      - install/*
+    expire_in: 3 days
+
+doc_html:
+  stage: build
+  needs: ["prepare", "compile"]
+  script:
+    - singularity exec --bind $(pwd) --pwd $(pwd) ${SIF} .gitlabci/doc_html.sh
+  artifacts:
+    paths:
+      - install/share/doc/html/*
+    expire_in: 3 days
+
+minimal_build:
+  stage: build
+  needs: ["prepare", "compile"]
+  script:
+    - singularity exec --bind $(pwd) --pwd $(pwd) ${SIF} .gitlabci/compile_minimal.sh
+
+check_source:
+  stage: test
+  needs: ["prepare", "compile"]
+  script:
+    - singularity exec --bind $(pwd) --pwd $(pwd) ${SIF} .gitlabci/check_source.sh
+
+minimal_test:
+  stage: test
+  needs: ["prepare", "compile"]
+  script:
+    - singularity exec --bind $(pwd) --pwd $(pwd) ${SIF}
+        .gitlabci/test.sh
+          -LE need_data
+          -R "(asrun0|mumps02b|supv002|vocab0|zzzz503n)"
+          --resutest=results_mini
+  artifacts:
+    when: always
+    paths:
+      - results_mini/run_testcases.xml
+      - results_mini/Testing/Temporary/*
+      - results_mini/*
+    expire_in: 3 days
+    reports:
+      junit: results_mini/run_testcases.xml
+
+verification_test:
+  stage: test
+  needs: ["prepare", "compile", "minimal_test"]
+  script:
+    - singularity exec --bind $(pwd) --pwd $(pwd) ${SIF}
+        .gitlabci/test.sh
+          -LE need_data
+          -L verification
+          --exclude-testlist .gitlabci/known_failures-pleiade.list
+          --resutest=results
+  artifacts:
+    when: always
+    paths:
+      - results/run_testcases.xml
+      - results/Testing/Temporary/*
+      - results/*
+    expire_in: 3 days
+    reports:
+      junit: results/run_testcases.xml
+
+known_failures_test:
+  stage: test
+  needs: ["prepare", "compile", "minimal_test"]
+  script:
+    - singularity exec --bind $(pwd) --pwd $(pwd) ${SIF}
+        .gitlabci/test.sh
+          --testlist .gitlabci/known_failures-pleiade.list
+          --resutest=results_failures
+  allow_failure: true
+  artifacts:
+    when: always
+    paths:
+      - results_failures/run_testcases.xml
+      - results_failures/Testing/Temporary/*
+      - results_failures/*
+    expire_in: 3 days
+    reports:
+      junit: results_failures/run_testcases.xml
