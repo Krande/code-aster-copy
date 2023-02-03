@@ -141,16 +141,19 @@ subroutine nmdesc(mesh, modele, numedd, &
 !
 ! --- CALCUL DE LA MATRICE GLOBALE
 !
-    call nmcoma(mesh, modele, ds_material, &
-                carele, ds_constitutive, ds_algopara, &
-                lischa, numedd, numfix, &
-                solveu, ds_system, sddisc, &
-                sddyna, ds_print, ds_measure, &
-                ds_algorom, numins, iterat, &
-                fonact, ds_contact, valinc, &
-                solalg, hhoField, meelem, measse, &
-                maprec, matass, faccvg, &
-                ldccvg, sdnume)
+    call nmcoma(fonact, &
+                mesh, modele, carele, &
+                ds_material, ds_constitutive, &
+                lischa, sddyna, &
+                sddisc, numins, iterat, &
+                ds_algopara, ds_contact, ds_algorom, &
+                ds_print, ds_measure, &
+                valinc, solalg, hhoField, &
+                meelem, measse, &
+                numedd, numfix, sdnume, &
+                solveu, ds_system, &
+                maprec, matass, &
+                faccvg, ldccvg)
 !
 ! --- ERREUR SANS POSSIBILITE DE CONTINUER
 !

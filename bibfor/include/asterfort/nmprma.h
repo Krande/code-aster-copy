@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,41 +17,44 @@
 ! --------------------------------------------------------------------
 !
 interface
-    subroutine nmprma(mesh       , modelz   , ds_material, carele    , ds_constitutive,&
-                      ds_algopara, lischa   , numedd     , numfix    , solveu,&
-                      ds_system  , ds_print , ds_measure , ds_algorom, sddisc,&
-                      sddyna     , nume_inst, list_func_acti, ds_contact, valinc,&
-                      solalg     , hhoField , meelem  , measse      ,maprec    , matass,&
-                      faccvg     , ldccvg   , condcvg)
+    subroutine nmprma(listFuncActi,&
+                      mesh, modelz, caraElem,&
+                      ds_material, ds_constitutive,&
+                      listLoad, sddyna,&
+                      sddisc, numeTime,&
+                      ds_algopara, ds_contact, ds_algorom,&
+                      ds_print, ds_measure ,&
+                      hval_incr, hval_algo, hhoField,&
+                      hval_meelem, hval_measse,&
+                      numeDof, numeDofFixe,&
+                      solveu, ds_system,&
+                      maprec, matass,&
+                      faccvg, ldccvg, condcvg)
         use NonLin_Datastructure_type
         use Rom_Datastructure_type
         use HHO_type
+        integer, intent(in) :: listFuncActi(*)
         character(len=8), intent(in) :: mesh
-        character(len=*) :: modelz
-        character(len=24) :: carele
+        character(len=*), intent(in) :: modelz
+        character(len=24), intent(in) :: caraElem
         type(NL_DS_Material), intent(in) :: ds_material
         type(NL_DS_Constitutive), intent(in) :: ds_constitutive
+        character(len=19), intent(in) :: listLoad, sddyna
+        character(len=19), intent(in) :: sddisc
+        integer, intent(in) :: numeTime
         type(NL_DS_AlgoPara), intent(in) :: ds_algopara
-        character(len=19) :: lischa
-        character(len=24) :: numedd
-        character(len=24) :: numfix
-        character(len=19) :: solveu
-        type(NL_DS_Print), intent(inout) :: ds_print
-        type(HHO_Field), intent(in) :: hhoField
-        type(NL_DS_Measure), intent(inout) :: ds_measure
-        type(ROM_DS_AlgoPara), intent(in) :: ds_algorom
-        type(NL_DS_System), intent(in) :: ds_system
-        character(len=19) :: sddisc
-        character(len=19) :: sddyna
-        integer, intent(in) :: nume_inst, list_func_acti(*)
         type(NL_DS_Contact), intent(inout) :: ds_contact
-        character(len=19) :: valinc(*)
-        character(len=19) :: solalg(*)
-        character(len=19) :: meelem(*)
-        character(len=19) :: measse(*)
-        character(len=19) :: maprec
-        character(len=19) :: matass
-        integer :: faccvg, condcvg
-        integer :: ldccvg
+        type(ROM_DS_AlgoPara), intent(in) :: ds_algorom
+        type(NL_DS_Print), intent(inout) :: ds_print
+        type(NL_DS_Measure), intent(inout) :: ds_measure
+        character(len=19), intent(in) :: hval_algo(*), hval_incr(*)
+        type(HHO_Field), intent(in) :: hhoField
+        character(len=19), intent(in) :: hval_meelem(*), hval_measse(*)
+        character(len=24), intent(inout) :: numeDof
+        character(len=24), intent(in) :: numeDofFixe
+        character(len=19), intent(in) :: solveu
+        type(NL_DS_System), intent(in) :: ds_system
+        character(len=19), intent(in) :: maprec, matass
+        integer, intent(out) :: faccvg, ldccvg, condcvg
     end subroutine nmprma
 end interface

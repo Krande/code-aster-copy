@@ -172,11 +172,18 @@ subroutine nmprta(mesh, model, nume_dof, numfix, ds_material, cara_elem, &
 !
 ! --- CALCUL DE LA MATRICE GLOBALE
 !
-    call nmprma(mesh, model, ds_material, cara_elem, ds_constitutive, &
-                ds_algopara, list_load, nume_dof, numfix, solveu, &
-                ds_system, ds_print, ds_measure, ds_algorom, sddisc, &
-                sddyna, nume_inst, list_func_acti, ds_contact, hval_incr, &
-                hval_algo, hhoField, hval_meelem, hval_measse, maprec, matass, &
+    call nmprma(list_func_acti, &
+                mesh, model, cara_elem, &
+                ds_material, ds_constitutive, &
+                list_load, sddyna, &
+                sddisc, nume_inst, &
+                ds_algopara, ds_contact, ds_algorom, &
+                ds_print, ds_measure, &
+                hval_incr, hval_algo, hhoField, &
+                hval_meelem, hval_measse, &
+                nume_dof, numfix, &
+                solveu, ds_system, &
+                maprec, matass, &
                 faccvg, ldccvg, condcvg)
 !
 ! --- ERREUR SANS POSSIBILITE DE CONTINUER

@@ -167,12 +167,19 @@ subroutine nmprca(mesh, modele, numedd, numfix, ds_material, carele, &
 !
 ! --- CALCUL DE LA MATRICE GLOBALE
 !
-    call nmprma(mesh, modele, ds_material, carele, ds_constitutive, &
-                ds_algopara, lischa, numedd, numfix, solveu, ds_system, &
-                ds_print, ds_measure, ds_algorom, sddisc, &
-                sddyna, numins, fonact, ds_contact, &
-                valinc, solalg, hhoField, meelem, measse, &
-                maprec, matass, faccvg, ldccvg, condcvg)
+    call nmprma(fonact, &
+                mesh, modele, carele, &
+                ds_material, ds_constitutive, &
+                lischa, sddyna, &
+                sddisc, numins, &
+                ds_algopara, ds_contact, ds_algorom, &
+                ds_print, ds_measure, &
+                valinc, solalg, hhoField, &
+                meelem, measse, &
+                numedd, numfix, &
+                solveu, ds_system, &
+                maprec, matass, &
+                faccvg, ldccvg, condcvg)
 !
 ! --- ERREUR SANS POSSIBILITE DE CONTINUER
 !
