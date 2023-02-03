@@ -17,14 +17,14 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine nmspec(model, ds_material, cara_elem, list_load, list_func_acti, &
-                  nume_dof, nume_dof_inva, ds_system, &
+subroutine nmspec(model, ds_material, caraElem, listLoad, listFuncActi, &
+                  nume_dof, ds_system, &
                   ds_constitutive, &
-                  sddisc, nume_inst, &
+                  sddisc, numeTime, &
                   sddyna, sderro, ds_algopara, &
                   ds_measure, &
                   hval_incr, hval_algo, &
-                  hval_meelem, hval_measse, &
+                  hval_meelem, &
                   ds_posttimestep)
 !
     use NonLin_Datastructure_type
@@ -39,21 +39,21 @@ subroutine nmspec(model, ds_material, cara_elem, list_load, list_func_acti, &
 #include "asterfort/nmflam.h"
 #include "asterfort/utmess.h"
 !
-    character(len=24), intent(in) :: model, cara_elem
+    character(len=24), intent(in) :: model, caraElem
     type(NL_DS_Material), intent(in) :: ds_material
-    character(len=19), intent(in) :: list_load
-    integer, intent(in) :: list_func_acti(*)
-    character(len=24), intent(in) :: nume_dof, nume_dof_inva
+    character(len=19), intent(in) :: listLoad
+    integer, intent(in) :: listFuncActi(*)
+    character(len=24), intent(in) :: nume_dof
     type(NL_DS_Constitutive), intent(in) :: ds_constitutive
     character(len=19), intent(in) :: sddisc
-    integer, intent(in) :: nume_inst
+    integer, intent(in) :: numeTime
     character(len=19), intent(in) :: sddyna
     character(len=24), intent(in) :: sderro
     type(NL_DS_AlgoPara), intent(in) :: ds_algopara
     type(NL_DS_Measure), intent(inout) :: ds_measure
     type(NL_DS_System), intent(in) :: ds_system
     character(len=19), intent(in) :: hval_incr(*), hval_algo(*)
-    character(len=19), intent(in) :: hval_meelem(*), hval_measse(*)
+    character(len=19), intent(in) :: hval_meelem(*)
     type(NL_DS_PostTimeStep), intent(inout) :: ds_posttimestep
 !
 ! --------------------------------------------------------------------------------------------------
@@ -66,14 +66,13 @@ subroutine nmspec(model, ds_material, cara_elem, list_load, list_func_acti, &
 !
 ! In  model            : name of model
 ! In  ds_material      : datastructure for material parameters
-! In  cara_elem        : name of elementary characteristics (field)
-! In  list_load        : datastructure for list of loads
-! In  list_func_acti   : list of active functionnalities
+! In  caraElem         : name of elementary characteristics (field)
+! In  listLoad        : datastructure for list of loads
+! In  listFuncActi     : list of active functionnalities
 ! In  nume_dof         : name of numbering (NUME_DDL)
-! In  nume_dof_inva    : name of reference numbering (invariant)
 ! In  ds_constitutive  : datastructure for constitutive laws management
 ! In  sddisc           : datastructure for time discretization
-! In  nume_inst        : index of current time step
+! In  numeTime        : index of current time step
 ! In  sddyna           : datastructure for dynamic
 ! In  sderro           : datastructure for error management (events)
 ! In  ds_algopara      : datastructure for algorithm parameters
@@ -82,50 +81,47 @@ subroutine nmspec(model, ds_material, cara_elem, list_load, list_func_acti, &
 ! In  hval_incr        : hat-variable for incremental values fields
 ! In  hval_algo        : hat-variable for algorithms fields
 ! In  hval_meelem      : hat-variable for elementary matrix
-! In  hval_measse      : hat-variable for matrix
 ! IO  ds_posttimestep  : datastructure for post-treatment at each time step
 !
 ! --------------------------------------------------------------------------------------------------
 !
     aster_logical :: l_mode_vibr, l_crit_stab, l_select
-    real(kind=8) :: inst
-    character(len=16) :: option
+    real(kind=8) :: timeCurr
+    character(len=16) :: optionSpec
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    inst = diinst(sddisc, nume_inst)
+    timeCurr = diinst(sddisc, numeTime)
     l_select = ASTER_FALSE
-    option = ' '
-!
+    optionSpec = ' '
+
 ! - Active functionnalites
-!
-    l_mode_vibr = isfonc(list_func_acti, 'MODE_VIBR')
-    l_crit_stab = isfonc(list_func_acti, 'CRIT_STAB')
-!
+    l_mode_vibr = isfonc(listFuncActi, 'MODE_VIBR')
+    l_crit_stab = isfonc(listFuncActi, 'CRIT_STAB')
+
 ! - Compute stability criterion
-!
     if (l_crit_stab) then
-        call selectListGet(ds_posttimestep%crit_stab%selector, nume_inst, inst, l_select)
+        call selectListGet(ds_posttimestep%crit_stab%selector, numeTime, timeCurr, l_select)
         if (l_select) then
-            option = ds_posttimestep%crit_stab%option
+            optionSpec = ds_posttimestep%crit_stab%option
 ! --------- Print
-            if (option .eq. 'FLAMBSTA') then
+            if (optionSpec .eq. 'FLAMBSTA') then
                 call utmess('I', 'MECANONLINE6_2')
-            else if (option .eq. 'FLAMBDYN') then
+            else if (optionSpec .eq. 'FLAMBDYN') then
                 call utmess('I', 'MECANONLINE6_2')
             else
                 ASSERT(ASTER_FALSE)
             end if
 ! --------- Compute
-            call nmflam(option, &
-                        model, ds_material, cara_elem, list_load, list_func_acti, &
-                        nume_dof, nume_dof_inva, ds_system, &
+            call nmflam(optionSpec, &
+                        model, ds_material, caraElem, listLoad, listFuncActi, &
+                        nume_dof, ds_system, &
                         ds_constitutive, &
-                        sddisc, nume_inst, &
+                        sddisc, numeTime, &
                         sddyna, sderro, ds_algopara, &
                         ds_measure, &
                         hval_incr, hval_algo, &
-                        hval_meelem, hval_measse, &
+                        hval_meelem, &
                         ds_posttimestep)
         end if
     end if
@@ -133,21 +129,21 @@ subroutine nmspec(model, ds_material, cara_elem, list_load, list_func_acti, &
 ! - Compute vibration modes
 !
     if (l_mode_vibr) then
-        call selectListGet(ds_posttimestep%mode_vibr%selector, nume_inst, inst, l_select)
+        call selectListGet(ds_posttimestep%mode_vibr%selector, numeTime, timeCurr, l_select)
         if (l_select) then
-            option = ds_posttimestep%mode_vibr%option
+            optionSpec = ds_posttimestep%mode_vibr%option
 ! --------- Print
             call utmess('I', 'MECANONLINE6_3')
 ! --------- Compute
-            call nmflam(option, &
-                        model, ds_material, cara_elem, list_load, list_func_acti, &
-                        nume_dof, nume_dof_inva, ds_system, &
+            call nmflam(optionSpec, &
+                        model, ds_material, caraElem, listLoad, listFuncActi, &
+                        nume_dof, ds_system, &
                         ds_constitutive, &
-                        sddisc, nume_inst, &
+                        sddisc, numeTime, &
                         sddyna, sderro, ds_algopara, &
                         ds_measure, &
                         hval_incr, hval_algo, &
-                        hval_meelem, hval_measse, &
+                        hval_meelem, &
                         ds_posttimestep)
         end if
     end if

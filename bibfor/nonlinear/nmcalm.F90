@@ -180,15 +180,7 @@ subroutine nmcalm(typmat, modelz, lischa, ds_material, carele, &
         end if
         call mecgme(model, carele, ds_material%mater, ds_material%mateco, lischa, instap, &
                     disp_prev, disp_cumu_inst, instam, ds_constitutive%compor, matele)
-!
-! --- MATR_ELEM DES SOUS-STRUCTURES
-!
-    else if (typmat .eq. 'MESSTR') then
-        if (niv .ge. 2) then
-            call utmess('I', 'MECANONLINE13_85')
-        end if
-        call messtr(base, optmat, model, carele, ds_material%mater, &
-                    matele)
+
     else
         ASSERT(ASTER_FALSE)
     end if

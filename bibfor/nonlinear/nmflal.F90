@@ -17,9 +17,10 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine nmflal(option, ds_posttimestep, mod45, l_hpp, &
-                  nfreq, cdsp, typmat, optmod, bande, &
-                  nddle, nsta, modrig, typcal)
+subroutine nmflal(optionSpec, ds_posttimestep, &
+                  mod45, l_hpp, &
+                  nbFreq, coefDimSpace, matrType, optionModal, bande, &
+                  nbDofExcl, nbDofStab, lModiRigi, calcLevel)
 !
     use NonLin_Datastructure_type
 !
@@ -28,14 +29,16 @@ subroutine nmflal(option, ds_posttimestep, mod45, l_hpp, &
 #include "asterf_types.h"
 #include "asterfort/assert.h"
 !
-    character(len=16) :: optmod, option
-    character(len=4) :: mod45
-    integer :: nfreq, nddle, nsta, cdsp
-    character(len=16) :: typmat, modrig
-    real(kind=8) :: bande(2)
+    character(len=16), intent(in) :: optionSpec
     type(NL_DS_PostTimeStep), intent(in) :: ds_posttimestep
+    character(len=16), intent(out) :: optionModal
+    character(len=4), intent(out) :: mod45
+    integer, intent(out) :: nbFreq, nbDofExcl, nbDofStab, coefDimSpace
+    character(len=16), intent(out) :: matrType
+    aster_logical, intent(out) :: lModiRigi
+    real(kind=8), intent(out) :: bande(2)
     aster_logical, intent(out) :: l_hpp
-    character(len=16), intent(out) :: typcal
+    character(len=16), intent(out) :: calcLevel
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -45,10 +48,7 @@ subroutine nmflal(option, ds_posttimestep, mod45, l_hpp, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! IN  OPTION : TYPE DE CALCUL
-!              'FLAMBSTA' MODES DE FLAMBEMENT EN STATIQUE
-!              'FLAMBDYN' MODES DE FLAMBEMENT EN DYNAMIQUE
-!              'VIBRDYNA' MODES VIBRATOIRES
+! In  optionSpec       : option to compute (FLAMBSTA/FLAMBDYN/VIBRDYNA)
 ! In  ds_posttimestep  : datastructure for post-treatment at each time step
 ! OUT MOD45  : TYPE DE CALCUL DE MODES PROPRES
 !              'VIBR'     MODES VIBRATOIRES
@@ -56,8 +56,7 @@ subroutine nmflal(option, ds_posttimestep, mod45, l_hpp, &
 !              'STAB'     MODE DE STABILITE
 ! OUT NFREQ  : NOMBRE DE FREQUENCES A CALCULER
 ! OUT CDSP   : COEFFICIENT MULTIPLICATEUR DE NFREQ -> DIM_SPACE
-! OUT TYPMAT : TYPE DE MATRICE A UTILISER
-!                'ELASTIQUE/TANGENTE/SECANTE'
+! Out matrType         : type of matrix
 ! OUT OPTMOD : OPTION DE RECHERCHE DE MODES
 !               'PLUS_PETITE' LA PLUS PETITE FREQUENCE
 !               'BANDE'       DANS UNE BANDE DE FREQUENCE DONNEE
@@ -78,55 +77,53 @@ subroutine nmflal(option, ds_posttimestep, mod45, l_hpp, &
 !
     bande(1) = 1.d-5
     bande(2) = 1.d5
-    nfreq = 0
-    cdsp = 0
-    nddle = 0
+    nbFreq = 0
+    coefDimSpace = 0
+    nbDofExcl = 0
     mod45 = ' '
-    optmod = ' '
+    optionModal = ' '
     optrig = ' '
-    typmat = ' '
-    modrig = ' '
-    nsta = 0
-    typcal = 'TOUT'
+    matrType = ' '
+    lModiRigi = ASTER_FALSE
+    nbDofStab = 0
+    calcLevel = 'TOUT'
     l_hpp = ASTER_TRUE
-!
-! --- RECUPERATION DES OPTIONS
-!
-    if (option(1:7) .eq. 'VIBRDYN') then
-        nfreq = ds_posttimestep%mode_vibr%nb_eigen
-        cdsp = ds_posttimestep%mode_vibr%coef_dim_espace
-        typmat = ds_posttimestep%mode_vibr%type_matr_rigi
+
+! - Get parameters
+    if (optionSpec .eq. 'VIBRDYNA') then
+        nbFreq = ds_posttimestep%mode_vibr%nb_eigen
+        coefDimSpace = ds_posttimestep%mode_vibr%coef_dim_espace
+        matrType = ds_posttimestep%mode_vibr%type_matr_rigi
         if (ds_posttimestep%mode_vibr%l_small) then
-            optmod = 'PLUS_PETITE'
+            optionModal = 'PLUS_PETITE'
         else
-            optmod = 'BANDE'
+            optionModal = 'BANDE'
         end if
         bande = ds_posttimestep%mode_vibr%strip_bounds
         if (ds_posttimestep%mode_vibr%level .eq. 'CALIBRATION') then
-            typcal = 'CALIBRATION'
+            calcLevel = 'CALIBRATION'
         end if
         mod45 = 'VIBR'
 
-    else if (option(1:5) .eq. 'FLAMB') then
-        nfreq = ds_posttimestep%crit_stab%nb_eigen
-        cdsp = ds_posttimestep%crit_stab%coef_dim_espace
-        typmat = ds_posttimestep%crit_stab%type_matr_rigi
+    else if (optionSpec(1:5) .eq. 'FLAMB') then
+        nbFreq = ds_posttimestep%crit_stab%nb_eigen
+        coefDimSpace = ds_posttimestep%crit_stab%coef_dim_espace
+        matrType = ds_posttimestep%crit_stab%type_matr_rigi
         if (ds_posttimestep%crit_stab%l_small) then
-            optmod = 'PLUS_PETITE'
+            optionModal = 'PLUS_PETITE'
         else
-            optmod = 'BANDE'
+            optionModal = 'BANDE'
         end if
         bande = ds_posttimestep%crit_stab%strip_bounds
         if (ds_posttimestep%crit_stab%level .eq. 'CALIBRATION') then
-            typcal = 'CALIBRATION'
+            calcLevel = 'CALIBRATION'
         end if
         mod45 = 'FLAM'
-        nddle = ds_posttimestep%stab_para%nb_dof_excl
-        nsta = ds_posttimestep%stab_para%nb_dof_stab
-        if (ds_posttimestep%stab_para%l_modi_rigi) then
-            modrig = 'MODI_RIGI_OUI'
-        end if
+        nbDofExcl = ds_posttimestep%stab_para%nb_dof_excl
+        nbDofStab = ds_posttimestep%stab_para%nb_dof_stab
+        lModiRigi = ds_posttimestep%stab_para%l_modi_rigi
         l_hpp = ds_posttimestep%l_hpp
+
     else
         ASSERT(ASTER_FALSE)
     end if

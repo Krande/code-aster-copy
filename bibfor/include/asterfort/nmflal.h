@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,22 +18,20 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine nmflal(option, ds_posttimestep, mod45 , l_hpp ,&
-                      nfreq , cdsp           , typmat, optmod, bande ,&
-                      nddle , nsta           , modrig, typcal)
+    subroutine nmflal(optionSpec, ds_posttimestep,&
+                  mod45, l_hpp,&
+                  nbFreq, coefDimSpace, matrType, optionModal, bande,&
+                  nbDofExcl, nbDofStab, lModiRigi, calcLevel)
         use NonLin_Datastructure_type
-        character(len=16) :: option
+        character(len=16), intent(in) :: optionSpec
         type(NL_DS_PostTimeStep), intent(in) :: ds_posttimestep
-        character(len=4) :: mod45
+        character(len=16), intent(out) :: optionModal
+        character(len=4), intent(out) :: mod45
+        integer, intent(out) :: nbFreq, nbDofExcl, nbDofStab, coefDimSpace
+        character(len=16), intent(out) :: matrType
+        aster_logical, intent(out) :: lModiRigi
+        real(kind=8), intent(out) :: bande(2)
         aster_logical, intent(out) :: l_hpp
-        integer :: nfreq
-        integer :: cdsp
-        character(len=16) :: typmat
-        character(len=16) :: optmod
-        real(kind=8) :: bande(2)
-        integer :: nddle
-        integer :: nsta
-        character(len=16) :: modrig
-        character(len=16), intent(out) :: typcal
+        character(len=16), intent(out) :: calcLevel
     end subroutine nmflal
 end interface

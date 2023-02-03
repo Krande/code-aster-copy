@@ -18,16 +18,23 @@
 ! person_in_charge: mickael.abbas at edf.fr
 ! aslint: disable=W1504
 !
-subroutine nmflma(typmat, mod45, l_hpp, ds_algopara, modelz, &
-                  ds_material, carele, sddisc, sddyna, fonact, &
-                  numins, valinc, solalg, lischa, &
-                  numedd, numfix, ds_system, &
-                  ds_constitutive, ds_measure, meelem, &
-                  measse, nddle, ds_posttimestep, modrig, &
-                  ldccvg, matass, matgeo)
+subroutine nmflma(matrType, mod45, &
+                  l_hpp, lModiRigi, &
+                  listFuncActi, ds_algopara, &
+                  modelZ, caraElem, &
+                  ds_material, ds_constitutive, &
+                  sddyna, listLoad, &
+                  sddisc, numeTime, &
+                  ds_posttimestep, nbDofExcl, &
+                  hval_incr, hval_algo, &
+                  numeDof, ds_system, &
+                  ds_measure, hval_meelem, &
+                  matrAsse, matrGeom)
 !
     use NonLin_Datastructure_type
     use HHO_type
+    use NonLinearElem_module, only: elemSuper
+    use NonLinear_module, only: updateLoadBCMatrix, compElemGeom, getOption
 !
     implicit none
 !
@@ -45,34 +52,34 @@ subroutine nmflma(typmat, mod45, l_hpp, ds_algopara, modelz, &
 #include "asterfort/jemarq.h"
 #include "asterfort/matide.h"
 #include "asterfort/matr_asse_syme.h"
-#include "asterfort/ndynlo.h"
 #include "asterfort/nmcha0.h"
 #include "asterfort/nmchai.h"
 #include "asterfort/nmchcp.h"
 #include "asterfort/nmchex.h"
 #include "asterfort/nmrigi.h"
-#include "asterfort/nmcmat.h"
-#include "asterfort/nmxmat.h"
+#include "asterfort/NonLinear_type.h"
 #include "asterfort/utmess.h"
 !
-    character(len=16) :: typmat, modrig
-    character(len=4) :: mod45
-    aster_logical, intent(in) :: l_hpp
+    character(len=16), intent(in) :: matrType
+    character(len=4), intent(in) :: mod45
+    aster_logical, intent(in) :: l_hpp, lModiRigi
+    integer, intent(in) :: listFuncActi(*)
     type(NL_DS_AlgoPara), intent(in) :: ds_algopara
-    integer :: fonact(*)
-    character(len=*) :: modelz
-    character(len=24) :: carele
+    character(len=*), intent(in) :: modelZ
+    character(len=24), intent(in) :: caraElem
     type(NL_DS_Material), intent(in) :: ds_material
     type(NL_DS_Constitutive), intent(in) :: ds_constitutive
-    type(NL_DS_Measure), intent(inout) :: ds_measure
-    integer :: numins, ldccvg, nddle
-    character(len=19) :: sddisc, sddyna, lischa
-    character(len=24) :: numedd, numfix
-    character(len=19) :: meelem(*), measse(*)
-    type(NL_DS_System), intent(in) :: ds_system
-    character(len=19) :: solalg(*), valinc(*)
-    character(len=19) :: matass, matgeo
+    character(len=19), intent(in) :: sddyna, listLoad
+    character(len=19), intent(in) :: sddisc
+    integer, intent(in) :: numeTime
     type(NL_DS_PostTimeStep), intent(in) :: ds_posttimestep
+    integer, intent(in) :: nbDofExcl
+    character(len=19), intent(in) :: hval_algo(*), hval_incr(*)
+    character(len=24), intent(in) :: numeDof
+    type(NL_DS_System), intent(in) :: ds_system
+    type(NL_DS_Measure), intent(inout) :: ds_measure
+    character(len=19), intent(in) :: hval_meelem(*)
+    character(len=19), intent(out) :: matrAsse, matrGeom
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -82,8 +89,7 @@ subroutine nmflma(typmat, mod45, l_hpp, ds_algopara, modelz, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! IN  TYPMAT : TYPE DE MATRICE DE RIGIDITE A UTILISER
-!                'ELASTIQUE/TANGENTE/SECANTE'
+! In  matrType         : type of matrix
 ! IN  MOD45  : TYPE DE CALCUL DE MODES PROPRES
 !              'VIBR'     MODES VIBRATOIRES
 !              'FLAM'     MODES DE FLAMBEMENT
@@ -111,12 +117,6 @@ subroutine nmflma(typmat, mod45, l_hpp, ds_algopara, modelz, &
 ! IN  NDDLE  : NOMBRE DE DDL A EXCLURE
 ! In  ds_posttimestep  : datastructure for post-treatment at each time step
 ! IN  MODRIG : MODIFICATION OU NON DE LA RAIDEUR
-! OUT LDCCVG : CODE RETOUR INTEGRATION DU COMPORTEMENT
-!                0 - OK
-!                1 - ECHEC DANS L'INTEGRATION : PAS DE RESULTATS
-!                2 - ERREUR DANS LES LDC SUR LA NON VERIFICATION DE
-!                    CRITERES PHYSIQUES
-!                3 - SIZZ NON NUL (DEBORST) ON CONTINUE A ITERER
 ! OUT MATASS : MATRICE DE RAIDEUR ASSEMBLEE GLOBALE
 ! OUT MATGEO : DEUXIEME MATRICE ASSEMBLEE POUR LE PROBLEME AUX VP :
 !              - MATRICE GEOMETRIQUE GLOBALE (CAS FLAMBEMENT)
@@ -125,22 +125,23 @@ subroutine nmflma(typmat, mod45, l_hpp, ds_algopara, modelz, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
+    integer, parameter :: phaseType = POST_BUCKLING
+    integer, parameter :: iterNewtPred = 0
     integer, parameter :: zvalin = 28
-    aster_logical :: reasma
-    aster_logical :: lcrigi, lmacr
-    aster_logical :: l_neum_undead
-    character(len=16) :: optrig
-    integer :: reincr, iterat
-    character(len=8) :: tdiag, syme
-    character(len=19) :: rigi2, masse, memass, megeom
-    character(len=19) :: depplu, vitplu, accplu, sigplu, varplu, valin2(zvalin)
-    integer :: nmax
-    integer :: nb_matr
-    type(HHO_Field) :: hhoField
-    character(len=6) :: list_matr_type(20)
-    character(len=16) :: list_calc_opti(20), list_asse_opti(20), modlag
-    aster_logical :: list_l_asse(20), list_l_calc(20)
+    character(len=16), parameter :: modlag = 'MODI_LAGR_OUI'
+    character(len=8), parameter :: tdiag = 'MAX_ABS'
+    character(len=19), parameter :: matrRigiSyme = '&&NMFLMA.RIGISYME'
     integer :: ifm, niv
+    aster_logical :: l_update_matr
+    aster_logical :: lRigiCompute, lSuperElement, lNeumUndead
+    character(len=16) :: nonLinearOption
+    integer :: reincr
+    character(len=8) :: answer
+    character(len=19) :: massElem, geomElem
+    character(len=19) :: depplu, vitplu, accplu, sigplu, varplu, hval_incrCopy(zvalin)
+    integer :: nmax, ldccvg
+    type(HHO_Field) :: hhoField
+    character(len=24) :: superElem
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -149,182 +150,135 @@ subroutine nmflma(typmat, mod45, l_hpp, ds_algopara, modelz, &
     if (niv .ge. 2) then
         call utmess('I', 'MECANONLINE13_69')
     end if
-!
+
 ! - Initializations
-!
-    nb_matr = 0
-    list_matr_type(1:20) = ' '
-    iterat = 0
-!
-! --- RECOPIE DU VECTEUR CHAPEAU
-!
+    matrAsse = "&&NMFLAM.MATASS"
+    matrGeom = "&&NMFLAM.MAGEOM"
+
+! - Copy hat-variable
     call nmchai('VALINC', 'LONMAX', nmax)
     ASSERT(nmax .eq. zvalin)
-    call nmcha0('VALINC', 'ALLINI', ' ', valin2)
-    call nmchcp('VALINC', valinc, valin2)
-!
-! --- FONCTIONNALITES ACTIVEES
-!
-    l_neum_undead = isfonc(fonact, 'NEUM_UNDEAD')
-    lmacr = isfonc(fonact, 'MACR_ELEM_STAT')
-!
-! --- DECOMPACTION DES VARIABLES CHAPEAUX
-!
-    call nmchex(measse, 'MEASSE', 'MEMASS', masse)
-    call nmchex(meelem, 'MEELEM', 'MEMASS', memass)
-    call nmchex(meelem, 'MEELEM', 'MEGEOM', megeom)
-!
+    call nmcha0('VALINC', 'ALLINI', ' ', hval_incrCopy)
+    call nmchcp('VALINC', hval_incr, hval_incrCopy)
+
+! - Active functionnalities
+    lNeumUndead = isfonc(listFuncActi, 'NEUM_UNDEAD')
+    lSuperElement = isfonc(listFuncActi, 'MACR_ELEM_STAT')
+
+! - Extract hat-variables
+    call nmchex(hval_meelem, 'MEELEM', 'MEMASS', massElem)
+    call nmchex(hval_meelem, 'MEELEM', 'MEGEOM', geomElem)
+
 ! --- ON UTILISE CHAMP EN T+ PAS T- CAR DEPDEL=0 ET
 ! --- MATRICE = RIGI_MECA_TANG (VOIR FICHE 18779)
 ! --- SAUF VARI. COMM.
-!
-    call nmchex(valinc, 'VALINC', 'DEPPLU', depplu)
-    call nmchex(valinc, 'VALINC', 'SIGPLU', sigplu)
-    call nmchex(valinc, 'VALINC', 'VARPLU', varplu)
-    call nmchex(valinc, 'VALINC', 'VITPLU', vitplu)
-    call nmchex(valinc, 'VALINC', 'ACCPLU', accplu)
-!
-    call nmcha0('VALINC', 'DEPMOI', depplu, valin2)
-    call nmcha0('VALINC', 'VITMOI', vitplu, valin2)
-    call nmcha0('VALINC', 'VARMOI', varplu, valin2)
-    call nmcha0('VALINC', 'ACCMOI', accplu, valin2)
-    call nmcha0('VALINC', 'SIGMOI', sigplu, valin2)
-!
-! --- OBJET POUR RECONSTRUCTION RIGIDITE TOUJOURS SYMETRIQUE
-!
-    rigi2 = '&&NMFLMA.RIGISYME'
-!
+    call nmchex(hval_incr, 'VALINC', 'DEPPLU', depplu)
+    call nmchex(hval_incr, 'VALINC', 'SIGPLU', sigplu)
+    call nmchex(hval_incr, 'VALINC', 'VARPLU', varplu)
+    call nmchex(hval_incr, 'VALINC', 'VITPLU', vitplu)
+    call nmchex(hval_incr, 'VALINC', 'ACCPLU', accplu)
+    call nmcha0('VALINC', 'DEPMOI', depplu, hval_incrCopy)
+    call nmcha0('VALINC', 'VITMOI', vitplu, hval_incrCopy)
+    call nmcha0('VALINC', 'VARMOI', varplu, hval_incrCopy)
+    call nmcha0('VALINC', 'ACCMOI', accplu, hval_incrCopy)
+    call nmcha0('VALINC', 'SIGMOI', sigplu, hval_incrCopy)
+
 ! - Get parameter
-!
     reincr = ds_algopara%reac_incr
-!
-! --- REASSEMBLAGE DE LA MATRICE GLOBALE
-!
-    if ((reincr .eq. 0) .and. (numins .ne. 1)) then
-        reasma = .false.
+
+! - Update global matrix ?
+    if ((reincr .eq. 0) .and. (numeTime .ne. 1)) then
+        l_update_matr = ASTER_FALSE
     end if
-    if (numins .eq. 1) then
-        reasma = .true.
+    if (numeTime .eq. 1) then
+        l_update_matr = ASTER_TRUE
     end if
-    if ((reincr .ne. 0) .and. (numins .ne. 1)) then
-        reasma = mod(numins-1, reincr) .eq. 0
+    if ((reincr .ne. 0) .and. (numeTime .ne. 1)) then
+        l_update_matr = mod(numeTime-1, reincr) .eq. 0
     end if
-!
-! --- OPTION DE CALCUL DE MERIMO
-!
-    if (typmat .eq. 'TANGENTE') then
-        optrig = 'RIGI_MECA_TANG'
-    else if (typmat .eq. 'SECANTE') then
-        optrig = 'RIGI_MECA_ELAS'
-    else if (typmat .eq. 'ELASTIQUE') then
-        optrig = 'RIGI_MECA'
-    else
-        optrig = 'RIGI_MECA_TANG'
-    end if
-!
-! --- A RECALCULER
-!
-    lcrigi = reasma
-!
-! --- CALCUL DES MATR-ELEM DE RIGIDITE
-!
-    if (lcrigi) then
-        call nmrigi(modelz, carele, &
+    lRigiCompute = l_update_matr
+
+! - Select non-linear option for compute matrices
+    call getOption(phaseType, listFuncActi, matrType, nonLinearOption)
+
+! - Compute rigidity elementary matrices
+    if (lRigiCompute) then
+        call nmrigi(modelZ, caraElem, &
                     ds_material, ds_constitutive, &
-                    fonact, iterat, &
+                    listFuncActi, iterNewtPred, &
                     sddyna, ds_measure, ds_system, &
-                    valin2, solalg, hhoField, &
-                    optrig, ldccvg)
+                    hval_incrCopy, hval_algo, hhoField, &
+                    nonLinearOption, ldccvg)
+        ASSERT(ldccvg .eq. 0)
     end if
-!
-! --- CALCUL DES MATR-ELEM DES CHARGEMENTS SUIVEURS
-!
-    if (l_neum_undead) then
-        call nmcmat('MESUIV', ' ', ' ', ASTER_TRUE, &
-                    ASTER_FALSE, nb_matr, list_matr_type, list_calc_opti, list_asse_opti, &
-                    list_l_calc, list_l_asse)
-    end if
-!
-! --- CALCUL DE LA RIGIDITE GEOMETRIQUE DANS LE CAS HPP
-!
+
+! - Update elementary matrices for loads and boundary conditions (undead cases)
+    call updateLoadBCMatrix(listFuncActi, listLoad, &
+                            sddisc, numeTime, &
+                            modelZ, caraElem, &
+                            ds_material, ds_constitutive, &
+                            hval_incrCopy, hval_algo, &
+                            hval_meelem)
+
+! - Compute elementary matrices for geometry (buckling)
     if (mod45 .eq. 'FLAM') then
         if (l_hpp) then
-            call nmcmat('MEGEOM', ' ', ' ', ASTER_TRUE, &
-                        ASTER_FALSE, nb_matr, list_matr_type, list_calc_opti, list_asse_opti, &
-                        list_l_calc, list_l_asse)
+            call compElemGeom(modelZ, caraElem, &
+                              ds_material, &
+                              hval_incrCopy, hval_meelem)
         end if
     end if
-!
-! --- CALCUL DES MATR-ELEM DES SOUS-STRUCTURES
-!
-    if (lmacr) then
-        call nmcmat('MESSTR', ' ', ' ', ASTER_TRUE, &
-                    ASTER_FALSE, nb_matr, list_matr_type, list_calc_opti, list_asse_opti, &
-                    list_l_calc, list_l_asse)
+
+! - Compute elementary matrices for super-elements
+    if (lSuperElement) then
+        call nmchex(hval_meelem, 'MEELEM', 'MESSTR', superElem)
+        call elemSuper(modelZ, ds_material%mater, caraElem, superElem)
     end if
-!
-! --- CALCUL ET ASSEMBLAGE DES MATR_ELEM DE LA LISTE
-!
-    if (nb_matr .gt. 0) then
-        call nmxmat(modelz, ds_material, carele, &
-                    ds_constitutive, sddisc, numins, &
-                    valin2, solalg, lischa, &
-                    numedd, numfix, ds_measure, &
-                    nb_matr, list_matr_type, list_calc_opti, &
-                    list_asse_opti, list_l_calc, list_l_asse, &
-                    meelem, measse, ds_system)
-    end if
-!
-! --- ON RECONSTRUIT RIGI2 TOUJOURS SYMETRIQUE
-!
-    call asmari(ds_system, meelem, lischa, rigi2)
-    matass = rigi2
-!
-! --- PRISE EN COMPTE DE LA MATRICE TANGENTE DES FORCES SUIVEUSES
-!
-    if (reasma) then
-        if (l_neum_undead) then
-            call ascoma(meelem, numedd, lischa, matass)
+
+! - Assemble rigidity matrix
+    call asmari(ds_system, hval_meelem, listLoad, matrRigiSyme)
+    matrAsse = matrRigiSyme
+
+! - Undead loads
+    if (l_update_matr) then
+        if (lNeumUndead) then
+            call ascoma(hval_meelem, numeDof, listLoad, matrAsse)
         end if
     end if
-!
-!  --- MODIFICATION EVENTUELLE DE LA MATRICE DE RAIDEUR
-!
-    modlag = 'MODI_LAGR_OUI'
-    tdiag = 'MAX_ABS'
-    if ((nddle .ne. 0) .and. (modrig(1:13) .eq. 'MODI_RIGI_OUI')) then
-        call matide(matass, nddle, ds_posttimestep%stab_para%list_dof_excl, modlag, tdiag, &
-                    10.d0)
+
+! - MODIFICATION EVENTUELLE DE LA MATRICE DE RAIDEUR
+    if ((nbDofExcl .ne. 0) .and. lModiRigi) then
+        call matide(matrAsse, nbDofExcl, ds_posttimestep%stab_para%list_dof_excl, &
+                    modlag, tdiag, 10.d0)
     end if
-!
-! --- CALCUL DE LA RIGIDITE GEOMETRIQUE DANS LE CAS HPP
-!
+
+! - Geometry matrix for HPP case
     if (mod45 .eq. 'FLAM') then
         if (l_hpp) then
-            call asmatr(1, megeom, ' ', numedd, &
-                        lischa, 'ZERO', 'V', 1, matgeo)
-            if ((nddle .ne. 0) .and. (modrig(1:13) .eq. 'MODI_RIGI_OUI')) then
-                call matide(matgeo, nddle, ds_posttimestep%stab_para%list_dof_excl, modlag, tdiag, &
-                            10.d0)
+            call asmatr(1, geomElem, ' ', numeDof, &
+                        listLoad, 'ZERO', 'V', 1, matrGeom)
+            if ((nbDofExcl .ne. 0) .and. lModiRigi) then
+                call matide(matrGeom, nbDofExcl, ds_posttimestep%stab_para%list_dof_excl, &
+                            modlag, tdiag, 10.d0)
             end if
         else
-            matgeo = matass
+            matrGeom = matrAsse
         end if
     else if (mod45 .eq. 'VIBR') then
-        call asmama(memass, ' ', numedd, lischa, &
-                    matgeo)
+        call asmama(massElem, ' ', numeDof, listLoad, matrGeom)
+    else
+        ASSERT(ASTER_FALSE)
     end if
-!
+
 ! --- VERIFICATION POUR MODE_VIBR QUE LES DEUX MATRICES SONT SYMETRIQUES
-!
     if (mod45 .eq. 'VIBR') then
-        call dismoi('TYPE_MATRICE', matass, 'MATR_ASSE', repk=syme)
-        if (syme .eq. 'NON_SYM') then
-            call matr_asse_syme(matass)
+        call dismoi('TYPE_MATRICE', matrAsse, 'MATR_ASSE', repk=answer)
+        if (answer .eq. 'NON_SYM') then
+            call matr_asse_syme(matrAsse)
             call utmess('A', 'MECANONLINE5_56')
         else
-            call dismoi('TYPE_MATRICE', matgeo, 'MATR_ASSE', repk=syme)
-            if (syme .eq. 'NON_SYM') then
+            call dismoi('TYPE_MATRICE', matrGeom, 'MATR_ASSE', repk=answer)
+            if (answer .eq. 'NON_SYM') then
                 call utmess('F', 'MECANONLINE5_56')
             end if
         end if

@@ -61,7 +61,7 @@ subroutine nmassm(lischa, numedd, numfix, typmat, optasz, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    character(len=19) :: mediri, memass, meamor, messtr
+    character(len=19) :: mediri, memass, meamor
     integer :: ifm, niv
     character(len=16) :: optass
 !
@@ -80,7 +80,6 @@ subroutine nmassm(lischa, numedd, numfix, typmat, optasz, &
         call nmchex(meelem, 'MEELEM', 'MEDIRI', mediri)
         call nmchex(meelem, 'MEELEM', 'MEMASS', memass)
         call nmchex(meelem, 'MEELEM', 'MEAMOR', meamor)
-        call nmchex(meelem, 'MEELEM', 'MESSTR', messtr)
     end if
 !
 ! --- ASSEMBLAGE MATRICES ELEMENTAIRES
@@ -102,13 +101,7 @@ subroutine nmassm(lischa, numedd, numfix, typmat, optasz, &
             call asmama(memass, mediri, numedd, lischa, &
                         matass)
         end if
-    else if (typmat .eq. 'MESSTR') then
-        if (niv .ge. 2) then
-            call utmess('I', 'MECANONLINE13_73')
-        end if
-        call asmatr(1, messtr, ' ', numfix, &
-                    lischa, 'ZERO', 'V', 1, matass)
-        call mtdscr(matass)
+
     else if (typmat .eq. 'MERIGI') then
 ! ----- Direct with asmari
         ASSERT(ASTER_FALSE)

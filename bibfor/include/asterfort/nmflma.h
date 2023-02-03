@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,40 +18,38 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine nmflma(typmat, mod45 , l_hpp  , ds_algopara, modelz,&
-                      ds_material, carele, sddisc, sddyna     , fonact,&
-                      numins, valinc, solalg, lischa     ,&
-                      numedd, numfix, ds_system,&
-                      ds_constitutive, ds_measure, meelem,&
-                      measse, nddle , ds_posttimestep, modrig,&
-                      ldccvg, matass, matgeo)
+    subroutine nmflma(matrType, mod45,&
+                  l_hpp, lModiRigi,&
+                  listFuncActi, ds_algopara,&
+                  modelZ, caraElem,&
+                  ds_material, ds_constitutive,&
+                  sddyna, listLoad,&
+                  sddisc, numeTime,&
+                  ds_posttimestep, nbDofExcl,&
+                  hval_incr, hval_algo, &
+                  numeDof, ds_system,&
+                  ds_measure, hval_meelem,&
+                  matrAsse, matrGeom)
         use NonLin_Datastructure_type
-        character(len=16) :: typmat
-        character(len=4) :: mod45
-        aster_logical, intent(in) :: l_hpp
+        character(len=16), intent(in) :: matrType
+        character(len=4), intent(in) :: mod45
+        aster_logical, intent(in) :: l_hpp, lModiRigi
+        integer, intent(in) :: listFuncActi(*)
         type(NL_DS_AlgoPara), intent(in) :: ds_algopara
-        character(len=*) :: modelz
+        character(len=*), intent(in) :: modelZ
+        character(len=24), intent(in) :: caraElem
         type(NL_DS_Material), intent(in) :: ds_material
-        character(len=24) :: carele
-        character(len=19) :: sddisc
-        character(len=19) :: sddyna
-        integer :: fonact(*)
-        integer :: numins
-        character(len=19) :: valinc(*)
-        character(len=19) :: solalg(*)
-        character(len=19) :: lischa
-        character(len=24) :: numedd
-        character(len=24) :: numfix
         type(NL_DS_Constitutive), intent(in) :: ds_constitutive
-        type(NL_DS_Measure), intent(inout) :: ds_measure
-        type(NL_DS_System), intent(in) :: ds_system
-        character(len=19) :: meelem(*)
-        character(len=19) :: measse(*)
-        integer :: nddle
+        character(len=19), intent(in) :: sddyna, listLoad
+        character(len=19), intent(in) :: sddisc
+        integer, intent(in) :: numeTime
         type(NL_DS_PostTimeStep), intent(in) :: ds_posttimestep
-        character(len=16) :: modrig
-        integer :: ldccvg
-        character(len=19) :: matass
-        character(len=19) :: matgeo
+        integer, intent(in) :: nbDofExcl
+        character(len=19), intent(in) :: hval_algo(*), hval_incr(*)
+        character(len=24), intent(in) :: numeDof
+        type(NL_DS_System), intent(in) :: ds_system
+        type(NL_DS_Measure), intent(inout) :: ds_measure
+        character(len=19), intent(in) :: hval_meelem(*)
+        character(len=19), intent(out) :: matrAsse, matrGeom
     end subroutine nmflma
 end interface

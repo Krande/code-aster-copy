@@ -16,18 +16,17 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-! Indicator select phase of algorithm
-#define PRED_EULER          1
-#define CORR_NEWTON         2
-#define INTE_FORCE          3
-#define ACCEL_INIT          4
-#define POST_BUCKLING       5
-
-! Set to 1 to activate DEBUG
-#define NONLINEAR_DEBUG     0
-
-! Indicator to combine nodal fields for internal forces
-#define INTE_FORCE_NONE     0
-#define INTE_FORCE_COMB     1
-#define INTE_FORCE_INTE     2
-#define INTE_FORCE_FNOD     3
+interface
+    subroutine vpSorensen(mod45, matrAsse, matrGeom,&
+                          optionModal, calcLevel,&
+                          coefDimSpace, nbFreq, bande,&
+                          eigsol)
+        character(len=4), intent(in) :: mod45
+        character(len=19), intent(in) :: matrAsse, matrGeom
+        character(len=16), intent(in) :: optionModal, calcLevel
+        integer, intent(in) :: nbFreq
+        real(kind=8), intent(in) :: bande(2)
+        integer, intent(in) :: coefDimSpace
+        character(len=19), intent(in) :: eigsol
+    end subroutine vpSorensen
+end interface

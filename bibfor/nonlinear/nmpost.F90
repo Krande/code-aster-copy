@@ -160,13 +160,13 @@ subroutine nmpost(model, mesh, cara_elem, list_load, &
         if (l_mode_vibr .or. l_crit_stab) then
             call nmspec(model, ds_material, cara_elem, &
                         list_load, list_func_acti, &
-                        numedof, numfix, ds_system, &
+                        numedof, ds_system, &
                         ds_constitutive, &
                         sddisc, nume_inst, &
                         sddyna, sderro, ds_algopara, &
                         ds_measure, &
                         hval_incr, hval_algo, &
-                        hval_meelem, hval_measse, &
+                        hval_meelem, &
                         ds_posttimestep)
         end if
 ! ----- CALCUL DES ENERGIES
