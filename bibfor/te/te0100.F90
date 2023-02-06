@@ -32,7 +32,6 @@ subroutine te0100(option, nomte)
 #include "asterfort/jevech.h"
 #include "asterfort/lteatt.h"
 #include "asterfort/nmdlog.h"
-#include "asterfort/nmed2d.h"
 #include "asterfort/nmgpfi.h"
 #include "asterfort/nmgr2d.h"
 #include "asterfort/nmgrla.h"
@@ -75,7 +74,7 @@ subroutine te0100(option, nomte)
     integer :: ivarix, jv_mult_comp
     integer :: jtab(7)
     real(kind=8) :: bary(3)
-    real(kind=8) :: def(4*27*2), dfdi(2*9)
+    real(kind=8) :: dfdi(2*9)
     real(kind=8) :: angl_naut(7)
     aster_logical :: matsym
     character(len=16) :: mult_comp, defo_comp
@@ -106,6 +105,7 @@ subroutine te0100(option, nomte)
 !
 ! - Type of finite element
 !
+    typmod = " "
     if (lteatt('AXIS', 'OUI')) then
         typmod(1) = 'AXIS'
     else if (lteatt('C_PLAN', 'OUI')) then
@@ -114,12 +114,6 @@ subroutine te0100(option, nomte)
         typmod(1) = 'D_PLAN'
     else
         ASSERT(ASTER_FALSE)
-    end if
-
-    if (lteatt('TYPMOD2', 'ELEMDISC')) then
-        typmod(2) = 'ELEMDISC'
-    else
-        typmod(2) = ' '
     end if
 !
 ! - Get input fields
@@ -189,26 +183,16 @@ subroutine te0100(option, nomte)
 
     if (defo_comp .eq. 'PETIT') then
 
-        if (typmod(2) .eq. 'ELEMDISC') then
-            call nmed2d(nno, npg, ipoids, ivf, idfde, &
-                        zr(igeom), typmod, option, zi(imate), zk16(icompo), &
-                        lgpg, ideplm, ideplp, zr(icontm), &
-                        zr(ivarim), dfdi, def, zr(icontp), zr(ivarip), &
-                        zr(imatuu), ivectu, codret)
-            if (codret .ne. 0) goto 999
-
-        else
-            call nmpl2d(fami, nno, npg, &
-                        ipoids, ivf, idfde, &
-                        zr(igeom), typmod, option, zi(imate), &
-                        zk16(icompo), mult_comp, lgpg, zr(icarcr), &
-                        zr(iinstm), zr(iinstp), &
-                        zr(ideplm), zr(ideplp), &
-                        angl_naut, zr(icontm), zr(ivarim), &
-                        matsym, zr(icontp), zr(ivarip), &
-                        zr(imatuu), zr(ivectu), codret)
-            if (codret .ne. 0) goto 999
-        end if
+        call nmpl2d(fami, nno, npg, &
+                    ipoids, ivf, idfde, &
+                    zr(igeom), typmod, option, zi(imate), &
+                    zk16(icompo), mult_comp, lgpg, zr(icarcr), &
+                    zr(iinstm), zr(iinstp), &
+                    zr(ideplm), zr(ideplp), &
+                    angl_naut, zr(icontm), zr(ivarim), &
+                    matsym, zr(icontp), zr(ivarip), &
+                    zr(imatuu), zr(ivectu), codret)
+        if (codret .ne. 0) goto 999
 
     else if (defo_comp .eq. 'PETIT_REAC') then
 

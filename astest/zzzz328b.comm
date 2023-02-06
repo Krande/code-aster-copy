@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -194,47 +194,5 @@ TEST_RESU(
     )
 )
 
-# MODELISATION PLAN_ELDI
-
-MO4 = AFFE_MODELE(MAILLAGE=MA, AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="PLAN_ELDI"))
-
-MAT4 = DEFI_MATERIAU(ELAS=_F(E=1.0e9, NU=0.2), RUPT_FRAG=_F(SIGM_C=1.0e20, GC=100))
-
-MOMAT4 = AFFE_MATERIAU(MAILLAGE=MA, AFFE=_F(TOUT="OUI", MATER=MAT4))
-
-BLOC4 = AFFE_CHAR_MECA(
-    MODELE=MO4,
-    DDL_IMPO=(
-        _F(GROUP_NO="A", DX=AX, DY=AY),
-        _F(GROUP_NO="B", DX=BX, DY=BY),
-        _F(GROUP_NO="C", DX=CX, DY=CY),
-        _F(GROUP_NO="D", DX=DX, DY=DY),
-    ),
-)
-
-U4 = STAT_NON_LINE(
-    MODELE=MO4,
-    CHAM_MATER=MOMAT4,
-    EXCIT=_F(CHARGE=BLOC4),
-    NEWTON=_F(REAC_ITER=0),
-    COMPORTEMENT=_F(RELATION="CZM_EXP"),
-    INCREMENT=_F(LIST_INST=L_TPS),
-    ARCHIVAGE=_F(LIST_INST=L_ARCH),
-)
-
-U4 = CALC_CHAMP(reuse=U4, ENERGIE="ENEL_ELEM", RESULTAT=U4)
-
-TEST_RESU(
-    RESU=_F(
-        NUME_ORDRE=1,
-        REFERENCE="ANALYTIQUE",
-        RESULTAT=U4,
-        NOM_CHAM="ENEL_ELEM",
-        NOM_CMP="TOTALE",
-        VALE_REFE=2430.555556,
-        VALE_CALC=2430.555556,
-        GROUP_MA="M5",
-    )
-)
 
 FIN()

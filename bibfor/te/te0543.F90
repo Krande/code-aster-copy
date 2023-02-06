@@ -28,7 +28,6 @@ subroutine te0543(option, nomte)
 #include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
 #include "asterfort/lteatt.h"
-#include "asterfort/pipeed.h"
 #include "asterfort/pipepe.h"
 #include "asterfort/tecach.h"
 #include "asterfort/Behaviour_type.h"
@@ -71,10 +70,6 @@ subroutine te0543(option, nomte)
     end if
 !
     typmod(2) = 'DEPLA'
-!
-    if (lteatt('TYPMOD2', 'ELEMDISC')) then
-        typmod(2) = 'ELEMDISC'
-    end if
 !
 ! - FONCTIONS DE FORMES ET POINTS DE GAUSS
     call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, &
@@ -122,18 +117,11 @@ subroutine te0543(option, nomte)
 !
     call jevech('PCOPILO', 'E', icopil)
 !
-    if (typmod(2) .eq. 'ELEMDISC') then
-        call pipeed(nno, npg, ipoids, ivf, idfde, &
-                    zr(igeom), typmod, zi(imate), lgpg, zr(ideplm), &
-                    zr(ivarim), zr(iddepl), zr(idepl0), zr(idepl1), &
-                    zr(ictau), zr(icopil))
-    else
-        call pipepe(BEHinteg, &
-                    pilo, ndim, nno, npg, ipoids, &
-                    ivf, idfde, zr(igeom), typmod, zi(imate), &
-                    zk16(icompo), lgpg, zr(ideplm), zr(icontm), zr(ivarim), &
-                    zr(iddepl), zr(idepl0), zr(idepl1), zr(icopil), &
-                    iborne, ictau)
-    end if
+    call pipepe(BEHinteg, &
+                pilo, ndim, nno, npg, ipoids, &
+                ivf, idfde, zr(igeom), typmod, zi(imate), &
+                zk16(icompo), lgpg, zr(ideplm), zr(icontm), zr(ivarim), &
+                zr(iddepl), zr(idepl0), zr(idepl1), zr(icopil), &
+                iborne, ictau)
 !
 end subroutine

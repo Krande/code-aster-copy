@@ -106,7 +106,6 @@ AFFE_MODELE = OPER(
                     "AXIS_JOINT",  # person_in_charge: kyrylo.kazymyrenko at edf.fr
                     "AXIS_INTERFACE",  # person_in_charge: kyrylo.kazymyrenko at edf.fr
                     "AXIS_INTERFACE_S",  # person_in_charge: kyrylo.kazymyrenko at edf.fr
-                    "AXIS_ELDI",  # person_in_charge: kyrylo.kazymyrenko at edf.fr
                     "BARRE",  # person_in_charge: jean-luc.flejou at edf.fr
                     "CABLE_GAINE",  # person_in_charge: sylvie.michel-ponnelle at edf.fr
                     "2D_BARRE",  # person_in_charge: jean-luc.flejou at edf.fr
@@ -125,7 +124,6 @@ AFFE_MODELE = OPER(
                     "PLAN_JOINT_HYME",  # person_in_charge: kyrylo.kazymyrenko at edf.fr
                     "PLAN_INTERFACE",  # person_in_charge: kyrylo.kazymyrenko at edf.fr
                     "PLAN_INTERFACE_S",  # person_in_charge: kyrylo.kazymyrenko at edf.fr
-                    "PLAN_ELDI",  # person_in_charge: kyrylo.kazymyrenko at edf.fr
                     "D_PLAN_ABSO",  # person_in_charge: georges-cc.devesa at edf.fr
                     "D_PLAN_INCO_UPG",  # person_in_charge: mickael.abbas at edf.fr
                     "D_PLAN_INCO_UP",  # person_in_charge: mickael.abbas at edf.fr

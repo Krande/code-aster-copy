@@ -527,7 +527,6 @@ TYPMOD = Attribute(
 TYPMOD2 = Attribute(
     value=(
         "EJ_HYME",
-        "ELEMDISC",
         "ELEMJOIN",
         "GRADVARI",
         "GRADSIGM",
@@ -547,7 +546,6 @@ TYPMOD2 = Attribute(
   TYPMOD2= GRADVARI l'element utilise des comportements non locaux (TYPMOD(2)='GRADVARI' pour NMCOMP)
            ELEMJOIN l'element utilise des comportements d'elements de joints (CZM sur des modelisations *_JOINT)
            INTERFAC l'element utilise des comportements d'elements d'interface (CZM sur des modelisations *_INTERFACE)
-           ELEMDISC l'element utilise des comportements d'elements a discontinuite interne
            PMF      l'element fait appel a des comportements 1D PMF
            THM      thermo-hydro-mechanic
            HHO      Hybrid High-Order elements

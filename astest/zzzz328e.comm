@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -136,49 +136,6 @@ TEST_RESU(
         NUME_ORDRE=1,
         REFERENCE="ANALYTIQUE",
         RESULTAT=U1,
-        NOM_CHAM="ENEL_ELEM",
-        NOM_CMP="TOTALE",
-        VALE_REFE=7.5,
-        VALE_CALC=7.5,
-        GROUP_MA="M5",
-    )
-)
-
-# MODELISATION AXIS_ELDI
-
-MO2 = AFFE_MODELE(MAILLAGE=MA, AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="AXIS_ELDI"))
-
-MAT2 = DEFI_MATERIAU(ELAS=_F(E=1.0e9, NU=0.0), RUPT_FRAG=_F(SIGM_C=1.0e20, GC=100))
-
-MOMAT2 = AFFE_MATERIAU(MAILLAGE=MA, AFFE=_F(TOUT="OUI", MATER=MAT2))
-
-BLOC2 = AFFE_CHAR_MECA(
-    MODELE=MO2,
-    DDL_IMPO=(
-        _F(GROUP_NO="A", DX=AX, DY=AY),
-        _F(GROUP_NO="B", DX=BX, DY=BY),
-        _F(GROUP_NO="C", DX=CX, DY=CY),
-        _F(GROUP_NO="D", DX=DX, DY=DY),
-    ),
-)
-
-U2 = STAT_NON_LINE(
-    MODELE=MO2,
-    CHAM_MATER=MOMAT2,
-    EXCIT=_F(CHARGE=BLOC2),
-    NEWTON=_F(REAC_ITER=0),
-    COMPORTEMENT=_F(RELATION="CZM_EXP"),
-    INCREMENT=_F(LIST_INST=L_TPS),
-    ARCHIVAGE=_F(LIST_INST=L_ARCH),
-)
-
-U2 = CALC_CHAMP(reuse=U2, ENERGIE="ENEL_ELEM", RESULTAT=U2)
-
-TEST_RESU(
-    RESU=_F(
-        NUME_ORDRE=1,
-        REFERENCE="ANALYTIQUE",
-        RESULTAT=U2,
         NOM_CHAM="ENEL_ELEM",
         NOM_CMP="TOTALE",
         VALE_REFE=7.5,

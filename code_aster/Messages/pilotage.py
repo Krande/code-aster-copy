@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -121,18 +121,6 @@ cata_msg = {
         """
  Problème lors du pilotage.
  Précision machine dépassée.
-"""
-    ),
-    85: _(
-        """
- Problème lors du pilotage.
- Il y a trois solutions ou plus.
-"""
-    ),
-    86: _(
-        """
- Problème lors du pilotage.
- La matrice locale n'est pas inversible.
 """
     ),
     87: _(

@@ -58,7 +58,6 @@ def C_RELATION(COMMAND):
             "CAM_CLAY",
             "CJS",
             "CORR_ACIER",
-            "CZM_EXP",
             "CZM_EXP_REG",
             "CZM_EXP_MIX",
             "CZM_FAT_MIX",

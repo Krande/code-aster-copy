@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -1464,22 +1464,6 @@ class MEAXQU4(Element):
             para_out=((SP.PSIGISG, LC.EDOMGGA), (SP.PWEIBUL, LC.EWEIBUL)),
         ),
     )
-
-
-# ------------------------------------------------------------
-class MDAXQU4(MEAXQU4):
-    """QUAD4 AXIS_ELDI element"""
-
-    meshType = MT.QUAD4
-    elrefe = (
-        ElrefeLoc(
-            MT.QU4,
-            gauss=("RIGI=FPG4", "FPG1=FPG1", "MASS=FPG4", "NOEU_S=NOEU_S", "NOEU=NOEU"),
-            mater=("RIGI", "NOEU", "FPG1"),
-        ),
-    )
-
-    calculs = (OP.ENTR_ELEM(te=-1),)
 
 
 # ------------------------------------------------------------

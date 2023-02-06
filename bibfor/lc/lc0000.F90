@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! aslint: disable=W1501,W1504,W1306
+! aslint: disable=W1501,W1504,W1306,C1505
 !
 subroutine lc0000(BEHinteg, &
                   fami, kpg, ksp, ndim, typmod, &
@@ -168,7 +168,8 @@ subroutine lc0000(BEHinteg, &
     real(kind=8) :: epsm(neps), deps(neps)
     real(kind=8) :: sigm_all(nsig), sigp(nsig)
     real(kind=8) :: vim(nvi_all), vip(nvi_all)
-  real(kind=8) :: dsidep(merge(nsig, 6, nsig*neps .eq. ndsde), merge(neps, 6, nsig*neps .eq. ndsde))
+    real(kind=8) :: dsidep(merge(nsig, 6, nsig*neps .eq. ndsde), &
+                           merge(neps, 6, nsig*neps .eq. ndsde))
     character(len=16) :: compor(*), option
     character(len=8), intent(in) :: materi
     character(len=16), intent(in) :: mult_comp
@@ -329,7 +330,7 @@ subroutine lc0000(BEHinteg, &
     if (typmod(2) .eq. 'GRADVARI') then
         numlc = numlc+6000
     end if
-    if (typmod(2) .eq. 'EJ_HYME' .or. typmod(2) .eq. 'ELEMDISC' .or. &
+    if (typmod(2) .eq. 'EJ_HYME' .or. &
         typmod(2) .eq. 'ELEMJOIN' .or. typmod(2) .eq. 'INTERFAC') then
         numlc = numlc+7000
     end if
@@ -1069,7 +1070,7 @@ subroutine lc0000(BEHinteg, &
                     ndsde, dsidep, codret)
 !
 ! --------------------------------------------------------------------------------------------------
-! - With INTERFAC/ELEMDISC/EJ_HYME/ELEMJOIN
+! - With INTERFAC/EJ_HYME/ELEMJOIN
 ! --------------------------------------------------------------------------------------------------
 !
     case (7010)
@@ -1250,7 +1251,8 @@ subroutine lc0000(BEHinteg, &
         ASSERT(nsig .ge. ndimsi)
         call lcvisc(fami, kpg, ksp, ndim, imate, &
                     lSigm, lMatr, lVari, &
-                 instam, instap, deps(1:ndimsi), vim(idx_regu_visc:idx_regu_visc+nvi_regu_visc-1), &
+                    instam, instap, deps(1:ndimsi), &
+                    vim(idx_regu_visc:idx_regu_visc+nvi_regu_visc-1), &
                     sigp(1:ndimsi), vip(idx_regu_visc:idx_regu_visc+nvi_regu_visc-1), &
                     dsidep(1:ndimsi, 1:ndimsi))
     end if
@@ -1273,7 +1275,8 @@ subroutine lc0000(BEHinteg, &
             ASSERT(size(dsidep, 2) .ge. ndimsi)
             ASSERT(lSigm .and. lMatr)
 
-           call behaviourPredictionStress(BEHinteg%esva, dsidep(1:ndimsi, 1:ndimsi), sigp(1:ndimsi))
+            call behaviourPredictionStress(BEHinteg%esva, &
+                                           dsidep(1:ndimsi, 1:ndimsi), sigp(1:ndimsi))
         end if
     end if
 

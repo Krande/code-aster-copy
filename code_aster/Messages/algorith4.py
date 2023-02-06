@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -50,11 +50,6 @@ La modélisation 1d n'est pas autorisée
     1. On conseille l'utilisation de la PREDICTION=ELASTIQUE, REAC_ITER=n, avec n>1
     2. Vérifiez les paramètres d'entrée comme le matériau,... .
     3. Contactez l'assistance si le problème persiste
-"""
-    ),
-    48: _(
-        """
- élément à discontinuité avec une loi CZM_EXP : la matrice H est non inversible
 """
     ),
     50: _(

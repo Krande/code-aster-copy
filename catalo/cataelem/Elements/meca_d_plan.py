@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -1531,28 +1531,6 @@ class MEDPQU4(MEDPQS8):
     )
 
     calculs = (OP.ENTR_ELEM(te=-1),)
-
-
-# ------------------------------------------------------------
-class MDDPQU4(MEDPQS8):
-    """Please document this element"""
-
-    meshType = MT.QUAD4
-    nodes = (SetOfNodes("EN1", (1, 2, 3, 4)),)
-    elrefe = (
-        ElrefeLoc(
-            MT.QU4,
-            gauss=(
-                "RIGI=FPG4",
-                "MASS=FPG4",
-                "FPG1=FPG1",
-                "NOEU_S=NOEU_S",
-                "NOEU=NOEU",
-                "MTGA=FPG4",
-            ),
-            mater=("RIGI", "NOEU", "FPG1", "MTGA"),
-        ),
-    )
 
 
 # ------------------------------------------------------------

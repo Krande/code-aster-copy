@@ -1914,16 +1914,6 @@ phen.add(
 )
 
 phen.add(
-    "AXIS_ELDI",
-    Modelisation(
-        dim=(2, 2),
-        code="ADI",
-        attrs=((AT.AXIS, "OUI"), (AT.NBSIGM, "4"), (AT.TYPMOD, "AXIS"), (AT.TYPMOD2, "ELEMDISC")),
-        elements=((MT.QUAD4, EL.MDAXQU4), (MT.SEG2, EL.MEAXSE2)),
-    ),
-)
-
-phen.add(
     "AXIS_FLUIDE#1",
     Modelisation(
         dim=(2, 2),
@@ -5580,16 +5570,6 @@ phen.add(
             (MT.QUAD8, EL.MEMBQU8),
             (MT.QUAD9, EL.MEMBQU9),
         ),
-    ),
-)
-
-phen.add(
-    "PLAN_ELDI",
-    Modelisation(
-        dim=(2, 2),
-        code="PDI",
-        attrs=((AT.NBSIGM, "4"), (AT.D_PLAN, "OUI"), (AT.TYPMOD, "PLAN"), (AT.TYPMOD2, "ELEMDISC")),
-        elements=((MT.QUAD4, EL.MDDPQU4), (MT.SEG2, EL.MEPLSE2)),
     ),
 )
 
