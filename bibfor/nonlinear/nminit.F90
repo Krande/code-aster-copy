@@ -32,6 +32,7 @@ subroutine nminit(mesh, model, mater, mateco, cara_elem, &
     use Rom_Datastructure_type
     use HHO_type
     use HHO_Meca_module, only: hhoMecaInit
+    use NonLinearDyna_module, only: compMatrInit
 !
     implicit none
 !
@@ -74,7 +75,6 @@ subroutine nminit(mesh, model, mater, mateco, cara_elem, &
 #include "asterfort/nonlinDSInOutInit.h"
 #include "asterfort/nonlinSystemInit.h"
 #include "asterfort/nmrefe.h"
-#include "asterfort/nminma.h"
 #include "asterfort/nminmc.h"
 #include "asterfort/nmlssv.h"
 #include "asterfort/nmnoli.h"
@@ -237,55 +237,43 @@ subroutine nminit(mesh, model, mater, mateco, cara_elem, &
     l_ener = isfonc(list_func_acti, 'ENERGIE')
     l_dyna = ndynlo(sddyna, 'DYNAMIQUE')
     l_hho = isfonc(list_func_acti, 'HHO')
-!
+
 ! - Initializations for HHO
-!
     if (l_hho) then
         call hhoMecaInit(model, list_load, list_func_acti, hhoField)
     end if
-!
+
 ! - Initialization for reduced method
-!
     if (ds_algorom%l_rom) then
         call romAlgoNLInit('MECA', model, mesh, numedd, ds_inout%result, ds_algorom)
     end if
-!
+
 ! - Prepare contact solving datastructure
-!
     if (ds_contact%l_meca_cont) then
         call cfmxsd(mesh, model, numedd, list_func_acti, sddyna, ds_contact)
     end if
-!
-! --- CREATION DE LA STRUCTURE DE LIAISON_UNILATERALE
-!
     if (ds_contact%l_meca_unil) then
         call cucrsd(mesh, numedd, ds_contact)
     end if
-!
+
 ! - Initializations for measure and statistic management
-!
     call nmcrti(list_func_acti, ds_inout%result, ds_contact, ds_measure)
-!
+
 ! - Initializations for algorithm parameters
-!
     call nonlinDSAlgoParaInit(list_func_acti, ds_algopara, ds_contact)
-!
+
 ! - Initializations for convergence management
-!
     call nonlinDSConvergenceInit(ds_conv, list_func_acti, ds_contact, model)
-!
+
 ! - Initializations for energy management
-!
     if (l_ener) then
         call nonlinDSEnergyInit(ds_inout%result, ds_energy)
     end if
-!
+
 ! - Initializations for input/output management
-!
     call nonlinDSInOutInit('MECA', ds_inout)
-!
+
 ! - Initializations for error indicator management
-!
     if (l_erre_thm) then
         call nonlinDSErrorIndicInit(model, ds_constitutive, ds_errorindic)
     end if
@@ -294,9 +282,8 @@ subroutine nminit(mesh, model, mater, mateco, cara_elem, &
 !
     call nmcrch(numedd, list_func_acti, sddyna, ds_contact, valinc, &
                 solalg, veasse)
-!
+
 ! - Initializations for dynamic
-!
     call nonlinDSDynamicInit(valinc, sddyna, ds_constitutive)
 !
 ! --- CONSTRUCTION DU CHAM_NO ASSOCIE AU PILOTAGE
@@ -308,66 +295,68 @@ subroutine nminit(mesh, model, mater, mateco, cara_elem, &
 ! --- DUPLICATION NUME_DDL POUR CREER UN DUME_DDL FIXE
 !
     call nmpro2(list_func_acti, numedd, numfix)
-!
+
 ! - Create input/output datastructure
-!
     call nmetcr(ds_inout, model, ds_constitutive%compor, list_func_acti, sddyna, &
                 ds_contact, cara_elem, list_load)
-!
+
 ! - Read initial state
-!
     call nmdoet(model, ds_constitutive%compor, list_func_acti, numedd, sdpilo, &
                 sddyna, ds_errorindic, solalg, lacc0, ds_inout)
-!
+
 ! - Create time discretization and storing datastructures
-!
     call diinit(mesh, model, ds_inout, mater, mateco, cara_elem, &
                 list_func_acti, sddyna, ds_conv, ds_algopara, solver, &
                 ds_contact, sddisc)
 
-!! - Vérifier les instants des calculs attachés à _NON_LINE (eg. MODE_VIBR)
+! - Vérifier les instants des calculs attachés à _NON_LINE (eg. MODE_VIBR)
     call verins(sddisc, ds_posttimestep)
 
 ! - Initial time
-!
     numins = 0
     instin = diinst(sddisc, numins)
 
-!
 ! - Initializations for material parameters management
-!
     call nonlinDSMaterialInit(model, mater, mateco, cara_elem, &
                               ds_constitutive%compor, valinc, &
                               numedd, instin, &
                               ds_material)
-!
+
 ! - Initializations for non-linear system
-!
     call nonlinSystemInit(list_func_acti, numedd, ds_algopara, ds_contact, ds_system)
-!
-! --- PRE-CALCUL DES MATR_ELEM CONSTANTES AU COURS DU CALCUL
-!
-    call nminmc(list_func_acti, list_load, sddyna, model, ds_constitutive, &
-                numedd, numfix, solalg, &
-                valinc, ds_material, cara_elem, sddisc, ds_measure, &
-                meelem, measse, ds_system)
-!
+
+! - Prepare constant elementary matrices
+    call nminmc(list_func_acti, &
+                model, cara_elem, ds_material, &
+                list_load, numfix, &
+                meelem, measse)
+
+! - Prepare matrices for dynamic
+    if (l_dyna) then
+        call compMatrInit(list_func_acti, &
+                          sddyna, sddisc, list_load, &
+                          model, cara_elem, &
+                          ds_material, ds_constitutive, &
+                          ds_measure, ds_system, &
+                          numedd, numfix, &
+                          valinc, solalg, &
+                          meelem, measse)
+    end if
+
 ! - Compute reference vector for RESI_REFE_RELA
-!
     if (lrefe) then
         call nmrefe(model, ds_constitutive%compor, mateco, cara_elem, numedd, &
                     ds_conv, valinc, veelem, veasse)
     end if
-!
+
 ! - Compute vector for DIDI loads
-!
     if (ldidi) then
         call nmdidi(ds_inout, model, list_load, numedd, valinc, &
                     veelem, veasse)
     end if
 !
 ! --- CREATION DE LA SD POUR ARCHIVAGE DES INFORMATIONS DE CONVERGENCE
-!
+
     call nmcrcv(sdcrit)
 !
 ! --- INITIALISATION CALCUL PAR SOUS-STRUCTURATION
@@ -426,14 +415,8 @@ subroutine nminit(mesh, model, mater, mateco, cara_elem, &
 ! - Initializations for printing
 !
     call nonlinDSPrintInit(ds_print, sd_suiv)
-!
-! --- PRE-CALCUL DES MATR_ASSE CONSTANTES AU COURS DU CALCUL
-!
-    call nminma(list_load, sddyna, numedd, &
-                numfix, meelem, measse)
-!
+
 ! - Prepare storing
-!
     call nmnoli(sddisc, sderro, ds_print, sdcrit, &
                 list_func_acti, sddyna, model, ds_material, &
                 cara_elem, sdpilo, ds_measure, ds_energy, ds_inout, &

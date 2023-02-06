@@ -17,37 +17,28 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine nminmc(fonact, lischa, sddyna, modele, ds_constitutive, &
-                  numedd, numfix, solalg, &
-                  valinc, ds_material, carele, sddisc, ds_measure, &
-                  meelem, measse, ds_system)
+subroutine nminmc(listFuncActi, &
+                  model, caraElem, ds_material, &
+                  listLoad, numfix, &
+                  meelem, measse)
 !
     use NonLin_Datastructure_type
-    use HHO_type
+    use NonLinearElem_module, only: elemSuper, asseSuper, elemDiri
 !
     implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/infdbg.h"
 #include "asterfort/isfonc.h"
-#include "asterfort/ndynlo.h"
-#include "asterfort/nmcmat.h"
-#include "asterfort/nmxmat.h"
 #include "asterfort/utmess.h"
-#include "asterfort/nmrigi.h"
+#include "asterfort/nmchex.h"
 !
-    integer :: fonact(*)
-    character(len=19) :: lischa, sddyna
-    character(len=24) :: numedd, numfix
-    type(NL_DS_Constitutive), intent(in) :: ds_constitutive
+    integer, intent(in) :: listFuncActi(*)
+    character(len=24), intent(in) :: model, caraElem
     type(NL_DS_Material), intent(in) :: ds_material
-    character(len=24) :: modele
-    character(len=24) :: carele
-    character(len=19) :: meelem(*), measse(*)
-    type(NL_DS_System), intent(in) :: ds_system
-    character(len=19) :: solalg(*), valinc(*)
-    character(len=19) :: sddisc
-    type(NL_DS_Measure), intent(inout) :: ds_measure
+    character(len=19), intent(in) :: listLoad
+    character(len=24), intent(in) :: numfix
+    character(len=19), intent(in) :: meelem(*), measse(*)
 !
 ! ----------------------------------------------------------------------
 !
@@ -76,17 +67,10 @@ subroutine nminmc(fonact, lischa, sddyna, modele, ds_constitutive, &
 !
 ! ----------------------------------------------------------------------
 !
-    character(len=16) :: opmass, oprigi
-    aster_logical :: lmacr, ldyna, lexpl
-    aster_logical :: lamor, lktan, lelas, lvarc, lcfint, lamra
+    aster_logical :: lSuperElement
     integer :: ifm, niv
-    type(HHO_Field) :: hhoField
-    integer :: numins, iterat, ldccvg
-    integer :: nb_matr
-    character(len=16) :: optrig
-    character(len=6) :: list_matr_type(20)
-    character(len=16) :: list_calc_opti(20), list_asse_opti(20)
-    aster_logical :: list_l_asse(20), list_l_calc(20)
+    character(len=24) :: diriElem
+    character(len=24) :: superElem, superAsse
 !
 ! ----------------------------------------------------------------------
 !
@@ -94,112 +78,20 @@ subroutine nminmc(fonact, lischa, sddyna, modele, ds_constitutive, &
     if (niv .ge. 2) then
         call utmess('I', 'MECANONLINE13_18')
     end if
-!
-! --- FONCTIONNALITES ACTIVEES
-!
-    lmacr = isfonc(fonact, 'MACR_ELEM_STAT')
-    ldyna = ndynlo(sddyna, 'DYNAMIQUE')
-    lexpl = ndynlo(sddyna, 'EXPLICITE')
-    lvarc = isfonc(fonact, 'EXI_VARC')
-    lamor = ndynlo(sddyna, 'MAT_AMORT')
-    lktan = ndynlo(sddyna, 'RAYLEIGH_KTAN')
-    lamra = ndynlo(sddyna, 'AMOR_RAYLEIGH')
-!
-! - Initializations
-!
-    nb_matr = 0
-    list_matr_type(1:20) = ' '
-    lelas = ASTER_FALSE
-    lcfint = ASTER_FALSE
-    ldccvg = -1
-    if (lamra .and. .not. lktan) then
-        lelas = ASTER_TRUE
-        if (lvarc) then
-            call utmess('F', 'MECANONLINE3_2')
-        end if
-    end if
-!
-! --- INSTANT INITIAL
-!
-    numins = 1
-!
-! --- MATRICE DE RIGIDITE ASSOCIEE AUX LAGRANGE
-!
-    if (niv .ge. 2) then
-        call utmess('I', 'MECANONLINE13_19')
-    end if
-    call nmcmat('MEDIRI', ' ', ' ', ASTER_TRUE, &
-                ASTER_FALSE, nb_matr, list_matr_type, list_calc_opti, list_asse_opti, &
-                list_l_calc, list_l_asse)
-!
-! --- MATRICE DE MASSE
-!
-    if (ldyna) then
-        if (niv .ge. 2) then
-            call utmess('I', 'MECANONLINE13_20')
-        end if
-        if (lexpl) then
-            if (ndynlo(sddyna, 'MASS_DIAG')) then
-                opmass = 'MASS_MECA_EXPLI'
-            else
-                opmass = 'MASS_MECA'
-            end if
-        else
-            opmass = 'MASS_MECA'
-        end if
-        call nmcmat('MEMASS', opmass, ' ', ASTER_TRUE, &
-                    ASTER_FALSE, nb_matr, list_matr_type, list_calc_opti, list_asse_opti, &
-                    list_l_calc, list_l_asse)
-!
-    end if
-!
-! --- MATRICES DES MACRO-ELEMENTS
-! --- ON DOIT ASSEMBLER _AVANT_ ACCEL0
-!
-    if (lmacr) then
-        if (niv .ge. 2) then
-            call utmess('I', 'MECANONLINE13_21')
-        end if
-        oprigi = 'RIGI_MECA'
-        call nmcmat('MESSTR', oprigi, ' ', ASTER_TRUE, &
-                    ASTER_TRUE, nb_matr, list_matr_type, list_calc_opti, list_asse_opti, &
-                    list_l_calc, list_l_asse)
-    end if
-!
-! --- AJOUT DE LA MATRICE ELASTIQUE DANS LA LISTE
-!
-    if (lelas) then
-        optrig = 'RIGI_MECA'
-        iterat = 0
-        call nmrigi(modele, carele, &
-                    ds_material, ds_constitutive, &
-                    fonact, iterat, sddyna, ds_measure, ds_system, &
-                    valinc, solalg, hhoField, &
-                    optrig, ldccvg)
-    end if
-!
-! --- AJOUT DE LA MATRICE AMORTISSEMENT DANS LA LISTE
-!
-    if (lamor .and. .not. lktan) then
-        call nmcmat('MEAMOR', ' ', ' ', ASTER_TRUE, &
-                    ASTER_FALSE, nb_matr, list_matr_type, list_calc_opti, list_asse_opti, &
-                    list_l_calc, list_l_asse)
-!
-    end if
-!
-! --- CALCUL ET ASSEMBLAGE DES MATR_ELEM DE LA LISTE
-!
-    if (nb_matr .gt. 0) then
-        call nmxmat(modele, ds_material, carele, &
-                    ds_constitutive, sddisc, numins, &
-                    valinc, solalg, lischa, &
-                    numedd, numfix, ds_measure, &
-                    nb_matr, list_matr_type, list_calc_opti, &
-                    list_asse_opti, list_l_calc, list_l_asse, &
-                    meelem, measse, ds_system)
-        if (ldccvg .gt. 0) then
-            call utmess('F', 'MECANONLINE_1')
-        end if
+
+! - Active functionnalities
+    lSuperElement = isfonc(listFuncActi, 'MACR_ELEM_STAT')
+
+! - Compute elementary matrices for Dirichet (B matrix for Lagrange multipliers)
+    call nmchex(meelem, 'MEELEM', 'MEDIRI', diriElem)
+    call elemDiri(model, listLoad, diriElem)
+
+! - Compute elementary matrices for super-elements and assemble them
+    if (lSuperElement) then
+        call nmchex(meelem, 'MEELEM', 'MESSTR', superElem)
+        call nmchex(measse, 'MEASSE', 'MESSTR', superAsse)
+        call elemSuper(model, ds_material%mater, caraElem, superElem)
+        call asseSuper(numfix, listLoad, superElem, superAsse)
     end if
 !
 end subroutine

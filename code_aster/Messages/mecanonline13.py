@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -42,11 +42,6 @@ cata_msg = {
     16: _(""" Initialisations de la subdivision des pas de temps."""),
     17: _(""" Initialisations du pilotage."""),
     18: _(""" Initialisations des matrices élémentaires constantes durant le calcul."""),
-    19: _(
-        """  Calcul des matrices pour les conditions limites dualisées (multiplicateurs de Lagrange)."""
-    ),
-    20: _("""  Calcul des matrices de masse."""),
-    21: _("""  Calcul des matrices pour les macro-éléments statiques."""),
     22: _(""" Initialisations des matrices assemblées constantes durant le calcul."""),
     23: _("""  Assemblage de la matrice de masse."""),
     24: _("""  Assemblage de la matrice d'amortissement."""),
