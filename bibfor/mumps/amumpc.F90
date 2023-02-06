@@ -128,9 +128,6 @@ subroutine amumpc(action, kxmps, csolu, vcine, nbsol, &
     call jeveuo(nosolv//'.SLVR', 'L', vr=slvr)
     call jeveuo(nosolv//'.SLVI', 'E', vi=slvi)
 !
-! --- ANALYSE PAR BLOCS
-    lbloc = ((slvk(5) (1:4) .eq. 'FR++') .or. (slvk(5) (1:4) .eq. 'LR++'))
-!
 ! --- L'UTILISATEUR VEUT-IL UNE ESTIMATION DE LA QUALITE DE LA SOL ?
 ! --- => LQUALI
 !
@@ -171,10 +168,16 @@ subroutine amumpc(action, kxmps, csolu, vcine, nbsol, &
 ! --- MATRICE ASTER DISTRIBUEE ?
     call dismoi('MATR_DISTRIBUEE', nomat, 'MATR_ASSE', repk=matd)
     lmd = matd .eq. 'OUI'
+
 !
 ! --- MATRICE ASTER HPC ?
     call dismoi('MATR_HPC', nomat, 'MATR_ASSE', repk=mathpc)
     lmhpc = mathpc .eq. 'OUI'
+
+! --- ANALYSE PAR BLOCS
+!     PAS ENCORE ETENDU AU MODE DISTRIBUE
+    lbloc = (((slvk(5) (1:3) .eq. 'FR+') .or. (slvk(5) (1:3) .eq. 'LR+') .or. &
+              (slvk(5) (1:4) .eq. 'AUTO')) .and. (.not. lmhpc) .and. (.not. lmd))
 !
 ! --- MUMPS EST-IL UTILISE COMME PRECONDITIONNEUR ?
 ! --- SI OUI, ON DEBRANCHE LES ALARMES ET INFO (PAS LES UTMESS_F)

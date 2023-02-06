@@ -211,7 +211,9 @@ subroutine amumpd(action, kxmps, rsolu, vcine, nbsol, &
 !       --------------------------------------------------------------
 !        CHOIX ICNTL VECTEUR DE PARAMETRES POUR MUMPS (ANALYSE+FACTO):
 !       --------------------------------------------------------------
-        lbloc = ((slvk(5) (1:4) .eq. 'FR++') .or. (slvk(5) (1:4) .eq. 'LR++'))
+!       PAS ENCORE ETENDU AU MODE DISTRIBUE
+        lbloc = (((slvk(5) (1:3) .eq. 'FR+') .or. (slvk(5) (1:3) .eq. 'LR+') .or. &
+                  (slvk(5) (1:4) .eq. 'AUTO')) .and. (.not. lmhpc) .and. (.not. lmd))
         call amumpi(2, lquali, ldist, kxmps, type, lmhpc, lbloc)
 !
 !       -----------------------------------------------------

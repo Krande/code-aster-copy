@@ -107,6 +107,7 @@ subroutine amumpi(option, lquali, ldist, kxmps, type, lmhpc, lbloc)
     nprec = slvi(1)
     call jeveuo(nosolv//'.SLVR', 'L', vr=slvr)
 
+    kacmum = 'XXXXXXXX'
     kacmum = trim(adjustl(slvk(5)))
     blreps = slvr(4)
     redmpi = slvi(7)
@@ -196,6 +197,8 @@ subroutine amumpi(option, lquali, ldist, kxmps, type, lmhpc, lbloc)
 !        INITIALISATION ICNTL/CNTL POUR MUMPS (ANALYSE +FACTO)
 !       ------------------------------------------------------
     else if (option .eq. 2) then
+! ECRIRE LA MATRICE ET LE RHS VUS PAR MUMPS
+!        dmpsk%WRITE_PROBLEM='chemin complet/nomfichier'
         if (type .eq. 'S') then
             nbproc = smpsk%nprocs
         else if (type .eq. 'C') then
@@ -283,79 +286,80 @@ subroutine amumpi(option, lquali, ldist, kxmps, type, lmhpc, lbloc)
         if (icntl(17) > 1) then
             nbomp = nbomp*icntl(17)
         end if
+        k268 = 0
+        k370 = 0
+        k371 = 0
+        k401 = 0
+        icntl(35) = 0
+        icntl(36) = 0
+        icntl(37) = 0
+        cntl(7) = -999.d0
         select case (kacmum)
         case ('FR')
 ! FR std
-            icntl(35) = 0
-            icntl(36) = 0
-            icntl(37) = 0
-            cntl(7) = -999.d0
-            k268 = 0
-            k370 = 0
-            k371 = 0
-            k401 = 0
         case ('FR+', 'FR++')
 ! FR +  aggressive optimizations + MUMPS feature in advance if ++ (consortium version)
-            icntl(35) = 0
-            icntl(36) = 0
-            icntl(37) = 0
-            cntl(7) = -999.d0
-            k268 = -2
             k370 = 1
             k371 = 1
-            if ((kacmum(3:4) .eq. '++') .and. (nbomp > 1)) then
-                k401 = 1
-            else
-                k401 = 0
+            if (kacmum(3:4) .eq. '++') then
+                k268 = -2
+#ifdef ASTER_MUMPS_CONSORTIUM
+                icntl(58) = 2
+#endif
+                if (nbomp > 1) then
+                    k401 = 1
+                end if
             end if
-        case ('LR')
-! BLR std
+        case ('LR', 'LR+', 'LR++')
+! BLR std, UFSC, ou BLR UCFS (si blreps<0)
             icntl(35) = 1
-            icntl(36) = 0
-            icntl(37) = 0
-            cntl(7) = blreps
-            k268 = 0
-            k370 = 0
-            k371 = 0
-            k401 = 0
-        case ('LR+', 'LR++')
-! BLR+ + aggressive optimizations+ MUMPS feature in advance if ++ (consortium version)
-            icntl(35) = 2
-            icntl(36) = 1
-            icntl(37) = 0
-            cntl(7) = blreps
-            k268 = -2
-            k370 = 1
-            k371 = 1
-            if ((kacmum(3:4) .eq. '++') .and. (nbomp > 1)) then
-                k401 = 1
+            if (blreps >= 0) then
+                cntl(7) = blreps
             else
-                k401 = 0
+                icntl(36) = 1
+                cntl(7) = -blreps
+            end if
+            if (kacmum(3:3) .eq. '+') then
+! BLR+: priorite temps (consortium version)
+#ifdef ASTER_MUMPS_CONSORTIUM
+                icntl(58) = 2
+#endif
+                k268 = -2
+                k370 = 1
+                k371 = 1
+                if (nbomp > 1) then
+                    k401 = 1
+                end if
+                if (kacmum(4:4) .eq. '+') then
+! BLR+: priorite RAM (consortium version)
+                    icntl(37) = 1
+                    icntl(40) = 1
+                end if
             end if
         case default
             ASSERT(.false.)
         end select
 
         if (type .eq. 'S') then
+            smpsk%keep(268) = to_mumps_int(k268)
             smpsk%keep(370) = to_mumps_int(k370)
             smpsk%keep(371) = to_mumps_int(k371)
             smpsk%keep(401) = to_mumps_int(k401)
-            smpsk%keep(268) = to_mumps_int(k268)
         else if (type .eq. 'C') then
+            cmpsk%keep(268) = to_mumps_int(k268)
             cmpsk%keep(370) = to_mumps_int(k370)
             cmpsk%keep(371) = to_mumps_int(k371)
             cmpsk%keep(401) = to_mumps_int(k401)
-            cmpsk%keep(268) = to_mumps_int(k268)
         else if (type .eq. 'D') then
+            dmpsk%keep(268) = to_mumps_int(k268)
             dmpsk%keep(370) = to_mumps_int(k370)
             dmpsk%keep(371) = to_mumps_int(k371)
             dmpsk%keep(401) = to_mumps_int(k401)
-            dmpsk%keep(268) = to_mumps_int(k268)
         else if (type .eq. 'Z') then
+            zmpsk%keep(268) = to_mumps_int(k268)
             zmpsk%keep(370) = to_mumps_int(k370)
             zmpsk%keep(371) = to_mumps_int(k371)
             zmpsk%keep(401) = to_mumps_int(k401)
-            zmpsk%keep(268) = to_mumps_int(k268)
         end if
 !
 ! ---     MESSAGES/ALERTES MUMPS

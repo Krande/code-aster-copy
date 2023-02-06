@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -86,7 +86,9 @@ TEMPE = THER_LINEAIRE(
 # ANALYSE DES RESULTATS -----------------------------------------------
 #
 
-TEMPE = CALC_ERREUR(reuse=TEMPE, RESULTAT=TEMPE, OPTION=("ERTH_ELEM",))
+TEMPE = CALC_ERREUR(
+    reuse=TEMPE, RESULTAT=TEMPE, OPTION=("ERTH_ELEM",), SOLVEUR=_F(ACCELERATION="FR")
+)
 
 TEMP_005 = CREA_CHAMP(
     OPERATION="EXTR", TYPE_CHAM="NOEU_TEMP_R", NOM_CHAM="TEMP", RESULTAT=TEMPE, INST=0.05
@@ -346,7 +348,7 @@ TEST_RESU(
 )
 
 TEST_RESU(
-    CHAM_ELEM=(_F(GROUP_MA="M17", NOM_CMP="ERTABS", CHAM_GD=ERREUR, VALE_CALC=0.03840812386765109),)
+    CHAM_ELEM=(_F(GROUP_MA="M17", NOM_CMP="ERTABS", CHAM_GD=ERREUR, VALE_CALC=0.03840811402401148),)
 )
 
 

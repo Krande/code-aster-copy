@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -47,7 +47,7 @@ class sd_solveur(AsBase):
                 "PARMETIS",
                 "PTSCOTCH",
             )
-            assert slvk[4] in ("AUTO", "FR", "FR+", "LR", "LR+")
+            assert slvk[4] in ("AUTO", "FR", "FR+", "FR++", "LR", "LR+", "LR++")
             assert slvk[5] in ("LAGR2", "NON")
             assert slvk[7] in ("OUI", "NON", "XXXX")
             assert slvk[8] in ("IN_CORE", "OUT_OF_CORE", "AUTO", "EVAL", "XXXX")

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -106,7 +106,7 @@ UTOT1 = STAT_NON_LINE(
     NEWTON=_F(REAC_INCR=1, REAC_ITER=1),
     INCREMENT=_F(LIST_INST=L_INST),
     CONVERGENCE=(_F(ITER_GLOB_MAXI=20, RESI_GLOB_MAXI=1e-6)),
-    SOLVEUR=_F(METHODE="MUMPS"),
+    SOLVEUR=_F(METHODE="MUMPS", ACCELERATION="FR"),
     ARCHIVAGE=_F(CHAM_EXCLU="VARI_ELGA"),
     INFO=1,
 )

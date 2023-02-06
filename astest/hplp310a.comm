@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -152,9 +152,20 @@ INSTMECA = DEFI_LIST_REEL(VALE=1.0)
 # CALCUL AVEC LES CHARGEMENTS 1 ET 2 DE LA FICHE (SANS CONTACT)
 # -------------------------------------------------------------
 
-CHAMDEPP = MECA_STATIQUE(MODELE=MO, CHAM_MATER=CHMAT, EXCIT=(_F(CHARGE=CH10), _F(CHARGE=CL)))
+CHAMDEPP = MECA_STATIQUE(
+    MODELE=MO,
+    CHAM_MATER=CHMAT,
+    SOLVEUR=_F(ACCELERATION="FR"),
+    EXCIT=(_F(CHARGE=CH10), _F(CHARGE=CL)),
+)
 
-CHAMDEPT = MECA_STATIQUE(MODELE=MO, CHAM_MATER=CHMAT2, EXCIT=(_F(CHARGE=CL)), LIST_INST=INSTMECA)
+CHAMDEPT = MECA_STATIQUE(
+    MODELE=MO,
+    CHAM_MATER=CHMAT2,
+    SOLVEUR=_F(ACCELERATION="FR"),
+    EXCIT=(_F(CHARGE=CL)),
+    LIST_INST=INSTMECA,
+)
 
 # -----------------------------------------------------------
 # CALCUL AVEC LE CHARGEMENT 3 DE LA FICHE POUR DIFFERENTES
@@ -199,6 +210,7 @@ CHAMDEP0 = STAT_NON_LINE(
     NEWTON=_F(MATRICE="ELASTIQUE"),
     INCREMENT=_F(LIST_INST=L_INST),
     CONVERGENCE=_F(ITER_GLOB_MAXI=20),
+    SOLVEUR=_F(ACCELERATION="FR"),
 )
 
 FOND_NEW = DEFI_FOND_FISS(

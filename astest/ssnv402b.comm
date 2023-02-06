@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -166,6 +166,7 @@ RESU = STAT_NON_LINE(
     INCREMENT=_F(LIST_INST=L_INST, INST_FIN=Tfin),
     NEWTON=_F(MATRICE="TANGENTE", REAC_ITER=1),
     CONVERGENCE=_F(ITER_GLOB_MAXI=20, RESI_GLOB_RELA=ResiGlobRela),
+    SOLVEUR=_F(ACCELERATION="FR"),
 )
 RESU = CALC_CHAMP(
     RESULTAT=RESU, reuse=RESU, TOUT="OUI", TOUT_ORDRE="OUI", DEFORMATION=("EPSI_ELGA",)

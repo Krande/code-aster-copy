@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -164,7 +164,7 @@ STATIC = MECA_STATIQUE(
     CHAM_MATER=MATER_F,
     CARA_ELEM=FE_CAR,
     EXCIT=(_F(CHARGE=BOUND_C), _F(CHARGE=FOR_4), _F(CHARGE=DFOR_1), _F(CHARGE=CDeLiais)),
-    SOLVEUR=_F(RESI_RELA=1e-05, NPREC=-1),
+    SOLVEUR=_F(RESI_RELA=1e-05, NPREC=-1, ACCELERATION="FR"),
 )
 #
 # EXTRA FIELD CALCULATIONS FROM THE RESULT AND THE FE-MODEL #########

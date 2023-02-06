@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -222,6 +222,7 @@ DFOR_1 = AFFE_CHAR_MECA(
 #
 # LINEAR STATIC SOLVER ####################
 STATIC = MECA_STATIQUE(
+    INFO=2,
     MODELE=MODEL,
     CHAM_MATER=MATER_F,
     CARA_ELEM=FE_CAR,
@@ -232,7 +233,7 @@ STATIC = MECA_STATIQUE(
         _F(CHARGE=FOR_14),
         # _F(CHARGE    = DFOR_1,),
     ),
-    SOLVEUR=_F(RESI_RELA=1e-05, NPREC=-1),
+    SOLVEUR=_F(RESI_RELA=1e-05, NPREC=-1, ACCELERATION="FR"),
 )
 #
 # EXTRA FIELD CALCULATIONS FROM THE RESULT AND THE FE-MODEL #########

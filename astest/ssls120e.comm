@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -76,7 +76,7 @@ ELAS = MECA_STATIQUE(
     MODELE=MODMECA,
     CHAM_MATER=CHMAT,
     CARA_ELEM=CARAELE,
-    SOLVEUR=_F(POSTTRAITEMENTS="MINI"),
+    SOLVEUR=_F(POSTTRAITEMENTS="MINI", NPREC=10),
     EXCIT=(_F(CHARGE=BLOCAGE), _F(CHARGE=PH)),
 )
 
@@ -155,6 +155,7 @@ TEST_RESU(
 LIST = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=_F(JUSQU_A=1.0, NOMBRE=1))
 
 ELAS2 = STAT_NON_LINE(
+    SOLVEUR=_F(NPREC=10),
     MODELE=MODMECA,
     CHAM_MATER=CHMAT,
     CARA_ELEM=CARAELE,

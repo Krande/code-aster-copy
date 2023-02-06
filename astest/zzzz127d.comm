@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -34,7 +34,7 @@ Press = 1.0
 
 
 MAILL = LIRE_MAILLAGE(FORMAT="MED")
-
+nprec = 10
 # remarque importante :
 # Le point D existe en double dans le maillage (D1 dans ABC et D2 dans DBCE).
 # D1 va etre "attache" a DBCE (LIAISON_MAIL). Il sera quasiment elimine.
@@ -104,6 +104,7 @@ RACCORD1 = AFFE_CHAR_MECA(
 )
 
 RESU1 = MECA_STATIQUE(
+    SOLVEUR=_F(NPREC=nprec),
     MODELE=MODEL,
     CHAM_MATER=CHMAT,
     CARA_ELEM=CARELEM,
@@ -140,6 +141,7 @@ RACCORD2 = AFFE_CHAR_MECA(
 )
 
 RESU2 = MECA_STATIQUE(
+    SOLVEUR=_F(NPREC=nprec),
     MODELE=MODEL,
     CHAM_MATER=CHMAT,
     CARA_ELEM=CARELEM,
@@ -173,6 +175,7 @@ RACCORD3 = AFFE_CHAR_MECA(
 )
 
 RESU3 = MECA_STATIQUE(
+    SOLVEUR=_F(NPREC=nprec),
     MODELE=MODEL,
     CHAM_MATER=CHMAT,
     CARA_ELEM=CARELEM,

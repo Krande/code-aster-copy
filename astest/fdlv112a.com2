@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -240,7 +240,7 @@ TEST_TABLE(
     VALE_CALC=-156.905320627526,
     NOM_PARA="Im_FX",
     TABLE=TABLE_A,
-    TOLE_MACHINE=2.5e-6,
+    TOLE_MACHINE=5.0e-6,
     FILTRE=_F(NOM_PARA="FREQ", VALE=1.0e01),
 )
 TEST_TABLE(
@@ -253,7 +253,7 @@ TEST_TABLE(
     VALE_CALC=-156.905320627526,
     NOM_PARA="Im_FX",
     TABLE=TABLE03,
-    TOLE_MACHINE=2.5e-6,
+    TOLE_MACHINE=5.0e-6,
     FILTRE=_F(NOM_PARA="FREQ", VALE=1.0e01),
 )
 

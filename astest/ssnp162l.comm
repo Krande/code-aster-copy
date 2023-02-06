@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -179,7 +179,7 @@ FCT = DEFI_FONCTION(
 
 # CALCUL MECANIQUE AVEC FROTTEMENT (JOINT_MECA_FROT)
 U_F = STAT_NON_LINE(
-    SOLVEUR=_F(METHODE="MUMPS", NPREC=8),
+    SOLVEUR=_F(METHODE="MUMPS", NPREC=10),
     MODELE=MO,
     CHAM_MATER=CM_F,
     EXCIT=(_F(CHARGE=LIAISON), _F(CHARGE=PAM_J), _F(CHARGE=TRAC_1, FONC_MULT=FCT)),

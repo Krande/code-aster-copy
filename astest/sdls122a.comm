@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -187,7 +187,10 @@ LINT2_CL = DEFI_INTERF_DYNA(
 
 # -- CALCUL DES MODES D'INTERFACE
 MODESTA1 = MODE_STATIQUE(
-    MATR_RIGI=RAID1, MATR_MASS=MASS1, MODE_INTERF=_F(GROUP_NO=("INTF1"), TOUT_CMP="OUI", NB_MODE=15)
+    SOLVEUR=_F(ACCELERATION="FR"),
+    MATR_RIGI=RAID1,
+    MATR_MASS=MASS1,
+    MODE_INTERF=_F(GROUP_NO=("INTF1"), TOUT_CMP="OUI", NB_MODE=15),
 )
 
 TEST_RESU(RESU=_F(NUME_ORDRE=2, PARA="FREQ", RESULTAT=MODESTA1, VALE_CALC=17.0766310916))
@@ -207,7 +210,10 @@ TEST_RESU(RESU=_F(NUME_ORDRE=15, PARA="FREQ", RESULTAT=MODESTA1, VALE_CALC=1337.
 
 
 MODESTA2 = MODE_STATIQUE(
-    MATR_RIGI=RAID2, MATR_MASS=MASS2, MODE_INTERF=_F(GROUP_NO=("INTF2"), TOUT_CMP="OUI", NB_MODE=15)
+    SOLVEUR=_F(ACCELERATION="FR"),
+    MATR_RIGI=RAID2,
+    MATR_MASS=MASS2,
+    MODE_INTERF=_F(GROUP_NO=("INTF2"), TOUT_CMP="OUI", NB_MODE=15),
 )
 
 MODES_1 = NORM_MODE(

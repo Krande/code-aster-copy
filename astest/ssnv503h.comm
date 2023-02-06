@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -133,6 +133,7 @@ U_NOR = STAT_NON_LINE(
     INCREMENT=_F(LIST_INST=L_INST),
     NEWTON=_F(MATRICE="TANGENTE", REAC_ITER=1),
     CONVERGENCE=_F(ITER_GLOB_MAXI=30),
+    SOLVEUR=_F(ACCELERATION="FR"),
     INFO=1,
 )
 
@@ -153,6 +154,7 @@ U_99 = STAT_NON_LINE(
     INCREMENT=_F(LIST_INST=L_INST),
     NEWTON=_F(MATRICE="TANGENTE", REAC_ITER=1),
     CONVERGENCE=_F(ITER_GLOB_MAXI=1500),
+    SOLVEUR=_F(ACCELERATION="FR"),
 )
 
 U_99 = CALC_CHAMP(reuse=U_99, RESULTAT=U_99, FORCE="REAC_NODA")
@@ -172,6 +174,7 @@ U_101 = STAT_NON_LINE(
     INCREMENT=_F(LIST_INST=L_INST),
     NEWTON=_F(MATRICE="TANGENTE", REAC_ITER=1),
     CONVERGENCE=_F(ITER_GLOB_MAXI=1500),
+    SOLVEUR=_F(ACCELERATION="FR"),
 )
 
 U_101 = CALC_CHAMP(reuse=U_101, RESULTAT=U_101, FORCE="REAC_NODA")

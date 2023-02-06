@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -1044,7 +1044,7 @@ TEST_TABLE(
     CRITERE="ABSOLU",
     PRECISION=5.0e-03,
     VALE_REFE=2.81e-04,
-    VALE_CALC=0.0007223154900647634,
+    VALE_CALC=0.0007210537346039551,
 )
 TEST_TABLE(
     TABLE=TDForc,
@@ -1163,7 +1163,7 @@ TEST_TABLE(
     CRITERE="ABSOLU",
     PRECISION=5.0e-03,
     VALE_REFE=6.0e-08,
-    VALE_CALC=0.0004140505225772482,
+    VALE_CALC=0.00041278876711643985,
 )
 TEST_TABLE(
     TABLE=TDForcAB,
