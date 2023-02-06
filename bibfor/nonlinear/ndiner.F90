@@ -17,21 +17,22 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine ndiner(nb_equa, sddyna, hval_incr, hval_measse, cniner)
+subroutine ndiner(nbEqua, sddyna, hval_incr, hval_measse, cniner)
+!
+    use NonLinearDyna_module, only: compResiForce
 !
     implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/infdbg.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/mrmult.h"
 #include "asterfort/ndynre.h"
 #include "asterfort/nmchex.h"
 #include "asterfort/nmdebg.h"
-#include "asterfort/vtzero.h"
+#include "asterfort/utmess.h"
 #include "blas/dscal.h"
 !
-    integer, intent(in) :: nb_equa
+    integer, intent(in) :: nbEqua
     character(len=19), intent(in) :: sddyna
     character(len=19), intent(in) :: hval_incr(*), hval_measse(*)
     character(len=19), intent(in) :: cniner
@@ -44,7 +45,7 @@ subroutine ndiner(nb_equa, sddyna, hval_incr, hval_measse, cniner)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  nb_equa          : total number of equations
+! In  nbEqua           : total number of equations
 ! In  sddyna           : datastructure for dynamic
 ! In  hval_incr        : hat-variable for incremental values fields
 ! In  hval_measse      : hat-variable for matrix
@@ -53,42 +54,25 @@ subroutine ndiner(nb_equa, sddyna, hval_incr, hval_measse, cniner)
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: ifm, niv
-    integer :: jv_matr_mass
-    real(kind=8) :: coef_iner
-    character(len=19) :: vite_curr, matr_mass
-    real(kind=8), pointer :: v_iner(:) => null()
-    real(kind=8), pointer :: v_vite_prev(:) => null()
+    real(kind=8) :: coefIner
+    real(kind=8), pointer :: inerVale(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
     call infdbg('MECANONLINE', ifm, niv)
     if (niv .ge. 2) then
-        write (ifm, *) '<MECANONLINE> CALCUL DES FORCES D''INERTIE'
+        call utmess('I', 'MECANONLINE11_32')
     end if
-!
-! - Get hat variables
-!
-    call nmchex(hval_incr, 'VALINC', 'VITPLU', vite_curr)
-    call nmchex(hval_measse, 'MEASSE', 'MEMASS', matr_mass)
-!
-! - Initializations
-!
-    call vtzero(cniner)
-    coef_iner = ndynre(sddyna, 'COEF_FORC_INER')
-!
-! --- ACCES SD
-!
-    call jeveuo(matr_mass(1:19)//'.&INT', 'L', jv_matr_mass)
-    call jeveuo(cniner(1:19)//'.VALE', 'E', vr=v_iner)
-    call jeveuo(vite_curr(1:19)//'.VALE', 'L', vr=v_vite_prev)
-!
+
+! - Coefficient
+    coefIner = ndynre(sddyna, 'COEF_FORC_INER')
+
 ! - Compute
-!
-    call mrmult('ZERO', jv_matr_mass, v_vite_prev, v_iner, 1, ASTER_TRUE)
-    call dscal(nb_equa, coef_iner, v_iner, 1)
-!
+    call compResiForce(hval_incr, hval_measse, cniner)
+    call jeveuo(cniner(1:19)//'.VALE', 'E', vr=inerVale)
+    call dscal(nbEqua, coefIner, inerVale, 1)
+
 ! - Debug
-!
     if (niv .ge. 2) then
         call nmdebg('VECT', cniner, ifm)
     end if

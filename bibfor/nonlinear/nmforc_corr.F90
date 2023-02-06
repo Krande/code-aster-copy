@@ -92,8 +92,8 @@ subroutine nmforc_corr(list_func_acti, &
     integer, parameter :: phaseType = CORR_NEWTON
     integer :: ifm, niv
     character(len=19) :: cndyna, cnsstr
-    character(len=19) :: disp_curr, vite_curr, acce_curr
-    real(kind=8) :: time_prev, time_curr
+    character(len=19) :: dispCurr
+    real(kind=8) :: timePrev, timeCurr
     aster_logical :: l_dyna, l_impe, lDampModal, lSuperElement
 !
 ! --------------------------------------------------------------------------------------------------
@@ -105,8 +105,8 @@ subroutine nmforc_corr(list_func_acti, &
 
 ! - Get time
     ASSERT(nume_inst .gt. 0)
-    time_prev = diinst(sddisc, nume_inst-1)
-    time_curr = diinst(sddisc, nume_inst)
+    timePrev = diinst(sddisc, nume_inst-1)
+    timeCurr = diinst(sddisc, nume_inst)
 
 ! - Active functionnalities
     l_dyna = ndynlo(sddyna, 'DYNAMIQUE')
@@ -115,22 +115,20 @@ subroutine nmforc_corr(list_func_acti, &
     lSuperElement = isfonc(list_func_acti, 'MACR_ELEM_STAT')
 
 ! - Get hat variables
-    call nmchex(hval_incr, 'VALINC', 'DEPPLU', disp_curr)
-    call nmchex(hval_incr, 'VALINC', 'ACCPLU', acce_curr)
-    call nmchex(hval_incr, 'VALINC', 'VITPLU', vite_curr)
+    call nmchex(hval_incr, 'VALINC', 'DEPPLU', dispCurr)
 
 ! - Compute loads (undead)
     call nonlinLoadCompute('VARI', list_load, &
                            model, cara_elem, nume_dof, list_func_acti, &
                            ds_material, ds_constitutive, ds_measure, &
-                           time_prev, time_curr, &
+                           timePrev, timeCurr, &
                            hval_incr, hval_algo, &
                            hval_veelem, hval_veasse)
 
 ! - Compute sub-structuring effect on second member
     if (lSuperElement) then
         call nmchex(hval_veasse, 'VEASSE', 'CNSSTR', cnsstr)
-        call nonlinSubStruCompute(ds_measure, disp_curr, &
+        call nonlinSubStruCompute(ds_measure, dispCurr, &
                                   hval_measse, cnsstr)
     end if
 
@@ -138,7 +136,7 @@ subroutine nmforc_corr(list_func_acti, &
     if (l_dyna) then
         call nmchex(hval_veasse, 'VEASSE', 'CNDYNA', cndyna)
         call ndfdyn(sddyna, nlDynaDamping, &
-                    hval_measse, ds_measure, vite_curr, acce_curr, &
+                    hval_incr, hval_measse, ds_measure, &
                     cndyna)
     end if
 

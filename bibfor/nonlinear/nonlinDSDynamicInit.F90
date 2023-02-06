@@ -74,7 +74,7 @@ subroutine nonlinDSDynamicInit(hval_incr, sddyna, nlDynaDamping, ds_constitutive
 !
     call infdbg('MECANONLINE', ifm, niv)
     if (niv .ge. 2) then
-        call utmess('I', 'MECANONLINE13_13')
+        call utmess('I', 'MECANONLINE15_3')
     end if
 
 ! - Active functionnalities
@@ -92,9 +92,8 @@ subroutine nonlinDSDynamicInit(hval_incr, sddyna, nlDynaDamping, ds_constitutive
             call utmess('F', 'DYNAMIQUE_54')
         end if
     end if
-!
+
 ! - Multi-support analysis
-!
     if (lMultiSupport) then
 ! ----- Get parameters about modes for multi support
         call ndynkk(sddyna, 'multSuppMode', multSuppMode)

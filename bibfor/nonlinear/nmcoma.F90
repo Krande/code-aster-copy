@@ -39,7 +39,7 @@ subroutine nmcoma(listFuncActi, &
     use NonLinear_module, only: getOption, getMatrType, isMatrUpdate, &
                                 isRigiMatrCompute, isInteVectCompute, &
                                 factorSystem, updateLoadBCMatrix
-    use NonLinearDyna_module, only: isDampMatrCompute, isMassMatrAssemble, &
+    use NonLinearDyna_module, only: isDampMatrUpdate, isMassMatrAssemble, &
                                     compDampMatrix, asseMassMatrix
 !
     implicit none
@@ -141,7 +141,7 @@ subroutine nmcoma(listFuncActi, &
     integer, parameter :: phaseType = CORR_NEWTON
     integer :: ifm, niv
     aster_logical :: l_update_matr, l_renumber
-    aster_logical :: lRigiCompute, lDampCompute, lRigiAssemble
+    aster_logical :: lRigiCompute, lDampMatrUpdate, lRigiAssemble
     aster_logical :: lMassAssemble
     aster_logical :: lFintCompute
     aster_logical :: lContCompute
@@ -186,19 +186,19 @@ subroutine nmcoma(listFuncActi, &
 ! - Select non-linear option for compute matrices
     call getOption(phaseType, listFuncActi, matrType, nonLinearOption, l_update_matr)
 
-! - Do the damping matrices have to be compute ?
-    call isDampMatrCompute(nlDynaDamping, l_renumber, lDampCompute)
+! - Do the damping matrices need to be updated ?
+    call isDampMatrUpdate(nlDynaDamping, l_renumber, lDampMatrUpdate)
 
-! - Do the mass matrices have to be assemble ?
+! - Do the mass matrix has to be assembled ?
     call isMassMatrAssemble(listFuncActi, l_update_matr, lMassAssemble)
 
 ! - Do the rigidity matrices have to be calculated/assembled ?
     call isRigiMatrCompute(phaseType, &
                            sddyna, numeTime, &
-                           l_update_matr, lDampCompute, &
+                           l_update_matr, lDampMatrUpdate, &
                            lRigiCompute, lRigiAssemble)
 
-! - Do the internal forces vectors have to be compute ?
+! - Do the internal forces vector has to be computed ?
     call isInteVectCompute(phaseType, listFuncActi, &
                            nonLinearOption, iterNewt, &
                            lRigiCompute, lFintCompute)
@@ -251,11 +251,11 @@ subroutine nmcoma(listFuncActi, &
         end if
 
 ! ----- Compute damping matrix
-        if (lDampCompute) then
+        if (lDampMatrUpdate) then
             call compDampMatrix(modelz, caraElem, &
                                 ds_material, ds_constitutive, &
-                                time, listLoad, numeDof, &
-                                ds_system, hval_incr, hval_meelem, hval_measse)
+                                time, listLoad, numeDof, nlDynaDamping, &
+                                ds_system, hval_incr, hval_meelem)
         end if
 
 ! ----- Compute global matrix of system

@@ -21,15 +21,16 @@ module NonLinearDyna_module
     use NonLinearDyna_type
     use NonLin_Datastructure_type
     use Damping_type
-    use Damping_module
+    use Damping_module, only: dampModalPrintParameters, dampModalGetParameters, &
+                              dampModalPreparation, dampComputeMatrix
     use NonLinearElem_module, only: elemMass, elemElas, asseMass
 ! ==================================================================================================
     implicit none
 ! ==================================================================================================
     public :: compMatrInit, compDampMatrix, asseMassMatrix
     public :: compAcceForce, compViteForce, compResiForce
-    public :: dampGetParameters
-    public :: isDampMatrCompute, isMassMatrAssemble
+    public :: dampGetParameters, dampPrintParameters
+    public :: isDampMatrUpdate, isMassMatrAssemble
     public :: shiftMassMatrix
     private :: needElasMatrix, massGetType, compMassMatrix
 ! ==================================================================================================
@@ -68,19 +69,21 @@ contains
 ! Out nlDynaDamping    : damping parameters
 !
 ! --------------------------------------------------------------------------------------------------
-    subroutine dampGetParameters(model, materialField, caraElem, sdammo, &
+    subroutine dampGetParameters(model, materialField, caraElem, &
                                  nlDynaDamping)
 ! - Parameters
         character(len=24), intent(in) :: model, materialField, caraElem
-        character(len=24), intent(in) :: sdammo
         type(NLDYNA_DAMPING), intent(out) :: nlDynaDamping
 ! - Local
         character(len=16), parameter :: factorKeyword = 'AMOR_MODAL'
         character(len=16) :: answer
         integer :: iret, nbOcc
-        aster_logical :: hasMatrDamp
+        aster_logical :: hasMatrDamp, hasVectDamp, hasDamp
         aster_logical :: lDampRayleigh, lDampRayleighTang
         aster_logical :: lDampContact, lDampFEModel, lDampDiscret
+        aster_logical :: lElemDampFromUser
+        character(len=8) :: dampFromUser, dampElem
+        aster_logical :: lElemDampToCompute
         aster_logical :: lDampModal, lDampModalReacVite
         type(MODAL_DAMPING) :: modalDamping
 !   ------------------------------------------------------------------------------------------------
@@ -137,20 +140,34 @@ contains
             lDampDiscret = ASTER_TRUE
         end if
 
+! - Damping - From user
+        call getvid(' ', 'MATR_ELEM_AMOR', scal=dampElem, nbret=iret)
+        lElemDampFromUser = ASTER_FALSE
+        if (iret .eq. 1) then
+            lElemDampFromUser = ASTER_TRUE
+            dampFromUser = dampElem
+        end if
+
 ! - Modal damping
         lDampModalReacVite = ASTER_FALSE
         call getfac(factorKeyword, nbOcc)
         lDampModal = nbOcc .gt. 0
         if (lDampModal) then
-            call dampModalGetParameters(factorKeyword, sdammo, modalDamping)
+            call dampModalGetParameters(factorKeyword, modalDamping)
             call dampModalPreparation(modalDamping)
         end if
 
-! - Which cases damping is matrix ?
-        hasMatrDamp = lDampRayleigh .or. lDampContact .or. lDampFEModel .or. lDampDiscret
+! - Which cases damping is matrix or vector ?
+        lElemDampToCompute = lDampRayleigh .or. lDampContact .or. lDampFEModel .or. lDampDiscret
+        hasMatrDamp = lElemDampToCompute .or. lElemDampFromUser
+        hasVectDamp = lDampModal
+        hasDamp = hasMatrDamp .or. hasVectDamp
 
 ! - Save parameters
+        nlDynaDamping%hasDamp = hasDamp
         nlDynaDamping%hasMatrDamp = hasMatrDamp
+        nlDynaDamping%hasVectDamp = hasVectDamp
+        nlDynaDamping%lElemDampToCompute = lElemDampToCompute
         nlDynaDamping%lDampRayleigh = lDampRayleigh
         nlDynaDamping%lDampRayleighTang = lDampRayleighTang
         nlDynaDamping%lDampContact = lDampContact
@@ -158,36 +175,39 @@ contains
         nlDynaDamping%lDampDiscret = lDampDiscret
         nlDynaDamping%lDampModal = lDampModal
         nlDynaDamping%modalDamping = modalDamping
+        nlDynaDamping%lElemDampFromUser = lElemDampFromUser
+        nlDynaDamping%dampFromUser = dampFromUser
+        nlDynaDamping%dampAsse = "&&NMCH6P.AMORT"
 !
 !   -----------------------------------------------------------------------------------------------
     end subroutine
 ! --------------------------------------------------------------------------------------------------
 !
-! isDampMatrCompute
+! isDampMatrUpdate
 !
-! Do the damping matrices have to be calculated ?
+! Do the damping matrices need to be updated ?
 !
 ! In  nlDynaDamping    : damping parameters
 ! In  l_renumber       : flag to renumbering
-! Out lDampCompute     : flag if damp elementary matrices have to be calculated
+! Out lDampMatrUpdate  : flag if damp elementary matrices have to be updated
 !
 ! --------------------------------------------------------------------------------------------------
-    subroutine isDampMatrCompute(nlDynaDamping, l_renumber, lDampCompute)
+    subroutine isDampMatrUpdate(nlDynaDamping, l_renumber, lDampMatrUpdate)
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
         type(NLDYNA_DAMPING), intent(in) :: nlDynaDamping
         aster_logical, intent(in) :: l_renumber
-        aster_logical, intent(out) :: lDampCompute
+        aster_logical, intent(out) :: lDampMatrUpdate
 ! - Local
         aster_logical :: lDampRayleighTang, lDampMatrix
 !   ------------------------------------------------------------------------------------------------
 !
-        lDampCompute = ASTER_FALSE
+        lDampMatrUpdate = ASTER_FALSE
         lDampMatrix = nlDynaDamping%hasMatrDamp
         lDampRayleighTang = nlDynaDamping%lDampRayleighTang
         if (lDampMatrix) then
             if (l_renumber .or. lDampRayleighTang) then
-                lDampCompute = ASTER_TRUE
+                lDampMatrUpdate = ASTER_TRUE
             end if
         end if
 !
@@ -228,7 +248,7 @@ contains
 ! Do you need elastic matrix ?
 !
 ! In  nlDynaDamping    : damping parameters
-! Out lDampCompute     : flag if damp elementary matrices have to be calculated
+! Out lElas            : flag if elastic elementary matrices have to be calculated
 !
 ! --------------------------------------------------------------------------------------------------
     subroutine needElasMatrix(nlDynaDamping, lElas)
@@ -382,8 +402,8 @@ contains
         if (lDampMatrix) then
             call compDampMatrix(model, caraElem, &
                                 ds_material, ds_constitutive, &
-                                timeInit, listLoad, numeDof, &
-                                ds_system, hval_incr, hval_meelem, hval_measse)
+                                timeInit, listLoad, numeDof, nlDynaDamping, &
+                                ds_system, hval_incr, hval_meelem)
         end if
 !
 !   -----------------------------------------------------------------------------------------------
@@ -401,16 +421,16 @@ contains
 ! In  time             : value of time
 ! In  listLoad         : name of datastructure for list of loads
 ! In  numeDof          : name of numbering (NUME_DDL)
+! In  nlDynaDamping    : damping parameters
 ! In  ds_system        : datastructure for non-linear system management
 ! In  hval_incr        : hat-variable for incremental values fields
 ! In  hval_meelem      : hat-variable for elementary matrix
-! In  hval_measse      : hat-variable for matrix
 !
 ! --------------------------------------------------------------------------------------------------
     subroutine compDampMatrix(model, caraElem, &
                               ds_material, ds_constitutive, &
-                              time, listLoad, numeDof, &
-                              ds_system, hval_incr, hval_meelem, hval_measse)
+                              time, listLoad, numeDof, nlDynaDamping, &
+                              ds_system, hval_incr, hval_meelem)
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
         character(len=24), intent(in) :: model, caraElem
@@ -419,24 +439,42 @@ contains
         real(kind=8), intent(in) :: time
         character(len=19), intent(in) :: listLoad
         character(len=14), intent(in) :: numeDof
+        type(NLDYNA_DAMPING), intent(in) :: nlDynaDamping
         type(NL_DS_System), intent(in) :: ds_system
-        character(len=19), intent(in) :: hval_incr(*), hval_meelem(*), hval_measse(*)
+        character(len=19), intent(in) :: hval_incr(*), hval_meelem(*)
 ! - Local
+        character(len=1), parameter :: jvBase = "V"
         character(len=24) :: dampAsse, variPrev
         character(len=24) :: massElem, rigiElem, dampElem
 !   ------------------------------------------------------------------------------------------------
 !
-        rigiElem = ds_system%merigi
-        call nmchex(hval_meelem, 'MEELEM', 'MEMASS', massElem)
-        call nmchex(hval_meelem, 'MEELEM', 'MEAMOR', dampElem)
-        call nmchex(hval_measse, 'MEASSE', 'MEAMOR', dampAsse)
-        call nmchex(hval_incr, 'VALINC', 'VARMOI', variPrev)
-        call dampComputeMatrix(model, caraElem, &
-                               ds_material%mater, ds_material%mateco, &
-                               ds_constitutive%compor, &
-                               variPrev, time, listLoad, numeDof, &
-                               rigiElem, massElem, dampElem, &
-                               dampAsse)
+        dampAsse = nlDynaDamping%dampAsse
+        call detrsd('MATR_ASSE', dampAsse)
+
+! - Compute damping matrix from elementary matrices
+        if (nlDynaDamping%lElemDampToCompute) then
+            call nmchex(hval_meelem, 'MEELEM', 'MEMASS', massElem)
+            rigiElem = ds_system%merigi
+            call nmchex(hval_incr, 'VALINC', 'VARMOI', variPrev)
+            call dampComputeMatrix(model, caraElem, &
+                                   ds_material%mater, ds_material%mateco, &
+                                   ds_constitutive%compor, &
+                                   variPrev, time, listLoad, numeDof, &
+                                   rigiElem, massElem, &
+                                   dampAsse)
+        end if
+
+! - Get damping matrix from user
+        if (nlDynaDamping%lElemDampFromUser) then
+            dampElem = nlDynaDamping%dampFromUser
+            if (nlDynaDamping%lElemDampToCompute) then
+                call asmatr(1, dampElem, ' ', numeDof, &
+                            listLoad, 'CUMU', jvBase, 1, dampAsse)
+            else
+                call asmatr(1, dampElem, ' ', numeDof, &
+                            listLoad, 'ZERO', jvBase, 1, dampAsse)
+            end if
+        end if
 !
 !   -----------------------------------------------------------------------------------------------
     end subroutine
@@ -549,6 +587,55 @@ contains
     end subroutine
 ! --------------------------------------------------------------------------------------------------
 !
+! dampPrintParameters
+!
+! Print damping parameters
+!
+! In  nlDynaDamping    : damping parameters
+!
+! --------------------------------------------------------------------------------------------------
+    subroutine dampPrintParameters(nlDynaDamping)
+!   ------------------------------------------------------------------------------------------------
+! - Parameters
+        type(NLDYNA_DAMPING), intent(in) :: nlDynaDamping
+!   ------------------------------------------------------------------------------------------------
+!
+        if (nlDynaDamping%hasDamp) then
+            call utmess('I', 'MECANONLINE15_30')
+            if (nlDynaDamping%hasMatrDamp) then
+                call utmess('I', 'MECANONLINE15_31')
+            end if
+            if (nlDynaDamping%hasVectDamp) then
+                call utmess('I', 'MECANONLINE15_32')
+            end if
+            if (nlDynaDamping%lDampRayleigh) then
+                if (nlDynaDamping%lDampRayleighTang) then
+                    call utmess('I', 'MECANONLINE15_34')
+                else
+                    call utmess('I', 'MECANONLINE15_33')
+                end if
+            end if
+            if (nlDynaDamping%lDampContact) then
+                call utmess('I', 'MECANONLINE15_35')
+            end if
+            if (nlDynaDamping%lDampFEModel) then
+                call utmess('I', 'MECANONLINE15_36')
+            end if
+            if (nlDynaDamping%lDampDiscret) then
+                call utmess('I', 'MECANONLINE15_37')
+            end if
+            if (nlDynaDamping%lDampModal) then
+                call utmess('I', 'MECANONLINE15_38')
+                call dampModalPrintParameters(nlDynaDamping%modalDamping)
+            end if
+        else
+            call utmess('I', 'MECANONLINE15_29')
+        end if
+!
+!   -----------------------------------------------------------------------------------------------
+    end subroutine
+! --------------------------------------------------------------------------------------------------
+!
 ! shiftMassMatrix
 !
 ! Shift mass matrix
@@ -646,13 +733,15 @@ contains
 !
 ! Compute force (RHS) for speed (damping effect)
 !
+! In  nlDynaDamping    : damping parameters
 ! In  hval_incr        : hat-variable for incremental values fields
 ! In  viteForce        : name of field for force (damping effect)
 !
 ! --------------------------------------------------------------------------------------------------
-    subroutine compViteForce(hval_incr, viteForce)
+    subroutine compViteForce(nlDynaDamping, hval_incr, viteForce)
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
+        type(NLDYNA_DAMPING), intent(in) :: nlDynaDamping
         character(len=19), intent(in) :: hval_incr(*)
         character(len=19), intent(in) :: viteForce
 ! - Local
@@ -665,7 +754,7 @@ contains
         call vtzero(viteForce)
 
 ! - Get name of matrices and vectors
-        dampAsse = "TOTO"
+        dampAsse = nlDynaDamping%dampAsse
         call nmchex(hval_incr, 'VALINC', 'VITPLU', viteCurr)
 
 ! - Get access

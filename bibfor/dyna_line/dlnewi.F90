@@ -153,7 +153,6 @@ subroutine dlnewi(result, force0, force1, lcrea, lamort, &
     character(len=19) :: lisarc
     character(len=24) :: lispas, libint, linbpa
     character(len=24) :: lisins
-    character(len=24), parameter :: jvDataDamp = '&&K24AMO'
     character(len=24), parameter :: vitini = '&&VITINI'
     character(len=24), parameter :: vitent = '&&VITENT', famomo = '&&FAMOMO'
     character(len=24) :: veanec, vaanec, deeq, vaonde, veonde
@@ -204,10 +203,10 @@ subroutine dlnewi(result, force0, force1, lcrea, lamort, &
 ! - Modal damping
     call getfac(modDampFactorKeyword, nmodam)
     if (nmodam .ne. 0) then
-        call dampModalGetParameters(modDampFactorKeyword, jvDataDamp, modalDamping)
+        call dampModalGetParameters(modDampFactorKeyword, modalDamping)
         call dampModalPreparation(modalDamping)
-        valmod = jvDataDamp(1:19)//'.VALM'
-        basmod = jvDataDamp(1:19)//'.BASM'
+        valmod = modalDamping%jvDataDamp(1:19)//'.VALM'
+        basmod = modalDamping%jvDataDamp(1:19)//'.BASM'
     end if
 
 ! - IMPE_ABSO elements in model ?

@@ -38,12 +38,11 @@ subroutine nmch3p(meelem)
 !
 ! ----------------------------------------------------------------------
 !
-    character(len=19) :: memass, meamor, mediri, mesuiv
+    character(len=19) :: memass, mediri, mesuiv
     character(len=19) :: messtr, megeom
     character(len=19) :: meeltc, meeltf
 !
     data memass, mediri/'&&NMCH3P.MEMASS', '&&NMCH3P.MEDIRI'/
-    data meamor/'&&NMCH3P.MEAMOR'/
     data mesuiv, messtr/'&&NMCH3P.MATGME', '&&NMCH3P.SSRELE'/
     data megeom/'&&NMCH3P.MEGEOM'/
     data meeltc, meeltf/'&&NMCH3P.MEELTC', '&&NMCH3P.MEELTF'/
@@ -53,7 +52,6 @@ subroutine nmch3p(meelem)
     call nmcha0('MEELEM', 'ALLINI', ' ', meelem)
     call nmcha0('MEELEM', 'MEDIRI', mediri, meelem)
     call nmcha0('MEELEM', 'MEMASS', memass, meelem)
-    call nmcha0('MEELEM', 'MEAMOR', meamor, meelem)
     call nmcha0('MEELEM', 'MESUIV', mesuiv, meelem)
     call nmcha0('MEELEM', 'MESSTR', messtr, meelem)
     call nmcha0('MEELEM', 'MEGEOM', megeom, meelem)

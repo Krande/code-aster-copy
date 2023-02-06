@@ -29,8 +29,8 @@ module Damping_module
 ! ==================================================================================================
     implicit none
 ! ==================================================================================================
-    public :: dampModalGetParameters, dampModalPreparation
-    public :: dampComputeMatrix, dampComputeVector
+    public :: dampModalGetParameters, dampModalPreparation, dampModalPrintParameters
+    public :: dampComputeMatrix
 ! ==================================================================================================
     private
 #include "asterf_types.h"
@@ -66,17 +66,16 @@ contains
 ! Get parameters for modal damping
 !
 ! In  factorKeyword    : factor keyword
-! In  jvDataDamp       : name of datastructure to save parameters
 ! Out modalDamping     : parameters for modal damping
 !
 ! --------------------------------------------------------------------------------------------------
-    subroutine dampModalGetParameters(factorKeyword, jvDataDamp, modalDamping)
+    subroutine dampModalGetParameters(factorKeyword, modalDamping)
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
         character(len=16), intent(in) :: factorKeyword
-        character(len=24), intent(in) :: jvDataDamp
         type(MODAL_DAMPING), intent(out) :: modalDamping
 ! - Local
+        character(len=24), parameter :: jvDataDamp = "&&NDLECT.SDAMMO"
         character(len=24), parameter :: jvListDamp = "&&NMMOAM.AMORTISSEMENT"
         character(len=16) :: answer
         character(len=8) :: listDamp
@@ -105,10 +104,10 @@ contains
         call getvis(factorKeyword, 'NB_MODE', iocc=1, scal=nbModeMax, nbret=iret)
         if (iret .ne. 0) then
             nbMode = nbModeMax
-        end if
-        if (nbModeMax .ne. nbModeDS) then
-            nbMode = min(nbModeDS, nbModeMax)
-            call utmess('I', 'DAMPING1_30', ni=3, vali=[nbModeDS, nbModeMax, nbMode])
+            if (nbModeMax .ne. nbModeDS) then
+                nbMode = min(nbModeDS, nbModeMax)
+                call utmess('I', 'DAMPING1_30', ni=3, vali=[nbModeDS, nbModeMax, nbMode])
+            end if
         end if
 
 ! - Get list of reduced damping values: by vector from Python or by list_r8 datastructure
@@ -157,16 +156,6 @@ contains
         modalDamping%jvListDamp = jvListDamp
         modalDamping%nbDampVale = nbDampVale
         modalDamping%jvDataDamp = jvDataDamp
-
-! - Debug
-        if (modalDamping%debug) then
-            WRITE (6, *) "Présence d'amortissement modal"
-            WRITE (6, *) " Modes mécaniques: ", dampMode
-            WRITE (6, *) " Nombre de modes retenus: ", nbMode
-            WRITE (6, *) " Nombre d'amortissement modaux: ", nbDampVale
-            call jeveuo(jvListDamp, 'L', vr=dampVale)
-            WRITE (6, *) "    => ", dampVale(1:nbDampVale)
-        end if
 !
 !   ------------------------------------------------------------------------------------------------
     end subroutine
@@ -256,7 +245,6 @@ contains
 ! In  numeDof          : name of numbering (NUME_DDL)
 ! In  rigiElem         : name of elementary matrices for rigidity
 ! In  massElem         : name of elementary matrices for mass
-! In  dampElem         : name of elementary matrices for damping
 ! In  dampAsse         : name of assembled matrice for damp
 !
 ! --------------------------------------------------------------------------------------------------
@@ -264,7 +252,7 @@ contains
                                  materialField, materialCoding, &
                                  behaviourField, &
                                  vari, time, listLoad, numeDof, &
-                                 rigiElem, massElem, dampElem, &
+                                 rigiElem, massElem, &
                                  dampAsse)
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
@@ -275,7 +263,9 @@ contains
         real(kind=8), intent(in) :: time
         character(len=14), intent(in) :: numeDof
         character(len=19), intent(in) :: listLoad
-        character(len=24), intent(in) :: dampElem, rigiElem, massElem, dampAsse
+        character(len=24), intent(in) :: rigiElem, massElem, dampAsse
+! - Local
+        character(len=24), parameter :: dampElem = '&&NMCH3P.MEAMOR'
 !   ------------------------------------------------------------------------------------------------
 !
 
@@ -294,22 +284,28 @@ contains
     end subroutine
 ! --------------------------------------------------------------------------------------------------
 !
-! dampComputeVector
+! dampModalPrintParameters
 !
-! Compute damping vector
+! Print parameters for modal damping
 !
 ! In  modalDamping     : parameters for modal damping
 !
 ! --------------------------------------------------------------------------------------------------
-    subroutine dampComputeVector()
+    subroutine dampModalPrintParameters(modalDamping)
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
-
+        type(MODAL_DAMPING), intent(in) :: modalDamping
 ! - Local
-
+        real(kind=8), pointer :: dampVale(:) => null()
 !   ------------------------------------------------------------------------------------------------
 !
-
+        call utmess('I', 'DAMPING2_1', si=modalDamping%nbMode)
+        call utmess('I', 'DAMPING2_2', si=modalDamping%nbDampVale)
+        call jeveuo(modalDamping%jvListDamp, 'L', vr=dampVale)
+        WRITE (6, *) "    => ", dampVale(1:modalDamping%nbDampVale)
+        if (modalDamping%lReacVite) then
+            call utmess('I', 'DAMPING2_3')
+        end if
 !
 !   ------------------------------------------------------------------------------------------------
     end subroutine

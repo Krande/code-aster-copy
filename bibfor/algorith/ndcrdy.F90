@@ -41,7 +41,7 @@ subroutine ndcrdy(result, sddyna)
 ! --------------------------------------------------------------------------------------------------
 !
 ! In  result           : name of result datastructure (EVOL_NOLI)
-! Out sddyna           : datastructure for dynamic
+! Out sddyna           : name of datastructure for dynamic parameters
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -59,23 +59,20 @@ subroutine ndcrdy(result, sddyna)
 !
     call jemarq()
     call infdbg('MECANONLINE', ifm, niv)
-!
+
 ! --- OPERATEUR APPELANT (STATIQUE OU DYNAMIQUE)
-!
     call getres(k8bid, k16bid, nomcmd)
-!
-! - INITIALISATIONS
-!
+
+! - Name of datastructure
     sddyna = result(1:8)//'.SDDYNA'
-!
-! --- OBJET PRINCIPAL
-!
+
+! - Create objects
     tsch = sddyna(1:15)//'.TYPE_SCH'
     call wkvect(tsch, 'V V K16', 9, jtsch)
     if (nomcmd(1:4) .eq. 'DYNA') then
         zk16(jtsch+1-1) = 'DYNAMIQUE'
         if (niv .ge. 2) then
-            call utmess('I', 'MECANONLINE13_13')
+            call utmess('I', 'MECANONLINE15_1')
         end if
         psch = sddyna(1:15)//'.PARA_SCH'
         losd = sddyna(1:15)//'.INFO_SD'

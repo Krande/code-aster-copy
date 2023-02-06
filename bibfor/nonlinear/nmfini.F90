@@ -82,7 +82,7 @@ subroutine nmfini(sddyna, nlDynaDamping, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    character(len=19) :: masse, amort, vitmoi, accmoi
+    character(len=19) :: masse, dampAsse, vitmoi, accmoi
     character(len=19) :: fexmoi, fammoi, flimoi
     integer :: imasse, iamort
     integer :: nbEqua, iEqua
@@ -124,9 +124,9 @@ subroutine nmfini(sddyna, nlDynaDamping, &
 
 ! --- AJOUT DU TERME C.V
     if (lDampMatrix) then
-        call nmchex(measse, 'MEASSE', 'MEAMOR', amort)
-        call mtdscr(amort)
-        call jeveuo(amort//'.&INT', 'L', iamort)
+        dampAsse = nlDynaDamping%dampAsse
+        call mtdscr(dampAsse)
+        call jeveuo(dampAsse//'.&INT', 'L', iamort)
         call nmchex(valinc, 'VALINC', 'VITMOI', vitmoi)
         call jeveuo(vitmoi//'.VALE', 'L', vr=vitmo)
         AS_ALLOCATE(vr=cv, size=nbEqua)

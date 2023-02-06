@@ -18,15 +18,14 @@
 !
 interface
     subroutine ndfdyn(sddyna, nlDynaDamping,&
-                      hval_measse, ds_measure, vite_curr, acce_curr,&
+                      hval_incr, hval_measse, ds_measure, &
                       cndyna)
         use NonLin_Datastructure_type
         use NonLinearDyna_type
         character(len=19), intent(in) :: sddyna
         type(NLDYNA_DAMPING), intent(in) :: nlDynaDamping
-        character(len=19), intent(in) :: hval_measse(*)
+        character(len=19), intent(in) :: hval_incr(*), hval_measse(*)
         type(NL_DS_Measure), intent(inout) :: ds_measure
-        character(len=19), intent(in) :: vite_curr, acce_curr
         character(len=19), intent(in) :: cndyna
     end subroutine ndfdyn
 end interface

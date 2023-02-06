@@ -16,14 +16,13 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
-! aslint: disable=W0413
 !
 subroutine ndlect(model, materialField, caraElem, listLoad, &
                   sddyna, nlDynaDamping)
 !
     use NonLinearDyna_type
     use Damping_type
-    use NonLinearDyna_module
+    use NonLinearDyna_module, only: dampGetParameters, dampPrintParameters
 !
     implicit none
 !
@@ -32,7 +31,6 @@ subroutine ndlect(model, materialField, caraElem, listLoad, &
 #include "asterc/getfac.h"
 #include "asterc/r8prem.h"
 #include "asterfort/assert.h"
-#include "asterfort/dismoi.h"
 #include "asterfort/getvid.h"
 #include "asterfort/getvr8.h"
 #include "asterfort/getvtx.h"
@@ -63,18 +61,16 @@ subroutine ndlect(model, materialField, caraElem, listLoad, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! IN  MODELE : NOM DU MODELE
-! IN  MATE   : NOM DU CHAM_MATER
-! IN  CARELE : NOM DU CARA_ELEM
-! IN  LISCHA : SD L_CHARGES
-! IN  SDDYNA : SD DYNAMIQUE
+! In  model            : name of model
+! In  materialField    : name of field for material parameters
+! In  caraElem         : name of field for elementary characteristics
+! In  listLoad         : name of datastructure for list of loads
+! In  sddyna           : name of datastructure for dynamic parameters
 ! Out nlDynaDamping    : damping parameters
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    real(kind=8) :: undemi, un, quatre
-    parameter(undemi=0.5d0, un=1.d0)
-    parameter(quatre=4.d0)
+    real(kind=8), parameter :: undemi = 0.5d0, un = 1.d0, quatre = 4.d0
     integer :: nondp
     integer :: nbmods, nbmodp
     integer :: iret
@@ -106,7 +102,6 @@ subroutine ndlect(model, materialField, caraElem, listLoad, &
     character(len=19) :: cdsstf, cdviss, cdsstr
     character(len=19) :: depent, vitent, accent
     character(len=19) :: depabs, vitabs, accabs
-    character(len=24), parameter :: sdammo = "&&NDLECT.SDAMMO"
 !
     data cdfedo, cdfsdo/'&&NDLECT.CNFEDO', '&&NDLECT.CNFSDO'/
     data cddido, cddidi/'&&NDLECT.CNDIDO', '&&NDLECT.CNDIDI'/
@@ -140,18 +135,17 @@ subroutine ndlect(model, materialField, caraElem, listLoad, &
     call jemarq()
     call infdbg('MECANONLINE', ifm, niv)
 
-! --- LECTURE DONNEES DYNAMIQUE
+! - LECTURE DONNEES DYNAMIQUE
     ldyna = ndynlo(sddyna, 'DYNAMIQUE')
     if (ldyna) then
         if (niv .ge. 2) then
-            write (ifm, *) '<MECANONLINE> ... REMPLISSAGE SD DYNAMIQUE'
+            call utmess('I', 'MECANONLINE15_2')
         end if
     else
         goto 999
     end if
-!
+
 ! --- ACCES AUX OBJETS DE LA SD SDDYNA
-!
     tsch = sddyna(1:15)//'.TYPE_SCH'
     tfor = sddyna(1:15)//'.TYPE_FOR'
     psch = sddyna(1:15)//'.PARA_SCH'
@@ -176,7 +170,7 @@ subroutine ndlect(model, materialField, caraElem, listLoad, &
     call jeveuo(vecabs, 'E', jvecab)
 
 ! - Get parameters for damping
-    call dampGetParameters(model, materialField, caraElem, sdammo, &
+    call dampGetParameters(model, materialField, caraElem, &
                            nlDynaDamping)
 
 ! --- PARAMETRES DU SCHEMA TEMPS
@@ -214,7 +208,7 @@ subroutine ndlect(model, materialField, caraElem, listLoad, &
         gamma = undemi-alpha
 
     else
-        ASSERT(.false.)
+        ASSERT(ASTER_FALSE)
     end if
     zr(jpsch+1-1) = beta
     zr(jpsch+2-1) = gamma
@@ -387,39 +381,42 @@ subroutine ndlect(model, materialField, caraElem, listLoad, &
     zl(jlosd+15-1) = lviss
 !
     if (niv .ge. 2) then
-        write (ifm, *) '<MECANONLINE> ... FONCTIONNALITES ACTIVEES EN DYNAMIQUE '
-!
+        call utmess('I', 'MECANONLINE15_10')
         if (ndynlo(sddyna, 'IMPLICITE')) then
-            write (ifm, *) '<MECANONLINE> ...... SCHEMA IMPLICITE'
+            call utmess('I', 'MECANONLINE15_11')
         end if
         if (ndynlo(sddyna, 'EXPLICITE')) then
-            write (ifm, *) '<MECANONLINE> ...... SCHEMA EXPLICITE'
+            call utmess('I', 'MECANONLINE15_12')
         end if
         if (ndynlo(sddyna, 'MULTI_APPUI')) then
-            write (ifm, *) '<MECANONLINE> ...... MULTI APPUI'
+            call utmess('I', 'MECANONLINE15_13')
         end if
         if (ndynlo(sddyna, 'MASS_DIAG')) then
-            write (ifm, *) '<MECANONLINE> ...... MATRICE MASSE DIAGONALE'
+            call utmess('I', 'MECANONLINE15_14')
         end if
         if (ndynlo(sddyna, 'PROJ_MODAL')) then
-            write (ifm, *) '<MECANONLINE> ...... PROJECTION MODALE'
+            call utmess('I', 'MECANONLINE15_15')
         end if
         if (ndynlo(sddyna, 'IMPE_ABSO')) then
-            write (ifm, *) '<MECANONLINE> ...... ELEMENTS D''IMPEDANCE'
+            call utmess('I', 'MECANONLINE15_16')
         end if
         if (ndynlo(sddyna, 'ONDE_PLANE')) then
-            write (ifm, *) '<MECANONLINE> ...... CHARGEMENT ONDES PLANES'
+            call utmess('I', 'MECANONLINE15_17')
         end if
         if (ndynlo(sddyna, 'EXPL_GENE')) then
-            write (ifm, *) '<MECANONLINE> ...... CALCUL EXPLICITE EN MODAL'
+            call utmess('I', 'MECANONLINE15_18')
         end if
         if (ndynlo(sddyna, 'COEF_MASS_SHIFT')) then
-            write (ifm, *) '<MECANONLINE> ...... COEF. MASS. SHIFT'
+            call utmess('I', 'MECANONLINE15_19')
         end if
         if (ndynlo(sddyna, 'VECT_ISS')) then
-            write (ifm, *) '<MECANONLINE> ...... FORCE SOL'
+            call utmess('I', 'MECANONLINE15_20')
         end if
     end if
+    if (niv .ge. 2) then
+        call dampPrintParameters(nlDynaDamping)
+    end if
+
 !
 999 continue
 !

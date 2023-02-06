@@ -24,7 +24,7 @@ subroutine nmmatr(phaseType, listFuncActi, listLoad, numeDof, &
 !
     use NonLin_Datastructure_type
     use NonLinearDyna_type
-    use NonLinearDyna_module
+    use NonLinearDyna_module, only: shiftMassMatrix
 !
     implicit none
 !
@@ -77,18 +77,15 @@ subroutine nmmatr(phaseType, listFuncActi, listLoad, numeDof, &
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: ifm, niv
-    aster_logical :: lDyna, lctcd, lexpl, lDampMatrix, l_neum_undead, lShiftMass, lprem, l_cont_lac
-    real(kind=8) :: coerig, coeamo, coemas, coeshi
-    character(len=8) :: nomddl
-    real(kind=8) :: coemat(3)
-    character(len=24) :: limat(3)
-    character(len=4) :: typcst(3)
-    real(kind=8) :: coemam(3)
-    character(len=24) :: limam(3)
-    character(len=4) :: typcsm(3)
-    integer :: nbmat
-    character(len=19) :: rigiAsse, rigiMass, rigiDamp
-    aster_logical :: lunil, l_unil_pena
+    aster_logical :: lDyna, lExpl, lDampMatrix, lNeumUndead
+    aster_logical :: lContDiscret, lContLAC
+    real(kind=8) :: coefRigi, coefDamp, coefMass
+    real(kind=8) :: coefVale(3)
+    character(len=24) :: matrName(3)
+    character(len=4), parameter :: coefType(3) = (/'R', 'R', 'R'/)
+    integer :: nbMatr
+    character(len=19) :: rigiAsse, massAsse, dampAsse
+    aster_logical :: lUnil, lUnilPena
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -97,144 +94,108 @@ subroutine nmmatr(phaseType, listFuncActi, listLoad, numeDof, &
         call utmess('I', 'MECANONLINE13_41')
     end if
 
-! - Initializations
-    nomddl = ' '
-
 ! - Get name of matrices
     call nmchex(measse, 'MEASSE', 'MERIGI', rigiAsse)
-    call nmchex(measse, 'MEASSE', 'MEMASS', rigiMass)
-    call nmchex(measse, 'MEASSE', 'MEAMOR', rigiDamp)
+    call nmchex(measse, 'MEASSE', 'MEMASS', massAsse)
+    dampAsse = nlDynaDamping%dampAsse
 
 ! - Active functionnalites
-    lctcd = isfonc(listFuncActi, 'CONT_DISCRET')
-    lunil = isfonc(listFuncActi, 'LIAISON_UNILATER')
-    l_neum_undead = isfonc(listFuncActi, 'NEUM_UNDEAD')
-    l_cont_lac = isfonc(listFuncActi, 'CONT_LAC')
+    lContDiscret = isfonc(listFuncActi, 'CONT_DISCRET')
+    lUnil = isfonc(listFuncActi, 'LIAISON_UNILATER')
+    lNeumUndead = isfonc(listFuncActi, 'NEUM_UNDEAD')
+    lContLAC = isfonc(listFuncActi, 'CONT_LAC')
     lDyna = isfonc(listFuncActi, 'DYNAMIQUE')
     lDampMatrix = nlDynaDamping%hasMatrDamp
-    lexpl = ndynlo(sddyna, 'EXPLICITE')
-    lShiftMass = ndynlo(sddyna, 'COEF_MASS_SHIFT')
-!
-! --- PREMIER PAS DE TEMPS ?
-!
-    lprem = numeTime .le. 1
-!
-! --- SUPPRESSION ANCIENNE MATRICE ASSEMBLEE
-!
+    lExpl = ndynlo(sddyna, 'EXPLICITE')
+
+! - Delete previous matrix
     if (lDyna) then
         call detrsd('MATR_ASSE', matrAsse)
     end if
-!
-! --- COEFFICIENTS POUR MATRICES
-!
+
+! - Get coefficients for matrixes
     if (lDyna) then
-        coerig = ndynre(sddyna, 'COEF_MATR_RIGI')
-        coeamo = ndynre(sddyna, 'COEF_MATR_AMOR')
-        coemas = ndynre(sddyna, 'COEF_MATR_MASS')
-        coeshi = ndynre(sddyna, 'COEF_MASS_SHIFT')
+        coefRigi = ndynre(sddyna, 'COEF_MATR_RIGI')
+        coefDamp = ndynre(sddyna, 'COEF_MATR_AMOR')
+        coefMass = ndynre(sddyna, 'COEF_MATR_MASS')
     else
-        coerig = 1.d0
+        coefRigi = 1.d0
     end if
-    typcst(1) = 'R'
-    typcst(2) = 'R'
-    typcst(3) = 'R'
-!
-! --- DECALAGE DE LA MATRICE MASSE (COEF_MASS_SHIFT)
-!
-    if (lShiftMass .and. lprem .and. (phaseType .eq. PRED_EULER)) then
-        typcsm(1) = 'R'
-        typcsm(2) = 'R'
-        coemam(1) = 1.d0
-        coemam(2) = coeshi
-        limam(1) = rigiMass
-        limam(2) = rigiAsse
-        if (lexpl) then
-            call mtcmbl(2, typcsm, coemam, limam, rigiMass, &
-                        ' ', ' ', 'ELIM=')
-        else
-            call mtcmbl(2, typcsm, coemam, limam, rigiMass, &
-                        'LAGR', ' ', 'ELIM=')
-        end if
+
+! - Shift mass matrix
+    if (lDyna .and. phaseType .eq. PRED_EULER) then
+        call shiftMassMatrix(sddyna, numeTime, measse)
     end if
-!
-! --- MATRICES ET COEFFICIENTS
-!
-    if (ldyna) then
+
+! - Matrixes and coefficients
+    if (lDyna) then
         if (phaseType .eq. ACCEL_INIT) then
-            limat(1) = rigiMass
-            nbmat = 1
-            coemat(1) = 1.d0
+            matrName(1) = massAsse
+            nbMatr = 1
+            coefVale(1) = 1.d0
         else
-            if (lexpl) then
-                limat(1) = rigiMass
-                nbmat = 1
-                coemat(1) = coemas
+            if (lExpl) then
+                matrName(1) = massAsse
+                nbMatr = 1
+                coefVale(1) = coefMass
             else
-                coemat(1) = coerig
-                coemat(2) = coemas
-                coemat(3) = coeamo
-                limat(1) = rigiAsse
-                limat(2) = rigiMass
-                limat(3) = rigiDamp
+                coefVale(1) = coefRigi
+                coefVale(2) = coefMass
+                coefVale(3) = coefDamp
+                matrName(1) = rigiAsse
+                matrName(2) = massAsse
+                matrName(3) = dampAsse
                 if (lDampMatrix) then
-                    nbmat = 3
+                    nbMatr = 3
                 else
-                    nbmat = 2
+                    nbMatr = 2
                 end if
             end if
         end if
     end if
-!
-! --- DEFINITION DE LA STRUCTURE DE LA MATRICE
-!
-    if (ldyna) then
+
+! - Define matrix
+    if (lDyna) then
         if (phaseType .eq. ACCEL_INIT) then
-            call mtdefs(matrAsse, rigiMass, 'V', 'R')
+            call mtdefs(matrAsse, massAsse, 'V', 'R')
         else
-            if (lexpl) then
-                call mtdefs(matrAsse, rigiMass, 'V', 'R')
+            if (lExpl) then
+                call mtdefs(matrAsse, massAsse, 'V', 'R')
             else
                 call mtdefs(matrAsse, rigiAsse, 'V', 'R')
             end if
         end if
     end if
-!
-! --- ASSEMBLAGE
-!
+
+! - Combination of matrix
     if (lDyna) then
-        call mtcmbl(nbmat, typcst, coemat, limat, matrAsse, &
-                    nomddl, ' ', 'ELIM=')
+        call mtcmbl(nbMatr, coefType, coefVale, matrName, matrAsse, ' ', ' ', 'ELIM=')
     else
         matrAsse = rigiAsse
     end if
     if (phaseType .eq. ACCEL_INIT) then
         goto 999
     end if
-!
-! --- PRISE EN COMPTE DE LA MATRICE TANGENTE DES FORCES SUIVEUSES
-!
-    if (l_neum_undead) then
+
+! - Matrix for undead loads
+    if (lNeumUndead) then
         call ascoma(meelem, numeDof, listLoad, matrAsse)
     end if
-!
-! --- PRISE EN COMPTE DE LA MATRICE TANGENTE DU FROTTEMENT
-!
-    if (lctcd .and. (phaseType .eq. CORR_NEWTON)) then
+
+! - Matrix for friction
+    if (lContDiscret .and. (phaseType .eq. CORR_NEWTON)) then
         call nmasfr(ds_contact, matrAsse)
     end if
-!
+
 ! - Special post-treatment for LAC contact method
-!
-    if (l_cont_lac) then
+    if (lContLAC) then
         call lccmst(ds_contact, matrAsse)
     end if
-!
-! --- PRISE EN COMPTE DE LA MATRICE TANGENTE DE PENALISATION
-! --- AVEC LES LIAISONS UNILATERALES
-!
-    if (lunil .and. (phaseType .eq. CORR_NEWTON)) then
-        l_unil_pena = cfdisl(ds_contact%sdcont_defi, 'UNIL_PENA')
-        if (l_unil_pena) then
+
+! - Matrix for unilateral conidition
+    if (lUnil .and. (phaseType .eq. CORR_NEWTON)) then
+        lUnilPena = cfdisl(ds_contact%sdcont_defi, 'UNIL_PENA')
+        if (lUnilPena) then
             call nmasun(ds_contact, matrAsse)
         end if
     end if

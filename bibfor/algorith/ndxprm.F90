@@ -28,7 +28,7 @@ subroutine ndxprm(modelz, ds_material, carele, ds_constitutive, ds_algopara, &
     use NonLin_Datastructure_type
     use HHO_type
     use NonLinearDyna_type
-    use NonLinearDyna_module, only: isDampMatrCompute, compDampMatrix
+    use NonLinearDyna_module, only: isDampMatrUpdate, compDampMatrix
     use NonLinear_module, only: updateLoadBCMatrix
 !
     implicit none
@@ -112,7 +112,7 @@ subroutine ndxprm(modelz, ds_material, carele, ds_constitutive, ds_algopara, &
     character(len=16), parameter :: nonLinearOption = 'RIGI_MECA_TANG'
     aster_logical, parameter :: l_renumber = ASTER_FALSE
     aster_logical :: l_update_matr, l_first_step
-    aster_logical :: lRigiCompute, lDampCompute, lRigiAssemble
+    aster_logical :: lRigiCompute, lDampMatrUpdate, lRigiAssemble
     aster_logical :: lshima, lprmo
     character(len=16) :: explMatrType
     integer :: ifm, niv, ibid
@@ -157,13 +157,13 @@ subroutine ndxprm(modelz, ds_material, carele, ds_constitutive, ds_algopara, &
         end if
     end if
 
-! - Do the damping matrices have to be compute ?
-    call isDampMatrCompute(nlDynaDamping, l_renumber, lDampCompute)
+! - Do the damping matrices need to be updated ?
+    call isDampMatrUpdate(nlDynaDamping, l_renumber, lDampMatrUpdate)
 
 ! - Do the rigidity matrices have to be calculated/assembled ?
     lRigiCompute = ASTER_FALSE
     lRigiAssemble = ASTER_FALSE
-    if (lDampCompute) then
+    if (lDampMatrUpdate) then
         lRigiCompute = ASTER_TRUE
     end if
     if (lshima .and. l_first_step) then
@@ -193,11 +193,11 @@ subroutine ndxprm(modelz, ds_material, carele, ds_constitutive, ds_algopara, &
                             meelem)
 
 ! - Compute damping matrix
-    if (lDampCompute) then
+    if (lDampMatrUpdate) then
         call compDampMatrix(modelz, carele, &
                             ds_material, ds_constitutive, &
-                            time, lischa, numedd, &
-                            ds_system, valinc, meelem, measse)
+                            time, lischa, numedd, nlDynaDamping, &
+                            ds_system, valinc, meelem)
     end if
 
 ! - No error => continue

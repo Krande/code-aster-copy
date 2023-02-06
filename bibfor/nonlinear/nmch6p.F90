@@ -37,9 +37,9 @@ subroutine nmch6p(measse)
 !
 ! ----------------------------------------------------------------------
 !
-    character(len=19) :: masse, amort, rigid, sstru
+    character(len=19) :: masse, rigid, sstru
 !
-    data amort, masse/'&&NMCH6P.AMORT', '&&NMCH6P.MASSE'/
+    data masse/'&&NMCH6P.MASSE'/
     data rigid, sstru/'&&NMCH6P.RIGID', '&&NMCH6P.SSRASS'/
 !
 ! ----------------------------------------------------------------------
@@ -47,7 +47,6 @@ subroutine nmch6p(measse)
     call nmcha0('MEASSE', 'ALLINI', ' ', measse)
     call nmcha0('MEASSE', 'MERIGI', rigid, measse)
     call nmcha0('MEASSE', 'MEMASS', masse, measse)
-    call nmcha0('MEASSE', 'MEAMOR', amort, measse)
     call nmcha0('MEASSE', 'MESSTR', sstru, measse)
 !
 end subroutine

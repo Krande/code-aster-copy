@@ -96,7 +96,7 @@ subroutine nmener(valinc, veasse, measse, &
 !
     integer, parameter:: zveass = 19
     integer :: iret(zveass)
-    character(len=19) :: depmoi, depplu, vitmoi, vitplu, masse, amort, rigid
+    character(len=19) :: depmoi, depplu, vitmoi, vitplu, massAsse, dampAsse, rigiAsse
     character(len=19) :: fexmoi, fexplu, fammoi, fnomoi
     character(len=19) :: famplu, flimoi, fliplu, fnoplu
     character(len=19) :: lisbid
@@ -158,9 +158,9 @@ subroutine nmener(valinc, veasse, measse, &
     call nmchex(valinc, 'VALINC', 'FLIMOI', flimoi)
     call nmchex(valinc, 'VALINC', 'FLIPLU', fliplu)
     call nmchex(valinc, 'VALINC', 'FNOPLU', fnoplu)
-    call nmchex(measse, 'MEASSE', 'MERIGI', rigid)
-    call nmchex(measse, 'MEASSE', 'MEMASS', masse)
-    call nmchex(measse, 'MEASSE', 'MEAMOR', amort)
+    call nmchex(measse, 'MEASSE', 'MERIGI', rigiAsse)
+    call nmchex(measse, 'MEASSE', 'MEMASS', massAsse)
+    dampAsse = nlDynaDamping%dampAsse
     call jeveuo(ds_material%fvarc_curr(1:19)//'.VALE', 'L', vr=v_fvarc_curr)
     if (ds_contact%l_cnctdf) then
         call jeveuo(ds_contact%cnctdf(1:19)//'.VALE', 'L', vr=v_cnctdf)
@@ -296,7 +296,7 @@ subroutine nmener(valinc, veasse, measse, &
 ! --- REASSEMBLAGE DE LA MATRICE DE MASSE.
         lisbid = ' '
         call nmmass(lisbid, sddyna, numeDof, &
-                    numeDofFixe, meelem, masse)
+                    numeDofFixe, meelem, massAsse)
     end if
 !
 ! --- INITIALISATION DE LA FORCE EXTERIEURE ET DES FORCES INTERNES
@@ -325,7 +325,7 @@ subroutine nmener(valinc, veasse, measse, &
     end do
 !
     call enerca(valinc, epmo, zr(ivitmo), eppl, zr(ivitpl), &
-                masse, amort, rigid, zr(ifexte), zr(ifamor), &
+                massAsse, dampAsse, rigiAsse, zr(ifexte), zr(ifamor), &
                 zr(ifliai), zr(ifnoda), zr(ifcine), lDampMatrix, ldyna, &
                 lexpl, ds_energy, k8bid)
 !

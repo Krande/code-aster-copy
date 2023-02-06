@@ -18,33 +18,30 @@
 ! person_in_charge: mickael.abbas at edf.fr
 !
 subroutine ndfdyn(sddyna, nlDynaDamping, &
-                  hval_measse, ds_measure, vite_curr, acce_curr, &
+                  hval_incr, hval_measse, ds_measure, &
                   cndyna)
 !
     use NonLin_Datastructure_type
     use NonLinearDyna_type
+    use NonLinearDyna_module, only: compAcceForce, compViteForce
 !
     implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
+#include "asterfort/infdbg.h"
 #include "asterfort/ndynlo.h"
 #include "asterfort/ndynre.h"
-#include "asterfort/nmchex.h"
-#include "asterfort/nmhyst.h"
-#include "asterfort/nminer.h"
+#include "asterfort/nmdebg.h"
 #include "asterfort/nmtime.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vtaxpy.h"
 #include "asterfort/vtzero.h"
-#include "asterfort/infdbg.h"
-#include "asterfort/utmess.h"
-#include "asterfort/nmdebg.h"
 !
     character(len=19), intent(in) :: sddyna
     type(NLDYNA_DAMPING), intent(in) :: nlDynaDamping
-    character(len=19), intent(in) :: hval_measse(*)
+    character(len=19), intent(in) :: hval_incr(*), hval_measse(*)
     type(NL_DS_Measure), intent(inout) :: ds_measure
-    character(len=19), intent(in) :: vite_curr, acce_curr
     character(len=19), intent(in) :: cndyna
 !
 ! --------------------------------------------------------------------------------------------------
@@ -57,18 +54,16 @@ subroutine ndfdyn(sddyna, nlDynaDamping, &
 !
 ! In  nlDynaDamping    : damping parameters
 ! In  sddyna           : datastructure for dynamic
+! In  hval_incr        : hat-variable for incremental values fields
 ! In  hval_measse      : hat-variable for matrix
 ! IO  ds_measure       : datastructure for measure and statistics management
-! In  vite_curr        : speed field
-! In  acce_curr        : acceleration field
 ! In  cndyna           : name of dynamic effect on second member
 !
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: ifm, niv
-    character(len=19) :: amort, masse
-    character(len=19) :: cniner, cnhyst
-    real(kind=8) :: coerma, coeram
+    character(len=19), parameter :: cniner = '&&CNPART.CHP1', cnhyst = '&&CNPART.CHP2'
+    real(kind=8) :: coefIner, coefDamp
     aster_logical :: lDampMatrix, l_impl
 !
 ! --------------------------------------------------------------------------------------------------
@@ -82,33 +77,25 @@ subroutine ndfdyn(sddyna, nlDynaDamping, &
     call nmtime(ds_measure, 'Init', '2nd_Member')
     call nmtime(ds_measure, 'Launch', '2nd_Member')
 
-! - COEFFICIENTS DEVANTS MATRICES
-    coerma = ndynre(sddyna, 'COEF_FDYN_MASSE')
-    coeram = ndynre(sddyna, 'COEF_FDYN_AMORT')
+! - Coefficients
+    coefIner = ndynre(sddyna, 'COEF_FDYN_MASSE')
+    coefDamp = ndynre(sddyna, 'COEF_FDYN_AMORT')
 
 ! - Active functionnalities
     lDampMatrix = nlDynaDamping%hasMatrDamp
     l_impl = ndynlo(sddyna, 'IMPLICITE')
 
-! - MATRICES ASSEMBLEES
-    call nmchex(hval_measse, 'MEASSE', 'MEAMOR', amort)
-    call nmchex(hval_measse, 'MEASSE', 'MEMASS', masse)
-
-! - VECTEURS RESULTATS
-    cniner = '&&CNPART.CHP1'
-    cnhyst = '&&CNPART.CHP2'
-    call vtzero(cniner)
-    call vtzero(cnhyst)
+! - Initializations
     call vtzero(cndyna)
 
-! - VECTEURS SOLUTIONS
+! - Compute
     if (l_impl) then
-        call nminer(masse, acce_curr, cniner)
-        call vtaxpy(coerma, cniner, cndyna)
+        call compAcceForce(hval_incr, hval_measse, cniner)
+        call vtaxpy(coefIner, cniner, cndyna)
     end if
     if (lDampMatrix) then
-        call nmhyst(amort, vite_curr, cnhyst)
-        call vtaxpy(coeram, cnhyst, cndyna)
+        call compViteForce(nlDynaDamping, hval_incr, cnhyst)
+        call vtaxpy(coefDamp, cnhyst, cndyna)
     end if
 
 ! - Stop timer

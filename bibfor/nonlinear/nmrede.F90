@@ -77,7 +77,7 @@ subroutine nmrede(list_func_acti, sddyna, &
 ! --------------------------------------------------------------------------------------------------
 !
     aster_logical :: l_dyna, l_load_cine, l_cont_cont, l_cont_lac, l_macr
-    character(len=19) :: cniner
+    character(len=19), parameter :: cniner = '&&CNPART.CHP1'
     integer :: i_equa
     real(kind=8) :: val2, appui, fext
     character(len=24) :: sdnuco
@@ -116,7 +116,6 @@ subroutine nmrede(list_func_acti, sddyna, &
 ! - Compute inertial force
 !
     if (l_dyna) then
-        cniner = '&&CNPART.CHP1'
         call ndiner(nb_equa, sddyna, hval_incr, hval_measse, cniner)
     end if
 !

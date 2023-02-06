@@ -36,7 +36,6 @@ cata_msg = {
     10: _(""" Initialisations pour le système à résoudre."""),
     11: _(""" Initialisations des fonctionnalités actives."""),
     12: _(""" Initialisations de la numérotation des inconnues."""),
-    13: _(""" Initialisations de la dynamique."""),
     14: _(""" Initialisations de l'archivage."""),
     15: _(""" Initialisations de la discrétisation temporelle."""),
     16: _(""" Initialisations de la subdivision des pas de temps."""),

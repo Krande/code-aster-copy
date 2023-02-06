@@ -16,7 +16,6 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
-! aslint: disable=W1403
 !
 module NonLinearDyna_type
 ! ==================================================================================================
@@ -36,13 +35,25 @@ module NonLinearDyna_type
 !
 ! - Type: Damping parameters
     type NLDYNA_DAMPING
+! - Flag for damping
+        aster_logical :: hasDamp = ASTER_FALSE
+! - Flag for damping from matrix (LHS)
+        aster_logical :: hasMatrDamp = ASTER_FALSE
+! - Flag for damping from vector (RHS)
+        aster_logical :: hasVectDamp = ASTER_FALSE
+! - Flag when elementary damping matrix has to be computed
+        aster_logical :: lElemDampToCompute = ASTER_FALSE
+! - Flag for different damping
         aster_logical :: lDampRayleigh = ASTER_FALSE
         aster_logical :: lDampRayleighTang = ASTER_FALSE
         aster_logical :: lDampContact = ASTER_FALSE
         aster_logical :: lDampFEModel = ASTER_FALSE
         aster_logical :: lDampDiscret = ASTER_FALSE
         aster_logical :: lDampModal = ASTER_FALSE
-        aster_logical :: hasMatrDamp = ASTER_FALSE
+        aster_logical :: lElemDampFromUser = ASTER_FALSE
+        character(len=8) :: dampFromUser = " "
+! - Matrix for damping
+        character(len=19) :: dampAsse = " "
 ! - For modal damping
         type(MODAL_DAMPING) :: modalDamping
     end type NLDYNA_DAMPING

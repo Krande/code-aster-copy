@@ -34,21 +34,21 @@ subroutine ndxforc_pred(list_func_acti, &
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/NonLinear_type.h"
 #include "asterfort/assert.h"
 #include "asterfort/infdbg.h"
-#include "asterfort/utmess.h"
+#include "asterfort/isfonc.h"
 #include "asterfort/ndfdyn.h"
 #include "asterfort/diinst.h"
 #include "asterfort/ndynlo.h"
-#include "asterfort/isfonc.h"
 #include "asterfort/nmchex.h"
-#include "asterfort/nonlinRForceCompute.h"
-#include "asterfort/nonlinDynaMDampCompute.h"
 #include "asterfort/nonlinDynaImpeCompute.h"
-#include "asterfort/nonlinLoadCompute.h"
-#include "asterfort/nonlinSubStruCompute.h"
+#include "asterfort/nonlinDynaMDampCompute.h"
+#include "asterfort/NonLinear_type.h"
 #include "asterfort/nonlinIntForce.h"
+#include "asterfort/nonlinLoadCompute.h"
+#include "asterfort/nonlinRForceCompute.h"
+#include "asterfort/nonlinSubStruCompute.h"
+#include "asterfort/utmess.h"
 !
     integer, intent(in) :: list_func_acti(*)
     character(len=24), intent(in) :: model, cara_elem, nume_dof
@@ -99,9 +99,8 @@ subroutine ndxforc_pred(list_func_acti, &
     integer, parameter :: iterNewtPred = 0
     integer :: ifm, niv
     character(len=19) :: cndyna, cnsstr
-    character(len=19) :: disp_prev, vite_prev, acce_prev
-    character(len=19) :: disp_curr, vite_curr, acce_curr
-    real(kind=8) :: time_prev, time_curr
+    character(len=19) :: dispCurr, accePrev
+    real(kind=8) :: timePrev, timeCurr
     aster_logical :: l_impe, lDampModal, lSuperElement
 !
 ! --------------------------------------------------------------------------------------------------
@@ -116,8 +115,8 @@ subroutine ndxforc_pred(list_func_acti, &
 
 ! - Get time
     ASSERT(nume_inst .gt. 0)
-    time_prev = diinst(sddisc, nume_inst-1)
-    time_curr = diinst(sddisc, nume_inst)
+    timePrev = diinst(sddisc, nume_inst-1)
+    timeCurr = diinst(sddisc, nume_inst)
 
 ! - Active functionnalities
     l_impe = ndynlo(sddyna, 'IMPE_ABSO')
@@ -125,54 +124,44 @@ subroutine ndxforc_pred(list_func_acti, &
     lSuperElement = isfonc(list_func_acti, 'MACR_ELEM_STAT')
 
 ! - Get hat variables
-    call nmchex(hval_incr, 'VALINC', 'DEPMOI', disp_prev)
-    call nmchex(hval_incr, 'VALINC', 'VITMOI', vite_prev)
-    call nmchex(hval_incr, 'VALINC', 'ACCMOI', acce_prev)
-    call nmchex(hval_incr, 'VALINC', 'DEPPLU', disp_curr)
-    call nmchex(hval_incr, 'VALINC', 'ACCPLU', acce_curr)
-    call nmchex(hval_incr, 'VALINC', 'VITPLU', vite_curr)
-!
+    call nmchex(hval_incr, 'VALINC', 'ACCMOI', accePrev)
+    call nmchex(hval_incr, 'VALINC', 'DEPPLU', dispCurr)
+
 ! - Compute loads (undead)
-!
     call nonlinLoadCompute('VARI', list_load, &
                            model, cara_elem, nume_dof, list_func_acti, &
                            ds_material, ds_constitutive, ds_measure, &
-                           time_prev, time_curr, &
+                           timePrev, timeCurr, &
                            hval_incr, hval_algo, &
                            hval_veelem, hval_veasse)
-!
+
 ! - Compute sub-structuring effect on second member
-!
     if (lSuperElement) then
         call nmchex(hval_veasse, 'VEASSE', 'CNSSTR', cnsstr)
-        call nonlinSubStruCompute(ds_measure, disp_curr, &
+        call nonlinSubStruCompute(ds_measure, dispCurr, &
                                   hval_measse, cnsstr)
     end if
-!
+
 ! - Compute force for Dirichlet boundary conditions (dualized) - BT.LAMBDA
-!
     call nonlinRForceCompute(model, ds_material, cara_elem, list_load, &
-                             nume_dof, ds_measure, acce_prev, &
+                             nume_dof, ds_measure, accePrev, &
                              hval_veelem, hval_veasse)
-!
+
 ! - Compute effect of dynamic forces (from time discretization scheme)
-!
     call nmchex(hval_veasse, 'VEASSE', 'CNDYNA', cndyna)
     call ndfdyn(sddyna, nlDynaDamping, &
-                hval_measse, ds_measure, vite_curr, acce_curr, &
+                hval_incr, hval_measse, ds_measure, &
                 cndyna)
-!
+
 ! - Compute modal damping
-!
     if (lDampModal) then
         call nonlinDynaMDampCompute(phaseType, &
                                     nlDynaDamping, &
                                     nume_dof, ds_measure, &
                                     hval_incr, hval_veasse)
     end if
-!
+
 ! - Compute impedance
-!
     if (l_impe) then
         call nonlinDynaImpeCompute(phaseType, sddyna, &
                                    model, nume_dof, &
@@ -180,9 +169,8 @@ subroutine ndxforc_pred(list_func_acti, &
                                    hval_incr, &
                                    hval_veelem, hval_veasse)
     end if
-!
+
 ! - Compute internal forces
-!
     call nonlinIntForce(phaseType, &
                         model, cara_elem, &
                         list_func_acti, iterNewtPred, sdnume, &
@@ -191,7 +179,7 @@ subroutine ndxforc_pred(list_func_acti, &
                         hval_incr, hval_algo, &
                         ldccvg, &
                         sddyna_=sddyna, &
-                        time_prev_=time_prev, &
-                        time_curr_=time_curr)
+                        time_prev_=timePrev, &
+                        time_curr_=timeCurr)
 !
 end subroutine

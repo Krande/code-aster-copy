@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -51,4 +51,5 @@ cata_msg = {
     29: _("""Intégration de la loi de comportement et de la matrice tangente."""),
     30: _("""Calcul des forces de contact et de frottement (méthodes continues)."""),
     31: _("""Calcul des forces de contact et de frottement (méthodes discrètes)."""),
+    32: _("""Calcul des forces d'inertie pour mise à l'échelle du résidu d'équilibre."""),
 }
