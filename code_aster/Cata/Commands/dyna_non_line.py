@@ -38,6 +38,7 @@ DYNA_NON_LINE = OPER(
     MODE_STAT=SIMP(statut="f", typ=mode_meca),
     CARA_ELEM=SIMP(statut="f", typ=cara_elem),
     MASS_DIAG=SIMP(statut="f", typ="TXM", into=("OUI", "NON")),
+    MATR_ELEM_AMOR=SIMP(statut="f", typ=(matr_elem_depl_r,), max=1),
     EXCIT=FACT(
         statut="f",
         max="**",

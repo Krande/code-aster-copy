@@ -107,7 +107,7 @@ dampElem = CALC_MATR_ELEM(
     MASS_MECA=massElem,
     CHAM_MATER=mateRayleigh,
 )
-"""
+
 # Calcul avec Rayleigh donné par matrices d'amortissement pré-calculées
 DYNA2 = DYNA_NON_LINE(
     MODELE=model,
@@ -217,6 +217,6 @@ dyna3_viteDX_NodeC = RECU_FONCTION(
     NOM_CHAM="VITE",
     NOM_CMP="DX",
 )
-"""
+
 
 FIN()
