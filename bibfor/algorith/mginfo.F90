@@ -16,16 +16,16 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine mginfo(modmecz, numeDof, nbmode, nbEqua)
+subroutine mginfo(modeMecaZ, numeDof_, nbmode_, nbEqua_)
 !
     implicit none
 !
 #include "asterfort/dismoi.h"
 #include "asterfort/jelira.h"
 !
-    character(len=*), intent(in) :: modmecz
-    integer, intent(out) :: nbmode, nbEqua
-    character(len=14), intent(out) :: numeDof
+    character(len=*), intent(in) :: modeMecaZ
+    integer, optional, intent(out) :: nbmode_, nbEqua_
+    character(len=14), optional, intent(out) :: numeDof_
 !
 !
 ! ----------------------------------------------------------------------
@@ -42,22 +42,34 @@ subroutine mginfo(modmecz, numeDof, nbmode, nbEqua)
 ! OUT NEQ    : NOMBRE D'EQUATIONS
 
     character(len=24) :: matrix
-    character(len=8) :: modmec
+    character(len=8) :: modeMeca
+    integer :: nbmode, nbEqua
+    character(len=14) :: numeDof
 !
 ! ----------------------------------------------------------------------
 !
-    modmec = modmecz
+    modeMeca = modeMecaZ
     nbEqua = 0
     nbMode = 0
     numeDof = ' '
-    call dismoi('NUME_DDL', modmec, 'RESU_DYNA', repk=numeDof)
+    call dismoi('NUME_DDL', modeMeca, 'RESU_DYNA', repk=numeDof)
     if (numeDof(1:1) .ne. ' ') then
         call dismoi('NB_EQUA', numeDof, 'NUME_DDL', repi=nbEqua)
     else
-        call dismoi('REF_RIGI_PREM', modmec, 'RESU_DYNA', repk=matrix)
+        call dismoi('REF_RIGI_PREM', modeMeca, 'RESU_DYNA', repk=matrix)
         call dismoi('NOM_NUME_DDL', matrix, 'MATR_ASSE', repk=numeDof)
         call dismoi('NB_EQUA', matrix, 'MATR_ASSE', repi=nbEqua)
     end if
-    call jelira(modmec//'           .ORDR', 'LONMAX', nbmode)
+    call jelira(modeMeca(1:8)//'           .ORDR', 'LONMAX', nbmode)
+
+    if (present(nbEqua_)) then
+        nbEqua_ = nbEqua
+    end if
+    if (present(nbMode_)) then
+        nbMode_ = nbMode
+    end if
+    if (present(numeDof_)) then
+        numeDof_ = numeDof
+    end if
 !
 end subroutine

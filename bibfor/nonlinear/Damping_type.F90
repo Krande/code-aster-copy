@@ -15,11 +15,35 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
+! person_in_charge: mickael.abbas at edf.fr
 !
-interface
-    subroutine mginfo(modeMecaZ, numeDof_, nbmode_, nbEqua_)
-        character(len=*), intent(in) :: modeMecaZ
-        integer, optional, intent(out) :: nbmode_, nbEqua_
-        character(len=14), optional, intent(out) :: numeDof_
-    end subroutine mginfo
-end interface
+module Damping_type
+!
+    implicit none
+!
+#include "asterf_types.h"
+!
+! --------------------------------------------------------------------------------------------------
+!
+! Damping
+!
+! Define types
+!
+! --------------------------------------------------------------------------------------------------
+!
+
+! - Type: modal damping parameters
+    type MODAL_DAMPING
+! - Flag for update speed
+        aster_logical :: lReacVite = ASTER_FALSE
+! - Modes for damping
+        character(len=8) :: dampMode = " "
+        integer :: nbMode = 0
+! - Values of damping
+        integer :: nbDampVale = 0
+        character(len=24) :: jvListDamp = " "
+! - Name of datastructure to save parameters
+        character(len=24) :: jvDataDamp = " "
+    end type MODAL_DAMPING
+!
+end module Damping_type

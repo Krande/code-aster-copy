@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,14 +16,16 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-! Indicator to compute nodal field from internal forces
+! Indicator select phase of algorithm
 #define PRED_EULER          1
 #define CORR_NEWTON         2
 #define INTE_FORCE          3
-!
+#define ACCEL_INIT          4
+
+
 ! Set to 1 to activate DEBUG
 #define NONLINEAR_DEBUG     0
-!
+
 ! Indicator to combine nodal fields for internal forces
 #define INTE_FORCE_NONE     0
 #define INTE_FORCE_COMB     1
