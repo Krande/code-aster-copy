@@ -592,55 +592,50 @@ contains
 ! --------------------------------------------------------------------------------------------------
     subroutine isRigiMatrCompute(phaseType, &
                                  sddyna, numeTime, &
-                                 l_update_matr, l_comp_damp, &
-                                 l_comp_rigi, l_asse_rigi)
+                                 l_update_matr, lDampCompute, &
+                                 lRigiCompute, lRigiAssemble)
+!   ------------------------------------------------------------------------------------------------
 ! - Parameters
         integer, intent(in) :: phaseType
         character(len=19), intent(in) :: sddyna
         integer, intent(in) :: numeTime
-        aster_logical, intent(in) :: l_update_matr, l_comp_damp
-        aster_logical, intent(out) :: l_comp_rigi, l_asse_rigi
-!   ------------------------------------------------------------------------------------------------
+        aster_logical, intent(in) :: l_update_matr, lDampCompute
+        aster_logical, intent(out) :: lRigiCompute, lRigiAssemble
 ! - Local
         aster_logical :: l_first_step, l_shift_mass
 !   ------------------------------------------------------------------------------------------------
-        l_comp_rigi = ASTER_FALSE
-        l_asse_rigi = ASTER_FALSE
 !
-! - First step ?
-!
+        lRigiCompute = ASTER_FALSE
+        lRigiAssemble = ASTER_FALSE
+
+! ----- First step ?
         l_first_step = numeTime .le. 1
-!
-! - Active functionnalities
-!
+
+! ----- Active functionnalities
         l_shift_mass = ndynlo(sddyna, 'COEF_MASS_SHIFT')
-!
-! - Rigidity matrices have to be calculated ?
-!
+
+! ----- Rigidity matrices have to be calculated ?
         if (phaseType .eq. PRED_EULER) then
-            l_comp_rigi = l_update_matr
+            lRigiCompute = l_update_matr
+            lRigiAssemble = ASTER_TRUE
         end if
-!
-! - Rayleigh: need update of rigidity matrices
-!
-        if (l_comp_damp) then
-            l_comp_rigi = ASTER_TRUE
+
+! ----- Rayleigh: need update of rigidity matrices
+        if (lDampCompute) then
+            lRigiCompute = ASTER_TRUE
         end if
-!
-! - For COEF_MASS_SHIFT
-!
+
+! ----- For COEF_MASS_SHIFT
         if (l_shift_mass .and. l_first_step) then
-            l_comp_rigi = ASTER_TRUE
+            lRigiCompute = ASTER_TRUE
+            lRigiAssemble = ASTER_TRUE
         end if
-!
-! - Rigidity matrices have to be assembled ?
-!
-        if (l_shift_mass .and. l_first_step) then
-            l_asse_rigi = ASTER_TRUE
-        end if
+
+! ----- From status of global matrix
         if (l_update_matr) then
-            l_asse_rigi = ASTER_TRUE
+            lRigiAssemble = ASTER_TRUE
         end if
+!
 !   -----------------------------------------------------------------------------------------------
     end subroutine
 ! --------------------------------------------------------------------------------------------------

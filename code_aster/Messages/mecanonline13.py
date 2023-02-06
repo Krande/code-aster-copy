@@ -43,8 +43,6 @@ cata_msg = {
     17: _(""" Initialisations du pilotage."""),
     18: _(""" Initialisations des matrices élémentaires constantes durant le calcul."""),
     22: _(""" Initialisations des matrices assemblées constantes durant le calcul."""),
-    23: _("""  Assemblage de la matrice de masse."""),
-    24: _("""  Assemblage de la matrice d'amortissement."""),
     25: _(""" Initialisations pour la structure de données résultat."""),
     26: _(""" Initialisations pour l'état initial."""),
     27: _(""" Initialisations des structures de données pour la résolution du contact."""),

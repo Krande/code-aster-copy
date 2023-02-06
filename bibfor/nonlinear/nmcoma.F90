@@ -38,24 +38,23 @@ subroutine nmcoma(listFuncActi, &
     use NonLinear_module, only: getOption, getMatrType, isMatrUpdate, &
                                 isRigiMatrCompute, isInteVectCompute, &
                                 factorSystem, updateLoadBCMatrix
-    use NonLinearDyna_module, only: isMassMatrAssemble, &
-                                    asseMassMatrix, isDampMatrCompute
+    use NonLinearDyna_module, only: isDampMatrCompute, isMassMatrAssemble, &
+                                    compDampMatrix, asseMassMatrix
 !
     implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/asmari.h"
 #include "asterfort/assert.h"
+#include "asterfort/diinst.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/infdbg.h"
 #include "asterfort/isfonc.h"
 #include "asterfort/nmchex.h"
-#include "asterfort/nmcmat.h"
 #include "asterfort/nmelcm.h"
 #include "asterfort/nmimck.h"
 #include "asterfort/nmmatr.h"
 #include "asterfort/nmrenu.h"
-#include "asterfort/nmxmat.h"
 #include "asterfort/NonLinear_type.h"
 #include "asterfort/nonlinIntForce.h"
 #include "asterfort/nonlinIntForceAsse.h"
@@ -136,21 +135,18 @@ subroutine nmcoma(listFuncActi, &
 ! --------------------------------------------------------------------------------------------------
 !
     integer, parameter :: phaseType = CORR_NEWTON
-    aster_logical :: l_update_matr, l_comp_damp
-    aster_logical :: lRigiCompute, lRigiAssemble
+    integer :: ifm, niv
+    aster_logical :: l_update_matr, l_renumber
+    aster_logical :: lRigiCompute, lDampCompute, lRigiAssemble
     aster_logical :: lMassAssemble
     aster_logical :: lFintCompute
     aster_logical :: lContCompute
     character(len=16) :: matrType, nonLinearOption
     character(len=19) :: contElem, rigid
-    aster_logical :: l_renumber
-    integer :: ifm, niv
-    integer :: nb_matr, reac_iter
+    integer :: reac_iter
     integer :: condcvg
-    character(len=6) :: list_matr_type(20)
     character(len=8) :: ksym
-    character(len=16) :: list_calc_opti(20), list_asse_opti(20)
-    aster_logical :: list_l_asse(20), list_l_calc(20)
+    real(kind=8) :: time
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -160,11 +156,12 @@ subroutine nmcoma(listFuncActi, &
     end if
 
 ! - Initializations
-    nb_matr = 0
-    list_matr_type = ' '
     faccvg = -1
     ldccvg = -1
     condcvg = -1
+
+! - Time
+    time = diinst(sddisc, numeTime-1)
 
 ! - Active functionnalites
     lContCompute = isfonc(listFuncActi, 'ELT_CONTACT')
@@ -187,8 +184,8 @@ subroutine nmcoma(listFuncActi, &
 ! - Select non-linear option for compute matrices
     call getOption(phaseType, listFuncActi, matrType, nonLinearOption, l_update_matr)
 
-! - Do the damping matrices have to be calculated ?
-    call isDampMatrCompute(sddyna, l_renumber, l_comp_damp)
+! - Do the damping matrices have to be compute ?
+    call isDampMatrCompute(sddyna, l_renumber, lDampCompute)
 
 ! - Do the mass matrices have to be assemble ?
     call isMassMatrAssemble(sddyna, l_update_matr, lMassAssemble)
@@ -196,7 +193,7 @@ subroutine nmcoma(listFuncActi, &
 ! - Do the rigidity matrices have to be calculated/assembled ?
     call isRigiMatrCompute(phaseType, &
                            sddyna, numeTime, &
-                           l_update_matr, l_comp_damp, &
+                           l_update_matr, lDampCompute, &
                            lRigiCompute, lRigiAssemble)
 
 ! - Do the internal forces vectors have to be compute ?
@@ -251,22 +248,12 @@ subroutine nmcoma(listFuncActi, &
             ASSERT(l_update_matr)
         end if
 
-! ----- Compute damping (Rayleigh) elementary matrices
-        if (l_comp_damp) then
-            call nmcmat('MEAMOR', ' ', ' ', ASTER_TRUE, &
-                        ASTER_TRUE, nb_matr, list_matr_type, list_calc_opti, list_asse_opti, &
-                        list_l_calc, list_l_asse)
-        end if
-
-! ----- Compute and assemble matrices
-        if (nb_matr .gt. 0) then
-            call nmxmat(modelZ, ds_material, caraElem, &
-                        ds_constitutive, sddisc, numeTime, &
-                        hval_incr, hval_algo, listLoad, &
-                        numeDof, numeDofFixe, ds_measure, &
-                        nb_matr, list_matr_type, list_calc_opti, &
-                        list_asse_opti, list_l_calc, list_l_asse, &
-                        hval_meelem, hval_measse, ds_system)
+! ----- Compute damping matrix
+        if (lDampCompute) then
+            call compDampMatrix(modelz, caraElem, &
+                                ds_material, ds_constitutive, &
+                                time, listLoad, numeDof, &
+                                ds_system, hval_incr, hval_meelem, hval_measse)
         end if
 
 ! ----- Compute global matrix of system
