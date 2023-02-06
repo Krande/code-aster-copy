@@ -36,10 +36,10 @@ subroutine nmprma(listFuncActi, &
     use Rom_Datastructure_type
     use HHO_type
     use NonLinear_module, only: getOption, getMatrType, isMatrUpdate, &
-                                isDampMatrCompute, isRigiMatrCompute, &
+                                isRigiMatrCompute, &
                                 factorSystem, updateLoadBCMatrix
     use NonLinearDyna_module, only: isMassMatrAssemble, &
-                                    asseMassMatrix
+                                    asseMassMatrix, isDampMatrCompute
 !
     implicit none
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 !
 interface
-    subroutine ndexpl(modele         , numedd    , numfix     , ds_material, carele   ,&
+    subroutine ndexpl(modele         , numedd    , ds_material, carele   ,&
                       ds_constitutive, lischa    , ds_algopara, fonact     , ds_system,&
                       ds_print       , ds_measure, sdnume     , sddyna     , sddisc   ,&
                       sderro         , valinc    , numins     , solalg     , solveu   ,&
@@ -26,7 +26,6 @@ interface
         use NonLin_Datastructure_type
         character(len=24) :: modele
         character(len=24) :: numedd
-        character(len=24) :: numfix
         type(NL_DS_Material), intent(in) :: ds_material
         character(len=24) :: carele
         type(NL_DS_Constitutive), intent(in) :: ds_constitutive

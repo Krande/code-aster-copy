@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 !
 interface
     subroutine ndxprm(modelz, ds_material, carele    , ds_constitutive, ds_algopara   ,&
-                      lischa, numedd     , numfix    , solveu         , ds_system     ,&
+                      lischa, numedd     , solveu         , ds_system     ,&
                       sddisc, sddyna     , ds_measure, nume_inst      , list_func_acti,&
                       valinc, solalg     , meelem    , measse     ,&
                       maprec, matass     , faccvg    , ldccvg)
@@ -29,7 +29,7 @@ interface
         type(NL_DS_Material), intent(in) :: ds_material
         character(len=24) :: carele
         type(NL_DS_Measure), intent(inout) :: ds_measure
-        character(len=24) :: numedd, numfix
+        character(len=24) :: numedd
         type(NL_DS_Constitutive), intent(in) :: ds_constitutive
         type(NL_DS_System), intent(in) :: ds_system
         character(len=19) :: sddisc, sddyna, lischa, solveu

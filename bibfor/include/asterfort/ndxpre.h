@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine ndxpre(model          , nume_dof   , numfix     , ds_material, cara_elem  ,&
+    subroutine ndxpre(model          , nume_dof   , ds_material, cara_elem  ,&
                       ds_constitutive, list_load  , ds_algopara, solveu     , ds_system  ,&
                       list_func_acti , sddisc     , ds_measure , nume_inst  , hval_incr  ,&
                       hval_algo      , matass     , maprec     , sddyna     , sderro     ,&
@@ -36,7 +36,7 @@ interface
         character(len=24) :: model, cara_elem
         type(NL_DS_Constitutive), intent(in) :: ds_constitutive
         type(NL_DS_System), intent(in) :: ds_system
-        character(len=24) :: nume_dof, numfix
+        character(len=24) :: nume_dof
         character(len=24) :: sderro
         character(len=19) :: hval_meelem(*), hval_veelem(*)
         character(len=19) :: hval_measse(*), hval_veasse(*)

@@ -18,7 +18,7 @@
 ! person_in_charge: mickael.abbas at edf.fr
 ! aslint: disable=W1504
 !
-subroutine ndxpre(model, nume_dof, numfix, ds_material, cara_elem, &
+subroutine ndxpre(model, nume_dof, ds_material, cara_elem, &
                   ds_constitutive, list_load, ds_algopara, solveu, ds_system, &
                   list_func_acti, sddisc, ds_measure, nume_inst, hval_incr, &
                   hval_algo, matass, maprec, sddyna, sderro, &
@@ -52,7 +52,7 @@ subroutine ndxpre(model, nume_dof, numfix, ds_material, cara_elem, &
     character(len=24) :: model, cara_elem
     type(NL_DS_Constitutive), intent(in) :: ds_constitutive
     type(NL_DS_System), intent(in) :: ds_system
-    character(len=24) :: nume_dof, numfix
+    character(len=24) :: nume_dof
     character(len=24) :: sderro
     character(len=19) :: hval_meelem(*), hval_veelem(*)
     character(len=19) :: hval_measse(*), hval_veasse(*)
@@ -124,7 +124,7 @@ subroutine ndxpre(model, nume_dof, numfix, ds_material, cara_elem, &
 ! --- CALCUL DE LA MATRICE GLOBALE
 !
     call ndxprm(model, ds_material, cara_elem, ds_constitutive, ds_algopara, &
-                list_load, nume_dof, numfix, solveu, ds_system, &
+                list_load, nume_dof, solveu, ds_system, &
                 sddisc, sddyna, ds_measure, nume_inst, list_func_acti, &
                 hval_incr, hval_algo, hval_meelem, hval_measse, &
                 maprec, matass, faccvg, ldccvg)

@@ -31,7 +31,7 @@ module NonLinear_module
                isElasMatr
     public  :: getMatrType, getOption, &
                isMatrUpdate, &
-               isDampMatrCompute, isMassMatrCompute, isRigiMatrCompute, isInteVectCompute, &
+               isRigiMatrCompute, isInteVectCompute, &
                factorSystem, &
                setNodalValuesGDVARINO, &
                inteForceGetOption, &
@@ -572,73 +572,6 @@ contains
             l_matr_elas = ASTER_TRUE
         else
             l_matr_elas = ASTER_FALSE
-        end if
-!   -----------------------------------------------------------------------------------------------
-    end subroutine
-! --------------------------------------------------------------------------------------------------
-!
-! isDampMatrCompute
-!
-! Do the damping matrices have to be calculated ?
-!
-! In  sddyna           : name of dynamic parameters datastructure
-! In  l_renumber       : flag to renumbering
-! Out l_comp_damp      : flag if damp elementary matrices have to be calculated
-!
-! --------------------------------------------------------------------------------------------------
-    subroutine isDampMatrCompute(sddyna, l_renumber, l_comp_damp)
-! - Parameters
-        character(len=19), intent(in) :: sddyna
-        aster_logical, intent(in) :: l_renumber
-        aster_logical, intent(out) :: l_comp_damp
-!   ------------------------------------------------------------------------------------------------
-! - Local
-        aster_logical :: l_ktan, l_damp
-!   ------------------------------------------------------------------------------------------------
-        l_comp_damp = ASTER_FALSE
-!
-! - Active functionnalities
-!
-        l_damp = ndynlo(sddyna, 'MAT_AMORT')
-        l_ktan = ndynlo(sddyna, 'RAYLEIGH_KTAN')
-!
-        if (l_damp) then
-            if (l_renumber .or. l_ktan) then
-                l_comp_damp = ASTER_TRUE
-            end if
-        end if
-!   -----------------------------------------------------------------------------------------------
-    end subroutine
-! --------------------------------------------------------------------------------------------------
-!
-! isMassMatrCompute
-!
-! Do the mass matrices have to be calculated ?
-!
-! In  sddyna           : name of dynamic parameters datastructure
-! In  l_update_matr    : flag to update matrix
-! Out l_comp_mass      : flag if mass elementary matrices have to be calculated
-!
-! --------------------------------------------------------------------------------------------------
-    subroutine isMassMatrCompute(sddyna, l_update_matr, l_comp_mass)
-! - Parameters
-        character(len=19), intent(in) :: sddyna
-        aster_logical, intent(in) :: l_update_matr
-        aster_logical, intent(out) :: l_comp_mass
-! - Local
-        aster_logical :: l_dyna
-!   ------------------------------------------------------------------------------------------------
-!
-        l_comp_mass = ASTER_FALSE
-!
-! - Active functionnalities
-!
-        l_dyna = ndynlo(sddyna, 'DYNAMIQUE')
-!
-! - Mass matrices have to be calculated ?
-!
-        if (l_dyna .and. l_update_matr) then
-            l_comp_mass = ASTER_TRUE
         end if
 !   -----------------------------------------------------------------------------------------------
     end subroutine

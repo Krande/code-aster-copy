@@ -225,7 +225,7 @@ subroutine op0070()
 ! --- REALISATION DU PAS DE TEMPS
 !
     if (lexpl) then
-        call ndexpl(model, numedd, numfix, ds_material, cara_elem, &
+        call ndexpl(model, numedd, ds_material, cara_elem, &
                     ds_constitutive, list_load, ds_algopara, fonact, ds_system, &
                     ds_print, ds_measure, sdnume, sddyna, sddisc, &
                     sderro, valinc, numins, solalg, solver, &

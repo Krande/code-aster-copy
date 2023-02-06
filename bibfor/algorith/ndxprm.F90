@@ -19,32 +19,31 @@
 ! aslint: disable=W1504
 !
 subroutine ndxprm(modelz, ds_material, carele, ds_constitutive, ds_algopara, &
-                  lischa, numedd, numfix, solveu, ds_system, &
+                  lischa, numedd, solveu, ds_system, &
                   sddisc, sddyna, ds_measure, nume_inst, list_func_acti, &
                   valinc, solalg, meelem, measse, &
                   maprec, matass, faccvg, ldccvg)
 !
     use NonLin_Datastructure_type
     use HHO_type
-    use NonLinear_module, only: isDampMatrCompute
+    use NonLinearDyna_module, only: isDampMatrCompute, compDampMatrix
     use NonLinear_module, only: updateLoadBCMatrix
 !
     implicit none
 !
 #include "asterf_types.h"
+#include "asterfort/asmari.h"
+#include "asterfort/diinst.h"
 #include "asterfort/infdbg.h"
 #include "asterfort/isfonc.h"
 #include "asterfort/ndxmat.h"
 #include "asterfort/ndynlo.h"
-#include "asterfort/nmcmat.h"
+#include "asterfort/nmchex.h"
+#include "asterfort/nmrigi.h"
 #include "asterfort/nmrinc.h"
 #include "asterfort/nmtime.h"
-#include "asterfort/nmxmat.h"
 #include "asterfort/preres.h"
 #include "asterfort/utmess.h"
-#include "asterfort/nmrigi.h"
-#include "asterfort/asmari.h"
-#include "asterfort/nmchex.h"
 !
     type(NL_DS_AlgoPara), intent(in) :: ds_algopara
     integer, intent(in) :: list_func_acti(*), nume_inst
@@ -52,7 +51,7 @@ subroutine ndxprm(modelz, ds_material, carele, ds_constitutive, ds_algopara, &
     type(NL_DS_Material), intent(in) :: ds_material
     character(len=24) :: carele
     type(NL_DS_Measure), intent(inout) :: ds_measure
-    character(len=24) :: numedd, numfix
+    character(len=24) :: numedd
     type(NL_DS_Constitutive), intent(in) :: ds_constitutive
     type(NL_DS_System), intent(in) :: ds_system
     character(len=19) :: sddisc, sddyna, lischa, solveu
@@ -71,7 +70,6 @@ subroutine ndxprm(modelz, ds_material, carele, ds_constitutive, ds_algopara, &
 !
 ! IN  MODELE : MODELE
 ! IN  NUMEDD : NUME_DDL (VARIABLE AU COURS DU CALCUL)
-! IN  NUMFIX : NUME_DDL (FIXE AU COURS DU CALCUL)
 ! In  ds_material      : datastructure for material parameters
 ! IN  CARELE : CARACTERISTIQUES DES ELEMENTS DE STRUCTURE
 ! In  ds_constitutive  : datastructure for constitutive laws management
@@ -105,19 +103,17 @@ subroutine ndxprm(modelz, ds_material, carele, ds_constitutive, ds_algopara, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    aster_logical :: l_update_matr
-    aster_logical :: l_comp_rigi, l_comp_damp, l_asse_rigi, l_first_step
-    aster_logical :: l_neum_undead, lshima, lprmo
+    integer, parameter :: iterNewtPred = 0
+    character(len=16), parameter :: nonLinearOption = 'RIGI_MECA_TANG'
+    aster_logical, parameter :: l_renumber = ASTER_FALSE
+    aster_logical :: l_update_matr, l_first_step
+    aster_logical :: lRigiCompute, lDampCompute, lRigiAssemble
+    aster_logical :: lshima, lprmo
     character(len=16) :: explMatrType
-    character(len=16) :: option_nonlin
     integer :: ifm, niv, ibid
-    integer :: iter_newt
-    integer :: nb_matr
     character(len=19) :: rigid
-    character(len=6) :: list_matr_type(20)
-    character(len=16) :: list_calc_opti(20), list_asse_opti(20)
-    aster_logical :: list_l_asse(20), list_l_calc(20)
     type(HHO_Field) :: hhoField
+    real(kind=8) :: time
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -125,38 +121,28 @@ subroutine ndxprm(modelz, ds_material, carele, ds_constitutive, ds_algopara, &
     if (niv .ge. 2) then
         write (ifm, *) '<MECANONLINE> ... CALCUL MATRICE'
     end if
-!
+
 ! - Initializations
-!
-    call nmchex(measse, 'MEASSE', 'MERIGI', rigid)
-    nb_matr = 0
-    list_matr_type(1:20) = ' '
     faccvg = -1
     ldccvg = -1
-!
-! - Prediction
-!
-    iter_newt = 0
-!
+
+! - Time
+    time = diinst(sddisc, nume_inst-1)
+
 ! - Active functionnalities
-!
     lprmo = ndynlo(sddyna, 'PROJ_MODAL')
-    l_neum_undead = isfonc(list_func_acti, 'NEUM_UNDEAD')
     lshima = ndynlo(sddyna, 'COEF_MASS_SHIFT')
-!
+
 ! - First step ?
-!
     l_first_step = nume_inst .le. 1
-!
+
 ! - Get type of matrix
-!
     explMatrType = ds_algopara%matrix_pred
     if (explMatrType .ne. 'TANGENTE') then
         call utmess('F', 'MECANONLINE5_1')
     end if
-!
+
 ! - Update global matrix ?
-!
     l_update_matr = ASTER_FALSE
     if (l_first_step) then
         if (lprmo) then
@@ -165,36 +151,30 @@ subroutine ndxprm(modelz, ds_material, carele, ds_constitutive, ds_algopara, &
             l_update_matr = ASTER_TRUE
         end if
     end if
-!
-! - Do the damping matrices have to be calculated ?
-!
-    call isDampMatrCompute(sddyna, ASTER_FALSE, l_comp_damp)
-!
-! - Select non-linear option for compute matrices
-!
-    option_nonlin = 'RIGI_MECA_TANG'
-!
+
+! - Do the damping matrices have to be compute ?
+    call isDampMatrCompute(sddyna, l_renumber, lDampCompute)
+
 ! - Do the rigidity matrices have to be calculated/assembled ?
-!
-    l_comp_rigi = ASTER_FALSE
-    l_asse_rigi = ASTER_FALSE
-    if (l_comp_damp) then
-        l_comp_rigi = ASTER_TRUE
+    lRigiCompute = ASTER_FALSE
+    lRigiAssemble = ASTER_FALSE
+    if (lDampCompute) then
+        lRigiCompute = ASTER_TRUE
     end if
     if (lshima .and. l_first_step) then
-        l_comp_rigi = ASTER_TRUE
-        l_asse_rigi = ASTER_TRUE
+        lRigiCompute = ASTER_TRUE
+        lRigiAssemble = ASTER_TRUE
     end if
-!
+
 ! - Compute rigidity elementary matrices / internal forces elementary vectors
-!
-    if (l_comp_rigi) then
+    if (lRigiCompute) then
         call nmrigi(modelz, carele, &
                     ds_material, ds_constitutive, &
-                    list_func_acti, iter_newt, sddyna, ds_measure, ds_system, &
+                    list_func_acti, iterNewtPred, sddyna, ds_measure, ds_system, &
                     valinc, solalg, hhoField, &
-                    option_nonlin, ldccvg)
-        if (l_asse_rigi) then
+                    nonLinearOption, ldccvg)
+        if (lRigiAssemble) then
+            call nmchex(measse, 'MEASSE', 'MERIGI', rigid)
             call asmari(ds_system, meelem, lischa, rigid)
         end if
     end if
@@ -206,29 +186,16 @@ subroutine ndxprm(modelz, ds_material, carele, ds_constitutive, ds_algopara, &
                             ds_material, ds_constitutive, &
                             valinc, solalg, &
                             meelem)
-!
-! - Compute damping (Rayleigh) elementary matrices
-!
-    if (l_comp_damp) then
-        call nmcmat('MEAMOR', ' ', ' ', ASTER_TRUE, &
-                    ASTER_TRUE, nb_matr, list_matr_type, list_calc_opti, list_asse_opti, &
-                    list_l_calc, list_l_asse)
+
+! - Compute damping matrix
+    if (lDampCompute) then
+        call compDampMatrix(modelz, carele, &
+                            ds_material, ds_constitutive, &
+                            time, lischa, numedd, &
+                            ds_system, valinc, meelem, measse)
     end if
-!
-! --- CALCUL ET ASSEMBLAGE DES MATR_ELEM DE LA LISTE
-!
-    if (nb_matr .gt. 0) then
-        call nmxmat(modelz, ds_material, carele, &
-                    ds_constitutive, sddisc, nume_inst, &
-                    valinc, solalg, lischa, &
-                    numedd, numfix, ds_measure, &
-                    nb_matr, list_matr_type, list_calc_opti, &
-                    list_asse_opti, list_l_calc, list_l_asse, &
-                    meelem, measse, ds_system)
-    end if
-!
+
 ! - No error => continue
-!
     if (ldccvg .ne. 1) then
 ! ----- Compute global matrix of system
         if (l_update_matr) then

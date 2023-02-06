@@ -18,7 +18,7 @@
 ! person_in_charge: mickael.abbas at edf.fr
 ! aslint: disable=W1504
 !
-subroutine ndexpl(modele, numedd, numfix, ds_material, carele, &
+subroutine ndexpl(modele, numedd, ds_material, carele, &
                   ds_constitutive, lischa, ds_algopara, fonact, ds_system, &
                   ds_print, ds_measure, sdnume, sddyna, sddisc, &
                   sderro, valinc, numins, solalg, solveu, &
@@ -50,7 +50,7 @@ subroutine ndexpl(modele, numedd, numfix, ds_material, carele, &
     character(len=19) :: measse(*), veasse(*)
     character(len=19) :: lischa
     character(len=19) :: solveu, maprec, matass
-    character(len=24) :: modele, numedd, numfix
+    character(len=24) :: modele, numedd
     type(NL_DS_Constitutive), intent(in) :: ds_constitutive
     type(NL_DS_System), intent(in) :: ds_system
     type(NL_DS_Material), intent(in) :: ds_material
@@ -121,7 +121,7 @@ subroutine ndexpl(modele, numedd, numfix, ds_material, carele, &
 !
 ! --- PREDICTION D'UNE DIRECTION DE DESCENTE
 !
-    call ndxpre(modele, numedd, numfix, ds_material, carele, &
+    call ndxpre(modele, numedd, ds_material, carele, &
                 ds_constitutive, lischa, ds_algopara, solveu, ds_system, &
                 fonact, sddisc, ds_measure, numins, valinc, &
                 solalg, matass, maprec, sddyna, sderro, &
