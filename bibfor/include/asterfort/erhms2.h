@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,12 +20,11 @@
 !
 #include "asterf_types.h"
 !
-interface 
-    subroutine erhms2(perman, ino, nbs, theta, jac,&
+interface
+    subroutine erhms2(ino, nbs, theta, jac,&
                       nx, ny, sielnp, adsip, sielnm,&
                       nbcmp, typmav, tbref1, tbref2, ivois,&
                       tm2h1s)
-        aster_logical :: perman
         integer :: ino
         integer :: nbs
         real(kind=8) :: theta
@@ -42,4 +41,4 @@ interface
         integer :: ivois
         real(kind=8) :: tm2h1s(3)
     end subroutine erhms2
-end interface 
+end interface

@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 ! aslint: disable=W1504
 !
-subroutine caeihm(ds_thm, nomte, l_axi, l_steady, mecani, press1, &
+subroutine caeihm(ds_thm, nomte, l_axi, mecani, press1, &
                   press2, tempe, dimdef, dimcon, ndim, &
                   nno1, nno2, npi, npg, dimuel, &
                   iw, ivf1, idf1, ivf2, idf2, &
@@ -75,7 +75,7 @@ subroutine caeihm(ds_thm, nomte, l_axi, l_steady, mecani, press1, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    aster_logical :: l_axi, l_steady, l_vf
+    aster_logical :: l_axi, l_vf
     integer :: mecani(8), press1(9), press2(9), tempe(5), dimuel
     integer :: ndim, nnos, nno1, nno2, ntrou
     integer :: dimdef, dimcon
@@ -91,14 +91,13 @@ subroutine caeihm(ds_thm, nomte, l_axi, l_steady, mecani, press1, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    l_steady = ASTER_FALSE
     ndim = 2
     l_axi = ASTER_FALSE
     l_vf = ASTER_FALSE
 ! ======================================================================
 ! --- INITIALISATION DES GRANDEURS GENERALISEES SELON MODELISATION -----
 ! ======================================================================
-    call greihm(l_steady, ndim, mecani, press1, press2, &
+    call greihm(ndim, mecani, press1, press2, &
                 tempe, dimdef, dimcon)
 
 !

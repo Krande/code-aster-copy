@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,8 +17,8 @@
 ! --------------------------------------------------------------------
 #include "asterf_types.h"
 !
-interface 
-    subroutine xcaehm(ds_thm, nomte, l_axi, l_steady, type_elem, inte_type,&
+interface
+    subroutine xcaehm(ds_thm, nomte, l_axi, type_elem, inte_type,&
                       mecani, press1, press2, tempe, dimdef,&
                       dimcon, nmec, np1, np2, ndim,&
                       nno, nnos, nnom, npi, npg,&
@@ -61,8 +61,8 @@ interface
         integer :: enrhyd(3)
         integer :: ddlc
         integer :: nfh
-        aster_logical, intent(out) :: l_axi, l_steady
+        aster_logical, intent(out) :: l_axi
         integer, intent(out) :: ndim
         character(len=8), intent(out) :: type_elem(2)
     end subroutine xcaehm
-end interface 
+end interface

@@ -18,7 +18,7 @@
 ! aslint: disable=W1504
 ! person_in_charge: daniele.colombo at ifpen.fr
 !
-subroutine xcaehm(ds_thm, nomte, l_axi, l_steady, type_elem, inte_type, &
+subroutine xcaehm(ds_thm, nomte, l_axi, type_elem, inte_type, &
                   mecani, press1, press2, tempe, dimdef, &
                   dimcon, nmec, np1, np2, ndim, &
                   nno, nnos, nnom, npi, npg, &
@@ -44,7 +44,7 @@ subroutine xcaehm(ds_thm, nomte, l_axi, l_steady, type_elem, inte_type, &
     integer :: npg, npi, nddls, nddlm, ipoids, ivf, idfde
     character(len=16) :: nomte
     character(len=3), intent(out) :: inte_type
-    aster_logical, intent(out) :: l_axi, l_steady
+    aster_logical, intent(out) :: l_axi
     integer, intent(out) :: ndim
     character(len=8), intent(out) :: type_elem(2)
 
@@ -96,7 +96,7 @@ subroutine xcaehm(ds_thm, nomte, l_axi, l_steady, type_elem, inte_type, &
 !
 ! - Get model of finite element
 !
-    call thmGetElemModel(ds_thm, l_axi, l_vf, l_steady, ndim, type_elem)
+    call thmGetElemModel(ds_thm, l_axi, l_vf, ndim, type_elem)
 !
 ! - Get type of integration
 !

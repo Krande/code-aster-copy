@@ -86,7 +86,7 @@ subroutine te0500(option, nomte)
     real(kind=8) :: fluhpx, fluhmx, fluhpy, fluhmy
     real(kind=8) :: tertps
 !
-    aster_logical :: l_axi, l_steady
+    aster_logical :: l_axi
 !
     integer :: codme1(nbre1), codmr1(nbrr1), codme2(nbre2), codmr2(nbrr1), codme3(nbre3), kpg, spt
     integer :: codmr3(nbrr3), codmr4(nbrr3)
@@ -112,7 +112,7 @@ subroutine te0500(option, nomte)
 !
 ! - Get all parameters for current element
 !
-    call thmGetElemPara(ds_thm, l_axi, l_steady, &
+    call thmGetElemPara(ds_thm, l_axi, &
                         type_elem, inte_type, ndim, &
                         mecani, press1, press2, tempe, &
                         dimdep, dimdef, dimcon, dimuel, &

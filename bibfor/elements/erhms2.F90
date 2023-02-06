@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine erhms2(perman, ino, nbs, theta, jac, &
+subroutine erhms2(ino, nbs, theta, jac, &
                   nx, ny, sielnp, adsip, sielnm, &
                   nbcmp, typmav, tbref1, tbref2, ivois, &
                   tm2h1s)
@@ -69,7 +69,6 @@ subroutine erhms2(perman, ino, nbs, theta, jac, &
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/indiis.h"
-    aster_logical :: perman
     integer :: ino, nbs
     integer :: ivois, nbcmp, adsip
     integer :: tbref1(12), tbref2(12)
@@ -100,7 +99,7 @@ subroutine erhms2(perman, ino, nbs, theta, jac, &
     integer :: iconx2, admavp, admavm, adinov, adjnov, admnov
     integer :: jad, jadv, ncher
     integer :: nbnv, i, jno, mno, inov, jnov, mnov
-    integer :: iaux, ibid
+    integer :: iaux
     character(len=2) :: formv, noeuv
 ! =====================================================================
 ! 1.  RECUPERATION SUR LA MAILLE COURANTE AUX NOEUDS INO ET JNO DE :
@@ -116,12 +115,6 @@ subroutine erhms2(perman, ino, nbs, theta, jac, &
 !                 3 --> MNO NOEUD MILIEU S'IL EXISTE
 ! =====================================================================
 !
-    if (.not. perman) then
-        ibid = 1
-    else
-        ibid = 0
-        theta = 1.d0
-    end if
     ta1 = 1.d0-theta
 !
     if (ino .eq. nbs) then
@@ -134,15 +127,15 @@ subroutine erhms2(perman, ino, nbs, theta, jac, &
     sixxp(1) = sielnp(iaux+1)
     siyyp(1) = sielnp(iaux+2)
     sixyp(1) = sielnp(iaux+4)
-    fluxp(1) = sielnp(iaux+adsip+ibid+1+5)
-    fluyp(1) = sielnp(iaux+adsip+ibid+2+5)
+    fluxp(1) = sielnp(iaux+adsip+1+1+5)
+    fluyp(1) = sielnp(iaux+adsip+1+2+5)
 !
     iaux = nbcmp*(jno-1)
     sixxp(2) = sielnp(iaux+1)
     siyyp(2) = sielnp(iaux+2)
     sixyp(2) = sielnp(iaux+4)
-    fluxp(2) = sielnp(iaux+adsip+ibid+1+5)
-    fluyp(2) = sielnp(iaux+adsip+ibid+2+5)
+    fluxp(2) = sielnp(iaux+adsip+1+1+5)
+    fluyp(2) = sielnp(iaux+adsip+1+2+5)
 !
 ! BIEN QUE LA PRESSION NE SOIT CALCULEE QU'AUX NOEUDS SOMMETS, LE
 ! GRADIENT L'EST EGALEMENT AU NOEUD MILIEU, VIA EPSTHM
@@ -158,38 +151,35 @@ subroutine erhms2(perman, ino, nbs, theta, jac, &
 ! BIEN QUE LA PRESSION NE SOIT CALCULEE QU'AUX NOEUDS SOMMETS, LE
 ! GRADIENT L'EST EGALEMENT AU NOEUD MILIEU, VIA EPSTHM
 !
-    fluxp(3) = sielnp(iaux+adsip+ibid+1+5)
-    fluyp(3) = sielnp(iaux+adsip+ibid+2+5)
+    fluxp(3) = sielnp(iaux+adsip+1+1+5)
+    fluyp(3) = sielnp(iaux+adsip+1+2+5)
 !
-    if (.not. perman) then
+    iaux = nbcmp*(ino-1)
+    sixxm(1) = sielnm(iaux+1)
+    siyym(1) = sielnm(iaux+2)
+    sixym(1) = sielnm(iaux+4)
+    fluxm(1) = sielnm(iaux+adsip+1+1+5)
+    fluym(1) = sielnm(iaux+adsip+1+2+5)
 !
-        iaux = nbcmp*(ino-1)
-        sixxm(1) = sielnm(iaux+1)
-        siyym(1) = sielnm(iaux+2)
-        sixym(1) = sielnm(iaux+4)
-        fluxm(1) = sielnm(iaux+adsip+ibid+1+5)
-        fluym(1) = sielnm(iaux+adsip+ibid+2+5)
-!
-        iaux = nbcmp*(jno-1)
-        sixxm(2) = sielnm(iaux+1)
-        siyym(2) = sielnm(iaux+2)
-        sixym(2) = sielnm(iaux+4)
-        fluxm(2) = sielnm(iaux+adsip+ibid+1+5)
-        fluym(2) = sielnm(iaux+adsip+ibid+2+5)
+    iaux = nbcmp*(jno-1)
+    sixxm(2) = sielnm(iaux+1)
+    siyym(2) = sielnm(iaux+2)
+    sixym(2) = sielnm(iaux+4)
+    fluxm(2) = sielnm(iaux+adsip+1+1+5)
+    fluym(2) = sielnm(iaux+adsip+1+2+5)
 !
 ! BIEN QUE LA PRESSION NE SOIT CALCULEE QU'AUX NOEUDS SOMMETS, LE
 ! GRADIENT L'EST EGALEMENT AU NOEUD MILIEU, VIA EPSTHM
 !
-        mno = nbs+ino
+    mno = nbs+ino
 !
-        iaux = nbcmp*(mno-1)
-        sixxm(3) = sielnm(iaux+1)
-        siyym(3) = sielnm(iaux+2)
-        sixym(3) = sielnm(iaux+4)
-        fluxm(3) = sielnm(iaux+adsip+ibid+1+5)
-        fluym(3) = sielnm(iaux+adsip+ibid+2+5)
-!
-    end if
+    iaux = nbcmp*(mno-1)
+    sixxm(3) = sielnm(iaux+1)
+    siyym(3) = sielnm(iaux+2)
+    sixym(3) = sielnm(iaux+4)
+    fluxm(3) = sielnm(iaux+adsip+1+1+5)
+    fluym(3) = sielnm(iaux+adsip+1+2+5)
+
 !
 !
 ! =====================================================================
@@ -215,12 +205,8 @@ subroutine erhms2(perman, ino, nbs, theta, jac, &
 !
 ! ADRESSE (DANS .CELV DE SIELNP) DU DEBUT DU GREL IGREL
     iavalp = jcelvp-1+zi(jceldp-1+zi(jceldp-1+4+igrel)+8)
-    if (.not. perman) then
 ! ADRESSE (DANS .CELV DE SIELNM) DU DEBUT DU GREL IGREL
-        iavalm = jcelvm-1+zi(jceldm-1+zi(jceldm-1+4+igrel)+8)
-    else
-        iavalm = 1
-    end if
+    iavalm = jcelvm-1+zi(jceldm-1+zi(jceldm-1+4+igrel)+8)
 !
 ! 2.2. ----- TESTS SUR LA MAILLE VOISINE ------------------------------
 !
@@ -286,15 +272,15 @@ subroutine erhms2(perman, ino, nbs, theta, jac, &
     sixxpv(1) = zr(iaux+1)
     siyypv(1) = zr(iaux+2)
     sixypv(1) = zr(iaux+4)
-    fluxpv(1) = zr(iaux+adsip+ibid+1+5)
-    fluypv(1) = zr(iaux+adsip+ibid+2+5)
+    fluxpv(1) = zr(iaux+adsip+1+1+5)
+    fluypv(1) = zr(iaux+adsip+1+2+5)
 !
     iaux = admavp+adjnov
     sixxpv(2) = zr(iaux+1)
     siyypv(2) = zr(iaux+2)
     sixypv(2) = zr(iaux+4)
-    fluxpv(2) = zr(iaux+adsip+ibid+1+5)
-    fluypv(2) = zr(iaux+adsip+ibid+2+5)
+    fluxpv(2) = zr(iaux+adsip+1+1+5)
+    fluypv(2) = zr(iaux+adsip+1+2+5)
 !
 ! 2.4. NOEUD MILIEU
 !
@@ -313,52 +299,49 @@ subroutine erhms2(perman, ino, nbs, theta, jac, &
     sixxpv(3) = zr(iaux+1)
     siyypv(3) = zr(iaux+2)
     sixypv(3) = zr(iaux+4)
-    fluxpv(3) = zr(iaux+adsip+ibid+1+5)
-    fluypv(3) = zr(iaux+adsip+ibid+2+5)
-!
-    if (.not. perman) then
+    fluxpv(3) = zr(iaux+adsip+1+1+5)
+    fluypv(3) = zr(iaux+adsip+1+2+5)
 !
 ! CONTRAINTES MECANIQUES ET HYDRAULIQUES AUX NOEUDS
 ! SUR L'ELEMENT VOISIN, POUR LES 2 NOEUDS DE L'ARETE
 !
-        iaux = admavm+adinov
+    iaux = admavm+adinov
 !
-        sixxmv(1) = zr(iaux+1)
-        siyymv(1) = zr(iaux+2)
-        sixymv(1) = zr(iaux+4)
-        fluxmv(1) = zr(iaux+adsip+ibid+1+5)
-        fluymv(1) = zr(iaux+adsip+ibid+2+5)
+    sixxmv(1) = zr(iaux+1)
+    siyymv(1) = zr(iaux+2)
+    sixymv(1) = zr(iaux+4)
+    fluxmv(1) = zr(iaux+adsip+1+1+5)
+    fluymv(1) = zr(iaux+adsip+1+2+5)
 !
-        iaux = admavm+adjnov
+    iaux = admavm+adjnov
 !
-        sixxmv(2) = zr(iaux+1)
-        siyymv(2) = zr(iaux+2)
-        sixymv(2) = zr(iaux+4)
-        fluxmv(2) = zr(iaux+adsip+ibid+1+5)
-        fluymv(2) = zr(iaux+adsip+ibid+2+5)
+    sixxmv(2) = zr(iaux+1)
+    siyymv(2) = zr(iaux+2)
+    sixymv(2) = zr(iaux+4)
+    fluxmv(2) = zr(iaux+adsip+1+1+5)
+    fluymv(2) = zr(iaux+adsip+1+2+5)
 !
 ! NOEUD MILIEU
 !
-        mno = nbs+ino
+    mno = nbs+ino
 !
 ! MEME OPERATION QUE POUR LES EXTREMITES : ON PASSE PAR LE NUMERO GLOBAL
 !
-        ncher = zi(jad-1+mno)
-        mnov = indiis(zi(jadv), ncher, 1, nbnv)
+    ncher = zi(jad-1+mno)
+    mnov = indiis(zi(jadv), ncher, 1, nbnv)
 !
 ! ADRESSE DU NOEUD MNOV DE LA MAILLE VOISINE DE L'ELEMENT COURANT
 !
-        admnov = nbcmp*(mnov-1)
+    admnov = nbcmp*(mnov-1)
 !
-        iaux = admavm+admnov
+    iaux = admavm+admnov
 !
-        sixxmv(3) = zr(iaux+1)
-        siyymv(3) = zr(iaux+2)
-        sixymv(3) = zr(iaux+4)
-        fluxmv(3) = zr(iaux+adsip+ibid+1+5)
-        fluymv(3) = zr(iaux+adsip+ibid+2+5)
-!
-    end if
+    sixxmv(3) = zr(iaux+1)
+    siyymv(3) = zr(iaux+2)
+    sixymv(3) = zr(iaux+4)
+    fluxmv(3) = zr(iaux+adsip+1+1+5)
+    fluymv(3) = zr(iaux+adsip+1+2+5)
+
 !
 ! =====================================================================
 ! 3. --- CALCUL DES SAUTS DES TERMES DIFFUSIFS
@@ -389,22 +372,19 @@ subroutine erhms2(perman, ino, nbs, theta, jac, &
         dmxfin(i) = theta*dmxp(i)
         dmyfin(i) = theta*dmyp(i)
 !
-        if (.not. perman) then
+        dsgxxm(i) = sixxm(i)-sixxmv(i)
+        dsgyym(i) = siyym(i)-siyymv(i)
+        dsgxym(i) = sixym(i)-sixymv(i)
 !
-            dsgxxm(i) = sixxm(i)-sixxmv(i)
-            dsgyym(i) = siyym(i)-siyymv(i)
-            dsgxym(i) = sixym(i)-sixymv(i)
+        dmxm(i) = fluxm(i)-fluxmv(i)
+        dmym(i) = fluym(i)-fluymv(i)
 !
-            dmxm(i) = fluxm(i)-fluxmv(i)
-            dmym(i) = fluym(i)-fluymv(i)
+        intme2(i) = jac(i)*(((dsgxxp(i)-dsgxxm(i))*nx(i)+(dsgxyp(i)-dsgxym(i))*ny(i))**2 &
+                    &+((dsgxyp(i)-dsgxym(i))*nx(i)+(dsgyyp(i)-dsgyym(i))*ny(i))**2)
 !
-            intme2(i) = jac(i)*(((dsgxxp(i)-dsgxxm(i))*nx(i)+(dsgxyp(i)-dsgxym(i))*ny(i))**2 &
-                        &+((dsgxyp(i)-dsgxym(i))*nx(i)+(dsgyyp(i)-dsgyym(i))*ny(i))**2)
-!
-            dmxfin(i) = theta*dmxp(i)+ta1*dmxm(i)
-            dmyfin(i) = theta*dmyp(i)+ta1*dmym(i)
-!
-        end if
+        dmxfin(i) = theta*dmxp(i)+ta1*dmxm(i)
+        dmyfin(i) = theta*dmyp(i)+ta1*dmym(i)
+
 !
 ! =====================================================================
 ! 3.B --- PARTIE HYDRAULIQUE
@@ -420,11 +400,7 @@ subroutine erhms2(perman, ino, nbs, theta, jac, &
 !
     tm2h1s(1) = tm2h1s(1)+((intme1(1)+4.d0*intme1(3)+intme1(2))/3.d0)
     tm2h1s(3) = tm2h1s(3)+((inthyd(1)+4.d0*inthyd(3)+inthyd(2))/3.d0)
-!
-    if (.not. perman) then
-!
-        tm2h1s(2) = tm2h1s(2)+(intme2(1)+4.d0*intme2(3)+intme2(2))/3.d0
-!
-    end if
+    tm2h1s(2) = tm2h1s(2)+(intme2(1)+4.d0*intme2(3)+intme2(2))/3.d0
+
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,12 +17,12 @@
 ! --------------------------------------------------------------------
 #include "asterf_types.h"
 !
-interface 
-    subroutine thmGetElemModel(ds_thm, l_axi_, l_vf_, l_steady_, ndim_, type_elem_)
+interface
+    subroutine thmGetElemModel(ds_thm, l_axi_, l_vf_, ndim_, type_elem_)
         use THM_type
         type(THM_DS), intent(inout) :: ds_thm
-        aster_logical, optional, intent(out) :: l_axi_, l_steady_, l_vf_
+        aster_logical, optional, intent(out) :: l_axi_, l_vf_
         integer, optional, intent(out) :: ndim_
         character(len=8), optional, intent(out) :: type_elem_(2)
     end subroutine thmGetElemModel
-end interface 
+end interface

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,9 +17,9 @@
 ! --------------------------------------------------------------------
 #include "asterf_types.h"
 !
-interface 
+interface
     subroutine fonoda(ds_thm  ,&
-                      jv_mater, ndim  , l_steady, fnoevo,&
+                      jv_mater, ndim  , fnoevo,&
                       mecani  , press1, press2  , tempe ,&
                       dimdef  , dimcon, dt      , congem,&
                       r)
@@ -28,11 +28,10 @@ interface
         integer, intent(in) :: jv_mater
         integer, intent(in) :: ndim
         aster_logical, intent(in) :: fnoevo
-        aster_logical, intent(in) :: l_steady
         integer, intent(in) :: mecani(5), press1(7), press2(7), tempe(5)
         integer, intent(in) :: dimdef, dimcon
         real(kind=8), intent(in) :: dt
         real(kind=8), intent(inout) :: congem(dimcon)
         real(kind=8), intent(out) :: r(dimdef+1)
     end subroutine fonoda
-end interface 
+end interface

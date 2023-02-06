@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine caeihm(ds_thm, nomte, l_axi, l_steady, mecani, press1,&
+    subroutine caeihm(ds_thm, nomte, l_axi, mecani, press1,&
                       press2, tempe, dimdef, dimcon, ndim,&
                       nno1, nno2, npi, npg, dimuel,&
                       iw, ivf1, idf1, ivf2, idf2,&

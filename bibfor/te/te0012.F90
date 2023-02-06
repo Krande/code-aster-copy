@@ -72,6 +72,7 @@ subroutine te0012(option, nomte)
     real(kind=8) :: trace, alfa, wgt, masvit(81), masdep(81)
     real(kind=8) :: vect1(81), vect2(81)
     integer :: mecani(5), press1(7), press2(7), tempe(5), idec
+    aster_logical, parameter :: l_vf = ASTER_FALSE
     type(THM_DS) :: ds_thm
 !
 ! --------------------------------------------------------------------------------------------------
@@ -88,7 +89,7 @@ subroutine te0012(option, nomte)
 !
 ! - Get generalized coordinates
 !
-    call thmGetGene(ds_thm, ASTER_FALSE, ASTER_FALSE, 3, &
+    call thmGetGene(ds_thm, l_vf, 3, &
                     mecani, press1, press2, tempe)
 
     if (lteatt('TYPMOD2', 'THM')) then

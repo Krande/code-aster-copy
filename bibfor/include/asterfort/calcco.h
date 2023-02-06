@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,8 +17,8 @@
 ! --------------------------------------------------------------------
 #include "asterf_types.h"
 !
-interface 
-    subroutine calcco(ds_thm  , l_steady ,&
+interface
+    subroutine calcco(ds_thm  ,&
                       lMatr, lSigm, lVari, lMatrPred, angl_naut,&
                       j_mater ,&
                       ndim    , nbvari   ,&
@@ -32,11 +32,10 @@ interface
                       phi     , rho11    , satur ,nl,&
                       pad     , pvp      , h11   , h12   ,&
                       congem  , congep   ,&
-                      vintm   , vintp    , dsde  ,& 
+                      vintm   , vintp    , dsde  ,&
                       retcom)
         use THM_type
         type(THM_DS), intent(inout) :: ds_thm
-        aster_logical, intent(in) :: l_steady
         aster_logical, intent(in) :: lMatr, lSigm, lVari, lMatrPred
         real(kind=8), intent(in) :: angl_naut(3)
         integer, intent(in) :: j_mater, ndim, nbvari
@@ -55,4 +54,4 @@ interface
         real(kind=8), intent(inout) :: dsde(dimcon, dimdef)
         integer, intent(out)  :: retcom
     end subroutine calcco
-end interface 
+end interface

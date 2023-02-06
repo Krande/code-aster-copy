@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,13 +17,13 @@
 ! --------------------------------------------------------------------
 #include "asterf_types.h"
 !
-interface 
-    subroutine thmGetGene(ds_thm, l_steady, l_vf  , ndim,&
+interface
+    subroutine thmGetGene(ds_thm, l_vf  , ndim,&
                           mecani, press1  , press2, tempe)
         use THM_type
         type(THM_DS), intent(in) :: ds_thm
-        aster_logical, intent(in) :: l_steady, l_vf
+        aster_logical, intent(in) :: l_vf
         integer, intent(in) :: ndim
         integer, intent(out) :: mecani(5), press1(7), press2(7), tempe(5)
     end subroutine thmGetGene
-end interface 
+end interface

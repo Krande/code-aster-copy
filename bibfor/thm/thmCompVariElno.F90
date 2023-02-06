@@ -48,21 +48,19 @@ subroutine thmCompVariElno(ds_thm)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    character(len=16) :: option
+    character(len=16), parameter :: option = 'VARI_ELNO'
     character(len=8) :: elrefe, elref2
     integer :: jv_gano, jv_compo, jv_varielga, jv_varielno
     integer :: ncmp, nvim
-    aster_logical :: l_axi, l_vf, l_steady
+    aster_logical :: l_axi, l_vf
     character(len=3) :: inte_type
     integer :: ndim
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    option = 'VARI_ELNO'
-!
+
 ! - Get model of finite element
-!
-    call thmGetElemModel(ds_thm, l_axi, l_vf, l_steady, ndim)
+    call thmGetElemModel(ds_thm, l_axi, l_vf, ndim)
 !
 ! - Get type of integration
 !

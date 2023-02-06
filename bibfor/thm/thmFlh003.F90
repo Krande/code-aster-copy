@@ -209,9 +209,11 @@ subroutine thmFlh003(ds_thm, lMatr, lSigm, ndim, j_mater, &
             congep(adcp12+i) = 0.d0
             do j = 1, ndim
                 congep(adcp11+i) = congep(adcp11+i)+ &
-                                   rho11*lambd1(1)*tperm(i, j)*(-grap1(j)+rho11*gravity(j))
+                                   rho11*lambd1(1)*tperm(i, j)* &
+                                   (-grap1(j)+rho11*gravity(j))
                 congep(adcp12+i) = congep(adcp12+i)+ &
-                                   rho12*lambd2(1)*tperm(i, j)*(-gp(j)+rho12*gravity(j))
+                                   rho12*lambd2(1)*tperm(i, j)* &
+                                   (-gp(j)+rho12*gravity(j))
             end do
         end do
     end if
@@ -222,19 +224,25 @@ subroutine thmFlh003(ds_thm, lMatr, lSigm, ndim, j_mater, &
         do i = 1, ndim
             do j = 1, ndim
                 dsde(adcp11+i, addep1) = dsde(adcp11+i, addep1)+ &
-                                        dr11p1*lambd1(1)*tperm(i, j)*(-grap1(j)+rho11*gravity(j))+ &
-                                         rho11*lambd1(1)*tperm(i, j)*(dr11p1*gravity(j))+ &
-                                         rho11*lambd1(3)*tperm(i, j)*(-grap1(j)+rho11*gravity(j))
+                                         dr11p1*lambd1(1)*tperm(i, j)* &
+                                         (-grap1(j)+rho11*gravity(j))+ &
+                                         rho11*lambd1(1)*tperm(i, j)* &
+                                         (dr11p1*gravity(j))+ &
+                                         rho11*lambd1(3)*tperm(i, j)* &
+                                         (-grap1(j)+rho11*gravity(j))
                 dsde(adcp11+i, addep1+j) = dsde(adcp11+i, addep1+j)- &
                                            rho11*lambd1(1)*tperm(i, j)
             end do
             do j = 1, ndim
                 dsde(adcp12+i, addep1) = dsde(adcp12+i, addep1)+ &
-                                         dr12p1*lambd2(1)*tperm(i, j)*(-gp(j)+rho12*gravity(j))
+                                         dr12p1*lambd2(1)*tperm(i, j)* &
+                                         (-gp(j)+rho12*gravity(j))
                 dsde(adcp12+i, addep1) = dsde(adcp12+i, addep1)+ &
-                                         rho12*lambd2(3)*tperm(i, j)*(-gp(j)+rho12*gravity(j))
+                                         rho12*lambd2(3)*tperm(i, j)* &
+                                         (-gp(j)+rho12*gravity(j))
                 dsde(adcp12+i, addep1) = dsde(adcp12+i, addep1)+ &
-                                         rho12*lambd2(1)*tperm(i, j)*(dr12p1*gravity(j))
+                                         rho12*lambd2(1)*tperm(i, j)* &
+                                         (dr12p1*gravity(j))
                 dsde(adcp12+i, addep1) = dsde(adcp12+i, addep1)- &
                                          rho12*lambd2(1)*tperm(i, j)*dgpvp1(j)
                 dsde(adcp12+i, addep1+j) = dsde(adcp12+i, addep1+j)- &

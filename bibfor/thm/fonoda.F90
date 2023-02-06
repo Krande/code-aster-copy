@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 !
 subroutine fonoda(ds_thm, &
-                  jv_mater, ndim, l_steady, fnoevo, &
+                  jv_mater, ndim, fnoevo, &
                   mecani, press1, press2, tempe, &
                   dimdef, dimcon, dt, congem, &
                   r)
@@ -33,7 +33,6 @@ subroutine fonoda(ds_thm, &
     integer, intent(in) :: jv_mater
     integer, intent(in) :: ndim
     aster_logical, intent(in) :: fnoevo
-    aster_logical, intent(in) :: l_steady
     integer, intent(in) :: mecani(5), press1(7), press2(7), tempe(5)
     integer, intent(in) :: dimdef, dimcon
     real(kind=8), intent(in) :: dt
@@ -52,7 +51,6 @@ subroutine fonoda(ds_thm, &
 ! In  jv_mater         : coded material address
 ! In  ndim             : dimension of element (2 ou 3)
 ! In  fnoevo           : .true. if compute in non-linear operator (transient terms)
-! In  l_steady         : .true. for steady state
 ! In  mecani           : parameters for mechanic
 ! In  press1           : parameters for hydraulic (first pressure)
 ! In  press1           : parameters for hydraulic (second pressure)
@@ -94,18 +92,12 @@ subroutine fonoda(ds_thm, &
     addete = tempe(2)
     adcote = tempe(3)
     addep2 = press2(3)
-    if (l_steady) then
-        adcp11 = press1(4)-1
-        adcp12 = press1(5)-1
-        adcp21 = press2(4)-1
-        adcp22 = press2(5)-1
-    else
-        adcp11 = press1(4)
-        adcp12 = press1(5)
-        addep2 = press2(3)
-        adcp21 = press2(4)
-        adcp22 = press2(5)
-    end if
+    adcp11 = press1(4)
+    adcp12 = press1(5)
+    addep2 = press2(3)
+    adcp21 = press2(4)
+    adcp22 = press2(5)
+
 !
 ! - Transforms stress with sqrt(2)
 !

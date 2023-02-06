@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,8 +17,8 @@
 ! --------------------------------------------------------------------
 #include "asterf_types.h"
 !
-interface 
-    subroutine comthm(ds_thm   , l_steady ,&
+interface
+    subroutine comthm(ds_thm   , &
                       lMatr    , lSigm    ,&
                       lVari    , lMatrPred,&
                       option   , j_mater  ,&
@@ -29,14 +29,13 @@ interface
                       addeme   , addete   , addep1  , addep2,&
                       kpi      , npg      ,&
                       carcri   ,&
-                      defgem   , defgep   ,& 
-                      congem   , congep   ,& 
-                      vintm    , vintp    ,& 
+                      defgem   , defgep   ,&
+                      congem   , congep   ,&
+                      vintm    , vintp    ,&
                       time_prev, time_curr,&
                       dsde     , gravity  , retcom)
         use THM_type
         type(THM_DS), intent(inout) :: ds_thm
-        aster_logical, intent(in) :: l_steady
         aster_logical, intent(in) :: lMatr, lSigm, lVari, lMatrPred
         character(len=16), intent(in) :: option
         integer, intent(in) :: j_mater
@@ -58,4 +57,4 @@ interface
         real(kind=8), intent(out) :: gravity(3)
         integer, intent(out) :: retcom
     end subroutine comthm
-end interface 
+end interface

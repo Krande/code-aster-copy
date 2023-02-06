@@ -18,7 +18,7 @@
 ! person_in_charge: sylvie.granet at edf.fr
 ! aslint: disable=W1504
 !
-subroutine fnothm(ds_thm, jv_mater, ndim, l_axi, l_steady, fnoevo, &
+subroutine fnothm(ds_thm, jv_mater, ndim, l_axi, fnoevo, &
                   mecani, press1, press2, tempe, &
                   nno, nnos, npi, npg, &
                   elem_coor, deltat, dimdef, dimcon, dimuel, &
@@ -40,7 +40,6 @@ subroutine fnothm(ds_thm, jv_mater, ndim, l_axi, l_steady, fnoevo, &
     integer, intent(in) :: jv_mater
     integer, intent(in) :: ndim
     aster_logical, intent(in) :: l_axi
-    aster_logical, intent(in) :: l_steady
     aster_logical, intent(in) :: fnoevo
     integer, intent(in) :: mecani(5), press1(7), press2(7), tempe(5)
     integer, intent(in) :: nno, nnos
@@ -104,7 +103,6 @@ subroutine fnothm(ds_thm, jv_mater, ndim, l_axi, l_steady, fnoevo, &
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: kpi, i, n
-    real(kind=8) :: dt
     real(kind=8) :: dfdi(20, 3), dfdi2(20, 3), poids, poids2
     integer :: addeme, addete, addep1, addep2
 !
@@ -121,14 +119,6 @@ subroutine fnothm(ds_thm, jv_mater, ndim, l_axi, l_steady, fnoevo, &
     addep1 = press1(3)
     addep2 = press2(3)
     addete = tempe(2)
-!
-! - Time step
-!
-    if (l_steady) then
-        dt = 1.d0
-    else
-        dt = deltat
-    end if
 !
 ! - Loop on Gauss points
 !
@@ -149,9 +139,9 @@ subroutine fnothm(ds_thm, jv_mater, ndim, l_axi, l_steady, fnoevo, &
                     poids, poids2, &
                     b)
 ! ----- Compute stress vector {R}
-        call fonoda(ds_thm, jv_mater, ndim, l_steady, fnoevo, &
+        call fonoda(ds_thm, jv_mater, ndim, fnoevo, &
                     mecani, press1, press2, tempe, &
-                    dimdef, dimcon, dt, congem((kpi-1)*dimcon+1), &
+                    dimdef, dimcon, deltat, congem((kpi-1)*dimcon+1), &
                     r)
 ! ----- Compute residual = [B]^T.{R}
         do i = 1, dimuel

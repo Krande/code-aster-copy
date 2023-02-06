@@ -18,7 +18,7 @@
 ! person_in_charge: sylvie.granet at edf.fr
 ! aslint: disable=W1504
 !
-subroutine thmGetElemPara(ds_thm, l_axi, l_steady, &
+subroutine thmGetElemPara(ds_thm, l_axi, &
                           type_elem, inte_type, ndim, &
                           mecani, press1, press2, tempe, &
                           dimdep, dimdef, dimcon, dimuel, &
@@ -43,7 +43,7 @@ subroutine thmGetElemPara(ds_thm, l_axi, l_steady, &
 #include "asterfort/thmGetElemInfo.h"
 !
     type(THM_DS), intent(inout) :: ds_thm
-    aster_logical, intent(out) :: l_axi, l_steady
+    aster_logical, intent(out) :: l_axi
     character(len=8), intent(out) :: type_elem(2)
     character(len=3), intent(out) :: inte_type
     integer, intent(out) :: ndim
@@ -66,7 +66,6 @@ subroutine thmGetElemPara(ds_thm, l_axi, l_steady, &
 !
 ! IO  ds_thm           : datastructure for THM
 ! Out l_axi            : flag is axisymmetric model
-! Out l_steady         : .true. for steady state
 ! Out type_elem        : type of element
 ! Out inte_type        : type of integration - classical, lumped (D), reduced (R)
 ! Out ndim             : dimension of element (2 ou 3)
@@ -131,7 +130,7 @@ subroutine thmGetElemPara(ds_thm, l_axi, l_steady, &
 !
 ! - Get model of finite element
 !
-    call thmGetElemModel(ds_thm, l_axi, l_vf, l_steady, ndim, type_elem)
+    call thmGetElemModel(ds_thm, l_axi, l_vf, ndim, type_elem)
     ASSERT(.not. l_vf)
 !
 ! - Get type of integration
@@ -140,7 +139,7 @@ subroutine thmGetElemPara(ds_thm, l_axi, l_steady, &
 !
 ! - Get generalized coordinates
 !
-    call thmGetGene(ds_thm, l_steady, l_vf, ndim, &
+    call thmGetGene(ds_thm, l_vf, ndim, &
                     mecani, press1, press2, tempe)
 !
 ! - Get reference elements

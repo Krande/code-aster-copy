@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,7 +27,7 @@ interface
                       vff1, vff2, dffr2, time_prev, time_curr,&
                       deplm, deplp, sigm, sigp, varim,&
                       varip, nomail, wref, geom, ang,&
-                      compor, l_steady, vectu, matuu,&
+                      compor, vectu, matuu,&
                       retcom)
         use THM_type
         type(THM_DS), intent(inout) :: ds_thm
@@ -68,7 +68,6 @@ interface
         real(kind=8) :: geom(ndim, nno2)
         real(kind=8) :: ang(24)
         character(len=16), intent(in) :: compor(*)
-        aster_logical :: l_steady
         real(kind=8) :: vectu(dimuel)
         real(kind=8) :: matuu(dimuel*dimuel)
         integer :: retcom

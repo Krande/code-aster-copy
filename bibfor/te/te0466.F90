@@ -48,7 +48,7 @@ subroutine te0466(option, nomte)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    aster_logical :: l_axi, l_steady, l_vf
+    aster_logical :: l_axi, l_vf
     integer :: jv_poids, jv_func, jv_dfunc, jv_gano, jv_poids2, jv_dfunc2, jv_func2
     integer :: idfdy, igeom, i, j, l, ifluxf
     integer :: ndim, nno, ipg, npi, ires, iflux, itemps, ipres, ipresf
@@ -69,7 +69,7 @@ subroutine te0466(option, nomte)
 !
 ! - Get model of finite element
 !
-    call thmGetElemModel(ds_thm, l_axi_=l_axi, l_vf_=l_vf, l_steady_=l_steady)
+    call thmGetElemModel(ds_thm, l_axi_=l_axi, l_vf_=l_vf)
 !
 ! - Get reference elements
 !

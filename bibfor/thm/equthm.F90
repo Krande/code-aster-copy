@@ -107,7 +107,6 @@ subroutine equthm(ds_thm, option, j_mater, &
     integer :: adcp11, adcp12, adcp21, adcp22
     integer :: adcome, adcote
     real(kind=8) :: gravity(3)
-    aster_logical :: l_steady
     real(kind=8), parameter :: rac2 = sqrt(2.d0)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -117,7 +116,6 @@ subroutine equthm(ds_thm, option, j_mater, &
     r(1:dimdef+1) = 0.d0
     gravity(:) = 0.d0
     retcom = 0
-    l_steady = ASTER_FALSE
 !
 ! - Address in generalized strains vector
 !
@@ -153,9 +151,8 @@ subroutine equthm(ds_thm, option, j_mater, &
     end if
 !
 ! - Compute generalized stresses and derivatives at current Gauss point
-!
 
-    call comthm(ds_thm, l_steady, &
+    call comthm(ds_thm, &
                 lMatr, lSigm, &
                 lVari, lMatrPred, &
                 option, j_mater, &

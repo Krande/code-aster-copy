@@ -19,7 +19,7 @@
 ! person_in_charge: sylvie.granet at edf.fr
 !
 subroutine thmCpl001(ds_thm, &
-                     perman, lMatr, lSigm, lVari, angl_naut, &
+                     lMatr, lSigm, lVari, angl_naut, &
                      ndim, nbvari, &
                      dimdef, dimcon, &
                      adcome, adcote, adcp11, &
@@ -63,7 +63,7 @@ subroutine thmCpl001(ds_thm, &
 #include "asterfort/THM_type.h"
 !
     type(THM_DS), intent(in) :: ds_thm
-    aster_logical, intent(in) :: perman, lMatr, lSigm, lVari
+    aster_logical, intent(in) :: lMatr, lSigm, lVari
     real(kind=8), intent(in) :: angl_naut(3)
     integer, intent(in) :: ndim, nbvari
     integer, intent(in) :: dimdef, dimcon
@@ -342,13 +342,11 @@ subroutine thmCpl001(ds_thm, &
 !
     if (lSigm) then
 ! ----- Update quantity of mass of liquid
-        if (.not. perman) then
-            congep(adcp11) = appmas(m11m, &
-                                    phi, phim, &
-                                    satur, saturm, &
-                                    rho11, rho11m, &
-                                    epsv, epsvm)
-        end if
+        congep(adcp11) = appmas(m11m, &
+                                phi, phim, &
+                                satur, saturm, &
+                                rho11, rho11m, &
+                                epsv, epsvm)
     end if
 !
 ! ==================================================================================================
@@ -373,13 +371,11 @@ subroutine thmCpl001(ds_thm, &
                                              dsdp1(i)*rac2
             end do
 ! --------- Derivative of quantity of mass by volumic mass - Mechanical part (strains)
-            if (.not. perman) then
-                call dmdepv(rho11, satur, tbiot, dmdeps)
-                do i = 1, 6
-                    dsde(adcp11, addeme+ndim-1+i) = dsde(adcp11, addeme+ndim-1+i)+ &
-                                                    dmdeps(i)
-                end do
-            end if
+            call dmdepv(rho11, satur, tbiot, dmdeps)
+            do i = 1, 6
+                dsde(adcp11, addeme+ndim-1+i) = dsde(adcp11, addeme+ndim-1+i)+ &
+                                                dmdeps(i)
+            end do
         end if
 !
 ! ----- Thermic
@@ -410,11 +406,9 @@ subroutine thmCpl001(ds_thm, &
             end if
         end if
 ! ----- Derivative of quantity of mass of liquid by capillary pressure
-        if (.not. perman) then
-            dsde(adcp11, addep1) = dsde(adcp11, addep1)+ &
-                                   dmwdp1(rho11, signe, satur, dsatur, phi, &
-                                          cs, cliq, 1.d0, l_emmag, em)
-        end if
+        dsde(adcp11, addep1) = dsde(adcp11, addep1)+ &
+                               dmwdp1(rho11, signe, satur, dsatur, phi, &
+                                      cs, cliq, 1.d0, l_emmag, em)
     end if
 !
 30  continue

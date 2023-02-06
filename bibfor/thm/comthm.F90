@@ -18,7 +18,7 @@
 ! person_in_charge: sylvie.granet at edf.fr
 ! aslint: disable=W1504, W1306
 !
-subroutine comthm(ds_thm, l_steady, &
+subroutine comthm(ds_thm, &
                   lMatr, lSigm, &
                   lVari, lMatrPred, &
                   option, j_mater, &
@@ -59,7 +59,6 @@ subroutine comthm(ds_thm, l_steady, &
 !
     type(THM_DS), intent(inout) :: ds_thm
     aster_logical, intent(in) :: lMatr, lSigm, lVari, lMatrPred
-    aster_logical, intent(in) :: l_steady
     character(len=16), intent(in) :: option
     integer, intent(in) :: j_mater
     character(len=8), intent(in) :: type_elem(2)
@@ -89,7 +88,6 @@ subroutine comthm(ds_thm, l_steady, &
 ! --------------------------------------------------------------------------------------------------
 !
 ! IO  ds_thm           : datastructure for THM
-! In  l_steady         : flag for no-transient problem
 ! In  option           : name of option- to compute
 ! In  j_mater          : coded material address
 ! In  type_elem        : type of modelization (TYPMOD2)
@@ -177,7 +175,7 @@ subroutine comthm(ds_thm, l_steady, &
 !
 ! - Compute generalized stresses and matrix for coupled quantities
 !
-    call calcco(ds_thm, l_steady, &
+    call calcco(ds_thm, &
                 lMatr, lSigm, lVari, &
                 lMatrPred, angl_naut, &
                 j_mater, &
@@ -247,7 +245,7 @@ subroutine comthm(ds_thm, l_steady, &
 !
     if (ds_thm%ds_elem%l_dof_pre1) then
         call calcfh(ds_thm, &
-                    lMatr, lSigm, l_steady, ndim, j_mater, &
+                    lMatr, lSigm, ndim, j_mater, &
                     dimdef, dimcon, &
                     addep1, addep2, &
                     adcp11, adcp12, adcp21, adcp22, &

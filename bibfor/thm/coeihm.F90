@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 ! aslint: disable=W1306,W1504
 !
-subroutine coeihm(ds_thm, option, l_steady, &
+subroutine coeihm(ds_thm, option, &
                   lSigm, lVari, lMatr, lVect, &
                   j_mater, &
                   time_prev, time_curr, nomail, &
@@ -58,7 +58,6 @@ subroutine coeihm(ds_thm, option, l_steady, &
     real(kind=8), intent(in) :: defgem(1:dimdef), defgep(1:dimdef)
     real(kind=8), intent(in) :: varim(nbvari), time_prev, time_curr
     real(kind=8), intent(in) :: sigm(dimcon)
-    aster_logical, intent(in) :: l_steady
     aster_logical, intent(in) :: lSigm, lVari, lMatr, lVect
     integer, intent(out) :: retcom
     real(kind=8), intent(inout) :: sigp(dimcon), varip(nbvari)
@@ -78,7 +77,6 @@ subroutine coeihm(ds_thm, option, l_steady, &
 !
 ! IO  ds_thm           : datastructure for THM
 ! IN OPTION : OPTION DE CALCUL
-! IN l_steady : l_steadyENT ?
 ! IN IMATE  : MATERIAU CODE
 ! IN COMPOR : COMPORTEMENT
 ! IN CRIT   : CRITERES DE CONVERGENCE LOCAUX
@@ -222,7 +220,7 @@ subroutine coeihm(ds_thm, option, l_steady, &
 !
 ! - Compute generalized stresses and matrix for coupled quantities
 !
-    call calcco(ds_thm, l_steady, &
+    call calcco(ds_thm, &
                 lMatr, lSigm, lVari, lMatrPred, angl_naut, &
                 j_mater, &
                 ndim-1, nbvari, &
@@ -275,7 +273,7 @@ subroutine coeihm(ds_thm, option, l_steady, &
     end do
     if (ds_thm%ds_elem%l_dof_pre1) then
         call calcfh(ds_thm, &
-                    lMatr, lSigm, l_steady, ndim-1, j_mater, &
+                    lMatr, lSigm, ndim-1, j_mater, &
                     dimdef, dimcon, &
                     addep1, addep2, &
                     adcp11, adcp12, adcp21, adcp22, &
@@ -341,11 +339,13 @@ subroutine coeihm(ds_thm, option, l_steady, &
                     do j = 1, ndim-1
                         if (nume_thmc .eq. GAZ) then
                             drde(addep1+i, 1) = drde(addep1+i, 1)+ &
-                                             deltat*3.d0*tlint*rho11/viscg*(-grap1(i)+rho11*pesa(i))
+                                                deltat*3.d0* &
+                                                tlint*rho11/viscg*(-grap1(i)+rho11*pesa(i))
                         end if
                         if (nume_thmc .eq. LIQU_SATU) then
                             drde(addep1+i, 1) = drde(addep1+i, 1)+ &
-                                             deltat*3.d0*tlint*rho11/viscl*(-grap1(i)+rho11*pesa(i))
+                                                deltat*3.d0* &
+                                                tlint*rho11/viscl*(-grap1(i)+rho11*pesa(i))
                         end if
                         drde(addep1+i, addep1) = drde(addep1+i, addep1)+ &
                                                  deltat*ouvh*dsde(adcp11+j, addep1)

@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 ! aslint: disable=W1306,W1504
 !
-subroutine erhmv2(ds_thm, axi, perman, deltat, dimdep, dimdef, &
+subroutine erhmv2(ds_thm, axi, deltat, dimdep, dimdef, &
                   nmec, np1, np2, ndim, nno, &
                   nnos, npg, nddls, nddlm, &
                   dimuel, ipoids, ivf, idfde, ipoid2, &
@@ -101,7 +101,7 @@ subroutine erhmv2(ds_thm, axi, perman, deltat, dimdep, dimdef, &
 ! --------------------------------------------------------------------------------------------------
 !
     type(THM_DS), intent(inout) :: ds_thm
-    aster_logical :: axi, perman
+    aster_logical :: axi
     integer :: dimuel
     integer :: ndim, nno, nnos, dimdep, dimdef, nmec, np1, np2
     integer :: nbcmp, npg, nddls, nddlm, ipoids, ivf, idfde
@@ -196,10 +196,8 @@ subroutine erhmv2(ds_thm, axi, perman, deltat, dimdep, dimdef, &
         do nn = iaux, jaux, dimdep
             grapxp = grapxp+b(addep1+1, nn)*deplp(nn)
             grapyp = grapyp+b(addep1+2, nn)*deplp(nn)
-            if (.not. perman) then
-                grapxm = grapxm+b(addep1+1, nn)*deplm(nn)
-                grapym = grapym+b(addep1+2, nn)*deplm(nn)
-            end if
+            grapxm = grapxm+b(addep1+1, nn)*deplm(nn)
+            grapym = grapym+b(addep1+2, nn)*deplm(nn)
         end do
 !
 ! =====================================================================
@@ -229,15 +227,13 @@ subroutine erhmv2(ds_thm, axi, perman, deltat, dimdep, dimdef, &
             dsxyyp = dsxyyp+sigxyp*dfdi(ii, 2)
             dsyyyp = dsyyyp+sigyyp*dfdi(ii, 2)
             dsxyxp = dsxyxp+sigxyp*dfdi(ii, 1)
-            if (.not. perman) then
-                sigxxm = sielnm(iaux+1)
-                sigyym = sielnm(iaux+2)
-                sigxym = sielnm(iaux+4)
-                dsxxxm = dsxxxm+sigxxm*dfdi(ii, 1)
-                dsxyym = dsxyym+sigxym*dfdi(ii, 2)
-                dsyyym = dsyyym+sigyym*dfdi(ii, 2)
-                dsxyxm = dsxyxm+sigxym*dfdi(ii, 1)
-            end if
+            sigxxm = sielnm(iaux+1)
+            sigyym = sielnm(iaux+2)
+            sigxym = sielnm(iaux+4)
+            dsxxxm = dsxxxm+sigxxm*dfdi(ii, 1)
+            dsxyym = dsxyym+sigxym*dfdi(ii, 2)
+            dsyyym = dsyyym+sigyym*dfdi(ii, 2)
+            dsxyxm = dsxyxm+sigxym*dfdi(ii, 1)
         end do
 !
 ! LA DIVERGENCE DU TENSEUR DES CONTRAINTES EST UN VECTEUR
@@ -245,10 +241,9 @@ subroutine erhmv2(ds_thm, axi, perman, deltat, dimdep, dimdef, &
 !
         dsxp = dsxxxp+dsxyyp
         dsyp = dsxyxp+dsyyyp
-        if (.not. perman) then
-            dsxm = dsxxxm+dsxyym
-            dsym = dsxyxm+dsyyym
-        end if
+        dsxm = dsxxxm+dsxyym
+        dsym = dsxyxm+dsyyym
+
 !
 ! =====================================================================
 ! 2.4. ------ ASSEMBLAGE DES 3 TERMES : -------------------------------
@@ -261,10 +256,9 @@ subroutine erhmv2(ds_thm, axi, perman, deltat, dimdep, dimdef, &
         fory = fovo(2)+fpy+fry(kpi)
         tm2h1v(1) = tm2h1v(1)+poids*((forx+dsxp-biot*grapxp)**2+ &
                                      (fory+dsyp-biot*grapyp)**2)
-        if (.not. perman) then
-            tm2h1v(2) = tm2h1v(2)+poids*((dsxp-dsxm-biot*(grapxp-grapxm))**2+ &
-                                         (dsyp-dsym-biot*(grapyp-grapym))**2)
-        end if
+        tm2h1v(2) = tm2h1v(2)+poids*((dsxp-dsxm-biot*(grapxp-grapxm))**2+ &
+                                     (dsyp-dsym-biot*(grapyp-grapym))**2)
+
 !
 ! =====================================================================
 ! 2.5. TERME VOLUMIQUE DE L'HYDRAULIQUE (CF DOC R)
@@ -284,39 +278,37 @@ subroutine erhmv2(ds_thm, axi, perman, deltat, dimdep, dimdef, &
 !        HYDRAULIQUE NE SONT PAS CALCULES.
 ! =====================================================================
 !
-        if (.not. perman) then
-            divuxp = 0.d0
-            divuyp = 0.d0
-            divuxm = 0.d0
-            divuym = 0.d0
-            do ii = 1, nno
-                if (ii .le. nnos) then
-                    iaux = dimdep*(ii-1)
-                else
-                    iaux = (dimdep-1)*ii+nnos-2
-                end if
-                divuxp = divuxp+deplp(iaux+1)*dfdi(ii, 1)
-                divuyp = divuyp+deplp(iaux+2)*dfdi(ii, 2)
-                divuxm = divuxm+deplm(iaux+1)*dfdi(ii, 1)
-                divuym = divuym+deplm(iaux+2)*dfdi(ii, 2)
-            end do
-            divup = divuxp+divuyp
-            divum = divuxm+divuym
-            pressp = 0.d0
-            pressm = 0.d0
-            iaux = ndim+1
-            jaux = nnos*dimdep
-            do nn = iaux, jaux, dimdep
-                pressp = pressp+b(addep1, nn)*deplp(nn)
-                pressm = pressm+b(addep1, nn)*deplm(nn)
-            end do
-            if (deltat .gt. ovfl) then
-                ter11 = biot*(divup-divum)/deltat
-                ter12 = unsurm*(pressp-pressm)/deltat
-                tm2h1v(3) = tm2h1v(3)+poids2*(ter11+ter12)**2
+        divuxp = 0.d0
+        divuyp = 0.d0
+        divuxm = 0.d0
+        divuym = 0.d0
+        do ii = 1, nno
+            if (ii .le. nnos) then
+                iaux = dimdep*(ii-1)
             else
-                call utmess('F', 'INDICATEUR_31')
+                iaux = (dimdep-1)*ii+nnos-2
             end if
+            divuxp = divuxp+deplp(iaux+1)*dfdi(ii, 1)
+            divuyp = divuyp+deplp(iaux+2)*dfdi(ii, 2)
+            divuxm = divuxm+deplm(iaux+1)*dfdi(ii, 1)
+            divuym = divuym+deplm(iaux+2)*dfdi(ii, 2)
+        end do
+        divup = divuxp+divuyp
+        divum = divuxm+divuym
+        pressp = 0.d0
+        pressm = 0.d0
+        iaux = ndim+1
+        jaux = nnos*dimdep
+        do nn = iaux, jaux, dimdep
+            pressp = pressp+b(addep1, nn)*deplp(nn)
+            pressm = pressm+b(addep1, nn)*deplm(nn)
+        end do
+        if (deltat .gt. ovfl) then
+            ter11 = biot*(divup-divum)/deltat
+            ter12 = unsurm*(pressp-pressm)/deltat
+            tm2h1v(3) = tm2h1v(3)+poids2*(ter11+ter12)**2
+        else
+            call utmess('F', 'INDICATEUR_31')
         end if
     end do
 !

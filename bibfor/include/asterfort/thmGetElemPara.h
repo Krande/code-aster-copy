@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine thmGetElemPara(ds_thm   , l_axi    , l_steady ,&
+    subroutine thmGetElemPara(ds_thm   , l_axi    , &
                               type_elem, inte_type, ndim     ,&
                               mecani   , press1   , press2   , tempe  ,&
                               dimdep   , dimdef   , dimcon   , dimuel ,&
@@ -30,7 +30,7 @@ interface
                               jv_gano)
         use THM_type
         type(THM_DS), intent(inout) :: ds_thm
-        aster_logical, intent(out) :: l_axi, l_steady
+        aster_logical, intent(out) :: l_axi
         character(len=8), intent(out) :: type_elem(2)
         character(len=3), intent(out) :: inte_type
         integer, intent(out) :: ndim
@@ -41,6 +41,6 @@ interface
         integer, intent(out) :: npi, npg
         integer, intent(out) :: jv_func, jv_dfunc, jv_poids
         integer, intent(out) :: jv_func2, jv_dfunc2, jv_poids2
-        integer, intent(out) :: jv_gano     
+        integer, intent(out) :: jv_gano
     end subroutine thmGetElemPara
 end interface

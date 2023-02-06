@@ -52,7 +52,7 @@ subroutine te0472(option, nomte)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    aster_logical :: l_axi, l_steady, l_vf
+    aster_logical :: l_axi, l_vf
     integer :: nno, nnos, kp, npg, ndim, nnom, napre1, napre2, ndim2
     integer :: jv_gano, jv_poids, jv_poids2, jv_func, jv_func2, jv_dfunc, jv_dfunc2
     integer :: ipres, k, kk, i, l, ires, iflux, itemps, iopt, ipresf, ndlnm
@@ -68,7 +68,7 @@ subroutine te0472(option, nomte)
 !
 ! - Get model of finite element
 !
-    call thmGetElemModel(ds_thm, l_axi_=l_axi, l_vf_=l_vf, l_steady_=l_steady)
+    call thmGetElemModel(ds_thm, l_axi_=l_axi, l_vf_=l_vf)
 !
 ! - Get reference elements
 !
@@ -338,11 +338,7 @@ subroutine te0472(option, nomte)
                 end if
                 do i = 1, nnos
                     l = 3*(i-1)-1
-                    if (.not. l_steady) then
-                        zr(ires+l+3) = zr(ires+l+3)-poids*deltat*flu1*zr(jv_func2+kk+i-1)
-                    else
-                        zr(ires+l+3) = zr(ires+l+3)-poids*flu1*zr(jv_func2+kk+i-1)
-                    end if
+                    zr(ires+l+3) = zr(ires+l+3)-poids*deltat*flu1*zr(jv_func2+kk+i-1)
                 end do
             end if
 !

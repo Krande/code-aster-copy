@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,9 +17,9 @@
 ! --------------------------------------------------------------------
 #include "asterf_types.h"
 !
-interface 
+interface
     subroutine refthm(ds_thm   ,&
-                      jv_mater , ndim     , l_axi    , l_steady , fnoevo ,&
+                      jv_mater , ndim     , l_axi    , fnoevo ,&
                       mecani   , press1   , press2   , tempe    ,&
                       nno      , nnos     , npi      , npg      ,&
                       elem_coor, dt       , dimdef   , dimcon   , dimuel ,&
@@ -32,7 +32,6 @@ interface
         integer, intent(in) :: jv_mater
         integer, intent(in) :: ndim
         aster_logical, intent(in) :: l_axi
-        aster_logical, intent(in) :: l_steady
         aster_logical, intent(in) :: fnoevo
         integer, intent(in) :: mecani(5), press1(7), press2(7), tempe(5)
         integer, intent(in) :: nno, nnos
@@ -48,4 +47,4 @@ interface
         real(kind=8), intent(out) :: r(1:dimdef+1)
         real(kind=8), intent(out) :: vectu(dimuel)
     end subroutine refthm
-end interface 
+end interface

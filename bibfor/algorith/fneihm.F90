@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 ! aslint: disable=W1306,W1504
 !
-subroutine fneihm(ds_thm, fnoevo, deltat, perman, nno1, nno2, &
+subroutine fneihm(ds_thm, fnoevo, deltat, nno1, nno2, &
                   npi, npg, wref, iu, ip, &
                   ipf, iq, vff1, vff2, dffr2, &
                   geom, ang, congem, r, vectu, &
@@ -33,7 +33,7 @@ subroutine fneihm(ds_thm, fnoevo, deltat, perman, nno1, nno2, &
 #include "asterfort/matthm.h"
 !
     type(THM_DS), intent(in) :: ds_thm
-    aster_logical :: fnoevo, perman, axi
+    aster_logical :: fnoevo, axi
     integer :: dimdef, dimcon, nno1, nno2
     integer :: dimuel, ndim
     integer :: npi, npg, mecani(8), press1(9), press2(9)
@@ -80,7 +80,7 @@ subroutine fneihm(ds_thm, fnoevo, deltat, perman, nno1, nno2, &
 ! ======================================================================
     integer :: adcome, adcp11, addlh1, adcop1, adcop2
     integer :: kpi, i, n
-    real(kind=8) :: dt, wi, q(dimdef, dimuel)
+    real(kind=8) :: wi, q(dimdef, dimuel)
 !
 ! ======================================================================
 ! --- DETERMINATION DES VARIABLES CARACTERISANT LE MILIEU --------------
@@ -94,12 +94,6 @@ subroutine fneihm(ds_thm, fnoevo, deltat, perman, nno1, nno2, &
     adcop1 = press1(7)
     addep2 = press2(3)
     adcop2 = press2(6)
-!
-    if (perman) then
-        dt = 1.d0
-    else
-        dt = deltat
-    end if
 !
 ! ======================================================================
 ! --- INITIALISATION DE VECTU ------------------------------------------
@@ -130,7 +124,7 @@ subroutine fneihm(ds_thm, fnoevo, deltat, perman, nno1, nno2, &
                     geom, ang, wi, q)
 !
 ! ======================================================================
-        call fonoei(ds_thm, ndim, dt, fnoevo, dimdef, dimcon, &
+        call fonoei(ds_thm, ndim, deltat, fnoevo, dimdef, dimcon, &
                     addeme, &
                     addep1, addep2, addlh1, adcome, &
                     adcp11, &

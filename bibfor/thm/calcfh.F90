@@ -19,7 +19,7 @@
 ! aslint: disable=W1504
 !
 subroutine calcfh(ds_thm, &
-                  lMatr, lSigm, l_steady, ndim, j_mater, &
+                  lMatr, lSigm, ndim, j_mater, &
                   dimdef, dimcon, &
                   addep1, addep2, &
                   adcp11, adcp12, adcp21, adcp22, &
@@ -47,7 +47,7 @@ subroutine calcfh(ds_thm, &
 #include "asterfort/thmFlh010.h"
 !
     type(THM_DS), intent(in) :: ds_thm
-    aster_logical, intent(in) :: lMatr, lSigm, l_steady
+    aster_logical, intent(in) :: lMatr, lSigm
     integer, intent(in) :: j_mater
     integer, intent(in) :: ndim, dimdef, dimcon
     integer, intent(in) :: addeme, addep1, addep2, addete, adcp11, adcp12, adcp21, adcp22
@@ -103,13 +103,13 @@ subroutine calcfh(ds_thm, &
 !
     select case (ds_thm%ds_behaviour%nume_thmc)
     case (LIQU_SATU)
-        call thmFlh001(ds_thm, lMatr, lSigm, l_steady, ndim, &
+        call thmFlh001(ds_thm, lMatr, lSigm, ndim, &
                        dimdef, dimcon, &
                        addep1, adcp11, addeme, addete, &
                        grad_p1, rho11, gravity, tperm, &
                        congep, dsde)
     case (GAZ)
-        call thmFlh002(ds_thm, lMatr, lSigm, l_steady, ndim, &
+        call thmFlh002(ds_thm, lMatr, lSigm, ndim, &
                        dimdef, dimcon, &
                        addep1, adcp11, addeme, addete, &
                        temp, p1, grad_p1, &
@@ -125,7 +125,7 @@ subroutine calcfh(ds_thm, &
                        satur, dsatur, gravity, tperm, &
                        congep, dsde)
     case (LIQU_VAPE_GAZ)
-        call thmFlh004(ds_thm, lMatr, lSigm, l_steady, ndim, j_mater, &
+        call thmFlh004(ds_thm, lMatr, lSigm, ndim, j_mater, &
                        dimdef, dimcon, &
                        addep1, addep2, adcp11, adcp12, adcp21, &
                        addeme, addete, &
@@ -145,7 +145,7 @@ subroutine calcfh(ds_thm, &
                        satur, dsatur, gravity, tperm, &
                        congep, dsde)
     case (LIQU_GAZ_ATM)
-        call thmFlh006(ds_thm, lMatr, lSigm, l_steady, ndim, j_mater, &
+        call thmFlh006(ds_thm, lMatr, lSigm, ndim, j_mater, &
                        dimdef, dimcon, &
                        addep1, adcp11, &
                        addeme, addete, &
@@ -155,7 +155,7 @@ subroutine calcfh(ds_thm, &
                        satur, dsatur, gravity, tperm, &
                        congep, dsde)
     case (LIQU_AD_GAZ_VAPE)
-        call thmFlh009(ds_thm, lMatr, lSigm, l_steady, ndim, j_mater, &
+        call thmFlh009(ds_thm, lMatr, lSigm, ndim, j_mater, &
                        dimdef, dimcon, &
                        addep1, addep2, adcp11, adcp12, adcp21, adcp22, &
                        addeme, addete, &
@@ -165,7 +165,7 @@ subroutine calcfh(ds_thm, &
                        satur, dsatur, gravity, tperm, &
                        congep, dsde)
     case (LIQU_AD_GAZ)
-        call thmFlh010(ds_thm, lMatr, lSigm, l_steady, ndim, j_mater, &
+        call thmFlh010(ds_thm, lMatr, lSigm, ndim, j_mater, &
                        dimdef, dimcon, &
                        addep1, addep2, adcp11, adcp12, adcp21, adcp22, &
                        addeme, addete, &

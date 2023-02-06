@@ -26,7 +26,7 @@ subroutine aseihm(ds_thm, option, &
                   vff1, vff2, dffr2, time_prev, time_curr, &
                   deplm, deplp, sigm, sigp, varim, &
                   varip, nomail, wref, geom, ang, &
-                  compor, l_steady, vectu, matuu, &
+                  compor, vectu, matuu, &
                   retcom)
 !
     use THM_type
@@ -112,7 +112,7 @@ subroutine aseihm(ds_thm, option, &
     real(kind=8) :: sigm(dimcon, npi), varim(nbvari, npi)
     character(len=8) :: nomail
     character(len=16) :: option
-    aster_logical :: l_axi, l_steady
+    aster_logical :: l_axi
     character(len=16), intent(in) :: compor(*)
 !
 ! - VARIABLES SORTIE
@@ -205,7 +205,7 @@ subroutine aseihm(ds_thm, option, &
 ! --- INTEGRATION DES LOIS DE COMPORTEMENT ----------------------------
 ! =====================================================================
 !
-        call coeihm(ds_thm, option, l_steady, &
+        call coeihm(ds_thm, option, &
                     lSigm, lVari, lMatr, lVect, &
                     j_mater, &
                     time_prev, time_curr, nomail, &

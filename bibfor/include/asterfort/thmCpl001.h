@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,12 +17,12 @@
 ! --------------------------------------------------------------------
 #include "asterf_types.h"
 !
-interface 
+interface
     subroutine thmCpl001(ds_thm,&
-                         perman, lMatr, lSigm, lVari, angl_naut,&
+                         lMatr, lSigm, lVari, angl_naut,&
                          ndim  , nbvari, &
                          dimdef, dimcon,&
-                         adcome, adcote, adcp11,& 
+                         adcome, adcote, adcp11,&
                          addeme, addete, addep1,&
                          temp  ,&
                          dtemp , dp1   ,&
@@ -34,11 +34,11 @@ interface
                          retcom)
         use THM_type
         type(THM_DS), intent(in) :: ds_thm
-        aster_logical, intent(in) :: perman, lMatr, lSigm, lVari
+        aster_logical, intent(in) :: lMatr, lSigm, lVari
         real(kind=8), intent(in) :: angl_naut(3)
         integer, intent(in) :: ndim, nbvari
         integer, intent(in) :: dimdef, dimcon
-        integer, intent(in) :: adcome, adcote, adcp11 
+        integer, intent(in) :: adcome, adcote, adcp11
         integer, intent(in) :: addeme, addete, addep1
         real(kind=8), intent(in) :: temp
         real(kind=8), intent(in) :: dtemp, dp1
@@ -51,4 +51,4 @@ interface
         real(kind=8), intent(inout) :: dsde(dimcon, dimdef)
         integer, intent(out) :: retcom
     end subroutine thmCpl001
-end interface 
+end interface

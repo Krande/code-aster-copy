@@ -156,9 +156,11 @@ subroutine thmFlh005(ds_thm, lMatr, lSigm, ndim, j_mater, &
             congep(adcp21+i) = 0.d0
             do j = 1, ndim
                 congep(adcp11+i) = congep(adcp11+i)+ &
-                                   rho11*lambd1(1)*tperm(i, j)*(-grap2(j)+grap1(j)+rho11*gravity(j))
+                                   rho11*lambd1(1)*tperm(i, j)* &
+                                   (-grap2(j)+grap1(j)+rho11*gravity(j))
                 congep(adcp21+i) = congep(adcp21+i)+ &
-                                   rho21*lambd2(1)*tperm(i, j)*(-grap2(j)+rho21*gravity(j))
+                                   rho21*lambd2(1)*tperm(i, j)* &
+                                   (-grap2(j)+rho21*gravity(j))
             end do
         end do
     end if
@@ -169,15 +171,19 @@ subroutine thmFlh005(ds_thm, lMatr, lSigm, ndim, j_mater, &
         do i = 1, ndim
             do j = 1, ndim
                 dsde(adcp11+i, addep1) = dsde(adcp11+i, addep1)+ &
-                                  dr11p1*lambd1(1)*tperm(i, j)*(-grap2(j)+grap1(j)+rho11*gravity(j))
+                                         dr11p1*lambd1(1)*tperm(i, j)* &
+                                         (-grap2(j)+grap1(j)+rho11*gravity(j))
                 dsde(adcp11+i, addep1) = dsde(adcp11+i, addep1)+ &
-                                   rho11*lambd1(3)*tperm(i, j)*(-grap2(j)+grap1(j)+rho11*gravity(j))
+                                         rho11*lambd1(3)*tperm(i, j)* &
+                                         (-grap2(j)+grap1(j)+rho11*gravity(j))
                 dsde(adcp11+i, addep1) = dsde(adcp11+i, addep1)+ &
                                          rho11*lambd1(1)*tperm(i, j)*dr11p1*gravity(j)
                 dsde(adcp11+i, addep2) = dsde(adcp11+i, addep2)+ &
-                                  dr11p2*lambd1(1)*tperm(i, j)*(-grap2(j)+grap1(j)+rho11*gravity(j))
+                                         dr11p2*lambd1(1)*tperm(i, j)* &
+                                         (-grap2(j)+grap1(j)+rho11*gravity(j))
                 dsde(adcp11+i, addep2) = dsde(adcp11+i, addep2)+ &
-                                   rho11*lambd1(4)*tperm(i, j)*(-grap2(j)+grap1(j)+rho11*gravity(j))
+                                         rho11*lambd1(4)*tperm(i, j)* &
+                                         (-grap2(j)+grap1(j)+rho11*gravity(j))
                 dsde(adcp11+i, addep2) = dsde(adcp11+i, addep2)+ &
                                          rho11*lambd1(1)*tperm(i, j)*dr11p2*gravity(j)
                 dsde(adcp11+i, addep1+j) = dsde(adcp11+i, addep1+j)+ &
@@ -187,13 +193,16 @@ subroutine thmFlh005(ds_thm, lMatr, lSigm, ndim, j_mater, &
             end do
             do j = 1, ndim
                 dsde(adcp21+i, addep1) = dsde(adcp21+i, addep1)+ &
-                                         rho21*lambd2(3)*tperm(i, j)*(-grap2(j)+rho21*gravity(j))
+                                         rho21*lambd2(3)*tperm(i, j)* &
+                                         (-grap2(j)+rho21*gravity(j))
             end do
             do j = 1, ndim
                 dsde(adcp21+i, addep2) = dsde(adcp21+i, addep2)+ &
-                                         dr21p2*lambd2(1)*tperm(i, j)*(-grap2(j)+rho21*gravity(j))
+                                         dr21p2*lambd2(1)*tperm(i, j)* &
+                                         (-grap2(j)+rho21*gravity(j))
                 dsde(adcp21+i, addep2) = dsde(adcp21+i, addep2)+ &
-                                         rho21*lambd2(4)*tperm(i, j)*(-grap2(j)+rho21*gravity(j))
+                                         rho21*lambd2(4)*tperm(i, j)* &
+                                         (-grap2(j)+rho21*gravity(j))
                 dsde(adcp21+i, addep2) = dsde(adcp21+i, addep2)+ &
                                          rho21*lambd2(1)*tperm(i, j)*dr21p2*gravity(j)
             end do
@@ -205,28 +214,34 @@ subroutine thmFlh005(ds_thm, lMatr, lSigm, ndim, j_mater, &
                 do j = 1, 3
                     do k = 1, ndim
                         dsde(adcp11+i, addeme+ndim-1+j) = dsde(adcp11+i, addeme+ndim-1+j)+ &
-                                 (rho11*lambd1(2)*tperm(i, k)*(-grap2(k)+grap1(k)+rho11*gravity(k)))
+                                                          (rho11*lambd1(2)*tperm(i, k)* &
+                                                           (-grap2(k)+grap1(k)+rho11*gravity(k)))
                     end do
                     do k = 1, ndim
                         dsde(adcp21+i, addeme+ndim-1+j) = dsde(adcp21+i, addeme+ndim-1+j)+ &
-                                            rho21*lambd2(2)*tperm(i, k)*(-grap2(k)+rho21*gravity(k))
+                                                          rho21*lambd2(2)*tperm(i, k)* &
+                                                          (-grap2(k)+rho21*gravity(k))
                     end do
                 end do
             end if
             if (ds_thm%ds_elem%l_dof_ther) then
                 do j = 1, ndim
                     dsde(adcp11+i, addete) = dsde(adcp11+i, addete)+ &
-                                   dr11t*lambd1(1)*tperm(i, j)*(-grap2(j)+grap1(j)+rho11*gravity(j))
+                                             dr11t*lambd1(1)*tperm(i, j)* &
+                                             (-grap2(j)+grap1(j)+rho11*gravity(j))
                     dsde(adcp11+i, addete) = dsde(adcp11+i, addete)+ &
-                                   rho11*lambd1(5)*tperm(i, j)*(-grap2(j)+grap1(j)+rho11*gravity(j))
+                                             rho11*lambd1(5)*tperm(i, j)* &
+                                             (-grap2(j)+grap1(j)+rho11*gravity(j))
                     dsde(adcp11+i, addete) = dsde(adcp11+i, addete)+ &
                                              rho11*lambd1(1)*tperm(i, j)*(dr11t*gravity(j))
                 end do
                 do j = 1, ndim
                     dsde(adcp21+i, addete) = dsde(adcp21+i, addete)+ &
-                                            dr21t*lambd2(1)*tperm(i, j)*(-grap2(j)+rho21*gravity(j))
+                                             dr21t*lambd2(1)*tperm(i, j)* &
+                                             (-grap2(j)+rho21*gravity(j))
                     dsde(adcp21+i, addete) = dsde(adcp21+i, addete)+ &
-                                            rho21*lambd2(5)*tperm(i, j)*(-grap2(j)+rho21*gravity(j))
+                                             rho21*lambd2(5)*tperm(i, j)* &
+                                             (-grap2(j)+rho21*gravity(j))
                     dsde(adcp21+i, addete) = dsde(adcp21+i, addete)+ &
                                              rho21*lambd2(1)*tperm(i, j)*(dr21t*gravity(j))
                 end do

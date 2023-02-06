@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: sylvie.granet at edf.fr
 !
-subroutine thmGetElemPara_vf(ds_thm, l_axi, l_steady, l_vf, &
+subroutine thmGetElemPara_vf(ds_thm, l_axi, l_vf, &
                              type_elem, ndim, &
                              mecani, press1, press2, tempe, &
                              dimdef, dimcon, dimuel, &
@@ -36,7 +36,7 @@ subroutine thmGetElemPara_vf(ds_thm, l_axi, l_steady, l_vf, &
 #include "asterfort/elrefe_info.h"
 !
     type(THM_DS), intent(inout) :: ds_thm
-    aster_logical, intent(out) :: l_axi, l_steady, l_vf
+    aster_logical, intent(out) :: l_axi, l_vf
     character(len=8), intent(out) :: type_elem(2)
     integer, intent(out) :: ndim
     integer, intent(out) :: mecani(5), press1(7), press2(7), tempe(5)
@@ -54,7 +54,6 @@ subroutine thmGetElemPara_vf(ds_thm, l_axi, l_steady, l_vf, &
 ! IO  ds_thm           : datastructure for THM
 ! Out l_axi            : flag is axisymmetric model
 ! Out l_vf             : flag for finite volume
-! Out l_steady         : .true. for steady state
 ! Out type_elem        : type of element
 ! Out ndim             : dimension of element (2 ou 3)
 ! Out mecani           : parameters for mechanic
@@ -103,12 +102,12 @@ subroutine thmGetElemPara_vf(ds_thm, l_axi, l_steady, l_vf, &
 !
 ! - Get model of finite element
 !
-    call thmGetElemModel(ds_thm, l_axi, l_vf, l_steady, ndim, type_elem)
+    call thmGetElemModel(ds_thm, l_axi, l_vf, ndim, type_elem)
     ASSERT(l_vf)
 !
 ! - Get generalized coordinates
 !
-    call thmGetGene(ds_thm, l_steady, l_vf, ndim, &
+    call thmGetGene(ds_thm, l_vf, ndim, &
                     mecani, press1, press2, tempe)
 !
 ! - Get dimensions of generalized vectors

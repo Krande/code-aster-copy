@@ -86,7 +86,7 @@ subroutine te0588(option, nomte)
     character(len=8) :: typmod(2)
     character(len=16) :: phenom, elref
     real(kind=8) :: rho(1), rbid(1)
-    aster_logical :: axi, perman, fnoevo
+    aster_logical :: axi, fnoevo
     type(THM_DS) :: ds_thm
 ! =====================================================================
 !  CETTE ROUTINE FAIT UN CALCUL EN HM AVEC XFEM
@@ -170,7 +170,7 @@ subroutine te0588(option, nomte)
 ! INITIALISATION POUR XFEM
 !
     call xhmini(nomte, nfh, ddld, ddlm, ddlp, nfiss, ddlc, contac)
-    call xcaehm(ds_thm, nomte, axi, perman, typmod, modint, &
+    call xcaehm(ds_thm, nomte, axi, typmod, modint, &
                 mecani, press1, press2, tempe, dimdef, &
                 dimcon, nmec, np1, np2, ndim, &
                 nno, nnos, nnom, npi, npg, &

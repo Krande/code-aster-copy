@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,10 +17,10 @@
 ! --------------------------------------------------------------------
 #include "asterf_types.h"
 !
-interface 
+interface
     subroutine assthm(ds_thm   , option   , j_mater  ,&
                       lMatr    , lSigm    , lVect    ,&
-                      lVari    , lMatrPred, l_axi    , l_steady ,&
+                      lVari    , lMatrPred, l_axi    ,&
                       typmod   , inte_type, angl_naut,&
                       ndim     , nbvari   ,&
                       nno      , nnos     , npg      , npi      ,&
@@ -42,7 +42,7 @@ interface
         character(len=16), intent(in) :: option
         integer, intent(in) :: j_mater
         aster_logical, intent(in) :: lMatr, lSigm, lVari, lMatrPred, lVect
-        aster_logical, intent(in)  :: l_axi, l_steady
+        aster_logical, intent(in)  :: l_axi
         character(len=8), intent(in) :: typmod(2)
         character(len=3), intent(in) :: inte_type
         real(kind=8), intent(in)  :: angl_naut(3)

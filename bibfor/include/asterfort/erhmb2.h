@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,20 +15,17 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-!
 !
 #include "asterf_types.h"
 !
-interface 
-    subroutine erhmb2(perman, ino, nbs, ndim, theta,&
+interface
+    subroutine erhmb2(ino, nbs, ndim, theta,&
                       instpm, jac, nx, ny, tx,&
                       ty, nbcmp, geom, ivois, sielnp,&
                       sielnm, adsip, iagd, tbref2, iade2,&
                       iava2, ncmpm2, iaptm2, iade3, iava3,&
                       ncmpm3, iaptm3, tm2h1b)
         integer :: ndim
-        aster_logical :: perman
         integer :: ino
         integer :: nbs
         real(kind=8) :: theta
@@ -56,4 +53,4 @@ interface
         integer :: iaptm3
         real(kind=8) :: tm2h1b(3)
     end subroutine erhmb2
-end interface 
+end interface

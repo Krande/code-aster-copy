@@ -4639,25 +4639,6 @@ phen.add(
 )
 
 phen.add(
-    "D_PLAN_HM_P",
-    Modelisation(
-        dim=(2, 2),
-        code="DHB",
-        attrs=(
-            (AT.TYPMOD, "D_PLAN"),
-            (AT.TYPMOD2, "THM"),
-            (AT.TYPMOD3, "STEADY"),
-            (AT.MECA, "OUI"),
-            (AT.THER, "NON"),
-            (AT.HYDR1, "1"),
-            (AT.HYDR2, "0"),
-            (AT.D_PLAN, "OUI"),
-        ),
-        elements=((MT.QUAD8, EL.HM_DPQ8_P), (MT.TRIA6, EL.HM_DPTR6_P), (MT.SEG3, EL.HM_DPSE3_P)),
-    ),
-)
-
-phen.add(
     "D_PLAN_HM_SI",
     Modelisation(
         dim=(2, 2),

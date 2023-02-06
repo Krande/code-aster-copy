@@ -16,14 +16,13 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine greihm(perman, ndim, mecani, press1, press2, &
+subroutine greihm(ndim, mecani, press1, press2, &
                   tempe, dimdef, dimcon)
     implicit none
 #include "asterf_types.h"
 #include "asterfort/lteatt.h"
 #include "asterfort/assert.h"
 !
-    aster_logical :: perman
     integer :: mecani(8), press1(9), press2(9), tempe(5)
     integer :: dimdef, dimcon
     integer :: ndim
@@ -96,8 +95,6 @@ subroutine greihm(perman, ndim, mecani, press1, press2, &
 !   TEMPE(4)  = NOMBRE DE DEFORMATIONS THERMIQUES
 !   TEMPE(5)  = NOMBRE DE CONTRAINTES THERMIQUES
 !
-    integer :: iaux
-!
 !====
 ! 1. REPERAGE DES CALCULS A FAIRE : MECANIQUE, HYDRAULIQUE, ETC.
 !====
@@ -139,18 +136,9 @@ subroutine greihm(perman, ndim, mecani, press1, press2, &
         mecani(8) = ndim
     end if
 !
-!  EN MODE PERMANENT POUR LES PROBLEMES HYDRAULIQUES ET/OU THERMIQUE,
-!  IL N'Y A PLUS DE VARIABLES SCALAIRES. IL NE RESTE QUE LES FLUX.
-!
-    if (perman) then
-        iaux = 0
-    else
-        iaux = 1
-    end if
-!
     if (press1(1) .eq. 1) then
         press1(8) = ndim
-        press1(9) = iaux+ndim-1
+        press1(9) = ndim
         if (tempe(1) .eq. 1) press1(9) = press1(9)+1
     else
         press1(8) = 0
@@ -159,7 +147,7 @@ subroutine greihm(perman, ndim, mecani, press1, press2, &
 !
     if (press2(1) .eq. 1) then
         press2(7) = ndim
-        press2(8) = iaux+ndim-1
+        press2(8) = ndim
         if (tempe(1) .eq. 1) press2(8) = press2(8)+1
     else
         press2(7) = 0

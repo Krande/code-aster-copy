@@ -52,7 +52,7 @@ subroutine thmCompSiefElno(ds_thm)
     character(len=8) :: elrefe, elref2
     integer :: jv_sigm, jv_sigmelno, nvim, jv_gano
     integer :: dimdep, dimdef, dimcon
-    aster_logical :: l_axi, l_vf, l_steady
+    aster_logical :: l_axi, l_vf
     character(len=3) :: inte_type
     integer :: ndim
     integer :: mecani(5), press1(7), press2(7), tempe(5)
@@ -63,7 +63,7 @@ subroutine thmCompSiefElno(ds_thm)
 !
 ! - Get model of finite element
 !
-    call thmGetElemModel(ds_thm, l_axi, l_vf, l_steady, ndim)
+    call thmGetElemModel(ds_thm, l_axi, l_vf, ndim)
 !
 ! - Get type of integration
 !
@@ -71,7 +71,7 @@ subroutine thmCompSiefElno(ds_thm)
 !
 ! - Get generalized coordinates
 !
-    call thmGetGene(ds_thm, l_steady, l_vf, ndim, &
+    call thmGetGene(ds_thm, l_vf, ndim, &
                     mecani, press1, press2, tempe)
     nvim = mecani(5)
 !

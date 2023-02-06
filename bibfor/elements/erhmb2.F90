@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine erhmb2(perman, ino, nbs, ndim, theta, &
+subroutine erhmb2(ino, nbs, ndim, theta, &
                   instpm, jac, nx, ny, tx, &
                   ty, nbcmp, geom, ivois, sielnp, &
                   sielnm, adsip, iagd, tbref2, iade2, &
@@ -98,7 +98,6 @@ subroutine erhmb2(perman, ino, nbs, ndim, theta, &
 #include "asterfort/fointe.h"
 #include "asterfort/r8inir.h"
 #include "asterfort/utmess.h"
-    aster_logical :: perman
     integer :: ino, nbs, ndim
     real(kind=8) :: jac(3), nx(3), ny(3), tx(3), ty(3)
     integer :: nbcmp, ivois, iagd
@@ -113,7 +112,7 @@ subroutine erhmb2(perman, ino, nbs, ndim, theta, &
 !
     aster_logical :: flagm, flagh
     integer :: imav, ient2, numgd2, ient3, numgd3
-    integer :: jno, mno, ibid
+    integer :: jno, mno
     integer :: idec1, idec2, idec3
     integer :: ier1, ier2, ier3, ier4, ier5, ier6
     integer :: ier11, ier21, ier31, ier41, ier51, ier61
@@ -125,12 +124,6 @@ subroutine erhmb2(perman, ino, nbs, ndim, theta, &
     character(len=8) :: prf, cif, fluxhf
     character(len=19) :: nomgd2, nomgd3
 ! =====================================================================
-    if (.not. perman) then
-        ibid = 1
-    else
-        ibid = 0
-        theta = 1.d0
-    end if
     ta1 = 1.d0-theta
 ! =====================================================================
 ! 1. RECUPERATION SUR LA MAILLE COURANTE AUX NOEUDS INO ET JNO DE :
@@ -164,11 +157,9 @@ subroutine erhmb2(perman, ino, nbs, ndim, theta, &
     flagm = .true.
     call r8inir(3, 0.d0, prp, 1)
     call r8inir(3, 0.d0, cip, 1)
-!
-    if (.not. perman) then
-        call r8inir(3, 0.d0, prm, 1)
-        call r8inir(3, 0.d0, cim, 1)
-    end if
+    call r8inir(3, 0.d0, prm, 1)
+    call r8inir(3, 0.d0, cim, 1)
+
 !
 ! --------------------------------------------------------------------
 ! ** ON A IMPOSE DES CONDITIONS AUX LIMITES DE NEUMANN
@@ -241,13 +232,13 @@ subroutine erhmb2(perman, ino, nbs, ndim, theta, &
                 call fointe('FM', cif, 3, nompar, valpar, &
                             cip(1), ier2)
 !
-                if (.not. perman) then
-                    valpar(3) = instpm(2)
-                    call fointe('FM', prf, 3, nompar, valpar, &
-                                prm(1), ier11)
-                    call fointe('FM', cif, 3, nompar, valpar, &
-                                cim(1), ier21)
-                end if
+
+                valpar(3) = instpm(2)
+                call fointe('FM', prf, 3, nompar, valpar, &
+                            prm(1), ier11)
+                call fointe('FM', cif, 3, nompar, valpar, &
+                            cim(1), ier21)
+
 !
                 valpar(1) = geom(1, jno)
                 valpar(2) = geom(2, jno)
@@ -258,13 +249,11 @@ subroutine erhmb2(perman, ino, nbs, ndim, theta, &
                 call fointe('FM', cif, 3, nompar, valpar, &
                             cip(2), ier4)
 !
-                if (.not. perman) then
-                    valpar(3) = instpm(2)
-                    call fointe('FM', prf, 3, nompar, valpar, &
-                                prm(2), ier31)
-                    call fointe('FM', cif, 3, nompar, valpar, &
-                                cim(2), ier41)
-                end if
+                valpar(3) = instpm(2)
+                call fointe('FM', prf, 3, nompar, valpar, &
+                            prm(2), ier31)
+                call fointe('FM', cif, 3, nompar, valpar, &
+                            cim(2), ier41)
 !
                 valpar(1) = geom(1, mno)
                 valpar(2) = geom(2, mno)
@@ -275,13 +264,11 @@ subroutine erhmb2(perman, ino, nbs, ndim, theta, &
                 call fointe('FM', cif, 3, nompar, valpar, &
                             cip(3), ier6)
 !
-                if (.not. perman) then
-                    valpar(3) = instpm(2)
-                    call fointe('FM', prf, 3, nompar, valpar, &
-                                prm(3), ier51)
-                    call fointe('FM', cif, 3, nompar, valpar, &
-                                cim(3), ier61)
-                end if
+                valpar(3) = instpm(2)
+                call fointe('FM', prf, 3, nompar, valpar, &
+                            prm(3), ier51)
+                call fointe('FM', cif, 3, nompar, valpar, &
+                            cim(3), ier61)
 !
 ! 2.2.3. ERREUR
 !
@@ -346,64 +333,62 @@ subroutine erhmb2(perman, ino, nbs, ndim, theta, &
 !
     tm2h1b(1) = tm2h1b(1)+(inte1+4.d0*inte3+inte2)/3.d0
 !
-    if (.not. perman) then
 !
-        if (flagm) then
+    if (flagm) then
 !
 ! ----- PAS DE CHARGEMENT DE NEUMANN EXPLICITE SUR LE BORD
 !       ==> ON PREND LA DERIVEE DE SIGMA TOTAL NULLE
 !
-            call r8inir(3, 0.d0, sig11, 1)
-            call r8inir(3, 0.d0, sig22, 1)
-            call r8inir(3, 0.d0, sig12, 1)
+        call r8inir(3, 0.d0, sig11, 1)
+        call r8inir(3, 0.d0, sig22, 1)
+        call r8inir(3, 0.d0, sig12, 1)
 !
-        else
+    else
 ! ---- DANS CE QUI SUIT ON  PREND EN COMPTE DANS LE CALCUL DE
 !      LA CONTRAINTE TOTALE LES TERMES DU TENSEUR SIP
-            idec1 = nbcmp*(ino-1)
+        idec1 = nbcmp*(ino-1)
 !
-            sig11(1) = sielnp(idec1+1)-sielnm(idec1+1)+sielnp(idec1+adsip)-sielnm(idec1+ad&
-                       &sip)
-            sig22(1) = sielnp(idec1+2)-sielnm(idec1+2)+sielnp(idec1+adsip+1)-sielnm(idec1+&
-                       &adsip+1)
-            sig12(1) = sielnp(idec1+4)-sielnm(idec1+4)+sielnp(idec1+adsip+3)-sielnm(idec1+&
-                       &adsip+3)
+        sig11(1) = sielnp(idec1+1)-sielnm(idec1+1)+sielnp(idec1+adsip)-sielnm(idec1+ad&
+                    &sip)
+        sig22(1) = sielnp(idec1+2)-sielnm(idec1+2)+sielnp(idec1+adsip+1)-sielnm(idec1+&
+                    &adsip+1)
+        sig12(1) = sielnp(idec1+4)-sielnm(idec1+4)+sielnp(idec1+adsip+3)-sielnm(idec1+&
+                    &adsip+3)
 !
-            idec2 = nbcmp*(jno-1)
+        idec2 = nbcmp*(jno-1)
 !
-            sig11(2) = sielnp(idec2+1)-sielnm(idec2+1)+sielnp(idec2+adsip)-sielnm(idec2+ad&
-                       &sip)
-            sig22(2) = sielnp(idec2+2)-sielnm(idec2+2)+sielnp(idec2+adsip+1)-sielnm(idec2+&
-                       &adsip+1)
-            sig12(2) = sielnp(idec2+4)-sielnm(idec2+4)+sielnp(idec2+adsip+3)-sielnm(idec2+&
-                       &adsip+3)
+        sig11(2) = sielnp(idec2+1)-sielnm(idec2+1)+sielnp(idec2+adsip)-sielnm(idec2+ad&
+                    &sip)
+        sig22(2) = sielnp(idec2+2)-sielnm(idec2+2)+sielnp(idec2+adsip+1)-sielnm(idec2+&
+                    &adsip+1)
+        sig12(2) = sielnp(idec2+4)-sielnm(idec2+4)+sielnp(idec2+adsip+3)-sielnm(idec2+&
+                    &adsip+3)
 !
-            idec3 = nbcmp*(mno-1)
+        idec3 = nbcmp*(mno-1)
 !
-            sig11(3) = sielnp(idec3+1)-sielnm(idec3+1)+sielnp(idec3+adsip)-sielnm(idec3+ad&
-                       &sip)
-            sig22(3) = sielnp(idec3+2)-sielnm(idec3+2)+sielnp(idec3+adsip+1)-sielnm(idec3+&
-                       &adsip+1)
-            sig12(3) = sielnp(idec3+4)-sielnm(idec3+4)+sielnp(idec3+adsip+3)-sielnm(idec3+&
-                       &adsip+3)
-!
-        end if
-!
-        inted1 = jac(1)*((-(prp(1)-prm(1))*nx(1)+(cip(1)-cim(1))*tx(1)-(sig11(1)*nx(&
-                 &1)+sig12(1)*ny(1)))**2+(-(prp(1)-prm(1))*ny(1)+(cip(1)-cim(1))*t&
-                 &y(1)-(sig12(1)*nx(1)+sig22(1)*ny(1)))**2)
-!
-        inted2 = jac(2)*((-(prp(2)-prm(2))*nx(2)+(cip(2)-cim(2))*tx(2)-(sig11(2)*nx(&
-                 &2)+sig12(2)*ny(2)))**2+(-(prp(2)-prm(2))*ny(2)+(cip(2)-cim(2))*t&
-                 &y(2)-(sig12(2)*nx(2)+sig22(2)*ny(2)))**2)
-!
-        inted3 = jac(3)*((-(prp(3)-prm(3))*nx(3)+(cip(3)-cim(3))*tx(3)-(sig11(3)*nx(&
-                 &3)+sig12(3)*ny(3)))**2+(-(prp(3)-prm(3))*ny(3)+(cip(3)-cim(3))*t&
-                 &y(3)-(sig12(3)*nx(3)+sig22(3)*ny(3)))**2)
-!
-        tm2h1b(2) = tm2h1b(2)+(inted1+4.d0*inted3+inted2)/3.d0
+        sig11(3) = sielnp(idec3+1)-sielnm(idec3+1)+sielnp(idec3+adsip)-sielnm(idec3+ad&
+                    &sip)
+        sig22(3) = sielnp(idec3+2)-sielnm(idec3+2)+sielnp(idec3+adsip+1)-sielnm(idec3+&
+                    &adsip+1)
+        sig12(3) = sielnp(idec3+4)-sielnm(idec3+4)+sielnp(idec3+adsip+3)-sielnm(idec3+&
+                    &adsip+3)
 !
     end if
+!
+    inted1 = jac(1)*((-(prp(1)-prm(1))*nx(1)+(cip(1)-cim(1))*tx(1)-(sig11(1)*nx(&
+                &1)+sig12(1)*ny(1)))**2+(-(prp(1)-prm(1))*ny(1)+(cip(1)-cim(1))*t&
+                &y(1)-(sig12(1)*nx(1)+sig22(1)*ny(1)))**2)
+!
+    inted2 = jac(2)*((-(prp(2)-prm(2))*nx(2)+(cip(2)-cim(2))*tx(2)-(sig11(2)*nx(&
+                &2)+sig12(2)*ny(2)))**2+(-(prp(2)-prm(2))*ny(2)+(cip(2)-cim(2))*t&
+                &y(2)-(sig12(2)*nx(2)+sig22(2)*ny(2)))**2)
+!
+    inted3 = jac(3)*((-(prp(3)-prm(3))*nx(3)+(cip(3)-cim(3))*tx(3)-(sig11(3)*nx(&
+                &3)+sig12(3)*ny(3)))**2+(-(prp(3)-prm(3))*ny(3)+(cip(3)-cim(3))*t&
+                &y(3)-(sig12(3)*nx(3)+sig22(3)*ny(3)))**2)
+!
+    tm2h1b(2) = tm2h1b(2)+(inted1+4.d0*inted3+inted2)/3.d0
+
 !
 3333 continue
 !
@@ -413,10 +398,8 @@ subroutine erhmb2(perman, ino, nbs, ndim, theta, &
 !
     flagh = .true.
     call r8inir(3, 0.d0, fluxhp, 1)
-!
-    if (.not. perman) then
-        call r8inir(3, 0.d0, fluxhm, 1)
-    end if
+    call r8inir(3, 0.d0, fluxhm, 1)
+
 !
 ! --------------------------------------------------------------------
 ! ** ON A IMPOSE DES CONDITIONS AUX LIMITES DE NEUMANN
@@ -482,11 +465,9 @@ subroutine erhmb2(perman, ino, nbs, ndim, theta, &
                 call fointe('FM', fluxhf, 3, nompar, valpar, &
                             fluxhp(1), ier1)
 !
-                if (.not. perman) then
-                    valpar(3) = instpm(2)
-                    call fointe('FM', fluxhf, 3, nompar, valpar, &
-                                fluxhm(1), ier11)
-                end if
+                valpar(3) = instpm(2)
+                call fointe('FM', fluxhf, 3, nompar, valpar, &
+                            fluxhm(1), ier11)
 !
                 valpar(1) = geom(1, jno)
                 valpar(2) = geom(2, jno)
@@ -494,11 +475,9 @@ subroutine erhmb2(perman, ino, nbs, ndim, theta, &
                 call fointe('FM', fluxhf, 3, nompar, valpar, &
                             fluxhp(2), ier2)
 !
-                if (.not. perman) then
-                    valpar(3) = instpm(2)
-                    call fointe('FM', fluxhf, 3, nompar, valpar, &
-                                fluxhm(2), ier21)
-                end if
+                valpar(3) = instpm(2)
+                call fointe('FM', fluxhf, 3, nompar, valpar, &
+                            fluxhm(2), ier21)
 !
                 valpar(1) = geom(1, mno)
                 valpar(2) = geom(2, mno)
@@ -506,11 +485,9 @@ subroutine erhmb2(perman, ino, nbs, ndim, theta, &
                 call fointe('FM', fluxhf, 3, nompar, valpar, &
                             fluxhp(3), ier3)
 !
-                if (.not. perman) then
-                    valpar(3) = instpm(2)
-                    call fointe('FM', fluxhf, 3, nompar, valpar, &
-                                fluxhm(3), ier31)
-                end if
+                valpar(3) = instpm(2)
+                call fointe('FM', fluxhf, 3, nompar, valpar, &
+                            fluxhm(3), ier31)
 !
 ! 3.2.3. ERREUR
 !
@@ -528,79 +505,40 @@ subroutine erhmb2(perman, ino, nbs, ndim, theta, &
 !
 ! 3.3. TERME DE BORD
 !
-    if (.not. perman) then
-!
-        if (flagh) then
+
+    if (flagh) then
 !
 ! ----- PAS DE FLUX HYDRAULIQUE NUL DECLARE EXPLICITEMENT
 !       SUR LE BORD
 !       ==> ON PREND DERIVEE DU FLUX HYDRAULIQUE NULLE
 !
-            call r8inir(3, 0.d0, fh11x, 1)
-            call r8inir(3, 0.d0, fh11y, 1)
-!
-        else
-!
-            idec1 = nbcmp*(ino-1)+adsip+ibid+1+5
-            fh11x(1) = theta*sielnp(idec1)+ta1*sielnm(idec1)
-            fh11y(1) = theta*sielnp(idec1+1)+ta1*sielnm(idec1+1)
-!
-            idec2 = nbcmp*(jno-1)+adsip+ibid+1+5
-            fh11x(2) = theta*sielnp(idec2)+ta1*sielnm(idec2)
-            fh11y(2) = theta*sielnp(idec2+1)+ta1*sielnm(idec2+1)
-!
-            idec3 = nbcmp*(mno-1)+adsip+ibid+1+5
-            fh11x(3) = theta*sielnp(idec3)+ta1*sielnm(idec3)
-            fh11y(3) = theta*sielnp(idec3+1)+ta1*sielnm(idec3+1)
-!
-        end if
-!
-        inte1 = jac(1)*(theta*fluxhp(1)+ta1*fluxhm(1)-fh11x(1)*nx(1)-fh11y(1)*ny(1))**2
-!
-        inte2 = jac(2)*(theta*fluxhp(2)+ta1*fluxhm(2)-fh11x(2)*nx(2)-fh11y(2)*ny(2))**2
-!
-        inte3 = jac(3)*(theta*fluxhp(3)+ta1*fluxhm(3)-fh11x(3)*nx(3)-fh11y(3)*ny(3))**2
-!
-        tm2h1b(3) = tm2h1b(3)+(inte1+4.d0*inte3+inte2)/3.d0
+        call r8inir(3, 0.d0, fh11x, 1)
+        call r8inir(3, 0.d0, fh11y, 1)
 !
     else
 !
-        if (flagh) then
+        idec1 = nbcmp*(ino-1)+adsip+1+1+5
+        fh11x(1) = theta*sielnp(idec1)+ta1*sielnm(idec1)
+        fh11y(1) = theta*sielnp(idec1+1)+ta1*sielnm(idec1+1)
 !
-! ----- PAS DE FLUX HYDRAULIQUE NUL DECLARE EXPLICITEMENT
-!       SUR LE BORD
-!       ==> ON PREND FLUX HYDRAULIQUE NUL
+        idec2 = nbcmp*(jno-1)+adsip+1+1+5
+        fh11x(2) = theta*sielnp(idec2)+ta1*sielnm(idec2)
+        fh11y(2) = theta*sielnp(idec2+1)+ta1*sielnm(idec2+1)
 !
-            call r8inir(3, 0.d0, fh11x, 1)
-            call r8inir(3, 0.d0, fh11y, 1)
-!
-        else
-!
-            idec1 = nbcmp*(ino-1)+adsip+ibid+1+5
-            fh11x(1) = sielnp(idec1)
-            fh11y(1) = sielnp(idec1+1)
-!
-            idec2 = nbcmp*(jno-1)+adsip+ibid+1+5
-            fh11x(2) = sielnp(idec2)
-            fh11y(2) = sielnp(idec2+1)
-!
-            idec3 = nbcmp*(mno-1)+adsip+ibid+1+5
-            fh11x(3) = sielnp(idec3)
-            fh11y(3) = sielnp(idec3+1)
-!
-        end if
-!
-        inte1 = jac(1)*(fluxhp(1)-(fh11x(1)*nx(1)+fh11y(1)*ny(1)))**2
-!
-        inte2 = jac(2)*(fluxhp(2)-(fh11x(2)*nx(2)+fh11y(2)*ny(2)))**2
-!
-        idec3 = nbcmp*(mno-1)+adsip+ibid+1+5
-!
-        inte3 = jac(3)*(fluxhp(3)-(fh11x(3)*nx(3)+fh11y(3)*ny(3)))**2
-!
-        tm2h1b(3) = tm2h1b(3)+(inte1+4.d0*inte3+inte2)/3.d0
+        idec3 = nbcmp*(mno-1)+adsip+1+1+5
+        fh11x(3) = theta*sielnp(idec3)+ta1*sielnm(idec3)
+        fh11y(3) = theta*sielnp(idec3+1)+ta1*sielnm(idec3+1)
 !
     end if
+!
+    inte1 = jac(1)*(theta*fluxhp(1)+ta1*fluxhm(1)-fh11x(1)*nx(1)-fh11y(1)*ny(1))**2
+!
+    inte2 = jac(2)*(theta*fluxhp(2)+ta1*fluxhm(2)-fh11x(2)*nx(2)-fh11y(2)*ny(2))**2
+!
+    inte3 = jac(3)*(theta*fluxhp(3)+ta1*fluxhm(3)-fh11x(3)*nx(3)-fh11y(3)*ny(3))**2
+!
+    tm2h1b(3) = tm2h1b(3)+(inte1+4.d0*inte3+inte2)/3.d0
+!
 !
 999 continue
 !

@@ -176,7 +176,6 @@ AFFE_MODELE = OPER(
                     "D_PLAN_THH2MS",  # person_in_charge: sylvie.granet at edf.fr
                     "D_PLAN_THHMS",  # person_in_charge: sylvie.granet at edf.fr
                     "D_PLAN_THMS",  # person_in_charge: sylvie.granet at edf.fr
-                    "D_PLAN_HM_P",  # person_in_charge: sylvie.granet at edf.fr
                     "D_PLAN_HS",  # person_in_charge: sylvie.granet at edf.fr
                     "D_PLAN_HHD",  # person_in_charge: sylvie.granet at edf.fr
                     "D_PLAN_HHS",  # person_in_charge: sylvie.granet at edf.fr

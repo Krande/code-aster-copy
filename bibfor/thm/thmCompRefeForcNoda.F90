@@ -61,7 +61,7 @@ subroutine thmCompRefeForcNoda(ds_thm)
     integer :: nddls, nddlm
     integer :: nddl_meca, nddl_p1, nddl_p2
     integer :: dimdep, dimdef, dimcon, dimuel
-    aster_logical :: l_axi, l_vf, l_steady
+    aster_logical :: l_axi, l_vf
     character(len=3) :: inte_type
     integer :: ndim
     integer :: mecani(5), press1(7), press2(7), tempe(5)
@@ -73,7 +73,7 @@ subroutine thmCompRefeForcNoda(ds_thm)
 !
 ! - Get model of finite element
 !
-    call thmGetElemModel(ds_thm, l_axi, l_vf, l_steady, ndim)
+    call thmGetElemModel(ds_thm, l_axi, l_vf, ndim)
 !
 ! - Cannot compute for finite volume
 !
@@ -85,7 +85,7 @@ subroutine thmCompRefeForcNoda(ds_thm)
 !
 ! - Get generalized coordinates
 !
-    call thmGetGene(ds_thm, l_steady, l_vf, ndim, &
+    call thmGetGene(ds_thm, l_vf, ndim, &
                     mecani, press1, press2, tempe)
 !
 ! - Get reference elements
@@ -125,7 +125,7 @@ subroutine thmCompRefeForcNoda(ds_thm)
 ! - Compute REFE_FORC_NODA
 !
     call refthm(ds_thm, &
-                zi(jv_mater), ndim, l_axi, l_steady, fnoevo, &
+                zi(jv_mater), ndim, l_axi, fnoevo, &
                 mecani, press1, press2, tempe, &
                 nno, nnos, npi, npg, &
                 zr(jv_geom), dt, dimdef, dimcon, dimuel, &

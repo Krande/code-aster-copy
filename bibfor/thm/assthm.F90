@@ -20,7 +20,7 @@
 !
 subroutine assthm(ds_thm, option, j_mater, &
                   lMatr, lSigm, lVect, &
-                  lVari, lMatrPred, l_axi, l_steady, &
+                  lVari, lMatrPred, l_axi, &
                   typmod, inte_type, angl_naut, &
                   ndim, nbvari, nno, nnos, &
                   npg, npi, &
@@ -47,7 +47,6 @@ subroutine assthm(ds_thm, option, j_mater, &
 #include "asterfort/assert.h"
 #include "asterfort/cabthm.h"
 #include "asterfort/equthm.h"
-#include "asterfort/equthp.h"
 #include "asterfort/pmathm.h"
 #include "asterfort/thmGetBehaviour.h"
 #include "asterfort/thmGetBehaviourVari.h"
@@ -61,7 +60,7 @@ subroutine assthm(ds_thm, option, j_mater, &
     character(len=16), intent(in) :: option
     aster_logical, intent(in) :: lMatr, lSigm, lVari, lMatrPred, lVect
     integer, intent(in) :: j_mater
-    aster_logical, intent(in)  :: l_axi, l_steady
+    aster_logical, intent(in)  :: l_axi
     character(len=8), intent(in) :: typmod(2)
     character(len=3), intent(in) :: inte_type
     real(kind=8), intent(in)  :: angl_naut(3)
@@ -253,52 +252,36 @@ subroutine assthm(ds_thm, option, j_mater, &
             end do
         end do
 ! ----- Compute generalized stresses and derivatives at current Gauss point
-        if (l_steady) then
-            call equthp(ds_thm, option, j_mater, &
-                        lMatr, lSigm, lVect, &
-                        lVari, lMatrPred, &
-                        typmod, angl_naut, &
-                        ndim, nbvari, &
-                        kpi, npg, &
-                        dimdef, dimcon, &
-                        mecani, press1, press2, tempe, &
-                        carcri, &
-                        defgem, defgep, &
-                        congem((kpi-1)*dimcon+1), congep((kpi-1)*dimcon+1), &
-                        vintm((kpi-1)*nbvari+1), vintp((kpi-1)*nbvari+1), &
-                        time_prev, time_curr, &
-                        r, drds, dsde, codret)
-        else
-            call equthm(ds_thm, option, j_mater, &
-                        lMatr, lSigm, &
-                        lVari, lMatrPred, &
-                        typmod, angl_naut, parm_theta, &
-                        ndim, nbvari, &
-                        kpi, npg, &
-                        dimdef, dimcon, &
-                        mecani, press1, press2, tempe, &
-                        carcri, &
-                        defgem, defgep, &
-                        congem((kpi-1)*dimcon+1), congep((kpi-1)*dimcon+1), &
-                        vintm((kpi-1)*nbvari+1), vintp((kpi-1)*nbvari+1), &
-                        time_prev, time_curr, time_incr, &
-                        r, drds, dsde, codret)
+        call equthm(ds_thm, option, j_mater, &
+                    lMatr, lSigm, &
+                    lVari, lMatrPred, &
+                    typmod, angl_naut, parm_theta, &
+                    ndim, nbvari, &
+                    kpi, npg, &
+                    dimdef, dimcon, &
+                    mecani, press1, press2, tempe, &
+                    carcri, &
+                    defgem, defgep, &
+                    congem((kpi-1)*dimcon+1), congep((kpi-1)*dimcon+1), &
+                    vintm((kpi-1)*nbvari+1), vintp((kpi-1)*nbvari+1), &
+                    time_prev, time_curr, time_incr, &
+                    r, drds, dsde, codret)
 ! --------- For selective integrations => move Gauss points to nodes
-            if (ds_thm%ds_elem%l_dof_meca) then
-                if (kpi .gt. npg) then
-                    if (lSigm) then
-                        do i = 1, 6
-                            congep((kpi-1)*dimcon+i) = congep((kpi-npg-1)*dimcon+i)
-                        end do
-                    end if
-                    if (lVari) then
-                        do i = 1, nb_vari_meca
-                            vintp((kpi-1)*nbvari+i) = vintp((kpi-npg-1)*nbvari+i)
-                        end do
-                    end if
+        if (ds_thm%ds_elem%l_dof_meca) then
+            if (kpi .gt. npg) then
+                if (lSigm) then
+                    do i = 1, 6
+                        congep((kpi-1)*dimcon+i) = congep((kpi-npg-1)*dimcon+i)
+                    end do
+                end if
+                if (lVari) then
+                    do i = 1, nb_vari_meca
+                        vintp((kpi-1)*nbvari+i) = vintp((kpi-npg-1)*nbvari+i)
+                    end do
                 end if
             end if
         end if
+
         if (codret .ne. 0) then
             goto 99
         end if

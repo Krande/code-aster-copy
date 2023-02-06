@@ -18,7 +18,7 @@
 ! aslint: disable=W1504
 !
 subroutine refthm(ds_thm, &
-                  jv_mater, ndim, l_axi, l_steady, fnoevo, &
+                  jv_mater, ndim, l_axi, fnoevo, &
                   mecani, press1, press2, tempe, &
                   nno, nnos, npi, npg, &
                   elem_coor, dt, dimdef, dimcon, dimuel, &
@@ -44,7 +44,6 @@ subroutine refthm(ds_thm, &
     integer, intent(in) :: jv_mater
     integer, intent(in) :: ndim
     aster_logical, intent(in) :: l_axi
-    aster_logical, intent(in) :: l_steady
     aster_logical, intent(in) :: fnoevo
     integer, intent(in) :: mecani(5), press1(7), press2(7), tempe(5)
     integer, intent(in) :: nno, nnos
@@ -72,7 +71,6 @@ subroutine refthm(ds_thm, &
 ! In  jv_mater         : coded material address
 ! In  ndim             : dimension of element (2 ou 3)
 ! In  l_axi            : flag is axisymmetric model
-! In  l_steady         : .true. for steady state
 ! In  fnoevo           : .true. if compute in non-linear operator (transient terms)
 ! In  mecani           : parameters for mechanic
 ! In  press1           : parameters for hydraulic (first pressure)
@@ -174,7 +172,7 @@ subroutine refthm(ds_thm, &
 ! --------- Compute
             if (vale_refe .ne. r8vide()) then
                 sigtm(i_dim+dimcon*(kpi-1)) = vale_refe
-                call fnothm(ds_thm, jv_mater, ndim, l_axi, l_steady, fnoevo, &
+                call fnothm(ds_thm, jv_mater, ndim, l_axi, fnoevo, &
                             mecani, press1, press2, tempe, &
                             nno, nnos, npi, npg, &
                             elem_coor, dt, dimdef, dimcon, dimuel, &

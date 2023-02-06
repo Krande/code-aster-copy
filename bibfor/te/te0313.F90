@@ -77,7 +77,7 @@ subroutine te0313(option, nomte)
     character(len=8) :: nomail
     type(THM_DS) :: ds_thm
     integer :: li
-    aster_logical :: axi, perman
+    aster_logical :: axi
     aster_logical :: fnoevo
     real(kind=8) :: dt
 !
@@ -94,7 +94,7 @@ subroutine te0313(option, nomte)
 !
 ! - Preparation
 !
-    call caeihm(ds_thm, nomte, axi, perman, mecani, press1, &
+    call caeihm(ds_thm, nomte, axi, mecani, press1, &
                 press2, tempe, dimdef, dimcon, ndim, &
                 nno1, nno2, npi, npg, dimuel, &
                 ipoids, ivf1, idf1, ivf2, idf2, &
@@ -170,7 +170,7 @@ subroutine te0313(option, nomte)
                         zr(ivf1), zr(ivf2), zr(idf2), zr(iinstm), zr(iinstp), &
                         zr(ideplm), zr(ideplm), zr(icontm), zr(icontm), zr(ivarim), &
                         zr(ivarim), nomail, zr(ipoids), zr(igeom), ang, &
-                        zk16(icompo), perman, zr(ivectu), zr(imatuu), &
+                        zk16(icompo), zr(ivectu), zr(imatuu), &
                         codret)
         else
             do li = 1, dimuel
@@ -185,7 +185,7 @@ subroutine te0313(option, nomte)
                         zr(ivf1), zr(ivf2), zr(idf2), zr(iinstm), zr(iinstp), &
                         zr(ideplm), zr(ideplp), zr(icontm), zr(icontp), zr(ivarim), &
                         zr(ivarip), nomail, zr(ipoids), zr(igeom), ang, &
-                        zk16(icompo), perman, zr(ivectu), zr(imatuu), &
+                        zk16(icompo), zr(ivectu), zr(imatuu), &
                         codret)
             if (lSigm) then
                 zi(jcret) = codret
@@ -223,7 +223,7 @@ subroutine te0313(option, nomte)
 ! ======================================================================
         call jevech('PVECTUR', 'E', ivectu)
 !
-        call fneihm(ds_thm, fnoevo, dt, perman, nno1, nno2, &
+        call fneihm(ds_thm, fnoevo, dt, nno1, nno2, &
                     npi, npg, zr(ipoids), iu, ip, &
                     ipf, iq, zr(ivf1), zr(ivf2), zr(idf2), &
                     zr(igeom), ang, zr(icontm), r, zr(ivectu), &

@@ -63,7 +63,7 @@ subroutine thmCompForcNoda(ds_thm)
     real(kind=8) :: b(21, 120), r(22)
     integer :: jv_poids, jv_poids2
     integer :: jv_func, jv_func2, jv_dfunc, jv_dfunc2, jv_gano
-    aster_logical :: l_axi, l_vf, l_steady
+    aster_logical :: l_axi, l_vf
     character(len=3) :: inte_type
     integer :: ndim
     integer :: mecani(5), press1(7), press2(7), tempe(5)
@@ -75,7 +75,7 @@ subroutine thmCompForcNoda(ds_thm)
 !
 ! - Get model of finite element
 !
-    call thmGetElemModel(ds_thm, l_axi, l_vf, l_steady, ndim)
+    call thmGetElemModel(ds_thm, l_axi, l_vf, ndim)
 !
 ! - Cannot compute for finite volume
 !
@@ -87,7 +87,7 @@ subroutine thmCompForcNoda(ds_thm)
 !
 ! - Get generalized coordinates
 !
-    call thmGetGene(ds_thm, l_steady, l_vf, ndim, &
+    call thmGetGene(ds_thm, l_vf, ndim, &
                     mecani, press1, press2, tempe)
 !
 ! - Is transient computation (STAT_NON_LINE or CALC_CHAMP ? )
@@ -139,7 +139,7 @@ subroutine thmCompForcNoda(ds_thm)
 !
 ! - Compute
 !
-    call fnothm(ds_thm, zi(jv_mater), ndim, l_axi, l_steady, fnoevo, &
+    call fnothm(ds_thm, zi(jv_mater), ndim, l_axi, fnoevo, &
                 mecani, press1, press2, tempe, &
                 nno, nnos, npi, npg, &
                 zr(jv_geom), dt, dimdef, dimcon, dimuel, &

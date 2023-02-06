@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine thmGetElemModel(ds_thm, l_axi_, l_vf_, l_steady_, ndim_, type_elem_)
+subroutine thmGetElemModel(ds_thm, l_axi_, l_vf_, ndim_, type_elem_)
 !
     use THM_type
 !
@@ -29,7 +29,7 @@ subroutine thmGetElemModel(ds_thm, l_axi_, l_vf_, l_steady_, ndim_, type_elem_)
 #include "asterfort/utmess.h"
 !
     type(THM_DS), intent(inout) :: ds_thm
-    aster_logical, optional, intent(out) :: l_axi_, l_steady_, l_vf_
+    aster_logical, optional, intent(out) :: l_axi_, l_vf_
     integer, optional, intent(out) :: ndim_
     character(len=8), optional, intent(out) :: type_elem_(2)
 !
@@ -52,17 +52,16 @@ subroutine thmGetElemModel(ds_thm, l_axi_, l_vf_, l_steady_, ndim_, type_elem_)
 !
     integer :: iret1, iret2
     real(kind=8) :: r8bid
-    aster_logical :: l_axi, l_steady, l_vf
+    aster_logical :: l_axi, l_vf
     integer :: ndim
     character(len=8) :: type_elem(2)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    l_axi = .false.
+    l_axi = ASTER_FALSE
     ndim = 0
-    type_elem(:) = ' '
-    l_steady = .false.
-    l_vf = .false.
+    type_elem = ' '
+    l_vf = ASTER_FALSE
 !
 ! - Get dof in finite element
 !
@@ -99,9 +98,8 @@ subroutine thmGetElemModel(ds_thm, l_axi_, l_vf_, l_steady_, ndim_, type_elem_)
 !
 ! - Get general model
 !
-    l_axi = .false.
-    if (lteatt('AXIS', 'OUI')) then
-        l_axi = .true.
+    l_axi = lteatt('AXIS', 'OUI')
+    if (l_axi) then
         type_elem(1) = 'AXIS'
         ndim = 2
     else if (lteatt('D_PLAN', 'OUI')) then
@@ -111,10 +109,6 @@ subroutine thmGetElemModel(ds_thm, l_axi_, l_vf_, l_steady_, ndim_, type_elem_)
         type_elem(1) = '3D'
         ndim = 3
     end if
-!
-! - Steady problem ?
-!
-    l_steady = lteatt('TYPMOD3', 'STEADY')
 !
 ! - Finite volume
 !
@@ -127,9 +121,6 @@ subroutine thmGetElemModel(ds_thm, l_axi_, l_vf_, l_steady_, ndim_, type_elem_)
     end if
     if (present(l_vf_)) then
         l_vf_ = l_vf
-    end if
-    if (present(l_steady_)) then
-        l_steady_ = l_steady
     end if
     if (present(ndim_)) then
         ndim_ = ndim

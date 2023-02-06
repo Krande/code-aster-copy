@@ -65,7 +65,7 @@ subroutine thmCompGravity(ds_thm)
     integer :: jv_poids, jv_poids2
     integer :: jv_func, jv_func2, jv_dfunc, jv_dfunc2, jv_gano
     integer :: kpg, l, i, j, k, ii
-    aster_logical :: l_vf, l_axi, l_steady
+    aster_logical :: l_vf, l_axi
     character(len=3) :: inte_type
     integer :: ndim
     integer :: mecani(5), press1(7), press2(7), tempe(5)
@@ -75,7 +75,7 @@ subroutine thmCompGravity(ds_thm)
 !
 ! - Get model of finite element
 !
-    call thmGetElemModel(ds_thm, l_axi, l_vf, l_steady, ndim)
+    call thmGetElemModel(ds_thm, l_axi, l_vf, ndim)
 !
 ! - Cannot compute for finite volume
 !
@@ -87,7 +87,7 @@ subroutine thmCompGravity(ds_thm)
 !
 ! - Get generalized coordinates
 !
-    call thmGetGene(ds_thm, l_steady, l_vf, ndim, &
+    call thmGetGene(ds_thm, l_vf, ndim, &
                     mecani, press1, press2, tempe)
 !
 ! - Get input/output fields
@@ -178,7 +178,8 @@ subroutine thmCompGravity(ds_thm)
                 end do
                 do i = 1, nnom
                     zr(jv_vect+nddls*nnos+nddlm*(i-1)-1+2) = zr(jv_vect+nddls*nnos+nddlm*(i-1)+1)+ &
-                                                          poids*zr(jv_pesa+2)*zr(jv_func+k+i+nnos-1)
+                                                             poids* &
+                                                             zr(jv_pesa+2)*zr(jv_func+k+i+nnos-1)
                 end do
             else
                 do i = 1, nnos
@@ -189,9 +190,11 @@ subroutine thmCompGravity(ds_thm)
                 end do
                 do i = 1, nnom
                     zr(jv_vect+nddls*nnos+nddlm*(i-1)) = zr(jv_vect+nddls*nnos+nddlm*(i-1))+ &
-                                                         poids*zr(jv_pesa+1)*zr(jv_func+k+i+nnos-1)
+                                                         poids* &
+                                                         zr(jv_pesa+1)*zr(jv_func+k+i+nnos-1)
                     zr(jv_vect+nddls*nnos+nddlm*(i-1)+1) = zr(jv_vect+nddls*nnos+nddlm*(i-1)+1)+ &
-                                                          poids*zr(jv_pesa+2)*zr(jv_func+k+i+nnos-1)
+                                                           poids* &
+                                                           zr(jv_pesa+2)*zr(jv_func+k+i+nnos-1)
                 end do
             end if
         end do

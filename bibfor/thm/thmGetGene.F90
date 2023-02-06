@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine thmGetGene(ds_thm, l_steady, l_vf, ndim, &
+subroutine thmGetGene(ds_thm, l_vf, ndim, &
                       mecani, press1, press2, tempe)
 !
     use THM_type
@@ -27,7 +27,7 @@ subroutine thmGetGene(ds_thm, l_steady, l_vf, ndim, &
 #include "asterfort/assert.h"
 !
     type(THM_DS), intent(in) :: ds_thm
-    aster_logical, intent(in) :: l_steady, l_vf
+    aster_logical, intent(in) :: l_vf
     integer, intent(in)  :: ndim
     integer, intent(out) :: mecani(5), press1(7), press2(7), tempe(5)
 !
@@ -40,7 +40,6 @@ subroutine thmGetGene(ds_thm, l_steady, l_vf, ndim, &
 ! --------------------------------------------------------------------------------------------------
 !
 ! In  ds_thm           : datastructure for THM
-! In  l_steady         : flag for no-transient problem
 ! In  l_vf             : flag for finite volume
 ! In  ndim             : dimension of space (2 or 3)
 ! Out mecani           : parameters for mechanic
@@ -114,22 +113,14 @@ subroutine thmGetGene(ds_thm, l_steady, l_vf, ndim, &
 !
     if (press1(1) .eq. 1) then
         press1(6) = 1+ndim
-        if (l_steady) then
-            press1(7) = ndim
-        else
-            press1(7) = ndim+1
-        end if
+        press1(7) = ndim+1
         if (tempe(1) .eq. 1) then
             press1(7) = press1(7)+1
         end if
     end if
     if (press2(1) .eq. 1) then
         press2(6) = 1+ndim
-        if (l_steady) then
-            press2(7) = ndim
-        else
-            press2(7) = ndim+1
-        end if
+        press2(7) = ndim+1
         if (tempe(1) .eq. 1) then
             press2(7) = press2(7)+1
         end if

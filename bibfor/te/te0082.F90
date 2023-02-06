@@ -71,6 +71,7 @@ subroutine te0082(option, nomte)
     integer :: mecani(5), press1(7), press2(7), tempe(5)
     integer :: idec, iret
     aster_logical :: l_axi
+    aster_logical, parameter :: l_vf = ASTER_FALSE
     type(THM_DS) :: ds_thm
 !
 ! --------------------------------------------------------------------------------------------------
@@ -86,7 +87,7 @@ subroutine te0082(option, nomte)
 !
 ! - Get generalized coordinates
 !
-    call thmGetGene(ds_thm, ASTER_FALSE, ASTER_FALSE, 2, &
+    call thmGetGene(ds_thm, l_vf, 2, &
                     mecani, press1, press2, tempe)
     if (lteatt('TYPMOD2', 'THM')) then
         idec = press1(1)+press2(1)+tempe(1)

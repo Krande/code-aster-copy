@@ -190,7 +190,7 @@ subroutine comthm_vf(ds_thm, &
 !
 ! - Compute generalized stresses and matrix for coupled quantities
 !
-    call calcco(ds_thm, l_steady, &
+    call calcco(ds_thm, &
                 lMatr, lSigm, lVari, &
                 lMatrPred, angl_naut, &
                 j_mater, &
@@ -214,8 +214,10 @@ subroutine comthm_vf(ds_thm, &
     if (ifa .eq. 0) then
         deltat = time_curr-time_prev
         if (lVect) then
-           valcen(masse, eau) = (congep(adcp11)+congep(adcp12)-congem(adcp11)-congem(adcp12))/deltat
-           valcen(masse, air) = (congep(adcp21)+congep(adcp22)-congem(adcp21)-congem(adcp22))/deltat
+            valcen(masse, eau) = (congep(adcp11)+congep(adcp12)-congem(adcp11)-congem(adcp12))/ &
+                                 deltat
+            valcen(masse, air) = (congep(adcp21)+congep(adcp22)-congem(adcp21)-congem(adcp22))/ &
+                                 deltat
         end if
         if (lMatr) then
             valcen(dmasp1, eau) = (dsde(adcp11, addep1)+dsde(adcp12, addep1))/deltat

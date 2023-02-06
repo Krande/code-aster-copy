@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,8 +17,8 @@
 ! --------------------------------------------------------------------
 #include "asterf_types.h"
 !
-interface 
-    subroutine erhmv2(ds_thm, axi, perman, deltat, dimdep, dimdef,&
+interface
+    subroutine erhmv2(ds_thm, axi, deltat, dimdep, dimdef,&
                       nmec, np1, np2, ndim, nno,&
                       nnos, npg, nddls, nddlm,&
                       dimuel, ipoids, ivf, idfde, ipoid2,&
@@ -36,7 +36,6 @@ interface
         integer :: dimdef
         integer :: dimdep
         aster_logical :: axi
-        aster_logical :: perman
         real(kind=8) :: deltat
         integer :: nmec
         integer :: np1
@@ -69,4 +68,4 @@ interface
         integer :: addete
         real(kind=8) :: tm2h1v(3)
     end subroutine erhmv2
-end interface 
+end interface

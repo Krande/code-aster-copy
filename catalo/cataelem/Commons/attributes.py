@@ -558,13 +558,12 @@ TYPMOD2 = Attribute(
 )
 
 TYPMOD3 = Attribute(
-    value=("SUSHI", "STEADY"),
+    value=("SUSHI",),
     comment="""
   TYPMOD3 : Complement au type de  modelisation utilise pour integrer les lois de comportement TYPMOD
             (TYPMOD3 est utilise dans NMCOMP et certaines routines LCxxxx)
            Les valeurs possibles de cet attribut sont :
   TYPMOD3= SUSHI    finite volume
-           STEADY   permanent for THM (not transient)
 """,
 )
 

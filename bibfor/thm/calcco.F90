@@ -18,7 +18,7 @@
 ! person_in_charge: sylvie.granet at edf.fr
 ! aslint: disable=W1504
 !
-subroutine calcco(ds_thm, l_steady, &
+subroutine calcco(ds_thm, &
                   lMatr, lSigm, lVari, lMatrPred, angl_naut, &
                   j_mater, &
                   ndim, nbvari, &
@@ -53,7 +53,6 @@ subroutine calcco(ds_thm, l_steady, &
 #include "asterfort/THM_type.h"
 !
     type(THM_DS), intent(inout) :: ds_thm
-    aster_logical, intent(in) :: l_steady
     aster_logical, intent(in) :: lMatr, lSigm, lVari, lMatrPred
     real(kind=8), intent(in) :: angl_naut(3)
     integer, intent(in) :: j_mater, ndim, nbvari
@@ -81,7 +80,6 @@ subroutine calcco(ds_thm, l_steady, &
 ! --------------------------------------------------------------------------------------------------
 !
 ! IO  ds_thm           : datastructure for THM
-! In  l_steady         : .true. for no-transient problem
 ! In  angl_naut        : nautical angles
 !                        (1) Alpha - clockwise around Z0
 !                        (2) Beta  - counterclockwise around Y1
@@ -127,11 +125,6 @@ subroutine calcco(ds_thm, l_steady, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: bdcp11
-!
-! --------------------------------------------------------------------------------------------------
-!
-
     phi = 0.d0
     rho11 = 0.d0
     satur = 0.d0
@@ -139,12 +132,6 @@ subroutine calcco(ds_thm, l_steady, &
     h11 = 0.d0
     h12 = 0.d0
     retcom = 0
-!
-    if (l_steady) then
-        bdcp11 = adcp11-1
-    else
-        bdcp11 = adcp11
-    end if
 !
 ! - Get parameters for coupling
 !
@@ -155,10 +142,10 @@ subroutine calcco(ds_thm, l_steady, &
     select case (ds_thm%ds_behaviour%nume_thmc)
     case (LIQU_SATU)
         call thmCpl001(ds_thm, &
-                       l_steady, lMatr, lSigm, lVari, angl_naut, &
+                       lMatr, lSigm, lVari, angl_naut, &
                        ndim, nbvari, &
                        dimdef, dimcon, &
-                       adcome, adcote, bdcp11, &
+                       adcome, adcote, adcp11, &
                        addeme, addete, addep1, &
                        temp, &
                        dtemp, dp1, &

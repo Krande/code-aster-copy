@@ -39,9 +39,8 @@ subroutine te0475(option, nomte)
 !
 ! Options: ECHA_THM_R ECHA_THM_F
 !
-    aster_logical :: l_axi, l_steady, l_vf
+    aster_logical :: l_axi, l_vf
     integer :: nno, nnos, ndim, nnom, napre1, napre2, ndim2
-
     integer :: jv_gano, jv_poids, jv_poids2, jv_func, jv_func2, jv_dfunc, jv_dfunc2
     integer :: i, j, l, ires, itemps, iopt, ndlnm, iech
     integer :: idfdy, iret, ndlno, igeom, natemp, iechf, ipg, npi
@@ -70,7 +69,7 @@ subroutine te0475(option, nomte)
 !
 ! - Get model of finite element
 !
-    call thmGetElemModel(ds_thm, l_axi_=l_axi, l_vf_=l_vf, l_steady_=l_steady)
+    call thmGetElemModel(ds_thm, l_axi_=l_axi, l_vf_=l_vf)
 !
 ! - Get reference elements
 !

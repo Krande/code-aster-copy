@@ -97,11 +97,11 @@ subroutine te0497(option, nomte)
     real(kind=8) :: hk, deltat, theta
     real(kind=8) :: cyoung, rhohom, permin, viscli, porosi, poisso
     real(kind=8) :: tm2h1v(3), tm2h1b(3), tm2h1s(3)
-    real(kind=8) :: tsivom, tdevom, tsivoh, tsibom, tdebom, tsibsh, tsibbh, tsisam, tdesam, tsissh
-    real(kind=8) :: tsisbh, denomi
+    real(kind=8) :: tsivom, tdevom, tsivoh, tsibom, tdebom, tsibsh, tsisam, tdesam, tsissh
+    real(kind=8) :: denomi
     real(kind=8) :: longc, presc, admec, adhy0, adhy1, adv1h, adhymd
 !
-    aster_logical :: l_axi, l_steady
+    aster_logical :: l_axi
 !
     character(len=2) :: form, noeu
     character(len=3) :: inte_type
@@ -153,7 +153,7 @@ subroutine te0497(option, nomte)
 !
 ! - Get all parameters for current element
 !
-    call thmGetElemPara(ds_thm, l_axi, l_steady, &
+    call thmGetElemPara(ds_thm, l_axi, &
                         type_elem, inte_type, ndim, &
                         mecani, press1, press2, tempe, &
                         dimdep, dimdef, dimcon, dimuel, &
@@ -184,11 +184,9 @@ subroutine te0497(option, nomte)
     call tecach('ONO', 'PTEMPSR', 'L', iret, iad=itab(1))
     if (iret .eq. 0) then
         instpm(1) = zr(itab(1))
-        if (.not. l_steady) then
-            deltat = zr(itab(1)+1)
-            theta = zr(itab(1)+2)
-            instpm(2) = instpm(1)-deltat
-        end if
+        deltat = zr(itab(1)+1)
+        theta = zr(itab(1)+2)
+        instpm(2) = instpm(1)-deltat
     else
         call utmess('F', 'INDICATEUR_11')
     end if
@@ -207,11 +205,8 @@ subroutine te0497(option, nomte)
 !
     call jevech('PDEPLAR', 'L', ideplp)
 !
-    if (.not. l_steady) then
-        call jevech('PDEPLMR', 'L', ideplm)
-    else
-        ideplm = 1
-    end if
+    call jevech('PDEPLMR', 'L', ideplm)
+
 !
 ! 2.3. CONTRAINTES AUX NOEUDS PAR ELEMENTS A L'INSTANT ACTUEL
 !      1. TOUJOURS A L'INSTANT ACTUEL --> ISIENP
@@ -221,13 +216,9 @@ subroutine te0497(option, nomte)
                 itab=itab)
     isienp = itab(1)
     nbcmp = itab(2)/nno
-    if (.not. l_steady) then
-        call tecach('ONO', 'PCONTNM', 'L', iret, nval=3, &
-                    itab=itab)
-        isienm = itab(1)
-    else
-        isienm = 1
-    end if
+    call tecach('ONO', 'PCONTNM', 'L', iret, nval=3, &
+                itab=itab)
+    isienm = itab(1)
 !
 ! 2.4. CARTES DE PESANTEUR ET ROTATION
 !
@@ -342,62 +333,61 @@ subroutine te0497(option, nomte)
 !     . MODULE DE YOUNG
 !--------------------------------------------------------------------
 !
-    if (.not. l_steady) then
+
 !
 ! 4.1. RECHERCHE DE LA POROSITE INITIALE
 !
-        call rcvalb(fami, kpg, spt, poum, zi(imate), &
-                    ' ', 'THM_INIT', 1, nompar, [valres], &
-                    nbre3, nomre3, valre3, codme3, 1)
+    call rcvalb(fami, kpg, spt, poum, zi(imate), &
+                ' ', 'THM_INIT', 1, nompar, [valres], &
+                nbre3, nomre3, valre3, codme3, 1)
 !
-        if (codme3(1) .eq. 0) then
-            porosi = valre3(1)
-        else
-            call utmess('F', 'ELEMENTS4_70', sk=nomre3(1))
-        end if
+    if (codme3(1) .eq. 0) then
+        porosi = valre3(1)
+    else
+        call utmess('F', 'ELEMENTS4_70', sk=nomre3(1))
+    end if
 !
 ! 4.2. RECHERCHE DU COEFFICIENT DE POISSON ET DU MODULE DE YOUNG
 !
+    call rcvalb(fami, kpg, spt, poum, zi(imate), &
+                ' ', 'ELAS', 1, nompar, [valres], &
+                nbre4, nomre4, valre4, codme4, 0)
+!
+    if ((codme4(1) .eq. 0) .and. (codme4(2) .eq. 0)) then
+        cyoung = valre4(1)
+        poisso = valre4(2)
+    else if ((codme4(1) .eq. 1) .and. (codme4(2) .eq. 1)) then
         call rcvalb(fami, kpg, spt, poum, zi(imate), &
-                    ' ', 'ELAS', 1, nompar, [valres], &
-                    nbre4, nomre4, valre4, codme4, 0)
-!
-        if ((codme4(1) .eq. 0) .and. (codme4(2) .eq. 0)) then
-            cyoung = valre4(1)
-            poisso = valre4(2)
-        else if ((codme4(1) .eq. 1) .and. (codme4(2) .eq. 1)) then
-            call rcvalb(fami, kpg, spt, poum, zi(imate), &
-                        ' ', 'ELAS_ISTR', 1, nompar, [valres], &
-                        nbre5, nomre5, valre5, codme5, 0)
-            if ((codme5(1) .eq. 0) .and. (codme5(2) .eq. 0) .and. (codme5(3) .eq. 0) .and. &
-                (codme5(4) .eq. 0)) then
-                cyoung = sqrt(valre5(1)**2+valre5(2)**2)
-                poisso = sqrt(valre5(3)**2+valre5(4)**2)
-            else
-                call rcvalb(fami, kpg, spt, poum, zi(imate), &
-                            ' ', 'ELAS_ORTH', 1, nompar, [valres], &
-                            nbre6, nomre6, valre6, codme6, 0)
-                if ((codme6(1) .eq. 0) .and. (codme6(2) .eq. 0) .and. (codme6(3) .eq. 0) .and. &
-                    (codme6(4) .eq. 0)) then
-                    cyoung = sqrt(valre6(1)**2+valre6(2)**2)
-                    poisso = sqrt(valre6(3)**2+valre6(4)**2)
-                end if
-!
-            end if
+                    ' ', 'ELAS_ISTR', 1, nompar, [valres], &
+                    nbre5, nomre5, valre5, codme5, 0)
+        if ((codme5(1) .eq. 0) .and. (codme5(2) .eq. 0) .and. (codme5(3) .eq. 0) .and. &
+            (codme5(4) .eq. 0)) then
+            cyoung = sqrt(valre5(1)**2+valre5(2)**2)
+            poisso = sqrt(valre5(3)**2+valre5(4)**2)
         else
-            call utmess('F', 'ELEMENTS4_71', sk=nomre4(1)//nomre4(2))
+            call rcvalb(fami, kpg, spt, poum, zi(imate), &
+                        ' ', 'ELAS_ORTH', 1, nompar, [valres], &
+                        nbre6, nomre6, valre6, codme6, 0)
+            if ((codme6(1) .eq. 0) .and. (codme6(2) .eq. 0) .and. (codme6(3) .eq. 0) .and. &
+                (codme6(4) .eq. 0)) then
+                cyoung = sqrt(valre6(1)**2+valre6(2)**2)
+                poisso = sqrt(valre6(3)**2+valre6(4)**2)
+            end if
+!
         end if
+    else
+        call utmess('F', 'ELEMENTS4_71', sk=nomre4(1)//nomre4(2))
+    end if
 !
 ! 4.4. ON CALCULE L'INVERSE DU MODULE DE BIOT
 !
-        if (cyoung .gt. ovfl) then
-            unsurm = 3.d0*(biot-porosi)*(1.d0-biot)*(1.d0-2*poisso)/cyoung
+    if (cyoung .gt. ovfl) then
+        unsurm = 3.d0*(biot-porosi)*(1.d0-biot)*(1.d0-2*poisso)/cyoung
 !
-        else
-            call utmess('F', 'ELEMENTS4_67')
-        end if
-!
+    else
+        call utmess('F', 'ELEMENTS4_67')
     end if
+
 !
 !--------------------------------------------------------------------
 ! 5. RECUPERATION DES GRANDEURS CARACTERISTIQUES
@@ -486,7 +476,7 @@ subroutine te0497(option, nomte)
 !
 ! 2.3. --- TERME VOLUMIQUE ---
 !
-    call erhmv2(ds_thm, l_axi, l_steady, deltat, dimdep, dimdef, &
+    call erhmv2(ds_thm, l_axi, deltat, dimdep, dimdef, &
                 nddl_meca, nddl_p1, nddl_p2, ndim, nno, &
                 nnos, npg, nddls, nddlm, &
                 dimuel, jv_poids, jv_func, jv_dfunc, jv_poids2, &
@@ -500,12 +490,10 @@ subroutine te0497(option, nomte)
 !
     admec = 1.d0/(presc**2*longc**ndim)
     tsivom = hk**2*admec*tm2h1v(1)
-!
-    if (.not. l_steady) then
-        tdevom = hk**2*admec*tm2h1v(2)
-        adv1h = cyoung*unsurk*admec
-        tsivoh = deltat*hk**2*adv1h*tm2h1v(3)
-    end if
+    tdevom = hk**2*admec*tm2h1v(2)
+    adv1h = cyoung*unsurk*admec
+    tsivoh = deltat*hk**2*adv1h*tm2h1v(3)
+
 !
 !------------------------------------------------------------------
 ! 2. CALCUL DES TERMES SURFACIQUES
@@ -630,7 +618,7 @@ subroutine te0497(option, nomte)
 !
             if (typmav(1:4) .eq. 'TRIA' .or. typmav(1:4) .eq. 'QUAD') then
 !
-                call erhms2(l_steady, ifa, nbs, theta, jaco, &
+                call erhms2(ifa, nbs, theta, jaco, &
                             nx, ny, zr(isienp), adsip, zr(isienm), &
                             nbcmp, typmav, zi(iref1), zi(iref2), ivois, &
                             tm2h1s)
@@ -640,7 +628,7 @@ subroutine te0497(option, nomte)
 !
             else if (typmav(1:2) .eq. 'SE') then
 !
-                call erhmb2(l_steady, ifa, nbs, ndim, theta, &
+                call erhmb2(ifa, nbs, ndim, theta, &
                             instpm, jaco, nx, ny, tx, &
                             ty, nbcmp, zr(igeom), ivois, zr(isienp), &
                             zr(isienm), adsip, iagd, zi(iref2), iade2, &
@@ -683,51 +671,29 @@ subroutine te0497(option, nomte)
     tsisam = hk*admec*tm2h1s(1)
     tsibom = hk*admec*tm2h1b(1)
 !
-    if (l_steady) then
 !
-        tsibsh = hk*adhy0*tm2h1b(3)
-        tsibbh = hk**3*adhy1*tm2h1b(3)
+    call jevech('PERREM', 'L', ierrm)
 !
-        tsissh = hk*adhy0*tm2h1s(3)
-        tsisbh = hk**3*adhy1*tm2h1s(3)
+    tdebom = hk*admec*tm2h1b(2)
+    tdesam = hk*admec*tm2h1s(2)
 !
-    else
+    adhymd = deltat*hk*cyoung*permin/viscli*adhy1
+    tsibsh = adhymd*tm2h1b(3)
+    tsissh = adhymd*tm2h1s(3)
 !
-        call jevech('PERREM', 'L', ierrm)
-!
-        tdebom = hk*admec*tm2h1b(2)
-        tdesam = hk*admec*tm2h1s(2)
-!
-        adhymd = deltat*hk*cyoung*permin/viscli*adhy1
-        tsibsh = adhymd*tm2h1b(3)
-        tsissh = adhymd*tm2h1s(3)
-!
-    end if
 !
 ! ON STOCKE LES INDICATEURS
 !
     call jevech('PERREUR', 'E', ierr)
 !
-    if (l_steady) then
+    zr(ierr+1) = tsivom+tsisam+tsibom
+    zr(ierr+2) = tdevom+tdebom+tdesam
+    zr(ierr+3) = tsivoh+tsibsh+tsissh
 !
-        zr(ierr) = sqrt(tsivom+tsibom+tsisam)+sqrt(tsibsh+tsissh)
-        zr(ierr+1) = sqrt(tsivom+tsibom+tsisam)+sqrt(tsibbh+tsisbh)
-        zr(ierr+2) = tsibsh+tsissh
-        zr(ierr+3) = tsivom+tsibom+tsisam
-        zr(ierr+4) = tsibbh+tsisbh
-!
-    else
-!
-        zr(ierr+1) = tsivom+tsisam+tsibom
-        zr(ierr+2) = tdevom+tdebom+tdesam
-        zr(ierr+3) = tsivoh+tsibsh+tsissh
-!
-        zr(ierr+4) = max(zr(ierrm+4), sqrt(zr(ierr+1)))
-        zr(ierr+5) = zr(ierrm+5)+sqrt(zr(ierr+2))
-        zr(ierr+6) = sqrt(zr(ierrm+6)**2+zr(ierr+3))
-        zr(ierr) = zr(ierr+4)+zr(ierr+5)+zr(ierr+6)
-!
-    end if
+    zr(ierr+4) = max(zr(ierrm+4), sqrt(zr(ierr+1)))
+    zr(ierr+5) = zr(ierrm+5)+sqrt(zr(ierr+2))
+    zr(ierr+6) = sqrt(zr(ierrm+6)**2+zr(ierr+3))
+    zr(ierr) = zr(ierr+4)+zr(ierr+5)+zr(ierr+6)
 !
     call jedema()
 !

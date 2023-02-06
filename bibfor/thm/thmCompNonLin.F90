@@ -54,7 +54,7 @@ subroutine thmCompNonLin(option, ds_thm)
     integer :: jv_geom, jv_matr, jv_vect, jv_sigmm, jv_varim, jv_cret
     integer :: jv_mater, jv_instm, jv_instp, jv_dispm
     integer :: jv_dispp, jv_compor, jv_carcri, jv_varip, jv_sigmp
-    aster_logical :: l_axi, l_steady
+    aster_logical :: l_axi
     character(len=3) :: inte_type
     integer :: mecani(5), press1(7), press2(7), tempe(5)
     integer :: dimdep, dimdef, dimcon, dimuel
@@ -74,7 +74,7 @@ subroutine thmCompNonLin(option, ds_thm)
 !
 ! - Get all parameters for current element
 !
-    call thmGetElemPara(ds_thm, l_axi, l_steady, &
+    call thmGetElemPara(ds_thm, l_axi, &
                         type_elem, inte_type, ndim, &
                         mecani, press1, press2, tempe, &
                         dimdep, dimdef, dimcon, dimuel, &
@@ -157,7 +157,7 @@ subroutine thmCompNonLin(option, ds_thm)
 !
     call assthm(ds_thm, option, zi(jv_mater), &
                 lMatr, lSigm, lVect, &
-                lVari, lMatrPred, l_axi, l_steady, &
+                lVari, lMatrPred, l_axi, &
                 type_elem, inte_type, angl_naut, &
                 ndim, nbvari, nno, nnos, &
                 npg, npi, &

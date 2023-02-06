@@ -56,7 +56,7 @@ subroutine thmCompLoad(option, ds_thm)
     integer :: dimdep, dimdef, dimcon, dimuel
     integer :: nddls, nddlm
     integer :: nddl_meca, nddl_p1, nddl_p2
-    aster_logical :: l_axi, l_vf, l_steady
+    aster_logical :: l_axi, l_vf
     character(len=3) :: inte_type
     integer :: ndim
     integer :: mecani(5), press1(7), press2(7), tempe(5)
@@ -66,7 +66,7 @@ subroutine thmCompLoad(option, ds_thm)
 !
 ! - Get model of finite element
 !
-    call thmGetElemModel(ds_thm, l_axi, l_vf, l_steady, ndim)
+    call thmGetElemModel(ds_thm, l_axi, l_vf, ndim)
     ASSERT(.not. l_vf)
 !
 ! - Get type of integration
@@ -75,7 +75,7 @@ subroutine thmCompLoad(option, ds_thm)
 !
 ! - Get generalized coordinates
 !
-    call thmGetGene(ds_thm, l_steady, l_vf, ndim, &
+    call thmGetGene(ds_thm, l_vf, ndim, &
                     mecani, press1, press2, tempe)
 !
 ! - Get reference elements

@@ -50,7 +50,7 @@ subroutine te0480(option, nomte)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    aster_logical :: l_axi, l_steady, l_vf
+    aster_logical :: l_axi, l_vf
     integer :: nno, nnos, kp, npg, ndim, nnom, ndim2
     integer :: jv_gano, jv_poids, jv_poids2, jv_func, jv_func2, jv_dfunc, jv_dfunc2
     integer :: k, kk, i, l, ires, itemps, iopt, ndlnm, iech
@@ -60,8 +60,6 @@ subroutine te0480(option, nomte)
     real(kind=8) :: c11, c12, c21, c22, p1ext, p2ext, p1m, p2m
     character(len=8) :: nompar(2), elrefe, elref2
     integer :: idepm
-!
-!
     type(THM_DS) :: ds_thm
 !
 ! --------------------------------------------------------------------------------------------------
@@ -79,7 +77,7 @@ subroutine te0480(option, nomte)
 !
 ! - Get model of finite element
 !
-    call thmGetElemModel(ds_thm, l_axi_=l_axi, l_vf_=l_vf, l_steady_=l_steady)
+    call thmGetElemModel(ds_thm, l_axi_=l_axi, l_vf_=l_vf)
 !
 ! - Get reference elements
 !

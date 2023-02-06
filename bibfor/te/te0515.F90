@@ -60,7 +60,7 @@ subroutine te0515(option, nomte)
     real(kind=8) :: defgep(21), defgem(21)
     character(len=8) :: type_elem(2)
     integer :: li
-    aster_logical :: l_axi, l_vf, l_steady
+    aster_logical :: l_axi, l_vf
     aster_logical :: lVect, lMatr, lVari, lSigm, lMatrPred
     type(THM_DS) :: ds_thm
 !
@@ -69,7 +69,7 @@ subroutine te0515(option, nomte)
 !
 ! - Get all parameters for current element - Finite volume version
 !
-    call thmGetElemPara_vf(ds_thm, l_axi, l_steady, l_vf, &
+    call thmGetElemPara_vf(ds_thm, l_axi, l_vf, &
                            type_elem, ndim, &
                            mecani, press1, press2, tempe, &
                            dimdef, dimcon, dimuel, &
