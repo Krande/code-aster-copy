@@ -23,13 +23,15 @@ subroutine nmpost(model, mesh, cara_elem, list_load, &
                   ds_constitutive, ds_material, &
                   ds_contact, ds_algopara, list_func_acti, &
                   ds_measure, sddisc, nume_inst, eta, &
-                  sd_obsv, sderro, sddyna, &
+                  sd_obsv, sderro, &
+                  sddyna, nlDynaDamping, &
                   hval_incr, hval_algo, &
                   hval_meelem, hval_measse, hval_veasse, &
                   ds_energy, ds_errorindic, &
                   ds_posttimestep)
 !
     use NonLin_Datastructure_type
+    use NonLinearDyna_type
 !
     implicit none
 !
@@ -51,7 +53,8 @@ subroutine nmpost(model, mesh, cara_elem, list_load, &
     character(len=24), intent(in) :: model
     character(len=8), intent(in) :: mesh
     character(len=24), intent(in) :: cara_elem
-    character(len=19), intent(in) :: list_load
+    character(len=19), intent(in) :: list_load, sddyna
+    type(NLDYNA_DAMPING), intent(in) :: nlDynaDamping
     character(len=24), intent(in) :: numedof, numfix
     type(NL_DS_System), intent(in) :: ds_system
     type(NL_DS_Constitutive), intent(in) :: ds_constitutive
@@ -65,7 +68,6 @@ subroutine nmpost(model, mesh, cara_elem, list_load, &
     real(kind=8), intent(in) :: eta
     character(len=19), intent(in) :: sd_obsv
     character(len=24), intent(in) :: sderro
-    character(len=19), intent(in) :: sddyna
     character(len=19), intent(in) :: hval_incr(*), hval_algo(*)
     character(len=19), intent(in) :: hval_meelem(*), hval_measse(*)
     character(len=19), intent(in) :: hval_veasse(*)
@@ -98,6 +100,7 @@ subroutine nmpost(model, mesh, cara_elem, list_load, &
 ! In  nume_inst        : index of current time step
 ! In  sd_obsv          : datastructure for observation parameters
 ! In  sderro           : datastructure for error management (events)
+! In  nlDynaDamping    : damping parameters
 ! In  sddyna           : datastructure for dynamic
 ! In  hval_incr        : hat-variable for incremental values fields
 ! In  hval_algo        : hat-variable for algorithms fields
@@ -171,8 +174,9 @@ subroutine nmpost(model, mesh, cara_elem, list_load, &
         end if
 ! ----- CALCUL DES ENERGIES
         if (lener) then
-            call nmener(hval_incr, hval_veasse, hval_measse, sddyna, eta, &
-                        ds_energy, list_func_acti, numedof, numfix, &
+            call nmener(hval_incr, hval_veasse, hval_measse, &
+                        sddyna, nlDynaDamping, &
+                        eta, ds_energy, list_func_acti, numedof, numfix, &
                         hval_meelem, nume_inst, model, ds_material, cara_elem, &
                         ds_constitutive, ds_measure, sddisc, hval_algo, &
                         ds_contact, ds_system)

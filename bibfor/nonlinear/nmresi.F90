@@ -19,7 +19,8 @@
 ! aslint: disable=W1504
 !
 subroutine nmresi(mesh, list_func_acti, ds_material, &
-                  nume_dof, sdnume, sddyna, &
+                  nume_dof, sdnume, &
+                  sddyna, nlDynaDamping, &
                   ds_conv, ds_print, ds_contact, &
                   ds_inout, ds_algorom, ds_system, &
                   matass, nume_inst, eta, &
@@ -28,6 +29,7 @@ subroutine nmresi(mesh, list_func_acti, ds_material, &
                   r_equi_vale, r_char_vale)
 !
     use NonLin_Datastructure_type
+    use NonLinearDyna_type
     use Rom_Datastructure_type
 !
     implicit none
@@ -64,7 +66,9 @@ subroutine nmresi(mesh, list_func_acti, ds_material, &
     integer, intent(in) :: list_func_acti(*)
     type(NL_DS_Material), intent(in) :: ds_material
     character(len=24), intent(in) :: nume_dof
-    character(len=19), intent(in) :: sddyna, sdnume
+    character(len=19), intent(in) :: sdnume
+    character(len=19), intent(in) :: sddyna
+    type(NLDYNA_DAMPING), intent(in) :: nlDynaDamping
     type(NL_DS_Conv), intent(inout) :: ds_conv
     type(NL_DS_Print), intent(inout) :: ds_print
     type(NL_DS_Contact), intent(inout) :: ds_contact
@@ -91,7 +95,8 @@ subroutine nmresi(mesh, list_func_acti, ds_material, &
 ! In  ds_material      : datastructure for material parameters
 ! In  nume_dof         : name of numbering object (NUME_DDL)
 ! In  sdnume           : datastructure for dof positions
-! In  sddyna           : datastructure for dynamic
+! In  sddyna           : name of datastructure for dynamic parameters
+! In  nlDynaDamping    : damping parameters
 ! IO  ds_conv          : datastructure for convergence management
 ! IO  ds_print         : datastructure for printing parameters
 ! In  ds_contact       : datastructure for contact management
@@ -218,13 +223,11 @@ subroutine nmresi(mesh, list_func_acti, ds_material, &
     cndirp = '&&NMRESI.CNDIRP'
     cnbudp = '&&NMRESI.CNBUDP'
     cnrefp = '&&NMRESI.CNREFP'
-!
+
 ! - Compute external forces
-!
-    call nmfext(eta, list_func_acti, hval_veasse, cnfext, ds_contact, sddyna)
-!
+    call nmfext(eta, list_func_acti, hval_veasse, cnfext, ds_contact, sddyna, nlDynaDamping)
+
 ! - For kinematic loads
-!
     if (l_load_cine) then
         call nmpcin(matass)
         call jeveuo(matass(1:19)//'.CCID', 'L', vi=v_ccid)

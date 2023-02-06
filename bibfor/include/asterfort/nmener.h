@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,31 +17,26 @@
 ! --------------------------------------------------------------------
 !
 interface
-    subroutine nmener(valinc, veasse, measse, sddyna, eta        ,&
-                      ds_energy, fonact, numedd, numfix, &
-                      meelem, numins, modele, ds_material, carele     ,&
+    subroutine nmener(valinc, veasse, measse,&
+                      sddyna, nlDynaDamping,&
+                      eta, ds_energy, listFuncActi, numeDof, numeDofFixe,&
+                      meelem, numeTime, model, ds_material, caraElem,&
                       ds_constitutive, ds_measure, sddisc, solalg,&
                       ds_contact, ds_system)
         use NonLin_Datastructure_type
-        character(len=19) :: valinc(*)
-        character(len=19) :: veasse(*)
-        character(len=19) :: measse(*)
-        character(len=19) :: sddyna
-        real(kind=8) :: eta
+        use NonLinearDyna_type
+        character(len=19), intent(in) :: valinc(*), veasse(*), measse(*)
+        character(len=19), intent(in) :: sddyna
+        type(NLDYNA_DAMPING), intent(in) :: nlDynaDamping
         type(NL_DS_Energy), intent(inout) :: ds_energy
-        integer :: fonact(*)
-        character(len=24) :: numedd
-        character(len=24) :: numfix
-        character(len=19) :: meelem(*)
-        integer :: numins
-        character(len=24) :: modele
         type(NL_DS_Material), intent(in) :: ds_material
-        character(len=24) :: carele
+        character(len=19), intent(in) :: meelem(*), sddisc, solalg(*)
+        character(len=24), intent(in) :: numeDof, numeDofFixe, model, caraElem
         type(NL_DS_Constitutive), intent(in) :: ds_constitutive
         type(NL_DS_System), intent(in) :: ds_system
         type(NL_DS_Measure), intent(inout) :: ds_measure
-        character(len=19) :: sddisc
-        character(len=19) :: solalg(*)
+        real(kind=8), intent(in) :: eta
+        integer, intent(in) :: listFuncActi(*), numeTime
         type(NL_DS_Contact), intent(in) :: ds_contact
     end subroutine nmener
 end interface

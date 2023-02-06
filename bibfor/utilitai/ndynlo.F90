@@ -135,12 +135,8 @@ function ndynlo(sddyna, chainz)
         if (v_typesch(7) .eq. 'DIFF_CENTREE' .or. v_typesch(8) .eq. 'TCHAMWA') then
             ndynlo = ASTER_TRUE
         end if
-    else if (chaine .eq. 'MAT_AMORT') then
-        ndynlo = v_infosd(1)
     else if (chaine .eq. 'MULTI_APPUI') then
         ndynlo = v_infosd(2)
-    else if (chaine .eq. 'AMOR_MODAL') then
-        ndynlo = v_infosd(3)
     else if (chaine .eq. 'MASS_DIAG') then
         ndynlo = v_infosd(4)
     else if (chaine .eq. 'PROJ_MODAL') then
@@ -151,16 +147,10 @@ function ndynlo(sddyna, chainz)
         ndynlo = v_infosd(7)
     else if (chaine .eq. 'EXPL_GENE') then
         ndynlo = v_infosd(9)
-    else if (chaine .eq. 'NREAVI') then
-        ndynlo = v_infosd(12)
-    else if (chaine .eq. 'RAYLEIGH_KTAN') then
-        ndynlo = v_infosd(13)
     else if (chaine .eq. 'COEF_MASS_SHIFT') then
         ndynlo = v_infosd(14)
     else if (chaine .eq. 'VECT_ISS') then
         ndynlo = v_infosd(15)
-    else if (chaine .eq. 'AMOR_RAYLEIGH') then
-        ndynlo = v_infosd(16)
     else if (chaine .eq. 'FORMUL_DEPL') then
         if (ndynin(sddyna, 'FORMUL_DYNAMIQUE') .eq. 1) then
             ndynlo = ASTER_TRUE

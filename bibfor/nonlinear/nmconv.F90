@@ -18,8 +18,9 @@
 ! person_in_charge: mickael.abbas at edf.fr
 ! aslint: disable=W1504
 !
-subroutine nmconv(noma, modele, ds_material, numedd, sdnume, &
-                  fonact, sddyna, ds_conv, ds_print, ds_measure, &
+subroutine nmconv(noma, modele, ds_material, numedd, sdnume, fonact, &
+                  sddyna, nlDynaDamping, &
+                  ds_conv, ds_print, ds_measure, &
                   sddisc, sdcrit, sderro, ds_algopara, ds_algorom, &
                   ds_inout, matass, solveu, ds_system, numins, &
                   iterat, eta, ds_contact, valinc, solalg, &
@@ -27,6 +28,7 @@ subroutine nmconv(noma, modele, ds_material, numedd, sdnume, &
 !
     use NonLin_Datastructure_type
     use Rom_Datastructure_type
+    use NonLinearDyna_type
 !
     implicit none
 !
@@ -60,7 +62,9 @@ subroutine nmconv(noma, modele, ds_material, numedd, sdnume, &
     integer :: iterat, numins
     type(NL_DS_AlgoPara), intent(inout) :: ds_algopara
     real(kind=8) :: eta
-    character(len=19) :: sdcrit, sddisc, sddyna, sdnume
+    character(len=19) :: sdcrit, sddisc, sdnume
+    character(len=19), intent(in) :: sddyna
+    type(NLDYNA_DAMPING), intent(in) :: nlDynaDamping
     character(len=19) :: matass, solveu
     character(len=19) :: measse(*), veasse(*)
     character(len=19) :: solalg(*), valinc(*)
@@ -184,11 +188,11 @@ subroutine nmconv(noma, modele, ds_material, numedd, sdnume, &
             line_sear_iter = ds_conv%line_sear_iter
             call nmrvai(ds_measure, 'LineSearch', input_count=line_sear_iter)
         end if
-!
+
 ! ----- Compute residuals
-!
         call nmresi(noma, fonact, ds_material, &
-                    numedd, sdnume, sddyna, &
+                    numedd, sdnume, &
+                    sddyna, nlDynaDamping, &
                     ds_conv, ds_print, ds_contact, &
                     ds_inout, ds_algorom, ds_system, &
                     matass, numins, eta, &

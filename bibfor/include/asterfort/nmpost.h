@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,21 +17,24 @@
 ! --------------------------------------------------------------------
 !
 interface
-    subroutine nmpost(model          , mesh           , cara_elem      , list_load,&
-                      numedof        , numfix         , ds_system      ,&
-                      ds_constitutive, ds_material   ,&
-                      ds_contact     , ds_algopara    , list_func_acti ,&
-                      ds_measure     , sddisc         , nume_inst      , eta      ,&
-                      sd_obsv        , sderro         , sddyna         , &
-                      hval_incr      , hval_algo      ,&
-                      hval_meelem    , hval_measse    , hval_veasse    ,&
-                      ds_energy      , ds_errorindic  ,&
+    subroutine nmpost(model, mesh, cara_elem, list_load,&
+                      numedof, numfix, ds_system,&
+                      ds_constitutive, ds_material,&
+                      ds_contact, ds_algopara, list_func_acti,&
+                      ds_measure, sddisc, nume_inst, eta,&
+                      sd_obsv, sderro,&
+                      sddyna, nlDynaDamping,&
+                      hval_incr, hval_algo,&
+                      hval_meelem, hval_measse, hval_veasse,&
+                      ds_energy, ds_errorindic,&
                       ds_posttimestep)
         use NonLin_Datastructure_type
+        use NonLinearDyna_type
         character(len=24), intent(in) :: model
         character(len=8), intent(in) :: mesh
         character(len=24), intent(in) :: cara_elem
-        character(len=19), intent(in) :: list_load
+        character(len=19), intent(in) :: list_load, sddyna
+        type(NLDYNA_DAMPING), intent(in) :: nlDynaDamping
         character(len=24), intent(in) :: numedof, numfix
         type(NL_DS_System), intent(in) :: ds_system
         type(NL_DS_Constitutive), intent(in) :: ds_constitutive
@@ -45,7 +48,6 @@ interface
         real(kind=8), intent(in) :: eta
         character(len=19), intent(in) :: sd_obsv
         character(len=24), intent(in) :: sderro
-        character(len=19), intent(in) :: sddyna
         character(len=19), intent(in) :: hval_incr(*), hval_algo(*)
         character(len=19), intent(in) :: hval_meelem(*), hval_measse(*)
         character(len=19), intent(in) :: hval_veasse(*)

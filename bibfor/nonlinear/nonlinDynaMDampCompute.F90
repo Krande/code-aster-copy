@@ -17,29 +17,30 @@
 ! --------------------------------------------------------------------
 ! person_in_lload_name: mickael.abbas at edf.fr
 !
-subroutine nonlinDynaMDampCompute(phase, sddyna, &
+subroutine nonlinDynaMDampCompute(phaseType, &
+                                  nlDynaDamping, &
                                   nume_dof, ds_measure, &
                                   hval_incr, hval_veasse)
 !
     use NonLin_Datastructure_type
+    use NonLinearDyna_type
 !
     implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
-#include "asterfort/nmchex.h"
-#include "asterfort/nmtime.h"
 #include "asterfort/dismoi.h"
-#include "asterfort/ndynkk.h"
-#include "asterfort/ndynlo.h"
-#include "asterfort/jeveuo.h"
 #include "asterfort/fmodam.h"
 #include "asterfort/infdbg.h"
-#include "asterfort/utmess.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/nmchex.h"
 #include "asterfort/nmdebg.h"
+#include "asterfort/nmtime.h"
+#include "asterfort/NonLinear_type.h"
+#include "asterfort/utmess.h"
 !
-    character(len=10), intent(in) :: phase
-    character(len=19), intent(in) :: sddyna
+    integer, intent(in) :: phaseType
+    type(NLDYNA_DAMPING), intent(in) :: nlDynaDamping
     character(len=24), intent(in) :: nume_dof
     type(NL_DS_Measure), intent(inout) :: ds_measure
     character(len=19), intent(in) :: hval_incr(*)
@@ -53,8 +54,8 @@ subroutine nonlinDynaMDampCompute(phase, sddyna, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  phase            : "prediction" or "correction"
-! In  sddyna           : datastructure for dynamic
+! In  phaseType        : name of current phase of algorithm
+! In  nlDynaDamping    : damping parameters
 ! In  model            : name of model
 ! In  nume_dof         : name of numbering object (NUME_DDL)
 ! In  ds_material      : datastructure for material parameters
@@ -66,15 +67,15 @@ subroutine nonlinDynaMDampCompute(phase, sddyna, &
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: ifm, niv
-    character(len=19) :: vect_asse
-    character(len=19) :: vite_iter, vite_curr
-    real(kind=8), pointer :: v_vect_asse(:) => null()
+    character(len=19) :: vectAsse, viteIter, viteCurr
+    real(kind=8), pointer :: valeVectAsse(:) => null()
     integer :: nb_equa
+    type(MODAL_DAMPING) :: modalDamping
+    character(len=24) :: jvDataDamp
     character(len=24) :: valmod, basmod
-    character(len=19) :: sdammo
-    aster_logical :: nreavi
-    real(kind=8), pointer :: v_vite_iter(:) => null()
-    real(kind=8), pointer :: v_vite_curr(:) => null()
+    aster_logical :: lReacVite
+    real(kind=8), pointer :: valeViteIter(:) => null()
+    real(kind=8), pointer :: valeViteCurr(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -82,50 +83,45 @@ subroutine nonlinDynaMDampCompute(phase, sddyna, &
     if (niv .ge. 2) then
         call utmess('I', 'MECANONLINE11_10')
     end if
-!
+
 ! - Get hat variables
-!
-    call nmchex(hval_incr, 'VALINC', 'VITPLU', vite_curr)
-    call nmchex(hval_incr, 'VALINC', 'VITKM1', vite_iter)
-    call nmchex(hval_veasse, 'VEASSE', 'CNAMOD', vect_asse)
-    call jeveuo(vite_iter(1:19)//'.VALE', 'E', vr=v_vite_iter)
-    call jeveuo(vite_curr(1:19)//'.VALE', 'E', vr=v_vite_curr)
-    call jeveuo(vect_asse(1:19)//'.VALE', 'E', vr=v_vect_asse)
-!
+    call nmchex(hval_incr, 'VALINC', 'VITPLU', viteCurr)
+    call nmchex(hval_incr, 'VALINC', 'VITKM1', viteIter)
+    call nmchex(hval_veasse, 'VEASSE', 'CNAMOD', vectAsse)
+    call jeveuo(viteIter(1:19)//'.VALE', 'E', vr=valeViteIter)
+    call jeveuo(viteCurr(1:19)//'.VALE', 'E', vr=valeViteCurr)
+    call jeveuo(vectAsse(1:19)//'.VALE', 'E', vr=valeVectAsse)
+
 ! - Initializations
-!
     call dismoi('NB_EQUA', nume_dof, 'NUME_DDL', repi=nb_equa)
-    call ndynkk(sddyna, 'SDAMMO', sdammo)
-    valmod = sdammo(1:19)//'.VALM'
-    basmod = sdammo(1:19)//'.BASM'
-    nreavi = ndynlo(sddyna, 'NREAVI')
-!
+    modalDamping = nlDynaDamping%modalDamping
+    jvDataDamp = modalDamping%jvDataDamp
+    lReacVite = modalDamping%lReacVite
+    valmod = jvDataDamp(1:19)//'.VALM'
+    basmod = jvDataDamp(1:19)//'.BASM'
+
 ! - Launch timer
-!
     call nmtime(ds_measure, 'Init', '2nd_Member')
     call nmtime(ds_measure, 'Launch', '2nd_Member')
-!
+
 ! - Compute
-!
-    if (phase .eq. 'Prediction') then
-        call fmodam(nb_equa, v_vite_iter, valmod, basmod, v_vect_asse)
-    elseif (phase .eq. 'Correction') then
-        call fmodam(nb_equa, v_vite_curr, valmod, basmod, v_vect_asse)
-        if (nreavi) then
-            call fmodam(nb_equa, v_vite_curr, valmod, basmod, v_vect_asse)
+    if (phaseType .eq. PRED_EULER) then
+        call fmodam(nb_equa, valeViteIter, valmod, basmod, valeVectAsse)
+    elseif (phaseType .eq. CORR_NEWTON) then
+        call fmodam(nb_equa, valeViteCurr, valmod, basmod, valeVectAsse)
+        if (lReacVite) then
+            call fmodam(nb_equa, valeViteCurr, valmod, basmod, valeVectAsse)
         end if
     else
         ASSERT(ASTER_FALSE)
     end if
-!
+
 ! - Stop timer
-!
     call nmtime(ds_measure, 'Stop', '2nd_Member')
-!
+
 ! - Debug
-!
     if (niv .ge. 2) then
-        call nmdebg('VECT', vect_asse, 6)
+        call nmdebg('VECT', vectAsse, 6)
     end if
 !
 end subroutine

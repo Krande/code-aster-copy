@@ -17,18 +17,20 @@
 ! --------------------------------------------------------------------
 !
 interface
-    subroutine nmmatr(phaseType, fonact, lischa, numedd, sddyna,&
-                      numins, ds_contact, meelem, measse, matass)
+    subroutine nmmatr(phaseType, listFuncActi, listLoad, numeDof,&
+                      sddyna, nlDynaDamping,&
+                      numeTime, ds_contact, meelem, measse,&
+                      matrAsse)
         use NonLin_Datastructure_type
-        integer, intent(in) :: phaseType
-        integer :: fonact(*)
-        character(len=19) :: lischa
-        character(len=24) :: numedd
-        character(len=19) :: sddyna
-        integer :: numins
+        use NonLinearDyna_type
+        integer, intent(in) :: phaseType, listFuncActi(*)
+        character(len=19), intent(in) :: listLoad
+        character(len=24), intent(in) :: numeDof
+        character(len=19), intent(in) :: sddyna
+        type(NLDYNA_DAMPING), intent(in) :: nlDynaDamping
+        integer, intent(in) :: numeTime
         type(NL_DS_Contact), intent(in) :: ds_contact
-        character(len=19) :: meelem(*)
-        character(len=19) :: measse(*)
-        character(len=19) :: matass
+        character(len=19), intent(in) :: meelem(*), measse(*)
+        character(len=19), intent(inout) :: matrAsse
     end subroutine nmmatr
 end interface

@@ -22,12 +22,14 @@ subroutine nmprta(mesh, model, nume_dof, numfix, ds_material, cara_elem, &
                   ds_constitutive, list_load, ds_algopara, solveu, ds_system, &
                   list_func_acti, ds_print, ds_measure, ds_algorom, sddisc, &
                   nume_inst, hval_incr, hval_algo, hhoField, matass, maprec, &
-                  ds_contact, sddyna, hval_meelem, hval_measse, hval_veelem, &
+                  sddyna, nlDynaDamping, &
+                  ds_contact, hval_meelem, hval_measse, hval_veelem, &
                   hval_veasse, sdnume, ldccvg, faccvg, &
-                  rescvg, condcvg)
+                  rescvg)
 !
     use NonLin_Datastructure_type
     use Rom_Datastructure_type
+    use NonLinearDyna_type
     use HHO_type
 !
     implicit none
@@ -51,7 +53,7 @@ subroutine nmprta(mesh, model, nume_dof, numfix, ds_material, cara_elem, &
 !
     integer :: list_func_acti(*)
     character(len=8), intent(in) :: mesh
-    integer :: nume_inst, faccvg, rescvg, ldccvg, condcvg
+    integer :: nume_inst, faccvg, rescvg, ldccvg
     type(NL_DS_Constitutive), intent(in) :: ds_constitutive
     type(NL_DS_System), intent(in) :: ds_system
     type(NL_DS_AlgoPara), intent(in) :: ds_algopara
@@ -60,7 +62,9 @@ subroutine nmprta(mesh, model, nume_dof, numfix, ds_material, cara_elem, &
     type(NL_DS_Print), intent(inout) :: ds_print
     type(NL_DS_Material), intent(in) :: ds_material
     character(len=19) :: matass, maprec
-    character(len=19) :: list_load, solveu, sddisc, sddyna, sdnume
+    character(len=19) :: list_load, solveu, sddisc, sdnume
+    character(len=19), intent(in) :: sddyna
+    type(NLDYNA_DAMPING), intent(in) :: nlDynaDamping
     character(len=24) :: model, cara_elem
     character(len=24) :: nume_dof, numfix
     character(len=19) :: hval_algo(*), hval_incr(*)
@@ -99,7 +103,8 @@ subroutine nmprta(mesh, model, nume_dof, numfix, ds_material, cara_elem, &
 ! In  hval_veasse      : hat-variable for vectors (node fields)
 ! In  hval_meelem      : hat-variable for elementary matrix
 ! In  hval_measse      : hat-variable for matrix
-! In  sddyna           : datastructure for dynamic
+! In  sddyna           : name of datastructure for dynamic parameters
+! In  nlDynaDamping    : damping parameters
 ! IO  ds_contact       : datastructure for contact management
 ! IN  MATASS : NOM DE LA MATRICE DU PREMIER MEMBRE ASSEMBLEE
 ! IN  MAPREC : NOM DE LA MATRICE DE PRECONDITIONNEMENT (GCPC)
@@ -150,7 +155,6 @@ subroutine nmprta(mesh, model, nume_dof, numfix, ds_material, cara_elem, &
     ldccvg = -1
     faccvg = -1
     rescvg = -1
-    condcvg = -1
     cndonn = '&&CNCHAR.DONN'
     cnpilo = '&&CNCHAR.PILO'
     call vtzero(cndonn)
@@ -169,13 +173,12 @@ subroutine nmprta(mesh, model, nume_dof, numfix, ds_material, cara_elem, &
 ! --- INCREMENT DE DEPLACEMENT NUL EN PREDICTION
 !
     call nmdep0('ON ', hval_algo)
-!
-! --- CALCUL DE LA MATRICE GLOBALE
-!
+
+! - Compute matrix
     call nmprma(list_func_acti, &
                 mesh, model, cara_elem, &
                 ds_material, ds_constitutive, &
-                list_load, sddyna, &
+                list_load, sddyna, nlDynaDamping, &
                 sddisc, nume_inst, &
                 ds_algopara, ds_contact, ds_algorom, &
                 ds_print, ds_measure, &
@@ -184,7 +187,7 @@ subroutine nmprta(mesh, model, nume_dof, numfix, ds_material, cara_elem, &
                 nume_dof, numfix, &
                 solveu, ds_system, &
                 maprec, matass, &
-                faccvg, ldccvg, condcvg)
+                faccvg, ldccvg)
 !
 ! --- ERREUR SANS POSSIBILITE DE CONTINUER
 !
@@ -195,9 +198,9 @@ subroutine nmprta(mesh, model, nume_dof, numfix, ds_material, cara_elem, &
 ! - Compute forces for second member at prediction
 !
     call nmforc_pred(list_func_acti, &
-                     model, cara_elem, &
+                     model, cara_elem, list_load, &
                      nume_dof, matass, &
-                     list_load, sddyna, &
+                     sddyna, nlDynaDamping, &
                      ds_material, ds_constitutive, &
                      ds_measure, ds_algopara, &
                      sddisc, nume_inst, &
@@ -229,12 +232,11 @@ subroutine nmprta(mesh, model, nume_dof, numfix, ds_material, cara_elem, &
     if (ldccvg .eq. 1) then
         goto 999
     end if
-!
+
 ! - Evaluate second member for prediction
-!
     call nmassp(list_func_acti, &
-                sddyna, ds_system, &
-                ds_contact, hval_veasse, &
+                sddyna, nlDynaDamping, &
+                ds_system, ds_contact, hval_veasse, &
                 cnpilo, cndonn)
 !
 ! --- INCREMENT DE DEPLACEMENT NUL EN PREDICTION

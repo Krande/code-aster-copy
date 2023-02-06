@@ -24,12 +24,13 @@ subroutine nmdesc(mesh, modele, numedd, &
                   ds_algopara, ds_system, solveu, &
                   fonact, numins, iterat, &
                   sddisc, ds_print, ds_measure, &
-                  ds_algorom, sddyna, sdnume, &
+                  ds_algorom, sddyna, nlDynaDamping, sdnume, &
                   sderro, matass, maprec, &
                   valinc, solalg, hhoField, meelem, &
                   measse, veasse, lerrit)
 !
     use NonLin_Datastructure_type
+    use NonLinearDyna_type
     use ROM_Datastructure_type
     use HHO_type
 !
@@ -54,7 +55,9 @@ subroutine nmdesc(mesh, modele, numedd, &
     type(NL_DS_AlgoPara), intent(in) :: ds_algopara
     character(len=19) :: matass, maprec
     type(NL_DS_Measure), intent(inout) :: ds_measure
-    character(len=19) :: lischa, solveu, sddisc, sddyna, sdnume
+    character(len=19) :: solveu, sddisc, sdnume
+    character(len=19), intent(in) :: lischa, sddyna
+    type(NLDYNA_DAMPING), intent(in) :: nlDynaDamping
     character(len=24) :: numedd, numfix
     character(len=24) :: modele, carele
     type(NL_DS_Material), intent(in) :: ds_material
@@ -94,6 +97,8 @@ subroutine nmdesc(mesh, modele, numedd, &
 ! IN  SDNUME : SD NUMEROTATION
 ! IN  ITERAT : NUMERO D'ITERATION DE NEWTON
 ! IN  NUMINS : NUMERO D'INSTANT
+! In  sddyna           : name of datastructure for dynamic parameters
+! In  nlDynaDamping    : damping parameters
 ! IO  ds_contact       : datastructure for contact management
 ! In  ds_algopara      : datastructure for algorithm parameters
 ! In  ds_algorom       : datastructure for ROM parameters
@@ -144,7 +149,7 @@ subroutine nmdesc(mesh, modele, numedd, &
     call nmcoma(fonact, &
                 mesh, modele, carele, &
                 ds_material, ds_constitutive, &
-                lischa, sddyna, &
+                lischa, sddyna, nlDynaDamping, &
                 sddisc, numins, iterat, &
                 ds_algopara, ds_contact, ds_algorom, &
                 ds_print, ds_measure, &
@@ -160,10 +165,11 @@ subroutine nmdesc(mesh, modele, numedd, &
     if ((faccvg .eq. 1) .or. (faccvg .eq. 2) .or. (ldccvg .eq. 1)) then
         goto 999
     end if
-!
+
 ! - Evaluate second member for correction
-!
-    call nmassc(fonact, sddyna, ds_contact, veasse, ds_system, &
+    call nmassc(fonact, &
+                sddyna, nlDynaDamping, &
+                ds_contact, veasse, ds_system, &
                 cnpilo, cndonn)
 !
 ! --- ACTUALISATION DES CL CINEMATIQUES

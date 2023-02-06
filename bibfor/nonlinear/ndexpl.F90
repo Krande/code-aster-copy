@@ -20,12 +20,14 @@
 !
 subroutine ndexpl(modele, numedd, ds_material, carele, &
                   ds_constitutive, lischa, ds_algopara, fonact, ds_system, &
-                  ds_print, ds_measure, sdnume, sddyna, sddisc, &
-                  sderro, valinc, numins, solalg, solveu, &
+                  ds_print, ds_measure, sdnume, &
+                  sddyna, nlDynaDamping, &
+                  sddisc, sderro, valinc, numins, solalg, solveu, &
                   matass, maprec, ds_inout, meelem, measse, &
                   veelem, veasse, nbiter)
 !
     use NonLin_Datastructure_type
+    use NonLinearDyna_type
 !
     implicit none
 !
@@ -42,7 +44,9 @@ subroutine ndexpl(modele, numedd, ds_material, carele, &
     type(NL_DS_AlgoPara), intent(in) :: ds_algopara
     character(len=24) :: sderro
     type(NL_DS_Measure), intent(inout) :: ds_measure
-    character(len=19), intent(in) :: sdnume, sddyna, sddisc
+    character(len=19), intent(in) :: sdnume, sddisc
+    character(len=19), intent(in) :: sddyna
+    type(NLDYNA_DAMPING), intent(in) :: nlDynaDamping
     type(NL_DS_InOut), intent(in) :: ds_inout
     type(NL_DS_Print), intent(inout) :: ds_print
     character(len=19) :: valinc(*), solalg(*)
@@ -86,30 +90,27 @@ subroutine ndexpl(modele, numedd, ds_material, carele, &
 ! IN  MEASSE : VARIABLE CHAPEAU POUR NOM DES MATR_ASSE
 ! IN  VEELEM : VARIABLE CHAPEAU POUR NOM DES VECT_ELEM
 ! IN  VEASSE : VARIABLE CHAPEAU POUR NOM DES VECT_ASSE
-! IN  SDDYNA : SD DYNAMIQUE
+! In  sddyna           : name of datastructure for dynamic parameters
+! In  nlDynaDamping    : damping parameters
 ! IN  MATASS : NOM DE LA MATRICE DU PREMIER MEMBRE ASSEMBLEE
 ! IN  MAPREC : NOM DE LA MATRICE DE PRECONDITIONNEMENT (GCPC)
 ! OUT NBITER : NOMBRE D'ITERATIONS DE NEWTON
 !
 ! --------------------------------------------------------------------------------------------------
 !
-
     aster_logical :: lerrit
 !
 ! --------------------------------------------------------------------------------------------------
 !
 
-!
 ! - Update for new time step
-!
     call ndxnpa(modele, carele, &
                 fonact, ds_print, &
                 ds_material, ds_constitutive, &
                 sddisc, sddyna, sdnume, numedd, numins, &
                 valinc, solalg)
-!
+
 ! - Compute forces for second member when constant in time step
-!
     call ndxforc_step(fonact, &
                       modele, carele, numedd, &
                       lischa, sddyna, &
@@ -124,14 +125,16 @@ subroutine ndexpl(modele, numedd, ds_material, carele, &
     call ndxpre(modele, numedd, ds_material, carele, &
                 ds_constitutive, lischa, ds_algopara, solveu, ds_system, &
                 fonact, sddisc, ds_measure, numins, valinc, &
-                solalg, matass, maprec, sddyna, sderro, &
-                sdnume, meelem, measse, veelem, veasse, &
+                solalg, matass, maprec, &
+                sddyna, nlDynaDamping, &
+                sderro, sdnume, meelem, measse, veelem, veasse, &
                 lerrit)
 !
 ! - Update displacements
 !
     if (.not. lerrit) then
-        call ndxdep(numedd, fonact, numins, sddisc, sddyna, &
+        call ndxdep(numedd, fonact, numins, sddisc, &
+                    sddyna, nlDynaDamping, &
                     sdnume, valinc, solalg, veasse)
     end if
 !

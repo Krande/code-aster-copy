@@ -101,8 +101,9 @@ contains
             call utmess('F', 'DAMPING1_20')
         end if
         call jelira(dampMode(1:8)//'           .ORDR', 'LONMAX', nbModeDS)
+        nbMode = nbModeDS
         call getvis(factorKeyword, 'NB_MODE', iocc=1, scal=nbModeMax, nbret=iret)
-        if (iret .eq. 0) then
+        if (iret .ne. 0) then
             nbMode = nbModeMax
         end if
         if (nbModeMax .ne. nbModeDS) then
@@ -111,7 +112,6 @@ contains
         end if
 
 ! - Get list of reduced damping values: by vector from Python or by list_r8 datastructure
-        call wkvect(jvListDamp, 'V V R', nbMode, vr=dampVale)
         call getvr8(factorKeyword, 'AMOR_REDUIT', iocc=1, nbval=0, nbret=nbDampVale)
         nbDampVale = -nbDampVale
         lReducedDampPy = nbDampVale .ne. 0
@@ -123,15 +123,15 @@ contains
         ASSERT(.not. (lReducedDampPy .and. lReducedDampList))
 
         if (lReducedDampPy) then
-            call getvr8(factorKeyword, 'AMOR_REDUIT', iocc=1, nbval=nbDampVale, vect=dampVale, &
-                        nbret=iret)
+            call wkvect(jvListDamp, 'V V R', nbDampVale, vr=dampVale)
+            call getvr8(factorKeyword, 'AMOR_REDUIT', iocc=1, nbval=nbDampVale, &
+                        vect=dampVale, nbret=iret)
         else
             call getvid(factorKeyword, 'LIST_AMOR', iocc=1, scal=listDamp, nbret=iret)
             call jelira(listDamp//'           .VALE', 'LONMAX', ival=nbDampVale)
             call jeveuo(listDamp//'           .VALE', 'L', vr=dampValeTemp)
-            do iMode = 1, nbMode
-                dampVale(1:nbMode) = dampValeTemp(1:nbMode)
-            end do
+            call wkvect(jvListDamp, 'V V R', nbDampVale, vr=dampVale)
+            dampVale(1:nbDampVale) = dampValeTemp(1:nbDampVale)
         end if
 
         if (nbDampVale .gt. nbMode) then
@@ -157,6 +157,16 @@ contains
         modalDamping%jvListDamp = jvListDamp
         modalDamping%nbDampVale = nbDampVale
         modalDamping%jvDataDamp = jvDataDamp
+
+! - Debug
+        if (modalDamping%debug) then
+            WRITE (6, *) "Présence d'amortissement modal"
+            WRITE (6, *) " Modes mécaniques: ", dampMode
+            WRITE (6, *) " Nombre de modes retenus: ", nbMode
+            WRITE (6, *) " Nombre d'amortissement modaux: ", nbDampVale
+            call jeveuo(jvListDamp, 'L', vr=dampVale)
+            WRITE (6, *) "    => ", dampVale(1:nbDampVale)
+        end if
 !
 !   ------------------------------------------------------------------------------------------------
     end subroutine

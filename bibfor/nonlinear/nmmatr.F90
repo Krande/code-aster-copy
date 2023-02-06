@@ -17,10 +17,14 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine nmmatr(phaseType, fonact, lischa, numedd, sddyna, &
-                  numins, ds_contact, meelem, measse, matass)
+subroutine nmmatr(phaseType, listFuncActi, listLoad, numeDof, &
+                  sddyna, nlDynaDamping, &
+                  numeTime, ds_contact, meelem, measse, &
+                  matrAsse)
 !
     use NonLin_Datastructure_type
+    use NonLinearDyna_type
+    use NonLinearDyna_module
 !
     implicit none
 !
@@ -41,15 +45,15 @@ subroutine nmmatr(phaseType, fonact, lischa, numedd, sddyna, &
 #include "asterfort/NonLinear_type.h"
 #include "asterfort/utmess.h"
 !
-    integer, intent(in) :: phaseType
-    character(len=19) :: matass
-    character(len=19) :: sddyna
+    integer, intent(in) :: phaseType, listFuncActi(*)
+    character(len=19), intent(in) :: listLoad
+    character(len=24), intent(in) :: numeDof
+    character(len=19), intent(in) :: sddyna
+    type(NLDYNA_DAMPING), intent(in) :: nlDynaDamping
+    integer, intent(in) :: numeTime
     type(NL_DS_Contact), intent(in) :: ds_contact
-    integer :: fonact(*)
-    integer :: numins
-    character(len=19) :: meelem(*), measse(*)
-    character(len=24) :: numedd
-    character(len=19) :: lischa
+    character(len=19), intent(in) :: meelem(*), measse(*)
+    character(len=19), intent(inout) :: matrAsse
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -61,18 +65,19 @@ subroutine nmmatr(phaseType, fonact, lischa, numedd, sddyna, &
 !
 ! In  phaseType        : name of current phase of algorithm
 ! In  ds_contact       : datastructure for contact management
-! IN  SDDYNA : SD DYNAMIQUE
-! IN  NUMINS : NUMERO D'INSTANT
-! IN  NUMEDD : NOM DE LA NUMEROTATION MECANIQUE
-! IN  LISCHA : SD LISTE DES CHARGES
+! In  sddyna           : name of datastructure for dynamic parameters
+! In  nlDynaDamping    : damping parameters
+! IN  numeTime : NUMERO D'INSTANT
+! IN  numeDof : NOM DE LA NUMEROTATION MECANIQUE
+! IN  listLoad : SD LISTE DES CHARGES
 ! IN  MEASSE : VARIABLE CHAPEAU POUR NOM DES MATR_ASSE
 ! IN  MEELEM : VARIABLE CHAPEAU POUR NOM DES MATR_ELEM
-! OUT MATASS : MATRICE ASSEMBLEE RESULTANTE
+! IO  MATASS : MATRICE ASSEMBLEE RESULTANTE
 !
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: ifm, niv
-    aster_logical :: ldyna, lctcd, lexpl, lDampMatrix, l_neum_undead, lshima, lprem, l_cont_lac
+    aster_logical :: lDyna, lctcd, lexpl, lDampMatrix, l_neum_undead, lShiftMass, lprem, l_cont_lac
     real(kind=8) :: coerig, coeamo, coemas, coeshi
     character(len=8) :: nomddl
     real(kind=8) :: coemat(3)
@@ -82,7 +87,7 @@ subroutine nmmatr(phaseType, fonact, lischa, numedd, sddyna, &
     character(len=24) :: limam(3)
     character(len=4) :: typcsm(3)
     integer :: nbmat
-    character(len=19) :: rigid, masse, amort
+    character(len=19) :: rigiAsse, rigiMass, rigiDamp
     aster_logical :: lunil, l_unil_pena
 !
 ! --------------------------------------------------------------------------------------------------
@@ -96,33 +101,33 @@ subroutine nmmatr(phaseType, fonact, lischa, numedd, sddyna, &
     nomddl = ' '
 
 ! - Get name of matrices
-    call nmchex(measse, 'MEASSE', 'MERIGI', rigid)
-    call nmchex(measse, 'MEASSE', 'MEMASS', masse)
-    call nmchex(measse, 'MEASSE', 'MEAMOR', amort)
+    call nmchex(measse, 'MEASSE', 'MERIGI', rigiAsse)
+    call nmchex(measse, 'MEASSE', 'MEMASS', rigiMass)
+    call nmchex(measse, 'MEASSE', 'MEAMOR', rigiDamp)
 
 ! - Active functionnalites
-    lctcd = isfonc(fonact, 'CONT_DISCRET')
-    lunil = isfonc(fonact, 'LIAISON_UNILATER')
-    l_neum_undead = isfonc(fonact, 'NEUM_UNDEAD')
-    l_cont_lac = isfonc(fonact, 'CONT_LAC')
-    lDampMatrix = ndynlo(sddyna, 'MAT_AMORT')
-    ldyna = ndynlo(sddyna, 'DYNAMIQUE')
+    lctcd = isfonc(listFuncActi, 'CONT_DISCRET')
+    lunil = isfonc(listFuncActi, 'LIAISON_UNILATER')
+    l_neum_undead = isfonc(listFuncActi, 'NEUM_UNDEAD')
+    l_cont_lac = isfonc(listFuncActi, 'CONT_LAC')
+    lDyna = isfonc(listFuncActi, 'DYNAMIQUE')
+    lDampMatrix = nlDynaDamping%hasMatrDamp
     lexpl = ndynlo(sddyna, 'EXPLICITE')
-    lshima = ndynlo(sddyna, 'COEF_MASS_SHIFT')
+    lShiftMass = ndynlo(sddyna, 'COEF_MASS_SHIFT')
 !
 ! --- PREMIER PAS DE TEMPS ?
 !
-    lprem = numins .le. 1
+    lprem = numeTime .le. 1
 !
 ! --- SUPPRESSION ANCIENNE MATRICE ASSEMBLEE
 !
-    if (ldyna) then
-        call detrsd('MATR_ASSE', matass)
+    if (lDyna) then
+        call detrsd('MATR_ASSE', matrAsse)
     end if
 !
 ! --- COEFFICIENTS POUR MATRICES
 !
-    if (ldyna) then
+    if (lDyna) then
         coerig = ndynre(sddyna, 'COEF_MATR_RIGI')
         coeamo = ndynre(sddyna, 'COEF_MATR_AMOR')
         coemas = ndynre(sddyna, 'COEF_MATR_MASS')
@@ -136,18 +141,18 @@ subroutine nmmatr(phaseType, fonact, lischa, numedd, sddyna, &
 !
 ! --- DECALAGE DE LA MATRICE MASSE (COEF_MASS_SHIFT)
 !
-    if (lshima .and. lprem .and. (phaseType .eq. PRED_EULER)) then
+    if (lShiftMass .and. lprem .and. (phaseType .eq. PRED_EULER)) then
         typcsm(1) = 'R'
         typcsm(2) = 'R'
         coemam(1) = 1.d0
         coemam(2) = coeshi
-        limam(1) = masse
-        limam(2) = rigid
+        limam(1) = rigiMass
+        limam(2) = rigiAsse
         if (lexpl) then
-            call mtcmbl(2, typcsm, coemam, limam, masse, &
+            call mtcmbl(2, typcsm, coemam, limam, rigiMass, &
                         ' ', ' ', 'ELIM=')
         else
-            call mtcmbl(2, typcsm, coemam, limam, masse, &
+            call mtcmbl(2, typcsm, coemam, limam, rigiMass, &
                         'LAGR', ' ', 'ELIM=')
         end if
     end if
@@ -156,21 +161,21 @@ subroutine nmmatr(phaseType, fonact, lischa, numedd, sddyna, &
 !
     if (ldyna) then
         if (phaseType .eq. ACCEL_INIT) then
-            limat(1) = masse
+            limat(1) = rigiMass
             nbmat = 1
             coemat(1) = 1.d0
         else
             if (lexpl) then
-                limat(1) = masse
+                limat(1) = rigiMass
                 nbmat = 1
                 coemat(1) = coemas
             else
                 coemat(1) = coerig
                 coemat(2) = coemas
                 coemat(3) = coeamo
-                limat(1) = rigid
-                limat(2) = masse
-                limat(3) = amort
+                limat(1) = rigiAsse
+                limat(2) = rigiMass
+                limat(3) = rigiDamp
                 if (lDampMatrix) then
                     nbmat = 3
                 else
@@ -184,23 +189,23 @@ subroutine nmmatr(phaseType, fonact, lischa, numedd, sddyna, &
 !
     if (ldyna) then
         if (phaseType .eq. ACCEL_INIT) then
-            call mtdefs(matass, masse, 'V', 'R')
+            call mtdefs(matrAsse, rigiMass, 'V', 'R')
         else
             if (lexpl) then
-                call mtdefs(matass, masse, 'V', 'R')
+                call mtdefs(matrAsse, rigiMass, 'V', 'R')
             else
-                call mtdefs(matass, rigid, 'V', 'R')
+                call mtdefs(matrAsse, rigiAsse, 'V', 'R')
             end if
         end if
     end if
 !
 ! --- ASSEMBLAGE
 !
-    if (ldyna) then
-        call mtcmbl(nbmat, typcst, coemat, limat, matass, &
+    if (lDyna) then
+        call mtcmbl(nbmat, typcst, coemat, limat, matrAsse, &
                     nomddl, ' ', 'ELIM=')
     else
-        matass = rigid
+        matrAsse = rigiAsse
     end if
     if (phaseType .eq. ACCEL_INIT) then
         goto 999
@@ -209,19 +214,19 @@ subroutine nmmatr(phaseType, fonact, lischa, numedd, sddyna, &
 ! --- PRISE EN COMPTE DE LA MATRICE TANGENTE DES FORCES SUIVEUSES
 !
     if (l_neum_undead) then
-        call ascoma(meelem, numedd, lischa, matass)
+        call ascoma(meelem, numeDof, listLoad, matrAsse)
     end if
 !
 ! --- PRISE EN COMPTE DE LA MATRICE TANGENTE DU FROTTEMENT
 !
     if (lctcd .and. (phaseType .eq. CORR_NEWTON)) then
-        call nmasfr(ds_contact, matass)
+        call nmasfr(ds_contact, matrAsse)
     end if
 !
 ! - Special post-treatment for LAC contact method
 !
     if (l_cont_lac) then
-        call lccmst(ds_contact, matass)
+        call lccmst(ds_contact, matrAsse)
     end if
 !
 ! --- PRISE EN COMPTE DE LA MATRICE TANGENTE DE PENALISATION
@@ -230,7 +235,7 @@ subroutine nmmatr(phaseType, fonact, lischa, numedd, sddyna, &
     if (lunil .and. (phaseType .eq. CORR_NEWTON)) then
         l_unil_pena = cfdisl(ds_contact%sdcont_defi, 'UNIL_PENA')
         if (l_unil_pena) then
-            call nmasun(ds_contact, matass)
+            call nmasun(ds_contact, matrAsse)
         end if
     end if
 !

@@ -17,13 +17,15 @@
 ! --------------------------------------------------------------------
 !
 interface
-    subroutine ndexpl(modele         , numedd    , ds_material, carele   ,&
-                      ds_constitutive, lischa    , ds_algopara, fonact     , ds_system,&
-                      ds_print       , ds_measure, sdnume     , sddyna     , sddisc   ,&
-                      sderro         , valinc    , numins     , solalg     , solveu   ,&
-                      matass         , maprec    , ds_inout   , meelem     , measse   ,&
-                      veelem         , veasse    , nbiter  )
+    subroutine ndexpl(modele, numedd, ds_material, carele,&
+                      ds_constitutive, lischa, ds_algopara, fonact, ds_system,&
+                      ds_print, ds_measure, sdnume,&
+                      sddyna, nlDynaDamping,&
+                      sddisc, sderro, valinc, numins, solalg, solveu,&
+                      matass, maprec, ds_inout, meelem, measse,&
+                      veelem, veasse, nbiter)
         use NonLin_Datastructure_type
+        use NonLinearDyna_type
         character(len=24) :: modele
         character(len=24) :: numedd
         type(NL_DS_Material), intent(in) :: ds_material
@@ -36,7 +38,9 @@ interface
         type(NL_DS_InOut), intent(in) :: ds_inout
         type(NL_DS_Print), intent(inout) :: ds_print
         type(NL_DS_Measure), intent(inout) :: ds_measure
-        character(len=19), intent(in) :: sdnume, sddyna, sddisc
+        character(len=19), intent(in) :: sdnume, sddisc
+        character(len=19), intent(in) :: sddyna
+        type(NLDYNA_DAMPING), intent(in) :: nlDynaDamping
         character(len=24) :: sderro
         character(len=19) :: valinc(*)
         integer :: numins

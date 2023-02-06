@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,44 +17,35 @@
 ! --------------------------------------------------------------------
 !
 interface
-    subroutine nmprde(mesh, modele, numedd         , numfix    , ds_material, carele    ,&
-                      ds_constitutive, lischa    , ds_algopara, solveu   , ds_system,&
-                      fonact, ds_print       , ds_measure, ds_algorom ,sddisc     , numins    ,&
-                      valinc, solalg         , matass    , maprec     , ds_contact,&
-                      sddyna, meelem         , measse    , veelem     , veasse    ,&
-                      ldccvg, faccvg         , rescvg    , condcvg)
+    subroutine nmprde(mesh, modele, numedd, numfix, ds_material, carele,&
+                        ds_constitutive, lischa, ds_algopara, solveu, ds_system,&
+                        fonact, ds_print, ds_measure, ds_algorom, sddisc, numins,&
+                        valinc, solalg, matass, maprec, ds_contact,&
+                        sddyna, nlDynaDamping,&
+                        meelem, measse, veelem, veasse,&
+                        ldccvg, faccvg, rescvg)
         use NonLin_Datastructure_type
         use Rom_Datastructure_type
-        character(len=8), intent(in) :: mesh
-        character(len=24) :: modele
-        character(len=24) :: numedd
-        character(len=24) :: numfix
-        type(NL_DS_Material), intent(in) :: ds_material
-        character(len=24) :: carele
-        type(NL_DS_Constitutive), intent(in) :: ds_constitutive
-        character(len=19) :: lischa
-        type(NL_DS_AlgoPara), intent(in) :: ds_algopara
-        type(ROM_DS_AlgoPara), intent(in) :: ds_algorom
-        character(len=19) :: solveu
+        use NonLinearDyna_type
         integer :: fonact(*)
-        type(NL_DS_Print), intent(inout) :: ds_print
+        character(len=8), intent(in) :: mesh
+        integer :: numins, ldccvg, faccvg, rescvg
+        type(NL_DS_AlgoPara), intent(in) :: ds_algopara
+        character(len=19) :: maprec, matass
         type(NL_DS_Measure), intent(inout) :: ds_measure
+        type(NL_DS_Print), intent(inout) :: ds_print
+        type(ROM_DS_AlgoPara), intent(in) :: ds_algorom
+        character(len=19) :: lischa, solveu, sddisc
+        character(len=19), intent(in) :: sddyna
+        type(NLDYNA_DAMPING), intent(in) :: nlDynaDamping
+        character(len=24) :: numedd, numfix
+        character(len=24) :: modele, carele
         type(NL_DS_System), intent(in) :: ds_system
-        character(len=19) :: sddisc
-        integer :: numins
-        character(len=19) :: valinc(*)
-        character(len=19) :: solalg(*)
-        character(len=19) :: matass
-        character(len=19) :: maprec
+        type(NL_DS_Material), intent(in) :: ds_material
+        type(NL_DS_Constitutive), intent(in) :: ds_constitutive
         type(NL_DS_Contact), intent(inout) :: ds_contact
-        character(len=19) :: sddyna
-        character(len=19) :: meelem(*)
-        character(len=19) :: measse(*)
-        character(len=19) :: veelem(*)
-        character(len=19) :: veasse(*)
-        integer :: ldccvg
-        integer :: faccvg
-        integer :: rescvg
-        integer :: condcvg
+        character(len=19) :: veelem(*), veasse(*)
+        character(len=19) :: meelem(*), measse(*)
+        character(len=19) :: solalg(*), valinc(*)
     end subroutine nmprde
 end interface

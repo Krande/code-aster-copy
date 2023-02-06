@@ -22,13 +22,15 @@ subroutine nminit(mesh, model, mater, mateco, cara_elem, &
                   list_load, &
                   numedd, numfix, ds_algopara, ds_constitutive, maprec, &
                   solver, numins, sddisc, sdnume, sdcrit, &
-                  ds_material, list_func_acti, sdpilo, sddyna, ds_print, &
+                  ds_material, listFuncActi, sdpilo, ds_print, &
+                  sddyna, nlDynaDamping, &
                   sd_suiv, sd_obsv, sderro, ds_posttimestep, ds_inout, &
                   ds_energy, ds_conv, ds_errorindic, valinc, solalg, &
                   measse, veelem, meelem, veasse, ds_contact, &
                   ds_measure, ds_algorom, ds_system, hhoField)
 !
     use NonLin_Datastructure_type
+    use NonLinearDyna_type
     use Rom_Datastructure_type
     use HHO_type
     use HHO_Meca_module, only: hhoMecaInit
@@ -108,9 +110,10 @@ subroutine nminit(mesh, model, mater, mateco, cara_elem, &
     character(len=19) :: sdnume
     character(len=19) :: sdcrit
     type(NL_DS_Material), intent(inout) :: ds_material
-    integer, intent(inout) :: list_func_acti(*)
+    integer, intent(inout) :: listFuncActi(*)
     character(len=19) :: sdpilo
-    character(len=19) :: sddyna
+    character(len=19), intent(in) :: sddyna
+    type(NLDYNA_DAMPING), intent(in) :: nlDynaDamping
     type(NL_DS_Print), intent(inout) :: ds_print
     character(len=24), intent(out) :: sd_suiv
     character(len=19), intent(out) :: sd_obsv
@@ -160,6 +163,8 @@ subroutine nminit(mesh, model, mater, mateco, cara_elem, &
 ! IO  ds_errorindic    : datastructure for error indicator
 ! Out sd_obsv          : datastructure for observation parameters
 ! Out sd_suiv          : datastructure for dof monitoring parameters
+! In  sddyna           : name of datastructure for dynamic parameters
+! In  nlDynaDamping    : damping parameters
 ! IO  ds_print         : datastructure for printing parameters
 ! IO  ds_conv          : datastructure for convergence management
 ! IO  ds_algopara      : datastructure for algorithm parameters
@@ -167,7 +172,7 @@ subroutine nminit(mesh, model, mater, mateco, cara_elem, &
 ! IO  ds_measure       : datastructure for measure and statistics management
 ! IO  ds_algorom       : datastructure for ROM parameters
 ! IO  ds_system        : datastructure for non-linear system management
-! IO  list_func_acti   : list of active functionnalities
+! IO  listFuncActi     : list of active functionnalities
 ! IO  hhoField         : datastructure for HHO
 !
 ! --------------------------------------------------------------------------------------------------
@@ -221,26 +226,27 @@ subroutine nminit(mesh, model, mater, mateco, cara_elem, &
     call nmfonc(ds_conv, ds_algopara, solver, model, ds_contact, &
                 list_load, sdnume, sddyna, ds_errorindic, mater, &
                 ds_inout, ds_constitutive, ds_energy, ds_algorom, ds_posttimestep, &
-                list_func_acti)
-!
+                listFuncActi)
+
 ! - Check compatibility of some functionnalities
 !
-    call exfonc(list_func_acti, ds_algopara, solver, ds_contact, sddyna, &
+    call exfonc(listFuncActi, ds_algopara, solver, ds_contact, &
+                sddyna, nlDynaDamping, &
                 mater, model)
-    lpilo = isfonc(list_func_acti, 'PILOTAGE')
+    lpilo = isfonc(listFuncActi, 'PILOTAGE')
     lmpas = ndynlo(sddyna, 'MULTI_PAS')
-    lsstf = isfonc(list_func_acti, 'SOUS_STRUC')
-    l_erre_thm = isfonc(list_func_acti, 'ERRE_TEMPS_THM')
+    lsstf = isfonc(listFuncActi, 'SOUS_STRUC')
+    l_erre_thm = isfonc(listFuncActi, 'ERRE_TEMPS_THM')
     lviss = ndynlo(sddyna, 'VECT_ISS')
-    lrefe = isfonc(list_func_acti, 'RESI_REFE')
-    ldidi = isfonc(list_func_acti, 'DIDI')
-    l_ener = isfonc(list_func_acti, 'ENERGIE')
+    lrefe = isfonc(listFuncActi, 'RESI_REFE')
+    ldidi = isfonc(listFuncActi, 'DIDI')
+    l_ener = isfonc(listFuncActi, 'ENERGIE')
     l_dyna = ndynlo(sddyna, 'DYNAMIQUE')
-    l_hho = isfonc(list_func_acti, 'HHO')
+    l_hho = isfonc(listFuncActi, 'HHO')
 
 ! - Initializations for HHO
     if (l_hho) then
-        call hhoMecaInit(model, list_load, list_func_acti, hhoField)
+        call hhoMecaInit(model, list_load, listFuncActi, hhoField)
     end if
 
 ! - Initialization for reduced method
@@ -250,20 +256,20 @@ subroutine nminit(mesh, model, mater, mateco, cara_elem, &
 
 ! - Prepare contact solving datastructure
     if (ds_contact%l_meca_cont) then
-        call cfmxsd(mesh, model, numedd, list_func_acti, sddyna, ds_contact)
+        call cfmxsd(mesh, model, numedd, listFuncActi, sddyna, ds_contact)
     end if
     if (ds_contact%l_meca_unil) then
         call cucrsd(mesh, numedd, ds_contact)
     end if
 
 ! - Initializations for measure and statistic management
-    call nmcrti(list_func_acti, ds_inout%result, ds_contact, ds_measure)
+    call nmcrti(listFuncActi, ds_inout%result, ds_contact, ds_measure)
 
 ! - Initializations for algorithm parameters
-    call nonlinDSAlgoParaInit(list_func_acti, ds_algopara, ds_contact)
+    call nonlinDSAlgoParaInit(listFuncActi, ds_algopara, ds_contact)
 
 ! - Initializations for convergence management
-    call nonlinDSConvergenceInit(ds_conv, list_func_acti, ds_contact, model)
+    call nonlinDSConvergenceInit(ds_conv, listFuncActi, ds_contact, model)
 
 ! - Initializations for energy management
     if (l_ener) then
@@ -277,14 +283,13 @@ subroutine nminit(mesh, model, mater, mateco, cara_elem, &
     if (l_erre_thm) then
         call nonlinDSErrorIndicInit(model, ds_constitutive, ds_errorindic)
     end if
-!
-! --- CREATION DES VECTEURS D'INCONNUS
-!
-    call nmcrch(numedd, list_func_acti, sddyna, ds_contact, valinc, &
-                solalg, veasse)
+
+! - Create vectors
+    call nmcrch(numedd, listFuncActi, sddyna, nlDynaDamping, &
+                ds_contact, valinc, solalg, veasse)
 
 ! - Initializations for dynamic
-    call nonlinDSDynamicInit(valinc, sddyna, ds_constitutive)
+    call nonlinDSDynamicInit(valinc, sddyna, nlDynaDamping, ds_constitutive)
 !
 ! --- CONSTRUCTION DU CHAM_NO ASSOCIE AU PILOTAGE
 !
@@ -294,19 +299,19 @@ subroutine nminit(mesh, model, mater, mateco, cara_elem, &
 !
 ! --- DUPLICATION NUME_DDL POUR CREER UN DUME_DDL FIXE
 !
-    call nmpro2(list_func_acti, numedd, numfix)
+    call nmpro2(listFuncActi, numedd, numfix)
 
 ! - Create input/output datastructure
-    call nmetcr(ds_inout, model, ds_constitutive%compor, list_func_acti, sddyna, &
+    call nmetcr(ds_inout, model, ds_constitutive%compor, listFuncActi, sddyna, &
                 ds_contact, cara_elem, list_load)
 
 ! - Read initial state
-    call nmdoet(model, ds_constitutive%compor, list_func_acti, numedd, sdpilo, &
+    call nmdoet(model, ds_constitutive%compor, listFuncActi, numedd, sdpilo, &
                 sddyna, ds_errorindic, solalg, lacc0, ds_inout)
 
 ! - Create time discretization and storing datastructures
     call diinit(mesh, model, ds_inout, mater, mateco, cara_elem, &
-                list_func_acti, sddyna, ds_conv, ds_algopara, solver, &
+                listFuncActi, sddyna, ds_conv, ds_algopara, solver, &
                 ds_contact, sddisc)
 
 ! - Vérifier les instants des calculs attachés à _NON_LINE (eg. MODE_VIBR)
@@ -323,18 +328,19 @@ subroutine nminit(mesh, model, mater, mateco, cara_elem, &
                               ds_material)
 
 ! - Initializations for non-linear system
-    call nonlinSystemInit(list_func_acti, numedd, ds_algopara, ds_contact, ds_system)
+    call nonlinSystemInit(listFuncActi, numedd, ds_algopara, ds_contact, ds_system)
 
 ! - Prepare constant elementary matrices
-    call nminmc(list_func_acti, &
+    call nminmc(listFuncActi, &
                 model, cara_elem, ds_material, &
                 list_load, numfix, &
                 meelem, measse)
 
 ! - Prepare matrices for dynamic
     if (l_dyna) then
-        call compMatrInit(list_func_acti, &
-                          sddyna, sddisc, list_load, &
+        call compMatrInit(listFuncActi, &
+                          sddyna, nlDynaDamping, &
+                          sddisc, list_load, &
                           model, cara_elem, &
                           ds_material, ds_constitutive, &
                           ds_measure, ds_system, &
@@ -375,7 +381,7 @@ subroutine nminit(mesh, model, mater, mateco, cara_elem, &
 !
     if (lacc0) then
 ! ----- Compute forces for second member for initial acceleration
-        call nmforc_acci(list_func_acti, &
+        call nmforc_acci(listFuncActi, &
                          model, cara_elem, numedd, &
                          list_load, sddyna, &
                          ds_material, ds_constitutive, ds_system, &
@@ -385,10 +391,13 @@ subroutine nminit(mesh, model, mater, mateco, cara_elem, &
                          veelem, veasse, &
                          measse)
 ! ----- Compute initial acceleration
-        call accel0(model, numedd, list_func_acti, list_load, &
-                    ds_contact, maprec, solver, valinc, sddyna, &
-                    ds_measure, ds_system, meelem, measse, &
-                    veelem, veasse, solalg)
+        call accel0(model, numedd, listFuncActi, list_load, &
+                    ds_contact, maprec, solver, &
+                    sddyna, nlDynaDamping, &
+                    ds_measure, ds_system, &
+                    meelem, measse, &
+                    veelem, veasse, &
+                    valinc, solalg)
     end if
 !
 ! - Extract variables
@@ -418,7 +427,7 @@ subroutine nminit(mesh, model, mater, mateco, cara_elem, &
 
 ! - Prepare storing
     call nmnoli(sddisc, sderro, ds_print, sdcrit, &
-                list_func_acti, sddyna, model, ds_material, &
+                listFuncActi, sddyna, model, ds_material, &
                 cara_elem, sdpilo, ds_measure, ds_energy, ds_inout, &
                 ds_errorindic)
 !
@@ -443,7 +452,7 @@ subroutine nminit(mesh, model, mater, mateco, cara_elem, &
 !
     if (lmpas) then
         call nmihht(model, numedd, ds_material, ds_constitutive, &
-                    cara_elem, list_load, list_func_acti, ds_measure, &
+                    cara_elem, list_load, listFuncActi, ds_measure, &
                     sddyna, sdnume, valinc, &
                     sddisc, solalg, measse, ds_inout)
     end if

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,19 +15,18 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-!
 !
 interface
-    subroutine exfonc(list_func_acti, ds_algopara, solver, ds_contact, sddyna,&
+    subroutine exfonc(listFuncActi, ds_algopara, solver, ds_contact,&
+                      sddyna, nlDynaDamping,&
                       mater, model)
         use NonLin_Datastructure_type
-        integer, intent(in) :: list_func_acti(*)
-        character(len=19), intent(in) :: solver
-        character(len=19), intent(in) :: sddyna
+        use NonLinearDyna_type
+        integer, intent(in) :: listFuncActi(*)
+        character(len=19), intent(in) :: solver, sddyna
+        type(NLDYNA_DAMPING), intent(in) :: nlDynaDamping
         type(NL_DS_Contact), intent(in) :: ds_contact
-        character(len=24), intent(in) :: mater
-        character(len=24), intent(in) :: model
+        character(len=24), intent(in) :: mater, model
         type(NL_DS_AlgoPara), intent(in) :: ds_algopara
     end subroutine exfonc
 end interface

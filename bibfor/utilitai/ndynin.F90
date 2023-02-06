@@ -76,8 +76,6 @@ function ndynin(sddyna, chaine)
         ndynin = zi(jncha+2-1)
     else if (chaine .eq. 'NBRE_EXCIT_GENE') then
         ndynin = zi(jncha+3-1)
-    else if (chaine .eq. 'NBRE_MODE_AMOR') then
-        ndynin = zi(jncha+4-1)
     else if (chaine .eq. 'NBRE_MODE_PROJ') then
         ndynin = zi(jncha+5-1)
     else

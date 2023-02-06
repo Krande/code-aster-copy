@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 ! person_in_lload_name: mickael.abbas at edf.fr
 !
-subroutine nonlinDynaImpeCompute(phase, sddyna, &
+subroutine nonlinDynaImpeCompute(phaseType, sddyna, &
                                  model, nume_dof, &
                                  ds_material, ds_measure, &
                                  hval_incr, &
@@ -28,18 +28,19 @@ subroutine nonlinDynaImpeCompute(phase, sddyna, &
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
-#include "asterfort/nmchex.h"
-#include "asterfort/nmtime.h"
-#include "asterfort/veimpd.h"
 #include "asterfort/asasve.h"
-#include "asterfort/jeveuo.h"
+#include "asterfort/assert.h"
 #include "asterfort/copisd.h"
 #include "asterfort/infdbg.h"
-#include "asterfort/utmess.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/nmchex.h"
 #include "asterfort/nmdebg.h"
+#include "asterfort/nmtime.h"
+#include "asterfort/NonLinear_type.h"
+#include "asterfort/utmess.h"
+#include "asterfort/veimpd.h"
 !
-    character(len=10), intent(in) :: phase
+    integer, intent(in) :: phaseType
     character(len=19), intent(in) :: sddyna
     character(len=24), intent(in) :: model, nume_dof
     type(NL_DS_Measure), intent(inout) :: ds_measure
@@ -55,7 +56,7 @@ subroutine nonlinDynaImpeCompute(phase, sddyna, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  phase            : "prediction" or "correction"
+! In  phaseType        : name of current phase of algorithm
 ! In  sddyna           : datastructure for dynamic
 ! In  model            : name of model
 ! In  nume_dof         : name of numbering object (NUME_DDL)
@@ -94,10 +95,10 @@ subroutine nonlinDynaImpeCompute(phase, sddyna, &
 !
 ! - Compute
 !
-    if (phase .eq. 'Prediction') then
+    if (phaseType .eq. PRED_EULER) then
         call veimpd(model, ds_material%mateco, vite_prev, sddyna, &
                     vect_elem)
-    elseif (phase .eq. 'Correction') then
+    elseif (phaseType .eq. CORR_NEWTON) then
         call veimpd(model, ds_material%mateco, vite_curr, sddyna, &
                     vect_elem)
     else

@@ -15,7 +15,8 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+! person_in_charge: mickael.abbas at edf.fr
+!
 subroutine enerca(valinc, dep0, vit0, depl1, vite1, &
                   masse, amort, rigid, fexte, famor, &
                   fliai, fnoda, fcine, lamort, ldyna, &
@@ -46,8 +47,6 @@ subroutine enerca(valinc, dep0, vit0, depl1, vite1, &
 #include "asterfort/as_allocate.h"
 #include "blas/dcopy.h"
 #include "blas/ddot.h"
-!
-! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=19) :: valinc(*), masse, amort, rigid
     real(kind=8) :: dep0(*), vit0(*), depl1(*), vite1(*)

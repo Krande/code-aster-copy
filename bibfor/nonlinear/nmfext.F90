@@ -17,9 +17,11 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine nmfext(eta, fonact, veasse, cnfext, ds_contact_, sddynz_)
+subroutine nmfext(eta, listFuncActi, veasse, cnfext, &
+                  ds_contact_, sddyna_, nlDynaDamping_)
 !
     use NonLin_Datastructure_type
+    use NonLinearDyna_type
 !
     implicit none
 !
@@ -42,12 +44,13 @@ subroutine nmfext(eta, fonact, veasse, cnfext, ds_contact_, sddynz_)
 #include "asterfort/vtzero.h"
 #include "asterfort/utmess.h"
 !
-    real(kind=8) :: eta
-    integer :: fonact(*)
+    real(kind=8), intent(in) :: eta
+    integer, intent(in) :: listFuncActi(*)
     character(len=19) :: veasse(*)
     type(NL_DS_Contact), optional, intent(in) :: ds_contact_
-    character(len=19) :: cnfext
-    character(len=*), optional, intent(in) :: sddynz_
+    character(len=19), intent(in) :: cnfext
+    character(len=19), optional, intent(in) :: sddyna_
+    type(NLDYNA_DAMPING), optional, intent(in) :: nlDynaDamping_
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -57,11 +60,12 @@ subroutine nmfext(eta, fonact, veasse, cnfext, ds_contact_, sddynz_)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! IN  SDDYNA : SD DYNAMIQUE
-! IN  FONACT : FONCTIONNALITES ACTIVEES
+! In  listFuncActi     : list of active functionnalities
 ! IN  ETA    : COEFFICIENT DE PILOTAGE
 ! IN  VEASSE : VARIABLE CHAPEAU POUR NOM DES VECT_ASSE
 ! In  ds_contact       : datastructure for contact management
+! In  sddyna           : name of datastructure for dynamic parameters
+! In  nlDynaDamping    : damping parameters
 ! OUT CNFEXT : CHARGEMENT EXTERIEUR RESULTANT
 !
 ! --------------------------------------------------------------------------------------------------
@@ -72,6 +76,7 @@ subroutine nmfext(eta, fonact, veasse, cnfext, ds_contact_, sddynz_)
     real(kind=8) :: coeequ
     aster_logical :: ldyna, lallv, l_pilo
     integer :: ifdo, n
+    type(NLDYNA_DAMPING) :: nlDynaDamping
     character(len=19) :: vect(20)
     real(kind=8) :: coef(20)
 !
@@ -82,26 +87,25 @@ subroutine nmfext(eta, fonact, veasse, cnfext, ds_contact_, sddynz_)
     if (niv .ge. 2) then
         call utmess('I', 'MECANONLINE13_44')
     end if
-!
-! --- FONCTIONNALITES ACTIVEES
-!
-    lctcd = isfonc(fonact, 'CONT_DISCRET')
-    lunil = isfonc(fonact, 'LIAISON_UNILATER')
-    lallv = isfonc(fonact, 'CONT_ALL_VERIF')
-    l_pilo = isfonc(fonact, 'PILOTAGE')
-!
-! --- INITIALISATIONS
-!
+
+! - Active functionnalities
+    ldyna = isfonc(listFuncActi, 'DYNAMIQUE')
+    lctcd = isfonc(listFuncActi, 'CONT_DISCRET')
+    lunil = isfonc(listFuncActi, 'LIAISON_UNILATER')
+    lallv = isfonc(listFuncActi, 'CONT_ALL_VERIF')
+    l_pilo = isfonc(listFuncActi, 'PILOTAGE')
+
+! - Initializations
     sddyna = ' '
-    if (present(sddynz_)) then
-        sddyna = sddynz_
+    if (present(sddyna_)) then
+        sddyna = sddyna_
+        nlDynaDamping = nlDynaDamping_
     end if
     ifdo = 0
     cnffdo = '&&CNCHAR.FFDO'
     cnffpi = '&&CNCHAR.FFPI'
     cnfvdo = '&&CNCHAR.FVDO'
     cnvady = '&&CNCHAR.FVDY'
-    ldyna = ndynlo(sddyna, 'DYNAMIQUE')
     call vtzero(cnfext)
 !
 ! --- FORCES DE CONTACT DISCRET
@@ -126,17 +130,17 @@ subroutine nmfext(eta, fonact, veasse, cnfext, ds_contact_, sddynz_)
 !
 ! - Get dead Neumann loads and multi-step dynamic schemes forces
 !
-    call nmasfi(fonact, veasse, cnffdo, sddyna)
+    call nmasfi(listFuncActi, veasse, cnffdo, sddyna)
 !
 ! - Get undead Neumann loads and multi-step dynamic schemes forces
 !
-    call nmasva(fonact, veasse, cnfvdo, sddyna)
+    call nmasva(listFuncActi, veasse, cnfvdo, sddyna)
 !
 ! - Get undead Neumann loads for dynamic
 !
     if (ldyna) then
         coeequ = ndynre(sddyna, 'COEF_MPAS_EQUI_COUR')
-        call ndasva(sddyna, veasse, cnvady)
+        call ndasva(sddyna, nlDynaDamping, veasse, cnvady)
     end if
 !
 ! --- CHARGEMENTS EXTERIEURS DONNEES

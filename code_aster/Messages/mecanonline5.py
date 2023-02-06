@@ -128,11 +128,6 @@ en accélération est possible
  pas être -1.
 """
     ),
-    19: _(
-        """
-Il y a plus d'amortissements modaux (AMOR_MODAL) que de modes.
-"""
-    ),
     20: _(
         """
 On ne trouve pas le champ de déplacement pour Dirichlet différentiel dans le concept <%(k1)s>.
@@ -187,14 +182,6 @@ La méthode XFEM n'est pas possible.
 Vous faites de la projection modale PROJ_MODAL en explicite.
 Il y a %(i1)d  modes dans la structure MODE_MECA.
 Le nombre de modes (mot-clef NB_MODE dans PROJ_MODAL) vaut %(i2)d.
-On prend donc %(i3)d modes.
-"""
-    ),
-    30: _(
-        """
-Vous faites de l'amortissement modal (réduit ou non).
-Il y a %(i1)d  modes dans la structure MODE_MECA.
-Le nombre de modes (mot-clef NB_MODE dans AMOR_MODAL) vaut %(i2)d.
 On prend donc %(i3)d modes.
 """
     ),

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,19 +20,24 @@
 interface
     subroutine nmfcor(model          , nume_dof   , ds_material   , cara_elem  , ds_system,&
                       ds_constitutive, list_load  , list_func_acti, ds_algopara, nume_inst,&
-                      iter_newt      , ds_measure , sddisc        , sddyna     , sdnume   ,&
-                      sderro         , ds_contact , hval_incr     , hval_algo, hhoField,&
+                      iter_newt      , ds_measure , sddisc        ,&
+                      sddyna, nlDynaDamping,&
+                      sdnume   ,  sderro         , ds_contact ,&
+                      hval_incr     , hval_algo, hhoField,&
                       hval_veelem , hval_veasse, hval_measse   , matass   ,&
                       lerrit)
         use NonLin_Datastructure_type
         use HHO_type
+        use NonLinearDyna_type
         integer :: list_func_acti(*)
         integer :: iter_newt, nume_inst
         type(NL_DS_AlgoPara), intent(in) :: ds_algopara
         type(NL_DS_Measure), intent(inout) :: ds_measure
-        character(len=19) :: sddisc, sddyna, sdnume
+        character(len=19) :: sddisc, sdnume
         character(len=19) :: list_load, matass
         character(len=24) :: model, nume_dof, cara_elem
+        character(len=19), intent(in) :: sddyna
+        type(NLDYNA_DAMPING), intent(in) :: nlDynaDamping
         type(NL_DS_Material), intent(in) :: ds_material
         type(NL_DS_Constitutive), intent(in) :: ds_constitutive
         type(NL_DS_System), intent(in) :: ds_system

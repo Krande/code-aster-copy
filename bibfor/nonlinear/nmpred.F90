@@ -22,11 +22,13 @@ subroutine nmpred(mesh, modele, numedd, numfix, ds_material, carele, &
                   ds_constitutive, lischa, ds_algopara, solveu, ds_system, &
                   fonact, ds_print, ds_measure, ds_algorom, sddisc, &
                   sdnume, sderro, numins, valinc, solalg, hhoField, &
-                  matass, maprec, ds_contact, sddyna, &
+                  matass, maprec, ds_contact, &
+                  sddyna, nlDynaDamping, &
                   meelem, measse, veelem, veasse, lerrit)
 !
     use NonLin_Datastructure_type
     use Rom_Datastructure_type
+    use NonLinearDyna_type
     use HHO_type
 !
     implicit none
@@ -51,7 +53,9 @@ subroutine nmpred(mesh, modele, numedd, numfix, ds_material, carele, &
     type(NL_DS_Print), intent(inout) :: ds_print
     type(NL_DS_Material), intent(in) :: ds_material
     type(NL_DS_Constitutive), intent(in) :: ds_constitutive
-    character(len=19) :: lischa, solveu, sddisc, sddyna, sdnume
+    character(len=19) :: lischa, solveu, sddisc, sdnume
+    character(len=19), intent(in) :: sddyna
+    type(NLDYNA_DAMPING), intent(in) :: nlDynaDamping
     character(len=24) :: modele, carele
     character(len=24) :: numedd, numfix
     type(HHO_Field), intent(in) :: hhoField
@@ -84,7 +88,8 @@ subroutine nmpred(mesh, modele, numedd, numfix, ds_material, carele, &
 ! In  ds_algopara      : datastructure for algorithm parameters
 ! IO  ds_print         : datastructure for printing parameters
 ! IO  ds_contact       : datastructure for contact management
-! IN  SDDYNA : SD POUR LA DYNAMIQUE
+! In  sddyna           : name of datastructure for dynamic parameters
+! In  nlDynaDamping    : damping parameters
 ! IO  ds_measure       : datastructure for measure and statistics management
 ! In  ds_algorom       : datastructure for ROM parameters
 ! IN  SDDISC : SD DISCRETISATION TEMPORELLE
@@ -106,7 +111,7 @@ subroutine nmpred(mesh, modele, numedd, numfix, ds_material, carele, &
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: ifm, niv
-    integer :: faccvg, rescvg, ldccvg, condcvg
+    integer :: faccvg, rescvg, ldccvg
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -130,9 +135,10 @@ subroutine nmpred(mesh, modele, numedd, numfix, ds_material, carele, &
                     ds_constitutive, lischa, ds_algopara, solveu, ds_system, &
                     fonact, ds_print, ds_measure, ds_algorom, sddisc, &
                     numins, valinc, solalg, hhoField, matass, maprec, &
-                    ds_contact, sddyna, meelem, measse, veelem, &
+                    sddyna, nlDynaDamping, &
+                    ds_contact, meelem, measse, veelem, &
                     veasse, sdnume, ldccvg, faccvg, &
-                    rescvg, condcvg)
+                    rescvg)
 !
 ! --- PREDICTION PAR EXTRAPOLATION DU PAS PRECEDENT OU PAR DEPLACEMENT
 ! --- CALCULE
@@ -143,8 +149,9 @@ subroutine nmpred(mesh, modele, numedd, numfix, ds_material, carele, &
                     ds_constitutive, lischa, ds_algopara, solveu, ds_system, &
                     fonact, ds_print, ds_measure, ds_algorom, sddisc, numins, &
                     valinc, solalg, matass, maprec, ds_contact, &
-                    sddyna, meelem, measse, veelem, veasse, &
-                    ldccvg, faccvg, rescvg, condcvg)
+                    sddyna, nlDynaDamping, &
+                    meelem, measse, veelem, veasse, &
+                    ldccvg, faccvg, rescvg)
     else
         ASSERT(ASTER_FALSE)
     end if

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,12 +23,13 @@ interface
                       ds_constitutive, lischa    , ds_algopara, solveu  , ds_system,&
                       fonact, ds_print       , ds_measure, ds_algorom , sddisc  ,&
                       sdnume, sderro         , numins    , valinc     , solalg  , hhoField,&
-                      matass, maprec         , ds_contact, sddyna     , &
+                      matass, maprec         , ds_contact,&
+                      sddyna, nlDynaDamping,&
                       meelem, measse         , veelem    , veasse     , lerrit)
         use NonLin_Datastructure_type
         use ROM_Datastructure_type
+        use NonLinearDyna_type
         use HHO_type
-
         character(len=8), intent(in) :: mesh
         character(len=24) :: modele
         character(len=24) :: numedd
@@ -52,7 +53,8 @@ interface
         character(len=19) :: valinc(*), solalg(*)
         character(len=19) :: matass, maprec
         type(NL_DS_Contact), intent(inout) :: ds_contact
-        character(len=19) :: sddyna
+        character(len=19), intent(in) :: sddyna
+        type(NLDYNA_DAMPING), intent(in) :: nlDynaDamping
         character(len=19) :: meelem(*), measse(*)
         character(len=19) :: veelem(*), veasse(*)
         aster_logical :: lerrit

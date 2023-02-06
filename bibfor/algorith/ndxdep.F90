@@ -17,8 +17,12 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine ndxdep(numedd, fonact, numins, sddisc, sddyna, &
+subroutine ndxdep(numeDof, listFuncActi, numeTime, sddisc, &
+                  sddyna, nlDynaDamping, &
                   sdnume, valinc, solalg, veasse)
+!
+    use NonLin_Datastructure_type
+    use NonLinearDyna_type
 !
     implicit none
 !
@@ -34,14 +38,14 @@ subroutine ndxdep(numedd, fonact, numins, sddisc, sddyna, &
 #include "asterfort/nmmajc.h"
 #include "asterfort/nmsolu.h"
 !
-    integer :: fonact(*)
-    integer :: numins
-    character(len=19) :: sddisc, sdnume, sddyna
-    character(len=24) :: numedd
-    character(len=19) :: veasse(*)
-    character(len=19) :: solalg(*), valinc(*)
+    integer, intent(in) :: listFuncActi(*), numeTime
+    character(len=19), intent(in) :: sddisc, sdnume
+    character(len=19), intent(in) :: sddyna
+    type(NLDYNA_DAMPING), intent(in) :: nlDynaDamping
+    character(len=24), intent(in) :: numeDof
+    character(len=19), intent(in) :: veasse(*), solalg(*), valinc(*)
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
 ! ROUTINE MECA_NON_LINE (ALGORITHME)
 !
@@ -50,56 +54,53 @@ subroutine ndxdep(numedd, fonact, numins, sddisc, sddyna, &
 !
 ! CAS EXPLICITE
 !
-! ----------------------------------------------------------------------
-!
+! --------------------------------------------------------------------------------------------------
 !
 ! IN  NUMEDD : NUME_DDL
-! IN  FONACT : FONCTIONNALITES ACTIVEES
+! In  listFuncActi     : list of active functionnalities
 ! IN  NUMINS : NUMERO D'INSTANT
 ! IN  SDNUME : SD NUMEROTATION
 ! IN  SDDISC : SD DISCRETISATION
-! IN  SDDYNA : SD DYNAMIQUE
+! In  sddyna           : name of datastructure for dynamic parameters
+! In  nlDynaDamping    : damping parameters
 ! IN  VALINC : VARIABLE CHAPEAU POUR INCREMENTS VARIABLES
 ! IN  SOLALG : VARIABLE CHAPEAU POUR INCREMENTS SOLUTIONS
 ! IN  VEASSE : VARIABLE CHAPEAU POUR NOM DES VECT_ASSE
 !
+! --------------------------------------------------------------------------------------------------
 !
-!
-!
-    real(kind=8) :: instam, instap, deltat
+    real(kind=8) :: timePrev, timeCurr, timeIncr
     character(len=19) :: cnfext
     character(len=19) :: ddepla, deppr1
     character(len=19) :: dvitla, vitpr1
     character(len=19) :: daccla, accpr1
     integer :: ifm, niv
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
     call infdbg('MECANONLINE', ifm, niv)
     if (niv .ge. 2) then
         write (ifm, *) '<MECANONLINE> CORRECTION INCR. DEPL.'
     end if
-!
-! --- DECOMPACTION VARIABLES CHAPEAUX
-!
+
+! - Get hat-variables
     call nmchex(solalg, 'SOLALG', 'DDEPLA', ddepla)
     call nmchex(solalg, 'SOLALG', 'DEPPR1', deppr1)
     call nmchex(solalg, 'SOLALG', 'DVITLA', dvitla)
     call nmchex(solalg, 'SOLALG', 'VITPR1', vitpr1)
     call nmchex(solalg, 'SOLALG', 'DACCLA', daccla)
     call nmchex(solalg, 'SOLALG', 'ACCPR1', accpr1)
-!
-! --- INITIALISATIONS
-!
-    instam = diinst(sddisc, numins-1)
-    instap = diinst(sddisc, numins)
-    deltat = instap-instam
-!
-! --- CALCUL DE LA RESULTANTE DES EFFORTS EXTERIEURS
-!
+
+! - Time
+    timePrev = diinst(sddisc, numeTime-1)
+    timeCurr = diinst(sddisc, numeTime)
+    timeIncr = timeCurr-timePrev
+
+! - Compute external forces
     call nmchex(veasse, 'VEASSE', 'CNFEXT', cnfext)
-    call nmfext(0.d0, fonact, veasse, cnfext, sddynz_=sddyna)
+    call nmfext(0.d0, listFuncActi, veasse, cnfext, &
+                sddyna_=sddyna, nlDynaDamping_=nlDynaDamping)
 !
 ! --- CONVERSION RESULTAT dU VENANT DE K.dU = F SUIVANT SCHEMAS
 !
@@ -130,7 +131,7 @@ subroutine ndxdep(numedd, fonact, numins, sddisc, sddyna, &
 !
 ! --- ACTUALISATION DES CHAMPS SOLUTIONS
 !
-    call nmmajc(fonact, sddyna, sdnume, deltat, numedd, &
+    call nmmajc(listFuncActi, sddyna, sdnume, timeIncr, numeDof, &
                 valinc, solalg)
 !
     call jedema()

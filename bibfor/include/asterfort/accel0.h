@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,26 +17,25 @@
 ! --------------------------------------------------------------------
 !
 interface
-    subroutine accel0(modele    , numedd   , fonact, lischa,&
-                      ds_contact, maprec   , solveu, valinc, sddyna,&
-                      ds_measure, ds_system, meelem, measse,&
-                      veelem    , veasse   , solalg)
+    subroutine accel0(model, numeDof, listFuncActi, listLoad,&
+                      ds_contact, maprec, solveu, &
+                      sddyna, nlDynaDamping,&
+                      ds_measure, ds_system,&
+                      hval_meelem, hval_measse,&
+                      hval_veelem, hval_veasse,&
+                      hval_incr, hval_algo)
         use NonLin_Datastructure_type
-        character(len=24) :: modele
-        character(len=24) :: numedd
-        integer :: fonact(*)
-        character(len=19) :: lischa
-        type(NL_DS_Contact), intent(in) :: ds_contact
-        character(len=19) :: maprec
-        character(len=19) :: solveu
-        character(len=19) :: valinc(*)
-        character(len=19) :: sddyna
+        use NonLinearDyna_type
+        character(len=19), intent(in) :: solveu, maprec, listLoad
+        character(len=19), intent(in) :: sddyna
+        type(NLDYNA_DAMPING), intent(in) :: nlDynaDamping
         type(NL_DS_Measure), intent(inout) :: ds_measure
+        character(len=24), intent(in) :: numeDof, model
+        type(NL_DS_Contact), intent(in) :: ds_contact
+        character(len=19), intent(in) :: hval_meelem(*), hval_measse(*)
+        character(len=19), intent(in) :: hval_veasse(*), hval_veelem(*)
+        character(len=19), intent(in) :: hval_algo(*), hval_incr(*)
+        integer, intent(in) :: listFuncActi(*)
         type(NL_DS_System), intent(in) :: ds_system
-        character(len=19) :: meelem(*)
-        character(len=19) :: measse(*)
-        character(len=19) :: veelem(*)
-        character(len=19) :: veasse(*)
-        character(len=19) :: solalg(*)
     end subroutine accel0
 end interface

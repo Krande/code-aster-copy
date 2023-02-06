@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -91,20 +91,6 @@ cata_msg = {
   La projection d'un résultat non réel sur une base de mode (de type
   résultat harmonique) n'est pas possible. Vous pouvez demander
   l'évolution.
-"""
-    ),
-    20: _(
-        """
-  La prise en compte d'un amortissement équivalent a un amortissement modal par le mot-clé AMOR_MODAL nécessite
-  une base de modes pré calculée sur laquelle est décomposé l'amortissement.
-  Conseil: vérifiez qu'un base de modes est bien renseignée sous le mot-clé MODE_MECA.
-"""
-    ),
-    21: _(
-        """
-  Aucune valeur d'amortissement modal n'a été trouvée sous le mot-clé AMOR_MODAL.
-  Cette information est nécessaire pour la prise en compte d'un amortissement de type modal.
-
 """
     ),
     22: _(

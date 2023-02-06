@@ -27,6 +27,8 @@ subroutine dlnewi(result, force0, force1, lcrea, lamort, &
                   sd_obsv, mesh, kineLoad)
 !
     use NonLin_Datastructure_type
+    use Damping_type
+    use Damping_module
 !
     implicit none
 !
@@ -54,7 +56,6 @@ subroutine dlnewi(result, force0, force1, lcrea, lamort, &
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/mtcmbl.h"
-#include "asterfort/nmmoam.h"
 #include "asterfort/preres.h"
 #include "asterfort/sigusr.h"
 #include "asterfort/trmult.h"
@@ -107,6 +108,7 @@ subroutine dlnewi(result, force0, force1, lcrea, lamort, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
+    character(len=16), parameter :: modDampFactorKeyword = "AMOR_MODAL"
     integer :: iinteg, neq, imat(3), nchar, nveca, liad(*), nume, nondp
     integer :: numrep, nb_matr
     character(len=1) :: coef_type(3), resu_type
@@ -151,7 +153,7 @@ subroutine dlnewi(result, force0, force1, lcrea, lamort, &
     character(len=19) :: lisarc
     character(len=24) :: lispas, libint, linbpa
     character(len=24) :: lisins
-    character(len=24), parameter :: k24amo = '&&K24AMO'
+    character(len=24), parameter :: jvDataDamp = '&&K24AMO'
     character(len=24), parameter :: vitini = '&&VITINI'
     character(len=24), parameter :: vitent = '&&VITENT', famomo = '&&FAMOMO'
     character(len=24) :: veanec, vaanec, deeq, vaonde, veonde
@@ -171,6 +173,7 @@ subroutine dlnewi(result, force0, force1, lcrea, lamort, &
     real(kind=8), pointer :: vite(:) => null()
     character(len=19), intent(inout) :: sd_obsv
     character(len=*), intent(in) :: mesh
+    type(MODAL_DAMPING) :: modalDamping
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -197,14 +200,14 @@ subroutine dlnewi(result, force0, force1, lcrea, lamort, &
     impe = ' '
     resu_type = 'R'
     nomddl = ' '
-!
-! N: SAISIE DES DONNEES AMOR_MODAL
-!    (  MOT CLE FACTEUR: AMOR_MODAL  )
-    call getfac('AMOR_MODAL', nmodam)
+
+! - Modal damping
+    call getfac(modDampFactorKeyword, nmodam)
     if (nmodam .ne. 0) then
-        call nmmoam(k24amo, ibid)
-        valmod = k24amo(1:19)//'.VALM'
-        basmod = k24amo(1:19)//'.BASM'
+        call dampModalGetParameters(modDampFactorKeyword, jvDataDamp, modalDamping)
+        call dampModalPreparation(modalDamping)
+        valmod = jvDataDamp(1:19)//'.VALM'
+        basmod = jvDataDamp(1:19)//'.BASM'
     end if
 
 ! - IMPE_ABSO elements in model ?

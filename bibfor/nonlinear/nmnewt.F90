@@ -21,14 +21,16 @@
 subroutine nmnewt(mesh, model, numins, numedd, numfix, &
                   ds_material, cara_elem, ds_constitutive, list_load, ds_system, &
                   hhoField, &
+                  sddyna, nlDynaDamping, &
                   ds_algopara, fonact, ds_measure, sderro, ds_print, &
-                  sdnume, sddyna, sddisc, sdcrit, sdsuiv, &
+                  sdnume, sddisc, sdcrit, sdsuiv, &
                   sdpilo, ds_conv, solveu, maprec, matass, &
                   ds_inout, valinc, solalg, meelem, measse, &
                   veelem, veasse, ds_contact, ds_algorom, eta, &
                   nbiter)
 !
     use NonLin_Datastructure_type
+    use NonLinearDyna_type
     use Rom_Datastructure_type
     use HHO_type
 !
@@ -77,7 +79,6 @@ subroutine nmnewt(mesh, model, numins, numedd, numfix, &
     type(NL_DS_Material), intent(in) :: ds_material
     character(len=24), intent(in) :: cara_elem
     type(NL_DS_Constitutive), intent(inout) :: ds_constitutive
-    character(len=19), intent(in) :: list_load
     type(NL_DS_System), intent(in) :: ds_system
     type(NL_DS_AlgoPara), intent(inout) :: ds_algopara
     integer :: fonact(*)
@@ -86,7 +87,8 @@ subroutine nmnewt(mesh, model, numins, numedd, numfix, &
     character(len=24) :: sderro
     type(NL_DS_Print), intent(inout) :: ds_print
     character(len=19) :: sdnume
-    character(len=19) :: sddyna
+    character(len=19), intent(in) :: list_load, sddyna
+    type(NLDYNA_DAMPING), intent(in) :: nlDynaDamping
     character(len=19) :: sddisc
     character(len=19) :: sdcrit
     character(len=24) :: sdsuiv
@@ -121,6 +123,8 @@ subroutine nmnewt(mesh, model, numins, numedd, numfix, &
 ! In  cara_elem        : name of elementary characteristics (field)
 ! In  list_load        : name of datastructure for list of loads
 ! IO  ds_algopara      : datastructure for algorithm parameters
+! In  sddyna           : name of datastructure for dynamic parameters
+! In  nlDynaDamping    : damping parameters
 ! IO  ds_constitutive  : datastructure for constitutive laws management
 ! In  solver           : name of datastructure for solver
 ! In  ds_system        : datastructure for non-linear system management
@@ -251,7 +255,8 @@ subroutine nmnewt(mesh, model, numins, numedd, numfix, &
                 ds_constitutive, list_load, ds_algopara, solveu, ds_system, &
                 fonact, ds_print, ds_measure, ds_algorom, sddisc, &
                 sdnume, sderro, numins, valinc, solalg, hhoField, &
-                matass, maprec, ds_contact, sddyna, &
+                matass, maprec, ds_contact, &
+                sddyna, nlDynaDamping, &
                 meelem, measse, veelem, veasse, lerrit)
 !
     if (lerrit) goto 315
@@ -275,7 +280,8 @@ subroutine nmnewt(mesh, model, numins, numedd, numfix, &
     call nmdepl(model, numedd, ds_material, cara_elem, &
                 ds_constitutive, list_load, fonact, ds_measure, ds_algopara, &
                 mesh, numins, iterat, solveu, matass, &
-                sddisc, sddyna, sdnume, sdpilo, sderro, &
+                sddyna, nlDynaDamping, &
+                sddisc, sdnume, sdpilo, sderro, &
                 ds_contact, valinc, solalg, veelem, veasse, &
                 eta, ds_conv, ds_system, lerrit)
 !
@@ -285,8 +291,10 @@ subroutine nmnewt(mesh, model, numins, numedd, numfix, &
 !
     call nmfcor(model, numedd, ds_material, cara_elem, ds_system, &
                 ds_constitutive, list_load, fonact, ds_algopara, numins, &
-                iterat, ds_measure, sddisc, sddyna, sdnume, &
-                sderro, ds_contact, valinc, solalg, hhoField, &
+                iterat, ds_measure, sddisc, &
+                sddyna, nlDynaDamping, &
+                sdnume, sderro, ds_contact, &
+                valinc, solalg, hhoField, &
                 veelem, veasse, measse, matass, lerrit)
 !
     if (lerrit) goto 315
@@ -299,8 +307,9 @@ subroutine nmnewt(mesh, model, numins, numedd, numfix, &
 ! --- ESTIMATION DE LA CONVERGENCE
 !
 315 continue
-    call nmconv(mesh, model, ds_material, numedd, sdnume, &
-                fonact, sddyna, ds_conv, ds_print, ds_measure, &
+    call nmconv(mesh, model, ds_material, numedd, sdnume, fonact, &
+                sddyna, nlDynaDamping, &
+                ds_conv, ds_print, ds_measure, &
                 sddisc, sdcrit, sderro, ds_algopara, ds_algorom, &
                 ds_inout, matass, solveu, ds_system, numins, &
                 iterat, eta, ds_contact, valinc, &
@@ -338,7 +347,7 @@ subroutine nmnewt(mesh, model, numins, numedd, numfix, &
                 ds_algopara, ds_system, solveu, &
                 fonact, numins, iterat, &
                 sddisc, ds_print, ds_measure, &
-                ds_algorom, sddyna, sdnume, &
+                ds_algorom, sddyna, nlDynaDamping, sdnume, &
                 sderro, matass, maprec, &
                 valinc, solalg, hhoField, meelem, &
                 measse, veasse, lerrit)

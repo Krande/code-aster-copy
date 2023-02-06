@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,20 +15,18 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-!
 !
 interface
-    subroutine ndxdep(numedd, fonact, numins, sddisc, sddyna,&
+    subroutine ndxdep(numeDof, listFuncActi, numeTime, sddisc,&
+                      sddyna, nlDynaDamping,&
                       sdnume, valinc, solalg, veasse)
-        character(len=24) :: numedd
-        integer :: fonact(*)
-        integer :: numins
-        character(len=19) :: sddisc
-        character(len=19) :: sddyna
-        character(len=19) :: sdnume
-        character(len=19) :: valinc(*)
-        character(len=19) :: solalg(*)
-        character(len=19) :: veasse(*)
+        use NonLin_Datastructure_type
+        use NonLinearDyna_type
+        integer, intent(in) :: listFuncActi(*), numeTime
+        character(len=19), intent(in) :: sddisc, sdnume
+        character(len=19), intent(in) :: sddyna
+        type(NLDYNA_DAMPING), intent(in) :: nlDynaDamping
+        character(len=24), intent(in) :: numeDof
+        character(len=19), intent(in) :: veasse(*), solalg(*), valinc(*)
     end subroutine ndxdep
 end interface

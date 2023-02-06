@@ -81,7 +81,7 @@ subroutine nmfonc(ds_conv, ds_algopara, solver, model, ds_contact, &
 ! In  ds_contact       : datastructure for contact management
 ! In  list_load        : name of datastructure for list of loads
 ! In  sdnume           : datastructure for dof positions
-! In  sddyna           : dynamic parameters datastructure
+! In  sddyna           : name of datastructure for dynamic parameters
 ! In  ds_errorindic    : datastructure for error indicator
 ! In  mater            : name of material
 ! In  ds_inout         : datastructure for input/output management

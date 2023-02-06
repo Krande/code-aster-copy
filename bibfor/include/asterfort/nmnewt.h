@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,13 +20,15 @@ interface
     subroutine nmnewt(mesh       , model    , numins         , numedd    , numfix   ,&
                       ds_material, cara_elem, ds_constitutive, list_load , ds_system,&
                       hhoField ,&
+                      sddyna, nlDynaDamping,&
                       ds_algopara, fonact   , ds_measure     , sderro    , ds_print ,&
-                      sdnume     , sddyna   , sddisc         , sdcrit    , sdsuiv   ,&
+                      sdnume     , sddisc         , sdcrit    , sdsuiv   ,&
                       sdpilo     , ds_conv  , solveu         , maprec    , matass   ,&
                       ds_inout   , valinc   , solalg         , meelem    , measse   ,&
                       veelem     , veasse   , ds_contact     , ds_algorom, eta      ,&
                       nbiter  )
         use NonLin_Datastructure_type
+        use NonLinearDyna_type
         use Rom_Datastructure_type
         use HHO_type
         character(len=8), intent(in) :: mesh
@@ -37,7 +39,8 @@ interface
         type(NL_DS_Material), intent(in) :: ds_material
         character(len=24), intent(in) :: cara_elem
         type(NL_DS_Constitutive), intent(inout) :: ds_constitutive
-        character(len=19), intent(in) :: list_load
+        character(len=19), intent(in) :: list_load, sddyna
+        type(NLDYNA_DAMPING), intent(in) :: nlDynaDamping
         type(NL_DS_System), intent(in) :: ds_system
         type(NL_DS_AlgoPara), intent(inout) :: ds_algopara
         integer :: fonact(*)
@@ -46,7 +49,6 @@ interface
         character(len=24) :: sderro
         type(NL_DS_Print), intent(inout) :: ds_print
         character(len=19) :: sdnume
-        character(len=19) :: sddyna
         character(len=19) :: sddisc
         character(len=19) :: sdcrit
         character(len=24) :: sdsuiv

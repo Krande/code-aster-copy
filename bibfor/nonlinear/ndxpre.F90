@@ -21,11 +21,13 @@
 subroutine ndxpre(model, nume_dof, ds_material, cara_elem, &
                   ds_constitutive, list_load, ds_algopara, solveu, ds_system, &
                   list_func_acti, sddisc, ds_measure, nume_inst, hval_incr, &
-                  hval_algo, matass, maprec, sddyna, sderro, &
-                  sdnume, hval_meelem, hval_measse, hval_veelem, hval_veasse, &
+                  hval_algo, matass, maprec, &
+                  sddyna, nlDynaDamping, &
+                  sderro, sdnume, hval_meelem, hval_measse, hval_veelem, hval_veasse, &
                   lerrit)
 !
     use NonLin_Datastructure_type
+    use NonLinearDyna_type
 !
     implicit none
 !
@@ -48,8 +50,10 @@ subroutine ndxpre(model, nume_dof, ds_material, cara_elem, &
     type(NL_DS_Material), intent(in) :: ds_material
     type(NL_DS_Measure), intent(inout) :: ds_measure
     character(len=19) :: list_load, solveu
-    character(len=19), intent(in) :: sdnume, sddyna, sddisc
+    character(len=19), intent(in) :: sdnume, sddisc
     character(len=24) :: model, cara_elem
+    character(len=19), intent(in) :: sddyna
+    type(NLDYNA_DAMPING), intent(in) :: nlDynaDamping
     type(NL_DS_Constitutive), intent(in) :: ds_constitutive
     type(NL_DS_System), intent(in) :: ds_system
     character(len=24) :: nume_dof
@@ -88,7 +92,8 @@ subroutine ndxpre(model, nume_dof, ds_material, cara_elem, &
 ! In  hval_veasse      : hat-variable for vectors (node fields)
 ! In  hval_meelem      : hat-variable for elementary matrix
 ! In  hval_measse      : hat-variable for matrix
-! In  sddyna           : datastructure for dynamic
+! In  sddyna           : name of datastructure for dynamic parameters
+! In  nlDynaDamping    : damping parameters
 ! IN  MATASS : NOM DE LA MATRICE DU PREMIER MEMBRE ASSEMBLEE
 ! IN  MAPREC : NOM DE LA MATRICE DE PRECONDITIONNEMENT (GCPC)
 ! OUT LERRIT  : .TRUE. SI ERREUR PENDANT PREDICTION
@@ -124,8 +129,9 @@ subroutine ndxpre(model, nume_dof, ds_material, cara_elem, &
 ! --- CALCUL DE LA MATRICE GLOBALE
 !
     call ndxprm(model, ds_material, cara_elem, ds_constitutive, ds_algopara, &
-                list_load, nume_dof, solveu, ds_system, &
-                sddisc, sddyna, ds_measure, nume_inst, list_func_acti, &
+                list_load, nume_dof, solveu, ds_system, sddisc, &
+                sddyna, nlDynaDamping, &
+                ds_measure, nume_inst, list_func_acti, &
                 hval_incr, hval_algo, hval_meelem, hval_measse, &
                 maprec, matass, faccvg, ldccvg)
 !
@@ -134,26 +140,25 @@ subroutine ndxpre(model, nume_dof, ds_material, cara_elem, &
     if ((faccvg .eq. 1) .or. (faccvg .eq. 2) .or. (ldccvg .eq. 1)) then
         goto 99
     end if
-!
+
 ! - Compute forces for second member at prediction
-!
     call ndxforc_pred(list_func_acti, &
-                      model, cara_elem, nume_dof, &
-                      list_load, sddyna, &
+                      model, cara_elem, list_load, nume_dof, &
+                      sddyna, nlDynaDamping, &
                       ds_material, ds_constitutive, ds_system, &
                       ds_measure, sdnume, &
                       sddisc, nume_inst, &
                       hval_incr, hval_algo, &
                       hval_veelem, hval_veasse, &
                       hval_measse, ldccvg)
-!
-! - Evaluate second member
-!
-    call nmassx(list_func_acti, sddyna, hval_veasse, ds_system, &
+
+! - Assemble second member
+    call nmassx(list_func_acti, &
+                sddyna, nlDynaDamping, &
+                hval_veasse, ds_system, &
                 cndonn)
-!
+
 ! - Solve system
-!
     if (ldccvg .eq. 0) then
         call nmresd(list_func_acti, sddyna, ds_measure, solveu, nume_dof, &
                     instap, maprec, matass, cndonn, cnzero, &

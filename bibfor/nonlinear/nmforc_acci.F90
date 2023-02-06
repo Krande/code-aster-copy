@@ -34,18 +34,19 @@ subroutine nmforc_acci(list_func_acti, &
 #include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/assvec.h"
-#include "asterfort/infdbg.h"
-#include "asterfort/nonlinLoadCompute.h"
-#include "asterfort/nonlinLoadDynaCompute.h"
-#include "asterfort/nonlinDynaImpeCompute.h"
-#include "asterfort/nonlinSubStruCompute.h"
-#include "asterfort/nonlinNForceCompute.h"
-#include "asterfort/nmchex.h"
 #include "asterfort/diinst.h"
+#include "asterfort/infdbg.h"
 #include "asterfort/isfonc.h"
 #include "asterfort/ndynlo.h"
-#include "asterfort/utmess.h"
+#include "asterfort/nmchex.h"
 #include "asterfort/nmdebg.h"
+#include "asterfort/nonlinDynaImpeCompute.h"
+#include "asterfort/NonLinear_type.h"
+#include "asterfort/nonlinLoadCompute.h"
+#include "asterfort/nonlinLoadDynaCompute.h"
+#include "asterfort/nonlinNForceCompute.h"
+#include "asterfort/nonlinSubStruCompute.h"
+#include "asterfort/utmess.h"
 !
     integer, intent(in) :: list_func_acti(*)
     character(len=24), intent(in) :: model, cara_elem, nume_dof
@@ -74,7 +75,7 @@ subroutine nmforc_acci(list_func_acti, &
 ! In  cara_elem        : name of elementary characteristics (field)
 ! In  nume_dof         : name of numbering object (NUME_DDL)
 ! In  list_load        : name of datastructure for list of loads
-! In  sddyna           : datastructure for dynamic
+! In  sddyna           : name of datastructure for dynamic parameters
 ! In  ds_material      : datastructure for material parameters
 ! In  ds_constitutive  : datastructure for constitutive laws management
 ! In  ds_system        : datastructure for non-linear system management
@@ -90,6 +91,7 @@ subroutine nmforc_acci(list_func_acti, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
+    integer, parameter :: phaseTypePred = PRED_EULER
     integer :: ifm, niv
     real(kind=8) :: time_prev, time_curr
     aster_logical :: l_macr, l_impe
@@ -133,7 +135,7 @@ subroutine nmforc_acci(list_func_acti, &
 ! - Compute impedance
 !
     if (l_impe) then
-        call nonlinDynaImpeCompute('Prediction', sddyna, &
+        call nonlinDynaImpeCompute(phaseTypePred, sddyna, &
                                    model, nume_dof, &
                                    ds_material, ds_measure, &
                                    hval_incr, &

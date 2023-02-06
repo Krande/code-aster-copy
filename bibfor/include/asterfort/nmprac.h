@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,21 +17,24 @@
 ! --------------------------------------------------------------------
 !
 interface
-    subroutine nmprac(fonact, lischa, numedd, solveu     ,&
-                      sddyna, ds_measure, ds_contact,&
-                      meelem, measse, maprec, matass    , faccvg)
-        use NonLin_Datastructure_type        
-        integer :: fonact(*)
-        character(len=19) :: lischa
-        character(len=24) :: numedd
-        character(len=19) :: solveu
-        character(len=19) :: sddyna
+    subroutine nmprac(listFuncActi, listLoad, numeDof, solveu,&
+                      sddyna, nlDynaDamping,&
+                      ds_measure, ds_contact,&
+                      meelem, measse, maprec, matrAsse,&
+                      faccvg)
+        use NonLin_Datastructure_type
+        use NonLinearDyna_type
+        integer, intent(in) :: listFuncActi(*)
+        character(len=19), intent(in) :: listLoad
+        character(len=24), intent(in) :: numeDof
+        character(len=19), intent(in) :: sddyna
+        type(NLDYNA_DAMPING), intent(in) :: nlDynaDamping
         type(NL_DS_Measure), intent(inout) :: ds_measure
+        character(len=19), intent(in) :: solveu
+        character(len=19), intent(in) :: meelem(*), measse(*)
         type(NL_DS_Contact), intent(in) :: ds_contact
-        character(len=19) :: meelem(*)
-        character(len=19) :: measse(*)
-        character(len=19) :: maprec
-        character(len=19) :: matass
-        integer :: faccvg
+        character(len=19), intent(in) :: maprec
+        character(len=19), intent(inout) :: matrAsse
+        integer, intent(out) :: faccvg
     end subroutine nmprac
 end interface

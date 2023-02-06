@@ -17,11 +17,15 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine nmprac(fonact, lischa, numedd, solveu, &
-                  sddyna, ds_measure, ds_contact, &
-                  meelem, measse, maprec, matass, faccvg)
+subroutine nmprac(listFuncActi, listLoad, numeDof, solveu, &
+                  sddyna, nlDynaDamping, &
+                  ds_measure, ds_contact, &
+                  meelem, measse, &
+                  maprec, matrAsse, &
+                  faccvg)
 !
     use NonLin_Datastructure_type
+    use NonLinearDyna_type
 !
     implicit none
 !
@@ -45,29 +49,33 @@ subroutine nmprac(fonact, lischa, numedd, solveu, &
 #include "asterfort/preres.h"
 #include "asterfort/utmess.h"
 !
-    integer :: fonact(*)
-    character(len=19) :: sddyna, lischa
+    integer, intent(in) :: listFuncActi(*)
+    character(len=19), intent(in) :: listLoad
+    character(len=24), intent(in) :: numeDof
+    character(len=19), intent(in) :: sddyna
+    type(NLDYNA_DAMPING), intent(in) :: nlDynaDamping
     type(NL_DS_Measure), intent(inout) :: ds_measure
-    character(len=24) :: numedd
-    character(len=19) :: solveu
-    character(len=19) :: meelem(*), measse(*)
+    character(len=19), intent(in) :: solveu
+    character(len=19), intent(in) :: meelem(*), measse(*)
     type(NL_DS_Contact), intent(in) :: ds_contact
-    character(len=19) :: maprec, matass
-    integer :: faccvg
+    character(len=19), intent(in) :: maprec
+    character(len=19), intent(inout) :: matrAsse
+    integer, intent(out) :: faccvg
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
 ! ROUTINE MECA_NON_LINE (CALCUL - UTILITAIRE)
 !
 ! CALCUL DE LA MATRICE GLOBALE ACCELERATION INITIALE
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
 ! IN  NUMEDD : NUME_DDL (VARIABLE AU COURS DU CALCUL)
 ! IN  LISCHA : LISTE DES CHARGES
 ! In  ds_contact       : datastructure for contact management
 ! IO  ds_measure       : datastructure for measure and statistics management
-! IN  SDDYNA : SD POUR LA DYNAMIQUE
+! In  sddyna           : name of datastructure for dynamic parameters
+! In  nlDynaDamping    : damping parameters
 ! IN  SOLVEU : SOLVEUR
 ! IN  MEELEM : VARIABLE CHAPEAU POUR NOM DES MATR_ELEM
 ! IN  MEASSE : VARIABLE CHAPEAU POUR NOM DES MATR_ASSE
@@ -82,13 +90,14 @@ subroutine nmprac(fonact, lischa, numedd, solveu, &
 ! ----------------------------------------------------------------------
 !
     integer, parameter :: phaseType = ACCEL_INIT
-    aster_logical :: lctcc
-    integer :: ieq, ibid, numins
-    integer :: iadia, neq, lres, neql
-    character(len=8) :: kmatd
+    integer, parameter :: numeTimeFirst = 1
+    aster_logical :: lContContinu
+    integer :: iEqua, nbEqua
+    integer :: iadia, ibid, lres
+    character(len=8) :: answer
     integer :: jvalm, zislv1, zislv3
     integer :: ifm, niv
-    character(len=19) :: masse, memass, mediri
+    character(len=19) :: asseMass, elemMass, elemDiri
     integer, pointer :: slvi(:) => null()
 !
 ! ----------------------------------------------------------------------
@@ -101,75 +110,63 @@ subroutine nmprac(fonact, lischa, numedd, solveu, &
 
 ! - Initializations
     faccvg = -1
-    numins = 1
-    call dismoi('NB_EQUA', numedd, 'NUME_DDL', repi=neq)
 
 ! - Active functionnalites
-    lctcc = isfonc(fonact, 'CONT_CONTINU')
-!
-! --- DECOMPACTION DES VARIABLES CHAPEAUX
-!
-    call nmchex(meelem, 'MEELEM', 'MEMASS', memass)
-    call nmchex(meelem, 'MEELEM', 'MEDIRI', mediri)
-    call nmchex(measse, 'MEASSE', 'MEMASS', masse)
-!
-! --- ASSEMBLAGE DE LA MATRICE MASSE
-!
-    call asmama(memass, mediri, numedd, lischa, masse)
-!
-! --- CALCUL DE LA MATRICE ASSEMBLEE GLOBALE
-!
-    call nmmatr(phaseType, fonact, lischa, numedd, sddyna, &
-                numins, ds_contact, meelem, measse, matass)
+    lContContinu = isfonc(listFuncActi, 'CONT_CONTINU')
+
+! - Get hat-variables
+    call nmchex(meelem, 'MEELEM', 'MEMASS', elemMass)
+    call nmchex(meelem, 'MEELEM', 'MEDIRI', elemDiri)
+    call nmchex(measse, 'MEASSE', 'MEMASS', asseMass)
+
+! - Assemble mass matrix
+    call asmama(elemMass, elemDiri, numeDof, listLoad, asseMass)
+
+! - Compute global matrix of system
+    call nmmatr(phaseType, listFuncActi, listLoad, numeDof, &
+                sddyna, nlDynaDamping, &
+                numeTimeFirst, ds_contact, meelem, measse, &
+                matrAsse)
 !
 ! --- SI METHODE CONTINUE ON REMPLACE LES TERMES DIAGONAUX NULS PAR
 ! --- DES UNS POUR POUVOIR INVERSER LA MATRICE ASSEMBLE MATASS
 !
-    if (lctcc) then
-        call mtdsc2(matass, 'SXDI', 'L', iadia)
-        call dismoi('MATR_DISTR', matass, 'MATR_ASSE', repk=kmatd)
-        if (kmatd .eq. 'OUI') then
-            call jeveuo(matass//'.&INT', 'L', lres)
-            neql = zi(lres+5)
+    if (lContContinu) then
+        call mtdsc2(matrAsse, 'SXDI', 'L', iadia)
+        call dismoi('MATR_DISTR', matrAsse, 'MATR_ASSE', repk=answer)
+        if (answer .eq. 'OUI') then
+            call jeveuo(matrAsse//'.&INT', 'L', lres)
+            nbEqua = zi(lres+5)
         else
-            neql = neq
+            call dismoi('NB_EQUA', numeDof, 'NUME_DDL', repi=nbEqua)
         end if
-        call jeveuo(jexnum(matass//'.VALM', 1), 'E', jvalm)
-        do ieq = 1, neql
-            if (abs(zr(jvalm-1+zi(iadia-1+ieq))) .le. r8prem()) then
-                zr(jvalm-1+zi(iadia-1+ieq)) = 1.d0
+        call jeveuo(jexnum(matrAsse//'.VALM', 1), 'E', jvalm)
+        do iEqua = 1, nbEqua
+            if (abs(zr(jvalm-1+zi(iadia-1+iEqua))) .le. r8prem()) then
+                zr(jvalm-1+zi(iadia-1+iEqua)) = 1.d0
             end if
         end do
     end if
-!
+
 ! --- ON ACTIVE LA DETECTION DE SINGULARITE (NPREC=8)
 ! --- ON EVITE L'ARRET FATAL LORS DE L'INVERSION DE LA MATRICE
-!
     call jeveuo(solveu//'.SLVI', 'E', vi=slvi)
     zislv1 = slvi(1)
     zislv3 = slvi(3)
     slvi(1) = 8
     slvi(3) = 2
-!
+
 ! --- FACTORISATION DE LA MATRICE ASSEMBLEE GLOBALE
-!
     call nmtime(ds_measure, 'Init', 'Factor')
     call nmtime(ds_measure, 'Launch', 'Factor')
-    call preres(solveu, 'V', faccvg, maprec, matass, ibid, -9999)
+    call preres(solveu, 'V', faccvg, maprec, matrAsse, ibid, -9999)
     call nmtime(ds_measure, 'Stop', 'Factor')
     call nmrinc(ds_measure, 'Factor')
-!
-! --- RETABLISSEMENT CODE
-!
+
+! - RETABLISSEMENT CODE
     slvi(1) = zislv1
     slvi(3) = zislv3
-!
-! --- LA MATRICE PEUT ETRE QUASI-SINGULIERE PAR EXEMPLE POUR LES DKT
-!
-    if (faccvg .eq. 1) then
-        call utmess('A', 'MECANONLINE_78')
-    end if
-!
+
     call jedema()
 !
 end subroutine

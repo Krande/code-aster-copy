@@ -21,11 +21,13 @@
 subroutine nmdepl(modele, numedd, ds_material, carele, &
                   ds_constitutive, lischa, fonact, ds_measure, ds_algopara, &
                   noma, numins, iterat, solveu, matass, &
-                  sddisc, sddyna, sdnume, sdpilo, sderro, &
+                  sddyna, nlDynaDamping, &
+                  sddisc, sdnume, sdpilo, sderro, &
                   ds_contact, valinc, solalg, veelem, veasse, &
                   eta, ds_conv, ds_system, lerrit)
 !
     use NonLin_Datastructure_type
+    use NonLinearDyna_type
 !
     implicit none
 !
@@ -57,7 +59,9 @@ subroutine nmdepl(modele, numedd, ds_material, carele, &
     character(len=8) :: noma
     type(NL_DS_Conv), intent(inout) :: ds_conv
     type(NL_DS_AlgoPara), intent(in) :: ds_algopara
-    character(len=19) :: sddisc, sdnume, sddyna, sdpilo
+    character(len=19) :: sddisc, sdnume, sdpilo
+    character(len=19), intent(in) :: sddyna
+    type(NLDYNA_DAMPING), intent(in) :: nlDynaDamping
     type(NL_DS_Measure), intent(inout) :: ds_measure
     character(len=19) :: lischa, matass, solveu
     type(NL_DS_Constitutive), intent(in) :: ds_constitutive
@@ -94,7 +98,8 @@ subroutine nmdepl(modele, numedd, ds_material, carele, &
 ! IN  SOLVEU : NOM DU SOLVEUR
 ! IN  SDNUME : SD NUMEROTATION
 ! IN  SDDISC : SD DISCRETISATION
-! IN  SDDYNA : SD DYNAMIQUE
+! In  sddyna           : name of datastructure for dynamic parameters
+! In  nlDynaDamping    : damping parameters
 ! IN  SDPILO : SD PILOTAGE
 ! IN  SDERRO : SD GESTION DES ERREURS
 ! IO  ds_contact       : datastructure for contact management
@@ -154,7 +159,7 @@ subroutine nmdepl(modele, numedd, ds_material, carele, &
 ! --- CALCUL DE LA RESULTANTE DES EFFORTS EXTERIEURS
 !
     call nmchex(veasse, 'VEASSE', 'CNFEXT', cnfext)
-    call nmfext(etan, fonact, veasse, cnfext, ds_contact, sddyna)
+    call nmfext(etan, fonact, veasse, cnfext, ds_contact, sddyna, nlDynaDamping)
 !
 ! --- CONVERSION RESULTAT dU VENANT DE K.dU = F SUIVANT SCHEMAS
 !

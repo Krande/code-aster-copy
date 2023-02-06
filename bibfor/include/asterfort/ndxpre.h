@@ -21,21 +21,25 @@ interface
     subroutine ndxpre(model          , nume_dof   , ds_material, cara_elem  ,&
                       ds_constitutive, list_load  , ds_algopara, solveu     , ds_system  ,&
                       list_func_acti , sddisc     , ds_measure , nume_inst  , hval_incr  ,&
-                      hval_algo      , matass     , maprec     , sddyna     , sderro     ,&
-                      sdnume         , hval_meelem, hval_measse, hval_veelem, hval_veasse,&
+                      hval_algo      , matass     , maprec     ,&
+                      sddyna, nlDynaDamping,&
+                      sderro, sdnume, hval_meelem, hval_measse, hval_veelem, hval_veasse,&
                       lerrit)
         use NonLin_Datastructure_type
+        use NonLinearDyna_type
         integer :: list_func_acti(*)
         integer :: nume_inst
         type(NL_DS_AlgoPara), intent(in) :: ds_algopara
         character(len=19) :: matass, maprec
-        character(len=19), intent(in) :: sdnume, sddisc, sddyna
+        character(len=19), intent(in) :: sdnume, sddisc
         type(NL_DS_Material), intent(in) :: ds_material
         type(NL_DS_Measure), intent(inout) :: ds_measure
         character(len=19) :: list_load, solveu
         character(len=24) :: model, cara_elem
         type(NL_DS_Constitutive), intent(in) :: ds_constitutive
         type(NL_DS_System), intent(in) :: ds_system
+        character(len=19), intent(in) :: sddyna
+        type(NLDYNA_DAMPING), intent(in) :: nlDynaDamping
         character(len=24) :: nume_dof
         character(len=24) :: sderro
         character(len=19) :: hval_meelem(*), hval_veelem(*)

@@ -17,9 +17,10 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine nonlinDSDynamicInit(hval_incr, sddyna, ds_constitutive)
+subroutine nonlinDSDynamicInit(hval_incr, sddyna, nlDynaDamping, ds_constitutive)
 !
     use NonLin_Datastructure_type
+    use NonLinearDyna_type
 !
     implicit none
 !
@@ -41,6 +42,7 @@ subroutine nonlinDSDynamicInit(hval_incr, sddyna, ds_constitutive)
 !
     character(len=19), intent(in) :: hval_incr(*)
     character(len=19), intent(in) :: sddyna
+    type(NLDYNA_DAMPING), intent(in) :: nlDynaDamping
     type(NL_DS_Constitutive), intent(in) :: ds_constitutive
 !
 ! --------------------------------------------------------------------------------------------------
@@ -52,7 +54,8 @@ subroutine nonlinDSDynamicInit(hval_incr, sddyna, ds_constitutive)
 ! --------------------------------------------------------------------------------------------------
 !
 ! In  hval_incr        : hat-variable for incremental values fields
-! In  sddyna           : datastructure for dynamic
+! In  sddyna           : name of datastructure for dynamic parameters
+! In  nlDynaDamping    : damping parameters
 ! in  ds_constitutive  : datastructure for constitutive laws management
 !
 ! --------------------------------------------------------------------------------------------------
@@ -61,8 +64,8 @@ subroutine nonlinDSDynamicInit(hval_incr, sddyna, ds_constitutive)
     integer :: nbMode, nbEqua
     integer :: iExci, nbExci
     integer :: jvMultSuppProj, jvNumeDofDEEQ
-    aster_logical :: lDampMode, lMultiSupport
-    character(len=19) :: pfcn1, pfcn2, disp_prev, multSuppProj
+    aster_logical :: lDampModal, lMultiSupport
+    character(len=19) :: pfcn1, pfcn2, dispPrev, multSuppProj
     character(len=8) :: mesh
     character(len=14) :: numeDof
     character(len=24) :: numeDofDEEQ, matrix, multSuppMode, dampMode
@@ -73,19 +76,17 @@ subroutine nonlinDSDynamicInit(hval_incr, sddyna, ds_constitutive)
     if (niv .ge. 2) then
         call utmess('I', 'MECANONLINE13_13')
     end if
-!
+
 ! - Active functionnalities
-!
-    lDampMode = ndynlo(sddyna, 'AMOR_MODAL')
+    lDampModal = nlDynaDamping%lDampModal
     lMultiSupport = ndynlo(sddyna, 'MULTI_APPUI')
-!
+
 ! - Modal damping: check numbering of equation
-!
-    if (lDampMode) then
-        call ndynkk(sddyna, 'dampMode', dampMode)
+    if (lDampModal) then
+        dampMode = nlDynaDamping%modalDamping%dampMode
         call mginfo(dampMode, numeDof, nbMode, nbEqua)
-        call nmchex(hval_incr, 'VALINC', 'DEPMOI', disp_prev)
-        call dismoi('PROF_CHNO', disp_prev, 'CHAM_NO', repk=pfcn1)
+        call nmchex(hval_incr, 'VALINC', 'DEPMOI', dispPrev)
+        call dismoi('PROF_CHNO', dispPrev, 'CHAM_NO', repk=pfcn1)
         call dismoi('PROF_CHNO', numeDof, 'NUME_DDL', repk=pfcn2)
         if (.not. iden_nume(pfcn1, pfcn2)) then
             call utmess('F', 'DYNAMIQUE_54')

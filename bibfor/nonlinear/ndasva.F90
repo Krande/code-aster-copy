@@ -17,9 +17,10 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine ndasva(sddyna, hval_veasse, cnvady)
+subroutine ndasva(sddyna, nlDynaDamping, hval_veasse, cnvady)
 !
     use NonLin_Datastructure_type
+    use NonLinearDyna_type
 !
     implicit none
 !
@@ -30,7 +31,9 @@ subroutine ndasva(sddyna, hval_veasse, cnvady)
 #include "asterfort/nonlinDSVectCombInit.h"
 #include "asterfort/ndynlo.h"
 !
-    character(len=19), intent(in) :: sddyna, hval_veasse(*), cnvady
+    character(len=19), intent(in) :: sddyna
+    type(NLDYNA_DAMPING), intent(in) :: nlDynaDamping
+    character(len=19), intent(in) :: hval_veasse(*), cnvady
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -40,36 +43,34 @@ subroutine ndasva(sddyna, hval_veasse, cnvady)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  sddyna           : datastructure for dynamic
+! In  sddyna           : name of datastructure for dynamic parameters
+! In  nlDynaDamping    : damping parameters
 ! In  hval_veasse      : hat-variable for vectors (node fields)
 ! In  cnvady           : name of resultant nodal field
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    aster_logical :: l_impe, l_ammo
+    aster_logical :: l_impe, lDampModal
     type(NL_DS_VectComb) :: ds_vectcomb
 !
 ! --------------------------------------------------------------------------------------------------
 !
     l_impe = ndynlo(sddyna, 'IMPE_ABSO')
-    l_ammo = ndynlo(sddyna, 'AMOR_MODAL')
-!
+    lDampModal = nlDynaDamping%lDampModal
+
 ! - Initializations
-!
     call nonlinDSVectCombInit(ds_vectcomb)
-!
+
 ! - Undead dynamic forces
-!
     call nonlinDSVectCombAddHat(hval_veasse, 'CNDYNA', -1.d0, ds_vectcomb)
-    if (l_ammo) then
+    if (lDampModal) then
         call nonlinDSVectCombAddHat(hval_veasse, 'CNAMOD', -1.d0, ds_vectcomb)
     end if
     if (l_impe) then
         call nonlinDSVectCombAddHat(hval_veasse, 'CNIMPE', -1.d0, ds_vectcomb)
     end if
-!
+
 ! - Combination
-!
     call nonlinDSVectCombCompute(ds_vectcomb, cnvady)
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,16 +21,17 @@ interface
                       ds_constitutive, list_load, ds_algopara, solveu     , ds_system,&
                       list_func_acti , ds_print , ds_measure , ds_algorom , sddisc,&
                       nume_inst      , hval_incr, hval_algo  , hhoField, matass     , maprec,&
-                      ds_contact     , sddyna   , hval_meelem, hval_measse, hval_veelem,&
+                      sddyna, nlDynaDamping,&
+                      ds_contact     , hval_meelem, hval_measse, hval_veelem,&
                       hval_veasse    , sdnume   , ldccvg     , faccvg,&
-                      rescvg         , condcvg)
+                      rescvg)
         use NonLin_Datastructure_type
         use ROM_Datastructure_type
         use HHO_type
-
+        use NonLinearDyna_type
         character(len=8), intent(in) :: mesh
         integer :: list_func_acti(*)
-        integer :: nume_inst, faccvg, rescvg, ldccvg, condcvg
+        integer :: nume_inst, faccvg, rescvg, ldccvg
         type(NL_DS_Constitutive), intent(in) :: ds_constitutive
         type(NL_DS_AlgoPara), intent(in) :: ds_algopara
         type(NL_DS_Measure), intent(inout) :: ds_measure
@@ -40,7 +41,9 @@ interface
         type(NL_DS_System), intent(in) :: ds_system
         type(HHO_Field), intent(in) :: hhoField
         character(len=19) :: matass, maprec
-        character(len=19) :: list_load, solveu, sddisc, sddyna, sdnume
+        character(len=19) :: list_load, solveu, sddisc, sdnume
+        character(len=19), intent(in) :: sddyna
+        type(NLDYNA_DAMPING), intent(in) :: nlDynaDamping
         character(len=24) :: model, cara_elem
         character(len=24) :: nume_dof, numfix
         character(len=19) :: hval_algo(*), hval_incr(*)

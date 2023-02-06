@@ -19,6 +19,7 @@
 module NonLinear_module
 ! ==================================================================================================
     use NonLin_Datastructure_type
+    use NonLinearDyna_type
     use Rom_Datastructure_type
     use ldlt_xp_data_module
     use NonLinearElem_module, only: elemDiri, elemNeum, elemGeom
@@ -381,10 +382,10 @@ contains
 !
 ! Update global matrix ?
 !
-! In  phaseType        : name of current phase (prediction/correction/internal forces)
+! In  phaseType        : name of current phase of algorithm
 ! In  matrType         : type of matrix
 ! In  listFuncActi     : list of active functionnalities
-! In  sddyna           : name of dynamic parameters datastructure
+! In  nlDynaDamping    : damping parameters
 ! In  ds_system        : datastructure for non-linear system management
 ! Out l_update_matr    : flag to update matrix
 ! In  numeTime         : index of current time step
@@ -394,7 +395,7 @@ contains
 !
 ! --------------------------------------------------------------------------------------------------
     subroutine isMatrUpdate(phaseType, matrType, listFuncActi, &
-                            sddyna, ds_system, &
+                            nlDynaDamping, ds_system, &
                             l_update_matr, &
                             nume_inst_, iter_newt_, &
                             reac_iter_, reac_incr_)
@@ -403,22 +404,22 @@ contains
         integer, intent(in) :: phaseType
         character(len=16), intent(in) :: matrType
         integer, intent(in) :: listFuncActi(*)
-        character(len=19), intent(in) :: sddyna
+        type(NLDYNA_DAMPING), intent(in) :: nlDynaDamping
         type(NL_DS_System), intent(in) :: ds_system
         aster_logical, intent(out) :: l_update_matr
         integer, optional, intent(in) :: nume_inst_, iter_newt_
         integer, optional, intent(in) :: reac_iter_, reac_incr_
 ! - Local
         aster_logical :: l_matr_elas
-        aster_logical :: l_cont_elem, l_dyna
-        aster_logical :: l_damp, l_dischoc, l_varc, l_elas_fo
+        aster_logical :: l_cont_elem, lDyna
+        aster_logical :: lDampMatrix, l_dischoc, l_varc, l_elas_fo
 !   ------------------------------------------------------------------------------------------------
 !
         l_update_matr = ASTER_FALSE
 
 ! - Active functionnalities
-        l_dyna = ndynlo(sddyna, 'DYNAMIQUE')
-        l_damp = ndynlo(sddyna, 'MAT_AMORT')
+        lDyna = isfonc(listFuncActi, 'DYNAMIQUE')
+        lDampMatrix = nlDynaDamping%hasMatrDamp
         l_cont_elem = isfonc(listFuncActi, 'ELT_CONTACT')
         l_dischoc = isfonc(listFuncActi, 'DIS_CHOC')
         l_varc = isfonc(listFuncActi, 'EXI_VARC')
@@ -429,7 +430,7 @@ contains
 
 ! - Update matrix ?
         if (phaseType .eq. PRED_EULER) then
-            call isMatrUpdatePred(l_dyna, l_damp, l_matr_elas, &
+            call isMatrUpdatePred(lDyna, lDampMatrix, l_matr_elas, &
                                   l_varc, l_elas_fo, &
                                   reac_incr_, nume_inst_, &
                                   l_update_matr)
@@ -474,7 +475,7 @@ contains
 ! Update global matrix at prediction ?
 !
 ! In  l_dyna           : flag for dynamic
-! In  l_damp           : flag for damping (Rayleigh)
+! In  lDampMatrix      : flag for damping matrix
 ! In  l_matr_elas      : flag if matrix is elastic
 ! In  l_varc           : flag for external state variables (AFFE_VARC)
 ! In  l_elas_fo        : flag if elasticity parameters are functions
@@ -483,13 +484,13 @@ contains
 ! Out l_update_matr    : flag to update matrix
 !
 ! --------------------------------------------------------------------------------------------------
-    subroutine isMatrUpdatePred(l_dyna, l_damp, l_matr_elas, &
+    subroutine isMatrUpdatePred(l_dyna, lDampMatrix, l_matr_elas, &
                                 l_varc, l_elas_fo, &
                                 reac_incr, numeTime, &
                                 l_update_matr)
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
-        aster_logical, intent(in) :: l_dyna, l_damp, l_matr_elas, l_varc, l_elas_fo
+        aster_logical, intent(in) :: l_dyna, lDampMatrix, l_matr_elas, l_varc, l_elas_fo
         integer, intent(in) :: reac_incr, numeTime
         aster_logical, intent(out) :: l_update_matr
 ! - Local
@@ -509,8 +510,8 @@ contains
             l_update_matr = mod(numeTime-1, reac_incr) .eq. 0
         end if
 
-! - Update matrix if Rayleigh damping
-        if (l_dyna .and. l_damp .and. l_first_step) then
+! - Update matrix if damping matrix
+        if (l_dyna .and. lDampMatrix .and. l_first_step) then
             l_update_matr = ASTER_TRUE
         end if
 
@@ -644,7 +645,7 @@ contains
 !
 ! Do the internal forces vectors have to be calculated ?
 !
-! In  phaseType        : name of current phase (prediction/correction/internal forces)
+! In  phaseType        : name of current phase of algorithm
 ! In  listFuncActi     : list of active functionnalities
 ! In  nonLinearOption  : name of option for non-linear computation
 ! In  iter_newt        : index of current Newton iteration
@@ -809,7 +810,7 @@ contains
 !
 ! Get options to compute internal forces
 !
-! In  phaseType        : name of current phase (prediction/correction/internal forces)
+! In  phaseType        : name of current phase of algorithm
 ! In  listFuncActi     : list of active functionnalities
 ! In  ds_algorom       : datastructure for ROM parameters
 ! Out lNodeComp        : compute internal forces without integration (FORC_NODA)

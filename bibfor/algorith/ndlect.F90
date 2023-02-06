@@ -16,15 +16,20 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
+! aslint: disable=W0413
 !
-subroutine ndlect(modele, mate, carele, lischa, sddyna)
+subroutine ndlect(model, materialField, caraElem, listLoad, &
+                  sddyna, nlDynaDamping)
+!
+    use NonLinearDyna_type
+    use Damping_type
+    use NonLinearDyna_module
 !
     implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getfac.h"
-#include "asterc/getres.h"
 #include "asterc/r8prem.h"
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
@@ -39,43 +44,41 @@ subroutine ndlect(modele, mate, carele, lischa, sddyna)
 #include "asterfort/mecact.h"
 #include "asterfort/mxmoam.h"
 #include "asterfort/ndynlo.h"
-#include "asterfort/nmamab.h"
 #include "asterfort/nmcsol.h"
 #include "asterfort/nmimpe.h"
-#include "asterfort/nmmoam.h"
 #include "asterfort/nmmuap.h"
 #include "asterfort/nmondp.h"
 #include "asterfort/utmess.h"
 !
-    character(len=19) :: sddyna
-    character(len=24) :: modele, mate, carele
-    character(len=19) :: lischa
+    character(len=24), intent(in) :: model, materialField, caraElem
+    character(len=19), intent(in) :: listLoad
+    character(len=19), intent(in) :: sddyna
+    type(NLDYNA_DAMPING), intent(out) :: nlDynaDamping
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE MECA_NON_LINE (INITIALISATION)
+! DYNA_NON_LINE - Initializations
 !
-! LECTURE DES OPERANDES DYNAMIQUES ET REMPLISSAGE DE SDDYNA
+! Get parameters from command file
 !
-! ----------------------------------------------------------------------
-!
+! --------------------------------------------------------------------------------------------------
 !
 ! IN  MODELE : NOM DU MODELE
 ! IN  MATE   : NOM DU CHAM_MATER
 ! IN  CARELE : NOM DU CARA_ELEM
 ! IN  LISCHA : SD L_CHARGES
 ! IN  SDDYNA : SD DYNAMIQUE
+! Out nlDynaDamping    : damping parameters
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
     real(kind=8) :: undemi, un, quatre
     parameter(undemi=0.5d0, un=1.d0)
     parameter(quatre=4.d0)
-!
-    integer :: nmodam, nreavi, nondp
-    integer :: nbmods, nbmoda, nbmodp
+    integer :: nondp
+    integer :: nbmods, nbmodp
     integer :: iret
-    integer :: n1, nbmg, nrv
+    integer :: n1, nbmg
     integer :: nbexci, nbgene
     character(len=24) :: tsch, psch, losd, nosd, tfor
     integer :: jtsch, jpsch, jlosd, jnosd, jtfor
@@ -84,30 +87,26 @@ subroutine ndlect(modele, mate, carele, lischa, sddyna)
     character(len=24) :: vecent, vecabs
     integer :: jvecen, jvecab
     character(len=8) :: k8bid, licmp(3), rep
-    character(len=8) :: rep1, rep2, rep3, rep4, rigiam
-    character(len=16) :: schema, kform, k16bid, nomcmd
+    character(len=16) :: schema, kform
     character(len=24) :: texte
-    character(len=19) :: sdammo, stadyn
+    character(len=19) :: stadyn
     character(len=15) :: sdmuap, sdprmo, sdexso
     character(len=24) :: chondp
     integer :: iform
     integer :: ifm, niv
     real(kind=8) :: alpha, beta, gamma, phi
     real(kind=8) :: rcmp(3), shima
-    aster_logical :: lmuap, lammo, lshima, lviss, lamra
-    aster_logical :: lamor, lktan, londe, limped, ldyna, lexpl
-!
-    character(len=8) :: dampMode
+    aster_logical :: lmuap, lshima, lviss
+    aster_logical :: londe, limped, ldyna, lexpl
     character(len=19) :: vefsdo, vefint, vedido, vesstf
     character(len=19) :: vefedo, veondp, vedidi, velapl
-!
     character(len=19) :: cdfedo, cdfsdo, cddidi, cdfint
     character(len=19) :: cddido, cdcine
     character(len=19) :: cdondp, cdlapl, cdeltc, cdeltf
     character(len=19) :: cdsstf, cdviss, cdsstr
-!
     character(len=19) :: depent, vitent, accent
     character(len=19) :: depabs, vitabs, accabs
+    character(len=24), parameter :: sdammo = "&&NDLECT.SDAMMO"
 !
     data cdfedo, cdfsdo/'&&NDLECT.CNFEDO', '&&NDLECT.CNFSDO'/
     data cddido, cddidi/'&&NDLECT.CNDIDO', '&&NDLECT.CNDIDI'/
@@ -134,26 +133,14 @@ subroutine ndlect(modele, mate, carele, lischa, sddyna)
     data stadyn/'&&NDLECT.STADYN'/
     data sdprmo/'&&NDLECT.SDPRMO'/
     data sdmuap/'&&NDLECT.SDMUAP'/
-    data sdammo/'&&NDLECT.SDAMMO'/
     data sdexso/'&&NDLECT.SDEXSO'/
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
     call infdbg('MECANONLINE', ifm, niv)
-!
-! --- OPERATEUR APPELANT (STATIQUE OU DYNAMIQUE)
-!
-    call getres(k8bid, k16bid, nomcmd)
-!
-! --- INITIALISATIONS
-!
-    beta = 0.d0
-    gamma = 0.d0
-    phi = 0.d0
-!
+
 ! --- LECTURE DONNEES DYNAMIQUE
-!
     ldyna = ndynlo(sddyna, 'DYNAMIQUE')
     if (ldyna) then
         if (niv .ge. 2) then
@@ -187,35 +174,12 @@ subroutine ndlect(modele, mate, carele, lischa, sddyna)
     call jeveuo(vaol, 'E', jvaol)
     call jeveuo(vecent, 'E', jvecen)
     call jeveuo(vecabs, 'E', jvecab)
-!
-! --- EXISTENCE D'AMORTISSEMENT DE RAYLEIGH
-!
-    lamor = .false.
-    lktan = .false.
-    call dismoi('EXI_AMOR_ALPHA', mate, 'CHAM_MATER', repk=rep1)
-    call dismoi('EXI_AMOR_BETA', mate, 'CHAM_MATER', repk=rep2)
-    call dismoi('EXI_AMOR_NOR', mate, 'CHAM_MATER', repk=rep3)
-    call dismoi('EXI_AMOR_TAN', mate, 'CHAM_MATER', repk=rep4)
-    if ((rep1(1:3) .eq. 'OUI') .or. (rep2(1:3) .eq. 'OUI') .or. (rep3(1:3) .eq. 'OUI') .or. &
-        (rep4(1:3) .eq. 'OUI')) then
-        lamor = .true.
-        call getvtx(' ', 'AMOR_RAYL_RIGI', scal=rigiam, nbret=iret)
-        if (rigiam .eq. 'TANGENTE') lktan = .true.
-    end if
 
-    lamra = lamor
-!
-    if ((rep1(1:3) .eq. 'OUI') .or. (rep2(1:3) .eq. 'OUI')) then
-        call utmess('I', 'MECANONLINE5_7')
-    end if
-    if (.not. lamor) call nmamab(modele, carele, lamor)
-    zl(jlosd+1-1) = lamor
-    zl(jlosd+13-1) = lktan
-    zl(jlosd+16-1) = lamra
-!
+! - Get parameters for damping
+    call dampGetParameters(model, materialField, caraElem, sdammo, &
+                           nlDynaDamping)
+
 ! --- PARAMETRES DU SCHEMA TEMPS
-!
-!
     beta = 0.d0
     gamma = 0.d0
     phi = 0.d0
@@ -252,21 +216,17 @@ subroutine ndlect(modele, mate, carele, lischa, sddyna)
     else
         ASSERT(.false.)
     end if
-!
     zr(jpsch+1-1) = beta
     zr(jpsch+2-1) = gamma
     zr(jpsch+3-1) = phi
     zr(jpsch+7-1) = alpha
-!
-! --- TYPE DE SCHEMA
-!
+
+! - TYPE DE SCHEMA
     lexpl = ndynlo(sddyna, 'EXPLICITE')
-!
+
 ! --- NOM DE QUELQUES SD
-!
     zk24(jnosd+3-1) = sdprmo
     zk24(jnosd+4-1) = stadyn
-    zk24(jnosd+2-1) = sdammo
     zk24(jnosd+1-1) = sdmuap
     zk24(jnosd+5-1) = sdexso
 !
@@ -310,14 +270,14 @@ subroutine ndlect(modele, mate, carele, lischa, sddyna)
         end if
     end if
     if (ndynlo(sddyna, 'HHT_COMPLET')) then
-        if (alpha .eq. -1.0) then
+        if (alpha .eq. -1.d0) then
             call utmess('F', 'MECANONLINE5_17')
         end if
     end if
 !
 ! --- VERIFICATION DE LA PRESENCE D'ELEMENTS AVEC 'IMPE_ABSO'
 !
-    call nmimpe(modele, limped)
+    call nmimpe(model, limped)
     zl(jlosd+6-1) = limped
 !
 ! --- NOMBRE DE CHARGEMENTS
@@ -329,7 +289,7 @@ subroutine ndlect(modele, mate, carele, lischa, sddyna)
 !
 ! --- TEST DE LA PRESENCE DE CHARGES DE TYPE 'ONDE_PLANE'
 !
-    call nmondp(lischa, londe, chondp, nondp)
+    call nmondp(listLoad, londe, chondp, nondp)
     zl(jlosd+7-1) = londe
     zi(jncha+2-1) = nondp
     zk24(jtcha+1-1) = chondp
@@ -410,7 +370,7 @@ subroutine ndlect(modele, mate, carele, lischa, sddyna)
     rcmp(2) = beta
     rcmp(3) = gamma
     call jedetr(stadyn)
-    call mecact('V', stadyn, 'MODELE', modele(1:8)//'.MODELE', 'STAOUDYN', &
+    call mecact('V', stadyn, 'MODELE', model(1:8)//'.MODELE', 'STAOUDYN', &
                 ncmp=3, lnomcmp=licmp, vr=rcmp)
 !
 ! --- MODE MULTI-APPUI
@@ -421,32 +381,9 @@ subroutine ndlect(modele, mate, carele, lischa, sddyna)
         call nmmuap(sddyna)
     end if
     zl(jlosd+2-1) = lmuap
-!
-! --- AMORTISSEMENT MODAL
-!
-    call getfac('AMOR_MODAL', nmodam)
-    lammo = nmodam .gt. 0
-    if (lammo) then
-        call nmmoam(sdammo, nbmoda, dampMode)
-        nreavi = 0
-!
-! --- REACTUALISATION DE L'AMORT A CHAQUE ITERATION ?
-!
-        call getvtx('AMOR_MODAL', 'REAC_VITE', iocc=1, scal=k8bid, nbret=nrv)
-        if (k8bid .eq. 'OUI') nreavi = 1
-    else
-        nreavi = 0
-        nbmoda = 0
-        dampMode = ' '
-    end if
-    zl(jlosd+3-1) = lammo
-    zl(jlosd+12-1) = nreavi .gt. 0
-    zi(jncha+4-1) = nbmoda
-    zk24(jnosd-1+7) = dampMode
-!
+
 ! --- VECT ISS
-!
-    call nmcsol(lischa, sddyna, lviss)
+    call nmcsol(listLoad, sddyna, lviss)
     zl(jlosd+15-1) = lviss
 !
     if (niv .ge. 2) then
@@ -458,15 +395,8 @@ subroutine ndlect(modele, mate, carele, lischa, sddyna)
         if (ndynlo(sddyna, 'EXPLICITE')) then
             write (ifm, *) '<MECANONLINE> ...... SCHEMA EXPLICITE'
         end if
-!
-        if (ndynlo(sddyna, 'MAT_AMORT')) then
-            write (ifm, *) '<MECANONLINE> ...... MATRICE AMORTISSEMENT'
-        end if
         if (ndynlo(sddyna, 'MULTI_APPUI')) then
             write (ifm, *) '<MECANONLINE> ...... MULTI APPUI'
-        end if
-        if (ndynlo(sddyna, 'AMOR_MODAL')) then
-            write (ifm, *) '<MECANONLINE> ...... AMORTISSEMENT MODAL'
         end if
         if (ndynlo(sddyna, 'MASS_DIAG')) then
             write (ifm, *) '<MECANONLINE> ...... MATRICE MASSE DIAGONALE'
@@ -482,9 +412,6 @@ subroutine ndlect(modele, mate, carele, lischa, sddyna)
         end if
         if (ndynlo(sddyna, 'EXPL_GENE')) then
             write (ifm, *) '<MECANONLINE> ...... CALCUL EXPLICITE EN MODAL'
-        end if
-        if (ndynlo(sddyna, 'NREAVI')) then
-            write (ifm, *) '<MECANONLINE> ...... REAC. VITE'
         end if
         if (ndynlo(sddyna, 'COEF_MASS_SHIFT')) then
             write (ifm, *) '<MECANONLINE> ...... COEF. MASS. SHIFT'

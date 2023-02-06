@@ -44,6 +44,8 @@ module Damping_type
         character(len=24) :: jvListDamp = " "
 ! - Name of datastructure to save parameters
         character(len=24) :: jvDataDamp = " "
+! - Flag for Debug
+        aster_logical :: debug = ASTER_TRUE
     end type MODAL_DAMPING
 !
 end module Damping_type

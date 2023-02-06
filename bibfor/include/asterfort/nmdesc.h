@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,14 +24,14 @@ interface
                       ds_algopara    , ds_system  , solveu    ,&
                       fonact         , numins     , iterat    ,&
                       sddisc         , ds_print   , ds_measure,&
-                      ds_algorom     , sddyna     , sdnume    ,&
+                      ds_algorom, sddyna, nlDynaDamping, sdnume,&
                       sderro         , matass     , maprec    ,&
                       valinc         , solalg     , hhoField  , meelem,&
                       measse         , veasse     , lerrit)
         use NonLin_Datastructure_type
+        use NonLinearDyna_type
         use ROM_Datastructure_type
         use HHO_type
-
         character(len=8), intent(in) :: mesh
         character(len=24) :: modele
         character(len=24) :: numedd
@@ -40,7 +40,8 @@ interface
         type(HHO_Field), intent(in) :: hhoField
         character(len=24) :: carele
         type(NL_DS_Constitutive), intent(in) :: ds_constitutive
-        character(len=19) :: lischa
+        character(len=19), intent(in) :: lischa, sddyna
+        type(NLDYNA_DAMPING), intent(in) :: nlDynaDamping
         type(NL_DS_Contact), intent(inout) :: ds_contact
         character(len=19) :: solveu
         type(NL_DS_AlgoPara), intent(in) :: ds_algopara
@@ -52,7 +53,6 @@ interface
         type(NL_DS_Measure), intent(inout) :: ds_measure
         type(ROM_DS_AlgoPara), intent(in) :: ds_algorom
         type(NL_DS_System), intent(in) :: ds_system
-        character(len=19) :: sddyna
         character(len=19) :: sdnume
         character(len=24) :: sderro
         character(len=19) :: matass

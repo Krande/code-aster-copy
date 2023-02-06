@@ -17,10 +17,12 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine exfonc(list_func_acti, ds_algopara, solver, ds_contact, sddyna, &
+subroutine exfonc(listFuncActi, ds_algopara, solver, ds_contact, &
+                  sddyna, nlDynaDamping, &
                   mater, model)
 !
     use NonLin_Datastructure_type
+    use NonLinearDyna_type
 !
     implicit none
 !
@@ -37,12 +39,11 @@ subroutine exfonc(list_func_acti, ds_algopara, solver, ds_contact, sddyna, &
 #include "asterfort/utmess.h"
 #include "asterfort/dismoi.h"
 !
-    integer, intent(in) :: list_func_acti(*)
-    character(len=19), intent(in) :: solver
-    character(len=19), intent(in) :: sddyna
+    integer, intent(in) :: listFuncActi(*)
+    character(len=19), intent(in) :: solver, sddyna
+    type(NLDYNA_DAMPING), intent(in) :: nlDynaDamping
     type(NL_DS_Contact), intent(in) :: ds_contact
-    character(len=24), intent(in) :: mater
-    character(len=24), intent(in) :: model
+    character(len=24), intent(in) :: mater, model
     type(NL_DS_AlgoPara), intent(in) :: ds_algopara
 !
 ! --------------------------------------------------------------------------------------------------
@@ -53,11 +54,12 @@ subroutine exfonc(list_func_acti, ds_algopara, solver, ds_contact, sddyna, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  list_func_acti   : list of active functionnalities
+! In  listFuncActi     : list of active functionnalities
 ! In  ds_algopara      : datastructure for algorithm parameters
 ! In  solver           : datastructure for solver parameters
 ! In  ds_contact       : datastructure for contact management
-! In  sddyna           : dynamic parameters datastructure
+! In  sddyna           : name of datastructure for dynamic parameters
+! In  nlDynaDamping    : damping parameters
 ! In  mater            : name of material
 !
 ! --------------------------------------------------------------------------------------------------
@@ -69,7 +71,7 @@ subroutine exfonc(list_func_acti, ds_algopara, solver, ds_contact, sddyna, &
     aster_logical :: l_cont_gcp, lpetsc, lamg, limpex, l_matr_distr, lgcpc
     aster_logical :: londe, l_dyna, l_grot_gdep, l_newt_krylov, l_mumps, l_rom
     aster_logical :: l_energy, lproj, lmatdi, lldsp, lResiCompRela, lResiRefeRela
-    aster_logical :: l_unil_pena, l_cont_acti, l_hho, l_undead, lammo, lthms, limpl
+    aster_logical :: l_unil_pena, l_cont_acti, l_hho, l_undead, lDampModal, lthms, limpl
     aster_logical :: l_state_init, l_reuse
     character(len=24) :: typilo, metres, char24
     character(len=16) :: reli_meth, matrix_pred, partit
@@ -83,44 +85,44 @@ subroutine exfonc(list_func_acti, ds_algopara, solver, ds_contact, sddyna, &
 !
 ! - Active functionnalites
 !
-    l_xfem = isfonc(list_func_acti, 'XFEM')
-    l_cont_cont = isfonc(list_func_acti, 'CONT_CONTINU')
-    l_cont_disc = isfonc(list_func_acti, 'CONT_DISCRET')
-    l_cont_xfem = isfonc(list_func_acti, 'CONT_XFEM')
-    l_cont = isfonc(list_func_acti, 'CONTACT')
-    l_cont_lac = isfonc(list_func_acti, 'CONT_LAC')
-    l_unil = isfonc(list_func_acti, 'LIAISON_UNILATER')
-    l_pilo = isfonc(list_func_acti, 'PILOTAGE')
-    l_line_search = isfonc(list_func_acti, 'RECH_LINE')
-    lmacr = isfonc(list_func_acti, 'MACR_ELEM_STAT')
-    l_vibr_mode = isfonc(list_func_acti, 'MODE_VIBR')
-    l_buckling = isfonc(list_func_acti, 'CRIT_STAB')
+    l_xfem = isfonc(listFuncActi, 'XFEM')
+    l_cont_cont = isfonc(listFuncActi, 'CONT_CONTINU')
+    l_cont_disc = isfonc(listFuncActi, 'CONT_DISCRET')
+    l_cont_xfem = isfonc(listFuncActi, 'CONT_XFEM')
+    l_cont = isfonc(listFuncActi, 'CONTACT')
+    l_cont_lac = isfonc(listFuncActi, 'CONT_LAC')
+    l_unil = isfonc(listFuncActi, 'LIAISON_UNILATER')
+    l_pilo = isfonc(listFuncActi, 'PILOTAGE')
+    l_line_search = isfonc(listFuncActi, 'RECH_LINE')
+    lmacr = isfonc(listFuncActi, 'MACR_ELEM_STAT')
+    l_vibr_mode = isfonc(listFuncActi, 'MODE_VIBR')
+    l_buckling = isfonc(listFuncActi, 'CRIT_STAB')
     londe = ndynlo(sddyna, 'ONDE_PLANE')
     l_dyna = ndynlo(sddyna, 'DYNAMIQUE')
     limpl = ndynlo(sddyna, 'IMPLICITE')
-    lexpl = isfonc(list_func_acti, 'EXPLICITE')
-    l_grot_gdep = isfonc(list_func_acti, 'GD_ROTA')
-    lammo = ndynlo(sddyna, 'AMOR_MODAL')
-    limpex = isfonc(list_func_acti, 'IMPLEX')
-    l_newt_krylov = isfonc(list_func_acti, 'NEWTON_KRYLOV')
-    l_rom = isfonc(list_func_acti, 'ROM')
-    l_energy = isfonc(list_func_acti, 'ENERGIE')
-    lproj = isfonc(list_func_acti, 'PROJ_MODAL')
-    lmatdi = isfonc(list_func_acti, 'MATR_DISTRIBUEE')
-    leltc = isfonc(list_func_acti, 'ELT_CONTACT')
-    lResiCompRela = isfonc(list_func_acti, 'RESI_COMP')
-    lResiRefeRela = isfonc(list_func_acti, 'RESI_REFE')
-    lgcpc = isfonc(list_func_acti, 'GCPC')
-    lpetsc = isfonc(list_func_acti, 'PETSC')
-    lldsp = isfonc(list_func_acti, 'LDLT_SP')
-    l_mumps = isfonc(list_func_acti, 'MUMPS')
-    l_mult_front = isfonc(list_func_acti, 'MULT_FRONT')
-    l_diri_undead = isfonc(list_func_acti, 'DIRI_UNDEAD')
-    l_matr_distr = isfonc(list_func_acti, 'MATR_DISTRIBUEE')
-    l_hho = isfonc(list_func_acti, 'HHO')
-    l_undead = isfonc(list_func_acti, 'NEUM_UNDEAD') .or. isfonc(list_func_acti, 'DIRI_UNDEAD')
-    l_state_init = isfonc(list_func_acti, 'ETAT_INIT')
-    l_reuse = isfonc(list_func_acti, 'REUSE')
+    lexpl = isfonc(listFuncActi, 'EXPLICITE')
+    l_grot_gdep = isfonc(listFuncActi, 'GD_ROTA')
+    lDampModal = nlDynaDamping%lDampModal
+    limpex = isfonc(listFuncActi, 'IMPLEX')
+    l_newt_krylov = isfonc(listFuncActi, 'NEWTON_KRYLOV')
+    l_rom = isfonc(listFuncActi, 'ROM')
+    l_energy = isfonc(listFuncActi, 'ENERGIE')
+    lproj = isfonc(listFuncActi, 'PROJ_MODAL')
+    lmatdi = isfonc(listFuncActi, 'MATR_DISTRIBUEE')
+    leltc = isfonc(listFuncActi, 'ELT_CONTACT')
+    lResiCompRela = isfonc(listFuncActi, 'RESI_COMP')
+    lResiRefeRela = isfonc(listFuncActi, 'RESI_REFE')
+    lgcpc = isfonc(listFuncActi, 'GCPC')
+    lpetsc = isfonc(listFuncActi, 'PETSC')
+    lldsp = isfonc(listFuncActi, 'LDLT_SP')
+    l_mumps = isfonc(listFuncActi, 'MUMPS')
+    l_mult_front = isfonc(listFuncActi, 'MULT_FRONT')
+    l_diri_undead = isfonc(listFuncActi, 'DIRI_UNDEAD')
+    l_matr_distr = isfonc(listFuncActi, 'MATR_DISTRIBUEE')
+    l_hho = isfonc(listFuncActi, 'HHO')
+    l_undead = isfonc(listFuncActi, 'NEUM_UNDEAD') .or. isfonc(listFuncActi, 'DIRI_UNDEAD')
+    l_state_init = isfonc(listFuncActi, 'ETAT_INIT')
+    l_reuse = isfonc(listFuncActi, 'REUSE')
 !
 ! - Get algorithm parameters
 !
@@ -183,7 +185,7 @@ subroutine exfonc(list_func_acti, ds_algopara, solver, ds_contact, sddyna, &
         if (lpetsc .and. lmatdi) then
             call utmess('F', 'MECANONLINE3_98')
         end if
-        if (lammo) then
+        if (lDampModal) then
             call utmess('F', 'MECANONLINE3_93')
         end if
     end if

@@ -22,11 +22,13 @@ subroutine nmprca(mesh, modele, numedd, numfix, ds_material, carele, &
                   ds_constitutive, lischa, ds_algopara, solveu, ds_system, &
                   fonact, ds_print, ds_measure, ds_algorom, sddisc, numins, &
                   valinc, solalg, matass, maprec, ds_contact, &
-                  sddyna, meelem, measse, veelem, veasse, &
-                  depest, ldccvg, faccvg, rescvg, condcvg)
+                  sddyna, nlDynaDamping, &
+                  meelem, measse, veelem, veasse, &
+                  depest, ldccvg, faccvg, rescvg)
 !
     use NonLin_Datastructure_type
     use Rom_Datastructure_type
+    use NonLinearDyna_type
     use HHO_type
 !
     implicit none
@@ -51,7 +53,7 @@ subroutine nmprca(mesh, modele, numedd, numfix, ds_material, carele, &
 !
     integer :: fonact(*)
     character(len=8), intent(in) :: mesh
-    integer :: numins, ldccvg, faccvg, rescvg, condcvg
+    integer :: numins, ldccvg, faccvg, rescvg
     type(NL_DS_AlgoPara), intent(in) :: ds_algopara
     type(NL_DS_Material), intent(in) :: ds_material
     character(len=19) :: maprec, matass
@@ -59,7 +61,9 @@ subroutine nmprca(mesh, modele, numedd, numfix, ds_material, carele, &
     type(NL_DS_Constitutive), intent(in) :: ds_constitutive
     type(ROM_DS_AlgoPara), intent(in) :: ds_algorom
     type(NL_DS_System), intent(in) :: ds_system
-    character(len=19) :: lischa, solveu, sddisc, sddyna
+    character(len=19) :: lischa, solveu, sddisc
+    character(len=19), intent(in) :: sddyna
+    type(NLDYNA_DAMPING), intent(in) :: nlDynaDamping
     character(len=24) :: modele, carele
     character(len=24) :: numedd, numfix
     type(NL_DS_Print), intent(inout) :: ds_print
@@ -98,7 +102,8 @@ subroutine nmprca(mesh, modele, numedd, numfix, ds_material, carele, &
 ! IN  MATASS : MATRICE ASSEMBLEE
 ! IN  MAPREC : MATRICE DE PRECONDITIONNEMENT (GCPC)
 ! In  ds_contact       : datastructure for contact management
-! IN  SDDYNA : SD POUR LA DYNAMIQUE
+! In  sddyna           : name of datastructure for dynamic parameters
+! In  nlDynaDamping    : damping parameters
 ! IN  MEELEM : VARIABLE CHAPEAU POUR NOM DES MATR_ELEM
 ! IN  MEASSE : VARIABLE CHAPEAU POUR NOM DES MATR_ASSE
 ! IN  VEELEM : VARIABLE CHAPEAU POUR NOM DES VECT_ELEM
@@ -156,7 +161,6 @@ subroutine nmprca(mesh, modele, numedd, numfix, ds_material, carele, &
     call dismoi('NB_EQUA', numedd, 'NUME_DDL', repi=neq)
     ldccvg = -1
     faccvg = -1
-    condcvg = -1
     l_rom = isfonc(fonact, 'ROM')
 !
 ! --- DECOMPACTION DES VARIABLES CHAPEAUX
@@ -170,7 +174,7 @@ subroutine nmprca(mesh, modele, numedd, numfix, ds_material, carele, &
     call nmprma(fonact, &
                 mesh, modele, carele, &
                 ds_material, ds_constitutive, &
-                lischa, sddyna, &
+                lischa, sddyna, nlDynaDamping, &
                 sddisc, numins, &
                 ds_algopara, ds_contact, ds_algorom, &
                 ds_print, ds_measure, &
@@ -179,7 +183,7 @@ subroutine nmprca(mesh, modele, numedd, numfix, ds_material, carele, &
                 numedd, numfix, &
                 solveu, ds_system, &
                 maprec, matass, &
-                faccvg, ldccvg, condcvg)
+                faccvg, ldccvg)
 !
 ! --- ERREUR SANS POSSIBILITE DE CONTINUER
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,12 +21,14 @@ interface
                       list_load  ,                                                            &
                       numedd     , numfix        , ds_algopara  , ds_constitutive, maprec    ,&
                       solver     , numins        , sddisc       , sdnume         , sdcrit    ,&
-                      ds_material, list_func_acti, sdpilo       , sddyna         , ds_print  ,&
+                      ds_material, listFuncActi, sdpilo       , ds_print  ,&
+                      sddyna, nlDynaDamping,&
                       sd_suiv    , sd_obsv       , sderro       , ds_posttimestep, ds_inout  ,&
                       ds_energy  , ds_conv       , ds_errorindic, valinc         , solalg    ,&
                       measse     , veelem        , meelem       , veasse         , ds_contact,&
                       ds_measure , ds_algorom    , ds_system    , hhoField)
         use NonLin_Datastructure_type
+        use NonLinearDyna_type
         use Rom_Datastructure_type
         use HHO_type
         character(len=8), intent(in) :: mesh
@@ -46,9 +48,10 @@ interface
         character(len=19) :: sdnume
         character(len=19) :: sdcrit
         type(NL_DS_Material), intent(inout) :: ds_material
-        integer, intent(inout) :: list_func_acti(*)
+        integer, intent(inout) :: listFuncActi(*)
         character(len=19) :: sdpilo
-        character(len=19) :: sddyna
+        character(len=19), intent(in) :: sddyna
+        type(NLDYNA_DAMPING), intent(in) :: nlDynaDamping
         type(NL_DS_Print), intent(inout) :: ds_print
         character(len=24), intent(out) :: sd_suiv
         character(len=19), intent(out) :: sd_obsv

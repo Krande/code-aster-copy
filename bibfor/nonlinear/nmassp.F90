@@ -17,13 +17,13 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine nmassp(list_func_acti, &
-                  sddyna, ds_system, &
-                  ds_contact, hval_veasse, &
+subroutine nmassp(listFuncActi, &
+                  sddyna, nlDynaDamping, &
+                  ds_system, ds_contact, hval_veasse, &
                   cnpilo, cndonn)
 !
     use NonLin_Datastructure_type
-    use Rom_Datastructure_type
+    use NonLinearDyna_type
 !
     implicit none
 !
@@ -34,9 +34,10 @@ subroutine nmassp(list_func_acti, &
 #include "asterfort/nsassp.h"
 #include "asterfort/vtzero.h"
 !
-    integer, intent(in) :: list_func_acti(*)
+    integer, intent(in) :: listFuncActi(*)
     type(NL_DS_System), intent(in) :: ds_system
     character(len=19), intent(in) :: sddyna
+    type(NLDYNA_DAMPING), intent(in) :: nlDynaDamping
     type(NL_DS_Contact), intent(in) :: ds_contact
     character(len=19), intent(in) :: hval_veasse(*)
     character(len=19), intent(in) :: cnpilo, cndonn
@@ -49,10 +50,11 @@ subroutine nmassp(list_func_acti, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  list_func_acti   : list of active functionnalities
+! In  listFuncActi     : list of active functionnalities
 ! In  ds_system        : datastructure for non-linear system management
 ! In  ds_contact       : datastructure for contact management
-! In  sddyna           : datastructure for dynamic
+! In  sddyna           : name of datastructure for dynamic parameters
+! In  nlDynaDamping    : damping parameters
 ! In  hval_veasse      : hat-variable for vectors (node fields)
 ! In  cndonn           : name of nodal field for "given" forces
 ! In  cnpilo           : name of nodal field for "pilotage" forces
@@ -74,10 +76,11 @@ subroutine nmassp(list_func_acti, &
 ! - Evaluate second member for prediction
 !
     if (l_dyna) then
-        call ndassp(list_func_acti, ds_contact, ds_system, &
-                    sddyna, hval_veasse, cndonn)
+        call ndassp(listFuncActi, ds_contact, ds_system, &
+                    sddyna, nlDynaDamping, &
+                    hval_veasse, cndonn)
     else if (l_stat) then
-        call nsassp(list_func_acti, ds_contact, ds_system, &
+        call nsassp(listFuncActi, ds_contact, ds_system, &
                     hval_veasse, cnpilo, cndonn)
     else
         ASSERT(ASTER_FALSE)

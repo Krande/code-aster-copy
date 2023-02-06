@@ -22,10 +22,12 @@ subroutine nmprde(mesh, modele, numedd, numfix, ds_material, carele, &
                   ds_constitutive, lischa, ds_algopara, solveu, ds_system, &
                   fonact, ds_print, ds_measure, ds_algorom, sddisc, numins, &
                   valinc, solalg, matass, maprec, ds_contact, &
-                  sddyna, meelem, measse, veelem, veasse, &
-                  ldccvg, faccvg, rescvg, condcvg)
+                  sddyna, nlDynaDamping, &
+                  meelem, measse, veelem, veasse, &
+                  ldccvg, faccvg, rescvg)
 !
     use NonLin_Datastructure_type
+    use NonLinearDyna_type
     use Rom_Datastructure_type
 !
     implicit none
@@ -42,13 +44,15 @@ subroutine nmprde(mesh, modele, numedd, numfix, ds_material, carele, &
 !
     integer :: fonact(*)
     character(len=8), intent(in) :: mesh
-    integer :: numins, ldccvg, faccvg, rescvg, condcvg
+    integer :: numins, ldccvg, faccvg, rescvg
     type(NL_DS_AlgoPara), intent(in) :: ds_algopara
     character(len=19) :: maprec, matass
     type(NL_DS_Measure), intent(inout) :: ds_measure
     type(NL_DS_Print), intent(inout) :: ds_print
     type(ROM_DS_AlgoPara), intent(in) :: ds_algorom
-    character(len=19) :: lischa, solveu, sddisc, sddyna
+    character(len=19) :: lischa, solveu, sddisc
+    character(len=19), intent(in) :: sddyna
+    type(NLDYNA_DAMPING), intent(in) :: nlDynaDamping
     character(len=24) :: numedd, numfix
     character(len=24) :: modele, carele
     type(NL_DS_System), intent(in) :: ds_system
@@ -79,7 +83,8 @@ subroutine nmprde(mesh, modele, numedd, numfix, ds_material, carele, &
 ! IN  SOLVEU : SOLVEUR
 ! In  ds_algopara      : datastructure for algorithm parameters
 ! IO  ds_print         : datastructure for printing parameters
-! IN  SDDYNA : SD POUR LA DYNAMIQUE
+! In  sddyna           : name of datastructure for dynamic parameters
+! In  nlDynaDamping    : damping parameters
 ! IO  ds_measure       : datastructure for measure and statistics management
 ! IN  SDDISC : SD DISCRETISATION TEMPORELLE
 ! IO  ds_contact       : datastructure for contact management
@@ -108,10 +113,6 @@ subroutine nmprde(mesh, modele, numedd, numfix, ds_material, carele, &
 !                 1 : ECHEC DE L'INTEGRATION DE LA LDC
 !                 2 : ERREUR SUR LA NON VERIF. DE CRITERES PHYSIQUES
 !                 3 : SIZZ PAS NUL POUR C_PLAN DEBORST
-! OUT CONDCVG : CODE RETOUR DE LA CONDANSATION STATIQUE
-!                -1 : PAS DE CONDENSATION
-!                 0 : CAS DU FONCTIONNEMENT NORMAL
-!                 1 : ECHEC DE LA CONDENSATION
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=19) :: incest, depest, depmoi
@@ -133,7 +134,6 @@ subroutine nmprde(mesh, modele, numedd, numfix, ds_material, carele, &
     faccvg = -1
     rescvg = -1
     ldccvg = -1
-    condcvg = -1
 !
 ! --- DECOMPACTION DES VARIABLES CHAPEAUX
 !
@@ -168,8 +168,9 @@ subroutine nmprde(mesh, modele, numedd, numfix, ds_material, carele, &
                     ds_constitutive, lischa, ds_algopara, solveu, ds_system, &
                     fonact, ds_print, ds_measure, ds_algorom, sddisc, numins, &
                     valinc, solalg, matass, maprec, ds_contact, &
-                    sddyna, meelem, measse, veelem, veasse, &
-                    depest, ldccvg, faccvg, rescvg, condcvg)
+                    sddyna, nlDynaDamping, &
+                    meelem, measse, veelem, veasse, &
+                    depest, ldccvg, faccvg, rescvg)
     end if
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,10 @@
 ! --------------------------------------------------------------------
 !
 interface
-    subroutine ndasva(sddyna, hval_veasse, cnvady)
-        character(len=19), intent(in) :: sddyna, hval_veasse(*), cnvady
+    subroutine ndasva(sddyna, nlDynaDamping, hval_veasse, cnvady)
+        use NonLinearDyna_type
+        character(len=19), intent(in) :: sddyna
+        type(NLDYNA_DAMPING), intent(in) :: nlDynaDamping
+        character(len=19), intent(in) :: hval_veasse(*), cnvady
     end subroutine ndasva
 end interface

@@ -167,15 +167,15 @@ contains
 !
 ! Do the damping matrices have to be calculated ?
 !
-! In  sddyna           : name of dynamic parameters datastructure
+! In  nlDynaDamping    : damping parameters
 ! In  l_renumber       : flag to renumbering
 ! Out lDampCompute     : flag if damp elementary matrices have to be calculated
 !
 ! --------------------------------------------------------------------------------------------------
-    subroutine isDampMatrCompute(sddyna, l_renumber, lDampCompute)
+    subroutine isDampMatrCompute(nlDynaDamping, l_renumber, lDampCompute)
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
-        character(len=19), intent(in) :: sddyna
+        type(NLDYNA_DAMPING), intent(in) :: nlDynaDamping
         aster_logical, intent(in) :: l_renumber
         aster_logical, intent(out) :: lDampCompute
 ! - Local
@@ -183,8 +183,8 @@ contains
 !   ------------------------------------------------------------------------------------------------
 !
         lDampCompute = ASTER_FALSE
-        lDampMatrix = ndynlo(sddyna, 'MAT_AMORT')
-        lDampRayleighTang = ndynlo(sddyna, 'RAYLEIGH_KTAN')
+        lDampMatrix = nlDynaDamping%hasMatrDamp
+        lDampRayleighTang = nlDynaDamping%lDampRayleighTang
         if (lDampMatrix) then
             if (l_renumber .or. lDampRayleighTang) then
                 lDampCompute = ASTER_TRUE
@@ -199,23 +199,23 @@ contains
 !
 ! Do the mass matrices have to be assemble ?
 !
-! In  sddyna           : name of dynamic parameters datastructure
+! In  listFuncActi     : list of active functionnalities
 ! In  l_update_matr    : flag to update matrix
 ! Out lMassAssemble    : flag if mass elementary matrices have to be assembled
 !
 ! --------------------------------------------------------------------------------------------------
-    subroutine isMassMatrAssemble(sddyna, l_update_matr, lMassAssemble)
+    subroutine isMassMatrAssemble(listFuncActi, l_update_matr, lMassAssemble)
 ! - Parameters
-        character(len=19), intent(in) :: sddyna
+        integer, intent(in) :: listFuncActi(*)
         aster_logical, intent(in) :: l_update_matr
         aster_logical, intent(out) :: lMassAssemble
 ! - Local
-        aster_logical :: l_dyna
+        aster_logical :: lDyna
 !   ------------------------------------------------------------------------------------------------
 !
         lMassAssemble = ASTER_FALSE
-        l_dyna = ndynlo(sddyna, 'DYNAMIQUE')
-        if (l_dyna .and. l_update_matr) then
+        lDyna = isfonc(listFuncActi, 'DYNAMIQUE')
+        if (lDyna .and. l_update_matr) then
             lMassAssemble = ASTER_TRUE
         end if
 !
@@ -227,22 +227,22 @@ contains
 !
 ! Do you need elastic matrix ?
 !
-! In  sddyna           : name of dynamic parameters datastructure
+! In  nlDynaDamping    : damping parameters
 ! Out lDampCompute     : flag if damp elementary matrices have to be calculated
 !
 ! --------------------------------------------------------------------------------------------------
-    subroutine needElasMatrix(sddyna, lElas)
+    subroutine needElasMatrix(nlDynaDamping, lElas)
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
-        character(len=19), intent(in) :: sddyna
+        type(NLDYNA_DAMPING), intent(in) :: nlDynaDamping
         aster_logical, intent(out) :: lElas
 ! - Local
         aster_logical :: lDampRayleigh, lDampRayleighTang
 !   ------------------------------------------------------------------------------------------------
 !
         lElas = ASTER_FALSE
-        lDampRayleigh = ndynlo(sddyna, 'AMOR_RAYLEIGH')
-        lDampRayleighTang = ndynlo(sddyna, 'RAYLEIGH_KTAN')
+        lDampRayleigh = nlDynaDamping%lDampRayleigh
+        lDampRayleighTang = nlDynaDamping%lDampRayleighTang
         if (lDampRayleigh .and. .not. lDampRayleighTang) then
             lElas = ASTER_TRUE
         end if
@@ -290,6 +290,7 @@ contains
 !
 ! In  listFuncActi     : list of active functionnalities
 ! In  sddyna           : name of dynamic parameters datastructure
+! In  nlDynaDamping    : damping parameters
 ! In  sddisc           : datastructure for time discretization
 ! In  listLoad         : name of datastructure for list of loads
 ! In  model            : model
@@ -307,7 +308,8 @@ contains
 !
 ! --------------------------------------------------------------------------------------------------
     subroutine compMatrInit(listFuncActi, &
-                            sddyna, sddisc, listLoad, &
+                            sddyna, nlDynaDamping, &
+                            sddisc, listLoad, &
                             model, caraElem, &
                             ds_material, ds_constitutive, &
                             ds_measure, ds_system, &
@@ -317,7 +319,9 @@ contains
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
         integer, intent(in) :: listFuncActi(*)
-        character(len=19), intent(in) :: sddyna, sddisc, listLoad
+        character(len=19), intent(in) :: sddyna
+        type(NLDYNA_DAMPING), intent(in) :: nlDynaDamping
+        character(len=19), intent(in) :: sddisc, listLoad
         character(len=24), intent(in) :: model, caraElem
         type(NL_DS_Material), intent(in) :: ds_material
         type(NL_DS_Constitutive), intent(in) :: ds_constitutive
@@ -346,10 +350,10 @@ contains
 ! - Active functionnalities
         lVarc = isfonc(listFuncActi, 'EXI_VARC')
         lExpl = ndynlo(sddyna, 'EXPLICITE')
-        lDampMatrix = ndynlo(sddyna, 'MAT_AMORT')
+        lDampMatrix = nlDynaDamping%hasMatrDamp
 
 ! - Compute elementary matrices for elasticity ?
-        call needElasMatrix(sddyna, lElas)
+        call needElasMatrix(nlDynaDamping, lElas)
 
 ! - Compute elementary matrices for elasticity
         if (lElas) then

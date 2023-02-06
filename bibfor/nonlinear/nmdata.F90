@@ -20,10 +20,13 @@
 subroutine nmdata(model, mesh, mater, mateco, cara_elem, ds_constitutive, &
                   list_load, solver, ds_conv, sddyna, ds_posttimestep, &
                   ds_energy, ds_errorindic, ds_print, ds_algopara, &
-                  ds_inout, ds_contact, ds_measure, ds_algorom)
+                  ds_inout, ds_contact, ds_measure, ds_algorom, &
+                  nlDynaDamping)
 !
     use NonLin_Datastructure_type
+    use NonLinearDyna_type
     use Rom_Datastructure_type
+    use NonLinearDyna_module
 !
     implicit none
 !
@@ -51,14 +54,9 @@ subroutine nmdata(model, mesh, mater, mateco, cara_elem, ds_constitutive, &
 #include "asterfort/nonlinDSErrorIndicRead.h"
 #include "asterfort/nonlinDSPrintSepLine.h"
 !
-    character(len=*), intent(out) :: model
-    character(len=*), intent(out) :: mesh
-    character(len=*), intent(out) :: mater
-    character(len=*), intent(out) :: mateco
-    character(len=*), intent(out) :: cara_elem
+    character(len=*), intent(out) :: model, mesh, mater, mateco, cara_elem
     type(NL_DS_Constitutive), intent(inout) :: ds_constitutive
-    character(len=*), intent(out) :: list_load
-    character(len=*), intent(out) :: solver
+    character(len=*), intent(out) :: list_load, solver
     type(NL_DS_Conv), intent(inout) :: ds_conv
     character(len=19) :: sddyna
     type(NL_DS_PostTimeStep), intent(inout) :: ds_posttimestep
@@ -70,6 +68,7 @@ subroutine nmdata(model, mesh, mater, mateco, cara_elem, ds_constitutive, &
     type(NL_DS_Measure), intent(inout) :: ds_measure
     type(ROM_DS_AlgoPara), intent(inout) :: ds_algorom
     type(NL_DS_ErrorIndic), intent(inout) :: ds_errorindic
+    type(NLDYNA_DAMPING), intent(out) :: nlDynaDamping
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -98,6 +97,7 @@ subroutine nmdata(model, mesh, mater, mateco, cara_elem, ds_constitutive, &
 ! IO  ds_contact       : datastructure for contact management
 ! IO  ds_measure       : datastructure for measure and statistics management
 ! IO  ds_algorom       : datastructure for ROM parameters
+! Out nlDynaDamping    : damping parameters
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -157,14 +157,13 @@ subroutine nmdata(model, mesh, mater, mateco, cara_elem, ds_constitutive, &
 ! - Read parameters for convergence
 !
     call nmdocn(ds_conv)
-!
-! --- CREATION SD DYNAMIQUE
-!
+
+! - Create datastructure for dynamic
     call ndcrdy(result, sddyna)
-!
-! --- LECTURE DES OPERANDES DYNAMIQUES
-!
-    call ndlect(model, mater, cara_elem, list_load, sddyna)
+
+! - Get parameters from command file for dynamic
+    call ndlect(model, mater, cara_elem, list_load, &
+                sddyna, nlDynaDamping)
 !
 ! - Read parameters for post-treatment management (CRIT_STAB and MODE_VIBR)
 !

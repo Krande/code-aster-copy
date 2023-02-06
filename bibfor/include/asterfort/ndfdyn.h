@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,10 +17,13 @@
 ! --------------------------------------------------------------------
 !
 interface
-    subroutine ndfdyn(sddyna, hval_measse, ds_measure, vite_curr, acce_curr,&
+    subroutine ndfdyn(sddyna, nlDynaDamping,&
+                      hval_measse, ds_measure, vite_curr, acce_curr,&
                       cndyna)
         use NonLin_Datastructure_type
+        use NonLinearDyna_type
         character(len=19), intent(in) :: sddyna
+        type(NLDYNA_DAMPING), intent(in) :: nlDynaDamping
         character(len=19), intent(in) :: hval_measse(*)
         type(NL_DS_Measure), intent(inout) :: ds_measure
         character(len=19), intent(in) :: vite_curr, acce_curr

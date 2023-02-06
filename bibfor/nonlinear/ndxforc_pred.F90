@@ -18,8 +18,9 @@
 ! person_in_charge: mickael.abbas at edf.fr
 !
 subroutine ndxforc_pred(list_func_acti, &
-                        model, cara_elem, nume_dof, &
-                        list_load, sddyna, &
+                        model, cara_elem, list_load, &
+                        nume_dof, &
+                        sddyna, nlDynaDamping, &
                         ds_material, ds_constitutive, ds_system, &
                         ds_measure, sdnume, &
                         sddisc, nume_inst, &
@@ -28,6 +29,7 @@ subroutine ndxforc_pred(list_func_acti, &
                         hval_measse, ldccvg)
 !
     use NonLin_Datastructure_type
+    use NonLinearDyna_type
 !
     implicit none
 !
@@ -51,6 +53,7 @@ subroutine ndxforc_pred(list_func_acti, &
     integer, intent(in) :: list_func_acti(*)
     character(len=24), intent(in) :: model, cara_elem, nume_dof
     character(len=19), intent(in) :: list_load, sddyna
+    type(NLDYNA_DAMPING), intent(in) :: nlDynaDamping
     type(NL_DS_Material), intent(in) :: ds_material
     type(NL_DS_Constitutive), intent(in) :: ds_constitutive
     type(NL_DS_System), intent(in) :: ds_system
@@ -75,7 +78,8 @@ subroutine ndxforc_pred(list_func_acti, &
 ! In  cara_elem        : name of elementary characteristics (field)
 ! In  nume_dof         : name of numbering object (NUME_DDL)
 ! In  list_load        : name of datastructure for list of loads
-! In  sddyna           : datastructure for dynamic
+! In  sddyna           : name of datastructure for dynamic parameters
+! In  nlDynaDamping    : damping parameters
 ! In  ds_material      : datastructure for material parameters
 ! In  ds_constitutive  : datastructure for constitutive laws management
 ! In  ds_system        : datastructure for non-linear system management
@@ -98,7 +102,7 @@ subroutine ndxforc_pred(list_func_acti, &
     character(len=19) :: disp_prev, vite_prev, acce_prev
     character(len=19) :: disp_curr, vite_curr, acce_curr
     real(kind=8) :: time_prev, time_curr
-    aster_logical :: l_impe, l_ammo, l_macr
+    aster_logical :: l_impe, lDampModal, lSuperElement
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -114,15 +118,13 @@ subroutine ndxforc_pred(list_func_acti, &
     ASSERT(nume_inst .gt. 0)
     time_prev = diinst(sddisc, nume_inst-1)
     time_curr = diinst(sddisc, nume_inst)
-!
+
 ! - Active functionnalities
-!
     l_impe = ndynlo(sddyna, 'IMPE_ABSO')
-    l_ammo = ndynlo(sddyna, 'AMOR_MODAL')
-    l_macr = isfonc(list_func_acti, 'MACR_ELEM_STAT')
-!
+    lDampModal = nlDynaDamping%lDampModal
+    lSuperElement = isfonc(list_func_acti, 'MACR_ELEM_STAT')
+
 ! - Get hat variables
-!
     call nmchex(hval_incr, 'VALINC', 'DEPMOI', disp_prev)
     call nmchex(hval_incr, 'VALINC', 'VITMOI', vite_prev)
     call nmchex(hval_incr, 'VALINC', 'ACCMOI', acce_prev)
@@ -141,7 +143,7 @@ subroutine ndxforc_pred(list_func_acti, &
 !
 ! - Compute sub-structuring effect on second member
 !
-    if (l_macr) then
+    if (lSuperElement) then
         call nmchex(hval_veasse, 'VEASSE', 'CNSSTR', cnsstr)
         call nonlinSubStruCompute(ds_measure, disp_curr, &
                                   hval_measse, cnsstr)
@@ -156,13 +158,15 @@ subroutine ndxforc_pred(list_func_acti, &
 ! - Compute effect of dynamic forces (from time discretization scheme)
 !
     call nmchex(hval_veasse, 'VEASSE', 'CNDYNA', cndyna)
-    call ndfdyn(sddyna, hval_measse, ds_measure, vite_curr, acce_curr, &
+    call ndfdyn(sddyna, nlDynaDamping, &
+                hval_measse, ds_measure, vite_curr, acce_curr, &
                 cndyna)
 !
 ! - Compute modal damping
 !
-    if (l_ammo) then
-        call nonlinDynaMDampCompute('Prediction', sddyna, &
+    if (lDampModal) then
+        call nonlinDynaMDampCompute(phaseType, &
+                                    nlDynaDamping, &
                                     nume_dof, ds_measure, &
                                     hval_incr, hval_veasse)
     end if
@@ -170,7 +174,7 @@ subroutine ndxforc_pred(list_func_acti, &
 ! - Compute impedance
 !
     if (l_impe) then
-        call nonlinDynaImpeCompute('Prediction', sddyna, &
+        call nonlinDynaImpeCompute(phaseType, sddyna, &
                                    model, nume_dof, &
                                    ds_material, ds_measure, &
                                    hval_incr, &

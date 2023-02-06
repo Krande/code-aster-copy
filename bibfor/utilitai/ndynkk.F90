@@ -53,7 +53,6 @@ subroutine ndynkk(sddyna, chaine, nomsd)
     integer :: jveol, jvaol
     aster_logical :: ldyna
     character(len=24) :: cham24
-    character(len=19) :: sdammo
     character(len=15) :: sdmuap, sdprmo, sdexso
 !
 ! --------------------------------------------------------------------------------------------------
@@ -147,12 +146,6 @@ subroutine ndynkk(sddyna, chaine, nomsd)
     else if (chaine(1:6) .eq. 'CHONDP') then
         cham24 = zk24(jtcha+1-1)
 !
-! --- SD AMORTISSEMENT MODAL
-!
-    else if (chaine(1:6) .eq. 'SDAMMO') then
-        sdammo = zk24(jnosd-1+2) (1:19)
-        cham24 = sdammo
-!
 ! --- SD EXCIT_SOL
 !
     else if (chaine(1:6) .eq. 'SDEXSO') then
@@ -161,9 +154,6 @@ subroutine ndynkk(sddyna, chaine, nomsd)
 ! - Static modes for multi-support
     else if (chaine .eq. 'multSuppMode') then
         cham24 = zk24(jnosd-1+6)
-! - Modes for damping
-    else if (chaine .eq. 'dampMode') then
-        cham24 = zk24(jnosd-1+7)
 !
 ! --- SD PROJECTION MODALE
 !

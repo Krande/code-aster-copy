@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,21 +17,25 @@
 ! --------------------------------------------------------------------
 !
 interface
-    subroutine nmresi(mesh       , list_func_acti, ds_material,&
-                      nume_dof   , sdnume        , sddyna     ,&
-                      ds_conv    , ds_print      , ds_contact ,&
-                      ds_inout   , ds_algorom    , ds_system  ,&
-                      matass     , nume_inst     , eta        ,&
-                      hval_incr  , hval_algo     ,&
-                      hval_veasse, hval_measse   ,&
-                      r_equi_vale, r_char_vale)
+    subroutine nmresi(mesh, list_func_acti, ds_material,&
+                        nume_dof, sdnume,&
+                        sddyna, nlDynaDamping,&
+                        ds_conv, ds_print, ds_contact,&
+                        ds_inout, ds_algorom, ds_system,&
+                        matass, nume_inst, eta,&
+                        hval_incr, hval_algo,&
+                        hval_veasse, hval_measse,&
+                        r_equi_vale, r_char_vale)
         use NonLin_Datastructure_type
         use Rom_Datastructure_type
+        use NonLinearDyna_type
         character(len=8), intent(in) :: mesh
         integer, intent(in) :: list_func_acti(*)
         type(NL_DS_Material), intent(in) :: ds_material
         character(len=24), intent(in) :: nume_dof
-        character(len=19), intent(in) :: sddyna, sdnume
+        character(len=19), intent(in) :: sdnume
+        character(len=19), intent(in) :: sddyna
+        type(NLDYNA_DAMPING), intent(in) :: nlDynaDamping
         type(NL_DS_Conv), intent(inout) :: ds_conv
         type(NL_DS_Print), intent(inout) :: ds_print
         type(NL_DS_Contact), intent(inout) :: ds_contact

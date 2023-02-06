@@ -21,7 +21,7 @@
 subroutine nmprma(listFuncActi, &
                   mesh, modelz, caraElem, &
                   ds_material, ds_constitutive, &
-                  listLoad, sddyna, &
+                  listLoad, sddyna, nlDynaDamping, &
                   sddisc, numeTime, &
                   ds_algopara, ds_contact, ds_algorom, &
                   ds_print, ds_measure, &
@@ -29,10 +29,11 @@ subroutine nmprma(listFuncActi, &
                   hval_meelem, hval_measse, &
                   numeDof, numeDofFixe, &
                   solveu, ds_system, &
-                  maprec, matass, &
-                  faccvg, ldccvg, condcvg)
+                  maprec, matrAsse, &
+                  faccvg, ldccvg)
 !
     use NonLin_Datastructure_type
+    use NonLinearDyna_type
     use Rom_Datastructure_type
     use HHO_type
     use NonLinear_module, only: getOption, getMatrType, isMatrUpdate, &
@@ -67,6 +68,7 @@ subroutine nmprma(listFuncActi, &
     type(NL_DS_Material), intent(in) :: ds_material
     type(NL_DS_Constitutive), intent(in) :: ds_constitutive
     character(len=19), intent(in) :: listLoad, sddyna
+    type(NLDYNA_DAMPING), intent(in) :: nlDynaDamping
     character(len=19), intent(in) :: sddisc
     integer, intent(in) :: numeTime
     type(NL_DS_AlgoPara), intent(in) :: ds_algopara
@@ -81,8 +83,9 @@ subroutine nmprma(listFuncActi, &
     character(len=24), intent(in) :: numeDofFixe
     character(len=19), intent(in) :: solveu
     type(NL_DS_System), intent(in) :: ds_system
-    character(len=19), intent(in) :: maprec, matass
-    integer, intent(out) :: faccvg, ldccvg, condcvg
+    character(len=19), intent(in) :: maprec
+    character(len=19), intent(inout) :: matrAsse
+    integer, intent(out) :: faccvg, ldccvg
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -100,20 +103,20 @@ subroutine nmprma(listFuncActi, &
 ! In  ds_constitutive  : datastructure for constitutive laws management
 ! IN  LISCHA : LISTE DES CHARGES
 ! IO  ds_contact       : datastructure for contact management
-! IO  ds_print         : datastructure for printing parameters
-! IN  SDDYNA : SD POUR LA DYNAMIQUE
+! In  sddyna           : name of datastructure for dynamic parameters
+! In  nlDynaDamping    : damping parameters
 ! In  ds_algopara      : datastructure for algorithm parameters
 ! IN  SOLVEU : SOLVEUR
+! IN  SDDISC : SD DISCRETISATION TEMPORELLE
+! IO  ds_print         : datastructure for printing parameters
 ! IO  ds_measure       : datastructure for measure and statistics management
 ! In  listFuncActi   : list of active functionnalities
 ! In  ds_algorom       : datastructure for ROM parameters
 ! In  ds_system        : datastructure for non-linear system management
-! In  hhoField         : datastructure for HHO
 ! In  numeTime        : index of current time step
-! IN  SOLVEU : SOLVEUR
-! IN  SDDISC : SD DISCRETISATION TEMPORELLE
 ! IN  VALINC : VARIABLE CHAPEAU POUR INCREMENTS VARIABLES
 ! IN  SOLALG : VARIABLE CHAPEAU POUR INCREMENTS SOLUTIONS
+! In  hhoField         : datastructure for HHO
 ! IN  MEASSE : VARIABLE CHAPEAU POUR NOM DES MATR_ASSE
 ! IN  MEELEM : VARIABLE CHAPEAU POUR NOM DES MATR_ELEM
 ! OUT LFINT  : .TRUE. SI FORCES INTERNES CALCULEES
@@ -131,10 +134,6 @@ subroutine nmprma(listFuncActi, &
 !                 1 : ECHEC DE L'INTEGRATION DE LA LDC
 !                 2 : ERREUR SUR LA NON VERIF. DE CRITERES PHYSIQUES
 !                 3 : SIZZ PAS NUL POUR C_PLAN DEBORST
-! OUT CONDCVG : CODE RETOUR DE LA CONDENSATION STATIQUE
-!                -1 : PAS DE CONDENSATION
-!                 0 : CAS DU FONCTIONNEMENT NORMAL
-!                 1 : ECHEC DE LA CONDENSATION
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -148,7 +147,7 @@ subroutine nmprma(listFuncActi, &
     character(len=16) :: matrType, nonLinearOption
     character(len=19) :: contElem, rigid
     integer :: reac_incr
-    character(len=8) :: ksym
+    character(len=8) :: answer
     real(kind=8) :: time
 !
 ! --------------------------------------------------------------------------------------------------
@@ -161,7 +160,6 @@ subroutine nmprma(listFuncActi, &
 ! - Initializations
     faccvg = -1
     ldccvg = -1
-    condcvg = -1
 
 ! - Time
     time = diinst(sddisc, numeTime-1)
@@ -181,7 +179,7 @@ subroutine nmprma(listFuncActi, &
 
 ! - Update global matrix ?
     call isMatrUpdate(phaseType, matrType, listFuncActi, &
-                      sddyna, ds_system, &
+                      nlDynaDamping, ds_system, &
                       l_update_matr, &
                       nume_inst_=numeTime, reac_incr_=reac_incr)
 
@@ -189,10 +187,10 @@ subroutine nmprma(listFuncActi, &
     call getOption(phaseType, listFuncActi, matrType, nonLinearOption)
 
 ! - Do the damping matrices have to be compute ?
-    call isDampMatrCompute(sddyna, l_renumber, lDampCompute)
+    call isDampMatrCompute(nlDynaDamping, l_renumber, lDampCompute)
 
 ! - Do the mass matrices have to be assemble ?
-    call isMassMatrAssemble(sddyna, l_update_matr, lMassAssemble)
+    call isMassMatrAssemble(listFuncActi, l_update_matr, lMassAssemble)
 
 ! - Do the rigidity matrices have to be calculated/assembled ?
     call isRigiMatrCompute(phaseType, &
@@ -254,16 +252,18 @@ subroutine nmprma(listFuncActi, &
 
 ! ----- Compute global matrix of system
         if (l_update_matr) then
-            call nmmatr(phaseType, listFuncActi, listLoad, numeDof, sddyna, &
-                        numeTime, ds_contact, hval_meelem, hval_measse, matass)
-            call dismoi('TYPE_MATRICE', matass, 'MATR_ASSE', repk=ksym)
-            select case (ksym(1:7))
+            call nmmatr(phaseType, listFuncActi, listLoad, numeDof, &
+                        sddyna, nlDynaDamping, &
+                        numeTime, ds_contact, hval_meelem, hval_measse, &
+                        matrAsse)
+            call dismoi('TYPE_MATRICE', matrAsse, 'MATR_ASSE', repk=answer)
+            select case (answer(1:7))
             case ('SYMETRI')
                 matrType(12:16) = '(SYM)'
             case ('NON_SYM')
                 matrType(10:16) = '(NOSYM)'
             case default
-                ASSERT(.false.)
+                ASSERT(ASTER_FALSE)
             end select
             call nmimck(ds_print, 'MATR_ASSE', matrType, ASTER_TRUE)
         else
@@ -272,13 +272,13 @@ subroutine nmprma(listFuncActi, &
 
 ! ----- Change matrix for contact (BEURK)
         if (lContContinu) then
-            call contMatrModi(modelZ, ds_contact, matass)
+            call contMatrModi(modelZ, ds_contact, matrAsse)
         end if
 
 ! ----- Factorization of global matrix of system
         if (l_update_matr) then
             call factorSystem(listFuncActi, ds_measure, ds_algorom, &
-                              numeDof, solveu, maprec, matass, &
+                              numeDof, solveu, maprec, matrAsse, &
                               faccvg)
         end if
     end if

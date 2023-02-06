@@ -20,7 +20,7 @@ interface
     subroutine nmprma(listFuncActi,&
                       mesh, modelz, caraElem,&
                       ds_material, ds_constitutive,&
-                      listLoad, sddyna,&
+                      listLoad, sddyna, nlDynaDamping,&
                       sddisc, numeTime,&
                       ds_algopara, ds_contact, ds_algorom,&
                       ds_print, ds_measure ,&
@@ -28,9 +28,10 @@ interface
                       hval_meelem, hval_measse,&
                       numeDof, numeDofFixe,&
                       solveu, ds_system,&
-                      maprec, matass,&
-                      faccvg, ldccvg, condcvg)
+                      maprec, matrAsse,&
+                      faccvg, ldccvg)
         use NonLin_Datastructure_type
+        use NonLinearDyna_type
         use Rom_Datastructure_type
         use HHO_type
         integer, intent(in) :: listFuncActi(*)
@@ -40,6 +41,7 @@ interface
         type(NL_DS_Material), intent(in) :: ds_material
         type(NL_DS_Constitutive), intent(in) :: ds_constitutive
         character(len=19), intent(in) :: listLoad, sddyna
+        type(NLDYNA_DAMPING), intent(in) :: nlDynaDamping
         character(len=19), intent(in) :: sddisc
         integer, intent(in) :: numeTime
         type(NL_DS_AlgoPara), intent(in) :: ds_algopara
@@ -54,7 +56,8 @@ interface
         character(len=24), intent(in) :: numeDofFixe
         character(len=19), intent(in) :: solveu
         type(NL_DS_System), intent(in) :: ds_system
-        character(len=19), intent(in) :: maprec, matass
-        integer, intent(out) :: faccvg, ldccvg, condcvg
+        character(len=19), intent(in) :: maprec
+        character(len=19), intent(inout) :: matrAsse
+        integer, intent(out) :: faccvg, ldccvg
     end subroutine nmprma
 end interface

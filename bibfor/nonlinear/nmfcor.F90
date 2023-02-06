@@ -20,13 +20,16 @@
 !
 subroutine nmfcor(model, nume_dof, ds_material, cara_elem, ds_system, &
                   ds_constitutive, list_load, list_func_acti, ds_algopara, nume_inst, &
-                  iter_newt, ds_measure, sddisc, sddyna, sdnume, &
-                  sderro, ds_contact, hval_incr, hval_algo, hhoField, &
+                  iter_newt, ds_measure, sddisc, &
+                  sddyna, nlDynaDamping, &
+                  sdnume, sderro, ds_contact, &
+                  hval_incr, hval_algo, hhoField, &
                   hval_veelem, hval_veasse, hval_measse, matass, &
                   lerrit)
 !
     use NonLin_Datastructure_type
     use HHO_type
+    use NonLinearDyna_type
     use NonLinear_module, only: getOption, getMatrType, isMatrUpdate, &
                                 isInteVectCompute
 !
@@ -56,7 +59,9 @@ subroutine nmfcor(model, nume_dof, ds_material, cara_elem, ds_system, &
     integer :: iter_newt, nume_inst
     type(NL_DS_AlgoPara), intent(in) :: ds_algopara
     type(NL_DS_Measure), intent(inout) :: ds_measure
-    character(len=19) :: sddisc, sddyna, sdnume
+    character(len=19) :: sddisc, sdnume
+    character(len=19), intent(in) :: sddyna
+    type(NLDYNA_DAMPING), intent(in) :: nlDynaDamping
     character(len=19) :: list_load, matass
     character(len=24) :: model, nume_dof, cara_elem
     type(NL_DS_Material), intent(in) :: ds_material
@@ -86,7 +91,8 @@ subroutine nmfcor(model, nume_dof, ds_material, cara_elem, ds_system, &
 ! In  nume_dof         : name of numbering object (NUME_DDL)
 ! In  ds_material      : datastructure for material parameters
 ! In  ds_constitutive  : datastructure for constitutive laws management
-! In  sddyna           : datastructure for dynamic
+! In  sddyna           : name of datastructure for dynamic parameters
+! In  nlDynaDamping    : damping parameters
 ! IO  ds_measure       : datastructure for measure and statistics management
 ! In  list_func_acti   : list of active functionnalities
 ! In  ds_algopara      : datastructure for algorithm parameters
@@ -124,17 +130,15 @@ subroutine nmfcor(model, nume_dof, ds_material, cara_elem, ds_system, &
     if (niv .ge. 2) then
         call utmess('I', 'MECANONLINE13_63')
     end if
-!
+
 ! - Initializations
-!
     mate = ds_material%mater
     mateco = ds_material%mateco
     varc_refe = ds_material%varc_refe
     ldccvg = -1
     condcvg = -1
-!
+
 ! - Active functionnalites
-!
     l_unil = isfonc(list_func_acti, 'LIAISON_UNILATER')
     l_cont_disc = isfonc(list_func_acti, 'CONT_DISCRET')
     l_comp_cont = isfonc(list_func_acti, 'ELT_CONTACT')
@@ -148,8 +152,9 @@ subroutine nmfcor(model, nume_dof, ds_material, cara_elem, ds_system, &
 ! - Compute forces for second member at correction
 !
     call nmforc_corr(list_func_acti, &
-                     model, cara_elem, nume_dof, &
-                     list_load, sddyna, &
+                     model, cara_elem, list_load, &
+                     nume_dof, &
+                     sddyna, nlDynaDamping, &
                      ds_material, ds_constitutive, &
                      ds_measure, &
                      sddisc, nume_inst, &
@@ -172,7 +177,7 @@ subroutine nmfcor(model, nume_dof, ds_material, cara_elem, ds_system, &
 ! - Update global matrix ?
 !
     call isMatrUpdate(phaseType, corrMatrType, list_func_acti, &
-                      sddyna, ds_system, &
+                      nlDynaDamping, ds_system, &
                       l_update_matr, &
                       iter_newt_=iter_newt, reac_iter_=reac_iter)
 !

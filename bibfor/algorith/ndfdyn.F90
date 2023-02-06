@@ -17,10 +17,12 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine ndfdyn(sddyna, hval_measse, ds_measure, vite_curr, acce_curr, &
+subroutine ndfdyn(sddyna, nlDynaDamping, &
+                  hval_measse, ds_measure, vite_curr, acce_curr, &
                   cndyna)
 !
     use NonLin_Datastructure_type
+    use NonLinearDyna_type
 !
     implicit none
 !
@@ -39,6 +41,7 @@ subroutine ndfdyn(sddyna, hval_measse, ds_measure, vite_curr, acce_curr, &
 #include "asterfort/nmdebg.h"
 !
     character(len=19), intent(in) :: sddyna
+    type(NLDYNA_DAMPING), intent(in) :: nlDynaDamping
     character(len=19), intent(in) :: hval_measse(*)
     type(NL_DS_Measure), intent(inout) :: ds_measure
     character(len=19), intent(in) :: vite_curr, acce_curr
@@ -52,6 +55,7 @@ subroutine ndfdyn(sddyna, hval_measse, ds_measure, vite_curr, acce_curr, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
+! In  nlDynaDamping    : damping parameters
 ! In  sddyna           : datastructure for dynamic
 ! In  hval_measse      : hat-variable for matrix
 ! IO  ds_measure       : datastructure for measure and statistics management
@@ -65,7 +69,7 @@ subroutine ndfdyn(sddyna, hval_measse, ds_measure, vite_curr, acce_curr, &
     character(len=19) :: amort, masse
     character(len=19) :: cniner, cnhyst
     real(kind=8) :: coerma, coeram
-    aster_logical :: l_amor, l_impl
+    aster_logical :: lDampMatrix, l_impl
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -73,53 +77,44 @@ subroutine ndfdyn(sddyna, hval_measse, ds_measure, vite_curr, acce_curr, &
     if (niv .ge. 2) then
         call utmess('I', 'MECANONLINE11_9')
     end if
-!
+
 ! - Launch timer
-!
     call nmtime(ds_measure, 'Init', '2nd_Member')
     call nmtime(ds_measure, 'Launch', '2nd_Member')
-!
-! --- COEFFICIENTS DEVANTS MATRICES
-!
+
+! - COEFFICIENTS DEVANTS MATRICES
     coerma = ndynre(sddyna, 'COEF_FDYN_MASSE')
     coeram = ndynre(sddyna, 'COEF_FDYN_AMORT')
-!
+
 ! - Active functionnalities
-!
-    l_amor = ndynlo(sddyna, 'MAT_AMORT')
+    lDampMatrix = nlDynaDamping%hasMatrDamp
     l_impl = ndynlo(sddyna, 'IMPLICITE')
-!
-! --- MATRICES ASSEMBLEES
-!
+
+! - MATRICES ASSEMBLEES
     call nmchex(hval_measse, 'MEASSE', 'MEAMOR', amort)
     call nmchex(hval_measse, 'MEASSE', 'MEMASS', masse)
-!
-! --- VECTEURS RESULTATS
-!
+
+! - VECTEURS RESULTATS
     cniner = '&&CNPART.CHP1'
     cnhyst = '&&CNPART.CHP2'
     call vtzero(cniner)
     call vtzero(cnhyst)
     call vtzero(cndyna)
-!
-! --- VECTEURS SOLUTIONS
-!
+
+! - VECTEURS SOLUTIONS
     if (l_impl) then
         call nminer(masse, acce_curr, cniner)
         call vtaxpy(coerma, cniner, cndyna)
     end if
-!
-    if (l_amor) then
+    if (lDampMatrix) then
         call nmhyst(amort, vite_curr, cnhyst)
         call vtaxpy(coeram, cnhyst, cndyna)
     end if
-!
+
 ! - Stop timer
-!
     call nmtime(ds_measure, 'Stop', '2nd_Member')
-!
+
 ! - Debug
-!
     if (niv .ge. 2) then
         call nmdebg('VECT', cndyna, 6)
     end if

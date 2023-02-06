@@ -17,12 +17,16 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine accel0(modele, numedd, fonact, lischa, &
-                  ds_contact, maprec, solveu, valinc, sddyna, &
-                  ds_measure, ds_system, meelem, measse, &
-                  veelem, veasse, solalg)
+subroutine accel0(model, numeDof, listFuncActi, listLoad, &
+                  ds_contact, maprec, solveu, &
+                  sddyna, nlDynaDamping, &
+                  ds_measure, ds_system, &
+                  hval_meelem, hval_measse, &
+                  hval_veelem, hval_veasse, &
+                  hval_incr, hval_algo)
 !
     use NonLin_Datastructure_type
+    use NonLinearDyna_type
 !
     implicit none
 !
@@ -41,14 +45,16 @@ subroutine accel0(modele, numedd, fonact, lischa, &
 #include "asterfort/vtzero.h"
 #include "asterfort/nonlinLoadDirichletCompute.h"
 !
-    character(len=19) :: solveu, maprec, lischa
-    character(len=19) :: sddyna
+    character(len=19), intent(in) :: solveu, maprec, listLoad
+    character(len=19), intent(in) :: sddyna
+    type(NLDYNA_DAMPING), intent(in) :: nlDynaDamping
     type(NL_DS_Measure), intent(inout) :: ds_measure
-    character(len=24) :: numedd, modele
+    character(len=24), intent(in) :: numeDof, model
     type(NL_DS_Contact), intent(in) :: ds_contact
-    character(len=19) :: meelem(*), measse(*), veasse(*), veelem(*)
-    character(len=19) :: solalg(*), valinc(*)
-    integer :: fonact(*)
+    character(len=19), intent(in) :: hval_meelem(*), hval_measse(*)
+    character(len=19), intent(in) :: hval_veasse(*), hval_veelem(*)
+    character(len=19), intent(in) :: hval_algo(*), hval_incr(*)
+    integer, intent(in) :: listFuncActi(*)
     type(NL_DS_System), intent(in) :: ds_system
 !
 ! --------------------------------------------------------------------------------------------------
@@ -72,7 +78,8 @@ subroutine accel0(modele, numedd, fonact, lischa, &
 ! IN  FONACT : FONCTIONNALITES ACTIVEES
 ! IO  ds_measure       : datastructure for measure and statistics management
 ! In  ds_system        : datastructure for non-linear system management
-! IN  SDDYNA : SD POUR LA DYNAMIQUE
+! In  sddyna           : name of datastructure for dynamic parameters
+! In  nlDynaDamping    : damping parameters
 ! IN  VEELEM : VARIABLE CHAPEAU POUR NOM DES VECT_ELEM
 ! IN  VEASSE : VARIABLE CHAPEAU POUR NOM DES VECT_ASSE
 ! IN  VALINC : VARIABLE CHAPEAU POUR INCREMENTS VARIABLES
@@ -83,9 +90,10 @@ subroutine accel0(modele, numedd, fonact, lischa, &
     integer :: ifm, niv
     integer :: neq
     integer :: faccvg, rescvg
-    character(len=19) :: matass, depso1, depso2
+    character(len=19) :: depso1, depso2
     character(len=19) :: cncine, cncinx, cndonn, k19bla
     character(len=19) :: disp_prev, acce_prev
+    character(len=19) :: matrAsse
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -94,53 +102,54 @@ subroutine accel0(modele, numedd, fonact, lischa, &
         call utmess('I', 'MECANONLINE11_26')
     end if
     call utmess('I', 'MECANONLINE_24')
-!
+
 ! - Initializations
-!
     k19bla = ' '
     cndonn = '&&CNCHAR.DONN'
     cncinx = '&&CNCHAR.CINE'
-    matass = '&&ACCEL0.MATASS'
-    call dismoi('NB_EQUA', numedd, 'NUME_DDL', repi=neq)
-!
-! --- DECOMPACTION VARIABLES CHAPEAUX
-!
-    call nmchex(valinc, 'VALINC', 'DEPMOI', disp_prev)
-    call nmchex(valinc, 'VALINC', 'ACCMOI', acce_prev)
-    call nmchex(veasse, 'VEASSE', 'CNCINE', cncine)
-    call nmchex(solalg, 'SOLALG', 'DEPSO1', depso1)
-    call nmchex(solalg, 'SOLALG', 'DEPSO2', depso2)
-!
-! --- ASSEMBLAGE ET FACTORISATION DE LA MATRICE
-!
-    call nmprac(fonact, lischa, numedd, solveu, &
-                sddyna, ds_measure, ds_contact, &
-                meelem, measse, maprec, matass, faccvg)
+    matrAsse = '&&ACCEL0.MATASS'
+    call dismoi('NB_EQUA', numeDof, 'NUME_DDL', repi=neq)
+
+! - DECOMPACTION VARIABLES CHAPEAUX
+    call nmchex(hval_incr, 'VALINC', 'DEPMOI', disp_prev)
+    call nmchex(hval_incr, 'VALINC', 'ACCMOI', acce_prev)
+    call nmchex(hval_veasse, 'VEASSE', 'CNCINE', cncine)
+    call nmchex(hval_algo, 'SOLALG', 'DEPSO1', depso1)
+    call nmchex(hval_algo, 'SOLALG', 'DEPSO2', depso2)
+
+! - ASSEMBLAGE ET FACTORISATION DE LA MATRICE
+    call nmprac(listFuncActi, listLoad, numeDof, solveu, &
+                sddyna, nlDynaDamping, &
+                ds_measure, ds_contact, &
+                hval_meelem, hval_measse, &
+                maprec, matrAsse, &
+                faccvg)
+    if (faccvg .eq. 1) then
+        call utmess('A', 'MECANONLINE_78')
+    end if
     if (faccvg .eq. 2) then
         call vtzero(acce_prev)
         call utmess('A', 'MECANONLINE_69')
         goto 999
     end if
-!
+
 ! - Compute values of Dirichlet conditions
-!
-    call nonlinLoadDirichletCompute(lischa, modele, numedd, &
-                                    ds_measure, matass, disp_prev, &
-                                    veelem, veasse)
-!
+    call nonlinLoadDirichletCompute(listLoad, model, numeDof, &
+                                    ds_measure, matrAsse, disp_prev, &
+                                    hval_veelem, hval_veasse)
+
 ! - Evaluate second member for initial acceleration
-!
-    call nmassi(fonact, sddyna, ds_system, veasse, cndonn)
-!
+    call nmassi(listFuncActi, sddyna, ds_system, hval_veasse, cndonn)
+
 ! --- POUR LE CALCUL DE DDEPLA, IL FAUT METTRE CNCINE A ZERO
-!
+
     call copisd('CHAMP_GD', 'V', cncine, cncinx)
     call vtzero(cncinx)
 !
 ! --- RESOLUTION DIRECTE
 !
-    call nmreso(fonact, cndonn, k19bla, cncinx, solveu, &
-                maprec, matass, depso1, depso2, rescvg)
+    call nmreso(listFuncActi, cndonn, k19bla, cncinx, solveu, &
+                maprec, matrAsse, depso1, depso2, rescvg)
     if (rescvg .eq. 1) then
         call vtzero(acce_prev)
         call utmess('A', 'MECANONLINE_70')
@@ -165,8 +174,8 @@ subroutine accel0(modele, numedd, fonact, lischa, &
 ! --- MENAGE
 !
 ! --- EN PREMIER DE L'EVENTUELLE INSTANCE MUMPS (SI PRE_COND 'LDLT_SP')
-    call detlsp(matass, solveu)
+    call detlsp(matrAsse, solveu)
 ! --- EN SECOND DE LA MATRICE ASSEMBLEE
-    call detrsd('MATR_ASSE', matass)
+    call detrsd('MATR_ASSE', matrAsse)
 !
 end subroutine

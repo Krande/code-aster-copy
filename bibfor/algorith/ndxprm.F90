@@ -19,13 +19,15 @@
 ! aslint: disable=W1504
 !
 subroutine ndxprm(modelz, ds_material, carele, ds_constitutive, ds_algopara, &
-                  lischa, numedd, solveu, ds_system, &
-                  sddisc, sddyna, ds_measure, nume_inst, list_func_acti, &
+                  lischa, numedd, solveu, ds_system, sddisc, &
+                  sddyna, nlDynaDamping, &
+                  ds_measure, nume_inst, list_func_acti, &
                   valinc, solalg, meelem, measse, &
                   maprec, matass, faccvg, ldccvg)
 !
     use NonLin_Datastructure_type
     use HHO_type
+    use NonLinearDyna_type
     use NonLinearDyna_module, only: isDampMatrCompute, compDampMatrix
     use NonLinear_module, only: updateLoadBCMatrix
 !
@@ -54,7 +56,9 @@ subroutine ndxprm(modelz, ds_material, carele, ds_constitutive, ds_algopara, &
     character(len=24) :: numedd
     type(NL_DS_Constitutive), intent(in) :: ds_constitutive
     type(NL_DS_System), intent(in) :: ds_system
-    character(len=19) :: sddisc, sddyna, lischa, solveu
+    character(len=19) :: sddisc, lischa, solveu
+    character(len=19), intent(in) :: sddyna
+    type(NLDYNA_DAMPING), intent(in) :: nlDynaDamping
     character(len=19) :: solalg(*), valinc(*)
     character(len=19) :: meelem(*), measse(*)
     character(len=19) :: maprec, matass
@@ -74,7 +78,8 @@ subroutine ndxprm(modelz, ds_material, carele, ds_constitutive, ds_algopara, &
 ! IN  CARELE : CARACTERISTIQUES DES ELEMENTS DE STRUCTURE
 ! In  ds_constitutive  : datastructure for constitutive laws management
 ! IN  LISCHA : LISTE DES CHARGES
-! IN  SDDYNA : SD POUR LA DYNAMIQUE
+! In  sddyna           : name of datastructure for dynamic parameters
+! In  nlDynaDamping    : damping parameters
 ! IO  ds_measure       : datastructure for measure and statistics management
 ! In  ds_algopara      : datastructure for algorithm parameters
 ! IN  SOLVEU : SOLVEUR
@@ -153,7 +158,7 @@ subroutine ndxprm(modelz, ds_material, carele, ds_constitutive, ds_algopara, &
     end if
 
 ! - Do the damping matrices have to be compute ?
-    call isDampMatrCompute(sddyna, l_renumber, lDampCompute)
+    call isDampMatrCompute(nlDynaDamping, l_renumber, lDampCompute)
 
 ! - Do the rigidity matrices have to be calculated/assembled ?
     lRigiCompute = ASTER_FALSE

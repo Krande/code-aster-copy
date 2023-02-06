@@ -17,11 +17,14 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine nmfini(sddyna, valinc, measse, modele, ds_material, &
-                  carele, ds_constitutive, ds_system, ds_measure, sddisc, numins, &
-                  solalg, numedd, fonact)
+subroutine nmfini(sddyna, nlDynaDamping, &
+                  valinc, measse, model, ds_material, &
+                  caraElem, ds_constitutive, ds_system, &
+                  ds_measure, sddisc, numeTime, &
+                  solalg, numeDof, listFuncActi)
 !
     use NonLin_Datastructure_type
+    use NonLinearDyna_type
 !
     implicit none
 !
@@ -39,16 +42,18 @@ subroutine nmfini(sddyna, valinc, measse, modele, ds_material, &
 #include "asterfort/as_allocate.h"
 #include "asterfort/assvec.h"
 !
-    character(len=19) :: sddyna, valinc(*), measse(*)
-    integer, intent(in) :: fonact(*)
-    character(len=24) :: modele, carele
+    character(len=19), intent(in) :: valinc(*), measse(*)
+    character(len=19), intent(in) :: sddyna
+    type(NLDYNA_DAMPING), intent(in) :: nlDynaDamping
+    integer, intent(in) :: listFuncActi(*)
+    character(len=24), intent(in) :: model, caraElem
     type(NL_DS_Material), intent(in) :: ds_material
     type(NL_DS_Constitutive), intent(in) :: ds_constitutive
     type(NL_DS_System), intent(in) :: ds_system
     type(NL_DS_Measure), intent(inout) :: ds_measure
-    character(len=24) :: numedd
-    character(len=19) :: sddisc, solalg(*)
-    integer :: numins
+    character(len=24), intent(in) :: numeDof
+    character(len=19), intent(in) :: sddisc, solalg(*)
+    integer, intent(in) :: numeTime
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -59,11 +64,12 @@ subroutine nmfini(sddyna, valinc, measse, modele, ds_material, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! IN  SDDYNA : SD DYNAMIQUE
+! In  nlDynaDamping    : damping parameters
+! In  sddyna           : datastructure for dynamic
 ! IN  VALINC : VARIABLE CHAPEAU POUR INCREMENTS VARIABLES
 ! IN  MEASSE : VARIABLE CHAPEAU POUR NOM DES MATR_ASSE
 ! IN  MODELE : MODELE
-! In  fonact           : list of active functionnalities
+! In  listFuncActi           : list of active functionnalities
 ! In  ds_material      : datastructure for material parameters
 ! IN  CARELE : CARACTERISTIQUES DES ELEMENTS DE STRUCTURE
 ! In  ds_constitutive  : datastructure for constitutive laws management
@@ -79,10 +85,10 @@ subroutine nmfini(sddyna, valinc, measse, modele, ds_material, &
     character(len=19) :: masse, amort, vitmoi, accmoi
     character(len=19) :: fexmoi, fammoi, flimoi
     integer :: imasse, iamort
-    integer :: nb_equa, i_equa
-    aster_logical :: lamor, ldyna
+    integer :: nbEqua, iEqua
+    aster_logical :: lDampMatrix, ldyna
     character(len=19) :: fnomoi
-    real(kind=8) :: time_prev, time_curr
+    real(kind=8) :: timePrev, timeCurr
     real(kind=8), pointer :: cv(:) => null()
     real(kind=8), pointer :: ma(:) => null()
     real(kind=8), pointer :: ccmo(:) => null()
@@ -95,41 +101,38 @@ subroutine nmfini(sddyna, valinc, measse, modele, ds_material, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    lamor = ndynlo(sddyna, 'MAT_AMORT')
     ldyna = ndynlo(sddyna, 'DYNAMIQUE')
+    lDampMatrix = nlDynaDamping%hasMatrDamp
+!
     call nmchex(valinc, 'VALINC', 'FEXMOI', fexmoi)
     call jeveuo(fexmoi//'.VALE', 'E', vr=fexmo)
-    call dismoi('NB_EQUA', numedd, 'NUME_DDL', repi=nb_equa)
-!
+    call dismoi('NB_EQUA', numeDof, 'NUME_DDL', repi=nbEqua)
+
 ! - Get time
-!
-    ASSERT(numins .eq. 1)
-    time_prev = diinst(sddisc, numins-1)
-    time_curr = diinst(sddisc, numins)
-!
-! --- AJOUT DE LA FORCE DE LIAISON ET DE LA FORCE D AMORTISSEMENT MODAL
-!
+    ASSERT(numeTime .eq. 1)
+    timePrev = diinst(sddisc, numeTime-1)
+    timeCurr = diinst(sddisc, numeTime)
+
+! - AJOUT DE LA FORCE DE LIAISON ET DE LA FORCE D AMORTISSEMENT MODAL
     call nmchex(valinc, 'VALINC', 'FAMMOI', fammoi)
     call jeveuo(fammoi//'.VALE', 'L', vr=fammo)
     call nmchex(valinc, 'VALINC', 'FLIMOI', flimoi)
     call jeveuo(flimoi//'.VALE', 'L', vr=flimo)
-    do i_equa = 1, nb_equa
-        fexmo(i_equa) = fammo(i_equa)+flimo(i_equa)
+    do iEqua = 1, nbEqua
+        fexmo(iEqua) = fammo(iEqua)+flimo(iEqua)
     end do
-!
+
 ! --- AJOUT DU TERME C.V
-!
-    if (lamor) then
+    if (lDampMatrix) then
         call nmchex(measse, 'MEASSE', 'MEAMOR', amort)
         call mtdscr(amort)
         call jeveuo(amort//'.&INT', 'L', iamort)
         call nmchex(valinc, 'VALINC', 'VITMOI', vitmoi)
         call jeveuo(vitmoi//'.VALE', 'L', vr=vitmo)
-        AS_ALLOCATE(vr=cv, size=nb_equa)
-        call mrmult('ZERO', iamort, vitmo, cv, 1, &
-                    .true._1)
-        do i_equa = 1, nb_equa
-            fexmo(i_equa) = fexmo(i_equa)+cv(i_equa)
+        AS_ALLOCATE(vr=cv, size=nbEqua)
+        call mrmult('ZERO', iamort, vitmo, cv, 1, .true._1)
+        do iEqua = 1, nbEqua
+            fexmo(iEqua) = fexmo(iEqua)+cv(iEqua)
         end do
         AS_DEALLOCATE(vr=cv)
     end if
@@ -142,35 +145,35 @@ subroutine nmfini(sddyna, valinc, measse, modele, ds_material, &
         call jeveuo(masse//'.&INT', 'L', imasse)
         call nmchex(valinc, 'VALINC', 'ACCMOI', accmoi)
         call jeveuo(accmoi//'.VALE', 'L', vr=ccmo)
-        AS_ALLOCATE(vr=ma, size=nb_equa)
+        AS_ALLOCATE(vr=ma, size=nbEqua)
         call mrmult('ZERO', imasse, ccmo, ma, 1, &
                     .true._1)
-        do i_equa = 1, nb_equa
-            fexmo(i_equa) = fexmo(i_equa)+ma(i_equa)
+        do iEqua = 1, nbEqua
+            fexmo(iEqua) = fexmo(iEqua)+ma(iEqua)
         end do
         AS_DEALLOCATE(vr=ma)
     end if
 !
 ! - Direct computation (no integration of behaviour)
 !
-    call nonlinNForceCompute(modele, carele, fonact, &
+    call nonlinNForceCompute(model, caraElem, listFuncActi, &
                              ds_material, ds_constitutive, &
                              ds_measure, ds_system, &
-                             time_prev, time_curr, &
+                             timePrev, timeCurr, &
                              valinc, solalg)
     call assvec('V', ds_system%cnfnod, 1, ds_system%vefnod, [1.d0], &
                 ds_system%nume_dof)
     call jeveuo(ds_system%cnfnod//'.VALE', 'L', vr=cnfno)
-    do i_equa = 1, nb_equa
-        fexmo(i_equa) = fexmo(i_equa)+cnfno(i_equa)
+    do iEqua = 1, nbEqua
+        fexmo(iEqua) = fexmo(iEqua)+cnfno(iEqua)
     end do
 !
 ! --- INITIALISATION DES FORCES INTERNES
 !
     call nmchex(valinc, 'VALINC', 'FNOMOI', fnomoi)
     call jeveuo(fnomoi//'.VALE', 'E', vr=fnomo)
-    do i_equa = 1, nb_equa
-        fnomo(i_equa) = cnfno(i_equa)
+    do iEqua = 1, nbEqua
+        fnomo(iEqua) = cnfno(iEqua)
     end do
 !
 end subroutine

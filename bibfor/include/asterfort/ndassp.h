@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,14 +17,17 @@
 ! --------------------------------------------------------------------
 !
 interface
-    subroutine ndassp(list_func_acti, ds_contact , ds_system,&
-                      sddyna        , hval_veasse, cndonn)
+    subroutine ndassp(listFuncActi, ds_contact, ds_system,&
+                      sddyna, nlDynaDamping,&
+                      hval_veasse, cndonn)
         use NonLin_Datastructure_type
-        integer, intent(in) :: list_func_acti(*)
+        use NonLinearDyna_type
+        integer, intent(in) :: listFuncActi(*)
         type(NL_DS_Contact), intent(in) :: ds_contact
-        character(len=19), intent(in) :: sddyna
-        character(len=19), intent(in) :: hval_veasse(*)
         type(NL_DS_System), intent(in) :: ds_system
+        character(len=19), intent(in) :: sddyna
+        type(NLDYNA_DAMPING), intent(in) :: nlDynaDamping
+        character(len=19), intent(in) :: hval_veasse(*)
         character(len=19), intent(in) :: cndonn
     end subroutine ndassp
 end interface

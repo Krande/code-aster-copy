@@ -20,7 +20,9 @@
 subroutine op0070()
 !
     use NonLin_Datastructure_type
+    use NonLinearDyna_type
     use Rom_Datastructure_type
+    use NonLinearDyna_module
     use HHO_type
     use HHO_Meca_module, only: hhoPreCalcMeca
 !
@@ -122,6 +124,7 @@ subroutine op0070()
     type(NL_DS_ErrorIndic)   :: ds_errorindic
     type(NL_DS_System)       :: ds_system
     type(HHO_Field)          :: hhoField
+    type(NLDYNA_DAMPING) :: nlDynaDamping
     aster_logical            :: l_hho
 !
 ! --- VARIABLES CHAPEAUX
@@ -163,20 +166,21 @@ subroutine op0070()
                 ds_print, ds_conv, ds_algopara, &
                 ds_inout, ds_contact, ds_measure, &
                 ds_energy, ds_material, sderro)
-!
+
 ! - Read parameters
-!
     call nmdata(model, mesh, mater, mateco, cara_elem, ds_constitutive, &
                 list_load, solver, ds_conv, sddyna, ds_posttimestep, &
                 ds_energy, ds_errorindic, ds_print, ds_algopara, &
-                ds_inout, ds_contact, ds_measure, ds_algorom)
+                ds_inout, ds_contact, ds_measure, ds_algorom, &
+                nlDynaDamping)
 !
 ! - Initializations of datastructures
 !
     call nminit(mesh, model, mater, mateco, cara_elem, list_load, &
                 numedd, numfix, ds_algopara, ds_constitutive, maprec, &
                 solver, numins, sddisc, sdnume, sdcrit, &
-                ds_material, fonact, sdpilo, sddyna, ds_print, &
+                ds_material, fonact, sdpilo, ds_print, &
+                sddyna, nlDynaDamping, &
                 sd_suiv, sd_obsv, sderro, ds_posttimestep, ds_inout, &
                 ds_energy, ds_conv, ds_errorindic, valinc, solalg, &
                 measse, veelem, meelem, veasse, ds_contact, &
@@ -227,16 +231,18 @@ subroutine op0070()
     if (lexpl) then
         call ndexpl(model, numedd, ds_material, cara_elem, &
                     ds_constitutive, list_load, ds_algopara, fonact, ds_system, &
-                    ds_print, ds_measure, sdnume, sddyna, sddisc, &
-                    sderro, valinc, numins, solalg, solver, &
+                    ds_print, ds_measure, sdnume, &
+                    sddyna, nlDynaDamping, &
+                    sddisc, sderro, valinc, numins, solalg, solver, &
                     matass, maprec, ds_inout, meelem, measse, &
                     veelem, veasse, nbiter)
     else if (lstat .or. limpl) then
         call nmnewt(mesh, model, numins, numedd, numfix, &
                     ds_material, cara_elem, ds_constitutive, list_load, ds_system, &
                     hhoField, &
+                    sddyna, nlDynaDamping, &
                     ds_algopara, fonact, ds_measure, sderro, ds_print, &
-                    sdnume, sddyna, sddisc, sdcrit, sd_suiv, &
+                    sdnume, sddisc, sdcrit, sd_suiv, &
                     sdpilo, ds_conv, solver, maprec, matass, &
                     ds_inout, valinc, solalg, meelem, measse, &
                     veelem, veasse, ds_contact, ds_algorom, eta, &
@@ -269,7 +275,8 @@ subroutine op0070()
                 ds_constitutive, ds_material, &
                 ds_contact, ds_algopara, fonact, &
                 ds_measure, sddisc, numins, eta, &
-                sd_obsv, sderro, sddyna, &
+                sd_obsv, sderro, &
+                sddyna, nlDynaDamping, &
                 valinc, solalg, &
                 meelem, measse, veasse, &
                 ds_energy, ds_errorindic, &

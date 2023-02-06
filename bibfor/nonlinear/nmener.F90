@@ -16,14 +16,17 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
+! aslint: disable=W1504
 !
-subroutine nmener(valinc, veasse, measse, sddyna, eta, &
-                  ds_energy, fonact, numedd, numfix, &
-                  meelem, numins, modele, ds_material, carele, &
+subroutine nmener(valinc, veasse, measse, &
+                  sddyna, nlDynaDamping, &
+                  eta, ds_energy, listFuncActi, numeDof, numeDofFixe, &
+                  meelem, numeTime, model, ds_material, caraElem, &
                   ds_constitutive, ds_measure, sddisc, solalg, &
                   ds_contact, ds_system)
 !
     use NonLin_Datastructure_type
+    use NonLinearDyna_type
 !
     implicit none
 !
@@ -45,16 +48,18 @@ subroutine nmener(valinc, veasse, measse, sddyna, eta, &
 #include "asterfort/nmmass.h"
 #include "asterfort/wkvect.h"
 !
-    character(len=19) :: sddyna, valinc(*), veasse(*), measse(*)
+    character(len=19), intent(in) :: valinc(*), veasse(*), measse(*)
+    character(len=19), intent(in) :: sddyna
+    type(NLDYNA_DAMPING), intent(in) :: nlDynaDamping
     type(NL_DS_Energy), intent(inout) :: ds_energy
     type(NL_DS_Material), intent(in) :: ds_material
-    character(len=19) :: meelem(*), sddisc, solalg(*)
-    character(len=24) :: numedd, numfix, modele, carele
+    character(len=19), intent(in) :: meelem(*), sddisc, solalg(*)
+    character(len=24), intent(in) :: numeDof, numeDofFixe, model, caraElem
     type(NL_DS_Constitutive), intent(in) :: ds_constitutive
     type(NL_DS_System), intent(in) :: ds_system
     type(NL_DS_Measure), intent(inout) :: ds_measure
-    real(kind=8) :: eta
-    integer :: fonact(*), numins
+    real(kind=8), intent(in) :: eta
+    integer, intent(in) :: listFuncActi(*), numeTime
     type(NL_DS_Contact), intent(in) :: ds_contact
 !
 ! --------------------------------------------------------------------------------------------------
@@ -68,7 +73,8 @@ subroutine nmener(valinc, veasse, measse, sddyna, eta, &
 ! IN  VALINC : VARIABLE CHAPEAU POUR INCREMENTS VARIABLES
 ! IN  VEASSE : VARIABLE CHAPEAU POUR NOM DES VECT_ASSE
 ! IN  MEASSE : VARIABLE CHAPEAU POUR NOM DES MATR_ASSE
-! IN  SDDYNA : SD DYNAMIQUE
+! In  nlDynaDamping    : damping parameters
+! In  sddyna           : datastructure for dynamic
 ! IN  ETA    : COEFFICIENT DU PILOTAGE
 ! IO  ds_energy        : datastructure for energy management
 ! IN  FONACT : FONCTIONNALITES ACTIVEES
@@ -96,9 +102,9 @@ subroutine nmener(valinc, veasse, measse, sddyna, eta, &
     character(len=19) :: lisbid
     character(len=8) :: k8bid
     integer :: ivitmo, ivitpl
-    integer :: neq, i, long, j
+    integer :: nbEqua, i, long, j
     integer :: ifexte, ifamor, ifliai, ifcine, ifnoda
-    aster_logical :: ldyna, lamor, lexpl, reassm
+    aster_logical :: ldyna, lDampMatrix, lexpl, reassm
     real(kind=8), pointer :: epmo(:) => null()
     real(kind=8), pointer :: eppl(:) => null()
     real(kind=8), pointer :: fammo(:) => null()
@@ -131,9 +137,9 @@ subroutine nmener(valinc, veasse, measse, sddyna, eta, &
     call jeveuo(depmoi//'.VALE', 'L', vr=epmo)
     call nmchex(valinc, 'VALINC', 'DEPPLU', depplu)
     call jeveuo(depplu//'.VALE', 'L', vr=eppl)
-    call jelira(depmoi//'.VALE', 'LONMAX', ival=neq)
+    call jelira(depmoi//'.VALE', 'LONMAX', ival=nbEqua)
     ldyna = ndynlo(sddyna, 'DYNAMIQUE')
-    lamor = ndynlo(sddyna, 'MAT_AMORT')
+    lDampMatrix = nlDynaDamping%hasMatrDamp
     lexpl = ndynlo(sddyna, 'EXPLICITE')
     if (ldyna) then
         call nmchex(valinc, 'VALINC', 'VITMOI', vitmoi)
@@ -193,11 +199,11 @@ subroutine nmener(valinc, veasse, measse, sddyna, eta, &
     flipl(:) = 0.d0
     fnopl(:) = 0.d0
 !
-    call wkvect('FEXTE', 'V V R', 2*neq, ifexte)
-    call wkvect('FAMOR', 'V V R', 2*neq, ifamor)
-    call wkvect('FLIAI', 'V V R', 2*neq, ifliai)
-    call wkvect('FNODA', 'V V R', 2*neq, ifnoda)
-    call wkvect('FCINE', 'V V R', neq, ifcine)
+    call wkvect('FEXTE', 'V V R', 2*nbEqua, ifexte)
+    call wkvect('FAMOR', 'V V R', 2*nbEqua, ifamor)
+    call wkvect('FLIAI', 'V V R', 2*nbEqua, ifliai)
+    call wkvect('FNODA', 'V V R', 2*nbEqua, ifnoda)
+    call wkvect('FCINE', 'V V R', nbEqua, ifcine)
 !
 ! - Add external state variable contribution
 !
@@ -275,7 +281,7 @@ subroutine nmener(valinc, veasse, measse, sddyna, eta, &
 ! ON DOIT RECONSTRUIRE LA MATRICE DE MASSE CAR ELLE A ETE MODIFIEE
 ! POUR SUPPRIMER DES DEGRES DE LIBERTE EN RAISON DE AFFE_CHAR_CINE.
                 reassm = .true.
-                do j = 1, neq
+                do j = 1, nbEqua
                     zr(ifcine-1+j) = zr(ifcine-1+j)+veass(j)
                 end do
             end if
@@ -289,36 +295,38 @@ subroutine nmener(valinc, veasse, measse, sddyna, eta, &
     if (reassm) then
 ! --- REASSEMBLAGE DE LA MATRICE DE MASSE.
         lisbid = ' '
-        call nmmass(lisbid, sddyna, numedd, &
-                    numfix, meelem, masse)
+        call nmmass(lisbid, sddyna, numeDof, &
+                    numeDofFixe, meelem, masse)
     end if
 !
 ! --- INITIALISATION DE LA FORCE EXTERIEURE ET DES FORCES INTERNES
 ! --- AU PREMIER PAS DE TEMPS.
 ! --- ON LE FAIT ICI AFIN DE DISPOSER D UNE MATRICE D AMORTISSEMENT.
 !
-    if (numins .eq. 1) then
-        call nmfini(sddyna, valinc, measse, modele, ds_material, &
-                    carele, ds_constitutive, ds_system, ds_measure, sddisc, numins, &
-                    solalg, numedd, fonact)
+    if (numeTime .eq. 1) then
+        call nmfini(sddyna, nlDynaDamping, &
+                    valinc, measse, model, ds_material, &
+                    caraElem, ds_constitutive, ds_system, &
+                    ds_measure, sddisc, numeTime, &
+                    solalg, numeDof, listFuncActi)
     end if
 !
 ! --- PREPARATION DES CHAMPS DE FORCE
 !
-    do i = 1, neq
-        zr(ifexte-1+i+neq) = fexpl(i)
+    do i = 1, nbEqua
+        zr(ifexte-1+i+nbEqua) = fexpl(i)
         zr(ifexte-1+i) = fexmo(i)
-        zr(ifliai-1+i+neq) = flipl(i)
+        zr(ifliai-1+i+nbEqua) = flipl(i)
         zr(ifliai-1+i) = flimo(i)
-        zr(ifamor-1+i+neq) = fampl(i)
+        zr(ifamor-1+i+nbEqua) = fampl(i)
         zr(ifamor-1+i) = fammo(i)
-        zr(ifnoda-1+i+neq) = fnopl(i)
+        zr(ifnoda-1+i+nbEqua) = fnopl(i)
         zr(ifnoda-1+i) = fnomo(i)
     end do
 !
     call enerca(valinc, epmo, zr(ivitmo), eppl, zr(ivitpl), &
                 masse, amort, rigid, zr(ifexte), zr(ifamor), &
-                zr(ifliai), zr(ifnoda), zr(ifcine), lamor, ldyna, &
+                zr(ifliai), zr(ifnoda), zr(ifcine), lDampMatrix, ldyna, &
                 lexpl, ds_energy, k8bid)
 !
 !     ON NE PEUT PAS UTILISER NMFPAS POUR METTRE LES CHAMPS PLUS
