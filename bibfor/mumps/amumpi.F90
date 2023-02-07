@@ -407,14 +407,14 @@ subroutine amumpi(option, lquali, ldist, kxmps, type, lmhpc, lbloc)
             icntl(28) = 1
             icntl(7) = 3
         else if (slvk(4) .eq. 'PTSCOTCH') then
-            if (nbproc .eq. 1) then
-                icntl(28) = 1
-                icntl(7) = 3
-                call utmess('A', 'FACTOR_89')
-            else
-                icntl(28) = 2
-                icntl(29) = 1
-            end if
+#ifdef ASTER_HAVE_MPI
+            icntl(28) = 2
+            icntl(29) = 1
+#else
+            icntl(28) = 1
+            icntl(7) = 3
+            call utmess('A', 'FACTOR_89')
+#endif
         else if (slvk(4) .eq. 'PORD') then
             icntl(28) = 1
             icntl(7) = 4
@@ -422,14 +422,14 @@ subroutine amumpi(option, lquali, ldist, kxmps, type, lmhpc, lbloc)
             icntl(28) = 1
             icntl(7) = 5
         else if (slvk(4) .eq. 'PARMETIS') then
-            if (nbproc .eq. 1) then
-                icntl(28) = 1
-                icntl(7) = 5
-                call utmess('A', 'FACTOR_90')
-            else
-                icntl(28) = 2
-                icntl(29) = 2
-            end if
+#ifdef ASTER_HAVE_MPI
+            icntl(28) = 2
+            icntl(29) = 2
+#else
+            icntl(28) = 1
+            icntl(7) = 5
+            call utmess('A', 'FACTOR_90')
+#endif
         else if (slvk(4) .eq. 'QAMD') then
             icntl(28) = 1
             icntl(7) = 6
