@@ -154,4 +154,16 @@ std::vector< T > concatenate( const std::vector< std::vector< T > > &vec ) {
     return ret;
 }
 
+template < typename T >
+std::set< T > toSet( const std::vector< T > &vec ) {
+    std::set< T > set;
+    std::copy( vec.begin(), vec.end(), std::inserter( set, set.end() ) );
+    return set;
+}
+
+template < typename T >
+std::vector< T > toVector( const std::set< T > &set ) {
+    return std::vector< T >( set.begin(), set.end() );
+}
+
 #endif /* TOOLS_H_ */

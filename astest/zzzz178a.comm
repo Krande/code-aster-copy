@@ -111,6 +111,7 @@ TEMP2 = PROJ_CHAMP(METHODE="COLLOCATION", RESULTAT=TEMP, MODELE_1=MODE_TL, MODEL
 
 # Validate the result
 temp2 = TEMP2.getField("TEMP", 0)
+print("NAME: ", temp2.getName(), temp2.getDescription(), flush=True)
 test.assertAlmostEqual(temp2.norm("NORM_INFINITY"), temp.norm("NORM_INFINITY"))
 
 test.assertAlmostEqual(temp2.norm("NORM_2"), 161.61043455736277)

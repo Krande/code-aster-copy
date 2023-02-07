@@ -57,7 +57,7 @@ class GeneralizedFieldOnNodesDescription : public FieldOnNodesDescription {
      * d'une sd_resu)
      */
     GeneralizedFieldOnNodesDescription( const std::string name )
-        : FieldOnNodesDescription( name, "PROF_GENE" ),
+        : FieldOnNodesDescription( name, nullptr, "PROF_GENE" ),
           _desc( JeveuxVectorLong( getName() + ".DESC" ) ),
           _nequ( JeveuxVectorLong( getName() + ".NEQU" ) ),
           _refn( JeveuxVectorChar24( getName() + ".REFN" ) ),

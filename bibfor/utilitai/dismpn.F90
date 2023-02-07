@@ -22,13 +22,18 @@ subroutine dismpn(questi, nomobz, repi, repkz, ierd)
 !     ARGUMENTS:
 !     ----------
 #include "jeveux.h"
+#include "asterfort/assert.h"
 #include "asterfort/dismlg.h"
+#include "asterfort/dismcn.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jenuno.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jenonu.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
+#include "asterfort/jexnom.h"
 !
     integer :: repi, ierd, n1
     character(len=*) :: questi
@@ -50,11 +55,12 @@ subroutine dismpn(questi, nomobz, repi, repkz, ierd)
 !     VARIABLES LOCALES:
 !     ------------------
     character(len=19) :: noligr
+    character(len=14) :: cham
 !
 !
 !
 !-----------------------------------------------------------------------
-    integer :: i, nbddlb, nbnos, nequ, nlili
+    integer :: i, nbddlb, nbnos, nequ, nlili, iret
     character(len=24), pointer :: refn(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
@@ -85,10 +91,28 @@ subroutine dismpn(questi, nomobz, repi, repkz, ierd)
 !     --------------------------------
 !       QUESTION POURRIE !! (VALABLE SUR NUME_EQUA)
 !       CETTE QUESTION NE DEVRAIT PAS ETRE UTILISEE
-        call jeveuo(nomob//'.REFN', 'L', vk24=refn)
-        repk = refn(2) (1:8)
+        call jeexin(nomob//'.REFN', iret)
+        if (iret > 0) then
+            call jeveuo(nomob//'.REFN', 'L', vk24=refn)
+            repk = refn(2) (1:8)
+        else
+            cham = nomob(1:14)
+            call dismcn(questi, cham, repi, repk, ierd)
+        end if
 !
-!
+    else if (questi .eq. 'NUM_GD') then
+!     --------------------------------
+!       QUESTION POURRIE !! (VALABLE SUR NUME_EQUA)
+!       CETTE QUESTION NE DEVRAIT PAS ETRE UTILISEE
+        call jeexin(nomob//'.REFN', iret)
+        if (iret > 0) then
+            call jeveuo(nomob//'.REFN', 'L', vk24=refn)
+            call jenonu(jexnom('&CATA.GD.NOMGD', refn(2) (1:8)), repi)
+        else
+            cham = nomob(1:14)
+            call dismcn(questi, cham, repi, repk, ierd)
+        end if
+
     else if (questi .eq. 'NOM_MODELE') then
 !     --------------------------------
 !       QUESTION POURRIE !!
@@ -106,7 +130,6 @@ subroutine dismpn(questi, nomobz, repi, repkz, ierd)
         repk = ' '
         ierd = 1
 99      continue
-!
 !
     else
         ierd = 1

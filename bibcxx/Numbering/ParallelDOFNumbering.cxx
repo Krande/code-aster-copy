@@ -160,28 +160,15 @@ std::string ParallelDOFNumbering::getComponentAssociatedToRow( const ASTERINTEGE
     auto localrow = row;
     if ( !local )
         localrow = globalToLocalRow( row );
-    if ( localrow < 0 or localrow >= getNumberOfDofs( true ) )
-        throw std::out_of_range( "Invalid row index" );
-    JeveuxVectorLong descriptor = getDescription()->getNodeAndComponentsNumberFromDOF();
-    descriptor->updateValuePointer();
 
-    ASTERINTEGER cmpId = ( *descriptor )[2 * row + 1];
-    const bool isLagrange( cmpId <= 0 );
-    if ( cmpId == 0 )
-        return "LAGR:MPC"; // Lagrange multiplier associated to MPC
-    cmpId = abs( cmpId );
-    JeveuxChar8 cmpName( " " );
-    CALLO_NUMEDDL_GET_COMPONENT_NAME( getName(), &cmpId, cmpName );
-
-    if ( isLagrange )
-        return "LAGR:" + cmpName.rstrip(); // Lagrange multiplier associated to Dirichlet BC
-
-    return cmpName.rstrip(); // Physical DoF
+    auto [nodeId, cmpName] = getDescription()->getNodeAndComponentFromDOF( localrow );
+    return cmpName;
 };
 
-ASTERINTEGER ParallelDOFNumbering::getRowAssociatedToNodeComponent( const ASTERINTEGER node,
-                                                                    const std::string compoName,
-                                                                    const bool local ) const {
+ASTERINTEGER
+ParallelDOFNumbering::getRowAssociatedToNodeComponent( const ASTERINTEGER node,
+                                                       const std::string compoName,
+                                                       const bool local ) const {
     auto localnode = node;
     auto loc2glo = getLocalToGlobalMapping();
     loc2glo->updateValuePointer();
@@ -206,35 +193,29 @@ ASTERINTEGER ParallelDOFNumbering::getRowAssociatedToNodeComponent( const ASTERI
     return outrow;
 };
 
-ASTERINTEGER ParallelDOFNumbering::getNodeAssociatedToRow( const ASTERINTEGER row,
-                                                           const bool local ) const {
-    if ( row < 0 or row >= getNumberOfDofs( local ) )
-        throw std::out_of_range( "Invalid row index" );
+ASTERINTEGER
+ParallelDOFNumbering::getNodeAssociatedToRow( const ASTERINTEGER row, const bool local ) const {
     auto localrow = row;
-    auto loc2glo4mesh =
-        std::static_pointer_cast< ParallelMesh >( getMesh() )->getLocalToGlobalMapping();
     if ( !local )
         localrow = globalToLocalRow( row );
-    JeveuxVectorLong descriptor = getDescription()->getNodeAndComponentsNumberFromDOF();
-    descriptor->updateValuePointer();
-    auto localid = ( *descriptor )[2 * row] - 1;
-    auto outid = local ? localid : ( *loc2glo4mesh )[localid];
-    return outid;
+
+    auto [nodeId, cmpId] = getDescription()->getNodeAndComponentNumberFromDOF( localrow, local );
+
+    return nodeId;
 };
 
 bool ParallelDOFNumbering::isRowAssociatedToPhysical( const ASTERINTEGER row,
                                                       const bool local ) const {
-    if ( row < 0 or row >= getNumberOfDofs( local ) )
-        throw std::out_of_range( "Invalid row index" );
     auto localrow = row;
     if ( !local )
         localrow = globalToLocalRow( row );
-    JeveuxVectorLong descriptor = getDescription()->getNodeAndComponentsNumberFromDOF();
-    descriptor->updateValuePointer();
-    return ( *descriptor )[2 * localrow + 1] > 0;
+    auto [nodeId, cmpId] = getDescription()->getNodeAndComponentNumberFromDOF( localrow );
+
+    return cmpId > 0;
 };
 
-ASTERINTEGER ParallelDOFNumbering::getNumberOfDofs( const bool local ) const {
+ASTERINTEGER
+ParallelDOFNumbering::getNumberOfDofs( const bool local ) const {
     getGlobalNumbering()->getNumberOfEquations()->updateValuePointer();
     if ( local )
         return ( *getGlobalNumbering()->getNumberOfEquations() )[0];

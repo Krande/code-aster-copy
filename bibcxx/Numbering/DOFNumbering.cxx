@@ -98,22 +98,8 @@ VectorLong DOFNumbering::getRowsAssociatedToLagrangeMultipliers( const bool loca
 
 std::string DOFNumbering::getComponentAssociatedToRow( const ASTERINTEGER row,
                                                        const bool local ) const {
-    if ( row < 0 or row >= getNumberOfDofs() )
-        throw std::runtime_error( "Invalid row index" );
-    JeveuxVectorLong descriptor = getDescription()->getNodeAndComponentsNumberFromDOF();
-    descriptor->updateValuePointer();
-    ASTERINTEGER cmpId = ( *descriptor )[2 * row + 1];
-    const bool isLagrange( cmpId <= 0 );
-    if ( cmpId == 0 )
-        return "LAGR:MPC"; // Lagrange multiplier associated to MPC
-    cmpId = abs( cmpId );
-    JeveuxChar8 cmpName( " " );
-    CALLO_NUMEDDL_GET_COMPONENT_NAME( getName(), &cmpId, cmpName );
-
-    if ( isLagrange )
-        return "LAGR:" + cmpName.rstrip(); // Lagrange multiplier associated to Dirichlet BC
-
-    return cmpName.rstrip(); // Physical DoF
+    auto [nodeId, cmpName] = getDescription()->getNodeAndComponentFromDOF( row );
+    return cmpName;
 };
 
 ASTERINTEGER DOFNumbering::getRowAssociatedToNodeComponent( const ASTERINTEGER node,
@@ -137,19 +123,13 @@ ASTERINTEGER DOFNumbering::getRowAssociatedToNodeComponent( const ASTERINTEGER n
 
 ASTERINTEGER DOFNumbering::getNodeAssociatedToRow( const ASTERINTEGER row,
                                                    const bool local ) const {
-    if ( row < 0 or row >= getNumberOfDofs( local ) )
-        throw std::runtime_error( "Invalid row index" );
-    JeveuxVectorLong descriptor = getDescription()->getNodeAndComponentsNumberFromDOF();
-    descriptor->updateValuePointer();
-    return ( *descriptor )[2 * row] - 1;
+    auto [nodeId, cmpId] = getDescription()->getNodeAndComponentNumberFromDOF( row );
+    return nodeId;
 };
 
 bool DOFNumbering::isRowAssociatedToPhysical( const ASTERINTEGER row, const bool local ) const {
-    if ( row < 0 or row >= getNumberOfDofs( local ) )
-        throw std::runtime_error( "Invalid row index" );
-    JeveuxVectorLong descriptor = getDescription()->getNodeAndComponentsNumberFromDOF();
-    descriptor->updateValuePointer();
-    return ( *descriptor )[2 * row + 1] > 0;
+    auto [nodeId, cmpId] = getDescription()->getNodeAndComponentNumberFromDOF( row );
+    return cmpId > 0;
 };
 
 ASTERINTEGER DOFNumbering::getNumberOfDofs( const bool local ) const {

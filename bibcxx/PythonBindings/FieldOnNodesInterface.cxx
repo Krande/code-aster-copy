@@ -63,49 +63,6 @@ void exportFieldOnNodesToPython( py::module_ &mod ) {
         .def( "getMesh", &FieldOnNodesReal::getMesh )
         .def( "getDescription", &FieldOnNodesReal::getDescription )
         .def( "updateValuePointers", &FieldOnNodesReal::updateValuePointers )
-        .def( "getNodesAndComponentsFromDOF", &FieldOnNodesReal::getNodesAndComponentsFromDOF, R"(
-            Return the list of node id and name of component for each dofs
-
-            Arguments:
-                local (bool) = True: if True use local node index else use global index
-
-            Returns:
-                list[tuple[int, str]] : node id and name of component for each dofs
-            )",
-              py::arg( "local" ) = true )
-        .def( "getNodesAndComponentsNumberFromDOF",
-              &FieldOnNodesReal::getNodesAndComponentsNumberFromDOF, R"(
-            Return the list of node id and component id for each dofs
-
-            Arguments:
-                local (bool) = True: if True use local node index else use global index
-
-            Returns:
-                list[tuple[int, int]] : node id and component if for each dofs
-            )",
-              py::arg( "local" ) = true )
-        .def( "getDOFsFromNodesAndComponentsNumber",
-              &FieldOnNodesReal::getDOFsFromNodesAndComponentsNumber, R"(
-            Return the dict of dofs with the pair (node id, name id) as keys
-
-            Arguments:
-                local (bool) = True: if True use local node index else use global index
-
-            Returns:
-                dict[int, str] : dofs id for each node id and component id
-            )",
-              py::arg( "local" ) = true )
-        .def( "getDOFsFromNodesAndComponentsName",
-              &FieldOnNodesReal::getDOFsFromNodesAndComponentsName, R"(
-           Return the dict of dofs with the pair (node id, component's name) as keys
-
-            Arguments:
-                local (bool) = True: if True use local node index else use global index
-
-            Returns:
-                dict[int, str] : dofs id for each node id and component's name
-            )",
-              py::arg( "local" ) = true )
         .def( "getComponents", &FieldOnNodesReal::getComponents, R"(
             Get list of components
 
@@ -251,15 +208,7 @@ void exportFieldOnNodesToPython( py::module_ &mod ) {
             Returns:
                 list[complex]: List of values.
             )",
-              py::arg( "cmps" ) = VectorString(), py::arg( "groupsOfCells" ) = VectorString() )
-        .def( "getNodesAndComponentsNumberFromDOF",
-              &FieldOnNodesReal::getNodesAndComponentsNumberFromDOF, R"(
-            Return a list of values such that for each DOF, it gives the node id and component id
-            as [dof1=[node_1, comp_1], dof2=[node_1, comp_2], ....]
-
-            Returns:
-                list[[int, int]]: List of values (node, component) for each DOF.
-            )" );
+              py::arg( "cmps" ) = VectorString(), py::arg( "groupsOfCells" ) = VectorString() );
     /**
      * Object FieldOnNodesComplex
      */

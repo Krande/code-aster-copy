@@ -51,6 +51,15 @@ using SetInt = std::set< ASTERINTEGER4 >;
 using SetLong = std::set< ASTERINTEGER >;
 using SetString = std::set< std::string >;
 
+using PairInt = std::pair< ASTERINTEGER4, ASTERINTEGER4 >;
+using PairLong = std::pair< ASTERINTEGER, ASTERINTEGER >;
+using PairReal = std::pair< ASTERDOUBLE, ASTERDOUBLE >;
+using PairString = std::pair< std::string, std::string >;
+
+using VectorPairLong = std::vector< PairLong >;
+using VectorPairReal = std::vector< PairReal >;
+using VectorPairString = std::vector< PairString >;
+
 #define AS_ABORT( message )                                                                        \
     DEBUG_LOC;                                                                                     \
     std::cout << message << std::endl;                                                             \

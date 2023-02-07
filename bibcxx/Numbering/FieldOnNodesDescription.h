@@ -33,6 +33,7 @@
 #include "MemoryManager/JeveuxCollection.h"
 #include "MemoryManager/JeveuxVector.h"
 #include "MemoryManager/NamesMap.h"
+#include "Meshes/BaseMesh.h"
 #include "Supervis/ResultNaming.h"
 
 /**
@@ -49,19 +50,26 @@ class FieldOnNodesDescription : public DataStructure {
     JeveuxVectorLong _indexationVector;
     /** @brief Objet Jeveux '.DEEQ' */
     JeveuxVectorLong _nodeAndComponentsNumberFromDOF;
+    /** @brief Mesh (only in c++) */
+    BaseMeshPtr _mesh;
 
   public:
+    /** @typedef FieldOnNodesDescriptionPtr */
+    typedef std::shared_ptr< FieldOnNodesDescription > FieldOnNodesDescriptionPtr;
+
     /**
      * @brief Constructeur
      * @param name nom souhaité de la sd (utile pour le FieldOnNodesDescription d'une
      * sd_resu)
      */
-    FieldOnNodesDescription( const std::string name, const std::string type = "PROF_CHNO" );
+    FieldOnNodesDescription( const std::string name, const BaseMeshPtr mesh = nullptr,
+                             const std::string type = "PROF_CHNO" );
 
     /**
      * @brief Constructeur
      */
-    FieldOnNodesDescription() : FieldOnNodesDescription( DataStructureNaming::getNewName() ){};
+    FieldOnNodesDescription( const BaseMeshPtr mesh = nullptr )
+        : FieldOnNodesDescription( DataStructureNaming::getNewName(), mesh ){};
 
     /**
      * @brief Destructor
@@ -76,13 +84,6 @@ class FieldOnNodesDescription : public DataStructure {
     bool operator!=( FieldOnNodesDescription &toCompare ) { return !( *this == toCompare ); }
 
     /**
-     * @brief Returns a vector of information of the numbering
-     */
-    const JeveuxVectorLong getNodeAndComponentsNumberFromDOF() const {
-        return _nodeAndComponentsNumberFromDOF;
-    }
-
-    /**
      * @brief Returns a vector with node index for each DOFs
      */
     VectorLong getNodesFromDOF() const;
@@ -91,6 +92,56 @@ class FieldOnNodesDescription : public DataStructure {
      * @brief Returns number of DOFs
      */
     ASTERINTEGER getNumberOfDofs() const;
+
+    /**
+     * @brief Return list of DOFs
+     * @param sameRank True: Use only owned nodes / False: Use all nodes
+     * @param list_cmp empty: Use all cmp / keep only cmp given
+     * @param groupsOfCells empty: Use all nodes / keep only nodes given
+     */
+    VectorLong getDOFs( const bool sameRank = false, const VectorString &list_cmp = {},
+                        const VectorLong &list_nodes = {} ) const;
+
+    /**
+     * @brief Returns a vector with node index and component name for each DOFs
+     */
+    VectorPairLong getNodesAndComponentsNumberFromDOF( const bool local = true ) const;
+
+    PairLong getNodeAndComponentNumberFromDOF( const ASTERINTEGER dof,
+                                               const bool local = true ) const;
+
+    /**
+     * @brief Returns a vector with node index and component name for each DOFs
+     */
+    std::vector< std::pair< ASTERINTEGER, std::string > >
+    getNodesAndComponentsFromDOF( const bool local = true ) const;
+    std::pair< ASTERINTEGER, std::string >
+    getNodeAndComponentFromDOF( const ASTERINTEGER dof, const bool local = true ) const;
+
+    /**
+     * @brief Maps between node id and name of components to DOF
+     */
+    std::map< PairLong, ASTERINTEGER >
+    getDOFsFromNodesAndComponentsNumber( const bool local = true ) const;
+
+    std::map< std::pair< ASTERINTEGER, std::string >, ASTERINTEGER >
+    getDOFsFromNodesAndComponents( const bool local = true ) const;
+
+    /**
+     * @brief Get componants
+     */
+    SetString getComponents() const;
+    SetLong getComponentsNumber() const;
+
+    /**
+     * @brief Maps between name of components and the number
+     */
+    std::map< std::string, ASTERINTEGER > getComponentsName2Number() const;
+    std::map< ASTERINTEGER, std::string > getComponentsNumber2Name() const;
+
+    void setMesh( const BaseMeshPtr mesh );
+
+    BaseMeshPtr getMesh() const { return _mesh; };
 
     /**
      * @brief Mise a jour des pointeurs Jeveux

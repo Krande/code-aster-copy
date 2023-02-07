@@ -1,5 +1,5 @@
 /* -------------------------------------------------------------------- */
-/* Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org             */
+/* Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org             */
 /* This file is part of code_aster.                                     */
 /*                                                                      */
 /* code_aster is free software: you can redistribute it and/or modify   */
@@ -88,6 +88,10 @@ extern void DEFSPS( UTNCMP, utncmp, const char *, STRING_SIZE, ASTERINTEGER *, c
 
 #define CALL_UTNCMP2( a, b, c, d ) CALLSPSS( UTNCMP2, utncmp2, a, b, c, d )
 extern void DEFSPSS( UTNCMP2, utncmp2, const char *, STRING_SIZE, ASTERINTEGER *, const char *,
+                     STRING_SIZE, const char *, STRING_SIZE );
+
+#define CALL_UTNCMP3( a, b, c, d ) CALLSPSS( UTNCMP3, utncmp3, a, b, c, d )
+extern void DEFSPSS( UTNCMP3, utncmp3, const char *, STRING_SIZE, ASTERINTEGER *, const char *,
                      STRING_SIZE, const char *, STRING_SIZE );
 
 #define CALL_UTMESS( cod, idmess ) CALLSS( UTMESS_CWRAP, utmess_cwrap, cod, idmess )
