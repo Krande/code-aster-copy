@@ -446,7 +446,7 @@ test.assertSequenceEqual(
 
 # rank-owned nodes in local numbering
 nodeLoc = [[58, 68, 69], [], [76, 85, 86]]
-test.assertSequenceEqual(mesh.getNodesFromCells("Cable0", True, True), nodeLoc[rank])
+test.assertSequenceEqual(mesh.getNodesFromCells(["Cable0"], True, True), nodeLoc[rank])
 test.assertSequenceEqual(
     mesh.getNodesFromCells("Cable0", False, True),
     sorted([globalNodesNum[i] for i in nodeLoc[rank]]),

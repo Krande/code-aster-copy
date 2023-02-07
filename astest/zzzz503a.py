@@ -171,7 +171,7 @@ resu = monSolver.solve(retour, vcine)
 y = resu.EXTR_COMP()
 test.assertEqual(len(y.valeurs), 81)
 
-resu2 = resu.exportToSimpleFieldOnNodes()
+resu2 = resu.toSimpleFieldOnNodes()
 resu2.updateValuePointers()
 test.assertAlmostEqual(resu2.getValue(6, 0), 0.000757555469653289)
 
@@ -182,7 +182,7 @@ resu.printMedFile("fort.med")
 matrAsse.setValues(idx.tolist(), jdx.tolist(), [10 * v for v in values])
 monSolver.factorize(matrAsse)
 resu = monSolver.solve(retour)
-resu2 = resu.exportToSimpleFieldOnNodes()
+resu2 = resu.toSimpleFieldOnNodes()
 resu2.updateValuePointers()
 test.assertAlmostEqual(resu2.getValue(6, 0), 0.000757555469653289 / 10.0)
 

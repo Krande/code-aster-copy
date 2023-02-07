@@ -610,14 +610,31 @@ class Mesh(BaseMesh):
         2. __init__(self: libaster.Mesh, arg0: str) -> None
         """
 
-    def getCells(self, group_name=""):
-        """Return the list of the indexes of the cells that belong to a group of cells.
+    def getCells(self, *args, **kwargs):
+        """Overloaded function.
+
+        1. getCells(self: libaster.Mesh, group_name: str) -> List[int]
+
+
+        Return the list of the indexes of the cells that belong to a group of cells.
 
         Arguments:
             group_name (str): Name of the local group.
 
         Returns:
             list[int]: Indexes of the cells of the local group.
+
+
+        2. getCells(self: libaster.Mesh, groups_name: List[str] = []) -> List[int]
+
+
+        Return the list of the indexes of the cells that belong to the groups of cells.
+
+        Arguments:
+            groups_name (str): Name of the local groups.
+
+        Returns:
+            list[int]: Indexes of the cells of the local groups.
         """
 
     def getGroupsOfCells(self, local=False):
@@ -2181,13 +2198,10 @@ class FieldOnNodesReal(DataField):
     def duplicate(self):
         pass
 
-    def exportToSimpleFieldOnNodes(self):
-        pass
-
     def fromPetsc(self, *args, **kwargs):
         """Overloaded function.
 
-        1. fromPetsc(self: libaster.FieldOnNodesReal, dofNmbrg: libaster.DOFNumbering, vec: vec, scaling: float) -> None
+        1. fromPetsc(self: libaster.FieldOnNodesReal, dofNmbrg: libaster.BaseDOFNumbering, vec: vec, scaling: float = 1.0) -> None
 
 
                     Import a PETSc vector into the field.
@@ -2195,57 +2209,17 @@ class FieldOnNodesReal(DataField):
                     Arguments:
                         dofNmbrg (DOFNumbering): The numbering of the DOFs
                         vec (Vec): The PETSc vector
-                        scaling (float) : The scaling of the Lagrange DOFs
+                        scaling (float) : The scaling of the Lagrange DOFs (default: 1.0)
 
 
-        2. fromPetsc(self: libaster.FieldOnNodesReal, dofNmbrg: ParallelDOFNumbering, vec: vec, scaling: float) -> None
-
-
-                    Import a PETSc vector into the field.
-
-                    Arguments:
-                        dofNmbrg (DOFNumbering): The numbering of the DOFs
-                        vec (Vec): The PETSc vector
-                        scaling (float) : The scaling of the Lagrange DOFs
-
-
-        3. fromPetsc(self: libaster.FieldOnNodesReal, dofNmbrg: libaster.DOFNumbering, vec: vec) -> None
-
-
-                    Import a PETSc vector into the field.
-
-                    Arguments:
-                        dofNmbrg (DOFNumbering): The numbering of the DOFs
-                        vec (Vec): The PETSc vector
-
-
-        4. fromPetsc(self: libaster.FieldOnNodesReal, dofNmbrg: ParallelDOFNumbering, vec: vec) -> None
-
-
-                    Import a PETSc vector into the field.
-
-                    Arguments:
-                        dofNmbrg (DOFNumbering): The numbering of the DOFs
-                        vec (Vec): The PETSc vector
-
-
-        5. fromPetsc(self: libaster.FieldOnNodesReal, vec: vec, scaling: float) -> None
+        2. fromPetsc(self: libaster.FieldOnNodesReal, vec: vec, scaling: float = 1.0) -> None
 
 
                     Import a PETSc vector into the field.
 
                     Arguments:
                         vec (Vec): The PETSc vector
-                        scaling (float) : The scaling of the Lagrange DOFs
-
-
-        6. fromPetsc(self: libaster.FieldOnNodesReal, vec: vec) -> None
-
-
-                    Import a PETSc vector into the field.
-
-                    Arguments:
-                        vec (Vec): The PETSc vector
+                        scaling (float) : The scaling of the Lagrange DOFs (default: 1.0)
         """
 
     def getComponents(self):
@@ -2253,6 +2227,26 @@ class FieldOnNodesReal(DataField):
 
         Returns:
             list[str]: list of components
+        """
+
+    def getDOFsFromNodesAndComponentsName(self, local=True):
+        """Return the dict of dofs with the pair (node id, component's name) as keys
+
+        Arguments:
+            local (bool) = True: if True use local node index else use global index
+
+        Returns:
+            dict[int, str] : dofs id for each node id and component's name
+        """
+
+    def getDOFsFromNodesAndComponentsNumber(self, local=True):
+        """Return the dict of dofs with the pair (node id, name id) as keys
+
+        Arguments:
+            local (bool) = True: if True use local node index else use global index
+
+        Returns:
+            dict[int, str] : dofs id for each node id and component id
         """
 
     def getDescription(self):
@@ -2311,11 +2305,30 @@ class FieldOnNodesReal(DataField):
     def getPhysicalQuantity(self):
         pass
 
-    def getValues(self):
-        """Return a list of values as (x1, y1, z1, x2, y2, z2...)
+    def getValues(self, *args, **kwargs):
+        """Overloaded function.
 
-        Returns:
-            list[float]: List of values.
+        1. getValues(self: libaster.FieldOnNodesReal) -> JeveuxVector
+
+
+                    Return a list of values as (x1, y1, z1, x2, y2, z2...)
+
+                    Returns:
+                        list[float]: List of values.
+
+
+        2. getValues(self: libaster.FieldOnNodesReal, cmps: List[str] = [], groupsOfCells: List[str] = []) -> List[float]
+
+
+                    Return a list of values as (x1, y1, z1, x2, y2, z2...)
+
+                    Arguments:
+                        cmps[list[str]]: filter on list of components
+                        groupsOfCells[list[str]]: filter on list of groups of cells (default=" ").
+                        If empty, the full mesh is used
+
+                    Returns:
+                        list[complex]: List of values.
         """
 
     def norm(self, normType, list_cmp=[]):
@@ -2366,7 +2379,7 @@ class FieldOnNodesReal(DataField):
                         values (list[float]): list of values to set
 
 
-        3. setValues(self: libaster.FieldOnNodesReal, value: Dict[str, float]) -> None
+        3. setValues(self: libaster.FieldOnNodesReal, value: Dict[str, float], groupsOfCells: List[str] = []) -> None
 
 
                     Set values of the field where components and values are given as a dict.
@@ -2375,6 +2388,7 @@ class FieldOnNodesReal(DataField):
 
                     Arguments:
                         value (dict[str, float]): dict of values to set (key: str, value: float)
+                        groupsOfCells (list[str]): list of groups. If empty, the full mesh is considered
         """
 
     def size(self):
@@ -2383,6 +2397,9 @@ class FieldOnNodesReal(DataField):
         Returns:
             int: number of element in the field
         """
+
+    def toSimpleFieldOnNodes(self):
+        pass
 
     def updateValuePointers(self):
         pass
@@ -2436,9 +2453,6 @@ class FieldOnNodesComplex(DataField):
             complex: dot product
         """
 
-    def exportToSimpleFieldOnNodes(self):
-        pass
-
     def getComponents(self):
         """Get list of components
 
@@ -2467,12 +2481,30 @@ class FieldOnNodesComplex(DataField):
     def getPhysicalQuantity(self):
         pass
 
-    def getValues(self):
-        """Return a list of complex values as [x11, x21, ..., xm1, x12, x22, ..., xm2...]
-        (m is the total number of componenets)
+    def getValues(self, *args, **kwargs):
+        """Overloaded function.
 
-        Returns:
-            list[complex]: List of values.
+        1. getValues(self: libaster.FieldOnNodesComplex) -> JeveuxVector
+
+
+                    Return a list of values as (x1, y1, z1, x2, y2, z2...)
+
+                    Returns:
+                        list[complex]: List of values.
+
+
+        2. getValues(self: libaster.FieldOnNodesComplex, cmps: List[str] = [], groupsOfCells: List[str] = []) -> List[complex]
+
+
+                    Return a list of values as (x1, y1, z1, x2, y2, z2...)
+
+                    Arguments:
+                        cmps[list[str]]: filter on list of components
+                        groupsOfCells[list[str]]: filter on list of groups of cells (default=" ").
+                        If empty, the full mesh is used
+
+                    Returns:
+                        list[complex]: List of values.
         """
 
     def norm(self, normType, list_cmp=[]):
@@ -2522,6 +2554,9 @@ class FieldOnNodesComplex(DataField):
                     Arguments:
                         values (list[complex]): list of values to set
         """
+
+    def toSimpleFieldOnNodes(self):
+        pass
 
     def updateValuePointers(self):
         pass
@@ -11508,14 +11543,31 @@ class ParallelMesh(BaseMesh):
         2. __init__(self: libaster.ParallelMesh, arg0: str) -> None
         """
 
-    def getCells(self, group_name=""):
-        """Return the list of the indexes of the cells that belong to a group of cells.
+    def getCells(self, *args, **kwargs):
+        """Overloaded function.
+
+        1. getCells(self: libaster.ParallelMesh, group_name: str) -> List[int]
+
+
+        Return the list of the indexes of the cells that belong to a group of cells.
 
         Arguments:
             group_name (str): Name of the local group.
 
         Returns:
             list[int]: Indexes of the cells of the local group.
+
+
+        2. getCells(self: libaster.ParallelMesh, groups_name: List[str] = []) -> List[int]
+
+
+        Return the list of the indexes of the cells that belong to the groups of cells.
+
+        Arguments:
+            groups_name (str): Name of the local groups.
+
+        Returns:
+            list[int]: Indexes of the cells of the local groups.
         """
 
     def getCellsRank(self):

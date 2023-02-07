@@ -62,7 +62,8 @@ Arguments:
     cell_ids (list[int]) : cell ids which are in the group
         )",
               py::arg( "group_name" ), py::arg( "cell_ids" ) )
-        .def( "getCells", &Mesh::getCells, R"(
+        .def( "getCells", py::overload_cast< const std::string >( &Mesh::getCells, py::const_ ),
+              R"(
 Return the list of the indexes of the cells that belong to a group of cells.
 
 Arguments:
@@ -71,7 +72,18 @@ Arguments:
 Returns:
     list[int]: Indexes of the cells of the local group.
         )",
-              py::arg( "group_name" ) = "" )
+              py::arg( "group_name" ) )
+        .def( "getCells", py::overload_cast< const VectorString & >( &Mesh::getCells, py::const_ ),
+              R"(
+Return the list of the indexes of the cells that belong to the groups of cells.
+
+Arguments:
+    groups_name (str): Name of the local groups.
+
+Returns:
+    list[int]: Indexes of the cells of the local groups.
+        )",
+              py::arg( "groups_name" ) = VectorString() )
         .def( "getGroupsOfNodes", &Mesh::getGroupsOfNodes, R"(
 Return the list of the existing groups of nodes.
 
@@ -158,10 +170,11 @@ Returns:
     bool: *True* if the mesh contains quadratic cells, *False* otherwise.
         )" )
         .def( "_getNodesFromCells",
-              py::overload_cast< const std::string, const bool, const ASTERINTEGER >(
+              py::overload_cast< const VectorString &, const bool, const ASTERINTEGER >(
                   &Mesh::getNodesFromCells, py::const_ ),
               R"(
 Returns the nodes indexes of a group of cells.
+For developpers only.
 
 Arguments:
     group_name (str): name of the group of cells.

@@ -102,14 +102,22 @@ private:
    * @param sameRank True: Use only owned nodes / False: Use all nodes
    * @param list_cmp empty: Use all cmp / keep only cmp given
    */
-  VectorLong _getDOFsToUse(const bool sameRank,
-                           const VectorString &list_cmp) const {
-    const bool all_nodes = !sameRank;
+  VectorLong _getDOFsToUse(const bool sameRank, const VectorString &list_cmp,
+                           const VectorString &groupsOfCells = {}) const {
+    const bool all_nodes = groupsOfCells.empty();
+    const bool all_rank = !sameRank;
     const auto rank = getMPIRank();
     if (!_mesh)
       raiseAsterError("Mesh is empty");
     const JeveuxVectorLong nodesRank = _mesh->getNodesRank();
     nodesRank->updateValuePointer();
+
+    SetLong set_nodes;
+    for (auto &grp : groupsOfCells) {
+      auto grp_nodes = _mesh->getNodesFromCells(grp);
+      std::copy(grp_nodes.begin(), grp_nodes.end(),
+                std::inserter(set_nodes, set_nodes.end()));
+    }
 
     const bool all_cmp = list_cmp.empty();
     std::map<ASTERINTEGER, std::string> map_cmp;
@@ -131,9 +139,10 @@ private:
 
     for (auto dof = 0; dof < taille; ++dof) {
       const auto node_id = std::abs(descr[dof].first);
-      bool l_keep_cmp = all_cmp || map_cmp.count(descr[dof].second) > 0;
-      bool l_keep_node = all_nodes || (*nodesRank)[node_id] == rank;
-      if (l_keep_node && l_keep_cmp)
+      const bool l_keep_cmp = all_cmp || map_cmp.count(descr[dof].second) > 0;
+      const bool l_keep_rank = all_rank || (*nodesRank)[node_id] == rank;
+      const bool l_keep_node = all_nodes || (set_nodes.count(node_id) > 0);
+      if (l_keep_node && l_keep_cmp && l_keep_rank)
         dofUsed.push_back(dof);
     }
 
@@ -169,6 +178,8 @@ public:
     // Pointers to be copied
     _dofDescription = toCopy._dofDescription;
     _mesh = toCopy._mesh;
+
+    this->updateValuePointers();
   }
 
   /** @brief Move constructor */
@@ -180,6 +191,8 @@ public:
     _title = other._title;
     _dofDescription = other._dofDescription;
     _mesh = other._mesh;
+
+    this->updateValuePointers();
   }
 
   /**
@@ -211,6 +224,8 @@ public:
     const auto intType = AllowedFieldType<ValueType>::numTypeJeveux;
     CALLO_VTCREB_WRAP(getName(), JeveuxMemoryTypesNames[Permanent],
                       JeveuxTypesNames[intType], dofNume->getName());
+
+    this->updateValuePointers();
   };
 
   /**
@@ -235,6 +250,8 @@ public:
     const auto intType = AllowedFieldType<ValueType>::numTypeJeveux;
     CALLO_VTCREB_WRAP(getName(), JeveuxMemoryTypesNames[Permanent],
                       JeveuxTypesNames[intType], dofNume->getName());
+
+    this->updateValuePointers();
   };
 
   /**
@@ -252,6 +269,8 @@ public:
     const auto intType = AllowedFieldType<ValueType>::numTypeJeveux;
     CALLO_VTCREB_WRAP(getName(), JeveuxMemoryTypesNames[Permanent],
                       JeveuxTypesNames[intType], dofNum->getName());
+
+    this->updateValuePointers();
   };
 
   /**
@@ -266,7 +285,9 @@ public:
   FieldOnNodes(MeshCoordinatesFieldPtr &toCopy)
       : DataField("CHAM_NO"), _descriptor(toCopy->getDescriptor()),
         _reference(toCopy->getReference()), _values(toCopy->getValues()),
-        _dofDescription(nullptr), _mesh(nullptr){};
+        _dofDescription(nullptr), _mesh(nullptr) {
+    this->updateValuePointers();
+  };
 
   /**
    * @brief Surcharge de l'operateur []
@@ -500,6 +521,41 @@ public:
   };
 
   /**
+   * @brief Returns a vector with node index and component name for each DOFs
+   */
+  std::map<std::pair<ASTERINTEGER, ASTERINTEGER>, ASTERINTEGER>
+  getDOFsFromNodesAndComponentsNumber(const bool local = true) const {
+    auto descr = this->getNodesAndComponentsNumberFromDOF(local);
+
+    std::map<std::pair<ASTERINTEGER, ASTERINTEGER>, ASTERINTEGER> ret;
+
+    auto nbDof = descr.size();
+
+    for (ASTERINTEGER iDof = 0; iDof < nbDof; iDof++) {
+      ret[descr[iDof]] = iDof;
+    }
+
+    return ret;
+  };
+
+  std::map<std::pair<ASTERINTEGER, std::string>, ASTERINTEGER>
+  getDOFsFromNodesAndComponentsName(const bool local = true) const {
+    auto descr = this->getNodesAndComponentsNumberFromDOF(local);
+    auto num2name = this->getComponentsNumber2Name();
+
+    std::map<std::pair<ASTERINTEGER, std::string>, ASTERINTEGER> ret;
+
+    auto nbDof = descr.size();
+
+    for (ASTERINTEGER iDof = 0; iDof < nbDof; iDof++) {
+      auto [node, cmp] = descr[iDof];
+      ret[std::make_pair(node, num2name[cmp])] = iDof;
+    }
+
+    return ret;
+  };
+
+  /**
    * @brief Maps between name of components and the nimber
    */
   std::map<std::string, ASTERINTEGER> getComponentsName2Number() const {
@@ -555,26 +611,12 @@ public:
   ASTERINTEGER getNumberOfComponents() const { return getComponents().size(); }
 
   /**
-   * @brief Allouer un champ au noeud à partir d'un autre
-   * @return renvoit true
-   */
-  bool allocateFrom(const FieldOnNodes<ValueType> &tmp) {
-    this->_descriptor->deallocate();
-    this->_reference->deallocate();
-    this->_values->deallocate();
-
-    this->_descriptor->allocate(tmp._descriptor->size());
-    this->_reference->allocate(tmp._reference->size());
-    this->_values->allocate(tmp._values->size());
-    return true;
-  };
-
-  /**
    * @brief Renvoit un champ aux noeuds simple (carré de taille nb_no*nbcmp)
    * @return SimpleFieldOnNodesValueTypePtr issu du FieldOnNodes
    */
-  SimpleFieldOnNodesValueTypePtr exportToSimpleFieldOnNodes() {
-    SimpleFieldOnNodesValueTypePtr toReturn(new SimpleFieldOnNodesValueType());
+  SimpleFieldOnNodesValueTypePtr toSimpleFieldOnNodes() {
+    SimpleFieldOnNodesValueTypePtr toReturn =
+        std::make_shared<SimpleFieldOnNodesValueType>();
     const std::string resultName = toReturn->getName();
     const std::string inName = getName();
     CALLO_CNOCNS_WRAP(inName, JeveuxMemoryTypesNames[Permanent], resultName);
@@ -601,58 +643,35 @@ public:
    * @param scaling The scaling of the Lagrange DOFs
    */
 #ifdef ASTER_HAVE_PETSC
-  void fromPetsc(const DOFNumbering &dofNmbrg, const Vec &vec,
-                 const ASTERDOUBLE &scaling) {
-    if (get_sh_jeveux_status() == 1) {
-      CALLO_VECT_ASSE_FROM_PETSC(getName(), dofNmbrg.getName(), &vec, &scaling);
-      _values->updateValuePointer();
-    }
+  void fromPetsc(const BaseDOFNumberingPtr &dofNmbrg, const Vec &vec,
+                 const ASTERDOUBLE scaling = 1.0) {
+    CALLO_VECT_ASSE_FROM_PETSC(getName(), dofNmbrg->getName(), &vec, &scaling);
+    _values->updateValuePointer();
   };
-  void fromPetsc(const ParallelDOFNumbering &dofNmbrg, const Vec &vec,
-                 const ASTERDOUBLE &scaling) {
-    if (get_sh_jeveux_status() == 1) {
-      CALLO_VECT_ASSE_FROM_PETSC(getName(), dofNmbrg.getName(), &vec, &scaling);
-      _values->updateValuePointer();
+
+  void fromPetsc(const Vec &vec, const ASTERDOUBLE scaling = 1.0) {
+    if (getMesh()->isParallel()) {
+      raiseAsterError("dofNumbering must be provided");
     }
-  };
-  void fromPetsc(const DOFNumbering &dofNmbrg, const Vec &vec) {
-    if (get_sh_jeveux_status() == 1) {
-      const auto dummy_scaling = 1.;
-      CALLO_VECT_ASSE_FROM_PETSC(getName(), dofNmbrg.getName(), &vec,
-                                 &dummy_scaling);
-      _values->updateValuePointer();
-    }
-  };
-  void fromPetsc(const ParallelDOFNumbering &dofNmbrg, const Vec &vec) {
-    if (get_sh_jeveux_status() == 1) {
-      const auto dummy_scaling = 1.;
-      CALLO_VECT_ASSE_FROM_PETSC(getName(), dofNmbrg.getName(), &vec,
-                                 &dummy_scaling);
-      _values->updateValuePointer();
-    }
-  };
-  void fromPetsc(const Vec &vec, const ASTERDOUBLE &scaling) {
-    if (get_sh_jeveux_status() == 1) {
-      if (getMesh()->isParallel()) {
-        raiseAsterError("dofNumbering must be provided");
-      }
-      const std::string dummy_nbg = " ";
-      CALLO_VECT_ASSE_FROM_PETSC(getName(), dummy_nbg, &vec, &scaling);
-      _values->updateValuePointer();
-    }
-  };
-  void fromPetsc(const Vec &vec) {
-    if (get_sh_jeveux_status() == 1) {
-      if (getMesh()->isParallel()) {
-        raiseAsterError("dofNumbering must be provided");
-      }
-      const auto dummy_scaling = 1.;
-      const std::string dummy_nbg = " ";
-      CALLO_VECT_ASSE_FROM_PETSC(getName(), dummy_nbg, &vec, &dummy_scaling);
-      _values->updateValuePointer();
-    }
+    const std::string dummy_nbg = " ";
+    CALLO_VECT_ASSE_FROM_PETSC(getName(), dummy_nbg, &vec, &scaling);
+    _values->updateValuePointer();
   };
 #endif
+
+  void applyLagrangeScaling(const ValueType scaling) {
+    _values->updateValuePointer();
+
+    const auto descr = this->getNodesAndComponentsNumberFromDOF();
+
+    auto nbDofs = this->size();
+
+    for (ASTERINTEGER dof = 0; dof < nbDofs; dof++) {
+      if (descr[dof].second < 0) {
+        (*this)[dof] = (*this)[dof] * scaling;
+      }
+    }
+  };
 
   /**
    * @brief Set the Values object
@@ -672,21 +691,8 @@ public:
     *_values = values;
   };
 
-  void applyLagrangeScaling(const ValueType scaling) {
-    _values->updateValuePointer();
-
-    const auto descr = this->getNodesAndComponentsNumberFromDOF();
-
-    auto nbDofs = this->size();
-
-    for (ASTERINTEGER dof = 0; dof < nbDofs; dof++) {
-      if (descr[dof].second < 0) {
-        (*this)[dof] = (*this)[dof] * scaling;
-      }
-    }
-  };
-
-  void setValues(const std::map<std::string, ValueType> &values) {
+  void setValues(const std::map<std::string, ValueType> &values,
+                 VectorString groupsOfCells = {}) {
     _values->updateValuePointer();
 
     VectorString list_cmp;
@@ -698,6 +704,8 @@ public:
     const auto descr = this->getNodesAndComponentsNumberFromDOF();
 
     auto nbDofs = this->size();
+
+    auto nodes = _mesh->getNodesFromCells(groupsOfCells);
 
     for (ASTERINTEGER dof = 0; dof < nbDofs; dof++) {
       auto search = values.find(num2name[descr[dof].second]);
@@ -712,6 +720,22 @@ public:
    *
    */
   const JeveuxVector<ValueType> &getValues() const { return _values; }
+
+  std::vector<ValueType>
+  getValues(const VectorString &cmps,
+            const VectorString &groupsOfCells = {}) const {
+    std::vector<ValueType> val;
+
+    auto usedDof = this->_getDOFsToUse(false, cmps, groupsOfCells);
+    val.reserve(usedDof.size());
+    _values->updateValuePointer();
+
+    for (auto &dof : usedDof) {
+      val.push_back((*_values)[dof]);
+    }
+
+    return val;
+  }
 
   /**
    * @brief Set FieldOnNodes description
@@ -769,7 +793,7 @@ public:
         norme = std::max(norme, std::abs((*this)[dof]));
       }
     } else
-      raiseAsterError("Unknown norm");
+      raiseAsterError("Unknown norm: " + normType);
 
 #ifdef ASTER_HAVE_MPI
     if (_mesh->isParallel()) {

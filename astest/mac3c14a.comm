@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -228,8 +228,8 @@ U_GLIS = CALC_CHAMP(
     FORCE=("FORC_NODA", "REAC_NODA"),
 )
 
-depl_glis = U_GLIS.getField("DEPL", 1).exportToSimpleFieldOnNodes()
-depl_adh = U_ADH.getField("DEPL", 1).exportToSimpleFieldOnNodes()
+depl_glis = U_GLIS.getField("DEPL", 1).toSimpleFieldOnNodes()
+depl_adh = U_ADH.getField("DEPL", 1).toSimpleFieldOnNodes()
 
 depl_glis_v, m = depl_glis.getValues(True)
 depl_adh_v, m = depl_adh.getValues(True)

@@ -78,7 +78,7 @@ resu.printMedFile("test" + str(rank) + ".med")
 # copyfile("test"+str(rank)+".med", "/home/siavelis/test"+str(rank)+".med")
 
 MyFieldOnNodes = resu.getFieldOnNodesReal("DEPL", 1)
-sfon = MyFieldOnNodes.exportToSimpleFieldOnNodes()
+sfon = MyFieldOnNodes.toSimpleFieldOnNodes()
 sfon.debugPrint(10 + rank)
 sfon.build()
 

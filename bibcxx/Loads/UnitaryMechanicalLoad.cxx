@@ -3,7 +3,7 @@
  * @brief Implementation de MechanicalLoad
  * @author Natacha Bereux
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *

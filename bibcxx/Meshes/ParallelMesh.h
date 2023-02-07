@@ -125,7 +125,9 @@ class ParallelMesh : public BaseMesh {
     void setGroupOfNodes( const std::string &name, const VectorLong &node_ids,
                           const bool localNumbering = false );
 
-    VectorLong getCells( const std::string name = "" ) const;
+    VectorLong getCells( const std::string name ) const;
+
+    VectorLong getCells( const VectorString &names = {} ) const;
 
     /**
      * @brief Return list of nodes
@@ -184,6 +186,9 @@ class ParallelMesh : public BaseMesh {
      * @return list of Nodes
      */
     VectorLong getNodesFromCells( const std::string name, const bool localNumbering = true,
+                                  const ASTERINTEGER same_rank = PythonBool::None ) const;
+
+    VectorLong getNodesFromCells( const VectorString &names, const bool localNumbering = true,
                                   const ASTERINTEGER same_rank = PythonBool::None ) const;
 
     VectorLong getNodesFromCells( const VectorLong &cells, const bool localNumbering = true,

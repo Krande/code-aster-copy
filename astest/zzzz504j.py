@@ -70,7 +70,7 @@ resu = STAT_NON_LINE(
 )
 
 MyFieldOnNodes = resu.getFieldOnNodesReal("DEPL", 1)
-sfon = MyFieldOnNodes.exportToSimpleFieldOnNodes()
+sfon = MyFieldOnNodes.toSimpleFieldOnNodes()
 
 value = [1.0, 1.0, 0.0, 0.0]
 test.assertAlmostEqual(sfon.getValue(0, 0), value[rank])

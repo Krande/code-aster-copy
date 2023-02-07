@@ -29,7 +29,7 @@ from ..Commands import CREA_MAILLAGE
 from ..Messages import UTMESS
 from ..Objects import ConnectionMesh, Mesh, ParallelMesh, PythonBool, ResultNaming
 from ..Objects.Serialization import InternalStateBuilder
-from ..Utilities import MPI, ExecutionParameter, Options, injector, shared_tmpdir
+from ..Utilities import MPI, ExecutionParameter, Options, injector, shared_tmpdir, force_list
 from ..Utilities.MedUtils.MEDPartitioner import MEDPartitioner
 from . import mesh_builder
 
@@ -290,7 +290,7 @@ class ExtendedParallelMesh:
         """Returns the nodes indexes of a group of cells.
 
         Arguments:
-            group_name (str): Name of the group.
+            group_name (str/list[str]): Name of the group.
             localNumbering (bool) : use local or global numbering (default: True)
             same_rank : - None: keep all nodes (default: None)
                         - True keep the nodes which are owned by the current MPI-rank
@@ -302,7 +302,7 @@ class ExtendedParallelMesh:
 
         val = {None: PythonBool.NONE, True: PythonBool.TRUE, False: PythonBool.FALSE}
 
-        return self._getNodesFromCells(group_name, localNumbering, val[same_rank])
+        return self._getNodesFromCells(force_list(group_name), localNumbering, val[same_rank])
 
 
 @injector(ConnectionMesh)

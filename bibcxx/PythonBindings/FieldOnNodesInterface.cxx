@@ -3,7 +3,7 @@
  * @brief Python interface for FieldOnNodes
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -42,7 +42,7 @@ void exportFieldOnNodesToPython( py::module_ &mod ) {
         .def( py::init( &initFactoryPtr< FieldOnNodesReal, BaseDOFNumberingPtr > ) )
         .def( py::init( &initFactoryPtr< FieldOnNodesReal, MeshCoordinatesFieldPtr > ) )
         .def( "duplicate", &FieldOnNodesReal::duplicate )
-        .def( "exportToSimpleFieldOnNodes", &FieldOnNodesReal::exportToSimpleFieldOnNodes )
+        .def( "toSimpleFieldOnNodes", &FieldOnNodesReal::toSimpleFieldOnNodes )
         .def( "getPhysicalQuantity", &FieldOnNodesReal::getPhysicalQuantity )
         .def( "getMesh", &FieldOnNodesReal::getMesh )
         .def( "__getitem__",
@@ -84,6 +84,28 @@ void exportFieldOnNodesToPython( py::module_ &mod ) {
 
             Returns:
                 list[tuple[int, int]] : node id and component if for each dofs
+            )",
+              py::arg( "local" ) = true )
+        .def( "getDOFsFromNodesAndComponentsNumber",
+              &FieldOnNodesReal::getDOFsFromNodesAndComponentsNumber, R"(
+            Return the dict of dofs with the pair (node id, name id) as keys
+
+            Arguments:
+                local (bool) = True: if True use local node index else use global index
+
+            Returns:
+                dict[int, str] : dofs id for each node id and component id
+            )",
+              py::arg( "local" ) = true )
+        .def( "getDOFsFromNodesAndComponentsName",
+              &FieldOnNodesReal::getDOFsFromNodesAndComponentsName, R"(
+           Return the dict of dofs with the pair (node id, component's name) as keys
+
+            Arguments:
+                local (bool) = True: if True use local node index else use global index
+
+            Returns:
+                dict[int, str] : dofs id for each node id and component's name
             )",
               py::arg( "local" ) = true )
         .def( "getComponents", &FieldOnNodesReal::getComponents, R"(
@@ -141,7 +163,7 @@ void exportFieldOnNodesToPython( py::module_ &mod ) {
               py::arg( "scaling" ) )
 #ifdef ASTER_HAVE_PETSC
         .def( "fromPetsc",
-              py::overload_cast< const DOFNumbering &, const Vec &, const ASTERDOUBLE & >(
+              py::overload_cast< const BaseDOFNumberingPtr &, const Vec &, const ASTERDOUBLE >(
                   &FieldOnNodesReal::fromPetsc ),
               R"(
             Import a PETSc vector into the field.
@@ -149,60 +171,19 @@ void exportFieldOnNodesToPython( py::module_ &mod ) {
             Arguments:
                 dofNmbrg (DOFNumbering): The numbering of the DOFs
                 vec (Vec): The PETSc vector
-                scaling (float) : The scaling of the Lagrange DOFs
+                scaling (float) : The scaling of the Lagrange DOFs (default: 1.0)
             )",
-              py::arg( "dofNmbrg" ), py::arg( "vec" ), py::arg( "scaling" ) )
+              py::arg( "dofNmbrg" ), py::arg( "vec" ), py::arg( "scaling" ) = 1.0 )
         .def( "fromPetsc",
-              py::overload_cast< const ParallelDOFNumbering &, const Vec &, const ASTERDOUBLE & >(
-                  &FieldOnNodesReal::fromPetsc ),
-              R"(
-            Import a PETSc vector into the field.
-
-            Arguments:
-                dofNmbrg (DOFNumbering): The numbering of the DOFs
-                vec (Vec): The PETSc vector
-                scaling (float) : The scaling of the Lagrange DOFs
-            )",
-              py::arg( "dofNmbrg" ), py::arg( "vec" ), py::arg( "scaling" ) )
-        .def(
-            "fromPetsc",
-            py::overload_cast< const DOFNumbering &, const Vec & >( &FieldOnNodesReal::fromPetsc ),
-            R"(
-            Import a PETSc vector into the field.
-
-            Arguments:
-                dofNmbrg (DOFNumbering): The numbering of the DOFs
-                vec (Vec): The PETSc vector
-            )",
-            py::arg( "dofNmbrg" ), py::arg( "vec" ) )
-        .def( "fromPetsc",
-              py::overload_cast< const ParallelDOFNumbering &, const Vec & >(
-                  &FieldOnNodesReal::fromPetsc ),
-              R"(
-            Import a PETSc vector into the field.
-
-            Arguments:
-                dofNmbrg (DOFNumbering): The numbering of the DOFs
-                vec (Vec): The PETSc vector
-            )",
-              py::arg( "dofNmbrg" ), py::arg( "vec" ) )
-        .def( "fromPetsc",
-              py::overload_cast< const Vec &, const ASTERDOUBLE & >( &FieldOnNodesReal::fromPetsc ),
+              py::overload_cast< const Vec &, const ASTERDOUBLE >( &FieldOnNodesReal::fromPetsc ),
               R"(
             Import a PETSc vector into the field.
 
             Arguments:
                 vec (Vec): The PETSc vector
-                scaling (float) : The scaling of the Lagrange DOFs
+                scaling (float) : The scaling of the Lagrange DOFs (default: 1.0)
             )",
-              py::arg( "vec" ), py::arg( "scaling" ) )
-        .def( "fromPetsc", py::overload_cast< const Vec & >( &FieldOnNodesReal::fromPetsc ), R"(
-            Import a PETSc vector into the field.
-
-            Arguments:
-                vec (Vec): The PETSc vector
-            )",
-              py::arg( "vec" ) )
+              py::arg( "vec" ), py::arg( "scaling" ) = 1.0 )
 #endif
         .def( "setValues", py::overload_cast< const ASTERDOUBLE & >( &FieldOnNodesReal::setValues ),
               R"(
@@ -221,7 +202,7 @@ void exportFieldOnNodesToPython( py::module_ &mod ) {
             )",
               py::arg( "values" ) )
         .def( "setValues",
-              py::overload_cast< const std::map< std::string, ASTERDOUBLE > & >(
+              py::overload_cast< const std::map< std::string, ASTERDOUBLE > &, VectorString >(
                   &FieldOnNodesReal::setValues ),
               R"(
             Set values of the field where components and values are given as a dict.
@@ -230,14 +211,31 @@ void exportFieldOnNodesToPython( py::module_ &mod ) {
 
             Arguments:
                 value (dict[str, float]): dict of values to set (key: str, value: float)
+                groupsOfCells (list[str]): list of groups. If empty, the full mesh is considered
             )",
-              py::arg( "value" ) )
-        .def( "getValues", &FieldOnNodesReal::getValues, py::return_value_policy::reference, R"(
+              py::arg( "value" ), py::arg( "groupsOfCells" ) = VectorString() )
+        .def( "getValues", py::overload_cast<>( &FieldOnNodesReal::getValues, py::const_ ),
+              R"(
             Return a list of values as (x1, y1, z1, x2, y2, z2...)
 
             Returns:
                 list[float]: List of values.
             )" )
+        .def( "getValues",
+              py::overload_cast< const VectorString &, const VectorString & >(
+                  &FieldOnNodesReal::getValues, py::const_ ),
+              R"(
+            Return a list of values as (x1, y1, z1, x2, y2, z2...)
+
+            Arguments:
+                cmps[list[str]]: filter on list of components
+                groupsOfCells[list[str]]: filter on list of groups of cells (default=" ").
+                If empty, the full mesh is used
+
+            Returns:
+                list[complex]: List of values.
+            )",
+              py::arg( "cmps" ) = VectorString(), py::arg( "groupsOfCells" ) = VectorString() )
         .def( "getNodesAndComponentsNumberFromDOF",
               &FieldOnNodesReal::getNodesAndComponentsNumberFromDOF, R"(
             Return a list of values such that for each DOF, it gives the node id and component id
@@ -256,7 +254,7 @@ void exportFieldOnNodesToPython( py::module_ &mod ) {
         .def( py::init< const FieldOnNodesComplex & >() )
         .def( py::init( &initFactoryPtr< FieldOnNodesComplex, ModelPtr > ) )
         .def( py::init( &initFactoryPtr< FieldOnNodesComplex, BaseDOFNumberingPtr > ) )
-        .def( "exportToSimpleFieldOnNodes", &FieldOnNodesComplex::exportToSimpleFieldOnNodes )
+        .def( "toSimpleFieldOnNodes", &FieldOnNodesComplex::toSimpleFieldOnNodes )
         .def( "getPhysicalQuantity", &FieldOnNodesComplex::getPhysicalQuantity )
         .def( "getMesh", &FieldOnNodesComplex::getMesh )
         .def( "__getitem__",
@@ -269,13 +267,28 @@ void exportFieldOnNodesToPython( py::module_ &mod ) {
         .def( "build", &FieldOnNodesComplex::build )
         .def( "getMesh", &FieldOnNodesComplex::getMesh )
         .def( "getDescription", &FieldOnNodesComplex::getDescription )
-        .def( "getValues", &FieldOnNodesComplex::getValues, py::return_value_policy::reference, R"(
-            Return a list of complex values as [x11, x21, ..., xm1, x12, x22, ..., xm2...]
-            (m is the total number of componenets)
+        .def( "getValues", py::overload_cast<>( &FieldOnNodesComplex::getValues, py::const_ ),
+              R"(
+            Return a list of values as (x1, y1, z1, x2, y2, z2...)
 
             Returns:
                 list[complex]: List of values.
             )" )
+        .def( "getValues",
+              py::overload_cast< const VectorString &, const VectorString & >(
+                  &FieldOnNodesComplex::getValues, py::const_ ),
+              R"(
+            Return a list of values as (x1, y1, z1, x2, y2, z2...)
+
+            Arguments:
+                cmps[list[str]]: filter on list of components
+                groupsOfCells[list[str]]: filter on list of groups of cells (default=" ").
+                If empty, the full mesh is used
+
+            Returns:
+                list[complex]: List of values.
+            )",
+              py::arg( "cmps" ) = VectorString(), py::arg( "groupsOfCells" ) = VectorString() )
         .def( "getComponents", &FieldOnNodesComplex::getComponents, R"(
             Get list of components
 

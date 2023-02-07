@@ -3,7 +3,7 @@
  * @brief Implementation de AssemblyMatrix vide car AssemblyMatrix est un template
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -30,27 +30,23 @@ template <>
 void AssemblyMatrix< ASTERDOUBLE, Displacement >::setValues( const VectorLong &idx,
                                                              const VectorLong &jdx,
                                                              const VectorReal &values ) {
-    if ( get_sh_jeveux_status() == 1 ) {
-        const ASTERINTEGER dim = idx.size();
-        if ( idx.size() != jdx.size() || idx.size() != values.size() ) {
-            throw std::runtime_error( "All lists must have same length" );
-        }
-        CALLO_MATR_ASSE_SET_VALUES( getName(), &dim, idx.data(), jdx.data(), values.data() );
-        _isFactorized = false;
+    const ASTERINTEGER dim = idx.size();
+    if ( idx.size() != jdx.size() || idx.size() != values.size() ) {
+        throw std::runtime_error( "All lists must have same length" );
     }
+    CALLO_MATR_ASSE_SET_VALUES( getName(), &dim, idx.data(), jdx.data(), values.data() );
+    _isFactorized = false;
 };
 
 template <>
 void AssemblyMatrix< ASTERDOUBLE, Displacement >::scale( const VectorReal &lvect,
                                                          const VectorReal &rvect ) {
-    if ( get_sh_jeveux_status() == 1 ) {
-        const ASTERINTEGER matSize = size( true )[0];
-        if ( lvect.size() != matSize || rvect.size() != matSize ) {
-            throw std::runtime_error( "Arguments must share the matrix size" );
-        }
-        CALLO_MATR_ASSE_SCALE( getName(), lvect.data(), rvect.data() );
-        _isFactorized = false;
+    const ASTERINTEGER matSize = size( true )[0];
+    if ( lvect.size() != matSize || rvect.size() != matSize ) {
+        throw std::runtime_error( "Arguments must share the matrix size" );
     }
+    CALLO_MATR_ASSE_SCALE( getName(), lvect.data(), rvect.data() );
+    _isFactorized = false;
 };
 
 template <>
@@ -68,27 +64,23 @@ template <>
 void AssemblyMatrix< ASTERDOUBLE, Temperature >::setValues( const VectorLong &idx,
                                                             const VectorLong &jdx,
                                                             const VectorReal &values ) {
-    if ( get_sh_jeveux_status() == 1 ) {
-        const ASTERINTEGER dim = idx.size();
-        if ( idx.size() != jdx.size() || idx.size() != values.size() ) {
-            throw std::runtime_error( "All lists must have same length" );
-        }
-        CALLO_MATR_ASSE_SET_VALUES( getName(), &dim, idx.data(), jdx.data(), values.data() );
-        _isFactorized = false;
+    const ASTERINTEGER dim = idx.size();
+    if ( idx.size() != jdx.size() || idx.size() != values.size() ) {
+        throw std::runtime_error( "All lists must have same length" );
     }
+    CALLO_MATR_ASSE_SET_VALUES( getName(), &dim, idx.data(), jdx.data(), values.data() );
+    _isFactorized = false;
 };
 
 template <>
 void AssemblyMatrix< ASTERDOUBLE, Temperature >::scale( const VectorReal &lvect,
                                                         const VectorReal &rvect ) {
-    if ( get_sh_jeveux_status() == 1 ) {
-        const ASTERINTEGER matSize = size( true )[0];
-        if ( lvect.size() != matSize || rvect.size() != matSize ) {
-            throw std::runtime_error( "Arguments must share the matrix size" );
-        }
-        CALLO_MATR_ASSE_SCALE( getName(), lvect.data(), rvect.data() );
-        _isFactorized = false;
+    const ASTERINTEGER matSize = size( true )[0];
+    if ( lvect.size() != matSize || rvect.size() != matSize ) {
+        throw std::runtime_error( "Arguments must share the matrix size" );
     }
+    CALLO_MATR_ASSE_SCALE( getName(), lvect.data(), rvect.data() );
+    _isFactorized = false;
 };
 
 template <>
@@ -101,14 +93,12 @@ template <>
 void AssemblyMatrix< ASTERDOUBLE, Pressure >::setValues( const VectorLong &idx,
                                                          const VectorLong &jdx,
                                                          const VectorReal &values ) {
-    if ( get_sh_jeveux_status() == 1 ) {
-        const ASTERINTEGER dim = idx.size();
-        if ( idx.size() != jdx.size() || idx.size() != values.size() ) {
-            throw std::runtime_error( "All lists must have same length" );
-        }
-        CALLO_MATR_ASSE_SET_VALUES( getName(), &dim, idx.data(), jdx.data(), values.data() );
-        _isFactorized = false;
+    const ASTERINTEGER dim = idx.size();
+    if ( idx.size() != jdx.size() || idx.size() != values.size() ) {
+        throw std::runtime_error( "All lists must have same length" );
     }
+    CALLO_MATR_ASSE_SET_VALUES( getName(), &dim, idx.data(), jdx.data(), values.data() );
+    _isFactorized = false;
 };
 
 template <>

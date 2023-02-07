@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -36,7 +36,7 @@ test = code_aster.TestCase()
 ####################################################################################
 
 
-mesh0 = code_aster.ParallelMesh.buildCube(refine=2)
+mesh0 = code_aster.ParallelMesh.buildCube(refine=1)
 
 mesh = CREA_MAILLAGE(MAILLAGE=mesh0, MODI_HHO=_F(TOUT="OUI"))
 
@@ -86,6 +86,19 @@ for form in ("LINEAIRE", "QUADRATIQUE"):
     u_diff = u_hho - u_sol
 
     test.assertAlmostEqual(u_diff.norm("NORM_2"), 0.0, delta=1e-8)
+
+    # test getValues on FieldOnNodes
+    u_depl = resu.getField("HHO_DEPL", para="INST", value=1.0)
+    test.assertAlmostEqual(
+        sum(u_depl.getValues(["DX", "DY", "DZ"], ["VOLUME"])),
+        sum(u_depl.getValues(["DX", "DY", "DZ"])),
+    )
+    test.assertAlmostEqual(
+        sum(u_depl.getValues(["DX", "DY", "DZ"], ["VOLUME"])), sum(u_depl.getValues())
+    )
+    test.assertAlmostEqual(sum(u_depl.getValues([], ["VOLUME"])), sum(u_depl.getValues()))
+    test.assertEqual(len(u_depl.getValues(["HHO_F1"], ["VOLUME"])), 0)
+    test.assertEqual(len(u_depl.getValues(["HHO_F1"], ["VOL"])), 0)
 
 # print("f=", f_hho.getValues())
 # print("u=", u_hho.getValues())

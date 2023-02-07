@@ -5,7 +5,7 @@
  * @file Mesh.h
  * @brief Fichier entete de la classe Mesh
  * @section LICENCE
- *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -78,7 +78,9 @@ class Mesh : public BaseMesh {
     void setGroupOfNodes( const std::string &name, const VectorLong &node_ids,
                           const bool localNumbering = false );
 
-    VectorLong getCells( const std::string name = "" ) const;
+    VectorLong getCells( const std::string name ) const;
+
+    VectorLong getCells( const VectorString &names = {} ) const;
 
     /**
      * @brief Return list of nodes
@@ -98,6 +100,9 @@ class Mesh : public BaseMesh {
      * @return list of nodes indexes
      */
     VectorLong getNodesFromCells( const std::string, const bool localNumbering = true,
+                                  const ASTERINTEGER same_rank = PythonBool::None ) const;
+
+    VectorLong getNodesFromCells( const VectorString &, const bool localNumbering = true,
                                   const ASTERINTEGER same_rank = PythonBool::None ) const;
 
     VectorLong getNodesFromCells( const VectorLong &cells, const bool localNumbering = true,

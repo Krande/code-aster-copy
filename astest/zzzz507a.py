@@ -77,14 +77,14 @@ maskField = CREA_CHAMP(
 )
 
 loadAsse2 = loadElem.assembleWithMask(numeDof, maskField, 0)
-nodalField2 = loadAsse2.exportToSimpleFieldOnNodes()
+nodalField2 = loadAsse2.toSimpleFieldOnNodes()
 nodalField2.updateValuePointers()
 
 test.assertAlmostEqual(nodalField2.getValue(2, 2), -0.15328124999999998)
 test.assertAlmostEqual(nodalField2.getValue(23, 2), 0)
 
 loadAsse3 = loadElem.assembleWithMask(numeDof, maskField, 1)
-nodalField3 = loadAsse3.exportToSimpleFieldOnNodes()
+nodalField3 = loadAsse3.toSimpleFieldOnNodes()
 nodalField3.updateValuePointers()
 
 test.assertAlmostEqual(nodalField3.getValue(22, 2), -0.6131250000000001)

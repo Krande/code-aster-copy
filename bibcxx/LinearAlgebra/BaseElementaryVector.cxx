@@ -1,5 +1,5 @@
 /* -------------------------------------------------------------------- */
-/* Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org             */
+/* Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org             */
 /* This file is part of code_aster.                                     */
 /*                                                                      */
 /* code_aster is free software: you can redistribute it and/or modify   */
@@ -34,8 +34,6 @@ BaseElementaryVector::assembleWithLoadFunctions( const BaseDOFNumberingPtr &dofN
     if ( ( !dofNume ) || dofNume->isEmpty() )
         raiseAsterError( "Numerotation is empty" );
 
-    FieldOnNodesRealPtr field = std::make_shared< FieldOnNodesReal >( dofNume );
-
     // Elementary vector names
     std::string vectElemName = getName();
 
@@ -53,17 +51,14 @@ BaseElementaryVector::assembleWithLoadFunctions( const BaseDOFNumberingPtr &dofN
         fomult = listOfLoadsFunc->getName();
 
     // Final assembling with load function
-    JeveuxVectorChar24 vectTmp2( name );
-    vectTmp2->updateValuePointer();
-    std::string name2( ( *vectTmp2 )[0].toString(), 0, 19 );
-    FieldOnNodesRealPtr vectTmp3( new FieldOnNodesReal( name2 ) );
-    field->allocateFrom( *vectTmp3 );
+    FieldOnNodesRealPtr field = std::make_shared< FieldOnNodesReal >( dofNume );
 
     std::string detr( "D" );
     std::string base = "G";
     std::string param( "INST" );
     CALLO_ASCOVA( detr, name, fomult, param, &time, typres, field->getName(), base );
 
+    field->updateValuePointers();
     return field;
 };
 
@@ -93,5 +88,6 @@ FieldOnNodesRealPtr BaseElementaryVector::assembleWithMask( const BaseDOFNumberi
 
     FreeStr( tabNames );
 
+    field->updateValuePointers();
     return field;
 };

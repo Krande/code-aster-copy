@@ -5,7 +5,7 @@
  * @file MechanicalLoadInterface.h
  * @brief Fichier entete de la classe MechanicalLoadInterface
  * @section LICENCE
- *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *

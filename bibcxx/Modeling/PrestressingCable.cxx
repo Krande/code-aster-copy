@@ -3,7 +3,7 @@
  * @brief Implementation de PrestressingCable
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 22018 EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 22023 EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *

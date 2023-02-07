@@ -86,7 +86,7 @@ test.assertFalse(resu.hasElementaryCharacteristics(1))
 resu = CALC_CHAMP(RESULTAT=resu, reuse=resu, CONTRAINTE=("SIEF_ELGA"))
 
 DEPL = resu.getFieldOnNodesReal("DEPL", 1)
-sfon = DEPL.exportToSimpleFieldOnNodes()
+sfon = DEPL.toSimpleFieldOnNodes()
 sfon.build()
 
 SIEF = resu.getFieldOnCellsReal("SIEF_ELGA", 1)

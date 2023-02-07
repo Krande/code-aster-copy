@@ -99,16 +99,30 @@ void Mesh::setGroupOfNodes( const std::string &name, const VectorLong &node_ids,
 };
 
 VectorLong Mesh::getCells( const std::string name ) const {
+    return getCells( VectorString( {name} ) );
+}
 
-    if ( name.empty() ) {
+VectorLong Mesh::getCells( const VectorString &names ) const {
+
+    if ( names.empty() ) {
         return irange( long( 0 ), long( getNumberOfCells() - 1 ) );
-    } else if ( !hasGroupOfCells( name ) ) {
-        return VectorLong();
     }
-    VectorLong cells = ( *_groupsOfCells )[name]->toVector();
-    for ( auto &cell : cells )
+
+    std::vector< VectorLong > cells;
+    cells.reserve( names.size() );
+
+    for ( auto &name : names ) {
+        if ( hasGroupOfCells( name ) ) {
+            cells.push_back( ( *_groupsOfCells )[name]->toVector() );
+        }
+    }
+
+    auto all_cells = unique( concatenate( cells ) );
+    for ( auto &cell : all_cells ) {
         cell -= 1;
-    return cells;
+    }
+
+    return all_cells;
 }
 
 VectorLong Mesh::getNodes( const std::string name, const bool, const ASTERINTEGER ) const {
@@ -145,6 +159,11 @@ VectorLong Mesh::getNodesFromCells( const VectorLong &cells, const bool,
     CALL_JEDEMA();
     return VectorLong( nodes.begin(), nodes.end() );
 }
+
+VectorLong Mesh::getNodesFromCells( const VectorString &names, const bool,
+                                    const ASTERINTEGER ) const {
+    return getNodesFromCells( this->getCells( names ) );
+};
 
 VectorLong Mesh::getNodesFromCells( const std::string name, const bool, const ASTERINTEGER ) const {
     return getNodesFromCells( this->getCells( name ) );

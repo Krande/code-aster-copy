@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -107,7 +107,7 @@ f3.EXTR_COMP().valeurs
 test.assertAlmostEqual(f3.norm("NORM_2"), 0)
 
 myField = code_aster.FieldOnNodesReal(dofNume)
-myField.setValues(1.0)
+myField.setValues({"DX": 1.0, "DY": 1.0, "DZ": 1.0, "XX": 1234.5})
 test.assertAlmostEqual(myField.norm("NORM_1"), 3 * nbNodes)
 
 field2 = field - myField
@@ -143,24 +143,8 @@ f3.EXTR_COMP().valeurs
 test.assertAlmostEqual(f3.norm("NORM_2"), 0)
 
 # Test TEST_RESU with TEST_TYPE='MIN','MAX', 'SOMME', 'SOMME_ABS'
-
-
-def return_index(mapDOF, node_gl):
-    """Find appropriate inedx in HPC"""
-
-    index = 0
-    for node, ddl in mapDOF:
-        if node == node_gl and ddl == "DX":
-            return index
-        else:
-            index += 1
-
-    raise RuntimeError("Node not find")
-
-
-test.printSummary()
 ftest = fieldp.duplicate()
-mapDOF = ftest.getNodesAndComponentsFromDOF(False)
+mapDOF = ftest.getDOFsFromNodesAndComponentsName(False)
 
 values_test = {
     "MAX": 4.0,
@@ -170,9 +154,9 @@ values_test = {
 }
 ftest.updateValuePointers()
 # for 'MAX' - DX
-ftest[return_index(mapDOF, 0)] = 4.0
+ftest[mapDOF[0, "DX"]] = 4.0
 # for 'MIN' - DX
-ftest[return_index(mapDOF, 15)] = -7.0
+ftest[mapDOF[15, "DX"]] = -7.0
 
 # Avec NOM_CMP
 TEST_RESU(
@@ -262,7 +246,7 @@ f_real.setValues(1.0)
 vals_real = f_real.EXTR_COMP("DX").valeurs
 test.assertEqual(vals_real[0], 1.0)
 
-sf_real = f_real.exportToSimpleFieldOnNodes()
+sf_real = f_real.toSimpleFieldOnNodes()
 sf_real_values, sf_real_mask = sf_real.getValues()
 test.assertEqual(sf_real_values[0][0], 1.0)
 test.assertEqual(sf_real_mask.all(), True)
@@ -277,7 +261,7 @@ f2_complex = code_aster.FieldOnNodesComplex(dofNume)
 f2_complex.setValues(1 + 5j)
 dot_f_f2 = sum(
     f_complex.getValues()[p] * f2_complex.getValues()[p].conjugate()
-    for p in range(len(f_complex.getValues()))
+    for p in range(len(f_complex.getValues(["DX", "DY", "DZ"])))
 )
 test.assertEqual(f_complex.dot(f2_complex), dot_f_f2)
 test.assertEqual(f_complex.norm("NORM_1"), sum(map(abs, f_complex.getValues())))
@@ -286,11 +270,11 @@ test.assertEqual(
 )
 test.assertEqual(f_complex.norm("NORM_INFINITY"), max(map(abs, f_complex.getValues())))
 
-sf_complex = f_complex.exportToSimpleFieldOnNodes()
+sf_complex = f_complex.toSimpleFieldOnNodes()
 sf_complex_values, sf_complex_mask = sf_complex.getValues()
 test.assertEqual(sf_complex_values[0][0], 1 + 2j)
 test.assertEqual(sf_complex_mask.all(), True)
 
 #
-
+test.printSummary()
 code_aster.close()

@@ -28,7 +28,7 @@ import aster
 from ..Commands import CREA_MAILLAGE
 from ..Objects import Mesh, PythonBool
 from ..Objects.Serialization import InternalStateBuilder
-from ..Utilities import injector
+from ..Utilities import injector, force_list
 from ..Utilities.MedUtils.MEDConverter import convertMesh2MedCoupling
 from . import mesh_builder
 
@@ -314,7 +314,7 @@ class ExtendedMesh:
         """Returns the nodes indexes of a group of cells.
 
         Arguments:
-            group_name (str): Name of the group.
+            group_name (str/list[str]): Name of the groups.
             localNumbering (bool): not used (for compatibilty with ParallelMesh)
             same_rank (bool): not used (for compatibilty with ParallelMesh)
 
@@ -324,4 +324,4 @@ class ExtendedMesh:
 
         val = {None: PythonBool.NONE, True: PythonBool.TRUE, False: PythonBool.FALSE}
 
-        return self._getNodesFromCells(group_name, localNumbering, val[same_rank])
+        return self._getNodesFromCells(force_list(group_name), localNumbering, val[same_rank])

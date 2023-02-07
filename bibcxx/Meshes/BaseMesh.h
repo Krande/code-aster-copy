@@ -257,6 +257,11 @@ class BaseMesh : public DataStructure, public ListOfTables {
         return {};
     }
 
+    virtual VectorLong getCells( const VectorString &names ) const {
+        AS_ASSERT( false );
+        return {};
+    }
+
     /**
      * @brief Returns the nodes indexes of a group of nodes
      * @return VectorLong
@@ -273,6 +278,13 @@ class BaseMesh : public DataStructure, public ListOfTables {
      * @return VectorLong
      */
     virtual VectorLong getNodesFromCells( const std::string name, const bool localNumbering = true,
+                                          const ASTERINTEGER same_rank = PythonBool::None ) const {
+        AS_ASSERT( false );
+        return {};
+    }
+
+    virtual VectorLong getNodesFromCells( const VectorString &names,
+                                          const bool localNumbering = true,
                                           const ASTERINTEGER same_rank = PythonBool::None ) const {
         AS_ASSERT( false );
         return {};

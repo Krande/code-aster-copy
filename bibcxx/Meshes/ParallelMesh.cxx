@@ -188,17 +188,30 @@ void ParallelMesh::setGroupOfNodes( const std::string &name, const VectorLong &n
 };
 
 VectorLong ParallelMesh::getCells( const std::string name ) const {
+    return getCells( VectorString( {name} ) );
+}
 
-    if ( name.empty() ) {
+VectorLong ParallelMesh::getCells( const VectorString &names ) const {
+
+    if ( names.empty() ) {
         return irange( long( 0 ), long( getNumberOfCells() - 1 ) );
-    } else if ( !hasGroupOfCells( name, true ) ) {
-        return VectorLong();
     }
 
-    VectorLong cells = ( *_groupsOfCells )[name]->toVector();
-    for ( auto &cell : cells )
+    std::vector< VectorLong > cells;
+    cells.reserve( names.size() );
+
+    for ( auto &name : names ) {
+        if ( hasGroupOfCells( name, true ) ) {
+            cells.push_back( ( *_groupsOfCells )[name]->toVector() );
+        }
+    }
+
+    auto all_cells = unique( concatenate( cells ) );
+    for ( auto &cell : all_cells ) {
         cell -= 1;
-    return cells;
+    }
+
+    return all_cells;
 }
 
 VectorLong ParallelMesh::getNodes( const std::string name, const bool localNumbering,
@@ -313,6 +326,11 @@ VectorLong ParallelMesh::getNodesFromCells( const VectorLong &cells, const bool 
 VectorLong ParallelMesh::getNodesFromCells( const std::string name, const bool localNumbering,
                                             const ASTERINTEGER same_rank ) const {
     return getNodesFromCells( getCells( name ), localNumbering, same_rank );
+};
+
+VectorLong ParallelMesh::getNodesFromCells( const VectorString &names, const bool localNumbering,
+                                            const ASTERINTEGER same_rank ) const {
+    return getNodesFromCells( getCells( names ), localNumbering, same_rank );
 };
 
 VectorLong ParallelMesh::getInnerCells() const {

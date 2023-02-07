@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -59,7 +59,7 @@ test.assertEqual(U2_2.getFieldsOnCellsRealNames(), ["SIEF_ELGA", "VARI_ELGA"])
 
 ranks = dico_par["NUME_ORDRE"]
 rf = U2_2.getField("DEPL", ranks[0])
-sf = rf.exportToSimpleFieldOnNodes()
+sf = rf.toSimpleFieldOnNodes()
 
 values, mask = sf.getValues()
 test.assertAlmostEqual(values[3, 0], 0.314065725792971)

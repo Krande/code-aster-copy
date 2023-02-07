@@ -154,7 +154,7 @@ with shared_tmpdir("zzzz504a_") as tmpdir:
 # resu.printMedFile('/tmp/seq.resu.med')
 
 MyFieldOnNodes = resu.getFieldOnNodesReal("DEPL", 1)
-sfon = MyFieldOnNodes.exportToSimpleFieldOnNodes()
+sfon = MyFieldOnNodes.toSimpleFieldOnNodes()
 if parallel:
     test.assertAlmostEqual(sfon.getValue(2, 0), 0.5175556367605225)
 else:

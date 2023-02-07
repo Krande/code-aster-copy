@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -23,7 +23,7 @@ code_aster.init("--test", "--continue")
 
 test = code_aster.TestCase()
 
-pres_noeu = RESU.getFieldOnNodesReal("PRES_NOEU", 8).exportToSimpleFieldOnNodes()
+pres_noeu = RESU.getFieldOnNodesReal("PRES_NOEU", 8).toSimpleFieldOnNodes()
 values, mask = pres_noeu.getValues()
 test.assertEqual(values.shape, mask.shape)
 test.assertEqual(values.shape, (430, 1))
