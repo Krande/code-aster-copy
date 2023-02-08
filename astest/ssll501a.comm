@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2016  EDF R2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2016  EDF R2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -165,7 +165,13 @@ CHMTM = AFFE_MATERIAU(
 # RESOLUTION EN STATIQUE LINEAIRE ***************************
 
 
-RESU = MECA_STATIQUE(MODELE=MODELE, CHAM_MATER=CHMTM, CARA_ELEM=CARA_POU, EXCIT=(_F(CHARGE=BLOQU),))
+RESU = MECA_STATIQUE(
+    MODELE=MODELE,
+    CHAM_MATER=CHMTM,
+    CARA_ELEM=CARA_POU,
+    EXCIT=(_F(CHARGE=BLOQU),),
+    SOLVEUR=_F(POSTTRAITEMENTS="FORCE"),
+)
 
 RESU = CALC_CHAMP(reuse=RESU, RESULTAT=RESU, CONTRAINTE=("SIPM_ELNO", "EFGE_ELNO", "EFGE_NOEU"))
 

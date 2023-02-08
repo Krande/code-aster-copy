@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -69,6 +69,7 @@ LOG = STAT_NON_LINE(
     NEWTON=_F(MATRICE="TANGENTE", PREDICTION="EXTRAPOLE", REAC_ITER=1),
     CONVERGENCE=_F(RESI_GLOB_RELA=1.0e-6, ITER_GLOB_MAXI=50),
     RECH_LINEAIRE=_F(ITER_LINE_MAXI=3),
+    SOLVEUR=_F(RESI_RELA=1.0e-6),
 )
 
 LOGMF = STAT_NON_LINE(
@@ -86,6 +87,7 @@ LOGMF = STAT_NON_LINE(
     NEWTON=_F(MATRICE="TANGENTE", PREDICTION="EXTRAPOLE", REAC_ITER=1),
     CONVERGENCE=_F(RESI_GLOB_RELA=1.0e-6, ITER_GLOB_MAXI=50),
     RECH_LINEAIRE=_F(ITER_LINE_MAXI=3),
+    SOLVEUR=_F(RESI_RELA=1.0e-6),
 )
 
 
@@ -176,6 +178,7 @@ SM = STAT_NON_LINE(
     NEWTON=_F(MATRICE="TANGENTE", PREDICTION="EXTRAPOLE", REAC_ITER=1),
     CONVERGENCE=_F(RESI_GLOB_RELA=1.0e-6, ITER_GLOB_MAXI=50),
     RECH_LINEAIRE=_F(ITER_LINE_MAXI=3),
+    SOLVEUR=_F(RESI_RELA=1.0e-6),
 )
 
 
@@ -259,6 +262,7 @@ SMF = STAT_NON_LINE(
     NEWTON=_F(MATRICE="ELASTIQUE", PREDICTION="EXTRAPOLE"),
     CONVERGENCE=_F(RESI_GLOB_MAXI=5.0e-6, ITER_GLOB_MAXI=150),
     RECH_LINEAIRE=_F(ITER_LINE_MAXI=5),
+    SOLVEUR=_F(RESI_RELA=1.0e-6),
 )
 
 # IMPR_RESU(FORMAT="RESULTAT",RESU=_F(RESULTAT=SMF))
