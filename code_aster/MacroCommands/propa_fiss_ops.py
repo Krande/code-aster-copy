@@ -992,6 +992,9 @@ def propa_fiss_ops(self, METHODE_PROPA, INFO, **args):
         mm = [None] * Nbfissure
         __MMX = [None] * Nbfissure
 
+        MAIL_STRUC = args["MAIL_STRUC"]
+        dime = MAIL_STRUC.getDimension()
+
         # DEUXIEME BOUCLE SUR LES FISSURES : PROPAGATION
         for numfis, Fiss in enumerate(Fissures):
             fiss0 = Fiss["FISS_ACTUELLE"]
@@ -999,7 +1002,7 @@ def propa_fiss_ops(self, METHODE_PROPA, INFO, **args):
             print("TRAITEMENT DE LA FISSURE ", fiss0.getName())
             print("-------------------------------------------")
             MAIL_FISS1 = Fiss["MAIL_ACTUEL"]
-            dime = MAIL_FISS1.sdj.DIME.get()[5]
+            
             MFOND = Fiss["GROUP_MA_FOND"]
             MFISS = Fiss["GROUP_MA_FISS"]
 
@@ -1336,7 +1339,6 @@ def propa_fiss_ops(self, METHODE_PROPA, INFO, **args):
 
         # Sauvegarde maillage concatene
         MAIL_TOTAL = args.get("MAIL_TOTAL")
-        MAIL_STRUC = args["MAIL_STRUC"]
         ma_tot = ASSE_MAILLAGE(
             MAILLAGE_1=MAIL_STRUC, MAILLAGE_2=__MMX[Nbfissure - 1], OPERATION="SUPERPOSE"
         )

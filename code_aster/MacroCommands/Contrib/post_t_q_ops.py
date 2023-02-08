@@ -253,16 +253,14 @@ def get_noeud_a_calculer(Lnoff, ndim, FOND_FISS, MAILLAGE, EnumTypes, args):
         NO_SANS = []
         NO_AVEC = []
         if GROUP_NO is not None:
-            collgrno = MAILLAGE.sdj.GROUPENO.get()
-            cnom = MAILLAGE.sdj.NOMNOE.get()
             if type(GROUP_NO) not in EnumTypes:
                 GROUP_NO = (GROUP_NO,)
             for m in range(len(GROUP_NO)):
                 ngrno = GROUP_NO[m].ljust(24).upper()
-                if ngrno not in list(collgrno.keys()):
+                if ngrno not in MAILLAGE.getGroupsOfNodes():
                     UTMESS("F", "RUPTURE0_13", valk=ngrno)
-                for i in range(len(collgrno[ngrno])):
-                    NO_AVEC.append(cnom[collgrno[ngrno][i] - 1])
+                for i in MAILLAGE.getNodes(ngrno):
+                    NO_AVEC.append(MAILLAGE.getNodeName(i))
             NO_AVEC = list(map(lambda x: x.rstrip(), NO_AVEC))
         if NOEUD is not None:
             if type(NOEUD) not in EnumTypes:
@@ -270,16 +268,14 @@ def get_noeud_a_calculer(Lnoff, ndim, FOND_FISS, MAILLAGE, EnumTypes, args):
             else:
                 NO_AVEC = NOEUD
         if SANS_GROUP_NO is not None:
-            collgrno = MAILLAGE.sdj.GROUPENO.get()
-            cnom = MAILLAGE.sdj.NOMNOE.get()
             if type(SANS_GROUP_NO) not in EnumTypes:
                 SANS_GROUP_NO = (SANS_GROUP_NO,)
             for m in range(len(SANS_GROUP_NO)):
                 ngrno = SANS_GROUP_NO[m].ljust(24).upper()
-                if ngrno not in list(collgrno.keys()):
+                if ngrno not in MAILLAGE.getGroupsOfNodes():
                     UTMESS("F", "RUPTURE0_13", valk=ngrno)
-                for i in range(len(collgrno[ngrno])):
-                    NO_SANS.append(cnom[collgrno[ngrno][i] - 1])
+                for i in MAILLAGE.getNodes(ngrno):
+                    NO_SANS.append(MAILLAGE.getNodeName(i))
             NO_SANS = list(map(lambda x: x.rstrip(), NO_SANS))
         if SANS_NOEUD is not None:
             if type(SANS_NOEUD) not in EnumTypes:
@@ -359,8 +355,9 @@ def get_direction(Nnoff, ndim, Lnoff, FOND_FISS, MAILLAGE):
     # suppresion des coordonnées du projeté du noeud, non utilisées ici
     basloc = NP.array(basloc).reshape((len(basloc) // nb_comp_basloc), nb_comp_basloc)[:, ndim:]
     # recuperation des valeurs dans baseloc en indexant sur les noeuds du fond de fissure
-    nomnoe = [i.strip() for i in MAILLAGE.sdj.NOMNOE.get()]
-    Basefo = basloc[[nomnoe.index(item) for item in Lnoff], :].flatten()
+    
+    index_by_nodename = {MAILLAGE.getNodeName(i):i for i in MAILLAGE.getNodes()}
+    Basefo = basloc[[index_by_nodename[nodename] for nodename in Lnoff], :].flatten()
 
     VNOR = [None] * Nnoff
     VDIR = [None] * Nnoff

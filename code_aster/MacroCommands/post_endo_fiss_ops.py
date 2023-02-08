@@ -74,7 +74,7 @@ def cherche_trajet(
     dplan1 = infoPlan[3]
     dplan2 = infoPlan[4]
 
-    dime = __mail.sdj.DIME.get()[5]
+    dime = __mail.getDimension()
 
     # ---------------------------------
     # SEARCH PARAMETERS
@@ -801,7 +801,7 @@ def post_endo_fiss_ops(
         else:
             __mail = __RESUIN.getModel().getMesh()
 
-    dime = __mail.sdj.DIME.get()[5]
+    dime = __mail.getDimension()
 
     # --------------------------------------------------
     # CONTROLS ON THE INPUT FIELDS

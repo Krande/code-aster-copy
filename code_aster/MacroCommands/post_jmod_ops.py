@@ -5507,7 +5507,6 @@ def post_jmod_ops(
         # print(args)
         # print("GROUP_NO from cmd file",GROUP_NO)
 
-        # help(MAIL.sdj.GROUPENO)
         if GROUP_NO is not None:
             # print("collgrno keys",collgrno.keys())
             # print("collgrno ",collgrno)

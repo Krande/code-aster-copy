@@ -124,14 +124,12 @@ def dyna_visco_harm(
                     elif direction[i_nf][j] == 5:
                         ddl_phys[i_nf].append("DRZ")
 
-            no_mail = maillage.sdj.NOMNOE.get()  # name of the nodes presents in the maillage
-
             for i in range(1, len(no_force) + 1):
                 mc_composante = {}
                 mc_composante["AVEC_CMP"] = tuple(ddl_phys[i - 1])
 
                 mc_force_nodale.append(
-                    _F(NOEUD=(no_mail[(no_force[i][0] - 1)].strip()), **mc_composante)
+                    _F(NOEUD=(maillage.getNodeName(no_force[i][0] - 1)), **mc_composante)
                 )
 
     if l_force_nodale == False:

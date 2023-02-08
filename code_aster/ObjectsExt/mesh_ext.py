@@ -226,24 +226,24 @@ class ExtendedMesh:
     def LIST_GROUP_NO(self):
         """Retourne la liste des groupes de noeuds sous la forme :
         [ (gno1, nb noeuds  gno1), ...]"""
-        dic_gpno = self.sdj.GROUPENO.get()
-        if dic_gpno is None:
+        node_groups = self.getGroupsOfNodes()
+        if not node_groups:
             return []
-        return [(gpno.strip(), len(dic_gpno[gpno])) for gpno in dic_gpno]
+        return [(node_group, len(self.getNodes(node_group))) for node_group in node_groups]
 
     def LIST_GROUP_MA(self):
         """Retourne la liste des groupes de mailles sous la forme :
         [ (gma1, nb mailles gma1, dime max des mailles gma1), ...]"""
-        ltyma = aster.getvectjev("&CATA.TM.NOMTM")
-        catama = aster.getcolljev("&CATA.TM.TMDIM")
-        dic_gpma = self.sdj.GROUPEMA.get()
-        if dic_gpma is None:
+        catama = {x.strip():y for x,y in aster.getcolljev("&CATA.TM.TMDIM").items()}
+        cell_groups = self.getGroupsOfCells()
+        if not cell_groups:
             return []
-        dimama = [catama[ltyma[ma - 1].ljust(24)][0] for ma in self.sdj.TYPMAIL.get()]
+        print(catama)
         ngpma = []
-        for grp in list(dic_gpma.keys()):
-            dim = max([dimama[ma - 1] for ma in dic_gpma[grp]])
-            ngpma.append((grp.strip(), len(dic_gpma[grp]), dim))
+        for grp in cell_groups:
+            cells = self.getCells(grp)
+            dim = max([catama[self.getCellTypeName(cell)] for cell in cells])
+            ngpma.append((grp.strip(), len(cells), dim))
         return ngpma
 
     def buildFromMedCouplingMesh(self, mcmesh, verbose=0):

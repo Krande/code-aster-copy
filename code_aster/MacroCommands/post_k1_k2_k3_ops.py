@@ -308,17 +308,14 @@ def get_noeud_a_calculer(Lnoff, ndim, FOND_FISS, MAILLAGE, EnumTypes, args):
         NO_AVEC = []
 
         if GROUP_NO is not None:
-            collgrno = MAILLAGE.sdj.GROUPENO.get()
-            cnom = MAILLAGE.sdj.NOMNOE.get()
             if type(GROUP_NO) not in EnumTypes:
                 GROUP_NO = (GROUP_NO,)
 
             for grpno in GROUP_NO:
-                ngrno = grpno.ljust(24)
-                if ngrno not in list(collgrno.keys()):
-                    UTMESS("F", "RUPTURE0_13", valk=ngrno)
-                for node in collgrno[ngrno]:
-                    NO_AVEC.append(cnom[node - 1])
+                if grpno not in MAILLAGE.getGroupsOfNodes():
+                    UTMESS("F", "RUPTURE0_13", valk=grpno)
+                for node in MAILLAGE.getNodes(grpno):
+                    NO_AVEC.append(MAILLAGE.getNodeName(node))
             NO_AVEC = list(map(lambda x: x.rstrip(), NO_AVEC))
         else:
             if (MAILLAGE.isQuadratic()) and (TOUT is None):
@@ -327,16 +324,13 @@ def get_noeud_a_calculer(Lnoff, ndim, FOND_FISS, MAILLAGE, EnumTypes, args):
                 NO_AVEC = Lnoff
 
         if SANS_GROUP_NO is not None:
-            collgrno = MAILLAGE.sdj.GROUPENO.get()
-            cnom = MAILLAGE.sdj.NOMNOE.get()
             if type(SANS_GROUP_NO) not in EnumTypes:
                 SANS_GROUP_NO = (SANS_GROUP_NO,)
             for grpno in SANS_GROUP_NO:
-                ngrno = grpno.ljust(24)
-                if ngrno not in list(collgrno.keys()):
-                    UTMESS("F", "RUPTURE0_13", valk=ngrno)
-                for node in collgrno[ngrno]:
-                    NO_SANS.append(cnom[node - 1])
+                if grpno not in MAILLAGE.getGroupsOfNodes():
+                    UTMESS("F", "RUPTURE0_13", valk=grpno)
+                for node in MAILLAGE.getNodes(grpno):
+                    NO_SANS.append(MAILLAGE.getNodeName(node))
             NO_SANS = list(map(lambda x: x.rstrip(), NO_SANS))
 
         # verification que les noeuds "AVEC" et "SANS" appartiennent au fond de
@@ -407,8 +401,8 @@ def get_direction(Nnoff, ndim, Lnoff, FOND_FISS, MAILLAGE):
     # suppresion des coordonnées du projeté du noeud, non utilisées ici
     basloc = NP.array(basloc).reshape((len(basloc) // nb_comp_basloc), nb_comp_basloc)[:, ndim:]
     #   recuperation des valeurs dans baseloc en indexant sur les noeuds du fond de fissure
-    nomnoe = [i.strip() for i in MAILLAGE.sdj.NOMNOE.get()]
-    Basefo = basloc[[nomnoe.index(item) for item in Lnoff], :].flatten()
+    index_by_nodename = {MAILLAGE.getNodeName(i):i for i in MAILLAGE.getNodes()}
+    Basefo = basloc[[index_by_nodename[nodename] for nodename in Lnoff], :].flatten()
 
     VNOR = [None] * Nnoff
     VDIR = [None] * Nnoff
@@ -1065,7 +1059,7 @@ def get_propmat_varc_fem(
     # blindage sur le nombre de noeuds du champ / nombre de noeuds du maillage
     # -> permet de se premunir de l'oubli du couple (OP.INIT_VARC.PVARCNO, LC.ZVARCNO)
     #    en para_out de l'option INIT_VARC d'un catalogue EF
-    NbNoMa = MAILLAGE.sdj.DIME.get()[0]
+    NbNoMa = MAILLAGE.getNumberOfNodes()
     if len(ChnoVrcNoeu) != NbNoMa:
         UTMESS("F", "RUPTURE0_2", valk=para_fonc, vali=[len(ChnoVrcNoeu), NbNoMa])
 
@@ -1146,7 +1140,7 @@ def get_propmat_varc_xfem(
     # blindage sur le nombre de noeuds du champ / nombre de noeuds du maillage
     # -> permet de se premunir de l'oubli du couple (OP.INIT_VARC.PVARCNO, LC.ZVARCNO)
     #    en para_out de l'option INIT_VARC d'un catalogue EF
-    NbNoMa = MAILLAGE.sdj.DIME.get()[0]
+    NbNoMa = MAILLAGE.getNumberOfNodes()
     if len(ChnoVrcNoeu) != NbNoMa:
         UTMESS("F", "RUPTURE0_2", valk=para_fonc, vali=[len(ChnoVrcNoeu), NbNoMa])
 

@@ -17,7 +17,6 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-import aster
 from ..Cata.Syntax import _F
 from ..Commands import CALC_FONCTION, CREA_TABLE, IMPR_FONCTION, RECU_FONCTION
 from ..Messages import UTMESS
@@ -44,9 +43,6 @@ def macr_spectre_ops(self, **args):
 
     # construction de la liste des noeuds à traiter
     planch_nodes = {}
-    if MAILLAGE:
-        dic_gpno = aster.getcolljev(MAILLAGE.getName().ljust(8) + ".GROUPENO")
-        l_nodes = aster.getvectjev(MAILLAGE.getName().ljust(8) + ".NOMNOE")
     l_plancher = []
     l_batiment = []
     l_commentaire = []
@@ -70,12 +66,12 @@ def macr_spectre_ops(self, **args):
                 assert MAILLAGE is not None
                 if type(plancher["GROUP_NO"]) == str:
                     noms_no = [
-                        l_nodes[n - 1].strip() for n in dic_gpno[plancher["GROUP_NO"].ljust(24)]
+                         MAILLAGE.getNodeName(n) for n in MAILLAGE.getNodes(plancher["GROUP_NO"])
                     ]
                     liste_no = liste_no + noms_no
                 else:
                     for group_no in plancher["GROUP_NO"]:
-                        noms_no = [l_nodes[n - 1].strip() for n in dic_gpno[group_no.ljust(24)]]
+                        noms_no = [MAILLAGE.getNodeName(n) for n in MAILLAGE.getNodes(group_no)]
                         liste_no = liste_no + noms_no
         planch_nodes[plancher["NOM"]] = liste_no
         l_plancher.append(plancher["NOM"])

@@ -56,9 +56,6 @@ def calc_spectre_ipm_ops(
     # construction de la liste des noeuds à traiter
     planch_nodes = {}
     planch_param = {}
-    if MAILLAGE:
-        dic_gpno = aster.getcolljev(MAILLAGE.getName().ljust(8) + ".GROUPENO")
-        l_nodes = aster.getvectjev(MAILLAGE.getName().ljust(8) + ".NOMNOE")
     l_plancher = []
     #
     dplancher = []
@@ -80,12 +77,12 @@ def calc_spectre_ipm_ops(
                 assert MAILLAGE is not None
                 if type(plancher["GROUP_NO"]) is str:
                     noms_no = [
-                        l_nodes[n - 1].strip() for n in dic_gpno[plancher["GROUP_NO"].ljust(24)]
+                        MAILLAGE.getNodeName(n) for n in MAILLAGE.getNodes(plancher["GROUP_NO"])
                     ]
                     liste_no = liste_no + noms_no
                 else:
                     for group_no in plancher["GROUP_NO"]:
-                        noms_no = [l_nodes[n - 1].strip() for n in dic_gpno[group_no.ljust(24)]]
+                        noms_no = [MAILLAGE.getNodeName(n) for n in MAILLAGE.getNodes(group_no)]
                         liste_no = liste_no + noms_no
         planch_nodes[plancher["NOM"]] = liste_no
         l_plancher.append(plancher["NOM"])
