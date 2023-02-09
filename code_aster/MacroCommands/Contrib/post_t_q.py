@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -38,7 +38,6 @@ POST_T_Q_CATA = MACRO(
         statut="o",
         typ="TXM",
         into=("3D", "AXIS", "D_PLAN", "C_PLAN"),
-        position="global",
         fr=tr("Modélisation cohérente avec celle utilisée pour le calcul des déplacements"),
     ),
     FOND_FISS=SIMP(statut="f", typ=fond_fissure),
@@ -46,7 +45,6 @@ POST_T_Q_CATA = MACRO(
     RESULTAT=SIMP(
         statut="o",
         typ=(evol_elas, evol_noli, mode_meca),
-        position="global",
         fr=tr("Déplacement des noeuds de la lèvre supérieure et inférieure"),
     ),
     NB_NOEUD_COUPE=SIMP(statut="f", typ="I", defaut=5, val_min=3),
