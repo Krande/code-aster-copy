@@ -57,7 +57,6 @@ subroutine intnewm(sd_dtm_, sd_int_, buffdtm, buffint)
     real(kind=8), pointer :: depl2(:) => null()
     real(kind=8), pointer :: vite2(:) => null()
     real(kind=8), pointer :: acce2(:) => null()
-    real(kind=8), pointer :: fext2(:) => null()
 
     real(kind=8), pointer :: mgen(:) => null()
     real(kind=8), pointer :: kgen(:) => null()
@@ -105,7 +104,7 @@ subroutine intnewm(sd_dtm_, sd_int_, buffdtm, buffint)
     call intget(sd_int, DEPL, iocc=1, vr=depl1, lonvec=nbequ, buffer=buffint)
     call intget(sd_int, VITE, iocc=1, vr=vite1, buffer=buffint)
     call intget(sd_int, ACCE, iocc=1, vr=acce1, buffer=buffint)
-    call intget(sd_int, FORCE_EX, iocc=1, vr=fext1, buffer=buffint)
+
 
 !   2 - Detection of the initial call to the Newmark algorithm
 !       DEPL/2 does not exist in the buffer
@@ -200,7 +199,6 @@ subroutine intnewm(sd_dtm_, sd_int_, buffdtm, buffint)
         call intinivec(sd_int, DEPL, nbequ, iocc=2, vr=depl2)
         call intinivec(sd_int, VITE, nbequ, iocc=2, vr=vite2)
         call intinivec(sd_int, ACCE, nbequ, iocc=2, vr=acce2)
-        call intinivec(sd_int, FORCE_EX, nbequ, iocc=2, vr=fext2)
 !
         dtold = dt
 !
@@ -220,16 +218,22 @@ subroutine intnewm(sd_dtm_, sd_int_, buffdtm, buffint)
         call intget(sd_int, DEPL, iocc=2, vr=depl2, buffer=buffint)
         call intget(sd_int, VITE, iocc=2, vr=vite2, buffer=buffint)
         call intget(sd_int, ACCE, iocc=2, vr=acce2, buffer=buffint)
-        call intget(sd_int, FORCE_EX, iocc=2, vr=fext2, buffer=buffint)
 !
         call intget(sd_int, STEP, iocc=2, rscal=dtold, buffer=buffint)
     end if
+
+!   3 - Computing FORCE/2 (t_i+1)
+    call intsav(sd_int, TIME , 1, iocc=2, rscal=t1+dt, buffer=buffint)
+    call intsav(sd_int, STEP , 1, iocc=2, rscal=dt, buffer=buffint)
+    call intsav(sd_int, INDEX, 1, iocc=2, iscal=ind1+1, buffer=buffint)
+    call dtmforc(sd_dtm, sd_int, 2, buffdtm, buffint)
+    call intget(sd_int, FORCE_EX, iocc=2, vr=fext1, buffer=buffint)
 
     coeff = dt/dtold
 
     call intget(sd_int, MAT_UPDT, iscal=upmat, buffer=buffint)
 
-!   3 - Updating the operators in the event of a change in dt or a matrix update
+!   4 - Updating the operators in the event of a change in dt or a matrix update
 !       (case of implicit consideration of non-linearities)
     if ((upmat .eq. 1) .or. (abs(coeff-1.d0) .ge. epsi)) then
         if (upmat .eq. 1) then
@@ -277,7 +281,7 @@ subroutine intnewm(sd_dtm_, sd_int_, buffdtm, buffint)
                           ktilda, ftild1, ftild2, ftild3)
     end if
 
-!   4 - Calculating DEPL/2 (t_i+1)according to the equation
+!   5 - Calculating DEPL/2 (t_i+1)according to the equation
 !      ktilda(i,j) * depl2(i) =  fext1(i)              +  ftild1(i,j)*vite1(i)  + &
 !                                ftild2(i,j)*depl1(i)  +  ftild3(i,j)*acce1(i)
 
@@ -306,7 +310,7 @@ subroutine intnewm(sd_dtm_, sd_int_, buffdtm, buffint)
         call rrlds(ktilda, nbequ, nbequ, depl2, 1)
     end if
 
-!   5 - Calculating VITE/ACCE/2 (t_i+1) according to the equation
+!   6 - Calculating VITE/ACCE/2 (t_i+1) according to the equation
 !       acce2(i) = -a4*acce1(i) + a1*(depl2(i) - depl1(i) - dt*vite1(i))
 !       vite2(i) =     vite1(i) + a7*acce1(i) + a8*acce2(i)
 !
@@ -315,18 +319,10 @@ subroutine intnewm(sd_dtm_, sd_int_, buffdtm, buffint)
         vite2(i) = vite1(i)+a(7)*acce1(i)+a(8)*acce2(i)
     end do
 
-!   6 - Calculating FORCE/2 (t_i+1) necessary for the subsequent steps
-    call intsav(sd_int, TIME, 1, iocc=2, rscal=t1+dt, buffer=buffint)
-    call intsav(sd_int, STEP, 1, iocc=2, rscal=dt, buffer=buffint)
-    call intsav(sd_int, INDEX, 1, iocc=2, iscal=ind1+1, buffer=buffint)
-
-    call dtmforc(sd_dtm, sd_int, 2, buffdtm, buffint)
-
 !   7 - Preparing the algorithm for the next step, copy index 2 in 1
     call dcopy(nbequ, depl2, 1, depl1, 1)
     call dcopy(nbequ, vite2, 1, vite1, 1)
     call dcopy(nbequ, acce2, 1, acce1, 1)
-    call dcopy(nbequ, fext2, 1, fext1, 1)
     call intsav(sd_int, STEP, 1, iocc=1, rscal=dt, buffer=buffint)
     call intsav(sd_int, TIME, 1, iocc=1, rscal=t1+dt, buffer=buffint)
     call intsav(sd_int, INDEX, 1, iocc=1, iscal=ind1+1, buffer=buffint)
