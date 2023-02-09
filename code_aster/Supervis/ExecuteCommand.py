@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -202,15 +202,6 @@ class ExecuteCommand(object):
         remove_none(keywords)
         try:
             self.check_syntax(keywords)
-        except (CheckerError, AssertionError, KeyError, TypeError, ValueError) as exc:
-            # in case of syntax error, show the syntax and raise the exception
-            self.print_syntax(keywords)
-            ExecuteCommand.level -= 1
-            msg = getattr(exc, "msg", str(exc))
-            if ExecutionParameter().option & Options.Debug:
-                logger.error(msg)
-                raise
-            UTMESS("F", "SUPERVIS_4", valk=(self.command_name, msg))
         finally:
             timer.Stop(" . check syntax")
         self.adapt_syntax(keywords)
@@ -449,9 +440,19 @@ class ExecuteCommand(object):
             keywords (dict): Keywords arguments of user's keywords, changed
                 in place.
         """
-        logger.debug("checking syntax of %s...", self.name)
-        max_check = ExecutionParameter().get_option("max_check")
-        checkCommandSyntax(self._cata, keywords, add_default=False, max_check=max_check)
+        try:
+            logger.debug("checking syntax of %s...", self.name)
+            max_check = ExecutionParameter().get_option("max_check")
+            checkCommandSyntax(self._cata, keywords, add_default=False, max_check=max_check)
+        except (CheckerError, AssertionError, KeyError, TypeError, ValueError) as exc:
+            # in case of syntax error, show the syntax and raise the exception
+            self.print_syntax(keywords)
+            ExecuteCommand.level -= 1
+            msg = getattr(exc, "msg", str(exc))
+            if ExecutionParameter().option & Options.Debug:
+                logger.error(msg)
+                raise
+            UTMESS("F", "SUPERVIS_4", valk=(self.command_name, msg))
 
     def create_result(self, keywords):
         """Create the result before calling the *exec* command function

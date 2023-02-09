@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -99,6 +99,7 @@ from .defi_list_enti import DEFI_LIST_ENTI
 from .defi_list_inst import DEFI_LIST_INST
 from .defi_list_reel import DEFI_LIST_REEL
 from .defi_maillage import DEFI_MAILLAGE
+from .defi_materiau import DEFI_MATERIAU
 from .defi_modele_gene import DEFI_MODELE_GENE
 from .defi_nappe import DEFI_NAPPE
 from .defi_obstacle import DEFI_OBSTACLE
@@ -130,7 +131,6 @@ from .info_exec_aster import INFO_EXEC_ASTER
 from .info_mode import INFO_MODE
 from .info_resu import INFO_RESU
 from .lire_champ import LIRE_CHAMP
-from .lire_fonction import LIRE_FONCTION
 from .lire_forc_miss import LIRE_FORC_MISS
 from .lire_impe_miss import LIRE_IMPE_MISS
 from .lire_maillage import LIRE_MAILLAGE
