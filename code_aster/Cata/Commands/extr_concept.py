@@ -17,31 +17,26 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-# person_in_charge: mathieu.courtois@edf.fr
+from ..Language.DataStructure import *
+from ..Language.Syntax import *
 
-"""
-This module provides pybind11 DataStructures and low level objects.
-"""
 
-from libaster import *
+def extr_concept_prod(self, DICT, **args):
+    """Define the type of the result of EXTR_CONCEPT."""
+    into = {evol_ther_dict: evol_ther}
+    if args.get("__all__"):
+        return tuple(into.values())
 
-from .datastructure_py import (
-    AsFloat,
-    AsInteger,
-    ThermalResultDict,
-    OnlyParallelObject,
-    PyDataStructure,
+    typ = into.get(AsType(DICT))
+    if not typ:
+        raise AsException("Type de concept non supporté: %s %s" % (DICT, AsType(DICT)))
+    return typ
+
+
+EXTR_CONCEPT = MACRO(
+    nom="EXTR_CONCEPT",
+    op=OPS("code_aster.MacroCommands.extr_concept_ops.extr_concept_ops"),
+    sd_prod=extr_concept_prod,
+    DICT=SIMP(statut="o", typ=ds_dict),
+    NOM=SIMP(statut="o", typ="TXM"),
 )
-from .parallel_py import (
-    ConnectionMesh,
-    ParallelDOFNumbering,
-    ParallelEquationNumbering,
-    ParallelFiniteElementDescriptor,
-    ParallelMechanicalLoadFunction,
-    ParallelMechanicalLoadReal,
-    ParallelMesh,
-    ParallelThermalLoadFunction,
-    ParallelThermalLoadReal,
-)
-from .Serialization import InternalStateBuilder
-from .user_extensions import WithEmbeddedObjects

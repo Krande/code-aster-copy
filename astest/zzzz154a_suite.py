@@ -1,0 +1,47 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+import code_aster
+from code_aster.Commands import *
+
+code_aster.init("--test", "--continue")
+test = code_aster.TestCase()
+
+# test for usage of dict-like objects
+print("DEBUG:", ther_dict)
+test.assertEqual(len(ther_dict), 2, msg="check len()")
+test.assertSequenceEqual(sorted(ther_dict.keys()), ["12", "13"], msg="check keys()")
+# ch1 = ther_dict["12"].getField("TEMP", 1)
+# ch1.debugPrint()
+# ch3 = ther_dict["13"].getField("TEMP", 2)
+# ch3.debugPrint()
+
+# test.assertAlmostEqual(max(ch1.getValues()), 1.0, msg="check ther1")
+# test.assertAlmostEqual(max(ch3.getValues()), 3.0, msg="check ther3")
+
+result_ab = EXTR_CONCEPT(DICT=dict_test, NOM="ab")
+result_ac = EXTR_CONCEPT(DICT=dict_test, NOM="ac")
+# cha = result_ab.getField("TEMP", 1)
+# chc = result_ac.getField("TEMP", 2)
+# test.assertAlmostEqual(max(cha.getValues()), 1.0, msg="check ther_a")
+# test.assertAlmostEqual(max(chc.getValues()), 3.0, msg="check ther_c")
+
+test.printSummary()
+
+code_aster.close()

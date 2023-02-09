@@ -17,31 +17,15 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-# person_in_charge: mathieu.courtois@edf.fr
 
-"""
-This module provides pybind11 DataStructures and low level objects.
-"""
+"""EXTR_CONCEPT command"""
 
-from libaster import *
+from ..Messages import UTMESS
 
-from .datastructure_py import (
-    AsFloat,
-    AsInteger,
-    ThermalResultDict,
-    OnlyParallelObject,
-    PyDataStructure,
-)
-from .parallel_py import (
-    ConnectionMesh,
-    ParallelDOFNumbering,
-    ParallelEquationNumbering,
-    ParallelFiniteElementDescriptor,
-    ParallelMechanicalLoadFunction,
-    ParallelMechanicalLoadReal,
-    ParallelMesh,
-    ParallelThermalLoadFunction,
-    ParallelThermalLoadReal,
-)
-from .Serialization import InternalStateBuilder
-from .user_extensions import WithEmbeddedObjects
+
+def extr_concept_ops(self, DICT, NOM, **kwargs):
+    """Extract an object from a dict-like object."""
+    result = DICT.get(NOM)
+    if not result:
+        UTMESS("F", "SUPERVIS_6", valk=NOM)
+    return result

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -16,6 +16,8 @@
 # You should have received a copy of the GNU General Public License
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
+
+from .user_extensions import WithEmbeddedObjects
 
 
 class OnlyParallelObject:
@@ -69,3 +71,59 @@ class AsFloat(PyDataStructure):
     def getType(cls):
         """Return type as string."""
         return "REEL"
+
+
+class DataStructureDict(PyDataStructure, WithEmbeddedObjects):
+    """Dict-like object that stores datastructures associated to a key.
+
+    This is the implementation of derivatives of ``ds_dict`` objects used in the syntax.
+    """
+
+    object_type = None
+    aster_embedded = ["_store"]
+
+    def __init__(self, name="unnamed"):
+        super().__init__(name)
+        self._store = {}
+
+    @classmethod
+    def getType(cls):
+        """Return a type for syntax checking."""
+        return cls.object_type + "_DICT"
+
+    def __len__(self):
+        return len(self._store)
+
+    def keys(self):
+        """Return a view on the access keys."""
+        return self._store.keys()
+
+    def __setitem__(self, key, obj):
+        """Store an object with the given access key."""
+        if obj.getType() != self.object_type:
+            raise TypeError(f"__setitem__ value must be a {self.object_type!r}")
+        self._store[key] = obj
+
+    def __getitem__(self, key):
+        """Returns the value for key if key is in the store, otherwise
+        raises *KeyError*."""
+        return self._store[key]
+
+    def get(self, key, default=None):
+        """Return the value for key if key is in the store, else default.
+
+        Arguments:
+            key (str): Access key.
+            default (*object_type*, optional): Default value if no object is
+                stored with that key.
+
+        Returns:
+            *object_type*: Object stored with that key.
+        """
+        return self._store.get(key, default)
+
+
+class ThermalResultDict(DataStructureDict):
+    """Set of thermal results."""
+
+    object_type = "EVOL_THER"

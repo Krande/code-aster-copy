@@ -686,3 +686,12 @@ class vect_elem_pres_c(vect_elem):
 
 class vect_elem_temp_r(vect_elem):
     pass
+
+
+# dict of objects
+class ds_dict(ASSD):
+    pass
+
+
+class evol_ther_dict(ds_dict):
+    pass

@@ -17,31 +17,30 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-# person_in_charge: mathieu.courtois@edf.fr
+from code_aster.Cata.DataStructure import evol_ther_dict, evol_ther
+from code_aster.Cata.Syntax import FACT, MACRO, SIMP
+from code_aster.Objects import ThermalResultDict
+from code_aster.Supervis.ExecuteCommand import UserMacro
 
-"""
-This module provides pybind11 DataStructures and low level objects.
-"""
 
-from libaster import *
+def macro_test_ops(self, AFFE, **kwargs):
+    """Macro de test."""
+    result = ThermalResultDict()
+    for fact in AFFE:
+        result[fact["NOM_CAS"]] = fact["RESULTAT"]
+    return result
 
-from .datastructure_py import (
-    AsFloat,
-    AsInteger,
-    ThermalResultDict,
-    OnlyParallelObject,
-    PyDataStructure,
+
+MACRO_TEST_CATA = MACRO(
+    nom="MACRO_TEST",
+    op=macro_test_ops,
+    sd_prod=evol_ther_dict,
+    AFFE=FACT(
+        statut="o",
+        max="**",
+        NOM_CAS=SIMP(statut="o", typ="TXM"),
+        RESULTAT=SIMP(statut="o", typ=evol_ther),
+    ),
 )
-from .parallel_py import (
-    ConnectionMesh,
-    ParallelDOFNumbering,
-    ParallelEquationNumbering,
-    ParallelFiniteElementDescriptor,
-    ParallelMechanicalLoadFunction,
-    ParallelMechanicalLoadReal,
-    ParallelMesh,
-    ParallelThermalLoadFunction,
-    ParallelThermalLoadReal,
-)
-from .Serialization import InternalStateBuilder
-from .user_extensions import WithEmbeddedObjects
+
+MACRO_TEST = UserMacro("MACRO_TEST", MACRO_TEST_CATA, macro_test_ops)
