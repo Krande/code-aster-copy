@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -30,7 +30,9 @@ mesh0 = LIRE_MAILLAGE(FORMAT="MED")
 mesh = CREA_MAILLAGE(MAILLAGE=mesh0, MODI_HHO=_F(TOUT="OUI", PREF_NOEUD="NH"))
 
 E = 70
-mater = DEFI_MATERIAU(ECRO_LINE=_F(D_SIGM_EPSI=0.13474, SY=0.243), ELAS=_F(E=E, NU=0.4999))
+mater = DEFI_MATERIAU(
+    ECRO_LINE=_F(D_SIGM_EPSI=0.13474, SY=0.243), ELAS=_F(E=E, NU=0.4999), HHO=_F(COEF_STAB=100 * E)
+)
 
 fieldmat = AFFE_MATERIAU(AFFE=_F(MATER=(mater,), TOUT="OUI"), MAILLAGE=mesh)
 
@@ -83,7 +85,6 @@ resnonl = STAT_NON_LINE(
     MODELE=model,
     NEWTON=_F(MATRICE="TANGENTE", PREDICTION="TANGENTE", REAC_ITER=1),
     SOLVEUR=_F(METHODE="MUMPS"),
-    HHO=_F(STABILISATION="MANUEL", COEF_STAB=100 * E, OPTIMISATION="TEMPS"),
     INFO=1,
 )
 

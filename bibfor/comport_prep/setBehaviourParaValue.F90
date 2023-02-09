@@ -18,7 +18,6 @@
 ! person_in_charge: mickael.abbas at edf.fr
 !
 subroutine setBehaviourParaValue(behaviourCrit, parm_theta_thm, parm_alpha_thm, &
-                                 hho_coef_stab, hho_type_stab, hho_type_calc, &
                                  iFactorKeyword_, carcriList_, carcriMap_)
 !
     use Behaviour_type
@@ -31,7 +30,6 @@ subroutine setBehaviourParaValue(behaviourCrit, parm_theta_thm, parm_alpha_thm, 
 !
     type(Behaviour_Crit), pointer :: behaviourCrit(:)
     real(kind=8), intent(in) :: parm_theta_thm, parm_alpha_thm
-    real(kind=8), intent(in) :: hho_coef_stab, hho_type_stab, hho_type_calc
     integer, optional, intent(in) :: iFactorKeyword_
     real(kind=8), intent(out), optional :: carcriList_(:)
     real(kind=8), pointer, optional :: carcriMap_(:)
@@ -89,10 +87,6 @@ subroutine setBehaviourParaValue(behaviourCrit, parm_theta_thm, parm_alpha_thm, 
         carcriMap_(EXTE_ESVA_PTR_NAME) = behaviourCrit(iFactorKeyword)%cptr_namevarext
         carcriMap_(EXTE_PROP_NB) = behaviourCrit(iFactorKeyword)%cptr_nameprop
         carcriMap_(EXTE_PROP_PTR_NAME) = behaviourCrit(iFactorKeyword)%cptr_nbprop
-! ----- For HHO
-        carcriMap_(HHO_COEF) = hho_coef_stab
-        carcriMap_(HHO_STAB) = hho_type_stab
-        carcriMap_(HHO_CALC) = hho_type_calc
     end if
     if (present(carcriList_)) then
         carcriList_(ITER_INTE_MAXI) = behaviourCrit(iFactorKeyword)%iter_inte_maxi
@@ -123,10 +117,6 @@ subroutine setBehaviourParaValue(behaviourCrit, parm_theta_thm, parm_alpha_thm, 
         carcriList_(EXTE_ESVA_PTR_NAME) = behaviourCrit(iFactorKeyword)%cptr_namevarext
         carcriList_(EXTE_PROP_NB) = behaviourCrit(iFactorKeyword)%cptr_nameprop
         carcriList_(EXTE_PROP_PTR_NAME) = behaviourCrit(iFactorKeyword)%cptr_nbprop
-! ----- For HHO
-        carcriList_(HHO_COEF) = hho_coef_stab
-        carcriList_(HHO_STAB) = hho_type_stab
-        carcriList_(HHO_CALC) = hho_type_calc
     end if
 
 ! - Set values for MFRONT

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -35,7 +35,7 @@ NU = 0.499
 K = (6 * (C10 + C01)) / (3 * (1 - 2 * NU))
 
 # MATERIAU HYPERELASTIQUE: MOONEY-RIVLIN
-RUBBER1 = DEFI_MATERIAU(ELAS_HYPER=_F(C01=C01, C10=C10, C20=C20, K=K))
+RUBBER1 = DEFI_MATERIAU(ELAS_HYPER=_F(C01=C01, C10=C10, C20=C20, K=K), HHO=_F(COEF_STAB=10))
 
 CHMAT1 = AFFE_MATERIAU(AFFE=_F(MATER=RUBBER1, TOUT="OUI"), MAILLAGE=MAIL)
 
@@ -97,7 +97,6 @@ RESU1 = STAT_NON_LINE(
     SOLVEUR=_F(METHODE="MULT_FRONT"),
     MODELE=MODELE,
     NEWTON=_F(MATRICE="TANGENTE", REAC_INCR=1, REAC_ITER=1),
-    HHO=_F(STABILISATION="MANUEL", COEF_STAB=10, OPTIMISATION="TEMPS"),
 )
 
 RESU1 = CALC_CHAMP(reuse=RESU1, RESULTAT=RESU1, CONTRAINTE=("SIGM_NOEU"))
@@ -111,7 +110,6 @@ RESU2 = STAT_NON_LINE(
     MODELE=MODELE,
     SOLVEUR=_F(METHODE="MUMPS"),
     NEWTON=_F(MATRICE="TANGENTE", REAC_INCR=1, REAC_ITER=1),
-    HHO=_F(STABILISATION="AUTO"),
 )
 
 RESU2 = CALC_CHAMP(reuse=RESU2, RESULTAT=RESU2, CONTRAINTE=("SIGM_NOEU"))

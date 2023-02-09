@@ -20,7 +20,9 @@ module HHO_type
 !
     implicit none
 !
+    private
 #include "asterf_types.h"
+#include "asterfort/tecach.h"
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -29,6 +31,8 @@ module HHO_type
 ! Define types for datastructures
 !
 ! --------------------------------------------------------------------------------------------------
+!
+    public :: HHO_Field, HHO_Data, HHO_Cell, HHO_Face
 !
     type HHO_Field
 !
@@ -57,10 +61,6 @@ module HHO_type
         integer            :: m_cell_degree
 ! ----- Ordre inconnues grad
         integer            :: m_grad_degree
-! ----- Stabilisation ?
-        aster_logical      :: l_stab
-! ----- Precompute operator ?
-        aster_logical      :: l_precalc
 ! ----- Adapt stabilization coefficient ?
         aster_logical      :: l_adapt_coef
 ! ----- Coefficient stabilisation
@@ -72,10 +72,9 @@ module HHO_type
         procedure, pass    :: cell_degree
         procedure, pass    :: grad_degree
         procedure, pass    :: debug => debug_data
-        procedure, pass    :: stabilize
-        procedure, pass    :: precompute
         procedure, pass    :: adapt
         procedure, pass    :: coeff_stab
+        procedure, pass    :: precompute
         procedure, pass    :: setCoeffStab
         procedure, pass    :: print => print_data
     end type HHO_Data
@@ -156,8 +155,8 @@ contains
 !
 !===================================================================================================
 !
-    subroutine initialize_data(this, face_degree, cell_degree, grad_degree, l_stab, coeff, &
-                               l_debug, l_precalc, l_adapt_coef)
+    subroutine initialize_data(this, face_degree, cell_degree, grad_degree, coeff, &
+                               l_debug, l_adapt_coef)
 !
         implicit none
 !
@@ -165,8 +164,6 @@ contains
         integer, intent(in)             :: face_degree
         integer, intent(in)             :: cell_degree
         integer, intent(in)             :: grad_degree
-        aster_logical, intent(in)       :: l_stab
-        aster_logical, intent(in)       :: l_precalc
         aster_logical, intent(in)       :: l_adapt_coef
         real(kind=8), intent(in)        :: coeff
         aster_logical, intent(in)       :: l_debug
@@ -178,8 +175,6 @@ contains
 !   In face_degree
 !   In cell_degree
 !   In grad_degree
-!   In l_stab   : stabilize yes or no ?
-!   In l_precalc: precompute yes or no ?
 !   In l_adapt_coef: adapt automatically the coefficient yes or no ?
 !   In coeff    : coefficient of stabilization
 !   In l_debug  : debug yes or no ?
@@ -188,8 +183,6 @@ contains
         this%m_face_degree = face_degree
         this%m_cell_degree = cell_degree
         this%m_grad_degree = grad_degree
-        this%l_stab = l_stab
-        this%l_precalc = l_precalc
         this%l_adapt_coef = l_adapt_coef
         this%m_coeff_stab = coeff
         this%l_debug = l_debug
@@ -288,50 +281,6 @@ contains
 !
 !===================================================================================================
 !
-    function stabilize(this) result(logic)
-!
-        implicit none
-!
-        class(HHO_Data), intent(in) :: this
-        logical                     :: logic
-!
-! --------------------------------------------------------------------------------------------------
-!
-!   return the stab logical of a HHO_DATA type
-!   In this     : a HHo Data
-!   Out logic   : stabilize yes or no ?
-! --------------------------------------------------------------------------------------------------
-!
-        logic = this%l_stab
-!
-    end function
-!
-!===================================================================================================
-!
-!===================================================================================================
-!
-    function precompute(this) result(logic)
-!
-        implicit none
-!
-        class(HHO_Data), intent(in) :: this
-        logical                     :: logic
-!
-! --------------------------------------------------------------------------------------------------
-!
-!   return the precalc logical of a HHO_DATA type
-!   In this     : a HHo Data
-!   Out logic   : precompute yes or no ?
-! --------------------------------------------------------------------------------------------------
-!
-        logic = this%l_precalc
-!
-    end function
-!
-!===================================================================================================
-!
-!===================================================================================================
-!
     function adapt(this) result(logic)
 !
         implicit none
@@ -347,6 +296,30 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
         logic = this%l_adapt_coef
+!
+    end function
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+    function precompute(this) result(precomp)
+!
+        implicit none
+!
+        class(HHO_Data), intent(in) :: this
+        aster_logical                :: precomp
+!
+! --------------------------------------------------------------------------------------------------
+!
+!   Operators are precomputed ?
+!   In this     : a HHo Data
+! --------------------------------------------------------------------------------------------------
+!
+        integer :: iret, nval, jtab(1)
+
+        call tecach('NNO', 'PCHHOGT', 'L', iret, nval=1, itab=jtab)
+        precomp = iret == 0
 !
     end function
 !
@@ -413,7 +386,6 @@ contains
         write (6, *) "face degree: ", this%face_degree()
         write (6, *) "cell degree: ", this%cell_degree()
         write (6, *) "grad degree: ", this%grad_degree()
-        write (6, *) "stab ?: ", this%stabilize()
         write (6, *) "coeff stab: ", this%coeff_stab()
         write (6, *) "end hhoData debug"
 !

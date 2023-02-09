@@ -178,7 +178,6 @@ module NonLin_Datastructure_type
         aster_logical          :: l_dyna = ASTER_FALSE
         character(len=8)       :: result_prev_disp = ' '
         aster_logical          :: l_matr_rigi_syme = ASTER_FALSE
-        aster_logical          :: l_precalc_hho = ASTER_FALSE
 ! ----- Flag for swap to elastic matrix (PRED_CONTACT)
         aster_logical          :: l_swapToElastic = ASTER_FALSE
     end type NL_DS_AlgoPara

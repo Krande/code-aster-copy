@@ -60,7 +60,6 @@ subroutine carc_save(mesh, carcri, ds_compor_para)
     integer :: iFactorKeyword, nbFactorKeyword
     real(kind=8), pointer :: carcriValv(:) => null()
     real(kind=8) :: parm_theta_thm, parm_alpha_thm
-    real(kind=8) :: hho_coef_stab, hho_type_stab, hho_type_calc
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -73,11 +72,6 @@ subroutine carc_save(mesh, carcri, ds_compor_para)
     parm_theta_thm = ds_compor_para%parm_theta_thm
     parm_alpha_thm = ds_compor_para%parm_alpha_thm
 
-! - Get parameters from HHO
-    hho_coef_stab = ds_compor_para%hho_coef_stab
-    hho_type_stab = ds_compor_para%hho_type_stab
-    hho_type_calc = ds_compor_para%hho_type_calc
-
 ! - Loop on occurrences of COMPORTEMENT
     do iFactorKeyword = 1, nbFactorKeyword
 ! ----- Get list of elements where comportment is defined
@@ -87,7 +81,6 @@ subroutine carc_save(mesh, carcri, ds_compor_para)
 ! ----- Set in <CARTE>
         call setBehaviourParaValue(ds_compor_para%v_crit, &
                                    parm_theta_thm, parm_alpha_thm, &
-                                   hho_coef_stab, hho_type_stab, hho_type_calc, &
                                    iFactorKeyword, carcriMap_=carcriValv)
 
 ! ----- Affect in <CARTE>

@@ -63,8 +63,6 @@ subroutine pmdocr(carcri)
 ! - Set in list
     call setBehaviourParaValue(behaviourPrepCrit%v_crit, &
                                behaviourPrepCrit%parm_theta_thm, behaviourPrepCrit%parm_alpha_thm, &
-                               behaviourPrepCrit%hho_coef_stab, behaviourPrepCrit%hho_type_stab, &
-                               behaviourPrepCrit%hho_type_calc, &
                                carcriList_=carcri(1:CARCRI_SIZE))
 
 ! - Clean

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -73,11 +73,7 @@ for form in ("LINEAIRE", "QUADRATIQUE"):
     LREEL = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=_F(JUSQU_A=1, NOMBRE=1))
 
     resu = STAT_NON_LINE(
-        MODELE=model,
-        CHAM_MATER=mater,
-        INCREMENT=_F(LIST_INST=LREEL),
-        EXCIT=(_F(CHARGE=bc),),
-        HHO=_F(OPTIMISATION="TEMPS"),
+        MODELE=model, CHAM_MATER=mater, INCREMENT=_F(LIST_INST=LREEL), EXCIT=(_F(CHARGE=bc),)
     )
 
     u_sol = resu.getField("DEPL", para="INST", value=1.0)

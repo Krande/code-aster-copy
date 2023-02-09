@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -72,7 +72,6 @@ RESU = STAT_NON_LINE(
     COMPORTEMENT=_F(RELATION="VMIS_ISOT_LINE", DEFORMATION="GDEF_LOG"),
     INCREMENT=_F(LIST_INST=DEFLIST),
     SOLVEUR=_F(METHODE="MUMPS"),
-    HHO=_F(OPTIMISATION="TEMPS"),
     NEWTON=_F(REAC_ITER=1),
     ARCHIVAGE=_F(LIST_INST=INSTANTS),
 )

@@ -203,7 +203,7 @@ subroutine op0070()
 ! --- Si formulation HHO: On precalcule des opérateurs
 !
     l_hho = isfonc(fonact, 'HHO')
-    if (l_hho .and. ds_algopara%l_precalc_hho) then
+    if (l_hho) then
         call hhoPreCalcMeca(model, hhoField, ds_constitutive, ds_measure)
     end if
 !

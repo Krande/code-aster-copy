@@ -155,30 +155,6 @@ DYNA_NON_LINE = OPER(
         statut="f", max=1, CALCUL=SIMP(statut="f", typ="TXM", into=("OUI",), defaut="OUI")
     ),
     # -------------------------------------------------------------------
-    HHO=FACT(
-        statut="f",
-        max=1,
-        min=0,
-        OPTIMISATION=SIMP(
-            statut="f",
-            typ="TXM",
-            into=("TEMPS", "MEMOIRE"),
-            defaut="MEMOIRE",
-            fr=tr("Optimisation pour les méthodes HHO"),
-        ),
-        STABILISATION=SIMP(
-            statut="f",
-            typ="TXM",
-            into=("AUTO", "MANUEL"),
-            defaut="AUTO",
-            fr=tr("Coefficient de stabilisation pour les méthodes HHO"),
-        ),
-        b_coef_stab=BLOC(
-            condition="""(equal_to("STABILISATION", 'MANUEL'))""",
-            COEF_STAB=SIMP(statut="o", typ="R", val_min=0.0),
-        ),
-    ),
-    # -------------------------------------------------------------------
     AFFICHAGE=C_AFFICHAGE(),
     # -------------------------------------------------------------------
     ARCHIVAGE=C_ARCHIVAGE(),

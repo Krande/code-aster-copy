@@ -1251,7 +1251,7 @@ contains
 !
         integer :: jgrad, jstab, gv_cbs, gv_fbs, gv_total_dofs, gv_gbs, j
 !
-        if (hhoData%precompute()) then
+        if (ASTER_FALSE) then
             call jevech('PCHHOGT', 'L', jgrad)
             call jevech('PCHHOST', 'L', jstab)
 !

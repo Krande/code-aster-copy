@@ -43,7 +43,6 @@ subroutine carc_read(behaviourPrepCrit, model_)
 #include "asterfort/getExternalBehaviourPntr.h"
 #include "asterfort/getExternalStateVariable.h"
 #include "asterfort/getExternalStrainModel.h"
-#include "asterfort/getHHOPara.h"
 #include "asterfort/getTHMPara.h"
 #include "asterfort/getvis.h"
 #include "asterfort/getvr8.h"
@@ -387,8 +386,5 @@ subroutine carc_read(behaviourPrepCrit, model_)
     if (l_exist_thm) then
         call getTHMPara(behaviourPrepCrit)
     end if
-
-! - Get HHO parameters
-    call getHHOPara(behaviourPrepCrit)
 !
 end subroutine

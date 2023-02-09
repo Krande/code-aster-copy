@@ -83,13 +83,11 @@ contains
         if (answer .eq. 'OUI') then
             call dismoi('EXI_HHO_QUAD', model, 'MODELE', repk=answer)
             if (answer .eq. 'OUI') then
-                call hhoData%initialize(2, 2, 2, ASTER_FALSE, 0.d0, ASTER_FALSE, ASTER_FALSE, &
-                                        ASTER_FALSE)
+                call hhoData%initialize(2, 2, 2, 0.d0, ASTER_FALSE, ASTER_FALSE)
             else
                 call dismoi('EXI_HHO_LINE', model, 'MODELE', repk=answer)
                 if (answer .eq. 'OUI') then
-                    call hhoData%initialize(1, 1, 1, ASTER_FALSE, 0.d0, ASTER_FALSE, ASTER_FALSE, &
-                                            ASTER_FALSE)
+                    call hhoData%initialize(1, 1, 1, 0.d0, ASTER_FALSE, ASTER_FALSE)
                 else
                     ASSERT(ASTER_FALSE)
                 end if

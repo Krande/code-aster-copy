@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -28,7 +28,9 @@ MA = CREA_MAILLAGE(MAILLAGE=MA0, MODI_HHO=_F(TOUT="OUI", PREF_NOEUD="NH"))
 
 E = 200000.0
 
-MATERIAU = DEFI_MATERIAU(ELAS=_F(E=E, NU=0.3), ECRO_LINE=_F(D_SIGM_EPSI=1000.0, SY=200.0))
+MATERIAU = DEFI_MATERIAU(
+    ELAS=_F(E=E, NU=0.3), ECRO_LINE=_F(D_SIGM_EPSI=1000.0, SY=200.0), HHO=_F(COEF_STAB=E)
+)
 
 CH_MATER = AFFE_MATERIAU(MAILLAGE=MA, AFFE=_F(TOUT="OUI", MATER=MATERIAU))
 
@@ -80,7 +82,6 @@ RESU = STAT_NON_LINE(
     INCREMENT=_F(LIST_INST=DEFLIST),
     SOLVEUR=_F(METHODE="MUMPS"),
     NEWTON=_F(REAC_ITER=1),
-    HHO=_F(STABILISATION="MANUEL", COEF_STAB=E, OPTIMISATION="TEMPS"),
     ARCHIVAGE=_F(LIST_INST=INSTANTS),
 )
 

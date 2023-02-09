@@ -225,10 +225,6 @@ module Behaviour_type
 ! ----- Parameters for THM scheme
         real(kind=8)                      :: parm_alpha_thm = 0.d0
         real(kind=8)                      :: parm_theta_thm = 0.d0
-! ----- HHO parameters
-        real(kind=8)                      :: hho_coef_stab = 0.d0
-        real(kind=8)                      :: hho_type_stab = 0.d0
-        real(kind=8)                      :: hho_type_calc = 0.d0
 ! ----- List of criteria (by keyword COMPORTEMENT)
         type(Behaviour_Crit), pointer     :: v_crit(:)
     end type Behaviour_PrepCrit

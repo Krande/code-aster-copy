@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -34,7 +34,7 @@ mesh = MODI_MAILLAGE(reuse=mesh, MAILLAGE=mesh, ORIE_PEAU=_F(GROUP_MA_PEAU=("Enc
 ctrac = LIRE_FONCTION(UNITE=21, NOM_PARA="EPSI", PROL_DROITE="LINEAIRE")
 
 E = 206.9
-mater = DEFI_MATERIAU(TRACTION=_F(SIGM=ctrac), ELAS=_F(E=E, NU=0.29))
+mater = DEFI_MATERIAU(TRACTION=_F(SIGM=ctrac), ELAS=_F(E=E, NU=0.29), HHO=_F(COEF_STAB=E))
 
 fieldmat = AFFE_MATERIAU(AFFE=_F(MATER=(mater,), TOUT="OUI"), MAILLAGE=mesh)
 
@@ -86,7 +86,6 @@ resnonl = STAT_NON_LINE(
     MODELE=model,
     NEWTON=_F(MATRICE="TANGENTE", PREDICTION="TANGENTE", REAC_ITER=1),
     SOLVEUR=_F(METHODE="MUMPS"),
-    HHO=_F(STABILISATION="MANUEL", COEF_STAB=E, OPTIMISATION="TEMPS"),
     INFO=1,
 )
 

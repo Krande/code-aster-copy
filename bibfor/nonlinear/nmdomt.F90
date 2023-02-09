@@ -140,23 +140,4 @@ subroutine nmdomt(ds_algopara, ds_algorom_)
         ASSERT(.false.)
     end if
 !
-    ds_algopara%l_precalc_hho = ASTER_FALSE
-    if (getexm('HHO', 'OPTIMISATION') == 1) then
-!
-        call getvtx('HHO', 'OPTIMISATION', iocc=1, nbval=0, nbret=iret)
-!
-        if (iret == -1) then
-            call getvtx('HHO', 'OPTIMISATION', iocc=1, scal=answer, nbret=iret)
-            ASSERT(iret == 1)
-            if (answer == "MEMOIRE") then
-                ds_algopara%l_precalc_hho = ASTER_FALSE
-            elseif (answer == "TEMPS") then
-                ds_algopara%l_precalc_hho = ASTER_TRUE
-            else
-                ASSERT(ASTER_FALSE)
-            end if
-        end if
-!
-    end if
-!
 end subroutine

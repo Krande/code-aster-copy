@@ -85,9 +85,6 @@ subroutine carc_init(mesh, carcri, base)
     carcriValv(3) = 1.d-6
     carcriValv(4) = 1.d0
     carcriValv(4) = 1.d0
-    carcriValv(HHO_COEF) = 0.d0
-    carcriValv(HHO_STAB) = real(HHO_STAB_AUTO, kind=8)
-    carcriValv(HHO_CALC) = real(HHO_CALC_NO, kind=8)
 
 ! - Allocate on all mesh
     call nocart(carcri, 1, nbCmp)

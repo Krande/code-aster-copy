@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -154,12 +154,6 @@
 #define IVARIEXT1               11
 #define IVARIEXT2               23
 !
-! Slots: for HHO parameters
-!
-#define HHO_COEF                24
-#define HHO_STAB                25
-#define HHO_CALC                26
-!
 ! Slots: for THM parameters
 !
 #define PARM_ALPHA_THM          18
@@ -180,13 +174,6 @@
 #define EXTE_PROP_PTR_NAME      19
 !
 ! --------------------------------------------------------------------------------------------------
-!
-! type for HHO parameters
-!
-#define HHO_STAB_AUTO 1
-#define HHO_STAB_MANU 2
-#define HHO_CALC_YES  1
-#define HHO_CALC_NO   2
 !
 ! Slots: for generic parameters
 !

@@ -42,9 +42,8 @@ module HHO_init_module
 #include "asterfort/tecach.h"
 #include "asterfort/tecael.h"
 #include "asterfort/utmess.h"
+#include "asterfort/rcvala.h"
 #include "blas/dsyr.h"
-#include "blas/dscal.h"
-#include "blas/daxpy.h"
 #include "jeveux.h"
 !
 ! --------------------------------------------------------------------------------------------------
@@ -576,10 +575,12 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
         aster_logical, parameter :: l_debug = ASTER_FALSE
-        aster_logical :: l_stab, l_precalc, l_adapt_coeff
-        integer :: grad_deg, face_deg, cell_deg
-        integer :: jv_carcri, jtab(1), iret
+        aster_logical :: l_adapt_coeff
+        integer :: grad_deg, face_deg, cell_deg, jv_mater
+        integer ::  jtab(1), iret, icodre(1)
         real(kind=8) :: coef_stab
+        real(kind=8) :: resu_vale(1)
+        character(len=16), parameter :: resu_name(1) = (/"COEF_STAB"/)
 !
 ! --- Read Parameters
 !
@@ -600,38 +601,21 @@ contains
 !
         coef_stab = 0.d0
         iret = -1
-        l_precalc = ASTER_FALSE
         l_adapt_coeff = ASTER_TRUE
-        l_stab = ASTER_TRUE
-        call tecach('NNN', 'PCARCRI', 'L', iret, nval=1, itab=jtab)
+        call tecach('NNN', 'PMATERC', 'L', iret, nval=1, itab=jtab)
         if (iret .eq. 0) then
-            call jevech('PCARCRI', 'L', jv_carcri)
-            if (int(zr(jv_carcri-1+HHO_CALC)) == HHO_CALC_YES) then
-                l_precalc = ASTER_TRUE
-            elseif (int(zr(jv_carcri-1+HHO_CALC)) == HHO_CALC_NO) then
-                l_precalc = ASTER_FALSE
-            else
-                ASSERT(ASTER_FALSE)
-            end if
-!
-            if (int(zr(jv_carcri-1+HHO_STAB)) == HHO_STAB_AUTO) then
-                l_adapt_coeff = ASTER_TRUE
-            elseif (int(zr(jv_carcri-1+HHO_STAB)) == HHO_STAB_MANU) then
-                l_adapt_coeff = ASTER_FALSE
-                coef_stab = zr(jv_carcri-1+HHO_COEF)
-            else
-                ASSERT(ASTER_FALSE)
+            call jevech('PMATERC', 'L', jv_mater)
+            call rcvala(zi(jv_mater), ' ', 'HHO', 0, ' ', [0.0], &
+                        1, resu_name, resu_vale, icodre, 0)
+            l_adapt_coeff = icodre(1) == 1
+            if (.not. l_adapt_coeff) then
+                coef_stab = resu_vale(1)
             end if
         end if
 !
 ! --- Init
 !
-        call hhoData%initialize(face_deg, cell_deg, grad_deg, l_stab, coef_stab, l_debug, &
-                                l_precalc, l_adapt_coeff)
-!
-        if (hhoData%grad_degree() == hhoData%face_degree()) then
-            ASSERT(l_stab)
-        end if
+        call hhoData%initialize(face_deg, cell_deg, grad_deg, coef_stab, l_debug, l_adapt_coeff)
 !
         if (hhoData%debug()) then
             call hhoData%print()

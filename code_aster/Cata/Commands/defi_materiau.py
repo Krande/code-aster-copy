@@ -233,6 +233,7 @@ DEFI_MATERIAU = MACRO(
             "DIS_ECRO_TRAC",
             "DIS_BILI_ELAS",
             "DIS_CHOC_ENDO",
+            "HHO",
             "JONC_ENDO_PLAS",
             "THER_NL",
             "THER_HYDR",
@@ -5562,6 +5563,11 @@ DEFI_MATERIAU = MACRO(
     ### RESTAURATION D'ECROUISSAGE (ANNEALING)
     REST_ECRO=FACT(
         statut="f", FONC_MULT=SIMP(statut="o", typ=(fonction_sdaster, nappe_sdaster, formule))
+    ),
+    # POUR HHO
+    HHO=FACT(
+        statut="f",
+        COEF_STAB=SIMP(statut="f", typ="R", val_min=0.0, fr=tr("coefficient de stabilisation")),
     ),
     #
     INFO=SIMP(statut="f", typ="I", defaut=1, into=(1, 2)),

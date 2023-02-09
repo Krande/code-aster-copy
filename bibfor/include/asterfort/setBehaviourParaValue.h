@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,12 +18,10 @@
 !
 interface
     subroutine setBehaviourParaValue(behaviourCrit, parm_theta_thm, parm_alpha_thm,&
-                                     hho_coef_stab, hho_type_stab , hho_type_calc ,&
                                      iFactorKeyword_, carcriList_ , carcriMap_)
         use Behaviour_type
         type(Behaviour_Crit), pointer :: behaviourCrit(:)
         real(kind=8), intent(in) :: parm_theta_thm, parm_alpha_thm
-        real(kind=8), intent(in) :: hho_coef_stab, hho_type_stab, hho_type_calc
         integer, optional, intent(in) :: iFactorKeyword_
         real(kind=8), intent(out), optional :: carcriList_(:)
         real(kind=8), pointer, optional :: carcriMap_(:)
