@@ -66,9 +66,8 @@ def LIST_CARA_CIRCONF(GROUP_MA, AXE, MAILLAGE, **args):
     # On recupere la connectivite, les noms des mailles,
     # les coordonnees et le groupes de mailles GROUP_MA
     coordo = MAILLAGE.getCoordinates().getValues()
-    connex = MAILLAGE.sdj.CONNEX.get()
-    nommai = MAILLAGE.sdj.NOMMAI.get()
-    groupma = MAILLAGE.sdj.GROUPEMA.get()[GROUP_MA.ljust(24)]
+    connex = MAILLAGE.getConnectivity()
+    groupma = MAILLAGE.getCells(GROUP_MA)
 
     # On met en forme les coordonnees : matrice 3 colonnes
     coordo = NP.reshape(coordo, [len(coordo) // 3, 3])
@@ -116,7 +115,7 @@ def LIST_CARA_CIRCONF(GROUP_MA, AXE, MAILLAGE, **args):
             beta = -NP.arctan2(vecV[2], norm(vecX1)) * 180.0 / NP.pi
 
             # Meme remarque que precedemment sur les listes Python
-            nom_maille = nommai[ima - 1]
+            nom_maille = MAILLAGE.getCellName(ima)
 
             # On boucle sur les arguments de la fonction pour
             # creer une liste de mots-cle facteurs que l'on va

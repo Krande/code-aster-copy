@@ -75,9 +75,7 @@ def F_DEFI_GROUP(MAIL):
 
         # get the mesh connectivity, the elements sets and names, the node names
         print("Getting mesh connectivity and element sets...")
-        connectivity = MAIL.sdj.CONNEX.get()
-        names_elset = MAIL.sdj.NOMMAI.get()
-        type_elset = MAIL.sdj.TYPMAIL.get()
+        connectivity = MAIL.getConnextivity()
         type_3D = [18, 19, 20, 21, 22, 23, 24, 25, 26]
         # mailles 3D :
         # 18 : TETRA3
@@ -89,7 +87,7 @@ def F_DEFI_GROUP(MAIL):
         # 24 : HEXA8',  '
         # 25 : HEXA20', '
         # 26 : HEXA27'
-        nb_elset = len(names_elset)
+        nb_elset = MAIL.getNumberOfCells()
         listegroup = [None] * nb_elset
         print("Done.")
 
@@ -98,9 +96,9 @@ def F_DEFI_GROUP(MAIL):
         for i_elset in range(nb_elset):
             ### Warning: in code_aster connectivity table, nodes number begin at 1
             ### whereas in python tables they begin at 0!
-            this_elset_nodes = connectivity[i_elset + 1]
+            this_elset_nodes = connectivity[i_elset]
             # 3D element only
-            if type_elset[i_elset] in type_3D:
+            if MAIL.getCellType(i_elset) in type_3D:
                 ### computation of the barycentre of the elset
                 middle_point = NP.array([0.0, 0.0, 0.0])
                 nbnodel = len(this_elset_nodes)
@@ -129,7 +127,7 @@ def F_DEFI_GROUP(MAIL):
             this_elset_list = []
             for i_elset in range(nb_elset):
                 if listegroup[i_elset] == i_germ:
-                    this_elset_list.append(names_elset[i_elset])
+                    this_elset_list.append(MAIL.getNodeName(i_elset))
             this_dict["MAILLE"] = this_elset_list
             LIST_GROUP.append(this_dict)
 

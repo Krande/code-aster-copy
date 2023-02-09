@@ -44,7 +44,6 @@ def char_rota_ops(self, MODELE, ANGLE_DEGRES, TINI, TFIN, RESU, MAIL, **args):
 
     angle = ANGLE_DEGRES * math.pi / 180.0
     coordo = MAIL.getCoordinates().getValues()
-    nomnoe = MAIL.sdj.NOMNOE.get()
     coordo = NP.reshape(coordo, [len(coordo) // 3, 3])
     X = coordo[:, 0]
     Z = coordo[:, 2]
@@ -78,7 +77,7 @@ def char_rota_ops(self, MODELE, ANGLE_DEGRES, TINI, TFIN, RESU, MAIL, **args):
             FONCTION=__DZTf, LIST_PARA=__interp, NOM_PARA="INST", INTERPOL="LIN"
         )
         dico = {}
-        dico["NOEUD"] = nomnoe[ino]
+        dico["NOEUD"] = MAIL.getNodeName(ino)
         dico["DX"] = _DXT
         dico["DZ"] = _DZT
         ddlimpo.append(dico)

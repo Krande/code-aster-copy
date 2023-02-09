@@ -139,12 +139,6 @@ TEST_RESU(
     )
 )
 
-# Pour trouver le numero de la maille a tester :
-# ----------------------------------------------
-# num=M[1].sdj.GROUPEMA.get()['TEST_V'.ljust(8)]
-# assert len(num)==1
-# print 'la maille de TEST_V est : '+M[1].sdj.NOMMAI.get()[num[0]-1]
-
 # La maille MA65 est le tetraedre du groupe TEST_V dans MA[1]
 TEST_RESU(
     RESU=_F(
