@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -56,7 +56,7 @@ FMT_DIAG = """
 
 
 def create_temporary_dir(dir):
-    """Create a temporarry directory.
+    """Create a temporary directory.
 
     Returns:
         str: Path of the directory.

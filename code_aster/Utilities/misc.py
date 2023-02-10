@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -26,6 +26,7 @@ Module fournissant quelques fonctions utilitaires.
 import os
 import os.path as osp
 import re
+import socket
 import tempfile
 import time
 from contextlib import contextmanager
@@ -40,7 +41,7 @@ except ImportError:
 
 import aster
 
-from .mpi_utils import haveMPI, MPI
+from .mpi_utils import MPI, haveMPI
 from .strfunc import convert, maximize_lines
 from .version import get_version
 
@@ -131,7 +132,16 @@ def decode_str(array):
 
 
 def send_file(fname, dest):
-    """Send a file into an existing remote destination directory using scp"""
+    """Send a file into an existing remote destination directory using scp.
+
+    Arguments:
+        fname (str): local file name.
+        dest (str): destination path '[host:]path'.
+    """
+    local = socket.gethostname()
+    host, path = dest.split(":", maxsplit=1)
+    if host in ("", local):
+        dest = path
     dst = osp.join(dest, osp.basename(fname))
     proc = Popen(["scp", "-rBCq", "-o", "StrictHostKeyChecking=no", fname, dst])
     return proc.wait()

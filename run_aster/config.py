@@ -211,7 +211,11 @@ class Config:
         """Load the configuration file."""
         self.load_one(self._mainfcfg, main=True)
         usercfg = Config.usercfg
-        os.makedirs(osp.dirname(usercfg), exist_ok=True)
+        try:
+            os.makedirs(osp.dirname(usercfg), exist_ok=True)
+        except OSError as exc:
+            logger.warning("can not create user preferences file: %s", str(exc))
+            return
         if not osp.exists(usercfg) or not yaml:
             jcfg = osp.splitext(usercfg)[0] + ".json"
             if osp.exists(jcfg):

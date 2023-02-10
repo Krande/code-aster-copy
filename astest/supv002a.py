@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -320,7 +320,9 @@ def get_personal_dict():
     if _pws:
         return _pws
     cnt = ["personal_ws-1.1 fr 0 %s" % ENCODING]
-    dictdir = osp.join(os.environ["HOME"], "dev", "codeaster", "devtools", "share", "spell")
+    default = osp.join(os.environ["HOME"], "dev", "codeaster", "devtools")
+    devtools = os.environ.get("DEVTOOLS_ROOT", default)
+    dictdir = osp.join(devtools, "share", "spell")
     cata = osp.join(dictdir, "code_aster_cata.aspell.per")
     if osp.exists(cata):
         # ignore the first line

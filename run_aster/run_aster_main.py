@@ -324,14 +324,15 @@ def main(argv=None):
             fobj.write(AUTO_IMPORT.format(starter=SAVE_ARGV))
             export.add_file(File(fobj.name, filetype="comm", unit=1))
             tmpf = fobj.name
+    ctest_results = []
     if args.ctest:
         args.test = True
         basename = osp.splitext(osp.basename(args.file))[0]
         add = {6: "mess", 15: "code"}
         for unit, typ in add.items():
-            export.add_file(
-                File(osp.abspath(basename + "." + typ), filetype=typ, unit=unit, resu=True)
-            )
+            res = File(osp.abspath(basename + "." + typ), filetype=typ, unit=unit, resu=True)
+            export.add_file(res)
+            ctest_results.append(res.path)
     if args.time_limit:
         export.set_time_limit(args.time_limit)
     # use FACMTPS from environment
@@ -362,7 +363,10 @@ def main(argv=None):
                 "If MPI_Abort is called during execution, result files could not be copied."
             )
             run_aster = osp.join(RUNASTER_ROOT, "bin", "run_aster")
-            expdir = create_temporary_dir(dir=os.getenv("HOME", "/tmp") + "/.tmp_run_aster")
+            try:
+                expdir = create_temporary_dir(dir=os.environ["HOME"] + "/.tmp_run_aster")
+            except (OSError, KeyError):
+                expdir = create_temporary_dir(dir="/tmp")
             statfile = osp.join(expdir, "__status__")
             basn = osp.basename(osp.splitext(args.file)[0])
             expected = export.get("expected_diag", [])
@@ -415,6 +419,13 @@ def main(argv=None):
             status.save(args.statusfile)
         if tmpf and not opts["env"]:
             os.remove(tmpf)
+        # remove results file
+        if args.ctest and os.environ.get("ONLY_FAILED_RESULTS") and exitcode == 0:
+            for res in ctest_results:
+                try:
+                    os.remove(res)
+                except FileNotFoundError:
+                    pass
     finally:
         if not args.wrkdir:
             shutil.rmtree(wrkdir)

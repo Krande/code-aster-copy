@@ -136,6 +136,12 @@ def parse_args(argv):
         "--testlist", action="store", metavar="FILE", help="list of testcases to run"
     )
     parser.add_argument(
+        "--exclude-testlist",
+        action="store",
+        metavar="FILE",
+        help="list of testcases to be excluded",
+    )
+    parser.add_argument(
         "--resutest",
         action="store",
         metavar="DIR",
@@ -170,6 +176,12 @@ def parse_args(argv):
         help="multiplicative factor applied to the time limit, "
         "passed through environment to run_aster "
         "(default: 1.0)",
+    )
+    parser.add_argument(
+        "--only-failed-results",
+        action="store_true",
+        default=False,
+        help="keep only the results of tests in failure",
     )
     group = parser.add_argument_group("ctest options")
     group.add_argument(
@@ -226,6 +238,9 @@ def main(argv=None):
     args, ctest_args = parse_args(argv or sys.argv[1:])
     # options passed through environment
     os.environ["FACMTPS"] = str(args.timefactor)
+    if args.only_failed_results:
+        os.environ["ONLY_FAILED_RESULTS"] = "1"
+        print("only the results files of testcases in failure will be kept!")
 
     use_tmp = args.resutest.lower() == "none"
     if use_tmp:
@@ -246,9 +261,10 @@ def main(argv=None):
         os.makedirs(resutest, exist_ok=True)
 
     testlist = osp.abspath(args.testlist) if args.testlist else ""
+    excl = osp.abspath(args.exclude_testlist) if args.exclude_testlist else ""
     if not args.rerun_failed:
         # create CTestTestfile.cmake
-        create_ctest_file(testlist, osp.join(resutest, "CTestTestfile.cmake"))
+        create_ctest_file(testlist, excl, osp.join(resutest, "CTestTestfile.cmake"))
     parallel = CFG.get("parallel", 0)
     labels = set()
     if not parallel:
@@ -274,26 +290,32 @@ def main(argv=None):
     return proc.returncode
 
 
-def create_ctest_file(testlist, filename):
+def create_ctest_file(testlist, exclude, filename):
     """Create the CTestTestfile.cmake file.
 
     Arguments:
-        testlist (str): Labels of testlists (comma separated) or a file
-            containing a list of testcases.
+        testlist (str): file containing a list of testcases.
+        exclude (str): file containing a list of testcases to be excluded.
         filename (str): Destination for the 'ctest' file.
     """
     datadir = osp.normpath(osp.join(RUNASTER_ROOT, "share", "aster"))
     bindir = osp.normpath(osp.join(RUNASTER_ROOT, "bin"))
     testdir = osp.join(datadir, "tests")
     assert osp.isdir(testdir), f"no such directory {testdir}"
+    re_comment = re.compile("^ *#.*$", re.M)
     if osp.isfile(testlist):
-        re_comment = re.compile("^ *#.*$", re.M)
         with open(testlist, "r") as fobj:
             text = re_comment.sub("", fobj.read())
-            ltests = set(text.split())
-            lexport = [osp.join(testdir, tst + ".export") for tst in ltests]
+        ltests = set(text.split())
+        lexport = [osp.join(testdir, tst + ".export") for tst in ltests]
     else:
         lexport = glob(osp.join(testdir, "*.export"))
+    if osp.isfile(exclude):
+        with open(exclude, "r") as fobj:
+            text = re_comment.sub("", fobj.read())
+        ltests = set(text.split())
+        excl = [osp.join(testdir, tst + ".export") for tst in ltests]
+        lexport = list(set(lexport).difference(excl))
 
     tag = CFG.get("version_tag", "")
     text = [f"set(COMPONENT_NAME ASTER_{tag})", _build_def(bindir, datadir, lexport)]

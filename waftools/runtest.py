@@ -83,6 +83,7 @@ def configure(self):
         self.end_msg("not found")
         fcfg = osp.splitext(fcfg)[0] + ".json"
         self.start_msg("Reading user prefs from %s" % fcfg)
+    value = ""
     if osp.isfile(fcfg):
         with open(fcfg, "rb") as fobj:
             if osp.splitext(fcfg)[-1] == ".yaml":

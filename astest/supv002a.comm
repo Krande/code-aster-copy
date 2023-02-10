@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -34,9 +34,11 @@ from supv002a import SUPV002
 #
 # Les dictionnaires des mots autorisés (en plus du dictionnaire français de aspell)
 # sont cherchés dans le dépôt 'devtools' qui doit donc être présent et à jour.
-# - $HOME/dev/codeaster/devtools/share/spell/code_aster_cata.aspell.per pour les
+# Le dépôt est cherché dans $DEVTOOLS_ROOT.
+# Par défaut, DEVTOOLS_ROOT vaut $HOME/dev/codeaster/devtools.
+# - $DEVTOOLS_ROOT/share/spell/code_aster_cata.aspell.per pour les
 # mots-clés du catalogue de commandes,
-# - $HOME/dev/codeaster/devtools/share/spell/code_aster_dict.aspell.per pour le
+# - $DEVTOOLS_ROOT/share/spell/code_aster_dict.aspell.per pour le
 # dictionnaire des termes spécifiques.
 #
 # Dans l'output de l'exécution, on trouvera des lignes d'impression lors de la vérification
