@@ -67,21 +67,31 @@ by the development version.
 See the [Installation and Development][4] documentation and its changelog page to select
 the correct image to be used.
 
+The prerequisites can be installed natively (see [Compiling code_aster from scratch][6]).
+If one prerequisite is missing, one should use the option `--no-enable-all` during the
+configuration stage (by default all prerequisites are required/enabled):
+
+```bash
+./waf configure --no-enable-all
+./waf install -j 8
+```
+
 ### Example
 
-For the version 16.2.0, the container name is [salome_meca-lgpl-2021.1.0-1-20220405-scibian-9.sif][5].
+From the version 16.3.2 to the current development version, the container name
+is [salome_meca-lgpl-2022.1.0-1-20221225-scibian-9.sif][5].
 
 ```bash
 $ mkdir $HOME/containers && cd $HOME/containers
 
 # download and the container image (.sif) here
-$ singularity run --app install salome_meca-lgpl-2021.1.0-1-20220405-scibian-9.sif
+$ singularity run --app install salome_meca-lgpl-2022.1.0-1-20221225-scibian-9.sif
 
 # build code_aster in the container environment
 $ cd $HOME/dev/codeaster/src
-$ $HOME/containers/salome_meca-lgpl-2021.1.0-1-20220405-scibian-9 --shell
+$ $HOME/containers/salome_meca-lgpl-2022.1.0-1-20221225-scibian-9 --shell
 
-Singularity> ./waf configure install
+Singularity> ./waf configure install -j 8
 
 # or, with the embeeded makefile
 Singularity> make bootstrap
@@ -91,5 +101,6 @@ Singularity> make bootstrap
 [2]: ../../../../devtools
 [3]: ../../../../changelog
 [4]: https://gitlab.com/codeaster-opensource-documentation/opensource-installation-development
-[5]: https://www.code-aster.org/FICHIERS/singularity/salome_meca-lgpl-2021.1.0-1-20220405-scibian-9.sif
+[5]: https://code-aster.org/FICHIERS/singularity/salome_meca-lgpl-2022.1.0-1-20221225-scibian-9.sif
+[6]: https://gitlab.com/codeaster-opensource-documentation/opensource-installation-development/-/blob/main/install/install-code-aster-native.md
 [9]: https://www.code-aster.org/

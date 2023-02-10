@@ -166,8 +166,16 @@ def options(self):
         "--enable-all",
         dest="enable_all",
         action="store_true",
-        default=os.environ.get("ENABLE_ALL"),
-        help="activate all 'enable-*' options (same as " "ENABLE_ALL environment variable)",
+        default=os.environ.get("ENABLE_ALL") != "0",
+        help="activate all 'enable-*' options, means that all prerequisites are required"
+        "(same as ENABLE_ALL=1 environment variable)",
+    )
+    group.add_option(
+        "--no-enable-all",
+        dest="enable_all",
+        action="store_false",
+        help="try to build with some missing prerequisites (same as "
+        "ENABLE_ALL=0 environment variable)",
     )
 
 

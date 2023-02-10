@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -139,6 +139,8 @@ int main(void){
     return 0;
 }"""
     self.start_msg("Checking scotch version")
+    mumps_vers = tuple([int(num) for num in self.env["MUMPS_VERSION"].split(".")[:2]])
+    required = 7 if mumps_vers >= (5, 5) else 6
     try:
         ret = self.check_cc(
             fragment=fragment,
@@ -149,10 +151,12 @@ int main(void){
             define_ret=True,
         )
         vers = eval(ret)
-        if vers[0] < 5:
-            raise Errors.ConfigurationError(
-                "Scotch version >= 5 is required, unexpected version: {0}".format(ret)
+        if vers[0] < required:
+            self.end_msg(
+                "Scotch version >= {1} is required, unexpected version: {0}".format(ret, required),
+                "RED",
             )
+            raise Errors.ConfigurationError
     except:
         self.end_msg("no", "YELLOW")
         raise
