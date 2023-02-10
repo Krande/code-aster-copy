@@ -43,8 +43,6 @@ class MeshCoordinatesField : public DataField {
   private:
     /** @brief Vecteur Jeveux '.DESC' */
     JeveuxVectorLong _descriptor;
-    /** @brief Vecteur Jeveux '.REFE' */
-    JeveuxVectorChar24 _reference;
     /** @brief Vecteur Jeveux '.VALE' */
     JeveuxVectorReal _valuesList;
 
@@ -69,9 +67,8 @@ class MeshCoordinatesField : public DataField {
      * @param name Nom Jeveux du champ aux noeuds
      */
     MeshCoordinatesField( const std::string &name )
-        : DataField( name, "CHAM_NO" ),
+        : DataField( name, "CHAM_GEOM" ),
           _descriptor( JeveuxVectorLong( getName() + ".DESC" ) ),
-          _reference( JeveuxVectorChar24( getName() + ".REFE" ) ),
           _valuesList( JeveuxVectorReal( getName() + ".VALE" ) ){};
 
     /**
@@ -81,13 +78,12 @@ class MeshCoordinatesField : public DataField {
     MeshCoordinatesField( const MeshCoordinatesField &coordField )
         : MeshCoordinatesField( ResultNaming::getNewResultName() ) {
         *( _descriptor ) = *( coordField._descriptor );
-        *( _reference ) = *( coordField._reference );
         *( _valuesList ) = *( coordField._valuesList );
     };
 
     bool exists() const { return _valuesList->exists(); };
 
-    void assign( const std::string &meshName, const JeveuxVectorReal &values );
+    void assign( const JeveuxVectorReal &values );
 
     /**
      * @brief Shorthand + operator assignement
@@ -181,7 +177,6 @@ class MeshCoordinatesField : public DataField {
      */
     MeshCoordinatesField &operator=( const MeshCoordinatesField &coordField ) {
         *( _descriptor ) = *( coordField._descriptor );
-        *( _reference ) = *( coordField._reference );
         *( _valuesList ) = *( coordField._valuesList );
         return *this;
     };
@@ -190,11 +185,6 @@ class MeshCoordinatesField : public DataField {
      * @brief Get _descriptor
      */
     const JeveuxVectorLong getDescriptor() const { return _descriptor; };
-
-    /**
-     * @brief Get _reference
-     */
-    const JeveuxVectorChar24 getReference() const { return _reference; };
 
     /**
      * @brief Get _valuesList
@@ -232,7 +222,6 @@ class MeshCoordinatesField : public DataField {
      */
     void updateValuePointers() const {
         _descriptor->updateValuePointer();
-        _reference->updateValuePointer();
         _valuesList->updateValuePointer();
     };
 };

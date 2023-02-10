@@ -24,6 +24,8 @@ subroutine crcnct(base, nomch, mailla, gd, nbcmp, &
 !     ----------
 #include "jeveux.h"
 #include "asterc/indik8.h"
+#include "asterfort/assert.h"
+#include "asterfort/afchno.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jeecra.h"
@@ -35,6 +37,7 @@ subroutine crcnct(base, nomch, mailla, gd, nbcmp, &
 #include "asterfort/jexnum.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/jedetr.h"
 !
     integer :: nbcmp
     character(len=*) :: base, nomch, mailla, gd
@@ -70,15 +73,18 @@ subroutine crcnct(base, nomch, mailla, gd, nbcmp, &
 !
 !
 !-----------------------------------------------------------------------
-    integer :: iadesc, iancmp, iarefe, iavale, icmp, iec
-    integer :: igd, iiec, ino, itrou, nbcmp2, nbno
-    integer :: nec
+    integer :: iancmp, iavale, icmp, iec
+    integer :: igd, ino, itrou, nbcmp2, nbno
+    integer :: nec, jj
+    integer, pointer :: desc(:) => null()
+    integer, pointer :: nbca(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
     gd2 = gd
     maill2 = mailla
     ch19 = nomch
     bas2 = base
+
 !
 !
 !     VERIFICATION DES ARGUMENTS D'APPEL :
@@ -89,15 +95,6 @@ subroutine crcnct(base, nomch, mailla, gd, nbcmp, &
     end if
     call jeveuo(jexnum('&CATA.GD.NOMCMP', igd), 'L', iancmp)
     call jelira(jexnum('&CATA.GD.NOMCMP', igd), 'LONMAX', nbcmp2)
-    do icmp = 1, nbcmp
-        nocmp = licmp(icmp)
-        itrou = indik8(zk8(iancmp), nocmp, 1, nbcmp2)
-        if (itrou .eq. 0) then
-            valk(1) = nocmp
-            valk(2) = gd2
-            call utmess('F', 'CALCULEL2_22', nk=2, valk=valk)
-        end if
-    end do
     call dismoi('NB_EC', gd2, 'GRANDEUR', repi=nec)
     call dismoi('TYPE_SCA', gd2, 'GRANDEUR', repk=tysca)
     if (tysca(1:1) .ne. 'R') then
@@ -108,26 +105,28 @@ subroutine crcnct(base, nomch, mailla, gd, nbcmp, &
 !     ALLOCATION DU CHAM_NO :
 !     -----------------------
     call dismoi('NB_NO_MAILLA', maill2, 'MAILLAGE', repi=nbno)
-    call wkvect(ch19//'.VALE', bas2//' V R', nbcmp*nbno, iavale)
-    call wkvect(ch19//'.DESC', bas2//' V I', nec+2, iadesc)
-    call wkvect(ch19//'.REFE', bas2//' V K24', 4, iarefe)
-!
-!     OBJET: .REFE
-!     ------------
-    zk24(iarefe-1+1) = maill2
-!
-!     OBJET: .DESC
-!     ------------
-    call jeecra(ch19//'.DESC', 'DOCU', cval='CHNO')
-    zi(iadesc-1+1) = igd
-    zi(iadesc-1+2) = -nbcmp
-    do icmp = 1, nbcmp
-        nocmp = licmp(icmp)
-        itrou = indik8(zk8(iancmp), nocmp, 1, nbcmp2)
-        iec = (itrou-1)/30+1
-        iiec = itrou-(iec-1)*30
-        zi(iadesc-1+2+iec) = ior(zi(iadesc-1+2+iec), 2**iiec)
+    call wkvect('&&CRCNCT.NCMPMX_AFFE', 'V V I ', nbno, vi=nbca)
+    call wkvect('&&CRCNCT.DESC_NOEUD', 'V V I', nec*nbno, vi=desc)
+
+    do ino = 1, nbno
+        nbca(ino) = nbcmp
+        do icmp = 1, nbcmp
+            nocmp = licmp(icmp)
+            itrou = indik8(zk8(iancmp), nocmp, 1, nbcmp2)
+            if (itrou .ne. 0) then
+                iec = (itrou-1)/30+1
+                jj = itrou-30*(iec-1)
+                desc((ino-1)*nec+iec) = ior(desc((ino-1)*nec+iec), 2**jj)
+            else
+                valk(1) = nocmp
+                valk(2) = gd2
+                call utmess('F', 'CALCULEL2_22', nk=2, valk=valk)
+            end if
+        end do
     end do
+
+    call afchno(ch19, bas2, gd, maill2, nbno, nbca, desc, nbcmp*nbno, 'R')
+    call jeveuo(ch19//'.VALE', 'E', iavale)
 !
 !     OBJET: .VALE
 !     ------------
@@ -137,6 +136,8 @@ subroutine crcnct(base, nomch, mailla, gd, nbcmp, &
         end do
     end do
 !
+    call jedetr('&&CRCNCT.NCMPMX_AFFE')
+    call jedetr('&&CRCNCT.DESC_NOEUD')
 !
     call jedema()
 end subroutine

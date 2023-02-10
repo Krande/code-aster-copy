@@ -72,7 +72,7 @@ subroutine ssdmte(mag)
 ! ----------------------------------------------------------------------
 !-----------------------------------------------------------------------
     integer :: i, i2coex, iacoex, iadesc
-    integer :: iagno, ianeno, iarefe
+    integer :: iagno, ianeno
     integer :: iasupm, iatypl, iavale, ibid, ico, igeomr, igno
     integer :: ilcoex, ima, ino, iret, isma, jno, k
     integer :: kno, nbgno, nbma, nbno, nbnoco, nbnoe, nbnoet
@@ -141,15 +141,13 @@ subroutine ssdmte(mag)
 !
             call jenonu(jexnom('&CATA.GD.NOMGD', 'GEOM_R'), igeomr)
             call wkvect(coordo//'.DESC', 'G V I', 3, iadesc)
-            call jeecra(coordo//'.DESC', 'DOCU', ibid, 'CHNO')
+            call jeecra(coordo//'.DESC', 'DOCU', ibid, 'CHGO')
             zi(iadesc-1+1) = igeomr
 !     -- TOUJOURS 3 COMPOSANTES X, Y ET Z
             zi(iadesc-1+2) = -3
 !     -- 14 = 2**1 + 2**2 + 2**3
             zi(iadesc-1+3) = 14
 !
-            call wkvect(coordo//'.REFE', 'G V K24', 4, iarefe)
-            zk24(iarefe-1+1) = mag
             call wkvect(coordo//'.VALE', 'G V R', 3*nbnop2, iavale)
 !     -- NOM DES NOEUDS PHYSIQUES (ET LEUR COORDONNEES) :
             ico = 0

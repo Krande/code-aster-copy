@@ -67,9 +67,6 @@ subroutine op0082()
 !     DUPLIQUE LA SD_MAILLAGE
     call copisd('MAILLAGE', 'G', mail, grille)
 !
-!     MET A JOUR LE NOM DU MAILLAGE DANS LA SD_MAILLAGE DUPLIQUEE
-    call jeveuo(grille//'.COORDO    .REFE', 'E', ibid)
-    zk24(ibid) = grille
 !
 !     CALCUL DES GRANDEURS DE LA GRILLE ET VERIFICATION QUE LE MAILLAGE
 !     EN ENTREE PEUT BIEN ETRE UTILISE POUR LA DEFINITION DE LA GRILLE

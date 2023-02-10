@@ -15,25 +15,11 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-!
+#include "asterf_types.h"
 !
 interface
-    subroutine sdmail(nomu, nommai, nomnoe, cooval, coodsc,&
-                      grpnoe, gpptnn, grpmai, gpptnm,&
-                      connex, titre, typmai, adapma)
-        character(len=8) :: nomu
-        character(len=24) :: nommai
-        character(len=24) :: nomnoe
-        character(len=24) :: cooval
-        character(len=24) :: coodsc
-        character(len=24) :: grpnoe
-        character(len=24) :: gpptnn
-        character(len=24) :: grpmai
-        character(len=24) :: gpptnm
-        character(len=24) :: connex
-        character(len=24) :: titre
-        character(len=24) :: typmai
-        character(len=24) :: adapma
-    end subroutine sdmail
+    subroutine cgocns(cnoz, basez, cnsz, meshz, undf0_)
+        character(len=*), intent(in) :: cnoz, basez, cnsz, meshz
+        aster_logical, optional, intent(in) :: undf0_
+    end subroutine cgocns
 end interface

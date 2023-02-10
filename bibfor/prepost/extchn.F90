@@ -255,6 +255,7 @@ subroutine extchn(nchmno, nnoeud, numnd, ncmp, nbn, &
 !
     gd = zi(adesch+1-1)
     num = zi(adesch+2-1)
+    ASSERT(num > 0)
 !
     nomaux = zk24(arefch+1-1)
     nmaila = nomaux(1:8)
@@ -365,24 +366,6 @@ subroutine extchn(nchmno, nnoeud, numnd, ncmp, nbn, &
 !   REMPISSAGE DU SGT DE VALEURS
 !   ----------------------------
 !
-    if (num .lt. 0) then
-!
-!          /* CAS D' UN CHAM_NO A REPRESENTATION CONSTANTE */
-!
-        do i = 1, nbn, 1
-!
-            call jecroc(jexnum(nperr, i))
-            call jeecra(jexnum(nperr, i), 'LONMAX', nbc)
-            call jeveuo(jexnum(nperr, i), 'E', aperr)
-!
-            ind = numnd(i)
-!
-            call exchnn(zi(adesch+1-1), ind, zi(anumcp), nbc, zr(avalch), &
-                        [ibid], .false._1, zr(apval+nbc*(i-1)+1-1), zi(aperr))
-!
-        end do
-!
-    else
 !
 !          /* CAS D' UN CHAM_NO A REPRESENTATION PAR NOEUD */
 !          /* CONTENUE DANS LE PRNO (OC 1) DU PROF_CHNO    */
@@ -390,36 +373,35 @@ subroutine extchn(nchmno, nnoeud, numnd, ncmp, nbn, &
 !        RECUPERATION DU NOM DU PROF_CHNO
 !        --------------------------------
 !
-        nomaux = zk24(arefch+2-1)
-        nprof = nomaux(1:19)
+    nomaux = zk24(arefch+2-1)
+    nprof = nomaux(1:19)
 !
 !        ACCES AU DESCRIPTEUR DU CHAM_NO
 !        -------------------------------
 !
-        nprno = nprof//'.PRNO'
-        nnueq = nprof//'.NUEQ'
-        call jeveuo(nnueq, 'L', anueq)
+    nprno = nprof//'.PRNO'
+    nnueq = nprof//'.NUEQ'
+    call jeveuo(nnueq, 'L', anueq)
 !
-        call jeveuo(jexnum(nprno, 1), 'L', aprno)
+    call jeveuo(jexnum(nprno, 1), 'L', aprno)
 !
 !        RECUPERATION DES VALEURS
 !        ------------------------
 !
 !
-        do i = 1, nbn, 1
+    do i = 1, nbn, 1
 !
-            call jecroc(jexnum(nperr, i))
-            call jeecra(jexnum(nperr, i), 'LONMAX', nbc)
-            call jeveuo(jexnum(nperr, i), 'E', aperr)
+        call jecroc(jexnum(nperr, i))
+        call jeecra(jexnum(nperr, i), 'LONMAX', nbc)
+        call jeveuo(jexnum(nperr, i), 'E', aperr)
 !
-            ind = numnd(i)
+        ind = numnd(i)
 !
-            call exchnn(zi(aprno+(ind-1)*(2+nbec)+1-1), 0, zi(anumcp), nbc, zr(avalch), &
-                        zi(anueq), .true._1, zr(apval+nbc*(i-1)+1-1), zi(aperr))
+        call exchnn(zi(aprno+(ind-1)*(2+nbec)+1-1), 0, zi(anumcp), nbc, zr(avalch), &
+                    zi(anueq), .true._1, zr(apval+nbc*(i-1)+1-1), zi(aperr))
 !
-        end do
+    end do
 !
-    end if
 !
 !   DESTRUCTION DES OJB TEMPORAIRES
 !   -------------------------------

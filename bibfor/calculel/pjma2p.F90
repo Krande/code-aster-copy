@@ -65,7 +65,7 @@ subroutine pjma2p(ndim, moa2, ma2p, corres)
 ! ----------------------------------------------------------------------
     integer :: ntgeo, ipo, ipg, nuno2
     integer ::  nbno2p, nno2, ino2p
-    integer :: k, j1, j4, ipoi1, ipy5, ipy13
+    integer :: k, j1, ipoi1, ipy5, ipy13
     integer :: nbma, nbpt, nbcmp, nbmamo
     integer :: ima, ipt, icmp, iad, iadime
     integer ::  jdimt, jpo2, nbtrou, jlitr
@@ -250,10 +250,6 @@ subroutine pjma2p(ndim, moa2, ma2p, corres)
 !
 !
 !
-!     -- CREATION DU .REFE DU NOUVEAU MAILLAGE
-!     --------------------------------------------------
-    call wkvect(ma2p//'.COORDO    .REFE', 'V V K24', 4, j4)
-    zk24(j4) = 'MA2P'
 !
 !
 !     -- CREATION DE COORDO.VALE DU NOUVEAU MAILLAGE
@@ -292,7 +288,7 @@ subroutine pjma2p(ndim, moa2, ma2p, corres)
     call jenonu(jexnom('&CATA.GD.NOMGD', 'GEOM_R'), ntgeo)
     call jecreo(coodsc, 'V V I')
     call jeecra(coodsc, 'LONMAX', 3)
-    call jeecra(coodsc, 'DOCU', cval='CHNO')
+    call jeecra(coodsc, 'DOCU', cval='CHGO')
     call jeveuo(coodsc, 'E', iad)
     zi(iad) = ntgeo
     zi(iad+1) = -3

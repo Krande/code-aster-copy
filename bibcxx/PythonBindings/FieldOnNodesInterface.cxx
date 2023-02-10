@@ -26,7 +26,6 @@
 
 #include "aster_pybind.h"
 
-#include "DataFields/MeshCoordinatesField.h"
 #include "PythonBindings/DataStructureInterface.h"
 
 void exportFieldOnNodesToPython( py::module_ &mod ) {
@@ -40,7 +39,6 @@ void exportFieldOnNodesToPython( py::module_ &mod ) {
         .def( py::init( &initFactoryPtr< FieldOnNodesReal, const FieldOnNodesReal & > ) )
         .def( py::init( &initFactoryPtr< FieldOnNodesReal, ModelPtr > ) )
         .def( py::init( &initFactoryPtr< FieldOnNodesReal, BaseDOFNumberingPtr > ) )
-        .def( py::init( &initFactoryPtr< FieldOnNodesReal, MeshCoordinatesFieldPtr > ) )
         .def( "duplicate", &FieldOnNodesReal::duplicate )
         .def( "toSimpleFieldOnNodes", &FieldOnNodesReal::toSimpleFieldOnNodes )
         .def( "getPhysicalQuantity", &FieldOnNodesReal::getPhysicalQuantity )

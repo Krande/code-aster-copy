@@ -30,7 +30,6 @@
 #include "astercxx.h"
 
 #include "DataFields/DataField.h"
-#include "DataFields/MeshCoordinatesField.h"
 #include "DataFields/SimpleFieldOnNodes.h"
 #include "MemoryManager/JeveuxAllowedTypes.h"
 #include "MemoryManager/JeveuxVector.h"
@@ -278,16 +277,6 @@ public:
    * @return new field, copy of the calling field
    */
   FieldOnNodes duplicate() { return *this; }
-
-  /**
-   * @brief Constructeur from a MeshCoordinatesFieldPtr&
-   */
-  FieldOnNodes(MeshCoordinatesFieldPtr &toCopy)
-      : DataField("CHAM_NO"), _descriptor(toCopy->getDescriptor()),
-        _reference(toCopy->getReference()), _values(toCopy->getValues()),
-        _dofDescription(nullptr), _mesh(nullptr) {
-    this->updateValuePointers();
-  };
 
   /**
    * @brief Surcharge de l'operateur []
@@ -925,6 +914,8 @@ public:
       const std::string name2 = trim((*_reference)[1].toString());
       if (!name2.empty()) {
         _dofDescription = std::make_shared<FieldOnNodesDescription>(name2);
+      } else {
+        AS_ABORT("PROF_CHNO is empty");
       }
       CALL_JEDEMA();
     }

@@ -76,7 +76,6 @@ subroutine rec110(nomres, nomsqu, modgen)
     character(len=8), pointer :: vnomsst(:) => null()
     real(kind=8), pointer :: nlcoord(:) => null()
     real(kind=8), pointer :: nlvold(:) => null()
-    character(len=24), pointer :: refe(:) => null()
 !-----------------------------------------------------------------------
     data tt/'&&REC110'/
 !-----------------------------------------------------------------------
@@ -430,10 +429,6 @@ subroutine rec110(nomres, nomsqu, modgen)
             zi(lconn-1+i) = zi(linver-1+zi(lconn-1+i))
         end do
     end do
-!
-! --- OBJET  .REFE
-    call jeveuo(nomres//'.COORDO    .REFE', 'E', vk24=refe)
-    refe(1) = nomres
 !
 ! --- OBJET  .DIME
     call jeveuo(nomres//'.DIME', 'E', ldime)

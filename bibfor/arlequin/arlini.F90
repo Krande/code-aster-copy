@@ -54,8 +54,8 @@ subroutine arlini(mail, base, dime, nbno, &
 ! IN  NBMA   : NOMBRE DE MAILLES DU MAILLAGE
 ! IN  NBNOMA : LONGUEUR DU VECTEUR CONNECTIVITE DES MAILLES
 
-    character(len=24) :: maidim, cooref, cooval, coodsc
-    integer :: jdime, jrefe, jcoor, jcods
+    character(len=24) :: maidim, cooval, coodsc
+    integer :: jdime, jcoor, jcods
     character(len=24) :: typmai
     integer :: jtypm
     character(len=24) :: nomnoe, nommai, connex
@@ -68,7 +68,6 @@ subroutine arlini(mail, base, dime, nbno, &
 ! --- NOM DES OBJETS JEVEUX
 
     maidim = mail(1:8)//'.DIME'
-    cooref = mail(1:8)//'.COORDO    .REFE'
     cooval = mail(1:8)//'.COORDO    .VALE'
     coodsc = mail(1:8)//'.COORDO    .DESC'
     nomnoe = mail(1:8)//'.NOMNOE         '
@@ -102,15 +101,11 @@ subroutine arlini(mail, base, dime, nbno, &
 
 ! --- CHAM_NO DES COORDONNEES DES NOEUDS
 
-    call wkvect(cooref, base//' V K24', 2, jrefe)
-    zk24(jrefe) = mail
-    zk24(jrefe+1) = ' '
-
     call wkvect(cooval, base//' V R', 3*nbno, jcoor)
 
     call jecreo(coodsc, base//' V I')
     call jeecra(coodsc, 'LONMAX', 3, ' ')
-    call jeecra(coodsc, 'DOCU', 0, 'CHNO')
+    call jeecra(coodsc, 'DOCU', 0, 'CHGO')
     call jeveuo(coodsc, 'E', jcods)
     zi(jcods) = ntgeo
     zi(jcods+1) = -3

@@ -202,7 +202,7 @@ subroutine op0100()
 !
 !
         call gver2d(1, noeud, rinf, rsup)
-        call gcou2d('G', theta, noma, nomno, noeud, zr(iadrco), rinf, &
+        call gcou2d(theta, noma, nomno, noeud, zr(iadrco), rinf, &
                     rsup, config)
     end if
 !

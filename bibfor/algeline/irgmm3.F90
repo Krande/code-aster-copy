@@ -49,7 +49,7 @@ subroutine irgmm3(nomain, nomaou, nbmat, nummai, basz, &
 !     LE MAILLAGE "NOMAOU" NE POSSEDE QUE DES MAILLES DE TYPE
 !     POI1, SEG2, TRIA3, TETRA4
 !     ------------------------------------------------------------------
-    integer :: i, ima, nbma, nbmail, ifm, niv, ino, ima2, imav, iatyma, jrefe
+    integer :: i, ima, nbma, nbmail, ifm, niv, ino, ima2, imav, iatyma
     integer :: jtitr
     integer :: jtypm, jdime, jopt, jnpt, nbmac, jmail, im, jnumol, jnbnun
     integer :: idlima
@@ -57,8 +57,8 @@ subroutine irgmm3(nomain, nomaou, nbmat, nummai, basz, &
     character(len=1) :: base
     character(len=8) :: k8b, nomg, typm, typm2
     character(len=24) :: nommai, typmai, connex, nodime, nomnoe, cooval, coodsc
-    character(len=24) :: cooref, titre, numold, nbnune
-    character(len=24) :: typmav, connev, nodimv, nomnov, coovav, coodsv, coorev
+    character(len=24) ::  titre, numold, nbnune
+    character(len=24) :: typmav, connev, nodimv, nomnov, coovav, coodsv
     character(len=24) :: valk(2)
     integer :: ind, numel, nbcr, nbp
     integer :: nbmmax
@@ -96,7 +96,6 @@ subroutine irgmm3(nomain, nomaou, nbmat, nummai, basz, &
     nodimv = nomain//'.DIME           '
     coovav = nomain//'.COORDO    .VALE'
     coodsv = nomain//'.COORDO    .DESC'
-    coorev = nomain//'.COORDO    .REFE'
 !
     nommai = nomaou//'.NOMMAI         '
     nomnoe = nomaou//'.NOMNOE         '
@@ -105,7 +104,6 @@ subroutine irgmm3(nomain, nomaou, nbmat, nummai, basz, &
     nodime = nomaou//'.DIME           '
     cooval = nomaou//'.COORDO    .VALE'
     coodsc = nomaou//'.COORDO    .DESC'
-    cooref = nomaou//'.COORDO    .REFE'
     titre = nomaou//'           .TITR'
     numold = nomaou//'.NUMOLD         '
     nbnune = nomaou//'.NBNUNE'
@@ -186,10 +184,6 @@ subroutine irgmm3(nomain, nomaou, nbmat, nummai, basz, &
     call jedupo(nomnov, base, nomnoe, logic)
     call jedupo(coovav, base, cooval, logic)
     call jedupo(coodsv, base, coodsc, logic)
-    call jedupo(coorev, base, cooref, logic)
-!
-    call jeveuo(cooref, 'E', jrefe)
-    zk24(jrefe) = nomaou
 !
     call jeveuo(nodime, 'E', jdime)
     zi(jdime+3-1) = nbmail

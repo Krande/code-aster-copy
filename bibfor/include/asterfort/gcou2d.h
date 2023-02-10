@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,9 +21,8 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine gcou2d(base, resu, noma, nomno, noeud,&
+    subroutine gcou2d(resu, noma, nomno, noeud,&
                       coor, rinf, rsup, config, l_new_fiss)
-        character(len=1) :: base
         character(len=24) :: resu
         character(len=8) :: noma
         character(len=24) :: nomno

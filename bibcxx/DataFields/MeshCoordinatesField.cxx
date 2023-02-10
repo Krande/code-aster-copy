@@ -26,7 +26,7 @@
 #include "DataFields/FieldOnNodes.h"
 
 /* person_in_charge: nicolas.sellenet at edf.fr */
-void MeshCoordinatesField::assign( const std::string &meshName, const JeveuxVectorReal &values ) {
+void MeshCoordinatesField::assign( const JeveuxVectorReal &values ) {
     JeveuxVectorLong descr( 3 );
     JeveuxChar32 objName( " " );
     const std::string quantities( "&CATA.GD.NOMGD" );
@@ -35,15 +35,11 @@ void MeshCoordinatesField::assign( const std::string &meshName, const JeveuxVect
     ASTERINTEGER idxgeo = -1;
     CALLO_JENONU( objName, &idxgeo );
     ( *descr )[0] = idxgeo;
-    ( *descr )[1] = -3;
+    ( *descr )[1] = -3; // X,Y,Z components
     ( *descr )[2] = 14; // means 0b1110 for XYZ (and not W)
-    descr->setInformationParameter( "CHNO" );
-
-    JeveuxVectorChar24 refe( 4 );
-    ( *refe )[0] = meshName;
+    descr->setInformationParameter( "CHGO" );
 
     *_descriptor = *descr;
-    *_reference = *refe;
     *_valuesList = *values;
 }
 

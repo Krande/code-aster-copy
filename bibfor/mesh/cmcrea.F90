@@ -245,8 +245,6 @@ subroutine cmcrea(main, maout, nbocc)
     call jedupo(main//'.NOMNOE', 'G', maout//'.NOMNOE', false)
     call cpclma(main, maout, 'GROUPENO', 'G')
     call copisd('CHAMP_GD', 'G', main//'.COORDO', maout//'.COORDO')
-    call jeveuo(maout//'.COORDO    .REFE', 'E', jadout)
-    zk24(jadout) = maout
 !
 !    DUPLICATION A L'IDENTIQUE DES AUTRES OBJETS NON TRAITES
     call jedupo(main//'.NOMACR', 'G', maout//'.NOMACR', false)

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -34,7 +34,7 @@ from .fieldonnodes_ext import post_comp_cham_no
 
 @injector(MeshCoordinatesField)
 class ExtendedMeshCoordinatesField:
-    cata_sdj = "SD.sd_champ.sd_cham_no_class"
+    cata_sdj = "SD.sd_champ.sd_cham_geom_class"
 
     def EXTR_COMP(self, comp=" ", lgno=[], topo=0):
         """retourne les valeurs de la composante comp du champ sur la liste

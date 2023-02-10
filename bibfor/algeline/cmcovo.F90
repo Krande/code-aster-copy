@@ -73,15 +73,15 @@ subroutine cmcovo(main, maout, nbma, lima, prefno, &
     integer :: jtypm, numa, nbno, lgno, inov, jnewm
     integer :: iret, jvale, kvale, lgnu, lgpref, nbgrmv
     integer :: typhex, typpen, iatyma, nbnomx, imav, lgnd, nbgrmn
-    integer :: jopt, nbpt, jnpt, nbnuma, n4, jdimo, j, jvg, jrefe
+    integer :: jopt, nbpt, jnpt, nbnuma, n4, jdimo, j, jvg
     integer :: nbmai, jgg, nbmat, jno, ima2
     character(len=8) :: knume, cdim, typm, ma1, ma2
     character(len=10) :: kangl
     character(len=24) :: normno, nonuma, grpmai, grpmav
     character(len=24) :: valk(4)
     character(len=24) :: nommav, nomnov, typmav, connev, grpnov, nodimv
-    character(len=24) :: coovav, coodsv, coorev, nommai, nomnoe, typmai
-    character(len=24) :: connex, grpnoe, nodime, cooval, coodsc, cooref
+    character(len=24) :: coovav, coodsv, nommai, nomnoe, typmai
+    character(len=24) :: connex, grpnoe, nodime, cooval, coodsc
     character(len=24) :: lisma, newma, grpnno, grpnma, nomg
     real(kind=8) :: coon1(3), coon2(3), coon3(3), coon4(3), n1n3(3), n1n2(3)
     real(kind=8) :: nx, ny, nz, nt(3), eps2, sinvec, cosvec
@@ -104,7 +104,6 @@ subroutine cmcovo(main, maout, nbma, lima, prefno, &
     nodimv = main//'.DIME           '
     coovav = main//'.COORDO    .VALE'
     coodsv = main//'.COORDO    .DESC'
-    coorev = main//'.COORDO    .REFE'
 !
     nommai = maout//'.NOMMAI         '
     nomnoe = maout//'.NOMNOE         '
@@ -117,7 +116,6 @@ subroutine cmcovo(main, maout, nbma, lima, prefno, &
     nodime = maout//'.DIME           '
     cooval = maout//'.COORDO    .VALE'
     coodsc = maout//'.COORDO    .DESC'
-    cooref = maout//'.COORDO    .REFE'
 !
     call jeveuo(typmav, 'L', jtypm)
 !
@@ -342,9 +340,6 @@ subroutine cmcovo(main, maout, nbma, lima, prefno, &
 ! --- DES COORDONNEES POUR MAOUT
 !
     call jedupo(coodsv, 'G', coodsc, logic)
-    call jedupo(coorev, 'G', cooref, logic)
-    call jeveuo(cooref, 'E', jrefe)
-    zk24(jrefe) = maout
 !
 ! --- MAOUT EST DE DIMENSION 3
 !

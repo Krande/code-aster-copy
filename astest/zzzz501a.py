@@ -32,7 +32,7 @@ mesh.readMedFile("zzzz501a.mmed")
 # help(mesh)
 
 coord = mesh.getCoordinates()
-test.assertEqual(coord.getType(), "CHAM_NO_SDASTER")
+test.assertEqual(coord.getType(), "CHAM_GEOM")
 # help(coord)
 
 coord1 = coord.duplicate()

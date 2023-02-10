@@ -58,7 +58,7 @@ subroutine abscur(ma)
 !
     character(len=8) :: typm, noma, nono
     character(len=24) :: mesmai, mesnoe
-    character(len=24) :: nommai, nomnoe, cooval, coodsc, cooref, grpnoe
+    character(len=24) :: nommai, nomnoe, cooval, coodsc, grpnoe
     character(len=24) :: gpptnn, grpmai, gpptnm, connex, titre, typmai, adapma
     character(len=16) :: motcle(3), typmcl(3)
     integer :: adrm, iseg1, iseg2, isegprev, jtmp, kseg, nbextr, nbnot
@@ -81,7 +81,7 @@ subroutine abscur(ma)
     call jemarq()
 !
     call sdmail(ma, nommai, nomnoe, cooval, coodsc, &
-                cooref, grpnoe, gpptnn, grpmai, gpptnm, &
+                grpnoe, gpptnn, grpmai, gpptnm, &
                 connex, titre, typmai, adapma)
     call dismoi('NB_NO_MAILLA', ma, 'MAILLAGE', repi=nbnot)
     call jeveuo(cooval, 'L', jcoor)

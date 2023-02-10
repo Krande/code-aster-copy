@@ -26,6 +26,7 @@ subroutine dismoi(questi, nomob, typeco, repi, repk, &
 #include "asterfort/dismch.h"
 #include "asterfort/dismcm.h"
 #include "asterfort/dismcn.h"
+#include "asterfort/dismcgo.h"
 #include "asterfort/dismco.h"
 #include "asterfort/dismcp.h"
 #include "asterfort/dismcr.h"
@@ -122,6 +123,8 @@ subroutine dismoi(questi, nomob, typeco, repi, repk, &
         call dismcr(quest1, nomo1(1:8), repi1, repk1, ier1)
     else if (typec1 .eq. 'CHAM_NO') then
         call dismcn(quest1, nomo1(1:19), repi1, repk1, ier1)
+    else if (typec1 .eq. 'CHAM_GEOM') then
+        call dismcgo(quest1, nomo1(1:19), repi1, repk1, ier1)
     else if (typec1 .eq. 'CHAM_NO_S') then
         call dismns(quest1, nomo1(1:19), repi1, repk1, ier1)
     else if (typec1 .eq. 'CARTE') then

@@ -53,7 +53,7 @@ subroutine cmqutr(basz, nomain, nomaou, nbma, nummai, &
 !
 !     ------------------------------------------------------------------
     integer :: i, ima, nbmat, nbmail, typtri, nbtri, iret, nbgrno, nbnomx, nbpt
-    integer :: ino, ima2, imav, iatyma, jrefe, jvg, jtypm, jdime, jopt, jnpt
+    integer :: ino, ima2, imav, iatyma, jvg, jtypm, jdime, jopt, jnpt
     integer :: nbno, ier, jgg, im, j, lgpref, lgnd, nbmag, nbgrm, ifm, niv, iq4
     integer :: iq8, iq9, igrma, nbgm, jlgrma, jgrma, nbma2, jdec, ig, ind
     aster_logical :: logic
@@ -62,9 +62,9 @@ subroutine cmqutr(basz, nomain, nomaou, nbma, nummai, &
     character(len=8) :: typm, nima
     character(len=16) :: knume
     character(len=24) :: nommai, typmai, connex, nodime, nomnoe, grpnoe, cooval
-    character(len=24) :: coodsc, cooref, grpmai, nomg
+    character(len=24) :: coodsc, grpmai, nomg
     character(len=24) :: typmav, connev, nodimv, nomnov, grpnov, gpptnn, coovav
-    character(len=24) :: coodsv, coorev, nommav, grpmav, gpptnm
+    character(len=24) :: coodsv, nommav, grpmav, gpptnm
     integer :: versio
     parameter(versio=1)
 !  --- TABLEAU DE DECOUPAGE
@@ -100,7 +100,6 @@ subroutine cmqutr(basz, nomain, nomaou, nbma, nummai, &
     nodimv = nomain//'.DIME           '
     coovav = nomain//'.COORDO    .VALE'
     coodsv = nomain//'.COORDO    .DESC'
-    coorev = nomain//'.COORDO    .REFE'
 !
     nommai = nomaou//'.NOMMAI         '
     nomnoe = nomaou//'.NOMNOE         '
@@ -111,7 +110,6 @@ subroutine cmqutr(basz, nomain, nomaou, nbma, nummai, &
     nodime = nomaou//'.DIME           '
     cooval = nomaou//'.COORDO    .VALE'
     coodsc = nomaou//'.COORDO    .DESC'
-    cooref = nomaou//'.COORDO    .REFE'
 !
     call jeveuo(typmav, 'L', jtypm)
     call jeveuo(nodimv, 'L', jdime)
@@ -161,10 +159,10 @@ subroutine cmqutr(basz, nomain, nomaou, nbma, nummai, &
     end do
 !
     if (niv .ge. 1) then
-        write (ifm, 1000) 1
-        if (iq4 .ne. 0) write (ifm, 1002) iq4, 'QUAD4', 2*iq4, 'TRIA3'
-        if (iq8 .ne. 0) write (ifm, 1002) iq8, 'QUAD8', 6*iq8, 'TRIA3'
-        if (iq9 .ne. 0) write (ifm, 1002) iq9, 'QUAD9', 6*iq9, 'TRIA3'
+        write (ifm, 500) 1
+        if (iq4 .ne. 0) write (ifm, 502) iq4, 'QUAD4', 2*iq4, 'TRIA3'
+        if (iq8 .ne. 0) write (ifm, 502) iq8, 'QUAD8', 6*iq8, 'TRIA3'
+        if (iq9 .ne. 0) write (ifm, 502) iq9, 'QUAD9', 6*iq9, 'TRIA3'
     end if
 !
     nbmail = nbmail+nbtri
@@ -173,10 +171,7 @@ subroutine cmqutr(basz, nomain, nomaou, nbma, nummai, &
     call jedupo(nomnov, base, nomnoe, logic)
     call jedupo(coovav, base, cooval, logic)
     call jedupo(coodsv, base, coodsc, logic)
-    call jedupo(coorev, base, cooref, logic)
 !
-    call jeveuo(cooref, 'E', jrefe)
-    zk24(jrefe) = nomaou
 !
     call jeveuo(nodime, 'E', jdime)
     zi(jdime+3-1) = nbmail
@@ -394,9 +389,9 @@ subroutine cmqutr(basz, nomain, nomaou, nbma, nummai, &
 !
 !
 !
-1000 format('MOT CLE FACTEUR "MODI_MAILLE", OCCURRENCE ', i4)
-1002 format('  MODIFICATION DE ', i6, ' MAILLES ', a8,&
-    &                     ' EN ', i6, ' MAILLES ', a8)
+500 format('MOT CLE FACTEUR "MODI_MAILLE", OCCURRENCE ', i4)
+502 format('  MODIFICATION DE ', i6, ' MAILLES ', a8,&
+ &                     ' EN ', i6, ' MAILLES ', a8)
 !
     call jedema()
 !

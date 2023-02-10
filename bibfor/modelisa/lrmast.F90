@@ -58,7 +58,7 @@ subroutine lrmast(nomu, ifm, ifl, nbnoeu, nbmail, &
 #include "asterfort/wkvect.h"
 !
     integer :: ifm, ifl
-    character(len=24) :: cooval, coodsc, cooref, grpnoe, grpmai, connex
+    character(len=24) :: cooval, coodsc, grpnoe, grpmai, connex
     character(len=24) :: titre, nommai, nomnoe, typmai
     character(len=24) :: adapma
     character(len=8) :: nomu
@@ -221,7 +221,7 @@ subroutine lrmast(nomu, ifm, ifl, nbnoeu, nbmail, &
     call jemarq()
 !
     call sdmail(nomu, nommai, nomnoe, cooval, coodsc, &
-                cooref, grpnoe, gpptnn, grpmai, gpptnm, &
+                grpnoe, gpptnn, grpmai, gpptnm, &
                 connex, titre, typmai, adapma)
 !
 !  1  CONSTRUCTION DES NOMS JEVEUX POUR L OBJET-MAILLAGE
@@ -485,16 +485,11 @@ subroutine lrmast(nomu, ifm, ifl, nbnoeu, nbmail, &
     call jecreo(coodsc, 'G V I')
     call jeecra(coodsc, 'LONMAX', 3)
     call jeecra(coodsc, 'LONUTI', 3)
-    call jeecra(coodsc, 'DOCU', 0, 'CHNO')
+    call jeecra(coodsc, 'DOCU', 0, 'CHGO')
     call jeveuo(coodsc, 'E', iad)
     zi(iad) = ntgeo
     zi(iad+1) = -3
     zi(iad+2) = 14
-!
-! -   OBJET COORDO.REFE = VECTEUR 2*K24 NOM DU MAILLAGE !!!
-!
-    call wkvect(cooref, 'G V K24', 4, iad)
-    zk24(iad) = nomu
 !
 ! -   OBJET GROUPNOV  = FAMILLES CONTIGUES DE VECTEURS N*K8 VOLATILE
 !                       POINTEUR DE NOM       = GROUPNOV.$$NOM

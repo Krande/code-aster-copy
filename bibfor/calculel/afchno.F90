@@ -21,6 +21,7 @@ subroutine afchno(chamn, base, gran_name, mesh, nb_node, &
                   cval, kval)
     implicit none
 #include "jeveux.h"
+#include "asterfort/assert.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/cmpcha.h"
 #include "asterfort/vtcreb.h"
@@ -36,9 +37,10 @@ subroutine afchno(chamn, base, gran_name, mesh, nb_node, &
 #include "asterfort/pteequ.h"
 !
     integer :: nbcpno(*), desc(*)
-    real(kind=8) :: rval(*)
-    complex(kind=8) :: cval(*)
-    character(len=*) :: chamn, gran_name, base, typval, kval(*), mesh
+    real(kind=8), optional :: rval(*)
+    complex(kind=8), optional :: cval(*)
+    character(len=*), optional :: kval(*)
+    character(len=*) :: chamn, gran_name, base, typval, mesh
 !
 !
 !
@@ -53,9 +55,20 @@ subroutine afchno(chamn, base, gran_name, mesh, nb_node, &
     integer, pointer :: field_to_cata(:) => null()
     character(len=8), pointer :: cmp_name(:) => null()
     integer, pointer :: prno(:) => null()
+    aster_logical :: l_affe
 !-----------------------------------------------------------------------
     call jemarq()
     chamno = chamn
+    l_affe = present(rval) .or. present(cval) .or. present(kval)
+    if (l_affe) then
+        if (typval(1:1) .eq. 'R') then
+            ASSERT(present(rval))
+        else if (typval(1:1) .eq. 'C') then
+            ASSERT(present(cval))
+        else if (typval(1:2) .eq. 'K8') then
+            ASSERT(present(kval))
+        end if
+    end if
 !
     call jenonu(jexnom('&CATA.GD.NOMGD', gran_name), idx_gd)
     call jelira(jexnum('&CATA.GD.NOMCMP', idx_gd), 'LONMAX', ncmpmx)
@@ -88,27 +101,29 @@ subroutine afchno(chamn, base, gran_name, mesh, nb_node, &
 !
 !     --- AFFECTATION DU .VALE DE L'OBJET CHAMNO ---
 !
-    call jeveuo(chamno//'.VALE', 'E', lvale)
-    call jeveuo(prof_chno//'.NUEQ', 'E', lnueq)
-    do ino = 1, nb_node
-        i1 = prno((nec+2)*(ino-1)+1)+lnueq-1
-        do ic = 1, ncmpmx
-            iec = (ic-1)/30+1
-            jj = ic-30*(iec-1)
-            ii = 2**jj
-            nn = iand(desc((ino-1)*nec+iec), ii)
-            if (nn .gt. 0) then
-                if (typval(1:1) .eq. 'R') then
-                    zr(lvale-1+zi(i1)) = rval((ino-1)*ncmpmx+ic)
-                else if (typval(1:1) .eq. 'C') then
-                    zc(lvale-1+zi(i1)) = cval((ino-1)*ncmpmx+ic)
-                else if (typval(1:2) .eq. 'K8') then
-                    zk8(lvale-1+zi(i1)) = kval((ino-1)*ncmpmx+ic)
+    if (l_affe) then
+        call jeveuo(chamno//'.VALE', 'E', lvale)
+        call jeveuo(prof_chno//'.NUEQ', 'E', lnueq)
+        do ino = 1, nb_node
+            i1 = prno((nec+2)*(ino-1)+1)+lnueq-1
+            do ic = 1, ncmpmx
+                iec = (ic-1)/30+1
+                jj = ic-30*(iec-1)
+                ii = 2**jj
+                nn = iand(desc((ino-1)*nec+iec), ii)
+                if (nn .gt. 0) then
+                    if (typval(1:1) .eq. 'R') then
+                        zr(lvale-1+zi(i1)) = rval((ino-1)*ncmpmx+ic)
+                    else if (typval(1:1) .eq. 'C') then
+                        zc(lvale-1+zi(i1)) = cval((ino-1)*ncmpmx+ic)
+                    else if (typval(1:2) .eq. 'K8') then
+                        zk8(lvale-1+zi(i1)) = kval((ino-1)*ncmpmx+ic)
+                    end if
+                    i1 = i1+1
                 end if
-                i1 = i1+1
-            end if
+            end do
         end do
-    end do
+    end if
 !
 ! - Create object local components (field) => global components (catalog)
 !

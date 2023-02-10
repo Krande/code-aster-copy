@@ -30,6 +30,7 @@ subroutine chpchd(chin, type, celmod, prol0, base, &
 #include "asterfort/cesces.h"
 #include "asterfort/cescns.h"
 #include "asterfort/cnocns.h"
+#include "asterfort/cgocns.h"
 #include "asterfort/cnsces.h"
 #include "asterfort/cnscno.h"
 #include "asterfort/detrsd.h"
@@ -63,9 +64,13 @@ subroutine chpchd(chin, type, celmod, prol0, base, &
 !        /'NON' : ERREUR <F> SI IL EXISTE DES
 !         DES VALEURS DE CHOU QUI NE SONT PAS AFFECTEES DANS CHIN
 !   CELMOD IN/JXIN  K19 : NOM D'UN CHAM_ELEM "MODELE" SI TYPE='EL..'
+!                       : NOM DU MAILLAGE SI TYPE='GEOM.'
 !
 !  LES CAS TRAITES AUJOURD'HUI SONT :
 !
+!         /'GEOM->NOEU'   : CHAM_GEOM -> CHAM_NO
+!         /'GEOM->ELNO'   : CHAM_GEOM -> CHAM_ELEM/ELNO
+
 !         /'NOEU->ELNO'   : CHAM_NO -> CHAM_ELEM/ELNO
 !         /'NOEU->ELGA'   : CHAM_NO -> CHAM_ELEM/ELGA
 !
@@ -115,11 +120,10 @@ subroutine chpchd(chin, type, celmod, prol0, base, &
 !      NOMGD : NOM DE LA GRANDEUR ASSOCIEE A CHIN
 ! ------------------------------------------------------------------
 !
-    call dismoi('NOM_MAILLA', chin, 'CHAMP', repk=ma)
     call dismoi('TYPE_CHAMP', chin, 'CHAMP', repk=tychi)
     call dismoi('NOM_GD', chin, 'CHAMP', repk=nomgd)
     bool = tychi .eq. 'NOEU' .or. tychi .eq. 'CART' .or. tychi .eq. 'ELNO' .or. tychi .eq. 'ELGA' &
-           .or. tychi .eq. 'ELEM' .or. tychi .eq. 'CESE'
+           .or. tychi .eq. 'ELEM' .or. tychi .eq. 'CESE' .or. tychi .eq. 'GEOM'
     ASSERT(bool)
 !
 !
@@ -132,6 +136,7 @@ subroutine chpchd(chin, type, celmod, prol0, base, &
         call dismoi('NOM_OPTION', celmod, 'CHAM_ELEM', repk=option)
         call dismoi('NOM_PARAM', celmod, 'CHAM_ELEM', repk=param)
         call dismoi('NOM_MAILLA', ligrel, 'LIGREL', repk=ma2)
+        call dismoi('NOM_MAILLA', chin, 'CHAMP', repk=ma)
         if (ma .ne. ma2) then
             call utmess('F', 'CALCULEL4_59')
         end if
@@ -142,6 +147,9 @@ subroutine chpchd(chin, type, celmod, prol0, base, &
 ! 3.  -- CALCUL DE CAS :
 ! ---------------------------------------
 !     SONT TRAITES AUJOURD'HUI :
+!
+!         /'GEOM->NOEU'   : CHAM_GEOM -> CHAM_NO
+!         /'GEOM->ELNO'   : CHAM_GEOM -> CHAM_ELEM/ELNO
 !
 !         /'NOEU->ELNO'   : CHAM_NO -> CHAM_ELEM/ELNO
 !         /'NOEU->ELGA'   : CHAM_NO -> CHAM_ELEM/ELGA
@@ -229,6 +237,24 @@ subroutine chpchd(chin, type, celmod, prol0, base, &
         call cescel(ces1, ligrel, option, param, prol0, &
                     nncp, base, chou, 'F', ibid)
         call detrsd('CHAM_ELEM_S', ces1)
+!
+    else if (cas(1:4) .eq. 'GEOM') then
+!     ----------------------------------------------------------------
+!
+        call cgocns(chin, 'V', cns1, celmod)
+        if (cas(7:10) == "NOEU") then
+            call cnscno(cns1, ' ', 'NON', base, chou, 'F', ibid)
+        elseif (cas(7:10) == "ELNO") then
+            call cnsces(cns1, 'ELNO', cesmod, ' ', 'V', ces1)
+!
+            call cescel(ces1, ligrel, option, param, prol0, &
+                        nncp, base, chou, 'F', ibid)
+            call detrsd('CHAM_ELEM_S', ces1)
+        else
+            ASSERT(ASTER_FALSE)
+        end if
+!
+        call detrsd('CHAM_NO_S', cns1)
 !
 !
     elseif ((cas .eq. 'ELNO->NOEU') .or. (cas .eq. 'ELGA->NOEU') .or. &

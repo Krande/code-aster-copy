@@ -48,15 +48,15 @@ subroutine irgmma(nomain, nomaou, nbmat, nummai, basz, &
 !     POI1, SEG2, TRIA3, TETRA4 EN VERSION 1.0
 !     + QUAD4, PENTA6, PYRAM5, HEXA8 EN VERSIO 1.2 (VOIR IRGMTB)
 !     ------------------------------------------------------------------
-    integer :: i, ima, nbma, nbmail, ifm, niv, ino, ima2, imav, iatyma, jrefe
+    integer :: i, ima, nbma, nbmail, ifm, niv, ino, ima2, imav, iatyma
     integer :: jtitr
     integer :: jtypm, jdime, jopt, jnpt, nbmac, jmail, im, jnumol
     aster_logical :: logic
     character(len=1) :: base
     character(len=8) :: k8b, nomg, typm, typm2
     character(len=24) :: nommai, typmai, connex, nodime, nomnoe, cooval, coodsc
-    character(len=24) :: cooref, titre, numold
-    character(len=24) :: typmav, connev, nodimv, nomnov, coovav, coodsv, coorev
+    character(len=24) :: titre, numold
+    character(len=24) :: typmav, connev, nodimv, nomnov, coovav, coodsv
     character(len=24) :: valk(2)
     integer :: ind, numel, nbcr, nbp
     integer :: nbmmax
@@ -94,7 +94,6 @@ subroutine irgmma(nomain, nomaou, nbmat, nummai, basz, &
     nodimv = nomain//'.DIME           '
     coovav = nomain//'.COORDO    .VALE'
     coodsv = nomain//'.COORDO    .DESC'
-    coorev = nomain//'.COORDO    .REFE'
 !
     nommai = nomaou//'.NOMMAI         '
     nomnoe = nomaou//'.NOMNOE         '
@@ -103,7 +102,6 @@ subroutine irgmma(nomain, nomaou, nbmat, nummai, basz, &
     nodime = nomaou//'.DIME           '
     cooval = nomaou//'.COORDO    .VALE'
     coodsc = nomaou//'.COORDO    .DESC'
-    cooref = nomaou//'.COORDO    .REFE'
     titre = nomaou//'           .TITR'
     numold = nomaou//'.NUMOLD         '
 !
@@ -182,10 +180,6 @@ subroutine irgmma(nomain, nomaou, nbmat, nummai, basz, &
     call jedupo(nomnov, base, nomnoe, logic)
     call jedupo(coovav, base, cooval, logic)
     call jedupo(coodsv, base, coodsc, logic)
-    call jedupo(coorev, base, cooref, logic)
-!
-    call jeveuo(cooref, 'E', jrefe)
-    zk24(jrefe) = nomaou
 !
     call jeveuo(nodime, 'E', jdime)
     zi(jdime+3-1) = nbmail

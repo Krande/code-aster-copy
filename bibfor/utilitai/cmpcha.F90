@@ -91,6 +91,8 @@ subroutine cmpcha(fieldz, cmp_name, cata_to_field, field_to_cata, nb_cmpz, &
         call dismoi('NOM_GD', field, 'CHAM_ELEM', repk=gran_name)
     else if (typsd .eq. 'CART') then
         call dismoi('NOM_GD', field, 'CARTE', repk=gran_name)
+    else if (typsd .eq. 'GEOM') then
+        gran_name = "GEOM_R"
     else
         ASSERT(.false.)
     end if
@@ -117,29 +119,32 @@ subroutine cmpcha(fieldz, cmp_name, cata_to_field, field_to_cata, nb_cmpz, &
         call dismoi('NOM_MAILLA', field, 'CHAM_NO', repk=mesh)
         call dismoi('NB_NO_MAILLA', mesh, 'MAILLAGE', repi=nb_node)
 !
-!        -- 1.1.1 CAS DES CHAM_NO A REPRESENTATION CONSTANTE :
-        if (zi(jdesc-1+2) .lt. 0) then
-            call jelira(field//'.DESC', 'LONMAX', long)
-            ASSERT(long .eq. (2+nb_ec))
-            iadg = jdesc-1+3
-            do k = 1, nb_ec
-                dg(k) = zi(iadg-1+k)
-            end do
-!
 !        -- 1.1.2 CAS DES CHAM_NO A PROF_CHNO:
-        else
-            call dismoi('PROF_CHNO', field, 'CHAM_NO', repk=prof_chno)
-            call jeveuo(jexnum(prof_chno//'.PRNO', 1), 'L', jprno)
-            do i_node = 1, nb_node
-                ncmpp = zi(jprno-1+(i_node-1)*(nb_ec+2)+2)
-                if (ncmpp .ne. 0) then
-                    iadg = jprno-1+(i_node-1)*(nb_ec+2)+3
-                    do k = 1, nb_ec
-                        dg(k) = ior(dg(k), zi(iadg-1+k))
-                    end do
-                end if
-            end do
-        end if
+        ASSERT(zi(jdesc-1+2) > 0)
+        call dismoi('PROF_CHNO', field, 'CHAM_NO', repk=prof_chno)
+        call jeveuo(jexnum(prof_chno//'.PRNO', 1), 'L', jprno)
+        do i_node = 1, nb_node
+            ncmpp = zi(jprno-1+(i_node-1)*(nb_ec+2)+2)
+            if (ncmpp .ne. 0) then
+                iadg = jprno-1+(i_node-1)*(nb_ec+2)+3
+                do k = 1, nb_ec
+                    dg(k) = ior(dg(k), zi(iadg-1+k))
+                end do
+            end if
+        end do
+!
+!     -- 1.1 CAS DES CHAM_GEOM
+!     ----------------------------------------------------------------
+    elseif (typsd .eq. 'GEOM') then
+        call jeveuo(field//'.DESC', 'L', jdesc)
+        ASSERT(zi(jdesc-1+2) == -3)
+        call jelira(field//'.DESC', 'LONMAX', long)
+        ASSERT(long .eq. (2+nb_ec))
+        iadg = jdesc-1+3
+        do k = 1, nb_ec
+            dg(k) = zi(iadg-1+k)
+        end do
+        !
 !
 !
 !     -- 1.2 CAS DES CHAM_ELEM

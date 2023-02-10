@@ -121,7 +121,6 @@ subroutine eclpgm(ma2, mo, cham1, ligrel, shrink, &
     real(kind=8), pointer :: geopoini(:) => null()
     integer, pointer :: liel(:) => null()
     real(kind=8), pointer :: vale(:) => null()
-    character(len=24), pointer :: refe(:) => null()
     integer, pointer :: maco(:) => null()
 ! ----------------------------------------------------------------------
 !
@@ -428,8 +427,6 @@ subroutine eclpgm(ma2, mo, cham1, ligrel, shrink, &
     call copisd('CHAMP_GD', 'G', ma1//'.COORDO', ma2//'.COORDO')
     call jedetr(ma2//'.COORDO    .VALE')
     call wkvect(ma2//'.COORDO    .VALE', 'G V R', 3*nbnoeu, ibid)
-    call jeveuo(ma2//'.COORDO    .REFE', 'E', vk24=refe)
-    refe(1) = ma2
 !
     do k = 1, dimgeo
         nuno2 = 0

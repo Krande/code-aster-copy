@@ -30,6 +30,7 @@ subroutine dismcp(questi, nomobz, repi, repkz, ierd)
 #include "asterfort/dismes.h"
 #include "asterfort/dismns.h"
 #include "asterfort/dismre.h"
+#include "asterfort/dismcgo.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jelira.h"
     integer :: repi, ierd
@@ -86,6 +87,8 @@ subroutine dismcp(questi, nomobz, repi, repkz, ierd)
 !
     if (tych .eq. 'CHNO') then
         call dismcn(questi, nomob, repi, repk, ierd)
+    elseif (tych .eq. 'CHGO') then
+        call dismcgo(questi, nomob, repi, repk, ierd)
     else if (tych .eq. 'CART') then
         call dismca(questi, nomob, repi, repk, ierd)
     else if (tych .eq. 'CHML') then

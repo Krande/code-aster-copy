@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -30,9 +30,9 @@ interface
         integer :: desc(*)
         integer :: nb_equa
         character(len=*) :: typval
-        real(kind=8) :: rval(*)
-        complex(kind=8) :: cval(*)
-        character(len=*) :: kval(*)
+        real(kind=8),optional :: rval(*)
+        complex(kind=8),optional :: cval(*)
+        character(len=*),optional :: kval(*)
         character(len=*) :: mesh
     end subroutine afchno
 end interface

@@ -1353,7 +1353,7 @@ contains
         class(Mmesh), intent(inout) :: this
         character(len=8), intent(in) :: mesh_out
 ! ------------------------------------------------------------------
-        character(len=24) :: nommai, nomnoe, cooval, coodsc, cooref, grpnoe
+        character(len=24) :: nommai, nomnoe, cooval, coodsc, grpnoe
         character(len=24) :: gpptnn, grpmai, gpptnm, connex, titre, typmai, adapma
         character(len=32) :: name
         character(len=4) :: dimesp
@@ -1368,7 +1368,6 @@ contains
         integer, pointer :: v_maex(:) => null()
         integer, pointer :: v_nuloc(:) => null()
         integer, pointer :: v_nulogl(:) => null()
-        character(len=24), pointer :: v_k24(:) => null()
 !
         call jemarq()
 !
@@ -1384,7 +1383,7 @@ contains
         end if
 !
         call sdmail(mesh_out, nommai, nomnoe, cooval, coodsc, &
-                    cooref, grpnoe, gpptnn, grpmai, gpptnm, &
+                    grpnoe, gpptnn, grpmai, gpptnm, &
                     connex, titre, typmai, adapma)
 !
 ! --- Create nodes
@@ -1449,13 +1448,10 @@ contains
 ! ------ Type of GEOM_R field
         call jenonu(jexnom('&CATA.GD.NOMGD', 'GEOM_R'), ntgeo)
         call wkvect(coodsc, 'G V I', 3, vi=v_int)
-        call jeecra(coodsc, 'DOCU', 0, 'CHNO')
+        call jeecra(coodsc, 'DOCU', 0, 'CHGO')
         v_int(1) = ntgeo
         v_int(2) = -3
         v_int(3) = 14
-!
-        call wkvect(cooref, 'G V K24', 4, vk24=v_k24)
-        v_k24(1) = mesh_out
 !
 ! --- Create cells
 !

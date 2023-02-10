@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 
 from . import *
 from .sd_carte import sd_carte
-from .sd_cham_no import sd_cham_no
+from .sd_cham_geom import sd_cham_geom
 from .sd_l_table import sd_l_table
 from .sd_titre import sd_titre
 
@@ -32,7 +32,7 @@ class sd_maillage(sd_titre):
 
     # un sd_maillage a toujours des noeuds :
     NOMNOE = AsPn(ltyp=8)
-    COORDO = sd_cham_no()
+    COORDO = sd_cham_geom()
 
     # normalement, un sd_maillage a toujours une "sd_l_table" contenant des
     # caractéristiques géométriques :

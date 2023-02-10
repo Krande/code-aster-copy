@@ -61,7 +61,7 @@ subroutine crea_maillage(noma, noma2, base, nbno, lino)
     integer ::  ino2, typpoi, jadou, itypou, k
     character(len=4) :: docu
     character(len=8) ::  nomno, nom
-    character(len=24) ::  nomnoe, cooval, cooref, coodsc
+    character(len=24) ::  nomnoe, cooval, coodsc
     character(len=24) ::  dimin, dimou, connex, typmai, nommai
     real(kind=8), pointer :: vale(:) => null()
 !------------------------------------------------------------------------------
@@ -81,7 +81,6 @@ subroutine crea_maillage(noma, noma2, base, nbno, lino)
     nomnoe = noma2//'.NOMNOE'
     cooval = noma2//'.COORDO    .VALE'
     coodsc = noma2//'.COORDO    .DESC'
-    cooref = noma2//'.COORDO    .REFE'
 
 ! --- OBJET .DIME
     dimin = noma//'.DIME'
@@ -114,16 +113,12 @@ subroutine crea_maillage(noma, noma2, base, nbno, lino)
 ! --- OBJET COORDO.DESC
     call jecreo(coodsc, base//' V I')
     call jeecra(coodsc, 'LONMAX', 3)
-    call jeecra(coodsc, 'DOCU', cval='CHNO')
+    call jeecra(coodsc, 'DOCU', cval='CHGO')
     call jeveuo(coodsc, 'E', iad)
     call jenonu(jexnom('&CATA.GD.NOMGD', 'GEOM_R'), ntgeo)
     zi(iad) = ntgeo
     zi(iad+1) = -3
     zi(iad+2) = 14
-
-! --- OBJET COORDO.REFE
-    call wkvect(cooref, base//' V K24', 4, iad)
-    zk24(iad) = noma2
 
 ! --- Pour qu'on puisse voire le maillage de noeuds avec salome,
 !     on ajoute des POI1 sur tous les noeuds

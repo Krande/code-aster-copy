@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -22,6 +22,7 @@ import aster
 from . import *
 from .sd_carte import sd_carte
 from .sd_cham_elem import sd_cham_elem
+from .sd_cham_geom import sd_cham_geom
 from .sd_cham_gene import sd_cham_gene
 from .sd_cham_no import sd_cham_no
 from .sd_resuelem import sd_resuelem
@@ -53,6 +54,8 @@ class sd_champ(AsBase):
         docu = aster.jeveux_getattr(nom2, "DOCU")[1].strip()
         if docu == "CHNO":
             sd2 = sd_cham_no(nom)
+        elif docu == "CHGO":
+            sd2 = sd_cham_geom(nom)
         elif docu == "CART":
             sd2 = sd_carte(nom)
         elif docu == "CHML":
@@ -70,6 +73,13 @@ class sd_champ(AsBase):
 
 
 class sd_cham_no_class(sd_champ, sd_cham_no):
+    pass
+
+
+# sd des cham_geom
+
+
+class sd_cham_geom_class(sd_champ, sd_cham_geom):
     pass
 
 

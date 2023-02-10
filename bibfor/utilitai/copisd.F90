@@ -387,8 +387,6 @@ subroutine copisd(typesd, base, sd1, sd2)
         call copich(bas2, k81//'.ABSC_CURV', k82//'.ABSC_CURV')
 !       -- LES 2 CHAMPS COPIES DOIVENT S'APPUYER
 !          SUR LE NOUVEAU MAILLAGE :
-        call jeveuo(k82//'.COORDO    .REFE', 'E', j1)
-        zk24(j1-1+1) = k82
         call jeexin(k82//'.ABSC_CURV .NOMA', iexi)
         if (iexi .gt. 0) then
             call jeveuo(k82//'.ABSC_CURV .NOMA', 'E', j1)

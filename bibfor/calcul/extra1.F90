@@ -18,7 +18,10 @@
 !
 subroutine extra1(nin, lchin, lpain)
 !
-    use calcul_module, only : ca_iachii_, ca_iachik_, ca_iachin_, ca_iachix_, ca_iachlo_, ca_ianueq_, ca_iaoppa_, ca_iawlo2_, ca_iawloc_, ca_igd_, ca_igr_, ca_iichin_, ca_ilchlo_, ca_itypgd_, ca_lprno_, ca_nbgr_, ca_ncmpmx_, ca_nec_, ca_npario_, ca_typegd_, ca_nute_, ca_nuop_, ca_iachid_
+    use calcul_module, only: ca_iachii_, ca_iachik_, ca_iachin_, ca_iachix_, ca_iachlo_, &
+                             ca_ianueq_, ca_iaoppa_, ca_iawlo2_, ca_iawloc_, ca_igd_, ca_igr_, &
+                             ca_iichin_, ca_ilchlo_, ca_itypgd_, ca_lprno_, ca_nbgr_, ca_ncmpmx_, &
+                             ca_nec_, ca_npario_, ca_typegd_, ca_nute_, ca_nuop_, ca_iachid_
 !
     implicit none
 !
@@ -30,6 +33,7 @@ subroutine extra1(nin, lchin, lpain)
 #include "asterfort/assert.h"
 #include "asterfort/excart.h"
 #include "asterfort/exchml.h"
+#include "asterfort/exchgo.h"
 #include "asterfort/exchno.h"
 #include "asterfort/exresl.h"
 #include "asterfort/nbpara.h"
@@ -116,6 +120,7 @@ subroutine extra1(nin, lchin, lpain)
         if (type .eq. 'CART') call excart(imodat, iparg)
         if (type .eq. 'CHML') call exchml(imodat, iparg)
         if (type .eq. 'CHNO') call exchno(imodat, iparg)
+        if (type .eq. 'CHGO') call exchgo(imodat, iparg)
         if (type .eq. 'RESL') call exresl(imodat, iparg, chin)
 90      continue
     end do

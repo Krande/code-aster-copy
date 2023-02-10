@@ -58,7 +58,7 @@ subroutine asmasu(ma1, ma2, mag)
     integer :: iacon1, iacon2, iaconx
     integer :: iagno1, iagno2, iagnox
     integer :: iatyp1, iatyp2, iatypx
-    integer :: nbgno, nbgn1, nbgn2, ii, igeomr, iadesc, ibid, iarefe
+    integer :: nbgno, nbgn1, nbgn2, ii, igeomr, iadesc, ibid
     integer :: iatyma, iavale, iret, iret1, iret2
     real(kind=8), pointer :: coo1(:) => null()
     real(kind=8), pointer :: coo2(:) => null()
@@ -196,15 +196,13 @@ subroutine asmasu(ma1, ma2, mag)
 !
     call jenonu(jexnom('&CATA.GD.NOMGD', 'GEOM_R'), igeomr)
     call wkvect(coordo//'.DESC', 'G V I', 3, iadesc)
-    call jeecra(coordo//'.DESC', 'DOCU', ibid, 'CHNO')
+    call jeecra(coordo//'.DESC', 'DOCU', ibid, 'CHGO')
     zi(iadesc-1+1) = igeomr
 !     -- TOUJOURS 3 COMPOSANTES X, Y ET Z
     zi(iadesc-1+2) = -3
 !     -- 14 = 2**1 + 2**2 + 2**3
     zi(iadesc-1+3) = 14
 !
-    call wkvect(coordo//'.REFE', 'G V K24', 4, iarefe)
-    zk24(iarefe-1+1) = mag
     call jeveuo(ma1//'.COORDO    .VALE', 'L', vr=coo1)
     call jeveuo(ma2//'.COORDO    .VALE', 'L', vr=coo2)
     call wkvect(coordo//'.VALE', 'G V R', 3*nbno, iavale)

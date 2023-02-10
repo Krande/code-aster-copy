@@ -130,6 +130,7 @@ subroutine tresu_champ_no(cham19, nonoeu, nocmp, nbref, tbtxt, &
     call jeveuo(cham19//'.DESC', 'L', iadesc)
     gd = zi(iadesc-1+1)
     num = zi(iadesc-1+2)
+    ASSERT(num > 0)
     nec = nbec(gd)
 !
 !     -- ON RECHERCHE LE NUMERO CORRESPONDANT A NOCMP:
@@ -165,58 +166,35 @@ subroutine tresu_champ_no(cham19, nonoeu, nocmp, nbref, tbtxt, &
         end if
     end if
 !
-!     --SI LE CHAMP EST A REPRESENTATION CONSTANTE:
-!
-    if (num .lt. 0) then
-        ncmp = -num
-!
-!        -- ON COMPTE LES CMP PRESENTES SUR LE NOEUD AVANT ICMP: (+1)
-        idecal = 0
-        do iicmp = 1, icmp
-            if (exisdg(zi(iadesc+2), iicmp)) idecal = idecal+1
-        end do
-!
-        if (exisdg(zi(iadesc+2), icmp)) then
-            if (type .eq. 'R') then
-                valr = zr(iavale-1+(ino-1)*ncmp+idecal)
-            else if (type .eq. 'I') then
-                vali = zi(iavale-1+(ino-1)*ncmp+idecal)
-            else if (type .eq. 'C') then
-                valc = zc(iavale-1+(ino-1)*ncmp+idecal)
-            end if
-            l_ok = ASTER_TRUE
-        end if
-    else
 !        --SI LE CHAMP EST DECRIT PAR 1 "PRNO":
 !
-        call jenuno(jexnum(prchno//'.LILI', 1), nolili)
-        call jeveuo(jexnum(prchno//'.PRNO', 1), 'L', iaprno)
-        call jeveuo(prchno//'.NUEQ', 'L', ianueq)
+    call jenuno(jexnum(prchno//'.LILI', 1), nolili)
+    call jeveuo(jexnum(prchno//'.PRNO', 1), 'L', iaprno)
+    call jeveuo(prchno//'.NUEQ', 'L', ianueq)
 !
 !        IVAL : ADRESSE DU DEBUT DU NOEUD INO DANS .NUEQ
 !        NCMP : NOMBRE DE COMPOSANTES PRESENTES SUR LE NOEUD
 !        IADG : DEBUT DU DESCRIPTEUR GRANDEUR DU NOEUD INO
-        ival = zi(iaprno-1+(ino-1)*(nec+2)+1)
-        ncmp = zi(iaprno-1+(ino-1)*(nec+2)+2)
-        iadg = iaprno-1+(ino-1)*(nec+2)+3
-        ASSERT(ncmp .ne. 0)
+    ival = zi(iaprno-1+(ino-1)*(nec+2)+1)
+    ncmp = zi(iaprno-1+(ino-1)*(nec+2)+2)
+    iadg = iaprno-1+(ino-1)*(nec+2)+3
+    ASSERT(ncmp .ne. 0)
 !
 !        -- ON COMPTE LES CMP PRESENTES SUR LE NOEUD AVANT ICMP:
-        idecal = 0
-        do iicmp = 1, icmp
-            if (exisdg(zi(iadg), iicmp)) idecal = idecal+1
-        end do
+    idecal = 0
+    do iicmp = 1, icmp
+        if (exisdg(zi(iadg), iicmp)) idecal = idecal+1
+    end do
 !
-        if (exisdg(zi(iadg), icmp)) then
-            if (type .eq. 'R') then
-                valr = zr(iavale-1+zi(ianueq-1+ival-1+idecal))
-            else if (type .eq. 'I') then
-                vali = zi(iavale-1+zi(ianueq-1+ival-1+idecal))
-            else if (type .eq. 'C') then
-                valc = zc(iavale-1+zi(ianueq-1+ival-1+idecal))
-            end if
-            l_ok = ASTER_TRUE
+    if (exisdg(zi(iadg), icmp)) then
+        if (type .eq. 'R') then
+            valr = zr(iavale-1+zi(ianueq-1+ival-1+idecal))
+        else if (type .eq. 'I') then
+            vali = zi(iavale-1+zi(ianueq-1+ival-1+idecal))
+        else if (type .eq. 'C') then
+            valc = zc(iavale-1+zi(ianueq-1+ival-1+idecal))
         end if
+        l_ok = ASTER_TRUE
     end if
 !
 100 continue

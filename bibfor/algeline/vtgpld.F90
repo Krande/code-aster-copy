@@ -75,7 +75,7 @@ subroutine vtgpld(cumul, alpha, geomiz, deplaz, base, &
     integer :: length_prno
     integer :: i_cmp_glob, i_ec, i_equ, i_node, i_dof
     real(kind=8) :: rdepla
-    character(len=8) :: mesh, nomgd, ktype
+    character(len=8) :: nomgd, ktype
     character(len=19) :: geomi, depla, geomf, prof_chno
     real(kind=8), pointer :: v_depla(:) => null()
     real(kind=8), pointer :: v_geomf(:) => null()
@@ -94,12 +94,11 @@ subroutine vtgpld(cumul, alpha, geomiz, deplaz, base, &
 !
 ! - Get mesh informations
 !
-    call dismoi('NOM_MAILLA', geomi, 'CHAM_NO', repk=mesh)
-    call dismoi('NB_NO_MAILLA', mesh, 'MAILLAGE', repi=nb_node_mesh)
+    call dismoi('NB_NO_MAILLA', geomi, 'CHAM_GEOM', repi=nb_node_mesh)
 !
 ! - Checking
 !
-    call dismoi('NOM_GD', geomi, 'CHAM_NO', repk=nomgd)
+    call dismoi('NOM_GD', geomi, 'CHAM_GEOM', repk=nomgd)
     ASSERT(nomgd(1:6) .eq. 'GEOM_R')
     call dismoi('NOM_GD', depla, 'CHAM_NO', repk=nomgd)
     ASSERT(nomgd(1:6) .eq. 'DEPL_R')

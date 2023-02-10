@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -150,7 +150,6 @@ subroutine op0167()
     integer, pointer :: nodeInGrIn(:) => null(), nodeInGrOut(:) => null()
     integer, pointer :: meshDimeIn(:) => null(), meshDimeOut(:) => null()
     integer, pointer :: meshTypmailIn(:) => null(), meshTypmailOut(:) => null()
-    character(len=24), pointer :: meshRefeOut(:) => null()
     real(kind=8), pointer :: meshValeIn(:) => null(), meshValeOut(:) => null()
     type(Mmesh) :: meshSolidShell
     character(len=8) :: convType(2)
@@ -802,7 +801,6 @@ subroutine op0167()
 !
     call jedupo(meshIn//'.DIME', 'G', meshOut//'.DIME', ASTER_FALSE)
     call jedupo(meshIn//'.COORDO    .DESC', 'G', meshOut//'.COORDO    .DESC', ASTER_FALSE)
-    call jedupo(meshIn//'.COORDO    .REFE', 'G', meshOut//'.COORDO    .REFE', ASTER_FALSE)
     call jedupo(meshIn//'.NOMACR', 'G', meshOut//'.NOMACR', ASTER_FALSE)
     call jedupo(meshIn//'.PARA_R', 'G', meshOut//'.PARA_R', ASTER_FALSE)
     call jedupo(meshIn//'.SUPMAIL', 'G', meshOut//'.SUPMAIL', ASTER_FALSE)
@@ -861,9 +859,6 @@ subroutine op0167()
 
 ! - Coordinates of nodes
     call jedupo(meshIn//'.COORDO    .DESC', 'G', meshOut//'.COORDO    .DESC', ASTER_FALSE)
-    call jedupo(meshIn//'.COORDO    .REFE', 'G', meshOut//'.COORDO    .REFE', ASTER_FALSE)
-    call jeveuo(meshOut//'.COORDO    .REFE', 'E', vk24=meshRefeOut)
-    meshRefeOut(1) = meshOut
     if (nbNodeOut .eq. nbNodeIn) then
         call jedupo(meshIn//'.COORDO    .VALE', 'G', meshOut//'.COORDO    .VALE', ASTER_FALSE)
     else

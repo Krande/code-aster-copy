@@ -18,24 +18,19 @@
 # --------------------------------------------------------------------
 
 from . import *
-from .sd_prof_chno import sd_prof_chno
-from .sd_maillage import sd_maillage
 from .sd_titre import sd_titre
 from .sd_util import *
 
 
-class sd_cham_no(sd_titre):
+class sd_cham_geom(sd_titre):
     nomj = SDNom(fin=19)
-    VALE = AsVect(
-        ltyp=Parmi(4, 8, 16, 24), type=Parmi("C", "I", "K", "R"), docu=Parmi("", "2", "3")
-    )
-    REFE = AsVK24(lonmax=4)
-    DESC = AsVI(docu="CHNO")
+    VALE = AsVect(ltyp=Parmi(4, 8, 16, 24), type=Parmi("R"), docu=Parmi("", "2", "3"))
+    DESC = AsVI(docu="CHGO")
 
     def exists(self):
         # retourne "vrai" si la SD semble exister (et donc qu'elle peut etre
         # vérifiée)
-        return self.REFE.exists
+        return self.VALE.exists
 
     def u_desc(self):
         desc = self.DESC.get()
@@ -43,42 +38,16 @@ class sd_cham_no(sd_titre):
         num = desc[1]
         return gd, num
 
-    def u_refe(self):
-        refe = self.REFE.get_stripped()
-        mail = refe[0]
-        prof_chno = refe[1]
-        assert refe[2] == "", refe
-        assert refe[3] == "", refe
-        return mail, prof_chno
-
-    def check_cham_no_i_REFE(self, checker):
-
-        if not self.exists():
-            return
-        if self.REFE in checker.names:
-            return
-
-        mail, prof_chno = self.u_refe()
-        gd, num = self.u_desc()
-
-        # faut-il vérifier le sd_maillage de chaque sd_cham_no ?   AJACOT_PB
-        #  - cela risque de couter cher
-        sd2 = sd_maillage(mail)
-        sd2.check(checker)
-        if prof_chno and num > 0:
-            if prof_chno[:14] + ".NUME.PRNO" in checker.names:
-                return
-            sd2 = sd_prof_chno(prof_chno)
-            sd2.check(checker)
-
-    def check_cham_no_DESC(self, checker):
+    def check_cham_geom_DESC(self, checker):
         if not self.exists():
             return
         if self.DESC in checker.names:
             return
 
         gd, num = self.u_desc()
-        if num > 0:
-            assert self.DESC.lonmax == 2
+        if num < 0:
+            nb_ec = sdu_nb_ec(gd)
+            assert nb_ec == 1
+            assert self.DESC.lonmax == 3
         else:
             assert False

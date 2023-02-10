@@ -49,6 +49,7 @@ subroutine chprec(chou)
 #include "asterfort/rsutnu.h"
 #include "asterfort/titre.h"
 #include "asterfort/utmess.h"
+#include "asterfort/chpchd.h"
     character(len=*) :: chou
 !
 ! 0.2. ==> COMMUNS
@@ -66,7 +67,7 @@ subroutine chprec(chou)
     character(len=8) :: resuco, interp, crit, proldr, prolga, typmax, cara
     character(len=8) :: nomgd, charme
     character(len=16) :: k16bid, nomcmd, nomch, acces, tysd, tychlu, tych
-    character(len=19) :: chextr, noch19, knum
+    character(len=19) :: chextr, noch19, knum, chnos
     character(len=24) :: valk(3)
     character(len=8) :: k8bid, ma, fis
     aster_logical :: grille
@@ -79,6 +80,7 @@ subroutine chprec(chou)
     base = 'G'
     call getres(k8bid, k16bid, nomcmd)
     noch19 = chou
+    chnos = "&&CHPREC.CHNOS"
 !
     call getvtx(' ', 'NOEUD_CMP', nbval=0, nbret=n1)
     if (n1 .ne. 0 .and. n1 .ne. -2) then
@@ -103,13 +105,23 @@ subroutine chprec(chou)
         call dismoi('TYPE_CHAMP', ma//'.COORDO', 'CHAMP', repk=tych)
         call dismoi('NOM_GD', ma//'.COORDO', 'CHAMP', repk=nomgd)
 !
-        if ((tychlu(1:4) .ne. tych) .or. (tychlu(6:) .ne. nomgd)) then
+        if (tychlu(6:) .ne. nomgd) then
             valk(1) = tychlu
             valk(2) = tych(1:4)
             valk(3) = nomgd
             call utmess('F', 'MODELISA4_18', nk=3, valk=valk)
         end if
-        call copisd('CHAMP_GD', 'G', ma//'.COORDO', noch19)
+
+        if (tychlu(1:4) .eq. "GEOM") then
+            call copisd('CHAMP_GD', 'G', ma//'.COORDO', noch19)
+        elseif (tychlu(1:4) .eq. "NOEU") then
+            call chpchd(ma//'.COORDO', "NOEU", ma, "NON", "G", noch19)
+        else
+            valk(1) = tychlu
+            valk(2) = tych(1:4)
+            valk(3) = nomgd
+            call utmess('F', 'MODELISA4_18', nk=3, valk=valk)
+        end if
         goto 20
     end if
 !

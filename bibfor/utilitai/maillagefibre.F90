@@ -77,7 +77,7 @@ subroutine maillagefibre(nogfma, ulnbnoeuds, maxmailgrp, nbgf, vcoord, nbnoeuds,
 !
     integer :: ii, iadobj, idep, ifin, itype, nbmail, nno, nbnoma
     character(len=7)  :: k7bid
-    character(len=24) :: objdime, objtitre, objnomnoe, objcooval, objcoodsc, objcooref
+    character(len=24) :: objdime, objtitre, objnomnoe, objcooval, objcoodsc
     character(len=24) :: objnommai, objtypmai, objconnex, objgrpmai, objgpptnm
     character(len=24) :: nomgrf
 !
@@ -95,7 +95,6 @@ subroutine maillagefibre(nogfma, ulnbnoeuds, maxmailgrp, nbgf, vcoord, nbnoeuds,
     objnomnoe = nogfma//'.NOMNOE         '
     objcooval = nogfma//'.COORDO    .VALE'
     objcoodsc = nogfma//'.COORDO    .DESC'
-    objcooref = nogfma//'.COORDO    .REFE'
     objnommai = nogfma//'.NOMMAI         '
     objtypmai = nogfma//'.TYPMAIL        '
     objconnex = nogfma//'.CONNEX         '
@@ -128,15 +127,11 @@ subroutine maillagefibre(nogfma, ulnbnoeuds, maxmailgrp, nbgf, vcoord, nbnoeuds,
     call jenonu(jexnom('&CATA.GD.NOMGD', 'GEOM_R'), itype)
     call jecreo(objcoodsc, 'G V I')
     call jeecra(objcoodsc, 'LONMAX', 3)
-    call jeecra(objcoodsc, 'DOCU', 0, 'CHNO')
+    call jeecra(objcoodsc, 'DOCU', 0, 'CHGO')
     call jeveuo(objcoodsc, 'E', iadobj)
     zi(iadobj) = itype
     zi(iadobj+1) = -3
     zi(iadobj+2) = 14
-!
-!   nom du maillage
-    call wkvect(objcooref, 'G V K24', 4, iadobj)
-    zk24(iadobj) = nogfma
 !
     call wkvect(objcooval, 'G V R', 3*nbnoeuds, vr=xyz)
 !

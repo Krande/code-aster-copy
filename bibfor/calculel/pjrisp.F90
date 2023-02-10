@@ -69,7 +69,7 @@ subroutine pjrisp(moa2, masp, corres, noca)
 !
     integer :: ntgeo, ipo, ipg, nuno2
     integer :: ibid, nbnosp, nno2, ino2p
-    integer :: k, j1, j4, ipoi1
+    integer :: k, j1, ipoi1
     integer :: nbma, nbpt, nbsp, nbcmp
     integer :: ima, ipt, isp, icmp, iad, iadime
     integer :: jtypma, jpo2
@@ -200,10 +200,6 @@ subroutine pjrisp(moa2, masp, corres, noca)
     end do
 !
 ! --------------------------------------------------------------------------------------------------
-!   Création du .REFE du nouveau maillage
-!
-    call wkvect(masp//'.COORDO    .REFE', 'V V K24', 4, j4)
-    zk24(j4) = 'MASP'
 !
 !   COORDO.VALE du nouveau maillage
     call wkvect(masp//'.COORDO    .VALE', 'V V R', 3*nbnosp, j1)
@@ -238,7 +234,7 @@ subroutine pjrisp(moa2, masp, corres, noca)
     call jenonu(jexnom('&CATA.GD.NOMGD', 'GEOM_R'), ntgeo)
     call jecreo(coodsc, 'V V I')
     call jeecra(coodsc, 'LONMAX', 3)
-    call jeecra(coodsc, 'DOCU', cval='CHNO')
+    call jeecra(coodsc, 'DOCU', cval='CHGO')
     call jeveuo(coodsc, 'E', iad)
     zi(iad) = ntgeo
     zi(iad+1) = -3

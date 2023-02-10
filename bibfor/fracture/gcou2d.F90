@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine gcou2d(base, resu, noma, nomno, noeud, &
+subroutine gcou2d(resu, noma, nomno, noeud, &
                   coor, rinf, rsup, config, l_new_fiss)
     implicit none
 #include "asterf_types.h"
@@ -40,9 +40,9 @@ subroutine gcou2d(base, resu, noma, nomno, noeud, &
 #include "asterfort/jeexin.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/crcnct.h"
 !
     real(kind=8) :: rinf, rsup, coor(*)
-    character(len=1) :: base
     character(len=8) :: noma, noeud, config
     character(len=24) :: resu, nomno
     aster_logical, optional :: l_new_fiss
@@ -75,13 +75,12 @@ subroutine gcou2d(base, resu, noma, nomno, noeud, &
 !     ------------------------------------------------------------------
 !
 !
-    integer :: itheta, i, irefe, idesc, num, nbel, numa, iret
-    integer :: nec, ibid, numfon, n1, n2, ndim, jgtl, estbf
+    integer :: itheta, i, num, nbel, iret
+    integer :: ibid, numfon, n1, n2, ndim, jgtl, estbf
     parameter(ndim=2)
     real(kind=8) :: xm, ym, xi, yi, eps, d, norme, alpha, valx, valy, dir(3)
     character(len=8) :: k8b, fiss, fonfis
     character(len=19) :: grlt, chgrs
-    character(len=24) :: chamno
     real(kind=8), pointer :: fondfiss(:) => null()
     real(kind=8), pointer :: cnsv(:) => null()
     real(kind=8), pointer :: vbasfd(:) => null()
@@ -160,27 +159,10 @@ subroutine gcou2d(base, resu, noma, nomno, noeud, &
             dir = [1.d0, 0.d0, 0.d0]
         end if
     end if
-!
-!  .DESC
-    chamno = resu(1:19)//'.DESC'
-    call dismoi('NB_EC', 'DEPL_R', 'GRANDEUR', repi=nec)
-    call wkvect(chamno, base//' V I', 2+nec, idesc)
-!
-    call jeecra(chamno, 'DOCU', cval='CHNO')
-    call jenonu(jexnom('&CATA.GD.NOMGD', 'DEPL_R'), numa)
-    zi(idesc+1-1) = numa
-    zi(idesc+2-1) = -2
-    zi(idesc+3-1) = 6
-!
-!  .REFE
-    chamno = resu(1:19)//'.REFE'
-    call wkvect(chamno, base//' V K24', 4, irefe)
-    zk24(irefe+1-1) = noma//'                '
-!
-!  .VALE
-    chamno = resu(1:19)//'.VALE'
+
+    call crcnct('G', resu, noma, 'DEPL_R', 2, ['DX', 'DY'], [0.d0, 0.d0])
     call dismoi('NB_NO_MAILLA', noma, 'MAILLAGE', repi=nbel)
-    call wkvect(chamno, base//' V R', 2*nbel, itheta)
+    call jeveuo(resu(1:19)//'.VALE', "E", itheta)
 !
 !     --- CALCUL DE THETA ---
 !

@@ -101,7 +101,7 @@ subroutine xpodim(malini, mailc, modvis, licham, nsetot, &
 !
 !
     integer :: ier, nbmac, nbma2, nbno, nbno2, iret, igeomr, nbid
-    integer :: iadesc, iarefe, iacoo2, jtypm2, jno, jmac
+    integer :: iadesc, iacoo2, jtypm2, jno, jmac
     integer :: ndim, jord, iord, i, ifm, niv, nmaxsp, nmaxcm, nbcham
     integer :: jdirgr, jxc, contac
     integer :: igma1, nbgma, n, jlogma, nbgma1, nbgma2, cptgr2, jlicha
@@ -191,14 +191,12 @@ subroutine xpodim(malini, mailc, modvis, licham, nsetot, &
         coord2 = maxfem//'.COORDO'
         call jenonu(jexnom('&CATA.GD.NOMGD', 'GEOM_R'), igeomr)
         call wkvect(coord2//'.DESC', 'G V I', 3, iadesc)
-        call jeecra(coord2//'.DESC', 'DOCU', cval='CHNO')
+        call jeecra(coord2//'.DESC', 'DOCU', cval='CHGO')
         zi(iadesc-1+1) = igeomr
 !       -- TOUJOURS 3 COMPOSANTES X, Y ET Z
         zi(iadesc-1+2) = -3
 !       -- 14 = 2**1 + 2**2 + 2**3
         zi(iadesc-1+3) = 14
-        call wkvect(coord2//'.REFE', 'G V K24', 4, iarefe)
-        zk24(iarefe-1+1) = maxfem
         call wkvect(coord2//'.VALE', 'G V R', 3*nbno2, iacoo2)
 !
         call wkvect(maxfem//'.TYPMAIL', 'G V I', nbma2, jtypm2)

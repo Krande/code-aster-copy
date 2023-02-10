@@ -92,7 +92,7 @@ subroutine cppagn(main, maout, nbma, lima, izone, typ_dec, jcninv, same_zone, &
 ! IN        TYP_DEC I  TYPE DE DECOUPE POUR LES HEXA 1:PYRA 2:HEXA
 ! -------------------------------------------------------------------------------------------------
     integer :: inc, patch, nbnot, nbmat, info, nma, nbno, ind1, nbnwma, nbpain
-    integer :: jdim, jrefe, macou, macsu, jcoor, jgmao, nbnwmaes
+    integer :: jdim, macou, macsu, jcoor, jgmao, nbnwmaes
     integer :: jmacsu, jmacou, jlimane, jconloc, lgma, inc2, jcnmpa, jcnnpa
     integer :: ind, ntrouv, jtpmao, jtypma, aux, numa, laux(1)
     integer :: jcnmai, jcnmao, incc, ntrouv1, jgma
@@ -377,8 +377,6 @@ subroutine cppagn(main, maout, nbma, lima, izone, typ_dec, jcninv, same_zone, &
 ! --- CHAM_GEOM : RECOPIE DE LA PARTIE COMMUNE ----------------------------------------------------
     coordo = maout//'.COORDO'
     call copisd('CHAMP_GD', 'G', main//'.COORDO', coordo)
-    call jeveuo(coordo//'.REFE', 'E', jrefe)
-    zk24(jrefe) = maout
     call juveca(coordo//'.VALE', nbnot*3)
 
 ! -------------------------------------------------------------------------------------------------

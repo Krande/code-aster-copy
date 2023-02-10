@@ -17,12 +17,12 @@
 ! --------------------------------------------------------------------
 
 subroutine sdmail(nomu, nommai, nomnoe, cooval, coodsc, &
-                  cooref, grpnoe, gpptnn, grpmai, gpptnm, &
+                  grpnoe, gpptnn, grpmai, gpptnm, &
                   connex, titre, typmai, adapma)
     implicit none
 !
     character(len=8) :: nomu
-    character(len=24) :: nommai, nomnoe, cooval, coodsc, cooref, grpnoe
+    character(len=24) :: nommai, nomnoe, cooval, coodsc, grpnoe
     character(len=24) :: gpptnn, grpmai, gpptnm, connex, titre, typmai, adapma
 !
 ! person_in_charge: nicolas.sellenet at edf.fr
@@ -35,7 +35,6 @@ subroutine sdmail(nomu, nommai, nomnoe, cooval, coodsc, &
     nomnoe = nomu//'.NOMNOE         '
     cooval = nomu//'.COORDO    .VALE'
     coodsc = nomu//'.COORDO    .DESC'
-    cooref = nomu//'.COORDO    .REFE'
     grpnoe = nomu//'.GROUPENO       '
     gpptnn = nomu//'.PTRNOMNOE      '
     grpmai = nomu//'.GROUPEMA       '

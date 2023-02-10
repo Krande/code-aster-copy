@@ -124,13 +124,16 @@ subroutine debcal(nin, lchin, lpain, nout, lchout)
     do i = 1, nin
         chin = lchin(i)
         if (.not. (zl(ca_iachix_-1+i))) cycle
-        call dismoi('NOM_MAILLA', chin, 'CHAMP', repk=ma2)
-        if (ma2 .ne. ma) then
-            valk(1) = chin
-            valk(2) = ca_ligrel_
-            valk(3) = ma2
-            valk(4) = ma
-            call utmess('F', 'CALCUL_3', nk=4, valk=valk)
+        call dismoi('TYPE_CHAMP', chin, 'CHAMP', repk=tych)
+        if (tych .ne. "GEOM") then
+            call dismoi('NOM_MAILLA', chin, 'CHAMP', repk=ma2)
+            if (ma2 .ne. ma) then
+                valk(1) = chin
+                valk(2) = ca_ligrel_
+                valk(3) = ma2
+                valk(4) = ma
+                call utmess('F', 'CALCUL_3', nk=4, valk=valk)
+            end if
         end if
     end do
 

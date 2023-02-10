@@ -16,12 +16,13 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine exchno(imodat, iparg)
+subroutine exchgo(imodat, iparg)
 !
-    use calcul_module, only: ca_iachii_, ca_iachlo_, ca_ialiel_, ca_iamaco_, &
-                             ca_iamloc_, ca_iamsco_, ca_iawlo2_, ca_igr_, ca_iichin_, &
-                             ca_illiel_, ca_ilmaco_, ca_ilmloc_, ca_ilmsco_, ca_nbelgr_, &
-                             ca_nbgr_, ca_nec_, ca_typegd_, ca_lparal_, &
+    use calcul_module, only: ca_iachii_, ca_iachlo_, ca_ialiel_, ca_iamaco_, ca_iamloc_, &
+                             ca_iamsco_, ca_iawlo2_, ca_igr_, ca_iichin_, &
+                             ca_illiel_, ca_ilmaco_, ca_ilmloc_, &
+                             ca_ilmsco_, ca_nbelgr_, ca_nbgr_, &
+                             ca_nec_, ca_typegd_, ca_lparal_, &
                              ca_paral_, ca_iel_, ca_iachid_
 !
     implicit none
@@ -47,10 +48,10 @@ subroutine exchno(imodat, iparg)
 !        ecriture dans le champ local
 !----------------------------------------------------------------------
 !
-    integer :: ima, ino, nno, nugl, num
-    integer :: desc, prno1, prno2, modloc, ityplo, gd
-    integer :: deb1, deb2, idg1, idg2, nbpt, nbpt2, lgcata, ncmp
-    integer :: iaux1, k, debugr
+    integer :: ima, ino, nno, long, nugl, num
+    integer :: desc, modloc, ityplo, gd
+    integer :: deb1, deb2, idg2, nbpt, nbpt2, lgcata, ncmp
+    integer :: iaux1, k, iec, debugr
     aster_logical :: diff, moyenn
 !
 ! --------------------------------------------------------------------------------------------------
@@ -75,7 +76,8 @@ subroutine exchno(imodat, iparg)
     debugr = zi(ca_iawlo2_-1+5*(ca_nbgr_*(iparg-1)+ca_igr_-1)+5)
     lgcata = zi(ca_iawlo2_-1+5*(ca_nbgr_*(iparg-1)+ca_igr_-1)+2)
 !
-    ASSERT(num > 0)
+    ASSERT(num == -3)
+    ASSERT(ca_typegd_ == 'R')
 !
     ASSERT(ityplo .lt. 4)
 !
@@ -121,51 +123,30 @@ subroutine exchno(imodat, iparg)
 !       --------------------------------------------------
         if (moyenn) then
             ncmp = lgcata
-            if (ca_typegd_ .eq. 'R') then
-                if (ca_lparal_) then
-                    do ca_iel_ = 1, ca_nbelgr_
-                        if (ca_paral_(ca_iel_)) then
-                            iaux1 = ca_iachlo_+debugr-1+(ca_iel_-1)*ncmp
-                            do k = 1, ncmp
-                                zr(iaux1-1+k) = 0.d0
-                            end do
-                        end if
-                    end do
-                else
-                    do k = 1, ca_nbelgr_*ncmp
-                        zr(ca_iachlo_+debugr-1-1+k) = 0.d0
-                    end do
-                end if
-            else if (ca_typegd_ .eq. 'C') then
-                if (ca_lparal_) then
-                    do ca_iel_ = 1, ca_nbelgr_
-                        if (ca_paral_(ca_iel_)) then
-                            iaux1 = ca_iachlo_+debugr-1+(ca_iel_-1)*ncmp
-                            do k = 1, ncmp
-                                zc(iaux1-1+k) = (0.d0, 0.d0)
-                            end do
-                        end if
-                    end do
-                else
-                    do k = 1, ca_nbelgr_*ncmp
-                        zc(ca_iachlo_+debugr-1-1+k) = (0.d0, 0.d0)
-                    end do
-                end if
+            if (ca_lparal_) then
+                do ca_iel_ = 1, ca_nbelgr_
+                    if (ca_paral_(ca_iel_)) then
+                        iaux1 = ca_iachlo_+debugr-1+(ca_iel_-1)*ncmp
+                        do k = 1, ncmp
+                            zr(iaux1-1+k) = 0.d0
+                        end do
+                    end if
+                end do
             else
-                ASSERT(.false.)
+                do k = 1, ca_nbelgr_*ncmp
+                    zr(ca_iachlo_+debugr-1-1+k) = 0.d0
+                end do
             end if
         end if
 !
-!           -- c'est 1 champ avec profil_noeud:
-!           ------------------------------------
-        prno1 = zi(ca_iachii_-1+ca_iachid_*(ca_iichin_-1)+8)
-        prno2 = zi(ca_iachii_-1+ca_iachid_*(ca_iichin_-1)+9)
+
+        long = -num
         deb2 = debugr
         do ca_iel_ = 1, ca_nbelgr_
             if (ca_lparal_) then
                 if (.not. ca_paral_(ca_iel_)) then
                     deb2 = deb2+lgcata
-                    goto 110
+                    goto 90
                 end if
             end if
             ima = numail(ca_igr_, ca_iel_)
@@ -177,54 +158,39 @@ subroutine exchno(imodat, iparg)
                 else
                     nugl = numgls((-ima), ino)
                 end if
-                deb1 = (abs(nugl)-1)*(ca_nec_+2)+1
-                idg1 = (abs(nugl)-1)*(ca_nec_+2)+3
+                deb1 = (nugl-1)*long+1
 !
                 if (nugl .gt. 0) then
-                    call trigd(zi(prno1-1+idg1), zi(prno1-1+deb1), zi(modloc-1+idg2), deb2, &
-                               moyenn, ino, nno)
+                    call trigd(zi(desc-1+3), deb1, zi(modloc-1+idg2), deb2, moyenn, &
+                               ino, nno)
                 else
-                    call trigd(zi(prno2-1+idg1), zi(prno2-1+deb1), zi(modloc-1+idg2), deb2, &
-                               moyenn, ino, nno)
+!                       on verifie que le modloc affirme ncmp=0:
+                    do iec = 1, ca_nec_
+                        if (zi(modloc-1+idg2-1+iec) .ne. 0) then
+                            call utmess('F', 'CALCUL_9')
+                        end if
+                    end do
                 end if
             end do
-110         continue
+90          continue
         end do
 !
         if (moyenn) then
             ncmp = lgcata
-            if (ca_typegd_ .eq. 'R') then
-                if (ca_lparal_) then
-                    do ca_iel_ = 1, ca_nbelgr_
-                        if (ca_paral_(ca_iel_)) then
-                            iaux1 = ca_iachlo_+debugr-1+(ca_iel_-1)*ncmp
-                            do k = 1, ncmp
-                                zr(iaux1-1+k) = zr(iaux1-1+k)/dble(nno)
-                            end do
-                        end if
-                    end do
-                else
-                    do k = 1, ca_nbelgr_*ncmp
-                        zr(ca_iachlo_-1+k) = zr(ca_iachlo_+debugr-1-1+k)/dble(nno)
-                    end do
-                end if
-            else if (ca_typegd_ .eq. 'C') then
-                if (ca_lparal_) then
-                    do ca_iel_ = 1, ca_nbelgr_
-                        if (ca_paral_(ca_iel_)) then
-                            iaux1 = ca_iachlo_+debugr-1+(ca_iel_-1)*ncmp
-                            do k = 1, ncmp
-                                zc(iaux1-1+k) = zc(iaux1-1+k)/dble(nno)
-                            end do
-                        end if
-                    end do
-                else
-                    do k = 1, ca_nbelgr_*ncmp
-                        zc(ca_iachlo_-1+k) = zc(ca_iachlo_+debugr-1-1+k)/dble(nno)
-                    end do
-                end if
+
+            if (ca_lparal_) then
+                do ca_iel_ = 1, ca_nbelgr_
+                    if (ca_paral_(ca_iel_)) then
+                        iaux1 = ca_iachlo_+debugr-1+(ca_iel_-1)*ncmp
+                        do k = 1, ncmp
+                            zr(iaux1-1+k) = zr(iaux1-1+k)/dble(nno)
+                        end do
+                    end if
+                end do
             else
-                ASSERT(.false.)
+                do k = 1, ca_nbelgr_*ncmp
+                    zr(ca_iachlo_-1+k) = zr(ca_iachlo_+debugr-1-1+k)/dble(nno)
+                end do
             end if
         end if
 !

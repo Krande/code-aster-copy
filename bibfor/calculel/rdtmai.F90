@@ -85,7 +85,7 @@ subroutine rdtmai(noma, nomare, base, corrn, corrm, &
     character(len=8) :: typmcl(2), nomres
     character(len=16) :: motcle(2), nomcmd, typres
     character(len=8) :: nomma, nomno, ttgrma, ttgrno
-    character(len=24) :: nommai, nomnoe, grpnoe, cooval, cooref, coodsc
+    character(len=24) :: nommai, nomnoe, grpnoe, cooval, coodsc
     character(len=24) :: grpmai, connex, typmai, dimin, dimou, nomgma, nomgno
     character(len=24) :: ptngrn, ptngrm, valk(2)
     aster_logical :: lvide
@@ -207,7 +207,6 @@ subroutine rdtmai(noma, nomare, base, corrn, corrm, &
     typmai = nomare//'.TYPMAIL        '
     cooval = nomare//'.COORDO    .VALE'
     coodsc = nomare//'.COORDO    .DESC'
-    cooref = nomare//'.COORDO    .REFE'
 !
 ! --- OBJET .DIME
     dimin = noma//'.DIME'
@@ -283,17 +282,13 @@ subroutine rdtmai(noma, nomare, base, corrn, corrm, &
     call jecreo(coodsc, base//' V I')
     call jeecra(coodsc, 'LONMAX', 3)
     call jeecra(coodsc, 'LONUTI', 3)
-    call jeecra(coodsc, 'DOCU', cval='CHNO')
+    call jeecra(coodsc, 'DOCU', cval='CHGO')
     call jeveuo(coodsc, 'E', iad)
     call jenonu(jexnom('&CATA.GD.NOMGD', 'GEOM_R'), ntgeo)
     zi(iad) = ntgeo
     zi(iad+1) = -3
     zi(iad+2) = 14
 !
-!
-! --- OBJET COORDO.REFE
-    call wkvect(cooref, base//' V K24', 4, iad)
-    zk24(iad) = nomare
 !
 !
 !     --- OBJET .GROUPEMA

@@ -72,7 +72,7 @@ subroutine cla110(nomres, modgen)
 !-----------------------------------------------------------------------
     integer :: i, iad, iatyma, icomp, igd, igr, igrma
     integer :: ilstgr, ioc, iret, is, itcon, j, k
-    integer :: l, ldcone, ldcoo, lddes, lddime, ldgrma, ldref
+    integer :: l, ldcone, ldcoo, lddes, lddime, ldgrma
     integer :: ldskin, ldtitr, llcona, llma, llrot
     integer :: lltra, lltyp, lstac, ltdesc, ltfac, ltino, ltinv
     integer :: ltlima, ltlino, ltmail, ltnbgr, ltnbma, ltnbno, ltnogr
@@ -421,10 +421,8 @@ subroutine cla110(nomres, modgen)
     call jecrec(nomres//'.GROUPEMA', 'G V I', 'NO '//gpptnm, 'DISPERSE', 'VARIABLE', &
                 nbstac+ngrmat)
 !
-    call wkvect(nomres//'.COORDO    .REFE', 'G V K24', 4, ldref)
-    zk24(ldref) = nomres
     call wkvect(nomres//'.COORDO    .DESC', 'G V I', 3, lddes)
-    call jeecra(nomres//'.COORDO    .DESC', 'DOCU', cval='CHNO')
+    call jeecra(nomres//'.COORDO    .DESC', 'DOCU', cval='CHGO')
     call wkvect(nomres//'.COORDO    .VALE', 'G V R', 3*nbnot, ldcoo)
 !
 !-----REMPLISSAGE DU TITRE----------------------------------------------

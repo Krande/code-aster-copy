@@ -451,7 +451,6 @@ ConnectionMesh::ConnectionMesh( const std::string &name, const ParallelMeshPtr &
     /* Add coordinates */
     const auto numberOfConnectionMeshCoordinates = coordinatesGathered.size();
     *_coordinates->getDescriptor() = *mesh->getCoordinates()->getDescriptor();
-    *_coordinates->getReference() = *mesh->getCoordinates()->getReference();
     auto values = _coordinates->getValues();
     values->allocate( numberOfConnectionMeshCoordinates );
     values->updateValuePointer();

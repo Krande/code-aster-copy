@@ -67,7 +67,7 @@ subroutine cyc110(nomres, mailla, nbsect)
 !-----------------------------------------------------------------------
     integer :: i, iatyma, ibid, icomp, igd, ioctou
     integer :: itcon, j, k, ldcoo, lddesc, lddime
-    integer :: ldgrma, ldref, ldskin, llcona, llcox
+    integer :: ldgrma, ldskin, llcona, llcox
     integer :: lltitr, lltyp, ltnmgr, ltnmma, ltnuma, ltnuno, nbcon
     integer :: nbgr, nbid, nbma, nbmato, nbno, nbnoto, nbsect
     integer :: nbskma, nbskno, nbtemp, nbtout, nbuf, ntacon, ntemna
@@ -233,9 +233,8 @@ subroutine cyc110(nomres, mailla, nbsect)
                 nbsect)
 !
 !
-    call wkvect(nomres//'.COORDO    .REFE', 'G V K24', 4, ldref)
     call wkvect(nomres//'.COORDO    .DESC', 'G V I', 3, lddesc)
-    call jeecra(nomres//'.COORDO    .DESC', 'DOCU', cval='CHNO')
+    call jeecra(nomres//'.COORDO    .DESC', 'DOCU', cval='CHGO')
     call wkvect(nomres//'.COORDO    .VALE', 'G V R', 3*nbnoto, ldcoo)
 !
 !
@@ -246,9 +245,6 @@ subroutine cyc110(nomres, mailla, nbsect)
 !------------------REMPLISSAGE .REFE ET .DESC ET TITRE -----------------
 !
     zk80(lltitr) = 'MAILLAGE SQUELETTE SOUS-STRUCTURATION CYCLIQUE'
-!
-    zk24(ldref) = mailla
-    zk24(ldref) = nomres
 !
 !
     call dismoi('NUM_GD', 'GEOM_R', 'GRANDEUR', repi=igd)

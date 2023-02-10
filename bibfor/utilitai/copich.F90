@@ -105,6 +105,12 @@ subroutine copich(base, ch1z, ch2z)
             end if
         end if
 !
+!     -- CAS DES CHAM_GEOM :
+!     ----------------------
+    else if (docu .eq. 'CHGO') then
+        call jedup1(ch1//'.DESC', base, ch2//'.DESC')
+        call jedup1(ch1//'.VALE', base, ch2//'.VALE')
+!
 !
 !     -- CAS DES CARTES :
 !     ----------------------

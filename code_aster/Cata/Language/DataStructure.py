@@ -316,6 +316,10 @@ class cham_no_sdaster(cham_gd_sdaster):
     pass
 
 
+class cham_geom_sdaster(cham_gd_sdaster):
+    pass
+
+
 class cham_mater(ASSD):
     pass
 
