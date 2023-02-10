@@ -1,0 +1,46 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+POURSUITE(CODE="OUI")
+
+test = CA.TestCase()
+NOM_CAS = ["TX", "RX", "RY", "RZ"]
+
+resu_nume_ordre = LIRE_RESU(
+    TYPE_RESU="EVOL_ELAS",
+    FORMAT="MED",
+    MAILLAGE=MA,
+    TOUT_ORDRE="OUI",
+    FORMAT_MED=_F(NOM_CHAM="DEPL", NOM_RESU="MEST1"),
+    UNITE=80,
+)
+test.assertEqual(resu_nume_ordre.getNumberOfIndexes(), 4)
+
+for cas in NOM_CAS:
+    resu_cas = LIRE_RESU(
+        TYPE_RESU="EVOL_ELAS",
+        FORMAT="MED",
+        MAILLAGE=MA,
+        TOUT_ORDRE="OUI",
+        FORMAT_MED=_F(NOM_CHAM="DEPL", NOM_RESU=cas),
+        UNITE=81,
+    )
+    test.assertEqual(resu_cas.getNumberOfIndexes(), 1)
+
+FIN()

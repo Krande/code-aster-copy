@@ -24,10 +24,11 @@ subroutine iremed(fileUnit, dsNameZ, lResu, &
                   cellUserNb, cellUserNume, &
                   nodeUserNb, nodeUserNume, &
                   cplxFormat, lVariName, caraElem, &
-                  lfichUniq)
+                  lfichUniq, lNomCas)
 !
     implicit none
 !
+#include "jeveux.h"
 #include "asterf_types.h"
 #include "asterc/asmpi_barrier_wrap.h"
 #include "asterc/asmpi_comm.h"
@@ -45,6 +46,7 @@ subroutine iremed(fileUnit, dsNameZ, lResu, &
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/mdnoch.h"
+#include "asterfort/rsadpa.h"
 #include "asterfort/rsexch.h"
 #include "asterfort/rsutrg.h"
 #include "asterfort/utcmp3.h"
@@ -72,7 +74,7 @@ subroutine iremed(fileUnit, dsNameZ, lResu, &
     character(len=*), intent(in) ::  cplxFormat
     aster_logical, intent(in) :: lVariName
     character(len=8), intent(in) :: caraElem
-    aster_logical, intent(in) :: lfichUniq
+    aster_logical, intent(in) :: lfichUniq, lNomCas
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -98,13 +100,14 @@ subroutine iremed(fileUnit, dsNameZ, lResu, &
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=6) :: chnumo, tsca
-    character(len=8) :: typech, nomgd, dsName, sdcarm, carel2, valk2(2)
-    character(len=16) :: fieldType
+    character(len=8) :: typech, nomgd, dsName, sdcarm, carel2, valk2(2), saux08
+    character(len=16) :: fieldType, fieldResult
     character(len=19) :: fieldName, cesnsp, cescoq, cesfib, cesori, cestuy
     character(len=24) :: valk(2), resultType
     character(len=64) :: fieldNameMed
-    integer(kind=8) :: storeIndx, iField, iStore, iret, ibid, codret
-    integer(kind=8) :: lnochm, ierd, nbCmpDyna, minval
+    integer(kind=8) :: storeIndx, iField, iStore, iret, ibid, codret, iaux
+    integer(kind=8) :: lnochm, ierd, nbCmpDyna, minval, nbNomCas
+
     aster_logical :: lfirst, l_mult_model, l_vari_name, l_meta_name
     integer(kind=8), pointer :: cmpListNume(:) => null()
     character(len=24), pointer :: celk(:) => null()
@@ -273,6 +276,18 @@ subroutine iremed(fileUnit, dsNameZ, lResu, &
             else
                 fieldNameMed = fieldMedListType(iField) (1:64)
             end if
+!
+! --------- Change name and nume_ordre for mult_elas sd
+            if (lNomCas) then
+                call rsadpa(dsName, 'L', 1, "NOM_CAS", storeIndx, 0, styp=saux08, sjv=iaux, istop=0)
+
+                fieldResult = zk16(iaux)
+                nbNomCas = len_trim(fieldResult(1:8))
+                fieldNameMed(1:8) = repeat('_', 8)
+                fieldNameMed(1:nbNomCas) = fieldResult(1:nbNomCas)
+                storeIndx = 1
+            end if
+
 !
 !         -- TRAITEMENT SPECIFIQUE POUR LES CHAMPS ISSUE DE PROJ_CHAMP
 !            METHODE='SOUS_POINT'

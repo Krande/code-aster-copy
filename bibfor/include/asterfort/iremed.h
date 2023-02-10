@@ -1,10 +1,10 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org 
 ! This file is part of code_aster.
 !
-! code_aster is free software: you can redistribute it and/or modify
-! it under the terms of the GNU General Public License as published by
-! the Free Software Foundation, either version 3 of the License, or
+! code_aster is free software: you can redistribute it and/or modify 
+! it under the terms of the GNU General Public License as published by 
+! the Free Software Foundation, either version 3 of the License, or 
 ! (at your option) any later version.
 !
 ! code_aster is distributed in the hope that it will be useful,
@@ -26,7 +26,7 @@ interface
                       cellUserNb , cellUserNume ,&
                       nodeUserNb , nodeUserNume ,&
                       cplxFormat , lVariName    , caraElem,&
-                      lfichUniq)
+                      lfichUniq, lNomCas)
         integer(kind=8), intent(in) :: fileUnit
         character(len=19), intent(in) :: dsNameZ
         aster_logical, intent(in) :: lResu
@@ -46,6 +46,6 @@ interface
         character(len=*), intent(in) ::  cplxFormat
         aster_logical, intent(in) :: lVariName
         character(len=8), intent(in) :: caraElem
-        aster_logical, intent(in) :: lfichUniq
+        aster_logical, intent(in) :: lfichUniq, lNomCas
     end subroutine iremed
 end interface

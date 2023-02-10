@@ -20,9 +20,9 @@
 !
 interface
     subroutine irmfac(keywfIocc, fileFormat, fileUnit, fileVersion, modelIn,&
-                      lfichUniq)
+                      lfichUniq, lNomCas)
         integer(kind=8), intent(in) :: keywfIocc, fileUnit, fileVersion
         character(len=8), intent(in) :: fileFormat, modelIn
-        aster_logical :: lfichUniq
+        aster_logical :: lfichUniq, lNomCas
     end subroutine irmfac
 end interface
