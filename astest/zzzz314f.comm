@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -38,7 +38,7 @@ import numpy as np
 nb_comp_basloc = 9
 basloc = FISS0.sdj.BASLOC.VALE.get()
 basloc = np.array(basloc).reshape((len(basloc) // nb_comp_basloc), nb_comp_basloc)[:, 3:]
-index_by_nodename = {M.getNodeName(i):i for i in M.getNodes()}
+index_by_nodename = {M.getNodeName(i): i for i in M.getNodes()}
 lnoff = FISS0.sdj.FOND_NOEU.get()
 basloc = basloc[[index_by_nodename[nodename.strip()] for nodename in lnoff], :]
 basloc = basloc.reshape((len(basloc), 2, 3))

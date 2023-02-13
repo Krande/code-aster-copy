@@ -955,7 +955,7 @@ def find_no(maya, mcsimp):
         for nu_ma in maya.getCells():
             if maya.getCellName(nu_ma) in mcsimp["MAILLE"]:
                 for ind_no in connect[nu_ma]:
-                    nomnoe = maya.getNodeName(ind_no-1)
+                    nomnoe = maya.getNodeName(ind_no - 1)
                     if nomnoe not in list_no:
                         list_no.append(nomnoe)
     elif "GROUP_MA" in mcsimp:
@@ -963,7 +963,7 @@ def find_no(maya, mcsimp):
             list_nu_ma = maya.getCells(group)
             for nu_ma in list_nu_ma:
                 for ind_no in connect[nu_ma]:
-                    nomnoe = maya.getNodeName(ind_no-1)
+                    nomnoe = maya.getNodeName(ind_no - 1)
                     if nomnoe not in list_no:
                         list_no.append(nomnoe)
 

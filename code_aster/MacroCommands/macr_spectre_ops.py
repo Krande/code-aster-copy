@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -66,7 +66,7 @@ def macr_spectre_ops(self, **args):
                 assert MAILLAGE is not None
                 if type(plancher["GROUP_NO"]) == str:
                     noms_no = [
-                         MAILLAGE.getNodeName(n) for n in MAILLAGE.getNodes(plancher["GROUP_NO"])
+                        MAILLAGE.getNodeName(n) for n in MAILLAGE.getNodes(plancher["GROUP_NO"])
                     ]
                     liste_no = liste_no + noms_no
                 else:

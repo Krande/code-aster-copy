@@ -234,7 +234,7 @@ class ExtendedMesh:
     def LIST_GROUP_MA(self):
         """Retourne la liste des groupes de mailles sous la forme :
         [ (gma1, nb mailles gma1, dime max des mailles gma1), ...]"""
-        catama = {x.strip():y for x,y in aster.getcolljev("&CATA.TM.TMDIM").items()}
+        catama = {x.strip(): y for x, y in aster.getcolljev("&CATA.TM.TMDIM").items()}
         cell_groups = self.getGroupsOfCells()
         if not cell_groups:
             return []

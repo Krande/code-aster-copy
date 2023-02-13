@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -58,7 +58,7 @@ def crea_grp_matiere(self, groupe, newgrp, iocc, m, __remodr, NOM_CHAM, LIGN_COU
         )
     )
 
-    node_by_name = {__macou.getNodeName(node):node for node in __macou.getNodes(groupe)}
+    node_by_name = {__macou.getNodeName(node): node for node in __macou.getNodes(groupe)}
 
     # dictb=table initiale (contenant éventuellement des noeuds hors matière)
     dictb = __tab.EXTR_TABLE()
@@ -113,11 +113,19 @@ def crea_grp_matiere(self, groupe, newgrp, iocc, m, __remodr, NOM_CHAM, LIGN_COU
         l_horslig = []
         for j in l_matiere[: nderm + 1]:
             node = node_by_name[j]
-            text_coordo = "(%f, %f, %f)"%(coord[3*node], coord[3*node+1], coord[3*node+2])
+            text_coordo = "(%f, %f, %f)" % (
+                coord[3 * node],
+                coord[3 * node + 1],
+                coord[3 * node + 2],
+            )
             l_surlig.append(text_coordo)
         for j in l_horsmat[: nderh + 1]:
             node = node_by_name[j]
-            text_coordo = "(%f, %f, %f)"%(coord[3*node], coord[3*node+1], coord[3*node+2])
+            text_coordo = "(%f, %f, %f)" % (
+                coord[3 * node],
+                coord[3 * node + 1],
+                coord[3 * node + 2],
+            )
             l_horslig.append(text_coordo)
         UTMESS("A", "POST0_8", valk=[indent.join(l_surlig), indent.join(l_horslig)])
 
@@ -128,7 +136,11 @@ def crea_grp_matiere(self, groupe, newgrp, iocc, m, __remodr, NOM_CHAM, LIGN_COU
         l_surlig = []
         for j in l_matiere[: nderm + 1]:
             node = node_by_name[j]
-            text_coordo = "(%f, %f, %f)"%(coord[3*node], coord[3*node+1], coord[3*node+2])
+            text_coordo = "(%f, %f, %f)" % (
+                coord[3 * node],
+                coord[3 * node + 1],
+                coord[3 * node + 2],
+            )
             l_surlig.append(text_coordo)
         UTMESS("A", "POST0_24", vali=[iocc, reste], valk=[indent.join(l_surlig)])
 
@@ -178,7 +190,7 @@ def crea_resu_local(self, dime, NOM_CHAM, m, resin, mail, nomgrma):
             cx3 = 0.0
             if dime == 3:
                 cx3 = m["COOR_EXTR"][2] - m["COOR_ORIG"][2]
-            nvx = sqrt(cx1 ** 2 + cx2 ** 2 + cx3 ** 2)
+            nvx = sqrt(cx1**2 + cx2**2 + cx3**2)
             if abs(nvx) < epsi:
                 UTMESS("F", "POST0_1")
             cx1 = cx1 / nvx
@@ -192,7 +204,7 @@ def crea_resu_local(self, dime, NOM_CHAM, m, resin, mail, nomgrma):
                     cy3 = m["VECT_Y"][2]
             else:
                 UTMESS("F", "POST0_50")
-            nvy = sqrt(cy1 ** 2 + cy2 ** 2 + cy3 ** 2)
+            nvy = sqrt(cy1**2 + cy2**2 + cy3**2)
             if abs(nvy) < epsi:
                 UTMESS("F", "POST0_2")
             cy1 = cy1 / nvy
@@ -206,14 +218,14 @@ def crea_resu_local(self, dime, NOM_CHAM, m, resin, mail, nomgrma):
                 cz1 = cx2 * cy3 - cx3 * cy2
                 cz2 = cx3 * cy1 - cx1 * cy3
                 cz3 = cx1 * cy2 - cx2 * cy1
-                nvz = sqrt(cz1 ** 2 + cz2 ** 2 + cz3 ** 2)
+                nvz = sqrt(cz1**2 + cz2**2 + cz3**2)
                 cz1 = cz1 / nvz
                 cz2 = cz2 / nvz
                 cz3 = cz3 / nvz
                 cy1 = cz2 * cx3 - cz3 * cx2
                 cy2 = cz3 * cx1 - cz1 * cx3
                 cy3 = cz1 * cx2 - cz2 * cx1
-                nvy = sqrt(cy1 ** 2 + cy2 ** 2 + cy3 ** 2)
+                nvy = sqrt(cy1**2 + cy2**2 + cy3**2)
                 cy1 = cy1 / nvy
                 cy2 = cy2 / nvy
                 cy3 = cy3 / nvy
@@ -227,7 +239,7 @@ def crea_resu_local(self, dime, NOM_CHAM, m, resin, mail, nomgrma):
             if dime == 2:
                 alpha = atan2(cx2, cx1)
             else:
-                if cx1 ** 2 + cx2 ** 2 > epsi:
+                if cx1**2 + cx2**2 > epsi:
                     alpha = atan2(cx2, cx1)
                     beta = -asin(cx3)
                     gamma = atan2(cy3, cz3)
@@ -382,7 +394,7 @@ def crea_resu_local(self, dime, NOM_CHAM, m, resin, mail, nomgrma):
                 if dime == 2:
                     alpha = atan2(cx2, cx1)
                 else:
-                    if cx1 ** 2 + cx2 ** 2 > epsi:
+                    if cx1**2 + cx2**2 > epsi:
                         alpha = atan2(cx2, cx1)
                         beta = -asin(cx3)
                         gamma = atan2(cy3, cz3)
@@ -444,7 +456,7 @@ def crea_noeu_lig_coup(dimension, pt1, pt2, anglj, dnor):
     eps = 0.00000001
     anglr = anglj * pi / 180.0
     if dimension == 2:
-        r = sqrt(a ** 2 + b ** 2)
+        r = sqrt(a**2 + b**2)
         if abs(r) < eps:
             UTMESS("F", "POST0_6")
         x = pt2[0] + a * cos(anglr) - b * sin(anglr)
@@ -452,13 +464,13 @@ def crea_noeu_lig_coup(dimension, pt1, pt2, anglj, dnor):
         return x, y
     elif dimension == 3:
         c = pt1[2] - pt2[2]
-        r = sqrt(a ** 2 + b ** 2 + c ** 2)
+        r = sqrt(a**2 + b**2 + c**2)
         if abs(r) < eps:
             UTMESS("F", "POST0_6")
         d1 = dnor[0]
         d2 = dnor[1]
         d3 = dnor[2]
-        d = sqrt(d1 ** 2 + d2 ** 2 + d3 ** 2)
+        d = sqrt(d1**2 + d2**2 + d3**2)
         if abs(r) < eps:
             UTMESS("F", "POST0_7")
         x = pt2[0] + a * cos(anglr) + sin(anglr) * (c * d2 - b * d3) / d
@@ -478,8 +490,8 @@ def dist_min_deux_points(mail):
     l_coor1 = []
     l_coor2 = []
     for i in range(nno - 1):
-        l_coor1 = coordinates[ 3 * (i): 3* (i)+3]
-        l_coor2 = coordinates[ 3 * (i+1): 3* (i+1)+3]
+        l_coor1 = coordinates[3 * (i) : 3 * (i) + 3]
+        l_coor2 = coordinates[3 * (i + 1) : 3 * (i + 1) + 3]
         d = sqrt(
             (l_coor1[0] - l_coor2[0]) ** 2
             + (l_coor1[1] - l_coor2[1]) ** 2
@@ -662,7 +674,7 @@ def get_coor(LIGN_COUPE, position, coord, mesh):
         if len(nodes) != 1:
             UTMESS("F", "POST0_27", valk=group, vali=len(nodes))
         node = nodes[0]
-        coor = [coord[3*node], coord[3*node+1], coord[3*node+2]]
+        coor = [coord[3 * node], coord[3 * node + 1], coord[3 * node + 2]]
     elif "COOR_" + position in LIGN_COUPE:
         coor = LIGN_COUPE["COOR_" + position]
     else:
@@ -831,7 +843,7 @@ def macr_lign_coupe_ops(
                 UTMESS("F", "POST0_13", valk=[group, mesh.getName()])
             l_coor_group = [group]
             for node in mesh.getNodes(group):
-                l_coor_group.append([coord[3*node], coord[3*node+1], coord[3*node+2]])
+                l_coor_group.append([coord[3 * node], coord[3 * node + 1], coord[3 * node + 2]])
             groups.append(l_coor_group)
 
         elif m["TYPE"] == "GROUP_MA":
@@ -867,7 +879,7 @@ def macr_lign_coupe_ops(
 
             l_coor_group = [group]
             for node in __mailla.getNodes(group):
-                l_coor_group.append([coord[3*node], coord[3*node+1], coord[3*node+2]])
+                l_coor_group.append([coord[3 * node], coord[3 * node + 1], coord[3 * node + 2]])
             groups.append(l_coor_group)
 
     if arcs != [] and (lignes != [] or groups != []):

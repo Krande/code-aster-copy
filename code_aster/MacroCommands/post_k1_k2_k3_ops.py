@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -401,7 +401,7 @@ def get_direction(Nnoff, ndim, Lnoff, FOND_FISS, MAILLAGE):
     # suppresion des coordonnées du projeté du noeud, non utilisées ici
     basloc = NP.array(basloc).reshape((len(basloc) // nb_comp_basloc), nb_comp_basloc)[:, ndim:]
     #   recuperation des valeurs dans baseloc en indexant sur les noeuds du fond de fissure
-    index_by_nodename = {MAILLAGE.getNodeName(i):i for i in MAILLAGE.getNodes()}
+    index_by_nodename = {MAILLAGE.getNodeName(i): i for i in MAILLAGE.getNodes()}
     Basefo = basloc[[index_by_nodename[nodename] for nodename in Lnoff], :].flatten()
 
     VNOR = [None] * Nnoff
@@ -1093,7 +1093,7 @@ def get_propmat_varc_fem(
 
     coefd3 = 0.0
     coefd = e * NP.sqrt(2.0 * pi)
-    unmnu2 = 1.0 - nu ** 2
+    unmnu2 = 1.0 - nu**2
     unpnu = 1.0 + nu
     if MODELISATION == "3D":
         coefd = coefd / (8.0 * unmnu2)
@@ -1205,7 +1205,7 @@ def get_propmat_varc_xfem(
     nu = valres[1]
     coefd3 = 0.0
     coefd = e * NP.sqrt(2.0 * pi)
-    unmnu2 = 1.0 - nu ** 2
+    unmnu2 = 1.0 - nu**2
     unpnu = 1.0 + nu
     if MODELISATION == "3D":
         coefd = coefd / (8.0 * unmnu2)
@@ -1419,7 +1419,7 @@ def get_kgsig(saut, nbval, coefd, coefd3):
     isig = NP.sign(NP.transpose(NP.resize(saut[:, -1], (nbval - 1, 3))))
     isig = NP.sign(isig + 0.001)
     saut2 = saut * NP.array([[coefd] * nbval, [coefd] * nbval, [coefd3] * nbval])
-    saut2 = saut2 ** 2
+    saut2 = saut2**2
     ksig = isig[:, 1]
     ksig = NP.array([ksig, ksig])
     ksig = NP.transpose(ksig)
@@ -1505,7 +1505,7 @@ def get_meth3(self, abscs, coefg, coefg3, kgsig, isig, saut2, INFO, ndim):
     #     attention, ici, il faut NP.sum et pas sum tout court
     k = NP.sum(NP.transpose(k), axis=0)
     de = abscs[-1]
-    vk = (k / de ** 2) * isig[:, 0]
+    vk = (k / de**2) * isig[:, 0]
     g = coefg * (vk[0] ** 2 + vk[1] ** 2) + coefg3 * vk[2] ** 2
     kg3 = NP.concatenate([[vk[0]] * 2, [vk[1]] * 2, [vk[2]] * 2, [g] * 2])
     if INFO == 2:
@@ -1903,7 +1903,7 @@ def post_k1_k2_k3_ops(
 
         coefd3 = 0.0
         coefd = e * NP.sqrt(2.0 * pi)
-        unmnu2 = 1.0 - nu ** 2
+        unmnu2 = 1.0 - nu**2
         unpnu = 1.0 + nu
         if MODELISATION == "3D":
             coefd = coefd / (8.0 * unmnu2)

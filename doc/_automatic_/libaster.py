@@ -485,6 +485,26 @@ class BaseMesh(DataStructure):
             str : name of the cell (stripped)
         """
 
+    def getCellType(self, index):
+        """Return the type of the given cell
+
+        Arguments:
+            index (int) : index of the cell (0-based)
+
+        Returns:
+            int : the cell type
+        """
+
+    def getCellTypeName(self, index):
+        """Return the type name of the given cell
+
+        Arguments:
+            index (int) : index of the cell (0-based)
+
+        Returns:
+            str : name of the cell type (stripped)
+        """
+
     def getConnectivity(self):
         """Return the connectivity of the mesh as Python lists.
 

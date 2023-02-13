@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -355,8 +355,8 @@ def get_direction(Nnoff, ndim, Lnoff, FOND_FISS, MAILLAGE):
     # suppresion des coordonnées du projeté du noeud, non utilisées ici
     basloc = NP.array(basloc).reshape((len(basloc) // nb_comp_basloc), nb_comp_basloc)[:, ndim:]
     # recuperation des valeurs dans baseloc en indexant sur les noeuds du fond de fissure
-    
-    index_by_nodename = {MAILLAGE.getNodeName(i):i for i in MAILLAGE.getNodes()}
+
+    index_by_nodename = {MAILLAGE.getNodeName(i): i for i in MAILLAGE.getNodes()}
     Basefo = basloc[[index_by_nodename[nodename] for nodename in Lnoff], :].flatten()
 
     VNOR = [None] * Nnoff
@@ -1161,9 +1161,9 @@ def get_propmat_tempe(MATER, tabtemp, Lnofon, ino, inst, PRECISION):
     e = valres[0]
     nu = valres[1]
 
-    coetd = e / ((1.0 - nu ** 2))
+    coetd = e / ((1.0 - nu**2))
 
-    coetg = (1.0 - nu ** 2) / e
+    coetg = (1.0 - nu**2) / e
     coetg3 = (1.0 + nu) / e
     return (e, nu, coetd, coetg, coetg3)
 
@@ -1885,7 +1885,7 @@ def post_t_q_ops(self, **args):
 
         coetd = e * 1
 
-        unmnu2 = 1.0 - nu ** 2
+        unmnu2 = 1.0 - nu**2
         unpnu = 1.0 + nu
 
         if MODELISATION == "3D":

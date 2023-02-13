@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -212,10 +212,10 @@ def char_grad_impo_ops(
         for index, ima in enumerate(dicolima[izone]):
             if ima == 0:
                 break
-            if ima-1 in cells:
+            if ima - 1 in cells:
                 # ATTENTION : dans Python, les tableaux commencent a 0
                 # mais dans la connectivite, les noeuds commencent a 1!
-                lnoeu = NP.array(connex[ima-1]) - 1
+                lnoeu = NP.array(connex[ima - 1]) - 1
                 nbno = len(lnoeu)
 
                 # calcul de la moyenne par maille de fx

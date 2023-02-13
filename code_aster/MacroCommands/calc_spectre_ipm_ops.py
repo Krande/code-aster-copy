@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -238,7 +238,7 @@ def calc_spectre_ipm_ops(
                         * X[0 : len(FFT)]
                         * omega
                         * AMOR_EQUI[i]
-                        + omega ** 2
+                        + omega**2
                     )
                     cNum = (
                         cNum
@@ -266,13 +266,13 @@ def calc_spectre_ipm_ops(
                     * omega1_
                     * AMOR_SUPP
                     * (1 + RAP_MAS) ** 0.5
-                    + omega1_ ** 2
+                    + omega1_**2
                 )
                 # Modele A
                 Delta1 = (
                     -((2.0 * pi * X[0 : len(FFT)]) ** 2)
                     + 2.0 * complex(0.0, 1.0) * 2.0 * pi * X[0 : len(FFT)] * omega1 * AMOR_SUPP
-                    + omega1 ** 2
+                    + omega1**2
                 )
                 # Calcul de la fonction de transfert
                 c = (1.0 + (2.0 * pi * X[0 : len(FFT)]) ** 2 * (1 + cNum) / (Delta1_ + cDenom)) / (

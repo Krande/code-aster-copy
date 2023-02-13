@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -111,7 +111,7 @@ def unit_normal(P0, P1, P2):
 
     z_co = np.linalg.det([[P0[0], P0[1], 1], [P1[0], P1[1], 1], [P2[0], P2[1], 1]])
 
-    magnitude = (x_co ** 2 + y_co ** 2 + z_co ** 2) ** 0.5
+    magnitude = (x_co**2 + y_co**2 + z_co**2) ** 0.5
 
     return [x_co / magnitude, y_co / magnitude, z_co / magnitude]
 
@@ -396,6 +396,7 @@ def na_lips(self, MAIL__, FOND_FISS, symeType):
             UTMESS("F", "RUPTURE0_19")
 
     return (lipSupName, lipInfName)
+
 
 # -----------------------------------------------------------------------------
 
@@ -1426,7 +1427,7 @@ def grad_elno(self, MAIL, MODE, MATE, listElemTMAIL, __EPSI_ELGA, __FIELD_CAL, i
 
     dicAllElems = {}
     for i, cell in enumerate(connect):
-        dicAllElems[MAIL.getCellName(i)] = [MAIL.getNodeName(j-1) for j in cell]
+        dicAllElems[MAIL.getCellName(i)] = [MAIL.getNodeName(j - 1) for j in cell]
 
     dicElemNode = {}
     for iElem in dicAllElems.keys():
@@ -2043,7 +2044,7 @@ def get_result2D(
 
     if checksym == "OUI":
         if nom_modelisation == "D_PLAN":
-            K = [np.sqrt(iJ * e / (1.0 - nu ** 2)) for iJ in J]
+            K = [np.sqrt(iJ * e / (1.0 - nu**2)) for iJ in J]
 
         if nom_modelisation == "C_PLAN":
             K = [np.sqrt(iJ * e) for iJ in J]
