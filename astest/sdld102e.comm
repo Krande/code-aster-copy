@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -263,7 +263,7 @@ SQUEL = DEFI_SQUELETTE(
         ),
     ),
 )
-
+DEFI_GROUP(MAILLAGE=SQUEL, CREA_GROUP_NO=_F(NOEUD="NO3", NOM="NO3"))
 #
 
 MODCOT = REST_SOUS_STRUC(RESU_GENE=RESGEN, TOUT_ORDRE="OUI", SOUS_STRUC="COTE1")
@@ -479,7 +479,7 @@ TEST_RESU(
         INST=80.0,
         RESULTAT=TRAN1,
         NOM_CHAM="DEPL",
-        NOEUD="NO3",
+        GROUP_NO="NO3",
         NOM_CMP="DX",
         VALE_CALC=0.414799297366,
         VALE_REFE=0.41699999999999998,
@@ -496,7 +496,7 @@ TEST_RESU(
         INST=80.0,
         RESULTAT=TRAN1,
         NOM_CHAM="VITE",
-        NOEUD="NO3",
+        GROUP_NO="NO3",
         NOM_CMP="DX",
         VALE_CALC=-0.429722374471,
         VALE_REFE=-0.43010999999999999,
@@ -513,7 +513,7 @@ TEST_RESU(
         INST=80.0,
         RESULTAT=TRAN1,
         NOM_CHAM="ACCE",
-        NOEUD="NO3",
+        GROUP_NO="NO3",
         NOM_CMP="DX",
         VALE_CALC=0.338227920865,
         VALE_REFE=0.33749000000000001,
@@ -530,7 +530,7 @@ TEST_RESU(
         INST=80.0,
         RESULTAT=TRAN2,
         NOM_CHAM="DEPL",
-        NOEUD="NO3",
+        GROUP_NO="NO3",
         NOM_CMP="DX",
         VALE_CALC=0.41700188176,
         VALE_REFE=0.41699999999999998,
@@ -547,7 +547,7 @@ TEST_RESU(
         INST=80.0,
         RESULTAT=TRAN2,
         NOM_CHAM="VITE",
-        NOEUD="NO3",
+        GROUP_NO="NO3",
         NOM_CMP="DX",
         VALE_CALC=-0.430114977198,
         VALE_REFE=-0.43010999999999999,
@@ -564,7 +564,7 @@ TEST_RESU(
         INST=80.0,
         RESULTAT=TRAN2,
         NOM_CHAM="ACCE",
-        NOEUD="NO3",
+        GROUP_NO="NO3",
         NOM_CMP="DX",
         VALE_CALC=0.337492434653,
         VALE_REFE=0.33749000000000001,
@@ -581,7 +581,7 @@ TEST_RESU(
         INST=80.0,
         RESULTAT=TRAN3,
         NOM_CHAM="DEPL",
-        NOEUD="NO3",
+        GROUP_NO="NO3",
         NOM_CMP="DX",
         VALE_CALC=0.417111185556,
         VALE_REFE=0.41699999999999998,
@@ -598,7 +598,7 @@ TEST_RESU(
         INST=80.0,
         RESULTAT=TRAN3,
         NOM_CHAM="VITE",
-        NOEUD="NO3",
+        GROUP_NO="NO3",
         NOM_CMP="DX",
         VALE_CALC=-0.430904498508,
         VALE_REFE=-0.43010999999999999,
@@ -615,7 +615,7 @@ TEST_RESU(
         INST=80.0,
         RESULTAT=TRAN3,
         NOM_CHAM="ACCE",
-        NOEUD="NO3",
+        GROUP_NO="NO3",
         NOM_CMP="DX",
         VALE_CALC=0.337629228068,
         VALE_REFE=0.33749000000000001,
@@ -632,7 +632,7 @@ TEST_RESU(
         INST=80.0,
         RESULTAT=TRAN4,
         NOM_CHAM="DEPL",
-        NOEUD="NO3",
+        GROUP_NO="NO3",
         NOM_CMP="DX",
         VALE_CALC=0.415409104417,
         VALE_REFE=0.41699999999999998,
@@ -649,7 +649,7 @@ TEST_RESU(
         INST=80.0,
         RESULTAT=TRAN4,
         NOM_CHAM="VITE",
-        NOEUD="NO3",
+        GROUP_NO="NO3",
         NOM_CMP="DX",
         VALE_CALC=-0.429956711921,
         VALE_REFE=-0.43010999999999999,
@@ -666,7 +666,7 @@ TEST_RESU(
         INST=80.0,
         RESULTAT=TRAN4,
         NOM_CHAM="ACCE",
-        NOEUD="NO3",
+        GROUP_NO="NO3",
         NOM_CMP="DX",
         VALE_CALC=0.337564072179,
         VALE_REFE=0.33749000000000001,
@@ -683,7 +683,7 @@ TEST_RESU(
         INST=80.0,
         RESULTAT=TRAN5,
         NOM_CHAM="DEPL",
-        NOEUD="NO3",
+        GROUP_NO="NO3",
         NOM_CMP="DX",
         VALE_CALC=0.417001882215,
         VALE_REFE=0.41699999999999998,
@@ -700,7 +700,7 @@ TEST_RESU(
         INST=80.0,
         RESULTAT=TRAN5,
         NOM_CHAM="VITE",
-        NOEUD="NO3",
+        GROUP_NO="NO3",
         NOM_CMP="DX",
         VALE_CALC=-0.430114967666,
         VALE_REFE=-0.43010999999999999,
@@ -717,7 +717,7 @@ TEST_RESU(
         INST=80.0,
         RESULTAT=TRAN5,
         NOM_CHAM="ACCE",
-        NOEUD="NO3",
+        GROUP_NO="NO3",
         NOM_CMP="DX",
         VALE_CALC=0.337492432035,
         VALE_REFE=0.33749000000000001,

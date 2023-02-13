@@ -90,6 +90,9 @@ MA = DEFI_GROUP(
     CREA_GROUP_NO=(
         _F(NOEUD=("NO2", "NO4", "NO8", "NS7", "NS8", "NS9"), NOM="DROITE"),
         _F(NOEUD=("NO1", "NO3", "NO7", "NS1", "NS2", "NS3"), NOM="GAUCHE"),
+        _F(NOEUD=("NS2"), NOM="NS2"),
+        _F(NOEUD=("NS14"), NOM="NS14"),
+        _F(NOEUD=("NS15"), NOM="NS15"),
     ),
 )
 
@@ -349,7 +352,7 @@ TEST_RESU(
             NOM_CMP="PRE1",
             VALE_REFE=press,
             VALE_CALC=50000.0068,
-            NOEUD="NS14",
+            GROUP_NO="NS14",
             INST=insfin,
         ),
     )
@@ -361,7 +364,7 @@ TEST_RESU(
         REFERENCE="ANALYTIQUE",
         RESULTAT=U_F,
         NOM_CHAM="DEPL",
-        NOEUD="NS15",
+        GROUP_NO="NS15",
         NOM_CMP="PRE1",
         VALE_CALC=50000.000000065,
         VALE_REFE=press,
@@ -376,7 +379,7 @@ TEST_RESU(
         REFERENCE="ANALYTIQUE",
         RESULTAT=U_F,
         NOM_CHAM="VARI_NOEU",
-        NOEUD="NS15",
+        GROUP_NO="NS15",
         NOM_CMP="V18",
         VALE_CALC=50000.000000002,
         VALE_REFE=press,
@@ -391,7 +394,7 @@ TEST_RESU(
         REFERENCE="ANALYTIQUE",
         RESULTAT=U_F,
         NOM_CHAM="VARI_NOEU",
-        NOEUD="NO6",
+        GROUP_NO="NO6",
         NOM_CMP="V18",
         VALE_CALC=50000.0000000002,
         VALE_REFE=press,
@@ -621,7 +624,7 @@ TEST_RESU(
             NOM_CMP="PRE1",
             VALE_REFE=press,
             VALE_CALC=50000.012,
-            NOEUD="NS15",
+            GROUP_NO="NS15",
             INST=insfin,
         ),
     )
@@ -634,7 +637,7 @@ TEST_RESU(
             NOM_CHAM="VARI_NOEU",
             NOM_CMP="V15",
             VALE_CALC=-3.16535589618e-14,
-            NOEUD="NS2",
+            GROUP_NO="NS2",
             INST=linst2[1],
         ),
     )

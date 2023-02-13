@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -328,8 +328,20 @@ TEST_RESU(
 
 TEST_RESU(
     CHAM_ELEM=(
-        _F(CHAM_GD=MAXABS, MAILLE="M1", NOEUD="N1", NOM_CMP="SN", VALE_CALC=-8.20094496775807e08),
-        _F(CHAM_GD=MAXABS, MAILLE="M9", NOEUD="N12", NOM_CMP="SMFZ", VALE_CALC=1.93299612798964e10),
+        _F(
+            CHAM_GD=MAXABS,
+            GROUP_MA="M1",
+            GROUP_NO="N1",
+            NOM_CMP="SN",
+            VALE_CALC=-8.20094496775807e08,
+        ),
+        _F(
+            CHAM_GD=MAXABS,
+            GROUP_MA="M9",
+            GROUP_NO="N12",
+            NOM_CMP="SMFZ",
+            VALE_CALC=1.93299612798964e10,
+        ),
     )
 )
 
@@ -337,8 +349,8 @@ TEST_RESU(
     CHAM_ELEM=(
         _F(
             CHAM_GD=MAXABSAB,
-            MAILLE="M1",
-            NOEUD="N1",
+            GROUP_MA="M1",
+            GROUP_NO="N1",
             NOM_CMP="SN",
             VALE_CALC=8.20094496775807e08,
             VALE_REFE=8.20094496775807e08,
@@ -346,8 +358,8 @@ TEST_RESU(
         ),
         _F(
             CHAM_GD=MAXABSAB,
-            MAILLE="M9",
-            NOEUD="N12",
+            GROUP_MA="M9",
+            GROUP_NO="N12",
             NOM_CMP="SMFZ",
             VALE_CALC=1.93299612798964e10,
             VALE_REFE=1.93299612798964e10,
@@ -358,8 +370,20 @@ TEST_RESU(
 
 TEST_RESU(
     CHAM_ELEM=(
-        _F(CHAM_GD=MINABS, MAILLE="M1", NOEUD="N1", NOM_CMP="SN", VALE_CALC=-2.65282777575495e04),
-        _F(CHAM_GD=MINABS, MAILLE="M1", NOEUD="N5", NOM_CMP="SN", VALE_CALC=4.44886809226435e04),
+        _F(
+            CHAM_GD=MINABS,
+            GROUP_MA="M1",
+            GROUP_NO="N1",
+            NOM_CMP="SN",
+            VALE_CALC=-2.65282777575495e04,
+        ),
+        _F(
+            CHAM_GD=MINABS,
+            GROUP_MA="M1",
+            GROUP_NO="N5",
+            NOM_CMP="SN",
+            VALE_CALC=4.44886809226435e04,
+        ),
     )
 )
 
@@ -367,8 +391,8 @@ TEST_RESU(
     CHAM_ELEM=(
         _F(
             CHAM_GD=MINABSAB,
-            MAILLE="M1",
-            NOEUD="N1",
+            GROUP_MA="M1",
+            GROUP_NO="N1",
             NOM_CMP="SN",
             VALE_CALC=2.65282777575495e04,
             VALE_REFE=2.65282777575495e04,
@@ -376,8 +400,8 @@ TEST_RESU(
         ),
         _F(
             CHAM_GD=MINABSAB,
-            MAILLE="M1",
-            NOEUD="N5",
+            GROUP_MA="M1",
+            GROUP_NO="N5",
             NOM_CMP="SN",
             VALE_CALC=4.44886809226435e04,
             VALE_REFE=4.44886809226435e04,

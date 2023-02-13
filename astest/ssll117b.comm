@@ -36,6 +36,7 @@ MAIL = DEFI_GROUP(
         _F(NOM="MROCHE", CRIT_NOEUD="MILIEU", GROUP_MA="ROCHE"),
         _F(NOM="SBC", CRIT_NOEUD="SOMMET", GROUP_MA="BC"),
     ),
+    CREA_GROUP_MA=(_F(NOM="MRM41", MAILLE="MRM41"),),
 )
 
 MAILLAGE = CREA_MAILLAGE(
@@ -96,7 +97,7 @@ TEST_RESU(
             INST=1.0,
             RESULTAT=U1,
             NOM_CHAM="DEPL",
-            NOEUD="N1",
+            GROUP_NO="N1",
             NOM_CMP="GONF",
             VALE_CALC=-0.055022376,
             CRITERE="RELATIF",
@@ -105,7 +106,7 @@ TEST_RESU(
             INST=1.0,
             RESULTAT=U1,
             NOM_CHAM="DEPL",
-            NOEUD="N5",
+            GROUP_NO="N5",
             NOM_CMP="DX",
             VALE_CALC=0.094497773,
             CRITERE="RELATIF",
@@ -118,7 +119,7 @@ TEST_RESU(
             NOM_CMP="DEPV",
             VALE_CALC=9.9999999999999995e-07,
             CRITERE="ABSOLU",
-            MAILLE="MRM41",
+            GROUP_MA="MRM41",
         ),
     )
 )

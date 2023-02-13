@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -58,6 +58,10 @@ MACR_ADAP_MAIL(
 # IMPR_RESU(FORMAT="RESULTAT",FORMAT='MED',RESU=_F(MAILLAGE=MA_R1_RE,),)
 # IMPR_RESU(FORMAT="RESULTAT",RESU=_F(MAILLAGE=MA_R1_RE,),)
 
+DEFI_GROUP(
+    MAILLAGE=MA_R1_RE, CREA_GROUP_MA=(_F(NOM="M23", MAILLE="M23"), _F(NOM="M15", MAILLE="M15"))
+)
+
 MACR_ADAP_MAIL(
     MAILLAGE_N=MA_INIT,
     MAILLAGE_NP1=CO("MA_R1_AB"),
@@ -70,6 +74,10 @@ MACR_ADAP_MAIL(
 # IMPR_RESU(FORMAT="RESULTAT",FORMAT='MED',RESU=_F(MAILLAGE=MA_R1_AB,),)
 # IMPR_RESU(FORMAT="RESULTAT",RESU=_F(MAILLAGE=MA_R1_AB,),)
 
+DEFI_GROUP(
+    MAILLAGE=MA_R1_AB, CREA_GROUP_MA=(_F(NOM="M12", MAILLE="M12"), _F(NOM="M20", MAILLE="M20"))
+)
+
 TEST_RESU(
     CARTE=(
         _F(
@@ -78,7 +86,7 @@ TEST_RESU(
             PRECISION=9.9999999999999995e-07,
             VALE_CALC=0.707106781,
             VALE_REFE=0.70710678100000002,
-            MAILLE="M23",
+            GROUP_MA="M23",
             CHAM_GD=D_R1_RE,
         ),
         _F(
@@ -87,7 +95,7 @@ TEST_RESU(
             PRECISION=9.9999999999999995e-07,
             VALE_CALC=0.707106781,
             VALE_REFE=0.70710678100000002,
-            MAILLE="M15",
+            GROUP_MA="M15",
             CHAM_GD=D_R1_RE,
         ),
         _F(
@@ -96,7 +104,7 @@ TEST_RESU(
             PRECISION=9.9999999999999995e-07,
             VALE_CALC=0.707106781,
             VALE_REFE=0.70710678100000002,
-            MAILLE="M12",
+            GROUP_MA="M12",
             CHAM_GD=D_R1_AB,
         ),
         _F(
@@ -105,7 +113,7 @@ TEST_RESU(
             PRECISION=9.9999999999999995e-07,
             VALE_CALC=1.118033989,
             VALE_REFE=1.118033989,
-            MAILLE="M20",
+            GROUP_MA="M20",
             CHAM_GD=D_R1_AB,
         ),
     )
@@ -142,6 +150,7 @@ MACR_ADAP_MAIL(
     CRIT_DERA_ABS=3.0,
     NIVE_MIN=1,
 )
+DEFI_GROUP(MAILLAGE=MA_R1, CREA_GROUP_MA=(_F(NOM="M17", MAILLE="M17"),))
 # IMPR_RESU(FORMAT="RESULTAT",FORMAT='MED',RESU=_F(MAILLAGE=MA_D1,),)
 # IMPR_RESU(FORMAT="RESULTAT",RESU=_F(MAILLAGE=MA_D1,),)
 
@@ -151,6 +160,7 @@ MACR_ADAP_MAIL(
     ADAPTATION="RAFFINEMENT_UNIFORME",
     ADD_CHAM=_F(CHAM_GD=CO("N_R2"), CHAM_CAT="NIVEAU"),
 )
+DEFI_GROUP(MAILLAGE=MA_R2, CREA_GROUP_MA=(_F(NOM="M44", MAILLE="M44"),))
 # IMPR_RESU(FORMAT="RESULTAT",FORMAT='MED',RESU=_F(MAILLAGE=MA_R2,),)
 # IMPR_RESU(FORMAT="RESULTAT",RESU=_F(MAILLAGE=MA_R2,),)
 
@@ -163,6 +173,7 @@ MACR_ADAP_MAIL(
     NIVE_MIN=1,
     ADD_CHAM=_F(CHAM_GD=CO("N_D2"), CHAM_CAT="NIVEAU"),
 )
+DEFI_GROUP(MAILLAGE=MA_D2, CREA_GROUP_MA=(_F(NOM="M17", MAILLE="M17"),))
 # IMPR_RESU(FORMAT="RESULTAT",FORMAT='MED',RESU=_F(MAILLAGE=MA_D2,),)
 # IMPR_RESU(FORMAT="RESULTAT",RESU=_F(MAILLAGE=MA_D2,),)
 
@@ -174,7 +185,7 @@ TEST_RESU(
             PRECISION=9.9999999999999995e-07,
             VALE_CALC=1.000000000,
             VALE_REFE=1.0,
-            MAILLE="M17",
+            GROUP_MA="M17",
             CHAM_GD=N_R1,
         ),
         _F(
@@ -183,7 +194,7 @@ TEST_RESU(
             PRECISION=9.9999999999999995e-07,
             VALE_CALC=2.000000000,
             VALE_REFE=2.0,
-            MAILLE="M44",
+            GROUP_MA="M44",
             CHAM_GD=N_R2,
         ),
         _F(
@@ -192,7 +203,7 @@ TEST_RESU(
             PRECISION=9.9999999999999995e-07,
             VALE_CALC=1.000000000,
             VALE_REFE=1.0,
-            MAILLE="M17",
+            GROUP_MA="M17",
             CHAM_GD=N_D2,
         ),
     )

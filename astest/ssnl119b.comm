@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -87,6 +87,7 @@ MAIL = MODI_MAILLAGE(
 MA = CREA_MAILLAGE(
     MAILLAGE=MAIL, CREA_MAILLE=(_F(NOM="RENF_H", GROUP_MA="POUTRE", PREF_MAILLE="H"),)
 )
+DEFI_GROUP(MAILLAGE=MA, CREA_GROUP_MA=_F(NOM="HM52", MAILLE="HM52"))
 
 # -----------------------------------------------
 # CREATION DU MODELE
@@ -327,7 +328,7 @@ TEST_RESU(
         _F(
             POINT=1,
             NOM_CMP="EXX",
-            MAILLE=("HM52",),
+            GROUP_MA=("HM52",),
             INST=0.3,
             NOM_CHAM="EPSI_ELGA",
             RESULTAT=RESU,
@@ -339,7 +340,7 @@ TEST_RESU(
         _F(
             POINT=1,
             NOM_CMP="EXX",
-            MAILLE=("HM52",),
+            GROUP_MA=("HM52",),
             INST=0.5,
             NOM_CHAM="EPSI_ELGA",
             RESULTAT=RESU,
@@ -351,7 +352,7 @@ TEST_RESU(
         _F(
             POINT=1,
             NOM_CMP="EXX",
-            MAILLE=("HM52",),
+            GROUP_MA=("HM52",),
             INST=0.7,
             NOM_CHAM="EPSI_ELGA",
             RESULTAT=RESU,
@@ -363,7 +364,7 @@ TEST_RESU(
         _F(
             POINT=1,
             NOM_CMP="EXX",
-            MAILLE=("HM52",),
+            GROUP_MA=("HM52",),
             INST=1.1,
             NOM_CHAM="EPSI_ELGA",
             RESULTAT=RESU,
@@ -375,7 +376,7 @@ TEST_RESU(
         _F(
             POINT=1,
             NOM_CMP="EXX",
-            MAILLE=("HM52",),
+            GROUP_MA=("HM52",),
             INST=1.6,
             NOM_CHAM="EPSI_ELGA",
             RESULTAT=RESU,
@@ -387,7 +388,7 @@ TEST_RESU(
         _F(
             POINT=1,
             NOM_CMP="EXX",
-            MAILLE=("HM52",),
+            GROUP_MA=("HM52",),
             INST=1.9,
             NOM_CHAM="EPSI_ELGA",
             RESULTAT=RESU,
@@ -399,7 +400,7 @@ TEST_RESU(
         _F(
             POINT=1,
             NOM_CMP="EXX",
-            MAILLE=("HM52",),
+            GROUP_MA=("HM52",),
             INST=5.0,
             NOM_CHAM="EPSI_ELGA",
             RESULTAT=RESU,

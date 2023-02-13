@@ -33,6 +33,34 @@ MAI = LIRE_MAILLAGE(FORMAT="MED")
 
 MAIL = CREA_MAILLAGE(MAILLAGE=MAI, CREA_POI1=(_F(GROUP_NO="crayon", NOM_GROUP_MA="crayon"),))
 
+# Liste des discrets
+Ldiscrets = [
+    "M305",
+    "M311",
+    "M315",
+    "M317",
+    "M306",
+    "M310",
+    "M316",
+    "M320",
+    "M307",
+    "M309",
+    "M313",
+    "M319",
+    "M308",
+    "M312",
+    "M314",
+    "M318",
+]
+
+creaG = []
+for dis in Ldiscrets:
+    d = {"NOM": dis, "MAILLE": dis}
+    creaG.append(d)
+
+DEFI_GROUP(MAILLAGE=MAIL, CREA_GROUP_MA=creaG)
+
+
 MODE = AFFE_MODELE(
     MAILLAGE=MAIL,
     AFFE=(
@@ -109,25 +137,7 @@ RESUDYN = DYNA_NON_LINE(
 )
 
 # ----------------------------------------------------
-# Liste des discrets
-Ldiscrets = [
-    "M305",
-    "M311",
-    "M315",
-    "M317",
-    "M306",
-    "M310",
-    "M316",
-    "M320",
-    "M307",
-    "M309",
-    "M313",
-    "M319",
-    "M308",
-    "M312",
-    "M314",
-    "M318",
-]
+
 
 Force1stat = -992.0269126494252
 Force1dyna = -992.026620299333
@@ -181,7 +191,7 @@ for mm, ffdyna, ffstat in zip(Ldiscrets, Lforcedyna, Lforcestat):
         RESU=(
             # Le jeu, calcul DYNA_NON_LINE
             _F(
-                MAILLE=mm,
+                GROUP_MA=mm,
                 POINT=1,
                 INST=0.0,
                 REFERENCE="ANALYTIQUE",
@@ -192,7 +202,7 @@ for mm, ffdyna, ffstat in zip(Ldiscrets, Lforcedyna, Lforcestat):
                 VALE_REFE=-1.0e-04,
             ),
             _F(
-                MAILLE=mm,
+                GROUP_MA=mm,
                 POINT=2,
                 INST=0.0,
                 REFERENCE="ANALYTIQUE",
@@ -204,7 +214,7 @@ for mm, ffdyna, ffstat in zip(Ldiscrets, Lforcedyna, Lforcestat):
             ),
             # Les efforts, calcul DYNA_NON_LINE
             _F(
-                MAILLE=mm,
+                GROUP_MA=mm,
                 POINT=1,
                 INST=0.0,
                 RESULTAT=RESUDYN,
@@ -213,7 +223,7 @@ for mm, ffdyna, ffstat in zip(Ldiscrets, Lforcedyna, Lforcestat):
                 VALE_CALC=ffdyna,
             ),
             _F(
-                MAILLE=mm,
+                GROUP_MA=mm,
                 POINT=2,
                 INST=0.0,
                 RESULTAT=RESUDYN,
@@ -224,7 +234,7 @@ for mm, ffdyna, ffstat in zip(Ldiscrets, Lforcedyna, Lforcestat):
             #
             # Le jeu, calcul STAT_NON_LINE
             _F(
-                MAILLE=mm,
+                GROUP_MA=mm,
                 POINT=1,
                 INST=0.0,
                 REFERENCE="ANALYTIQUE",
@@ -235,7 +245,7 @@ for mm, ffdyna, ffstat in zip(Ldiscrets, Lforcedyna, Lforcestat):
                 VALE_REFE=-1.0e-04,
             ),
             _F(
-                MAILLE=mm,
+                GROUP_MA=mm,
                 POINT=2,
                 INST=0.0,
                 REFERENCE="ANALYTIQUE",
@@ -247,7 +257,7 @@ for mm, ffdyna, ffstat in zip(Ldiscrets, Lforcedyna, Lforcestat):
             ),
             # Les efforts, calcul STAT_NON_LINE
             _F(
-                MAILLE=mm,
+                GROUP_MA=mm,
                 POINT=1,
                 INST=0.0,
                 RESULTAT=RESUSTAT,
@@ -256,7 +266,7 @@ for mm, ffdyna, ffstat in zip(Ldiscrets, Lforcedyna, Lforcestat):
                 VALE_CALC=ffstat,
             ),
             _F(
-                MAILLE=mm,
+                GROUP_MA=mm,
                 POINT=2,
                 INST=0.0,
                 RESULTAT=RESUSTAT,

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -72,7 +72,7 @@ for maille, point, X, Y, Z, W in PourTest:
                 REFERENCE="ANALYTIQUE",
                 POINT=point,
                 NOM_CMP="X",
-                MAILLE=maille,
+                GROUP_MA=maille,
                 CHAM_GD=coor3d,
                 VALE_CALC=X,
                 VALE_REFE=X,
@@ -81,7 +81,7 @@ for maille, point, X, Y, Z, W in PourTest:
                 REFERENCE="ANALYTIQUE",
                 POINT=point,
                 NOM_CMP="Y",
-                MAILLE=maille,
+                GROUP_MA=maille,
                 CHAM_GD=coor3d,
                 VALE_CALC=Y,
                 VALE_REFE=Y,
@@ -90,7 +90,7 @@ for maille, point, X, Y, Z, W in PourTest:
                 REFERENCE="ANALYTIQUE",
                 POINT=point,
                 NOM_CMP="Z",
-                MAILLE=maille,
+                GROUP_MA=maille,
                 CHAM_GD=coor3d,
                 VALE_CALC=Z,
                 VALE_REFE=Z,
@@ -99,7 +99,7 @@ for maille, point, X, Y, Z, W in PourTest:
                 REFERENCE="ANALYTIQUE",
                 POINT=point,
                 NOM_CMP="W",
-                MAILLE=maille,
+                GROUP_MA=maille,
                 CHAM_GD=coor3d,
                 VALE_CALC=W,
                 VALE_REFE=W,
@@ -122,7 +122,7 @@ for maille, point, X, Y, W in PourTest:
                 REFERENCE="ANALYTIQUE",
                 POINT=point,
                 NOM_CMP="X",
-                MAILLE=maille,
+                GROUP_MA=maille,
                 CHAM_GD=coor2d,
                 VALE_CALC=X,
                 VALE_REFE=X,
@@ -131,7 +131,7 @@ for maille, point, X, Y, W in PourTest:
                 REFERENCE="ANALYTIQUE",
                 POINT=point,
                 NOM_CMP="Y",
-                MAILLE=maille,
+                GROUP_MA=maille,
                 CHAM_GD=coor2d,
                 VALE_CALC=Y,
                 VALE_REFE=Y,
@@ -140,7 +140,7 @@ for maille, point, X, Y, W in PourTest:
                 REFERENCE="ANALYTIQUE",
                 POINT=point,
                 NOM_CMP="W",
-                MAILLE=maille,
+                GROUP_MA=maille,
                 CHAM_GD=coor2d,
                 VALE_CALC=W,
                 VALE_REFE=W,

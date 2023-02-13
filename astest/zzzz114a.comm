@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -24,6 +24,30 @@ MA = LIRE_MAILLAGE(FORMAT="ASTER")
 MA2 = CREA_MAILLAGE(MAILLAGE=MA, LINE_QUAD=_F(TOUT="OUI"))
 
 MA3 = CREA_MAILLAGE(MAILLAGE=MA2, PENTA15_18=_F(TOUT="OUI", PREF_NOEUD="NT"))
+DEFI_GROUP(
+    MAILLAGE=MA3,
+    CREA_GROUP_NO=(
+        _F(NOEUD="N1", NOM="N1"),
+        _F(NOEUD="N2", NOM="N2"),
+        _F(NOEUD="N3", NOM="N3"),
+        _F(NOEUD="N4", NOM="N4"),
+        _F(NOEUD="N5", NOM="N5"),
+        _F(NOEUD="N6", NOM="N6"),
+        _F(NOEUD="NS1", NOM="NS1"),
+        _F(NOEUD="NS2", NOM="NS2"),
+        _F(NOEUD="NS3", NOM="NS3"),
+        _F(NOEUD="NS4", NOM="NS4"),
+        _F(NOEUD="NS5", NOM="NS5"),
+        _F(NOEUD="NS6", NOM="NS6"),
+        _F(NOEUD="NS7", NOM="NS7"),
+        _F(NOEUD="NS8", NOM="NS8"),
+        _F(NOEUD="NS9", NOM="NS9"),
+        _F(NOEUD="NT1", NOM="NT1"),
+        _F(NOEUD="NT2", NOM="NT2"),
+        _F(NOEUD="NT3", NOM="NT3"),
+    ),
+)
+
 
 IMPR_RESU(FORMAT="ASTER", RESU=_F(MAILLAGE=MA3))
 
@@ -65,24 +89,24 @@ IMPR_CO(CONCEPT=_F(NOM=CH2), UNITE=11)
 
 TEST_RESU(
     CHAM_NO=(
-        _F(CHAM_GD=CH2, NOEUD="N1", NOM_CMP="DX", VALE_CALC=1.0),
-        _F(CHAM_GD=CH2, NOEUD="N2", NOM_CMP="DX", VALE_CALC=2.0),
-        _F(CHAM_GD=CH2, NOEUD="N3", NOM_CMP="DX", VALE_CALC=3.0),
-        _F(CHAM_GD=CH2, NOEUD="N4", NOM_CMP="DX", VALE_CALC=4.0),
-        _F(CHAM_GD=CH2, NOEUD="N5", NOM_CMP="DX", VALE_CALC=5.0),
-        _F(CHAM_GD=CH2, NOEUD="N6", NOM_CMP="DX", VALE_CALC=6.0),
-        _F(CHAM_GD=CH2, NOEUD="NS1", NOM_CMP="DX", VALE_CALC=7.0),
-        _F(CHAM_GD=CH2, NOEUD="NS2", NOM_CMP="DX", VALE_CALC=8.0),
-        _F(CHAM_GD=CH2, NOEUD="NS3", NOM_CMP="DX", VALE_CALC=9.0),
-        _F(CHAM_GD=CH2, NOEUD="NS4", NOM_CMP="DX", VALE_CALC=10.0),
-        _F(CHAM_GD=CH2, NOEUD="NS5", NOM_CMP="DX", VALE_CALC=11.0),
-        _F(CHAM_GD=CH2, NOEUD="NS6", NOM_CMP="DX", VALE_CALC=12.0),
-        _F(CHAM_GD=CH2, NOEUD="NS7", NOM_CMP="DX", VALE_CALC=13.0),
-        _F(CHAM_GD=CH2, NOEUD="NS8", NOM_CMP="DX", VALE_CALC=14.0),
-        _F(CHAM_GD=CH2, NOEUD="NS9", NOM_CMP="DX", VALE_CALC=15.0),
-        _F(CHAM_GD=CH2, NOEUD="NT1", NOM_CMP="DX", VALE_CALC=16.0),
-        _F(CHAM_GD=CH2, NOEUD="NT2", NOM_CMP="DX", VALE_CALC=17.0),
-        _F(CHAM_GD=CH2, NOEUD="NT3", NOM_CMP="DX", VALE_CALC=18.0),
+        _F(CHAM_GD=CH2, GROUP_NO="N1", NOM_CMP="DX", VALE_CALC=1.0),
+        _F(CHAM_GD=CH2, GROUP_NO="N2", NOM_CMP="DX", VALE_CALC=2.0),
+        _F(CHAM_GD=CH2, GROUP_NO="N3", NOM_CMP="DX", VALE_CALC=3.0),
+        _F(CHAM_GD=CH2, GROUP_NO="N4", NOM_CMP="DX", VALE_CALC=4.0),
+        _F(CHAM_GD=CH2, GROUP_NO="N5", NOM_CMP="DX", VALE_CALC=5.0),
+        _F(CHAM_GD=CH2, GROUP_NO="N6", NOM_CMP="DX", VALE_CALC=6.0),
+        _F(CHAM_GD=CH2, GROUP_NO="NS1", NOM_CMP="DX", VALE_CALC=7.0),
+        _F(CHAM_GD=CH2, GROUP_NO="NS2", NOM_CMP="DX", VALE_CALC=8.0),
+        _F(CHAM_GD=CH2, GROUP_NO="NS3", NOM_CMP="DX", VALE_CALC=9.0),
+        _F(CHAM_GD=CH2, GROUP_NO="NS4", NOM_CMP="DX", VALE_CALC=10.0),
+        _F(CHAM_GD=CH2, GROUP_NO="NS5", NOM_CMP="DX", VALE_CALC=11.0),
+        _F(CHAM_GD=CH2, GROUP_NO="NS6", NOM_CMP="DX", VALE_CALC=12.0),
+        _F(CHAM_GD=CH2, GROUP_NO="NS7", NOM_CMP="DX", VALE_CALC=13.0),
+        _F(CHAM_GD=CH2, GROUP_NO="NS8", NOM_CMP="DX", VALE_CALC=14.0),
+        _F(CHAM_GD=CH2, GROUP_NO="NS9", NOM_CMP="DX", VALE_CALC=15.0),
+        _F(CHAM_GD=CH2, GROUP_NO="NT1", NOM_CMP="DX", VALE_CALC=16.0),
+        _F(CHAM_GD=CH2, GROUP_NO="NT2", NOM_CMP="DX", VALE_CALC=17.0),
+        _F(CHAM_GD=CH2, GROUP_NO="NT3", NOM_CMP="DX", VALE_CALC=18.0),
     )
 )
 

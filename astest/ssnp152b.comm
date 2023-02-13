@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -42,7 +42,11 @@ MA = DEFI_GROUP(
         _F(GROUP_MA="GM400", NOM="S2R2"),
         _F(GROUP_MA="GM500", NOM="S2R3"),
     ),
-    CREA_GROUP_NO=(_F(GROUP_MA="S1R2", NOM="CONT_N_1"), _F(GROUP_MA="S2R2", NOM="CONT_N_2")),
+    CREA_GROUP_NO=(
+        _F(GROUP_MA="S1R2", NOM="CONT_N_1"),
+        _F(GROUP_MA="S2R2", NOM="CONT_N_2"),
+        _F(NOEUD="N10", NOM="N10"),
+    ),
 )
 
 MA = MODI_MAILLAGE(
@@ -207,7 +211,7 @@ TEST_RESU(
         REFERENCE="ANALYTIQUE",
         RESULTAT=RESU1,
         NOM_CHAM="DEPL",
-        NOEUD="N10",
+        GROUP_NO="N10",
         NOM_CMP="LAGS_C",
         VALE_CALC=91945.12001766187,
         VALE_REFE=pres_cont * EXP(0.1),
@@ -222,7 +226,7 @@ TEST_RESU(
         REFERENCE="ANALYTIQUE",
         RESULTAT=RESU1,
         NOM_CHAM="DEPL",
-        NOEUD="N10",
+        GROUP_NO="N10",
         NOM_CMP="LAGS_C",
         VALE_CALC=230955.69941592027,
         VALE_REFE=pres_cont * EXP(0.5),
@@ -237,7 +241,7 @@ TEST_RESU(
         REFERENCE="ANALYTIQUE",
         RESULTAT=RESU1,
         NOM_CHAM="DEPL",
-        NOEUD="N10",
+        GROUP_NO="N10",
         NOM_CMP="LAGS_C",
         VALE_CALC=730346.0487517805,
         VALE_REFE=pres_cont * EXP(1.0),
@@ -252,7 +256,7 @@ TEST_RESU(
         REFERENCE="ANALYTIQUE",
         RESULTAT=RESU1,
         NOM_CHAM="DEPL",
-        NOEUD="N10",
+        GROUP_NO="N10",
         NOM_CMP="LAGS_C",
         VALE_CALC=2309556.9941595113,
         VALE_REFE=pres_cont * EXP(1.5),
@@ -267,7 +271,7 @@ TEST_RESU(
         REFERENCE="ANALYTIQUE",
         RESULTAT=RESU1,
         NOM_CHAM="DEPL",
-        NOEUD="N10",
+        GROUP_NO="N10",
         NOM_CMP="LAGS_C",
         VALE_CALC=9194512.00176809,
         VALE_REFE=pres_cont * EXP(2.1),
@@ -284,7 +288,7 @@ TEST_RESU(
         REFERENCE="ANALYTIQUE",
         RESULTAT=RESU2,
         NOM_CHAM="DEPL",
-        NOEUD="N10",
+        GROUP_NO="N10",
         NOM_CMP="LAGS_C",
         VALE_CALC=92134.40799798157,
         VALE_REFE=pres_cont * EXP(0.1),
@@ -299,7 +303,7 @@ TEST_RESU(
         REFERENCE="ANALYTIQUE",
         RESULTAT=RESU2,
         NOM_CHAM="DEPL",
-        NOEUD="N10",
+        GROUP_NO="N10",
         NOM_CMP="LAGS_C",
         VALE_CALC=231431.16932393122,
         VALE_REFE=pres_cont * EXP(0.5),
@@ -314,7 +318,7 @@ TEST_RESU(
         REFERENCE="ANALYTIQUE",
         RESULTAT=RESU2,
         NOM_CHAM="DEPL",
-        NOEUD="N10",
+        GROUP_NO="N10",
         NOM_CMP="LAGS_C",
         VALE_CALC=731849.6166205783,
         VALE_REFE=pres_cont * EXP(1.0),
@@ -330,7 +334,7 @@ TEST_RESU(
         REFERENCE="ANALYTIQUE",
         RESULTAT=RESU2,
         NOM_CHAM="DEPL",
-        NOEUD="N10",
+        GROUP_NO="N10",
         NOM_CMP="LAGS_C",
         VALE_CALC=2314311.6932421275,
         VALE_REFE=pres_cont * EXP(1.5),
@@ -345,7 +349,7 @@ TEST_RESU(
         REFERENCE="ANALYTIQUE",
         RESULTAT=RESU2,
         NOM_CHAM="DEPL",
-        NOEUD="N10",
+        GROUP_NO="N10",
         NOM_CMP="LAGS_C",
         VALE_CALC=9213440.799751304,
         VALE_REFE=pres_cont * EXP(2.1),

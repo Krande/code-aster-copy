@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -68,6 +68,26 @@ DEFI_GROUP(
 )
 
 DEFI_GROUP(reuse=MA, MAILLAGE=MA, CREA_GROUP_NO=_F(NOM="ABSANSA", UNION=("BX", "AXSANSA")))
+
+DEFI_GROUP(
+    MAILLAGE=MA,
+    CREA_GROUP_NO=(
+        _F(NOM="N17", NOEUD="N17"),
+        _F(NOM="N9", NOEUD="N9"),
+        _F(NOM="N84", NOEUD="N84"),
+        _F(NOM="N96", NOEUD="N96"),
+        _F(NOM="N77", NOEUD="N77"),
+    ),
+)
+
+DEFI_GROUP(
+    MAILLAGE=MA,
+    CREA_GROUP_MA=(
+        _F(NOM="M10", MAILLE="M10"),
+        _F(NOM="M6", MAILLE="M6"),
+        _F(NOM="M12", MAILLE="M12"),
+    ),
+)
 
 
 MO = AFFE_MODELE(
@@ -149,16 +169,16 @@ TEST_RESU(
             NOM_CHAM="ERME_ELEM",
             NOM_CMP="NUEST",
             VALE_CALC=20.047249622391,
-            MAILLE="M10",
+            GROUP_MA="M10",
         ),
         _F(
             NUME_ORDRE=10,
             RESULTAT=DEPLD2,
             NOM_CHAM="ERME_ELNO",
-            NOEUD="N96",
+            GROUP_NO="N96",
             NOM_CMP="ERREST",
             VALE_CALC=0.21086799332511,
-            MAILLE="M6",
+            GROUP_MA="M6",
         ),
     )
 )
@@ -173,7 +193,7 @@ TEST_RESU(
             REFERENCE="ANALYTIQUE",
             RESULTAT=DEPLD2,
             NOM_CHAM="DEPL",
-            NOEUD="N17",
+            GROUP_NO="N17",
             NOM_CMP="DX",
             VALE_CALC=-6.1906207163e-26,
             VALE_REFE=0.0,
@@ -185,7 +205,7 @@ TEST_RESU(
             REFERENCE="ANALYTIQUE",
             RESULTAT=DEPLD2,
             NOM_CHAM="DEPL",
-            NOEUD="N17",
+            GROUP_NO="N17",
             NOM_CMP="DY",
             VALE_CALC=8.3071793774e-26,
             VALE_REFE=0.0,
@@ -197,7 +217,7 @@ TEST_RESU(
             REFERENCE="ANALYTIQUE",
             RESULTAT=DEPLD2,
             NOM_CHAM="DEPL",
-            NOEUD="N17",
+            GROUP_NO="N17",
             NOM_CMP="DZ",
             VALE_CALC=-1.72167950e-06,
             VALE_REFE=-1.721655e-06,
@@ -209,7 +229,7 @@ TEST_RESU(
             REFERENCE="ANALYTIQUE",
             RESULTAT=DEPLD2,
             NOM_CHAM="DEPL",
-            NOEUD="N9",
+            GROUP_NO="N9",
             NOM_CMP="DX",
             VALE_CALC=1.3514011667e-12,
             VALE_REFE=0.0,
@@ -221,7 +241,7 @@ TEST_RESU(
             REFERENCE="ANALYTIQUE",
             RESULTAT=DEPLD2,
             NOM_CHAM="DEPL",
-            NOEUD="N9",
+            GROUP_NO="N9",
             NOM_CMP="DY",
             VALE_CALC=2.2610499060e-23,
             VALE_REFE=0.0,
@@ -233,7 +253,7 @@ TEST_RESU(
             REFERENCE="ANALYTIQUE",
             RESULTAT=DEPLD2,
             NOM_CHAM="DEPL",
-            NOEUD="N9",
+            GROUP_NO="N9",
             NOM_CMP="DZ",
             VALE_CALC=-1.70733093e-06,
             VALE_REFE=-1.707308e-06,
@@ -245,7 +265,7 @@ TEST_RESU(
             REFERENCE="ANALYTIQUE",
             RESULTAT=DEPLD2,
             NOM_CHAM="DEPL",
-            NOEUD="N84",
+            GROUP_NO="N84",
             NOM_CMP="DX",
             VALE_CALC=-1.72160340e-07,
             VALE_REFE=-1.7216549999999999e-07,
@@ -257,7 +277,7 @@ TEST_RESU(
             REFERENCE="ANALYTIQUE",
             RESULTAT=DEPLD2,
             NOM_CHAM="DEPL",
-            NOEUD="N84",
+            GROUP_NO="N84",
             NOM_CMP="DY",
             VALE_CALC=5.0534284145e-25,
             VALE_REFE=0.0,
@@ -269,7 +289,7 @@ TEST_RESU(
             REFERENCE="ANALYTIQUE",
             RESULTAT=DEPLD2,
             NOM_CHAM="DEPL",
-            NOEUD="N84",
+            GROUP_NO="N84",
             NOM_CMP="DZ",
             VALE_CALC=1.43153831e-08,
             VALE_REFE=1.4347129999999999e-08,
@@ -281,7 +301,7 @@ TEST_RESU(
             REFERENCE="ANALYTIQUE",
             RESULTAT=DEPLD2,
             NOM_CHAM="DEPL",
-            NOEUD="N96",
+            GROUP_NO="N96",
             NOM_CMP="DX",
             VALE_CALC=-1.5517856169e-25,
             VALE_REFE=0.0,
@@ -293,7 +313,7 @@ TEST_RESU(
             REFERENCE="ANALYTIQUE",
             RESULTAT=DEPLD2,
             NOM_CHAM="DEPL",
-            NOEUD="N96",
+            GROUP_NO="N96",
             NOM_CMP="DY",
             VALE_CALC=1.2212094302e-24,
             VALE_REFE=0.0,
@@ -305,7 +325,7 @@ TEST_RESU(
             REFERENCE="ANALYTIQUE",
             RESULTAT=DEPLD2,
             NOM_CHAM="DEPL",
-            NOEUD="N96",
+            GROUP_NO="N96",
             NOM_CMP="DZ",
             VALE_CALC=-1.29126612e-06,
             VALE_REFE=-1.2912410000000001e-06,
@@ -317,26 +337,26 @@ TEST_RESU(
             REFERENCE="ANALYTIQUE",
             RESULTAT=DEPLD2,
             NOM_CHAM="SIGM_ELNO",
-            NOEUD="N77",
+            GROUP_NO="N77",
             NOM_CMP="SIZZ",
             VALE_CALC=2.29565650e05,
             VALE_REFE=2.29554e5,
             CRITERE="RELATIF",
             PRECISION=1.0e-3,
-            MAILLE="M10",
+            GROUP_MA="M10",
         ),
         _F(
             NUME_ORDRE=10,
             REFERENCE="ANALYTIQUE",
             RESULTAT=DEPLD2,
             NOM_CHAM="SIGM_ELNO",
-            NOEUD="N96",
+            GROUP_NO="N96",
             NOM_CMP="SIZZ",
             VALE_CALC=1.14776707e05,
             VALE_REFE=1.14777e5,
             CRITERE="RELATIF",
             PRECISION=1.0e-3,
-            MAILLE="M6",
+            GROUP_MA="M6",
         ),
     )
 )

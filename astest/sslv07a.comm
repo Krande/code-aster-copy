@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -76,6 +76,27 @@ DEFI_GROUP(reuse=MA, MAILLAGE=MA, CREA_GROUP_MA=_F(NOM="BAS", MAILLE=("M1", "M2"
 DEFI_GROUP(reuse=MA, MAILLAGE=MA, CREA_GROUP_MA=_F(NOM="PES", MAILLE=("M5", "M6", "M7", "M8")))
 
 DEFI_GROUP(reuse=MA, MAILLAGE=MA, CREA_GROUP_MA=_F(NOM="HAUT", MAILLE=("M9", "M10", "M11", "M12")))
+
+
+DEFI_GROUP(
+    MAILLAGE=MA,
+    CREA_GROUP_NO=(
+        _F(NOM="N17", NOEUD="N17"),
+        _F(NOM="N9", NOEUD="N9"),
+        _F(NOM="N84", NOEUD="N84"),
+        _F(NOM="N96", NOEUD="N96"),
+        _F(NOM="N77", NOEUD="N77"),
+    ),
+)
+
+DEFI_GROUP(
+    MAILLAGE=MA,
+    CREA_GROUP_MA=(
+        _F(NOM="M10", MAILLE="M10"),
+        _F(NOM="M6", MAILLE="M6"),
+        _F(NOM="M12", MAILLE="M12"),
+    ),
+)
 
 MO = AFFE_MODELE(
     MAILLAGE=MA,
@@ -409,7 +430,7 @@ TEST_RESU(
         _F(
             RESULTAT=STATIQUE,
             NOM_CHAM="DEPL",
-            NOEUD="N17",
+            GROUP_NO="N17",
             NOM_CMP="DX",
             VALE_CALC=0.0,
             VALE_REFE=0.0,
@@ -421,7 +442,7 @@ TEST_RESU(
         _F(
             RESULTAT=STATIQUE,
             NOM_CHAM="DEPL",
-            NOEUD="N17",
+            GROUP_NO="N17",
             NOM_CMP="DY",
             VALE_CALC=0.0,
             VALE_REFE=0.0,
@@ -433,7 +454,7 @@ TEST_RESU(
         _F(
             RESULTAT=STATIQUE,
             NOM_CHAM="DEPL",
-            NOEUD="N17",
+            GROUP_NO="N17",
             NOM_CMP="DZ",
             VALE_CALC=-1.7216737553339e-06,
             VALE_REFE=-1.721655e-06,
@@ -444,7 +465,7 @@ TEST_RESU(
         _F(
             RESULTAT=STATIQUE,
             NOM_CHAM="DEPL",
-            NOEUD="N9",
+            GROUP_NO="N9",
             NOM_CMP="DX",
             VALE_CALC=0.0,
             VALE_REFE=0.0,
@@ -456,7 +477,7 @@ TEST_RESU(
         _F(
             RESULTAT=STATIQUE,
             NOM_CHAM="DEPL",
-            NOEUD="N9",
+            GROUP_NO="N9",
             NOM_CMP="DY",
             VALE_CALC=0.0,
             VALE_REFE=0.0,
@@ -468,7 +489,7 @@ TEST_RESU(
         _F(
             RESULTAT=STATIQUE,
             NOM_CHAM="DEPL",
-            NOEUD="N9",
+            GROUP_NO="N9",
             NOM_CMP="DZ",
             VALE_CALC=-1.7073265343915e-06,
             VALE_REFE=-1.707308e-06,
@@ -479,7 +500,7 @@ TEST_RESU(
         _F(
             RESULTAT=STATIQUE,
             NOM_CHAM="DEPL",
-            NOEUD="N84",
+            GROUP_NO="N84",
             NOM_CMP="DX",
             VALE_CALC=-1.7216403593759e-07,
             VALE_REFE=-1.721655e-07,
@@ -490,7 +511,7 @@ TEST_RESU(
         _F(
             RESULTAT=STATIQUE,
             NOM_CHAM="DEPL",
-            NOEUD="N84",
+            GROUP_NO="N84",
             NOM_CMP="DY",
             VALE_CALC=0.0,
             VALE_REFE=0.0,
@@ -502,7 +523,7 @@ TEST_RESU(
         _F(
             RESULTAT=STATIQUE,
             NOM_CHAM="DEPL",
-            NOEUD="N84",
+            GROUP_NO="N84",
             NOM_CMP="DZ",
             VALE_CALC=1.4323821291141e-08,
             VALE_REFE=1.434713e-08,
@@ -513,7 +534,7 @@ TEST_RESU(
         _F(
             RESULTAT=STATIQUE,
             NOM_CHAM="DEPL",
-            NOEUD="N96",
+            GROUP_NO="N96",
             NOM_CMP="DX",
             VALE_CALC=0.0,
             VALE_REFE=0.0,
@@ -525,7 +546,7 @@ TEST_RESU(
         _F(
             RESULTAT=STATIQUE,
             NOM_CHAM="DEPL",
-            NOEUD="N96",
+            GROUP_NO="N96",
             NOM_CMP="DY",
             VALE_CALC=0.0,
             VALE_REFE=0.0,
@@ -537,7 +558,7 @@ TEST_RESU(
         _F(
             RESULTAT=STATIQUE,
             NOM_CHAM="DEPL",
-            NOEUD="N96",
+            GROUP_NO="N96",
             NOM_CMP="DZ",
             VALE_CALC=-1.291260280881e-06,
             VALE_REFE=-1.291241e-06,
@@ -556,27 +577,27 @@ TEST_RESU(
             NUME_ORDRE=1,
             RESULTAT=RESU,
             NOM_CHAM="SIGM_ELNO",
-            NOEUD="N77",
+            GROUP_NO="N77",
             NOM_CMP="SIZZ",
             VALE_CALC=2.2956240740814e5,
             VALE_REFE=2.29554e5,
             REFERENCE="ANALYTIQUE",
             PRECISION=1.0e-3,
             CRITERE="RELATIF",
-            MAILLE="M10",
+            GROUP_MA="M10",
         ),
         _F(
             NUME_ORDRE=1,
             RESULTAT=RESU,
             NOM_CHAM="SIGM_ELNO",
-            NOEUD="N96",
+            GROUP_NO="N96",
             NOM_CMP="SIZZ",
             VALE_CALC=1.1477703258605e5,
             VALE_REFE=1.14777e5,
             REFERENCE="ANALYTIQUE",
             PRECISION=1.0e-3,
             CRITERE="RELATIF",
-            MAILLE="M6",
+            GROUP_MA="M6",
         ),
     )
 )
@@ -593,16 +614,16 @@ TEST_RESU(
             NOM_CHAM="ERME_ELEM",
             NOM_CMP="NUEST",
             VALE_CALC=20.047109687679999,
-            MAILLE="M10",
+            GROUP_MA="M10",
         ),
         _F(
             NUME_ORDRE=10,
             RESULTAT=DEPLD2,
             NOM_CHAM="ERME_ELNO",
-            NOEUD="N96",
+            GROUP_NO="N96",
             NOM_CMP="ERREST",
             VALE_CALC=0.13018281360424,
-            MAILLE="M6",
+            GROUP_MA="M6",
         ),
     )
 )
@@ -616,7 +637,7 @@ TEST_RESU(
             NOM_CHAM="ERME_ELEM",
             NOM_CMP="ERREST",
             VALE_CALC=1.9701930581634999e4,
-            MAILLE="M12",
+            GROUP_MA="M12",
         ),
         _F(
             NUME_ORDRE=10,
@@ -625,7 +646,7 @@ TEST_RESU(
             NOM_CHAM="ERME_ELEM",
             NOM_CMP="TERMRE",
             VALE_CALC=0.46170599564344,
-            MAILLE="M12",
+            GROUP_MA="M12",
         ),
         _F(
             NUME_ORDRE=10,
@@ -634,7 +655,7 @@ TEST_RESU(
             NOM_CHAM="ERME_ELEM",
             NOM_CMP="TERMSA",
             VALE_CALC=0.35070437607475002,
-            MAILLE="M12",
+            GROUP_MA="M12",
         ),
         _F(
             NUME_ORDRE=10,
@@ -643,7 +664,7 @@ TEST_RESU(
             NOM_CHAM="ERME_ELEM",
             NOM_CMP="TERMNO",
             VALE_CALC=1.9701118171262999e4,
-            MAILLE="M12",
+            GROUP_MA="M12",
         ),
     )
 )
@@ -658,26 +679,26 @@ TEST_RESU(
             REFERENCE="ANALYTIQUE",
             RESULTAT=DEPLD2,
             NOM_CHAM="SIGM_ELNO",
-            NOEUD="N77",
+            GROUP_NO="N77",
             NOM_CMP="SIZZ",
             VALE_CALC=2.29562407e05,
             VALE_REFE=2.29554e5,
             CRITERE="RELATIF",
             PRECISION=1.0e-3,
-            MAILLE="M10",
+            GROUP_MA="M10",
         ),
         _F(
             NUME_ORDRE=10,
             REFERENCE="ANALYTIQUE",
             RESULTAT=DEPLD2,
             NOM_CHAM="SIGM_ELNO",
-            NOEUD="N96",
+            GROUP_NO="N96",
             NOM_CMP="SIZZ",
             VALE_CALC=1.14777033e05,
             VALE_REFE=1.14777e5,
             CRITERE="RELATIF",
             PRECISION=1.0e-3,
-            MAILLE="M6",
+            GROUP_MA="M6",
         ),
     )
 )

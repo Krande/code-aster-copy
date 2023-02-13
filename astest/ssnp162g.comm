@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -95,6 +95,7 @@ MA = DEFI_GROUP(
     CREA_GROUP_NO=(
         _F(NOEUD=("NO4", "NO2", "NS2"), NOM="DROITE"),
         _F(NOEUD=("NO1", "NO3", "NS4"), NOM="GAUCHE"),
+        _F(NOEUD=("NS7"), NOM="NS7"),
     ),
 )
 
@@ -298,7 +299,7 @@ TEST_RESU(
         REFERENCE="ANALYTIQUE",
         RESULTAT=U_HM,
         NOM_CHAM="DEPL",
-        NOEUD="NS7",
+        GROUP_NO="NS7",
         NOM_CMP="PRE1",
         VALE_CALC=500.000000000,
         VALE_REFE=press,

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -68,7 +68,7 @@ for ne in list(Noeuds.keys()):
                 INST=temps,
                 NOM_CHAM="NEUT",
                 NOM_CMP="X1",
-                NOEUD=ne,
+                GROUP_NO=ne,
                 VALE_CALC=valeur,
                 VALE_REFE=valeur,
                 REFERENCE="ANALYTIQUE",

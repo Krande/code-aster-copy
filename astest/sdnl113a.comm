@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -61,6 +61,8 @@ MA = DEFI_GROUP(
         _F(NOM="N10", NOEUD="N10"),
         _F(NOM="N160", NOEUD="N160"),
         _F(NOM="N1", NOEUD="N1"),
+        _F(NOM="N155", NOEUD="N155"),
+        _F(NOM="N157", NOEUD="N157"),
         _F(GROUP_MA="CDGVAN"),
         _F(GROUP_MA="PATBIELB"),
     ),
@@ -516,19 +518,19 @@ PROJ_E = PROJ_CHAMP(
 
 TEST_RESU(
     CHAM_NO=(
-        _F(NOEUD="N155", CHAM_GD=DEPL, NOM_CMP="DX", VALE_CALC=-3.24044250030696e-04),
-        _F(NOEUD="N155", CHAM_GD=DEPL, NOM_CMP="DY", VALE_CALC=-4.67087139352263e-04),
-        _F(NOEUD="N155", CHAM_GD=DEPL, NOM_CMP="DRZ", VALE_CALC=-4.07003475345353e-04),
-        _F(NOEUD="N157", CHAM_GD=DEPL, NOM_CMP="DX", VALE_CALC=-5.79308689944468e-04),
-        _F(NOEUD="N157", CHAM_GD=DEPL, NOM_CMP="DY", VALE_CALC=-4.80549819560532e-04),
-        _F(NOEUD="N157", CHAM_GD=DEPL, NOM_CMP="DRZ", VALE_CALC=-3.85337603546452e-04),
+        _F(GROUP_NO="N155", CHAM_GD=DEPL, NOM_CMP="DX", VALE_CALC=-3.24044250030696e-04),
+        _F(GROUP_NO="N155", CHAM_GD=DEPL, NOM_CMP="DY", VALE_CALC=-4.67087139352263e-04),
+        _F(GROUP_NO="N155", CHAM_GD=DEPL, NOM_CMP="DRZ", VALE_CALC=-4.07003475345353e-04),
+        _F(GROUP_NO="N157", CHAM_GD=DEPL, NOM_CMP="DX", VALE_CALC=-5.79308689944468e-04),
+        _F(GROUP_NO="N157", CHAM_GD=DEPL, NOM_CMP="DY", VALE_CALC=-4.80549819560532e-04),
+        _F(GROUP_NO="N157", CHAM_GD=DEPL, NOM_CMP="DRZ", VALE_CALC=-3.85337603546452e-04),
     )
 )
 
 TEST_RESU(
     CHAM_NO=(
         _F(
-            NOEUD="N155",
+            GROUP_NO="N155",
             CHAM_GD=PROJ_D,
             NOM_CMP="DX",
             VALE_CALC=-3.24044250030696e-04,
@@ -536,7 +538,7 @@ TEST_RESU(
             REFERENCE="ANALYTIQUE",
         ),
         _F(
-            NOEUD="N155",
+            GROUP_NO="N155",
             CHAM_GD=PROJ_D,
             NOM_CMP="DY",
             VALE_CALC=-4.67087139352263e-04,
@@ -544,7 +546,7 @@ TEST_RESU(
             REFERENCE="ANALYTIQUE",
         ),
         _F(
-            NOEUD="N155",
+            GROUP_NO="N155",
             CHAM_GD=PROJ_D,
             NOM_CMP="DRZ",
             VALE_CALC=-4.07003475345353e-04,
@@ -552,7 +554,7 @@ TEST_RESU(
             REFERENCE="ANALYTIQUE",
         ),
         _F(
-            NOEUD="N157",
+            GROUP_NO="N157",
             CHAM_GD=PROJ_D,
             NOM_CMP="DX",
             VALE_CALC=-5.79308689944468e-04,
@@ -560,7 +562,7 @@ TEST_RESU(
             REFERENCE="ANALYTIQUE",
         ),
         _F(
-            NOEUD="N157",
+            GROUP_NO="N157",
             CHAM_GD=PROJ_D,
             NOM_CMP="DY",
             VALE_CALC=-4.80549819560532e-04,
@@ -568,7 +570,7 @@ TEST_RESU(
             REFERENCE="ANALYTIQUE",
         ),
         _F(
-            NOEUD="N157",
+            GROUP_NO="N157",
             CHAM_GD=PROJ_D,
             NOM_CMP="DRZ",
             VALE_CALC=-3.85337603546452e-04,
@@ -581,7 +583,7 @@ TEST_RESU(
 TEST_RESU(
     CHAM_NO=(
         _F(
-            NOEUD="N155",
+            GROUP_NO="N155",
             CHAM_GD=PROJ_D2,
             NOM_CMP="DX",
             VALE_CALC=-3.24044250030696e-04,
@@ -589,7 +591,7 @@ TEST_RESU(
             REFERENCE="ANALYTIQUE",
         ),
         _F(
-            NOEUD="N155",
+            GROUP_NO="N155",
             CHAM_GD=PROJ_D2,
             NOM_CMP="DY",
             VALE_CALC=-4.67087139352263e-04,
@@ -597,7 +599,7 @@ TEST_RESU(
             REFERENCE="ANALYTIQUE",
         ),
         _F(
-            NOEUD="N155",
+            GROUP_NO="N155",
             CHAM_GD=PROJ_D2,
             NOM_CMP="DRZ",
             VALE_CALC=-4.07003475345353e-04,
@@ -605,7 +607,7 @@ TEST_RESU(
             REFERENCE="ANALYTIQUE",
         ),
         _F(
-            NOEUD="N157",
+            GROUP_NO="N157",
             CHAM_GD=PROJ_D2,
             NOM_CMP="DX",
             VALE_CALC=-5.79308689944468e-04,
@@ -613,7 +615,7 @@ TEST_RESU(
             REFERENCE="ANALYTIQUE",
         ),
         _F(
-            NOEUD="N157",
+            GROUP_NO="N157",
             CHAM_GD=PROJ_D2,
             NOM_CMP="DY",
             VALE_CALC=-4.80549819560532e-04,
@@ -621,7 +623,7 @@ TEST_RESU(
             REFERENCE="ANALYTIQUE",
         ),
         _F(
-            NOEUD="N157",
+            GROUP_NO="N157",
             CHAM_GD=PROJ_D2,
             NOM_CMP="DRZ",
             VALE_CALC=-3.85337603546452e-04,

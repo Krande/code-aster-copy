@@ -1277,9 +1277,7 @@ AFFE_CARA_ELEM = OPER(
     MEMBRANE=FACT(
         statut="f",
         max="**",
-        regles=(
-            EXCLUS("ANGL_REP_1", "ANGL_REP_2", "VECT_1", "VECT_2"),
-        ),
+        regles=(EXCLUS("ANGL_REP_1", "ANGL_REP_2", "VECT_1", "VECT_2"),),
         GROUP_MA=SIMP(statut="o", typ=grma, validators=NoRepeat(), max="**"),
         EPAIS=SIMP(
             statut="o",

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -37,13 +37,8 @@ TEST_RESU = PROC(
     CHAM_NO=FACT(
         statut="f",
         max="**",
-        regles=(
-            EXCLUS("NOEUD", "GROUP_NO"),  # EXCLUS avec 'TYPE_TEST' dans trchno.f
-            PRESENT_PRESENT("NOEUD", "NOM_CMP"),
-            PRESENT_PRESENT("GROUP_NO", "NOM_CMP"),
-        ),
+        regles=(PRESENT_PRESENT("GROUP_NO", "NOM_CMP"),),
         CHAM_GD=SIMP(statut="o", typ=cham_no_sdaster),
-        NOEUD=SIMP(statut="c", typ=no),
         GROUP_NO=SIMP(statut="f", typ=grno),
         NOM_CMP=SIMP(statut="f", typ="TXM", max=1),
         **C_TEST_REFERENCE("CHAM_NO", max="**")
@@ -51,29 +46,23 @@ TEST_RESU = PROC(
     CARTE=FACT(
         statut="f",
         max="**",
-        regles=(UN_PARMI("MAILLE", "GROUP_MA"),),
         CHAM_GD=SIMP(statut="o", typ=carte_sdaster),
         GROUP_MA=SIMP(statut="f", typ=grma),
-        MAILLE=SIMP(statut="c", typ=ma),
         NOM_CMP=SIMP(statut="o", typ="TXM", max=1),
         **C_TEST_REFERENCE("CARTE", max=1)
     ),
     CHAM_ELEM=FACT(
         statut="f",
         max="**",
-        regles=(  # UN_PARMI('MAILLE' ou 'GROUP_MA','TYPE_TEST',) dans trchel.f
-            EXCLUS("MAILLE", "GROUP_MA"),
-            EXCLUS("NOEUD", "GROUP_NO", "POINT"),
-            PRESENT_PRESENT("NOEUD", "NOM_CMP"),
+        regles=(  # UN_PARMI('GROUP_MA','TYPE_TEST',) dans trchel.f
+            EXCLUS("GROUP_NO", "POINT"),
             PRESENT_PRESENT("GROUP_NO", "NOM_CMP"),
             PRESENT_PRESENT("POINT", "NOM_CMP"),
         ),
         CHAM_GD=SIMP(statut="o", typ=cham_elem),
         GROUP_MA=SIMP(statut="f", typ=grma),
-        MAILLE=SIMP(statut="c", typ=ma),
         POINT=SIMP(statut="f", typ="I"),
         SOUS_POINT=SIMP(statut="f", typ="I"),
-        NOEUD=SIMP(statut="c", typ=no),
         GROUP_NO=SIMP(statut="f", typ=grno),
         NOM_CMP=SIMP(statut="f", typ="TXM", max=1),
         **C_TEST_REFERENCE("CHAM_ELEM", max="**")
@@ -84,11 +73,8 @@ TEST_RESU = PROC(
         regles=(
             UN_PARMI("NUME_ORDRE", "INST", "FREQ", "NUME_MODE", "NOEUD_CMP", "NOM_CAS", "ANGLE"),
             UN_PARMI("NOM_CHAM", "PARA"),
-            PRESENT_ABSENT(
-                "PARA", "MAILLE", "GROUP_MA", "NOEUD", "GROUP_NO", "POINT", "NOM_CMP", "NOM_VARI"
-            ),
-            EXCLUS("NOEUD", "GROUP_NO", "POINT"),  # EXCLUS avec 'TYPE_TEST' dans trresu.f
-            EXCLUS("MAILLE", "GROUP_MA"),
+            PRESENT_ABSENT("PARA", "GROUP_MA", "GROUP_NO", "POINT", "NOM_CMP", "NOM_VARI"),
+            EXCLUS("GROUP_NO", "POINT"),  # EXCLUS avec 'TYPE_TEST' dans trresu.f
             EXCLUS("NOM_CMP", "NOM_VARI"),
         ),
         RESULTAT=SIMP(statut="o", typ=resultat_sdaster),
@@ -104,8 +90,6 @@ TEST_RESU = PROC(
         NOM_CMP=SIMP(statut="f", typ="TXM", max=1),
         NOM_VARI=SIMP(statut="f", typ="TXM", max=1),
         GROUP_MA=SIMP(statut="f", typ=grma),
-        MAILLE=SIMP(statut="c", typ=ma),
-        NOEUD=SIMP(statut="c", typ=no, max="**"),
         GROUP_NO=SIMP(statut="f", typ=grno, max="**"),
         POINT=SIMP(statut="f", typ="I"),
         SOUS_POINT=SIMP(statut="f", typ="I"),

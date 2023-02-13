@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -135,7 +135,7 @@ TEST_RESU(
             NUME_ORDRE=2,
             RESULTAT=EVOLNOLI,
             NOM_CHAM="SIEF_NOEU",
-            NOEUD="N20",
+            GROUP_NO="N20",
             NOM_CMP="N",
             VALE_CALC=5373.6346812073,
             VALE_REFE=5373.5429318889,
@@ -147,7 +147,7 @@ TEST_RESU(
             NUME_ORDRE=2,
             RESULTAT=EVOLNOLI,
             NOM_CHAM="SIEF_NOEU",
-            NOEUD="N10",
+            GROUP_NO="N10",
             NOM_CMP="N",
             VALE_CALC=4173.5315342889,
             VALE_REFE=4145.3863764751,
@@ -164,7 +164,7 @@ TEST_RESU(
             NUME_ORDRE=2,
             RESULTAT=EVOLNOLI,
             NOM_CHAM="FORC_NODA",
-            NOEUD="N20",
+            GROUP_NO="N20",
             NOM_CMP="DX",
             VALE_CALC=5373.5309678365,
             VALE_REFE=5373.5008825388,
@@ -176,7 +176,7 @@ TEST_RESU(
             NUME_ORDRE=2,
             RESULTAT=EVOLNOLI,
             NOM_CHAM="FORC_NODA",
-            NOEUD="N20",
+            GROUP_NO="N20",
             NOM_CMP="DZ",
             VALE_CALC=21.258202734348,
             VALE_REFE=21.258085693706,
@@ -190,6 +190,7 @@ TEST_RESU(
 # COMPARAISON BARRE
 
 MA2 = LIRE_MAILLAGE(FORMAT="MED", UNITE=19)
+DEFI_GROUP(MAILLAGE=MA2, CREA_GROUP_NO=(_F(NOM="N21", NOEUD="N21"), _F(NOM="N11", NOEUD="N11")))
 MO2 = AFFE_MODELE(
     MAILLAGE=MA2,
     AFFE=(
@@ -279,7 +280,7 @@ TEST_RESU(
             NUME_ORDRE=2,
             RESULTAT=EVOLNOL2,
             NOM_CHAM="SIEF_NOEU",
-            NOEUD="N21",
+            GROUP_NO="N21",
             NOM_CMP="N",
             VALE_CALC=5373.5429318889,
             CRITERE="RELATIF",
@@ -288,7 +289,7 @@ TEST_RESU(
             NUME_ORDRE=2,
             RESULTAT=EVOLNOL2,
             NOM_CHAM="SIEF_NOEU",
-            NOEUD="N11",
+            GROUP_NO="N11",
             NOM_CMP="N",
             VALE_CALC=4145.3863764751,
             CRITERE="RELATIF",
@@ -302,7 +303,7 @@ TEST_RESU(
             NUME_ORDRE=2,
             RESULTAT=EVOLNOL2,
             NOM_CHAM="FORC_NODA",
-            NOEUD="N21",
+            GROUP_NO="N21",
             NOM_CMP="DX",
             VALE_CALC=5373.5008825388,
             CRITERE="RELATIF",
@@ -311,7 +312,7 @@ TEST_RESU(
             NUME_ORDRE=2,
             RESULTAT=EVOLNOL2,
             NOM_CHAM="FORC_NODA",
-            NOEUD="N21",
+            GROUP_NO="N21",
             NOM_CMP="DZ",
             VALE_CALC=21.258085693706,
             CRITERE="RELATIF",

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -1394,7 +1394,7 @@ for i in range(2):
             INST=TFIN,
             RESULTAT=r,
             NOM_CHAM="SIEF_NOEU",
-            NOEUD="N2",
+            GROUP_NO="C",
             NOM_CMP="SIXX",
             REFERENCE="ANALYTIQUE",
             VALE_CALC=val_cal[i],

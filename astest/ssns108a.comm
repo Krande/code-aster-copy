@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -353,7 +353,7 @@ TEST_RESU(
             INST=0.03,
             RESULTAT=RESU,
             NOM_CHAM="DEPL",
-            NOEUD="N283",
+            GROUP_NO="N283",
             NOM_CMP="DX",
             VALE_CALC=0.000256501895302,
         ),
@@ -361,7 +361,7 @@ TEST_RESU(
             INST=0.03,
             RESULTAT=RESU,
             NOM_CHAM="FORC_NODA",
-            NOEUD="N332",
+            GROUP_NO="N332",
             NOM_CMP="DX",
             VALE_CALC=118886.140412,
         ),
@@ -369,7 +369,7 @@ TEST_RESU(
             INST=0.0495,
             RESULTAT=RESU,
             NOM_CHAM="DEPL",
-            NOEUD="N311",
+            GROUP_NO="N311",
             NOM_CMP="DX",
             VALE_CALC=0.00044924081556,
         ),
@@ -377,7 +377,7 @@ TEST_RESU(
             INST=0.0495,
             RESULTAT=RESU,
             NOM_CHAM="FORC_NODA",
-            NOEUD="N332",
+            GROUP_NO="N332",
             NOM_CMP="DX",
             VALE_CALC=138830.309323,
         ),

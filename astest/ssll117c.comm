@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -36,6 +36,7 @@ MAIL = DEFI_GROUP(
         _F(NOM="MROCHE", CRIT_NOEUD="MILIEU", GROUP_MA="ROCHE"),
         _F(NOM="SBC", CRIT_NOEUD="SOMMET", GROUP_MA="BC"),
     ),
+    CREA_GROUP_MA=(_F(NOM="MRM1", MAILLE="MRM1"),),
 )
 
 MAILLAGE = CREA_MAILLAGE(
@@ -96,7 +97,7 @@ TEST_RESU(
             INST=1.0,
             RESULTAT=U1,
             NOM_CHAM="DEPL",
-            NOEUD="N1",
+            GROUP_NO="N1",
             NOM_CMP="GONF",
             VALE_REFE=-0.1,
             VALE_CALC=-0.10000034532906,
@@ -108,7 +109,7 @@ TEST_RESU(
             INST=1.0,
             RESULTAT=U1,
             NOM_CHAM="DEPL",
-            NOEUD="N5",
+            GROUP_NO="N5",
             NOM_CMP="DX",
             VALE_REFE=0.025,
             VALE_CALC=0.025000163666144,
@@ -127,7 +128,7 @@ TEST_RESU(
             PRECISION=1.0e-4,
             REFERENCE="ANALYTIQUE",
             CRITERE="RELATIF",
-            MAILLE="MRM1",
+            GROUP_MA="MRM1",
         ),
         _F(
             INST=1.0,
@@ -140,7 +141,7 @@ TEST_RESU(
             PRECISION=1.0e-4,
             REFERENCE="ANALYTIQUE",
             CRITERE="ABSOLU",
-            MAILLE="MRM1",
+            GROUP_MA="MRM1",
         ),
     )
 )

@@ -174,6 +174,7 @@ MAG0 = DEFI_MAILLAGE(
 )
 
 MAG = ASSE_MAILLAGE(MAILLAGE_1=MAG0, MAILLAGE_2=MA, OPERATION="SOUS_STR")
+DEFI_GROUP(MAILLAGE=MAG, CREA_GROUP_NO=_F(NOM="NN312", NOEUD="NN312"))
 
 #  -------------------
 
@@ -249,7 +250,7 @@ U1S_3 = DEPL_INTERNE(DEPL_GLOBAL=U1S_123, SUPER_MAILLE="S_3", NOM_CAS="CHF2")
 TEST_RESU(
     CHAM_NO=(
         _F(
-            NOEUD="N15",
+            GROUP_NO="N15",
             REFERENCE="AUTRE_ASTER",
             NOM_CMP="DX",
             PRECISION=1.0000000000000001e-05,
@@ -258,7 +259,7 @@ TEST_RESU(
             VALE_REFE=0.015366519405176001,
         ),
         _F(
-            NOEUD="N15",
+            GROUP_NO="N15",
             REFERENCE="AUTRE_ASTER",
             NOM_CMP="DY",
             PRECISION=1.0000000000000001e-05,
@@ -267,7 +268,7 @@ TEST_RESU(
             VALE_REFE=-1.2161203814809e-3,
         ),
         _F(
-            NOEUD="NN312",
+            GROUP_NO="NN312",
             REFERENCE="AUTRE_ASTER",
             NOM_CMP="DX",
             PRECISION=1.0000000000000001e-05,
@@ -276,7 +277,7 @@ TEST_RESU(
             VALE_REFE=1.0406892549361999e-06,
         ),
         _F(
-            NOEUD="NN312",
+            GROUP_NO="NN312",
             REFERENCE="AUTRE_ASTER",
             NOM_CMP="DY",
             PRECISION=1.0000000000000001e-05,
@@ -285,7 +286,7 @@ TEST_RESU(
             VALE_REFE=-1.0406892549361999e-06,
         ),
         _F(
-            NOEUD="N10",
+            GROUP_NO="N10",
             REFERENCE="AUTRE_ASTER",
             NOM_CMP="DX",
             PRECISION=1.0000000000000001e-05,
@@ -294,7 +295,7 @@ TEST_RESU(
             VALE_REFE=6.8940445817137005e-05,
         ),
         _F(
-            NOEUD="N10",
+            GROUP_NO="N10",
             REFERENCE="AUTRE_ASTER",
             NOM_CMP="DY",
             PRECISION=1.0000000000000001e-05,
@@ -303,7 +304,7 @@ TEST_RESU(
             VALE_REFE=9.2096201614429003e-05,
         ),
         _F(
-            NOEUD="N12",
+            GROUP_NO="N12",
             REFERENCE="AUTRE_ASTER",
             NOM_CMP="DX",
             PRECISION=1.0000000000000001e-05,
@@ -312,7 +313,7 @@ TEST_RESU(
             VALE_REFE=-1.0406892549361999e-06,
         ),
         _F(
-            NOEUD="N12",
+            GROUP_NO="N12",
             REFERENCE="AUTRE_ASTER",
             NOM_CMP="DY",
             PRECISION=1.0000000000000001e-05,
@@ -321,7 +322,7 @@ TEST_RESU(
             VALE_REFE=-1.0406892549361999e-06,
         ),
         _F(
-            NOEUD="N10",
+            GROUP_NO="N10",
             REFERENCE="AUTRE_ASTER",
             NOM_CMP="DX",
             PRECISION=1.0000000000000001e-05,
@@ -330,7 +331,7 @@ TEST_RESU(
             VALE_REFE=6.8940445817137005e-05,
         ),
         _F(
-            NOEUD="N10",
+            GROUP_NO="N10",
             REFERENCE="AUTRE_ASTER",
             NOM_CMP="DY",
             PRECISION=1.0000000000000001e-05,
@@ -381,7 +382,7 @@ U2S_3 = DEPL_INTERNE(DEPL_GLOBAL=U2S_123, SUPER_MAILLE="S_3", NOM_CAS="CHF2")
 TEST_RESU(
     CHAM_NO=(
         _F(
-            NOEUD="N15",
+            GROUP_NO="N15",
             REFERENCE="AUTRE_ASTER",
             NOM_CMP="DX",
             PRECISION=0.050000000000000003,
@@ -390,7 +391,7 @@ TEST_RESU(
             VALE_REFE=0.015366519405368999,
         ),
         _F(
-            NOEUD="N15",
+            GROUP_NO="N15",
             REFERENCE="AUTRE_ASTER",
             NOM_CMP="DY",
             PRECISION=0.050000000000000003,
@@ -399,7 +400,7 @@ TEST_RESU(
             VALE_REFE=-1.2161203823997e-3,
         ),
         _F(
-            NOEUD="NN312",
+            GROUP_NO="NN312",
             REFERENCE="AUTRE_ASTER",
             NOM_CMP="DX",
             PRECISION=0.059999999999999998,
@@ -408,7 +409,7 @@ TEST_RESU(
             VALE_REFE=1.0406892551514001e-06,
         ),
         _F(
-            NOEUD="NN312",
+            GROUP_NO="NN312",
             REFERENCE="AUTRE_ASTER",
             NOM_CMP="DY",
             PRECISION=0.059999999999999998,
@@ -417,7 +418,7 @@ TEST_RESU(
             VALE_REFE=-1.0406892551514001e-06,
         ),
         _F(
-            NOEUD="N10",
+            GROUP_NO="N10",
             REFERENCE="AUTRE_ASTER",
             NOM_CMP="DX",
             PRECISION=0.050000000000000003,
@@ -426,7 +427,7 @@ TEST_RESU(
             VALE_REFE=6.8940445827615006e-05,
         ),
         _F(
-            NOEUD="N10",
+            GROUP_NO="N10",
             REFERENCE="AUTRE_ASTER",
             NOM_CMP="DY",
             PRECISION=0.050000000000000003,
@@ -435,7 +436,7 @@ TEST_RESU(
             VALE_REFE=9.2096201627558e-05,
         ),
         _F(
-            NOEUD="N12",
+            GROUP_NO="N12",
             REFERENCE="AUTRE_ASTER",
             NOM_CMP="DX",
             PRECISION=0.059999999999999998,
@@ -444,7 +445,7 @@ TEST_RESU(
             VALE_REFE=-1.0406892551514001e-06,
         ),
         _F(
-            NOEUD="N12",
+            GROUP_NO="N12",
             REFERENCE="AUTRE_ASTER",
             NOM_CMP="DY",
             PRECISION=0.059999999999999998,
@@ -453,7 +454,7 @@ TEST_RESU(
             VALE_REFE=-1.0406892551514001e-06,
         ),
         _F(
-            NOEUD="N10",
+            GROUP_NO="N10",
             REFERENCE="AUTRE_ASTER",
             NOM_CMP="DX",
             PRECISION=0.059999999999999998,
@@ -462,7 +463,7 @@ TEST_RESU(
             VALE_REFE=6.8940445827615006e-05,
         ),
         _F(
-            NOEUD="N10",
+            GROUP_NO="N10",
             REFERENCE="AUTRE_ASTER",
             NOM_CMP="DY",
             PRECISION=0.059999999999999998,

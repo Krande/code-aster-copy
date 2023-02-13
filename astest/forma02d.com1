@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -99,8 +99,8 @@ for nma in Resultat.keys():
             _F(
                 RESULTAT=RESVMIS,
                 NOM_CHAM="UT01_ELNO",
-                MAILLE=nma,
-                NOEUD=nno1,
+                GROUP_MA=nma,
+                GROUP_NO=nno1,
                 NOM_CMP="X1",
                 INST=2.0,
                 VALE_CALC=vale1,
@@ -110,8 +110,8 @@ for nma in Resultat.keys():
             _F(
                 RESULTAT=RESVMIS,
                 NOM_CHAM="UT01_ELNO",
-                MAILLE=nma,
-                NOEUD=nno2,
+                GROUP_MA=nma,
+                GROUP_NO=nno2,
                 NOM_CMP="X1",
                 INST=2.0,
                 VALE_CALC=vale2,

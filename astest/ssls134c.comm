@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -425,7 +425,7 @@ for j in range(len(D_ref)):
                     INST=j + 1.0,
                     NOM_CHAM="FERRAILLAGE",
                     NOM_CMP=ncmp,
-                    MAILLE="M1",
+                    GROUP_MA="M1",
                     LEGENDE="ELS_QP",
                     VALE_REFE=D_ref[j][i],
                     VALE_CALC=D_calc[j][i],
@@ -441,7 +441,7 @@ for j in range(len(D_ref)):
                     INST=j + 1.0,
                     NOM_CHAM="FERRAILLAGE",
                     NOM_CMP=ncmp,
-                    MAILLE="M1",
+                    GROUP_MA="M1",
                     LEGENDE="ELS_QP",
                     VALE_REFE=D_ref[j][i],
                     REFERENCE="ANALYTIQUE",
@@ -712,7 +712,7 @@ for j in range(len(D_ref)):
                     INST=j + 1.0,
                     NOM_CHAM="FERRAILLAGE",
                     NOM_CMP=ncmp,
-                    MAILLE="M1",
+                    GROUP_MA="M1",
                     LEGENDE="ELS_QP",
                     VALE_REFE=D_ref[j][i],
                     VALE_CALC=D_calc[j][i],
@@ -728,7 +728,7 @@ for j in range(len(D_ref)):
                     INST=j + 1.0,
                     NOM_CHAM="FERRAILLAGE",
                     NOM_CMP=ncmp,
-                    MAILLE="M1",
+                    GROUP_MA="M1",
                     LEGENDE="ELS_QP",
                     VALE_REFE=D_ref[j][i],
                     REFERENCE="ANALYTIQUE",
@@ -1001,7 +1001,7 @@ for j in range(len(D_ref)):
                     INST=j + 1.0,
                     NOM_CHAM="FERRAILLAGE",
                     NOM_CMP=ncmp,
-                    MAILLE="M1",
+                    GROUP_MA="M1",
                     LEGENDE="ELS_QP",
                     VALE_REFE=D_ref[j][i],
                     VALE_CALC=D_calc[j][i],
@@ -1017,7 +1017,7 @@ for j in range(len(D_ref)):
                     INST=j + 1.0,
                     NOM_CHAM="FERRAILLAGE",
                     NOM_CMP=ncmp,
-                    MAILLE="M1",
+                    GROUP_MA="M1",
                     LEGENDE="ELS_QP",
                     VALE_REFE=D_ref[j][i],
                     REFERENCE="ANALYTIQUE",
@@ -1287,7 +1287,7 @@ for j in range(len(D_ref)):
                     INST=j + 1.0,
                     NOM_CHAM="FERRAILLAGE",
                     NOM_CMP=ncmp,
-                    MAILLE="M1",
+                    GROUP_MA="M1",
                     LEGENDE="ELS_QP",
                     VALE_REFE=D_ref[j][i],
                     VALE_CALC=D_calc[j][i],
@@ -1303,7 +1303,7 @@ for j in range(len(D_ref)):
                     INST=j + 1.0,
                     NOM_CHAM="FERRAILLAGE",
                     NOM_CMP=ncmp,
-                    MAILLE="M1",
+                    GROUP_MA="M1",
                     LEGENDE="ELS_QP",
                     VALE_REFE=D_ref[j][i],
                     REFERENCE="ANALYTIQUE",

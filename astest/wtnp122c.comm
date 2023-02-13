@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -94,6 +94,7 @@ MAIL = DEFI_GROUP(
         _F(GROUP_MA="MGAUCHE"),
         _F(GROUP_MA="TOUT", NOM="NS", CRIT_NOEUD="MILIEU"),
         _F(GROUP_MA="TOUT", NOM="NK", CRIT_NOEUD="CENTRE"),
+        _F(NOM="NT70", NOEUD="NT70"),
     ),
 )
 
@@ -269,7 +270,7 @@ TEST_RESU(
         REFERENCE="ANALYTIQUE",
         RESULTAT=CAL1,
         NOM_CHAM="DEPL",
-        NOEUD="N360",
+        GROUP_NO="N360",
         NOM_CMP="PRE2",
         VALE_CALC=1.46396795e03,
         VALE_REFE=1330.51641,
@@ -285,7 +286,7 @@ TEST_RESU(
         REFERENCE="ANALYTIQUE",
         RESULTAT=CAL1,
         NOM_CHAM="DEPL",
-        NOEUD="N505",
+        GROUP_NO="N505",
         NOM_CMP="PRE2",
         VALE_CALC=1.46091483e03,
         VALE_REFE=1330.51641,
@@ -301,7 +302,7 @@ TEST_RESU(
         REFERENCE="NON_DEFINI",
         RESULTAT=CAL1,
         NOM_CHAM="DEPL",
-        NOEUD="N360",
+        GROUP_NO="N360",
         NOM_CMP="PRE2",
         VALE_CALC=1.46396795e03,
         VALE_REFE=1454.395434045,
@@ -317,7 +318,7 @@ TEST_RESU(
         REFERENCE="NON_DEFINI",
         RESULTAT=CAL1,
         NOM_CHAM="DEPL",
-        NOEUD="N505",
+        GROUP_NO="N505",
         NOM_CMP="PRE2",
         VALE_CALC=1.46091483e03,
         VALE_REFE=1450.3938034155999,
@@ -333,7 +334,7 @@ TEST_RESU(
         REFERENCE="NON_DEFINI",
         RESULTAT=CAL1,
         NOM_CHAM="DEPL",
-        NOEUD="NT70",
+        GROUP_NO="NT70",
         NOM_CMP="PRE2",
         VALE_CALC=353.878334026,
         VALE_REFE=353.97760862167002,

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -89,6 +89,10 @@ MACR_ADAP_MAIL(
     USAGE_CMP="RELATIF",
     MAILLAGE_N=MABID,
     MAILLAGE_NP1=MAILLAG1,
+)
+
+DEFI_GROUP(
+    MAILLAGE=MAILLAG1, CREA_GROUP_MA=(_F(NOM="M21", MAILLE="M21"), _F(NOM="M18", MAILLE="M18"))
 )
 
 # ----------------------------------------------
@@ -352,7 +356,7 @@ TEST_RESU(
             NOM_CHAM="TEMP_ELGA",
             NOM_CMP="TEMP",
             NUME_ORDRE=1,
-            MAILLE="M21",
+            GROUP_MA="M21",
             POINT=1,
             REFERENCE="ANALYTIQUE",
             VALE_REFE=10.0,
@@ -363,7 +367,7 @@ TEST_RESU(
             NOM_CHAM="TEMP_ELGA",
             NOM_CMP="TEMP",
             NUME_ORDRE=1,
-            MAILLE="M18",
+            GROUP_MA="M18",
             POINT=1,
             REFERENCE="ANALYTIQUE",
             VALE_REFE=20.0,

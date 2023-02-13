@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -190,7 +190,14 @@ MAIL = DEFI_GROUP(
     ),
 )
 MAIL = DEFI_GROUP(
-    reuse=MAIL, MAILLAGE=MAIL, CREA_GROUP_NO=(_F(GROUP_MA="BAS", NOM="NSBAS", CRIT_NOEUD="MILIEU"),)
+    reuse=MAIL,
+    MAILLAGE=MAIL,
+    CREA_GROUP_NO=(
+        _F(GROUP_MA="BAS", NOM="NSBAS", CRIT_NOEUD="MILIEU"),
+        _F(NOM="NT335", NOEUD="NT335"),
+        _F(NOM="NT551", NOEUD="NT551"),
+        _F(NOM="NT566", NOEUD="NT566"),
+    ),
 )
 # ======================================
 #            MODELISATION
@@ -402,7 +409,7 @@ TEST_RESU(
         REFERENCE="NON_DEFINI",
         RESULTAT=CAL1,
         NOM_CHAM="DEPL",
-        NOEUD="NT335",
+        GROUP_NO="NT335",
         NOM_CMP="PRE1",
         VALE_CALC=-9.55973731e05,
         VALE_REFE=-9.55974e5,
@@ -418,7 +425,7 @@ TEST_RESU(
         REFERENCE="NON_DEFINI",
         RESULTAT=CAL1,
         NOM_CHAM="DEPL",
-        NOEUD="NT551",
+        GROUP_NO="NT551",
         NOM_CMP="PRE1",
         VALE_CALC=-9.99999254e05,
         VALE_REFE=-9.99999e5,
@@ -434,7 +441,7 @@ TEST_RESU(
         REFERENCE="NON_DEFINI",
         RESULTAT=CAL1,
         NOM_CHAM="DEPL",
-        NOEUD="NT566",
+        GROUP_NO="NT566",
         NOM_CMP="PRE1",
         VALE_CALC=-9.99999006e05,
         VALE_REFE=-9.99999e5,
@@ -451,7 +458,7 @@ TEST_RESU(
         REFERENCE="NON_DEFINI",
         RESULTAT=CAL1,
         NOM_CHAM="DEPL",
-        NOEUD="NT335",
+        GROUP_NO="NT335",
         NOM_CMP="PRE2",
         VALE_CALC=4.40256993e04,
         VALE_REFE=4.4025699999999997e4,
@@ -467,7 +474,7 @@ TEST_RESU(
         REFERENCE="NON_DEFINI",
         RESULTAT=CAL1,
         NOM_CHAM="DEPL",
-        NOEUD="NT551",
+        GROUP_NO="NT551",
         NOM_CMP="PRE2",
         VALE_CALC=1.633e-13,
         VALE_REFE=0.0,
@@ -483,7 +490,7 @@ TEST_RESU(
         REFERENCE="NON_DEFINI",
         RESULTAT=CAL1,
         NOM_CHAM="DEPL",
-        NOEUD="NT566",
+        GROUP_NO="NT566",
         NOM_CMP="PRE2",
         VALE_CALC=3.64e-15,
         VALE_REFE=0.0,

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -74,6 +74,7 @@ i_raff = 0
 
 # MAILLAGE QUADRATIQUE
 MA_L = LIRE_MAILLAGE(FORMAT="MED")
+
 MA[i_raff] = CREA_MAILLAGE(MAILLAGE=MA_L, LINE_QUAD=_F(TOUT="OUI"))
 
 # boucle de raffinements
@@ -104,6 +105,11 @@ assert nb_iter == i_raff + 1
 
 # impression du dernier maillage
 IMPR_RESU(FORMAT="MED", UNITE=80, RESU=_F(MAILLAGE=MA[nb_iter]))
+
+DEFI_GROUP(
+    MAILLAGE=MA[nb_iter],
+    CREA_GROUP_MA=(_F(NOM="M636", MAILLE="M636"), _F(NOM="M646", MAILLE="M646")),
+)
 
 MA[nb_iter] = MODI_MAILLAGE(
     reuse=MA[nb_iter],

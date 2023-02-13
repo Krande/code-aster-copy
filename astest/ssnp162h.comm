@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -95,6 +95,8 @@ MA = DEFI_GROUP(
     CREA_GROUP_NO=(
         _F(NOEUD=("NO2", "NO4", "NO10", "NO8", "NS2", "NS6", "NS10", "NS7"), NOM="DROITE"),
         _F(NOEUD=("NO1", "NO3", "NO9", "NO7", "NS4", "NS5", "NS12", "NS8"), NOM="GAUCHE"),
+        _F(NOEUD=("NS17"), NOM="NS17"),
+        _F(NOEUD=("NS18"), NOM="NS18"),
     ),
 )
 
@@ -309,7 +311,7 @@ TEST_RESU(
         REFERENCE="ANALYTIQUE",
         RESULTAT=U_HM,
         NOM_CHAM="DEPL",
-        NOEUD="NS17",
+        GROUP_NO="NS17",
         NOM_CMP="PRE1",
         VALE_CALC=500.000000000,
         VALE_REFE=press,
@@ -323,7 +325,7 @@ TEST_RESU(
         REFERENCE="ANALYTIQUE",
         RESULTAT=U_HM,
         NOM_CHAM="DEPL",
-        NOEUD="NS18",
+        GROUP_NO="NS18",
         NOM_CMP="PRE1",
         VALE_CALC=500.000000000,
         VALE_REFE=press,
@@ -338,7 +340,7 @@ TEST_RESU(
         REFERENCE="ANALYTIQUE",
         RESULTAT=U_HM,
         NOM_CHAM="VARI_NOEU",
-        NOEUD="NS18",
+        GROUP_NO="NS18",
         NOM_CMP="V18",
         VALE_CALC=500.000000000,
         VALE_REFE=press,
@@ -353,7 +355,7 @@ TEST_RESU(
         REFERENCE="ANALYTIQUE",
         RESULTAT=U_HM,
         NOM_CHAM="VARI_NOEU",
-        NOEUD="NO12",
+        GROUP_NO="NO12",
         NOM_CMP="V18",
         VALE_CALC=500.000000000,
         VALE_REFE=press,

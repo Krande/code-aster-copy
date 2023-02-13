@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -118,7 +118,7 @@ TEST_RESU(
             NUME_ORDRE=21,
             RESULTAT=VT,
             NOM_CHAM="DEPL",
-            NOEUD="N4",
+            GROUP_NO="N4",
             NOM_CMP="DX",
             REFERENCE="ANALYTIQUE",
             VALE_REFE=86.6025,
@@ -128,7 +128,7 @@ TEST_RESU(
             NUME_ORDRE=21,
             RESULTAT=VT,
             NOM_CHAM="DEPL",
-            NOEUD="N4",
+            GROUP_NO="N4",
             NOM_CMP="DY",
             REFERENCE="ANALYTIQUE",
             VALE_REFE=50.0,

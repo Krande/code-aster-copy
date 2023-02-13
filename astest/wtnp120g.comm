@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -228,6 +228,9 @@ if METHODE == "EF":
             _F(GROUP_MA="GAUCHE"),
             _F(GROUP_MA="DROIT"),
             _F(GROUP_MA="TOUT"),
+            _F(NOM="N3", NOEUD="N3"),
+            _F(NOM="N303", NOEUD="N303"),
+            _F(NOM="N393", NOEUD="N393"),
         ),
     )
 else:
@@ -410,7 +413,7 @@ if METHODE == "EF":
             REFERENCE="NON_DEFINI",
             RESULTAT=U0,
             NOM_CHAM="DEPL",
-            NOEUD="N3",
+            GROUP_NO="N3",
             NOM_CMP="PRE1",
             VALE_CALC=-995729.8224868318,
             VALE_REFE=-9.95754e5,
@@ -425,7 +428,7 @@ if METHODE == "EF":
             REFERENCE="NON_DEFINI",
             RESULTAT=U0,
             NOM_CHAM="DEPL",
-            NOEUD="N3",
+            GROUP_NO="N3",
             NOM_CMP="PRE1",
             VALE_CALC=-721265.2730639455,
             VALE_REFE=-7.22030e5,
@@ -440,7 +443,7 @@ if METHODE == "EF":
             REFERENCE="NON_DEFINI",
             RESULTAT=U0,
             NOM_CHAM="DEPL",
-            NOEUD="N3",
+            GROUP_NO="N3",
             NOM_CMP="PRE1",
             VALE_CALC=446183.73558946495,
             VALE_REFE=446184.0,
@@ -454,7 +457,7 @@ if METHODE == "EF":
             REFERENCE="NON_DEFINI",
             RESULTAT=U0,
             NOM_CHAM="DEPL",
-            NOEUD="N303",
+            GROUP_NO="N303",
             NOM_CMP="PRE1",
             VALE_CALC=-999999.1027913451,
             VALE_REFE=-1.00000e6,
@@ -469,7 +472,7 @@ if METHODE == "EF":
             REFERENCE="NON_DEFINI",
             RESULTAT=U0,
             NOM_CHAM="DEPL",
-            NOEUD="N303",
+            GROUP_NO="N303",
             NOM_CMP="PRE1",
             VALE_CALC=-1000656.9322105744,
             VALE_REFE=-1.00000e6,
@@ -483,7 +486,7 @@ if METHODE == "EF":
             REFERENCE="NON_DEFINI",
             RESULTAT=U0,
             NOM_CHAM="DEPL",
-            NOEUD="N303",
+            GROUP_NO="N303",
             NOM_CMP="PRE1",
             VALE_CALC=-62935.35918385946,
             VALE_REFE=-62935.0,
@@ -497,7 +500,7 @@ if METHODE == "EF":
             REFERENCE="NON_DEFINI",
             RESULTAT=U0,
             NOM_CHAM="DEPL",
-            NOEUD="N393",
+            GROUP_NO="N393",
             NOM_CMP="PRE1",
             VALE_CALC=-999999.0000062884,
             VALE_REFE=-1.00000e6,
@@ -512,7 +515,7 @@ if METHODE == "EF":
             REFERENCE="NON_DEFINI",
             RESULTAT=U0,
             NOM_CHAM="DEPL",
-            NOEUD="N393",
+            GROUP_NO="N393",
             NOM_CMP="PRE1",
             VALE_CALC=-1000064.7649276713,
             VALE_REFE=-1.00000e6,
@@ -526,7 +529,7 @@ if METHODE == "EF":
             REFERENCE="NON_DEFINI",
             RESULTAT=U0,
             NOM_CHAM="DEPL",
-            NOEUD="N393",
+            GROUP_NO="N393",
             NOM_CMP="PRE1",
             VALE_CALC=-925905.0596872474,
             VALE_REFE=-925905.0,

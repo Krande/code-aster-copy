@@ -75,7 +75,7 @@ subroutine charci(chcine, mfact, mo, valeType)
     integer, parameter :: mxcmp = 100
     character(len=8) :: k8b, mesh, nomgd, nogdsi, gdcns, answer
     character(len=8) :: evoim, licmp(20), chcity(mxcmp)
-    character(len=16), parameter :: motcle(4) = (/'GROUP_MA',&
+    character(len=16), parameter :: motcle(4) = (/'GROUP_MA', &
                                                   'GROUP_NO', 'NOEUD   ', &
                                                   'TOUT    '/)
     character(len=16) :: keywordFact, phenom, typco, userDOFName(mxcmp)

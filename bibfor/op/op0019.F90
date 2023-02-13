@@ -469,8 +469,9 @@ subroutine op0019()
 ! --------------------------------------------------------------------------------------------------
 !   AFFECTATION DES ORIENTATIONS AUX ELEMENTS POUTRES ET DISCRETS  ET
 !     BARRES ET AFFECTATION DE LA CARTE ORIENTATION
-if (nbocc(ACE_POUTRE) .ne. 0 .or. nbocc(ACE_DISCRET) .ne. 0 .or. nbocc(ACE_DISCRET_2D) .ne. 0 .or. &
-        nbocc(ACE_BARRE) .ne. 0 .or. nbocc(ACE_RIGI_PARASOL) .ne. 0) then
+    if (nbocc(ACE_POUTRE) .ne. 0 .or. nbocc(ACE_DISCRET) .ne. 0 .or. &
+        nbocc(ACE_DISCRET_2D) .ne. 0 .or. nbocc(ACE_BARRE) .ne. 0 &
+        .or. nbocc(ACE_RIGI_PARASOL) .ne. 0) then
         call aceaor(noma, nomo, lmax, ACE_NB_POUTRE, &
                     elem_supp_num, elem_supp_nom, ivr, nbocc)
     end if

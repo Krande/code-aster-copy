@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -296,7 +296,7 @@ SQUEL = DEFI_SQUELETTE(
     MODELE_GENE=MODEGE,
     SOUS_STRUC=(_F(NOM="COTE1", GROUP_MA="RESSORT"), _F(NOM="COTE2", GROUP_MA="RESSORT")),
 )
-
+DEFI_GROUP(MAILLAGE=SQUEL, CREA_GROUP_NO=_F(NOEUD="NO3", NOM="NO3"))
 #
 
 MODCOT = REST_SOUS_STRUC(RESU_GENE=RESGEN, TOUT_ORDRE="OUI", SOUS_STRUC="COTE1")
@@ -368,7 +368,7 @@ TEST_RESU(
         INST=80.0,
         RESULTAT=TRAN1,
         NOM_CHAM="DEPL",
-        NOEUD="NO3",
+        GROUP_NO="NO3",
         NOM_CMP="DX",
         VALE_CALC=0.414799297365,
         VALE_REFE=0.41699999999999998,
@@ -385,7 +385,7 @@ TEST_RESU(
         INST=80.0,
         RESULTAT=TRAN1,
         NOM_CHAM="VITE",
-        NOEUD="NO3",
+        GROUP_NO="NO3",
         NOM_CMP="DX",
         VALE_CALC=-0.429722374471,
         VALE_REFE=-0.43010999999999999,
@@ -402,7 +402,7 @@ TEST_RESU(
         INST=80.0,
         RESULTAT=TRAN1,
         NOM_CHAM="ACCE",
-        NOEUD="NO3",
+        GROUP_NO="NO3",
         NOM_CMP="DX",
         VALE_CALC=0.338227920865,
         VALE_REFE=0.33749000000000001,

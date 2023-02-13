@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -47,7 +47,7 @@ TEST_RESU(
         NUME_ORDRE=1,
         NOM_CHAM="SIEF_ELGA",
         NOM_CMP="SIYY",
-        MAILLE="M636",
+        GROUP_MA="M636",
         POINT=22,
         VALE_CALC=18608143.656,
     )
@@ -59,7 +59,7 @@ TEST_RESU(
         NUME_ORDRE=1,
         NOM_CHAM="SIEF_ELGA",
         NOM_CMP="SIYY",
-        MAILLE="M636",
+        GROUP_MA="M636",
         POINT=22,
         VALE_CALC=18608143.6559,
     )
@@ -73,7 +73,7 @@ TEST_RESU(
         NUME_ORDRE=1,
         NOM_CHAM="SIEF_ELGA",
         NOM_CMP="SIYY",
-        MAILLE="M646",
+        GROUP_MA="M646",
         POINT=3,
         VALE_CALC=1168549.6209260903,
     )
@@ -85,7 +85,7 @@ TEST_RESU(
         NUME_ORDRE=1,
         NOM_CHAM="SIEF_ELGA",
         NOM_CMP="SIYY",
-        MAILLE="M646",
+        GROUP_MA="M646",
         POINT=3,
         VALE_CALC=1168549.6209311497,
     )

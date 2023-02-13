@@ -44,18 +44,14 @@ AFFE_CHAR_ACOU = OPER(
     VITE_FACE=FACT(
         statut="f",
         max="**",
-        regles=(
-            UN_PARMI("VNOR", "DIRECTION"),
-        ),
+        regles=(UN_PARMI("VNOR", "DIRECTION"),),
         GROUP_MA=SIMP(statut="o", typ=grma, validators=NoRepeat(), max="**"),
         VNOR=SIMP(statut="o", typ="C"),
     ),
     IMPE_FACE=FACT(
         statut="f",
         max="**",
-        regles=(
-            UN_PARMI("TOUT", "GROUP_MA"),
-        ),
+        regles=(UN_PARMI("TOUT", "GROUP_MA"),),
         TOUT=SIMP(statut="f", typ="TXM", into=("OUI",)),
         GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
         IMPE=SIMP(statut="o", typ="C"),
@@ -63,7 +59,7 @@ AFFE_CHAR_ACOU = OPER(
     LIAISON_UNIF=FACT(
         statut="f",
         max="**",
-        regles=(UN_PARMI("GROUP_NO", "GROUP_MA",),),
+        regles=(UN_PARMI("GROUP_NO", "GROUP_MA"),),
         GROUP_NO=SIMP(statut="f", typ=grno, validators=NoRepeat(), max="**"),
         GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
         DDL=SIMP(statut="o", typ="TXM", max="**"),

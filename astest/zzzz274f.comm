@@ -1,5 +1,5 @@
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -116,9 +116,9 @@ stnl01 = CALC_CHAMP(reuse=stnl01, RESULTAT=stnl01, FORCE=("REAC_NODA"))
 SiefGlob = KK_T_N @ DeplGlob
 # Les axes pour les efforts internes
 Fint = {
-    "GMP1": [("N", 1, "DX", "P1"), ("VY", 2, "DY", "P1"), ("VZ", 3, "DZ", "P1")],
-    "GMP2": [("N", 2, "DY", "P2"), ("VY", -1, "DX", "P2"), ("VZ", 3, "DZ", "P2")],
-    "GMP3": [("N", 3, "DZ", "P3"), ("VY", 2, "DY", "P3"), ("VZ", -1, "DX", "P3")],
+    "GMP1": [("N", 1, "DX", "GNP1"), ("VY", 2, "DY", "GNP1"), ("VZ", 3, "DZ", "GNP1")],
+    "GMP2": [("N", 2, "DY", "GNP2"), ("VY", -1, "DX", "GNP2"), ("VZ", 3, "DZ", "GNP2")],
+    "GMP3": [("N", 3, "DZ", "GNP3"), ("VY", 2, "DY", "GNP3"), ("VZ", -1, "DX", "GNP3")],
 }
 
 # Les FORCES INTERNES & les REAC_NODA
@@ -153,7 +153,7 @@ for gma, force in Fint.items():
                 INST=1.0,
                 NOM_CHAM="REAC_NODA",
                 NOM_CMP=compoR,
-                NOEUD=noeud,
+                GROUP_NO=noeud,
                 REFERENCE="ANALYTIQUE",
                 VALE_CALC=R1,
                 VALE_REFE=R1,
@@ -278,18 +278,18 @@ TEST_RESU(**mtclfs)
 # Les REAC_NODA
 Sief04 = PGL.T @ Sief04
 Reaction = [
-    (Sief01, 1, "DX", "P1"),
-    (Sief01, 2, "DY", "P1"),
-    (Sief01, 3, "DZ", "P1"),
-    (Sief02, -2, "DX", "P2"),
-    (Sief02, 1, "DY", "P2"),
-    (Sief02, 3, "DZ", "P2"),
-    (Sief03, -3, "DX", "P3"),
-    (Sief03, 2, "DY", "P3"),
-    (Sief03, 1, "DZ", "P3"),
-    (Sief04, 1, "DX", "P4"),
-    (Sief04, 2, "DY", "P4"),
-    (Sief04, 3, "DZ", "P4"),
+    (Sief01, 1, "DX", "GNP1"),
+    (Sief01, 2, "DY", "GNP1"),
+    (Sief01, 3, "DZ", "GNP1"),
+    (Sief02, -2, "DX", "GNP2"),
+    (Sief02, 1, "DY", "GNP2"),
+    (Sief02, 3, "DZ", "GNP2"),
+    (Sief03, -3, "DX", "GNP3"),
+    (Sief03, 2, "DY", "GNP3"),
+    (Sief03, 1, "DZ", "GNP3"),
+    (Sief04, 1, "DX", "GNP4"),
+    (Sief04, 2, "DY", "GNP4"),
+    (Sief04, 3, "DZ", "GNP4"),
 ]
 
 mtclfs = {"RESU": []}
@@ -304,7 +304,7 @@ for sief, indx, compo, noeud in Reaction:
             INST=1.0,
             NOM_CHAM="REAC_NODA",
             NOM_CMP=compo,
-            NOEUD=noeud,
+            GROUP_NO=noeud,
             REFERENCE="ANALYTIQUE",
             VALE_CALC=R1,
             VALE_REFE=R1,

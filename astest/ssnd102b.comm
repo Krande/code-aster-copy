@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -294,7 +294,6 @@ LesDiscrets = {}
 LesDiscrets["DL_T"] = {}
 LesDiscrets["DL_T"]["NOEUD"] = "N2"
 LesDiscrets["DL_T"]["COMPO"] = [("N", "DX"), ("VY", "DY")]
-LesDiscrets["DL_T"]["MAILLE"] = "M1"
 LesDiscrets["DL_T"]["ENERG"] = [9.08390, 35.56339]
 LesDiscrets["DL_T"]["N"] = R1000
 LesDiscrets["DL_T"]["VY"] = R1500
@@ -302,7 +301,6 @@ LesDiscrets["DL_T"]["VY"] = R1500
 LesDiscrets["DL_TR"] = {}
 LesDiscrets["DL_TR"]["NOEUD"] = "N3"
 LesDiscrets["DL_TR"]["COMPO"] = [("N", "DX"), ("VY", "DY"), ("MFZ", "DRZ")]
-LesDiscrets["DL_TR"]["MAILLE"] = "M2"
 LesDiscrets["DL_TR"]["ENERG"] = [9.08390, 35.56339, 61.54945]
 LesDiscrets["DL_TR"]["N"] = R1000
 LesDiscrets["DL_TR"]["VY"] = R1500
@@ -311,7 +309,6 @@ LesDiscrets["DL_TR"]["MFZ"] = R2500
 LesDiscrets["DN_T"] = {}
 LesDiscrets["DN_T"]["NOEUD"] = "N4"
 LesDiscrets["DN_T"]["COMPO"] = [("N", "DX"), ("VY", "DY")]
-LesDiscrets["DN_T"]["MAILLE"] = "M3"
 LesDiscrets["DN_T"]["ENERG"] = [9.08390, 35.56339]
 LesDiscrets["DN_T"]["N"] = R1000
 LesDiscrets["DN_T"]["VY"] = R1500
@@ -319,7 +316,6 @@ LesDiscrets["DN_T"]["VY"] = R1500
 LesDiscrets["DN_TR"] = {}
 LesDiscrets["DN_TR"]["NOEUD"] = "N5"
 LesDiscrets["DN_TR"]["COMPO"] = [("N", "DX"), ("VY", "DY"), ("MFZ", "DRZ")]
-LesDiscrets["DN_TR"]["MAILLE"] = "M4"
 LesDiscrets["DN_TR"]["ENERG"] = [9.08390, 35.56339, 61.54945]
 LesDiscrets["DN_TR"]["N"] = R1000
 LesDiscrets["DN_TR"]["VY"] = R1500
@@ -374,7 +370,6 @@ for LeDiscret in ListeDiscrets:
         ii += 1
     # TESTS DES RESULTATS : energie
     if "ENERG" in list(LesDiscrets[LeDiscret].keys()):
-        LaMaille = LesDiscrets[LeDiscret]["MAILLE"]
         Energie = LesDiscrets[LeDiscret]["ENERG"]
         motclefs = {}
         motclefs["RESU"] = []
@@ -387,7 +382,7 @@ for LeDiscret in ListeDiscrets:
                     INST=TempsMaxi,
                     NOM_CHAM="VARI_ELGA",
                     CRITERE=("RELATIF", "ABSOLU"),
-                    MAILLE=LaMaille,
+                    GROUP_MA=LeDiscret,
                     POINT=1,
                     NOM_CMP=vari,
                     VALE_CALC=vale,
@@ -493,18 +488,18 @@ IMPR_RESU(UNITE=6, FORMAT="RESULTAT", RESU=_F(CHAM_GD=PROJ_E))
 
 TEST_RESU(
     CHAM_NO=(
-        _F(NOEUD="N4", CHAM_GD=DEPL, NOM_CMP="DX", VALE_CALC=1.47058823529412e-03),
-        _F(NOEUD="N4", CHAM_GD=DEPL, NOM_CMP="DY", VALE_CALC=3.75000000000000e-03),
-        _F(NOEUD="N5", CHAM_GD=DEPL, NOM_CMP="DX", VALE_CALC=1.47058823529412e-03),
-        _F(NOEUD="N5", CHAM_GD=DEPL, NOM_CMP="DY", VALE_CALC=3.75000000000000e-03),
-        _F(NOEUD="N5", CHAM_GD=DEPL, NOM_CMP="DRZ", VALE_CALC=3.90625000000000e-03),
+        _F(GROUP_NO="PT4", CHAM_GD=DEPL, NOM_CMP="DX", VALE_CALC=1.47058823529412e-03),
+        _F(GROUP_NO="PT4", CHAM_GD=DEPL, NOM_CMP="DY", VALE_CALC=3.75000000000000e-03),
+        _F(GROUP_NO="PT5", CHAM_GD=DEPL, NOM_CMP="DX", VALE_CALC=1.47058823529412e-03),
+        _F(GROUP_NO="PT5", CHAM_GD=DEPL, NOM_CMP="DY", VALE_CALC=3.75000000000000e-03),
+        _F(GROUP_NO="PT5", CHAM_GD=DEPL, NOM_CMP="DRZ", VALE_CALC=3.90625000000000e-03),
     )
 )
 
 TEST_RESU(
     CHAM_NO=(
         _F(
-            NOEUD="N4",
+            GROUP_NO="PT4",
             CHAM_GD=PROJ_D,
             NOM_CMP="DX",
             VALE_CALC=1.47058823529412e-03,
@@ -512,7 +507,7 @@ TEST_RESU(
             REFERENCE="ANALYTIQUE",
         ),
         _F(
-            NOEUD="N4",
+            GROUP_NO="PT4",
             CHAM_GD=PROJ_D,
             NOM_CMP="DY",
             VALE_CALC=3.75000000000000e-03,
@@ -520,7 +515,7 @@ TEST_RESU(
             REFERENCE="ANALYTIQUE",
         ),
         _F(
-            NOEUD="N5",
+            GROUP_NO="PT5",
             CHAM_GD=PROJ_D,
             NOM_CMP="DX",
             VALE_CALC=1.47058823529412e-03,
@@ -528,7 +523,7 @@ TEST_RESU(
             REFERENCE="ANALYTIQUE",
         ),
         _F(
-            NOEUD="N5",
+            GROUP_NO="PT5",
             CHAM_GD=PROJ_D,
             NOM_CMP="DY",
             VALE_CALC=3.75000000000000e-03,
@@ -536,7 +531,7 @@ TEST_RESU(
             REFERENCE="ANALYTIQUE",
         ),
         _F(
-            NOEUD="N5",
+            GROUP_NO="PT5",
             CHAM_GD=PROJ_D,
             NOM_CMP="DRZ",
             VALE_CALC=3.90625000000000e-03,

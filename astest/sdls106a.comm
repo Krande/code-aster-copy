@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -35,6 +35,8 @@ DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
 #
 
 MAILLA = LIRE_MAILLAGE(FORMAT="IDEAS", UNITE=19)
+DEFI_GROUP(MAILLAGE=MAILLA, CREA_GROUP_NO=(_F(NOM="N22", NOEUD=("N22")),))
+
 
 MODELE = AFFE_MODELE(
     MAILLAGE=MAILLA, AFFE=_F(GROUP_MA="CALCUL", PHENOMENE="MECANIQUE", MODELISATION="DKT")
@@ -268,6 +270,15 @@ SQUEL = DEFI_SQUELETTE(
     SOUS_STRUC=(_F(NOM="CARRE1", GROUP_MA="CALCUL"), _F(NOM="CARRE2", GROUP_MA="CALCUL")),
 )
 
+DEFI_GROUP(
+    MAILLAGE=SQUEL,
+    CREA_GROUP_NO=(
+        _F(NOM="NO1", NOEUD=("NO1")),
+        _F(NOM="NO2", NOEUD=("NO2")),
+        _F(NOM="NO3", NOEUD=("NO3")),
+    ),
+)
+
 #
 #   RESTITUTION SUR MAILLAGE SQUELETTE
 #
@@ -292,6 +303,10 @@ SQUELBIS = DEFI_SQUELETTE(
     MODELE_GENE=MODEGE, SQUELETTE=SQUEL, RECO_GLOBAL=_F(TOUT="OUI", DIST_REFE=0.1)
 )
 
+DEFI_GROUP(MAILLAGE=SQUEL, CREA_GROUP_NO=(_F(NOM="NO1292", NOEUD=("NO1292")),))
+
+DEFI_GROUP(MAILLAGE=SQUELBIS, CREA_GROUP_NO=(_F(NOM="NO1292", NOEUD=("NO1292")),))
+
 #
 #
 MODGLBIS = REST_SOUS_STRUC(SQUELETTE=SQUELBIS, RESULTAT=MODGLO, TOUT_ORDRE="OUI", TOUT_CHAM="OUI")
@@ -313,7 +328,7 @@ TEST_RESU(
             NUME_MODE=1,
             RESULTAT=MODGLO,
             NOM_CHAM="DEPL",
-            NOEUD="NO1",
+            GROUP_NO="NO1",
             NOM_CMP="DZ",
             VALE_CALC=0.86602959150341,
             CRITERE="RELATIF",
@@ -322,7 +337,7 @@ TEST_RESU(
             NUME_MODE=1,
             RESULTAT=MODGLBIS,
             NOM_CHAM="DEPL",
-            NOEUD="NO1072",
+            GROUP_NO="NO1",
             NOM_CMP="DZ",
             VALE_CALC=0.86602959150341,
             CRITERE="RELATIF",
@@ -336,7 +351,7 @@ TEST_RESU(
             NUME_MODE=3,
             RESULTAT=MODGLO,
             NOM_CHAM="DEPL",
-            NOEUD="NO2",
+            GROUP_NO="NO2",
             NOM_CMP="DZ",
             VALE_CALC=0.74720793064283,
             CRITERE="RELATIF",
@@ -345,7 +360,7 @@ TEST_RESU(
             NUME_MODE=3,
             RESULTAT=MODGLBIS,
             NOM_CHAM="DEPL",
-            NOEUD="NO1073",
+            GROUP_NO="NO2",
             NOM_CMP="DZ",
             VALE_CALC=0.74720793064283,
             CRITERE="RELATIF",
@@ -359,7 +374,7 @@ TEST_RESU(
             NUME_MODE=4,
             RESULTAT=MODGLO,
             NOM_CHAM="DEPL",
-            NOEUD="NO3",
+            GROUP_NO="NO3",
             NOM_CMP="DZ",
             VALE_CALC=-0.95107179047988,
             CRITERE="RELATIF",
@@ -368,7 +383,7 @@ TEST_RESU(
             NUME_MODE=4,
             RESULTAT=MODGLBIS,
             NOM_CHAM="DEPL",
-            NOEUD="NO1074",
+            GROUP_NO="NO3",
             NOM_CMP="DZ",
             VALE_CALC=-0.95107179047988,
             CRITERE="RELATIF",
@@ -377,7 +392,7 @@ TEST_RESU(
             NUME_MODE=4,
             RESULTAT=MODGLO,
             NOM_CHAM="DEPL",
-            NOEUD="NO1292",
+            GROUP_NO="NO1292",
             NOM_CMP="DZ",
             VALE_CALC=-0.78273296953165,
             CRITERE="RELATIF",
@@ -386,7 +401,7 @@ TEST_RESU(
             NUME_MODE=4,
             RESULTAT=MODGLBIS,
             NOM_CHAM="DEPL",
-            NOEUD="NO1292",
+            GROUP_NO="NO1292",
             NOM_CMP="DZ",
             VALE_CALC=-0.78273296953165,
             CRITERE="RELATIF",
@@ -675,7 +690,7 @@ TEST_RESU(
             NUME_MODE=99,
             RESULTAT=BAMO1_DM,
             NOM_CHAM="DEPL",
-            NOEUD="N22",
+            GROUP_NO="N22",
             NOM_CMP="DZ",
             VALE_CALC=1.1640440451176,
             CRITERE="RELATIF",
@@ -684,7 +699,7 @@ TEST_RESU(
             NUME_MODE=99,
             RESULTAT=BAMO2_DM,
             NOM_CHAM="DEPL",
-            NOEUD="N22",
+            GROUP_NO="N22",
             NOM_CMP="DZ",
             VALE_CALC=-2.4977605189562002e-4,
             CRITERE="RELATIF",

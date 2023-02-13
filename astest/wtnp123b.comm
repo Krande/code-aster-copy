@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -182,7 +182,12 @@ MAIL = DEFI_GROUP(
         _F(NOM="GAUCHE", UNION=("GM19", "GM18")),
         _F(NOM="SORT", UNION=("GM26", "GM27")),
     ),
-    CREA_GROUP_NO=(_F(GROUP_MA="BAS"),),
+    CREA_GROUP_NO=(
+        _F(GROUP_MA="BAS"),
+        _F(NOM="N6", NOEUD="N6"),
+        _F(NOM="N292", NOEUD="N292"),
+        _F(NOM="N577", NOEUD="N577"),
+    ),
 )
 
 # ======================================
@@ -394,7 +399,7 @@ TEST_RESU(
         INST=UNMOIS,
         NOM_CHAM="DEPL",
         NOM_CMP="PRE1",
-        NOEUD="N6",
+        GROUP_NO="N6",
         VALE_REFE=-9.5979e05,
         VALE_CALC=-9.59792525e05,
         CRITERE="RELATIF",
@@ -409,7 +414,7 @@ TEST_RESU(
         INST=UNMOIS,
         NOM_CHAM="DEPL",
         NOM_CMP="PRE2",
-        NOEUD="N6",
+        GROUP_NO="N6",
         VALE_CALC=4.02069e04,
         VALE_REFE=4.0207e04,
         CRITERE="RELATIF",
@@ -424,7 +429,7 @@ TEST_RESU(
         INST=UNMOIS,
         NOM_CHAM="DEPL",
         NOM_CMP="PRE1",
-        NOEUD="N292",
+        GROUP_NO="N292",
         VALE_REFE=-1.0e06,
         VALE_CALC=-9.99999e05,
         CRITERE="RELATIF",
@@ -439,7 +444,7 @@ TEST_RESU(
         INST=UNMOIS,
         NOM_CHAM="DEPL",
         NOM_CMP="PRE2",
-        NOEUD="N292",
+        GROUP_NO="N292",
         VALE_REFE=0.0,
         VALE_CALC=1.42195e-13,
         CRITERE="ABSOLU",
@@ -454,7 +459,7 @@ TEST_RESU(
         INST=UNMOIS,
         NOM_CHAM="DEPL",
         NOM_CMP="PRE1",
-        NOEUD="N577",
+        GROUP_NO="N577",
         VALE_CALC=-9.99999e05,
         VALE_REFE=-1.0e06,
         CRITERE="RELATIF",
@@ -469,7 +474,7 @@ TEST_RESU(
         INST=UNMOIS,
         NOM_CHAM="DEPL",
         NOM_CMP="PRE2",
-        NOEUD="N577",
+        GROUP_NO="N577",
         VALE_REFE=0.0,
         VALE_CALC=6.93178e-15,
         CRITERE="ABSOLU",
