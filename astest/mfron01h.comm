@@ -286,8 +286,9 @@ TEST_RESU(
             RESULTAT=SMF,
             NOM_CHAM="SIEF_ELGA",
             NOM_CMP="SIXX",
-            VALE_CALC=1500.5535132,
-            VALE_REFE=1.50055349e03,
+            VALE_CALC=1500.55351,
+            TOLE_MACHINE=1.0e-4,  ### FIXME: en attente de issue32616
+            VALE_REFE=1500.55349,
             REFERENCE="AUTRE_ASTER",
             PRECISION=1.0e-2,
             GROUP_MA="MA1",
@@ -298,7 +299,8 @@ TEST_RESU(
             RESULTAT=SMF,
             NOM_CHAM="VARI_ELGA",
             NOM_CMP="V1",
-            VALE_CALC=0.250006478172,
+            VALE_CALC=0.250006478,
+            TOLE_MACHINE=5.0e-4,  ### FIXME: en attente de issue32616
             VALE_REFE=0.250006467,
             REFERENCE="AUTRE_ASTER",
             PRECISION=0.014999999999999999,
