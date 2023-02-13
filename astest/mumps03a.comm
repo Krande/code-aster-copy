@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -22,6 +22,7 @@
 # MODULANT:
 #     - POUR LA PRISE EN COMPTE DES DIRICHLETS (AFFE_CHAR_CINE OU PAS)
 #     - LES RENUMEROTEURS UTILISES (METIS, SCOTCH, PORD, AMD, AMF, QAMD).
+#     - ON TESTE AUSSI LA PRESENCE SIMULTANNEE DE NMXINS=10 OCCURENCES MUMPS
 #
 # PARALLELE: VALEUR CONSEILLEE 2 PROCS
 #   RQ. 3 ALARMES NORMALES SI COMPILE AVEC MUMPS5.0.2, 2 AVEC MUMPS5.1.0
@@ -48,8 +49,8 @@ CHDUAL = AFFE_CHAR_ACOU(MODELE=GUIDE, PRES_IMPO=_F(GROUP_NO="NO500", PRES=1.0 + 
 CHCINE = AFFE_CHAR_CINE(MODELE=GUIDE, ACOU_IMPO=_F(GROUP_NO="NO500", PRES=1.0 + 3.0j))
 
 
-# 1ER CALCUL (REFERENCE) AVEC MULT_FRONT SANS CHAR_CINE :
-# --------------------------------------------------------
+# 1ER CALCUL (REFERENCE) AVEC MULT_FRONT SANS CHAR_CINE
+# -----------------------------------------------------
 MEL1 = CALC_MATR_ELEM(
     CHARGE=(IMPEACOU, CHDUAL), INST=0.0, OPTION="RIGI_ACOU", MODELE=GUIDE, CHAM_MATER=CHAMPMAT
 )
@@ -73,7 +74,7 @@ TEST_RESU(
     )
 )
 
-# 1ER BIS CALCUL AVEC MUMPS SANS CHAR_CINE ET AVEC ASSEMBLAGE:
+# 1ER CALCUL AVEC MUMPS: SANS CHAR_CINE ET AVEC ASSEMBLAGE
 # --------------------------------------------------------
 ASSEMBLAGE(
     MODELE=GUIDE,
@@ -104,8 +105,8 @@ TEST_RESU(
     )
 )
 
-# 2EME CALCUL AVEC MULT_FRONT AVEC CHAR_CINE :
-# --------------------------------------------------------
+# 2EME CALCUL AVEC MULT_FRONT AVEC CHAR_CINE
+# ------------------------------------------
 MEL2 = CALC_MATR_ELEM(
     CHARGE=(IMPEACOU), INST=0.0, OPTION="RIGI_ACOU", MODELE=GUIDE, CHAM_MATER=CHAMPMAT
 )
@@ -131,8 +132,8 @@ TEST_RESU(
     )
 )
 
-# 3EME CALCUL AVEC MUMPS AVEC CHAR_CINE + AMD:
-# --------------------------------------------------------
+# 2EME CALCUL AVEC MUMPS AVEC CHAR_CINE + AMD
+# -------------------------------------------
 MEL3 = CALC_MATR_ELEM(
     CHARGE=(IMPEACOU), INST=0.0, OPTION="RIGI_ACOU", MODELE=GUIDE, CHAM_MATER=CHAMPMAT
 )
@@ -170,13 +171,12 @@ TEST_RESU(
     )
 )
 
-del MATAS34
 del VCIN34
 del VECTEL34
 del VECTAS34
 
-# 3EME CALCUL AVEC MUMPS AVEC CHAR_CINE + AMF:
-# --------------------------------------------------------
+# 3EME CALCUL AVEC MUMPS AVEC CHAR_CINE + AMF
+# -------------------------------------------
 MATAS32 = ASSE_MATRICE(NUME_DDL=NUM3, MATR_ELEM=MEL3, CHAR_CINE=CHCINE)
 VCIN32 = CALC_CHAR_CINE(NUME_DDL=NUM3, CHAR_CINE=CHCINE)
 VECTEL32 = CALC_VECT_ELEM(OPTION="CHAR_ACOU", CHAM_MATER=CHAMPMAT, CHARGE=(CHARACOU, IMPEACOU))
@@ -194,13 +194,12 @@ TEST_RESU(
     )
 )
 
-del MATAS32
 del VCIN32
 del VECTEL32
 del VECTAS32
 
-# 3EME CALCUL AVEC MUMPS AVEC CHAR_CINE + SCOTCH:
-# --------------------------------------------------------
+# 4EME CALCUL AVEC MUMPS AVEC CHAR_CINE + SCOTCH
+# ----------------------------------------------
 MATAS33 = ASSE_MATRICE(NUME_DDL=NUM3, MATR_ELEM=MEL3, CHAR_CINE=CHCINE)
 VCIN33 = CALC_CHAR_CINE(NUME_DDL=NUM3, CHAR_CINE=CHCINE)
 VECTEL33 = CALC_VECT_ELEM(OPTION="CHAR_ACOU", CHAM_MATER=CHAMPMAT, CHARGE=(CHARACOU, IMPEACOU))
@@ -218,13 +217,12 @@ TEST_RESU(
     )
 )
 
-del MATAS33
 del VCIN33
 del VECTEL33
 del VECTAS33
 
-# 3EME CALCUL AVEC MUMPS AVEC CHAR_CINE + PORD:
-# --------------------------------------------------------
+# 5EME CALCUL AVEC MUMPS AVEC CHAR_CINE + PORD
+# --------------------------------------------
 MATAS34 = ASSE_MATRICE(NUME_DDL=NUM3, MATR_ELEM=MEL3, CHAR_CINE=CHCINE)
 VCIN34 = CALC_CHAR_CINE(NUME_DDL=NUM3, CHAR_CINE=CHCINE)
 VECTEL34 = CALC_VECT_ELEM(OPTION="CHAR_ACOU", CHAM_MATER=CHAMPMAT, CHARGE=(CHARACOU, IMPEACOU))
@@ -242,9 +240,70 @@ TEST_RESU(
     )
 )
 
-del MATAS34
 del VCIN34
 del VECTEL34
 del VECTAS34
 
+# 6EME CALCUL AVEC MUMPS AVEC CHAR_CINE + QAMD
+# --------------------------------------------
+MATAS35 = ASSE_MATRICE(NUME_DDL=NUM3, MATR_ELEM=MEL3, CHAR_CINE=CHCINE)
+VCIN35 = CALC_CHAR_CINE(NUME_DDL=NUM3, CHAR_CINE=CHCINE)
+VECTEL35 = CALC_VECT_ELEM(OPTION="CHAR_ACOU", CHAM_MATER=CHAMPMAT, CHARGE=(CHARACOU, IMPEACOU))
+VECTAS35 = ASSE_VECTEUR(VECT_ELEM=VECTEL35, NUME_DDL=NUM3)
+FACTORISER(reuse=MATAS35, MATR_ASSE=MATAS35, METHODE="MUMPS", RENUM="QAMD")
+VECTAS35 = RESOUDRE(reuse=VECTAS35, MATR=MATAS35, CHAM_NO=VECTAS35, CHAM_CINE=VCIN35)
+TEST_RESU(
+    CHAM_NO=_F(
+        GROUP_NO="NO1",
+        VALE_CALC_C=1.886953497 + 4.437969369j,
+        VALE_REFE_C=(1.8869534967818999 + 4.4379693694298998j),
+        REFERENCE="AUTRE_ASTER",
+        NOM_CMP="PRES",
+        CHAM_GD=VECTAS35,
+    )
+)
+
+del VCIN35
+del VECTEL35
+del VECTAS35
+
+# nombre maximum d'occurences MUMPS simultanées (moins les 6 deja presentes)
+# on ne met pas la valeur 50 mais 10 pour limiter la durée du cas-test
+# nxmins = 50
+nxmins = 10
+nxmins2 = nxmins - 6
+MATAS = [None] * nxmins2
+VCIN = [None] * nxmins2
+VECTEL = [None] * nxmins2
+VECTAS = [None] * nxmins2
+for num_calc in range(0, nxmins2):
+    MATAS[num_calc] = ASSE_MATRICE(NUME_DDL=NUM3, MATR_ELEM=MEL3, CHAR_CINE=CHCINE)
+    VCIN[num_calc] = CALC_CHAR_CINE(NUME_DDL=NUM3, CHAR_CINE=CHCINE)
+    VECTEL[num_calc] = CALC_VECT_ELEM(
+        OPTION="CHAR_ACOU", CHAM_MATER=CHAMPMAT, CHARGE=(CHARACOU, IMPEACOU)
+    )
+    VECTAS[num_calc] = ASSE_VECTEUR(VECT_ELEM=VECTEL[num_calc], NUME_DDL=NUM3)
+    FACTORISER(reuse=MATAS[num_calc], MATR_ASSE=MATAS[num_calc], METHODE="MUMPS")
+    VECTAS[num_calc] = RESOUDRE(
+        reuse=VECTAS[num_calc],
+        MATR=MATAS[num_calc],
+        CHAM_NO=VECTAS[num_calc],
+        CHAM_CINE=VCIN[num_calc],
+    )
+    TEST_RESU(
+        CHAM_NO=_F(
+            GROUP_NO="NO1",
+            VALE_CALC_C=1.886953497 + 4.437969369j,
+            VALE_REFE_C=(1.8869534967818999 + 4.4379693694298998j),
+            REFERENCE="AUTRE_ASTER",
+            NOM_CMP="PRES",
+            CHAM_GD=VECTAS[num_calc],
+        )
+    )
+    #  del VCIN[num_calc]
+    #  del VECTEL[num_calc]
+    #  del VECTAS[num_calc]
+    print("********************************")
+    print("OCCURENCE MUMPS n° ", num_calc + 7)
+    print("********************************")
 FIN()
