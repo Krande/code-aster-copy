@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -69,11 +69,10 @@ CREA_MAILLAGE = OPER(
         statut="f",
         max="**",
         fr=tr("Création de mailles de type POI1 à partir de noeuds"),
-        regles=(AU_MOINS_UN("TOUT", "GROUP_MA", "MAILLE", "GROUP_NO", "NOEUD"),),
+        regles=(AU_MOINS_UN("TOUT", "GROUP_MA", "GROUP_NO", "NOEUD"),),
         NOM_GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
         TOUT=SIMP(statut="f", typ="TXM", into=("OUI",)),
         GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
-        MAILLE=SIMP(statut="c", typ=ma, validators=NoRepeat(), max="**"),
         GROUP_NO=SIMP(statut="f", typ=grno, validators=NoRepeat(), max="**"),
         NOEUD=SIMP(statut="c", typ=no, validators=NoRepeat(), max="**"),
     ),
@@ -81,10 +80,9 @@ CREA_MAILLAGE = OPER(
         statut="f",
         max="**",
         fr=tr("Duplication de mailles"),
-        regles=(AU_MOINS_UN("TOUT", "MAILLE", "GROUP_MA"),),
+        regles=(AU_MOINS_UN("TOUT", "GROUP_MA"),),
         NOM=SIMP(statut="o", typ="TXM"),
         TOUT=SIMP(statut="f", typ="TXM", into=("OUI",)),
-        MAILLE=SIMP(statut="c", typ=ma, validators=NoRepeat(), max="**"),
         GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
         PREF_MAILLE=SIMP(statut="f", typ="TXM", defaut="MS"),
         PREF_NUME=SIMP(statut="f", typ="I"),
@@ -93,9 +91,7 @@ CREA_MAILLAGE = OPER(
         statut="f",
         fr=tr("Restreindre un maillage à des groupes de mailles"),
         max=1,
-        regles=(AU_MOINS_UN("GROUP_MA", "MAILLE"),),
-        GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
-        MAILLE=SIMP(statut="c", typ=ma, validators=NoRepeat(), max="**"),
+        GROUP_MA=SIMP(statut="o", typ=grma, validators=NoRepeat(), max="**"),
         TOUT_GROUP_MA=SIMP(statut="f", typ="TXM", defaut="NON", into=("OUI", "NON")),
         GROUP_NO=SIMP(statut="f", typ=grno, validators=NoRepeat(), max="**"),
         TOUT_GROUP_NO=SIMP(statut="f", typ="TXM", defaut="NON", into=("OUI", "NON")),
@@ -160,9 +156,8 @@ CREA_MAILLAGE = OPER(
     LINE_QUAD=FACT(
         statut="f",
         fr=tr("Passage linéaire -> quadratique"),
-        regles=(AU_MOINS_UN("TOUT", "MAILLE", "GROUP_MA"),),
+        regles=(AU_MOINS_UN("TOUT", "GROUP_MA"),),
         TOUT=SIMP(statut="f", typ="TXM", into=("OUI",)),
-        MAILLE=SIMP(statut="c", typ=ma, validators=NoRepeat(), max="**"),
         GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
         PREF_NOEUD=SIMP(statut="f", typ="TXM", defaut="NS"),
         PREF_NUME=SIMP(statut="f", typ="I", defaut=1),
@@ -170,9 +165,8 @@ CREA_MAILLAGE = OPER(
     HEXA20_27=FACT(
         statut="f",
         fr=tr("Passage HEXA20 -> HEXA27"),
-        regles=(AU_MOINS_UN("TOUT", "MAILLE", "GROUP_MA"),),
+        regles=(AU_MOINS_UN("TOUT", "GROUP_MA"),),
         TOUT=SIMP(statut="f", typ="TXM", into=("OUI",)),
-        MAILLE=SIMP(statut="c", typ=ma, validators=NoRepeat(), max="**"),
         GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
         PREF_NOEUD=SIMP(statut="f", typ="TXM", defaut="NS"),
         PREF_NUME=SIMP(statut="f", typ="I", defaut=1),
@@ -180,9 +174,8 @@ CREA_MAILLAGE = OPER(
     PENTA15_18=FACT(
         statut="f",
         fr=tr("Passage PENTA15 -> PENTA18"),
-        regles=(AU_MOINS_UN("TOUT", "MAILLE", "GROUP_MA"),),
+        regles=(AU_MOINS_UN("TOUT", "GROUP_MA"),),
         TOUT=SIMP(statut="f", typ="TXM", into=("OUI",)),
-        MAILLE=SIMP(statut="c", typ=ma, validators=NoRepeat(), max="**"),
         GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
         PREF_NOEUD=SIMP(statut="f", typ="TXM", defaut="NS"),
         PREF_NUME=SIMP(statut="f", typ="I", defaut=1),
@@ -205,9 +198,8 @@ CREA_MAILLAGE = OPER(
     QUAD_LINE=FACT(
         statut="f",
         fr=tr("Passage quadratique -> linéaire"),
-        regles=(AU_MOINS_UN("TOUT", "MAILLE", "GROUP_MA"),),
+        regles=(AU_MOINS_UN("TOUT", "GROUP_MA"),),
         TOUT=SIMP(statut="f", typ="TXM", into=("OUI",)),
-        MAILLE=SIMP(statut="c", typ=ma, validators=NoRepeat(), max="**"),
         GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
     ),
     REPERE=FACT(
@@ -249,7 +241,6 @@ CREA_MAILLAGE = OPER(
         fr=tr("Eclatement des mailles en petites mailles contenant chacune un seul point de gauss"),
         MODELE=SIMP(statut="o", typ=modele_sdaster),
         TOUT=SIMP(statut="f", typ="TXM", into=("OUI",)),
-        MAILLE=SIMP(statut="c", typ=ma, validators=NoRepeat(), max="**"),
         GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
         SHRINK=SIMP(statut="f", typ="R", defaut=0.9, fr=tr("Facteur de réduction")),
         TAILLE_MIN=SIMP(statut="f", typ="R", defaut=0.0, fr=tr("Taille minimale d'un coté")),

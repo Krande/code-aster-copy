@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -215,7 +215,6 @@ DYNA_LINE = MACRO(
             b_mult_mono=BLOC(
                 condition="""equal_to("TYPE_APPUI", 'MONO')""",
                 regles=(
-                    PRESENT_ABSENT("NOEUD", "GROUP_NO"),
                     PRESENT_PRESENT("ACCE", "VITE", "DEPL"),
                     PRESENT_ABSENT("ACCE", "FONC_MULT"),
                 ),
@@ -224,18 +223,15 @@ DYNA_LINE = MACRO(
                 ACCE=SIMP(statut="f", typ=(fonction_sdaster, nappe_sdaster, formule)),
                 VITE=SIMP(statut="f", typ=(fonction_sdaster, nappe_sdaster, formule)),
                 DEPL=SIMP(statut="f", typ=(fonction_sdaster, nappe_sdaster, formule)),
-                NOEUD=SIMP(statut="c", typ=no, validators=NoRepeat(), max="**"),
                 GROUP_NO=SIMP(statut="f", typ=grno, validators=NoRepeat(), max="**"),
             ),
             b_mult_appui=BLOC(
                 condition="""equal_to("TYPE_APPUI", 'MULTI')""",
                 regles=(
-                    UN_PARMI("NOEUD", "GROUP_NO"),
                     PRESENT_PRESENT("ACCE", "VITE", "DEPL"),
                     PRESENT_ABSENT("ACCE", "FONC_MULT"),
                 ),
                 DIRECTION=SIMP(statut="o", typ="R", max=6),
-                NOEUD=SIMP(statut="c", typ=no, validators=NoRepeat(), max="**"),
                 GROUP_NO=SIMP(statut="f", typ=grno, validators=NoRepeat(), max="**"),
                 FONC_MULT=SIMP(statut="f", typ=(fonction_sdaster, nappe_sdaster, formule)),
                 ACCE=SIMP(statut="f", typ=(fonction_sdaster, nappe_sdaster, formule)),
@@ -263,17 +259,13 @@ DYNA_LINE = MACRO(
             ),
             b_mult_mono=BLOC(
                 condition="""equal_to("TYPE_APPUI", 'MONO')""",
-                regles=(PRESENT_ABSENT("NOEUD", "GROUP_NO")),
                 DIRECTION=SIMP(statut="o", typ="R", max=6),
-                NOEUD=SIMP(statut="c", typ=no, validators=NoRepeat(), max="**"),
                 GROUP_NO=SIMP(statut="f", typ=grno, validators=NoRepeat(), max="**"),
             ),
             b_mult_appui=BLOC(
                 condition="""equal_to("TYPE_APPUI", 'MULTI')""",
-                regles=(UN_PARMI("NOEUD", "GROUP_NO")),
                 DIRECTION=SIMP(statut="o", typ="R", max=6),
-                NOEUD=SIMP(statut="c", typ=no, validators=NoRepeat(), max="**"),
-                GROUP_NO=SIMP(statut="f", typ=grno, validators=NoRepeat(), max="**"),
+                GROUP_NO=SIMP(statut="o", typ=grno, validators=NoRepeat(), max="**"),
             ),
         ),
     ),  # end b_excit_line_harm
@@ -465,10 +457,8 @@ DYNA_LINE = MACRO(
             ),
             PRESSION_FLU_IMPO=FACT(
                 statut="o",
-                regles=(UN_PARMI("GROUP_NO", "NOEUD"),),
                 PRES_FLUIDE=SIMP(statut="o", typ="R"),
-                GROUP_NO=SIMP(statut="f", typ=grno, max="**"),
-                NOEUD=SIMP(statut="c", typ=no, max="**"),
+                GROUP_NO=SIMP(statut="o", typ=grno, max="**"),
             ),
         ),  # end b_ifs_harm
     ),  # end b_harm_gene
@@ -623,18 +613,15 @@ DYNA_LINE = MACRO(
             MODELISATION_FLU=SIMP(statut="o", typ="TXM", into=("3D", "COQUE")),
             RHO_FLUIDE=FACT(
                 statut="o",
-                regles=(UN_PARMI("TOUT", "GROUP_MA", "MAILLE"),),
+                regles=(UN_PARMI("TOUT", "GROUP_MA"),),
                 RHO=SIMP(statut="o", typ="R"),
                 TOUT=SIMP(statut="f", typ="TXM", into=("OUI",)),
                 GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
-                MAILLE=SIMP(statut="c", typ=ma, validators=NoRepeat(), max="**"),
             ),
             PRESSION_FLU_IMPO=FACT(
                 statut="o",
-                regles=(UN_PARMI("GROUP_NO", "NOEUD"),),
                 PRES_FLUIDE=SIMP(statut="o", typ="R"),
-                GROUP_NO=SIMP(statut="f", typ=grno, max="**"),
-                NOEUD=SIMP(statut="c", typ=no, max="**"),
+                GROUP_NO=SIMP(statut="o", typ=grno, max="**"),
             ),
         ),  # end b_ifs_tran
         b_comportement=BLOC(

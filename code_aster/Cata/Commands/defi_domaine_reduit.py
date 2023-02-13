@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -39,9 +39,7 @@ DEFI_DOMAINE_REDUIT = OPER(
         statut="f",
         max=1,
         GROUP_NO=SIMP(statut="f", typ=grno, validators=NoRepeat(), max="**"),
-        NOEUD=SIMP(statut="c", typ=no, validators=NoRepeat(), max="**"),
         GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
-        MAILLE=SIMP(statut="c", typ=ma, validators=NoRepeat(), max="**"),
     ),
     DOMAINE_MAXI=FACT(
         statut="f", max=1, GROUP_MA=SIMP(statut="o", typ=grma, validators=NoRepeat(), max="**")

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -85,10 +85,8 @@ CREA_CHAMP = OPER(
     #        ------------------------------------------------------------------
     b_norm=BLOC(
         condition="""equal_to("OPERATION", 'NORMALE')""",
-        regles=(AU_MOINS_UN("GROUP_MA", "MAILLE"),),
         MODELE=SIMP(statut="o", typ=(modele_sdaster)),
-        GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
-        MAILLE=SIMP(statut="c", typ=ma, validators=NoRepeat(), max="**"),
+        GROUP_MA=SIMP(statut="o", typ=grma, validators=NoRepeat(), max="**"),
     ),
     #        ------------------------------------------------------------------
     b_affe=BLOC(
@@ -100,12 +98,11 @@ CREA_CHAMP = OPER(
             statut="o",
             max="**",
             regles=(
-                AU_MOINS_UN("TOUT", "GROUP_MA", "MAILLE", "GROUP_NO", "NOEUD"),
+                AU_MOINS_UN("TOUT", "GROUP_MA", "GROUP_NO", "NOEUD"),
                 UN_PARMI("VALE", "VALE_I", "VALE_C", "VALE_F"),
             ),
             TOUT=SIMP(statut="f", typ="TXM", into=("OUI",)),
             GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
-            MAILLE=SIMP(statut="c", typ=ma, validators=NoRepeat(), max="**"),
             GROUP_NO=SIMP(statut="f", typ=grno, validators=NoRepeat(), max="**"),
             NOEUD=SIMP(statut="c", typ=no, validators=NoRepeat(), max="**"),
             NOM_CMP=SIMP(statut="o", typ="TXM", max="**"),
@@ -125,14 +122,12 @@ CREA_CHAMP = OPER(
             statut="o",
             max="**",
             regles=(
-                AU_MOINS_UN("TOUT", "GROUP_MA", "GROUP_NO", "MAILLE", "NOEUD"),
+                AU_MOINS_UN("TOUT", "GROUP_MA", "GROUP_NO"),
                 PRESENT_PRESENT("NOM_CMP_RESU", "NOM_CMP"),
             ),
             TOUT=SIMP(statut="f", typ="TXM", into=("OUI",)),
             GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
             GROUP_NO=SIMP(statut="f", typ=grno, validators=NoRepeat(), max="**"),
-            MAILLE=SIMP(statut="c", typ=ma, validators=NoRepeat(), max="**"),
-            NOEUD=SIMP(statut="c", typ=no, validators=NoRepeat(), max="**"),
             CHAM_GD=SIMP(statut="o", typ=cham_gd_sdaster),
             NOM_CMP=SIMP(statut="f", typ="TXM", max="**"),
             NOM_CMP_RESU=SIMP(statut="f", typ="TXM", max="**"),

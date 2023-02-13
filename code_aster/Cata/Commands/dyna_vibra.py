@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -418,9 +418,7 @@ DYNA_VIBRA = OPER(
             MULT_APPUI=SIMP(statut="f", typ="TXM", defaut="NON", into=("OUI", "NON")),
             b_mult_appui=BLOC(
                 condition="""equal_to("MULT_APPUI", 'OUI')""",
-                regles=(EXCLUS("NOEUD", "GROUP_NO"),),
                 DIRECTION=SIMP(statut="f", typ="R", max="**"),
-                NOEUD=SIMP(statut="c", typ=no, validators=NoRepeat(), max="**"),
                 GROUP_NO=SIMP(statut="f", typ=grno, validators=NoRepeat(), max="**"),
             ),
         ),
@@ -461,9 +459,7 @@ DYNA_VIBRA = OPER(
             MULT_APPUI=SIMP(statut="f", typ="TXM", into=("OUI",)),
             b_mult_appui=BLOC(
                 condition="""equal_to("MULT_APPUI", 'OUI')""",
-                regles=(EXCLUS("NOEUD", "GROUP_NO"),),
                 DIRECTION=SIMP(statut="f", typ="R", max="**"),
-                NOEUD=SIMP(statut="c", typ=no, validators=NoRepeat(), max="**"),
                 GROUP_NO=SIMP(statut="f", typ=grno, validators=NoRepeat(), max="**"),
             ),
             CORR_STAT=SIMP(statut="f", typ="TXM", into=("OUI",)),

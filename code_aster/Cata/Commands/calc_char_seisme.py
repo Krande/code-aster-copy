@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -46,9 +46,7 @@ CALC_CHAR_SEISME = OPER(
     MODE_STAT=SIMP(statut="f", typ=(mode_meca,)),
     b_mode_stat=BLOC(
         condition="""exists("MODE_STAT")""",
-        regles=(UN_PARMI("NOEUD", "GROUP_NO"),),
-        NOEUD=SIMP(statut="c", typ=no, validators=NoRepeat(), max="**"),
-        GROUP_NO=SIMP(statut="f", typ=grno, validators=NoRepeat(), max="**"),
+        GROUP_NO=SIMP(statut="o", typ=grno, validators=NoRepeat(), max="**"),
     ),
     TITRE=SIMP(statut="f", typ="TXM"),
 )

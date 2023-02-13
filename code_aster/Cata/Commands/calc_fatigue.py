@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -117,11 +117,9 @@ CALC_FATIGUE = OPER(
         RESULTAT=SIMP(statut="o", typ=(evol_elas, evol_noli)),
         CHAM_MATER=SIMP(statut="f", typ=(cham_mater)),
         MAILLAGE=SIMP(statut="o", typ=maillage_sdaster),
-        regles=(UN_PARMI("GROUP_NO", "NOEUD", "GROUP_MA", "MAILLE"),),
+        regles=(UN_PARMI("GROUP_NO", "GROUP_MA"),),
         GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
-        MAILLE=SIMP(statut="c", typ=ma, validators=NoRepeat(), max="**"),
         GROUP_NO=SIMP(statut="f", typ=grno, validators=NoRepeat(), max="**"),
-        NOEUD=SIMP(statut="c", typ=no, validators=NoRepeat(), max="**"),
         COEF_PREECROU=SIMP(statut="f", typ="R", defaut=1.0e0),
         b_period=BLOC(
             condition="""equal_to("TYPE_CHARGE", 'PERIODIQUE')""",

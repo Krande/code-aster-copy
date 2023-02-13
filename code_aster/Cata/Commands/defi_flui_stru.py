@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -56,13 +56,11 @@ DEFI_FLUI_STRU = OPER(
         statut="f",
         regles=(
             ENSEMBLE("GRAPPE_2", "CARA_ELEM", "MODELE", "RHO_FLUI"),
-            EXCLUS("NOEUD", "GROUP_NO"),
             PRESENT_PRESENT("COEF_MASS_AJOU", "GRAPPE_2"),
         ),
         #  peut on créer un bloc a partir de la valeur de couplage
         COUPLAGE=SIMP(statut="o", typ="TXM", into=("OUI", "NON")),
         GRAPPE_2=SIMP(statut="f", typ="TXM", into=("ASC_CEN", "ASC_EXC", "DES_CEN", "DES_EXC")),
-        NOEUD=SIMP(statut="c", typ=no),
         GROUP_NO=SIMP(statut="f", typ=grno),
         CARA_ELEM=SIMP(statut="f", typ=cara_elem),
         MODELE=SIMP(statut="f", typ=modele_sdaster),

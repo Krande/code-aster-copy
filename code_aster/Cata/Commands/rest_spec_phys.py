@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -29,12 +29,7 @@ REST_SPEC_PHYS = OPER(
     sd_prod=interspectre,
     reentrant="n",
     fr=tr("Calculer la réponse d'une structure dans la base physique"),
-    regles=(
-        AU_MOINS_UN("BASE_ELAS_FLUI", "MODE_MECA"),
-        AU_MOINS_UN("NOEUD", "GROUP_NO"),
-        EXCLUS("NOEUD", "GROUP_NO"),
-        EXCLUS("MAILLE", "GROUP_MA"),
-    ),
+    regles=(AU_MOINS_UN("BASE_ELAS_FLUI", "MODE_MECA"), UN_PARMI("NOEUD", "GROUP_NO")),
     BASE_ELAS_FLUI=SIMP(statut="f", typ=melasflu_sdaster),
     b_fluide=BLOC(
         condition="""exists("BASE_ELAS_FLUI")""",
@@ -48,7 +43,6 @@ REST_SPEC_PHYS = OPER(
     INTE_SPEC_GENE=SIMP(statut="o", typ=interspectre),
     NOEUD=SIMP(statut="c", typ=no, max="**"),
     GROUP_NO=SIMP(statut="f", typ=grno, max="**"),
-    MAILLE=SIMP(statut="c", typ=ma, max="**"),
     GROUP_MA=SIMP(statut="f", typ=grma, max="**"),
     NOM_CMP=SIMP(statut="o", typ="TXM", max="**"),
     NOM_CHAM=SIMP(

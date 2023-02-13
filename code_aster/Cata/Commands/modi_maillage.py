@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -120,24 +120,14 @@ MODI_MAILLAGE = OPER(
         max="**",
         GROUP_MA=SIMP(statut="o", typ=grma, validators=NoRepeat(), max="**"),
         VECT_NORM=SIMP(statut="f", typ="R", max=3),
-        b_vect_norm=BLOC(
-            condition="""exists("VECT_NORM")""",
-            regles=UN_PARMI("NOEUD", "GROUP_NO"),
-            NOEUD=SIMP(statut="c", typ=no),
-            GROUP_NO=SIMP(statut="f", typ=grno),
-        ),
+        b_vect_norm=BLOC(condition="""exists("VECT_NORM")""", GROUP_NO=SIMP(statut="o", typ=grno)),
     ),
     ORIE_LIGNE=FACT(
         statut="f",
         max="**",
         GROUP_MA=SIMP(statut="o", typ=grma, validators=NoRepeat(), max="**"),
         VECT_TANG=SIMP(statut="f", typ="R", max=3),
-        b_vect_tang=BLOC(
-            condition="""exists("VECT_TANG")""",
-            regles=UN_PARMI("NOEUD", "GROUP_NO"),
-            NOEUD=SIMP(statut="c", typ=no),
-            GROUP_NO=SIMP(statut="f", typ=grno),
-        ),
+        b_vect_tang=BLOC(condition="""exists("VECT_TANG")""", GROUP_NO=SIMP(statut="o", typ=grno)),
     ),
     MODI_MAILLE=FACT(
         statut="f",
@@ -182,14 +172,9 @@ MODI_MAILLAGE = OPER(
     ABSC_CURV=FACT(
         statut="f",
         max=1,
-        regles=(
-            AU_MOINS_UN("TOUT", "GROUP_MA", "MAILLE"),
-            EXCLUS("TOUT", "GROUP_MA"),
-            EXCLUS("TOUT", "MAILLE"),
-        ),
+        regles=(UN_PARMI("TOUT", "GROUP_MA"),),
         TOUT=SIMP(statut="f", typ="TXM", into=("OUI",)),
         GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
-        MAILLE=SIMP(statut="c", typ=ma, validators=NoRepeat(), max="**"),
         GROUP_NO_ORIG=SIMP(statut="f", typ=grno, max=1),
     ),
     INFO=SIMP(statut="f", typ="I", defaut=1, into=(1, 2)),

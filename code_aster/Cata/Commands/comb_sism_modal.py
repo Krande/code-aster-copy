@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -62,7 +62,7 @@ COMB_SISM_MODAL = OPER(
         EXCIT=FACT(
             statut="o",
             max="**",
-            regles=(UN_PARMI("AXE", "TRI_AXE", "TRI_SPEC"), UN_PARMI("NOEUD", "GROUP_NO")),
+            regles=(UN_PARMI("AXE", "TRI_AXE", "TRI_SPEC")),
             AXE=SIMP(statut="f", typ="R", max=3, fr=tr("Excitation suivant un seul axe")),
             TRI_AXE=SIMP(
                 statut="f",
@@ -95,8 +95,7 @@ COMB_SISM_MODAL = OPER(
                 ECHELLE=SIMP(statut="f", typ="R", min=3, max=3),
             ),
             NATURE=SIMP(statut="f", typ="TXM", defaut="ACCE", into=("ACCE", "VITE", "DEPL")),
-            NOEUD=SIMP(statut="c", typ=no, validators=NoRepeat(), max="**"),
-            GROUP_NO=SIMP(statut="f", typ=grno, validators=NoRepeat(), max="**"),
+            GROUP_NO=SIMP(statut="o", typ=grno, validators=NoRepeat(), max="**"),
         ),  # fin mcf_excit
     ),  # fin b_mult_appui
     b_not_mult_appui=BLOC(
@@ -144,9 +143,7 @@ COMB_SISM_MODAL = OPER(
         GROUP_APPUI=FACT(
             statut="f",
             max="**",
-            regles=(UN_PARMI("NOEUD", "GROUP_NO"),),
-            NOEUD=SIMP(statut="c", typ=no, validators=NoRepeat(), max="**"),
-            GROUP_NO=SIMP(statut="f", typ=grno, validators=NoRepeat(), max="**"),
+            GROUP_NO=SIMP(statut="o", typ=grno, validators=NoRepeat(), max="**"),
         ),
     ),
     b_correle=BLOC(
@@ -154,9 +151,8 @@ COMB_SISM_MODAL = OPER(
         COMB_MULT_APPUI=FACT(
             statut="f",
             max="**",
-            regles=(UN_PARMI("TOUT", "NOEUD", "GROUP_NO"),),
+            regles=(UN_PARMI("TOUT", "GROUP_NO"),),
             TOUT=SIMP(statut="f", typ="TXM", into=("OUI",)),
-            NOEUD=SIMP(statut="c", typ=no, validators=NoRepeat(), max="**"),
             GROUP_NO=SIMP(statut="f", typ=grno, validators=NoRepeat(), max="**"),
             TYPE_COMBI=SIMP(statut="f", typ="TXM", into=("QUAD", "LINE")),
         ),
@@ -183,13 +179,12 @@ COMB_SISM_MODAL = OPER(
     DEPL_MULT_APPUI=FACT(
         statut="f",
         max="**",
-        regles=(UN_PARMI("NOEUD", "GROUP_NO"), AU_MOINS_UN("DX", "DY", "DZ")),
+        regles=(AU_MOINS_UN("DX", "DY", "DZ")),
         NOM_CAS=SIMP(statut="o", typ="TXM", max="**"),
         NUME_CAS=SIMP(statut="o", typ="I", max="**"),
         MODE_STAT=SIMP(statut="o", typ=mode_meca),
         GROUP_NO_REFE=SIMP(statut="f", typ=grno, max=1),
-        NOEUD=SIMP(statut="c", typ=no, validators=NoRepeat(), max="**"),
-        GROUP_NO=SIMP(statut="f", typ=grno, validators=NoRepeat(), max="**"),
+        GROUP_NO=SIMP(statut="o", typ=grno, validators=NoRepeat(), max="**"),
         DX=SIMP(statut="f", typ="R"),
         DY=SIMP(statut="f", typ="R"),
         DZ=SIMP(statut="f", typ="R"),

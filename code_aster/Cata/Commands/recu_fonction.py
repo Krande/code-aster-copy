@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -209,16 +209,14 @@ RECU_FONCTION = OPER(
         b_cham=BLOC(
             condition="""exists("NOM_CHAM")""",
             regles=(
-                AU_MOINS_UN("MAILLE", "GROUP_MA", "GROUP_NO", "NOEUD"),
+                AU_MOINS_UN("GROUP_MA", "GROUP_NO", "NOEUD"),
                 PRESENT_ABSENT("POINT", "NOEUD", "GROUP_NO"),
                 PRESENT_ABSENT("SOUS_POINT", "NOEUD", "GROUP_NO"),
-                EXCLUS("GROUP_MA", "MAILLE"),
                 EXCLUS("GROUP_NO", "NOEUD"),
                 UN_PARMI("NOM_CMP", "NOM_VARI"),
             ),
             NOM_CMP=SIMP(statut="f", typ="TXM"),
             NOM_VARI=SIMP(statut="f", typ="TXM"),
-            MAILLE=SIMP(statut="c", typ=ma),
             GROUP_MA=SIMP(statut="f", typ=grma),
             NOEUD=SIMP(statut="c", typ=no),
             GROUP_NO=SIMP(statut="f", typ=grno),
@@ -330,14 +328,12 @@ RECU_FONCTION = OPER(
         condition="""(exists("CHAM_GD"))""",
         fr=tr("Opérandes en cas de CHAM_GD"),
         regles=(
-            AU_MOINS_UN("MAILLE", "GROUP_MA", "GROUP_NO", "NOEUD"),
+            AU_MOINS_UN("GROUP_MA", "GROUP_NO", "NOEUD"),
             PRESENT_ABSENT("POINT", "NOEUD", "GROUP_NO"),
             PRESENT_ABSENT("SOUS_POINT", "NOEUD", "GROUP_NO"),
-            EXCLUS("GROUP_MA", "MAILLE"),
             EXCLUS("GROUP_NO", "NOEUD"),
         ),
         NOM_CMP=SIMP(statut="o", typ="TXM"),
-        MAILLE=SIMP(statut="c", typ=ma),
         GROUP_MA=SIMP(statut="f", typ=grma),
         NOEUD=SIMP(statut="c", typ=no),
         GROUP_NO=SIMP(statut="f", typ=grno),

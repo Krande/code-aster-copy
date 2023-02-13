@@ -58,7 +58,7 @@ subroutine op0143()
     character(len=2) :: carapa(4)
     character(len=3) :: ouinon
     character(len=9) :: typas(2), tpas
-    character(len=16) :: concep, cmd, nommcf, mcfac(4), motcle(2), typmcl(2)
+    character(len=16) :: concep, cmd, nommcf, mcfac(4), motcle(1), typmcl(1)
     character(len=19) :: nomu
     character(len=8) :: nomu8, modele, grappe, carael, maillage
     character(len=24) :: fsic, fsvi, fsvr, fsvk, fsgm, fscr, fsgr, lisno
@@ -77,8 +77,8 @@ subroutine op0143()
     data typas/'CARRE_LIG', 'TRIA_LIGN'/
     data mcfac/'FAISCEAU_TRANS ', 'GRAPPE', &
         'FAISCEAU_AXIAL ', 'COQUE_COAX'/
-    data motcle/'NOEUD', 'GROUP_NO'/
-    data typmcl/'NOEUD', 'GROUP_NO'/
+    data motcle/'GROUP_NO'/
+    data typmcl/'GROUP_NO'/
 
 !=======================================================================
     call jemarq()
@@ -252,7 +252,7 @@ subroutine op0143()
             lisno = '&&OP0143.LISTE_NOEUD'
             call dismoi('NOM_MAILLA', modele, 'MODELE', repk=maillage)
             call reliem(modele, maillage, 'NO_NOEUD', 'GRAPPE', iocc, &
-                        2, motcle, typmcl, lisno, nbno)
+                        1, motcle, typmcl, lisno, nbno)
             ASSERT(nbno .eq. 1)
             call jeveuo(lisno, 'L', jno)
 !

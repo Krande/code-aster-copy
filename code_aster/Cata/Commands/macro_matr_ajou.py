@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -76,14 +76,12 @@ MACRO_MATR_AJOU = MACRO(
         RHO=SIMP(statut="o", typ="R"),
         TOUT=SIMP(statut="f", typ="TXM", into=("OUI",)),
         GROUP_MA=SIMP(statut="f", typ=grma),
-        MAILLE=SIMP(statut="c", typ=ma),
     ),
     DDL_IMPO=FACT(
         statut="o",
         max="**",
-        regles=(UN_PARMI("NOEUD", "GROUP_NO"), UN_PARMI("PRES_FLUIDE", "PRES_SORTIE")),
-        NOEUD=SIMP(statut="c", typ=no),
-        GROUP_NO=SIMP(statut="f", typ=grno),
+        regles=(UN_PARMI("PRES_FLUIDE", "PRES_SORTIE")),
+        GROUP_NO=SIMP(statut="o", typ=grno),
         PRES_FLUIDE=SIMP(statut="f", typ="R"),
         PRES_SORTIE=SIMP(statut="f", typ="R"),
     ),
@@ -109,7 +107,6 @@ MACRO_MATR_AJOU = MACRO(
         statut="f",
         max="**",
         DIRECTION=SIMP(statut="o", typ="R", max=3),
-        NOEUD=SIMP(statut="c", typ=no, validators=NoRepeat(), max="**"),
         GROUP_NO=SIMP(statut="f", typ=grno, validators=NoRepeat(), max="**"),
         VECTEUR=SIMP(statut="o", typ=CO),
     ),

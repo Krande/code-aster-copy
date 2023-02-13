@@ -78,7 +78,6 @@ subroutine asmsup(masse, meca, nbmode, neq, nbsup, &
     character(len=19) :: cham19
     character(len=24) :: obj1, obj2, valk(2), grnoeu
     character(len=24), pointer :: group_no(:) => null()
-    character(len=8), pointer :: noeud(:) => null()
     real(kind=8), pointer :: vale(:) => null()
 !     ------------------------------------------------------------------
     data dir/'X', 'Y', 'Z'/
@@ -175,67 +174,39 @@ subroutine asmsup(masse, meca, nbmode, neq, nbsup, &
                     end do
                 end do
             else
-                call getvtx(motfac, 'NOEUD', iocc=ioc, nbval=0, nbret=n1)
+                call getvtx(motfac, 'GROUP_NO', iocc=ioc, nbval=0, nbret=n1)
                 if (n1 .ne. 0) then
-                    nno = -n1
-                    AS_ALLOCATE(vk8=noeud, size=nno)
-                    call getvtx(motfac, 'NOEUD', iocc=ioc, nbval=nno, vect=noeud, &
+                    ngr = -n1
+                    AS_ALLOCATE(vk24=group_no, size=ngr)
+                    call getvtx(motfac, 'GROUP_NO', iocc=ioc, nbval=ngr, vect=group_no, &
                                 nbret=n1)
-                    do ino = 1, nno
-                        noeu = noeud(ino)
-                        call jenonu(jexnom(obj2, noeu), iret)
+                    do igr = 1, ngr
+                        grnoeu = group_no(igr)
+                        call jeexin(jexnom(obj1, grnoeu), iret)
                         if (iret .eq. 0) then
                             ier = ier+1
-                            valk(1) = noeu
+                            valk(1) = grnoeu
                             valk(2) = noma
-                            call utmess('E', 'SEISME_1', nk=2, valk=valk)
-                            goto 46
-                        end if
-                        do is = 1, nbsup
-                            do id = 1, 3
-                                if (nomsup(is, id) .eq. noeu) then
-                                    if (ctyp .eq. 'LINE') tcosup(is, id) = 2
-                                end if
-                            end do
-                        end do
-46                      continue
-                    end do
-                    AS_DEALLOCATE(vk8=noeud)
-                else
-                    call getvtx(motfac, 'GROUP_NO', iocc=ioc, nbval=0, nbret=n1)
-                    if (n1 .ne. 0) then
-                        ngr = -n1
-                        AS_ALLOCATE(vk24=group_no, size=ngr)
-                        call getvtx(motfac, 'GROUP_NO', iocc=ioc, nbval=ngr, vect=group_no, &
-                                    nbret=n1)
-                        do igr = 1, ngr
-                            grnoeu = group_no(igr)
-                            call jeexin(jexnom(obj1, grnoeu), iret)
-                            if (iret .eq. 0) then
-                                ier = ier+1
-                                valk(1) = grnoeu
-                                valk(2) = noma
-                                call utmess('E', 'SEISME_2', nk=2, valk=valk)
-                                goto 50
-                            else
-                                call jelira(jexnom(obj1, grnoeu), 'LONUTI', nno)
-                                call jeveuo(jexnom(obj1, grnoeu), 'L', jdgn)
-                                do ino = 1, nno
-                                    call jenuno(jexnum(obj2, zi(jdgn+ino-1)), noeu)
-                                    do is = 1, nbsup
-                                        do id = 1, 3
-                                            if (nomsup(is, id) .eq. noeu) then
-                                                if (ctyp .eq. 'LINE') tcosup(is, id) = &
-                                                    2
-                                            end if
-                                        end do
+                            call utmess('E', 'SEISME_2', nk=2, valk=valk)
+                            goto 50
+                        else
+                            call jelira(jexnom(obj1, grnoeu), 'LONUTI', nno)
+                            call jeveuo(jexnom(obj1, grnoeu), 'L', jdgn)
+                            do ino = 1, nno
+                                call jenuno(jexnum(obj2, zi(jdgn+ino-1)), noeu)
+                                do is = 1, nbsup
+                                    do id = 1, 3
+                                        if (nomsup(is, id) .eq. noeu) then
+                                            if (ctyp .eq. 'LINE') tcosup(is, id) = &
+                                                2
+                                        end if
                                     end do
                                 end do
-                            end if
-50                          continue
-                        end do
-                        AS_DEALLOCATE(vk24=group_no)
-                    end if
+                            end do
+                        end if
+50                      continue
+                    end do
+                    AS_DEALLOCATE(vk24=group_no)
                 end if
             end if
         end if

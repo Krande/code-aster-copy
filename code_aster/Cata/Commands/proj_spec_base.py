@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -33,7 +33,7 @@ PROJ_SPEC_BASE = OPER(
     ),
     regles=(
         UN_PARMI("BASE_ELAS_FLUI", "MODE_MECA", "CHAM_NO"),
-        UN_PARMI("TOUT", "GROUP_MA", "MAILLE"),
+        UN_PARMI("TOUT", "GROUP_MA"),
         PRESENT_PRESENT("CHAM_NO", "MODELE_INTERFACE"),
     ),
     SPEC_TURB=SIMP(statut="o", typ=spectre_sdaster, validators=NoRepeat(), max="**"),
@@ -52,7 +52,6 @@ PROJ_SPEC_BASE = OPER(
     OPTION=SIMP(statut="f", typ="TXM", defaut="TOUT", into=("TOUT", "DIAG")),
     TOUT=SIMP(statut="f", typ="TXM", into=("OUI",)),
     GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
-    MAILLE=SIMP(statut="c", typ=ma, validators=NoRepeat(), max="**"),
     #  Quel est le type attendu derriere  MODELE_INTERFACE
     MODELE_INTERFACE=SIMP(statut="f", typ=modele_sdaster),
     VECT_X=SIMP(statut="f", typ="R", min=3, max=3),

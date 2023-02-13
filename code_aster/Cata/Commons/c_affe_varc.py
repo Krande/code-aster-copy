@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -26,15 +26,9 @@ def C_AFFE_VARC():
     return FACT(
         statut="f",
         max="**",
-        regles=(
-            PRESENT_ABSENT("TOUT", "GROUP_MA", "MAILLE"),
-            PRESENT_ABSENT("GROUP_MA", "TOUT"),
-            PRESENT_ABSENT("MAILLE", "TOUT"),
-            EXCLUS("EVOL", "CHAM_GD"),
-        ),
+        regles=(EXCLUS("GROUP_MA", "TOUT"), EXCLUS("EVOL", "CHAM_GD")),
         TOUT=SIMP(statut="f", typ="TXM", into=("OUI",)),
         GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
-        MAILLE=SIMP(statut="c", typ=ma, validators=NoRepeat(), max="**"),
         NOM_VARC=SIMP(
             statut="o",
             typ="TXM",

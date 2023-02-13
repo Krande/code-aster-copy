@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -44,20 +44,8 @@ CALC_TRANSFERT = MACRO(
     sd_prod=calc_transfert_prod,
     fr=tr("Calcul des fonctions de transfert et des signaux deconvolues "),
     NOM_CHAM=SIMP(statut="o", typ="TXM", max=1, into=("DEPL", "VITE", "ACCE")),
-    ENTREE=FACT(
-        statut="o",
-        max=1,
-        regles=(UN_PARMI("GROUP_NO", "NOEUD"),),
-        GROUP_NO=SIMP(statut="f", typ=grno, max=1),
-        NOEUD=SIMP(statut="c", typ=no, max=1),
-    ),
-    SORTIE=FACT(
-        statut="o",
-        max=1,
-        regles=(UN_PARMI("GROUP_NO", "NOEUD"),),
-        GROUP_NO=SIMP(statut="f", typ=grno, max=1),
-        NOEUD=SIMP(statut="c", typ=no, max=1),
-    ),
+    ENTREE=FACT(statut="o", max=1, GROUP_NO=SIMP(statut="o", typ=grno, max=1)),
+    SORTIE=FACT(statut="o", max=1, GROUP_NO=SIMP(statut="o", typ=grno, max=1)),
     REPERE=SIMP(statut="f", typ="TXM", defaut="RELATIF", into=("RELATIF", "ABSOLU")),
     b_repere=BLOC(
         condition="""equal_to("REPERE", 'RELATIF')""",

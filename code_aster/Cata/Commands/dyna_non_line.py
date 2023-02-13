@@ -53,7 +53,6 @@ DYNA_NON_LINE = OPER(
         VITE=SIMP(statut="f", typ=(fonction_sdaster, nappe_sdaster, formule)),
         MULT_APPUI=SIMP(statut="f", typ="TXM", defaut="NON", into=("OUI", "NON")),
         DIRECTION=SIMP(statut="f", typ="R", max="**"),
-        NOEUD=SIMP(statut="c", typ=no, validators=NoRepeat(), max="**"),
         GROUP_NO=SIMP(statut="f", typ=grno, validators=NoRepeat(), max="**"),
     ),
     EXCIT_GENE=FACT(

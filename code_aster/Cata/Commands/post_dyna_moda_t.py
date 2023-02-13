@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -46,9 +46,7 @@ POST_DYNA_MODA_T = OPER(
     RELA_EFFO_DEPL=FACT(
         statut="f",
         fr=tr("Analyse des relationsnon linéaires effort-déplacement"),
-        regles=(UN_PARMI("NOEUD", "GROUP_NO"), EXCLUS("NOEUD", "GROUP_NO")),
-        NOEUD=SIMP(statut="c", typ=no),
-        GROUP_NO=SIMP(statut="f", typ=grno),
+        GROUP_NO=SIMP(statut="o", typ=grno),
         NOM_CMP=SIMP(statut="o", typ="TXM"),
     ),
     INFO=SIMP(statut="f", typ="I", defaut=1, into=(1, 2)),

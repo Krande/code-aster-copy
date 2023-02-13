@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -253,7 +253,6 @@ CREA_RESU = OPER(
             VITE=SIMP(statut="f", typ=(fonction_sdaster, nappe_sdaster, formule)),
             MULT_APPUI=SIMP(statut="f", typ="TXM", defaut="NON", into=("OUI", "NON")),
             DIRECTION=SIMP(statut="f", typ="R", max="**"),
-            NOEUD=SIMP(statut="c", typ=no, validators=NoRepeat(), max="**"),
             GROUP_NO=SIMP(statut="f", typ=grno, validators=NoRepeat(), max="**"),
         ),
     ),  # fin bloc b_evol_noli
@@ -415,7 +414,6 @@ CREA_RESU = OPER(
                 statut="o", typ=cara_elem
             ),  # CARA_ELEM pour connaitre EPAIS et COQU_NCOU
             TOUT=SIMP(statut="f", typ="TXM", into=("OUI",)),
-            MAILLE=SIMP(statut="c", typ=ma, validators=NoRepeat(), max="**"),
             GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
         ),
     ),

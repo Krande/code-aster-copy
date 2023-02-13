@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -26,7 +26,7 @@ from ..Language.Syntax import *
 def C_PILOTAGE():
     return FACT(
         statut="f",
-        regles=(EXCLUS("NOEUD", "GROUP_NO"), PRESENT_ABSENT("TOUT", "GROUP_MA", "MAILLE")),
+        regles=(EXCLUS("NOEUD", "GROUP_NO"), PRESENT_ABSENT("TOUT", "GROUP_MA")),
         TYPE=SIMP(
             statut="o",
             typ="TXM",
@@ -58,7 +58,6 @@ def C_PILOTAGE():
         TOUT=SIMP(statut="f", typ="TXM", into=("OUI",)),
         GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
         FISSURE=SIMP(statut="f", typ=fiss_xfem, validators=NoRepeat(), max="**"),
-        MAILLE=SIMP(statut="f", typ=ma, validators=NoRepeat(), max="**"),
         NOEUD=SIMP(statut="f", typ=no, validators=NoRepeat(), max="**"),
         GROUP_NO=SIMP(statut="f", typ=grno, validators=NoRepeat(), max="**"),
         NOM_CMP=SIMP(statut="f", typ="TXM", max="**"),

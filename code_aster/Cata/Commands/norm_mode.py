@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -43,7 +43,7 @@ NORM_MODE = OPER(
     sd_prod=norm_mode_prod,
     fr=tr("Normer des modes propres en fonction d'un critère choisi par l'utilisateur"),
     reentrant="f:MODE",
-    regles=(UN_PARMI("NORME", "GROUP_NO", "NOEUD", "AVEC_CMP", "SANS_CMP"),),
+    regles=(UN_PARMI("NORME", "GROUP_NO", "AVEC_CMP", "SANS_CMP"),),
     reuse=SIMP(statut="c", typ=CO),
     MODE=SIMP(statut="o", typ=(mode_meca, mode_flamb)),
     NORME=SIMP(
@@ -52,15 +52,12 @@ NORM_MODE = OPER(
         fr=tr("Norme prédéfinie : masse généralisée, euclidienne,..."),
         into=("MASS_GENE", "RIGI_GENE", "EUCL", "EUCL_TRAN", "TRAN", "TRAN_ROTA"),
     ),
-    NOEUD=SIMP(statut="c", typ=no, fr=tr("Composante donnée d'un noeud spécifié égale à 1")),
     GROUP_NO=SIMP(
         statut="f",
         typ=grno,
         fr=tr("Composante donnée d'un groupe contenant un seul noeud spécifié égale à 1"),
     ),
-    b_noeud=BLOC(
-        condition="""exists("NOEUD") or exists("GROUP_NO")""", NOM_CMP=SIMP(statut="o", typ="TXM")
-    ),
+    b_noeud=BLOC(condition="""exists("GROUP_NO")""", NOM_CMP=SIMP(statut="o", typ="TXM")),
     AVEC_CMP=SIMP(statut="f", typ="TXM", validators=NoRepeat(), max="**"),
     SANS_CMP=SIMP(statut="f", typ="TXM", validators=NoRepeat(), max="**"),
     MODE_SIGNE=FACT(

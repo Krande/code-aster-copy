@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -103,17 +103,11 @@ DEFI_SPEC_TURB = OPER(
     SPEC_CORR_CONV_3=FACT(statut="f", TABLE_FONCTION=SIMP(statut="o", typ=(table_fonction))),
     SPEC_FONC_FORME=FACT(
         statut="f",
-        regles=(
-            UN_PARMI("INTE_SPEC", "GRAPPE_1"),
-            ENSEMBLE("INTE_SPEC", "FONCTION"),
-            UN_PARMI("NOEUD", "GROUP_NO"),
-            EXCLUS("NOEUD", "GROUP_NO"),
-        ),
+        regles=(UN_PARMI("INTE_SPEC", "GRAPPE_1"), ENSEMBLE("INTE_SPEC", "FONCTION")),
         INTE_SPEC=SIMP(statut="f", typ=interspectre),
         FONCTION=SIMP(statut="f", typ=(table_fonction), max="**"),
         GRAPPE_1=SIMP(statut="f", typ="TXM", into=("DEBIT_180", "DEBIT_300")),
-        NOEUD=SIMP(statut="c", typ=no),
-        GROUP_NO=SIMP(statut="f", typ=grno),
+        GROUP_NO=SIMP(statut="o", typ=grno),
         CARA_ELEM=SIMP(statut="o", typ=cara_elem),
         MODELE=SIMP(statut="o", typ=modele_sdaster),
     ),
@@ -125,18 +119,14 @@ DEFI_SPEC_TURB = OPER(
         #  Quels sont les statuts des mots cles a l interieur des deux blocs qui suivent
         b_inte_spec=BLOC(
             condition="""exists("INTE_SPEC")""",
-            regles=(UN_PARMI("NOEUD", "GROUP_NO"), EXCLUS("NOEUD", "GROUP_NO")),
             NATURE=SIMP(statut="o", typ="TXM", max="**", into=("FORCE", "MOMENT")),
             ANGLE=SIMP(statut="o", typ="R", max="**"),
-            NOEUD=SIMP(statut="c", typ=no, max="**"),
-            GROUP_NO=SIMP(statut="f", typ=grno, max="**"),
+            GROUP_NO=SIMP(statut="o", typ=grno, max="**"),
         ),
         b_grappe_2=BLOC(
             condition="""exists("GRAPPE_2")""",
-            regles=(UN_PARMI("NOEUD", "GROUP_NO"), EXCLUS("NOEUD", "GROUP_NO")),
             RHO_FLUI=SIMP(statut="o", typ="R"),
-            NOEUD=SIMP(statut="c", typ=no),
-            GROUP_NO=SIMP(statut="f", typ=grno),
+            GROUP_NO=SIMP(statut="o", typ=grno),
         ),
         CARA_ELEM=SIMP(statut="o", typ=cara_elem),
         MODELE=SIMP(statut="o", typ=modele_sdaster),

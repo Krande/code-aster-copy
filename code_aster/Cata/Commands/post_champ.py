@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -75,7 +75,7 @@ POST_CHAMP = OPER(
             "LIST_ORDRE",
             "NOM_CAS",
         ),
-        EXCLUS("TOUT", "GROUP_MA", "MAILLE"),
+        EXCLUS("TOUT", "GROUP_MA"),
     ),
     RESULTAT=SIMP(statut="o", typ=resultat_sdaster, fr=tr("Resultat d'une commande globale")),
     # ====
@@ -107,7 +107,6 @@ POST_CHAMP = OPER(
     # ====
     TOUT=SIMP(statut="f", typ="TXM", into=("OUI",)),
     GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
-    MAILLE=SIMP(statut="c", typ=ma, validators=NoRepeat(), max="**"),
     # ====
     # Extraction sur un sous-point d'une coque :
     # ====

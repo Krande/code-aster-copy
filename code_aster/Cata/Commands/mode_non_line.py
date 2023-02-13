@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -41,7 +41,6 @@ MODE_NON_LINE = OPER(
     CHOC=FACT(
         statut="f",
         max="**",
-        regles=(UN_PARMI("NOEUD", "GROUP_NO"),),
         OBSTACLE=SIMP(statut="f", typ="TXM", into=("PLAN", "BI_PLAN", "CERCLE")),
         b_cercle=BLOC(
             condition="""equal_to("OBSTACLE", 'CERCLE')""",
@@ -58,8 +57,7 @@ MODE_NON_LINE = OPER(
             condition="""equal_to("OBSTACLE", 'PLAN')""",
             NOM_CMP=SIMP(statut="o", typ="TXM", min=1, max=1, into=("DX", "DY", "DZ")),
         ),
-        NOEUD=SIMP(statut="c", typ=no, max=1),
-        GROUP_NO=SIMP(statut="f", typ=grno, max=1),
+        GROUP_NO=SIMP(statut="o", typ=grno, max=1),
         JEU=SIMP(statut="o", typ="R", max=1),
         RIGI_NOR=SIMP(statut="o", typ="R", max=1),
         PARA_REGUL=SIMP(statut="f", typ="R", defaut=0.005),

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -29,7 +29,7 @@ CALC_META = OPER(
     sd_prod=evol_ther,
     reentrant="o:RESULTAT",
     fr=tr("Calcule l'évolution métallurgique à partir du résultat d'un calcul thermique"),
-    regles=(PRESENT_ABSENT("TOUT", "GROUP_MA", "MAILLE"),),
+    regles=(PRESENT_ABSENT("TOUT", "GROUP_MA"),),
     reuse=SIMP(statut="c", typ=CO),
     MODELE=SIMP(statut="f", typ=modele_sdaster),
     CHAM_MATER=SIMP(statut="f", typ=cham_mater),
@@ -45,13 +45,6 @@ CALC_META = OPER(
     GROUP_MA=SIMP(
         statut="f",
         typ=grma,
-        validators=NoRepeat(),
-        max="**",
-        fr=tr("le calcul ne sera effectué que sur ces mailles là"),
-    ),
-    MAILLE=SIMP(
-        statut="c",
-        typ=ma,
         validators=NoRepeat(),
         max="**",
         fr=tr("le calcul ne sera effectué que sur ces mailles là"),

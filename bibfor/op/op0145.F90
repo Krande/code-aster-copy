@@ -45,7 +45,7 @@ subroutine op0145()
     character(len=1) :: typspe
     character(len=8) :: intspe, caelem, modele, nomzon, maillage
     character(len=16) :: concep, cmd, nommcf, mcfac(9)
-    character(len=16) :: motcle(2), typmcl(2), nomno
+    character(len=16) :: motcle(1), typmcl(1), nomno
     character(len=19) :: nomu
     character(len=24) :: vain, vare, vate, nnoe, chnumi
 !
@@ -60,8 +60,8 @@ subroutine op0145()
      &            'SPEC_CORR_CONV_1', 'SPEC_CORR_CONV_2',&
      &            'SPEC_CORR_CONV_3',&
      &            'SPEC_FONC_FORME', 'SPEC_EXCI_POINT'/
-    data motcle/'NOEUD', 'GROUP_NO'/
-    data typmcl/'NOEUD', 'GROUP_NO'/
+    data motcle/'GROUP_NO'/
+    data typmcl/'GROUP_NO'/
 ! ----------------------------------------------------------------------
     call jemarq()
     call infmaj()

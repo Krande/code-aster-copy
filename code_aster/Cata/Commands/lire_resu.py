@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -187,7 +187,6 @@ LIRE_RESU = OPER(
         EXCIT=FACT(
             statut="f",
             max="**",
-            regles=(EXCLUS("NOEUD", "GROUP_NO"),),
             CHARGE=SIMP(statut="o", typ=(char_meca, char_cine_meca)),
             FONC_MULT=SIMP(statut="f", typ=(fonction_sdaster, nappe_sdaster, formule)),
             TYPE_CHARGE=SIMP(
@@ -201,7 +200,6 @@ LIRE_RESU = OPER(
             VITE=SIMP(statut="f", typ=(fonction_sdaster, nappe_sdaster, formule)),
             MULT_APPUI=SIMP(statut="f", typ="TXM", defaut="NON", into=("OUI", "NON")),
             DIRECTION=SIMP(statut="f", typ="R", max="**"),
-            NOEUD=SIMP(statut="c", typ=no, validators=NoRepeat(), max="**"),
             GROUP_NO=SIMP(statut="f", typ=grno, validators=NoRepeat(), max="**"),
         ),
     ),

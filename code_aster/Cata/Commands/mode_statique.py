@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -69,11 +69,10 @@ MODE_STATIQUE = OPER(
     PSEUDO_MODE=FACT(
         statut="f",
         max="**",
-        regles=(UN_PARMI("AXE", "DIRECTION", "TOUT", "NOEUD", "GROUP_NO"),),
+        regles=(UN_PARMI("AXE", "DIRECTION", "TOUT", "GROUP_NO"),),
         AXE=SIMP(statut="f", typ="TXM", into=("X", "Y", "Z"), max=3),
         DIRECTION=SIMP(statut="f", typ="R", min=3, max=3),
         TOUT=SIMP(statut="f", typ="TXM", into=("OUI",)),
-        NOEUD=SIMP(statut="c", typ=no, max="**"),
         GROUP_NO=SIMP(statut="f", typ=grno, max="**"),
         b_dir=BLOC(condition="""exists("DIRECTION")""", NOM_DIR=SIMP(statut="o", typ="TXM")),
         b_cmp=BLOC(
@@ -87,12 +86,8 @@ MODE_STATIQUE = OPER(
     MODE_INTERF=FACT(
         statut="f",
         max=1,
-        regles=(
-            UN_PARMI("TOUT", "NOEUD", "GROUP_NO"),
-            UN_PARMI("TOUT_CMP", "AVEC_CMP", "SANS_CMP"),
-        ),
+        regles=(UN_PARMI("TOUT", "GROUP_NO"), UN_PARMI("TOUT_CMP", "AVEC_CMP", "SANS_CMP")),
         TOUT=SIMP(statut="f", typ="TXM", into=("OUI",)),
-        NOEUD=SIMP(statut="c", typ=no, max="**"),
         GROUP_NO=SIMP(statut="f", typ=grno, max="**"),
         TOUT_CMP=SIMP(statut="f", typ="TXM", into=("OUI",)),
         AVEC_CMP=SIMP(statut="f", typ="TXM", max="**"),

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -129,9 +129,8 @@ POST_ELEM = OPER(
     ENER_POT=FACT(
         statut="f",
         max="**",
-        regles=(UN_PARMI("TOUT", "GROUP_MA", "MAILLE"),),
+        regles=(UN_PARMI("TOUT", "GROUP_MA"),),
         TOUT=SIMP(statut="f", typ="TXM", into=("OUI",)),
-        MAILLE=SIMP(statut="c", typ=ma, validators=NoRepeat(), max="**"),
         GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
     ),
     b_ener_pot=BLOC(
@@ -185,7 +184,7 @@ POST_ELEM = OPER(
     ENER_CIN=FACT(
         statut="f",
         max="**",
-        regles=(UN_PARMI("TOUT", "GROUP_MA", "MAILLE"),),
+        regles=(UN_PARMI("TOUT", "GROUP_MA"),),
         OPTION=SIMP(
             statut="f",
             typ="TXM",
@@ -194,7 +193,6 @@ POST_ELEM = OPER(
             defaut="MASS_MECA",
         ),
         TOUT=SIMP(statut="f", typ="TXM", into=("OUI",)),
-        MAILLE=SIMP(statut="c", typ=ma, validators=NoRepeat(), max="**"),
         GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
     ),
     b_ener_cin=BLOC(
@@ -246,9 +244,8 @@ POST_ELEM = OPER(
     ENER_DISS=FACT(
         statut="f",
         max="**",
-        regles=(UN_PARMI("TOUT", "GROUP_MA", "MAILLE"),),
+        regles=(UN_PARMI("TOUT", "GROUP_MA"),),
         TOUT=SIMP(statut="f", typ="TXM", into=("OUI",)),
-        MAILLE=SIMP(statut="c", typ=ma, validators=NoRepeat(), max="**"),
         GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
     ),
     b_ener_diss=BLOC(
@@ -279,9 +276,8 @@ POST_ELEM = OPER(
     ENER_ELAS=FACT(
         statut="f",
         max="**",
-        regles=(UN_PARMI("TOUT", "GROUP_MA", "MAILLE"),),
+        regles=(UN_PARMI("TOUT", "GROUP_MA"),),
         TOUT=SIMP(statut="f", typ="TXM", into=("OUI",)),
-        MAILLE=SIMP(statut="c", typ=ma, validators=NoRepeat(), max="**"),
         GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
     ),
     b_ener_elas=BLOC(
@@ -312,9 +308,8 @@ POST_ELEM = OPER(
     ENER_ELTR=FACT(
         statut="f",
         max="**",
-        regles=(UN_PARMI("TOUT", "GROUP_MA", "MAILLE"),),
+        regles=(UN_PARMI("TOUT", "GROUP_MA"),),
         TOUT=SIMP(statut="f", typ="TXM", into=("OUI",)),
-        MAILLE=SIMP(statut="c", typ=ma, validators=NoRepeat(), max="**"),
         GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
     ),
     b_ener_eltr=BLOC(
@@ -552,9 +547,8 @@ POST_ELEM = OPER(
     WEIBULL=FACT(
         statut="f",
         max="**",
-        regles=(UN_PARMI("TOUT", "GROUP_MA", "MAILLE"),),
+        regles=(UN_PARMI("TOUT", "GROUP_MA"),),
         TOUT=SIMP(statut="f", typ="TXM", into=("OUI",)),
-        MAILLE=SIMP(statut="c", typ=ma, validators=NoRepeat(), max="**"),
         GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
         OPTION=SIMP(
             statut="f",
@@ -598,9 +592,8 @@ POST_ELEM = OPER(
     RICE_TRACEY=FACT(
         statut="f",
         max="**",
-        regles=(UN_PARMI("TOUT", "GROUP_MA", "MAILLE"),),
+        regles=(UN_PARMI("TOUT", "GROUP_MA"),),
         TOUT=SIMP(statut="f", typ="TXM", into=("OUI",)),
-        MAILLE=SIMP(statut="c", typ=ma, validators=NoRepeat(), max="**"),
         GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
         OPTION=SIMP(
             statut="f",
@@ -729,9 +722,8 @@ POST_ELEM = OPER(
     CARA_GEOM=FACT(
         statut="f",
         max="**",
-        regles=(AU_MOINS_UN("TOUT", "GROUP_MA", "MAILLE"),),
+        regles=(AU_MOINS_UN("TOUT", "GROUP_MA"),),
         TOUT=SIMP(statut="f", typ="TXM", into=("OUI",)),
-        MAILLE=SIMP(statut="c", typ=ma, validators=NoRepeat(), max="**"),
         GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
         SYME_X=SIMP(statut="f", typ="TXM", defaut="NON", into=("OUI", "NON")),
         SYME_Y=SIMP(statut="f", typ="TXM", defaut="NON", into=("OUI", "NON")),

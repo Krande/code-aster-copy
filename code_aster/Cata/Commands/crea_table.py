@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -89,8 +89,8 @@ CREA_TABLE = OPER(
         regles=(
             UN_PARMI("CHAM_GD", "RESULTAT"),
             UN_PARMI("TOUT_CMP", "NOM_CMP", "NOM_VARI"),
-            PRESENT_ABSENT("TOUT", "GROUP_MA", "GROUP_NO", "MAILLE", "NOEUD"),
-            AU_MOINS_UN("TOUT", "GROUP_MA", "GROUP_NO", "MAILLE", "NOEUD"),
+            PRESENT_ABSENT("TOUT", "GROUP_MA", "GROUP_NO"),
+            AU_MOINS_UN("TOUT", "GROUP_MA", "GROUP_NO"),
         ),
         CHAM_GD=SIMP(statut="f", typ=cham_gd_sdaster),
         RESULTAT=SIMP(statut="f", typ=resultat_sdaster),
@@ -138,8 +138,6 @@ CREA_TABLE = OPER(
         TOUT=SIMP(statut="f", typ="TXM", into=("OUI",)),
         GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
         GROUP_NO=SIMP(statut="f", typ=grno, validators=NoRepeat(), max="**"),
-        MAILLE=SIMP(statut="c", typ=ma, validators=NoRepeat(), max="**"),
-        NOEUD=SIMP(statut="c", typ=no, validators=NoRepeat(), max="**"),
     ),
     TYPE_TABLE=SIMP(
         statut="f", typ="TXM", defaut="TABLE", into=("TABLE", "TABLE_FONCTION", "TABLE_CONTAINER")

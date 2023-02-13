@@ -90,7 +90,7 @@ subroutine paqmai(nomsd, nomu, nommai, nommet, nomcri, &
 !
     character(len=1) :: kbid
     character(len=4) :: lsig(6), leps(6)
-    character(len=8) :: k8b, motcle(4), tymocl(4)
+    character(len=8) :: k8b, motcle(1), tymocl(1)
     character(len=16) :: typres, nomopt
     character(len=19) :: lismai
     character(len=19) :: cesr, ligre, celbid, chsig, chsigs, ces1, ces2
@@ -228,10 +228,8 @@ subroutine paqmai(nomsd, nomu, nommai, nommet, nomcri, &
         lismai = '&&PAQMAI.L_MAILLES'
         motcle(1) = 'GROUP_MA'
         tymocl(1) = 'GROUP_MA'
-        motcle(2) = 'MAILLE'
-        tymocl(2) = 'MAILLE'
         call reliem(' ', nommai, 'NU_MAILLE', ' ', 0, &
-                    2, motcle, tymocl, lismai, nbmagm)
+                    1, motcle, tymocl, lismai, nbmagm)
         call jeveuo(lismai, 'L', jmail)
 !
 !        VECTEUR CONTENANT LE NBR. DE PT. DE GAUSS DES MAILLES DU OU

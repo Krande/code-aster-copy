@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -92,18 +92,15 @@ OBSERVATION = MACRO(
         statut="f",
         max="**",
         regles=(
-            AU_MOINS_UN("TOUT_1", "GROUP_MA_1", "MAILLE_1", "GROUP_NO_1", "NOEUD_1"),
-            AU_MOINS_UN("TOUT_2", "GROUP_MA_2", "GROUP_NO_2", "NOEUD_2"),
+            AU_MOINS_UN("TOUT_1", "GROUP_MA_1", "GROUP_NO_1"),
+            AU_MOINS_UN("TOUT_2", "GROUP_MA_2", "GROUP_NO_2"),
         ),
         TOUT_1=SIMP(statut="f", typ="TXM", into=("OUI",)),
         GROUP_MA_1=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
-        MAILLE_1=SIMP(statut="c", typ=ma, validators=NoRepeat(), max="**"),
         GROUP_NO_1=SIMP(statut="f", typ=grno, validators=NoRepeat(), max="**"),
-        NOEUD_1=SIMP(statut="c", typ=no, validators=NoRepeat(), max="**"),
         TOUT_2=SIMP(statut="f", typ="TXM", into=("OUI",)),
         GROUP_MA_2=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
         GROUP_NO_2=SIMP(statut="f", typ=grno, validators=NoRepeat(), max="**"),
-        NOEUD_2=SIMP(statut="c", typ=no, validators=NoRepeat(), max="**"),
         CAS_FIGURE=SIMP(statut="f", typ="TXM", into=("2D", "3D", "2.5D", "1.5D")),
     ),
     #        ------------------------------------------------------------------
@@ -112,10 +109,9 @@ OBSERVATION = MACRO(
     MODI_REPERE=FACT(
         statut="f",
         max="**",
-        regles=(UN_PARMI("REPERE"), AU_MOINS_UN("TOUT", "GROUP_MA", "MAILLE", "GROUP_NO", "NOEUD")),
+        regles=(UN_PARMI("REPERE"), AU_MOINS_UN("TOUT", "GROUP_MA", "GROUP_NO", "NOEUD")),
         GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
         GROUP_NO=SIMP(statut="f", typ=grno, validators=NoRepeat(), max="**"),
-        MAILLE=SIMP(statut="c", typ=ma, validators=NoRepeat(), max="**"),
         NOEUD=SIMP(statut="c", typ=no, validators=NoRepeat(), max="**"),
         TOUT=SIMP(statut="f", typ="TXM", into=("OUI",)),
         #
@@ -179,10 +175,9 @@ OBSERVATION = MACRO(
     EPSI_MOYENNE=FACT(
         statut="f",
         max="**",
-        regles=(AU_MOINS_UN("GROUP_MA", "MAILLE", "GROUP_NO", "NOEUD"),),
+        regles=(AU_MOINS_UN("GROUP_MA", "GROUP_NO", "NOEUD"),),
         NOEUD=SIMP(statut="c", typ=no, validators=NoRepeat(), max="**"),
         GROUP_NO=SIMP(statut="f", typ=grno, validators=NoRepeat(), max="**"),
-        MAILLE=SIMP(statut="c", typ=ma, validators=NoRepeat(), max="**"),
         GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
         SEUIL_VARI=SIMP(statut="f", typ="R", validators=NoRepeat(), defaut=0.1),
         MASQUE=SIMP(statut="f", typ="TXM", max=6),
@@ -196,11 +191,10 @@ OBSERVATION = MACRO(
         regles=(
             UN_PARMI("DDL_ACTIF"),
             #                           'MASQUE'),
-            AU_MOINS_UN("TOUT", "GROUP_MA", "MAILLE", "GROUP_NO", "NOEUD"),
+            AU_MOINS_UN("TOUT", "GROUP_MA", "GROUP_NO", "NOEUD"),
         ),
         GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
         GROUP_NO=SIMP(statut="f", typ=grno, validators=NoRepeat(), max="**"),
-        MAILLE=SIMP(statut="c", typ=ma, validators=NoRepeat(), max="**"),
         NOEUD=SIMP(statut="c", typ=no, validators=NoRepeat(), max="**"),
         TOUT=SIMP(statut="f", typ="TXM", into=("OUI",)),
         NOM_CHAM=SIMP(statut="o", typ="TXM", validators=NoRepeat(), into=C_NOM_CHAM_INTO()),

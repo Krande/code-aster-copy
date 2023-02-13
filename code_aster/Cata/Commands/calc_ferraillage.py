@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -80,10 +80,9 @@ CALC_FERRAILLAGE = OPER(
         AFFE=FACT(
             statut="o",
             max="**",
-            regles=(UN_PARMI("TOUT", "GROUP_MA", "MAILLE"),),
+            regles=(UN_PARMI("TOUT", "GROUP_MA"),),
             TOUT=SIMP(statut="f", typ="TXM", into=("OUI",)),
             GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
-            MAILLE=SIMP(statut="c", typ=ma, validators=NoRepeat(), max="**"),
             TYPE_STRUCTURE=SIMP(
                 statut="o", typ="TXM", into=("1D", "2D"), fr=tr("Type de Structure 1D ou 2D")
             ),
@@ -403,10 +402,9 @@ CALC_FERRAILLAGE = OPER(
         AFFE=FACT(
             statut="o",
             max="**",
-            regles=(UN_PARMI("TOUT", "GROUP_MA", "MAILLE"),),
+            regles=(UN_PARMI("TOUT", "GROUP_MA"),),
             TOUT=SIMP(statut="f", typ="TXM", into=("OUI",)),
             GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
-            MAILLE=SIMP(statut="c", typ=ma, validators=NoRepeat(), max="**"),
             TYPE_STRUCTURE=SIMP(
                 statut="o", typ="TXM", into=("1D", "2D"), fr=tr("Type de Structure 1D ou 2D")
             ),

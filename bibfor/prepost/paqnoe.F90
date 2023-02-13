@@ -89,7 +89,7 @@ subroutine paqnoe(nomsd, nomu, nommai, nommet, nomcri, &
 !
     character(len=1) :: kbid
     character(len=4) :: lsig(6), leps(6)
-    character(len=8) :: k8b, lresu(24), motcle(4), tymocl(4)
+    character(len=8) :: k8b, lresu(24), motcle(2), tymocl(2)
     character(len=16) :: typres, nomopt
     character(len=19) :: cnsr, lisnoe, cheppe, cns7, cns8
     character(len=19) :: chsig, cheps, cns1, cns2, cns3, cns4, chsig1, chsig2
@@ -214,14 +214,10 @@ subroutine paqnoe(nomsd, nomu, nommai, nommet, nomcri, &
     lisnoe = '&&PAQNOE.L_NOEUDS'
     motcle(1) = 'GROUP_MA'
     tymocl(1) = 'GROUP_MA'
-    motcle(2) = 'MAILLE'
-    tymocl(2) = 'MAILLE'
-    motcle(3) = 'GROUP_NO'
-    tymocl(3) = 'GROUP_NO'
-    motcle(4) = 'NOEUD'
-    tymocl(4) = 'NOEUD'
+    motcle(2) = 'GROUP_NO'
+    tymocl(2) = 'GROUP_NO'
     call reliem(' ', nommai, 'NU_NOEUD', ' ', 0, &
-                4, motcle, tymocl, lisnoe, nbno)
+                2, motcle, tymocl, lisnoe, nbno)
     call jeveuo(lisnoe, 'L', jnoeu)
 !
     write (6, *) 'NOMBRE TOTAL DE NOEUDS A TRAITER ==>', nbno

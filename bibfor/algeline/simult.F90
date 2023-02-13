@@ -98,41 +98,28 @@ subroutine simult()
 !
 !     --- ON RECUPERE LES POINTS D'ANCRAGE ---
 !
-    call getvem(mailla, 'NOEUD', ' ', 'NOEUD', 0, &
-                0, kbid, nbno)
-    if (nbno .ne. 0) then
+    call getvem(mailla, 'GROUP_NO', ' ', 'GROUP_NO', 0, &
+                0, kbid, nbgr)
+    nbgr = -nbgr
+    AS_ALLOCATE(vk24=group_no, size=nbgr)
+    call getvem(mailla, 'GROUP_NO', ' ', 'GROUP_NO', 0, &
+                nbgr, group_no, nbv)
 !
-!        --- ON RECUPERE UNE LISTE DE NOEUD ---
-        nbno = -nbno
-        call wkvect('&&SIMULT.NOEUD', 'V V K8', nbno, idno)
-        call getvem(mailla, 'NOEUD', ' ', 'NOEUD', 0, &
-                    nbno, zk8(idno), nbv)
-    else
-!
-!        --- ON RECUPERE UNE LISTE DE GROUP_NO ---
-        call getvem(mailla, 'GROUP_NO', ' ', 'GROUP_NO', 0, &
-                    0, kbid, nbgr)
-        nbgr = -nbgr
-        AS_ALLOCATE(vk24=group_no, size=nbgr)
-        call getvem(mailla, 'GROUP_NO', ' ', 'GROUP_NO', 0, &
-                    nbgr, group_no, nbv)
-!
-!        --- ECLATE LE GROUP_NO EN NOEUD ---
-        call compno(mailla, nbgr, group_no, nbno)
-        call wkvect('&&SIMULT.NOEUD', 'V V K8', nbno, idno)
-        magrno = mailla//'.GROUPENO'
-        manono = mailla//'.NOMNOE'
-        ii = -1
-        do i = 1, nbgr
-            call jelira(jexnom(magrno, group_no(i)), 'LONUTI', nb)
-            call jeveuo(jexnom(magrno, group_no(i)), 'L', ldgn)
-            do in = 0, nb-1
-                call jenuno(jexnum(manono, zi(ldgn+in)), nomnoe)
-                ii = ii+1
-                zk8(idno+ii) = nomnoe
-            end do
+!    --- ECLATE LE GROUP_NO EN NOEUD ---
+    call compno(mailla, nbgr, group_no, nbno)
+    call wkvect('&&SIMULT.NOEUD', 'V V K8', nbno, idno)
+    magrno = mailla//'.GROUPENO'
+    manono = mailla//'.NOMNOE'
+    ii = -1
+    do i = 1, nbgr
+        call jelira(jexnom(magrno, group_no(i)), 'LONUTI', nb)
+        call jeveuo(jexnom(magrno, group_no(i)), 'L', ldgn)
+        do in = 0, nb-1
+            call jenuno(jexnum(manono, zi(ldgn+in)), nomnoe)
+            ii = ii+1
+            zk8(idno+ii) = nomnoe
         end do
-    end if
+    end do
     call simul2(resu, nomcmd, masse, modsta, nbdir, &
                 depl, zk8(idno), nbno)
 !

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -34,9 +34,7 @@ CALC_SPECTRE_IPM = MACRO(
             statut="o",
             max="**",
             NOM=SIMP(statut="o", typ="TXM"),
-            regles=(AU_MOINS_UN("GROUP_NO", "NOEUD"),),
-            GROUP_NO=SIMP(statut="f", typ=grno, validators=NoRepeat(), max="**"),
-            NOEUD=SIMP(statut="c", typ=no, validators=NoRepeat(), max="**"),
+            GROUP_NO=SIMP(statut="o", typ=grno, validators=NoRepeat(), max="**"),
             RAPPORT_MASSE_TOTALE=SIMP(statut="o", typ="R", max=1),
             COEF_MASS_EQUIP=SIMP(statut="o", typ="R", max="**"),
             FREQ_SUPPORT=SIMP(statut="o", typ="R", max=1),

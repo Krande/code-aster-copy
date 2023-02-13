@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -73,7 +73,6 @@ DEFI_SQUELETTE = OPER(
     ),
     EXCLUSIF=SIMP(statut="f", typ="TXM", defaut="NON", into=("OUI", "NON")),
     MAILLAGE=SIMP(statut="f", typ=maillage_sdaster),
-    MAILLE=SIMP(statut="c", typ=ma, validators=NoRepeat(), max="**"),
     GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
     TOUT=SIMP(statut="f", typ="TXM", into=("OUI",)),
     TRANS=SIMP(statut="f", typ="R", min=3, max=3),
@@ -81,16 +80,14 @@ DEFI_SQUELETTE = OPER(
     SOUS_STRUC=FACT(
         statut="f",
         max="**",
-        regles=(UN_PARMI("TOUT", "MAILLE", "GROUP_MA"),),
+        regles=(UN_PARMI("TOUT", "GROUP_MA"),),
         NOM=SIMP(statut="o", typ="TXM"),
-        MAILLE=SIMP(statut="c", typ=ma, validators=NoRepeat(), max="**"),
         GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
         TOUT=SIMP(statut="f", typ="TXM", into=("OUI",)),
     ),
     SECTEUR=FACT(
         statut="f",
         max="**",
-        MAILLE=SIMP(statut="c", typ=ma, validators=NoRepeat(), max="**"),
         GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
         TOUT=SIMP(statut="f", typ="TXM", into=("OUI",)),
     ),

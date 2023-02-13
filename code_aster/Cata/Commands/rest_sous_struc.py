@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -67,7 +67,6 @@ REST_SOUS_STRUC = OPER(
         ),
         #  Doc U à revoir
         EXCLUS("NOEUD", "GROUP_NO"),
-        EXCLUS("MAILLE", "GROUP_MA"),
         PRESENT_PRESENT("RESULTAT", "SQUELETTE"),
         UN_PARMI("SQUELETTE", "SOUS_STRUC", "SECTEUR"),
     ),
@@ -116,7 +115,6 @@ REST_SOUS_STRUC = OPER(
     GROUP_NO=SIMP(statut="f", typ=grno, validators=NoRepeat(), max="**"),
     NOEUD=SIMP(statut="c", typ=no, validators=NoRepeat(), max="**"),
     GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
-    MAILLE=SIMP(statut="c", typ=ma, validators=NoRepeat(), max="**"),
     CYCLIQUE=FACT(
         statut="f",
         NB_SECTEUR=SIMP(statut="f", typ="I", max=1),

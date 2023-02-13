@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -722,13 +722,9 @@ POST_RCCM = OPER(
         ZONE_ANALYSE=FACT(
             statut="o",
             fr=tr("liste des mailles ou des noeuds analysés"),
-            regles=(
-                PRESENT_ABSENT("TOUT", "GROUP_MA", "MAILLE"),
-                AU_MOINS_UN("TOUT", "GROUP_MA", "MAILLE"),
-            ),
+            regles=(UN_PARMI("TOUT", "GROUP_MA"),),
             TOUT=SIMP(statut="f", typ="TXM", into=("OUI",)),
             GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
-            MAILLE=SIMP(statut="c", typ=ma, validators=NoRepeat(), max="**"),
         ),
         b_momeq=BLOC(
             condition="""equal_to("OPTION", 'MOMENT_EQUIVALENT')""",
@@ -814,10 +810,7 @@ POST_RCCM = OPER(
                 statut="o",
                 max="**",
                 fr=tr("indices de contraintes"),
-                regles=(
-                    PRESENT_ABSENT("TOUT", "GROUP_MA", "MAILLE"),
-                    AU_MOINS_UN("TOUT", "GROUP_MA", "MAILLE"),
-                ),
+                regles=(UN_PARMI("TOUT", "GROUP_MA"),),
                 C1=SIMP(statut="f", typ="R", defaut=1.0, fr=tr("indice de contraintes C1 du RCCM")),
                 K1=SIMP(statut="f", typ="R", defaut=1.0, fr=tr("indice de contraintes K1 du RCCM")),
                 C2=SIMP(statut="f", typ="R", defaut=1.0, fr=tr("indice de contraintes C2 du RCCM")),
@@ -842,7 +835,6 @@ POST_RCCM = OPER(
                 b_grma=BLOC(
                     condition="""(exists("GROUP_MA"))or(exists("MAILLE"))""",
                     GROUP_NO=SIMP(statut="f", typ=grno, validators=NoRepeat(), max="**"),
-                    NOEUD=SIMP(statut="c", typ=no, validators=NoRepeat(), max="**"),
                 ),
                 TYPE_ELEM_STANDARD=SIMP(
                     statut="f",
@@ -857,10 +849,7 @@ POST_RCCM = OPER(
                 statut="f",
                 max="**",
                 fr=tr("resultats thermiques"),
-                regles=(
-                    PRESENT_ABSENT("TOUT", "GROUP_MA", "MAILLE"),
-                    AU_MOINS_UN("TOUT", "GROUP_MA", "MAILLE"),
-                ),
+                regles=(UN_PARMI("TOUT", "GROUP_MA"),),
                 NUME_RESU_THER=SIMP(
                     statut="o", typ="I", fr=tr("numéro de la table de résultat thermique")
                 ),
@@ -874,11 +863,9 @@ POST_RCCM = OPER(
                 ),
                 TOUT=SIMP(statut="f", typ="TXM", into=("OUI",)),
                 GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
-                MAILLE=SIMP(statut="c", typ=ma, validators=NoRepeat(), max="**"),
                 b_grma=BLOC(
-                    condition="""(exists("GROUP_MA"))or(exists("MAILLE"))""",
+                    condition="""(exists("GROUP_MA"))""",
                     GROUP_NO=SIMP(statut="f", typ=grno, validators=NoRepeat(), max="**"),
-                    NOEUD=SIMP(statut="c", typ=no, validators=NoRepeat(), max="**"),
                 ),
             ),
             SEISME=FACT(
