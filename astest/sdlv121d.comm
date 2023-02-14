@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -56,13 +56,19 @@ CHAMPMAT = AFFE_MATERIAU(
 
 FONCD = CALC_FONCTION(INTEGRE=_F(FONCTION=FONCT), PROL_DROITE="CONSTANT", PROL_GAUCHE="CONSTANT")
 
+x0 = 0.0
+z0 = -50.0
+
+x1 = 0.0
+z1 = 0.0
+
 ONDE = AFFE_CHAR_MECA_F(
     MODELE=MODELE,
     ONDE_PLANE=_F(
         DIRECTION=(0.0, 1.0, 0.0),
         TYPE_ONDE="S",
-        DIST=-50.0,
-        DIST_REFLECHI=0.0,
+        COOR_SOURCE=(x0, z0),
+        COOR_REFLECHI=(x1, z1),
         DEPL_IMPO=FONCD,
         FONC_SIGNAL=FONCT,
         GROUP_MA="CONTOUR",

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -54,14 +54,22 @@ CHMAT = AFFE_MATERIAU(MAILLAGE=MA, AFFE=_F(TOUT="OUI", MATER=MAT))
 
 sinus = FORMULE(VALE="sin(4*INST*pi*2.)", NOM_PARA="INST")
 
+x0 = 0.0
+y0 = 0.0
+z0 = 0.0
+
+x1 = 0.0
+y1 = 0.0
+z1 = 0.5
+
 ONDE = AFFE_CHAR_MECA_F(
     MODELE=MO,
     ONDE_PLANE=_F(
         DIRECTION=(0.0, 0.0, 1.0),
         TYPE_ONDE="P",
         FONC_SIGNAL=sinus,
-        DIST=0.0,
-        DIST_REFLECHI=0.5,
+        COOR_SOURCE=(x0, y0, z0),
+        COOR_REFLECHI=(x1, y1, z1),
         GROUP_MA=("COTE_H",),
     ),
 )

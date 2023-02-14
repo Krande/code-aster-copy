@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -137,8 +137,6 @@ ASSEMBLAGE(
     ),
 )
 
-# INCLUDE(UNITE=28,)
-
 from sdls140a import F_FONC
 
 sinus = F_FONC()
@@ -148,6 +146,11 @@ LINST2 = DEFI_LIST_REEL(DEBUT=0.5, INTERVALLE=_F(JUSQU_A=1.0, PAS=0.005))
 
 d_sinus = CALC_FONCTION(DERIVE=_F(FONCTION=sinus), PROL_GAUCHE="CONSTANT", PROL_DROITE="CONSTANT")
 
+x0 = -200.0
+z0 = -200.0
+
+x1 = -200.0
+z1 = 0.0
 
 ONDES = AFFE_CHAR_MECA_F(
     MODELE=MODELE,
@@ -155,8 +158,8 @@ ONDES = AFFE_CHAR_MECA_F(
         DIRECTION=(0.0, 1.0, 0),
         TYPE_ONDE="S",
         FONC_SIGNAL=d_sinus,
-        DIST=-200.0,
-        DIST_REFLECHI=0.0,
+        COOR_SOURCE=(x0, z0),
+        COOR_REFLECHI=(x1, z1),
         DEPL_IMPO=sinus,
         GROUP_MA="FOND",
     ),
@@ -169,8 +172,8 @@ ONDEP1 = AFFE_CHAR_MECA_F(
         DIRECTION=(0.0, 1.0, 0),
         TYPE_ONDE="P",
         FONC_SIGNAL=d_sinus,
-        DIST=-200.0,
-        DIST_REFLECHI=0.0,
+        COOR_SOURCE=(x0, z0),
+        COOR_REFLECHI=(x1, z1),
         DEPL_IMPO=sinus,
         GROUP_MA="FOND_SS",
     ),
@@ -182,8 +185,8 @@ ONDEP2 = AFFE_CHAR_MECA_F(
         DIRECTION=(0.0, 1.0, 0),
         TYPE_ONDE="P",
         FONC_SIGNAL=d_sinus,
-        DIST=-200.0,
-        DIST_REFLECHI=0.0,
+        COOR_SOURCE=(x0, z0),
+        COOR_REFLECHI=(x1, z1),
         DEPL_IMPO=sinus,
         GROUP_MA=("FOND_RG", "FOND_RD"),
     ),
@@ -392,17 +395,24 @@ ONDESBL = AFFE_CHAR_MECA_F(
         DIRECTION=(0.0, 1.0, 0),
         TYPE_ONDE="S",
         FONC_SIGNAL=d_sinus,
-        DIST=-200.0,
-        DIST_REFLECHI=0.0,
+        COOR_SOURCE=(x0, z0),
+        COOR_REFLECHI=(x1, z1),
         DEPL_IMPO=sinus,
         GROUP_MA="LATE",
     ),
 )
 
-sina = 0.2
-cosa = 0.9798
+from math import *
 
-dist = -200.0 * (sina + cosa)
+sina = 0.2
+
+
+a2 = asin(sina)
+cosa = cos(a2)
+
+# cosa = 0.9798
+
+# dist = -200.0 * (sina + cosa)
 
 ONDESBF = AFFE_CHAR_MECA_F(
     MODELE=MODELE,
@@ -410,7 +420,7 @@ ONDESBF = AFFE_CHAR_MECA_F(
         DIRECTION=(sina, cosa, 0),
         TYPE_ONDE="S",
         FONC_SIGNAL=d_sinus,
-        DIST=dist,
+        COOR_SOURCE=(x0, z0),
         DEPL_IMPO=sinus,
         GROUP_MA="FOND_SS",
     ),
@@ -478,11 +488,11 @@ maxS2 = CREA_CHAMP(
 
 TEST_RESU(
     CHAM_NO=(
-        _F(CHAM_GD=maxS2, NOM_CMP="DX", GROUP_NO="N785", VALE_CALC=1.277849673384756),
-        _F(CHAM_GD=maxS2, NOM_CMP="DX", GROUP_NO="N408", VALE_CALC=2.3837295018962523),
-        _F(CHAM_GD=maxS2, NOM_CMP="DY", GROUP_NO="N408", VALE_CALC=2.0474983989909132),
-        _F(CHAM_GD=maxS2, NOM_CMP="DX", GROUP_NO="N775", VALE_CALC=1.0631774271691519),
-        _F(CHAM_GD=maxS2, NOM_CMP="DY", GROUP_NO="N775", VALE_CALC=0.8872550186120395),
+        _F(CHAM_GD=maxS2, NOM_CMP="DX", GROUP_NO="N785", VALE_CALC=1.2778460574413948),
+        _F(CHAM_GD=maxS2, NOM_CMP="DX", GROUP_NO="N408", VALE_CALC=2.3837174028125854),
+        _F(CHAM_GD=maxS2, NOM_CMP="DY", GROUP_NO="N408", VALE_CALC=2.04750205238328),
+        _F(CHAM_GD=maxS2, NOM_CMP="DX", GROUP_NO="N775", VALE_CALC=1.0631661625055564),
+        _F(CHAM_GD=maxS2, NOM_CMP="DY", GROUP_NO="N775", VALE_CALC=0.8872476649196436),
     )
 )
 

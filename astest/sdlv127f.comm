@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -56,40 +56,20 @@ from math import *
 
 # Coordonnées du point de départ de l'onde.
 z0 = -200.0
-x0 = 0
+x0 = 0.0
+y0 = 0.0
+
+
+z1 = 0.0
+x1 = 0.0
+y1 = 0.0
 
 # Angle d'incidence par rapport à la verticale de propagation de l'onde (0=vertical)
 a = 21
-# a=0.
 
 a2 = radians(a)
 cosa = cos(a2)
 sina = sin(a2)
-
-# Calcul du rapport des célérités des ondes de cisaillement (c2) et de compression (c1).
-Rc1c2 = sqrt(2 + 2 * Nusol / (1 - 2 * Nusol))
-
-# Calcul de l'angle réflexion de l'onde SV réfléchie.
-b2 = asin(sina / Rc1c2)
-
-cosb2 = cos(b2)
-sinb2 = sin(b2)
-
-# Coefficients de réflexions (Calcul intégré au script).
-k = 1 / Rc1c2
-N = (k) ** 2 * sin(2 * b2) * sin(2 * a2) + cos(2 * b2) ** 2
-
-RA12 = (k**2 * sin(2 * a2) * sin(2 * b2) - cos(2 * b2) ** 2) / N
-RA13 = 2 * k * sin(2 * a2) * cos(2 * b2) / N
-
-# Calcul des bons paramètres dist à insérer dans le calcul.
-dist = x0 * sina + z0 * cosa
-dist2 = x0 * sina + (-z0) * (-cosa)
-
-zsv = cosb2 * (-z0) / Rc1c2 / cosa
-xsv = (sina / cosa) * (-z0) - sinb2 * (-z0) / Rc1c2 / cosa
-
-dist3 = xsv * sinb2 + zsv * (-cosb2)
 
 # Sollicitation en acceleration
 
@@ -269,8 +249,8 @@ ONDEP = AFFE_CHAR_MECA_F(
         DIRECTION=(sina, 0.000, cosa),
         TYPE_ONDE="P",
         FONC_SIGNAL=vite_1,
-        DIST=dist,
-        DIST_REFLECHI=0.0,
+        COOR_SOURCE=(x0, y0, z0),
+        COOR_REFLECHI=(x1, y1, z1),
         DEPL_IMPO=depl_1,
         GROUP_MA=("SUB", "SUD", "SUG"),
     ),
@@ -283,8 +263,8 @@ ONDESV = AFFE_CHAR_MECA_F(
         DIRECTION=(sina, 0.000, cosa),
         TYPE_ONDE="SV",
         FONC_SIGNAL=vite_1,
-        DIST=dist,
-        DIST_REFLECHI=0.0,
+        COOR_SOURCE=(x0, y0, z0),
+        COOR_REFLECHI=(x1, y1, z1),
         DEPL_IMPO=depl_1,
         GROUP_MA=("SUG", "SUD", "SUB"),
     ),

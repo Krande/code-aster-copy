@@ -60,7 +60,7 @@ subroutine te0498(option, nomte)
     real(kind=8) :: sigma(3, 3), epsi(3, 3), grad(3, 3), valfon
     real(kind=8) :: xgg(9), ygg(9), zgg(9), vondn(3), vondt(3), uondn(3), uondt(3)
     real(kind=8) :: a2, b2, sina, cosa, cosg, sing, sinb2, cosb2, rc1c2, ra12, ra13, kr, nr
-    real(kind=8) :: xsv, zsv, ysv, dist1, dist2, instd1, instd2, x0, y0, z0, z1
+    real(kind=8) :: xsv, zsv, ysv, dist1, dist2, instd1, instd2, x0, y0, z0, x1, y1, z1
     real(kind=8) :: valfon1, valfon2, param1, param2
     integer :: icodre(5), ndim2
     character(len=2) :: type
@@ -114,10 +114,12 @@ subroutine te0498(option, nomte)
     diry = zr(iondc+1)
     dirz = zr(iondc+2)
     typer = zr(iondc+3)
-    h = zr(iondc+4)
-    h2 = zr(iondc+5)
-    x0 = zr(iondc+6)
-    y0 = zr(iondc+7)
+    x0 = zr(iondc+4)
+    y0 = zr(iondc+5)
+    z0 = zr(iondc+6)
+    x1 = zr(iondc+7)
+    y1 = zr(iondc+8)
+    z1 = zr(iondc+9)
 !
     if (typer .eq. 0.d0) type = 'P'
     if (typer .eq. 1.d0) type = 'SV'
@@ -129,6 +131,17 @@ subroutine te0498(option, nomte)
     dirx = dirx/norm
     diry = diry/norm
     dirz = dirz/norm
+
+    if (x0 .ne. r8vide()) then
+        h = x0*dirx+y0*diry+z0*dirz
+        if (x1 .ne. r8vide()) then
+            h2 = x1*dirx+y1*diry+z1*dirz
+        else
+            h2 = r8vide()
+        end if
+    else
+        h = r8vide()
+    end if
 !
 !     CALCUL DU REPERE ASSOCIE A L'ONDE
     tanx = diry
@@ -295,7 +308,6 @@ subroutine te0498(option, nomte)
             ra12 = (kr**2*sin(2.d0*a2)*sin(2.d0*b2)-cos(2.d0*b2)**2)/nr
             ra13 = 2.d0*kr*sin(2.d0*a2)*cos(2.d0*b2)/nr
         else if (type .eq. 'SV') then
-!          b2=asin(sina*rc1c2)
             b2 = trigom('ASIN', sina*rc1c2*coef_dse)
             cosb2 = cos(b2)
             sinb2 = sin(b2)
@@ -316,11 +328,10 @@ subroutine te0498(option, nomte)
         end if
 
 ! Calcul des bons paramètres dist à insérer dans le calcul.
+
         if (h .ne. r8vide()) then
             if (h2 .ne. r8vide()) then
                 if (abs(cosa) .gt. 0.d0) then
-                    z0 = (h-x0*sina*cosg-y0*sina*sing)/cosa
-                    z1 = (h2-x0*sina*cosg-y0*sina*sing)/cosa
                     dist1 = x0*sina*cosg+y0*sina*sing+(2.d0*z1-z0)*(-cosa)
                     if (type .eq. 'P') then
                         zsv = z1+cosb2*(z1-z0)/rc1c2/cosa
@@ -764,12 +775,12 @@ subroutine te0498(option, nomte)
 !
         do i = 1, nno
             ii = 3*i-2
-            zr(ires+ii-1) = zr(ires+ii-1)+(taux+coedir*taondx)*zr(ivf+ldec+i-1)*jac*zr(ipoids+&
-                            &ipg-1)
-            zr(ires+ii+1-1) = zr(ires+ii+1-1)+(tauy+coedir*taondy)*zr(ivf+ldec+i-1)*jac*zr(ipo&
-                              &ids+ipg-1)
-            zr(ires+ii+2-1) = zr(ires+ii+2-1)+(tauz+coedir*taondz)*zr(ivf+ldec+i-1)*jac*zr(ipo&
-                              &ids+ipg-1)
+            zr(ires+ii-1) = zr(ires+ii-1)+(taux+coedir*taondx)*&
+                            &zr(ivf+ldec+i-1)*jac*zr(ipoids+ipg-1)
+            zr(ires+ii+1-1) = zr(ires+ii+1-1)+(tauy+coedir*taondy)*&
+                              &zr(ivf+ldec+i-1)*jac*zr(ipoids+ipg-1)
+            zr(ires+ii+2-1) = zr(ires+ii+2-1)+(tauz+coedir*taondz)*&
+                              &zr(ivf+ldec+i-1)*jac*zr(ipoids+ipg-1)
         end do
 !
     end do

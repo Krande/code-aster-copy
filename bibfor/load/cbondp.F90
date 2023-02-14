@@ -65,11 +65,11 @@ subroutine cbondp(load, mesh, ndim, valeType)
     real(kind=8) :: r8dummy
     character(len=8) :: k8dummy
     character(len=16) :: k16dummy
-    real(kind=8) :: wave_dire(3), coor_vect(2), wave_type_r, dist
+    real(kind=8) :: wave_dire(3), point_source(3), point_reflechi(3), wave_type_r
     character(len=8) :: signal, signde
     character(len=16) :: wave_type
     integer :: jvalv
-    integer :: iocc, ndir, val_nb, nondp, ncoor
+    integer :: iocc, ndir, val_nb, nondp
     integer :: jvCell
     integer :: nbCell
     character(len=19) :: map(LOAD_MAP_NBMAX)
@@ -164,30 +164,38 @@ subroutine cbondp(load, mesh, ndim, valeType)
             zr(jvalv-1+2) = wave_dire(2)
             zr(jvalv-1+3) = wave_dire(3)
             zr(jvalv-1+4) = wave_type_r
+
+! --------- Get source point coordinates
             zr(jvalv-1+5) = r8vide()
             zr(jvalv-1+6) = r8vide()
-            call getvr8(keywordfact, 'DIST', iocc=iocc, &
-                        nbval=0, nbret=ndir)
+            zr(jvalv-1+7) = r8vide()
+            call getvr8(keywordfact, 'COOR_SOURCE', iocc=iocc, nbval=0, nbret=ndir)
+            ndir = -ndir
             if (ndir .ne. 0) then
-                call getvr8(keywordfact, 'DIST', iocc=iocc, scal=dist)
-                zr(jvalv-1+5) = dist
+                call getvr8(keywordfact, 'COOR_SOURCE', iocc=iocc,&
+                            &nbval=ndir, vect=point_source)
+                zr(jvalv-1+5) = point_source(1)
+                zr(jvalv-1+6) = point_source(2)
+                if (ndim .eq. 3) then
+                    zr(jvalv-1+7) = point_source(3)
+                end if
             end if
-            call getvr8(keywordfact, 'DIST_REFLECHI', iocc=iocc, &
-                        nbval=0, nbret=ndir)
+
+! --------- Get reflection point coordinates
+            zr(jvalv-1+8) = r8vide()
+            zr(jvalv-1+9) = r8vide()
+            zr(jvalv-1+10) = r8vide()
+            call getvr8(keywordfact, 'COOR_REFLECHI', iocc=iocc, nbval=0, nbret=ndir)
+            ndir = -ndir
             if (ndir .ne. 0) then
-                call getvr8(keywordfact, 'DIST_REFLECHI', iocc=iocc, &
-                            scal=dist)
-                zr(jvalv-1+6) = dist
+                call getvr8(keywordfact, 'COOR_REFLECHI', iocc=iocc,&
+                            &nbval=ndir, vect=point_reflechi)
+                zr(jvalv-1+8) = point_reflechi(1)
+                zr(jvalv-1+9) = point_reflechi(2)
+                if (ndim .eq. 3) then
+                    zr(jvalv-1+10) = point_reflechi(3)
+                end if
             end if
-            coor_vect(1) = r8vide()
-            coor_vect(2) = r8vide()
-            call getvr8(keywordfact, 'COOR_REFE', iocc=iocc, nbval=0, nbret=ncoor)
-            ncoor = -ncoor
-            if (ncoor .ne. 0) then
-                call getvr8(keywordfact, 'COOR_REFE', iocc=iocc, nbval=ncoor, vect=coor_vect)
-            end if
-            zr(jvalv-1+7) = coor_vect(1)
-            zr(jvalv-1+8) = coor_vect(2)
 
             call nocart(map(2), 3, nbCmp(2), mode='NUM', nma=nbCell, &
                         limanu=zi(jvCell))

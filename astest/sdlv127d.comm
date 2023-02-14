@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -66,9 +66,6 @@ a2 = radians(a)
 cosa = cos(a2)
 sina = sin(a2)
 
-
-# Calcul des bons paramètres dist à insérer dans le calcul.
-dist = x0 * sina + y0 * cosa
 
 # Longueur du modèle en direction X
 Lt = 400.0
@@ -251,7 +248,7 @@ ONDEP = AFFE_CHAR_MECA_F(
         DIRECTION=(sina, cosa, 0.0),
         TYPE_ONDE="P",
         FONC_SIGNAL=vite_1,
-        DIST=dist,
+        COOR_SOURCE=(x0, y0),
         DEPL_IMPO=depl_1,
         GROUP_MA=("LITOT"),
     ),
@@ -263,7 +260,7 @@ ONDEP0 = AFFE_CHAR_MECA_F(
         DIRECTION=(sina, cosa, 0.0),
         TYPE_ONDE="P",
         FONC_SIGNAL=vite_1,
-        DIST=dist,
+        COOR_SOURCE=(x0, y0),
         DEPL_IMPO=depl_1,
         GROUP_MA=("LIB"),
     ),
@@ -276,7 +273,7 @@ ONDES = AFFE_CHAR_MECA_F(
         DIRECTION=(sina, cosa, 0.0),
         TYPE_ONDE="S",
         FONC_SIGNAL=vite_1,
-        DIST=dist,
+        COOR_SOURCE=(x0, y0),
         DEPL_IMPO=depl_1,
         GROUP_MA=("LITOT"),
     ),
@@ -287,7 +284,7 @@ ONDES0 = AFFE_CHAR_MECA_F(
         DIRECTION=(sina, cosa, 0.0),
         TYPE_ONDE="S",
         FONC_SIGNAL=vite_1,
-        DIST=dist,
+        COOR_SOURCE=(x0, y0),
         DEPL_IMPO=depl_1,
         GROUP_MA=("LIB"),
     ),

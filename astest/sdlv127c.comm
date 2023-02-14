@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -56,25 +56,21 @@ sol = DEFI_MATERIAU(ELAS=_F(E=Esol, NU=Nusol, RHO=Msol))
 from math import *
 
 # Coordonnées du point de départ de l'onde.
-# z0=-400.
 z0 = -200.0
-x0 = 0
+y0 = 0.0
+x0 = 0.0
 
 # Angle d'incidence par rapport à la verticale de propagation de l'onde (0=vertical)
-a = 21
+a = 21.0
 
 a2 = radians(a)
 cosa = cos(a2)
 sina = sin(a2)
 
-# Calcul des bons paramètres dist à insérer dans le calcul.
-dist = x0 * sina + z0 * cosa
-
 # Longueur du modèle en direction X
 Lt = 400.0
 
 # Sollicitation en acceleration
-# INCLUDE(UNITE=38,)
 
 LINST = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=_F(JUSQU_A=0.3, PAS=0.002))  # 1,
 
@@ -297,7 +293,7 @@ ONDEP = AFFE_CHAR_MECA_F(
         DIRECTION=(sina, 0.000, cosa),
         TYPE_ONDE="P",
         FONC_SIGNAL=vite_1,
-        DIST=dist,
+        COOR_SOURCE=(x0, y0, z0),
         DEPL_IMPO=depl_1,
         GROUP_MA=("SUB", "SUD", "SUG"),
     ),
@@ -309,7 +305,7 @@ ONDEP0 = AFFE_CHAR_MECA_F(
         DIRECTION=(sina, 0.000, cosa),
         TYPE_ONDE="P",
         FONC_SIGNAL=vite_1,
-        DIST=dist,
+        COOR_SOURCE=(x0, y0, z0),
         DEPL_IMPO=depl_1,
         GROUP_MA=("SUB"),
     ),
@@ -323,7 +319,7 @@ ONDESV = AFFE_CHAR_MECA_F(
         DIRECTION=(sina, 0.000, cosa),
         TYPE_ONDE="SV",
         FONC_SIGNAL=vite_1,
-        DIST=dist,
+        COOR_SOURCE=(x0, y0, z0),
         DEPL_IMPO=depl_1,
         GROUP_MA=("SUG", "SUD", "SUB"),
     ),
@@ -335,7 +331,7 @@ ONDESV0 = AFFE_CHAR_MECA_F(
         DIRECTION=(sina, 0.000, cosa),
         TYPE_ONDE="SV",
         FONC_SIGNAL=vite_1,
-        DIST=dist,
+        COOR_SOURCE=(x0, y0, z0),
         DEPL_IMPO=depl_1,
         GROUP_MA=("SUB",),
     ),

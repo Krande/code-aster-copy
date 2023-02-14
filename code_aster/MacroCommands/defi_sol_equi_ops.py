@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -1711,7 +1711,7 @@ def defi_sol_equi_ops(self, TITRE=None, INFO=None, **args):
                         ONDE_PLANE=_F(
                             DIRECTION=(0.0, 1.0, 0.0),
                             TYPE_ONDE="S",
-                            DIST=-1.0 * __TMAT["Y", NCOU + 1],
+                            COOR_SOURCE=(0.0, -1.0 * __TMAT["Y", NCOU + 1]),
                             FONC_SIGNAL=__VITEX[0],
                             GROUP_MA=grma_subst,
                         ),
@@ -1724,7 +1724,7 @@ def defi_sol_equi_ops(self, TITRE=None, INFO=None, **args):
                                 ONDE_PLANE=_F(
                                     DIRECTION=(0.0, 1.0, 0.0),
                                     TYPE_ONDE="S",
-                                    DIST=-1.0 * __TMAT["Y", NCOU + 1],  # DIST_REFLECHI=0.,
+                                    COOR_SOURCE=(0.0, -1.0 * __TMAT["Y", NCOU + 1]),
                                     FONC_SIGNAL=__VITEX[0],
                                     GROUP_MA=(grma_subst,),
                                 ),
@@ -1748,7 +1748,7 @@ def defi_sol_equi_ops(self, TITRE=None, INFO=None, **args):
                                 ONDE_PLANE=_F(
                                     DIRECTION=(0.0, 1.0, 0.0),
                                     TYPE_ONDE="S",
-                                    DIST=-1.0 * __TMAT["Y", NCOU + 1],
+                                    COOR_SOURCE=(0.0, -1.0 * __TMAT["Y", NCOU + 1]),
                                     FONC_SIGNAL=__VITEX[0],
                                     GROUP_MA=grma_subst,
                                 ),
@@ -1759,8 +1759,8 @@ def defi_sol_equi_ops(self, TITRE=None, INFO=None, **args):
                             ONDE_PLANE=_F(
                                 DIRECTION=(0.0, 1.0, 0.0),
                                 TYPE_ONDE="S",
-                                DIST=-1.0 * __TMAT["Y", NCOU + 1],
-                                DIST_REFLECHI=0.0,
+                                COOR_SOURCE=(0.0, -1.0 * __TMAT["Y", NCOU + 1]),
+                                COOR_REFLECHI=(0.0, 0.0),
                                 FONC_SIGNAL=__VITEX[0],
                                 GROUP_MA=(grma_subst, grma_gauch, grma_droit),
                             ),
@@ -1775,7 +1775,7 @@ def defi_sol_equi_ops(self, TITRE=None, INFO=None, **args):
                         ONDE_PLANE=_F(
                             DIRECTION=(0.0, 1.0, 0.0),
                             TYPE_ONDE="P",
-                            DIST=-1.0 * __TMAT["Y", NCOU + 1],
+                            COOR_SOURCE=(0.0, -1.0 * __TMAT["Y", NCOU + 1]),
                             FONC_SIGNAL=__VITEX[0],
                             GROUP_MA=grma_subst,
                         ),
@@ -1788,7 +1788,7 @@ def defi_sol_equi_ops(self, TITRE=None, INFO=None, **args):
                                 ONDE_PLANE=_F(
                                     DIRECTION=(0.0, 1.0, 0.0),
                                     TYPE_ONDE="P",
-                                    DIST=-1.0 * __TMAT["Y", NCOU + 1],  # DIST_REFLECHI=0.,
+                                    COOR_SOURCE=(0.0, -1.0 * __TMAT["Y", NCOU + 1]),
                                     FONC_SIGNAL=__VITEX[0],
                                     GROUP_MA=(grma_subst,),
                                 ),
@@ -1812,7 +1812,7 @@ def defi_sol_equi_ops(self, TITRE=None, INFO=None, **args):
                                 ONDE_PLANE=_F(
                                     DIRECTION=(0.0, 1.0, 0.0),
                                     TYPE_ONDE="P",
-                                    DIST=-1.0 * __TMAT["Y", NCOU + 1],
+                                    COOR_SOURCE=(0.0, -1.0 * __TMAT["Y", NCOU + 1]),
                                     FONC_SIGNAL=__VITEX[0],
                                     GROUP_MA=grma_subst,
                                 ),
@@ -1823,8 +1823,8 @@ def defi_sol_equi_ops(self, TITRE=None, INFO=None, **args):
                             ONDE_PLANE=_F(
                                 DIRECTION=(0.0, 1.0, 0.0),
                                 TYPE_ONDE="P",
-                                DIST=-1.0 * __TMAT["Y", NCOU + 1],
-                                DIST_REFLECHI=0.0,
+                                COOR_SOURCE=(0.0, -1.0 * __TMAT["Y", NCOU + 1]),
+                                COOR_REFLECHI=(0.0, 0.0),
                                 FONC_SIGNAL=__VITEX[0],
                                 GROUP_MA=(grma_subst, grma_gauch, grma_droit),
                             ),
@@ -1846,7 +1846,7 @@ def defi_sol_equi_ops(self, TITRE=None, INFO=None, **args):
                     ONDE_PLANE=_F(
                         DIRECTION=(0.0, 1.0, 0.0),
                         TYPE_ONDE="P",
-                        DIST=-1.0 * __TMAT["Y", NCOU + 1],
+                        COOR_SOURCE=(0.0, -1.0 * __TMAT["Y", NCOU + 1]),
                         FONC_SIGNAL=__VITEX[1],
                         GROUP_MA=grma_subst,
                     ),
@@ -1856,7 +1856,7 @@ def defi_sol_equi_ops(self, TITRE=None, INFO=None, **args):
                     ONDE_PLANE=_F(
                         DIRECTION=(0.0, 1.0, 0.0),
                         TYPE_ONDE="SH",
-                        DIST=-1.0 * __TMAT["Y", NCOU + 1],
+                        COOR_SOURCE=(0.0, -1.0 * __TMAT["Y", NCOU + 1]),
                         FONC_SIGNAL=__VITEX[0],
                         GROUP_MA=grma_subst,
                     ),
@@ -1866,7 +1866,7 @@ def defi_sol_equi_ops(self, TITRE=None, INFO=None, **args):
                     ONDE_PLANE=_F(
                         DIRECTION=(0.0, 1.0, 0.0),
                         TYPE_ONDE="SV",
-                        DIST=-1.0 * __TMAT["Y", NCOU + 1],
+                        COOR_SOURCE=(0.0, -1.0 * __TMAT["Y", NCOU + 1]),
                         FONC_SIGNAL=__VITEX[2],
                         GROUP_MA=grma_subst,
                     ),
@@ -1877,8 +1877,8 @@ def defi_sol_equi_ops(self, TITRE=None, INFO=None, **args):
                     ONDE_PLANE=_F(
                         DIRECTION=(0.0, 1.0, 0.0),
                         TYPE_ONDE="P",
-                        DIST=-1.0 * __TMAT["Y", NCOU + 1],
-                        DIST_REFLECHI=0.0,
+                        COOR_SOURCE=(0.0, -1.0 * __TMAT["Y", NCOU + 1]),
+                        COOR_REFLECHI=(0.0, 0.0),
                         FONC_SIGNAL=__VITEX[1],
                         GROUP_MA=(grma_subst, grma_gauch, grma_droit),
                     ),
@@ -1888,8 +1888,8 @@ def defi_sol_equi_ops(self, TITRE=None, INFO=None, **args):
                     ONDE_PLANE=_F(
                         DIRECTION=(0.0, 1.0, 0.0),
                         TYPE_ONDE="SH",
-                        DIST=-1.0 * __TMAT["Y", NCOU + 1],
-                        DIST_REFLECHI=0.0,
+                        COOR_SOURCE=(0.0, -1.0 * __TMAT["Y", NCOU + 1]),
+                        COOR_REFLECHI=(0.0, 0.0),
                         FONC_SIGNAL=__VITEX[0],
                         GROUP_MA=(grma_subst, grma_gauch, grma_droit),
                     ),
@@ -1899,8 +1899,8 @@ def defi_sol_equi_ops(self, TITRE=None, INFO=None, **args):
                     ONDE_PLANE=_F(
                         DIRECTION=(0.0, 1.0, 0.0),
                         TYPE_ONDE="SV",
-                        DIST=-1.0 * __TMAT["Y", NCOU + 1],
-                        DIST_REFLECHI=0.0,
+                        COOR_SOURCE=(0.0, -1.0 * __TMAT["Y", NCOU + 1]),
+                        COOR_REFLECHI=(0.0, 0.0),
                         FONC_SIGNAL=__VITEX[2],
                         GROUP_MA=(grma_subst, grma_gauch, grma_droit),
                     ),

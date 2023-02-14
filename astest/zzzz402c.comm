@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -208,11 +208,21 @@ ab1 = ACCEXX1.Absc()[:10300]
 ACCEX11 = DEFI_FONCTION(NOM_PARA="INST", ORDONNEE=ao1, ABSCISSE=ab1)
 VITX1 = CALC_FONCTION(INTEGRE=_F(FONCTION=ACCEX11), PROL_DROITE="CONSTANT")
 
+x0 = 0.0
+z0 = 72.0
+
+x1 = 0.0
+z1 = 146.0
+
 CHARGX = AFFE_CHAR_MECA_F(
     MODELE=MODYN,
     VERI_NORM="OUI",
     ONDE_PLANE=_F(
-        GROUP_MA=("BAS"), TYPE_ONDE="S", DIST=72.0, DIRECTION=(0, 1, 0), FONC_SIGNAL=VITX1
+        GROUP_MA=("BAS"),
+        TYPE_ONDE="S",
+        COOR_SOURCE=(x0, z0),
+        DIRECTION=(0, 1, 0),
+        FONC_SIGNAL=VITX1,
     ),
 )
 
@@ -222,8 +232,8 @@ ONDELATE = AFFE_CHAR_MECA_F(
         DIRECTION=(0.0, 1.0, 0.0),
         TYPE_ONDE="S",
         GROUP_MA=Cotes,
-        DIST=72.0,
-        DIST_REFLECHI=146.0,
+        COOR_SOURCE=(x0, z0),
+        COOR_REFLECHI=(x1, z1),
         FONC_SIGNAL=VITX1,
     ),
 )

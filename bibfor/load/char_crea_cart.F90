@@ -357,7 +357,7 @@ subroutine char_crea_cart(phenom, loadType, load, mesh, valeType, &
         cmpName(2, 1) = 'PRES'
     else if (loadType .eq. 'ONDE_PLANE') then
         nbCmp(1) = 2
-        nbCmp(2) = 8
+        nbCmp(2) = 10
         cmpName(1, 1) = 'Z1'
         cmpName(1, 2) = 'Z2'
         cmpName(2, 1) = 'X1'
@@ -368,6 +368,8 @@ subroutine char_crea_cart(phenom, loadType, load, mesh, valeType, &
         cmpName(2, 6) = 'X6'
         cmpName(2, 7) = 'X7'
         cmpName(2, 8) = 'X8'
+        cmpName(2, 9) = 'X9'
+        cmpName(2, 10) = 'X10'
     else if (loadType .eq. 'ROTATION') then
         nbCmp(1) = 7
         cmpName(1, 1) = 'OME'

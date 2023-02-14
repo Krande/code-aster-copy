@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -68,11 +68,6 @@ b = 45
 b2 = radians(b)
 cosb = cos(b2)
 sinb = sin(b2)
-
-# Calcul des bons paramètres dist à insérer dans AFFE_CHAR_MECA
-dist = x0 * sina * cosb + y0 * sina * sinb + z0 * cosa
-
-distr = x1 * sina * cosb + y1 * sina * sinb + z1 * cosa
 
 # Sollicitation en acceleration (ondelette de Ricker)
 
@@ -219,9 +214,8 @@ ONDEP = AFFE_CHAR_MECA_F(
         DIRECTION=(sina * cosb, sina * sinb, cosa),
         TYPE_ONDE="P",
         FONC_SIGNAL=vite_1,
-        DIST=dist,
-        DIST_REFLECHI=distr,
-        COOR_REFE=(-150.0, 200.0),
+        COOR_SOURCE=(x0, y0, z0),
+        COOR_REFLECHI=(x1, y1, z1),
         DEPL_IMPO=depl_1,
         GROUP_MA=("SUB", "SULA"),
     ),
@@ -235,9 +229,8 @@ ONDESV = AFFE_CHAR_MECA_F(
         DIRECTION=(sina * cosb, sina * sinb, cosa),
         TYPE_ONDE="SV",
         FONC_SIGNAL=vite_1,
-        DIST=dist,
-        DIST_REFLECHI=distr,
-        COOR_REFE=(-150.0, 200.0),
+        COOR_SOURCE=(x0, y0, z0),
+        COOR_REFLECHI=(x1, y1, z1),
         DEPL_IMPO=depl_1,
         GROUP_MA=("SUB", "SULA"),
     ),

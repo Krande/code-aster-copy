@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -609,20 +609,15 @@ AFFE_CHAR_MECA_F = OPER(
             " d'un concept fonction"
         ),
         DIRECTION=SIMP(statut="o", typ="R", min=3, max=3),
-        DIST=SIMP(statut="f", typ="R"),
-        DIST_REFLECHI=SIMP(statut="f", typ="R"),
+        COOR_SOURCE=SIMP(statut="f", typ="R", min=2, max=3),
+        c_reflection=BLOC(
+            condition="""exists("COOR_SOURCE")""",
+            COOR_REFLECHI=SIMP(statut="f", typ="R", min=2, max=3),
+        ),
         TYPE_ONDE=SIMP(statut="o", typ="TXM", into=("S", "P", "SV", "SH")),
         FONC_SIGNAL=SIMP(statut="o", typ=(fonction_sdaster, nappe_sdaster, formule)),
         DEPL_IMPO=SIMP(statut="f", typ=(fonction_sdaster, nappe_sdaster, formule)),
         GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
-        COOR_REFE=SIMP(
-            statut="f",
-            typ="R",
-            defaut=(0.0, 0.0),
-            min=1,
-            max=2,
-            fr=tr("coord de reference pour les phases"),
-        ),
     ),
     FLUX_THM_REP=FACT(
         statut="f",

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,4 +21,4 @@
 ! Maximum number of maps for a load
 #define LOAD_MAP_NBMAX     2
 ! Maximum number of components in a map for a load
-#define LOAD_MAP_NBCMPMAX  8
+#define LOAD_MAP_NBCMPMAX  10

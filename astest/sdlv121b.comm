@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -136,11 +136,17 @@ LIAISON = AFFE_CHAR_MECA(
         _F(GROUP_NO="LIBR", DDL="DY"),
     ),
 )
+x0 = 0.0
+z0 = -50.0
 
 ONDE = AFFE_CHAR_MECA_F(
     MODELE=MODELE,
     ONDE_PLANE=_F(
-        DIRECTION=(0.0, 1.0, 0.0), TYPE_ONDE="S", DIST=-50.0, FONC_SIGNAL=FONCT, GROUP_MA="ABSO"
+        DIRECTION=(0.0, 1.0, 0.0),
+        TYPE_ONDE="S",
+        COOR_SOURCE=(x0, z0),
+        FONC_SIGNAL=FONCT,
+        GROUP_MA="ABSO",
     ),
 )
 

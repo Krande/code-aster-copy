@@ -55,8 +55,8 @@ subroutine te0499(option, nomte)
     real(kind=8) :: param0, param, h, h2, instd, ris, rip, l0, usl0
     real(kind=8) :: a2, b2, sina, cosa, sinb2, cosb2, rc1c2, ra12, ra13
     real(kind=8) :: coedir, typer, valfon
-    real(kind=8) :: xsv, zsv, dist, dist1, dist2, instd1, instd2
-    real(kind=8) :: kr, nr, x0, z0, z1
+    real(kind=8) :: xsv, zsv, dist1, dist2, instd1, instd2, x0, z0, x1, z1
+    real(kind=8) :: kr, nr
     real(kind=8) :: valfon1, valfon2, param1, param2
     integer :: nno, npg, ipoids, ivf, idfde, igeom
     integer :: ivectu, k, i, mater
@@ -108,10 +108,10 @@ subroutine te0499(option, nomte)
     dirx = zr(iondc)
     diry = zr(iondc+1)
     typer = zr(iondc+3)
-    h = zr(iondc+4)
-    h2 = zr(iondc+5)
-!ER h2 équivalent de h pour définir la position du toit du rocher par rapport a l'onde
-    x0 = zr(iondc+6)
+    x0 = zr(iondc+4)
+    z0 = zr(iondc+5)
+    x1 = zr(iondc+7)
+    z1 = zr(iondc+8)
 !
     if (typer .eq. 0.d0) type = 'P'
     if (typer .eq. 1.d0) type = 'S'
@@ -121,6 +121,17 @@ subroutine te0499(option, nomte)
     norm = sqrt(dirx**2.d0+diry**2.d0)
     dirx = dirx/norm
     diry = diry/norm
+
+    if (x0 .ne. r8vide()) then
+        h = x0*dirx+z0*diry
+        if (x1 .ne. r8vide()) then
+            h2 = x1*dirx+z1*diry
+        else
+            h2 = r8vide()
+        end if
+    else
+        h = r8vide()
+    end if
 !
 !     CALCUL DU REPERE ASSOCIE A L'ONDE
     norx = -diry
@@ -223,11 +234,7 @@ subroutine te0499(option, nomte)
 
 ! Calcul des bons paramètres dist à insérer dans le calcul.
         if (h .ne. r8vide()) then
-!          x0=0.d0
-            z0 = (h-x0*sina)/cosa
-            dist = h
             if (h2 .ne. r8vide()) then
-                z1 = (h2-x0*sina)/cosa
                 dist1 = x0*sina+(2.d0*z1-z0)*(-cosa)
                 if (type .eq. 'P') then
                     zsv = z1+cosb2*(z1-z0)/rc1c2/cosa
@@ -238,7 +245,6 @@ subroutine te0499(option, nomte)
                 end if
                 dist2 = xsv*sinb2+zsv*(-cosb2)
             end if
-!          write(6,*) 'z0 dist dist1 dist2 ',z0,dist,dist1,dist2
         end if
 !
         k = (kpg-1)*nno
@@ -536,8 +542,10 @@ subroutine te0499(option, nomte)
 !
         do i = 1, nno
             ii = 2*i-1
-            zr(ivectu+ii-1) = zr(ivectu+ii-1)+(taux+coedir*taondx)*zr(ivf+k+i-1)*poids
-            zr(ivectu+ii+1-1) = zr(ivectu+ii+1-1)+(tauy+coedir*taondy)*zr(ivf+k+i-1)*poids
+            zr(ivectu+ii-1) = zr(ivectu+ii-1)+(taux+coedir*taondx)*&
+                                  &zr(ivf+k+i-1)*poids
+            zr(ivectu+ii+1-1) = zr(ivectu+ii+1-1)+(tauy+coedir*taondy)*&
+                                      &zr(ivf+k+i-1)*poids
         end do
 !
     end do

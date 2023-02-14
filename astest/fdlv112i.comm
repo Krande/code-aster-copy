@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -234,11 +234,16 @@ deplx = CALC_FONC_INTERP(
 
 
 # On donne en exemple en plus les cas ondes P et SH
+
+x0 = 0.0
+y0 = 0.0
+z0 = prof
+
 #
 # ONDEP=AFFE_CHAR_MECA_F(  MODELE=ensemble,
 #                 ONDE_PLANE=_F( DIRECTION = (0., 0., 1.,),
 #                 TYPE_ONDE = 'P',
-#                 DIST=prof,
+#                 COOR_SOURCE = (x0,y0,z0),
 #                 DEPL_IMPO=deplx,
 #                 FONC_SIGNAL = vitex, GROUP_MA='TH_SOL')
 #                      )
@@ -247,7 +252,7 @@ ONDEV = AFFE_CHAR_MECA_F(
     ONDE_PLANE=_F(
         DIRECTION=(0.0, 0.0, 1.0),
         TYPE_ONDE="SV",
-        DIST=prof,
+        COOR_SOURCE=(x0, y0, z0),
         DEPL_IMPO=deplx,
         FONC_SIGNAL=vitex,
         GROUP_MA="TH_SOL",
@@ -256,7 +261,7 @@ ONDEV = AFFE_CHAR_MECA_F(
 # ONDEH=AFFE_CHAR_MECA_F(  MODELE=ensemble,
 #                 ONDE_PLANE=_F( DIRECTION = (0., 0., 1.,),
 #                 TYPE_ONDE = 'SH',
-#                 DIST=prof,
+#                 COOR_SOURCE = (x0,y0,z0),
 #                 DEPL_IMPO=deplx,
 #                 FONC_SIGNAL = vitex, GROUP_MA='TH_SOL')
 #                      )
