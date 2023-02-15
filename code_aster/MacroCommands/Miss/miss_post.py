@@ -61,7 +61,6 @@ from ...Helpers.LogicalUnit import LogicalUnitFile
 from ...Objects import DataStructure
 from ...Objects.table_py import Table
 from ...Utilities.misc import _print, _printDBG, set_debug
-from ..Utils.partition import MAIL_PY
 from .force_iss_vari import force_iss_vari
 from .miss_resu_miss import MissCsolReader
 
@@ -1257,17 +1256,12 @@ class PostMissChar(PostMiss):
             # récuperation du maillage
             nom_MODELE = self.MODELE.getName()
             mail = self.MODELE.getMesh()
-            mm = MAIL_PY()
-            mm.FromAster(mail)
-            # groupes de noeuds
-            collgrno = mm.gno
             list_nuno_affe = []
             for gr in self.param["GROUP_NO_AFFE"]:
-                list_nuno_affe.extend(collgrno[gr])
+                list_nuno_affe.extend(mail.getNodes(gr))
             self.List_Noeu_Fictif = []
-            linomno = list(mm.correspondance_noeuds)
             for nuno in list_nuno_affe:
-                self.List_Noeu_Fictif.append(linomno[nuno].strip())
+                self.List_Noeu_Fictif.append(mail.getNodeName(nuno))
         else:
             self.List_Noeu_Fictif = []
 
