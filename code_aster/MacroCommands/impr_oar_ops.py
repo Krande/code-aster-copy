@@ -17,11 +17,8 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-import aster
 from ..Objects.table_py import Table
 from ..Messages import UTMESS
-
-from .Utils.partition import MAIL_PY
 
 
 def buildTabString(tabLevel):
@@ -739,19 +736,6 @@ class tuyauterie(OAR_element):
 
         # Gestion du maillage
         self.maillage = self.para_resu_meca["MAILLAGE"]
-        mapy = MAIL_PY()
-        mapy.FromAster(self.maillage)
-
-        self.ma = [val.rstrip() for val in mapy.correspondance_mailles]
-        self.no = [val.rstrip() for val in mapy.correspondance_noeuds]
-
-        self.dictMailleNoeuds = dict()
-
-        for i in range(0, len(mapy.co)):
-            # on ne traite que les SEG2 ou les SEG3 :
-            if len(mapy.co[i]) not in (2, 3):
-                continue
-            self.dictMailleNoeuds[self.ma[i]] = [self.no[mapy.co[i][0]], self.no[mapy.co[i][1]]]
 
         self.dictNoeudValTorseur = dict()
         self.buildTableTorseur()
@@ -803,16 +787,19 @@ class tuyauterie(OAR_element):
         nodeTM.append("oar:CHAR-REF", self.num_char)
         nodeMTG = nodeTM.append("MAILLE_TORSEUR-GRP")
         nodeMT = nodeMTG.append("MAILLE_TORSEUR")
-        for MA in list(self.dictMailleNoeuds.keys()):  # Boucle sur les mailles
+
+        for cell, nodes in enumerate(self.maillage.getConnectivity()):
             NbNoeuds = 0
-            for NO in self.dictMailleNoeuds[MA]:  # 2 noeuds
-                if NO in list(self.dictNoeudValTorseur.keys()):
+            for node in nodes:
+                node_name = self.maillage.getNodeName(node - 1)
+                if node_name in self.dictNoeudValTorseur.keys():
                     NbNoeuds += 1
             if NbNoeuds == 2:
-                nodeMT.append("oar:MAILLE-REF", MA)
-                for NO in self.dictMailleNoeuds[MA]:  # 2 noeuds
+                nodeMT.append("oar:MAILLE-REF", self.maillage.getCellName(cell))
+                for node in nodes:
+                    node_name = self.maillage.getNodeName(node - 1)
                     nodeTorseur = nodeMT.append("oar:TORSEUR")
-                    for val, cle in zip(self.dictNoeudValTorseur[NO], torseur_XML):  # 6 valeurs
+                    for val, cle in zip(self.dictNoeudValTorseur[node_name], torseur_XML):  # 6 valeurs
                         nodeTorseur.append(cle, val)
 
 
