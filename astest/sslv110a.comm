@@ -175,6 +175,8 @@ GLOC1x = CALC_G(
     THETA=_F(FISSURE=FISS1, DISCRETISATION="LEGENDRE", DEGRE=7, CHAM_THETA=cham_theta_no1),
 )
 
+TABL_K1 = POST_K1_K2_K3(RESULTAT=CHAMDEPL, FOND_FISS=FISS1, TYPE_MAILLAGE="LIBRE", INFO=2)
+
 IMPR_TABLE(TABLE=GLOC0, UNITE=6)
 IMPR_TABLE(TABLE=GLOC1, UNITE=6)
 IMPR_TABLE(TABLE=GLOC0_C, UNITE=6)
@@ -182,6 +184,7 @@ IMPR_TABLE(TABLE=GLOC1_C, UNITE=6)
 IMPR_TABLE(TABLE=G0_C_LI, UNITE=6)
 IMPR_TABLE(TABLE=G1_C_LI, UNITE=6)
 IMPR_TABLE(TABLE=G0_C_LI_NEG, UNITE=6)
+IMPR_TABLE(TABLE=TABL_K1, UNITE=6)
 
 # ~ IMPR_RESU(FORMAT='MED',UNITE=81,RESU=_F(CHAM_GD=cham_theta_no0))
 # ~ IMPR_RESU(FORMAT='MED',UNITE=82,RESU=_F(CHAM_GD=cham_theta_no1))
@@ -346,6 +349,18 @@ TEST_TABLE(
     FILTRE=_F(NOM_PARA="NUM_PT", VALE_I=5),
 )
 
+# Test de post_K1_K2_k3 pour le point A
+
+TEST_TABLE(
+    REFERENCE="ANALYTIQUE",
+    PRECISION=0.04,
+    VALE_CALC=6.91874e-05,
+    VALE_REFE=7.1710000000000003e-05,
+    NOM_PARA="G",
+    TABLE=TABL_K1,
+    FILTRE=_F(NOM_PARA="ABSC_CURV", VALE=0.0),
+)
+
 # ----------------------------------------------------------------------
 #              TEST DE G(B), KJ(B), KI(B) ET G_IRWIN(B) SUR LES 2 COURONNES
 # ----------------------------------------------------------------------
@@ -493,6 +508,16 @@ TEST_TABLE(
     FILTRE=_F(NOM_PARA="ABSC_CURV", VALE=2.66827e01),
 )
 
+# Test de post_K1_K2_k3 pour le point B
+TEST_TABLE(
+    REFERENCE="ANALYTIQUE",
+    PRECISION=0.03,
+    VALE_CALC=1.6832372647089785e-05,
+    VALE_REFE=1.721e-05,
+    NOM_PARA="G",
+    TABLE=TABL_K1,
+    FILTRE=_F(NOM_PARA="ABSC_CURV", VALE=2.66916e01),
+)
 
 # ----------------------------------------------------------------------
 #              TEST DE G(C) ET KJ(C)  SUR LES 2 COURONNES

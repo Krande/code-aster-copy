@@ -484,8 +484,11 @@ def get_tab_dep(
             VIS_A_VIS=_F(MAILLE_1=ListmaI),
             LIGN_COUPE=mcfact,
         )
+        result = __TlibI.EXTR_TABLE()
+    else:
+        result = None
 
-    return (__TlibS.EXTR_TABLE(), __TlibI.EXTR_TABLE())
+    return (__TlibS.EXTR_TABLE(), result)
 
 
 # -------------------------------------------------------------------------
@@ -1962,6 +1965,7 @@ def post_k1_k2_k3_ops(
         #     ------------------------------------------------------------
 
         ListmaS = FOND_FISS.sdj.LEVRESUP_MAIL.get()
+
         if not ListmaS:
             UTMESS("F", "RUPTURE0_19")
 
@@ -1993,6 +1997,8 @@ def post_k1_k2_k3_ops(
 
             if syme_char == "NON":
                 ListmaI = FOND_FISS.sdj.LEVREINF_MAIL.get()
+            else:
+                ListmaI = None
 
             #        Dictionnaire des coordonnees des noeuds du fond
             d_coor = get_coor_libre(self, Lnoff, RESULTAT, ndim)
