@@ -52,7 +52,7 @@ subroutine romConvertEquaToNode(field_refe, list_length, v_list_equa, v_list_nod
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    call dismoi('PROF_CHNO', field_refe, 'CHAM_NO', repk=prchno)
+    call dismoi('NUME_EQUA', field_refe, 'CHAM_NO', repk=prchno)
     call jeveuo(prchno(1:19)//'.DEEQ', 'L', vi=v_deeq)
 !
 ! - Convert

@@ -51,8 +51,8 @@ subroutine nueffe(nb_ligr, list_ligr, base, nume_ddlz, renumz, &
 ! In  list_ligr      : pointer to list of LIGREL
 ! In  nume_ddl       : name of numbering object (NUME_DDL)
 ! In  base           : JEVEUX base to create objects
-!                      base(1:1) => PROF_CHNO objects
-!                      base(2:2) => NUME_DDL objects
+!                      base(1:1) => NUME_DDL objects
+!                      base(2:2) => NUME_EQUA objects
 ! In  renum          : method for renumbering equations
 !                       SANS/RCMK
 ! In  modelocz       : local mode for GRANDEUR numbering

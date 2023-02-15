@@ -140,7 +140,7 @@ subroutine cfmxre(mesh, model_, ds_measure, ds_contact, nume_inst, &
 ! - Transform CHAM_NO_S field
 !
     if (.not. l_cont_lac) then
-        call dismoi('PROF_CHNO', cnoinr, 'CHAM_NO', repk=prno, arret='C')
+        call dismoi('NUME_EQUA', cnoinr, 'CHAM_NO', repk=prno, arret='C')
         call cnscno(cnsinr, prno, 'NON', 'V', cnoinr, 'F', ibid)
     end if
 !

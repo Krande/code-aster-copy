@@ -128,7 +128,7 @@ subroutine xmiszl(vecinc, ds_contact, mesh)
     cns1d = '&&XMISZL.CNS1D'
     cns1e = '&&XMISZL.CNS1E'
     call cnocns(vecinc, 'V', cns1)
-    call dismoi('PROF_CHNO', vecinc, 'CHAM_NO', repk=prno)
+    call dismoi('NUME_EQUA', vecinc, 'CHAM_NO', repk=prno)
 !
 ! --- REDUCTION CHAM_NO_S SUR LAGS_C/LAG_F1/LAG_F2
 !

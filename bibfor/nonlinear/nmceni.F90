@@ -82,7 +82,7 @@ subroutine nmceni(numedd, depdel, deppr1, deppr2, rho, &
 ! --- INFORMATIONS SUR NUMEROTATION
 !
     call dismoi('NB_EQUA', numedd, 'NUME_DDL', repi=neq)
-    call dismoi('PROF_CHNO', depdel, 'CHAM_NO', repk=profch)
+    call dismoi('NUME_EQUA', depdel, 'CHAM_NO', repk=profch)
     call jeveuo(profch(1:19)//'.DEEQ', 'L', vi=deeq)
 !
 ! --- ACCES AUX VECTEURS SOLUTIONS

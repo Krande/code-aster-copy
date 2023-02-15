@@ -60,8 +60,8 @@ subroutine mvnume(depmoi, depdel, depplu)
 ! --- SI LES CHAMPS N'ONT PAS LA MEME NUMEROTATION, ON TRANSFERT DEPMOI
 ! --- DANS LA NUMEROTATION DE DEPDEL
 !
-    call dismoi('PROF_CHNO', depmoi, 'CHAM_NO', repk=pfchn1)
-    call dismoi('PROF_CHNO', depdel, 'CHAM_NO', repk=pfchn2)
+    call dismoi('NUME_EQUA', depmoi, 'CHAM_NO', repk=pfchn1)
+    call dismoi('NUME_EQUA', depdel, 'CHAM_NO', repk=pfchn2)
     if (pfchn1 .ne. pfchn2) then
         call copisd('CHAMP_GD', 'V', depdel, depmo1)
         call vtzero(depmo1)

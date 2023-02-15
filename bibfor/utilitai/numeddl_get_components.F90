@@ -70,7 +70,7 @@ subroutine numeddl_get_components(nume19, allorone, nodeid, ncmp, stringarray, m
     AS_ALLOCATE(vi=vicmp, size=ncmpmx)
 !
     call dismoi('NB_NO_MAILLA', noma, 'MAILLAGE', repi=nnoe)
-    call dismoi('PROF_CHNO', numeddl, 'NUME_DDL', repk=prno)
+    call dismoi('NUME_EQUA', numeddl, 'NUME_DDL', repk=prno)
     ASSERT(prno .ne. ' ')
     call jeveuo(jexnum(prno//'.PRNO', 1), 'L', jprno)
     if (allorone(1:3) .eq. "ALL") then

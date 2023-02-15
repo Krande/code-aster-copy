@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine utncmp3(prno, ncmp, list_cmp, list_name)
+subroutine utncmp3(nume_equa, ncmp, list_cmp, list_name)
     implicit none
 #include "jeveux.h"
 #include "asterfort/assert.h"
@@ -36,7 +36,7 @@ subroutine utncmp3(prno, ncmp, list_cmp, list_name)
 #include "asterfort/as_allocate.h"
 !
     integer :: ncmp
-    character(len=*) :: prno, list_cmp, list_name
+    character(len=*) :: nume_equa, list_cmp, list_name
 !
 !     RENVOIE UN LIEN iCMP -> NOM
 !
@@ -44,22 +44,21 @@ subroutine utncmp3(prno, ncmp, list_cmp, list_name)
 !
     integer :: jprno, gd, nec, tabec(10), j, ino, iec, icmp, ncmpmx
     integer ::  iad, kcmp, nnoe
-    integer :: ilong, nb, jcmp
+    integer :: jcmp
     character(len=8) :: noma
-    character(len=19) :: prno19
+    character(len=19) :: nume_equa19
     integer, pointer :: vicmp(:) => null()
-    integer, pointer :: desc(:) => null()
 !     ------------------------------------------------------------------
     call jemarq()
 !
-    prno19 = prno
+    nume_equa19 = nume_equa
     ncmp = 0
 !
-    !call dismoi('NOM_MAILLA', prno19, 'PROF_CHNO', repk=noma)
-    !call dismoi('NB_NO_MAILLA', noma, 'MAILLAGE', repi=nnoe)
+    call dismoi('NOM_MAILLA', nume_equa19, 'NUME_EQUA', repk=noma)
+    call dismoi('NB_NO_MAILLA', noma, 'MAILLAGE', repi=nnoe)
     nnoe = 1
 
-    call dismoi('NUM_GD', prno19, 'PROF_CHNO', repi=gd)
+    call dismoi('NUM_GD', nume_equa19, 'NUME_EQUA', repi=gd)
 !
     nec = nbec(gd)
     ASSERT(nec .le. 10)
@@ -68,10 +67,10 @@ subroutine utncmp3(prno, ncmp, list_cmp, list_name)
     AS_ALLOCATE(vi=vicmp, size=ncmpmx)
 !
 !     ==================================================================
-!                            C H A M _ N O
+!                            NUME_EQUA
 !     ==================================================================
 
-    call jeveuo(jexnum(prno19//'.PRNO', 1), 'L', jprno)
+    call jeveuo(jexnum(nume_equa19//'.PRNO', 1), 'L', jprno)
     do ino = 1, nnoe
         do iec = 1, nec
             tabec(iec) = zi(jprno-1+(ino-1)*(nec+2)+2+iec)

@@ -475,10 +475,15 @@ subroutine detrsd(typesd, nomsd)
     else if (typ2sd .eq. 'NUME_EQUA') then
 !     ------------------------------------
         k19 = nomsd
-        call detrs2('PROF_CHNO', k19)
+        call jedetr(k19//'.DEEQ')
+        call jedetr(k19//'.LILI')
+        call jedetr(k19//'.NUEQ')
+        call jedetr(k19//'.PRNO')
         call jedetr(k19//'.NEQU')
         call jedetr(k19//'.REFN')
         call jedetr(k19//'.DELG')
+        call jedetr(k19//'.NULG')
+        call jedetr(k19//'.PDDL')
 
     else if (typ2sd .eq. 'NUML_EQUA') then
 !  --------------------------------------

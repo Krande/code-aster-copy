@@ -74,7 +74,7 @@ subroutine utncmp2(cham19, ncmp, list_cmp, list_name)
 !     ==================================================================
     if (tych(1:4) .eq. 'NOEU') then
         call dismoi('NB_NO_MAILLA', noma, 'MAILLAGE', repi=nnoe)
-        call dismoi('PROF_CHNO', ch19, 'CHAM_NO', repk=prno)
+        call dismoi('NUME_EQUA', ch19, 'CHAM_NO', repk=prno)
         if (prno .eq. ' ') then
 !AS OU LE CHAMP EST A PROFIL CONSTANT (CHAMP DE GEOMETRIE)
             call jeveuo(ch19//'.DESC', 'L', vi=desc)

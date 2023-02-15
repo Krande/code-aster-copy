@@ -71,7 +71,7 @@ subroutine get_equa_info(nume_ddlz, i_equa, type_equa, nume_nodez, nume_cmpz, &
 !
     character(len=24) :: lili, nueq, orig, desc, deeq
     integer :: nume_node, nume_cmp, nume_subs, nume_link, nume_cmp_lagr
-    character(len=19) :: prof_chno, ligrel
+    character(len=19) :: nume_equa, ligrel
     character(len=14) :: nume_ddl
     integer :: iexi, isst
     integer :: idx_gd
@@ -92,22 +92,22 @@ subroutine get_equa_info(nume_ddlz, i_equa, type_equa, nume_nodez, nume_cmpz, &
     nume_link = 0
     nume_cmp_lagr = 0
 !
-! - Get name of prof_chno
+! - Get name of nume_equa
 !
-    call dismoi('PROF_CHNO', nume_ddl, 'NUME_DDL', repk=prof_chno)
+    call dismoi('NUME_EQUA', nume_ddl, 'NUME_DDL', repk=nume_equa)
 !
-! - PROF_CHNO or PROF_GENE ?
+! - NUME_EQUA or PROF_GENE ?
 !
-    call jeexin(prof_chno//'.DESC', iexi)
+    call jeexin(nume_equa//'.DESC', iexi)
     l_gene = (iexi .gt. 0)
 !
-! - Objects in PROF_CHNO/PROF_GENE
+! - Objects in NUME_EQUA/PROF_GENE
 !
-    deeq = prof_chno(1:19)//'.DEEQ'
-    lili = prof_chno(1:19)//'.LILI'
-    desc = prof_chno(1:19)//'.DESC'
-    orig = prof_chno(1:19)//'.ORIG'
-    nueq = prof_chno(1:19)//'.NUEQ'
+    deeq = nume_equa(1:19)//'.DEEQ'
+    lili = nume_equa(1:19)//'.LILI'
+    desc = nume_equa(1:19)//'.DESC'
+    orig = nume_equa(1:19)//'.ORIG'
+    nueq = nume_equa(1:19)//'.NUEQ'
 !
     call jeveuo(deeq, 'L', vi=p_deeq)
     call jeveuo(nueq, 'L', vi=p_nueq)
@@ -150,7 +150,7 @@ subroutine get_equa_info(nume_ddlz, i_equa, type_equa, nume_nodez, nume_cmpz, &
 !
         if (ino .gt. 0 .and. icmp .lt. 0) then
             type_equa = 'B'
-            call get_lagr_info(prof_chno, i_equa, idx_gd, nb_node_lagr, list_node_lagr, &
+            call get_lagr_info(nume_equa, i_equa, idx_gd, nb_node_lagr, list_node_lagr, &
                                nume_cmp)
             ASSERT(nb_node_lagr .eq. 1)
             nume_node = list_node_lagr(1)
@@ -162,7 +162,7 @@ subroutine get_equa_info(nume_ddlz, i_equa, type_equa, nume_nodez, nume_cmpz, &
 !
         if (ino .eq. 0 .and. icmp .eq. 0) then
             type_equa = 'C'
-            call get_lagr_info(prof_chno, i_equa, idx_gd, nb_node_lagr, list_node_lagr, &
+            call get_lagr_info(nume_equa, i_equa, idx_gd, nb_node_lagr, list_node_lagr, &
                                ligrelz=ligrel)
             goto 70
         end if

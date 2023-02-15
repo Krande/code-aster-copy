@@ -69,7 +69,7 @@ subroutine dbrInitProfTrunc(resultNameIn, resultNameOut, paraTrunc)
 ! - Get parameters from numbering
 !
     call dismoi('NUM_GD', modeRefe, 'CHAM_NO', repi=physNume)
-    call dismoi('PROF_CHNO', modeRefe, 'CHAM_NO', repk=profChnoRefe)
+    call dismoi('NUME_EQUA', modeRefe, 'CHAM_NO', repk=profChnoRefe)
 !
 ! - Create name of new PROF_CHNO
 !

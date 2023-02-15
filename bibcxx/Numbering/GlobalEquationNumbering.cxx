@@ -46,8 +46,9 @@ void GlobalEquationNumbering::GlobalEquationNumbering::setModel( const ModelPtr 
     if ( _informations->exists() ) {
         _informations->updateValuePointer();
         const auto modelName = std::string( ( *_informations )[2].toString(), 0, 8 );
-        if ( model && modelName != model->getName() )
+        if ( model && modelName != model->getName() ) {
             AS_ABORT( "Models are incompatible" );
+        }
     }
     _model = model;
     this->setMesh( _model->getMesh() );
@@ -57,8 +58,9 @@ void GlobalEquationNumbering::GlobalEquationNumbering::setMesh( const BaseMeshPt
     if ( _informations->exists() ) {
         _informations->updateValuePointer();
         const auto meshName = std::string( ( *_informations )[0].toString(), 0, 8 );
-        if ( mesh && meshName != mesh->getName() )
-            AS_ABORT( "Mesh are incompatible" );
+        if ( mesh && meshName != mesh->getName() ) {
+            AS_ABORT( "Mesh are incompatible: " + mesh->getName() + " vs " + meshName );
+        }
     }
     _mesh = mesh;
 };

@@ -328,7 +328,7 @@ subroutine op0195()
             call dismoi('NOM_GD', chou, 'CHAMP', repk=nogd)
             prchn1 = ' '
             if (i11 .gt. 0) then
-                call dismoi('PROF_CHNO', ch1, 'CHAM_NO', repk=prchn1)
+                call dismoi('NUME_EQUA', ch1, 'CHAM_NO', repk=prchn1)
                 call dismoi('NOM_GD', ch1, 'CHAM_NO', repk=nomgd1)
             end if
             if (i12 .gt. 0) then
@@ -349,7 +349,7 @@ subroutine op0195()
             end if
 1           continue
 !
-            call dismoi('PROF_CHNO', chou, 'CHAM_NO', repk=prchn2)
+            call dismoi('NUME_EQUA', chou, 'CHAM_NO', repk=prchn2)
             if (.not. idensd('PROF_CHNO', prchn1, prchn2)) then
                 call getfac('COMB', nocc)
                 if (nocc .ne. 0) then

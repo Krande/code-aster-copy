@@ -163,7 +163,7 @@ subroutine chnucn(chno1, numdd2, ncorr, tcorr, base, &
 ! ------------------------------ VERIFICATIONS -------------------------
 !
     call dismoi('NOM_GD', cn1, 'CHAM_NO', repk=gd1)
-    call dismoi('PROF_CHNO', cn1, 'CHAM_NO', repk=pchno1)
+    call dismoi('NUME_EQUA', cn1, 'CHAM_NO', repk=pchno1)
     pchno2 = nu2//'.NUME'
     call dismoi('NOM_GD', nu2, 'NUME_DDL', repk=gd2)
 !

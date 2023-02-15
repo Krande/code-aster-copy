@@ -233,7 +233,7 @@ subroutine macr78(nomres, trange, typres)
     call dismoi('NOM_GD', cham19, 'CHAMP', repk=nogdsi)
     call dismoi('NB_EC', nogdsi, 'GRANDEUR', repi=nbec)
 !
-    call dismoi('PROF_CHNO', cham19, 'CHAMP', repk=nprno)
+    call dismoi('NUME_EQUA', cham19, 'CHAMP', repk=nprno)
     nprno = nprno(1:19)//'.PRNO'
     call jeveuo(jexnum(nprno, 1), 'L', iaprno)
     do i = 1, nbcham

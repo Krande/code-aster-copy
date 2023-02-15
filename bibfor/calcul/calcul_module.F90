@@ -44,10 +44,10 @@ module calcul_module
 !     ca_iachlo_: adresse jeveux de chloc//'.VALE'
 !     ca_ilchlo_: adresse jeveux de chloc//'.EXIS'
 !     ca_iichin_: numero du champ chin dans la liste lchin.
-!     ca_ianueq_: adresse de l'objet .nueq du prof_chno associe eventuelle
+!     ca_ianueq_: adresse de l'objet .nueq du nume_equa associe eventuelle
 !            -ment au champ chin. (si ca_lprno_=1).
 !     ca_lprno_ : 1-> l'objet .nueq est a prendre en compte
-!                 (cham_no a prof_chno)
+!                 (cham_no a nume_equa)
 !             0-> l'objet .nueq n'est pas a prendre en compte
 !                 (cham_no a representation constante ou autre champ)
 !     ca_typegd_: type scalaire de la grandeur ca_igd_ : 'R', 'I', 'K8', ...

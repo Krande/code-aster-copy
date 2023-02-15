@@ -67,7 +67,7 @@ subroutine regres(nomres, mailsk, result, pfchn2)
 !
     call rsexch('F', result, 'DEPL', 1, chamno, &
                 iret)
-    call dismoi('PROF_CHNO', chamno, 'CHAM_NO', repk=pfchn1)
+    call dismoi('NUME_EQUA', chamno, 'CHAM_NO', repk=pfchn1)
     call nueq_chck(pfchn1)
 !
 !

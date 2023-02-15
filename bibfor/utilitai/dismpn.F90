@@ -35,7 +35,7 @@ subroutine dismpn(questi, nomobz, repi, repkz, ierd)
 #include "asterfort/jexnum.h"
 #include "asterfort/jexnom.h"
 !
-    integer :: repi, ierd, n1
+    integer :: repi, ierd
     character(len=*) :: questi
     character(len=*) :: nomobz, repkz
     character(len=32) :: repk
@@ -55,13 +55,11 @@ subroutine dismpn(questi, nomobz, repi, repkz, ierd)
 !     VARIABLES LOCALES:
 !     ------------------
     character(len=19) :: noligr
-    character(len=14) :: cham
 !
 !
 !
 !-----------------------------------------------------------------------
-    integer :: i, nbddlb, nbnos, nequ, nlili, iret
-    character(len=24), pointer :: refn(:) => null()
+    integer :: i, nbddlb, nbnos, nequ, nlili
 !-----------------------------------------------------------------------
     call jemarq()
     nomob = nomobz
@@ -85,51 +83,6 @@ subroutine dismpn(questi, nomobz, repi, repkz, ierd)
     else if (questi .eq. 'NB_EQUA') then
 !     --------------------------------
         call jelira(nomob//'.NUEQ', 'LONMAX', repi)
-!
-!
-    else if (questi .eq. 'NOM_GD') then
-!     --------------------------------
-!       QUESTION POURRIE !! (VALABLE SUR NUME_EQUA)
-!       CETTE QUESTION NE DEVRAIT PAS ETRE UTILISEE
-        call jeexin(nomob//'.REFN', iret)
-        if (iret > 0) then
-            call jeveuo(nomob//'.REFN', 'L', vk24=refn)
-            repk = refn(2) (1:8)
-        else
-            cham = nomob(1:14)
-            call dismcn(questi, cham, repi, repk, ierd)
-        end if
-!
-    else if (questi .eq. 'NUM_GD') then
-!     --------------------------------
-!       QUESTION POURRIE !! (VALABLE SUR NUME_EQUA)
-!       CETTE QUESTION NE DEVRAIT PAS ETRE UTILISEE
-        call jeexin(nomob//'.REFN', iret)
-        if (iret > 0) then
-            call jeveuo(nomob//'.REFN', 'L', vk24=refn)
-            call jenonu(jexnom('&CATA.GD.NOMGD', refn(2) (1:8)), repi)
-        else
-            cham = nomob(1:14)
-            call dismcn(questi, cham, repi, repk, ierd)
-        end if
-
-    else if (questi .eq. 'NOM_MODELE') then
-!     --------------------------------
-!       QUESTION POURRIE !!
-!       CETTE QUESTION NE DEVRAIT PAS ETRE UTILISEE
-        call jelira(nomob//'.LILI', 'NOMUTI', n1)
-        if (n1 .lt. 2) goto 98
-!
-        call jenuno(jexnum(nomob//'.LILI', 2), noligr)
-        if (noligr(1:8) .eq. 'LIAISONS') goto 98
-!
-        call dismlg(questi, noligr, repi, repk, ierd)
-        goto 99
-!
-98      continue
-        repk = ' '
-        ierd = 1
-99      continue
 !
     else
         ierd = 1

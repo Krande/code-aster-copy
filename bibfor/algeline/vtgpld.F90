@@ -76,7 +76,7 @@ subroutine vtgpld(cumul, alpha, geomiz, deplaz, base, &
     integer :: i_cmp_glob, i_ec, i_equ, i_node, i_dof
     real(kind=8) :: rdepla
     character(len=8) :: nomgd, ktype
-    character(len=19) :: geomi, depla, geomf, prof_chno
+    character(len=19) :: geomi, depla, geomf, nume_equa
     real(kind=8), pointer :: v_depla(:) => null()
     real(kind=8), pointer :: v_geomf(:) => null()
     real(kind=8), pointer :: v_geomi(:) => null()
@@ -132,12 +132,12 @@ subroutine vtgpld(cumul, alpha, geomiz, deplaz, base, &
     ASSERT(p_cata_cmp(2) .eq. 'DY')
     ASSERT(p_cata_cmp(3) .eq. 'DZ')
 !
-! - Get PROF_CHNO
+! - Get NUME_EQUA
 !
-    call dismoi('PROF_CHNO', depla, 'CHAM_NO', repk=prof_chno)
-    lili = prof_chno(1:19)//'.LILI'
-    prno = prof_chno(1:19)//'.PRNO'
-    nueq = prof_chno(1:19)//'.NUEQ'
+    call dismoi('NUME_EQUA', depla, 'CHAM_NO', repk=nume_equa)
+    lili = nume_equa(1:19)//'.LILI'
+    prno = nume_equa(1:19)//'.PRNO'
+    nueq = nume_equa(1:19)//'.NUEQ'
     call jeveuo(nueq, 'L', vi=v_nueq)
 !
 ! - Get PRNO object for mesh

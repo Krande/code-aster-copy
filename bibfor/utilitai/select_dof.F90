@@ -125,17 +125,17 @@ subroutine select_dof(listEqua_, tablEqua_, tablCmp_, &
         ASSERT(nbNodeToSelect_ .eq. 1)
     end if
 !
-! - Get PROF_CHNO
+! - Get NUME_EQUA
 !
     profChno = ' '
     if (present(numeDofZ_)) then
         numeDof = numeDofZ_
         ASSERT(.not. present(fieldNodeZ_))
-        call dismoi('PROF_CHNO', numeDof, 'NUME_DDL', repk=profChno)
+        call dismoi('NUME_EQUA', numeDof, 'NUME_DDL', repk=profChno)
     elseif (present(fieldNodeZ_)) then
         fieldNode = fieldNodeZ_
         ASSERT(.not. present(numeDofZ_))
-        call dismoi('PROF_CHNO', fieldNode, 'CHAM_NO', repk=profChno)
+        call dismoi('NUME_EQUA', fieldNode, 'CHAM_NO', repk=profChno)
     else
         ASSERT(ASTER_FALSE)
     end if
@@ -195,7 +195,7 @@ subroutine select_dof(listEqua_, tablEqua_, tablCmp_, &
         end if
     end do
 !
-! - PROF_CHNO or PROF_GENE ?
+! - NUME_EQUA or PROF_GENE ?
 !
     call jeexin(profChno//'.DESC', iexi)
     lProfGene = (iexi .gt. 0)

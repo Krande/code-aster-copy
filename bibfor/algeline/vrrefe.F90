@@ -128,7 +128,7 @@ subroutine vrrefe(objet1, objet2, ier)
     else
 !       -- cas des cham_no :
         if (zk24(irefe1) .ne. zk24(irefe2)) ier = ier+1
-        ok = idensd('PROF_CHNO', zk24(irefe1+1), zk24(irefe2+1))
+        ok = idensd('NUME_EQUA', zk24(irefe1+1), zk24(irefe2+1))
         if (.not. ok) ier = ier+1
     end if
 !

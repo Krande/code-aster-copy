@@ -150,7 +150,7 @@ subroutine modiba(nomres, basemo, basefl, numvit, newres, &
 !
     call rsexch('F', basemo, 'DEPL', nuor(1), nomcha, &
                 iret)
-    call dismoi('PROF_CHNO', nomcha, 'CHAM_NO', repk=prchno)
+    call dismoi('NUME_EQUA', nomcha, 'CHAM_NO', repk=prchno)
     call jeveuo(prchno//'.DEEQ', 'L', vi=deeq)
 !
 !     --- CAS DU COUPLAGE ---

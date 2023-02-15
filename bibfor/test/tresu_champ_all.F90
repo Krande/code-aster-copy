@@ -78,7 +78,7 @@ subroutine tresu_champ_all(chamgd, typtes, typres, nbref, tbtxt, &
     character(len=4) :: type
     character(len=8) :: mesh
     character(len=5) :: sufv
-    character(len=19) :: cham19, prof_chno, cnsin1, cnsinr
+    character(len=19) :: cham19, nume_equa, cnsin1, cnsinr
     aster_logical :: skip, l_parallel_mesh, cham_no
     mpi_int :: irank
     integer, pointer :: v_noex(:) => null()
@@ -147,8 +147,8 @@ subroutine tresu_champ_all(chamgd, typtes, typres, nbref, tbtxt, &
         call wkvect('&&TRESU_CH.ALL', 'V V '//type(1:1), neq, jvale2)
         neq2 = 0
         if (cham_no) then
-            call dismoi('PROF_CHNO', cham19, 'CHAM_NO', repk=prof_chno, arret='F')
-            call jeveuo(prof_chno//".DEEQ", 'L', vi=v_deeq)
+            call dismoi('NUME_EQUA', cham19, 'CHAM_NO', repk=nume_equa, arret='F')
+            call jeveuo(nume_equa//".DEEQ", 'L', vi=v_deeq)
             do i = 1, neq
                 if (v_deeq(2*(i-1)+1) <= 0) then
                     ! On s'arrete en erreur dès que noeud = 0 car on ne sait pas comment le

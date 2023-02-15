@@ -280,7 +280,7 @@ subroutine mecalr(newcal, tysd, knum, kcha, resuco, &
                 if (option .eq. 'SIZ1_NOEU') then
                     call sinoz1(modele, chsig, chsign)
                 else if (option .eq. 'SIZ2_NOEU') then
-                    call dismoi('PROF_CHNO', chamgd, 'CHAM_NO', repk=pfchno)
+                    call dismoi('NUME_EQUA', chamgd, 'CHAM_NO', repk=pfchno)
                     call sinoz2(modele, pfchno, chsig, chsign)
                 end if
                 call rsnoch(leres1, option, iordr)

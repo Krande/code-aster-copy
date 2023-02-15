@@ -72,9 +72,9 @@ subroutine romMultiParaChck(ds_multipara, l_stab_fsi)
 ! - Check numbering in vector
 !
     if (ds_multipara%vect_name(1) .ne. ' ') then
-        call dismoi('PROF_CHNO', ds_multipara%vect_name(1), 'CHAM_NO', repk=prchno_ref)
+        call dismoi('NUME_EQUA', ds_multipara%vect_name(1), 'CHAM_NO', repk=prchno_ref)
         do i_vect = 2, nb_vect
-            call dismoi('PROF_CHNO', ds_multipara%vect_name(i_vect), 'CHAM_NO', repk=prchno)
+            call dismoi('NUME_EQUA', ds_multipara%vect_name(i_vect), 'CHAM_NO', repk=prchno)
             if (prchno .ne. prchno_ref) then
                 call utmess('F', 'ROM2_21')
             end if

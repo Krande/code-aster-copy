@@ -63,7 +63,7 @@ subroutine numecn(modele, champ, nume)
 !
     call jemarq()
     mo = modele
-    call dismoi('PROF_CHNO', champ, 'CHAM_NO', repk=prfchn)
+    call dismoi('NUME_EQUA', champ, 'CHAM_NO', repk=prfchn)
     call jelira(prfchn//'.LILI', 'NOMMAX', nb1)
 !
 !

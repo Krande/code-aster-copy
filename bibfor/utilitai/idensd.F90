@@ -63,6 +63,24 @@ function idensd(typesd, sd1, sd2)
         if (.not. iden) goto 998
 !
 !
+    else if (typ2sd .eq. 'NUME_EQUA') then
+        !     --------------------------------
+        pchn1 = sd1
+        pchn2 = sd2
+        iden = idenob(pchn1//'.LILI', pchn2//'.LILI')
+        if (.not. iden) goto 998
+        iden = idenob(pchn1//'.PRNO', pchn2//'.PRNO')
+        if (.not. iden) goto 998
+        iden = idenob(pchn1//'.DEEQ', pchn2//'.DEEQ')
+        if (.not. iden) goto 998
+        iden = idenob(pchn1//'.NUEQ', pchn2//'.NUEQ')
+        if (.not. iden) goto 998
+        iden = idenob(pchn1//'.NEQU', pchn2//'.NEQU')
+        if (.not. iden) goto 998
+        iden = idenob(pchn1//'.DELG', pchn2//'.DELG')
+        if (.not. iden) goto 998
+        !
+        !
     else
         call utmess('F', 'UTILITAI_47', sk=typ2sd)
     end if

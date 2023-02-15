@@ -149,7 +149,7 @@ subroutine trprot(model, bamo, tgeom, imodg, iadx, &
 !
 ! CHANGEMENT DE VALEUR POUR DX ET DY (OU DZ)
 !
-    call dismoi('PROF_CHNO', nomcha, 'CHAM_NO', repk=pchno)
+    call dismoi('NUME_EQUA', nomcha, 'CHAM_NO', repk=pchno)
     call dismoi('NOM_MAILLA', nomcha, 'CHAM_NO', repk=mailla)
     call dismoi('NOM_GD', nomcha, 'CHAM_NO', repk=gd)
     call dismoi('NB_EC', gd, 'GRANDEUR', repi=nec)

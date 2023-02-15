@@ -150,7 +150,7 @@ subroutine romMultiParaRead(ds_multipara)
 ! - Get informations from field
 !
     vect_assez = vect_asse
-    call dismoi('PROF_CHNO', vect_assez, 'CHAM_NO', repk=prof_chno)
+    call dismoi('NUME_EQUA', vect_assez, 'CHAM_NO', repk=prof_chno)
     call dismoi('NOM_MODELE', prof_chno, 'PROF_CHNO', repk=model)
     field_name = 'DEPL'
     call romFieldGetInfo(model, field_name, vect_assez, ds_multipara%field, l_chck_=ASTER_FALSE)

@@ -56,20 +56,20 @@ subroutine numer2(nb_ligr, list_ligr, base, nume_ddlz, &
 ! In  nb_ligr        : number of LIGREL in list
 ! In  list_ligr      : pointer to list of LIGREL
 ! In  base           : JEVEUX base to create objects
-!                      base(1:1) => PROF_CHNO objects
-!                      base(2:2) => NUME_DDL objects
+!                      base(2:2) => NUME_EQUA objects
+!                      base(1:1) => NUME_DDL objects
 ! IO  nume_ddl       : name of numbering object (NUME_DDL)
 ! In  modeloc        : local mode for GRANDEUR numbering
 ! In  nume_ddl_old   : name of previous nume_ddl object
 ! In  sd_iden_rela   : name of object for identity relations between dof
 !
 ! If nume_ddl_old is present
-!   -> try to know if PROF_CHNO in nume_ddl_old can be reuse
+!   -> try to know if NUME_EQUA in nume_ddl_old can be reuse
 !      In this case nume_ddl = nume_ddl_old
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    character(len=19) :: prof_chno, prof_chno_old
+    character(len=19) :: nume_equa, nume_equa_old
     character(len=14) :: nume_ddl, nume_ddl_old, moloc
     character(len=24) :: sd_iden_rela
     character(len=3) :: matd
@@ -84,8 +84,8 @@ subroutine numer2(nb_ligr, list_ligr, base, nume_ddlz, &
     nume_ddl = nume_ddlz
     moloc = modelocz
     nume_ddl_old = nume_ddl_oldz
-    prof_chno = nume_ddl//'.NUME'
-    prof_chno_old = nume_ddl_old//'.NUME'
+    nume_equa = nume_ddl//'.NUME'
+    nume_equa_old = nume_ddl_old//'.NUME'
 !
     call detrsd('NUME_DDL', nume_ddl)
 !
@@ -118,7 +118,7 @@ subroutine numer2(nb_ligr, list_ligr, base, nume_ddlz, &
 ! - Trying to reuse old nume_ddl
 !
     if (nume_ddl_old .ne. ' ') then
-        if (idensd('PROF_CHNO', prof_chno, prof_chno_old)) then
+        if (idensd('NUME_EQUA', nume_equa, nume_equa_old)) then
             call detrsd('NUME_DDL', nume_ddl)
             call jedupo(nume_ddl//'     .ADNE', 'V', nume_ddl_old//'     .ADNE', .false._1)
             call jedupo(nume_ddl//'     .ADLI', 'V', nume_ddl_old//'     .ADLI', .false._1)

@@ -16,78 +16,93 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine dismcn(questi, nomobz, repi, repkz, ierd)
+subroutine dismeq(questi, nomobz, repi, repkz, ierd)
     implicit none
-!     --     DISMOI(CHAM_NO)
+!     --     DISMOI(PROF_CHNO)
 !     ARGUMENTS:
 !     ----------
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
-#include "asterfort/dismgd.h"
-#include "asterfort/dismpn.h"
+#include "asterfort/dismlg.h"
+#include "asterfort/dismcn.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jenuno.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jenonu.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
+#include "asterfort/jexnom.h"
+!
     integer :: repi, ierd
     character(len=*) :: questi
     character(len=*) :: nomobz, repkz
-    character(len=24) :: questl
     character(len=32) :: repk
     character(len=19) :: nomob
 ! ----------------------------------------------------------------------
 !     IN:
 !       QUESTI : TEXTE PRECISANT LA QUESTION POSEE
-!       NOMOB  : NOM D'UN OBJET DE TYPE NUM_DDL
+!       NOMOBZ : NOM D'UN OBJET DE TYPE NUME_EQUA
 !     OUT:
 !       REPI   : REPONSE ( SI ENTIERE )
-!       REPK   : REPONSE ( SI CHAINE DE CARACTERES )
+!       REPKZ  : REPONSE ( SI CHAINE DE CARACTERES )
 !       IERD   : CODE RETOUR (0--> OK, 1 --> PB)
 !
+!     LISTE DES QUESTIONS ADMISSIBLES:
+!        'NB_DDLACT'
 ! ----------------------------------------------------------------------
 !     VARIABLES LOCALES:
 !     ------------------
-    character(len=8) :: nogd
-    integer :: iadesc, iarefe
+    character(len=19) :: noligr
+!
+!
+!
+!-----------------------------------------------------------------------
+    integer :: i, nbddlb, nbnos, nequ, nlili
+    character(len=24), pointer :: refn(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
+    nomob = nomobz
     repk = ' '
     repi = 0
     ierd = 0
 !
-    nomob = nomobz
-    questl = questi
+    if (questi .eq. 'NB_DDLACT') then
+!     --------------------------------
+        call jelira(nomob//'.NUEQ', 'LONMAX', nequ)
+        call jelira(nomob//'.LILI', 'NUTIOC', nlili)
+        nbddlb = 0
+        do i = 2, nlili
+            call jenuno(jexnum(nomob//'.LILI', i), noligr)
+            call dismlg('NB_NO_SUP', noligr, nbnos, repk, ierd)
+            nbddlb = nbddlb+nbnos
+        end do
+        repi = nequ-3*(nbddlb/2)
 !
-    if (questl .eq. 'NB_EQUA') then
-        call jelira(nomob//'.VALE', 'LONMAX', repi)
-    else if (questl .eq. 'NOM_MAILLA') then
-        call jeveuo(nomob//'.REFE', 'L', iarefe)
-        repk = zk24(iarefe-1+1) (1:8)
-    else if (questl .eq. 'NB_DDLACT') then
-        call jeveuo(nomob//'.REFE', 'L', iarefe)
-        call dismpn(questl, zk24(iarefe-1+2) (1:8)//'.NUME      ', repi, repk, ierd)
-    else if (questl .eq. 'TYPE_CHAMP') then
-        repk = 'NOEU'
-    else if (questl(1:7) .eq. 'NUM_GD ') then
-        call jeveuo(nomob//'.DESC', 'L', iadesc)
-        repi = zi(iadesc)
-    else if (questl(1:7) .eq. 'NOM_GD ') then
-        call jeveuo(nomob//'.DESC', 'L', iadesc)
-        call jenuno(jexnum('&CATA.GD.NOMGD', zi(iadesc)), repk)
-    else if (questl .eq. 'TYPE_SUPERVIS' .or. questl .eq. 'TYPE_SCA') then
-        call jeveuo(nomob//'.DESC', 'L', iadesc)
-        call jenuno(jexnum('&CATA.GD.NOMGD', zi(iadesc)), nogd)
-        if (questl .eq. 'TYPE_SUPERVIS') then
-            repk = 'CHAM_NO_'//nogd
-        else
-            call dismgd(questl, nogd, repi, repk, ierd)
-        end if
-    else if (questl .eq. 'NUME_EQUA') then
-        call jeveuo(nomob//'.REFE', 'L', iarefe)
-        repk = zk24(iarefe+1)
+!
+    else if (questi .eq. 'NB_EQUA') then
+!     --------------------------------
+        call jelira(nomob//'.NUEQ', 'LONMAX', repi)
+!
+!
+    else if (questi .eq. 'NOM_GD') then
+!     --------------------------------
+        call jeveuo(nomob//'.REFN', 'L', vk24=refn)
+        repk = refn(2) (1:8)
+!
+    else if (questi .eq. 'NUM_GD') then
+!     --------------------------------
+        call jeveuo(nomob//'.REFN', 'L', vk24=refn)
+        call jenonu(jexnom('&CATA.GD.NOMGD', refn(2) (1:8)), repi)
+!
+    else if (questi .eq. 'NOM_MODELE') then
+        call jeveuo(nomob//'.REFN', 'L', vk24=refn)
+        repk = refn(3)
+    else if (questi .eq. 'NOM_MAILLA') then
+        call jeveuo(nomob//'.REFN', 'L', vk24=refn)
+        repk = refn(1)
+!
     else
         ierd = 1
     end if

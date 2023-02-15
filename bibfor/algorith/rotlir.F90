@@ -332,7 +332,7 @@ subroutine rotlir(nomres, sst1, intf1, lino1, codret, &
         nook = .false.
         do i1 = 1, nbeq1
             kint = zk24(lmod1+i1-1) (1:19)
-            call dismoi('PROF_CHNO', kint, 'CHAM_NO', repk=prchn2)
+            call dismoi('NUME_EQUA', kint, 'CHAM_NO', repk=prchn2)
             if (.not. idensd('PROF_CHNO', prchn1, prchn2)) then
                 call utmess('E', 'ALGORITH12_36', nk=1, valk=[bamo1], &
                             ni=1, vali=[i1])

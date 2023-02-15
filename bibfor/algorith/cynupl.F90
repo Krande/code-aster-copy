@@ -92,7 +92,7 @@ subroutine cynupl(prof_chno, indirf, modcyc, mailsk, nbsec)
 !----------------RECUPERATION DU PROF_CHNO:
     call rsexch('F', modcyc, 'DEPL', 1, chamno, &
                 ier)
-    call dismoi('PROF_CHNO', chamno, 'CHAM_NO', repk=prof_chno_sec)
+    call dismoi('NUME_EQUA', chamno, 'CHAM_NO', repk=prof_chno_sec)
 !
 !---------------RECUPERATION DU NOMBRE DE COMPOSANTES-------------------
 !

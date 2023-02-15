@@ -194,7 +194,7 @@ subroutine focrr2(nomfon, resu, base, nomcha, maille, &
 !               ----- EXTRACTION SUR UN "CHAM_NO" -----
 !
     if (typcha(1:7) .eq. 'CHAM_NO') then
-        call dismoi('PROF_CHNO', ch1, 'CHAM_NO', repk=profch)
+        call dismoi('NUME_EQUA', ch1, 'CHAM_NO', repk=profch)
         call dismoi('NOM_MAILLA', ch1, 'CHAM_NO', repk=noma)
         call posddl('CHAM_NO', ch1, noeud, cmp, inoeud, &
                     iddl1)
@@ -244,7 +244,7 @@ subroutine focrr2(nomfon, resu, base, nomcha, maille, &
             call rsexch('F', resu, nomcha, ip2, ch2, &
                         l2)
 !
-            call dismoi('PROF_CHNO', ch1, 'CHAM_NO', repk=profc2)
+            call dismoi('NUME_EQUA', ch1, 'CHAM_NO', repk=profc2)
             if (profc2 .ne. profch) then
                 profch = profc2
                 call posddl('CHAM_NO', ch1, noeud, cmp, inoeud, &
@@ -271,7 +271,7 @@ subroutine focrr2(nomfon, resu, base, nomcha, maille, &
             r1 = (zr(jlir8-1+i2)-rval)/rbase
             r2 = (rval-zr(jlir8-1+i1))/rbase
 !
-            call dismoi('PROF_CHNO', ch2, 'CHAM_NO', repk=profc2)
+            call dismoi('NUME_EQUA', ch2, 'CHAM_NO', repk=profc2)
             if (profc2 .ne. profch) then
                 profch = profc2
                 call posddl('CHAM_NO', ch2, noeud, cmp, inoeud, &

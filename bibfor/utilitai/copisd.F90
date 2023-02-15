@@ -231,10 +231,15 @@ subroutine copisd(typesd, base, sd1, sd2)
 !     -----------------------------------
         k191 = sd1
         k192 = sd2
-        call copis2('PROF_CHNO', bas2, k191, k192)
+        call jedup1(k191//'.DEEQ', bas2, k192//'.DEEQ')
+        call jedup1(k191//'.NUEQ', bas2, k192//'.NUEQ')
+        call jedup1(k191//'.PRNO', bas2, k192//'.PRNO')
+        call jedup1(k191//'.LILI', bas2, k192//'.LILI')
         call jedup1(k191//'.NEQU', bas2, k192//'.NEQU')
         call jedup1(k191//'.REFN', bas2, k192//'.REFN')
         call jedup1(k191//'.DELG', bas2, k192//'.DELG')
+        call jedup1(k191//'.NULG', bas2, k192//'.NULG')
+        call jedup1(k191//'.PDDL', bas2, k192//'.PDDL')
 !
 ! ----------------------------------------------------------------------
     else if (typesd .eq. 'STOCKAGE') then

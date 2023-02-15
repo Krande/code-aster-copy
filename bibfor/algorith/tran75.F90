@@ -213,7 +213,7 @@ subroutine tran75(nomres, typres, nomin, basemo)
                     ir)
         chmod = chmod(1:19)//'.REFE'
         call dismoi('NOM_GD', chmod, 'CHAM_NO', repk=nomgd)
-        call dismoi('PROF_CHNO', chmod, 'CHAM_NO', repk=prchno)
+        call dismoi('NUME_EQUA', chmod, 'CHAM_NO', repk=prchno)
         call jeveuo(chmod, 'L', llcha)
         mailla = zk24(llcha) (1:8)
         crefe(1) = zk24(llcha)
@@ -380,7 +380,7 @@ subroutine tran75(nomres, typres, nomin, basemo)
 !
 !              SI NOMCHA N'A PAS LA BONNE NUMEROTATION, ON ARRETE TOUT :
                 ASSERT(prchno .ne. ' ')
-                call dismoi('PROF_CHNO', nomcha, 'CHAM_NO', repk=prchn1)
+                call dismoi('NUME_EQUA', nomcha, 'CHAM_NO', repk=prchn1)
                 if (.not. idensd('PROF_CHNO', prchno, prchn1)) then
                     call vtcrea(tmpcha, crefe, 'V', 'R', neq1)
                     call vtcopy(nomcha, tmpcha, ' ', ir)
@@ -435,7 +435,7 @@ subroutine tran75(nomres, typres, nomin, basemo)
                         prems = .false.
                         call cnocre(mailla, nomgd, nbnoeu, zi(inumno), ncmp, &
                                     zk8(inocmp), zi(inoecp), 'G', ' ', chamno)
-                        call dismoi('PROF_CHNO', chamno, 'CHAM_NO', repk=prof)
+                        call dismoi('NUME_EQUA', chamno, 'CHAM_NO', repk=prof)
                     else
                         call cnocre(mailla, nomgd, nbnoeu, zi(inumno), ncmp, &
                                     zk8(inocmp), zi(inoecp), 'G', prof, chamno)

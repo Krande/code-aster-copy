@@ -119,7 +119,7 @@ subroutine focrr0(nomfon, interp, base, resu, nomcha, &
     call dismoi('TYPE_SUPERVIS', cham19, 'CHAMP', repk=typcha)
 !
     if (typcha(1:7) .eq. 'CHAM_NO') then
-        call dismoi('PROF_CHNO', cham19, 'CHAM_NO', repk=profch)
+        call dismoi('NUME_EQUA', cham19, 'CHAM_NO', repk=profch)
         call dismoi('NOM_MAILLA', cham19, 'CHAM_NO', repk=noma)
         call posddl('CHAM_NO', cham19, noeud, cmp, inoeud, &
                     iddl)
@@ -141,7 +141,7 @@ subroutine focrr0(nomfon, interp, base, resu, nomcha, &
             call rsexch(' ', resu, nomcha, lordr(iordr), cham19, &
                         ie)
             if (ie .eq. 0) then
-                call dismoi('PROF_CHNO', cham19, 'CHAM_NO', repk=profc2)
+                call dismoi('NUME_EQUA', cham19, 'CHAM_NO', repk=profc2)
                 if (profc2 .ne. profch) then
                     profch = profc2
                     call posddl('CHAM_NO', cham19, noeud, cmp, inoeud, &

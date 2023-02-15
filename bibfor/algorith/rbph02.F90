@@ -69,7 +69,7 @@ subroutine rbph02(mailla, numddl, chamno, nomgd, neq, &
         call dismoi('PROF_CHNO', numddl, 'NUME_DDL', repk=prno)
     else
         ASSERT(chamno .ne. ' ')
-        call dismoi('PROF_CHNO', chamno, 'CHAM_NO', repk=prno)
+        call dismoi('NUME_EQUA', chamno, 'CHAM_NO', repk=prno)
     end if
 !
     call dismoi('NB_EC', nomgd, 'GRANDEUR', repi=nec)

@@ -93,12 +93,12 @@ subroutine romFieldNodeEquaToEqua(fieldA, fieldB, nbNodeMesh, listNode, equaAToB
 !
 ! - Access to numbering for domain A
 !
-    call dismoi('PROF_CHNO', fieldRefeA, 'CHAM_NO', repk=profChnoA)
+    call dismoi('NUME_EQUA', fieldRefeA, 'CHAM_NO', repk=profChnoA)
     call jeveuo(profChnoA(1:19)//'.DEEQ', 'L', vi=deeqA)
 !
 ! - Access to numbering for domain B
 !
-    call dismoi('PROF_CHNO', fieldRefeB, 'CHAM_NO', repk=profChnoB)
+    call dismoi('NUME_EQUA', fieldRefeB, 'CHAM_NO', repk=profChnoB)
     call jeveuo(profChnoB(1:19)//'.DEEQ', 'L', vi=deeqB)
     call jeveuo(jexnum(profChnoB(1:19)//'.PRNO', iLigrMesh), 'L', vi=prnoB)
     call jeveuo(profChnoB(1:19)//'.NUEQ', 'L', vi=nueqB)

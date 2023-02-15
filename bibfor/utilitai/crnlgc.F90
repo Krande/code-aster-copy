@@ -81,7 +81,7 @@ subroutine crnlgc(numddl)
 !
     character(len=3) :: chnbjo
     character(len=8) :: mesh, k8bid, nomgdr
-    character(len=19) :: nomlig, comm_name, tag_name
+    character(len=19) :: nomlig, comm_name, tag_name, nume_equa
     character(len=24) :: nojoie, nojoir, nonulg
 !
 !----------------------------------------------------------------------
@@ -109,12 +109,13 @@ subroutine crnlgc(numddl)
     DEBUG_MPI('crnlgc', rang, nbproc)
 
 !   RECUPERATION DU NOM DU MAILLAGE DANS LE BUT D'OBTENIR LE JOINT
-    call jeveuo(numddl//'.NUME.REFN', 'L', jrefn)
+    nume_equa = numddl//'.NUME'
+    call jeveuo(nume_equa//'.REFN', 'L', jrefn)
     mesh = zk24(jrefn) (1:8)
     nomgdr = zk24(jrefn+1) (1:8)
 
-    call jeveuo(numddl//'.NUME.NULG', 'E', vi=v_nugll)
-    call jeveuo(numddl//'.NUME.PDDL', 'E', vi=v_posdd)
+    call jeveuo(nume_equa//'.NULG', 'E', vi=v_nugll)
+    call jeveuo(nume_equa//'.PDDL', 'E', vi=v_posdd)
 !
 ! -- Création du graphe de comm
     comm_name = '&CRNULG.COMM'
@@ -124,16 +125,16 @@ subroutine crnlgc(numddl)
     call jeveuo(tag_name, 'L', vi=v_tag)
 !
     if (nb_comm > 0) then
-        call jedupo(mesh//'.DOMJOINTS', 'G', numddl//'.NUME.DOMJ', ASTER_FALSE)
+        call jedupo(mesh//'.DOMJOINTS', 'G', nume_equa//'.DOMJ', ASTER_FALSE)
     end if
 
 !     !!!! IL PEUT ETRE INTERESSANT DE STOCKER CES INFOS
 !     !!!! EN CAS DE CONSTRUCTION MULTIPLE DE NUMEDDL
 !
 !   RECHERCHE DES ADRESSES DU .PRNO DE .NUME
-    call jeveuo(numddl//'.NUME.PRNO', 'E', idprn1)
-    call jeveuo(jexatr(numddl//'.NUME.PRNO', 'LONCUM'), 'L', idprn2)
-    call jeveuo(numddl//'.NUME.DEEQ', 'L', vi=v_deeq)
+    call jeveuo(nume_equa//'.PRNO', 'E', idprn1)
+    call jeveuo(jexatr(nume_equa//'.PRNO', 'LONCUM'), 'L', idprn2)
+    call jeveuo(nume_equa//'.DEEQ', 'L', vi=v_deeq)
 
 !   !!! VERIFIER QU'IL N'Y A PAS DE MACRO-ELTS
 !
@@ -197,7 +198,7 @@ subroutine crnlgc(numddl)
 
         nbddl = 0
         if (zi(jrecep1) > 0) then
-            call wkvect(numddl//'.NUMEE'//chnbjo, 'G V I', zi(jrecep1), jnujoi1)
+            call wkvect(nume_equa//'E'//chnbjo, 'G V I', zi(jrecep1), jnujoi1)
 !
             do jaux = 1, nbnoee
                 poscom = (jaux-1)*(1+nec)+1
@@ -235,7 +236,7 @@ subroutine crnlgc(numddl)
                               zi(jrecep2), n4r, numpr4, tag4, mpicou)
 
         if (nb_ddl_envoi > 0) then
-            call wkvect(numddl//'.NUMER'//chnbjo, 'G V I', nb_ddl_envoi, jnujoi2)
+            call wkvect(nume_equa//'R'//chnbjo, 'G V I', nb_ddl_envoi, jnujoi2)
 !
             curpos = 0
             do jaux = 1, nbnoer
@@ -262,9 +263,9 @@ subroutine crnlgc(numddl)
     call jedetr(comm_name)
     call jedetr(tag_name)
 
-    call jelira(numddl//'.NUME.PRNO', 'NMAXOC', nlili, k8bid)
+    call jelira(nume_equa//'.PRNO', 'NMAXOC', nlili, k8bid)
     do ili = 2, nlili
-        call jenuno(jexnum(numddl//'.NUME.LILI', ili), nomlig)
+        call jenuno(jexnum(nume_equa//'.LILI', ili), nomlig)
         call create_graph_comm(nomlig, "LIGREL", nb_comm, comm_name, tag_name)
         call jeveuo(comm_name, 'L', vi=v_comm)
         call jeveuo(tag_name, 'L', vi=v_tag)
@@ -334,7 +335,7 @@ subroutine crnlgc(numddl)
 ! --- Vérification de la numérotation
 !
 !   NOMBRE DE DDL LOCAUX
-    call jeveuo(numddl//'.NUME.NEQU', 'L', jnequ)
+    call jeveuo(nume_equa//'.NEQU', 'L', jnequ)
     nbddll = zi(jnequ)
     call jeveuo(mesh//'.NOEX', 'L', vi=v_noex)
     do iaux = 1, nbddll
@@ -358,9 +359,9 @@ subroutine crnlgc(numddl)
         end do
         call asmpi_comm_vect("MPI_SUM", "I", sci=nno)
 !
-        call jeexin(numddl//'.NUME.MDLA', iret)
+        call jeexin(nume_equa//'.MDLA', iret)
         if (iret .ne. 0) then
-            call jelira(numddl//'.NUME.MDLA', 'LONMAX', nlag, k8bid)
+            call jelira(nume_equa//'.MDLA', 'LONMAX', nlag, k8bid)
             nlag = nlag/3
         else
             nlag = 0

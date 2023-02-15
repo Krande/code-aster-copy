@@ -106,7 +106,7 @@ subroutine dbrMainTrunc(paraTrunc, baseOut)
         ASSERT(iret .eq. 100)
         call vtcreb(modeRom, 'G', 'R', &
                     meshz=mesh, &
-                    prof_chnoz=profChno, &
+                    nume_equaz=profChno, &
                     idx_gdz=physNume, &
                     nb_equa_inz=nbEquaRom)
         call jeveuo(modeRom(1:19)//'.VALE', 'E', vr=valeRom)

@@ -68,7 +68,7 @@ subroutine rsmena(resu)
 !
 !--------------------------------------------------------
 !     IL FAUT DERUIRE :
-!         * LES PROF_CHNO INUTILISES
+!         * LES NUME_EQUA INUTILISES
 !         * LES EXCIT INUTILISES
 !         * LES LIGREL INUTILISES
 !--------------------------------------------------------
@@ -82,10 +82,10 @@ subroutine rsmena(resu)
                 n2)
 !
 !
-!     1. LES PROF_CHNO :
+!     1. LES NUME_EQUA :
 !     ------------------
 !
-!     1.1 LISTE DES PROF_CHNO EXISTANTS
+!     1.1 LISTE DES NUME_EQUA EXISTANTS
     call jecreo('&&RSMENA.DICO', 'V N K24')
     call jeecra('&&RSMENA.DICO', 'NOMMAX', n2)
     nbcon = 0
@@ -99,7 +99,7 @@ subroutine rsmena(resu)
     end do
     if (nbcon .eq. 0) goto 50
 !
-!     1.2 ON "COCHE" LES  PROF_CHNO REFERENCES :
+!     1.2 ON "COCHE" LES  NUME_EQUA REFERENCES :
     call jelira(res19//'.DESC', 'NOMMAX', nbnosy)
     call rsorac(res19, 'LONUTI', 0, r8b, kbid, &
                 c16b, r8b, kbid, tord, 1, &
@@ -120,7 +120,7 @@ subroutine rsmena(resu)
                         iret)
             call dismoi('TYPE_CHAMP', cham, 'CHAMP', repk=tych)
             if (tych .ne. 'NOEU') goto 30
-            call dismoi('PROF_CHNO', cham, 'CHAMP', repk=noco19)
+            call dismoi('NUME_EQUA', cham, 'CHAMP', repk=noco19)
             call jenonu(jexnom('&&RSMENA.DICO', noco19), i1)
             ASSERT(i1 .gt. 0 .and. i1 .le. nbcon)
             zi(jcoche-1+i1) = 1
@@ -129,11 +129,11 @@ subroutine rsmena(resu)
 30      continue
     end do
 !
-!     1.2 ON DETRUIT LES  PROF_CHNO NON REFERENCES :
+!     1.2 ON DETRUIT LES  NUME_EQUA NON REFERENCES :
     do k = 1, nbcon
         if (zi(jcoche-1+k) .eq. 0) then
             call jenuno(jexnum('&&RSMENA.DICO', k), noco19)
-            call detrsd('PROF_CHNO', noco19)
+            call detrsd('NUME_EQUA', noco19)
         end if
     end do
 50  continue

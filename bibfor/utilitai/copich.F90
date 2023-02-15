@@ -82,7 +82,7 @@ subroutine copich(base, ch1z, ch2z)
 !
 !
 !       SI LE NOUVEAU CHAM_NO DOIT ETRE CREE SUR 'G', ON IMPOSE
-!       QUE LE NOM DU PROF_CHNO DE CE CHAMP  COMMENCE PAR LE NOM
+!       QUE LE NOM DU NUME_EQUA DE CE CHAMP  COMMENCE PAR LE NOM
 !       UTILISATEUR DU RESULTAT DE LA COMMANDE EN COURS :
 !       --------------------------------------------------------------
         if (base .eq. 'G') then
@@ -91,15 +91,15 @@ subroutine copich(base, ch1z, ch2z)
             if (nomu == ' ') then
                 nomu = ch2(1:8)
             end if
-            call dismoi('PROF_CHNO', ch2, 'CHAM_NO', repk=prno)
-!         -- REMARQUE : UN CHAM_NO PEUT NE PAS AVOIR DE PROF_CHNO (' '):
+            call dismoi('NUME_EQUA', ch2, 'CHAM_NO', repk=prno)
+!         -- REMARQUE : UN CHAM_NO PEUT NE PAS AVOIR DE NUME_EQUA (' '):
             if (prno .ne. ' ') then
                 if (prno(1:8) .ne. nomu) then
                     noojb = '12345678.PRCHN00000.PRNO'
                     call gnomsd(nomu, noojb, 15, 19)
                     prno2 = noojb(1:19)
                     call jeveuo(ch2//'.REFE', 'E', vk24=refe)
-                    call copisd('PROF_CHNO', base, prno, prno2)
+                    call copisd('NUME_EQUA', base, prno, prno2)
                     refe(2) = prno2
                 end if
             end if

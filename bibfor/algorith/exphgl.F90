@@ -101,7 +101,7 @@ subroutine exphgl(nomres, typsd, modcyc, profno, indirf, &
 !
     call rsexch('F', modcyc, 'DEPL', 1, chamno, &
                 ier)
-    call dismoi('PROF_CHNO', chamno, 'CHAM_NO', repk=pfchno)
+    call dismoi('NUME_EQUA', chamno, 'CHAM_NO', repk=pfchno)
 !
     call dismoi('NB_EQUA', pfchno, 'PROF_CHNO', repi=neqsec)
 !     -- QUESTION "POURRIE" :

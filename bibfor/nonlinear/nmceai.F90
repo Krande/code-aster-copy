@@ -101,7 +101,7 @@ subroutine nmceai(numedd, depdel, deppr1, deppr2, depold, &
     norm_depold = 0.d0
     f = 0.d0
     call dismoi('NB_EQUA', numedd, 'NUME_DDL', repi=neq)
-    call dismoi('PROF_CHNO', depdel, 'CHAM_NO', repk=profch)
+    call dismoi('NUME_EQUA', depdel, 'CHAM_NO', repk=profch)
     call jeveuo(profch(1:19)//'.DEEQ', 'L', vi=deeq)
 !
 ! --- ACCES AUX VECTEURS SOLUTIONS

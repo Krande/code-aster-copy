@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine get_lagr_info(prof_chnoz, i_equa, idx_gd, nb_node_lagr, list_node_lagr, &
+subroutine get_lagr_info(nume_equaz, i_equa, idx_gd, nb_node_lagr, list_node_lagr, &
                          nume_cmpz, ligrelz)
 !
     implicit none
@@ -32,7 +32,7 @@ subroutine get_lagr_info(prof_chnoz, i_equa, idx_gd, nb_node_lagr, list_node_lag
 #include "asterfort/nbec.h"
 !
 !
-    character(len=*), intent(in) :: prof_chnoz
+    character(len=*), intent(in) :: nume_equaz
     integer, intent(in) :: i_equa
     integer, intent(in) :: idx_gd
     integer, intent(out) :: nb_node_lagr
@@ -46,7 +46,7 @@ subroutine get_lagr_info(prof_chnoz, i_equa, idx_gd, nb_node_lagr, list_node_lag
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  prof_chno      : name of PROF_CHNO
+! In  nume_equa      : name of NUME_EQUA
 ! In  i_equa         : index of equation for lagrange dof
 ! In  idx_gd         : index of GRANDEUR in catalog
 ! Out nb_node_lagr   : number of nodes linked to lagrange dof
@@ -58,7 +58,7 @@ subroutine get_lagr_info(prof_chnoz, i_equa, idx_gd, nb_node_lagr, list_node_lag
 !
     character(len=24) :: lili, prno, nueq
     integer :: nume_ligr, nume_node_lagr
-    character(len=19) :: prof_chno, ligrel
+    character(len=19) :: nume_equa, ligrel
     integer :: i_cmp, i_nueq, length, idx_node
     integer :: i_elem, i_node, i_ligr, ico, jprno, i_cmp_max
     integer :: ideb, ncmp
@@ -72,10 +72,10 @@ subroutine get_lagr_info(prof_chnoz, i_equa, idx_gd, nb_node_lagr, list_node_lag
 !
     nume_cmp = 0
     nb_node_lagr = 0
-    prof_chno = prof_chnoz
-    lili = prof_chno(1:19)//'.LILI'
-    prno = prof_chno(1:19)//'.PRNO'
-    nueq = prof_chno(1:19)//'.NUEQ'
+    nume_equa = nume_equaz
+    lili = nume_equa(1:19)//'.LILI'
+    prno = nume_equa(1:19)//'.PRNO'
+    nueq = nume_equa(1:19)//'.NUEQ'
     call jelira(prno, 'NMAXOC', nb_ligr)
     call jeveuo(nueq, 'L', vi=p_nueq)
     call jelira(jexnum('&CATA.GD.NOMCMP', idx_gd), 'LONMAX', nb_cmp_max)

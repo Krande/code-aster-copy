@@ -69,8 +69,8 @@ subroutine nueffe_lag1(nb_ligr, list_ligr, base, nume_ddlz, renumz, &
 ! In  list_ligr      : pointer to list of LIGREL
 ! In  nume_ddl       : name of numbering object (NUME_DDL)
 ! In  base           : JEVEUX base to create objects
-!                      base(1:1) => PROF_CHNO objects
-!                      base(2:2) => NUME_DDL objects
+!                      base(1:1) => NUME_DDL objects
+!                      base(2:2) => NUME_EQUA objects
 ! In  renum          : method for renumbering equations
 !                       SANS/RCMK
 ! In  modelocz       : local mode for GRANDEUR numbering
@@ -105,7 +105,6 @@ subroutine nueffe_lag1(nb_ligr, list_ligr, base, nume_ddlz, renumz, &
     character(len=24) :: num2, dsclag, exi1, newn, oldn, derli
     character(len=19) :: nume_equa
     character(len=24) :: nequ, refn, sd_iden_rela
-    character(len=19) :: prof_chno
     character(len=24) :: lili, prno, nueq, deeq, delg
     integer :: nb_node_mesh, ilim, itypel, nb_dof, jdeeq, jdelg, nb_equa
     integer :: nb_iden_rela, nb_iden_dof, nb_iden_term
@@ -245,13 +244,11 @@ subroutine nueffe_lag1(nb_ligr, list_ligr, base, nume_ddlz, renumz, &
 
 ! --- NOMS DES PRINCIPAUX OBJETS JEVEUX :
 !     ---------------------------------
-    prof_chno = nume_ddl//'.NUME'
-    lili = prof_chno(1:19)//'.LILI'
-    prno = prof_chno(1:19)//'.PRNO'
-    nueq = prof_chno(1:19)//'.NUEQ'
-    deeq = prof_chno(1:19)//'.DEEQ'
-!
     nume_equa = nume_ddl//'.NUME'
+    lili = nume_equa(1:19)//'.LILI'
+    prno = nume_equa(1:19)//'.PRNO'
+    nueq = nume_equa(1:19)//'.NUEQ'
+    deeq = nume_equa(1:19)//'.DEEQ'
     delg = nume_equa(1:19)//'.DELG'
     nequ = nume_equa(1:19)//'.NEQU'
     refn = nume_equa(1:19)//'.REFN'
@@ -588,7 +585,7 @@ subroutine nueffe_lag1(nb_ligr, list_ligr, base, nume_ddlz, renumz, &
 ! - Create NEQU object
 !
     call jedetr(nequ)
-    call wkvect(nequ, base(1:1)//' V I', 2, vi=p_nequ)
+    call wkvect(nequ, base(2:2)//' V I', 2, vi=p_nequ)
 !
 ! - Number of dof for computation (number of equations in system)
 !
@@ -616,7 +613,7 @@ subroutine nueffe_lag1(nb_ligr, list_ligr, base, nume_ddlz, renumz, &
         call utmess('I', 'FACTOR_1', ni=5, vali=vali)
     end if
 
-    call wkvect(refn, base(1:1)//' V K24', 4, idref)
+    call wkvect(refn, base(2:2)//' V K24', 4, idref)
     zk24(idref) = mesh
     zk24(idref+1) = gran_name
     zk24(idref+2) = modele
@@ -628,7 +625,7 @@ subroutine nueffe_lag1(nb_ligr, list_ligr, base, nume_ddlz, renumz, &
 !
 ! - Set NUEQ object
 !
-    call nunueq(mesh, prof_chno, nb_dof, igds, sd_iden_rela)
+    call nunueq(mesh, nume_equa, nb_dof, igds, sd_iden_rela)
 !
 ! - Create DEEQ object
 !
@@ -638,7 +635,7 @@ subroutine nueffe_lag1(nb_ligr, list_ligr, base, nume_ddlz, renumz, &
 ! - Create DELG object
 !
     call jedetr(delg)
-    call wkvect(delg, base(1:1)//' V I', nb_equa, jdelg)
+    call wkvect(delg, base(2:2)//' V I', nb_equa, jdelg)
 !
 ! - Set DEEQ and DELG objects with non-physical nodes
 !

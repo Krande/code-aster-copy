@@ -368,9 +368,9 @@ subroutine extchn(nchmno, nnoeud, numnd, ncmp, nbn, &
 !
 !
 !          /* CAS D' UN CHAM_NO A REPRESENTATION PAR NOEUD */
-!          /* CONTENUE DANS LE PRNO (OC 1) DU PROF_CHNO    */
+!          /* CONTENUE DANS LE PRNO (OC 1) DU NUME_EQUA    */
 !
-!        RECUPERATION DU NOM DU PROF_CHNO
+!        RECUPERATION DU NOM DU NUME_EQUA
 !        --------------------------------
 !
     nomaux = zk24(arefch+2-1)
@@ -389,7 +389,7 @@ subroutine extchn(nchmno, nnoeud, numnd, ncmp, nbn, &
 !        ------------------------
 !
 !
-    do i = 1, nbn, 1
+    do i = 1, nbn
 !
         call jecroc(jexnum(nperr, i))
         call jeecra(jexnum(nperr, i), 'LONMAX', nbc)

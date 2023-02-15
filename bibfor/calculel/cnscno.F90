@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine cnscno(cnsz, prchnz, prol0, basez, cnoz, &
+subroutine cnscno(cnsz, nume_equaz, prol0, basez, cnoz, &
                   kstop, iret, nbz, vchamz)
 ! person_in_charge: jacques.pellet at edf.fr
 !
@@ -28,7 +28,7 @@ subroutine cnscno(cnsz, prchnz, prol0, basez, cnoz, &
 #include "asterfort/assert.h"
 #include "asterfort/cmpcha.h"
 #include "asterfort/codent.h"
-#include "asterfort/profchno_crsd.h"
+#include "asterfort/nume_equa_crsd.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/gcncon.h"
@@ -52,7 +52,7 @@ subroutine cnscno(cnsz, prchnz, prol0, basez, cnoz, &
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
 !
-    character(len=*) :: cnsz, cnoz, basez, prchnz, prol0
+    character(len=*) :: cnsz, cnoz, basez, nume_equaz, prol0
     character(len=1) :: kstop
     integer, optional :: nbz
     character(len=24), optional :: vchamz
@@ -61,21 +61,21 @@ subroutine cnscno(cnsz, prchnz, prol0, basez, cnoz, &
 ! ------------------------------------------------------------------
 !     ARGUMENTS:
 ! CNSZ    IN/JXIN  K19 : SD CHAM_NO_S A TRANSFORMER
-! PRCHNZ  IN/JXVAR K19 : SD PROF_CHNO  (OU ' ')
-!          SI PRCHNZ EXISTE ON CREE CNOZ CONFORMEMENT A PRCHNZ :
+! NUME_EQUAZ  IN/JXVAR K19 : SD NUME_EQUA  (OU ' ')
+!          SI NUME_EQUAZ EXISTE ON CREE CNOZ CONFORMEMENT A NUME_EQUAZ :
 !             => SI CNSZ CONTIENT DES VALEURS QUE L'ON NE SAIT PAS
-!                STOCKER DANS PRCHNZ, ON LES "OUBLIE"
-!             => SI PRCHNZ EXIGE DES VALEURS QUE L'ON NE TROUVE PAS
+!                STOCKER DANS NUME_EQUAZ, ON LES "OUBLIE"
+!             => SI NUME_EQUAZ EXIGE DES VALEURS QUE L'ON NE TROUVE PAS
 !                DANS CNSZ :
 !                  - SI PROL0='OUI' : ON PRENDS LA VALEUR "ZERO"
 !                  - SI PROL0='NON' : ERREUR <F>
 !
-!          SI PRCHNZ N'EXISTE PAS ON CREE CNOZ EN FONCTION
+!          SI NUME_EQUAZ N'EXISTE PAS ON CREE CNOZ EN FONCTION
 !             DU CONTENU DE CNSZ
-!             SI PRCHNZ  = ' ' ON CREE UN PROF_CHNO "SOUS-TERRAIN"
-!             SI PRCHNZ /= ' ' ON CREE UN PROF_CHNO DE NOM PRCHNZ
+!             SI NUME_EQUAZ  = ' ' ON CREE UN NUME_EQUA "SOUS-TERRAIN"
+!             SI NUME_EQUAZ /= ' ' ON CREE UN NUME_EQUA DE NOM NUME_EQUAZ
 ! PROL0   IN   K3  :  POUR PROLONGER (OU NON) LE CHAMP PAR "ZERO"
-!        /OUI /NON  ( CET ARGUMENT N'EST UTILISE QUE SI PRCHNZ /= ' ')
+!        /OUI /NON  ( CET ARGUMENT N'EST UTILISE QUE SI NUME_EQUAZ /= ' ')
 !        "ZERO" : / 0       POUR LES CHAMPS NUMERIQUES (R/C/I)
 !                 / ' '     POUR LES CHAMPS "KN"
 !                 / .FALSE. POUR LES CHAMPS DE "L"
@@ -101,9 +101,9 @@ subroutine cnscno(cnsz, prchnz, prol0, basez, cnoz, &
     integer :: lshift, nuprf, nb_equa_gl
     character(len=1) :: base
     character(len=8) :: ma, nomgd, nomno, nomcmp
-    aster_logical :: l_crea_prchno, l_chck_prchno, ldist, l_pmesh
+    aster_logical :: l_crea_nume_equa, l_chck_nume_equa, ldist, l_pmesh
     character(len=3) :: tsca
-    character(len=19) :: cns, cno, prchno, messag, prnoav, nume_equa
+    character(len=19) :: cns, cno, nume_equa, messag, prnoav
     integer, pointer :: deeq(:) => null()
     integer, pointer :: cnsd(:) => null()
     character(len=8), pointer :: cnsc(:) => null()
@@ -136,8 +136,8 @@ subroutine cnscno(cnsz, prchnz, prol0, basez, cnoz, &
     cns = cnsz
     cno = cnoz
 !
-    l_chck_prchno = .false.
-    l_crea_prchno = .false.
+    l_chck_nume_equa = .false.
+    l_crea_nume_equa = .false.
 !     CALL UTIMSD(6,2,.TRUE.,.TRUE.,CNS,1,' ')
 !
     call jeveuo(cns//'.CNSK', 'L', vk8=cnsk)
@@ -163,29 +163,29 @@ subroutine cnscno(cnsz, prchnz, prol0, basez, cnoz, &
 !     -- SI CNO EXISTE DEJA, ON LE DETRUIT :
     call detrsd('CHAM_NO', cno)
 !
-! - PROF_CHNO name
+! - NUME_EQUA name
 !
-    if (prchnz .eq. ' ') then
+    if (nume_equaz .eq. ' ') then
         if (base .eq. 'G') then
             noojb = '12345678.PRCHN00000.PRNO'
             call gnomsd(' ', noojb, 15, 19)
             noojb(1:8) = cno(1:8)
-            prchno = noojb(1:19)
+            nume_equa = noojb(1:19)
         else
-            call gcncon('.', prchno)
+            call gcncon('.', nume_equa)
         end if
-        l_chck_prchno = .false.
+        l_chck_nume_equa = .false.
     else
-        prchno = prchnz
-        l_chck_prchno = .true.
+        nume_equa = nume_equaz
+        l_chck_nume_equa = .true.
     end if
 !
-! - Create PROF_CHNO ?
+! - Create NUME_EQUA ?
 !
-    call jeexin(prchno//'.PRNO', iexi)
-    l_crea_prchno = (iexi .eq. 0)
-    if (l_crea_prchno) then
-        l_chck_prchno = .false.
+    call jeexin(nume_equa//'.PRNO', iexi)
+    l_crea_nume_equa = (iexi .eq. 0)
+    if (l_crea_nume_equa) then
+        l_chck_nume_equa = .false.
     end if
 !
 !
@@ -203,33 +203,26 @@ subroutine cnscno(cnsz, prchnz, prol0, basez, cnoz, &
         tmp_nucm1(icmp1) = icmp
     end do
 !
-! - Check PROF_CHNO
+! - Check NUME_EQUA
 !
-    if (l_chck_prchno) then
-        valk(1) = cno
-        valk(2) = prchno
-        call jeexin(prchno//'.REFN', iexi2)
-        if (iexi2 .gt. 0) then
-            nume_equa = prchno
-!         -- SI PRCHNO VIENT D'UN NUME_EQUA, ON PEUT VERIFIER maillage et grandeur
-            call jeveuo(nume_equa(1:19)//'.REFN', 'L', vk24=refn)
-            if ((refn(1) .ne. ma) .or. (refn(2) .ne. nomgd)) then
+    if (l_chck_nume_equa) then
+!         --  ON PEUT VERIFIER maillage et grandeur
+        call jeveuo(nume_equa(1:19)//'.REFN', 'L', vk24=refn)
+        if ((refn(1) .ne. ma) .or. (refn(2) .ne. nomgd)) then
 !             -- ON ACCEPTE : DEPL_R / DEPL_C
-                if ((nomgd(1:5) .eq. 'DEPL_') .and. (refn(2) (1:5) .eq. 'DEPL_')) then
-                else
-                    call utmess('F', 'CALCULEL4_6', nk=2, valk=valk)
-                end if
+            if ((nomgd(1:5) .eq. 'DEPL_') .and. (refn(2) (1:5) .eq. 'DEPL_')) then
+            else
+                valk(1) = cno
+                valk(2) = nume_equa
+                call utmess('F', 'CALCULEL4_6', nk=2, valk=valk)
             end if
-        else
-            call jelira(jexnum(prchno//'.PRNO', 1), 'LONMAX', prno_length)
-            ASSERT(prno_length .eq. nbno*(nbec+2))
         end if
     end if
 !
 !
-!     2- ON CREE (SI NECESSAIRE) LE PROF_CHNO  :
+!     2- ON CREE (SI NECESSAIRE) LE NUME_EQUA  :
 !     ------------------------------------------
-    if (l_crea_prchno) then
+    if (l_crea_nume_equa) then
 !
 !       2.1 ON COMPTE LES CMPS PORTEES PAR CNS :
         nb_equa = 0
@@ -269,12 +262,12 @@ subroutine cnscno(cnsz, prchnz, prol0, basez, cnoz, &
         end if
 !
 !       2.2 ALLOCATION DES OBJETS :
-        call profchno_crsd(prchno, base, nb_equa, meshz=ma, &
-                           gran_namez=nomgd, l_coll_const=.true.)
-        call jecroc(jexnum(prchno//'.PRNO', 1))
+        call nume_equa_crsd(nume_equa, base, nb_equa, meshz=ma, &
+                            gran_namez=nomgd)
+        call jecroc(jexnum(nume_equa//'.PRNO', 1))
 !
 !       2.3 REMPLISSAGE DE .PRNO :
-        call jeveuo(jexnum(prchno//'.PRNO', 1), 'E', jprn2)
+        call jeveuo(jexnum(nume_equa//'.PRNO', 1), 'E', jprn2)
         do ino = 1, nbno
             do icmp1 = 1, ncmp1
                 if (zl(jcnsl-1+(ino-1)*ncmp1+icmp1)) then
@@ -295,7 +288,7 @@ subroutine cnscno(cnsz, prchnz, prol0, basez, cnoz, &
             zi(jprn2-1+((2+nec)*(ino-1))+1) = ico+1
             ico = ico+zi(jprn2-1+((2+nec)*(ino-1))+2)
         end do
-        call jelibe(prchno//'.PRNO')
+        call jelibe(nume_equa//'.PRNO')
 !
 !       2.4 CREATION  DE .DEEQ :
 !       POUR DES RAISONS DE PERFORMANCES, IL VAUT MIEUX LE
@@ -304,11 +297,11 @@ subroutine cnscno(cnsz, prchnz, prol0, basez, cnoz, &
 !
 ! - Get number of equations
 !
-    call jeexin(prchno//'.NEQU', iexi)
+    call jeexin(nume_equa//'.NEQU', iexi)
     if (iexi .eq. 0) then
-        call jelira(prchno//'.NUEQ', 'LONUTI', nb_equa)
+        call jelira(nume_equa//'.NUEQ', 'LONUTI', nb_equa)
     else
-        call jeveuo(prchno//'.NEQU', 'L', vi=v_nequ)
+        call jeveuo(nume_equa//'.NEQU', 'L', vi=v_nequ)
         nb_equa = v_nequ(1)
     end if
 !
@@ -317,17 +310,17 @@ subroutine cnscno(cnsz, prchnz, prol0, basez, cnoz, &
 ! CREATION DES SDS CHAM_NOS SIMPLE OU SIMULTANES
     if (ldist .and. (nb .ge. 2)) then
         call vtcreb(cno, base, tsca, &
-                    meshz=ma, prof_chnoz=prchno, idx_gdz=gd, nb_equa_inz=nb_equa, &
+                    meshz=ma, nume_equaz=nume_equa, idx_gdz=gd, nb_equa_inz=nb_equa, &
                     nbz=nb, vchamz=vcham)
     else
         call vtcreb(cno, base, tsca, &
-                    meshz=ma, prof_chnoz=prchno, idx_gdz=gd, nb_equa_inz=nb_equa)
+                    meshz=ma, nume_equaz=nume_equa, idx_gdz=gd, nb_equa_inz=nb_equa)
     end if
 !
 !
-!     5-BIS ON CREE SI NECESSAIRE LE .DEEQ DU PROF_CHNO
+!     5-BIS ON CREE SI NECESSAIRE LE .DEEQ DU NUME_EQUA
 !     ----------------------------------------------------
-    if (l_crea_prchno) then
+    if (l_crea_nume_equa) then
 !
 ! ----- Create object local components (field) => global components (catalog)
 !
@@ -336,7 +329,7 @@ subroutine cnscno(cnsz, prchnz, prol0, basez, cnoz, &
 !          ON LIBERE TEMPORAIREMENT .CNSV ET .CNSL :
         call jelibe(cns//'.CNSV')
         call jelibe(cns//'.CNSL')
-        call pteequ(prchno, base, nb_equa, gd, ncmp, &
+        call pteequ(nume_equa, base, nb_equa, gd, ncmp, &
                     field_to_cata)
 !
         AS_DEALLOCATE(vi=cata_to_field)
@@ -350,7 +343,7 @@ subroutine cnscno(cnsz, prchnz, prol0, basez, cnoz, &
 !     6- ON REMPLIT LE .VALE :
 !     -----------------------------------
 
-    call jeveuo(prchno//'.DEEQ', 'L', vi=deeq)
+    call jeveuo(nume_equa//'.DEEQ', 'L', vi=deeq)
     call jeveuo(cno//'.VALE', 'E', jvale)
 !
     do ieq2 = 1, nb_equa
@@ -492,16 +485,16 @@ subroutine cnscno(cnsz, prchnz, prol0, basez, cnoz, &
     end do
 !
 !
-!     7 - POUR ECONOMISER LES PROF_CHNO, ON REGARDE SI
+!     7 - POUR ECONOMISER LES NUME_EQUA, ON REGARDE SI
 !         LE PRECEDENT NE CONVIENDRAIT PAS :
 !     -----------------------------------------------------
-    if (prchnz .eq. ' ' .and. base .eq. 'G') then
-        read (prchno(15:19), '(I5)') nuprf
+    if (nume_equaz .eq. ' ' .and. base .eq. 'G') then
+        read (nume_equa(15:19), '(I5)') nuprf
         if (nuprf .gt. 0) then
-            prnoav = prchno
+            prnoav = nume_equa
             call codent(nuprf-1, 'D0', prnoav(15:19))
-            if (idensd('PROF_CHNO', prchno, prnoav)) then
-                call detrsd('PROF_CHNO', prchno)
+            if (idensd('NUME_EQUA', nume_equa, prnoav)) then
+                call detrsd('NUME_EQUA', nume_equa)
                 call jeveuo(cno//'.REFE', 'E', jrefe)
                 zk24(jrefe-1+2) = prnoav
 ! SI PARALLELISME EN TEMPS: ON PREND LA MEME DECISION POUR TOUS LES CHAM_NOS

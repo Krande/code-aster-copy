@@ -243,7 +243,7 @@ subroutine crtype()
         if (k24(1:7) .eq. 'CHAM_NO') then
 !           -- on cherche a economiser les prof_chno (partage si possible)
             if (profch .eq. ' ') then
-                call dismoi('PROF_CHNO', champ, 'CHAM_NO', repk=pchn1)
+                call dismoi('NUME_EQUA', champ, 'CHAM_NO', repk=pchn1)
                 noojb = '12345678.PRCHN00000.PRNO'
                 call gnomsd(' ', noojb, 15, 19)
                 profch = noojb(1:19)
@@ -267,7 +267,7 @@ subroutine crtype()
                     call copisd('PROF_CHNO', 'G', pchn1, profch)
                 end if
             else
-                call dismoi('PROF_CHNO', champ, 'CHAM_NO', repk=pchn1)
+                call dismoi('NUME_EQUA', champ, 'CHAM_NO', repk=pchn1)
                 if (.not. idensd('PROF_CHNO', profch, pchn1)) then
                     noojb = '12345678.PRCHN00000.PRNO'
                     call gnomsd(' ', noojb, 15, 19)
@@ -332,7 +332,7 @@ subroutine crtype()
 !
             call copisd('CHAMP_GD', 'G', champ, nomch)
             if (k24(1:7) .eq. 'CHAM_NO') then
-                call dismoi('PROF_CHNO', nomch, 'CHAM_NO', repk=pchn1)
+                call dismoi('NUME_EQUA', nomch, 'CHAM_NO', repk=pchn1)
                 if (pchn1 .ne. profch) then
                     call detrsd('PROF_CHNO', pchn1)
                     call jeveuo(nomch//'.REFE', 'E', jrefe)
@@ -716,7 +716,7 @@ subroutine crtype()
 !           information from the fields composing the sd_resultat
             if (numedd .eq. ' ') then
                 call getvid('AFFE', 'CHAM_GD', iocc=1, scal=champ, nbret=ier)
-                call dismoi('PROF_CHNO', champ, 'CHAMP', repk=profch, arret='C', &
+                call dismoi('NUME_EQUA', champ, 'CHAMP', repk=profch, arret='C', &
                             ier=ier)
                 if (ier .eq. 0) then
                     call refdaj('F', resu19, (nbordr2-nbordr1), profch, 'DYNAMIQUE', matric, ier)
@@ -730,7 +730,7 @@ subroutine crtype()
                 do j = nbordr1+1, nbordr2-nbordr1
                     call rsexch(' ', resu19, 'DEPL', j, nomch, ier1)
                     if (ier1 .eq. 0) then
-                        call dismoi('PROF_CHNO', nomch, 'CHAMP', repk=profch, &
+                        call dismoi('NUME_EQUA', nomch, 'CHAMP', repk=profch, &
                                     arret='C', ier=ier)
                         if (ier .eq. 0) then
                             if (.not. idensd('PROF_CHNO', numedd(1:14)//'.NUME', profch)) then

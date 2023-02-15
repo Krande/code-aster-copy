@@ -44,7 +44,7 @@ subroutine afchno(chamn, base, gran_name, mesh, nb_node, &
 !
 !
 !
-    character(len=19) :: chamno, prof_chno
+    character(len=19) :: chamno, nume_equa
     integer :: ncmp, ncmpmx
 !
 !-----------------------------------------------------------------------
@@ -74,19 +74,19 @@ subroutine afchno(chamn, base, gran_name, mesh, nb_node, &
     call jelira(jexnum('&CATA.GD.NOMCMP', idx_gd), 'LONMAX', ncmpmx)
     call dismoi('NB_EC', gran_name, 'GRANDEUR', repi=nec)
 !
-! - Create PROF_CHNO
+! - Create NUME_EQUA
 !
-    prof_chno = chamno(1:8)//'.PROF_CHNO '
-    call crprno(prof_chno, base, mesh, gran_name, nb_equa)
+    nume_equa = chamno(1:8)//'.NUME_EQUA '
+    call crprno(nume_equa, base, mesh, gran_name, nb_equa)
 !
 ! - Create NODE field
 !
     call vtcreb(chamno, base, typval, &
-                meshz=mesh, prof_chnoz=prof_chno, idx_gdz=idx_gd, nb_equa_inz=nb_equa)
+                meshz=mesh, nume_equaz=nume_equa, idx_gdz=idx_gd, nb_equa_inz=nb_equa)
 !
-!     --- AFFECTATION DU .PRNO DE L'OBJET PROF_CHNO ---
+!     --- AFFECTATION DU .PRNO DE L'OBJET NUME_EQUA ---
 !
-    call jeveuo(prof_chno//'.PRNO', 'E', vi=prno)
+    call jeveuo(nume_equa//'.PRNO', 'E', vi=prno)
     ii = 0
     idec = 1
     do ino = 1, nb_node
@@ -103,7 +103,7 @@ subroutine afchno(chamn, base, gran_name, mesh, nb_node, &
 !
     if (l_affe) then
         call jeveuo(chamno//'.VALE', 'E', lvale)
-        call jeveuo(prof_chno//'.NUEQ', 'E', lnueq)
+        call jeveuo(nume_equa//'.NUEQ', 'E', lnueq)
         do ino = 1, nb_node
             i1 = prno((nec+2)*(ino-1)+1)+lnueq-1
             do ic = 1, ncmpmx
@@ -131,7 +131,7 @@ subroutine afchno(chamn, base, gran_name, mesh, nb_node, &
 !
 ! - Compute .DEEQ object
 !
-    call pteequ(prof_chno, base, nb_equa, idx_gd, ncmp, &
+    call pteequ(nume_equa, base, nb_equa, idx_gd, ncmp, &
                 field_to_cata)
     AS_DEALLOCATE(vi=cata_to_field)
     AS_DEALLOCATE(vi=field_to_cata)

@@ -22,7 +22,7 @@ subroutine crprno(prof_chnoz, base, meshz, gran_namez, nb_equa)
 !
 #include "asterfort/assert.h"
 #include "asterfort/jenonu.h"
-#include "asterfort/profchno_crsd.h"
+#include "asterfort/nume_equa_crsd.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
 !
@@ -52,8 +52,8 @@ subroutine crprno(prof_chnoz, base, meshz, gran_namez, nb_equa)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    call profchno_crsd(prof_chnoz, base, nb_equa, meshz=meshz, &
-                       gran_namez=gran_namez)
+    call nume_equa_crsd(prof_chnoz, base, nb_equa, meshz=meshz, &
+                        gran_namez=gran_namez)
 
     lili = prof_chnoz(1:19)//'.LILI'
     call jenonu(jexnom(lili, '&MAILLA'), i_ligr_mesh)

@@ -232,7 +232,7 @@ subroutine nmresi(mesh, list_func_acti, ds_material, &
         call nmpcin(matass)
         call jeveuo(matass(1:19)//'.CCID', 'L', vi=v_ccid)
     end if
-    call dismoi('PROF_CHNO', disp_prev, 'CHAM_NO', repk=profch)
+    call dismoi('NUME_EQUA', disp_prev, 'CHAM_NO', repk=profch)
     call jeveuo(profch(1:19)//'.DEEQ', 'L', vi=v_deeq)
 !
 ! - For contact dof

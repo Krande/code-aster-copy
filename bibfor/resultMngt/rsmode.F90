@@ -52,7 +52,7 @@ subroutine rsmode(resu)
     character(len=19) :: resu19
     character(len=14) :: nu
     character(len=16) :: nomsym
-    character(len=19) :: prchno, champt, nomcha, prchn1
+    character(len=19) :: nume_equao, champt, nomcha, nume_equa1
     character(len=24) :: valk(5)
     integer, pointer :: ordr(:) => null()
 !-----------------------------------------------------------------------
@@ -70,7 +70,7 @@ subroutine rsmode(resu)
 !
     if (nu .eq. ' ') goto 50
 !
-    prchn1 = nu(1:8)//'.NUME'
+    nume_equa1 = nu(1:8)//'.NUME'
     call dismoi('NOM_MAILLA', nu, 'NUME_DDL', repk=ma1)
 !
     champt = '&&RSMODE.CHAMPT'
@@ -91,8 +91,8 @@ subroutine rsmode(resu)
             call dismoi('NOM_GD', nomcha, 'CHAM_NO', repk=nomgd)
             if (nomgd(1:5) .ne. 'DEPL_') goto 30
 !
-            call dismoi('PROF_CHNO', nomcha, 'CHAM_NO', repk=prchno)
-            if (prchno .eq. prchn1) goto 30
+            call dismoi('NUME_EQUA', nomcha, 'CHAM_NO', repk=nume_equao)
+            if (nume_equao .eq. nume_equa1) goto 30
 !
             call dismoi('NOM_MAILLA', nomcha, 'CHAM_NO', repk=ma2)
             if (ma1 .ne. ma2) then
@@ -116,7 +116,7 @@ subroutine rsmode(resu)
     end do
 !
 !
-!     -- IL FAUT ENCORE DETRUIRE LES PROF_CHNO QUI ONT ETE CREES
+!     -- IL FAUT ENCORE DETRUIRE LES NUME_EQUA QUI ONT ETE CREES
 !        INUTILEMENT SUE LA BASE GLOBALE (POUR SDVERI=OUI)
     if (resu .ne. nu(1:8)) then
         call jelstc('G', resu8//'.PRFCN', 1, 0, kbid, &
@@ -127,7 +127,7 @@ subroutine rsmode(resu)
             call jelstc('G', resu8//'.PRFCN', 1, nbval, zk24(jliprf), &
                         nbval2)
             do k = 1, nbval2
-                call detrsd('PROF_CHNO', zk24(jliprf-1+k) (1:19))
+                call detrsd('NUME_EQUA', zk24(jliprf-1+k) (1:19))
             end do
         end if
     end if

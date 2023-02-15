@@ -37,7 +37,7 @@ subroutine vlaxpy(alpha, chamna, chamnb)
 !     IN/OUT CHAMNB :  K*  : CHAM_NO MAITRE 2
 !----------------------------------------------------------------------
     integer :: neq, i
-    character(len=19) :: prno
+    character(len=19) :: nume_equa
     character(len=24) :: chamn1, chamn2
     integer, pointer :: delg(:) => null()
     real(kind=8), pointer :: val1(:) => null()
@@ -49,8 +49,8 @@ subroutine vlaxpy(alpha, chamna, chamnb)
     chamn2 = chamnb
 !
 ! --- NUMEROTATION POUR TRIER LES LAGRANGE ET LES DDLS PHYSIQUES
-    call dismoi('PROF_CHNO', chamn1, 'CHAM_NO', repk=prno)
-    call jeveuo(prno(1:14)//'.NUME.DELG', 'L', vi=delg)
+    call dismoi('NUME_EQUA', chamn1, 'CHAM_NO', repk=nume_equa)
+    call jeveuo(nume_equa//'.DELG', 'L', vi=delg)
 !
 !
 ! --- MISE A JOUR DES VALEURS DES LAGRANGE

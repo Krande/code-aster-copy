@@ -86,7 +86,7 @@ subroutine pjspma(corres, cham1, cham2, prol0, ligre2, &
     call cescel(ch2s, ligre2, option, nompar, prol0, &
                 nncp, 'G', cham2, 'A', ierd)
 !
-    call dismoi('PROF_CHNO', chauxs, 'CHAM_NO', repk=prfchn)
+    call dismoi('NUME_EQUA', chauxs, 'CHAM_NO', repk=prfchn)
     call detrsd('PROF_CHNO', prfchn)
 !
     call detrsd('CHAM_NO_S', cns1)

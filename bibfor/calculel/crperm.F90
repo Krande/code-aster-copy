@@ -227,7 +227,7 @@ subroutine crperm()
         chs1 = chsi1(ic)
         chs2 = chsi2(ic)
         if (cham(ic) .eq. 'DEPL') then
-            call dismoi('PROF_CHNO', ch2, 'CHAM_NO', repk=prchno)
+            call dismoi('NUME_EQUA', ch2, 'CHAM_NO', repk=prchno)
             call cnscno(chs2, prchno, 'NON', 'G', ch2, &
                         'F', ibid)
             call detrsd('CHAM_NO_S', chs1)

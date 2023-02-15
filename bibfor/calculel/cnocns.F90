@@ -59,7 +59,7 @@ subroutine cnocns(cnoz, basez, cnsz, undf0_)
     character(len=1) :: base
     character(len=3) :: tsca
     character(len=8) :: mesh, gran_name
-    character(len=19) :: cno, cns, prof_chno
+    character(len=19) :: cno, cns, nume_equa
     integer :: nb_ec, idx_gd, nb_cmp_mx, nb_node, jvale, ierr
     integer :: iadg, jprno, i_node, ncmp, nb_cmp, jcnsl, jcnsv
     integer :: ival, ico, ieq, i_cmp_cata, i_cmp_field, i_cmp
@@ -127,14 +127,15 @@ subroutine cnocns(cnoz, basez, cnsz, undf0_)
 ! - Constant profiling ?
 !
     if (desc(2) .lt. 0) then
-        prof_chno = ' '
+        nume_equa = ' '
     else
-        call dismoi('PROF_CHNO', cno, 'CHAM_NO', repk=prof_chno)
+        call dismoi('NUME_EQUA', cno, 'CHAM_NO', repk=nume_equa)
     end if
 !
 ! - Set values in CNS
 !
-    if (prof_chno .eq. ' ') then
+    if (nume_equa .eq. ' ') then
+        ASSERT(ASTER_FALSE)
         do i_node = 1, nb_node
             do i_cmp_field = 1, nb_cmp
                 zl(jcnsl-1+(i_node-1)*nb_cmp+i_cmp_field) = .true.
@@ -155,8 +156,8 @@ subroutine cnocns(cnoz, basez, cnsz, undf0_)
             end do
         end do
     else
-        call jeveuo(jexnum(prof_chno//'.PRNO', 1), 'L', jprno)
-        call jeveuo(prof_chno//'.NUEQ', 'L', vi=nueq)
+        call jeveuo(jexnum(nume_equa//'.PRNO', 1), 'L', jprno)
+        call jeveuo(nume_equa//'.NUEQ', 'L', vi=nueq)
         do i_node = 1, nb_node
 !
 !         NCMP : NOMBRE DE CMPS SUR LE NOEUD INO

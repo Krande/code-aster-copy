@@ -54,7 +54,7 @@ subroutine calvci(nomci, nume_ddlz, nbchci, lchci, inst, &
 ! ----------------------------------------------------------------------
 ! BUT  :  CALCUL DU CHAM_NO CONTENANT UN VECTEUR LE CINEMATIQUE
 ! ---     ASSOCIE A UNE LISTE DE CHAR_CINE_* A UN INSTANT INST
-!         CHAR_CINE ET AYANT COMME PROF_CHNO CELUI DE NOMNU
+!         CHAR_CINE ET AYANT COMME NUME_EQUA CELUI DE NOMNU
 !                              ---
 !                              ! 0. SI I DDLS NON IMPOSE DANS
 !         NOMCI(1:19).VALE(I) =!       LA LISTE DES CHAR_CINE
@@ -66,7 +66,7 @@ subroutine calvci(nomci, nume_ddlz, nbchci, lchci, inst, &
 !                       DERNIERE CHAR_CINE IMPOSANT I
 ! ----------------------------------------------------------------------
 ! IN/JXVAR  K*19 NOMCI  : NOM DU CHAM_NO CREE A PARTIR DE LA LISTE DE
-!                   CHAR_CINE ET AYANT COMME PROF_CHNO CELUI DE NOMNU
+!                   CHAR_CINE ET AYANT COMME NUME_EQUA CELUI DE NOMNU
 ! IN  K*14 NUME_DDL  : NOM DE LA NUMEROTATION SUPPORTANT LE CHAM_NO
 ! IN  I    NBCHCI : NOMBRE DE CHAR_CINE DE LA LISTE LCHCI
 ! IN  K*24 LCHCI  : LISTE DES NOMS DES CHARGES CINEMATIQUES ENTRANT
@@ -94,7 +94,7 @@ subroutine calvci(nomci, nume_ddlz, nbchci, lchci, inst, &
     character(len=8) :: mesh, gd, nomf, evoim, cmp_name, nomch
     character(len=14) :: nume_ddl
     character(len=16) :: nomp(4)
-    character(len=19) :: vcine, charci, cnoimp, cnsimp, prof_chno
+    character(len=19) :: vcine, charci, cnoimp, cnsimp, nume_equa
     character(len=24) :: vvale, valk(4)
     integer, pointer :: afci(:) => null()
     integer, pointer :: cnsd(:) => null()
@@ -127,7 +127,7 @@ subroutine calvci(nomci, nume_ddlz, nbchci, lchci, inst, &
 !
     call dismoi('NOM_GD', nume_ddl, 'NUME_DDL', repk=gd)
     call dismoi('NOM_MAILLA', nume_ddl, 'NUME_DDL', repk=mesh)
-    call dismoi('PROF_CHNO', nume_ddl, 'NUME_DDL', repk=prof_chno)
+    call dismoi('NUME_EQUA', nume_ddl, 'NUME_DDL', repk=nume_equa)
 !
 ! - Get informations about GRANDEUR
 !
@@ -151,10 +151,10 @@ subroutine calvci(nomci, nume_ddlz, nbchci, lchci, inst, &
     call wkvect(vcine//'.DLCI', 'V V I', neq, jdlci)
 !
     call jeveuo(vvale, 'E', ivvale)
-    call jeveuo(prof_chno//'.NUEQ', 'L', vi=p_nueq)
-    call jeveuo(prof_chno//'.DEEQ', 'L', vi=deeq)
-    call jenonu(jexnom(prof_chno//'.LILI', '&MAILLA'), i_ligr_mesh)
-    call jeveuo(jexnum(prof_chno//'.PRNO', i_ligr_mesh), 'L', jprno)
+    call jeveuo(nume_equa//'.NUEQ', 'L', vi=p_nueq)
+    call jeveuo(nume_equa//'.DEEQ', 'L', vi=deeq)
+    call jenonu(jexnom(nume_equa//'.LILI', '&MAILLA'), i_ligr_mesh)
+    call jeveuo(jexnum(nume_equa//'.PRNO', i_ligr_mesh), 'L', jprno)
     call jeveuo(mesh//'.COORDO    .VALE', 'L', vr=vale)
 !
 ! - Loop on kinematic loads

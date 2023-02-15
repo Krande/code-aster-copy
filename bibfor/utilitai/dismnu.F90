@@ -24,7 +24,7 @@ subroutine dismnu(questi, nomobz, repi, repkz, ierd)
 #include "jeveux.h"
 #include "asterfort/dismgd.h"
 #include "asterfort/dismlg.h"
-#include "asterfort/dismpn.h"
+#include "asterfort/dismeq.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jemarq.h"
@@ -120,11 +120,11 @@ subroutine dismnu(questi, nomobz, repi, repkz, ierd)
         repk = 'NON'
         if (isLagr .and. .not. isDbLagr) repk = 'OUI'
 !
-    else if (questi .eq. 'PROF_CHNO') then
+    else if (questi .eq. 'NUME_EQUA') then
         repk = nomob//'.NUME'
 !
     else if (questi .eq. 'NOM_MODELE') then
-        call dismpn(questi, nomob//'.NUME', repi, repk, ierd)
+        call dismeq(questi, nomob//'.NUME', repi, repk, ierd)
 !
     else if (questi .eq. 'MATR_DISTRIBUEE') then
         call jeexin(nomob//'.NUML.NULG', imatd)

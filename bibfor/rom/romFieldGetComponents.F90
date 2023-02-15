@@ -99,7 +99,7 @@ subroutine romFieldGetComponents(field)
 !
     if (fieldSupp == 'NOEU') then
 ! ----- Access to numbering
-        call dismoi('PROF_CHNO', fieldRefe, 'CHAM_NO', repk=pfchno)
+        call dismoi('NUME_EQUA', fieldRefe, 'CHAM_NO', repk=pfchno)
         call jeveuo(pfchno//'.DEEQ', 'L', vi=deeq)
 
 ! ----- Detect equation

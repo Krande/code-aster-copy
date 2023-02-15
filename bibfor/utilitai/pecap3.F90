@@ -84,7 +84,7 @@ subroutine pecap3(chgeoz, tempez, iomega)
     character(len=8) :: lpain(2), lpaout(1)
     character(len=8) :: temper
     character(len=8) :: crit, modele
-    character(len=19) :: prchno
+    character(len=19) :: nume_equa
     character(len=14) :: typres
     character(len=19) :: knum, ligrth
     character(len=24) :: lchin(2), lchout(1), chgeom
@@ -134,11 +134,11 @@ subroutine pecap3(chgeoz, tempez, iomega)
 !
 ! --- RECUPERATION DU NUME_DDL ASSOCIE AU CHAMP DE TEMPERATURES :
 !     ---------------------------------------------------------
-    call dismoi('PROF_CHNO', chtemp, 'CHAM_NO', repk=prchno)
+    call dismoi('NUME_EQUA', chtemp, 'CHAM_NO', repk=nume_equa)
 !
 ! --- RECUPERATION DU MODELE ASSOCIE AU NUME_DDL  :
 !     ------------------------------------------
-    call dismoi('NOM_MODELE', prchno, 'PROF_CHNO', repk=modele)
+    call dismoi('NOM_MODELE', nume_equa, 'NUME_EQUA', repk=modele)
 !
 ! --- RECUPERATION DU LIGREL DU MODELE  :
 !     --------------------------------

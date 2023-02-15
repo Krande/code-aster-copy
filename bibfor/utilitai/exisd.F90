@@ -212,6 +212,14 @@ subroutine exisd(typesd, nomsd, iret)
         call jeexin(ch(1:19)//'.LILI', i3)
         call jeexin(ch(1:19)//'.NUEQ', i4)
         if (i1*i2*i3*i4 .ne. 0) iret = 1
+    else if (typ2sd .eq. 'NUME_EQUA') then
+        !     -----------------------------------
+        ch = nomsd
+        call jeexin(ch(1:19)//'.PRNO', i1)
+        call jeexin(ch(1:19)//'.DEEQ', i2)
+        call jeexin(ch(1:19)//'.LILI', i3)
+        call jeexin(ch(1:19)//'.NUEQ', i4)
+        if (i1*i2*i3*i4 .ne. 0) iret = 1
 !
     else
         call utmess('F', 'UTILITAI_47', sk=typ2sd)

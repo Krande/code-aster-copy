@@ -96,8 +96,8 @@ subroutine chtpcn(chno1, tgeom, tailmi, tmin, epsi, &
 ! ------------------------------ VERIFICATIONS -------------------------
 !
     call dismoi('NOM_GD', cn1, 'CHAM_NO', repk=gd1)
-    call dismoi('PROF_CHNO', cn1, 'CHAM_NO', repk=pchno1)
-    call dismoi('PROF_CHNO', cn2, 'CHAM_NO', repk=pchno2)
+    call dismoi('NUME_EQUA', cn1, 'CHAM_NO', repk=pchno1)
+    call dismoi('NUME_EQUA', cn2, 'CHAM_NO', repk=pchno2)
     call jeveuo(cn1//'.VALE', 'L', vr=val1)
     call jelira(cn1//'.VALE', 'LONMAX', nbcn1)
 !

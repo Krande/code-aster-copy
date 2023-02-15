@@ -85,7 +85,7 @@ subroutine op0156()
         call utmess('F', 'ALGELINE4_42', nk=2, valk=valk)
     end if
 !
-    call dismoi('PROF_CHNO', chamno, 'CHAM_NO', repk=pfchn2)
+    call dismoi('NUME_EQUA', chamno, 'CHAM_NO', repk=pfchn2)
 !     -- SI LA NUMEROTATION DE CHAM_NO N'EST PAS LA MEME QUE CELLE DE
 !        LA MATRICE, ON CHANGE LA NUMEROTATION DE CHAM_NO.
 !        EN APPELANT VTCOPY, ON PERD LA VALEUR DES LAGRANGES

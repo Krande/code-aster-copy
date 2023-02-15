@@ -120,7 +120,7 @@ subroutine tabcor(model, mate, mateco, ma1, ma2, moint, &
 ! RECUPERATION DES CARACTERISTIQUES DU CHAMP AUX NOEUDS DE
 ! L'INTERFACE
 !
-    call dismoi('PROF_CHNO', cn2, 'CHAM_NO', repk=pchno2)
+    call dismoi('NUME_EQUA', cn2, 'CHAM_NO', repk=pchno2)
     call jenonu(jexnom(pchno2//'.LILI', '&MAILLA'), ibid)
     call jeveuo(jexnum(pchno2//'.PRNO', ibid), 'L', iprn2)
     call dismoi('NB_EC', gd2, 'GRANDEUR', repi=nec2)

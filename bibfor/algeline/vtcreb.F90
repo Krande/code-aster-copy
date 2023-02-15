@@ -18,7 +18,7 @@
 
 subroutine vtcreb(field_nodez, base, type_scalz, &
                   nume_ddlz, &
-                  meshz, prof_chnoz, idx_gdz, nb_equa_inz, &
+                  meshz, nume_equaz, idx_gdz, nb_equa_inz, &
                   nb_equa_outz, nbz, vchamz)
 !
     implicit none
@@ -39,7 +39,7 @@ subroutine vtcreb(field_nodez, base, type_scalz, &
     character(len=*), intent(in) :: type_scalz
     character(len=*), optional, intent(in) :: nume_ddlz
     character(len=*), optional, intent(in) :: meshz
-    character(len=*), optional, intent(in) :: prof_chnoz
+    character(len=*), optional, intent(in) :: nume_equaz
     integer, optional, intent(in) :: nb_equa_inz
     integer, optional, intent(in) :: idx_gdz
     integer, optional, intent(out) :: nb_equa_outz
@@ -61,7 +61,7 @@ subroutine vtcreb(field_nodez, base, type_scalz, &
 !   In  nume_ddl    : name of numbering
 ! With complete informations:
 !   In  mesh        : name of mesh
-!   In  prof_chno   : name of PROF_CHNO
+!   In  nume_equa   : name of NUME_EQUA
 !   In  idx_gd      : index of GRANDEUR
 !   In  nb_equa_in  : number of equations
 ! Create simultaneously nbz NODE fields of name vchamz(1)...vchamz(nbz)
@@ -74,7 +74,7 @@ subroutine vtcreb(field_nodez, base, type_scalz, &
 !
     character(len=3) :: type_scal
     character(len=8) :: mesh
-    character(len=19) :: prof_chno, field_node, chamno
+    character(len=19) :: nume_equa, field_node, chamno
     character(len=24) :: obj_refe, obj_vale, obj_desc
     character(len=24), pointer :: p_refe(:) => null()
     integer :: idx_gd, nb_equa, j_vale, ideb, ifin, i, pdesc_save, jvcham, nb_equa_gl
@@ -104,11 +104,11 @@ subroutine vtcreb(field_nodez, base, type_scalz, &
         call dismoi('NUM_GD_SI', nume_ddlz, 'NUME_DDL', repi=idx_gd)
         call dismoi('NB_EQUA', nume_ddlz, 'NUME_DDL', repi=nb_equa)
         call dismoi('NOM_MAILLA', nume_ddlz, 'NUME_DDL', repk=mesh)
-        call dismoi('PROF_CHNO', nume_ddlz, 'NUME_DDL', repk=prof_chno)
+        call dismoi('NUME_EQUA', nume_ddlz, 'NUME_DDL', repk=nume_equa)
     else
         idx_gd = idx_gdz
         nb_equa = nb_equa_inz
-        prof_chno = prof_chnoz
+        nume_equa = nume_equaz
         mesh = meshz
     end if
 !
@@ -132,7 +132,7 @@ subroutine vtcreb(field_nodez, base, type_scalz, &
 ! - Object .REFE
         call wkvect(obj_refe, base//' V K24', 4, vk24=p_refe)
         p_refe(1) = mesh
-        p_refe(2) = prof_chno
+        p_refe(2) = nume_equa
 ! - Object .DESC
         call wkvect(obj_desc, base//' V I', 2, vi=p_desc)
         call jeecra(obj_desc, 'DOCU', cval='CHNO')
@@ -162,7 +162,7 @@ subroutine vtcreb(field_nodez, base, type_scalz, &
 ! - Object .REFE
             call wkvect(obj_refe, base//' V K24', 4, vk24=p_refe)
             p_refe(1) = mesh
-            p_refe(2) = prof_chno
+            p_refe(2) = nume_equa
 ! - Object .DESC
             call wkvect(obj_desc, base//' V I', 2, vi=p_desc)
             call jeecra(obj_desc, 'DOCU', cval='CHNO')

@@ -71,7 +71,7 @@ subroutine x195cb(tychr, nomgd, chou)
     call jelira(ch2//'.VALE', 'LONMAX', n1)
     call jerazo(ch2//'.VALE', n1, 1)
     call dismoi('NOM_MAILLA', ch2, 'CHAMP', repk=ma2)
-    call dismoi('PROF_CHNO', ch2, 'CHAM_NO', repk=pfcn2)
+    call dismoi('NUME_EQUA', ch2, 'CHAM_NO', repk=pfcn2)
 !
 !
 !     -- 2. CALCUL DU CONTENU DE CH2 :
@@ -90,8 +90,8 @@ subroutine x195cb(tychr, nomgd, chou)
             call utmess('F', 'CREACHAMP1_13')
         end if
 !
-        call dismoi('PROF_CHNO', ch1, 'CHAM_NO', repk=pfcn1)
-        if (.not. idensd('PROF_CHNO', pfcn1, pfcn2)) then
+        call dismoi('NUME_EQUA', ch1, 'CHAM_NO', repk=pfcn1)
+        if (.not. idensd('NUME_EQUA', pfcn1, pfcn2)) then
             call utmess('F', 'CREACHAMP1_12')
         end if
 !

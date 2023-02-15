@@ -65,7 +65,7 @@ subroutine crnlgn(numddl)
     integer, pointer :: v_mdlag(:) => null()
 !
     character(len=8) :: k8bid, mesh
-    character(len=19) :: nomlig
+    character(len=19) :: nomlig, nume_equa
     character(len=24) :: owner, mult1, mult2
 !
 !----------------------------------------------------------------------
@@ -88,7 +88,8 @@ subroutine crnlgn(numddl)
     rang = to_aster_int(mrank)
     nbproc = to_aster_int(msize)
 !
-    call jeveuo(numddl//'.NUME.REFN', 'L', jrefn)
+    nume_equa = nume_equa
+    call jeveuo(nume_equa//'.REFN', 'L', jrefn)
     mesh = zk24(jrefn) (1:8)
 !
     call dismoi('NUM_GD_SI', numddl, 'NUME_DDL', repi=gd)
@@ -99,14 +100,14 @@ subroutine crnlgn(numddl)
 !
     call jeveuo(mesh//'.NOEX', 'L', vi=v_noext)
 !
-    call jeveuo(numddl//'.NUME.DEEQ', 'L', vi=v_deeq)
-    call jeveuo(numddl//'.NUME.NEQU', 'L', vi=v_nequ)
-    call jeveuo(numddl//'.NUME.DELG', 'L', vi=v_delg)
+    call jeveuo(nume_equa//'.DEEQ', 'L', vi=v_deeq)
+    call jeveuo(nume_equa//'.NEQU', 'L', vi=v_nequ)
+    call jeveuo(nume_equa//'.DELG', 'L', vi=v_delg)
     nbddll = v_nequ(1)
 
 !   Creation de la numerotation globale
-    call wkvect(numddl//'.NUME.NULG', 'G V I', nbddll, vi=v_nugll)
-    call wkvect(numddl//'.NUME.PDDL', 'G V I', nbddll, vi=v_posdd)
+    call wkvect(nume_equa//'.NULG', 'G V I', nbddll, vi=v_nugll)
+    call wkvect(nume_equa//'.PDDL', 'G V I', nbddll, vi=v_posdd)
     call wkvect('&&CRNUGL.MULT_DDL', 'V V I', nbddll, vi=v_mult)
     call wkvect('&&CRNUGL.MULT_DDL2', 'V V I', nbddll, vi=v_mults)
 !
@@ -131,18 +132,18 @@ subroutine crnlgn(numddl)
     end do
 !
 !   RECHERCHE DES ADRESSES DU .PRNO DE .NUME
-    call jeveuo(numddl//'.NUME.PRNO', 'E', idprn1)
-    call jeveuo(jexatr(numddl//'.NUME.PRNO', 'LONCUM'), 'L', idprn2)
-    call jelira(numddl//'.NUME.PRNO', 'NMAXOC', ntot, k8bid)
+    call jeveuo(nume_equa//'.PRNO', 'E', idprn1)
+    call jeveuo(jexatr(nume_equa//'.PRNO', 'LONCUM'), 'L', idprn2)
+    call jelira(nume_equa//'.PRNO', 'NMAXOC', ntot, k8bid)
 !
 ! --- On numérote les lagranges des noeuds tardifs
     nbddl_lag = 0
     do ili = 2, ntot
-        call jeexin(jexnum(numddl//'.NUME.PRNO', ili), iret)
+        call jeexin(jexnum(nume_equa//'.PRNO', ili), iret)
         if (iret .ne. 0) then
-            call jelira(jexnum(numddl//'.NUME.PRNO', ili), 'LONMAX', lonmax)
+            call jelira(jexnum(nume_equa//'.PRNO', ili), 'LONMAX', lonmax)
             nbno_prno = lonmax/(nec+2)
-            call jenuno(jexnum(numddl//'.NUME.LILI', ili), nomlig)
+            call jenuno(jexnum(nume_equa//'.LILI', ili), nomlig)
             owner = nomlig//'.PNOE'
             mult1 = nomlig//'.MULT'
             mult2 = nomlig//'.MUL2'
@@ -189,7 +190,7 @@ subroutine crnlgn(numddl)
     zi(jnbddl-1+1) = 0
 !
     if (nbddl_lag .ne. 0) then
-        call wkvect(numddl//'.NUME.MDLA', 'G V I', 3*nbddl_lag, vi=v_mdlag)
+        call wkvect(nume_equa//'.MDLA', 'G V I', 3*nbddl_lag, vi=v_mdlag)
     end if
 
     pos = 0

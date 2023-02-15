@@ -174,9 +174,9 @@ subroutine calich(chargz, phenom)
 !       -------------------------------------------
         call dismoi('NB_EQUA', chamno, 'CHAM_NO', repi=nequa)
 !
-! ---   RECUPERATION DU PROF_CHNO DU CHAM_NO
+! ---   RECUPERATION DU NUME_EQUA DU CHAM_NO
 !       ------------------------------------
-        call dismoi('PROF_CHNO', chamno, 'CHAM_NO', repk=prchno)
+        call dismoi('NUME_EQUA', chamno, 'CHAM_NO', repk=prchno)
 !
 ! ---   RECUPERATION DU NOMBRE DE COMPOSANTES ASSOCIEES A LA LA GRANDEUR
 !       ----------------------------------------------------------------
@@ -190,7 +190,7 @@ subroutine calich(chargz, phenom)
 !       --------------------------------
         call jeveuo(cham19//'.VALE', 'E', vr=vvale)
 !
-! ---   RECUPERATION DU .DEEQ DU PROF_CHNO
+! ---   RECUPERATION DU .DEEQ DU NUME_EQUA
 !       ----------------------------------
         call jeveuo(prchno//'.DEEQ', 'L', vi=deeq)
 !

@@ -402,7 +402,7 @@ subroutine chmima(nomsd, nomsy, typcha, typmax, nocham, typresu, &
         call rsexch('F', nomsd, noms2, zi(jordr), chextr, &
                     iret)
         call jeveuo(chextr//'.VALE', 'L', ivale)
-        call dismoi('PROF_CHNO', chextr, 'CHAM_NO', repk=prno)
+        call dismoi('NUME_EQUA', chextr, 'CHAM_NO', repk=prno)
         call dismoi('NOM_MAILLA', chextr, 'CHAM_NO', repk=noma)
         call dismoi('NB_NO_MAILLA', noma, 'MAILLAGE', repi=nbnoe)
         nomnoe = noma//'.NOMNOE'
@@ -456,7 +456,7 @@ subroutine chmima(nomsd, nomsy, typcha, typmax, nocham, typresu, &
         do i = 2, nbordr
             call rsexch('F', nomsd, noms2, zi(jordr+i-1), chextr, &
                         iret)
-            call dismoi('PROF_CHNO', chextr, 'CHAM_NO', repk=prn2)
+            call dismoi('NUME_EQUA', chextr, 'CHAM_NO', repk=prn2)
             if (prn2 .ne. prno) then
                 if (.not. idensd('PROF_CHNO', prn2, prno)) then
                     call utmess('F', 'UTILITAI_26')

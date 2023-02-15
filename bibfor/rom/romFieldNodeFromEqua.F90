@@ -77,7 +77,7 @@ subroutine romFieldNodeFromEqua(field, nbNodeMesh, listNode)
 !
 ! - Properties of field
 !
-    call dismoi('PROF_CHNO', fieldRefe, 'CHAM_NO', repk=profChno)
+    call dismoi('NUME_EQUA', fieldRefe, 'CHAM_NO', repk=profChno)
     call jeveuo(profChno(1:19)//'.DEEQ', 'L', vi=deeq)
     call jelira(fieldRefe(1:19)//'.VALE', 'LONMAX', nbEquaChck)
     ASSERT(nbEquaChck .eq. nbEqua)

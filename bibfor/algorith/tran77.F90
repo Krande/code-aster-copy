@@ -329,7 +329,7 @@ subroutine tran77(nomres, typres, nomin, basemo)
                         prems = .false.
                         call cnocre(mailla, nomgd, nbnoeu, zi(inumno), ncmp, &
                                     zk8(inocmp), zi(inoecp), 'G', ' ', chamno)
-                        call dismoi('PROF_CHNO', chamno, 'CHAM_NO', repk=prof)
+                        call dismoi('NUME_EQUA', chamno, 'CHAM_NO', repk=prof)
                     else
                         call cnocre(mailla, nomgd, nbnoeu, zi(inumno), ncmp, &
                                     zk8(inocmp), zi(inoecp), 'G', prof, chamno)

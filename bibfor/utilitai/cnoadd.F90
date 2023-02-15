@@ -42,9 +42,8 @@ subroutine cnoadd(chno, chnop)
     integer :: iaux, jvale, jprddl, nbeq
     mpi_int :: mrank, msize
     character(len=8)  :: k8bid
-    character(len=14) :: numddl
     character(len=16) :: typsd
-    character(len=19) :: cn19, pfchno, nommai, cn19p
+    character(len=19) :: cn19, nume_equa, nommai, cn19p
 !----------------------------------------------------------------
     call jemarq()
 
@@ -56,16 +55,14 @@ subroutine cnoadd(chno, chnop)
 
 !   si le maillage support n'est pas distribué, on sort
 !   ---------------------------------------------------
-    call dismoi('PROF_CHNO', cn19, 'CHAM_NO', repk=pfchno)
-    ASSERT(pfchno(15:19) .eq. '.NUME')
-    numddl = pfchno(1:14)
-    call dismoi('NOM_MAILLA', numddl, 'NUME_DDL', repk=nommai)
+    call dismoi('NUME_EQUA', cn19, 'CHAM_NO', repk=nume_equa)
+    call dismoi('NOM_MAILLA', nume_equa, 'NUME_EQUA', repk=nommai)
     typsd = ' '
     call gettco(nommai(1:8), typsd)
     if (typsd .eq. 'MAILLAGE_P') then
 
-        call jeveuo(numddl//'.NUME.PDDL', 'L', jprddl)
-        call jelira(numddl//'.NUME.PDDL', 'LONMAX', nbeq, k8bid)
+        call jeveuo(nume_equa//'.PDDL', 'L', jprddl)
+        call jelira(nume_equa//'.PDDL', 'LONMAX', nbeq, k8bid)
 
         call asmpi_info(rank=mrank, size=msize)
         rang = to_aster_int(mrank)

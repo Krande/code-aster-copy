@@ -61,7 +61,7 @@ subroutine exchnn(descn, numn, tcmp, nbc, tvale, &
 !
 !       TNUEQ : TABLE D'INDIRECTION (JACOT)
 !
-!       B     : .TRUE. LE CHAMP EST PROF_CHNO (FALSE SINON).
+!       B     : .TRUE. LE CHAMP EST NUME_EQUA (FALSE SINON).
 !
 !     ARGUMENTS EN SORTIE
 !     -------------------

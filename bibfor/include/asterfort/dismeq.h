@@ -19,20 +19,11 @@
 !
 !
 interface
-    subroutine vtcreb(field_nodez , base      , type_scalz,&
-                      nume_ddlz   ,&
-                      meshz       , nume_equaz, idx_gdz, nb_equa_inz,&
-                      nb_equa_outz, nbz, vchamz)
-        character(len=*), intent(in) :: field_nodez
-        character(len=1), intent(in) :: base
-        character(len=*), intent(in) :: type_scalz
-        character(len=*), optional, intent(in) :: nume_ddlz
-        character(len=*), optional, intent(in) :: meshz
-        character(len=*), optional, intent(in) :: nume_equaz
-        integer, optional, intent(in) :: nb_equa_inz
-        integer, optional, intent(in) :: idx_gdz
-        integer, optional, intent(out) :: nb_equa_outz
-        integer, optional, intent(in) :: nbz
-        character(len=24), optional, intent(in) :: vchamz
-    end subroutine vtcreb
+    subroutine dismeq(questi, nomobz, repi, repkz, ierd)
+        character(len=*) :: questi
+        character(len=*) :: nomobz
+        integer :: repi
+        character(len=*) :: repkz
+        integer :: ierd
+    end subroutine dismeq
 end interface

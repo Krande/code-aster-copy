@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -65,7 +65,7 @@ subroutine ap_assembly_vector(chno)
 
     real(kind=8), dimension(:), pointer :: val => null()
     character(len=16) :: typsd
-    character(len=19) :: cn19, pfchno, nommai
+    character(len=19) :: cn19, nume_equa, nommai
     aster_logical :: dbg
 !
 !----------------------------------------------------------------
@@ -88,29 +88,27 @@ subroutine ap_assembly_vector(chno)
     dbg = .false. .and. nstep == step
     nstep = nstep+1
 
-    call dismoi('PROF_CHNO', cn19, 'CHAM_NO', repk=pfchno)
-    ASSERT(pfchno(15:19) .eq. '.NUME')
-    numddl = pfchno(1:14)
-    call dismoi('NOM_MAILLA', numddl, 'NUME_DDL', repk=nommai)
+    call dismoi('NUME_EQUA', cn19, 'CHAM_NO', repk=nume_equa)
+    call dismoi('NOM_MAILLA', nume_equa, 'NUME_EQUA', repk=nommai)
     call gettco(nommai(1:8), typsd)
     if (typsd .ne. 'MAILLAGE_P') then
         goto 999
     end if
-    call jeveuo(numddl//'.NUME.NULG', 'L', jnulg)
-    call jeveuo(numddl//'.NUME.PDDL', 'L', vi=pddl)
-    call jeveuo(numddl//'.NUME.NEQU', 'L', jnequ)
+    call jeveuo(nume_equa//'.NULG', 'L', jnulg)
+    call jeveuo(nume_equa//'.PDDL', 'L', vi=pddl)
+    call jeveuo(nume_equa//'.NEQU', 'L', jnequ)
     call jeveuo(cn19//'.VALE', 'E', jvale)
     nloc = zi(jnequ)
     nglo = zi(jnequ+1)
 !
     if (dbg) then
         print *, "DEBUG IN AS_ASSEMBLY_VECTOR"
-        call jeexin(numddl//'.NUME.NULS', iret)
+        call jeexin(nume_equa//'.NULS', iret)
         if (iret == 0) then
             call crnustd(numddl)
         end if
-        call jeveuo(numddl//'.NUME.NULS', 'L', vi=v_nuls)
-        call jeveuo(numddl//'.NUME.DEEG', 'L', vi=v_deeg)
+        call jeveuo(nume_equa//'.NULS', 'L', vi=v_nuls)
+        call jeveuo(nume_equa//'.DEEG', 'L', vi=v_deeg)
     end if
 !
 !   -- COMMUNICATEUR MPI DE TRAVAIL

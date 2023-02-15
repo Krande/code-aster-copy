@@ -33,6 +33,7 @@ subroutine dismoi(questi, nomob, typeco, repi, repk, &
 #include "asterfort/dismct.h"
 #include "asterfort/dismdy.h"
 #include "asterfort/dismes.h"
+#include "asterfort/dismeq.h"
 #include "asterfort/dismff.h"
 #include "asterfort/dismgd.h"
 #include "asterfort/dismoi_carcri.h"
@@ -139,6 +140,8 @@ subroutine dismoi(questi, nomob, typeco, repi, repk, &
         call dismpm(quest1, nomo1(1:32), repi1, repk1, ier1)
     else if (typec1 .eq. 'NUME_DDL') then
         call dismnu(quest1, nomo1(1:14), repi1, repk1, ier1)
+    else if (typec1 .eq. 'NUME_EQUA') then
+        call dismeq(quest1, nomo1(1:19), repi1, repk1, ier1)
     else if (typec1 .eq. 'PROF_CHNO') then
         call dismpn(quest1, nomo1(1:19), repi1, repk1, ier1)
     else if (typec1 .eq. 'MATR_ELEM') then

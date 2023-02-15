@@ -86,7 +86,7 @@ subroutine vtcop1(chin, chout, kstop, codret)
         call jeveuo(ch1//'.VALE', 'L', jvale1)
         call jelira(ch2//'.VALE', 'TYPE', cval=typ2)
         call jeveuo(ch2//'.VALE', 'E', jvale2)
-        call dismoi('PROF_CHNO', ch2, 'CHAM_NO', repk=pfchno)
+        call dismoi('NUME_EQUA', ch2, 'CHAM_NO', repk=pfchno)
         call jeveuo(pfchno//'.DEEQ', 'L', vi=deeq)
         if (typ1 .eq. typ2) then
             if (typ1 .eq. 'R') then

@@ -135,11 +135,11 @@ subroutine pjelga(nomo2, cham1, ligre1, prol0, corres, &
     call detrsd('MAILLAGE', ma1p)
     call detrsd('CHAM_NO_S', cns1)
 !
-    call dismoi('PROF_CHNO', cham1e, 'CHAM_NO', repk=prfchn)
+    call dismoi('NUME_EQUA', cham1e, 'CHAM_NO', repk=prfchn)
     call detrsd('PROF_CHNO', prfchn)
     call detrsd('CHAM_NO', cham1e)
 !
-    call dismoi('PROF_CHNO', chauxs, 'CHAM_NO', repk=prfchn)
+    call dismoi('NUME_EQUA', chauxs, 'CHAM_NO', repk=prfchn)
     call detrsd('PROF_CHNO', prfchn)
     call detrsd('CHAM_NO', chauxs)
 !

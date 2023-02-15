@@ -64,7 +64,7 @@ subroutine fieldNodeHasConstantProfile(fieldz, lConst)
     ASSERT(fieldSupp .eq. 'NOEU')
     call dismoi('NOM_MAILLA', field, 'CHAM_NO', repk=mesh)
     call dismoi('NB_NO_MAILLA', mesh, 'MAILLAGE', repi=nbNodeMesh)
-    call dismoi('PROF_CHNO', field, 'CHAM_NO', repk=profChno)
+    call dismoi('NUME_EQUA', field, 'CHAM_NO', repk=profChno)
     call jeveuo(profChno(1:19)//'.DEEQ', 'L', vi=deeq)
     call jelira(field(1:19)//'.VALE', 'LONMAX', nbEqua)
 !

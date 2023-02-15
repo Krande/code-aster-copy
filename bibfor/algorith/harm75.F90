@@ -188,7 +188,7 @@ subroutine harm75(nomres, typres, nomin, basemo)
                     iret)
         chmod = chmod(1:19)//'.REFE'
         call dismoi('NOM_GD', chmod, 'CHAM_NO', repk=nomgd)
-        call dismoi('PROF_CHNO', chmod, 'CHAM_NO', repk=prchno)
+        call dismoi('NUME_EQUA', chmod, 'CHAM_NO', repk=prchno)
         call jeveuo(chmod, 'L', llcha)
         mailla = zk24(llcha) (1:8)
         crefe(1) = zk24(llcha)
@@ -338,7 +338,7 @@ subroutine harm75(nomres, typres, nomin, basemo)
 !
                         call cnocre(mailla, nomgd, nbnoeu, zi(inumno), ncmp, &
                                     zk8(inocmp), zi(inoecp), 'G', ' ', chamno)
-                        call dismoi('PROF_CHNO', chamno, 'CHAM_NO', repk=prof)
+                        call dismoi('NUME_EQUA', chamno, 'CHAM_NO', repk=prof)
                     else
                         call cnocre(mailla, nomgd, nbnoeu, zi(inumno), ncmp, &
                                     zk8(inocmp), zi(inoecp), 'G', prof, chamno)

@@ -33,7 +33,7 @@ subroutine vtcrea(champ, crefe, base, typc, neq)
 !     IN  CHAMP  : K19 : NOM DU CHAM_NO A CREER
 !     IN  CREFE  : K24 : CONTENU DE L'OBJET .REFE D'UN CHAM_NO MODELE
 !                (1) :  K8  : MODELE
-!                (2) :  K19 : PROF_CHNO
+!                (2) :  K19 : NUME_EQUA
 ! IN  BASE   : CH1 : NOM DE LA BASE SUR LAQUELLE LE CHAM_NO DOIT ETRE
 !                    CREER
 !     IN  TYPC   :     : TYPE DES VALEURS DU CHAM_NO A CREER

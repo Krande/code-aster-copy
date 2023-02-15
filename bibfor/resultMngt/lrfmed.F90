@@ -332,17 +332,17 @@ subroutine lrfmed(fileUnit, resultName, meshAst, storeLast, &
                     zi(jnbpgm), zi(jnbpmm), zi(jnbsmm), iret)
 !
 !         POUR LES CHAM_NO : POUR ECONOMISER L'ESPACE,
-!         ON ESSAYE DE PARTAGER LE PROF_CHNO DU CHAMP CREE AVEC
-!         LE PROF_CHNO PRECEDENT :
+!         ON ESSAYE DE PARTAGER LE NUME_EQUA DU CHAMP CREE AVEC
+!         LE NUME_EQUA PRECEDENT :
         if (fieldSupport .eq. 'NOEU') then
-            call dismoi('PROF_CHNO', fieldNameAst, 'CHAM_NO', repk=pchn1)
-            if (.not. idensd('PROF_CHNO', nomprn(1:19), pchn1)) then
+            call dismoi('NUME_EQUA', fieldNameAst, 'CHAM_NO', repk=pchn1)
+            if (.not. idensd('NUME_EQUA', nomprn(1:19), pchn1)) then
                 call gnomsd(' ', nomprn, 15, 19)
-                call copisd('PROF_CHNO', 'G', pchn1, nomprn)
+                call copisd('NUME_EQUA', 'G', pchn1, nomprn)
             end if
             call jeveuo(fieldNameAst//'.REFE', 'E', vk24=refe)
             refe(2) = nomprn(1:19)
-            call detrsd('PROF_CHNO', pchn1)
+            call detrsd('NUME_EQUA', pchn1)
         end if
         if (numeStore .eq. ednono) then
             numeStore = numeStep

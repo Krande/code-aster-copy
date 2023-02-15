@@ -107,8 +107,8 @@ subroutine alimrs(mate, mateco, ma1, ma2, moint, ndble, &
     call dismoi('NOM_GD', cn2, 'CHAM_NO', repk=gd2)
     call dismoi('NOM_GD', cn1, 'CHAM_NO', repk=gd1)
     call dismoi('NB_NO_MAILLA', ma1, 'MAILLAGE', repi=nbno1)
-    call dismoi('PROF_CHNO', cn2, 'CHAM_NO', repk=pchno2)
-    call dismoi('PROF_CHNO', cn1, 'CHAM_NO', repk=pchno1)
+    call dismoi('NUME_EQUA', cn2, 'CHAM_NO', repk=pchno2)
+    call dismoi('NUME_EQUA', cn1, 'CHAM_NO', repk=pchno1)
 !
 ! - Protection: no matrix shrinking
 !
