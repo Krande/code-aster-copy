@@ -67,8 +67,9 @@ from ..Commands import (
     STAT_NON_LINE,
 )
 from ..Helpers.LogicalUnit import LogicalUnitFile
-from .Utils.partition import MAIL_PY
 
+from code_aster.Objects import Mesh as CA_Mesh
+import medcoupling as medc
 
 def pre_seisme_nonl_ops(self, **args):
     """Corps de la macro PRE_SEISME_NONL"""
@@ -1153,7 +1154,7 @@ class Mesh(object):
             )
             if "MAILLAGE" in self.param["RESULTAT"]:
                 self.parent.register_result(_NewMesh, self.param["RESULTAT"]["MAILLAGE"])
-
+    
             self.new_mesh = _NewMesh
 
     def get_new_mesh(self):
@@ -1213,29 +1214,36 @@ class Mesh(object):
         """Add fictitious cells and nodes to the mesh"""
         if self.check_ficti_nodes() == False:
             return None
-        mail = MAIL_PY()
-        mail.FromAster(self.old_mesh)
-        Nb_no = self.get_nb_ficti_no()
-        gr_ma = []
-        mail.correspondance_mailles = list(mail.correspondance_mailles)
-        mail.correspondance_noeuds = list(mail.correspondance_noeuds)
-        mail.tm = list(mail.tm)
-        mail.dime_maillage = list(mail.dime_maillage)
-        nb_noeuds = mail.dime_maillage[0]
-        for ii in range(0, Nb_no):
-            xx = 0.0
-            yy = 0.0
-            zz = 1000000.0
-            mail.cn = NP.concatenate((mail.cn, NP.array([[xx, yy, zz]])))
-            mail.correspondance_noeuds.append("N" + str(nb_noeuds + ii + 1))
-            mail.dime_maillage[0] += 1
-        for ii in range(0, Nb_no):
-            mail.co.append(NP.array([nb_noeuds + ii]))
-            gr_ma.append(len(mail.co) - 1)
-            mail.correspondance_mailles.append("PF0%d" % ii)
-            mail.tm.append(mail.dic["POI1"])
-            mail.dime_maillage[2] += 1
-        mail.gma["MFICTIF"] = NP.array(gr_ma)
-        unite = mail.ToAster()
-        _mail = LIRE_MAILLAGE(FORMAT="ASTER", UNITE=unite)
-        self.new_mesh = _mail
+
+        nb_new_nodes = self.get_nb_ficti_no()
+
+        umesh = self.old_mesh.createMedCouplingMesh()
+
+        coords = umesh.getCoords()
+        nb_nodes = coords.getNumberOfTuples()
+        coords.reAlloc(nb_nodes+nb_new_nodes)
+
+        mesh0d = umesh.getMeshAtLevel(-3)
+        nb_cells0d = mesh0d.getNumberOfCells()
+
+        groups0d = [umesh.getGroupArr(-3, name) for name in umesh.getGroupsOnSpecifiedLev(-3)]
+
+        cells=[]
+        for ii in range(nb_new_nodes):
+            new_node = nb_nodes+ii
+            new_cell = nb_cells0d+ii
+            coords[new_node] = (0.0, 0.0, 1000000.0)
+            mesh0d.insertNextCell(medc.NORM_POINT1, 1, [new_node])
+            cells.append(new_cell)
+        mesh0d.finishInsertingCells()
+        mesh0d.checkConsistencyLight()
+
+        group = medc.DataArrayInt(cells)
+        group.setName("MFICTIF")
+        groups0d.append(group)
+
+        umesh.setMeshAtLevel(-3, mesh0d)
+        umesh.setGroupsAtLevel(-3, groups0d)
+
+        self.new_mesh = CA_Mesh()
+        self.new_mesh.buildFromMedCouplingMesh(umesh)
