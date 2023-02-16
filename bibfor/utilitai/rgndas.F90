@@ -66,7 +66,7 @@ subroutine rgndas(nume_ddlz, i_equa, l_print, type_equaz, name_nodez, &
     character(len=1) :: type_equa
     character(len=8) :: mesh, modl_gene, ligrel
     integer :: nume_node, nume_cmp, nume_cmp_lagr, nume_subs, nume_link
-    character(len=19) :: prof_gene
+    character(len=19) :: nume_equa_gene
     character(len=14) :: nume_ddl
     character(len=8) :: name_node, name_cmp, name_cmp_lagr, name_subs
     character(len=8), pointer :: p_cata_nomcmp(:) => null()
@@ -77,7 +77,7 @@ subroutine rgndas(nume_ddlz, i_equa, l_print, type_equaz, name_nodez, &
 ! --------------------------------------------------------------------------------------------------
 !
     nume_ddl = nume_ddlz
-    prof_gene = nume_ddl(1:14)//'.NUME'
+    nume_equa_gene = nume_ddl(1:14)//'.NUME'
     ligrel = ' '
     name_node = ' '
     name_cmp = ' '
@@ -131,11 +131,11 @@ subroutine rgndas(nume_ddlz, i_equa, l_print, type_equaz, name_nodez, &
 !
     if (type_equa .eq. 'D') then
         name_cmp = 'GEN'
-        call jeexin(prof_gene//'.REFE', iexi)
+        call jeexin(nume_equa_gene//'.REFE', iexi)
         if (iexi .gt. 0) then
-            call jeveuo(prof_gene//'.REFE', 'L', vk24=p_refe)
+            call jeveuo(nume_equa_gene//'.REFE', 'L', vk24=p_refe)
         else
-            call jeveuo(prof_gene//'.REFN', 'L', vk24=p_refe)
+            call jeveuo(nume_equa_gene//'.REFN', 'L', vk24=p_refe)
         end if
         modl_gene = p_refe(1) (1:8)
         call jeexin(modl_gene//'      .MODG.SSNO', iexi)

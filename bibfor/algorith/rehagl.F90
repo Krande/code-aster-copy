@@ -73,7 +73,7 @@ subroutine rehagl(nomres, resgen, mailsk, profno)
     character(len=8) :: chmp(3), crit, interp, k8b, nomres, basmod, mailsk
     character(len=8) :: model_gene, resgen, k8bid, k8rep
     character(len=14) :: nume_gene
-    character(len=19) :: numddl, prof_gene, knume, kfreq, harmge, profno
+    character(len=19) :: numddl, nume_equa_gene, knume, kfreq, harmge, profno
     character(len=24) :: crefe(2), chamba, indirf, chamno, seliai, sizlia, sst
     character(len=24) :: valk, nomsst
     integer :: itresu(3), elim, neqet, neqred, lmapro, lsilia, lsst, lmoet
@@ -195,14 +195,14 @@ subroutine rehagl(nomres, resgen, mailsk, profno)
 !
 ! --- RECUPERATION DE LA NUMEROTATION ET DU MODELE GENERALISE
     call dismoi('NUME_DDL', harmge, 'RESU_DYNA', repk=nume_gene)
-    prof_gene = nume_gene//'.NUME'
-    call jeveuo(prof_gene//'.REFN', 'L', vk24=refn)
+    nume_equa_gene = nume_gene//'.NUME'
+    call jeveuo(nume_equa_gene//'.REFN', 'L', vk24=refn)
     model_gene = refn(1) (1:8)
     call jelira(model_gene//'      .MODG.SSNO', 'NOMMAX', nbsst)
     k8bid = '  '
     call mgutdm(model_gene, k8bid, 1, 'NB_CMP_MAX', nbcmp, &
                 k8bid)
-    call nueq_chck(prof_gene, neqgen)
+    call nueq_chck(nume_equa_gene, neqgen)
 !
 ! --- RECUPERATION DES ROTATIONS
     call wkvect('&&'//pgc//'ROTX', 'V V R', nbsst, ltrotx)
@@ -272,10 +272,10 @@ subroutine rehagl(nomres, resgen, mailsk, profno)
 ! --- RESTITUTION SUR BASE PHYSIQUE ---
 ! -------------------------------------
 !
-    call jeveuo(prof_gene//'.NUEQ', 'L', vi=nueq)
-    call jenonu(jexnom(prof_gene//'.LILI', '&SOUSSTR'), i_ligr_ss)
-    call jeveuo(jexnum(prof_gene//'.ORIG', i_ligr_ss), 'L', llors)
-    call jeveuo(jexnum(prof_gene//'.PRNO', i_ligr_ss), 'L', llprs)
+    call jeveuo(nume_equa_gene//'.NUEQ', 'L', vi=nueq)
+    call jenonu(jexnom(nume_equa_gene//'.LILI', '&SOUSSTR'), i_ligr_ss)
+    call jeveuo(jexnum(nume_equa_gene//'.ORIG', i_ligr_ss), 'L', llors)
+    call jeveuo(jexnum(nume_equa_gene//'.PRNO', i_ligr_ss), 'L', llprs)
 !
     iarchi = 0
 !

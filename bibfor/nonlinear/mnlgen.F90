@@ -41,7 +41,7 @@ subroutine mnlgen(numdrv, matdrv, ninc)
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/profgene_crsd.h"
+#include "asterfort/nume_equa_gene_crsd.h"
 #include "asterfort/wkvect.h"
 ! ----------------------------------------------------------------------
 ! --- DECLARATION DES ARGUMENTS DE LA ROUTINE
@@ -52,7 +52,7 @@ subroutine mnlgen(numdrv, matdrv, ninc)
 ! ----------------------------------------------------------------------
 ! --- DECLARATION DES VARIABLES LOCALES
 ! ----------------------------------------------------------------------
-    character(len=19) :: prof_gene, solveu
+    character(len=19) :: nume_equa_gene, solveu
     character(len=24) :: lili, orig, prno
     integer :: i_ligr_link, i_ligr_sstr
     integer, pointer :: prgene_orig(:) => null()
@@ -67,16 +67,16 @@ subroutine mnlgen(numdrv, matdrv, ninc)
 ! ----------------------------------------------------------------------
 ! --- CREATION DU NUME_DDL_GENE ASSOCIEE A LA MATRICE JACOBIENNE
 ! ----------------------------------------------------------------------
-! --- CREATION DU PROF_GENE
-    prof_gene = numdrv//'.NUME'
-    lili = prof_gene//'.LILI'
-    orig = prof_gene//'.ORIG'
-    prno = prof_gene//'.PRNO'
+! --- CREATION DU nume_equa_gene
+    nume_equa_gene = numdrv//'.NUME'
+    lili = nume_equa_gene//'.LILI'
+    orig = nume_equa_gene//'.ORIG'
+    prno = nume_equa_gene//'.PRNO'
 !
-! - Create PROF_GENE
+! - Create nume_equa_gene
 !
-    call profgene_crsd(prof_gene, 'V', ninc, nb_sstr=1, nb_link=1, &
-                       model_genez=' ', gran_namez='DEPL_R')
+    call nume_equa_gene_crsd(nume_equa_gene, 'V', ninc, nb_sstr=1, nb_link=1, &
+                             model_genez=' ', gran_namez='DEPL_R')
 !
 ! - Set sub_structures
 !

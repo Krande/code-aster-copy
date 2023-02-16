@@ -70,7 +70,7 @@ subroutine rehaec(nomres, resgen, nomsst)
     character(len=8) :: chmp(3), crit, interp, k8b, nomres, basmod, mailla
     character(len=8) :: lint, nomsst, model_gene, resgen, k8rep
     character(len=14) :: nume_gene
-    character(len=19) :: numddl, prof_gene, knume, kfreq, harmge
+    character(len=19) :: numddl, nume_equa_gene, knume, kfreq, harmge
     character(len=24) :: crefe(2), chamba, chamno, seliai, sizlia, sst
     character(len=24) :: valk(2)
     integer :: itresu(3), elim, iret
@@ -177,11 +177,11 @@ subroutine rehaec(nomres, resgen, nomsst)
 ! --- RECUPERATION DE LA NUMEROTATION ET DU MODELE GENERALISE
 !
     call dismoi('NUME_DDL', harmge, 'RESU_DYNA', repk=nume_gene)
-    prof_gene = nume_gene//'.NUME'
-    call jeveuo(prof_gene//'.REFN', 'L', vk24=refn)
+    nume_equa_gene = nume_gene//'.NUME'
+    call jeveuo(nume_equa_gene//'.REFN', 'L', vk24=refn)
     model_gene = refn(1) (1:8)
-    call jelibe(prof_gene//'.REFN')
-    call nueq_chck(prof_gene, neqgen)
+    call jelibe(nume_equa_gene//'.REFN')
+    call nueq_chck(nume_equa_gene, neqgen)
 !
 ! --- RECUPERATION NUMERO DE LA SOUS-STRUCTURE
 !
@@ -202,10 +202,10 @@ subroutine rehaec(nomres, resgen, nomsst)
 !
     if (elim .eq. 0) then
 !
-        call jenonu(jexnom(prof_gene//'.LILI', '&SOUSSTR'), i_ligr_ss)
-        call jeveuo(jexnum(prof_gene//'.ORIG', i_ligr_ss), 'L', llors)
-        call jeveuo(jexnum(prof_gene//'.PRNO', i_ligr_ss), 'L', llprs)
-        call jelira(jexnum(prof_gene//'.ORIG', i_ligr_ss), 'LONMAX', nbsst)
+        call jenonu(jexnom(nume_equa_gene//'.LILI', '&SOUSSTR'), i_ligr_ss)
+        call jeveuo(jexnum(nume_equa_gene//'.ORIG', i_ligr_ss), 'L', llors)
+        call jeveuo(jexnum(nume_equa_gene//'.PRNO', i_ligr_ss), 'L', llprs)
+        call jelira(jexnum(nume_equa_gene//'.ORIG', i_ligr_ss), 'LONMAX', nbsst)
 !
         nutars = 0
         do i = 1, nbsst
@@ -283,7 +283,7 @@ subroutine rehaec(nomres, resgen, nomsst)
 ! --- RESTITUTION SUR BASE PHYSIQUE ---
 ! -------------------------------------
 !
-    call jeveuo(prof_gene//'.NUEQ', 'L', vi=nueq)
+    call jeveuo(nume_equa_gene//'.NUEQ', 'L', vi=nueq)
 !
     iarchi = 0
     if (interp(1:3) .ne. 'NON') then
@@ -354,7 +354,7 @@ subroutine rehaec(nomres, resgen, nomsst)
 !
 ! --> AAC-->NORMALEMENT CE .REFD EST INCOHERENT AVEC CELUI DE DYNA_GENE
     call refdcp(basmod, nomres)
-    call jelibe(prof_gene//'.NUEQ')
+    call jelibe(nume_equa_gene//'.NUEQ')
     call jedetr('&&RETREC.NUM_RANG')
     call jedetr('&&RETREC.FREQ')
 !

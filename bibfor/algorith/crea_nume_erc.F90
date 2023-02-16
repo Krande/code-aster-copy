@@ -89,7 +89,7 @@ subroutine crea_nume_erc(baseno, numnu,matprod,nom_nume_erc,nom_matr_erc,nom_vec
 ! --- SOLVEUR
     solveu = nom_nume_erc//'.SOLV'
     call cresol(solveu)
-! --- CREATION DU PROF_GENE
+! --- CREATION DU nume_equa_gene
     prgene = nom_nume_erc//'.NUME'
 ! --- DESC
     call wkvect(prgene//'.DESC', 'G V I', 1, lddesc)
@@ -189,7 +189,8 @@ subroutine crea_nume_erc(baseno, numnu,matprod,nom_nume_erc,nom_matr_erc,nom_vec
             do ll = zi(ismdi+kk-2)+1, zi(ismdi+kk-1)
 
                 if (zi4(ismhc+ll-1) .gt. jj) goto 111
-                ! on evalue si on tombe sur le numero de file correspondant a la colonne reelle en cours
+                ! on evalue si on tombe sur le numero de file correspondant
+                ! a la colonne reelle en cours
                 if (zi4(ismhc+ll-1) .eq. jj) then
                     nz_colncour = nz_colncour+1
                     zi4(inewsmhc-1+zi(ismde+1)+cumul_non_zero+nz_colncour) = int(kk, 4)

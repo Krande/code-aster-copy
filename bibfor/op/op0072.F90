@@ -115,7 +115,7 @@ subroutine op0072()
         if (typeba(1:1) .eq. ' ') then
             call exisd('MATR_ASSE', matric, iret)
             if (iret .ne. 0) then
-                call dismoi('PROF_CHNO', matric, 'MATR_ASSE', repk=proch2)
+                call dismoi('NUME_EQUA', matric, 'MATR_ASSE', repk=proch2)
             else
                 proch2 = proch1
             end if
@@ -124,7 +124,7 @@ subroutine op0072()
             proch2 = nume2(1:14)//'.NUME'
         end if
 !
-        if (.not. idensd('PROF_CHNO', proch1, proch2)) then
+        if (.not. idensd('NUME_EQUA', proch1, proch2)) then
             call utmess('I', 'ALGORITH9_41')
         end if
 !

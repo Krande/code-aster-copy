@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -43,7 +43,7 @@ class SismicLoading(ExecuteCommand):
         """
 
         nume_ddl = keywords["MATR_MASS"].getDOFNumbering()
-        self._result.setDescription(nume_ddl.getDescription())
+        self._result.setDescription(nume_ddl.getGlobalEquationNumbering())
         self._result.setMesh(nume_ddl.getMesh())
         self._result.build()
 

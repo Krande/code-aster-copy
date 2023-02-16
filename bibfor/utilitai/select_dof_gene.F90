@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine select_dof_gene(prof_genez, nb_cmp, cata_cmp, list_cmp, list_equa, &
+subroutine select_dof_gene(nume_equa_genez, nb_cmp, cata_cmp, list_cmp, list_equa, &
                            tabl_equa)
 !
     implicit none
@@ -26,7 +26,7 @@ subroutine select_dof_gene(prof_genez, nb_cmp, cata_cmp, list_cmp, list_equa, &
 #include "asterfort/assert.h"
 !
 !
-    character(len=*), intent(in) :: prof_genez
+    character(len=*), intent(in) :: nume_equa_genez
     integer, intent(in) :: nb_cmp
     character(len=8), pointer, optional :: cata_cmp(:)
     character(len=8), pointer, optional :: list_cmp(:)
@@ -35,7 +35,7 @@ subroutine select_dof_gene(prof_genez, nb_cmp, cata_cmp, list_cmp, list_equa, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! Select dof from list of nodes and components from PROF_GENE
+! Select dof from list of nodes and components from NUME_EQUA_GENE
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -50,7 +50,7 @@ subroutine select_dof_gene(prof_genez, nb_cmp, cata_cmp, list_cmp, list_equa, &
 !                         tabl_equa[ieq,icmp] = 0 if node+component not present
 !                         tabl_equa[ieq,icmp] = 1 if node+component is present
 !
-! In  prof_gene     : name of profile (PROF_GENE)
+! In  nume_equa_gene     : name of profile (NUME_EQUA_GENE)
 ! IO  list_equa     : list of equations
 ! IO  tabl_equa     : table of equations by components
 ! In  nb_cmp        : number of components
@@ -62,18 +62,18 @@ subroutine select_dof_gene(prof_genez, nb_cmp, cata_cmp, list_cmp, list_equa, &
     integer :: i_equa, i_cmp, nb_equa
     integer :: node_nume
     character(len=8) :: name_cmp
-    character(len=19) :: prof_gene
+    character(len=19) :: nume_equa_gene
     integer, pointer :: v_desc(:) => null()
     integer, pointer :: v_deeq(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    prof_gene = prof_genez
-    call nueq_chck(prof_gene, nb_equa)
-    call jeveuo(prof_gene//'.DESC', 'L', vi=v_desc)
+    nume_equa_gene = nume_equa_genez
+    call nueq_chck(nume_equa_gene, nb_equa)
+    call jeveuo(nume_equa_gene//'.DESC', 'L', vi=v_desc)
     ASSERT(v_desc(1) .eq. 2)
 !
-    call jeveuo(prof_gene//'.DEEQ', 'L', vi=v_deeq)
+    call jeveuo(nume_equa_gene//'.DEEQ', 'L', vi=v_deeq)
     do i_equa = 1, nb_equa
         node_nume = v_deeq(2*i_equa)
         do i_cmp = 1, nb_cmp

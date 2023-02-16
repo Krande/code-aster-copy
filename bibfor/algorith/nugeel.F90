@@ -56,7 +56,7 @@ subroutine nugeel(nugene, modgen)
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/profgene_crsd.h"
+#include "asterfort/nume_equa_gene_crsd.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
@@ -66,7 +66,7 @@ subroutine nugeel(nugene, modgen)
     character(len=6) :: pgc
     character(len=8) :: modgen, sst1, sst2
     character(len=14) :: nugene
-    character(len=19) :: prof_gene
+    character(len=19) :: nume_equa_gene
     character(len=24) :: defli, nomsst, sizlia, sst
     character(len=24) :: valk, seliai
     aster_logical :: pbcone
@@ -120,18 +120,18 @@ subroutine nugeel(nugene, modgen)
     call indlia(modgen, seliai, nindep, nbddl, sst, &
                 sizlia)
 !
-! - Create PROF_GENE
+! - Create nume_equa_gene
 !
-    prof_gene = nugene//'.NUME'
-    call profgene_crsd(prof_gene, 'G', nindep, nb_sstr=nb_sstr, nb_link=0, &
-                       model_genez=modgen, gran_namez='DEPL_R')
+    nume_equa_gene = nugene//'.NUME'
+    call nume_equa_gene_crsd(nume_equa_gene, 'G', nindep, nb_sstr=nb_sstr, nb_link=0, &
+                             model_genez=modgen, gran_namez='DEPL_R')
 !
 ! - Set sub_structures
 !
-    call jenonu(jexnom(prof_gene//'.LILI', '&SOUSSTR'), i_ligr_sstr)
+    call jenonu(jexnom(nume_equa_gene//'.LILI', '&SOUSSTR'), i_ligr_sstr)
     ASSERT(i_ligr_sstr .eq. 1)
-    call jeveuo(jexnum(prof_gene//'.PRNO', i_ligr_sstr), 'E', vi=prgene_prno)
-    call jeveuo(jexnum(prof_gene//'.ORIG', i_ligr_sstr), 'E', vi=prgene_orig)
+    call jeveuo(jexnum(nume_equa_gene//'.PRNO', i_ligr_sstr), 'E', vi=prgene_prno)
+    call jeveuo(jexnum(nume_equa_gene//'.ORIG', i_ligr_sstr), 'E', vi=prgene_orig)
     prgene_prno(1) = 1
     prgene_prno(2) = nindep
     prgene_orig(1) = 1

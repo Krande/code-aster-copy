@@ -50,14 +50,14 @@ subroutine numgen(nugene, modgen)
 #include "asterfort/mgutdm.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-#include "asterfort/profgene_crsd.h"
+#include "asterfort/nume_equa_gene_crsd.h"
 !
 !
 !
     character(len=6) :: pgc
     character(len=8) :: modgen, nomcou, sst1, sst2, kbid
     character(len=14) :: nugene
-    character(len=19) :: prof_gene
+    character(len=19) :: nume_equa_gene
     character(len=24) :: defli, fprofl, nomsst
     character(len=24) :: valk
     aster_logical :: assok, pbcone
@@ -72,10 +72,10 @@ subroutine numgen(nugene, modgen)
     integer :: nbmod, neq, ntail, nuas, nulia, null2
     integer :: nult, nusst, nusst1, nusst2, nut, nutarl
     character(len=24) :: lili, prno, orig, deeq, nueq
-    integer, pointer :: prof_gene_orig_s(:) => null()
-    integer, pointer :: prof_gene_orig_l(:) => null()
-    integer, pointer :: prof_gene_prno_s(:) => null()
-    integer, pointer :: prof_gene_prno_l(:) => null()
+    integer, pointer :: nume_equa_gene_orig_s(:) => null()
+    integer, pointer :: nume_equa_gene_orig_l(:) => null()
+    integer, pointer :: nume_equa_gene_prno_s(:) => null()
+    integer, pointer :: nume_equa_gene_prno_l(:) => null()
 
 !-----------------------------------------------------------------------
     data pgc/'NUMGEN'/
@@ -92,12 +92,12 @@ subroutine numgen(nugene, modgen)
 !
 !--------------------CREATION DU .REFN----------------------------------
 !                       ET DU DESC
-    prof_gene = nugene//'.NUME'
-    lili = prof_gene//'.LILI'
-    prno = prof_gene//'.PRNO'
-    orig = prof_gene//'.ORIG'
-    deeq = prof_gene//'.DEEQ'
-    nueq = prof_gene//'.NUEQ'
+    nume_equa_gene = nugene//'.NUME'
+    lili = nume_equa_gene//'.LILI'
+    prno = nume_equa_gene//'.PRNO'
+    orig = nume_equa_gene//'.ORIG'
+    deeq = nume_equa_gene//'.DEEQ'
+    nueq = nume_equa_gene//'.NUEQ'
 !
 !----------------------RECUPERATION DES DIMENSIONS PRINCIPALES----------
 !
@@ -143,20 +143,20 @@ subroutine numgen(nugene, modgen)
     write (ifimes, *) '+++ DONT NOMBRE D''EQUATIONS STRUCTURE: ', icomps
     write (ifimes, *) '+++ DONT NOMBRE D''EQUATIONS LIAISON: ', icompl
 !
-! - Create PROF_GENE
+! - Create NUME_EQUA_GENE
 !
     nb_sstr = nb_sstr
     nb_link = 2*nblia
-    call profgene_crsd(prof_gene, 'G', neq, nb_sstr=nb_sstr, nb_link=nb_link, &
-                       model_genez=modgen, gran_namez='DEPL_R')
+    call nume_equa_gene_crsd(nume_equa_gene, 'G', neq, nb_sstr=nb_sstr, nb_link=nb_link, &
+                             model_genez=modgen, gran_namez='DEPL_R')
     call jeveuo(deeq, 'E', lddeeq)
     call jeveuo(nueq, 'E', ldnueq)
 !
 ! - Set LIGREL for substructuring
 !
     call jenonu(jexnom(lili, '&SOUSSTR'), i_ligr_sstr)
-    call jeveuo(jexnum(prno, i_ligr_sstr), 'E', vi=prof_gene_prno_s)
-    call jeveuo(jexnum(orig, i_ligr_sstr), 'E', vi=prof_gene_orig_s)
+    call jeveuo(jexnum(prno, i_ligr_sstr), 'E', vi=nume_equa_gene_prno_s)
+    call jeveuo(jexnum(orig, i_ligr_sstr), 'E', vi=nume_equa_gene_orig_s)
 !
     do i = 1, nb_sstr
         kbid = '        '
@@ -164,23 +164,23 @@ subroutine numgen(nugene, modgen)
                     nomcou)
         call jeveuo(nomcou//'.MAEL_RAID_DESC', 'L', lldesc)
         nbmod = zi(lldesc+1)
-        prof_gene_orig_s(i) = i
-        prof_gene_prno_s((i-1)*2+2) = nbmod
+        nume_equa_gene_orig_s(i) = i
+        nume_equa_gene_prno_s((i-1)*2+2) = nbmod
     end do
 !
 ! - Add LIGREL LIAISONS
 !
     call jenonu(jexnom(lili, 'LIAISONS'), i_ligr_link)
-    call jeveuo(jexnum(prno, i_ligr_link), 'E', vi=prof_gene_prno_l)
-    call jeveuo(jexnum(orig, i_ligr_link), 'E', vi=prof_gene_orig_l)
+    call jeveuo(jexnum(prno, i_ligr_link), 'E', vi=nume_equa_gene_prno_l)
+    call jeveuo(jexnum(orig, i_ligr_link), 'E', vi=nume_equa_gene_orig_l)
 
 !
     do i = 1, nblia
         nblig = zi(llprof+(i-1)*9)
-        prof_gene_orig_l((i-1)*2+1) = i
-        prof_gene_orig_l((i-1)*2+2) = i
-        prof_gene_prno_l((i-1)*4+2) = nblig
-        prof_gene_prno_l((i-1)*4+4) = nblig
+        nume_equa_gene_orig_l((i-1)*2+1) = i
+        nume_equa_gene_orig_l((i-1)*2+2) = i
+        nume_equa_gene_prno_l((i-1)*4+2) = nblig
+        nume_equa_gene_prno_l((i-1)*4+4) = nblig
     end do
 !
     call wkvect('&&'//pgc//'.SST.NBLIA', 'V V I', nb_sstr, ltssnb)
@@ -194,7 +194,7 @@ subroutine numgen(nugene, modgen)
 !                              NUMERO
 !
     do i = 1, nblia*2
-        nulia = prof_gene_orig_l(1+i-1)
+        nulia = nume_equa_gene_orig_l(1+i-1)
         call jeveuo(jexnum(defli, nulia), 'L', lldefl)
         sst1 = zk8(lldefl)
         sst2 = zk8(lldefl+2)
@@ -214,7 +214,7 @@ subroutine numgen(nugene, modgen)
     pbcone = .false.
     do i = 1, nb_sstr
         icomp = 0
-        nusst = prof_gene_orig_s(i)
+        nusst = nume_equa_gene_orig_s(i)
         if (zi(ltssnb+nusst-1) .eq. 0) then
             pbcone = .true.
             call jenuno(jexnum(nomsst, nusst), sst1)
@@ -255,7 +255,7 @@ subroutine numgen(nugene, modgen)
         do j = 1, nblia*2
             assok = .true.
             nutarl = zi(ltsst+j-1)
-            nulia = prof_gene_orig_l(nutarl)
+            nulia = nume_equa_gene_orig_l(nutarl)
             if (nutarl .gt. 0) then
 !
 !   BOUCLE SUR LES NOEUDS TARDIFS DE LIAISON DE LA SOUS-STRUCTURE
@@ -265,7 +265,7 @@ subroutine numgen(nugene, modgen)
                 if (j .ne. 1) then
                     do k = 1, j-1
                         nult = zi(ltsst+k-1)
-                        null2 = prof_gene_orig_l(nult)
+                        null2 = nume_equa_gene_orig_l(nult)
                         if (null2 .eq. nulia .and. nult .ne. 0) assok = .false.
                     end do
                 end if
@@ -310,13 +310,13 @@ subroutine numgen(nugene, modgen)
 !
 !  CAS DE LA SOUS-STRUCTURE
         if (nuas .gt. 0) then
-            nbddl = prof_gene_prno_s((nuas-1)*2+2)
-            prof_gene_prno_s(1+(nuas-1)*2) = icomp
+            nbddl = nume_equa_gene_prno_s((nuas-1)*2+2)
+            nume_equa_gene_prno_s(1+(nuas-1)*2) = icomp
 !
 ! CAS DE LA LIAISON
         else
-            nbddl = prof_gene_prno_l(-(nuas+1)*2+2)
-            prof_gene_prno_l(1-(nuas+1)*2) = icomp
+            nbddl = nume_equa_gene_prno_l(-(nuas+1)*2+2)
+            nume_equa_gene_prno_l(1-(nuas+1)*2) = icomp
         end if
 !
         do j = icomp, icomp+nbddl-1

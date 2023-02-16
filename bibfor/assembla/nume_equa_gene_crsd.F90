@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine profgene_crsd(prof_genez, base, nb_equa, nb_sstr, nb_link, &
-                         model_genez, gran_namez)
+subroutine nume_equa_gene_crsd(nume_equa_genez, base, nb_equa, nb_sstr, nb_link, &
+                               model_genez, gran_namez)
 !
     implicit none
 !
@@ -33,7 +33,7 @@ subroutine profgene_crsd(prof_genez, base, nb_equa, nb_sstr, nb_link, &
 #include "asterfort/wkvect.h"
 !
 !
-    character(len=*), intent(in) :: prof_genez
+    character(len=*), intent(in) :: nume_equa_genez
     character(len=1), intent(in) :: base
     integer, intent(in) :: nb_equa
     integer, intent(in) :: nb_sstr
@@ -43,14 +43,14 @@ subroutine profgene_crsd(prof_genez, base, nb_equa, nb_sstr, nb_link, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! PROF_GENE
+! NUME_EQUA_GENE
 !
 ! Create object
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  prof_gene   : name of PROF_GENE
-! In  base        : JEVEUX base to create PROF_GENE
+! In  nume_equa_gene   : name of NUME_EQUA_GENE
+! In  base        : JEVEUX base to create NUME_EQUA_GENE
 ! In  nb_equa     : number of equations
 ! In  nb_sstr     : number of sub_structures
 ! In  nb_link     : number of links
@@ -59,7 +59,7 @@ subroutine profgene_crsd(prof_genez, base, nb_equa, nb_sstr, nb_link, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    character(len=19) :: prof_gene
+    character(len=19) :: nume_equa_gene
     integer :: i_equa, i_ligr_sstr, i_ligr_link, nb_ligr
     logical :: l_ligr_sstr, l_ligr_link
     character(len=24) :: model_gene, gran_name
@@ -72,7 +72,7 @@ subroutine profgene_crsd(prof_genez, base, nb_equa, nb_sstr, nb_link, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    prof_gene = prof_genez
+    nume_equa_gene = nume_equa_genez
     model_gene = ' '
     if (present(model_genez)) then
         model_gene = model_genez
@@ -82,11 +82,11 @@ subroutine profgene_crsd(prof_genez, base, nb_equa, nb_sstr, nb_link, &
         gran_name = gran_namez
     end if
 !
-    call detrsd('PROF_GENE', prof_gene)
+    call detrsd('NUME_EQUA_GENE', nume_equa_gene)
 !
 ! - Create object NUEQ
 !
-    call wkvect(prof_gene//'.NUEQ', base//' V I', nb_equa, vi=prgene_nueq)
+    call wkvect(nume_equa_gene//'.NUEQ', base//' V I', nb_equa, vi=prgene_nueq)
 !
 ! - Set to identity
 !
@@ -96,7 +96,7 @@ subroutine profgene_crsd(prof_genez, base, nb_equa, nb_sstr, nb_link, &
 !
 ! - Create object DEEQ
 !
-    call wkvect(prof_gene//'.DEEQ', base//' V I', 2*nb_equa, vi=prgene_deeq)
+    call wkvect(nume_equa_gene//'.DEEQ', base//' V I', 2*nb_equa, vi=prgene_deeq)
 !
 ! - Set
 !
@@ -120,56 +120,56 @@ subroutine profgene_crsd(prof_genez, base, nb_equa, nb_sstr, nb_link, &
 !
 ! - Create object LILI
 !
-    call jecreo(prof_gene//'.LILI', base//' N K8')
-    call jeecra(prof_gene//'.LILI', 'NOMMAX', nb_ligr)
+    call jecreo(nume_equa_gene//'.LILI', base//' N K8')
+    call jeecra(nume_equa_gene//'.LILI', 'NOMMAX', nb_ligr)
     if (l_ligr_sstr) then
-        call jecroc(jexnom(prof_gene//'.LILI', '&SOUSSTR'))
-        call jenonu(jexnom(prof_gene//'.LILI', '&SOUSSTR'), i_ligr_sstr)
+        call jecroc(jexnom(nume_equa_gene//'.LILI', '&SOUSSTR'))
+        call jenonu(jexnom(nume_equa_gene//'.LILI', '&SOUSSTR'), i_ligr_sstr)
         ASSERT(i_ligr_sstr .eq. 1)
     end if
     if (l_ligr_link) then
-        call jecroc(jexnom(prof_gene//'.LILI', 'LIAISONS'))
-        call jenonu(jexnom(prof_gene//'.LILI', 'LIAISONS'), i_ligr_link)
+        call jecroc(jexnom(nume_equa_gene//'.LILI', 'LIAISONS'))
+        call jenonu(jexnom(nume_equa_gene//'.LILI', 'LIAISONS'), i_ligr_link)
     end if
 !
 ! - Create object PRNO
 !
-    call jecrec(prof_gene//'.PRNO', base//' V I', 'NU', 'DISPERSE', 'VARIABLE', nb_ligr)
+    call jecrec(nume_equa_gene//'.PRNO', base//' V I', 'NU', 'DISPERSE', 'VARIABLE', nb_ligr)
     if (l_ligr_sstr) then
-        call jeecra(jexnum(prof_gene//'.PRNO', i_ligr_sstr), 'LONMAX', 2*nb_sstr)
+        call jeecra(jexnum(nume_equa_gene//'.PRNO', i_ligr_sstr), 'LONMAX', 2*nb_sstr)
     end if
     if (l_ligr_link) then
-        call jeecra(jexnum(prof_gene//'.PRNO', i_ligr_link), 'LONMAX', 2*nb_link)
+        call jeecra(jexnum(nume_equa_gene//'.PRNO', i_ligr_link), 'LONMAX', 2*nb_link)
     end if
 !
 ! - Create object ORIG
 !
-    call jecrec(prof_gene//'.ORIG', base//' V I', 'NU', 'DISPERSE', 'VARIABLE', 2)
+    call jecrec(nume_equa_gene//'.ORIG', base//' V I', 'NU', 'DISPERSE', 'VARIABLE', 2)
     if (l_ligr_sstr) then
-        call jeecra(jexnum(prof_gene//'.ORIG', i_ligr_sstr), 'LONMAX', nb_sstr)
+        call jeecra(jexnum(nume_equa_gene//'.ORIG', i_ligr_sstr), 'LONMAX', nb_sstr)
     end if
     if (l_ligr_link) then
-        call jeecra(jexnum(prof_gene//'.ORIG', i_ligr_link), 'LONMAX', nb_link)
+        call jeecra(jexnum(nume_equa_gene//'.ORIG', i_ligr_link), 'LONMAX', nb_link)
     end if
 !
 ! - Create object NEQU
 !
-    call wkvect(prof_gene//'.NEQU', base//' V I', 1, vi=prgene_nequ)
+    call wkvect(nume_equa_gene//'.NEQU', base//' V I', 1, vi=prgene_nequ)
     prgene_nequ(1) = nb_equa
 !
 ! - Create object DESC
 !
-    call wkvect(prof_gene//'.DESC', base//' V I', 1, vi=prgene_desc)
+    call wkvect(nume_equa_gene//'.DESC', base//' V I', 1, vi=prgene_desc)
     prgene_desc(1) = 2
 !
 ! - Create object REFN
 !
-    call wkvect(prof_gene//'.REFN', base//' V K24', 4, vk24=prgene_refn)
+    call wkvect(nume_equa_gene//'.REFN', base//' V K24', 4, vk24=prgene_refn)
     prgene_refn(1) = model_gene
     prgene_refn(2) = gran_name
 !
 ! - Create object DELG
 !
-    call wkvect(prof_gene//'.DELG', base//' V I', nb_equa, vi=prgene_delg)
+    call wkvect(nume_equa_gene//'.DELG', base//' V I', nb_equa, vi=prgene_delg)
 
 end subroutine

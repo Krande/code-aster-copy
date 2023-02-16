@@ -74,10 +74,10 @@ subroutine select_dof_2(listEqua_, tablEqua_, &
     integer, parameter :: nbEcMax = 10
     integer :: physDesc(nbEcMax)
     character(len=8) :: cmpName, mesh
-    character(len=19) :: profChno, profGene, fieldNode, numeEqul
+    character(len=19) :: profChno, nume_equa_gene, fieldNode, numeEqul
     character(len=14) :: numeDof
     integer :: iexi
-    aster_logical :: lProfGene
+    aster_logical :: lnume_equa_gene
     aster_logical :: lMatrDist
     integer :: nodeNume, physNume, prnoLength
     integer :: iLigr, nbLigr, nbNode
@@ -169,13 +169,13 @@ subroutine select_dof_2(listEqua_, tablEqua_, &
         end if
     end do
 !
-! - NUME_EQUA or PROF_GENE ?
+! - NUME_EQUA or NUME_EQUA_GENE ?
 !
     call jeexin(profChno//'.DESC', iexi)
-    lProfGene = (iexi .gt. 0)
-    if (lProfGene) then
-        profGene = profChno
-        call select_dof_gene(profGene, nbCmpToSelect, physCataName, &
+    lnume_equa_gene = (iexi .gt. 0)
+    if (lnume_equa_gene) then
+        nume_equa_gene = profChno
+        call select_dof_gene(nume_equa_gene, nbCmpToSelect, physCataName, &
                              listCmpToSelect_, listEqua_, tablEqua_)
         goto 99
     end if

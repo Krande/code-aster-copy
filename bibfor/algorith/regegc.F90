@@ -91,7 +91,7 @@ subroutine regegc(nomres, resgen, mailsk, profno)
     character(len=8) :: basmod, macrel, model_gene, kbid
     character(len=16) :: depl, nompar(8)
     character(len=14) :: nume_gene
-    character(len=19) :: raid, numddl, chamne, prof_gene
+    character(len=19) :: raid, numddl, chamne, nume_equa_gene
     character(len=24) :: crefe(2), chamol, chamba, indirf, seliai, sizlia, sst
     character(len=24) :: valk, nomsst, intf
     complex(kind=8) :: cbid
@@ -139,13 +139,13 @@ subroutine regegc(nomres, resgen, mailsk, profno)
 !
     call jeveuo(raid//'.REFA', 'L', vk24=refa)
     nume_gene = refa(2) (1:14)
-    prof_gene = nume_gene//'.NUME'
-    call nueq_chck(prof_gene, neqred)
+    nume_equa_gene = nume_gene//'.NUME'
+    call nueq_chck(nume_equa_gene, neqred)
     call jelibe(raid//'.REFA')
 !
-    call jeveuo(prof_gene//'.REFN', 'L', vk24=refn)
+    call jeveuo(nume_equa_gene//'.REFN', 'L', vk24=refn)
     model_gene = refn(1) (1:8)
-    call jelibe(prof_gene//'.REFN')
+    call jelibe(nume_equa_gene//'.REFN')
 !
     call jelira(model_gene//'      .MODG.SSNO', 'NOMMAX', nbsst)
     kbid = '  '
@@ -232,10 +232,10 @@ subroutine regegc(nomres, resgen, mailsk, profno)
 !---RESTITUTION PROPREMENT DITE---------------------------------------
 !
 !
-    call jeveuo(prof_gene//'.NUEQ', 'L', vi=nueq)
-    call jenonu(jexnom(prof_gene//'.LILI', '&SOUSSTR'), i_ligr_ss)
-    call jeveuo(jexnum(prof_gene//'.ORIG', i_ligr_ss), 'L', llors)
-    call jeveuo(jexnum(prof_gene//'.PRNO', i_ligr_ss), 'L', llprs)
+    call jeveuo(nume_equa_gene//'.NUEQ', 'L', vi=nueq)
+    call jenonu(jexnom(nume_equa_gene//'.LILI', '&SOUSSTR'), i_ligr_ss)
+    call jeveuo(jexnum(nume_equa_gene//'.ORIG', i_ligr_ss), 'L', llors)
+    call jeveuo(jexnum(nume_equa_gene//'.PRNO', i_ligr_ss), 'L', llprs)
 !
 !  BOUCLE SUR LES MODES A RESTITUER
 !
@@ -429,7 +429,7 @@ subroutine regegc(nomres, resgen, mailsk, profno)
     call jedetr('&&MODE_ETENDU_REST_ELIM')
     call jedetr('&&REGEGL.REVERSE_INDEX')
     call jedetr(indirf)
-    call jelibe(prof_gene//'.NUEQ')
+    call jelibe(nume_equa_gene//'.NUEQ')
     call jedetr('&&REGEGL.NUME')
 !
     call jedema()

@@ -87,7 +87,7 @@ private:
   newGeneralizedGlobalEquationNumbering(const std::string &name) {
     AS_ABORT(name);
     if (_setGlobNume.count(trim(name)) > 0) {
-      raiseAsterError("PROF_GENE already exists: " + name);
+      raiseAsterError("nume_equa_gene already exists: " + name);
     }
 
     auto curDesc = std::make_shared<GeneralizedGlobalEquationNumbering>(name);

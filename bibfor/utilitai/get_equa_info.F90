@@ -96,12 +96,12 @@ subroutine get_equa_info(nume_ddlz, i_equa, type_equa, nume_nodez, nume_cmpz, &
 !
     call dismoi('NUME_EQUA', nume_ddl, 'NUME_DDL', repk=nume_equa)
 !
-! - NUME_EQUA or PROF_GENE ?
+! - NUME_EQUA or NUME_EQUA_GENE ?
 !
     call jeexin(nume_equa//'.DESC', iexi)
     l_gene = (iexi .gt. 0)
 !
-! - Objects in NUME_EQUA/PROF_GENE
+! - Objects in NUME_EQUA/NUME_EQUA_GENE
 !
     deeq = nume_equa(1:19)//'.DEEQ'
     lili = nume_equa(1:19)//'.LILI'

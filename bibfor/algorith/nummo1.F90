@@ -26,7 +26,7 @@ subroutine nummo1(nugene, modmec, nbmode, typrof)
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/profgene_crsd.h"
+#include "asterfort/nume_equa_gene_crsd.h"
 !
 !
     integer, intent(in) :: nbmode
@@ -48,7 +48,7 @@ subroutine nummo1(nugene, modmec, nbmode, typrof)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    character(len=19) :: prof_gene, stomor
+    character(len=19) :: nume_equa_gene, stomor
     character(len=24) :: lili, orig, prno
     integer :: i_ligr_link, i_ligr_sstr
     integer, pointer :: prgene_orig(:) => null()
@@ -56,16 +56,16 @@ subroutine nummo1(nugene, modmec, nbmode, typrof)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    prof_gene = nugene//'.NUME'
+    nume_equa_gene = nugene//'.NUME'
     stomor = nugene//'.SMOS'
-    lili = prof_gene//'.LILI'
-    orig = prof_gene//'.ORIG'
-    prno = prof_gene//'.PRNO'
+    lili = nume_equa_gene//'.LILI'
+    orig = nume_equa_gene//'.ORIG'
+    prno = nume_equa_gene//'.PRNO'
 !
-! - Create PROF_GENE
+! - Create nume_equa_gene
 !
-    call profgene_crsd(prof_gene, 'G', nbmode, nb_sstr=1, nb_link=1, &
-                       model_genez=modmec, gran_namez='DEPL_R')
+    call nume_equa_gene_crsd(nume_equa_gene, 'G', nbmode, nb_sstr=1, nb_link=1, &
+                             model_genez=modmec, gran_namez='DEPL_R')
 !
 ! - Set sub_structures
 !

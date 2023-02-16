@@ -43,13 +43,13 @@ subroutine numgcy(nugene, modgen)
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/profgene_crsd.h"
+#include "asterfort/nume_equa_gene_crsd.h"
 #include "asterfort/mgutdm.h"
 !
 !
     character(len=8) :: modgen, nomcou, kbid
     character(len=14) :: nugene
-    character(len=19) :: prof_gene, stomor
+    character(len=19) :: nume_equa_gene, stomor
     character(len=24) :: defli, fprofl, nomsst
     integer :: ibid, i, i_ligr_link, nb_link, nb_sstr, i_ligr_sstr
     character(len=24) :: lili, prno, orig
@@ -72,11 +72,11 @@ subroutine numgcy(nugene, modgen)
     defli = modgen//'      .MODG.LIDF'
     fprofl = modgen//'      .MODG.LIPR'
     nomsst = modgen//'      .MODG.SSNO'
-    prof_gene = nugene//'.NUME'
+    nume_equa_gene = nugene//'.NUME'
     stomor = nugene//'.SMOS'
-    lili = prof_gene//'.LILI'
-    prno = prof_gene//'.PRNO'
-    orig = prof_gene//'.ORIG'
+    lili = nume_equa_gene//'.LILI'
+    prno = nume_equa_gene//'.PRNO'
+    orig = nume_equa_gene//'.ORIG'
 
 ! ON RECUPERE LE NOMBRE DE LIAISON
     call jelira(defli, 'NMAXOC', nblia)
@@ -121,10 +121,10 @@ subroutine numgcy(nugene, modgen)
     nb_sstr = 1
     nb_link = 1
 !
-! - Create PROF_GENE
+! - Create nume_equa_gene
 !
-    call profgene_crsd(prof_gene, 'G', neq, nb_sstr=nb_sstr, nb_link=nb_link, &
-                       model_genez=modgen, gran_namez='DEPL_R')
+    call nume_equa_gene_crsd(nume_equa_gene, 'G', neq, nb_sstr=nb_sstr, nb_link=nb_link, &
+                             model_genez=modgen, gran_namez='DEPL_R')
 !
 ! - Set sub_structures
 !

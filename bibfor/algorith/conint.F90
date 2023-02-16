@@ -61,7 +61,7 @@ subroutine conint(nume, raide, coint, connec, &
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/matint.h"
-#include "asterfort/profgene_crsd.h"
+#include "asterfort/nume_equa_gene_crsd.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/utmess.h"
 !
@@ -81,7 +81,7 @@ subroutine conint(nume, raide, coint, connec, &
     real(kind=8) :: rayon, dist, mindis, maxdis, kr(12, 12), mr(12, 12)
     real(kind=8) :: direc(3), ptref(3), temp, long, vtest(3), r8bid
     character(len=8) :: nomma, k8bid
-    character(len=19) :: prof_gene, prof_chno, raiint, ssami, solveu
+    character(len=19) :: nume_equa_gene, nume_equa, raiint, ssami, solveu
     character(len=24) :: repsst, nommcl
     integer, pointer :: ipos_ddl_interf(:) => null()
     real(kind=8), pointer :: vale(:) => null()
@@ -102,11 +102,11 @@ subroutine conint(nume, raide, coint, connec, &
 !--------------------------------C
 !
 
-    prof_gene = nume_gene//'.NUME'
+    nume_equa_gene = nume_gene//'.NUME'
 
 !
 !-- CREATION D'UN MODELE_GENE MINIMALISTE
-    call wkvect(prof_gene//'.REFE', 'V V K24', 4, ibid)
+    call wkvect(nume_equa_gene//'.REFE', 'V V K24', 4, ibid)
     zk24(ibid) = '&&MODL91'
 !-- ET ON REMPLIT AVEC JUSTE LES INFOS UTILES POUR RGNDAS.F
     repsst = '&&MODL91      .MODG.SSNO'
@@ -125,13 +125,13 @@ subroutine conint(nume, raide, coint, connec, &
 !
 
 !
-! - Create PROF_GENE
+! - Create nume_equa_gene
 !
     neq = 6*nnoint
-    call profgene_crsd(prof_gene, 'V', neq, nb_sstr=1, nb_link=0, &
-                       model_genez='&&MODL91', gran_namez='DEPL_R')
-    ! call jecroc(jexnum(prof_gene//'.ORIG', 1))
-    call jeveuo(jexnum(prof_gene//'.ORIG', 1), 'E', ibid)
+    call nume_equa_gene_crsd(nume_equa_gene, 'V', neq, nb_sstr=1, nb_link=0, &
+                             model_genez='&&MODL91', gran_namez='DEPL_R')
+    ! call jecroc(jexnum(nume_equa_gene//'.ORIG', 1))
+    call jeveuo(jexnum(nume_equa_gene//'.ORIG', 1), 'E', ibid)
     zi(ibid-1+1) = 0
 !
 !-------------------------------------C
@@ -145,8 +145,8 @@ subroutine conint(nume, raide, coint, connec, &
     call jeveuo(jexnum(raide//'.VALM', 1), 'L', lraide)
     call jeveuo(nume//'.SMOS.SMDI', 'L', lsmdi)
     call jeveuo(nume//'.SMOS.SMHC', 'L', lsmhc)
-    call dismoi('PROF_CHNO', nume, 'NUME_DDL', repk=prof_chno)
-    call jeveuo(jexnum(prof_chno//'.PRNO', 1), 'L', lprno)
+    call dismoi('NUME_EQUA', nume, 'NUME_DDL', repk=nume_equa)
+    call jeveuo(jexnum(nume_equa//'.PRNO', 1), 'L', lprno)
 !
 !-- BOUCLE SUR LES NOEUDS D'INTERFACE
 !
@@ -241,7 +241,7 @@ subroutine conint(nume, raide, coint, connec, &
                 indddl = ipos_ddl_interf(1+ind_noeud(no2)-1)
 !
                 do l1 = 1, neqd2
-                    zi4(lsmhc+ismhc) = indddl+l1
+                    zi4(lsmhc+ismhc) = int(indddl+l1, kind=4)
                     ismhc = ismhc+1
                 end do
             end do
@@ -249,7 +249,7 @@ subroutine conint(nume, raide, coint, connec, &
 !-- ON REMPLIT LE BLOC DIAGONAL DU NOEUD COURANT
             indddl = ipos_ddl_interf(i1)
             do l1 = 1, j1
-                zi4(lsmhc+ismhc) = indddl+l1
+                zi4(lsmhc+ismhc) = int(indddl+l1, kind=4)
                 ismhc = ismhc+1
             end do
             zi(lsmdi+indeq) = ismhc

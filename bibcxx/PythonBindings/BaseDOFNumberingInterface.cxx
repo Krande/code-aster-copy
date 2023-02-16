@@ -42,13 +42,18 @@ void exportBaseDOFNumberingToPython( py::module_ &mod ) {
     c1.def( "computeNumbering", f2 );
     c1.def( "computeRenumbering", &BaseDOFNumbering::computeRenumbering );
     c1.def( "getFiniteElementDescriptors", &BaseDOFNumbering::getFiniteElementDescriptors );
+    c1.def( "getGlobalEquationNumbering", &BaseDOFNumbering::getGlobalEquationNumbering, R"(
+Returns the global equation numbering object;
+
+Returns:
+    GlobalEquationNumbering: global equation numbering.
+        )" );
     c1.def( "getPhysicalQuantity", &BaseDOFNumbering::getPhysicalQuantity, R"(
 Returns the name of the physical quantity that is numbered.
 
 Returns:
     str: physical quantity name.
         )" );
-
     c1.def( "isParallel", &BaseDOFNumbering::isParallel, R"(
 The numbering is distributed across MPI processes for High Performance Computing.
 
