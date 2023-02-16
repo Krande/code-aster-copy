@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -21,11 +21,12 @@ import code_aster
 import code_aster.LinearAlgebra
 from code_aster.Commands import *
 from code_aster.Utilities import ExecutionParameter, Options
+from code_aster.Utilities import petscInitialize
 
 test = code_aster.TestCase()
 
 code_aster.init("--test")
-code_aster.LinearAlgebra.petscInitialize()
+petscInitialize()
 
 # modeling = "D_PLAN_INCO_UPG"
 modeling = "D_PLAN_INCO_UP"

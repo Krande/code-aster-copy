@@ -64,6 +64,7 @@ from .searchlist import SearchList
 from .logger import DEBUG, ERROR, INFO, WARNING, logger
 from .misc import get_shared_tmpdir, shared_tmpdir
 from .mpi_utils import MPI, haveMPI
+from .petsc_utils import PETSc, petscInitialize, petscFinalize
 from .options import Options
 from .report import CR
 from .statistics_manager import print_stats, profile

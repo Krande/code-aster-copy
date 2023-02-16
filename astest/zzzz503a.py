@@ -21,6 +21,7 @@ import code_aster
 from code_aster.Commands import *
 import libaster
 import numpy as np
+from code_aster.Utilities import PETSc
 
 code_aster.init("--test")
 
@@ -122,7 +123,7 @@ matrAsse.assemble()
 
 ccid = matrAsse.getDirichletBCDOFs()
 test.assertEqual(sum(ccid), 0)
-test.assertEqual(len(ccid), numeDDL.getNumberOfDofs())
+test.assertEqual(len(ccid), numeDDL.getNumberOfDofs() + 1)
 
 x = matrAsse.EXTR_MATR(sparse=True)
 test.assertTrue("numpy" in str(type(x[0])))
@@ -141,18 +142,13 @@ matrAsse.setValues(idx.tolist(), jdx.tolist(), values.tolist())
 K3 = matrAsse.EXTR_MATR()
 test.assertEqual(np.linalg.norm(K1 - K3), 0)
 
-try:
-    import petsc4py
+A = matrAsse.toPetsc()
 
-    A = matrAsse.toPetsc()
-except (ImportError, NotImplementedError):
-    pass
-else:
-    v = petsc4py.PETSc.Viewer()
-    A.view(v)
-    v = petsc4py.PETSc.Viewer().createASCII("test.txt")
-    v.pushFormat(petsc4py.PETSc.Viewer.Format.ASCII_MATLAB)
-    A.view(v)
+v = PETSc.Viewer()
+A.view(v)
+v = PETSc.Viewer().createASCII("test.txt")
+v.pushFormat(PETSc.Viewer.Format.ASCII_MATLAB)
+A.view(v)
 
 test.assertEqual(matrAsse.getType(), "MATR_ASSE_DEPL_R")
 test.assertTrue(isinstance(matrAsse, code_aster.AssemblyMatrixDisplacementReal))

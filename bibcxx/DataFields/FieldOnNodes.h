@@ -643,35 +643,48 @@ public:
    * @param scaling The scaling of the Lagrange DOFs
    */
 #ifdef ASTER_HAVE_PETSC
-  void fromPetsc(const BaseDOFNumberingPtr &dofNmbrg, const Vec &vec,
-                 const ASTERDOUBLE scaling = 1.0) {
-    CALLO_VECT_ASSE_FROM_PETSC(getName(), dofNmbrg->getName(), &vec, &scaling);
-    _values->updateValuePointer();
-  };
-
-  void fromPetsc(const Vec &vec, const ASTERDOUBLE scaling = 1.0) {
-    if (getMesh()->isParallel()) {
-      raiseAsterError("dofNumbering must be provided");
+  FieldOnNodes *fromPetsc(const BaseDOFNumberingPtr &dofNmbrg, const Vec &vec,
+                          const ASTERDOUBLE &scaling) {
+    if (get_sh_jeveux_status() == 1) {
+      CALLO_VECT_ASSE_FROM_PETSC(getName(), dofNmbrg->getName(), &vec,
+                                 &scaling);
+      _values->updateValuePointer();
     }
-    const std::string dummy_nbg = " ";
-    CALLO_VECT_ASSE_FROM_PETSC(getName(), dummy_nbg, &vec, &scaling);
-    _values->updateValuePointer();
+    return this;
+  };
+  FieldOnNodes *fromPetsc(const BaseDOFNumberingPtr &dofNmbrg, const Vec &vec) {
+    if (get_sh_jeveux_status() == 1) {
+      const auto dummy_scaling = 1.;
+      CALLO_VECT_ASSE_FROM_PETSC(getName(), dofNmbrg->getName(), &vec,
+                                 &dummy_scaling);
+      _values->updateValuePointer();
+    }
+    return this;
+  };
+  FieldOnNodes *fromPetsc(const Vec &vec, const ASTERDOUBLE &scaling) {
+    if (get_sh_jeveux_status() == 1) {
+      if (getMesh()->isParallel()) {
+        raiseAsterError("dofNumbering must be provided");
+      }
+      const std::string dummy_nbg = " ";
+      CALLO_VECT_ASSE_FROM_PETSC(getName(), dummy_nbg, &vec, &scaling);
+      _values->updateValuePointer();
+    }
+    return this;
+  };
+  FieldOnNodes *fromPetsc(const Vec &vec) {
+    if (get_sh_jeveux_status() == 1) {
+      if (getMesh()->isParallel()) {
+        raiseAsterError("dofNumbering must be provided");
+      }
+      const auto dummy_scaling = 1.;
+      const std::string dummy_nbg = " ";
+      CALLO_VECT_ASSE_FROM_PETSC(getName(), dummy_nbg, &vec, &dummy_scaling);
+      _values->updateValuePointer();
+    }
+    return this;
   };
 #endif
-
-  void applyLagrangeScaling(const ValueType scaling) {
-    _values->updateValuePointer();
-
-    const auto descr = this->getNodesAndComponentsNumberFromDOF();
-
-    auto nbDofs = this->size();
-
-    for (ASTERINTEGER dof = 0; dof < nbDofs; dof++) {
-      if (descr[dof].second < 0) {
-        (*this)[dof] = (*this)[dof] * scaling;
-      }
-    }
-  };
 
   /**
    * @brief Set the Values object
@@ -689,6 +702,20 @@ public:
     AS_ASSERT(values.size() == size());
 
     *_values = values;
+  };
+
+  void applyLagrangeScaling(const ValueType scaling) {
+    _values->updateValuePointer();
+
+    const auto descr = this->getNodesAndComponentsNumberFromDOF();
+
+    auto nbDofs = this->size();
+
+    for (ASTERINTEGER dof = 0; dof < nbDofs; dof++) {
+      if (descr[dof].second < 0) {
+        (*this)[dof] = (*this)[dof] * scaling;
+      }
+    }
   };
 
   void setValues(const std::map<std::string, ValueType> &values,

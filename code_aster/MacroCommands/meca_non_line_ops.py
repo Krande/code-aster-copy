@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -67,7 +67,7 @@ def _keywords_check(keywords):
             if key in ("RESI_REFE_RELA", "RESI_COMP_RELA"):
                 raise RuntimeError("unsupported value in CONVERGENCE: %s" % key)
 
-    if keywords["METHODE"] != "NEWTON":
+    if keywords["METHODE"] not in ["NEWTON", "SNES"]:
         raise RuntimeError("unsupported value in METHODE")
 
 
@@ -98,6 +98,7 @@ def meca_non_line_ops(self, **args):
         INCREMENT=args["INCREMENT"],
         INFO=args["INFO"],
         CONTACT=args["CONTACT"],
+        METHODE=args["METHODE"],
     )
 
     # Add behaviour

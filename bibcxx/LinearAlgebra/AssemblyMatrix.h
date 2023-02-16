@@ -314,6 +314,17 @@ class AssemblyMatrix : public BaseAssemblyMatrix {
         return result;
     };
 
+    /**
+     * @brief Apply the DirichletBC into the Rhs (aka kinematic aka no Lagrange multipliers)
+     * @param DirichletBC [FieldOnNodes] the values on the DirichletBC
+     * @param Rhs [FieldOnNodes] The residual to be modified
+     */
+    void applyDirichletBC( const FieldOnNodes< ValueType > &DirichletBC,
+                           FieldOnNodes< ValueType > &Rhs ) const {
+        // Template class raises error. It must be specialized in each instanciated class.
+        throw std::runtime_error( "Not implemented" );
+    };
+
     AssemblyMatrix duplicate() { return *this; };
 
     /**
@@ -330,8 +341,13 @@ void AssemblyMatrix< ASTERDOUBLE, Displacement >::setValues( const VectorLong &i
 template <>
 void AssemblyMatrix< ASTERDOUBLE, Displacement >::scale( const VectorReal &lvect,
                                                          const VectorReal &rvect );
+template <>
+void AssemblyMatrix< ASTERDOUBLE, Displacement >::applyDirichletBC(
+    const FieldOnNodesReal &DirichletBC, FieldOnNodesReal &Rhs ) const;
+
 typedef AssemblyMatrix< ASTERDOUBLE, Displacement > AssemblyMatrixDisplacementReal;
 
+/** @typedef Definition d'une matrice assemblee de double avec relations linéaires éliminées*/
 class AssemblyMatrixEliminatedReal : public AssemblyMatrixDisplacementReal {
   public:
     using AssemblyMatrixDisplacementReal::AssemblyMatrixDisplacementReal;
@@ -348,12 +364,20 @@ void AssemblyMatrix< ASTERDOUBLE, Temperature >::setValues( const VectorLong &id
                                                             const VectorReal &values );
 typedef AssemblyMatrix< ASTERDOUBLE, Temperature > AssemblyMatrixTemperatureReal;
 
+template <>
+void AssemblyMatrix< ASTERDOUBLE, Temperature >::applyDirichletBC(
+    const FieldOnNodesReal &DirichletBC, FieldOnNodesReal &Rhs ) const;
+
 /** @typedef Definition d'une matrice assemblee de double pression */
 template <>
 void AssemblyMatrix< ASTERDOUBLE, Pressure >::setValues( const VectorLong &idx,
                                                          const VectorLong &jdx,
                                                          const VectorReal &values );
 typedef AssemblyMatrix< ASTERDOUBLE, Pressure > AssemblyMatrixPressureReal;
+
+template <>
+void AssemblyMatrix< ASTERDOUBLE, Pressure >::applyDirichletBC( const FieldOnNodesReal &DirichletBC,
+                                                                FieldOnNodesReal &Rhs ) const;
 
 /** @typedef Definition d'une matrice assemblee de ASTERCOMPLEX temperature */
 template class AssemblyMatrix< ASTERCOMPLEX, Temperature >;

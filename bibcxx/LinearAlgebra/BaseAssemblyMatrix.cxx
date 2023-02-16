@@ -77,6 +77,25 @@ BaseAssemblyMatrix::BaseAssemblyMatrix( BaseAssemblyMatrix &&other )
     _isFactorized = other._isFactorized;
 }
 
+ASTERDOUBLE BaseAssemblyMatrix::getLagrangeScaling() const {
+    // Special case of a matrix on a ParallelMesh
+    if ( getMesh() && getMesh()->isParallel() ) {
+        ASTERDOUBLE scaling0, scaling;
+#ifdef ASTER_HAVE_MPI
+        CALLO_CONLAG( getName(), &scaling0 );
+        AsterMPI::all_reduce( scaling0, scaling, MPI_MIN );
+#endif
+        return scaling;
+    } else {
+        // Other cases
+        ASTERDOUBLE scaling = 1.;
+        if ( _scaleFactorLagrangian->exists() ) {
+            CALLO_CONLAG( getName(), &scaling );
+        }
+        return scaling;
+    }
+}
+
 void BaseAssemblyMatrix::updateDOFNumbering() {
     if ( _description->exists() ) {
         _description->updateValuePointer();

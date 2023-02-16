@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -21,10 +21,9 @@ import numpy as N
 import code_aster
 from code_aster.Commands import *
 from code_aster import MPI
+from code_aster.Utilities import PETSc
 
 code_aster.init("--test")
-
-import petsc4py
 
 test = code_aster.TestCase()
 
@@ -101,7 +100,7 @@ from scipy.linalg import norm
 logger.setLevel(2)
 
 S = MatrixScaler.MatrixScaler()
-nt = petsc4py.PETSc.NormType.NORM_INFINITY
+nt = PETSc.NormType.NORM_INFINITY
 test.assertAlmostEqual(matrAsse.toPetsc().norm(nt), 1527.7777777794063)
 test.assertAlmostEqual(matrAsse.toPetsc().norm(nt), norm(matrAsse.EXTR_MATR(), np.inf))
 

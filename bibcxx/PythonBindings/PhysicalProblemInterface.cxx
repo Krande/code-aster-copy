@@ -139,6 +139,14 @@ Returns:
             tuple(ieq = 0, neq - 1) = 1 then DOF eliminated else 0,
             tuple(neq) = number of DOFs eliminated.
         )" );
+    // -----------------------------------------------------------------------------------------
+    c1.def( "zeroDirichletBCDOFs", &PhysicalProblem::zeroDirichletBCDOFs, R"(
+    Set in-place to zero the DOFs with DirichletBC (aka not assigned by Lagrange multipliers)
+
+    Returns:
+        field(FieldOnNodes): the modified field
+        )" );
+    // -----------------------------------------------------------------------------------------
     addDirichletBCToInterface( c1 );
     addMechanicalLoadToInterface( c1 );
 #ifdef ASTER_HAVE_MPI

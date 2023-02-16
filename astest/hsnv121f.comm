@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 # --------------------------------------------------------------------
 import code_aster.LinearAlgebra
 from code_aster import MPI
-from code_aster.Utilities import shared_tmpdir
+from code_aster.Utilities import shared_tmpdir, petscInitialize
 import os.path as osp
 
 DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
@@ -27,7 +27,7 @@ rank = MPI.ASTER_COMM_WORLD.Get_rank()
 nbproc = MPI.ASTER_COMM_WORLD.Get_size()
 lParallel = nbproc > 1
 
-code_aster.LinearAlgebra.petscInitialize("-ksp_monitor_true_residual -log_view")
+petscInitialize("-ksp_monitor_true_residual -log_view")
 
 if lParallel:
     MA0 = code_aster.ParallelMesh.buildCube(refine=2)

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,6 +17,7 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
+from code_aster.Utilities import config
 
 DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"), INFO=1)
 
@@ -218,5 +219,154 @@ for rank in range(nbIndexes):
             ),
         )
     )
+
+
+# =========================================================
+#            SOLVEUR NON LINEAIRE SNES
+# =========================================================
+
+if config["ASTER_HAVE_PETSC4PY"]:
+
+    myOptions = "-pc_type lu -pc_factor_mat_solver_type mumps -ksp_type fgmres -snes_linesearch_type basic  -snes_max_it 10"
+    RES_NEW = MECA_NON_LINE(
+        CHAM_MATER=AFFE,
+        COMPORTEMENT=_F(DEFORMATION="GDEF_LOG", RELATION="VMIS_ISOT_LINE", TOUT="OUI"),
+        CONVERGENCE=_F(RESI_GLOB_RELA=3e-8, ITER_GLOB_MAXI=25),
+        EXCIT=(
+            _F(CHARGE=CHAR1, FONC_MULT=RAMPE, TYPE_CHARGE="FIXE_CSTE"),
+            _F(CHARGE=CHAR2, FONC_MULT=RAMPE, TYPE_CHARGE="FIXE_CSTE"),
+        ),
+        INCREMENT=_F(LIST_INST=lisi, PRECISION=1e-06),
+        METHODE="SNES",
+        MODELE=MODI,
+        NEWTON=_F(MATRICE="TANGENTE", PREDICTION="ELASTIQUE", REAC_INCR=1, REAC_ITER=1),
+        SOLVEUR=_F(METHODE="PETSC", OPTION_PETSC=myOptions),
+    )
+
+    # =========================================================
+    #          DETERMINATION DE LA REFERENCE
+    # =========================================================
+
+    nbIndexes = RES.getNumberOfIndexes()
+    test.assertEqual(RES.getNumberOfIndexes(), RES_NEW.getNumberOfIndexes())
+
+    # =========================================================
+    #            REALISATION DES TESTS
+    # =========================================================
+    fmt = "# check diff: {0:3d} {1:<6s} {2:12.6e} {3:12.6e} {4:12.6e}"
+
+    for rank in range(nbIndexes):
+        DEPL_REF = RES.getFieldOnNodesReal("DEPL", rank)
+        SIGMA_REF = RES.getFieldOnCellsReal("SIEF_ELGA", rank)
+        VARI_REF = RES.getFieldOnCellsReal("VARI_ELGA", rank)
+
+        DEPL = RES_NEW.getFieldOnNodesReal("DEPL", rank)
+        SIGMA = RES_NEW.getFieldOnCellsReal("SIEF_ELGA", rank)
+        VARI = RES_NEW.getFieldOnCellsReal("VARI_ELGA", rank)
+
+        DIF_DEPL = DEPL_REF - DEPL
+
+        DIF_SIG = SIGMA_REF - SIGMA
+
+        DIF_VAR = VARI_REF - VARI
+
+        print(
+            fmt.format(
+                rank,
+                "DEPL",
+                DEPL_REF.norm("NORM_INFINITY"),
+                DEPL.norm("NORM_INFINITY"),
+                DIF_DEPL.norm("NORM_INFINITY"),
+            )
+        )
+        print(
+            fmt.format(
+                rank,
+                "SIGMA",
+                SIGMA_REF.norm("NORM_INFINITY"),
+                SIGMA.norm("NORM_INFINITY"),
+                DIF_SIG.norm("NORM_INFINITY"),
+            )
+        )
+        print(
+            fmt.format(
+                rank,
+                "VARI",
+                VARI_REF.norm("NORM_INFINITY"),
+                VARI.norm("NORM_INFINITY"),
+                DIF_VAR.norm("NORM_INFINITY"),
+            )
+        )
+
+        TEST_RESU(
+            CHAM_ELEM=(
+                _F(
+                    CRITERE="ABSOLU",
+                    REFERENCE="ANALYTIQUE",
+                    ORDRE_GRANDEUR=50.0,
+                    TYPE_TEST="MIN",
+                    CHAM_GD=DIF_SIG,
+                    VALE_CALC=0.0,
+                    VALE_REFE=0.0,
+                    VALE_ABS="OUI",
+                ),
+                _F(
+                    CRITERE="ABSOLU",
+                    REFERENCE="ANALYTIQUE",
+                    ORDRE_GRANDEUR=50.0,
+                    TYPE_TEST="MAX",
+                    CHAM_GD=DIF_SIG,
+                    VALE_CALC=0.0,
+                    VALE_REFE=0.0,
+                    VALE_ABS="OUI",
+                ),
+                _F(
+                    CRITERE="ABSOLU",
+                    REFERENCE="ANALYTIQUE",
+                    ORDRE_GRANDEUR=50.0,
+                    TYPE_TEST="MIN",
+                    CHAM_GD=DIF_VAR,
+                    VALE_CALC=0.0,
+                    VALE_REFE=0.0,
+                    VALE_ABS="OUI",
+                ),
+                _F(
+                    CRITERE="ABSOLU",
+                    REFERENCE="ANALYTIQUE",
+                    ORDRE_GRANDEUR=100,
+                    TYPE_TEST="MAX",
+                    CHAM_GD=DIF_VAR,
+                    VALE_CALC=0.0,
+                    VALE_REFE=0.0,
+                    VALE_ABS="OUI",
+                ),
+            )
+        )
+
+        TEST_RESU(
+            CHAM_NO=(
+                _F(
+                    CRITERE="ABSOLU",
+                    REFERENCE="ANALYTIQUE",
+                    ORDRE_GRANDEUR=10e-3,
+                    TYPE_TEST="MIN",
+                    CHAM_GD=DIF_DEPL,
+                    VALE_CALC=0.0,
+                    VALE_REFE=0.0,
+                    VALE_ABS="OUI",
+                ),
+                _F(
+                    CRITERE="ABSOLU",
+                    REFERENCE="ANALYTIQUE",
+                    ORDRE_GRANDEUR=10e-3,
+                    TYPE_TEST="MAX",
+                    CHAM_GD=DIF_DEPL,
+                    VALE_CALC=0.0,
+                    VALE_REFE=0.0,
+                    VALE_ABS="OUI",
+                ),
+            )
+        )
+
 
 FIN()

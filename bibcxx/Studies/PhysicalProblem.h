@@ -28,6 +28,7 @@
 
 #include "Behaviours/BehaviourProperty.h"
 #include "DataFields/FieldOnCells.h"
+#include "DataFields/FieldOnNodes.h"
 #include "Discretization/ElementaryCharacteristics.h"
 #include "Loads/ListOfLoads.h"
 #include "Materials/CodedMaterial.h"
@@ -128,6 +129,8 @@ class PhysicalProblem {
     FieldOnCellsRealPtr getExternalStateVariables( const ASTERDOUBLE &time ) const;
 
     VectorLong getDirichletBCDOFs( void ) const;
+
+    void zeroDirichletBCDOFs( FieldOnNodesReal & ) const;
 };
 
 using PhysicalProblemPtr = std::shared_ptr< PhysicalProblem >;

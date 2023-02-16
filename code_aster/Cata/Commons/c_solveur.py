@@ -81,6 +81,7 @@ def C_SOLVEUR(COMMAND, BASE=None):  # COMMUN#
         "MACR_ASPIC_CALC",
         "MACRO_BASCULE_SCHEMA",
         "STAT_NON_LINE",
+        "STAT_NON_LINE_SNES",
         "THER_NON_LINE",
         "MODE_NON_LINE",
     ):
@@ -205,6 +206,9 @@ def C_SOLVEUR(COMMAND, BASE=None):  # COMMUN#
     if COMMAND in ["MODE_ITER_INV_SM"]:
         _defaut = "MULT_FRONT"
         _into = ("MULT_FRONT", "LDLT")
+    if COMMAND in ["STAT_NON_LINE_SNES"]:
+        _defaut = "PETSC"
+        _into = ("PETSC",)
     _MotCleSimples["METHODE"] = SIMP(statut="f", typ="TXM", defaut=_defaut, into=_into)
 
     # --------------------------------------------------------------------

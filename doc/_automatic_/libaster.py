@@ -2221,7 +2221,7 @@ class FieldOnNodesReal(DataField):
     def fromPetsc(self, *args, **kwargs):
         """Overloaded function.
 
-        1. fromPetsc(self: libaster.FieldOnNodesReal, dofNmbrg: libaster.BaseDOFNumbering, vec: vec, scaling: float = 1.0) -> None
+        1. fromPetsc(self: libaster.FieldOnNodesReal, dofNmbrg: libaster.BaseDOFNumbering, vec: vec, scaling: float) -> libaster.FieldOnNodesReal
 
 
                     Import a PETSc vector into the field.
@@ -2229,17 +2229,36 @@ class FieldOnNodesReal(DataField):
                     Arguments:
                         dofNmbrg (DOFNumbering): The numbering of the DOFs
                         vec (Vec): The PETSc vector
-                        scaling (float) : The scaling of the Lagrange DOFs (default: 1.0)
+                        scaling (float) : The scaling of the Lagrange DOFs
 
 
-        2. fromPetsc(self: libaster.FieldOnNodesReal, vec: vec, scaling: float = 1.0) -> None
+        2. fromPetsc(self: libaster.FieldOnNodesReal, dofNmbrg: libaster.BaseDOFNumbering, vec: vec) -> libaster.FieldOnNodesReal
+
+
+                    Import a PETSc vector into the field.
+
+                    Arguments:
+                        dofNmbrg (DOFNumbering): The numbering of the DOFs
+                        vec (Vec): The PETSc vector
+
+
+        3. fromPetsc(self: libaster.FieldOnNodesReal, vec: vec, scaling: float) -> libaster.FieldOnNodesReal
 
 
                     Import a PETSc vector into the field.
 
                     Arguments:
                         vec (Vec): The PETSc vector
-                        scaling (float) : The scaling of the Lagrange DOFs (default: 1.0)
+                        scaling (float) : The scaling of the Lagrange DOFs
+
+
+        4. fromPetsc(self: libaster.FieldOnNodesReal, vec: vec) -> libaster.FieldOnNodesReal
+
+
+                    Import a PETSc vector into the field.
+
+                    Arguments:
+                        vec (Vec): The PETSc vector
         """
 
     def getComponents(self):
@@ -5397,6 +5416,14 @@ class AssemblyMatrixDisplacementReal(BaseAssemblyMatrix):
             coeff [float]: assembling factor (default = 1.0)
         """
 
+    def applyDirichletBC(self, arg0, arg1):
+        """Apply the DirichletBC into the Rhs (aka kinematic aka no Lagrange multipliers).
+
+        Arguments:
+            DirichletBC [FieldOnNodes] the values on the DirichletBC.
+            Rhs [FieldOnNodes] The residual to be modified.
+        """
+
     def clearElementaryMatrix(self):
         pass
 
@@ -5406,11 +5433,13 @@ class AssemblyMatrixDisplacementReal(BaseAssemblyMatrix):
     def duplicate(self):
         pass
 
-    def getMaterialField(self):
-        pass
+    def getMaterialField(self, *args, **kwargs):
+        """Overloaded function.
 
-    def getNumberOfElementaryMatrix(self):
-        pass
+        1. getMaterialField(self: libaster.AssemblyMatrixDisplacementReal) -> MaterialField
+
+        2. getMaterialField(self: libaster.AssemblyMatrixDisplacementReal) -> MaterialField
+        """
 
     def scale(self, arg0, arg1):
         """Scale the matrix in place using right and left multiplication by diagonal matrices stored as vectors
@@ -5598,6 +5627,14 @@ class AssemblyMatrixTemperatureReal(BaseAssemblyMatrix):
             coeff [float]: assembling factor (default = 1.0)
         """
 
+    def applyDirichletBC(self, arg0, arg1):
+        """Apply the DirichletBC into the Rhs (aka kinematic aka no Lagrange multipliers).
+
+        Arguments:
+            DirichletBC [FieldOnNodes] the values on the DirichletBC.
+            Rhs [FieldOnNodes] The residual to be modified.
+        """
+
     def clearElementaryMatrix(self):
         pass
 
@@ -5739,6 +5776,14 @@ class AssemblyMatrixPressureReal(BaseAssemblyMatrix):
         Arguments:
             matr_elem [ElementaryMatrixDisplacementReal]: elementary matrix to add
             coeff [float]: assembling factor (default = 1.0)
+        """
+
+    def applyDirichletBC(self, arg0, arg1):
+        """Apply the DirichletBC into the Rhs (aka kinematic aka no Lagrange multipliers).
+
+        Arguments:
+            DirichletBC [FieldOnNodes] the values on the DirichletBC.
+            Rhs [FieldOnNodes] The residual to be modified.
         """
 
     def clearElementaryMatrix(self):
@@ -6735,6 +6780,13 @@ class PetscSolver(LinearSolver):
         1. __init__(self: libaster.PetscSolver) -> None
 
         2. __init__(self: libaster.PetscSolver, arg0: str) -> None
+        """
+
+    def getPetscOptions(self):
+        """return the petsc solver options
+
+        Returns:
+            string: the petsc solver options
         """
 
 
@@ -10898,6 +10950,13 @@ class PhysicalProblem:
             FieldOnCellsRealPtr : field of reference values
         """
 
+    def zeroDirichletBCDOFs(self, arg0):
+        """Set in-place to zero the DOFs with DirichletBC (aka not assigned by Lagrange multipliers)
+
+        Returns:
+            field(FieldOnNodes): the modified field
+        """
+
 
 # class Glossary in libaster
 
@@ -11785,6 +11844,13 @@ class ParallelDOFNumbering(BaseDOFNumbering):
 
         Returns:
             int: global number of the DOF.
+        """
+
+    def getNoGhostRows(self):
+        """Returns the indexes of the DOFs owned locally (aka not ghost).
+
+        Returns:
+            int: indexes of the DOFs owned locally.
         """
 
     def getNodeAssociatedToRow(self, row, local=False):

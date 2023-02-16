@@ -115,7 +115,13 @@ Returns:
 
     py::class_< PetscSolver, PetscSolverPtr, LinearSolver >( mod, "PetscSolver" )
         .def( py::init( &initFactoryPtr< PetscSolver > ) )
-        .def( py::init( &initFactoryPtr< PetscSolver, std::string > ) );
+        .def( py::init( &initFactoryPtr< PetscSolver, std::string > ) )
+        .def( "getPetscOptions", &PetscSolver::getPetscOptions, R"(
+return the petsc solver options
+
+Returns:
+    string: the petsc solver options
+        )" );
 
     py::class_< GcpcSolver, GcpcSolverPtr, LinearSolver >( mod, "GcpcSolver" )
         .def( py::init( &initFactoryPtr< GcpcSolver > ) )

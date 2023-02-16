@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -19,10 +19,10 @@
 
 import code_aster
 from code_aster.Commands import *
+from code_aster.Utilities import config
 from code_aster.MacroCommands.NonLinearSolver import NonLinearSolver, TimeStepper
 
 DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"), INFO=1)
-
 
 mesh = LIRE_MAILLAGE(FORMAT="MED", UNITE=20)
 
@@ -60,7 +60,7 @@ SOLUT = STAT_NON_LINE(
     INFO=1,
 )
 
-SOLUN = MECA_NON_LINE(
+SOLU1 = MECA_NON_LINE(
     MODELE=model,
     CHAM_MATER=mater,
     EXCIT=(_F(CHARGE=encast, FONC_MULT=RAMPE), _F(CHARGE=depl, FONC_MULT=RAMPE)),
@@ -84,22 +84,20 @@ VARI_REF = CREA_CHAMP(
     OPERATION="EXTR", TYPE_CHAM="ELGA_VARI_R", NOM_CHAM="VARI_ELGA", RESULTAT=SOLUT, INST=1.0
 )
 
-
-SIGMA = CREA_CHAMP(
-    OPERATION="EXTR", TYPE_CHAM="ELGA_SIEF_R", NOM_CHAM="SIEF_ELGA", RESULTAT=SOLUN, INST=1.0
+SIGMA1 = CREA_CHAMP(
+    OPERATION="EXTR", TYPE_CHAM="ELGA_SIEF_R", NOM_CHAM="SIEF_ELGA", RESULTAT=SOLU1, INST=1.0
 )
 
-VARI = CREA_CHAMP(
-    OPERATION="EXTR", TYPE_CHAM="ELGA_VARI_R", NOM_CHAM="VARI_ELGA", RESULTAT=SOLUN, INST=1.0
+VARI1 = CREA_CHAMP(
+    OPERATION="EXTR", TYPE_CHAM="ELGA_VARI_R", NOM_CHAM="VARI_ELGA", RESULTAT=SOLU1, INST=1.0
 )
 
 # =========================================================
 #            REALISATION DES TESTS
 # =========================================================
 
-DIF_SIG = SIGMA_REF - SIGMA
-
-DIF_VAR = VARI_REF - VARI
+DIF_SIG1 = SIGMA_REF - SIGMA1
+DIF_VAR1 = VARI_REF - VARI1
 
 TEST_RESU(
     CHAM_ELEM=(
@@ -108,7 +106,7 @@ TEST_RESU(
             REFERENCE="AUTRE_ASTER",
             PRECISION=1.0e-08,
             TYPE_TEST="MIN",
-            CHAM_GD=DIF_SIG,
+            CHAM_GD=DIF_SIG1,
             VALE_CALC=1.5063505998114124e-12,
             VALE_REFE=0.0,
             VALE_ABS="OUI",
@@ -118,7 +116,7 @@ TEST_RESU(
             REFERENCE="AUTRE_ASTER",
             PRECISION=1.0e-08,
             TYPE_TEST="MAX",
-            CHAM_GD=DIF_SIG,
+            CHAM_GD=DIF_SIG1,
             VALE_CALC=1.7053025658242404e-12,
             VALE_REFE=0.0,
             VALE_ABS="OUI",
@@ -129,7 +127,7 @@ TEST_RESU(
             ORDRE_GRANDEUR=5.0e-03,
             PRECISION=1.0e-08,
             TYPE_TEST="MIN",
-            CHAM_GD=DIF_VAR,
+            CHAM_GD=DIF_VAR1,
             VALE_CALC=0.0,
             VALE_REFE=0.0,
             VALE_ABS="OUI",
@@ -140,12 +138,91 @@ TEST_RESU(
             ORDRE_GRANDEUR=5.0e-3,
             PRECISION=1.0e-08,
             TYPE_TEST="MAX",
-            CHAM_GD=DIF_VAR,
+            CHAM_GD=DIF_VAR1,
             VALE_CALC=0.0,
             VALE_REFE=0.0,
             VALE_ABS="OUI",
         ),
     )
 )
+
+# =========================================================
+#            SOLVEUR NON LINEAIRE SNES
+# =========================================================
+
+if config["ASTER_HAVE_PETSC4PY"]:
+
+    myOptions = "-pc_type lu -pc_factor_mat_solver_type mumps -ksp_type fgmres -snes_linesearch_type basic  -snes_max_it 10"
+    SOLU2 = MECA_NON_LINE(
+        MODELE=model,
+        CHAM_MATER=mater,
+        EXCIT=(_F(CHARGE=encast, FONC_MULT=RAMPE), _F(CHARGE=depl, FONC_MULT=RAMPE)),
+        COMPORTEMENT=_F(RELATION="VMIS_ISOT_LINE", DEFORMATION="GDEF_LOG"),
+        NEWTON=_F(REAC_INCR=1, PREDICTION="ELASTIQUE", MATRICE="TANGENTE", REAC_ITER=1),
+        METHODE="SNES",
+        CONVERGENCE=_F(RESI_GLOB_RELA=1e-8),
+        INCREMENT=_F(LIST_INST=LIST),
+        SOLVEUR=_F(METHODE="PETSC", OPTION_PETSC=myOptions),
+        INFO=1,
+    )
+
+    SIGMA2 = CREA_CHAMP(
+        OPERATION="EXTR", TYPE_CHAM="ELGA_SIEF_R", NOM_CHAM="SIEF_ELGA", RESULTAT=SOLU2, INST=1.0
+    )
+
+    VARI2 = CREA_CHAMP(
+        OPERATION="EXTR", TYPE_CHAM="ELGA_VARI_R", NOM_CHAM="VARI_ELGA", RESULTAT=SOLU2, INST=1.0
+    )
+
+    DIF_SIG2 = SIGMA_REF - SIGMA2
+    DIF_VAR2 = VARI_REF - VARI2
+
+    TEST_RESU(
+        CHAM_ELEM=(
+            _F(
+                CRITERE="ABSOLU",
+                REFERENCE="AUTRE_ASTER",
+                PRECISION=1.0e-08,
+                TYPE_TEST="MIN",
+                CHAM_GD=DIF_SIG2,
+                VALE_CALC=1.5063505998114124e-12,
+                VALE_REFE=0.0,
+                VALE_ABS="OUI",
+            ),
+            _F(
+                CRITERE="ABSOLU",
+                REFERENCE="AUTRE_ASTER",
+                PRECISION=1.0e-08,
+                TYPE_TEST="MAX",
+                CHAM_GD=DIF_SIG2,
+                VALE_CALC=1.7053025658242404e-12,
+                VALE_REFE=0.0,
+                VALE_ABS="OUI",
+            ),
+            _F(
+                CRITERE="ABSOLU",
+                REFERENCE="AUTRE_ASTER",
+                ORDRE_GRANDEUR=5.0e-03,
+                PRECISION=1.0e-08,
+                TYPE_TEST="MIN",
+                CHAM_GD=DIF_VAR2,
+                VALE_CALC=0.0,
+                VALE_REFE=0.0,
+                VALE_ABS="OUI",
+            ),
+            _F(
+                CRITERE="ABSOLU",
+                REFERENCE="AUTRE_ASTER",
+                ORDRE_GRANDEUR=5.0e-3,
+                PRECISION=1.0e-08,
+                TYPE_TEST="MAX",
+                CHAM_GD=DIF_VAR2,
+                VALE_CALC=0.0,
+                VALE_REFE=0.0,
+                VALE_ABS="OUI",
+            ),
+        )
+    )
+
 
 FIN()

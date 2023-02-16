@@ -56,7 +56,7 @@ AFFMAT = AFFE_MATERIAU(MAILLAGE=pMesh2, AFFE=_F(TOUT="OUI", MATER=MATER1))
 LINSTC = DEFI_LIST_REEL(VALE=(1.0, 2.0))
 
 
-resu = MECA_STATIQUE(
+resu1 = MECA_STATIQUE(
     CHAM_MATER=AFFMAT,
     MODELE=model,
     LIST_INST=LINSTC,
@@ -64,21 +64,21 @@ resu = MECA_STATIQUE(
     EXCIT=(_F(CHARGE=char_cin), _F(CHARGE=char_meca)),
 )
 
-ranks = resu.getIndexes()
+ranks = resu1.getIndexes()
 test.assertEqual(len(ranks), 1)
 test.assertAlmostEqual(ranks[0], 1.0)
-resu.debugPrint(10 + rank)
+resu1.debugPrint(10 + rank)
 
-test.assertEqual("resu", resu.userName)
-test.assertFalse(resu.hasElementaryCharacteristics())
-test.assertFalse(resu.hasElementaryCharacteristics(1))
+test.assertEqual("resu1", resu1.userName)
+test.assertFalse(resu1.hasElementaryCharacteristics())
+test.assertFalse(resu1.hasElementaryCharacteristics(1))
 
-resu.printMedFile("test" + str(rank) + ".med")
+resu1.printMedFile("test" + str(rank) + ".med")
 # from shutil import copyfile
 # copyfile("test"+str(rank)+".med", "/home/siavelis/test"+str(rank)+".med")
 
-MyFieldOnNodes = resu.getFieldOnNodesReal("DEPL", 1)
-sfon = MyFieldOnNodes.toSimpleFieldOnNodes()
+field1 = resu1.getFieldOnNodesReal("DEPL", 1)
+sfon = field1.toSimpleFieldOnNodes()
 sfon.debugPrint(10 + rank)
 sfon.build()
 
@@ -88,5 +88,23 @@ if rank == 0:
     test.assertAlmostEqual(sfon.getValue(1, 0), 1.14977255749554, 6)
 elif rank == 1:
     test.assertAlmostEqual(sfon.getValue(1, 0), 1.14977255749554, 6)
+
+myOptions = "-pc_type lu -pc_factor_mat_solver_type mumps -ksp_type fgmres -snes_linesearch_type basic  -snes_max_it 10"
+resu2 = MECA_NON_LINE(
+    MODELE=model,
+    CHAM_MATER=AFFMAT,
+    EXCIT=(_F(CHARGE=char_cin), _F(CHARGE=char_meca)),
+    COMPORTEMENT=_F(RELATION="ELAS"),
+    NEWTON=_F(REAC_INCR=1, PREDICTION="ELASTIQUE", MATRICE="TANGENTE", REAC_ITER=1),
+    METHODE="SNES",
+    CONVERGENCE=_F(RESI_GLOB_RELA=1e-8),
+    INCREMENT=_F(LIST_INST=LINSTC),
+    SOLVEUR=_F(METHODE="PETSC", OPTION_PETSC=myOptions),
+    INFO=1,
+)
+
+field2 = resu2.getFieldOnNodesReal("DEPL", 1)
+
+test.assertAlmostEqual(field1.norm("NORM_2"), field2.norm("NORM_2"), 6)
 
 FIN()

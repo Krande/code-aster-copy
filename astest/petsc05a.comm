@@ -21,13 +21,11 @@ import os.path as osp
 
 import code_aster
 from code_aster.Commands import *
+from code_aster.Utilities import PETSc
 
 root = osp.dirname(__file__)
 
 code_aster.init("--test", "--abort")
-
-# must not initialize PETSc before calling `code_aster.init`
-from petsc4py.PETSc import KSP
 
 MA = code_aster.Mesh()
 MA.readMedFile(osp.join(root, "petsc05a.mmed"))
@@ -95,7 +93,7 @@ def build_ksp(matrix):
     Returns:
         KSP: KSP operator.
     """
-    ksp = KSP().create(comm=code_aster.MPI.ASTER_COMM_WORLD)
+    ksp = PETSc.KSP().create(comm=code_aster.MPI.ASTER_COMM_WORLD)
     ksp.setOperators(matrix)
     ksp.setType("fgmres")
     pc = ksp.getPC()

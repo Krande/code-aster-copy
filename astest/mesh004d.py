@@ -21,9 +21,10 @@ from code_aster.Utilities import logger
 import numpy as N
 import code_aster
 from code_aster.Commands import *
+from code_aster.Utilities import PETSc
 
 code_aster.init("--test")
-import petsc4py
+
 from code_aster.LinearAlgebra import MatrixScaler
 
 test = code_aster.TestCase()
@@ -141,20 +142,20 @@ test.assertListEqual(ghostRows, [[6, 7], [2, 3]][rank])
 # Some petsc4py manipulations
 pA = matrAsse.toPetsc()
 
-v = petsc4py.PETSc.Viewer()
+v = PETSc.Viewer()
 pA.view(v)
-v = petsc4py.PETSc.Viewer().createASCII("test.txt")
-v.pushFormat(petsc4py.PETSc.Viewer.Format.ASCII_MATLAB)
+v = PETSc.Viewer().createASCII("test.txt")
+v.pushFormat(PETSc.Viewer.Format.ASCII_MATLAB)
 
 rank = pA.getComm().getRank()
 rs, re = pA.getOwnershipRange()
 ce, _ = pA.getSize()
-rows = N.array(list(range(rs, re)), dtype=petsc4py.PETSc.IntType)
-cols = N.array(list(range(0, ce)), dtype=petsc4py.PETSc.IntType)
-rows = petsc4py.PETSc.IS().createGeneral(rows, comm=pA.getComm())
-cols = petsc4py.PETSc.IS().createGeneral(cols, comm=pA.getComm())
+rows = N.array(list(range(rs, re)), dtype=PETSc.IntType)
+cols = N.array(list(range(0, ce)), dtype=PETSc.IntType)
+rows = PETSc.IS().createGeneral(rows, comm=pA.getComm())
+cols = PETSc.IS().createGeneral(cols, comm=pA.getComm())
 (S,) = pA.createSubMatrices(rows, cols)
-v = petsc4py.PETSc.Viewer().createASCII("mesh004c_rank" + str(rank) + ".out", comm=S.getComm())
+v = PETSc.Viewer().createASCII("mesh004c_rank" + str(rank) + ".out", comm=S.getComm())
 S.view(v)
 
 # Scaling validation
@@ -167,7 +168,7 @@ S.scaleMatrix(matrAsse)
 
 pA_scaled = matrAsse.toPetsc()
 pA_scaled.view()
-nt = petsc4py.PETSc.NormType.NORM_INFINITY
+nt = PETSc.NormType.NORM_INFINITY
 test.assertAlmostEqual(pA_unscaled.norm(nt), 24666666666.69744)
 test.assertAlmostEqual(pA_scaled.norm(nt), 1.0)
 

@@ -19,14 +19,14 @@
 
 import code_aster
 from code_aster.Commands import *
-from code_aster import LinearAlgebra
+from code_aster.Utilities import petscInitialize
 from code_aster import MPI
 
 
 code_aster.init("--test")
 
 # force PETSc to start before solves for testing purpose only - no need in regular study
-LinearAlgebra.petscInitialize("-ksp_view -log_view -ksp_monitor")
+petscInitialize("-ksp_view -log_view -ksp_monitor")
 
 test = code_aster.TestCase()
 
@@ -70,6 +70,7 @@ charCine.build()
 
 study = code_aster.PhysicalProblem(model, affectMat)
 study.addDirichletBC(charCine)
+study.computeDOFNumbering()
 dComputation = code_aster.DiscreteComputation(study)
 matr_elem = dComputation.getElasticStiffnessMatrix()
 
@@ -87,6 +88,16 @@ matrAsse.setDOFNumbering(numeDDL)
 matrAsse.addDirichletBC(charCine)
 matrAsse.assemble()
 matrAsse.debugPrint(rank + 30)
+
+ccid = matrAsse.getDirichletBCDOFs()
+bcNb = {0: 142, 1: 148, 2: 0, 3: 0}
+test.assertEqual(sum(ccid), bcNb[rank])
+test.assertEqual(len(ccid), numeDDL.getNumberOfDofs(local=True) + 1)
+
+vec = code_aster.FieldOnNodesReal(model)
+vec.setValues(1.0)
+study.zeroDirichletBCDOFs(vec)
+test.assertEqual(sum(vec.getValues()), numeDDL.getNumberOfDofs(local=True) - sum(ccid[:-1]))
 
 retour = matrAsse.getDOFNumbering()
 test.assertEqual(retour.isParallel(), True)

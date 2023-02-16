@@ -69,6 +69,7 @@ bool LinearSolver::build() {
         _charValues->deallocate();
         _doubleValues->deallocate();
         _integerValues->deallocate();
+        _petscOptions->deallocate();
     }
     std::string newName( getName() );
     newName.resize( 19, ' ' );

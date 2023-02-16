@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -58,14 +58,20 @@ MECA_NON_LINE = MACRO(
     # -------------------------------------------------------------------
     INCREMENT=C_INCREMENT("MECANIQUE"),
     # -------------------------------------------------------------------
-    METHODE=SIMP(statut="f", typ="TXM", defaut="NEWTON", into=("NEWTON",)),
+    METHODE=SIMP(statut="f", typ="TXM", defaut="NEWTON", into=("NEWTON", "SNES")),
     b_meth_newton=BLOC(
-        condition="""equal_to("METHODE", 'NEWTON')""", NEWTON=C_NEWTON("MECA_NON_LINE")
+        condition="""equal_to("METHODE", 'NEWTON') or equal_to("METHODE", 'SNES') """,
+        NEWTON=C_NEWTON("MECA_NON_LINE"),
     ),
     # -------------------------------------------------------------------
     CONVERGENCE=C_CONVERGENCE(),
     # -------------------------------------------------------------------
-    SOLVEUR=C_SOLVEUR("STAT_NON_LINE"),
+    b_newton_solveur=BLOC(
+        condition="""equal_to("METHODE", 'NEWTON')""", SOLVEUR=C_SOLVEUR("STAT_NON_LINE")
+    ),
+    b_snes_solveur=BLOC(
+        condition="""equal_to("METHODE", 'SNES')""", SOLVEUR=C_SOLVEUR("STAT_NON_LINE_SNES")
+    ),
     # -------------------------------------------------------------------
     INFO=SIMP(statut="f", typ="I", into=(1, 2)),
 )

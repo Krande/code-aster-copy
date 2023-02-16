@@ -193,6 +193,18 @@ class PetscSolver : public LinearSolver {
     PetscSolver() : LinearSolver(){};
     const std::string getSolverName() const { return "PETSC"; };
     const bool supportParallelMesh() const { return true; };
+    /**
+     * @brief Return the PETSc options set by the user
+     * @return string
+     */
+    const std::string getPetscOptions() const {
+        std::string opt;
+        _petscOptions->updateValuePointer();
+        for ( auto i = 0; i < _petscOptions->size(); i++ ) {
+            opt.append( ( *_petscOptions )[i] );
+        }
+        return trim( opt );
+    };
 };
 
 class GcpcSolver : public LinearSolver {

@@ -189,6 +189,14 @@ Returns:
         )",
               py::arg( "local" ) = true )
         // ---------------------------------------------------------------------
+        .def( "getNoGhostRows", &ParallelDOFNumbering::getNoGhostRows,
+              R"(
+Returns the indexes of the DOFs owned locally (aka not ghost).
+
+Returns:
+    int: indexes of the DOFs owned locally.
+        )" )
+        // ---------------------------------------------------------------------
         .def( "localToGlobalRow", &ParallelDOFNumbering::localToGlobalRow,
               R"(
 Returns the global number of a local DOF.

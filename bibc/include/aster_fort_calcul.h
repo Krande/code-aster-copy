@@ -1,5 +1,5 @@
 /* -------------------------------------------------------------------- */
-/* Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org             */
+/* Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org             */
 /* This file is part of code_aster.                                     */
 /*                                                                      */
 /* code_aster is free software: you can redistribute it and/or modify   */
@@ -97,6 +97,11 @@ void DEFSSPSSPP( MATRIX_FACTOR, matrix_factor, const char *, STRING_SIZE, const 
 
 #define CALL_MATR_ASSE_SYME( a ) CALLO( MATR_ASSE_SYME, matr_asse_syme, a )
 void DEFS( MATR_ASSE_SYME, matr_asse_syme, const char *, STRING_SIZE );
+
+#define MATR_ASSE_COMPUTE_KINEMATIC_RHS( a, b, c )                                                 \
+    CALLOOO( MATR_ASSE_COMPUTE_KINEMATIC_RHS, matr_asse_compute_kinematic_rhs, a, b, c )
+void DEFSSS( MATR_ASSE_COMPUTE_KINEMATIC_RHS, matr_asse_compute_kinematic_rhs, const char *,
+             STRING_SIZE, const char *, STRING_SIZE, const char *, STRING_SIZE );
 
 #define CALLO_NMDOCH_WRAP( a, b, c, d, e, f, g )                                                   \
     CALLOPPOOOO( NMDOCH_WRAP, nmdoch_wrap, a, b, c, d, e, f, g )

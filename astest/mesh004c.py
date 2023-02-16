@@ -18,7 +18,7 @@
 # --------------------------------------------------------------------
 
 import numpy as N
-import petsc4py
+from code_aster.Utilities import PETSc
 import code_aster
 from code_aster.Commands import *
 from code_aster import MPI
@@ -85,21 +85,21 @@ retour = RESOUDRE(MATR=matrAsse, CHAM_NO=vecass, CHAM_CINE=vcine, ALGORITHME="CR
 
 A = matrAsse.toPetsc()
 
-v = petsc4py.PETSc.Viewer()
+v = PETSc.Viewer()
 A.view(v)
-v = petsc4py.PETSc.Viewer().createASCII("test.txt")
-v.pushFormat(petsc4py.PETSc.Viewer.Format.ASCII_MATLAB)
+v = PETSc.Viewer().createASCII("test.txt")
+v.pushFormat(PETSc.Viewer.Format.ASCII_MATLAB)
 
 rank = A.getComm().getRank()
 print("rank=", rank)
 rs, re = A.getOwnershipRange()
 ce, _ = A.getSize()
-rows = N.array(list(range(rs, re)), dtype=petsc4py.PETSc.IntType)
-cols = N.array(list(range(0, ce)), dtype=petsc4py.PETSc.IntType)
-rows = petsc4py.PETSc.IS().createGeneral(rows, comm=A.getComm())
-cols = petsc4py.PETSc.IS().createGeneral(cols, comm=A.getComm())
+rows = N.array(list(range(rs, re)), dtype=PETSc.IntType)
+cols = N.array(list(range(0, ce)), dtype=PETSc.IntType)
+rows = PETSc.IS().createGeneral(rows, comm=A.getComm())
+cols = PETSc.IS().createGeneral(cols, comm=A.getComm())
 (S,) = A.createSubMatrices(rows, cols)
-v = petsc4py.PETSc.Viewer().createASCII("mesh004c_rank" + str(rank) + ".out", comm=S.getComm())
+v = PETSc.Viewer().createASCII("mesh004c_rank" + str(rank) + ".out", comm=S.getComm())
 S.view(v)
 
 # Use Dualized BC (with AFFE_CHAR_THER)
@@ -133,8 +133,7 @@ V = U.duplicate()
 V.setValues(0.0)
 test.assertEqual(V.norm("NORM_2"), 0)
 
-V.fromPetsc(numeDDL, pU)
-test.assertEqual((U - V).norm("NORM_2"), 0)
+test.assertEqual((U - V.fromPetsc(numeDDL, pU)).norm("NORM_2"), 0)
 
 scaling = 1000.0
 V.fromPetsc(numeDDL, pU, scaling)

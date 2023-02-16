@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -28,7 +28,7 @@ strings (:py:class:`FieldOnNodesChar8`) and
 complex numbers (:py:class:`FieldOnNodesComplex`).
 """
 
-import numpy, functools
+import numpy, functools, operator
 
 import aster
 from libaster import (
@@ -39,8 +39,7 @@ from libaster import (
     DOFNumbering,
 )
 from ..Objects.Serialization import InternalStateBuilder
-from ..Utilities import injector, config
-from ..Utilities.mpi_utils import MPI
+from ..Utilities import injector, config, MPI
 
 
 class FieldOnNodesStateBuilder(InternalStateBuilder):
@@ -156,23 +155,26 @@ class ExtendedFieldOnNodesReal:
         if mesh.isParallel():
             if not dofNmbrng:
                 raise RuntimeError("dofNumbering must be provided")
-            comm = MPI.COMM_WORLD
+            comm = MPI.ASTER_COMM_WORLD
             _vec = Vec().create(comm=comm)
             _vec.setType("mpi")
-            val = self.getValues()
-            neql = len(val) - len(dofNmbrng.getGhostRows())
-            neqg = dofNmbrng.getNumberOfDofs(False)
+            ownedRows = dofNmbrng.getNoGhostRows()
+            neql = len(ownedRows)
+            neqg = dofNmbrng.getNumberOfDofs(local=False)
             _vec.setSizes((neql, neqg))
-            _vec.setValues(
-                dofNmbrng.getLocalToGlobalMapping(), self.getValues(), InsertMode.INSERT_VALUES
-            )
+            val = self.getValues()
+            l2g = dofNmbrng.getLocalToGlobalMapping()
+            extract = operator.itemgetter(*ownedRows)
+            ll2g = extract(l2g)
+            lval = extract(val)
+            _vec.setValues(ll2g, lval, InsertMode.INSERT_VALUES)
         else:
             _vec = Vec().create()
             _vec.setType("mpi")
             val = self.getValues()
             neq = len(val)
             _vec.setSizes(neq)
-            _vec.setValues(range(neq), self.getValues(), InsertMode.INSERT_VALUES)
+            _vec.setValues(range(neq), val, InsertMode.INSERT_VALUES)
         _vec.assemble()
         return _vec
 

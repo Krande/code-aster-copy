@@ -16,3 +16,41 @@
 # You should have received a copy of the GNU General Public License
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
+
+# person_in_charge: nicolas.tardieu@edf.fr
+
+"""
+This module gives common utilities for PETSc.
+Please *always* import PETSc using this wrapper rather than directly.
+"""
+
+from libaster import _petscInitializeWithOptions, petscFinalize
+
+
+class _PETScMeta(type):
+    """Meta class for petsc4py wrapping."""
+
+    _init = False
+    _mod = None
+
+    def __getattr__(cls, attr):
+        if not cls._init:
+            import petsc4py
+            from petsc4py import PETSc
+
+            cls._init = True
+            cls._mod = PETSc
+        return getattr(cls._mod, attr)
+
+
+class PETSc(metaclass=_PETScMeta):
+    """Wrapper to petsc4py.PETSc"""
+
+
+def petscInitialize(options=""):
+    """Starts the PETSc interface with options.
+
+    Arguments:
+        options[str]: PETSc options
+    """
+    _petscInitializeWithOptions(options)

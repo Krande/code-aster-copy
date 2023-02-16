@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -22,11 +22,9 @@ import numpy as np
 import code_aster
 from code_aster import MPI
 from code_aster.Commands import *
+from code_aster.Utilities import PETSc
 
 code_aster.init("--test", "--abort")
-
-# must not initialize PETSc before calling `code_aster.init`
-from petsc4py.PETSc import IS, KSP, PC, Mat, Options
 
 MA = LIRE_MAILLAGE(
     FORMAT="MED",
@@ -115,8 +113,8 @@ def build_ksp(matrix, nmbrng=NUM):
 
     phys = getattr(phys, "tolist", lambda: value)()
     lags = getattr(lags, "tolist", lambda: value)()
-    phys = IS().createGeneral(phys, comm=comm)
-    lags = IS().createGeneral(lags, comm=comm)
+    phys = PETSc.IS().createGeneral(phys, comm=comm)
+    lags = PETSc.IS().createGeneral(lags, comm=comm)
 
     K00 = matrix.createSubMatrix(phys, phys)
     K01 = matrix.createSubMatrix(phys, lags)
@@ -125,10 +123,10 @@ def build_ksp(matrix, nmbrng=NUM):
 
     _, nlags = K01.getSize()
 
-    C = K11.copy(structure=Mat.Structure.DIFFERENT_NONZERO_PATTERN)
+    C = K11.copy(structure=PETSc.Mat.Structure.DIFFERENT_NONZERO_PATTERN)
     C.setUp()
     C.setPreallocationNNZ(1)
-    Cm1 = K11.copy(structure=Mat.Structure.DIFFERENT_NONZERO_PATTERN)
+    Cm1 = K11.copy(structure=PETSc.Mat.Structure.DIFFERENT_NONZERO_PATTERN)
     Cm1.setUp()
     Cm1.setPreallocationNNZ(1)
 
@@ -144,7 +142,7 @@ def build_ksp(matrix, nmbrng=NUM):
         root = MPI.ASTER_COMM_WORLD.allreduce(lroot, MPI.SUM)
         indx = MPI.ASTER_COMM_WORLD.bcast(indx, root=root)
         row_val = MPI.ASTER_COMM_WORLD.bcast(row_val, root=root)
-        indx = IS().createGeneral(indx)
+        indx = PETSc.IS().createGeneral(indx)
         val = K00.createSubMatrix(indx, indx).norm()
         cval = row_val.dot(row_val) / val
         cs, ce = C.getOwnershipRange()
@@ -157,25 +155,25 @@ def build_ksp(matrix, nmbrng=NUM):
 
     BtCm1B = Cm1.PtAP(K10)
 
-    P = Mat().create(comm=comm)
+    P = PETSc.Mat().create(comm=comm)
     P.createNest([[K00 + BtCm1B, None], [None, C]])
     P.assemble()
 
     phys, lags = P.getNestISs()[0]
 
-    optDB = Options()
+    optDB = PETSc.Options()
     optDB.setValue("-ksp_monitor_true_residual", "")
 
-    ksp = KSP().create(comm=comm)
+    ksp = PETSc.KSP().create(comm=comm)
 
     ksp.setOperators(matrix, P)
     ksp.setType("fgmres")
     ksp.setFromOptions()
 
     pc = ksp.getPC()
-    pc.setType(PC.Type.FIELDSPLIT)
+    pc.setType(PETSc.PC.Type.FIELDSPLIT)
     pc.setFieldSplitIS(("u", phys), ("p", lags))
-    pc.setFieldSplitType(PC.CompositeType.ADDITIVE)
+    pc.setFieldSplitType(PETSc.PC.CompositeType.ADDITIVE)
     subksps = pc.getFieldSplitSubKSP()
     subksps[0].setType("cg")
     optDB.setValue("-{}ksp_monitor".format(subksps[0].prefix), "")

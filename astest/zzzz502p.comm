@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -20,11 +20,11 @@
 import os.path as osp
 
 import code_aster.LinearAlgebra
-from code_aster.Utilities import shared_tmpdir
+from code_aster.Utilities import shared_tmpdir, petscInitialize
 
 DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"))
 
-code_aster.LinearAlgebra.petscInitialize("-mat_view ::ascii_info -ksp_monitor -log_view")
+petscInitialize("-mat_view ::ascii_info -ksp_monitor -log_view")
 
 MA = LIRE_MAILLAGE(FORMAT="MED", PARTITIONNEUR="PTSCOTCH")
 

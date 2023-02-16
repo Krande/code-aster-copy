@@ -31,6 +31,7 @@
 #include "aster_fort_petsc.h"
 #include "astercxx.h"
 
+#include "DataFields/FieldOnNodes.h"
 #include "DataStructures/DataStructure.h"
 #include "LinearAlgebra/ElementaryMatrix.h"
 #include "Loads/ListOfLoads.h"
@@ -167,7 +168,7 @@ class BaseAssemblyMatrix : public DataStructure {
      * @brief Get mesh
      * @return Internal mesh
      */
-    BaseMeshPtr getMesh() {
+    BaseMeshPtr getMesh() const {
         if ( _dofNum ) {
             return _dofNum->getMesh();
         }
@@ -300,21 +301,18 @@ class BaseAssemblyMatrix : public DataStructure {
             return _ccid->toVector();
         } else {
             ASTERINTEGER shape = _dofNum->getNumberOfDofs( true );
-            return VectorLong( shape, 0 );
+            return VectorLong( shape + 1, 0 );
         }
     }
 
-    ASTERDOUBLE
-    getLagrangeScaling() const {
-        if ( _scaleFactorLagrangian->exists() ) {
-            ASTERDOUBLE scaling = 0.0;
-            CALLO_CONLAG( getName(), &scaling );
-            return scaling;
-        }
+    /**
+     * @brief Return the scaling factor of Lagrange multipliers
+     */
+    ASTERDOUBLE getLagrangeScaling() const;
 
-        return 1.0;
-    }
-
+    /**
+     * @brief Return the list of loads assigned to the matrix
+     */
     ListOfLoadsPtr getListOfLoads() const { return _listOfLoads; }
 
     /**

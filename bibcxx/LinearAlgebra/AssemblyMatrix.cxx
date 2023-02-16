@@ -55,6 +55,16 @@ void AssemblyMatrix< ASTERDOUBLE, Displacement >::defineSolver() {
 }
 
 template <>
+void AssemblyMatrix< ASTERDOUBLE, Displacement >::applyDirichletBC(
+    const FieldOnNodesReal &DirichletBC, FieldOnNodesReal &Rhs ) const {
+    if ( get_sh_jeveux_status() == 1 ) {
+        MATR_ASSE_COMPUTE_KINEMATIC_RHS( getName(), DirichletBC.getName(), Rhs.getName() );
+    } else {
+        raiseAsterError( "Jeveux is not ready!" );
+    }
+};
+
+template <>
 void AssemblyMatrix< ASTERCOMPLEX, Displacement >::defineSolver() {
     _solver = std::make_shared< LinearSolver >( ljust( getName(), 8 ) + ".SOLVEUR   " );
 }
@@ -88,6 +98,16 @@ void AssemblyMatrix< ASTERDOUBLE, Temperature >::defineSolver() {
     _solver = std::make_shared< LinearSolver >( ljust( getName(), 8 ) + ".SOLVEUR   " );
 }
 
+template <>
+void AssemblyMatrix< ASTERDOUBLE, Temperature >::applyDirichletBC(
+    const FieldOnNodesReal &DirichletBC, FieldOnNodesReal &Rhs ) const {
+    if ( get_sh_jeveux_status() == 1 ) {
+        MATR_ASSE_COMPUTE_KINEMATIC_RHS( getName(), DirichletBC.getName(), Rhs.getName() );
+    } else {
+        raiseAsterError( "Jeveux is not ready!" );
+    }
+};
+
 // Specialization for <double, Pressure>
 template <>
 void AssemblyMatrix< ASTERDOUBLE, Pressure >::setValues( const VectorLong &idx,
@@ -99,6 +119,16 @@ void AssemblyMatrix< ASTERDOUBLE, Pressure >::setValues( const VectorLong &idx,
     }
     CALLO_MATR_ASSE_SET_VALUES( getName(), &dim, idx.data(), jdx.data(), values.data() );
     _isFactorized = false;
+};
+
+template <>
+void AssemblyMatrix< ASTERDOUBLE, Pressure >::applyDirichletBC( const FieldOnNodesReal &DirichletBC,
+                                                                FieldOnNodesReal &Rhs ) const {
+    if ( get_sh_jeveux_status() == 1 ) {
+        MATR_ASSE_COMPUTE_KINEMATIC_RHS( getName(), DirichletBC.getName(), Rhs.getName() );
+    } else {
+        raiseAsterError( "Jeveux is not ready!" );
+    }
 };
 
 template <>

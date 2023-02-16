@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -25,6 +25,7 @@ from .contact_manager import ContactManager
 from .convergence_manager import ConvergenceManager
 from .geometric_solver import GeometricSolver
 from .logging_manager import LoggingManager
+from .snes_solver import SNESSolver
 
 
 class StepSolver:
@@ -145,6 +146,24 @@ class StepSolver:
 
         return geom_solver
 
+    def createSNESSolver(self):
+        """Return a solver for the next nonlinear step.
+
+        Returns:
+            SNESSolver: object to solve the next iteration.
+        """
+
+        snes_solver = SNESSolver()
+        snes_solver.setParameters(self.param)
+        snes_solver.setPhysicalProblem(self.phys_pb)
+        snes_solver.setPhysicalState(self.phys_state)
+        snes_solver.setLinearSolver(self.linear_solver)
+        snes_solver.setContactManager(self.contact_manager)
+
+        self.contact_manager.setPairingCoordinates(self.geom)
+
+        return snes_solver
+
     def createLoggingManager(self):
         """Return a logging manager
 
@@ -201,8 +220,15 @@ class StepSolver:
 
         self.geom = self.phys_pb.getMesh().getCoordinates() + self.phys_state.primal
 
+        method = self._get("METHODE")
+
         while not self.hasFinished(convManager):
-            geometric = self.createGeometricSolver()
+            if method == "NEWTON":
+                geometric = self.createGeometricSolver()
+            elif method == "SNES":
+                geometric = self.createSNESSolver()
+            else:
+                assert False
             geometric.setLoggingManager(logManager)
 
             # Solve current iteration

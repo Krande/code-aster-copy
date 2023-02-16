@@ -154,9 +154,23 @@ VectorLong PhysicalProblem::getDirichletBCDOFs( void ) const {
     JeveuxVectorLong ccid( "&&NUME_CCID" );
     std::string base( "V" );
 
+    if ( !_dofNume )
+        raiseAsterError( "DOFNumbering not available ; call computeDOFNumering first." );
     // Il faudrait eventuellement rajouter une liste de charge en plus donné par le user
     CALLO_NUMCIMA( getListOfLoads()->getName(), _dofNume->getName(), ccid->getName(), base );
 
     ccid->updateValuePointer();
     return ccid->toVector();
+};
+
+void PhysicalProblem::zeroDirichletBCDOFs( FieldOnNodesReal &field ) const {
+    VectorLong dirBC = getDirichletBCDOFs();
+    if ( dirBC.size() != field.size() )
+        raiseAsterError( "Field has incompatible size" );
+    field.updateValuePointers();
+    for ( auto i = 0; i < field.size(); i++ ) {
+        if ( dirBC[i] == 1 ) {
+            field[i] = 0.;
+        }
+    }
 };

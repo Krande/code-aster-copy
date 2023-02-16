@@ -58,6 +58,16 @@ Arguments:
         .def( "getNumberOfElementaryMatrix",
               &AssemblyMatrixDisplacementReal::getNumberOfElementaryMatrix )
         // -----------------------------------------------------------------------------------------
+        .def( "getMaterialField", &AssemblyMatrixDisplacementReal::getMaterialField )
+        // -----------------------------------------------------------------------------------------
+        .def( "applyDirichletBC", &AssemblyMatrixDisplacementReal::applyDirichletBC, R"(
+Apply the DirichletBC into the Rhs (aka kinematic aka no Lagrange multipliers).
+
+Arguments:
+    DirichletBC [FieldOnNodes] the values on the DirichletBC.
+    Rhs [FieldOnNodes] The residual to be modified.
+        )" )
+        // -----------------------------------------------------------------------------------------
         .def( "setValues", &AssemblyMatrixDisplacementReal::setValues, R"(
 Erase the assembly matrix and set new values in it.
 
@@ -179,6 +189,14 @@ Arguments:
         // -----------------------------------------------------------------------------------------
         .def( "getMaterialField", &AssemblyMatrixTemperatureReal::getMaterialField )
         // -----------------------------------------------------------------------------------------
+        .def( "applyDirichletBC", &AssemblyMatrixTemperatureReal::applyDirichletBC, R"(
+Apply the DirichletBC into the Rhs (aka kinematic aka no Lagrange multipliers).
+
+Arguments:
+    DirichletBC [FieldOnNodes] the values on the DirichletBC.
+    Rhs [FieldOnNodes] The residual to be modified.
+        )" )
+        // -----------------------------------------------------------------------------------------
         .def( "getNumberOfElementaryMatrix",
               &AssemblyMatrixTemperatureReal::getNumberOfElementaryMatrix )
         // -----------------------------------------------------------------------------------------
@@ -271,6 +289,14 @@ Arguments:
         .def( "clearElementaryMatrix", &AssemblyMatrixPressureReal::clearElementaryMatrix )
         // -----------------------------------------------------------------------------------------
         .def( "getMaterialField", &AssemblyMatrixPressureReal::getMaterialField )
+        // -----------------------------------------------------------------------------------------
+        .def( "applyDirichletBC", &AssemblyMatrixPressureReal::applyDirichletBC, R"(
+Apply the DirichletBC into the Rhs (aka kinematic aka no Lagrange multipliers).
+
+Arguments:
+    DirichletBC [FieldOnNodes] the values on the DirichletBC.
+    Rhs [FieldOnNodes] The residual to be modified.
+        )" )
         // -----------------------------------------------------------------------------------------
         .def( "getNumberOfElementaryMatrix",
               &AssemblyMatrixPressureReal::getNumberOfElementaryMatrix )

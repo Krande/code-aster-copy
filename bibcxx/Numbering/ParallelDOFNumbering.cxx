@@ -71,7 +71,7 @@ bool ParallelDOFNumbering::useLagrangeMultipliers() const {
     if ( retour == "OUI" )
         local_answer = true;
 
-    AsterMPI::all_reduce( local_answer, global_answer, MPI_LAND );
+    AsterMPI::all_reduce( local_answer, global_answer, MPI_LOR );
 
     return global_answer;
 };
@@ -117,6 +117,21 @@ VectorLong ParallelDOFNumbering::getGhostRows( const bool local ) const {
             }
     }
     return ghostRows;
+};
+
+VectorLong ParallelDOFNumbering::getNoGhostRows() const {
+    auto localToRank = getGlobalNumbering()->getLocalToRank();
+    localToRank->updateValuePointer();
+    const auto rank = getMPIRank();
+    ASTERINTEGER dofOwner;
+    VectorLong noGhostRows;
+
+    for ( int i = 0; i < getNumberOfDofs( true ); i++ ) {
+        dofOwner = ( *localToRank )[i];
+        if ( dofOwner == rank )
+            noGhostRows.push_back( i );
+    }
+    return noGhostRows;
 };
 
 VectorLong ParallelDOFNumbering::getRowsAssociatedToLagrangeMultipliers( const bool local ) const {

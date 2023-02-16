@@ -19,6 +19,7 @@
 
 import code_aster
 from code_aster.Commands import *
+from code_aster.Utilities import config
 
 DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"), INFO=1)
 
@@ -70,7 +71,7 @@ print("Field in original SNL:", flush=True)
 SOLUT.printListOfFields()
 
 # NEW STAT_NON_LINE
-SOLUN = MECA_NON_LINE(
+SOLU1 = MECA_NON_LINE(
     MODELE=model,
     CHAM_MATER=mater,
     EXCIT=(_F(CHARGE=encast, FONC_MULT=RAMPE), _F(CHARGE=depl, FONC_MULT=RAMPE)),
@@ -82,10 +83,10 @@ SOLUN = MECA_NON_LINE(
 )
 
 print("Field in new SNL:", flush=True)
-SOLUN.printListOfFields()
+SOLU1.printListOfFields()
 
 nbIndexes = SOLUT.getNumberOfIndexes()
-test.assertEqual(SOLUT.getNumberOfIndexes(), SOLUN.getNumberOfIndexes())
+test.assertEqual(SOLUT.getNumberOfIndexes(), SOLU1.getNumberOfIndexes())
 
 
 # =========================================================
@@ -98,9 +99,9 @@ for rank in range(nbIndexes):
     SIGMA_REF = SOLUT.getFieldOnCellsReal("SIEF_ELGA", rank)
     VARI_REF = SOLUT.getFieldOnCellsReal("VARI_ELGA", rank)
 
-    DEPL = SOLUN.getFieldOnNodesReal("DEPL", rank)
-    SIGMA = SOLUN.getFieldOnCellsReal("SIEF_ELGA", rank)
-    VARI = SOLUN.getFieldOnCellsReal("VARI_ELGA", rank)
+    DEPL = SOLU1.getFieldOnNodesReal("DEPL", rank)
+    SIGMA = SOLU1.getFieldOnCellsReal("SIEF_ELGA", rank)
+    VARI = SOLU1.getFieldOnCellsReal("VARI_ELGA", rank)
 
     DIF_DEPL = DEPL_REF - DEPL
 
@@ -177,6 +178,119 @@ for rank in range(nbIndexes):
             ),
         )
     )
+
+if config["ASTER_HAVE_PETSC4PY"]:
+
+    # NEW STAT_NON_LINE
+    myOptions = "-pc_type lu -pc_factor_mat_solver_type mumps -ksp_type fgmres -snes_linesearch_type basic  -snes_max_it 10"
+    SOLU2 = MECA_NON_LINE(
+        MODELE=model,
+        CHAM_MATER=mater,
+        EXCIT=(_F(CHARGE=encast, FONC_MULT=RAMPE), _F(CHARGE=depl, FONC_MULT=RAMPE)),
+        COMPORTEMENT=_F(RELATION="VMIS_ISOT_LINE"),
+        CONVERGENCE=_F(RESI_GLOB_RELA=1e-12),
+        NEWTON=_F(REAC_INCR=1, PREDICTION="ELASTIQUE", MATRICE="TANGENTE", REAC_ITER=1),
+        INCREMENT=_F(LIST_INST=LIST),
+        METHODE="SNES",
+        SOLVEUR=_F(METHODE="PETSC", OPTION_PETSC=myOptions),
+        INFO=1,
+    )
+
+    print("Field in new SNL:", flush=True)
+    SOLU2.printListOfFields()
+
+    nbIndexes = SOLUT.getNumberOfIndexes()
+    test.assertEqual(SOLUT.getNumberOfIndexes(), SOLU2.getNumberOfIndexes())
+
+    # =========================================================
+    #            REALISATION DES TESTS
+    # =========================================================
+
+    for rank in range(nbIndexes):
+        # ON EXTRAIT LES CHAMPS A TESTER au dernier instant
+        DEPL_REF = SOLUT.getFieldOnNodesReal("DEPL", rank)
+        SIGMA_REF = SOLUT.getFieldOnCellsReal("SIEF_ELGA", rank)
+        VARI_REF = SOLUT.getFieldOnCellsReal("VARI_ELGA", rank)
+
+        DEPL = SOLU2.getFieldOnNodesReal("DEPL", rank)
+        SIGMA = SOLU2.getFieldOnCellsReal("SIEF_ELGA", rank)
+        VARI = SOLU2.getFieldOnCellsReal("VARI_ELGA", rank)
+
+        DIF_DEPL = DEPL_REF - DEPL
+
+        DIF_SIG = SIGMA_REF - SIGMA
+
+        DIF_VAR = VARI_REF - VARI
+
+        TEST_RESU(
+            CHAM_ELEM=(
+                _F(
+                    CRITERE="ABSOLU",
+                    REFERENCE="AUTRE_ASTER",
+                    PRECISION=1.0e-08,
+                    TYPE_TEST="MIN",
+                    CHAM_GD=DIF_SIG,
+                    VALE_CALC=1.5916157281026244e-12,
+                    VALE_REFE=0.0,
+                    VALE_ABS="OUI",
+                ),
+                _F(
+                    CRITERE="ABSOLU",
+                    REFERENCE="AUTRE_ASTER",
+                    PRECISION=1.0e-08,
+                    TYPE_TEST="MAX",
+                    CHAM_GD=DIF_SIG,
+                    VALE_CALC=1.1368683772161603e-12,
+                    VALE_REFE=0.0,
+                    VALE_ABS="OUI",
+                ),
+                _F(
+                    CRITERE="ABSOLU",
+                    REFERENCE="AUTRE_ASTER",
+                    ORDRE_GRANDEUR=1.0e-08,
+                    TYPE_TEST="MIN",
+                    CHAM_GD=DIF_VAR,
+                    VALE_CALC=0.0,
+                    VALE_REFE=0.0,
+                    VALE_ABS="OUI",
+                ),
+                _F(
+                    CRITERE="ABSOLU",
+                    REFERENCE="AUTRE_ASTER",
+                    ORDRE_GRANDEUR=1.0e-8,
+                    TYPE_TEST="MAX",
+                    CHAM_GD=DIF_VAR,
+                    VALE_CALC=0.0,
+                    VALE_REFE=0.0,
+                    VALE_ABS="OUI",
+                ),
+            )
+        )
+
+        TEST_RESU(
+            CHAM_NO=(
+                _F(
+                    CRITERE="ABSOLU",
+                    REFERENCE="AUTRE_ASTER",
+                    PRECISION=1.0e-08,
+                    TYPE_TEST="MIN",
+                    CHAM_GD=DIF_DEPL,
+                    VALE_CALC=6.984919309616089e-10,
+                    VALE_REFE=0.0,
+                    VALE_ABS="OUI",
+                ),
+                _F(
+                    CRITERE="ABSOLU",
+                    REFERENCE="AUTRE_ASTER",
+                    PRECISION=1.0e-08,
+                    TYPE_TEST="MAX",
+                    CHAM_GD=DIF_DEPL,
+                    VALE_CALC=9.313225746154785e-10,
+                    VALE_REFE=0.0,
+                    VALE_ABS="OUI",
+                ),
+            )
+        )
 
 
 FIN()

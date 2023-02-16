@@ -172,6 +172,11 @@ class ParallelDOFNumbering : public BaseDOFNumbering {
     VectorLong getGhostRows( const bool local = false ) const;
 
     /**
+     * @brief Get Rows owned locally (aka not Ghost)
+     */
+    VectorLong getNoGhostRows() const;
+
+    /**
      * @brief Get Rows Associated to Lagrange Multipliers Dof
      */
     VectorLong getRowsAssociatedToLagrangeMultipliers( const bool local = false ) const;
