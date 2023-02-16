@@ -50,7 +50,7 @@ subroutine nugllo(nu, base)
 ! IN K14 NU     : NOM DU NUME_DDL
 ! IN K2   BASE  : BASE(1:1) : BASE POUR CREER LE NUME_DDL
 !                    (SAUF LE PROF_CHNO)
-!               : BASE(2:2) : BASE POUR CREER LE PROF_CHNO
+!               : BASE(2:2) : BASE POUR CREER LE NUME_EQUA
 !----------------------------------------------------------------------
 !
 !

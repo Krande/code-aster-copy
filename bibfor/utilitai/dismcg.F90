@@ -23,7 +23,7 @@ subroutine dismcg(questi, nomobz, repi, repkz, ierd)
 !     ----------
 #include "jeveux.h"
 #include "asterfort/dismgd.h"
-#include "asterfort/dismpn.h"
+#include "asterfort/dismeq.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jelira.h"
@@ -69,7 +69,7 @@ subroutine dismcg(questi, nomobz, repi, repkz, ierd)
         repk = zk24(iarefe-1+1) (1:8)
     else if (questi .eq. 'NB_DDLACT') then
         call jeveuo(nomob//'.REFE', 'L', iarefe)
-        call dismpn(questi, zk24(iarefe-1+2) (1:8)//'.NUME      ', repi, repk, ierd)
+        call dismeq(questi, zk24(iarefe-1+2), repi, repk, ierd)
     else if (questi .eq. 'TYPE_CHAMP') then
         repk = 'VGEN'
     else if (questl(1:7) .eq. 'NOM_GD ') then

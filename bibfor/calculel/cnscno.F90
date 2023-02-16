@@ -263,7 +263,7 @@ subroutine cnscno(cnsz, nume_equaz, prol0, basez, cnoz, &
 !
 !       2.2 ALLOCATION DES OBJETS :
         call nume_equa_crsd(nume_equa, base, nb_equa, meshz=ma, &
-                            gran_namez=nomgd)
+                            gran_namez=nomgd, l_coll_constz=.true.)
         call jecroc(jexnum(nume_equa//'.PRNO', 1))
 !
 !       2.3 REMPLISSAGE DE .PRNO :

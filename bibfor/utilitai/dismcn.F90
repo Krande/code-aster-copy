@@ -25,7 +25,7 @@ subroutine dismcn(questi, nomobz, repi, repkz, ierd)
 !
 #include "asterfort/assert.h"
 #include "asterfort/dismgd.h"
-#include "asterfort/dismpn.h"
+#include "asterfort/dismeq.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
@@ -68,7 +68,7 @@ subroutine dismcn(questi, nomobz, repi, repkz, ierd)
         repk = zk24(iarefe-1+1) (1:8)
     else if (questl .eq. 'NB_DDLACT') then
         call jeveuo(nomob//'.REFE', 'L', iarefe)
-        call dismpn(questl, zk24(iarefe-1+2) (1:8)//'.NUME      ', repi, repk, ierd)
+        call dismeq(questl, zk24(iarefe-1+2), repi, repk, ierd)
     else if (questl .eq. 'TYPE_CHAMP') then
         repk = 'NOEU'
     else if (questl(1:7) .eq. 'NUM_GD ') then

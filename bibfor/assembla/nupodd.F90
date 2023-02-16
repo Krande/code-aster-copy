@@ -52,7 +52,7 @@ subroutine nupodd(nu, base, rang, nbproc)
 !   NU      K14  NOM DU NUME_DDL
 !   BASE    K2   BASE(1:1) : BASE POUR CREER LE NUME_DDL
 !                    (SAUF LE PROF_CHNO)
-!                BASE(2:2) : BASE POUR CREER LE PROF_CHNO
+!                BASE(2:2) : BASE POUR CREER LE NUME_EQUA
 !
     integer :: nbma, nbnoma, jnumsd
     integer :: nlili, ili, igr, nel, iel, numa, jpddl, nbno, ino

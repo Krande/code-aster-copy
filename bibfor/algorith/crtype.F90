@@ -241,22 +241,22 @@ subroutine crtype()
 20      continue
 !
         if (k24(1:7) .eq. 'CHAM_NO') then
-!           -- on cherche a economiser les prof_chno (partage si possible)
+!           -- on cherche a economiser les nume_equa (partage si possible)
             if (profch .eq. ' ') then
                 call dismoi('NUME_EQUA', champ, 'CHAM_NO', repk=pchn1)
                 noojb = '12345678.PRCHN00000.PRNO'
                 call gnomsd(' ', noojb, 15, 19)
                 profch = noojb(1:19)
                 lcopy = .true.
-!               -- si le numero du prof_chno est > 0, on regarde si le numero precedent convient:
+!               -- si le numero du nume_equa est > 0, on regarde si le numero precedent convient:
                 read (profch(15:19), '(I5)') nuprev
                 if (nuprev .gt. 0) then
                     nuprev = nuprev-1
                     profprev = profch
                     call codent(nuprev, 'D0', profprev(15:19))
-                    call exisd('PROF_CHNO', profprev, iexi)
+                    call exisd('NUME_EQUA', profprev, iexi)
                     if (iexi .gt. 0) then
-                        if (idensd('PROF_CHNO', profprev, pchn1)) then
+                        if (idensd('NUME_EQUA', profprev, pchn1)) then
                             profch = profprev
                             lcopy = .false.
                         end if
@@ -264,15 +264,15 @@ subroutine crtype()
                 end if
 !
                 if (lcopy) then
-                    call copisd('PROF_CHNO', 'G', pchn1, profch)
+                    call copisd('NUME_EQUA', 'G', pchn1, profch)
                 end if
             else
                 call dismoi('NUME_EQUA', champ, 'CHAM_NO', repk=pchn1)
-                if (.not. idensd('PROF_CHNO', profch, pchn1)) then
+                if (.not. idensd('NUME_EQUA', profch, pchn1)) then
                     noojb = '12345678.PRCHN00000.PRNO'
                     call gnomsd(' ', noojb, 15, 19)
                     profch = noojb(1:19)
-                    call copisd('PROF_CHNO', 'G', pchn1, profch)
+                    call copisd('NUME_EQUA', 'G', pchn1, profch)
                 end if
             end if
         end if
@@ -334,7 +334,7 @@ subroutine crtype()
             if (k24(1:7) .eq. 'CHAM_NO') then
                 call dismoi('NUME_EQUA', nomch, 'CHAM_NO', repk=pchn1)
                 if (pchn1 .ne. profch) then
-                    call detrsd('PROF_CHNO', pchn1)
+                    call detrsd('NUME_EQUA', pchn1)
                     call jeveuo(nomch//'.REFE', 'E', jrefe)
                     zk24(jrefe+1) = profch
                 end if
@@ -733,7 +733,7 @@ subroutine crtype()
                         call dismoi('NUME_EQUA', nomch, 'CHAMP', repk=profch, &
                                     arret='C', ier=ier)
                         if (ier .eq. 0) then
-                            if (.not. idensd('PROF_CHNO', numedd(1:14)//'.NUME', profch)) then
+                            if (.not. idensd('NUME_EQUA', numedd(1:14)//'.NUME', profch)) then
                                 valkk(1) = numedd
                                 valkk(2) = profch
                                 call utmess('A', 'ALGORITH2_51', nk=2, valk=valkk)

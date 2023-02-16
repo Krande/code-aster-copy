@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine nunueq(mesh, prof_chno, nb_equa, igds, sd_iden_relaz)
+subroutine nunueq(mesh, nume_equa, nb_equa, igds, sd_iden_relaz)
 !
     implicit none
 !
@@ -39,7 +39,7 @@ subroutine nunueq(mesh, prof_chno, nb_equa, igds, sd_iden_relaz)
 !
 !
     character(len=8), intent(in) :: mesh
-    character(len=19), intent(in) :: prof_chno
+    character(len=19), intent(in) :: nume_equa
     integer, intent(in) :: nb_equa
     integer, intent(in) :: igds
     character(len=*), optional, intent(in) :: sd_iden_relaz
@@ -53,7 +53,7 @@ subroutine nunueq(mesh, prof_chno, nb_equa, igds, sd_iden_relaz)
 ! --------------------------------------------------------------------------------------------------
 !
 ! In  mesh           : name of mesh
-! In  prof_chno      : name of PROF_CHNO
+! In  nume_equa      : name of NUME_EQUA
 ! In  nb_equa        : number of equations
 ! In  igds           : index of GRANDEUR used to numbering
 ! In  sd_iden_rela   : name of object for identity relations between dof
@@ -86,8 +86,8 @@ subroutine nunueq(mesh, prof_chno, nb_equa, igds, sd_iden_relaz)
 !
 ! - Initializations
 !
-    nueq = prof_chno(1:19)//'.NUEQ'
-    prno = prof_chno(1:19)//'.PRNO'
+    nueq = nume_equa(1:19)//'.NUEQ'
+    prno = nume_equa(1:19)//'.PRNO'
     call jeveuo(nueq, 'E', vi=v_nueq)
 !
 ! - Information about GRANDEUR

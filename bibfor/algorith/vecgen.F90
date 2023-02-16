@@ -264,7 +264,7 @@ subroutine vecgen(nomres, numeg)
 !
 !     RECUPERATION DU NUME_DDL ASSOCIE AU SECOND MEMBRE.
 !
-!     ON VERIFIE D'ABORD QU'ON A BIEN LE NOM DU PROF_CHNO DANS LE
+!     ON VERIFIE D'ABORD QU'ON A BIEN LE NOM DU NUME_EQUA DANS LE
 !     .REFE DU CHAMNO SECOND MEMBRE. POUR CE FAIRE, ON CONTROLE QUE
 !     LA VALEUR DE NUME DANS LE .DESC EST BIEN POSITIVE.
 !
@@ -317,7 +317,7 @@ subroutine vecgen(nomres, numeg)
 !     PAR SECURITE, ON S'ASSURE QUE LE NUME_DDL ASSOCIE AU CHARGEMENT
 !     COINCIDE AVEC CELUI ASSOCIE A LA SOUS-STRUCTURE.
 !
-        if (.not. idensd('PROF_CHNO', nuchar(1:19), nubamo(1:19))) then
+        if (.not. idensd('NUME_EQUA', nuchar(1:19), nubamo(1:19))) then
 !        if (nuchar(1:14) .ne. nubamo(1:14)) then
             valk(1) = nomsst
             valk(2) = nubamo
@@ -418,7 +418,7 @@ subroutine vecgen(nomres, numeg)
 !     3/ ASSEMBLAGE
 !     =============
 !
-!     ACCES AU PRNO DU PROF_CHNO GENERALISE, POUR LES SOUS-STRUCTURES.
+!     ACCES AU PRNO DU NUME_EQUA_GNE, POUR LES SOUS-STRUCTURES.
     call jenonu(jexnom(profg//'.LILI', '&SOUSSTR'), ibid)
     call jeveuo(jexnum(profg//'.PRNO', ibid), 'L', ldprs)
 !

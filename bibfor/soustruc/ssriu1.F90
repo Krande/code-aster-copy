@@ -43,7 +43,7 @@ subroutine ssriu1(nomu)
 !     BUT:
 !       1) METTRE A JOUR .DESM(3,4,5,8,9,10)
 !       2) METTRE LES DDLS INTERNES AVANT LES DLLS EXTERNES.
-!          ON CHANGE LE VECTEUR D'INDIRECTION .NUEQ DU PROF_CHNO
+!          ON CHANGE LE VECTEUR D'INDIRECTION .NUEQ DU NUME_EQUA
 !       3) ECRIRE LE "LONMAX" DE LA COLLECTION .LICA
 !       4) CALCULER L'OBJET .CONX :
 !          I VARIE DE 1 A NBNOET=NBNOE+NLAGE+NLAGL
@@ -104,7 +104,7 @@ subroutine ssriu1(nomu)
     integer :: i
     character(len=8) :: nogdsi
     character(len=14) :: nume_ddl
-    character(len=19) :: prof_chno
+    character(len=19) :: nume_equa
     integer :: iaconx
     integer :: iaprno, ico, icoe, icoi
     integer :: ieqn, ili, inl, ino, iret
@@ -122,7 +122,7 @@ subroutine ssriu1(nomu)
 !-----------------------------------------------------------------------
     call jemarq()
     nume_ddl = nomu
-    prof_chno = nume_ddl(1:14)//'.NUME'
+    nume_equa = nume_ddl(1:14)//'.NUME'
 !
     call dismoi('NOM_GD', nume_ddl, 'NUME_DDL', repk=nogdsi)
     if (nogdsi .ne. 'DEPL_R') then
@@ -131,11 +131,11 @@ subroutine ssriu1(nomu)
     call dismoi('NU_CMP_LAGR', 'DEPL_R', 'GRANDEUR', repi=nulag)
     call dismoi('NB_EC', nogdsi, 'GRANDEUR', repi=nec)
 
-    call nueq_chck(prof_chno, nddlt)
-    call jeveuo(prof_chno//'.DEEQ', 'E', vi=deeq)
-    call jeveuo(prof_chno//'.DELG', 'E', vi=delg)
-    call jeveuo(prof_chno//'.NUEQ', 'E', vi=vnueq)
-    call jelira(prof_chno//'.PRNO', 'NMAXOC', nlili)
+    call nueq_chck(nume_equa, nddlt)
+    call jeveuo(nume_equa//'.DEEQ', 'E', vi=deeq)
+    call jeveuo(nume_equa//'.DELG', 'E', vi=delg)
+    call jeveuo(nume_equa//'.NUEQ', 'E', vi=vnueq)
+    call jelira(nume_equa//'.PRNO', 'NMAXOC', nlili)
 !
     call jeveuo(nomu//'.DESM', 'E', vi=desm)
     call jeveuo(nomu//'.LINO', 'E', vi=lino)
@@ -307,11 +307,11 @@ subroutine ssriu1(nomu)
 !     -- MISE A JOUR DE .CONX : NOEUDS DE LAGRANGE :
 !     ----------------------------------------------
     do ili = 2, nlili
-        call jeexin(jexnum(prof_chno//'.PRNO', ili), iret)
+        call jeexin(jexnum(nume_equa//'.PRNO', ili), iret)
         if (iret .eq. 0) goto 60
-        call jelira(jexnum(prof_chno//'.PRNO', ili), 'LONMAX', n1)
+        call jelira(jexnum(nume_equa//'.PRNO', ili), 'LONMAX', n1)
         if (n1 .eq. 0) goto 60
-        call jeveuo(jexnum(prof_chno//'.PRNO', ili), 'L', iaprno)
+        call jeveuo(jexnum(nume_equa//'.PRNO', ili), 'L', iaprno)
         nbno = n1/(nec+2)
         do ino = 1, nbno
             nueq = zi(iaprno-1+(ino-1)*(nec+2)+1)

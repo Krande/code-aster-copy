@@ -30,7 +30,6 @@ function idensd(typesd, sd1, sd2)
 ! ----------------------------------------------------------------------
 !  BUT : DETERMINER L'IDENTITE DE 2 SD D'ASTER.
 !  IN   TYPESD : TYPE DE  SD1 ET SD2
-!               'PROF_CHNO'
 !       SD1   : NOM DE LA 1ERE SD
 !       SD2   : NOM DE LA 2EME SD
 !
@@ -49,21 +48,8 @@ function idensd(typesd, sd1, sd2)
     if (sd1 .eq. sd2) goto 999
 !
 !
-    if (typ2sd .eq. 'PROF_CHNO') then
-!     --------------------------------
-        pchn1 = sd1
-        pchn2 = sd2
-        iden = idenob(pchn1//'.LILI', pchn2//'.LILI')
-        if (.not. iden) goto 998
-        iden = idenob(pchn1//'.PRNO', pchn2//'.PRNO')
-        if (.not. iden) goto 998
-        iden = idenob(pchn1//'.DEEQ', pchn2//'.DEEQ')
-        if (.not. iden) goto 998
-        iden = idenob(pchn1//'.NUEQ', pchn2//'.NUEQ')
-        if (.not. iden) goto 998
 !
-!
-    else if (typ2sd .eq. 'NUME_EQUA') then
+    if (typ2sd .eq. 'NUME_EQUA') then
         !     --------------------------------
         pchn1 = sd1
         pchn2 = sd2

@@ -56,7 +56,7 @@ subroutine ssdein(chno_lz, chno_gz, mail, nocas)
 !
     character(len=8) :: chno_lz, chno_gz, mail, nocas, mag, mal, nomgd, nomacr
     character(len=14) :: nul
-    character(len=19) :: prof_chno_g, prof_chno_l
+    character(len=19) :: nume_equa_g, nume_equa_l
     real(kind=8) :: lambda(6, 6), angl(3), pgl(3, 3)
     aster_logical :: exil, exig
     character(len=8) :: rota, ch8(2)
@@ -89,8 +89,8 @@ subroutine ssdein(chno_lz, chno_gz, mail, nocas)
 !
     call dismoi('NOM_MAILLA', chno_gz, 'CHAM_NO', repk=mag)
     call jeveuo(chno_g//'.REFE', 'L', vk24=refe)
-    prof_chno_g = refe(2) (1:19)
-    call nueq_chck(prof_chno_g)
+    nume_equa_g = refe(2) (1:19)
+    call nueq_chck(nume_equa_g)
     call dismoi('NOM_GD', chno_gz, 'CHAM_NO', repk=nomgd)
     if (nomgd(1:6) .ne. 'DEPL_R') then
         call utmess('F', 'SOUSTRUC_43', sk=nomgd)
@@ -109,8 +109,8 @@ subroutine ssdein(chno_lz, chno_gz, mail, nocas)
     call jeveuo(jexnom(mag//'.SUPMAIL', mail), 'L', iasupm)
     nomacr = vnomacr(isma)
     nul = nomacr
-    prof_chno_l = nul//'.NUME'
-    call nueq_chck(prof_chno_l)
+    nume_equa_l = nul//'.NUME'
+    call nueq_chck(nume_equa_l)
 !
     call dismoi('NOM_MAILLA', nomacr, 'MACR_ELEM_STAT', repk=mal)
     call jeveuo(nomacr//'.CONX', 'L', vi=conx)
@@ -123,9 +123,9 @@ subroutine ssdein(chno_lz, chno_gz, mail, nocas)
     call wkvect('&&SSDEIN.VALP', 'V V R', nddlt, iavalp)
 !
     call jeveuo(chno_g//'.VALE', 'L', vr=vale)
-    call jeveuo(jexnum(prof_chno_g//'.PRNO', 1), 'L', iaprng)
-    call jeveuo(prof_chno_g//'.NUEQ', 'L', vi=nueg)
-    call jeveuo(prof_chno_l//'.NUEQ', 'L', vi=nuel)
+    call jeveuo(jexnum(nume_equa_g//'.PRNO', 1), 'L', iaprng)
+    call jeveuo(nume_equa_g//'.NUEQ', 'L', vi=nueg)
+    call jeveuo(nume_equa_l//'.NUEQ', 'L', vi=nuel)
     call dismoi('NB_EC', nomgd, 'GRANDEUR', repi=nec)
     call dismoi('NB_CMP_MAX', nomgd, 'GRANDEUR', repi=ncmpmx)
 !
@@ -156,7 +156,7 @@ subroutine ssdein(chno_lz, chno_gz, mail, nocas)
         inol = conx(3*(inoe-1)+2)
         ili = conx(3*(inoe-1)+1)
 !
-        call jeveuo(jexnum(prof_chno_l//'.PRNO', ili), 'L', iaprnl)
+        call jeveuo(jexnum(nume_equa_l//'.PRNO', ili), 'L', iaprnl)
 !
         nueql = zi(iaprnl-1+(inol-1)*(nec+2)+1)
         iadgl = iaprnl-1+(inol-1)*(nec+2)+3

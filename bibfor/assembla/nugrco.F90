@@ -48,7 +48,7 @@ subroutine nugrco(nu, base)
 !   NU      K14  NOM DU NUME_DDL
 !   BASE    K2   BASE(1:1) : BASE POUR CREER LE NUME_DDL
 !                    (SAUF LE PROF_CHNO)
-!                BASE(2:2) : BASE POUR CREER LE PROF_CHNO
+!                BASE(2:2) : BASE POUR CREER LE NUME_EQUA
 !
     integer :: rang, nbproc, jcomm1, iddl, neql, jgraco
     integer :: iproc, nbedge, iaux, jtmp, nmatch, iproc1

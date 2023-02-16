@@ -16,12 +16,12 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine sinoz2(modele, pfchno, sigel, signo)
+subroutine sinoz2(modele, nume_equa, sigel, signo)
 !   BUT :  CALCUL DES CONTRAINTES AUX NOEUDS PAR LA METHODE ZZ2
     implicit none
 !
 !   IN  MODELE   :   NOM DU MODELE
-!   IN  PFCHNO   :   PROF_CHNO
+!   IN  NUME_EQUA   :   NUME_EQUA
 !   IN  SIGEL    :   NOM DU CHAMP DE CONTRAINTES AUX POINTS DE GAUSS
 !
 !  OUT  SIGNO    :   NOM DU CHAMP DE CONTRAINTES AUX NOEUDS
@@ -62,7 +62,7 @@ subroutine sinoz2(modele, pfchno, sigel, signo)
     character(len=8) :: modele, ma, typema, licmp(4), vecass, elrefe
     character(len=8) :: famil
     character(len=14) :: nu14
-    character(len=19) :: pfchno
+    character(len=19) :: nume_equa
     character(len=16) :: phen
     character(len=19) :: noeub, mo, vecel
     character(len=24) :: signo, sigel, lisvec, typmai, connex, coninv
@@ -173,9 +173,9 @@ subroutine sinoz2(modele, pfchno, sigel, signo)
     lisvec = vecel//'.RELR'
 !
 !     -- POUR POUVOIR APPELER ASSVEC, IL FAUT CREER UN "FAUX"
-!        NUME_DDL AVEC UN PROF_CHNO :
+!        NUME_DDL AVEC UN NUME_EQUA :
     nu14 = '&&SINOZ2.NUDDL'
-    call copisd('PROF_CHNO', 'V', pfchno, nu14//'.NUME')
+    call copisd('NUME_EQUA', 'V', nume_equa, nu14//'.NUME')
     call wkvect(nu14//'.NUME.REFN', 'V V K24', 4, jrefn)
     zk24(jrefn-1+1) = ma
     zk24(jrefn-1+2) = 'DEPL_R'
@@ -185,12 +185,12 @@ subroutine sinoz2(modele, pfchno, sigel, signo)
 !
     noeub = vecass
     call jeveuo(noeub//'.REFE', 'E', vk24=refe)
-    refe(2) = pfchno
+    refe(2) = nume_equa
 !
     AS_ALLOCATE(vl=noeubord, size=nbno)
 !
     call dismoi('NB_EC', 'DEPL_R', 'GRANDEUR', repi=nbec)
-    call jeveuo(jexnum(pfchno//'.PRNO', 1), 'L', jprno)
+    call jeveuo(jexnum(nume_equa//'.PRNO', 1), 'L', jprno)
     call jeveuo(noeub//'.VALE', 'L', vr=val)
     eps = 1.d-06
     nbnob = 0

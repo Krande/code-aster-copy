@@ -97,8 +97,6 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
     JeveuxVector< ValueType > _values;
     /** @brief Dof description */
     GlobalEquationNumberingPtr _dofDescription;
-    /** @brief mesh */
-    BaseMeshPtr _mesh;
 
     /**
      * @brief Return list of dof to use
@@ -107,9 +105,8 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
      */
     VectorLong _getDOFsToUse( const bool sameRank, const VectorString &list_cmp,
                               const VectorString &groupsOfCells = {} ) const {
-        auto list_nodes = _mesh->getNodesFromCells( groupsOfCells );
-        // return _dofDescription->getDOFs( sameRank, list_cmp, list_nodes );
-        return {};
+        auto list_nodes = this->getMesh()->getNodesFromCells( groupsOfCells );
+        return _dofDescription->getDOFs( sameRank, list_cmp, list_nodes );
     }
 
   public:
@@ -125,8 +122,7 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
           _descriptor( JeveuxVectorLong( getName() + ".DESC" ) ),
           _reference( JeveuxVectorChar24( getName() + ".REFE" ) ),
           _values( JeveuxVector< ValueType >( getName() + ".VALE" ) ),
-          _dofDescription( nullptr ),
-          _mesh( nullptr ){};
+          _dofDescription( nullptr ){};
 
     /** @brief Constructor with automatic name */
     FieldOnNodes() : FieldOnNodes( DataStructureNaming::getNewName() ){};
@@ -140,7 +136,6 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
         *( _title ) = *( toCopy._title );
         // Pointers to be copied
         _dofDescription = toCopy._dofDescription;
-        _mesh = toCopy._mesh;
 
         this->updateValuePointers();
     }
@@ -153,7 +148,6 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
         _values = other._values;
         _title = other._title;
         _dofDescription = other._dofDescription;
-        _mesh = other._mesh;
 
         this->updateValuePointers();
     }
@@ -181,7 +175,6 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
         dofNume->computeNumberingWithLocalMode( localMode );
 
         _dofDescription = dofNume->getGlobalEquationNumbering();
-        _mesh = fed->getMesh();
 
         const auto intType = AllowedFieldType< ValueType >::numTypeJeveux;
         CALLO_VTCREB_WRAP( getName(), JeveuxMemoryTypesNames[Permanent], JeveuxTypesNames[intType],
@@ -207,7 +200,6 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
         dofNume->computeNumbering( model, lOL );
 
         _dofDescription = dofNume->getGlobalEquationNumbering();
-        _mesh = dofNume->getMesh();
 
         const auto intType = AllowedFieldType< ValueType >::numTypeJeveux;
         CALLO_VTCREB_WRAP( getName(), JeveuxMemoryTypesNames[Permanent], JeveuxTypesNames[intType],
@@ -226,7 +218,6 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
         }
 
         _dofDescription = dofNum->getGlobalEquationNumbering();
-        _mesh = dofNum->getMesh();
 
         const auto intType = AllowedFieldType< ValueType >::numTypeJeveux;
         CALLO_VTCREB_WRAP( getName(), JeveuxMemoryTypesNames[Permanent], JeveuxTypesNames[intType],
@@ -267,7 +258,7 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
         bool similar = ( ( *_descriptor ) == ( *tmp2._descriptor ) );
         similar = ( similar && ( this->_reference->size() == tmp2._reference->size() ) );
         similar = ( similar && ( this->_values->size() == tmp2._values->size() ) );
-        similar = ( similar && ( _mesh == tmp2._mesh ) );
+        similar = ( similar && ( this->getMesh() == tmp2.getMesh() ) );
 
         if ( similar ) {
             _descriptor->updateValuePointer();
@@ -413,7 +404,7 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
     /**
      * @brief Get mesh
      */
-    BaseMeshPtr getMesh() const { return _mesh; };
+    BaseMeshPtr getMesh() const { return _dofDescription->getMesh(); };
 
     bool printMedFile( const std::string fileName, bool local = true ) const;
 
@@ -486,7 +477,7 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
 
         auto nbDofs = this->size();
 
-        auto nodes = _mesh->getNodesFromCells( groupsOfCells );
+        auto nodes = this->getMesh()->getNodesFromCells( groupsOfCells );
 
         for ( ASTERINTEGER dof = 0; dof < nbDofs; dof++ ) {
             auto search = values.find( num2name[descr[dof].second] );
@@ -533,18 +524,7 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
      * @brief Set mesh
      * @param mesh object BaseMeshPtr
      */
-    void setMesh( const BaseMeshPtr &mesh ) {
-        if ( !mesh )
-            raiseAsterError( "Empty Mesh" );
-
-        if ( _mesh && mesh->getName() != _mesh->getName() )
-            raiseAsterError( "Meshes inconsistents" );
-        _mesh = mesh;
-
-        if ( _dofDescription ) {
-            _dofDescription->setMesh( _mesh );
-        }
-    };
+    void setMesh( const BaseMeshPtr &mesh ) { _dofDescription->setMesh( this->getMesh() ); };
 
     /**
      * @brief Compute norm
@@ -579,7 +559,7 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
             raiseAsterError( "Unknown norm: " + normType );
 
 #ifdef ASTER_HAVE_MPI
-        if ( _mesh->isParallel() ) {
+        if ( this->getMesh()->isParallel() ) {
             ASTERDOUBLE norm2 = norme;
             if ( normType == "NORM_1" || normType == "NORM_2" )
                 AsterMPI::all_reduce( norm2, norme, MPI_SUM );
@@ -627,7 +607,7 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
         }
 
 #ifdef ASTER_HAVE_MPI
-        if ( _mesh->isParallel() ) {
+        if ( this->getMesh()->isParallel() ) {
             ValueType ret2 = ret;
             AsterMPI::all_reduce( ret2, ret, MPI_SUM );
         }
@@ -670,10 +650,9 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
             _reference->updateValuePointer();
             const std::string name2 = trim( ( *_reference )[1].toString() );
             if ( !name2.empty() ) {
-                std::cout << "CREATE NUME_EQUA: " << name2 << std::endl;
                 _dofDescription = std::make_shared< GlobalEquationNumbering >( name2 );
             } else {
-                AS_ABORT( "PROF_CHNO is empty" );
+                AS_ABORT( "NUME_EQUA is empty" );
             }
             CALL_JEDEMA();
         }

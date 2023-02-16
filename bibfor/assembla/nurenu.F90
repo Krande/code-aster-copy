@@ -48,7 +48,7 @@ subroutine nurenu(nu, base)
 !   NU      K14  NOM DU NUME_DDL
 !   BASE    K2   BASE(1:1) : BASE POUR CREER LE NUME_DDL
 !                    (SAUF LE PROF_CHNO)
-!                BASE(2:2) : BASE POUR CREER LE PROF_CHNO
+!                BASE(2:2) : BASE POUR CREER LE NUME_EQUA
 !
     integer :: rang, nbproc, neql, iddl, nbrddl, jnbddl
     integer :: iproc, nbddpr, neqg, jnulg, decals, decald, iaux

@@ -25,7 +25,6 @@ subroutine dismcgo(questi, nomobz, repi, repkz, ierd)
 !
 #include "asterfort/assert.h"
 #include "asterfort/dismgd.h"
-#include "asterfort/dismpn.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"

@@ -75,7 +75,7 @@ subroutine harm75(nomres, typres, nomin, basemo)
     character(len=8) :: nomgd, basem2, blanc
     character(len=14) :: numddl
     character(len=16) :: typres, typbas(8), typcha, type(3)
-    character(len=19) :: knume, kfreq, hrange, prchno, prof, typref(8)
+    character(len=19) :: knume, kfreq, hrange, nume_equa, prof, typref(8)
     character(len=24) :: matric, chamno, crefe(2), chmod, nomcha, objve1, objve2
     character(len=24) :: objve3, objve4
     aster_logical :: tousno, leffor, prems
@@ -100,7 +100,7 @@ subroutine harm75(nomres, typres, nomin, basemo)
 !
     nomcha = ' '
     numddl = ' '
-    prchno = ' '
+    nume_equa = ' '
 !
     mode = basemo
     hrange = nomin
@@ -158,7 +158,7 @@ subroutine harm75(nomres, typres, nomin, basemo)
             else
                 call dismoi('NUME_DDL', basemo, 'RESU_DYNA', repk=numddl)
             end if
-            prchno = numddl//'.NUME'
+            nume_equa = numddl//'.NUME'
             call dismoi('NOM_GD', numddl, 'NUME_DDL', repk=nomgd)
             call dismoi('NOM_MAILLA', numddl, 'NUME_DDL', repk=mailla)
             if (tousno) call dismoi('NB_EQUA', numddl, 'NUME_DDL', repi=neq)
@@ -172,7 +172,7 @@ subroutine harm75(nomres, typres, nomin, basemo)
             else
                 numddl = matric(1:8)
             end if
-            prchno = numddl//'.NUME'
+            nume_equa = numddl//'.NUME'
             call jeveuo(numddl//'.NUME.REFN', 'L', vk24=refn)
             matric = refn(1)
             mailla = matric(1:8)
@@ -188,13 +188,13 @@ subroutine harm75(nomres, typres, nomin, basemo)
                     iret)
         chmod = chmod(1:19)//'.REFE'
         call dismoi('NOM_GD', chmod, 'CHAM_NO', repk=nomgd)
-        call dismoi('NUME_EQUA', chmod, 'CHAM_NO', repk=prchno)
+        call dismoi('NUME_EQUA', chmod, 'CHAM_NO', repk=nume_equa)
         call jeveuo(chmod, 'L', llcha)
         mailla = zk24(llcha) (1:8)
         crefe(1) = zk24(llcha)
         crefe(2) = zk24(llcha+1)
         if (tousno) then
-            call nueq_chck(prchno, nb_equaz=neq)
+            call nueq_chck(nume_equa, nb_equaz=neq)
         end if
         basem2 = ' '
     end if
@@ -277,8 +277,8 @@ subroutine harm75(nomres, typres, nomin, basemo)
         AS_ALLOCATE(vr=base, size=nbmode*neq)
 ! CAS DE LA RESTITUTION SUR TOUTE LA STRUCTURE
         if (tousno) then
-!           fournir nequa est indispensable parce que nous passons un prof_chno a copmod
-            call copmod(basemo, bmodr=base, champ=typcha, numer=prchno(1:14), nequa=neq)
+!           fournir nequa est indispensable
+            call copmod(basemo, bmodr=base, champ=typcha, numer=nume_equa(1:14), nequa=neq)
 ! CAS DE LA RESTITUTION SUR UNE PARTIE DE LA STRUCTURE SEULEMENT
         else
             do j = 1, nbmode

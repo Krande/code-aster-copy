@@ -44,7 +44,7 @@ subroutine cnocre(maz, nomgdz, nbnoz, linoe, ncmpz, &
 ! NCMPZ   IN       I   : NOMBRE DE CMPS VOULUES DANS CNOZ
 ! LICMP   IN       L_K8: NOMS DES CMPS VOULUES DANS CNOZ
 ! BASEZ   IN       K1  : BASE DE CREATION POUR CNOZ : G/V/L
-! PROF    IN/JXVAR K19 : SD PROF_CHNO SUR LAQUELLE LE CHAM_NO EST CREE
+! PROF    IN/JXVAR K19 : SD NUME_EQUA SUR LAQUELLE LE CHAM_NO EST CREE
 ! CNOZ    IN/JXOUT K19 : SD CHAM_NO A CREER
 !     ------------------------------------------------------------------
 !     VARIABLES LOCALES:

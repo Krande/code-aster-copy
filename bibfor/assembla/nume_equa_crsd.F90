@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine nume_equa_crsd(nume_equaz, base, nb_equa, meshz, gran_namez)
+subroutine nume_equa_crsd(nume_equaz, base, nb_equa, meshz, gran_namez, l_coll_constz)
 !
     implicit none
 !
@@ -40,6 +40,7 @@ subroutine nume_equa_crsd(nume_equaz, base, nb_equa, meshz, gran_namez)
     integer, intent(in) :: nb_equa
     character(len=*), intent(in) :: meshz
     character(len=*), intent(in) :: gran_namez
+    logical, optional, intent(in) :: l_coll_constz
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -72,7 +73,12 @@ subroutine nume_equa_crsd(nume_equaz, base, nb_equa, meshz, gran_namez)
         ASSERT(nb_equa > 0)
     end if
 !
-    call profchno_crsd(nume_equa, base, nb_equa, meshz=meshz, gran_namez=gran_namez)
+    if (present(l_coll_constz)) then
+        call profchno_crsd(nume_equa, base, nb_equa, meshz=meshz, gran_namez=gran_namez, &
+                           l_coll_const=l_coll_constz)
+    else
+        call profchno_crsd(nume_equa, base, nb_equa, meshz=meshz, gran_namez=gran_namez)
+    end if
 !
 ! - Create object NEQU
 !

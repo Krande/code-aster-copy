@@ -57,7 +57,7 @@ subroutine copisd(typesd, base, sd1, sd2)
 !               'RESULTAT'        'NUME_DDL'
 !               'MAILLAGE'        'LIGREL'
 !               'MATR_ASSE_GENE'  'MATR_ASSE'
-!               'PROF_CHNO'       'MATR_ELEM'
+!               'MATR_ELEM'
 !               'VECT_ELEM'       'SOLVEUR'
 !     BASE     : 'G' , 'V' , ... : BASE DE CREATION DE SD2
 !     SD1 (K*) : NOM DE LA SD A DUPPLIQUER
@@ -215,16 +215,6 @@ subroutine copisd(typesd, base, sd1, sd2)
         call jedup1(k191//'.CESC', bas2, k192//'.CESC')
         call jedup1(k191//'.CESL', bas2, k192//'.CESL')
         call jedup1(k191//'.CESV', bas2, k192//'.CESV')
-!
-! ----------------------------------------------------------------------
-    else if (typesd .eq. 'PROF_CHNO') then
-!     -----------------------------------
-        k191 = sd1
-        k192 = sd2
-        call jedup1(k191//'.DEEQ', bas2, k192//'.DEEQ')
-        call jedup1(k191//'.NUEQ', bas2, k192//'.NUEQ')
-        call jedup1(k191//'.PRNO', bas2, k192//'.PRNO')
-        call jedup1(k191//'.LILI', bas2, k192//'.LILI')
 !
 ! ----------------------------------------------------------------------
     else if (typesd .eq. 'NUME_EQUA') then

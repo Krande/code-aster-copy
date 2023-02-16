@@ -458,7 +458,7 @@ subroutine chmima(nomsd, nomsy, typcha, typmax, nocham, typresu, &
                         iret)
             call dismoi('NUME_EQUA', chextr, 'CHAM_NO', repk=prn2)
             if (prn2 .ne. prno) then
-                if (.not. idensd('PROF_CHNO', prn2, prno)) then
+                if (.not. idensd('NUME_EQUA', prn2, prno)) then
                     call utmess('F', 'UTILITAI_26')
                 end if
             end if

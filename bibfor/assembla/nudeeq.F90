@@ -61,7 +61,7 @@ subroutine nudeeq(mesh, nb_node_mesh, nb_node_subs, nume_ddl, nb_equa, &
 ! In  igds           : index of GRANDEUR used to numbering
 ! In  iddlag         : adresse of DSCLAG object (see nueffe)
 !
-! Object   : PROF_CHNO.DEEQ
+! Object   : NUME_EQUA.DEEQ
 ! Dimension: vector of size (2*nb_equa)
 ! Contains : for i_equa = 1,nb_equa
 !
@@ -95,7 +95,6 @@ subroutine nudeeq(mesh, nb_node_mesh, nb_node_subs, nume_ddl, nb_equa, &
     parameter(nb_cmp_chck=10)
 !
     character(len=8) :: nono, nocmp
-    character(len=19) :: prof_chno
     character(len=24) :: prno, nueq, deeq
     character(len=19) :: nume_equa
     character(len=24) :: delg
@@ -116,10 +115,9 @@ subroutine nudeeq(mesh, nb_node_mesh, nb_node_subs, nume_ddl, nb_equa, &
 !
     nume_equa = nume_ddl//'.NUME'
     delg = nume_equa(1:19)//'.DELG'
-    prof_chno = nume_ddl//'.NUME'
-    prno = prof_chno(1:19)//'.PRNO'
-    nueq = prof_chno(1:19)//'.NUEQ'
-    deeq = prof_chno(1:19)//'.DEEQ'
+    prno = nume_equa(1:19)//'.PRNO'
+    nueq = nume_equa(1:19)//'.NUEQ'
+    deeq = nume_equa(1:19)//'.DEEQ'
     if (nb_node_subs .gt. 0) then
         call jeveuo(mesh//'.TYPL', 'L', jtypl)
     end if

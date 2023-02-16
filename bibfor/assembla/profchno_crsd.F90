@@ -78,7 +78,7 @@ subroutine profchno_crsd(prof_chnoz, base, nb_equa, meshz, nb_ligrz, &
     prno_length = 0
     nb_ec = 0
     prof_chno = prof_chnoz
-    call detrsd('PROF_CHNO', prof_chno)
+    !call detrsd('PROF_CHNO', prof_chno)
     if (present(nb_ligrz)) then
         nb_ligr = nb_ligrz
     else

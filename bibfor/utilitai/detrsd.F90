@@ -49,7 +49,7 @@ subroutine detrsd(typesd, nomsd)
 !  ATTENTION : QUAND ON UTILISE TYPESD=' ', ON APPELLE LA ROUTINE JEDETC
 !              QUI EST TRES COUTEUSE EN CPU.
 !  IN   TYPESD : TYPE DE LA STRUCTURE DE DONNEE A DETRUIRE
-!          'NUME_DDL'     'PROF_CHNO'    'MLTF'
+!          'NUME_DDL'     'MLTF'
 !          'MATR_ASSE'    'VECT_ASSE'    'MATR_ASSE_GENE'
 !          'MATR_ELEM'    'VECT_ELEM'   'PARTITION'
 !          'VARI_COM'     'FONCTION' (POUR LES FONCTIONS OU NAPPES)
@@ -451,15 +451,8 @@ subroutine detrsd(typesd, nomsd)
         call jedetr(k19//'.NCMP')
         call jedetr(k19//'.VALV')
 !     ------------------------------------------------------------------
-    else if (typ2sd .eq. 'PROF_CHNO') then
-!     ------------------------------------
-        k19 = nomsd
-        call jedetr(k19//'.DEEQ')
-        call jedetr(k19//'.LILI')
-        call jedetr(k19//'.NUEQ')
-        call jedetr(k19//'.PRNO')
 !
-    else if (typ2sd .eq. 'PROF_GENE') then
+    else if (typ2sd .eq. 'NUME_EQUA_GENE') then
 !     ------------------------------------
         k19 = nomsd
         call jedetr(k19//'.DEEQ')

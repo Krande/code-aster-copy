@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine crprno(prof_chnoz, base, meshz, gran_namez, nb_equa)
+subroutine crprno(nume_equaz, base, meshz, gran_namez, nb_equa)
 !
     implicit none
 !
@@ -27,7 +27,7 @@ subroutine crprno(prof_chnoz, base, meshz, gran_namez, nb_equa)
 #include "asterfort/jexnum.h"
 !
 !
-    character(len=*), intent(in) :: prof_chnoz
+    character(len=*), intent(in) :: nume_equaz
     character(len=1), intent(in) :: base
     character(len=*), intent(in) :: gran_namez
     character(len=*), intent(in) :: meshz
@@ -35,12 +35,12 @@ subroutine crprno(prof_chnoz, base, meshz, gran_namez, nb_equa)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! Create PROF_CHNO only on mesh
+! Create NUME_EQUA only on mesh
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  prof_chno   : name of PROF_CHNO
-! In  base        : JEVEUX base to create PROF_CHNO
+! In  nume_equa   : name of NUME_EQUA
+! In  base        : JEVEUX base to create NUME_EQUA
 ! In  nb_equa     : number of equations
 ! In  gran_name   : name of GRANDEUR
 ! In  mesh        : name of mesh
@@ -52,10 +52,10 @@ subroutine crprno(prof_chnoz, base, meshz, gran_namez, nb_equa)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    call nume_equa_crsd(prof_chnoz, base, nb_equa, meshz=meshz, &
+    call nume_equa_crsd(nume_equaz, base, nb_equa, meshz=meshz, &
                         gran_namez=gran_namez)
 
-    lili = prof_chnoz(1:19)//'.LILI'
+    lili = nume_equaz(1:19)//'.LILI'
     call jenonu(jexnom(lili, '&MAILLA'), i_ligr_mesh)
     ASSERT(i_ligr_mesh .eq. 1)
 

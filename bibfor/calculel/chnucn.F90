@@ -52,7 +52,7 @@ subroutine chnucn(chno1, numdd2, ncorr, tcorr, base, &
 ! ARGUMENTS:
 ! ----------
 ! IN/JXIN  CHNO1: K19 : CHAM_NO DONT ON VA RECUPERER LES VALEURS
-! IN/JXIN  NUMDD2 : K14 : PROF_CHNO DU CHAM_NO A CREER
+! IN/JXIN  NUMDD2 : K14 : NUME_MECA DU CHAM_NO A CREER
 ! IN       BASE   : K1  : NOM DE LA BASE SUR LAQUELLE LE CHAM_NO DOIT
 !                         ETRE CREE
 ! IN       NCORR  : I   : DIMENSION DE TCORR

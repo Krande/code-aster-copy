@@ -45,7 +45,7 @@ subroutine numddl(nume_ddlz, base, nb_matr, list_matr)
 !
 ! In  nume_ddl       : name of nume_ddl object
 ! In  base           : JEVEUX base to create objects
-!                      base(1:1) => PROF_CHNO objects
+!                      base(1:1) => NUME_EQUA objects
 !                      base(2:2) => NUME_DDL objects
 ! In  list_matr      : list of elementary matrixes
 ! In  nb_matr        : number of elementary matrixes
