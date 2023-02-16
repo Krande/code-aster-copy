@@ -36,6 +36,8 @@ from .Fracture.detec_front import DETEC_FRONT
 from .Fracture.propa_xfem import PROPA_XFEM
 from .Utils.partition import MAIL_PY
 
+from code_aster.Objects import Mesh
+import medcoupling as medc
 
 def InterpolationLineaire(x0, points):
     """
@@ -1010,58 +1012,52 @@ def propa_fiss_ops(self, METHODE_PROPA, INFO, **args):
             # CAS 3a : MODELE 3D
             #
             if dime == 3:
-                mm[numfis] = MAIL_PY()
-                mm[numfis].FromAster(MAIL_FISS1)
 
                 # Recuperation des informations sur le maillage
-                nbno = mm[numfis].dime_maillage[0]
-                nbma = mm[numfis].dime_maillage[2]
-                groupma = mm[numfis].gma
+                nbno = MAIL_FISS1.getNumberOfNodes()
                 Fondmult = fiss0.sdj.FONDMULT.get()
                 Nbfond = len(Fondmult) // 2
                 Coorfo = fiss0.sdj.FONDFISS.get()
 
                 # Recuperation de la liste des noeuds du fond
-                connex = mm[numfis].co
+                connex = MAIL_FISS1.getConnectivity()
                 lisnofo = []
                 # recuperation des noeud du fond de fissure
-                inofo = 1
-                FmPrec = []
-                lmafo = groupma[MFOND + "_" + str(it - 1)]
-                for i in range(len(lmafo)):
-                    no_i = connex[lmafo[i]]
-                    if i == 0:
-                        FmPrec.append(no_i[0])
-                        lisnofo.append(no_i[0])
-                        lisnofo.append(no_i[1])
+                cells = MAIL_FISS1.getCells("%s_%i" % (MFOND, it - 1))
+                for cell in cells:
+                    nodes = connex[cell]
+                    if not lisnofo:
+                        lisnofo.append(nodes[0])
+                        lisnofo.append(nodes[1])
                     # si on reste sur le meme fond
-                    elif lisnofo[inofo] == no_i[0]:
-                        lisnofo.append(no_i[1])
-                        inofo += 1
+                    elif lisnofo[-1] == nodes[0]:
+                        lisnofo.append(nodes[1])
                     # si on change de fond
-                    elif lisnofo[inofo] == no_i[0] - 1:
-                        FmPrec.append(no_i[0] - 1)
-                        FmPrec.append(no_i[0])
-                        lisnofo.append(no_i[0])
-                        lisnofo.append(no_i[1])
-                        inofo += 2
+                    elif lisnofo[-1] == nodes[0] - 1:
+                        lisnofo.append(nodes[0])
+                        lisnofo.append(nodes[1])
                     # le maillage en entree n'est pas bien ordonne
                     else:
                         UTMESS("F", "RUPTURE1_51")
-                FmPrec.append(lisnofo[-1])
                 nbnofo = len(lisnofo)
 
                 # Dans le cas de la separation d'un front en deux
                 # on cherche les points du front les plus proches des nouvelles extremites
                 # des fronts de fissures
                 FmAct = [-1] * 2 * Nbfond
+                
+                mm[numfis] = MAIL_FISS1.createMedCouplingMesh()
+                coords = mm[numfis].getCoords()
+                if coords.getNumberOfComponents()==2:
+                    coords = coords.changeNbOfComponents(3, 0.)
+                    mm[numfis].setCoords(coords)
                 for j in range(2 * Nbfond):
                     xyz = Coorfo[4 * (Fondmult[j] - 1) : 4 * Fondmult[j] - 1]
-                    xyzk = mm[numfis].cn[nbno - nbnofo + 0]
+                    xyzk = coords[nbno - nbnofo].getValues()
                     dist0 = -1
                     k0 = 0
                     for k in range(nbnofo):
-                        xyzk = mm[numfis].cn[nbno - nbnofo + k]
+                        xyzk = coords[nbno - nbnofo + k].getValues()
                         if (xyz[0] - xyzk[0]) ** 2 + (xyz[1] - xyzk[1]) ** 2 + (
                             xyz[2] - xyzk[2]
                         ) ** 2 <= dist0 or dist0 == -1:
@@ -1074,9 +1070,7 @@ def propa_fiss_ops(self, METHODE_PROPA, INFO, **args):
                     FmAct[j] = nbno - nbnofo + k0
 
                     # Correction de la position des noeuds les plus proches des bords libres
-                    mm[numfis].cn[FmAct[j]][0] = Coorfo[4 * (Fondmult[j] - 1) + 0]
-                    mm[numfis].cn[FmAct[j]][1] = Coorfo[4 * (Fondmult[j] - 1) + 1]
-                    mm[numfis].cn[FmAct[j]][2] = Coorfo[4 * (Fondmult[j] - 1) + 2]
+                    coords[FmAct[j]] = Coorfo[4 * (Fondmult[j] - 1):4 * (Fondmult[j] - 1)+3]              
 
                 # Critere pour calculer le nombre de noeuds total et par fond
                 # nombre total de noeuds constant
@@ -1110,7 +1104,10 @@ def propa_fiss_ops(self, METHODE_PROPA, INFO, **args):
 
                 numptfo = [[0] * nbptfo[i] for i in range(Nbfond)]
                 abscf = [[0.0] * nbptfo[i] for i in range(Nbfond)]
-                ALPHABET = nom_points_fonds(nbnofo)
+
+                nb_old_nodes = coords.getNumberOfTuples()
+                nb_new_nodes = sum([len(range(1,nbptfo[j]-1)) for j in range(Nbfond)])
+                coords.reAlloc(nb_old_nodes+nb_new_nodes)
                 inofo = 0
                 for j in range(Nbfond):
                     absmax = Coorfo[4 * Fondmult[2 * j + 1] - 1]
@@ -1123,15 +1120,9 @@ def propa_fiss_ops(self, METHODE_PROPA, INFO, **args):
                         abscf[j][i] = i * absmax / (nbptfo[j] - 1)
                         xyz = InterpolFondFiss(abscf[j][i], Coorfoj)
                         numptfo[j][i] = nbno
-                        LesNoeudsEnPlus = NP.array([[xyz[0], xyz[1], xyz[2]]])
-                        mm[numfis].cn = NP.concatenate((mm[numfis].cn, LesNoeudsEnPlus))
-                        NomNoeudsEnPlus = ("PS%s%i" % (ALPHABET[inofo], it),)
-                        mm[numfis].correspondance_noeuds = (
-                            tuple(mm[numfis].correspondance_noeuds) + NomNoeudsEnPlus
-                        )
-                        inofo += 1
+                        coords[nb_old_nodes+inofo] = xyz
                         nbno += 1
-                nbmafo = nbnofo - Nbfond
+                        inofo += 1
                 nbno += nbnofo
 
                 # Recuperation des informations importantes pour la propagation
@@ -1139,16 +1130,19 @@ def propa_fiss_ops(self, METHODE_PROPA, INFO, **args):
                 Listfo = fiss0.sdj.FONDFISS.get()
 
                 # Boucle sur le fond : calcul des coordonnees des points propages
-                inofo = 0
                 A = [0, 0, 0]
                 B = [0, 0, 0]
                 Damaxbis = Damax
 
+                
+                nb_old_nodes = coords.getNumberOfTuples()
+                nb_new_nodes = sum([len(numptfo[j]) for j in range(Nbfond)])
+                coords.reAlloc(nb_old_nodes+nb_new_nodes)
+
+                inofo = 0
                 for j in range(Nbfond):
                     for i in range(len(numptfo[j])):
-                        Xf = mm[numfis].cn[numptfo[j][i]][0]
-                        Yf = mm[numfis].cn[numptfo[j][i]][1]
-                        Zf = mm[numfis].cn[numptfo[j][i]][2]
+                        Xf, Yf, Zf = coords[numptfo[j][i]].getValues()
                         C = [Xf, Yf, Zf]
                         VPVNi = InterpolBaseFiss(
                             abscf[j][i],
@@ -1199,12 +1193,7 @@ def propa_fiss_ops(self, METHODE_PROPA, INFO, **args):
                                     Damaxbis = min(Damaxbis, Damax * Crit2)
                         A = C
                         B = D
-                        LesNoeudsEnPlus = NP.array([[Xf2, Yf2, Zf2]])
-                        NomNoeudsEnPlus = ("NX%s%i" % (ALPHABET[inofo], it + 1),)
-                        mm[numfis].cn = NP.concatenate((mm[numfis].cn, LesNoeudsEnPlus))
-                        mm[numfis].correspondance_noeuds = (
-                            tuple(mm[numfis].correspondance_noeuds) + NomNoeudsEnPlus
-                        )
+                        coords[nb_old_nodes+inofo] = [Xf2, Yf2, Zf2]
                         inofo += 1
 
                 # 2eme Calcul des points avec le nouveau DAMAX si fissure problematique
@@ -1213,76 +1202,87 @@ def propa_fiss_ops(self, METHODE_PROPA, INFO, **args):
 
                 # Ajouts Maille levre (quad4)
                 imafo = 0
-                nbma += 2 * nbmafo
-                fsi = mm[numfis].gma["%s_%i" % (MFISS, it - 1)]
+
+                mesh2d = mm[numfis].getMeshAtLevel(0)
+                nb_cells2d = mesh2d.getNumberOfCells()
+                cells = mm[numfis].getGroupArr(0, "%s_%i" % (MFISS, it - 1)).getValues()
                 for j in range(Nbfond):
                     for i in range(len(numptfo[j]) - 1):
                         i1 = numptfo[j][i]
                         i2 = numptfo[j][i + 1]
                         i3 = nbno - nbnofo + imafo + j + 1
                         i4 = nbno - nbnofo + imafo + j
-                        mm[numfis].co.append(NP.array([i1, i2, i3, i4]))
-                        typ_maille = mm[numfis].dic["QUAD4"]
-                        mm[numfis].tm = NP.concatenate((mm[numfis].tm, NP.array([typ_maille])))
-                        mm[numfis].correspondance_mailles += ("MX%s%i" % (ALPHABET[imafo], it + 1),)
-                        mm[numfis].gma["%s_%i" % (MFISS, it)] = NP.concatenate(
-                            (fsi, NP.array([nbma - 2 * nbmafo + imafo]))
-                        )
-                        fsi = mm[numfis].gma["%s_%i" % (MFISS, it)]
+                        mesh2d.insertNextCell(medc.NORM_QUAD4, 4, [i1, i2, i3, i4])
+                        cells.append(nb_cells2d+imafo)
                         imafo += 1
+                        
+                groups2d = [mm[numfis].getGroupArr(0, name) for name in mm[numfis].getGroupsOnSpecifiedLev(0)]
+
+                group = medc.DataArrayInt(cells)
+                group.setName("%s_%i" % (MFISS, it))
+                groups2d.append(group)
+
+                mm[numfis].setMeshAtLevel(0, mesh2d)
+                mm[numfis].setGroupsAtLevel(0, groups2d)
 
                 # Ajout Maille fond (SEG2)
                 imafo = 0
+                
+                mesh1d = mm[numfis].getMeshAtLevel(-1)
+                nb_cells1d = mesh1d.getNumberOfCells()
+                cells=[]
                 for j in range(Nbfond):
                     for i in range(len(numptfo[j]) - 1):
                         i3 = nbno - nbnofo + imafo + j
                         i4 = nbno - nbnofo + imafo + j + 1
-                        mm[numfis].co.append(NP.array([i3, i4]))
-                        typ_maille = mm[numfis].dic["SEG2"]
-                        mm[numfis].tm = NP.concatenate((mm[numfis].tm, NP.array([typ_maille])))
-                        mm[numfis].correspondance_mailles += ("MF%s%i" % (ALPHABET[imafo], it + 1),)
+                        mesh1d.insertNextCell(medc.NORM_SEG2, 2, [i3, i4])
+                        cells.append(nb_cells1d+imafo)
                         imafo += 1
-                mm[numfis].gma["%s_%i" % (MFOND, it)] = NP.arange(nbma - nbmafo, nbma)
+
+                groups1d = [mm[numfis].getGroupArr(-1, name) for name in mm[numfis].getGroupsOnSpecifiedLev(-1)]
+                group = medc.DataArrayInt(cells)
+                group.setName("%s_%i" % (MFOND, it))
+                groups1d.append(group)
+
+                mm[numfis].setMeshAtLevel(-1, mesh1d)
+                mm[numfis].setGroupsAtLevel(-1, groups1d)
 
             # ------------------------------------------------------------------
             # CAS 3b : MODELE 2D
             #
             if dime == 2:
-                mm[numfis] = MAIL_PY()
-                FISS_A = "%s_%i" % (MFISS, (it - 1))
                 DEFI_GROUP(
                     reuse=MAIL_FISS1,
                     MAILLAGE=MAIL_FISS1,
-                    CREA_GROUP_NO=_F(OPTION="NOEUD_ORDO", NOM="Nds_Plan", GROUP_MA=FISS_A),
-                    INFO=2,
+                    CREA_GROUP_NO=_F(OPTION="NOEUD_ORDO", NOM="Nds_Plan", GROUP_MA="%s_%i" % (MFISS, (it - 1))),
                 )
                 DEFI_GROUP(
                     reuse=MAIL_FISS1,
                     MAILLAGE=MAIL_FISS1,
                     DETR_GROUP_MA=_F(NOM="A"),
+                )
+                DEFI_GROUP(
+                    reuse=MAIL_FISS1,
+                    MAILLAGE=MAIL_FISS1,
                     CREA_GROUP_MA=_F(
                         OPTION="APPUI", NOM="A", TYPE_APPUI="TOUT", GROUP_NO="Nds_Plan"
                     ),
-                    INFO=2,
                 )
                 DEFI_GROUP(reuse=MAIL_FISS1, MAILLAGE=MAIL_FISS1, DETR_GROUP_NO=_F(NOM="Nds_Plan"))
 
-                mm[numfis].FromAster(MAIL_FISS1)
-
-                (nno, ndim) = mm[numfis].cn.shape
-
                 # Recuperation des informations sur le maillage
-                nbno = mm[numfis].dime_maillage[0]
-                nbma = mm[numfis].dime_maillage[2]
-                coord = mm[numfis].cn
-                linomno = list(mm[numfis].correspondance_noeuds)
-                linomno = list(map(lambda x: x.rstrip(), linomno))
-                l_coorf = [[linomno[i], coord[i]] for i in range(0, nbno)]
-                d_coorf = dict(l_coorf)
+                connex = MAIL_FISS1.getConnectivity()
+
+                mm[numfis] = MAIL_FISS1.createMedCouplingMesh()
+
+                coords = mm[numfis].getCoords()
+                nbno = coords.getNumberOfTuples()
+                assert(coords.getNumberOfComponents()==2)
 
                 # Coordonnees du point propage
-                Xf = d_coorf["NXA%i" % (it)][0]
-                Yf = d_coorf["NXA%i" % (it)][1]
+                cells = MAIL_FISS1.getCells("%s_%i" % (MFOND, it - 1))
+                node = connex[cells[0]][0]-1
+                Xf, Yf = coords[node].getValues()
 
                 VPVNi = fiss0.sdj.BASEFOND.get()
                 Vloc = NBCYCLE * tab_VIT[numfis][1][0][1]
@@ -1290,31 +1290,42 @@ def propa_fiss_ops(self, METHODE_PROPA, INFO, **args):
                 Xf2 = Xf + (VPVNi[2] * cos(beta) + VPVNi[0] * sin(beta)) * Vloc
                 Yf2 = Yf + (VPVNi[3] * cos(beta) + VPVNi[1] * sin(beta)) * Vloc
 
-                LesNoeudsEnPlus = NP.array([[Xf2, Yf2]])
-                NomNoeudsEnPlus = ("NXA%i" % (it + 1),)
-                mm[numfis].cn = NP.concatenate((mm[numfis].cn, LesNoeudsEnPlus))
-                mm[numfis].correspondance_noeuds = tuple(linomno) + NomNoeudsEnPlus
-                ALPHABET = nom_points_fonds(1)
+                coords.reAlloc(nbno+1)
+                coords[nbno] = [Xf2, Yf2]
 
                 # Ajout Maille levre (SEG2)
-                NomMaillesEnPlus = ("MX%s%i" % (ALPHABET[0], it + 1),)
-                NoeudsMailles = [NP.array([nbno - 1, nbno])]
-                typ_maille = mm[numfis].dic["SEG2"]
-                mm[numfis].tm = NP.concatenate((mm[numfis].tm, NP.array([typ_maille])))
-                mm[numfis].correspondance_mailles += NomMaillesEnPlus
-                mm[numfis].co += NoeudsMailles
-                fsi = mm[numfis].gma["%s_%i" % (MFISS, it - 1)]
-                fsi = NP.concatenate((fsi, NP.array([nbma])))
-                mm[numfis].gma["%s_%i" % (MFISS, it)] = fsi.astype(int)
+                mesh1d = mm[numfis].getMeshAtLevel(0)
+                nb_cells1d = mesh1d.getNumberOfCells()
+                cells = mm[numfis].getGroupArr(0, "%s_%i" % (MFISS, it - 1)).getValues()
+                mesh1d.insertNextCell(medc.NORM_SEG2, 2, [nbno - 1, nbno])
+                mesh1d.finishInsertingCells()
+                mesh1d.checkConsistencyLight()
+                cells.append(nb_cells1d)
+
+                groups1d = [mm[numfis].getGroupArr(0, name) for name in mm[numfis].getGroupsOnSpecifiedLev(0)]
+                group = medc.DataArrayInt(cells)
+                group.setName("%s_%i" % (MFISS, it))
+                groups1d.append(group)
+
+                mm[numfis].setMeshAtLevel(0, mesh1d)
+                mm[numfis].setGroupsAtLevel(0, groups1d)
 
                 # Ajout Maille fond (POI1)
-                NomMaillesEnPlus = ("MF%s%i" % (ALPHABET[0], it + 1),)
-                NoeudsMailles = [NP.array([nbno])]
-                typ_maille = mm[numfis].dic["POI1"]
-                mm[numfis].tm = NP.concatenate((mm[numfis].tm, NP.array([typ_maille] * 1)))
-                mm[numfis].correspondance_mailles += NomMaillesEnPlus
-                mm[numfis].co += NoeudsMailles
-                mm[numfis].gma["%s_%i" % (MFOND, it)] = NP.array([nbma + 1], dtype=int)
+                mesh0d = mm[numfis].getMeshAtLevel(-1)
+                nb_cells0d = mesh0d.getNumberOfCells()
+                mesh0d.insertNextCell(medc.NORM_POINT1, 1, [nbno])
+                mesh0d.finishInsertingCells()
+                mesh0d.checkConsistencyLight()
+                cells = [nb_cells0d]
+
+                groups0d = [mm[numfis].getGroupArr(-1, name) for name in mm[numfis].getGroupsOnSpecifiedLev(-1)]
+                group = medc.DataArrayInt(cells)
+                group.setName("%s_%i" % (MFOND, it))
+                groups0d.append(group)
+
+                mm[numfis].setMeshAtLevel(-1, mesh0d)
+                mm[numfis].setGroupsAtLevel(-1, groups0d)
+
             # Fin du 2D
 
             if INFO == 2:
@@ -1325,13 +1336,14 @@ def propa_fiss_ops(self, METHODE_PROPA, INFO, **args):
             # Sauvegarde maillage xfem
             MAIL_FISS2 = Fiss.get("MAIL_PROPAGE")
 
-            unit = mm[numfis].ToAster()
-            ma_xfem2 = LIRE_MAILLAGE(FORMAT="ASTER", UNITE=unit)
+            ma_xfem2 = Mesh()
+            ma_xfem2.buildFromMedCouplingMesh(mm[numfis])
+            
             if MAIL_FISS2 != None:
                 self.register_result(ma_xfem2, MAIL_FISS2)
 
             if numfis == 0:
-                __MMX[0] = LIRE_MAILLAGE(FORMAT="ASTER", UNITE=unit)
+                __MMX[0] = ma_xfem2
             else:
                 __MMX[numfis] = ASSE_MAILLAGE(
                     MAILLAGE_1=__MMX[numfis - 1], MAILLAGE_2=ma_xfem2, OPERATION="SUPERPOSE"
