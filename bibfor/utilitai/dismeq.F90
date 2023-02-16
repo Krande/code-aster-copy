@@ -18,7 +18,7 @@
 
 subroutine dismeq(questi, nomobz, repi, repkz, ierd)
     implicit none
-!     --     DISMOI(PROF_CHNO)
+!     --     DISMOI(NUME_EQUA)
 !     ARGUMENTS:
 !     ----------
 #include "jeveux.h"

@@ -26,6 +26,8 @@
 
 #include "aster_pybind.h"
 
+#include "Numbering/FieldOnNodesDescription.h"
+
 void exportBaseDOFNumberingToPython( py::module_ &mod ) {
 
     bool ( BaseDOFNumbering::*f1 )( const ModelPtr model, const ListOfLoadsPtr listOfLoads ) =
@@ -46,7 +48,6 @@ void exportBaseDOFNumberingToPython( py::module_ &mod ) {
     c1.def( "computeNumbering", f1 );
     c1.def( "computeNumbering", f2 );
     c1.def( "computeRenumbering", &BaseDOFNumbering::computeRenumbering );
-    c1.def( "getDescription", &BaseDOFNumbering::getDescription );
     c1.def( "getFiniteElementDescriptors", &BaseDOFNumbering::getFiniteElementDescriptors );
     c1.def( "getPhysicalQuantity", &BaseDOFNumbering::getPhysicalQuantity, R"(
 Returns the name of the physical quantity that is numbered.

@@ -167,8 +167,8 @@ subroutine cnscno(cnsz, nume_equaz, prol0, basez, cnoz, &
 !
     if (nume_equaz .eq. ' ') then
         if (base .eq. 'G') then
-            noojb = '12345678.PRCHN00000.PRNO'
-            call gnomsd(' ', noojb, 15, 19)
+            noojb = '12345678.NUME000000.PRNO'
+            call gnomsd(' ', noojb, 14, 19)
             noojb(1:8) = cno(1:8)
             nume_equa = noojb(1:19)
         else

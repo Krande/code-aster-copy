@@ -33,22 +33,20 @@
 #ifdef ASTER_HAVE_MPI
 
 ParallelDOFNumbering::ParallelDOFNumbering()
-    : BaseDOFNumbering( ResultNaming::getNewResultName(), "NUME_DDL_P" ) {
-    _globalNumbering = std::make_shared< ParallelGlobalEquationNumbering >( getName() );
-};
+    : ParallelDOFNumbering( ResultNaming::getNewResultName() ){};
 
 ParallelDOFNumbering::ParallelDOFNumbering( const std::string name,
-                                            const FieldOnNodesDescriptionPtr fdof,
+                                            const ParallelGlobalEquationNumberingPtr globNume,
                                             const ModelPtr model )
-    : BaseDOFNumbering( name, "NUME_DDL_P", fdof ) {
-    _globalNumbering = std::make_shared< ParallelGlobalEquationNumbering >( getName() );
+    : BaseDOFNumbering( name, "NUME_DDL_P" ), _globalNumbering( globNume ) {
     setModel( model );
 };
 
 ParallelDOFNumbering::ParallelDOFNumbering( const std::string &name )
-    : BaseDOFNumbering( name, "NUME_DDL_P" ) {
-    _globalNumbering = std::make_shared< ParallelGlobalEquationNumbering >( getName() );
-};
+    : BaseDOFNumbering( name, "NUME_DDL_P" ),
+      _globalNumbering(
+          std::make_shared< ParallelGlobalEquationNumbering >( getName() + ".NUME" ) ){};
+
 
 bool ParallelDOFNumbering::useLagrangeMultipliers() const {
     const std::string typeco( "NUME_DDL" );
@@ -153,7 +151,7 @@ std::string ParallelDOFNumbering::getComponentAssociatedToRow( const ASTERINTEGE
     if ( !local )
         localrow = globalToLocalRow( row );
 
-    auto [nodeId, cmpName] = getDescription()->getNodeAndComponentFromDOF( localrow );
+    auto [nodeId, cmpName] = getGlobalNumbering()->getNodeAndComponentFromDOF( localrow );
     return cmpName;
 };
 
@@ -191,7 +189,8 @@ ParallelDOFNumbering::getNodeAssociatedToRow( const ASTERINTEGER row, const bool
     if ( !local )
         localrow = globalToLocalRow( row );
 
-    auto [nodeId, cmpId] = getDescription()->getNodeAndComponentNumberFromDOF( localrow, local );
+    auto [nodeId, cmpId] =
+        getGlobalNumbering()->getNodeAndComponentNumberFromDOF( localrow, local );
 
     return nodeId;
 };
@@ -201,7 +200,7 @@ bool ParallelDOFNumbering::isRowAssociatedToPhysical( const ASTERINTEGER row,
     auto localrow = row;
     if ( !local )
         localrow = globalToLocalRow( row );
-    auto [nodeId, cmpId] = getDescription()->getNodeAndComponentNumberFromDOF( localrow );
+    auto [nodeId, cmpId] = getGlobalNumbering()->getNodeAndComponentNumberFromDOF( localrow );
 
     return cmpId > 0;
 };

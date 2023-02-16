@@ -28,21 +28,9 @@
 
 #include "Supervis/ResultNaming.h"
 
-BaseDOFNumbering::BaseDOFNumbering( const std::string name, const std::string &type,
-                                    const FieldOnNodesDescriptionPtr fdof )
-    : DataStructure( name, 14, type ),
-      _nameOfSolverDataStructure( JeveuxVectorChar24( getName() + ".NSLV" ) ),
-      _dofDescription( fdof ),
-      _smos( new MorseStorage( getName() + ".SMOS" ) ),
-      _slcs( new LigneDeCiel( getName() + ".SLCS" ) ),
-      _mltf( new MultFrontGarbage( getName() + ".MLTF" ) ),
-      _localNumbering( std::make_shared< LocalEquationNumbering >( getName() ) ),
-      _isEmpty( false ){};
-
 BaseDOFNumbering::BaseDOFNumbering( const std::string name, const std::string &type )
     : DataStructure( name, 14, type ),
       _nameOfSolverDataStructure( JeveuxVectorChar24( getName() + ".NSLV" ) ),
-      _dofDescription( new FieldOnNodesDescription( getName() + ".NUME" ) ),
       _smos( new MorseStorage( getName() + ".SMOS" ) ),
       _slcs( new LigneDeCiel( getName() + ".SLCS" ) ),
       _mltf( new MultFrontGarbage( getName() + ".MLTF" ) ),
@@ -78,7 +66,7 @@ bool BaseDOFNumbering::computeNumbering( const std::vector< MatrElem > matrix ) 
     CALLO_NUME_DDL_MATR( getName(), jvListOfMatr->getName(), &nb_matr );
 
     if ( getMesh() ) {
-        _dofDescription->setMesh( getMesh() );
+        this->setMesh( getMesh() );
     }
 
     _isEmpty = false;
@@ -100,7 +88,7 @@ bool BaseDOFNumbering::computeNumbering( const ModelPtr model, const ListOfLoads
     const auto FEDescs = listOfLoads->getFiniteElementDescriptors();
     this->addFiniteElementDescriptors( FEDescs );
     setModel( model );
-    _dofDescription->setMesh( getMesh() );
+    this->setMesh( getMesh() );
     _isEmpty = false;
 
     return true;
@@ -120,7 +108,7 @@ bool BaseDOFNumbering::computeRenumbering( const ModelPtr model,
 
     CALLO_NUMER3( model->getName(), listOfLoads->getName(), getName(), null, base );
     setModel( model );
-    _dofDescription->setMesh( getMesh() );
+    this->setMesh( getMesh() );
 
     return true;
 };

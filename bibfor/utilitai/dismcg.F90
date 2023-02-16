@@ -79,7 +79,7 @@ subroutine dismcg(questi, nomobz, repi, repkz, ierd)
         call jeveuo(nomob//'.DESC', 'L', iadesc)
         call jenuno(jexnum('&CATA.GD.NOMGD', zi(iadesc)), nogd)
         repk = 'CHAM_NO_'//nogd
-    else if (questi .eq. 'PROF_CHNO') then
+    else if (questi .eq. 'NUME_EQUA') then
         call jeveuo(nomob//'.REFE', 'L', iarefe)
         repk = zk24(iarefe+1)
     else if (questi .eq. 'NOM_NUME_DDL') then

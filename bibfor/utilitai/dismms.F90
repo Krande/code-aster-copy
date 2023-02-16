@@ -143,10 +143,6 @@ subroutine dismms(questi, nomobz, repi, repkz, ierd)
                 repk = slvk(4)
             end if
         end if
-
-    else if (questi .eq. 'PROF_CHNO') then
-        repk = refa(2) (1:14)//'.NUME'
-
     else if (questi .eq. 'NUME_EQUA') then
         repk = refa(2) (1:14)//'.NUME'
 

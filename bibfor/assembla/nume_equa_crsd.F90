@@ -76,7 +76,7 @@ subroutine nume_equa_crsd(nume_equaz, base, nb_equa, meshz, gran_namez)
 !
 ! - Create object NEQU
 !
-    call wkvect(nume_equa//'.NEQU', base//' V I', max(1, nb_equa), vi=nequ)
+    call wkvect(nume_equa//'.NEQU', base//' V I', 2, vi=nequ)
     nequ(1) = nb_equa
     nequ(2) = nb_equa
 !

@@ -18,7 +18,7 @@
 # --------------------------------------------------------------------
 
 from . import *
-from .sd_prof_chno import sd_prof_chno
+from .sd_nume_equa import sd_nume_equa
 from .sd_maillage import sd_maillage
 from .sd_titre import sd_titre
 from .sd_util import *
@@ -46,10 +46,10 @@ class sd_cham_no(sd_titre):
     def u_refe(self):
         refe = self.REFE.get_stripped()
         mail = refe[0]
-        prof_chno = refe[1]
+        nume_equa = refe[1]
         assert refe[2] == "", refe
         assert refe[3] == "", refe
-        return mail, prof_chno
+        return mail, nume_equa
 
     def check_cham_no_i_REFE(self, checker):
 
@@ -58,17 +58,17 @@ class sd_cham_no(sd_titre):
         if self.REFE in checker.names:
             return
 
-        mail, prof_chno = self.u_refe()
+        mail, nume_equa = self.u_refe()
         gd, num = self.u_desc()
 
         # faut-il vérifier le sd_maillage de chaque sd_cham_no ?   AJACOT_PB
         #  - cela risque de couter cher
         sd2 = sd_maillage(mail)
         sd2.check(checker)
-        if prof_chno and num > 0:
-            if prof_chno[:14] + ".NUME.PRNO" in checker.names:
+        if nume_equa and num > 0:
+            if nume_equa[:14] + ".NUME.PRNO" in checker.names:
                 return
-            sd2 = sd_prof_chno(prof_chno)
+            sd2 = sd_nume_equa(nume_equa)
             sd2.check(checker)
 
     def check_cham_no_DESC(self, checker):

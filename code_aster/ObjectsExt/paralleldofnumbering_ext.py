@@ -37,7 +37,7 @@ class ExtendedParallelDOFNumbering:
         """Returns the argument required to reinitialize a
         ParallelDOFNumbering object during unpickling.
         """
-        return (self.getName(), self.getDescription(), self.getModel())
+        return (self.getName(), self.getGlobalNumbering(), self.getModel())
 
     @functools.lru_cache()
     def __Components2Rows(self, local=True):

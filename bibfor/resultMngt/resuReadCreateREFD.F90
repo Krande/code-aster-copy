@@ -72,7 +72,7 @@ subroutine resuReadCreateREFD(resultName, resultType, matrRigi, matrMass)
                 if (numeMass .ne. numeRigi) then
                     profRigi = (numeRigi//'.NUME')
                     profMass = (numeMass//'.NUME')
-                    if (.not. idensd('PROF_CHNO', profRigi, profMass)) then
+                    if (.not. idensd('NUME_EQUA', profRigi, profMass)) then
                         call utmess('F', 'RESULT2_15')
                     end if
                 end if

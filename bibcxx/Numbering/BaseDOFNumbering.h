@@ -51,7 +51,6 @@
 #include "Meshes/BaseMesh.h"
 #include "Modeling/FiniteElementDescriptor.h"
 #include "Modeling/Model.h"
-#include "Numbering/FieldOnNodesDescription.h"
 #include "Numbering/GlobalEquationNumbering.h"
 
 #pragma once
@@ -250,8 +249,6 @@ class BaseDOFNumbering : public DataStructure {
     JeveuxVectorChar24 _nameOfSolverDataStructure;
     /** @brief Objet maillage */
     BaseMeshPtr _mesh;
-    /** @brief Objet prof_chno */
-    FieldOnNodesDescriptionPtr _dofDescription;
     /** @brief Objet Jeveux '.SMOS' */
     MorseStoragePtr _smos;
     /** @brief Objet Jeveux '.SLCS' */
@@ -273,8 +270,6 @@ class BaseDOFNumbering : public DataStructure {
      * @brief Constructeur
      * @param name nom souhaité de la sd (utile pour le BaseDOFNumbering d'une sd_resu)
      */
-    BaseDOFNumbering( const std::string name, const std::string &type,
-                      const FieldOnNodesDescriptionPtr fdof );
 
     BaseDOFNumbering( const std::string name, const std::string &type );
 
@@ -398,11 +393,6 @@ class BaseDOFNumbering : public DataStructure {
     virtual VectorString getComponents() const { AS_ABORT( "Not allowed" ); }
 
     /**
-     * @brief Get FieldOnNodesDescription
-     */
-    FieldOnNodesDescriptionPtr getDescription() const { return _dofDescription; };
-
-    /**
      * @brief Get all FiniteElementDescriptors
      * @return vector of all FiniteElementDescriptors
      */
@@ -413,6 +403,8 @@ class BaseDOFNumbering : public DataStructure {
      * @return Internal mesh
      */
     BaseMeshPtr getMesh() const;
+
+    virtual void setMesh( const BaseMeshPtr mesh ) const = 0;
 
     /**
      * @brief Methode permettant de savoir si la numerotation est vide

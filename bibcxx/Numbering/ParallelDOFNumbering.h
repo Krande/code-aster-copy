@@ -72,7 +72,7 @@ class ParallelDOFNumbering : public BaseDOFNumbering {
      */
     ParallelDOFNumbering();
 
-    ParallelDOFNumbering( const std::string name, const FieldOnNodesDescriptionPtr fdof,
+    ParallelDOFNumbering( const std::string name, const ParallelGlobalEquationNumberingPtr fdof,
                           const ModelPtr model );
 
     /**
@@ -195,6 +195,8 @@ class ParallelDOFNumbering : public BaseDOFNumbering {
      * @brief Get mesh
      */
     BaseMeshPtr getMesh() const { return _globalNumbering->getMesh(); };
+
+    void setMesh( const BaseMeshPtr mesh ) const { _globalNumbering->setMesh( mesh ); };
 };
 
 /**

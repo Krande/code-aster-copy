@@ -88,7 +88,7 @@ subroutine crnlgn(numddl)
     rang = to_aster_int(mrank)
     nbproc = to_aster_int(msize)
 !
-    nume_equa = nume_equa
+    nume_equa = numddl//'.NUME'
     call jeveuo(nume_equa//'.REFN', 'L', jrefn)
     mesh = zk24(jrefn) (1:8)
 !

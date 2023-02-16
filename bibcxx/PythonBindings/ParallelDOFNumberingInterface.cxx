@@ -35,7 +35,7 @@ void exportParallelDOFNumberingToPython( py::module_ &mod ) {
         .def( py::init( &initFactoryPtr< ParallelDOFNumbering > ) )
         .def( py::init( &initFactoryPtr< ParallelDOFNumbering, std::string > ) )
         .def( py::init( &initFactoryPtr< ParallelDOFNumbering, std::string,
-                                         FieldOnNodesDescriptionPtr, ModelPtr > ) )
+                                         ParallelGlobalEquationNumberingPtr, ModelPtr > ) )
         // ---------------------------------------------------------------------
         .def( "useLagrangeMultipliers", &ParallelDOFNumbering::useLagrangeMultipliers, R"(
 Lagrange multipliers are used for BC or MPC.

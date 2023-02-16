@@ -229,7 +229,7 @@ subroutine dismdy(questi, nomobz, repi, repkz, ierd)
 !     --- QUELLE EST LA NUMEROTATION CORRESPONDANTE DE CE RESU_DYNA ?
 !       --- RENVOI DEUX INFORMATIONS IMPORTANTES :
 !       --- 1) ENTIER DONNANT LE NOMBRE DE NUME_DDL DIFFERENTS TROUVES
-!       --- 2) LE NOM DU 1ER NUMEDDL DE REFERENCE (OU PROF_CHNO SELON LE CAS)
+!       --- 2) LE NOM DU 1ER NUMEDDL DE REFERENCE
 !
     else if (questl(1:8) .eq. 'NUME_DDL') then
         call jelira(resdyn//'           .REFD', 'NUTIOC', nbrefs, k8bid)

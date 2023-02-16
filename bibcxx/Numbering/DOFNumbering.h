@@ -54,7 +54,6 @@
 #include "Modeling/FiniteElementDescriptor.h"
 #include "Modeling/Model.h"
 #include "Numbering/BaseDOFNumbering.h"
-#include "Numbering/FieldOnNodesDescription.h"
 
 /**
  * @class DOFNumbering
@@ -78,7 +77,7 @@ class DOFNumbering : public BaseDOFNumbering {
      */
     DOFNumbering();
 
-    DOFNumbering( const std::string name, const FieldOnNodesDescriptionPtr fdof,
+    DOFNumbering( const std::string name, const GlobalEquationNumberingPtr fdof,
                   const ModelPtr model );
 
     /**
@@ -169,6 +168,8 @@ class DOFNumbering : public BaseDOFNumbering {
      * @brief Get mesh
      */
     BaseMeshPtr getMesh() const { return _globalNumbering->getMesh(); };
+
+    void setMesh( const BaseMeshPtr mesh ) const { _globalNumbering->setMesh( mesh ); };
 };
 
 /**

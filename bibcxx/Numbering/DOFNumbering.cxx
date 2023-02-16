@@ -30,20 +30,17 @@
 
 #include <stdexcept>
 
-DOFNumbering::DOFNumbering()
-    : BaseDOFNumbering( ResultNaming::getNewResultName(), "NUME_DDL" ),
-      _globalNumbering( std::make_shared< GlobalEquationNumbering >( getName() ) ){};
+DOFNumbering::DOFNumbering() : DOFNumbering( ResultNaming::getNewResultName() ){};
 
-DOFNumbering::DOFNumbering( const std::string name, const FieldOnNodesDescriptionPtr fdof,
+DOFNumbering::DOFNumbering( const std::string name, const GlobalEquationNumberingPtr globNume,
                             const ModelPtr model )
-    : BaseDOFNumbering( name, "NUME_DDL", fdof ),
-      _globalNumbering( std::make_shared< GlobalEquationNumbering >( getName() ) ) {
+    : BaseDOFNumbering( name, "NUME_DDL" ), _globalNumbering( globNume ) {
     setModel( model );
 };
 
 DOFNumbering::DOFNumbering( const std::string name )
     : BaseDOFNumbering( name, "NUME_DDL" ),
-      _globalNumbering( std::make_shared< GlobalEquationNumbering >( getName() ) ){};
+      _globalNumbering( std::make_shared< GlobalEquationNumbering >( getName() + ".NUME" ) ){};
 
 bool DOFNumbering::useLagrangeMultipliers() const {
     const std::string typeco( "NUME_DDL" );
@@ -89,7 +86,7 @@ VectorLong DOFNumbering::getRowsAssociatedToLagrangeMultipliers( const bool loca
 
 std::string DOFNumbering::getComponentAssociatedToRow( const ASTERINTEGER row,
                                                        const bool local ) const {
-    auto [nodeId, cmpName] = getDescription()->getNodeAndComponentFromDOF( row );
+    auto [nodeId, cmpName] = getGlobalNumbering()->getNodeAndComponentFromDOF( row );
     return cmpName;
 };
 
@@ -114,12 +111,12 @@ ASTERINTEGER DOFNumbering::getRowAssociatedToNodeComponent( const ASTERINTEGER n
 
 ASTERINTEGER DOFNumbering::getNodeAssociatedToRow( const ASTERINTEGER row,
                                                    const bool local ) const {
-    auto [nodeId, cmpId] = getDescription()->getNodeAndComponentNumberFromDOF( row );
+    auto [nodeId, cmpId] = getGlobalNumbering()->getNodeAndComponentNumberFromDOF( row );
     return nodeId;
 };
 
 bool DOFNumbering::isRowAssociatedToPhysical( const ASTERINTEGER row, const bool local ) const {
-    auto [nodeId, cmpId] = getDescription()->getNodeAndComponentNumberFromDOF( row );
+    auto [nodeId, cmpId] = getGlobalNumbering()->getNodeAndComponentNumberFromDOF( row );
     return cmpId > 0;
 };
 
