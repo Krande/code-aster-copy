@@ -515,7 +515,7 @@ class Result : public DataStructure, public ListOfTables {
 
     std::vector< FiniteElementDescriptorPtr > getFiniteElementDescriptors() const;
 
-    std::vector< GlobalEquationNumberingPtr > getGlobalNumberings() const;
+    std::vector< GlobalEquationNumberingPtr > getGlobalEquationNumberings() const;
 
     void clear( const ASTERINTEGER &index );
 

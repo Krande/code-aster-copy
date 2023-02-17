@@ -879,6 +879,6 @@ std::vector< FiniteElementDescriptorPtr > Result::getFiniteElementDescriptors() 
     return _fieldBuidler.getFiniteElementDescriptors();
 };
 
-std::vector< GlobalEquationNumberingPtr > Result::getGlobalNumberings() const {
+std::vector< GlobalEquationNumberingPtr > Result::getGlobalEquationNumberings() const {
     return _fieldBuidler.getGlobalEquationNumberings();
 };

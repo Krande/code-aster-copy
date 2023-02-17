@@ -57,7 +57,7 @@ bool DOFNumbering::useLagrangeMultipliers() const {
 };
 
 VectorLong DOFNumbering::getRowsAssociatedToPhysicalDofs( const bool local ) const {
-    auto lagrInfo = getGlobalNumbering()->getLagrangianInformations();
+    auto lagrInfo = getGlobalEquationNumbering()->getLagrangianInformations();
     lagrInfo->updateValuePointer();
     ASTERINTEGER size = lagrInfo->size();
     VectorLong physicalRows;
@@ -71,7 +71,7 @@ VectorLong DOFNumbering::getRowsAssociatedToPhysicalDofs( const bool local ) con
 };
 
 VectorLong DOFNumbering::getRowsAssociatedToLagrangeMultipliers( const bool local ) const {
-    auto lagrInfo = getGlobalNumbering()->getLagrangianInformations();
+    auto lagrInfo = getGlobalEquationNumbering()->getLagrangianInformations();
     lagrInfo->updateValuePointer();
     ASTERINTEGER size = lagrInfo->size();
     VectorLong lagrangeRows;
@@ -86,7 +86,7 @@ VectorLong DOFNumbering::getRowsAssociatedToLagrangeMultipliers( const bool loca
 
 std::string DOFNumbering::getComponentAssociatedToRow( const ASTERINTEGER row,
                                                        const bool local ) const {
-    auto [nodeId, cmpName] = getGlobalNumbering()->getNodeAndComponentFromDOF( row );
+    auto [nodeId, cmpName] = getGlobalEquationNumbering()->getNodeAndComponentFromDOF( row );
     return cmpName;
 };
 
@@ -111,18 +111,18 @@ ASTERINTEGER DOFNumbering::getRowAssociatedToNodeComponent( const ASTERINTEGER n
 
 ASTERINTEGER DOFNumbering::getNodeAssociatedToRow( const ASTERINTEGER row,
                                                    const bool local ) const {
-    auto [nodeId, cmpId] = getGlobalNumbering()->getNodeAndComponentNumberFromDOF( row );
+    auto [nodeId, cmpId] = getGlobalEquationNumbering()->getNodeAndComponentNumberFromDOF( row );
     return nodeId;
 };
 
 bool DOFNumbering::isRowAssociatedToPhysical( const ASTERINTEGER row, const bool local ) const {
-    auto [nodeId, cmpId] = getGlobalNumbering()->getNodeAndComponentNumberFromDOF( row );
+    auto [nodeId, cmpId] = getGlobalEquationNumbering()->getNodeAndComponentNumberFromDOF( row );
     return cmpId > 0;
 };
 
 ASTERINTEGER DOFNumbering::getNumberOfDofs( const bool local ) const {
-    getGlobalNumbering()->getNumberOfEquations()->updateValuePointer();
-    return ( *getGlobalNumbering()->getNumberOfEquations() )[0];
+    getGlobalEquationNumbering()->getNumberOfEquations()->updateValuePointer();
+    return ( *getGlobalEquationNumbering()->getNumberOfEquations() )[0];
 };
 
 bool DOFNumbering::useSingleLagrangeMultipliers() const {

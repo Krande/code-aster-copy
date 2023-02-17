@@ -61,8 +61,8 @@ class ExtrMode(ExecuteCommand):
                 self._result.setStiffnessMatrix(stiffMat)
             for fED in mode.getFiniteElementDescriptors():
                 self._result.addFiniteElementDescriptor(fED)
-            for fOND in mode.getFieldOnNodesDescriptions():
-                self._result.addFieldOnNodesDescription(fOND)
+            for fOND in mode.getGlobalEquationNumberings():
+                self._result.addGlobalEquationNumbering(fOND)
             self._result.setDOFNumbering(mode.getDOFNumbering())
             self._result.build()
 

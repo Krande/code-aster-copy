@@ -33,7 +33,7 @@
 #include "MemoryManager/JeveuxCollection.h"
 #include "MemoryManager/JeveuxVector.h"
 #include "Modeling/GeneralizedModel.h"
-#include "Numbering/GeneralizedFieldOnNodesDescription.h"
+#include "Numbering/GeneralizedGlobalEquationNumbering.h"
 #include "Results/ForwardGeneralizedModeResult.h"
 #include "Results/ForwardModeResult.h"
 #include "Supervis/ResultNaming.h"
@@ -55,9 +55,9 @@ class GeneralizedDOFNumbering : public DataStructure {
     MorseStoragePtr _smos;
     /** @brief Objet Jeveux '.SLCS' */
     LigneDeCielPtr _slcs;
-    /** @brief GeneralizedFieldOnNodesDescription */
-    GeneralizedFieldOnNodesDescriptionPtr _nume;
-    /** @brief GeneralizedFieldOnNodesDescription */
+    /** @brief GeneralizedGlobalEquationNumbering */
+    GeneralizedGlobalEquationNumberingPtr _nume;
+    /** @brief GeneralizedModel */
     GeneralizedModelPtr _model;
     /** @brief modal basis */
     ForwardModeResultPtr _basis1;
@@ -86,7 +86,7 @@ class GeneralizedDOFNumbering : public DataStructure {
           _tail( JeveuxVectorLong( getName() + ".ELIM.TAIL" ) ),
           _smos( new MorseStorage( getName() + ".SMOS" ) ),
           _slcs( new LigneDeCiel( getName() + ".SLCS" ) ),
-          _nume( new GeneralizedFieldOnNodesDescription( getName() + ".NUME" ) ),
+          _nume( new GeneralizedGlobalEquationNumbering( getName() + ".NUME" ) ),
           _model( nullptr ),
           _basis1( nullptr ),
           _basis2( nullptr ){};
@@ -96,7 +96,7 @@ class GeneralizedDOFNumbering : public DataStructure {
      */
     GeneralizedModelPtr getGeneralizedModel() const { return _model; };
 
-    GeneralizedFieldOnNodesDescriptionPtr getDescription() const { return _nume; };
+    GeneralizedGlobalEquationNumberingPtr getDescription() const { return _nume; };
 
     /**
      * @brief Get modal basis

@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -77,7 +77,7 @@ class NonLinearStaticAnalysis(ExecuteCommand):
 
             if "EVOL_NOLI" in etat:
                 feds += etat["EVOL_NOLI"].getFiniteElementDescriptors()
-                fnds += etat["EVOL_NOLI"].getFieldOnNodesDescriptions()
+                fnds += etat["EVOL_NOLI"].getGlobalEquationNumberings()
 
         self._result.build(feds, fnds)
 

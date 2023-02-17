@@ -68,7 +68,7 @@ class ExtendedDOFNumbering:
         """Returns the argument required to reinitialize a
         DOFNumbering object during unpickling.
         """
-        return (self.getName(), self.getGlobalNumbering(), self.getModel())
+        return (self.getName(), self.getGlobalEquationNumbering(), self.getModel())
 
     @property
     @functools.lru_cache()

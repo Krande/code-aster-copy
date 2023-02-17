@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -27,7 +27,7 @@ from .sd_matr_asse import sd_matr_asse
 from .sd_matr_asse_gene import sd_matr_asse_gene
 from .sd_nume_ddl import sd_nume_ddl
 from .sd_nume_ddl_gene import sd_nume_ddl_gene
-from .sd_prof_chno import sd_prof_chno
+from .sd_nume_equa import sd_nume_equa
 from .sd_proj_mesu import sd_proj_mesu
 from .sd_resultat import sd_resultat
 
@@ -118,12 +118,12 @@ def CheckNumeDDL(self, Entry, checker):
         return Type
 
     # In some cases, such as in CREA_RESU when no complete NUME_DDL information can be
-    # found, the reference numbering corresponds to a sd_prof_chno
+    # found, the reference numbering corresponds to a sd_nume_equa
     ProfChNo = 0
     if len(NumeName) > 8:
         ProfChNo = 1
 
-    NumeDDL = {"PHYS": [sd_nume_ddl, sd_prof_chno], "GENE": [sd_nume_ddl_gene]}[Type][ProfChNo](
+    NumeDDL = {"PHYS": [sd_nume_ddl, sd_nume_equa], "GENE": [sd_nume_ddl_gene]}[Type][ProfChNo](
         NumeName
     )
     NumeDDL.check(checker)

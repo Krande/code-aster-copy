@@ -84,7 +84,7 @@ class ParallelDOFNumbering : public BaseDOFNumbering {
     /**
      * @brief Returns the GlobalEquationNumberingPtr
      */
-    GlobalEquationNumberingPtr getGlobalNumbering() const { return _globalNumbering; };
+    GlobalEquationNumberingPtr getGlobalEquationNumbering() const { return _globalNumbering; };
 
     std::string getPhysicalQuantity() const { return _globalNumbering->getPhysicalQuantity(); };
 

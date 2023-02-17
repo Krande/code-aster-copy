@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -144,7 +144,7 @@ DICT_SDJ = {
     "ElementaryVectorPressureComplex": "SD.sd_vect_elem.sd_vect_elem",
     "ElementaryVectorTemperatureReal": "SD.sd_vect_elem.sd_vect_elem",
     "FiberGeometry": "SD.sd_gfibre.sd_gfibre",
-    "FieldOnNodesDescription": "SD.sd_prof_chno.sd_prof_chno",
+    "GlobalEquationNumbering": "SD.sd_nume_equa.sd_nume_equa",
     "FluidStructureInteraction": "SD.sd_type_flui_stru.sd_type_flui_stru",
     "FluidStructureModalBasis": "SD.sd_melasflu.sd_melasflu",
     "FullHarmonicAcousticResult": "SD.sd_dyna_phys.sd_dyna_phys",

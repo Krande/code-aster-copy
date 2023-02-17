@@ -567,7 +567,7 @@ Get list of finite element descriptor to build internal FieldOnCells
 Returns:
     list[FiniteElementDescriptor]: list of finite element descriptor
         )" )
-        .def( "getGlobalNumberings", &Result::getGlobalNumberings, R"(
+        .def( "getGlobalEquationNumberings", &Result::getGlobalEquationNumberings, R"(
 Get list of field's description to build internal FieldOnNodes
 
 Returns:

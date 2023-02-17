@@ -31,12 +31,12 @@
 #include "Meshes/BaseMesh.h"
 #include "Modeling/FiniteElementDescriptor.h"
 #include "Numbering/DOFNumbering.h"
-#include "Numbering/GeneralizedFieldOnNodesDescription.h"
+#include "Numbering/GeneralizedGlobalEquationNumbering.h"
 
 /**
  * @class FieldBuilder
  * @brief This class builds FieldOnNodes and FieldOnCells with respect of
- *        FieldOnNodesDescription and FiniteElementDescriptor
+ *        GlobalEquationNumbering and FiniteElementDescriptor
  * @author Nicolas Sellenet
  */
 class FieldBuilder {
@@ -66,12 +66,12 @@ private:
   };
 
   /**
-   * @brief Add a existing FieldOnNodesDescription in FieldBuilder
+   * @brief Add a existing GlobalEquationNumbering in FieldBuilder
    */
   GlobalEquationNumberingPtr
   newGlobalEquationNumbering(const std::string &name) {
     if (_setGlobNume.count(trim(name)) > 0) {
-      raiseAsterError("PROF_CHNO already exists: " + name);
+      raiseAsterError("NUME_EQUA already exists: " + name);
     }
 
     auto curDesc = std::make_shared<GlobalEquationNumbering>(name);
@@ -81,16 +81,17 @@ private:
   };
 
   /**
-   * @brief Add a existing generalizedFieldOnNodesDescription in FieldBuilder
+   * @brief Add a existing generalizedGlobalEquationNumbering in FieldBuilder
    */
-  FieldOnNodesDescriptionPtr
-  newGeneralizedFieldOnNodesDescription(const std::string &name) {
+  GeneralizedGlobalEquationNumberingPtr
+  newGeneralizedGlobalEquationNumbering(const std::string &name) {
+    AS_ABORT(name);
     if (_setGlobNume.count(trim(name)) > 0) {
       raiseAsterError("PROF_GENE already exists: " + name);
     }
 
-    auto curDesc = std::make_shared<GeneralizedFieldOnNodesDescription>(name);
-    // addFieldOnNodesDescription(curDesc);
+    auto curDesc = std::make_shared<GeneralizedGlobalEquationNumbering>(name);
+    // addGlobalEquationNumbering(curDesc);
 
     return curDesc;
   };
@@ -185,7 +186,7 @@ public:
     else {
       // .REFE de taille 2 pour les VGEN, voir vpstor.F90
       if (field->_reference->size() == 2) {
-        // curDesc = newGeneralizedFieldOnNodesDescription( globNume );
+        auto curDesc2 = newGeneralizedGlobalEquationNumbering(globNume);
       } else {
         curDesc = newGlobalEquationNumbering(globNume);
       }

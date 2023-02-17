@@ -59,8 +59,8 @@ class ModalBasisDef(ExecuteCommand):
                 self._result.setMesh(mesh)
             for fED in mode_meca.getFiniteElementDescriptors():
                 self._result.addFiniteElementDescriptor(fED)
-            for fOND in mode_meca.getFieldOnNodesDescriptions():
-                self._result.addFieldOnNodesDescription(fOND)
+            for fOND in mode_meca.getGlobalEquationNumberings():
+                self._result.addGlobalEquationNumbering(fOND)
         elif ritz is not None:
             if "INTERF_DYNA" in ritz[0]:
                 self._result.setStructureInterface(ritz[0]["INTERF_DYNA"])
@@ -83,8 +83,8 @@ class ModalBasisDef(ExecuteCommand):
                     self._result.setMesh(mode_meca.getMesh())
                 for fED in mode_meca.getFiniteElementDescriptors():
                     self._result.addFiniteElementDescriptor(fED)
-                for fOND in mode_meca.getFieldOnNodesDescriptions():
-                    self._result.addFieldOnNodesDescription(fOND)
+                for fOND in mode_meca.getGlobalEquationNumberings():
+                    self._result.addGlobalEquationNumbering(fOND)
                 if self._result.getDOFNumbering() is None:
                     nume_ddl = mode_meca.getDOFNumbering()
                     self._result.setDOFNumbering(nume_ddl)

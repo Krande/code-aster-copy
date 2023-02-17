@@ -1,9 +1,6 @@
-#ifndef GENERALIZEDFIELDONNODESDESCRIPTION_H_
-#define GENERALIZEDFIELDONNODESDESCRIPTION_H_
-
 /**
- * @file GeneralizedFieldOnNodesDescription.h
- * @brief Fichier entete de la classe GeneralizedFieldOnNodesDescription
+ * @file GeneralizedGlobalEquationNumbering.h
+ * @brief Fichier entete de la classe GeneralizedGlobalEquationNumbering
  * @author Nicolas Sellenet
  * @section LICENCE
  *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
@@ -24,21 +21,20 @@
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* person_in_charge: nicolas.sellenet at edf.fr */
+#pragma once
 
 #include "astercxx.h"
 
+#include "DataStructures/DataStructure.h"
 #include "MemoryManager/JeveuxCollection.h"
 #include "MemoryManager/JeveuxVector.h"
-#include "Numbering/FieldOnNodesDescription.h"
-#include "Supervis/ResultNaming.h"
 
 /**
- * @class GeneralizedFieldOnNodesDescription
+ * @class GeneralizedGlobalEquationNumbering
  * @brief This class describes the structure of dof stored in a field on nodes
  * @author Nicolas Sellenet
  */
-class GeneralizedFieldOnNodesDescription : public FieldOnNodesDescription {
+class GeneralizedGlobalEquationNumbering : public DataStructure {
     /** @brief Objet Jeveux '.DESC' */
     JeveuxVectorLong _desc;
     /** @brief Objet Jeveux '.NEQU' */
@@ -49,32 +45,32 @@ class GeneralizedFieldOnNodesDescription : public FieldOnNodesDescription {
     JeveuxVectorLong _delg;
     /** @brief Objet Jeveux '.ORIG' */
     JeveuxCollectionLong _orig;
+    /** @brief Objet Jeveux '.PRNO' */
+    JeveuxCollectionLong _componentsOnNodes;
+    /** @brief Objet Jeveux '.LILI' */
+    NamesMapChar24 _namesOfGroupOfCells;
+    /** @brief Objet Jeveux '.NUEQ' */
+    JeveuxVectorLong _indexationVector;
+    /** @brief Objet Jeveux '.DEEQ' */
+    JeveuxVectorLong _nodeAndComponentsNumberFromDOF;
 
   public:
     /**
      * @brief Constructeur
-     * @param name nom souhaité de la sd (utile pour le GeneralizedFieldOnNodesDescription
+     * @param name nom souhaité de la sd (utile pour le GeneralizedGlobalEquationNumbering
      * d'une sd_resu)
      */
-    GeneralizedFieldOnNodesDescription( const std::string name )
-        : FieldOnNodesDescription( name, nullptr, "PROF_GENE" ),
-          _desc( JeveuxVectorLong( getName() + ".DESC" ) ),
-          _nequ( JeveuxVectorLong( getName() + ".NEQU" ) ),
-          _refn( JeveuxVectorChar24( getName() + ".REFN" ) ),
-          _delg( JeveuxVectorLong( getName() + ".DELG" ) ),
-          _orig( JeveuxCollectionLong( getName() + ".ORIG" ) ){};
+    GeneralizedGlobalEquationNumbering( const std::string name );
 
     /**
      * @brief Constructeur
      */
-    GeneralizedFieldOnNodesDescription()
-        : GeneralizedFieldOnNodesDescription( ResultNaming::getNewResultName() ){};
+    GeneralizedGlobalEquationNumbering();
 
     /**
      * @brief Destructor
      */
-    ~GeneralizedFieldOnNodesDescription(){};
+    ~GeneralizedGlobalEquationNumbering(){};
 };
-typedef std::shared_ptr< GeneralizedFieldOnNodesDescription > GeneralizedFieldOnNodesDescriptionPtr;
 
-#endif /* GENERALIZEDFIELDONNODESDESCRIPTION_H_ */
+typedef std::shared_ptr< GeneralizedGlobalEquationNumbering > GeneralizedGlobalEquationNumberingPtr;

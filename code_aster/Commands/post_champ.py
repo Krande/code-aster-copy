@@ -58,8 +58,8 @@ class PostChamp(ExecuteCommand):
             self._result.setMesh(mesh)
         for fED in resu.getFiniteElementDescriptors():
             self._result.addFiniteElementDescriptor(fED)
-        for fOND in resu.getFieldOnNodesDescriptions():
-            self._result.addFieldOnNodesDescription(fOND)
+        for fOND in resu.getGlobalEquationNumberings():
+            self._result.addGlobalEquationNumbering(fOND)
         self._result.build()
 
 

@@ -62,7 +62,7 @@ class RestCondTran(ExecuteCommand):
                 self._result.setModel(dofNum.getModel())
                 for i in dofNum.getFiniteElementDescriptors():
                     self._result.addFiniteElementDescriptor(i)
-                fnds.append(dofNum.getDescription())
+                fnds.append(dofNum.getGlobalEquationNumbering())
 
         self._result.build(fnds=fnds)
 

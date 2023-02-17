@@ -297,7 +297,7 @@ class BaseDOFNumbering : public DataStructure {
     /**
      * @brief Returns the GlobalEquationNumberingPtr
      */
-    virtual GlobalEquationNumberingPtr getGlobalNumbering() const = 0;
+    virtual GlobalEquationNumberingPtr getGlobalEquationNumbering() const = 0;
 
     virtual std::string getPhysicalQuantity() const = 0;
 

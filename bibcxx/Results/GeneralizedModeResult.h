@@ -98,7 +98,7 @@ class GeneralizedModeResult : public FullResult {
     bool setGeneralizedDOFNumbering( const GeneralizedDOFNumberingPtr &dofNum ) {
         if ( dofNum != nullptr ) {
             _genDOFNum = dofNum;
-            //_fieldBuidler.addFieldOnNodesDescription( _genDOFNum->getDescription() );
+            //_fieldBuidler.addGlobalEquationNumbering( _genDOFNum->getDescription() );
             return true;
         }
         return false;

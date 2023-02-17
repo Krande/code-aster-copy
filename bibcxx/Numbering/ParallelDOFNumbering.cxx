@@ -47,7 +47,6 @@ ParallelDOFNumbering::ParallelDOFNumbering( const std::string &name )
       _globalNumbering(
           std::make_shared< ParallelGlobalEquationNumbering >( getName() + ".NUME" ) ){};
 
-
 bool ParallelDOFNumbering::useLagrangeMultipliers() const {
     const std::string typeco( "NUME_DDL" );
     ASTERINTEGER repi = 0, ier = 0;
@@ -67,7 +66,7 @@ bool ParallelDOFNumbering::useLagrangeMultipliers() const {
 };
 
 VectorLong ParallelDOFNumbering::getRowsAssociatedToPhysicalDofs( const bool local ) const {
-    auto dofInformation = getGlobalNumbering()->getLagrangianInformations();
+    auto dofInformation = getGlobalEquationNumbering()->getLagrangianInformations();
     dofInformation->updateValuePointer();
     ASTERINTEGER size = dofInformation->size();
     VectorLong physicalRows;
@@ -88,7 +87,7 @@ VectorLong ParallelDOFNumbering::getRowsAssociatedToPhysicalDofs( const bool loc
 };
 
 VectorLong ParallelDOFNumbering::getGhostRows( const bool local ) const {
-    auto localToRank = getGlobalNumbering()->getLocalToRank();
+    auto localToRank = getGlobalEquationNumbering()->getLocalToRank();
     localToRank->updateValuePointer();
     VectorLong ghostRows;
     const auto rank = getMPIRank();
@@ -110,7 +109,7 @@ VectorLong ParallelDOFNumbering::getGhostRows( const bool local ) const {
 };
 
 VectorLong ParallelDOFNumbering::getNoGhostRows() const {
-    auto localToRank = getGlobalNumbering()->getLocalToRank();
+    auto localToRank = getGlobalEquationNumbering()->getLocalToRank();
     localToRank->updateValuePointer();
     const auto rank = getMPIRank();
     ASTERINTEGER dofOwner;
@@ -125,7 +124,7 @@ VectorLong ParallelDOFNumbering::getNoGhostRows() const {
 };
 
 VectorLong ParallelDOFNumbering::getRowsAssociatedToLagrangeMultipliers( const bool local ) const {
-    auto dofInformation = getGlobalNumbering()->getLagrangianInformations();
+    auto dofInformation = getGlobalEquationNumbering()->getLagrangianInformations();
     dofInformation->updateValuePointer();
     ASTERINTEGER size = dofInformation->size();
     VectorLong lagrangeRows;
@@ -151,7 +150,7 @@ std::string ParallelDOFNumbering::getComponentAssociatedToRow( const ASTERINTEGE
     if ( !local )
         localrow = globalToLocalRow( row );
 
-    auto [nodeId, cmpName] = getGlobalNumbering()->getNodeAndComponentFromDOF( localrow );
+    auto [nodeId, cmpName] = getGlobalEquationNumbering()->getNodeAndComponentFromDOF( localrow );
     return cmpName;
 };
 
@@ -190,7 +189,7 @@ ParallelDOFNumbering::getNodeAssociatedToRow( const ASTERINTEGER row, const bool
         localrow = globalToLocalRow( row );
 
     auto [nodeId, cmpId] =
-        getGlobalNumbering()->getNodeAndComponentNumberFromDOF( localrow, local );
+        getGlobalEquationNumbering()->getNodeAndComponentNumberFromDOF( localrow, local );
 
     return nodeId;
 };
@@ -200,18 +199,18 @@ bool ParallelDOFNumbering::isRowAssociatedToPhysical( const ASTERINTEGER row,
     auto localrow = row;
     if ( !local )
         localrow = globalToLocalRow( row );
-    auto [nodeId, cmpId] = getGlobalNumbering()->getNodeAndComponentNumberFromDOF( localrow );
+    auto [nodeId, cmpId] = getGlobalEquationNumbering()->getNodeAndComponentNumberFromDOF( localrow );
 
     return cmpId > 0;
 };
 
 ASTERINTEGER
 ParallelDOFNumbering::getNumberOfDofs( const bool local ) const {
-    getGlobalNumbering()->getNumberOfEquations()->updateValuePointer();
+    getGlobalEquationNumbering()->getNumberOfEquations()->updateValuePointer();
     if ( local )
-        return ( *getGlobalNumbering()->getNumberOfEquations() )[0];
+        return ( *getGlobalEquationNumbering()->getNumberOfEquations() )[0];
     else
-        return ( *getGlobalNumbering()->getNumberOfEquations() )[1];
+        return ( *getGlobalEquationNumbering()->getNumberOfEquations() )[1];
 };
 
 bool ParallelDOFNumbering::useSingleLagrangeMultipliers() const {
@@ -276,7 +275,7 @@ VectorString ParallelDOFNumbering::getComponentsAssociatedToNode( const ASTERINT
 };
 
 const JeveuxVectorLong ParallelDOFNumbering::getLocalToGlobalMapping() const {
-    return getGlobalNumbering()->getLocalToGlobal();
+    return getGlobalEquationNumbering()->getLocalToGlobal();
 };
 
 const ASTERINTEGER ParallelDOFNumbering::localToGlobalRow( const ASTERINTEGER loc ) {

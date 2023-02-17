@@ -299,7 +299,7 @@ class AssemblyMatrix : public BaseAssemblyMatrix {
     operator*( const AssemblyMatrix< ValueType, PhysicalQuantity > &mat,
                const FieldOnNodes< ValueType > &lhs ) {
 
-        auto matDesc = mat.getDOFNumbering()->getGlobalNumbering();
+        auto matDesc = mat.getDOFNumbering()->getGlobalEquationNumbering();
         auto vecDesc = lhs.getDescription();
         if ( matDesc != vecDesc ) {
             if ( *matDesc != *vecDesc ) {

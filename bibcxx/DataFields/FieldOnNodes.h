@@ -180,7 +180,7 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
         dofNume->addFiniteElementDescriptor( fed );
         dofNume->computeNumberingWithLocalMode( localMode );
 
-        _dofDescription = dofNume->getGlobalNumbering();
+        _dofDescription = dofNume->getGlobalEquationNumbering();
         _mesh = fed->getMesh();
 
         const auto intType = AllowedFieldType< ValueType >::numTypeJeveux;
@@ -206,7 +206,7 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
 
         dofNume->computeNumbering( model, lOL );
 
-        _dofDescription = dofNume->getGlobalNumbering();
+        _dofDescription = dofNume->getGlobalEquationNumbering();
         _mesh = dofNume->getMesh();
 
         const auto intType = AllowedFieldType< ValueType >::numTypeJeveux;
@@ -225,7 +225,7 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
             raiseAsterError( " DOFNumbering is null" );
         }
 
-        _dofDescription = dofNum->getGlobalNumbering();
+        _dofDescription = dofNum->getGlobalEquationNumbering();
         _mesh = dofNum->getMesh();
 
         const auto intType = AllowedFieldType< ValueType >::numTypeJeveux;

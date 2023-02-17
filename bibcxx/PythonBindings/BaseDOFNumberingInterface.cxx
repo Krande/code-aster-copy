@@ -26,19 +26,12 @@
 
 #include "aster_pybind.h"
 
-#include "Numbering/FieldOnNodesDescription.h"
-
 void exportBaseDOFNumberingToPython( py::module_ &mod ) {
 
     bool ( BaseDOFNumbering::*f1 )( const ModelPtr model, const ListOfLoadsPtr listOfLoads ) =
         &BaseDOFNumbering::computeNumbering;
     bool ( BaseDOFNumbering::*f2 )( const std::vector< BaseDOFNumbering::MatrElem > matrix ) =
         &BaseDOFNumbering::computeNumbering;
-
-    py::class_< FieldOnNodesDescription, FieldOnNodesDescriptionPtr, DataStructure >(
-        mod, "FieldOnNodesDescription" )
-        .def( py::init( &initFactoryPtr< FieldOnNodesDescription > ) )
-        .def( py::init( &initFactoryPtr< FieldOnNodesDescription, std::string > ) );
 
     py::class_< BaseDOFNumbering, BaseDOFNumbering::BaseDOFNumberingPtr, DataStructure > c1(
         mod, "BaseDOFNumbering" );

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -22,8 +22,6 @@ from .sd_champ import sd_champ
 from .sd_char_meca import sd_char_chme, sd_char_dual
 from .sd_ligrel import sd_ligrel
 from .sd_xfem import sd_modele_xfem
-
-from .sd_prof_chno import sd_prof_chno
 
 
 class sd_contact(AsBase):
