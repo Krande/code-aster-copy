@@ -66,7 +66,7 @@ class ElementaryTerm : public DataField {
 
     FiniteElementDescriptorPtr getFiniteElementDescriptor() const { return _FEDesc; };
 
-    bool exists() const { return _noli->exists() && _descriptor->exists() && _resl->exists(); };
+    bool exists() const { return _noli.exists() && _descriptor.exists() && _resl.exists(); };
 
     std::string getOption() {
         _noli->updateValuePointer();
@@ -126,12 +126,12 @@ class ElementaryTerm : public DataField {
     }
 
     bool isMPIFull() {
-        AS_ASSERT( _noli->exists() );
+        AS_ASSERT( _noli.exists() );
         _noli->updateValuePointer();
         return trim( ( *_noli )[2].toString() ) == "MPI_COMPLET";
     }
 
-    bool isEmpty() { return !( _noli->exists() && _descriptor->exists() ); }
+    bool isEmpty() { return !( _noli.exists() && _descriptor.exists() ); }
 
     bool build() { return _resl->build( true ); };
 

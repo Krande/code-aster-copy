@@ -290,9 +290,7 @@ class ConstantFieldOnCells : public DataField {
      */
     ~ConstantFieldOnCells(){};
 
-    bool exists() const {
-        return _meshName->exists() && _descriptor->exists() && _values->exists();
-    };
+    bool exists() const { return _meshName.exists() && _descriptor.exists() && _values.exists(); };
 
     /**
      * @brief Allocation de la carte
@@ -593,7 +591,7 @@ class ConstantFieldOnCells : public DataField {
         _values->updateValuePointer();
         // Les deux elements suivants sont facultatifs
         _listOfMeshCells->updateValuePointer();
-        if ( _nameOfLigrels->exists() )
+        if ( _nameOfLigrels.exists() )
             _nameOfLigrels->updateValuePointer();
     };
 

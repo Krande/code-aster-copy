@@ -161,8 +161,8 @@ class ParallelMechanicalLoad : public DataStructure {
         const auto &mesh = _FEDesc->getMesh();
         auto &LToGmapMesh = mesh->getLocalToGlobalMapping();
         auto &LToGmapFE = _FEDesc->getLocalToGlobalMapping();
-        auto e1 = LToGmapMesh->exists();
-        auto e2 = LToGmapFE->exists();
+        auto e1 = LToGmapMesh.exists();
+        auto e2 = LToGmapFE.exists();
         if ( !e1 || !e2 )
             return;
         LToGmapMesh->updateValuePointer();

@@ -26,14 +26,14 @@
 #include "Functions/Function2D.h"
 
 std::string Function2D::getResultName() {
-    if ( !_property->exists() )
+    if ( !_property.exists() )
         return "";
     _property->updateValuePointer();
     return ( *_property )[3].toString();
 }
 
 ASTERINTEGER Function2D::maximumSize() const {
-    if ( !_value->exists() )
+    if ( !_value.exists() )
         return 0;
     _value->build();
     ASTERINTEGER toReturn = 0;
@@ -45,7 +45,7 @@ ASTERINTEGER Function2D::maximumSize() const {
 }
 
 ASTERINTEGER Function2D::size() const {
-    if ( !_value->exists() )
+    if ( !_value.exists() )
         return 0;
     _value->build();
     ASTERINTEGER toReturn = 0;

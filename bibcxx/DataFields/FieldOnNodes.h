@@ -397,9 +397,7 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
         return toReturn;
     };
 
-    bool exists() const {
-        return _reference->exists() && _descriptor->exists() && _values->exists();
-    };
+    bool exists() const { return _reference.exists() && _descriptor.exists() && _values.exists(); };
 
     /**
      * @brief Get mesh
@@ -524,7 +522,7 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
      * @brief Set mesh
      * @param mesh object BaseMeshPtr
      */
-    void setMesh( const BaseMeshPtr &mesh ) { _dofDescription->setMesh( this->getMesh() ); };
+    void setMesh( const BaseMeshPtr &mesh ) { _dofDescription->setMesh( mesh ); };
 
     /**
      * @brief Compute norm

@@ -35,14 +35,14 @@ ListOfTables::ListOfTables( const std::string &name ) : _name( name ) {
 bool ListOfTables::update_tables() {
     CALL_JEMARQ();
 
-    if ( !_dsId->exists() ) {
+    if ( !_dsId.exists() ) {
         CALL_JEDEMA();
         return true;
     } else {
         _dsId->updateValuePointer();
     }
 
-    if ( !_dsName->exists() ) {
+    if ( !_dsName.exists() ) {
         CALL_JEDEMA();
         return true;
     } else {

@@ -77,6 +77,8 @@ class GlobalEquationNumbering : public DataStructure {
 
     GlobalEquationNumbering( const std::string &baseName );
 
+    GlobalEquationNumbering();
+
     /**
      * @brief Surcharge de l'operateur =
      */
@@ -113,7 +115,7 @@ class GlobalEquationNumbering : public DataStructure {
     /**
      * @brief Get model
      */
-    ModelPtr getModel() { return _model; };
+    ModelPtr getModel() const { return _model; };
 
     /**
      * @brief Set model
@@ -123,7 +125,7 @@ class GlobalEquationNumbering : public DataStructure {
     /**
      * @brief Get Mesh
      */
-    BaseMeshPtr getMesh() { return _mesh; };
+    BaseMeshPtr getMesh() const { return _mesh; };
 
     /**
      * @brief Set Mesh
@@ -136,6 +138,8 @@ class GlobalEquationNumbering : public DataStructure {
     std::string getPhysicalQuantity() const;
 
     bool isParallel() const { return false; };
+
+    bool exists() const;
 
     /**
      * @brief Returns a vector with node index for each DOFs

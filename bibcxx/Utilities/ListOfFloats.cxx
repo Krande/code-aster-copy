@@ -26,7 +26,7 @@
 #include "Utilities/ListOfFloats.h"
 
 VectorReal ListOfFloats::getValues() const {
-    if ( !_vale->exists() )
+    if ( !_vale.exists() )
         throw std::runtime_error( "No list of values in ListOfFloats" );
 
     _vale->updateValuePointer();

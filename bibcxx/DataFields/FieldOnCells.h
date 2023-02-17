@@ -226,7 +226,7 @@ class FieldOnCells : public DataField {
      */
     FiniteElementDescriptorPtr getDescription() const { return _dofDescription; };
 
-    bool exists() const { return _descriptor->exists() && _values->exists(); };
+    bool exists() const { return _descriptor.exists() && _values.exists(); };
 
     /**
      * @brief Update field and build FiniteElementDescriptor if necessary

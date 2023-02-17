@@ -89,7 +89,7 @@ ASTERDOUBLE BaseAssemblyMatrix::getLagrangeScaling() const {
     } else {
         // Other cases
         ASTERDOUBLE scaling = 1.;
-        if ( _scaleFactorLagrangian->exists() ) {
+        if ( _scaleFactorLagrangian.exists() ) {
             CALLO_CONLAG( getName(), &scaling );
         }
         return scaling;
@@ -97,7 +97,7 @@ ASTERDOUBLE BaseAssemblyMatrix::getLagrangeScaling() const {
 }
 
 void BaseAssemblyMatrix::updateDOFNumbering() {
-    if ( _description->exists() ) {
+    if ( _description.exists() ) {
         _description->updateValuePointer();
         std::string dofName = ( *_description )[1];
         _dofNum = std::make_shared< DOFNumbering >( dofName );

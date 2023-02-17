@@ -197,11 +197,15 @@ class NamesMap {
 
     NamesMapClass< ValueType > &operator*(void)const { return *_namesMapPtr; };
 
-    bool isEmpty() const {
+    bool exists() const {
+        if ( _namesMapPtr == nullptr )
+            return false;
+
         if ( _namesMapPtr.use_count() == 0 )
-            return true;
-        return false;
-    };
+            return false;
+
+        return _namesMapPtr->exists();
+    }
 };
 
 /** @typedef Definition d'un pointeur de nom Jeveux entier long */

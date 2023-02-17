@@ -68,7 +68,7 @@ BaseMesh::BaseMesh( const std::string &name, const std::string &type )
 ASTERINTEGER BaseMesh::getNumberOfNodes() const {
     if ( isEmpty() )
         return 0;
-    if ( !_dimensionInformations->exists() )
+    if ( !_dimensionInformations.exists() )
         return 0;
     _dimensionInformations->updateValuePointer();
     return ( *_dimensionInformations )[0];
@@ -77,7 +77,7 @@ ASTERINTEGER BaseMesh::getNumberOfNodes() const {
 ASTERINTEGER BaseMesh::getNumberOfCells() const {
     if ( isEmpty() )
         return 0;
-    if ( !_dimensionInformations->exists() )
+    if ( !_dimensionInformations.exists() )
         return 0;
     _dimensionInformations->updateValuePointer();
     return ( *_dimensionInformations )[2];
@@ -86,7 +86,7 @@ ASTERINTEGER BaseMesh::getNumberOfCells() const {
 ASTERINTEGER BaseMesh::getDimension() const {
     if ( isEmpty() )
         return 0;
-    if ( !_dimensionInformations->exists() )
+    if ( !_dimensionInformations.exists() )
         return 0;
 
     _dimensionInformations->updateValuePointer();
@@ -228,7 +228,7 @@ std::string BaseMesh::getCellName( const ASTERINTEGER &index ) const {
 ASTERINTEGER BaseMesh::getCellType( const ASTERINTEGER &index ) const {
     if ( isEmpty() )
         return 0;
-    if ( !_cellsType->exists() )
+    if ( !_cellsType.exists() )
         return 0;
     _cellsType->updateValuePointer();
     return ( *_cellsType )[index];
@@ -283,16 +283,16 @@ void BaseMesh::initDefinition( const int &dim, const VectorReal &coord,
     int nbNodes = coord.size() / 3;
     int nbCells = types.size();
 
-    AS_ASSERT( !_dimensionInformations->exists() );
+    AS_ASSERT( !_dimensionInformations.exists() );
     _dimensionInformations->allocate( 6 );
     ( *_dimensionInformations )[0] = nbNodes;
     ( *_dimensionInformations )[2] = nbCells;
     ( *_dimensionInformations )[5] = (ASTERINTEGER)dim;
 
-    AS_ASSERT( !_cellsType->exists() );
+    AS_ASSERT( !_cellsType.exists() );
     ( *_cellsType ) = types;
 
-    AS_ASSERT( !_connectivity->exists() );
+    AS_ASSERT( !_connectivity.exists() );
     _connectivity->allocateContiguousNumbered( connectivity );
 
     const JeveuxVectorReal values( coord );
@@ -319,7 +319,7 @@ void BaseMesh::addGroupsOfNodes( const VectorString &names,
                                  const VectorOfVectorsLong &groupsOfNodes ) {
     int nbGroups = names.size();
     AS_ASSERT( nbGroups == groupsOfNodes.size() );
-    AS_ASSERT( _groupsOfNodes->exists() );
+    AS_ASSERT( _groupsOfNodes.exists() );
     AS_ASSERT( _groupsOfNodes->capacity() >= _groupsOfNodes->size() + nbGroups );
 
     for ( auto i = 0; i < nbGroups; ++i ) {
@@ -331,7 +331,7 @@ void BaseMesh::addGroupsOfCells( const VectorString &names,
                                  const VectorOfVectorsLong &groupsOfCells ) {
     int nbGroups = names.size();
     AS_ASSERT( nbGroups == groupsOfCells.size() );
-    AS_ASSERT( _groupsOfCells->exists() );
+    AS_ASSERT( _groupsOfCells.exists() );
     AS_ASSERT( _groupsOfCells->capacity() >= _groupsOfCells->size() + nbGroups );
 
     for ( auto i = 0; i < nbGroups; ++i ) {

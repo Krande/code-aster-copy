@@ -65,7 +65,7 @@ py::dict LinearSolver::getKeywords() const {
 }
 
 bool LinearSolver::build() {
-    if ( _charValues->exists() ) {
+    if ( _charValues.exists() ) {
         _charValues->deallocate();
         _doubleValues->deallocate();
         _integerValues->deallocate();

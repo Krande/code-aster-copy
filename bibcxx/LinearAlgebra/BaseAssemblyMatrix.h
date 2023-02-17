@@ -283,7 +283,7 @@ class BaseAssemblyMatrix : public DataStructure {
      * @todo delete this function and the attribute _solverName
      */
     bool deleteFactorizedMatrix( void ) {
-        if ( _description->exists() && get_sh_jeveux_status() == 1 ) {
+        if ( _description.exists() && get_sh_jeveux_status() == 1 ) {
             CALLO_DELETE_MATRIX( getName(), _solverName );
         }
 
@@ -295,13 +295,13 @@ class BaseAssemblyMatrix : public DataStructure {
     /**
      * @brief Return True if CCID object exists for DirichletElimination
      */
-    bool hasDirichletEliminationDOFs() const { return _ccid->exists(); }
+    bool hasDirichletEliminationDOFs() const { return _ccid.exists(); }
 
     /**
      * @brief Return CCID object if exists for DirichletElimination
      */
     VectorLong getDirichletBCDOFs( void ) const {
-        if ( _ccid->exists() ) {
+        if ( _ccid.exists() ) {
             _ccid->updateValuePointer();
             return _ccid->toVector();
         } else {

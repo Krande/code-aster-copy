@@ -42,27 +42,34 @@ GlobalEquationNumbering::GlobalEquationNumbering( const std::string &baseName )
       _mesh( nullptr ),
       _model( nullptr ){};
 
+GlobalEquationNumbering::GlobalEquationNumbering()
+    : GlobalEquationNumbering( DataStructureNaming::getNewName() ){};
+
+bool GlobalEquationNumbering::exists() const {
+    return _informations.exists() && _componentsOnNodes.exists() && _indexationVector.exists();
+};
+
 void GlobalEquationNumbering::GlobalEquationNumbering::setModel( const ModelPtr &model ) {
-    if ( _informations->exists() ) {
+    if ( model && exists() ) {
         _informations->updateValuePointer();
         const auto modelName = std::string( ( *_informations )[2].toString(), 0, 8 );
         if ( model && modelName != model->getName() ) {
             AS_ABORT( "Models are incompatible" );
         }
+        _model = model;
+        this->setMesh( _model->getMesh() );
     }
-    _model = model;
-    this->setMesh( _model->getMesh() );
 };
 
 void GlobalEquationNumbering::GlobalEquationNumbering::setMesh( const BaseMeshPtr &mesh ) {
-    if ( _informations->exists() ) {
+    if ( mesh && exists() ) {
         _informations->updateValuePointer();
         const auto meshName = std::string( ( *_informations )[0].toString(), 0, 8 );
         if ( mesh && meshName != mesh->getName() ) {
             AS_ABORT( "Mesh are incompatible: " + mesh->getName() + " vs " + meshName );
         }
+        _mesh = mesh;
     }
-    _mesh = mesh;
 };
 
 std::string GlobalEquationNumbering::getPhysicalQuantity() const {

@@ -338,7 +338,7 @@ class BaseMesh : public DataStructure, public ListOfTables {
      * @brief Fonction permettant de savoir si un maillage est vide (non relu par exemple)
      * @return retourne true si le maillage est vide
      */
-    bool isEmpty() const { return !_dimensionInformations->exists(); };
+    bool isEmpty() const { return !_dimensionInformations.exists(); };
 
     /**
      * @brief Fonction permettant de savoir si un maillage est parallel

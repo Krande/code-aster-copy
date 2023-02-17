@@ -41,11 +41,11 @@ BaseFunction::BaseFunction( const std::string type, const std::string type2 )
     : BaseFunction::BaseFunction( ResultNaming::getNewResultName(), type, type2 ) {}
 
 void BaseFunction::allocate( ASTERINTEGER size ) {
-    if ( _property->exists() )
+    if ( _property.exists() )
         _property->deallocate();
     propertyAllocate();
 
-    if ( _value->exists() )
+    if ( _value.exists() )
         _value->deallocate();
     _value->allocate( 2 * size );
 }
@@ -80,7 +80,7 @@ void BaseFunction::setValues( const VectorReal &absc, const VectorReal &ordo ) {
 
 void BaseFunction::setInterpolation( const std::string type ) {
     std::string interp;
-    if ( !_property->exists() )
+    if ( !_property.exists() )
         propertyAllocate();
 
     if ( type.length() != 7 )
@@ -98,7 +98,7 @@ void BaseFunction::setInterpolation( const std::string type ) {
 }
 
 void BaseFunction::setAsConstant() {
-    if ( !_property->exists() )
+    if ( !_property.exists() )
         propertyAllocate();
     _funct_type = "CONSTANT";
     ( *_property )[0] = _funct_type;

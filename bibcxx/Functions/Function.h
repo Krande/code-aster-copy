@@ -68,7 +68,7 @@ class BaseFunction : public GenericFunction {
      * @return  name of the result
      */
     std::string getResultName() {
-        if ( !_property->exists() )
+        if ( !_property.exists() )
             return "";
         _property->updateValuePointer();
         return ( *_property )[3].toString();
@@ -85,7 +85,7 @@ class BaseFunction : public GenericFunction {
      * @type  name string
      */
     void setParameterName( const std::string name ) {
-        if ( !_property->exists() )
+        if ( !_property.exists() )
             propertyAllocate();
         ( *_property )[2] = name.substr( 0, 8 ).c_str();
     }
@@ -96,7 +96,7 @@ class BaseFunction : public GenericFunction {
      * @type  name string
      */
     void setResultName( const std::string name ) {
-        if ( !_property->exists() )
+        if ( !_property.exists() )
             propertyAllocate();
         ( *_property )[3] = name.substr( 0, 8 ).c_str();
     }
@@ -135,7 +135,7 @@ class BaseFunction : public GenericFunction {
      * @brief Return the number of points of the function
      */
     virtual ASTERINTEGER maximumSize() const {
-        if ( !_value->exists() )
+        if ( !_value.exists() )
             return 0;
         _value->updateValuePointer();
         return _value->size() / 2;

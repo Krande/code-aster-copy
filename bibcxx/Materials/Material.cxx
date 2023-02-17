@@ -66,11 +66,11 @@ MaterialProperties::MaterialProperties( const std::string &name, const MaterialP
     *( _valR ) = *( toCopy._valR );
     *( _valC ) = *( toCopy._valC );
     *( _valK ) = *( toCopy._valK );
-    if ( !toCopy._ordr.isEmpty() ) {
+    if ( !toCopy._ordr.exists() ) {
         _ordr = JeveuxVectorChar16( getName() + ".ORDR" );
         *( _ordr ) = *( toCopy._ordr );
     }
-    if ( !toCopy._kord.isEmpty() ) {
+    if ( !toCopy._kord.exists() ) {
         _kord = JeveuxVectorLong( getName() + ".KORD" );
         *( _kord ) = *( toCopy._kord );
     }
@@ -205,7 +205,7 @@ bool Material::build() {
 }
 
 ASTERINTEGER Material::size() {
-    if ( !_names->exists() ) {
+    if ( !_names.exists() ) {
         return 0;
     }
     _names->updateValuePointer();
@@ -235,7 +235,7 @@ std::string Material::_storeListFunc( VectorString vect ) {
 void Material::_addProperties( const std::string name, int nbParam, VectorReal valR,
                                VectorComplex valC, VectorString valK, VectorString ordr,
                                VectorLong kord ) {
-    if ( _names->exists() && std::find( _names.begin(), _names.end(), name ) != _names.end() ) {
+    if ( _names.exists() && std::find( _names.begin(), _names.end(), name ) != _names.end() ) {
         throw std::runtime_error( "Properties for '" + name + "' are already defined" );
     }
     _names->push_back( name );

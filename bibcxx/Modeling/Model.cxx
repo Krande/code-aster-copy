@@ -256,7 +256,7 @@ BaseMeshPtr Model::getMesh() const {
 
 JeveuxVectorLong Model::getTypeOfCells() const { return _typeOfCells; }
 
-bool Model::isEmpty() const { return !_typeOfCells->exists(); };
+bool Model::isEmpty() const { return !_typeOfCells.exists(); };
 
 void Model::setSaneModel( ModelPtr saneModel ) { _saneModel = saneModel; };
 

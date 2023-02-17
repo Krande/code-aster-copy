@@ -83,7 +83,7 @@ class Table : public DataStructure {
         // #ifdef ASTER_DEBUG_CXX
         //         std::cout << "DEBUG: Table.destr: " << this->getName() << std::endl;
         // #endif
-        if ( _parameterDescription->exists() && _description->exists() ) {
+        if ( _parameterDescription.exists() && _description.exists() ) {
             _parameterDescription->updateValuePointer();
             _description->updateValuePointer();
             const int nbParam = ( *_description )[0];

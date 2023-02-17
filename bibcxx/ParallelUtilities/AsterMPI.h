@@ -364,7 +364,7 @@ void AsterMPI::all_gather( const std::vector< T > &in_values, JeveuxVector< T > 
     const std::size_t n = std::accumulate( pcounts.begin(), pcounts.end(), 0 );
 
     if ( out_values->size() < n ) {
-        if ( out_values->exists() )
+        if ( out_values.exists() )
             out_values->deallocate();
         out_values->allocate( n );
     }

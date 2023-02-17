@@ -352,15 +352,15 @@ py::dict Result::getAccessParameters() const {
 
     CALL_JEMARQ();
     _serialNumber->updateValuePointer();
-    if ( _rspr->exists() )
+    if ( _rspr.exists() )
         _rspr->updateValuePointer();
-    if ( _rspi->exists() )
+    if ( _rspi.exists() )
         _rspi->updateValuePointer();
-    if ( _rsp8->exists() )
+    if ( _rsp8.exists() )
         _rsp8->updateValuePointer();
-    if ( _rs16->exists() )
+    if ( _rs16.exists() )
         _rs16->updateValuePointer();
-    if ( _rs24->exists() )
+    if ( _rs24.exists() )
         _rs24->updateValuePointer();
 
     AS_ASSERT( _calculationParameter->build() );
@@ -808,7 +808,7 @@ bool Result::build( const std::vector< FiniteElementDescriptorPtr > feds,
     return update_tables();
 };
 
-bool Result::exists() const { return _symbolicNamesOfFields->exists(); };
+bool Result::exists() const { return _symbolicNamesOfFields.exists(); };
 
 void Result::resize( ASTERINTEGER nbIndexes ) {
     if ( !exists() ) {

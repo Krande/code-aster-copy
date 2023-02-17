@@ -749,11 +749,14 @@ public:
     return *_jeveuxCollectionPtr;
   };
 
-  bool isEmpty() const {
+  bool exists() const {
+    if (_jeveuxCollectionPtr == nullptr)
+      return false;
     if (_jeveuxCollectionPtr.use_count() == 0)
-      return true;
-    return false;
-  };
+      return false;
+
+    return _jeveuxCollectionPtr->exists();
+  }
 
   auto begin() { return _jeveuxCollectionPtr->begin(); };
 

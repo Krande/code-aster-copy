@@ -119,7 +119,7 @@ ASTERINTEGER FiniteElementDescriptor::getNumberOfVirtualNodes() const {
 
 void FiniteElementDescriptor::setNumberOfVirtualNodes( const ASTERINTEGER nbNodes ) {
 
-    if ( !_numberOfDelayedNumberedConstraintNodes->exists() ) {
+    if ( !_numberOfDelayedNumberedConstraintNodes.exists() ) {
         _numberOfDelayedNumberedConstraintNodes->allocate( 1 );
     } else {
         _numberOfDelayedNumberedConstraintNodes->updateValuePointer();
@@ -195,7 +195,7 @@ bool FiniteElementDescriptor::existsFiniteElement() {
 bool FiniteElementDescriptor::existsSuperElement() { return ( numberOfSuperElement() > 0 ); }
 
 bool FiniteElementDescriptor::exists() const {
-    if ( _parameters->exists() && _numberOfDelayedNumberedConstraintNodes->exists() )
+    if ( _parameters.exists() && _numberOfDelayedNumberedConstraintNodes.exists() )
         return true;
 
     return false;

@@ -83,7 +83,7 @@ class ElementaryCompute {
     };
 
     /** @brief Has elementary term ? */
-    bool hasElementaryTerm() { return _relr->exists(); };
+    bool hasElementaryTerm() { return _relr.exists(); };
 
     /** @brief Get number of elementary term  */
     ASTERINTEGER getNumberOfElementaryTerms() const { return _relr->size(); };

@@ -789,7 +789,9 @@ class JeveuxVector {
 
     const JeveuxVectorTypePtr &operator->(void)const {
 #ifdef ASTER_DEBUG_CXX
-        AS_ASSERT( _jeveuxVectorPtr );
+        if ( !_jeveuxVectorPtr ) {
+            AS_ABORT( "Null Jeveux vector" );
+        }
 #endif
 
         return _jeveuxVectorPtr;
@@ -797,18 +799,22 @@ class JeveuxVector {
 
     JeveuxVectorClass< ValueType > &operator*(void)const {
 #ifdef ASTER_DEBUG_CXX
-        AS_ASSERT( _jeveuxVectorPtr );
+        if ( !_jeveuxVectorPtr ) {
+            AS_ABORT( "Null Jeveux vector" );
+        }
 #endif
         return *_jeveuxVectorPtr;
     };
 
-    bool isEmpty() const {
+    bool exists() const {
+
         if ( _jeveuxVectorPtr == nullptr )
-            return true;
+            return false;
         if ( _jeveuxVectorPtr.use_count() == 0 )
-            return true;
-        return false;
-    };
+            return false;
+
+        return _jeveuxVectorPtr->exists();
+    }
 
     auto begin() { return _jeveuxVectorPtr->begin(); };
 

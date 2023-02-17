@@ -80,7 +80,7 @@ class Formula : public GenericFunction {
      * @return  name of the result
      */
     std::string getResultName() {
-        if ( !_property->exists() )
+        if ( !_property.exists() )
             return "";
         _property->updateValuePointer();
         return ( *_property )[3].toString();

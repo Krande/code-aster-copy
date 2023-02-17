@@ -35,7 +35,7 @@
 
 void ParallelMesh::_buildGlobal2LocalMap() {
     auto l2g = getLocalToGlobalMapping();
-    if ( l2g->exists() ) {
+    if ( l2g.exists() ) {
         l2g->updateValuePointer();
         ASTERINTEGER nloc = l2g->size();
 
@@ -54,7 +54,7 @@ bool ParallelMesh::updateGlobalGroupOfNodes( void ) {
     for ( auto &nameOfGrp : allgONNames )
         _setOfAllGON.insert( trim( nameOfGrp.toString() ) );
 
-    if ( _globalGroupOfNodes->exists() )
+    if ( _globalGroupOfNodes.exists() )
         _globalGroupOfNodes->deallocate();
 
     if ( _setOfAllGON.size() > 0 ) {
@@ -79,7 +79,7 @@ bool ParallelMesh::updateGlobalGroupOfCells( void ) {
     for ( auto &nameOfGrp : allgOENames )
         _setOfAllGOE.insert( trim( nameOfGrp.toString() ) );
 
-    if ( _globalGroupOfCells->exists() )
+    if ( _globalGroupOfCells.exists() )
         _globalGroupOfCells->deallocate();
 
     if ( _setOfAllGOE.size() > 0 ) {
