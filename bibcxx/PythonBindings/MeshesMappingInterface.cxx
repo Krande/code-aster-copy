@@ -31,5 +31,7 @@ void exportMeshesMappingToPython( py::module_ &mod ) {
                                                                                  "MeshesMapping" )
         .def( py::init( &initFactoryPtr< MeshesMapping > ) )
         .def( py::init( &initFactoryPtr< MeshesMapping, std::string > ) )
-        .def( "setFirstMesh", &MeshesMapping::setFirstMesh );
+        .def( "setFirstMesh", &MeshesMapping::setFirstMesh )
+        .def( "setSecondMesh", &MeshesMapping::setSecondMesh )
+        .def( "getSecondMesh", &MeshesMapping::getSecondMesh );
 };

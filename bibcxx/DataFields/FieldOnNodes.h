@@ -521,10 +521,14 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
             raiseAsterError( "Empty GlobalEquationNumbering" );
         if ( _dofDescription && _dofDescription != desc )
             raiseAsterError( "GlobalEquationNumbering inconsistents" );
-        _reference->updateValuePointer();
-        const auto descName = std::string( ( *_reference )[1].toString(), 0, 19 );
-        if ( descName != desc->getName() ) {
-            raiseAsterError( "Description are incompatible" );
+        if ( _reference.exists() ) {
+            _reference->updateValuePointer();
+            const auto descName = std::string( ( *_reference )[1].toString(), 0, 19 );
+            if ( descName != desc->getName() ) {
+                std::string mess;
+                mess = "Description are incompatible: " + descName + " vs " + desc->getName();
+                raiseAsterError( mess );
+            }
         }
         _dofDescription = desc;
     };
@@ -535,7 +539,13 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
      */
     void setMesh( const BaseMeshPtr &mesh ) {
         AS_ASSERT( _dofDescription );
-
+        _reference->updateValuePointer();
+        const auto meshName = trim( ( *_reference )[0].toString() );
+        if ( mesh && meshName != mesh->getName() ) {
+            std::string mess;
+            mess = "Meshes are incompatible: " + meshName + " vs " + mesh->getName();
+            raiseAsterError( mess );
+        }
         _dofDescription->setMesh( mesh );
     };
 
@@ -662,11 +672,10 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
 
             _reference->updateValuePointer();
             const std::string name2 = trim( ( *_reference )[1].toString() );
-            std::cout << getName() << " vs " << name2 << std::endl;
             if ( !name2.empty() ) {
                 AS_ASSERT( mesh );
                 _dofDescription = std::make_shared< GlobalEquationNumbering >( name2 );
-                _dofDescription->setMesh( mesh );
+                this->setMesh( mesh );
             } else {
                 AS_ABORT( "NUME_EQUA is empty" );
             }

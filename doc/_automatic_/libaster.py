@@ -1260,27 +1260,34 @@ class DiscreteComputation:
         """
 
 
-# class FieldOnNodesDescription in libaster
+# class GlobalEquationNumbering in libaster
 
 
-class FieldOnNodesDescription(DataStructure):
+class GlobalEquationNumbering(DataStructure):
     pass
 
     # Method resolution order:
-    #     FieldOnNodesDescription
+    #     GlobalEquationNumbering
     #     DataStructure
     #     pybind11_builtins.pybind11_object
     #     builtins.object
 
     # Methods defined here:
 
-    def __init__(self, *args, **kwargs):
-        """Overloaded function.
+    def __init__(self, arg0):
+        pass
 
-        1. __init__(self: libaster.FieldOnNodesDescription) -> None
+    def getMesh(self):
+        pass
 
-        2. __init__(self: libaster.FieldOnNodesDescription, arg0: str) -> None
-        """
+    def getModel(self):
+        pass
+
+    def setMesh(self, arg0):
+        pass
+
+    def setModel(self, arg0):
+        pass
 
 
 # class BaseDOFNumbering in libaster
@@ -1314,11 +1321,15 @@ class BaseDOFNumbering(DataStructure):
     def computeRenumbering(self, arg0, arg1):
         pass
 
-    def getDescription(self):
-        pass
-
     def getFiniteElementDescriptors(self):
         pass
+
+    def getGlobalEquationNumbering(self):
+        """Returns the global equation numbering object;
+
+        Returns:
+            GlobalEquationNumbering: global equation numbering.
+        """
 
     def getMesh(self):
         """Return the mesh
@@ -1370,7 +1381,7 @@ class DOFNumbering(BaseDOFNumbering):
 
         2. __init__(self: libaster.DOFNumbering, arg0: str) -> None
 
-        3. __init__(self: libaster.DOFNumbering, arg0: str, arg1: libaster.FieldOnNodesDescription, arg2: Model) -> None
+        3. __init__(self: libaster.DOFNumbering, arg0: str, arg1: libaster.GlobalEquationNumbering, arg2: Model) -> None
         """
 
     def getComponentAssociatedToRow(self, row, local=False):
@@ -2183,8 +2194,6 @@ class FieldOnNodesReal(DataField):
         4. __init__(self: libaster.FieldOnNodesReal, arg0: Model) -> None
 
         5. __init__(self: libaster.FieldOnNodesReal, arg0: libaster.BaseDOFNumbering) -> None
-
-        6. __init__(self: libaster.FieldOnNodesReal, arg0: MeshCoordinatesField) -> None
         """
 
     def __isub__(self, arg0):
@@ -2212,7 +2221,7 @@ class FieldOnNodesReal(DataField):
             scaling (float): scaling velue
         """
 
-    def build(self):
+    def build(self, mesh=None):
         pass
 
     def dot(self, other):
@@ -2231,7 +2240,7 @@ class FieldOnNodesReal(DataField):
     def fromPetsc(self, *args, **kwargs):
         """Overloaded function.
 
-        1. fromPetsc(self: libaster.FieldOnNodesReal, dofNmbrg: libaster.BaseDOFNumbering, vec: vec, scaling: float) -> libaster.FieldOnNodesReal
+        1. fromPetsc(self: libaster.FieldOnNodesReal, dofNmbrg: libaster.BaseDOFNumbering, vec: vec, scaling: float = 1.0) -> libaster.FieldOnNodesReal
 
 
                     Import a PETSc vector into the field.
@@ -2242,17 +2251,7 @@ class FieldOnNodesReal(DataField):
                         scaling (float) : The scaling of the Lagrange DOFs
 
 
-        2. fromPetsc(self: libaster.FieldOnNodesReal, dofNmbrg: libaster.BaseDOFNumbering, vec: vec) -> libaster.FieldOnNodesReal
-
-
-                    Import a PETSc vector into the field.
-
-                    Arguments:
-                        dofNmbrg (DOFNumbering): The numbering of the DOFs
-                        vec (Vec): The PETSc vector
-
-
-        3. fromPetsc(self: libaster.FieldOnNodesReal, vec: vec, scaling: float) -> libaster.FieldOnNodesReal
+        2. fromPetsc(self: libaster.FieldOnNodesReal, vec: vec, scaling: float = 1.0) -> libaster.FieldOnNodesReal
 
 
                     Import a PETSc vector into the field.
@@ -2260,15 +2259,6 @@ class FieldOnNodesReal(DataField):
                     Arguments:
                         vec (Vec): The PETSc vector
                         scaling (float) : The scaling of the Lagrange DOFs
-
-
-        4. fromPetsc(self: libaster.FieldOnNodesReal, vec: vec) -> libaster.FieldOnNodesReal
-
-
-                    Import a PETSc vector into the field.
-
-                    Arguments:
-                        vec (Vec): The PETSc vector
         """
 
     def getComponents(self):
@@ -2276,26 +2266,6 @@ class FieldOnNodesReal(DataField):
 
         Returns:
             list[str]: list of components
-        """
-
-    def getDOFsFromNodesAndComponentsName(self, local=True):
-        """Return the dict of dofs with the pair (node id, component's name) as keys
-
-        Arguments:
-            local (bool) = True: if True use local node index else use global index
-
-        Returns:
-            dict[int, str] : dofs id for each node id and component's name
-        """
-
-    def getDOFsFromNodesAndComponentsNumber(self, local=True):
-        """Return the dict of dofs with the pair (node id, name id) as keys
-
-        Arguments:
-            local (bool) = True: if True use local node index else use global index
-
-        Returns:
-            dict[int, str] : dofs id for each node id and component id
         """
 
     def getDescription(self):
@@ -2307,41 +2277,6 @@ class FieldOnNodesReal(DataField):
         1. getMesh(self: libaster.FieldOnNodesReal) -> libaster.BaseMesh
 
         2. getMesh(self: libaster.FieldOnNodesReal) -> libaster.BaseMesh
-        """
-
-    def getNodesAndComponentsFromDOF(self, local=True):
-        """Return the list of node id and name of component for each dofs
-
-        Arguments:
-            local (bool) = True: if True use local node index else use global index
-
-        Returns:
-            list[tuple[int, str]] : node id and name of component for each dofs
-        """
-
-    def getNodesAndComponentsNumberFromDOF(self, *args, **kwargs):
-        """Overloaded function.
-
-        1. getNodesAndComponentsNumberFromDOF(self: libaster.FieldOnNodesReal, local: bool = True) -> List[Tuple[int, int]]
-
-
-                    Return the list of node id and component id for each dofs
-
-                    Arguments:
-                        local (bool) = True: if True use local node index else use global index
-
-                    Returns:
-                        list[tuple[int, int]] : node id and component if for each dofs
-
-
-        2. getNodesAndComponentsNumberFromDOF(self: libaster.FieldOnNodesReal, arg0: bool) -> List[Tuple[int, int]]
-
-
-                    Return a list of values such that for each DOF, it gives the node id and component id
-                    as [dof1=[node_1, comp_1], dof2=[node_1, comp_2], ....]
-
-                    Returns:
-                        list[[int, int]]: List of values (node, component) for each DOF.
         """
 
     def getNumberOfComponents(self):
@@ -2489,7 +2424,7 @@ class FieldOnNodesComplex(DataField):
     def __setitem__(self, arg0, arg1):
         pass
 
-    def build(self):
+    def build(self, mesh=None):
         pass
 
     def dot(self, other):
@@ -2638,6 +2573,9 @@ class FieldOnNodesLong(DataField):
         4. __init__(self: libaster.FieldOnNodesLong, arg0: libaster.BaseDOFNumbering) -> None
         """
 
+    def build(self, mesh=None):
+        pass
+
     def getDescription(self):
         pass
 
@@ -2677,6 +2615,9 @@ class FieldOnNodesChar8(DataField):
 
         4. __init__(self: libaster.FieldOnNodesChar8, arg0: libaster.BaseDOFNumbering) -> None
         """
+
+    def build(self, mesh=None):
+        pass
 
     def getDescription(self):
         pass
@@ -8934,7 +8875,13 @@ class MeshesMapping(DataStructure):
         2. __init__(self: libaster.MeshesMapping, arg0: str) -> None
         """
 
+    def getSecondMesh(self):
+        pass
+
     def setFirstMesh(self, arg0):
+        pass
+
+    def setSecondMesh(self, arg0):
         pass
 
 
@@ -9936,10 +9883,10 @@ class Result(DataStructure):
         2. __init__(self: libaster.Result, arg0: str, arg1: str) -> None
         """
 
-    def addFieldOnNodesDescription(self, arg0):
+    def addFiniteElementDescriptor(self, arg0):
         pass
 
-    def addFiniteElementDescriptor(self, arg0):
+    def addGlobalEquationNumbering(self, arg0):
         pass
 
     def allocate(self, nb_index):
@@ -9956,7 +9903,7 @@ class Result(DataStructure):
         Arguments:
             feds (list[FiniteElementDescriptor]) : list of additional finite element descriptor used to
                 build FieldOnCells
-            fnds (list[FieldOnNodesDescriptionPtr]) : list of additional field description used to
+            fnds (list[GlobalEquationNumberingPtr]) : list of additional field description used to
                 build FieldOnNodes
 
         Returns:
@@ -10100,13 +10047,6 @@ class Result(DataStructure):
             FieldOnNodesComplex: field to get
         """
 
-    def getFieldOnNodesDescriptions(self):
-        """Get list of field's description to build internal FieldOnNodes
-
-        Returns:
-            list[FieldOnNodesDescription]: list of field's description
-        """
-
     def getFieldOnNodesReal(self, name, index):
         """Get a FieldOnNodesReal from result.
 
@@ -10179,6 +10119,13 @@ class Result(DataStructure):
 
         Returns:
             list[FiniteElementDescriptor]: list of finite element descriptor
+        """
+
+    def getGlobalEquationNumberings(self):
+        """Get list of field's description to build internal FieldOnNodes
+
+        Returns:
+            list[GlobalEquationNumbering]: list of field's description
         """
 
     def getIndexes(self):
@@ -11797,6 +11744,25 @@ class ParallelMesh(BaseMesh):
         """
 
 
+# class ParallelGlobalEquationNumbering in libaster
+
+
+class ParallelGlobalEquationNumbering(GlobalEquationNumbering):
+    pass
+
+    # Method resolution order:
+    #     ParallelGlobalEquationNumbering
+    #     GlobalEquationNumbering
+    #     DataStructure
+    #     pybind11_builtins.pybind11_object
+    #     builtins.object
+
+    # Methods defined here:
+
+    def __init__(self, arg0):
+        pass
+
+
 # class ParallelDOFNumbering in libaster
 
 
@@ -11819,7 +11785,7 @@ class ParallelDOFNumbering(BaseDOFNumbering):
 
         2. __init__(self: libaster.ParallelDOFNumbering, arg0: str) -> None
 
-        3. __init__(self: libaster.ParallelDOFNumbering, arg0: str, arg1: libaster.FieldOnNodesDescription, arg2: libaster.Model) -> None
+        3. __init__(self: libaster.ParallelDOFNumbering, arg0: str, arg1: libaster.ParallelGlobalEquationNumbering, arg2: libaster.Model) -> None
         """
 
     def getComponentAssociatedToRow(self, row, local=False):

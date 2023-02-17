@@ -155,8 +155,12 @@ class FieldCreator(ExecuteCommand):
                 for comb in force_list(keywords.get("COMB", [])):
                     desc = comb["CHAM_GD"].getDescription()
                     if desc:
-                        self._result.setDescription(desc)
+                        try:
+                            self._result.setDescription(desc)
+                        except:
+                            pass
                         break
+
             self._result.build(self._getMesh(keywords))
         elif location[:2] == "EL":
             resultat = keywords.get("RESULTAT")

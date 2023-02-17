@@ -43,7 +43,7 @@ class FieldProjector(ExecuteCommand):
         if resultat is not None:
             self._result = type(keywords["RESULTAT"])()
             return
-        if chamGd != None and methode == "SOUS_POINT":
+        if chamGd is None and methode == "SOUS_POINT":
             self._result = FieldOnCellsReal()
             return
         else:
@@ -69,6 +69,8 @@ class FieldProjector(ExecuteCommand):
                 self._result.setModel(keywords["MODELE_2"])
             elif "MAILLAGE_2" in keywords:
                 self._result.setMesh(keywords["MAILLAGE_2"])
+            elif "MATR_PROJECTION" in keywords:
+                self._result.setMesh(keywords["MATR_PROJECTION"].getSecondMesh())
             else:
                 self._result.setMesh(keywords["RESULTAT"].getMesh())
             self._result.build()
@@ -77,6 +79,7 @@ class FieldProjector(ExecuteCommand):
         else:
             if "MAILLAGE_1" in keywords:
                 self._result.setFirstMesh(keywords["MAILLAGE_1"])
+                self._result.setSecondMesh(keywords["MAILLAGE_2"])
 
     def add_dependencies(self, keywords):
         """Register input *DataStructure* objects as dependencies.

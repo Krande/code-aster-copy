@@ -66,10 +66,11 @@ subroutine op0077()
 !
 !
 !
+    character(len=1) :: base
     character(len=8) :: k8b, nomres, resin, nomsst, mailsk, mode
     character(len=8) :: k8bid, result, blanc, param(3)
     character(len=16) :: concep, nomcmd, typres, typrep, champ(4)
-    character(len=19) :: profno
+    character(len=19) :: nume_equa
     character(len=24) :: matgen, numgen, vbl24(1)
     integer :: ioc1, nbord, i, iord, lpaout(3)
 !
@@ -77,7 +78,7 @@ subroutine op0077()
 !-----------------------------------------------------------------------
     integer :: ibid, ir, ir1, iret, isk, j
     integer :: j2refe, j3refe, jrefn, jrefnb, lmacr, lmodge
-    integer ::  n1, n2, nbcham, numsec
+    integer ::  n1, n2, nbcham, numsec, neq
     integer, pointer :: ordr(:) => null()
     character(len=3) :: typesca
     character(len=8), pointer :: refm(:) => null()
@@ -120,12 +121,14 @@ subroutine op0077()
 !     --- SI RESTITUTION SUR UNE SQUELETTE, ALORS ATTACHER UN NUME_EQUA
 !         AU RESULTAT
     if (ir .eq. 0) then
-        profno = '&&OP0077.PROFC.NUME'
+        nume_equa = '&&OP0077.PROFC.NUME'
+        base = 'V'
     else
-        profno = nomres//'.PROFC.NUME'
+        base = 'G'
+        nume_equa = nomres//'.PROFC.NUME'
     end if
 ! --- CREATION D'UN OBJET REFN DU PROFIL SUR BASE VOLATILE
-    call wkvect(profno//'.REFN', 'V V K24', 4, jrefn)
+    call wkvect(nume_equa//'.REFN', base//' V K24', 4, jrefn)
     zk24(jrefn+1) = 'DEPL_R'
 !
 !
@@ -143,8 +146,8 @@ subroutine op0077()
         zk24(jrefn) = mailsk
         call getfac('CYCLIQUE', ioc1)
         if (ioc1 .gt. 0) then
-            call excygl(nomres, typres, result, mailsk, profno)
-            call jeveuo(profno//'.REFN', 'E', jrefnb)
+            call excygl(nomres, typres, result, mailsk, nume_equa)
+            call jeveuo(nume_equa//'.REFN', 'E', jrefnb)
             zk24(jrefnb) = mailsk
             zk24(jrefnb+1) = 'DEPL_R'
             concep(1:9) = '         '
@@ -153,8 +156,8 @@ subroutine op0077()
 !
         else
             if (typres .eq. 'MODE_MECA') then
-                call regres(nomres, mailsk, result, profno)
-                call jeveuo(profno//'.REFN', 'E', jrefnb)
+                call regres(nomres, mailsk, result, nume_equa)
+                call jeveuo(nume_equa//'.REFN', 'E', jrefnb)
                 zk24(jrefnb) = mailsk
                 zk24(jrefnb+1) = 'DEPL_R'
                 concep(1:9) = '         '
@@ -199,8 +202,8 @@ subroutine op0077()
                 call retrec(nomres, resin, nomsst)
             else
                 call getvid(' ', 'SQUELETTE', scal=mailsk, nbret=ibid)
-                call retrgl(nomres, resin, mailsk, profno)
-                call jeveuo(profno//'.REFN', 'E', jrefnb)
+                call retrgl(nomres, resin, mailsk, nume_equa)
+                call jeveuo(nume_equa//'.REFN', 'E', jrefnb)
                 zk24(jrefnb) = mailsk
                 zk24(jrefnb+1) = 'DEPL_R'
             end if
@@ -255,20 +258,20 @@ subroutine op0077()
                 !-- l'autre en complexe. En cas de modification d'une des routines,
                 !-- ne pas oublier de reporter le changement dans l'autre.
                 if (typesca .eq. "R") then
-                    call regegl(nomres, resin, mailsk, profno)
+                    call regegl(nomres, resin, mailsk, nume_equa)
                 elseif (typesca .eq. "C") then
-                    call regegc(nomres, resin, mailsk, profno)
+                    call regegc(nomres, resin, mailsk, nume_equa)
                 else
                     ASSERT(.false.)
                 end if
-                call jeveuo(profno//'.REFN', 'E', jrefnb)
+                call jeveuo(nume_equa//'.REFN', 'E', jrefnb)
                 zk24(jrefnb) = mailsk
                 zk24(jrefnb+1) = 'DEPL_R'
             end if
         else
 !
 !     --- CALCUL MODAL SANS SOUS-STRUCTURATION ---
-            call regene(nomres, resin, profno)
+            call regene(nomres, resin, nume_equa)
         end if
 !
 !     --- CALCUL MODAL PAR SOUS-STYRUCTURATION CYCLIQUE ---
@@ -280,8 +283,8 @@ subroutine op0077()
             call recyec(nomres, resin, numsec, 'MODE_MECA')
         else
             call getvid(' ', 'SQUELETTE', scal=mailsk, nbret=ibid)
-            call recygl(nomres, 'MODE_MECA', resin, mailsk, profno)
-            call jeveuo(profno//'.REFN', 'E', jrefnb)
+            call recygl(nomres, 'MODE_MECA', resin, mailsk, nume_equa)
+            call jeveuo(nume_equa//'.REFN', 'E', jrefnb)
             zk24(jrefnb) = mailsk
             zk24(jrefnb+1) = 'DEPL_R'
         end if
@@ -298,8 +301,8 @@ subroutine op0077()
                 call rehaec(nomres, resin, nomsst)
             else
                 call getvid(' ', 'SQUELETTE', scal=mailsk, nbret=ibid)
-                call rehagl(nomres, resin, mailsk, profno)
-                call jeveuo(profno//'.REFN', 'E', jrefnb)
+                call rehagl(nomres, resin, mailsk, nume_equa)
+                call jeveuo(nume_equa//'.REFN', 'E', jrefnb)
                 zk24(jrefnb) = mailsk
                 zk24(jrefnb+1) = 'DEPL_R'
             end if
@@ -333,11 +336,6 @@ subroutine op0077()
         if (isk .eq. 0) then
             call getvtx(' ', 'SOUS_STRUC', scal=nomsst, nbret=ibid)
 !
-!-- RECUPERATION DU MACRO ELEMENT ASSOCIE A LA SOUS STRUCTURE
-!           call dismoi('F', 'REF_RIGI_PREM', resin, 'RESU_DYNA', ibid, raide, ir)
-!           call jeveuo(raide(1:8)//'           .REFA', 'L', vk24=nlnume)
-!           call jeveuo(nlnume(2)(1:14)//'.NUME.REFN', 'L', lmodge)
-!
             call dismoi('NUME_DDL', resin, 'RESU_DYNA', repk=numgen)
             call jeveuo(numgen(1:14)//'.NUME.REFN', 'L', lmodge)
             call jenonu(jexnom(zk24(lmodge) (1:8)//'      .MODG.SSNO', nomsst), iret)
@@ -359,8 +357,24 @@ subroutine op0077()
 !     -- CREATION DE L'OBJET .REFD SI NECESSAIRE:
 !     -------------------------------------------
     call jeexin(nomres//'           .REFD', iret)
-    if (iret .eq. 0) call refdaj(' ', nomres, -1, profno, 'INIT', &
+    if (iret .eq. 0) call refdaj(' ', nomres, -1, nume_equa, 'INIT', &
                                  ' ', iret)
+
+    if (base == 'G') then
+        call jeexin(nume_equa//'.NUEQ', iret)
+        if (iret > 0) then
+            call jelira(nume_equa//'.NUEQ', 'LONMAX', neq)
+        else
+            neq = 1
+        end if
+        call wkvect(nume_equa//'.NEQU', 'G V I', 2, jrefn)
+        zi(jrefn) = neq
+        zi(jrefn+1) = neq
+        call wkvect(nume_equa//'.DELG', 'G V I', neq, jrefn)
+        do iord = 1, neq
+            zi(jrefn-1+iord) = 0
+        end do
+    end if
 !
     call jedema()
 end subroutine

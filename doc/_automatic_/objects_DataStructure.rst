@@ -560,15 +560,6 @@ Subclasses of :py:class:`~code_aster.Objects.DataStructure`
 
 
 ********************************************************************************
-:py:class:`~code_aster.Objects.FieldOnNodesDescription` object
-********************************************************************************
-
-.. autoclass:: code_aster.Objects.FieldOnNodesDescription
-   :show-inheritance:
-   :members:
-
-
-********************************************************************************
 :py:class:`~code_aster.Objects.FieldOnNodesLong` object
 ********************************************************************************
 
@@ -834,6 +825,15 @@ Subclasses of :py:class:`~code_aster.Objects.DataStructure`
 ********************************************************************************
 
 .. autoclass:: code_aster.Objects.GenericModalBasis
+   :show-inheritance:
+   :members:
+
+
+********************************************************************************
+:py:class:`~code_aster.Objects.GlobalEquationNumbering` object
+********************************************************************************
+
+.. autoclass:: code_aster.Objects.GlobalEquationNumbering
    :show-inheritance:
    :members:
 
@@ -1167,6 +1167,15 @@ Subclasses of :py:class:`~code_aster.Objects.DataStructure`
 ********************************************************************************
 
 .. autoclass:: code_aster.Objects.ParallelFiniteElementDescriptor
+   :show-inheritance:
+   :members:
+
+
+********************************************************************************
+:py:class:`~code_aster.Objects.ParallelGlobalEquationNumbering` object
+********************************************************************************
+
+.. autoclass:: code_aster.Objects.ParallelGlobalEquationNumbering
    :show-inheritance:
    :members:
 

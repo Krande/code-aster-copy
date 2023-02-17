@@ -64,6 +64,8 @@ class MeshesMapping : public DataStructure {
     JeveuxVectorLong _pjngI2;
     /** @brief Premier Maillage */
     BaseMeshPtr _firstBaseMesh;
+    /** @brief Premier Maillage */
+    BaseMeshPtr _secondBaseMesh;
 
   public:
     /**
@@ -84,6 +86,16 @@ class MeshesMapping : public DataStructure {
         _firstBaseMesh = currentMesh;
         return true;
     };
+
+    bool setSecondMesh( MeshPtr &currentMesh ) {
+        if ( currentMesh->isEmpty() ) {
+            AS_ABORT( "Mesh is empty" );
+        }
+        _secondBaseMesh = currentMesh;
+        return true;
+    };
+
+    BaseMeshPtr getSecondMesh() const { return _secondBaseMesh; };
 };
 
 /**
