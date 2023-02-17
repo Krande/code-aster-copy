@@ -167,7 +167,6 @@ FieldOnNodesRealPtr LinearSolver::solve( const FieldOnNodesRealPtr currentRHS,
 
     _solve( currentRHS->getName(), diriName, result->getName() );
 
-    result->build();
     return result;
 };
 
@@ -186,6 +185,5 @@ FieldOnNodesComplexPtr LinearSolver::solve( const FieldOnNodesComplexPtr current
 
     _solve( currentRHS->getName(), diriName, result->getName() );
 
-    result->build();
     return result;
 };

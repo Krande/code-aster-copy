@@ -56,19 +56,21 @@ class JeveuxVectorClass : public JeveuxObjectClass, private AllowedJeveuxType< V
      *   il faut donc faire appel a JeveuxVectorClass::updateValuePointer
      */
     JeveuxVectorClass( const std::string &nom )
-        : JeveuxObjectClass( nom ), _valuePtr( nullptr ), _jeveuxAdress( 0 ) {
-#ifdef ASTER_DEBUG_CXX
-        std::cout << "DEBUG: JeveuxVector.create: " << _name << std::endl;
-#endif
-    };
+        : JeveuxObjectClass( nom ),
+          _valuePtr( nullptr ),
+          _jeveuxAdress( 0 ){
+              // #ifdef ASTER_DEBUG_CXX
+              //         std::cout << "DEBUG: JeveuxVector.create: " << _name << std::endl;
+              // #endif
+          };
 
     /**
      * @brief Destructeur
      */
     ~JeveuxVectorClass() {
-#ifdef ASTER_DEBUG_CXX
-        std::cout << "DEBUG: JeveuxVector.destr: " << _name << std::endl;
-#endif
+        // #ifdef ASTER_DEBUG_CXX
+        //         std::cout << "DEBUG: JeveuxVector.destr: " << _name << std::endl;
+        // #endif
         this->deallocate();
     };
 

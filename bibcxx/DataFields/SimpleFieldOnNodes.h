@@ -309,8 +309,7 @@ class SimpleFieldOnNodes : public DataStructure {
 
         AS_ASSERT( iret == 0 );
 
-        cham_no->setMesh( _mesh );
-        cham_no->build();
+        cham_no->build( _mesh );
         return cham_no;
     }
 };

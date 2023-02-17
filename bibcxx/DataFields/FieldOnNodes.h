@@ -645,14 +645,16 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
     /**
      * @brief Update field and build GlobalEquationNumbering if necessary
      */
-    bool build() {
+    bool build( const BaseMeshPtr mesh = nullptr ) {
         if ( !_dofDescription ) {
             CALL_JEMARQ();
 
             _reference->updateValuePointer();
             const std::string name2 = trim( ( *_reference )[1].toString() );
             if ( !name2.empty() ) {
+                AS_ASSERT( mesh );
                 _dofDescription = std::make_shared< GlobalEquationNumbering >( name2 );
+                _dofDescription->setMesh( mesh );
             } else {
                 AS_ABORT( "NUME_EQUA is empty" );
             }

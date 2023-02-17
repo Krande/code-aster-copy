@@ -69,12 +69,14 @@ private:
    * @brief Add a existing GlobalEquationNumbering in FieldBuilder
    */
   GlobalEquationNumberingPtr
-  newGlobalEquationNumbering(const std::string &name) {
+  newGlobalEquationNumbering(const std::string &name, const BaseMeshPtr mesh) {
     if (_setGlobNume.count(trim(name)) > 0) {
       raiseAsterError("NUME_EQUA already exists: " + name);
     }
 
     auto curDesc = std::make_shared<GlobalEquationNumbering>(name);
+    curDesc->setMesh(mesh);
+
     addGlobalEquationNumbering(curDesc);
 
     return curDesc;
@@ -91,7 +93,6 @@ private:
     }
 
     auto curDesc = std::make_shared<GeneralizedGlobalEquationNumbering>(name);
-    // addGlobalEquationNumbering(curDesc);
 
     return curDesc;
   };
@@ -171,7 +172,8 @@ public:
    * @brief Build a FieldOnNodes with a GlobalEquationNumbering
    */
   template <typename ValueType>
-  std::shared_ptr<FieldOnNodes<ValueType>> buildFieldOnNodes(std::string name) {
+  std::shared_ptr<FieldOnNodes<ValueType>>
+  buildFieldOnNodes(std::string name, const BaseMeshPtr mesh) {
     std::shared_ptr<FieldOnNodes<ValueType>> field =
         std::make_shared<FieldOnNodes<ValueType>>(name);
     field->updateValuePointers();
@@ -184,12 +186,7 @@ public:
     if (curIter != _mapGlobNume.end())
       curDesc = curIter->second;
     else {
-      // .REFE de taille 2 pour les VGEN, voir vpstor.F90
-      if (field->_reference->size() == 2) {
-        auto curDesc2 = newGeneralizedGlobalEquationNumbering(globNume);
-      } else {
-        curDesc = newGlobalEquationNumbering(globNume);
-      }
+      curDesc = newGlobalEquationNumbering(globNume, mesh);
     }
     field->setDescription(curDesc);
 

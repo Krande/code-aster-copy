@@ -681,8 +681,7 @@ class FieldOnCells : public DataField {
 
         CALLO_CHPCHD( getName(), type, celmod, prol, base, chamno->getName(), model );
 
-        chamno->setMesh( getMesh() );
-        chamno->build();
+        chamno->build( getMesh() );
 
         return chamno;
     }
