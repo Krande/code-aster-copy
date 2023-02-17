@@ -34,7 +34,6 @@ from ..Commands import (
 from ..Messages import UTMESS
 from .Fracture.detec_front import DETEC_FRONT
 from .Fracture.propa_xfem import PROPA_XFEM
-from .Utils.partition import MAIL_PY
 
 from code_aster.Objects import Mesh
 import medcoupling as medc
@@ -1250,7 +1249,7 @@ def propa_fiss_ops(self, METHODE_PROPA, INFO, **args):
             # ------------------------------------------------------------------
             # CAS 3b : MODELE 2D
             #
-            if dime == 2:
+            elif dime == 2:
                 DEFI_GROUP(
                     reuse=MAIL_FISS1,
                     MAILLAGE=MAIL_FISS1,
@@ -1325,8 +1324,8 @@ def propa_fiss_ops(self, METHODE_PROPA, INFO, **args):
 
                 mm[numfis].setMeshAtLevel(-1, mesh0d)
                 mm[numfis].setGroupsAtLevel(-1, groups0d)
-
-            # Fin du 2D
+            else:
+                assert(False)
 
             if INFO == 2:
                 texte = "Maillage produit par l operateur PROPA_FISS"
@@ -1369,43 +1368,48 @@ def propa_fiss_ops(self, METHODE_PROPA, INFO, **args):
         if form == "DEMI_DROITE":
             PF = args["PFON"]
             DTAN = args["DTAN"]
-            PI = NP.array([[PF[0] - DTAN[0], PF[1] - DTAN[1]]])
 
-            ndim = 2
-            mm = MAIL_PY()
-            mm.__init__()
+            mm=medc.MEDFileUMesh()
 
-            # Ajout des noeuds
-            LesNoeudsEnPlus = NP.concatenate((PI, NP.array([PF[0:2]])))
-            NomNoeudsEnPlus = ["NXA0", "NXA1"]
-            mm.cn = LesNoeudsEnPlus
-            mm.correspondance_noeuds = tuple(NomNoeudsEnPlus)
-            ALPHABET = nom_points_fonds(1)
+            # Coordonnees des noeuds
+            coords = []
+            PI = [PF[0] - DTAN[0], PF[1] - DTAN[1]]
+            coords.extend(PI)
+            coords.extend(PF[0:2])
+
+            coords = medc.DataArrayDouble(coords, len(coords)//2, 2)
 
             # Ajout Maille levre (SEG2)
-            it = 1
-            nbma = 0
-            nbno = 0
-            NomMaillesEnPlus = ["MX%s%i" % (ALPHABET[0], it)]
-            num_maille = [nbma + 1]
-            num_maille.append(nbma + 1)
-            NoeudsMailles = [NP.array([nbno, nbno + 1])]
-            typ_maille = mm.dic["SEG2"]
-            NbMailleAjoute = 1
-            mm.tm = NP.concatenate((mm.tm, NP.array([typ_maille] * NbMailleAjoute)))
-            mm.correspondance_mailles += tuple(NomMaillesEnPlus)
-            mm.co += NoeudsMailles
-            mm.gma["%s_0" % (MFISS)] = NP.array([nbma], dtype=int)
+            mesh1d = medc.MEDCouplingUMesh()
+            mesh1d.setMeshDimension(1)
+            mesh1d.allocateCells(1)
+            mesh1d.setCoords(coords)
+
+            mesh1d.insertNextCell(medc.NORM_SEG2, 2, [0, 1])
+
+            mesh1d.finishInsertingCells()
+            mesh1d.checkConsistencyLight()
+            group = medc.DataArrayInt([0])
+            group.setName("%s_0" % (MFISS))
+            mm.setMeshAtLevel(0, mesh1d)
+            mm.setGroupsAtLevel(0, [group])
+
 
             # Ajout Maille fond (POI1)
-            NomMaillesEnPlus = ["MF%s%i" % (ALPHABET[0], it)]
-            num_maille = [nbma + 2]
-            NoeudsMailles = [NP.array([nbno + 1])]
-            typ_maille = mm.dic["POI1"]
-            mm.tm = NP.concatenate((mm.tm, NP.array([typ_maille] * 1)))
-            mm.correspondance_mailles += tuple(NomMaillesEnPlus)
-            mm.co += NoeudsMailles
-            mm.gma["%s_0" % (MFOND)] = NP.array([nbma + 1], dtype=int)
+            mesh0d = medc.MEDCouplingUMesh()
+            mesh0d.setMeshDimension(0)
+            mesh0d.allocateCells(1)
+            mesh0d.setCoords(coords)
+
+            mesh0d.insertNextCell(medc.NORM_POINT1, 1, [1])
+
+            mesh0d.finishInsertingCells()
+            mesh0d.checkConsistencyLight()
+            group = medc.DataArrayInt([0])
+            group.setName("%s_0" % (MFOND))
+            mm.setMeshAtLevel(-1, mesh0d)
+            mm.setGroupsAtLevel(-1, [group])
+
 
         # 4-b : demi-plan
         if form == "DEMI_PLAN":
@@ -1413,22 +1417,20 @@ def propa_fiss_ops(self, METHODE_PROPA, INFO, **args):
             P1 = args["POINT_EXTR"]
             dpropa = args["DTAN"]
             nbpt = args["NB_POINT_FOND"]
-            ALPHABET = nom_points_fonds(nbpt)
-            Q0 = NP.array([[P0[0] - dpropa[0], P0[1] - dpropa[1], P0[2] - dpropa[2]]])
 
-            mm = MAIL_PY()
-            mm.__init__()
+            mm=medc.MEDFileUMesh()
+
             x = [None] * nbpt
             y = [None] * nbpt
             z = [None] * nbpt
             xx = [None] * nbpt
             yy = [None] * nbpt
             zz = [None] * nbpt
-            LesNoeudsEnPlus = Q0
-            NomNoeudsEnPlus = ["NXA0"]
-            mm.cn = LesNoeudsEnPlus
-            mm.correspondance_noeuds = tuple(NomNoeudsEnPlus)
 
+            # Coordonnees des noeuds
+            coords = []
+            Q0 = [P0[0] - dpropa[0], P0[1] - dpropa[1], P0[2] - dpropa[2]]
+            coords.extend(Q0)
             for i in range(1, nbpt):
                 x[i] = P0[0] + i * (P1[0] - P0[0]) / (nbpt - 1)
                 y[i] = P0[1] + i * (P1[1] - P0[1]) / (nbpt - 1)
@@ -1436,59 +1438,52 @@ def propa_fiss_ops(self, METHODE_PROPA, INFO, **args):
                 xx[i] = x[i] - dpropa[0]
                 yy[i] = y[i] - dpropa[1]
                 zz[i] = z[i] - dpropa[2]
-                LesNoeudsEnPlus = NP.array([[xx[i], yy[i], zz[i]]])
-                NomNoeudsEnPlus = ["NX%s0" % (ALPHABET[i])]
-                mm.cn = NP.concatenate((mm.cn, LesNoeudsEnPlus))
-                mm.correspondance_noeuds = tuple(list(mm.correspondance_noeuds) + NomNoeudsEnPlus)
-            LesNoeudsEnPlus = NP.array([P0])
-            NomNoeudsEnPlus = ["NXA1"]
-            mm.cn = NP.concatenate((mm.cn, LesNoeudsEnPlus))
-            mm.correspondance_noeuds = tuple(list(mm.correspondance_noeuds) + NomNoeudsEnPlus)
+                coords.extend([xx[i], yy[i], zz[i]])
+            coords.extend(P0)
             for i in range(1, nbpt):
-                LesNoeudsEnPlus = NP.array([[x[i], y[i], z[i]]])
-                NomNoeudsEnPlus = ["NX%s1" % (ALPHABET[i])]
-                mm.cn = NP.concatenate((mm.cn, LesNoeudsEnPlus))
-                mm.correspondance_noeuds = tuple(list(mm.correspondance_noeuds) + NomNoeudsEnPlus)
+                coords.extend([x[i], y[i], z[i]])
+
+            coords = medc.DataArrayDouble(coords, len(coords)//3, 3)
 
             # Ajout Maille levre (quad4)
-            NomMaillesEnPlus = []
-            num_maille = []
-            NoeudsMailles = []
+            mesh2d = medc.MEDCouplingUMesh()
+            mesh2d.setMeshDimension(2)
+            mesh2d.allocateCells(nbpt-1)
+            mesh2d.setCoords(coords)
+            cells = []
             for ifond in range(nbpt - 1):
-                NomMaillesEnPlus.append("MX%s1" % (ALPHABET[ifond]))
-                num_maille.append([ifond + 1])
-                num_maille.append(ifond + 1)
                 i1 = ifond
                 i2 = ifond + 1
                 i3 = nbpt + ifond
                 i4 = nbpt + ifond + 1
-                NoeudsMailles.append(NP.array([i1, i2, i4, i3]))
+                mesh2d.insertNextCell(medc.NORM_QUAD4, 4, [i1, i2, i4, i3])
+                cells.append(ifond)
 
-            typ_maille = mm.dic["QUAD4"]
-            NbMailleAjoute = nbpt - 1
-            mm.tm = NP.concatenate((mm.tm, NP.array([typ_maille] * NbMailleAjoute)))
-            mm.correspondance_mailles += tuple(NomMaillesEnPlus)
-            mm.co += NoeudsMailles
-            mm.gma["%s_0" % (MFISS)] = NP.arange(nbpt - 1)
+            mesh2d.finishInsertingCells()
+            mesh2d.checkConsistencyLight()
+            group = medc.DataArrayInt(cells)
+            group.setName("%s_0" % (MFISS))
+            mm.setMeshAtLevel(0, mesh2d)
+            mm.setGroupsAtLevel(0, [group])
 
             # Ajout Maille fond (SEG2)
-            NomMaillesEnPlus = []
-            num_maille = []
-            NoeudsMailles = []
+            mesh1d = medc.MEDCouplingUMesh()
+            mesh1d.setMeshDimension(1)
+            mesh1d.allocateCells(nbpt-1)
+            mesh1d.setCoords(coords)
+            cells = []
             for ifond in range(nbpt - 1):
-                NomMaillesEnPlus.append("MF%s1" % (ALPHABET[ifond]))
-                num_maille.append([ifond + nbpt])
-                num_maille.append(ifond + nbpt)
                 i3 = nbpt + ifond
                 i4 = nbpt + ifond + 1
-                NoeudsMailles.append(NP.array([i3, i4]))
+                mesh1d.insertNextCell(medc.NORM_SEG2, 2, [i3, i4])
+                cells.append(ifond)
 
-            typ_maille = mm.dic["SEG2"]
-            NbMailleAjoute = nbpt - 1
-            mm.tm = NP.concatenate((mm.tm, NP.array([typ_maille] * NbMailleAjoute)))
-            mm.correspondance_mailles += tuple(NomMaillesEnPlus)
-            mm.co += NoeudsMailles
-            mm.gma["%s_0" % (MFOND)] = NP.arange(nbpt - 1, 2 * (nbpt - 1))
+            mesh1d.finishInsertingCells()
+            mesh1d.checkConsistencyLight()
+            group = medc.DataArrayInt(cells)
+            group.setName("%s_0" % (MFOND))
+            mm.setMeshAtLevel(-1, mesh1d)
+            mm.setGroupsAtLevel(-1, [group])
 
         # 4-c : ellipse
         if form == "ELLIPSE":
@@ -1504,16 +1499,11 @@ def propa_fiss_ops(self, METHODE_PROPA, INFO, **args):
             if abs(verif) > 0.01:
                 UTMESS("F", "RUPTURE1_52")
             nbpt = args["NB_POINT_FOND"]
-            ALPHABET = nom_points_fonds(nbpt)
 
-            mm = MAIL_PY()
-            mm.__init__()
-            LesNoeudsEnPlus = NP.array([[P0[0], P0[1], P0[2]]])
-            NomNoeudsEnPlus = ["NXA0"]
-            mm.cn = LesNoeudsEnPlus
-            mm.correspondance_noeuds = tuple(NomNoeudsEnPlus)
+            mm=medc.MEDFileUMesh()
 
             # Coordonnees des noeuds
+            coords = [P0[0], P0[1], P0[2]]
             matr = NP.asarray([vect_x, vect_y, normale])
             matr2 = NP.transpose(matr)
             alpha0 = alpha0 * NP.pi / 180.0
@@ -1522,48 +1512,48 @@ def propa_fiss_ops(self, METHODE_PROPA, INFO, **args):
                 alphai = alpha0 + i * (alpha1 - alpha0) / (nbpt - 1)
                 coor_r1 = NP.asarray([gdax * cos(alphai), ptax * sin(alphai), 0])
                 coor_r0 = NP.dot(matr2, coor_r1) + P0
-                LesNoeudsEnPlus = NP.array([[coor_r0[0], coor_r0[1], coor_r0[2]]])
-                NomNoeudsEnPlus = ["NX%s1" % (ALPHABET[i])]
-                mm.cn = NP.concatenate((mm.cn, LesNoeudsEnPlus))
-                mm.correspondance_noeuds = tuple(list(mm.correspondance_noeuds) + NomNoeudsEnPlus)
+                coords.extend([coor_r0[0], coor_r0[1], coor_r0[2]])
+
+            coords = medc.DataArrayDouble(coords, len(coords)//3, 3)
 
             # Ajout Maille levre (TRIA3)
-            NomMaillesEnPlus = []
-            num_maille = []
-            NoeudsMailles = []
-            typ_maille = mm.dic["TRIA3"]
+            mesh2d = medc.MEDCouplingUMesh()
+            mesh2d.setMeshDimension(2)
+            mesh2d.allocateCells(nbpt-1)
+            mesh2d.setCoords(coords)
+            cells = []
             for ifond in range(nbpt - 1):
-                NomMaillesEnPlus.append("MX%s1" % (ALPHABET[ifond]))
-                num_maille.append([ifond + 1])
-                num_maille.append(ifond + 1)
                 i1 = 0
                 i2 = ifond + 1
                 i3 = ifond + 2
-                NoeudsMailles.append(NP.array([i1, i2, i3]))
-            NbMailleAjoute = nbpt - 1
-            mm.tm = NP.concatenate((mm.tm, NP.array([typ_maille] * NbMailleAjoute)))
-            mm.correspondance_mailles += tuple(NomMaillesEnPlus)
-            mm.co += NoeudsMailles
-            mm.gma["%s_0" % (MFISS)] = NP.arange(NbMailleAjoute)
+                mesh2d.insertNextCell(medc.NORM_TRI3, 3, [i1, i2, i3])
+                cells.append(ifond)
+
+            mesh2d.finishInsertingCells()
+            mesh2d.checkConsistencyLight()
+            group = medc.DataArrayInt(cells)
+            group.setName("%s_0" % (MFISS))
+            mm.setMeshAtLevel(0, mesh2d)
+            mm.setGroupsAtLevel(0, [group])
 
             # Ajout Maille fond (SEG2)
-            NomMaillesEnPlus = []
-            num_maille = []
-            NoeudsMailles = []
-            typ_maille = mm.dic["SEG2"]
+            mesh1d = medc.MEDCouplingUMesh()
+            mesh1d.setMeshDimension(1)
+            mesh1d.allocateCells(nbpt-1)
+            mesh1d.setCoords(coords)
+            cells = []
             for ifond in range(nbpt - 1):
-                NomMaillesEnPlus.append("MF%s1" % (ALPHABET[ifond]))
-                num_maille.append([ifond + nbpt])
-                num_maille.append(ifond + nbpt)
                 i3 = ifond + 1
                 i4 = ifond + 2
-                NoeudsMailles.append(NP.array([i3, i4]))
+                mesh1d.insertNextCell(medc.NORM_SEG2, 2, [i3, i4])
+                cells.append(ifond)
 
-            NbMailleAjoute = nbpt - 1
-            mm.tm = NP.concatenate((mm.tm, NP.array([typ_maille] * NbMailleAjoute)))
-            mm.correspondance_mailles += tuple(NomMaillesEnPlus)
-            mm.co += NoeudsMailles
-            mm.gma["%s_0" % (MFOND)] = NP.arange(nbpt - 1, 2 * (nbpt - 1))
+            mesh1d.finishInsertingCells()
+            mesh1d.checkConsistencyLight()
+            group = medc.DataArrayInt(cells)
+            group.setName("%s_0" % (MFOND))
+            mm.setMeshAtLevel(-1, mesh1d)
+            mm.setGroupsAtLevel(-1, [group])
 
         if INFO == 2:
             texte = "Maillage produit par l operateur PROPA_FISS"
@@ -1572,9 +1562,9 @@ def propa_fiss_ops(self, METHODE_PROPA, INFO, **args):
 
         # Sauvegarde (maillage xfem et maillage concatene)
         MAIL_FISS2 = args.get("MAIL_FISS")
-        unit = mm.ToAster()
+        ma_xfem2 = Mesh()
+        ma_xfem2.buildFromMedCouplingMesh(mm)
 
-        ma_xfem2 = LIRE_MAILLAGE(FORMAT="ASTER", UNITE=unit)
         self.register_result(ma_xfem2, MAIL_FISS2)
         if MAIL_FISS2 != None:
             self.register_result(ma_xfem2, MAIL_FISS2)
