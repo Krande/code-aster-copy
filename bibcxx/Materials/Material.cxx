@@ -66,11 +66,11 @@ MaterialProperties::MaterialProperties( const std::string &name, const MaterialP
     *( _valR ) = *( toCopy._valR );
     *( _valC ) = *( toCopy._valC );
     *( _valK ) = *( toCopy._valK );
-    if ( !toCopy._ordr.exists() ) {
+    if ( toCopy._ordr.exists() ) {
         _ordr = JeveuxVectorChar16( getName() + ".ORDR" );
         *( _ordr ) = *( toCopy._ordr );
     }
-    if ( !toCopy._kord.exists() ) {
+    if ( toCopy._kord.exists() ) {
         _kord = JeveuxVectorLong( getName() + ".KORD" );
         *( _kord ) = *( toCopy._kord );
     }

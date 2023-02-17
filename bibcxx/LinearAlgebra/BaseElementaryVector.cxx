@@ -47,7 +47,7 @@ BaseElementaryVector::assembleWithLoadFunctions( const BaseDOFNumberingPtr &dofN
     _listOfLoads->build();
     std::string fomult( " " );
     const JeveuxVectorChar24 listOfLoadsFunc = _listOfLoads->getListOfFunctions();
-    if ( !listOfLoadsFunc.exists() )
+    if ( listOfLoadsFunc.exists() )
         fomult = listOfLoadsFunc->getName();
 
     // Final assembling with load function

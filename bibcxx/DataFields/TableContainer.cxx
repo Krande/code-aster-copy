@@ -222,26 +222,26 @@ bool TableContainer::build() {
                   << std::endl;
 #endif
         if ( para == "NOM_OBJET" ) {
-            if ( _objectName.exists() )
+            if ( !_objectName.exists() )
                 _objectName = JeveuxVectorChar16( objev );
         } else if ( para == "TYPE_OBJET" ) {
-            if ( _objectType.exists() )
+            if ( !_objectType.exists() )
                 _objectType = JeveuxVectorChar16( objev );
         } else if ( para == "NOM_SD" ) {
             if ( type == "K8" ) {
-                if ( _dsName8.exists() )
+                if ( !_dsName8.exists() )
                     _dsName8 = JeveuxVectorChar8( objev );
             } else {
-                if ( _dsName24.exists() )
+                if ( !_dsName24.exists() )
                     _dsName24 = JeveuxVectorChar24( objev );
             }
         }
     }
-    const bool usek8 = !_dsName8.exists();
-    const bool usek24 = !_dsName24.exists();
+    const bool usek8 = _dsName8.exists();
+    const bool usek24 = _dsName24.exists();
     const bool hasDS = usek8 || usek24;
     AS_ASSERT( !( usek8 && usek24 ) );
-    if ( hasDS && !_objectType.exists() && !_objectName.exists() ) {
+    if ( hasDS && _objectType.exists() && _objectName.exists() ) {
         int usedSize = 0;
         if ( usek8 ) {
             _dsName8->updateValuePointer();
