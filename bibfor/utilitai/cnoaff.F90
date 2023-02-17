@@ -70,7 +70,7 @@ subroutine cnoaff(noma, nomgd, base, cno)
     character(len=8) :: kbid, typmcl(4)
     character(len=16) :: motcle(4)
     character(len=19) :: cnos
-    character(len=24) :: valk(2), mesnoe, mescmp, prchno
+    character(len=24) :: valk(2), mesnoe, mescmp, numeq
     character(len=8), pointer :: tmp(:) => null()
     aster_logical :: l_parallel_mesh
 !
@@ -320,10 +320,10 @@ subroutine cnoaff(noma, nomgd, base, cno)
 !
 ! --- 5. PASSAGE DU CHAM_NO_S AU CHAM_NO :
 !     =============================================
-    prchno = ' '
+    numeq = ' '
     prol0 = 'NON'
     call getvtx(' ', 'PROL_ZERO', scal=prol0, nbret=ibid)
-    call cnscno(cnos, prchno, prol0, base, cno, &
+    call cnscno(cnos, numeq, prol0, base, cno, &
                 'F', iret)
 !
 !

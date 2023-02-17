@@ -82,7 +82,7 @@ subroutine tresu_champ_no(cham19, nonoeu, nocmp, nbref, tbtxt, &
     real(kind=8) :: valr
     complex(kind=8) :: valc
     character(len=8) :: nomma
-    character(len=19) :: prchno, valk(3)
+    character(len=19) :: numeq, valk(3)
     character(len=24) :: nolili
     aster_logical :: skip, l_parallel_mesh, l_ok
     real(kind=8) :: ordgrd
@@ -113,7 +113,7 @@ subroutine tresu_champ_no(cham19, nonoeu, nocmp, nbref, tbtxt, &
 !
     call jeveuo(cham19//'.REFE', 'L', iarefe)
     nomma = zk24(iarefe-1+1) (1:8)
-    prchno = zk24(iarefe-1+2) (1:19)
+    numeq = zk24(iarefe-1+2) (1:19)
 !
     call jelira(cham19//'.VALE', 'TYPE', cval=type)
     if (type .ne. typres) then
@@ -168,9 +168,9 @@ subroutine tresu_champ_no(cham19, nonoeu, nocmp, nbref, tbtxt, &
 !
 !        --SI LE CHAMP EST DECRIT PAR 1 "PRNO":
 !
-    call jenuno(jexnum(prchno//'.LILI', 1), nolili)
-    call jeveuo(jexnum(prchno//'.PRNO', 1), 'L', iaprno)
-    call jeveuo(prchno//'.NUEQ', 'L', ianueq)
+    call jenuno(jexnum(numeq//'.LILI', 1), nolili)
+    call jeveuo(jexnum(numeq//'.PRNO', 1), 'L', iaprno)
+    call jeveuo(numeq//'.NUEQ', 'L', ianueq)
 !
 !        IVAL : ADRESSE DU DEBUT DU NOEUD INO DANS .NUEQ
 !        NCMP : NOMBRE DE COMPOSANTES PRESENTES SUR LE NOEUD

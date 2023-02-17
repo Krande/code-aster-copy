@@ -74,7 +74,7 @@ subroutine op0195()
     character(len=8) :: kbid, model, mesh, chou, nomgd, nomgd2, carel
     character(len=8) :: tsca, nogd, nomgd1, nompar, ma2, ta, ma3
     character(len=16) :: tychr1, opera, optio2, typco, option
-    character(len=19) :: modelLigrel, chatmp, celmod, prchn1, cns1, ch1, prchn2, chin, chou2
+    character(len=19) :: modelLigrel, chatmp, celmod, numeq1, cns1, ch1, numeq2, chin, chou2
     character(len=8) :: nu1
     character(len=24), pointer :: v_celmod_celk(:) => null()
     aster_logical :: dbg
@@ -326,13 +326,13 @@ subroutine op0195()
         end if
         if ((i11+i12) .gt. 0) then
             call dismoi('NOM_GD', chou, 'CHAMP', repk=nogd)
-            prchn1 = ' '
+            numeq1 = ' '
             if (i11 .gt. 0) then
-                call dismoi('NUME_EQUA', ch1, 'CHAM_NO', repk=prchn1)
+                call dismoi('NUME_EQUA', ch1, 'CHAM_NO', repk=numeq1)
                 call dismoi('NOM_GD', ch1, 'CHAM_NO', repk=nomgd1)
             end if
             if (i12 .gt. 0) then
-                call dismoi('PROF_CHNO', nu1, 'NUME_DDL', repk=prchn1)
+                call dismoi('NUME_EQUA', nu1, 'NUME_DDL', repk=numeq1)
                 call dismoi('NOM_GD', nu1, 'NUME_DDL', repk=nomgd1)
             end if
 !
@@ -349,8 +349,8 @@ subroutine op0195()
             end if
 1           continue
 !
-            call dismoi('NUME_EQUA', chou, 'CHAM_NO', repk=prchn2)
-            if (.not. idensd('PROF_CHNO', prchn1, prchn2)) then
+            call dismoi('NUME_EQUA', chou, 'CHAM_NO', repk=numeq2)
+            if (.not. idensd('NUME_EQUA', numeq1, numeq2)) then
                 call getfac('COMB', nocc)
                 if (nocc .ne. 0) then
                     call utmess('A', 'CREACHAMP1_14')
@@ -359,17 +359,17 @@ subroutine op0195()
                 if (iret .eq. 0) then
                     prol0 = 'NON'
                 end if
-!               chacun son PROF_CHNO pour éviter les problèmes en cas de suppression
+!               chacun son NUME_EQUA pour éviter les problèmes en cas de suppression
                 cns1 = '&&OP0195.CNS1'
                 call cnocns(chou, 'V', cns1)
-                call detrsd('PROF_CHNO', prchn2)
-!               si NUME_DDL pas de problèmes, donc on partage le prof_CHNO
+                call detrsd('NUME_EQUA', numeq2)
+!               si NUME_DDL pas de problèmes, donc on partage le nume_EQUA
                 if (i12 .eq. 1) then
-                    call cnscno(cns1, prchn1, prol0, 'G', chou, &
+                    call cnscno(cns1, numeq1, prol0, 'G', chou, &
                                 'F', ibid)
                 else
-                    call copisd('PROF_CHNO', 'G', prchn1, prchn2)
-                    call cnscno(cns1, prchn2, prol0, 'G', chou, &
+                    call copisd('NUME_EQUA', 'G', numeq1, numeq2)
+                    call cnscno(cns1, numeq2, prol0, 'G', chou, &
                                 'F', ibid)
                 end if
                 call detrsd('CHAM_NO_S', cns1)

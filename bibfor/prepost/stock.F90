@@ -18,7 +18,7 @@
 
 subroutine stock(resu, chs, nocham, ligrel, tychas, &
                  numord, iouf, numode, masgen, amrge, &
-                 prchno)
+                 numeq)
     implicit none
 #include "jeveux.h"
 #include "asterc/r8depi.h"
@@ -46,7 +46,7 @@ subroutine stock(resu, chs, nocham, ligrel, tychas, &
 ! IN  : NUMORD : I   : NUMERO D'ORDRE
 ! IN  : RESU   : K8  : NOM DE LA STRUCTURE DE DONNEES RESULTATS
 ! IN  : IOUF   : R   : IOUF DE L'INSTANT OU DE LA FREQUENCE
-! IN  : PRCHNO : K19 : PROFIL DE STOCKAGE
+! IN  : NUMEQ : K19 : PROFIL DE STOCKAGE
 !
 !----------------------------------------------------------------------
 !
@@ -58,7 +58,7 @@ subroutine stock(resu, chs, nocham, ligrel, tychas, &
     character(len=8) :: k8b, acce
     character(len=24) :: valk(2)
     character(len=16) :: param
-    character(len=19) :: nomch, prchno
+    character(len=19) :: nomch, numeq
 !
 !- RECHERCHE DU NOM DU CHAMP RESULTAT
     depi = r8depi()
@@ -83,11 +83,11 @@ subroutine stock(resu, chs, nocham, ligrel, tychas, &
 !
 ! - TRANSFERT DU CHAMP SIMPLE VERS LE CHAMP VRAI
 !
-!      CALL UTIMSD('MESSAGE',0,.TRUE.,.TRUE.,PRCHNO,1,' ')
+!      CALL UTIMSD('MESSAGE',0,.TRUE.,.TRUE.,NUMEQ,1,' ')
 !      CALL UTIMSD('MESSAGE',1,.TRUE.,.TRUE.,
-!     &             PRCHNO//".PRNO",1,' ')
+!     &             NUMEQ//".PRNO",1,' ')
     if (tychas .eq. 'NOEU') then
-        call cnscno(chs, prchno, 'NON', 'G', nomch, &
+        call cnscno(chs, numeq, 'NON', 'G', nomch, &
                     'F', ibid)
     else
         call cescel(chs, ligrel, ' ', ' ', 'OUI', &

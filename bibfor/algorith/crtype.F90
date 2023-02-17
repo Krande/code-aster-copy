@@ -244,7 +244,7 @@ subroutine crtype()
 !           -- on cherche a economiser les nume_equa (partage si possible)
             if (profch .eq. ' ') then
                 call dismoi('NUME_EQUA', champ, 'CHAM_NO', repk=pchn1)
-                noojb = '12345678.PRCHN00000.PRNO'
+                noojb = '12345678.NUMEQ00000.PRNO'
                 call gnomsd(' ', noojb, 15, 19)
                 profch = noojb(1:19)
                 lcopy = .true.
@@ -269,7 +269,7 @@ subroutine crtype()
             else
                 call dismoi('NUME_EQUA', champ, 'CHAM_NO', repk=pchn1)
                 if (.not. idensd('NUME_EQUA', profch, pchn1)) then
-                    noojb = '12345678.PRCHN00000.PRNO'
+                    noojb = '12345678.NUMEQ00000.PRNO'
                     call gnomsd(' ', noojb, 15, 19)
                     profch = noojb(1:19)
                     call copisd('NUME_EQUA', 'G', pchn1, profch)

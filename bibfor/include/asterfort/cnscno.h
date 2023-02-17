@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,10 +19,10 @@
 !
 !
 interface
-    subroutine cnscno(cnsz, prchnz, prol0, basez, cnoz,&
+    subroutine cnscno(cnsz, numeqz, prol0, basez, cnoz,&
                       kstop, iret, nbz, vchamz)
         character(len=*) :: cnsz
-        character(len=*) :: prchnz
+        character(len=*) :: numeqz
         character(len=*) :: prol0
         character(len=*) :: basez
         character(len=*) :: cnoz

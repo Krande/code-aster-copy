@@ -344,9 +344,9 @@ subroutine op0041()
 !
     ltno = fiss(1:8)//'.LTNO'
     lnno = fiss(1:8)//'.LNNO'
-    call cnscno(cnslt, ltno(1:13)//'.PRCHN', 'NON', 'G', ltno, &
+    call cnscno(cnslt, ltno(1:13)//'.NUMEQ', 'NON', 'G', ltno, &
                 'F', ibid)
-    call cnscno(cnsln, ltno(1:13)//'.PRCHN', 'NON', 'G', lnno, &
+    call cnscno(cnsln, ltno(1:13)//'.NUMEQ', 'NON', 'G', lnno, &
                 'F', ibid)
 !
     if (niv .ge. 3) then
@@ -414,9 +414,9 @@ subroutine op0041()
 !
         ltnofa = fiss(1:8)//'.GRI.LTNO'
         lnnofa = fiss(1:8)//'.GRI.LNNO'
-        call cnscno(cnslng, ltnofa(1:12)//'L.PRCHN', 'NON', 'G', lnnofa, &
+        call cnscno(cnslng, ltnofa(1:12)//'L.NUMEQ', 'NON', 'G', lnnofa, &
                     'F', ibid)
-        call cnscno(cnsltg, ltnofa(1:12)//'L.PRCHN', 'NON', 'G', ltnofa, &
+        call cnscno(cnsltg, ltnofa(1:12)//'L.NUMEQ', 'NON', 'G', ltnofa, &
                     'F', ibid)
 !
         if (niv .ge. 3) then
@@ -445,9 +445,9 @@ subroutine op0041()
 !
     grltno = fiss(1:8)//'.GRLTNO'
     grlnno = fiss(1:8)//'.GRLNNO'
-    call cnscno(grlt, grltno(1:13)//'.PRCHN', 'NON', 'G', grltno, &
+    call cnscno(grlt, grltno(1:13)//'.NUMEQ', 'NON', 'G', grltno, &
                 'F', ibid)
-    call cnscno(grln, grltno(1:13)//'.PRCHN', 'NON', 'G', grlnno, &
+    call cnscno(grln, grltno(1:13)//'.NUMEQ', 'NON', 'G', grlnno, &
                 'F', ibid)
 !
     if (niv .ge. 2) then
@@ -471,9 +471,9 @@ subroutine op0041()
 !
         grltfa = fiss(1:8)//'.GRI.GRLTNO'
         grlnfa = fiss(1:8)//'.GRI.GRLNNO'
-        call cnscno(grltg, grltfa(1:12)//'G.PRCHN ', 'NON', 'G', grltfa, &
+        call cnscno(grltg, grltfa(1:12)//'G.NUMEQ ', 'NON', 'G', grltfa, &
                     'F', ibid)
-        call cnscno(grlng, grltfa(1:12)//'G.PRCHN ', 'NON', 'G', grlnfa, &
+        call cnscno(grlng, grltfa(1:12)//'G.NUMEQ ', 'NON', 'G', grlnfa, &
                     'F', ibid)
 !
         if (niv .ge. 2) then
@@ -520,7 +520,7 @@ subroutine op0041()
 ! --- CREATION DU CHAM_NO POUR LE STATUT DES NOEUDS
 !
     stno = fiss(1:8)//'.STNO'
-    call cnscno(cnsen, ltno(1:13)//'.PRCHN', 'NON', 'G', stno, &
+    call cnscno(cnsen, ltno(1:13)//'.NUMEQ', 'NON', 'G', stno, &
                 'F', ibid)
     if (niv .ge. 3) then
         call imprsd('CHAMP', stno, ifm, 'FISSURE.STNO=')

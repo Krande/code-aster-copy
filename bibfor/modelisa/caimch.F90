@@ -60,7 +60,7 @@ subroutine caimch(chargz)
     character(len=8) :: chamno, noma, nomcmp, nomnoe, betaf
     character(len=8) :: charge, nomgd
     character(len=16) :: motfac
-    character(len=19) :: lisrel, cham19, prchno
+    character(len=19) :: lisrel, cham19, numeq
     character(len=24) :: noeuma
     real(kind=8) :: beta, coef_impo
     complex(kind=8) :: betac
@@ -168,7 +168,7 @@ subroutine caimch(chargz)
 !
 ! ---   RECUPERATION DU NUME_EQUA DU CHAM_NO
 !       ------------------------------------
-        call dismoi('NUME_EQUA', chamno, 'CHAM_NO', repk=prchno)
+        call dismoi('NUME_EQUA', chamno, 'CHAM_NO', repk=numeq)
 !
 ! ---   RECUPERATION DU NOMBRE DE COMPOSANTES ASSOCIEES A LA LA GRANDEUR
 !       ----------------------------------------------------------------
@@ -184,7 +184,7 @@ subroutine caimch(chargz)
 !
 ! ---   RECUPERATION DU .DEEQ DU NUME_EQUA
 !       ----------------------------------
-        call jeveuo(prchno//'.DEEQ', 'L', vi=deeq)
+        call jeveuo(numeq//'.DEEQ', 'L', vi=deeq)
 !
         nbterm = nequa
 !

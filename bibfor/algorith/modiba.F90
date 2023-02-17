@@ -83,7 +83,7 @@ subroutine modiba(nomres, basemo, basefl, numvit, newres, &
     real(kind=8) :: frequ, amort, omeg2, masg, rigg
     real(kind=8) :: factx, facty, factz, depi, xmastr(3)
     character(len=1) :: typmod
-    character(len=19) :: prchno
+    character(len=19) :: numeq
     character(len=16) :: norm
     character(len=19) :: nomcha
     character(len=24) :: chamfl, kvec, nopara(nbpara)
@@ -150,8 +150,8 @@ subroutine modiba(nomres, basemo, basefl, numvit, newres, &
 !
     call rsexch('F', basemo, 'DEPL', nuor(1), nomcha, &
                 iret)
-    call dismoi('NUME_EQUA', nomcha, 'CHAM_NO', repk=prchno)
-    call jeveuo(prchno//'.DEEQ', 'L', vi=deeq)
+    call dismoi('NUME_EQUA', nomcha, 'CHAM_NO', repk=numeq)
+    call jeveuo(numeq//'.DEEQ', 'L', vi=deeq)
 !
 !     --- CAS DU COUPLAGE ---
 !

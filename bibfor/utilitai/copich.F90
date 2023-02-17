@@ -95,7 +95,7 @@ subroutine copich(base, ch1z, ch2z)
 !         -- REMARQUE : UN CHAM_NO PEUT NE PAS AVOIR DE NUME_EQUA (' '):
             if (prno .ne. ' ') then
                 if (prno(1:8) .ne. nomu) then
-                    noojb = '12345678.PRCHN00000.PRNO'
+                    noojb = '12345678.NUMEQ00000.PRNO'
                     call gnomsd(nomu, noojb, 15, 19)
                     prno2 = noojb(1:19)
                     call jeveuo(ch2//'.REFE', 'E', vk24=refe)

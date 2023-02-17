@@ -84,7 +84,7 @@ subroutine tran75(nomres, typres, nomin, basemo)
     character(len=8) :: nomin, nomcmp(6), mode, monmot(2), matgen, nomgd
     character(len=14) :: numddl
     character(len=16) :: typres, type(8), typcha, typbas(8), concep
-    character(len=19) :: fonct(3), kinst, knume, prchno, prchn1, trange
+    character(len=19) :: fonct(3), kinst, knume, numeq, numeq1, trange
     character(len=19) :: typref(8), prof
     character(len=24) :: matric, chamno, crefe(2), nomcha, chamn2, objve1
     character(len=24) :: objve2, objve3, objve4, chmod, tmpcha
@@ -124,7 +124,7 @@ subroutine tran75(nomres, typres, nomin, basemo)
 !
     nomcha = ' '
     numddl = ' '
-    prchno = ' '
+    numeq = ' '
 !
 !     --- RECHERCHE SI UNE ACCELERATION D'ENTRAINEMENT EXISTE ---
     nfonct = 0
@@ -180,7 +180,7 @@ subroutine tran75(nomres, typres, nomin, basemo)
                     call dismoi('NOM_NUME_DDL', matric, 'MATR_ASSE', repk=numddl)
                 end if
             end if
-            prchno = numddl//'.NUME'
+            numeq = numddl//'.NUME'
             call dismoi('NOM_GD', numddl, 'NUME_DDL', repk=nomgd)
             call dismoi('NOM_MAILLA', numddl, 'NUME_DDL', repk=mailla)
             if (tousno) call dismoi('NB_EQUA', numddl, 'NUME_DDL', repi=neq)
@@ -195,7 +195,7 @@ subroutine tran75(nomres, typres, nomin, basemo)
             else
                 numddl = matric(1:8)
             end if
-            prchno = numddl//'.NUME'
+            numeq = numddl//'.NUME'
             call jeveuo(numddl//'.NUME.REFN', 'L', vk24=refn)
             matric = refn(1)
             mailla = matric(1:8)
@@ -213,13 +213,13 @@ subroutine tran75(nomres, typres, nomin, basemo)
                     ir)
         chmod = chmod(1:19)//'.REFE'
         call dismoi('NOM_GD', chmod, 'CHAM_NO', repk=nomgd)
-        call dismoi('NUME_EQUA', chmod, 'CHAM_NO', repk=prchno)
+        call dismoi('NUME_EQUA', chmod, 'CHAM_NO', repk=numeq)
         call jeveuo(chmod, 'L', llcha)
         mailla = zk24(llcha) (1:8)
         crefe(1) = zk24(llcha)
         crefe(2) = zk24(llcha+1)
         if (tousno) then
-            call dismoi('NB_EQUA', prchno, 'PROF_CHNO', repi=neq)
+            call dismoi('NB_EQUA', numeq, 'PROF_CHNO', repi=neq)
         end if
         basem2 = ' '
     end if
@@ -362,13 +362,13 @@ subroutine tran75(nomres, typres, nomin, basemo)
 !
         AS_ALLOCATE(vr=base, size=nbmode*neq)
         if (tousno) then
-            call copmod(basemo, champ=typcha, numer=prchno(1:14), bmodr=base, nequa=neq, &
+            call copmod(basemo, champ=typcha, numer=numeq(1:14), bmodr=base, nequa=neq, &
                         nbmodes=nbmode)
         else
             crefe(1) = mailla
-            crefe(2) = prchno
+            crefe(2) = numeq
             tmpcha = '&&TRAN75.CHAMP'
-            call dismoi('NB_EQUA', prchno, 'PROF_CHNO', repi=neq1)
+            call dismoi('NB_EQUA', numeq, 'PROF_CHNO', repi=neq1)
             do j = 1, nbmode
                 call rsexch('F', basemo, typcha, j, nomcha, &
                             ir)
@@ -379,9 +379,9 @@ subroutine tran75(nomres, typres, nomin, basemo)
                 ASSERT(typ1 .eq. 'R')
 !
 !              SI NOMCHA N'A PAS LA BONNE NUMEROTATION, ON ARRETE TOUT :
-                ASSERT(prchno .ne. ' ')
-                call dismoi('NUME_EQUA', nomcha, 'CHAM_NO', repk=prchn1)
-                if (.not. idensd('PROF_CHNO', prchno, prchn1)) then
+                ASSERT(numeq .ne. ' ')
+                call dismoi('NUME_EQUA', nomcha, 'CHAM_NO', repk=numeq1)
+                if (.not. idensd('PROF_CHNO', numeq, numeq1)) then
                     call vtcrea(tmpcha, crefe, 'V', 'R', neq1)
                     call vtcopy(nomcha, tmpcha, ' ', ir)
                     nomcha = tmpcha

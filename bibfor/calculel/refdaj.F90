@@ -45,7 +45,7 @@ subroutine refdaj(arret, result, nbordr, numer, typre, &
 !    |_______________________________________________________________|
 !
 ! ---------
-! EXEMPLES: call refdaj ('F',modmec,nbordr,prchno,'DYNAMIQUE'  ,matric,iret)
+! EXEMPLES: call refdaj ('F',modmec,nbordr,numeq,'DYNAMIQUE'  ,matric,iret)
 ! --------- call refdaj ('F',tragen,nbordr,numddl,'DYNAMIQUE'  ,matric,iret)
 !           call refdaj ('F',ritzba,nbordr,numddl,'INTERF_DYNA',intdyn,iret)
 !           call refdaj ('F',ritzba,nbordr,numddl,'INTERF_STAT',modsta,iret)

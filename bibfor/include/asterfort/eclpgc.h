@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,13 +19,13 @@
 !
 !
 interface
-    subroutine eclpgc(ch1, ch2, ligrel, ma2, prchno,&
+    subroutine eclpgc(ch1, ch2, ligrel, ma2, numeq,&
                       nomfpg)
         character(len=19) :: ch1
         character(len=19) :: ch2
         character(len=19) :: ligrel
         character(len=8) :: ma2
-        character(len=19) :: prchno
+        character(len=19) :: numeq
         character(len=24) :: nomfpg
     end subroutine eclpgc
 end interface

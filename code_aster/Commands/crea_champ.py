@@ -88,10 +88,8 @@ class FieldCreator(ExecuteCommand):
                 self._result = FieldOnNodesChar8()
             else:
                 raise NotImplementedError("Output for CREA_CHAMP not defined")
-            if mesh is not None:
-                self._result.setMesh(mesh)
             if numeDdl is not None:
-                self._result.setDescription(numeDdl.getDescription())
+                self._result.setDescription(numeDdl.getGlobalEquationNumbering())
         else:
             if typ == "R":
                 self._result = FieldOnCellsReal()

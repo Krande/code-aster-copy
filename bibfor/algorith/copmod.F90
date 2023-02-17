@@ -93,7 +93,7 @@ subroutine copmod(base, bmodr, bmodz, champ, numer, &
 !     0.2 - DECLARATION DES VARIABLES LOCALES
 !
     character(len=1) :: typc
-    aster_logical :: modnum, exnume, chnoeud, lprchno1
+    aster_logical :: modnum, exnume, chnoeud, lnumeq1
     integer :: i, iret, neq, nbmode
     integer :: jdeeq, jval
     character(len=16) :: champ2
@@ -199,12 +199,12 @@ subroutine copmod(base, bmodr, bmodz, champ, numer, &
 !     1.3 - TRAITEMENT DES CAS AVEC UN PROF_CHNO ET NON PAS UN NUME_DDL
 !           COMPLET.
 !
-    lprchno1 = .false.
+    lnumeq1 = .false.
     call jeexin(numer1(1:14)//'.NUME.NEQU', iret)
     if (iret .ne. 0) then
         numer1 = numer1(1:14)//'.NUME'
     else
-        if (exnume) lprchno1 = .true.
+        if (exnume) lnumeq1 = .true.
     end if
 
     if (exnume) then
@@ -242,7 +242,7 @@ subroutine copmod(base, bmodr, bmodz, champ, numer, &
                 call utmess('F', 'ALGORITH12_62', nk=4, valk=valk)
             end if
         end if
-        if (lprchno1) then
+        if (lnumeq1) then
             if ((numer2 .ne. numer1) .and. (iret .eq. 0)) then
                 modnum = .true.
             end if

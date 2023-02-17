@@ -71,7 +71,7 @@ subroutine op0144()
     aster_logical :: tmode, calcul(2)
     character(len=8) :: nombm, mailla, k8b, gran, nomcmp(6)
     character(len=16) :: concep, cmd, nompar
-    character(len=19) :: nomu, cham19, prchno
+    character(len=19) :: nomu, cham19, numeq
     character(len=24) :: desc, numo, vite, freq, masg, fact
     character(len=24) :: numoi, fsic, nomcha, matria, chrefe, chdesc
     character(len=24) :: chvale
@@ -344,7 +344,7 @@ subroutine op0144()
                     end do
                     idec = idec+6
                 end do
-                prchno = cham19
+                numeq = cham19
 !
 ! ------------- Create object local components (field) => global components (catalog)
 !
@@ -352,14 +352,14 @@ subroutine op0144()
 !
 ! ------------- Compute .DEEQ object
 !
-                call pteequ(prchno, 'G', long, numgd, ncmp, &
+                call pteequ(numeq, 'G', long, numgd, ncmp, &
                             field_to_cata)
                 AS_DEALLOCATE(vi=cata_to_field)
                 AS_DEALLOCATE(vi=field_to_cata)
                 AS_DEALLOCATE(vk8=cmp_name)
 !
             else
-                zk24(jcrefe+1) = prchno
+                zk24(jcrefe+1) = numeq
             end if
 !
         end do

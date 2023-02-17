@@ -60,7 +60,7 @@ subroutine crperm()
     character(len=8) :: k8b, crit, resu1, resu2, resu3, ma1, ma2
     character(len=16) :: typres, nomcmd, cham(4), option
     character(len=24) :: valk(2)
-    character(len=19) :: prchno
+    character(len=19) :: numeq
     character(len=24) :: ch1, ch2, chs1, chs2, linoeu, gma1, gma2, lima1, lima2
     character(len=24) :: ligrel, chsi1(4), chsi2(4)
     integer, pointer :: ordr(:) => null()
@@ -227,8 +227,8 @@ subroutine crperm()
         chs1 = chsi1(ic)
         chs2 = chsi2(ic)
         if (cham(ic) .eq. 'DEPL') then
-            call dismoi('NUME_EQUA', ch2, 'CHAM_NO', repk=prchno)
-            call cnscno(chs2, prchno, 'NON', 'G', ch2, &
+            call dismoi('NUME_EQUA', ch2, 'CHAM_NO', repk=numeq)
+            call cnscno(chs2, numeq, 'NON', 'G', ch2, &
                         'F', ibid)
             call detrsd('CHAM_NO_S', chs1)
             call detrsd('CHAM_NO_S', chs2)

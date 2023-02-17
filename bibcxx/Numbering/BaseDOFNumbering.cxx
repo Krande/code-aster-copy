@@ -59,14 +59,17 @@ bool BaseDOFNumbering::computeNumbering( const std::vector< MatrElem > matrix ) 
                     throw std::runtime_error( "Inconsistent mesh in list of ElementaryMatrix" );
             }
         }
-        const auto model = std::visit( ElementaryMatrixGetModel(), mat );
-        setModel( model );
     }
 
     CALLO_NUME_DDL_MATR( getName(), jvListOfMatr->getName(), &nb_matr );
 
-    if ( getMesh() ) {
-        this->setMesh( getMesh() );
+    for ( const auto &mat : matrix ) {
+        const auto model = std::visit( ElementaryMatrixGetModel(), mat );
+        if ( model ) {
+            setModel( model );
+        } else {
+            setMesh( std::visit( ElementaryMatrixGetMesh(), mat ) );
+        }
     }
 
     _isEmpty = false;
@@ -88,7 +91,6 @@ bool BaseDOFNumbering::computeNumbering( const ModelPtr model, const ListOfLoads
     const auto FEDescs = listOfLoads->getFiniteElementDescriptors();
     this->addFiniteElementDescriptors( FEDescs );
     setModel( model );
-    this->setMesh( getMesh() );
     _isEmpty = false;
 
     return true;
@@ -108,7 +110,6 @@ bool BaseDOFNumbering::computeRenumbering( const ModelPtr model,
 
     CALLO_NUMER3( model->getName(), listOfLoads->getName(), getName(), null, base );
     setModel( model );
-    this->setMesh( getMesh() );
 
     return true;
 };

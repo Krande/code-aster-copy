@@ -119,7 +119,7 @@ subroutine lridea(fileUnit, &
     character(len=13) :: a13bid
     character(len=14) :: numeDof
     character(len=16) :: fieldType, noidea, fieldTypeSave, datasetType, fileName
-    character(len=19) :: chs, prchnd, prchn2, prchn3, ligrel
+    character(len=19) :: chs, numeqd, numeq2, numeq3, ligrel
     character(len=80) :: rec(20)
     character(len=16), pointer :: fid_nom(:) => null()
     character(len=8), pointer :: fid_cmp(:) => null()
@@ -184,11 +184,11 @@ subroutine lridea(fileUnit, &
 !
 ! - Get profile for numbering nodal fields
 !
-    prchnd = ' '
+    numeqd = ' '
     if (resultType(1:9) .eq. 'MODE_MECA') then
         call dismoi('NUME_DDL', resultName, 'RESU_DYNA', repk=numeDof)
         if (numeDof .ne. ' ') then
-            prchnd = numeDof(1:14)//'.NUME'
+            numeqd = numeDof(1:14)//'.NUME'
         end if
     end if
     rewind fileUnit
@@ -571,23 +571,23 @@ subroutine lridea(fileUnit, &
 150     continue
 ! ----- Get profile of numbering
         ldepl = (fieldType .eq. 'DEPL' .or. fieldType .eq. 'VITE' .or. fieldType .eq. 'ACCE')
-        if (prchnd .eq. ' ' .or. (.not. ldepl)) then
+        if (numeqd .eq. ' ' .or. (.not. ldepl)) then
             if (fieldType .eq. fieldTypeSave) then
-                prchn3 = prchn2
+                numeq3 = numeq2
             else
                 noojb = '12345678.00000.NUME.PRNO'
                 call gnomsd(' ', noojb, 10, 14)
-                prchn3 = noojb(1:19)
+                numeq3 = noojb(1:19)
             end if
             fieldTypeSave = fieldType
-            prchn2 = prchn3
+            numeq2 = numeq3
         else
-            prchn3 = prchnd
+            numeq3 = numeqd
         end if
 ! ----- Get current
         call stock(resultName, chs, fieldType, ligrel, tychas, &
                    fileIndx, fileTime, numode, masgen, amrge, &
-                   prchn3)
+                   numeq3)
         goto 10
     else
         goto 10

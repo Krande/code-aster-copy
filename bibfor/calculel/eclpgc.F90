@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine eclpgc(ch1, ch2, ligrel, ma2, prchno, &
+subroutine eclpgc(ch1, ch2, ligrel, ma2, numeq, &
                   nomfpg)
     implicit none
 ! person_in_charge: jacques.pellet at edf.fr
@@ -32,7 +32,7 @@ subroutine eclpgc(ch1, ch2, ligrel, ma2, prchno, &
 !           LIGREL EST EVENTUELLEMMENT UN "SOUS" LIGREL DU LIGREL
 !           ASSOCIE A CH1.
 !  IN/JXIN  MA2 : NOM DU MAILLAGE QUI "PORTERA" LE CHAM_NO CH2
-!  IN/JXIN  PRCHNO : NOM DE LA SD_PROF_CHNO QUI SERA ASSOCIEE A CH2
+!  IN/JXIN  NUMEQ : NOM DE LA SD_PROF_CHNO QUI SERA ASSOCIEE A CH2
 !  IN/JXIN  NOMFPG : NOM D'UN OBJET JEVEUX CONTENANT LE NOM DE LA
 !           FAMILLE DE PG A UTILISER POUR CHAQUE MAILLE DE LIGREL.
 !
@@ -46,9 +46,9 @@ subroutine eclpgc(ch1, ch2, ligrel, ma2, prchno, &
 !  * NOMFPG PEUT ETRE OBTENU PAR LA ROUTINE CELFPG
 !  * LIGREL PEUT ETRE OBTENU PAR LA ROUTINE EXLIMA OU BIEN ON
 !           L'EXTRAIT DE CH1 (DISMOI).
-!  * PRCHNO PEUT ETRE ' '. DANS CE CAS, ON EN CREERA UN DIFFERENT
+!  * NUMEQ PEUT ETRE ' '. DANS CE CAS, ON EN CREERA UN DIFFERENT
 !           A CHAQUE APPEL A ECLPGC.
-!           CHOISIR PRCHNO /= ' ' PERMET D'ECONOMISER CETTE SD SI
+!           CHOISIR NUMEQ /= ' ' PERMET D'ECONOMISER CETTE SD SI
 !           PLUSIEURS CHAMPS PEUVENT LA PARTAGER.
 !           C'EST LE CAS EN GENERAL POUR LA BOUCLE SUR LES NUME_ORDRE
 !
@@ -116,7 +116,7 @@ subroutine eclpgc(ch1, ch2, ligrel, ma2, prchno, &
     character(len=8) :: ma2, nomg1, nomg2, elrefa, fapg
     character(len=16) :: nomte
     character(len=16) :: optio, param
-    character(len=19) :: ligrel, ch1, ch2s, ch2, prchno, ch1b
+    character(len=19) :: ligrel, ch1, ch2s, ch2, numeq, ch1b
     character(len=24) :: valk(2), nomfpg
     character(len=24), pointer :: celk(:) => null()
     real(kind=8), pointer :: celv(:) => null()
@@ -339,7 +339,7 @@ subroutine eclpgc(ch1, ch2, ligrel, ma2, prchno, &
 !     -- 2 JELIBE POUR ECONOMISER LA MEMOIRE EN DESSOUS (MARQUE):
     call jelibe(ch2s//'.CNSL')
     call jelibe(ch2s//'.CNSV')
-    call cnscno(ch2s, prchno, 'NON', 'G', ch2, &
+    call cnscno(ch2s, numeq, 'NON', 'G', ch2, &
                 'F', ibid)
     call detrsd('CHAM_NO_S', ch2s)
 !

@@ -86,7 +86,7 @@ subroutine rotlir(nomres, sst1, intf1, lino1, codret, &
     character(len=8) :: nomres
     character(len=1) :: k1bid
     character(len=24) :: int1, indin1, lino1, maint1, restmo, tramo1, ordol, valk(2)
-    character(len=19) :: kint, prchn1, prchn2
+    character(len=19) :: kint, numeq1, numeq2
     character(len=8) :: sst1, intf1, lint1, bamo1, kbid, nmacr1, temp
     character(len=8) :: sst2, mailla, nomnoe
     character(len=4) :: nliai
@@ -179,13 +179,13 @@ subroutine rotlir(nomres, sst1, intf1, lino1, codret, &
     call mgutdm(nomres, sst1, ibid, 'NOM_MACR_ELEM', ibid, &
                 nmacr1)
 !-- recuperation du prof_chno
-    call dismoi('PROF_CHNO', nmacr1, 'NUME_DDL', repk=prchn1)
+    call dismoi('PROF_CHNO', nmacr1, 'NUME_DDL', repk=numeq1)
 !
 !-- recuperation du maillage
     call dismoi('NOM_MAILLA', nmacr1, 'NUME_DDL', repk=mailla)
 !
 !-- RECUPERATION DE LA NUMEROTATION DES EQUATIONS
-    call jeveuo(jexnum(prchn1//'.PRNO', 1), 'L', lmacr1)
+    call jeveuo(jexnum(numeq1//'.PRNO', 1), 'L', lmacr1)
 !
 !-- REMPLISSAGE DES VECTEURS D'INDICES POUR REPERER LES DDL  D'INTEFACE
     nbddl1 = 6*nbno1
@@ -332,8 +332,8 @@ subroutine rotlir(nomres, sst1, intf1, lino1, codret, &
         nook = .false.
         do i1 = 1, nbeq1
             kint = zk24(lmod1+i1-1) (1:19)
-            call dismoi('NUME_EQUA', kint, 'CHAM_NO', repk=prchn2)
-            if (.not. idensd('PROF_CHNO', prchn1, prchn2)) then
+            call dismoi('NUME_EQUA', kint, 'CHAM_NO', repk=numeq2)
+            if (.not. idensd('PROF_CHNO', numeq1, numeq2)) then
                 call utmess('E', 'ALGORITH12_36', nk=1, valk=[bamo1], &
                             ni=1, vali=[i1])
                 nook = .true.

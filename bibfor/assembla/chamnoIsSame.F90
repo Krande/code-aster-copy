@@ -45,7 +45,7 @@ subroutine chamnoIsSame(chamno1_, chamno2_, ier)
 !
     aster_logical :: l_same
     integer :: nb_refe1, nb_refe2, nb_ligr1, nb_ligr2, nbno
-    character(len=19) :: chamno1, chamno2, prchno1, prchno2, ligrel
+    character(len=19) :: chamno1, chamno2, numeq1, numeq2, ligrel
     character(len=24) :: refe1, refe2
     character(len=24), pointer :: v_refe1(:) => null()
     character(len=24), pointer :: v_refe2(:) => null()
@@ -78,28 +78,28 @@ subroutine chamnoIsSame(chamno1_, chamno2_, ier)
 !
 ! - For PROFCHNO
 !
-    prchno1 = v_refe1(2) (1:19)
-    prchno2 = v_refe2(2) (1:19)
-    l_same = idenob(prchno1//'.DEEQ', prchno2//'.DEEQ')
+    numeq1 = v_refe1(2) (1:19)
+    numeq2 = v_refe2(2) (1:19)
+    l_same = idenob(numeq1//'.DEEQ', numeq2//'.DEEQ')
     if (.not. l_same) then
         ier = ier+1
     end if
-    l_same = idenob(prchno1//'.NUEQ', prchno2//'.NUEQ')
+    l_same = idenob(numeq1//'.NUEQ', numeq2//'.NUEQ')
     if (.not. l_same) then
         ier = ier+1
     end if
-    l_same = idenob(prchno1//'.LILI', prchno2//'.LILI')
+    l_same = idenob(numeq1//'.LILI', numeq2//'.LILI')
     if (l_same) then
-        l_same = idenob(prchno1//'.PRNO', prchno2//'.PRNO')
+        l_same = idenob(numeq1//'.PRNO', numeq2//'.PRNO')
         if (.not. l_same) then
             ier = ier+1
         end if
     else
         nbno = 0
-        call jelira(prchno1//'.LILI', 'NOMMAX', nb_ligr1)
-        call jelira(prchno2//'.LILI', 'NOMMAX', nb_ligr2)
+        call jelira(numeq1//'.LILI', 'NOMMAX', nb_ligr1)
+        call jelira(numeq2//'.LILI', 'NOMMAX', nb_ligr2)
         if (nb_ligr1 .eq. 2 .and. nb_ligr2 .eq. 1) then
-            call jenuno(jexnum(prchno1//'.LILI', 2), ligrel)
+            call jenuno(jexnum(numeq1//'.LILI', 2), ligrel)
             call jeexin(ligrel(1:19)//'.NBNO', iexi)
             if (iexi .gt. 0) then
                 call jeveuo(ligrel(1:19)//'.NBNO', 'L', vi=v_nbno)
@@ -109,7 +109,7 @@ subroutine chamnoIsSame(chamno1_, chamno2_, ier)
                 end if
             end if
         elseif (nb_ligr2 .eq. 2 .and. nb_ligr1 .eq. 1) then
-            call jenuno(jexnum(prchno2//'.LILI', 2), ligrel)
+            call jenuno(jexnum(numeq2//'.LILI', 2), ligrel)
             call jeexin(ligrel(1:19)//'.NBNO', iexi)
             if (iexi .gt. 0) then
                 call jeveuo(ligrel(1:19)//'.NBNO', 'L', vi=v_nbno)

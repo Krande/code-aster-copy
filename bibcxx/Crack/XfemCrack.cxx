@@ -71,14 +71,14 @@ XfemCrack::XfemCrack( const std::string name, MeshPtr mesh )
       _info( JeveuxVectorChar16( getName() + ".INFO" ) ),
       _crackTipNodeFacesField( JeveuxVectorLong( getName() + ".NOFACPTFON" ) ) {
     _tangentialLevelSetField->setDescription(
-        std::make_shared< GlobalEquationNumbering >( getName() + ".LTNO.PRCHN" ) );
+        std::make_shared< GlobalEquationNumbering >( getName() + ".LTNO.NUMEQ" ) );
     _normalLevelSetField->setDescription( _tangentialLevelSetField->getDescription() );
     _nodeStatusField->setDescription( _tangentialLevelSetField->getDescription() );
     _tangentialLevelSetGradient->setDescription(
-        std::make_shared< GlobalEquationNumbering >( getName() + ".GRLT.PRCHN" ) );
+        std::make_shared< GlobalEquationNumbering >( getName() + ".GRLT.NUMEQ" ) );
     _normalLevelSetGradient->setDescription( _tangentialLevelSetGradient->getDescription() );
     _localBasis->setDescription(
-        std::make_shared< GlobalEquationNumbering >( getName() + ".BASL.PRCHN" ) );
+        std::make_shared< GlobalEquationNumbering >( getName() + ".BASL.NUMEQ" ) );
 };
 
 XfemCrack::XfemCrack( MeshPtr mesh ) : XfemCrack( ResultNaming::getNewResultName(), mesh ){};

@@ -56,15 +56,19 @@ class JeveuxVectorClass : public JeveuxObjectClass, private AllowedJeveuxType< V
      *   il faut donc faire appel a JeveuxVectorClass::updateValuePointer
      */
     JeveuxVectorClass( const std::string &nom )
-        : JeveuxObjectClass( nom ), _valuePtr( nullptr ), _jeveuxAdress( 0 ){};
+        : JeveuxObjectClass( nom ), _valuePtr( nullptr ), _jeveuxAdress( 0 ) {
+#ifdef ASTER_DEBUG_CXX
+        std::cout << "DEBUG: JeveuxVector.create: " << _name << std::endl;
+#endif
+    };
 
     /**
      * @brief Destructeur
      */
     ~JeveuxVectorClass() {
-        // #ifdef ASTER_DEBUG_CXX
-        //         std::cout << "DEBUG: JeveuxVector.destr: " << _name << std::endl;
-        // #endif
+#ifdef ASTER_DEBUG_CXX
+        std::cout << "DEBUG: JeveuxVector.destr: " << _name << std::endl;
+#endif
         this->deallocate();
     };
 
@@ -756,16 +760,14 @@ class JeveuxVector {
     JeveuxVector( std::string nom )
         : _jeveuxVectorPtr( std::make_shared< JeveuxVectorClass< ValueType > >( nom ) ){};
 
-    JeveuxVector( std::string nom, const std::vector< ValueType > &vect )
-        : _jeveuxVectorPtr( std::make_shared< JeveuxVectorClass< ValueType > >( nom ) ) {
+    JeveuxVector( std::string nom, const std::vector< ValueType > &vect ) : JeveuxVector( nom ) {
         ( *_jeveuxVectorPtr ) = vect;
     };
 
     JeveuxVector( const std::vector< ValueType > &vect )
         : JeveuxVector( ResultNaming::getNewResultName(), vect ){};
 
-    JeveuxVector( std::string nom, const ASTERINTEGER &size )
-        : _jeveuxVectorPtr( std::make_shared< JeveuxVectorClass< ValueType > >( nom ) ) {
+    JeveuxVector( std::string nom, const ASTERINTEGER &size ) : JeveuxVector( nom ) {
         _jeveuxVectorPtr->allocate( size );
     };
 
@@ -773,7 +775,7 @@ class JeveuxVector {
         : JeveuxVector( ResultNaming::getNewResultName(), size ){};
 
     JeveuxVector( std::string nom, const ASTERINTEGER &size, const ValueType &val )
-        : _jeveuxVectorPtr( std::make_shared< JeveuxVectorClass< ValueType > >( nom ) ) {
+        : JeveuxVector( nom ) {
         _jeveuxVectorPtr->allocate( size, val );
     };
 

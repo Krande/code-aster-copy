@@ -47,13 +47,13 @@ subroutine romConvertEquaToNode(field_refe, list_length, v_list_equa, v_list_nod
 ! --------------------------------------------------------------------------------------------------
 !
     integer, pointer :: v_deeq(:) => null()
-    character(len=19) :: prchno
+    character(len=19) :: numeq
     integer :: i_list, i_equa, nume_node
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    call dismoi('NUME_EQUA', field_refe, 'CHAM_NO', repk=prchno)
-    call jeveuo(prchno(1:19)//'.DEEQ', 'L', vi=v_deeq)
+    call dismoi('NUME_EQUA', field_refe, 'CHAM_NO', repk=numeq)
+    call jeveuo(numeq(1:19)//'.DEEQ', 'L', vi=v_deeq)
 !
 ! - Convert
 !

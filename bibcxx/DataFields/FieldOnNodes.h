@@ -513,7 +513,7 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
     void setDescription( const GlobalEquationNumberingPtr &desc ) {
         if ( !desc )
             raiseAsterError( "Empty GlobalEquationNumbering" );
-        if ( _dofDescription && _dofDescription->getName() != desc->getName() )
+        if ( _dofDescription && _dofDescription != desc )
             raiseAsterError( "GlobalEquationNumbering inconsistents" );
         _dofDescription = desc;
     };
@@ -522,7 +522,11 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
      * @brief Set mesh
      * @param mesh object BaseMeshPtr
      */
-    void setMesh( const BaseMeshPtr &mesh ) { _dofDescription->setMesh( mesh ); };
+    void setMesh( const BaseMeshPtr &mesh ) {
+        AS_ASSERT( _dofDescription );
+
+        _dofDescription->setMesh( mesh );
+    };
 
     /**
      * @brief Compute norm
