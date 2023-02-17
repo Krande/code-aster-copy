@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -284,7 +284,7 @@ CALC_MODES = MACRO(
                 b_sorensen=BLOC(
                     condition="""equal_to("METHODE", 'SORENSEN')""",
                     PREC_SOREN=SIMP(statut="f", typ="R", defaut=0.0e0, val_min=0.0e0),
-                    NMAX_ITER_SOREN=SIMP(statut="f", typ="I", defaut=20, val_min=0),
+                    NMAX_ITER_SOREN=SIMP(statut="f", typ="I", defaut=20, val_min=1),
                     PARA_ORTHO_SOREN=SIMP(statut="f", typ="R", defaut=0.717),
                 ),
                 b_qz=BLOC(
@@ -551,7 +551,7 @@ CALC_MODES = MACRO(
                 b_sorensen=BLOC(
                     condition="""equal_to("METHODE", 'SORENSEN')""",
                     PREC_SOREN=SIMP(statut="f", typ="R", defaut=0.0e0, val_min=0.0e0),
-                    NMAX_ITER_SOREN=SIMP(statut="f", typ="I", defaut=20, val_min=0),
+                    NMAX_ITER_SOREN=SIMP(statut="f", typ="I", defaut=20, val_min=1),
                     PARA_ORTHO_SOREN=SIMP(statut="f", typ="R", defaut=0.717),
                 ),
                 b_qz=BLOC(
@@ -774,7 +774,7 @@ CALC_MODES = MACRO(
                 b_sorensen=BLOC(
                     condition="""equal_to("METHODE", 'SORENSEN')""",
                     PREC_SOREN=SIMP(statut="f", typ="R", defaut=0.0e0, val_min=0.0e0),
-                    NMAX_ITER_SOREN=SIMP(statut="f", typ="I", defaut=20, val_min=0),
+                    NMAX_ITER_SOREN=SIMP(statut="f", typ="I", defaut=20, val_min=1),
                     PARA_ORTHO_SOREN=SIMP(statut="f", typ="R", defaut=0.717),
                 ),
                 b_qz=BLOC(

@@ -5441,6 +5441,9 @@ class AssemblyMatrixDisplacementReal(BaseAssemblyMatrix):
         2. getMaterialField(self: libaster.AssemblyMatrixDisplacementReal) -> MaterialField
         """
 
+    def getNumberOfElementaryMatrix(self):
+        pass
+
     def scale(self, arg0, arg1):
         """Scale the matrix in place using right and left multiplication by diagonal matrices stored as vectors
 

@@ -104,7 +104,7 @@ MODE_ITER_SIMULT_CATA = OPER(
     b_sorensen=BLOC(
         condition="METHODE == 'SORENSEN'",
         PREC_SOREN=SIMP(statut="f", typ="R", defaut=0.0e0, val_min=0.0e0),
-        NMAX_ITER_SOREN=SIMP(statut="f", typ="I", defaut=20, val_min=0),
+        NMAX_ITER_SOREN=SIMP(statut="f", typ="I", defaut=20, val_min=1),
         PARA_ORTHO_SOREN=SIMP(statut="f", typ="R", defaut=0.717),
     ),
     b_qz=BLOC(
