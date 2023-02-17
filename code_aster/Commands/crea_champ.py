@@ -42,15 +42,7 @@ class FieldCreator(ExecuteCommand):
 
     command_name = "CREA_CHAMP"
 
-    def create_result(self, keywords):
-        """Initialize the result.
-
-        Arguments:
-            keywords (dict): Keywords arguments of user's keywords.
-        """
-        # Analysis of type of field
-        location, quantity, typ = keywords["TYPE_CHAM"].split("_")
-
+    def _getMesh(self, keywords):
         mesh = keywords.get("MAILLAGE")
         model = keywords.get("MODELE")
         caraElem = keywords.get("CARA_ELEM")
@@ -73,9 +65,32 @@ class FieldCreator(ExecuteCommand):
             elif fiss is not None:
                 mesh = fiss.getMesh()
 
+        if mesh is None:
+            for comb in force_list(keywords.get("COMB", [])):
+                mesh = comb["CHAM_GD"].getMesh()
+                if mesh:
+                    break
+
+        return mesh
+
+    def create_result(self, keywords):
+        """Initialize the result.
+
+        Arguments:
+            keywords (dict): Keywords arguments of user's keywords.
+        """
+        # Analysis of type of field
+        location, quantity, typ = keywords["TYPE_CHAM"].split("_")
+
+        mesh = self._getMesh(keywords)
+        model = keywords.get("MODELE")
+        caraElem = keywords.get("CARA_ELEM")
+        resultat = keywords.get("RESULTAT")
+        numeDdl = keywords.get("NUME_DDL")
+
         if location == "CART":
             if mesh is None:
-                raise NotImplementedError("Must have Mesh, Model or ElementaryCharacteristics")
+                raise NotImplementedError("Must have Mesh")
             self._result = ConstantFieldOnCellsReal(mesh)
         elif location == "NOEU":
             if typ == "R":
@@ -142,14 +157,7 @@ class FieldCreator(ExecuteCommand):
                     if desc:
                         self._result.setDescription(desc)
                         break
-            if not self._result.getMesh():
-                for comb in force_list(keywords.get("COMB", [])):
-                    mesh = comb["CHAM_GD"].getMesh()
-                    if mesh:
-                        self._result.setMesh(mesh)
-                        break
-
-            self._result.build()
+            self._result.build(self._getMesh(keywords))
         elif location[:2] == "EL":
             resultat = keywords.get("RESULTAT")
             fed = []

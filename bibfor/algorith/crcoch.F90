@@ -226,7 +226,7 @@ subroutine crcoch()
 
     call dismoi('NOM_MODELE', matr, 'MATR_ASSE', repk=modele)
     call dismoi('NOM_MAILLA', modele, 'MODELE', repk=noma)
-    call dismoi('PROF_CHNO', matr, 'MATR_ASSE', repk=profch)
+    call dismoi('NUME_EQUA', matr, 'MATR_ASSE', repk=profch)
     call dismoi('NB_EQUA', numedd, 'NUME_DDL', repi=neq)
     call dismoi('CHAM_MATER', matr, 'MATR_ASSE', repk=materi)
     call dismoi('CARA_ELEM', matr, 'MATR_ASSE', repk=carele)

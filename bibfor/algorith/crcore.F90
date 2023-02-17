@@ -220,7 +220,7 @@ subroutine crcore()
         matr = ' '
     end if
     call dismoi('NOM_MODELE', numedd, 'NUME_DDL', repk=modele)
-    call dismoi('PROF_CHNO', numedd, 'NUME_DDL', repk=profch)
+    call dismoi('NUME_EQUA', numedd, 'NUME_DDL', repk=profch)
     call dismoi('NB_EQUA', numedd, 'NUME_DDL', repi=neq)
     call dismoi('NOM_MAILLA', modele, 'MODELE', repk=noma)
     call dismoi('NB_NO_MAILLA', noma, 'MAILLAGE', repi=nbnoeu)

@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine pteequ(prof_chno, base, neq, igds, nb_cmp_field, &
+subroutine pteequ(nume_equa, base, neq, igds, nb_cmp_field, &
                   field_to_cata)
 !
     implicit none
@@ -35,7 +35,7 @@ subroutine pteequ(prof_chno, base, neq, igds, nb_cmp_field, &
 #include "asterfort/wkvect.h"
 !
 !
-    character(len=19), intent(in) :: prof_chno
+    character(len=19), intent(in) :: nume_equa
     integer, intent(in) :: neq
     integer, intent(in) :: igds
     integer, intent(in) :: nb_cmp_field
@@ -48,14 +48,14 @@ subroutine pteequ(prof_chno, base, neq, igds, nb_cmp_field, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  base           : JEVEUX base to create PROF_CHNO object
-! In  prof_chno      : name of PROF_CHNO object
+! In  base           : JEVEUX base to create NUME_EQUA object
+! In  nume_equa      : name of NUME_EQUA object
 ! In  neq            : number of equations
 ! In  igds           : index of GRANDEUR used to numbering
 ! In  nb_cmp_field   : number of components in field
 ! In  field_to_cata  : pointer to converter from local components (field) to global (catalog)
 !
-! Object   : PROF_CHNO.DEEQ
+! Object   : NUME_EQUA.DEEQ
 ! Dimension: vector of size (2*neq)
 ! Contains : for ieq = 1,neq
 !
@@ -86,9 +86,9 @@ subroutine pteequ(prof_chno, base, neq, igds, nb_cmp_field, &
 !
     call jemarq()
 !
-    prno = prof_chno(1:19)//'.PRNO'
-    nueq = prof_chno(1:19)//'.NUEQ'
-    deeq = prof_chno(1:19)//'.DEEQ'
+    prno = nume_equa(1:19)//'.PRNO'
+    nueq = nume_equa(1:19)//'.NUEQ'
+    deeq = nume_equa(1:19)//'.DEEQ'
 !
 ! - Information about GRANDEUR
 !

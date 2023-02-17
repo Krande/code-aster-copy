@@ -28,7 +28,7 @@ subroutine rotchm(profno, vale, tetss, nbss, invsk, &
 !
 !-----------------------------------------------------------------------
 !
-! PROFNO   /I/: NOM K19 DU PROF_CHNO GLOBAL
+! PROFNO   /I/: NOM K19 DU NUME_EQUA GLOBAL
 ! VALE     /M/: VECTEUR CORRESPONDANT AU .VALE DU CHAMNO COURANT
 ! TESSS    /I/: VECTEUR DES ANGLE DE ROTATION DES SOUS-STRUCTURES
 ! NBSS     /I/: NOMBRE DE SOUS-STRUCTURES

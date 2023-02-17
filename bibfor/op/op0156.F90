@@ -71,7 +71,7 @@ subroutine op0156()
         call utmess('F', 'ALGELINE2_86')
     end if
     call dismoi('NOM_NUME_DDL', masse, 'MATR_ASSE', repk=numem)
-    call dismoi('PROF_CHNO', masse, 'MATR_ASSE', repk=pfchn1)
+    call dismoi('NUME_EQUA', masse, 'MATR_ASSE', repk=pfchn1)
 !
 !
 !     1. CHAM_NO  :
@@ -89,7 +89,7 @@ subroutine op0156()
 !     -- SI LA NUMEROTATION DE CHAM_NO N'EST PAS LA MEME QUE CELLE DE
 !        LA MATRICE, ON CHANGE LA NUMEROTATION DE CHAM_NO.
 !        EN APPELANT VTCOPY, ON PERD LA VALEUR DES LAGRANGES
-    if (.not. idensd('PROF_CHNO', pfchn1, pfchn2)) then
+    if (.not. idensd('NUME_EQUA', pfchn1, pfchn2)) then
         valk(1) = pfchn1
         valk(2) = pfchn2
         call utmess('A', 'CALCULEL3_46', nk=2, valk=valk)

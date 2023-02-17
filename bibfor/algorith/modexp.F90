@@ -103,7 +103,7 @@ subroutine modexp(modgen, sst1, indin1, lino1, nbmod, &
 !
 !-- RECUPERATION DU NUME_DDL
     call dismoi('NOM_NUME_DDL', masse(1:8), 'MATR_ASSE', repk=nume)
-    call dismoi('PROF_CHNO', nume, 'NUME_DDL', repk=prno)
+    call dismoi('NUME_EQUA', nume, 'NUME_DDL', repk=prno)
     call jeveuo(jexnum(prno//'.PRNO', 1), 'L', lprno)
 !
     call dismoi('NB_EQUA', raide, 'MATR_ASSE', repi=nbeq1)

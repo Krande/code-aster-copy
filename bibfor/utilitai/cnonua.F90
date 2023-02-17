@@ -67,7 +67,7 @@ subroutine cnonua(nb_dim, chnoz, list_nodez, nuagez)
     integer :: jnuav, ival, k, ieq, i_ligr_mesh
     character(len=4) :: type_scal
     character(len=8) :: mesh, gran_name
-    character(len=19) :: chno, list_node, nuage, profchno
+    character(len=19) :: chno, list_node, nuage, numeequa
     aster_logical :: l_crea_nual, prem
     integer, pointer :: ent_cod(:) => null()
     integer, pointer :: cmp_name(:) => null()
@@ -99,9 +99,9 @@ subroutine cnonua(nb_dim, chnoz, list_nodez, nuagez)
 !
     call jeveuo(chno//'.REFE', 'L', vk24=p_refe)
     mesh = p_refe(1) (1:8)
-    profchno = p_refe(2) (1:19)
+    numeequa = p_refe(2) (1:19)
 !
-    call nueq_chck(profchno, l_error=.true.)
+    call nueq_chck(numeequa, l_error=.true.)
     call dismoi('NB_NO_MAILLA', mesh, 'MAILLAGE', repi=nb_point)
     call jeveuo(mesh//'.COORDO    .VALE', 'L', kcoor)
 !
@@ -130,9 +130,9 @@ subroutine cnonua(nb_dim, chnoz, list_nodez, nuagez)
 !     --- SI LE CHAMP EST DECRIT PAR 1 "PRNO" ---
 !     ---------------------------------------------------
     prem = .true.
-    call jeveuo(profchno//'.NUEQ', 'L', ianueq)
-    call jenonu(jexnom(profchno//'.LILI', '&MAILLA'), i_ligr_mesh)
-    call jeveuo(jexnum(profchno//'.PRNO', i_ligr_mesh), 'L', iaprno)
+    call jeveuo(numeequa//'.NUEQ', 'L', ianueq)
+    call jenonu(jexnom(numeequa//'.LILI', '&MAILLA'), i_ligr_mesh)
+    call jeveuo(jexnum(numeequa//'.PRNO', i_ligr_mesh), 'L', iaprno)
     do i_pt = 1, nb_point
         nume_pt = p_list_node(i_pt)
         ncmp = zi(iaprno-1+(nume_pt-1)*(nb_ec+2)+2)
@@ -198,9 +198,9 @@ subroutine cnonua(nb_dim, chnoz, list_nodez, nuagez)
 !
 !     --- SI LE CHAMP EST DECRIT PAR 1 "PRNO" ---
 !
-    call jeveuo(profchno//'.NUEQ', 'L', ianueq)
-    call jenonu(jexnom(profchno//'.LILI', '&MAILLA'), i_ligr_mesh)
-    call jeveuo(jexnum(profchno//'.PRNO', i_ligr_mesh), 'L', iaprno)
+    call jeveuo(numeequa//'.NUEQ', 'L', ianueq)
+    call jenonu(jexnom(numeequa//'.LILI', '&MAILLA'), i_ligr_mesh)
+    call jeveuo(jexnum(numeequa//'.PRNO', i_ligr_mesh), 'L', iaprno)
     do i_pt = 1, nb_point
         nume_pt = p_list_node(i_pt)
         ival = zi(iaprno-1+(nume_pt-1)*(nb_ec+2)+1)

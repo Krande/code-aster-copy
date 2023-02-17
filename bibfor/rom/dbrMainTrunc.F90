@@ -53,7 +53,7 @@ subroutine dbrMainTrunc(paraTrunc, baseOut)
     integer :: ifm, niv
     integer :: nbMode, nbEquaDom, nbEquaRom
     integer :: iMode, iEqua, iret, numeEquaRom, numeMode
-    character(len=24) :: modeDom, modeRom, modeSymbName, profChno
+    character(len=24) :: modeDom, modeRom, modeSymbName, numeequa
     character(len=8) :: modelRom, resultNameIn, mesh, resultNameOut
     real(kind=8) :: modeSing
     integer :: nbSnap, numeSlice, physNume
@@ -72,7 +72,7 @@ subroutine dbrMainTrunc(paraTrunc, baseOut)
     resultNameOut = baseOut%resultName
     nbEquaRom = paraTrunc%nbEquaRom
     modelRom = paraTrunc%modelRom
-    profChno = paraTrunc%profChnoRom
+    numeequa = paraTrunc%profChnoRom
     physNume = paraTrunc%physNume
     baseIn = paraTrunc%baseInit
 !
@@ -106,7 +106,7 @@ subroutine dbrMainTrunc(paraTrunc, baseOut)
         ASSERT(iret .eq. 100)
         call vtcreb(modeRom, 'G', 'R', &
                     meshz=mesh, &
-                    nume_equaz=profChno, &
+                    nume_equaz=numeequa, &
                     idx_gdz=physNume, &
                     nb_equa_inz=nbEquaRom)
         call jeveuo(modeRom(1:19)//'.VALE', 'E', vr=valeRom)

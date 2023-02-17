@@ -360,7 +360,7 @@ subroutine modint(ssami, raiint, nddlin, nbmod, shift, &
 !
 !-- MISE A 0 DES DDL DE LAGRANGE
     call dismoi('NOM_NUME_DDL', raide, 'MATR_ASSE', repk=nume)
-    call dismoi('PROF_CHNO', nume, 'NUME_DDL', repk=prno)
+    call dismoi('NUME_EQUA', nume, 'NUME_DDL', repk=prno)
     call jeveuo(prno//'.DELG', 'L', vi=delg)
 !
     do i1 = 1, neq

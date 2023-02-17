@@ -43,7 +43,7 @@ subroutine numero_wrap(nume_ddlz, base, &
 !
 ! IO  nume_ddl       : name of numbering object (NUME_DDL)
 ! In  base           : JEVEUX base to create objects
-!                      base(1:1) => PROF_CHNO objects
+!                      base(1:1) => NUME_EQUA objects
 !                      base(2:2) => NUME_DDL objects
 ! In  old_nume_ddl   : name of previous nume_ddl object
 ! In  modelocz       : local mode for GRANDEUR numbering
@@ -54,7 +54,7 @@ subroutine numero_wrap(nume_ddlz, base, &
 ! In  sd_iden_rela   : name of object for identity relations between dof
 !
 ! If old_nume_ddl is present
-!   -> try to know if PROF_CHNO in old_nume_ddl can be reuse
+!   -> try to know if NUME_EQUA in old_nume_ddl can be reuse
 !      In this case nume_ddl = old_nume_ddl
 !
 ! --------------------------------------------------------------------------------------------------

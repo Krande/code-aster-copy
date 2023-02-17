@@ -101,7 +101,7 @@ subroutine prcymn(nomres, soumat, repmat)
 !
 !
     call dismoi('NUME_DDL', basmod, 'RESU_DYNA', repk=numddl)
-!----ON AJOUT .NUME POUR OBTENIR LE PROF_CHNO
+!----ON AJOUT .NUME POUR OBTENIR LE NUME_EQUA
     numddl(15:19) = '.NUME'
 !
     call dismoi('REF_RIGI_PREM', basmod, 'RESU_DYNA', repk=raid)

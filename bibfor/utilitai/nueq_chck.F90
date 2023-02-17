@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine nueq_chck(prof_chnoz, nb_equaz, l_error, l_subs)
+subroutine nueq_chck(nume_equaz, nb_equaz, l_error, l_subs)
 !
     implicit none
 !
@@ -26,34 +26,34 @@ subroutine nueq_chck(prof_chnoz, nb_equaz, l_error, l_subs)
 #include "asterfort/utmess.h"
 !
 !
-    character(len=*), intent(in) :: prof_chnoz
+    character(len=*), intent(in) :: nume_equaz
     integer, optional, intent(out) :: nb_equaz
     logical, optional, intent(in) :: l_error
     logical, optional, intent(in) :: l_subs
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! Check prof_chno
+! Check nume_equa
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  prof_chno   : name of PROF_CHNO
+! In  nume_equa   : name of NUME_EQUA
 ! Out nb_equa     : number of equations
 ! In  l_error     : emits explicit message if present
 ! In  l_subs      : exclude non-unit numbering (excluding substructing) if present
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    character(len=19) :: prof_chno
+    character(len=19) :: nume_equa
     character(len=24) :: nueq, deeq
     integer :: len_v, nb_equa, i_equa
     integer, pointer :: p_nueq(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    prof_chno = prof_chnoz
-    nueq = prof_chno//'.NUEQ'
-    deeq = prof_chno//'.DEEQ'
+    nume_equa = nume_equaz
+    nueq = nume_equa//'.NUEQ'
+    deeq = nume_equa//'.DEEQ'
     call jelira(deeq, 'LONMAX', len_v)
     call jelira(nueq, 'LONMAX', nb_equa)
     if (len_v .ne. 2*nb_equa) then

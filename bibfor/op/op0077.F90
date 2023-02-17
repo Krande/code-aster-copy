@@ -117,7 +117,7 @@ subroutine op0077()
 ! --- CREATION DU PROFIL :
 !     ---------------------------
     call getvid(' ', 'SQUELETTE', scal=k8b, nbret=ir)
-!     --- SI RESTITUTION SUR UNE SQUELETTE, ALORS ATTACHER UN PROF_CHNO
+!     --- SI RESTITUTION SUR UNE SQUELETTE, ALORS ATTACHER UN NUME_EQUA
 !         AU RESULTAT
     if (ir .eq. 0) then
         profno = '&&OP0077.PROFC.NUME'

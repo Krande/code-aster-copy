@@ -89,7 +89,7 @@ subroutine select_dof(listEqua_, tablEqua_, tablCmp_, &
     integer :: physDesc(nbEcMax)
     character(len=24) :: liliName
     character(len=8) :: cmpName, mesh
-    character(len=19) :: profChno, nume_equa_gene, fieldNode, numeEqul
+    character(len=19) :: nume_equa, nume_equa_gene, fieldNode, numeEqul
     character(len=14) :: numeDof
     integer :: iexi
     aster_logical :: lnume_equa_gene
@@ -127,15 +127,15 @@ subroutine select_dof(listEqua_, tablEqua_, tablCmp_, &
 !
 ! - Get NUME_EQUA
 !
-    profChno = ' '
+    nume_equa = ' '
     if (present(numeDofZ_)) then
         numeDof = numeDofZ_
         ASSERT(.not. present(fieldNodeZ_))
-        call dismoi('NUME_EQUA', numeDof, 'NUME_DDL', repk=profChno)
+        call dismoi('NUME_EQUA', numeDof, 'NUME_DDL', repk=nume_equa)
     elseif (present(fieldNodeZ_)) then
         fieldNode = fieldNodeZ_
         ASSERT(.not. present(numeDofZ_))
-        call dismoi('NUME_EQUA', fieldNode, 'CHAM_NO', repk=profChno)
+        call dismoi('NUME_EQUA', fieldNode, 'CHAM_NO', repk=nume_equa)
     else
         ASSERT(ASTER_FALSE)
     end if
@@ -197,10 +197,10 @@ subroutine select_dof(listEqua_, tablEqua_, tablCmp_, &
 !
 ! - NUME_EQUA or NUME_EQUA_GENE ?
 !
-    call jeexin(profChno//'.DESC', iexi)
+    call jeexin(nume_equa//'.DESC', iexi)
     lnume_equa_gene = (iexi .gt. 0)
     if (lnume_equa_gene) then
-        nume_equa_gene = profChno
+        nume_equa_gene = nume_equa
         call select_dof_gene(nume_equa_gene, nbCmpToSelect, physCataName, &
                              listCmpToSelect_, listEqua_, tablEqua_)
         goto 99
@@ -244,15 +244,15 @@ subroutine select_dof(listEqua_, tablEqua_, tablCmp_, &
 !
 ! - Some checks
 !
-    call jenuno(jexnum(profChno(1:19)//'.LILI', iLigrMesh), liliName)
+    call jenuno(jexnum(nume_equa(1:19)//'.LILI', iLigrMesh), liliName)
     ASSERT(liliName .eq. '&MAILLA')
-    call jelira(jexnum(profChno(1:19)//'.PRNO', iLigrMesh), 'LONMAX', prnoLength)
+    call jelira(jexnum(nume_equa(1:19)//'.PRNO', iLigrMesh), 'LONMAX', prnoLength)
     ASSERT(prnoLength/(nb_ec+2) .eq. nbNodeMesh)
 !
 ! - Get objects
 !
-    call jeveuo(jexnum(profChno(1:19)//'.PRNO', iLigrMesh), 'L', vi=prno)
-    call jeveuo(profChno(1:19)//'.NUEQ', 'L', vi=nueq)
+    call jeveuo(jexnum(nume_equa(1:19)//'.PRNO', iLigrMesh), 'L', vi=prno)
+    call jeveuo(nume_equa(1:19)//'.NUEQ', 'L', vi=nueq)
 !
 ! - Loop on nodes
 !

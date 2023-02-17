@@ -76,7 +76,7 @@ subroutine chamnoIsSame(chamno1_, chamno2_, ier)
         ier = ier+1
     end if
 !
-! - For PROFCHNO
+! - For NUMEEQUA
 !
     numeq1 = v_refe1(2) (1:19)
     numeq2 = v_refe2(2) (1:19)

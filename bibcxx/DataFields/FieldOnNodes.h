@@ -141,7 +141,7 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
     }
 
     /** @brief Move constructor */
-    FieldOnNodes( FieldOnNodes &&other ) : DataField{std::move( other )} {
+    FieldOnNodes( FieldOnNodes &&other ) : DataField( std::move( other ) ) {
         // Pointers to be moved
         _descriptor = other._descriptor;
         _reference = other._reference;
@@ -402,7 +402,13 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
     /**
      * @brief Get mesh
      */
-    BaseMeshPtr getMesh() const { return _dofDescription->getMesh(); };
+    BaseMeshPtr getMesh() const {
+        if ( _dofDescription ) {
+            return _dofDescription->getMesh();
+        }
+
+        return nullptr;
+    };
 
     bool printMedFile( const std::string fileName, bool local = true ) const;
 
@@ -515,6 +521,11 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
             raiseAsterError( "Empty GlobalEquationNumbering" );
         if ( _dofDescription && _dofDescription != desc )
             raiseAsterError( "GlobalEquationNumbering inconsistents" );
+        _reference->updateValuePointer();
+        const auto descName = std::string( ( *_reference )[1].toString(), 0, 19 );
+        if ( descName != desc->getName() ) {
+            raiseAsterError( "Description are incompatible" );
+        }
         _dofDescription = desc;
     };
 
@@ -651,6 +662,7 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
 
             _reference->updateValuePointer();
             const std::string name2 = trim( ( *_reference )[1].toString() );
+            std::cout << getName() << " vs " << name2 << std::endl;
             if ( !name2.empty() ) {
                 AS_ASSERT( mesh );
                 _dofDescription = std::make_shared< GlobalEquationNumbering >( name2 );

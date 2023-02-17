@@ -77,7 +77,7 @@ subroutine dbrInitBaseTrunc(resultName, paraTrunc, lReuse, base)
         call romBaseGetInfo(resultNameIn, paraTrunc%baseInit)
     end if
 !
-! - Create PROF_CHNO for truncation
+! - Create NUME_EQUA for truncation
 !
     if (niv .ge. 2) then
         call utmess('I', 'ROM18_19')

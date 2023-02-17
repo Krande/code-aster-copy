@@ -59,7 +59,7 @@ subroutine nuacno(nuagez, list_nodez, chnoz)
     integer :: idx_gd
     character(len=4) :: type_scal
     character(len=8) :: mesh, gran_name
-    character(len=19) :: chno, list_node, nuage, profchno
+    character(len=19) :: chno, list_node, nuage, numeequa
     integer :: iaprno, icmp
     integer :: icompt, i_ec, ieq, nume_pt, itype, ival, i_pt
     integer :: j, jnuai, jnuav, k, i_ligr_mesh
@@ -91,8 +91,8 @@ subroutine nuacno(nuagez, list_nodez, chnoz)
 !
     call jeveuo(chno//'.REFE', 'L', vk24=p_refe)
     mesh = p_refe(1) (1:8)
-    profchno = p_refe(2) (1:19)
-    call nueq_chck(profchno, l_error=.true.)
+    numeequa = p_refe(2) (1:19)
+    call nueq_chck(numeequa, l_error=.true.)
     call dismoi('NB_NO_MAILLA', mesh, 'MAILLAGE', repi=nb_point)
 !
     if (list_node .ne. ' ') then
@@ -121,9 +121,9 @@ subroutine nuacno(nuagez, list_nodez, chnoz)
 !
 !     --- SI LE CHAMP EST DECRIT PAR 1 "PRNO" ---
 !
-    call jeveuo(profchno//'.NUEQ', 'L', vi=nueq)
-    call jenonu(jexnom(profchno//'.LILI', '&MAILLA'), i_ligr_mesh)
-    call jeveuo(jexnum(profchno//'.PRNO', i_ligr_mesh), 'L', iaprno)
+    call jeveuo(numeequa//'.NUEQ', 'L', vi=nueq)
+    call jenonu(jexnom(numeequa//'.LILI', '&MAILLA'), i_ligr_mesh)
+    call jeveuo(jexnum(numeequa//'.PRNO', i_ligr_mesh), 'L', iaprno)
     do j = 1, nb_point
         nume_pt = p_list_node(j)
         ival = zi(iaprno-1+(nume_pt-1)*(nb_ec+2)+1)

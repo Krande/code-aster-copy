@@ -38,7 +38,7 @@ subroutine dbrInitProfTrunc(resultNameIn, resultNameOut, paraTrunc)
 !
 ! DEFI_BASE_REDUITE - Initializations
 !
-! Create PROF_CHNO for truncation
+! Create NUME_EQUA for truncation
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -71,14 +71,14 @@ subroutine dbrInitProfTrunc(resultNameIn, resultNameOut, paraTrunc)
     call dismoi('NUM_GD', modeRefe, 'CHAM_NO', repi=physNume)
     call dismoi('NUME_EQUA', modeRefe, 'CHAM_NO', repk=profChnoRefe)
 !
-! - Create name of new PROF_CHNO
+! - Create name of new NUME_EQUA
 !
     profChnoNew = resultNameOut(1:8)//'.00000'
     call gnomsd(' ', profChnoNew, 10, 14)
 !
 ! - Duplicate numbering
 !
-    call copisd('PROF_CHNO', 'G', profChnoRefe, profChnoNew)
+    call copisd('NUME_EQUA', 'G', profChnoRefe, profChnoNew)
 !
 ! - Save parameters
 !

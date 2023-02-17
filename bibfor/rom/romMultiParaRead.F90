@@ -59,7 +59,7 @@ subroutine romMultiParaRead(ds_multipara)
     character(len=1)  :: matr_type, vect_type, ktyp, matr_elem_type, vect_elem_type
     character(len=16) :: keywfact, type_vari_coef
     character(len=8) :: matr_asse, vect_asse, gran_name, model
-    character(len=19) :: prof_chno
+    character(len=19) :: nume_equa
     character(len=24) :: field_name, vect_assez
     type(ROM_DS_MultiCoef) :: ds_multicoef
     type(ROM_DS_VariPara) :: ds_varipara
@@ -150,8 +150,8 @@ subroutine romMultiParaRead(ds_multipara)
 ! - Get informations from field
 !
     vect_assez = vect_asse
-    call dismoi('NUME_EQUA', vect_assez, 'CHAM_NO', repk=prof_chno)
-    call dismoi('NOM_MODELE', prof_chno, 'PROF_CHNO', repk=model)
+    call dismoi('NUME_EQUA', vect_assez, 'CHAM_NO', repk=nume_equa)
+    call dismoi('NOM_MODELE', nume_equa, 'NUME_EQUA', repk=model)
     field_name = 'DEPL'
     call romFieldGetInfo(model, field_name, vect_assez, ds_multipara%field, l_chck_=ASTER_FALSE)
 !

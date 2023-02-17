@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,9 +19,9 @@
 !
 !
 interface
-    subroutine pteequ(prof_chno    , base, neq, igds, nb_cmp_field,&
+    subroutine pteequ(nume_equa    , base, neq, igds, nb_cmp_field,&
                       field_to_cata)
-        character(len=19), intent(in) :: prof_chno
+        character(len=19), intent(in) :: nume_equa
         integer, intent(in) :: neq
         integer, intent(in) :: igds
         integer, intent(in) :: nb_cmp_field

@@ -200,7 +200,7 @@ subroutine crkucv()
     call jeveuo(mamor(1:19)//'.&INT', 'E', lmat)
     call dismoi('NOM_NUME_DDL', mamor, 'MATR_ASSE', repk=numem)
     call dismoi('NOM_MODELE', mamor, 'MATR_ASSE', repk=modele)
-    call dismoi('PROF_CHNO', mamor, 'MATR_ASSE', repk=profch)
+    call dismoi('NUME_EQUA', mamor, 'MATR_ASSE', repk=profch)
     call dismoi('NB_EQUA', numem, 'NUME_DDL', repi=neq)
     call getvid('KUCV', 'MATR_RIGI', iocc=iocc, scal=mrigi, nbret=nr)
     if (nr .ne. 0) then

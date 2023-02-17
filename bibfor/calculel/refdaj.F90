@@ -63,7 +63,7 @@ subroutine refdaj(arret, result, nbordr, numer, typre, &
 !  |                                                                   |
 !  | IN > NUMER  : NUMEROTATION DES CONCEPTS DE REFERENCE          [K*]|
 !  |               SOIT : NUME_DDL                                     |
-!  |               SOIT : PROF_CHNO                                    |
+!  |               SOIT : NUME_EQUA                                    |
 !  |                                                                   |
 !  | IN > TYPRE  : TYPE DE REFERENCE A AJOUTER                     [K4]|
 !  |               POSSIBILITES : 'DYNAMIQUE'                          |

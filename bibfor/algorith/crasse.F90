@@ -147,7 +147,7 @@ subroutine crasse()
     end do
 !
 !
-!     -- EVENTUELLEMENT, IL FAUT DETRUIRE LES PROF_CHNO INUTILES
+!     -- EVENTUELLEMENT, IL FAUT DETRUIRE LES NUME_EQUA INUTILES
 !        (A CAUSE DES INSTANTS MULTIPLES) :
     call rsmena(resu2)
 !

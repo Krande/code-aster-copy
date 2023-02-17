@@ -123,7 +123,7 @@ subroutine prosmo(matrez, limat, nbmat, basez, numedd, &
     call dismoi('NOM_NUME_DDL', mat1, 'MATR_ASSE', repk=numdd1)
 !
 !
-! --- RECOPIE DU PROF_CHNO DE LA PREMIERE MATRICE SUR LA MATRICE
+! --- RECOPIE DU NUME_EQUA DE LA PREMIERE MATRICE SUR LA MATRICE
 ! --- RESULTANTE :
 !     ---------
     nume_equa1 = numdd1//'.NUME'

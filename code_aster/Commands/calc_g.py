@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -69,8 +69,7 @@ def calc_g_with_co(self, **args):
         NOM_PARA="NOM_SD",
         FILTRE=_F(NOM_PARA="NOM_OBJET", VALE_K="CHAM_THETA"),
     )
-    _cham_theta_no.setMesh(args["RESULTAT"].getMesh())
-    _cham_theta_no.build()
+    _cham_theta_no.build(args["RESULTAT"].getMesh())
 
     if ("CHAM_THETA" in args["THETA"]) and (args["THETA"]["CHAM_THETA"].is_typco()):
         # number of CHAM_THETA fields

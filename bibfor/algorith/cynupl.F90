@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine cynupl(prof_chno, indirf, modcyc, mailsk, nbsec)
+subroutine cynupl(nume_equa, indirf, modcyc, mailsk, nbsec)
     implicit none
 !
 !***********************************************************************
@@ -36,7 +36,7 @@ subroutine cynupl(prof_chno, indirf, modcyc, mailsk, nbsec)
 !
 ! NOM----- / /:
 !
-! PROF_CHNO   /I/: NOM K19 DU PROF_CHNO A CREER
+! NUME_EQUA   /I/: NOM K19 DU NUME_EQUA A CREER
 ! INDIRF   /I/: NOM K24 DE LA FAMILLE DES INDIRECTIONS A CREER
 ! MODCYC   /I/: NOM DU RESULTAT CYCLIQUE EN AMONT
 ! MAILSK   /I/: NOM DU MAILLAGE SKELETTE
@@ -77,7 +77,7 @@ subroutine cynupl(prof_chno, indirf, modcyc, mailsk, nbsec)
     parameter(nbcpmx=300)
     character(len=6) :: pgc
     character(len=8) :: modcyc, mailsk, nomgd
-    character(len=19) :: prof_chno_sec, prof_chno, chamno
+    character(len=19) :: nume_equa_sec, nume_equa, chamno
     character(len=24) :: indirf, lili, prno, deeq, nueq
     integer :: idec(nbcpmx), nec
     integer, pointer :: skeleton(:) => null()
@@ -89,15 +89,15 @@ subroutine cynupl(prof_chno, indirf, modcyc, mailsk, nbsec)
     pgc = 'CYNUPL'
 !
 !
-!----------------RECUPERATION DU PROF_CHNO:
+!----------------RECUPERATION DU NUME_EQUA:
     call rsexch('F', modcyc, 'DEPL', 1, chamno, &
                 ier)
-    call dismoi('NUME_EQUA', chamno, 'CHAM_NO', repk=prof_chno_sec)
+    call dismoi('NUME_EQUA', chamno, 'CHAM_NO', repk=nume_equa_sec)
 !
 !---------------RECUPERATION DU NOMBRE DE COMPOSANTES-------------------
 !
 !     -- QUESTION "POURRIE" :
-    call dismoi('NOM_GD', prof_chno_sec, 'PROF_CHNO', repk=nomgd)
+    call dismoi('NOM_GD', nume_equa_sec, 'NUME_EQUA', repk=nomgd)
     call dismoi('NB_CMP_MAX', nomgd, 'GRANDEUR', repi=nbcmp)
     call jenonu(jexnom('&CATA.GD.NOMGD', nomgd), nugd)
     nec = nbec(nugd)
@@ -114,10 +114,10 @@ subroutine cynupl(prof_chno, indirf, modcyc, mailsk, nbsec)
 !
 !--------------RECUPERATION DU PRNO DU SECTEUR--------------------------
 !
-    call jenonu(jexnom(prof_chno_sec//'.LILI', '&MAILLA'), i_ligr_mesh)
-    call jeveuo(jexnum(prof_chno_sec//'.PRNO', i_ligr_mesh), 'L', llprno)
-    call jeveuo(prof_chno_sec//'.NUEQ', 'L', vi=vnueq)
-    call dismoi('NB_EQUA', prof_chno_sec, 'PROF_CHNO', repi=neqsec)
+    call jenonu(jexnom(nume_equa_sec//'.LILI', '&MAILLA'), i_ligr_mesh)
+    call jeveuo(jexnum(nume_equa_sec//'.PRNO', i_ligr_mesh), 'L', llprno)
+    call jeveuo(nume_equa_sec//'.NUEQ', 'L', vi=vnueq)
+    call dismoi('NB_EQUA', nume_equa_sec, 'NUME_EQUA', repi=neqsec)
 !
 !--------------------ALLOCATION DU VECTEUR DE TRAVAIL-------------------
 !     POUR STOCKAGE NOMBRE DE DDL GLOBAUX ENGENDRE PAR SECTEUR
@@ -137,14 +137,14 @@ subroutine cynupl(prof_chno, indirf, modcyc, mailsk, nbsec)
 !
 !-----------------ALLOCATION DES DIVERS OBJETS--------------------------
 !
-    lili = prof_chno//'.LILI'
-    prno = prof_chno//'.PRNO'
-    deeq = prof_chno//'.DEEQ'
-    nueq = prof_chno//'.NUEQ'
+    lili = nume_equa//'.LILI'
+    prno = nume_equa//'.PRNO'
+    deeq = nume_equa//'.DEEQ'
+    nueq = nume_equa//'.NUEQ'
 !
-! - Create PROF_CHNO
+! - Create NUME_EQUA
 !
-    call profchno_crsd(prof_chno, 'G', nb_equa=nddlt, nb_ligrz=2, &
+    call profchno_crsd(nume_equa, 'G', nb_equa=nddlt, nb_ligrz=2, &
                        prno_lengthz=nbnot*(2+nec))
     call jeveuo(deeq, 'E', lddeeq)
     call jeveuo(nueq, 'E', ldnueq)

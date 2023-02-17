@@ -241,12 +241,12 @@ subroutine op0144()
 ! ---   DE DEPLACEMENTS MODAUX                                  ---
 ! ---   SIMULTANEMENT ON CREE LES OBJETS .REFE , .DESC ET .VALE ---
 ! ---   ASSOCIES A CHACUN DES CHAMPS                            ---
-! ---   POUR LE PREMIER CHAMP ON CREE LE PROF_CHNO QUI VAUT     ---
+! ---   POUR LE PREMIER CHAMP ON CREE LE NUME_EQUA QUI VAUT     ---
 ! ---   ENSUITE POUR TOUS LES AUTRES CHAMPS                     ---
 !
 ! --- 6.1.RECUPERATION D'INFORMATIONS NECESSAIRES
 ! ---     A LA CREATION DES OBJETS ASSOCIES AUX CHAMPS
-! ---     A LA CREATION DU PROF_CHNO COMMUN
+! ---     A LA CREATION DU NUME_EQUA COMMUN
 !
     call dismoi('REF_RIGI_PREM', nombm, 'RESU_DYNA', repk=matria)
 !
@@ -328,7 +328,7 @@ subroutine op0144()
             call wkvect(chrefe, 'G V K24', 4, jcrefe)
             zk24(jcrefe) = mailla
 !
-! --------AU PREMIER PASSAGE CREATION DU PROF_CHNO
+! --------AU PREMIER PASSAGE CREATION DU NUME_EQUA
             if (io .eq. 1 .and. ipar .eq. 1) then
                 zk24(jcrefe+1) = cham19
                 call crprno(cham19, 'G', mailla, gran, long)

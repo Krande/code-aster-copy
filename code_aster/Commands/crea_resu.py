@@ -105,7 +105,7 @@ class ResultCreator(ExecuteCommand):
                         self._result.setMesh(mesh)
                         break
 
-        # find ligrel and prof_chno
+        # find ligrel and nume_equa
         feds = []
         fnds = []
         for occ in fkw:

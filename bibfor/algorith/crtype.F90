@@ -725,7 +725,7 @@ subroutine crtype()
                 call refdaj('F', resu19, (nbordr2-nbordr1), numedd, 'DYNAMIQUE', &
                             matric, ier)
 !
-!               compare numedd and profchno of all the new fields added (only DEPL)
+!               compare numedd and numeequa of all the new fields added (only DEPL)
 !
                 do j = nbordr1+1, nbordr2-nbordr1
                     call rsexch(' ', resu19, 'DEPL', j, nomch, ier1)

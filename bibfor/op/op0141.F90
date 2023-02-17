@@ -187,14 +187,14 @@ subroutine op0141()
 ! ---- Verification : les deux nume_ddl doivent etre identiques
     pronu1 = (numdd1//'.NUME')
     pronu2 = (numdd2//'.NUME')
-    if (.not. idensd('PROF_CHNO', pronu1, pronu2)) then
+    if (.not. idensd('NUME_EQUA', pronu1, pronu2)) then
         call utmess('F', 'ALGELINE2_80')
     end if
 !
 ! --- Verification : le nume_ddl doit etre celui de la MATR_ASSE
     if (matr .ne. ' ') then
         pronua = (numdda//'.NUME')
-        if (.not. idensd('PROF_CHNO', pronu1, pronua)) then
+        if (.not. idensd('NUME_EQUA', pronu1, pronua)) then
             call utmess('F', 'ALGELINE2_81')
         end if
         nu = numdda(1:14)

@@ -168,7 +168,7 @@ function nbddlMaxMa(nume_ddlz, matr_assez, nbmat) result(maxDDLMa)
     call jelira(nume_ddl//'.NUME.REFN', 'LONMAX', n1)
     ASSERT(n1 .eq. 4)
 !
-! --- Acces au PROF_CHNO
+! --- Acces au NUME_EQUA
 !
     if (l_matd) then
         call jeveuo(nume_ddl//'.NUML.PRNO', 'L', vi=v_prn1)

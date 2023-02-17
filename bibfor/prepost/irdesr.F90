@@ -49,8 +49,8 @@ subroutine irdesr(ifi, nbno, prno, nueq, nec, &
 !      ENTREE:
 !         IFI   : UNITE LOGIQUE DU FICHIER UNIVERSEL
 !                NBNO  : NOMBRE DE NOEUDS DU LIGREL ( DU MAILLAGE)
-!         PRNO  : OBJET .PRNO DU PROF_CHNO
-!         NUEQ  : OBJET .NUEQ DU PROF_CHNO
+!         PRNO  : OBJET .PRNO DU NUME_EQUA
+!         NUEQ  : OBJET .NUEQ DU NUME_EQUA
 !         NEC   : NOMBRE D'ENTIERS-CODES
 !         DG    : ENTIERS CODES
 !         NCMPMX: NOMBRE MAXI DE CMP DE LA GRANDEUR

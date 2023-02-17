@@ -119,7 +119,7 @@ subroutine flexib(basmod, nbmod, flex, nl, nc, &
 ! --- RECUPERATION DU NOMBRE DE DDL PHYSIQUES ASSEMBLES
 !
     call dismoi('NB_EQUA', numddl, 'NUME_DDL', repi=neq)
-!----ON AJOUT .NUME POUR OBTENIR LE PROF_CHNO
+!----ON AJOUT .NUME POUR OBTENIR LE NUME_EQUA
     numddl(15:19) = '.NUME'
     call jeveuo(numddl//'.DEEQ', 'L', vi=deeq)
 !

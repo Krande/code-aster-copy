@@ -183,7 +183,7 @@ subroutine regene(nomres, resgen, profno)
 ! ------ CREATION DU PROF-CHAMNO
 !
         call genugl(profno, indirf, modgen, mailsk)
-        call dismoi('NB_EQUA', profno, 'PROF_CHNO', repi=neq)
+        call dismoi('NB_EQUA', profno, 'NUME_EQUA', repi=neq)
 !
 ! ------ RECUPERATION DU NOMBRE DE NOEUDS
 !

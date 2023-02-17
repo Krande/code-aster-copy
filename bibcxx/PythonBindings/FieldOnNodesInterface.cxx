@@ -59,7 +59,7 @@ void exportFieldOnNodesToPython( py::module_ &mod ) {
               py::arg( "local" ) = true )
         .def( "setMesh", &FieldOnNodesReal::setMesh )
         .def( "setDescription", &FieldOnNodesReal::setDescription )
-        .def( "build", &FieldOnNodesReal::build )
+        .def( "build", &FieldOnNodesReal::build, py::arg( "mesh" ) = nullptr )
         .def( "getMesh", &FieldOnNodesReal::getMesh )
         .def( "getDescription", &FieldOnNodesReal::getDescription )
         .def( "updateValuePointers", &FieldOnNodesReal::updateValuePointers )
@@ -211,7 +211,7 @@ void exportFieldOnNodesToPython( py::module_ &mod ) {
         .def( "printMedFile", &FieldOnNodesComplex::printMedFile )
         .def( "setMesh", &FieldOnNodesComplex::setMesh )
         .def( "setDescription", &FieldOnNodesComplex::setDescription )
-        .def( "build", &FieldOnNodesComplex::build )
+        .def( "build", &FieldOnNodesComplex::build, py::arg( "mesh" ) = nullptr )
         .def( "getMesh", &FieldOnNodesComplex::getMesh )
         .def( "getDescription", &FieldOnNodesComplex::getDescription )
         .def( "getValues", py::overload_cast<>( &FieldOnNodesComplex::getValues, py::const_ ),

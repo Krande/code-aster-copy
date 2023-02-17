@@ -119,11 +119,11 @@ def CheckNumeDDL(self, Entry, checker):
 
     # In some cases, such as in CREA_RESU when no complete NUME_DDL information can be
     # found, the reference numbering corresponds to a sd_nume_equa
-    ProfChNo = 0
+    NUMEEQUA = 0
     if len(NumeName) > 8:
-        ProfChNo = 1
+        NUMEEQUA = 1
 
-    NumeDDL = {"PHYS": [sd_nume_ddl, sd_nume_equa], "GENE": [sd_nume_ddl_gene]}[Type][ProfChNo](
+    NumeDDL = {"PHYS": [sd_nume_ddl, sd_nume_equa], "GENE": [sd_nume_ddl_gene]}[Type][NUMEEQUA](
         NumeName
     )
     NumeDDL.check(checker)

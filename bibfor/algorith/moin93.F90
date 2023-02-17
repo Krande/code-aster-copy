@@ -82,7 +82,7 @@ subroutine moin93(masse, raide, raidfa, nbmoin, matmod, &
 !-----------------------------------------------------C
 !
 !-- RECUPERATION DE LA DEFINITION DES EQUATIONS
-    call dismoi('PROF_CHNO', nume, 'NUME_DDL', repk=prno)
+    call dismoi('NUME_EQUA', nume, 'NUME_DDL', repk=prno)
     call jeveuo(jexnum(prno//'.PRNO', 1), 'L', lprno)
 !
 !-- ALLOCATION ET REMPLISSAGE DU VECTEUR DES INDICES DES DDL D'INTERFACE

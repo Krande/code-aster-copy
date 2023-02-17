@@ -178,8 +178,8 @@ subroutine rotlir(nomres, sst1, intf1, lino1, codret, &
 !-- DANS LA NUMEROTATION DES MAILLAGES INITIAUX
     call mgutdm(nomres, sst1, ibid, 'NOM_MACR_ELEM', ibid, &
                 nmacr1)
-!-- recuperation du prof_chno
-    call dismoi('PROF_CHNO', nmacr1, 'NUME_DDL', repk=numeq1)
+!-- recuperation du nume_equa
+    call dismoi('NUME_EQUA', nmacr1, 'NUME_DDL', repk=numeq1)
 !
 !-- recuperation du maillage
     call dismoi('NOM_MAILLA', nmacr1, 'NUME_DDL', repk=mailla)
@@ -328,12 +328,12 @@ subroutine rotlir(nomres, sst1, intf1, lino1, codret, &
 !
         call jeveuo(jexnum(bamo1//'           .TACH', 1), 'L', lmod1)
 
-! -- verification que les prof_chno des modes correspondent bien a celui du nume_ddl
+! -- verification que les nume_equa des modes correspondent bien a celui du nume_ddl
         nook = .false.
         do i1 = 1, nbeq1
             kint = zk24(lmod1+i1-1) (1:19)
             call dismoi('NUME_EQUA', kint, 'CHAM_NO', repk=numeq2)
-            if (.not. idensd('PROF_CHNO', numeq1, numeq2)) then
+            if (.not. idensd('NUME_EQUA', numeq1, numeq2)) then
                 call utmess('E', 'ALGORITH12_36', nk=1, valk=[bamo1], &
                             ni=1, vali=[i1])
                 nook = .true.

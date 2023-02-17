@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine cynugl(prof_chno, indirf, modcyc, mailsk)
+subroutine cynugl(nume_equa, indirf, modcyc, mailsk)
     implicit none
 !
 !***********************************************************************
@@ -36,7 +36,7 @@ subroutine cynugl(prof_chno, indirf, modcyc, mailsk)
 !
 ! NOM----- / /:
 !
-! PROF_CHNO   /I/: NOM K19 DU PROF_CHNO A CREER
+! NUME_EQUA   /I/: NOM K19 DU NUME_EQUA A CREER
 ! INDIRF   /I/: NOM K24 DE LA FAMILLE DES INDIRECTIONS A CREER
 ! MODCYC   /I/: NOM DU RESULTAT CYCLIQUE EN AMONT
 ! MAILSK   /I/: NOM DU MAILLAGE SKELETTE
@@ -74,7 +74,7 @@ subroutine cynugl(prof_chno, indirf, modcyc, mailsk)
     parameter(nbcpmx=300)
     character(len=6) :: pgc
     character(len=8) :: modcyc, mailsk, basmod, intf
-    character(len=19) :: numddl, prof_chno, prnosect
+    character(len=19) :: numddl, nume_equa, prnosect
     character(len=24) :: indirf, lili, prno, deeq, nueq
     integer :: idec(nbcpmx)
     character(len=24), pointer :: cycl_refe(:) => null()
@@ -150,14 +150,14 @@ subroutine cynugl(prof_chno, indirf, modcyc, mailsk)
 !
 !-----------------ALLOCATION DES DIVERS OBJETS--------------------------
 !
-    lili = prof_chno//'.LILI'
-    prno = prof_chno//'.PRNO'
-    deeq = prof_chno//'.DEEQ'
-    nueq = prof_chno//'.NUEQ'
+    lili = nume_equa//'.LILI'
+    prno = nume_equa//'.PRNO'
+    deeq = nume_equa//'.DEEQ'
+    nueq = nume_equa//'.NUEQ'
 !
-! - Create PROF_CHNO
+! - Create NUME_EQUA
 !
-    call profchno_crsd(prof_chno, 'G', nb_equa=nddlt, nb_ligrz=2, &
+    call profchno_crsd(nume_equa, 'G', nb_equa=nddlt, nb_ligrz=2, &
                        prno_lengthz=nbnot*(2+nbec))
     call jeveuo(deeq, 'E', lddeeq)
     call jeveuo(nueq, 'E', ldnueq)

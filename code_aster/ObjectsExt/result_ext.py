@@ -57,7 +57,7 @@ class ResultStateBuilder(InternalStateBuilder):
         self._st["loads"] = []
         # list of ligrel
         self._st["feds"] = result.getFiniteElementDescriptors()
-        # list of prof_chno
+        # list of nume_equa
         self._st["fnds"] = result.getGlobalEquationNumberings()
         for i in self._st["index"]:
             if result.hasModel(i):

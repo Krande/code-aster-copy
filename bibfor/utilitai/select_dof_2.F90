@@ -74,7 +74,7 @@ subroutine select_dof_2(listEqua_, tablEqua_, &
     integer, parameter :: nbEcMax = 10
     integer :: physDesc(nbEcMax)
     character(len=8) :: cmpName, mesh
-    character(len=19) :: profChno, nume_equa_gene, fieldNode, numeEqul
+    character(len=19) :: nume_equa, nume_equa_gene, fieldNode, numeEqul
     character(len=14) :: numeDof
     integer :: iexi
     aster_logical :: lnume_equa_gene
@@ -101,15 +101,15 @@ subroutine select_dof_2(listEqua_, tablEqua_, &
 !
 ! - Get NUME_EQUA
 !
-    profChno = ' '
+    nume_equa = ' '
     if (present(numeDofZ_)) then
         numeDof = numeDofZ_
         ASSERT(.not. present(fieldNodeZ_))
-        call dismoi('NUME_EQUA', numeDof, 'NUME_DDL', repk=profChno)
+        call dismoi('NUME_EQUA', numeDof, 'NUME_DDL', repk=nume_equa)
     elseif (present(fieldNodeZ_)) then
         fieldNode = fieldNodeZ_
         ASSERT(.not. present(numeDofZ_))
-        call dismoi('NUME_EQUA', fieldNode, 'CHAM_NO', repk=profChno)
+        call dismoi('NUME_EQUA', fieldNode, 'CHAM_NO', repk=nume_equa)
     else
         ASSERT(ASTER_FALSE)
     end if
@@ -171,10 +171,10 @@ subroutine select_dof_2(listEqua_, tablEqua_, &
 !
 ! - NUME_EQUA or NUME_EQUA_GENE ?
 !
-    call jeexin(profChno//'.DESC', iexi)
+    call jeexin(nume_equa//'.DESC', iexi)
     lnume_equa_gene = (iexi .gt. 0)
     if (lnume_equa_gene) then
-        nume_equa_gene = profChno
+        nume_equa_gene = nume_equa
         call select_dof_gene(nume_equa_gene, nbCmpToSelect, physCataName, &
                              listCmpToSelect_, listEqua_, tablEqua_)
         goto 99
@@ -193,20 +193,20 @@ subroutine select_dof_2(listEqua_, tablEqua_, &
 !
 ! - Get objects
 !
-    call jeveuo(profChno(1:19)//'.NUEQ', 'L', vi=nueq)
+    call jeveuo(nume_equa(1:19)//'.NUEQ', 'L', vi=nueq)
 !
 ! - Loop on LIGRELs
 !
-    call jelira(profChno(1:19)//'.PRNO', 'NMAXOC', nbLigr)
+    call jelira(nume_equa(1:19)//'.PRNO', 'NMAXOC', nbLigr)
     do iLigr = 1, nbLigr
 
 ! ----- Get number of nodes
-        call jelira(jexnum(profChno(1:19)//'.PRNO', iLigr), 'LONMAX', prnoLength)
+        call jelira(jexnum(nume_equa(1:19)//'.PRNO', iLigr), 'LONMAX', prnoLength)
         nbNode = prnoLength/(nb_ec+2)
 
 ! ----- Loop on nodes
         if (nbNode .ne. 0) then
-            call jeveuo(jexnum(profChno(1:19)//'.PRNO', iLigr), 'L', vi=prno)
+            call jeveuo(jexnum(nume_equa(1:19)//'.PRNO', iLigr), 'L', vi=prno)
             do iNode = 1, nbNode
                 nodeNume = iNode
 

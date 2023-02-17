@@ -26,7 +26,7 @@ subroutine exphgl(nomres, typsd, modcyc, profno, indirf, &
 !     => RESULTAT COMPOSE DEJA ALLOUE PAR LA
 !        ROUTINE APPELLANTE
 !
-!  DONNEES DU PROFCHNO DEJA CONSTITUE ET DE LA TABLE INDIRECTION
+!  DONNEES DU NUMEEQUA DEJA CONSTITUE ET DE LA TABLE INDIRECTION
 !  DES NUMEROS EQUATIONS CORRESPONDANTES (COLLECTION NUMEROTEE
 !  POINTEE PAR LES NUMEROS DE SECTEUR)
 !-----------------------------------------------------------------------
@@ -103,9 +103,9 @@ subroutine exphgl(nomres, typsd, modcyc, profno, indirf, &
                 ier)
     call dismoi('NUME_EQUA', chamno, 'CHAM_NO', repk=pfchno)
 !
-    call dismoi('NB_EQUA', pfchno, 'PROF_CHNO', repi=neqsec)
+    call dismoi('NB_EQUA', pfchno, 'NUME_EQUA', repi=neqsec)
 !     -- QUESTION "POURRIE" :
-    call dismoi('NOM_GD ', pfchno, 'PROF_CHNO', repi=ibid, repk=k8b)
+    call dismoi('NOM_GD ', pfchno, 'NUME_EQUA', repi=ibid, repk=k8b)
     call dismoi('NB_CMP_MAX', k8b, 'GRANDEUR', repi=nbcmp)
 !
 !-----RECUPERATION DU NOMBRE DE DDL PHYSIQUES GLOBAUX-------------------

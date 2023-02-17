@@ -66,7 +66,7 @@ subroutine rbph02(mailla, numddl, chamno, nomgd, neq, &
     call jeveuo(objve1, 'L', jnoeu)
 !
     if (numddl .ne. ' ') then
-        call dismoi('PROF_CHNO', numddl, 'NUME_DDL', repk=prno)
+        call dismoi('NUME_EQUA', numddl, 'NUME_DDL', repk=prno)
     else
         ASSERT(chamno .ne. ' ')
         call dismoi('NUME_EQUA', chamno, 'CHAM_NO', repk=prno)

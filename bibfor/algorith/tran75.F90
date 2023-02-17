@@ -219,7 +219,7 @@ subroutine tran75(nomres, typres, nomin, basemo)
         crefe(1) = zk24(llcha)
         crefe(2) = zk24(llcha+1)
         if (tousno) then
-            call dismoi('NB_EQUA', numeq, 'PROF_CHNO', repi=neq)
+            call dismoi('NB_EQUA', numeq, 'NUME_EQUA', repi=neq)
         end if
         basem2 = ' '
     end if
@@ -368,7 +368,7 @@ subroutine tran75(nomres, typres, nomin, basemo)
             crefe(1) = mailla
             crefe(2) = numeq
             tmpcha = '&&TRAN75.CHAMP'
-            call dismoi('NB_EQUA', numeq, 'PROF_CHNO', repi=neq1)
+            call dismoi('NB_EQUA', numeq, 'NUME_EQUA', repi=neq1)
             do j = 1, nbmode
                 call rsexch('F', basemo, typcha, j, nomcha, &
                             ir)
@@ -381,7 +381,7 @@ subroutine tran75(nomres, typres, nomin, basemo)
 !              SI NOMCHA N'A PAS LA BONNE NUMEROTATION, ON ARRETE TOUT :
                 ASSERT(numeq .ne. ' ')
                 call dismoi('NUME_EQUA', nomcha, 'CHAM_NO', repk=numeq1)
-                if (.not. idensd('PROF_CHNO', numeq, numeq1)) then
+                if (.not. idensd('NUME_EQUA', numeq, numeq1)) then
                     call vtcrea(tmpcha, crefe, 'V', 'R', neq1)
                     call vtcopy(nomcha, tmpcha, ' ', ir)
                     nomcha = tmpcha

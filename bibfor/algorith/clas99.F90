@@ -67,7 +67,7 @@ subroutine clas99(nomres)
     call dismoi('NUME_DDL', nomres, 'RESU_DYNA', repk=numddl)
     call dismoi('REF_INTD_PREM', nomres, 'RESU_DYNA', repk=intf)
 !
-!----ON AJOUT .NUME POUR OBTENIR LE PROF_CHNO
+!----ON AJOUT .NUME POUR OBTENIR LE NUME_EQUA
     numddl(15:19) = '.NUME'
 !
 ! --- RECUPERATION DU NOMBRE DE MODE_MECA A PRENDRE EN COMPTE

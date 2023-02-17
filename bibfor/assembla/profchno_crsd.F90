@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine profchno_crsd(prof_chnoz, base, nb_equa, meshz, nb_ligrz, &
+subroutine profchno_crsd(nume_equaz, base, nb_equa, meshz, nb_ligrz, &
                          nb_ecz, gran_namez, prno_lengthz, l_coll_const)
 !
     implicit none
@@ -35,7 +35,7 @@ subroutine profchno_crsd(prof_chnoz, base, nb_equa, meshz, nb_ligrz, &
 #include "asterfort/isParallelMesh.h"
 !
 !
-    character(len=*), intent(in) :: prof_chnoz
+    character(len=*), intent(in) :: nume_equaz
     character(len=1), intent(in) :: base
     integer, intent(in) :: nb_equa
     character(len=*), optional, intent(in) :: meshz
@@ -47,14 +47,14 @@ subroutine profchno_crsd(prof_chnoz, base, nb_equa, meshz, nb_ligrz, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! PROF_CHNO
+! NUME_EQUA
 !
 ! Create object
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  prof_chno    : name of PROF_CHNO
-! In  base         : JEVEUX base to create PROF_CHNO
+! In  nume_equa    : name of NUME_EQUA
+! In  base         : JEVEUX base to create NUME_EQUA
 ! In  nb_equa      : number of equations
 ! In  nb_ligr      : number of LIGREL in .LILI object
 !                   if not present => only mesh (nb_ligr=1)
@@ -67,7 +67,7 @@ subroutine profchno_crsd(prof_chnoz, base, nb_equa, meshz, nb_ligrz, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    character(len=19) :: prof_chno
+    character(len=19) :: nume_equa
     integer :: i_equa, i_ligr_mesh, nb_node_mesh, nb_ec, nb_ligr, prno_length
     integer, pointer :: prchno_nueq(:) => null()
     integer, pointer :: prchno_deeq(:) => null()
@@ -77,8 +77,8 @@ subroutine profchno_crsd(prof_chnoz, base, nb_equa, meshz, nb_ligrz, &
 !
     prno_length = 0
     nb_ec = 0
-    prof_chno = prof_chnoz
-    !call detrsd('PROF_CHNO', prof_chno)
+    nume_equa = nume_equaz
+    !call detrsd('NUME_EQUA', nume_equa)
     if (present(nb_ligrz)) then
         nb_ligr = nb_ligrz
     else
@@ -103,8 +103,8 @@ subroutine profchno_crsd(prof_chnoz, base, nb_equa, meshz, nb_ligrz, &
 !
 ! - Create object NUEQ
 !
-    call wkvect(prof_chno//'.NUEQ', base//' V I', max(1, nb_equa), vi=prchno_nueq)
-    call jeecra(prof_chno//'.NUEQ', "LONUTI", nb_equa)
+    call wkvect(nume_equa//'.NUEQ', base//' V I', max(1, nb_equa), vi=prchno_nueq)
+    call jeecra(nume_equa//'.NUEQ', "LONUTI", nb_equa)
 !
 ! - Set to identity
 !
@@ -114,18 +114,18 @@ subroutine profchno_crsd(prof_chnoz, base, nb_equa, meshz, nb_ligrz, &
 !
 ! - Create object DEEQ
 !
-    call wkvect(prof_chno//'.DEEQ', base//' V I', max(1, 2*nb_equa), vi=prchno_deeq)
-    call jeecra(prof_chno//'.DEEQ', "LONUTI", 2*nb_equa)
+    call wkvect(nume_equa//'.DEEQ', base//' V I', max(1, 2*nb_equa), vi=prchno_deeq)
+    call jeecra(nume_equa//'.DEEQ', "LONUTI", 2*nb_equa)
 !
 ! - Create object LILI (name repertory)
 !
-    call jecreo(prof_chno//'.LILI', base//' N K24')
-    call jeecra(prof_chno//'.LILI', 'NOMMAX', nb_ligr)
+    call jecreo(nume_equa//'.LILI', base//' N K24')
+    call jeecra(nume_equa//'.LILI', 'NOMMAX', nb_ligr)
 !
 ! - Create &MAILLA object in LILI
 !
-    call jecroc(jexnom(prof_chno(1:19)//'.LILI', '&MAILLA'))
-    call jenonu(jexnom(prof_chno//'.LILI', '&MAILLA'), i_ligr_mesh)
+    call jecroc(jexnom(nume_equa(1:19)//'.LILI', '&MAILLA'))
+    call jenonu(jexnom(nume_equa//'.LILI', '&MAILLA'), i_ligr_mesh)
     ASSERT(i_ligr_mesh .eq. 1)
 !
 ! - Length of first PRNO object (on mesh)
@@ -139,13 +139,13 @@ subroutine profchno_crsd(prof_chnoz, base, nb_equa, meshz, nb_ligrz, &
 ! - Create object PRNO (collection)
 !
     if (present(l_coll_const)) then
-        call jecrec(prof_chno//'.PRNO', base//' V I', 'NU', 'CONTIG', 'CONSTANT', nb_ligr)
+        call jecrec(nume_equa//'.PRNO', base//' V I', 'NU', 'CONTIG', 'CONSTANT', nb_ligr)
     else
-        call jecrec(prof_chno//'.PRNO', base//' V I', 'NU', 'CONTIG', 'VARIABLE', nb_ligr)
+        call jecrec(nume_equa//'.PRNO', base//' V I', 'NU', 'CONTIG', 'VARIABLE', nb_ligr)
     end if
 !
 ! - Length of &MAILLA object in PRNO
 !
-    call jeecra(jexnum(prof_chno//'.PRNO', i_ligr_mesh), 'LONMAX', prno_length)
+    call jeecra(jexnum(nume_equa//'.PRNO', i_ligr_mesh), 'LONMAX', prno_length)
 !
 end subroutine

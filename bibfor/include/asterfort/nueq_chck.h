@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,8 +19,8 @@
 !
 !
 interface
-    subroutine nueq_chck(prof_chnoz, nb_equaz, l_error, l_subs)
-        character(len=*), intent(in) :: prof_chnoz
+    subroutine nueq_chck(nume_equaz, nb_equaz, l_error, l_subs)
+        character(len=*), intent(in) :: nume_equaz
         integer, optional, intent(out) :: nb_equaz
         logical, optional, intent(in) :: l_error
         logical, optional, intent(in) :: l_subs

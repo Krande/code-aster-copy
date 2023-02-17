@@ -48,7 +48,7 @@ subroutine fieldNodeHasConstantProfile(fieldz, lConst)
     character(len=19) :: field
     integer, pointer :: deeq(:) => null()
     integer, pointer :: nodeNbCmp(:) => null()
-    character(len=19) :: profChno
+    character(len=19) :: numeequa
     integer :: iNode, iEqua
     integer :: numeNode, numeCmp
     integer :: nbNodeMesh, nbEqua, nbCmpNode, nbCmp
@@ -64,8 +64,8 @@ subroutine fieldNodeHasConstantProfile(fieldz, lConst)
     ASSERT(fieldSupp .eq. 'NOEU')
     call dismoi('NOM_MAILLA', field, 'CHAM_NO', repk=mesh)
     call dismoi('NB_NO_MAILLA', mesh, 'MAILLAGE', repi=nbNodeMesh)
-    call dismoi('NUME_EQUA', field, 'CHAM_NO', repk=profChno)
-    call jeveuo(profChno(1:19)//'.DEEQ', 'L', vi=deeq)
+    call dismoi('NUME_EQUA', field, 'CHAM_NO', repk=numeequa)
+    call jeveuo(numeequa(1:19)//'.DEEQ', 'L', vi=deeq)
     call jelira(field(1:19)//'.VALE', 'LONMAX', nbEqua)
 !
 ! - Create object

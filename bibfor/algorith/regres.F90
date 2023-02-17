@@ -71,7 +71,7 @@ subroutine regres(nomres, mailsk, result, pfchn2)
     call nueq_chck(pfchn1)
 !
 !
-    call copisd('PROF_CHNO', 'G', pfchn1, pfchn2)
+    call copisd('NUME_EQUA', 'G', pfchn1, pfchn2)
     call copisd('RESULTAT', 'G', result, nomres)
 !
 !
@@ -94,7 +94,7 @@ subroutine regres(nomres, mailsk, result, pfchn2)
         nddl = nddl+zi(lprold+(iold-1)*ndi+1)
     end do
 !
-! - Create prof_chno
+! - Create nume_equa
 !
     call profchno_crsd(pfchn2, 'G', nddl, prno_lengthz=nnodes*ndi)
     call jeveuo(pfchn2//'.DEEQ', 'E', ldeeq)
@@ -102,7 +102,7 @@ subroutine regres(nomres, mailsk, result, pfchn2)
     call jeveuo(jexnum(pfchn2//'.PRNO', 1), 'E', lprnew)
 
 !
-! - THis is a NUME_EQUA object, not PROF_CHNO one
+! - THis is a NUME_EQUA object, not NUME_EQUA one
 !
     nequ = pfchn2(1:19)//'.NEQU'
     call wkvect(nequ, 'V V I', 2, vi=p_nequ)
@@ -118,7 +118,7 @@ subroutine regres(nomres, mailsk, result, pfchn2)
 !     --- MISE A JOUR DU .REFE
         call jeveuo(chexou//'.REFE', 'E', vk24=refe)
         refe(1) = mailsk
-        call detrsd('PROF_CHNO', refe(2))
+        call detrsd('NUME_EQUA', refe(2))
         refe(2) = nomres//'.PROFC.NUME'
 !
         ieq = 1

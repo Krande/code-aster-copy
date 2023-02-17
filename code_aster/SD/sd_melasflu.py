@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -151,19 +151,19 @@ class sd_melasflu(AsBase):
 
         data = col1_d.data.get()
         mask = col1_m.mask.get()
-        profchno = ""
+        numeequa = ""
         for k in range(len(mask)):
             if not mask[k]:
                 continue
             ch1 = sd_cham_no(data[k])
             ch1.check(checker)
 
-            # Tous les cham_no doivent avoir le meme prof_chno :
+            # Tous les cham_no doivent avoir le meme nume_equa :
             profchn1 = ch1.REFE.get()[1]
-            if profchno == "":
-                profchno = profchn1
+            if numeequa == "":
+                numeequa = profchn1
             else:
-                assert profchn1 == profchno, (profchn1, profchno)
+                assert profchn1 == numeequa, (profchn1, numeequa)
 
         # vérification de la SD l_table :
         # --------------------------------

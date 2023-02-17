@@ -54,7 +54,7 @@ subroutine romFieldNodeFromEqua(field, nbNodeMesh, listNode)
 !
     integer :: ifm, niv
     integer, pointer :: deeq(:) => null()
-    character(len=19) :: profChno
+    character(len=19) :: nume_equa
     character(len=16) :: fieldSupp
     character(len=24) :: fieldRefe
     integer :: iEqua, iNodeMesh
@@ -77,8 +77,8 @@ subroutine romFieldNodeFromEqua(field, nbNodeMesh, listNode)
 !
 ! - Properties of field
 !
-    call dismoi('NUME_EQUA', fieldRefe, 'CHAM_NO', repk=profChno)
-    call jeveuo(profChno(1:19)//'.DEEQ', 'L', vi=deeq)
+    call dismoi('NUME_EQUA', fieldRefe, 'CHAM_NO', repk=nume_equa)
+    call jeveuo(nume_equa(1:19)//'.DEEQ', 'L', vi=deeq)
     call jelira(fieldRefe(1:19)//'.VALE', 'LONMAX', nbEquaChck)
     ASSERT(nbEquaChck .eq. nbEqua)
 !

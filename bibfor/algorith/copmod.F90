@@ -47,7 +47,7 @@ subroutine copmod(base, bmodr, bmodz, champ, numer, &
 !  |---------------------------------------------------------------------------------|
 !  | in < fac > champ     : Field type to copy (default = 'DEPL')                [k*]|
 !  | in < fac > numer     : - If given, the name of the nume_ddl concept         [k*]|
-!  |                      :   or that of the prof_chno giving the new numbering      |
+!  |                      :   or that of the nume_equa giving the new numbering      |
 !  |                      :   of the copied fields                                   |
 !  |                      : - If absent, the numbering is unchanged                  |
 !  | in < fac > nbmodes   : The number of modes to be copied                      [i]|
@@ -196,7 +196,7 @@ subroutine copmod(base, bmodr, bmodz, champ, numer, &
     maill1 = refe(1) (1:8)
     numer1 = refe(2) (1:19)
 !
-!     1.3 - TRAITEMENT DES CAS AVEC UN PROF_CHNO ET NON PAS UN NUME_DDL
+!     1.3 - TRAITEMENT DES CAS AVEC UN NUME_EQUA ET NON PAS UN NUME_DDL
 !           COMPLET.
 !
     lnumeq1 = .false.
@@ -232,7 +232,7 @@ subroutine copmod(base, bmodr, bmodz, champ, numer, &
     call jeexin(maill1(1:8)//'.INV.SKELETON', iret)
     modnum = .false.
     if (numer2 .ne. ' ') then
-        if ((.not. idensd('PROF_CHNO', numer2, numer1)) .and. (iret .eq. 0) .and. (exnume)) then
+        if ((.not. idensd('NUME_EQUA', numer2, numer1)) .and. (iret .eq. 0) .and. (exnume)) then
             call dismoi('NOM_MAILLA', numer2(1:14), 'NUME_DDL', repk=maill2)
             if (maill1 .ne. maill2) then
                 valk(1) = numer2
@@ -247,7 +247,7 @@ subroutine copmod(base, bmodr, bmodz, champ, numer, &
                 modnum = .true.
             end if
         else
-            if ((.not. idensd('PROF_CHNO', numer2, numer1)) .and. (iret .eq. 0)) then
+            if ((.not. idensd('NUME_EQUA', numer2, numer1)) .and. (iret .eq. 0)) then
                 modnum = .true.
             end if
         end if

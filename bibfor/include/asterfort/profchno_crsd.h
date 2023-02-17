@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,9 +19,9 @@
 !
 !
 interface
-    subroutine profchno_crsd(prof_chnoz , base      , nb_equa     , meshz      , nb_ligrz,&
+    subroutine profchno_crsd(nume_equaz , base      , nb_equa     , meshz      , nb_ligrz,&
                              nb_ecz     , gran_namez, prno_lengthz, l_coll_const)
-        character(len=*), intent(in) :: prof_chnoz
+        character(len=*), intent(in) :: nume_equaz
         character(len=1), intent(in) :: base
         integer, intent(in) :: nb_equa
         character(len=*), optional, intent(in) :: meshz

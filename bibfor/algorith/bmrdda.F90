@@ -139,7 +139,7 @@ subroutine bmrdda(basmod, intf, nomint, numint, nbddl, &
 !
 !------------------RECUPERATION ADRESSE DEEQ----------------------------
 !
-!----ON AJOUT .NUME POUR OBTENIR LE PROF_CHNO
+!----ON AJOUT .NUME POUR OBTENIR LE NUME_EQUA
     numddl(15:19) = '.NUME'
     call jeveuo(numddl//'.DEEQ', 'L', vi=deeq)
 !

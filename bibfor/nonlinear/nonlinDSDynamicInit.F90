@@ -87,7 +87,7 @@ subroutine nonlinDSDynamicInit(hval_incr, sddyna, nlDynaDamping, ds_constitutive
         call mginfo(dampMode, numeDof, nbMode, nbEqua)
         call nmchex(hval_incr, 'VALINC', 'DEPMOI', dispPrev)
         call dismoi('NUME_EQUA', dispPrev, 'CHAM_NO', repk=pfcn1)
-        call dismoi('PROF_CHNO', numeDof, 'NUME_DDL', repk=pfcn2)
+        call dismoi('NUME_EQUA', numeDof, 'NUME_DDL', repk=pfcn2)
         if (.not. iden_nume(pfcn1, pfcn2)) then
             call utmess('F', 'DYNAMIQUE_54')
         end if

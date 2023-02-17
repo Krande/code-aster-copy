@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,8 +19,8 @@
 !
 !
 interface
-    subroutine genugl(prof_chno, indirf, modgen, mailsk)
-        character(len=19) :: prof_chno
+    subroutine genugl(nume_equa, indirf, modgen, mailsk)
+        character(len=19) :: nume_equa
         character(len=24) :: indirf
         character(len=8) :: modgen
         character(len=8) :: mailsk

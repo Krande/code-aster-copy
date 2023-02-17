@@ -156,7 +156,7 @@ subroutine extchn(nchmno, nnoeud, numnd, ncmp, nbn, &
     integer :: apadr, apcmp, apval, anugd, aperr, anoma
     character(len=24) :: npadr, npcmp, npval, nnugd, nperr, nnoma
 !
-!   NOMS ET ADRESSES DES OJB ASSOCIES AUX PROFCHNO
+!   NOMS ET ADRESSES DES OJB ASSOCIES AUX NUMEEQUA
 !   ----------------------------------------------
 !
     integer :: aprno
