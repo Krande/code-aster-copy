@@ -65,8 +65,6 @@ class DOFNumbering : public BaseDOFNumbering {
   private:
     /** @brief Objet '.NUME' */
     GlobalEquationNumberingPtr _globalNumbering;
-    /** @brief Objet '.NUML' */
-    LocalEquationNumberingPtr _localNumbering;
 
   public:
     /**
@@ -97,7 +95,7 @@ class DOFNumbering : public BaseDOFNumbering {
     /**
      * @brief Get Physical Quantity
      */
-    std::string getPhysicalQuantity() const;
+    std::string getPhysicalQuantity() const { return _globalNumbering->getPhysicalQuantity(); };
 
     /**
      * @brief Are Lagrange Multipliers used for BC or MPC
@@ -165,7 +163,12 @@ class DOFNumbering : public BaseDOFNumbering {
     /**
      * @brief Set model
      */
-    bool setModel( const ModelPtr &model ) { return _globalNumbering->setModel( model ); };
+    void setModel( const ModelPtr &model ) { _globalNumbering->setModel( model ); };
+
+    /**
+     * @brief Get mesh
+     */
+    BaseMeshPtr getMesh() const { return _globalNumbering->getMesh(); };
 };
 
 /**

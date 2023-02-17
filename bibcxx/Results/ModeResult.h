@@ -348,8 +348,8 @@ class ModeResult : public FullResult {
 
     bool build( const std::vector< FiniteElementDescriptorPtr > feds =
                     std::vector< FiniteElementDescriptorPtr >(),
-                const std::vector< FieldOnNodesDescriptionPtr > fnds =
-                    std::vector< FieldOnNodesDescriptionPtr >() ) {
+                const std::vector< GlobalEquationNumberingPtr > fnds =
+                    std::vector< GlobalEquationNumberingPtr >() ) {
         BaseDOFNumberingPtr numeDdl( nullptr );
         if ( _rigidityDispDMatrix != nullptr )
             numeDdl = _rigidityDispDMatrix->getDOFNumbering();

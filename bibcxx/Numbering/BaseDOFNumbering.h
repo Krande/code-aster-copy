@@ -52,6 +52,7 @@
 #include "Modeling/FiniteElementDescriptor.h"
 #include "Modeling/Model.h"
 #include "Numbering/FieldOnNodesDescription.h"
+#include "Numbering/GlobalEquationNumbering.h"
 
 #pragma once
 
@@ -197,67 +198,6 @@ class BaseDOFNumbering : public DataStructure {
     typedef std::shared_ptr< MultFrontGarbage > MultFrontGarbagePtr;
 
   protected:
-    class GlobalEquationNumbering : public DataStructure {
-      protected:
-        /** @brief Objet Jeveux '.NEQU' */
-        JeveuxVectorLong _numberOfEquations;
-        /** @brief Objet Jeveux '.REFN' */
-        JeveuxVectorChar24 _informations;
-        /** @brief Objet Jeveux '.DELG' */
-        JeveuxVectorLong _lagrangianInformations;
-        /** @brief Model */
-        ModelPtr _model;
-
-        GlobalEquationNumbering( const std::string &baseName )
-            : DataStructure( baseName + ".NUME", 19, "NUME_EQUA" ),
-              _numberOfEquations( getName() + ".NEQU" ),
-              _informations( getName() + ".REFN" ),
-              _lagrangianInformations( getName() + ".DELG" ),
-              _model( nullptr ){};
-
-      public:
-        /**
-         * @brief Returns a vector of information of the Lagrange multipliers
-         */
-        const JeveuxVectorLong getLagrangianInformations() const { return _lagrangianInformations; }
-
-        /**
-         * @brief Returns a vector of information on the numer of equations
-         */
-        const JeveuxVectorLong getNumberOfEquations() const { return _numberOfEquations; }
-
-        /**
-         * @brief Returns the vector of local to global numbering
-         */
-        virtual const JeveuxVectorLong getLocalToGlobal() const {
-            throw std::runtime_error( "Vector LocalToGlobal doesn't exist in sequential" );
-            return JeveuxVectorLong( "RIEN" );
-        };
-
-        /**
-         * @brief Returns the vector of the rank owning the local dof number
-         */
-        virtual const JeveuxVectorLong getLocalToRank() const {
-            throw std::runtime_error( "Vector LocalToRank doesn't exist in sequential" );
-            return JeveuxVectorLong( "RIEN" );
-        };
-
-        /**
-         * @brief Get model
-         */
-        ModelPtr getModel() { return _model; };
-
-        /**
-         * @brief Set model
-         */
-        bool setModel( const ModelPtr &model );
-
-        friend class BaseDOFNumbering;
-        friend class DOFNumbering;
-        friend class ParallelDOFNumbering;
-    };
-    typedef std::shared_ptr< GlobalEquationNumbering > GlobalEquationNumberingPtr;
-
     class LocalEquationNumbering : public DataStructure {
       protected:
         /** @brief Objet Jeveux '.NEQU' */
@@ -272,9 +212,10 @@ class BaseDOFNumbering : public DataStructure {
         JeveuxVectorLong _localToGlobal;
         /** @brief Objet Jeveux '.NUGL' */
         JeveuxVectorLong _globalToLocal;
-        /** @brief Objet Jeveux '.PDDL' */
+        /*protected* @brief Objet Jeveux '.PDDL' */
         JeveuxVectorLong _localToRank;
 
+      public:
         LocalEquationNumbering( const std::string &baseName )
             : DataStructure( baseName + ".NUML", 19, "NUML_EQUA" ),
               _numberOfEquations( getName() + ".NEQU" ),
@@ -285,7 +226,6 @@ class BaseDOFNumbering : public DataStructure {
               _globalToLocal( getName() + ".NUGL" ),
               _localToRank( getName() + ".PDDL" ){};
 
-      public:
         /**
          * @brief Returns the vector of local to global numbering
          */
@@ -321,6 +261,9 @@ class BaseDOFNumbering : public DataStructure {
     /** @brief Booleen permettant de preciser sur la sd est vide */
     bool _isEmpty;
 
+    /** @brief Objet '.NUML' */
+    LocalEquationNumberingPtr _localNumbering;
+
     /** @brief Vectors of FiniteElementDescriptor */
     std::vector< FiniteElementDescriptorPtr > _FEDVector;
     std::set< std::string > _FEDNames;
@@ -334,9 +277,6 @@ class BaseDOFNumbering : public DataStructure {
                       const FieldOnNodesDescriptionPtr fdof );
 
     BaseDOFNumbering( const std::string name, const std::string &type );
-
-    /** @brief Objet '.NUME' */
-    GlobalEquationNumberingPtr _globalNumbering;
 
   public:
     /**
@@ -364,6 +304,8 @@ class BaseDOFNumbering : public DataStructure {
      */
     virtual GlobalEquationNumberingPtr getGlobalNumbering() const = 0;
 
+    virtual std::string getPhysicalQuantity() const = 0;
+
     /**
      * @brief Build the Numbering of DOFs
      */
@@ -383,11 +325,6 @@ class BaseDOFNumbering : public DataStructure {
      * @brief Build the Numbering of DOFs
      */
     virtual bool computeNumberingWithLocalMode( const std::string &localMode );
-
-    /**
-     * @brief Get Physical Quantity
-     */
-    virtual std::string getPhysicalQuantity() const = 0;
 
     /**
      * @brief Are Lagrange Multipliers used for BC or MPC
@@ -497,7 +434,7 @@ class BaseDOFNumbering : public DataStructure {
     /**
      * @brief Set model
      */
-    virtual bool setModel( const ModelPtr & ) = 0;
+    virtual void setModel( const ModelPtr & ) = 0;
 };
 
 /**

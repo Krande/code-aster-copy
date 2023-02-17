@@ -1,6 +1,6 @@
 /**
- * @file Result.cxx
- * @brief Implementation de Result
+ * @file DOFNumberingInterface.cxx
+ * @brief Interface python de DOFNumbering
  * @author Nicolas Sellenet
  * @section LICENCE
  *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
@@ -20,10 +20,19 @@
  *   You should have received a copy of the GNU General Public License
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 /* person_in_charge: nicolas.sellenet at edf.fr */
 
-#include "DataFields/FieldBuilder.h"
+#include "PythonBindings/GlobalEquationNumberingInterface.h"
 
-std::set< std::string > FieldBuilder::_setGlobNume;
-std::set< std::string > FieldBuilder::_setLigrel;
+#include "aster_pybind.h"
+
+void exportGlobalEquationNumberingToPython( py::module_ &mod ) {
+
+    py::class_< GlobalEquationNumbering, GlobalEquationNumberingPtr, DataStructure >(
+        mod, "GlobalEquationNumbering" )
+        .def( py::init( &initFactoryPtr< GlobalEquationNumbering, std::string > ) )
+        .def( "getModel", &GlobalEquationNumbering::getModel )
+        .def( "setModel", &GlobalEquationNumbering::setModel )
+        .def( "getMesh", &GlobalEquationNumbering::getMesh )
+        .def( "setMesh", &GlobalEquationNumbering::setMesh );
+};

@@ -520,13 +520,13 @@ FieldOnNodesComplexPtr Result::getFieldOnNodesComplex( const std::string name,
 void Result::setField( const FieldOnNodesRealPtr field, const std::string &name,
                        const ASTERINTEGER index ) {
     _setFieldBase( name, index, field, _dictOfMapOfFieldOnNodesReal );
-    _fieldBuidler.addFieldOnNodesDescription( field->getDescription() );
+    _fieldBuidler.addGlobalEquationNumbering( field->getDescription() );
 };
 
 void Result::setField( const FieldOnNodesComplexPtr field, const std::string &name,
                        const ASTERINTEGER index ) {
     _setFieldBase( name, index, field, _dictOfMapOfFieldOnNodesComplex );
-    _fieldBuidler.addFieldOnNodesDescription( field->getDescription() );
+    _fieldBuidler.addGlobalEquationNumbering( field->getDescription() );
 };
 
 void Result::setField( const FieldOnCellsRealPtr field, const std::string &name,
@@ -631,7 +631,7 @@ bool Result::addFiniteElementDescriptor( const FiniteElementDescriptorPtr curFED
 }
 
 bool Result::build( const std::vector< FiniteElementDescriptorPtr > feds,
-                    const std::vector< FieldOnNodesDescriptionPtr > fnds ) {
+                    const std::vector< GlobalEquationNumberingPtr > fnds ) {
     CALL_JEMARQ();
     _serialNumber->updateValuePointer();
 
@@ -645,7 +645,7 @@ bool Result::build( const std::vector< FiniteElementDescriptorPtr > feds,
     }
 
     for ( auto &fnd : fnds ) {
-        _fieldBuidler.addFieldOnNodesDescription( fnd );
+        _fieldBuidler.addGlobalEquationNumbering( fnd );
     }
 
     ASTERINTEGER cmpt = 1;
@@ -879,6 +879,6 @@ std::vector< FiniteElementDescriptorPtr > Result::getFiniteElementDescriptors() 
     return _fieldBuidler.getFiniteElementDescriptors();
 };
 
-std::vector< FieldOnNodesDescriptionPtr > Result::getFieldOnNodesDescriptions() const {
-    return _fieldBuidler.getFieldOnNodesDescriptions();
+std::vector< GlobalEquationNumberingPtr > Result::getGlobalNumberings() const {
+    return _fieldBuidler.getGlobalEquationNumberings();
 };

@@ -199,10 +199,10 @@ class Result : public DataStructure, public ListOfTables {
     void setElementaryCharacteristics( const ElementaryCharacteristicsPtr &, ASTERINTEGER index );
 
     /**
-     * @brief Add a existing FieldOnNodesDescription in _fieldBuidler
+     * @brief Add a existing GlobalEquationNumbering in _fieldBuidler
      */
-    void addFieldOnNodesDescription( const FieldOnNodesDescriptionPtr &fond ) {
-        _fieldBuidler.addFieldOnNodesDescription( fond );
+    void addGlobalEquationNumbering( const GlobalEquationNumberingPtr &fond ) {
+        _fieldBuidler.addGlobalEquationNumbering( fond );
     };
 
     /**
@@ -505,8 +505,8 @@ class Result : public DataStructure, public ListOfTables {
      */
     virtual bool build( const std::vector< FiniteElementDescriptorPtr > feds =
                             std::vector< FiniteElementDescriptorPtr >(),
-                        const std::vector< FieldOnNodesDescriptionPtr > fnds =
-                            std::vector< FieldOnNodesDescriptionPtr >() );
+                        const std::vector< GlobalEquationNumberingPtr > fnds =
+                            std::vector< GlobalEquationNumberingPtr >() );
 
     /**
      * @brief Update the  Result's size
@@ -515,7 +515,7 @@ class Result : public DataStructure, public ListOfTables {
 
     std::vector< FiniteElementDescriptorPtr > getFiniteElementDescriptors() const;
 
-    std::vector< FieldOnNodesDescriptionPtr > getFieldOnNodesDescriptions() const;
+    std::vector< GlobalEquationNumberingPtr > getGlobalNumberings() const;
 
     void clear( const ASTERINTEGER &index );
 

@@ -32,29 +32,18 @@
 
 DOFNumbering::DOFNumbering()
     : BaseDOFNumbering( ResultNaming::getNewResultName(), "NUME_DDL" ),
-      _localNumbering( new LocalEquationNumbering( getName() ) ) {
-    _globalNumbering = GlobalEquationNumberingPtr( new GlobalEquationNumbering( getName() ) );
-};
+      _globalNumbering( std::make_shared< GlobalEquationNumbering >( getName() ) ){};
 
 DOFNumbering::DOFNumbering( const std::string name, const FieldOnNodesDescriptionPtr fdof,
                             const ModelPtr model )
     : BaseDOFNumbering( name, "NUME_DDL", fdof ),
-      _localNumbering( new LocalEquationNumbering( getName() ) ) {
-    _globalNumbering = GlobalEquationNumberingPtr( new GlobalEquationNumbering( getName() ) );
+      _globalNumbering( std::make_shared< GlobalEquationNumbering >( getName() ) ) {
     setModel( model );
 };
 
 DOFNumbering::DOFNumbering( const std::string name )
     : BaseDOFNumbering( name, "NUME_DDL" ),
-      _localNumbering( new LocalEquationNumbering( getName() ) ) {
-    _globalNumbering = GlobalEquationNumberingPtr( new GlobalEquationNumbering( getName() ) );
-};
-
-std::string DOFNumbering::getPhysicalQuantity() const {
-    _globalNumbering->_informations->updateValuePointer();
-    JeveuxChar24 physicalQuantity = ( *_globalNumbering->_informations )[1];
-    return physicalQuantity.rstrip();
-};
+      _globalNumbering( std::make_shared< GlobalEquationNumbering >( getName() ) ){};
 
 bool DOFNumbering::useLagrangeMultipliers() const {
     const std::string typeco( "NUME_DDL" );
@@ -71,12 +60,13 @@ bool DOFNumbering::useLagrangeMultipliers() const {
 };
 
 VectorLong DOFNumbering::getRowsAssociatedToPhysicalDofs( const bool local ) const {
-    getGlobalNumbering()->getLagrangianInformations()->updateValuePointer();
-    ASTERINTEGER size = getGlobalNumbering()->getLagrangianInformations()->size();
+    auto lagrInfo = getGlobalNumbering()->getLagrangianInformations();
+    lagrInfo->updateValuePointer();
+    ASTERINTEGER size = lagrInfo->size();
     VectorLong physicalRows;
     ASTERINTEGER physicalIndicator;
     for ( int i = 0; i < size; i++ ) {
-        physicalIndicator = ( *getGlobalNumbering()->getLagrangianInformations() )[i];
+        physicalIndicator = ( *lagrInfo )[i];
         if ( physicalIndicator == 0 )
             physicalRows.push_back( i );
     }
@@ -84,12 +74,13 @@ VectorLong DOFNumbering::getRowsAssociatedToPhysicalDofs( const bool local ) con
 };
 
 VectorLong DOFNumbering::getRowsAssociatedToLagrangeMultipliers( const bool local ) const {
-    getGlobalNumbering()->getLagrangianInformations()->updateValuePointer();
-    ASTERINTEGER size = getGlobalNumbering()->getLagrangianInformations()->size();
+    auto lagrInfo = getGlobalNumbering()->getLagrangianInformations();
+    lagrInfo->updateValuePointer();
+    ASTERINTEGER size = lagrInfo->size();
     VectorLong lagrangeRows;
     ASTERINTEGER physicalIndicator;
     for ( int i = 0; i < size; i++ ) {
-        physicalIndicator = ( *getGlobalNumbering()->getLagrangianInformations() )[i];
+        physicalIndicator = ( *lagrInfo )[i];
         if ( physicalIndicator != 0 )
             lagrangeRows.push_back( i );
     }

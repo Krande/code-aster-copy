@@ -49,11 +49,12 @@ XfemCrack::XfemCrack( const std::string name, MeshPtr mesh )
       _enrichmentRadiusZone( 0 ),
       _enrichedLayersNumber( 0 ),
 
-      _tangentialLevelSetField( new FieldOnNodesReal( getName() + ".LTNO      " ) ),
-      _normalLevelSetField( new FieldOnNodesReal( getName() + ".LNNO      " ) ),
-      _tangentialLevelSetGradient( new FieldOnNodesReal( getName() + ".GRLTNO    " ) ),
-      _normalLevelSetGradient( new FieldOnNodesReal( getName() + ".GRLNNO    " ) ),
-      _localBasis( new FieldOnNodesReal( getName() + ".BASLOC    " ) ),
+      _tangentialLevelSetField( std::make_shared< FieldOnNodesReal >( getName() + ".LTNO      " ) ),
+      _normalLevelSetField( std::make_shared< FieldOnNodesReal >( getName() + ".LNNO      " ) ),
+      _tangentialLevelSetGradient(
+          std::make_shared< FieldOnNodesReal >( getName() + ".GRLTNO    " ) ),
+      _normalLevelSetGradient( std::make_shared< FieldOnNodesReal >( getName() + ".GRLNNO    " ) ),
+      _localBasis( std::make_shared< FieldOnNodesReal >( getName() + ".BASLOC    " ) ),
       _crackTipCoords( JeveuxVectorReal( getName() + ".FONDFISS" ) ),
       _crackTipBasis( JeveuxVectorReal( getName() + ".BASEFOND" ) ),
       _crackTipMultiplicity( JeveuxVectorLong( getName() + ".FONDMULT" ) ),
@@ -63,21 +64,21 @@ XfemCrack::XfemCrack( const std::string name, MeshPtr mesh )
       _crackTipCells( JeveuxVectorLong( getName() + ".MAILFISS.CTIP" ) ),
       _heavisideCells( JeveuxVectorLong( getName() + ".MAILFISS.HEAV" ) ),
       _crackTipAndHeavisideCells( JeveuxVectorLong( getName() + ".MAILFISS.HECT" ) ),
-      _nodeStatusField( new FieldOnNodesLong( getName() + ".STNO" ) ),
+      _nodeStatusField( std::make_shared< FieldOnNodesLong >( getName() + ".STNO" ) ),
       _crackTipCellGroup( JeveuxVectorLong( getName() + ".MAILFISS.MAFOND" ) ),
       _enrichedCellGroup( JeveuxVectorLong( getName() + ".GROUP_MA_ENRI" ) ),
       _meshName( JeveuxVectorChar8( getName() + ".MAILLAGE" ) ),
       _info( JeveuxVectorChar16( getName() + ".INFO" ) ),
       _crackTipNodeFacesField( JeveuxVectorLong( getName() + ".NOFACPTFON" ) ) {
     _tangentialLevelSetField->setDescription(
-        std::make_shared< FieldOnNodesDescription >( getName() + ".LTNO.PRCHN" ) );
+        std::make_shared< GlobalEquationNumbering >( getName() + ".LTNO.PRCHN" ) );
     _normalLevelSetField->setDescription( _tangentialLevelSetField->getDescription() );
     _nodeStatusField->setDescription( _tangentialLevelSetField->getDescription() );
     _tangentialLevelSetGradient->setDescription(
-        std::make_shared< FieldOnNodesDescription >( getName() + ".GRLT.PRCHN" ) );
+        std::make_shared< GlobalEquationNumbering >( getName() + ".GRLT.PRCHN" ) );
     _normalLevelSetGradient->setDescription( _tangentialLevelSetGradient->getDescription() );
     _localBasis->setDescription(
-        std::make_shared< FieldOnNodesDescription >( getName() + ".BASL.PRCHN" ) );
+        std::make_shared< GlobalEquationNumbering >( getName() + ".BASL.PRCHN" ) );
 };
 
 XfemCrack::XfemCrack( MeshPtr mesh ) : XfemCrack( ResultNaming::getNewResultName(), mesh ){};

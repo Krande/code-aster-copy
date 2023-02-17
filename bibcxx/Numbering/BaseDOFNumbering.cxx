@@ -36,6 +36,7 @@ BaseDOFNumbering::BaseDOFNumbering( const std::string name, const std::string &t
       _smos( new MorseStorage( getName() + ".SMOS" ) ),
       _slcs( new LigneDeCiel( getName() + ".SLCS" ) ),
       _mltf( new MultFrontGarbage( getName() + ".MLTF" ) ),
+      _localNumbering( std::make_shared< LocalEquationNumbering >( getName() ) ),
       _isEmpty( false ){};
 
 BaseDOFNumbering::BaseDOFNumbering( const std::string name, const std::string &type )
@@ -45,6 +46,7 @@ BaseDOFNumbering::BaseDOFNumbering( const std::string name, const std::string &t
       _smos( new MorseStorage( getName() + ".SMOS" ) ),
       _slcs( new LigneDeCiel( getName() + ".SLCS" ) ),
       _mltf( new MultFrontGarbage( getName() + ".MLTF" ) ),
+      _localNumbering( std::make_shared< LocalEquationNumbering >( getName() ) ),
       _isEmpty( true ){};
 
 bool BaseDOFNumbering::computeNumbering( const std::vector< MatrElem > matrix ) {
@@ -170,16 +172,5 @@ bool BaseDOFNumbering::addFiniteElementDescriptors(
             return false;
     }
 
-    return true;
-};
-
-bool BaseDOFNumbering::GlobalEquationNumbering::setModel( const ModelPtr &model ) {
-    if ( _informations->exists() ) {
-        _informations->updateValuePointer();
-        const auto modelName = std::string( ( *_informations )[2].toString(), 0, 8 );
-        if ( modelName != model->getName() )
-            return false;
-    }
-    _model = model;
     return true;
 };

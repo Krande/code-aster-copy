@@ -1,6 +1,6 @@
 /**
- * @file Result.cxx
- * @brief Implementation de Result
+ * @file DOFNumbering.cxx
+ * @brief Implementation de DOFNumbering
  * @author Nicolas Sellenet
  * @section LICENCE
  *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
@@ -21,9 +21,11 @@
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* person_in_charge: nicolas.sellenet at edf.fr */
+#include "Numbering/ParallelGlobalEquationNumbering.h"
 
-#include "DataFields/FieldBuilder.h"
+#include "astercxx.h"
 
-std::set< std::string > FieldBuilder::_setGlobNume;
-std::set< std::string > FieldBuilder::_setLigrel;
+ParallelGlobalEquationNumbering::ParallelGlobalEquationNumbering( const std::string &baseName )
+    : GlobalEquationNumbering( baseName ),
+      _localToGlobal( JeveuxVectorLong( getName() + ".NULG" ) ),
+      _localToRank( JeveuxVectorLong( getName() + ".PDDL" ) ){};

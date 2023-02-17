@@ -34,28 +34,20 @@
 
 ParallelDOFNumbering::ParallelDOFNumbering()
     : BaseDOFNumbering( ResultNaming::getNewResultName(), "NUME_DDL_P" ) {
-    _globalNumbering =
-        GlobalEquationNumberingPtr( new ParallelGlobalEquationNumbering( getName() ) );
+    _globalNumbering = std::make_shared< ParallelGlobalEquationNumbering >( getName() );
 };
 
 ParallelDOFNumbering::ParallelDOFNumbering( const std::string name,
                                             const FieldOnNodesDescriptionPtr fdof,
                                             const ModelPtr model )
     : BaseDOFNumbering( name, "NUME_DDL_P", fdof ) {
-    _globalNumbering = GlobalEquationNumberingPtr( new GlobalEquationNumbering( getName() ) );
+    _globalNumbering = std::make_shared< ParallelGlobalEquationNumbering >( getName() );
     setModel( model );
 };
 
 ParallelDOFNumbering::ParallelDOFNumbering( const std::string &name )
     : BaseDOFNumbering( name, "NUME_DDL_P" ) {
-    _globalNumbering =
-        GlobalEquationNumberingPtr( new ParallelGlobalEquationNumbering( getName() ) );
-};
-
-std::string ParallelDOFNumbering::getPhysicalQuantity() const {
-    _globalNumbering->_informations->updateValuePointer();
-    JeveuxChar24 physicalQuantity = ( *_globalNumbering->_informations )[1];
-    return physicalQuantity.rstrip();
+    _globalNumbering = std::make_shared< ParallelGlobalEquationNumbering >( getName() );
 };
 
 bool ParallelDOFNumbering::useLagrangeMultipliers() const {

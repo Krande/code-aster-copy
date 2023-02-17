@@ -32,6 +32,7 @@
 /* person_in_charge: nicolas.sellenet at edf.fr */
 
 #include "Numbering/BaseDOFNumbering.h"
+#include "Numbering/ParallelGlobalEquationNumbering.h"
 
 #include <unordered_map>
 
@@ -42,30 +43,8 @@
  */
 class ParallelDOFNumbering : public BaseDOFNumbering {
   private:
-    class ParallelGlobalEquationNumbering : public GlobalEquationNumbering {
-        /** @brief Objet Jeveux '.NULG' */
-        JeveuxVectorLong _localToGlobal;
-        /** @brief Objet Jeveux '.PDDL' */
-        JeveuxVectorLong _localToRank;
-
-        ParallelGlobalEquationNumbering( const std::string &DOFNumName )
-            : GlobalEquationNumbering( DOFNumName ),
-              _localToGlobal( JeveuxVectorLong( getName() + ".NULG" ) ),
-              _localToRank( JeveuxVectorLong( getName() + ".PDDL" ) ){};
-
-      public:
-        /**
-         * @brief Returns the vector of local to global numbering
-         */
-        const JeveuxVectorLong getLocalToGlobal() const { return _localToGlobal; }
-
-        /**
-         * @brief Returns the vector of the rank owning the local dof number
-         */
-        const JeveuxVectorLong getLocalToRank() const { return _localToRank; }
-
-        friend class ParallelDOFNumbering;
-    };
+    /** @brief Objet '.NUME' */
+    ParallelGlobalEquationNumberingPtr _globalNumbering;
 
     std::unordered_map< ASTERINTEGER, ASTERINTEGER > _global2localMap;
 
@@ -105,12 +84,9 @@ class ParallelDOFNumbering : public BaseDOFNumbering {
     /**
      * @brief Returns the GlobalEquationNumberingPtr
      */
-    virtual GlobalEquationNumberingPtr getGlobalNumbering() const { return _globalNumbering; };
+    GlobalEquationNumberingPtr getGlobalNumbering() const { return _globalNumbering; };
 
-    /**
-     * @brief Get Physical Quantity
-     */
-    std::string getPhysicalQuantity() const;
+    std::string getPhysicalQuantity() const { return _globalNumbering->getPhysicalQuantity(); };
 
     /**
      * @brief Methode permettant de savoir si l'objet est parallel
@@ -213,7 +189,12 @@ class ParallelDOFNumbering : public BaseDOFNumbering {
     /**
      * @brief Set model
      */
-    bool setModel( const ModelPtr &model ) { return _globalNumbering->setModel( model ); };
+    void setModel( const ModelPtr &model ) { _globalNumbering->setModel( model ); };
+
+    /**
+     * @brief Get mesh
+     */
+    BaseMeshPtr getMesh() const { return _globalNumbering->getMesh(); };
 };
 
 /**

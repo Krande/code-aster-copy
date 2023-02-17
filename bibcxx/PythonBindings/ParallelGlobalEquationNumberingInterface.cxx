@@ -1,6 +1,6 @@
 /**
- * @file Result.cxx
- * @brief Implementation de Result
+ * @file DOFNumberingInterface.cxx
+ * @brief Interface python de DOFNumbering
  * @author Nicolas Sellenet
  * @section LICENCE
  *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
@@ -20,10 +20,15 @@
  *   You should have received a copy of the GNU General Public License
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 /* person_in_charge: nicolas.sellenet at edf.fr */
 
-#include "DataFields/FieldBuilder.h"
+#include "PythonBindings/ParallelGlobalEquationNumberingInterface.h"
 
-std::set< std::string > FieldBuilder::_setGlobNume;
-std::set< std::string > FieldBuilder::_setLigrel;
+#include "aster_pybind.h"
+
+void exportParallelGlobalEquationNumberingToPython( py::module_ &mod ) {
+
+    py::class_< ParallelGlobalEquationNumbering, ParallelGlobalEquationNumberingPtr,
+                GlobalEquationNumbering >( mod, "ParallelGlobalEquationNumbering" )
+        .def( py::init( &initFactoryPtr< ParallelGlobalEquationNumbering, std::string > ) );
+};

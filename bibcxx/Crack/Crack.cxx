@@ -40,17 +40,17 @@ Crack::Crack( const std::string name )
       _info( JeveuxVectorChar24( getName() + ".INFO" ) ),
       _fondTailleR( JeveuxVectorReal( getName() + ".FOND.TAILLE_R" ) ),
       _abscur( JeveuxVectorReal( getName() + ".ABSCUR" ) ),
-      _ltno( new FieldOnNodesReal( getName() + ".LTNO      " ) ),
-      _lnno( new FieldOnNodesReal( getName() + ".LNNO      " ) ),
-      _basLoc( new FieldOnNodesReal( getName() + ".BASLOC    " ) ),
+      _ltno( std::make_shared< FieldOnNodesReal >( getName() + ".LTNO      " ) ),
+      _lnno( std::make_shared< FieldOnNodesReal >( getName() + ".LNNO      " ) ),
+      _basLoc( std::make_shared< FieldOnNodesReal >( getName() + ".BASLOC    " ) ),
       _basNof( JeveuxVectorReal( getName() + ".BASNOF" ) ),
       _coorfond( JeveuxVectorReal( getName() + ".COORFOND" ) ),
       _absfon( JeveuxVectorReal( getName() + ".ABSFON" ) ) {
     _ltno->setDescription(
-        std::make_shared< FieldOnNodesDescription >( getName() + ".LTNO.PRCHN" ) );
+        std::make_shared< GlobalEquationNumbering >( getName() + ".LTNO.PRCHN" ) );
     _lnno->setDescription( _ltno->getDescription() );
     _basLoc->setDescription(
-        std::make_shared< FieldOnNodesDescription >( getName() + ".BASL.PRCHN" ) );
+        std::make_shared< GlobalEquationNumbering >( getName() + ".BASL.PRCHN" ) );
 };
 
 void Crack::updateValuePointers() {

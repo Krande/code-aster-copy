@@ -128,18 +128,7 @@ void exportFieldOnNodesToPython( py::module_ &mod ) {
                 vec (Vec): The PETSc vector
                 scaling (float) : The scaling of the Lagrange DOFs
             )",
-              py::arg( "dofNmbrg" ), py::arg( "vec" ), py::arg( "scaling" ) )
-        .def( "fromPetsc",
-              py::overload_cast< const BaseDOFNumberingPtr &, const Vec & >(
-                  &FieldOnNodesReal::fromPetsc ),
-              R"(
-            Import a PETSc vector into the field.
-
-            Arguments:
-                dofNmbrg (DOFNumbering): The numbering of the DOFs
-                vec (Vec): The PETSc vector
-            )",
-              py::arg( "dofNmbrg" ), py::arg( "vec" ) )
+              py::arg( "dofNmbrg" ), py::arg( "vec" ), py::arg( "scaling" ) = 1.0 )
         .def( "fromPetsc",
               py::overload_cast< const Vec &, const ASTERDOUBLE & >( &FieldOnNodesReal::fromPetsc ),
               R"(
@@ -149,14 +138,7 @@ void exportFieldOnNodesToPython( py::module_ &mod ) {
                 vec (Vec): The PETSc vector
                 scaling (float) : The scaling of the Lagrange DOFs
             )",
-              py::arg( "vec" ), py::arg( "scaling" ) )
-        .def( "fromPetsc", py::overload_cast< const Vec & >( &FieldOnNodesReal::fromPetsc ), R"(
-            Import a PETSc vector into the field.
-
-            Arguments:
-                vec (Vec): The PETSc vector
-            )",
-              py::arg( "vec" ) )
+              py::arg( "vec" ), py::arg( "scaling" ) = 1.0 )
 #endif
         .def( "setValues", py::overload_cast< const ASTERDOUBLE & >( &FieldOnNodesReal::setValues ),
               R"(

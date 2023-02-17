@@ -92,6 +92,7 @@
 #include "PythonBindings/GeneralizedResultInterface.h"
 #include "PythonBindings/GenericEnumInterface.h"
 #include "PythonBindings/GenericFunctionInterface.h"
+#include "PythonBindings/GlobalEquationNumberingInterface.h"
 #include "PythonBindings/GridInterface.h"
 #include "PythonBindings/HHOInterface.h"
 #include "PythonBindings/InterspectralMatrixInterface.h"
@@ -116,6 +117,7 @@
 #include "PythonBindings/NonLinearResultInterface.h"
 #include "PythonBindings/ParallelDOFNumberingInterface.h"
 #include "PythonBindings/ParallelFiniteElementDescriptorInterface.h"
+#include "PythonBindings/ParallelGlobalEquationNumberingInterface.h"
 #include "PythonBindings/ParallelMechanicalLoadInterface.h"
 #include "PythonBindings/ParallelMeshInterface.h"
 #include "PythonBindings/ParallelThermalLoadInterface.h"
@@ -175,6 +177,7 @@ PYBIND11_MODULE( libaster, mod ) {
     exportMeshToPython( mod );
     exportMedCouplingConversionToPython( mod );
     exportDiscreteComputationToPython( mod );
+    exportGlobalEquationNumberingToPython( mod );
     exportBaseDOFNumberingToPython( mod );
     exportDOFNumberingToPython( mod );
     exportElementaryCharacteristicsToPython( mod );
@@ -267,6 +270,7 @@ PYBIND11_MODULE( libaster, mod ) {
     /* These objects must be declared in ObjectsExt/* as
        OnlyParallelObject for sequential version. */
     exportParallelMeshToPython( mod );
+    exportParallelGlobalEquationNumberingToPython( mod );
     exportParallelDOFNumberingToPython( mod );
     exportParallelMechanicalLoadToPython( mod );
     exportParallelThermalLoadToPython( mod );
