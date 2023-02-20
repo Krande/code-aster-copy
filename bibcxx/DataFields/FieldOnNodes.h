@@ -673,9 +673,10 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
             _reference->updateValuePointer();
             const std::string name2 = trim( ( *_reference )[1].toString() );
             if ( !name2.empty() ) {
-                AS_ASSERT( mesh );
                 _dofDescription = std::make_shared< GlobalEquationNumbering >( name2 );
-                this->setMesh( mesh );
+                if ( mesh ) {
+                    this->setMesh( mesh );
+                }
             } else {
                 AS_ABORT( "NUME_EQUA is empty" );
             }
