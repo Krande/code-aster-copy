@@ -139,6 +139,16 @@ phen.add(
 )
 
 phen.add(
+    "2D_FLUI_ABSO#2",
+    Modelisation(
+        dim=(1, 2),
+        code="2FX",
+        attrs=((AT.TYPMOD, "PLAN"), (AT.FLUIDE, "OUI"), (AT.ABSO, "OUI"), (AT.FORMULATION, "U_P")),
+        elements=((MT.SEG2, EL.MEFASE2UP), (MT.SEG3, EL.MEFASE3UP)),
+    ),
+)
+
+phen.add(
     "2D_FLUI_PESA#1",
     Modelisation(
         dim=(2, 2),
@@ -673,6 +683,22 @@ phen.add(
             (MT.TRIA6, EL.MEFA_FACE6),
             (MT.QUAD8, EL.MEFA_FACE8),
             (MT.QUAD9, EL.MEFA_FACE9),
+        ),
+    ),
+)
+
+phen.add(
+    "3D_FLUI_ABSO#2",
+    Modelisation(
+        dim=(2, 3),
+        code="3FX",
+        attrs=((AT.FLUIDE, "OUI"), (AT.ABSO, "OUI"), (AT.FORMULATION, "U_P")),
+        elements=(
+            (MT.TRIA3, EL.MEFA_FACE3UP),
+            (MT.QUAD4, EL.MEFA_FACE4UP),
+            (MT.TRIA6, EL.MEFA_FACE6UP),
+            (MT.QUAD8, EL.MEFA_FACE8UP),
+            (MT.QUAD9, EL.MEFA_FACE9UP),
         ),
     ),
 )
