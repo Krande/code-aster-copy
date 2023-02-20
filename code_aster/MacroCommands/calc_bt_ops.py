@@ -39,7 +39,6 @@ from ..Commands import (
 )
 from ..Helpers.LogicalUnit import LogicalUnitFile
 from ..Messages import UTMESS
-from .Utils import partition
 from .Utils.griddata_local import griddata
 from .Utils.voronoi_local import Voronoi
 
@@ -275,7 +274,7 @@ def calc_bt_ops(self, **args):
             return a
 
     # ==============================================================================
-    def B_BC(__grno, DDL_, FORCE_):
+    def B_BC(mesh, DDL_, FORCE_):
         """
         Description:
             Transfer the continuous boundary conditions to discrete ones.
@@ -292,27 +291,28 @@ def calc_bt_ops(self, **args):
             SUP=SUPPORTS
             LOAD=LOADS
         """
-        __grno = mm.gno
 
         n = 0
         for key in DDL_.keys():
-            n = n + len(np.asarray(__grno[key]))
+            n = n + len(mesh.getNodes(key))
 
         SUPPORTS = np.zeros((n, 4), dtype=int) - 1
         for key in DDL_.keys():
             a = sum(SUPPORTS[:, 0] >= 0)
-            b = len(np.asarray(__grno[key]))
-            SUPPORTS[a : (b + a), 0] = np.asarray(__grno[key])
+            nodes = mesh.getNodes(key)
+            b = len(nodes)
+            SUPPORTS[a : (b + a), 0] = np.asarray(nodes)
 
         n = 0
         for key in FORCE_.keys():
-            n = n + len(np.asarray(__grno[key]))
+            n = n + len(np.asarray(mesh.getNodes(key)))
 
         FORCES = np.zeros((n, 4), dtype=int) - 1
         for key in FORCE_.keys():
             a = sum(FORCES[:, 0] >= 0)
-            b = len(np.asarray(__grno[key]))
-            FORCES[a : (b + a), 0] = np.asarray(__grno[key])
+            nodes = mesh.getNodes(key)
+            b = len(nodes)
+            FORCES[a : (b + a), 0] = np.asarray(nodes)
 
         return SUPPORTS + 1, FORCES + 1
 
@@ -334,21 +334,20 @@ def calc_bt_ops(self, **args):
             SUP=SUPPORTS
             LOAD=LOADS
         """
-        __grno = mm.gno
 
         N_o_S = dict()
 
-        for key in __grno.keys():
-            SUP = np.asarray(__grno[key])
-            b = np.zeros((len(SUP[:])), dtype=int)
-            for i_ in range(len(SUP[:])):
+        for group_name in __MAIL.getGroupsOfNodes():
+            SUP = __MAIL.getNodes(group_name)
+            b = np.zeros((len(SUP)), dtype=int)
+            for i_ in range(len(SUP)):
                 dist_ = np.sqrt((GS_[:, 0] - Mesh_[int(SUP[i_]), 1]) ** 2) + np.sqrt(
                     (GS_[:, 1] - Mesh_[int(SUP[i_]), 2]) ** 2
                 )
 
                 b[i_] = sum(np.multiply(range(len(GS_[:, 0])), dist_ == min(dist_))) + 1
 
-            N_o_S.update({key: np.unique(b)})
+            N_o_S.update({group_name: np.unique(b)})
 
         return N_o_S
 
@@ -1635,8 +1634,6 @@ def calc_bt_ops(self, **args):
                     GS_nodes, Con_Mat, N_o_S, __Forces, Title_, UNITE_MAILLAGE, __GROUP_S, __GROUP_F
                 )
 
-                UNITE_MAILLAGE = mm.ToAster()
-
                 nomFichierSortie = LogicalUnitFile.filename_from_unit(UNITE_MAILLAGE)
                 with open(nomFichierSortie, "w") as fproc:
                     fproc.write(os.linesep.join(ST_MESH))
@@ -1669,7 +1666,6 @@ def calc_bt_ops(self, **args):
         ST_MESH = mesh_create2(
             GS_nodes, Con_Mat, N_o_S, __Forces, Title_, UNITE_MAILLAGE, __GROUP_S, __GROUP_F
         )
-        UNITE_MAILLAGE = mm.ToAster()
 
         nomFichierSortie = LogicalUnitFile.filename_from_unit(UNITE_MAILLAGE)
         with open(nomFichierSortie, "w") as fproc:
@@ -2405,7 +2401,7 @@ def calc_bt_ops(self, **args):
     #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     # Geometry contour
     #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    def SKIN(__grma, __Nodes, __SUPPORTS_KEY, __FORCES_KEY, GROUP_C, __MAIL):
+    def SKIN(mesh, __Nodes, __SUPPORTS_KEY, __FORCES_KEY, GROUP_C):
         """ """
         motscles = {}
         motscles1 = {}
@@ -2438,33 +2434,28 @@ def calc_bt_ops(self, **args):
                 __A.append(GROUP_C[key])
         motscles1["DETR_GROUP_NO"].append(_F(NOM=(__A)))
         # Defining nodal groups
-        __MAIL = DEFI_GROUP(reuse=__MAIL, MAILLAGE=__MAIL, **motscles1)
-        __MAIL = DEFI_GROUP(reuse=__MAIL, MAILLAGE=__MAIL, **motscles)
+        mesh = DEFI_GROUP(reuse=mesh, MAILLAGE=mesh, **motscles1)
+        mesh = DEFI_GROUP(reuse=mesh, MAILLAGE=mesh, **motscles)
 
-        # Updating mail_py
-        mm = partition.MAIL_PY()
-        mm.FromAster(__MAIL)
-        __grno = mm.gno
 
         Bound = np.array([])
         Holes = {}
         for key in GROUP_C.keys():
             if key == 0:
-                Bound = Cr_loop(__grno[GROUP_C[key]])
+                Bound = Cr_loop(np.array(mesh.getNodes(GROUP_C[key])))
             else:
-                Holes[key] = Cr_loop(__grno[GROUP_C[key]])
+                Holes[key] = Cr_loop(np.array(mesh.getNodes(GROUP_C[key])))
 
-        __MAIL = DEFI_GROUP(reuse=__MAIL, MAILLAGE=__MAIL, **motscles1)
+        mesh = DEFI_GROUP(reuse=mesh, MAILLAGE=mesh, **motscles1)
         return __Nodes, Bound, Holes
 
     # =========================================================================
     # Base model definition
     # =========================================================================
 
-    mm = partition.MAIL_PY()
-    mm.FromAster(__MAIL)
+    logical_unit_file = LogicalUnitFile.new_free()
 
-    __UNITE_MAILLAGE = mm.ToAster()
+    __UNITE_MAILLAGE = logical_unit_file.unit
 
     # Extraction of materials
     b_mater = BETON.getName()  # Names of the materials inside sd_mater
@@ -2490,13 +2481,11 @@ def calc_bt_ops(self, **args):
         UTMESS("F", "CALCBT_9")
 
     # Nodal groups associated to the boundary conditions
-    __grno = mm.gno
-    __SUPPORTS, __FORCES = B_BC(__grno, __GROUP_S, __GROUP_F)  # Loads and supports
+    __SUPPORTS, __FORCES = B_BC(__MAIL, __GROUP_S, __GROUP_F)  # Loads and supports
 
     # Geometry's "skin"
-    __grma = mm.gma
     __N_Bound, __Bound, __Holes = SKIN(
-        __grma, __Nodes, __GROUP_S.keys(), __GROUP_F.keys(), __GROUP_C, __MAIL
+        __MAIL, __Nodes, __GROUP_S.keys(), __GROUP_F.keys(), __GROUP_C
     )  # Geometry loops
 
     # Geometry's maximum dimentions and real merging tolerances
@@ -2675,5 +2664,7 @@ def calc_bt_ops(self, **args):
     )
 
     self.register_result(__resu, RESU_BT)
+
+    logical_unit_file.release()
 
     return TABLE
