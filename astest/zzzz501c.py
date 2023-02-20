@@ -39,8 +39,7 @@ coord = monMaillage.getCoordinates()
 print("coord[3] ", coord[3])
 test.assertEqual(coord[3], 1.0)
 
-with test.assertRaises(TypeError):
-    coord[3] = 5.0
+coord[3] = 5.0
 
 # Definition du modele Aster
 monModel = code_aster.Model(monMaillage)
@@ -54,7 +53,7 @@ with test.assertRaises(NameError):
 
 # delete/overwrite monModel, coord object still exists
 monModel = 1
-test.assertEqual(coord[3], 1.0)
+test.assertEqual(coord[3], 5.0)
 
 test.printSummary()
 

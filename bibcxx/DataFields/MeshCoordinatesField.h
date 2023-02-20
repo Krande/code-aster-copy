@@ -209,9 +209,18 @@ class MeshCoordinatesField : public DataField {
     ASTERDOUBLE operator[]( const ASTERINTEGER &i ) const { return _valuesList->operator[]( i ); };
 
     /**
+     * @brief Surcharge de l'operateur []
+     * @param i Indice dans le tableau Jeveux
+     * @return la valeur du tableau Jeveux a la position i
+     */
+    ASTERDOUBLE& operator[]( ASTERINTEGER i ) { return _valuesList->operator[]( i ); };
+
+    /**
      * @brief Size of the FieldOnNodes
      */
     ASTERINTEGER size( void ) const { return _valuesList->size(); }
+
+
 
     /**
      * @brief duplicate

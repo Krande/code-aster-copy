@@ -41,8 +41,7 @@ test.assertEqual(coord.getValues(), coord1.getValues())
 print("coord[3] ", coord[3])
 test.assertEqual(coord[3], 1.0)
 
-with test.assertRaises(TypeError):
-    coord[3] = 5.0
+coord[3] = 5.0
 
 # Definition du modele Aster
 model = code_aster.Model(mesh)
