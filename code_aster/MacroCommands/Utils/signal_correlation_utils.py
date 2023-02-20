@@ -43,7 +43,6 @@ import aster_core
 from ...Messages import UTMESS
 
 from ...Objects.function_py import t_fonction
-from .partition import MAIL_PY
 from .random_signal_utils import ACCE2SROM, acce_filtre_CP, calc_dsp_FR, calc_dsp_KT, dsp_filtre_CP
 
 
@@ -124,16 +123,13 @@ def CALC_COHE(freq, **kwargs):
 
 
 def get_group_nom_coord(group_inter, nom_mail):
-    mm = MAIL_PY()
-    mm.FromAster(nom_mail)
-    noeuds_maillage = NP.array(mm.correspondance_noeuds)
+    print("in signal_correlation_utils")
     # no des noeuds
-    liste_no_interf = list(mm.gno[group_inter])
-    nom_no_interf = noeuds_maillage[liste_no_interf]
+    liste_no_interf = nom_mail.getNodes(group_inter)
     # nom des noeuds
-    liste_nom_no_int = tuple([nom.strip() for nom in nom_no_interf])
-    COORD_3D = mm.cn
-    coord_no_interf = COORD_3D[mm.gno.get(group_inter)]
+    liste_nom_no_int = [nom_mail.getNodeName(node) for node in liste_no_interf]
+    COORD_3D = nom_mail.getCoordinates().getValues()
+    coord_no_interf = NP.array([COORD_3D[3*node:3*(node+1)] for node in liste_no_interf])
     if len(coord_no_interf[0]) == 2:
         z = NP.zeros((len(coord_no_interf[:, 0]), 1))
         coord_no_interf = NP.append(coord_no_interf, z, axis=1)

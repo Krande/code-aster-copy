@@ -143,7 +143,8 @@ class Generator(object):
         nom_bamo = bamo.getName()
         self.mat_gene_params["NUME_DDL"] = ddlgene
         self.mat_gene_params["BASE"] = bamo
-        nom_mail = bamo.getDOFNumbering().getMesh().getName()
+        mesh = bamo.getDOFNumbering().getMesh()
+        nom_mail = mesh.getName()
         self.cohe_params["MAILLAGE"] = nom_mail
         _, nbmodt, _ = aster.dismoi("NB_MODES_TOT", nom_bamo, "RESULTAT", "F")
         _, nbmodd, _ = aster.dismoi("NB_MODES_DYN", nom_bamo, "RESULTAT", "F")
@@ -151,7 +152,7 @@ class Generator(object):
         self.mat_gene_params["NBMODD"] = nbmodd
         self.mat_gene_params["NBMODS"] = nbmods
         self.mat_gene_params["NBMODT"] = nbmodt
-        _, noe_interf = get_group_nom_coord(self.interf_params["GROUP_NO_INTERF"], nom_mail)
+        _, noe_interf = get_group_nom_coord(self.interf_params["GROUP_NO_INTERF"], mesh)
         self.cohe_params["DIST"] = calc_dist2(noe_interf)
         self.cohe_params["NOEUDS_INTERF"] = noe_interf
         self.interf_params["NBNO"] = len(noe_interf)
