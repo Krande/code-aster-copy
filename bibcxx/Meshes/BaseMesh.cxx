@@ -237,6 +237,12 @@ ASTERINTEGER BaseMesh::getCellType( const ASTERINTEGER &index ) const {
     return ( *_cellsType )[index];
 };
 
+JeveuxVectorLong BaseMesh::getCellsType() const {
+    if ( _cellsType->exists() )
+        _cellsType->updateValuePointer();
+    return _cellsType;
+};
+
 std::string BaseMesh::getCellTypeName( const ASTERINTEGER &index ) const {
     auto cellType = getCellType( index );
     const std::string cata = "&CATA.TM.NOMTM";
@@ -313,6 +319,34 @@ void BaseMesh::initDefinition( const int &dim, const VectorReal &coord,
     }
 }
 
+bool BaseMesh::buildInformations( const int &dim ) {
+    if ( _dimensionInformations->exists() )
+        return false;
+    if ( !_coordinates->exists() )
+        throw std::runtime_error( "Coordinates vector must exist" );
+    if ( !_cellsType->exists() )
+        throw std::runtime_error( "Cells type vector must exist" );
+    int nbNodes = _coordinates->size() / 3;
+    int nbCells = _cellsType->size();
+
+    _dimensionInformations->allocate( 6 );
+    ( *_dimensionInformations )[0] = nbNodes;
+    ( *_dimensionInformations )[2] = nbCells;
+    ( *_dimensionInformations )[5] = (ASTERINTEGER)dim;
+    return true;
+}
+
+bool BaseMesh::buildNamesVectors() {
+    if ( _nameOfNodes->exists() || _nameOfCells->exists() )
+        return false;
+    int nbNodes = _coordinates->size() / 3;
+    int nbCells = _cellsType->size();
+
+    add_automatic_names( _nameOfNodes, nbNodes, "N" );
+    add_automatic_names( _nameOfCells, nbCells, "M" );
+    return true;
+}
+
 void BaseMesh::show( const int verbosity ) const {
     ASTERINTEGER level( verbosity );
     CALLO_INFOMA( getName(), &level );
@@ -334,7 +368,8 @@ void BaseMesh::addGroupsOfCells( const VectorString &names,
                                  const VectorOfVectorsLong &groupsOfCells ) {
     int nbGroups = names.size();
     AS_ASSERT( nbGroups == groupsOfCells.size() );
-    AS_ASSERT( _groupsOfCells.exists() );
+    if ( !_groupsOfCells->exists() )
+        _groupsOfCells->allocateSparseNamed( nbGroups );
     AS_ASSERT( _groupsOfCells->capacity() >= _groupsOfCells->size() + nbGroups );
 
     for ( auto i = 0; i < nbGroups; ++i ) {

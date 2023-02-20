@@ -449,17 +449,15 @@ void AsterMPI::all_reduce(const T in_value, T &out_value, MPI_Op op,
                       1, mpi_type<T>(), op, _commCurrent);
 }
 //---------------------------------------------------------------------------
-template <typename T>
-void AsterMPI::bcast(T &value, int root, aster_comm_t *_commCurrent) {
-  aster_mpi_bcast(const_cast<T *>(&value), 1, mpi_type<T>(), root,
-                  _commCurrent);
+template < typename T >
+void AsterMPI::bcast( T &value, int root, aster_comm_t *_commCurrent ) {
+    aster_mpi_bcast( const_cast< T * >( &value ), 1, mpi_type< T >(), root, _commCurrent );
 }
 //---------------------------------------------------------------------------
-template <typename T>
-void AsterMPI::bcast(std::vector<T> &value, int root,
-                     aster_comm_t *_commCurrent) {
-  aster_mpi_bcast(const_cast<T *>(&value.data()), value.size(), mpi_type<T>(),
-                  root, _commCurrent);
+template < typename T >
+void AsterMPI::bcast( std::vector< T > &value, int root, aster_comm_t *_commCurrent ) {
+    aster_mpi_bcast( const_cast< T * >( &value[0] ), value.size(), mpi_type< T >(), root,
+                     _commCurrent );
 }
 //---------------------------------------------------------------------------
 template < typename T >

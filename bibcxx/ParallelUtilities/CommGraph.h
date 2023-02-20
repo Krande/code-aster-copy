@@ -70,8 +70,8 @@ class CommGraph {
 
         iterator &operator++() {
             m_ptr++;
-            while ( *m_ptr == -1 )
-                m_ptr++;
+            // while ( *m_ptr == -1 )
+            //     m_ptr++;
             return *this;
         }
 
@@ -130,4 +130,4 @@ class CommGraph {
 
 using CommGraphPtr = std::shared_ptr< CommGraph >;
 
-#endif /* COMMGRAPH */
+#endif /* COMMGRAPH_H_ */

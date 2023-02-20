@@ -1,6 +1,6 @@
 /**
- * @file ObjectBalancerInterface.cxx
- * @brief Interface python de ObjectBalancer
+ * @file BalanceableMeshInterface.cxx
+ * @brief Interface python de BalanceableMesh
  * @author Nicolas Sellenet
  * @section LICENCE
  *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
@@ -23,23 +23,17 @@
 
 /* person_in_charge: nicolas.sellenet at edf.fr */
 
-#include "PythonBindings/ObjectBalancerInterface.h"
+#include "PythonBindings/BalanceableMeshInterface.h"
 
 #include "aster_pybind.h"
 
 // Not DataStructures
 // aslint: disable=C3006
 
-void exportObjectBalancerToPython( py::module_ &mod ) {
+void exportBalanceableMeshToPython( py::module_ &mod ) {
 
-    py::class_< ObjectBalancer, ObjectBalancerPtr >( mod, "ObjectBalancer" )
-        .def( py::init( &initFactoryPtr< ObjectBalancer > ) )
-        .def( "addElementarySend", &ObjectBalancer::addElementarySend )
-        .def( "endElementarySendDefinition", &ObjectBalancer::endElementarySendDefinition )
-        .def( "prepareCommunications", &ObjectBalancer::prepareCommunications )
-        .def( "setElementsToKeep", &ObjectBalancer::setElementsToKeep )
-        .def( "balanceVectorOverProcesses",
-              &ObjectBalancer::balanceVectorOverProcesses< VectorReal > )
-        .def( "balanceVectorOverProcesses",
-              &ObjectBalancer::balanceVectorOverProcesses< VectorInt > );
+    py::class_< BalanceableMesh, BalanceableMeshPtr >( mod, "BalanceableMesh" )
+        .def( py::init( &initFactoryPtr< BalanceableMesh > ) )
+        .def( "applyBalancingStrategy", &BalanceableMesh::applyBalancingStrategy )
+        .def( "buildFromBaseMesh", &BalanceableMesh::buildFromBaseMesh );
 };

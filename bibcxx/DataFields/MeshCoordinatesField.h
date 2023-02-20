@@ -221,8 +221,12 @@ class MeshCoordinatesField : public DataField {
      * @return renvoie true si la mise a jour s'est bien deroulee, false sinon
      */
     void updateValuePointers() const {
-        _descriptor->updateValuePointer();
-        _valuesList->updateValuePointer();
+        if ( _descriptor->exists() )
+            _descriptor->updateValuePointer();
+        if ( _reference->exists() )
+            _reference->updateValuePointer();
+        if ( _valuesList->exists() )
+            _valuesList->updateValuePointer();
     };
 };
 

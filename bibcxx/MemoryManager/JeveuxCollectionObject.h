@@ -259,6 +259,20 @@ class JeveuxCollectionObjectClass : private AllowedJeveuxType< ValueType > {
         return _valuePtr[i];
     };
 
+    inline ValueType &operator[]( const ASTERINTEGER &i ) {
+#ifdef ASTER_DEBUG_CXX
+        AS_ASSERT( _valuePtr != nullptr );
+        if ( i < 0 && i >= this->size() ) {
+            std::string error = "Out of range of JeveuxCollectionObjectClass '" + getStringName() +
+                                "', index = " + std::to_string( i ) +
+                                " ( size = " + std::to_string( this->size() ) + " )";
+            AS_ABORT( error );
+        }
+#endif
+
+        return _valuePtr[i];
+    };
+
     JeveuxChar32 getName() const { return JeveuxChar32( _nameOfObject ); };
 
     const std::string &getStringName() const { return _nameOfObject; };
@@ -309,6 +323,17 @@ class JeveuxCollectionObjectClass : private AllowedJeveuxType< ValueType > {
                       std::to_string( 1 ) );
         }
         _valuePtr[0] = toCopy;
+    };
+
+    /** @brief Set values of collection object */
+    void setValues( const JeveuxCollectionObjectClass< ValueType > &toCopy ) {
+        if ( size() != toCopy.size() ) {
+            AS_ABORT( "Sizes do not match: " + std::to_string( size() ) + " vs " +
+                      std::to_string( toCopy.size() ) );
+        }
+        for ( int i = 0; i < size(); ++i ) {
+            _valuePtr[i] = toCopy[i];
+        }
     };
 
     /** @brief Get size of collection object */

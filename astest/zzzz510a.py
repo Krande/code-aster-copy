@@ -37,6 +37,7 @@ if rank == 0:
     graph.addCommunication(3)
     balancer.addElementarySend(1, [0, 2])
     balancer.addElementarySend(3, [1, 3])
+    balancer.setElementsToKeep([3])
 elif rank == 1:
     graph.addCommunication(0)
     graph.addCommunication(2)
@@ -48,20 +49,22 @@ elif rank == 2:
 elif rank == 3:
     graph.addCommunication(1)
     balancer.addElementarySend(1, [8])
-# graph.synchronizeOverProcesses()
+
+balancer.endElementarySendDefinition()
 balancer.prepareCommunications()
-result = balancer.balanceObjectOverProcesses(a)
+result = balancer.balanceVectorOverProcesses(a)
 print("Result ", result)
 
 if rank == 0:
-    test.assertEqual(result[0], 4.0)
-    test.assertEqual(result[1], 5.0)
-    test.assertEqual(result[2], 6.0)
-    test.assertEqual(result[3], 7.0)
-    test.assertEqual(result[4], 8.0)
-    test.assertEqual(result[5], 9.0)
-    test.assertEqual(result[6], 15.0)
-    test.assertEqual(result[7], 16.0)
+    test.assertEqual(result[0], 3.0)
+    test.assertEqual(result[1], 4.0)
+    test.assertEqual(result[2], 5.0)
+    test.assertEqual(result[3], 6.0)
+    test.assertEqual(result[4], 7.0)
+    test.assertEqual(result[5], 8.0)
+    test.assertEqual(result[6], 9.0)
+    test.assertEqual(result[7], 15.0)
+    test.assertEqual(result[8], 16.0)
 elif rank == 1:
     test.assertEqual(result[0], 10.0)
     test.assertEqual(result[1], 11.0)
@@ -97,5 +100,19 @@ elif rank == 3:
     test.assertEqual(result[10], 27.0)
     test.assertEqual(result[11], 1.0)
     test.assertEqual(result[12], 3.0)
+
+
+bMesh = code_aster.BalanceableMesh()
+if rank == 0:
+    myMesh = code_aster.Mesh()
+    myMesh.readMedFile("fort.20")
+    bMesh.buildFromBaseMesh(myMesh)
+    bMesh.applyBalancingStrategy([1, 2, 9, 11, 17, 19, 25, 31])
+elif rank == 1:
+    bMesh.applyBalancingStrategy([5, 6, 13, 15, 18, 20, 26, 32])
+elif rank == 2:
+    bMesh.applyBalancingStrategy([7, 8, 14, 16, 22, 24, 28, 30])
+elif rank == 3:
+    bMesh.applyBalancingStrategy([3, 4, 10, 12, 21, 23, 27, 29])
 
 FIN()

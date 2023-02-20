@@ -26,10 +26,18 @@
 #include "ParallelUtilities/ObjectBalancer.h"
 
 void ObjectBalancer::prepareCommunications() {
+    if ( !_sendDefined ) {
+        throw std::runtime_error( "The definition of elementary sends must finished"
+                                  " end before calling prepareCommunications" );
+    }
     _graph->synchronizeOverProcesses();
     const auto rank = getMPIRank();
     int tag = 0;
+    // Communicate what to send and what to receive
     for ( const auto proc : *_graph ) {
+        ++tag;
+        if ( proc == -1 )
+            continue;
         VectorInt tmp( 1, -1 );
         if ( rank > proc ) {
             tmp[0] = _sendList[proc].size();
@@ -48,6 +56,31 @@ void ObjectBalancer::prepareCommunications() {
             tmp[0] = _sendList[proc].size();
             AsterMPI::send( tmp, proc, tag );
         }
-        ++tag;
     }
+    const auto tmp = std::set< int >( _toSend.begin(), _toSend.end() );
+    std::set< int > intersect;
+    std::set_intersection( tmp.begin(), tmp.end(), _toKeep.begin(), _toKeep.end(),
+                           std::inserter( intersect, intersect.begin() ) );
+    const auto nbProcs = getMPISize();
+
+    // Compute size delta for vectors
+    _sizeDelta = 0;
+    for ( int iProc = 0; iProc < nbProcs; ++iProc ) {
+        _sizeDelta += _recvSize[iProc];
+    }
+    _sizeDelta -= ( _toSend.size() - intersect.size() );
+    _isOk = true;
+};
+
+void ObjectBalancer::balanceObjectOverProcesses( const MeshCoordinatesFieldPtr &coordsIn,
+                                                 MeshCoordinatesFieldPtr &coordsOut ) const {
+    if ( !_isOk )
+        throw std::runtime_error( "ObjectBalancer not prepared" );
+    auto valuesIn = coordsIn->getValues();
+    const auto vecSize = valuesIn->size();
+    auto valuesOut = coordsOut->getValues();
+
+    valuesOut->resize( vecSize + 3 * _sizeDelta );
+    balanceSimpleVectorOverProcesses< ASTERDOUBLE, 3 >( &( *valuesIn )[0], vecSize,
+                                                        &( *valuesOut )[0] );
 };

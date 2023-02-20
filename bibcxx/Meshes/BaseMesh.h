@@ -195,6 +195,8 @@ class BaseMesh : public DataStructure, public ListOfTables {
 
     ASTERINTEGER getCellType( const ASTERINTEGER &index ) const;
 
+    JeveuxVectorLong getCellsType() const;
+
     std::string getCellTypeName( const ASTERINTEGER &index ) const;
 
     bool hasCellsOfType( const std::string ) const;
@@ -392,6 +394,10 @@ class BaseMesh : public DataStructure, public ListOfTables {
     void initDefinition( const int &dim, const VectorReal &coord,
                          const VectorOfVectorsLong &connectivity, const VectorLong &types,
                          const int &nbGrpCells, const int &nbGrpNodes );
+
+    bool buildInformations( const int &dim );
+
+    bool buildNamesVectors();
 
     void addGroupsOfNodes( const VectorString &names, const VectorOfVectorsLong &groupsOfNodes );
 

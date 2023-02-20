@@ -96,6 +96,7 @@ private:
   /** @brief Correspondance nom/numéro */
   mapStrInt _mapNumObject;
   ASTERINTEGER _capacity;
+  ASTERINTEGER _totalSize;
   /**
    * @brief Pointeur vers un NamesMap
    * @todo ASTERINTEGER par defaut : pas terrible
@@ -141,6 +142,7 @@ private:
       std::string strParam("LONT");
       taille = totalSize;
       CALLO_JEECRA_WRAP(_name, strParam, &taille);
+      _totalSize = totalSize;
     }
 
     return true;
@@ -170,7 +172,7 @@ public:
   template <typename T1 = AccessType, typename = IsSame<T1, ASTERINTEGER>>
   JeveuxCollectionClass(const std::string &name)
       : JeveuxObjectClass(name), _isNamed(false), _isEmpty(true), _namesMap(0),
-        _capacity(0) {}
+        _capacity(0), _totalSize(0) {}
 
   /**
    * @brief Constructeur dans le cas où AccessType est un NamesMap
@@ -179,7 +181,7 @@ public:
   template <typename T1 = AccessType, typename = IsNotSame<T1, ASTERINTEGER>>
   JeveuxCollectionClass(const std::string &name, AccessType ptr)
       : JeveuxObjectClass(name), _isNamed(false), _isEmpty(true),
-        _namesMap(ptr), _capacity(0){};
+        _namesMap(ptr), _capacity(0), _totalSize(0){};
 
   ~JeveuxCollectionClass() {
     // #ifdef ASTER_DEBUG_CXX
@@ -379,6 +381,14 @@ public:
     obj->setValues(values);
   };
   /**
+   * @brief Allocation of one object at the end of a existing collection
+   */
+  void push_back(const JeveuxCollObjValType &values) {
+    values->updateValuePointer();
+    auto obj = allocateObject(getNewIndex(), values->size());
+    obj->setValues(*values);
+  };
+  /**
    * @brief Allocation of one object by name
    */
   void push_back(const std::string &name,
@@ -534,9 +544,32 @@ public:
 
   inline ASTERINTEGER capacity() const { return _capacity; };
 
+  inline ASTERINTEGER totalSize() const {
+    if (exists()) {
+      ASTERINTEGER size;
+      JeveuxChar8 param("LONT");
+      std::string charval(32, ' ');
+      CALLO_JELIRA(_name, param, &size, charval);
+      return size;
+    }
+    return 0;
+  };
+
   inline ASTERBOOL isNamed() const { return _isNamed; };
 
   inline ASTERBOOL isNumeroted() const { return (!_isNamed); };
+
+  inline bool isContiguous() const {
+    ASTERINTEGER nothin;
+    JeveuxChar8 param("STOCKAGE");
+    std::string charval(32, ' ');
+    CALLO_JELIRA(_name, param, &nothin, charval);
+    if (trim(charval) == "CONTIG") {
+      return true;
+    } else {
+      return false;
+    }
+  };
 
   inline bool empty() const { return _isEmpty; };
 

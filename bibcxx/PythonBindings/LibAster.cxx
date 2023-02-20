@@ -33,6 +33,7 @@
 #include "PythonBindings/AcousticLoadInterface.h"
 #include "PythonBindings/AcousticModeResultInterface.h"
 #include "PythonBindings/AssemblyMatrixInterface.h"
+#include "PythonBindings/BalanceableMeshInterface.h"
 #include "PythonBindings/BaseAssemblyMatrixInterface.h"
 #include "PythonBindings/BaseDOFNumberingInterface.h"
 #include "PythonBindings/BaseMeshInterface.h"
@@ -304,4 +305,5 @@ PYBIND11_MODULE( libaster, mod ) {
     exportHHOToPython( mod );
     exportCommGraphToPython( mod );
     exportObjectBalancerToPython( mod );
+    exportBalanceableMeshToPython( mod );
 };

@@ -28,9 +28,12 @@
 #include "aster_mpi.h"
 #include "astercxx.h"
 
+#include "MemoryManager/JeveuxCollection.h"
 #include "MemoryManager/JeveuxString.h"
 #include "MemoryManager/JeveuxVector.h"
+#include "Meshes/BaseMesh.h"
 #include "ParallelUtilities/CommGraph.h"
+#include "ParallelUtilities/TemplateVectorTools.h"
 
 /**
  * @class CommGraph
@@ -42,17 +45,86 @@ class ObjectBalancer {
     std::vector< VectorInt > _sendList;
     /** @brief Vector of number of elements to receive from others */
     VectorInt _recvSize;
+    /** @brief Set of elements to keep on local process */
+    std::set< int > _toKeep;
+    /** @brief Set of elements to send */
+    std::set< int > _toSend;
+    /** @brief Size delta */
+    int _sizeDelta;
     /** @brief Graph to browse */
     CommGraphPtr _graph;
+    /** @brief Is objet ok to balance objects */
+    bool _isOk;
+    /** @brief Is objet ok to balance objects */
+    bool _sendDefined;
 
-    template < typename T >
+    template < typename T, int nbCmp = 1 >
     void balanceSimpleVectorOverProcesses( const T *, int, T * ) const;
 
   public:
+    /**
+     * @class DistributedMask
+     * @brief Class used to apply a mask after sending and reverse after receiveing
+     * @todo maybe a template ??
+     * @author Nicolas Sellenet
+     */
+    class DistributedMask {
+        const ObjectBalancer &_balancer;
+        const VectorLong _vectMaskIn;
+        const VectorLong _vectMaskOut;
+        std::map< ASTERINTEGER, ASTERINTEGER > _mapMaskOut;
+
+        std::map< ASTERINTEGER, ASTERINTEGER > buildMask() const {
+            int cmpt = 1;
+            std::map< ASTERINTEGER, ASTERINTEGER > mapMaskOut;
+            for ( const auto globId : _vectMaskOut ) {
+                mapMaskOut[globId] = cmpt;
+                ++cmpt;
+            }
+            return mapMaskOut;
+        }
+
+      public:
+        DistributedMask( const ObjectBalancer &balancer, const VectorLong &mask )
+            : _balancer( balancer ),
+              _vectMaskIn( mask ),
+              _vectMaskOut( _balancer.balanceVectorOverProcesses( _vectMaskIn ) ),
+              _mapMaskOut( buildMask() ){};
+
+        DistributedMask() : _balancer( ObjectBalancer() ), _vectMaskIn( VectorLong() ) {
+            throw std::runtime_error( "Mask constructor not allowed" );
+        };
+
+        const ASTERINTEGER &apply( const ASTERINTEGER &valueIn ) const {
+            return _vectMaskIn[valueIn - 1];
+        };
+
+        const ASTERINTEGER &reverse( const ASTERINTEGER &valueIn ) const {
+#ifdef ASTER_DEBUG_CXX
+            if ( _mapMaskOut.find( valueIn ) == _mapMaskOut.end() ) {
+                std::cout << "Num glob " << valueIn << " sans correspondance" << std::endl;
+            }
+#endif
+            return _mapMaskOut.find( valueIn )->second;
+        };
+
+        const VectorLong &getBalancedMask() const { return _vectMaskOut; };
+    };
+
+    struct DummyMask {
+      public:
+        const ASTERINTEGER &apply( const ASTERINTEGER &valueIn ) const { return valueIn; };
+
+        const ASTERINTEGER &reverse( const ASTERINTEGER &valueIn ) const { return valueIn; };
+    };
+
     ObjectBalancer()
         : _sendList( std::vector< VectorInt >( getMPISize() ) ),
           _recvSize( VectorInt( getMPISize(), 0 ) ),
-          _graph( new CommGraph() ){};
+          _sizeDelta( 0 ),
+          _graph( new CommGraph() ),
+          _isOk( false ),
+          _sendDefined( false ){};
 
     /**
      * @brief Add an elementary send
@@ -60,11 +132,31 @@ class ObjectBalancer {
      * @param toSend vector of index to send
      */
     void addElementarySend( const int &rank, const VectorInt &toSend ) {
+        if ( _sendDefined )
+            throw std::runtime_error( "Definition of elementary sends already finished" );
         _sendList[rank] = toSend;
         const auto result2 = std::min_element( toSend.begin(), toSend.end() );
         if ( *result2 < 0 )
             throw std::runtime_error( "Indexes of elements to send must be grower or equal to 0" );
         _graph->addCommunication( rank );
+        for ( const auto &id : toSend ) {
+            this->_toSend.insert( id );
+        }
+    };
+
+    /**
+     * @brief End elementary send definition
+     */
+    void endElementarySendDefinition() { _sendDefined = true; };
+
+    /**
+     * @brief Set list of elements to keep on local process (even if some are to send)
+     * @param toKeep vector of index to keep
+     */
+    void setElementsToKeep( const VectorInt &toKeep ) {
+        for ( const auto &id : toKeep ) {
+            this->_toKeep.insert( id );
+        }
     };
 
     /** @brief Prepare communications (send and receive comm sizes) */
@@ -72,98 +164,452 @@ class ObjectBalancer {
 
     /** @brief Balance a object over processes by following elementary sends */
     template < typename T >
-    T balanceObjectOverProcesses( const T & ) const;
+    T balanceVectorOverProcesses( const T & ) const;
+
+    /** @brief Balance a object over processes by following elementary sends */
+    template < typename T, int nbCmp = 1 >
+    void balanceObjectOverProcesses( const T &, T & ) const;
+
+    /** @brief Balance MeshCoordinatesField over processes by following elementary sends */
+    void balanceObjectOverProcesses( const MeshCoordinatesFieldPtr &,
+                                     MeshCoordinatesFieldPtr & ) const;
+
+    /** @brief Balance JeveuxCollection over processes by following elementary sends */
+    // template < typename T, typename Mask = ObjectBalancer::DummyMask >
+    // void balanceObjectOverProcesses( const JeveuxCollection< T >&, JeveuxCollection< T >&,
+    //                                  const Mask& mask = Mask() ) const;
+    template < typename T, typename Mask = ObjectBalancer::DummyMask >
+    void balanceObjectOverProcesses2( const T &, T &, const Mask &mask = Mask() ) const;
 };
 
 using ObjectBalancerPtr = std::shared_ptr< ObjectBalancer >;
 
-template < typename T >
+template < typename T, int nbCmp >
 void ObjectBalancer::balanceSimpleVectorOverProcesses( const T *in, int sizeIn, T *out ) const {
     const auto rank = getMPIRank();
     const auto nbProcs = getMPISize();
     VectorBool toKeep( sizeIn, true );
+    const auto sizeToKeep = _toKeep.size();
+    // Find elements to keep
     for ( int iProc = 0; iProc < nbProcs; ++iProc ) {
         const auto curSendList = _sendList[iProc];
         const auto curSize = curSendList.size();
         for ( int iPos = 0; iPos < curSize; ++iPos ) {
-            const auto vecPos = curSendList[iPos];
-            if ( vecPos >= sizeIn )
-                throw std::runtime_error( "Index to send grower to vector size" );
-            if ( !toKeep[vecPos] )
-                throw std::runtime_error( "Index " + std::to_string( vecPos ) +
-                                          " in another comm (not allowed)" );
-            toKeep[vecPos] = false;
+            for ( int iCmp = 0; iCmp < nbCmp; ++iCmp ) {
+                const auto vecPos = nbCmp * curSendList[iPos] + iCmp;
+                if ( vecPos >= sizeIn )
+                    throw std::runtime_error( "Index to send grower to vector size" );
+                if ( sizeToKeep == 0 ) {
+                    toKeep[vecPos] = false;
+                } else {
+                    if ( _toKeep.find( curSendList[iPos] ) == _toKeep.end() )
+                        toKeep[vecPos] = false;
+                }
+            }
         }
     }
+    // Copy of elements to keep in output vector
     int cmpt = 0;
-    for ( int iPos = 0; iPos < sizeIn; ++iPos ) {
-        if ( toKeep[iPos] ) {
-            out[cmpt] = in[iPos];
-            ++cmpt;
+    const auto curSize = sizeIn / nbCmp;
+    for ( int iPos = 0; iPos < curSize; ++iPos ) {
+        for ( int iCmp = 0; iCmp < nbCmp; ++iCmp ) {
+            if ( toKeep[iPos * nbCmp + iCmp] ) {
+                out[cmpt] = in[iPos * nbCmp + iCmp];
+                ++cmpt;
+            }
         }
     }
 
     int tag = 0;
+    // Loop over graph to communicate elements to send and receive
+    // And then copy received values in output vector
     for ( const auto proc : *_graph ) {
+        ++tag;
+        if ( proc == -1 )
+            continue;
         if ( rank > proc ) {
             const auto curSendList = _sendList[proc];
             const auto curSendSize = curSendList.size();
             if ( curSendSize > 0 ) {
-                VectorReal tmp( curSendSize, 0. );
+                std::vector< T > tmp( curSendSize * nbCmp, 0. );
                 for ( int iPos = 0; iPos < curSendSize; ++iPos ) {
-                    tmp[iPos] = in[curSendList[iPos]];
+                    for ( int iCmp = 0; iCmp < nbCmp; ++iCmp ) {
+                        tmp[iPos * nbCmp + iCmp] = in[curSendList[iPos] * nbCmp + iCmp];
+                    }
                 }
                 AsterMPI::send( tmp, proc, tag );
             }
             const auto curRecvSize = _recvSize[proc];
             if ( curRecvSize > 0 ) {
-                VectorReal tmp( curRecvSize, 0. );
+                std::vector< T > tmp( curRecvSize * nbCmp, 0. );
                 AsterMPI::receive( tmp, proc, tag );
                 for ( int curPos = 0; curPos < curRecvSize; ++curPos ) {
-                    out[cmpt] = tmp[curPos];
+                    for ( int iCmp = 0; iCmp < nbCmp; ++iCmp ) {
+                        out[cmpt] = tmp[curPos * nbCmp + iCmp];
+                        ++cmpt;
+                    }
+                }
+            }
+        } else {
+            const auto curRecvSize = _recvSize[proc];
+            if ( curRecvSize > 0 ) {
+                std::vector< T > tmp( curRecvSize * nbCmp, 0. );
+                AsterMPI::receive( tmp, proc, tag );
+                for ( int curPos = 0; curPos < curRecvSize; ++curPos ) {
+                    for ( int iCmp = 0; iCmp < nbCmp; ++iCmp ) {
+                        out[cmpt] = tmp[curPos * nbCmp + iCmp];
+                        ++cmpt;
+                    }
+                }
+            }
+            const auto curSendList = _sendList[proc];
+            const auto curSendSize = curSendList.size();
+            if ( curSendSize > 0 ) {
+                std::vector< T > tmp( curSendSize * nbCmp, 0. );
+                for ( int iPos = 0; iPos < curSendSize; ++iPos ) {
+                    for ( int iCmp = 0; iCmp < nbCmp; ++iCmp ) {
+                        tmp[iPos * nbCmp + iCmp] = in[curSendList[iPos] * nbCmp + iCmp];
+                    }
+                }
+                AsterMPI::send( tmp, proc, tag );
+            }
+        }
+    }
+};
+
+template < typename T >
+T ObjectBalancer::balanceVectorOverProcesses( const T &obj ) const {
+    if ( !_isOk )
+        throw std::runtime_error( "ObjectBalancer not prepared" );
+    const auto vecSize = obj.size();
+    T toReturn( vecSize + _sizeDelta, 0 );
+    balanceSimpleVectorOverProcesses< typename T::value_type >( &obj[0], vecSize, &toReturn[0] );
+    return toReturn;
+};
+
+template < typename T, int nbCmp >
+void ObjectBalancer::balanceObjectOverProcesses( const T &in, T &out ) const {
+    if ( !_isOk )
+        throw std::runtime_error( "ObjectBalancer not prepared" );
+    const auto vecSize = getSize< typename ValueType< T >::value_type >( in );
+
+    resize< typename ValueType< T >::value_type >( out, vecSize + _sizeDelta );
+    balanceSimpleVectorOverProcesses< typename ValueType< T >::value_type, nbCmp >(
+        getAddress( in ), vecSize, getAddress( out ) );
+};
+
+// template < typename T, typename Mask >
+// void ObjectBalancer::balanceObjectOverProcesses( const JeveuxCollection< T >& in,
+//                                                  JeveuxCollection< T >& out,
+//                                                  const Mask& mask ) const {
+//     const auto rank = getMPIRank();
+//     const auto nbProcs = getMPISize();
+//     const auto sizeIn = in->size();
+//     if( sizeIn != 0 ) {
+//         if( !in->isContiguous() )
+//             throw std::runtime_error( "Only allowed for contiguous collection" );
+//     }
+//     const auto totalSize = in->totalSize();
+//     VectorBool toKeep( sizeIn, true );
+//     const auto sizeToKeep = _toKeep.size();
+//     std::vector< VectorInt > occSize( nbProcs );
+//     VectorInt sizeToReceive( nbProcs, 0 );
+//     VectorInt sizeToSend( nbProcs, 0 );
+//     int toRemoveCum = 0, toReceiveCum = 0;
+//     int tag = 0;
+//     for ( const auto proc : *_graph ) {
+//         ++tag;
+//         if( proc == -1 ) continue;
+//         const auto curSendList = _sendList[proc];
+//         const auto curSize = curSendList.size();
+//         int toRemove = 0, toSend = 0;
+//         for ( int iPos = 0; iPos < curSize; ++iPos ) {
+//             const auto vecPos = curSendList[iPos];
+//             const auto curSizeOC = (*in)[vecPos+1]->size();
+//             occSize[ proc ].push_back( curSizeOC );
+//             toSend += curSizeOC;
+//             if ( vecPos >= sizeIn )
+//                 throw std::runtime_error( "Index to send grower to vector size" );
+//             if( sizeToKeep == 0 ) {
+//                 if( toKeep[vecPos] ) toRemove += curSizeOC;
+//                 toKeep[vecPos] = false;
+//             } else {
+//                 if( _toKeep.find(curSendList[iPos]) == _toKeep.end() ) {
+//                     if( toKeep[vecPos] ) toRemove += curSizeOC;
+//                     toKeep[vecPos] = false;
+//                 }
+//             }
+//         }
+//         toRemoveCum += toRemove;
+//         VectorInt tmp( 1, 0. );
+//         sizeToSend[proc] = toSend;
+//         if ( rank > proc ) {
+//             tmp[0] = toSend;
+//             AsterMPI::send( tmp, proc, tag );
+//             AsterMPI::receive( tmp, proc, tag );
+//             toReceiveCum += tmp[0];
+//             sizeToReceive[proc] = tmp[0];
+//         } else {
+//             AsterMPI::receive( tmp, proc, tag );
+//             toReceiveCum += tmp[0];
+//             sizeToReceive[proc] = tmp[0];
+//             tmp[0] = toSend;
+//             AsterMPI::send( tmp, proc, tag );
+//         }
+//     }
+
+//     out->allocateContiguousNumbered( sizeIn+_sizeDelta, totalSize-toRemoveCum+toReceiveCum );
+//     int cmpt = 1;
+//     const auto curSize = sizeIn;
+//     for ( int iPos = 0; iPos < curSize; ++iPos ) {
+//         if ( toKeep[iPos] ) {
+//             const auto& toCopy = (*in)[iPos+1];
+//             toCopy->updateValuePointer();
+//             auto newObj = out->allocateObject( cmpt, toCopy->size() );
+//             const auto& sizetoCopy = toCopy->size();
+//             for( int curPos2 = 0; curPos2 < sizetoCopy; ++curPos2 ) {
+//                 (*newObj)[curPos2] = mask.reverse( (*toCopy)[curPos2] );
+//             }
+//             ++cmpt;
+//         }
+//     }
+
+//     tag = 0;
+//     for ( const auto proc : *_graph ) {
+//         ++tag;
+//         if( proc == -1 ) continue;
+//         if ( rank > proc ) {
+//             const auto curSendList = _sendList[proc];
+//             const auto curSendSize = curSendList.size();
+//             if ( curSendSize > 0 ) {
+//                 AsterMPI::send( occSize[ proc ], proc, tag );
+//                 VectorInt tmp( sizeToSend[proc], 0. );
+//                 int cmpt2 = 0;
+//                 for ( int iPos = 0; iPos < curSendSize; ++iPos ) {
+//                     const auto& toCopy = (*in)[curSendList[iPos]+1];
+//                     toCopy->updateValuePointer();
+//                     const auto& sizetoCopy = occSize[ proc ][iPos];
+//                     for( int curPos2 = 0; curPos2 < sizetoCopy; ++curPos2 ) {
+//                         tmp[cmpt2] = mask.apply( (*toCopy)[curPos2] );
+//                         ++cmpt2;
+//                     }
+//                 }
+//                 AsterMPI::send( tmp, proc, tag );
+//             }
+//             const auto curRecvSize = _recvSize[proc];
+//             if ( curRecvSize > 0 ) {
+//                 VectorInt tmp( curRecvSize, 0. );
+//                 AsterMPI::receive( tmp, proc, tag );
+//                 VectorInt tmp2( sizeToReceive[proc], 0. );
+//                 AsterMPI::receive( tmp2, proc, tag );
+//                 int cmpt2 = 0;
+//                 for( int curPos = 0; curPos < curRecvSize; ++curPos ) {
+//                     const auto& sizetoCopy = tmp[curPos];
+//                     auto newObj = out->allocateObject( cmpt, sizetoCopy );
+//                     for( int curPos2 = 0; curPos2 < sizetoCopy; ++curPos2 ) {
+//                         (*newObj)[curPos2] = mask.reverse( tmp2[cmpt2] );
+//                         ++cmpt2;
+//                     }
+//                     ++cmpt;
+//                 }
+//             }
+//         } else {
+//             const auto curRecvSize = _recvSize[proc];
+//             if ( curRecvSize > 0 ) {
+//                 VectorInt tmp( curRecvSize, 0. );
+//                 AsterMPI::receive( tmp, proc, tag );
+//                 VectorInt tmp2( sizeToReceive[proc], 0. );
+//                 AsterMPI::receive( tmp2, proc, tag );
+//                 int cmpt2 = 0;
+//                 for( int curPos = 0; curPos < curRecvSize; ++curPos ) {
+//                     const auto& sizetoCopy = tmp[curPos];
+//                     auto newObj = out->allocateObject( cmpt, sizetoCopy );
+//                     for( int curPos2 = 0; curPos2 < sizetoCopy; ++curPos2 ) {
+//                         (*newObj)[curPos2] = mask.reverse( tmp2[cmpt2] );
+//                         ++cmpt2;
+//                     }
+//                     ++cmpt;
+//                 }
+//             }
+//             const auto curSendList = _sendList[proc];
+//             const auto curSendSize = curSendList.size();
+//             if ( curSendSize > 0 ) {
+//                 AsterMPI::send( occSize[ proc ], proc, tag );
+//                 VectorInt tmp( sizeToSend[proc], 0. );
+//                 int cmpt2 = 0;
+//                 for ( int iPos = 0; iPos < curSendSize; ++iPos ) {
+//                     const auto& toCopy = (*in)[curSendList[iPos]+1];
+//                     toCopy->updateValuePointer();
+//                     const auto& sizetoCopy = occSize[ proc ][iPos];
+//                     for( int curPos2 = 0; curPos2 < sizetoCopy; ++curPos2 ) {
+//                         std::cout << "Verif0 " << (*toCopy)[curPos2] << std::endl;
+//                         std::cout << "Verif1 " << mask.apply( (*toCopy)[curPos2] ) << std::endl;
+//                         tmp[cmpt2] = mask.apply( (*toCopy)[curPos2] );
+//                         ++cmpt2;
+//                     }
+//                 }
+//                 AsterMPI::send( tmp, proc, tag );
+//             }
+//         }
+//     }
+// };
+
+template < typename T, typename Mask >
+void ObjectBalancer::balanceObjectOverProcesses2( const T &in, T &out, const Mask &mask ) const {
+    const auto rank = getMPIRank();
+    const auto nbProcs = getMPISize();
+    const auto sizeIn = getSize( in );
+    // if( sizeIn != 0 ) {
+    //     if( !in->isContiguous() )
+    //         throw std::runtime_error( "Only allowed for contiguous collection" );
+    // }
+    const auto totalSize = getTotalSize( in );
+    VectorBool toKeep( sizeIn, true );
+    const auto sizeToKeep = _toKeep.size();
+    std::vector< VectorInt > occSize( nbProcs );
+    VectorInt sizeToReceive( nbProcs, 0 );
+    VectorInt sizeToSend( nbProcs, 0 );
+    int toRemoveCum = 0, toReceiveCum = 0;
+    int tag = 0;
+    constexpr int start = StartPosition< T >::value;
+    for ( const auto proc : *_graph ) {
+        ++tag;
+        if ( proc == -1 )
+            continue;
+        const auto curSendList = _sendList[proc];
+        const auto curSize = curSendList.size();
+        int toRemove = 0, toSend = 0;
+        for ( int iPos = 0; iPos < curSize; ++iPos ) {
+            const auto vecPos = curSendList[iPos];
+            const auto &occ = getOccurence( in, vecPos + start );
+            const auto curSizeOC = getSize( occ );
+            occSize[proc].push_back( curSizeOC );
+            toSend += curSizeOC;
+            if ( vecPos >= sizeIn )
+                throw std::runtime_error( "Index to send grower to vector size" );
+            if ( sizeToKeep == 0 ) {
+                if ( toKeep[vecPos] )
+                    toRemove += curSizeOC;
+                toKeep[vecPos] = false;
+            } else {
+                if ( _toKeep.find( curSendList[iPos] ) == _toKeep.end() ) {
+                    if ( toKeep[vecPos] )
+                        toRemove += curSizeOC;
+                    toKeep[vecPos] = false;
+                }
+            }
+        }
+        toRemoveCum += toRemove;
+        VectorInt tmp( 1, 0. );
+        sizeToSend[proc] = toSend;
+        if ( rank > proc ) {
+            tmp[0] = toSend;
+            AsterMPI::send( tmp, proc, tag );
+            AsterMPI::receive( tmp, proc, tag );
+            toReceiveCum += tmp[0];
+            sizeToReceive[proc] = tmp[0];
+        } else {
+            AsterMPI::receive( tmp, proc, tag );
+            toReceiveCum += tmp[0];
+            sizeToReceive[proc] = tmp[0];
+            tmp[0] = toSend;
+            AsterMPI::send( tmp, proc, tag );
+        }
+    }
+
+    allocate( out, sizeIn + _sizeDelta, totalSize - toRemoveCum + toReceiveCum );
+    int cmpt = 1;
+    const auto curSize = sizeIn;
+    for ( int iPos = 0; iPos < curSize; ++iPos ) {
+        if ( toKeep[iPos] ) {
+            auto toCopy = getOccurence( in, iPos + start );
+            update( toCopy );
+            const auto &sizetoCopy = getSize( toCopy );
+            auto newObj = allocateOccurence( out, cmpt, sizetoCopy );
+            for ( int curPos2 = 0; curPos2 < sizetoCopy; ++curPos2 ) {
+                setValue( newObj, curPos2, mask.reverse( getValue( toCopy, curPos2 ) ) );
+            }
+            ++cmpt;
+        }
+    }
+
+    tag = 0;
+    for ( const auto proc : *_graph ) {
+        ++tag;
+        if ( proc == -1 )
+            continue;
+        if ( rank > proc ) {
+            const auto curSendList = _sendList[proc];
+            const auto curSendSize = curSendList.size();
+            if ( curSendSize > 0 ) {
+                AsterMPI::send( occSize[proc], proc, tag );
+                VectorInt tmp( sizeToSend[proc], 0. );
+                int cmpt2 = 0;
+                for ( int iPos = 0; iPos < curSendSize; ++iPos ) {
+                    auto toCopy = getOccurence( in, curSendList[iPos] + start );
+                    update( toCopy );
+                    const auto &sizetoCopy = occSize[proc][iPos];
+                    for ( int curPos2 = 0; curPos2 < sizetoCopy; ++curPos2 ) {
+                        tmp[cmpt2] = mask.apply( getValue( toCopy, curPos2 ) );
+                        ++cmpt2;
+                    }
+                }
+                AsterMPI::send( tmp, proc, tag );
+            }
+            const auto curRecvSize = _recvSize[proc];
+            if ( curRecvSize > 0 ) {
+                VectorInt tmp( curRecvSize, 0. );
+                AsterMPI::receive( tmp, proc, tag );
+                VectorInt tmp2( sizeToReceive[proc], 0. );
+                AsterMPI::receive( tmp2, proc, tag );
+                int cmpt2 = 0;
+                for ( int curPos = 0; curPos < curRecvSize; ++curPos ) {
+                    const auto &sizetoCopy = tmp[curPos];
+                    auto newObj = allocateOccurence( out, cmpt, sizetoCopy );
+                    for ( int curPos2 = 0; curPos2 < sizetoCopy; ++curPos2 ) {
+                        setValue( newObj, curPos2, mask.reverse( tmp2[cmpt2] ) );
+                        ++cmpt2;
+                    }
                     ++cmpt;
                 }
             }
         } else {
             const auto curRecvSize = _recvSize[proc];
             if ( curRecvSize > 0 ) {
-                VectorReal tmp( curRecvSize, 0. );
+                VectorInt tmp( curRecvSize, 0. );
                 AsterMPI::receive( tmp, proc, tag );
+                VectorInt tmp2( sizeToReceive[proc], 0. );
+                AsterMPI::receive( tmp2, proc, tag );
+                int cmpt2 = 0;
                 for ( int curPos = 0; curPos < curRecvSize; ++curPos ) {
-                    out[cmpt] = tmp[curPos];
+                    const auto &sizetoCopy = tmp[curPos];
+                    auto newObj = allocateOccurence( out, cmpt, sizetoCopy );
+                    for ( int curPos2 = 0; curPos2 < sizetoCopy; ++curPos2 ) {
+                        setValue( newObj, curPos2, mask.reverse( tmp2[cmpt2] ) );
+                        ++cmpt2;
+                    }
                     ++cmpt;
                 }
             }
             const auto curSendList = _sendList[proc];
             const auto curSendSize = curSendList.size();
             if ( curSendSize > 0 ) {
-                VectorReal tmp( curSendSize, 0. );
+                AsterMPI::send( occSize[proc], proc, tag );
+                VectorInt tmp( sizeToSend[proc], 0. );
+                int cmpt2 = 0;
                 for ( int iPos = 0; iPos < curSendSize; ++iPos ) {
-                    tmp[iPos] = in[curSendList[iPos]];
+                    auto toCopy = getOccurence( in, curSendList[iPos] + start );
+                    update( toCopy );
+                    const auto &sizetoCopy = occSize[proc][iPos];
+                    for ( int curPos2 = 0; curPos2 < sizetoCopy; ++curPos2 ) {
+                        tmp[cmpt2] = mask.apply( getValue( toCopy, curPos2 ) );
+                        ++cmpt2;
+                    }
                 }
                 AsterMPI::send( tmp, proc, tag );
             }
         }
-        ++tag;
     }
 };
 
-template < typename T >
-T ObjectBalancer::balanceObjectOverProcesses( const T &obj ) const {
-    const auto rank = getMPIRank();
-    const auto nbProcs = getMPISize();
-    int sizeDelta = 0;
-    const auto vecSize = obj.size();
-    for ( int iProc = 0; iProc < nbProcs; ++iProc ) {
-        const auto curSendList = _sendList[iProc];
-        const auto curSize = curSendList.size();
-        sizeDelta -= curSize;
-        sizeDelta += _recvSize[iProc];
-    }
-
-    T toReturn( vecSize + sizeDelta, 0 );
-    balanceSimpleVectorOverProcesses< typename T::value_type >( &obj[0], vecSize, &toReturn[0] );
-    return toReturn;
-};
-
-#endif /* COMMGRAPH_H */
+#endif /* OBJECTBALANCER_H_ */
