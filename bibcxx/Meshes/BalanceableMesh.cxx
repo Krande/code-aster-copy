@@ -71,8 +71,6 @@ void BalanceableMesh::applyBalancingStrategy( VectorInt &newLocalNodesList ) {
     const auto connex = _mesh->getConnectivity();
     auto connexOut = outMesh->getConnectivity();
     cellsBalancer.balanceObjectOverProcesses2( connex, connexOut, dMask );
-    // VectorOfVectorsLong test, test2;
-    // cellsBalancer.balanceObjectOverProcesses2( test, test2, dMask );
     // JeveuxCollectionLong test( "RIEN" );
     // cellsBalancer.testBalance( connex, test, dMask );
     // cellsBalancer.testBalance( connex, connexOut, dMask );
@@ -115,6 +113,7 @@ void BalanceableMesh::buildBalancers( VectorInt &newLocalNodesList, ObjectBalanc
 
     const auto nbProcs = getMPISize();
     const auto rank = getMPIRank();
+    VectorOfVectorsLong test, test2;
     // Build ObjectBalancer by finding every nodes and cells in direct
     // environment of nodes needed by a given process
     for ( int iProc = 0; iProc < nbProcs; ++iProc ) {
@@ -126,22 +125,35 @@ void BalanceableMesh::buildBalancers( VectorInt &newLocalNodesList, ObjectBalanc
         if ( iProc == rank ) {
             AsterMPI::bcast( newLocalNodesList, iProc );
             auto returnPairToKeep = findNodesAndElementsInNodesNeighborhood( newLocalNodesList );
-            if ( returnPairToKeep.first.size() != 0 )
+            if ( returnPairToKeep.first.size() != 0 ) {
                 nodesB.setElementsToKeep( returnPairToKeep.first );
+                const auto extNodes =
+                    findExternalNodes( newLocalNodesList, returnPairToKeep.first );
+            }
             if ( returnPairToKeep.second.size() != 0 )
                 cellsB.setElementsToKeep( returnPairToKeep.second );
         } else {
             AsterMPI::bcast( nodesLists, iProc );
             auto returnPairToSend = findNodesAndElementsInNodesNeighborhood( nodesLists );
-            if ( returnPairToSend.first.size() != 0 )
+            if ( returnPairToSend.first.size() != 0 ) {
                 nodesB.addElementarySend( iProc, returnPairToSend.first );
+                const auto extNodes =
+                    findExternalNodes( newLocalNodesList, returnPairToSend.first );
+            }
             if ( returnPairToSend.second.size() != 0 )
                 cellsB.addElementarySend( iProc, returnPairToSend.second );
         }
     }
     // Save memory by destroying reverse connectivity
     deleteReverseConnectivity();
-}
+    // cellsBalancer.balanceObjectOverProcesses2( test, test2, dMask );
+};
+
+VectorInt BalanceableMesh::findExternalNodes( const VectorInt &askedNodes,
+                                              const VectorInt &sendNodes ) {
+    VectorInt toReturn;
+    return toReturn;
+};
 
 std::pair< VectorInt, VectorInt >
 BalanceableMesh::findNodesAndElementsInNodesNeighborhood( const VectorInt &nodesListIn ) {

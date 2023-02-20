@@ -58,6 +58,11 @@ int getSize( const JeveuxCollectionObject< T > &toCopy ) {
 };
 
 template < typename T >
+int getSize( const std::vector< T > *in ) {
+    return 1;
+};
+
+template < typename T >
 int getTotalSize( const std::vector< T > &toCopy ) {
     return 0;
 };
@@ -135,8 +140,13 @@ struct ValueType< JeveuxVector< T > > {
 // T& getOccurence( T& )
 
 template < typename T >
-std::vector< T > &getOccurence( const std::vector< std::vector< T > > &in, const int &iPos ) {
-    return in[iPos];
+const std::vector< T > *getOccurence( const std::vector< std::vector< T > > &in, const int &iPos ) {
+    return &in[iPos];
+};
+
+template < typename T >
+std::vector< T > *getOccurence( std::vector< std::vector< T > > &in, const int &iPos ) {
+    return &in[iPos];
 };
 
 template < typename T >
@@ -173,7 +183,10 @@ void allocate( JeveuxCollection< T > &in, const int &size1, const int &size2 ) {
 };
 
 template < typename T >
-void update( std::vector< T > &in ){};
+void update( const std::vector< T > &in ){};
+
+template < typename T >
+void update( const std::vector< T > *in ){};
 
 template < typename T >
 void update( JeveuxCollectionObject< T > in ) {
@@ -199,13 +212,18 @@ const T &getValue( const std::vector< T > &in, const int &pos ) {
 };
 
 template < typename T >
+const T &getValue( const std::vector< T > *in, const int &pos ) {
+    return ( *in )[pos];
+};
+
+template < typename T >
 const T &getValue( const JeveuxCollectionObject< T > &in, const int &pos ) {
     return ( *in )[pos];
 };
 
 template < typename T >
-void setValue( std::vector< T > &in, const int &pos, const T &val ) {
-    in[pos] = val;
+void setValue( std::vector< T > *in, const int &pos, const T &val ) {
+    ( *in )[pos] = val;
 };
 
 template < typename T >

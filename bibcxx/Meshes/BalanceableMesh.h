@@ -49,6 +49,8 @@ class BalanceableMesh {
 
     void balanceGroups( BaseMeshPtr, const ObjectBalancer &, const ObjectBalancer & );
 
+    VectorInt findExternalNodes( const VectorInt &, const VectorInt & );
+
     /**
      * @brief Find nodes and elements in node neighborhood
      *        !!!! WARNING : return indexes are in C convention (starts at 0) !!!!
