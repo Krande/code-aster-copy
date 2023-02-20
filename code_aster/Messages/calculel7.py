@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -250,6 +250,66 @@ Commande CALC_FERRAILLAGE :
    FERR_SYME = 'OUI' : Vous souhaitez réaliser un calcul de ferraillage symétrique.
    Pour ce fait, il est nécessaire de renseigner le seuil de tolérance SEUIL_SYME pour le calcul d'un ferraillage symétrique en faces SUP et INF.
    Conseil : on suggère soit de renseigner la valeur de la section SEUIL_SYME, soit de reprendre le calcul avec FERR_SYME = 'NON'
+"""
+    ),
+    31: _(
+        """
+ Commande CALC_FERRAILLAGE :
+   PAS_THETA : Vous souhaitez réaliser un calcul de ferraillage de plaques (2D).
+   Les algorithmes implémentés se basent sur des méthodes itératives pour la recherche du ferraillage de dimensionnement.
+   Pour ce fait, la valeur de l'angle d'itération à renseigner doit être strictement supérieure à 0° et inférieure à 10°.
+"""
+    ),
+    32: _(
+        """
+ Commande CALC_FERRAILLAGE :
+   PAS_EPAI : Vous souhaitez réaliser un calcul de ferraillage de plaques (2D), avec la méthode SANDWICH.
+   L'algorithme implémenté se base sur une méthode itérative pour la recherche des épaisseurs du modèle à 3 couches associé.
+   Pour ce fait, la valeur du taux d'itération sur les épaisseurs des couches à renseigner doit être strictement supérieure à 0 et inférieure à 0.1.
+"""
+    ),
+    33: _(
+        """
+ Commande CALC_FERRAILLAGE :
+   PAS_SIGM : Vous souhaitez réaliser un calcul de ferraillage de plaques (2D), avec la méthode SANDWICH.
+   L'algorithme implémenté se base sur une méthode itérative pour la recherche de la configuration 'SANDWICH' associée.
+   Entre autres, il s'agit de déterminer le ratio des contraintes principales reprises par les bielles de compression aux niveaux des couches périphériques
+   Pour ce fait, la valeur du taux d'itération sur ce ratio doit être strictement supérieure à 0 et inférieure à 0.2.
+"""
+    ),
+    34: _(
+        """
+ Commande CALC_FERRAILLAGE :
+   ELU : Vous souhaitez réaliser un calcul de ferraillage de plaques (2D), avec la méthode SANDWICH.
+   L'algorithme implémenté se base sur une méthode itérative pour la recherche de la configuration 'SANDWICH' associée.
+   Pour le cas demandé, le code rencontre une incapacité à converger vers un ferraillage d'équilibre.
+   Conseil : on suggère, soit d'augmenter les critères de précision (THETA_ITER/EP_ITER/ALPHA_ITER), soit de passer à la méthode de Capra-Maury.
+"""
+    ),
+    35: _(
+        """
+ Commande CALC_FERRAILLAGE :    
+   ELU : On n'a pas réussi à calculer la densité de ferraillage sur l'élément.
+   Pour au moins une des couches périphériques du modèle 'Sandwich', l'épaisseur est trop comprimée.
+   ATTENTION : Si vous avez retenu FERR_COMP = 'NON', les aciers en compression ne sont pas calculés !
+   La densité de ferraillage est mise à -1.
+   Conseil : on suggère soit de reprendre le calcul avec FERR_COMP = 'OUI', soit de changer la classe de béton ou soit de revoir le coffrage.
+"""
+    ),
+    36: _(
+        """
+ Commande CALC_FERRAILLAGE :
+   ELU : On n'a pas réussi à calculer la densité de ferraillage sur l'élément.
+   Pour le modèle 'Sandwich' estimé, le béton de la couche intermédiaire est trop cisaillé.
+   La densité d'acier d'effort tranchant est fixé à -1 pour l'élément.
+   Conseil : on suggère soit de changer la classe de béton soit de revoir le coffrage.
+"""
+    ),
+    37: _(
+        """
+ Commande CALC_FERRAILLAGE :
+   ELS/ELS_QP : Vous souhaitez réaliser un calcul de ferraillage de plaques (2D), avec la méthode SANDWICH.
+   Cependant, cette méthode n'est conçue que pour effectuer un calcul à l'ELU ; une méthode alternative 'Multicouches' devrait être implémentée dans les prochaines versions de l'opérateur.
 """
     ),
 }

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 !
 !
 interface
-    subroutine clcplq(typcmb, typco, ferrsyme, slsyme, ferrcomp, epucisa,&
+    subroutine clcplq(typcmb, typco, nb, ferrsyme, slsyme, ferrcomp, epucisa,&
                       ferrmin, rholmin, rhotmin, compress, cequi,&
                       enrobi, enrobs, sigs, sigci, sigcs,&
                       alphacc, gammas, gammac, facier, eys, typdiag,&
@@ -28,6 +28,7 @@ interface
                       ht, effrts, dnsits, ierr)
         integer :: typcmb
         integer :: typco
+        integer :: nb
         integer :: ferrsyme
         real(kind=8) :: slsyme
         integer :: ferrcomp

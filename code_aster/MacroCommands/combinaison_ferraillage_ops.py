@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -32,6 +32,13 @@ def combinaison_ferraillage_ops(self, **args):
     combinaison = args.get("COMBINAISON")
     affe = args.get("AFFE")
     codification = args.get("CODIFICATION")
+    meth2D = args.get("METHODE_2D")
+    ptheta = args.get("PAS_THETA")
+    pepai = args.get("PAS_EPAI")
+    psigm = args.get("PAS_SIGM")
+    cond109 = args.get("COND_109")
+    uc = args.get("UNITE_CONTRAINTE")
+    um = args.get("UNITE_DIMENSION")
 
     # Retriving from RESULTAT
     modele = resu.getModel()
@@ -65,7 +72,25 @@ def combinaison_ferraillage_ops(self, **args):
 
     UTMESS("I", "COMBFERR_12", valk="\n    ".join(lst_type_combo))
 
-    resu = algo_ferr(resu, affe, lst_inst_index, codification, lst_type_combo)
+    meth2D = args.get("METHODE_2D")
+    ptheta = args.get("PAS_THETA")
+    pepai = args.get("PAS_EPAI")
+    psigm = args.get("PAS_SIGM")
+    cond109 = args.get("COND_109")
+    uc = args.get("UNITE_CONTRAINTE")
+    um = args.get("UNITE_DIMENSION")
+
+    l_info = []
+    l_info.append(codification)
+    l_info.append(meth2D)
+    l_info.append(ptheta)
+    l_info.append(pepai)
+    l_info.append(psigm)
+    l_info.append(cond109)
+    l_info.append(uc)
+    l_info.append(um)
+
+    resu = algo_ferr(resu, affe, lst_inst_index, l_info, lst_type_combo)
 
     # - Build result type EVOL_ELAS from MULTI_ELAS and combo type list in order
     #   to select the right verify. This because CREA_CHAMP doesn't EXTR the
@@ -120,7 +145,7 @@ def combinaison_ferraillage_ops(self, **args):
     return resu
 
 
-def algo_ferr(resferr, affe, lst_nume_ordre, code, type_combo):
+def algo_ferr(resferr, affe, lst_nume_ordre, l_info, type_combo):
 
     #   From physical_quantities.py :
     #   FER2_R   = PhysicalQuantity(type='R',
@@ -151,7 +176,24 @@ def algo_ferr(resferr, affe, lst_nume_ordre, code, type_combo):
         else:
             dic_type_comb["TYPE_COMB"] = "ELU"
 
-        dic_type_comb["CODIFICATION"] = code
+        # l_info.append(codification)
+        # l_info.append(meth2D)
+        # l_info.append(ptheta)
+        # l_info.append(pepai)
+        # l_info.append(psigm)
+        # l_info.append(cond109)
+        # l_info.append(uc)
+        # l_info.append(um)
+
+        dic_type_comb["CODIFICATION"] = l_info[0]
+        dic_type_comb["METHODE_2D"] = l_info[1]
+        dic_type_comb["PAS_THETA"] = l_info[2]
+        dic_type_comb["PAS_EPAI"] = l_info[3]
+        dic_type_comb["PAS_SIGM"] = l_info[4]
+        dic_type_comb["COND_109"] = l_info[5]
+        dic_type_comb["UNITE_CONTRAINTE"] = l_info[6]
+        dic_type_comb["UNITE_DIMENSION"] = l_info[7]
+
         lst_tmp_affe = []
 
         for i_affe in affe:

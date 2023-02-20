@@ -260,6 +260,11 @@ CFER1_R = LocatedComponents(
     components=(
         "TYPCOMB",
         "CODIF",
+        "METH2D",
+        "THITER",
+        "EPITER",
+        "APHITER",
+        "COND109",
         "TYPSTRU",
         "FERRSYME",
         "SLSYME",

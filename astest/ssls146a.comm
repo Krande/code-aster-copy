@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -288,8 +288,6 @@ ferrDatSlu1 = dict(
     ALPHA_E=15,
     CLASSE_ACIER="B",
     ALPHA_CC=1.0,
-    UNITE_CONTRAINTE="Pa",
-    UNITE_DIMENSION="m",
     FERR_SYME="NON",
     FERR_COMP="OUI",
     EPURE_CISA="NON",
@@ -329,8 +327,6 @@ ferrDatSlu2 = dict(
     ALPHA_E=15,
     CLASSE_ACIER="B",
     ALPHA_CC=1.0,
-    UNITE_CONTRAINTE="Pa",
-    UNITE_DIMENSION="m",
     FERR_SYME="NON",
     FERR_COMP="OUI",
     EPURE_CISA="NON",
@@ -352,6 +348,8 @@ reslin = COMBINAISON_FERRAILLAGE(
     reuse=reslin,
     RESULTAT=reslin,
     CODIFICATION="EC2",
+    UNITE_CONTRAINTE="Pa",
+    UNITE_DIMENSION="m",
     COMBINAISON=(
         _F(TYPE="ELU_FONDAMENTAL", NOM_CAS=("elu1", "elu2")),
         _F(TYPE="ELU_ACCIDENTEL", NOM_CAS=("elu_acc")),

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -198,8 +198,6 @@ ferrDatSlu = dict(
     ALPHA_E=15,
     CLASSE_ACIER="B",
     ALPHA_CC=1.0,
-    UNITE_CONTRAINTE="MPa",
-    UNITE_DIMENSION="mm",
     FERR_SYME="NON",
     FERR_COMP="OUI",
     EPURE_CISA="NON",
@@ -219,6 +217,8 @@ reslin = COMBINAISON_FERRAILLAGE(
     reuse=reslin,
     RESULTAT=reslin,
     CODIFICATION="EC2",
+    UNITE_CONTRAINTE="MPa",
+    UNITE_DIMENSION="mm",
     COMBINAISON=(
         _F(TYPE="ELU_FONDAMENTAL", NOM_CAS=("shearLd3", "tractLd3", "comprLd2")),
         _F(TYPE="ELS_CARACTERISTIQUE", NOM_CAS=("shearLd2", "tractLd2", "comprLd1")),

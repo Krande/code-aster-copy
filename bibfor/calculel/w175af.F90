@@ -48,11 +48,12 @@ subroutine w175af(modele, chfer1)
     integer :: n1, n2, n3, n4, n5, n6, n7, n8, n9, n10, n11, n12, n13, n14, n15
     integer :: n16, n17, n18, n19, n20, n21, n22, n23, n24, n25, n26, n27, n28, n29, n30, n31, n32
     integer :: n33, n34, n35, n36, n37, n38, n39, n40, n41, n42, n43, n44, n45, n46, n47, n48, n49
-    integer :: n50, n51, n52, n53, n54, n55, n56
+    integer :: n50, n51, n52, n53, n54, n55, n56, n57, n58, n59, n60, n61
     integer ::   jmail, iocc, nbmail
-    real(kind=8) :: valrcb, valrco
+    real(kind=8) :: valrcb, valrco, valrmt, valrcd, valruc, valrum
     character(len=8) :: k8b, typmcl(2), noma, typcb, clacier, uc, compress
-    character(len=8) :: epucisa, ferrcomp, ferrsyme, typdiag, typstru
+    character(len=8) :: epucisa, ferrcomp, ferrsyme, typdiag, typstru, cond109, unitm, unitc
+    character(len=16) :: meth2D
     character(len=16) :: motcls(2), typco, ferrmin
     character(len=24) :: mesmai
     character(len=8), pointer :: ncmp(:) => null()
@@ -79,64 +80,71 @@ subroutine w175af(modele, chfer1)
 !
     call jenonu(jexnom('&CATA.GD.NOMGD', 'FER1_R'), gd)
     call jelira(jexnum('&CATA.GD.NOMCMP', gd), 'LONMAX', ncmpmx)
+
 !
-    ASSERT(ncmpmx .eq. 56)
+    ASSERT(ncmpmx .eq. 61)
     ncmp(1) = 'TYPCOMB'
     ncmp(2) = 'CODIF'
-    ncmp(3) = 'TYPSTRU'
-    ncmp(4) = 'FERRSYME'
-    ncmp(5) = 'SLSYME'
-    ncmp(6) = 'FERRCOMP'
-    ncmp(7) = 'EPUCISA'
-    ncmp(8) = 'FERRMIN'
-    ncmp(9) = 'RHOLMIN'
-    ncmp(10) = 'RHOTMIN'
-    ncmp(11) = 'COMPRESS'
-    ncmp(12) = 'CEQUI'
-    ncmp(13) = 'ENROBI'
-    ncmp(14) = 'ENROBS'
-    ncmp(15) = 'ENROBYI'
-    ncmp(16) = 'ENROBYS'
-    ncmp(17) = 'ENROBZI'
-    ncmp(18) = 'ENROBZS'
-    ncmp(19) = 'SIGS'
-    ncmp(20) = 'SIGCI'
-    ncmp(21) = 'SIGCS'
-    ncmp(22) = 'SIGCYI'
-    ncmp(23) = 'SIGCYS'
-    ncmp(24) = 'SIGCZI'
-    ncmp(25) = 'SIGCZS'
-    ncmp(26) = 'ALPHACC'
-    ncmp(27) = 'GAMMAS'
-    ncmp(28) = 'GAMMAC'
-    ncmp(29) = 'FACIER'
-    ncmp(30) = 'EYS'
-    ncmp(31) = 'TYPDIAG'
-    ncmp(32) = 'FBETON'
-    ncmp(33) = 'CLACIER'
-    ncmp(34) = 'UC'
-    ncmp(35) = 'UM'
-    ncmp(36) = 'RHOACIER'
-    ncmp(37) = 'AREINF'
-    ncmp(38) = 'ASHEAR'
-    ncmp(39) = 'ASTIRR'
-    ncmp(40) = 'RHOCRIT'
-    ncmp(41) = 'DATCRIT'
-    ncmp(42) = 'LCRIT'
-    ncmp(43) = 'WMAXI'
-    ncmp(44) = 'WMAXS'
-    ncmp(45) = 'WMAXYI'
-    ncmp(46) = 'WMAXYS'
-    ncmp(47) = 'WMAXZI'
-    ncmp(48) = 'WMAXZS'
-    ncmp(49) = 'SIGELSQP'
-    ncmp(50) = 'KT'
-    ncmp(51) = 'PHIXI'
-    ncmp(52) = 'PHIXS'
-    ncmp(53) = 'PHIYI'
-    ncmp(54) = 'PHIYS'
-    ncmp(55) = 'PHIZI'
-    ncmp(56) = 'PHIZS'
+    ncmp(3) = 'METH2D'
+    ncmp(4) = 'THITER'
+    ncmp(5) = 'EPITER'
+    ncmp(6) = 'APHITER'
+    ncmp(7) = 'COND109'
+    ncmp(8) = 'TYPSTRU'
+    ncmp(9) = 'FERRSYME'
+    ncmp(10) = 'SLSYME'
+    ncmp(11) = 'FERRCOMP'
+    ncmp(12) = 'EPUCISA'
+    ncmp(13) = 'FERRMIN'
+    ncmp(14) = 'RHOLMIN'
+    ncmp(15) = 'RHOTMIN'
+    ncmp(16) = 'COMPRESS'
+    ncmp(17) = 'CEQUI'
+    ncmp(18) = 'ENROBI'
+    ncmp(19) = 'ENROBS'
+    ncmp(20) = 'ENROBYI'
+    ncmp(21) = 'ENROBYS'
+    ncmp(22) = 'ENROBZI'
+    ncmp(23) = 'ENROBZS'
+    ncmp(24) = 'SIGS'
+    ncmp(25) = 'SIGCI'
+    ncmp(26) = 'SIGCS'
+    ncmp(27) = 'SIGCYI'
+    ncmp(28) = 'SIGCYS'
+    ncmp(29) = 'SIGCZI'
+    ncmp(30) = 'SIGCZS'
+    ncmp(31) = 'ALPHACC'
+    ncmp(32) = 'GAMMAS'
+    ncmp(33) = 'GAMMAC'
+    ncmp(34) = 'FACIER'
+    ncmp(35) = 'EYS'
+    ncmp(36) = 'TYPDIAG'
+    ncmp(37) = 'FBETON'
+    ncmp(38) = 'CLACIER'
+    ncmp(39) = 'UC'
+    ncmp(40) = 'UM'
+    ncmp(41) = 'RHOACIER'
+    ncmp(42) = 'AREINF'
+    ncmp(43) = 'ASHEAR'
+    ncmp(44) = 'ASTIRR'
+    ncmp(45) = 'RHOCRIT'
+    ncmp(46) = 'DATCRIT'
+    ncmp(47) = 'LCRIT'
+    ncmp(48) = 'WMAXI'
+    ncmp(49) = 'WMAXS'
+    ncmp(50) = 'WMAXYI'
+    ncmp(51) = 'WMAXYS'
+    ncmp(52) = 'WMAXZI'
+    ncmp(53) = 'WMAXZS'
+    ncmp(54) = 'SIGELSQP'
+    ncmp(55) = 'KT'
+    ncmp(56) = 'PHIXI'
+    ncmp(57) = 'PHIXS'
+    ncmp(58) = 'PHIYI'
+    ncmp(59) = 'PHIYS'
+    ncmp(60) = 'PHIZI'
+    ncmp(61) = 'PHIZS'
+
 !
 !     2. MOTS CLES GLOBAUX :
 !     ----------------------
@@ -153,256 +161,288 @@ subroutine w175af(modele, chfer1)
     if (typco .eq. 'EC2') valrco = 2.d0
     valv(2) = valrco
 !
+!     2.3 CHOIX ALGO CALCUL 2D :
+    call getvtx(' ', 'METHODE_2D', scal=meth2D, nbret=n3)
+    if (meth2D .eq. 'Capra-Maury') valrmt = 1.d0
+    if (meth2D .eq. 'Sandwich') valrmt = 2.d0
+    valv(3) = valrmt
 !
+!     2.4 CHOIX CRITERES DE PRECISION :
+    call getvr8(' ', 'PAS_THETA', scal=valv(4), nbret=n4)
+    call getvr8(' ', 'PAS_EPAI', scal=valv(5), nbret=n5)
+    call getvr8(' ', 'PAS_SIGM', scal=valv(6), nbret=n6)
+    call getvtx(' ', 'COND_109', scal=cond109, nbret=n7)
+!        COND109 = 0 (NON)
+!        COND109 = 1 (OUI)
+    if (cond109 .eq. 'OUI') valrcd = 1.d0
+    if (cond109 .eq. 'NON') valrcd = 0.d0
+    valv(7) = valrcd
+!
+!     2.5 UNITES :
+    call getvtx(' ', 'UNITE_CONTRAINTE', scal=unitc, nbret=n39)
+!        UC = 0 CONTRAINTES EN Pa
+!        UC = 1 CONTRAINTES EN MPa
+    if (unitc .eq. 'Pa') valruc = 0.d0
+    if (unitc .eq. 'MPa') valruc = 1.d0
+    valv(39) = valruc
+    call getvtx(' ', 'UNITE_CONTRAINTE', scal=unitm, nbret=n40)
+!        UM = 0 DIMENSIONS EN m
+!        UM = 1 DIMENSIONS EN mm
+    if (unitc .eq. 'm') valruc = 0.d0
+    if (unitc .eq. 'mm') valruc = 1.d0
+    valv(40) = valruc
+
 !     3- BOUCLE SUR LES OCCURENCES DU MOT CLE AFFE
 !     --------------------------------------------
     do iocc = 1, nocc
 !
         if (typco .eq. 'BAEL91') then
 !           RECUPERATION DES MOTS CLES POUR CODIFICATION = 'BAEL91'
-            call getvtx('AFFE', 'TYPE_STRUCTURE', iocc=iocc, scal=typstru, nbret=n3)
-            if (typstru .eq. '2D') valv(3) = 0.d0
-            if (typstru .eq. '1D') valv(3) = 1.d0
-            call getvtx('AFFE', 'FERR_SYME', iocc=iocc, scal=ferrsyme, nbret=n4)
-            if (ferrsyme .eq. 'NON') valv(4) = 0.d0
-            if (ferrsyme .eq. 'OUI') valv(4) = 1.d0
-            call getvr8('AFFE', 'SEUIL_SYME', iocc=iocc, scal=valv(5), nbret=n5)
-            call getvtx('AFFE', 'FERR_COMP', iocc=iocc, scal=ferrcomp, nbret=n6)
-            if (ferrcomp .eq. 'NON') valv(6) = 0.d0
-            if (ferrcomp .eq. 'OUI') valv(6) = 1.d0
-            call getvtx('AFFE', 'EPURE_CISA', iocc=iocc, scal=epucisa, nbret=n7)
-            if (epucisa .eq. 'NON') valv(7) = 0.d0
-            if (epucisa .eq. 'OUI') valv(7) = 1.d0
-            call getvtx('AFFE', 'FERR_MIN', iocc=iocc, scal=ferrmin, nbret=n8)
-            if (ferrmin .eq. 'NON') valv(8) = 0.d0
-            if (ferrmin .eq. 'OUI') valv(8) = 1.d0
-            if (ferrmin .eq. 'CODE') valv(8) = 2.d0
-            call getvr8('AFFE', 'RHO_LONGI_MIN', iocc=iocc, scal=valv(9), nbret=n9)
-            call getvr8('AFFE', 'RHO_TRNSV_MIN', iocc=iocc, scal=valv(10), nbret=n10)
-            call getvr8('AFFE', 'N', iocc=iocc, scal=valv(12), nbret=n12)
-            call getvr8('AFFE', 'C_INF', iocc=iocc, scal=valv(13), nbret=n13)
-            call getvr8('AFFE', 'C_SUP', iocc=iocc, scal=valv(14), nbret=n14)
-            call getvr8('AFFE', 'C_INF_Y', iocc=iocc, scal=valv(15), nbret=n15)
-            call getvr8('AFFE', 'C_SUP_Y', iocc=iocc, scal=valv(16), nbret=n16)
-            call getvr8('AFFE', 'C_INF_Z', iocc=iocc, scal=valv(17), nbret=n17)
-            call getvr8('AFFE', 'C_SUP_Z', iocc=iocc, scal=valv(18), nbret=n18)
-            call getvr8('AFFE', 'SIGS_ELS', iocc=iocc, scal=valv(19), nbret=n19)
-            call getvr8('AFFE', 'SIGC_INF_ELS', iocc=iocc, scal=valv(20), nbret=n20)
-            call getvr8('AFFE', 'SIGC_SUP_ELS', iocc=iocc, scal=valv(21), nbret=n21)
-            call getvr8('AFFE', 'SIGC_INF_Y_ELS', iocc=iocc, scal=valv(22), nbret=n22)
-            call getvr8('AFFE', 'SIGC_SUP_Y_ELS', iocc=iocc, scal=valv(23), nbret=n23)
-            call getvr8('AFFE', 'SIGC_INF_Z_ELS', iocc=iocc, scal=valv(24), nbret=n24)
-            call getvr8('AFFE', 'SIGC_SUP_Z_ELS', iocc=iocc, scal=valv(25), nbret=n25)
-            call getvr8('AFFE', 'ALPHA_CC', iocc=iocc, scal=valv(26), nbret=n26)
-            call getvr8('AFFE', 'GAMMA_S', iocc=iocc, scal=valv(27), nbret=n27)
-            call getvr8('AFFE', 'GAMMA_C', iocc=iocc, scal=valv(28), nbret=n28)
-            call getvr8('AFFE', 'FE', iocc=iocc, scal=valv(29), nbret=n29)
-            call getvr8('AFFE', 'EYS', iocc=iocc, scal=valv(30), nbret=n30)
-            call getvtx('AFFE', 'TYPE_DIAGRAMME', iocc=iocc, scal=typdiag, nbret=n31)
-            if (uc .eq. 'B1') valv(31) = 1.d0
-            if (uc .eq. 'B2') valv(31) = 2.d0
-            call getvr8('AFFE', 'FCJ', iocc=iocc, scal=valv(32), nbret=n32)
-            call getvtx('AFFE', 'UNITE_CONTRAINTE', iocc=iocc, scal=uc, nbret=n34)
-            if (uc .eq. 'Pa') valv(34) = 0.d0
-            if (uc .eq. 'MPa') valv(34) = 1.d0
-            call getvtx('AFFE', 'UNITE_DIMENSION', iocc=iocc, scal=uc, nbret=n35)
-            if (uc .eq. 'm') valv(35) = 0.d0
-            if (uc .eq. 'mm') valv(35) = 1.d0
-            call getvr8('AFFE', 'RHO_ACIER', iocc=iocc, scal=valv(36), nbret=n36)
-            call getvr8('AFFE', 'ALPHA_REINF', iocc=iocc, scal=valv(37), nbret=n37)
-            call getvr8('AFFE', 'ALPHA_SHEAR', iocc=iocc, scal=valv(38), nbret=n38)
-            call getvr8('AFFE', 'ALPHA_STIRRUPS', iocc=iocc, scal=valv(39), nbret=n39)
-            call getvr8('AFFE', 'RHO_CRIT', iocc=iocc, scal=valv(40), nbret=n40)
-            call getvr8('AFFE', 'DNSTRA_CRIT', iocc=iocc, scal=valv(41), nbret=n41)
-            call getvr8('AFFE', 'L_CRIT', iocc=iocc, scal=valv(42), nbret=n42)
-            call getvr8('AFFE', 'WMAX_INF', iocc=iocc, scal=valv(43), nbret=n43)
-            call getvr8('AFFE', 'WMAX_SUP', iocc=iocc, scal=valv(44), nbret=n44)
-            call getvr8('AFFE', 'WMAX_INF_Y', iocc=iocc, scal=valv(45), nbret=n45)
-            call getvr8('AFFE', 'WMAX_SUP_Y', iocc=iocc, scal=valv(46), nbret=n46)
-            call getvr8('AFFE', 'WMAX_INF_Z', iocc=iocc, scal=valv(47), nbret=n47)
-            call getvr8('AFFE', 'WMAX_SUP_Z', iocc=iocc, scal=valv(48), nbret=n48)
-            call getvr8('AFFE', 'SIGC_ELS_QP', iocc=iocc, scal=valv(49), nbret=n49)
-            call getvr8('AFFE', 'KT', iocc=iocc, scal=valv(50), nbret=n50)
-            call getvr8('AFFE', 'PHI_INF_X', iocc=iocc, scal=valv(51), nbret=n51)
-            call getvr8('AFFE', 'PHI_SUP_X', iocc=iocc, scal=valv(52), nbret=n52)
-            call getvr8('AFFE', 'PHI_INF_Y', iocc=iocc, scal=valv(53), nbret=n53)
-            call getvr8('AFFE', 'PHI_SUP_Y', iocc=iocc, scal=valv(54), nbret=n54)
-            call getvr8('AFFE', 'PHI_INF_Z', iocc=iocc, scal=valv(55), nbret=n55)
-            call getvr8('AFFE', 'PHI_SUP_Z', iocc=iocc, scal=valv(56), nbret=n56)
+            call getvtx('AFFE', 'TYPE_STRUCTURE', iocc=iocc, scal=typstru, nbret=n8)
+            if (typstru .eq. '2D') valv(8) = 0.d0
+            if (typstru .eq. '1D') valv(8) = 1.d0
+            call getvtx('AFFE', 'FERR_SYME', iocc=iocc, scal=ferrsyme, nbret=n9)
+            if (ferrsyme .eq. 'NON') valv(9) = 0.d0
+            if (ferrsyme .eq. 'OUI') valv(9) = 1.d0
+            call getvr8('AFFE', 'SEUIL_SYME', iocc=iocc, scal=valv(10), nbret=n10)
+            call getvtx('AFFE', 'FERR_COMP', iocc=iocc, scal=ferrcomp, nbret=n11)
+            if (ferrcomp .eq. 'NON') valv(11) = 0.d0
+            if (ferrcomp .eq. 'OUI') valv(11) = 1.d0
+            call getvtx('AFFE', 'EPURE_CISA', iocc=iocc, scal=epucisa, nbret=n12)
+            if (epucisa .eq. 'NON') valv(12) = 0.d0
+            if (epucisa .eq. 'OUI') valv(12) = 1.d0
+            call getvtx('AFFE', 'FERR_MIN', iocc=iocc, scal=ferrmin, nbret=n13)
+            if (ferrmin .eq. 'NON') valv(13) = 0.d0
+            if (ferrmin .eq. 'OUI') valv(13) = 1.d0
+            if (ferrmin .eq. 'CODE') valv(13) = 2.d0
+            call getvr8('AFFE', 'RHO_LONGI_MIN', iocc=iocc, scal=valv(14), nbret=n14)
+            call getvr8('AFFE', 'RHO_TRNSV_MIN', iocc=iocc, scal=valv(15), nbret=n15)
+            call getvr8('AFFE', 'N', iocc=iocc, scal=valv(17), nbret=n17)
+            call getvr8('AFFE', 'C_INF', iocc=iocc, scal=valv(18), nbret=n18)
+            call getvr8('AFFE', 'C_SUP', iocc=iocc, scal=valv(19), nbret=n19)
+            call getvr8('AFFE', 'C_INF_Y', iocc=iocc, scal=valv(20), nbret=n20)
+            call getvr8('AFFE', 'C_SUP_Y', iocc=iocc, scal=valv(21), nbret=n21)
+            call getvr8('AFFE', 'C_INF_Z', iocc=iocc, scal=valv(22), nbret=n22)
+            call getvr8('AFFE', 'C_SUP_Z', iocc=iocc, scal=valv(23), nbret=n23)
+            call getvr8('AFFE', 'SIGS_ELS', iocc=iocc, scal=valv(24), nbret=n24)
+            call getvr8('AFFE', 'SIGC_INF_ELS', iocc=iocc, scal=valv(25), nbret=n25)
+            call getvr8('AFFE', 'SIGC_SUP_ELS', iocc=iocc, scal=valv(26), nbret=n26)
+            call getvr8('AFFE', 'SIGC_INF_Y_ELS', iocc=iocc, scal=valv(27), nbret=n27)
+            call getvr8('AFFE', 'SIGC_SUP_Y_ELS', iocc=iocc, scal=valv(28), nbret=n28)
+            call getvr8('AFFE', 'SIGC_INF_Z_ELS', iocc=iocc, scal=valv(29), nbret=n29)
+            call getvr8('AFFE', 'SIGC_SUP_Z_ELS', iocc=iocc, scal=valv(30), nbret=n30)
+            call getvr8('AFFE', 'FE', iocc=iocc, scal=valv(34), nbret=n34)
+            call getvr8('AFFE', 'FCJ', iocc=iocc, scal=valv(37), nbret=n37)
+            call getvr8('AFFE', 'WMAX_INF', iocc=iocc, scal=valv(48), nbret=n48)
+            call getvr8('AFFE', 'WMAX_SUP', iocc=iocc, scal=valv(49), nbret=n49)
+            call getvr8('AFFE', 'WMAX_INF_Y', iocc=iocc, scal=valv(50), nbret=n50)
+            call getvr8('AFFE', 'WMAX_SUP_Y', iocc=iocc, scal=valv(51), nbret=n51)
+            call getvr8('AFFE', 'WMAX_INF_Z', iocc=iocc, scal=valv(52), nbret=n52)
+            call getvr8('AFFE', 'WMAX_SUP_Z', iocc=iocc, scal=valv(53), nbret=n53)
+            call getvr8('AFFE', 'SIGC_ELS_QP', iocc=iocc, scal=valv(54), nbret=n54)
+            call getvr8('AFFE', 'KT', iocc=iocc, scal=valv(55), nbret=n55)
+            call getvr8('AFFE', 'PHI_INF_X', iocc=iocc, scal=valv(56), nbret=n56)
+            call getvr8('AFFE', 'PHI_SUP_X', iocc=iocc, scal=valv(57), nbret=n57)
+            call getvr8('AFFE', 'PHI_INF_Y', iocc=iocc, scal=valv(58), nbret=n58)
+            call getvr8('AFFE', 'PHI_SUP_Y', iocc=iocc, scal=valv(59), nbret=n59)
+            call getvr8('AFFE', 'PHI_INF_Z', iocc=iocc, scal=valv(60), nbret=n60)
+            call getvr8('AFFE', 'PHI_SUP_Z', iocc=iocc, scal=valv(61), nbret=n61)
+            call getvr8('AFFE', 'RHO_ACIER', iocc=iocc, scal=valv(41), nbret=n41)
+            call getvr8('AFFE', 'ALPHA_REINF', iocc=iocc, scal=valv(42), nbret=n42)
+            call getvr8('AFFE', 'ALPHA_SHEAR', iocc=iocc, scal=valv(43), nbret=n43)
+            call getvr8('AFFE', 'ALPHA_STIRRUPS', iocc=iocc, scal=valv(44), nbret=n44)
+            call getvr8('AFFE', 'RHO_CRIT', iocc=iocc, scal=valv(45), nbret=n45)
+            call getvr8('AFFE', 'DNSTRA_CRIT', iocc=iocc, scal=valv(46), nbret=n46)
+            call getvr8('AFFE', 'L_CRIT', iocc=iocc, scal=valv(47), nbret=n47)
+            call getvr8('AFFE', 'ALPHA_CC', iocc=iocc, scal=valv(31), nbret=n31)
+            call getvr8('AFFE', 'GAMMA_S', iocc=iocc, scal=valv(32), nbret=n32)
+            call getvr8('AFFE', 'GAMMA_C', iocc=iocc, scal=valv(33), nbret=n33)
+            call getvr8('AFFE', 'EYS', iocc=iocc, scal=valv(35), nbret=n35)
+            call getvtx('AFFE', 'TYPE_DIAGRAMME', iocc=iocc, scal=typdiag, nbret=n36)
+            if (typdiag .eq. 'B1') valv(36) = 1.d0
+            if (typdiag .eq. 'B2') valv(36) = 2.d0
         else if (typco .eq. 'EC2') then
 !           RECUPERATION DES MOTS CLES POUR CODIFICATION = 'EC2'
-            call getvtx('AFFE', 'TYPE_STRUCTURE', iocc=iocc, scal=typstru, nbret=n3)
-            if (typstru .eq. '2D') valv(3) = 0.d0
-            if (typstru .eq. '1D') valv(3) = 1.d0
-            call getvtx('AFFE', 'FERR_SYME', iocc=iocc, scal=ferrsyme, nbret=n4)
-            if (ferrsyme .eq. 'NON') valv(4) = 0.d0
-            if (ferrsyme .eq. 'OUI') valv(4) = 1.d0
-            call getvr8('AFFE', 'SEUIL_SYME', iocc=iocc, scal=valv(5), nbret=n5)
-            call getvtx('AFFE', 'FERR_COMP', iocc=iocc, scal=ferrcomp, nbret=n6)
-            if (ferrcomp .eq. 'NON') valv(6) = 0.d0
-            if (ferrcomp .eq. 'OUI') valv(6) = 1.d0
-            call getvtx('AFFE', 'EPURE_CISA', iocc=iocc, scal=epucisa, nbret=n7)
-            if (epucisa .eq. 'NON') valv(7) = 0.d0
-            if (epucisa .eq. 'OUI') valv(7) = 1.d0
-            call getvtx('AFFE', 'FERR_MIN', iocc=iocc, scal=ferrmin, nbret=n8)
-            if (ferrmin .eq. 'NON') valv(8) = 0.d0
-            if (ferrmin .eq. 'OUI') valv(8) = 1.d0
-            if (ferrmin .eq. 'CODE') valv(8) = 2.d0
-            call getvr8('AFFE', 'RHO_LONGI_MIN', iocc=iocc, scal=valv(9), nbret=n9)
-            call getvr8('AFFE', 'RHO_TRNSV_MIN', iocc=iocc, scal=valv(10), nbret=n10)
-            call getvtx('AFFE', 'UTIL_COMPR', iocc=iocc, scal=compress, nbret=n11)
-            if (compress .eq. 'NON') valv(11) = 0.d0
-            if (compress .eq. 'OUI') valv(11) = 1.d0
-            call getvr8('AFFE', 'ALPHA_E', iocc=iocc, scal=valv(12), nbret=n12)
-            call getvr8('AFFE', 'C_INF', iocc=iocc, scal=valv(13), nbret=n13)
-            call getvr8('AFFE', 'C_SUP', iocc=iocc, scal=valv(14), nbret=n14)
-            call getvr8('AFFE', 'C_INF_Y', iocc=iocc, scal=valv(15), nbret=n15)
-            call getvr8('AFFE', 'C_SUP_Y', iocc=iocc, scal=valv(16), nbret=n16)
-            call getvr8('AFFE', 'C_INF_Z', iocc=iocc, scal=valv(17), nbret=n17)
-            call getvr8('AFFE', 'C_SUP_Z', iocc=iocc, scal=valv(18), nbret=n18)
-            call getvr8('AFFE', 'SIGS_ELS', iocc=iocc, scal=valv(19), nbret=n19)
-            call getvr8('AFFE', 'SIGC_INF_ELS', iocc=iocc, scal=valv(20), nbret=n20)
-            call getvr8('AFFE', 'SIGC_SUP_ELS', iocc=iocc, scal=valv(21), nbret=n21)
-            call getvr8('AFFE', 'SIGC_INF_Y_ELS', iocc=iocc, scal=valv(22), nbret=n22)
-            call getvr8('AFFE', 'SIGC_SUP_Y_ELS', iocc=iocc, scal=valv(23), nbret=n23)
-            call getvr8('AFFE', 'SIGC_INF_Z_ELS', iocc=iocc, scal=valv(24), nbret=n24)
-            call getvr8('AFFE', 'SIGC_SUP_Z_ELS', iocc=iocc, scal=valv(25), nbret=n25)
-            call getvr8('AFFE', 'ALPHA_CC', iocc=iocc, scal=valv(26), nbret=n26)
-            call getvr8('AFFE', 'GAMMA_S', iocc=iocc, scal=valv(27), nbret=n27)
-            call getvr8('AFFE', 'GAMMA_C', iocc=iocc, scal=valv(28), nbret=n28)
-            call getvr8('AFFE', 'FYK', iocc=iocc, scal=valv(29), nbret=n29)
-            call getvr8('AFFE', 'EYS', iocc=iocc, scal=valv(30), nbret=n30)
-            call getvtx('AFFE', 'TYPE_DIAGRAMME', iocc=iocc, scal=typdiag, nbret=n31)
-            if (typdiag .eq. 'B1') valv(31) = 1.d0
-            if (typdiag .eq. 'B2') valv(31) = 2.d0
-            call getvr8('AFFE', 'FCK', iocc=iocc, scal=valv(32), nbret=n32)
-            call getvtx('AFFE', 'CLASSE_ACIER', iocc=iocc, scal=clacier, nbret=n33)
-            if (clacier .eq. 'A') valv(33) = 0.d0
-            if (clacier .eq. 'B') valv(33) = 1.d0
-            if (clacier .eq. 'C') valv(33) = 2.d0
-            call getvtx('AFFE', 'UNITE_CONTRAINTE', iocc=iocc, scal=uc, nbret=n34)
-            if (uc .eq. 'Pa') valv(34) = 0.d0
-            if (uc .eq. 'MPa') valv(34) = 1.d0
-            call getvtx('AFFE', 'UNITE_DIMENSION', iocc=iocc, scal=uc, nbret=n35)
-            if (uc .eq. 'm') valv(35) = 0.d0
-            if (uc .eq. 'mm') valv(35) = 1.d0
-            call getvr8('AFFE', 'RHO_ACIER', iocc=iocc, scal=valv(36), nbret=n36)
-            call getvr8('AFFE', 'ALPHA_REINF', iocc=iocc, scal=valv(37), nbret=n37)
-            call getvr8('AFFE', 'ALPHA_SHEAR', iocc=iocc, scal=valv(38), nbret=n38)
-            call getvr8('AFFE', 'ALPHA_STIRRUPS', iocc=iocc, scal=valv(39), nbret=n39)
-            call getvr8('AFFE', 'RHO_CRIT', iocc=iocc, scal=valv(40), nbret=n40)
-            call getvr8('AFFE', 'DNSTRA_CRIT', iocc=iocc, scal=valv(41), nbret=n41)
-            call getvr8('AFFE', 'L_CRIT', iocc=iocc, scal=valv(42), nbret=n42)
-            call getvr8('AFFE', 'WMAX_INF', iocc=iocc, scal=valv(43), nbret=n43)
-            call getvr8('AFFE', 'WMAX_SUP', iocc=iocc, scal=valv(44), nbret=n44)
-            call getvr8('AFFE', 'WMAX_INF_Y', iocc=iocc, scal=valv(45), nbret=n45)
-            call getvr8('AFFE', 'WMAX_SUP_Y', iocc=iocc, scal=valv(46), nbret=n46)
-            call getvr8('AFFE', 'WMAX_INF_Z', iocc=iocc, scal=valv(47), nbret=n47)
-            call getvr8('AFFE', 'WMAX_SUP_Z', iocc=iocc, scal=valv(48), nbret=n48)
-            call getvr8('AFFE', 'SIGC_ELS_QP', iocc=iocc, scal=valv(49), nbret=n49)
-            call getvr8('AFFE', 'KT', iocc=iocc, scal=valv(50), nbret=n50)
-            call getvr8('AFFE', 'PHI_INF_X', iocc=iocc, scal=valv(51), nbret=n51)
-            call getvr8('AFFE', 'PHI_SUP_X', iocc=iocc, scal=valv(52), nbret=n52)
-            call getvr8('AFFE', 'PHI_INF_Y', iocc=iocc, scal=valv(53), nbret=n53)
-            call getvr8('AFFE', 'PHI_SUP_Y', iocc=iocc, scal=valv(54), nbret=n54)
-            call getvr8('AFFE', 'PHI_INF_Z', iocc=iocc, scal=valv(55), nbret=n55)
-            call getvr8('AFFE', 'PHI_SUP_Z', iocc=iocc, scal=valv(56), nbret=n56)
+            call getvtx('AFFE', 'TYPE_STRUCTURE', iocc=iocc, scal=typstru, nbret=n8)
+            if (typstru .eq. '2D') valv(8) = 0.d0
+            if (typstru .eq. '1D') valv(8) = 1.d0
+            call getvtx('AFFE', 'FERR_SYME', iocc=iocc, scal=ferrsyme, nbret=n9)
+            if (ferrsyme .eq. 'NON') valv(9) = 0.d0
+            if (ferrsyme .eq. 'OUI') valv(9) = 1.d0
+            call getvr8('AFFE', 'SEUIL_SYME', iocc=iocc, scal=valv(10), nbret=n10)
+            call getvtx('AFFE', 'FERR_COMP', iocc=iocc, scal=ferrcomp, nbret=n11)
+            if (ferrcomp .eq. 'NON') valv(11) = 0.d0
+            if (ferrcomp .eq. 'OUI') valv(11) = 1.d0
+            call getvtx('AFFE', 'EPURE_CISA', iocc=iocc, scal=epucisa, nbret=n12)
+            if (epucisa .eq. 'NON') valv(12) = 0.d0
+            if (epucisa .eq. 'OUI') valv(12) = 1.d0
+            call getvtx('AFFE', 'FERR_MIN', iocc=iocc, scal=ferrmin, nbret=n13)
+            if (ferrmin .eq. 'NON') valv(13) = 0.d0
+            if (ferrmin .eq. 'OUI') valv(13) = 1.d0
+            if (ferrmin .eq. 'CODE') valv(13) = 2.d0
+            call getvr8('AFFE', 'RHO_LONGI_MIN', iocc=iocc, scal=valv(14), nbret=n14)
+            call getvr8('AFFE', 'RHO_TRNSV_MIN', iocc=iocc, scal=valv(15), nbret=n15)
+            call getvtx('AFFE', 'UTIL_COMPR', iocc=iocc, scal=compress, nbret=n16)
+            if (compress .eq. 'NON') valv(16) = 0.d0
+            if (compress .eq. 'OUI') valv(16) = 1.d0
+            call getvr8('AFFE', 'ALPHA_E', iocc=iocc, scal=valv(17), nbret=n17)
+            call getvr8('AFFE', 'C_INF', iocc=iocc, scal=valv(18), nbret=n18)
+            call getvr8('AFFE', 'C_SUP', iocc=iocc, scal=valv(19), nbret=n19)
+            call getvr8('AFFE', 'C_INF_Y', iocc=iocc, scal=valv(20), nbret=n20)
+            call getvr8('AFFE', 'C_SUP_Y', iocc=iocc, scal=valv(21), nbret=n21)
+            call getvr8('AFFE', 'C_INF_Z', iocc=iocc, scal=valv(22), nbret=n22)
+            call getvr8('AFFE', 'C_SUP_Z', iocc=iocc, scal=valv(23), nbret=n23)
+            call getvr8('AFFE', 'SIGS_ELS', iocc=iocc, scal=valv(24), nbret=n24)
+            call getvr8('AFFE', 'SIGC_INF_ELS', iocc=iocc, scal=valv(25), nbret=n25)
+            call getvr8('AFFE', 'SIGC_SUP_ELS', iocc=iocc, scal=valv(26), nbret=n26)
+            call getvr8('AFFE', 'SIGC_INF_Y_ELS', iocc=iocc, scal=valv(27), nbret=n27)
+            call getvr8('AFFE', 'SIGC_SUP_Y_ELS', iocc=iocc, scal=valv(28), nbret=n28)
+            call getvr8('AFFE', 'SIGC_INF_Z_ELS', iocc=iocc, scal=valv(29), nbret=n29)
+            call getvr8('AFFE', 'SIGC_SUP_Z_ELS', iocc=iocc, scal=valv(30), nbret=n30)
+            call getvr8('AFFE', 'FYK', iocc=iocc, scal=valv(34), nbret=n34)
+            call getvr8('AFFE', 'FCK', iocc=iocc, scal=valv(37), nbret=n37)
+            call getvtx('AFFE', 'CLASSE_ACIER', iocc=iocc, scal=clacier, nbret=n38)
+            if (clacier .eq. 'A') valv(38) = 0.d0
+            if (clacier .eq. 'B') valv(38) = 1.d0
+            if (clacier .eq. 'C') valv(38) = 2.d0
+            call getvr8('AFFE', 'WMAX_INF', iocc=iocc, scal=valv(48), nbret=n48)
+            call getvr8('AFFE', 'WMAX_SUP', iocc=iocc, scal=valv(49), nbret=n49)
+            call getvr8('AFFE', 'WMAX_INF_Y', iocc=iocc, scal=valv(50), nbret=n50)
+            call getvr8('AFFE', 'WMAX_SUP_Y', iocc=iocc, scal=valv(51), nbret=n51)
+            call getvr8('AFFE', 'WMAX_INF_Z', iocc=iocc, scal=valv(52), nbret=n52)
+            call getvr8('AFFE', 'WMAX_SUP_Z', iocc=iocc, scal=valv(53), nbret=n53)
+            call getvr8('AFFE', 'SIGC_ELS_QP', iocc=iocc, scal=valv(54), nbret=n54)
+            call getvr8('AFFE', 'KT', iocc=iocc, scal=valv(55), nbret=n55)
+            call getvr8('AFFE', 'PHI_INF_X', iocc=iocc, scal=valv(56), nbret=n56)
+            call getvr8('AFFE', 'PHI_SUP_X', iocc=iocc, scal=valv(57), nbret=n57)
+            call getvr8('AFFE', 'PHI_INF_Y', iocc=iocc, scal=valv(58), nbret=n58)
+            call getvr8('AFFE', 'PHI_SUP_Y', iocc=iocc, scal=valv(59), nbret=n59)
+            call getvr8('AFFE', 'PHI_INF_Z', iocc=iocc, scal=valv(60), nbret=n60)
+            call getvr8('AFFE', 'PHI_SUP_Z', iocc=iocc, scal=valv(61), nbret=n61)
+            call getvr8('AFFE', 'RHO_ACIER', iocc=iocc, scal=valv(41), nbret=n41)
+            call getvr8('AFFE', 'ALPHA_REINF', iocc=iocc, scal=valv(42), nbret=n42)
+            call getvr8('AFFE', 'ALPHA_SHEAR', iocc=iocc, scal=valv(43), nbret=n43)
+            call getvr8('AFFE', 'ALPHA_STIRRUPS', iocc=iocc, scal=valv(44), nbret=n44)
+            call getvr8('AFFE', 'RHO_CRIT', iocc=iocc, scal=valv(45), nbret=n45)
+            call getvr8('AFFE', 'DNSTRA_CRIT', iocc=iocc, scal=valv(46), nbret=n46)
+            call getvr8('AFFE', 'L_CRIT', iocc=iocc, scal=valv(47), nbret=n47)
+            call getvr8('AFFE', 'ALPHA_CC', iocc=iocc, scal=valv(31), nbret=n31)
+            call getvr8('AFFE', 'GAMMA_S', iocc=iocc, scal=valv(32), nbret=n32)
+            call getvr8('AFFE', 'GAMMA_C', iocc=iocc, scal=valv(33), nbret=n33)
+            call getvr8('AFFE', 'EYS', iocc=iocc, scal=valv(35), nbret=n35)
+            call getvtx('AFFE', 'TYPE_DIAGRAMME', iocc=iocc, scal=typdiag, nbret=n36)
+            if (typdiag .eq. 'B1') valv(36) = 1.d0
+            if (typdiag .eq. 'B2') valv(36) = 2.d0
         end if
 
 !
 !       VERIFICATION DE LA COHERENCE DES PARAMETRES
 
+        if (typstru .eq. '2D') then
+            if ((valv(4) .le. 0) .or. (valv(4) .gt. 10)) then
+                call utmess('F', 'CALCULEL7_31')
+            end if
+            if ((valv(3) .eq. 2.d0) .and. (valv(1) .ne. 0.d0)) then
+                call utmess('F', 'CALCULEL7_37')
+            end if
+            if ((valv(3) .eq. 2.d0) .and. (valv(1) .eq. 0.d0)) then
+                if ((valv(6) .le. 0) .or. (valv(6) .gt. 0.2)) then
+                    call utmess('F', 'CALCULEL7_33')
+                end if
+            end if
+        end if
+
         if (typstru .eq. '1D') then
 !           VERIFICATION DES ENROBAGES 1D
-            if (n15 .eq. 0 .or. n16 .eq. 0 .or. n17 .eq. 0 &
-                & .or. n18 .eq. 0) then
+            if (n20 .eq. 0 .or. n21 .eq. 0 .or. n22 .eq. 0 &
+                & .or. n23 .eq. 0) then
                 call utmess('F', 'CALCULEL7_18')
             end if
         elseif (typstru .eq. '2D') then
 !           VERIFICATION DES ENROBAGES 2D
-            if (n13 .eq. 0 .or. n14 .eq. 0) then
+            if (n18 .eq. 0 .or. n19 .eq. 0) then
                 call utmess('F', 'CALCULEL7_19')
             end if
         end if
 
         if (ferrsyme .eq. 'OUI') then
 !           VERIFICATION DES SYMETRIES
-            if (n5 .eq. 0) then
+            if (n10 .eq. 0) then
                 call utmess('F', 'CALCULEL7_30')
             end if
             if (typstru .eq. '1D') then
-                if (valv(15) .ne. valv(16) &
-                    & .or. valv(17) .ne. valv(18)) then
+                if (valv(20) .ne. valv(21) &
+                    & .or. valv(22) .ne. valv(23)) then
                     call utmess('F', 'CALCULEL7_20')
                 end if
                 if (typcb .eq. 'ELS') then
-                    if (valv(22) .ne. valv(23) &
-                        & .or. valv(24) .ne. valv(25)) then
+                    if (valv(27) .ne. valv(28) &
+                        & .or. valv(29) .ne. valv(30)) then
                         call utmess('F', 'CALCULEL7_21')
                     end if
                 elseif (typcb .eq. 'ELS_QP') then
-                    if (valv(45) .ne. valv(46) &
-                        & .or. valv(47) .ne. valv(48)) then
+                    if (valv(50) .ne. valv(51) &
+                        & .or. valv(52) .ne. valv(53)) then
                         call utmess('F', 'CALCULEL7_22')
                     end if
-                    if (valv(53) .ne. valv(54) &
-                        & .or. valv(55) .ne. valv(56)) then
+                    if (valv(58) .ne. valv(59) &
+                        & .or. valv(60) .ne. valv(61)) then
                         call utmess('F', 'CALCULEL7_23')
                     end if
                 end if
             elseif (typstru .eq. '2D') then
-                if (valv(13) .ne. valv(14)) then
+                if (valv(18) .ne. valv(19)) then
                     call utmess('F', 'CALCULEL7_24')
                 end if
                 if (typcb .eq. 'ELS') then
-                    if (valv(20) .ne. valv(21)) then
+                    if (valv(25) .ne. valv(26)) then
                         call utmess('F', 'CALCULEL7_25')
                     end if
                 elseif (typcb .eq. 'ELS_QP') then
-                    if (valv(43) .ne. valv(44)) then
+                    if (valv(48) .ne. valv(49)) then
                         call utmess('F', 'CALCULEL7_26')
                     end if
-                    if (valv(51) .ne. valv(52) &
-                        & .or. valv(53) .ne. valv(54)) then
+                    if (valv(56) .ne. valv(57) &
+                        & .or. valv(58) .ne. valv(59)) then
                         call utmess('F', 'CALCULEL7_27')
                     end if
                 end if
             end if
         end if
 
-        if (valv(8) .eq. (1.d0)) then
-            if ((n9 .eq. 0) .or. (n10 .eq. 0)) then
+        if (valv(13) .eq. (1.d0)) then
+            if ((n14 .eq. 0) .or. (n15 .eq. 0)) then
                 call utmess('F', 'CALCULEL7_11')
             end if
         end if
 
-        if (valv(36) .lt. 0.d0) then
+        if (valv(41) .lt. 0.d0) then
 !           MASSE VOLUMIQUE NEGATIVE
             call utmess('I', 'CALCULEL_89')
         end if
 !
         if (typcb .eq. 'ELU') then
 !           MOTS-CLE OBLIGATOIRES POUR UN CALCUL A L'ELU
-            if (n27 .eq. 0 .or. n28 .eq. 0 .or. n29 .eq. 0 &
-                & .or. n30 .eq. 0 .or. n31 .eq. 0 .or. n32 .eq. 0) then
+            if (n32 .eq. 0 .or. n33 .eq. 0 .or. n34 .eq. 0 &
+                & .or. n35 .eq. 0 .or. n36 .eq. 0 .or. n37 .eq. 0) then
                 call utmess('F', 'CALCULEL_74')
             end if
 
         else if (typcb .eq. 'ELS') then
 !           MOTS-CLE OBLIGATOIRES POUR UN CALCUL A L'ELS
-            if (n12 .eq. 0 .or. n19 .eq. 0) then
+            if (n17 .eq. 0 .or. n24 .eq. 0) then
                 call utmess('F', 'CALCULEL_82')
             end if
             if (typstru .eq. '2D') then
-                if (n20 .eq. 0 .or. n21 .eq. 0) then
+                if (n24 .eq. 0 .or. n26 .eq. 0) then
                     call utmess('F', 'CALCULEL_82')
                 end if
             elseif (typstru .eq. '1D') then
-                if (n22 .eq. 0 .or. n23 .eq. 0 .or. n24 .eq. 0 .or. n25 .eq. 0) then
+                if (n27 .eq. 0 .or. n28 .eq. 0 .or. n29 .eq. 0 .or. n30 .eq. 0) then
                     call utmess('F', 'CALCULEL_82')
                 end if
             end if
-            if (typco .eq. 'EC2' .and. n32 .eq. 0) then
+            if (typco .eq. 'EC2' .and. n37 .eq. 0) then
                 call utmess('F', 'CALCULEL_82')
             end if
             if (typco .eq. 'BAEL91') then
@@ -413,19 +453,19 @@ subroutine w175af(modele, chfer1)
 
         else if (typcb .eq. 'ELS_QP') then
 !           MOTS-CLE OBLIGATOIRES POUR UN CALCUL A L'ELS QP
-            if (n12 .eq. 0 .or. n29 .eq. 0 .or. n30 .eq. 0 .or. n32 .eq. 0 &
-                & .or. n49 .eq. 0 .or. n50 .eq. 0) then
+            if (n17 .eq. 0 .or. n34 .eq. 0 .or. n35 .eq. 0 .or. n37 .eq. 0 &
+                & .or. n54 .eq. 0 .or. n55 .eq. 0) then
                 call utmess('F', 'CALCULEL7_8')
             end if
             if (typstru .eq. '2D') then
-                if (n43 .eq. 0 .or. n44 .eq. 0 .or. n51 .eq. 0 &
-                    & .or. n52 .eq. 0 .or. n53 .eq. 0 .or. n54 .eq. 0) then
+                if (n48 .eq. 0 .or. n49 .eq. 0 .or. n56 .eq. 0 &
+                    & .or. n57 .eq. 0 .or. n58 .eq. 0 .or. n59 .eq. 0) then
                     call utmess('F', 'CALCULEL7_8')
                 end if
             elseif (typstru .eq. '1D') then
-                if (n45 .eq. 0 .or. n46 .eq. 0 .or. n47 .eq. 0 &
-                    & .or. n48 .eq. 0 .or. n53 .eq. 0 .or. n54 .eq. 0 &
-                    & .or. n55 .eq. 0 .or. n56 .eq. 0) then
+                if (n50 .eq. 0 .or. n51 .eq. 0 .or. n52 .eq. 0 &
+                    & .or. n53 .eq. 0 .or. n58 .eq. 0 .or. n59 .eq. 0 &
+                    & .or. n60 .eq. 0 .or. n61 .eq. 0) then
                     call utmess('F', 'CALCULEL7_8')
                 end if
             end if

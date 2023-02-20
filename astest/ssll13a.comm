@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -234,6 +234,8 @@ RESUELU1 = CALC_FERRAILLAGE(
     reuse=RESUELU,
     CODIFICATION="EC2",
     TYPE_COMB="ELU",
+    UNITE_CONTRAINTE="Pa",
+    UNITE_DIMENSION="m",
     INST=(1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0, 11.0, 12.0, 13.0, 14.0),
     AFFE=(
         _F(
@@ -244,15 +246,13 @@ RESUELU1 = CALC_FERRAILLAGE(
             C_SUP_Z=0.04,
             C_INF_Z=0.04,
             FYK=500.0e6,
+            FCK=35.0e6,
+            RHO_ACIER=7800.0,
             EYS=210.0e9,
             TYPE_DIAGRAMME="B2",
-            FCK=35.0e6,
             GAMMA_S=1.15,
             GAMMA_C=1.5,
             ALPHA_CC=1.0,
-            UNITE_CONTRAINTE="Pa",
-            UNITE_DIMENSION="m",
-            RHO_ACIER=7800.0,
         ),
     ),
 )
@@ -590,6 +590,8 @@ RESUELU2 = CALC_FERRAILLAGE(
     reuse=RESUELU,
     CODIFICATION="EC2",
     TYPE_COMB="ELU",
+    UNITE_CONTRAINTE="Pa",
+    UNITE_DIMENSION="m",
     INST=(1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0, 11.0, 12.0, 13.0, 14.0),
     AFFE=(
         _F(
@@ -601,15 +603,13 @@ RESUELU2 = CALC_FERRAILLAGE(
             C_SUP_Z=0.04,
             C_INF_Z=0.04,
             FYK=500.0e6,
+            FCK=35.0e6,
+            RHO_ACIER=7800.0,
             EYS=210.0e9,
             TYPE_DIAGRAMME="B2",
-            FCK=35.0e6,
             GAMMA_S=1.15,
             GAMMA_C=1.5,
             ALPHA_CC=1.0,
-            UNITE_CONTRAINTE="Pa",
-            UNITE_DIMENSION="m",
-            RHO_ACIER=7800.0,
         ),
     ),
 )
@@ -946,6 +946,8 @@ RESUELU3 = CALC_FERRAILLAGE(
     reuse=RESUELU,
     CODIFICATION="EC2",
     TYPE_COMB="ELU",
+    UNITE_CONTRAINTE="Pa",
+    UNITE_DIMENSION="m",
     INST=(1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0, 11.0, 12.0, 13.0, 14.0),
     AFFE=(
         _F(
@@ -957,17 +959,15 @@ RESUELU3 = CALC_FERRAILLAGE(
             C_SUP_Z=0.04,
             C_INF_Z=0.04,
             FYK=500.0e6,
-            EYS=210.0e9,
-            TYPE_DIAGRAMME="B2",
             FCK=35.0e6,
-            GAMMA_S=1.15,
-            GAMMA_C=1.5,
-            ALPHA_CC=1.0,
-            UNITE_CONTRAINTE="Pa",
-            UNITE_DIMENSION="m",
             EPURE_CISA="OUI",
             UTIL_COMPR="OUI",
             RHO_ACIER=7800.0,
+            EYS=210.0e9,
+            TYPE_DIAGRAMME="B2",
+            GAMMA_S=1.15,
+            GAMMA_C=1.5,
+            ALPHA_CC=1.0,
         ),
     ),
 )
@@ -1304,6 +1304,8 @@ RESUELU4 = CALC_FERRAILLAGE(
     reuse=RESUELU,
     CODIFICATION="EC2",
     TYPE_COMB="ELU",
+    UNITE_CONTRAINTE="Pa",
+    UNITE_DIMENSION="m",
     INST=(1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0, 11.0, 12.0, 13.0, 14.0),
     AFFE=(
         _F(
@@ -1317,16 +1319,14 @@ RESUELU4 = CALC_FERRAILLAGE(
             C_SUP_Z=0.04,
             C_INF_Z=0.04,
             FYK=500.0e6,
+            FCK=35.0e6,
+            UTIL_COMPR="OUI",
+            RHO_ACIER=7800.0,
             EYS=210.0e9,
             TYPE_DIAGRAMME="B2",
-            FCK=35.0e6,
             GAMMA_S=1.15,
             GAMMA_C=1.5,
             ALPHA_CC=1.0,
-            UNITE_CONTRAINTE="Pa",
-            UNITE_DIMENSION="m",
-            UTIL_COMPR="OUI",
-            RHO_ACIER=7800.0,
         ),
     ),
 )
@@ -1663,6 +1663,8 @@ RESUELU5 = CALC_FERRAILLAGE(
     reuse=RESUELU,
     CODIFICATION="BAEL91",
     TYPE_COMB="ELU",
+    UNITE_CONTRAINTE="Pa",
+    UNITE_DIMENSION="m",
     INST=(1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0, 11.0, 12.0, 13.0, 14.0),
     AFFE=(
         _F(
@@ -1674,15 +1676,13 @@ RESUELU5 = CALC_FERRAILLAGE(
             C_SUP_Z=0.04,
             C_INF_Z=0.04,
             FE=500.0e6,
+            FCJ=35.0e6,
+            RHO_ACIER=7800.0,
             EYS=210.0e9,
             TYPE_DIAGRAMME="B2",
-            FCJ=35.0e6,
             GAMMA_S=1.15,
             GAMMA_C=1.5,
             ALPHA_CC=1.0,
-            UNITE_CONTRAINTE="Pa",
-            UNITE_DIMENSION="m",
-            RHO_ACIER=7800.0,
         ),
     ),
 )

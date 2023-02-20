@@ -172,6 +172,8 @@ RESUELS1 = CALC_FERRAILLAGE(
     reuse=RESUELS,
     CODIFICATION="EC2",
     TYPE_COMB="ELS",
+    UNITE_CONTRAINTE="Pa",
+    UNITE_DIMENSION="m",
     INST=(1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0),
     AFFE=(
         _F(
@@ -185,9 +187,6 @@ RESUELS1 = CALC_FERRAILLAGE(
             SIGC_SUP_ELS=21e6,
             ALPHA_E=21.0,
             UTIL_COMPR="NON",
-            RHO_ACIER=7800,
-            UNITE_CONTRAINTE="Pa",
-            UNITE_DIMENSION="m",
             DNSTRA_CRIT=6.0e-3,
             ALPHA_REINF=1.0,
             ALPHA_SHEAR=1.0,
@@ -195,6 +194,7 @@ RESUELS1 = CALC_FERRAILLAGE(
             ALPHA_STIRRUPS=1.0,
             L_CRIT=1.0,
             ALPHA_CC=1.0,
+            RHO_ACIER=7800,
         ),
     ),
 )
@@ -415,6 +415,8 @@ RESUELS2 = CALC_FERRAILLAGE(
     reuse=RESUELS,
     CODIFICATION="EC2",
     TYPE_COMB="ELS",
+    UNITE_CONTRAINTE="Pa",
+    UNITE_DIMENSION="m",
     INST=(1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0),
     AFFE=(
         _F(
@@ -429,9 +431,6 @@ RESUELS2 = CALC_FERRAILLAGE(
             SIGC_SUP_ELS=21e6,
             ALPHA_E=21.0,
             UTIL_COMPR="NON",
-            RHO_ACIER=7800,
-            UNITE_CONTRAINTE="Pa",
-            UNITE_DIMENSION="m",
             DNSTRA_CRIT=6.0e-3,
             ALPHA_REINF=1.0,
             ALPHA_SHEAR=1.0,
@@ -439,6 +438,7 @@ RESUELS2 = CALC_FERRAILLAGE(
             ALPHA_STIRRUPS=1.0,
             L_CRIT=1.0,
             ALPHA_CC=1.0,
+            RHO_ACIER=7800,
         ),
     ),
 )
@@ -695,6 +695,8 @@ RESUELS3 = CALC_FERRAILLAGE(
     reuse=RESUELS,
     CODIFICATION="EC2",
     TYPE_COMB="ELS",
+    UNITE_CONTRAINTE="Pa",
+    UNITE_DIMENSION="m",
     INST=(1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0),
     AFFE=(
         _F(
@@ -711,9 +713,6 @@ RESUELS3 = CALC_FERRAILLAGE(
             SIGC_SUP_ELS=21e6,
             ALPHA_E=21.0,
             UTIL_COMPR="NON",
-            RHO_ACIER=7800,
-            UNITE_CONTRAINTE="Pa",
-            UNITE_DIMENSION="m",
             DNSTRA_CRIT=6.0e-3,
             ALPHA_REINF=1.0,
             ALPHA_SHEAR=1.0,
@@ -721,6 +720,7 @@ RESUELS3 = CALC_FERRAILLAGE(
             ALPHA_STIRRUPS=1.0,
             L_CRIT=1.0,
             ALPHA_CC=1.0,
+            RHO_ACIER=7800,
         ),
     ),
 )
@@ -977,6 +977,8 @@ RESUELS4 = CALC_FERRAILLAGE(
     reuse=RESUELS,
     CODIFICATION="BAEL91",
     TYPE_COMB="ELS",
+    UNITE_CONTRAINTE="Pa",
+    UNITE_DIMENSION="m",
     INST=(1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0),
     AFFE=(
         _F(
@@ -990,9 +992,6 @@ RESUELS4 = CALC_FERRAILLAGE(
             SIGC_INF_ELS=21e6,
             SIGC_SUP_ELS=21e6,
             N=21.0,
-            RHO_ACIER=7800,
-            UNITE_CONTRAINTE="Pa",
-            UNITE_DIMENSION="m",
             DNSTRA_CRIT=6.0e-3,
             ALPHA_REINF=1.0,
             ALPHA_SHEAR=1.0,
@@ -1000,6 +999,7 @@ RESUELS4 = CALC_FERRAILLAGE(
             ALPHA_STIRRUPS=1.0,
             L_CRIT=1.0,
             ALPHA_CC=1.0,
+            RHO_ACIER=7800,
         ),
     ),
 )

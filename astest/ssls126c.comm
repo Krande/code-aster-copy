@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -445,6 +445,8 @@ RESU = CALC_FERRAILLAGE(
     INST=1.0,
     CODIFICATION="EC2",
     TYPE_COMB="ELU",
+    UNITE_CONTRAINTE="Pa",
+    UNITE_DIMENSION="m",
     AFFE=_F(
         TOUT="OUI",
         TYPE_STRUCTURE="2D",
@@ -456,8 +458,6 @@ RESU = CALC_FERRAILLAGE(
         FCK=31500000.0,
         EYS=210000000000.0,
         TYPE_DIAGRAMME="B2",
-        UNITE_CONTRAINTE="Pa",
-        UNITE_DIMENSION="m",
     ),
 )
 
@@ -469,7 +469,7 @@ TEST_RESU(
         NOM_CMP="DNSXS",
         GROUP_MA="M124",
         POINT=1,
-        VALE_CALC=7.21372818606e-05,
+        VALE_CALC=7.227638814115128e-05,
     )
 )
 

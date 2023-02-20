@@ -194,6 +194,9 @@ subroutine cftels(typco, typstru, effrts, effm, effn, efft, effmt, &
         if ((Scp .lt. 0) .or. (compress .eq. 0)) then
             Scp = 0
         end if
+        if (Scp .gt. 0) then
+            Scp = min(Scp, 0.2*fbeton/gammac)
+        end if
 
 !   Impact de la torsion sur Cisaillement
 

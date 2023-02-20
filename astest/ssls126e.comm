@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -184,8 +184,6 @@ ferrDatSlu = dict(
     EYS=210.0e9,
     CLASSE_ACIER="B",
     ALPHA_CC=1.0,
-    UNITE_CONTRAINTE="Pa",
-    UNITE_DIMENSION="m",
     TYPE_STRUCTURE="2D",
 )
 
@@ -193,6 +191,8 @@ RESUMULT = COMBINAISON_FERRAILLAGE(
     reuse=RESUMULT,
     RESULTAT=RESUMULT,
     CODIFICATION="EC2",
+    UNITE_CONTRAINTE="Pa",
+    UNITE_DIMENSION="m",
     COMBINAISON=(_F(TYPE="ELU_FONDAMENTAL", NUME_ORDRE=lst_numeordre),),
     AFFE=(_F(**ferrDatSlu),),
 )

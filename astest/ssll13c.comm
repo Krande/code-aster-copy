@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -233,6 +233,8 @@ RESUELSQP1 = CALC_FERRAILLAGE(
     reuse=RESUELSQP,
     CODIFICATION="EC2",
     TYPE_COMB="ELS_QP",
+    UNITE_CONTRAINTE="Pa",
+    UNITE_DIMENSION="m",
     INST=(1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0, 11.0, 12.0, 13.0, 14.0),
     AFFE=(
         _F(
@@ -244,7 +246,6 @@ RESUELSQP1 = CALC_FERRAILLAGE(
             C_INF_Z=0.04,
             FCK=35.0e6,
             FYK=500.0e6,
-            EYS=210.0e9,
             SIGC_ELS_QP=0.45 * 35.0e6,
             ALPHA_E=15.0,
             KT=0.4,
@@ -256,9 +257,8 @@ RESUELSQP1 = CALC_FERRAILLAGE(
             PHI_SUP_Y=0.025,
             PHI_INF_Z=0.025,
             PHI_SUP_Z=0.025,
-            UNITE_CONTRAINTE="Pa",
-            UNITE_DIMENSION="m",
             RHO_ACIER=7800.0,
+            EYS=210.0e9,
         ),
     ),
 )
@@ -595,6 +595,8 @@ RESUELSQP2 = CALC_FERRAILLAGE(
     reuse=RESUELSQP,
     CODIFICATION="EC2",
     TYPE_COMB="ELS_QP",
+    UNITE_CONTRAINTE="Pa",
+    UNITE_DIMENSION="m",
     INST=(1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0, 11.0, 12.0, 13.0, 14.0),
     AFFE=(
         _F(
@@ -607,7 +609,6 @@ RESUELSQP2 = CALC_FERRAILLAGE(
             C_INF_Z=0.04,
             FCK=35.0e6,
             FYK=500.0e6,
-            EYS=210.0e9,
             SIGC_ELS_QP=0.45 * 35.0e6,
             ALPHA_E=15.0,
             KT=0.4,
@@ -619,9 +620,8 @@ RESUELSQP2 = CALC_FERRAILLAGE(
             PHI_SUP_Y=0.025,
             PHI_INF_Z=0.025,
             PHI_SUP_Z=0.025,
-            UNITE_CONTRAINTE="Pa",
-            UNITE_DIMENSION="m",
             RHO_ACIER=7800.0,
+            EYS=210.0e9,
         ),
     ),
 )
@@ -959,6 +959,8 @@ RESUELSQP3 = CALC_FERRAILLAGE(
     reuse=RESUELSQP,
     CODIFICATION="EC2",
     TYPE_COMB="ELS_QP",
+    UNITE_CONTRAINTE="Pa",
+    UNITE_DIMENSION="m",
     INST=(1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0, 11.0, 12.0, 13.0, 14.0),
     AFFE=(
         _F(
@@ -973,7 +975,6 @@ RESUELSQP3 = CALC_FERRAILLAGE(
             C_INF_Z=0.04,
             FCK=35.0e6,
             FYK=500.0e6,
-            EYS=210.0e9,
             SIGC_ELS_QP=0.45 * 35.0e6,
             ALPHA_E=15.0,
             KT=0.4,
@@ -985,9 +986,8 @@ RESUELSQP3 = CALC_FERRAILLAGE(
             PHI_SUP_Y=0.025,
             PHI_INF_Z=0.025,
             PHI_SUP_Z=0.025,
-            UNITE_CONTRAINTE="Pa",
-            UNITE_DIMENSION="m",
             RHO_ACIER=7800.0,
+            EYS=210.0e9,
         ),
     ),
 )
@@ -1325,6 +1325,8 @@ RESUELSQP4 = CALC_FERRAILLAGE(
     reuse=RESUELSQP,
     CODIFICATION="BAEL91",
     TYPE_COMB="ELS_QP",
+    UNITE_CONTRAINTE="Pa",
+    UNITE_DIMENSION="m",
     INST=(1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0, 11.0, 12.0, 13.0, 14.0),
     AFFE=(
         _F(
@@ -1336,7 +1338,6 @@ RESUELSQP4 = CALC_FERRAILLAGE(
             C_INF_Z=0.04,
             FCJ=35.0e6,
             FE=500.0e6,
-            EYS=210.0e9,
             SIGC_ELS_QP=0.45 * 35.0e6,
             N=15.0,
             KT=0.4,
@@ -1348,9 +1349,8 @@ RESUELSQP4 = CALC_FERRAILLAGE(
             PHI_SUP_Y=0.025,
             PHI_INF_Z=0.025,
             PHI_SUP_Z=0.025,
-            UNITE_CONTRAINTE="Pa",
-            UNITE_DIMENSION="m",
             RHO_ACIER=7800.0,
+            EYS=210.0e9,
         ),
     ),
 )

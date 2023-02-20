@@ -15,8 +15,8 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-!
-subroutine trgfct(fcttab)
+
+subroutine trgfct(nb, fcttab)
 !_____________________________________________________________________
 !
 !     TRGFCT
@@ -28,12 +28,12 @@ subroutine trgfct(fcttab)
 !
     implicit none
 !
-!
 !     ! FACETTES POUR METHODE DE CAPRA ET MAURY
 !
-!       36 FACETTES
+!       nb FACETTES
+    integer :: nb
 !       NOMBRE DE DIVISIONS ENTRE -PI/2 ET +PI/2
-    real(kind=8) :: fcttab(36, 5)
+    real(kind=8) :: fcttab(nb, 5)
 !
 !       ANGLE DE LA FACETTE (-PI/2 <= X < +PI/2)
     real(kind=8) :: angle
@@ -49,7 +49,7 @@ subroutine trgfct(fcttab)
 !       -PI/2
     angle = (-4d0*atan2(1.d0, 1.d0))/2.d0
 !       2PI/N
-    pas = -2.d0*angle/36d0
+    pas = -2.d0*angle/nb
 !
 !   POUR CHAQUE FACETTE, LES VALEURS SONT
 !     1 = COS^2
@@ -57,12 +57,12 @@ subroutine trgfct(fcttab)
 !     3 = 2 SIN COS
 !     4 = SIN
 !     5 = COS
-    do i = 2, 36
+    do 20 i = 2, nb
         angle = angle+pas
         fcttab(i, 1) = cos(angle)*cos(angle)
         fcttab(i, 2) = sin(angle)*sin(angle)
         fcttab(i, 3) = -2.d0*sin(angle)*cos(angle)
         fcttab(i, 4) = cos(angle)
         fcttab(i, 5) = sin(angle)
-    end do
-end subroutine
+20      continue
+        end subroutine

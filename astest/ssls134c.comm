@@ -172,6 +172,8 @@ RESUELSQP1 = CALC_FERRAILLAGE(
     reuse=RESUELSQP,
     CODIFICATION="EC2",
     TYPE_COMB="ELS_QP",
+    UNITE_CONTRAINTE="Pa",
+    UNITE_DIMENSION="m",
     INST=(1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0),
     AFFE=(
         _F(
@@ -181,7 +183,6 @@ RESUELSQP1 = CALC_FERRAILLAGE(
             C_SUP=0.04,
             FCK=35.0e6,
             FYK=500.0e6,
-            EYS=210.0e9,
             WMAX_INF=0.00015,
             WMAX_SUP=0.00015,
             SIGC_ELS_QP=0.45 * 35.0e6,
@@ -192,9 +193,6 @@ RESUELSQP1 = CALC_FERRAILLAGE(
             PHI_SUP_Y=0.025,
             ALPHA_E=21.0,
             UTIL_COMPR="NON",
-            RHO_ACIER=7800,
-            UNITE_CONTRAINTE="Pa",
-            UNITE_DIMENSION="m",
             DNSTRA_CRIT=6.0e-3,
             ALPHA_REINF=1.0,
             ALPHA_SHEAR=1.0,
@@ -202,6 +200,8 @@ RESUELSQP1 = CALC_FERRAILLAGE(
             ALPHA_STIRRUPS=1.0,
             L_CRIT=1.0,
             ALPHA_CC=1.0,
+            EYS=210.0e9,
+            RHO_ACIER=7800,
         ),
     ),
 )
@@ -458,6 +458,8 @@ RESUELSQP2 = CALC_FERRAILLAGE(
     reuse=RESUELSQP,
     CODIFICATION="EC2",
     TYPE_COMB="ELS_QP",
+    UNITE_CONTRAINTE="Pa",
+    UNITE_DIMENSION="m",
     INST=(1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0),
     AFFE=(
         _F(
@@ -468,7 +470,6 @@ RESUELSQP2 = CALC_FERRAILLAGE(
             C_SUP=0.04,
             FCK=35.0e6,
             FYK=500.0e6,
-            EYS=210.0e9,
             WMAX_INF=0.00015,
             WMAX_SUP=0.00015,
             SIGC_ELS_QP=0.45 * 35.0e6,
@@ -479,9 +480,6 @@ RESUELSQP2 = CALC_FERRAILLAGE(
             PHI_SUP_Y=0.025,
             ALPHA_E=21.0,
             UTIL_COMPR="NON",
-            RHO_ACIER=7800,
-            UNITE_CONTRAINTE="Pa",
-            UNITE_DIMENSION="m",
             DNSTRA_CRIT=6.0e-3,
             ALPHA_REINF=1.0,
             ALPHA_SHEAR=1.0,
@@ -489,6 +487,8 @@ RESUELSQP2 = CALC_FERRAILLAGE(
             ALPHA_STIRRUPS=1.0,
             L_CRIT=1.0,
             ALPHA_CC=1.0,
+            EYS=210.0e9,
+            RHO_ACIER=7800,
         ),
     ),
 )
@@ -745,6 +745,8 @@ RESUELSQP3 = CALC_FERRAILLAGE(
     reuse=RESUELSQP,
     CODIFICATION="EC2",
     TYPE_COMB="ELS_QP",
+    UNITE_CONTRAINTE="Pa",
+    UNITE_DIMENSION="m",
     INST=(1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0),
     AFFE=(
         _F(
@@ -757,7 +759,6 @@ RESUELSQP3 = CALC_FERRAILLAGE(
             C_SUP=0.04,
             FCK=35.0e6,
             FYK=500.0e6,
-            EYS=210.0e9,
             WMAX_INF=0.00015,
             WMAX_SUP=0.00015,
             SIGC_ELS_QP=0.45 * 35.0e6,
@@ -768,9 +769,6 @@ RESUELSQP3 = CALC_FERRAILLAGE(
             PHI_SUP_Y=0.025,
             ALPHA_E=21.0,
             UTIL_COMPR="NON",
-            RHO_ACIER=7800,
-            UNITE_CONTRAINTE="Pa",
-            UNITE_DIMENSION="m",
             DNSTRA_CRIT=6.0e-3,
             ALPHA_REINF=1.0,
             ALPHA_SHEAR=1.0,
@@ -778,6 +776,8 @@ RESUELSQP3 = CALC_FERRAILLAGE(
             ALPHA_STIRRUPS=1.0,
             L_CRIT=1.0,
             ALPHA_CC=1.0,
+            EYS=210.0e9,
+            RHO_ACIER=7800,
         ),
     ),
 )
@@ -1034,6 +1034,8 @@ RESUELSQP4 = CALC_FERRAILLAGE(
     reuse=RESUELSQP,
     CODIFICATION="BAEL91",
     TYPE_COMB="ELS_QP",
+    UNITE_CONTRAINTE="Pa",
+    UNITE_DIMENSION="m",
     INST=(1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0),
     AFFE=(
         _F(
@@ -1044,7 +1046,6 @@ RESUELSQP4 = CALC_FERRAILLAGE(
             C_SUP=0.04,
             FCJ=35.0e6,
             FE=500.0e6,
-            EYS=210.0e9,
             WMAX_INF=0.00015,
             WMAX_SUP=0.00015,
             SIGC_ELS_QP=0.45 * 35.0e6,
@@ -1054,9 +1055,6 @@ RESUELSQP4 = CALC_FERRAILLAGE(
             PHI_INF_Y=0.025,
             PHI_SUP_Y=0.025,
             N=21.0,
-            RHO_ACIER=7800,
-            UNITE_CONTRAINTE="Pa",
-            UNITE_DIMENSION="m",
             DNSTRA_CRIT=6.0e-3,
             ALPHA_REINF=1.0,
             ALPHA_SHEAR=1.0,
@@ -1064,6 +1062,8 @@ RESUELSQP4 = CALC_FERRAILLAGE(
             ALPHA_STIRRUPS=1.0,
             L_CRIT=1.0,
             ALPHA_CC=1.0,
+            EYS=210.0e9,
+            RHO_ACIER=7800,
         ),
     ),
 )

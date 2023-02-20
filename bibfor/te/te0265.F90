@@ -43,6 +43,15 @@ subroutine te0265(nomopt, nomte)
 !                   0 = ELU, 1 = ELS, 2 = ELS QP
 !     TYPCO      TYPE DE CODIFICATION :
 !                   1 = BAEL91, 2 = EUROCODE 2
+!     METH2D     CHOIX DE METHODE POUR LE CALCUL DU FERRAILLAGE DES
+!                   ELEMENTS 2D
+!                   1 = CapraMaury, 2 = Sandwich/Multicouches
+!     THITER     ANGLE D'ITERATION DANS LE CAS DU CALCUL DU FERRAILLAGE DES PLAQUES
+!                   (POUR LA METHODE SANDWICH, IL S'AGIT DE L'INCLINAISON DES BIELLES)
+!                   (POUR LA METHODE CAPRA-MAURY, IL S'AGIT DE L'ORIENTATION DES FACETTES)
+!     COND109    PRISE EN COMPTE OU PAS DE LA CLAUSE §109 POUR LE CALCUL
+!                   DE RESISTANCE DANS LA METHODE SANDWICH
+!                   1 = OUI, 2 = NON
 !     TYPSTRU    TYPE DE STRUCTURE :
 !                   0 = 2D, 1 = 1D
 !     FERRSYME   FERRAILLAGE SYMETRIQUE?
@@ -184,11 +193,11 @@ subroutine te0265(nomopt, nomte)
     real(kind=8) :: ht, bw, enrobi, enrobs, enrobyi, enrobys, enrobzi, enrobzs
     real(kind=8) :: gammac, gammas, rholmin, rhotmin, slsyme
     real(kind=8) :: facier, fbeton, eys, rhoacier, areinf, ashear
-    real(kind=8) :: astirr, rhocrit, datcrit, lcrit
+    real(kind=8) :: astirr, rhocrit, datcrit, lcrit, thiter, epiter, aphiter
     real(kind=8) :: wmaxi, wmaxs, wmaxyi, wmaxys, wmaxzi, wmaxzs, sigelsqp, kt
     real(kind=8) :: phixi, phixs, phiyi, phiys, phizi, phizs
     integer :: clacier, compress, epucisa, ferrcomp, ferrmin, ferrsyme, typdiag
-    integer :: ierr
+    integer :: ierr, meth2D, cond109
     character(len=24) :: valk(2)
     integer :: vali(2)
 
@@ -209,25 +218,27 @@ subroutine te0265(nomopt, nomte)
 
 !       -- RECUPERATION DES DONNEES DE L'UTILISATEUR :
 !       ----------------------------------------------
-!     FER1_R = 'TYPCOMB','CODIF','TYPSTRU','FERRSYME','SLSYME','FERRCOMP',
-!                  1        2        3          4         5        6
-!              'EPUCISA','FERRMIN','RHOLMIN','RHOTMIN',
-!                  7         8         9        10
+!     FER1_R = 'TYPCOMB','CODIF','METH2D','THITER','EPITER','APHITER',
+!                  1        2        3        4        5        6
+!              'COND109','TYPSTRU','FERRSYME','SLSYME',
+!                  7         8          9        10
+!              'FERRCOMP','EPUCISA','FERRMIN','RHOLMIN','RHOTMIN',
+!                  11        12         13        14       15
 !              'COMPRESS','CEQUI','ENROBI','ENROBS','ENROBYI','ENROBYS',
-!                  11        12      13       14       15        16
+!                  16        17      18       19       20        21
 !              'ENROBZI','ENROBZS','SIGS','SIGCI','SIGCS','SIGCYI','SIGCYS',
-!                  17        18      19      20     21       22       23
+!                  22        23      24      25      26      27       28
 !              'SIGCZI','SIGCZS','ALPHACC','GAMMAS','GAMMAC','FACIER','EYS',
-!                  24      25        26       27       28       29     30
+!                 29       30        31       32       33       34     35
 !              'TYPDIAG','FBETON','CLACIER','UC','UM','RHOACIER','AREINF',
-!                  31       32       33      34   35      36        37
+!                 36        37       38      39   40      41        42
 !              'ASHEAR','ASTIRR','RHOCRIT','DATCRIT','LCRIT','WMAXI','WMAXS',
-!                  38      39        40        41      42      43      44
+!                 43       44        45       46       47      48      49
 !              'WMAXYI','WMAXYS','WMAXZI','WMAXZS','SIGELSQP','KT',
-!                 45       46       47       48        49      50
+!                 50       51       52       53        54      55
 !              'PHIXI','PHIXS','PHIYI','PHIYS','PHIZI','PHIZS'
-!                 51      52      53      54      55      56
-
+!                 56      57      58      59      60      61
+!
 !
 !                                  PCAGEPO
 !  'HY1', 'HZ1', 'EPY1', 'EPZ1', 'HY2','HZ2', 'EPY2', 'EPZ2', 'R1', 'EP1',
@@ -256,60 +267,65 @@ subroutine te0265(nomopt, nomte)
     bw = HY1
     typcmb = nint(zr(jfer1-1+1))
     typco = nint(zr(jfer1-1+2))
-    typstru = nint(zr(jfer1-1+3))
-    ferrsyme = nint(zr(jfer1-1+4))
-    slsyme = zr(jfer1-1+5)
-    ferrcomp = nint(zr(jfer1-1+6))
-    epucisa = nint(zr(jfer1-1+7))
-    ferrmin = nint(zr(jfer1-1+8))
-    rholmin = zr(jfer1-1+9)
-    rhotmin = zr(jfer1-1+10)
-    compress = int(zr(jfer1-1+11))
-    cequi = zr(jfer1-1+12)
-    enrobi = zr(jfer1-1+13)
-    enrobs = zr(jfer1-1+14)
-    enrobyi = zr(jfer1-1+15)
-    enrobys = zr(jfer1-1+16)
-    enrobzi = zr(jfer1-1+17)
-    enrobzs = zr(jfer1-1+18)
-    sigs = zr(jfer1-1+19)
-    sigci = zr(jfer1-1+20)
-    sigcs = zr(jfer1-1+21)
-    sigcyi = zr(jfer1-1+22)
-    sigcys = zr(jfer1-1+23)
-    sigczi = zr(jfer1-1+24)
-    sigczs = zr(jfer1-1+25)
-    alphacc = zr(jfer1-1+26)
-    gammas = zr(jfer1-1+27)
-    gammac = zr(jfer1-1+28)
-    facier = zr(jfer1-1+29)
-    eys = zr(jfer1-1+30)
-    typdiag = int(zr(jfer1-1+31))
-    fbeton = zr(jfer1-1+32)
-    clacier = int(zr(jfer1-1+33))
-    uc = int(zr(jfer1-1+34))
-    um = int(zr(jfer1-1+35))
-    rhoacier = zr(jfer1-1+36)
-    areinf = zr(jfer1-1+37)
-    ashear = zr(jfer1-1+38)
-    astirr = zr(jfer1-1+39)
-    rhocrit = zr(jfer1-1+40)
-    datcrit = zr(jfer1-1+41)
-    lcrit = zr(jfer1-1+42)
-    wmaxi = zr(jfer1-1+43)
-    wmaxs = zr(jfer1-1+44)
-    wmaxyi = zr(jfer1-1+45)
-    wmaxys = zr(jfer1-1+46)
-    wmaxzi = zr(jfer1-1+47)
-    wmaxzs = zr(jfer1-1+48)
-    sigelsqp = zr(jfer1-1+49)
-    kt = zr(jfer1-1+50)
-    phixi = zr(jfer1-1+51)
-    phixs = zr(jfer1-1+52)
-    phiyi = zr(jfer1-1+53)
-    phiys = zr(jfer1-1+54)
-    phizi = zr(jfer1-1+55)
-    phizs = zr(jfer1-1+56)
+    meth2D = nint(zr(jfer1-1+3))
+    thiter = zr(jfer1-1+4)
+    epiter = zr(jfer1-1+5)
+    aphiter = zr(jfer1-1+6)
+    cond109 = nint(zr(jfer1-1+7))
+    typstru = nint(zr(jfer1-1+8))
+    ferrsyme = nint(zr(jfer1-1+9))
+    slsyme = zr(jfer1-1+10)
+    ferrcomp = nint(zr(jfer1-1+11))
+    epucisa = nint(zr(jfer1-1+12))
+    ferrmin = nint(zr(jfer1-1+13))
+    rholmin = zr(jfer1-1+14)
+    rhotmin = zr(jfer1-1+15)
+    compress = int(zr(jfer1-1+16))
+    cequi = zr(jfer1-1+17)
+    enrobi = zr(jfer1-1+18)
+    enrobs = zr(jfer1-1+19)
+    enrobyi = zr(jfer1-1+20)
+    enrobys = zr(jfer1-1+21)
+    enrobzi = zr(jfer1-1+22)
+    enrobzs = zr(jfer1-1+23)
+    sigs = zr(jfer1-1+24)
+    sigci = zr(jfer1-1+25)
+    sigcs = zr(jfer1-1+26)
+    sigcyi = zr(jfer1-1+27)
+    sigcys = zr(jfer1-1+28)
+    sigczi = zr(jfer1-1+29)
+    sigczs = zr(jfer1-1+30)
+    alphacc = zr(jfer1-1+31)
+    gammas = zr(jfer1-1+32)
+    gammac = zr(jfer1-1+33)
+    facier = zr(jfer1-1+34)
+    eys = zr(jfer1-1+35)
+    typdiag = int(zr(jfer1-1+36))
+    fbeton = zr(jfer1-1+37)
+    clacier = int(zr(jfer1-1+38))
+    uc = int(zr(jfer1-1+39))
+    um = int(zr(jfer1-1+40))
+    rhoacier = zr(jfer1-1+41)
+    areinf = zr(jfer1-1+42)
+    ashear = zr(jfer1-1+43)
+    astirr = zr(jfer1-1+44)
+    rhocrit = zr(jfer1-1+45)
+    datcrit = zr(jfer1-1+46)
+    lcrit = zr(jfer1-1+47)
+    wmaxi = zr(jfer1-1+48)
+    wmaxs = zr(jfer1-1+49)
+    wmaxyi = zr(jfer1-1+50)
+    wmaxys = zr(jfer1-1+51)
+    wmaxzi = zr(jfer1-1+52)
+    wmaxzs = zr(jfer1-1+53)
+    sigelsqp = zr(jfer1-1+54)
+    kt = zr(jfer1-1+55)
+    phixi = zr(jfer1-1+56)
+    phixs = zr(jfer1-1+57)
+    phiyi = zr(jfer1-1+58)
+    phiys = zr(jfer1-1+59)
+    phizi = zr(jfer1-1+60)
+    phizs = zr(jfer1-1+61)
 
     !Only option '1D'
     if (typstru .eq. 0.d0) then

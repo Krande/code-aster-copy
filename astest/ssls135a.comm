@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -26,6 +26,18 @@ MeshLin0 = LIRE_MAILLAGE(FORMAT="MED", UNITE=20)
 # Type de calcul
 
 MeshLin = CREA_MAILLAGE(MAILLAGE=MeshLin0, CREA_POI1=(_F(NOM_GROUP_MA="BASEN", GROUP_NO="BASE"),))
+
+FEMLin = AFFE_MODELE(
+    MAILLAGE=MeshLin,
+    AFFE=(
+        _F(
+            GROUP_MA=("COTEX", "COTEY", "BASE", "HAUT", "SYMX", "SYMY"),
+            PHENOMENE="MECANIQUE",
+            MODELISATION="DKT",
+        ),
+        _F(GROUP_MA="BASEN", PHENOMENE="MECANIQUE", MODELISATION="DIS_T"),
+    ),
+)
 
 FEMLin = AFFE_MODELE(
     MAILLAGE=MeshLin,
@@ -110,6 +122,8 @@ Solution = CALC_FERRAILLAGE(
     reuse=Solution,
     RESULTAT=Solution,
     TYPE_COMB="ELS",
+    UNITE_CONTRAINTE="Pa",
+    UNITE_DIMENSION="m",
     INST=(0.0),
     AFFE=(
         _F(
@@ -122,8 +136,6 @@ Solution = CALC_FERRAILLAGE(
             SIGS_ELS=2.8e8,
             SIGC_INF_ELS=3.5e7,
             SIGC_SUP_ELS=3.5e7,
-            UNITE_CONTRAINTE="Pa",
-            UNITE_DIMENSION="m",
         ),
     ),
 )

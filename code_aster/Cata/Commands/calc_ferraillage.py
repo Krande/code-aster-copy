@@ -73,6 +73,52 @@ CALC_FERRAILLAGE = OPER(
     #
     TYPE_COMB=SIMP(statut="o", typ="TXM", into=("ELU", "ELS", "ELS_QP")),
     CODIFICATION=SIMP(statut="f", typ="TXM", defaut="EC2", into=("BAEL91", "EC2")),
+    METHODE_2D=SIMP(
+        statut="f",
+        typ="TXM",
+        defaut="Capra-Maury",
+        into=("Capra-Maury", "Sandwich"),
+        fr=tr("Choix de l'algorithme de calcul 2D"),
+    ),
+    PAS_THETA=SIMP(
+        statut="f",
+        typ="R",
+        defaut=5,
+        fr=(
+            "Angle d'itération en degrés pour la recherche de la configuration d'équilibre pour le calcul 2D - Pour CapraMaury, il s'agit de l'orientation des facettes ; pour Sandwich, il s'agit de l'inclinaison des bielles de compression"
+        ),
+    ),
+    PAS_EPAI=SIMP(
+        statut="f",
+        typ="R",
+        defaut=0.01,
+        fr=(
+            "SANDWICH : Pas d'itération en pourcentage de l'épaisseur de la plaque, pour la recherche des épaisseurs optimales des couches SUP et INF"
+        ),
+    ),
+    PAS_SIGM=SIMP(
+        statut="f",
+        typ="R",
+        defaut=0.1,
+        fr=(
+            "SANDWICH : Pas d'itération pour la recherche du ratio optimal des contraintes principales de compression dans le béton"
+        ),
+    ),
+    COND_109=SIMP(
+        statut="f",
+        typ="TXM",
+        into=("OUI", "NON"),
+        defaut="OUI",
+        fr=(
+            "SANDWICH : Prise en compte de la clause §6.109-Éléments de membrane de l’EN-1992-2 pour le calcul de la résistance des bielles de compression du béton"
+        ),
+    ),
+    UNITE_CONTRAINTE=SIMP(
+        statut="o", typ="TXM", into=("MPa", "Pa"), fr=tr("Unité des contraintes du problème")
+    ),
+    UNITE_DIMENSION=SIMP(
+        statut="o", typ="TXM", into=("mm", "m"), fr=tr("Unité des dimensions du problème")
+    ),
     b_BAEL91=BLOC(
         condition=""" equal_to("CODIFICATION", 'BAEL91')""",
         fr=tr("utilisation du BAEL91"),
@@ -113,15 +159,6 @@ CALC_FERRAILLAGE = OPER(
                 fr=tr(
                     "Prise en compte de l'effort de traction supplémentaire du à l'effort tranchant et à la torsion?"
                 ),
-            ),
-            UNITE_CONTRAINTE=SIMP(
-                statut="o",
-                typ="TXM",
-                into=("MPa", "Pa"),
-                fr=tr("Unité des contraintes du problème"),
-            ),
-            UNITE_DIMENSION=SIMP(
-                statut="o", typ="TXM", into=("mm", "m"), fr=tr("Unité des dimensions du problème")
             ),
             FERR_MIN=SIMP(
                 statut="f",
@@ -177,36 +214,8 @@ CALC_FERRAILLAGE = OPER(
             N=SIMP(
                 statut="f", typ="R", fr=tr("Coefficient d'équivalence acier/béton (ELS,ELS_QP)")
             ),
-            RHO_ACIER=SIMP(statut="f", typ="R", defaut=-1, fr=tr("Densité volumique des aciers")),
             FE=SIMP(statut="f", typ="R", fr=tr("Contrainte admissible dans l'acier")),
-            EYS=SIMP(statut="f", typ="R", fr=tr("Module d'Young de l'acier")),
-            TYPE_DIAGRAMME=SIMP(
-                statut="f",
-                typ="TXM",
-                into=("B1", "B2"),
-                fr=tr(
-                    "Type du diagramme Contrainte-Deformation à utiliser: B1 (Incliné) ou B2 (Horizontal)"
-                ),
-            ),
-            GAMMA_S=SIMP(
-                statut="f",
-                typ="R",
-                fr=tr("Coefficient de sécurité sur la résistance de calcul des aciers à l'ELU"),
-            ),
             FCJ=SIMP(statut="f", typ="R", fr=tr("Contrainte admissible dans le béton")),
-            GAMMA_C=SIMP(
-                statut="f",
-                typ="R",
-                fr=tr("Coefficient de sécurité sur la résistance de calcul du béton à l'ELU"),
-            ),
-            ALPHA_CC=SIMP(
-                statut="f",
-                typ="R",
-                defaut=0.85,
-                fr=tr(
-                    "Coefficient de sécurité sur la résistance de calcul du béton en compression (ELU)"
-                ),
-            ),
             SIGS_ELS=SIMP(
                 statut="f",
                 typ="R",
@@ -350,7 +359,18 @@ CALC_FERRAILLAGE = OPER(
                 typ="R",
                 fr=tr("Diamètre approximatif des armatures supérieures suivant l'axe Z (ELS_QP)"),
             ),
-            b_iconst_bael=BLOC(
+            EYS=SIMP(statut="f", typ="R", fr=tr("Module d'Young de l'acier")),
+            TYPE_DIAGRAMME=SIMP(
+                statut="f",
+                typ="TXM",
+                defaut="B2",
+                into=("B1", "B2"),
+                fr=tr(
+                    "Type du diagramme Contrainte-Deformation à utiliser: B1 (Incliné) ou B2 (Horizontal)"
+                ),
+            ),
+            RHO_ACIER=SIMP(statut="f", typ="R", defaut=-1, fr=tr("Densité volumique des aciers")),
+            b_iconst=BLOC(
                 condition=""" greater_than("RHO_ACIER", 0)""",
                 fr=tr("Calcul du critère de difficulté de bétonnage si RHO_ACIER > 0"),
                 ALPHA_REINF=SIMP(
@@ -358,7 +378,7 @@ CALC_FERRAILLAGE = OPER(
                     typ="R",
                     defaut=1,
                     fr=tr(
-                        "Coefficient de pondération du ration de densité d'acier par mètre cube de béton"
+                        "Coefficient de pondération du ratio de densité d'acier par mètre cube de béton"
                     ),
                 ),
                 ALPHA_SHEAR=SIMP(
@@ -366,7 +386,7 @@ CALC_FERRAILLAGE = OPER(
                     typ="R",
                     defaut=1,
                     fr=tr(
-                        "Coefficient de pondération du ration de densité d'acier d'effort tranchant"
+                        "Coefficient de pondération du ratio de densité d'acier d'effort tranchant"
                     ),
                 ),
                 ALPHA_STIRRUPS=SIMP(
@@ -374,7 +394,7 @@ CALC_FERRAILLAGE = OPER(
                     typ="R",
                     defaut=1,
                     fr=tr(
-                        "Coefficient de pondération du ration de longueur des épingles d'acier d'effort tranchant"
+                        "Coefficient de pondération du ratio de longueur des épingles d'acier effort tranchant"
                     ),
                 ),
                 RHO_CRIT=SIMP(
@@ -390,7 +410,25 @@ CALC_FERRAILLAGE = OPER(
                     statut="f",
                     typ="R",
                     defaut=1,
-                    fr=tr("Longueur critique des épingles d'aciers d'effort tranchant"),
+                    fr=tr("Longueur critique des epingle d'aciers d'effort tranchant"),
+                ),
+            ),
+            GAMMA_S=SIMP(
+                statut="f",
+                typ="R",
+                fr=tr("Coefficient de sécurité sur la résistance de calcul des aciers à l'ELU"),
+            ),
+            GAMMA_C=SIMP(
+                statut="f",
+                typ="R",
+                fr=tr("Coefficient de sécurité sur la résistance de calcul du béton à l'ELU"),
+            ),
+            ALPHA_CC=SIMP(
+                statut="f",
+                typ="R",
+                defaut=0.85,
+                fr=tr(
+                    "Coefficient de sécurité sur la résistance de calcul du béton en compression (ELU)"
                 ),
             ),
         ),
@@ -435,15 +473,6 @@ CALC_FERRAILLAGE = OPER(
                 fr=tr(
                     "Prise en compte de l'effort de traction supplémentaire du à l'effort tranchant et à la torsion?"
                 ),
-            ),
-            UNITE_CONTRAINTE=SIMP(
-                statut="o",
-                typ="TXM",
-                into=("MPa", "Pa"),
-                fr=tr("Unité des contraintes du problème"),
-            ),
-            UNITE_DIMENSION=SIMP(
-                statut="o", typ="TXM", into=("mm", "m"), fr=tr("Unité des dimensions du problème")
             ),
             FERR_MIN=SIMP(
                 statut="f",
@@ -499,42 +528,13 @@ CALC_FERRAILLAGE = OPER(
             ALPHA_E=SIMP(
                 statut="f", typ="R", fr=tr("Coefficient d'équivalence acier/béton (ELS, ELS_QP)")
             ),
-            RHO_ACIER=SIMP(statut="f", typ="R", defaut=-1, fr=tr("Densité volumique des aciers")),
             FYK=SIMP(
                 statut="f", typ="R", fr=tr("Limite d'élasticité caractéristique dans l'acier")
-            ),
-            EYS=SIMP(statut="f", typ="R", fr=tr("Module d'Young de l'acier")),
-            TYPE_DIAGRAMME=SIMP(
-                statut="f",
-                typ="TXM",
-                defaut="B2",
-                into=("B1", "B2"),
-                fr=tr(
-                    "Type du diagramme Contrainte-Deformation à utiliser: B1 (Incliné) ou B2 (Horizontal)"
-                ),
-            ),
-            GAMMA_S=SIMP(
-                statut="f",
-                typ="R",
-                fr=tr("Coefficient de sécurité sur la résistance de calcul des aciers"),
             ),
             FCK=SIMP(
                 statut="f",
                 typ="R",
                 fr=tr("Résistance caractéristique du béton en compression à 28 jours"),
-            ),
-            GAMMA_C=SIMP(
-                statut="f",
-                typ="R",
-                fr=tr("Coefficient de sécurité sur la résistance de calcul du béton"),
-            ),
-            ALPHA_CC=SIMP(
-                statut="f",
-                typ="R",
-                defaut=1.0,
-                fr=tr(
-                    "Coefficient de sécurité sur la résistance de calcul du béton en compression (ELU)"
-                ),
             ),
             SIGS_ELS=SIMP(
                 statut="f", typ="R", fr=tr("Contrainte ultime de dimensionnement des aciers (ELS)")
@@ -691,7 +691,18 @@ CALC_FERRAILLAGE = OPER(
                 into=("A", "B", "C"),
                 fr=tr("Classe de ductilité des aciers"),
             ),
-            b_iconst_ec2=BLOC(
+            EYS=SIMP(statut="f", typ="R", fr=tr("Module d'Young de l'acier")),
+            TYPE_DIAGRAMME=SIMP(
+                statut="f",
+                typ="TXM",
+                defaut="B2",
+                into=("B1", "B2"),
+                fr=tr(
+                    "Type du diagramme Contrainte-Deformation à utiliser: B1 (Incliné) ou B2 (Horizontal)"
+                ),
+            ),
+            RHO_ACIER=SIMP(statut="f", typ="R", defaut=-1, fr=tr("Densité volumique des aciers")),
+            b_iconst=BLOC(
                 condition=""" greater_than("RHO_ACIER", 0)""",
                 fr=tr("Calcul du critère de difficulté de bétonnage si RHO_ACIER > 0"),
                 ALPHA_REINF=SIMP(
@@ -732,6 +743,24 @@ CALC_FERRAILLAGE = OPER(
                     typ="R",
                     defaut=1,
                     fr=tr("Longueur critique des epingle d'aciers d'effort tranchant"),
+                ),
+            ),
+            GAMMA_S=SIMP(
+                statut="f",
+                typ="R",
+                fr=tr("Coefficient de sécurité sur la résistance de calcul des aciers à l'ELU"),
+            ),
+            GAMMA_C=SIMP(
+                statut="f",
+                typ="R",
+                fr=tr("Coefficient de sécurité sur la résistance de calcul du béton à l'ELU"),
+            ),
+            ALPHA_CC=SIMP(
+                statut="f",
+                typ="R",
+                defaut=0.85,
+                fr=tr(
+                    "Coefficient de sécurité sur la résistance de calcul du béton en compression (ELU)"
                 ),
             ),
         ),

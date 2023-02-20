@@ -50,6 +50,52 @@ COMBINAISON_FERRAILLAGE = MACRO(
         NUME_ORDRE=SIMP(statut="f", typ="I", min=1, max="**"),
     ),
     CODIFICATION=SIMP(statut="f", typ="TXM", defaut="EC2", into=("EC2", "BAEL91")),
+    METHODE_2D=SIMP(
+        statut="f",
+        typ="TXM",
+        defaut="Capra-Maury",
+        into=("Capra-Maury", "Sandwich"),
+        fr=tr("Choix de l'algorithme de calcul 2D"),
+    ),
+    PAS_THETA=SIMP(
+        statut="f",
+        typ="R",
+        defaut=5,
+        fr=(
+            "Angle d'itération en degrés pour la recherche de la configuration d'équilibre pour le calcul 2D - Pour CapraMaury, il s'agit de l'orientation des facettes ; pour Sandwich, il s'agit de l'inclinaison des bielles de compression"
+        ),
+    ),
+    PAS_EPAI=SIMP(
+        statut="f",
+        typ="R",
+        defaut=0.01,
+        fr=(
+            "SANDWICH : Pas d'itération en pourcentage de l'épaisseur de la plaque, pour la recherche des épaisseurs optimales des couches SUP et INF"
+        ),
+    ),
+    PAS_SIGM=SIMP(
+        statut="f",
+        typ="R",
+        defaut=0.1,
+        fr=(
+            "SANDWICH : Pas d'itération pour la recherche du ratio optimal des contraintes principales de compression dans le béton"
+        ),
+    ),
+    COND_109=SIMP(
+        statut="f",
+        typ="TXM",
+        into=("OUI", "NON"),
+        defaut="OUI",
+        fr=(
+            "SANDWICH : Prise en compte de la clause §6.109-Éléments de membrane de l’EN-1992-2 pour le calcul de la résistance des bielles de compression du béton"
+        ),
+    ),
+    UNITE_CONTRAINTE=SIMP(
+        statut="o", typ="TXM", into=("MPa", "Pa"), fr=tr("Unité des contraintes du problème")
+    ),
+    UNITE_DIMENSION=SIMP(
+        statut="o", typ="TXM", into=("mm", "m"), fr=tr("Unité des dimensions du problème")
+    ),
     b_EC2=BLOC(
         condition=""" equal_to("CODIFICATION", 'EC2')""",
         fr=tr("utilisation de l'eurocode 2"),
@@ -90,15 +136,6 @@ COMBINAISON_FERRAILLAGE = MACRO(
                 fr=tr(
                     "Prise en compte de l'effort de traction supplémentaire du à l'effort tranchant et à la torsion?"
                 ),
-            ),
-            UNITE_CONTRAINTE=SIMP(
-                statut="o",
-                typ="TXM",
-                into=("MPa", "Pa"),
-                fr=tr("Unité des contraintes du problème"),
-            ),
-            UNITE_DIMENSION=SIMP(
-                statut="o", typ="TXM", into=("mm", "m"), fr=tr("Unité des dimensions du problème")
             ),
             FERR_MIN=SIMP(
                 statut="f",
@@ -449,15 +486,6 @@ COMBINAISON_FERRAILLAGE = MACRO(
                 fr=tr(
                     "Prise en compte de l'effort de traction supplémentaire du à l'effort tranchant et à la torsion?"
                 ),
-            ),
-            UNITE_CONTRAINTE=SIMP(
-                statut="o",
-                typ="TXM",
-                into=("MPa", "Pa"),
-                fr=tr("Unité des contraintes du problème"),
-            ),
-            UNITE_DIMENSION=SIMP(
-                statut="o", typ="TXM", into=("mm", "m"), fr=tr("Unité des dimensions du problème")
             ),
             FERR_MIN=SIMP(
                 statut="f",
