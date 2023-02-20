@@ -2437,7 +2437,6 @@ def calc_bt_ops(self, **args):
         mesh = DEFI_GROUP(reuse=mesh, MAILLAGE=mesh, **motscles1)
         mesh = DEFI_GROUP(reuse=mesh, MAILLAGE=mesh, **motscles)
 
-
         Bound = np.array([])
         Holes = {}
         for key in GROUP_C.keys():

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -68,8 +68,9 @@ from ..Commands import (
 )
 from ..Helpers.LogicalUnit import LogicalUnitFile
 
-from code_aster.Objects import Mesh as CA_Mesh
+from ..Objects import Mesh as CA_Mesh
 import medcoupling as medc
+
 
 def pre_seisme_nonl_ops(self, **args):
     """Corps de la macro PRE_SEISME_NONL"""
@@ -1154,7 +1155,7 @@ class Mesh(object):
             )
             if "MAILLAGE" in self.param["RESULTAT"]:
                 self.parent.register_result(_NewMesh, self.param["RESULTAT"]["MAILLAGE"])
-    
+
             self.new_mesh = _NewMesh
 
     def get_new_mesh(self):
@@ -1221,17 +1222,17 @@ class Mesh(object):
 
         coords = umesh.getCoords()
         nb_nodes = coords.getNumberOfTuples()
-        coords.reAlloc(nb_nodes+nb_new_nodes)
+        coords.reAlloc(nb_nodes + nb_new_nodes)
 
         mesh0d = umesh.getMeshAtLevel(-3)
         nb_cells0d = mesh0d.getNumberOfCells()
 
         groups0d = [umesh.getGroupArr(-3, name) for name in umesh.getGroupsOnSpecifiedLev(-3)]
 
-        cells=[]
+        cells = []
         for ii in range(nb_new_nodes):
-            new_node = nb_nodes+ii
-            new_cell = nb_cells0d+ii
+            new_node = nb_nodes + ii
+            new_cell = nb_cells0d + ii
             coords[new_node] = (0.0, 0.0, 1000000.0)
             mesh0d.insertNextCell(medc.NORM_POINT1, 1, [new_node])
             cells.append(new_cell)

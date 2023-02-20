@@ -11418,6 +11418,9 @@ class MeshCoordinatesField(DataStructure):
     def __rmul__(self, arg0):
         pass
 
+    def __setitem__(self, idx, value):
+        """Set the coordinate value at index *idx* in the vector."""
+
     def __sub__(self, arg0):
         pass
 

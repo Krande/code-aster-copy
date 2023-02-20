@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -129,7 +129,7 @@ def get_group_nom_coord(group_inter, nom_mail):
     # nom des noeuds
     liste_nom_no_int = [nom_mail.getNodeName(node) for node in liste_no_interf]
     COORD_3D = nom_mail.getCoordinates().getValues()
-    coord_no_interf = NP.array([COORD_3D[3*node:3*(node+1)] for node in liste_no_interf])
+    coord_no_interf = NP.array([COORD_3D[3 * node : 3 * (node + 1)] for node in liste_no_interf])
     if len(coord_no_interf[0]) == 2:
         z = NP.zeros((len(coord_no_interf[:, 0]), 1))
         coord_no_interf = NP.append(coord_no_interf, z, axis=1)
@@ -159,7 +159,7 @@ def calc_dist2(noe_interf):
     YRT = NP.transpose(YR)
     DX = XR - XRT
     DY = YR - YRT
-    DIST = DX ** 2 + DY ** 2
+    DIST = DX**2 + DY**2
     return DIST
 
 
@@ -417,7 +417,7 @@ def itersimcor_SRO(self, FONC_DSP, data_cohe, **SRO_args):
     err_ZPA = coef_ZPA * err_zpa
     err_MAX = coef_MAX * err_max
     err_RMS = coef_RMS * err_rms
-    errmult.append(sqrt(1.0 / 3.0 * (err_ZPA ** 2 + err_MAX ** 2 + err_RMS ** 2)))
+    errmult.append(sqrt(1.0 / 3.0 * (err_ZPA**2 + err_MAX**2 + err_RMS**2)))
     if self.INFO == 2:
         UTMESS("I", "SEISME_43", valr=(err_zpa, err_max, err_rms, errmult[-1]))
 
@@ -427,7 +427,7 @@ def itersimcor_SRO(self, FONC_DSP, data_cohe, **SRO_args):
         nz = NP.nonzero(valesro)
         factm = NP.ones(nbfreq2)
         factm[nz] = vale_sro_ref[nz] / valesro[nz]
-        vale_dspi = vale_dsp * factm ** 2
+        vale_dspi = vale_dsp * factm**2
         #          vale_dsp[N1:]= vale_dspi[N1:]
         vale_dsp = vale_dspi
         f_dsp = t_fonction(freq_dsp, vale_dsp, para=para_dsp)
@@ -460,7 +460,7 @@ def itersimcor_SRO(self, FONC_DSP, data_cohe, **SRO_args):
         err_ZPA = coef_ZPA * err_zpa
         err_MAX = coef_MAX * err_max
         err_RMS = coef_RMS * err_rms
-        errmult.append(sqrt(1.0 / 3.0 * (err_ZPA ** 2 + err_MAX ** 2 + err_RMS ** 2)))
+        errmult.append(sqrt(1.0 / 3.0 * (err_ZPA**2 + err_MAX**2 + err_RMS**2)))
         if self.INFO == 2:
             UTMESS("I", "SEISME_42", vali=(kk + 1, NB_ITER), valr=errmult[-1])
     # OPTIMUM
@@ -495,7 +495,7 @@ def erre_spectre(Freq, valesro, vale_sro_ref):
     errzpa = errlin[-1]
     errmax = max(abs(errlin))
     errmin = min(errlin)
-    errms = sqrt(1.0 / len(Freq) * NP.sum(errlin ** 2))
+    errms = sqrt(1.0 / len(Freq) * NP.sum(errlin**2))
     freqerr = [Freq[NP.argmax(abs(errlin))], Freq[NP.argmin((errlin))]]
     return errzpa, errmax, errmin, errms, freqerr
 
@@ -575,7 +575,7 @@ def itersimcortir_SRO(self, FONC_DSP, data_cohe, NB_TIR, **SRO_args):
     err_ZPA = coef_ZPA * err_zpa
     err_MAX = coef_MAX * err_max
     err_RMS = coef_RMS * err_rms
-    errmult.append(sqrt(1.0 / 3.0 * (err_ZPA ** 2 + err_MAX ** 2 + err_RMS ** 2)))
+    errmult.append(sqrt(1.0 / 3.0 * (err_ZPA**2 + err_MAX**2 + err_RMS**2)))
     if self.INFO == 2:
         UTMESS("I", "SEISME_43", valr=(err_zpa, err_max, err_rms, errmult[-1]))
 
@@ -585,7 +585,7 @@ def itersimcortir_SRO(self, FONC_DSP, data_cohe, NB_TIR, **SRO_args):
         nz = NP.nonzero(valesro)
         factm = NP.ones(nbfreq2)
         factm[nz] = vale_sro_ref[nz] / valesro[nz]
-        vale_dspi = vale_dsp * factm ** 2
+        vale_dspi = vale_dsp * factm**2
         #          vale_dsp[N1:]= vale_dspi[N1:]
         vale_dsp = vale_dspi
         f_dsp = t_fonction(freq_dsp, vale_dsp, para=para_dsp)
@@ -619,7 +619,7 @@ def itersimcortir_SRO(self, FONC_DSP, data_cohe, NB_TIR, **SRO_args):
         err_ZPA = coef_ZPA * err_zpa
         err_MAX = coef_MAX * err_max
         err_RMS = coef_RMS * err_rms
-        errmult.append(sqrt(1.0 / 3.0 * (err_ZPA ** 2 + err_MAX ** 2 + err_RMS ** 2)))
+        errmult.append(sqrt(1.0 / 3.0 * (err_ZPA**2 + err_MAX**2 + err_RMS**2)))
         if self.INFO == 2:
             UTMESS("I", "SEISME_42", vali=(kk + 1, NB_ITER), valr=errmult[-1])
     # OPTIMUM

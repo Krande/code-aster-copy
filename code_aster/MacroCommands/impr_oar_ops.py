@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -799,7 +799,9 @@ class tuyauterie(OAR_element):
                 for node in nodes:
                     node_name = self.maillage.getNodeName(node - 1)
                     nodeTorseur = nodeMT.append("oar:TORSEUR")
-                    for val, cle in zip(self.dictNoeudValTorseur[node_name], torseur_XML):  # 6 valeurs
+                    for val, cle in zip(
+                        self.dictNoeudValTorseur[node_name], torseur_XML
+                    ):  # 6 valeurs
                         nodeTorseur.append(cle, val)
 
 

@@ -35,8 +35,9 @@ from ..Messages import UTMESS
 from .Fracture.detec_front import DETEC_FRONT
 from .Fracture.propa_xfem import PROPA_XFEM
 
-from code_aster.Objects import Mesh
+from ..Objects import Mesh
 import medcoupling as medc
+
 
 def InterpolationLineaire(x0, points):
     """
@@ -1044,11 +1045,11 @@ def propa_fiss_ops(self, METHODE_PROPA, INFO, **args):
                 # on cherche les points du front les plus proches des nouvelles extremites
                 # des fronts de fissures
                 FmAct = [-1] * 2 * Nbfond
-                
+
                 mm[numfis] = MAIL_FISS1.createMedCouplingMesh()
                 coords = mm[numfis].getCoords()
-                if coords.getNumberOfComponents()==2:
-                    coords = coords.changeNbOfComponents(3, 0.)
+                if coords.getNumberOfComponents() == 2:
+                    coords = coords.changeNbOfComponents(3, 0.0)
                     mm[numfis].setCoords(coords)
                 for j in range(2 * Nbfond):
                     xyz = Coorfo[4 * (Fondmult[j] - 1) : 4 * Fondmult[j] - 1]
@@ -1069,7 +1070,7 @@ def propa_fiss_ops(self, METHODE_PROPA, INFO, **args):
                     FmAct[j] = nbno - nbnofo + k0
 
                     # Correction de la position des noeuds les plus proches des bords libres
-                    coords[FmAct[j]] = Coorfo[4 * (Fondmult[j] - 1):4 * (Fondmult[j] - 1)+3]              
+                    coords[FmAct[j]] = Coorfo[4 * (Fondmult[j] - 1) : 4 * (Fondmult[j] - 1) + 3]
 
                 # Critere pour calculer le nombre de noeuds total et par fond
                 # nombre total de noeuds constant
@@ -1105,8 +1106,8 @@ def propa_fiss_ops(self, METHODE_PROPA, INFO, **args):
                 abscf = [[0.0] * nbptfo[i] for i in range(Nbfond)]
 
                 nb_old_nodes = coords.getNumberOfTuples()
-                nb_new_nodes = sum([len(range(1,nbptfo[j]-1)) for j in range(Nbfond)])
-                coords.reAlloc(nb_old_nodes+nb_new_nodes)
+                nb_new_nodes = sum([len(range(1, nbptfo[j] - 1)) for j in range(Nbfond)])
+                coords.reAlloc(nb_old_nodes + nb_new_nodes)
                 inofo = 0
                 for j in range(Nbfond):
                     absmax = Coorfo[4 * Fondmult[2 * j + 1] - 1]
@@ -1119,7 +1120,7 @@ def propa_fiss_ops(self, METHODE_PROPA, INFO, **args):
                         abscf[j][i] = i * absmax / (nbptfo[j] - 1)
                         xyz = InterpolFondFiss(abscf[j][i], Coorfoj)
                         numptfo[j][i] = nbno
-                        coords[nb_old_nodes+inofo] = xyz
+                        coords[nb_old_nodes + inofo] = xyz
                         nbno += 1
                         inofo += 1
                 nbno += nbnofo
@@ -1133,10 +1134,9 @@ def propa_fiss_ops(self, METHODE_PROPA, INFO, **args):
                 B = [0, 0, 0]
                 Damaxbis = Damax
 
-                
                 nb_old_nodes = coords.getNumberOfTuples()
                 nb_new_nodes = sum([len(numptfo[j]) for j in range(Nbfond)])
-                coords.reAlloc(nb_old_nodes+nb_new_nodes)
+                coords.reAlloc(nb_old_nodes + nb_new_nodes)
 
                 inofo = 0
                 for j in range(Nbfond):
@@ -1192,7 +1192,7 @@ def propa_fiss_ops(self, METHODE_PROPA, INFO, **args):
                                     Damaxbis = min(Damaxbis, Damax * Crit2)
                         A = C
                         B = D
-                        coords[nb_old_nodes+inofo] = [Xf2, Yf2, Zf2]
+                        coords[nb_old_nodes + inofo] = [Xf2, Yf2, Zf2]
                         inofo += 1
 
                 # 2eme Calcul des points avec le nouveau DAMAX si fissure problematique
@@ -1212,10 +1212,13 @@ def propa_fiss_ops(self, METHODE_PROPA, INFO, **args):
                         i3 = nbno - nbnofo + imafo + j + 1
                         i4 = nbno - nbnofo + imafo + j
                         mesh2d.insertNextCell(medc.NORM_QUAD4, 4, [i1, i2, i3, i4])
-                        cells.append(nb_cells2d+imafo)
+                        cells.append(nb_cells2d + imafo)
                         imafo += 1
-                        
-                groups2d = [mm[numfis].getGroupArr(0, name) for name in mm[numfis].getGroupsOnSpecifiedLev(0)]
+
+                groups2d = [
+                    mm[numfis].getGroupArr(0, name)
+                    for name in mm[numfis].getGroupsOnSpecifiedLev(0)
+                ]
 
                 group = medc.DataArrayInt(cells)
                 group.setName("%s_%i" % (MFISS, it))
@@ -1226,19 +1229,22 @@ def propa_fiss_ops(self, METHODE_PROPA, INFO, **args):
 
                 # Ajout Maille fond (SEG2)
                 imafo = 0
-                
+
                 mesh1d = mm[numfis].getMeshAtLevel(-1)
                 nb_cells1d = mesh1d.getNumberOfCells()
-                cells=[]
+                cells = []
                 for j in range(Nbfond):
                     for i in range(len(numptfo[j]) - 1):
                         i3 = nbno - nbnofo + imafo + j
                         i4 = nbno - nbnofo + imafo + j + 1
                         mesh1d.insertNextCell(medc.NORM_SEG2, 2, [i3, i4])
-                        cells.append(nb_cells1d+imafo)
+                        cells.append(nb_cells1d + imafo)
                         imafo += 1
 
-                groups1d = [mm[numfis].getGroupArr(-1, name) for name in mm[numfis].getGroupsOnSpecifiedLev(-1)]
+                groups1d = [
+                    mm[numfis].getGroupArr(-1, name)
+                    for name in mm[numfis].getGroupsOnSpecifiedLev(-1)
+                ]
                 group = medc.DataArrayInt(cells)
                 group.setName("%s_%i" % (MFOND, it))
                 groups1d.append(group)
@@ -1253,13 +1259,11 @@ def propa_fiss_ops(self, METHODE_PROPA, INFO, **args):
                 DEFI_GROUP(
                     reuse=MAIL_FISS1,
                     MAILLAGE=MAIL_FISS1,
-                    CREA_GROUP_NO=_F(OPTION="NOEUD_ORDO", NOM="Nds_Plan", GROUP_MA="%s_%i" % (MFISS, (it - 1))),
+                    CREA_GROUP_NO=_F(
+                        OPTION="NOEUD_ORDO", NOM="Nds_Plan", GROUP_MA="%s_%i" % (MFISS, (it - 1))
+                    ),
                 )
-                DEFI_GROUP(
-                    reuse=MAIL_FISS1,
-                    MAILLAGE=MAIL_FISS1,
-                    DETR_GROUP_MA=_F(NOM="A"),
-                )
+                DEFI_GROUP(reuse=MAIL_FISS1, MAILLAGE=MAIL_FISS1, DETR_GROUP_MA=_F(NOM="A"))
                 DEFI_GROUP(
                     reuse=MAIL_FISS1,
                     MAILLAGE=MAIL_FISS1,
@@ -1276,11 +1280,11 @@ def propa_fiss_ops(self, METHODE_PROPA, INFO, **args):
 
                 coords = mm[numfis].getCoords()
                 nbno = coords.getNumberOfTuples()
-                assert(coords.getNumberOfComponents()==2)
+                assert coords.getNumberOfComponents() == 2
 
                 # Coordonnees du point propage
                 cells = MAIL_FISS1.getCells("%s_%i" % (MFOND, it - 1))
-                node = connex[cells[0]][0]-1
+                node = connex[cells[0]][0] - 1
                 Xf, Yf = coords[node].getValues()
 
                 VPVNi = fiss0.sdj.BASEFOND.get()
@@ -1289,7 +1293,7 @@ def propa_fiss_ops(self, METHODE_PROPA, INFO, **args):
                 Xf2 = Xf + (VPVNi[2] * cos(beta) + VPVNi[0] * sin(beta)) * Vloc
                 Yf2 = Yf + (VPVNi[3] * cos(beta) + VPVNi[1] * sin(beta)) * Vloc
 
-                coords.reAlloc(nbno+1)
+                coords.reAlloc(nbno + 1)
                 coords[nbno] = [Xf2, Yf2]
 
                 # Ajout Maille levre (SEG2)
@@ -1301,7 +1305,10 @@ def propa_fiss_ops(self, METHODE_PROPA, INFO, **args):
                 mesh1d.checkConsistencyLight()
                 cells.append(nb_cells1d)
 
-                groups1d = [mm[numfis].getGroupArr(0, name) for name in mm[numfis].getGroupsOnSpecifiedLev(0)]
+                groups1d = [
+                    mm[numfis].getGroupArr(0, name)
+                    for name in mm[numfis].getGroupsOnSpecifiedLev(0)
+                ]
                 group = medc.DataArrayInt(cells)
                 group.setName("%s_%i" % (MFISS, it))
                 groups1d.append(group)
@@ -1317,7 +1324,10 @@ def propa_fiss_ops(self, METHODE_PROPA, INFO, **args):
                 mesh0d.checkConsistencyLight()
                 cells = [nb_cells0d]
 
-                groups0d = [mm[numfis].getGroupArr(-1, name) for name in mm[numfis].getGroupsOnSpecifiedLev(-1)]
+                groups0d = [
+                    mm[numfis].getGroupArr(-1, name)
+                    for name in mm[numfis].getGroupsOnSpecifiedLev(-1)
+                ]
                 group = medc.DataArrayInt(cells)
                 group.setName("%s_%i" % (MFOND, it))
                 groups0d.append(group)
@@ -1325,7 +1335,7 @@ def propa_fiss_ops(self, METHODE_PROPA, INFO, **args):
                 mm[numfis].setMeshAtLevel(-1, mesh0d)
                 mm[numfis].setGroupsAtLevel(-1, groups0d)
             else:
-                assert(False)
+                assert False
 
             if INFO == 2:
                 texte = "Maillage produit par l operateur PROPA_FISS"
@@ -1337,7 +1347,7 @@ def propa_fiss_ops(self, METHODE_PROPA, INFO, **args):
 
             ma_xfem2 = Mesh()
             ma_xfem2.buildFromMedCouplingMesh(mm[numfis])
-            
+
             if MAIL_FISS2 != None:
                 self.register_result(ma_xfem2, MAIL_FISS2)
 
@@ -1369,7 +1379,7 @@ def propa_fiss_ops(self, METHODE_PROPA, INFO, **args):
             PF = args["PFON"]
             DTAN = args["DTAN"]
 
-            mm=medc.MEDFileUMesh()
+            mm = medc.MEDFileUMesh()
 
             # Coordonnees des noeuds
             coords = []
@@ -1377,7 +1387,7 @@ def propa_fiss_ops(self, METHODE_PROPA, INFO, **args):
             coords.extend(PI)
             coords.extend(PF[0:2])
 
-            coords = medc.DataArrayDouble(coords, len(coords)//2, 2)
+            coords = medc.DataArrayDouble(coords, len(coords) // 2, 2)
 
             # Ajout Maille levre (SEG2)
             mesh1d = medc.MEDCouplingUMesh()
@@ -1394,7 +1404,6 @@ def propa_fiss_ops(self, METHODE_PROPA, INFO, **args):
             mm.setMeshAtLevel(0, mesh1d)
             mm.setGroupsAtLevel(0, [group])
 
-
             # Ajout Maille fond (POI1)
             mesh0d = medc.MEDCouplingUMesh()
             mesh0d.setMeshDimension(0)
@@ -1410,7 +1419,6 @@ def propa_fiss_ops(self, METHODE_PROPA, INFO, **args):
             mm.setMeshAtLevel(-1, mesh0d)
             mm.setGroupsAtLevel(-1, [group])
 
-
         # 4-b : demi-plan
         if form == "DEMI_PLAN":
             P0 = args["POINT_ORIG"]
@@ -1418,7 +1426,7 @@ def propa_fiss_ops(self, METHODE_PROPA, INFO, **args):
             dpropa = args["DTAN"]
             nbpt = args["NB_POINT_FOND"]
 
-            mm=medc.MEDFileUMesh()
+            mm = medc.MEDFileUMesh()
 
             x = [None] * nbpt
             y = [None] * nbpt
@@ -1443,12 +1451,12 @@ def propa_fiss_ops(self, METHODE_PROPA, INFO, **args):
             for i in range(1, nbpt):
                 coords.extend([x[i], y[i], z[i]])
 
-            coords = medc.DataArrayDouble(coords, len(coords)//3, 3)
+            coords = medc.DataArrayDouble(coords, len(coords) // 3, 3)
 
             # Ajout Maille levre (quad4)
             mesh2d = medc.MEDCouplingUMesh()
             mesh2d.setMeshDimension(2)
-            mesh2d.allocateCells(nbpt-1)
+            mesh2d.allocateCells(nbpt - 1)
             mesh2d.setCoords(coords)
             cells = []
             for ifond in range(nbpt - 1):
@@ -1469,7 +1477,7 @@ def propa_fiss_ops(self, METHODE_PROPA, INFO, **args):
             # Ajout Maille fond (SEG2)
             mesh1d = medc.MEDCouplingUMesh()
             mesh1d.setMeshDimension(1)
-            mesh1d.allocateCells(nbpt-1)
+            mesh1d.allocateCells(nbpt - 1)
             mesh1d.setCoords(coords)
             cells = []
             for ifond in range(nbpt - 1):
@@ -1500,7 +1508,7 @@ def propa_fiss_ops(self, METHODE_PROPA, INFO, **args):
                 UTMESS("F", "RUPTURE1_52")
             nbpt = args["NB_POINT_FOND"]
 
-            mm=medc.MEDFileUMesh()
+            mm = medc.MEDFileUMesh()
 
             # Coordonnees des noeuds
             coords = [P0[0], P0[1], P0[2]]
@@ -1514,12 +1522,12 @@ def propa_fiss_ops(self, METHODE_PROPA, INFO, **args):
                 coor_r0 = NP.dot(matr2, coor_r1) + P0
                 coords.extend([coor_r0[0], coor_r0[1], coor_r0[2]])
 
-            coords = medc.DataArrayDouble(coords, len(coords)//3, 3)
+            coords = medc.DataArrayDouble(coords, len(coords) // 3, 3)
 
             # Ajout Maille levre (TRIA3)
             mesh2d = medc.MEDCouplingUMesh()
             mesh2d.setMeshDimension(2)
-            mesh2d.allocateCells(nbpt-1)
+            mesh2d.allocateCells(nbpt - 1)
             mesh2d.setCoords(coords)
             cells = []
             for ifond in range(nbpt - 1):
@@ -1539,7 +1547,7 @@ def propa_fiss_ops(self, METHODE_PROPA, INFO, **args):
             # Ajout Maille fond (SEG2)
             mesh1d = medc.MEDCouplingUMesh()
             mesh1d.setMeshDimension(1)
-            mesh1d.allocateCells(nbpt-1)
+            mesh1d.allocateCells(nbpt - 1)
             mesh1d.setCoords(coords)
             cells = []
             for ifond in range(nbpt - 1):

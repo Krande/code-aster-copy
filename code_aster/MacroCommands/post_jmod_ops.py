@@ -224,7 +224,7 @@ def all_coordinates(self, MAIL):
     Store in dict type
     """
 
-    nodes = [MAIL.getNodeName(node) for node in  MAIL.getNodes()]
+    nodes = [MAIL.getNodeName(node) for node in MAIL.getNodes()]
     node_co = np.reshape(MAIL.getCoordinates().getValues(), (len(nodes), 3)).tolist()
 
     all_co = dict(zip(nodes, node_co))
@@ -713,9 +713,9 @@ def calc_vari_area_no_bord(self, MAIL, NB_COUCHES, lNode1, lNode2, NODESBOUGE, l
     coords = MAIL.getCoordinates()
 
     for iNode in NODESBOUGE:
-        coords[iNode*3] = coords[iNode*3] + lVect[0]
-        coords[iNode*3+1] = coords[iNode*3+1] + lVect[1]
-        coords[iNode*3+2] = coords[iNode*3+2] + lVect[2]
+        coords[iNode * 3] = coords[iNode * 3] + lVect[0]
+        coords[iNode * 3 + 1] = coords[iNode * 3 + 1] + lVect[1]
+        coords[iNode * 3 + 2] = coords[iNode * 3 + 2] + lVect[2]
 
     if symeType == "OUI":
         crea_group_no_from_no(self, MAIL, "NOAREAX", lNode1[1 : len(lNode1) - 1])
@@ -748,9 +748,9 @@ def calc_vari_area_no_bord(self, MAIL, NB_COUCHES, lNode1, lNode2, NODESBOUGE, l
     del_group_ma(self, MAIL, "MAAREA")
 
     for iNode in NODESBOUGE:
-        coords[iNode*3] = coords[iNode*3] - lVect[0]
-        coords[iNode*3+1] = coords[iNode*3+1] - lVect[1]
-        coords[iNode*3+2] = coords[iNode*3+2] - lVect[2]
+        coords[iNode * 3] = coords[iNode * 3] - lVect[0]
+        coords[iNode * 3 + 1] = coords[iNode * 3 + 1] - lVect[1]
+        coords[iNode * 3 + 2] = coords[iNode * 3 + 2] - lVect[2]
 
     XAIRE = areaFin - areaIni
 
@@ -797,18 +797,15 @@ def calc_vari_area_no_midd(
     coords = MAIL.getCoordinates()
 
     for iNode in NODESBOUGE:
-        coords[iNode*3] = coords[iNode*3] + lVect[0]
-        coords[iNode*3+1] = coords[iNode*3+1] + lVect[1]
-        coords[iNode*3+2] = coords[iNode*3+2] + lVect[2]
+        coords[iNode * 3] = coords[iNode * 3] + lVect[0]
+        coords[iNode * 3 + 1] = coords[iNode * 3 + 1] + lVect[1]
+        coords[iNode * 3 + 2] = coords[iNode * 3 + 2] + lVect[2]
 
     if symeType == "OUI":
         crea_group_no_from_no(self, MAIL, "NOAREA", lNode[1 : len(lNode) - 1])
     else:
         crea_group_no_from_no(
-            self,
-            MAIL,
-            "NOAREA",
-            lNode[0][1 : len(lNode[0]) - 1] + lNode[1][1 : len(lNode[1]) - 1],
+            self, MAIL, "NOAREA", lNode[0][1 : len(lNode[0]) - 1] + lNode[1][1 : len(lNode[1]) - 1]
         )
 
     crea_group_ma_appui_group_no_2d(self, MAIL, "MAAREATEM", "NOAREA")
@@ -830,9 +827,9 @@ def calc_vari_area_no_midd(
         del_group_ma(self, MAIL, "MAAREAINF")
 
     for iNode in NODESBOUGE:
-        coords[iNode*3] = coords[iNode*3] - lVect[0]
-        coords[iNode*3+1] = coords[iNode*3+1] - lVect[1]
-        coords[iNode*3+2] = coords[iNode*3+2] - lVect[2]
+        coords[iNode * 3] = coords[iNode * 3] - lVect[0]
+        coords[iNode * 3 + 1] = coords[iNode * 3 + 1] - lVect[1]
+        coords[iNode * 3 + 2] = coords[iNode * 3 + 2] - lVect[2]
 
     XAIRE = areaFin - areaIni
 
@@ -910,9 +907,9 @@ def calc_vari_area_no_glob(
 
     for iKey in NODESBOUGE.keys():
         for iNode in NODESBOUGE[iKey]:
-            coords[iNode*3] = coords[iNode*3] + lVect[iKey][0]
-            coords[iNode*3+1] = coords[iNode*3+1] + lVect[iKey][1]
-            coords[iNode*3+2] = coords[iNode*3+2] + lVect[iKey][2]
+            coords[iNode * 3] = coords[iNode * 3] + lVect[iKey][0]
+            coords[iNode * 3 + 1] = coords[iNode * 3 + 1] + lVect[iKey][1]
+            coords[iNode * 3 + 2] = coords[iNode * 3 + 2] + lVect[iKey][2]
 
     crea_group_no_from_no(self, MAIL, "NOAREA", Nodes)
     crea_group_ma_appui_group_no_2d(self, MAIL, "MAAREATEM", "NOAREA")
@@ -935,9 +932,9 @@ def calc_vari_area_no_glob(
 
     for iKey in NODESBOUGE.keys():
         for iNode in NODESBOUGE[iKey]:
-            coords[iNode*3] = coords[iNode*3] - lVect[iKey][0]
-            coords[iNode*3+1] = coords[iNode*3+1] - lVect[iKey][1]
-            coords[iNode*3+2] = coords[iNode*3+2] - lVect[iKey][2]
+            coords[iNode * 3] = coords[iNode * 3] - lVect[iKey][0]
+            coords[iNode * 3 + 1] = coords[iNode * 3 + 1] - lVect[iKey][1]
+            coords[iNode * 3 + 2] = coords[iNode * 3 + 2] - lVect[iKey][2]
 
     XAIRE = areaFin - areaIni
 
@@ -991,9 +988,9 @@ def calc_vari_area_no_glob_one_elem(
 
     for iKey in NODESBOUGE.keys():
         for iNode in NODESBOUGE[iKey]:
-            coords[iNode*3] = coords[iNode*3] + lVect[iKey][0]
-            coords[iNode*3+1] = coords[iNode*3+1] + lVect[iKey][1]
-            coords[iNode*3+2] = coords[iNode*3+2] + lVect[iKey][2]
+            coords[iNode * 3] = coords[iNode * 3] + lVect[iKey][0]
+            coords[iNode * 3 + 1] = coords[iNode * 3 + 1] + lVect[iKey][1]
+            coords[iNode * 3 + 2] = coords[iNode * 3 + 2] + lVect[iKey][2]
 
     if symeType == "OUI":
         crea_group_no_from_no(self, MAIL, "NOAREAX", lNode[1][1 : len(lNode[1]) - 1])
@@ -1027,9 +1024,9 @@ def calc_vari_area_no_glob_one_elem(
 
     for iKey in NODESBOUGE.keys():
         for iNode in NODESBOUGE[iKey]:
-            coords[iNode*3] = coords[iNode*3] - lVect[iKey][0]
-            coords[iNode*3+1] = coords[iNode*3+1] - lVect[iKey][1]
-            coords[iNode*3+2] = coords[iNode*3+2] - lVect[iKey][2]
+            coords[iNode * 3] = coords[iNode * 3] - lVect[iKey][0]
+            coords[iNode * 3 + 1] = coords[iNode * 3 + 1] - lVect[iKey][1]
+            coords[iNode * 3 + 2] = coords[iNode * 3 + 2] - lVect[iKey][2]
 
     XAIRE = areaFin - areaIni
 

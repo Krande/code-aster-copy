@@ -58,8 +58,11 @@ Returns:
     float: Values of the *idx*-th coordinate.
         )",
               py::arg( "idx" ) )
-        .def( "__setitem__", +[]( MeshCoordinatesField &v, ASTERINTEGER i,
-                                  double d ) { return v.operator[]( i ) = d; }, R"(
+        .def( "__setitem__",
+              +[]( MeshCoordinatesField &v, ASTERINTEGER i, double d ) {
+                  return v.operator[]( i ) = d;
+              },
+              R"(
 Set the coordinate value at index *idx* in the vector.
         )",
               py::arg( "idx" ), py::arg( "value" ) )

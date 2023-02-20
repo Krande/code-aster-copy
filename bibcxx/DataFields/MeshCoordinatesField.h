@@ -213,14 +213,12 @@ class MeshCoordinatesField : public DataField {
      * @param i Indice dans le tableau Jeveux
      * @return la valeur du tableau Jeveux a la position i
      */
-    ASTERDOUBLE& operator[]( ASTERINTEGER i ) { return _valuesList->operator[]( i ); };
+    ASTERDOUBLE &operator[]( ASTERINTEGER i ) { return _valuesList->operator[]( i ); };
 
     /**
      * @brief Size of the FieldOnNodes
      */
     ASTERINTEGER size( void ) const { return _valuesList->size(); }
-
-
 
     /**
      * @brief duplicate
