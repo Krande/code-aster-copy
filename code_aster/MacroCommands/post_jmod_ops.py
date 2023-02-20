@@ -30,7 +30,6 @@ from ..Cata.DataStructure import mode_meca
 from ..SD.sd_mater import sd_compor1
 from ..Objects.table_py import Table, merge
 from ..Messages import UTMESS, MasquerAlarme
-from ..MacroCommands.Utils.partition import *
 from ..Utilities.misc import get_titre_concept
 from ..Commands import (
     AFFE_MODELE,
@@ -225,16 +224,10 @@ def all_coordinates(self, MAIL):
     Store in dict type
     """
 
-    mail_py = MAIL_PY()
-    mail_py.FromAster(MAIL)
+    nodes = [MAIL.getNodeName(node) for node in  MAIL.getNodes()]
+    node_co = np.reshape(MAIL.getCoordinates().getValues(), (len(nodes), 3)).tolist()
 
-    list_node_co = mail_py.cn
-    list_node_co = list_node_co.tolist()
-
-    list_node_na = mail_py.correspondance_noeuds
-    list_node_na = list(map(lambda x: x.rstrip(), list_node_na))
-
-    all_co = dict(zip(list_node_na, list_node_co))
+    all_co = dict(zip(nodes, node_co))
 
     return all_co
 
@@ -717,49 +710,47 @@ def calc_vari_area_no_bord(self, MAIL, NB_COUCHES, lNode1, lNode2, NODESBOUGE, l
     del_group_ma(self, MAIL, "MAAREAY")
     del_group_ma(self, MAIL, "MAAREA")
 
-    mesh = MAIL_PY()
-    mesh.FromAster(MAIL)
+    coords = MAIL.getCoordinates()
 
     for iNode in NODESBOUGE:
-        mesh.cn[iNode, 0] = mesh.cn[iNode, 0] + lVect[0]
-        mesh.cn[iNode, 1] = mesh.cn[iNode, 1] + lVect[1]
-        mesh.cn[iNode, 2] = mesh.cn[iNode, 2] + lVect[2]
-
-    newMesh = mesh.ToAster()
-    DEFI_FICHIER(UNITE=newMesh, ACTION="LIBERER")
-    __MAIL2 = LIRE_MAILLAGE(FORMAT="ASTER", UNITE=newMesh)
+        coords[iNode*3] = coords[iNode*3] + lVect[0]
+        coords[iNode*3+1] = coords[iNode*3+1] + lVect[1]
+        coords[iNode*3+2] = coords[iNode*3+2] + lVect[2]
 
     if symeType == "OUI":
-        crea_group_no_from_no(self, __MAIL2, "NOAREAX", lNode1[1 : len(lNode1) - 1])
-        crea_group_no_from_no(self, __MAIL2, "NOAREAY", lNode2[1 : len(lNode2) - 1])
+        crea_group_no_from_no(self, MAIL, "NOAREAX", lNode1[1 : len(lNode1) - 1])
+        crea_group_no_from_no(self, MAIL, "NOAREAY", lNode2[1 : len(lNode2) - 1])
     else:
         crea_group_no_from_no(
             self,
-            __MAIL2,
+            MAIL,
             "NOAREAX",
             lNode1[0][1 : len(lNode1[0]) - 1] + lNode1[1][1 : len(lNode1[1]) - 1],
         )
         crea_group_no_from_no(
             self,
-            __MAIL2,
+            MAIL,
             "NOAREAY",
             lNode2[0][1 : len(lNode2[0]) - 1] + lNode2[1][1 : len(lNode2[1]) - 1],
         )
 
-    crea_group_ma_appui_group_no_2d(self, __MAIL2, "MAAREAX", "NOAREAX")
-    crea_group_ma_appui_group_no_2d(self, __MAIL2, "MAAREAY", "NOAREAY")
+    crea_group_ma_appui_group_no_2d(self, MAIL, "MAAREAX", "NOAREAX")
+    crea_group_ma_appui_group_no_2d(self, MAIL, "MAAREAY", "NOAREAY")
 
-    intersec_group_ma(self, __MAIL2, "MAAREA", "MAAREAX", "MAAREAY")
+    intersec_group_ma(self, MAIL, "MAAREA", "MAAREAX", "MAAREAY")
 
-    areaFin = calc_area(self, __MAIL2, "MAAREA")
+    areaFin = calc_area(self, MAIL, "MAAREA")
 
-    del_group_no(self, __MAIL2, "NOAREAX")
-    del_group_no(self, __MAIL2, "NOAREAY")
-    del_group_ma(self, __MAIL2, "MAAREAX")
-    del_group_ma(self, __MAIL2, "MAAREAY")
-    del_group_ma(self, __MAIL2, "MAAREA")
+    del_group_no(self, MAIL, "NOAREAX")
+    del_group_no(self, MAIL, "NOAREAY")
+    del_group_ma(self, MAIL, "MAAREAX")
+    del_group_ma(self, MAIL, "MAAREAY")
+    del_group_ma(self, MAIL, "MAAREA")
 
-    DETRUIRE(CONCEPT=(_F(NOM=__MAIL2),))
+    for iNode in NODESBOUGE:
+        coords[iNode*3] = coords[iNode*3] - lVect[0]
+        coords[iNode*3+1] = coords[iNode*3+1] - lVect[1]
+        coords[iNode*3+2] = coords[iNode*3+2] - lVect[2]
 
     XAIRE = areaFin - areaIni
 
@@ -803,47 +794,45 @@ def calc_vari_area_no_midd(
         del_group_ma(self, MAIL, "MAAREASUP")
         del_group_ma(self, MAIL, "MAAREAINF")
 
-    mesh = MAIL_PY()
-    mesh.FromAster(MAIL)
+    coords = MAIL.getCoordinates()
 
     for iNode in NODESBOUGE:
-        mesh.cn[iNode, 0] = mesh.cn[iNode, 0] + lVect[0]
-        mesh.cn[iNode, 1] = mesh.cn[iNode, 1] + lVect[1]
-        mesh.cn[iNode, 2] = mesh.cn[iNode, 2] + lVect[2]
-
-    newMesh = mesh.ToAster()
-    DEFI_FICHIER(UNITE=newMesh, ACTION="LIBERER")
-    __MAIL2 = LIRE_MAILLAGE(FORMAT="ASTER", UNITE=newMesh)
+        coords[iNode*3] = coords[iNode*3] + lVect[0]
+        coords[iNode*3+1] = coords[iNode*3+1] + lVect[1]
+        coords[iNode*3+2] = coords[iNode*3+2] + lVect[2]
 
     if symeType == "OUI":
-        crea_group_no_from_no(self, __MAIL2, "NOAREA", lNode[1 : len(lNode) - 1])
+        crea_group_no_from_no(self, MAIL, "NOAREA", lNode[1 : len(lNode) - 1])
     else:
         crea_group_no_from_no(
             self,
-            __MAIL2,
+            MAIL,
             "NOAREA",
             lNode[0][1 : len(lNode[0]) - 1] + lNode[1][1 : len(lNode[1]) - 1],
         )
 
-    crea_group_ma_appui_group_no_2d(self, __MAIL2, "MAAREATEM", "NOAREA")
+    crea_group_ma_appui_group_no_2d(self, MAIL, "MAAREATEM", "NOAREA")
 
     if symeType == "OUI":
-        intersec_group_ma(self, __MAIL2, "MAAREA", lipSupName, "MAAREATEM")
+        intersec_group_ma(self, MAIL, "MAAREA", lipSupName, "MAAREATEM")
     else:
-        intersec_group_ma(self, __MAIL2, "MAAREASUP", lipInfName, "MAAREATEM")
-        intersec_group_ma(self, __MAIL2, "MAAREAINF", lipSupName, "MAAREATEM")
-        union_group_ma(self, __MAIL2, "MAAREA", "MAAREASUP", "MAAREAINF")
+        intersec_group_ma(self, MAIL, "MAAREASUP", lipInfName, "MAAREATEM")
+        intersec_group_ma(self, MAIL, "MAAREAINF", lipSupName, "MAAREATEM")
+        union_group_ma(self, MAIL, "MAAREA", "MAAREASUP", "MAAREAINF")
 
-    areaFin = calc_area(self, __MAIL2, "MAAREA")
+    areaFin = calc_area(self, MAIL, "MAAREA")
 
-    del_group_no(self, __MAIL2, "NOAREA")
-    del_group_ma(self, __MAIL2, "MAAREA")
-    del_group_ma(self, __MAIL2, "MAAREATEM")
+    del_group_no(self, MAIL, "NOAREA")
+    del_group_ma(self, MAIL, "MAAREA")
+    del_group_ma(self, MAIL, "MAAREATEM")
     if symeType != "OUI":
-        del_group_ma(self, __MAIL2, "MAAREASUP")
-        del_group_ma(self, __MAIL2, "MAAREAINF")
+        del_group_ma(self, MAIL, "MAAREASUP")
+        del_group_ma(self, MAIL, "MAAREAINF")
 
-    DETRUIRE(CONCEPT=(_F(NOM=__MAIL2),))
+    for iNode in NODESBOUGE:
+        coords[iNode*3] = coords[iNode*3] - lVect[0]
+        coords[iNode*3+1] = coords[iNode*3+1] - lVect[1]
+        coords[iNode*3+2] = coords[iNode*3+2] - lVect[2]
 
     XAIRE = areaFin - areaIni
 
@@ -917,39 +906,38 @@ def calc_vari_area_no_glob(
         del_group_ma(self, MAIL, "MAAREASUP")
         del_group_ma(self, MAIL, "MAAREAINF")
 
-    mesh = MAIL_PY()
-    mesh.FromAster(MAIL)
+    coords = MAIL.getCoordinates()
 
     for iKey in NODESBOUGE.keys():
         for iNode in NODESBOUGE[iKey]:
-            mesh.cn[iNode, 0] = mesh.cn[iNode, 0] + lVect[iKey][0]
-            mesh.cn[iNode, 1] = mesh.cn[iNode, 1] + lVect[iKey][1]
-            mesh.cn[iNode, 2] = mesh.cn[iNode, 2] + lVect[iKey][2]
+            coords[iNode*3] = coords[iNode*3] + lVect[iKey][0]
+            coords[iNode*3+1] = coords[iNode*3+1] + lVect[iKey][1]
+            coords[iNode*3+2] = coords[iNode*3+2] + lVect[iKey][2]
 
-    newMesh = mesh.ToAster()
-    DEFI_FICHIER(UNITE=newMesh, ACTION="LIBERER")
-    __MAIL2 = LIRE_MAILLAGE(FORMAT="ASTER", UNITE=newMesh)
-
-    crea_group_no_from_no(self, __MAIL2, "NOAREA", Nodes)
-    crea_group_ma_appui_group_no_2d(self, __MAIL2, "MAAREATEM", "NOAREA")
+    crea_group_no_from_no(self, MAIL, "NOAREA", Nodes)
+    crea_group_ma_appui_group_no_2d(self, MAIL, "MAAREATEM", "NOAREA")
 
     if symeType == "OUI":
-        intersec_group_ma(self, __MAIL2, "MAAREA", lipSupName, "MAAREATEM")
+        intersec_group_ma(self, MAIL, "MAAREA", lipSupName, "MAAREATEM")
     else:
-        intersec_group_ma(self, __MAIL2, "MAAREASUP", lipInfName, "MAAREATEM")
-        intersec_group_ma(self, __MAIL2, "MAAREAINF", lipSupName, "MAAREATEM")
-        union_group_ma(self, __MAIL2, "MAAREA", "MAAREASUP", "MAAREAINF")
+        intersec_group_ma(self, MAIL, "MAAREASUP", lipInfName, "MAAREATEM")
+        intersec_group_ma(self, MAIL, "MAAREAINF", lipSupName, "MAAREATEM")
+        union_group_ma(self, MAIL, "MAAREA", "MAAREASUP", "MAAREAINF")
 
-    areaFin = calc_area(self, __MAIL2, "MAAREA")
+    areaFin = calc_area(self, MAIL, "MAAREA")
 
-    del_group_no(self, __MAIL2, "NOAREA")
-    del_group_ma(self, __MAIL2, "MAAREA")
-    del_group_ma(self, __MAIL2, "MAAREATEM")
+    del_group_no(self, MAIL, "NOAREA")
+    del_group_ma(self, MAIL, "MAAREA")
+    del_group_ma(self, MAIL, "MAAREATEM")
     if symeType != "OUI":
-        del_group_ma(self, __MAIL2, "MAAREASUP")
-        del_group_ma(self, __MAIL2, "MAAREAINF")
+        del_group_ma(self, MAIL, "MAAREASUP")
+        del_group_ma(self, MAIL, "MAAREAINF")
 
-    DETRUIRE(CONCEPT=(_F(NOM=__MAIL2),))
+    for iKey in NODESBOUGE.keys():
+        for iNode in NODESBOUGE[iKey]:
+            coords[iNode*3] = coords[iNode*3] - lVect[iKey][0]
+            coords[iNode*3+1] = coords[iNode*3+1] - lVect[iKey][1]
+            coords[iNode*3+2] = coords[iNode*3+2] - lVect[iKey][2]
 
     XAIRE = areaFin - areaIni
 
@@ -999,42 +987,37 @@ def calc_vari_area_no_glob_one_elem(
     del_group_ma(self, MAIL, "MAAREAY")
     del_group_ma(self, MAIL, "MAAREA")
 
-    mesh = MAIL_PY()
-    mesh.FromAster(MAIL)
+    coords = MAIL.getCoordinates()
 
     for iKey in NODESBOUGE.keys():
         for iNode in NODESBOUGE[iKey]:
-            mesh.cn[iNode, 0] = mesh.cn[iNode, 0] + lVect[iKey][0]
-            mesh.cn[iNode, 1] = mesh.cn[iNode, 1] + lVect[iKey][1]
-            mesh.cn[iNode, 2] = mesh.cn[iNode, 2] + lVect[iKey][2]
-
-    newMesh = mesh.ToAster()
-    DEFI_FICHIER(UNITE=newMesh, ACTION="LIBERER")
-    __MAIL2 = LIRE_MAILLAGE(FORMAT="ASTER", UNITE=newMesh)
+            coords[iNode*3] = coords[iNode*3] + lVect[iKey][0]
+            coords[iNode*3+1] = coords[iNode*3+1] + lVect[iKey][1]
+            coords[iNode*3+2] = coords[iNode*3+2] + lVect[iKey][2]
 
     if symeType == "OUI":
-        crea_group_no_from_no(self, __MAIL2, "NOAREAX", lNode[1][1 : len(lNode[1]) - 1])
-        crea_group_no_from_no(self, __MAIL2, "NOAREAY", lNode[NPP][1 : len(lNode[NPP]) - 1])
+        crea_group_no_from_no(self, MAIL, "NOAREAX", lNode[1][1 : len(lNode[1]) - 1])
+        crea_group_no_from_no(self, MAIL, "NOAREAY", lNode[NPP][1 : len(lNode[NPP]) - 1])
     else:
         crea_group_no_from_no(
             self,
-            __MAIL2,
+            MAIL,
             "NOAREAX",
             lNode[0][1][1 : len(lNode[0][1]) - 1] + lNode[1][1][1 : len(lNode[1][1]) - 1],
         )
         crea_group_no_from_no(
             self,
-            __MAIL2,
+            MAIL,
             "NOAREAY",
             lNode[0][NPP][1 : len(lNode[0][NPP]) - 1] + lNode[1][NPP][1 : len(lNode[1][NPP]) - 1],
         )
 
-    crea_group_ma_appui_group_no_2d(self, __MAIL2, "MAAREAX", "NOAREAX")
-    crea_group_ma_appui_group_no_2d(self, __MAIL2, "MAAREAY", "NOAREAY")
+    crea_group_ma_appui_group_no_2d(self, MAIL, "MAAREAX", "NOAREAX")
+    crea_group_ma_appui_group_no_2d(self, MAIL, "MAAREAY", "NOAREAY")
 
-    intersec_group_ma(self, __MAIL2, "MAAREA", "MAAREAX", "MAAREAY")
+    intersec_group_ma(self, MAIL, "MAAREA", "MAAREAX", "MAAREAY")
 
-    areaFin = calc_area(self, __MAIL2, "MAAREA")
+    areaFin = calc_area(self, MAIL, "MAAREA")
 
     del_group_no(self, MAIL, "NOAREAX")
     del_group_no(self, MAIL, "NOAREAY")
@@ -1042,7 +1025,11 @@ def calc_vari_area_no_glob_one_elem(
     del_group_ma(self, MAIL, "MAAREAY")
     del_group_ma(self, MAIL, "MAAREA")
 
-    DETRUIRE(CONCEPT=(_F(NOM=__MAIL2),))
+    for iKey in NODESBOUGE.keys():
+        for iNode in NODESBOUGE[iKey]:
+            coords[iNode*3] = coords[iNode*3] - lVect[iKey][0]
+            coords[iNode*3+1] = coords[iNode*3+1] - lVect[iKey][1]
+            coords[iNode*3+2] = coords[iNode*3+2] - lVect[iKey][2]
 
     XAIRE = areaFin - areaIni
 
