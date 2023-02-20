@@ -55,7 +55,6 @@ class FieldOnNodesStateBuilder(InternalStateBuilder):
             *InternalStateBuilder*: The internal state itself.
         """
         super().save(field)
-        self._st["mesh"] = field.getMesh()
         self._st["dofd"] = field.getDescription()
         return self
 
@@ -67,8 +66,6 @@ class FieldOnNodesStateBuilder(InternalStateBuilder):
             field (*DataStructure*): The *DataStructure* object to be pickled.
         """
         super().restore(field)
-        if self._st["mesh"]:
-            field.setMesh(self._st["mesh"])
         if self._st["dofd"]:
             field.setDescription(self._st["dofd"])
 

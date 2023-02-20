@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -61,6 +61,7 @@ from .generalizedassemblyvector_ext import (
     GeneralizedAssemblyVectorReal,
 )
 from .generalizedmodel_ext import GeneralizedModel
+from .globalequationnumbering_ext import GlobalEquationNumbering
 from .linearsolver_ext import (
     GcpcSolver,
     LdltSolver,
@@ -80,6 +81,7 @@ from .meshcoordinatesfield_ext import MeshCoordinatesField
 from .model_ext import Model
 from .moderesult_ext import ModeResult
 from .paralleldofnumbering_ext import ParallelDOFNumbering
+from .parallelglobalequationnumbering import ParallelGlobalEquationNumbering
 from .parallelmechanicalload_ext import ParallelMechanicalLoadReal, ParallelMechanicalLoadFunction
 from .parallelmesh_ext import ConnectionMesh, ParallelMesh
 from .prestressingcable_ext import PrestressingCable
