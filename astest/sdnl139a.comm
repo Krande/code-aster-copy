@@ -21,7 +21,6 @@ import numpy as N
 from numpy import *
 
 from code_aster.Commands import *
-from code_aster.MacroCommands.Utils.partition import *
 
 DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"))
 
@@ -282,22 +281,17 @@ ajust = 1 / float(10 ** (Virgule + 2))  # au moins faire Virgule+2 en dÃÂ©n
 alphab = 0.001
 # --------------------------------------------------
 
-# Creation du maillage Python vide
-mail_py = MAIL_PY()
-
-# Conversion du maillage Aster en maillage Python
-mail_py.FromAster(Mail)
-
 # Coordonnees des noeuds (c'est un vecteur numeric N*3)
-COORD_3D = mail_py.cn
+COORD_3D = N.reshape(Mail.getCoordinates().getValues(), (Mail.getNumberOfNodes(), 3))
 
-iPouAllNode = mail_py.gno.get(
+iPouAllNode = Mail.getNodes(
     "AllNode"
 )  # permet de recuperer dans une liste les noeuds des noeuds appartemant
 # au groupe AllNode dans l'ordre de leur apparition dans le 'Mail', ex, [3, 5, 2, ...., 1000].
 # C'est a dire COORD_3D[2] est celle du noeud N2.
-iPouRP1 = mail_py.gno.get("RP1")
-iPouRP2 = mail_py.gno.get("RP2")
+
+iPouRP1 = N.array(Mail.getNodes("RP1"))
+iPouRP2 = N.array(Mail.getNodes("RP2"))
 
 C3DZ = zeros((len(COORD_3D), 1))
 for i in range(len(C3DZ)):
@@ -331,7 +325,7 @@ def OrdreSect(z):
     return jk
 
 
-temps = NP.array([Tb, Tb_1, Tb_2])
+temps = N.array([Tb, Tb_1, Tb_2])
 nbpas = temps.shape[0]
 
 U0 = []
