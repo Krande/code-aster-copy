@@ -330,6 +330,8 @@ def main(argv=None):
         basename = osp.splitext(osp.basename(args.file))[0]
         add = {6: "mess", 15: "code"}
         for unit, typ in add.items():
+            if export.files_of_type(typ):
+                continue
             res = File(osp.abspath(basename + "." + typ), filetype=typ, unit=unit, resu=True)
             export.add_file(res)
             ctest_results.append(res.path)

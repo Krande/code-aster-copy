@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -384,6 +384,16 @@ class Export(Store):
     def resultfiles(self):
         """list[File]: List of output File objects."""
         return [i for i in self._files if i.resu]
+
+    def files_of_type(self, typ):
+        """Return the list of files of the given type.
+
+        Arguments:
+            typ (str): Expected type.
+
+        Returns:
+            list[File]: List of output File objects."""
+        return [i for i in self._files if i.filetype == typ]
 
     def add_file(self, fileobj):
         """Add a File object.
