@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -347,9 +347,9 @@ class TestExport(unittest.TestCase):
         self.assertEqual(len(export.commfiles), 1)
         self.assertEqual(len(export.datafiles), 3)
         # 0 in asrun01b.export, but
-        # + 'mess' + 'code' with '--ctest',
-        # + 'resu' with as_run
-        self.assertIn(len(export.resultfiles), (0, 2, 3))
+        # + 'code' with '--ctest',
+        # + 'mess', 'resu' with as_run
+        self.assertIn(len(export.resultfiles), (0, 1, 3))
         comm = export.commfiles[0]
         self.assertEqual(osp.basename(comm.path), "asrun01b.comm")
         self.assertEqual(comm.unit, 1)
