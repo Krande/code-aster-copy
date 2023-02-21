@@ -294,6 +294,8 @@ def main(argv=None):
         basename = osp.splitext(osp.basename(args.export))[0]
         add = {6: "mess", 15:"code"}
         for unit, typ in add.items():
+            if export.files_of_type(typ):
+                continue
             export.add_file(File(osp.abspath(basename + "." + typ),
                                  filetype=typ,
                                  unit=unit,
