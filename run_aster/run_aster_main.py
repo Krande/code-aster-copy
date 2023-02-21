@@ -325,10 +325,14 @@ def main(argv=None):
             export.add_file(File(fobj.name, filetype="comm", unit=1))
             tmpf = fobj.name
     ctest_results = []
+    output = None
     if args.ctest:
         args.test = True
         basename = osp.splitext(osp.basename(args.file))[0]
-        add = {6: "mess", 15: "code"}
+        output = osp.abspath(basename + ".mess")
+        if osp.isfile(output):
+            os.remove(output)
+        add = {15: "code"}
         for unit, typ in add.items():
             if export.files_of_type(typ):
                 continue
@@ -404,6 +408,7 @@ def main(argv=None):
         opts["test"] = args.test
         opts["env"] = make_env
         opts["tee"] = not args.ctest and (not args.only_proc0 or procid == 0)
+        opts["output"] = output
         opts["interactive"] = args.interactive
         if args.exectool:
             wrapper = CFG.get("exectool", {}).get(args.exectool)

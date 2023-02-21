@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -29,7 +29,7 @@ from code_aster.Commands import FIN
 code_aster.init("--test")
 test = code_aster.TestCase()
 
-result = unittest.main(argv=["comm"], module="asrun01b", exit=False).result
+result = unittest.main(argv=["comm"], module="asrun01b", exit=False, verbosity=2).result
 isok = result.wasSuccessful()
 
 # to flush printings from unittest

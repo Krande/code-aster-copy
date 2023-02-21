@@ -75,7 +75,9 @@ class RunAster:
     _show_comm = True
 
     @classmethod
-    def factory(cls, export, test=False, env=False, tee=False, interactive=False, exectool=None):
+    def factory(
+        cls, export, test=False, env=False, tee=False, output=None, interactive=False, exectool=None
+    ):
         """Return a *RunAster* object from an *Export* object.
 
         Arguments:
@@ -86,13 +88,16 @@ class RunAster:
             tee (bool): to follow execution output,
             interactive (bool): to keep Python interpreter active.
             exectool (str): command that preceeds code_aster command line.
+            output (str): Path to redirect stdout.
         """
         class_ = RunAster
         if env:
             class_ = RunOnlyEnv
-        return class_(export, test, tee, interactive, exectool)
+        return class_(export, test, tee, output, interactive, exectool)
 
-    def __init__(self, export, test=False, tee=False, interactive=False, exectool=None):
+    def __init__(
+        self, export, test=False, tee=False, output=None, interactive=False, exectool=None
+    ):
         self.export = export
         self.jobnum = str(os.getpid())
         logger.debug("Export content: %s", self.export.filename)
@@ -100,6 +105,7 @@ class RunAster:
         self._parallel = CFG.get("parallel", 0)
         self._test = test
         self._tee = tee
+        self._output = output or TMPMESS
         self._interact = interactive
         self._exectool = exectool
         if self.export.get("hide-command"):
@@ -211,7 +217,7 @@ class RunAster:
         status = self._get_status(exitcode)
         msg = f"\nEXECUTION_CODE_ASTER_EXIT_{self.jobnum}={status.exitcode}\n\n"
         logger.info(msg)
-        _log_mess(msg)
+        self._log_mess(msg)
 
         if status.is_completed():
             if not self._last:
@@ -229,7 +235,7 @@ class RunAster:
             msg = f"execution failed (command file #{idx + 1}): {status.diag}"
             logger.warning(msg)
         if self._procid == 0:
-            _log_mess(FMT_DIAG.format(state=status.diag))
+            self._log_mess(FMT_DIAG.format(state=status.diag))
         return status
 
     def _get_cmdline_exec(self, commfile, idx):
@@ -310,9 +316,16 @@ class RunAster:
             pass
         elif self._tee:
             orig = " ".join(cmd)
-            cmd = [f"( {orig} ; echo $? > {EXITCODE_FILE} )", "2>&1", "|", "tee", "-a", TMPMESS]
+            cmd = [
+                f"( {orig} ; echo $? > {EXITCODE_FILE} )",
+                "2>&1",
+                "|",
+                "tee",
+                "-a",
+                self._output,
+            ]
         else:
-            cmd.extend([">>", TMPMESS, "2>&1"])
+            cmd.extend([">>", self._output, "2>&1"])
         cmd.insert(0, f"ulimit -c unlimited ; ulimit -t {timeout:.0f} ;")
         return cmd
 
@@ -325,7 +338,7 @@ class RunAster:
         Returns:
             Status: Status object.
         """
-        status = get_status(exitcode, TMPMESS, test=self._test and self._last)
+        status = get_status(exitcode, self._output, test=self._test and self._last)
         expected = self.export.get("expected_diag", [])
         if status.diag in expected:
             status.state = StateOptions.Ok
@@ -350,6 +363,11 @@ class RunAster:
         if results:
             logger.info("TITLE Copying results")
             copy_resultfiles(results, is_completed, test=self._test)
+
+    def _log_mess(self, msg):
+        """Log a message into the *message* file."""
+        with open(self._output, "a") as fobj:
+            fobj.write(msg + "\n")
 
 
 class RunOnlyEnv(RunAster):
@@ -563,9 +581,3 @@ def copy_resultfiles(files, copybase, test=False):
 def _ls(*paths):
     proc = run(["ls", "-l"] + list(paths), stdout=PIPE, universal_newlines=True)
     return proc.stdout
-
-
-def _log_mess(msg):
-    """Log a message into the *message* file."""
-    with open(TMPMESS, "a") as fobj:
-        fobj.write(msg + "\n")
