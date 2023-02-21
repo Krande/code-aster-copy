@@ -26,16 +26,38 @@
 #include "Meshes/BalanceableMesh.h"
 
 #include "Meshes/Mesh.h"
-#include "Meshes/ParallelMesh.h"
 
-void BalanceableMesh::applyBalancingStrategy( VectorInt &newLocalNodesList ) {
+void decrement( int &i ) { i--; };
+
+ParallelMeshPtr BalanceableMesh::applyBalancingStrategy( VectorInt &newLocalNodesList ) {
     ObjectBalancer nodesBalancer, cellsBalancer;
+    const auto rank = getMPIRank();
+    const auto nbProcs = getMPISize();
 
-    buildBalancers( newLocalNodesList, nodesBalancer, cellsBalancer );
+    VectorInt newList = newLocalNodesList;
+    std::for_each( newList.begin(), newList.end(), &decrement );
+
+    VectorOfVectorsLong interfaces;
+    VectorLong nOwners;
+    buildBalancersAndInterfaces( newList, nodesBalancer, cellsBalancer, interfaces, nOwners );
+
+    CommGraph graph;
+    for ( int iProc = 0; iProc < nbProcs; ++iProc ) {
+        if ( iProc != rank && interfaces[2 * iProc].size() != 0 )
+            graph.addCommunication( iProc );
+    }
+    graph.synchronizeOverProcesses();
+    VectorLong domains;
+    VectorOfVectorsLong graphInterfaces;
+    for ( const auto &iProc : graph ) {
+        if ( iProc != -1 ) {
+            domains.push_back( iProc );
+            graphInterfaces.push_back( interfaces[2 * iProc] );
+            graphInterfaces.push_back( interfaces[2 * iProc + 1] );
+        }
+    }
 
     ParallelMeshPtr outMesh( new ParallelMesh() );
-
-    const auto rank = getMPIRank();
 
     // Build a global numbering (if there is not)
     VectorLong globNum;
@@ -44,14 +66,11 @@ void BalanceableMesh::applyBalancingStrategy( VectorInt &newLocalNodesList ) {
             throw std::runtime_error( "Sequential mesh must be defined only on #0" );
         globNum.reserve( _mesh->getNumberOfNodes() );
         for ( int i = 0; i < _mesh->getNumberOfNodes(); ++i ) {
+            // +1 is mandatory becaux connectivity starts at 1 in aster
+            // cf. connex = _mesh->getConnectivity();
             globNum.push_back( i + 1 );
         }
     }
-    nodesBalancer.endElementarySendDefinition();
-    cellsBalancer.endElementarySendDefinition();
-    // Prepare ObjectBalancer (graph and sizes of what to send)
-    nodesBalancer.prepareCommunications();
-    cellsBalancer.prepareCommunications();
 
     // Build mask to apply to distribute connectivity
     // Before sending, conversion to global numbering
@@ -71,11 +90,6 @@ void BalanceableMesh::applyBalancingStrategy( VectorInt &newLocalNodesList ) {
     const auto connex = _mesh->getConnectivity();
     auto connexOut = outMesh->getConnectivity();
     cellsBalancer.balanceObjectOverProcesses2( connex, connexOut, dMask );
-    // JeveuxCollectionLong test( "RIEN" );
-    // cellsBalancer.testBalance( connex, test, dMask );
-    // cellsBalancer.testBalance( connex, connexOut, dMask );
-    // std::cout << "Validation " << *connexOut << std::endl;
-    // std::cout << "Validation2 " << *test << std::endl;
 
     // Build cells and nodes groups
     balanceGroups( outMesh, nodesBalancer, cellsBalancer );
@@ -83,15 +97,17 @@ void BalanceableMesh::applyBalancingStrategy( VectorInt &newLocalNodesList ) {
 
     // Build "dummy" names vectors (for cells and nodes)
     outMesh->buildNamesVectors();
-    outMesh->printMedFile( "/home/H85256/" + std::to_string( rank ) + ".med" );
+    outMesh->create_joints( domains, dMask.getBalancedMask(), nOwners, graphInterfaces );
+    // outMesh->printMedFile( "/home/H85256/" + std::to_string( rank ) + ".med" );
     // outMesh->debugPrint();
+    return outMesh;
 };
 
 void BalanceableMesh::buildReverseConnectivity() {
     if ( _mesh == nullptr )
         return;
     const auto connex = _mesh->getConnectivityExplorer();
-    int elemId = 1;
+    int elemId = 0;
     for ( const auto &element : connex ) {
         for ( const auto &nodeId : element ) {
             _reverseConnex[nodeId - 1].insert( elemId );
@@ -106,14 +122,22 @@ void BalanceableMesh::deleteReverseConnectivity() {
     _bReverseConnex = false;
 };
 
-void BalanceableMesh::buildBalancers( VectorInt &newLocalNodesList, ObjectBalancer &nodesB,
-                                      ObjectBalancer &cellsB ) {
+void BalanceableMesh::buildBalancersAndInterfaces( VectorInt &newLocalNodesList,
+                                                   ObjectBalancer &nodesB, ObjectBalancer &cellsB,
+                                                   VectorOfVectorsLong &interfaces,
+                                                   VectorLong &nOwners ) {
     // Build reverse connectivity to be able to build ObjectBalancer (what to send to which process)
     buildReverseConnectivity();
 
     const auto nbProcs = getMPISize();
     const auto rank = getMPIRank();
-    VectorOfVectorsLong test, test2;
+    VectorOfVectorsLong procInterfaces, balanceProcInterfaces;
+    VectorLong nodeOwner;
+    if ( _mesh != nullptr ) {
+        procInterfaces = VectorOfVectorsLong( _mesh->getNumberOfNodes() );
+        nodeOwner = VectorLong( _mesh->getNumberOfNodes(), -1 );
+    }
+
     // Build ObjectBalancer by finding every nodes and cells in direct
     // environment of nodes needed by a given process
     for ( int iProc = 0; iProc < nbProcs; ++iProc ) {
@@ -128,7 +152,10 @@ void BalanceableMesh::buildBalancers( VectorInt &newLocalNodesList, ObjectBalanc
             if ( returnPairToKeep.first.size() != 0 ) {
                 nodesB.setElementsToKeep( returnPairToKeep.first );
                 const auto extNodes =
-                    findExternalNodes( newLocalNodesList, returnPairToKeep.first );
+                    findExternalNodes( returnPairToKeep.first, newLocalNodesList );
+                for ( const auto &tmp : returnPairToKeep.first ) {
+                    procInterfaces[tmp].push_back( rank );
+                }
             }
             if ( returnPairToKeep.second.size() != 0 )
                 cellsB.setElementsToKeep( returnPairToKeep.second );
@@ -137,22 +164,69 @@ void BalanceableMesh::buildBalancers( VectorInt &newLocalNodesList, ObjectBalanc
             auto returnPairToSend = findNodesAndElementsInNodesNeighborhood( nodesLists );
             if ( returnPairToSend.first.size() != 0 ) {
                 nodesB.addElementarySend( iProc, returnPairToSend.first );
-                const auto extNodes =
-                    findExternalNodes( newLocalNodesList, returnPairToSend.first );
+                const auto extNodes = findExternalNodes( returnPairToSend.first, nodesLists );
+                for ( const auto &tmp : returnPairToSend.first ) {
+                    procInterfaces[tmp].push_back( iProc );
+                }
             }
             if ( returnPairToSend.second.size() != 0 )
                 cellsB.addElementarySend( iProc, returnPairToSend.second );
         }
+        // TODO : modifier la construction de nodeOwner dans le cadre distribue
+        if ( rank == 0 ) {
+            if ( iProc == 0 ) {
+                for ( const auto &tmp : newLocalNodesList ) {
+                    nodeOwner[tmp] = rank;
+                }
+            } else {
+                for ( const auto &tmp : nodesLists ) {
+                    nodeOwner[tmp] = iProc;
+                }
+            }
+        }
     }
     // Save memory by destroying reverse connectivity
     deleteReverseConnectivity();
-    // cellsBalancer.balanceObjectOverProcesses2( test, test2, dMask );
+    nodesB.endElementarySendDefinition();
+    cellsB.endElementarySendDefinition();
+    // Prepare ObjectBalancer (graph and sizes of what to send)
+    nodesB.prepareCommunications();
+    cellsB.prepareCommunications();
+
+    nodesB.balanceObjectOverProcesses2( procInterfaces, balanceProcInterfaces );
+    nodesB.balanceObjectOverProcesses( nodeOwner, nOwners );
+    int iNode = 0;
+    interfaces = VectorOfVectorsLong( 2 * nbProcs );
+    for ( const auto &vec1 : balanceProcInterfaces ) {
+        const auto &ownerProc = nOwners[iNode];
+        if ( ownerProc == rank ) {
+            for ( const auto &proc : vec1 ) {
+                if ( proc != rank )
+                    interfaces[2 * proc].push_back( iNode + 1 );
+            }
+        } else {
+            for ( const auto &proc : vec1 ) {
+                if ( proc == ownerProc )
+                    interfaces[2 * proc + 1].push_back( iNode + 1 );
+            }
+        }
+        ++iNode;
+    }
+    for ( auto &val : nOwners ) {
+        if ( val != rank )
+            val = -1;
+    }
 };
 
 VectorInt BalanceableMesh::findExternalNodes( const VectorInt &askedNodes,
                                               const VectorInt &sendNodes ) {
-    VectorInt toReturn;
-    return toReturn;
+    VectorInt diff;
+    auto tmp1 = askedNodes, tmp2 = sendNodes;
+    std::sort( tmp1.begin(), tmp1.end() );
+    std::sort( tmp2.begin(), tmp2.end() );
+    std::set_difference( tmp1.begin(), tmp1.end(), tmp2.begin(), tmp2.end(),
+                         std::inserter( diff, diff.begin() ) );
+    return diff;
 };
 
 std::pair< VectorInt, VectorInt >
@@ -174,20 +248,22 @@ BalanceableMesh::findNodesAndElementsInNodesNeighborhood( const VectorInt &nodes
     VectorBool checkedElem( _mesh->getNumberOfCells(), false );
     VectorBool checkedNodes( _mesh->getNumberOfNodes(), false );
     for ( const auto &nodeId : nodesListIn ) {
-        const auto elemSet = _reverseConnex[nodeId - 1];
+        const auto elemSet = _reverseConnex[nodeId];
         for ( const auto &elemId : elemSet ) {
-            if ( checkedElem[elemId - 1] )
+            if ( checkedElem[elemId] )
                 continue;
-            checkedElem[elemId - 1] = true;
-            for ( const auto &nodeId2 : connex[elemId - 1] ) {
+            checkedElem[elemId] = true;
+            for ( const auto &nodeId2 : connex[elemId] ) {
                 if ( !checkedNodes[nodeId2 - 1] ) {
                     nodesList.push_back( nodeId2 - 1 );
                     checkedNodes[nodeId2 - 1] = true;
                 }
             }
-            elemList.push_back( elemId - 1 );
+            elemList.push_back( elemId );
         }
     }
+    std::sort( nodesList.begin(), nodesList.end() );
+    std::sort( elemList.begin(), elemList.end() );
     return toReturn;
 };
 

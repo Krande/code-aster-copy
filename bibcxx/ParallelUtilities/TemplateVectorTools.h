@@ -78,8 +78,8 @@ int getTotalSize( const JeveuxVector< T > &toCopy ) {
 };
 
 template < typename T >
-int getTotalSize( const JeveuxCollection< T > &toCopy ) {
-    return toCopy->totalSize();
+int getTotalSize( const JeveuxCollectionClass< T > &toCopy ) {
+    return toCopy.totalSize();
 };
 
 template < typename T >
@@ -163,7 +163,7 @@ struct StartPosition< std::vector< std::vector< T > > > {
 };
 
 template < typename T >
-struct StartPosition< JeveuxCollection< T > > {
+struct StartPosition< JeveuxCollectionClass< T > > {
     static constexpr int value = 1;
 };
 
@@ -178,8 +178,8 @@ void allocate( std::vector< T > &in, const int &size1, const int &size2 ) {
 };
 
 template < typename T >
-void allocate( JeveuxCollection< T > &in, const int &size1, const int &size2 ) {
-    in->allocateContiguousNumbered( size1, size2 );
+void allocate( JeveuxCollectionClass< T > &in, const int &size1, const int &size2 ) {
+    in.allocateContiguousNumbered( size1, size2 );
 };
 
 template < typename T >
@@ -194,16 +194,13 @@ void update( JeveuxCollectionObject< T > in ) {
 };
 
 template < typename T >
-std::vector< T > *allocateOccurence( std::vector< std::vector< T > > &in, const int &pos,
-                                     const int &size ) {
+void allocateOccurence( std::vector< std::vector< T > > &in, const int &pos, const int &size ) {
     in[pos] = std::vector< T >( size );
-    return &in[pos];
 };
 
 template < typename T >
-JeveuxCollectionObject< T > allocateOccurence( JeveuxCollection< T > &in, const int &pos,
-                                               const int &size ) {
-    return in->allocateObject( pos, size );
+void allocateOccurence( JeveuxCollectionClass< T > &in, const int &pos, const int &size ) {
+    in.allocateObject( pos, size );
 };
 
 template < typename T >
@@ -212,7 +209,7 @@ const T &getValue( const std::vector< T > &in, const int &pos ) {
 };
 
 template < typename T >
-const T &getValue( const std::vector< T > *in, const int &pos ) {
+const T getValue( const std::vector< T > *in, const int &pos ) {
     return ( *in )[pos];
 };
 

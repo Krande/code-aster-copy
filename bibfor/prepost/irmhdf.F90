@@ -296,9 +296,9 @@ subroutine irmhdf(ifi, ndim, nbnoeu, coordo, nbmail, &
 ! 8. IMPRESSION NUMEROTATION GLOBALE ET JOINTS EN HPC
 !====
 !
-        ! if (isParallelMesh(nomast) .and. (.not. lfu)) then
-        !     call irmhpc(fid, nomamd, nomast, nbnoeu)
-        ! end if
+        if (isParallelMesh(nomast) .and. (.not. lfu)) then
+            call irmhpc(fid, nomamd, nomast, nbnoeu)
+        end if
 !
 !====
 ! 9. FERMETURE DU FICHIER MED

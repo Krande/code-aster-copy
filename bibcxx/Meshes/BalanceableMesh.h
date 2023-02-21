@@ -28,6 +28,7 @@
 #include "astercxx.h"
 
 #include "Meshes/BaseMesh.h"
+#include "Meshes/ParallelMesh.h"
 #include "ParallelUtilities/AsterMPI.h"
 #include "ParallelUtilities/ObjectBalancer.h"
 
@@ -40,8 +41,9 @@ class BalanceableMesh {
     std::map< int, std::set< int > > _reverseConnex;
     bool _bReverseConnex;
 
-    void buildBalancers( VectorInt &newLocalNodesList, ObjectBalancer &nodesB,
-                         ObjectBalancer &cellsB );
+    void buildBalancersAndInterfaces( VectorInt &newLocalNodesList, ObjectBalancer &nodesB,
+                                      ObjectBalancer &cellsB, VectorOfVectorsLong &interfaces,
+                                      VectorLong &nOwners );
 
     void buildReverseConnectivity();
 
@@ -69,7 +71,7 @@ class BalanceableMesh {
      */
     BalanceableMesh() : _mesh( nullptr ), _bReverseConnex( false ){};
 
-    void applyBalancingStrategy( VectorInt & );
+    ParallelMeshPtr applyBalancingStrategy( VectorInt & );
 
     void buildFromBaseMesh( const BaseMeshPtr &mesh ) { _mesh = mesh; };
 };

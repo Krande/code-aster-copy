@@ -113,11 +113,16 @@ class ObjectBalancer {
 
     struct DummyMask {
       public:
-        const ASTERINTEGER &apply( const ASTERINTEGER &valueIn ) const { return valueIn; };
+        const ASTERINTEGER apply( const ASTERINTEGER &valueIn ) const { return valueIn; };
 
-        const ASTERINTEGER &reverse( const ASTERINTEGER &valueIn ) const { return valueIn; };
+        const ASTERINTEGER reverse( const ASTERINTEGER &valueIn ) const { return valueIn; };
     };
 
+  private:
+    template < typename T, typename Mask = ObjectBalancer::DummyMask >
+    void balanceObjectOverProcesses3( const T &, T &, const Mask &mask = Mask() ) const;
+
+  public:
     ObjectBalancer()
         : _sendList( std::vector< VectorInt >( getMPISize() ) ),
           _recvSize( VectorInt( getMPISize(), 0 ) ),
@@ -175,11 +180,13 @@ class ObjectBalancer {
                                      MeshCoordinatesFieldPtr & ) const;
 
     /** @brief Balance JeveuxCollection over processes by following elementary sends */
-    // template < typename T, typename Mask = ObjectBalancer::DummyMask >
-    // void balanceObjectOverProcesses( const JeveuxCollection< T >&, JeveuxCollection< T >&,
-    //                                  const Mask& mask = Mask() ) const;
     template < typename T, typename Mask = ObjectBalancer::DummyMask >
-    void balanceObjectOverProcesses2( const T &, T &, const Mask &mask = Mask() ) const;
+    void balanceObjectOverProcesses2( const JeveuxCollection< T > &, JeveuxCollection< T > &,
+                                      const Mask &mask = Mask() ) const;
+    template < typename T, typename Mask = ObjectBalancer::DummyMask >
+    void balanceObjectOverProcesses2( const std::vector< std::vector< T > > &,
+                                      std::vector< std::vector< T > > &,
+                                      const Mask &mask = Mask() ) const;
 };
 
 using ObjectBalancerPtr = std::shared_ptr< ObjectBalancer >;
@@ -299,10 +306,26 @@ void ObjectBalancer::balanceObjectOverProcesses( const T &in, T &out ) const {
 };
 
 template < typename T, typename Mask >
-void ObjectBalancer::balanceObjectOverProcesses2( const T &in, T &out, const Mask &mask ) const {
+void ObjectBalancer::balanceObjectOverProcesses2( const JeveuxCollection< T > &in,
+                                                  JeveuxCollection< T > &out,
+                                                  const Mask &mask ) const {
+    balanceObjectOverProcesses3( *in, *out, mask );
+};
+
+template < typename T, typename Mask >
+void ObjectBalancer::balanceObjectOverProcesses2( const std::vector< std::vector< T > > &in,
+                                                  std::vector< std::vector< T > > &out,
+                                                  const Mask &mask ) const {
+    balanceObjectOverProcesses3( in, out, mask );
+};
+
+template < typename T, typename Mask >
+void ObjectBalancer::balanceObjectOverProcesses3( const T &in, T &out, const Mask &mask ) const {
+    if ( !_isOk )
+        throw std::runtime_error( "ObjectBalancer not prepared" );
     const auto rank = getMPIRank();
     const auto nbProcs = getMPISize();
-    const auto sizeIn = getSize( in );
+    const auto sizeIn = in.size();
     // if( sizeIn != 0 ) {
     //     if( !in->isContiguous() )
     //         throw std::runtime_error( "Only allowed for contiguous collection" );
@@ -325,7 +348,7 @@ void ObjectBalancer::balanceObjectOverProcesses2( const T &in, T &out, const Mas
         int toRemove = 0, toSend = 0;
         for ( int iPos = 0; iPos < curSize; ++iPos ) {
             const auto vecPos = curSendList[iPos];
-            const auto &occ = getOccurence( in, vecPos + start );
+            const auto &occ = in[vecPos + start];
             const auto curSizeOC = getSize( occ );
             occSize[proc].push_back( curSizeOC );
             toSend += curSizeOC;
@@ -362,16 +385,17 @@ void ObjectBalancer::balanceObjectOverProcesses2( const T &in, T &out, const Mas
     }
 
     allocate( out, sizeIn + _sizeDelta, totalSize - toRemoveCum + toReceiveCum );
-    int cmpt = 1;
+    int cmpt = start;
     const auto curSize = sizeIn;
     for ( int iPos = 0; iPos < curSize; ++iPos ) {
         if ( toKeep[iPos] ) {
-            auto toCopy = getOccurence( in, iPos + start );
+            auto toCopy = in[iPos + start];
             update( toCopy );
             const auto &sizetoCopy = getSize( toCopy );
-            auto newObj = allocateOccurence( out, cmpt, sizetoCopy );
+            allocateOccurence( out, cmpt, sizetoCopy );
+            auto &newObj = out[cmpt];
             for ( int curPos2 = 0; curPos2 < sizetoCopy; ++curPos2 ) {
-                setValue( newObj, curPos2, mask.reverse( getValue( toCopy, curPos2 ) ) );
+                newObj[curPos2] = mask.reverse( toCopy[curPos2] );
             }
             ++cmpt;
         }
@@ -390,11 +414,11 @@ void ObjectBalancer::balanceObjectOverProcesses2( const T &in, T &out, const Mas
                 VectorInt tmp( sizeToSend[proc], 0. );
                 int cmpt2 = 0;
                 for ( int iPos = 0; iPos < curSendSize; ++iPos ) {
-                    auto toCopy = getOccurence( in, curSendList[iPos] + start );
+                    auto toCopy = in[curSendList[iPos] + start];
                     update( toCopy );
                     const auto &sizetoCopy = occSize[proc][iPos];
                     for ( int curPos2 = 0; curPos2 < sizetoCopy; ++curPos2 ) {
-                        tmp[cmpt2] = mask.apply( getValue( toCopy, curPos2 ) );
+                        tmp[cmpt2] = mask.apply( toCopy[curPos2] );
                         ++cmpt2;
                     }
                 }
@@ -409,9 +433,10 @@ void ObjectBalancer::balanceObjectOverProcesses2( const T &in, T &out, const Mas
                 int cmpt2 = 0;
                 for ( int curPos = 0; curPos < curRecvSize; ++curPos ) {
                     const auto &sizetoCopy = tmp[curPos];
-                    auto newObj = allocateOccurence( out, cmpt, sizetoCopy );
+                    allocateOccurence( out, cmpt, sizetoCopy );
+                    auto &newObj = out[cmpt];
                     for ( int curPos2 = 0; curPos2 < sizetoCopy; ++curPos2 ) {
-                        setValue( newObj, curPos2, mask.reverse( tmp2[cmpt2] ) );
+                        newObj[curPos2] = mask.reverse( tmp2[cmpt2] );
                         ++cmpt2;
                     }
                     ++cmpt;
@@ -427,9 +452,10 @@ void ObjectBalancer::balanceObjectOverProcesses2( const T &in, T &out, const Mas
                 int cmpt2 = 0;
                 for ( int curPos = 0; curPos < curRecvSize; ++curPos ) {
                     const auto &sizetoCopy = tmp[curPos];
-                    auto newObj = allocateOccurence( out, cmpt, sizetoCopy );
+                    allocateOccurence( out, cmpt, sizetoCopy );
+                    auto &newObj = out[cmpt];
                     for ( int curPos2 = 0; curPos2 < sizetoCopy; ++curPos2 ) {
-                        setValue( newObj, curPos2, mask.reverse( tmp2[cmpt2] ) );
+                        newObj[curPos2] = mask.reverse( tmp2[cmpt2] );
                         ++cmpt2;
                     }
                     ++cmpt;
@@ -442,11 +468,11 @@ void ObjectBalancer::balanceObjectOverProcesses2( const T &in, T &out, const Mas
                 VectorInt tmp( sizeToSend[proc], 0. );
                 int cmpt2 = 0;
                 for ( int iPos = 0; iPos < curSendSize; ++iPos ) {
-                    auto toCopy = getOccurence( in, curSendList[iPos] + start );
+                    auto toCopy = in[curSendList[iPos] + start];
                     update( toCopy );
                     const auto &sizetoCopy = occSize[proc][iPos];
                     for ( int curPos2 = 0; curPos2 < sizetoCopy; ++curPos2 ) {
-                        tmp[cmpt2] = mask.apply( getValue( toCopy, curPos2 ) );
+                        tmp[cmpt2] = mask.apply( toCopy[curPos2] );
                         ++cmpt2;
                     }
                 }

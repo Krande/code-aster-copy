@@ -488,7 +488,7 @@ public:
       AS_ABORT("Position not in collection: " + std::to_string(position));
     }
 #endif
-    return _listObjects[position];
+    return _listObjects.at(position);
   };
 
   inline JeveuxCollObjValType &operator[](const ASTERINTEGER &position) {

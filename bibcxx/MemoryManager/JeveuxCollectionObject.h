@@ -483,6 +483,12 @@ class JeveuxCollectionObject {
     const auto cbegin() { return _jeveuxCOPtr->cbegin(); };
 
     const auto cend() { return _jeveuxCOPtr->cend(); };
+
+    inline const ValueType &operator[]( const ASTERINTEGER &i ) const {
+        return ( *_jeveuxCOPtr )[i];
+    };
+
+    inline ValueType &operator[]( const ASTERINTEGER &i ) { return ( *_jeveuxCOPtr )[i]; };
 };
 
 /** @typedef Definition d'un objet de collection de type entier long */
