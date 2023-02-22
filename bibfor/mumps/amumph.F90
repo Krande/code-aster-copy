@@ -32,12 +32,6 @@ subroutine amumph(action, solvez, matasz, rsolu, csolu, &
 !          - L'ARITHMETIQUE DE LA RESOLUTION MUMPS (SIMPLE OU DOUBLE)
 !
 ! IN : ACTION :
-!     /'VERSION' : POUR RECUPERER LE NUMERO DE VERSION (SEULEMENT LA
-!              SD_SOLVEUR OU LA MATAS SONT REQUIS). CE NUMERO EST
-!              STOCKEE DANS SD_SOLVEUR.SLVK(12). IL DOIT ETRE LICITE
-!              (CF. VERSIONS PERMISES DANS ASTERF_MUMPS) SINON UTMESS_F.
-!              PAR DEFAUT ON CHERCHE LE NUMERO DS LA SD_SOLVEUR, SINON ON PREND CELUI LIE
-!              AU PACKAGE MUMPS LINKE.
 !     /'PRERES'  : POUR DEMANDER LES ETAPES ANALYSE+FACTORISATION
 !     /'RESOUD'  : POUR DEMANDER LA DESCENTE/REMONTEE
 !     /'DETR_MAT': POUR DEMANDER LA DESTRUCTION DE L'INSTANCE MUMPS
@@ -126,8 +120,7 @@ subroutine amumph(action, solvez, matasz, rsolu, csolu, &
     iretz = 0
     call infdbg('SOLVEUR', ifm, niv)
     if ((action(1:6) .ne. 'PRERES') .and. (action(1:6) .ne. 'RESOUD') .and. &
-        (action(1:8) .ne. 'DETR_OCC') .and. (action(1:8) .ne. 'DETR_MAT') .and. &
-        (action(1:7) .ne. 'VERSION')) then
+        (action(1:8) .ne. 'DETR_OCC') .and. (action(1:8) .ne. 'DETR_MAT')) then
         ASSERT(.false.)
     end if
 !
@@ -236,10 +229,6 @@ subroutine amumph(action, solvez, matasz, rsolu, csolu, &
 ! --- MUMPS EST-IL UTILISE COMME PRECONDITIONNEUR ?
 ! --- SI OUI, ON DEBRANCHE LES ALARMES ET INFO (PAS LES UTMESS_F)
             lpreco = slvk(8) (1:3) .eq. 'OUI'
-! --- ON RECUPERE UNIQUEMENT UN NUMERO DE VERSION LICITE
-            if (action(1:7) .eq. 'VERSION') then
-                goto 999
-            end if
             if (slvk(7) (1:3) .eq. 'OUI') then
                 prec = 'S'
             else if (slvk(7) (1:3) .eq. 'NON') then
@@ -258,7 +247,7 @@ subroutine amumph(action, solvez, matasz, rsolu, csolu, &
         end if
     else
 ! --- ON DOIT AVOIR UNE SD_SOLVEUR.SLVK POUR CETTE OPTION
-        if ((action(1:8) .eq. 'DETR_OCC') .or. (action(1:7) .eq. 'VERSION')) then
+        if ((action(1:8) .eq. 'DETR_OCC')) then
             ASSERT(.false.)
         end if
     end if
