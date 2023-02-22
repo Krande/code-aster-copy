@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine extdch(typext, valinc, nocham, nocmp, dval)
+subroutine extdch(typext, valinc, nocham, nocmp, dval, lst_loca)
 !
 ! person_in_charge: samuel.geniaut at edf.fr
 !
@@ -37,10 +37,12 @@ subroutine extdch(typext, valinc, nocham, nocmp, dval)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/nmchex.h"
-    real(kind=8) :: dval
-    character(len=8) :: typext
-    character(len=16) :: nocham, nocmp
-    character(len=19) :: valinc(*)
+    character(len=8), intent(in)  :: typext
+    character(len=19), intent(in) :: valinc(*)
+    character(len=16), intent(in) :: nocham
+    character(len=16), intent(in) :: nocmp
+    real(kind=8), intent(out) :: dval
+    integer, optional, intent(in) :: lst_loca(:)
 !
 ! ----------------------------------------------------------------------
 !
@@ -57,6 +59,7 @@ subroutine extdch(typext, valinc, nocham, nocmp, dval)
 ! IN  NOCHAM : NOM DU CHAMP
 ! IN  NOCMP  : NOM DE LA COMPOSANTE
 ! OUT DVAL   : EXTREMUM
+! IN  LST_LOCA: Liste des mailles/noeuds a prendre en compte (si absent: tout)
 !
 !
 !
@@ -64,7 +67,7 @@ subroutine extdch(typext, valinc, nocham, nocmp, dval)
 !
     integer :: jcnsl
     integer :: nbno, ino
-    integer :: nbma, ima, ipt, isp, icmp, nbpt, nbsp, nbcmp
+    integer :: nbma, ima, ipt, isp, icmp, nbpt, nbsp, nbcmp, idx, nb_idx
     integer :: jmoid, jmoil, jmoiv, imoiad
     integer :: jplud, jplul, jpluv, ipluad
     real(kind=8) :: valeur, vmoi, vplu
@@ -72,7 +75,7 @@ subroutine extdch(typext, valinc, nocham, nocmp, dval)
     character(len=16) :: typch
     character(len=19) :: dch, dchs, chplu, chmoi, chmois, chplus
     parameter(nompro='EXTDCH')
-    aster_logical :: bool
+    aster_logical :: bool, filtered
     real(kind=8), pointer :: cnsv(:) => null()
     integer, pointer :: cnsd(:) => null()
 !
@@ -102,6 +105,9 @@ subroutine extdch(typext, valinc, nocham, nocmp, dval)
         call nmchex(valinc, 'VALINC', 'DEPPLU', chplu)
         typch = 'CHAM_NO'
     end if
+
+    filtered = present(lst_loca)
+
 !
 !     INITIALISATION DE L'EXTREMUM
     if (typext .eq. 'MIN' .or. typext .eq. 'MIN_ABS' .or. typext .eq. 'MIN_VAR') dval = &
@@ -135,7 +141,19 @@ subroutine extdch(typext, valinc, nocham, nocmp, dval)
         nbma = zi(jmoid-1+1)
         ASSERT(zi(jplud-1+1) .eq. nbma)
 !
-        do ima = 1, nbma
+        if (filtered) then
+            nb_idx = size(lst_loca)
+        else
+            nb_idx = nbma
+        end if
+
+        do idx = 1, nb_idx
+            if (filtered) then
+                ima = lst_loca(idx)
+            else
+                ima = idx
+            end if
+
             nbpt = zi(jmoid-1+5+4*(ima-1)+1)
             nbsp = zi(jmoid-1+5+4*(ima-1)+2)
             nbcmp = zi(jmoid-1+5+4*(ima-1)+3)
@@ -200,7 +218,20 @@ subroutine extdch(typext, valinc, nocham, nocmp, dval)
         call jeveuo(dchs//'.CNSL', 'L', jcnsl)
         call jeveuo(dchs//'.CNSD', 'L', vi=cnsd)
         nbno = cnsd(1)
-        do ino = 1, nbno
+
+        if (filtered) then
+            nb_idx = size(lst_loca)
+        else
+            nb_idx = nbno
+        end if
+
+        do idx = 1, nb_idx
+            if (filtered) then
+                ino = lst_loca(idx)
+            else
+                ino = idx
+            end if
+
             if (zl(jcnsl-1+ino)) then
                 valeur = abs(cnsv(ino))
                 if (typext(5:7) .eq. 'ABS') valeur = abs(valeur)

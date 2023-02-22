@@ -27,14 +27,17 @@ subroutine nmcrsu(sddisc, lisins, ds_conv, ds_algopara, l_implex, &
 #include "asterf_types.h"
 #include "event_def.h"
 #include "jeveux.h"
+#include "asterfort/assert.h"
 #include "asterfort/gettco.h"
 #include "asterc/r8vide.h"
 #include "asterfort/crsvsi.h"
+#include "asterfort/getvid.h"
 #include "asterfort/getvis.h"
 #include "asterfort/infdbg.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedup1.h"
 #include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
 #include "asterfort/nmcerr.h"
 #include "asterfort/nmcrld.h"
 #include "asterfort/utdidt.h"
@@ -77,12 +80,15 @@ subroutine nmcrsu(sddisc, lisins, ds_conv, ds_algopara, l_implex, &
     aster_logical :: ldeco
     real(kind=8) :: resi_glob_maxi, resi_glob_rela, inikry
     character(len=16) :: typeco, nopara, decoup
-    character(len=24) :: lisevr, lisevk, lisesu
-    character(len=24) :: lisavr, listpr, listpk
-    character(len=24) :: tpsevr, tpsevk, tpsesu
-    character(len=24) :: tpsavr, tpstpr, tpstpk
+    character(len=24) :: lisevr, lisevk, liseloca, lisesu
+    character(len=24) :: lisavr, lisaloca, listpr, listpk
+    character(len=24) :: tpsevr, tpsevk, tpseloca, tpsesu
+    character(len=24) :: tpsavr, tpsaloca, tpstpr, tpstpk
     character(len=24) :: tpsext
     integer :: jtpsex, event_type, action_type
+    character(len=8), pointer:: v_modele_dli(:) => null()
+    character(len=8):: modele_dli, modele_snl
+
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -110,8 +116,10 @@ subroutine nmcrsu(sddisc, lisins, ds_conv, ds_algopara, l_implex, &
 !
     lisevr = lisins(1:8)//'.ECHE.EVENR'
     lisevk = lisins(1:8)//'.ECHE.EVENK'
+    liseloca = lisins(1:8)//'.ECHE.LOCA'
     lisesu = lisins(1:8)//'.ECHE.SUBDR'
     lisavr = lisins(1:8)//'.ADAP.EVENR'
+    lisaloca = lisins(1:8)//'.ADAP.LOCA'
     listpr = lisins(1:8)//'.ADAP.TPLUR'
     listpk = lisins(1:8)//'.ADAP.TPLUK'
 !
@@ -119,8 +127,10 @@ subroutine nmcrsu(sddisc, lisins, ds_conv, ds_algopara, l_implex, &
 !
     tpsevr = sddisc(1:19)//'.EEVR'
     tpsevk = sddisc(1:19)//'.EEVK'
+    tpseloca = sddisc(1:19)//'.ELOC'
     tpsesu = sddisc(1:19)//'.ESUR'
     tpsavr = sddisc(1:19)//'.AEVR'
+    tpsaloca = sddisc(1:19)//'.ALOC'
     tpstpr = sddisc(1:19)//'.ATPR'
     tpstpk = sddisc(1:19)//'.ATPK'
 !
@@ -139,11 +149,22 @@ subroutine nmcrsu(sddisc, lisins, ds_conv, ds_algopara, l_implex, &
 !
         call jedup1(lisevr, 'V', tpsevr)
         call jedup1(lisevk, 'V', tpsevk)
+        call jedup1(liseloca, 'V', tpseloca)
         call jedup1(lisesu, 'V', tpsesu)
         if (nb_adap .ne. 0) then
             call jedup1(lisavr, 'V', tpsavr)
+            call jedup1(lisaloca, 'V', tpsaloca)
             call jedup1(listpr, 'V', tpstpr)
             call jedup1(listpk, 'V', tpstpk)
+        end if
+
+        ! Verification de la coherence du modele si renseigne dans DEFI_LIST_INST
+        call jeveuo(lisins(1:8)//'.MODELE', 'L', vk8=v_modele_dli)
+        modele_dli = v_modele_dli(1)
+        if (modele_dli .ne. ' ') then
+            call getvid(' ', 'MODELE', scal=modele_snl)
+            if (modele_dli .ne. modele_snl) call utmess('F', 'MECANONLINE_7')
+
         end if
     end if
 !

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -36,6 +36,12 @@ cata_msg = {
         """
   Sélection d'instants.
   La précision donnée pour votre critère de sélection est négative ou inférieure à la précision machine.
+"""
+    ),
+    4: _(
+        """
+  Champ utilisé pour DELTA_GRANDEUR.
+  Quand le champ est filtré sur un groupe de mailles ou de noeuds, le mot-clé MODELE doit être présent.
 """
     ),
 }

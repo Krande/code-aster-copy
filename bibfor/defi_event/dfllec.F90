@@ -54,6 +54,8 @@ subroutine dfllec(sdlist, dtmin)
     integer :: event_list(FAIL_EVT_NB)
     character(len=16) :: keywf
     character(len=16) :: nom_cham, nom_cmp, crit_cmp
+    character(len=24)  :: lst_loca
+    integer:: etat_loca
     real(kind=8) :: vale_ref, subd_pas_mini
     integer :: nb_fail_read, nb_fail
     integer :: i_fail, i_event, i_fail_save
@@ -70,6 +72,8 @@ subroutine dfllec(sdlist, dtmin)
     real(kind=8), pointer :: v_sdlist_eevenr(:) => null()
     character(len=24) :: sdlist_eevenk
     character(len=16), pointer :: v_sdlist_eevenk(:) => null()
+    character(len=24) :: sdlist_loca
+    integer, pointer :: v_sdlist_loca(:) => null()
     character(len=24) :: sdlist_esubdr
     real(kind=8), pointer :: v_sdlist_esubdr(:) => null()
     character(len=24) :: sdlist_linfor
@@ -106,11 +110,14 @@ subroutine dfllec(sdlist, dtmin)
 !
     sdlist_eevenr = sdlist(1:8)//'.ECHE.EVENR'
     sdlist_eevenk = sdlist(1:8)//'.ECHE.EVENK'
+    sdlist_loca = sdlist(1:8)//'.ECHE.LOCA'
     sdlist_esubdr = sdlist(1:8)//'.ECHE.SUBDR'
     call wkvect(sdlist_eevenr, 'G V R', nb_fail*SIZE_LEEVR, vr=v_sdlist_eevenr)
     call wkvect(sdlist_eevenk, 'G V K16', nb_fail*SIZE_LEEVK, vk16=v_sdlist_eevenk)
+    call wkvect(sdlist_loca, 'G V I', nb_fail*SIZE_LELOCA, vi=v_sdlist_loca)
     call wkvect(sdlist_esubdr, 'G V R', nb_fail*SIZE_LESUR, vr=v_sdlist_esubdr)
     v_sdlist_linfor(9) = nb_fail
+    v_sdlist_loca(1:nb_fail*SIZE_LELOCA) = 0
 !
 ! - Ordering list of events
 !
@@ -181,8 +188,8 @@ subroutine dfllec(sdlist, dtmin)
         else
 ! --------- Get parameters of EVENEMENT for current failure keyword
             call dfllpe(keywf, i_fail, event_typek, &
-                        vale_ref, nom_cham, nom_cmp, crit_cmp, &
-                        pene_maxi, resi_glob_maxi)
+                        vale_ref, nom_cham, nom_cmp, crit_cmp, lst_loca, &
+                        etat_loca, pene_maxi, resi_glob_maxi)
 ! --------- Get parameters of ACTION for current failure keyword
             call dfllac(keywf, i_fail, dtmin, event_typek, &
                         action_typek, &
@@ -196,10 +203,10 @@ subroutine dfllec(sdlist, dtmin)
 ! ----- Save parameters in datastructure
 !
         if (l_save) then
-            call dfllsv(v_sdlist_linfor, v_sdlist_eevenr, v_sdlist_eevenk, v_sdlist_esubdr, &
-                        i_fail_save, &
+            call dfllsv(v_sdlist_linfor, v_sdlist_eevenr, v_sdlist_eevenk, sdlist_loca, &
+                        v_sdlist_esubdr, i_fail_save, &
                         event_typek, vale_ref, nom_cham, nom_cmp, &
-                        crit_cmp, pene_maxi, resi_glob_maxi, &
+                        crit_cmp, lst_loca, etat_loca, pene_maxi, resi_glob_maxi, &
                         action_typek, subd_method, subd_auto, subd_pas_mini, &
                         subd_pas, subd_niveau, pcent_iter_plus, coef_maxi, &
                         subd_inst, subd_duree)

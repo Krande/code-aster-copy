@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -31,8 +31,12 @@ class sd_list_inst(AsBase):
     ECHE_EVENR = AsVR(SDNom(nomj=".ECHE.EVENR"))
     ECHE_EVENK = AsVK16(SDNom(nomj=".ECHE.EVENK"))
     ECHE_SUBDR = AsVR(SDNom(nomj=".ECHE.SUBDR"))
+    ECHE_LOCA = AsVI(SDNom(nomj=".ECHE.LOCA"))
 
     ADAP_EVENR = Facultatif(AsVR(SDNom(nomj=".ADAP.EVENR")))
     ADAP_EVENK = Facultatif(AsVK8(SDNom(nomj=".ADAP.EVENK")))
     ADAP_TPLUR = Facultatif(AsVR(SDNom(nomj=".ADAP.TPLUR")))
     ADAP_TPLUK = Facultatif(AsVK16(SDNom(nomj=".ADAP.TPLUK")))
+    ADAP_LOCA = Facultatif(AsVI(SDNom(nomj=".ADAP.LOCA")))
+
+    MODELE = AsVK8(SDNom(nomj=".MODELE"), lonmax=1)

@@ -25,12 +25,17 @@ subroutine dfllad(sdlist)
 #include "asterc/getfac.h"
 #include "asterfort/assert.h"
 #include "asterfort/dinogd.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/getvid.h"
 #include "asterfort/getvis.h"
 #include "asterfort/getvr8.h"
 #include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
+#include "asterfort/jelira.h"
+#include "asterfort/juveca.h"
+#include "asterfort/reliem.h"
 #include "asterfort/utcmp2.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
@@ -59,12 +64,18 @@ subroutine dfllad(sdlist)
     integer :: valei, nucmp(1)
     character(len=24) :: sdlist_aevenr
     real(kind=8), pointer :: v_sdlist_aevenr(:) => null()
+    character(len=24) :: sdlist_loca
+    integer, pointer :: v_sdlist_loca(:) => null()
+    integer, pointer :: v_lst_loca(:) => null()
     character(len=24) :: sdlist_atplur
     real(kind=8), pointer :: v_sdlist_atplur(:) => null()
     character(len=24) :: sdlist_atpluk
     character(len=16), pointer :: v_sdlist_atpluk(:) => null()
     character(len=24) :: sdlist_linfor
     real(kind=8), pointer :: v_sdlist_linfor(:) => null()
+    integer           :: nocc, nb_loca, lg_ini, etat_loca
+    character(len=8)  :: mesh
+    character(len=24) :: model, lst_loca
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -95,12 +106,15 @@ subroutine dfllad(sdlist)
 ! - Create datastructure
 !
     sdlist_aevenr = sdlist(1:8)//'.ADAP.EVENR'
+    sdlist_loca = sdlist(1:8)//'.ADAP.LOCA'
     sdlist_atplur = sdlist(1:8)//'.ADAP.TPLUR'
     sdlist_atpluk = sdlist(1:8)//'.ADAP.TPLUK'
     call wkvect(sdlist_aevenr, 'G V R', nb_adapt*SIZE_LAEVR, vr=v_sdlist_aevenr)
+    call wkvect(sdlist_loca, 'G V I', nb_adapt*SIZE_LALOCA, vi=v_sdlist_loca)
     call wkvect(sdlist_atplur, 'G V R', nb_adapt*SIZE_LATPR, vr=v_sdlist_atplur)
     call wkvect(sdlist_atpluk, 'G V K16', nb_adapt*SIZE_LATPK, vk16=v_sdlist_atpluk)
     v_sdlist_linfor(10) = nb_adapt
+    v_sdlist_loca(1:nb_adapt*SIZE_LALOCA) = 0
 !
 ! - Read parameters
 !
@@ -182,6 +196,58 @@ subroutine dfllad(sdlist)
             call getvtx(keywf, 'NOM_PARA', iocc=i_adap, scal=nom_para, nbret=nbret)
             call getvtx(keywf, 'NOM_CHAM', iocc=i_adap, scal=nom_cham, nbret=nbret)
             call getvtx(keywf, 'NOM_CMP', iocc=i_adap, scal=nom_cmp, nbret=nbret)
+
+            if (nom_cham .eq. 'DEPL') then
+                call getvtx(keywf, 'GROUP_NO', iocc=i_adap, nbret=nocc)
+            else if (nom_cham .eq. 'SIEF_ELGA' .or. nom_cham .eq. 'VARI_ELGA') then
+                call getvtx(keywf, 'GROUP_MA', iocc=i_adap, nbret=nocc)
+            else
+                ASSERT(.false.)
+            end if
+            etat_loca = merge(LOCA_TOUT, LOCA_PARTIEL, nocc .eq. 0)
+
+            if (etat_loca .eq. LOCA_PARTIEL) then
+                call getvid(' ', 'MODELE', scal=model, nbret=nocc)
+                if (nocc .ne. 1) call utmess('F', 'LISTINST_4')
+                call dismoi('NOM_MAILLA', model, 'MODELE', repk=mesh)
+
+                write (lst_loca, '(A19,I5.5)') '&&OP0028.ADAP.LOCA.', i_adap
+                if (nom_cham .eq. 'DEPL') then
+                    call reliem(model, mesh, 'NU_NOEUD', keywf, i_adap, 1, ['GROUP_NO'], &
+                                ['GROUP_NO'], lst_loca, nb_loca)
+                else if (nom_cham .eq. 'SIEF_ELGA' .or. nom_cham .eq. 'VARI_ELGA') then
+                    call reliem(model, mesh, 'NU_MAILLE', keywf, i_adap, 1, ['GROUP_MA'], &
+                                ['GROUP_MA'], lst_loca, nb_loca)
+                else
+                    ASSERT(.false.)
+                end if
+                if (nb_loca .eq. 0) etat_loca = LOCA_VIDE
+            end if
+
+            if (etat_loca .eq. LOCA_VIDE) then
+                call jeveuo(sdlist_loca, 'E', vi=v_sdlist_loca)
+                v_sdlist_loca(SIZE_LALOCA*(i_adap-1)+1) = etat_loca
+                v_sdlist_loca(SIZE_LALOCA*(i_adap-1)+2) = 0
+                v_sdlist_loca(SIZE_LALOCA*(i_adap-1)+3) = 0
+            else if (etat_loca .eq. LOCA_PARTIEL) then
+                call jelira(lst_loca, 'LONMAX', nb_loca)
+                call jelira(sdlist_loca, 'LONMAX', lg_ini)
+                call juveca(sdlist_loca, lg_ini+nb_loca)
+
+                call jeveuo(sdlist_loca, 'E', vi=v_sdlist_loca)
+                call jeveuo(lst_loca, 'L', vi=v_lst_loca)
+
+                v_sdlist_loca(SIZE_LALOCA*(i_adap-1)+1) = etat_loca
+                v_sdlist_loca(SIZE_LALOCA*(i_adap-1)+2) = lg_ini+1
+                v_sdlist_loca(SIZE_LALOCA*(i_adap-1)+3) = lg_ini+nb_loca
+                v_sdlist_loca(lg_ini+1:lg_ini+nb_loca) = v_lst_loca(1:nb_loca)
+            else if (etat_loca .eq. LOCA_TOUT) then
+                call jeveuo(sdlist_loca, 'E', vi=v_sdlist_loca)
+                v_sdlist_loca(SIZE_LALOCA*(i_adap-1)+1) = etat_loca
+                v_sdlist_loca(SIZE_LALOCA*(i_adap-1)+2) = 0
+                v_sdlist_loca(SIZE_LALOCA*(i_adap-1)+3) = 0
+            end if
+
             nomgd = dinogd(nom_cham)
             call utcmp2(nomgd, keywf, i_adap, 1, nom_cmp, &
                         nucmp, ibid)

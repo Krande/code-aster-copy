@@ -22,11 +22,14 @@ subroutine nmevdg(sddisc, vale, i_echec, i_echec_acti)
     implicit none
 !
 #include "jeveux.h"
+#include "asterf_types.h"
+#include "event_def.h"
 #include "asterfort/assert.h"
 #include "asterfort/extdch.h"
 #include "asterfort/infdbg.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
 #include "asterfort/tbacce.h"
 #include "asterfort/tbliva.h"
 #include "asterfort/utdidt.h"
@@ -46,13 +49,15 @@ subroutine nmevdg(sddisc, vale, i_echec, i_echec_acti)
 ! IN  VALE   : INCREMENTS DES VARIABLES
 !               OP0070: VARIABLE CHAPEAU
 !               OP0033: TABLE
-! IN  IECHEC : OCCURRENCE DE L'ECHEC
-! OUT IEVDAC : VAUT IECHEC SI EVENEMENT DECLENCHE
+! IN  i_echec : OCCURRENCE DE L'ECHEC
+! OUT i_echec_acti : VAUT i_echec SI EVENEMENT DECLENCHE
 !                   0 SINON
 !
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: ifm, niv, ier
+    integer :: deb, fin, etat_loca
+    integer, pointer:: loca(:) => null()
     real(kind=8) :: valref, dval, r8bid
     integer :: ibid
     character(len=8) :: k8bid, crit, typext
@@ -104,7 +109,22 @@ subroutine nmevdg(sddisc, vale, i_echec, i_echec_acti)
     else
 !
 !       RESULTAT DE STAT_NON_LINE
-        call extdch(typext, vale, nocham, nocmp, dval)
+
+        ! Extraction du filtre sur la liste des mailles
+        call jeveuo(sddisc//'.ELOC', 'L', vi=loca)
+        etat_loca = loca(SIZE_LELOCA*(i_echec-1)+1)
+
+        if (etat_loca .eq. LOCA_VIDE) then
+            dval = 0
+        else if (etat_loca .eq. LOCA_PARTIEL) then
+            deb = loca(SIZE_LELOCA*(i_echec-1)+2)
+            fin = loca(SIZE_LELOCA*(i_echec-1)+3)
+            call extdch(typext, vale, nocham, nocmp, dval, lst_loca=loca(deb:fin))
+        else if (etat_loca .eq. LOCA_TOUT) then
+            call extdch(typext, vale, nocham, nocmp, dval)
+        else
+            ASSERT(.false.)
+        end if
     end if
 !
     ASSERT(crit .eq. 'GT')

@@ -59,6 +59,12 @@ Erreur utilisateur :
 L'option MATR_DISTRIBUEE='OUI' est interdite avec le contact continu.
 """
     ),
+    7: _(
+        """
+Le MODELE fourni par l'utilisateur sous le mot-clé MODELE est différent de celui présent dans la structure 
+de données renseignée sous le mot-clé INCREMENT/LIST_INST et construite par l'opérateur DEFI_LIST_INST.
+"""
+    ),
     23: _(
         """
  Le calcul de l'accélération initiale a ignoré les chargements de type:

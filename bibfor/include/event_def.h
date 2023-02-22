@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,9 +26,11 @@
 #define SIZE_LLINR           11
 #define SIZE_LEEVR           7
 #define SIZE_LEEVK           3
+#define SIZE_LELOCA          3
 #define SIZE_LESUR           10
 #define SIZE_LAEVR           6
 #define SIZE_LAEVK           1
+#define SIZE_LALOCA          3
 #define SIZE_LATPR           6
 #define SIZE_LATPK           4
 ! Defines for ECHEC/EVENEMENT
@@ -40,7 +42,11 @@
 #define FAIL_EVT_DIVE_RESI        5
 #define FAIL_EVT_INSTABILITY      6
 #define FAIL_EVT_RESI_MAXI        7
-
+! Localisation
+#define LOCA_VIDE    0
+#define LOCA_PARTIEL 1
+#define LOCA_TOUT    2
+!
 integer, parameter :: failEventMaxi(FAIL_EVT_NB)     = (/1, 99, 1,&
                                                          1, 99, 1,&
                                                          1/)

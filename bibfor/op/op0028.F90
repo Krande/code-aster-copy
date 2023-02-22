@@ -26,8 +26,10 @@ subroutine op0028()
 #include "asterfort/dflldb.h"
 #include "asterfort/dfllec.h"
 #include "asterfort/dfllty.h"
+#include "asterfort/getvid.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/infniv.h"
+#include "asterfort/wkvect.h"
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -40,6 +42,9 @@ subroutine op0028()
     character(len=16) :: list_method
     real(kind=8) :: dtmin
     integer :: ifm, niv
+    integer:: nocc
+    character(len=8)::model
+    character(len=8), pointer:: v_model(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -49,6 +54,13 @@ subroutine op0028()
 ! - Get result datastructure
 !
     call getres(sdlist, k16bid, k16bid)
+!
+! - Read model if present
+!
+    call getvid(' ', 'MODELE', scal=model, nbret=nocc)
+    if (nocc .eq. 0) model = ' '
+    call wkvect(sdlist//'.MODELE', 'G V K8', 1, vk8=v_model)
+    v_model(1) = model
 !
 ! - Read parameters for keyword DEFI_LIST
 !

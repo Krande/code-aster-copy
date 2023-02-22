@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,11 +19,12 @@
 !
 !
 interface
-    subroutine extdch(typext, valinc, nocham, nocmp, dval)
-        character(len=8) :: typext
-        character(len=19) :: valinc(*)
-        character(len=16) :: nocham
-        character(len=16) :: nocmp
-        real(kind=8) :: dval
+    subroutine extdch(typext, valinc, nocham, nocmp, dval, lst_loca)
+        character(len=8),intent(in)  :: typext
+        character(len=19),intent(in) :: valinc(*)
+        character(len=16),intent(in) :: nocham
+        character(len=16),intent(in) :: nocmp
+        real(kind=8),intent(out) :: dval
+        integer,optional,intent(in) :: lst_loca(:)
     end subroutine extdch
 end interface

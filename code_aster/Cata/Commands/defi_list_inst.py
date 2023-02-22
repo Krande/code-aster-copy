@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -157,6 +157,7 @@ DEFI_LIST_INST = OPER(
     sd_prod=list_inst,
     reentrant="n",
     fr=tr("Définition de la gestion de la liste d'instants"),
+    MODELE=SIMP(statut="f", typ=(modele_sdaster)),
     METHODE=SIMP(
         fr=tr("Methode de definition de la liste d'instants"),
         statut="f",
@@ -240,6 +241,9 @@ DEFI_LIST_INST = OPER(
         b_edelta=BLOC(
             fr=tr("Event: l'increment d'une composante d'un champ depasse le seuil"),
             condition="""equal_to("EVENEMENT", 'DELTA_GRANDEUR') """,
+            regles=(EXCLUS("GROUP_MA", "GROUP_NO"),),
+            GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
+            GROUP_NO=SIMP(statut="f", typ=grno, validators=NoRepeat(), max="**"),
             VALE_REF=SIMP(fr=tr("Valeur du seuil"), statut="o", typ="R", max=1),
             NOM_CHAM=SIMP(
                 fr=tr("Nom du champ"),
@@ -380,6 +384,9 @@ DEFI_LIST_INST = OPER(
             b_mdelta=BLOC(
                 fr=tr("Mode de calcul de dt+: increment d'une grandeur"),
                 condition="""equal_to("MODE_CALCUL_TPLUS", 'DELTA_GRANDEUR') """,
+                regles=(EXCLUS("GROUP_MA", "GROUP_NO"),),
+                GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
+                GROUP_NO=SIMP(statut="f", typ=grno, validators=NoRepeat(), max="**"),
                 VALE_REF=SIMP(statut="o", max=1, typ="R"),
                 NOM_CHAM=SIMP(
                     statut="o", max=1, typ="TXM", into=("DEPL", "VARI_ELGA", "SIEF_ELGA")

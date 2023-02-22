@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -22,7 +22,12 @@ DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
 # LECTURE DU MAILLAGE
 MAIL = LIRE_MAILLAGE(FORMAT="MED")
 
-MAIL = DEFI_GROUP(reuse=MAIL, MAILLAGE=MAIL, CREA_GROUP_NO=_F(GROUP_MA="34"))
+MAIL = DEFI_GROUP(
+    reuse=MAIL,
+    MAILLAGE=MAIL,
+    CREA_GROUP_MA=_F(NOM="TOUT_2D", TOUT="OUI", TYPE_MAILLE="2D"),
+    CREA_GROUP_NO=(_F(GROUP_MA="34"), _F(GROUP_MA="TOUT_2D")),
+)
 
 # AFFECTATION DU MODELE SUR LE MAILLAGE
 MODE = AFFE_MODELE(MAILLAGE=MAIL, AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="D_PLAN"))
@@ -102,12 +107,14 @@ FX = RECU_FONCTION(
 
 DEFLIST1 = DEFI_LIST_INST(
     METHODE="AUTO",
+    MODELE=MODE,
     DEFI_LIST=_F(LIST_INST=L_INST1),
     ADAPTATION=_F(
         EVENEMENT="TOUT_INST",
         MODE_CALCUL_TPLUS="DELTA_GRANDEUR",
         NOM_CHAM="DEPL",
         NOM_CMP="DY",
+        GROUP_NO="TOUT_2D",
         VALE_REF=0.005e0,
     ),
 )

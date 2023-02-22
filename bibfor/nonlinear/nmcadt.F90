@@ -27,11 +27,15 @@ subroutine nmcadt(sddisc, i_adap, nume_inst, hval_incr, dtp)
 #include "asterc/r8maem.h"
 #include "asterc/r8vide.h"
 #include "asterfort/assert.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/extdch.h"
 #include "asterfort/jedema.h"
+#include "asterfort/jeexin.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
+#include "asterfort/nmchex.h"
 #include "asterfort/utdidt.h"
+#include "asterfort/wkvect.h"
 #include "asterfort/getAdapAction.h"
 !
     character(len=19), intent(in) :: sddisc
@@ -58,6 +62,9 @@ subroutine nmcadt(sddisc, i_adap, nume_inst, hval_incr, dtp)
 !
 !
 !
+    integer :: deb, fin, etat_loca
+    integer, pointer:: loca(:) => null()
+
     integer :: nit, nbiter, action_type
     real(kind=8) :: dtm, pcent, valref, dval
     character(len=8) :: typext
@@ -107,7 +114,21 @@ subroutine nmcadt(sddisc, i_adap, nume_inst, hval_incr, dtp)
 ! -----             = VREF / MAX ( |DELTA(CHAMP+CMP)| )
 ! ----- DVAL :MAX EN VALEUR ABSOLUE DU DELTA(CHAMP+CMP)
 !
-        call extdch(typext, hval_incr, nocham, nocmp, dval)
+        ! Extraction du filtre sur la liste des mailles
+        call jeveuo(sddisc//'.ALOC', 'L', vi=loca)
+        etat_loca = loca(SIZE_LALOCA*(i_adap-1)+1)
+
+        if (etat_loca .eq. LOCA_VIDE) then
+            dval = 0
+        else if (etat_loca .eq. LOCA_PARTIEL) then
+            deb = loca(SIZE_LALOCA*(i_adap-1)+2)
+            fin = loca(SIZE_LALOCA*(i_adap-1)+3)
+            call extdch(typext, hval_incr, nocham, nocmp, dval, lst_loca=loca(deb:fin))
+        else if (etat_loca .eq. LOCA_TOUT) then
+            call extdch(typext, hval_incr, nocham, nocmp, dval)
+        else
+            ASSERT(.false.)
+        end if
 !
 ! ----- LE CHAMP DE VARIATION EST IDENTIQUEMENT NUL : ON SORT
 !

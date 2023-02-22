@@ -17,10 +17,10 @@
 ! --------------------------------------------------------------------
 ! aslint: disable=W1504
 !
-subroutine dfllsv(v_sdlist_linfor, v_sdlist_eevenr, v_sdlist_eevenk, v_sdlist_esubdr, &
-                  i_fail_save, &
+subroutine dfllsv(v_sdlist_linfor, v_sdlist_eevenr, v_sdlist_eevenk, sdlist_loca, &
+                  v_sdlist_esubdr, i_fail_save, &
                   event_typek, vale_ref, nom_cham, nom_cmp, &
-                  crit_cmp, pene_maxi, resi_glob_maxi, &
+                  crit_cmp, lst_loca, etat_loca, pene_maxi, resi_glob_maxi, &
                   action_typek, subd_methode, subd_auto, subd_pas_mini, &
                   subd_pas, subd_niveau, pcent_iter_plus, coef_maxi, &
                   subd_inst, subd_duree)
@@ -32,11 +32,15 @@ subroutine dfllsv(v_sdlist_linfor, v_sdlist_eevenr, v_sdlist_eevenk, v_sdlist_es
 #include "asterfort/assert.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/juveca.h"
 #include "asterfort/utmess.h"
 !
     real(kind=8), pointer :: v_sdlist_linfor(:)
     real(kind=8), pointer :: v_sdlist_eevenr(:)
     character(len=16), pointer :: v_sdlist_eevenk(:)
+    character(len=24), intent(in):: sdlist_loca
     real(kind=8), pointer :: v_sdlist_esubdr(:)
     integer, intent(in) :: i_fail_save
     character(len=16), intent(in) :: event_typek
@@ -44,6 +48,8 @@ subroutine dfllsv(v_sdlist_linfor, v_sdlist_eevenr, v_sdlist_eevenk, v_sdlist_es
     character(len=16), intent(in) :: nom_cham
     character(len=16), intent(in) :: nom_cmp
     character(len=16), intent(in) :: crit_cmp
+    character(len=24), intent(in) :: lst_loca
+    integer, intent(in):: etat_loca
     real(kind=8), intent(in) :: pene_maxi
     real(kind=8), intent(in) :: resi_glob_maxi
     character(len=16), intent(in) :: action_typek
@@ -75,6 +81,8 @@ subroutine dfllsv(v_sdlist_linfor, v_sdlist_eevenr, v_sdlist_eevenk, v_sdlist_es
 ! In  nom_cham         : value of NOM_CHAM for EVENEMENT=DELTA_GRANDEUR
 ! In  nom_cmp          : value of NOM_CMP for EVENEMENT=DELTA_GRANDEUR
 ! In  crit_cmp         : value of CRIT_CMP for EVENEMENT=DELTA_GRANDEUR
+! In  lst_loca         : list of cells or nodes for EVENEMENT=DELTA_GRANDEUR
+! In  etat_loca        : in relation with lst_loca 0=void, 1=partial (lst_loca), 2=all
 ! In  pene_maxi        : value of PENE_MAXI for EVENEMENT=INTERPENETRATION
 ! In  resi_glob_maxi   : value of RESI_GLOB_MAXI for EVENEMENT=RESI_MAXI
 ! In  action_typek     : type of action
@@ -90,6 +98,11 @@ subroutine dfllsv(v_sdlist_linfor, v_sdlist_eevenr, v_sdlist_eevenk, v_sdlist_es
 !
 ! --------------------------------------------------------------------------------------------------
 !
+    integer:: nb_loca, lg_ini
+    integer, pointer :: v_sdlist_loca(:) => null()
+    integer, pointer :: v_lst_loca(:) => null()
+! --------------------------------------------------------------------------------------------------
+
     call jemarq()
 !
 ! - Alarm for no-step cut
@@ -151,6 +164,30 @@ subroutine dfllsv(v_sdlist_linfor, v_sdlist_eevenr, v_sdlist_eevenk, v_sdlist_es
         v_sdlist_eevenk(SIZE_LEEVK*(i_fail_save-1)+1) = nom_cham
         v_sdlist_eevenk(SIZE_LEEVK*(i_fail_save-1)+2) = nom_cmp
         v_sdlist_eevenk(SIZE_LEEVK*(i_fail_save-1)+3) = crit_cmp
+
+        if (etat_loca .eq. LOCA_VIDE) then
+            call jeveuo(sdlist_loca, 'E', vi=v_sdlist_loca)
+            v_sdlist_loca(SIZE_LELOCA*(i_fail_save-1)+1) = etat_loca
+            v_sdlist_loca(SIZE_LELOCA*(i_fail_save-1)+2) = 0
+            v_sdlist_loca(SIZE_LELOCA*(i_fail_save-1)+3) = 0
+        else if (etat_loca .eq. LOCA_PARTIEL) then
+            call jelira(lst_loca, 'LONMAX', nb_loca)
+            call jelira(sdlist_loca, 'LONMAX', lg_ini)
+            call juveca(sdlist_loca, lg_ini+nb_loca)
+
+            call jeveuo(sdlist_loca, 'E', vi=v_sdlist_loca)
+            call jeveuo(lst_loca, 'L', vi=v_lst_loca)
+
+            v_sdlist_loca(SIZE_LELOCA*(i_fail_save-1)+1) = etat_loca
+            v_sdlist_loca(SIZE_LELOCA*(i_fail_save-1)+2) = lg_ini+1
+            v_sdlist_loca(SIZE_LELOCA*(i_fail_save-1)+3) = lg_ini+nb_loca
+            v_sdlist_loca(lg_ini+1:lg_ini+nb_loca) = v_lst_loca(1:nb_loca)
+        else if (etat_loca .eq. LOCA_TOUT) then
+            call jeveuo(sdlist_loca, 'E', vi=v_sdlist_loca)
+            v_sdlist_loca(SIZE_LELOCA*(i_fail_save-1)+1) = etat_loca
+            v_sdlist_loca(SIZE_LELOCA*(i_fail_save-1)+2) = 0
+            v_sdlist_loca(SIZE_LELOCA*(i_fail_save-1)+3) = 0
+        end if
     end if
 !
 ! - Parameters for EVENEMENT = 'INTERPENETRATION'
