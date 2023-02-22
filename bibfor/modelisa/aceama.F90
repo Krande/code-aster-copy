@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-!
+
 subroutine aceama(nomu, noma, lmax, nbocc)
     implicit none
 #include "jeveux.h"
@@ -29,6 +29,10 @@ subroutine aceama(nomu, noma, lmax, nbocc)
 #include "asterfort/jeveuo.h"
 #include "asterfort/nocart.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/getvid.h"
+#include "asterfort/copisd.h"
+#include "asterfort/utmess.h"
+#include "asterfort/assert.h"
     integer :: lmax, nbocc
     character(len=8) :: nomu, noma
 !     AFFE_CARA_ELEM
@@ -40,104 +44,133 @@ subroutine aceama(nomu, noma, lmax, nbocc)
 ! IN  : NBOCC  : NOMBRE D'OCCURENCES DU MOT CLE COQUE
 ! ----------------------------------------------------------------------
     real(kind=8) :: ang(3), orig(3), angeul(3)
-    character(len=19) :: cartma
-    character(len=24) :: tmpnma, tmpvma
+    character(len=19) :: cartma, chorie
+    character(len=24) :: tmpnma, tmpvma, chdef
 !     ------------------------------------------------------------------
 !
 ! --- CONSTRUCTION DES CARTES ET ALLOCATION
 !-----------------------------------------------------------------------
     integer :: i, ioc, jdcc, jdls, jdvc, naxe, neul
-    integer :: ng, norig, nrep
+    integer :: ng, nm, norig, nrep, jdls2, ncham
 !-----------------------------------------------------------------------
     call jemarq()
     cartma = nomu//'.CARMASSI'
-    tmpnma = cartma//'.NCMP'
-    tmpvma = cartma//'.VALV'
 !
-    call alcart('G', cartma, noma, 'CAMASS')
-    call jeveuo(tmpnma, 'E', jdcc)
-    call jeveuo(tmpvma, 'E', jdvc)
+! --- Si on a donné CHAM_ORIE alors on ne peut avoir qu'un seul mot-clé facteur MASSIF
+!     Déjà vérifié par le superviseur.
+    do ioc = 1, nbocc
+        call getvid('MASSIF', 'CHAM_ORIE', iocc=ioc, scal=chorie, nbret=ncham)
+        if (ncham .ne. 0) then
+            ASSERT(nbocc .eq. 1)
+        end if
+    end do
+
+    if (ncham .ne. 0) then
+! --- CAS OU ON DONNE LA CARTE CARMASS DIRECTEMENT SOUS LE MOT-CLE CHAM_ORIE
+        call copisd('CHAMP_GD', 'G', chorie(1:19), cartma(1:19))
+    else
 !
-    call wkvect('&&TMPMASSIF', 'V V K24', lmax, jdls)
+! --- SINON ON CONSTRUIT LA CARTE AVEC LES INFORMATIONS (GROUP_MA, ANGLE_REP...) DONNEES SOUS MASSIF
+        tmpnma = cartma//'.NCMP'
+        tmpvma = cartma//'.VALV'
+!
+        call alcart('G', cartma, noma, 'CAMA_R')
+        call jeveuo(tmpnma, 'E', jdcc)
+        call jeveuo(tmpvma, 'E', jdvc)
+!
+        call wkvect('&&TMPMASSIF', 'V V K24', lmax, jdls)
+        call wkvect('&&TMPMASSIF2', 'V V K8', lmax, jdls2)
 !
 !     STOCKAGE DE VALEURS NULLES SUR TOUT LE MAILLAGE
 !
-    zk8(jdcc) = 'C'
-    zk8(jdcc+1) = 'ALPHA'
-    zk8(jdcc+2) = 'BETA'
-    zk8(jdcc+3) = 'KAPPA'
-    zk8(jdcc+4) = 'X'
-    zk8(jdcc+5) = 'Y'
-    zk8(jdcc+6) = 'Z'
+        zk8(jdcc) = 'C'
+        zk8(jdcc+1) = 'ALPHA'
+        zk8(jdcc+2) = 'BETA'
+        zk8(jdcc+3) = 'KAPPA'
+        zk8(jdcc+4) = 'X'
+        zk8(jdcc+5) = 'Y'
+        zk8(jdcc+6) = 'Z'
 !
-    zr(jdvc) = 1.d0
-    zr(jdvc+1) = 0.d0
-    zr(jdvc+2) = 0.d0
-    zr(jdvc+3) = 0.d0
-    zr(jdvc+4) = 0.d0
-    zr(jdvc+5) = 0.d0
-    zr(jdvc+6) = 0.d0
+        zr(jdvc) = 1.d0
+        zr(jdvc+1) = 0.d0
+        zr(jdvc+2) = 0.d0
+        zr(jdvc+3) = 0.d0
+        zr(jdvc+4) = 0.d0
+        zr(jdvc+5) = 0.d0
+        zr(jdvc+6) = 0.d0
 !
-    call nocart(cartma, 1, 7)
+        call nocart(cartma, 1, 7)
 !
 ! --- LECTURE DES VALEURS ET AFFECTATION DANS LA CARTE CARTMA
-    do ioc = 1, nbocc
-        ang(1) = 0.d0
-        ang(2) = 0.d0
-        ang(3) = 0.d0
-        orig(1) = 0.d0
-        orig(2) = 0.d0
-        orig(3) = 0.d0
-        call getvem(noma, 'GROUP_MA', 'MASSIF', 'GROUP_MA', ioc, &
-                    lmax, zk24(jdls), ng)
-        call getvr8('MASSIF', 'ANGL_REP', iocc=ioc, nbval=3, vect=ang(1), &
-                    nbret=nrep)
-        call getvr8('MASSIF', 'ANGL_EULER', iocc=ioc, nbval=3, vect=angeul(1), &
-                    nbret=neul)
-        call getvr8('MASSIF', 'ANGL_AXE', iocc=ioc, nbval=2, vect=ang(1), &
-                    nbret=naxe)
-        call getvr8('MASSIF', 'ORIG_AXE', iocc=ioc, nbval=3, vect=orig(1), &
-                    nbret=norig)
+        do ioc = 1, nbocc
+            ang(1) = 0.d0
+            ang(2) = 0.d0
+            ang(3) = 0.d0
+            orig(1) = 0.d0
+            orig(2) = 0.d0
+            orig(3) = 0.d0
+            call getvem(noma, 'GROUP_MA', 'MASSIF', 'GROUP_MA', ioc, &
+                        lmax, zk24(jdls), ng)
+            call getvem(noma, 'MAILLE', 'MASSIF', 'MAILLE', ioc, &
+                        lmax, zk8(jdls2), nm)
+            call getvr8('MASSIF', 'ANGL_REP', iocc=ioc, nbval=3, vect=ang(1), &
+                        nbret=nrep)
+            call getvr8('MASSIF', 'ANGL_EULER', iocc=ioc, nbval=3, vect=angeul(1), &
+                        nbret=neul)
+            call getvr8('MASSIF', 'ANGL_AXE', iocc=ioc, nbval=2, vect=ang(1), &
+                        nbret=naxe)
+            call getvr8('MASSIF', 'ORIG_AXE', iocc=ioc, nbval=3, vect=orig(1), &
+                        nbret=norig)
 !
-        if (nrep .ne. 0) then
-            zr(jdvc) = 1.d0
-            zr(jdvc+1) = ang(1)
-            zr(jdvc+2) = ang(2)
-            zr(jdvc+3) = ang(3)
-            zr(jdvc+4) = 0.d0
-            zr(jdvc+5) = 0.d0
-            zr(jdvc+6) = 0.d0
-        else if (neul .ne. 0) then
-            call eulnau(angeul, ang)
-            zr(jdvc) = 2.d0
-            zr(jdvc+1) = ang(1)
-            zr(jdvc+2) = ang(2)
-            zr(jdvc+3) = ang(3)
-            zr(jdvc+4) = angeul(1)
-            zr(jdvc+5) = angeul(2)
-            zr(jdvc+6) = angeul(3)
-        else
-            zr(jdvc) = -1.d0
-            zr(jdvc+1) = ang(1)
-            zr(jdvc+2) = ang(2)
-            zr(jdvc+3) = ang(2)
-            zr(jdvc+4) = orig(1)
-            zr(jdvc+5) = orig(2)
-            zr(jdvc+6) = orig(3)
-        end if
+            if (nrep .ne. 0) then
+                zr(jdvc) = 1.d0
+                zr(jdvc+1) = ang(1)
+                zr(jdvc+2) = ang(2)
+                zr(jdvc+3) = ang(3)
+                zr(jdvc+4) = 0.d0
+                zr(jdvc+5) = 0.d0
+                zr(jdvc+6) = 0.d0
+            else if (neul .ne. 0) then
+                call eulnau(angeul, ang)
+                zr(jdvc) = 2.d0
+                zr(jdvc+1) = ang(1)
+                zr(jdvc+2) = ang(2)
+                zr(jdvc+3) = ang(3)
+                zr(jdvc+4) = angeul(1)
+                zr(jdvc+5) = angeul(2)
+                zr(jdvc+6) = angeul(3)
+            else
+                zr(jdvc) = -1.d0
+                zr(jdvc+1) = ang(1)
+                zr(jdvc+2) = ang(2)
+                zr(jdvc+3) = ang(2)
+                zr(jdvc+4) = orig(1)
+                zr(jdvc+5) = orig(2)
+                zr(jdvc+6) = orig(3)
+            end if
 !
 ! ---    "GROUP_MA" = TOUTES LES MAILLES DE LA LISTE DE GROUPES MAILLES
-        if (ng .gt. 0) then
-            do i = 1, ng
-                call nocart(cartma, 2, 7, groupma=zk24(jdls+i-1))
-            end do
-        end if
+            if (ng .gt. 0) then
+                do i = 1, ng
+                    call nocart(cartma, 2, 7, groupma=zk24(jdls+i-1))
+                end do
+            end if
 !
-    end do
+! ---    "MAILLE" = TOUTES LES MAILLES DE LA LISTE DE MAILLES
 !
-    call jedetr('&&TMPMASSIF')
-    call jedetr(tmpnma)
-    call jedetr(tmpvma)
+            if (nm .gt. 0) then
+                call nocart(cartma, 3, 7, mode='NOM', nma=nm, &
+                            limano=zk8(jdls2))
+            end if
+!
+        end do
+!
+        call jedetr('&&TMPMASSIF')
+        call jedetr('&&TMPMASSIF2')
+        call jedetr(tmpnma)
+        call jedetr(tmpvma)
+!
+    end if
 !
     call jedema()
 end subroutine

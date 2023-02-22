@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -28,9 +28,6 @@ from cataelem.Options.options import OP
 # ----------------
 # Modes locaux :
 # ----------------
-
-
-CCAMASS = LocatedComponents(phys=PHY.CAMASS, type="ELEM", components=("C", "ALPHA"))
 
 
 DDL_MECA = LocatedComponents(phys=PHY.DEPL_R, type="ELNO", components=("DX", "DY", "DZ"))
@@ -184,7 +181,7 @@ class MEFOQU4(Element):
         OP.CHAR_MECA_EPSI_F(
             te=284,
             para_in=(
-                (SP.PCAMASS, CCAMASS),
+                (SP.PCAMASS, LC.CCAMA2D),
                 (SP.PEPSINF, CEPSINF),
                 (SP.PGEOMER, NGEOMER),
                 (SP.PHARMON, LC.CHARMON),
@@ -197,7 +194,7 @@ class MEFOQU4(Element):
         OP.CHAR_MECA_EPSI_R(
             te=284,
             para_in=(
-                (SP.PCAMASS, CCAMASS),
+                (SP.PCAMASS, LC.CCAMA2D),
                 (SP.PEPSINR, CEPSINR),
                 (SP.PGEOMER, NGEOMER),
                 (SP.PHARMON, LC.CHARMON),
@@ -234,7 +231,7 @@ class MEFOQU4(Element):
         OP.CHAR_MECA_TEMP_R(
             te=198,
             para_in=(
-                (SP.PCAMASS, CCAMASS),
+                (SP.PCAMASS, LC.CCAMA2D),
                 (SP.PGEOMER, NGEOMER),
                 (SP.PHARMON, LC.CHARMON),
                 (SP.PMATERC, LC.CMATERC),
@@ -259,7 +256,7 @@ class MEFOQU4(Element):
         OP.EPOT_ELEM(
             te=286,
             para_in=(
-                (SP.PCAMASS, CCAMASS),
+                (SP.PCAMASS, LC.CCAMA2D),
                 (SP.PDEPLAR, DDL_MECA),
                 (SP.PGEOMER, NGEOMER),
                 (SP.PHARMON, LC.CHARMON),
@@ -302,13 +299,13 @@ class MEFOQU4(Element):
         ),
         OP.REPERE_LOCAL(
             te=133,
-            para_in=((SP.PCAMASS, CCAMASS), (SP.PGEOMER, NGEOMER)),
+            para_in=((SP.PCAMASS, LC.CCAMA2D), (SP.PGEOMER, NGEOMER)),
             para_out=((SP.PREPLO1, LC.CGEOM2D), (SP.PREPLO2, LC.CGEOM2D)),
         ),
         OP.RIGI_MECA(
             te=190,
             para_in=(
-                (SP.PCAMASS, CCAMASS),
+                (SP.PCAMASS, LC.CCAMA2D),
                 (SP.PGEOMER, NGEOMER),
                 (SP.PHARMON, LC.CHARMON),
                 (SP.PMATERC, LC.CMATERC),
@@ -328,7 +325,7 @@ class MEFOQU4(Element):
         OP.SIEF_ELGA(
             te=115,
             para_in=(
-                (SP.PCAMASS, CCAMASS),
+                (SP.PCAMASS, LC.CCAMA2D),
                 (SP.PDEPLAR, DDL_MECA),
                 (SP.PGEOMER, NGEOMER),
                 (SP.PHARMON, LC.CHARMON),

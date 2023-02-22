@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -17,7 +17,7 @@
 # You should have received a copy of the GNU General Public License
 # along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
 
-
+from ..Messages import UTMESS
 from ..Objects import ElementaryCharacteristics
 from ..Supervis import ExecuteCommand
 
@@ -37,6 +37,21 @@ class EltCharacteristicsAssignment(ExecuteCommand):
             keywords (dict): Keywords arguments of user's keywords.
         """
         self._result = ElementaryCharacteristics(keywords["MODELE"])
+
+    def adapt_syntax(self, keywords):
+        """Hook to adapt syntax *after* syntax checking.
+
+        Arguments:
+            keywords (dict): Keywords arguments of user's keywords, changed
+                in place.
+        """
+        if "MASSIF" in keywords:
+            # Check that MASSIF appears once only if there is TOUT in MASSIF simple keywords
+            l_dic_kws = keywords.get("MASSIF")
+            if type(l_dic_kws) == tuple:  # il y a plus d'une occurrence de MASSIF
+                for dic in l_dic_kws:
+                    if "TOUT" in dic.keys():
+                        UTMESS("F", "SUPERVIS_10")
 
 
 AFFE_CARA_ELEM = EltCharacteristicsAssignment.run

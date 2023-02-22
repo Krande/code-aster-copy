@@ -30,10 +30,6 @@ from cataelem.Options.options import OP
 # ----------------
 
 
-CCAMASS = LocatedComponents(
-    phys=PHY.CAMASS, type="ELEM", components=("C", "ALPHA", "BETA", "KAPPA", "X", "Y", "Z")
-)
-
 # Reuse PHY.COMPOR from mechanical => names of components are strange
 CCOMPOR = LocatedComponents(
     phys=PHY.COMPOR, type="ELEM", components=("RELCOM", "NBVARI", "DEFORM", "INCELA", "C_PLAN")
@@ -134,7 +130,7 @@ class THER2DQ9_HHO222(Element):
         OP.CHAR_THER_EVOL(
             te=445,
             para_in=(
-                (SP.PCAMASS, CCAMASS),
+                (SP.PCAMASS, LC.CCAMA2D),
                 (SP.PGEOMER, NGEOMER),
                 (SP.PMATERC, LC.CMATERC),
                 (SP.PTEMPER, DDL_THER),
@@ -193,7 +189,7 @@ class THER2DQ9_HHO222(Element):
         OP.RIGI_THER(
             te=454,
             para_in=(
-                (SP.PCAMASS, CCAMASS),
+                (SP.PCAMASS, LC.CCAMA2D),
                 (SP.PGEOMER, NGEOMER),
                 (SP.PMATERC, LC.CMATERC),
                 (SP.PTEMPSR, CTEMPSR),

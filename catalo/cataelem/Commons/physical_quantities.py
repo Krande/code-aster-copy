@@ -310,12 +310,13 @@ CAGNPO = PhysicalQuantity(
 )
 
 
-CAMASS = PhysicalQuantity(
+CAMA_R = PhysicalQuantity(
     type="R",
     components=("C", "ALPHA", "BETA", "KAPPA", "X", "Y", "Z"),
-    comment="""  CAMASS Type:R Caracteristiques geometriques des elements massifs
-      C : indice de definition du repere d'orthotropie (=1 definition par 3)
-      angles nautiques, = -1 definition par un axe et un point sur cet axe)
+    comment="""  CAMA_R Type:R Caracteristiques geometriques des elements massifs
+      C : indice de definition du repere d'orthotropie (=1 definition par 3
+      angles nautiques, = -1 definition par un axe et un point sur cet axe, 
+      = 2 définition par 3 angles d'Euler ou par un champ d'orientation)
       ALPHA : 1er angle nautique
       BETA :  2eme angle nautique
       KAPPA : 3eme angle nautique

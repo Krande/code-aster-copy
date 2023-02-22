@@ -102,7 +102,7 @@ module cara_elem_parameter_module
 ! #define ACE_NB_CARTE  14
 !         '.CARCABLE', 'CACABL   ', 'CABLE     ',
 !         '.CARGENBA', 'CAGNBA   ', 'BARRE     ',
-!         '.CARMASSI', 'CAMASS   ', 'MASSIF    ',
+!         '.CARMASSI', 'CAMA_R   ', 'MASSIF    ',
 !         '.CARCOQUE', 'CACOQU_R ', 'COQUE     ',
 !         '.CARCOQUF', 'CACOQU_F ', 'COQUE    ',
 !         '.CARARCPO', 'CAARPO   ', 'POUTRE    ',

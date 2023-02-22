@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -28,9 +28,6 @@ from cataelem.Options.options import OP
 # ----------------
 # Modes locaux :
 # ----------------
-
-
-CCAMASS = LocatedComponents(phys=PHY.CAMASS, type="ELEM", components=("C", "ALPHA"))
 
 
 NDEPLAC = LocatedComponents(phys=PHY.DEPL_C, type="ELNO", components=("DX", "DY"))
@@ -482,7 +479,7 @@ class MECPQU4(Element):
         OP.CHAR_MECA_EPSI_F(
             te=284,
             para_in=(
-                (SP.PCAMASS, CCAMASS),
+                (SP.PCAMASS, LC.CCAMA2D),
                 (SP.PEPSINF, CEPSINF),
                 (SP.PGEOMER, NGEOMER),
                 (SP.PMATERC, LC.CMATERC),
@@ -494,7 +491,7 @@ class MECPQU4(Element):
         OP.CHAR_MECA_EPSI_R(
             te=284,
             para_in=(
-                (SP.PCAMASS, CCAMASS),
+                (SP.PCAMASS, LC.CCAMA2D),
                 (SP.PEPSINR, CEPSINR),
                 (SP.PGEOMER, NGEOMER),
                 (SP.PMATERC, LC.CMATERC),
@@ -515,7 +512,7 @@ class MECPQU4(Element):
         OP.CHAR_MECA_HYDR_R(
             te=13,
             para_in=(
-                (SP.PCAMASS, CCAMASS),
+                (SP.PCAMASS, LC.CCAMA2D),
                 (SP.PGEOMER, NGEOMER),
                 (SP.PMATERC, LC.CMATERC),
                 (SP.PTEMPSR, CTEMPSR),
@@ -555,7 +552,7 @@ class MECPQU4(Element):
         OP.CHAR_MECA_SECH_R(
             te=13,
             para_in=(
-                (SP.PCAMASS, CCAMASS),
+                (SP.PCAMASS, LC.CCAMA2D),
                 (SP.PGEOMER, NGEOMER),
                 (SP.PMATERC, LC.CMATERC),
                 (SP.PTEMPSR, CTEMPSR),
@@ -567,7 +564,7 @@ class MECPQU4(Element):
         OP.CHAR_MECA_TEMP_R(
             te=13,
             para_in=(
-                (SP.PCAMASS, CCAMASS),
+                (SP.PCAMASS, LC.CCAMA2D),
                 (SP.PGEOMER, NGEOMER),
                 (SP.PMATERC, LC.CMATERC),
                 (SP.PTEMPSR, CTEMPSR),
@@ -641,7 +638,7 @@ class MECPQU4(Element):
         OP.ENEL_ELGA(
             te=575,
             para_in=(
-                (SP.PCAMASS, CCAMASS),
+                (SP.PCAMASS, LC.CCAMA2D),
                 (OP.ENEL_ELGA.PCOMPOR, LC.CCOMPOR),
                 (OP.ENEL_ELGA.PCONTRR, ECONTPG),
                 (SP.PDEPLAR, DDL_MECA),
@@ -724,7 +721,7 @@ class MECPQU4(Element):
         OP.EPME_ELGA(
             te=87,
             para_in=(
-                (SP.PCAMASS, CCAMASS),
+                (SP.PCAMASS, LC.CCAMA2D),
                 (OP.EPME_ELGA.PCOMPOR, LC.CCOMPOR),
                 (SP.PDEPLAR, DDL_MECA),
                 (SP.PGEOMER, NGEOMER),
@@ -741,7 +738,7 @@ class MECPQU4(Element):
         OP.EPMG_ELGA(
             te=87,
             para_in=(
-                (SP.PCAMASS, CCAMASS),
+                (SP.PCAMASS, LC.CCAMA2D),
                 (SP.PDEPLAR, DDL_MECA),
                 (SP.PGEOMER, NGEOMER),
                 (SP.PMATERC, LC.CMATERC),
@@ -767,7 +764,7 @@ class MECPQU4(Element):
         OP.EPOT_ELEM(
             te=286,
             para_in=(
-                (SP.PCAMASS, CCAMASS),
+                (SP.PCAMASS, LC.CCAMA2D),
                 (SP.PDEPLAR, DDL_MECA),
                 (SP.PGEOMER, NGEOMER),
                 (SP.PMATERC, LC.CMATERC),
@@ -809,7 +806,7 @@ class MECPQU4(Element):
         OP.EPSI_ELGA(
             te=87,
             para_in=(
-                (SP.PCAMASS, CCAMASS),
+                (SP.PCAMASS, LC.CCAMA2D),
                 (SP.PDEPLAR, DDL_MECA),
                 (SP.PGEOMER, NGEOMER),
                 (SP.PMATERC, LC.CMATERC),
@@ -929,7 +926,7 @@ class MECPQU4(Element):
         OP.FULL_MECA(
             te=100,
             para_in=(
-                (SP.PCAMASS, CCAMASS),
+                (SP.PCAMASS, LC.CCAMA2D),
                 (SP.PCARCRI, LC.CCARCRI),
                 (SP.PMULCOM, LC.CMLCOMP),
                 (OP.FULL_MECA.PCOMPOR, LC.CCOMPOR),
@@ -959,7 +956,7 @@ class MECPQU4(Element):
         OP.FULL_MECA_ELAS(
             te=100,
             para_in=(
-                (SP.PCAMASS, CCAMASS),
+                (SP.PCAMASS, LC.CCAMA2D),
                 (SP.PCARCRI, LC.CCARCRI),
                 (SP.PMULCOM, LC.CMLCOMP),
                 (OP.FULL_MECA_ELAS.PCOMPOR, LC.CCOMPOR),
@@ -1136,7 +1133,7 @@ class MECPQU4(Element):
         OP.RAPH_MECA(
             te=100,
             para_in=(
-                (SP.PCAMASS, CCAMASS),
+                (SP.PCAMASS, LC.CCAMA2D),
                 (SP.PCARCRI, LC.CCARCRI),
                 (SP.PMULCOM, LC.CMLCOMP),
                 (OP.RAPH_MECA.PCOMPOR, LC.CCOMPOR),
@@ -1164,7 +1161,7 @@ class MECPQU4(Element):
         OP.RAPH_MECA_IMPLEX(
             te=100,
             para_in=(
-                (SP.PCAMASS, CCAMASS),
+                (SP.PCAMASS, LC.CCAMA2D),
                 (SP.PCARCRI, LC.CCARCRI),
                 (SP.PMULCOM, LC.CMLCOMP),
                 (OP.RAPH_MECA.PCOMPOR, LC.CCOMPOR),
@@ -1196,7 +1193,7 @@ class MECPQU4(Element):
         ),
         OP.REPERE_LOCAL(
             te=133,
-            para_in=((SP.PCAMASS, CCAMASS), (SP.PGEOMER, NGEOMER)),
+            para_in=((SP.PCAMASS, LC.CCAMA2D), (SP.PGEOMER, NGEOMER)),
             para_out=((SP.PREPLO1, LC.CGEOM2D), (SP.PREPLO2, LC.CGEOM2D)),
         ),
         OP.REST_ECRO(
@@ -1228,7 +1225,7 @@ class MECPQU4(Element):
         OP.RIGI_MECA(
             te=81,
             para_in=(
-                (SP.PCAMASS, CCAMASS),
+                (SP.PCAMASS, LC.CCAMA2D),
                 (SP.PGEOMER, NGEOMER),
                 (SP.PMATERC, LC.CMATERC),
                 (OP.RIGI_MECA.PVARCPR, LC.ZVARCPG),
@@ -1238,7 +1235,7 @@ class MECPQU4(Element):
         OP.RIGI_MECA_ELAS(
             te=100,
             para_in=(
-                (SP.PCAMASS, CCAMASS),
+                (SP.PCAMASS, LC.CCAMA2D),
                 (SP.PCARCRI, LC.CCARCRI),
                 (SP.PMULCOM, LC.CMLCOMP),
                 (OP.RIGI_MECA_ELAS.PCOMPOR, LC.CCOMPOR),
@@ -1274,7 +1271,7 @@ class MECPQU4(Element):
         OP.RIGI_MECA_IMPLEX(
             te=100,
             para_in=(
-                (SP.PCAMASS, CCAMASS),
+                (SP.PCAMASS, LC.CCAMA2D),
                 (SP.PCARCRI, LC.CCARCRI),
                 (SP.PMULCOM, LC.CMLCOMP),
                 (OP.RIGI_MECA_IMPLEX.PCOMPOR, LC.CCOMPOR),
@@ -1295,7 +1292,7 @@ class MECPQU4(Element):
         OP.RIGI_MECA_TANG(
             te=100,
             para_in=(
-                (SP.PCAMASS, CCAMASS),
+                (SP.PCAMASS, LC.CCAMA2D),
                 (SP.PCARCRI, LC.CCARCRI),
                 (SP.PMULCOM, LC.CMLCOMP),
                 (OP.RIGI_MECA_TANG.PCOMPOR, LC.CCOMPOR),
@@ -1334,7 +1331,7 @@ class MECPQU4(Element):
         OP.SIEF_ELGA(
             te=22,
             para_in=(
-                (SP.PCAMASS, CCAMASS),
+                (SP.PCAMASS, LC.CCAMA2D),
                 (SP.PDEPLAR, DDL_MECA),
                 (SP.PGEOMER, NGEOMER),
                 (SP.PMATERC, LC.CMATERC),

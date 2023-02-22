@@ -30,10 +30,6 @@ from cataelem.Options.options import OP
 # ----------------
 
 
-CCAMASS = LocatedComponents(
-    phys=PHY.CAMASS, type="ELEM", components=("C", "ALPHA", "BETA", "KAPPA", "X", "Y", "Z")
-)
-
 # Reuse PHY.COMPOR from mechanical => names of components are strange
 CCOMPOR = LocatedComponents(
     phys=PHY.COMPOR, type="ELEM", components=("RELCOM", "NBVARI", "DEFORM", "INCELA", "C_PLAN")
@@ -114,7 +110,7 @@ class THER_HEXA20(Element):
         OP.CHAR_THER_EVOL(
             te=61,
             para_in=(
-                (SP.PCAMASS, CCAMASS),
+                (SP.PCAMASS, LC.CCAMA3D),
                 (SP.PGEOMER, NGEOMER),
                 (SP.PMATERC, LC.CMATERC),
                 (SP.PTEMPER, DDL_THER),
@@ -128,7 +124,7 @@ class THER_HEXA20(Element):
             para_in=(
                 (OP.CHAR_THER_EVOLNI.PCOMPOR, CCOMPOR),
                 (SP.PGEOMER, NGEOMER),
-                (SP.PCAMASS, CCAMASS),
+                (SP.PCAMASS, LC.CCAMA3D),
                 (OP.CHAR_THER_EVOLNI.PHYDRPM, LC.EHYDRNO),
                 (SP.PMATERC, LC.CMATERC),
                 (SP.PTEMPER, DDL_THER),
@@ -230,7 +226,7 @@ class THER_HEXA20(Element):
         OP.ETHE_ELEM(
             te=66,
             para_in=(
-                (SP.PCAMASS, CCAMASS),
+                (SP.PCAMASS, LC.CCAMA3D),
                 (SP.PGEOMER, NGEOMER),
                 (SP.PMATERC, LC.CMATERC),
                 (SP.PTEMPER, DDL_THER),
@@ -243,7 +239,7 @@ class THER_HEXA20(Element):
         OP.FLUX_ELGA(
             te=62,
             para_in=(
-                (SP.PCAMASS, CCAMASS),
+                (SP.PCAMASS, LC.CCAMA3D),
                 (SP.PGEOMER, NGEOMER),
                 (SP.PMATERC, LC.CMATERC),
                 (SP.PTEMPER, DDL_THER),
@@ -296,7 +292,7 @@ class THER_HEXA20(Element):
             para_in=(
                 (OP.RIGI_THER_TANG.PCOMPOR, CCOMPOR),
                 (SP.PGEOMER, NGEOMER),
-                (SP.PCAMASS, CCAMASS),
+                (SP.PCAMASS, LC.CCAMA3D),
                 (SP.PMATERC, LC.CMATERC),
                 (SP.PTEMPEI, DDL_THER),
                 (SP.PTMPCHF, DDL_THER),
@@ -342,7 +338,7 @@ class THER_HEXA20(Element):
         ),
         OP.REPERE_LOCAL(
             te=133,
-            para_in=((SP.PCAMASS, CCAMASS), (SP.PGEOMER, NGEOMER)),
+            para_in=((SP.PCAMASS, LC.CCAMA3D), (SP.PGEOMER, NGEOMER)),
             para_out=((SP.PREPLO1, LC.CGEOM3D), (SP.PREPLO2, LC.CGEOM3D), (SP.PREPLO3, LC.CGEOM3D)),
         ),
         OP.RAPH_THER(
@@ -350,7 +346,7 @@ class THER_HEXA20(Element):
             para_in=(
                 (OP.RAPH_THER.PCOMPOR, CCOMPOR),
                 (SP.PGEOMER, NGEOMER),
-                (SP.PCAMASS, CCAMASS),
+                (SP.PCAMASS, LC.CCAMA3D),
                 (SP.PMATERC, LC.CMATERC),
                 (SP.PTEMPEI, DDL_THER),
                 (SP.PTMPCHF, DDL_THER),
@@ -386,7 +382,7 @@ class THER_HEXA20(Element):
         OP.RIGI_THER(
             te=51,
             para_in=(
-                (SP.PCAMASS, CCAMASS),
+                (SP.PCAMASS, LC.CCAMA3D),
                 (SP.PGEOMER, NGEOMER),
                 (SP.PMATERC, LC.CMATERC),
                 (SP.PTEMPSR, CTEMPSR),

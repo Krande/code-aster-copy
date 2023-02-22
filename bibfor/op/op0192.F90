@@ -42,13 +42,14 @@ subroutine op0192()
 #include "asterfort/ulisog.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/fsplit.h"
 !
 ! --------------------------------------------------------------------------------------------------
 !
 ! LIRE_CHAMP
 !
 ! --------------------------------------------------------------------------------------------------
-!
+
     character(len=6) :: nompro
     parameter(nompro='OP0192')
     integer :: ednono
@@ -120,8 +121,7 @@ subroutine op0192()
 !
     call getvtx(' ', 'TYPE_CHAM', scal=fieldType, nbret=iaux)
     call getres(fieldNameAst, typech, nomcmd)
-    fieldQuantity = fieldType(6:13)
-    fieldSupport = fieldType(1:4)
+    call fsplit(fieldType, fieldSupport, fieldQuantity)
     if (fieldType(1:11) .eq. 'ELGA_SIEF_R') then
         option = 'RAPH_MECA'
         param = 'PCONTPR'
@@ -320,3 +320,4 @@ subroutine op0192()
     call jedema()
 !
 end subroutine
+

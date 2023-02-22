@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -25,7 +25,8 @@ cata_msg = {
     # Messages dans OP0019
     2: _(
         """AFFE_CARA_ELEM
-Aucune affectation n'est réalisée sur des GROUP_MA ou des MAILLES.
+Au moins un des mot-clés facteur d'AFFE_CARA_ELEM n'a aucune affection sur des GROUP_MA,
+des MAILLES ou sur TOUT='OUI'.
 
 Vérifiez vos données.
 """

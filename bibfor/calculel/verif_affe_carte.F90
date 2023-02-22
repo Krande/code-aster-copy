@@ -204,7 +204,7 @@ subroutine verif_affe_carte(ligrmo, carte, comment, non_lin)
         if (nomgd .eq. 'VENTCX_F' .and. nocmp .eq. 'FCXP') cycle
         !
         ! E3) Valeurs fournies en loucede par le code d'AFFE_CARA_ELEM
-        if (nomgd .eq. 'CAMASS' .and. nocmp .eq. 'C') cycle
+        if (nomgd .eq. 'CAMA_R' .and. nocmp .eq. 'C') cycle
         if (nomgd .eq. 'CACOQU_R' .and. nocmp .eq. 'KAPPA') cycle
         if (nomgd .eq. 'CACOQU_R' .and. nocmp .eq. 'CTOR') verif_coef_drz = ASTER_TRUE
         if (nomgd .eq. 'CAORIE' .and. nocmp .eq. 'ALPHA') cycle

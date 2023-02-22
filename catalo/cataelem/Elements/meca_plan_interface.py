@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -33,10 +33,6 @@ import cataelem.Commons.attributes as AT
 # Modes locaux :
 # ----------------
 
-
-CCAMASS = LocatedComponents(
-    phys=PHY.CAMASS, type="ELEM", components=("C", "ALPHA", "BETA", "KAPPA", "X", "Y", "Z")
-)
 
 DDL_MECA = LocatedComponents(
     phys=PHY.DEPL_R,
@@ -125,7 +121,7 @@ class EIPLQU8(Element):
         OP.FORC_NODA(
             te=361,
             para_in=(
-                (SP.PCAMASS, CCAMASS),
+                (SP.PCAMASS, LC.CCAMA2D),
                 (OP.FORC_NODA.PCOMPOR, LC.CCOMPOR),
                 (OP.FORC_NODA.PCONTMR, ECONTPG),
                 (SP.PDEPLMR, DDL_MECA),
@@ -137,7 +133,7 @@ class EIPLQU8(Element):
         OP.FULL_MECA(
             te=360,
             para_in=(
-                (SP.PCAMASS, CCAMASS),
+                (SP.PCAMASS, LC.CCAMA2D),
                 (SP.PCARCRI, LC.CCARCRI),
                 (OP.FULL_MECA.PCOMPOR, LC.CCOMPOR),
                 (OP.FULL_MECA.PCONTMR, ECONTPG),
@@ -165,7 +161,7 @@ class EIPLQU8(Element):
         OP.FULL_MECA_ELAS(
             te=360,
             para_in=(
-                (SP.PCAMASS, CCAMASS),
+                (SP.PCAMASS, LC.CCAMA2D),
                 (SP.PCARCRI, LC.CCARCRI),
                 (OP.FULL_MECA_ELAS.PCOMPOR, LC.CCOMPOR),
                 (OP.FULL_MECA_ELAS.PCONTMR, ECONTPG),
@@ -200,7 +196,7 @@ class EIPLQU8(Element):
             te=359,
             para_in=(
                 (SP.PBORNPI, LC.CBORNPI),
-                (SP.PCAMASS, CCAMASS),
+                (SP.PCAMASS, LC.CCAMA2D),
                 (SP.PCARCRI, LC.CCARCRI),
                 (SP.PCDTAU, LC.CCDTAU),
                 (OP.PILO_PRED_ELAS.PCOMPOR, LC.CCOMPOR),
@@ -219,7 +215,7 @@ class EIPLQU8(Element):
         OP.RAPH_MECA(
             te=360,
             para_in=(
-                (SP.PCAMASS, CCAMASS),
+                (SP.PCAMASS, LC.CCAMA2D),
                 (SP.PCARCRI, LC.CCARCRI),
                 (OP.RAPH_MECA.PCOMPOR, LC.CCOMPOR),
                 (OP.RAPH_MECA.PCONTMR, ECONTPG),
@@ -244,13 +240,13 @@ class EIPLQU8(Element):
         ),
         OP.REFE_FORC_NODA(
             te=361,
-            para_in=((SP.PCAMASS, CCAMASS), (SP.PGEOMER, NGEOMER), (SP.PREFCO, EREFCO)),
+            para_in=((SP.PCAMASS, LC.CCAMA2D), (SP.PGEOMER, NGEOMER), (SP.PREFCO, EREFCO)),
             para_out=((SP.PVECTUR, MVECTUR),),
         ),
         OP.RIGI_MECA_ELAS(
             te=360,
             para_in=(
-                (SP.PCAMASS, CCAMASS),
+                (SP.PCAMASS, LC.CCAMA2D),
                 (SP.PCARCRI, LC.CCARCRI),
                 (OP.RIGI_MECA_ELAS.PCOMPOR, LC.CCOMPOR),
                 (OP.RIGI_MECA_ELAS.PCONTMR, ECONTPG),
@@ -270,7 +266,7 @@ class EIPLQU8(Element):
         OP.RIGI_MECA_TANG(
             te=360,
             para_in=(
-                (SP.PCAMASS, CCAMASS),
+                (SP.PCAMASS, LC.CCAMA2D),
                 (SP.PCARCRI, LC.CCARCRI),
                 (OP.RIGI_MECA_TANG.PCOMPOR, LC.CCOMPOR),
                 (OP.RIGI_MECA_TANG.PCONTMR, ECONTPG),

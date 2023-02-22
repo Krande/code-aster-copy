@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -32,8 +32,6 @@ from cataelem.Options.options import OP
 # Modes locaux :
 # ----------------
 
-
-CCAMASS = LocatedComponents(phys=PHY.CAMASS, type="ELEM", components=("C", "ALPHA"))
 
 DDL_MECA = LocatedComponents(
     phys=PHY.DEPL_R,
@@ -304,7 +302,7 @@ class MEAXTR3_XHC(Element):
             te=539,
             para_in=(
                 (OP.FULL_MECA.PBASLOR, LC.N6NEUT_R),
-                (SP.PCAMASS, CCAMASS),
+                (SP.PCAMASS, LC.CCAMA2D),
                 (SP.PCARCRI, LC.CCARCRI),
                 (OP.FULL_MECA.PCNSETO, LC.E36NEUI),
                 (OP.FULL_MECA.PCOMPOR, LC.CCOMPOR),
@@ -402,7 +400,7 @@ class MEAXTR3_XHC(Element):
             te=539,
             para_in=(
                 (OP.RAPH_MECA.PBASLOR, LC.N6NEUT_R),
-                (SP.PCAMASS, CCAMASS),
+                (SP.PCAMASS, LC.CCAMA2D),
                 (SP.PCARCRI, LC.CCARCRI),
                 (OP.RAPH_MECA.PCNSETO, LC.E36NEUI),
                 (OP.RAPH_MECA.PCOMPOR, LC.CCOMPOR),
@@ -488,7 +486,7 @@ class MEAXTR3_XHC(Element):
             te=539,
             para_in=(
                 (OP.RIGI_MECA_TANG.PBASLOR, LC.N6NEUT_R),
-                (SP.PCAMASS, CCAMASS),
+                (SP.PCAMASS, LC.CCAMA2D),
                 (SP.PCARCRI, LC.CCARCRI),
                 (OP.RIGI_MECA_TANG.PCNSETO, LC.E36NEUI),
                 (OP.RIGI_MECA_TANG.PCOMPOR, LC.CCOMPOR),

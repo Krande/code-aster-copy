@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -27,11 +27,6 @@ from cataelem.Options.options import OP
 
 
 CCAGEPO = LocatedComponents(phys=PHY.CAGEPO, type="ELEM", components=("R1", "EP1"))
-
-
-CCAMASS = LocatedComponents(
-    phys=PHY.CAMASS, type="ELEM", components=("C", "ALPHA", "BETA", "KAPPA", "X", "Y", "Z")
-)
 
 
 EDEFONC = LocatedComponents(
@@ -541,7 +536,7 @@ class MET3SEG3(Element):
             te=586,
             para_in=(
                 (SP.PCAGEPO, CCAGEPO),
-                (SP.PCAMASS, CCAMASS),
+                (SP.PCAMASS, LC.CCAMA3D),
                 (OP.FULL_MECA.PCAORIE, CCAORIE),
                 (SP.PCARCRI, LC.CCARCRI),
                 (OP.FULL_MECA.PCOMPOR, LC.CCOMPOR),
@@ -623,7 +618,7 @@ class MET3SEG3(Element):
             te=586,
             para_in=(
                 (SP.PCAGEPO, CCAGEPO),
-                (SP.PCAMASS, CCAMASS),
+                (SP.PCAMASS, LC.CCAMA3D),
                 (OP.RAPH_MECA.PCAORIE, CCAORIE),
                 (SP.PCARCRI, LC.CCARCRI),
                 (OP.RAPH_MECA.PCOMPOR, LC.CCOMPOR),
@@ -692,7 +687,7 @@ class MET3SEG3(Element):
             te=586,
             para_in=(
                 (SP.PCAGEPO, CCAGEPO),
-                (SP.PCAMASS, CCAMASS),
+                (SP.PCAMASS, LC.CCAMA3D),
                 (OP.RIGI_MECA_TANG.PCAORIE, CCAORIE),
                 (SP.PCARCRI, LC.CCARCRI),
                 (OP.RIGI_MECA_TANG.PCOMPOR, LC.CCOMPOR),

@@ -120,9 +120,12 @@ CFREQR = LocatedComponents(phys=PHY.FREQ_R, type="ELEM", components=("FREQ",))
 MTEMPSR = LocatedComponents(phys=PHY.INST_R, type="ELEM", components=("INST",))
 
 # Field for material orientation in 3D (ANGLE_MASSIF)
-CANGM3D = LocatedComponents(
-    phys=PHY.CAMASS, type="ELEM", components=("C", "ALPHA", "BETA", "KAPPA", "X", "Y", "Z")
+CCAMA3D = LocatedComponents(
+    phys=PHY.CAMA_R, type="ELEM", components=("C", "ALPHA", "BETA", "KAPPA", "X", "Y", "Z")
 )
+
+# Field for material orientation in 2D (ANGLE_MASSIF)
+CCAMA2D = LocatedComponents(phys=PHY.CAMA_R, type="ELEM", components=("C", "ALPHA"))
 
 CBORNPI = LocatedComponents(phys=PHY.PILO_R, type="ELEM", components=("A0", "A1"))
 

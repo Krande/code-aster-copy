@@ -30,11 +30,6 @@ from cataelem.Options.options import OP
 # ----------------
 
 
-CCAMASS = LocatedComponents(
-    phys=PHY.CAMASS, type="ELEM", components=("C", "ALPHA", "BETA", "KAPPA", "X", "Y", "Z")
-)
-
-
 DDL_MECA = LocatedComponents(
     phys=PHY.DEPL_R,
     type="ELNO",
@@ -426,7 +421,7 @@ class MECA3DGVH_HHO111(Element):
         ),
         OP.EPSI_ELGA(
             te=448,
-            para_in=((SP.PCAMASS, CCAMASS), (SP.PDEPLAR, DDL_MECA), (SP.PGEOMER, NGEOMER)),
+            para_in=((SP.PCAMASS, LC.CCAMA3D), (SP.PDEPLAR, DDL_MECA), (SP.PGEOMER, NGEOMER)),
             para_out=((SP.PDEFOPC, EDEFOPC), (OP.EPSI_ELGA.PDEFOPG, EDEFOPG)),
         ),
         OP.EPSI_ELNO(
@@ -461,7 +456,7 @@ class MECA3DGVH_HHO111(Element):
         OP.FULL_MECA(
             te=485,
             para_in=(
-                (SP.PCAMASS, CCAMASS),
+                (SP.PCAMASS, LC.CCAMA3D),
                 (SP.PCARCRI, LC.CCARCRI),
                 (SP.PMULCOM, LC.CMLCOMP),
                 (OP.FULL_MECA.PCOMPOR, LC.CCOMPOR),
@@ -556,7 +551,7 @@ class MECA3DGVH_HHO111(Element):
         OP.RAPH_MECA(
             te=485,
             para_in=(
-                (SP.PCAMASS, CCAMASS),
+                (SP.PCAMASS, LC.CCAMA3D),
                 (SP.PCARCRI, LC.CCARCRI),
                 (SP.PMULCOM, LC.CMLCOMP),
                 (OP.RAPH_MECA.PCOMPOR, LC.CCOMPOR),
@@ -585,7 +580,7 @@ class MECA3DGVH_HHO111(Element):
         OP.RIGI_MECA(
             te=485,
             para_in=(
-                (SP.PCAMASS, CCAMASS),
+                (SP.PCAMASS, LC.CCAMA3D),
                 (SP.PGEOMER, NGEOMER),
                 (SP.PMATERC, LC.CMATERC),
                 (OP.RIGI_MECA.PVARCPR, LC.ZVARCPG),
@@ -596,7 +591,7 @@ class MECA3DGVH_HHO111(Element):
         OP.RIGI_MECA_ELAS(
             te=485,
             para_in=(
-                (SP.PCAMASS, CCAMASS),
+                (SP.PCAMASS, LC.CCAMA3D),
                 (SP.PCARCRI, LC.CCARCRI),
                 (SP.PMULCOM, LC.CMLCOMP),
                 (OP.RIGI_MECA_ELAS.PCOMPOR, LC.CCOMPOR),
@@ -617,7 +612,7 @@ class MECA3DGVH_HHO111(Element):
         OP.RIGI_MECA_TANG(
             te=485,
             para_in=(
-                (SP.PCAMASS, CCAMASS),
+                (SP.PCAMASS, LC.CCAMA3D),
                 (SP.PCARCRI, LC.CCARCRI),
                 (SP.PMULCOM, LC.CMLCOMP),
                 (OP.RIGI_MECA_TANG.PCOMPOR, LC.CCOMPOR),

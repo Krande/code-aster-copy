@@ -35,9 +35,6 @@ DDL_THER = LocatedComponents(
     diff=True,
     components=(("EN1", ("HHO_T[3]",)), ("EN2", ()), ("EN3", ("HHO_T[4]"))),
 )
-CCAMASS = LocatedComponents(
-    phys=PHY.CAMASS, type="ELEM", components=("C", "ALPHA", "BETA", "KAPPA", "X", "Y", "Z")
-)
 
 # Reuse PHY.COMPOR from mechanical => names of components are strange
 CCOMPOR = LocatedComponents(
@@ -130,7 +127,7 @@ class THER3DH27_HHO111(Element):
         OP.CHAR_THER_EVOL(
             te=445,
             para_in=(
-                (SP.PCAMASS, CCAMASS),
+                (SP.PCAMASS, LC.CCAMA3D),
                 (SP.PGEOMER, NGEOMER),
                 (SP.PMATERC, LC.CMATERC),
                 (SP.PTEMPER, DDL_THER),
@@ -189,7 +186,7 @@ class THER3DH27_HHO111(Element):
         OP.RIGI_THER(
             te=454,
             para_in=(
-                (SP.PCAMASS, CCAMASS),
+                (SP.PCAMASS, LC.CCAMA3D),
                 (SP.PGEOMER, NGEOMER),
                 (SP.PMATERC, LC.CMATERC),
                 (SP.PTEMPSR, CTEMPSR),

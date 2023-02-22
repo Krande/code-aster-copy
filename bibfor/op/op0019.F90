@@ -108,6 +108,7 @@ subroutine op0019()
 !
 ! --------------------------------------------------------------------------------------------------
     integer :: nbocc(ACE_NB_MCLEF)
+    integer :: nbtout(ACE_NB_MCLEF)
     character(len=8) :: mclef_type
 !
     integer :: ivr(4), nbcart, iret, jadr, ii, nbtel, ireponse, nbelemdi
@@ -116,7 +117,7 @@ subroutine op0019()
     integer :: lxd, nboccd, lxrp, noemaf, lxrm, noemf2, nbmail, nbnoeu
     integer :: lxmr, noemf3
     integer :: npoutr, ncable, nbarre, nbdisc
-    integer :: iclf, ioc, icle, ng, nocc
+    integer :: iclf, ioc, icle, ng, nocc, nocctout, nocctot
     integer :: depart, jdnm
     aster_logical :: locaco, locagb, locamb, l_pmesh
     character(len=8) :: ver(3), nomu, nomo, noma, lpain(3), lpaout(1)
@@ -269,39 +270,60 @@ subroutine op0019()
 !   Vérification de l'existence des GROUP_MA et MAILLE déclarés
 !       Après cette vérification il n'est plus nécessaire d'utiliser les routines
 !           verima   getvem(getvtx+verima)
+!   On ne fait pas la vérification si on a TOUT (= 'OUI' seule valeur possible)
+!   sous le mot-clé facteur.
+!
 !   Comptage des GROUP_MA et MAILLE. Pour ne pas faire des ALLOCATE dans la boucle.
     lmax = 10
     nocc = 0
+    nocctout = 0
+    nocctot = 0
     do iclf = 1, ACE_NB_MCLEF
         do ioc = 1, nbocc(iclf)
-            do icle = 1, ACE_NB_GRMA_MA
-                ii = MCLEF_GRP_MA(icle+(iclf-1)*ACE_NB_GRMA_MA)
-                if (ii .ne. ACE_NOTHING) then
-                    mclef = ACE_GRMA_MA(ii)
-                    call getvtx(ACE_MCLEF(iclf), mclef, iocc=ioc, nbval=0, nbret=ng)
-                    lmax = max(lmax, -ng)
-                    nocc = max(nocc, -ng)
-                end if
-            end do
+!   Le superviseur doit avoir déjà vérifié qu'on ne peut avoir qu'une seule occurrence
+!   du mot-clé facteur si on trouve TOUT='OUI' sous celui-ci (fonction compat_syntax).
+!   On met quand même des assert au cas où.
+            call getvtx(ACE_MCLEF(iclf), 'TOUT', iocc=ioc, nbval=1, nbret=nbtout(iclf))
+            ASSERT((nbtout(iclf) .eq. 1) .or. (nbtout(iclf) .eq. 0))
+            if (nbtout(iclf) .eq. 1) then
+                ASSERT(nbocc(iclf) .eq. 1)
+                nocctout = nocctout+1
+            else
+                do icle = 1, ACE_NB_GRMA_MA
+                    ii = MCLEF_GRP_MA(icle+(iclf-1)*ACE_NB_GRMA_MA)
+                    if (ii .ne. ACE_NOTHING) then
+                        mclef = ACE_GRMA_MA(ii)
+                        call getvtx(ACE_MCLEF(iclf), mclef, iocc=ioc, nbval=0, nbret=ng)
+                        lmax = max(lmax, -ng)
+                        nocc = max(nocc, -ng)
+                    end if
+                end do
+            end if
+            nocctot = nocctot+nbocc(iclf)
         end do
     end do
-    if (nocc .le. 0) then
+!   Si on a moins d'occurrence de TOUT = 'OUI' que de mot-clés facteur, et qu'on a pas
+!   GROUP_MA défini, alors il manque des affections sous au moins
+!   un des mot-clés facteur donné par l'utilisateur.
+    if ((nocc .le. 0) .and. (nocctout .lt. nocctot)) then
         call utmess('F', 'AFFECARAELEM_2')
     end if
 !   Vérification
     AS_ALLOCATE(vk24=grp_lmax, size=lmax)
     do iclf = 1, ACE_NB_MCLEF
         do ioc = 1, nbocc(iclf)
-            do icle = 1, ACE_NB_GRMA_MA
-                ii = MCLEF_GRP_MA(icle+(iclf-1)*ACE_NB_GRMA_MA)
-                if (ii .ne. ACE_NOTHING) then
-                    mclef = ACE_GRMA_MA(ii)
-                    mclef_type = ACE_GRMA_TY(ii)
-                    call getvtx(ACE_MCLEF(iclf), mclef, iocc=ioc, nbval=lmax, vect=grp_lmax, &
-                                nbret=ng)
-                    call verima(noma, grp_lmax, ng, mclef_type)
-                end if
-            end do
+            if (nbtout(iclf) .eq. 0) then
+                do icle = 1, ACE_NB_GRMA_MA
+                    ii = MCLEF_GRP_MA(icle+(iclf-1)*ACE_NB_GRMA_MA)
+                    if (ii .ne. ACE_NOTHING) then
+                        mclef = ACE_GRMA_MA(ii)
+                        mclef_type = ACE_GRMA_TY(ii)
+                        call getvtx(ACE_MCLEF(iclf), mclef, iocc=ioc, nbval=lmax, vect=grp_lmax, &
+                                    nbret=ng)
+                        call verima(noma, grp_lmax, ng, mclef_type)
+                    end if
+                end do
+            end if
         end do
     end do
 !
@@ -469,9 +491,8 @@ subroutine op0019()
 ! --------------------------------------------------------------------------------------------------
 !   AFFECTATION DES ORIENTATIONS AUX ELEMENTS POUTRES ET DISCRETS  ET
 !     BARRES ET AFFECTATION DE LA CARTE ORIENTATION
-    if (nbocc(ACE_POUTRE) .ne. 0 .or. nbocc(ACE_DISCRET) .ne. 0 .or. &
-        nbocc(ACE_DISCRET_2D) .ne. 0 .or. nbocc(ACE_BARRE) .ne. 0 &
-        .or. nbocc(ACE_RIGI_PARASOL) .ne. 0) then
+if (nbocc(ACE_POUTRE) .ne. 0 .or. nbocc(ACE_DISCRET) .ne. 0 .or. nbocc(ACE_DISCRET_2D) .ne. 0 .or. &
+        nbocc(ACE_BARRE) .ne. 0 .or. nbocc(ACE_RIGI_PARASOL) .ne. 0) then
         call aceaor(noma, nomo, lmax, ACE_NB_POUTRE, &
                     elem_supp_num, elem_supp_nom, ivr, nbocc)
     end if
