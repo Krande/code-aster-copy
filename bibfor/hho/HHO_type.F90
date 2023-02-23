@@ -316,7 +316,7 @@ contains
 !   In this     : a HHo Data
 ! --------------------------------------------------------------------------------------------------
 !
-        integer :: iret, nval, jtab(1)
+        integer :: iret, jtab(1)
 
         call tecach('NNO', 'PCHHOGT', 'L', iret, nval=1, itab=jtab)
         precomp = iret == 0

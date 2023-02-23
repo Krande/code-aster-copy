@@ -22,8 +22,6 @@ def C_RELATION(COMMAND):
 
     if COMMAND in ("CALC_G",):
         return ("ELAS", "ELAS_VMIS_LINE", "ELAS_VMIS_TRAC", "ELAS_VMIS_PUIS")  # COMMUN#
-    elif COMMAND in ("MACR_ASCOUF_CALC", "MACR_ASPIC_CALC"):
-        return ("ELAS", "ELAS_VMIS_TRAC")
     elif COMMAND == "DEFI_COMPOR":
         return (
             # uniquement ce qui a du sens (cf doc) et qui fait l'objet d'un test

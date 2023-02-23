@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -26,8 +26,6 @@ from .c_relation import C_RELATION
 def C_COMPORTEMENT(COMMAND=None):  # COMMUN#
 
     assert COMMAND in (
-        "MACR_ASCOUF_CALC",
-        "MACR_ASPIC_CALC",
         "CALC_G",
         "POST_GP",
         "CALC_ESSAI_GEOMECA",
