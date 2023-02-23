@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -108,6 +108,7 @@ for i in range(0, 2):
         PILOTAGE=_F(TYPE="DDL_IMPO", GROUP_NO="CTRL", NOM_CMP="DX", COEF_MULT=1.0 / DB),
         COMPORTEMENT=_F(RELATION="VMIS_ISOT_LINE", DEFORMATION=defor[i]),
         NEWTON=_F(MATRICE="TANGENTE", REAC_ITER=1),
+        SOLVEUR=_F(RENUM="METIS"),
         INCREMENT=_F(LIST_INST=LINST),
         CONVERGENCE=_F(
             ITER_GLOB_MAXI=20, EPSI_REFE=SIGY / E, SIGM_REFE=SIGY, RESI_REFE_RELA=1.0e-4
