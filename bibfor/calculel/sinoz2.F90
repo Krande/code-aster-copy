@@ -176,7 +176,7 @@ subroutine sinoz2(modele, nume_equa, sigel, signo)
 !        NUME_DDL AVEC UN NUME_EQUA :
     nu14 = '&&SINOZ2.NUDDL'
     call copisd('NUME_EQUA', 'V', nume_equa, nu14//'.NUME')
-    call wkvect(nu14//'.NUME.REFN', 'V V K24', 4, jrefn)
+    call jeveuo(nu14//'.NUME.REFN', "E", jrefn)
     zk24(jrefn-1+1) = ma
     zk24(jrefn-1+2) = 'DEPL_R'
 !

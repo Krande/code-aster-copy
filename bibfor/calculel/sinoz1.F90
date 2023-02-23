@@ -118,7 +118,7 @@ subroutine sinoz1(modele, sigma, signo)
     solveu = '&&OP0042.SOLVEUR'
 
     call numero(nupgm, 'VV', &
-                modelocz='DDL_NOZ1', &
+                modelocz='DDL_NOZ1', modelz=modele, &
                 nb_matr_elem=1, list_matr_elem=massel)
 
     masselK19 = massel(1:19)
