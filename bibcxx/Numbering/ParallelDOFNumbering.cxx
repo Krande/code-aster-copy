@@ -40,6 +40,7 @@ ParallelDOFNumbering::ParallelDOFNumbering( const std::string name,
                                             const ModelPtr model )
     : BaseDOFNumbering( name, "NUME_DDL_P" ), _globalNumbering( globNume ) {
     setModel( model );
+    _isEmpty = false;
 };
 
 ParallelDOFNumbering::ParallelDOFNumbering( const std::string &name )
@@ -199,7 +200,8 @@ bool ParallelDOFNumbering::isRowAssociatedToPhysical( const ASTERINTEGER row,
     auto localrow = row;
     if ( !local )
         localrow = globalToLocalRow( row );
-    auto [nodeId, cmpId] = getGlobalEquationNumbering()->getNodeAndComponentNumberFromDOF( localrow );
+    auto [nodeId, cmpId] =
+        getGlobalEquationNumbering()->getNodeAndComponentNumberFromDOF( localrow );
 
     return cmpId > 0;
 };

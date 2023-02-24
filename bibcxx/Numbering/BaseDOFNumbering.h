@@ -244,7 +244,7 @@ class BaseDOFNumbering : public DataStructure {
     };
     typedef std::shared_ptr< LocalEquationNumbering > LocalEquationNumberingPtr;
 
-  private:
+  protected:
     /** @brief Objet Jeveux '.NSLV' */
     JeveuxVectorChar24 _nameOfSolverDataStructure;
     /** @brief Objet maillage */

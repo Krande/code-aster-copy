@@ -149,7 +149,7 @@ class GenericElementaryVector : public BaseElementaryVector {
     /**
      * @brief Function to update ElementaryTerm
      */
-    bool build() {
+    bool build( const std::vector< FiniteElementDescriptorPtr > FED = {} ) {
         if ( _elemComp->hasElementaryTerm() ) {
 
             SetString elemSave;
@@ -169,10 +169,20 @@ class GenericElementaryVector : public BaseElementaryVector {
                         // cham_no if .REFE is present, not a resuelem, store in _veass
                         if ( _veass == nullptr or _veass->getName() != name2 ) {
                             _veass = std::make_shared< FieldOnNodes< ValueType > >( name );
+                            _veass->build( this->getMesh() );
                         }
-                    } else
-                        _elemTerm.push_back(
-                            std::make_shared< ElementaryTerm< ValueType > >( name ) );
+                    } else {
+                        auto elemTerm = std::make_shared< ElementaryTerm< ValueType > >( name );
+                        for ( auto &Fe : FED ) {
+                            try {
+                                elemTerm->setFiniteElementDescriptor( Fe );
+                                break;
+                            } catch ( AsterErrorCpp & ) {
+                                // continue
+                            }
+                        }
+                        _elemTerm.push_back( elemTerm );
+                    }
                 }
             }
 
@@ -182,9 +192,13 @@ class GenericElementaryVector : public BaseElementaryVector {
             for ( auto &elemTerm : _elemTerm ) {
                 auto name = trim( elemTerm->getName() );
                 if ( elemKeep.count( name ) > 0 ) {
+                    if ( !elemTerm->getFiniteElementDescriptor() ) {
+                        std::cout << "Missing FED " << std::endl;
+                    }
                     elemTermNew.push_back( elemTerm );
                 }
             }
+
             _elemTerm = std::move( elemTermNew );
 
             if ( !getMesh()->isParallel() && !isMPIFull() ) {
@@ -192,6 +206,7 @@ class GenericElementaryVector : public BaseElementaryVector {
                 CALLO_SDMPIC( type, getName() );
             }
         }
+
         _isEmpty = false;
         return true;
     };

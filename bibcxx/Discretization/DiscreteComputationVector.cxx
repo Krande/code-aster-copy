@@ -53,13 +53,12 @@ FieldOnNodesRealPtr DiscreteComputation::getImposedDualBC( const ASTERDOUBLE tim
     };
 
     if ( has_load ) {
-        elemVect->build();
+        elemVect->build( _phys_problem->getDOFNumbering()->getFiniteElementDescriptors() );
         return elemVect->assembleWithLoadFunctions( _phys_problem->getDOFNumbering(), time );
     } else {
         FieldOnNodesRealPtr vectAsse =
             std::make_shared< FieldOnNodesReal >( _phys_problem->getDOFNumbering() );
         vectAsse->setValues( 0.0 );
-        vectAsse->build();
         return vectAsse;
     }
 };
@@ -84,7 +83,7 @@ DiscreteComputation::getNeumannForces( const ASTERDOUBLE time, const ASTERDOUBLE
         AS_ASSERT( false );
     };
     if ( has_load ) {
-        elemVect->build();
+        elemVect->build( _phys_problem->getDOFNumbering()->getFiniteElementDescriptors() );
         return elemVect->assembleWithLoadFunctions( _phys_problem->getDOFNumbering(), time );
     } else {
         FieldOnNodesRealPtr vectAsse =
@@ -125,7 +124,7 @@ FieldOnNodesRealPtr DiscreteComputation::getDualForces( FieldOnNodesRealPtr lagr
     CALLO_VEBTLA( base, modelName, materName, caraName, lagrName, listLoadsName, vectElemName );
 
     // Construct vect_elem object
-    elemVect->build();
+    elemVect->build( _phys_problem->getDOFNumbering()->getFiniteElementDescriptors() );
 
     // Assemble
     return elemVect->assemble( _phys_problem->getDOFNumbering() );
@@ -157,7 +156,7 @@ FieldOnNodesRealPtr DiscreteComputation::getDualDisplacement( FieldOnNodesRealPt
     CALLO_VEBUME( modelName, dispName, listLoadsName, vectElemName, &const_scaling, base );
 
     // Construct vect_elem object
-    elemVect->build();
+    elemVect->build( _phys_problem->getDOFNumbering()->getFiniteElementDescriptors() );
 
     // Assemble
     FieldOnNodesRealPtr bume = elemVect->assemble( _phys_problem->getDOFNumbering() );
@@ -226,7 +225,6 @@ DiscreteComputation::getIncrementalDirichletBC( const ASTERDOUBLE &time,
     // Construct vect_asse object
     FieldOnNodesRealPtr vectAsse = std::make_shared< FieldOnNodesReal >( dofNume );
     vectAsse->setValues( 0.0 );
-    vectAsse->build();
 
     return vectAsse;
 };
@@ -301,7 +299,7 @@ DiscreteComputation::getExternalStateVariablesForces( const ASTERDOUBLE time ) c
         }
     }
     // Build elementary vectors
-    elemVect->build();
+    elemVect->build( _phys_problem->getDOFNumbering()->getFiniteElementDescriptors() );
 
     // Assemble
     return elemVect->assemble( _phys_problem->getDOFNumbering() );

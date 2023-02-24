@@ -30,6 +30,7 @@
 #include "MemoryManager/JeveuxCollection.h"
 #include "MemoryManager/JeveuxVector.h"
 #include "Modeling/FiniteElementDescriptor.h"
+#include "Supervis/Exceptions.h"
 
 /**
  * @class ElementaryTerm
@@ -61,7 +62,22 @@ class ElementaryTerm : public DataField {
     ElementaryTerm() : ElementaryTerm( DataStructureNaming::getNewName() ){};
 
     void setFiniteElementDescriptor( const FiniteElementDescriptorPtr FEDesc ) {
-        _FEDesc = FEDesc;
+        if ( FEDesc ) {
+            if ( _FEDesc && _FEDesc != FEDesc ) {
+                std::string mess =
+                    "Incompatible FED: " + _FEDesc->getName() + " vs " + FEDesc->getName();
+                AS_ABORT( mess );
+            } else {
+                _noli->updateValuePointer();
+                auto FEDname = trim( ( *_noli )[0].toString() );
+                if ( FEDname != trim( FEDesc->getName() ) ) {
+                    std::string mess = "Incompatible FED: " + FEDname + " vs " + FEDesc->getName();
+                    raiseAsterError( mess );
+                }
+
+                _FEDesc = FEDesc;
+            }
+        }
     };
 
     FiniteElementDescriptorPtr getFiniteElementDescriptor() const { return _FEDesc; };

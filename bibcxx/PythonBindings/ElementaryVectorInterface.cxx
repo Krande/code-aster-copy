@@ -47,7 +47,8 @@ void exportElementaryVectorToPython( py::module_ &mod ) {
         .def( "setMaterialField", &BaseElementaryVector::setMaterialField )
         .def( "setModel", &BaseElementaryVector::setModel )
         .def( "setElementaryCharacteristics", &BaseElementaryVector::setElementaryCharacteristics )
-        .def( "build", &BaseElementaryVector::build );
+        .def( "build", &BaseElementaryVector::build,
+              py::arg( "FED" ) = std::vector< FiniteElementDescriptorPtr >() );
 
     py::class_< ElementaryVectorReal, ElementaryVectorRealPtr, BaseElementaryVector >(
         mod, "ElementaryVectorReal" )
@@ -56,7 +57,8 @@ void exportElementaryVectorToPython( py::module_ &mod ) {
         .def( py::init( &initFactoryPtr< ElementaryVectorReal, ModelPtr, MaterialFieldPtr,
                                          ElementaryCharacteristicsPtr, ListOfLoadsPtr > ) )
         .def( "getVeass", &ElementaryVectorReal::getVeass )
-        .def( "assemble", &ElementaryVectorReal::assemble );
+        .def( "assemble", &ElementaryVectorReal::assemble )
+        .def( "getFiniteElementDescriptor", &ElementaryVectorReal::getFiniteElementDescriptor );
 
     py::class_< ElementaryVectorComplex, ElementaryVectorComplexPtr, BaseElementaryVector >(
         mod, "ElementaryVectorComplex" )

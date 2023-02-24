@@ -179,6 +179,11 @@ class BaseElementaryVector : public DataStructure {
             _elemComp->createDescriptor( _model, _materialField, _elemChara );
         }
     };
+
+    virtual bool build( std::vector< FiniteElementDescriptorPtr > FED = {} ) {
+        AS_ABORT( "Not implemented" );
+        return false;
+    };
 };
 
 /**

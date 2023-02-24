@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -65,11 +65,15 @@ class ComputeElementaryVector(ExecuteCommand):
         if "CHAM_MATER" in keywords:
             self._result.setMaterialField(keywords["CHAM_MATER"])
 
+        Fed = []
         if "CHARGE" in keywords:
             loads = force_list(keywords["CHARGE"])
             self._result.setModel(loads[0].getModel())
+            for load in loads:
+                Fed.append(load.getFiniteElementDescriptor())
+                Fed.append(load.getModel().getFiniteElementDescriptor())
 
-        self._result.build()
+        self._result.build(Fed)
         veass = self._result.getVeass()
         if veass is not None:
             veass.build()

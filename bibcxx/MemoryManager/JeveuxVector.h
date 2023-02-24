@@ -233,6 +233,8 @@ class JeveuxVectorClass : public JeveuxObjectClass, private AllowedJeveuxType< V
             CALLO_WKVECTC( _name, carac, &taille, (void *)( &_valuePtr ) );
             if ( _valuePtr == NULL )
                 ret = false;
+        } else {
+            AS_ABORT( "JeveuxVector " + _name + "allocate null size" );
         }
 
         AS_ASSERT( ret );
