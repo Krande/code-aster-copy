@@ -25,6 +25,7 @@ subroutine dismeq(questi, nomobz, repi, repkz, ierd)
 #include "asterfort/assert.h"
 #include "asterfort/dismlg.h"
 #include "asterfort/dismcn.h"
+#include "asterfort/dismgd.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
@@ -39,7 +40,6 @@ subroutine dismeq(questi, nomobz, repi, repkz, ierd)
     character(len=*) :: questi
     character(len=*) :: nomobz, repkz
     character(len=32) :: repk
-    character(len=19) :: nomob
 ! ----------------------------------------------------------------------
 !     IN:
 !       QUESTI : TEXTE PRECISANT LA QUESTION POSEE
@@ -55,6 +55,7 @@ subroutine dismeq(questi, nomobz, repi, repkz, ierd)
 !     VARIABLES LOCALES:
 !     ------------------
     character(len=19) :: noligr
+    character(len=19) :: nomob
 !
 !
 !
@@ -95,7 +96,9 @@ subroutine dismeq(questi, nomobz, repi, repkz, ierd)
 !     --------------------------------
         call jeveuo(nomob//'.REFN', 'L', vk24=refn)
         call jenonu(jexnom('&CATA.GD.NOMGD', refn(2) (1:8)), repi)
-!
+    else if (questi(1:9) .eq. 'NUM_GD_SI') then
+        call jeveuo(nomob//'.REFN', 'L', vk24=refn)
+        call dismgd(questi, refn(2) (1:8), repi, repk, ierd)
     else if (questi .eq. 'NOM_MODELE') then
         call jeveuo(nomob//'.REFN', 'L', vk24=refn)
         repk = refn(3)

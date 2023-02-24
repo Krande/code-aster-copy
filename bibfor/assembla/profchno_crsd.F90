@@ -22,7 +22,7 @@ subroutine profchno_crsd(nume_equaz, base, nb_equa, meshz, nb_ligrz, &
     implicit none
 !
 #include "asterfort/assert.h"
-#include "asterfort/detrsd.h"
+#include "asterfort/jedetr.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/jecreo.h"
 #include "asterfort/jeecra.h"
@@ -78,7 +78,10 @@ subroutine profchno_crsd(nume_equaz, base, nb_equa, meshz, nb_ligrz, &
     prno_length = 0
     nb_ec = 0
     nume_equa = nume_equaz
-    !call detrsd('NUME_EQUA', nume_equa)
+    call jedetr(nume_equa//'.DEEQ')
+    call jedetr(nume_equa//'.LILI')
+    call jedetr(nume_equa//'.NUEQ')
+    call jedetr(nume_equa//'.PRNO')
     if (present(nb_ligrz)) then
         nb_ligr = nb_ligrz
     else

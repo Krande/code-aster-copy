@@ -78,7 +78,7 @@ subroutine op0077()
 !-----------------------------------------------------------------------
     integer :: ibid, ir, ir1, iret, isk, j
     integer :: j2refe, j3refe, jrefn, jrefnb, lmacr, lmodge
-    integer ::  n1, n2, nbcham, numsec, neq
+    integer ::  n1, n2, nbcham, numsec, neq, neq2
     integer, pointer :: ordr(:) => null()
     character(len=3) :: typesca
     character(len=8), pointer :: refm(:) => null()
@@ -367,11 +367,25 @@ subroutine op0077()
         else
             neq = 1
         end if
-        call wkvect(nume_equa//'.NEQU', 'G V I', 2, jrefn)
-        zi(jrefn) = neq
-        zi(jrefn+1) = neq
-        call wkvect(nume_equa//'.DELG', 'G V I', neq, jrefn)
-        do iord = 1, neq
+        call jeexin(nume_equa//'.NEQU', iret)
+        if (iret > 0) then
+            call jeveuo(nume_equa//'.NEQU', 'E', jrefn)
+            ASSERT(zi(jrefn) == neq)
+        else
+            call wkvect(nume_equa//'.NEQU', 'G V I', 2, jrefn)
+            zi(jrefn) = neq
+            zi(jrefn+1) = neq
+        end if
+
+        call jeexin(nume_equa//'.DELG', iret)
+        if (iret > 0) then
+            call jeveuo(nume_equa//'.DELG', 'E', jrefn)
+            call jelira(nume_equa//'.DELG', 'LONMAX', neq2)
+        else
+            call wkvect(nume_equa//'.DELG', 'G V I', neq, jrefn)
+            neq2 = neq
+        end if
+        do iord = 1, neq2
             zi(jrefn-1+iord) = 0
         end do
     end if

@@ -102,10 +102,10 @@ subroutine regres(nomres, mailsk, result, pfchn2)
     call jeveuo(jexnum(pfchn2//'.PRNO', 1), 'E', lprnew)
 
 !
-! - THis is a NUME_EQUA object, not NUME_EQUA one
+! - THis is a NUME_EQUA object
 !
     nequ = pfchn2(1:19)//'.NEQU'
-    call wkvect(nequ, 'V V I', 2, vi=p_nequ)
+    call jeveuo(nequ, 'E', vi=p_nequ)
     p_nequ(1) = nddl
 
 !

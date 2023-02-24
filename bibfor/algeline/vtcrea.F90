@@ -54,7 +54,6 @@ subroutine vtcrea(champ, crefe, base, typc, neq)
     integer :: lchamp
     character(len=1) :: classe
     character(len=1) :: type
-    character(len=14) :: nu
     character(len=24) :: vale, refe, desc
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
@@ -83,8 +82,7 @@ subroutine vtcrea(champ, crefe, base, typc, neq)
     desc(1:19) = champ
     call wkvect(desc, classe//' V I', 2, lchamp)
     call jeecra(desc, 'DOCU', ibid, 'CHNO')
-    nu = crefe(2) (1:14)
-    call dismoi('NUM_GD_SI', nu, 'NUME_DDL', repi=nugdsi)
+    call dismoi('NUM_GD_SI', crefe(2), 'NUME_EQUA', repi=nugdsi)
     zi(lchamp-1+1) = nugdsi
     zi(lchamp-1+2) = 1
 !
