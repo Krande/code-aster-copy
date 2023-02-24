@@ -43,7 +43,7 @@ class FieldProjector(ExecuteCommand):
         if resultat is not None:
             self._result = type(keywords["RESULTAT"])()
             return
-        if chamGd is None and methode == "SOUS_POINT":
+        if chamGd is not None and methode == "SOUS_POINT":
             self._result = FieldOnCellsReal()
             return
         else:
