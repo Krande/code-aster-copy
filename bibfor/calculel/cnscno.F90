@@ -208,18 +208,7 @@ subroutine cnscno(cnsz, nume_equaz, prol0, basez, cnoz, &
     if (l_chck_nume_equa) then
 !         --  ON PEUT VERIFIER maillage et grandeur
         call jeveuo(nume_equa(1:19)//'.REFN', 'L', vk24=refn)
-        l_error = ASTER_FALSE
         if ((refn(1) .ne. ma) .or. (refn(2) .ne. nomgd)) then
-!             -- ON ACCEPTE : DEPL_R / DEPL_C
-            if ((nomgd(1:5) .eq. 'DEPL_') .and. (refn(2) (1:5) .eq. 'DEPL_')) then
-            elseif ((nomgd(1:5) .eq. refn(2) (1:5))) then
-                call jelira(jexnum(nume_equa//'.PRNO', 1), 'LONMAX', prno_length)
-                ASSERT(prno_length .eq. nbno*(nbec+2))
-            else
-                l_error = ASTER_TRUE
-            end if
-        end if
-        if (l_error) then
             valk(1) = cno
             valk(2) = nume_equa
             call utmess('F', 'CALCULEL4_6', nk=2, valk=valk)

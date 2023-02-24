@@ -161,7 +161,11 @@ class FieldCreator(ExecuteCommand):
                             pass
                         break
 
-            self._result.build(self._getMesh(keywords))
+            try:
+                self._result.build(self._getMesh(keywords))
+            except:
+                if "FISSURE" in keywords:
+                    self._result.setMesh(keywords["FISSURE"].getAuxiliaryGrid())
         elif location[:2] == "EL":
             resultat = keywords.get("RESULTAT")
             fed = []
