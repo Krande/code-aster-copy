@@ -31,6 +31,7 @@ subroutine cnscno(cnsz, nume_equaz, prol0, basez, cnoz, &
 #include "asterfort/nume_equa_crsd.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/copisd.h"
 #include "asterfort/gcncon.h"
 #include "asterfort/gnomsd.h"
 #include "asterfort/idensd.h"
@@ -98,12 +99,12 @@ subroutine cnscno(cnsz, nume_equaz, prol0, basez, cnoz, &
     integer :: reste, iec, code, nbno, nb
     integer :: ncmpmx, jrefe, ncmp1, nb_equa, jcmpgd, icmp1, k, ieq2, iexi2, nbec
     integer :: jprn2, ino, idg2, ico, jvale, iret, prno_length
-    integer :: lshift, nuprf, nb_equa_gl
+    integer :: lshift, nuprf, nb_equa_gl, jrefn
     character(len=1) :: base
     character(len=8) :: ma, nomgd, nomno, nomcmp
     aster_logical :: l_crea_nume_equa, l_chck_nume_equa, ldist, l_pmesh, l_error
     character(len=3) :: tsca
-    character(len=19) :: cns, cno, nume_equa, messag, prnoav
+    character(len=19) :: cns, cno, nume_equa, messag, prnoav, nume_equa_tmp
     integer, pointer :: deeq(:) => null()
     integer, pointer :: cnsd(:) => null()
     character(len=8), pointer :: cnsc(:) => null()
@@ -209,9 +210,24 @@ subroutine cnscno(cnsz, nume_equaz, prol0, basez, cnoz, &
 !         --  ON PEUT VERIFIER maillage et grandeur
         call jeveuo(nume_equa(1:19)//'.REFN', 'L', vk24=refn)
         if ((refn(1) .ne. ma) .or. (refn(2) .ne. nomgd)) then
-            valk(1) = cno
-            valk(2) = nume_equa
-            call utmess('F', 'CALCULEL4_6', nk=2, valk=valk)
+            if (nomgd(1:5) == refn(2) (1:5)) then
+                if (base .eq. 'G') then
+                    noojb = '12345678.NUME000000.PRNO'
+                    call gnomsd(' ', noojb, 14, 19)
+                    noojb(1:8) = cno(1:8)
+                    nume_equa_tmp = noojb(1:19)
+                else
+                    call gcncon('.', nume_equa_tmp)
+                end if
+                call copisd("NUME_EQUA", base, nume_equa, nume_equa_tmp)
+                nume_equa = nume_equa_tmp
+                call jeveuo(nume_equa//".REFN", 'E', jrefn)
+                zk24(jrefn+1) = nomgd
+            else
+                valk(1) = cno
+                valk(2) = nume_equa
+                call utmess('F', 'CALCULEL4_6', nk=2, valk=valk)
+            end if
         end if
     end if
 !

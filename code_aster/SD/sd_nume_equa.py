@@ -76,6 +76,6 @@ class sd_nume_equa(AsBase):
         neq = nequ[0]
         assert neq > 0
         assert nequ[1] >= 0
-        assert len(delg) == nequ[1]
+        assert len(delg) == neq
         for x in delg:
             assert x in (-2, -1, 0)
