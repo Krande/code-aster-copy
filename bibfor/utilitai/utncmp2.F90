@@ -75,42 +75,22 @@ subroutine utncmp2(cham19, ncmp, list_cmp, list_name)
     if (tych(1:4) .eq. 'NOEU') then
         call dismoi('NB_NO_MAILLA', noma, 'MAILLAGE', repi=nnoe)
         call dismoi('NUME_EQUA', ch19, 'CHAM_NO', repk=prno)
-        if (prno .eq. ' ') then
-!AS OU LE CHAMP EST A PROFIL CONSTANT (CHAMP DE GEOMETRIE)
-            call jeveuo(ch19//'.DESC', 'L', vi=desc)
-            ncmp = -desc(2)
+        call jeveuo(jexnum(prno//'.PRNO', 1), 'L', jprno)
+        do ino = 1, nnoe
             do iec = 1, nec
-                tabec(iec) = desc(1+1+iec)
+                tabec(iec) = zi(jprno-1+(ino-1)*(nec+2)+2+iec)
             end do
-            nb = 0
             do icmp = 1, ncmpmx
                 if (exisdg(tabec, icmp)) then
                     do j = 1, ncmp
-                        if (vicmp(j) .eq. icmp) goto 34
+                        if (vicmp(j) .eq. icmp) goto 14
                     end do
-                    nb = nb+1
-                    vicmp(nb) = icmp
+                    ncmp = ncmp+1
+                    vicmp(ncmp) = icmp
                 end if
-34              continue
+14              continue
             end do
-        else
-            call jeveuo(jexnum(prno//'.PRNO', 1), 'L', jprno)
-            do ino = 1, nnoe
-                do iec = 1, nec
-                    tabec(iec) = zi(jprno-1+(ino-1)*(nec+2)+2+iec)
-                end do
-                do icmp = 1, ncmpmx
-                    if (exisdg(tabec, icmp)) then
-                        do j = 1, ncmp
-                            if (vicmp(j) .eq. icmp) goto 14
-                        end do
-                        ncmp = ncmp+1
-                        vicmp(ncmp) = icmp
-                    end if
-14                  continue
-                end do
-            end do
-        end if
+        end do
 !
 !     ==================================================================
 !                             C H A M _ E L E M

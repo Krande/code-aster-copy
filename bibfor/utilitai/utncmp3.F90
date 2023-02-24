@@ -56,7 +56,6 @@ subroutine utncmp3(nume_equa, ncmp, list_cmp, list_name)
 !
     call dismoi('NOM_MAILLA', nume_equa19, 'NUME_EQUA', repk=noma)
     call dismoi('NB_NO_MAILLA', noma, 'MAILLAGE', repi=nnoe)
-    nnoe = 1
 
     call dismoi('NUM_GD', nume_equa19, 'NUME_EQUA', repi=gd)
 !
