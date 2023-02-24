@@ -520,7 +520,7 @@ subroutine op0041()
 ! --- CREATION DU CHAM_NO POUR LE STATUT DES NOEUDS
 !
     stno = fiss(1:8)//'.STNO'
-    call cnscno(cnsen, ' ', 'NON', 'G', stno, &
+    call cnscno(cnsen, stno(1:13)//'.NUMEQ', 'NON', 'G', stno, &
                 'F', ibid)
     if (niv .ge. 3) then
         call imprsd('CHAMP', stno, ifm, 'FISSURE.STNO=')

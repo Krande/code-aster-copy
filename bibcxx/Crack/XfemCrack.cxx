@@ -73,7 +73,8 @@ XfemCrack::XfemCrack( const std::string name, MeshPtr mesh )
     _tangentialLevelSetField->setDescription(
         std::make_shared< GlobalEquationNumbering >( getName() + ".LTNO.NUMEQ" ) );
     _normalLevelSetField->setDescription( _tangentialLevelSetField->getDescription() );
-    _nodeStatusField->setDescription( _tangentialLevelSetField->getDescription() );
+    _nodeStatusField->setDescription(
+        std::make_shared< GlobalEquationNumbering >( getName() + ".STNO.NUMEQ" ) );
     _tangentialLevelSetGradient->setDescription(
         std::make_shared< GlobalEquationNumbering >( getName() + ".GRLT.NUMEQ" ) );
     _normalLevelSetGradient->setDescription( _tangentialLevelSetGradient->getDescription() );
