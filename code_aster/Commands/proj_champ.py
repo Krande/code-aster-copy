@@ -79,7 +79,12 @@ class FieldProjector(ExecuteCommand):
         else:
             if "MAILLAGE_1" in keywords:
                 self._result.setFirstMesh(keywords["MAILLAGE_1"])
+            if "MAILLAGE_2" in keywords:
                 self._result.setSecondMesh(keywords["MAILLAGE_2"])
+            if "MODELE_1" in keywords:
+                self._result.setFirstMesh(keywords["MODELE_1"].getMesh())
+            if "MODELE_2" in keywords:
+                self._result.setSecondMesh(keywords["MODELE_2"].getMesh())
 
     def add_dependencies(self, keywords):
         """Register input *DataStructure* objects as dependencies.
