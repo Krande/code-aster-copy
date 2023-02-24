@@ -68,7 +68,7 @@ subroutine genugl(nume_equa, indirf, modgen, mailsk)
     integer :: ipoint, j, k, lddeeq, ldinse, ldnueq
     integer :: ldprno, linueq, llprno, lttds, nbcmp
     integer :: nbcou, nbcpmx, nbddl, nbec, nbnot, nbsst, nddlt
-    integer :: ntail, numno, nusst
+    integer :: ntail, numno, nusst, jrefn
 !-----------------------------------------------------------------------
     parameter(nbcpmx=300)
     character(len=6) :: pgc
@@ -147,6 +147,10 @@ subroutine genugl(nume_equa, indirf, modgen, mailsk)
                        prno_lengthz=nbnot*(2+nbec))
     call jeveuo(deeq, 'E', lddeeq)
     call jeveuo(nueq, 'E', ldnueq)
+    call jeveuo(nume_equa//'.REFN', 'E', jrefn)
+    zk24(jrefn) = mailsk
+    zk24(jrefn+1) = 'DEPL_R'
+
 !
 ! - Create object LIAISON
 !
