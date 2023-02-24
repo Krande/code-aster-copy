@@ -380,7 +380,7 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
         return lhs;
     };
 
-    SetString getComponents() const { return _dofDescription->getComponents(); };
+    VectorString getComponents() const { return _dofDescription->getComponents(); };
 
     ASTERINTEGER getNumberOfComponents() const { return getComponents().size(); }
 

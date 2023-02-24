@@ -43,12 +43,113 @@
 
 #pragma once
 
+class BaseGlobalEquationNumbering : public DataStructure {
+
+  public:
+    BaseGlobalEquationNumbering( const std::string baseName = DataStructureNaming::getNewName() )
+        : DataStructure( baseName, 19, "NUME_EQUA" ){};
+
+    /**
+     * @brief Returns the vector of local to global numbering
+     */
+    virtual const JeveuxVectorLong getLocalToGlobal() const {
+        throw std::runtime_error( "Vector LocalToGlobal doesn't exist in sequential" );
+        return JeveuxVectorLong( "RIEN" );
+    };
+
+    /**
+     * @brief Returns the vector of the rank owning the local dof number
+     */
+    virtual const JeveuxVectorLong getLocalToRank() const {
+        throw std::runtime_error( "Vector LocalToRank doesn't exist in sequential" );
+        return JeveuxVectorLong( "RIEN" );
+    };
+
+    /**
+     * @brief Are Lagrange Multipliers used for BC or MPC
+     */
+    virtual bool useLagrangeMultipliers() const = 0;
+
+    /**
+     * @brief Are Single Lagrange Multipliers used for BC or MPC
+     */
+    virtual bool useSingleLagrangeMultipliers() const = 0;
+
+    /**
+     * @brief Get The Component Associated To A Given Row
+     */
+    virtual std::string getComponentAssociatedToRow( const ASTERINTEGER row,
+                                                     const bool local = false ) const = 0;
+    /**
+     * @brief Get The Node Id Associated To A Given Row
+     */
+    virtual ASTERINTEGER getNodeAssociatedToRow( const ASTERINTEGER row,
+                                                 const bool local = false ) const = 0;
+
+    /**
+     * @brief Return true if a physical dof is Associated To A Given Row
+     */
+    virtual bool isRowAssociatedToPhysical( const ASTERINTEGER row,
+                                            const bool local = false ) const = 0;
+
+    /**
+     * @brief Get The total number of Dofs
+     */
+    virtual ASTERINTEGER getNumberOfDofs( const bool local = false ) const = 0;
+
+    /**
+     * @brief Get Rows Associated to all Physical Dof
+     */
+    virtual VectorLong getRowsAssociatedToPhysicalDofs( const bool local = false ) const = 0;
+
+    /**
+     * @brief Get Rows Associated to Lagrange Multipliers Dof
+     */
+    virtual VectorLong getRowsAssociatedToLagrangeMultipliers( const bool local = false ) const = 0;
+
+    /**
+     * @brief Get Rows Associated to all Ghost Dof
+     */
+    VectorLong getGhostRows( const bool local = false ) const {
+        throw std::runtime_error( "Vector LocagetGhostRowslToRank doesn't exist in sequential" );
+        return VectorLong();
+    };
+
+    /**
+     * @brief Get Rows owned locally (aka not Ghost)
+     */
+    VectorLong getNoGhostRows() const {
+        throw std::runtime_error( "Vector LocagetGhostRowslToRank doesn't exist in sequential" );
+        return VectorLong();
+    };
+
+    /**
+     * @brief Return the local number of a global Dof
+     * @return Return the local number if the row if present on the subdomain ; otherwise
+     * raise an exception
+     */
+    const ASTERINTEGER globalToLocalRow( const ASTERINTEGER ) const {
+        throw std::runtime_error( "Vector globalToLocalRow doesn't exist in sequential" );
+        return -1;
+    };
+
+    /**
+     * @brief Return the global number of a local Dof
+     * @return Return the global number if the row if present on the subdomain ; otherwise
+     * raise an exception
+     */
+    const ASTERINTEGER localToGlobalRow( const ASTERINTEGER ) {
+        throw std::runtime_error( "Vector globalToLocalRow doesn't exist in sequential" );
+        return -1;
+    };
+};
+
 /**
  * @class GlobalEquationNumbering
  * @brief Class definissant un NUME_EQUA
  */
-class GlobalEquationNumbering : public DataStructure {
-  private:
+class GlobalEquationNumbering : public BaseGlobalEquationNumbering {
+  protected:
     /** @brief Objet Jeveux '.NEQU' */
     JeveuxVectorLong _numberOfEquations;
     /** @brief Objet Jeveux '.REFN' */
@@ -97,22 +198,6 @@ class GlobalEquationNumbering : public DataStructure {
     const JeveuxVectorLong getNumberOfEquations() const { return _numberOfEquations; }
 
     /**
-     * @brief Returns the vector of local to global numbering
-     */
-    virtual const JeveuxVectorLong getLocalToGlobal() const {
-        throw std::runtime_error( "Vector LocalToGlobal doesn't exist in sequential" );
-        return JeveuxVectorLong( "RIEN" );
-    };
-
-    /**
-     * @brief Returns the vector of the rank owning the local dof number
-     */
-    virtual const JeveuxVectorLong getLocalToRank() const {
-        throw std::runtime_error( "Vector LocalToRank doesn't exist in sequential" );
-        return JeveuxVectorLong( "RIEN" );
-    };
-
-    /**
      * @brief Get model
      */
     ModelPtr getModel() const { return _model; };
@@ -145,11 +230,6 @@ class GlobalEquationNumbering : public DataStructure {
      * @brief Returns a vector with node index for each DOFs
      */
     VectorLong getNodesFromDOF() const;
-
-    /**
-     * @brief Returns number of DOFs
-     */
-    ASTERINTEGER getNumberOfDofs() const;
 
     /**
      * @brief Return list of DOFs
@@ -188,7 +268,7 @@ class GlobalEquationNumbering : public DataStructure {
     /**
      * @brief Get componants
      */
-    SetString getComponents() const;
+    VectorString getComponents() const;
     SetLong getComponentsNumber() const;
 
     /**
@@ -196,6 +276,46 @@ class GlobalEquationNumbering : public DataStructure {
      */
     std::map< std::string, ASTERINTEGER > getComponentsName2Number() const;
     std::map< ASTERINTEGER, std::string > getComponentsNumber2Name() const;
+
+    /**
+     * @brief Are Lagrange Multipliers used for BC or MPC
+     */
+    bool useLagrangeMultipliers() const;
+
+    /**
+     * @brief Are Single Lagrange Multipliers used for BC or MPC
+     */
+    bool useSingleLagrangeMultipliers() const;
+
+    /**
+     * @brief Get The Component Associated To A Given Row
+     */
+    std::string getComponentAssociatedToRow( const ASTERINTEGER row,
+                                             const bool local = false ) const;
+    /**
+     * @brief Get The Node Id Associated To A Given Row
+     */
+    ASTERINTEGER getNodeAssociatedToRow( const ASTERINTEGER row, const bool local = false ) const;
+
+    /**
+     * @brief Return true if a physical dof is Associated To A Given Row
+     */
+    bool isRowAssociatedToPhysical( const ASTERINTEGER row, const bool local = false ) const;
+
+    /**
+     * @brief Get The total number of Dofs
+     */
+    ASTERINTEGER getNumberOfDofs( const bool local = false ) const;
+
+    /**
+     * @brief Get Rows Associated to all Physical Dof
+     */
+    VectorLong getRowsAssociatedToPhysicalDofs( const bool local = false ) const;
+
+    /**
+     * @brief Get Rows Associated to Lagrange Multipliers Dof
+     */
+    VectorLong getRowsAssociatedToLagrangeMultipliers( const bool local = false ) const;
 
     /**
      * @brief Mise a jour des pointeurs Jeveux

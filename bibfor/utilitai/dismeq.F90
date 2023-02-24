@@ -56,11 +56,14 @@ subroutine dismeq(questi, nomobz, repi, repkz, ierd)
 !     ------------------
     character(len=19) :: noligr
     character(len=19) :: nomob
+    aster_logical :: isLagr, isDbLagr
+    integer, pointer :: nequ(:) => null()
+    integer, pointer :: delg(:) => null()
 !
 !
 !
 !-----------------------------------------------------------------------
-    integer :: i, nbddlb, nbnos, nequ, nlili
+    integer :: i, nbddlb, nbnos, neq, nlili
     character(len=24), pointer :: refn(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
@@ -71,7 +74,7 @@ subroutine dismeq(questi, nomobz, repi, repkz, ierd)
 !
     if (questi .eq. 'NB_DDLACT') then
 !     --------------------------------
-        call jelira(nomob//'.NUEQ', 'LONMAX', nequ)
+        call jelira(nomob//'.NUEQ', 'LONMAX', neq)
         call jelira(nomob//'.LILI', 'NUTIOC', nlili)
         nbddlb = 0
         do i = 2, nlili
@@ -79,33 +82,65 @@ subroutine dismeq(questi, nomobz, repi, repkz, ierd)
             call dismlg('NB_NO_SUP', noligr, nbnos, repk, ierd)
             nbddlb = nbddlb+nbnos
         end do
-        repi = nequ-3*(nbddlb/2)
+        repi = neq-3*(nbddlb/2)
 !
 !
     else if (questi .eq. 'NB_EQUA') then
 !     --------------------------------
-        call jelira(nomob//'.NUEQ', 'LONMAX', repi)
+        call jeveuo(nomob//'.NEQU', 'L', vi=nequ)
+        repi = nequ(1)
 !
 !
     else if (questi .eq. 'NOM_GD') then
-!     --------------------------------
         call jeveuo(nomob//'.REFN', 'L', vk24=refn)
         repk = refn(2) (1:8)
 !
     else if (questi .eq. 'NUM_GD') then
-!     --------------------------------
         call jeveuo(nomob//'.REFN', 'L', vk24=refn)
         call jenonu(jexnom('&CATA.GD.NOMGD', refn(2) (1:8)), repi)
+!
     else if (questi(1:9) .eq. 'NUM_GD_SI') then
         call jeveuo(nomob//'.REFN', 'L', vk24=refn)
         call dismgd(questi, refn(2) (1:8), repi, repk, ierd)
+!
     else if (questi .eq. 'NOM_MODELE') then
         call jeveuo(nomob//'.REFN', 'L', vk24=refn)
         repk = refn(3)
+!
     else if (questi .eq. 'NOM_MAILLA') then
         call jeveuo(nomob//'.REFN', 'L', vk24=refn)
         repk = refn(1)
 !
+    else if (questi .eq. 'EXIS_LAGR') then
+        call jeveuo(nomob//'.DELG', 'L', vi=delg)
+        call jeveuo(nomob//'.NEQU', 'L', vi=nequ)
+        neq = nequ(1)
+        repk = 'NON'
+        do i = 1, neq
+            if (delg(i) .lt. 0) then
+                REPK = 'OUI'
+                goto 10
+            end if
+        end do
+10      continue
+    else if (questi .eq. 'SIMP_LAGR') then
+        call jeveuo(nomob//'.DELG', 'L', vi=delg)
+        call jeveuo(nomob//'.NEQU', 'L', vi=nequ)
+        neq = nequ(1)
+        isLagr = ASTER_FALSE
+        isDbLagr = ASTER_FALSE
+        do i = 1, neq
+            if (delg(i) .lt. 0) then
+                isLagr = ASTER_TRUE
+                if (delg(i) .eq. -2) then
+                    isDbLagr = ASTER_TRUE
+                    goto 20
+                end if
+            end if
+        end do
+20      continue
+        repk = 'NON'
+        if (isLagr .and. .not. isDbLagr) repk = 'OUI'
     else
         ierd = 1
     end if

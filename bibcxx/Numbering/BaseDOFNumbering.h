@@ -334,58 +334,64 @@ class BaseDOFNumbering : public DataStructure {
     /**
      * @brief Get The Component Associated To A Given Row
      */
-    virtual std::string getComponentAssociatedToRow( const ASTERINTEGER row ) const {
+    virtual std::string getComponentAssociatedToRow( const ASTERINTEGER row,
+                                                     const bool local = false ) const {
         AS_ABORT( "Not allowed" );
     };
 
     /**
      * @brief Get The Components Associated To A Given Node
      */
-    virtual VectorString getComponentsAssociatedToNode( const ASTERINTEGER node ) const {
+    virtual VectorString getComponentsAssociatedToNode( const ASTERINTEGER node,
+                                                        const bool local = false ) const {
         AS_ABORT( "Not allowed" );
     };
 
     /**
      * @brief Get The Node Id Associated To A Given Row
      */
-    virtual ASTERINTEGER getNodeAssociatedToRow( const ASTERINTEGER row ) const {
+    virtual ASTERINTEGER getNodeAssociatedToRow( const ASTERINTEGER row,
+                                                 const bool local = false ) const {
         AS_ABORT( "Not allowed" );
     };
 
     /**
      * @brief Return true if a physical dof is Associated To A Given Row
      */
-    virtual bool isRowAssociatedToPhysical( const ASTERINTEGER row ) const {
+    virtual bool isRowAssociatedToPhysical( const ASTERINTEGER row,
+                                            const bool local = false ) const {
         AS_ABORT( "Not allowed" );
     };
 
     /**
      * @brief Get The total number of Dofs
      */
-    virtual ASTERINTEGER getNumberOfDofs() const { AS_ABORT( "Not allowed" ); };
-
-    /**
-     * @brief Get The total number of Dofs
-     */
-    virtual ASTERINTEGER getNumberOfDofs( const bool local ) const { AS_ABORT( "Not allowed" ); };
+    virtual ASTERINTEGER getNumberOfDofs( const bool local = false ) const {
+        AS_ABORT( "Not allowed" );
+    };
 
     /**
      * @brief get the Row index Associated To the Component of a Node
      */
     virtual ASTERINTEGER getRowAssociatedToNodeComponent( const ASTERINTEGER node,
-                                                          const std::string comp ) const {
+                                                          const std::string comp,
+                                                          const bool local = false ) const {
         AS_ABORT( "Not allowed" );
     }
 
     /**
      * @brief Get Rows Associated to all Physical Dof
      */
-    virtual VectorLong getRowsAssociatedToPhysicalDofs() const { AS_ABORT( "Not allowed" ); }
+    virtual VectorLong getRowsAssociatedToPhysicalDofs( const bool local = false ) const {
+        AS_ABORT( "Not allowed" );
+    }
 
     /**
      * @brief Get Rows Associated to Lagrange Multipliers Dof
      */
-    virtual VectorLong getRowsAssociatedToLagrangeMultipliers() const { AS_ABORT( "Not allowed" ); }
+    virtual VectorLong getRowsAssociatedToLagrangeMultipliers( const bool local = false ) const {
+        AS_ABORT( "Not allowed" );
+    }
 
     /**
      * @brief Get Assigned Components

@@ -46,20 +46,6 @@ class ParallelDOFNumbering : public BaseDOFNumbering {
     /** @brief Objet '.NUME' */
     ParallelGlobalEquationNumberingPtr _globalNumbering;
 
-    std::unordered_map< ASTERINTEGER, ASTERINTEGER > _global2localMap;
-
-    /**
-     * @brief Build the mapping from global to local numbering of the dof
-     */
-    void _buildGlobal2LocalMap() {
-        getLocalToGlobalMapping()->updateValuePointer();
-        ASTERINTEGER nloc = getLocalToGlobalMapping()->size();
-
-        _global2localMap.reserve( nloc );
-        for ( auto j = 0; j < nloc; j++ )
-            _global2localMap[( *getLocalToGlobalMapping() )[j]] = j;
-    };
-
   public:
     /**
      * @typedef ParallelDOFNumberingPtr

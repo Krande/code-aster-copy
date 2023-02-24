@@ -1,6 +1,6 @@
 /**
- * @file DOFNumbering.cxx
- * @brief Implementation de DOFNumbering
+ * @file GlobalEquationNumbering.cxx
+ * @brief Implementation de GlobalEquationNumbering
  * @author Nicolas Sellenet
  * @section LICENCE
  *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
@@ -29,9 +29,10 @@
 #include "ParallelUtilities/AsterMPI.h"
 #include "Supervis/Exceptions.h"
 #include "Supervis/ResultNaming.h"
+#include "Utilities/Tools.h"
 
 GlobalEquationNumbering::GlobalEquationNumbering( const std::string &baseName )
-    : DataStructure( baseName, 19, "NUME_EQUA" ),
+    : BaseGlobalEquationNumbering( baseName ),
       _numberOfEquations( getName() + ".NEQU" ),
       _informations( getName() + ".REFN" ),
       _lagrangianInformations( getName() + ".DELG" ),
@@ -78,13 +79,41 @@ std::string GlobalEquationNumbering::getPhysicalQuantity() const {
     return physicalQuantity.rstrip();
 };
 
+bool GlobalEquationNumbering::useLagrangeMultipliers() const {
+    const std::string typeco( "NUME_EQUA" );
+    ASTERINTEGER repi = 0, ier = 0;
+    JeveuxChar32 repk( " " );
+    const std::string arret( "C" );
+    const std::string questi( "EXIS_LAGR" );
+
+    CALLO_DISMOI( questi, getName(), typeco, &repi, repk, arret, &ier );
+    auto retour = trim( repk.toString() );
+    if ( retour == "OUI" )
+        return true;
+    return false;
+};
+
+bool GlobalEquationNumbering::useSingleLagrangeMultipliers() const {
+    const std::string typeco( "NUME_EQUA" );
+    ASTERINTEGER repi = 0, ier = 0;
+    JeveuxChar32 repk( " " );
+    const std::string arret( "C" );
+    const std::string questi( "SIMP_LAGR" );
+
+    CALLO_DISMOI( questi, getName(), typeco, &repi, repk, arret, &ier );
+    auto retour = trim( repk.toString() );
+    if ( retour == "OUI" )
+        return true;
+    return false;
+};
+
 ASTERINTEGER
-GlobalEquationNumbering::getNumberOfDofs() const {
+GlobalEquationNumbering::getNumberOfDofs( const bool local ) const {
     return _nodeAndComponentsNumberFromDOF->size() / 2;
 };
 
-SetString GlobalEquationNumbering::getComponents() const {
-    SetString ret;
+VectorString GlobalEquationNumbering::getComponents() const {
+    VectorString ret;
 
     JeveuxVectorChar8 cmp_name( "&CMP_NAME" );
     JeveuxVectorLong cmp( "&CMP" );
@@ -109,10 +138,10 @@ SetString GlobalEquationNumbering::getComponents() const {
             name = "LAGR:" + trim( ( *cmp_name )[icmp] );
         }
 
-        ret.insert( name );
+        ret.push_back( name );
     }
 
-    return ret;
+    return unique( ret );
 };
 
 SetLong GlobalEquationNumbering::getComponentsNumber() const {
@@ -337,6 +366,53 @@ VectorLong GlobalEquationNumbering::getDOFs( const bool sameRank, const VectorSt
     }
 
     return dofUsed;
+};
+
+VectorLong GlobalEquationNumbering::getRowsAssociatedToPhysicalDofs( const bool local ) const {
+    auto lagrInfo = this->getLagrangianInformations();
+    lagrInfo->updateValuePointer();
+    ASTERINTEGER size = lagrInfo->size();
+    VectorLong physicalRows;
+    ASTERINTEGER physicalIndicator;
+    for ( int i = 0; i < size; i++ ) {
+        physicalIndicator = ( *lagrInfo )[i];
+        if ( physicalIndicator == 0 )
+            physicalRows.push_back( i );
+    }
+    return physicalRows;
+};
+
+VectorLong
+GlobalEquationNumbering::getRowsAssociatedToLagrangeMultipliers( const bool local ) const {
+    auto lagrInfo = this->getLagrangianInformations();
+    lagrInfo->updateValuePointer();
+    ASTERINTEGER size = lagrInfo->size();
+    VectorLong lagrangeRows;
+    ASTERINTEGER physicalIndicator;
+    for ( int i = 0; i < size; i++ ) {
+        physicalIndicator = ( *lagrInfo )[i];
+        if ( physicalIndicator != 0 )
+            lagrangeRows.push_back( i );
+    }
+    return lagrangeRows;
+};
+
+std::string GlobalEquationNumbering::getComponentAssociatedToRow( const ASTERINTEGER row,
+                                                                  const bool local ) const {
+    auto [nodeId, cmpName] = this->getNodeAndComponentFromDOF( row );
+    return cmpName;
+};
+
+ASTERINTEGER GlobalEquationNumbering::getNodeAssociatedToRow( const ASTERINTEGER row,
+                                                              const bool local ) const {
+    auto [nodeId, cmpId] = this->getNodeAndComponentNumberFromDOF( row );
+    return nodeId;
+};
+
+bool GlobalEquationNumbering::isRowAssociatedToPhysical( const ASTERINTEGER row,
+                                                         const bool local ) const {
+    auto [nodeId, cmpId] = this->getNodeAndComponentNumberFromDOF( row );
+    return cmpId > 0;
 };
 
 /**
