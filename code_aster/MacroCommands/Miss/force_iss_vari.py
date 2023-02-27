@@ -59,12 +59,13 @@ def force_iss_vari(
     resultat = MATR_GENE["BASE"]
     n_resultat = resultat.getName()
     nume_ddl = resultat.getDOFNumbering()
-    nom_mail = nume_ddl.getMesh().getName()
+    mesh = nume_ddl.getMesh()
+    nom_mail = mesh.getName()
     # MODELE, DDLGENE
 
     nume_ddlgene = MATR_GENE["NUME_DDL_GENE"]
 
-    _, noe_interf = get_group_nom_coord(GROUP_NO_INTER, nom_mail)
+    _, noe_interf = get_group_nom_coord(GROUP_NO_INTER, mesh)
 
     #   del nume_ddl, nom_mail, nom_modele
     # MODES
