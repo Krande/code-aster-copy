@@ -65,9 +65,9 @@ bool BaseDOFNumbering::computeNumbering( const std::vector< MatrElem > matrix ) 
     for ( const auto &mat : matrix ) {
         const auto model = std::visit( ElementaryMatrixGetModel(), mat );
         if ( model ) {
-            setModel( model );
+            this->setModel( model );
         } else {
-            setMesh( std::visit( ElementaryMatrixGetMesh(), mat ) );
+            this->setMesh( std::visit( ElementaryMatrixGetMesh(), mat ) );
         }
     }
 
@@ -75,10 +75,6 @@ bool BaseDOFNumbering::computeNumbering( const std::vector< MatrElem > matrix ) 
 };
 
 bool BaseDOFNumbering::computeNumbering( const ModelPtr model, const ListOfLoadsPtr listOfLoads ) {
-    if ( model->isEmpty() )
-        throw std::runtime_error( "Model is empty" );
-    _mesh = model->getMesh();
-
     listOfLoads->build( model );
 
     const std::string base( "GG" );
@@ -87,25 +83,20 @@ bool BaseDOFNumbering::computeNumbering( const ModelPtr model, const ListOfLoads
 
     const auto FEDescs = listOfLoads->getFiniteElementDescriptors();
     this->addFiniteElementDescriptor( FEDescs );
-    setModel( model );
+    this->setModel( model );
 
     return true;
 };
 
 bool BaseDOFNumbering::computeRenumbering( const ModelPtr model,
                                            const ListOfLoadsPtr listOfLoads ) {
-    if ( !model || model->isEmpty() ) {
-        throw std::runtime_error( "Model is empty" );
-    }
-    _mesh = model->getMesh();
-
     listOfLoads->build( model );
 
     const std::string base( "GG" );
     const std::string null( " " );
 
     CALLO_NUMER3( model->getName(), listOfLoads->getName(), getName(), null, base );
-    setModel( model );
+    this->setModel( model );
 
     return true;
 };
@@ -124,21 +115,6 @@ bool BaseDOFNumbering::computeNumbering( const std::vector< FiniteElementDescrip
     CALLO_NUME_DDL_CHAMELEM( getName(), list_ligrel->getName(), localMode );
 
     return true;
-};
-
-/**
- * @brief Get mesh
- * @return Internal mesh
- */
-BaseMeshPtr BaseDOFNumbering::getMesh() const {
-    if ( _mesh ) {
-        return _mesh;
-    }
-    const auto model = this->getModel();
-    if ( model != nullptr ) {
-        return model->getMesh();
-    }
-    return nullptr;
 };
 
 bool BaseDOFNumbering::addFiniteElementDescriptor( const FiniteElementDescriptorPtr &curFED ) {

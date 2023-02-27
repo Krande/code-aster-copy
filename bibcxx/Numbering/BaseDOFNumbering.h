@@ -252,8 +252,6 @@ class BaseDOFNumbering : public DataStructure {
   protected:
     /** @brief Objet Jeveux '.NSLV' */
     JeveuxVectorChar24 _nameOfSolverDataStructure;
-    /** @brief Objet maillage */
-    BaseMeshPtr _mesh;
     /** @brief Objet Jeveux '.SMOS' */
     MorseStoragePtr _smos;
     /** @brief Objet Jeveux '.SLCS' */
@@ -406,7 +404,7 @@ class BaseDOFNumbering : public DataStructure {
      * @brief Get mesh
      * @return Internal mesh
      */
-    BaseMeshPtr getMesh() const;
+    virtual BaseMeshPtr getMesh() const = 0;
 
     virtual void setMesh( const BaseMeshPtr mesh ) const = 0;
 
