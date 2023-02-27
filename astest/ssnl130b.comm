@@ -54,7 +54,7 @@ carelem = AFFE_CARA_ELEM(
             COEF_GROUP=1.0,
             REPERE="GLOBAL",
             CARA="K_T_D_L",
-            VALE=(KGLOB, KGLOB, 0),
+            VALE=(KGLOB, KGLOB),
             GROUP_NO_CENTRE="PCDG",
         ),
     ),

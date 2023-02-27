@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -103,8 +103,9 @@ Le groupe de noeuds fourni via le mot-clé GROUP_NO_ORIG comporte plusieurs noeu
     ),
     16: _(
         """
- vous fournissez deux caractéristiques élémentaires. Il est obligatoire de fournir une caractéristique
- relative à l'amortissement et une caractéristique relative à la rigidité
+ Vous fournissez deux caractéristiques élémentaires.
+ - Les caractéristiques doivent concerner l'amortissement et la rigidité.
+ - Les caractéristiques doivent être sur le même type de discret (TR_D_N ou TR_D_L).
 """
     ),
     17: _(
@@ -143,7 +144,7 @@ La caractéristique %(k1)s, coefficient de cisaillement, pour les poutres doit t
     26: _(
         """
 La maille %(k1)s est affectée d'une modélisation de type tuyau. La valeur du mot-clé SECTION
-doit nécessairement être CERCLE. 
+doit nécessairement être CERCLE.
 """
     ),
     27: _(

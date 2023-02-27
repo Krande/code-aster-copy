@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -52,7 +52,7 @@ carelem = AFFE_CARA_ELEM(
             COEF_GROUP=1.0,
             REPERE="GLOBAL",
             CARA="K_T_D_L",
-            VALE=(KGLOB, KGLOB, 0),
+            VALE=(KGLOB, KGLOB),
             GROUP_NO_CENTRE="PCDG",
         ),
     ),

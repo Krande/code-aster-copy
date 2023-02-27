@@ -909,7 +909,9 @@ class DiscreteComputation:
             ElementaryMatrix: elementary matrices
         """
 
-    def getElasticStiffnessMatrix(self, time=0.0, fourierMode=-1, groupOfCells=[], with_dual=True):
+    def getElasticStiffnessMatrix(
+        self, time=0.0, fourierMode=-1, groupOfCells=[], with_dual=True
+    ):
         """Return the elementary matrices for elastic Stiffness matrix.
         Option RIGI_MECA.
 
@@ -954,7 +956,9 @@ class DiscreteComputation:
               ElementaryMatrixReal: elementary fluid-structure mass matrix
         """
 
-    def getFluidStructureStiffnessMatrix(self, time=0.0, fourierMode=-1, groupOfCells=[]):
+    def getFluidStructureStiffnessMatrix(
+        self, time=0.0, fourierMode=-1, groupOfCells=[]
+    ):
         """Return the elementary matrices for fluid-structure stiffness matrix.
         Option RIGI_FLUI_STRUC.
 
@@ -1087,7 +1091,14 @@ class DiscreteComputation:
         """
 
     def getInternalForces(
-        self, displ, displ_step, stress, internVar, time_prev, time_step, groupOfCells=[]
+        self,
+        displ,
+        displ_step,
+        stress,
+        internVar,
+        time_prev,
+        time_step,
+        groupOfCells=[],
     ):
         """Compute internal forces (integration of behaviour)
 
@@ -1120,7 +1131,9 @@ class DiscreteComputation:
             ElementaryMatrix: elementary mass matrix
         """
 
-    def getLinearConductivityMatrix(self, time, fourierMode=0, groupOfCells=[], with_dual=True):
+    def getLinearConductivityMatrix(
+        self, time, fourierMode=0, groupOfCells=[], with_dual=True
+    ):
         """Return the elementary matices for linear thermal matrix.
         Option RIGI_THER.
 
@@ -1147,7 +1160,11 @@ class DiscreteComputation:
         """
 
     def getMechanicalDampingMatrix(
-        self, getMechanicalMassMatrix=None, stiffnessMatrix=None, time=0.0, groupOfCells=[]
+        self,
+        getMechanicalMassMatrix=None,
+        stiffnessMatrix=None,
+        time=0.0,
+        groupOfCells=[],
     ):
         """Return the elementary matrices for damping matrix.
         Option AMOR_MECA.
@@ -1175,7 +1192,9 @@ class DiscreteComputation:
             ElementaryMatrix: elementary mass matrix
         """
 
-    def getNeumannForces(self, time=0.0, time_step=0.0, theta=1.0, previousPrimalField=None):
+    def getNeumannForces(
+        self, time=0.0, time_step=0.0, theta=1.0, previousPrimalField=None
+    ):
         """Return the Neumann forces vector
 
         Arguments:
@@ -1196,7 +1215,14 @@ class DiscreteComputation:
         """
 
     def getPredictionTangentStiffnessMatrix(
-        self, displ, displ_step, stress, internVar, time_prev, time_step, groupOfCells=[]
+        self,
+        displ,
+        displ_step,
+        stress,
+        internVar,
+        time_prev,
+        time_step,
+        groupOfCells=[],
     ):
         """Compute jacobian matrix for Newton algorithm, Euler prediction
 
@@ -1227,7 +1253,14 @@ class DiscreteComputation:
         """
 
     def getTangentStiffnessMatrix(
-        self, displ, displ_step, stress, internVar, time_prev, time_step, groupOfCells=[]
+        self,
+        displ,
+        displ_step,
+        stress,
+        internVar,
+        time_prev,
+        time_step,
+        groupOfCells=[],
     ):
         """Compute jacobian matrix for Newton algorithm
 
@@ -1246,7 +1279,9 @@ class DiscreteComputation:
             elementary tangent matrix (ElementaryMatrixDisplacementReal)
         """
 
-    def getTransientThermalForces(self, time, time_step, theta, previousPrimalField=None):
+    def getTransientThermalForces(
+        self, time, time_step, theta, previousPrimalField=None
+    ):
         """Compute Transient Thermal Load
 
         Arguments:

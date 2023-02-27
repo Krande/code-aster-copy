@@ -1,0 +1,359 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+#
+# person_in_charge: jean-luc.flejou at edf.fr
+#
+
+from code_aster import AsterError
+from code_aster.Commands import *
+
+#
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"), ERREUR=_F(ERREUR_F="EXCEPTION"))
+
+mail = LIRE_MAILLAGE(FORMAT="MED")
+
+modT = AFFE_MODELE(
+    MAILLAGE=mail,
+    AFFE=(
+        _F(GROUP_MA="DALLE", PHENOMENE="MECANIQUE", MODELISATION="DKT"),
+        _F(GROUP_MA="RESSORT", PHENOMENE="MECANIQUE", MODELISATION="DIS_T"),
+    ),
+)
+
+modTR = AFFE_MODELE(
+    MAILLAGE=mail,
+    AFFE=(
+        _F(GROUP_MA="DALLE", PHENOMENE="MECANIQUE", MODELISATION="DKT"),
+        _F(GROUP_MA="RESSORT", PHENOMENE="MECANIQUE", MODELISATION="DIS_TR"),
+    ),
+)
+
+# Raideur       Translation & Rotation
+kx = 11000.0
+ky = 12000.0
+kz = 13000.0
+krx = 31000.0
+kry = 32000.0
+krz = 33000.0
+# Amortissement Translation & Rotation
+ax = 21000.0
+ay = 22000.0
+az = 23000.0
+arx = 41000.0
+ary = 42000.0
+arz = 43000.0
+#
+Info = 1
+# ==============================================================================
+#
+# TOUS LES CAS CI-DESSOUS DOIVENT PASSER
+#
+#   TEST DU NOMBRE DE CAS QUI SONT OK
+#
+# ==============================================================================
+NbCasTest = 0
+is_error = 0
+is_ok = 0
+# ------------------------------------------------------------------------
+NbCasTest += 1
+try:
+    CAR_T_K = AFFE_CARA_ELEM(
+        INFO=Info,
+        MODELE=modT,
+        COQUE=_F(GROUP_MA="DALLE", EPAIS=0.3, COQUE_NCOU=1),
+        ORIENTATION=(_F(GROUP_MA="RESSORT", CARA="ANGL_VRIL", VALE=(0.0,)),),
+        RIGI_PARASOL=_F(
+            GROUP_MA="DALLE",
+            GROUP_MA_SEG2="RESSORT",
+            COEF_GROUP=1.0,
+            REPERE="GLOBAL",
+            CARA="K_T_D_L",
+            VALE=(kx, ky, kz),
+            GROUP_NO_CENTRE="PCDG",
+        ),
+    )
+    is_ok += 1
+except AsterError as err:
+    is_error += 1
+# ------------------------------------------------------------------------
+NbCasTest += 1
+try:
+    CAR_T_A = AFFE_CARA_ELEM(
+        INFO=Info,
+        MODELE=modT,
+        COQUE=_F(GROUP_MA="DALLE", EPAIS=0.3, COQUE_NCOU=1),
+        ORIENTATION=(_F(GROUP_MA="RESSORT", CARA="ANGL_VRIL", VALE=(0.0,)),),
+        RIGI_PARASOL=_F(
+            GROUP_MA="DALLE",
+            GROUP_MA_SEG2="RESSORT",
+            COEF_GROUP=1.0,
+            REPERE="GLOBAL",
+            CARA="A_T_D_L",
+            VALE=(ax, ay, az),
+            GROUP_NO_CENTRE="PCDG",
+        ),
+    )
+    is_ok += 1
+except AsterError as err:
+    is_error += 1
+# ------------------------------------------------------------------------
+NbCasTest += 1
+try:
+    CAR_T_AK = AFFE_CARA_ELEM(
+        INFO=Info,
+        MODELE=modT,
+        COQUE=_F(GROUP_MA="DALLE", EPAIS=0.3, COQUE_NCOU=1),
+        ORIENTATION=(_F(GROUP_MA="RESSORT", CARA="ANGL_VRIL", VALE=(0.0,)),),
+        RIGI_PARASOL=_F(
+            GROUP_MA="DALLE",
+            GROUP_MA_SEG2="RESSORT",
+            COEF_GROUP=1.0,
+            REPERE="GLOBAL",
+            CARA=("A_T_D_L", "K_T_D_L"),
+            VALE=(ax, ay, az, kx, ky, kz),
+            GROUP_NO_CENTRE="PCDG",
+        ),
+    )
+    is_ok += 1
+except AsterError as err:
+    is_error += 1
+# ------------------------------------------------------------------------
+NbCasTest += 1
+try:
+    CAR_T_KA = AFFE_CARA_ELEM(
+        INFO=Info,
+        MODELE=modT,
+        COQUE=_F(GROUP_MA="DALLE", EPAIS=0.3, COQUE_NCOU=1),
+        ORIENTATION=(_F(GROUP_MA="RESSORT", CARA="ANGL_VRIL", VALE=(0.0,)),),
+        RIGI_PARASOL=_F(
+            GROUP_MA="DALLE",
+            GROUP_MA_SEG2="RESSORT",
+            COEF_GROUP=1.0,
+            REPERE="GLOBAL",
+            CARA=("K_T_D_L", "A_T_D_L"),
+            VALE=(kx, ky, kz, ax, ay, az),
+            GROUP_NO_CENTRE="PCDG",
+        ),
+    )
+    is_ok += 1
+except AsterError as err:
+    is_error += 1
+# ------------------------------------------------------------------------
+NbCasTest += 1
+try:
+    CAR_TR_K = AFFE_CARA_ELEM(
+        INFO=Info,
+        MODELE=modTR,
+        COQUE=_F(GROUP_MA="DALLE", EPAIS=0.3, COQUE_NCOU=1),
+        ORIENTATION=(_F(GROUP_MA="RESSORT", CARA="ANGL_VRIL", VALE=(0.0,)),),
+        RIGI_PARASOL=_F(
+            GROUP_MA="DALLE",
+            GROUP_MA_SEG2="RESSORT",
+            COEF_GROUP=1.0,
+            REPERE="GLOBAL",
+            CARA="K_TR_D_L",
+            VALE=(kx, ky, kz, krx, kry, krz),
+            GROUP_NO_CENTRE="PCDG",
+        ),
+    )
+    is_ok += 1
+except AsterError as err:
+    is_error += 1
+# ------------------------------------------------------------------------
+NbCasTest += 1
+try:
+    CAR_TR_A = AFFE_CARA_ELEM(
+        INFO=Info,
+        MODELE=modTR,
+        COQUE=_F(GROUP_MA="DALLE", EPAIS=0.3, COQUE_NCOU=1),
+        ORIENTATION=(_F(GROUP_MA="RESSORT", CARA="ANGL_VRIL", VALE=(0.0,)),),
+        RIGI_PARASOL=_F(
+            GROUP_MA="DALLE",
+            GROUP_MA_SEG2="RESSORT",
+            COEF_GROUP=1.0,
+            REPERE="GLOBAL",
+            CARA="A_TR_D_L",
+            VALE=(ax, ay, az, arx, ary, arz),
+            GROUP_NO_CENTRE="PCDG",
+        ),
+    )
+    is_ok += 1
+except AsterError as err:
+    is_error += 1
+# ------------------------------------------------------------------------
+NbCasTest += 1
+try:
+    CAR_TR_AK = AFFE_CARA_ELEM(
+        INFO=Info,
+        MODELE=modTR,
+        COQUE=_F(GROUP_MA="DALLE", EPAIS=0.3, COQUE_NCOU=1),
+        ORIENTATION=(_F(GROUP_MA="RESSORT", CARA="ANGL_VRIL", VALE=(0.0,)),),
+        RIGI_PARASOL=_F(
+            GROUP_MA="DALLE",
+            GROUP_MA_SEG2="RESSORT",
+            COEF_GROUP=1.0,
+            REPERE="GLOBAL",
+            CARA=("A_TR_D_L", "K_TR_D_L"),
+            VALE=(ax, ay, az, arx, ary, arz, kx, ky, kz, krx, kry, krz),
+            GROUP_NO_CENTRE="PCDG",
+        ),
+    )
+    is_ok += 1
+except AsterError as err:
+    is_error += 1
+# ------------------------------------------------------------------------
+NbCasTest += 1
+try:
+    CAR_TR_KA = AFFE_CARA_ELEM(
+        INFO=Info,
+        MODELE=modTR,
+        COQUE=_F(GROUP_MA="DALLE", EPAIS=0.3, COQUE_NCOU=1),
+        ORIENTATION=(_F(GROUP_MA="RESSORT", CARA="ANGL_VRIL", VALE=(0.0,)),),
+        RIGI_PARASOL=_F(
+            GROUP_MA="DALLE",
+            GROUP_MA_SEG2="RESSORT",
+            COEF_GROUP=1.0,
+            REPERE="GLOBAL",
+            CARA=("K_TR_D_L", "A_TR_D_L"),
+            VALE=(kx, ky, kz, krx, kry, krz, ax, ay, az, arx, ary, arz),
+            GROUP_NO_CENTRE="PCDG",
+        ),
+    )
+    is_ok += 1
+except AsterError as err:
+    is_error += 1
+#
+# ------------------------------------------------------------------------------
+TAB11 = CREA_TABLE(
+    LISTE=(_F(PARA="TEST", TYPE_K="K8", LISTE_K="VALEUR  "), _F(PARA="BOOLEEN", LISTE_I=is_ok))
+)
+TEST_TABLE(
+    REFERENCE="ANALYTIQUE",
+    VALE_CALC_I=NbCasTest,
+    VALE_REFE_I=NbCasTest,
+    NOM_PARA="BOOLEEN",
+    TABLE=TAB11,
+    FILTRE=_F(NOM_PARA="TEST", VALE_K="VALEUR  "),
+)
+
+# ==============================================================================
+#
+# TOUS LES CAS CI-DESSOUS DOIVENT PLANTER
+#
+#   TEST DU NOMBRE DE CAS QUI PLANTE, PAS LA RAISON
+#
+# ==============================================================================
+NbCasTest = 0
+is_ok = 0
+is_error = 0
+# ------------------------------------------------------------------------
+NbCasTest += 1
+try:
+    CAR_T_K = AFFE_CARA_ELEM(
+        MODELE=modT,
+        COQUE=_F(GROUP_MA="DALLE", EPAIS=0.3, COQUE_NCOU=1),
+        ORIENTATION=(_F(GROUP_MA="RESSORT", CARA="ANGL_VRIL", VALE=(0.0,)),),
+        RIGI_PARASOL=_F(
+            GROUP_MA="DALLE",
+            GROUP_MA_SEG2="RESSORT",
+            COEF_GROUP=1.0,
+            REPERE="GLOBAL",
+            CARA="K_T_D_L",
+            VALE=(kx, ky),
+            GROUP_NO_CENTRE="PCDG",
+        ),
+    )
+    is_ok += 1
+except AsterError as err:
+    is_error += 1
+# ------------------------------------------------------------------------
+NbCasTest += 1
+try:
+    CAR_T_A = AFFE_CARA_ELEM(
+        MODELE=modT,
+        COQUE=_F(GROUP_MA="DALLE", EPAIS=0.3, COQUE_NCOU=1),
+        ORIENTATION=(_F(GROUP_MA="RESSORT", CARA="ANGL_VRIL", VALE=(0.0,)),),
+        RIGI_PARASOL=_F(
+            GROUP_MA="DALLE",
+            GROUP_MA_SEG2="RESSORT",
+            COEF_GROUP=1.0,
+            REPERE="GLOBAL",
+            CARA="A_TR_D_L",
+            VALE=(ax, ay, az, arx, ary),
+            GROUP_NO_CENTRE="PCDG",
+        ),
+    )
+    is_ok += 1
+except AsterError as err:
+    is_error += 1
+# ------------------------------------------------------------------------
+NbCasTest += 1
+try:
+    CAR_TR_KA = AFFE_CARA_ELEM(
+        MODELE=modTR,
+        COQUE=_F(GROUP_MA="DALLE", EPAIS=0.3, COQUE_NCOU=1),
+        ORIENTATION=(_F(GROUP_MA="RESSORT", CARA="ANGL_VRIL", VALE=(0.0,)),),
+        RIGI_PARASOL=_F(
+            GROUP_MA="DALLE",
+            GROUP_MA_SEG2="RESSORT",
+            COEF_GROUP=1.0,
+            REPERE="GLOBAL",
+            CARA=("K_TR_D_L", "A_T_D_L"),
+            VALE=(kx, ky, kz, krx, kry, krz, ax, ay, az, arx, ary, arz),
+            GROUP_NO_CENTRE="PCDG",
+        ),
+    )
+    is_ok += 1
+except AsterError as err:
+    is_error += 1
+# ------------------------------------------------------------------------
+NbCasTest += 1
+try:
+    CAR_TR_KA = AFFE_CARA_ELEM(
+        MODELE=modTR,
+        COQUE=_F(GROUP_MA="DALLE", EPAIS=0.3, COQUE_NCOU=1),
+        ORIENTATION=(_F(GROUP_MA="RESSORT", CARA="ANGL_VRIL", VALE=(0.0,)),),
+        RIGI_PARASOL=_F(
+            GROUP_MA="DALLE",
+            GROUP_MA_SEG2="RESSORT",
+            COEF_GROUP=1.0,
+            REPERE="GLOBAL",
+            CARA=("K_TR_D_L", "A_TR_D_L"),
+            VALE=(kx, ky, kz, krx, kry, ax, ay, az, arx, ary, arz),
+            GROUP_NO_CENTRE="PCDG",
+        ),
+    )
+    is_ok += 1
+except AsterError as err:
+    is_error += 1
+#
+# ------------------------------------------------------------------------------
+TAB11 = CREA_TABLE(
+    LISTE=(_F(PARA="TEST", TYPE_K="K8", LISTE_K="VALEUR  "), _F(PARA="BOOLEEN", LISTE_I=is_error))
+)
+TEST_TABLE(
+    REFERENCE="ANALYTIQUE",
+    VALE_CALC_I=NbCasTest,
+    VALE_REFE_I=NbCasTest,
+    NOM_PARA="BOOLEEN",
+    TABLE=TAB11,
+    FILTRE=_F(NOM_PARA="TEST", VALE_K="VALEUR  "),
+)
+
+FIN()

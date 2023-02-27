@@ -57,36 +57,35 @@ subroutine acearp(infdonn, lmax, noemaf, nbocc, infcarte, ivr)
 #include "asterfort/rairep.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-!
+!&<
 ! --------------------------------------------------------------------------------------------------
     integer :: nbcar, nbval, nrd
     parameter(nbcar=100, nbval=12, nrd=2)
-    integer :: jdc(3), jdv(3), ibid, ir, ia, iunite, ifm
+    integer :: jdc(3), jdv(3), iunite, ifm, iretour
     integer :: jdcinf, jdvinf
-    integer :: i, iamto, ier, ii, in, inbn, ino, inoe, ioc, irep
+    integer :: ii, iamto, idecal, in, inbn, ino, inoe, ioc, irep
     integer :: irgno, irgto, isym, itbmp, itbno, iv
-    integer :: j, jd, jdls, jj, jn
-    integer :: l, ldgm, ldnm, lokm, lorep, nbnma
+    integer :: jd, jdls, jj, jn
+    integer :: ll, ldgm, ldnm, lokm, lorep, nbnma
     integer :: nbno, nbnoeu, nc, ncar, ncmp
     integer :: ndim, ng, ngp, nma, nrep, nval, dimcar
     integer :: vali(2)
 ! --------------------------------------------------------------------------------------------------
-    real(kind=8) :: val(nbval), eta, vale(nbval), rirot(3)
-    character(len=1) :: kma(3)
-    character(len=8) :: nomnoe, nommai, nomu, car(nbcar), lamass, noma
+    real(kind=8)      :: val(nbval), eta, vale(nbval), rirot(3)
+    character(len=1)  :: kma(3)
+    character(len=8)  :: nomnoe, nommai, nomu, car(nbcar), lamass, noma
     character(len=16) :: rep, repdis(nrd)
     character(len=19) :: cart(3), cartdi
     character(len=24) :: nogp
     character(len=24) :: mlgnno, mlgnma
 ! --------------------------------------------------------------------------------------------------
-    aster_logical :: transl, trarot
+    aster_logical :: transl, trarot, okunite
 !
     data repdis/'GLOBAL          ', 'LOCAL           '/
     data kma/'K', 'M', 'A'/
 ! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
-!
     nomu = infdonn%nomu
     noma = infdonn%maillage
     ndim = infdonn%dimmod
@@ -110,22 +109,18 @@ subroutine acearp(infdonn, lmax, noemaf, nbocc, infcarte, ivr)
     dimcar = infcarte(ACE_CAR_DINFO)%nbr_cmp
 !
     cart(1) = infcarte(ACE_CAR_DISCK)%nom_carte
-    jdc(1) = infcarte(ACE_CAR_DISCK)%adr_cmp
-    jdv(1) = infcarte(ACE_CAR_DISCK)%adr_val
+    jdc(1)  = infcarte(ACE_CAR_DISCK)%adr_cmp
+    jdv(1)  = infcarte(ACE_CAR_DISCK)%adr_val
 !
     cart(2) = infcarte(ACE_CAR_DISCM)%nom_carte
-    jdc(2) = infcarte(ACE_CAR_DISCM)%adr_cmp
-    jdv(2) = infcarte(ACE_CAR_DISCM)%adr_val
+    jdc(2)  = infcarte(ACE_CAR_DISCM)%adr_cmp
+    jdv(2)  = infcarte(ACE_CAR_DISCM)%adr_val
 !
     cart(3) = infcarte(ACE_CAR_DISCA)%nom_carte
-    jdc(3) = infcarte(ACE_CAR_DISCA)%adr_cmp
-    jdv(3) = infcarte(ACE_CAR_DISCA)%adr_val
+    jdc(3)  = infcarte(ACE_CAR_DISCA)%adr_cmp
+    jdv(3)  = infcarte(ACE_CAR_DISCA)%adr_val
 !
     ifm = ivr(4)
-!
-!   Raideur et amortissement pour EUROPLEXUS
-    ir = 0
-    ia = 0
 !   Boucle sur les occurrences de rigi_parasol
     do ioc = 1, nbocc
         eta = 0.0d0
@@ -144,61 +139,102 @@ subroutine acearp(infdonn, lmax, noemaf, nbocc, infcarte, ivr)
         ASSERT(ncar .ge. 1)
 !
         if (nrep .ne. 0) then
-            do i = 1, nrd
-                if (rep .eq. repdis(i)) irep = i
+            do ii = 1, nrd
+                if (rep .eq. repdis(ii)) irep = ii
             end do
         end if
 !       Unité pour imprimer les valeur des discrets
-        call getvis('RIGI_PARASOL', 'UNITE', iocc=ioc, scal=ibid, nbret=ier)
         iunite = -1
-        if (ier .ne. 0) then
-            iunite = ibid
-        end if
-        if (iunite .gt. 0) then
+        call getvis('RIGI_PARASOL', 'UNITE', iocc=ioc, scal=iunite, nbret=iretour)
+        okunite = (iunite .gt. 0) .and. (ndim .eq. 3)
+        if (okunite) then
             write (iunite, 100) rep, ioc
         end if
 !       GROUP_MA = toutes les mailles de tous les groupes de mailles
         if (ng .le. 0) goto 30
-        ii = 0
+        idecal = 0
         do nc = 1, ncar
-            if ((nc .eq. 2) .and. (car(1) (1:1) .eq. car(2) (1:1))) then
-                call utmess('F', 'MODELISA_16')
-            end if
-!           Discrets seulement en translation
-            transl = (car(nc) (1:7) .eq. 'K_T_D_N') .or. (car(nc) (1:7) .eq. 'K_T_D_L') .or. &
-                     (car(nc) (1:7) .eq. 'A_T_D_N') .or. (car(nc) (1:7) .eq. 'A_T_D_L')
-!           Discrets en translation et rotation
-            trarot = (car(nc) (1:8) .eq. 'K_TR_D_N') .or. (car(nc) (1:8) .eq. 'K_TR_D_L') .or. &
-                     (car(nc) (1:8) .eq. 'A_TR_D_N') .or. (car(nc) (1:8) .eq. 'A_TR_D_L')
-!
+            ! Discrets seulement en translation
+            transl = (car(nc)(1:7) .eq. 'K_T_D_N') .or. (car(nc)(1:7) .eq. 'K_T_D_L') .or. &
+                     (car(nc)(1:7) .eq. 'A_T_D_N') .or. (car(nc)(1:7) .eq. 'A_T_D_L')
+            ! Discrets en translation et rotation
+            trarot = (car(nc)(1:8) .eq. 'K_TR_D_N') .or. (car(nc)(1:8) .eq. 'K_TR_D_L') .or. &
+                     (car(nc)(1:8) .eq. 'A_TR_D_N') .or. (car(nc)(1:8) .eq. 'A_TR_D_L')
+            !
             if (transl .eqv. trarot) then
                 call utmess('F', 'MODELISA_17', sk=car(nc))
             end if
-!
+            ! Si 2 caractéristiques
+            if (nc .eq. 2) then
+                ! A et K : pas K et K ou A et A
+                if (car(1)(1:1) .eq. car(2)(1:1)) then
+                    call utmess('F', 'MODELISA_16')
+                endif
+                ! La modélisation doit être [A|K]_LaMême
+                if (transl) lokm = 7
+                if (trarot) lokm = 8
+                if (car(1)(2:lokm) .ne. car(2)(2:lokm)) then
+                    call utmess('F', 'MODELISA_16')
+                endif
+            end if
+            !
+            vale(:) = 0.0
             if (transl) then
-                lamass = 'M'//car(nc) (2:7)
-                if (ii+3 .gt. nval) then
-                    call utmess('F', 'DISCRETS_21')
-                end if
-                do j = 1, 3
-                    vale(j) = val(ii+j)
-                end do
+                lamass = 'M'//car(nc)(2:7)
+                ! En 3D          1  2  3     1  2  3
+                !   ncar=1  :   vx vy vz
+                !   ncar=2  :   vx vy vz    vx vy vz
+                ! En 2D
+                !   ncar=1  :   vx vy
+                !   ncar=2  :   vx vy       vx vy
+                if ( ndim .eq. 3 )then
+                    if (idecal+3 .gt. nval) then
+                        call utmess('F', 'DISCRETS_21')
+                    end if
+                    do jj = 1, 3
+                        vale(jj) = val(jj+idecal)
+                    end do
+                    idecal = idecal+3
+                else
+                    if (idecal+2 .gt. nval) then
+                        call utmess('F', 'DISCRETS_21')
+                    end if
+                    do jj = 1, 2
+                        vale(jj) = val(jj+idecal)
+                    enddo
+                    idecal = idecal+2
+                endif
                 call rairep(noma, ioc, car(nc), vale, ng, &
                             zk24(jdls), nbno, zk8(itbno), zr(irgno), zr(irgto), &
                             zr(iamto), rirot, ndim)
-                ii = ii+3
             else if (trarot) then
-                lamass = 'M'//car(nc) (2:8)
-                if (ii+6 .gt. nval) then
-                    call utmess('F', 'DISCRETS_21')
-                end if
-                do j = 1, 6
-                    vale(j) = val(ii+j)
-                end do
+                lamass = 'M'//car(nc)(2:8)
+                ! En 3D          1  2  3  4  5  6     1  2  3  4  5  6
+                !   ncar=1  :   vx vy vz rx ry rz
+                !   ncar=2  :   vx vy vz rx ry rz    vx vy vz rx ry rz
+                ! En 2D
+                !   ncar=1  :   vx vy          rz
+                !   ncar=2  :   vx vy          rz    vx vy          rz
+                if ( ndim .eq. 3 )then
+                    if (idecal+6 .gt. nval) then
+                        call utmess('F', 'DISCRETS_21')
+                    end if
+                    do jj = 1, 6
+                        vale(jj) = val(jj+idecal)
+                    end do
+                    idecal = idecal+6
+                else
+                    if (idecal+3 .gt. nval) then
+                        call utmess('F', 'DISCRETS_21')
+                    end if
+                    vale(1) = val(1+idecal)
+                    vale(2) = val(2+idecal)
+                    vale(6) = val(3+idecal)
+                    idecal = idecal+3
+                endif
                 call rairep(noma, ioc, car(nc), vale, ng, &
                             zk24(jdls), nbno, zk8(itbno), zr(irgno), zr(irgto), &
                             zr(iamto), rirot, ndim)
-                ii = ii+6
             else
                 ASSERT(.false.)
             end if
@@ -211,8 +247,8 @@ subroutine acearp(infdonn, lmax, noemaf, nbocc, infcarte, ivr)
             lokm = 0
             if (transl) lokm = 7
             if (trarot) lokm = 8
-            if (car(nc) (lokm:lokm) .eq. 'N') nbnoeu = 1
-            if (car(nc) (lokm:lokm) .eq. 'L') nbnoeu = 2
+            if (car(nc)(lokm:lokm) .eq. 'N') nbnoeu = 1
+            if (car(nc)(lokm:lokm) .eq. 'L') nbnoeu = 2
             ASSERT((nbnoeu .gt. 0) .and. (lokm .gt. 0))
 !
             call jelira(jexnom(noma//'.GROUPEMA', nogp), 'LONMAX', nma)
@@ -252,12 +288,11 @@ subroutine acearp(infdonn, lmax, noemaf, nbocc, infcarte, ivr)
 !           Préparation des impressions dans le fichier message
             lorep = 5
             if (irep .eq. 1) lorep = 6
-            if (iunite .gt. 0) then
+            if (okunite) then
                 if (transl) then
-                    write (iunite, 105) car(nc) (1:lokm)
+                    write(iunite, 105) car(nc)(1:lokm)
                 else
-                    write (iunite, 106) car(nc) (1:lokm), rirot(1), &
-                        rirot(2), rirot(3)
+                    write(iunite, 106) car(nc)(1:lokm), rirot(1), rirot(2), rirot(3)
                 end if
             end if
 !           Vérif qu'un discret est fixé à chacun des noeuds du radier
@@ -271,57 +306,53 @@ subroutine acearp(infdonn, lmax, noemaf, nbocc, infcarte, ivr)
                 end do
             end if
 !
-            if (iunite .gt. 0) then
-                do i = 1, nbno
+            if (okunite) then
+                do ii = 1, nbno
                     iv = 1
-                    jd = itbmp+i-1
-                    jn = itbno+i-1
+                    jd = itbmp+ii-1
+                    jn = itbno+ii-1
                     if (nbnoeu .eq. 1) then
                         if (transl) then
-                            write (iunite, 110) 'NOEUD', zk8(jn), &
-                                car(nc) (1:lokm), (zr(irgno+6*i-6+jj), &
-                                                   jj=0, 2), repdis(irep) (1:lorep)
+                            write(iunite, 110) 'NOEUD', zk8(jn), car(nc)(1:lokm), &
+                                (zr(irgno+6*ii-6+jj), jj=0, 2), repdis(irep)(1:lorep)
                         else
-                            write (iunite, 111) 'NOEUD', zk8(jn), &
-                                car(nc) (1:lokm), (zr(irgno+6*i-6+jj), &
-                                                   jj=0, 5), repdis(irep) (1:lorep)
+                            write(iunite, 111) 'NOEUD', zk8(jn), car(nc)(1:lokm), &
+                                (zr(irgno+6*ii-6+jj), jj=0, 5), repdis(irep)(1:lorep)
                         end if
                     else
                         if (transl) then
-                            write (iunite, 110) 'MAILLE', zk8(jd), &
-                                car(nc) (1:lokm), (zr(irgno+6*i-6+jj), &
-                                                   jj=0, 2), repdis(irep) (1:lorep)
+                            write(iunite, 110) 'MAILLE', zk8(jd), car(nc)(1:lokm), &
+                                (zr(irgno+6*ii-6+jj), jj=0, 2), repdis(irep)(1:lorep)
                         else
-                            write (iunite, 111) 'MAILLE', zk8(jd), &
-                                car(nc) (1:lokm), (zr(irgno+6*i-6+jj), &
-                                                   jj=0, 5), repdis(irep) (1:lorep)
+                            write(iunite, 111) 'MAILLE', zk8(jd), car(nc)(1:lokm), &
+                                (zr(irgno+6*ii-6+jj), jj=0, 5), repdis(irep)(1:lorep)
                         end if
                     end if
                 end do
             end if
 !
-            do i = 1, nbno
+            do ii = 1, nbno
                 iv = 1
-                jd = itbmp+i-1
-                jn = itbno+i-1
+                jd = itbmp+ii-1
+                jn = itbno+ii-1
 !
 !               Affectation des valeurs réparties
-                call affdis(ndim, irep, eta, car(nc), zr(irgno+6*i-6), &
+                call affdis(ndim, irep, eta, car(nc), zr(irgno+6*ii-6), &
                             jdc, jdv, ivr, iv, kma, &
-                            ncmp, l, jdcinf, jdvinf, isym)
+                            ncmp, ll, jdcinf, jdvinf, isym)
                 call nocart(cartdi, 3, dimcar, mode='NOM', nma=1, limano=[zk8(jd)])
-                call nocart(cart(l), 3, ncmp, mode='NOM', nma=1, limano=[zk8(jd)])
+                call nocart(cart(ll), 3, ncmp, mode='NOM', nma=1, limano=[zk8(jd)])
 !               affectation de matrice masse nulle
                 iv = 1
                 call r8inir(nbval, 0.0d0, vale, 1)
                 call affdis(ndim, irep, eta, lamass, vale, &
                             jdc, jdv, ivr, iv, kma, &
-                            ncmp, l, jdcinf, jdvinf, isym)
+                            ncmp, ll, jdcinf, jdvinf, isym)
                 call nocart(cartdi, 3, dimcar, mode='NOM', nma=1, limano=[zk8(jd)])
-                call nocart(cart(l), 3, ncmp, mode='NOM', nma=1, limano=[zk8(jd)])
+                call nocart(cart(ll), 3, ncmp, mode='NOM', nma=1, limano=[zk8(jd)])
             end do
         end do
-        if (ii .ne. nval) then
+        if (idecal .ne. nval) then
             call utmess('F', 'DISCRETS_21')
         end if
 30      continue
@@ -348,4 +379,5 @@ subroutine acearp(infdonn, lmax, noemaf, nbocc, infcarte, ivr)
            '    VALE=(', 3(1x, 1pe12.5, ','), /, &
            '          ', 3(1x, 1pe12.5, ','), '),', /, &
            '    REPERE=''', a, '''),')
+!&>
 end subroutine
