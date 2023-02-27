@@ -36,7 +36,6 @@ DOFNumbering::DOFNumbering( const std::string name, const GlobalEquationNumberin
                             const ModelPtr model )
     : BaseDOFNumbering( name, "NUME_DDL" ), _globalNumbering( globNume ) {
     setModel( model );
-    _isEmpty = false;
 };
 
 DOFNumbering::DOFNumbering( const std::string name )

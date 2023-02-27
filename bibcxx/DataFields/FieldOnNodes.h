@@ -161,7 +161,7 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
     /**
      * @brief Constructor with DOFNumbering
      */
-    FieldOnNodes( const FiniteElementDescriptorPtr &fed, const std::string &localMode )
+    FieldOnNodes( const FiniteElementDescriptorPtr fed, const std::string &localMode )
         : FieldOnNodes() {
 
         if ( !fed ) {
@@ -169,16 +169,25 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
         }
 
         // Create numbering from Local mode (see Cata)
-        auto dofNume = std::make_shared< DOFNumbering >();
+        std::string dofName;
+        if ( fed->getMesh()->isParallel() ) {
+            auto dofNume = std::make_shared< ParallelDOFNumbering >();
+            dofNume->computeNumbering( {fed}, localMode );
 
-        dofNume->addFiniteElementDescriptor( fed );
-        dofNume->computeNumberingWithLocalMode( localMode );
+            _dofDescription = dofNume->getGlobalEquationNumbering();
+            dofName = dofNume->getName();
+        } else {
+            auto dofNume = std::make_shared< DOFNumbering >();
 
-        _dofDescription = dofNume->getGlobalEquationNumbering();
+            dofNume->computeNumbering( {fed}, localMode );
+
+            _dofDescription = dofNume->getGlobalEquationNumbering();
+            dofName = dofNume->getName();
+        }
 
         const auto intType = AllowedFieldType< ValueType >::numTypeJeveux;
         CALLO_VTCREB_WRAP( getName(), JeveuxMemoryTypesNames[Permanent], JeveuxTypesNames[intType],
-                           dofNume->getName() );
+                           dofName );
 
         this->updateValuePointers();
     };

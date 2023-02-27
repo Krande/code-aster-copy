@@ -456,7 +456,7 @@ AssemblyMatrix< ValueType, PhysicalQuantity >::AssemblyMatrix( AssemblyMatrix &&
 
 template < class ValueType, PhysicalQuantityEnum PhysicalQuantity >
 bool AssemblyMatrix< ValueType, PhysicalQuantity >::assemble( bool clean ) {
-    if ( _dofNum->isEmpty() )
+    if ( !_dofNum->exists() )
         throw std::runtime_error( "Numbering is empty" );
 
     if ( getNumberOfElementaryMatrix() == 0 )

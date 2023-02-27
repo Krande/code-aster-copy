@@ -34,8 +34,7 @@ BaseDOFNumbering::BaseDOFNumbering( const std::string name, const std::string &t
       _smos( new MorseStorage( getName() + ".SMOS" ) ),
       _slcs( new LigneDeCiel( getName() + ".SLCS" ) ),
       _mltf( new MultFrontGarbage( getName() + ".MLTF" ) ),
-      _localNumbering( std::make_shared< LocalEquationNumbering >( getName() ) ),
-      _isEmpty( true ){};
+      _localNumbering( std::make_shared< LocalEquationNumbering >( getName() ) ){};
 
 bool BaseDOFNumbering::computeNumbering( const std::vector< MatrElem > matrix ) {
     ASTERINTEGER nb_matr = matrix.size();
@@ -47,7 +46,7 @@ bool BaseDOFNumbering::computeNumbering( const std::vector< MatrElem > matrix ) 
     for ( const auto &mat : matrix ) {
         ( *jvListOfMatr )[ind++] = std::visit( ElementaryMatrixGetName(), mat );
         auto FEDescs = std::visit( ElementaryMatrixGetFEDescrp(), mat );
-        this->addFiniteElementDescriptors( FEDescs );
+        this->addFiniteElementDescriptor( FEDescs );
         if ( ind == 1 ) {
             savedMesh = std::visit( ElementaryMatrixGetMesh(), mat );
             if ( savedMesh == nullptr )
@@ -72,8 +71,6 @@ bool BaseDOFNumbering::computeNumbering( const std::vector< MatrElem > matrix ) 
         }
     }
 
-    _isEmpty = false;
-
     return true;
 };
 
@@ -89,9 +86,8 @@ bool BaseDOFNumbering::computeNumbering( const ModelPtr model, const ListOfLoads
     CALLO_NUMERO_WRAP( getName(), base, null, null, model->getName(), listOfLoads->getName() );
 
     const auto FEDescs = listOfLoads->getFiniteElementDescriptors();
-    this->addFiniteElementDescriptors( FEDescs );
+    this->addFiniteElementDescriptor( FEDescs );
     setModel( model );
-    _isEmpty = false;
 
     return true;
 };
@@ -114,17 +110,18 @@ bool BaseDOFNumbering::computeRenumbering( const ModelPtr model,
     return true;
 };
 
-bool BaseDOFNumbering::computeNumberingWithLocalMode( const std::string &localMode ) {
+bool BaseDOFNumbering::computeNumbering( const std::vector< FiniteElementDescriptorPtr > &Feds,
+                                         const std::string &localMode ) {
 
     JeveuxVectorChar24 list_ligrel( "&&LIST_LIGREL" );
-    list_ligrel->reserve( _FEDVector.size() );
+    list_ligrel->reserve( Feds.size() );
 
-    for ( auto &fed : _FEDVector ) {
+    for ( auto &fed : Feds ) {
+        this->addFiniteElementDescriptor( fed );
         list_ligrel->push_back( JeveuxChar24( fed->getName() ) );
     }
 
     CALLO_NUME_DDL_CHAMELEM( getName(), list_ligrel->getName(), localMode );
-    _isEmpty = false;
 
     return true;
 };
@@ -134,6 +131,9 @@ bool BaseDOFNumbering::computeNumberingWithLocalMode( const std::string &localMo
  * @return Internal mesh
  */
 BaseMeshPtr BaseDOFNumbering::getMesh() const {
+    if ( _mesh ) {
+        return _mesh;
+    }
     const auto model = this->getModel();
     if ( model != nullptr ) {
         return model->getMesh();
@@ -153,12 +153,14 @@ bool BaseDOFNumbering::addFiniteElementDescriptor( const FiniteElementDescriptor
     return false;
 };
 
-bool BaseDOFNumbering::addFiniteElementDescriptors(
-    const std::vector< FiniteElementDescriptorPtr > &curFEDs ) {
-    for ( auto &curFED : curFEDs ) {
-        const bool ret = this->addFiniteElementDescriptor( curFED );
-        if ( !ret )
+bool BaseDOFNumbering::addFiniteElementDescriptor(
+    const std::vector< FiniteElementDescriptorPtr > &curFED ) {
+
+    for ( auto &fed : curFED ) {
+        auto ret = this->addFiniteElementDescriptor( fed );
+        if ( !ret ) {
             return false;
+        }
     }
 
     return true;

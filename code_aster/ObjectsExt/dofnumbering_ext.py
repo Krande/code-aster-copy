@@ -26,43 +26,12 @@
 from libaster import DOFNumbering
 
 from ..Utilities import injector
-from ..Objects.Serialization import InternalStateBuilder
 import functools
-
-
-class DOFNumberingStateBuilder(InternalStateBuilder):
-    """Class that returns the internal state of a *DOFNumbering*."""
-
-    def save(self, dofNum):
-        """Return the internal state of a *DOFNumbering* to be pickled.
-
-        Arguments:
-            dofNum (*DOFNumbering*): The *DOFNumbering* object to be pickled.
-
-        Returns:
-            *InternalStateBuilder*: The internal state itself.
-        """
-        super().save(dofNum)
-        # list of ligrel
-        self._st["feds"] = dofNum.getFiniteElementDescriptors()
-        return self
-
-    def restore(self, dofNum):
-        """Restore the *DataStructure* content from the previously saved internal
-        state.
-
-        Arguments:
-            dofNum (*DataStructure*): The *DataStructure* object to be pickled.
-        """
-        super().restore(dofNum)
-        for fed in self._st["feds"]:
-            dofNum.addFiniteElementDescriptor(fed)
 
 
 @injector(DOFNumbering)
 class ExtendedDOFNumbering:
     cata_sdj = "SD.sd_nume_ddl.sd_nume_ddl"
-    internalStateBuilder = DOFNumberingStateBuilder
 
     def __getinitargs__(self):
         """Returns the argument required to reinitialize a

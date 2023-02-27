@@ -37,7 +37,6 @@ void exportBaseDOFNumberingToPython( py::module_ &mod ) {
         mod, "BaseDOFNumbering" );
     // fake initFactoryPtr: created by subclasses
     // fake initFactoryPtr: created by subclasses
-    c1.def( "addFiniteElementDescriptor", &BaseDOFNumbering::addFiniteElementDescriptor );
     c1.def( "computeNumbering", f1 );
     c1.def( "computeNumbering", f2 );
     c1.def( "computeRenumbering", &BaseDOFNumbering::computeRenumbering );

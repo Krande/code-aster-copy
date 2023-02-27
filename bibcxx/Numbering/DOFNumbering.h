@@ -172,6 +172,13 @@ class DOFNumbering : public BaseDOFNumbering {
     BaseMeshPtr getMesh() const { return _globalNumbering->getMesh(); };
 
     void setMesh( const BaseMeshPtr mesh ) const { _globalNumbering->setMesh( mesh ); };
+
+    /**
+     * @brief Methode permettant de savoir si la numerotation est vide
+     * @return true si la numerotation est vide
+     */
+
+    bool exists() const { return _globalNumbering->exists(); };
 };
 
 /**

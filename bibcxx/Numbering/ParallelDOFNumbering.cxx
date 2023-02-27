@@ -40,7 +40,6 @@ ParallelDOFNumbering::ParallelDOFNumbering( const std::string name,
                                             const ModelPtr model )
     : BaseDOFNumbering( name, "NUME_DDL_P" ), _globalNumbering( globNume ) {
     setModel( model );
-    _isEmpty = false;
 };
 
 ParallelDOFNumbering::ParallelDOFNumbering( const std::string &name )

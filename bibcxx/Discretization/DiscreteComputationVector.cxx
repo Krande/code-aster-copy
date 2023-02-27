@@ -53,7 +53,9 @@ FieldOnNodesRealPtr DiscreteComputation::getImposedDualBC( const ASTERDOUBLE tim
     };
 
     if ( has_load ) {
-        elemVect->build( _phys_problem->getDOFNumbering()->getFiniteElementDescriptors() );
+        auto FEDs = _phys_problem->getListOfLoads()->getFiniteElementDescriptors();
+        FEDs.push_back( _phys_problem->getModel()->getFiniteElementDescriptor() );
+        elemVect->build( FEDs );
         return elemVect->assembleWithLoadFunctions( _phys_problem->getDOFNumbering(), time );
     } else {
         FieldOnNodesRealPtr vectAsse =
@@ -83,7 +85,9 @@ DiscreteComputation::getNeumannForces( const ASTERDOUBLE time, const ASTERDOUBLE
         AS_ASSERT( false );
     };
     if ( has_load ) {
-        elemVect->build( _phys_problem->getDOFNumbering()->getFiniteElementDescriptors() );
+        auto FEDs = _phys_problem->getListOfLoads()->getFiniteElementDescriptors();
+        FEDs.push_back( _phys_problem->getModel()->getFiniteElementDescriptor() );
+        elemVect->build( FEDs );
         return elemVect->assembleWithLoadFunctions( _phys_problem->getDOFNumbering(), time );
     } else {
         FieldOnNodesRealPtr vectAsse =
@@ -124,7 +128,9 @@ FieldOnNodesRealPtr DiscreteComputation::getDualForces( FieldOnNodesRealPtr lagr
     CALLO_VEBTLA( base, modelName, materName, caraName, lagrName, listLoadsName, vectElemName );
 
     // Construct vect_elem object
-    elemVect->build( _phys_problem->getDOFNumbering()->getFiniteElementDescriptors() );
+    auto FEDs = _phys_problem->getListOfLoads()->getFiniteElementDescriptors();
+    FEDs.push_back( _phys_problem->getModel()->getFiniteElementDescriptor() );
+    elemVect->build( FEDs );
 
     // Assemble
     return elemVect->assemble( _phys_problem->getDOFNumbering() );
@@ -156,7 +162,9 @@ FieldOnNodesRealPtr DiscreteComputation::getDualDisplacement( FieldOnNodesRealPt
     CALLO_VEBUME( modelName, dispName, listLoadsName, vectElemName, &const_scaling, base );
 
     // Construct vect_elem object
-    elemVect->build( _phys_problem->getDOFNumbering()->getFiniteElementDescriptors() );
+    auto FEDs = _phys_problem->getListOfLoads()->getFiniteElementDescriptors();
+    FEDs.push_back( _phys_problem->getModel()->getFiniteElementDescriptor() );
+    elemVect->build( FEDs );
 
     // Assemble
     FieldOnNodesRealPtr bume = elemVect->assemble( _phys_problem->getDOFNumbering() );
@@ -299,7 +307,7 @@ DiscreteComputation::getExternalStateVariablesForces( const ASTERDOUBLE time ) c
         }
     }
     // Build elementary vectors
-    elemVect->build( _phys_problem->getDOFNumbering()->getFiniteElementDescriptors() );
+    elemVect->build();
 
     // Assemble
     return elemVect->assemble( _phys_problem->getDOFNumbering() );

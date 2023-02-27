@@ -31,7 +31,7 @@ BaseElementaryVector::assembleWithLoadFunctions( const BaseDOFNumberingPtr &dofN
     if ( _isEmpty )
         raiseAsterError( "The ElementaryVector is empty" );
 
-    if ( ( !dofNume ) || dofNume->isEmpty() )
+    if ( ( !dofNume ) || !dofNume->exists() )
         raiseAsterError( "Numerotation is empty" );
 
     // Elementary vector names
@@ -66,7 +66,7 @@ FieldOnNodesRealPtr BaseElementaryVector::assembleWithMask( const BaseDOFNumberi
                                                             const FieldOnCellsLongPtr &maskCell,
                                                             const int &maskInve ) {
 
-    if ( ( !dofNume ) || dofNume->isEmpty() )
+    if ( ( !dofNume ) || !dofNume->exists() )
         raiseAsterError( "Numerotation is empty" );
 
     FieldOnNodesRealPtr field = std::make_shared< FieldOnNodesReal >( dofNume );

@@ -60,6 +60,8 @@ subroutine create_graph_comm(object, type, nb_comm, comm, tag)
         k24 = object//'.DOMJOINTS'
     elseif (type == "NUME_DDL") then
         k24 = object//'.NUME.DOMJ'
+    elseif (type == "NUME_EQUA") then
+        k24 = object//'.DOMJ'
     elseif (type == "LIGREL") then
         k24 = object//'.DOMJ'
     else

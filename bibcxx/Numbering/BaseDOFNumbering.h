@@ -238,6 +238,11 @@ class BaseDOFNumbering : public DataStructure {
          */
         const JeveuxVectorLong getLocalToRank() const { return _localToRank; }
 
+        bool exists() const {
+            return _numberOfEquations->exists() && _lagrangianInformations->exists() &&
+                   _componentsOnNodes->exists();
+        }
+
         friend class BaseDOFNumbering;
         friend class DOFNumbering;
         friend class ParallelDOFNumbering;
@@ -255,8 +260,6 @@ class BaseDOFNumbering : public DataStructure {
     LigneDeCielPtr _slcs;
     /** @brief Objet Jeveux '.MLTF' */
     MultFrontGarbagePtr _mltf;
-    /** @brief Booleen permettant de preciser sur la sd est vide */
-    bool _isEmpty;
 
     /** @brief Objet '.NUML' */
     LocalEquationNumberingPtr _localNumbering;
@@ -264,6 +267,14 @@ class BaseDOFNumbering : public DataStructure {
     /** @brief Vectors of FiniteElementDescriptor */
     std::vector< FiniteElementDescriptorPtr > _FEDVector;
     std::set< std::string > _FEDNames;
+
+    /**
+     * @brief Add a FiniteElementDescriptor to elementary matrix
+     * @param FiniteElementDescriptorPtr FiniteElementDescriptor
+     */
+    bool addFiniteElementDescriptor( const FiniteElementDescriptorPtr &curFED );
+
+    bool addFiniteElementDescriptor( const std::vector< FiniteElementDescriptorPtr > &curFED );
 
   protected:
     /**
@@ -279,20 +290,6 @@ class BaseDOFNumbering : public DataStructure {
      * @brief Pointeur intelligent vers un BaseDOFNumbering
      */
     typedef std::shared_ptr< BaseDOFNumbering > BaseDOFNumberingPtr;
-
-    /**
-     * @brief Add a FiniteElementDescriptor to elementary matrix
-     * @param FiniteElementDescriptorPtr FiniteElementDescriptor
-     */
-    bool addFiniteElementDescriptor( const FiniteElementDescriptorPtr &curFED );
-
-    /**
-     * @brief Add a FiniteElementDescriptor to elementary matrix
-     * @param FiniteElementDescriptorPtr FiniteElementDescriptor
-     */
-    bool addFiniteElementDescriptors( const std::vector< FiniteElementDescriptorPtr > &curFEDs );
-
-    void setEmpty( const bool &empty ) { _isEmpty = empty; };
 
     /**
      * @brief Returns the GlobalEquationNumberingPtr
@@ -319,7 +316,8 @@ class BaseDOFNumbering : public DataStructure {
     /**
      * @brief Build the Numbering of DOFs
      */
-    virtual bool computeNumberingWithLocalMode( const std::string &localMode );
+    virtual bool computeNumbering( const std::vector< FiniteElementDescriptorPtr > &Feds,
+                                   const std::string &localMode );
 
     /**
      * @brief Are Lagrange Multipliers used for BC or MPC
@@ -416,7 +414,8 @@ class BaseDOFNumbering : public DataStructure {
      * @brief Methode permettant de savoir si la numerotation est vide
      * @return true si la numerotation est vide
      */
-    bool isEmpty() { return _isEmpty; };
+
+    virtual bool exists() const { AS_ABORT( "Not allowed" ); };
 
     /**
      * @brief Methode permettant de savoir si l'objet est parallel
