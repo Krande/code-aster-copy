@@ -80,6 +80,11 @@ class ParallelGlobalEquationNumbering : public GlobalEquationNumbering {
     const JeveuxVectorLong getLocalToRank() const { return _localToRank; };
 
     /**
+     * @brief Returns a vector with node index and component name for each DOFs
+     */
+    VectorPairLong getNodesAndComponentsNumberFromDOF( const bool local = true ) const;
+
+    /**
      * @brief Get The Component Associated To A Given Row
      */
     std::string getComponentAssociatedToRow( const ASTERINTEGER row,

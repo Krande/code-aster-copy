@@ -203,7 +203,7 @@ std::map< ASTERINTEGER, std::string > GlobalEquationNumbering::getComponentsNumb
 
 VectorLong GlobalEquationNumbering::getNodesFromDOF() const {
     _nodeAndComponentsNumberFromDOF->updateValuePointer();
-    const ASTERINTEGER nb_eq = this->getNumberOfDofs();
+    const ASTERINTEGER nb_eq = this->getNumberOfDofs( true );
 
     VectorLong nodes( nb_eq );
     for ( ASTERINTEGER i_eq = 0; i_eq < nb_eq; i_eq++ ) {
@@ -216,7 +216,7 @@ VectorLong GlobalEquationNumbering::getNodesFromDOF() const {
 
 VectorPairLong
 GlobalEquationNumbering::getNodesAndComponentsNumberFromDOF( const bool local ) const {
-    const ASTERINTEGER nb_eq = this->getNumberOfDofs();
+    const ASTERINTEGER nb_eq = this->getNumberOfDofs( true );
 
     VectorPairLong ret;
     ret.reserve( nb_eq );
@@ -225,61 +225,32 @@ GlobalEquationNumbering::getNodesAndComponentsNumberFromDOF( const bool local ) 
     for ( ASTERINTEGER i_eq = 0; i_eq < nb_eq; i_eq++ ) {
         auto node_id = ( *_nodeAndComponentsNumberFromDOF )[2 * i_eq] - 1;
         auto cmp = ( *_nodeAndComponentsNumberFromDOF )[2 * i_eq + 1];
+#ifdef ASTER_DEBUG_CXX
+        AS_ASSERT( node_id >= 0 && node_id < getMesh()->getNumberOfNodes() );
+        AS_ASSERT( cmp >= 0 );
+#endif
         ret.push_back( std::make_pair( node_id, cmp ) );
     }
-
-#ifdef ASTER_HAVE_MPI
-    if ( !local ) {
-        AS_ASSERT( _mesh );
-        if ( _mesh->isParallel() ) {
-            auto mapLG = _mesh->getLocalToGlobalMapping();
-            mapLG->updateValuePointer();
-            for ( ASTERINTEGER i_eq = 0; i_eq < nb_eq; i_eq++ ) {
-                auto node_id = ret[i_eq].first;
-                ret[i_eq].first = ( *mapLG )[node_id];
-            }
-        }
-    }
-#endif
 
     return ret;
 };
 
 PairLong GlobalEquationNumbering::getNodeAndComponentNumberFromDOF( const ASTERINTEGER dof,
                                                                     const bool local ) const {
-    PairLong ret;
-    _nodeAndComponentsNumberFromDOF->updateValuePointer();
-    const ASTERINTEGER nb_eq = this->getNumberOfDofs();
-    for ( ASTERINTEGER i_eq = 0; i_eq < nb_eq; i_eq++ ) {
-        auto node_id = ( *_nodeAndComponentsNumberFromDOF )[2 * i_eq] - 1;
-        auto cmp = ( *_nodeAndComponentsNumberFromDOF )[2 * i_eq + 1];
-        ret = std::make_pair( node_id, cmp );
-    }
-
-#ifdef ASTER_HAVE_MPI
-    if ( !local ) {
-        AS_ASSERT( _mesh );
-        if ( _mesh->isParallel() ) {
-            auto mapLG = _mesh->getLocalToGlobalMapping();
-            mapLG->updateValuePointer();
-            auto node_id = ret.first;
-            ret.first = ( *mapLG )[node_id];
-        }
-    }
-#endif
-
-    return ret;
+    auto node_id = ( *_nodeAndComponentsNumberFromDOF )[2 * dof] - 1;
+    auto cmp = ( *_nodeAndComponentsNumberFromDOF )[2 * dof + 1];
+    return std::make_pair( node_id, cmp );
 };
 
 std::vector< std::pair< ASTERINTEGER, std::string > >
 GlobalEquationNumbering::getNodesAndComponentsFromDOF( const bool local ) const {
     auto nodesAndComponentsNumberFromDOF = this->getNodesAndComponentsNumberFromDOF( local );
 
-    const ASTERINTEGER nb_eq = this->getNumberOfDofs();
+    const ASTERINTEGER nb_eq = this->getNumberOfDofs( true );
     auto num2name = this->getComponentsNumber2Name();
 
     std::vector< std::pair< ASTERINTEGER, std::string > > ret;
-    ret.reserve( nb_eq );
+    ret.reserve( nodesAndComponentsNumberFromDOF.size() );
 
     for ( auto &[nodeId, cmpId] : nodesAndComponentsNumberFromDOF ) {
         ret.push_back( std::make_pair( nodeId, num2name[cmpId] ) );

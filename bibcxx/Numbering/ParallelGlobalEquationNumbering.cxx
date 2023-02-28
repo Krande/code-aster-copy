@@ -237,3 +237,18 @@ ParallelGlobalEquationNumbering::globalToLocalRow( const ASTERINTEGER glob ) con
         return -1;
     }
 };
+
+VectorPairLong
+ParallelGlobalEquationNumbering::getNodesAndComponentsNumberFromDOF( const bool local ) const {
+    auto ret = GlobalEquationNumbering::getNodesAndComponentsNumberFromDOF();
+
+    AS_ASSERT( _mesh->isParallel() );
+    auto mapLG = _mesh->getLocalToGlobalMapping();
+    mapLG->updateValuePointer();
+    ASTERINTEGER nb_eq = ret.size();
+    for ( ASTERINTEGER i_eq = 0; i_eq < nb_eq; i_eq++ ) {
+        auto node_id = ret[i_eq].first;
+        ret[i_eq].first = ( *mapLG )[node_id];
+    }
+    return ret;
+};
