@@ -34,5 +34,33 @@ void exportGlobalEquationNumberingToPython( py::module_ &mod ) {
         .def( "getModel", &GlobalEquationNumbering::getModel )
         .def( "setModel", &GlobalEquationNumbering::setModel )
         .def( "getMesh", &GlobalEquationNumbering::getMesh )
-        .def( "setMesh", &GlobalEquationNumbering::setMesh );
+        .def( "setMesh", &GlobalEquationNumbering::setMesh )
+        // ---------------------------------------------------------------------
+        .def( "useLagrangeMultipliers", &GlobalEquationNumbering::useLagrangeMultipliers, R"(
+Lagrange multipliers are used for BC or MPC.
+
+Returns:
+    bool: *True* if used, *False* otherwise.
+        )" )
+        // ---------------------------------------------------------------------
+        .def( "useSingleLagrangeMultipliers",
+              &GlobalEquationNumbering::useSingleLagrangeMultipliers,
+              R"(
+Single Lagrange multipliers are used for BC or MPC.
+
+Returns:
+    bool: *True* if used, *False* otherwise.
+        )" )
+        // ---------------------------------------------------------------------
+        .def( "getNumberOfDofs", &GlobalEquationNumbering::getNumberOfDofs,
+              R"(
+Returns the number of DOFs.
+
+Arguments:
+    local (bool): not used.
+
+Returns:
+    int: number of DOFs.
+        )",
+              py::arg( "local" ) = false );
 };

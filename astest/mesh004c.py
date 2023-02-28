@@ -127,7 +127,7 @@ retour = RESOUDRE(MATR=matrAsse, CHAM_NO=vecass, ALGORITHME="GCR", RESI_RELA=1e-
 test = code_aster.TestCase()
 U = retour
 
-pU = U.toPetsc(numeDDL)
+pU = U.toPetsc()
 V = U.duplicate()
 
 V.setValues(0.0)

@@ -169,7 +169,7 @@ class SNESSolver:
         diriBCs = disc_comp.getIncrementalDirichletBC(time_curr, self._primal_plus)
         self.current_matrix.applyDirichletBC(diriBCs, residual.resi)
         # Copy to PETSc
-        residual.resi.toPetsc(self.phys_pb.getDOFNumbering()).copy(F)
+        residual.resi.toPetsc().copy(F)
 
     def _evalJacobian(self, snes, X, J, P):
         if self.current_incr % self.matr_update_incr == 0:

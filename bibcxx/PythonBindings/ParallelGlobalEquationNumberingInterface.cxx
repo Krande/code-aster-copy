@@ -30,5 +30,56 @@ void exportParallelGlobalEquationNumberingToPython( py::module_ &mod ) {
 
     py::class_< ParallelGlobalEquationNumbering, ParallelGlobalEquationNumberingPtr,
                 GlobalEquationNumbering >( mod, "ParallelGlobalEquationNumbering" )
-        .def( py::init( &initFactoryPtr< ParallelGlobalEquationNumbering, std::string > ) );
+        .def( py::init( &initFactoryPtr< ParallelGlobalEquationNumbering, std::string > ) )
+        .def( "getGhostRows", &ParallelGlobalEquationNumbering::getGhostRows,
+              R"(
+Returns the indexes of the ghost DOFs.
+
+Arguments:
+    local (bool): local or global numbering
+
+Returns:
+    int: indexes of the ghost DOFs.
+        )",
+              py::arg( "local" ) = true )
+        // ---------------------------------------------------------------------
+        .def( "getNoGhostRows", &ParallelGlobalEquationNumbering::getNoGhostRows,
+              R"(
+Returns the indexes of the DOFs owned locally (aka not ghost).
+
+Returns:
+    int: indexes of the DOFs owned locally.
+        )" )
+        // ---------------------------------------------------------------------
+        .def( "getNumberOfDofs", &ParallelGlobalEquationNumbering::getNumberOfDofs,
+              R"(
+Returns the number of DOFs.
+
+Arguments:
+    local (bool): local or parallel request
+
+Returns:
+    int: number of DOFs.
+        )",
+              py::arg( "local" ) = false )
+        // ---------------------------------------------------------------------
+        .def( "getLocalToGlobalMapping", &ParallelGlobalEquationNumbering::getLocalToGlobalMapping,
+              R"(
+Returns the mapping from the local to the global number of the DOFs.
+
+Returns:
+    int: global number of the DOF.
+        )" )
+        // ---------------------------------------------------------------------
+        .def( "globalToLocalRow", &ParallelGlobalEquationNumbering::globalToLocalRow,
+              R"(
+Returns the local number of a global DOF.
+
+Arguments:
+    glob (int): global DOF number
+
+Returns:
+    int: local number of the DOF.
+        )",
+              py::arg( "glob" ) );
 };

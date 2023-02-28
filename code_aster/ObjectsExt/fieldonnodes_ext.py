@@ -133,12 +133,8 @@ class ExtendedFieldOnNodesReal:
                     indir.setdefault((node, dof), []).append(row)
         return indir
 
-    def toPetsc(self, dofNmbrng=None):
+    def toPetsc(self):
         """Convert the field to a PETSc vector object.
-
-        Arguments:
-            dofNmbrng (ParallelDofNumbering) : the numbering of the DOFs - mandatory in the case of a
-                                               parallel vector, not used otherwise.
 
         Returns:
             PetscVec: PETSc vector.
@@ -150,17 +146,16 @@ class ExtendedFieldOnNodesReal:
         from petsc4py.PETSc import Vec, InsertMode
 
         if mesh.isParallel():
-            if not dofNmbrng:
-                raise RuntimeError("dofNumbering must be provided")
             comm = MPI.ASTER_COMM_WORLD
             _vec = Vec().create(comm=comm)
             _vec.setType("mpi")
-            ownedRows = dofNmbrng.getNoGhostRows()
+            globNume = self.getDescription()
+            ownedRows = globNume.getNoGhostRows()
             neql = len(ownedRows)
-            neqg = dofNmbrng.getNumberOfDofs(local=False)
+            neqg = globNume.getNumberOfDofs(local=False)
             _vec.setSizes((neql, neqg))
             val = self.getValues()
-            l2g = dofNmbrng.getLocalToGlobalMapping()
+            l2g = globNume.getLocalToGlobalMapping()
             extract = operator.itemgetter(*ownedRows)
             ll2g = extract(l2g)
             lval = extract(val)
