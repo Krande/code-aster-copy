@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,7 +26,7 @@ interface
         integer(kind=4), intent(in) :: vecpet
 #endif
         character(len=19), intent(inout) :: vasse
-        character(len=14), intent(in) :: numddl
+        character(len=19), intent(in) :: numddl
         real(kind=8), intent(in) :: scaling
     end subroutine vect_asse_from_petsc
 end interface

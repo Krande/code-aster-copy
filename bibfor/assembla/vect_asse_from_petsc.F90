@@ -56,7 +56,7 @@ subroutine vect_asse_from_petsc(vasse, nume_equa, vecpet, scaling)
     integer(kind=4), intent(in) :: vecpet
 #endif
     character(len=19), intent(inout) :: vasse
-    character(len=14), intent(in) :: nume_equa
+    character(len=19), intent(in) :: nume_equa
     real(kind=8), intent(in) :: scaling
 #ifdef ASTER_HAVE_MPI
 !
