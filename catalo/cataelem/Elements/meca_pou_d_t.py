@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -729,6 +729,18 @@ class MECA_POU_D_T(Element):
                 (OP.RIGI_MECA_HYST.PVARCPR, LC.ZVARCPG),
             ),
             para_out=((SP.PMATUUC, MMATUUC),),
+        ),
+        OP.RIGI_MECA_RO(
+            te=235,
+            para_in=(
+                (SP.PCAGNPO, CCAGNPO),
+                (OP.RIGI_MECA_RO.PCAORIE, CCAORIE),
+                (SP.PGEOMER, NGEOMER),
+                (SP.PMATERC, LC.CMATERC),
+                (SP.PROTATR, LC.CROTATR),
+                (OP.RIGI_MECA_RO.PVARCPR, LC.ZVARCPG),
+            ),
+            para_out=((SP.PMATUUR, MMATUUR),),
         ),
         OP.RIGI_MECA_TANG(
             te=247,

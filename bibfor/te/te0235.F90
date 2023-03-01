@@ -22,7 +22,7 @@ subroutine te0235(option, nomte)
 ! --------------------------------------------------------------------------------------------------
 !
 !     CALCULE LA MATRICE DE RAIDEUR CENTRIFUGE DES ELEMENTS DE POUTRE
-!     AVEC GAUCHISSEMENT (MULTIFIBRE ON NON)
+!     SANS/AVEC GAUCHISSEMENT, MULTIFIBRE OU NON
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -30,9 +30,10 @@ subroutine te0235(option, nomte)
 !       OPTION  : NOM DE L'OPTION A CALCULER
 !           'RIGI_MECA_RO'      : CALCUL DE LA MATRICE DE RAIDEUR CENTRIFUGE
 !       NOMTE   : NOM DU TYPE ELEMENT
-!           'MECA_POU_D_TG' : POUTRE DROITE DE TIMOSHENKO (GAUCHISSEMENT)
-!           'MECA_POU_D_TGM': POUTRE DROITE DE TIMOSHENKO (GAUCHISSEMENT)
-!                               MULTI-FIBRES SECTION CONSTANTE
+!           'MECA_POU_D_E'  : POUTRE DROITE D'EULER (SANS GAUCHISSEMENT)
+!           'MECA_POU_D_T'  : POUTRE DROITE DE TIMOSHENKO (SANS GAUCHISSEMENT)
+!           'MECA_POU_D_TG' : POUTRE DROITE DE TIMOSHENKO (AVEC GAUCHISSEMENT)
+!           'MECA_POU_D_TGM': POUTRE DROITE DE TIMOSHENKO MULTI-FIBRES (AVEC GAUCHISSEMENT)
 ! --------------------------------------------------------------------------------------------------
 !
     implicit none
@@ -57,7 +58,8 @@ subroutine te0235(option, nomte)
     integer :: i, lmater, j, lorien, lmat, nno, nc, kpg, spt
     integer :: itype, irota, jacf
     real(kind=8) :: omega(3), omegl(3), s, xl
-    real(kind=8) :: e, g, xnu, rho, a, xiy, xiz, alfay, alfaz
+    real(kind=8) :: e, g, xnu, rho, a1, a2, xiy1, xiy2, xiz1, xiz2, alfay1, alfay2, alfaz1, alfaz2
+    real(kind=8) :: a, xiy, xiz
     real(kind=8) :: pgl(3, 3), mlv(105), matp1(78)
     real(kind=8) :: carsec(6), rbid, casrho(6), casece(6)
     character(len=8) :: fami, poum
@@ -73,28 +75,41 @@ subroutine te0235(option, nomte)
     integer :: nbfibr, nbgrfi, tygrfi, nbcarm, nug(10)
 !
 ! --------------------------------------------------------------------------------------------------
-    integer, parameter :: nb_cara = 5
+    integer, parameter :: nb_cara = 25
     real(kind=8) :: vale_cara(nb_cara)
     character(len=8) :: noms_cara(nb_cara)
-    data noms_cara/'A1', 'IY1', 'IZ1', 'AY1', 'AZ1'/
+    data noms_cara/'A1      ', 'IY1     ', 'IZ1     ', 'AY1     ', 'AZ1     ', &
+        'EY1     ', 'EZ1     ', 'JX1     ', 'RY1     ', 'RZ1     ', &
+        'RT1     ', 'JG1     ', 'A2      ', 'IY2     ', 'IZ2     ', &
+        'AY2     ', 'AZ2     ', 'EY2     ', 'EZ2     ', 'JX2     ', &
+        'RY2     ', 'RZ2     ', 'RT2     ', 'JG2     ', 'TVAR    '/
 ! --------------------------------------------------------------------------------------------------
 !
 !   Caracteristiques des elements
     nno = 2
-    nc = 7
-    itype = 0
+    if (nomte .eq. 'MECA_POU_D_E' .or. nomte .eq. 'MECA_POU_D_T') then
+        nc = 6
+    else if (nomte .eq. 'MECA_POU_D_TG' .or. nomte .eq. 'MECA_POU_D_TGM') then
+        nc = 7
+    end if
 !   Caracteristiques generales des sections
     call poutre_modloc('CAGNPO', noms_cara, nb_cara, lvaleur=vale_cara)
-    a = vale_cara(1)
-    xiy = vale_cara(2)
-    xiz = vale_cara(3)
-    alfay = vale_cara(4)
-    alfaz = vale_cara(5)
-!
+    a1 = vale_cara(1)
+    xiy1 = vale_cara(2)
+    xiz1 = vale_cara(3)
+    alfay1 = vale_cara(4)
+    alfaz1 = vale_cara(5)
+    a2 = vale_cara(13)
+    xiy2 = vale_cara(14)
+    xiz2 = vale_cara(15)
+    alfay2 = vale_cara(16)
+    alfaz2 = vale_cara(17)
+    itype = nint(vale_cara(25))
 !   Recuperation des caracteristiques materiaux
     call jevech('PMATERC', 'L', lmater)
 !
-    if (nomte .eq. 'MECA_POU_D_TG') then
+    if (nomte .eq. 'MECA_POU_D_E' .or. nomte .eq. 'MECA_POU_D_T' &
+        .or. nomte .eq. 'MECA_POU_D_TG') then
         valres(:) = 0.0d0
         fami = 'FPG1'
         kpg = 1
@@ -107,6 +122,7 @@ subroutine te0235(option, nomte)
         xnu = valres(2)
         rho = valres(3)
         g = e/(2.0d0*(1.0d0+xnu))
+!
     else if (nomte .eq. 'MECA_POU_D_TGM') then
 !       calcul de E et G
         call pmfitx(zi(lmater), 1, casece, g)
@@ -121,6 +137,7 @@ subroutine te0235(option, nomte)
         xiz = carsec(4)
         rho = casrho(1)/a
         e = casece(1)/a
+!
     end if
 !   Coordonnees des noeuds
     xl = lonele()
@@ -139,13 +156,27 @@ subroutine te0235(option, nomte)
         end do
         omegl(i) = s
     end do
-!   Calcul de la matrice de masse locale
+!   Calcul de la matrice de raideur centrifuge locale
     matp1(:) = 0.0d0
-!   Poutre droite section constante ou variable (1 ou 2)
-    call poriro(itype, matp1, rho, omegl, e, a, a, xl, xiy, xiy, &
-                xiz, xiz, g, alfay, alfay, alfaz, alfaz)
-    call masstg(matp1, mlv)
+!
+    if (nomte .eq. 'MECA_POU_D_E' .or. nomte .eq. 'MECA_POU_D_T' &
+        .or. nomte .eq. 'MECA_POU_D_TG') then
+        call poriro(itype, matp1, rho, omegl, e, a1, a2, xl, xiy1, xiy2, &
+                    xiz1, xiz2, g, alfay1, alfay2, alfaz1, alfaz2)
+    else if (nomte .eq. 'MECA_POU_D_TGM') then
+        call poriro(itype, matp1, rho, omegl, e, a, a, xl, xiy, xiy, &
+                    xiz, xiz, g, alfay1, alfay2, alfaz1, alfaz2)
+    end if
+!
     call jevech('PMATUUR', 'E', lmat)
-    call utpslg(nno, nc, pgl, mlv, zr(lmat))
+!
+    if (nomte .eq. "MECA_POU_D_E" .or. nomte .eq. "MECA_POU_D_T") then
+        call utpslg(nno, nc, pgl, matp1, zr(lmat))
+!
+    else if (nomte .eq. "MECA_POU_D_TG" .or. nomte .eq. "MECA_POU_D_TGM") then
+        call masstg(matp1, mlv)
+        call utpslg(nno, nc, pgl, mlv, zr(lmat))
+    end if
+!
 !
 end subroutine
