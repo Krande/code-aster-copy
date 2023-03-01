@@ -43,9 +43,9 @@ subroutine utncmp3(nume_equa, ncmp, list_cmp, list_name)
 !     ------------------------------------------------------------------
 !
     integer :: jprno, gd, nec, tabec(10), j, ino, iec, icmp, ncmpmx
-    integer ::  iad, kcmp, nnoe
+    integer ::  iad, kcmp, nnoe, ncmpt
     integer :: jcmp
-    character(len=8) :: noma
+    character(len=8) :: noma, exilag
     character(len=19) :: nume_equa19
     integer, pointer :: vicmp(:) => null()
 !     ------------------------------------------------------------------
@@ -90,12 +90,26 @@ subroutine utncmp3(nume_equa, ncmp, list_cmp, list_name)
         call utmess('F', 'UTILITAI5_53')
     end if
 !
-    call wkvect(list_name, 'V V K8', ncmp, kcmp)
-    call wkvect(list_cmp, 'V V I', ncmp, jcmp)
+    call dismoi('EXIS_LAGR', nume_equa19, 'NUME_EQUA', repk=exilag)
+    ncmpt = ncmp
+    print *, exilag
+    if (exilag .eq. 'OUI') then
+        ncmpt = ncmpt+1
+        print *, ncmp, ncmpt
+    end if
+
+!
+    call wkvect(list_name, 'V V K8', ncmpt, kcmp)
+    call wkvect(list_cmp, 'V V I', ncmpt, jcmp)
     do icmp = 1, ncmp
         zk8(kcmp+icmp-1) = zk8(iad-1+vicmp(icmp))
         zi(jcmp+icmp-1) = vicmp(icmp)
     end do
+    if (exilag .eq. 'OUI') then
+        zk8(kcmp+ncmpt-1) = "LAGR"
+        zi(jcmp+ncmpt-1) = 0
+    end if
+    ncmp = ncmpt
     AS_DEALLOCATE(vi=vicmp)
 !
     call jedema()

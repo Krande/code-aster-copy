@@ -30,6 +30,7 @@ void exportGlobalEquationNumberingToPython( py::module_ &mod ) {
 
     py::class_< GlobalEquationNumbering, GlobalEquationNumberingPtr, DataStructure >(
         mod, "GlobalEquationNumbering" )
+        .def( py::init( &initFactoryPtr< GlobalEquationNumbering > ) )
         .def( py::init( &initFactoryPtr< GlobalEquationNumbering, std::string > ) )
         .def( "getModel", &GlobalEquationNumbering::getModel )
         .def( "setModel", &GlobalEquationNumbering::setModel )
@@ -62,5 +63,17 @@ Arguments:
 Returns:
     int: number of DOFs.
         )",
-              py::arg( "local" ) = false );
+              py::arg( "local" ) = false )
+        .def( "getPhysicalQuantity", &GlobalEquationNumbering::getPhysicalQuantity, R"(
+Returns the name of the physical quantity that is numbered.
+
+Returns:
+    str: physical quantity name.
+        )" )
+        .def( "isParallel", &GlobalEquationNumbering::isParallel, R"(
+The numbering is distributed across MPI processes for High Performance Computing.
+
+Returns:
+    bool: *True* if used, *False* otherwise.
+        )" );
 };

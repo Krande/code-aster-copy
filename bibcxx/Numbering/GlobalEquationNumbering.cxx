@@ -26,6 +26,7 @@
 #include "aster_fort_calcul.h"
 #include "astercxx.h"
 
+#include "Modeling/PhysicalQuantityManager.h"
 #include "ParallelUtilities/AsterMPI.h"
 #include "Supervis/Exceptions.h"
 #include "Supervis/ResultNaming.h"
@@ -112,47 +113,51 @@ GlobalEquationNumbering::getNumberOfDofs( const bool local ) const {
     return _nodeAndComponentsNumberFromDOF->size() / 2;
 };
 
-VectorString GlobalEquationNumbering::getComponents() const {
-    VectorString ret;
+std::map< ASTERINTEGER, std::string >
+GlobalEquationNumbering::_getAllComponentsNumber2Name() const {
+    const std::string typeco( "NUME_EQUA" );
+    ASTERINTEGER repi = 0, ier = 0;
+    JeveuxChar32 repk( " " );
+    const std::string arret( "F" );
+    const std::string questi( "NUM_GD" );
 
-    JeveuxVectorChar8 cmp_name( "&CMP_NAME" );
-    JeveuxVectorLong cmp( "&CMP" );
-    ASTERINTEGER ncmp;
+    CALLO_DISMOI( questi, getName(), typeco, &repi, repk, arret, &ier );
 
-    CALL_UTNCMP3( getName().c_str(), &ncmp, cmp->getName().c_str(), cmp_name->getName().c_str() );
+    auto list_cmp = PhysicalQuantityManager::Class().getComponentNames( repi )->toVector();
+    int nb_cmp = list_cmp.size();
 
-    cmp_name->updateValuePointer();
-    cmp->updateValuePointer();
-
-    for ( int icmp = 0; icmp < ncmp; icmp++ ) {
-        auto cmpId = ( *cmp )[icmp];
-        std::string name;
-        if ( cmpId > 0 ) {
-            // Physical DoF
-            name = trim( ( *cmp_name )[icmp] );
-        } else if ( cmpId == 0 ) {
-            // Lagrange multiplier associated to MPC
-            name = "LAGR:MPC";
-        } else {
-            // Lagrange multiplier associated to Dirichlet BC
-            name = "LAGR:" + trim( ( *cmp_name )[icmp] );
-        }
-
-        ret.push_back( name );
+    std::map< ASTERINTEGER, std::string > ret;
+    ret[0] = "LAGR:MPC";
+    for ( int icmp = 1; icmp <= nb_cmp; icmp++ ) {
+        auto name = trim( list_cmp[icmp - 1] );
+        ret[icmp] = name;
+        ret[-icmp] = "LAGR:" + name;
     }
 
-    return unique( ret );
+    return ret;
+};
+
+VectorString GlobalEquationNumbering::getComponents() const {
+    SetString ret;
+
+    auto number2name = this->getComponentsNumber2Name();
+
+    for ( auto &[num, name] : number2name ) {
+        ret.insert( name );
+    }
+
+    return toVector( ret );
 };
 
 SetLong GlobalEquationNumbering::getComponentsNumber() const {
+    auto ret = this->getNodesAndComponentsNumberFromDOF( true );
 
-    JeveuxVectorChar8 cmp_name( "&CMP_NAME" );
-    JeveuxVectorLong cmp( "&CMP" );
-    ASTERINTEGER ncmp;
+    SetLong cmpIds;
+    for ( const auto &[nodeId, cmpId] : ret ) {
+        cmpIds.insert( cmpId );
+    }
 
-    CALL_UTNCMP3( getName().c_str(), &ncmp, cmp->getName().c_str(), cmp_name->getName().c_str() );
-
-    return toSet( cmp->toVector() );
+    return cmpIds;
 };
 
 /**
@@ -161,30 +166,9 @@ SetLong GlobalEquationNumbering::getComponentsNumber() const {
 std::map< std::string, ASTERINTEGER > GlobalEquationNumbering::getComponentsName2Number() const {
     std::map< std::string, ASTERINTEGER > ret;
 
-    JeveuxVectorChar8 cmp_name( "&CMP_NAME" );
-    JeveuxVectorLong cmp( "&CMP" );
-    ASTERINTEGER ncmp;
-
-    CALL_UTNCMP3( getName().c_str(), &ncmp, cmp->getName().c_str(), cmp_name->getName().c_str() );
-
-    cmp_name->updateValuePointer();
-    cmp->updateValuePointer();
-
-    for ( int icmp = 0; icmp < ncmp; icmp++ ) {
-        auto cmpId = ( *cmp )[icmp];
-        std::string name;
-        if ( cmpId > 0 ) {
-            // Physical DoF
-            name = trim( ( *cmp_name )[icmp] );
-        } else if ( cmpId == 0 ) {
-            // Lagrange multiplier associated to MPC
-            name = "LAGR:MPC";
-        } else {
-            // Lagrange multiplier associated to Dirichlet BC
-            name = "LAGR:" + trim( ( *cmp_name )[icmp] );
-        }
-
-        ret[name] = cmpId;
+    auto number2name = this->getComponentsNumber2Name();
+    for ( auto &[num, name] : number2name ) {
+        ret[name] = num;
     }
 
     return ret;
@@ -193,9 +177,11 @@ std::map< std::string, ASTERINTEGER > GlobalEquationNumbering::getComponentsName
 std::map< ASTERINTEGER, std::string > GlobalEquationNumbering::getComponentsNumber2Name() const {
     std::map< ASTERINTEGER, std::string > ret;
 
-    auto name2number = this->getComponentsName2Number();
-    for ( auto &[name, num] : name2number ) {
-        ret[num] = name;
+    auto an2n = this->_getAllComponentsNumber2Name();
+    auto cmpIds = this->getComponentsNumber();
+
+    for ( auto &cmpId : cmpIds ) {
+        ret[cmpId] = an2n[cmpId];
     }
 
     return ret;
@@ -227,7 +213,6 @@ GlobalEquationNumbering::getNodesAndComponentsNumberFromDOF( const bool local ) 
         auto cmp = ( *_nodeAndComponentsNumberFromDOF )[2 * i_eq + 1];
 #ifdef ASTER_DEBUG_CXX
         AS_ASSERT( node_id >= 0 && node_id < getMesh()->getNumberOfNodes() );
-        AS_ASSERT( cmp >= 0 );
 #endif
         ret.push_back( std::make_pair( node_id, cmp ) );
     }
@@ -237,8 +222,16 @@ GlobalEquationNumbering::getNodesAndComponentsNumberFromDOF( const bool local ) 
 
 PairLong GlobalEquationNumbering::getNodeAndComponentNumberFromDOF( const ASTERINTEGER dof,
                                                                     const bool local ) const {
+#ifdef ASTER_DEBUG_CXX
+    AS_ASSERT( dof >= 0 && dof < this->getNumberOfDofs( true ) )
+#endif
+    _nodeAndComponentsNumberFromDOF->updateValuePointer();
     auto node_id = ( *_nodeAndComponentsNumberFromDOF )[2 * dof] - 1;
     auto cmp = ( *_nodeAndComponentsNumberFromDOF )[2 * dof + 1];
+
+#ifdef ASTER_DEBUG_CXX
+    AS_ASSERT( node_id >= 0 && node_id < getMesh()->getNumberOfNodes() );
+#endif
     return std::make_pair( node_id, cmp );
 };
 
@@ -247,7 +240,7 @@ GlobalEquationNumbering::getNodesAndComponentsFromDOF( const bool local ) const 
     auto nodesAndComponentsNumberFromDOF = this->getNodesAndComponentsNumberFromDOF( local );
 
     const ASTERINTEGER nb_eq = this->getNumberOfDofs( true );
-    auto num2name = this->getComponentsNumber2Name();
+    auto num2name = this->_getAllComponentsNumber2Name();
 
     std::vector< std::pair< ASTERINTEGER, std::string > > ret;
     ret.reserve( nodesAndComponentsNumberFromDOF.size() );
@@ -263,8 +256,7 @@ std::pair< ASTERINTEGER, std::string >
 GlobalEquationNumbering::getNodeAndComponentFromDOF( const ASTERINTEGER dof,
                                                      const bool local ) const {
     auto [nodeId, cmpId] = this->getNodeAndComponentNumberFromDOF( dof, local );
-
-    auto num2name = this->getComponentsNumber2Name();
+    auto num2name = this->_getAllComponentsNumber2Name();
 
     return std::make_pair( nodeId, num2name[cmpId] );
 };

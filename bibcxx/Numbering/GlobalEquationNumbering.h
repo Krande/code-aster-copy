@@ -169,6 +169,8 @@ class GlobalEquationNumbering : public BaseGlobalEquationNumbering {
     /** @brief Model */
     ModelPtr _model;
 
+    std::map< ASTERINTEGER, std::string > _getAllComponentsNumber2Name() const;
+
   public:
     /**
      * @typedef GlobalEquationNumberingPtr

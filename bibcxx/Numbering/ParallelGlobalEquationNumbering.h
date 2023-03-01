@@ -85,6 +85,12 @@ class ParallelGlobalEquationNumbering : public GlobalEquationNumbering {
     VectorPairLong getNodesAndComponentsNumberFromDOF( const bool local = true ) const;
 
     /**
+     * @brief Returns a vector with node index and component name for each DOFs
+     */
+
+    PairLong getNodeAndComponentNumberFromDOF( const ASTERINTEGER dof,
+                                               const bool local = true ) const;
+    /**
      * @brief Get The Component Associated To A Given Row
      */
     std::string getComponentAssociatedToRow( const ASTERINTEGER row,
@@ -129,6 +135,12 @@ class ParallelGlobalEquationNumbering : public GlobalEquationNumbering {
      * @brief Get Assigned Components
      */
     VectorString getComponents() const;
+    SetLong getComponentsNumber() const;
+
+    /**
+     * @brief Maps between name of components and the number
+     */
+    std::map< std::string, ASTERINTEGER > getComponentsName2Number() const;
 
     /**
      * @brief Get the mapping between local ang global numbering of the Dof

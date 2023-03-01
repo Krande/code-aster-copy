@@ -179,39 +179,10 @@ ParallelGlobalEquationNumbering::getNumberOfDofs( const bool local ) const {
 };
 
 bool ParallelGlobalEquationNumbering::useSingleLagrangeMultipliers() const {
-    const std::string typeco( "NUME_DDL" );
-    ASTERINTEGER repi = 0, ier = 0;
-    JeveuxChar32 repk( " " );
-    const std::string arret( "C" );
-    const std::string questi( "SIMP_LAGR" );
-    bool local_answer = false, global_answer;
-
-    CALLO_DISMOI( questi, getName(), typeco, &repi, repk, arret, &ier );
-    auto retour = trim( repk.toString() );
-    if ( retour == "OUI" )
-        local_answer = true;
+    bool local_answer = GlobalEquationNumbering::useSingleLagrangeMultipliers(), global_answer;
     AsterMPI::all_reduce( local_answer, global_answer, MPI_LAND );
 
     return global_answer;
-};
-
-VectorString ParallelGlobalEquationNumbering::getComponents() const {
-    ASTERINTEGER ncmp, maxCmp = 100, ibid = 0;
-    char *stringArray;
-    VectorString localComp, globalComp;
-    std::string all( "ALL" );
-    stringArray = MakeTabFStr( 8, maxCmp );
-    CALL_NUMEDDL_GET_COMPONENTS( getName().c_str(), all.c_str(), &ibid, &ncmp, stringArray,
-                                 &maxCmp );
-    for ( int k = 0; k < ncmp; k++ ) {
-        localComp.push_back( trim( std::string( stringArray + 8 * k, 8 ) ) );
-    }
-    FreeStr( stringArray );
-
-    // Communicate with others
-    AsterMPI::all_gather( localComp, globalComp );
-
-    return unique( globalComp );
 };
 
 const ASTERINTEGER ParallelGlobalEquationNumbering::localToGlobalRow( const ASTERINTEGER loc ) {
@@ -243,12 +214,61 @@ ParallelGlobalEquationNumbering::getNodesAndComponentsNumberFromDOF( const bool 
     auto ret = GlobalEquationNumbering::getNodesAndComponentsNumberFromDOF();
 
     AS_ASSERT( _mesh->isParallel() );
-    auto mapLG = _mesh->getLocalToGlobalMapping();
-    mapLG->updateValuePointer();
-    ASTERINTEGER nb_eq = ret.size();
-    for ( ASTERINTEGER i_eq = 0; i_eq < nb_eq; i_eq++ ) {
-        auto node_id = ret[i_eq].first;
-        ret[i_eq].first = ( *mapLG )[node_id];
+    if ( !local ) {
+        auto mapLG = _mesh->getLocalToGlobalMapping();
+        mapLG->updateValuePointer();
+        ASTERINTEGER nb_eq = ret.size();
+        for ( ASTERINTEGER i_eq = 0; i_eq < nb_eq; i_eq++ ) {
+            auto node_id = ret[i_eq].first;
+            ret[i_eq].first = ( *mapLG )[node_id];
+        }
     }
     return ret;
+};
+
+PairLong
+ParallelGlobalEquationNumbering::getNodeAndComponentNumberFromDOF( const ASTERINTEGER dof,
+                                                                   const bool local ) const {
+    auto ret = GlobalEquationNumbering::getNodeAndComponentNumberFromDOF( dof, local );
+
+    AS_ASSERT( _mesh->isParallel() );
+    if ( !local ) {
+        auto mapLG = _mesh->getLocalToGlobalMapping();
+        mapLG->updateValuePointer();
+        auto node_id = ret.first;
+        ret.first = ( *mapLG )[node_id];
+    }
+    return ret;
+};
+
+VectorString ParallelGlobalEquationNumbering::getComponents() const {
+    auto cmp_set = GlobalEquationNumbering::getComponents();
+
+    VectorString cmp_glb;
+    AsterMPI::all_gather( cmp_set, cmp_glb );
+
+    return unique( cmp_glb );
+};
+
+SetLong ParallelGlobalEquationNumbering::getComponentsNumber() const {
+
+    auto cmp_set = GlobalEquationNumbering::getComponentsNumber();
+
+    SetLong cmp_glb;
+    AsterMPI::all_gather( cmp_set, cmp_glb );
+
+    return cmp_glb;
+};
+
+/**
+ * @brief Maps between name of components and the nimber
+ */
+std::map< std::string, ASTERINTEGER >
+ParallelGlobalEquationNumbering::getComponentsName2Number() const {
+
+    auto cmp_std = GlobalEquationNumbering::getComponentsName2Number();
+    std::map< std::string, ASTERINTEGER > cmp_glb;
+    AsterMPI::all_gather( cmp_std, cmp_glb );
+
+    return cmp_glb;
 };
