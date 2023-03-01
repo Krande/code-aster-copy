@@ -75,5 +75,55 @@ The numbering is distributed across MPI processes for High Performance Computing
 
 Returns:
     bool: *True* if used, *False* otherwise.
-        )" );
+        )" )
+        .def( "getNodesAndComponentsFromDOF",
+              &GlobalEquationNumbering::getNodesAndComponentsFromDOF, R"(
+            Return the list of node id and name of component for each dofs
+
+            Arguments:
+                local (bool) = True: if True use local node index else use global index in HPC
+
+            Returns:
+                list[tuple[int, str]] : node id and name of component for each dofs
+            )",
+              py::arg( "local" ) = true )
+        .def( "getNodesAndComponentsNumberFromDOF",
+              &GlobalEquationNumbering::getNodesAndComponentsNumberFromDOF, R"(
+            Return the list of node id and component id for each dofs
+
+            Arguments:
+                local (bool) = True: if True use local node index else use global index in HPC
+
+            Returns:
+                list[tuple[int, int]] : node id and component if for each dofs
+            )",
+              py::arg( "local" ) = true )
+        .def( "getDOFsFromNodesAndComponentsNumber",
+              &GlobalEquationNumbering::getDOFsFromNodesAndComponentsNumber, R"(
+            Return the dict of dofs with the pair (node id, name id) as keys
+
+            Arguments:
+                local (bool) = True: if True use local DOF index else use global index in HPC
+
+            Returns:
+                dict[int, str] : dofs id for each node id and component id
+            )",
+              py::arg( "local" ) = true )
+        .def( "getDOFsFromNodesAndComponents",
+              &GlobalEquationNumbering::getDOFsFromNodesAndComponents, R"(
+           Return the dict of dofs with the pair (node id, component's name) as keys
+
+            Arguments:
+                local (bool) = True: if True use local dof index else use global index in HPC
+
+            Returns:
+                dict[int, str] : dofs id for each node id and component's name
+            )",
+              py::arg( "local" ) = true )
+        .def( "getComponents", &GlobalEquationNumbering::getComponents, R"(
+            Get list of components
+
+            Returns:
+                list[str]: list of components
+            )" );
 };

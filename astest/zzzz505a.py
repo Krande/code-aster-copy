@@ -144,7 +144,7 @@ test.assertAlmostEqual(f3.norm("NORM_2"), 0)
 
 # Test TEST_RESU with TEST_TYPE='MIN','MAX', 'SOMME', 'SOMME_ABS'
 ftest = fieldp.duplicate()
-mapDOF = ftest.getDOFsFromNodesAndComponentsName(False)
+mapDOF = ftest.getDescription().getDOFsFromNodesAndComponents(False)
 
 values_test = {
     "MAX": 4.0,
