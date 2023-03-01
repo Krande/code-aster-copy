@@ -691,8 +691,9 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
             }
             CALL_JEDEMA();
         }
-        _descriptor->updateValuePointer();
-        AS_ASSERT( ( *_descriptor )[1] > 0 );
+        if ( this->exists() ) {
+            this->updateValuePointers();
+        }
         return true;
     };
 

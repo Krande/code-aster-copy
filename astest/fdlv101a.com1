@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -26,7 +26,7 @@ POURSUITE(CODE="OUI", DEBUG=_F(SDVERI="OUI"))
 
 test = code_aster.TestCase()
 
-test.assertEqual(NUSTR.getComponents(), ["DX", "DY", "LAGR"])
+test.assertEqual(NUSTR.getComponents(), ["DX", "DY", "LAGR:DY"])
 for row in NUSTR.getRowsAssociatedToLagrangeMultipliers():
     test.assertEqual(NUSTR.getComponentAssociatedToRow(row), "LAGR:DY")
     test.assertFalse(NUSTR.isRowAssociatedToPhysical(row))
@@ -41,8 +41,8 @@ test.assertTrue(NUSTR.useLagrangeMultipliers())
 test.assertFalse(NUSTR.useSingleLagrangeMultipliers())
 test.assertEqual(NUSTR.getPhysicalQuantity(), "DEPL_R")
 
-test.assertRaises(RuntimeError, lambda: list(NUSTR.getComponentAssociatedToRow(-1)))
-test.assertRaises(RuntimeError, lambda: list(NUSTR.getComponentAssociatedToRow(999999)))
+test.assertRaises(IndexError, lambda: list(NUSTR.getComponentAssociatedToRow(-1)))
+test.assertRaises(IndexError, lambda: list(NUSTR.getComponentAssociatedToRow(999999)))
 test.assertRaises(RuntimeError, lambda: list(NUSTR.getRowAssociatedToNodeComponent(0, "XXXXX")))
 test.assertRaises(RuntimeError, lambda: list(NUSTR.getRowAssociatedToNodeComponent(999999, "DX")))
 

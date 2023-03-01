@@ -222,9 +222,11 @@ GlobalEquationNumbering::getNodesAndComponentsNumberFromDOF( const bool local ) 
 
 PairLong GlobalEquationNumbering::getNodeAndComponentNumberFromDOF( const ASTERINTEGER dof,
                                                                     const bool local ) const {
-#ifdef ASTER_DEBUG_CXX
-    AS_ASSERT( dof >= 0 && dof < this->getNumberOfDofs( true ) )
-#endif
+
+    if ( dof < 0 or dof >= this->getNumberOfDofs( true ) ) {
+        throw std::out_of_range( "Invalid node index: " + std::to_string( dof ) );
+    }
+
     _nodeAndComponentsNumberFromDOF->updateValuePointer();
     auto node_id = ( *_nodeAndComponentsNumberFromDOF )[2 * dof] - 1;
     auto cmp = ( *_nodeAndComponentsNumberFromDOF )[2 * dof + 1];

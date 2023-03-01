@@ -150,6 +150,9 @@ subroutine genugl(nume_equa, indirf, modgen, mailsk)
     call jeveuo(nume_equa//'.REFN', 'E', jrefn)
     zk24(jrefn) = mailsk
     zk24(jrefn+1) = 'DEPL_R'
+    call wkvect(nume_equa//'.NEQU', 'G V I', 2, jrefn)
+    zi(jrefn) = nddlt
+    zi(jrefn+1) = nddlt
 
 !
 ! - Create object LIAISON
