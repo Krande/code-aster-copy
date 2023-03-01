@@ -830,10 +830,10 @@ Subclasses of :py:class:`~code_aster.Objects.DataStructure`
 
 
 ********************************************************************************
-:py:class:`~code_aster.Objects.GlobalEquationNumbering` object
+:py:class:`~code_aster.Objects.EquationNumbering` object
 ********************************************************************************
 
-.. autoclass:: code_aster.Objects.GlobalEquationNumbering
+.. autoclass:: code_aster.Objects.EquationNumbering
    :show-inheritance:
    :members:
 
@@ -1172,10 +1172,10 @@ Subclasses of :py:class:`~code_aster.Objects.DataStructure`
 
 
 ********************************************************************************
-:py:class:`~code_aster.Objects.ParallelGlobalEquationNumbering` object
+:py:class:`~code_aster.Objects.ParallelEquationNumbering` object
 ********************************************************************************
 
-.. autoclass:: code_aster.Objects.ParallelGlobalEquationNumbering
+.. autoclass:: code_aster.Objects.ParallelEquationNumbering
    :show-inheritance:
    :members:
 

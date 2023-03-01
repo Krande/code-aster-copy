@@ -1,5 +1,5 @@
 /**
- * @file GlobalEquationNumbering.cxx
+ * @file EquationNumbering.cxx
  * @brief Implementation de DOFNumbering
  * @author Nicolas Sellenet
  * @section LICENCE
@@ -21,11 +21,11 @@
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "Numbering/GeneralizedGlobalEquationNumbering.h"
+#include "Numbering/GeneralizedEquationNumbering.h"
 
 #include "Supervis/ResultNaming.h"
 
-GeneralizedGlobalEquationNumbering::GeneralizedGlobalEquationNumbering( const std::string name )
+GeneralizedEquationNumbering::GeneralizedEquationNumbering( const std::string name )
     : DataStructure( name, 19, "NUME_EQUA_GENE" ),
       _desc( JeveuxVectorLong( getName() + ".DESC" ) ),
       _nequ( JeveuxVectorLong( getName() + ".NEQU" ) ),
@@ -37,5 +37,5 @@ GeneralizedGlobalEquationNumbering::GeneralizedGlobalEquationNumbering( const st
       _indexationVector( getName() + ".NUEQ" ),
       _nodeAndComponentsNumberFromDOF( getName() + ".DEEQ" ){};
 
-GeneralizedGlobalEquationNumbering::GeneralizedGlobalEquationNumbering()
-    : GeneralizedGlobalEquationNumbering( ResultNaming::getNewResultName() ){};
+GeneralizedEquationNumbering::GeneralizedEquationNumbering()
+    : GeneralizedEquationNumbering( ResultNaming::getNewResultName() ){};

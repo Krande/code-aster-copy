@@ -68,7 +68,7 @@ class RestGenePhys(ExecuteCommand):
 
         if "MODE_MECA" in keywords:
             feds += keywords["MODE_MECA"].getFiniteElementDescriptors()
-            fnds += keywords["MODE_MECA"].getGlobalEquationNumberings()
+            fnds += keywords["MODE_MECA"].getEquationNumberings()
 
         resu_gene = keywords["RESU_GENE"]
         if isinstance(

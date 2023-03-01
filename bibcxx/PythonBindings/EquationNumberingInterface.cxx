@@ -22,30 +22,28 @@
  */
 /* person_in_charge: nicolas.sellenet at edf.fr */
 
-#include "PythonBindings/GlobalEquationNumberingInterface.h"
+#include "PythonBindings/EquationNumberingInterface.h"
 
 #include "aster_pybind.h"
 
-void exportGlobalEquationNumberingToPython( py::module_ &mod ) {
+void exportEquationNumberingToPython( py::module_ &mod ) {
 
-    py::class_< GlobalEquationNumbering, GlobalEquationNumberingPtr, DataStructure >(
-        mod, "GlobalEquationNumbering" )
-        .def( py::init( &initFactoryPtr< GlobalEquationNumbering > ) )
-        .def( py::init( &initFactoryPtr< GlobalEquationNumbering, std::string > ) )
-        .def( "getModel", &GlobalEquationNumbering::getModel )
-        .def( "setModel", &GlobalEquationNumbering::setModel )
-        .def( "getMesh", &GlobalEquationNumbering::getMesh )
-        .def( "setMesh", &GlobalEquationNumbering::setMesh )
+    py::class_< EquationNumbering, EquationNumberingPtr, DataStructure >( mod, "EquationNumbering" )
+        .def( py::init( &initFactoryPtr< EquationNumbering > ) )
+        .def( py::init( &initFactoryPtr< EquationNumbering, std::string > ) )
+        .def( "getModel", &EquationNumbering::getModel )
+        .def( "setModel", &EquationNumbering::setModel )
+        .def( "getMesh", &EquationNumbering::getMesh )
+        .def( "setMesh", &EquationNumbering::setMesh )
         // ---------------------------------------------------------------------
-        .def( "useLagrangeMultipliers", &GlobalEquationNumbering::useLagrangeMultipliers, R"(
+        .def( "useLagrangeMultipliers", &EquationNumbering::useLagrangeMultipliers, R"(
 Lagrange multipliers are used for BC or MPC.
 
 Returns:
     bool: *True* if used, *False* otherwise.
         )" )
         // ---------------------------------------------------------------------
-        .def( "useSingleLagrangeMultipliers",
-              &GlobalEquationNumbering::useSingleLagrangeMultipliers,
+        .def( "useSingleLagrangeMultipliers", &EquationNumbering::useSingleLagrangeMultipliers,
               R"(
 Single Lagrange multipliers are used for BC or MPC.
 
@@ -53,7 +51,7 @@ Returns:
     bool: *True* if used, *False* otherwise.
         )" )
         // ---------------------------------------------------------------------
-        .def( "getNumberOfDofs", &GlobalEquationNumbering::getNumberOfDofs,
+        .def( "getNumberOfDofs", &EquationNumbering::getNumberOfDofs,
               R"(
 Returns the number of DOFs.
 
@@ -64,20 +62,19 @@ Returns:
     int: number of DOFs.
         )",
               py::arg( "local" ) = false )
-        .def( "getPhysicalQuantity", &GlobalEquationNumbering::getPhysicalQuantity, R"(
+        .def( "getPhysicalQuantity", &EquationNumbering::getPhysicalQuantity, R"(
 Returns the name of the physical quantity that is numbered.
 
 Returns:
     str: physical quantity name.
         )" )
-        .def( "isParallel", &GlobalEquationNumbering::isParallel, R"(
+        .def( "isParallel", &EquationNumbering::isParallel, R"(
 The numbering is distributed across MPI processes for High Performance Computing.
 
 Returns:
     bool: *True* if used, *False* otherwise.
         )" )
-        .def( "getNodesAndComponentsFromDOF",
-              &GlobalEquationNumbering::getNodesAndComponentsFromDOF, R"(
+        .def( "getNodesAndComponentsFromDOF", &EquationNumbering::getNodesAndComponentsFromDOF, R"(
             Return the list of node id and name of component for each dofs
 
             Arguments:
@@ -88,7 +85,7 @@ Returns:
             )",
               py::arg( "local" ) = true )
         .def( "getNodesAndComponentsNumberFromDOF",
-              &GlobalEquationNumbering::getNodesAndComponentsNumberFromDOF, R"(
+              &EquationNumbering::getNodesAndComponentsNumberFromDOF, R"(
             Return the list of node id and component id for each dofs
 
             Arguments:
@@ -99,7 +96,7 @@ Returns:
             )",
               py::arg( "local" ) = true )
         .def( "getDOFsFromNodesAndComponentsNumber",
-              &GlobalEquationNumbering::getDOFsFromNodesAndComponentsNumber, R"(
+              &EquationNumbering::getDOFsFromNodesAndComponentsNumber, R"(
             Return the dict of dofs with the pair (node id, name id) as keys
 
             Arguments:
@@ -109,8 +106,8 @@ Returns:
                 dict[int, str] : dofs id for each node id and component id
             )",
               py::arg( "local" ) = true )
-        .def( "getDOFsFromNodesAndComponents",
-              &GlobalEquationNumbering::getDOFsFromNodesAndComponents, R"(
+        .def( "getDOFsFromNodesAndComponents", &EquationNumbering::getDOFsFromNodesAndComponents,
+              R"(
            Return the dict of dofs with the pair (node id, component's name) as keys
 
             Arguments:
@@ -120,7 +117,7 @@ Returns:
                 dict[int, str] : dofs id for each node id and component's name
             )",
               py::arg( "local" ) = true )
-        .def( "getComponents", &GlobalEquationNumbering::getComponents, R"(
+        .def( "getComponents", &EquationNumbering::getComponents, R"(
             Get list of components
 
             Returns:

@@ -199,10 +199,10 @@ class Result : public DataStructure, public ListOfTables {
     void setElementaryCharacteristics( const ElementaryCharacteristicsPtr &, ASTERINTEGER index );
 
     /**
-     * @brief Add a existing GlobalEquationNumbering in _fieldBuidler
+     * @brief Add a existing EquationNumbering in _fieldBuidler
      */
-    void addGlobalEquationNumbering( const GlobalEquationNumberingPtr &fond ) {
-        _fieldBuidler.addGlobalEquationNumbering( fond );
+    void addEquationNumbering( const EquationNumberingPtr &fond ) {
+        _fieldBuidler.addEquationNumbering( fond );
     };
 
     /**
@@ -503,10 +503,10 @@ class Result : public DataStructure, public ListOfTables {
      * @todo revoir l'agrandissement de dictOfMapOfFieldOnNodesReal et
      *  dictOfMapOfFieldOnCellsReal
      */
-    virtual bool build( const std::vector< FiniteElementDescriptorPtr > feds =
-                            std::vector< FiniteElementDescriptorPtr >(),
-                        const std::vector< GlobalEquationNumberingPtr > fnds =
-                            std::vector< GlobalEquationNumberingPtr >() );
+    virtual bool
+    build( const std::vector< FiniteElementDescriptorPtr > feds =
+               std::vector< FiniteElementDescriptorPtr >(),
+           const std::vector< EquationNumberingPtr > fnds = std::vector< EquationNumberingPtr >() );
 
     /**
      * @brief Update the  Result's size
@@ -515,7 +515,7 @@ class Result : public DataStructure, public ListOfTables {
 
     std::vector< FiniteElementDescriptorPtr > getFiniteElementDescriptors() const;
 
-    std::vector< GlobalEquationNumberingPtr > getGlobalEquationNumberings() const;
+    std::vector< EquationNumberingPtr > getEquationNumberings() const;
 
     void clear( const ASTERINTEGER &index );
 

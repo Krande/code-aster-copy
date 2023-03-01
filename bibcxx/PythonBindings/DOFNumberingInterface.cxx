@@ -33,7 +33,7 @@ void exportDOFNumberingToPython( py::module_ &mod ) {
         .def( py::init( &initFactoryPtr< DOFNumbering > ) )
         .def( py::init( &initFactoryPtr< DOFNumbering, std::string > ) )
         .def( py::init(
-            &initFactoryPtr< DOFNumbering, std::string, GlobalEquationNumberingPtr, ModelPtr > ) )
+            &initFactoryPtr< DOFNumbering, std::string, EquationNumberingPtr, ModelPtr > ) )
         // ----------------------------------------------------------------------
         .def( "useLagrangeMultipliers", &DOFNumbering::useLagrangeMultipliers, R"(
 Lagrange multipliers are used for BC or MPC.

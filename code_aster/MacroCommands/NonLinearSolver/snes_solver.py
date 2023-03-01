@@ -154,7 +154,7 @@ class SNESSolver:
 
     def _evalFunction(self, snes, X, F):
         # Get the solution increment from PETSc
-        self._primal_incr.fromPetsc(self.phys_pb.getDOFNumbering(), snes.getSolutionUpdate())
+        self._primal_incr.fromPetsc(snes.getSolutionUpdate())
         # Increment the solution
         self._primal_incr.applyLagrangeScaling(1 / self._scaling)
         self.phys_state.primal_step += self._primal_incr

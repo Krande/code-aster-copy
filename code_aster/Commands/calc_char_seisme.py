@@ -43,7 +43,7 @@ class SismicLoading(ExecuteCommand):
         """
 
         nume_ddl = keywords["MATR_MASS"].getDOFNumbering()
-        self._result.setDescription(nume_ddl.getGlobalEquationNumbering())
+        self._result.setDescription(nume_ddl.getEquationNumbering())
 
 
 CALC_CHAR_SEISME = SismicLoading.run

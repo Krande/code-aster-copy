@@ -18,24 +18,24 @@
 # --------------------------------------------------------------------
 
 """
-:py:class:`GlobalEquationNumbering` --- Numbering of equation
+:py:class:`EquationNumbering` --- Numbering of equation
 ********************************************************************
 """
 
 import aster
-from libaster import GlobalEquationNumbering
+from libaster import EquationNumbering
 from ..Objects.Serialization import InternalStateBuilder
 from ..Utilities import injector
 
 
-class GlobalEquationNumberingStateBuilder(InternalStateBuilder):
-    """Class that returns the internal state of a *GlobalEquationNumbering*."""
+class EquationNumberingStateBuilder(InternalStateBuilder):
+    """Class that returns the internal state of a *EquationNumbering*."""
 
     def save(self, nume):
         """Return the internal state of a *Result* to be pickled.
 
         Arguments:
-            nume (*GlobalEquationNumbering*): The *GlobalEquationNumbering* object to be pickled.
+            nume (*EquationNumbering*): The *EquationNumbering* object to be pickled.
 
         Returns:
             *InternalStateBuilder*: The internal state itself.
@@ -59,7 +59,7 @@ class GlobalEquationNumberingStateBuilder(InternalStateBuilder):
             nume.setMesh(self._st["mesh"])
 
 
-@injector(GlobalEquationNumbering)
-class ExtendedGlobalEquationNumbering:
+@injector(EquationNumbering)
+class ExtendedEquationNumbering:
     cata_sdj = "SD.sd_nume_equa.sd_nume_equa"
-    internalStateBuilder = GlobalEquationNumberingStateBuilder
+    internalStateBuilder = EquationNumberingStateBuilder

@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-subroutine vect_asse_from_petsc(vasse, numddl, vecpet, scaling)
+subroutine vect_asse_from_petsc(vasse, nume_equa, vecpet, scaling)
 #include "asterf_types.h"
 #include "asterf_petsc.h"
     use aster_petsc_module
@@ -56,7 +56,7 @@ subroutine vect_asse_from_petsc(vasse, numddl, vecpet, scaling)
     integer(kind=4), intent(in) :: vecpet
 #endif
     character(len=19), intent(inout) :: vasse
-    character(len=14), intent(in) :: numddl
+    character(len=14), intent(in) :: nume_equa
     real(kind=8), intent(in) :: scaling
 #ifdef ASTER_HAVE_MPI
 !
@@ -80,7 +80,7 @@ subroutine vect_asse_from_petsc(vasse, numddl, vecpet, scaling)
 !
     character(len=3) :: chnbjo
     character(len=8) :: k8bid, noma
-    character(len=19) :: nomlig, comm_name, tag_name, pfchno
+    character(len=19) :: nomlig, comm_name, tag_name
     character(len=24) :: nojoinr, nojoine
 !
     PetscOffset :: xidx
@@ -160,13 +160,13 @@ subroutine vect_asse_from_petsc(vasse, numddl, vecpet, scaling)
 !        -- Build the comm grpah
         comm_name = '&&CPYSOL.COMM'
         tag_name = '&&CPYSOL.TAG'
-        call create_graph_comm(numddl, "NUME_DDL", nb_comm, comm_name, tag_name)
+        call create_graph_comm(nume_equa, "NUME_EQUA", nb_comm, comm_name, tag_name)
         call jeveuo(comm_name, 'L', vi=v_comm)
         call jeveuo(tag_name, 'L', vi=v_tag)
 !
-        call jeveuo(numddl//'.NUME.NULG', 'L', jnulg)
-        call jeveuo(numddl//'.NUME.PDDL', 'L', jprddl)
-        call jeveuo(numddl//'.NUME.NEQU', 'L', jnequ)
+        call jeveuo(nume_equa//'.NULG', 'L', jnulg)
+        call jeveuo(nume_equa//'.PDDL', 'L', jprddl)
+        call jeveuo(nume_equa//'.NEQU', 'L', jnequ)
         nloc = zi(jnequ)
 
         call VecGetOwnershipRange(vecpet, low, high, ierr)
@@ -186,8 +186,8 @@ subroutine vect_asse_from_petsc(vasse, numddl, vecpet, scaling)
         do iaux = 1, nb_comm
             numpro = v_comm(iaux)
             call codlet(numpro, 'G', chnbjo)
-            nojoinr = numddl//'.NUMER'//chnbjo
-            nojoine = numddl//'.NUMEE'//chnbjo
+            nojoinr = nume_equa//'R'//chnbjo
+            nojoine = nume_equa//'E'//chnbjo
             call jeexin(nojoine, iret1)
             call jeexin(nojoinr, iret2)
             lgrecep = 0
@@ -237,19 +237,19 @@ subroutine vect_asse_from_petsc(vasse, numddl, vecpet, scaling)
         call jedetr(tag_name)
 
 !   Retrieve .PRNO and .NUME adresses
-        call jeveuo(numddl//'.NUME.PRNO', 'E', idprn1)
-        call jeveuo(jexatr(numddl//'.NUME.PRNO', 'LONCUM'), 'L', idprn2)
+        call jeveuo(nume_equa//'.PRNO', 'E', idprn1)
+        call jeveuo(jexatr(nume_equa//'.PRNO', 'LONCUM'), 'L', idprn2)
 
 !   Retrieve the name of the mesh in order to
-        call jeveuo(numddl//'.NUME.REFN', 'L', jrefn)
+        call jeveuo(nume_equa//'.REFN', 'L', jrefn)
         noma = zk24(jrefn) (1:8)
 
 !   !!! Check that no Super Elements exist in the model
-        call dismoi('NUM_GD_SI', numddl, 'NUME_DDL', repi=gd)
+        call dismoi('NUM_GD_SI', nume_equa, 'NUME_EQUA', repi=gd)
         nec = nbec(gd)
-        call jelira(numddl//'.NUME.PRNO', 'NMAXOC', nlili, k8bid)
+        call jelira(nume_equa//'.PRNO', 'NMAXOC', nlili, k8bid)
         do ili = 2, nlili
-            call jenuno(jexnum(numddl//'.NUME.LILI', ili), nomlig)
+            call jenuno(jexnum(nume_equa//'.LILI', ili), nomlig)
             call create_graph_comm(nomlig, "LIGREL", nb_comm, comm_name, tag_name)
             call jeveuo(comm_name, 'L', vi=v_comm)
             call jeveuo(tag_name, 'L', vi=v_tag)
@@ -320,12 +320,12 @@ subroutine vect_asse_from_petsc(vasse, numddl, vecpet, scaling)
 ! -- debug
         if (ldebug) then
             print *, "DEBUG IN vect_asse_from_petsc"
-            call jeexin(numddl//'.NUME.NULS', iret)
+            call jeexin(nume_equa//'.NULS', iret)
             if (iret == 0) then
-                call crnustd(numddl)
+                call crnustd(nume_equa)
             end if
-            call jeveuo(numddl//'.NUME.NULS', 'L', vi=v_nuls)
-            call jeveuo(numddl//'.NUME.DEEG', 'L', vi=v_deeg)
+            call jeveuo(nume_equa//'.NULS', 'L', vi=v_nuls)
+            call jeveuo(nume_equa//'.DEEG', 'L', vi=v_deeg)
             do iaux = 1, nloc
                 if (zi(jprddl+iaux-1) .eq. rang) then
                     nuno1 = v_deeg(2*(iaux-1)+1)
@@ -341,8 +341,7 @@ subroutine vect_asse_from_petsc(vasse, numddl, vecpet, scaling)
 
 !   Scale the Lagrange multipliers
     call jelira(vasse//'.VALE', 'LONMAX', neq)
-    call dismoi('NUME_EQUA', vasse, 'CHAM_NO', repk=pfchno)
-    call jeveuo(pfchno//'.DEEQ', 'L', vi=deeq)
+    call jeveuo(nume_equa//'.DEEQ', 'L', vi=deeq)
     do ieq = 1, neq
         if (deeq(2*(ieq-1)+2) .le. 0) then
             vale(ieq) = scaling*vale(ieq)

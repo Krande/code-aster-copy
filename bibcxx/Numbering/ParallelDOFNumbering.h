@@ -32,7 +32,7 @@
 /* person_in_charge: nicolas.sellenet at edf.fr */
 
 #include "Numbering/BaseDOFNumbering.h"
-#include "Numbering/ParallelGlobalEquationNumbering.h"
+#include "Numbering/ParallelEquationNumbering.h"
 
 #include <unordered_map>
 
@@ -44,7 +44,7 @@
 class ParallelDOFNumbering : public BaseDOFNumbering {
   private:
     /** @brief Objet '.NUME' */
-    ParallelGlobalEquationNumberingPtr _globalNumbering;
+    ParallelEquationNumberingPtr _globalNumbering;
 
   public:
     /**
@@ -58,7 +58,7 @@ class ParallelDOFNumbering : public BaseDOFNumbering {
      */
     ParallelDOFNumbering();
 
-    ParallelDOFNumbering( const std::string name, const ParallelGlobalEquationNumberingPtr fdof,
+    ParallelDOFNumbering( const std::string name, const ParallelEquationNumberingPtr fdof,
                           const ModelPtr model );
 
     /**
@@ -68,9 +68,9 @@ class ParallelDOFNumbering : public BaseDOFNumbering {
     ParallelDOFNumbering( const std::string &name );
 
     /**
-     * @brief Returns the GlobalEquationNumberingPtr
+     * @brief Returns the EquationNumberingPtr
      */
-    GlobalEquationNumberingPtr getGlobalEquationNumbering() const { return _globalNumbering; };
+    EquationNumberingPtr getEquationNumbering() const { return _globalNumbering; };
 
     std::string getPhysicalQuantity() const { return _globalNumbering->getPhysicalQuantity(); };
 

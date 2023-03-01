@@ -32,7 +32,7 @@
 
 DOFNumbering::DOFNumbering() : DOFNumbering( ResultNaming::getNewResultName() ){};
 
-DOFNumbering::DOFNumbering( const std::string name, const GlobalEquationNumberingPtr globNume,
+DOFNumbering::DOFNumbering( const std::string name, const EquationNumberingPtr globNume,
                             const ModelPtr model )
     : BaseDOFNumbering( name, "NUME_DDL" ), _globalNumbering( globNume ) {
     setModel( model );
@@ -40,44 +40,44 @@ DOFNumbering::DOFNumbering( const std::string name, const GlobalEquationNumberin
 
 DOFNumbering::DOFNumbering( const std::string name )
     : BaseDOFNumbering( name, "NUME_DDL" ),
-      _globalNumbering( std::make_shared< GlobalEquationNumbering >( getName() + ".NUME" ) ){};
+      _globalNumbering( std::make_shared< EquationNumbering >( getName() + ".NUME" ) ){};
 
 bool DOFNumbering::useLagrangeMultipliers() const {
-    return getGlobalEquationNumbering()->useLagrangeMultipliers();
+    return getEquationNumbering()->useLagrangeMultipliers();
 };
 
 bool DOFNumbering::useSingleLagrangeMultipliers() const {
-    return getGlobalEquationNumbering()->useSingleLagrangeMultipliers();
+    return getEquationNumbering()->useSingleLagrangeMultipliers();
 };
 
 VectorLong DOFNumbering::getRowsAssociatedToPhysicalDofs( const bool local ) const {
-    return getGlobalEquationNumbering()->getRowsAssociatedToPhysicalDofs( local );
+    return getEquationNumbering()->getRowsAssociatedToPhysicalDofs( local );
 };
 
 VectorLong DOFNumbering::getRowsAssociatedToLagrangeMultipliers( const bool local ) const {
-    return getGlobalEquationNumbering()->getRowsAssociatedToLagrangeMultipliers( local );
+    return getEquationNumbering()->getRowsAssociatedToLagrangeMultipliers( local );
 };
 
 std::string DOFNumbering::getComponentAssociatedToRow( const ASTERINTEGER row,
                                                        const bool local ) const {
-    return getGlobalEquationNumbering()->getComponentAssociatedToRow( row, local );
+    return getEquationNumbering()->getComponentAssociatedToRow( row, local );
 };
 
 ASTERINTEGER DOFNumbering::getNodeAssociatedToRow( const ASTERINTEGER row,
                                                    const bool local ) const {
-    return getGlobalEquationNumbering()->getNodeAssociatedToRow( row, local );
+    return getEquationNumbering()->getNodeAssociatedToRow( row, local );
 };
 
 bool DOFNumbering::isRowAssociatedToPhysical( const ASTERINTEGER row, const bool local ) const {
-    return getGlobalEquationNumbering()->isRowAssociatedToPhysical( row, local );
+    return getEquationNumbering()->isRowAssociatedToPhysical( row, local );
 };
 
 ASTERINTEGER DOFNumbering::getNumberOfDofs( const bool local ) const {
-    return getGlobalEquationNumbering()->getNumberOfDofs();
+    return getEquationNumbering()->getNumberOfDofs();
 };
 
 VectorString DOFNumbering::getComponents() const {
-    return getGlobalEquationNumbering()->getComponents();
+    return getEquationNumbering()->getComponents();
 };
 
 VectorString DOFNumbering::getComponentsAssociatedToNode( const ASTERINTEGER node,

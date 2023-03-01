@@ -77,7 +77,7 @@ class NonLinearStaticAnalysis(ExecuteCommand):
 
             if "EVOL_NOLI" in etat:
                 feds += etat["EVOL_NOLI"].getFiniteElementDescriptors()
-                fnds += etat["EVOL_NOLI"].getGlobalEquationNumberings()
+                fnds += etat["EVOL_NOLI"].getEquationNumberings()
 
         self._result.build(feds, fnds)
 

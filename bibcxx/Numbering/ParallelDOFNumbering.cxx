@@ -36,7 +36,7 @@ ParallelDOFNumbering::ParallelDOFNumbering()
     : ParallelDOFNumbering( ResultNaming::getNewResultName() ){};
 
 ParallelDOFNumbering::ParallelDOFNumbering( const std::string name,
-                                            const ParallelGlobalEquationNumberingPtr globNume,
+                                            const ParallelEquationNumberingPtr globNume,
                                             const ModelPtr model )
     : BaseDOFNumbering( name, "NUME_DDL_P" ), _globalNumbering( globNume ) {
     setModel( model );
@@ -44,8 +44,7 @@ ParallelDOFNumbering::ParallelDOFNumbering( const std::string name,
 
 ParallelDOFNumbering::ParallelDOFNumbering( const std::string &name )
     : BaseDOFNumbering( name, "NUME_DDL_P" ),
-      _globalNumbering(
-          std::make_shared< ParallelGlobalEquationNumbering >( getName() + ".NUME" ) ){};
+      _globalNumbering( std::make_shared< ParallelEquationNumbering >( getName() + ".NUME" ) ){};
 
 bool ParallelDOFNumbering::useLagrangeMultipliers() const {
     return _globalNumbering->useLagrangeMultipliers();

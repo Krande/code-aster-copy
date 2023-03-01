@@ -46,7 +46,7 @@ class ProdMatrCham(ExecuteCommand):
         mat = keywords["MATR_ASSE"]
 
         dofNum = mat.getDOFNumbering()
-        self._result.setDescription(dofNum.getGlobalEquationNumbering())
+        self._result.setDescription(dofNum.getEquationNumbering())
         self._result.setMesh(dofNum.getMesh())
 
         self._result.build()

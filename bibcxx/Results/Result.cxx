@@ -520,13 +520,13 @@ FieldOnNodesComplexPtr Result::getFieldOnNodesComplex( const std::string name,
 void Result::setField( const FieldOnNodesRealPtr field, const std::string &name,
                        const ASTERINTEGER index ) {
     _setFieldBase( name, index, field, _dictOfMapOfFieldOnNodesReal );
-    _fieldBuidler.addGlobalEquationNumbering( field->getDescription() );
+    _fieldBuidler.addEquationNumbering( field->getDescription() );
 };
 
 void Result::setField( const FieldOnNodesComplexPtr field, const std::string &name,
                        const ASTERINTEGER index ) {
     _setFieldBase( name, index, field, _dictOfMapOfFieldOnNodesComplex );
-    _fieldBuidler.addGlobalEquationNumbering( field->getDescription() );
+    _fieldBuidler.addEquationNumbering( field->getDescription() );
 };
 
 void Result::setField( const FieldOnCellsRealPtr field, const std::string &name,
@@ -631,7 +631,7 @@ bool Result::addFiniteElementDescriptor( const FiniteElementDescriptorPtr curFED
 }
 
 bool Result::build( const std::vector< FiniteElementDescriptorPtr > feds,
-                    const std::vector< GlobalEquationNumberingPtr > fnds ) {
+                    const std::vector< EquationNumberingPtr > fnds ) {
     CALL_JEMARQ();
     _serialNumber->updateValuePointer();
 
@@ -645,7 +645,7 @@ bool Result::build( const std::vector< FiniteElementDescriptorPtr > feds,
     }
 
     for ( auto &fnd : fnds ) {
-        _fieldBuidler.addGlobalEquationNumbering( fnd );
+        _fieldBuidler.addEquationNumbering( fnd );
     }
 
     ASTERINTEGER cmpt = 1;
@@ -872,6 +872,6 @@ std::vector< FiniteElementDescriptorPtr > Result::getFiniteElementDescriptors() 
     return _fieldBuidler.getFiniteElementDescriptors();
 };
 
-std::vector< GlobalEquationNumberingPtr > Result::getGlobalEquationNumberings() const {
-    return _fieldBuidler.getGlobalEquationNumberings();
+std::vector< EquationNumberingPtr > Result::getEquationNumberings() const {
+    return _fieldBuidler.getEquationNumberings();
 };

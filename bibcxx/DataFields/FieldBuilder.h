@@ -31,17 +31,17 @@
 #include "Meshes/BaseMesh.h"
 #include "Modeling/FiniteElementDescriptor.h"
 #include "Numbering/DOFNumbering.h"
-#include "Numbering/GeneralizedGlobalEquationNumbering.h"
+#include "Numbering/GeneralizedEquationNumbering.h"
 
 /**
  * @class FieldBuilder
  * @brief This class builds FieldOnNodes and FieldOnCells with respect of
- *        GlobalEquationNumbering and FiniteElementDescriptor
+ *        EquationNumbering and FiniteElementDescriptor
  * @author Nicolas Sellenet
  */
 class FieldBuilder {
 private:
-  std::map<std::string, GlobalEquationNumberingPtr> _mapGlobNume;
+  std::map<std::string, EquationNumberingPtr> _mapGlobNume;
   std::map<std::string, FiniteElementDescriptorPtr> _mapLigrel;
 
   // I use them to debug easily mutiple creation
@@ -66,33 +66,33 @@ private:
   };
 
   /**
-   * @brief Add a existing GlobalEquationNumbering in FieldBuilder
+   * @brief Add a existing EquationNumbering in FieldBuilder
    */
-  GlobalEquationNumberingPtr
-  newGlobalEquationNumbering(const std::string &name, const BaseMeshPtr mesh) {
+  EquationNumberingPtr newEquationNumbering(const std::string &name,
+                                            const BaseMeshPtr mesh) {
     if (_setGlobNume.count(trim(name)) > 0) {
       raiseAsterError("NUME_EQUA already exists: " + name);
     }
 
-    auto curDesc = std::make_shared<GlobalEquationNumbering>(name);
+    auto curDesc = std::make_shared<EquationNumbering>(name);
     curDesc->setMesh(mesh);
 
-    addGlobalEquationNumbering(curDesc);
+    addEquationNumbering(curDesc);
 
     return curDesc;
   };
 
   /**
-   * @brief Add a existing generalizedGlobalEquationNumbering in FieldBuilder
+   * @brief Add a existing generalizedEquationNumbering in FieldBuilder
    */
-  GeneralizedGlobalEquationNumberingPtr
-  newGeneralizedGlobalEquationNumbering(const std::string &name) {
+  GeneralizedEquationNumberingPtr
+  newGeneralizedEquationNumbering(const std::string &name) {
     AS_ABORT(name);
     if (_setGlobNume.count(trim(name)) > 0) {
       raiseAsterError("nume_equa_gene already exists: " + name);
     }
 
-    auto curDesc = std::make_shared<GeneralizedGlobalEquationNumbering>(name);
+    auto curDesc = std::make_shared<GeneralizedEquationNumbering>(name);
 
     return curDesc;
   };
@@ -104,9 +104,9 @@ public:
   FieldBuilder(){};
 
   /**
-   * @brief Add a existing GlobalEquationNumbering in FieldBuilder
+   * @brief Add a existing EquationNumbering in FieldBuilder
    */
-  void addGlobalEquationNumbering(const GlobalEquationNumberingPtr &fond) {
+  void addEquationNumbering(const EquationNumberingPtr &fond) {
     AS_ASSERT(fond);
 
     _mapGlobNume[trim(fond->getName())] = fond;
@@ -169,7 +169,7 @@ public:
   };
 
   /**
-   * @brief Build a FieldOnNodes with a GlobalEquationNumbering
+   * @brief Build a FieldOnNodes with a EquationNumbering
    */
   template <typename ValueType>
   std::shared_ptr<FieldOnNodes<ValueType>>
@@ -182,11 +182,11 @@ public:
     AS_ASSERT(!globNume.empty());
 
     auto curIter = _mapGlobNume.find(globNume);
-    GlobalEquationNumberingPtr curDesc;
+    EquationNumberingPtr curDesc;
     if (curIter != _mapGlobNume.end())
       curDesc = curIter->second;
     else {
-      curDesc = newGlobalEquationNumbering(globNume, mesh);
+      curDesc = newEquationNumbering(globNume, mesh);
     }
     field->setDescription(curDesc);
 
@@ -202,8 +202,8 @@ public:
     return ret;
   };
 
-  std::vector<GlobalEquationNumberingPtr> getGlobalEquationNumberings() const {
-    std::vector<GlobalEquationNumberingPtr> ret;
+  std::vector<EquationNumberingPtr> getEquationNumberings() const {
+    std::vector<EquationNumberingPtr> ret;
 
     for (auto &[name, fnd] : _mapGlobNume)
       ret.push_back(fnd);

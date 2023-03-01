@@ -62,7 +62,7 @@ class FieldProjector(ExecuteCommand):
             if isinstance(self._result, FullResult):
                 self._result.setDOFNumbering(dofNum)
             else:
-                self._result.addGlobalEquationNumbering(dofNum.getGlobalEquationNumbering())
+                self._result.addEquationNumbering(dofNum.getEquationNumbering())
 
         if "RESULTAT" in keywords:
             if "MODELE_2" in keywords:

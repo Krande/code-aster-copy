@@ -46,11 +46,9 @@ Crack::Crack( const std::string name )
       _basNof( JeveuxVectorReal( getName() + ".BASNOF" ) ),
       _coorfond( JeveuxVectorReal( getName() + ".COORFOND" ) ),
       _absfon( JeveuxVectorReal( getName() + ".ABSFON" ) ) {
-    _ltno->setDescription(
-        std::make_shared< GlobalEquationNumbering >( getName() + ".LTNO.NUMEQ" ) );
+    _ltno->setDescription( std::make_shared< EquationNumbering >( getName() + ".LTNO.NUMEQ" ) );
     _lnno->setDescription( _ltno->getDescription() );
-    _basLoc->setDescription(
-        std::make_shared< GlobalEquationNumbering >( getName() + ".BASL.NUMEQ" ) );
+    _basLoc->setDescription( std::make_shared< EquationNumbering >( getName() + ".BASL.NUMEQ" ) );
 };
 
 void Crack::updateValuePointers() {

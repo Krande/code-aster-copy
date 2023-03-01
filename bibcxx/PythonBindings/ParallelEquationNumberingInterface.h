@@ -25,6 +25,6 @@
 #include "aster_pybind.h"
 #include "astercxx.h"
 
-#include "Numbering/GlobalEquationNumbering.h"
+#include "Numbering/ParallelEquationNumbering.h"
 
-void exportGlobalEquationNumberingToPython( py::module_ &mod );
+void exportParallelEquationNumberingToPython( py::module_ &mod );

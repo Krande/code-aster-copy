@@ -131,7 +131,7 @@ class RestSousStrucOper(ExecuteCommand):
             if modeMeca is not None:
                 dofNum = modeMeca.getDOFNumbering()
                 if dofNum:
-                    fnds.append(dofNum.getGlobalEquationNumbering())
+                    fnds.append(dofNum.getEquationNumbering())
             self._result.setMesh(squelette)
 
         if self._result.getMesh():

@@ -61,7 +61,7 @@ from .generalizedassemblyvector_ext import (
     GeneralizedAssemblyVectorReal,
 )
 from .generalizedmodel_ext import GeneralizedModel
-from .globalequationnumbering_ext import GlobalEquationNumbering
+from .globalequationnumbering_ext import EquationNumbering
 from .linearsolver_ext import (
     GcpcSolver,
     LdltSolver,
@@ -81,7 +81,7 @@ from .meshcoordinatesfield_ext import MeshCoordinatesField
 from .model_ext import Model
 from .moderesult_ext import ModeResult
 from .paralleldofnumbering_ext import ParallelDOFNumbering
-from .parallelglobalequationnumbering import ParallelGlobalEquationNumbering
+from .parallelglobalequationnumbering import ParallelEquationNumbering
 from .parallelmechanicalload_ext import ParallelMechanicalLoadReal, ParallelMechanicalLoadFunction
 from .parallelmesh_ext import ConnectionMesh, ParallelMesh
 from .prestressingcable_ext import PrestressingCable

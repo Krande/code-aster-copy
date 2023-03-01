@@ -140,7 +140,7 @@ class ResultCreator(ExecuteCommand):
                 if keywords["TYPE_RESU"] == "DYNA_TRANS":
                     self._result.setDOFNumbering(dofNum)
                 else:
-                    fnds.append(dofNum.getGlobalEquationNumbering())
+                    fnds.append(dofNum.getEquationNumbering())
         if keywords.get("CONV_RESU"):
             self._result.setModel(keywords["CONV_RESU"]["RESU_INIT"].getModel())
             matr_rigi = keywords["CONV_RESU"].get("MATR_RIGI")
@@ -152,12 +152,12 @@ class ResultCreator(ExecuteCommand):
                 if keywords["TYPE_RESU"] == "DYNA_TRANS":
                     self._result.setDOFNumbering(dofNum)
                 else:
-                    fnds.append(dofNum.getGlobalEquationNumbering())
+                    fnds.append(dofNum.getEquationNumbering())
         if keywords.get("KUCV"):
             self._result.setModel(keywords["KUCV"]["RESU_INIT"].getModel())
             dofNum = keywords["KUCV"]["MATR_AMOR"].getDOFNumbering()
             if dofNum:
-                fnds.append(dofNum.getGlobalEquationNumbering())
+                fnds.append(dofNum.getEquationNumbering())
         if keywords.get("PROL_RTZ"):
             self._result.setMesh(keywords["PROL_RTZ"]["MAILLAGE_FINAL"])
 

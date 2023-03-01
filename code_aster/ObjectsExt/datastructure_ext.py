@@ -144,7 +144,7 @@ DICT_SDJ = {
     "ElementaryVectorPressureComplex": "SD.sd_vect_elem.sd_vect_elem",
     "ElementaryVectorTemperatureReal": "SD.sd_vect_elem.sd_vect_elem",
     "FiberGeometry": "SD.sd_gfibre.sd_gfibre",
-    "GlobalEquationNumbering": "SD.sd_nume_equa.sd_nume_equa",
+    "EquationNumbering": "SD.sd_nume_equa.sd_nume_equa",
     "FluidStructureInteraction": "SD.sd_type_flui_stru.sd_type_flui_stru",
     "FluidStructureModalBasis": "SD.sd_melasflu.sd_melasflu",
     "FullHarmonicAcousticResult": "SD.sd_dyna_phys.sd_dyna_phys",

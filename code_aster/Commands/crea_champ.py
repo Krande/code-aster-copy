@@ -104,7 +104,7 @@ class FieldCreator(ExecuteCommand):
             else:
                 raise NotImplementedError("Output for CREA_CHAMP not defined")
             if numeDdl is not None:
-                self._result.setDescription(numeDdl.getGlobalEquationNumbering())
+                self._result.setDescription(numeDdl.getEquationNumbering())
         else:
             if typ == "R":
                 self._result = FieldOnCellsReal()

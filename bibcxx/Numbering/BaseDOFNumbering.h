@@ -51,7 +51,7 @@
 #include "Meshes/BaseMesh.h"
 #include "Modeling/FiniteElementDescriptor.h"
 #include "Modeling/Model.h"
-#include "Numbering/GlobalEquationNumbering.h"
+#include "Numbering/EquationNumbering.h"
 
 #pragma once
 
@@ -290,9 +290,9 @@ class BaseDOFNumbering : public DataStructure {
     typedef std::shared_ptr< BaseDOFNumbering > BaseDOFNumberingPtr;
 
     /**
-     * @brief Returns the GlobalEquationNumberingPtr
+     * @brief Returns the EquationNumberingPtr
      */
-    virtual GlobalEquationNumberingPtr getGlobalEquationNumbering() const = 0;
+    virtual EquationNumberingPtr getEquationNumbering() const = 0;
 
     virtual std::string getPhysicalQuantity() const = 0;
 

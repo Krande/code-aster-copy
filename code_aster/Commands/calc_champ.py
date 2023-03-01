@@ -76,8 +76,8 @@ class ComputeAdditionalField(ExecuteCommand):
 
             for fED in keywords["RESULTAT"].getFiniteElementDescriptors():
                 self._result.addFiniteElementDescriptor(fED)
-            for fOND in keywords["RESULTAT"].getGlobalEquationNumberings():
-                self._result.addGlobalEquationNumbering(fOND)
+            for fOND in keywords["RESULTAT"].getEquationNumberings():
+                self._result.addEquationNumbering(fOND)
             mesh = keywords["RESULTAT"].getMesh()
             if mesh is not None:
                 self._result.setMesh(mesh)

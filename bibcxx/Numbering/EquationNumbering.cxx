@@ -1,6 +1,6 @@
 /**
- * @file GlobalEquationNumbering.cxx
- * @brief Implementation de GlobalEquationNumbering
+ * @file EquationNumbering.cxx
+ * @brief Implementation de EquationNumbering
  * @author Nicolas Sellenet
  * @section LICENCE
  *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
@@ -21,7 +21,7 @@
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "Numbering/GlobalEquationNumbering.h"
+#include "Numbering/EquationNumbering.h"
 
 #include "aster_fort_calcul.h"
 #include "astercxx.h"
@@ -32,8 +32,8 @@
 #include "Supervis/ResultNaming.h"
 #include "Utilities/Tools.h"
 
-GlobalEquationNumbering::GlobalEquationNumbering( const std::string &baseName )
-    : BaseGlobalEquationNumbering( baseName ),
+EquationNumbering::EquationNumbering( const std::string &baseName )
+    : BaseEquationNumbering( baseName ),
       _numberOfEquations( getName() + ".NEQU" ),
       _informations( getName() + ".REFN" ),
       _lagrangianInformations( getName() + ".DELG" ),
@@ -44,14 +44,13 @@ GlobalEquationNumbering::GlobalEquationNumbering( const std::string &baseName )
       _mesh( nullptr ),
       _model( nullptr ){};
 
-GlobalEquationNumbering::GlobalEquationNumbering()
-    : GlobalEquationNumbering( DataStructureNaming::getNewName() ){};
+EquationNumbering::EquationNumbering() : EquationNumbering( DataStructureNaming::getNewName() ){};
 
-bool GlobalEquationNumbering::exists() const {
+bool EquationNumbering::exists() const {
     return _informations.exists() && _componentsOnNodes.exists() && _indexationVector.exists();
 };
 
-void GlobalEquationNumbering::GlobalEquationNumbering::setModel( const ModelPtr &model ) {
+void EquationNumbering::EquationNumbering::setModel( const ModelPtr &model ) {
     if ( model && exists() ) {
         _informations->updateValuePointer();
         const auto modelName = std::string( ( *_informations )[2].toString(), 0, 8 );
@@ -63,7 +62,7 @@ void GlobalEquationNumbering::GlobalEquationNumbering::setModel( const ModelPtr 
     }
 };
 
-void GlobalEquationNumbering::GlobalEquationNumbering::setMesh( const BaseMeshPtr &mesh ) {
+void EquationNumbering::EquationNumbering::setMesh( const BaseMeshPtr &mesh ) {
     if ( mesh && exists() ) {
         _informations->updateValuePointer();
         const auto meshName = std::string( ( *_informations )[0].toString(), 0, 8 );
@@ -74,13 +73,13 @@ void GlobalEquationNumbering::GlobalEquationNumbering::setMesh( const BaseMeshPt
     }
 };
 
-std::string GlobalEquationNumbering::getPhysicalQuantity() const {
+std::string EquationNumbering::getPhysicalQuantity() const {
     _informations->updateValuePointer();
     JeveuxChar24 physicalQuantity = ( *_informations )[1];
     return physicalQuantity.rstrip();
 };
 
-bool GlobalEquationNumbering::useLagrangeMultipliers() const {
+bool EquationNumbering::useLagrangeMultipliers() const {
     const std::string typeco( "NUME_EQUA" );
     ASTERINTEGER repi = 0, ier = 0;
     JeveuxChar32 repk( " " );
@@ -94,7 +93,7 @@ bool GlobalEquationNumbering::useLagrangeMultipliers() const {
     return false;
 };
 
-bool GlobalEquationNumbering::useSingleLagrangeMultipliers() const {
+bool EquationNumbering::useSingleLagrangeMultipliers() const {
     const std::string typeco( "NUME_EQUA" );
     ASTERINTEGER repi = 0, ier = 0;
     JeveuxChar32 repk( " " );
@@ -109,12 +108,11 @@ bool GlobalEquationNumbering::useSingleLagrangeMultipliers() const {
 };
 
 ASTERINTEGER
-GlobalEquationNumbering::getNumberOfDofs( const bool local ) const {
+EquationNumbering::getNumberOfDofs( const bool local ) const {
     return _nodeAndComponentsNumberFromDOF->size() / 2;
 };
 
-std::map< ASTERINTEGER, std::string >
-GlobalEquationNumbering::_getAllComponentsNumber2Name() const {
+std::map< ASTERINTEGER, std::string > EquationNumbering::_getAllComponentsNumber2Name() const {
     const std::string typeco( "NUME_EQUA" );
     ASTERINTEGER repi = 0, ier = 0;
     JeveuxChar32 repk( " " );
@@ -137,7 +135,7 @@ GlobalEquationNumbering::_getAllComponentsNumber2Name() const {
     return ret;
 };
 
-VectorString GlobalEquationNumbering::getComponents() const {
+VectorString EquationNumbering::getComponents() const {
     SetString ret;
 
     auto number2name = this->getComponentsNumber2Name();
@@ -149,7 +147,7 @@ VectorString GlobalEquationNumbering::getComponents() const {
     return toVector( ret );
 };
 
-SetLong GlobalEquationNumbering::getComponentsNumber() const {
+SetLong EquationNumbering::getComponentsNumber() const {
     auto ret = this->getNodesAndComponentsNumberFromDOF( true );
 
     SetLong cmpIds;
@@ -163,7 +161,7 @@ SetLong GlobalEquationNumbering::getComponentsNumber() const {
 /**
  * @brief Maps between name of components and the nimber
  */
-std::map< std::string, ASTERINTEGER > GlobalEquationNumbering::getComponentsName2Number() const {
+std::map< std::string, ASTERINTEGER > EquationNumbering::getComponentsName2Number() const {
     std::map< std::string, ASTERINTEGER > ret;
 
     auto number2name = this->getComponentsNumber2Name();
@@ -174,7 +172,7 @@ std::map< std::string, ASTERINTEGER > GlobalEquationNumbering::getComponentsName
     return ret;
 };
 
-std::map< ASTERINTEGER, std::string > GlobalEquationNumbering::getComponentsNumber2Name() const {
+std::map< ASTERINTEGER, std::string > EquationNumbering::getComponentsNumber2Name() const {
     std::map< ASTERINTEGER, std::string > ret;
 
     auto an2n = this->_getAllComponentsNumber2Name();
@@ -187,7 +185,7 @@ std::map< ASTERINTEGER, std::string > GlobalEquationNumbering::getComponentsNumb
     return ret;
 };
 
-VectorLong GlobalEquationNumbering::getNodesFromDOF() const {
+VectorLong EquationNumbering::getNodesFromDOF() const {
     _nodeAndComponentsNumberFromDOF->updateValuePointer();
     const ASTERINTEGER nb_eq = this->getNumberOfDofs( true );
 
@@ -200,8 +198,7 @@ VectorLong GlobalEquationNumbering::getNodesFromDOF() const {
     return nodes;
 }
 
-VectorPairLong
-GlobalEquationNumbering::getNodesAndComponentsNumberFromDOF( const bool local ) const {
+VectorPairLong EquationNumbering::getNodesAndComponentsNumberFromDOF( const bool local ) const {
     const ASTERINTEGER nb_eq = this->getNumberOfDofs( true );
 
     VectorPairLong ret;
@@ -220,8 +217,8 @@ GlobalEquationNumbering::getNodesAndComponentsNumberFromDOF( const bool local ) 
     return ret;
 };
 
-PairLong GlobalEquationNumbering::getNodeAndComponentNumberFromDOF( const ASTERINTEGER dof,
-                                                                    const bool local ) const {
+PairLong EquationNumbering::getNodeAndComponentNumberFromDOF( const ASTERINTEGER dof,
+                                                              const bool local ) const {
 
     if ( dof < 0 or dof >= this->getNumberOfDofs( true ) ) {
         throw std::out_of_range( "Invalid node index: " + std::to_string( dof ) );
@@ -238,7 +235,7 @@ PairLong GlobalEquationNumbering::getNodeAndComponentNumberFromDOF( const ASTERI
 };
 
 std::vector< std::pair< ASTERINTEGER, std::string > >
-GlobalEquationNumbering::getNodesAndComponentsFromDOF( const bool local ) const {
+EquationNumbering::getNodesAndComponentsFromDOF( const bool local ) const {
     auto nodesAndComponentsNumberFromDOF = this->getNodesAndComponentsNumberFromDOF( local );
 
     const ASTERINTEGER nb_eq = this->getNumberOfDofs( true );
@@ -255,8 +252,7 @@ GlobalEquationNumbering::getNodesAndComponentsFromDOF( const bool local ) const 
 };
 
 std::pair< ASTERINTEGER, std::string >
-GlobalEquationNumbering::getNodeAndComponentFromDOF( const ASTERINTEGER dof,
-                                                     const bool local ) const {
+EquationNumbering::getNodeAndComponentFromDOF( const ASTERINTEGER dof, const bool local ) const {
     auto [nodeId, cmpId] = this->getNodeAndComponentNumberFromDOF( dof, local );
     auto num2name = this->_getAllComponentsNumber2Name();
 
@@ -264,7 +260,7 @@ GlobalEquationNumbering::getNodeAndComponentFromDOF( const ASTERINTEGER dof,
 };
 
 std::map< PairLong, ASTERINTEGER >
-GlobalEquationNumbering::getDOFsFromNodesAndComponentsNumber( const bool local ) const {
+EquationNumbering::getDOFsFromNodesAndComponentsNumber( const bool local ) const {
     auto descr = this->getNodesAndComponentsNumberFromDOF( local );
 
     std::map< PairLong, ASTERINTEGER > ret;
@@ -279,7 +275,7 @@ GlobalEquationNumbering::getDOFsFromNodesAndComponentsNumber( const bool local )
 };
 
 std::map< std::pair< ASTERINTEGER, std::string >, ASTERINTEGER >
-GlobalEquationNumbering::getDOFsFromNodesAndComponents( const bool local ) const {
+EquationNumbering::getDOFsFromNodesAndComponents( const bool local ) const {
     auto descr = this->getNodesAndComponentsFromDOF( local );
 
     std::map< std::pair< ASTERINTEGER, std::string >, ASTERINTEGER > ret;
@@ -293,8 +289,8 @@ GlobalEquationNumbering::getDOFsFromNodesAndComponents( const bool local ) const
     return ret;
 };
 
-VectorLong GlobalEquationNumbering::getDOFs( const bool sameRank, const VectorString &list_cmp,
-                                             const VectorLong &list_nodes ) const {
+VectorLong EquationNumbering::getDOFs( const bool sameRank, const VectorString &list_cmp,
+                                       const VectorLong &list_nodes ) const {
     const bool all_cmp = list_cmp.empty();
     const bool all_nodes = list_nodes.empty();
     const bool all_rank = !sameRank;
@@ -333,7 +329,7 @@ VectorLong GlobalEquationNumbering::getDOFs( const bool sameRank, const VectorSt
     return dofUsed;
 };
 
-VectorLong GlobalEquationNumbering::getRowsAssociatedToPhysicalDofs( const bool local ) const {
+VectorLong EquationNumbering::getRowsAssociatedToPhysicalDofs( const bool local ) const {
     auto lagrInfo = this->getLagrangianInformations();
     lagrInfo->updateValuePointer();
     ASTERINTEGER size = lagrInfo->size();
@@ -347,8 +343,7 @@ VectorLong GlobalEquationNumbering::getRowsAssociatedToPhysicalDofs( const bool 
     return physicalRows;
 };
 
-VectorLong
-GlobalEquationNumbering::getRowsAssociatedToLagrangeMultipliers( const bool local ) const {
+VectorLong EquationNumbering::getRowsAssociatedToLagrangeMultipliers( const bool local ) const {
     auto lagrInfo = this->getLagrangianInformations();
     lagrInfo->updateValuePointer();
     ASTERINTEGER size = lagrInfo->size();
@@ -362,20 +357,20 @@ GlobalEquationNumbering::getRowsAssociatedToLagrangeMultipliers( const bool loca
     return lagrangeRows;
 };
 
-std::string GlobalEquationNumbering::getComponentAssociatedToRow( const ASTERINTEGER row,
-                                                                  const bool local ) const {
+std::string EquationNumbering::getComponentAssociatedToRow( const ASTERINTEGER row,
+                                                            const bool local ) const {
     auto [nodeId, cmpName] = this->getNodeAndComponentFromDOF( row );
     return cmpName;
 };
 
-ASTERINTEGER GlobalEquationNumbering::getNodeAssociatedToRow( const ASTERINTEGER row,
-                                                              const bool local ) const {
+ASTERINTEGER EquationNumbering::getNodeAssociatedToRow( const ASTERINTEGER row,
+                                                        const bool local ) const {
     auto [nodeId, cmpId] = this->getNodeAndComponentNumberFromDOF( row );
     return nodeId;
 };
 
-bool GlobalEquationNumbering::isRowAssociatedToPhysical( const ASTERINTEGER row,
-                                                         const bool local ) const {
+bool EquationNumbering::isRowAssociatedToPhysical( const ASTERINTEGER row,
+                                                   const bool local ) const {
     auto [nodeId, cmpId] = this->getNodeAndComponentNumberFromDOF( row );
     return cmpId > 0;
 };
@@ -384,14 +379,14 @@ bool GlobalEquationNumbering::isRowAssociatedToPhysical( const ASTERINTEGER row,
  * @brief Mise a jour des pointeurs Jeveux
  * @return renvoie true si la mise a jour s'est bien deroulee, false sinon
  */
-void GlobalEquationNumbering::updateValuePointers() {
+void EquationNumbering::updateValuePointers() {
     _componentsOnNodes->build();
     _indexationVector->updateValuePointer();
     _nodeAndComponentsNumberFromDOF->updateValuePointer();
     _lagrangianInformations->updateValuePointer();
 };
 
-bool GlobalEquationNumbering::operator==( GlobalEquationNumbering &toCompare ) {
+bool EquationNumbering::operator==( EquationNumbering &toCompare ) {
     CALL_JEMARQ();
     bool ret = false;
 

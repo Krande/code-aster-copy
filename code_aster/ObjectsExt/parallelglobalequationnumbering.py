@@ -18,18 +18,18 @@
 # --------------------------------------------------------------------
 
 """
-:py:class:`GlobalEquationNumbering` --- Numbering of equation
+:py:class:`EquationNumbering` --- Numbering of equation
 ********************************************************************
 """
 
 import aster
-from libaster import ParallelGlobalEquationNumbering
+from libaster import ParallelEquationNumbering
 
 from ..Utilities import injector
-from .globalequationnumbering_ext import GlobalEquationNumberingStateBuilder
+from .globalequationnumbering_ext import EquationNumberingStateBuilder
 
 
-@injector(ParallelGlobalEquationNumbering)
-class ExtendedParallelGlobalEquationNumbering:
+@injector(ParallelEquationNumbering)
+class ExtendedParallelEquationNumbering:
     cata_sdj = "SD.sd_nume_equa.sd_nume_equa"
-    internalStateBuilder = GlobalEquationNumberingStateBuilder
+    internalStateBuilder = EquationNumberingStateBuilder

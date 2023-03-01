@@ -50,7 +50,7 @@ class CombFourier(ExecuteCommand):
 
         self._result.build(
             keywords["RESULTAT"].getFiniteElementDescriptors(),
-            keywords["RESULTAT"].getGlobalEquationNumberings(),
+            keywords["RESULTAT"].getEquationNumberings(),
         )
 
 

@@ -1,6 +1,6 @@
 /**
- * @file GeneralizedGlobalEquationNumbering.h
- * @brief Fichier entete de la classe GeneralizedGlobalEquationNumbering
+ * @file GeneralizedEquationNumbering.h
+ * @brief Fichier entete de la classe GeneralizedEquationNumbering
  * @author Nicolas Sellenet
  * @section LICENCE
  *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
@@ -30,11 +30,11 @@
 #include "MemoryManager/JeveuxVector.h"
 
 /**
- * @class GeneralizedGlobalEquationNumbering
+ * @class GeneralizedEquationNumbering
  * @brief This class describes the structure of dof stored in a field on nodes
  * @author Nicolas Sellenet
  */
-class GeneralizedGlobalEquationNumbering : public DataStructure {
+class GeneralizedEquationNumbering : public DataStructure {
     /** @brief Objet Jeveux '.DESC' */
     JeveuxVectorLong _desc;
     /** @brief Objet Jeveux '.NEQU' */
@@ -57,20 +57,20 @@ class GeneralizedGlobalEquationNumbering : public DataStructure {
   public:
     /**
      * @brief Constructeur
-     * @param name nom souhaité de la sd (utile pour le GeneralizedGlobalEquationNumbering
+     * @param name nom souhaité de la sd (utile pour le GeneralizedEquationNumbering
      * d'une sd_resu)
      */
-    GeneralizedGlobalEquationNumbering( const std::string name );
+    GeneralizedEquationNumbering( const std::string name );
 
     /**
      * @brief Constructeur
      */
-    GeneralizedGlobalEquationNumbering();
+    GeneralizedEquationNumbering();
 
     /**
      * @brief Destructor
      */
-    ~GeneralizedGlobalEquationNumbering(){};
+    ~GeneralizedEquationNumbering(){};
 };
 
-typedef std::shared_ptr< GeneralizedGlobalEquationNumbering > GeneralizedGlobalEquationNumberingPtr;
+typedef std::shared_ptr< GeneralizedEquationNumbering > GeneralizedEquationNumberingPtr;

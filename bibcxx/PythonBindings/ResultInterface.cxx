@@ -82,7 +82,7 @@ Returns
     float: time value
         )",
               py::arg( "index" ) )
-        .def( "addGlobalEquationNumbering", &Result::addGlobalEquationNumbering )
+        .def( "addEquationNumbering", &Result::addEquationNumbering )
         .def( "setMaterialField",
               py::overload_cast< const MaterialFieldPtr & >( &Result::setMaterialField ), R"(
 Set material field on all indexs
@@ -435,14 +435,14 @@ created in fortran
 Arguments:
     feds (list[FiniteElementDescriptor]) : list of additional finite element descriptor used to
         build FieldOnCells
-    fnds (list[GlobalEquationNumberingPtr]) : list of additional field description used to
+    fnds (list[EquationNumberingPtr]) : list of additional field description used to
         build FieldOnNodes
 
 Returns:
     bool: *True* if ok.
         )",
               py::arg( "feds" ) = std::vector< FiniteElementDescriptorPtr >(),
-              py::arg( "fnds" ) = std::vector< GlobalEquationNumberingPtr >() )
+              py::arg( "fnds" ) = std::vector< EquationNumberingPtr >() )
         .def( "printInfo", &Result::printInfo )
         .def( "getFieldsNames", &Result::getFieldsNames, R"(
 Return the list of names of stored fields
@@ -567,11 +567,11 @@ Get list of finite element descriptor to build internal FieldOnCells
 Returns:
     list[FiniteElementDescriptor]: list of finite element descriptor
         )" )
-        .def( "getGlobalEquationNumberings", &Result::getGlobalEquationNumberings, R"(
+        .def( "getEquationNumberings", &Result::getEquationNumberings, R"(
 Get list of field's description to build internal FieldOnNodes
 
 Returns:
-    list[GlobalEquationNumbering]: list of field's description
+    list[EquationNumbering]: list of field's description
         )" )
         .def( "addFiniteElementDescriptor", &Result::addFiniteElementDescriptor );
 };

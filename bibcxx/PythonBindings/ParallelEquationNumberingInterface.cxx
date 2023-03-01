@@ -22,16 +22,17 @@
  */
 /* person_in_charge: nicolas.sellenet at edf.fr */
 
-#include "PythonBindings/ParallelGlobalEquationNumberingInterface.h"
+#include "PythonBindings/ParallelEquationNumberingInterface.h"
 
 #include "aster_pybind.h"
 
-void exportParallelGlobalEquationNumberingToPython( py::module_ &mod ) {
+void exportParallelEquationNumberingToPython( py::module_ &mod ) {
 
-    py::class_< ParallelGlobalEquationNumbering, ParallelGlobalEquationNumberingPtr,
-                GlobalEquationNumbering >( mod, "ParallelGlobalEquationNumbering" )
-        .def( py::init( &initFactoryPtr< ParallelGlobalEquationNumbering, std::string > ) )
-        .def( "getGhostRows", &ParallelGlobalEquationNumbering::getGhostRows,
+    py::class_< ParallelEquationNumbering, ParallelEquationNumberingPtr, EquationNumbering >(
+        mod, "ParallelEquationNumbering" )
+        .def( py::init( &initFactoryPtr< ParallelEquationNumbering > ) )
+        .def( py::init( &initFactoryPtr< ParallelEquationNumbering, std::string > ) )
+        .def( "getGhostRows", &ParallelEquationNumbering::getGhostRows,
               R"(
 Returns the indexes of the ghost DOFs.
 
@@ -43,7 +44,7 @@ Returns:
         )",
               py::arg( "local" ) = true )
         // ---------------------------------------------------------------------
-        .def( "getNoGhostRows", &ParallelGlobalEquationNumbering::getNoGhostRows,
+        .def( "getNoGhostRows", &ParallelEquationNumbering::getNoGhostRows,
               R"(
 Returns the indexes of the DOFs owned locally (aka not ghost).
 
@@ -51,7 +52,7 @@ Returns:
     int: indexes of the DOFs owned locally.
         )" )
         // ---------------------------------------------------------------------
-        .def( "getNumberOfDofs", &ParallelGlobalEquationNumbering::getNumberOfDofs,
+        .def( "getNumberOfDofs", &ParallelEquationNumbering::getNumberOfDofs,
               R"(
 Returns the number of DOFs.
 
@@ -63,7 +64,7 @@ Returns:
         )",
               py::arg( "local" ) = false )
         // ---------------------------------------------------------------------
-        .def( "getLocalToGlobalMapping", &ParallelGlobalEquationNumbering::getLocalToGlobalMapping,
+        .def( "getLocalToGlobalMapping", &ParallelEquationNumbering::getLocalToGlobalMapping,
               R"(
 Returns the mapping from the local to the global number of the DOFs.
 
@@ -71,7 +72,7 @@ Returns:
     int: global number of the DOF.
         )" )
         // ---------------------------------------------------------------------
-        .def( "globalToLocalRow", &ParallelGlobalEquationNumbering::globalToLocalRow,
+        .def( "globalToLocalRow", &ParallelEquationNumbering::globalToLocalRow,
               R"(
 Returns the local number of a global DOF.
 

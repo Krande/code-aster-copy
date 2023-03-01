@@ -35,7 +35,7 @@
 #include "MemoryManager/JeveuxVector.h"
 #include "Meshes/BaseMesh.h"
 #include "Numbering/DOFNumbering.h"
-#include "Numbering/GlobalEquationNumbering.h"
+#include "Numbering/EquationNumbering.h"
 #include "Numbering/ParallelDOFNumbering.h"
 #include "ParallelUtilities/AsterMPI.h"
 #include "PythonBindings/LogicalUnitManager.h"
@@ -96,7 +96,7 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
     /** @brief Vecteur Jeveux '.VALE' */
     JeveuxVector< ValueType > _values;
     /** @brief Dof description */
-    GlobalEquationNumberingPtr _dofDescription;
+    EquationNumberingPtr _dofDescription;
 
     /**
      * @brief Return list of dof to use
@@ -174,14 +174,14 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
             auto dofNume = std::make_shared< ParallelDOFNumbering >();
             dofNume->computeNumbering( {fed}, localMode );
 
-            _dofDescription = dofNume->getGlobalEquationNumbering();
+            _dofDescription = dofNume->getEquationNumbering();
             dofName = dofNume->getName();
         } else {
             auto dofNume = std::make_shared< DOFNumbering >();
 
             dofNume->computeNumbering( {fed}, localMode );
 
-            _dofDescription = dofNume->getGlobalEquationNumbering();
+            _dofDescription = dofNume->getEquationNumbering();
             dofName = dofNume->getName();
         }
 
@@ -208,7 +208,7 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
 
         dofNume->computeNumbering( model, lOL );
 
-        _dofDescription = dofNume->getGlobalEquationNumbering();
+        _dofDescription = dofNume->getEquationNumbering();
 
         const auto intType = AllowedFieldType< ValueType >::numTypeJeveux;
         CALLO_VTCREB_WRAP( getName(), JeveuxMemoryTypesNames[Permanent], JeveuxTypesNames[intType],
@@ -226,7 +226,7 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
             raiseAsterError( " DOFNumbering is null" );
         }
 
-        _dofDescription = dofNum->getGlobalEquationNumbering();
+        _dofDescription = dofNum->getEquationNumbering();
 
         const auto intType = AllowedFieldType< ValueType >::numTypeJeveux;
         CALLO_VTCREB_WRAP( getName(), JeveuxMemoryTypesNames[Permanent], JeveuxTypesNames[intType],
@@ -429,20 +429,8 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
      * @param scaling The scaling of the Lagrange DOFs
      */
 #ifdef ASTER_HAVE_PETSC
-    FieldOnNodes *fromPetsc( const BaseDOFNumberingPtr &dofNmbrg, const Vec &vec,
-                             const ASTERDOUBLE &scaling = 1.0 ) {
-        CALLO_VECT_ASSE_FROM_PETSC( getName(), dofNmbrg->getName(), &vec, &scaling );
-        _values->updateValuePointer();
-
-        return this;
-    };
-
     FieldOnNodes *fromPetsc( const Vec &vec, const ASTERDOUBLE &scaling = 1.0 ) {
-        if ( getMesh()->isParallel() ) {
-            raiseAsterError( "dofNumbering must be provided" );
-        }
-        const std::string dummy_nbg = " ";
-        CALLO_VECT_ASSE_FROM_PETSC( getName(), dummy_nbg, &vec, &scaling );
+        CALLO_VECT_ASSE_FROM_PETSC( getName(), _dofDescription->getName(), &vec, &scaling );
         _values->updateValuePointer();
 
         return this;
@@ -523,13 +511,13 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
 
     /**
      * @brief Set FieldOnNodes description
-     * @param desc object GlobalEquationNumberingPtr
+     * @param desc object EquationNumberingPtr
      */
-    void setDescription( const GlobalEquationNumberingPtr &desc ) {
+    void setDescription( const EquationNumberingPtr &desc ) {
         if ( !desc )
-            raiseAsterError( "Empty GlobalEquationNumbering" );
+            raiseAsterError( "Empty EquationNumbering" );
         if ( _dofDescription && _dofDescription != desc )
-            raiseAsterError( "GlobalEquationNumbering inconsistents" );
+            raiseAsterError( "EquationNumbering inconsistents" );
         if ( _reference.exists() ) {
             _reference->updateValuePointer();
             const auto descName = std::string( ( *_reference )[1].toString(), 0, 19 );
@@ -608,7 +596,7 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
 
     /**
      * @brief Dot product
-     * @param tmp object GlobalEquationNumberingPtr
+     * @param tmp object EquationNumberingPtr
      */
     ValueType dot( const FieldOnNodesPtr &tmp ) const {
         CALL_JEMARQ();
@@ -668,12 +656,12 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
     ASTERINTEGER size( void ) const { return _values->size(); }
 
     /**
-     * @brief Get GlobalEquationNumbering
+     * @brief Get EquationNumbering
      */
-    GlobalEquationNumberingPtr getDescription( void ) const { return _dofDescription; };
+    EquationNumberingPtr getDescription( void ) const { return _dofDescription; };
 
     /**
-     * @brief Update field and build GlobalEquationNumbering if necessary
+     * @brief Update field and build EquationNumbering if necessary
      */
     bool build( const BaseMeshPtr mesh = nullptr ) {
         if ( !_dofDescription ) {
@@ -682,7 +670,7 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
             _reference->updateValuePointer();
             const std::string name2 = trim( ( *_reference )[1].toString() );
             if ( !name2.empty() ) {
-                _dofDescription = std::make_shared< GlobalEquationNumbering >( name2 );
+                _dofDescription = std::make_shared< EquationNumbering >( name2 );
                 if ( mesh ) {
                     this->setMesh( mesh );
                 }

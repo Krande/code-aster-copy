@@ -43,10 +43,10 @@
 
 #pragma once
 
-class BaseGlobalEquationNumbering : public DataStructure {
+class BaseEquationNumbering : public DataStructure {
 
   public:
-    BaseGlobalEquationNumbering( const std::string baseName = DataStructureNaming::getNewName() )
+    BaseEquationNumbering( const std::string baseName = DataStructureNaming::getNewName() )
         : DataStructure( baseName, 19, "NUME_EQUA" ){};
 
     /**
@@ -145,10 +145,10 @@ class BaseGlobalEquationNumbering : public DataStructure {
 };
 
 /**
- * @class GlobalEquationNumbering
+ * @class EquationNumbering
  * @brief Class definissant un NUME_EQUA
  */
-class GlobalEquationNumbering : public BaseGlobalEquationNumbering {
+class EquationNumbering : public BaseEquationNumbering {
   protected:
     /** @brief Objet Jeveux '.NEQU' */
     JeveuxVectorLong _numberOfEquations;
@@ -173,21 +173,21 @@ class GlobalEquationNumbering : public BaseGlobalEquationNumbering {
 
   public:
     /**
-     * @typedef GlobalEquationNumberingPtr
-     * @brief Pointeur intelligent vers un GlobalEquationNumbering
+     * @typedef EquationNumberingPtr
+     * @brief Pointeur intelligent vers un EquationNumbering
      */
-    typedef std::shared_ptr< GlobalEquationNumbering > GlobalEquationNumberingPtr;
+    typedef std::shared_ptr< EquationNumbering > EquationNumberingPtr;
 
-    GlobalEquationNumbering( const std::string &baseName );
+    EquationNumbering( const std::string &baseName );
 
-    GlobalEquationNumbering();
+    EquationNumbering();
 
     /**
      * @brief Surcharge de l'operateur =
      */
-    bool operator==( GlobalEquationNumbering &toCompare );
+    bool operator==( EquationNumbering &toCompare );
 
-    bool operator!=( GlobalEquationNumbering &toCompare ) { return !( *this == toCompare ); }
+    bool operator!=( EquationNumbering &toCompare ) { return !( *this == toCompare ); }
 
     /**
      * @brief Returns a vector of information of the Lagrange multipliers
@@ -327,7 +327,7 @@ class GlobalEquationNumbering : public BaseGlobalEquationNumbering {
 };
 
 /**
- * @typedef GlobalEquationNumberingPtr
- * @brief Enveloppe d'un pointeur intelligent vers un GlobalEquationNumbering
+ * @typedef EquationNumberingPtr
+ * @brief Enveloppe d'un pointeur intelligent vers un EquationNumbering
  */
-typedef std::shared_ptr< GlobalEquationNumbering > GlobalEquationNumberingPtr;
+typedef std::shared_ptr< EquationNumbering > EquationNumberingPtr;

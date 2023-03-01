@@ -1260,14 +1260,14 @@ class DiscreteComputation:
         """
 
 
-# class GlobalEquationNumbering in libaster
+# class EquationNumbering in libaster
 
 
-class GlobalEquationNumbering(DataStructure):
+class EquationNumbering(DataStructure):
     pass
 
     # Method resolution order:
-    #     GlobalEquationNumbering
+    #     EquationNumbering
     #     DataStructure
     #     pybind11_builtins.pybind11_object
     #     builtins.object
@@ -1324,11 +1324,11 @@ class BaseDOFNumbering(DataStructure):
     def getFiniteElementDescriptors(self):
         pass
 
-    def getGlobalEquationNumbering(self):
+    def getEquationNumbering(self):
         """Returns the global equation numbering object;
 
         Returns:
-            GlobalEquationNumbering: global equation numbering.
+            EquationNumbering: global equation numbering.
         """
 
     def getMesh(self):
@@ -1381,7 +1381,7 @@ class DOFNumbering(BaseDOFNumbering):
 
         2. __init__(self: libaster.DOFNumbering, arg0: str) -> None
 
-        3. __init__(self: libaster.DOFNumbering, arg0: str, arg1: libaster.GlobalEquationNumbering, arg2: Model) -> None
+        3. __init__(self: libaster.DOFNumbering, arg0: str, arg1: libaster.EquationNumbering, arg2: Model) -> None
         """
 
     def getComponentAssociatedToRow(self, row, local=False):
@@ -9886,7 +9886,7 @@ class Result(DataStructure):
     def addFiniteElementDescriptor(self, arg0):
         pass
 
-    def addGlobalEquationNumbering(self, arg0):
+    def addEquationNumbering(self, arg0):
         pass
 
     def allocate(self, nb_index):
@@ -9903,7 +9903,7 @@ class Result(DataStructure):
         Arguments:
             feds (list[FiniteElementDescriptor]) : list of additional finite element descriptor used to
                 build FieldOnCells
-            fnds (list[GlobalEquationNumberingPtr]) : list of additional field description used to
+            fnds (list[EquationNumberingPtr]) : list of additional field description used to
                 build FieldOnNodes
 
         Returns:
@@ -10121,11 +10121,11 @@ class Result(DataStructure):
             list[FiniteElementDescriptor]: list of finite element descriptor
         """
 
-    def getGlobalEquationNumberings(self):
+    def getEquationNumberings(self):
         """Get list of field's description to build internal FieldOnNodes
 
         Returns:
-            list[GlobalEquationNumbering]: list of field's description
+            list[EquationNumbering]: list of field's description
         """
 
     def getIndexes(self):
@@ -11744,15 +11744,15 @@ class ParallelMesh(BaseMesh):
         """
 
 
-# class ParallelGlobalEquationNumbering in libaster
+# class ParallelEquationNumbering in libaster
 
 
-class ParallelGlobalEquationNumbering(GlobalEquationNumbering):
+class ParallelEquationNumbering(EquationNumbering):
     pass
 
     # Method resolution order:
-    #     ParallelGlobalEquationNumbering
-    #     GlobalEquationNumbering
+    #     ParallelEquationNumbering
+    #     EquationNumbering
     #     DataStructure
     #     pybind11_builtins.pybind11_object
     #     builtins.object
@@ -11785,7 +11785,7 @@ class ParallelDOFNumbering(BaseDOFNumbering):
 
         2. __init__(self: libaster.ParallelDOFNumbering, arg0: str) -> None
 
-        3. __init__(self: libaster.ParallelDOFNumbering, arg0: str, arg1: libaster.ParallelGlobalEquationNumbering, arg2: libaster.Model) -> None
+        3. __init__(self: libaster.ParallelDOFNumbering, arg0: str, arg1: libaster.ParallelEquationNumbering, arg2: libaster.Model) -> None
         """
 
     def getComponentAssociatedToRow(self, row, local=False):

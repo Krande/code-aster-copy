@@ -38,15 +38,15 @@
 
 #include "DataStructures/DataStructure.h"
 #include "MemoryManager/JeveuxVector.h"
-#include "Numbering/GlobalEquationNumbering.h"
+#include "Numbering/EquationNumbering.h"
 
 #pragma once
 
 /**
- * @class ParallelGlobalEquationNumbering
+ * @class ParallelEquationNumbering
  * @brief Class definissant un NUME_EQUA
  */
-class ParallelGlobalEquationNumbering : public GlobalEquationNumbering {
+class ParallelEquationNumbering : public EquationNumbering {
   protected:
     /** @brief Objet Jeveux '.NULG' */
     JeveuxVectorLong _localToGlobal;
@@ -62,12 +62,14 @@ class ParallelGlobalEquationNumbering : public GlobalEquationNumbering {
 
   public:
     /**
-     * @typedef GlobalEquationNumberingPtr
-     * @brief Pointeur intelligent vers un ParallelGlobalEquationNumbering
+     * @typedef EquationNumberingPtr
+     * @brief Pointeur intelligent vers un ParallelEquationNumbering
      */
-    typedef std::shared_ptr< ParallelGlobalEquationNumbering > ParallelGlobalEquationNumberingPtr;
+    typedef std::shared_ptr< ParallelEquationNumbering > ParallelEquationNumberingPtr;
 
-    ParallelGlobalEquationNumbering( const std::string &baseName );
+    ParallelEquationNumbering();
+
+    ParallelEquationNumbering( const std::string &baseName );
 
     /**
      * @brief Returns the vector of local to global numbering
@@ -175,7 +177,7 @@ class ParallelGlobalEquationNumbering : public GlobalEquationNumbering {
 };
 
 /**
- * @typedef ParallelGlobalEquationNumberingPtr
- * @brief Enveloppe d'un pointeur intelligent vers un ParallelGlobalEquationNumbering
+ * @typedef ParallelEquationNumberingPtr
+ * @brief Enveloppe d'un pointeur intelligent vers un ParallelEquationNumbering
  */
-typedef std::shared_ptr< ParallelGlobalEquationNumbering > ParallelGlobalEquationNumberingPtr;
+typedef std::shared_ptr< ParallelEquationNumbering > ParallelEquationNumberingPtr;

@@ -63,7 +63,7 @@
 class DOFNumbering : public BaseDOFNumbering {
   private:
     /** @brief Objet '.NUME' */
-    GlobalEquationNumberingPtr _globalNumbering;
+    EquationNumberingPtr _globalNumbering;
 
   public:
     /**
@@ -77,8 +77,7 @@ class DOFNumbering : public BaseDOFNumbering {
      */
     DOFNumbering();
 
-    DOFNumbering( const std::string name, const GlobalEquationNumberingPtr fdof,
-                  const ModelPtr model );
+    DOFNumbering( const std::string name, const EquationNumberingPtr fdof, const ModelPtr model );
 
     /**
      * @brief Constructeur
@@ -87,11 +86,9 @@ class DOFNumbering : public BaseDOFNumbering {
     DOFNumbering( const std::string name );
 
     /**
-     * @brief Returns the GlobalEquationNumberingPtr
+     * @brief Returns the EquationNumberingPtr
      */
-    virtual GlobalEquationNumberingPtr getGlobalEquationNumbering() const {
-        return _globalNumbering;
-    };
+    virtual EquationNumberingPtr getEquationNumbering() const { return _globalNumbering; };
 
     /**
      * @brief Get Physical Quantity
