@@ -57,7 +57,7 @@ subroutine create_graph_comm(object, type, nb_comm, comm, tag)
 !
 ! --- Result depends on type
     if (type == 'MAILLAGE_P') then
-        k24 = object//'.DOMJOINTS'
+        k24 = object//'.DOMJOINTS .DOMJ'
     elseif (type == "NUME_DDL") then
         k24 = object//'.NUME.DOMJ'
     elseif (type == "NUME_EQUA") then

@@ -402,13 +402,16 @@ void ParallelMesh::create_joints( const VectorLong &domains, const VectorLong &g
                                   const VectorOfVectorsLong &joints ) {
     AS_ASSERT( joints.size() == 2 * domains.size() )
 
-    ( *_listOfOppositeDomain ) = domains;
+    _joints->setOppositeDomains( domains );
     ( *_globalNumbering ) = globalNumbering;
     ( *_outerNodes ) = nodesOwner;
     const std::string cadre( "G" );
     const std::string error( "F" );
     int i = 0;
+
     AS_ASSERT( domains.size() <= 46656 );
+    std::vector< std::pair< JeveuxVectorLong, JeveuxVectorLong > > _joints_tmp;
+
     for ( auto dom : domains ) {
         std::string nhex( 8, ' ' );
         CALLO_CODLET_WRAP( &dom, cadre, nhex, error );
@@ -419,12 +422,13 @@ void ParallelMesh::create_joints( const VectorLong &domains, const VectorLong &g
         JeveuxVectorLong jointR( getName() + ".R." + nhex );
         ( *jointR ) = joints[2 * i + 1];
 
-        _joints[dom] = std::make_pair( jointE, jointR );
+        _joints_tmp.push_back( std::make_pair( jointE, jointR ) );
         ++i;
     }
 
     _outerNodes->updateValuePointer();
     CALLO_LRM_CLEAN_JOINT( getName(), _outerNodes->getDataPtr() );
+    _joints->build();
 
     auto nbCells = getNumberOfCells();
     _outerCells->allocate( nbCells, LONG_MAX );

@@ -37,6 +37,10 @@ subroutine lrm_clean_joint(mesh, v_noex)
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/jecroc.h"
+#include "asterfort/jeecra.h"
+#include "asterfort/jecrec.h"
 #include "asterfort/wkvect.h"
 #include "MeshTypes_type.h"
 !
@@ -59,8 +63,8 @@ subroutine lrm_clean_joint(mesh, v_noex)
 !
     character(len=4) :: chdomdis
     character(len=8) :: k8bid
-    character(len=19) :: comm_name, tag_name
-    character(len=24) :: name_join_e_old, name_join_e_new, name_join_r_old, name_join_r_new
+    character(len=19) :: comm_name, tag_name, domj
+    character(len=24) :: name_join_e_old, send, name_join_r_old, recv
     integer :: rang, domdis, nbproc, i_comm, nb_comm
     integer :: nb_corr, ino, numno, deca
     integer :: nb_node_e, nb_node_r
@@ -93,6 +97,13 @@ subroutine lrm_clean_joint(mesh, v_noex)
     call create_graph_comm(mesh, "MAILLAGE_P", nb_comm, comm_name, tag_name)
     call jeveuo(comm_name, 'L', vi=v_comm)
     call jeveuo(tag_name, 'L', vi=v_tag)
+
+!   -- creation de la collection dipersee .DOMJOINTS  :
+    domj = mesh//".DOMJOINTS"
+    send = domj//".SEND"
+    recv = domj//".RECV"
+    call jecrec(send, 'G V I', 'NU', 'DISPERSE', 'VARIABLE', nb_comm)
+    call jecrec(recv, 'G V I', 'NU', 'DISPERSE', 'VARIABLE', nb_comm)
 
     do i_comm = 1, nb_comm
         domdis = v_comm(i_comm)
@@ -130,8 +141,9 @@ subroutine lrm_clean_joint(mesh, v_noex)
 !
 ! --- On crée le nouveau joint .E
 !
-        name_join_e_new = mesh//".E"//chdomdis
-        call wkvect(name_join_e_new, 'G V I', 2*nb_corr, vi=v_name_join_e_new)
+        call jecroc(jexnum(send, i_comm))
+        call jeecra(jexnum(send, i_comm), 'LONMAX', 2*nb_corr)
+        call jeveuo(jexnum(send, i_comm), 'E', vi=v_name_join_e_new)
 !
         deca = 0
         do ino = 1, nb_node_e
@@ -162,8 +174,9 @@ subroutine lrm_clean_joint(mesh, v_noex)
         end do
         ASSERT(nb_corr > 0)
 !
-        name_join_r_new = mesh//".R"//chdomdis
-        call wkvect(name_join_r_new, 'G V I', 2*nb_corr, vi=v_name_join_r_new)
+        call jecroc(jexnum(recv, i_comm))
+        call jeecra(jexnum(recv, i_comm), 'LONMAX', 2*nb_corr)
+        call jeveuo(jexnum(recv, i_comm), 'E', vi=v_name_join_r_new)
         call jeveuo(name_join_r_old, 'L', vi=v_name_join_r_old)
 !
         deca = 0

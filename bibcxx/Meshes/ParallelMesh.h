@@ -33,6 +33,7 @@
 
 #include "MemoryManager/NamesMap.h"
 #include "Meshes/BaseMesh.h"
+#include "Meshes/Joints.h"
 #include "Supervis/ResultNaming.h"
 
 /**
@@ -61,10 +62,8 @@ class ParallelMesh : public BaseMesh {
     JeveuxVectorLong _outerCells;
     /** @brief Global numbering */
     JeveuxVectorLong _globalNumbering;
-    /** @brief List of opposite domain */
-    JeveuxVectorLong _listOfOppositeDomain;
     /** @brief List of joints */
-    std::map< ASTERINTEGER, std::pair< JeveuxVectorLong, JeveuxVectorLong > > _joints;
+    JointsPtr _joints;
     /** @brief Global to local node number */
     std::map< ASTERINTEGER, ASTERINTEGER > _global2localMap;
 
@@ -92,7 +91,7 @@ class ParallelMesh : public BaseMesh {
           _outerNodes( getName() + ".NOEX" ),
           _outerCells( getName() + ".MAEX" ),
           _globalNumbering( getName() + ".NULOGL" ),
-          _listOfOppositeDomain( getName() + ".DOMJOINTS" ){};
+          _joints( std::make_shared< Joints >( getName() + ".DOMJOINTS" ) ){};
 
     /**
      * @brief Get the JeveuxVector for outer subdomain nodes
