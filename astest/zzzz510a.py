@@ -102,17 +102,17 @@ elif rank == 3:
     test.assertEqual(result[12], 3.0)
 
 
-bMesh = code_aster.BalanceableMesh()
+bMesh = code_aster.MeshBalancer()
 if rank == 0:
     myMesh = code_aster.Mesh()
     myMesh.readMedFile("fort.20")
     bMesh.buildFromBaseMesh(myMesh)
-    bMesh.applyBalancingStrategy([1, 2, 9, 11, 17, 19, 25, 31])
+    outMesh = bMesh.applyBalancingStrategy([1, 2, 9, 11, 17, 19, 25, 31])
 elif rank == 1:
-    bMesh.applyBalancingStrategy([5, 6, 13, 15, 18, 20, 26, 32])
+    outMesh = bMesh.applyBalancingStrategy([5, 6, 13, 15, 18, 20, 26, 32])
 elif rank == 2:
-    bMesh.applyBalancingStrategy([7, 8, 14, 16, 22, 24, 28, 30])
+    outMesh = bMesh.applyBalancingStrategy([7, 8, 14, 16, 22, 24, 28, 30])
 elif rank == 3:
-    bMesh.applyBalancingStrategy([3, 4, 10, 12, 21, 23, 27, 29])
+    outMesh = bMesh.applyBalancingStrategy([3, 4, 10, 12, 21, 23, 27, 29])
 
 FIN()

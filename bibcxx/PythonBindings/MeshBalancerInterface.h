@@ -1,9 +1,9 @@
-#ifndef BALANCEABLEMESHINTERFACE_H_
-#define BALANCEABLEMESHINTERFACE_H_
+#ifndef MESHBALANCERINTERFACE_H_
+#define MESHBALANCERINTERFACE_H_
 
 /**
- * @file BalanceableMeshInterface.h
- * @brief Fichier entete de la classe BalanceableMeshInterface
+ * @file MeshBalancerInterface.h
+ * @brief Fichier entete de la classe MeshBalancerInterface
  * @author Nicolas Sellenet
  * @section LICENCE
  *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
@@ -27,8 +27,8 @@
 #include "aster_pybind.h"
 #include "astercxx.h"
 
-#include "Meshes/BalanceableMesh.h"
+#include "Meshes/MeshBalancer.h"
 
-void exportBalanceableMeshToPython( py::module_ &mod );
+void exportMeshBalancerToPython( py::module_ &mod );
 
-#endif /* BALANCEABLEMESHINTERFACE_H_ */
+#endif /* MESHBALANCERINTERFACE_H_ */

@@ -1,6 +1,6 @@
 /**
- * @file BalanceableMeshInterface.cxx
- * @brief Interface python de BalanceableMesh
+ * @file MeshBalancerInterface.cxx
+ * @brief Interface python de MeshBalancer
  * @author Nicolas Sellenet
  * @section LICENCE
  *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
@@ -23,17 +23,17 @@
 
 /* person_in_charge: nicolas.sellenet at edf.fr */
 
-#include "PythonBindings/BalanceableMeshInterface.h"
+#include "PythonBindings/MeshBalancerInterface.h"
 
 #include "aster_pybind.h"
 
 // Not DataStructures
 // aslint: disable=C3006
 
-void exportBalanceableMeshToPython( py::module_ &mod ) {
+void exportMeshBalancerToPython( py::module_ &mod ) {
 
-    py::class_< BalanceableMesh, BalanceableMeshPtr >( mod, "BalanceableMesh" )
-        .def( py::init( &initFactoryPtr< BalanceableMesh > ) )
-        .def( "applyBalancingStrategy", &BalanceableMesh::applyBalancingStrategy )
-        .def( "buildFromBaseMesh", &BalanceableMesh::buildFromBaseMesh );
+    py::class_< MeshBalancer, MeshBalancerPtr >( mod, "MeshBalancer" )
+        .def( py::init( &initFactoryPtr< MeshBalancer > ) )
+        .def( "applyBalancingStrategy", &MeshBalancer::applyBalancingStrategy )
+        .def( "buildFromBaseMesh", &MeshBalancer::buildFromBaseMesh );
 };

@@ -1,6 +1,6 @@
 /**
- * @file BalanceableMesh.cxx
- * @brief Implementation de BalanceableMesh
+ * @file MeshBalancer.cxx
+ * @brief Implementation de MeshBalancer
  * @author Nicolas Sellenet
  * @section LICENCE
  *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
@@ -23,13 +23,13 @@
 
 /* person_in_charge: nicolas.sellenet at edf.fr */
 
-#include "Meshes/BalanceableMesh.h"
+#include "Meshes/MeshBalancer.h"
 
 #include "Meshes/Mesh.h"
 
 void decrement( int &i ) { i--; };
 
-ParallelMeshPtr BalanceableMesh::applyBalancingStrategy( VectorInt &newLocalNodesList ) {
+ParallelMeshPtr MeshBalancer::applyBalancingStrategy( VectorInt &newLocalNodesList ) {
     ObjectBalancer nodesBalancer, cellsBalancer;
     const auto rank = getMPIRank();
     const auto nbProcs = getMPISize();
@@ -129,12 +129,10 @@ ParallelMeshPtr BalanceableMesh::applyBalancingStrategy( VectorInt &newLocalNode
     // Build "dummy" name vectors (for cells and nodes)
     outMesh->buildNamesVectors();
     outMesh->create_joints( domains, dMask.getBalancedMask(), nOwners, graphInterfaces );
-    // outMesh->printMedFile( "/home/H85256/" + std::to_string( rank ) + ".med" );
-    // outMesh->debugPrint();
     return outMesh;
 };
 
-void BalanceableMesh::buildReverseConnectivity() {
+void MeshBalancer::buildReverseConnectivity() {
     if ( _mesh == nullptr )
         return;
     const auto connex = _mesh->getConnectivityExplorer();
@@ -148,16 +146,16 @@ void BalanceableMesh::buildReverseConnectivity() {
     _bReverseConnex = true;
 };
 
-void BalanceableMesh::deleteReverseConnectivity() {
+void MeshBalancer::deleteReverseConnectivity() {
     // free memory
     _reverseConnex = std::map< int, std::set< int > >();
     _bReverseConnex = false;
 };
 
-void BalanceableMesh::buildBalancersAndInterfaces( VectorInt &newLocalNodesList,
-                                                   ObjectBalancer &nodesB, ObjectBalancer &cellsB,
-                                                   VectorOfVectorsLong &interfaces,
-                                                   VectorLong &nOwners ) {
+void MeshBalancer::buildBalancersAndInterfaces( VectorInt &newLocalNodesList,
+                                                ObjectBalancer &nodesB, ObjectBalancer &cellsB,
+                                                VectorOfVectorsLong &interfaces,
+                                                VectorLong &nOwners ) {
     // Build reverse connectivity to be able to build ObjectBalancer (what to send to which process)
     buildReverseConnectivity();
 
@@ -250,8 +248,8 @@ void BalanceableMesh::buildBalancersAndInterfaces( VectorInt &newLocalNodesList,
     }
 };
 
-VectorInt BalanceableMesh::findExternalNodes( const VectorInt &askedNodes,
-                                              const VectorInt &sendNodes ) {
+VectorInt MeshBalancer::findExternalNodes( const VectorInt &askedNodes,
+                                           const VectorInt &sendNodes ) {
     VectorInt diff;
     auto tmp1 = askedNodes, tmp2 = sendNodes;
     std::sort( tmp1.begin(), tmp1.end() );
@@ -262,7 +260,7 @@ VectorInt BalanceableMesh::findExternalNodes( const VectorInt &askedNodes,
 };
 
 std::pair< VectorInt, VectorInt >
-BalanceableMesh::findNodesAndElementsInNodesNeighborhood( const VectorInt &nodesListIn ) {
+MeshBalancer::findNodesAndElementsInNodesNeighborhood( const VectorInt &nodesListIn ) {
     std::pair< VectorInt, VectorInt > toReturn;
     auto &nodesList = toReturn.first;
     auto &elemList = toReturn.second;
@@ -299,8 +297,8 @@ BalanceableMesh::findNodesAndElementsInNodesNeighborhood( const VectorInt &nodes
     return toReturn;
 };
 
-void BalanceableMesh::balanceGroups( BaseMeshPtr outMesh, const ObjectBalancer &nBalancer,
-                                     const ObjectBalancer &cBalancer ) {
+void MeshBalancer::balanceGroups( BaseMeshPtr outMesh, const ObjectBalancer &nBalancer,
+                                  const ObjectBalancer &cBalancer ) {
     const auto nbProcs = getMPISize();
     const auto rank = getMPIRank();
 

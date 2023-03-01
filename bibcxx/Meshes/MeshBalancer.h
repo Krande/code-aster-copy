@@ -1,9 +1,9 @@
-#ifndef BALANCEABLEMESH_H_
-#define BALANCEABLEMESH_H_
+#ifndef MESHBALANCER_H_
+#define MESHBALANCER_H_
 
 /**
- * @file BalanceableMesh.h
- * @brief Fichier entete de la classe BalanceableMesh
+ * @file MeshBalancer.h
+ * @brief Fichier entete de la classe MeshBalancer
  * @section LICENCE
  *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
  *
@@ -33,10 +33,10 @@
 #include "ParallelUtilities/ObjectBalancer.h"
 
 /**
- * @class BalanceableMesh
+ * @class MeshBalancer
  * @brief Class describing a mesh which is balanceable across MPI processes
  */
-class BalanceableMesh {
+class MeshBalancer {
     BaseMeshPtr _mesh;
     std::map< int, std::set< int > > _reverseConnex;
     bool _bReverseConnex;
@@ -61,15 +61,15 @@ class BalanceableMesh {
 
   public:
     /**
-     * @typedef BalanceableMeshPtr
-     * @brief Pointeur intelligent vers un BalanceableMesh
+     * @typedef MeshBalancerPtr
+     * @brief Pointeur intelligent vers un MeshBalancer
      */
-    typedef std::shared_ptr< BalanceableMesh > BalanceableMeshPtr;
+    typedef std::shared_ptr< MeshBalancer > MeshBalancerPtr;
 
     /**
      * @brief Constructeur
      */
-    BalanceableMesh() : _mesh( nullptr ), _bReverseConnex( false ){};
+    MeshBalancer() : _mesh( nullptr ), _bReverseConnex( false ){};
 
     ParallelMeshPtr applyBalancingStrategy( VectorInt & );
 
@@ -77,9 +77,9 @@ class BalanceableMesh {
 };
 
 /**
- * @typedef BalanceableMeshPtr
- * @brief Pointeur intelligent vers un BalanceableMesh
+ * @typedef MeshBalancerPtr
+ * @brief Pointeur intelligent vers un MeshBalancer
  */
-typedef std::shared_ptr< BalanceableMesh > BalanceableMeshPtr;
+typedef std::shared_ptr< MeshBalancer > MeshBalancerPtr;
 
-#endif /* BALANCEABLEMESH_H_ */
+#endif /* MESHBALANCER_H_ */
