@@ -47,15 +47,46 @@ ParallelMeshPtr BalanceableMesh::applyBalancingStrategy( VectorInt &newLocalNode
             graph.addCommunication( iProc );
     }
     graph.synchronizeOverProcesses();
+
+    // interface completion with local id of opposite nodes
     VectorLong domains;
     VectorOfVectorsLong graphInterfaces;
+    int tag = 0, cmpt = 0;
     for ( const auto &iProc : graph ) {
         if ( iProc != -1 ) {
+            VectorLong idToSend( interfaces[2 * iProc].size(), 0. );
+            VectorLong idToRecv( interfaces[2 * iProc + 1].size(), 0. );
+            if ( rank > iProc ) {
+                AsterMPI::send( interfaces[2 * iProc], iProc, tag );
+                AsterMPI::receive( idToRecv, iProc, tag );
+                ++tag;
+                AsterMPI::send( interfaces[2 * iProc + 1], iProc, tag );
+                AsterMPI::receive( idToSend, iProc, tag );
+                ++tag;
+            } else if ( rank < iProc ) {
+                AsterMPI::receive( idToRecv, iProc, tag );
+                AsterMPI::send( interfaces[2 * iProc], iProc, tag );
+                ++tag;
+                AsterMPI::receive( idToSend, iProc, tag );
+                AsterMPI::send( interfaces[2 * iProc + 1], iProc, tag );
+                ++tag;
+            }
             domains.push_back( iProc );
-            graphInterfaces.push_back( interfaces[2 * iProc] );
-            graphInterfaces.push_back( interfaces[2 * iProc + 1] );
+            graphInterfaces.push_back( VectorLong( 2 * interfaces[2 * iProc].size() ) );
+            graphInterfaces.push_back( VectorLong( 2 * interfaces[2 * iProc + 1].size() ) );
+            for ( int i = 0; i < interfaces[2 * iProc].size(); ++i ) {
+                graphInterfaces[cmpt][2 * i] = interfaces[2 * iProc][i];
+                graphInterfaces[cmpt][2 * i + 1] = idToSend[i];
+            }
+            for ( int i = 0; i < interfaces[2 * iProc + 1].size(); ++i ) {
+                graphInterfaces[cmpt + 1][2 * i] = interfaces[2 * iProc + 1][i];
+                graphInterfaces[cmpt + 1][2 * i + 1] = idToRecv[i];
+            }
+            cmpt += 2;
         }
     }
+    // free memory
+    interfaces = VectorOfVectorsLong();
 
     ParallelMeshPtr outMesh( new ParallelMesh() );
 
@@ -95,7 +126,7 @@ ParallelMeshPtr BalanceableMesh::applyBalancingStrategy( VectorInt &newLocalNode
     balanceGroups( outMesh, nodesBalancer, cellsBalancer );
     outMesh->buildInformations( 3 );
 
-    // Build "dummy" names vectors (for cells and nodes)
+    // Build "dummy" name vectors (for cells and nodes)
     outMesh->buildNamesVectors();
     outMesh->create_joints( domains, dMask.getBalancedMask(), nOwners, graphInterfaces );
     // outMesh->printMedFile( "/home/H85256/" + std::to_string( rank ) + ".med" );
@@ -118,7 +149,8 @@ void BalanceableMesh::buildReverseConnectivity() {
 };
 
 void BalanceableMesh::deleteReverseConnectivity() {
-    _reverseConnex.clear();
+    // free memory
+    _reverseConnex = std::map< int, std::set< int > >();
     _bReverseConnex = false;
 };
 
