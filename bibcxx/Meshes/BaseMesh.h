@@ -192,6 +192,8 @@ class BaseMesh : public DataStructure, public ListOfTables {
 
     std::string getCellTypeName( const ASTERINTEGER &index ) const;
 
+    bool hasCellsOfType( const std::string ) const;
+
     /**
      * @brief Recuperation de la dimension du maillage
      */

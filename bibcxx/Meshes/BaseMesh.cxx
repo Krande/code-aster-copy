@@ -244,6 +244,30 @@ std::string BaseMesh::getCellTypeName( const ASTERINTEGER &index ) const {
     return trim( charName.toString() );
 };
 
+bool BaseMesh::hasCellsOfType( const std::string typma) const {
+    
+    if ( isEmpty() )
+        return false;
+    if ( !_cellsType->exists() )
+        return false;
+    _cellsType->updateValuePointer();
+
+    ASTERINTEGER typv;
+    JeveuxChar32 objName( " " );
+    std::string name = "&CATA.TM.NOMTM";
+    CALLO_JEXNOM( objName, name, typma );
+    CALLO_JENONU( objName, &typv );
+    if ( typv <= 0 )
+        return false;
+
+    auto nbCells = _cellsType->size();
+    for ( ASTERINTEGER i = 0; i < nbCells; i++ ) {
+        if ( ( *_cellsType )[i] == typv )
+            return true;
+    }
+    return false;
+}
+
 bool BaseMesh::build() {
     _groupsOfNodes->build();
     _groupsOfCells->build();

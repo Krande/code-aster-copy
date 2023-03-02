@@ -21,9 +21,6 @@
 # POST_NEWMARK : calcul de stabilite ouvrage en remblai au seisme
 # -------------------------------------------------------
 
-import aster
-
-# import sys
 import numpy as np
 
 from ..Cata.Syntax import _F
@@ -266,8 +263,8 @@ def post_newmark_ops(self, **args):
         #### mailles SEG2 et SEG3 du maillage
         else:
             seg = []
-            _, _, yaseg2 = aster.dismoi("EXI_SEG2", __mail_1.getName(), "MAILLAGE", "F")
-            if yaseg2 == "OUI":
+            yaseg2 = __mail_1.hasCellsOfType("SEG2")
+            if yaseg2:
 
                 seg.append("LIGNE_2")
                 __mail_1 = DEFI_GROUP(
@@ -276,8 +273,8 @@ def post_newmark_ops(self, **args):
                     CREA_GROUP_MA=_F(NOM="LIGNE_2", TYPE_MAILLE=("SEG2"), TOUT="OUI"),
                 )
 
-            _, _, yaseg3 = aster.dismoi("EXI_SEG3", __mail_1.getName(), "MAILLAGE", "F")
-            if yaseg3 == "OUI":
+            yaseg3 = __mail_1.hasCellsOfType("SEG3")
+            if yaseg3:
                 seg.append("LIGNE_3")
                 __mail_1 = DEFI_GROUP(
                     reuse=__mail_1,

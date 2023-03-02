@@ -116,6 +116,16 @@ Returns:
     int : the cell type
         )",
               py::arg( "index" ) )
+        .def( "hasCellsOfType", &BaseMesh::hasCellsOfType, R"(
+Return True if mesh contains at least one cell of given type
+
+Arguments:
+    type (str) : cell type
+
+Returns:
+    bool : *True* if mesh contains at least one cell of given type, else *False*
+        )",
+              py::arg( "type" ) )
         .def( "getMedConnectivity", &BaseMesh::getMedConnectivity, R"(
 Return the connectivity of the mesh as Python lists following the Med numbering.
 
