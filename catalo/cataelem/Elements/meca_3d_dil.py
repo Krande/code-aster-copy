@@ -103,7 +103,7 @@ EREFCO = LocatedComponents(phys=PHY.PREC, type="ELEM", components=("SIGM", "EPSI
 ECONTNC = LocatedComponents(
     phys=PHY.SIEF_C,
     type="ELNO",
-    components=("SIXX", "SIYY", "SIZZ", "SIXY", "SIXZ", "SIYZ", "SIGONF", "PRES", "SIG[3]", "DEPV"),
+    components=("SIXX", "SIYY", "SIZZ", "SIXY", "SIXZ", "SIYZ", "PRES_M", "PRES", "SIG[3]", "DEPV"),
 )
 
 
@@ -111,14 +111,14 @@ ECONTPG = LocatedComponents(
     phys=PHY.SIEF_R,
     type="ELGA",
     location="RIGI",
-    components=("SIXX", "SIYY", "SIZZ", "SIXY", "SIXZ", "SIYZ", "SIGONF", "PRES", "SIG[3]", "DEPV"),
+    components=("SIXX", "SIYY", "SIZZ", "SIXY", "SIXZ", "SIYZ", "PRES_M", "PRES", "SIG[3]", "DEPV"),
 )
 
 
 ECONTNO = LocatedComponents(
     phys=PHY.SIEF_R,
     type="ELNO",
-    components=("SIXX", "SIYY", "SIZZ", "SIXY", "SIXZ", "SIYZ", "SIGONF", "PRES", "SIG[3]", "DEPV"),
+    components=("SIXX", "SIYY", "SIZZ", "SIXY", "SIXZ", "SIYZ", "PRES_M", "PRES", "SIG[3]", "DEPV"),
 )
 
 CFORCEF = LocatedComponents(phys=PHY.FORC_F, type="ELEM", components=("FX", "FY", "FZ"))

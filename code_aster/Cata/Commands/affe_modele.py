@@ -156,6 +156,7 @@ AFFE_MODELE = OPER(
                     "D_PLAN_HH2M_SI",  # person_in_charge: sylvie.granet at edf.fr
                     "D_PLAN_HM",  # person_in_charge: sylvie.granet at edf.fr
                     "D_PLAN_HM_SI",  # person_in_charge: sylvie.granet at edf.fr
+                    "D_PLAN_HM_SI_DIL",  # person_in_charge: sylvie.granet at edf.fr
                     "D_PLAN_THM",  # person_in_charge: sylvie.granet at edf.fr
                     "D_PLAN_HHMD",  # person_in_charge: sylvie.granet at edf.fr
                     "D_PLAN_HH2MD",  # person_in_charge: sylvie.granet at edf.fr
@@ -169,13 +170,15 @@ AFFE_MODELE = OPER(
                     "D_PLAN_HHMS",  # person_in_charge: sylvie.granet at edf.fr
                     "D_PLAN_HH2MS",  # person_in_charge: sylvie.granet at edf.fr
                     "D_PLAN_HMS",  # person_in_charge: sylvie.granet at edf.fr
+                    "D_PLAN_HMS_DIL",  # person_in_charge: sylvie.granet at edf.fr
                     "D_PLAN_THHS",  # person_in_charge: sylvie.granet at edf.fr
                     "D_PLAN_THH2S",  # person_in_charge: sylvie.granet at edf.fr
                     "D_PLAN_THVS",  # person_in_charge: sylvie.granet at edf.fr
                     "D_PLAN_THH2MS",  # person_in_charge: sylvie.granet at edf.fr
                     "D_PLAN_THHMS",  # person_in_charge: sylvie.granet at edf.fr
                     "D_PLAN_THMS",  # person_in_charge: sylvie.granet at edf.fr
-                    "D_PLAN_HS",  # person_in_charge: sylvie.granet at edf.fr
+                    "D_PLAN_THMS_DIL",  # person_in_charge: sylvie.granet at edf.fr                    
+		    "D_PLAN_HS",  # person_in_charge: sylvie.granet at edf.fr
                     "D_PLAN_HHD",  # person_in_charge: sylvie.granet at edf.fr
                     "D_PLAN_HHS",  # person_in_charge: sylvie.granet at edf.fr
                     "D_PLAN_HH2D",  # person_in_charge: sylvie.granet at edf.fr

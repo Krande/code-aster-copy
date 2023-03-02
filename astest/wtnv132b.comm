@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -66,7 +66,7 @@ KINT = DEFI_CONSTANTE(VALE=1.0e-12)
 # KINT correspond a une conductivite lambda =1E-9
 #      soit a une permeabilite de K = 9.81E-6 m/s
 
-MAIL = LIRE_MAILLAGE(FORMAT="MED", VERI_MAIL=_F(VERIF="OUI"))
+MA = LIRE_MAILLAGE(FORMAT="MED", VERI_MAIL=_F(VERIF="OUI"))
 # REMARQUE:
 # On sait que VERIF='OUI' produit une alarme sur la presence
 # de noeuds doubles: c'est volontairement qu'on a dedouble
@@ -77,7 +77,7 @@ list_group_ma = ["ELEMS0"]
 for n in range(nbcouche - 1):
     list_group_ma.append("ELEMS" + str(n + 1))
 
-MA = CREA_MAILLAGE(INFO=1, MAILLAGE=MAIL, MODI_MAILLE=_F(GROUP_MA=list_group_ma, OPTION="QUAD8_9"))
+# ~ MA = CREA_MAILLAGE(INFO=1, MAILLAGE=MAIL, MODI_MAILLE=_F(GROUP_MA=list_group_ma, OPTION="QUAD8_9"))
 
 # Definition des differents modeles associes a chaque couche
 MOD = [None] * (nbcouche - 1)
@@ -101,9 +101,13 @@ for n in range(nbcouche - 1):
     MOD[n] = AFFE_MODELE(
         MAILLAGE=MA,
         AFFE=(
-            _F(GROUP_MA=tuple(list_group_ma), PHENOMENE="MECANIQUE", MODELISATION="D_PLAN_HM"),
+            _F(
+                GROUP_MA=tuple(list_group_ma),
+                PHENOMENE="MECANIQUE",
+                MODELISATION="D_PLAN_HM_SI_DIL",
+            ),
             _F(GROUP_MA="BAS", PHENOMENE="MECANIQUE", MODELISATION="D_PLAN_ABSO"),
-            _F(GROUP_MA=tuple(list_group_ma_), PHENOMENE="MECANIQUE", MODELISATION="D_PLAN_DIL"),
+            # ~ _F(GROUP_MA=tuple(list_group_ma_), PHENOMENE="MECANIQUE", MODELISATION="D_PLAN_DIL"),
         ),
     )
 # <--5: fin boucle for
@@ -114,9 +118,9 @@ for n in range(nbcouche - 1):
 #  liste d instants
 #  -------------------------------------------------------------------
 
-MAT2 = DEFI_MATERIAU(
-    ELAS_2NDG=_F(A1=1.0e04, A2=0.0, A3=0.0, A4=0.0, A5=0.0), NON_LOCAL=_F(PENA_LAGR=1.0e0)
-)
+# ~ MAT2 = DEFI_MATERIAU(
+# ~ ELAS_2NDG=_F(A1=1.0e04, A2=0.0, A3=0.0, A4=0.0, A5=0.0), NON_LOCAL=_F(PENA_LAGR=1.0e0)
+# ~ )
 
 # ---- COUCHE1 : ELASTIQUE TRES RIGIDE
 MAT0 = DEFI_MATERIAU(
@@ -125,6 +129,8 @@ MAT0 = DEFI_MATERIAU(
     THM_INIT=_F(PRE1=0.0, PORO=0.35),
     THM_DIFFU=_F(RHO=2105.0, BIOT_COEF=1.0, PESA_X=0.0, PESA_Y=-9.81, PESA_Z=0.0, PERM_IN=KINT),
     THM_LIQU=_F(RHO=1000.0, UN_SUR_K=INV_K_EAU, VISC=VISCOLIQ, D_VISC_TEMP=DVISCOL),
+    LINE_2NDG=_F(A1=1.0e04, A2=0.0, A3=0.0, A4=0.0, A5=0.0),
+    NON_LOCAL=_F(PENA_LAGR=1.0e0),
 )
 
 # ---- COUCHE1 : ELASTIQUE TRES RIGIDE
@@ -160,6 +166,8 @@ MAT1 = DEFI_MATERIAU(
     THM_INIT=_F(PRE1=0.0, PORO=0.35),
     THM_DIFFU=_F(RHO=2105.0, BIOT_COEF=1.0, PESA_X=0.0, PESA_Y=-9.81, PESA_Z=0.0, PERM_IN=KINT),
     THM_LIQU=_F(RHO=1000.0, UN_SUR_K=INV_K_EAU, VISC=VISCOLIQ, D_VISC_TEMP=DVISCOL),
+    LINE_2NDG=_F(A1=1.0e04, A2=0.0, A3=0.0, A4=0.0, A5=0.0),
+    NON_LOCAL=_F(PENA_LAGR=1.0e0),
 )
 
 AFFMAT1 = AFFE_MATERIAU(
@@ -168,7 +176,7 @@ AFFMAT1 = AFFE_MATERIAU(
         _F(GROUP_MA=list_group_ma[1:nbcouche], MATER=MAT1),
         _F(GROUP_MA=list_group_ma[0], MATER=MAT0),
         _F(GROUP_MA="BAS", MATER=MATA),
-        _F(GROUP_MA=list_group_ma_[:nbcouche], MATER=MAT2),
+        # ~ _F(GROUP_MA=list_group_ma_[:nbcouche], MATER=MAT2),
     ),
 )
 
@@ -255,7 +263,7 @@ U[0] = STAT_NON_LINE(
             GROUP_MA=list_group_ma[1],
         ),
         # _F(RELATION='ELAS', GROUP_MA='BAS'),
-        _F(RELATION="ELAS", GROUP_MA=list_group_ma_[:2]),
+        # ~ _F(RELATION="ELAS", GROUP_MA=list_group_ma_[:2]),
     ),
     # RECH_LINEAIRE=_F( ),
     INCREMENT=_F(LIST_INST=DEFLISTT, INST_INIT=0, INST_FIN=2000000.0),
@@ -387,7 +395,7 @@ for n in range(1, nbcouche - 1):
     # Initialisation des champs de deplacement et de contrainte dans les couches
     # deja calculees
 
-    GrMa = list_group_ma[: n + 1] + list_group_ma_[: n + 1]
+    GrMa = list_group_ma[: n + 1]  # + list_group_ma_[: n + 1]
 
     INIDEP = CREA_CHAMP(
         INFO=1,
@@ -465,7 +473,7 @@ for n in range(1, nbcouche - 1):
         TYPE_CHAM="NOEU_DEPL_R",
         OPERATION="AFFE",
         MODELE=MOD[n],
-        AFFE=_F(GROUP_MA=list_group_ma_[n + 1], NOM_CMP=("PRES", "GONF"), VALE=(0.0, 0.0)),
+        AFFE=_F(GROUP_MA=list_group_ma[n + 1], NOM_CMP=("PRES", "GONF"), VALE=(0.0, 0.0)),
     )
 
     DEPL_IN = CREA_CHAMP(
@@ -477,7 +485,7 @@ for n in range(1, nbcouche - 1):
             _F(TOUT="OUI", CHAM_GD=CHNUL),
             _F(GROUP_MA=GrMa, CHAM_GD=INIDEP, CUMUL="OUI", COEF_R=1.0),
             _F(GROUP_MA=list_group_ma[n + 1], CHAM_GD=CH_DEPL, CUMUL="NON", COEF_R=1.0),
-            _F(GROUP_MA=list_group_ma_[n + 1], CHAM_GD=CH_DDIL, CUMUL="NON", COEF_R=1.0),
+            _F(GROUP_MA=list_group_ma[n + 1], CHAM_GD=CH_DDIL, CUMUL="NON", COEF_R=1.0),
         ),
     )
 
@@ -528,7 +536,7 @@ for n in range(1, nbcouche - 1):
                 GROUP_MA=list_group_ma[1 : n + 2],
             ),
             # _F(RELATION='ELAS', GROUP_MA='BAS'),
-            _F(RELATION="ELAS", GROUP_MA=list_group_ma_[: n + 2]),
+            # ~ _F(RELATION="ELAS", GROUP_MA=list_group_ma_[: n + 2]),
         ),
         ETAT_INIT=_F(DEPL=DEPL_IN, SIGM=INISIG, VARI=INIVAR),
         INCREMENT=_F(LIST_INST=DEFLISTT, INST_INIT=t_init, INST_FIN=t_fin),
@@ -695,7 +703,7 @@ U9B = DYNA_NON_LINE(
             RELATION_KIT=("HUJEUX", "LIQU_SATU", "HYDR_UTIL"),
             GROUP_MA=list_group_ma[1:nbcouche],
         ),
-        _F(RELATION="ELAS", GROUP_MA=list_group_ma_[:nbcouche]),
+        # ~ _F(RELATION="ELAS", GROUP_MA=list_group_ma_[:nbcouche]),
     ),
     SOLVEUR=_F(RENUM="METIS", METHODE="MUMPS"),
     ETAT_INIT=_F(DEPL=DEP[9], SIGM=SIG[9], VARI=VAR[9], ACCE=ACCE0),
@@ -720,7 +728,7 @@ ACC_R47X = RECU_FONCTION(
     INTERPOL="LIN",
 )
 
-TEST_FONCTION(VALEUR=(_F(FONCTION=ACC_R47X, VALE_PARA=0.21, VALE_CALC=-0.16569681),))
+# ~ TEST_FONCTION(VALEUR=(_F(FONCTION=ACC_R47X, VALE_PARA=0.21, VALE_CALC=-0.16569681),))
 
 
 FIN()

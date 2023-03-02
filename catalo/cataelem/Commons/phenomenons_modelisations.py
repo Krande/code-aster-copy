@@ -4763,6 +4763,50 @@ phen.add(
 )
 
 phen.add(
+    "D_PLAN_HMS_DIL",
+    Modelisation(
+        dim=(2, 2),
+        code="DR1",
+        attrs=(
+            (AT.TYPMOD, "D_PLAN"),
+            (AT.TYPMOD2, "THM"),
+            (AT.MECA, "OUI"),
+            (AT.THER, "NON"),
+            (AT.HYDR1, "1"),
+            (AT.HYDR2, "0"),
+            (AT.DIL, "OUI"),
+            (AT.FORMULATION, "DIL"),
+            (AT.D_PLAN, "OUI"),
+            (AT.INTTHM, "RED"),
+        ),
+        elements=(
+            (MT.QUAD8, EL.HM_DPQ8S_DIL),
+            (MT.TRIA6, EL.HM_DPTR6S_DIL),
+            (MT.SEG3, EL.HM_DPSE3),
+        ),
+    ),
+)
+
+phen.add(
+    "D_PLAN_HM_P",
+    Modelisation(
+        dim=(2, 2),
+        code="DHB",
+        attrs=(
+            (AT.TYPMOD, "D_PLAN"),
+            (AT.TYPMOD2, "THM"),
+            (AT.TYPMOD3, "STEADY"),
+            (AT.MECA, "OUI"),
+            (AT.THER, "NON"),
+            (AT.HYDR1, "1"),
+            (AT.HYDR2, "0"),
+            (AT.D_PLAN, "OUI"),
+        ),
+        elements=((MT.QUAD8, EL.HM_DPQ8_P), (MT.TRIA6, EL.HM_DPTR6_P), (MT.SEG3, EL.HM_DPSE3_P)),
+    ),
+)
+
+phen.add(
     "D_PLAN_HM_SI",
     Modelisation(
         dim=(2, 2),
@@ -4777,6 +4821,30 @@ phen.add(
             (AT.D_PLAN, "OUI"),
         ),
         elements=((MT.QUAD8, EL.HM_DPQ8M), (MT.TRIA6, EL.HM_DPTR6M), (MT.SEG3, EL.HM_DPSE3)),
+    ),
+)
+
+phen.add(
+    "D_PLAN_HM_SI_DIL",
+    Modelisation(
+        dim=(2, 2),
+        code="DM1",
+        attrs=(
+            (AT.TYPMOD, "D_PLAN"),
+            (AT.TYPMOD2, "THM"),
+            (AT.MECA, "OUI"),
+            (AT.THER, "NON"),
+            (AT.HYDR1, "1"),
+            (AT.HYDR2, "0"),
+            (AT.DIL, "OUI"),
+            (AT.FORMULATION, "DIL"),
+            (AT.D_PLAN, "OUI"),
+        ),
+        elements=(
+            (MT.QUAD8, EL.HM_DPQ8M_DIL),
+            (MT.TRIA6, EL.HM_DPTR6M_DIL),
+            (MT.SEG3, EL.HM_DPSE3),
+        ),
     ),
 )
 
@@ -5383,6 +5451,31 @@ phen.add(
             (AT.INTTHM, "LUM"),
         ),
         elements=((MT.QUAD8, EL.THV_DPQ8D), (MT.TRIA6, EL.THV_DPTR6D), (MT.SEG3, EL.THV_DPSE3)),
+    ),
+)
+
+phen.add(
+    "D_PLAN_THMS_DIL",
+    Modelisation(
+        dim=(2, 2),
+        code="DRD",
+        attrs=(
+            (AT.TYPMOD, "D_PLAN"),
+            (AT.TYPMOD2, "THM"),
+            (AT.MECA, "OUI"),
+            (AT.THER, "OUI"),
+            (AT.HYDR1, "1"),
+            (AT.HYDR2, "0"),
+            (AT.DIL, "OUI"),
+            (AT.FORMULATION, "DIL"),
+            (AT.D_PLAN, "OUI"),
+            (AT.INTTHM, "RED"),
+        ),
+        elements=(
+            (MT.QUAD8, EL.THM_DPQ8S_DIL),
+            (MT.TRIA6, EL.THM_DPTR6S_DIL),
+            (MT.SEG3, EL.THM_DPSE3),
+        ),
     ),
 )
 

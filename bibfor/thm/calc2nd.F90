@@ -85,13 +85,13 @@ subroutine calc2nd(ds_thm, j_mater, &
 ! - Compute second gradient generalized stresses at end of current step
     if (lSigm) then
         congep(adco2nd) = defgep(adde2nd+2+ndim)+ &
-                          rpena*(defgep(adde2nd+1)-defgep(adde2nd))
+                          rpena*(defgep(adde2nd)-defgep(adde2nd+1))
         congep(adco2nd+1) = -defgep(adde2nd+2+ndim)- &
-                            rpena*(defgep(adde2nd+1)-defgep(adde2nd))
+                            rpena*(defgep(adde2nd)-defgep(adde2nd+1))
         do i_dim = 1, ndim
             congep(adco2nd+1+i_dim) = silcp(i_dim)
         end do
-        congep(adco2nd+2+ndim) = defgep(adde2nd+1)-defgep(adde2nd)
+        congep(adco2nd+2+ndim) = defgep(adde2nd)-defgep(adde2nd+1)
     end if
 
 ! - Compute second gradient matrix

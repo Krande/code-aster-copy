@@ -504,6 +504,13 @@ HYDR2 = Attribute(
 """,
 )
 
+DIL = Attribute(
+    value=("OUI", "NON"),
+    comment="""
+  DIL  =  'OUI' :  l'element est en second gradient de dilatation.
+""",
+)
+
 TYPE_VOISIN = Attribute(
     value=("A2", "F3"),
     comment="""

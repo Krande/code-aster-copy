@@ -90,7 +90,7 @@ subroutine te0082(option, nomte)
     call thmGetGene(ds_thm, l_vf, 2, &
                     mecani, press1, press2, tempe, second)
     if (lteatt('TYPMOD2', 'THM')) then
-        idec = press1(1)+press2(1)+tempe(1)
+        idec = press1(1)+press2(1)+tempe(1)+second(1)*2
     else
         idec = 0
     end if

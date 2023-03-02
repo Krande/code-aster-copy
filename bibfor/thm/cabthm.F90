@@ -270,9 +270,9 @@ subroutine cabthm(ds_thm, l_axi, ndim, &
                 b(adde2nd+1, (i_node-1)*nddls+nddl_meca+nddl_pres+nddl_p1+nddl_p2+nddl_ther+1)+ &
                 zr(jv_func2+i_node+(kpi-1)*nnos-1)
             do i_dim = 1, ndim
-            b(adde2nd+1+i_dim, (i_node-1)*nddls+nddl_meca+nddl_pres+nddl_p1+nddl_p2+nddl_ther+1) = &
-             b(adde2nd+1+i_dim, (i_node-1)*nddls+nddl_meca+nddl_pres+nddl_p1+nddl_p2+nddl_ther+1)+ &
-                    dfdi2(i_node, i_dim)
+                b(adde2nd+1+i_dim, (i_node-1)*nddls+nddl_meca+nddl_pres+nddl_p1 &
+                  +nddl_p2+nddl_ther+1) = b(adde2nd+1+i_dim, (i_node-1)*nddls+nddl_meca &
+                                        +nddl_pres+nddl_p1+nddl_p2+nddl_ther+1)+dfdi2(i_node, i_dim)
             end do
         end if
     end do
