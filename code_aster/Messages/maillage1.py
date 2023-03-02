@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -46,14 +46,6 @@ très faiblement négative ( > -1.d-6 * X_MAX)
   * Vérifiez votre maillage.
   * Vous pouvez utiliser MODI_MAILLAGE / DEFORME pour repositionner votre maillage
     dans le demi espace  X >= 0
-"""
-    ),
-    5: _(
-        """
-Le maillage parallèle %(k1)s ne contient pas de joints pour définir le raccord entre les différents sous-domaines. Ceci peut arriver si vos différents sous-domaines ne sont pas connectés les uns aux autres.
-
- Conseils :
-  * Vérifiez votre maillage.
 """
     ),
 }

@@ -87,7 +87,7 @@ subroutine op0075()
 !     --- CREATION DU .REFN DU PROFIL :
     profno = '&&OP0075'//'.PROFC.NUME'
 !
-    call wkvect(profno(1:19)//'.REFN', 'V V K24', 4, jrefn)
+    call wkvect(profno(1:19)//'.REFN', 'V V K24', 5, jrefn)
     zk24(jrefn+1) = 'DEPL_R'
 !
     call getvid(' ', 'RESU_GENE', scal=resin, nbret=ir1)

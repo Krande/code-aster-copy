@@ -613,7 +613,7 @@ subroutine nueffe_lag1(nb_ligr, list_ligr, base, nume_ddlz, renumz, &
         call utmess('I', 'FACTOR_1', ni=5, vali=vali)
     end if
 
-    call wkvect(refn, base(2:2)//' V K24', 4, idref)
+    call wkvect(refn, base(2:2)//' V K24', 5, idref)
     zk24(idref) = mesh
     zk24(idref+1) = gran_name
     zk24(idref+2) = modele

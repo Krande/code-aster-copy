@@ -165,7 +165,7 @@ subroutine op0018()
 !
 ! - Common definition for model SD
 !
-    call wkvect(model//'.MODELE    .LGRF', 'G V K8', 3, vk8=p_model_lgrf)
+    call wkvect(model//'.MODELE    .LGRF', 'G V K8', 4, vk8=p_model_lgrf)
     call wkvect(model//'.MODELE    .NBNO', 'G V I', 1, vi=p_model_nbno)
     p_model_lgrf(1) = mesh
     p_model_lgrf(2) = model

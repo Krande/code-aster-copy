@@ -63,7 +63,7 @@ subroutine lrm_clean_joint(mesh, v_noex)
 !
     character(len=4) :: chdomdis
     character(len=8) :: k8bid
-    character(len=19) :: comm_name, tag_name, domj
+    character(len=19) :: comm_name, tag_name, joints
     character(len=24) :: name_join_e_old, send, name_join_r_old, recv
     integer :: rang, domdis, nbproc, i_comm, nb_comm, domj_i
     integer :: nb_corr, ino, numno, deca
@@ -87,7 +87,6 @@ subroutine lrm_clean_joint(mesh, v_noex)
     end if
     rang = to_aster_int(mrank)
     nbproc = to_aster_int(msize)
-    ASSERT(nbproc <= MT_DOMMAX)
     DEBUG_MPI('lrm_clean_joint', rang, nbproc)
 !
     call jemarq()
@@ -100,12 +99,14 @@ subroutine lrm_clean_joint(mesh, v_noex)
     call jeveuo(tag_name, 'L', vi=v_tag)
 
 !   -- creation de la collection dipersee .JOIN  :
-    domj = mesh//".JOIN"
-    send = domj//".SEND"
-    recv = domj//".RECV"
-    call jecrec(send, 'G V I', 'NU', 'DISPERSE', 'VARIABLE', nb_comm)
-    call jecrec(recv, 'G V I', 'NU', 'DISPERSE', 'VARIABLE', nb_comm)
-    call jeveuo(domj//".DOMJ", 'L', vi=v_domj)
+    joints = mesh//".JOIN"
+    send = joints//".SEND"
+    recv = joints//".RECV"
+    if (nb_comm > 0) then
+        call jecrec(send, 'G V I', 'NU', 'DISPERSE', 'VARIABLE', nb_comm)
+        call jecrec(recv, 'G V I', 'NU', 'DISPERSE', 'VARIABLE', nb_comm)
+        call jeveuo(joints//".DOMJ", 'L', vi=v_domj)
+    end if
 
     do i_comm = 1, nb_comm
         domj_i = v_comm(i_comm)
@@ -144,7 +145,6 @@ subroutine lrm_clean_joint(mesh, v_noex)
 !
 ! --- On crée le nouveau joint .E
 !
-        call jecroc(jexnum(send, domj_i))
         call jeecra(jexnum(send, domj_i), 'LONMAX', 2*nb_corr)
         call jeveuo(jexnum(send, domj_i), 'E', vi=v_name_join_e_new)
 !
@@ -177,7 +177,6 @@ subroutine lrm_clean_joint(mesh, v_noex)
         end do
         ASSERT(nb_corr > 0)
 !
-        call jecroc(jexnum(recv, domj_i))
         call jeecra(jexnum(recv, domj_i), 'LONMAX', 2*nb_corr)
         call jeveuo(jexnum(recv, domj_i), 'E', vi=v_name_join_r_new)
         call jeveuo(name_join_r_old, 'L', vi=v_name_join_r_old)

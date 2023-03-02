@@ -27,6 +27,8 @@
 
 #ifdef ASTER_HAVE_MPI
 
+Joints::Joints() : Joints( DataStructureNaming::getNewName() ){};
+
 Joints::Joints( const std::string name )
     : DataStructure( name, 19, "DOMJOINTS" ),
       _domj( JeveuxVectorLong( getName() + ".DOMJ" ) ),
@@ -53,18 +55,30 @@ bool Joints::build() {
 }
 
 void Joints::setSendedElements( const VectorOfVectorsLong &send ) {
-    _send->allocateSparseNumbered( send.size() );
+    if ( send.size() > 0 ) {
+        _send->allocateSparseNumbered( send.size() );
 
-    for ( auto &send_i : send ) {
-        _send->push_back( send_i );
+        ASTERINTEGER i = 1;
+        for ( auto &send_i : send ) {
+            if ( send_i.size() > 0 ) {
+                auto obj = _send->allocateObject( i, send_i );
+            }
+            i++;
+        }
     }
 };
 
 void Joints::setReceivedElements( const VectorOfVectorsLong &recv ) {
-    _recv->allocateSparseNumbered( recv.size() );
+    if ( recv.size() > 0 ) {
+        _recv->allocateSparseNumbered( recv.size() );
 
-    for ( auto &recv_i : recv ) {
-        _recv->push_back( recv_i );
+        ASTERINTEGER i = 1;
+        for ( auto &recv_i : recv ) {
+            if ( recv_i.size() > 0 ) {
+                auto obj = _recv->allocateObject( i, recv_i );
+            }
+            i++;
+        }
     }
 };
 

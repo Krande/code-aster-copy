@@ -451,6 +451,14 @@ subroutine detrsd(typesd, nomsd)
         call jedetr(k19//'.NCMP')
         call jedetr(k19//'.VALV')
 !     ------------------------------------------------------------------
+    else if (typ2sd .eq. 'DOMJOINTS') then
+        !     ----------------------------------
+        k19 = nomsd
+        call jedetr(k19//'.DOMJ')
+        call jedetr(k19//'.SEND')
+        call jedetr(k19//'.RECV')
+        !
+!     ------------------------------------------------------------------
 !
     else if (typ2sd .eq. 'NUME_EQUA_GENE') then
 !     ------------------------------------

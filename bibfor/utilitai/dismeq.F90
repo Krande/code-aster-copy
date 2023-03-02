@@ -84,6 +84,9 @@ subroutine dismeq(questi, nomobz, repi, repkz, ierd)
         end do
         repi = neq-3*(nbddlb/2)
 !
+    else if (questi .eq. 'JOINTS') then
+        call jeveuo(nomob//'.REFN', 'L', vk24=refn)
+        repk = refn(5) (1:19)
 !
     else if (questi .eq. 'NB_EQUA') then
 !     --------------------------------

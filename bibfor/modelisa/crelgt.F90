@@ -113,7 +113,7 @@ subroutine crelgt(basez, ligrez)
 !
 ! ---  CREATION DU K8 QUI EST LE NOM DU MAILLAGE :
 !      -----------------------------------------
-    call wkvect(ligret//'.LGRF', base//' V K8', 3, jlgrf)
+    call wkvect(ligret//'.LGRF', base//' V K8', 4, jlgrf)
 !
 ! ---  CREATION DE L'ENTIER QUI EST LE NOMBRE DE MAILLES TARDIVES :
 !      ----------------------------------------------------------

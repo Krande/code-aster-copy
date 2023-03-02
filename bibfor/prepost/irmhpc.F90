@@ -43,6 +43,7 @@ subroutine irmhpc(idfimd, nomamd, nomast, nbnoeu)
 #include "asterfort/infniv.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jeexin.h"
+#include "asterfort/jexnum.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
@@ -66,10 +67,10 @@ subroutine irmhpc(idfimd, nomamd, nomast, nbnoeu)
     integer, pointer :: v_dojoin(:) => null()
     mpi_int :: mrank, msize
 !
-    character(len=4) :: chnbjo
-    character(len=8) :: chrang, chdomdis
-    character(len=8) :: k8bid
-    character(len=24) :: nonulg, domjoin, nojoin
+    character(len=8) :: chrang, chdomdis, k8bid
+    character(len=19) :: joints
+    character(len=24) :: nonulg, send, recv, domj
+    character(len=32) :: nojoin
     character(len=MED_NAME_SIZE) :: nomjoi
     character(len=MED_COMMENT_SIZE) :: descri
 
@@ -88,7 +89,6 @@ subroutine irmhpc(idfimd, nomamd, nomast, nbnoeu)
     call asmpi_info(rank=mrank, size=msize)
     rang = to_aster_int(mrank)
     nbproc = to_aster_int(msize)
-    ASSERT(nbproc <= MT_DOMMAX)
 !
 ! -- Impression numerotation globale des noeuds
 !
@@ -100,12 +100,15 @@ subroutine irmhpc(idfimd, nomamd, nomast, nbnoeu)
 !
 ! -- Impression des joints
 !
-    domjoin = nomast//'.DOMJOINTS'
+    joints = nomast//".JOIN"
+    domj = joints//".DOMJ"
+    send = joints//".SEND"
+    recv = joints//".RECV"
     nbjoin = 0
-    call jeexin(domjoin, iret)
+    call jeexin(domj, iret)
     if (iret > 0) then
-        call jeveuo(domjoin, 'L', vi=v_dojoin)
-        call jelira(domjoin, 'LONMAX', nbjoin, k8bid)
+        call jeveuo(domj, 'L', vi=v_dojoin)
+        call jelira(domj, 'LONMAX', nbjoin, k8bid)
         descri = "code_aster"
         call codent(rang, 'G', chrang)
         ASSERT(nbjoin <= 9999)
@@ -115,25 +118,24 @@ subroutine irmhpc(idfimd, nomamd, nomast, nbnoeu)
         do i_join = 1, nbjoin
             domdis = v_dojoin(i_join)
             call codent(domdis, 'G', chdomdis)
-            call codlet(domdis, 'G', chnbjo)
             do i = 1, 2
                 nomjoi = " "
                 nojoin = " "
                 if (i == 1) then
                     if (rang < domdis) then
                         nomjoi = chrang//' '//chdomdis
-                        nojoin = nomast//'.R'//chnbjo
+                        nojoin = jexnum(recv, i_join)
                     else
                         nomjoi = chdomdis//' '//chrang
-                        nojoin = nomast//'.E'//chnbjo
+                        nojoin = jexnum(send, i_join)
                     end if
                 else
                     if (rang < domdis) then
                         nomjoi = chdomdis//' '//chrang
-                        nojoin = nomast//'.E'//chnbjo
+                        nojoin = jexnum(send, i_join)
                     else
                         nomjoi = chrang//' '//chdomdis
-                        nojoin = nomast//'.R'//chnbjo
+                        nojoin = jexnum(recv, i_join)
                     end if
                 end if
 !

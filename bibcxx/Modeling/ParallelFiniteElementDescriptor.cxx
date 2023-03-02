@@ -165,15 +165,14 @@ ParallelFiniteElementDescriptor::ParallelFiniteElementDescriptor(
         // Creation des raccords
         const std::string cadre( "G" );
         const std::string error( "F" );
-        AS_ASSERT( nbProcs <= 46656 );
         VectorOfVectorsLong recv, send;
         recv.reserve( nbProcs );
         send.reserve( nbProcs );
 
         VectorLong joints;
         for ( i = 0; i < nbProcs; ++i ) {
-            const auto &taille1 = toSend[i].size();
-            const auto &taille2 = toReceive[i].size();
+            const auto taille1 = toSend[i].size();
+            const auto taille2 = toReceive[i].size();
             if ( taille1 != 0 or taille2 != 0 ) {
                 send.push_back( toSend[i] );
                 recv.push_back( toReceive[i] );
@@ -247,6 +246,7 @@ ParallelFiniteElementDescriptor::ParallelFiniteElementDescriptor(
     ( *_parameters )[1] = model->getName();
     ( *_parameters )[2] = ( *param )[2];
     ( *_parameters )[3] = _joints->getName();
+    std::cout << ( *_parameters )[3] << std::endl;
     auto docu = FEDesc->getParameters()->getInformationParameter();
     _parameters->setInformationParameter( docu );
     /** @todo ajouter un assert sur le maillage sous-jacent au modele */

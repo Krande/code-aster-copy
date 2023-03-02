@@ -128,7 +128,7 @@ subroutine xmligr(mesh, model, ds_contact)
 !
 ! --- CREATION DE .NOMA
 !
-    call wkvect(ligrxf//'.LGRF', 'V V K8', 3, jlgrf)
+    call wkvect(ligrxf//'.LGRF', 'V V K8', 4, jlgrf)
     zk8(jlgrf-1+1) = mesh
     zk8(jlgrf-1+2) = model
     call jeveuo(mesh//'.CONNEX', 'L', vi=connex)

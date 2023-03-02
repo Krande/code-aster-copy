@@ -90,7 +90,9 @@ subroutine dismlg(questi, nomobz, repi, repkz, ierd)
     if (questi .eq. 'NOM_MAILLA') then
         call jeveuo(nomob//'.LGRF', 'L', jlgrf)
         repk = zk8(jlgrf-1+1)
-
+    else if (questi .eq. 'JOINTS') then
+        call jeveuo(nomob//'.LGRF', 'L', jlgrf)
+        repk = zk8(jlgrf-1+4)
     else if (questi .eq. 'PARTITION') then
         call jeveuo(nomob//'.LGRF', 'L', jlgrf)
         modele = zk8(jlgrf-1+2)

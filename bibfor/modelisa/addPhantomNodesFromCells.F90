@@ -27,13 +27,13 @@ subroutine addPhantomNodesFromCells(mesh, indic_nodes)
 #include "asterf_types.h"
 #include "asterfort/asmpi_info.h"
 #include "asterfort/assert.h"
-#include "asterfort/codlet.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/create_graph_comm.h"
 #include "MeshTypes_type.h"
@@ -51,16 +51,17 @@ subroutine addPhantomNodesFromCells(mesh, indic_nodes)
 ! ---------------------------------------------------------------------------------------------
 !
     character(len=8) :: k8bid
-    character(len=4) :: chnbjo
-    character(len=24) :: nojoie, nojoir
-    character(len=19) :: tag_name, comm_name
-    integer :: rang, nbproc, nb_comm, domdis, iret
+    character(len=24) :: domj, recv, send
+    character(len=19) :: tag_name, comm_name, joints
+    character(len=32) :: nojoie, nojoir
+    integer :: rang, nbproc, nb_comm, domdis, iret, domj_i
     integer :: i_comm, nbnoee, nbnoer, i_no, numno
     mpi_int :: mrank, msize, mpicou, tag4, numpr4, n4e, n4r
     integer, pointer :: v_comm(:) => null()
     integer, pointer :: v_tag(:) => null()
     integer, pointer :: v_joine(:) => null()
     integer, pointer :: v_joinr(:) => null()
+    integer, pointer :: v_dom(:) => null()
     integer(kind=4), pointer :: v_send(:) => null()
     integer(kind=4), pointer :: v_recv(:) => null()
 !
@@ -70,24 +71,28 @@ subroutine addPhantomNodesFromCells(mesh, indic_nodes)
     call asmpi_info(rank=mrank, size=msize)
     rang = to_aster_int(mrank)
     nbproc = to_aster_int(msize)
-    ASSERT(nbproc <= MT_DOMMAX)
     DEBUG_MPI('addPhantomNodesFromCells', rang, nbproc)
 !
 ! --- Lecture des joints
-    call jeexin(mesh//'.DOMJOINTS', iret)
+    joints = mesh//".JOIN"
+    domj = joints//".DOMJ"
+    send = joints//".SEND"
+    recv = joints//".RECV"
+    call jeexin(domj, iret)
     if (iret > 0) then
         comm_name = '&&ADDNODES.COMM'
         tag_name = '&&ADDNODES.TAG'
         call create_graph_comm(mesh, "MAILLAGE_P", nb_comm, comm_name, tag_name)
         call jeveuo(comm_name, 'L', vi=v_comm)
         call jeveuo(tag_name, 'L', vi=v_tag)
+        call jeveuo(domj, 'L', vi=v_dom)
 !
         do i_comm = 1, nb_comm
-            domdis = v_comm(i_comm)
+            domj_i = v_comm(i_comm)
+            domdis = v_dom(domj_i)
 ! --- Get JOINT
-            call codlet(domdis, 'G', chnbjo)
-            nojoie = mesh//'.E'//chnbjo
-            nojoir = mesh//'.R'//chnbjo
+            nojoie = jexnum(send, domj_i)
+            nojoir = jexnum(recv, domj_i)
             call jeveuo(nojoie, 'L', vi=v_joine)
             call jelira(nojoie, 'LONMAX', nbnoee, k8bid)
             call jeveuo(nojoir, 'L', vi=v_joinr)

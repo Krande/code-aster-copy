@@ -230,6 +230,16 @@ subroutine copisd(typesd, base, sd1, sd2)
         call jedup1(k191//'.DELG', bas2, k192//'.DELG')
         call jedup1(k191//'.NULG', bas2, k192//'.NULG')
         call jedup1(k191//'.PDDL', bas2, k192//'.PDDL')
+        !call copis2('DOMJOINTS', bas2, k191//'.JOIN', k192//'.JOIN')
+
+! ----------------------------------------------------------------------
+    else if (typesd .eq. 'DOMJOINTS') then
+!     -----------------------------------
+        k191 = sd1
+        k192 = sd2
+        call jedup1(k191//'.DOMJ', bas2, k192//'.DOMJ')
+        call jedup1(k191//'.SEND', bas2, k192//'.SEND')
+        call jedup1(k191//'.RECV', bas2, k192//'.RECV')
 !
 ! ----------------------------------------------------------------------
     else if (typesd .eq. 'STOCKAGE') then
@@ -402,6 +412,7 @@ subroutine copisd(typesd, base, sd1, sd2)
         call jedup1(k81//'.SUPMAIL', bas2, k82//'.SUPMAIL')
         call jedup1(k81//'.TYPL', bas2, k82//'.TYPL')
         call jedup1(k81//'.TITR', bas2, k82//'.TITR')
+        call copis2('DOMJOINTS', bas2, k81//'.JOIN', k82//'.JOIN')
 !
         call copis2('L_TABLE', bas2, k81, k82)
         call jedup1(k81//'           .TITR', bas2, k82//'           .TITR')

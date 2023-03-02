@@ -28,7 +28,6 @@ subroutine iremed_filtre(nomast, nomsd, base, par_seqfile)
 #include "asterfort/asmpi_info.h"
 #include "asterfort/assert.h"
 #include "asterfort/create_graph_comm.h"
-#include "asterfort/codlet.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jedema.h"
@@ -39,6 +38,7 @@ subroutine iremed_filtre(nomast, nomsd, base, par_seqfile)
 #include "asterfort/jenonu.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexatr.h"
+#include "asterfort/jexnum.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/lrmtyp.h"
 #include "asterfort/wkvect.h"
@@ -72,18 +72,19 @@ subroutine iremed_filtre(nomast, nomsd, base, par_seqfile)
     integer :: nuanom(MT_NTYMAX, MT_NNOMAX)
     integer :: ino, jnoex, jnbno, jnbno1, nbnot, iproc, jno, jma, jnbma, nbmat, jmaex
     integer :: rang, nbproc, ityp, jtyp, jtyp2, iaux, ifm, niv, jtypg
-    integer :: ima, ite04, ite08, itr03, itr04, nb_comm, i_comm
+    integer :: ima, ite04, ite08, itr03, itr04, nb_comm, i_comm, domj_i
     integer :: jjoine, jjoinr, nbnoee, nbnoer, numpro, jenvoi1, jrecep1
     integer(kind=4) :: tag4, numpr4, n4e, n4r
-    character(len=4) :: chnbjo
     character(len=8) :: nomtyp(MT_NTYMAX), k8bid
-    character(len=19) :: tag_name, comm_name
-    character(len=24) :: nojoie, nojoir
+    character(len=19) :: tag_name, comm_name, joints
+    character(len=24) :: domj, recv, send
+    character(len=32) :: nojoie, nojoir
     integer, pointer :: connex(:) => null()
     integer, pointer :: point(:) => null()
     integer, pointer :: typma(:) => null()
     integer, pointer :: v_comm(:) => null()
     integer, pointer :: v_tag(:) => null()
+    integer, pointer :: v_dom(:) => null()
     real(kind=8), pointer :: coordo(:) => null()
     aster_logical, pointer :: par_seq(:) => null()
     mpi_int :: mrank, msize, world
@@ -107,7 +108,6 @@ subroutine iremed_filtre(nomast, nomsd, base, par_seqfile)
         call asmpi_info(rank=mrank, size=msize)
         rang = to_aster_int(mrank)
         nbproc = to_aster_int(msize)
-        ASSERT(nbproc <= MT_DOMMAX)
 !
         call wkvect(nomsd//'.NOMA', base//' V K8', 1, jma)
         zk8(jma) = nomast
@@ -173,11 +173,18 @@ subroutine iremed_filtre(nomast, nomsd, base, par_seqfile)
 ! 5. ==> Construction d'une numerotation globale des noeuds :
 !          proc 0 en premier, proc 1 ensuite, etc.
 !
+        joints = nomast//".JOIN"
+        domj = joints//".DOMJ"
+        send = joints//".SEND"
+        recv = joints//".RECV"
+        if (nb_comm > 0) then
+            call jeveuo(domj, 'L', vi=v_dom)
+        end if
         do i_comm = 1, nb_comm
-            numpro = v_comm(i_comm)
-            call codlet(numpro, 'G', chnbjo)
-            nojoie = nomast//'.E'//chnbjo
-            nojoir = nomast//'.R'//chnbjo
+            domj_i = v_comm(i_comm)
+            numpro = v_dom(domj_i)
+            nojoie = jexnum(send, domj_i)
+            nojoir = jexnum(recv, domj_i)
             call jeveuo(nojoie, 'L', jjoine)
             call jelira(nojoie, 'LONMAX', nbnoee, k8bid)
             call jeveuo(nojoir, 'L', jjoinr)

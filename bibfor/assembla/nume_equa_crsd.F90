@@ -88,7 +88,7 @@ subroutine nume_equa_crsd(nume_equaz, base, nb_equa, meshz, gran_namez, l_coll_c
 !
 ! - Create object REFN
 !
-    call wkvect(nume_equa//'.REFN', base//' V K24', 4, vk24=refn)
+    call wkvect(nume_equa//'.REFN', base//' V K24', 5, vk24=refn)
     refn(1) = meshz
     refn(2) = gran_namez
 !

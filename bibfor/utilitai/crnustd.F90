@@ -75,7 +75,7 @@ subroutine crnustd(numddl)
     integer :: lgenve1, lgenvr1, jencod, jenco2, lgenve2, lgenvr2
     integer :: jaux, nb_ddl_envoi, jrecep1, jenvoi1, jenvoi2, jrecep2
     integer :: nbddl, ncmpmx, iad, jcpnec, jcpne2, ico2, icmp, curpos
-    integer :: nbno_lili_lc, nbno_lili_gl, nb_comm
+    integer :: nbno_lili_lc, nbno_lili_gl, nb_comm, domj_i
     mpi_int :: mrank, msize, mpicou, nbno4
     mpi_int :: tag4, numpr4, n4e, n4r
     integer, pointer :: v_noext(:) => null()
@@ -93,11 +93,12 @@ subroutine crnustd(numddl)
     integer, pointer :: v_linulg(:) => null()
     integer, pointer :: v_comm(:) => null()
     integer, pointer :: v_tag(:) => null()
+    integer, pointer :: v_dom(:) => null()
 !
-    character(len=4) :: chnbjo
     character(len=8) :: k8bid, mesh, nomgdr
-    character(len=19) :: nomlig, tag_name, comm_name
-    character(len=24) :: owner, nojoie, nojoir, linulg
+    character(len=19) :: nomlig, tag_name, comm_name, nume_equa, meshj, joints
+    character(len=24) :: owner, linulg
+    character(len=32) :: nojoie, nojoir
 !
 !----------------------------------------------------------------------
 !
@@ -118,10 +119,10 @@ subroutine crnustd(numddl)
     call asmpi_info(rank=mrank, size=msize)
     rang = to_aster_int(mrank)
     nbproc = to_aster_int(msize)
-    ASSERT(nbproc <= MT_DOMMAX)
     DEBUG_MPI('crnustd', rang, nbproc)
 !
-    call jeveuo(numddl//'.NUME.REFN', 'L', jrefn)
+    nume_equa = numddl//".NUME"
+    call jeveuo(nume_equa//'.REFN', 'L', jrefn)
     mesh = zk24(jrefn)
     nomgdr = zk24(jrefn+1)
 !
@@ -131,7 +132,7 @@ subroutine crnustd(numddl)
 !
 !   !!! VERIFIER QU'IL N'Y A PAS DE MACRO-ELTS
 !   CALCUL DU NOMBRE D'ENTIERS CODES A PARTIR DE LONMAX
-    call jelira(jexnum(numddl//'.NUME.PRNO', 1), 'LONMAX', ntot, k8bid)
+    call jelira(jexnum(nume_equa//'.PRNO', 1), 'LONMAX', ntot, k8bid)
     nec = ntot/zi(dime)-2
     call wkvect('&&CRNSTD.NEC', 'V V I', nec, jencod)
     call wkvect('&&CRNSTD.NEC2', 'V V I', nec, jenco2)
@@ -141,20 +142,20 @@ subroutine crnustd(numddl)
     call wkvect('&&CRNSTD.CMP', 'V V I', ncmpmx, jcpnec)
     call wkvect('&&CRNSTD.CMP2', 'V V I', ncmpmx, jcpne2)
 !
-    call jeveuo(numddl//'.NUME.DEEQ', 'L', vi=v_deeq)
-    call jeveuo(numddl//'.NUME.NEQU', 'L', vi=v_nequ)
-    call jeveuo(numddl//'.NUME.DELG', 'L', vi=v_delg)
+    call jeveuo(nume_equa//'.DEEQ', 'L', vi=v_deeq)
+    call jeveuo(nume_equa//'.NEQU', 'L', vi=v_nequ)
+    call jeveuo(nume_equa//'.DELG', 'L', vi=v_delg)
 !
     nbddll = v_nequ(1)
 !
-    call wkvect(numddl//'.NUME.DEEG', 'G V I', 2*nbddll, vi=v_deeg)
-    call wkvect(numddl//".NUME.NULS", 'G V I', nbddll, vi=v_nuls)
+    call wkvect(nume_equa//'.DEEG', 'G V I', 2*nbddll, vi=v_deeg)
+    call wkvect(nume_equa//".NULS", 'G V I', nbddll, vi=v_nuls)
     v_nuls(:) = -1
 !
 !   RECHERCHE DES ADRESSES DU .PRNO DE .NUME
-    call jeveuo(numddl//'.NUME.PRNO', 'E', idprn1)
-    call jeveuo(jexatr(numddl//'.NUME.PRNO', 'LONCUM'), 'L', idprn2)
-    call jelira(numddl//'.NUME.PRNO', 'NMAXOC', ntot, k8bid)
+    call jeveuo(nume_equa//'.PRNO', 'E', idprn1)
+    call jeveuo(jexatr(nume_equa//'.PRNO', 'LONCUM'), 'L', idprn2)
+    call jelira(nume_equa//'.PRNO', 'NMAXOC', ntot, k8bid)
 !
     call dismoi('NB_NO_MAILLA', mesh, 'MAILLAGE', repi=nbno)
 ! -- On compte les noeuds locaux proprio
@@ -240,17 +241,19 @@ subroutine crnustd(numddl)
     call create_graph_comm(mesh, "MAILLAGE_P", nb_comm, comm_name, tag_name)
     call jeveuo(comm_name, 'L', vi=v_comm)
     call jeveuo(tag_name, 'L', vi=v_tag)
+    meshj = mesh//".JOIN"
+    call jeveuo(meshj//'.DOMJ', 'L', vi=v_dom)
 !
 ! -- On renumerote les noeuds physiques non-proprio
 !    Il faut faire comme dans crnlgc.F90
     do i_join = 1, nb_comm
 !
 !       RECHERCHE DU JOINT
-        numpro = v_comm(i_join)
+        domj_i = v_comm(i_join)
+        numpro = v_dom(domj_i)
         if (numpro .ne. -1) then
-            call codlet(numpro, 'G', chnbjo)
-            nojoie = mesh//'.E'//chnbjo
-            nojoir = mesh//'.R'//chnbjo
+            nojoie = jexnum(meshj//".SEND", domj_i)
+            nojoir = jexnum(meshj//".RECV", domj_i)
             call jelira(nojoie, 'LONMAX', nbnoee, k8bid)
             call jeveuo(nojoir, 'L', jjoinr)
             call jelira(nojoir, 'LONMAX', nbnoer, k8bid)
@@ -355,11 +358,11 @@ subroutine crnustd(numddl)
     nbddl_lag_gl = 0
     do ili = 2, ntot
         nbno_lili_lc = 0
-        call jeexin(jexnum(numddl//'.NUME.PRNO', ili), iret)
+        call jeexin(jexnum(nume_equa//'.PRNO', ili), iret)
         if (iret .ne. 0) then
-            call jelira(jexnum(numddl//'.NUME.PRNO', ili), 'LONMAX', lonmax)
+            call jelira(jexnum(nume_equa//'.PRNO', ili), 'LONMAX', lonmax)
             nbno_prno = lonmax/(nec+2)
-            call jenuno(jexnum(numddl//'.NUME.LILI', ili), nomlig)
+            call jenuno(jexnum(nume_equa//'.LILI', ili), nomlig)
             owner = nomlig//'.PNOE'
             linulg = nomlig//'.NULG'
             call jeveuo(owner, 'L', vi=v_owner)
@@ -402,71 +405,73 @@ subroutine crnustd(numddl)
 !
 ! -- On complete avec les joints
     do ili = 2, ntot
-        ! call jeexin(jexnum(numddl//'.NUME.PRNO', ili), iret)
-        ! if( iret.ne.0 ) then
-        call jenuno(jexnum(numddl//'.NUME.LILI', ili), nomlig)
+        call jenuno(jexnum(nume_equa//'.LILI', ili), nomlig)
         call create_graph_comm(nomlig, "LIGREL", nb_comm, comm_name, tag_name)
-        call jeveuo(comm_name, 'L', vi=v_comm)
-        call jeveuo(tag_name, 'L', vi=v_tag)
-        do i_join = 1, nb_comm
-            numpro = v_comm(i_join)
-            if (numpro .ne. -1) then
-                numpr4 = to_mpi_int(numpro)
-                tag4 = to_mpi_int(v_tag(i_join))
-                call codlet(numpro, 'G', chnbjo)
-                nojoie = nomlig//'.E'//chnbjo
-                nojoir = nomlig//'.R'//chnbjo
+        if (nb_comm > 0) then
+            call jeveuo(comm_name, 'L', vi=v_comm)
+            call jeveuo(tag_name, 'L', vi=v_tag)
+            call dismoi("JOINTS", nomlig, "LIGREL", repk=joints, arret="F")
+            call jeveuo(joints//".DOMJ", 'L', vi=v_dom)
+            do i_join = 1, nb_comm
+                domj_i = v_comm(i_join)
+                numpro = v_dom(domj_i)
+                if (numpro .ne. -1) then
+                    numpr4 = to_mpi_int(numpro)
+                    tag4 = to_mpi_int(v_tag(i_join))
+                    nojoie = jexnum(joints//".SEND", domj_i)
+                    nojoir = jexnum(joints//".RECV", domj_i)
 
-                call jeexin(nojoie, iret1)
-                if (iret1 .ne. 0) then
-                    call jeveuo(nojoie, 'L', jjoine)
-                    call jelira(nojoie, 'LONMAX', nbnoee, k8bid)
-                    call wkvect('&&CRNSTD.NUM_DDL_GLOB_E', 'V V I', nbnoee, jnujoi1)
-                    do jaux = 1, nbnoee
-                        numnoe = -zi(jjoine+jaux-1)
-                        ASSERT(zzprno(ili, numnoe, 2) .eq. 1)
-                        nddll = zzprno(ili, numnoe, 1)
-                        zi(jnujoi1+jaux-1) = v_nuls(nddll)
-                    end do
-                    n4e = nbnoee
-                end if
-
-                call jeexin(nojoir, iret2)
-                if (iret2 .ne. 0) then
-                    call jeveuo(nojoir, 'L', jjoinr)
-                    call jelira(nojoir, 'LONMAX', nbnoer, k8bid)
-                    call wkvect('&&CRNSTD.NUM_DDL_GLOB_R', 'V V I', nbnoer, jnujoi2)
-                    n4r = nbnoer
-                end if
-
-                if (rang .lt. numpro) then
+                    call jeexin(nojoie, iret1)
                     if (iret1 .ne. 0) then
-                        call asmpi_send_i(zi(jnujoi1), n4e, numpr4, tag4, mpicou)
+                        call jeveuo(nojoie, 'L', jjoine)
+                        call jelira(nojoie, 'LONMAX', nbnoee, k8bid)
+                        call wkvect('&&CRNSTD.NUM_DDL_GLOB_E', 'V V I', nbnoee, jnujoi1)
+                        do jaux = 1, nbnoee
+                            numnoe = -zi(jjoine+jaux-1)
+                            ASSERT(zzprno(ili, numnoe, 2) .eq. 1)
+                            nddll = zzprno(ili, numnoe, 1)
+                            zi(jnujoi1+jaux-1) = v_nuls(nddll)
+                        end do
+                        n4e = nbnoee
                     end if
-                    if (iret2 .ne. 0) then
-                        call asmpi_recv_i(zi(jnujoi2), n4r, numpr4, tag4, mpicou)
-                    end if
-                else if (rang .gt. numpro) then
-                    if (iret2 .ne. 0) then
-                        call asmpi_recv_i(zi(jnujoi2), n4r, numpr4, tag4, mpicou)
-                    end if
-                    if (iret1 .ne. 0) then
-                        call asmpi_send_i(zi(jnujoi1), n4e, numpr4, tag4, mpicou)
-                    end if
-                end if
 
-                if (iret2 .ne. 0) then
-                    do jaux = 1, nbnoer
-                        numnoe = -zi(jjoinr+jaux-1)
-                        ASSERT(zzprno(ili, numnoe, 2) .eq. 1)
-                        nddll = zzprno(ili, numnoe, 1)
-                        v_nuls(nddll) = zi(jnujoi2+jaux-1)
-                    end do
+                    call jeexin(nojoir, iret2)
+                    if (iret2 .ne. 0) then
+                        call jeveuo(nojoir, 'L', jjoinr)
+                        call jelira(nojoir, 'LONMAX', nbnoer, k8bid)
+                        call wkvect('&&CRNSTD.NUM_DDL_GLOB_R', 'V V I', nbnoer, jnujoi2)
+                        n4r = nbnoer
+                    end if
+
+                    if (rang .lt. numpro) then
+                        if (iret1 .ne. 0) then
+                            call asmpi_send_i(zi(jnujoi1), n4e, numpr4, tag4, mpicou)
+                        end if
+                        if (iret2 .ne. 0) then
+                            call asmpi_recv_i(zi(jnujoi2), n4r, numpr4, tag4, mpicou)
+                        end if
+                    else if (rang .gt. numpro) then
+                        if (iret2 .ne. 0) then
+                            call asmpi_recv_i(zi(jnujoi2), n4r, numpr4, tag4, mpicou)
+                        end if
+                        if (iret1 .ne. 0) then
+                            call asmpi_send_i(zi(jnujoi1), n4e, numpr4, tag4, mpicou)
+                        end if
+                    end if
+
+                    if (iret2 .ne. 0) then
+                        do jaux = 1, nbnoer
+                            numnoe = -zi(jjoinr+jaux-1)
+                            ASSERT(zzprno(ili, numnoe, 2) .eq. 1)
+                            nddll = zzprno(ili, numnoe, 1)
+                            v_nuls(nddll) = zi(jnujoi2+jaux-1)
+                        end do
+                    end if
+                    call jedetr('&&CRNSTD.NUM_DDL_GLOB_E')
+                    call jedetr('&&CRNSTD.NUM_DDL_GLOB_R')
                 end if
-                call jedetr('&&CRNSTD.NUM_DDL_GLOB_E')
-                call jedetr('&&CRNSTD.NUM_DDL_GLOB_R')
-            end if
-        end do
+            end do
+        end if
         call jedetr(comm_name)
         call jedetr(tag_name)
         ! endif

@@ -488,6 +488,15 @@ Subclasses of :py:class:`~code_aster.Objects.DataStructure`
 
 
 ********************************************************************************
+:py:class:`~code_aster.Objects.EquationNumbering` object
+********************************************************************************
+
+.. autoclass:: code_aster.Objects.EquationNumbering
+   :show-inheritance:
+   :members:
+
+
+********************************************************************************
 :py:class:`~code_aster.Objects.ExternalStateVariablesResult` object
 ********************************************************************************
 
@@ -830,15 +839,6 @@ Subclasses of :py:class:`~code_aster.Objects.DataStructure`
 
 
 ********************************************************************************
-:py:class:`~code_aster.Objects.EquationNumbering` object
-********************************************************************************
-
-.. autoclass:: code_aster.Objects.EquationNumbering
-   :show-inheritance:
-   :members:
-
-
-********************************************************************************
 :py:class:`~code_aster.Objects.Grid` object
 ********************************************************************************
 
@@ -1163,19 +1163,19 @@ Subclasses of :py:class:`~code_aster.Objects.DataStructure`
 
 
 ********************************************************************************
-:py:class:`~code_aster.Objects.ParallelFiniteElementDescriptor` object
+:py:class:`~code_aster.Objects.ParallelEquationNumbering` object
 ********************************************************************************
 
-.. autoclass:: code_aster.Objects.ParallelFiniteElementDescriptor
+.. autoclass:: code_aster.Objects.ParallelEquationNumbering
    :show-inheritance:
    :members:
 
 
 ********************************************************************************
-:py:class:`~code_aster.Objects.ParallelEquationNumbering` object
+:py:class:`~code_aster.Objects.ParallelFiniteElementDescriptor` object
 ********************************************************************************
 
-.. autoclass:: code_aster.Objects.ParallelEquationNumbering
+.. autoclass:: code_aster.Objects.ParallelFiniteElementDescriptor
    :show-inheritance:
    :members:
 

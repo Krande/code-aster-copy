@@ -128,7 +128,7 @@ subroutine op0077()
         nume_equa = nomres//'.PROFC.NUME'
     end if
 ! --- CREATION D'UN OBJET REFN DU PROFIL SUR BASE VOLATILE
-    call wkvect(nume_equa//'.REFN', base//' V K24', 4, jrefn)
+    call wkvect(nume_equa//'.REFN', base//' V K24', 5, jrefn)
     zk24(jrefn+1) = 'DEPL_R'
 !
 !

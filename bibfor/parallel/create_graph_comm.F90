@@ -25,6 +25,7 @@ subroutine create_graph_comm(object, type, nb_comm, comm, tag)
 #include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/build_tree_comm.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
@@ -45,12 +46,12 @@ subroutine create_graph_comm(object, type, nb_comm, comm, tag)
 !---------------------------------------------------------------------------------------------------
 !
     character(len=8) :: k8bid
+    character(len=19) :: k19
     character(len=24) :: k24
     integer :: iret
     integer, pointer :: v_domdis(:) => null()
     integer, pointer :: v_comm(:) => null()
     integer, pointer :: v_tag(:) => null()
-    character(len=24), pointer :: v_lgrf(:) => null()
 !
     call jemarq()
 !
@@ -59,13 +60,12 @@ subroutine create_graph_comm(object, type, nb_comm, comm, tag)
 ! --- Result depends on type
     if (type == 'MAILLAGE_P') then
         k24 = object(1:8)//'.JOIN      .DOMJ'
-    elseif (type == "NUME_DDL") then
-        k24 = object(1:8)//'.NUME .JOIN.DOMJ'
     elseif (type == "NUME_EQUA") then
-        k24 = object(1:14)//'.JOIN.DOMJ'
+        call dismoi("JOINTS", object, "NUME_EQUA", repk=k19, arret="F")
+        k24 = k19//".DOMJ"
     elseif (type == "LIGREL") then
-        call jeveuo(object(1:19)//"LGRF", 'L', vk24=v_lgrf)
-        k24 = v_lgrf(4)
+        call dismoi("JOINTS", object, "LIGREL", repk=k19, arret="F")
+        k24 = k19//".DOMJ"
     else
         ASSERT(ASTER_FALSE)
     end if

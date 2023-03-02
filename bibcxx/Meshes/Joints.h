@@ -57,7 +57,9 @@ class Joints : public DataStructure {
     /**
      * @brief Constructeur
      */
-    Joints( const std::string name = DataStructureNaming::getNewName() );
+    Joints();
+
+    Joints( const std::string name );
 
     void setOppositeDomains( const VectorLong &oppositeDomains );
 

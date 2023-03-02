@@ -26,7 +26,7 @@ class sd_nume_equa(AsBase):
     nomj = SDNom(fin=19)
     NEQU = AsVI(lonmax=2)
     DELG = AsVI()
-    REFN = AsVK24(lonmax=4)
+    REFN = AsVK24(lonmax=5)
     PRNO = AsColl(acces="NU", stockage="CONTIG", modelong=Parmi("CONSTANT", "VARIABLE"), type="I")
     LILI = AsObject(genr="N", xous="S", type="K", ltyp=24)
     NUEQ = AsVI()

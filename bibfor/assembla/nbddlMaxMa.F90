@@ -166,7 +166,7 @@ function nbddlMaxMa(nume_ddlz, matr_assez, nbmat) result(maxDDLMa)
     l_matd = (answer .eq. 'OUI')
 !
     call jelira(nume_ddl//'.NUME.REFN', 'LONMAX', n1)
-    ASSERT(n1 .eq. 4)
+    ASSERT(n1 .eq. 5)
 !
 ! --- Acces au NUME_EQUA
 !

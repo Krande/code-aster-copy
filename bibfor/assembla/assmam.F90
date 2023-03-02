@@ -285,38 +285,13 @@ subroutine assmam(jvBase, matrAsseZ, &
     end if
 
     call jelira(numeDof//'.NUME.REFN', 'LONMAX', n1)
-    ASSERT(n1 .eq. 4)
+    ASSERT(n1 .eq. 5)
 
 ! - Get parameters for distribution of elementary matrices
     call getDistributionParameters(nbMatrElem, listMatrElem, &
                                    ldistme, ldgrel, &
                                    rang, nbproc, &
                                    numsd)
-
-!   -- calcul de ldistme, partit, ldgrel, jnumsd :
-!   -----------------------------------------------
-    ! rang=0
-    ! ldistme=.false.
-    ! ldgrel=.false.
-    ! call parti0(nbMatrElem, listMatrElem, partit)
-
-    ! if (partit .ne. ' ') then
-    !     ldistme=.true.
-    !     call asmpi_info(rank=mrank, size=msize)
-    !     rang = to_aster_int(mrank)
-    !     nbproc = to_aster_int(msize)
-    !     call jeveuo(partit//'.PRTK', 'L', vk24=prtk)
-    !     ldgrel=prtk(1).eq.'SOUS_DOMAINE' .or. prtk(1).eq.'GROUP_ELEM'
-    !     if (.not.ldgrel) then
-    !         call jeveuo(partit//'.PRTI', 'L', vi=prti)
-    !         if (prti(1) .gt. nbproc) then
-    !             vali(1)=prti(1)
-    !             vali(2)=nbproc
-    !             call utmess('F', 'CALCUL_35', ni=2, vali=vali)
-    !         endif
-    !         call jeveuo(partit//'.NUPR', 'L', jnumsd)
-    !     endif
-    ! endif
 
     if (lmatd) then
         ASSERT(ldistme)
