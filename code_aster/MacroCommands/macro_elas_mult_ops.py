@@ -17,8 +17,6 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-import aster
-
 from ..Cata.Syntax import _F
 from ..Commands import (
     ASSE_MATRICE,
@@ -201,10 +199,7 @@ def macro_elas_mult_ops(
             l_calc_varc = False
             if CHAM_MATER:
                 motscles["CHAM_MATER"] = CHAM_MATER
-                iret, ibid, answer = aster.dismoi(
-                    "EXI_VARC", CHAM_MATER.getName(), "CHAM_MATER", "F"
-                )
-                if answer == "OUI":
+                if CHAM_MATER.hasExternalStateVariable():
                     l_calc_varc = True
             if CARA_ELEM:
                 motscles["CARA_ELEM"] = CARA_ELEM

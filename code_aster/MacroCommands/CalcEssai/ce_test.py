@@ -203,7 +203,6 @@ def lance_modif_struct_calcul(
     modif_struct.find_modele_modif_from(MODIFSTRUCT["MODELE_MODIF"].getName())
     modif_struct.find_maillage_modif_from(MODIFSTRUCT["MODELE_MODIF"].getName())
 
-    modif_struct.get_modele_support()
     modif_struct.calc_base_proj()
 
     modif_struct.set_param_condens({"METHODE": "SVD", "EPS": 1.0e-5, "REGUL": "NON"})

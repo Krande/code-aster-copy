@@ -132,26 +132,11 @@ class ModeMeca(Resultat):
 
         # self.show_linked_concepts()
 
-    def get_matrices(self):
-        """recuperation des matrices du REFD et du nume_ddl"""
-        indi = aster.getvectjev(self.nom.ljust(19) + ".INDI")
-        if indi:
-            iret, ibid, self.kass_name = aster.dismoi("REF_RIGI_PREM", self.nom, "RESU_DYNA", "C")
-            iret, ibid, self.mass_name = aster.dismoi("REF_MASS_PREM", self.nom, "RESU_DYNA", "C")
-            iret, ibid, self.cass_name = aster.dismoi("REF_AMOR_PREM", self.nom, "RESU_DYNA", "C")
-            try:
-                self.kass = self.objects.matrices[self.kass_name]
-                self.mass = self.objects.matrices[self.mass_name]
-                self.cass = self.objects.matrices[self.cass_name]
-            except KeyError:
-                pass
-
     def get_nume(self):
         """Recuperation de la numerotation et du nume_ddl"""
         indi = aster.getvectjev(self.nom.ljust(19) + ".INDI")
         if indi:
-            iret, ibid, toto = aster.dismoi("NUME_DDL", self.nom, "RESU_DYNA", "C")
-            self.nume_name = toto.strip()
+            self.nume_name = self.obj.getDOFNumbering().getName()
             if self.nume_name:
                 self.nume = self.objects.nume_ddl[self.nume_name]
 
@@ -746,8 +731,8 @@ class Modele:
         """
         if self.mass is None or self.kass is None:
             for matr_name, matr in list(self.objects.matrices.items()):
-                iret, ibid, nom_modele = aster.dismoi("NOM_MODELE", matr_name, "MATR_ASSE", "F")
-                if nom_modele.strip() == self.nom.strip():
+                nom_modele = matr.getModel().getName()
+                if nom_modele == self.nom.strip():
                     if matr.sdj.REFA.get()[3].strip() == "RIGI_MECA":
                         self.kass = matr
                         self.kass_name = matr_name
@@ -826,7 +811,6 @@ class CalcEssaiObjects:
         elif obj.getType() == "MODE_MECA":
             self.mode_meca[name] = ModeMeca(self, name, obj, self.mess)
             self.mode_meca[name].get_modele()
-            self.mode_meca[name].get_matrices()
             self.mode_meca[name].get_nume()
             self.mode_meca[name].get_maillage()
         elif obj.getType() == "DYNA_HARMO":

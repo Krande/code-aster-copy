@@ -22,7 +22,7 @@
 import math
 import os
 
-import aster
+from ..Objects import Physics
 
 from ..Cata.Language.SyntaxObjects import _F
 from ..Commands import CALC_TABLE, CREA_CHAMP, CREA_RESU, CREA_TABLE, FORMULE, POST_ELEM
@@ -39,16 +39,12 @@ def post_erreur_ops(self, OPTION, CHAM_GD, MODELE, GROUP_MA, **args):
     # On importe les definitions des commandes a utiliser dans la macro
     # Le nom de la variable doit etre obligatoirement le nom de la commande
 
-    # récupération du phenomene
-    _, _, phenomene = aster.dismoi("PHENOMENE", MODELE.getName(), "MODELE", "F")
-
     # seul le phénomène mécanique est pris en charge
-    if phenomene != "MECANIQUE":
+    if MODELE.getPhysics() != Physics.Mechanics:
         UTMESS("F", "PREPOST_11")
 
     # le modele comporte-t-il des fissures X-FEM ?
-    _, nfismo, _ = aster.dismoi("NB_FISS_XFEM", MODELE.getName(), "MODELE", "F")
-    lxfem = nfismo > 0
+    lxfem = MODELE.isXfem()
 
     # récupération du maillage inclus dans le modele
     __MA = MODELE.getMesh()
