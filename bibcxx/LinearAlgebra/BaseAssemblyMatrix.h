@@ -148,6 +148,11 @@ class BaseAssemblyMatrix : public DataStructure {
     bool isMPIFull();
 
     /**
+     * @brief Tell if the matrix is symmetric
+     */
+    bool isSymmetric();
+
+    /**
      * @brief Get the size of the matrix
      * @param local [bool] local or global size
      */

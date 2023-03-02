@@ -19,8 +19,6 @@
 
 # person_in_charge: nicolas.brie at edf.fr
 
-import aster
-
 from ...Cata.Syntax import _F
 from ...Messages import UTMESS
 from ...Objects import AssemblyMatrixDisplacementComplex, GeneralizedAssemblyMatrixComplex
@@ -56,25 +54,21 @@ def calc_modes_amelioration(self, modes, TYPE_RESU, INFO, **args):
         matr_A = "MATR_A"
         matr_B = "MATR_B"
 
-    # 1.1 check if the input matrices are symetric and real
+    # 1.1 check if the input matrices are symmetric and real
     lsym = True
     lreel = True
-    iret, ibid, type_matr_A = aster.dismoi("TYPE_MATRICE", args[matr_A].getName(), "MATR_ASSE", "F")
-    if not type_matr_A == "SYMETRI":
+    if not args[matr_A].isSymmetric():
         lsym = False
     if isinstance(args[matr_A], AssemblyMatrixDisplacementComplex) or isinstance(
         args[matr_A], GeneralizedAssemblyMatrixComplex
     ):
         lreel = False
-    iret, ibid, type_matr_B = aster.dismoi("TYPE_MATRICE", args[matr_B].getName(), "MATR_ASSE", "F")
-    if not type_matr_B == "SYMETRI":
+        
+    if not args[matr_B].isSymmetric():
         lsym = False
     if TYPE_RESU == "DYNAMIQUE":
         if args["MATR_AMOR"] is not None:
-            iret, ibid, type_matr_C = aster.dismoi(
-                "TYPE_MATRICE", args["MATR_AMOR"].getName(), "MATR_ASSE", "F"
-            )
-            if not type_matr_C == "SYMETRI":
+            if not args["MATR_AMOR"].isSymmetric():
                 lsym = False
     if not lsym:
         UTMESS("I", "MODAL_15")

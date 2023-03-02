@@ -125,6 +125,11 @@ Returns:
             Make the assembly matrix symmetric in place
             )" )
         // -----------------------------------------------------------------------------------------
+        .def( "isSymmetric", &BaseAssemblyMatrix::isSymmetric,
+              R"(
+            Return True if matrix is symmetric
+            )" )
+        // -----------------------------------------------------------------------------------------
         .def( "transpose", &BaseAssemblyMatrix::transpose )
         // -----------------------------------------------------------------------------------------
         .def( "assemble", &BaseAssemblyMatrix::assemble, R"(

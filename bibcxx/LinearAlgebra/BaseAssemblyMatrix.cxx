@@ -110,3 +110,8 @@ bool BaseAssemblyMatrix::isMPIFull() {
     _description->updateValuePointer();
     return trim( ( *_description )[10].toString() ) == "MPI_COMPLET";
 };
+
+bool BaseAssemblyMatrix::isSymmetric() {
+    _description->updateValuePointer();
+    return trim( ( *_description )[8].toString() ).substr(0, 2) == "MS";
+};
