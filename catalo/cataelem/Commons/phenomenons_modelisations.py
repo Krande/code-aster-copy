@@ -641,12 +641,36 @@ phen.add(
 )
 
 phen.add(
-    "3D_DIL",
+    "3D_DIL#1",
     Modelisation(
         dim=(3, 3),
         code="D3D",
-        attrs=((AT.TYPMOD, "3D"),),
-        elements=((MT.TETRA10, EL.T10_3D), (MT.PENTA15, EL.P15_3D), (MT.HEXA20, EL.H20_3D)),
+        attrs=((AT.TYPMOD, "3D"), (AT.NBSIGM, "6"), (AT.FORMULATION, "DIL")),
+        elements=(
+            (MT.TETRA10, EL.T10_3D),
+            (MT.PENTA15, EL.P15_3D),
+            (MT.HEXA20, EL.H20_3D),
+            (MT.QUAD8, EL.MECA_FACE8),
+            (MT.TRIA6, EL.MECA_FACE6),
+            (MT.SEG3, EL.MECA_ARETE3),
+        ),
+    ),
+)
+
+phen.add(
+    "3D_DIL#2",
+    Modelisation(
+        dim=(3, 3),
+        code="D3I",
+        attrs=((AT.TYPMOD, "3D"), (AT.NBSIGM, "6"), (AT.FORMULATION, "DIL_INCO")),
+        elements=(
+            (MT.TETRA10, EL.T10_3DI),
+            (MT.PENTA15, EL.P15_3DI),
+            (MT.HEXA20, EL.H20_3DI),
+            (MT.QUAD8, EL.MECA_FACE8),
+            (MT.TRIA6, EL.MECA_FACE6),
+            (MT.SEG3, EL.MECA_ARETE3),
+        ),
     ),
 )
 
@@ -4376,17 +4400,32 @@ phen.add(
 )
 
 phen.add(
-    "D_PLAN_DIL",
+    "D_PLAN_DIL#1",
     Modelisation(
         dim=(2, 2),
         code="D2D",
-        attrs=((AT.TYPMOD, "D_PLAN"), (AT.D_PLAN, "OUI")),
-        elements=(
-            (MT.TRIA7, EL.TR7_DP_2D),
-            (MT.TRIA6, EL.TR6_DP_2D),
-            (MT.QUAD9, EL.QU9_DP_2D),
-            (MT.QUAD8, EL.QU8_DP_2D),
+        attrs=(
+            (AT.TYPMOD, "D_PLAN"),
+            (AT.NBSIGM, "4"),
+            (AT.D_PLAN, "OUI"),
+            (AT.FORMULATION, "DIL"),
         ),
+        elements=((MT.TRIA6, EL.TR6_DP_2D), (MT.QUAD8, EL.QU8_DP_2D), (MT.SEG3, EL.MEPLSE3)),
+    ),
+)
+
+phen.add(
+    "D_PLAN_DIL#2",
+    Modelisation(
+        dim=(2, 2),
+        code="D2I",
+        attrs=(
+            (AT.TYPMOD, "D_PLAN"),
+            (AT.NBSIGM, "4"),
+            (AT.D_PLAN, "OUI"),
+            (AT.FORMULATION, "DIL_INCO"),
+        ),
+        elements=((MT.TRIA6, EL.TR6_DP_2DI), (MT.QUAD8, EL.QU8_DP_2DI), (MT.SEG3, EL.MEPLSE3)),
     ),
 )
 

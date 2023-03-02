@@ -15,122 +15,350 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! aslint: disable=W1306,W1504
 !
-subroutine dilele(npi, ndim, dimuel, &
-                  nddls, nddlm, nno, nnos, nnom, &
-                  axi, regula, dimcon, ipoids, ipoid2, &
-                  ivf, ivf2, interp, idfde, idfde2, &
-                  compor, geom, deplp, contp, imate, &
-                  dimdef, matuu, vectu, lVect, lMatr, lSigm, &
-                  codret)
+subroutine dilele(option, typmod, ds_dil, ndim, nnos, &
+                  nnom, npg, nddl, dimdef, iw, vff, &
+                  vffb, idff, idffb, geomi, compor, &
+                  mate, lgpg, crit, instam, instap, &
+                  ddlm, ddld, siefm, vim, &
+                  siefp, vip, fint, matr, &
+                  lMatr, lVect, lSigm, codret)
+!
+    use dil_type
+    use bloc_fe_module, only: prod_bd, prod_sb, prod_bkb, add_fint, add_matr
+    use Behaviour_type
+    use Behaviour_module
 !
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/cabrp0.h"
-#include "asterfort/cabrp1.h"
-#include "asterfort/cabrsl.h"
-#include "asterfort/dilopt.h"
+#include "asterfort/assert.h"
+#include "asterfort/codere.h"
+#include "asterfort/dfdmip.h"
+#include "asterfort/nmepsi.h"
 #include "asterfort/dilpen.h"
-#include "asterfort/dilsga.h"
-#include "asterfort/equdil.h"
+#include "asterfort/dil2gr.h"
+#include "asterfort/nmcomp.h"
+#include "asterfort/nmbeps.h"
+
 !
+    aster_logical :: lVect, lMatr, lVari, lSigm
+    type(dil_modelisation)         :: ds_dil
+    character(len=8), intent(in)    :: typmod(*)
+    character(len=16), intent(in)   :: option, compor(*)
+    integer, intent(in)             :: ndim, nnos, nnom, npg, nddl, lgpg, dimdef
+    integer, intent(in)             :: mate, iw, idff, idffb
+    real(kind=8)                   :: crit(*), instam, instap
+    real(kind=8), intent(in)        :: geomi(ndim, nnos+nnom)
+    real(kind=8), intent(in)        :: vff(nnos+nnom, npg), vffb(nnos, npg)
+    real(kind=8), intent(in)        :: ddlm(nddl), ddld(nddl)
+    real(kind=8), intent(in)        :: siefm(dimdef*npg), vim(lgpg*npg)
+   real(kind=8), intent(out)       :: fint(nddl), matr(nddl, nddl), siefp(dimdef*npg), vip(lgpg*npg)
+    integer, intent(out)            :: codret
+!
+! ----------------------------------------------------------------------
+!     BUT:  CALCUL  DES OPTIONS RIGI_MECA_*, RAPH_MECA ET FULL_MECA_*
+!           EN PETITES DEFORMATIONS D_PLAN_DIL_U
+!           POUR SECOND GRADIENT DE DILATATION : XXXX_DIL
+! ----------------------------------------------------------------------
+! IN  OPTION  : OPTION DE CALCUL
+! IN  TYPMOD  : TYPE DE MODELISATION
+! IN  NDIM    : DIMENSION DE L'ESPACE
+! IN  NNOS    : NOMBRE DE NOEUDS SOMMETS
+! IN  NNOM    : NOMBRE DE NOEUDS MILIEUX
+! IN  NPG     : NOMBRE DE POINTS DE GAUSS
+! IN  DIMDEF  : DIMENSION DEF ET CONT GENERALISEES
+! IN  NDDL    : NOMBRE DE DEGRES DE LIBERTE D'UN ELEMENT
+! IN  DIMDEF  : NOMBRE DE DEFORMATIONS GENERALISEES PAR PG
+! IN  IW      : PTR. POIDS DES POINTS DE GAUSS
+! IN  VFF     : VALEUR  DES FONCTIONS DE FORME QUADRATIQUES
+! IN  VFFB    : VALEUR  DES FONCTIONS DE FORME LINEAIRES
+! IN  IDFF    : PTR. DERIVEE DES FONCTIONS DE FORME QUADRATIQUES ELEMENT DE REF.
+! IN  IDFFB   : PTR. DERIVEE DES FONCTIONS DE FORME LINEAIRES ELEMENT DE REF.
+! IN  GEOMI   : COORDONNEES DES NOEUDS (CONFIGURATION INITIALE)
+! IN  COMPOR  : COMPORTEMENT
+! IN  MATE    :
+! IN  LGPG    : DIMENSION DU VECTEUR DES VAR. INTERNES POUR 1 PT GAUSS
+! IN  CRIT    :
+! IN  INSTAM  :
+! IN  INSTAP  :
+! IN  DDLM    : DDL AU PAS T-
+! IN  DDLD    : INCREMENT DE DDL ENTRE T- ET T+
+! IN  SIEFM   : CONTRAINTES GENERALISEES EN T-
+! IN  VIM     : VARIABLES INTERNES EN T-
+! OUT SIEFP   : CONTRAINTES GENERALIEES (RAPH_MECA ET FULL_MECA_*)
+! OUT VIP     : VARIABLES INTERNES    (RAPH_MECA ET FULL_MECA_*)
+! OUT FINT    : FORCES INTERIEURES (RAPH_MECA ET FULL_MECA_*)
+! OUT MATR   : MATR. DE RIGIDITE NON SYM. (RIGI_MECA_* ET FULL_MECA_*)
+! OUT CODRET  : CODE RETOUR DE L'INTEGRATION DE LA LDC
+
+! ----------------------------------------------------------------------
+    real(kind=8), parameter :: rac2 = sqrt(2.d0)
+    real(kind=8), parameter :: vrac2(6) = [1.d0, 1.d0, 1.d0, rac2, rac2, rac2]
+    real(kind=8), parameter                :: tiers = 1.d0/3.d0
+    real(kind=8), dimension(6), parameter  :: kron = (/1.d0, 1.d0, 1.d0, 0.d0, 0.d0, 0.d0/)
+    real(kind=8), dimension(6), parameter  :: projhyd = (/tiers, tiers, tiers, 0.d0, 0.d0, 0.d0/)
+    real(kind=8), dimension(6, 6), parameter:: projdev = reshape( &
+                                               (/2*tiers, -tiers, -tiers, 0.d0, 0.d0, 0.d0, &
+                                                 -tiers, 2*tiers, -tiers, 0.d0, 0.d0, 0.d0, &
+                                                 -tiers, -tiers, 2*tiers, 0.d0, 0.d0, 0.d0, &
+                                                 0.d0, 0.d0, 0.d0, 1.d0, 0.d0, 0.d0, &
+                                                 0.d0, 0.d0, 0.d0, 0.d0, 1.d0, 0.d0, &
+                                                 0.d0, 0.d0, 0.d0, 0.d0, 0.d0, 1.d0/), (/6, 6/))
+! ----------------------------------------------------------------------
     aster_logical :: axi
-    integer :: npi, ipoids, ipoid2, ivf, ivf2, idfde, idfde2, nddls, nddlm
-    integer :: imate, dimdef, ndim, nno, nnom, nnos, dimuel, dimcon
-    integer :: regula(6)
-    real(kind=8) :: vectu(dimuel), matuu(dimuel*dimuel), contp(dimcon*npi)
-    real(kind=8) :: geom(ndim, *), deplp(dimuel)
-    character(len=2) :: interp
-    character(len=16) :: compor(*)
-    aster_logical, intent(in) :: lVect, lMatr, lSigm
-    integer, intent(out) :: codret
-! ======================================================================
-! --- BUT : CALCUL ELEMENTAIRE DE LA PARTIE SECOND GRADIENT A ----------
-! ---       MICRO-DILATATION AUX POINTS D'INTEGRATION ------------------
-! ======================================================================
-! --- VARIABLES LOCALES ------------------------------------------------
-! ======================================================================
-    integer :: i, n, kpg, iDime
-    real(kind=8) :: b(dimdef, dimuel), poids, poids2, r(dimdef), rpena
-    real(kind=8) :: defgep(dimdef), drde(dimcon, dimdef)
-    real(kind=8) :: sigp(dimcon)
-! ======================================================================
-! --- INITIALISATION DE VECTU, MATUU A 0 SUIVANT OPTION ----------------
-! ======================================================================
-    rpena = 0.0d0
-! ======================================================================
-    codret = 0
-    if (lMatr) then
-        do i = 1, dimuel*dimuel
-            matuu(i) = 0.d0
-        end do
-    end if
-    if (lVect) then
-        do i = 1, dimuel
-            vectu(i) = 0.d0
-        end do
-    end if
-! ======================================================================
-! --- RECUPERATION DU COEFFICIENT DE PENALISATION ----------------------
-! ======================================================================
-    call dilpen(imate, rpena)
-! ======================================================================
-! --- BOUCLE SUR LES POINTS D'INTEGRATION ------------------------------
-! ======================================================================
-    do kpg = 1, npi
-! ======================================================================
-! --- DEFINITION DE L'OPERATEUR B (DEFINI PAR E=B.U) -------------------
-! ======================================================================
-        if (interp .eq. 'P0') then
-            call cabrp0(kpg, ipoids, ipoid2, ivf, ivf2, &
-                        idfde, idfde2, geom, dimdef, dimuel, &
-                        ndim, nddls, nddlm, nno, nnos, &
-                        nnom, axi, regula, b, poids, &
-                        poids2)
-        else if (interp .eq. 'SL') then
-            call cabrsl(kpg, ipoids, ipoid2, ivf, ivf2, &
-                        idfde, idfde2, geom, dimdef, dimuel, &
-                        ndim, nddls, nddlm, nno, nnos, &
-                        nnom, axi, regula, b, poids, &
-                        poids2)
-        else if (interp .eq. 'P1') then
-            call cabrp1(kpg, ipoids, ipoid2, ivf, ivf2, &
-                        idfde, idfde2, geom, dimdef, dimuel, &
-                        ndim, nddls, nddlm, nno, nnos, &
-                        nnom, axi, regula, b, poids, &
-                        poids2)
+    type(Behaviour_Integ) :: BEHinteg
+    integer       :: g, n, i
+    integer       :: xu(ndim, nnos+nnom), xg(1, nnos), xp(1, nnos)
+    integer       :: cod(npg)
+    integer       :: nnu, nng, nnp, ndu, ndg, ndp, neu, neg, nep
+    integer       :: regula(6), ndsde
+    real(kind=8)  :: rpena, angmas(3)
+    real(kind=8)  :: dum(ndim, nnos+nnom), dup(ndim, nnos+nnom)
+    real(kind=8)  :: dgm(1, nnos), dpm(1, nnos)
+    real(kind=8)  :: dgp(1, nnos), dpp(1, nnos)
+    real(kind=8)  :: r, dff(nnos+nnom, ndim), dffb(nnos, ndim), poids
+    real(kind=8)  :: butmp(2*ndim, ndim, nnos+nnom)
+    real(kind=8)  :: bu(2*ndim+1, ndim, nnos+nnom)
+    real(kind=8)  :: bg(1+ndim, 1, nnos), bp(1, 1, nnos)
+    real(kind=8)  :: epefum(2*ndim+1), epefgm(1+ndim), epefpm(1)
+    real(kind=8)  :: epefup(2*ndim+1), epefgp(1+ndim), epefpp(1)
+    real(kind=8)  :: siefup(2*ndim+1), siefgp(1+ndim), siefpp(1)
+    real(kind=8)  :: epl1gm(2*ndim), epl1gp(2*ndim)
+    real(kind=8)  :: sigm1g(2*ndim), sigp1g(2*ndim)
+    real(kind=8)  :: eplcm(ndim), silcm(ndim)
+    real(kind=8)  :: eplcp(ndim), silcp(ndim), deps(2*ndim)
+    real(kind=8)  :: dsde1g(2*ndim, 2*ndim), dsde2g(ndim, ndim)
+    real(kind=8)  :: kefuu(2*ndim+1, 2*ndim+1), kefug(2*ndim+1, 1+ndim), kefup(2*ndim+1, 1)
+    real(kind=8)  :: kefgu(1+ndim, 2*ndim+1), kefgg(1+ndim, 1+ndim), kefgp(1+ndim, 1)
+    real(kind=8)  :: kefpu(1, 2*ndim+1), kefpg(1, 1+ndim), kefpp(1, 1)
+    real(kind=8)  :: dev(2*ndim, 2*ndim), hyd(2*ndim), kr(2*ndim)
+
+! --- INITIALISATION ---
+    axi = ASTER_FALSE
+    angmas(3) = 0.0d0
+
+    !Nombre de noeuds
+    nnu = nnos+nnom
+    nng = nnos
+    nnp = nnos
+    !Nombre de ddls
+    ndu = ndim
+    ndg = 1
+    ndp = 1
+    !Nombre de defs généralisées
+    neu = 1+2*ndim
+    neg = 1+ndim
+    nep = 1
+
+    kr = kron(1:2*ndim)
+    hyd = projhyd(1:2*ndim)
+    dev = projdev(1:2*ndim, 1:2*ndim)
+
+    if (lVect) fint = 0
+    if (lMatr) matr = 0
+    cod = 0
+
+    !Initialisation pour comportement second gradient
+    call dilpen(mate, rpena)
+
+    ! tableaux de reference bloc (depl,gonf,pres) -> numero du ddl
+    forall (i=1:ndu, n=1:nng) xu(i, n) = (n-1)*(ndu+ndg+ndp)+i
+    forall (i=1:ndp, n=1:nnp) xp(i, n) = (n-1)*(ndu+ndg+ndp)+ndu+i
+    forall (i=1:ndg, n=1:nng) xg(i, n) = (n-1)*(ndu+ndg+ndp)+ndu+ndp+i
+    forall (i=1:ndu, n=nng+1:nnu) xu(i, n) = (ndu+ndg+ndp)*nng+(n-1-nng)*ndu+i
+
+    ! Decompactage des ddls en t- et t+
+    forall (i=1:ndu, n=1:nnu) dum(i, n) = ddlm(xu(i, n))
+    forall (i=1:ndu, n=1:nnu) dup(i, n) = ddlm(xu(i, n))+ddld(xu(i, n))
+    forall (i=1:ndg, n=1:nng) dgm(i, n) = ddlm(xg(i, n))
+    forall (i=1:ndg, n=1:nng) dgp(i, n) = ddlm(xg(i, n))+ddld(xg(i, n))
+    forall (i=1:ndp, n=1:nnp) dpm(i, n) = ddlm(xp(i, n))
+    forall (i=1:ndp, n=1:nnp) dpp(i, n) = ddlm(xp(i, n))+ddld(xp(i, n))
+
+    gauss: do g = 1, npg
+
+        ! -----------------------!
+        !  ELEMENTS CINEMATIQUES !
+        ! -----------------------!
+
+        ! Calcul des derivees des fonctions de forme P1
+        call dfdmip(ndim, nnos, axi, geomi, g, iw, vffb(1, g), idffb, r, poids, dffb)
+
+        ! Calcul des derivees des fonctions de forme P2
+        call dfdmip(ndim, nnu, axi, geomi, g, iw, vff(1, g), idff, r, poids, dff)
+
+        ! Assemblage de la matrice BU
+        call nmbeps(axi, r, vff(:, g), dff, butmp)
+        bu = 0.0d0
+        bu(1:2*ndim, :, :) = butmp
+        bu(2*ndim+1, :, :) = butmp(1, :, :)+butmp(2, :, :)+butmp(3, :, :)
+
+        ! Assemblage des matrices BG et BP
+        bg = 0.0d0
+        bp = 0.0d0
+        bg(1, 1, :) = vffb(:, g)
+        bg(2:neg, 1, :) = transpose(dffb)
+        bp(1, 1, :) = vffb(:, g)
+
+        ! Calcul des deformations generalisees aux points de Gauss
+        ! Instant -
+        epefum = prod_bd(bu, dum)
+        epefgm = prod_bd(bg, dgm)
+        epefpm = prod_bd(bp, dpm)
+        ! Instant +
+        epefup = prod_bd(bu, dup)
+        epefgp = prod_bd(bg, dgp)
+        epefpp = prod_bd(bp, dpp)
+        ! Increment deps
+        deps = epefup(1:2*ndim)-epefum(1:2*ndim)
+
+        ! -------------------------------------------------------!
+        !   LOI DE COMPORTEMENT PREMIER GRADIENT                 !
+        ! -------------------------------------------------------!
+        !Initialisation of behaviour datastructure
+        call behaviourInit(BEHinteg)
+
+        !Calcul des déformations pour ldc
+        if (ds_dil%inco) then
+            epl1gm(1:2*ndim) = matmul(dev, epefum(1:2*ndim))+epefgm(1)*hyd
+            epl1gp(1:2*ndim) = matmul(dev, epefup(1:2*ndim))+epefgp(1)*hyd
+        else
+            epl1gm(1:2*ndim) = epefum(1:2*ndim)
+            epl1gp(1:2*ndim) = epefup(1:2*ndim)
         end if
-! ======================================================================
-! --- CALCUL DES DEFORMATIONS GENERALISEES E=B.U -----------------------
-! ======================================================================
-        do i = 1, dimdef
-            defgep(i) = 0.d0
-            do n = 1, dimuel
-                defgep(i) = defgep(i)+b(i, n)*deplp(n)
-            end do
-        end do
-! ======================================================================
-! --- CALCUL DES CONTRAINTES VIRTUELLES ET GENERALISEES ----------------
-! --- ET DE LEURS DERIVEES ---------------------------------------------
-! ======================================================================
-        call equdil(imate, lSigm, compor, regula, dimdef, &
-                    dimcon, defgep, interp, ndim, sigp, &
-                    rpena, r, drde)
+
+        !Format sigma pour ldc
+        sigm1g = siefm(1+(g-1)*dimdef:2*ndim+(g-1)*dimdef)*vrac2(1:2*ndim)
+        if (ds_dil%inco) then
+            sigm1g = sigm1g+(siefm(dimdef*(g-1)+2*ndim+2)+epefpm(1) &
+                             +rpena*(epefum(2*ndim+1)-epefgm(1)))*kr
+        end if
+
+        !Loi de comportement
+        call nmcomp(BEHinteg, &
+                    'RIGI', g, 1, ndim, typmod, &
+                    mate, compor, crit, instam, instap, &
+                    2*ndim, epl1gm, epl1gp-epl1gm, 2*ndim, sigm1g, &
+                    vim(1+lgpg*(g-1):lgpg*g), option, angmas, &
+                    sigp1g, vip(1+lgpg*(g-1):lgpg*g), 2*ndim*2*ndim, dsde1g, cod(g))
+
+        ! -------------------------------------------------------!
+        !   LOI DE COMPORTEMENT SECOND GRADIENT DE DILATATION    !
+        ! -------------------------------------------------------!
+
+        ! Preparation des deformations generalisees de ldc second gradient
+        !eplcm = epefgm(2:neg)
+        eplcp = epefgp(2:neg)
+        ! Preparation des contraintes generalisees de ldc second gradient instant t-
+        !silcm = siefm(2*ndim+3+(g-1)*dimdef:3*ndim+3+(g-1)*dimdef)
+
+        ! Comportement second gradient de dilatation
+        call dil2gr(mate, ndim, ndim, eplcp, silcp, dsde2g)
+
+        ! ----------------------------------------!
+        !   FORCES INTERIEURES ET CONTRAINTES EF  !
+        ! ----------------------------------------!
+
         if (lSigm) then
-            do iDime = 1, dimcon
-                contp(dimcon*(kpg-1)+iDime) = sigp(iDIme)
-            end do
+            !Format sigma sortie ldc
+            if (ds_dil%inco) then
+                siefup(1:2*ndim) = matmul(dev, sigp1g(1:2*ndim))
+            else
+                siefup(1:2*ndim) = sigp1g(1:2*ndim)
+            end if
+
+            ! Contraintes generalisees EF par bloc
+            siefup(2*ndim+1) = epefpp(1)+rpena*(epefup(2*ndim+1)-epefgp(1))
+            if (ds_dil%inco) then
+                siefgp(1) = -siefup(2*ndim+1)+dot_product(sigp1g(1:2*ndim), hyd)
+            else
+                siefgp(1) = -siefup(2*ndim+1)
+            end if
+            siefgp(2:neg) = silcp
+            siefpp(1) = epefup(2*ndim+1)-epefgp(1)
+
         end if
-        if (lMatr) then
-            call dilopt(dimdef, dimuel, poids, poids2, b, &
-                        drde, matuu)
-        end if
+
         if (lVect) then
-            call dilsga(dimdef, dimuel, poids, poids2, b, &
-                        r, vectu)
+            ! Forces interieures au point de Gauss g
+            call add_fint(fint, xu, poids*prod_sb(siefup, bu))
+            call add_fint(fint, xg, poids*prod_sb(siefgp, bg))
+            call add_fint(fint, xp, poids*prod_sb(siefpp, bp))
         end if
-    end do
-!
+
+        if (lSigm) then
+            ! Stockage des contraintes generalisees
+            siefp(dimdef*(g-1)+1:dimdef*(g-1)+2*ndim) = siefup(1:2*ndim)/vrac2(1:2*ndim)
+            siefp(dimdef*(g-1)+2*ndim+1) = siefup(2*ndim+1)
+            siefp(dimdef*(g-1)+2*ndim+2:dimdef*(g-1)+2*ndim+2+ndim) = siefgp
+            siefp(dimdef*g) = siefpp(1)
+        end if
+
+        ! -----------------------!
+        !    MATRICE TANGENTE    !
+        ! -----------------------!
+
+        if (lMatr) then
+
+            ! Construction des blocs de la matrice tangente EF
+            kefuu = 0.0d0
+            if (ds_dil%inco) then
+                kefuu(1:2*ndim, 1:2*ndim) = matmul(matmul(dev, dsde1g(1:2*ndim, 1:2*ndim)), dev)
+            else
+                kefuu(1:2*ndim, 1:2*ndim) = dsde1g(1:2*ndim, 1:2*ndim)
+            end if
+            kefuu(2*ndim+1, 2*ndim+1) = rpena
+
+            kefug = 0.0d0
+            if (ds_dil%inco) then
+                kefug(1:2*ndim, 1) = matmul(matmul(dev, dsde1g(1:2*ndim, 1:2*ndim)), hyd)
+            end if
+            kefug(2*ndim+1, 1) = -rpena
+
+            kefgu = 0.0d0
+            if (ds_dil%inco) then
+                kefgu(1, 1:2*ndim) = matmul(matmul(hyd, dsde1g(1:2*ndim, 1:2*ndim)), dev)
+            end if
+            kefgu(1, 2*ndim+1) = -rpena
+
+            kefgg = 0.0d0
+            if (ds_dil%inco) then
+                kefgg(1, 1) = rpena+dot_product(matmul(hyd, dsde1g(1:2*ndim, 1:2*ndim)), hyd)
+            else
+                kefgg(1, 1) = rpena
+            end if
+            kefgg(2:neg, 2:neg) = dsde2g
+
+            kefup = 0.0d0
+            kefup(2*ndim+1, 1) = 1.0d0
+
+            kefgp = 0.0d0
+            kefgp(1, 1) = -1.0d0
+
+            kefpu = 0.0d0
+            kefpu(1, 2*ndim+1) = 1.0d0
+
+            kefpg = 0.0d0
+            kefpg(1, 1) = -1.0d0
+
+            kefpp = 0.0d0
+
+            ! Assemblage des blocs de la matrice EF
+            call add_matr(matr, xu, xu, poids*prod_bkb(bu, kefuu, bu))
+            call add_matr(matr, xu, xg, poids*prod_bkb(bu, kefug, bg))
+            call add_matr(matr, xg, xu, poids*prod_bkb(bg, kefgu, bu))
+            call add_matr(matr, xg, xg, poids*prod_bkb(bg, kefgg, bg))
+            call add_matr(matr, xu, xp, poids*prod_bkb(bu, kefup, bp))
+            call add_matr(matr, xg, xp, poids*prod_bkb(bg, kefgp, bp))
+            call add_matr(matr, xp, xu, poids*prod_bkb(bp, kefpu, bu))
+            call add_matr(matr, xp, xg, poids*prod_bkb(bp, kefpg, bg))
+            call add_matr(matr, xp, xp, poids*prod_bkb(bp, kefpp, bp))
+
+        end if
+
+    end do gauss
+
+    if (lSigm) call codere(cod, npg, codret)
+
 end subroutine

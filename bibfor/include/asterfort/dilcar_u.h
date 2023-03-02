@@ -15,23 +15,28 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-!
-!
-#include "asterf_types.h"
 !
 interface
-    subroutine fnodil(option, typmod, ndim, nnos, &
-                    nnom, npg, nddl, dimdef, iw, vff, &
-                    vffb, idff,idffb,geomi, compor, &
-                    sief,  fint)
-        character(len=8),intent(in) :: typmod(*)
-        character(len=16),intent(in):: option, compor(*)
-        integer,intent(in)          :: ndim,nnos,nnom,npg,nddl,dimdef
-        integer,intent(in)          :: iw,idff,idffb
-        real(kind=8),intent(in)     :: geomi(ndim,nnos+nnom)
-        real(kind=8),intent(in)     :: vff(nnos+nnom, npg),vffb(nnos, npg)
-        real(kind=8),intent(in)     :: sief(dimdef*npg)
-        real(kind=8),intent(out)    :: fint(nddl)
-    end subroutine fnodil
+    subroutine dilcar_u(option, icompo, icontm, ivarim, ideplm, ideplp,&
+                      igeom, imate, imatuu, ivectu, icontp,&
+                      ivarip, ichg, ichn, jcret, icarcr, iinstm, iinstp)
+        character(len=16) :: option
+        integer :: icompo
+        integer :: icontm
+        integer :: ivarim
+        integer :: ideplm
+        integer :: ideplp
+        integer :: igeom
+        integer :: imate
+        integer :: imatuu
+        integer :: ivectu
+        integer :: icontp
+        integer :: ivarip
+        integer :: ichg
+        integer :: ichn
+        integer :: jcret
+        integer :: icarcr
+        integer :: iinstm
+        integer :: iinstp
+    end subroutine dilcar_u
 end interface

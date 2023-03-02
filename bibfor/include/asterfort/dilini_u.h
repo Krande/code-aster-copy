@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,37 +15,33 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-!
-!
 #include "asterf_types.h"
 !
 interface
-    subroutine epsdil(npi, ipoids, ipoid2, ivf, ivf2,&
-                      idfde, idfde2, geom, dimdef, dimuel,&
-                      ndim, nddls, nddlm, nno, nnos,&
-                      nnom, interp, axi, regula, deplp,&
-                      defgep)
-        integer :: ndim
-        integer :: dimuel
-        integer :: dimdef
-        integer :: npi
-        integer :: ipoids
-        integer :: ipoid2
+    subroutine dilini_u(option, ivf, ivf2, idfde,&
+                      idfde2, jgano, ndim, ipoids, ipoid2,&
+                      npi, dimdef, nddls, nddlm, lgpg,&
+                      dimcon, typmod, dimuel, nnom, nnos, ds_dil)
+        use dil_type
+        character(len=16) :: option
         integer :: ivf
         integer :: ivf2
         integer :: idfde
         integer :: idfde2
-        real(kind=8) :: geom(ndim, *)
+        integer :: jgano
+        integer :: ndim
+        integer :: ipoids
+        integer :: ipoid2
+        integer :: npi
+        integer :: dimdef
         integer :: nddls
         integer :: nddlm
-        integer :: nno
-        integer :: nnos
+        integer :: lgpg
+        integer :: dimcon
+        character(len=8) :: typmod(2)
+        integer :: dimuel
         integer :: nnom
-        character(len=2) :: interp
-        aster_logical :: axi
-        integer :: regula(6)
-        real(kind=8) :: deplp(dimuel)
-        real(kind=8) :: defgep(npi*dimdef)
-    end subroutine epsdil
+        integer :: nnos
+        type(dil_modelisation) :: ds_dil
+    end subroutine dilini_u
 end interface

@@ -265,6 +265,13 @@ AFFE_MODELE = OPER(
                     statut="f", typ="TXM", max=1, into=("U_P_PHI", "U_P", "U_PSI"), defaut="U_P_PHI"
                 ),
             ),
+            b_formu_dil=BLOC(
+                condition="""equal_to('MODELISATION', ('D_PLAN_DIL', '3D_DIL', ))""",
+                fr=tr("DIL formulation"),
+                FORMULATION=SIMP(
+                    statut="f", typ="TXM", max=1, into=("DIL", "DIL_INCO"), defaut="DIL"
+                ),
+            ),
         ),
         b_thermique=BLOC(
             condition="""equal_to("PHENOMENE", 'THERMIQUE')""",

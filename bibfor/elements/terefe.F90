@@ -74,6 +74,8 @@ subroutine terefe(refe_name, type_elem, refe_vale)
             index = 1
         else if (type_elem .eq. 'MECA_CG') then
             index = 1
+        else if (type_elem .eq. 'MECA_DIL') then
+            index = 1
         else
             ASSERT(.false.)
         end if
@@ -84,6 +86,8 @@ subroutine terefe(refe_name, type_elem, refe_vale)
             index = 1
         else if (type_elem .eq. 'MEMBRANE') then
             index = 1
+        else if (type_elem .eq. 'MECA_DIL') then
+            index = 2
         else
             ASSERT(.false.)
         end if
@@ -151,6 +155,8 @@ subroutine terefe(refe_name, type_elem, refe_vale)
         end if
     else if (refe_name .eq. 'LAGR_REFE') then
         if (type_elem .eq. 'MECA_GRADVARI') then
+            index = 3
+        else if (type_elem .eq. 'MECA_DIL') then
             index = 3
         else
             ASSERT(.false.)

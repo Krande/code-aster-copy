@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -36,7 +36,6 @@ CHAR_MECA_FF3D3D = Option(
         # Ce n'est pas a elle de calculer les chargements repartis :
         CondCalcul("+", ((AT.PHENO, "ME"), (AT.BORD, "0"), (AT.DIM_TOPO_MODELI, "3"))),
         CondCalcul("-", ((AT.PHENO, "ME"), (AT.INTERFACE, "OUI"))),
-        CondCalcul("-", ((AT.PHENO, "ME"), (AT.MODELI, "D3D"))),
     ),
     comment=""" CHAR_MECA_FF3D3D (MOT-CLE : FORCE_INTERNE): CALCUL DU SECOND
            MEMBRE ELEMENTAIRE CORRESPONDANT A DES FORCES INTERNES APPLIQUEES

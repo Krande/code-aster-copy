@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,13 +19,11 @@
 !
 !
 interface
-    subroutine dil2gr(imate, compor, ndim, regula, dimdef,&
+    subroutine dil2gr(imate, ndim, dimdef,&
                       defgep, sigp, dsde2g)
         integer :: dimdef
         integer :: ndim
         integer :: imate
-        character(len=16) :: compor(*)
-        integer :: regula(6)
         real(kind=8) :: defgep(dimdef)
         real(kind=8) :: sigp(ndim)
         real(kind=8) :: dsde2g(ndim, ndim)

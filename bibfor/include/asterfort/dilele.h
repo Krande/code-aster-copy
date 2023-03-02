@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,40 +18,26 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine dilele(npi, ndim, dimuel,&
-                      nddls, nddlm, nno, nnos, nnom,&
-                      axi, regula, dimcon, ipoids, ipoid2,&
-                      ivf, ivf2, interp, idfde, idfde2,&
-                      compor, geom, deplp, contp, imate,&
-                      dimdef, matuu, vectu, lVect, lMatr, lSigm,&
-                      codret)
-        integer :: dimdef
-        integer :: dimcon
-        integer :: dimuel
-        integer :: ndim
-        integer :: npi
-        integer :: nddls
-        integer :: nddlm
-        integer :: nno
-        integer :: nnos
-        integer :: nnom
-        aster_logical :: axi
-        integer :: regula(6)
-        integer :: ipoids
-        integer :: ipoid2
-        integer :: ivf
-        integer :: ivf2
-        character(len=2) :: interp
-        integer :: idfde
-        integer :: idfde2
-        character(len=16) :: compor(*)
-        real(kind=8) :: geom(ndim, *)
-        real(kind=8) :: deplp(dimuel)
-        real(kind=8) :: contp(dimcon*npi)
-        integer :: imate
-        real(kind=8) :: matuu(dimuel*dimuel)
-        real(kind=8) :: vectu(dimuel)
-        aster_logical, intent(in) :: lVect, lMatr, lSigm
-        integer, intent(out) :: codret
+    subroutine dilele(option, typmod, ds_dil, ndim, nnos, &
+                    nnom, npg, nddl, dimdef, iw, vff, &
+                    vffb, idff,idffb,geomi, compor, &
+                    mate,lgpg, crit, instam, instap, &
+                    ddlm, ddld, siefm, vim, &
+                    siefp,vip, fint, matr,&
+                    lMatr, lVect, lSigm, codret)
+        use dil_type
+        aster_logical :: lSigm, lMatr, lVect
+        character(len=8),intent(in) :: typmod(*)
+        character(len=16),intent(in):: option, compor(*)
+        type(dil_modelisation)      :: ds_dil
+        integer,intent(in)          :: ndim,nnos,nnom,npg,nddl,lgpg,dimdef
+        integer,intent(in)          :: mate,iw,idff,idffb
+        real(kind=8),intent(in)     :: crit(*), instam, instap
+        real(kind=8),intent(in)     :: geomi(ndim,nnos+nnom)
+        real(kind=8),intent(in)     :: vff(nnos+nnom, npg),vffb(nnos, npg)
+        real(kind=8),intent(in)     :: ddlm(nddl), ddld(nddl)
+        real(kind=8),intent(out)    :: siefm(dimdef*npg),vim(lgpg*npg)
+        real(kind=8),intent(out)    :: fint(nddl),matr(nddl,nddl),siefp(dimdef*npg),vip(lgpg*npg)
+        integer,intent(out)         :: codret
     end subroutine dilele
 end interface

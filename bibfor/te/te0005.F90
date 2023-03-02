@@ -18,17 +18,19 @@
 !
 subroutine te0005(option, nomte)
 !
+    use dil_type
+!
     implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
-#include "asterfort/dilcar.h"
+#include "asterfort/dilcar_u.h"
 #include "asterfort/dilele.h"
-#include "asterfort/dilini.h"
-#include "asterfort/epsdil.h"
+#include "asterfort/dilini_u.h"
 #include "asterfort/fnodil.h"
 #include "asterfort/Behaviour_type.h"
+#include "asterfort/terefe.h"
 !
     character(len=16), intent(in) :: option, nomte
 !
@@ -36,11 +38,11 @@ subroutine te0005(option, nomte)
 !
 ! Elementary computation
 !
-! Elements: D_PLAN_DIL, 3D_DIL
+! Elements: D_PLAN_DIL and 3D_DIL
+! Formulations: DIL and DIL_INCO
 !
 ! Options: FULL_MECA_*, RIGI_MECA_*, RAPH_MECA
-!          CHAR_MECA_PESA_R
-!          EPSI_ELGA
+!          FORC_NODA, REFE_FORC_NODA
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -49,14 +51,16 @@ subroutine te0005(option, nomte)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    aster_logical :: axi, lSigm, lMatr, lVect
-    integer :: i, ivf, ivf2, idfde, idfde2, jgano, ndim, ipoids, npi
-    integer :: ipoid2, dimdef, icompo, ichg, ichn, regula(6), idefo
+    aster_logical :: lSigm, lMatr, lVect
+    integer :: i, ivf, ivf2, idfde, idfde2, jgano, ndim, lgpg, ipoids, npi
+    integer :: ipoid2, dimdef, icompo, ichg, ichn
     integer :: icontm, ideplm, ideplp, igeom, imate, jcret, nddls, nddlm
-    integer :: imatuu, ivectu, icontp, nno, nnos, nnom, dimuel, dimcon
-    integer :: ivarip
-    character(len=2) :: interp
+    integer :: imatuu, ivectu, icontp, nnos, nnom, dimuel, dimcon
+    integer :: ivarim, ivarip, icarcr, iinstm, iinstp
     character(len=8) :: typmod(2)
+    real(kind=8) :: sigref, lagref, epsref
+    real(kind=8), allocatable:: sref(:)
+    type(dil_modelisation) :: ds_dil
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -66,51 +70,72 @@ subroutine te0005(option, nomte)
 !
 ! - Get adresses for fields
 !
-    call dilcar(option, icompo, icontm, ideplm, ideplp, &
-                igeom, imate, imatuu, ivectu, icontp, &
-                ivarip, ichg, ichn, jcret, idefo)
+
+    call dilcar_u(option, icompo, icontm, ivarim, ideplm, ideplp, &
+                  igeom, imate, imatuu, ivectu, icontp, &
+                  ivarip, ichg, ichn, jcret, icarcr, iinstm, iinstp)
+
 ! ======================================================================
 ! --- INITIALISATION DES VARIABLES DE L'ELEMENT ------------------------
 ! ======================================================================
-    call dilini(ivf, ivf2, idfde, &
-                idfde2, jgano, ndim, ipoids, ipoid2, &
-                npi, dimdef, nddls, nddlm, &
-                dimcon, typmod, dimuel, nno, nnom, &
-                nnos, regula, axi, interp)
-!
+    call dilini_u(option, ivf, ivf2, idfde, &
+                  idfde2, jgano, ndim, ipoids, ipoid2, &
+                  npi, dimdef, nddls, nddlm, lgpg, &
+                  dimcon, typmod, dimuel, nnom, nnos, ds_dil)
+
+! ======================================================================
+! --- CALCUL DES OPTIONS -----------------------------------------------
+! ======================================================================
     if (option(1:9) .eq. 'RIGI_MECA') then
-        call dilele(npi, ndim, dimuel, &
-                    nddls, nddlm, nno, nnos, nnom, &
-                    axi, regula, dimcon, ipoids, ipoid2, &
-                    ivf, ivf2, interp, idfde, idfde2, &
-                    zk16(icompo), zr(igeom), zr(ideplm), zr(icontm), zi(imate), &
-                    dimdef, zr(imatuu), zr(ivectu), lVect, lMatr, lSigm, &
-                    zi(jcret))
-    else if (option(1:9) .eq. 'RAPH_MECA' .or. option(1:9) .eq. 'FULL_MECA') then
-        do i = 1, dimuel
-            zr(ideplp-1+i) = zr(ideplm-1+i)+zr(ideplp-1+i)
-        end do
-        call dilele(npi, ndim, dimuel, &
-                    nddls, nddlm, nno, nnos, nnom, &
-                    axi, regula, dimcon, ipoids, ipoid2, &
-                    ivf, ivf2, interp, idfde, idfde2, &
-                    zk16(icompo), zr(igeom), zr(ideplp), zr(icontp), zi(imate), &
-                    dimdef, zr(imatuu), zr(ivectu), lVect, lMatr, lSigm, &
-                    zi(jcret))
+        call dilele(option, typmod, ds_dil, ndim, nnos, &
+                    nnom, npi, dimuel, dimdef, ipoids, zr(ivf), &
+                    zr(ivf2), idfde, idfde2, zr(igeom), zk16(icompo), &
+                    zi(imate), lgpg, zr(icarcr), zr(iinstm), zr(iinstp), &
+                    zr(ideplm), zr(ideplp), zr(icontm), zr(ivarim), &
+                    zr(icontm), zr(ivarim), &
+                    zr(ivectu), zr(imatuu), lMatr, lVect, lSigm, zi(jcret))
+    else if (option(1:9) .eq. 'RAPH_MECA' .or. option(1:9) &
+             .eq. 'FULL_MECA') then
+        call dilele(option, typmod, ds_dil, ndim, nnos, &
+                    nnom, npi, dimuel, dimdef, ipoids, zr(ivf), &
+                    zr(ivf2), idfde, idfde2, zr(igeom), zk16(icompo), &
+                    zi(imate), lgpg, zr(icarcr), zr(iinstm), zr(iinstp), &
+                    zr(ideplm), zr(ideplp), zr(icontm), zr(ivarim), &
+                    zr(icontp), zr(ivarip), &
+                    zr(ivectu), zr(imatuu), lMatr, lVect, lSigm, zi(jcret))
     else if (option .eq. 'FORC_NODA') then
-        call fnodil(dimuel, dimdef, nno, nnos, nnom, &
-                    ndim, npi, dimcon, zr(igeom), ipoids, &
-                    ipoid2, ivf, ivf2, interp, idfde, &
-                    idfde2, nddls, nddlm, axi, regula, &
-                    zr(ideplm), zr(icontm), zi(imate), zr(ivectu))
-    else if (option .eq. 'EPSI_ELGA') then
-        call epsdil(npi, ipoids, ipoid2, ivf, ivf2, &
-                    idfde, idfde2, zr(igeom), dimdef, dimuel, &
-                    ndim, nddls, nddlm, nno, nnos, &
-                    nnom, interp, axi, regula, zr(ideplp), &
-                    zr(idefo))
+        call fnodil(option, typmod, ndim, nnos, &
+                    nnom, npi, dimuel, dimdef, ipoids, zr(ivf), &
+                    zr(ivf2), idfde, idfde2, zr(igeom), zk16(icompo), &
+                    zr(icontm), zr(ivectu))
+    else if (option .eq. 'REFE_FORC_NODA') then
+
+        allocate (sref(dimdef))
+
+        call terefe('SIGM_REFE', 'MECA_DIL', sigref)
+        call terefe('LAGR_REFE', 'MECA_DIL', lagref)
+        call terefe('EPSI_REFE', 'MECA_DIL', epsref)
+
+        if (ndim .eq. 2) then
+            sref(1:dimdef) = [sigref, sigref, sigref, sigref, lagref, &
+                              lagref, sigref, sigref, epsref]
+        else if (ndim .eq. 3) then
+            sref(1:dimdef) = [sigref, sigref, sigref, sigref, sigref, &
+                              sigref, lagref, lagref, sigref, &
+                              sigref, sigref, epsref]
+        end if
+
+        call fnodil(option, typmod, ndim, nnos, &
+                    nnom, npi, dimuel, dimdef, ipoids, zr(ivf), &
+                    zr(ivf2), idfde, idfde2, zr(igeom), zk16(icompo), &
+                    transpose(spread(sref, 1, npi)), &
+                    zr(ivectu))
+
+        deallocate (sref)
+
     else
         ASSERT(ASTER_FALSE)
     end if
+
 !
 end subroutine

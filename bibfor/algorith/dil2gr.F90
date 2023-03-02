@@ -16,17 +16,16 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine dil2gr(imate, compor, ndim, regula, dimdef, &
+subroutine dil2gr(imate, ndim, dimdef, &
                   defgep, sigp, dsde2g)
-! --- BUT : CALCUL DE LA LOI DE COMPORTEMENT ELASTIQUE POUR LA PARTIE --
+! --- BUT : CALCUL DE LA LOI DE COMPORTEMENT POUR LA PARTIE --
 ! ---       SECOND GRADIENT --------------------------------------------
 ! ======================================================================
     implicit none
 #include "asterfort/rcvalb.h"
 #include "asterfort/utmess.h"
-    integer :: imate, ndim, dimdef, regula(6)
+    integer :: imate, ndim, dimdef
     real(kind=8) :: sigp(ndim), dsde2g(ndim, ndim), defgep(dimdef)
-    character(len=16) :: compor(*)
 ! ======================================================================
 ! --- VARIABLES LOCALES ------------------------------------------------
 ! ======================================================================
@@ -42,31 +41,27 @@ subroutine dil2gr(imate, compor, ndim, regula, dimdef, &
     kpg = 1
     spt = 1
     poum = '+'
-    if (compor(1) .eq. 'ELAS') then
-        do i = 1, ndim
-            do j = 1, ndim
-                dsde2g(j, i) = 0.0d0
-            end do
+
+    do i = 1, ndim
+        do j = 1, ndim
+            dsde2g(j, i) = 0.0d0
         end do
-        call rcvalb(fami, kpg, spt, poum, imate, &
-                    ' ', 'ELAS_2NDG', 0, ' ', [0.0d0], &
-                    1, ncra(1), val(1), icodre(1), 1)
-        call rcvalb(fami, kpg, spt, poum, imate, &
-                    ' ', 'ELAS_2NDG', 0, ' ', [0.0d0], &
-                    1, ncra(3), val(3), icodre(3), 1)
-        do i = 1, ndim
-            dsde2g(i, i) = (1+ndim)*(val(1)-val(3))
-        end do
+    end do
+
+    call rcvalb(fami, kpg, spt, poum, imate, &
+                ' ', 'LINE_2NDG', 0, ' ', [0.0d0], &
+                1, ncra(1), val(1), icodre(1), 1)
+
+    do i = 1, ndim
+        dsde2g(i, i) = (1+ndim)*val(1)
+    end do
 !
-        adder2 = regula(2)
-        do i = 1, ndim
-            sigp(i) = 0.0d0
-            do j = 1, ndim
-                sigp(i) = sigp(i)+dsde2g(i, j)*defgep(adder2-1+j)
-            end do
+    do i = 1, ndim
+        sigp(i) = 0.0d0
+        do j = 1, ndim
+            sigp(i) = sigp(i)+dsde2g(i, j)*defgep(j)
         end do
-    else
-        call utmess('F', 'ALGORITH4_50', sk=compor(1))
-    end if
+    end do
+
 ! ======================================================================
 end subroutine

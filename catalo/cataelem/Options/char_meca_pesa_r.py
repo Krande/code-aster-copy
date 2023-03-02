@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -124,8 +124,6 @@ CHAR_MECA_PESA_R = Option(
         CondCalcul("-", ((AT.PHENO, "ME"), (AT.ABSO, "OUI"))),
         #     les modelisations suivantes n'ont pas de masse :
         CondCalcul("-", ((AT.PHENO, "ME"), (AT.FLUIDE, "OUI"))),
-        CondCalcul("-", ((AT.PHENO, "ME"), (AT.MODELI, "D2D"))),
-        CondCalcul("-", ((AT.PHENO, "ME"), (AT.MODELI, "D3D"))),
     ),
     comment=""" CHAR_MECA_PESA_R  : calcul du second membre
    correspondant aux forces de gravite (MOT-CLE: PESANTEUR) """,

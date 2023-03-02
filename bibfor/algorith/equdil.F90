@@ -44,7 +44,7 @@ subroutine equdil(imate, lSigm, compor, regula, dimdef, &
 ! ======================================================================
 ! --- APPEL A LA RESOLUTION MECANIQUE DE LA LOI REGULARISANTE ----------
 ! ======================================================================
-    call dil2gr(imate, compor, ndim, regula, dimdef, &
+    call dil2gr(imate, ndim, dimdef, &
                 defgep, sigp, dsde2g)
     call dilcge(interp, dimdef, dimcon, regula, ndim, &
                 defgep, sigp, rpena, r)
