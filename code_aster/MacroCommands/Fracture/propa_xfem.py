@@ -77,6 +77,8 @@ class CrackPropagation(ExecuteCommand):
             keywords (dict): Keywords arguments of user's keywords.
         """
         self._result = XfemCrack(keywords["MODELE"].getMesh())
+    def post_exec(self, keywords):
+        self._result.setDiscontinuityType(keywords["FISS_PROP"].getDiscontinuityType())
 
 
 PROPA_XFEM = CrackPropagation.run

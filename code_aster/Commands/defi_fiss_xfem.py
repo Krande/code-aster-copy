@@ -37,6 +37,11 @@ class XFEMCrackDefinition(ExecuteCommand):
         self._result = XfemCrack(keywords["MAILLAGE"])
 
     def post_exec(self, keywords):
+        if "TYPE_DISCONTINUITE" in keywords:
+            if keywords["TYPE_DISCONTINUITE"]=="INTERFACE":
+                self._result.setDiscontinuityType("Interface")
+            elif keywords["TYPE_DISCONTINUITE"]=="COHESIF":
+                self._result.setDiscontinuityType("Cohesive")
         self._result.update()
 
 

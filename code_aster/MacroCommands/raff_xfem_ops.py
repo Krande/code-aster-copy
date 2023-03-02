@@ -17,15 +17,10 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-import copy
-import math
-
-import aster
 from ..Messages import UTMESS
 
 from ..Cata.Syntax import _F
 from ..Commands import CREA_CHAMP, FORMULE
-from ..SD.sd_xfem import sd_fiss_xfem
 from .Fracture.raff_xfem_zone import RAFF_XFEM_ZONE
 
 
@@ -86,17 +81,14 @@ def raff_xfem_ops(self, FISSURE, TYPE, **args):
             # recuperation du type de discontinuite :'FISSURE' ou 'INTERFACE'
             # si FISSURE   : l'erreur est la distance au fond de fissure
             # si INTERFACE : l'erreur est la distance a l'interface
-            iret, ibid, typ_ds = aster.dismoi(
-                "TYPE_DISCONTINUITE", fiss.getName(), "FISS_XFEM", "F"
-            )
-            typ_ds = typ_ds.rstrip()
+            typ_ds = fiss.getDiscontinuityType()
 
             # extraction des champs level sets
             __CHLN = CREA_CHAMP(
                 TYPE_CHAM="NOEU_NEUT_R", OPERATION="EXTR", NOM_CHAM="LNNO", FISSURE=fiss
             )
 
-            if typ_ds == "FISSURE":
+            if typ_ds == "Crack":
                 __CHLTB = CREA_CHAMP(
                     TYPE_CHAM="NOEU_NEUT_R", OPERATION="EXTR", NOM_CHAM="LTNO", FISSURE=fiss
                 )
@@ -111,14 +103,14 @@ def raff_xfem_ops(self, FISSURE, TYPE, **args):
 
             # On affecte à chaque noeud du maillage MA la formule __MDISTF ou
             # __MDISTI
-            if typ_ds == "FISSURE":
+            if typ_ds == "Crack":
                 __CHFOR = CREA_CHAMP(
                     TYPE_CHAM="NOEU_NEUT_F",
                     OPERATION="AFFE",
                     MAILLAGE=MA,
                     AFFE=_F(TOUT="OUI", NOM_CMP="X1", VALE_F=__MDISTF),
                 )
-            elif typ_ds == "INTERFACE":
+            elif typ_ds == "Interface":
                 __CHFOR = CREA_CHAMP(
                     TYPE_CHAM="NOEU_NEUT_F",
                     OPERATION="AFFE",
@@ -127,7 +119,7 @@ def raff_xfem_ops(self, FISSURE, TYPE, **args):
                 )
 
             # on evalue en tout noeud le champ de formules
-            if typ_ds == "FISSURE":
+            if typ_ds == "Crack":
                 __CERRB = CREA_CHAMP(
                     TYPE_CHAM="NOEU_NEUT_R",
                     OPERATION="EVAL",
@@ -135,7 +127,7 @@ def raff_xfem_ops(self, FISSURE, TYPE, **args):
                     CHAM_PARA=(__CHLN, __CHLT),
                 )
 
-            elif typ_ds == "INTERFACE":
+            elif typ_ds == "Interface":
                 __CERRB = CREA_CHAMP(
                     TYPE_CHAM="NOEU_NEUT_R", OPERATION="EVAL", CHAM_F=__CHFOR, CHAM_PARA=(__CHLN,)
                 )
