@@ -39,9 +39,8 @@ def calc_pression_ops(self, MAILLAGE, RESULTAT, GROUP_MA, GEOMETRIE, CRITERE, PR
 
     # BLINDAGE : on poursuit le calcul uniquement que si le groupe n'a pas
     # d'élément de structure
-    test_structure = aster.dismoi("EXI_RDM", model.getName(), "MODELE", "F")[-1]
     # si oui dans le modele, ensuite check toutes les mailles dans les group_ma
-    if test_structure != "NON":
+    if model.existsRdM():
         for grm in GROUP_MA:
             iret = aster.gmardm(grm, model.getName())
             if iret == 1:

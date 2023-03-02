@@ -59,6 +59,25 @@ void exportModelToPython( py::module_ &mod ) {
         .def( "build", &Model::build )
         .def( "existsThm", &Model::existsThm )
         .def( "existsHHO", &Model::existsHHO )
+        .def( "isAxis", &Model::isAxis, R"(
+            To know if the model is Axisymmetric
+
+            Returns:
+                bool: *True* if the model is axisymmetric, else *False*
+            )" )
+        .def( "existsRdM", &Model::existsRdM, R"(
+            To know if the model has RdM elements
+
+            Returns:
+                bool: *True* if the model contains beam, shell or discret elements, else *False*
+            )" )
+        .def( "existsPartition", &Model::existsPartition )
+        .def( "getModelisationName", &Model::getModelisationName, R"(
+            Get modelisation name used in model
+
+            Returns:
+                str: modelisation name if single modelisation, else '#PLUSIEURS'
+            )" )
         .def( "isXfem", &Model::isXfem )
         .def( "existsMultiFiberBeam", &Model::existsMultiFiberBeam )
         .def( "getSaneModel", &Model::getSaneModel )

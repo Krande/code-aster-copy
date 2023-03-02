@@ -19,7 +19,6 @@
 
 import numpy
 
-import aster
 from ...Messages import UTMESS
 
 from ...Cata.Syntax import _F
@@ -47,8 +46,7 @@ def CHAINAGE_MECA_HYDR(self, args, motscles):
     #
     # Nom du modèle obtenu à partir du résultat : nom_modele_1
     #
-    iret, ibid, nom_modele_1 = aster.dismoi("MODELISATION", __modele.getName(), "MODELE", "F")
-    nom_modele_1 = nom_modele_1.strip()
+    nom_modele_1 = __modele.getModelisationName()
 
     yathm1 = __modele.existsThm()
 
@@ -76,8 +74,7 @@ def CHAINAGE_MECA_HYDR(self, args, motscles):
     # Nom du modèle 2 fourni en entrée : nom_modele_2
     #
 
-    iret, ibid, nom_modele_2 = aster.dismoi("MODELISATION", MODELE_HYDR.getName(), "MODELE", "F")
-    nom_modele_2 = nom_modele_2.strip()
+    nom_modele_2 = MODELE_HYDR.getModelisationName()
 
     linst_resultat = RESU_MECA.LIST_VARI_ACCES()["INST"]
 
@@ -123,7 +120,7 @@ def CHAINAGE_MECA_HYDR(self, args, motscles):
     # => 3D, 3D_SI
     #
 
-    if not (nom_modele_1 in mod_mec_autorise) and (yathm1 == "NON"):
+    if not (nom_modele_1 in mod_mec_autorise) and (not yathm1):
         UTMESS("F", "CHAINAGE_4", valk=[nom_modele_1, "de départ"])
 
     #

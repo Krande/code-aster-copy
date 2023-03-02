@@ -346,9 +346,7 @@ def calc_precont_ops(
         # ---------------------------------------------------------
 
         # need CENTRALISE?
-        iret, repi, repk = aster.dismoi("PARTITION", MODELE.getName(), "MODELE", "C")
-        assert iret == 0, "Can not extract PARTITION type of the model."
-        opts = {} if repk.strip() else {"DISTRIBUTION": _F(METHODE="CENTRALISE")}
+        opts = {"DISTRIBUTION": _F(METHODE="CENTRALISE") if MODELE.existsPartition() else {}}
 
         __M_CA = AFFE_MODELE(MAILLAGE=MODELE.getMesh(), AFFE=affe_mo, **opts)
 

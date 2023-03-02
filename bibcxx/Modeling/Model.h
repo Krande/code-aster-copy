@@ -132,6 +132,8 @@ class Model : public DataStructure, public ListOfTables {
      */
     bool buildWithSyntax( SyntaxMapContainer & );
 
+    const std::string dismoi( const std::string&, bool stop = true ) const;
+
   public:
     Model( const std::string name, const bool is_xfem = false );
 
@@ -181,25 +183,38 @@ class Model : public DataStructure, public ListOfTables {
     virtual bool build();
 
     /**@brief Has multi-fiber beams in model ? */
-    bool existsMultiFiberBeam();
+    bool existsMultiFiberBeam() const;
 
     /**@brief Has THM in model ? */
-    bool existsThm();
+    bool existsThm() const;
 
     /**@brief Has XFEM in model ? */
-    bool existsXfem();
+    bool existsXfem() const;
 
     /**@brief Has HHO in model ? */
-    bool existsHHO();
+    bool existsHHO() const;
 
     /**@brief Has Axis element in model ? */
-    bool existsAxis();
+    bool existsAxis() const;
+
+    /**@brief model is Axis ? */
+    bool isAxis() const;
 
     /**@brief Has COQUE_3D in model ? */
-    bool exists3DShell();
+    bool exists3DShell() const;
 
     /**@brief Has STRX in model ? */
-    bool existsSTRX();
+    bool existsSTRX() const;
+
+    /**@brief Has RdM in model ? */
+    bool existsRdM() const;
+
+    /**@brief Has PARTITION in model ? */
+    bool existsPartition() const;
+
+    /**@brief Name of modelisation */
+    const std::string getModelisationName() const;
+
     /**
      * @brief Number of super-elements in model
      * @return Number of super elements in model
@@ -216,7 +231,7 @@ class Model : public DataStructure, public ListOfTables {
      * @brief function to know if XFEM Preconditioning is enable in model
      * @return true if xfem preconditioning enable
      */
-    bool xfemPreconditioningEnable();
+    bool xfemPreconditioningEnable() const;
 
     /**
      * @brief Get FiniteElementDescriptor

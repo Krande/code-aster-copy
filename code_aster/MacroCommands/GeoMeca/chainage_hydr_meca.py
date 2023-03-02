@@ -19,7 +19,6 @@
 
 import numpy
 
-import aster
 from ...Messages import UTMESS
 
 from ...Cata.Syntax import _F
@@ -52,8 +51,7 @@ def CHAINAGE_HYDR_MECA(self, args, motscles):
     # Nom du modèle obtenu à partir du résultat : nom_modele_1
     #
 
-    iret, ibid, nom_modele_1 = aster.dismoi("MODELISATION", __modele.getName(), "MODELE", "F")
-    nom_modele_1 = nom_modele_1.strip()
+    nom_modele_1 = __modele.getModelisationName()
 
     #
     # A l'heure actuelle, les modélisations autorisées pour
@@ -79,8 +77,7 @@ def CHAINAGE_HYDR_MECA(self, args, motscles):
     # Nom du modèle 2 fourni en entrée : nom_modele_2
     #
 
-    iret, ibid, nom_modele_2 = aster.dismoi("MODELISATION", MODELE_MECA.getName(), "MODELE", "F")
-    nom_modele_2 = nom_modele_2.strip()
+    nom_modele_2 = MODELE_MECA.getModelisationName()
 
     linst_resultat = RESU_HYDR.LIST_VARI_ACCES()["INST"]
 

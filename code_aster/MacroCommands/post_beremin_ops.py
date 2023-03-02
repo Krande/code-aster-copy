@@ -356,7 +356,7 @@ def sigweibull_proba(GROUP_MA, COEF_MULT, data_in, sigw):
         / data_in["wb_kwd"][GROUP_MA]["VOLU_REFE"]
     )
 
-    if data_in["axis"] == "OUI":
+    if data_in["axis"]:
         rayon_axis = sigw.getLocalizationOfDiscr().getValuesAsTuple()
         for ptga in range(p_aux.getNbOfElems()):
             p_aux[ptga] = p_aux[ptga] * rayon_axis[ptga][0]
@@ -513,8 +513,8 @@ def get_data(RESULTAT, MED_FILENAME_IN, DEFORMATION, GROUP_MA):
     if not RESULTAT.getModel().isMechanical():
         UTMESS("F", "RUPTURE1_82")
     else:
-        axis = aster.dismoi("AXIS", RESULTAT.getModel().getName(), "MODELE", "F")[-1]
-        dim_geom = aster.dismoi("DIM_GEOM", RESULTAT.getModel().getName(), "MODELE", "F")[-2]
+        axis = RESULTAT.getModel().isAxis()
+        dim_geom = RESULTAT.getModel().getGeometricDimension()
     wb_kwd = dict()
     _chmater = RESULTAT.getMaterialField().getVectorOfPartOfMaterialField()
     nomres = ["SIGM_REFE", "M", "VOLU_REFE", "SEUIL_EPSP_CUMU"]
