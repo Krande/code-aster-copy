@@ -409,7 +409,6 @@ void ParallelMesh::create_joints( const VectorLong &domains, const VectorLong &g
     const std::string error( "F" );
     int i = 0;
 
-    AS_ASSERT( domains.size() <= 46656 );
     std::vector< std::pair< JeveuxVectorLong, JeveuxVectorLong > > _joints_tmp;
 
     for ( auto dom : domains ) {

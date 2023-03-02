@@ -37,8 +37,6 @@ class ConstantFieldOnCells;
 typedef ConstantFieldOnCells< ASTERDOUBLE > ConstantFieldOnCellsReal;
 typedef std::shared_ptr< ConstantFieldOnCellsReal > ConstantFieldOnCellsRealPtr;
 
-using VectorOfVectorsLong = std::vector< VectorLong >;
-
 /**
  * @class BaseMesh
  * @brief This object is the base class for all meshes variants

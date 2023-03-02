@@ -23,7 +23,7 @@
 
 /* person_in_charge: nicolas.sellenet at edf.fr */
 
-#pragma
+#pragma once
 
 #include "astercxx.h"
 
@@ -54,12 +54,18 @@ class Joints : public DataStructure {
      */
     typedef std::shared_ptr< Joints > JointsPtr;
 
-    void setOppositeDomains( const VectorLong &oppositeDomains );
-
     /**
      * @brief Constructeur
      */
     Joints( const std::string name = DataStructureNaming::getNewName() );
+
+    void setOppositeDomains( const VectorLong &oppositeDomains );
+
+    JeveuxVectorLong getOppositeDomains() const;
+
+    void setSendedElements( const VectorOfVectorsLong &send );
+
+    void setReceivedElements( const VectorOfVectorsLong &recv );
 
     bool build();
 };

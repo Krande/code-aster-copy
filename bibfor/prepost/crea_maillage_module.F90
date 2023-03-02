@@ -2381,8 +2381,8 @@ contains
         class(Mmesh), intent(in) :: this
         character(len=8), intent(in) :: mesh_out
 ! ------------------------------------------------------------------
-        character(len=4) :: chnbjo
-        character(len=24) :: nojoin
+        character(len=24) :: send, recv, domj
+        character(len=19) :: joints
         integer, pointer :: v_rnode(:) => null()
         integer, pointer :: v_noex(:) => null()
         integer, pointer :: v_nojoin(:) => null()
@@ -2398,8 +2398,8 @@ contains
         real(kind=8), pointer :: v_send(:) => null()
         real(kind=8), pointer :: v_recv(:) => null()
         mpi_int :: msize, mrank, count_send, count_recv, id, tag, mpicou
-        integer :: nbproc, rank, ind, nb_recv, i_proc, recv(1)
-        integer :: n_coor_send, n_coor_recv, proc_id, i_comm
+        integer :: nbproc, rank, ind, nb_recv, i_proc, recv1(1)
+        integer :: n_coor_send, n_coor_recv, proc_id, i_comm, domj_i
         integer :: i_node, nb_nodes_keep, i_node_r, node_id, j_node
         integer :: i_cell, nno, nb_cells_keep, owner, cell_id
         real(kind=8) :: coor(3), coor_diff(3), tole_comp, start, end
@@ -2411,6 +2411,11 @@ contains
                 print *, "Create joints..."
                 call cpu_time(start)
             end if
+
+            joints = mesh_out//".JOIN"
+            domj = joints//".DOMJ"
+            send = joints//".SEND"
+            recv = joints//".RECV"
 
             call jemarq()
             call asmpi_comm('GET', mpicou)
@@ -2437,7 +2442,9 @@ contains
                 end if
             end do
             if (nb_recv > 0) then
-                call wkvect(mesh_out//'.DOMJOINTS', 'G V I', nb_recv, vi=v_proc)
+                call wkvect(domj, 'G V I', nb_recv, vi=v_proc)
+                call jecrec(send, 'G V I', 'NU', 'DISPERSE', 'VARIABLE', nb_recv)
+                call jecrec(recv, 'G V I', 'NU', 'DISPERSE', 'VARIABLE', nb_recv)
             end if
             nb_recv = 0
             do i_proc = 0, nbproc-1
@@ -2474,19 +2481,18 @@ contains
             end if
 ! --- On crée les joints
             do i_comm = 1, nb_recv
-                proc_id = v_comm(i_comm)
+                domj_i = v_comm(i_comm)
+                proc_id = v_proc(domj_i)
                 tag = to_mpi_int(v_tag(i_comm))
                 id = to_mpi_int(proc_id)
-!
-                call codlet(proc_id, 'G', chnbjo)
 !
 ! --- Send and Receive size
                 count_send = to_mpi_int(1)
                 count_recv = to_mpi_int(1)
                 n_coor_send = v_rnode(proc_id+1)
                 call asmpi_sendrecv_i([n_coor_send], count_send, id, tag, &
-                                      recv, count_recv, id, tag, mpicou)
-                n_coor_recv = recv(1)
+                                      recv1, count_recv, id, tag, mpicou)
+                n_coor_recv = recv1(1)
 !
                 call wkvect("&&CREAMA.SCOOR", 'V V R', 4*n_coor_send, vr=v_send)
                 call wkvect("&&CREAMA.RCOOR", 'V V R', 4*n_coor_recv, vr=v_recv)
@@ -2562,8 +2568,10 @@ contains
                 end if
 !
 ! --- Create joint .E
-                nojoin = mesh_out//'.E'//chnbjo
-                call wkvect(nojoin, 'G V I', 2*n_coor_recv, vi=v_nojoin)
+                call jecroc(jexnum(send, domj_i))
+                call jeecra(jexnum(send, domj_i), 'LONMAX', 2*n_coor_recv)
+                call jeveuo(jexnum(send, domj_i), 'E', vi=v_nojoin)
+!
                 call wkvect("&&CREAMA.SNUME", 'V V I', 2*n_coor_recv, vi=v_snume)
 !
 ! --- Search nodes with coordinates
@@ -2600,8 +2608,9 @@ contains
                                       v_rnume, count_recv, id, tag, mpicou)
 !
 ! --- Create joint .R
-                nojoin = mesh_out//'.R'//chnbjo
-                call wkvect(nojoin, 'G V I', 2*n_coor_send, vi=v_nojoin)
+                call jecroc(jexnum(recv, domj_i))
+                call jeecra(jexnum(recv, domj_i), 'LONMAX', 2*n_coor_send)
+                call jeveuo(jexnum(recv, domj_i), 'E', vi=v_nojoin)
 !
                 do i_node = 1, n_coor_send
                     v_nojoin(2*(i_node-1)+1) = int(v_send(4*(i_node-1)+1))

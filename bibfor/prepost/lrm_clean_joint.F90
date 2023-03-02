@@ -65,7 +65,7 @@ subroutine lrm_clean_joint(mesh, v_noex)
     character(len=8) :: k8bid
     character(len=19) :: comm_name, tag_name, domj
     character(len=24) :: name_join_e_old, send, name_join_r_old, recv
-    integer :: rang, domdis, nbproc, i_comm, nb_comm
+    integer :: rang, domdis, nbproc, i_comm, nb_comm, domj_i
     integer :: nb_corr, ino, numno, deca
     integer :: nb_node_e, nb_node_r
     mpi_int :: mpicou, count_send, count_recv, tag, id, mrank, msize
@@ -73,6 +73,7 @@ subroutine lrm_clean_joint(mesh, v_noex)
     integer, pointer :: v_tag(:) => null()
     integer, pointer :: v_nojoe(:) => null()
     integer, pointer :: v_nojor(:) => null()
+    integer, pointer :: v_domj(:) => null()
     integer, pointer :: v_name_join_e_old(:) => null()
     integer, pointer :: v_name_join_e_new(:) => null()
     integer, pointer :: v_name_join_r_old(:) => null()
@@ -98,15 +99,17 @@ subroutine lrm_clean_joint(mesh, v_noex)
     call jeveuo(comm_name, 'L', vi=v_comm)
     call jeveuo(tag_name, 'L', vi=v_tag)
 
-!   -- creation de la collection dipersee .DOMJOINTS  :
-    domj = mesh//".DOMJOINTS"
+!   -- creation de la collection dipersee .JOIN  :
+    domj = mesh//".JOIN"
     send = domj//".SEND"
     recv = domj//".RECV"
     call jecrec(send, 'G V I', 'NU', 'DISPERSE', 'VARIABLE', nb_comm)
     call jecrec(recv, 'G V I', 'NU', 'DISPERSE', 'VARIABLE', nb_comm)
+    call jeveuo(domj//".DOMJ", 'L', vi=v_domj)
 
     do i_comm = 1, nb_comm
-        domdis = v_comm(i_comm)
+        domj_i = v_comm(i_comm)
+        domdis = v_domj(domj_i)
         call codlet(domdis, 'G', chdomdis)
 !
 ! --- Il faut préparer les noeuds à envoyer et à recevoir
@@ -141,9 +144,9 @@ subroutine lrm_clean_joint(mesh, v_noex)
 !
 ! --- On crée le nouveau joint .E
 !
-        call jecroc(jexnum(send, i_comm))
-        call jeecra(jexnum(send, i_comm), 'LONMAX', 2*nb_corr)
-        call jeveuo(jexnum(send, i_comm), 'E', vi=v_name_join_e_new)
+        call jecroc(jexnum(send, domj_i))
+        call jeecra(jexnum(send, domj_i), 'LONMAX', 2*nb_corr)
+        call jeveuo(jexnum(send, domj_i), 'E', vi=v_name_join_e_new)
 !
         deca = 0
         do ino = 1, nb_node_e
@@ -174,9 +177,9 @@ subroutine lrm_clean_joint(mesh, v_noex)
         end do
         ASSERT(nb_corr > 0)
 !
-        call jecroc(jexnum(recv, i_comm))
-        call jeecra(jexnum(recv, i_comm), 'LONMAX', 2*nb_corr)
-        call jeveuo(jexnum(recv, i_comm), 'E', vi=v_name_join_r_new)
+        call jecroc(jexnum(recv, domj_i))
+        call jeecra(jexnum(recv, domj_i), 'LONMAX', 2*nb_corr)
+        call jeveuo(jexnum(recv, domj_i), 'E', vi=v_name_join_r_new)
         call jeveuo(name_join_r_old, 'L', vi=v_name_join_r_old)
 !
         deca = 0

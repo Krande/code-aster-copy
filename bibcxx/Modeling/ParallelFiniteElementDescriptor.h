@@ -30,6 +30,7 @@
  */
 
 #include "Meshes/ConnectionMesh.h"
+#include "Meshes/Joints.h"
 #include "Modeling/FiniteElementDescriptor.h"
 #include "Modeling/Model.h"
 
@@ -47,7 +48,7 @@ class ParallelFiniteElementDescriptor : public FiniteElementDescriptor {
     /** @brief Join to receive */
     std::vector< JeveuxVectorLong > _joinToReceive;
     /** @brief All joints */
-    JeveuxVectorLong _joints;
+    JointsPtr _joints;
     /** @brief Delayed nodes owner */
     JeveuxVectorLong _owner;
     /** @brief Number of elements in which a given node is located */
@@ -75,10 +76,7 @@ class ParallelFiniteElementDescriptor : public FiniteElementDescriptor {
      * @brief Get vector of joints between subdomains
      * @return reference on VectorLong
      */
-    const JeveuxVectorLong &getJoints() const {
-        _joints->updateValuePointer();
-        return _joints;
-    };
+    const JeveuxVectorLong getJoints() const { return _joints->getOppositeDomains(); };
 
     /**
      * @brief Get the mapping between local and global numbering of nodes

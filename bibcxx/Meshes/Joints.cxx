@@ -37,11 +37,35 @@ void Joints::setOppositeDomains( const VectorLong &oppositeDomains ) {
     ( *_domj ) = oppositeDomains;
 };
 
+JeveuxVectorLong Joints::getOppositeDomains() const {
+    if ( _domj->exists() ) {
+        _domj->updateValuePointer();
+    }
+
+    return _domj;
+}
+
 bool Joints::build() {
     _send->build();
     _recv->build();
 
     return true;
 }
+
+void Joints::setSendedElements( const VectorOfVectorsLong &send ) {
+    _send->allocateSparseNumbered( send.size() );
+
+    for ( auto &send_i : send ) {
+        _send->push_back( send_i );
+    }
+};
+
+void Joints::setReceivedElements( const VectorOfVectorsLong &recv ) {
+    _recv->allocateSparseNumbered( recv.size() );
+
+    for ( auto &recv_i : recv ) {
+        _recv->push_back( recv_i );
+    }
+};
 
 #endif /* ASTER_HAVE_MPI */

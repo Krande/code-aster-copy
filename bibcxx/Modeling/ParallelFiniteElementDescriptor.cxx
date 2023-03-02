@@ -36,7 +36,7 @@ ParallelFiniteElementDescriptor::ParallelFiniteElementDescriptor(
     const std::string &name, const FiniteElementDescriptorPtr &FEDesc,
     const ConnectionMeshPtr &mesh, const ModelPtr &model )
     : FiniteElementDescriptor( name, model->getMesh() ),
-      _joints( JeveuxVectorLong( getName() + ".DOMJ" ) ),
+      _joints( std::make_shared< Joints >() ),
       _owner( JeveuxVectorLong( getName() + ".PNOE" ) ),
       _multiplicity( JeveuxVectorLong( getName() + ".MULT" ) ),
       _outerMultiplicity( JeveuxVectorLong( getName() + ".MUL2" ) ),
@@ -166,27 +166,24 @@ ParallelFiniteElementDescriptor::ParallelFiniteElementDescriptor(
         const std::string cadre( "G" );
         const std::string error( "F" );
         AS_ASSERT( nbProcs <= 46656 );
+        VectorOfVectorsLong recv, send;
+        recv.reserve( nbProcs );
+        send.reserve( nbProcs );
+
         VectorLong joints;
         for ( i = 0; i < nbProcs; ++i ) {
             const auto &taille1 = toSend[i].size();
-            std::string chdomdis( 3, ' ' );
-            ASTERINTEGER domdis = i;
-            CALLO_CODLET_WRAP( &domdis, cadre, chdomdis, error );
-            if ( taille1 != 0 ) {
-                auto vec = JeveuxVectorLong( getName() + ".E" + chdomdis );
-                _joinToSend.push_back( vec );
-                ( *vec ) = toSend[i];
-                joints.push_back( i );
-            }
             const auto &taille2 = toReceive[i].size();
-            if ( taille2 != 0 ) {
-                auto vec = JeveuxVectorLong( getName() + ".R" + chdomdis );
-                _joinToReceive.push_back( vec );
-                ( *vec ) = toReceive[i];
+            if ( taille1 != 0 or taille2 != 0 ) {
+                send.push_back( toSend[i] );
+                recv.push_back( toReceive[i] );
                 joints.push_back( i );
             }
         }
-        *( _joints ) = unique( joints );
+
+        _joints->setOppositeDomains( joints );
+        _joints->setSendedElements( send );
+        _joints->setReceivedElements( recv );
 
         // Allocation du .NEMA
         _virtualCellsDescriptor->allocateContiguousNumbered( -nbElemToKeep,
@@ -244,11 +241,12 @@ ParallelFiniteElementDescriptor::ParallelFiniteElementDescriptor(
     const auto param = FEDesc->getParameters();
     param->updateValuePointer();
     // Creation du .LGRF en y mettant les noms du maillage et modele d'origine
-    _parameters->allocate( 3 );
+    _parameters->allocate( 4 );
     const auto &pMesh = mesh->getParallelMesh();
     ( *_parameters )[0] = pMesh->getName();
     ( *_parameters )[1] = model->getName();
     ( *_parameters )[2] = ( *param )[2];
+    ( *_parameters )[3] = _joints->getName();
     auto docu = FEDesc->getParameters()->getInformationParameter();
     _parameters->setInformationParameter( docu );
     /** @todo ajouter un assert sur le maillage sous-jacent au modele */

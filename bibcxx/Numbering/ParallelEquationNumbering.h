@@ -38,6 +38,7 @@
 
 #include "DataStructures/DataStructure.h"
 #include "MemoryManager/JeveuxVector.h"
+#include "Meshes/Joints.h"
 #include "Numbering/EquationNumbering.h"
 
 #pragma once
@@ -52,6 +53,8 @@ class ParallelEquationNumbering : public EquationNumbering {
     JeveuxVectorLong _localToGlobal;
     /** @brief Objet Jeveux '.PDDL' */
     JeveuxVectorLong _localToRank;
+    /** @brief List of joints */
+    JointsPtr _joints;
 
     std::unordered_map< ASTERINTEGER, ASTERINTEGER > _global2localMap;
 

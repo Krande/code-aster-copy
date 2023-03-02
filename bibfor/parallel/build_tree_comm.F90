@@ -45,7 +45,7 @@ subroutine build_tree_comm(domdist, nbdom, comm, tag)
 #ifdef ASTER_HAVE_MPI
 !
     integer :: rank, nbproc, nbdist_tot, i_proc, max_nbdom, nb_comm, nbdom_inf, domtmp(50)
-    integer :: dom1, dom2, i_dom, ind, nb_comm_loc
+    integer :: dom1, dom2, i_dom, ind, nb_comm_loc, j_dom
     mpi_int :: mrank, msize, mpicou, count_send, count_recv
     aster_logical :: find
     integer, pointer :: v_nbdist(:) => null()
@@ -148,6 +148,16 @@ subroutine build_tree_comm(domdist, nbdom, comm, tag)
     end do
 !
     ASSERT(nb_comm_loc == nbdom)
+!
+    do i_dom = 1, nbdom
+        dom1 = comm(i_dom)
+        do j_dom = 1, nbdom
+            if (dom1 == domdist(j_dom)) then
+                comm(i_dom) = j_dom
+                exit
+            end if
+        end do
+    end do
 !
     AS_DEALLOCATE(vl=v_proc)
     AS_DEALLOCATE(vi=v_rest)

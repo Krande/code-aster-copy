@@ -47,6 +47,8 @@ using VectorReal = std::vector< ASTERDOUBLE >;
 using VectorComplex = std::vector< ASTERCOMPLEX >;
 using VectorString = std::vector< std::string >;
 
+using VectorOfVectorsLong = std::vector< VectorLong >;
+
 using SetInt = std::set< ASTERINTEGER4 >;
 using SetLong = std::set< ASTERINTEGER >;
 using SetString = std::set< std::string >;

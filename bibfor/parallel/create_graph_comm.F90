@@ -50,6 +50,7 @@ subroutine create_graph_comm(object, type, nb_comm, comm, tag)
     integer, pointer :: v_domdis(:) => null()
     integer, pointer :: v_comm(:) => null()
     integer, pointer :: v_tag(:) => null()
+    character(len=24), pointer :: v_lgrf(:) => null()
 !
     call jemarq()
 !
@@ -57,13 +58,14 @@ subroutine create_graph_comm(object, type, nb_comm, comm, tag)
 !
 ! --- Result depends on type
     if (type == 'MAILLAGE_P') then
-        k24 = object//'.DOMJOINTS .DOMJ'
+        k24 = object(1:8)//'.JOIN      .DOMJ'
     elseif (type == "NUME_DDL") then
-        k24 = object//'.NUME.DOMJ'
+        k24 = object(1:8)//'.NUME .JOIN.DOMJ'
     elseif (type == "NUME_EQUA") then
-        k24 = object//'.DOMJ'
+        k24 = object(1:14)//'.JOIN.DOMJ'
     elseif (type == "LIGREL") then
-        k24 = object//'.DOMJ'
+        call jeveuo(object(1:19)//"LGRF", 'L', vk24=v_lgrf)
+        k24 = v_lgrf(4)
     else
         ASSERT(ASTER_FALSE)
     end if
