@@ -1790,50 +1790,6 @@ PyObject *args;
 }
 
 /* ---------------------------------------------------------------------- */
-static char dismoi_doc[] =
-    "Interface d'appel a la routine fortran DISMOI.\n"
-    "   usage: iret, repi, repk = aster.dismoi(question, concept, type_concept, codmes) \n\n"
-    "     question     : texte de la question\n"
-    "     concept      : nom du concept\n"
-    "     type_concept : type du concept\n\n"
-    "     codmes       : 'F' ou 'C'\n"
-    "   Retourne :\n"
-    "     iret         : 0 si ok, 1 en cas d'erreur\n"
-    "     repi         : reponse entiere\n"
-    "     repk         : reponse de type chaine de caracteres\n";
-
-static PyObject *aster_dismoi( self, args ) PyObject *self; /* Not used */
-PyObject *args;
-{
-    char *codmes, *question, *concept, *typeconcept;
-    char *Fcod, *Fque, *Fcon, *Ftyc, *Fres;
-    ASTERINTEGER repi = 0, iret;
-    char *repk;
-    PyObject *res;
-
-    repk = MakeBlankFStr( 32 );
-    if ( !PyArg_ParseTuple( args, "ssss", &question, &concept, &typeconcept, &codmes ) )
-        return NULL;
-
-    Fque = MakeFStrFromCStr( question, 32 );
-    Fcon = MakeFStrFromCStr( concept, 32 );
-    Ftyc = MakeFStrFromCStr( typeconcept, 32 );
-    Fcod = MakeFStrFromCStr( codmes, 1 );
-    CALL_DISMOI( Fque, Fcon, Ftyc, &repi, repk, Fcod, &iret );
-    Fres = MakeCStrFromFStr( repk, 32 );
-
-    res = Py_BuildValue( "iis", (int)iret, (int)repi, Fres );
-
-    FreeStr( Fcod );
-    FreeStr( Fque );
-    FreeStr( Fcon );
-    FreeStr( Ftyc );
-    FreeStr( Fres );
-    FreeStr( repk );
-    return res;
-}
-
-/* ---------------------------------------------------------------------- */
 static PyObject *aster_gmardm( self, args ) PyObject *self; /* Not used */
 PyObject *args;
 {
@@ -2366,7 +2322,6 @@ static PyMethodDef aster_methods[] = {
     {"mdnoma", aster_mdnoma, METH_VARARGS},
     {"mdnoch", aster_mdnoch, METH_VARARGS},
     {"rcvale", aster_rcvale, METH_VARARGS, rcvale_doc},
-    {"dismoi", aster_dismoi, METH_VARARGS, dismoi_doc},
     {"gmardm", aster_gmardm, METH_VARARGS},
     {"postkutil", aster_postkutil, METH_VARARGS, postkutil_doc},
     {"argv", aster_argv, METH_VARARGS},
