@@ -44,14 +44,13 @@ subroutine utncmp2(cham19, ncmp, list_cmp, list_name)
 !
     integer :: jprno, gd, nec, tabec(10), j, ino, iec, icmp, ncmpmx
     integer ::  iad, kcmp, igr, mode, nnoe, nbgrel, nbel
-    integer :: jmod, imodel, ilong, idescr, nb, jcmp
+    integer :: jmod, imodel, ilong, idescr, jcmp
     character(len=4) :: tych
     character(len=24) :: valk(2)
     character(len=8) :: noma
     character(len=19) :: ch19, prno, noligr
     integer, pointer :: vicmp(:) => null()
     integer, pointer :: celd(:) => null()
-    integer, pointer :: desc(:) => null()
 !     ------------------------------------------------------------------
     call jemarq()
 !

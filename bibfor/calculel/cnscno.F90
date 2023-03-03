@@ -97,12 +97,12 @@ subroutine cnscno(cnsz, nume_equaz, prol0, basez, cnoz, &
 !     -----------------------------------------------------------------
     integer :: icmp, nec, jcnsv, jcnsl, gd, iexi, ncmp, jvcham, jrefk
     integer :: reste, iec, code, nbno, nb
-    integer :: ncmpmx, jrefe, ncmp1, nb_equa, jcmpgd, icmp1, k, ieq2, iexi2, nbec
-    integer :: jprn2, ino, idg2, ico, jvale, iret, prno_length
+    integer :: ncmpmx, jrefe, ncmp1, nb_equa, jcmpgd, icmp1, k, ieq2, nbec
+    integer :: jprn2, ino, idg2, ico, jvale, iret
     integer :: lshift, nuprf, nb_equa_gl, jrefn
     character(len=1) :: base
     character(len=8) :: ma, nomgd, nomno, nomcmp
-    aster_logical :: l_crea_nume_equa, l_chck_nume_equa, ldist, l_pmesh, l_error
+    aster_logical :: l_crea_nume_equa, l_chck_nume_equa, ldist, l_pmesh
     character(len=3) :: tsca
     character(len=19) :: cns, cno, nume_equa, messag, prnoav, nume_equa_tmp
     integer, pointer :: deeq(:) => null()
