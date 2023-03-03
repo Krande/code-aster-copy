@@ -84,13 +84,12 @@ subroutine vecgen(nomres, numeg)
     integer :: ipos, iret, j, lddesc, ldnddl
     integer :: ldnsst, ldnvec, ldprs, ldstr
     integer :: lrdesc, lrref, lrval, nbchar, nbmod, nddl0
-    integer :: neq, neqgen, num, nusst
+    integer :: neq, neqgen, nusst
     real(kind=8) :: rbid
     real(kind=8), pointer :: vale(:) => null()
     character(len=24), pointer :: refe(:) => null()
     character(len=24), pointer :: refn(:) => null()
     integer, pointer :: nllneq(:) => null()
-    integer, pointer :: desc(:) => null()
 !-----------------------------------------------------------------------
     data pgc/'VECGEN'/
 !-----------------------------------------------------------------------
@@ -189,7 +188,7 @@ subroutine vecgen(nomres, numeg)
     chaval = chasou//'.VALE'
 !
     call wkvect(resdsc, 'G V I', 3, lrdesc)
-    call jeecra(resdsc, 'DOCU', cval='CHNO')
+    call jeecra(resdsc, 'DOCU', cval='VGEN')
 !
     call wkvect(resref, 'G V K24', 2, lrref)
 !
@@ -268,18 +267,12 @@ subroutine vecgen(nomres, numeg)
 !     .REFE DU CHAMNO SECOND MEMBRE. POUR CE FAIRE, ON CONTROLE QUE
 !     LA VALEUR DE NUME DANS LE .DESC EST BIEN POSITIVE.
 !
-        call jeveuo(nom2mb//'           .DESC', 'L', vi=desc)
-        num = desc(2)
-        if (num .lt. 0) then
-            valk(1) = nom2mb
-            call utmess('F', 'ALGORITH15_72', sk=valk(1))
-        end if
         call jeveuo(nom2mb//'           .REFE', 'L', vk24=refe)
         nuchar = refe(2)
 !
 !     VERIFICATION DE LA COHERENCE DES GRANDEURS ENTRE CHARGEMENTS.
 !
-        gd = desc(1)
+        call dismoi("NUM_GD", nom2mb, "CHAM_NO", repi=gd)
         if (i .eq. 1) then
             gd0 = gd
         end if

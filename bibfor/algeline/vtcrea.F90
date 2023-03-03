@@ -19,9 +19,13 @@
 subroutine vtcrea(champ, crefe, base, typc, neq)
     implicit none
 #include "jeveux.h"
+#include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/copisd.h"
+#include "asterfort/gnomsd.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jeecra.h"
+#include "asterfort/jeveuo.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/sdchgd.h"
 #include "asterfort/wkvect.h"
@@ -51,10 +55,12 @@ subroutine vtcrea(champ, crefe, base, typc, neq)
 !
 !
 !     ------------------------------------------------------------------
-    integer :: lchamp
+    integer :: lchamp, jrefn
     character(len=1) :: classe
-    character(len=1) :: type
-    character(len=24) :: vale, refe
+    character(len=1) :: type, type2
+    character(len=8) :: nomgd
+    character(len=19) :: nume_equa, nume_equa_tmp
+    character(len=24) :: vale, refe, noojb
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
     integer :: ibid, neq
@@ -70,11 +76,27 @@ subroutine vtcrea(champ, crefe, base, typc, neq)
         type = typc(1:1)
     end if
 !
+    nume_equa = crefe(2) (1:19)
+    call dismoi('TYPE_SCA', nume_equa, 'NUME_EQUA', repk=type2)
+    if (type .ne. type2) then
+        call dismoi('NOM_GD', nume_equa, 'NUME_EQUA', repk=nomgd)
+        nomgd(6:6) = type(1:1)
+        noojb = '12345678.NUME000000.PRNO'
+        call gnomsd(champ, noojb, 14, 19)
+        noojb(1:8) = champ(1:8)
+        nume_equa_tmp = noojb(1:19)
+        call copisd("NUME_EQUA", classe, nume_equa, nume_equa_tmp)
+        nume_equa = nume_equa_tmp
+        call jeveuo(nume_equa//".REFN", 'E', jrefn)
+        zk24(jrefn+1) = nomgd
+    end if
+    print *, "VTCREA: ", nume_equa
+!
 !     --- RECOPIE DE L'OBJET .REFE MODELE :
     refe(1:19) = champ
     call wkvect(refe, classe//' V K24', 4, lchamp)
     call jeecra(refe, 'DOCU', ibid, 'CHNO')
-    zk24(lchamp-1+2) = crefe(2)
+    zk24(lchamp-1+2) = nume_equa
 !
 !     -- CREATION DE L'OBJET .VALE :
     vale(1:19) = champ

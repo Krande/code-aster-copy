@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -97,8 +97,8 @@ class sd_fiss_xfem(AsBase):
 
         # si ....
         sdu_ensemble((self.PRO_RAYON_TORE, self.PRO_NOEUD_TORE))
-        sdu_ensemble((self.GRILLE_MAILLAGE, self.GRILLE_LNNO.DESC, self.GRILLE_GRLNNO.DESC))
-        sdu_ensemble((self.GRILLE_LTNO.DESC, self.GRILLE_GRLTNO.DESC))
+        sdu_ensemble((self.GRILLE_MAILLAGE, self.GRILLE_LNNO.REFE, self.GRILLE_GRLNNO.REFE))
+        sdu_ensemble((self.GRILLE_LTNO.REFE, self.GRILLE_GRLTNO.REFE))
 
 
 # -------------------------------

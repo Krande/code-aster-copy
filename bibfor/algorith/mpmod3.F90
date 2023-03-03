@@ -45,6 +45,7 @@ subroutine mpmod3(basemo, nommes, nbmesu, nbmtot, vcham, &
 #include "asterc/getres.h"
 #include "asterc/r8prem.h"
 #include "asterfort/cnocns.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/getvid.h"
 #include "asterfort/getvtx.h"
@@ -81,7 +82,6 @@ subroutine mpmod3(basemo, nommes, nbmesu, nbmtot, vcham, &
     real(kind=8) :: val, rbid
 !
     complex(kind=8) :: cbid
-    integer, pointer :: desc(:) => null()
     character(len=8), pointer :: cnsk(:) => null()
 !
 ! ----------------------------------------------------------------------
@@ -165,8 +165,7 @@ subroutine mpmod3(basemo, nommes, nbmesu, nbmtot, vcham, &
         call rsexch('F', nommes, nomcha, zi(lord), chamno, &
                     iret)
 !
-        call jeveuo(chamno//'.DESC', 'L', vi=desc)
-        gd = desc(1)
+        call dismoi("NUM_GD", chamno, "CHAM_NO", repi=gd)
         scal = scalai(gd)
         typval = scal(1:1)
         if (typval .eq. 'C') then

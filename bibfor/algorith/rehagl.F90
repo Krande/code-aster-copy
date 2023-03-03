@@ -223,7 +223,6 @@ subroutine rehagl(nomres, resgen, mailsk, profno)
     call dismoi('NB_NO_MAILLA', mailsk, 'MAILLAGE', repi=nbnot)
 !
 ! --- INFORMATIONS POUR CREATION DES CHAMNO A PARTIR DES .REFE
-    crefe(1) = mailsk
     crefe(2) = profno
 !
 ! --- RECUPERATION DES FREQUENCES

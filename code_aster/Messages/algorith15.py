@@ -253,13 +253,6 @@ Contactez le support technique.
  vous en avez          :  %(i3)d
 """
     ),
-    72: _(
-        """
-Il manque la numérotation pour le chargement : %(k1)s
-Ce message est un message d'erreur développeur.
-Contactez le support technique.
-"""
-    ),
     73: _(
         """
  on doit avoir le même type de forces pour un même chargement global

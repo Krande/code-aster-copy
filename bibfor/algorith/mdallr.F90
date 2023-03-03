@@ -98,7 +98,7 @@ subroutine mdallr(resu1, resu2, basemo, nbmode, nbsauv, &
         else
             ASSERT(.false.)
         end if
-        call jeecra(chamge//'.DESC', 'DOCU', cval='VGEN')
+        call jeecra(chamge//'.REFE', 'DOCU', cval='VGEN')
         call jeveuo(chamge//'.VALE', 'E', lvale)
         do ier = 1, nbmode
             if (.not. zcmplx) then

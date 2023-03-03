@@ -23,6 +23,7 @@ subroutine rsorac(nomsd, acces, ival, rval, kval, &
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/codent.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"

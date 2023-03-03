@@ -153,6 +153,7 @@ subroutine genugl(nume_equa, indirf, modgen, mailsk)
     call wkvect(nume_equa//'.NEQU', 'G V I', 2, jrefn)
     zi(jrefn) = nddlt
     zi(jrefn+1) = nddlt
+    call wkvect(nume_equa//'.DELG', 'G V I', nddlt, jrefn)
 
 !
 ! - Create object LIAISON

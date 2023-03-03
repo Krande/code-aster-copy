@@ -32,6 +32,7 @@ subroutine remome(promes, modmes, nommac)
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/cnocns.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jeecra.h"
@@ -60,7 +61,6 @@ subroutine remome(promes, modmes, nommac)
 !
     complex(kind=8) :: cbid, valc, vectc(3)
     character(len=8), pointer :: cnsc(:) => null()
-    integer, pointer :: desc(:) => null()
     integer, pointer :: cnsd(:) => null()
     integer, pointer :: ordr(:) => null()
 !
@@ -105,8 +105,7 @@ subroutine remome(promes, modmes, nommac)
         call rsexch('F', modmes, nomcha, ordr(numord), chamno, &
                     iret)
         if (numord .le. 1) then
-            call jeveuo(chamno//'.DESC', 'L', vi=desc)
-            gd = desc(1)
+            call dismoi("NUM_GD", chamno, "CHAM_NO", repi=gd)
             scal = scalai(gd)
             typval = scal(1:1)
             if (typval .eq. 'C') then

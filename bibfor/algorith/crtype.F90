@@ -613,9 +613,6 @@ subroutine crtype()
             end if
 !
             if (k24(1:7) .eq. 'CHAM_NO') then
-                o1 = champ//'.DESC'
-                o2 = nomch//'.DESC'
-                call jedupo(o1, 'G', o2, .false._1)
 !
                 o1 = champ//'.REFE'
                 o2 = nomch//'.REFE'
@@ -637,9 +634,11 @@ subroutine crtype()
                 call jeveuo(champ//'.REFE', 'L', jrefe)
                 call jeveuo(zk24(jrefe+1) (1:19)//'.DEEQ', 'L', vi=deeq)
 !
-                call jeveuo(nomch//'.DESC', 'E', vi=desc)
-                call jenonu(jexnom('&CATA.GD.NOMGD', typegd), igd)
-                desc(1) = igd
+                if (k24(1:7) .ne. 'CHAM_NO') then
+                    call jeveuo(nomch//'.DESC', 'E', vi=desc)
+                    call jenonu(jexnom('&CATA.GD.NOMGD', typegd), igd)
+                    desc(1) = igd
+                end if
                 call jedetr(nomch//'.VALE')
                 call wkvect(nomch//'.VALE', 'G V R', lg, jc)
 !              CHAM_NO DE FONCTIONS A EVALUER

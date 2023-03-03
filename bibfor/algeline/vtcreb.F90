@@ -27,6 +27,8 @@ subroutine vtcreb(field_nodez, base, type_scalz, &
 #include "asterfort/assert.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/gnomsd.h"
+#include "asterfort/copisd.h"
 #include "asterfort/jeecra.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/sdchgd.h"
@@ -73,11 +75,11 @@ subroutine vtcreb(field_nodez, base, type_scalz, &
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=3) :: type_scal, type_scal2
-    character(len=8) :: mesh
-    character(len=19) :: nume_equa, field_node, chamno
-    character(len=24) :: obj_refe, obj_vale
+    character(len=8) :: mesh, nomgd
+    character(len=19) :: nume_equa, field_node, chamno, nume_equa_tmp
+    character(len=24) :: obj_refe, obj_vale, noojb
     character(len=24), pointer :: p_refe(:) => null()
-    integer :: idx_gd, nb_equa, j_vale, ideb, ifin, i, jvcham, nb_equa_gl
+    integer :: idx_gd, nb_equa, j_vale, ideb, ifin, i, jvcham, nb_equa_gl, jrefn
     aster_logical :: l_pmesh
 !
 ! --------------------------------------------------------------------------------------------------
@@ -104,14 +106,27 @@ subroutine vtcreb(field_nodez, base, type_scalz, &
         call dismoi('NB_EQUA', nume_ddlz, 'NUME_DDL', repi=nb_equa)
         call dismoi('NOM_MAILLA', nume_ddlz, 'NUME_DDL', repk=mesh)
         call dismoi('NUME_EQUA', nume_ddlz, 'NUME_DDL', repk=nume_equa)
-        call dismoi('TYPE_SCA', nume_equa, 'NUME_EQUA', repk=type_scal2)
-        ASSERT(type_scal == type_scal2)
     else
         idx_gd = idx_gdz
         nb_equa = nb_equa_inz
         nume_equa = nume_equaz
         mesh = meshz
     end if
+!
+    call dismoi('TYPE_SCA', nume_equa, 'NUME_EQUA', repk=type_scal2)
+    if (type_scal .ne. type_scal2) then
+        call dismoi('NOM_GD', nume_equa, 'NUME_EQUA', repk=nomgd)
+        nomgd(6:6) = type_scal(1:1)
+        noojb = '12345678.NUME000000.PRNO'
+        call gnomsd(field_node, noojb, 14, 19)
+        noojb(1:8) = field_node(1:8)
+        nume_equa_tmp = noojb(1:19)
+        call copisd("NUME_EQUA", base, nume_equa, nume_equa_tmp)
+        nume_equa = nume_equa_tmp
+        call jeveuo(nume_equa//".REFN", 'E', jrefn)
+        zk24(jrefn+1) = nomgd
+    end if
+    print *, "VTCREB: ", nume_equa
 !
     l_pmesh = isParallelMesh(mesh)
     nb_equa_gl = nb_equa

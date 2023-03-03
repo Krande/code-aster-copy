@@ -84,7 +84,7 @@ subroutine mptran(nombas, nommes, nbmesu, nbmode, basepr, &
     integer :: labs, lmesu, lcoef, lred, jcnsd, jcnsc, jcnsv, n1
     integer :: ncoef, nfonc, lfonc, null, ibid, jcnsl, nbcmp
     integer :: lvale, lonmax, iocc, numord, ino, icmp, indice
-    integer :: idesc, jcnsk, lrange, lnoeud, nbabs, jord, nbord
+    integer :: jcnsk, lrange, lnoeud, nbabs, jord, nbord
     integer :: jbasm, lcham, nbcham, ich, lch, jpames
 !
     real(kind=8) :: r8bid, dt, pas, diff
@@ -149,8 +149,7 @@ subroutine mptran(nombas, nommes, nbmesu, nbmode, basepr, &
             call rsexch(' ', nommes, nomcha, zi(lord-1+numord), chamno, &
                         iret)
             if ((numord .le. 1) .and. (ich .eq. 1)) then
-                call jeveuo(chamno//'.DESC', 'L', idesc)
-                gd = zi(idesc-1+1)
+                call dismoi("NUM_GD", chamno, "CHAM_NO", repi=gd)
                 scal = scalai(gd)
                 typval = scal(1:1)
                 if (typval .eq. 'C') then

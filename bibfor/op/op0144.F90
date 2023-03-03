@@ -73,7 +73,7 @@ subroutine op0144()
     character(len=16) :: concep, cmd, nompar
     character(len=19) :: nomu, cham19, numeq
     character(len=24) :: desc, numo, vite, freq, masg, fact
-    character(len=24) :: numoi, fsic, nomcha, matria, chrefe, chdesc
+    character(len=24) :: numoi, fsic, nomcha, matria, chrefe
     character(len=24) :: chvale
     character(len=32) :: nomvar
     integer, pointer :: cata_to_field(:) => null()
@@ -88,7 +88,7 @@ subroutine op0144()
     integer :: iec, ifact, ifm, ifr, ifreq, ifsic
     integer :: ii, imasg, inec, ino, inumo, io, ipar
     integer :: irefe, itypfl, iv, ivite
-    integer :: j, jcdesc, jcrefe, jdesc, jj, long
+    integer :: j, jcrefe, jdesc, jj, long
     integer :: nbam, nbcomp, nbno, nbnoeu, nbocc, nbpar, nbpv
     integer :: nec, nivdef, nivpar, numgd
     real(kind=8) :: amor, umin, vmax, vmin, vmoy, vpas
@@ -313,11 +313,6 @@ subroutine op0144()
 !
 ! --------CREATION DU CHAMP
             cham19 = nomcha(1:19)
-! .DESC
-            chdesc = cham19//'.DESC'
-            call wkvect(chdesc, 'G V I', 2, jcdesc)
-            zi(jcdesc) = numgd
-            zi(jcdesc+1) = 6
 ! .VALE
             chvale = cham19//'.VALE'
             call jecreo(chvale, 'G V R')
