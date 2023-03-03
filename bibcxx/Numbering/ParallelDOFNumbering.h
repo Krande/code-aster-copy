@@ -190,6 +190,8 @@ class ParallelDOFNumbering : public BaseDOFNumbering {
      */
 
     bool exists() const { return _globalNumbering->exists(); };
+
+    bool build();
 };
 
 /**

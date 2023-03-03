@@ -159,4 +159,6 @@ ParallelDOFNumbering::getRowAssociatedToNodeComponent( const ASTERINTEGER node,
     return outrow;
 };
 
+bool ParallelDOFNumbering::build() { return _globalNumbering->build(); }
+
 #endif /* ASTER_HAVE_MPI */

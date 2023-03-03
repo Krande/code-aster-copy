@@ -71,6 +71,8 @@ bool BaseDOFNumbering::computeNumbering( const std::vector< MatrElem > matrix ) 
         }
     }
 
+    this->build();
+
     return true;
 };
 
@@ -85,6 +87,8 @@ bool BaseDOFNumbering::computeNumbering( const ModelPtr model, const ListOfLoads
     this->addFiniteElementDescriptor( FEDescs );
     this->setModel( model );
 
+    this->build();
+
     return true;
 };
 
@@ -97,6 +101,8 @@ bool BaseDOFNumbering::computeRenumbering( const ModelPtr model,
 
     CALLO_NUMER3( model->getName(), listOfLoads->getName(), getName(), null, base );
     this->setModel( model );
+
+    this->build();
 
     return true;
 };
@@ -113,6 +119,8 @@ bool BaseDOFNumbering::computeNumbering( const std::vector< FiniteElementDescrip
     }
 
     CALLO_NUME_DDL_CHAMELEM( getName(), list_ligrel->getName(), localMode );
+
+    this->build();
 
     return true;
 };

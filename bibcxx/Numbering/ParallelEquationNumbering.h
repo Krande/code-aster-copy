@@ -177,6 +177,8 @@ class ParallelEquationNumbering : public EquationNumbering {
     bool useSingleLagrangeMultipliers() const;
 
     bool isParallel() const { return true; };
+
+    bool build();
 };
 
 /**
