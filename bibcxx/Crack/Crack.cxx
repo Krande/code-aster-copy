@@ -83,3 +83,13 @@ const JeveuxVectorReal Crack::getCrackFrontPosition() {
     this->updateValuePointers();
     return _coorfond;
 };
+
+bool Crack::isSymmetric() {
+    this->updateValuePointers();
+    return trim( ( *_info )[0].toString() ) == "OUI";
+};
+
+std::string Crack::getConfigInit() {
+    this->updateValuePointers();
+    return trim( ( *_info )[1].toString() );
+};

@@ -226,8 +226,8 @@ def calc_gp_ops(self, **args):
             UTMESS("F", "POST0_39")
 
         #    symetrie
-        _, _, syme = aster.dismoi("SYME", args["FOND_FISS"].getName(), "FOND_FISS", "F")
-        if syme == "OUI":
+        is_symmetric = args["FOND_FISS"].isSymmetric()
+        if is_symmetric:
             mult = 2
 
     #

@@ -52,7 +52,6 @@
 #include "PythonBindings/CppToFortranGlossaryInterface.h"
 #include "PythonBindings/CrackInterface.h"
 #include "PythonBindings/CrackShapeInterface.h"
-#include "PythonBindings/CrackTipInterface.h"
 #include "PythonBindings/CreateEnthalpyInterface.h"
 #include "PythonBindings/CyclicSymmetryModeInterface.h"
 #include "PythonBindings/DOFNumberingInterface.h"
@@ -232,7 +231,6 @@ PYBIND11_MODULE( libaster, mod ) {
     exportDynamicMacroElementToPython( mod );
     exportStaticMacroElementToPython( mod );
     exportCrackShapeToPython( mod );
-    exportCrackTipToPython( mod );
     exportCrackToPython( mod );
     exportGeneralizedModelToPython( mod );
     exportModelToPython( mod );

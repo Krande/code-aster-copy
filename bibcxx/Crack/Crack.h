@@ -110,6 +110,8 @@ class Crack : public DataStructure {
     std::string getLowerLipGroupName();
     const JeveuxVectorReal getCrackFrontBasis();
     const JeveuxVectorReal getCrackFrontPosition();
+    bool isSymmetric();
+    std::string getConfigInit();
 };
 
 /**

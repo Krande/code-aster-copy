@@ -270,8 +270,7 @@ def expand_values(self, tabout, liste_noeu_a_extr, titre, type_para):
 
 def verif_config_init(FOND_FISS):
 
-    _, _, config = aster.dismoi("CONFIG_INIT", FOND_FISS.getName(), "FOND_FISS", "F")
-    if config != "COLLEE":
+    if FOND_FISS.getConfigInit() != "COLLEE":
         UTMESS("F", "RUPTURE0_16")
 
 
@@ -445,7 +444,7 @@ def get_tab_dep(
     ListmaI,
     NB_NOEUD_COUPE,
     hmax,
-    syme_char,
+    is_symmetric,
     PREC_VIS_A_VIS,
 ):
     """retourne les tables des deplacements sup et inf pour les noeuds perpendiculaires pour
@@ -476,7 +475,7 @@ def get_tab_dep(
         LIGN_COUPE=mcfact,
     )
 
-    if syme_char == "NON":
+    if not is_symmetric:
         __TlibI = MACR_LIGN_COUPE(
             RESULTAT=RESULTAT,
             NOM_CHAM="DEPL",
@@ -516,7 +515,7 @@ def get_dico_levres(lev, FOND_FISS, ndim, Lnoff, Nnoff):
 # -------------------------------------------------------------------------
 
 
-def get_coor_regle(self, RESULTAT, ndim, Lnoff, Lnocal, dicoS, syme_char, dicoI):
+def get_coor_regle(self, RESULTAT, ndim, Lnoff, Lnocal, dicoS, is_symmetric, dicoI):
     """retourne le dictionnaire des coordonnees des noeuds des lèvres pour les maillages regles"""
 
     #        a eclaircir
@@ -524,7 +523,7 @@ def get_coor_regle(self, RESULTAT, ndim, Lnoff, Lnocal, dicoS, syme_char, dicoI)
     for ino in Lnocal:
         l = [elem for elem in dicoS[ino] if elem != ""]
         Ltot += l
-    if syme_char == "NON":
+    if not is_symmetric:
         for ino in Lnocal:
             l = [elem for elem in dicoI[ino] if elem != ""]
             Ltot += l
@@ -584,7 +583,7 @@ def get_absfon(Lnoff, Nnoff, d_coor):
 # -------------------------------------------------------------------------
 
 
-def get_noeuds_perp_regle(Lnocal, d_coor, dicoS, dicoI, Lnoff, PREC_VIS_A_VIS, hmax, syme_char):
+def get_noeuds_perp_regle(Lnocal, d_coor, dicoS, dicoI, Lnoff, PREC_VIS_A_VIS, hmax, is_symmetric):
     """retourne la liste des noeuds du fond (encore ?), la liste des listes des noeuds perpendiculaires"""
 
     NBTRLS = 0
@@ -614,7 +613,7 @@ def get_noeuds_perp_regle(Lnocal, d_coor, dicoS, dicoI, Lnoff, PREC_VIS_A_VIS, h
                 if abss < rmprec:
                     NBTRLS = NBTRLS + 1
                     Tmpsup.append(dicoS[ino][k])
-            if syme_char == "NON":
+            if not is_symmetric:
                 if dicoI[ino][k] != "":
                     itoti = itoti + 1
                     Ninf = dicoI[ino][k]
@@ -636,7 +635,7 @@ def get_noeuds_perp_regle(Lnocal, d_coor, dicoS, dicoI, Lnoff, PREC_VIS_A_VIS, h
                 UTMESS("A", "RUPTURE0_24")
             else:
                 UTMESS("A", "RUPTURE0_25")
-        elif (syme_char == "NON") and (NBTRLI < 3):
+        elif (not is_symmetric) and (NBTRLI < 3):
             UTMESS("A+", "RUPTURE0_26", valk=ino)
             if ino == Lnoff[0] or ino == Lnoff[-1]:
                 UTMESS("A+", "RUPTURE0_23")
@@ -646,7 +645,7 @@ def get_noeuds_perp_regle(Lnocal, d_coor, dicoS, dicoI, Lnoff, PREC_VIS_A_VIS, h
                 UTMESS("A", "RUPTURE0_25")
         else:
             Lnosup[Nbnofo] = Tmpsup
-            if syme_char == "NON":
+            if not is_symmetric:
                 Lnoinf[Nbnofo] = Tmpinf
             Lnofon.append(ino)
             Nbnofo = Nbnofo + 1
@@ -843,9 +842,9 @@ def affiche_traitement(FOND_FISS, Lnofon, ino):
 # -------------------------------------------------------------------------
 
 
-def get_tab(self, lev, ino, Tlib, Lno, TTSo, FOND_FISS, TYPE_MAILLAGE, tabl_depl, syme_char):
+def get_tab(self, lev, ino, Tlib, Lno, TTSo, FOND_FISS, TYPE_MAILLAGE, tabl_depl, is_symmetric):
     """retourne la table des deplacements des noeuds perpendiculaires"""
-    if lev == "sup" or (lev == "inf" and syme_char == "NON" and FOND_FISS):
+    if lev == "sup" or (lev == "inf" and (not is_symmetric) and FOND_FISS):
 
         if FOND_FISS:
             if TYPE_MAILLAGE == "LIBRE":
@@ -1013,7 +1012,7 @@ def affiche_instant(inst, type_para):
 # -------------------------------------------------------------------------
 
 
-def get_tab_inst(lev, inst, FISSURE, syme_char, PRECISION, CRITERE, tabsup, tabinf, type_para):
+def get_tab_inst(lev, inst, FISSURE, is_symmetric, PRECISION, CRITERE, tabsup, tabinf, type_para):
     """retourne la table des deplacements des noeuds à l'instant courant"""
     tab = None
     assert lev == "sup" or lev == "inf"
@@ -1021,7 +1020,7 @@ def get_tab_inst(lev, inst, FISSURE, syme_char, PRECISION, CRITERE, tabsup, tabi
     if lev == "sup":
         tabres = tabsup
     elif lev == "inf":
-        if syme_char == "NON" and not FISSURE:
+        if not is_symmetric and not FISSURE:
             tabres = tabinf
         else:
             return tab
@@ -1052,7 +1051,7 @@ def get_propmat_varc_fem(
     # seules les varc TEMP et NEUT1 sont autorisees
     nomgd_2_nompar = {"TEMP_R": "TEMP", "NEUT_R": "NEUT1"}
     nomgd_2_nomcmp = {"TEMP_R": "TEMP", "NEUT_R": "X1"}
-    _, _, nomgd = aster.dismoi("NOM_GD", __CHNOVRC.getName(), "CHAM_NO", "F")
+    nomgd = __CHNOVRC.getPhysicalQuantity()
     assert nomgd in list(nomgd_2_nompar.keys())
     ChnoVrcExtr = __CHNOVRC.EXTR_COMP(topo=1)
     ChnoVrcNoeu = ChnoVrcExtr.noeud
@@ -1132,7 +1131,7 @@ def get_propmat_varc_xfem(
 
     # seules les varc TEMP et NEUT1 sont autorisees
     nomgd_2_nompar = {"TEMP_R": "TEMP", "NEUT_R": "NEUT1"}
-    _, _, nomgd = aster.dismoi("NOM_GD", __CHNOVRC.getName(), "CHAM_NO", "F")
+    nomgd = __CHNOVRC.getPhysicalQuantity()
     assert nomgd in list(nomgd_2_nompar.keys())
     ChnoVrcExtr = __CHNOVRC.EXTR_COMP(topo=1)
     ChnoVrcVale = ChnoVrcExtr.valeurs
@@ -1294,10 +1293,10 @@ def get_depl_sup(FOND_FISS, tabsupi, ndim, Lnofon, d_coor, ino, TYPE_MAILLAGE):
 # -------------------------------------------------------------------------
 
 
-def get_depl_inf(FOND_FISS, tabinfi, ndim, Lnofon, syme_char, d_coor, ino, TYPE_MAILLAGE):
+def get_depl_inf(FOND_FISS, tabinfi, ndim, Lnofon, is_symmetric, d_coor, ino, TYPE_MAILLAGE):
     """retourne les déplacements inf"""
 
-    if syme_char == "NON" and FOND_FISS:
+    if not is_symmetric and FOND_FISS:
         absci = getattr(tabinfi, "ABSC_CURV").values()
 
         nbval = len(absci)
@@ -1339,7 +1338,7 @@ def get_depl_inf(FOND_FISS, tabinfi, ndim, Lnofon, syme_char, d_coor, ino, TYPE_
 # -------------------------------------------------------------------------
 
 
-def get_pgl(syme_char, FISSURE, ino, VDIR, VNOR, dicVDIR, dicVNOR, Lnofon, ndim):
+def get_pgl(is_symmetric, FISSURE, ino, VDIR, VNOR, dicVDIR, dicVNOR, Lnofon, ndim):
     """retourne la matrice du changement de repère"""
 
     # attention en 2d, la base (VDIR, VNOR) issue BASEFOND n'est pas forcement dans le
@@ -1377,14 +1376,14 @@ def get_pgl(syme_char, FISSURE, ino, VDIR, VNOR, dicVDIR, dicVNOR, Lnofon, ndim)
 # -------------------------------------------------------------------------
 
 
-def get_saut(self, pgl, ds, di, INFO, FISSURE, syme_char, abscs, ndim):
+def get_saut(self, pgl, ds, di, INFO, FISSURE, is_symmetric, abscs, ndim):
     """retourne le saut de déplacements dans le nouveau repère"""
 
     dpls = NP.dot(pgl, ds)
 
     if FISSURE:
         saut = dpls
-    elif syme_char == "NON":
+    elif not is_symmetric:
         dpli = NP.dot(pgl, di)
         saut = dpls - dpli
     else:
@@ -1972,7 +1971,7 @@ def post_k1_k2_k3_ops(
         #     Verification de la presence de symetrie
         #     ----------------------------------
 
-        _, _, syme_char = aster.dismoi("SYME", FOND_FISS.getName(), "FOND_FISS", "F")
+        is_symmetric = FOND_FISS.isSymmetric()
 
         #     Recuperation de la liste des tailles de maille en chaque noeud du fond
         #     ----------------------------------------------------------------------
@@ -1995,7 +1994,7 @@ def post_k1_k2_k3_ops(
         #     creation des directions normales et macr_lign_coup
         if TYPE_MAILLAGE == "LIBRE":
 
-            if syme_char == "NON":
+            if not is_symmetric:
                 ListmaI = FOND_FISS.sdj.LEVREINF_MAIL.get()
             else:
                 ListmaI = None
@@ -2025,7 +2024,7 @@ def post_k1_k2_k3_ops(
                 ListmaI,
                 NB_NOEUD_COUPE,
                 hmax,
-                syme_char,
+                is_symmetric,
                 PREC_VIS_A_VIS,
             )
 
@@ -2041,12 +2040,12 @@ def post_k1_k2_k3_ops(
             #        Dictionnaires des levres
             dicoS = get_dico_levres("sup", FOND_FISS, ndim, Lnoff, Nnoff)
             dicoI = {}
-            if syme_char == "NON":
+            if not is_symmetric:
                 dicoI = get_dico_levres("inf", FOND_FISS, ndim, Lnoff, Nnoff)
 
             #        Dictionnaire des coordonnees et tableau des deplacements
             (d_coor, __tabl_depl) = get_coor_regle(
-                self, RESULTAT, ndim, Lnoff, Lnocal, dicoS, syme_char, dicoI
+                self, RESULTAT, ndim, Lnoff, Lnocal, dicoS, is_symmetric, dicoI
             )
             #        Dictionnaire des vecteurs normaux (allant de la levre inf vers la levre sup) et
             #        dictionnaire des vecteurs de propagation
@@ -2058,7 +2057,7 @@ def post_k1_k2_k3_ops(
 
             #        Noeuds LEVRE_SUP et LEVRE_INF
             (Lnofon, Lnosup, Lnoinf) = get_noeuds_perp_regle(
-                Lnocal, d_coor, dicoS, dicoI, Lnoff, PREC_VIS_A_VIS, hmax, syme_char
+                Lnocal, d_coor, dicoS, dicoI, Lnoff, PREC_VIS_A_VIS, hmax, is_symmetric
             )
 
             Nbnofo = len(Lnofon)
@@ -2144,8 +2143,8 @@ def post_k1_k2_k3_ops(
         assert False
     if "__tabl_depl" not in locals():
         __tabl_depl = []
-    if "syme_char" not in locals():
-        syme_char = "NON"
+    if "is_symmetric" not in locals():
+        is_symmetric = False
 
     #  ------------------------------------------------------------------
     #  V. BOUCLE SUR NOEUDS DU FOND
@@ -2174,7 +2173,7 @@ def post_k1_k2_k3_ops(
             FOND_FISS,
             TYPE_MAILLAGE,
             __tabl_depl,
-            syme_char,
+            is_symmetric,
         )
         tabinf = get_tab(
             self,
@@ -2186,7 +2185,7 @@ def post_k1_k2_k3_ops(
             FOND_FISS,
             TYPE_MAILLAGE,
             __tabl_depl,
-            syme_char,
+            is_symmetric,
         )
 
         #     les instants de post-traitement : creation de l_inst
@@ -2196,7 +2195,7 @@ def post_k1_k2_k3_ops(
             (l_inst, PRECISION, CRITERE) = get_liste_inst(tabsup, args)
 
         #     récupération de la matrice de changement de repère
-        pgl = get_pgl(syme_char, FISSURE, ino, VDIR, VNOR, dicVDIR, dicVNOR, Lnofon, ndim)
+        pgl = get_pgl(is_symmetric, FISSURE, ino, VDIR, VNOR, dicVDIR, dicVNOR, Lnofon, ndim)
 
         #     ------------------------------------------------------------------
         #                         BOUCLE SUR LES INSTANTS/FREQUENCES
@@ -2209,16 +2208,16 @@ def post_k1_k2_k3_ops(
 
             #        recuperation de la table au bon instant : tabsupi (et tabinfi)
             tabsupi = get_tab_inst(
-                "sup", inst, FISSURE, syme_char, PRECISION, CRITERE, tabsup, tabinf, type_para
+                "sup", inst, FISSURE, is_symmetric, PRECISION, CRITERE, tabsup, tabinf, type_para
             )
             tabinfi = get_tab_inst(
-                "inf", inst, FISSURE, syme_char, PRECISION, CRITERE, tabsup, tabinf, type_para
+                "inf", inst, FISSURE, is_symmetric, PRECISION, CRITERE, tabsup, tabinf, type_para
             )
 
             #        recupération des déplacements sup et inf : ds et di
             (abscs, ds) = get_depl_sup(FOND_FISS, tabsupi, ndim, Lnofon, d_coor, ino, TYPE_MAILLAGE)
             (_, di) = get_depl_inf(
-                FOND_FISS, tabinfi, ndim, Lnofon, syme_char, d_coor, ino, TYPE_MAILLAGE
+                FOND_FISS, tabinfi, ndim, Lnofon, is_symmetric, d_coor, ino, TYPE_MAILLAGE
             )
 
             #        TESTS NOMBRE DE NOEUDS
@@ -2274,7 +2273,7 @@ def post_k1_k2_k3_ops(
                         )
 
                 #           calcul du saut de déplacements dans le nouveau repère
-                saut = get_saut(self, pgl, ds, di, INFO, FISSURE, syme_char, abscs, ndim)
+                saut = get_saut(self, pgl, ds, di, INFO, FISSURE, is_symmetric, abscs, ndim)
 
                 #           CALCUL DES K1, K2, K3
                 (isig, kgsig, saut2) = get_kgsig(saut, nbval, coefd, coefd3)

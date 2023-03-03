@@ -22,7 +22,6 @@ import numpy as np
 import time
 import copy
 import aster
-import string as S
 import sys
 import math
 from ..Cata.Syntax import _F
@@ -261,7 +260,7 @@ def no_fond_fiss(self, FOND_FISS):
 # -----------------------------------------------------------------------------
 
 
-def no_lips(self, NP, FOND_FISS, NB_COUCHES, syme_type, closedCrack):
+def no_lips(self, NP, FOND_FISS, NB_COUCHES, is_symmetric, closedCrack):
     """
     Extract the nodes of lips through nodes of crack front
     Store in dict type
@@ -282,7 +281,7 @@ def no_lips(self, NP, FOND_FISS, NB_COUCHES, syme_type, closedCrack):
 
     lip_sup_nodes = list(map(lambda x: x.rstrip(), lip_sup_nodes))
 
-    if syme_type != "OUI":
+    if not is_symmetric:
 
         if NB_COUCHES < 10:
             lip_inf_nodes = FOND_FISS.sdj.INFNORM_NOEU2.get()
@@ -298,7 +297,7 @@ def no_lips(self, NP, FOND_FISS, NB_COUCHES, syme_type, closedCrack):
         TLIPSUPX = lip_sup_nodes[nodeNum * i : nodeNum * (i + 1)]
         TLIPSUP[i + 1] = [x.strip() for x in TLIPSUPX if x.strip()]
 
-        if syme_type != "OUI":
+        if not is_symmetric:
             TLIPINFX = lip_inf_nodes[nodeNum * i : nodeNum * (i + 1)]
             TLIPINF[i + 1] = [x.strip() for x in TLIPINFX if x.strip()]
 
@@ -317,7 +316,7 @@ def no_lips(self, NP, FOND_FISS, NB_COUCHES, syme_type, closedCrack):
                 idx = TLIPSUP[iNP + 1].index(no_cross_lip_sup)
                 TLIPSUP[iNP + 1] = TLIPSUP[iNP + 1][: idx + 1]
 
-        if syme_type != "OUI":
+        if not is_symmetric:
 
             for i in TLIPINF[1]:
                 for j in TLIPINF[2]:
@@ -334,7 +333,7 @@ def no_lips(self, NP, FOND_FISS, NB_COUCHES, syme_type, closedCrack):
 # -----------------------------------------------------------------------------
 
 
-def na_poinsf(self, FOND_FISS, symeType, elemType):
+def na_poinsf(self, FOND_FISS, is_symmetric, elemType):
     """
     Get corner node of first element on crack lips
     Store in node name
@@ -345,7 +344,7 @@ def na_poinsf(self, FOND_FISS, symeType, elemType):
         UTMESS("F", "RUPTURE0_11")
     lip_sup_nodes = list(map(lambda x: x.rstrip(), lip_sup_nodes))
 
-    if symeType == "OUI":
+    if is_symmetric:
         if elemType == "SEG2":
             poinsf_na = lip_sup_nodes[1]
         else:
@@ -367,7 +366,7 @@ def na_poinsf(self, FOND_FISS, symeType, elemType):
 # -----------------------------------------------------------------------------
 
 
-def na_lips(self, MAIL__, FOND_FISS, symeType):
+def na_lips(self, MAIL__, FOND_FISS, is_symmetric):
     """
     Extract name of lips
     """
@@ -380,7 +379,7 @@ def na_lips(self, MAIL__, FOND_FISS, symeType):
 
     lipInfName = None
 
-    if symeType != "OUI":
+    if not is_symmetric:
 
         lipInfName = FOND_FISS.getLowerLipGroupName()
 
@@ -674,13 +673,13 @@ def calc_area(self, MAILAREA, nameGroupMa):
 # -----------------------------------------------------------------------------
 
 
-def calc_vari_area_no_bord(self, MAIL, NB_COUCHES, lNode1, lNode2, NODESBOUGE, lVect, symeType):
+def calc_vari_area_no_bord(self, MAIL, NB_COUCHES, lNode1, lNode2, NODESBOUGE, lVect, is_symmetric):
 
     """
     Calculate varied area
     """
 
-    if symeType == "OUI":
+    if is_symmetric:
         crea_group_no_from_no(self, MAIL, "NOAREAX", lNode1[1 : len(lNode1) - 1])
         crea_group_no_from_no(self, MAIL, "NOAREAY", lNode2[1 : len(lNode2) - 1])
     else:
@@ -717,7 +716,7 @@ def calc_vari_area_no_bord(self, MAIL, NB_COUCHES, lNode1, lNode2, NODESBOUGE, l
         coords[iNode * 3 + 1] = coords[iNode * 3 + 1] + lVect[1]
         coords[iNode * 3 + 2] = coords[iNode * 3 + 2] + lVect[2]
 
-    if symeType == "OUI":
+    if is_symmetric:
         crea_group_no_from_no(self, MAIL, "NOAREAX", lNode1[1 : len(lNode1) - 1])
         crea_group_no_from_no(self, MAIL, "NOAREAY", lNode2[1 : len(lNode2) - 1])
     else:
@@ -754,7 +753,7 @@ def calc_vari_area_no_bord(self, MAIL, NB_COUCHES, lNode1, lNode2, NODESBOUGE, l
 
     XAIRE = areaFin - areaIni
 
-    if symeType != "OUI":
+    if not is_symmetric:
         XAIRE = XAIRE / 2.0
 
     return XAIRE
@@ -764,13 +763,13 @@ def calc_vari_area_no_bord(self, MAIL, NB_COUCHES, lNode1, lNode2, NODESBOUGE, l
 
 
 def calc_vari_area_no_midd(
-    self, MAIL, NB_COUCHES, lNode, NODESBOUGE, lVect, symeType, closedCrack, lipSupName, lipInfName
+    self, MAIL, NB_COUCHES, lNode, NODESBOUGE, lVect, is_symmetric, closedCrack, lipSupName, lipInfName
 ):
     """
     Calculate varied area
     """
 
-    if symeType == "OUI":
+    if is_symmetric:
         crea_group_no_from_no(self, MAIL, "NOAREA", lNode[1 : len(lNode) - 1])
     else:
         crea_group_no_from_no(
@@ -778,7 +777,7 @@ def calc_vari_area_no_midd(
         )
 
     crea_group_ma_appui_group_no_2d(self, MAIL, "MAAREATEM", "NOAREA")
-    if symeType == "OUI":
+    if is_symmetric:
         intersec_group_ma(self, MAIL, "MAAREA", lipSupName, "MAAREATEM")
     else:
         intersec_group_ma(self, MAIL, "MAAREASUP", lipInfName, "MAAREATEM")
@@ -790,7 +789,7 @@ def calc_vari_area_no_midd(
     del_group_no(self, MAIL, "NOAREA")
     del_group_ma(self, MAIL, "MAAREA")
     del_group_ma(self, MAIL, "MAAREATEM")
-    if symeType != "OUI":
+    if not is_symmetric:
         del_group_ma(self, MAIL, "MAAREASUP")
         del_group_ma(self, MAIL, "MAAREAINF")
 
@@ -801,7 +800,7 @@ def calc_vari_area_no_midd(
         coords[iNode * 3 + 1] = coords[iNode * 3 + 1] + lVect[1]
         coords[iNode * 3 + 2] = coords[iNode * 3 + 2] + lVect[2]
 
-    if symeType == "OUI":
+    if is_symmetric:
         crea_group_no_from_no(self, MAIL, "NOAREA", lNode[1 : len(lNode) - 1])
     else:
         crea_group_no_from_no(
@@ -810,7 +809,7 @@ def calc_vari_area_no_midd(
 
     crea_group_ma_appui_group_no_2d(self, MAIL, "MAAREATEM", "NOAREA")
 
-    if symeType == "OUI":
+    if is_symmetric:
         intersec_group_ma(self, MAIL, "MAAREA", lipSupName, "MAAREATEM")
     else:
         intersec_group_ma(self, MAIL, "MAAREASUP", lipInfName, "MAAREATEM")
@@ -822,7 +821,7 @@ def calc_vari_area_no_midd(
     del_group_no(self, MAIL, "NOAREA")
     del_group_ma(self, MAIL, "MAAREA")
     del_group_ma(self, MAIL, "MAAREATEM")
-    if symeType != "OUI":
+    if not is_symmetric:
         del_group_ma(self, MAIL, "MAAREASUP")
         del_group_ma(self, MAIL, "MAAREAINF")
 
@@ -833,7 +832,7 @@ def calc_vari_area_no_midd(
 
     XAIRE = areaFin - areaIni
 
-    if symeType != "OUI":
+    if not is_symmetric:
         XAIRE = XAIRE / 2.0
 
     return XAIRE
@@ -850,7 +849,7 @@ def calc_vari_area_no_glob(
     lNode,
     NODESBOUGE,
     lVect,
-    symeType,
+    is_symmetric,
     closedCrack,
     lipSupName,
     lipInfName,
@@ -861,7 +860,7 @@ def calc_vari_area_no_glob(
 
     Nodes = []
 
-    if symeType == "OUI":
+    if is_symmetric:
         if closedCrack != "OUI":
             for iNP in range(2, NPP):
                 Nodes = Nodes + lNode[iNP][1 : len(lNode[iNP]) - 1]
@@ -887,7 +886,7 @@ def calc_vari_area_no_glob(
     crea_group_no_from_no(self, MAIL, "NOAREA", Nodes)
     crea_group_ma_appui_group_no_2d(self, MAIL, "MAAREATEM", "NOAREA")
 
-    if symeType == "OUI":
+    if is_symmetric:
         intersec_group_ma(self, MAIL, "MAAREA", lipSupName, "MAAREATEM")
     else:
         intersec_group_ma(self, MAIL, "MAAREASUP", lipInfName, "MAAREATEM")
@@ -899,7 +898,7 @@ def calc_vari_area_no_glob(
     del_group_no(self, MAIL, "NOAREA")
     del_group_ma(self, MAIL, "MAAREA")
     del_group_ma(self, MAIL, "MAAREATEM")
-    if symeType != "OUI":
+    if not is_symmetric:
         del_group_ma(self, MAIL, "MAAREASUP")
         del_group_ma(self, MAIL, "MAAREAINF")
 
@@ -914,7 +913,7 @@ def calc_vari_area_no_glob(
     crea_group_no_from_no(self, MAIL, "NOAREA", Nodes)
     crea_group_ma_appui_group_no_2d(self, MAIL, "MAAREATEM", "NOAREA")
 
-    if symeType == "OUI":
+    if is_symmetric:
         intersec_group_ma(self, MAIL, "MAAREA", lipSupName, "MAAREATEM")
     else:
         intersec_group_ma(self, MAIL, "MAAREASUP", lipInfName, "MAAREATEM")
@@ -926,7 +925,7 @@ def calc_vari_area_no_glob(
     del_group_no(self, MAIL, "NOAREA")
     del_group_ma(self, MAIL, "MAAREA")
     del_group_ma(self, MAIL, "MAAREATEM")
-    if symeType != "OUI":
+    if not is_symmetric:
         del_group_ma(self, MAIL, "MAAREASUP")
         del_group_ma(self, MAIL, "MAAREAINF")
 
@@ -938,7 +937,7 @@ def calc_vari_area_no_glob(
 
     XAIRE = areaFin - areaIni
 
-    if symeType != "OUI":
+    if not is_symmetric:
         XAIRE = XAIRE / 2.0
 
     return XAIRE
@@ -948,13 +947,13 @@ def calc_vari_area_no_glob(
 
 
 def calc_vari_area_no_glob_one_elem(
-    self, MAIL, NB_COUCHES, NPP, lNode, NODESBOUGE, lVect, symeType
+    self, MAIL, NB_COUCHES, NPP, lNode, NODESBOUGE, lVect, is_symmetric
 ):
     """
     Calculate varied area
     """
 
-    if symeType == "OUI":
+    if is_symmetric:
         crea_group_no_from_no(self, MAIL, "NOAREAX", lNode[1][1 : len(lNode[1]) - 1])
         crea_group_no_from_no(self, MAIL, "NOAREAY", lNode[NPP][1 : len(lNode[NPP]) - 1])
     else:
@@ -992,7 +991,7 @@ def calc_vari_area_no_glob_one_elem(
             coords[iNode * 3 + 1] = coords[iNode * 3 + 1] + lVect[iKey][1]
             coords[iNode * 3 + 2] = coords[iNode * 3 + 2] + lVect[iKey][2]
 
-    if symeType == "OUI":
+    if is_symmetric:
         crea_group_no_from_no(self, MAIL, "NOAREAX", lNode[1][1 : len(lNode[1]) - 1])
         crea_group_no_from_no(self, MAIL, "NOAREAY", lNode[NPP][1 : len(lNode[NPP]) - 1])
     else:
@@ -1030,7 +1029,7 @@ def calc_vari_area_no_glob_one_elem(
 
     XAIRE = areaFin - areaIni
 
-    if symeType != "OUI":
+    if not is_symmetric:
         XAIRE = XAIRE / 2.0
 
     return XAIRE
@@ -2021,12 +2020,12 @@ def normalize(v):
 
 
 def get_result2D(
-    self, J, __J01, linst, liord, nom_modelisation, NB_COUCHES, e, nu, checksym, TITRE
+    self, J, __J01, linst, liord, nom_modelisation, NB_COUCHES, e, nu, is_symmetric, TITRE
 ):
 
     # CREA_TABLE = self.get_cmd('CREA_TABLE')
 
-    if checksym == "OUI":
+    if is_symmetric:
         if nom_modelisation == "D_PLAN":
             K = [np.sqrt(iJ * e / (1.0 - nu**2)) for iJ in J]
 
@@ -2051,7 +2050,7 @@ def get_result2D(
     tabfact.append(_F(PARA="VOLUME", LISTE_R=(RS_volume)))
     tabfact.append(_F(PARA="NB_COUCHES", LISTE_I=(RS_contour)))
 
-    if (checksym == "OUI") and (nom_modelisation != "AXIS"):
+    if is_symmetric and (nom_modelisation != "AXIS"):
         tabfact.append(_F(PARA="K", LISTE_R=(K)))
 
     tabfact.append(_F(PARA="J", LISTE_R=(J)))
@@ -2206,10 +2205,7 @@ def post_jmod_ops(
     #   Get material and modelisation names
 
     mater, MODELISATION = aster.postkutil(1, RESULTAT.getName(), FOND_FISS.getName())
-    ir, ib, nameMa = aster.dismoi("NOM_MAILLA", RESULTAT.getName(), "RESULTAT", "F")
-    ir, ib, nameMo = aster.dismoi("MODELE", RESULTAT.getName(), "RESULTAT", "F")
-    ir, ib, nameCh = aster.dismoi("CHAM_MATER", RESULTAT.getName(), "RESULTAT", "F")
-    iret, ibid, checksym = aster.dismoi("SYME", FOND_FISS.nom, "FOND_FISS", "F")
+    is_symmetric = FOND_FISS.isSymmetric()
 
     # Affectation de ndim selon le type de modelisation
     assert MODELISATION in ["3D", "AXIS", "D_PLAN", "C_PLAN"]
@@ -2461,7 +2457,7 @@ def post_jmod_ops(
             VECTEUR = normalize(VECTEURSI)
 
         VALDEPX = VECTEUR[0]
-        if checksym == "OUI":
+        if is_symmetric:
             VALDEPX = VALDEPX * 2.0
 
         VALDEPY = VECTEUR[1]
@@ -4298,7 +4294,7 @@ def post_jmod_ops(
         # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
         tab_result = get_result2D(
-            self, J, __J01, linst, liord, MODELISATION, NB_COUCHES, e, nu, checksym, TITRE
+            self, J, __J01, linst, liord, MODELISATION, NB_COUCHES, e, nu, is_symmetric, TITRE
         )
 
     """
@@ -4306,11 +4302,13 @@ def post_jmod_ops(
     """
     if ndim == 3:
         print("Macro POST_JMOD - Calculate J-integral in 3D")
+        
+        
+        
         #   Get symmetry problem
         post_j_marker0 = time.time()
-        ir, ib, symeType = aster.dismoi("SYME", FOND_FISS.getName(), "FOND_FISS", "F")
 
-        if symeType == "OUI":
+        if is_symmetric:
             XMULT = 2.0
         else:
             XMULT = 1.0
@@ -4332,7 +4330,7 @@ def post_jmod_ops(
         #   --------------------------------------------------------------------------
         #   GET NAME OF LIPS
         #
-        lipSupName, lipInfName = na_lips(self, MAIL, FOND_FISS, symeType)
+        lipSupName, lipInfName = na_lips(self, MAIL, FOND_FISS, is_symmetric)
         if lipSupName is None:
             UTMESS("F", "RUPTURE2_4")
 
@@ -4343,7 +4341,7 @@ def post_jmod_ops(
         #   --------------------------------------------------------------------------
         #   GET NODES ON CRACK LIPS THROUGH NODES OF CRACK FRONT
         #
-        TLIPSUP, TLIPINF = no_lips(self, NP, FOND_FISS, NB_COUCHES, symeType, closedCrack)
+        TLIPSUP, TLIPINF = no_lips(self, NP, FOND_FISS, NB_COUCHES, is_symmetric, closedCrack)
         #   --------------------------------------------------------------------------
         #   GET COORDINATES OF ALL NODES
         #
@@ -4353,8 +4351,10 @@ def post_jmod_ops(
         #
         TVECTEUR = {}
 
-        poinsf_na = na_poinsf(self, FOND_FISS, symeType, elemType)
-        if symeType == "OUI":
+        
+
+        poinsf_na = na_poinsf(self, FOND_FISS, is_symmetric, elemType)
+        if is_symmetric:
             POINSF = all_co[poinsf_na]
         else:
             POINSF = (
@@ -4655,7 +4655,7 @@ def post_jmod_ops(
                 for iNP in range(NP):
                     TLIPSUPCAL[iNP + 1] = TLIPSUP[iNP + 1][0 : NB_COUCHES + 1]
 
-                    if symeType != "OUI":
+                    if not is_symmetric:
                         TLIPINFCAL[iNP + 1] = TLIPINF[iNP + 1][0 : NB_COUCHES + 1]
 
             else:
@@ -4663,7 +4663,7 @@ def post_jmod_ops(
                 for iNP in range((NP + 1) // 2):
                     TLIPSUPCAL[2 * iNP + 1] = TLIPSUP[2 * iNP + 1][0 : 2 * NB_COUCHES + 1]
 
-                    if symeType != "OUI":
+                    if not is_symmetric:
                         TLIPINFCAL[2 * iNP + 1] = TLIPINF[2 * iNP + 1][0 : 2 * NB_COUCHES + 1]
 
                 if closedCrack != "OUI":
@@ -4671,7 +4671,7 @@ def post_jmod_ops(
                     for iNP in range(1, (NP + 1) // 2):
                         TLIPSUPCAL[2 * iNP] = TLIPSUP[2 * iNP][0 : NB_COUCHES + 1]
 
-                        if symeType != "OUI":
+                        if not is_symmetric:
                             TLIPINFCAL[2 * iNP] = TLIPINF[2 * iNP][0 : NB_COUCHES + 1]
 
                 else:
@@ -4679,12 +4679,12 @@ def post_jmod_ops(
                     for iNP in range(1, NP // 2 + 1):
                         TLIPSUPCAL[2 * iNP] = TLIPSUP[2 * iNP][0 : NB_COUCHES + 1]
 
-                        if symeType != "OUI":
+                        if not is_symmetric:
                             TLIPINFCAL[2 * iNP] = TLIPINF[2 * iNP][0 : NB_COUCHES + 1]
 
             if elemType == "SEG2":
 
-                if symeType == "OUI":
+                if is_symmetric:
 
                     if closedCrack != "OUI":
 
@@ -4701,7 +4701,7 @@ def post_jmod_ops(
                             TLIPSUPCAL[2],
                             NODESBOUGE,
                             TVECTEUR[1],
-                            symeType,
+                            is_symmetric,
                         )
 
                         TQ[1] = (np.array(TVECTEUR[1]) * XMULT / XAIRE).tolist()
@@ -4719,7 +4719,7 @@ def post_jmod_ops(
                             TLIPSUPCAL[NP - 1],
                             NODESBOUGE,
                             TVECTEUR[NP],
-                            symeType,
+                            is_symmetric,
                         )
 
                         TQ[NP] = (np.array(TVECTEUR[NP]) * XMULT / XAIRE).tolist()
@@ -4741,7 +4741,7 @@ def post_jmod_ops(
                                     TLIPSUPCAL[iNP + 1],
                                     NODESBOUGE,
                                     TVECTEUR[iNP + 1],
-                                    symeType,
+                                    is_symmetric,
                                     closedCrack,
                                     lipSupName,
                                     lipInfName,
@@ -4767,7 +4767,7 @@ def post_jmod_ops(
                                 TLIPSUPCAL,
                                 NODESBOUGE,
                                 TVECGLOB,
-                                symeType,
+                                is_symmetric,
                             )
                         else:
                             XAIRE = calc_vari_area_no_glob(
@@ -4778,7 +4778,7 @@ def post_jmod_ops(
                                 TLIPSUPCAL,
                                 NODESBOUGE,
                                 TVECGLOB,
-                                symeType,
+                                is_symmetric,
                                 closedCrack,
                                 lipSupName,
                                 lipInfName,
@@ -4805,7 +4805,7 @@ def post_jmod_ops(
                                 TLIPSUPCAL[iNP + 1],
                                 NODESBOUGE,
                                 TVECTEUR[iNP + 1],
-                                symeType,
+                                is_symmetric,
                                 closedCrack,
                                 lipSupName,
                                 lipInfName,
@@ -4830,7 +4830,7 @@ def post_jmod_ops(
                             TLIPSUPCAL,
                             NODESBOUGE,
                             TVECGLOB,
-                            symeType,
+                            is_symmetric,
                             closedCrack,
                             lipSupName,
                             lipInfName,
@@ -4859,7 +4859,7 @@ def post_jmod_ops(
                             (TLIPSUPCAL[2], TLIPINFCAL[2]),
                             NODESBOUGE,
                             TVECTEUR[1],
-                            symeType,
+                            is_symmetric,
                         )
 
                         TQ[1] = (np.array(TVECTEUR[1]) * XMULT / XAIRE).tolist()
@@ -4880,7 +4880,7 @@ def post_jmod_ops(
                             (TLIPSUPCAL[NP - 1], TLIPINFCAL[NP - 1]),
                             NODESBOUGE,
                             TVECTEUR[NP],
-                            symeType,
+                            is_symmetric,
                         )
 
                         TQ[NP] = (np.array(TVECTEUR[NP]) * XMULT / XAIRE).tolist()
@@ -4904,7 +4904,7 @@ def post_jmod_ops(
                                     (TLIPSUPCAL[iNP + 1], TLIPINFCAL[iNP + 1]),
                                     NODESBOUGE,
                                     TVECTEUR[iNP + 1],
-                                    symeType,
+                                    is_symmetric,
                                     closedCrack,
                                     lipSupName,
                                     lipInfName,
@@ -4932,7 +4932,7 @@ def post_jmod_ops(
                                 (TLIPSUPCAL, TLIPINFCAL),
                                 NODESBOUGE,
                                 TVECGLOB,
-                                symeType,
+                                is_symmetric,
                             )
                         else:
                             XAIRE = calc_vari_area_no_glob(
@@ -4943,7 +4943,7 @@ def post_jmod_ops(
                                 (TLIPSUPCAL, TLIPINFCAL),
                                 NODESBOUGE,
                                 TVECGLOB,
-                                symeType,
+                                is_symmetric,
                                 closedCrack,
                                 lipSupName,
                                 lipInfName,
@@ -4972,7 +4972,7 @@ def post_jmod_ops(
                                 (TLIPSUPCAL[iNP + 1], TLIPINFCAL[iNP + 1]),
                                 NODESBOUGE,
                                 TVECTEUR[iNP + 1],
-                                symeType,
+                                is_symmetric,
                                 closedCrack,
                                 lipSupName,
                                 lipInfName,
@@ -4999,7 +4999,7 @@ def post_jmod_ops(
                             (TLIPSUPCAL, TLIPINFCAL),
                             NODESBOUGE,
                             TVECGLOB,
-                            symeType,
+                            is_symmetric,
                             closedCrack,
                             lipSupName,
                             lipInfName,
@@ -5010,7 +5010,7 @@ def post_jmod_ops(
 
             else:
 
-                if symeType == "OUI":
+                if is_symmetric:
 
                     if closedCrack != "OUI":
 
@@ -5029,7 +5029,7 @@ def post_jmod_ops(
                             TLIPSUPCAL[3],
                             NODESBOUGE,
                             TVECTEUR[1],
-                            symeType,
+                            is_symmetric,
                         )
 
                         TQ[1] = (np.array(TVECTEUR[1]) * XMULT / XAIRE).tolist()
@@ -5049,7 +5049,7 @@ def post_jmod_ops(
                             TLIPSUPCAL[NP - 2],
                             NODESBOUGE,
                             TVECTEUR[NP],
-                            symeType,
+                            is_symmetric,
                         )
 
                         TQ[NP] = (np.array(TVECTEUR[NP]) * XMULT / XAIRE).tolist()
@@ -5072,7 +5072,7 @@ def post_jmod_ops(
                                     TLIPSUPCAL[2 * iNP + 1],
                                     NODESBOUGE,
                                     TVECTEUR[2 * iNP + 1],
-                                    symeType,
+                                    is_symmetric,
                                     closedCrack,
                                     lipSupName,
                                     lipInfName,
@@ -5098,7 +5098,7 @@ def post_jmod_ops(
                                 TLIPSUPCAL[2 * iNP],
                                 NODESBOUGE,
                                 TVECTEUR[2 * iNP],
-                                symeType,
+                                is_symmetric,
                                 closedCrack,
                                 lipSupName,
                                 lipInfName,
@@ -5129,7 +5129,7 @@ def post_jmod_ops(
                                 TLIPSUPCAL,
                                 NODESBOUGE,
                                 TVECGLOB,
-                                symeType,
+                                is_symmetric,
                             )
                         else:
                             XAIRE = calc_vari_area_no_glob(
@@ -5140,7 +5140,7 @@ def post_jmod_ops(
                                 TLIPSUPCAL,
                                 NODESBOUGE,
                                 TVECGLOB,
-                                symeType,
+                                is_symmetric,
                                 closedCrack,
                                 lipSupName,
                                 lipInfName,
@@ -5166,7 +5166,7 @@ def post_jmod_ops(
                                 TLIPSUPCAL[2 * iNP + 1],
                                 NODESBOUGE,
                                 TVECTEUR[2 * iNP + 1],
-                                symeType,
+                                is_symmetric,
                                 closedCrack,
                                 lipSupName,
                                 lipInfName,
@@ -5192,7 +5192,7 @@ def post_jmod_ops(
                                 TLIPSUPCAL[2 * iNP],
                                 NODESBOUGE,
                                 TVECTEUR[2 * iNP],
-                                symeType,
+                                is_symmetric,
                                 closedCrack,
                                 lipSupName,
                                 lipInfName,
@@ -5223,7 +5223,7 @@ def post_jmod_ops(
                             TLIPSUPCAL,
                             NODESBOUGE,
                             TVECGLOB,
-                            symeType,
+                            is_symmetric,
                             closedCrack,
                             lipSupName,
                             lipInfName,
@@ -5253,7 +5253,7 @@ def post_jmod_ops(
                             (TLIPSUPCAL[3], TLIPINFCAL[3]),
                             NODESBOUGE,
                             TVECTEUR[1],
-                            symeType,
+                            is_symmetric,
                         )
 
                         TQ[1] = (np.array(TVECTEUR[1]) * XMULT / XAIRE).tolist()
@@ -5275,7 +5275,7 @@ def post_jmod_ops(
                             (TLIPSUPCAL[NP - 2], TLIPINFCAL[NP - 2]),
                             NODESBOUGE,
                             TVECTEUR[NP],
-                            symeType,
+                            is_symmetric,
                         )
 
                         TQ[NP] = (np.array(TVECTEUR[NP]) * XMULT / XAIRE).tolist()
@@ -5299,7 +5299,7 @@ def post_jmod_ops(
                                     (TLIPSUPCAL[2 * iNP + 1], TLIPINFCAL[2 * iNP + 1]),
                                     NODESBOUGE,
                                     TVECTEUR[2 * iNP + 1],
-                                    symeType,
+                                    is_symmetric,
                                     closedCrack,
                                     lipSupName,
                                     lipInfName,
@@ -5327,7 +5327,7 @@ def post_jmod_ops(
                                 (TLIPSUPCAL[2 * iNP], TLIPINFCAL[2 * iNP]),
                                 NODESBOUGE,
                                 TVECTEUR[2 * iNP],
-                                symeType,
+                                is_symmetric,
                                 closedCrack,
                                 lipSupName,
                                 lipInfName,
@@ -5361,7 +5361,7 @@ def post_jmod_ops(
                                 (TLIPSUPCAL, TLIPINFCAL),
                                 NODESBOUGE,
                                 TVECGLOB,
-                                symeType,
+                                is_symmetric,
                             )
                         else:
                             XAIRE = calc_vari_area_no_glob(
@@ -5372,7 +5372,7 @@ def post_jmod_ops(
                                 (TLIPSUPCAL, TLIPINFCAL),
                                 NODESBOUGE,
                                 TVECGLOB,
-                                symeType,
+                                is_symmetric,
                                 closedCrack,
                                 lipSupName,
                                 lipInfName,
@@ -5401,7 +5401,7 @@ def post_jmod_ops(
                                 (TLIPSUPCAL[2 * iNP + 1], TLIPINFCAL[2 * iNP + 1]),
                                 NODESBOUGE,
                                 TVECTEUR[2 * iNP + 1],
-                                symeType,
+                                is_symmetric,
                                 closedCrack,
                                 lipSupName,
                                 lipInfName,
@@ -5429,7 +5429,7 @@ def post_jmod_ops(
                                 (TLIPSUPCAL[2 * iNP], TLIPINFCAL[2 * iNP]),
                                 NODESBOUGE,
                                 TVECTEUR[2 * iNP],
-                                symeType,
+                                is_symmetric,
                                 closedCrack,
                                 lipSupName,
                                 lipInfName,
@@ -5463,7 +5463,7 @@ def post_jmod_ops(
                             (TLIPSUPCAL, TLIPINFCAL),
                             NODESBOUGE,
                             TVECGLOB,
-                            symeType,
+                            is_symmetric,
                             closedCrack,
                             lipSupName,
                             lipInfName,

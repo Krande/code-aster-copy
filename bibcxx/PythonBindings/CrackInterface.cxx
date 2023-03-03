@@ -44,5 +44,11 @@ void exportCrackToPython( py::module_ &mod ) {
         )" )
         .def( "getCrackTipCellsType", &Crack::getCrackTipCellsType )
         .def( "getLowerLipGroupName", &Crack::getLowerLipGroupName )
-        .def( "getUpperLipGroupName", &Crack::getUpperLipGroupName );
+        .def( "getUpperLipGroupName", &Crack::getUpperLipGroupName )
+        .def( "isSymmetric", &Crack::isSymmetric, R"(
+            Return true if crack is symeric
+        )" )
+        .def( "getConfigInit", &Crack::getConfigInit, R"(
+            Return the crack initial configuration
+        )" );
 };
