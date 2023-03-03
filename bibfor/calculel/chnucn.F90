@@ -147,7 +147,7 @@ subroutine chnucn(chno1, numdd2, ncorr, tcorr, base, &
     integer :: iaval2, ico1, ico2, ieq1
     integer :: ieq2, ino, iprn1, iprn2
     integer :: iret, ival1, ival2, j1, j2, nbno, ncmmx1
-    integer :: ncmmx2, ncmp1, ncmp2, nec1, nec2, nugd2, nval1
+    integer :: ncmmx2, ncmp1, ncmp2, nec1, nec2, nval1
     integer :: nval2
     integer, pointer :: corr2(:) => null()
     real(kind=8), pointer :: vale(:) => null()
@@ -182,21 +182,13 @@ subroutine chnucn(chno1, numdd2, ncorr, tcorr, base, &
 ! ------------------------------- REFE --------------------------------
 !
 !     -- SI CN2 EXISTE DEJA, ON LE DETRUIT :
-    call jeexin(cn2//'.DESC', iret)
+    call jeexin(cn2//'.REFE', iret)
     if (iret .gt. 0) call detrsd('CHAMP_GD', cn2)
 !
     call wkvect(cn2//'.REFE', base2//' V K24', 4, i1)
+    call jeecra(cn2//'.REFE', 'DOCU', cval='CHNO')
     call jeveuo(nu2//'.NUME.REFN', 'L', i2)
-    zk24(i1) = zk24(i2)
     zk24(i1+1) = nu2//'.NUME'
-!
-! ------------------------------- DESC --------------------------------
-!
-    call wkvect(cn2//'.DESC', base2//' V I', 2, i1)
-    call jeecra(cn2//'.DESC', 'DOCU', cval='CHNO')
-    call dismoi('NUM_GD', gd2, 'GRANDEUR', repi=nugd2)
-    zi(i1) = nugd2
-    zi(i1+1) = 1
 !
 ! ------------------------------- VALE --------------------------------
 !

@@ -316,7 +316,6 @@ subroutine op0144()
 ! .DESC
             chdesc = cham19//'.DESC'
             call wkvect(chdesc, 'G V I', 2, jcdesc)
-            call jeecra(chdesc, 'DOCU', cval='CHNO')
             zi(jcdesc) = numgd
             zi(jcdesc+1) = 6
 ! .VALE
@@ -326,7 +325,7 @@ subroutine op0144()
 ! .REFE
             chrefe = cham19//'.REFE'
             call wkvect(chrefe, 'G V K24', 4, jcrefe)
-            zk24(jcrefe) = mailla
+            call jeecra(chrefe, 'DOCU', cval='CHNO')
 !
 ! --------AU PREMIER PASSAGE CREATION DU NUME_EQUA
             if (io .eq. 1 .and. ipar .eq. 1) then

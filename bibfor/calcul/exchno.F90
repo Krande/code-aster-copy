@@ -47,8 +47,8 @@ subroutine exchno(imodat, iparg)
 !        ecriture dans le champ local
 !----------------------------------------------------------------------
 !
-    integer :: ima, ino, nno, nugl, num
-    integer :: desc, prno1, prno2, modloc, ityplo, gd
+    integer :: ima, ino, nno, nugl
+    integer :: prno1, prno2, modloc, ityplo
     integer :: deb1, deb2, idg1, idg2, nbpt, nbpt2, lgcata, ncmp
     integer :: iaux1, k, debugr
     aster_logical :: diff, moyenn
@@ -67,15 +67,10 @@ subroutine exchno(imodat, iparg)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    desc = zi(ca_iachii_-1+ca_iachid_*(ca_iichin_-1)+4)
-    gd = zi(desc-1+1)
-    num = zi(desc-1+2)
     modloc = ca_iamloc_-1+zi(ca_ilmloc_-1+imodat)
     ityplo = zi(modloc-1+1)
     debugr = zi(ca_iawlo2_-1+5*(ca_nbgr_*(iparg-1)+ca_igr_-1)+5)
     lgcata = zi(ca_iawlo2_-1+5*(ca_nbgr_*(iparg-1)+ca_igr_-1)+2)
-!
-    ASSERT(num > 0)
 !
     ASSERT(ityplo .lt. 4)
 !

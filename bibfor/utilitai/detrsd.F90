@@ -433,7 +433,6 @@ subroutine detrsd(typesd, nomsd)
     else if (typ2sd .eq. 'CHAM_NO') then
 !     ----------------------------------
         k19 = nomsd
-        call jedetr(k19//'.DESC')
         call jedetr(k19//'.REFE')
         call jedetr(k19//'.VALE')
 !

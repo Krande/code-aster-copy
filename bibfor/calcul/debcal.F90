@@ -71,10 +71,10 @@ subroutine debcal(nin, lchin, lpain, nout, lchout)
 !----------------------------------------------------------------------
     integer :: desc
     integer :: i
-    integer :: ibid, nbpara, iret, j
-    integer :: jpar, igd, nec, ncmpmx, iii, num
+    integer :: ibid, nbpara, iret, j, igd2
+    integer :: jpar, igd, nec, ncmpmx, iii
     integer :: jproli, ianueq, iret1, inomcp
-    integer :: iret2
+    integer :: iret2, iret3
     character(len=8) :: k8bi, typsca
     character(len=4) :: knum, tych
     character(len=8) :: nompar, ma, ma2, k8bi1, k8bi2
@@ -114,7 +114,8 @@ subroutine debcal(nin, lchin, lpain, nout, lchout)
         else
             call jeexin(chin//'.DESC', iret1)
             call jeexin(chin//'.CELD', iret2)
-            if ((iret1+iret2) .eq. 0) zl(ca_iachix_-1+i) = .false.
+            call jeexin(chin//'.REFE', iret3)
+            if ((iret1+iret2+iret3) .eq. 0) zl(ca_iachix_-1+i) = .false.
         end if
     end do
 
@@ -165,7 +166,9 @@ subroutine debcal(nin, lchin, lpain, nout, lchout)
         if (iret1 .gt. 0) objdes = chin//'.DESC'
         call jeexin(chin//'.CELD', iret2)
         if (iret2 .gt. 0) objdes = chin//'.CELD'
-        ASSERT((iret1+iret2) .gt. 0)
+        call jeexin(chin//'.REFE', iret3)
+        if (iret3 .gt. 0) objdes = chin//'.REFE'
+        ASSERT((iret1+iret2+iret3) .gt. 0)
         nompar = lpain(i)
         jpar = indik8(zk8(ca_iaoppa_), nompar, 1, nbpara)
         ASSERT(jpar .ne. 0)
@@ -225,11 +228,17 @@ subroutine debcal(nin, lchin, lpain, nout, lchout)
         call jeveuo(objdes, 'L', desc)
         zi(ca_iachii_-1+ca_iachid_*(i-1)+4) = desc
 
+        if (iret3 > 0) then
+            call dismoi("NUM_GD", chin, "CHAM_NO", repi=igd2, arret="F")
+        else
+            igd2 = zi(desc)
+        end if
+
 !         -- si la grandeur associee au champ n'est pas celle associee
 !            au parametre, on arrete tout :
-        if (igd .ne. zi(desc)) then
+        if (igd .ne. igd2) then
             call jenuno(jexnum('&CATA.GD.NOMGD', igd), k8bi1)
-            call jenuno(jexnum('&CATA.GD.NOMGD', zi(desc)), k8bi2)
+            call jenuno(jexnum('&CATA.GD.NOMGD', igd2), k8bi2)
             valk(1) = chin
             valk(2) = k8bi2
             valk(3) = nompar
@@ -276,26 +285,23 @@ subroutine debcal(nin, lchin, lpain, nout, lchout)
 
 !        -- pour les cham_no a profil_noeud:
         if (zk8(ca_iachik_-1+2*(i-1)+1) (1:4) .eq. 'CHNO') then
-            num = zi(desc-1+2)
-            if (num .gt. 0) then
-                call jeveuo(chin//'.REFE', 'L', vk24=refe)
-                noprno = refe(2) (1:19)//'.PRNO'
-                call jeveuo(jexnum(noprno, 1), 'L', iii)
-                zi(ca_iachii_-1+ca_iachid_*(i-1)+8) = iii
-                call jeveuo(ca_ligrel_//'.NBNO', 'L', vi=nbno)
-                if (nbno(1) .gt. 0) then
-                    call jenonu(jexnom(noprno(1:19)//'.LILI', ca_ligrel_//'      '), jproli)
-                    if (jproli .eq. 0) then
-                        zi(ca_iachii_-1+ca_iachid_*(i-1)+9) = isnnem()
-                    else
-                        call jeveuo(jexnum(noprno, jproli), 'L', iii)
-                        zi(ca_iachii_-1+ca_iachid_*(i-1)+9) = iii
-                    end if
+            call jeveuo(chin//'.REFE', 'L', vk24=refe)
+            noprno = refe(2) (1:19)//'.PRNO'
+            call jeveuo(jexnum(noprno, 1), 'L', iii)
+            zi(ca_iachii_-1+ca_iachid_*(i-1)+8) = iii
+            call jeveuo(ca_ligrel_//'.NBNO', 'L', vi=nbno)
+            if (nbno(1) .gt. 0) then
+                call jenonu(jexnom(noprno(1:19)//'.LILI', ca_ligrel_//'      '), jproli)
+                if (jproli .eq. 0) then
+                    zi(ca_iachii_-1+ca_iachid_*(i-1)+9) = isnnem()
+                else
+                    call jeveuo(jexnum(noprno, jproli), 'L', iii)
+                    zi(ca_iachii_-1+ca_iachid_*(i-1)+9) = iii
                 end if
-                call jeveuo(noprno(1:19)//'.NUEQ', 'L', ianueq)
-                zi(ca_iachii_-1+ca_iachid_*(i-1)+10) = ianueq
-                zi(ca_iachii_-1+ca_iachid_*(i-1)+11) = 1
             end if
+            call jeveuo(noprno(1:19)//'.NUEQ', 'L', ianueq)
+            zi(ca_iachii_-1+ca_iachid_*(i-1)+10) = ianueq
+            zi(ca_iachii_-1+ca_iachid_*(i-1)+11) = 1
         end if
     end do
 

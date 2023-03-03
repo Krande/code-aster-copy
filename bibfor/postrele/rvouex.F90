@@ -104,10 +104,9 @@ subroutine rvouex(mcf, iocc, nchpt, lstcmp, lstmac, &
 !
     if (nchp19(1:1) .ne. '&') then
 !
-        call jeexin(nchp19//'.DESC', ibid)
-        if (ibid .gt. 0) then
-            call jelira(nchp19//'.DESC', 'DOCU', cval=docu)
-        else
+        call dismoi('DOCU', nchp19, 'CHAMP', repk=docu)
+
+        if (docu == "CHML") then
 !
 !          -- ON VERIFIE QUE LE CHAM_ELEM N'EST PAS TROP DYNAMIQUE :
 !
@@ -193,6 +192,7 @@ subroutine rvouex(mcf, iocc, nchpt, lstcmp, lstmac, &
             nrepe = zk24(adr) (1:19)//'.REPE'
             call jeveuo(nrepe, 'L', arepe)
 !
+            ibid = 0
             call rvgnoe(mcf, iocc, nmaila, lstnac, 0, &
                         [ibid])
 !

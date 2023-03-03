@@ -69,7 +69,7 @@ subroutine rvgarg(nxdnom, nxdnum, nvchef, nvcodo, nxdvar)
     character(len=8) :: k8b, nresu, nchgd, granch, nomcp(50)
     character(len=4) :: typech
     aster_logical :: existe
-    integer :: anomcp, anumcp, ancpu1, ancpu2, adesc, acpgd, avchef
+    integer :: anomcp, anumcp, ancpu1, ancpu2, acpgd, avchef
     integer :: n1, n2, i, iocc, gd, n3, adr, nbelp, nbinv, ibid, avcodo
     integer :: nbpost, nbchgd, nbcpgd, nbcmp, nbresu, nbtcp, nbsom
     integer :: ifr, j, jordr, jxvar, n4, nbc, nbnc, numecp(50), tord(1)
@@ -182,14 +182,7 @@ subroutine rvgarg(nxdnom, nxdnum, nvchef, nvcodo, nxdvar)
             zk24(avchef+iocc-1) = nchp19//'     '
             call dismoi('TYPE_CHAMP', nchp19, 'CHAMP', repk=typech)
             call dismoi('NOM_GD', nchp19, 'CHAMP', repk=granch)
-            call jeexin(nchp19//'.DESC', ibid)
-            if (ibid .gt. 0) then
-                call jeveuo(nchp19//'.DESC', 'L', adesc)
-            else
-                call jeveuo(nchp19//'.CELD', 'L', adesc)
-            end if
-!
-            gd = zi(adesc+1-1)
+            call dismoi('NUM_GD', nchp19, 'CHAMP', repi=gd)
             call jelira(jexnum('&CATA.GD.NOMCMP', gd), 'LONMAX', nbcpgd)
             call jeveuo(jexnum('&CATA.GD.NOMCMP', gd), 'L', acpgd)
             call getvtx('ACTION', 'NOM_CMP', iocc=iocc, nbval=0, nbret=nbcmp)

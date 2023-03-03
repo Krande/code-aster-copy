@@ -292,7 +292,7 @@ subroutine vpstor(ineg, typ, modes, nbmode, neq, &
             call utmess('F', 'ALGELINE4_85', sk=valk, ni=3, vali=vali)
         end if
         if (typcon .eq. 'MODE_GENE' .or. typcon .eq. 'HARM_GENE') then
-            call jeecra(chamno//'.DESC', 'DOCU', iarg, 'VGEN')
+            call jeecra(chamno//'.REFE', 'DOCU', iarg, 'VGEN')
 ! GLUTE CAR ON A UTILISE VTCRE[ABM] POUR UN CHAM_GENE QUI A UN .REFE
 ! DE TAILLE 2 ET NON 4 COMME UN CHAM_NO
             call juveca(chamno//'.REFE', 2)

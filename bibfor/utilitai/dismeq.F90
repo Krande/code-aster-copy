@@ -113,6 +113,9 @@ subroutine dismeq(questi, nomobz, repi, repkz, ierd)
     else if (questi .eq. 'NOM_MAILLA') then
         call jeveuo(nomob//'.REFN', 'L', vk24=refn)
         repk = refn(1)
+    else if (questi .eq. 'TYPE_SUPERVIS' .or. questi .eq. 'TYPE_SCA') then
+        call jeveuo(nomob//'.REFN', 'L', vk24=refn)
+        call dismgd(questi, refn(2) (1:8), repi, repk, ierd)
 !
     else if (questi .eq. 'EXIS_LAGR') then
         call jeveuo(nomob//'.DELG', 'L', vi=delg)

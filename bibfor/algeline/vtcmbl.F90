@@ -38,6 +38,7 @@ subroutine vtcmbl(nbcmb, typcst, const, typech, nomch, &
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/infniv.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeecra.h"
@@ -56,7 +57,7 @@ subroutine vtcmbl(nbcmb, typcst, const, typech, nomch, &
 !
 !
 ! DECLARATION VARIABLES LOCALES
-    integer :: ibid, i, ifm, niv
+    integer :: ifm, niv, i
     integer :: icmb, iret, ival, lvale, iconst
     integer :: jdesc, jrefe, jvale
     integer :: kdesc, krefe, kvale
@@ -68,7 +69,6 @@ subroutine vtcmbl(nbcmb, typcst, const, typech, nomch, &
     character(len=4) :: docu, type
     character(len=5) :: refe, desc, vale
     character(len=19) :: ch19, ch19r
-    character(len=24) :: k24b
 !     ------------------------------------------------------------------
 !
     call jemarq()
@@ -88,15 +88,7 @@ subroutine vtcmbl(nbcmb, typcst, const, typech, nomch, &
     end if
 !
 ! CHAM_NO OU CHAM_ELEM ?
-    k24b = ch19//'.DESC'
-    call jeexin(k24b, ibid)
-    if (ibid .gt. 0) then
-        k24b = ch19//'.DESC'
-        call jelira(k24b, 'DOCU', cval=docu)
-    else
-        k24b = ch19//'.CELD'
-        call jelira(k24b, 'DOCU', cval=docu)
-    end if
+    call dismoi("DOCU", ch19, "CHAMP", repk=docu)
 !
 !
 ! INIT. DE BASE
@@ -120,23 +112,35 @@ subroutine vtcmbl(nbcmb, typcst, const, typech, nomch, &
 !   OBTENTION DES ADRESSES ET DES TAILLES DES .DESC, .REFE ET .VALE
 !   DU PREMIER CHAM_NO A CONCATENER. ON SUPPOSE QUE
 !   TOUS LES CHAM_NOS DE LA LISTE NOMCH SONT HOMOGENES SUR CE POINT.
-    call jelira(ch19//desc, 'LONMAX', nbdesc)
     call jelira(ch19//vale, 'LONMAX', nbvale)
     call jelira(ch19//refe, 'LONMAX', nbrefe)
-    call jeveuo(ch19//desc, 'L', jdesc)
     call jeveuo(ch19//refe, 'L', jrefe)
+
+    if (docu == 'CHML') then
+        call jelira(ch19//desc, 'LONMAX', nbdesc)
+        call jeveuo(ch19//desc, 'L', jdesc)
+    else
+        nbdesc = 0
+    end if
+
 !
 !   CONSTRUCTION D'UN CHAM_GD RESULTAT SUR LE MODELE DE NOMCH(1)
     ch19r = chpres
     call jeexin(ch19r//vale, iret)
 !
     if (iret .eq. 0) then
-        call wkvect(ch19r//desc, base//' V I', nbdesc, kdesc)
+        if (docu == 'CHML') then
+            call wkvect(ch19r//desc, base//' V I', nbdesc, kdesc)
+        end if
         call wkvect(ch19r//vale, base//' V '//type, nbvale, kvale)
         call wkvect(ch19r//refe, base//' V K24', nbrefe, krefe)
     else
-        call jeveuo(ch19r//desc, 'E', kdesc)
-        call jelira(ch19r//desc, 'LONMAX', nbdes1)
+        if (docu == 'CHML') then
+            call jeveuo(ch19r//desc, 'E', kdesc)
+            call jelira(ch19r//desc, 'LONMAX', nbdes1)
+        else
+            nbdes1 = 0
+        end if
         call jeveuo(ch19r//refe, 'E', krefe)
         call jelira(ch19r//refe, 'LONMAX', nbref1)
         call jelira(ch19r//vale, 'LONMAX', nbval1)
@@ -145,8 +149,6 @@ subroutine vtcmbl(nbcmb, typcst, const, typech, nomch, &
         ASSERT(nbref1 .eq. nbrefe)
         ASSERT(nbval1 .eq. nbvale)
     end if
-!
-    call jeecra(ch19r//desc, 'DOCU', cval=docu)
 !   RECOPIE DU .DESC ET DU .REFE DU PREMIER CHAM_NO DE LA LISTE
 !   DANS CEUX DU CHAM_NO SOLUTION
     do i = 0, nbdesc-1
@@ -158,6 +160,11 @@ subroutine vtcmbl(nbcmb, typcst, const, typech, nomch, &
 !
 !   CHANGER LA GRANDEUR
     call sdchgd(ch19r, typres)
+    if (docu == 'CHML') then
+        call jeecra(ch19r//desc, 'DOCU', cval=docu)
+    else
+        call jeecra(ch19r//refe, 'DOCU', cval=docu)
+    end if
 !
 !   VECTEUR RECEPTACLE TEMPORAIRE DE LA COMBINAISON LINEAIRE
     call wkvect('&&VTCMBL.VALE', 'V V '//type, nbvale, lvale)

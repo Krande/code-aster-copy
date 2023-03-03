@@ -86,7 +86,7 @@ subroutine assmiv(base, vec, nbvec, tlivec, licoef, &
     character(len=8) :: ma, mo, mo2, nogdsi, nogdco
     character(len=14) :: nume_ddl
     character(len=19) :: partit, vecas, vprof, vecel, resu
-    character(len=24) :: kmaila, k24prn, knulil, kvelil, kveref, kvedsc, nomli
+    character(len=24) :: kmaila, k24prn, knulil, kvelil, kveref, nomli
     character(len=24) :: knequa, kvale
     integer :: admodl, lcmodl, iexi
     aster_logical :: ldist, ldgrel
@@ -95,7 +95,7 @@ subroutine assmiv(base, vec, nbvec, tlivec, licoef, &
 !-----------------------------------------------------------------------
     integer :: i, i1, iad, iad1, iadnem
     integer :: ianulo, iconx2
-    integer :: idprn1, idprn2, idveds, idverf, iel
+    integer :: idprn1, idprn2, idverf, iel
     integer :: igr, il, ilim, ilimnu, ilinu, ilive
     integer :: ilivec, imat, iresu, jresl, jvale
     integer :: k1, mode, n1, nbelm, nbnoss, nbresu, ncmp, nb_equa, nb_dof
@@ -165,16 +165,12 @@ subroutine assmiv(base, vec, nbvec, tlivec, licoef, &
     kvelil = vecas//'.LILI'
     kveref = vecas//'.REFE'
     kvale = vecas//'.VALE'
-    kvedsc = vecas//'.DESC'
 !
 ! --- CREATION DE REFE ET DESC
     call jecreo(kveref, bas//' V K24')
     call jeecra(kveref, 'LONMAX', 4)
     call jeveuo(kveref, 'E', idverf)
-    call jecreo(kvedsc, bas//' V I')
-    call jeecra(kvedsc, 'LONMAX', 2)
-    call jeecra(kvedsc, 'DOCU', cval='CHNO')
-    call jeveuo(kvedsc, 'E', idveds)
+    call jeecra(kveref, 'DOCU', cval='CHNO')
 !
 ! --- CALCUL D UN LILI POUR VECAS
 ! --- CREATION D'UN VECAS(1:19).ADNE ET VECAS(1:19).ADLI SUR 'V'
@@ -246,11 +242,8 @@ subroutine assmiv(base, vec, nbvec, tlivec, licoef, &
 ! ---  RECUPERATION DE NEQUA
 
 !
-! ---  REMPLISSAGE DE REFE ET DESC
-    zk24(idverf) = ma
+! ---  REMPLISSAGE DE REFE
     zk24(idverf+1) = k24prn(1:14)//'.NUME'
-    zi(idveds) = gd
-    zi(idveds+1) = 1
 !
 !
 ! --- ALLOCATION VALE

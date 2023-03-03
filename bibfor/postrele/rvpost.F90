@@ -100,14 +100,8 @@ subroutine rvpost(mcf, iocc, dim, i1, i2, &
     else
         lscpcd = '&&RVPOST.NOM.CMP.CAND.OC'
         lscpnc = '&&RVPOST.NOM.CMP.NCSR.OC'
-        call jeexin(nch19//'.DESC', ibid)
-        if (ibid .gt. 0) then
-            call jelira(nch19//'.DESC', 'DOCU', cval=docu)
-            call jeveuo(nch19//'.DESC', 'L', n1)
-        else
-            call jelira(nch19//'.CELD', 'DOCU', cval=docu)
-            call jeveuo(nch19//'.CELD', 'L', n1)
-        end if
+        call dismoi("DOCU", nch19, "CHAMP", repk=docu)
+        call dismoi("NUM_GD", nch19, "CHAMP", repi=gd)
         call jeveuo(jexnum(xnomcp, iocc), 'L', jnomcp)
         call jelira(jexnum(xnomcp, iocc), 'LONMAX', nbcac)
         call wkvect(lscpcd, 'V V K8', nbcac, jcmpcd)
@@ -115,7 +109,6 @@ subroutine rvpost(mcf, iocc, dim, i1, i2, &
         do i = 1, nbcac, 1
             zk8(jcmpcd+i-1) = zk8(jnomcp+i-1)
         end do
-        gd = zi(n1+1-1)
         if (niv .gt. 1) call rvinfo(ifm, iocc, i1, i2, 'B', &
                                     ncheff)
         if (nresu(1:1) .eq. ' ') nresu = nch19(1:8)

@@ -75,7 +75,7 @@ subroutine vtdef1(chpout, chpin, base, typc)
     if (tych .eq. 'NOEU') then
         docu = 'CHNO'
         tamp = refe
-        desc(20:24) = '.DESC'
+        desc(20:24) = '.REFE'
         vale(20:24) = '.VALE'
     else if (tych(1:2) .eq. 'EL') then
         docu = 'CHML'
@@ -108,26 +108,27 @@ subroutine vtdef1(chpout, chpin, base, typc)
 !
 !     --------------------------- DESC --------------------------------
 !     --- RECUPERATION DES INFORMATIONS DU DESCRIPTEUR CHPIN ---
-    desc(1:19) = chpin
-    call jelira(desc, 'LONMAX', nbval)
-    call jeveuo(desc, 'L', lchpin)
+    if (tych(1:2) .eq. 'EL') then
+        desc(1:19) = chpin
+        call jelira(desc, 'LONMAX', nbval)
+        call jeveuo(desc, 'L', lchpin)
 !
 !     --- AFFECTATION DES INFORMATIONS DE DESCRIPTEUR CHPOUT ---
-    desc(1:19) = chpout
-    call jecreo(desc, classe//' V I')
-    call jeecra(desc, 'LONMAX', nbval)
-    call jeecra(desc, 'LONUTI', nbval)
-    nbval1 = nbval-1
+        desc(1:19) = chpout
+        call jecreo(desc, classe//' V I')
+        call jeecra(desc, 'LONMAX', nbval)
+        call jeecra(desc, 'LONUTI', nbval)
+        nbval1 = nbval-1
 !
+!
+        call jeveuo(desc, 'E', lchpou)
+        do ival = 0, nbval1
+            zi(lchpou+ival) = zi(lchpin+ival)
+        end do
+!
+    end if
+    desc(1:19) = chpout
     call jeecra(desc, 'DOCU', cval=docu)
-!
-    call jeveuo(desc, 'E', lchpou)
-    do ival = 0, nbval1
-        zi(lchpou+ival) = zi(lchpin+ival)
-    end do
-!
-    desc(1:19) = chpin
-    desc(1:19) = chpout
 !
 !     --------------------------- VALE --------------------------------
     vale(1:19) = chpin

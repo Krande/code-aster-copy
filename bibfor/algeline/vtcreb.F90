@@ -72,14 +72,13 @@ subroutine vtcreb(field_nodez, base, type_scalz, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    character(len=3) :: type_scal
+    character(len=3) :: type_scal, type_scal2
     character(len=8) :: mesh
     character(len=19) :: nume_equa, field_node, chamno
-    character(len=24) :: obj_refe, obj_vale, obj_desc
+    character(len=24) :: obj_refe, obj_vale
     character(len=24), pointer :: p_refe(:) => null()
-    integer :: idx_gd, nb_equa, j_vale, ideb, ifin, i, pdesc_save, jvcham, nb_equa_gl
-    integer, pointer :: p_desc(:) => null()
-    aster_logical :: lchange, l_pmesh
+    integer :: idx_gd, nb_equa, j_vale, ideb, ifin, i, jvcham, nb_equa_gl
+    aster_logical :: l_pmesh
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -105,6 +104,8 @@ subroutine vtcreb(field_nodez, base, type_scalz, &
         call dismoi('NB_EQUA', nume_ddlz, 'NUME_DDL', repi=nb_equa)
         call dismoi('NOM_MAILLA', nume_ddlz, 'NUME_DDL', repk=mesh)
         call dismoi('NUME_EQUA', nume_ddlz, 'NUME_DDL', repk=nume_equa)
+        call dismoi('TYPE_SCA', nume_equa, 'NUME_EQUA', repk=type_scal2)
+        ASSERT(type_scal == type_scal2)
     else
         idx_gd = idx_gdz
         nb_equa = nb_equa_inz
@@ -126,62 +127,34 @@ subroutine vtcreb(field_nodez, base, type_scalz, &
     if (ideb .eq. ifin) then
         obj_refe = field_node(1:19)//'.REFE'
         obj_vale = field_node(1:19)//'.VALE'
-        obj_desc = field_node(1:19)//'.DESC'
 !
 ! Create only one node FIELD
 ! - Object .REFE
         call wkvect(obj_refe, base//' V K24', 4, vk24=p_refe)
-        p_refe(1) = mesh
+        call jeecra(obj_refe, 'DOCU', cval='CHNO')
         p_refe(2) = nume_equa
-! - Object .DESC
-        call wkvect(obj_desc, base//' V I', 2, vi=p_desc)
-        call jeecra(obj_desc, 'DOCU', cval='CHNO')
-        p_desc(1) = idx_gd
-        p_desc(2) = 1
 ! - Object .VALE
         call wkvect(obj_vale, base//' V '//type_scal, max(1, nb_equa), j_vale)
         call jeecra(obj_vale, "LONUTI", nb_equa)
         if (present(nb_equa_outz)) then
             nb_equa_outz = nb_equa
         end if
-! - Change GRANDEUR
-        if (type_scal .eq. 'R' .or. type_scal .eq. 'C' .or. type_scal .eq. 'F') then
-            call sdchgd(field_node, type_scal)
-        end if
 !
     else
 !
 ! ! Create at the same time the (ifin-ideb+1) node FIELDs of name chamno(i)
-        lchange = (type_scal .eq. 'R' .or. type_scal .eq. 'C' .or. type_scal .eq. 'F')
         call jeveuo(vchamz, 'L', jvcham)
         do i = ideb, ifin
             chamno = zk24(jvcham+i-1) (1:19)
             obj_refe = chamno(1:19)//'.REFE'
             obj_vale = chamno(1:19)//'.VALE'
-            obj_desc = chamno(1:19)//'.DESC'
 ! - Object .REFE
             call wkvect(obj_refe, base//' V K24', 4, vk24=p_refe)
-            p_refe(1) = mesh
+            call jeecra(obj_refe, 'DOCU', cval='CHNO')
             p_refe(2) = nume_equa
-! - Object .DESC
-            call wkvect(obj_desc, base//' V I', 2, vi=p_desc)
-            call jeecra(obj_desc, 'DOCU', cval='CHNO')
-            p_desc(1) = idx_gd
-            p_desc(2) = 1
 ! - Object .VALE
             call wkvect(obj_vale, base//' V '//type_scal, max(1, nb_equa), j_vale)
             call jeecra(obj_vale, "LONUTI", nb_equa)
-! - Change GRANDEUR
-            if (lchange) then
-                if (i .eq. ideb) then
-! CETTE ROUTINE CHANGE EVENTUELLEMENT LA VALEUR DE PDESC(1). ON LA SAUVEGARDE POUR LA TRANSFERER
-! AUX AUTRES CHAMNO SANS SE POSER LES MEMES QUESTIONS QUI CONDUIRONT A LA MEME REPONSE: PDESC_SAVE
-                    call sdchgd(chamno, type_scal)
-                    pdesc_save = p_desc(1)
-                else
-                    p_desc(1) = pdesc_save
-                end if
-            end if
         end do
 ! DIVERS MUTUALISE
         if (present(nb_equa_outz)) then

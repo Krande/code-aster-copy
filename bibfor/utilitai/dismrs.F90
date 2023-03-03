@@ -82,7 +82,12 @@ subroutine dismrs(questionZ, objNameZ, repi, repkz, ierd)
         if (ibid .gt. 0) then
             objdes = result//'.DESC'
         else
-            objdes = result//'.CELD'
+            call jeexin(result//'.REFE', ibid)
+            if (ibid .gt. 0) then
+                objdes = result//'.REFE'
+            else
+                objdes = result//'.CELD'
+            end if
         end if
 !
         call jelira(objdes, 'GENR', cval=answer)

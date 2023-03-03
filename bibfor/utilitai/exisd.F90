@@ -94,9 +94,8 @@ subroutine exisd(typesd, nomsd, iret)
 !     ------------------------------
         ch = nomsd
         call jeexin(ch//'.REFE', i1)
-        call jeexin(ch//'.DESC', i2)
-        call jeexin(ch//'.VALE', i3)
-        if (i1*i2*i3 .ne. 0) iret = 1
+        call jeexin(ch//'.VALE', i2)
+        if (i1*i2 .ne. 0) iret = 1
 !
 !
     else if (typ2sd .eq. 'CHAM_ELEM') then
@@ -126,9 +125,8 @@ subroutine exisd(typesd, nomsd, iret)
         if (i1*i2 .ne. 0) iret = 1
 !
 !       -- CHAM_NO OU CARTE ?
-        call jeexin(ch//'.DESC', i1)
-        call jeexin(ch//'.VALE', i2)
-        if (i1*i2 .ne. 0) iret = 1
+        call jeexin(ch//'.VALE', i1)
+        if (i1 .ne. 0) iret = 1
 !
 !       -- RESUELEM ?
         call jeexin(ch//'.DESC', i1)

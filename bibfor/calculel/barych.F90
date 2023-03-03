@@ -21,6 +21,7 @@ subroutine barych(ch1z, ch2z, r1, r2, chz, &
     implicit none
 #include "jeveux.h"
 #include "asterfort/assert.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/copisd.h"
 #include "asterfort/idenob.h"
 #include "asterfort/jedema.h"
@@ -53,7 +54,7 @@ subroutine barych(ch1z, ch2z, r1, r2, chz, &
     character(len=4) :: docu, scal
     character(len=24) :: valk(2)
     character(len=8) :: nomsd
-    integer :: i, jvale, jvale1, jvale2, ibid, ier
+    integer :: i, jvale, jvale1, jvale2, ier
     integer :: lon1
     aster_logical :: iden
 !-----------------------------------------------------------------------
@@ -67,12 +68,7 @@ subroutine barych(ch1z, ch2z, r1, r2, chz, &
 
     call copisd('CHAMP_GD', base, ch1, ch)
 
-    call jeexin(ch//'.DESC', ibid)
-    if (ibid .gt. 0) then
-        call jelira(ch//'.DESC', 'DOCU', cval=docu)
-    else
-        call jelira(ch//'.CELD', 'DOCU', cval=docu)
-    end if
+    call dismoi("DOCU", ch, "CHAMP", repk=docu)
 
     if (docu(1:4) .eq. 'CART') then
 !   -----------------------------------

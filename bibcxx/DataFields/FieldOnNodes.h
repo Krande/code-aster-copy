@@ -89,8 +89,6 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
     typedef SimpleFieldOnNodes< ValueType > SimpleFieldOnNodesValueType;
     typedef std::shared_ptr< SimpleFieldOnNodesValueType > SimpleFieldOnNodesValueTypePtr;
 
-    /** @brief Vecteur Jeveux '.DESC' */
-    JeveuxVectorLong _descriptor;
     /** @brief Vecteur Jeveux '.REFE' */
     JeveuxVectorChar24 _reference;
     /** @brief Vecteur Jeveux '.VALE' */
@@ -119,7 +117,6 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
      */
     FieldOnNodes( const std::string name )
         : DataField( name, "CHAM_NO" ),
-          _descriptor( JeveuxVectorLong( getName() + ".DESC" ) ),
           _reference( JeveuxVectorChar24( getName() + ".REFE" ) ),
           _values( JeveuxVector< ValueType >( getName() + ".VALE" ) ),
           _dofDescription( nullptr ){};
@@ -130,7 +127,6 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
     /** @brief Copy constructor */
     FieldOnNodes( const std::string &name, const FieldOnNodes &toCopy ) : FieldOnNodes( name ) {
         // JeveuxVector to be duplicated
-        *( _descriptor ) = *( toCopy._descriptor );
         *( _reference ) = *( toCopy._reference );
         *( _values ) = *( toCopy._values );
         *( _title ) = *( toCopy._title );
@@ -142,8 +138,7 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
 
     /** @brief Move constructor */
     FieldOnNodes( FieldOnNodes &&other ) : DataField( std::move( other ) ) {
-        // Pointers to be moved
-        _descriptor = other._descriptor;
+        // Pointers to be moved$
         _reference = other._reference;
         _values = other._values;
         _title = other._title;
@@ -266,16 +261,12 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
      */
     bool isSimilarTo( const FieldOnNodes< ValueType > &tmp2 ) {
         CALL_JEMARQ();
-        bool similar = ( ( *_descriptor ) == ( *tmp2._descriptor ) );
-        similar = ( similar && ( this->_reference->size() == tmp2._reference->size() ) );
+        bool similar = ( this->_reference->size() == tmp2._reference->size() );
         similar = ( similar && ( this->_values->size() == tmp2._values->size() ) );
         similar = ( similar && ( this->getMesh() == tmp2.getMesh() ) );
 
         if ( similar ) {
-            _descriptor->updateValuePointer();
-            tmp2._descriptor->updateValuePointer();
-            if ( ( *_descriptor )[1] > 0 || ( *tmp2._descriptor )[1] > 0 )
-                similar = ( similar && ( ( *_dofDescription ) == ( *tmp2._dofDescription ) ) );
+            similar = ( similar && ( ( *_dofDescription ) == ( *tmp2._dofDescription ) ) );
         }
         CALL_JEDEMA();
         return similar;
@@ -408,7 +399,7 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
         return toReturn;
     };
 
-    bool exists() const { return _reference.exists() && _descriptor.exists() && _values.exists(); };
+    bool exists() const { return _reference.exists() && _values.exists(); };
 
     /**
      * @brief Get mesh
@@ -538,13 +529,6 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
      */
     void setMesh( const BaseMeshPtr &mesh ) {
         AS_ASSERT( _dofDescription );
-        _reference->updateValuePointer();
-        const auto meshName = trim( ( *_reference )[0].toString() );
-        if ( mesh && meshName != mesh->getName() ) {
-            std::string mess;
-            mess = "Meshes are incompatible: " + meshName + " vs " + mesh->getName();
-            raiseAsterError( mess );
-        }
         _dofDescription->setMesh( mesh );
     };
 
@@ -692,7 +676,6 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
      * @return renvoie true si la mise a jour s'est bien deroulee, false sinon
      */
     void updateValuePointers() {
-        _descriptor->updateValuePointer();
         _reference->updateValuePointer();
         _values->updateValuePointer();
     };

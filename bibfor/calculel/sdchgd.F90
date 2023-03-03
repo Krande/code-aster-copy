@@ -27,6 +27,7 @@ subroutine sdchgd(fieldz, type_scalz)
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
+#include "asterfort/dismoi.h"
 !
 !
     character(len=*), intent(in) :: fieldz
@@ -49,7 +50,7 @@ subroutine sdchgd(fieldz, type_scalz)
     character(len=8) :: gd_name_old, gd_name_new
     integer :: i_exi, i_gd_old, i_gd_new
     integer, pointer :: p_desc(:) => null()
-    character(len=3) :: type_scal
+    character(len=3) :: type_scal, typ
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -62,19 +63,28 @@ subroutine sdchgd(fieldz, type_scalz)
     if (i_exi .gt. 0) then
         call jeveuo(field//'.DESC', 'E', vi=p_desc)
     else
-        call jeveuo(field//'.CELD', 'E', vi=p_desc)
+        call jeexin(field//'.CELD', i_exi)
+        if (i_exi .gt. 0) then
+            call jeveuo(field//'.CELD', 'E', vi=p_desc)
+        else
+            call dismoi("TYPE_SCA", field, "CHAM_NO", repk=typ)
+            ASSERT(typ == type_scal)
+        end if
     end if
+
+    if (i_exi > 0) then
 !
 ! - Old GRANDEUR
 !
-    i_gd_old = p_desc(1)
-    call jenuno(jexnum('&CATA.GD.NOMGD', i_gd_old), gd_name_old)
+        i_gd_old = p_desc(1)
+        call jenuno(jexnum('&CATA.GD.NOMGD', i_gd_old), gd_name_old)
 !
 ! - New GRANDEUR
 !
-    gd_name_new = gd_name_old(1:5)//type_scal
-    call jenonu(jexnom('&CATA.GD.NOMGD', gd_name_new), i_gd_new)
-    ASSERT(i_gd_new .ne. 0)
-    p_desc(1) = i_gd_new
+        gd_name_new = gd_name_old(1:5)//type_scal
+        call jenonu(jexnom('&CATA.GD.NOMGD', gd_name_new), i_gd_new)
+        ASSERT(i_gd_new .ne. 0)
+        p_desc(1) = i_gd_new
+    end if
 
 end subroutine

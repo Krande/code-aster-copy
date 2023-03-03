@@ -115,12 +115,10 @@ subroutine cmpcha(fieldz, cmp_name, cata_to_field, field_to_cata, nb_cmpz, &
 !     -- 1.1 CAS DES CHAM_NO
 !     ----------------------------------------------------------------
     if (typsd .eq. 'NOEU') then
-        call jeveuo(field//'.DESC', 'L', jdesc)
         call dismoi('NOM_MAILLA', field, 'CHAM_NO', repk=mesh)
         call dismoi('NB_NO_MAILLA', mesh, 'MAILLAGE', repi=nb_node)
 !
 !        -- 1.1.2 CAS DES CHAM_NO A NUME_EQUA:
-        ASSERT(zi(jdesc-1+2) > 0)
         call dismoi('NUME_EQUA', field, 'CHAM_NO', repk=nume_equa)
         call jeveuo(jexnum(nume_equa//'.PRNO', 1), 'L', jprno)
         do i_node = 1, nb_node

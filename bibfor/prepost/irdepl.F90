@@ -94,10 +94,8 @@ subroutine irdepl(fileUnit, &
     character(len=16) :: fieldType
     character(len=19), parameter :: fieldNameS = '&&IRDEPL_CES'
     character(len=24) :: profName
-    integer, pointer :: desc(:) => null()
-    character(len=24), pointer :: refe(:) => null()
     character(len=1) :: type
-    integer :: fieldScalar, quantityIndx, nec, fieldRepr, liliMesh
+    integer :: fieldScalar, quantityIndx, nec, liliMesh
     integer :: meshDime, meshNodeNb
     integer, pointer :: cmpListIndx(:) => null()
     integer, pointer :: nueq(:) => null()
@@ -162,8 +160,6 @@ subroutine irdepl(fileUnit, &
 !
 ! - Get properties of field
 !
-    call jeveuo(fieldName//'.DESC', 'L', vi=desc)
-    call jeveuo(fieldName//'.REFE', 'L', vk24=refe)
     call jelira(fieldName//'.VALE', 'TYPE', cval=type)
     if (type(1:1) .eq. 'R') then
         fieldScalar = 1
@@ -176,8 +172,7 @@ subroutine irdepl(fileUnit, &
     else
         ASSERT(ASTER_FALSE)
     end if
-    quantityIndx = desc(1)
-    fieldRepr = desc(2)
+    call dismoi('NUM_GD', fieldName, 'CHAM_NO', repi=quantityIndx)
 !
 ! - "coded" integers
 !
@@ -186,19 +181,17 @@ subroutine irdepl(fileUnit, &
 !
 ! - Access to mesh
 !
-    meshName = refe(1) (1:8)
+    call dismoi('NOM_MAILLA', fieldName, 'CHAM_NO', repk=meshName)
     call dismoi('DIM_GEOM_B', meshName, 'MAILLAGE', repi=meshDime)
     call jeveuo(meshName//'.COORDO    .VALE', 'L', vr=meshCoor)
     call dismoi('NB_NO_MAILLA', meshName, 'MAILLAGE', repi=meshNodeNb)
 !
 ! - Access to profile of numbering
 !
-    profName = refe(2)
-    if (fieldRepr .ge. 0) then
-        call jeveuo(profName(1:19)//'.NUEQ', 'L', vi=nueq)
-        call jenonu(jexnom(profName(1:19)//'.LILI', '&MAILLA'), liliMesh)
-        call jeveuo(jexnum(profName(1:19)//'.PRNO', liliMesh), 'L', vi=prno)
-    end if
+    call dismoi('NUME_EQUA', fieldName, 'CHAM_NO', repk=profName)
+    call jeveuo(profName(1:19)//'.NUEQ', 'L', vi=nueq)
+    call jenonu(jexnom(profName(1:19)//'.LILI', '&MAILLA'), liliMesh)
+    call jeveuo(jexnum(profName(1:19)//'.PRNO', liliMesh), 'L', vi=prno)
 !
 ! - Select list of components
 !
@@ -221,21 +214,14 @@ subroutine irdepl(fileUnit, &
 !
 ! - Print nodal field
 !
-    if (fieldScalar .eq. 1 .and. fieldRepr .ge. 0) then
+    if (fieldScalar .eq. 1) then
         call jeveuo(fieldName//'.VALE', 'L', vr=valeR)
         call ircnrl(fileUnit, nodeNb, prno, nueq, nec, &
                     codeInte, cmpCataNb, valeR, cmpCataName, nodeListName, &
                     lMeshCoor, meshDime, meshCoor, nodeListNume, cmpListNb, &
                     cmpListIndx, lsup, borsup, linf, borinf, &
                     lmax, lmin, realFormat)
-    else if (fieldScalar .eq. 1 .and. fieldRepr .lt. 0) then
-        call jeveuo(fieldName//'.VALE', 'L', vr=valeR)
-        call ircrrl(fileUnit, nodeNb, desc, nec, codeInte, &
-                    cmpCataNb, valeR, cmpCataName, nodeListName, lMeshCoor, &
-                    meshDime, meshCoor, nodeListNume, cmpListNb, cmpListIndx, &
-                    lsup, borsup, linf, borinf, lmax, &
-                    lmin, realFormat)
-    else if (fieldScalar .eq. 2 .and. fieldRepr .ge. 0) then
+    else if (fieldScalar .eq. 2) then
         call jeveuo(fieldName//'.VALE', 'L', vc=valeC)
         call ircnc8(fileUnit, realFormat, cplxFormat, &
                     nodeNb, nodeListNume, nodeListName, &
@@ -248,8 +234,6 @@ subroutine irdepl(fileUnit, &
                     lsup, borsup, &
                     linf, borinf, &
                     valeC)
-    else if (fieldScalar .eq. 2 .and. fieldRepr .lt. 0) then
-        call utmess('F', 'RESULT3_34')
     else if (fieldScalar .eq. 3 .or. fieldScalar .eq. 4) then
         call utmess('I', 'RESULT3_99', sk=fieldType)
         call cnocns(fieldName, 'V', fieldNameS)

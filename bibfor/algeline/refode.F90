@@ -72,12 +72,8 @@ subroutine refode(nbcmb, angle, nomch, nuharm, tyharm, &
     base = basz
     ch19 = nomch(1)
 !
-    call jeexin(ch19//'.DESC', ibid)
-    if (ibid .gt. 0) then
-        call jelira(ch19//'.DESC', 'DOCU', cval=docu)
-    else
-        call jelira(ch19//'.CELD', 'DOCU', cval=docu)
-    end if
+    call dismoi("DOCU", ch19, "CHAMP", repk=docu)
+
 !
     if (docu .eq. 'CHNO') then
         desc = '.DESC'

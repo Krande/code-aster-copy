@@ -64,24 +64,34 @@ subroutine dismcp(questi, nomobz, repi, repkz, ierd)
     if (iexi .gt. 0) then
         call jelira(nomob(1:19)//'.DESC', 'DOCU', cval=tych)
     else
-        call jeexin(nomob(1:19)//'.CELD', iexi)
+        call jeexin(nomob(1:19)//'.REFE', iexi)
         if (iexi .gt. 0) then
-            call jelira(nomob(1:19)//'.CELD', 'DOCU', cval=tych)
+            call jelira(nomob(1:19)//'.REFE', 'DOCU', cval=tych)
         else
-            call jeexin(nomob(1:19)//'.CESD', iexi)
+            call jeexin(nomob(1:19)//'.CELD', iexi)
             if (iexi .gt. 0) then
-                tych = 'CES'
+                call jelira(nomob(1:19)//'.CELD', 'DOCU', cval=tych)
             else
-                call jeexin(nomob(1:19)//'.CNSD', iexi)
+                call jeexin(nomob(1:19)//'.CESD', iexi)
                 if (iexi .gt. 0) then
-                    tych = 'CNS'
+                    tych = 'CES'
                 else
-                    repk = '?'
-                    ierd = 1
-                    goto 10
+                    call jeexin(nomob(1:19)//'.CNSD', iexi)
+                    if (iexi .gt. 0) then
+                        tych = 'CNS'
+                    else
+                        repk = '?'
+                        ierd = 1
+                        goto 10
+                    end if
                 end if
             end if
         end if
+    end if
+
+    if (questi(1:4) == "DOCU") then
+        repk = tych
+        go to 10
     end if
 !
 !

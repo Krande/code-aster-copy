@@ -72,7 +72,7 @@ subroutine assvss(base, vec, vecel, nu, vecpro, &
     integer :: i, i1, iad1, iadlie, iadnem, iadval
     integer :: ialcha, iamail, iancmp, ianueq, ianulo, iaprol
     integer :: iapsdl, ichar, icmp, iconx1, iconx2, idnequ
-    integer :: idprn1, idprn2, idresl, idveds, idverf, iec
+    integer :: idprn1, idprn2, idresl, idverf, iec
     integer :: ierd, il, ilim, ilimnu, ilivec, ima
     integer :: inold, iret, jec, k1, lgncmp, n1, nbchar
     integer :: nbecmx, nbelm, nbnoss, nbsma, nbssa, ncmp, ncmpel
@@ -85,7 +85,7 @@ subroutine assvss(base, vec, vecel, nu, vecpro, &
     character(len=14) :: nudev
     character(len=19) :: vecas, vprof
     character(len=24) :: knueq, kmaila, k24prn
-    character(len=24) :: kvelil, kveref, kvedsc, knequa, kvale
+    character(len=24) :: kvelil, kveref, knequa, kvale
     integer :: icodla(nbecmx), icodge(nbecmx)
     integer :: admodl, lcmodl, ifm, niv
     integer :: jfonct
@@ -204,19 +204,12 @@ subroutine assvss(base, vec, vecel, nu, vecpro, &
 !
     kveref = vecas//'.REFE'
     kvale = vecas//'.VALE'
-    kvedsc = vecas//'.DESC'
 !
     call jecreo(kveref, bas//' V K24')
     call jeecra(kveref, 'LONMAX', 4)
     call jeveuo(kveref, 'E', idverf)
-    call jecreo(kvedsc, bas//' V I')
-    call jeecra(kvedsc, 'LONMAX', 2)
-    call jeecra(kvedsc, 'DOCU', cval='CHNO')
-    call jeveuo(kvedsc, 'E', idveds)
-    zk24(idverf) = ma
+    call jeecra(kveref, 'DOCU', cval='CHNO')
     zk24(idverf+1) = k24prn(1:14)//'.NUME'
-    zi(idveds) = gd
-    zi(idveds+1) = 1
 !
 !
     if (type .eq. 1) then

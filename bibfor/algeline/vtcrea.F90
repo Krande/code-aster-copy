@@ -54,14 +54,13 @@ subroutine vtcrea(champ, crefe, base, typc, neq)
     integer :: lchamp
     character(len=1) :: classe
     character(len=1) :: type
-    character(len=24) :: vale, refe, desc
+    character(len=24) :: vale, refe
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: i, ibid, neq, nugdsi
+    integer :: ibid, neq
 !-----------------------------------------------------------------------
     data vale/'                   .VALE'/
     data refe/'                   .REFE'/
-    data desc/'                   .DESC'/
 !     DEB --------------------------------------------------------------
     call jemarq()
     classe = base(1:1)
@@ -74,17 +73,8 @@ subroutine vtcrea(champ, crefe, base, typc, neq)
 !     --- RECOPIE DE L'OBJET .REFE MODELE :
     refe(1:19) = champ
     call wkvect(refe, classe//' V K24', 4, lchamp)
-    do i = 1, 2
-        zk24(lchamp-1+i) = crefe(i)
-    end do
-!
-!     -- CREATION DE L'OBJET .DESC :
-    desc(1:19) = champ
-    call wkvect(desc, classe//' V I', 2, lchamp)
-    call jeecra(desc, 'DOCU', ibid, 'CHNO')
-    call dismoi('NUM_GD_SI', crefe(2), 'NUME_EQUA', repi=nugdsi)
-    zi(lchamp-1+1) = nugdsi
-    zi(lchamp-1+2) = 1
+    call jeecra(refe, 'DOCU', ibid, 'CHNO')
+    zk24(lchamp-1+2) = crefe(2)
 !
 !     -- CREATION DE L'OBJET .VALE :
     vale(1:19) = champ

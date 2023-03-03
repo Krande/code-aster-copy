@@ -29,27 +29,20 @@ class sd_cham_no(sd_titre):
     VALE = AsVect(
         ltyp=Parmi(4, 8, 16, 24), type=Parmi("C", "I", "K", "R"), docu=Parmi("", "2", "3")
     )
-    REFE = AsVK24(lonmax=4)
-    DESC = AsVI(docu="CHNO")
+    REFE = AsVK24(lonmax=4, docu="CHNO")
 
     def exists(self):
         # retourne "vrai" si la SD semble exister (et donc qu'elle peut etre
         # vérifiée)
         return self.REFE.exists
 
-    def u_desc(self):
-        desc = self.DESC.get()
-        gd = desc[0]
-        num = desc[1]
-        return gd, num
-
     def u_refe(self):
         refe = self.REFE.get_stripped()
-        mail = refe[0]
+        assert refe[0] == "", refe
         nume_equa = refe[1]
         assert refe[2] == "", refe
         assert refe[3] == "", refe
-        return mail, nume_equa
+        return nume_equa
 
     def check_cham_no_i_REFE(self, checker):
 
@@ -58,27 +51,8 @@ class sd_cham_no(sd_titre):
         if self.REFE in checker.names:
             return
 
-        mail, nume_equa = self.u_refe()
-        gd, num = self.u_desc()
+        nume_equa = self.u_refe()
 
-        # faut-il vérifier le sd_maillage de chaque sd_cham_no ?   AJACOT_PB
-        #  - cela risque de couter cher
-        sd2 = sd_maillage(mail)
+        # maillage vérifié dans le nume_equa
+        sd2 = sd_nume_equa(nume_equa)
         sd2.check(checker)
-        if nume_equa and num > 0:
-            if nume_equa[:14] + ".NUME.PRNO" in checker.names:
-                return
-            sd2 = sd_nume_equa(nume_equa)
-            sd2.check(checker)
-
-    def check_cham_no_DESC(self, checker):
-        if not self.exists():
-            return
-        if self.DESC in checker.names:
-            return
-
-        gd, num = self.u_desc()
-        if num > 0:
-            assert self.DESC.lonmax == 2
-        else:
-            assert False

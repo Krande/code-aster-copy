@@ -55,7 +55,7 @@ subroutine vtcop1(chin, chout, kstop, codret)
     integer :: nnomx, ncpmx, nuno2, nucp2, nuno1, nucp1
     integer :: jcmpgd, ncmpmx, icmp
     character(len=1) :: typ1, typ2
-    character(len=8) :: nomgd, noma
+    character(len=8) :: nomgd, noma, mesh1, mesh2
     character(len=24) :: valk(4)
     character(len=19) :: ch1, ch2, pfchno
     integer, pointer :: trav1(:) => null()
@@ -65,8 +65,6 @@ subroutine vtcop1(chin, chout, kstop, codret)
     integer, pointer :: deeq1(:) => null()
     integer, pointer :: deeq2(:) => null()
     integer, pointer :: deeq(:) => null()
-    integer, pointer :: desc1(:) => null()
-    integer, pointer :: desc2(:) => null()
 !
 !     ------------------------------------------------------------------
 !
@@ -141,19 +139,15 @@ subroutine vtcop1(chin, chout, kstop, codret)
     call jelira(ch2//'.VALE', 'LONMAX', neq2)
     call jeveuo(ch2//'.VALE', 'E', jvale2)
 !
-    call jeveuo(ch1//'.DESC', 'L', vi=desc1)
-    call jeveuo(ch2//'.DESC', 'L', vi=desc2)
-    if ((desc1(2) .lt. 0) .or. (desc2(2) .lt. 0)) then
-        call utmess('F', 'ALGELINE3_95')
-    end if
-!
     call jeveuo(ch1//'.REFE', 'L', vk24=refe1)
     call jeveuo(ch2//'.REFE', 'L', vk24=refe2)
-    if (refe1(1) (1:8) .ne. refe2(1) (1:8)) then
+    call dismoi("NOM_MAILLA", ch1, "CHAM_NO", repk=mesh1)
+    call dismoi("NOM_MAILLA", ch2, "CHAM_NO", repk=mesh2)
+    if (mesh1 .ne. mesh2) then
         valk(1) = ch1
         valk(2) = ch2
-        valk(3) = refe1(1) (1:8)
-        valk(4) = refe2(1) (1:8)
+        valk(3) = mesh1
+        valk(4) = mesh2
         call utmess('F', 'CALCULEL2_1', nk=4, valk=valk)
     end if
     call jeveuo(refe1(2) (1:19)//'.DEEQ', 'L', vi=deeq1)

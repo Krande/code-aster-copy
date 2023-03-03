@@ -44,12 +44,17 @@ class sd_champ(AsBase):
         if iexi:
             nom2 = nom + ".CELD"
         else:
-            nom2 = nom + ".DESC"
-            iexi2 = aster.jeveux_exists(nom2)
-            if not iexi2:
-                if not self.optional and not checker.optional:
-                    checker.err(self, "n'existe pas (%r)" % self._parent)
-                return
+            nom1 = nom + ".REFE"
+            iexi = aster.jeveux_exists(nom1)
+            if iexi:
+                nom2 = nom + ".REFE"
+            else:
+                nom2 = nom + ".DESC"
+                iexi2 = aster.jeveux_exists(nom2)
+                if not iexi2:
+                    if not self.optional and not checker.optional:
+                        checker.err(self, "n'existe pas (%r)" % self._parent)
+                    return
 
         docu = aster.jeveux_getattr(nom2, "DOCU")[1].strip()
         if docu == "CHNO":

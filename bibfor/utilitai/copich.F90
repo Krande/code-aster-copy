@@ -55,7 +55,7 @@ subroutine copich(base, ch1z, ch2z)
     character(len=16) :: concep, cmd
     character(len=19) :: prno, prno2, ch1, ch2, ligr, ligr2
     character(len=24) :: noojb
-    integer :: iret1, iret2
+    integer :: iret
     character(len=24), pointer :: refe(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
@@ -63,20 +63,12 @@ subroutine copich(base, ch1z, ch2z)
     ch1 = ch1z
     ch2 = ch2z
 !
-    call jeexin(ch1//'.DESC', iret1)
-    call jeexin(ch1//'.CELD', iret2)
-    if (max(iret1, iret2) .eq. 0) goto 999
-!
-    if (iret1 .gt. 0) then
-        call jelira(ch1//'.DESC', 'DOCU', cval=docu)
-    else
-        call jelira(ch1//'.CELD', 'DOCU', cval=docu)
-    end if
+    call dismoi("DOCU", ch1, "CHAMP", repk=docu, ier=iret, arret="C")
+    if (iret > 0) go to 999
 !
 !     -- CAS DES CHAM_NO :
 !     ----------------------
     if (docu .eq. 'CHNO') then
-        call jedup1(ch1//'.DESC', base, ch2//'.DESC')
         call jedup1(ch1//'.REFE', base, ch2//'.REFE')
         call jedup1(ch1//'.VALE', base, ch2//'.VALE')
 !
@@ -151,6 +143,7 @@ subroutine copich(base, ch1z, ch2z)
 !
 !
     else
+        print *, ch1, ", ", docu
         call utmess('F', 'CALCULEL_17')
     end if
 !

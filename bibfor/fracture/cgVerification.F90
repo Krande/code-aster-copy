@@ -51,7 +51,7 @@ subroutine cgVerification(cgField, cgTheta, cgStudy, cgStat)
 !
     character(len=8) :: model, mesh, typmo, mesh0, nomgd
     aster_logical :: lmodemeca, ldynatrans
-    integer :: nexci, nbel, i, desc, gd
+    integer :: nexci, nbel, i
     real(kind=8) :: start, finish, dirz, absccur, long
     real(kind=8), pointer :: jvale(:) => null()
 !
@@ -95,9 +95,7 @@ subroutine cgVerification(cgField, cgTheta, cgStudy, cgStat)
         call dismoi('NOM_MAILLA', cgTheta%theta_factors, 'CHAM_NO', repk=mesh0)
         ASSERT(mesh0 .eq. mesh)
 
-        call jeveuo(cgTheta%theta_factors(1:19)//'.DESC', 'L', desc)
-        gd = zi(desc-1+1)
-        call jenuno(jexnum('&CATA.GD.NOMGD', gd), nomgd)
+        call dismoi('NOM_GD', cgTheta%theta_factors, 'CHAM_NO', repk=nomgd)
         if ((nomgd(1:6) .ne. 'THET_R')) then
             call utmess('F', 'RUPTURE3_5', sk=nomgd)
         end if

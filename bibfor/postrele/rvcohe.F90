@@ -63,7 +63,7 @@ subroutine rvcohe(xdicmp, xdncmp, vcheff, i, ier)
     character(len=4) :: docu
     integer :: acheff, alneud, anumcp, anomcp, nbcmp
     integer :: nbgrpn, nbneud, grel, nbgrel, jceld, amod, mod
-    integer :: j, k, n1, ibid, ngrn, iexi
+    integer :: j, k, n1, ngrn, iexi
     aster_logical :: chelok
     character(len=24), pointer :: grpn(:) => null()
 !
@@ -96,12 +96,7 @@ subroutine rvcohe(xdicmp, xdncmp, vcheff, i, ier)
 !        VERIFICATION POUR LES CHAM_ELEM DU CARACTERE "AUX NOEUDS"
 !
         nchp19 = ncheff(1:19)
-        call jeexin(nchp19//'.DESC', ibid)
-        if (ibid .gt. 0) then
-            call jelira(nchp19//'.DESC', 'DOCU', cval=docu)
-        else
-            call jelira(nchp19//'.CELD', 'DOCU', cval=docu)
-        end if
+        call dismoi("DOCU", nchp19, "CHAMP", repk=docu)
 !
         if (docu .eq. 'CHML') then
             ndesc = nchp19//'.CELD'

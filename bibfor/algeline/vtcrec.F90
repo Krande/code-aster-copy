@@ -55,19 +55,17 @@ subroutine vtcrec(champ, chmod, base, typc, neq)
     integer :: lchamp
     character(len=1) :: classe
     character(len=1) :: type
-    character(len=24) :: vale, refe, desc
+    character(len=24) :: vale, refe
 !     ------------------------------------------------------------------
-    integer :: ibid, nugdsi, neq
+    integer :: ibid, neq
     character(len=19) :: chmod2
 !     ------------------------------------------------------------------
     data vale/'                   .VALE'/
     data refe/'                   .REFE'/
-    data desc/'                   .DESC'/
 !     DEB --------------------------------------------------------------
     call jemarq()
 !
     refe(1:19) = champ
-    desc(1:19) = champ
     vale(1:19) = champ
     chmod2 = chmod
 !
@@ -80,13 +78,7 @@ subroutine vtcrec(champ, chmod, base, typc, neq)
 !
 !     -- RECOPIE DE L'OBJET .REFE MODELE :
     call jedupo(chmod2//'.REFE', classe, refe, .false._1)
-!
-!     -- CREATION DE L'OBJET .DESC :
-    call wkvect(desc, classe//' V I', 2, lchamp)
-    call jeecra(desc, 'DOCU', ibid, 'CHNO')
-    call dismoi('NUM_GD', chmod2, 'CHAM_NO', repi=nugdsi)
-    zi(lchamp-1+1) = nugdsi
-    zi(lchamp-1+2) = 1
+    call jeecra(refe, 'DOCU', ibid, 'CHNO')
 !
 !     -- CREATION DE L'OBJET .VALE :
     call wkvect(vale, classe//' V '//type, neq, lchamp)

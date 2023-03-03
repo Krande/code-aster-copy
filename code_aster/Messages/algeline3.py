@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -490,11 +490,6 @@ Les CHAM_NO  %(k1)s  et  %(k2)s  sont de type inconnu  %(k3)s
     94: _(
         """
 Le CHAM_NO  %(k1)s  de type  %(k2)s  ne peut être copié dans le CHAM_NO  %(k3)s  de type  %(k4)s
-"""
-    ),
-    95: _(
-        """
-Champ à représentation constante : cas non traité.
 """
     ),
     97: _(

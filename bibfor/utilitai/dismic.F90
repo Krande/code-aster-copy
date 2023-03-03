@@ -22,6 +22,7 @@ subroutine dismic(questi, nomobz, repi, repkz, ierd)
 !     ARGUMENTS:
 !     ----------
 #include "jeveux.h"
+#include "asterfort/assert.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jelira.h"
@@ -82,9 +83,9 @@ subroutine dismic(questi, nomobz, repi, repkz, ierd)
         end if
 !
     else if (questi(1:7) .eq. 'CHAM_NO') then
-        call jeexin(nomob//'.DESC', iret)
+        call jeexin(nomob//'.REFE', iret)
         if (iret .gt. 0) then
-            call jelira(nomob//'.DESC', 'DOCU', cval=docu)
+            call jelira(nomob//'.REFE', 'DOCU', cval=docu)
             if (docu .eq. 'CHNO') then
                 repk = 'OUI'
                 goto 9999
@@ -111,13 +112,18 @@ subroutine dismic(questi, nomobz, repi, repkz, ierd)
         if (ire1 .gt. 0) then
             call jelira(nomob//'.DESC', 'DOCU', cval=docu)
             if (docu .eq. 'CHNO') then
-                repk = 'CHAM_NO'
-                goto 9999
+                ASSERT(.false.)
             else
                 call rsdocu(docu, repk, iret)
                 if (iret .ne. 0) ierd = 1
                 goto 9999
             end if
+        end if
+!
+        call jeexin(nomob//'.REFE', ire1)
+        if (ire1 .gt. 0) then
+            repk = 'CHAM_NO'
+            goto 9999
         end if
 !
         call jeexin(nomob//'.CELD', ire1)

@@ -90,9 +90,9 @@ subroutine tresu_champ_no(cham19, nonoeu, nocmp, nbref, tbtxt, &
     integer, pointer :: v_noex(:) => null()
 !
 !-----------------------------------------------------------------------
-    integer :: iadesc, iancmp, ianueq, iaprno, iarefe, iavale
+    integer :: iancmp, ianueq, iaprno, iavale
     integer :: icmp, idecal, iicmp, ino, ival, ncmp
-    integer :: ncmpmx, nec, num
+    integer :: ncmpmx, nec
 !-----------------------------------------------------------------------
     call jemarq()
 !
@@ -110,10 +110,9 @@ subroutine tresu_champ_no(cham19, nonoeu, nocmp, nbref, tbtxt, &
     l_parallel_mesh = isParallelMesh(mesh)
 !
     call dismoi('NOM_GD', cham19, 'CHAM_NO', repk=nogd)
-!
-    call jeveuo(cham19//'.REFE', 'L', iarefe)
-    nomma = zk24(iarefe-1+1) (1:8)
-    numeq = zk24(iarefe-1+2) (1:19)
+    call dismoi('NUM_GD', cham19, 'CHAM_NO', repi=gd)
+    call dismoi('NOM_MAILLA', cham19, 'CHAM_NO', repk=nomma)
+    call dismoi('NUME_EQUA', cham19, 'CHAM_NO', repk=numeq)
 !
     call jelira(cham19//'.VALE', 'TYPE', cval=type)
     if (type .ne. typres) then
@@ -127,10 +126,6 @@ subroutine tresu_champ_no(cham19, nonoeu, nocmp, nbref, tbtxt, &
     end if
     call jeveuo(cham19//'.VALE', 'L', iavale)
 !
-    call jeveuo(cham19//'.DESC', 'L', iadesc)
-    gd = zi(iadesc-1+1)
-    num = zi(iadesc-1+2)
-    ASSERT(num > 0)
     nec = nbec(gd)
 !
 !     -- ON RECHERCHE LE NUMERO CORRESPONDANT A NOCMP:

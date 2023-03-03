@@ -94,9 +94,8 @@ subroutine assvec(jvBase, vectAsseZ, &
     integer, parameter :: nbecmx = 10
     character(len=8) :: mesh, model, vectElemModel, nogdsi, nogdco
     character(len=14) :: numeDof, answer
-    character(len=24) :: vectRefeJv, vectDescJv, vectValeJv
+    character(len=24) :: vectRefeJv, vectValeJv
     character(len=24), pointer :: vectRefe(:) => null()
-    integer, pointer :: vectDesc(:) => null()
     character(len=19) :: vectAsse, vectAsseForNume
     character(len=19) :: vectElem, resuElem, numeEqua
     character(len=24) :: numePrnoJv, numeNueqJv, numeNequJv
@@ -288,22 +287,14 @@ subroutine assvec(jvBase, vectAsseZ, &
 ! - Access to vector
     vectRefeJv = vectAsse//'.REFE'
     vectValeJv = vectAsse//'.VALE'
-    vectDescJv = vectAsse//'.DESC'
 
 ! - Create vector objeccts
     call jecreo(vectRefeJv, jvBase//' V K24')
     call jeecra(vectRefeJv, 'LONMAX', 4)
     call jeecra(vectRefeJv, 'LONUTI', 4)
     call jeveuo(vectRefeJv, 'E', vk24=vectRefe)
-    call jecreo(vectDescJv, jvBase//' V I')
-    call jeecra(vectDescJv, 'LONMAX', 2)
-    call jeecra(vectDescJv, 'LONUTI', 2)
-    call jeecra(vectDescJv, 'DOCU', cval='CHNO')
-    call jeveuo(vectDescJv, 'E', vi=vectDesc)
-    vectRefe(1) = mesh
+    call jeecra(vectRefeJv, 'DOCU', cval='CHNO')
     vectRefe(2) = numePrnoJv(1:14)//'.NUME'
-    vectDesc(1) = physQuan
-    vectDesc(2) = 1
     if (vectScalType .eq. 1) then
         call jecreo(vectValeJv, jvBase//' V R8')
     else if (vectScalType .eq. 2) then

@@ -51,7 +51,7 @@ subroutine dismcn(questi, nomobz, repi, repkz, ierd)
 !     VARIABLES LOCALES:
 !     ------------------
     character(len=8) :: nogd
-    integer :: iadesc, iarefe
+    integer :: iarefe, i8
 !-----------------------------------------------------------------------
     call jemarq()
     repk = ' '
@@ -65,21 +65,21 @@ subroutine dismcn(questi, nomobz, repi, repkz, ierd)
         call jelira(nomob//'.VALE', 'LONMAX', repi)
     else if (questl .eq. 'NOM_MAILLA') then
         call jeveuo(nomob//'.REFE', 'L', iarefe)
-        repk = zk24(iarefe-1+1) (1:8)
+        call dismeq(questl, zk24(iarefe-1+2), repi, repk, ierd)
     else if (questl .eq. 'NB_DDLACT') then
         call jeveuo(nomob//'.REFE', 'L', iarefe)
         call dismeq(questl, zk24(iarefe-1+2), repi, repk, ierd)
     else if (questl .eq. 'TYPE_CHAMP') then
         repk = 'NOEU'
     else if (questl(1:7) .eq. 'NUM_GD ') then
-        call jeveuo(nomob//'.DESC', 'L', iadesc)
-        repi = zi(iadesc)
+        call jeveuo(nomob//'.REFE', 'L', iarefe)
+        call dismeq(questl, zk24(iarefe-1+2), repi, repk, ierd)
     else if (questl(1:7) .eq. 'NOM_GD ') then
-        call jeveuo(nomob//'.DESC', 'L', iadesc)
-        call jenuno(jexnum('&CATA.GD.NOMGD', zi(iadesc)), repk)
+        call jeveuo(nomob//'.REFE', 'L', iarefe)
+        call dismeq(questl, zk24(iarefe-1+2), repi, repk, ierd)
     else if (questl .eq. 'TYPE_SUPERVIS' .or. questl .eq. 'TYPE_SCA') then
-        call jeveuo(nomob//'.DESC', 'L', iadesc)
-        call jenuno(jexnum('&CATA.GD.NOMGD', zi(iadesc)), nogd)
+        call jeveuo(nomob//'.REFE', 'L', iarefe)
+        call dismeq("NOM_GD", zk24(iarefe-1+2), i8, nogd, ierd)
         if (questl .eq. 'TYPE_SUPERVIS') then
             repk = 'CHAM_NO_'//nogd
         else

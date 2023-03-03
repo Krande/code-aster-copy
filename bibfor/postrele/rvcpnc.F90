@@ -465,11 +465,7 @@ subroutine rvcpnc(mcf, iocc, nch19, gd, typegd, &
 !     /* CAS NOM_CMP */
 !
         call jeexin(nch19//'.DESC', ibid)
-        if (ibid .gt. 0) then
-            call jelira(nch19//'.DESC', 'DOCU', cval=docu)
-        else
-            call jelira(nch19//'.CELD', 'DOCU', cval=docu)
-        end if
+        call dismoi("DOCU", nch19, "CHAMP", repk=docu)
 !
         if (repere .eq. 'GLOBAL') then
             call wkvect(nomojb, 'V V K8', nbcpc, avk8)

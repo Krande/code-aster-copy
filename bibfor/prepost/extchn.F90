@@ -146,9 +146,9 @@ subroutine extchn(nchmno, nnoeud, numnd, ncmp, nbn, &
 !   NOMS ET ADRESSES DES OJB ASSOCIES AUX CHAM_NO
 !   ---------------------------------------------
 !
-    integer :: adesch, arefch, avalch, anueq
+    integer :: avalch, anueq
     character(len=3) :: type
-    character(len=24) :: ndesch, nrefch, nvalch, nomaux, nnueq, nomvec
+    character(len=24) :: nvalch, nnueq, nomvec
 !
 !   NOMS ET ADREESES DES OJB ASSOCIES AUX SOUS_CHAM_NO
 !   --------------------------------------------------
@@ -177,7 +177,7 @@ subroutine extchn(nchmno, nnoeud, numnd, ncmp, nbn, &
 !   VARIABLES COMPLEMENTAIRES
 !   -------------------------
 !
-    integer :: num, anumcp, i, ind, n1, ibid
+    integer :: anumcp, i, ind, n1, ibid
     real(kind=8) :: angl(3), pgl(3, 3), orig(3), axez(3)
     real(kind=8) :: zero, xnormz, epsi
     aster_logical :: utili
@@ -187,8 +187,6 @@ subroutine extchn(nchmno, nnoeud, numnd, ncmp, nbn, &
 !
     call jemarq()
 !
-    ndesch = nchmno//'.DESC'
-    nrefch = nchmno//'.REFE'
     nvalch = nchmno//'.VALE'
     ibid = 0
     zero = 0.0d0
@@ -203,8 +201,6 @@ subroutine extchn(nchmno, nnoeud, numnd, ncmp, nbn, &
         call rvrecu(mcf, iocc, nchmno, nomvec)
         call jeveuo(nomvec, 'L', avalch)
     end if
-    call jeveuo(ndesch, 'L', adesch)
-    call jeveuo(nrefch, 'L', arefch)
 !
 !   EST-CE UN REPERE "UTILISATEUR"
 !   ------------------------------
@@ -253,12 +249,8 @@ subroutine extchn(nchmno, nnoeud, numnd, ncmp, nbn, &
     nnoma = nsschn//'.NOMA'
     nnugd = nsschn//'.NUGD'
 !
-    gd = zi(adesch+1-1)
-    num = zi(adesch+2-1)
-    ASSERT(num > 0)
-!
-    nomaux = zk24(arefch+1-1)
-    nmaila = nomaux(1:8)
+    call dismoi('NUM_GD', nchmno, 'CHAM_NO', repi=gd)
+    call dismoi('NOM_MAILLA', nchmno, 'CHAM_NO', repk=nmaila)
 !
     call wkvect(nnoma, 'V V K8', 1, anoma)
 !
@@ -373,8 +365,7 @@ subroutine extchn(nchmno, nnoeud, numnd, ncmp, nbn, &
 !        RECUPERATION DU NOM DU NUME_EQUA
 !        --------------------------------
 !
-    nomaux = zk24(arefch+2-1)
-    nprof = nomaux(1:19)
+    call dismoi('NUME_EQUA', nchmno, 'CHAM_NO', repk=nprof)
 !
 !        ACCES AU DESCRIPTEUR DU CHAM_NO
 !        -------------------------------

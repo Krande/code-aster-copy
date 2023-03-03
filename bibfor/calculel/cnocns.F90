@@ -64,7 +64,6 @@ subroutine cnocns(cnoz, basez, cnsz, undf0_)
     integer :: iadg, jprno, i_node, ncmp, nb_cmp, jcnsl, jcnsv
     integer :: ival, ico, ieq, i_cmp_cata, i_cmp_field, i_cmp
     logical :: sdveri
-    integer, pointer :: desc(:) => null()
     integer, pointer :: nueq(:) => null()
     integer, pointer :: cata_to_field(:) => null()
     integer, pointer :: field_to_cata(:) => null()
@@ -107,7 +106,6 @@ subroutine cnocns(cnoz, basez, cnsz, undf0_)
     call dismoi('TYPE_SCA', gran_name, 'GRANDEUR', repk=tsca)
 
     call jeveuo(cno//'.VALE', 'L', jvale)
-    call jeveuo(cno//'.DESC', 'L', vi=desc)
 !
 ! - Create objects for global components (catalog) <=> local components (field)
 !
@@ -123,79 +121,49 @@ subroutine cnocns(cnoz, basez, cnsz, undf0_)
 !
     call jeveuo(cns//'.CNSL', 'E', jcnsl)
     call jeveuo(cns//'.CNSV', 'E', jcnsv)
-!
-! - Constant profiling ?
-!
-    if (desc(2) .lt. 0) then
-        nume_equa = ' '
-    else
-        call dismoi('NUME_EQUA', cno, 'CHAM_NO', repk=nume_equa)
-    end if
+    call dismoi('NUME_EQUA', cno, 'CHAM_NO', repk=nume_equa)
 !
 ! - Set values in CNS
 !
-    if (nume_equa .eq. ' ') then
-        ASSERT(ASTER_FALSE)
-        do i_node = 1, nb_node
-            do i_cmp_field = 1, nb_cmp
-                zl(jcnsl-1+(i_node-1)*nb_cmp+i_cmp_field) = .true.
-                ieq = (i_node-1)*nb_cmp+i_cmp_field
-                if (tsca .eq. 'R') then
-                    zr(jcnsv-1+ieq) = zr(jvale-1+ieq)
-                else if (tsca .eq. 'I') then
-                    zi(jcnsv-1+ieq) = zi(jvale-1+ieq)
-                else if (tsca .eq. 'C') then
-                    zc(jcnsv-1+ieq) = zc(jvale-1+ieq)
-                else if (tsca .eq. 'L') then
-                    zl(jcnsv-1+ieq) = zl(jvale-1+ieq)
-                else if (tsca .eq. 'K8') then
-                    zk8(jcnsv-1+ieq) = zk8(jvale-1+ieq)
-                else
-                    ASSERT(.false.)
-                end if
-            end do
-        end do
-    else
-        call jeveuo(jexnum(nume_equa//'.PRNO', 1), 'L', jprno)
-        call jeveuo(nume_equa//'.NUEQ', 'L', vi=nueq)
-        do i_node = 1, nb_node
+    call jeveuo(jexnum(nume_equa//'.PRNO', 1), 'L', jprno)
+    call jeveuo(nume_equa//'.NUEQ', 'L', vi=nueq)
+    do i_node = 1, nb_node
 !
 !         NCMP : NOMBRE DE CMPS SUR LE NOEUD INO
 !         IVAL : ADRESSE DU DEBUT DU NOEUD INO DANS .NUEQ
 !         IADG : DEBUT DU DESCRIPTEUR GRANDEUR DU NOEUD INO
-            ncmp = zi(jprno-1+(i_node-1)*(nb_ec+2)+2)
-            if (ncmp .ne. 0) then
-                ival = zi(jprno-1+(i_node-1)*(nb_ec+2)+1)
-                iadg = jprno-1+(i_node-1)*(nb_ec+2)+3
-                ico = 0
-                do i_cmp = 1, nb_cmp
-                    i_cmp_cata = field_to_cata(i_cmp)
-                    if (exisdg(zi(iadg), i_cmp_cata)) then
-                        ico = ico+1
-                        ieq = nueq(ival-1+ico)
-                        i_cmp_field = cata_to_field(i_cmp_cata)
+        ncmp = zi(jprno-1+(i_node-1)*(nb_ec+2)+2)
+        if (ncmp .ne. 0) then
+            ival = zi(jprno-1+(i_node-1)*(nb_ec+2)+1)
+            iadg = jprno-1+(i_node-1)*(nb_ec+2)+3
+            ico = 0
+            do i_cmp = 1, nb_cmp
+                i_cmp_cata = field_to_cata(i_cmp)
+                if (exisdg(zi(iadg), i_cmp_cata)) then
+                    ico = ico+1
+                    ieq = nueq(ival-1+ico)
+                    i_cmp_field = cata_to_field(i_cmp_cata)
 !             ASSERT(ic_mp_field.EQ.ic_mp)  COUTEUX ?
 
-                        zl(jcnsl-1+(i_node-1)*nb_cmp+i_cmp_field) = .true.
+                    zl(jcnsl-1+(i_node-1)*nb_cmp+i_cmp_field) = .true.
 
-                        if (tsca .eq. 'R') then
-                            zr(jcnsv-1+(i_node-1)*nb_cmp+i_cmp_field) = zr(jvale-1+ieq)
-                        else if (tsca .eq. 'I') then
-                            zi(jcnsv-1+(i_node-1)*nb_cmp+i_cmp_field) = zi(jvale-1+ieq)
-                        else if (tsca .eq. 'C') then
-                            zc(jcnsv-1+(i_node-1)*nb_cmp+i_cmp_field) = zc(jvale-1+ieq)
-                        else if (tsca .eq. 'L') then
-                            zl(jcnsv-1+(i_node-1)*nb_cmp+i_cmp_field) = zl(jvale-1+ieq)
-                        else if (tsca .eq. 'K8') then
-                            zk8(jcnsv-1+(i_node-1)*nb_cmp+i_cmp_field) = zk8(jvale-1+ieq)
-                        else
-                            ASSERT(.false.)
-                        end if
+                    if (tsca .eq. 'R') then
+                        zr(jcnsv-1+(i_node-1)*nb_cmp+i_cmp_field) = zr(jvale-1+ieq)
+                    else if (tsca .eq. 'I') then
+                        zi(jcnsv-1+(i_node-1)*nb_cmp+i_cmp_field) = zi(jvale-1+ieq)
+                    else if (tsca .eq. 'C') then
+                        zc(jcnsv-1+(i_node-1)*nb_cmp+i_cmp_field) = zc(jvale-1+ieq)
+                    else if (tsca .eq. 'L') then
+                        zl(jcnsv-1+(i_node-1)*nb_cmp+i_cmp_field) = zl(jvale-1+ieq)
+                    else if (tsca .eq. 'K8') then
+                        zk8(jcnsv-1+(i_node-1)*nb_cmp+i_cmp_field) = zk8(jvale-1+ieq)
+                    else
+                        ASSERT(.false.)
                     end if
-                end do
-            end if
-        end do
-    end if
+                end if
+            end do
+        end if
+    end do
 !
 ! - Check
 !
