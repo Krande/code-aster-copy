@@ -170,6 +170,33 @@ class T10_3D(Element):
         OP.COOR_ELGA(
             te=488, para_in=((SP.PGEOMER, NGEOMER),), para_out=((OP.COOR_ELGA.PCOORPG, EGGEOP_R),)
         ),
+        OP.EPEQ_ELGA(
+            te=335,
+            para_in=((OP.EPEQ_ELGA.PDEFORR, EDEFOPG),),
+            para_out=((OP.EPEQ_ELGA.PDEFOEQ, LC.EDFEQPG),),
+        ),
+        OP.EPEQ_ELNO(
+            te=335,
+            para_in=((OP.EPEQ_ELNO.PDEFORR, EDEFONO),),
+            para_out=((OP.EPEQ_ELNO.PDEFOEQ, LC.EDFEQNO),),
+        ),
+        OP.EPSI_ELGA(
+            te=25,
+            para_in=(
+                (SP.PCAMASS, CCAMASS),
+                (SP.PDEPLAR, NDEPLAR),
+                (SP.PGEOMER, NGEOMER),
+                (SP.PMATERC, LC.CMATERC),
+                (OP.EPSI_ELGA.PVARCPR, LC.ZVARCPG),
+                (SP.PVARCRR, LC.ZVARCPG),
+            ),
+            para_out=((SP.PDEFOPC, EDEFOPC), (OP.EPSI_ELGA.PDEFOPG, EDEFOPG)),
+        ),
+        OP.EPSI_ELNO(
+            te=4,
+            para_in=((OP.EPSI_ELNO.PDEFOPG, EDEFOPG),),
+            para_out=((SP.PDEFONC, EDEFONC), (SP.PDEFONO, EDEFONO)),
+        ),
         OP.FORC_NODA(
             te=5,
             para_in=(

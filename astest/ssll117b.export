@@ -6,5 +6,5 @@ P mpi_nbnoeud 1
 P testlist submit verification sequential
 
 F comm ssll117b.comm D 1
-F datg ssll117b.datg D 16
-F mmed ssll117b.mmed D 20
+F mail ssll117a.mail D 20
+F datg ssll117a.datg D 16
