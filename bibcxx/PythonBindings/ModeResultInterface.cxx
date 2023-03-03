@@ -56,7 +56,9 @@ void exportModeResultToPython( py::module_ &mod ) {
                                    &ModeResult::setMassMatrix ) )
         .def( "setMassMatrix", py::overload_cast< const GeneralizedAssemblyMatrixComplexPtr & >(
                                    &ModeResult::setMassMatrix ) )
-        .def( "setStructureInterface", &ModeResult::setStructureInterface );
+        .def( "setStructureInterface", &ModeResult::setStructureInterface )
+        .def( "getNumberOfDynamicModes", &ModeResult::getNumberOfDynamicModes )
+        .def( "getNumberOfStaticModes", &ModeResult::getNumberOfStaticModes );
 };
 
 void exportModeResultComplexToPython( py::module_ &mod ) {

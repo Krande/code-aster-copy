@@ -320,6 +320,32 @@ class ModeResult : public FullResult {
         _structureInterface = structureInterface;
     };
 
+    /**
+     * @brief return number of dynamic modes
+     */
+    ASTERINTEGER getNumberOfDynamicModes() const {
+        const std::string questi( "NB_MODES_DYN" );
+        const std::string typeco( "RESULTAT" );
+        ASTERINTEGER repi = 0, ier = 0;
+        JeveuxChar32 repk( " " );
+        const std::string arret( "F" );
+        CALLO_DISMOI( questi, getName(), typeco, &repi, repk, arret, &ier );
+        return repi;
+    };
+
+    /**
+     * @brief return number of static modes
+     */
+    ASTERINTEGER getNumberOfStaticModes() const {
+        const std::string questi( "NB_MODES_STA" );
+        const std::string typeco( "RESULTAT" );
+        ASTERINTEGER repi = 0, ier = 0;
+        JeveuxChar32 repk( " " );
+        const std::string arret( "F" );
+        CALLO_DISMOI( questi, getName(), typeco, &repi, repk, arret, &ier );
+        return repi;
+    };
+
     bool build( const std::vector< FiniteElementDescriptorPtr > feds =
                     std::vector< FiniteElementDescriptorPtr >(),
                 const std::vector< FieldOnNodesDescriptionPtr > fnds =

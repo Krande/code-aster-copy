@@ -69,9 +69,9 @@ def force_iss_vari(
 
     #   del nume_ddl, nom_mail, nom_modele
     # MODES
-    _, nbmodd, _ = aster.dismoi("NB_MODES_DYN", n_resultat, "RESULTAT", "F")
-    _, nbmods, _ = aster.dismoi("NB_MODES_STA", n_resultat, "RESULTAT", "F")
-    _, nbmodt, _ = aster.dismoi("NB_MODES_TOT", n_resultat, "RESULTAT", "F")
+    nbmodt = resultat.getNumberOfIndexes()
+    nbmodd = resultat.getNumberOfDynamicModes()
+    nbmods = resultat.getNumberOfStaticModes()
     FSIST = NP.zeros((NB_FREQ, nbmodt)) + 0j
     nbno, _ = noe_interf.shape
 

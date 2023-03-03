@@ -33,8 +33,6 @@ import re
 import shutil
 from math import log
 
-import aster
-
 from ...Helpers.LogicalUnit import FileType, LogicalUnitFile
 from ...Messages import ASSERT, UTMESS
 from ...Utilities import force_list
@@ -136,21 +134,15 @@ class MISS_PARAMETER(object):
 
             # récupération des infos sur les modes
             if self["BASE_MODALE"]:
-                basemo = self["BASE_MODALE"].getName()
+                basemo = self["BASE_MODALE"]
             elif self["MACR_ELEM_DYNA"]:
-                basemo = self["MACR_ELEM_DYNA"].sdj.MAEL_REFE.get()[0]
+                basemo = self["MACR_ELEM_DYNA"].getMechanicalMode()
             else:
                 ASSERT(False)
 
-            res = aster.dismoi("NB_MODES_TOT", basemo, "RESULTAT", "C")
-            ASSERT(res[0] == 0)
-            self["NBM_TOT"] = res[1]
-            res = aster.dismoi("NB_MODES_STA", basemo, "RESULTAT", "C")
-            ASSERT(res[0] == 0)
-            self["NBM_STA"] = res[1]
-            res = aster.dismoi("NB_MODES_DYN", basemo, "RESULTAT", "C")
-            ASSERT(res[0] == 0)
-            self["NBM_DYN"] = res[1]
+            self["NBM_TOT"] = basemo.getNumberOfIndexes()
+            self["NBM_DYN"] = basemo.getNumberOfDynamicModes()
+            self["NBM_STA"] = basemo.getNumberOfStaticModes()
 
             # si base modale, vérifier/compléter les amortissements réduits
             if self["BASE_MODALE"]:
