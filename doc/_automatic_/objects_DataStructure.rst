@@ -281,15 +281,6 @@ Subclasses of :py:class:`~code_aster.Objects.DataStructure`
 
 
 ********************************************************************************
-:py:class:`~code_aster.Objects.CrackTip` object
-********************************************************************************
-
-.. autoclass:: code_aster.Objects.CrackTip
-   :show-inheritance:
-   :members:
-
-
-********************************************************************************
 :py:class:`~code_aster.Objects.CyclicSymmetryMode` object
 ********************************************************************************
 

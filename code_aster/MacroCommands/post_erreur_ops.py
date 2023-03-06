@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -265,7 +265,7 @@ def post_erreur_ops(self, OPTION, CHAM_GD, MODELE, GROUP_MA, **args):
             l_ref_norm.append(ref)
 
             # ajout e la contribution du groupe courant a la norme L2 du deplacement analytique totale
-            ref_norm_tot += ref ** 2
+            ref_norm_tot += ref**2
 
             # 9. calcul de la norme L2 du champ de déplacement différence
 
@@ -284,7 +284,7 @@ def post_erreur_ops(self, OPTION, CHAM_GD, MODELE, GROUP_MA, **args):
             l_diff_norm.append(diff)
 
             # ajout e la contribution du groupe courant a la norme L2 du deplacement difference totale
-            diff_norm_tot += diff ** 2
+            diff_norm_tot += diff**2
 
         # ajout de normes en energie pour l'ensemble des groupes
         ref_norm_tot = math.sqrt(ref_norm_tot)
@@ -686,7 +686,7 @@ def post_erreur_ops(self, OPTION, CHAM_GD, MODELE, GROUP_MA, **args):
             l_ref_norm.append(ref)
 
             # ajout e la contribution du groupe courant a la norme L2 du deplacement analytique totale
-            ref_norm_tot += ref ** 2
+            ref_norm_tot += ref**2
 
             # 9. calcul de la norme L2 du champ de déplacement différence
 
@@ -705,7 +705,7 @@ def post_erreur_ops(self, OPTION, CHAM_GD, MODELE, GROUP_MA, **args):
             l_diff_norm.append(diff)
 
             # ajout e la contribution du groupe courant a la norme L2 du deplacement difference totale
-            diff_norm_tot += diff ** 2
+            diff_norm_tot += diff**2
 
         # ajout de normes en energie pour l'ensemble des groupes
         ref_norm_tot = math.sqrt(ref_norm_tot)

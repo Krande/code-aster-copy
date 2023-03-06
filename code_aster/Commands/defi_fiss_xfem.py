@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -38,9 +38,9 @@ class XFEMCrackDefinition(ExecuteCommand):
 
     def post_exec(self, keywords):
         if "TYPE_DISCONTINUITE" in keywords:
-            if keywords["TYPE_DISCONTINUITE"]=="INTERFACE":
+            if keywords["TYPE_DISCONTINUITE"] == "INTERFACE":
                 self._result.setDiscontinuityType("Interface")
-            elif keywords["TYPE_DISCONTINUITE"]=="COHESIF":
+            elif keywords["TYPE_DISCONTINUITE"] == "COHESIF":
                 self._result.setDiscontinuityType("Cohesive")
         self._result.update()
 

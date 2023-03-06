@@ -113,5 +113,5 @@ bool BaseAssemblyMatrix::isMPIFull() {
 
 bool BaseAssemblyMatrix::isSymmetric() {
     _description->updateValuePointer();
-    return trim( ( *_description )[8].toString() ).substr(0, 2) == "MS";
+    return trim( ( *_description )[8].toString() ).substr( 0, 2 ) == "MS";
 };

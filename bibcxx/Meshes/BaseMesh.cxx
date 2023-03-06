@@ -244,8 +244,8 @@ std::string BaseMesh::getCellTypeName( const ASTERINTEGER &index ) const {
     return trim( charName.toString() );
 };
 
-bool BaseMesh::hasCellsOfType( const std::string typma) const {
-    
+bool BaseMesh::hasCellsOfType( const std::string typma ) const {
+
     if ( isEmpty() )
         return false;
     if ( !_cellsType->exists() )

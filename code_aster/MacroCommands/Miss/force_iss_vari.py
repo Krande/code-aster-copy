@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -142,7 +142,7 @@ def force_iss_vari(
         vec = NP.take(vec, order, 0)
         # -----------------------
         # Nombre de modes POD a retenir
-        etot = NP.sum(eig ** 2)
+        etot = NP.sum(eig**2)
         ener = 0.0
         nbme = 0
         while nbme < nbno:
@@ -197,7 +197,7 @@ def force_iss_vari(
         SI0 = 0.0
         for k1 in range(0, nbme):
             XOe = abs(NP.sum(PVEC[k1])) / nbno
-            SI0 = SI0 + XOe ** 2
+            SI0 = SI0 + XOe**2
         SI = sqrt(SI0)
         for idd in range(0, nddi):  # nddi: nombre de ddl interface
             if NCMP2[idd][0:2] == NOM_CMP:

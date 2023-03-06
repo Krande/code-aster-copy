@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -53,12 +53,12 @@ def SEUIL(X, Y, X0, Y0, R, lc, Nume_cop, ccos, ssin):
     ):
         f1 = 1
     # C2,DY2
-    if ((X - X0 - Nume_cop * lc * ccos) ** 2 + (Y - Y0 - Nume_cop * lc * ssin) ** 2 <= R ** 2) and (
+    if ((X - X0 - Nume_cop * lc * ccos) ** 2 + (Y - Y0 - Nume_cop * lc * ssin) ** 2 <= R**2) and (
         (X - X0 - Nume_cop * lc * ccos) * ccos >= -ssin * (Y - Y0 - Nume_cop * lc * ssin)
     ):
         f2 = 1
     # C1,DY1
-    if ((X - X0) ** 2 + (Y - Y0) ** 2 <= R ** 2) and (-(X - X0) * ccos <= (Y - Y0) * ssin):
+    if ((X - X0) ** 2 + (Y - Y0) ** 2 <= R**2) and (-(X - X0) * ccos <= (Y - Y0) * ssin):
         f3 = 1
     f = f1 + f2 - f3
     return f

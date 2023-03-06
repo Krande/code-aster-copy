@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -1364,15 +1364,8 @@ FSEISX2 = CALC_MISS(
     GROUP_NO_AFFE=("N257",),
     VARI="OUI",
     MATR_GENE=_F(BASE=BAMO, NUME_DDL_GENE=NDDLGEN),
-    MATR_COHE=_F(
-        TYPE="MITA_LUCO",
-        VITE_ONDE=600.0,
-        PARA_ALPHA=0.5 / 2.0 / pi,
-    ),
-    INTERF=_F(
-        GROUP_NO_INTERF="RADIER",
-        MODE_INTERF="QUELCONQUE",
-    ),
+    MATR_COHE=_F(TYPE="MITA_LUCO", VITE_ONDE=600.0, PARA_ALPHA=0.5 / 2.0 / pi),
+    INTERF=_F(GROUP_NO_INTERF="RADIER", MODE_INTERF="QUELCONQUE"),
 )
 
 CHSOL = AFFE_CHAR_MECA(

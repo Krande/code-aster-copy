@@ -574,6 +574,16 @@ class BaseMesh(DataStructure):
             Table: Table stored with the given identifier.
         """
 
+    def hasCellsOfType(self, type):
+        """Return True if mesh contains at least one cell of given type
+
+        Arguments:
+            type (str) : cell type
+
+        Returns:
+            bool : *True* if mesh contains at least one cell of given type, else *False*
+        """
+
     def isParallel(self):
         """Tell if the mesh is distributed on parallel instances.
 
@@ -5327,6 +5337,9 @@ class BaseAssemblyMatrix(DataStructure):
             bool: *True* if the matrix is factorized, *False* otherwise.
         """
 
+    def isSymmetric(self):
+        """Return True if matrix is symmetric"""
+
     def print(self, format="ASTER", unit=6):
         """Print the matrix in code_aster or matlab format (with information on the DOF).
 
@@ -9140,29 +9153,6 @@ class CrackShape:
         pass
 
 
-# class CrackTip in libaster
-
-
-class CrackTip(DataStructure):
-    pass
-
-    # Method resolution order:
-    #     CrackTip
-    #     DataStructure
-    #     pybind11_builtins.pybind11_object
-    #     builtins.object
-
-    # Methods defined here:
-
-    def __init__(self, *args, **kwargs):
-        """Overloaded function.
-
-        1. __init__(self: libaster.CrackTip) -> None
-
-        2. __init__(self: libaster.CrackTip, arg0: str) -> None
-        """
-
-
 # class Crack in libaster
 
 
@@ -9184,6 +9174,9 @@ class Crack(DataStructure):
 
         2. __init__(self: libaster.Crack, arg0: str) -> None
         """
+
+    def getConfigInit(self):
+        """Return the crack initial configuration"""
 
     def getCrackFrontBasis(self):
         """Return the crack front basis
@@ -9207,6 +9200,9 @@ class Crack(DataStructure):
 
     def getUpperLipGroupName(self):
         pass
+
+    def isSymmetric(self):
+        """Return true if crack is symeric"""
 
 
 # class GeneralizedModel in libaster
@@ -9432,6 +9428,16 @@ class Model(DataStructure):
     def existsMultiFiberBeam(self):
         pass
 
+    def existsPartition(self):
+        pass
+
+    def existsRdM(self):
+        """To know if the model has RdM elements
+
+        Returns:
+            bool: *True* if the model contains beam, shell or discret elements, else *False*
+        """
+
     def existsThm(self):
         pass
 
@@ -9462,6 +9468,13 @@ class Model(DataStructure):
             Mesh: a pointer to the mesh
         """
 
+    def getModelisationName(self):
+        """Get modelisation name used in model
+
+        Returns:
+            str: modelisation name if single modelisation, else '#PLUSIEURS'
+        """
+
     def getPhysics(self):
         """To know the physics supported by the model
 
@@ -9490,6 +9503,13 @@ class Model(DataStructure):
 
         Returns:
             bool: True - if the model is acoustic
+        """
+
+    def isAxis(self):
+        """To know if the model is Axisymmetric
+
+        Returns:
+            bool: *True* if the model is axisymmetric, else *False*
         """
 
     def isMechanical(self):
@@ -11075,6 +11095,12 @@ class ModeResult(FullResult):
         pass
 
     def getMassMatrix(self):
+        pass
+
+    def getNumberOfDynamicModes(self):
+        pass
+
+    def getNumberOfStaticModes(self):
         pass
 
     def getStiffnessMatrix(self):

@@ -763,7 +763,16 @@ def calc_vari_area_no_bord(self, MAIL, NB_COUCHES, lNode1, lNode2, NODESBOUGE, l
 
 
 def calc_vari_area_no_midd(
-    self, MAIL, NB_COUCHES, lNode, NODESBOUGE, lVect, is_symmetric, closedCrack, lipSupName, lipInfName
+    self,
+    MAIL,
+    NB_COUCHES,
+    lNode,
+    NODESBOUGE,
+    lVect,
+    is_symmetric,
+    closedCrack,
+    lipSupName,
+    lipInfName,
 ):
     """
     Calculate varied area
@@ -4302,9 +4311,7 @@ def post_jmod_ops(
     """
     if ndim == 3:
         print("Macro POST_JMOD - Calculate J-integral in 3D")
-        
-        
-        
+
         #   Get symmetry problem
         post_j_marker0 = time.time()
 
@@ -4350,8 +4357,6 @@ def post_jmod_ops(
         #   DIRECTION OF VIRTUAL CRACK PROPAGATION
         #
         TVECTEUR = {}
-
-        
 
         poinsf_na = na_poinsf(self, FOND_FISS, is_symmetric, elemType)
         if is_symmetric:
