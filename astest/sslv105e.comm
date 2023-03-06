@@ -44,7 +44,13 @@ CHAMPMAT = AFFE_MATERIAU(MAILLAGE=MAILET, AFFE=_F(TOUT="OUI", MATER=mat))
 cara = AFFE_CARA_ELEM(
     MODELE=MODELE,
     INFO=1,
-    POUTRE=_F(GROUP_MA="TOUT", SECTION="RECTANGLE", CARA=("H",), VALE=(2.000000e-02,)),
+    POUTRE=_F(
+        GROUP_MA="TOUT",
+        SECTION="CERCLE",
+        VARI_SECT="HOMOTHETIQUE",
+        CARA=("R_DEBUT", "R_FIN"),
+        VALE=(2.0e-02, 4.0e-02),
+    ),
 )
 #
 #
@@ -105,28 +111,28 @@ TEST_RESU(
             NOM_CMP="DX",
             GROUP_NO="TEST",
             CHAM_GD=DEP1,
-            REFERENCE="ANALYTIQUE",
-            VALE_REFE=8.75e-3,
-            VALE_CALC=0.008749992458824801,
-            PRECISION=1.0e-3,
+            REFERENCE="AUTRE_ASTER",
+            VALE_REFE=0.015810458413229936,
+            VALE_CALC=0.015827241862590984,
+            PRECISION=2.0e-3,
         ),
         _F(
             NOM_CMP="DY",
             GROUP_NO="TEST",
             CHAM_GD=DEP1,
-            REFERENCE="ANALYTIQUE",
-            VALE_REFE=8.75e-3,
-            VALE_CALC=0.008749992458809235,
-            PRECISION=1.0e-3,
+            REFERENCE="AUTRE_ASTER",
+            VALE_REFE=0.015810575046506483,
+            VALE_CALC=0.015827241862558586,
+            PRECISION=2.0e-3,
         ),
         _F(
             NOM_CMP="DZ",
             GROUP_NO="TEST",
             CHAM_GD=DEP1,
-            REFERENCE="ANALYTIQUE",
-            VALE_REFE=8.75e-3,
-            VALE_CALC=0.008749992458786967,
-            PRECISION=1.0e-3,
+            REFERENCE="AUTRE_ASTER",
+            VALE_REFE=0.01581063655140852,
+            VALE_CALC=0.01582724186252768,
+            PRECISION=2.0e-3,
         ),
     )
 )
