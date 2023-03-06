@@ -16,11 +16,12 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine fnodil(option, typmod, ndim, &
+subroutine fnodil(option, typmod, ds_dil, ndim, &
                   nnos, nnom, npg, nddl, dimdef, iw, vff, &
                   vffb, idff, idffb, geomi, compor, &
                   sief, fint)
 !
+    use dil_type
     use bloc_fe_module, only: add_fint, prod_sb
     use Behaviour_type
     use Behaviour_module
@@ -37,6 +38,7 @@ subroutine fnodil(option, typmod, ndim, &
 !
     character(len=8), intent(in)    :: typmod(*)
     character(len=16), intent(in)   :: option, compor(*)
+    type(dil_modelisation)         :: ds_dil
     integer, intent(in)             :: ndim, nnos, nnom, npg, nddl, dimdef
     integer, intent(in)             :: iw, idff, idffb
     real(kind=8), intent(in)        :: geomi(ndim, nnos+nnom)
@@ -71,6 +73,7 @@ subroutine fnodil(option, typmod, ndim, &
 ! ----------------------------------------------------------------------
     real(kind=8), parameter :: rac2 = sqrt(2.d0)
     real(kind=8), parameter :: vrac2(6) = [1.d0, 1.d0, 1.d0, rac2, rac2, rac2]
+    real(kind=8), dimension(6), parameter  :: kron = (/1.d0, 1.d0, 1.d0, 0.d0, 0.d0, 0.d0/)
 ! ----------------------------------------------------------------------
     aster_logical :: axi
     type(Behaviour_Integ) :: BEHinteg
@@ -86,6 +89,7 @@ subroutine fnodil(option, typmod, ndim, &
     real(kind=8)  :: bu(2*ndim+1, ndim, nnos+nnom)
     real(kind=8)  :: bg(1+ndim, 1, nnos), bp(1, 1, nnos)
     real(kind=8)  :: siefu(2*ndim+1), siefg(1+ndim), siefp(1)
+    real(kind=8)  :: kr(2*ndim)
 
 ! --- INITIALISATION ---
     axi = ASTER_FALSE
@@ -99,6 +103,8 @@ subroutine fnodil(option, typmod, ndim, &
     neu = 1+2*ndim
     neg = 1+ndim
     nep = 1
+
+    kr = kron(1:2*ndim)
 
     fint = 0
     cod = 0
@@ -142,7 +148,12 @@ subroutine fnodil(option, typmod, ndim, &
         end if
 
         ! Contraintes generalisees EF par bloc
-        siefu(1:2*ndim) = sief(dimdef*(g-1)+1:dimdef*(g-1)+2*ndim)*vrac2(1:2*ndim)
+        if (ds_dil%inco) then
+            siefu(1:2*ndim) = sief(dimdef*(g-1)+1:dimdef*(g-1)+2*ndim)*vrac2(1:2*ndim) &
+                              -sief(dimdef*(g-1)+2*ndim+1)*kr
+        else
+            siefu(1:2*ndim) = sief(dimdef*(g-1)+1:dimdef*(g-1)+2*ndim)*vrac2(1:2*ndim)
+        end if
         siefu(2*ndim+1) = sief(dimdef*(g-1)+2*ndim+1)
         siefg = sief(dimdef*(g-1)+2*ndim+2:dimdef*(g-1)+3*ndim+2)
         siefp = sief(dimdef*g)

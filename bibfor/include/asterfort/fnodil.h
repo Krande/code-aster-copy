@@ -21,12 +21,14 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine fnodil(option, typmod, ndim, nnos, &
+    subroutine fnodil(option, typmod, ds_dil, ndim, nnos, &
                     nnom, npg, nddl, dimdef, iw, vff, &
                     vffb, idff,idffb,geomi, compor, &
                     sief,  fint)
+        use dil_type
         character(len=8),intent(in) :: typmod(*)
         character(len=16),intent(in):: option, compor(*)
+        type(dil_modelisation)      :: ds_dil
         integer,intent(in)          :: ndim,nnos,nnom,npg,nddl,dimdef
         integer,intent(in)          :: iw,idff,idffb
         real(kind=8),intent(in)     :: geomi(ndim,nnos+nnom)

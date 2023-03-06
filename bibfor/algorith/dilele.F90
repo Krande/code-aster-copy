@@ -42,7 +42,7 @@ subroutine dilele(option, typmod, ds_dil, ndim, nnos, &
 #include "asterfort/nmbeps.h"
 
 !
-    aster_logical :: lVect, lMatr, lVari, lSigm
+    aster_logical :: lVect, lMatr, lSigm
     type(dil_modelisation)         :: ds_dil
     character(len=8), intent(in)    :: typmod(*)
     character(len=16), intent(in)   :: option, compor(*)
@@ -53,8 +53,9 @@ subroutine dilele(option, typmod, ds_dil, ndim, nnos, &
     real(kind=8), intent(in)        :: vff(nnos+nnom, npg), vffb(nnos, npg)
     real(kind=8), intent(in)        :: ddlm(nddl), ddld(nddl)
     real(kind=8), intent(in)        :: siefm(dimdef*npg), vim(lgpg*npg)
-   real(kind=8), intent(out)       :: fint(nddl), matr(nddl, nddl), siefp(dimdef*npg), vip(lgpg*npg)
-    integer, intent(out)            :: codret
+    real(kind=8), intent(inout)     :: siefp(dimdef*npg), vip(lgpg*npg)
+    real(kind=8), intent(inout)     :: fint(nddl), matr(nddl, nddl)
+    integer, intent(inout)          :: codret
 !
 ! ----------------------------------------------------------------------
 !     BUT:  CALCUL  DES OPTIONS RIGI_MECA_*, RAPH_MECA ET FULL_MECA_*
@@ -124,11 +125,11 @@ subroutine dilele(option, typmod, ds_dil, ndim, nnos, &
     real(kind=8)  :: epefum(2*ndim+1), epefgm(1+ndim), epefpm(1)
     real(kind=8)  :: epefup(2*ndim+1), epefgp(1+ndim), epefpp(1)
     real(kind=8)  :: siefup(2*ndim+1), siefgp(1+ndim), siefpp(1)
-    real(kind=8)  :: epl1gm(2*ndim), epl1gp(2*ndim)
-    real(kind=8)  :: sigm1g(2*ndim), sigp1g(2*ndim)
+    real(kind=8)  :: epl1gm(6), epl1gp(6)
+    real(kind=8)  :: sigm1g(6), sigp1g(6)
     real(kind=8)  :: eplcm(ndim), silcm(ndim)
     real(kind=8)  :: eplcp(ndim), silcp(ndim), deps(2*ndim)
-    real(kind=8)  :: dsde1g(2*ndim, 2*ndim), dsde2g(ndim, ndim)
+    real(kind=8)  :: dsde1g(6, 6), dsde2g(ndim, ndim)
     real(kind=8)  :: kefuu(2*ndim+1, 2*ndim+1), kefug(2*ndim+1, 1+ndim), kefup(2*ndim+1, 1)
     real(kind=8)  :: kefgu(1+ndim, 2*ndim+1), kefgg(1+ndim, 1+ndim), kefgp(1+ndim, 1)
     real(kind=8)  :: kefpu(1, 2*ndim+1), kefpg(1, 1+ndim), kefpp(1, 1)
@@ -136,7 +137,7 @@ subroutine dilele(option, typmod, ds_dil, ndim, nnos, &
 
 ! --- INITIALISATION ---
     axi = ASTER_FALSE
-    angmas(3) = 0.0d0
+    angmas = 0.0d0
 
     !Nombre de noeuds
     nnu = nnos+nnom
@@ -220,6 +221,8 @@ subroutine dilele(option, typmod, ds_dil, ndim, nnos, &
         call behaviourInit(BEHinteg)
 
         !Calcul des déformations pour ldc
+        epl1gm = 0.0d0
+        epl1gp = 0.0d0
         if (ds_dil%inco) then
             epl1gm(1:2*ndim) = matmul(dev, epefum(1:2*ndim))+epefgm(1)*hyd
             epl1gp(1:2*ndim) = matmul(dev, epefup(1:2*ndim))+epefgp(1)*hyd
@@ -229,11 +232,16 @@ subroutine dilele(option, typmod, ds_dil, ndim, nnos, &
         end if
 
         !Format sigma pour ldc
-        sigm1g = siefm(1+(g-1)*dimdef:2*ndim+(g-1)*dimdef)*vrac2(1:2*ndim)
+        sigm1g = 0.0d0
+        sigm1g(1:2*ndim) = siefm(1+(g-1)*dimdef:2*ndim+(g-1)*dimdef)*vrac2(1:2*ndim)
         if (ds_dil%inco) then
-            sigm1g = sigm1g+(siefm(dimdef*(g-1)+2*ndim+2)+epefpm(1) &
-                             +rpena*(epefum(2*ndim+1)-epefgm(1)))*kr
+            sigm1g(1:2*ndim) = sigm1g+(siefm(dimdef*(g-1)+2*ndim+2) &
+                                       -siefm(dimdef*(g-1)+2*ndim+1)+epefpm(1) &
+                                       +rpena*(epefum(2*ndim+1)-epefgm(1)))*kr
         end if
+
+        sigp1g = 0.0d0
+        dsde1g = 0.0d0
 
         !Loi de comportement
         call nmcomp(BEHinteg, &
@@ -289,7 +297,12 @@ subroutine dilele(option, typmod, ds_dil, ndim, nnos, &
 
         if (lSigm) then
             ! Stockage des contraintes generalisees
-            siefp(dimdef*(g-1)+1:dimdef*(g-1)+2*ndim) = siefup(1:2*ndim)/vrac2(1:2*ndim)
+            if (ds_dil%inco) then
+                siefp(dimdef*(g-1)+1:dimdef*(g-1)+2*ndim) = siefup(1:2*ndim)/vrac2(1:2*ndim) &
+                                                            +siefup(2*ndim+1)*kr
+            else
+                siefp(dimdef*(g-1)+1:dimdef*(g-1)+2*ndim) = siefup(1:2*ndim)/vrac2(1:2*ndim)
+            end if
             siefp(dimdef*(g-1)+2*ndim+1) = siefup(2*ndim+1)
             siefp(dimdef*(g-1)+2*ndim+2:dimdef*(g-1)+2*ndim+2+ndim) = siefgp
             siefp(dimdef*g) = siefpp(1)

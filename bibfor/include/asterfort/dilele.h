@@ -36,8 +36,9 @@ interface
         real(kind=8),intent(in)     :: geomi(ndim,nnos+nnom)
         real(kind=8),intent(in)     :: vff(nnos+nnom, npg),vffb(nnos, npg)
         real(kind=8),intent(in)     :: ddlm(nddl), ddld(nddl)
-        real(kind=8),intent(out)    :: siefm(dimdef*npg),vim(lgpg*npg)
-        real(kind=8),intent(out)    :: fint(nddl),matr(nddl,nddl),siefp(dimdef*npg),vip(lgpg*npg)
-        integer,intent(out)         :: codret
+        real(kind=8),intent(in)     :: siefm(dimdef*npg),vim(lgpg*npg)
+        real(kind=8),intent(inout)  :: siefp(dimdef*npg),vip(lgpg*npg)
+        real(kind=8),intent(inout)  :: fint(nddl),matr(nddl,nddl)
+        integer,intent(inout)         :: codret
     end subroutine dilele
 end interface

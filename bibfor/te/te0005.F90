@@ -104,7 +104,7 @@ subroutine te0005(option, nomte)
                     zr(icontp), zr(ivarip), &
                     zr(ivectu), zr(imatuu), lMatr, lVect, lSigm, zi(jcret))
     else if (option .eq. 'FORC_NODA') then
-        call fnodil(option, typmod, ndim, nnos, &
+        call fnodil(option, typmod, ds_dil, ndim, nnos, &
                     nnom, npi, dimuel, dimdef, ipoids, zr(ivf), &
                     zr(ivf2), idfde, idfde2, zr(igeom), zk16(icompo), &
                     zr(icontm), zr(ivectu))
@@ -125,7 +125,7 @@ subroutine te0005(option, nomte)
                               sigref, sigref, epsref]
         end if
 
-        call fnodil(option, typmod, ndim, nnos, &
+        call fnodil(option, typmod, ds_dil, ndim, nnos, &
                     nnom, npi, dimuel, dimdef, ipoids, zr(ivf), &
                     zr(ivf2), idfde, idfde2, zr(igeom), zk16(icompo), &
                     transpose(spread(sref, 1, npi)), &
