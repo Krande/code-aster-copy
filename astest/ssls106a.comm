@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -54,7 +54,7 @@ reslin = MECA_STATIQUE(
     CHAM_MATER=fieldmat,
     EXCIT=(_F(CHARGE=forcPonc), _F(CHARGE=kine)),
     MODELE=model,
-    SOLVEUR=_F(RESI_RELA=5e-05),
+    SOLVEUR=_F(POSTTRAITEMENTS="MINI"),
 )
 
 deplRefe = -0.094
