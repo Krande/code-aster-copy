@@ -895,7 +895,7 @@ class MEDSQU4(Element):
                 (OP.TOU_INI_ELNO.PNEUT_F, LC.ENNEUT_F),
                 (OP.TOU_INI_ELNO.PNEUT_R, LC.ENNEUT_R),
                 (OP.TOU_INI_ELNO.PPRES_R, EPRESNO),
-                (OP.TOU_INI_ELNO.PSIEF_R, ECONTNO),
+                (OP.TOU_INI_ELNO.PSIEF_R, EEFGENOR),
             ),
         ),
         OP.VARI_ELNO(te=-1),
