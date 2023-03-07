@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -131,7 +131,7 @@ def check_i18n_tool(self, program, varname, argtest=["-h"]):
     self.start_msg("Check for %s programs" % program)
     try:
         self.env.stash()
-        if opts.enable_i18n == False:
+        if opts.enable_i18n is False:
             reason = "i18n not enabled"
             raise Errors.ConfigurationError(reason)
         reason = "not found"

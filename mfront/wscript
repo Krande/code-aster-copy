@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -54,7 +54,7 @@ def configure(self):
     except Errors.ConfigurationError:
         self.reset_msg()
         self.env.revert()
-        if opts.enable_mfront == True:
+        if opts.enable_mfront is True:
             raise
         self.undefine("ASTER_HAVE_MFRONT")
         self.env.TFELSUFFIX = ""
@@ -86,7 +86,7 @@ def build(self):
 @Configure.conf
 def check_mfront(self):
     opts = self.options
-    if opts.enable_mfront == False:
+    if opts.enable_mfront is False:
         raise Errors.ConfigurationError("MFRONT disabled")
 
     self.start_msg("Checking for TFELHOME variable")

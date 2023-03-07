@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -73,7 +73,7 @@ def configure(self):
 @Configure.conf
 def check_metis(self):
     opts = self.options
-    if opts.enable_metis == False:
+    if opts.enable_metis is False:
         raise Errors.ConfigurationError("METIS disabled")
     if opts.metis_libs is None:
         opts.metis_libs = "metis"

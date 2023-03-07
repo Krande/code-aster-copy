@@ -70,7 +70,7 @@ def options(self):
     group.add_option(
         "--disable-hdf5",
         dest="enable_hdf5",
-        default=True,
+        default=None,
         action="store_false",
         help="disable the HDF5 and MED support",
     )
@@ -79,7 +79,7 @@ def options(self):
         dest="enable_hdf5",
         default=None,
         action="store_true",
-        help="disable the HDF5 and MED support",
+        help="force the HDF5 and MED support",
     )
 
 
@@ -91,7 +91,7 @@ def configure(self):
     except Errors.ConfigurationError:
         self.reset_msg()
         self.env.revert()
-        if opts.enable_hdf5 == True:
+        if opts.enable_hdf5 is True:
             raise
         self.undefine("ASTER_HAVE_HDF5")
         self.undefine("ASTER_HAVE_MED")
@@ -104,7 +104,7 @@ def configure(self):
     except Errors.ConfigurationError:
         self.reset_msg()
         self.env.revert()
-        if opts.enable_med == True:
+        if opts.enable_med is True:
             raise
         self.undefine("ASTER_HAVE_MED")
     else:
@@ -118,7 +118,7 @@ def configure(self):
 @Configure.conf
 def check_hdf5(self):
     opts = self.options
-    if opts.enable_hdf5 == False:
+    if opts.enable_hdf5 is False:
         raise Errors.ConfigurationError("HDF5 disabled")
 
     if opts.hdf5_libs is None:
@@ -231,7 +231,7 @@ int main(void){
 @Configure.conf
 def check_med(self):
     opts = self.options
-    if opts.enable_med == False:
+    if opts.enable_med is False:
         raise Errors.ConfigurationError("MED disabled")
 
     if opts.med_libs is None:

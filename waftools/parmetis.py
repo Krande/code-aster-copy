@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -75,7 +75,7 @@ def configure(self):
 @Configure.conf
 def check_parmetis(self):
     opts = self.options
-    if opts.enable_parmetis == False:
+    if opts.enable_parmetis is False:
         raise Errors.ConfigurationError("PARMETIS disabled")
     if opts.parmetis_libs is None:
         opts.parmetis_libs = "parmetis"

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -30,10 +30,13 @@ def options(self):
 
     group = self.get_option_group("code_aster options")
     group.add_option(
+        "--disable-mpi", dest="parallel", action="store_false", help="Build a sequential version"
+    )
+    group.add_option(
         "--enable-mpi",
         dest="parallel",
         action="store_true",
-        default=os.environ.get("ENABLE_MPI"),
+        default=os.environ.get("ENABLE_MPI") != "0",
         help="Build a parallel version with mpi (same as " "ENABLE_MPI environment variable)",
     )
     group.add_option(

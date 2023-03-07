@@ -62,7 +62,7 @@ def configure(self):
         self.reset_msg()
         self.env.revert()
         self.undefine("ASTER_HAVE_SCOTCH")
-        if self.options.enable_scotch == True:
+        if self.options.enable_scotch is True:
             raise
     else:
         self.define("ASTER_HAVE_SCOTCH", 1)
@@ -74,7 +74,7 @@ def configure(self):
 @Configure.conf
 def check_scotch(self):
     opts = self.options
-    if opts.enable_scotch == False:
+    if opts.enable_scotch is False:
         raise Errors.ConfigurationError("SCOTCH disabled")
 
     self.check_scotch_headers()
@@ -139,7 +139,8 @@ int main(void){
     return 0;
 }"""
     self.start_msg("Checking scotch version")
-    mumps_vers = tuple([int(num) for num in self.env["MUMPS_VERSION"].split(".")[:2]])
+    mvers = self.env["MUMPS_VERSION"] or "0"
+    mumps_vers = tuple([int(num) for num in mvers.split(".")[:2]])
     required = 7 if mumps_vers >= (5, 5) else 6
     try:
         ret = self.check_cc(

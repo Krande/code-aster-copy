@@ -57,7 +57,7 @@ subroutine vect_asse_from_petsc(vasse, nume_equa, vecpet, scaling)
     character(len=19), intent(inout) :: vasse
     character(len=19), intent(in) :: nume_equa
     real(kind=8), intent(in) :: scaling
-#ifdef ASTER_HAVE_MPI
+#if defined(ASTER_HAVE_MPI) && defined(ASTER_HAVE_PETSC)
 !
     integer :: rang, nbproc, numpro, jjointr, jjointe
     integer :: lgenvo, lgrecep, jvaleue, jvaleur, iaux, jaux, jnulg

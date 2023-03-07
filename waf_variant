@@ -1,6 +1,6 @@
 #!/bin/bash
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -26,6 +26,9 @@ WAF_DEFAULT_VARIANT=""
 if [ ${WAF_SUFFIX} = "debug" ]; then
     WAF_SUFFIX="mpi"
     WAF_DEFAULT_VARIANT="debug"
+fi
+if [ ${WAF_SUFFIX} = "std" ]; then
+    export ENABLE_MPI=0
 fi
 
 export WAF_SUFFIX

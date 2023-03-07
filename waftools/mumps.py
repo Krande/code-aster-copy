@@ -63,7 +63,7 @@ def configure(self):
         self.reset_msg()
         self.env.revert()
         self.undefine("ASTER_HAVE_MUMPS")
-        if self.options.enable_mumps == True:
+        if self.options.enable_mumps is True:
             raise Errors.ConfigurationError(
                 str(exc) + "\n" + "check your environment or use --disable-mumps"
             )
@@ -75,7 +75,7 @@ def configure(self):
 @Configure.conf
 def check_mumps(self):
     opts = self.options
-    if opts.enable_mumps == False:
+    if opts.enable_mumps is False:
         raise Errors.ConfigurationError("MUMPS disabled")
     self.check_mumps_headers()
     self.check_mumps_version(("5.5", "5.4"))

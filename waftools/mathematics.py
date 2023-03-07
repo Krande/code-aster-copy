@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -114,6 +114,7 @@ def check_libm_after_files(self):
 @Configure.conf
 def detect_mkl(self):
     """Try to detect MKL"""
+    opts = self.options
     # MKL can be installed either as a standalone package
     # or with Intel compiler. In both cases MKLROOT is/must be defined
     if os.environ.get("MKLROOT") is None:
@@ -130,11 +131,11 @@ def detect_mkl(self):
         if self.get_define("ASTER_HAVE_OPENMP"):
             thread = "mkl_intel_thread"
         interf = "mkl_intel" + suffix
-        if self.get_define("ASTER_HAVE_MPI"):
+        if self.get_define("ASTER_HAVE_MPI") and opts.enable_mumps:
             scalapack = "mkl_scalapack" + suffix
             blacs = "mkl_blacs_intelmpi" + suffix
     else:
-        if self.get_define("ASTER_HAVE_MPI"):
+        if self.get_define("ASTER_HAVE_MPI") and opts.enable_mumps:
             scalapack = "scalapack"
         if self.get_define("ASTER_HAVE_OPENMP"):
             thread = "mkl_gnu_thread"
@@ -211,7 +212,7 @@ def detect_math_lib(self):
         self.check_math_libs("optional", OPTIONAL_DEPS, embed, optional=True)
 
     # parallel
-    if self.get_define("ASTER_HAVE_MPI"):
+    if self.get_define("ASTER_HAVE_MPI") and opts.enable_mumps:
         self.env.stash()
         try:
             # try first without blacs since now embedded by scalapack
