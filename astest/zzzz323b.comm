@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -62,8 +62,6 @@ MODELE=AFFE_MODELE( MAILLAGE=MAILLAGE,
                             ),
                          ),
                   )
-
-
 
 #
 EP=6.0E-2
@@ -300,6 +298,40 @@ TEST_RESU(CHAM_ELEM=(_F(
                         PRECISION = 1.E-8
                        ),
                     ),
+    )
+
+
+CHELNO = CREA_CHAMP(
+    OPERATION="AFFE",
+    TYPE_CHAM="ELNO_SIEF_R",
+    MODELE=MODELE,
+    PROL_ZERO="OUI",
+    AFFE=_F(
+        MAILLE=(
+            "DKT4",
+            "DKT3",
+            "DST4",
+            "DST3",
+            "Q4G4",
+            "Q4G3",
+            "DKTG4",
+            "DKTG3",
+            "Q4GG4",
+            "Q4GG3",
+        ),
+        NOM_CMP=("NXX", "QX"),
+        VALE=(1.0, 2.0),
+    ),
+)
+
+TEST_RESU(
+    CHAM_ELEM=(
+        _F(CHAM_GD=CHELNO, MAILLE="DKT4", POINT=1, NOM_CMP="NXX", VALE_CALC=1.0),
+        _F(CHAM_GD=CHELNO, MAILLE="DST4", POINT=1, NOM_CMP="NXX", VALE_CALC=1.0),
+        _F(CHAM_GD=CHELNO, MAILLE="Q4G4", POINT=1, NOM_CMP="NXX", VALE_CALC=1.0),
+        _F(CHAM_GD=CHELNO, MAILLE="DKTG4", POINT=1, NOM_CMP="QX", VALE_CALC=2.0),
+        _F(CHAM_GD=CHELNO, MAILLE="Q4GG3", POINT=1, NOM_CMP="QX", VALE_CALC=2.0),
          )
+        )
 
 FIN()
