@@ -171,11 +171,13 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
         // Create numbering from Local mode (see Cata)
         std::string dofName;
         if ( fed->getMesh()->isParallel() ) {
+#ifdef ASTER_HAVE_MPI
             auto dofNume = std::make_shared< ParallelDOFNumbering >();
             dofNume->computeNumbering( {fed}, localMode );
 
             _dofDescription = dofNume->getEquationNumbering();
             dofName = dofNume->getName();
+#endif
         } else {
             auto dofNume = std::make_shared< DOFNumbering >();
 

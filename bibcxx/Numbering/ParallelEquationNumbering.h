@@ -43,6 +43,8 @@
 
 #pragma once
 
+#ifdef ASTER_HAVE_MPI
+
 /**
  * @class ParallelEquationNumbering
  * @brief Class definissant un NUME_EQUA
@@ -186,3 +188,5 @@ class ParallelEquationNumbering : public EquationNumbering {
  * @brief Enveloppe d'un pointeur intelligent vers un ParallelEquationNumbering
  */
 typedef std::shared_ptr< ParallelEquationNumbering > ParallelEquationNumberingPtr;
+
+#endif

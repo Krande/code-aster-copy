@@ -26,6 +26,8 @@
 
 #include "aster_pybind.h"
 
+#ifdef ASTER_HAVE_MPI
+
 void exportParallelEquationNumberingToPython( py::module_ &mod ) {
 
     py::class_< ParallelEquationNumbering, ParallelEquationNumberingPtr, EquationNumbering >(
@@ -84,3 +86,5 @@ Returns:
         )",
               py::arg( "glob" ) );
 };
+
+#endif

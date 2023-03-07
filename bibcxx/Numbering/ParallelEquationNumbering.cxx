@@ -32,6 +32,8 @@
 #include "Supervis/ResultNaming.h"
 #include "Utilities/Tools.h"
 
+#ifdef ASTER_HAVE_MPI
+
 ParallelEquationNumbering::ParallelEquationNumbering()
     : ParallelEquationNumbering( DataStructureNaming::getNewName() ){};
 
@@ -281,3 +283,5 @@ bool ParallelEquationNumbering::build() {
     }
     return _joints->build();
 };
+
+#endif
