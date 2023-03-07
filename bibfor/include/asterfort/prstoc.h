@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@
 !
 interface
     subroutine prstoc(vecsol, vestoc, j, k, iad,&
-                      nbvale, nbrefe, nbdesc)
+                      nbvale, nbrefe)
         character(len=19) :: vecsol
         character(len=19) :: vestoc
         integer :: j
@@ -28,6 +28,5 @@ interface
         integer :: iad
         integer :: nbvale
         integer :: nbrefe
-        integer :: nbdesc
     end subroutine prstoc
 end interface

@@ -55,7 +55,7 @@ subroutine phi152(model, option, mate, mateco, phibar, ma, &
 #include "asterfort/rsorac.h"
 #include "asterfort/tabcor.h"
 #include "asterfort/wkvect.h"
-    integer :: ibid, nbvale, nbrefe, nbdesc, nbmode, iret
+    integer :: ibid, nbvale, nbrefe, nbmode, iret
     integer :: ilires, j, nbid, ivalk, indice, tabad(5), tmod(1)
     integer :: iphi1, iphi2, n5, n6, n7, n1, icor(2), n2, ndble
     real(kind=8) :: bid, ebid
@@ -148,7 +148,7 @@ subroutine phi152(model, option, mate, mateco, phibar, ma, &
             vecso2 = '&&OP0152.VECSOL2'
 !
             call calflu(nomcha, moflui, mate, mateco, nu, vecso1, &
-                        nbdesc, nbrefe, nbvale, 'R')
+                        nbrefe, nbvale, 'R')
 !
             ilires = ilires+1
 !
@@ -168,12 +168,12 @@ subroutine phi152(model, option, mate, mateco, phibar, ma, &
 !------------------------------------------------------------------
             vesto1 = '&&OP0152.VEST1'
             call prstoc(vecso1, vesto1, ilires, ilires, iphi1, &
-                        nbvale, nbrefe, nbdesc)
+                        nbvale, nbrefe)
 !
             if (option .eq. 'AMOR_AJOU' .or. option .eq. 'RIGI_AJOU') then
 !
                 call cal2m(nomcha(1:19), phib24, moflui, mate, mateco, nu, &
-                           vecso2, nbdesc, nbrefe, nbvale)
+                           vecso2, nbrefe, nbvale)
 !
                 call resoud(ma, maprec, solveu, ' ', 0, &
                             vecso2, chsol, 'V', [0.d0], [cbid], &
@@ -184,7 +184,7 @@ subroutine phi152(model, option, mate, mateco, phibar, ma, &
 !
                 vesto2 = '&&OP0152.VEST2'
                 call prstoc(vecso2, vesto2, ilires, ilires, iphi2, &
-                            nbvale, nbrefe, nbdesc)
+                            nbvale, nbrefe)
 !
             end if
 !
@@ -212,7 +212,7 @@ subroutine phi152(model, option, mate, mateco, phibar, ma, &
                 vecso2 = '&&OP0152.VESL2'
 !
                 call calflu(chamno, moflui, mate, mateco, nu, vecso1, &
-                            nbdesc, nbrefe, nbvale, 'R')
+                            nbrefe, nbvale, 'R')
 !
                 ilires = ilires+1
 !
@@ -233,11 +233,11 @@ subroutine phi152(model, option, mate, mateco, phibar, ma, &
 !
                 vesto1 = '&&OP0152.VEST1'
                 call prstoc(vecso1, vesto1, ilires, ilires, iphi1, &
-                            nbvale, nbrefe, nbdesc)
+                            nbvale, nbrefe)
 !
                 if (option .eq. 'AMOR_AJOU' .or. option .eq. 'RIGI_AJOU') then
                     call cal2m(chamno, phib24, moflui, mate, mateco, nu, &
-                               vecso2, nbdesc, nbrefe, nbvale)
+                               vecso2, nbrefe, nbvale)
                     call resoud(ma, maprec, solveu, ' ', 0, &
                                 vecso2, chsol, 'V', [0.d0], [cbid], &
                                 criter, .true._1, 0, iret)
@@ -247,7 +247,7 @@ subroutine phi152(model, option, mate, mateco, phibar, ma, &
 !
                     vesto2 = '&&OP0152.VEST2'
                     call prstoc(vecso2, vesto2, ilires, ilires, iphi2, &
-                                nbvale, nbrefe, nbdesc)
+                                nbvale, nbrefe)
                 end if
 !
             end do

@@ -17,13 +17,13 @@
 ! --------------------------------------------------------------------
 
 subroutine calflu(chamno, modele, mate, mateco, nu, vectas, &
-                  nd, nr, nv, opt)
+                  nr, nv, opt)
     implicit none
 #include "asterfort/assvec.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jelira.h"
 #include "asterfort/vectfl.h"
-    integer :: nr, nd, nv
+    integer :: nr, nv
     character(len=*) :: chamno, modele, mate, mateco, nu, vectas, opt
 !
 !------- CALCUL DES VECTEURS ASSEMBLES DE FLUX FLUIDES
@@ -55,7 +55,6 @@ subroutine calflu(chamno, modele, mate, mateco, nu, vectas, &
     call assvec('V', vectas, 1, ve(1:19), [1.d0], nu)
     call jedetr(ve)
 !
-    call jelira(vectas(1:19)//'.DESC', 'LONMAX', nd)
     call jelira(vectas(1:19)//'.REFE', 'LONMAX', nr)
     call jelira(vectas(1:19)//'.VALE', 'LONMAX', nv)
 !

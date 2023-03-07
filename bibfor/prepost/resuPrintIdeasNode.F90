@@ -82,12 +82,10 @@ subroutine resuPrintIdeasNode(fileUnit, dsName, &
     character(len=19) :: fieldName
     character(len=16) :: fieldType
     character(len=24) :: profName
-    integer, pointer :: desc(:) => null()
-    character(len=24), pointer :: refe(:) => null()
     character(len=80), pointer :: meshTitle(:) => null()
     aster_logical :: lMeshIdeas
     character(len=1) :: type
-    integer :: fieldScalar, quantityIndx, nec, fieldRepr, liliMesh, jvVale
+    integer :: fieldScalar, quantityIndx, nec, liliMesh, jvVale
     integer :: meshDime, meshNodeNb
     integer, pointer :: cmpListIndx(:) => null()
     integer, pointer :: nueq(:) => null()
@@ -128,8 +126,6 @@ subroutine resuPrintIdeasNode(fileUnit, dsName, &
 !
 ! - Get properties of field
 !
-    call jeveuo(fieldName//'.DESC', 'L', vi=desc)
-    call jeveuo(fieldName//'.REFE', 'L', vk24=refe)
     call jelira(fieldName//'.VALE', 'TYPE', cval=type)
     call jeveuo(fieldName//'.VALE', 'L', jvVale)
     if (type(1:1) .eq. 'R') then
@@ -143,8 +139,9 @@ subroutine resuPrintIdeasNode(fileUnit, dsName, &
     else
         ASSERT(ASTER_FALSE)
     end if
-    quantityIndx = desc(1)
-    fieldRepr = desc(2)
+    call dismoi("NUM_GD", fieldName, "CHAM_NO", repi=quantityIndx)
+    call dismoi("NOM_MAILLA", fieldName, "CHAM_NO", repk=meshName)
+    call dismoi("NUME_EQUA", fieldName, "CHAM_NO", repk=profName)
 !
 ! - "coded" integers
 !
@@ -153,18 +150,14 @@ subroutine resuPrintIdeasNode(fileUnit, dsName, &
 !
 ! - Access to mesh
 !
-    meshName = refe(1) (1:8)
     call dismoi('DIM_GEOM_B', meshName, 'MAILLAGE', repi=meshDime)
     call dismoi('NB_NO_MAILLA', meshName, 'MAILLAGE', repi=meshNodeNb)
 !
 ! - Access to profile of numbering
 !
-    profName = refe(2)
-    if (fieldRepr .ge. 0) then
-        call jeveuo(profName(1:19)//'.NUEQ', 'L', vi=nueq)
-        call jenonu(jexnom(profName(1:19)//'.LILI', '&MAILLA'), liliMesh)
-        call jeveuo(jexnum(profName(1:19)//'.PRNO', liliMesh), 'L', vi=prno)
-    end if
+    call jeveuo(profName(1:19)//'.NUEQ', 'L', vi=nueq)
+    call jenonu(jexnom(profName(1:19)//'.LILI', '&MAILLA'), liliMesh)
+    call jeveuo(jexnum(profName(1:19)//'.PRNO', liliMesh), 'L', vi=prno)
 !
 ! - Select list of components
 !
@@ -201,23 +194,16 @@ subroutine resuPrintIdeasNode(fileUnit, dsName, &
 !
 ! - Print nodal field
 !
-    if (fieldScalar .eq. 1 .and. fieldRepr .ge. 0) then
+    if (fieldScalar .eq. 1) then
         call irdesr(fileUnit, nodeNb, prno, nueq, nec, &
                     codeInte, cmpCataNb, zr(jvVale), cmpCataName, title, &
                     nodeName, dsName, fieldType, storeIndx, nodeNume, &
                     lMeshIdeas, cmpListNb, cmpListIndx, cmpUserName)
-    else if (fieldScalar .eq. 1 .and. fieldRepr .lt. 0) then
-        call irdrsr(fileUnit, nodeNb, desc, nec, codeInte, &
-                    cmpCataNb, zr(jvVale), cmpCataName, title, nodeName, &
-                    dsName, fieldType, storeIndx, nodeNume, lMeshIdeas, &
-                    cmpListNb, cmpListIndx, cmpUserName)
-    else if (fieldScalar .eq. 2 .and. fieldRepr .ge. 0) then
+    else if (fieldScalar .eq. 2) then
         call irdesc(fileUnit, nodeNb, prno, nueq, nec, &
                     codeInte, cmpCataNb, zc(jvVale), cmpCataName, title, &
                     nodeName, dsName, fieldType, storeIndx, nodeNume, &
                     lMeshIdeas)
-    else if (fieldScalar .eq. 2 .and. fieldRepr .lt. 0) then
-        call utmess('F', 'RESULT3_35')
     end if
     goto 999
 !

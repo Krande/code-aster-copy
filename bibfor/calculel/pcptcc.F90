@@ -426,7 +426,6 @@ subroutine pcptcc(option, ldist, dbg_ob, dbgv_ob, lcpu, &
                     call dcopy(lonch, zr(jcnoch+(p-1)*lonch), 1, zr(jval), 1)
                     call jelibe(k24b(1:19)//'.VALE')
                     call jelibe(k24b(1:19)//'.REFE')
-                    call jelibe(k24b(1:19)//'.DESC')
                     p = p+1
                 end do
             else
@@ -442,7 +441,6 @@ subroutine pcptcc(option, ldist, dbg_ob, dbgv_ob, lcpu, &
                     call zcopy(lonch, zc(jcnoch+(p-1)*lonch), 1, zc(jval), 1)
                     call jelibe(k24b(1:19)//'.VALE')
                     call jelibe(k24b(1:19)//'.REFE')
-                    call jelibe(k24b(1:19)//'.DESC')
                     p = p+1
                 end do
             end if
@@ -462,7 +460,6 @@ subroutine pcptcc(option, ldist, dbg_ob, dbgv_ob, lcpu, &
                 do k = ideb, ifin
                     k24b = zk24(jvcham+p-1)
 ! TRES VERBOSE: A RESERVER AUX PETITS CAS
-!            call jeimpo(ifm,k24b(1:19)//'.DESC','ccfnrn fin')
 !            call jeimpo(ifm,k24b(1:19)//'.REFE','ccfnrn fin')
 !            call jeveuo(k24b(1:19)//'.VALE', 'L', jval)
 !            do i=1,10
@@ -474,7 +471,6 @@ subroutine pcptcc(option, ldist, dbg_ob, dbgv_ob, lcpu, &
                 end do
             else
 ! EN SIMPLE
-!          call jeimpo(ifm,chamno(1:19)//'.DESC','ccfnrn fin')
 !          call jeimpo(ifm,chamno(1:19)//'.REFE','ccfnrn fin')
 !          call jeimpo(ifm,chamno(1:19)//'.VALE','ccfnrn fin')
 !          call jeveuo(chamno(1:19)//'.VALE', 'L', jval)

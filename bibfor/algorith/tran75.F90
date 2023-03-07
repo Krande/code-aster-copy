@@ -96,7 +96,7 @@ subroutine tran75(nomres, typres, nomin, basemo)
     integer :: idec, idefm, idresu, ie
     integer :: ier, inocmp, inoecp, inuddl, inumno, ipsdel, ir
     integer :: irou, jc, jinst
-    integer :: jnume, jpsdel, jvec, linst, llcha
+    integer :: jnume, jpsdel, jvec, linst
     integer :: lpsdel, lval2, lvale, n1, n2, n3
     integer :: n4, nbcham, nbd, nbexci, nbinsg, nbinst
     integer :: nbmode, nbnoeu, ncmp, neq, nfonct, neq0, ifonct, vali(2), neq1
@@ -209,15 +209,12 @@ subroutine tran75(nomres, typres, nomin, basemo)
     else
 !         --- BASE MODALE CALCULEE PAR SOUS-STRUCTURATION
 !
-        call rsexch('F', basemo, 'DEPL', 1, chmod, &
-                    ir)
-        chmod = chmod(1:19)//'.REFE'
+        call rsexch('F', basemo, 'DEPL', 1, chmod, ir)
         call dismoi('NOM_GD', chmod, 'CHAM_NO', repk=nomgd)
         call dismoi('NUME_EQUA', chmod, 'CHAM_NO', repk=numeq)
-        call jeveuo(chmod, 'L', llcha)
-        mailla = zk24(llcha) (1:8)
-        crefe(1) = zk24(llcha)
-        crefe(2) = zk24(llcha+1)
+        call dismoi('NOM_MAILLA', chmod, 'CHAM_NO', repk=mailla)
+        crefe(1) = " "
+        crefe(2) = numeq
         if (tousno) then
             call dismoi('NB_EQUA', numeq, 'NUME_EQUA', repi=neq)
         end if
@@ -365,7 +362,7 @@ subroutine tran75(nomres, typres, nomin, basemo)
             call copmod(basemo, champ=typcha, numer=numeq(1:14), bmodr=base, nequa=neq, &
                         nbmodes=nbmode)
         else
-            crefe(1) = mailla
+            crefe(1) = " "
             crefe(2) = numeq
             tmpcha = '&&TRAN75.CHAMP'
             call dismoi('NB_EQUA', numeq, 'NUME_EQUA', repi=neq1)

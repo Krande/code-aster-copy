@@ -86,7 +86,7 @@ subroutine trprot(model, bamo, tgeom, imodg, iadx, &
 #include "asterfort/nueq_chck.h"
 !
     aster_logical :: test1, test2, test3
-    integer :: nbvale, nbrefe, nbdesc, isst, iadrp, i_ligr_mesh
+    integer :: nbvale, nbrefe, isst, iadrp, i_ligr_mesh
     integer :: i, iad(2), iad3d(3), icor(2), ndble
     real(kind=8) :: tgeom(6), const(2)
     real(kind=8) :: tailmi, norm1, norm2, ca(3), sa(3)
@@ -419,24 +419,24 @@ subroutine trprot(model, bamo, tgeom, imodg, iadx, &
                     base, chtmpx)
 !
         call calflu(chtmpx, moint, mate, mateco, num, vesolx, &
-                    nbdesc, nbrefe, nbvale, 'X')
+                    nbrefe, nbvale, 'X')
 !
         call chtpcn(chamny, tgeom, tailmi, tmin, epsi, &
                     base, chtmpy)
 !
         call calflu(chtmpy, moint, mate, mateco, num, vesoly, &
-                    nbdesc, nbrefe, nbvale, 'Y')
+                    nbrefe, nbvale, 'Y')
 !
         ilires = ilires+1
         k = k+1
 !
         vestoc = '&&TRPROT.TPXSTO'
         call prstoc(chtmpx, vestoc, ilires, k, iadx, &
-                    nbvale, nbrefe, nbdesc)
+                    nbvale, nbrefe)
 !
         vestoc = '&&TRPROT.TPYSTO'
         call prstoc(chtmpy, vestoc, ilires, k, iady, &
-                    nbvale, nbrefe, nbdesc)
+                    nbvale, nbrefe)
 !
         if (model .eq. '3D') then
 !
@@ -444,10 +444,10 @@ subroutine trprot(model, bamo, tgeom, imodg, iadx, &
                         base, chtmpz)
 !
             call calflu(chtmpz, moint, mate, mateco, num, vesolz, &
-                        nbdesc, nbrefe, nbvale, 'Z')
+                        nbrefe, nbvale, 'Z')
             vestoc = '&&TRPROT.TPZSTO'
             call prstoc(chtmpz, vestoc, ilires, k, iadz, &
-                        nbvale, nbrefe, nbdesc)
+                        nbvale, nbrefe)
 !
         end if
     else
@@ -455,16 +455,16 @@ subroutine trprot(model, bamo, tgeom, imodg, iadx, &
 !        'CAS OU T=0 ET R=0'
 !
         call calflu(chamnx, moint, mate, mateco, num, vesolx, &
-                    nbdesc, nbrefe, nbvale, 'X')
+                    nbrefe, nbvale, 'X')
         call calflu(chamny, moint, mate, mateco, num, vesoly, &
-                    nbdesc, nbrefe, nbvale, 'Y')
+                    nbrefe, nbvale, 'Y')
 !
         ilires = ilires+1
         k = k+1
 !
         vestoc = '&&TRPROT.TPXSTO'
         call prstoc(chamnx, vestoc, ilires, k, iadx, &
-                    nbvale, nbrefe, nbdesc)
+                    nbvale, nbrefe)
 !
 !           IF (VESTOC(1:12).EQ.'TPXSTO000012') THEN
 !
@@ -476,15 +476,15 @@ subroutine trprot(model, bamo, tgeom, imodg, iadx, &
 !
         vestoc = '&&TRPROT.TPYSTO'
         call prstoc(chamny, vestoc, ilires, k, iady, &
-                    nbvale, nbrefe, nbdesc)
+                    nbvale, nbrefe)
 !
         if (model .eq. '3D') then
 !
             call calflu(chamnz, moint, mate, mateco, num, vesolz, &
-                        nbdesc, nbrefe, nbvale, 'Z')
+                        nbrefe, nbvale, 'Z')
             vestoc = '&&TRPROT.TPZSTO'
             call prstoc(chamnz, vestoc, ilires, k, iadz, &
-                        nbvale, nbrefe, nbdesc)
+                        nbvale, nbrefe)
 !
         end if
     end if
@@ -549,7 +549,7 @@ subroutine trprot(model, bamo, tgeom, imodg, iadx, &
 !
     vestoc = '&&TRPROT.VESTOC'
     call prstoc(vepr, vestoc, ilires, k, zi(iadrp+isst-1), &
-                nbvale, nbrefe, nbdesc)
+                nbvale, nbrefe)
 !
     call detrsd('CHAM_NO', vepr)
     call detrsd('CHAMP_GD', chcomb)

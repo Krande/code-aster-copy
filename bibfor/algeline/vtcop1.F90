@@ -55,7 +55,7 @@ subroutine vtcop1(chin, chout, kstop, codret)
     integer :: nnomx, ncpmx, nuno2, nucp2, nuno1, nucp1
     integer :: jcmpgd, ncmpmx, icmp
     character(len=1) :: typ1, typ2
-    character(len=8) :: nomgd, noma, mesh1, mesh2
+    character(len=8) :: nomgd, mesh1, mesh2
     character(len=24) :: valk(4)
     character(len=19) :: ch1, ch2, pfchno
     integer, pointer :: trav1(:) => null()
@@ -250,8 +250,7 @@ subroutine vtcop1(chin, chout, kstop, codret)
                 ASSERT(.false.)
             else
                 valk(1) = zk8(jcmpgd+nucp2-1)
-                noma = refe2(1)
-                call jenuno(jexnum(noma//'.NOMNOE', nuno2), valk(2))
+                call jenuno(jexnum(mesh2//'.NOMNOE', nuno2), valk(2))
                 valk(3) = ch1
                 call utmess('A', 'ALGELINE7_20', nk=3, valk=valk)
                 codret = 1

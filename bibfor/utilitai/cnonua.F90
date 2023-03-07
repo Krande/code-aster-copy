@@ -60,7 +60,7 @@ subroutine cnonua(nb_dim, chnoz, list_nodez, nuagez)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: idx_gd, num, ncmpmx, nb_ec
+    integer :: idx_gd, ncmpmx, nb_ec
     integer :: nb_point, kcoor, kvale, itype
     integer :: nb_cmp_max, i_ec, ianueq, iaprno, nume_pt, ncmp, icompt
     integer :: i_cmp, i_pt, i_dim, i_cmp_mx
@@ -74,9 +74,7 @@ subroutine cnonua(nb_dim, chnoz, list_nodez, nuagez)
     integer, pointer :: p_nuai(:) => null()
     real(kind=8), pointer :: p_nuax(:) => null()
     aster_logical, pointer :: p_nual(:) => null()
-    integer, pointer :: p_desc(:) => null()
     integer, pointer :: p_list_node(:) => null()
-    character(len=24), pointer :: p_refe(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -87,19 +85,15 @@ subroutine cnonua(nb_dim, chnoz, list_nodez, nuagez)
     nuage = nuagez
     l_crea_nual = .false.
 !
-    call jeveuo(chno//'.DESC', 'L', vi=p_desc)
-    idx_gd = p_desc(1)
-    num = p_desc(2)
-    ASSERT(num > 0)
+    call dismoi("NUM_GD", chno, "CHAM_NO", repi=idx_gd)
     call jelira(jexnum('&CATA.GD.NOMCMP', idx_gd), 'LONMAX', ncmpmx)
     call jenuno(jexnum('&CATA.GD.NOMGD', idx_gd), gran_name)
     nb_ec = nbec(idx_gd)
     AS_ALLOCATE(vi=cmp_name, size=ncmpmx)
     AS_ALLOCATE(vi=ent_cod, size=nb_ec)
 !
-    call jeveuo(chno//'.REFE', 'L', vk24=p_refe)
-    mesh = p_refe(1) (1:8)
-    numeequa = p_refe(2) (1:19)
+    call dismoi("NOM_MAILLA", chno, "CHAM_NO", repk=mesh)
+    call dismoi("NUME_EQUA", chno, "CHAM_NO", repk=numeequa)
 !
     call nueq_chck(numeequa, l_error=.true.)
     call dismoi('NB_NO_MAILLA', mesh, 'MAILLAGE', repi=nb_point)

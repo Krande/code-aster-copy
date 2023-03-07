@@ -105,6 +105,7 @@ subroutine regene(nomres, resgen, profno)
     call jelira(chamol, 'TYPE', cval=typsca)
     if (typsca .eq. 'C') zcmplx = .true.
 !
+    print *, "1: ", resgen
     call rsorac(resgen, 'LONUTI', 0, rbid, kbid, &
                 cbid, rbid, kbid, tmod, 1, &
                 ibid)
@@ -200,6 +201,7 @@ subroutine regene(nomres, resgen, profno)
 !
         call getvid(' ', 'MODE_MECA', scal=modmec, nbret=ibid)
         if (ibid .ne. 0) basmod = modmec
+        print *, "2: ", basmod
         call rsorac(basmod, 'LONUTI', 0, rbid, kbid, &
                     cbid, rbid, kbid, tmod, 1, &
                     ibid)
@@ -253,6 +255,8 @@ subroutine regene(nomres, resgen, profno)
 !-----------------------------------------------------------------------
 !
 !
+        print *, "3: ", basmod
+
         call rsorac(basmod, 'LONUTI', 0, rbid, kbid, &
                     cbid, rbid, kbid, tmod, 1, &
                     ibid)

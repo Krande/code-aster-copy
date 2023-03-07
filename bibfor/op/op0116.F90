@@ -60,7 +60,7 @@ subroutine op0116()
 !
     aster_logical :: ltrans, force
     integer :: i, ib, imod, nbmod, j1, jdisc, dim, icor(2), iadx, iady
-    integer :: nbdesc, nbrefe, nbvale, nbcoefs, icoef, jcoef
+    integer :: nbrefe, nbvale, nbcoefs, icoef, jcoef
     real(kind=8) :: r8b, pi, freq, para(2), constant, epstol
     character(len=2) :: modelisa(2), modelis
     character(len=8) :: rigthe, modmec, nomres, potentiel
@@ -195,9 +195,9 @@ subroutine op0116()
                         0, nuddl, tmpmod, chamny, 'DY', &
                         icor)
             call calflu(chamnx, modele, mater, mateco, nuddl, &
-                        vesolx, nbdesc, nbrefe, nbvale, 'X')
+                        vesolx, nbrefe, nbvale, 'X')
             call calflu(chamny, modele, mater, mateco, nuddl, &
-                        vesoly, nbdesc, nbrefe, nbvale, 'Y')
+                        vesoly, nbrefe, nbvale, 'Y')
 !
             chcomb = "&&OP0116.CHCOMB"
             nomch = [vect2(1:19), vesolx(1:19), vesoly(1:19)]
@@ -211,7 +211,7 @@ subroutine op0116()
                             0, nuddl, tmpmod, chamnz, 'DZ', &
                             icor)
                 call calflu(chamnz, modele, mater, mateco, nuddl, &
-                            vesolz, nbdesc, nbrefe, nbvale, 'Z')
+                            vesolz, nbrefe, nbvale, 'Z')
 !
                 chcmb2 = "&&OP0116.CHCOMB2"
                 call vtcmbl(2, ['R', 'R'], [1.d0, 1.d0], ['R', 'R'], [chcomb, vesolz], &

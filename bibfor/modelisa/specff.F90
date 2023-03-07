@@ -42,6 +42,7 @@ subroutine specff(casint, nomu, spectr, base, nuor, &
 #include "jeveux.h"
 #include "asterfort/axdipo.h"
 #include "asterfort/deffen.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/discax.h"
 #include "asterfort/discff.h"
 #include "asterfort/fenexc.h"
@@ -70,7 +71,7 @@ subroutine specff(casint, nomu, spectr, base, nuor, &
 !
     integer :: ibid, dim, dimint, mxval, itab, nbfreq, nbval
     integer :: ire, iim, isre, isim, i1, ind, lnumi, lnumj, ier2, ij, iprol
-    integer :: iaxe, ichref, ideb, idebit, idec, idefm, idiax
+    integer :: iaxe, ideb, idebit, idec, idefm, idiax
     integer :: idife, idiff, ifo, ifo1, ifo2, ifoi, ifsic, iinte, il, im1
     integer :: imata, imatb, inofe, inomf, inuno, iremf, iret, im1b, im2, im2b
     integer :: ispin, ispno, ispte, itypfl, iv, ivaff, ivale
@@ -149,8 +150,7 @@ subroutine specff(casint, nomu, spectr, base, nuor, &
     iv = 1
     write (chrefe, '(A8,A5,2I3.3,A5)') base(1:8), '.C01.', nuor(1), iv,&
      &                                 '.REFE'
-    call jeveuo(chrefe, 'L', ichref)
-    noma = zk24(ichref) (1:8)
+    call dismoi("NOM_MAILLA", chrefe, "CHAM_NO", repk=noma)
 !
 ! --- 4.DISCRETISATION DES FONCTIONS DE FORME ---
 !

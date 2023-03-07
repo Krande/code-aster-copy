@@ -65,7 +65,7 @@ subroutine ssdein(chno_lz, chno_gz, mail, nocas)
 ! ----------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: i, iadesc, iadgg, iadgl, ialica
+    integer :: i, iadgg, iadgl, ialica
     integer :: ialich, iaphi0, iaphie
     integer :: iaprng, iaprnl, iarefe, iasupm, iavall, iavalp
     integer :: ibid, iblph, icmp, icog, icol
@@ -79,7 +79,6 @@ subroutine ssdein(chno_lz, chno_gz, mail, nocas)
     real(kind=8), pointer :: para_r(:) => null()
     integer, pointer :: nueg(:) => null()
     integer, pointer :: nuel(:) => null()
-    integer, pointer :: desc(:) => null()
     integer, pointer :: conx(:) => null()
     real(kind=8), pointer :: vale(:) => null()
 !-----------------------------------------------------------------------
@@ -132,15 +131,9 @@ subroutine ssdein(chno_lz, chno_gz, mail, nocas)
 !
 !     2- ALLOCATION DU CHAM_NO RESULTAT : CHNO_L
 !     --------------------------------------
-!     .DESC:
-    call wkvect(chno_l//'.DESC', 'G V I', 2, iadesc)
-    call jeveuo(chno_g//'.DESC', 'L', vi=desc)
-    zi(iadesc-1+1) = desc(1)
-    zi(iadesc-1+2) = 1
-    call jeecra(chno_l//'.DESC', 'DOCU', ibid, 'CHNO')
 !     .REFE:
     call wkvect(chno_l//'.REFE', 'G V K24', 4, iarefe)
-    zk24(iarefe-1+1) = mal
+    call jeecra(chno_l//'.REFE', 'DOCU', ibid, 'CHNO')
     zk24(iarefe-1+2) = nul//'.NUME'
 !     .VALE:
     call wkvect(chno_l//'.VALE', 'G V R', nddlt, iavall)

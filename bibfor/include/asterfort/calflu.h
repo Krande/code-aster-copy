@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,13 +20,12 @@
 !
 interface
     subroutine calflu(chamno, modele, mate, mateco, nu, vectas,&
-                      nd, nr, nv, opt)
+                      nr, nv, opt)
         character(len=*) :: chamno
         character(len=*) :: modele
         character(len=*) :: mateco, mate
         character(len=*) :: nu
         character(len=*) :: vectas
-        integer :: nd
         integer :: nr
         integer :: nv
         character(len=*) :: opt

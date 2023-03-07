@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -123,19 +123,9 @@ Le filtre TYPE_MAILLE a éliminée %(i1)d mailles .
  les champs n'ont pas la même grandeur
 """
     ),
-    68: _(
-        """
- les champs n'ont pas la même numérotation
-"""
-    ),
     69: _(
         """
  les champs n'ont pas le même type de valeurs
-"""
-    ),
-    70: _(
-        """
-   désolé on ne sait pas écrire les champs aux noeuds de représentation constante au format IDEAS
 """
     ),
     77: _(

@@ -47,7 +47,7 @@ subroutine irmad0(ifc, versio, nstat, chamno, nomsym)
 !     ------------------------------------------------------------------
 !
     character(len=1) :: type, typi
-    integer :: gd, num, gdi, numi
+    integer :: gd, gdi
     character(len=8) :: k8b, nomma, nomgd
     character(len=16) :: nomcmd
     character(len=19) :: chamn
@@ -55,24 +55,22 @@ subroutine irmad0(ifc, versio, nstat, chamno, nomsym)
 !     ------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: i, iad, iadesc, iaec, iaprno
+    integer :: i, iad, iaec, iaprno
     integer :: ibid, ifc, ino, iret, itype
     integer ::  nbno, ncmpmx, nec
     character(len=8), pointer :: nomnoe(:) => null()
     integer, pointer :: numnoe(:) => null()
     integer, pointer :: nueq(:) => null()
-    character(len=24), pointer :: refe(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
     chamn = chamno(1)
 !
-    call jeveuo(chamn//'.REFE', 'L', vk24=refe)
 !
 !     --- NOM DU MAILLAGE
-    nomma = refe(1) (1:8)
+    call dismoi("NOM_MAILLA", chamn, "CHAM_NO", repk=nomma)
 !
 !     --- NOM DU PROFIL AUX NOEUDS ASSOCIE S'IL EXISTE
-    nomnu = refe(2)
+    call dismoi("NUME_EQUA", chamn, "CHAM_NO", repk=nomnu)
 !
     call jelira(chamn//'.VALE', 'TYPE', cval=type)
     if (type .eq. 'R') then
@@ -85,23 +83,16 @@ subroutine irmad0(ifc, versio, nstat, chamno, nomsym)
         goto 999
     end if
 !
-    call jeveuo(chamn//'.DESC', 'L', iadesc)
-    gd = zi(iadesc-1+1)
-    num = zi(iadesc-1+2)
+    call dismoi("NUM_GD", chamn, "CHAM_NO", repi=gd)
     call jenuno(jexnum('&CATA.GD.NOMGD', gd), nomgd)
 !
 !     --- ON VERIFIE QUE TOUS LES CHAMPS SONT IDENTIQUES
 !
     do i = 1, nstat
         chamn = chamno(i)
-        call jeveuo(chamn//'.DESC', 'L', iadesc)
-        gdi = zi(iadesc-1+1)
-        numi = zi(iadesc-1+2)
+        call dismoi("NUM_GD", chamn, "CHAM_NO", repi=gdi)
         if (gdi .ne. gd) then
             call utmess('F', 'PREPOST2_67')
-        end if
-        if (numi .ne. num) then
-            call utmess('F', 'PREPOST2_68')
         end if
         call jelira(chamn//'.VALE', 'TYPE', cval=typi)
         if (typi .ne. type) then
@@ -120,11 +111,9 @@ subroutine irmad0(ifc, versio, nstat, chamno, nomsym)
 !     --- SI LE CHAMP EST A REPRESENTATION CONSTANTE: RIEN DE SPECIAL
 !
 !     --- SI LE CHAMP EST DECRIT PAR UN "PRNO":
-    if (num .ge. 0) then
-        call jeveuo(nomnu(1:19)//'.NUEQ', 'L', vi=nueq)
-        call jenonu(jexnom(nomnu(1:19)//'.LILI', '&MAILLA'), ibid)
-        call jeveuo(jexnum(nomnu(1:19)//'.PRNO', ibid), 'L', iaprno)
-    end if
+    call jeveuo(nomnu(1:19)//'.NUEQ', 'L', vi=nueq)
+    call jenonu(jexnom(nomnu(1:19)//'.LILI', '&MAILLA'), ibid)
+    call jeveuo(jexnum(nomnu(1:19)//'.PRNO', ibid), 'L', iaprno)
 !
 !     --- NOMBRE DE NOEUDS DU MAILLAGE: NBNO
     call dismoi('NB_NO_MAILLA', nomma, 'MAILLAGE', repi=nbno)
@@ -137,15 +126,10 @@ subroutine irmad0(ifc, versio, nstat, chamno, nomsym)
         numnoe(ino) = ino
     end do
 !
-    if (num .ge. 0) then
-        ncmpmx = 6
-        call irmad1(ifc, versio, nbno, zi(iaprno), nueq, &
-                    nec, zi(iaec), ncmpmx, itype, nstat, &
-                    chamno, zk8(iad), nomsym, numnoe)
-    else
-        call getres(k8b, k8b, nomcmd)
-        call utmess('E', 'PREPOST2_70')
-    end if
+    ncmpmx = 6
+    call irmad1(ifc, versio, nbno, zi(iaprno), nueq, &
+                nec, zi(iaec), ncmpmx, itype, nstat, &
+                chamno, zk8(iad), nomsym, numnoe)
 !
 ! --- MENAGE
     call jedetr('&&IRMAD0.ENT_COD')

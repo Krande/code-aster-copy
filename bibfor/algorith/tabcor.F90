@@ -50,7 +50,7 @@ subroutine tabcor(model, mate, mateco, ma1, ma2, moint, &
 !
 !
 !---------------------------------------------------------------------
-    integer :: nbvale, nbrefe, nbdesc, ibid, nbno1
+    integer :: nbvale, nbrefe, ibid, nbno1
     integer :: ino1, ino2, icor(2), itb1, itb2, ncmp2, nbno2, ichnul
     integer :: nec2, iprn2
     integer :: ndble, nbptr
@@ -80,7 +80,7 @@ subroutine tabcor(model, mate, mateco, ma1, ma2, moint, &
 !
     cn2 = '&&TABCOR.BIDON'
     call calflu(chnul, moint, mate, mateco, num, cn2, &
-                nbdesc, nbrefe, nbvale, 'X')
+                nbrefe, nbvale, 'X')
 !
 !
 !

@@ -91,7 +91,7 @@ subroutine crtype()
     complex(kind=8) :: cbid
 !
     character(len=4) :: typabs
-    character(len=6) :: typegd
+    character(len=6) :: typegd, typegd2
     character(len=8) :: k8b, resultName, nomf, noma, typmod, criter, matr, nogdsi, axe
     character(len=8) :: resultNameReuse
     character(len=8) :: model, fieldMate, caraElem, blan8, noma2, model_prev, fieldMate_prev
@@ -99,6 +99,7 @@ subroutine crtype()
     character(len=14) :: numedd
     character(len=16) :: nomp(mxpara), type, oper, acces, k16b
     character(len=19) :: nomch, champ, listr8, list_load, pchn1, resu19, profprev, profch, listLoad
+    character(len=19) :: nume_equa_tmp
     character(len=24) :: k24, linst, fieldType, resultType, lcpt, o1, o2, noojb
     character(len=24) :: valkk(4), matric(3)
     character(len=32) :: kjexn
@@ -273,6 +274,19 @@ subroutine crtype()
                     call gnomsd(' ', noojb, 15, 19)
                     profch = noojb(1:19)
                     call copisd('NUME_EQUA', 'G', pchn1, profch)
+                end if
+            end if
+
+            if (lfonc) then
+                call dismoi('NOM_GD', profch, 'NUME_EQUA', repk=typegd2)
+                if (typegd .ne. typegd2) then
+                    noojb = '12345678.NUMEC00000.PRNO'
+                    call gnomsd(' ', noojb, 15, 19)
+                    nume_equa_tmp = noojb(1:19)
+                    call copisd('NUME_EQUA', 'G', profch, nume_equa_tmp)
+                    profch = nume_equa_tmp
+                    call jeveuo(profch//'.REFN', 'E', jrefe)
+                    zk24(jrefe-1+2) = typegd
                 end if
             end if
         end if

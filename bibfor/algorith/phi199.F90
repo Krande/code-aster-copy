@@ -65,7 +65,7 @@ subroutine phi199(model, mate, mateco, ma, nu, num, &
 !                                 : 2 : AMORTISSEMENT ET RAIDEUR
 ! IN : K* : SOLVEZ : METHODE DE RESOLUTION 'MULT_FRONT','LDLT' OU 'GCPC'
 !---------------------------------------------------------------------
-    integer :: ibid, nbvale, nbrefe, nbdesc, iret, nbno, id, ier
+    integer :: ibid, nbvale, nbrefe, iret, nbno, id, ier
     integer :: ilires, jref, neq, nbd, nbdir, i, jvec, in, nbsta
     integer :: iphi1, n3, n1, icor(2), n2, ndble, iordr, nbtrou, tmod(1)
     real(kind=8) :: rbid, xnorm, xd, depl(6), epsi
@@ -258,7 +258,7 @@ subroutine phi199(model, mate, mateco, ma, nu, num, &
         vecso1 = '&&OP0199.VECSOL1'
 !
         call calflu(nomcha, moflui, mate, mateco, nu, vecso1, &
-                    nbdesc, nbrefe, nbvale, 'R')
+                    nbrefe, nbvale, 'R')
 !
         ilires = ilires+1
 !
@@ -278,7 +278,7 @@ subroutine phi199(model, mate, mateco, ma, nu, num, &
 !------------------------------------------------------------------
         vesto1 = '&&OP0199.VEST1'
         call prstoc(vecso1, vesto1, ilires, ilires, iphi1, &
-                    nbvale, nbrefe, nbdesc)
+                    nbvale, nbrefe)
 !
     end if
 !

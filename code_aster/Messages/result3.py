@@ -47,9 +47,6 @@ Pour supprimer l'émission de ce message d'alarme, il faut donner la valeur BINA
     ),
     13: _("""La variable interne %(k1)s n'existe pas sur l'élément. On ne l'imprime pas."""),
     25: _("""On ne trouve pas la composante %(k1)s dans la grandeur %(k2)s."""),
-    35: _(
-        """On ne sait pas écrire les champs aux noeuds de représentation constante et à valeurs complexes dans ce format."""
-    ),
     36: _(
         """Avec un maillage parallèle, l'impression des résultats dans un fichier unique n'est
  possible que si PROC0 à la valeur 'NON'."""

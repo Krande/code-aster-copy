@@ -64,12 +64,9 @@ subroutine nuacno(nuagez, list_nodez, chnoz)
     integer :: icompt, i_ec, ieq, nume_pt, itype, ival, i_pt
     integer :: j, jnuai, jnuav, k, i_ligr_mesh
     integer :: kcomp, kvale, nc, ncmp, ncmpmx, nb_ec, nb_point
-    integer :: num
-    integer, pointer :: p_desc(:) => null()
     integer, pointer :: ent_cod(:) => null()
     integer, pointer :: nueq(:) => null()
     integer, pointer :: p_list_node(:) => null()
-    character(len=24), pointer :: p_refe(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -79,19 +76,15 @@ subroutine nuacno(nuagez, list_nodez, chnoz)
     list_node = list_nodez
     nuage = nuagez
 !
-    call jeveuo(chno//'.DESC', 'L', vi=p_desc)
-    idx_gd = p_desc(1)
-    num = p_desc(2)
-    ASSERT(num > 0)
+    call dismoi("NUM_GD", chno, "CHAM_NO", repi=idx_gd)
     call jelira(jexnum('&CATA.GD.NOMCMP', idx_gd), 'LONMAX', ncmpmx)
     call jenuno(jexnum('&CATA.GD.NOMGD', idx_gd), gran_name)
     nb_ec = nbec(idx_gd)
     call wkvect('&&NUACNO.NOMCMP', 'V V I', ncmpmx, kcomp)
     AS_ALLOCATE(vi=ent_cod, size=nb_ec)
 !
-    call jeveuo(chno//'.REFE', 'L', vk24=p_refe)
-    mesh = p_refe(1) (1:8)
-    numeequa = p_refe(2) (1:19)
+    call dismoi("NOM_MAILLA", chno, "CHAM_NO", repk=mesh)
+    call dismoi("NUME_EQUA", chno, "CHAM_NO", repk=numeequa)
     call nueq_chck(numeequa, l_error=.true.)
     call dismoi('NB_NO_MAILLA', mesh, 'MAILLAGE', repi=nb_point)
 !

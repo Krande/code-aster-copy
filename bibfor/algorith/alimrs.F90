@@ -59,7 +59,7 @@ subroutine alimrs(mate, mateco, ma1, ma2, moint, ndble, &
 !
 !---------------------------------------------------------------------
     aster_logical :: test
-    integer :: nbvale, nbrefe, nbdesc
+    integer :: nbvale, nbrefe
     integer :: ino1, nocmp, icor(2), ichnul, ndble, i_ligr_mesh
     real(kind=8) :: tailmi
     character(len=8) :: gd1, gd2, ma1, ma2
@@ -98,7 +98,7 @@ subroutine alimrs(mate, mateco, ma1, ma2, moint, ndble, &
 !
     cn2 = chno
     call calflu(chnul, moint, mate, mateco, nume_ddl, cn2, &
-                nbdesc, nbrefe, nbvale, 'X')
+                nbrefe, nbvale, 'X')
 !
 !
 !

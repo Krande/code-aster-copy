@@ -65,9 +65,9 @@ subroutine vpstor(ineg, typ, modes, nbmode, neq, &
     integer :: vali(3), jpara
     integer :: nmin1, kmode, nordr, iarg, i, ladpa, lmode, lvale
     integer :: nbpast, irang, iret, jmodg, jmacr, jbasm
-    integer :: jmod2, jlime, igd
+    integer :: jmod2, jlime, igd, jrefe
     parameter(nbpast=19)
-    character(len=8) :: res, k8b, modele, chmat, carael, basemo
+    character(len=8) :: res, k8b, modele, chmat, carael, basemo, mesh
     character(len=16) :: typcon, nomcmd, nosy, typmod
     character(len=19) :: chamno, sd2
     character(len=24) :: nume, nopast(nbpast)
@@ -303,6 +303,10 @@ subroutine vpstor(ineg, typ, modes, nbmode, neq, &
             call jeecra(chamno//'.DESC', 'DOCU', iarg, 'VGEN')
             call jeecra(chamno//'.REFE', 'DOCU', iarg, 'VGEN')
             call juveca(chamno//'.REFE', 2)
+
+            call dismoi("NOM_MAILLA", nume, "NUME_DDL", repk=mesh)
+            call jeveuo(chamno//'.REFE', 'E', jrefe)
+            zk24(jrefe) = mesh
         end if
         call jeveuo(chamno//'.VALE', 'E', lvale)
         if (typ(1:1) .eq. 'R') then

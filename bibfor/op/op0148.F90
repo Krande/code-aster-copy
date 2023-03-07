@@ -47,7 +47,7 @@ subroutine op0148()
 #include "asterfort/wkvect.h"
 !
 !-----------------------------------------------------------------------
-    integer :: i, ibid, icham, icham1, ichref, icode, idep
+    integer :: i, ibid, icham, icham1, icode, idep
     integer :: idis, ifoi, ifor, ifreq, ifsic, ifsvk, im
     integer :: imod1, imr, in, inoei, inoen, inumo, inuor
     integer :: irefba, isip, isip1, isip2, ismf, itypfl
@@ -62,7 +62,7 @@ subroutine op0148()
     character(len=16) :: concep, cmd, optcal, optcha
     character(len=19) :: base, typflu, nomcha
     character(len=24) :: fsic, fsvk, vite, numo, freq, refeba, sipo
-    character(len=24) :: nomnoe, chrefe, chvale, nomobj
+    character(len=24) :: nomnoe, chvale, nomobj
     character(len=24) :: chnumi, chfreq
     real(kind=8) :: epsi, val, vitef
 !
@@ -171,9 +171,7 @@ subroutine op0148()
 !
     iv = 1
     write (nomcha, '(A8,A5,2I3.3)') base(1:8), '.C01.', zi(inumo), iv
-    chrefe = nomcha//'.REFE'
-    call jeveuo(chrefe, 'L', ichref)
-    nommai = zk24(ichref) (1:8)
+    call dismoi("NOM_MAILLA", nomcha, "CHAM_NO", repk=nommai)
     nomnoe = nommai//'.NOMNOE'
     call jelira(nomnoe, 'NOMUTI', nbp)
 !

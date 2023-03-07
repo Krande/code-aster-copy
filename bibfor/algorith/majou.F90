@@ -67,7 +67,7 @@ subroutine majou(model, modmec, solveu, num, nu, &
 #include "asterfort/utmess.h"
 #include "asterfort/vtcmbl.h"
 #include "asterfort/wkvect.h"
-    integer :: nbvale, nbrefe, nbdesc, ibid, nbid, nbmode, ilires
+    integer :: nbvale, nbrefe, ibid, nbid, nbmode, ilires
     integer :: i, icor(2), ndble, tabad(5), jj, kk
     real(kind=8) :: const(2)
     character(len=1) :: typech(2), typcst(2)
@@ -91,7 +91,7 @@ subroutine majou(model, modmec, solveu, num, nu, &
 ! ON RECUPERE LE NOMBRE DE MODES DANS LE MODE_MECA
 ! DEFINI
 !-----------------------------------------------------------------------
-    integer :: iadirg, iadpr, iadx, iady, iadz, idesp
+    integer :: iadirg, iadpr, iadx, iady, iadz
     integer :: irefp, iret, ivalp, jpara, nbnumo
 !
     real(kind=8) :: bid, ebid
@@ -240,24 +240,24 @@ subroutine majou(model, modmec, solveu, num, nu, &
 !
 !
         call calflu(chamnx, moint, mate, mateco, num, vesolx, &
-                    nbdesc, nbrefe, nbvale, 'X')
+                    nbrefe, nbvale, 'X')
         call calflu(chamny, moint, mate, mateco, num, vesoly, &
-                    nbdesc, nbrefe, nbvale, 'Y')
+                    nbrefe, nbvale, 'Y')
 !
         vestoc = '&&MAJOU.TPXSTO'
         call prstoc(chamnx, vestoc, ilires, ilires, iadx, &
-                    nbvale, nbrefe, nbdesc)
+                    nbvale, nbrefe)
 !
         vestoc = '&&MAJOU.TPYSTO'
         call prstoc(chamny, vestoc, ilires, ilires, iady, &
-                    nbvale, nbrefe, nbdesc)
+                    nbvale, nbrefe)
 !
         if (model .eq. '3D') then
             call calflu(chamnz, moint, mate, mateco, num, vesolz, &
-                        nbdesc, nbrefe, nbvale, 'Z')
+                        nbrefe, nbvale, 'Z')
             vestoc = '&&MAJOU.TPZSTO'
             call prstoc(chamnz, vestoc, ilires, ilires, iadz, &
-                        nbvale, nbrefe, nbdesc)
+                        nbvale, nbrefe)
         end if
 !
 !---ON RECOMBINE LES DEUX (TROIS)CHAMPS AUX NOEUDS DE TEMP ET ON CALCULE
@@ -311,7 +311,7 @@ subroutine majou(model, modmec, solveu, num, nu, &
 !
         vestoc = '&&MAJOU.VESTOC'
         call prstoc(vepr, vestoc, ilires, ilires, iadpr, &
-                    nbvale, nbrefe, nbdesc)
+                    nbvale, nbrefe)
 1       continue
     end do
 !
@@ -333,7 +333,6 @@ subroutine majou(model, modmec, solveu, num, nu, &
             zk24(iadpr+ilires-1) = vestoc(1:14)//chaine(1:5)
             call wkvect(zk24(iadpr+ilires-1) (1:19)//'.VALE', 'V V R', nbvale, ivalp)
             call wkvect(zk24(iadpr+ilires-1) (1:19)//'.REFE', 'V V K24', nbrefe, irefp)
-            call wkvect(zk24(iadpr+ilires-1) (1:19)//'.DESC', 'V V I', nbdesc, idesp)
 !
 ! TABLEAUX POUR LES DEPLACEMENTS EN X
 !
@@ -341,7 +340,6 @@ subroutine majou(model, modmec, solveu, num, nu, &
             zk24(iadx+ilires-1) = vestoc(1:14)//chaine(1:5)
             call wkvect(zk24(iadx+ilires-1) (1:19)//'.VALE', 'V V R', nbvale, ivalp)
             call wkvect(zk24(iadx+ilires-1) (1:19)//'.REFE', 'V V K24', nbrefe, irefp)
-            call wkvect(zk24(iadx+ilires-1) (1:19)//'.DESC', 'V V I', nbdesc, idesp)
 !
 ! TABLEAUX POUR LES DEPLACEMENTS EN Y
 !
@@ -349,7 +347,6 @@ subroutine majou(model, modmec, solveu, num, nu, &
             zk24(iady+ilires-1) = vestoc(1:14)//chaine(1:5)
             call wkvect(zk24(iady+ilires-1) (1:19)//'.VALE', 'V V R', nbvale, ivalp)
             call wkvect(zk24(iady+ilires-1) (1:19)//'.REFE', 'V V K24', nbrefe, irefp)
-            call wkvect(zk24(iady+ilires-1) (1:19)//'.DESC', 'V V I', nbdesc, idesp)
 !
 ! TABLEAUX POUR LES DEPLACEMENTS EN Z
 !
@@ -358,7 +355,6 @@ subroutine majou(model, modmec, solveu, num, nu, &
                 zk24(iadz+ilires-1) = vestoc(1:14)//chaine(1:5)
                 call wkvect(zk24(iadz+ilires-1) (1:19)//'.VALE', 'V V R', nbvale, ivalp)
                 call wkvect(zk24(iadz+ilires-1) (1:19)//'.REFE', 'V V K24', nbrefe, irefp)
-                call wkvect(zk24(iadz+ilires-1) (1:19)//'.DESC', 'V V I', nbdesc, idesp)
             end if
 !
 3           continue

@@ -17,13 +17,13 @@
 ! --------------------------------------------------------------------
 
 subroutine cal2m(chamno, phibar, modele, mate, mateco, nu, &
-                 vecas2, nd, nr, nv)
+                 vecas2, nr, nv)
     implicit none
 #include "asterfort/assvec.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jelira.h"
 #include "asterfort/phi2el.h"
-    integer :: nr, nd, nv
+    integer :: nr, nv
     character(len=*) :: chamno, phibar, modele, mate, mateco, nu, vecas2
 !
 !------- CALCUL DES VECTEURS ASSEMBLES DE FLUX FLUIDES
@@ -54,7 +54,6 @@ subroutine cal2m(chamno, phibar, modele, mate, mateco, nu, &
     call assvec('V', vecas2, 1, ve2, [1.d0], nu)
     call jedetr(ve2)
 !
-    call jelira(vecas2(1:19)//'.DESC', 'LONMAX', nd)
     call jelira(vecas2(1:19)//'.REFE', 'LONMAX', nr)
     call jelira(vecas2(1:19)//'.VALE', 'LONMAX', nv)
 !

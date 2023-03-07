@@ -23,8 +23,10 @@ subroutine sepach(carael, chinz, base, chreel, chimag)
 #include "asterfort/alchml.h"
 #include "asterfort/assert.h"
 #include "asterfort/cesvar.h"
+#include "asterfort/copisd.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/gnomsd.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedup1.h"
 #include "asterfort/jeexin.h"
@@ -51,49 +53,26 @@ subroutine sepach(carael, chinz, base, chreel, chimag)
 !
     integer :: gd, gdre, jdescr, jdesci, nbval, nbval2
     integer :: jvaler, jvalei, ivale, ier, iret1, iret2
-    integer :: nmax1, nmax2, jncmpr, jncmpc, i
+    integer :: nmax1, nmax2, jncmpr, jncmpc, i, jrefe
     integer ::  nbsp
     character(len=8) :: nomgd, nomre
     character(len=4) :: typch
-    character(len=19) :: canbva, chin
-    character(len=24) :: ligrel, option, param, valk(2)
+    character(len=19) :: canbva, chin, nume_equa, nume_equa_tmp
+    character(len=24) :: ligrel, option, param, valk(2), noojb
     character(len=24), pointer :: celk(:) => null()
     complex(kind=8), pointer :: celv(:) => null()
     real(kind=8), pointer :: celvi(:) => null()
     real(kind=8), pointer :: celvr(:) => null()
-    integer, pointer :: desc(:) => null()
-    integer, pointer :: celd(:) => null()
 !
     call jemarq()
 !
     chin = chinz
 !
-    call jeexin(chin//'.DESC', ier)
-    if (ier .ne. 0) then
-        call jeexin(chin//'.LIMA', ier)
-        if (ier .ne. 0) then
-            typch = 'CART'
-        else
-            typch = 'CHNO'
-        end if
-    else
-        call jeexin(chin//'.CELK', ier)
-        if (ier .ne. 0) then
-            typch = 'CHML'
-        else
-            call utmess('F', 'CALCULEL_17')
-        end if
-    end if
+    call dismoi("DOCU", chin, "CHAMP", repk=typch)
+    call dismoi("NUM_GD", chin, "CHAMP", repi=gd)
 !
     ier = 0
 !
-    if (typch .eq. 'CHNO' .or. typch .eq. 'CART') then
-        call jeveuo(chin//'.DESC', 'L', vi=desc)
-        gd = desc(1)
-    else
-        call jeveuo(chin//'.CELD', 'L', vi=celd)
-        gd = celd(1)
-    end if
     call jenuno(jexnum('&CATA.GD.NOMGD', gd), nomgd)
     if ((nomgd(7:7) .ne. ' ') .or. (nomgd(5:6) .ne. '_C')) then
         call utmess('F', 'CALCULEL4_80', sk=nomgd)
@@ -129,15 +108,19 @@ subroutine sepach(carael, chinz, base, chreel, chimag)
 !     -- CHAM_NO :
 !     -------------------
     if (typch .eq. 'CHNO') then
-        call jedup1(chin//'.DESC', base, chreel//'.DESC')
+        noojb = '12345678.NUMEC00000.PRNO'
+        call gnomsd(chreel, noojb, 15, 19)
+        nume_equa_tmp = noojb(1:19)
+        call dismoi("NUME_EQUA", chin, "CHAMP", repk=nume_equa)
+        call copisd('NUME_EQUA', 'G', nume_equa, nume_equa_tmp)
+        call jeveuo(nume_equa_tmp//'.REFN', 'E', jrefe)
+        zk24(jrefe-1+2) = nomre
+
         call jedup1(chin//'.REFE', base, chreel//'.REFE')
-        call jeveuo(chreel//'.DESC', 'E', jdescr)
-        zi(jdescr) = gdre
+        call jeveuo(chreel//'.REFE', 'E', jrefe)
+        zk24(jrefe-1+2) = nume_equa_tmp
 !
-        call jedup1(chin//'.DESC', base, chimag//'.DESC')
-        call jedup1(chin//'.REFE', base, chimag//'.REFE')
-        call jeveuo(chimag//'.DESC', 'E', jdesci)
-        zi(jdesci) = gdre
+        call jedup1(chreel//'.REFE', base, chimag//'.REFE')
 !
         call jelira(chin//'.VALE', 'LONMAX', nbval)
         call jeveuo(chin//'.VALE', 'L', ivale)
