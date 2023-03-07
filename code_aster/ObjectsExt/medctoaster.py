@@ -17,11 +17,10 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-import medcoupling as medc
 import numpy as np
 
-from ..Utilities import MPI, Timer
 from ..Messages import UTMESS
+from ..Utilities import MPI, Timer, medcoupling as medc
 
 ASTER_TYPES = [1, 2, 4, 6, 7, 9, 11, 12, 14, 16, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27]
 
@@ -99,10 +98,6 @@ MED2ASTER_CONNECT = {
     ],
 }
 
-MEDC2ASTER_CONNECT = {
-    getattr(medc, "NORM_%s" % elem): nodes for elem, nodes in MED2ASTER_CONNECT.items()
-}
-
 
 # Fonction manquante dans medcoupling
 def ConvertToMEDFileGeoType(medcoupling_type):
@@ -140,6 +135,8 @@ class MEDCouplingMeshHelper:
     to create or manipulate a code_aster mesh.
     """
 
+    _medc2aster_connect = {}
+
     def __init__(self):
         self._mesh = None
         self._mesh_name = ""
@@ -156,7 +153,7 @@ class MEDCouplingMeshHelper:
         self._gNumbering = []
         self._timer = Timer(title="medcoupling conversion")
 
-    def setMedCouplingMesh(self, medmesh: medc.MEDFileUMesh):
+    def setMedCouplingMesh(self, medmesh):
         """Define the medcoupling mesh to be converted.
 
         Arguments:
@@ -464,8 +461,8 @@ class MEDCouplingMeshHelper:
         """dict: Dict of nodes contained in each group of nodes."""
         return list(zip(*self._groups_of_nodes.items()))
 
-    @staticmethod
-    def getConnectivityMedToAster(medcoupling_type):
+    @classmethod
+    def getConnectivityMedToAster(cls, medcoupling_type):
         """Return the code_aster connectivity of a medcoupling mesh type.
 
         Arguments:
@@ -474,4 +471,8 @@ class MEDCouplingMeshHelper:
         Returns:
             list[int]: List of nodes.
         """
-        return MEDC2ASTER_CONNECT[medcoupling_type]
+        if not cls._medc2aster_connect:
+            cls._medc2aster_connect = {
+                getattr(medc, "NORM_%s" % elem): nodes for elem, nodes in MED2ASTER_CONNECT.items()
+            }
+        return cls._medc2aster_connect[medcoupling_type]

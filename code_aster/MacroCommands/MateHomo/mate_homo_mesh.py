@@ -17,10 +17,9 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-import medcoupling as mc
-
-from ...Objects import Mesh
 from ...Messages import ASSERT, UTMESS
+from ...Objects import Mesh
+from ...Utilities import medcoupling as mc
 
 
 def prepare_mesh_syme(meshin, affe_groups, affe_all):

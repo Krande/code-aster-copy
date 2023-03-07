@@ -21,11 +21,9 @@ import pprint
 import sys
 import traceback
 
-import numpy as NP
-
 import aster
+import numpy as NP
 from libaster import AsterError
-from ..Messages import ASSERT, UTMESS
 
 from ..Cata.DataStructure import (
     cara_elem,
@@ -67,9 +65,9 @@ from ..Commands import (
     STAT_NON_LINE,
 )
 from ..Helpers.LogicalUnit import LogicalUnitFile
-
+from ..Messages import UTMESS
 from ..Objects import Mesh as CA_Mesh
-import medcoupling as medc
+from ..Utilities import medcoupling as medc
 
 
 def pre_seisme_nonl_ops(self, **args):

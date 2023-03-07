@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -22,10 +22,8 @@
 import random
 import string
 
-import medcoupling as mc
-
 from ...Messages import UTMESS
-from .. import MPI
+from .. import MPI, medcoupling as medc
 from ..logger import logger
 from .deal_with_pt1_post_process import add_pt1
 from .myMEDSplitter_mpi import (
@@ -54,9 +52,9 @@ class MEDPartitioner:
 
         assert MPI.use_comm_world(), "MEDPartionner can not be used on a sub-communicator!"
         med_vers_min = 300  # minimal med version 3.0.0
-        med_vers_num = int(mc.MEDFileVersionOfFileStr(self._filename).replace(".", ""))
+        med_vers_num = int(medc.MEDFileVersionOfFileStr(self._filename).replace(".", ""))
         if med_vers_num < med_vers_min:
-            UTMESS("F", "MED_20", valk=("3.0.0", mc.MEDFileVersionOfFileStr(self._filename)))
+            UTMESS("F", "MED_20", valk=("3.0.0", medc.MEDFileVersionOfFileStr(self._filename)))
 
     def filename(self):
         """Return the name of MED file"""

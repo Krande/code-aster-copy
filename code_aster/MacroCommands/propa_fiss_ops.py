@@ -32,11 +32,10 @@ from ..Commands import (
     POST_RUPTURE,
 )
 from ..Messages import UTMESS
+from ..Objects import Mesh
+from ..Utilities import medcoupling as medc
 from .Fracture.detec_front import DETEC_FRONT
 from .Fracture.propa_xfem import PROPA_XFEM
-
-from ..Objects import Mesh
-import medcoupling as medc
 
 
 def InterpolationLineaire(x0, points):

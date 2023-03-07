@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -28,19 +28,23 @@ from datetime import datetime
 from distutils.version import StrictVersion
 from resource import RUSAGE_SELF, getrusage
 
-import med
-import medcoupling as mc
 import numpy as np
 
 STANDALONE = True
 try:
-    from .. import MPI
+    from .. import MPI, medcoupling as mc
     from ..logger import logger
 
     STANDALONE = False
-except:
+except ImportError:
     logger = logging.getLogger()
     from mpi4py import MPI
+    import medcoupling as mc
+
+try:
+    import med
+except ImportError:
+    med = None
 
 
 def comm_world():

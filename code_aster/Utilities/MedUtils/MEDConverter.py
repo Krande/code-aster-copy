@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -20,15 +20,7 @@
 # person_in_charge: francesco.bettonte at edf.fr
 
 import libaster
-from ..logger import logger
-
-try:
-    import medcoupling as mc
-
-    HAS_MEDCOUPLING = True
-
-except ImportError:
-    HAS_MEDCOUPLING = False
+from .. import medcoupling as medc
 
 
 def convertMesh2MedCoupling(asmesh):
@@ -40,16 +32,12 @@ def convertMesh2MedCoupling(asmesh):
     Returns:
         *MEDCouplingMesh*: MEDCoupling object.
     """
-    if not HAS_MEDCOUPLING:
-        logger.info("The MEDCoupling module is required")
-        return
-
     cells, groups_c, groups_n = libaster.getMedCouplingConversionData(asmesh)
 
-    mcmesh = mc.MEDFileUMesh()
-    coords = mc.DataArrayDouble(asmesh.getCoordinates().getValues(), asmesh.getNumberOfNodes(), 3)[
-        :, : asmesh.getDimension()
-    ]
+    mcmesh = medc.MEDFileUMesh()
+    coords = medc.DataArrayDouble(
+        asmesh.getCoordinates().getValues(), asmesh.getNumberOfNodes(), 3
+    )[:, : asmesh.getDimension()]
 
     maxdim = max(cells.keys())
     levels = {i: i - maxdim for i in range(maxdim, -1, -1)}
@@ -57,11 +45,11 @@ def convertMesh2MedCoupling(asmesh):
     # Creation du maillage par niveau, depart par le plus haut (0)
     for dim in sorted(cells.keys())[::-1]:
 
-        mesh_at_current_level = mc.MEDCouplingUMesh(asmesh.getName(), dim)
+        mesh_at_current_level = medc.MEDCouplingUMesh(asmesh.getName(), dim)
         mesh_at_current_level.setCoords(coords)
 
         conn, connI = cells[dim]
-        mesh_at_current_level.setConnectivity(mc.DataArrayInt(conn), mc.DataArrayInt(connI))
+        mesh_at_current_level.setConnectivity(medc.DataArrayInt(conn), medc.DataArrayInt(connI))
 
         o2n = mesh_at_current_level.sortCellsInMEDFileFrmt()
         mesh_at_current_level.checkConsistencyLight()
@@ -71,7 +59,7 @@ def convertMesh2MedCoupling(asmesh):
         try:
             groups_c_at_level = []
             for group_name, group_cells in groups_c[dim].items():
-                group_medcoupling = mc.DataArrayInt(group_cells)
+                group_medcoupling = medc.DataArrayInt(group_cells)
                 group_medcoupling.transformWithIndArr(o2n)
                 group_medcoupling.setName(group_name)
                 groups_c_at_level.append(group_medcoupling)
@@ -84,7 +72,7 @@ def convertMesh2MedCoupling(asmesh):
     # Groupes de noeuds au niveau 1
     groups_n_at_level = []
     for group_name, group_nodes in groups_n.items():
-        group_medcoupling = mc.DataArrayInt(group_nodes)
+        group_medcoupling = medc.DataArrayInt(group_nodes)
         group_medcoupling.setName(group_name)
         groups_n_at_level.append(group_medcoupling)
     mcmesh.setGroupsAtLevel(1, groups_n_at_level)

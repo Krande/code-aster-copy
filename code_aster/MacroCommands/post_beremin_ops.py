@@ -41,19 +41,18 @@ Compute the Beremin probability of failure
 
 _biblio : CR-T66-2017-132, Lorentz
 """
+import math
 import os
 import pathlib
-import math
-import medcoupling as mc
-import numpy as np
+
 import aster
+from libaster import EntityType
 
 from ..Cata.Syntax import _F
-from ..Commands import DEFI_FICHIER, IMPR_RESU, CREA_TABLE
-from ..Helpers import LogicalUnitFile, ReservedUnitUsed
-
-from libaster import EntityType
+from ..Commands import CREA_TABLE, DEFI_FICHIER, IMPR_RESU
+from ..Helpers import LogicalUnitFile
 from ..Messages import UTMESS
+from ..Utilities import medcoupling as mc
 
 # projection with medcoupling (set _FB = True) or with code_aster
 # (set _FB = False)

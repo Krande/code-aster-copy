@@ -60,13 +60,14 @@ from .general import initial_context
 from .i18n import localization
 from .i18n import translate as _
 from .injector import injector
-from .searchlist import SearchList
 from .logger import DEBUG, ERROR, INFO, WARNING, logger
+from .import_helper import PETSc, medcoupling
 from .misc import get_shared_tmpdir, shared_tmpdir
 from .mpi_utils import MPI, haveMPI
-from .petsc_utils import PETSc, petscInitialize, petscFinalize
 from .options import Options
+from .petsc_utils import petscFinalize, petscInitialize
 from .report import CR
+from .searchlist import SearchList
 from .statistics_manager import print_stats, profile
 from .strfunc import (
     center,
