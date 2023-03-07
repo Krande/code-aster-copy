@@ -28,7 +28,6 @@ subroutine refode(nbcmb, angle, nomch, nuharm, tyharm, &
 #include "asterfort/jedetr.h"
 #include "asterfort/jeecra.h"
 #include "asterfort/jeexin.h"
-#include "asterfort/jelibe.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
@@ -76,13 +75,16 @@ subroutine refode(nbcmb, angle, nomch, nuharm, tyharm, &
 
 !
     if (docu .eq. 'CHNO') then
-        desc = '.DESC'
+        desc = ' '
         refe = '.REFE'
         vale = '.VALE'
+        nbdesc = 0
     else if (docu .eq. 'CHML') then
         desc = '.CELD'
         refe = '.CELK'
         vale = '.CELV'
+        call jelira(ch19//desc, 'LONMAX', nbdesc)
+        call jeveuo(ch19//desc, 'L', jdesc)
     else
         call utmess('F', 'UTILITAI_21')
     end if
@@ -99,29 +101,36 @@ subroutine refode(nbcmb, angle, nomch, nuharm, tyharm, &
 !
 !     --- CONSTRUCTION D'UN CHAMP RESULTAT SUR LE MODELE DE NOMCH(1)
 !
-    call jelira(ch19//desc, 'LONMAX', nbdesc)
     call jelira(ch19//vale, 'LONMAX', nbvale)
     call jelira(ch19//refe, 'LONMAX', nbrefe)
-    call jeveuo(ch19//desc, 'L', jdesc)
     call jeveuo(ch19//refe, 'L', jrefe)
 !
     ch19 = chpres
     call jeexin(ch19//vale, iret)
     if (iret .eq. 0) then
-        call wkvect(ch19//desc, base//' V I', nbdesc, kdesc)
+        if (docu .eq. 'CHML') then
+            call wkvect(ch19//desc, base//' V I', nbdesc, kdesc)
+        end if
         call wkvect(ch19//vale, base//' V R', nbvale, kvale)
         call wkvect(ch19//refe, base//' V K24', nbrefe, krefe)
     else
-        call jeveuo(ch19//desc, 'E', kdesc)
+        if (docu .eq. 'CHML') then
+            call jeveuo(ch19//desc, 'E', kdesc)
+        end if
         call jeveuo(ch19//vale, 'E', kvale)
         call jeveuo(ch19//refe, 'E', krefe)
     end if
 !
-    call jeecra(ch19//desc, 'DOCU', cval=docu)
-    do i = 0, nbdesc-1
-        zi(kdesc+i) = zi(jdesc+i)
-    end do
-    call jelibe(ch19//desc)
+
+    if (docu .eq. 'CHNO') then
+        call jeecra(ch19//refe, 'DOCU', cval=docu)
+    else if (docu .eq. 'CHML') then
+        call jeecra(ch19//desc, 'DOCU', cval=docu)
+        do i = 0, nbdesc-1
+            zi(kdesc+i) = zi(jdesc+i)
+        end do
+    end if
+
 !
 !
     call wkvect('&&REFODE.VALE', 'V V R', nbvale, lvale)
@@ -131,7 +140,6 @@ subroutine refode(nbcmb, angle, nomch, nuharm, tyharm, &
         do i = 0, nbrefe-1
             zk24(krefe+i) = zk24(jrefe+i)
         end do
-        call jelibe(ch19//'.REFE')
         call dismoi('NOM_MAILLA', nomch(1), 'CHAMP', repk=noma)
         call jelira(noma//'.NOMNOE', 'NOMMAX', nbnoeu)
 !
@@ -220,7 +228,6 @@ subroutine refode(nbcmb, angle, nomch, nuharm, tyharm, &
         do i = 0, nbrefe-1
             zk24(krefe+i) = zk24(jrefe+i)
         end do
-        call jelibe(ch19//'.CELK')
 !
         do im = 1, nbcmb
             i1 = -1
@@ -425,9 +432,6 @@ subroutine refode(nbcmb, angle, nomch, nuharm, tyharm, &
                 end if
 210             continue
             end do
-            call jelibe(ch19//desc)
-            call jelibe(ch19//'.CELK')
-            call jelibe(ch19//vale)
 !
         end do
     end if
@@ -436,7 +440,6 @@ subroutine refode(nbcmb, angle, nomch, nuharm, tyharm, &
         zr(kvale+ival) = zr(lvale+ival)
     end do
     ch19 = chpres
-    call jelibe(ch19//vale)
     call jedetr('&&REFODE.VALE')
 !
     call jedema()

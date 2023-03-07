@@ -44,12 +44,12 @@ class sd_champ(AsBase):
         if iexi:
             nom2 = nom + ".CELD"
         else:
-            nom1 = nom + ".REFE"
+            nom1 = nom + ".DESC"
             iexi = aster.jeveux_exists(nom1)
             if iexi:
-                nom2 = nom + ".REFE"
-            else:
                 nom2 = nom + ".DESC"
+            else:
+                nom2 = nom + ".REFE"
                 iexi2 = aster.jeveux_exists(nom2)
                 if not iexi2:
                     if not self.optional and not checker.optional:

@@ -42,6 +42,7 @@ subroutine vpstor(ineg, typ, modes, nbmode, neq, &
 #include "asterfort/rsexis.h"
 #include "asterfort/rsnoch.h"
 #include "asterfort/utmess.h"
+#include "asterfort/wkvect.h"
 #include "asterfort/vtcreb.h"
 #include "blas/dcopy.h"
 #include "blas/zcopy.h"
@@ -64,7 +65,7 @@ subroutine vpstor(ineg, typ, modes, nbmode, neq, &
     integer :: vali(3), jpara
     integer :: nmin1, kmode, nordr, iarg, i, ladpa, lmode, lvale
     integer :: nbpast, irang, iret, jmodg, jmacr, jbasm
-    integer :: jmod2, jlime
+    integer :: jmod2, jlime, igd
     parameter(nbpast=19)
     character(len=8) :: res, k8b, modele, chmat, carael, basemo
     character(len=16) :: typcon, nomcmd, nosy, typmod
@@ -73,6 +74,7 @@ subroutine vpstor(ineg, typ, modes, nbmode, neq, &
     character(len=24) :: valk, typeba, raide, raide2, k24b
     aster_logical :: lrefd, lbasm, lstock
     character(len=24), pointer :: rerr(:) => null()
+    integer, pointer :: p_desc(:) => null()
 !     ------------------------------------------------------------------
 ! --- PARAMETRES STOCKES DANS LA SD RESULTAT DYNAMIQUE
     data nopast/'NUME_MODE',&
@@ -292,9 +294,14 @@ subroutine vpstor(ineg, typ, modes, nbmode, neq, &
             call utmess('F', 'ALGELINE4_85', sk=valk, ni=3, vali=vali)
         end if
         if (typcon .eq. 'MODE_GENE' .or. typcon .eq. 'HARM_GENE') then
+            ! GLUTE CAR ON A UTILISE VTCRE[ABM] POUR UN CHAM_GENE QUI A UN .REFE
+            ! DE TAILLE 2 ET NON 4 COMME UN CHAM_NO ET PAS DE .DESC
+            call wkvect(chamno//'.DESC', 'G V I', 2, vi=p_desc)
+            call dismoi("NUM_GD_SI", nume, "NUME_DDL", repi=igd)
+            p_desc(1) = igd
+            p_desc(2) = 1
+            call jeecra(chamno//'.DESC', 'DOCU', iarg, 'VGEN')
             call jeecra(chamno//'.REFE', 'DOCU', iarg, 'VGEN')
-! GLUTE CAR ON A UTILISE VTCRE[ABM] POUR UN CHAM_GENE QUI A UN .REFE
-! DE TAILLE 2 ET NON 4 COMME UN CHAM_NO
             call juveca(chamno//'.REFE', 2)
         end if
         call jeveuo(chamno//'.VALE', 'E', lvale)

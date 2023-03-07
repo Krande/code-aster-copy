@@ -39,6 +39,8 @@ subroutine vtcmbl(nbcmb, typcst, const, typech, nomch, &
 #include "asterfort/assert.h"
 #include "asterfort/infniv.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/copisd.h"
+#include "asterfort/gnomsd.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeecra.h"
@@ -66,9 +68,10 @@ subroutine vtcmbl(nbcmb, typcst, const, typech, nomch, &
     real(kind=8) :: dimag
     complex(kind=8) :: c8cst
     character(len=1) :: base
-    character(len=4) :: docu, type
+    character(len=4) :: docu, type, type2
     character(len=5) :: refe, desc, vale
-    character(len=19) :: ch19, ch19r
+    character(len=19) :: ch19, ch19r, nume_equa
+    character(len=24) :: noojb
 !     ------------------------------------------------------------------
 !
     call jemarq()
@@ -94,7 +97,6 @@ subroutine vtcmbl(nbcmb, typcst, const, typech, nomch, &
 ! INIT. DE BASE
     if (docu .eq. 'CHNO') then
         refe = '.REFE'
-        desc = '.DESC'
         vale = '.VALE'
     else if (docu .eq. 'CHML') then
         refe = '.CELK'
@@ -157,9 +159,23 @@ subroutine vtcmbl(nbcmb, typcst, const, typech, nomch, &
     do i = 0, nbrefe-1
         zk24(krefe+i) = zk24(jrefe+i)
     end do
+
+    if (docu == "CHNO") then
+        call dismoi("TYPE_SCA", ch19r, "CHAM_NO", repk=type2)
+        if (type2 .ne. type) then
+            noojb = '12345678.NUME000000.PRNO'
+            call gnomsd(ch19r, noojb, 14, 19)
+            noojb(1:8) = ch19r(1:8)
+            nume_equa = noojb(1:19)
+            call copisd("NUME_EQUA", base, zk24(krefe-1+2), nume_equa)
+            zk24(krefe-1+2) = nume_equa
+            call jeveuo(nume_equa//".REFN", 'E', krefe)
+            zk24(krefe-1+2) = zk24(krefe-1+2) (1:5)//type(1:1)
+        end if
+    end if
 !
 !   CHANGER LA GRANDEUR
-    call sdchgd(ch19r, typres)
+    call sdchgd(ch19r, type)
     if (docu == 'CHML') then
         call jeecra(ch19r//desc, 'DOCU', cval=docu)
     else
