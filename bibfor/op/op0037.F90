@@ -71,7 +71,7 @@ subroutine op0037()
     integer :: i, ib, ic, ideb, ie, ieq, ierd
     integer :: iex, ifin, ilgcon, im, ind, iprec, isign
     integer :: ival, l, ladpa, lcmp, lcoef, lg, lmod, lgr, ln
-    integer :: lmode, lnorm, lnumor, lprod, lvali, lvalk, lvalr
+    integer :: lnorm, lnumor, lprod, lvali, lvalk, lvalr
     integer :: mosign, nbmod, nbmode, nbpafi, nbpafk, nbpafr
     integer :: nbpaft, nbpami, nbpamk, nbpamr, nbpamt, nbpara, nbpari
     integer :: nbpark, nbparr, nbtrou, ncmp, ncmpac, neq, npari
@@ -92,7 +92,7 @@ subroutine op0037()
     character(len=14) :: nume
     character(len=16) :: typcon, nomcmd, norm, normini, nomsy
     character(len=19) :: k19b, chamno
-    character(len=24) :: masse, amor, raide, refe, method, kvec, kvali, kvalr
+    character(len=24) :: masse, amor, raide, method, kvec, kvali, kvalr
     character(len=24) :: kvalk, noparm(nbpamt), noparf(nbpaft), nopara(nbpamt)
     character(len=24) :: mate, cara, modele, typeba, nomgrn
 !
@@ -294,10 +294,8 @@ subroutine op0037()
             lrefe = .false.
             call rsexch(' ', modein, 'DEPL', 1, chamno, &
                         iret)
-            refe = k19b//'.REFE'
-            call jeveuo(refe, 'L', lmode)
-            noma = zk24(lmode) (1:8)
-            nume = zk24(lmode+1) (1:14)
+            call dismoi("NOM_MAILLA", k19b, 'CHAM_NO', repk=noma)
+            call dismoi("NUME_EQUA", k19b, 'CHAM_NO', repk=nume)
 !           --- Ne pas calculer de masses unitaires pour ce cas
             goto 100
         end if

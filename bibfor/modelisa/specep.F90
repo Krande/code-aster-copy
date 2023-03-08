@@ -45,6 +45,7 @@ subroutine specep(casint, nomu, spectr, base, vite, &
 #include "asterfort/assert.h"
 #include "asterfort/axdipo.h"
 #include "asterfort/deelpo.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/exmano.h"
 #include "asterfort/fointr.h"
 #include "asterfort/jedema.h"
@@ -78,7 +79,7 @@ subroutine specep(casint, nomu, spectr, base, vite, &
     character(len=24) :: remf, fsic, chrefe, mlgnno, mlgnma, chnumi
 !
 !-----------------------------------------------------------------------
-    integer :: iaxe, ichref, ideb, idec, iex, iex1
+    integer :: iaxe, ideb, idec, iex, iex1
     integer :: iex2, ifsic, iinte, il, im1, im1b, im2
     integer :: im2b, imail, inat, iremf, iscal, ispin
     integer :: ispno, ispre, ispte, itypfl, iv, ivale, lwr
@@ -126,8 +127,7 @@ subroutine specep(casint, nomu, spectr, base, vite, &
     iv = 1
     write (chrefe, '(A8,A5,2I3.3,A5)') base(1:8), '.C01.', nuor(1), iv,&
      &                                 '.REFE'
-    call jeveuo(chrefe, 'L', ichref)
-    noma = zk24(ichref) (1:8)
+    call dismoi("NOM_MAILLA", chrefe, 'CHAM_NO', repk=noma)
 !
 !
 ! --- 3.RECUPERATION DES INFORMATIONS CARACTERISTIQUES DU SPECTRE ---

@@ -69,7 +69,7 @@ subroutine tran77(nomres, typres, nomin, basemo)
     character(len=14) :: numddl
     character(len=16) :: typres, type(8), typcha, typbas(8), concep
     character(len=19) :: kinst, knume, trange, typref(8), prof
-    character(len=24) :: matric, chamno, crefe(2), nomcha, objve1, k24bid
+    character(len=24) :: matric, chamno, nomcha, objve1
     character(len=24) :: objve2, objve3, objve4
     aster_logical :: tousno, multap, leffor, prems
 !     ------------------------------------------------------------------
@@ -77,7 +77,7 @@ subroutine tran77(nomres, typres, nomin, basemo)
     integer :: iarchi, ibid, ich, iadrif
     integer :: idec, idefm, idresu, inocmp
     integer :: inoecp, inuddl, inumno, iret, iretou, isk
-    integer :: jc, jinst, jnume, linst, llcha
+    integer :: jc, jinst, jnume, linst
     integer :: lvale, n1, n2, n3, n4, nbcham, nbinsg
     integer :: nbinst, nbmode, nbnoeu, ncmp, neq, nfonct
     real(kind=8), pointer :: base(:) => null()
@@ -157,9 +157,7 @@ subroutine tran77(nomres, typres, nomin, basemo)
                     iret)
         nomcha = nomcha(1:19)//'.REFE'
         call dismoi('NOM_GD', nomcha, 'CHAM_NO', repk=nomgd)
-        call jeveuo(nomcha, 'L', llcha)
-        k24bid = zk24(llcha)
-        mailla = k24bid(1:8)
+        call dismoi('NOM_MAILLA', nomcha, 'CHAM_NO', repk=mailla)
 !
 !------ON VERIFIE QUE L'UTILISATEUR A RENSEIGNE LE MEME SUPPORT DE
 !------RESTITUTION DANS LE FICHIER DE COMMANDE
@@ -172,8 +170,6 @@ subroutine tran77(nomres, typres, nomin, basemo)
             end if
         end if
 !
-        crefe(1) = zk24(llcha)
-        crefe(2) = zk24(llcha+1)
         if (tousno) then
             call dismoi('NB_EQUA', nomcha, 'CHAM_NO', repi=neq)
         end if

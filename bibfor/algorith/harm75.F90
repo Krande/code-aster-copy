@@ -82,7 +82,7 @@ subroutine harm75(nomres, typres, nomin, basemo)
     integer :: inocmp, inoecp, inumno, inuddl
     integer :: j, jc, i, iarchi, ich
     integer :: idvecg, iret, iretou, jfreq
-    integer :: jnume, lfreq, llcha, lvale, nbcham, nbinsg
+    integer :: jnume, lfreq, lvale, nbcham, nbinsg
     integer :: n1, n2, n3, n4, idec, idefm, idinsg, idresu
     integer :: nbfreq, neq, nbnoeu, ncmp
     real(kind=8), pointer :: base(:) => null()
@@ -189,10 +189,9 @@ subroutine harm75(nomres, typres, nomin, basemo)
         chmod = chmod(1:19)//'.REFE'
         call dismoi('NOM_GD', chmod, 'CHAM_NO', repk=nomgd)
         call dismoi('NUME_EQUA', chmod, 'CHAM_NO', repk=nume_equa)
-        call jeveuo(chmod, 'L', llcha)
-        mailla = zk24(llcha) (1:8)
-        crefe(1) = zk24(llcha)
-        crefe(2) = zk24(llcha+1)
+        call dismoi('NOM_MAILLA', chmod, 'CHAM_NO', repk=mailla)
+        crefe(1) = ' '
+        crefe(2) = nume_equa
         if (tousno) then
             call nueq_chck(nume_equa, nb_equaz=neq)
         end if

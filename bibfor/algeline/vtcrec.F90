@@ -20,7 +20,10 @@ subroutine vtcrec(champ, chmod, base, typc, neq)
     implicit none
 #include "jeveux.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/gnomsd.h"
+#include "asterfort/copisd.h"
 #include "asterfort/jedema.h"
+#include "asterfort/jeveuo.h"
 #include "asterfort/jedupo.h"
 #include "asterfort/jeecra.h"
 #include "asterfort/jemarq.h"
@@ -30,7 +33,6 @@ subroutine vtcrec(champ, chmod, base, typc, neq)
 ! person_in_charge: jacques.pellet at edf.fr
 !     ------------------------------------------------------------------
 !     CREATION D'UNE STRUCTURE CHAM_NO A PARTIR D'UN MODELE : CHMOD
-!     LE CHAM_NO MODELE NE DOIT PAS ETRE A REPRESENTATION CONSTANTE.
 !     ------------------------------------------------------------------
 !     IN  CHAMP  : K19 : NOM DU CHAM_NO A CREER
 !     IN  CHMOD  : K29 : NOM DU CHAMP MODELE
@@ -52,10 +54,12 @@ subroutine vtcrec(champ, chmod, base, typc, neq)
 !
 !
 !     ------------------------------------------------------------------
-    integer :: lchamp
+    integer :: lchamp, jrefn
     character(len=1) :: classe
-    character(len=1) :: type
-    character(len=24) :: vale, refe
+    character(len=1) :: type, type2
+    character(len=8) :: nomgd
+    character(len=19) :: nume_equa, nume_equa_new
+    character(len=24) :: vale, refe, noojb
 !     ------------------------------------------------------------------
     integer :: ibid, neq
     character(len=19) :: chmod2
@@ -79,6 +83,22 @@ subroutine vtcrec(champ, chmod, base, typc, neq)
 !     -- RECOPIE DE L'OBJET .REFE MODELE :
     call jedupo(chmod2//'.REFE', classe, refe, .false._1)
     call jeecra(refe, 'DOCU', ibid, 'CHNO')
+!
+    call dismoi("TYPE_SCA", chmod2, "CHAM_NO", repk=type2)
+    if (type .ne. type2) then
+        noojb = '12345678.NUME000000.PRNO'
+        call gnomsd(champ, noojb, 14, 19)
+        noojb(1:8) = champ(1:8)
+        nume_equa_new = noojb(1:19)
+        call dismoi("NUME_EQUA", chmod2, "CHAM_NO", repk=nume_equa)
+        call copisd("NUME_EQUA", classe, nume_equa, nume_equa_new)
+        call jeveuo(nume_equa_new//".REFN", "E", jrefn)
+        call dismoi("NOM_GD", chmod2, "CHAM_NO", repk=nomgd)
+        zk24(jrefn-1+2) = nomgd(1:5)//type
+        call jeveuo(champ(1:19)//".REFE", "E", jrefn)
+        zk24(jrefn-1+2) = nume_equa_new
+
+    end if
 !
 !     -- CREATION DE L'OBJET .VALE :
     call wkvect(vale, classe//' V '//type, neq, lchamp)

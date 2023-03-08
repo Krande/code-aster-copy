@@ -90,7 +90,6 @@ subroutine vtcrea(champ, crefe, base, typc, neq)
         call jeveuo(nume_equa//".REFN", 'E', jrefn)
         zk24(jrefn+1) = nomgd
     end if
-    print *, "VTCREA: ", nume_equa
 !
 !     --- RECOPIE DE L'OBJET .REFE MODELE :
     refe(1:19) = champ

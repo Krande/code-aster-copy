@@ -229,6 +229,13 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
         CALLO_VTCREB_WRAP( getName(), JeveuxMemoryTypesNames[Permanent], JeveuxTypesNames[intType],
                            dofNum->getName() );
 
+        _reference->updateValuePointer();
+        const std::string name2 = trim( ( *_reference )[1].toString() );
+        if ( trim( _dofDescription->getName() ) != name2 ) {
+            _dofDescription = std::make_shared< EquationNumbering >( name2 );
+            _dofDescription->setMesh( dofNum->getMesh() );
+        }
+
         this->updateValuePointers();
     };
 

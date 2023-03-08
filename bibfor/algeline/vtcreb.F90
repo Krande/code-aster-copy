@@ -126,7 +126,6 @@ subroutine vtcreb(field_nodez, base, type_scalz, &
         call jeveuo(nume_equa//".REFN", 'E', jrefn)
         zk24(jrefn+1) = nomgd
     end if
-    print *, "VTCREB: ", nume_equa
 !
     l_pmesh = isParallelMesh(mesh)
     nb_equa_gl = nb_equa

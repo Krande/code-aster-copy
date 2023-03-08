@@ -29,6 +29,7 @@ subroutine chreco(chou)
 #include "asterc/r8pi.h"
 #include "asterfort/copisd.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/gnomsd.h"
 #include "asterfort/getvid.h"
 #include "asterfort/getvtx.h"
 #include "asterfort/jecreo.h"
@@ -41,11 +42,12 @@ subroutine chreco(chou)
 #include "asterfort/sdchgd.h"
 #include "asterfort/utmess.h"
 
-    integer :: iret, jvale, nbval, jvalin, i
+    integer :: iret, jvale, nbval, jvalin, i, jrefn
     character(len=3) :: tsca
     character(len=4) :: tych
     character(len=8) :: chou, chin, nomgd, partie
-    character(len=24) :: vale, valin
+    character(len=19) :: nume_equa, nume_equa_new
+    character(len=24) :: vale, valin, noojb
     real(kind=8) :: x, y, c1
 !----------------------------------------------------------------------
 
@@ -63,6 +65,17 @@ subroutine chreco(chou)
 
 !   -- copie chin --> chou
     call copisd('CHAMP', 'G', chin, chou)
+!
+    noojb = '12345678.NUME000000.PRNO'
+    call gnomsd(chou, noojb, 14, 19)
+    noojb(1:8) = chou(1:8)
+    nume_equa_new = noojb(1:19)
+    call dismoi("NUME_EQUA", chin, "CHAM_NO", repk=nume_equa)
+    call copisd("NUME_EQUA", 'G', nume_equa, nume_equa_new)
+    call jeveuo(nume_equa_new//".REFN", "E", jrefn)
+    zk24(jrefn-1+2) = nomgd(1:5)//"R"
+    call jeveuo(chou//"           .REFE", "E", jrefn)
+    zk24(jrefn-1+2) = nume_equa_new
 
 !    modifications de chou:
 !    ======================

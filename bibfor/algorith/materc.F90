@@ -79,10 +79,10 @@ subroutine materc(matmas, matrig, matamo, numnu, amor, nommes, &
     character(len=3) :: rep_eval
     character(len=4) :: typmes
     character(len=8) :: baseno, k8bid, matprj, mainum, maiexp
-    character(len=8) :: nomgd, numdl1, numdl2, numdl3, answer
-    character(len=19) :: lifreq
+    character(len=8) :: nomgd, numdl1, numdl2, numdl3, answer, mesh
+    character(len=19) :: lifreq, nume_equa
     integer :: n1, lfreq, iproj, nbnexp, inn, inp, nnopr, nec1, nec2
-    integer :: idec(6), itach, tach1, iprnom, iprnoc, irefe, lprno, ipjnb
+    integer :: idec(6), itach, tach1, iprnom, iprnoc, lprno, ipjnb
     integer :: ipjnu, ltest, nbddl, ieq, ihh, ipjcf, nbnonu, jj, inddl, icode(6), lnueqm, lnueqc
     integer :: iobfil, iobcol, iobval, ifreq, lh, cc, dd
 !
@@ -169,17 +169,18 @@ subroutine materc(matmas, matrig, matamo, numnu, amor, nommes, &
 !
 ! --- A LA RECHERCHE DU PRNO
     call jeveuo(jexnum(nommes//bl11//'.TACH', itach), 'L', tach1)
-    call jeveuo(zk24(tach1) (1:19)//'.REFE', 'L', irefe)
+    call dismoi('NOM_MAILLA', zk24(tach1) (1:19), 'CHAM_NO', repk=mesh)
+    call dismoi('NUME_EQUA', zk24(tach1) (1:19), 'CHAM_NO', repk=nume_equa)
 
-    if (zk24(irefe) (1:8) .ne. maiexp) then
+    if (mesh .ne. maiexp) then
         call utmess('F', 'ALGORITH9_67')
     end if
-    call jeveuo(jexnum(zk24(irefe+1) (1:19)//'.PRNO', 1), 'L', iprnom)
-    call jelira(jexnum(zk24(irefe+1) (1:19)//'.PRNO', 1), 'LONMAX', lprno, k8bid)
+    call jeveuo(jexnum(nume_equa//'.PRNO', 1), 'L', iprnom)
+    call jelira(jexnum(nume_equa//'.PRNO', 1), 'LONMAX', lprno, k8bid)
     nbnexp = lprno/(2+nec2)
 ! --- ON VERIFIE L'ABSENCE DE LAGRANGES DANS LA MESURE
 ! --- ON ACCEPTE DES DDL PHYSIQUES (DX/DY/DZ/DRX/DRY/DRY) SEULEMENT
-    call jelira(zk24(irefe+1) (1:19)//'.NUEQ', 'LONMAX', lnueqm, k8bid)
+    call jelira(nume_equa//'.NUEQ', 'LONMAX', lnueqm, k8bid)
     dd = 0
     lh = 0
     do jj = 1, nbnexp

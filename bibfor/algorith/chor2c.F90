@@ -24,6 +24,8 @@ subroutine chor2c(lischa, vecele)
 #include "asterfort/assert.h"
 #include "asterfort/corich.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/copisd.h"
+#include "asterfort/gnomsd.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
@@ -53,10 +55,10 @@ subroutine chor2c(lischa, vecele)
 !
     character(len=24) :: vachar
     integer :: jvacha
-    character(len=19) :: chamno
-    integer :: jcn
-    character(len=24) :: resuel
-    character(len=8) :: typech, typsca
+    character(len=19) :: chamno, nume_equa, nume_equa_new, nume_equa_prev
+    integer :: jcn, jrefn
+    character(len=24) :: resuel, noojb
+    character(len=8) :: typech, typsca, nomgd
     integer :: iret, ichar
     integer :: ivec, nbvec, nbvdim, ivale, nbvale
     character(len=4) :: tyresl
@@ -83,6 +85,7 @@ subroutine chor2c(lischa, vecele)
     call jeveuo(vecele//'.RELR', 'L', vk24=relr)
     call jelira(chamno//'.VALE', 'LONMAX', nbvdim)
     AS_ALLOCATE(vr=copie_travail, size=nbvdim)
+    nume_equa_prev = ' '
 !
 ! --- BOUCLES SUR LES CHAMNO
 !
@@ -124,6 +127,21 @@ subroutine chor2c(lischa, vecele)
 ! ----- CONVERSION
 !
         if (typchn .eq. 'R') then
+            call dismoi("NUME_EQUA", chamno, "CHAM_NO", repk=nume_equa)
+            if (nume_equa .ne. nume_equa_prev) then
+                noojb = '12345678.NUME000000.PRNO'
+                call gnomsd(chamno, noojb, 14, 19)
+                noojb(1:8) = chamno(1:8)
+                nume_equa_new = noojb(1:19)
+                call copisd("NUME_EQUA", "G", nume_equa, nume_equa_new)
+                call jeveuo(nume_equa_new//".REFN", "E", jrefn)
+                call dismoi("NOM_GD", chamno, "CHAM_NO", repk=nomgd)
+                zk24(jrefn-1+2) = nomgd(1:5)//"C"
+                nume_equa_prev = nume_equa
+            end if
+            call jeveuo(chamno//".REFE", "E", jrefn)
+            zk24(jrefn-1+2) = nume_equa_new
+
             call jeveuo(chamno//'.VALE', 'L', jcn)
             call jelira(chamno//'.VALE', 'LONMAX', nbvale)
             if (nbvdim .ne. nbvale) then
