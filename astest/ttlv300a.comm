@@ -348,7 +348,15 @@ TEST_RESU(
 )
 
 TEST_RESU(
-    CHAM_ELEM=(_F(GROUP_MA="M17", NOM_CMP="ERTABS", CHAM_GD=ERREUR, VALE_CALC=0.03840811402401148),)
+    CHAM_ELEM=(
+        _F(
+            GROUP_MA="M17",
+            NOM_CMP="ERTABS",
+            CHAM_GD=ERREUR,
+            VALE_CALC=0.03840811402401148,
+            TOLE_MACHINE=2.0e-6,
+        ),
+    )
 )
 
 
