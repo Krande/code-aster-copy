@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -29,6 +29,7 @@ from .datastructure_py import AsFloat, AsInteger, OnlyParallelObject, PyDataStru
 from .parallel_py import (
     ConnectionMesh,
     ParallelDOFNumbering,
+    ParallelEquationNumbering,
     ParallelFiniteElementDescriptor,
     ParallelMechanicalLoadFunction,
     ParallelMechanicalLoadReal,

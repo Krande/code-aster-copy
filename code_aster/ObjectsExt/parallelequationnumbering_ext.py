@@ -26,7 +26,7 @@ import aster
 from libaster import ParallelEquationNumbering
 
 from ..Utilities import injector
-from .globalequationnumbering_ext import EquationNumberingStateBuilder
+from .equationnumbering_ext import EquationNumberingStateBuilder
 
 
 @injector(ParallelEquationNumbering)
