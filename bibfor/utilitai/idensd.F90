@@ -65,6 +65,8 @@ function idensd(typesd, sd1, sd2)
         if (.not. iden) goto 998
         iden = idenob(pchn1//'.DELG', pchn2//'.DELG')
         if (.not. iden) goto 998
+        iden = idenob(pchn1//'.REFN', pchn2//'.REFN')
+        if (.not. iden) goto 998
         !
         !
     else

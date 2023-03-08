@@ -193,8 +193,8 @@ subroutine copmod(base, bmodr, bmodz, champ, numer, &
 !
 !     1.2 - EXTRAIRE LE NOM DE MAILLAGE .REFE[1] ET DU NUME_DDL .REFE[2]
 !
-    maill1 = refe(1) (1:8)
-    numer1 = refe(2) (1:19)
+    call dismoi('NOM_MAILLA', nomcha, 'CHAM_NO', repk=maill1)
+    call dismoi('NUME_EQUA', nomcha, 'CHAM_NO', repk=numer1)
 !
 !     1.3 - TRAITEMENT DES CAS AVEC UN NUME_EQUA ET NON PAS UN NUME_DDL
 !           COMPLET.

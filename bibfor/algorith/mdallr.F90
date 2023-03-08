@@ -32,6 +32,7 @@ subroutine mdallr(resu1, resu2, basemo, nbmode, nbsauv, &
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
@@ -48,6 +49,7 @@ subroutine mdallr(resu1, resu2, basemo, nbmode, nbsauv, &
 #include "asterfort/wkvect.h"
 !
     integer :: nbmode, nbsauv, ldlim, imode, ier, lvale, i, jrefa
+    integer :: jdesc, igd, iarg, jrefe
     aster_logical :: lrefe, zcmplx
     character(len=8) :: resu1, resu2, matgen, k8b, basemo, typ
     character(len=14) :: nugene
@@ -92,9 +94,18 @@ subroutine mdallr(resu1, resu2, basemo, nbmode, nbsauv, &
             else
                 call vtcrem(chamge, matgen, 'G', 'C')
             end if
-! GLUTE CAR ON A UTILISE VTCRE[ABM] POUR UN CHAM_GENE QUI A UN .REFE
-! DE TAILLE 2 ET NON 4 COMME UN CHAM_NO
+            ! GLUTE CAR ON A UTILISE VTCRE[ABM] POUR UN CHAM_GENE QUI A UN .REFE
+            ! DE TAILLE 2 ET NON 4 COMME UN CHAM_NO ET PAS DE .DESC
+            call wkvect(chamge//'.DESC', 'G V I', 2, jdesc)
+            call dismoi("NUM_GD_SI", nugene, "NUME_DDL", repi=igd)
+            zi(jdesc-1+1) = igd
+            zi(jdesc-1+2) = 1
+            call jeecra(chamge//'.DESC', 'DOCU', iarg, 'VGEN')
+            call jeecra(chamge//'.REFE', 'DOCU', iarg, 'VGEN')
             call juveca(chamge//'.REFE', 2)
+
+            call jeveuo(chamge//'.REFE', 'E', jrefe)
+            zk24(jrefe) = basemo
         else
             ASSERT(.false.)
         end if

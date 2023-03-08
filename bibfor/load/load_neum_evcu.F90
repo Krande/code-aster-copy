@@ -93,7 +93,7 @@ subroutine load_neum_evcu(model, ligrel_calc, cara_elem, load_name, i_load, &
     integer :: ibid, ier, nb_cham
     character(len=8) :: evol_char
     character(len=16) :: type_sd, option, repk
-    character(len=19) :: load_name_evol
+    character(len=19) :: load_name_evol, nume_equa
     character(len=24) :: chgeom, chcara(18)
     character(len=8) :: lpain(8), lpaout
     character(len=19) :: lchin(8)
@@ -199,7 +199,7 @@ subroutine load_neum_evcu(model, ligrel_calc, cara_elem, load_name, i_load, &
         call chpnua(ndim, load_name_evol, ' ', nuage1)
         call chpnua(ndim, field_no_refe, ' ', nuage2)
 !
-! ----- Projection on deformed mesg
+! ----- Projection on deformed mesh
 !
         method = 'NUAGE_DEG_1'
         call pronua(method, nuage1, nuage2)
@@ -207,7 +207,8 @@ subroutine load_neum_evcu(model, ligrel_calc, cara_elem, load_name, i_load, &
 !
 ! ----- Set right mesh
 !
-        call jeveuo(field_no_refe//'.REFE', 'E', vk24=p_field_refe)
+        call dismoi("NUME_EQUA", field_no_refe, "CHAM_NO", repk=nume_equa)
+        call jeveuo(nume_equa//'.REFN', 'E', vk24=p_field_refe)
         p_field_refe(1) = mesh_2
 !
 ! ----- Relative speed field

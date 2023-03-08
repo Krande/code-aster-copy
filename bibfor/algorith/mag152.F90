@@ -107,7 +107,6 @@ subroutine mag152(n9, n10, nomres, nugene, modmec, &
             end do
         end do
 !
-        write (6, *) 'SOMME=', somme
         if ((nueq*(nueq+1)/2) .ne. somme) then
             call utmess('F', 'ALGORITH5_18')
         end if

@@ -121,7 +121,6 @@ subroutine pecap1(chgeoz, tempez, ngi, lisgma, ct)
     real(kind=8), pointer :: coor(:) => null()
     real(kind=8), pointer :: vale(:) => null()
     character(len=8), pointer :: lgrf(:) => null()
-    integer, pointer :: desc(:) => null()
     integer, pointer :: connex(:) => null()
 !
 !-----------------------------------------------------------------------
@@ -234,10 +233,6 @@ subroutine pecap1(chgeoz, tempez, ngi, lisgma, ct)
 ! ---   RECUPERATION DU TABLEAU DES VALEURS DU CHAMP DE TEMPERATURES :
 !       ------------------------------------------------------------
         call jeveuo(chtemp(1:19)//'.VALE', 'L', vr=vale)
-!
-! ---   RECUPERATION DU DESCRIPTEUR DU CHAMP DE TEMPERATURES :
-!       ----------------------------------------------------
-        call jeveuo(chtemp(1:19)//'.DESC', 'L', vi=desc)
 !
 ! ---   CALCUL POUR CHAQUE TROU DE SA SURFACE S
 ! ---   LA CONSTANTE DE TORSION CALCULEE PRECEDEMENT VA ETRE

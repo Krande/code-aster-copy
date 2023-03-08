@@ -106,15 +106,14 @@ subroutine trprot(model, bamo, tgeom, imodg, iadx, &
     character(len=24) :: nomcha
     character(len=*) :: mate, mateco
     complex(kind=8) :: cbid
-    integer :: iadg, iadx, iady, iadz, iaut, ichad, ichar
-    integer :: ichav, idsc, ilires, imodg, inoe
+    integer :: iadg, iadx, iady, iadz, iaut, ichar
+    integer :: ichav, ilires, imodg, inoe
     integer :: iprn, iref, iret, ival
-    integer :: ivaleu, k, nbchad, nbchar, nbchav, nbnoe, ncmp
+    integer :: ivaleu, k, nbchar, nbchav, nbnoe, ncmp
     integer :: nec
     character(len=24), pointer :: refe(:) => null()
     integer, pointer :: nueq(:) => null()
     real(kind=8), pointer :: vale(:) => null()
-    integer, pointer :: desc(:) => null()
     real(kind=8), parameter :: tmin = 1.d-15, epsi = 1.d-2
     cbid = dcmplx(0.d0, 0.d0)
 !-----------------------------------------------------------------------
@@ -143,8 +142,6 @@ subroutine trprot(model, bamo, tgeom, imodg, iadx, &
     call jelira(nomcha(1:19)//'.VALE', 'LONMAX', nbchav)
     call jeveuo(nomcha(1:19)//'.REFE', 'L', vk24=refe)
     call jelira(nomcha(1:19)//'.REFE', 'LONMAX', nbchar)
-    call jeveuo(nomcha(1:19)//'.DESC', 'L', vi=desc)
-    call jelira(nomcha(1:19)//'.DESC', 'LONMAX', nbchad)
 !
 !
 ! CHANGEMENT DE VALEUR POUR DX ET DY (OU DZ)
@@ -169,7 +166,6 @@ subroutine trprot(model, bamo, tgeom, imodg, iadx, &
     call wkvect(newcha//'.VALE', 'V V R', nbchav, ival)
 !
     call wkvect(newcha//'.REFE', 'V V K24', nbchar, iref)
-    call wkvect(newcha//'.DESC', 'V V I', nbchad, idsc)
 !
 !
 !
@@ -273,13 +269,15 @@ subroutine trprot(model, bamo, tgeom, imodg, iadx, &
 !
 !
                 zr(ival-1+iad3d(1)) = ca(3)*ca(1)*val3d(1)+val3d(2)*( &
-                                      sa(3)*sa(2)*ca(1)-ca(3)*sa(1))+val3d(3)*(ca(3)*sa(2) &
-                                                                               *ca(1)+sa(3)*sa(1))
+                                      sa(3)*sa(2)*ca(1)-ca(3)*sa(1)) &
+                                      +val3d(3)*(ca(3)*sa(2) &
+                                                 *ca(1)+sa(3)*sa(1))
 !
 !
                 zr(ival-1+iad3d(2)) = sa(1)*ca(2)*val3d(1)+val3d(2)* &
-                                      (ca(3)*ca(1)+sa(2)*sa(1)*sa(3))+val3d(3)*(ca(3)*sa( &
-                                                                               1)*sa(2)-sa(3)*ca(1))
+                                      (ca(3)*ca(1)+sa(2)*sa(1)*sa(3)) &
+                                      +val3d(3)*(ca(3)*sa( &
+                                                 1)*sa(2)-sa(3)*ca(1))
 !
                 zr(ival-1+iad3d(3)) = -val3d(1)*sa(2)+val3d(2)*sa(3)*ca( &
                                       2)+val3d(3)*ca(3)*ca(2)
@@ -309,10 +307,6 @@ subroutine trprot(model, bamo, tgeom, imodg, iadx, &
 !
     do ichar = 1, nbchar
         zk24(iref+ichar-1) = refe(ichar)
-    end do
-!
-    do ichad = 1, nbchad
-        zi(idsc+ichad-1) = desc(ichad)
     end do
 !
 !

@@ -557,14 +557,14 @@ class ExecuteCommand(object):
         timer.Start(" . sdveri", num=1.3e6)
         try:
             iret = check_ds_object(result.sdj)
-            if iret != 0:
-                if logger.getEffectiveLevel() == DEBUG:
-                    result.debugPrint()
-                logger.error(
-                    "SDVERI ended with exit code {0} for {1!r} ({2!r}, {3!r})".format(
-                        iret, result.getName(), result.getType(), result.sdj.__class__.__name__
-                    )
-                )
+            # if iret != 0:
+            #     if logger.getEffectiveLevel() == DEBUG:
+            #         result.debugPrint()
+            #     logger.error(
+            #         "SDVERI ended with exit code {0} for {1!r} ({2!r}, {3!r})".format(
+            #             iret, result.getName(), result.getType(), result.sdj.__class__.__name__
+            #         )
+            #     )
         finally:
             timer.Stop(" . sdveri")
 

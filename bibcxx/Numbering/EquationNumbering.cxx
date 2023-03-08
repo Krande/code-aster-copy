@@ -67,7 +67,7 @@ void EquationNumbering::EquationNumbering::setMesh( const BaseMeshPtr &mesh ) {
         _informations->updateValuePointer();
         const auto meshName = std::string( ( *_informations )[0].toString(), 0, 8 );
         if ( mesh && meshName != mesh->getName() ) {
-            AS_ABORT( "Mesh are incompatible: " + mesh->getName() + " vs " + meshName );
+            raiseAsterError( "Mesh are incompatible: " + mesh->getName() + " vs " + meshName );
         }
         _mesh = mesh;
     }

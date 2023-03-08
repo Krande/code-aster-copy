@@ -137,6 +137,7 @@ subroutine regene(nomres, resgen, profno)
 !
     call jeveuo(jexnum(resgen//'           .TACH', 1), 'L', iarefe)
     kint = zk24(iarefe) (1:19)
+    print *, "k: ", kint
     call jeveuo(kint//'.VALE', 'L', itresu)
     call jeveuo(kint//'.REFE', 'L', vk24=refe)
     basmod = refe(1) (1:8)
