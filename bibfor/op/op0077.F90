@@ -237,7 +237,7 @@ subroutine op0077()
             call jeveuo(resin(1:8)//'           .ORDR', 'L', ibid)
             call dcapno(resin, depl, zi(ibid), chamol)
             call dismoi('TYPE_SCA', chamol(1:19), 'CHAMP', repk=typesca)
-            print *, chamol, typesca
+
             if (isk .eq. 0) then
                 call getvtx(' ', 'SOUS_STRUC', scal=nomsst, nbret=ibid)
                 !-- les routines REGEEC et REGE2C font la meme chose, une en reel,
@@ -248,7 +248,6 @@ subroutine op0077()
                 elseif (typesca .eq. "C") then
                     call rege2c(nomres, resin, nomsst)
                 else
-                    print *, typesca
                     ASSERT(.false.)
                 end if
 

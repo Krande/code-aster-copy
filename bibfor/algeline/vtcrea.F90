@@ -22,6 +22,10 @@ subroutine vtcrea(champ, crefe, base, typc, neq)
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/copisd.h"
+#include "asterfort/exisd.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/codent.h"
+#include "asterfort/idensd.h"
 #include "asterfort/gnomsd.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jeecra.h"
@@ -55,7 +59,7 @@ subroutine vtcrea(champ, crefe, base, typc, neq)
 !
 !
 !     ------------------------------------------------------------------
-    integer :: lchamp, jrefn
+    integer :: lchamp, jrefn, prev, iexi
     character(len=1) :: classe
     character(len=1) :: type, type2
     character(len=8) :: nomgd
@@ -89,6 +93,19 @@ subroutine vtcrea(champ, crefe, base, typc, neq)
         nume_equa = nume_equa_tmp
         call jeveuo(nume_equa//".REFN", 'E', jrefn)
         zk24(jrefn+1) = nomgd
+        read (nume_equa(14:19), '(i6)') prev
+        if (prev > 0) then
+            prev = max(0, prev-1)
+            nume_equa_tmp = nume_equa
+            call codent(prev, "D0", nume_equa_tmp(14:19))
+            call exisd('NUME_EQUA', nume_equa_tmp, iexi)
+            if (iexi .gt. 0) then
+                if (idensd('NUME_EQUA', nume_equa, nume_equa_tmp)) then
+                    call detrsd("NUME_EQUA", nume_equa)
+                    nume_equa = nume_equa_tmp
+                end if
+            end if
+        end if
     end if
 !
 !     --- RECOPIE DE L'OBJET .REFE MODELE :

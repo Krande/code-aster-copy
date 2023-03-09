@@ -29,6 +29,10 @@ subroutine vtcreb(field_nodez, base, type_scalz, &
 #include "asterfort/dismoi.h"
 #include "asterfort/gnomsd.h"
 #include "asterfort/copisd.h"
+#include "asterfort/exisd.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/codent.h"
+#include "asterfort/idensd.h"
 #include "asterfort/jeecra.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/sdchgd.h"
@@ -79,7 +83,7 @@ subroutine vtcreb(field_nodez, base, type_scalz, &
     character(len=19) :: nume_equa, field_node, chamno, nume_equa_tmp
     character(len=24) :: obj_refe, obj_vale, noojb
     character(len=24), pointer :: p_refe(:) => null()
-    integer :: idx_gd, nb_equa, j_vale, ideb, ifin, i, jvcham, nb_equa_gl, jrefn
+    integer :: idx_gd, nb_equa, j_vale, ideb, ifin, i, jvcham, nb_equa_gl, jrefn, prev, iexi
     aster_logical :: l_pmesh
 !
 ! --------------------------------------------------------------------------------------------------
@@ -125,6 +129,19 @@ subroutine vtcreb(field_nodez, base, type_scalz, &
         nume_equa = nume_equa_tmp
         call jeveuo(nume_equa//".REFN", 'E', jrefn)
         zk24(jrefn+1) = nomgd
+        read (nume_equa(14:19), '(i6)') prev
+        if (prev > 0) then
+            prev = max(0, prev-1)
+            nume_equa_tmp = nume_equa
+            call codent(prev, "D0", nume_equa_tmp(14:19))
+            call exisd('NUME_EQUA', nume_equa_tmp, iexi)
+            if (iexi .gt. 0) then
+                if (idensd('NUME_EQUA', nume_equa, nume_equa_tmp)) then
+                    call detrsd("NUME_EQUA", nume_equa)
+                    nume_equa = nume_equa_tmp
+                end if
+            end if
+        end if
     end if
 !
     l_pmesh = isParallelMesh(mesh)
