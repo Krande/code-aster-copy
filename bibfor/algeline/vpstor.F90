@@ -25,6 +25,7 @@ subroutine vpstor(ineg, typ, modes, nbmode, neq, &
 #include "jeveux.h"
 #include "asterc/getres.h"
 #include "asterfort/assert.h"
+#include "asterfort/copisd.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/exisd.h"
 #include "asterfort/getvid.h"
@@ -34,7 +35,9 @@ subroutine vpstor(ineg, typ, modes, nbmode, neq, &
 #include "asterfort/jeexin.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
+#include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
+#include "asterfort/jenonu.h"
 #include "asterfort/juveca.h"
 #include "asterfort/refdaj.h"
 #include "asterfort/rsadpa.h"
@@ -67,7 +70,7 @@ subroutine vpstor(ineg, typ, modes, nbmode, neq, &
     integer :: nbpast, irang, iret, jmodg, jmacr, jbasm
     integer :: jmod2, jlime, igd, jrefe
     parameter(nbpast=19)
-    character(len=8) :: res, k8b, modele, chmat, carael, basemo, mesh
+    character(len=8) :: res, k8b, modele, chmat, carael, basemo, mesh, nomgd
     character(len=16) :: typcon, nomcmd, nosy, typmod
     character(len=19) :: chamno, sd2
     character(len=24) :: nume, nopast(nbpast)
@@ -297,7 +300,8 @@ subroutine vpstor(ineg, typ, modes, nbmode, neq, &
             ! GLUTE CAR ON A UTILISE VTCRE[ABM] POUR UN CHAM_GENE QUI A UN .REFE
             ! DE TAILLE 2 ET NON 4 COMME UN CHAM_NO ET PAS DE .DESC
             call wkvect(chamno//'.DESC', 'G V I', 2, vi=p_desc)
-            call dismoi("NUM_GD_SI", nume, "NUME_DDL", repi=igd)
+            call dismoi("NOM_GD", nume, "NUME_DDL", repk=nomgd)
+            call jenonu(jexnom('&CATA.GD.NOMGD', nomgd(1:5)//typ(1:1)), igd)
             p_desc(1) = igd
             p_desc(2) = 1
             call jeecra(chamno//'.DESC', 'DOCU', iarg, 'VGEN')
@@ -307,6 +311,7 @@ subroutine vpstor(ineg, typ, modes, nbmode, neq, &
             call dismoi("NOM_MAILLA", nume, "NUME_DDL", repk=mesh)
             call jeveuo(chamno//'.REFE', 'E', jrefe)
             zk24(jrefe) = mesh
+            zk24(jrefe+1) = nume
         end if
         call jeveuo(chamno//'.VALE', 'E', lvale)
         if (typ(1:1) .eq. 'R') then

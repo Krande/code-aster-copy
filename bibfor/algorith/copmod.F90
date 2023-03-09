@@ -93,6 +93,7 @@ subroutine copmod(base, bmodr, bmodz, champ, numer, &
 !     0.2 - DECLARATION DES VARIABLES LOCALES
 !
     character(len=1) :: typc
+    character(len=4) :: docu
     aster_logical :: modnum, exnume, chnoeud, lnumeq1
     integer :: i, iret, neq, nbmode
     integer :: jdeeq, jval
@@ -193,8 +194,15 @@ subroutine copmod(base, bmodr, bmodz, champ, numer, &
 !
 !     1.2 - EXTRAIRE LE NOM DE MAILLAGE .REFE[1] ET DU NUME_DDL .REFE[2]
 !
-    call dismoi('NOM_MAILLA', nomcha, 'CHAM_NO', repk=maill1)
-    call dismoi('NUME_EQUA', nomcha, 'CHAM_NO', repk=numer1)
+    call dismoi('DOCU', nomcha, 'CHAMP', repk=docu)
+
+    if (docu == "CHNO") then
+        call dismoi('NOM_MAILLA', nomcha, 'CHAM_NO', repk=maill1)
+        call dismoi('NUME_EQUA', nomcha, 'CHAM_NO', repk=numer1)
+    else
+        maill1 = refe(1) (1:8)
+        numer1 = refe(2) (1:19)
+    end if
 !
 !     1.3 - TRAITEMENT DES CAS AVEC UN NUME_EQUA ET NON PAS UN NUME_DDL
 !           COMPLET.

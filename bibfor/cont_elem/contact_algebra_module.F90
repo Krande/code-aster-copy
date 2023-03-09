@@ -215,8 +215,8 @@ contains
         if (geom%elem_dime == 3) then
             det = metricTens(1, 1)*metricTens(2, 2)-metricTens(1, 2)*metricTens(2, 1)
             invMetricTensor(1, 1) = metricTens(2, 2)/det
-            invMetricTensor(1, 2) = -metricTens(2, 1)/det
-            invMetricTensor(2, 1) = invMetricTensor(1, 2)
+            invMetricTensor(1, 2) = -metricTens(1, 2)/det
+            invMetricTensor(2, 1) = -metricTens(2, 1)/det
             invMetricTensor(2, 2) = metricTens(1, 1)/det
         else
             invMetricTensor(1, 1) = 1.d0/metricTens(1, 1)

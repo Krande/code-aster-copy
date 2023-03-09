@@ -245,7 +245,7 @@ subroutine regeec(nomres, resgen, nomsst)
 !
 ! ----- REQUETTE NOM ET ADRESSE CHAMNO GENERALISE
         call dcapno(resgen, depl, iord, chamol)
-        call dismoi('TYPE_SCA', chamol(1:19), 'CHAM_NO', repk=typesca)
+        call dismoi('TYPE_SCA', chamol(1:19), 'CHAMP', repk=typesca)
         if (typesca .ne. "R") then
             call utmess('F', 'SOUSTRUC_84')
         end if

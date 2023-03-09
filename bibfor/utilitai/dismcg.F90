@@ -18,7 +18,7 @@
 
 subroutine dismcg(questi, nomobz, repi, repkz, ierd)
     implicit none
-!     --     DISMOI(CHAM_NO)
+!     --     DISMOI(VECT_GENE)
 !     ARGUMENTS:
 !     ----------
 #include "jeveux.h"
@@ -52,7 +52,7 @@ subroutine dismcg(questi, nomobz, repi, repkz, ierd)
 !     VARIABLES LOCALES:
 !     ------------------
     character(len=8) :: nogd
-    integer :: i8, iarefe, iret
+    integer :: iadesc, iarefe, iret
 !-----------------------------------------------------------------------
     call jemarq()
     repk = ' '
@@ -73,11 +73,11 @@ subroutine dismcg(questi, nomobz, repi, repkz, ierd)
     else if (questi .eq. 'TYPE_CHAMP') then
         repk = 'VGEN'
     else if (questl(1:7) .eq. 'NOM_GD ') then
-        call jeveuo(nomob//'.REFE', 'L', iarefe)
-        call dismeq(questl, zk24(iarefe-1+2), repi, repk, ierd)
+        call jeveuo(nomob//'.DESC', 'L', iadesc)
+        call jenuno(jexnum('&CATA.GD.NOMGD', zi(iadesc)), repk)
     else if (questi .eq. 'TYPE_SUPERVIS') then
-        call jeveuo(nomob//'.REFE', 'L', iarefe)
-        call dismeq("NOM_GD", zk24(iarefe-1+2), i8, nogd, ierd)
+        call jeveuo(nomob//'.DESC', 'L', iadesc)
+        call jenuno(jexnum('&CATA.GD.NOMGD', zi(iadesc)), nogd)
         repk = 'CHAM_NO_'//nogd
     else if (questi .eq. 'NUME_EQUA') then
         call jeveuo(nomob//'.REFE', 'L', iarefe)
@@ -92,8 +92,8 @@ subroutine dismcg(questi, nomobz, repi, repkz, ierd)
             goto 9999
         end if
     else if (questl .eq. 'TYPE_SCA') then
-        call jeveuo(nomob//'.REFE', 'L', iarefe)
-        call dismeq("NOM_GD", zk24(iarefe-1+2), i8, nogd, ierd)
+        call jeveuo(nomob//'.DESC', 'L', iadesc)
+        call jenuno(jexnum('&CATA.GD.NOMGD', zi(iadesc)), nogd)
         call dismgd(questl, nogd, repi, repk, ierd)
     else
         ierd = 1

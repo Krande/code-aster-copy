@@ -106,6 +106,7 @@ subroutine mdallr(resu1, resu2, basemo, nbmode, nbsauv, &
 
             call jeveuo(chamge//'.REFE', 'E', jrefe)
             zk24(jrefe) = basemo
+            zk24(jrefe+1) = nugene
         else
             ASSERT(.false.)
         end if
