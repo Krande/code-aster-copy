@@ -42,7 +42,7 @@ cata_msg = {
     ),
     6: _(
         """
- Les charges n'ont pas le même MODELE.
+ Le mot-clé MODELE est nécessaire si CHARGE est présent dans une occurrence de EXCIT.
 """
     ),
     7: _(

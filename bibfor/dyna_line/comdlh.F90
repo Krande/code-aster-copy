@@ -243,7 +243,7 @@ subroutine comdlh()
     call dydome(nomo, mate, mateco, carele)
 
 ! - Get loads
-    call dylech(nomo, listLoad, nbexre, exreco, exresu)
+    call dylech(nomo, listLoad, nbexre, exreco, exresu, calgen)
 
 ! - Get kinematic loads
     call dyGetKineLoad(masse, raide, amor, l_damp, listLoad, kineLoadReal)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,11 +19,12 @@
 !
 !
 interface
-    subroutine dylech(nomo, lischa, nbexre, exreco, exresu)
+    subroutine dylech(nomo, lischa, nbexre, exreco, exresu, calgen)
         character(len=8) :: nomo
         character(len=19) :: lischa
         integer :: nbexre
         character(len=24) :: exreco
         character(len=24) :: exresu
+        aster_logical :: calgen
     end subroutine dylech
 end interface

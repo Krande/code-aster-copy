@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,9 +19,10 @@
 !
 !
 interface
-    subroutine liscom(nomo, codarr, lischa)
+    subroutine liscom(nomo, codarr, lischa, l_need_modelz)
     character(len=19) :: lischa
     character(len=1) :: codarr
     character(len=8) :: nomo
+    aster_logical, intent(in), optional :: l_need_modelz
     end subroutine liscom
 end interface

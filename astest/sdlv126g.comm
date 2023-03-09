@@ -2,7 +2,7 @@
 # coding: utf-8
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -127,6 +127,7 @@ for i in range(Nb_freq):
 
     # Resolution du système
     res_harm = DYNA_VIBRA(
+        MODELE=model,
         TYPE_CALCUL="HARM",
         BASE_CALCUL="PHYS",
         MATR_MASS=M1,
@@ -180,6 +181,7 @@ K1 = ASSE_MATRICE(MATR_ELEM=Kc_elem1, NUME_DDL=nddl, CHAR_CINE=encas1)
 
 # Resolution du système
 res_harm1 = DYNA_VIBRA(
+    MODELE=model,
     TYPE_CALCUL="HARM",
     BASE_CALCUL="PHYS",
     MATR_MASS=M1,

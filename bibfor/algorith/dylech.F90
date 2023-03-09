@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine dylech(nomo, lischa, nbexre, exreco, exresu)
+subroutine dylech(nomo, lischa, nbexre, exreco, exresu, calgen)
 !
 !
     implicit none
@@ -33,6 +33,7 @@ subroutine dylech(nomo, lischa, nbexre, exreco, exresu)
     character(len=19) :: lischa
     character(len=24) :: exreco, exresu
     integer :: nbexre
+    aster_logical :: calgen
 !
 ! ----------------------------------------------------------------------
 !
@@ -72,7 +73,7 @@ subroutine dylech(nomo, lischa, nbexre, exreco, exresu)
 !
 ! --- VERIFICATIONS DE LA LISTE DES CHARGES
 !
-    call lischk(nomo, 'MECANIQUE', nomcmd, lischa)
+    call lischk(nomo, 'MECANIQUE', nomcmd, lischa, calgen)
 !
 ! --- LECTURE INFORMATIONS EXCIT_RESU
 !
