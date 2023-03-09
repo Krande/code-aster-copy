@@ -22,8 +22,7 @@
 ********************************************************************
 """
 
-import aster
-from libaster import ParallelEquationNumbering
+from ..Objects import ParallelEquationNumbering
 
 from ..Utilities import injector
 from .equationnumbering_ext import EquationNumberingStateBuilder

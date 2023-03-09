@@ -346,10 +346,10 @@ class ModeResult : public FullResult {
         return repi;
     };
 
-    bool build( const std::vector< FiniteElementDescriptorPtr > feds =
-                    std::vector< FiniteElementDescriptorPtr >(),
-                const std::vector< EquationNumberingPtr > fnds =
-                    std::vector< EquationNumberingPtr >() ) {
+    bool build(
+        const std::vector< FiniteElementDescriptorPtr > feds =
+            std::vector< FiniteElementDescriptorPtr >(),
+        const std::vector< EquationNumberingPtr > fnds = std::vector< EquationNumberingPtr >() ) {
         BaseDOFNumberingPtr numeDdl( nullptr );
         if ( _rigidityDispDMatrix != nullptr )
             numeDdl = _rigidityDispDMatrix->getDOFNumbering();
