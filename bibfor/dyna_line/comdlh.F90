@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -246,7 +246,7 @@ implicit none
     call dydome(nomo, mate, mateco, carele)
 
 ! - Get loads
-    call dylech(nomo, listLoad, nbexre, exreco, exresu)
+    call dylech(nomo, listLoad, nbexre, exreco, exresu, calgen)
 
 ! - Get kinematic loads
     call dyGetKineLoad(masse, raide, amor, l_damp, listLoad, kineLoadReal)

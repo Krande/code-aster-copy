@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,11 +16,12 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine lischk(nomo, phenoz, nomcmz, lischa)
+subroutine lischk(nomo, phenoz, nomcmz, lischa, calgen)
 !
 !
     implicit      none
 #include "jeveux.h"
+#include "asterf_types.h"
 #include "asterfort/lisccm.h"
 #include "asterfort/lisccp.h"
 #include "asterfort/liscom.h"
@@ -29,6 +30,7 @@ subroutine lischk(nomo, phenoz, nomcmz, lischa)
     character(len=*) :: nomcmz, phenoz
     character(len=8) :: nomo
     character(len=19) :: lischa
+    aster_logical :: calgen
 !
 ! ----------------------------------------------------------------------
 !
@@ -43,21 +45,24 @@ subroutine lischk(nomo, phenoz, nomcmz, lischa)
 ! IN  PHENOM : TYPE DE PHENOMENE (MECANIQUE, THERMIQUE, ACOUSTIQUE)
 ! IN  NOMCMD : NOM DE LA COMMANDE
 ! IN  LISCHA : SD LISTE DES CHARGES
+! TRUE si calcul sur base GENE
 !
 ! ----------------------------------------------------------------------
 !
     character(len=16) :: nomcmd, phenom
     character(len=1) :: codarr
+    aster_logical :: l_need_model
 !
 ! ----------------------------------------------------------------------
 !
     nomcmd = nomcmz
     phenom = phenoz
     codarr = 'F'
+    l_need_model = ASTER_TRUE
 !
 ! --- VERIFICATION DE LA COHERENCE DES MODELES
 !
-    call liscom(nomo, codarr, lischa)
+    if (.not. calgen) call liscom(nomo, codarr, lischa, l_need_model)
 !
 ! --- VERIFICATION COMPATIBILITE CHARGE/PHENOMENE
 !

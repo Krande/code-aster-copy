@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,10 +19,11 @@
 !
 !
 interface
-    subroutine lischk(nomo, phenoz, nomcmz, lischa)
+    subroutine lischk(nomo, phenoz, nomcmz, lischa, calgen)
         character(len=8) :: nomo
         character(len=*) :: phenoz
         character(len=*) :: nomcmz
         character(len=19) :: lischa
+        aster_logical :: calgen
     end subroutine lischk
 end interface
