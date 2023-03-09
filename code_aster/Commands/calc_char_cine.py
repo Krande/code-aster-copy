@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -19,7 +19,7 @@
 
 # person_in_charge: nicolas.sellenet@edf.fr
 
-from ..Objects import FieldOnNodesReal
+from ..Objects import FieldOnNodesReal, FieldOnNodesComplex
 from ..Supervis import ExecuteCommand
 
 
@@ -34,7 +34,14 @@ class DirichletBCComputation(ExecuteCommand):
         Arguments:
             keywords (dict): Keywords arguments of user's keywords.
         """
-        self._result = FieldOnNodesReal(keywords["NUME_DDL"])
+
+        nume = keywords["NUME_DDL"]
+        phys = nume.getPhysicalQuantity()
+        real = phys.split("_")[1].strip() == "R"
+        if real:
+            self._result = FieldOnNodesReal(nume)
+        else:
+            self._result = FieldOnNodesComplex(nume)
 
     def post_exec(self, keywords):
         """Build.
@@ -44,6 +51,15 @@ class DirichletBCComputation(ExecuteCommand):
         """
 
         self._result.build()
+
+    def add_dependencies(self, keywords):
+        """Register input *DataStructure* objects as dependencies.
+
+        Arguments:
+            keywords (dict): User's keywords.
+        """
+
+        # no dependencies
 
 
 CALC_CHAR_CINE = DirichletBCComputation.run
