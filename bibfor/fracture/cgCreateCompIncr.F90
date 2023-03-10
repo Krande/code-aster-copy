@@ -80,6 +80,7 @@ subroutine cgCreateCompIncr(compor, l_etat_init)
                     call utmess("F", "RUPTURE3_11")
                 else
                     v_compor_vale(nb_cmp_max*(i_zone-1)+INCRELAS) = "COMP_ELAS"
+                    v_compor_vale(nb_cmp_max*(i_zone-1)+NVAR) = "1"
                 end if
             else
                 call utmess("F", "RUPTURE3_8", sk=rela_comp)
