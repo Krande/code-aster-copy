@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -154,6 +154,42 @@ TEST_FONCTION(VALEUR=(_F(VALE_CALC_C=(0.00710749646393-0.00035360678925j),
                          PRECISION=5.0000000000000001E-3,
                          FONCTION=F,),
                       ),
+    )
+
+# CL non-homogènes (cf #issue32678)
+# on vérifie simplement que l'on récupère le bon déplacement en sortie et non 2 x le bon déplacement
+# comme avant
+
+CONDLIM = AFFE_CHAR_MECA(
+    MODELE=MODELE, DDL_IMPO=(_F(TOUT="OUI", DY=0.0, DZ=0.0), _F(NOEUD="A", DX=1.0))
+)
+
+REPHARM = DYNA_LINE(
+    MODELE=MODELE,
+    CARA_ELEM=RIGMAS,
+    TYPE_CALCUL="HARM",
+    BASE_CALCUL="PHYS",
+    FREQ=3.3687,
+    CHARGE=CONDLIM,
+    AMORTISSEMENT=_F(TYPE_AMOR="HYST"),
+    EXCIT=(_F(CHARGE=FORCENO, COEF_MULT=2.0, PHAS_DEG=0.0),),
+)
+
+
+TEST_RESU(
+    RESU=_F(
+        RESULTAT=REPHARM,
+        FREQ=3.3687,
+        NOM_CHAM="DEPL",
+        NOEUD="A",
+        NOM_CMP="DX",
+        REFERENCE="ANALYTIQUE",
+        VALE_REFE_C=1.0 + 0.0j,
+        VALE_CALC_C=1.0 + 0.0j,
+        VALE_ABS="NON",
+        CRITERE="RELATIF",
+        PRECISION=1e-1,
               )
+)
 FIN( )
 #
