@@ -321,12 +321,24 @@ class DynaLineFEM:
         self.__amorModal = self.amortissement["AMOR_REDUIT"]
         return self.__amorModal
 
+    def convertBlocToVect(self):
+        """compute and return the assembled vector corresponding to blockage"""
+        keywords = self.keywords.copy()
+        if "CHARGE" in keywords:
+            del keywords["MODELE"]
+            keywords["CHARGE"] = [x for x in keywords["CHARGE"] if not x.hasLoadField("IMPED")]
+            if len(keywords["CHARGE"]) == 0:
+                return None
+            __vectelem = CALC_VECT_ELEM(OPTION="CHAR_MECA", **keywords)
+            __vect = ASSE_VECTEUR(VECT_ELEM=__vectelem, NUME_DDL=self.getNumeddl())
+            return __vect
+        else:
+            return None
+
     def convertChargeToVect(self, charge):
         """compute and return the assembled vector corresponding to 'charge'"""
         keywords = self.keywords.copy()
-        keywords["CHARGE"] = (
-            list(keywords["CHARGE"]) + [charge] if "CHARGE" in keywords else [charge]
-        )
+        keywords["CHARGE"] = [charge]
         del keywords["MODELE"]
         __vectelem = CALC_VECT_ELEM(OPTION="CHAR_MECA", **keywords)
         __vect = ASSE_VECTEUR(VECT_ELEM=__vectelem, NUME_DDL=self.getNumeddl())
@@ -488,6 +500,13 @@ class DynaLineExcit:
             return self.__charges
         self.__check()
         self.__charges = []
+        # add blockages
+        __vect = self.dynaLineFEM.convertBlocToVect()
+        if __vect is not None:
+            charge = {"COEF_MULT": 1.0}
+            self.__setVectOrVectGeneToCharge(charge, __vect)
+            self.__charges.append(charge)
+
         for charMecaLoading in self.__getCharMecaLoadings():
             charge = charMecaLoading.copy()
             __vect = self.dynaLineFEM.convertChargeToVect(charge["CHARGE"])
