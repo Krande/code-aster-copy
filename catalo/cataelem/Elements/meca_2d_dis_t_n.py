@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -141,6 +141,13 @@ class MECA_2D_DIS_T_N(Element):
             te=99,
             para_in=((SP.PGEOMER, NGEOMER), (OP.CHAR_MECA_TEMP_R.PVARCPR, LC.ZVARCPG)),
             para_out=((SP.PVECTUR, MVECTUR),),
+        ),
+        #       -- les elements discrets ne peuvent pas calculer de dilatation "hydratation/sechage" => te0099
+        OP.CHAR_MECA_HYDR_R(
+            te=99, para_in=((SP.PGEOMER, NGEOMER),), para_out=((SP.PVECTUR, MVECTUR),)
+        ),
+        OP.CHAR_MECA_SECH_R(
+            te=99, para_in=((SP.PGEOMER, NGEOMER),), para_out=((SP.PVECTUR, MVECTUR),)
         ),
         OP.COOR_ELGA(
             te=478, para_in=((SP.PGEOMER, NGEOMER),), para_out=((OP.COOR_ELGA.PCOORPG, EGGEOP_R),)
