@@ -16,7 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine crea_nume_erc(baseno, numnu,matprod,nom_nume_erc,nom_matr_erc,nom_vect_erc,solveu,valei)
+subroutine crea_nume_erc(baseno, numnu, matprod, nom_nume_erc, nom_matr_erc, &
+                         nom_vect_erc, solveu, valei)
 !
 !
     implicit none
@@ -63,10 +64,13 @@ subroutine crea_nume_erc(baseno, numnu,matprod,nom_nume_erc,nom_matr_erc,nom_vec
     integer, intent(out) :: valei(8)
     character(len=8) ::  k8bid
     character(len=19) :: prgene
-    integer :: ismde,ismdi,ismhc,improdsmde,improdsmhc,improdsmdi,improdvalm,neq,nozero,inewsmde
-    integer :: inewsmdi, inewsmhc, cumul_non_zero, non_zero_impe, non_zero_matprod, hors_diag_impe
+    integer :: ismde, ismdi, ismhc, improdsmde, improdsmhc, improdsmdi, improdvalm
+    integer :: neq, nozero, inewsmde
+    integer :: inewsmdi, inewsmhc, cumul_non_zero, non_zero_impe
+    integer :: non_zero_matprod, hors_diag_impe
     integer :: hd_matprod, nz_colncour, ii, jj, kk, tt, lddesc, ldnequ, k, jrefn
-    integer :: lddeeq, lddelg, ldnueq, ibid, ldprno, ldorig, mrefa, mdesc, vdesc, mvale, vvale, ll
+    integer :: lddeeq, lddelg, ldnueq, ibid, ldprno, ldorig, mrefa, mdesc, vdesc
+    integer :: mvale, vvale, ll
 !
 ! --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 !
@@ -175,7 +179,8 @@ subroutine crea_nume_erc(baseno, numnu,matprod,nom_nume_erc,nom_matr_erc,nom_vec
 ! --- --- BLOC TRIANGULAIRE SUP IMPEDANCE
         nz_colncour = 0
         do tt = 1, hors_diag_impe+1
-     zi4(inewsmhc+zi(ismde+1)+cumul_non_zero+tt-1) = zi4(ismhc+zi(ismdi+jj-1)-1-hors_diag_impe+tt-1)
+            zi4(inewsmhc+zi(ismde+1)+cumul_non_zero+tt-1) = &
+                zi4(ismhc+zi(ismdi+jj-1)-1-hors_diag_impe+tt-1)
             nz_colncour = nz_colncour+1
             non_zero_impe = non_zero_impe+1
         end do
@@ -208,8 +213,8 @@ subroutine crea_nume_erc(baseno, numnu,matprod,nom_nume_erc,nom_matr_erc,nom_vec
         do kk = 1, hd_matprod+1
             nz_colncour = nz_colncour+1
             non_zero_matprod = non_zero_matprod+1
-            zi4(inewsmhc-1+zi(ismde+1)+cumul_non_zero+nz_colncour) = int(neq, 4)+ &
-                                                                  zi4(improdsmhc-1+non_zero_matprod)
+            zi4(inewsmhc-1+zi(ismde+1)+cumul_non_zero+nz_colncour) = &
+                int(neq, 4)+zi4(improdsmhc-1+non_zero_matprod)
         end do
         cumul_non_zero = cumul_non_zero+nz_colncour
 ! --- --- FINALISATION SMDI

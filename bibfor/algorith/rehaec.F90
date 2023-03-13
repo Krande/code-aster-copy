@@ -303,9 +303,10 @@ subroutine rehaec(nomres, resgen, nomsst)
                     do i1 = 1, neqet
                         zc(lmoet+i1-1) = dcmplx(0.d0, 0.d0)
                         do k1 = 1, neqred
-                            zc(lmoet+i1-1) = zc(lmoet+i1-1)+zr(lmapro+( &
-                                                             k1-1)*neqet+i1-1)*zc(idresu+k1-1+(zi( &
-                                                                                 jnume+i)-1)*neqred)
+                            zc(lmoet+i1-1) = &
+                                zc(lmoet+i1-1)+ &
+                                zr(lmapro+(k1-1)*neqet+i1-1)* &
+                                zc(idresu+k1-1+(zi(jnume+i)-1)*neqred)
                         end do
                     end do
                 end if

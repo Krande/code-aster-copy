@@ -343,11 +343,9 @@ subroutine assmiv(base, vec, nbvec, tlivec, licoef, &
                                 if (type .eq. 1) then
                                     do i1 = 1, nddl1
                                         il = il+1
-                                        zr(jvale-1+nueq(iad1+ &
-                                                        posddl(i1)-1)) = min(zr( &
-                                                                             jvale-1+nueq(iad1+ &
-                                                                         posddl(i1)-1)), zr(jresl+ &
-                                                                             (iel-1)*ncmpel+il-1)*r)
+                                        zr(jvale-1+nueq(iad1+posddl(i1)-1)) = &
+                                            min(zr(jvale-1+nueq(iad1+posddl(i1)-1)), &
+                                                zr(jresl+(iel-1)*ncmpel+il-1)*r)
                                     end do
                                 end if
 50                              continue

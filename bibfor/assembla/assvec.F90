@@ -404,7 +404,8 @@ subroutine assvec(jvBase, vectAsseZ, &
                                             iDof = iDof+1
                                             zr(jvale-1+ &
                                                zi(ianueq-1+iad1+zi(iapsdl-1+iDofMode)-1)) = &
-                                            zr(jvale-1+zi(ianueq-1+iad1+zi(iapsdl-1+iDofMode)-1))+ &
+                                                zr(jvale-1+ &
+                                                   zi(ianueq-1+iad1+zi(iapsdl-1+iDofMode)-1))+ &
                                                 zr(jresl+(iElem-1)*nbCmpMode+iDof-1)*elemCoef
                                         end do
 !
@@ -413,7 +414,8 @@ subroutine assvec(jvBase, vectAsseZ, &
                                             iDof = iDof+1
                                             zc(jvale-1+ &
                                                zi(ianueq-1+iad1+zi(iapsdl-1+iDofMode)-1)) = &
-                                            zc(jvale-1+zi(ianueq-1+iad1+zi(iapsdl-1+iDofMode)-1))+ &
+                                                zc(jvale-1+ &
+                                                   zi(ianueq-1+iad1+zi(iapsdl-1+iDofMode)-1))+ &
                                                 zc(jresl+(iElem-1)*nbCmpMode+iDof-1)*elemCoef
                                         end do
                                     else
@@ -464,7 +466,8 @@ subroutine assvec(jvBase, vectAsseZ, &
                                             iDof = iDof+1
                                             zr(jvale-1+ &
                                                zi(ianueq-1+iad1+zi(iapsdl-1+iDofMode)-1)) = &
-                                            zr(jvale-1+zi(ianueq-1+iad1+zi(iapsdl-1+iDofMode)-1))+ &
+                                                zr(jvale-1+ &
+                                                   zi(ianueq-1+iad1+zi(iapsdl-1+iDofMode)-1))+ &
                                                 zr(jresl+(iElem-1)*nbCmpMode+iDof-1)*elemCoef
                                         end do
                                     else
@@ -472,7 +475,8 @@ subroutine assvec(jvBase, vectAsseZ, &
                                             iDof = iDof+1
                                             zc(jvale-1+ &
                                                zi(ianueq-1+iad1+zi(iapsdl-1+iDofMode)-1)) = &
-                                            zc(jvale-1+zi(ianueq-1+iad1+zi(iapsdl-1+iDofMode)-1))+ &
+                                                zc(jvale-1+ &
+                                                   zi(ianueq-1+iad1+zi(iapsdl-1+iDofMode)-1))+ &
                                                 zc(jresl+(iElem-1)*nbCmpMode+iDof-1)*elemCoef
                                         end do
                                     end if

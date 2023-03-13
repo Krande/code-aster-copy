@@ -230,13 +230,12 @@ subroutine rvcpnc(mcf, iocc, nch19, gd, typegd, &
             do i = 1, 3, 1
                 zk8(avk8+i-1) = zk8(acpgd+i-1)
             end do
-        else if ((option .eq. 'SIGM_ELNO') .or. (option .eq. &
-                                     'SIEF_ELNO') .or. (option .eq. 'EPSI_ELNO') .or. (option .eq. &
-                                     'EPSG_ELNO') .or. (option .eq. 'EPME_ELNO') .or. (option .eq. &
-                                     'EPMG_ELNO') .or. (option .eq. 'SIGM_NOEU') .or. (option .eq. &
-                                     'SIEF_NOEU') .or. (option .eq. 'EPSI_NOEU') .or. (option .eq. &
-                                     'EPSG_NOEU') .or. (option .eq. 'EPME_NOEU_DEPL') .or. (option &
-                                                                             .eq. 'EPMG_NOEU')) then
+        else if ((option .eq. 'SIGM_ELNO') .or. (option .eq. 'SIEF_ELNO') .or. &
+                 (option .eq. 'EPSI_ELNO') .or. (option .eq. 'EPSG_ELNO') .or. &
+                 (option .eq. 'EPME_ELNO') .or. (option .eq. 'EPMG_ELNO') .or. &
+                 (option .eq. 'SIGM_NOEU') .or. (option .eq. 'SIEF_NOEU') .or. &
+                 (option .eq. 'EPSI_NOEU') .or. (option .eq. 'EPSG_NOEU') .or. &
+                 (option .eq. 'EPME_NOEU_DEPL') .or. (option .eq. 'EPMG_NOEU')) then
             call wkvect(nomojb, 'V V K8', 5, avk8)
             zk8(avk8+1-1) = zk8(acpgd+1-1)
             zk8(avk8+2-1) = zk8(acpgd+2-1)
@@ -334,13 +333,12 @@ subroutine rvcpnc(mcf, iocc, nch19, gd, typegd, &
                 zi(avicp+pt-1) = 3
                 pt = pt+1
             end if
-        else if ((option .eq. 'SIGM_ELNO') .or. (option .eq. &
-                                     'SIEF_ELNO') .or. (option .eq. 'EPSI_ELNO') .or. (option .eq. &
-                                     'EPSG_ELNO') .or. (option .eq. 'EPME_ELNO') .or. (option .eq. &
-                                     'EPMG_ELNO') .or. (option .eq. 'SIGM_NOEU') .or. (option .eq. &
-                                     'SIEF_NOEU') .or. (option .eq. 'EPSI_NOEU') .or. (option .eq. &
-                                     'EPSG_NOEU') .or. (option .eq. 'EPME_NOEU_DEPL') .or. (option &
-                                                                             .eq. 'EPMG_NOEU')) then
+        else if ((option .eq. 'SIGM_ELNO') .or. (option .eq. 'SIEF_ELNO') .or. &
+                 (option .eq. 'EPSI_ELNO') .or. (option .eq. 'EPSG_ELNO') .or. &
+                 (option .eq. 'EPME_ELNO') .or. (option .eq. 'EPMG_ELNO') .or. &
+                 (option .eq. 'SIGM_NOEU') .or. (option .eq. 'SIEF_NOEU') .or. &
+                 (option .eq. 'EPSI_NOEU') .or. (option .eq. 'EPSG_NOEU') .or. &
+                 (option .eq. 'EPME_NOEU_DEPL') .or. (option .eq. 'EPMG_NOEU')) then
             call wkvect(nomnew, 'V V I', 3, avinew)
             if (dirx) then
                 zi(avinew+1-1) = 1

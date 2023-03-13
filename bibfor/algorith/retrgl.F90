@@ -392,9 +392,9 @@ subroutine retrgl(nomres, resgen, mailsk, profno)
                     do i1 = 1, neqet
                         zr(lmoet+i1-1) = 0.d0
                         do k1 = 1, neqred
-                            zr(lmoet+i1-1) = zr(lmoet+i1-1)+zr(lmapro+( &
-                                                             k1-1)*neqet+i1-1)*zr(idresu+k1-1+(zi( &
-                                                                                 jnume+i)-1)*neqred)
+                            zr(lmoet+i1-1) = zr(lmoet+i1-1)+ &
+                                             zr(lmapro+(k1-1)*neqet+i1-1)* &
+                                             zr(idresu+k1-1+(zi(jnume+i)-1)*neqred)
                         end do
                     end do
                 end if

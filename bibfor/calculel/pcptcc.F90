@@ -152,7 +152,8 @@ subroutine pcptcc(option, ldist, dbg_ob, dbgv_ob, lcpu, &
         nbpas = nbordr/nbproc
         ASSERT(nbpas .ge. 0)
         if (dbg_ob) then
-    write (ifm, *) '< ', rang, 'pcptcc> valeur kmpi/ldist/dbgv_ob/lcpu=', kmpi, ldist, dbgv_ob, lcpu
+            write (ifm, *) '< ', rang, &
+                'pcptcc> valeur kmpi/ldist/dbgv_ob/lcpu=', kmpi, ldist, dbgv_ob, lcpu
             write (ifm, *) '< ', rang, 'pcptcc> nbordr/nbproc/nbpas= ', nbordr, nbproc, nbpas
         end if
         if ((ldist) .and. ((nbpas .lt. 1) .or. (nbproc .eq. 1))) then
@@ -208,7 +209,8 @@ subroutine pcptcc(option, ldist, dbg_ob, dbgv_ob, lcpu, &
             ASSERT(compt .eq. nbordi)
             if (dbgv_ob) call jeimpo(ifm, lisori, 'lisori')
         end if
- if (dbg_ob) write (ifm, *) '< ', rang, 'pcptcc> Fin de création du contexte parallélisme en temps '
+        if (dbg_ob) write (ifm, *) '< ', rang, &
+            'pcptcc> Fin de création du contexte parallélisme en temps '
 !
     else if (option .eq. 102) then
 ! OPTION=102 INITIALISATIONS POUR CALCOP AVEC APPELS RECURSIF
@@ -278,7 +280,8 @@ subroutine pcptcc(option, ldist, dbg_ob, dbgv_ob, lcpu, &
         call jedetr(vldist)
         if (dbg_ob) then
             write (ifm, *) '< ', rang, 'pcptcc> destruction objet=', vldist
-           write (ifm, *) '< ', rang, 'pcptcc> Fin de destruction du contexte parallélisme en temps'
+            write (ifm, *) '< ', rang, &
+                'pcptcc> Fin de destruction du contexte parallélisme en temps'
         end if
         if (ldist) then
             if (lsdpar) then
@@ -291,7 +294,8 @@ subroutine pcptcc(option, ldist, dbg_ob, dbgv_ob, lcpu, &
                 call copisd('PARTITION', 'G', '&&PCPTCC.PARTSD', modele(1:8)//'.PARTSD')
                 call detrsd('PARTITION', '&&PCPTCC.PARTSD')
             end if
-            if (dbg_ob) write (ifm, *) '< ', rang, 'pcptcc> lsdpar/partsd_fin= ', lsdpar, partsd
+            if (dbg_ob) write (ifm, *) '< ', rang, &
+                'pcptcc> lsdpar/partsd_fin= ', lsdpar, partsd
         end if
     else if (option .eq. 4) then
 ! OPTION=4
@@ -313,7 +317,8 @@ subroutine pcptcc(option, ldist, dbg_ob, dbgv_ob, lcpu, &
 ! INDICE RELATIF DANS CE PAQUET
             irelat = i-ideb+1
         end if
-        if (dbg_ob) write (ifm, *) '< ', rang, 'pcptcc> i/ideb/ifin/irelat= ', i, ideb, ifin, irelat
+        if (dbg_ob) write (ifm, *) '< ', rang, &
+            'pcptcc> i/ideb/ifin/irelat= ', i, ideb, ifin, irelat
         ASSERT(ideb .ge. 1)
         ASSERT(ifin .ge. 1)
         ASSERT(irelat .ge. 1)
@@ -400,7 +405,8 @@ subroutine pcptcc(option, ldist, dbg_ob, dbgv_ob, lcpu, &
             else if (ktyp .eq. 'C') then
                 if (ipas .eq. 1) then
                     call wkvect(vcnoch, 'V V C', lonch*nbproc, jcnoch)
-                    if (dbg_ob) write (ifm, *) '< ', rang, 'pcptcc> creation objet=', vcnoch
+                    if (dbg_ob) write (ifm, *) '< ', rang, &
+                        'pcptcc> creation objet=', vcnoch
                 else
                     call jeveuo(vcnoch, 'E', jcnoch)
                 end if
@@ -417,7 +423,8 @@ subroutine pcptcc(option, ldist, dbg_ob, dbgv_ob, lcpu, &
                 call dcopy(lonch, noch, 1, zr(jcnoch+(irelat-1)*lonch), 1)
                 call asmpi_barrier(mpicou)
                 call asmpi_comm_vect('MPI_SUM', 'R', nbval=lonch*nbproc, vr=zr(jcnoch))
-             if (dbg_ob) write (ifm, *) '< ', rang, 'pcptcc> ALLREDUCE réel longueur=', lonch*nbproc
+                if (dbg_ob) write (ifm, *) '< ', rang, &
+                    'pcptcc> ALLREDUCE réel longueur=', lonch*nbproc
                 call asmpi_barrier(mpicou)
                 p = 1
                 do k = ideb, ifin
@@ -432,7 +439,8 @@ subroutine pcptcc(option, ldist, dbg_ob, dbgv_ob, lcpu, &
                 call zcopy(lonch, nochc, 1, zc(jcnoch+(irelat-1)*lonch), 1)
                 call asmpi_barrier(mpicou)
                 call asmpi_comm_vect('MPI_SUM', 'C', nbval=lonch*nbproc, vc=zc(jcnoch))
-         if (dbg_ob) write (ifm, *) '< ', rang, 'pcptcc> ALLREDUCE complexe longueur=', lonch*nbproc
+                if (dbg_ob) write (ifm, *) '< ', rang, &
+                    'pcptcc> ALLREDUCE complexe longueur=', lonch*nbproc
                 call asmpi_barrier(mpicou)
                 p = 1
                 do k = ideb, ifin

@@ -371,9 +371,9 @@ subroutine rotlir(nomres, sst1, intf1, lino1, codret, &
                 do k1 = 1, 6
                     l1 = int(mod(k1-1, 3)+1)
                     m1 = int(int((k1-1)/3)*3)
-                    zr(lmain1+(i1-1)*nbddl1+(j1-1)*6+k1-1) = rota(l1, 1) &
-                                                       *zr(lresmo+m1)+rota(l1, 2)*zr(lresmo+m1+1)+ &
-                                                             rota(l1, 3)*zr(lresmo+m1+2)
+                    zr(lmain1+(i1-1)*nbddl1+(j1-1)*6+k1-1) = &
+                        rota(l1, 1)*zr(lresmo+m1)+rota(l1, 2)*zr(lresmo+m1+1)+ &
+                        rota(l1, 3)*zr(lresmo+m1+2)
                 end do
             end do
 !

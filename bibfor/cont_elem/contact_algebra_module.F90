@@ -521,7 +521,8 @@ contains
 !
         d2Ns_du2_ns = 0.d0
         call dgemm("N", "T", geom%nb_dofs, geom%nb_dofs, geom%elem_dime-1, 1.d0, &
-                 dTs_ns, MAX_LAGA_DOFS, invA_dT_ns, MAX_LAGA_DOFS, 0.d0, d2Ns_du2_ns, MAX_LAGA_DOFS)
+                   dTs_ns, MAX_LAGA_DOFS, invA_dT_ns, MAX_LAGA_DOFS, 0.d0, &
+                   d2Ns_du2_ns, MAX_LAGA_DOFS)
 !
     end function
 !
@@ -571,7 +572,8 @@ contains
 ! --- Term: -( D tau^s(u^s)[v^s](u^s)[v^s] n^s)^T * invMetricTens^s * ( D tau^s(u^s)[v^s] n^m)
 !
         call dgemm("N", "T", geom%nb_dofs, geom%nb_dofs, geom%elem_dime-1, 1.d0, &
-                 dTs_nm, MAX_LAGA_DOFS, invA_dT_ns, MAX_LAGA_DOFS, 0.d0, d2Ns_du2_nm, MAX_LAGA_DOFS)
+                   dTs_nm, MAX_LAGA_DOFS, invA_dT_ns, MAX_LAGA_DOFS, 0.d0, &
+                   d2Ns_du2_nm, MAX_LAGA_DOFS)
 !
 ! --- Term: -((tau^s)^T n^m  invMetricTens^s ) . D tau^s(u^s)[v^s] D n^s(u^s)[du^s]
 !
@@ -1002,8 +1004,9 @@ contains
 !
 ! --- Term: -gap(u) D^2 n^s[v^s, w^s].n^m/(n^m.n^s)
 !
-        d2Gap_du2(1:geom%nb_dofs, 1:geom%nb_dofs) = d2Gap_du2(1:geom%nb_dofs, 1:geom%nb_dofs) &
-                                            -(gap*inv_ns_nm)*d2Ns_nm(1:geom%nb_dofs, 1:geom%nb_dofs)
+        d2Gap_du2(1:geom%nb_dofs, &
+                  1:geom%nb_dofs) = d2Gap_du2(1:geom%nb_dofs, 1:geom%nb_dofs) &
+                          -(gap*inv_ns_nm)*d2Ns_nm(1:geom%nb_dofs, 1:geom%nb_dofs)
 !
 ! --- Term: ( D tau^m[v] .n^m * De[w] + D tau^m[w] .n^m * De[v] )/(n^m.n^s)
 !

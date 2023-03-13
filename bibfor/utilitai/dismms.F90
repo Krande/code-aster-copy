@@ -154,7 +154,7 @@ subroutine dismms(questi, nomobz, repi, repkz, ierd)
 
     else if (questi .eq. 'MPI_COMPLET') then
         k24 = refa(11)
-       ASSERT((k24 .eq. 'MPI_COMPLET') .or. (k24 .eq. 'MPI_INCOMPLET') .or. (k24 .eq. 'MATR_DISTR'))
+        ASSERT(k24 .eq. 'MPI_COMPLET' .or. k24 .eq. 'MPI_INCOMPLET' .or. k24 .eq. 'MATR_DISTR')
         if (k24 .eq. 'MPI_COMPLET') then
             repk = 'OUI'
         else
@@ -163,7 +163,7 @@ subroutine dismms(questi, nomobz, repi, repkz, ierd)
 
     else if (questi .eq. 'MATR_DISTR') then
         k24 = refa(11)
-       ASSERT((k24 .eq. 'MPI_COMPLET') .or. (k24 .eq. 'MPI_INCOMPLET') .or. (k24 .eq. 'MATR_DISTR'))
+        ASSERT(k24 .eq. 'MPI_COMPLET' .or. k24 .eq. 'MPI_INCOMPLET' .or. k24 .eq. 'MATR_DISTR')
         if (k24 .eq. 'MATR_DISTR') then
             repk = 'OUI'
         else

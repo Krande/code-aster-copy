@@ -288,18 +288,16 @@ subroutine assvss(base, vec, vecel, nu, vecpro, &
                     if (type .eq. 1) then
                         do i1 = 1, nddl1
                             il = il+1
-                            zr(iadval-1+zi(ianueq-1+iad1+zi( &
-                                           iapsdl-1+i1)-1)) = zr(iadval-1+zi( &
-                                                                 ianueq-1+iad1+zi(iapsdl-1+ &
-                                                                       i1)-1))+zr(idresl+il-1)*rcoef
+                            zr(iadval-1+zi(ianueq-1+iad1+zi(iapsdl-1+i1)-1)) = &
+                                zr(iadval-1+zi(ianueq-1+iad1+zi(iapsdl-1+i1)-1))+ &
+                                zr(idresl+il-1)*rcoef
                         end do
                     else if (type .eq. 2) then
                         do i1 = 1, nddl1
                             il = il+1
-                            zc(iadval-1+zi(ianueq-1+iad1+zi( &
-                                           iapsdl-1+i1)-1)) = zc(iadval-1+zi( &
-                                                                 ianueq-1+iad1+zi(iapsdl-1+ &
-                                                                       i1)-1))+zc(idresl+il-1)*rcoef
+                            zc(iadval-1+zi(ianueq-1+iad1+zi(iapsdl-1+i1)-1)) = &
+                                zc(iadval-1+zi(ianueq-1+iad1+zi(iapsdl-1+i1)-1))+ &
+                                zc(idresl+il-1)*rcoef
                         end do
                     end if
                 end do
