@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -151,33 +151,33 @@ def createExternalStateVariable(fkw, nomVarc, mesh, kwTout, grp):
     if evol is not None:
         fieldName = fkw.get("NOM_CHAM")
         if fieldName is None:
-            if nomVarc is "TEMP":
+            if nomVarc == "TEMP":
                 evolParameter = EvolutionParameter(evol, "TEMP")
-            elif nomVarc is "NEUT1":
+            elif nomVarc == "NEUT1":
                 evolParameter = EvolutionParameter(evol, "NEUT")
-            elif nomVarc is "NEUT2":
+            elif nomVarc == "NEUT2":
                 evolParameter = EvolutionParameter(evol, "NEUT")
-            elif nomVarc is "NEUT3":
+            elif nomVarc == "NEUT3":
                 evolParameter = EvolutionParameter(evol, "NEUT")
-            elif nomVarc is "GEOM":
+            elif nomVarc == "GEOM":
                 evolParameter = EvolutionParameter(evol, "GEOM")
-            elif nomVarc is "CORR":
+            elif nomVarc == "CORR":
                 evolParameter = EvolutionParameter(evol, "CORR")
-            elif nomVarc is "IRRA":
+            elif nomVarc == "IRRA":
                 evolParameter = EvolutionParameter(evol, "IRRA")
-            elif nomVarc is "DIVU":
+            elif nomVarc == "DIVU":
                 evolParameter = EvolutionParameter(evol, "DIVU")
-            elif nomVarc is "HYDR":
+            elif nomVarc == "HYDR":
                 evolParameter = EvolutionParameter(evol, "HYDR_ELNO")
-            elif nomVarc is "SECH":
+            elif nomVarc == "SECH":
                 evolParameter = EvolutionParameter(evol, "TEMP")
-            elif nomVarc is "PTOT":
+            elif nomVarc == "PTOT":
                 evolParameter = EvolutionParameter(evol, "PTOT")
-            elif nomVarc is "EPSA":
+            elif nomVarc == "EPSA":
                 evolParameter = EvolutionParameter(evol, "EPSA")
-            elif nomVarc is "M_ACIER":
+            elif nomVarc == "M_ACIER":
                 evolParameter = EvolutionParameter(evol, "META_ELNO")
-            elif nomVarc is "M_ZIRC":
+            elif nomVarc == "M_ZIRC":
                 evolParameter = EvolutionParameter(evol, "META_ELNO")
             else:
                 raise RuntimeError("Unknown external state variables")

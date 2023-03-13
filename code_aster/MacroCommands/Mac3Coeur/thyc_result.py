@@ -182,7 +182,7 @@ class ThycResult:
             for key_mesh in mandatory_kws:
                 if key_mesh.lower() in line.lower() and len(self._thyc_mesh) < 3:
                     idx = get_first_digit(spline)
-                    typ = np.int if key_mesh is "K" else np.float
+                    typ = np.int if key_mesh == "K" else np.float
                     self._thyc_mesh[key_mesh] = np.array(spline[idx:], dtype=typ)
 
         # Check mesh data
