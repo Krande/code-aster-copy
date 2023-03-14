@@ -28,18 +28,21 @@ strings (:py:class:`FieldOnNodesChar8`) and
 complex numbers (:py:class:`FieldOnNodesComplex`).
 """
 
-import numpy, functools, operator
+import functools
+import operator
 
 import aster
+import numpy
 from libaster import (
-    FieldOnNodesReal,
-    FieldOnNodesLong,
+    DOFNumbering,
     FieldOnNodesChar8,
     FieldOnNodesComplex,
-    DOFNumbering,
+    FieldOnNodesLong,
+    FieldOnNodesReal,
 )
+
 from ..Objects.Serialization import InternalStateBuilder
-from ..Utilities import injector, config, MPI
+from ..Utilities import MPI, PETSc, config, injector
 
 
 class FieldOnNodesStateBuilder(InternalStateBuilder):
@@ -137,17 +140,15 @@ class ExtendedFieldOnNodesReal:
         """Convert the field to a PETSc vector object.
 
         Returns:
-            PetscVec: PETSc vector.
+            PETSc.Vec: PETSc vector.
         """
         mesh = self.getMesh()
         if not config["ASTER_HAVE_PETSC"] or not config["ASTER_HAVE_PETSC4PY"]:
             raise RuntimeError("petsc4py is needed and is not installed")
-        # import here and not at the beginning because it causes MPI_init (see issue32486)
-        from petsc4py.PETSc import Vec, InsertMode
 
         if mesh.isParallel():
             comm = MPI.ASTER_COMM_WORLD
-            _vec = Vec().create(comm=comm)
+            _vec = PETSc.Vec().create(comm=comm)
             _vec.setType("mpi")
             globNume = self.getDescription()
             ownedRows = globNume.getNoGhostRows()
@@ -159,14 +160,14 @@ class ExtendedFieldOnNodesReal:
             extract = operator.itemgetter(*ownedRows)
             ll2g = extract(l2g)
             lval = extract(val)
-            _vec.setValues(ll2g, lval, InsertMode.INSERT_VALUES)
+            _vec.setValues(ll2g, lval, PETSc.InsertMode.INSERT_VALUES)
         else:
-            _vec = Vec().create()
+            _vec = PETSc.Vec().create()
             _vec.setType("mpi")
             val = self.getValues()
             neq = len(val)
             _vec.setSizes(neq)
-            _vec.setValues(range(neq), val, InsertMode.INSERT_VALUES)
+            _vec.setValues(range(neq), val, PETSc.InsertMode.INSERT_VALUES)
         _vec.assemble()
         return _vec
 
