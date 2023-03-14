@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -254,7 +254,7 @@ CH1A = AFFE_CHAR_MECA(
         _F(GROUP_NO="LPOP8", DY=0.0),
         _F(GROUP_NO="LP1P8S", DY=0.0),
     ),
-    LIAISON_UNIF=_F(GROUP_NO="LP9P10", DDL=("DY", "DY")),
+    LIAISON_UNIF=_F(GROUP_NO="LP9P10", DDL=("DY")),
 )
 
 #
@@ -290,7 +290,7 @@ CH1B = AFFE_CHAR_MECA(
         _F(GROUP_NO="LP1P8S", DX=0.0),
         _F(GROUP_NO="LP1P8S", DY=0.0),
     ),
-    LIAISON_UNIF=_F(GROUP_NO="LP9P10", DDL=("DY", "DY")),
+    LIAISON_UNIF=_F(GROUP_NO="LP9P10", DDL=("DY",)),
 )
 
 CHCONT = DEFI_CONTACT(
@@ -389,7 +389,7 @@ CH2A = AFFE_CHAR_MECA(
         _F(GROUP_NO="LPOP8", DY=0.0),
         _F(GROUP_NO="LP1P8S", DY=0.0),
     ),
-    LIAISON_UNIF=_F(GROUP_NO="LP9P10", DDL=("DY", "DY")),
+    LIAISON_UNIF=_F(GROUP_NO="LP9P10", DDL=("DY",)),
 )
 
 #
@@ -427,7 +427,7 @@ CH2B = AFFE_CHAR_MECA(
         _F(GROUP_NO="LP1P8S", DX=0.0),
         _F(GROUP_NO="LP1P8S", DY=0.0),
     ),
-    LIAISON_UNIF=_F(GROUP_NO="LP9P10", DDL=("DY", "DY")),
+    LIAISON_UNIF=_F(GROUP_NO="LP9P10", DDL=("DY",)),
 )
 #
 # MATRICE QUASI-SINGULIERE, NE FONCTIONNE QU'AVEC MUMPS
@@ -519,7 +519,7 @@ CH3A = AFFE_CHAR_MECA(
         _F(GROUP_NO="LPOP8", DY=0.0),
         _F(GROUP_NO="LP1P8S", DY=0.0),
     ),
-    LIAISON_UNIF=_F(GROUP_NO="LP9P10", DDL=("DY", "DY")),
+    LIAISON_UNIF=_F(GROUP_NO="LP9P10", DDL=("DY",)),
 )
 
 #
@@ -556,7 +556,7 @@ CH3B = AFFE_CHAR_MECA(
         _F(GROUP_NO="LP1P8S", DX=0.0),
         _F(GROUP_NO="LP1P8S", DY=0.0),
     ),
-    LIAISON_UNIF=_F(GROUP_NO="LP9P10", DDL=("DY", "DY")),
+    LIAISON_UNIF=_F(GROUP_NO="LP9P10", DDL=("DY",)),
 )
 
 #

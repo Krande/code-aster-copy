@@ -276,7 +276,9 @@ AFFE_CHAR_MECA_F = OPER(
         GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
         SANS_GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
         SANS_GROUP_NO=SIMP(statut="f", typ=grno, validators=NoRepeat(), max="**"),
-        DDL=SIMP(statut="o", typ="TXM", into=C_NOM_DDL_INTO("MECANIQUE"), max="**"),
+        DDL=SIMP(
+            statut="o", typ="TXM", into=C_NOM_DDL_INTO("MECANIQUE"), max="**", validators=NoRepeat()
+        ),
     ),
     FORCE_NODALE=FACT(
         statut="f",

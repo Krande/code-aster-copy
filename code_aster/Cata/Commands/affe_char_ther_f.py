@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -210,7 +210,14 @@ AFFE_CHAR_THER_F = OPER(
         regles=(UN_PARMI("GROUP_NO", "GROUP_MA"),),
         GROUP_NO=SIMP(statut="f", typ=grno, validators=NoRepeat(), max="**"),
         GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
-        DDL=SIMP(statut="f", typ="TXM", defaut="TEMP", into=C_NOM_DDL_INTO("THERMIQUE"), max="**"),
+        DDL=SIMP(
+            statut="f",
+            typ="TXM",
+            defaut="TEMP",
+            into=C_NOM_DDL_INTO("THERMIQUE"),
+            max="**",
+            validators=NoRepeat(),
+        ),
     ),
     CONVECTION=FACT(statut="f", VITESSE=SIMP(statut="o", typ=cham_no_sdaster)),
     INFO=SIMP(statut="f", typ="I", defaut=1, into=(1, 2)),

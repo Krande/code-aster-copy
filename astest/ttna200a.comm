@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -299,9 +299,9 @@ CHTH1 = AFFE_CHAR_THER(
     ),
     TEMP_IMPO=_F(GROUP_NO=("N129", "N130"), TEMP=1.8),
     LIAISON_UNIF=(
-        _F(GROUP_MA="M60", DDL=("TEMP", "TEMP", "TEMP", "TEMP")),
+        _F(GROUP_MA="M60", DDL=("TEMP",)),
         _F(GROUP_MA="GMA22", DDL="TEMP"),
-        _F(GROUP_NO=("N19", "N163"), DDL=("TEMP", "TEMP")),
+        _F(GROUP_NO=("N19", "N163"), DDL=("TEMP")),
         _F(GROUP_NO="GNO1", DDL="TEMP"),
     ),
     SOURCE=(_F(SOUR_CALCULEE=CHELEM1), _F(GROUP_MA="M66", SOUR=0.3), _F(GROUP_MA="GMA8", SOUR=0.2)),

@@ -62,6 +62,6 @@ AFFE_CHAR_ACOU = OPER(
         regles=(UN_PARMI("GROUP_NO", "GROUP_MA"),),
         GROUP_NO=SIMP(statut="f", typ=grno, validators=NoRepeat(), max="**"),
         GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
-        DDL=SIMP(statut="o", typ="TXM", max="**"),
+        DDL=SIMP(statut="o", typ="TXM", max=1, into=("PRES",)),
     ),
 )
