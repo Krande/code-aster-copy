@@ -23,7 +23,6 @@
 
 #include "Supervis/CommandSyntax.h"
 
-#include "Python.h"
 #include "aster.h"
 #include "shared_vars.h"
 

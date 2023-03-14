@@ -24,7 +24,6 @@
  * person_in_charge: mathieu.courtois@edf.fr
  */
 
-#include "Python.h"
 #include "aster.h"
 
 #include "Utilities/CapyConvertibleValue.h"

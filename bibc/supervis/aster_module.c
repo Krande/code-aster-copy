@@ -20,7 +20,6 @@
 /* ------------------------------------------------------------------ */
 #include "aster_module.h"
 
-#include "Python.h"
 #include "aster.h"
 #include "aster_core_module.h"
 #include "aster_exceptions.h"

@@ -26,7 +26,6 @@
 
 /* person_in_charge: nicolas.sellenet at edf.fr */
 
-#include "Python.h"
 #include "astercxx.h"
 
 #include "DataFields/FieldBuilder.h"
@@ -158,7 +157,7 @@ class Result : public DataStructure, public ListOfTables {
     /**
      * @brief Constructeur
      */
-    Result( const std::string &resuTyp ) : Result( ResultNaming::getNewResultName(), resuTyp ){};
+    Result( const std::string &resuTyp ) : Result( ResultNaming::getNewResultName(), resuTyp ) {};
 
     /**
      * @brief Constructeur
@@ -177,7 +176,7 @@ class Result : public DataStructure, public ListOfTables {
           _rs16( JeveuxVectorChar16( getName() + ".RS16" ) ),
           _rs24( JeveuxVectorChar24( getName() + ".RS24" ) ),
           _mesh( nullptr ),
-          _fieldBuidler( FieldBuilder() ){};
+          _fieldBuidler( FieldBuilder() ) {};
 
     /**
      * @brief Add a FiniteElementDescriptor to elementary matrix

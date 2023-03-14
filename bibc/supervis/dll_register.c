@@ -1,5 +1,5 @@
 /* -------------------------------------------------------------------- */
-/* Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org             */
+/* Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org             */
 /* This file is part of code_aster.                                     */
 /*                                                                      */
 /* code_aster is free software: you can redistribute it and/or modify   */
@@ -16,11 +16,9 @@
 /* along with code_aster.  If not, see <http://www.gnu.org/licenses/>.  */
 /* -------------------------------------------------------------------- */
 
-#include "Python.h"
-
 /* *********************************************************************
  *
- *  Define functions to store in a dictionnary the pointers on libraries
+ *  Define functions to store in a dictionary the pointers on libraries
  *  and on symbols.
  *      dll_dict = {
  *          (libname, symbname ) : (handle_on_lib, function_pointer)
@@ -28,8 +26,9 @@
  *
  * *********************************************************************/
 
-#include "aster.h"
 #include "dll_register.h"
+
+#include "aster.h"
 
 /*
  *   PUBLIC FUNCTIONS

@@ -1,5 +1,5 @@
 /* -------------------------------------------------------------------- */
-/* Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org             */
+/* Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org             */
 /* This file is part of code_aster.                                     */
 /*                                                                      */
 /* code_aster is free software: you can redistribute it and/or modify   */
@@ -31,16 +31,6 @@
  *
  * etc...
  */
-
-/* NOTE:
- *  Since Python may define some pre-processor definitions which affect the
- *  standard headers on some systems, you must include "Python.h" before any
- *  standard headers are included.
- *  The warning on _POSIX_C_SOURCE redefinition must not occur.
- *
- *  source: http://docs.python.org/c-api/intro.html
- */
-#include "Python.h"
 
 #include "aster.h"
 #include "aster_core_module.h"

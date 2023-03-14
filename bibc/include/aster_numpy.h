@@ -25,6 +25,7 @@
 
 #define PY_ARRAY_UNIQUE_SYMBOL CODEASTER_ARRAY_API
 
+#define PY_SSIZE_T_CLEAN
 #include "Python.h"
 
 #include <numpy/numpyconfig.h>
