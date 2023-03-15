@@ -67,6 +67,8 @@ minimal_build:
 check_source:
   stage: test
   needs: ["prepare", "compile"]
+  rules:
+    - if: $CI_COMMIT_BRANCH != $CI_DEFAULT_BRANCH
   script:
     - singularity exec --bind $(pwd) --pwd $(pwd) ${SIF} .gitlabci/check_source.sh
 
