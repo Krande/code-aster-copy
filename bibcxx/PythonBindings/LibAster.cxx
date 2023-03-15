@@ -97,6 +97,7 @@
 #include "PythonBindings/GenericFunctionInterface.h"
 #include "PythonBindings/GridInterface.h"
 #include "PythonBindings/HHOInterface.h"
+#include "PythonBindings/IncompleteMeshInterface.h"
 #include "PythonBindings/InterspectralMatrixInterface.h"
 #include "PythonBindings/LinearSolverInterface.h"
 #include "PythonBindings/ListOfFloatsInterface.h"
@@ -306,4 +307,5 @@ PYBIND11_MODULE( libaster, mod ) {
     exportCommGraphToPython( mod );
     exportObjectBalancerToPython( mod );
     exportMeshBalancerToPython( mod );
+    exportIncompleteMeshToPython( mod );
 };

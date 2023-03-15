@@ -354,6 +354,12 @@ class BaseMesh : public DataStructure, public ListOfTables {
     virtual bool isParallel() const { return false; };
 
     /**
+     * @brief Fonction permettant de savoir si un maillage est complet
+     * @return retourne true si le maillage est complet
+     */
+    virtual bool isIncomplete() const { return false; };
+
+    /**
      * @brief Fonction permettant de savoir si un maillage est partiel
      * @return retourne true si le maillage est partiel
      */

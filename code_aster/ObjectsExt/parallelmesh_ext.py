@@ -27,7 +27,7 @@ import os.path as osp
 
 from ..Commands import CREA_MAILLAGE
 from ..Messages import UTMESS
-from ..Objects import ConnectionMesh, Mesh, ParallelMesh, PythonBool, ResultNaming
+from ..Objects import ConnectionMesh, Mesh, ParallelMesh, PythonBool, ResultNaming, IncompleteMesh
 from ..Objects.Serialization import InternalStateBuilder
 from ..Utilities import MPI, ExecutionParameter, Options, injector, shared_tmpdir, force_list
 from ..Utilities.MedUtils.MEDPartitioner import MEDPartitioner
@@ -308,3 +308,20 @@ class ExtendedParallelMesh:
 @injector(ConnectionMesh)
 class ExtendedConnectionMesh:
     cata_sdj = "SD.sd_maillage.sd_connection_mesh"
+
+
+@injector(IncompleteMesh)
+class ExtendedIncompleteMesh:
+    cata_sdj = "SD.sd_maillage.sd_maillage"
+
+    def readMedFile(self, filename, meshname=None, verbose=1):
+        """Read a MED file containing a mesh.
+
+        Arguments:
+            filename (string): name of the MED file
+            meshname (str): Name of the mesh to be read from file.
+            verbose (int) : 0 - warnings
+                            1 - informations about main steps
+                            2 - informations about all steps
+        """
+        mesh_builder.buildFromMedFile(self, filename, meshname, verbose)

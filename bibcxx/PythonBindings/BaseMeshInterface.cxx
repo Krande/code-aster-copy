@@ -61,6 +61,12 @@ Return the coordinates of the mesh.
 Returns:
     MeshCoordinatesField: Field of the coordinates.
         )" )
+        .def( "isIncomplete", &BaseMesh::isIncomplete, R"(
+Tell if the mesh is complete on parallel instances.
+
+Returns:
+    bool: *False* for a centralized or parallel mesh, *True* for an incomplete mesh.
+        )" )
         .def( "isParallel", &BaseMesh::isParallel, R"(
 Tell if the mesh is distributed on parallel instances.
 
