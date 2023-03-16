@@ -29,7 +29,6 @@ subroutine nmctce(model, mesh, ds_contact, sddyna, sddisc, &
 #include "asterfort/cfdisi.h"
 #include "asterfort/cfdisl.h"
 #include "asterfort/mmchml.h"
-#include "asterfort/xmcart.h"
 !
     character(len=8), intent(in) :: model
     character(len=8), intent(in) :: mesh
@@ -56,22 +55,16 @@ subroutine nmctce(model, mesh, ds_contact, sddyna, sddisc, &
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: cont_form
-    aster_logical :: l_cont_xfem_gg
 !
 ! --------------------------------------------------------------------------------------------------
 !
     cont_form = cfdisi(ds_contact%sdcont_defi, 'FORMULATION')
-    l_cont_xfem_gg = cfdisl(ds_contact%sdcont_defi, 'CONT_XFEM_GG')
 !
 ! - Create input fields for contact
 !
     if (cont_form .eq. 2 .or. cont_form .eq. 5) then
         call mmchml(mesh, ds_contact, sddisc, sddyna, nume_inst)
-    elseif (cont_form .eq. 3) then
-        if (l_cont_xfem_gg) then
-            call xmcart(mesh, model, ds_contact)
-        end if
-    else
+    elseif (cont_form .ne. 3) then
         ASSERT(.false.)
     end if
 !

@@ -61,7 +61,7 @@ subroutine nmrenu(modelz, list_func_acti, list_load, &
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: ifm, niv
-    aster_logical :: l_cont, l_cont_cont, l_cont_xfem, l_cont_elem, l_cont_xfem_gg
+    aster_logical :: l_cont, l_cont_cont, l_cont_xfem, l_cont_elem
     character(len=24) :: sd_iden_rela
 !
 ! --------------------------------------------------------------------------------------------------
@@ -89,12 +89,7 @@ subroutine nmrenu(modelz, list_func_acti, list_load, &
 ! ----- Numbering to change ?
         if (l_cont_elem) then
             if (l_cont_xfem) then
-                l_cont_xfem_gg = cfdisl(ds_contact%sdcont_defi, 'CONT_XFEM_GG')
-                if (l_cont_xfem_gg) then
-                    l_renumber = ASTER_TRUE
-                else
-                    l_renumber = ASTER_FALSE
-                end if
+                l_renumber = ASTER_FALSE
             else
                 l_renumber = ds_contact%l_renumber
                 ds_contact%l_renumber = ASTER_FALSE

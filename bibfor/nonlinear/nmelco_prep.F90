@@ -93,7 +93,7 @@ subroutine nmelco_prep(calc_type, &
     character(len=19) :: pinter, ainter, cface, faclon, baseco
     character(len=19) :: xdonco, xindco, xseuco, xcohes, basefo
     character(len=19) :: fisco
-    aster_logical :: l_cont_cont, l_cont_xfem, l_cont_xfem_gg, l_cont_lac, l_xfem_czm
+    aster_logical :: l_cont_cont, l_cont_xfem, l_cont_lac, l_xfem_czm
     integer, pointer :: v_model_xfemcont(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
@@ -131,7 +131,6 @@ subroutine nmelco_prep(calc_type, &
     l_cont_cont = cfdisl(ds_contact%sdcont_defi, 'FORMUL_CONTINUE')
     l_cont_xfem = cfdisl(ds_contact%sdcont_defi, 'FORMUL_XFEM')
     l_cont_lac = cfdisl(ds_contact%sdcont_defi, 'FORMUL_LAC')
-    l_cont_xfem_gg = cfdisl(ds_contact%sdcont_defi, 'CONT_XFEM_GG')
     l_xfem_czm = cfdisl(ds_contact%sdcont_defi, 'EXIS_XFEM_CZM')
 !
 ! - Select option
@@ -187,18 +186,6 @@ subroutine nmelco_prep(calc_type, &
         hea_fa = model(1:8)//'.TOPONO.HFA'
         basefo = model(1:8)//'.BASLOC'
         fisco = model(1:8)//'.FISSCO'
-        if (l_cont_xfem_gg) then
-            cpoint = ds_contact%sdcont_solv(1:14)//'.XFPO'
-            stano = ds_contact%sdcont_solv(1:14)//'.XFST'
-            cpinte = ds_contact%sdcont_solv(1:14)//'.XFPI'
-            cainte = ds_contact%sdcont_solv(1:14)//'.XFAI'
-            ccface = ds_contact%sdcont_solv(1:14)//'.XFCF'
-            heavno = ds_contact%sdcont_solv(1:14)//'.XFPL'
-            hea_fa = ds_contact%sdcont_solv(1:14)//'.XFHF'
-            hea_no = ds_contact%sdcont_solv(1:14)//'.XFHN'
-            basefo = ds_contact%sdcont_solv(1:14)//'.XFBS'
-            lnno = ds_contact%sdcont_solv(1:14)//'.XFLN'
-        end if
     end if
 !
 ! - Special input fields for LAC
@@ -267,17 +254,10 @@ subroutine nmelco_prep(calc_type, &
     lchin(28) = hea_fa
     lpain(29) = 'PSNO'
     lchin(29) = sdappa_psno
-    if (l_cont_xfem .and. l_cont_xfem_gg) then
-        lpain(15) = 'PLSNGG'
-        lchin(15) = lnno
-        lpain(30) = 'PBASLOC'
-        lchin(30) = basefo
-    else
-        lpain(15) = 'PLSN'
-        lchin(15) = lnno
-        lpain(30) = 'PBASLOR'
-        lchin(30) = basefo
-    end if
+    lpain(15) = 'PLSN'
+    lchin(15) = lnno
+    lpain(30) = 'PBASLOR'
+    lchin(30) = basefo
     lpain(31) = 'PINSTMR'
     lchin(31) = time_prev
     lpain(32) = 'PINSTPR'

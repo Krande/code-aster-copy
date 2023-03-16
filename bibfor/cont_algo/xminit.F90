@@ -27,12 +27,9 @@ subroutine xminit(mesh, model, ds_contact, nume_inst, ds_measure, &
 #include "asterfort/assert.h"
 #include "asterfort/cfdisl.h"
 #include "asterfort/copisd.h"
-#include "asterfort/xmiszl.h"
 #include "asterfort/ndynlo.h"
 #include "asterfort/nmchex.h"
-#include "asterfort/xmapin.h"
 #include "asterfort/xmelem.h"
-#include "asterfort/xoptin.h"
 #include "asterfort/mmbouc.h"
 !
 ! person_in_charge: mickael.abbas at edf.fr
@@ -65,7 +62,7 @@ subroutine xminit(mesh, model, ds_contact, nume_inst, ds_measure, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    aster_logical :: l_dyna, l_cont_xfem_gg, l_step_first
+    aster_logical :: l_dyna, l_step_first
     character(len=19) :: sdcont_depgeo, sdcont_deplam
     character(len=19) :: disp_prev
     character(len=19) :: xseuco, xseucp
@@ -74,7 +71,6 @@ subroutine xminit(mesh, model, ds_contact, nume_inst, ds_measure, &
 ! --------------------------------------------------------------------------------------------------
 !
     l_dyna = ndynlo(sddyna, 'DYNAMIQUE')
-    l_cont_xfem_gg = cfdisl(ds_contact%sdcont_defi, 'CONT_XFEM_GG')
     ASSERT(.not. l_dyna)
 !
 ! - Using *_INIT options (like SEUIL_INIT)
@@ -84,12 +80,6 @@ subroutine xminit(mesh, model, ds_contact, nume_inst, ds_measure, &
 ! - Get field names in hat-variables
 !
     call nmchex(hat_valinc, 'VALINC', 'DEPMOI', disp_prev)
-!
-! - Lagrangians initialized (LAMBDA TOTAUX)
-!
-    if (l_cont_xfem_gg) then
-        call xmiszl(disp_prev, ds_contact, mesh)
-    end if
 !
 ! - Management of status for time cut
 !
@@ -123,18 +113,6 @@ subroutine xminit(mesh, model, ds_contact, nume_inst, ds_measure, &
 ! - First geometric loop counter
 !
     call mmbouc(ds_contact, 'Geom', 'Incr_Counter')
-!
-! - Initial pairing
-!
-    if (l_cont_xfem_gg) then
-        call xmapin(mesh, model, ds_contact, ds_measure)
-    end if
-!
-! - Initial options
-!
-    if (l_cont_xfem_gg .and. l_step_first) then
-        call xoptin(mesh, model, ds_contact)
-    end if
 !
 ! - Create fields
 !

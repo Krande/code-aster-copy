@@ -24,7 +24,6 @@ subroutine dfc_read_xfem(sdcont, keywf, mesh, model, model_ndim, &
 #include "asterf_types.h"
 #include "asterfort/cfdisl.h"
 #include "asterfort/limacx.h"
-#include "asterfort/xmacon.h"
 #include "asterfort/xconta.h"
 #include "asterfort/xfem_rel_lin.h"
 !
@@ -54,23 +53,15 @@ subroutine dfc_read_xfem(sdcont, keywf, mesh, model, model_ndim, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    aster_logical :: l_cont_xfem_gg
     character(len=24) :: sdcont_defi
 !
 ! --------------------------------------------------------------------------------------------------
 !
     sdcont_defi = sdcont(1:8)//'.CONTACT'
-    l_cont_xfem_gg = cfdisl(sdcont_defi, 'CONT_XFEM_GG')
 !
 ! - Read cracks
 !
     call limacx(sdcont, keywf, model_ndim, nb_cont_zone)
-!
-! - Create/modify contact datastructure
-!
-    if (l_cont_xfem_gg) then
-        call xmacon(sdcont, mesh, model)
-    end if
 !
 ! - Prepare informations for linear relations for LBB condition
 !

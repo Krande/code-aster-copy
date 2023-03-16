@@ -36,7 +36,6 @@ subroutine nmctcc(mesh, model_, ds_material, nume_inst, &
 #include "asterfort/nmcrel.h"
 #include "asterfort/utmess.h"
 #include "asterfort/xmmbca.h"
-#include "asterfort/xmtbca.h"
 #include "asterfort/nmchex.h"
 !
     character(len=8), intent(in) :: mesh
@@ -76,7 +75,7 @@ subroutine nmctcc(mesh, model_, ds_material, nume_inst, &
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: ifm, niv
-    aster_logical :: l_cont_xfem_gg, l_cont_cont, l_cont_xfem, l_frot, l_erro_cont
+    aster_logical :: l_cont_cont, l_cont_xfem, l_frot, l_erro_cont
     integer :: nb_cont_poin, iter_cont_mult, iter_cont_maxi
     integer :: loop_cont_count
     character(len=8) :: model
@@ -105,7 +104,6 @@ subroutine nmctcc(mesh, model_, ds_material, nume_inst, &
     l_cont_cont = cfdisl(ds_contact%sdcont_defi, 'FORMUL_CONTINUE')
     l_cont_xfem = cfdisl(ds_contact%sdcont_defi, 'FORMUL_XFEM')
     l_frot = cfdisl(ds_contact%sdcont_defi, 'FROTTEMENT')
-    l_cont_xfem_gg = cfdisl(ds_contact%sdcont_defi, 'CONT_XFEM_GG')
     nb_cont_poin = cfdisi(ds_contact%sdcont_defi, 'NTPC')
     iter_cont_mult = cfdisi(ds_contact%sdcont_defi, 'ITER_CONT_MULT')
 !
@@ -117,7 +115,7 @@ subroutine nmctcc(mesh, model_, ds_material, nume_inst, &
 ! - Compute convergence criterion
 !
     !on laisse ITER_CONT_MULT pour XFEM
-    if (l_cont_xfem .or. l_cont_xfem_gg) then
+    if (l_cont_xfem) then
         if (iter_cont_mult .eq. -1) then
             iter_cont_maxi = cfdisi(ds_contact%sdcont_defi, 'ITER_CONT_MAXI')
         else
@@ -131,12 +129,8 @@ subroutine nmctcc(mesh, model_, ds_material, nume_inst, &
 !
     call mmbouc(ds_contact, 'Cont', 'Set_Vale', loop_vale_=loop_cont_vale)
     if (l_cont_xfem) then
-        if (l_cont_xfem_gg) then
-            call xmtbca(mesh, hval_incr, ds_material, ds_contact)
-        else
-            call xmmbca(mesh, model, ds_material, hval_incr, ds_contact, ds_constitutive, &
-                        list_func_acti)
-        end if
+        call xmmbca(mesh, model, ds_material, hval_incr, ds_contact, ds_constitutive, &
+                    list_func_acti)
     else if (l_cont_cont) then
         call mmstat(mesh, iter_newt, nume_inst, &
                     sddisc, disp_curr, disp_cumu_inst, ds_contact)

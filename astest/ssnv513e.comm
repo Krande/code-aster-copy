@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -61,8 +61,6 @@ MODELEK = MODI_MODELE_XFEM(
 CTXFEM = DEFI_CONTACT(
     MODELE=MODELEK,
     FORMULATION="XFEM",
-    REAC_GEOM="CONTROLE",
-    NB_ITER_GEOM=1,
     ELIM_ARETE="ELIM",
     ZONE=(
         _F(INTEGRATION="NOEUD", CONTACT_INIT="OUI", GLISSIERE="NON", FISS_MAIT=FISS1),

@@ -87,7 +87,7 @@ subroutine nmelcv(mesh, model, &
     character(len=1) :: base
     character(len=19) :: ligrel
     character(len=16) :: option
-    aster_logical :: l_cont_cont, l_cont_xfem, l_cont_xfem_gg, l_cont_lac
+    aster_logical :: l_cont_cont, l_cont_xfem, l_cont_lac
     aster_logical :: l_all_verif
 !
 ! --------------------------------------------------------------------------------------------------
@@ -104,7 +104,6 @@ subroutine nmelcv(mesh, model, &
     l_cont_cont = cfdisl(ds_contact%sdcont_defi, 'FORMUL_CONTINUE')
     l_cont_xfem = cfdisl(ds_contact%sdcont_defi, 'FORMUL_XFEM')
     l_cont_lac = cfdisl(ds_contact%sdcont_defi, 'FORMUL_LAC')
-    l_cont_xfem_gg = cfdisl(ds_contact%sdcont_defi, 'CONT_XFEM_GG')
     l_all_verif = cfdisl(ds_contact%sdcont_defi, 'ALL_VERIF')
 !
 ! --- TYPE DE CONTACT

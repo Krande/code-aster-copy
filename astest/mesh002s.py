@@ -116,8 +116,8 @@ for mesh_file in meshes:
     MPI.ASTER_COMM_WORLD.Barrier()
 
 
-list_nb_mesh = {2: 521, 3: 492, 4: 487}
-list_nb_mesh_conv = {2: 519, 3: 487, 4: 486}
+list_nb_mesh = {2: 521, 3: 486, 4: 486}
+list_nb_mesh_conv = {2: 519, 3: 481, 4: 485}
 list_nb_conv_error = {2: 22, 3: 9, 4: 13}
 
 print("Number of mesh: %s" % (nb_mesh), flush=True)

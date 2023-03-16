@@ -73,8 +73,6 @@ function cfdisl(sdcont_defi_, question_)
         cfdisl = cfdisi(sdcont_defi, 'COEF_ADAPT') .eq. 1
     else if (question .eq. 'CONT_DISC_GLIS') then
         cfdisl = mminfl(sdcont_defi, 'GLISSIERE_ZONE')
-    else if (question .eq. 'CONT_XFEM_GG') then
-        cfdisl = cfdisi(sdcont_defi, 'CONT_XFEM_GG') .eq. 1
     else if (question .eq. 'EXIS_XFEM_CZM') then
         cfdisl = cfdisi(sdcont_defi, 'EXIS_XFEM_CZM') .eq. 1
     else if (question .eq. 'EXIS_PENA') then

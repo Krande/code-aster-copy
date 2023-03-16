@@ -131,18 +131,7 @@ DEFI_CONTACT = OPER(
     b_bouc_geom_xfem=BLOC(
         condition="""equal_to("FORMULATION", 'XFEM') """,
         ALGO_RESO_GEOM=SIMP(statut="f", typ="TXM", into=("POINT_FIXE",), defaut="POINT_FIXE"),
-        REAC_GEOM=SIMP(
-            statut="f", typ="TXM", into=("AUTOMATIQUE", "CONTROLE", "SANS"), defaut="SANS"
-        ),
-        b_automatique=BLOC(
-            condition="""equal_to("REAC_GEOM", 'AUTOMATIQUE') """,
-            ITER_GEOM_MAXI=SIMP(statut="f", typ="I", defaut=10),
-            RESI_GEOM=SIMP(statut="f", typ="R", defaut=0.0001),
-        ),
-        b_controle=BLOC(
-            condition="""equal_to("REAC_GEOM", 'CONTROLE') """,
-            NB_ITER_GEOM=SIMP(statut="f", typ="I", defaut=2),
-        ),
+        REAC_GEOM=SIMP(statut="f", typ="TXM", into=("SANS",), defaut="SANS"),
     ),
     # PARAMETRE GENERAL : BOUCLE DE CONTACT
     b_bouc_cont_disc=BLOC(

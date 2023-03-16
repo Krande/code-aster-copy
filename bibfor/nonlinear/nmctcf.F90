@@ -66,7 +66,7 @@ subroutine nmctcf(mesh, model, sderro, hval_incr, ds_print, ds_contact)
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: ifm, niv
-    aster_logical :: l_cont_cont, l_cont_xfem, l_cont_xfem_gg
+    aster_logical :: l_cont_cont, l_cont_xfem
     aster_logical :: loop_fric_error
     integer :: iter_fric_maxi
     integer :: loop_fric_count
@@ -96,7 +96,6 @@ subroutine nmctcf(mesh, model, sderro, hval_incr, ds_print, ds_contact)
 ! - Get contact parameters
 !
     l_cont_cont = cfdisl(ds_contact%sdcont_defi, 'FORMUL_CONTINUE')
-    l_cont_xfem_gg = cfdisl(ds_contact%sdcont_defi, 'CONT_XFEM_GG')
     l_cont_xfem = cfdisl(ds_contact%sdcont_defi, 'FORMUL_XFEM')
 !
 ! - Get friction loop parameters
@@ -107,9 +106,7 @@ subroutine nmctcf(mesh, model, sderro, hval_incr, ds_print, ds_contact)
 ! - Update triggers
 !
     if (l_cont_xfem) then
-        if (.not. l_cont_xfem_gg) then
-            call xreacl(mesh, model, hval_incr, ds_contact)
-        end if
+        call xreacl(mesh, model, hval_incr, ds_contact)
     else if (l_cont_cont) then
         call mmreas(mesh, ds_contact, hval_incr)
     else

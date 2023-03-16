@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -297,15 +297,6 @@ Le calcul de la norme L2 de la pression de contact sur une fissure XFEM n'est pa
     37: _(
         """
      Nombre de level-sets réajustées : %(i1)d
-"""
-    ),
-    38: _(
-        """
-     Si vous êtes en 2D pour l'approche de contact <<Grands glissements avec XFEM>>,
-     seule la formulation aux noeuds sommets est possible si la fissure possède un fond.
-     Vous pouvez activer cette formulation en commentant LINE_QUAD afin que les mailles
-     soient de type QUAD4 ou TRIA3.
-
 """
     ),
     39: _(
@@ -742,15 +733,6 @@ L'opération ASSE_DEPL de l'opérateur CREA_CHAMP ne prend pas en charge les él
   -> Le mot-clé ALGO_LAGR de DEFI_CONTACT vaut 'VERSION3' et le maillage est composé d'éléments linéaires.
   -> Risque & Conseil:
      Le choix ALGO_LAGR='VERSION3' n'est utilisable qu'avec un maillage composé d'éléments quadratiques.
-"""
-    ),
-    91: _(
-        """
-  -> Le mot-clé ALGO_LAGR de DEFI_CONTACT vaut 'VERSION3' et le maillage est la formulation du contact en
-     grands glissements est utilisée.
-  -> Risque & Conseil:
-     Le choix ALGO_LAGR='VERSION3' n'est utilisable qu'avec la formulation du contact en petits glissements,
-     i.e. REAC_GEOM='SANS".
 """
     ),
     93: _(

@@ -152,13 +152,6 @@ function cfdisi(sdcont_defi_, question_)
     else if (question .eq. 'ALGO_RESO_GEOM') then
         call jeveuo(sdcont_paraci, 'L', vi=v_sdcont_paraci)
         cfdisi = v_sdcont_paraci(9)
-    else if (question .eq. 'CONT_XFEM_GG') then
-        call jeveuo(sdcont_paraci, 'L', vi=v_sdcont_paraci)
-        if ((v_sdcont_paraci(17) .eq. 7) .and. (v_sdcont_paraci(1) .ne. 0)) then
-            cfdisi = 1
-        else
-            cfdisi = 0
-        end if
     else if (question .eq. 'PROJ_NEWT_ITER') then
         cfdisi = 200
     else if (question .eq. 'FLIP_FLOP_IMAX') then

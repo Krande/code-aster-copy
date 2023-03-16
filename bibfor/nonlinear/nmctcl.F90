@@ -28,7 +28,6 @@ subroutine nmctcl(model, mesh, ds_contact)
 #include "asterfort/cfdisi.h"
 #include "asterfort/cfdisl.h"
 #include "asterfort/mmligr.h"
-#include "asterfort/xmligr.h"
 !
     character(len=8), intent(in) :: model
     character(len=8), intent(in) :: mesh
@@ -49,22 +48,16 @@ subroutine nmctcl(model, mesh, ds_contact)
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: cont_form
-    aster_logical :: l_cont_xfem_gg
 !
 ! --------------------------------------------------------------------------------------------------
 !
     cont_form = cfdisi(ds_contact%sdcont_defi, 'FORMULATION')
-    l_cont_xfem_gg = cfdisl(ds_contact%sdcont_defi, 'CONT_XFEM_GG')
 !
 ! - Create elements for contact
 !
     if (cont_form .eq. 2 .or. cont_form .eq. 5) then
         call mmligr(mesh, model, ds_contact)
-    elseif (cont_form .eq. 3) then
-        if (l_cont_xfem_gg) then
-            call xmligr(mesh, model, ds_contact)
-        end if
-    else
+    elseif (cont_form .ne. 3) then
         ASSERT(.false.)
     end if
 !

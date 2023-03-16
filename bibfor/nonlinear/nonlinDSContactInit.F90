@@ -63,7 +63,7 @@ subroutine nonlinDSContactInit(mesh, model, ds_contact)
     character(len=24) :: iden_rela
     aster_logical :: l_cont, l_unil
     aster_logical :: l_form_disc, l_form_cont, l_form_xfem, l_form_lac
-    aster_logical :: l_cont_xfem_gg, l_edge_elim, l_all_verif, l_iden_rela
+    aster_logical :: l_edge_elim, l_all_verif, l_iden_rela
     aster_logical :: l_unil_pena, l_inte_node
     integer :: nt_patch
     integer :: i_exist
@@ -117,7 +117,6 @@ subroutine nonlinDSContactInit(mesh, model, ds_contact)
         l_unil = cont_form .eq. 4
         l_form_lac = cont_form .eq. 5
         l_cont = cont_form .ne. 4
-        l_cont_xfem_gg = cfdisl(ds_contact%sdcont_defi, 'CONT_XFEM_GG')
         l_edge_elim = cfdisl(ds_contact%sdcont_defi, 'ELIM_ARETE')
         l_all_verif = cfdisl(ds_contact%sdcont_defi, 'ALL_VERIF')
         l_inte_node = cfdisl(ds_contact%sdcont_defi, 'ALL_INTEG_NOEUD')
@@ -193,27 +192,8 @@ subroutine nonlinDSContactInit(mesh, model, ds_contact)
                     ds_contact%ligrel_dof_rela = sdcont
                 end if
             end if
-            if (l_cont_xfem_gg) then
-                ds_contact%ligrel_elem_cont = model(1:8)//'.MODELE'
-            end if
             ds_contact%l_elem_cont = ASTER_FALSE
             ds_contact%ligrel_elem_cont = model(1:8)//'.MODELE'
-        end if
-!
-! ----- Special for xfem contact (large sliding)
-!
-        if (l_cont_xfem_gg) then
-            ds_contact%l_elem_cont = ASTER_TRUE
-            ds_contact%ligrel_elem_cont = '&&LIGRXF.CHME.LIGRE'
-            call wkvect(ds_contact%ligrel_elem_cont(1:8)//'.TYPE', 'V V K8', 1, vk8=v_load_type)
-            v_load_type(1) = 'ME'
-            if (ds_contact%l_dof_rela) then
-                ds_contact%ligrel_elem_slav = sdcont
-                ds_contact%l_elem_slav = ASTER_FALSE
-            else
-                ds_contact%ligrel_elem_slav = sdcont
-                ds_contact%l_elem_slav = ASTER_TRUE
-            end if
         end if
 !
 ! ----- Special for LAC contact

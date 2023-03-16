@@ -48,7 +48,6 @@ subroutine surfc3(sdcont, mesh, unit_msg)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    aster_logical :: l_cont_xfem_gg
     integer :: nb_cont_zone
     integer :: i_zone, statut
     character(len=24) :: sdcont_defi
@@ -79,7 +78,6 @@ subroutine surfc3(sdcont, mesh, unit_msg)
 ! - Parameters
 !
     nb_cont_zone = cfdisi(sdcont_defi, 'NZOCO')
-    l_cont_xfem_gg = cfdisl(sdcont_defi, 'CONT_XFEM_GG')
     nt_elem_slav = cfdisi(sdcont_defi, 'NTMAE')
 !
 ! - User print
@@ -117,40 +115,6 @@ subroutine surfc3(sdcont, mesh, unit_msg)
         write (unit_msg, 171) 'GLISSIERE       ', v_sdcont_caraxf(zcmxf*(i_zone-1)+10)
     end do
 !
-! - Slave elements
-!
-    if (l_cont_xfem_gg) then
-        call jeveuo(sdcont_maescx, 'L', vi=v_sdcont_maescx)
-        write (unit_msg, *) '<CONTACT> ... INFORMATIONS SUR MAILLES ESCLAVES'
-        do i_zone = 1, nb_cont_zone
-            zone_name = v_sdcont_xfimai(i_zone)
-            write (unit_msg, *) '<CONTACT> ...... ZONE : ', i_zone
-            write (unit_msg, 110) zone_name
-            do i_elem_slav = 1, nt_elem_slav
-                elem_slav_nume = v_sdcont_maescx(zmesx*(i_elem_slav-1)+1)
-                call jenuno(jexnum(mesh(1:8)//'.NOMMAI', elem_slav_nume), elem_slav_name)
-                write (unit_msg, 180) elem_slav_name
-                write (unit_msg, 170) 'ZONE            ', v_sdcont_maescx(zmesx*(i_elem_slav-1)+2)
-                write (unit_msg, 170) 'NB. PTS. INT.   ', v_sdcont_maescx(zmesx*(i_elem_slav-1)+3)
-                statut = v_sdcont_maescx(zmesx*(i_elem_slav-1)+4)
-                if (statut .eq. 0) then
-                    write (unit_msg, 104) 'PAS DE FOND. FISS.'
-                else if (statut .eq. 1) then
-                    write (unit_msg, 104) 'HEAVISIDE'
-                else if (statut .eq. -2) then
-                    write (unit_msg, 104) 'CRACK-TIP'
-                else if (statut .eq. 3) then
-                    write (unit_msg, 104) 'HEAVISIDE + CRACK-TIP'
-                else
-                    write (unit_msg, 170) 'STATUT          ', statut
-                end if
-            end do
-        end do
-    end if
-!
-104 format(' <CONTACT> ...... ', a25)
-170 format(' <CONTACT> ...... PARAM. : ', a16, ' - VAL. : ', i5)
 171 format(' <CONTACT> ...... PARAM. : ', a16, ' - VAL. : ', e12.5)
-180 format(' <CONTACT> ... MAILLE : ', a8)
 !
 end subroutine
