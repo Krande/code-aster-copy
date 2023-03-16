@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -520,6 +520,15 @@ La fréquence fournie %(k1)s n'appartient pas à la liste des fréquences initia
     78: _(
         """
 Le déplacement maximal %(r1)f souhaité est trop élevé ou trop petit. Le déplacement spectral à la fréquence %(r2)f vaut %(r3)f. On ne peut pas prolonger.
+"""
+    ),
+    80: _(
+        """
+La fonction %(k1)s n'a pas les bons paramètres d'accès. C'est soit :
+   - INST et EPAIS       : Instant et l'épaisseur de la coque/plaque,
+   - INST et EXCENT      : Instant et l'épaisseur de la coque/plaque en tenant compte
+                           de l'excentrement,
+   - INST et X et Y et Z : Instant et coordonnées du centre de gravité de la couche.
 """
     ),
 }

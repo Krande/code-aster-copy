@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,26 +17,28 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-# DANS CE TEST, ON VERIFIE LES DISTRIBUTIONS DE TEMPERATURE CALCULEES PAR
-# LES OPTIONS PREP_VRC1 ET PREP_VRC2
+# DANS CE TEST, ON VÉRIFIE LES DISTRIBUTIONS DE TEMPÉRATURE CALCULÉES PAR
+# L'OPTION PREP_VARC
 #
-# ON IMPOSE UNE TEMPERATURE VARIANT LINEAIREMENT DANS L'EPAISSEUR ENTRE -50. ET +50.
+# ON IMPOSE UNE TEMPÉRATURE VARIANT LINÉAIREMENT DANS L'ÉPAISSEUR
+#       ENTRE -50. ET +50.
 #
-# LA COQUE EST DIVISEE EN 5 COUCHES D'EGALES EPAISSEURS
-# LES ELEMENTS UTILISES (DKT ET COQUE_3D) ONT 3 POINTS D'INTEGRATION DANS L'EPAISSEUR
-# LES POINTS (ET SOUS-POINTS) SONT ORDONNES SELON LA NORMALE SORTANTE.
+# LA COQUE EST DIVISÉE EN 5 COUCHES D'ÉGALES ÉPAISSEURS
+# LES ÉLÉMENTS UTILISÉS (DKT ET COQUE_3D) ONT 3 POINTS D'INTÉGRATION DANS L'ÉPAISSEUR
+# LES POINTS (ET SOUS-POINTS) SONT ORDONNÉS SELON LA NORMALE SORTANTE.
 #
-# SI L'ON S'INTERESSE AU SOUS-POINT 10 (BAS DE LA 4EME COUCHE), ON S'ATTEND
-# A TROUVER UNE TEMPERATURE DE 10.
-# C'EST CE QUE L'ON VERIFIE SUR LES ELEMENTS TESTES.
-#
+# SI L'ON S'INTÉRESSE AU SOUS-POINT 10 (BAS DE LA 4EME COUCHE), ON DOIT
+# TROUVER UNE TEMPÉRATURE DE :
+#       10.0
+#       20.0   lorsque la température dépend du temps 10.0*inst
 # ----------------------------------------------------------------------
-
 
 DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
 
 M = LIRE_MAILLAGE(FORMAT="MED")
 M = DEFI_GROUP(reuse=M, MAILLAGE=M, CREA_GROUP_MA=_F(NOM="TOUT", TOUT="OUI"))
+
+# IMPR_RESU(UNITE=8,FORMAT='ASTER',RESU=_F(MAILLAGE=M,))
 
 MO = AFFE_MODELE(
     MAILLAGE=M,
@@ -46,25 +48,30 @@ MO = AFFE_MODELE(
     ),
 )
 
-CARAC = AFFE_CARA_ELEM(
+# Coques Non Excentrées :
+# -----------------------
+C_Epais = 0.1
+C_Excen = 0.0
+CARAC0 = AFFE_CARA_ELEM(
     MODELE=MO,
-    COQUE=_F(GROUP_MA="TOUT", EPAIS=0.1, A_CIS=100000.0, COQUE_NCOU=5, MODI_METRIQUE="OUI"),
+    COQUE=_F(GROUP_MA="TOUT", EPAIS=C_Epais, COQUE_NCOU=5, EXCENTREMENT=C_Excen, INER_ROTA="OUI"),
 )
 
-
-# Validation de PREP_VRC1 :
-# --------------------------
+# Validation de PREP_VARC avec un CHAMP et une NAPPE
+# --------------------------------------------------
+# La nappe est :
+#   constante en Temps
+#   variable  en Épaisseur
 TEMPZ1 = DEFI_NAPPE(
     NOM_RESU="TEMP",
     NOM_PARA="INST",
-    NOM_PARA_FONC="EPAIS",
     PARA=(0.0, 10.0),
+    NOM_PARA_FONC="EPAIS",
     DEFI_FONCTION=(
-        _F(VALE=(-0.05, -50.0, 0.05, 50.0)),  # PROFIL A T= 0.
-        _F(VALE=(-0.05, -50.0, 0.05, 50.0)),
-    ),  # PROFIL A T=10.
+        _F(VALE=(-C_Epais * 0.5, -50.0, C_Epais * 0.5, 50.0)),  # PROFIL A T= 0.
+        _F(VALE=(-C_Epais * 0.5, -50.0, C_Epais * 0.5, 50.0)),  # PROFIL A T=10.
+    ),
 )
-
 CHTEMF1 = CREA_CHAMP(
     OPERATION="AFFE",
     TYPE_CHAM="CART_TEMP_F",
@@ -72,44 +79,29 @@ CHTEMF1 = CREA_CHAMP(
     AFFE=_F(TOUT="OUI", NOM_CMP="TEMP", VALE_F=TEMPZ1),
 )
 
-
 TEMPER1 = CREA_RESU(
-    OPERATION="PREP_VRC1",
+    OPERATION="PREP_VARC",
     TYPE_RESU="EVOL_THER",
-    PREP_VRC1=_F(MODELE=MO, CARA_ELEM=CARAC, INST=(5.0), CHAM_GD=CHTEMF1),
+    PREP_VARC=_F(MODELE=MO, CARA_ELEM=CARAC0, INST=(0.0, 5.0), CHAM_GD=CHTEMF1),
 )
 
+# fmt: off
 TEST_RESU(
     RESU=(
-        _F(
-            NUME_ORDRE=1,
-            REFERENCE="ANALYTIQUE",
-            POINT=1,
-            SOUS_POINT=10,
-            RESULTAT=TEMPER1,
-            NOM_CHAM="TEMP",
-            NOM_CMP="TEMP",
-            VALE_CALC=10.000000000,
-            VALE_REFE=10.0,
-            GROUP_MA="M2",
+        _F(NUME_ORDRE=1,     REFERENCE="ANALYTIQUE", POINT=1, SOUS_POINT=10,
+           RESULTAT=TEMPER1, NOM_CHAM="TEMP",        NOM_CMP="TEMP",
+           VALE_CALC=10.0,   VALE_REFE=10.0,         GROUP_MA="M2",
         ),
-        _F(
-            NUME_ORDRE=1,
-            REFERENCE="ANALYTIQUE",
-            POINT=1,
-            SOUS_POINT=10,
-            RESULTAT=TEMPER1,
-            NOM_CHAM="TEMP",
-            NOM_CMP="TEMP",
-            VALE_CALC=10.000000000,
-            VALE_REFE=10.0,
-            GROUP_MA="M5",
+        _F(NUME_ORDRE=1,     REFERENCE="ANALYTIQUE", POINT=1, SOUS_POINT=10,
+           RESULTAT=TEMPER1, NOM_CHAM="TEMP",        NOM_CMP="TEMP",
+           VALE_CALC=10.0,   VALE_REFE=10.0,         GROUP_MA="M5",
         ),
     )
 )
+# fmt: on
 
-# Validation de PREP_VRC2 :
-# --------------------------
+# Validation de PREP_VARC avec un EVOL_THER :
+# -------------------------------------------
 TEMP2 = CREA_CHAMP(
     TYPE_CHAM="NOEU_TEMP_R",
     OPERATION="AFFE",
@@ -118,26 +110,133 @@ TEMP2 = CREA_CHAMP(
 )
 
 TEMPLI2 = CREA_RESU(
-    OPERATION="AFFE", TYPE_RESU="EVOL_THER", NOM_CHAM="TEMP", AFFE=(_F(CHAM_GD=TEMP2, INST=0.0))
+    OPERATION="AFFE", TYPE_RESU="EVOL_THER", NOM_CHAM="TEMP", AFFE=(_F(CHAM_GD=TEMP2, INST=0.0),)
 )
 
 TEMPER2 = CREA_RESU(
-    OPERATION="PREP_VRC2",
+    OPERATION="PREP_VARC",
     TYPE_RESU="EVOL_THER",
-    PREP_VRC2=_F(MODELE=MO, CARA_ELEM=CARAC, EVOL_THER=TEMPLI2),
+    PREP_VARC=_F(MODELE=MO, CARA_ELEM=CARAC0, EVOL_THER=TEMPLI2),
+)
+
+# fmt: off
+TEST_RESU(
+    RESU=(
+        _F(NUME_ORDRE=1,     REFERENCE="ANALYTIQUE", POINT=1, SOUS_POINT=10,
+           RESULTAT=TEMPER2, NOM_CHAM="TEMP",        NOM_CMP="TEMP",
+           VALE_CALC=10.0,   VALE_REFE=10.0,         GROUP_MA="M2",
+        ),
+        _F(NUME_ORDRE=1,     REFERENCE="ANALYTIQUE", POINT=1, SOUS_POINT=10,
+           RESULTAT=TEMPER2, NOM_CHAM="TEMP",        NOM_CMP="TEMP",
+           VALE_CALC=10.0,   VALE_REFE=10.0,         GROUP_MA="M5",
+        ),
+    )
+)
+# fmt: on
+
+# Validation de PREP_VARC avec un CHAMP et une FONCTION de (INST EPAIS)
+# ---------------------------------------------------------------------
+def ChampTher(inst, zic, epais, excen):
+    tpinf = -10.0 * inst
+    tpmoy = 0.0 * inst
+    tpsup = 10.0 * inst
+    #
+    cp1 = tpmoy
+    cp2 = (tpsup - tpinf) / epais
+    cp3 = 2.0 * (tpinf + tpsup - 2.0 * tpmoy) / (epais * epais)
+    # La fonction est définie par rapport au milieu de la coque
+    # Si excentrement il faut changer de repère
+    # On a EXCEN = Excen + zic
+    #    zic : c'est le z, on enlève donc Excen pour être dans la coque
+    zzic = zic - excen
+    tpc = cp3 * zzic * zzic + cp2 * zzic + cp1
+    return tpc
+
+
+TEMPZ3 = FORMULE(
+    NOM_PARA=("INST", "EPAIS"),
+    ChampTher=ChampTher,
+    C_Epais=C_Epais,
+    excen=C_Excen,
+    VALE="ChampTher(INST,EPAIS,C_Epais,excen)",
+)
+
+CHTEMF3 = CREA_CHAMP(
+    OPERATION="AFFE",
+    TYPE_CHAM="CART_TEMP_F",
+    MAILLAGE=M,
+    AFFE=_F(TOUT="OUI", NOM_CMP="TEMP", VALE_F=TEMPZ3),
+)
+
+TEMPER3 = CREA_RESU(
+    OPERATION="PREP_VARC",
+    TYPE_RESU="EVOL_THER",
+    PREP_VARC=_F(MODELE=MO, CARA_ELEM=CARAC0, INST=(5.0, 10.0), CHAM_GD=CHTEMF3),
+)
+
+# fmt: off
+TEST_RESU(
+    RESU=(
+        #  Ordre 1 , inst = 5.0
+        _F(NUME_ORDRE=1,     REFERENCE="ANALYTIQUE", POINT=1, SOUS_POINT=10,
+           RESULTAT=TEMPER3, NOM_CHAM="TEMP",        NOM_CMP="TEMP",
+           VALE_CALC=10.0,   VALE_REFE=10.0,         GROUP_MA="M2",
+        ),
+        _F(NUME_ORDRE=1,     REFERENCE="ANALYTIQUE", POINT=1, SOUS_POINT=10,
+           RESULTAT=TEMPER3, NOM_CHAM="TEMP",        NOM_CMP="TEMP",
+           VALE_CALC=10.0,   VALE_REFE=10.0,         GROUP_MA="M5",
+        ),
+        #  Ordre 2 , inst = 10.0
+        _F(NUME_ORDRE=2,     REFERENCE="ANALYTIQUE", POINT=1, SOUS_POINT=10,
+           RESULTAT=TEMPER3, NOM_CHAM="TEMP",        NOM_CMP="TEMP",
+           VALE_CALC=20.0,   VALE_REFE=20.0,         GROUP_MA="M2",
+        ),
+        _F(NUME_ORDRE=2,     REFERENCE="ANALYTIQUE", POINT=1, SOUS_POINT=10,
+           RESULTAT=TEMPER3, NOM_CHAM="TEMP",        NOM_CMP="TEMP",
+           VALE_CALC=20.0,   VALE_REFE=20.0,         GROUP_MA="M5",
+        ),
+    )
+)
+# fmt: on
+
+# Validation de PREP_VARC avec un CHAMP et une FONCTION de (INST EXCEN)
+# ----------------------------------------------------------------------
+#
+# Les coques NE SONT PAS excentrées donc c'est équivalent à EPAIS
+#   EXCEN = Excen + zic
+TEMPZ4 = FORMULE(
+    NOM_PARA=("INST", "EXCENT"),
+    ChampTher=ChampTher,
+    C_Epais=C_Epais,
+    excen=C_Excen,
+    VALE="ChampTher(INST,EXCENT,C_Epais,excen)",
+)
+
+CHTEMF4 = CREA_CHAMP(
+    OPERATION="AFFE",
+    TYPE_CHAM="CART_TEMP_F",
+    MAILLAGE=M,
+    AFFE=_F(TOUT="OUI", NOM_CMP="TEMP", VALE_F=TEMPZ4),
+)
+
+TEMPER4 = CREA_RESU(
+    OPERATION="PREP_VARC",
+    TYPE_RESU="EVOL_THER",
+    PREP_VARC=_F(MODELE=MO, CARA_ELEM=CARAC0, INST=(5.0, 10.0), CHAM_GD=CHTEMF4),
 )
 
 TEST_RESU(
     RESU=(
+        #  Ordre 1 , inst = 5.0
         _F(
             NUME_ORDRE=1,
             REFERENCE="ANALYTIQUE",
             POINT=1,
             SOUS_POINT=10,
-            RESULTAT=TEMPER2,
+            RESULTAT=TEMPER4,
             NOM_CHAM="TEMP",
             NOM_CMP="TEMP",
-            VALE_CALC=10.000000000,
+            VALE_CALC=10.0,
             VALE_REFE=10.0,
             GROUP_MA="M2",
         ),
@@ -146,11 +245,221 @@ TEST_RESU(
             REFERENCE="ANALYTIQUE",
             POINT=1,
             SOUS_POINT=10,
-            RESULTAT=TEMPER2,
+            RESULTAT=TEMPER4,
             NOM_CHAM="TEMP",
             NOM_CMP="TEMP",
-            VALE_CALC=10.000000000,
+            VALE_CALC=10.0,
             VALE_REFE=10.0,
+            GROUP_MA="M5",
+        ),
+        #  Ordre 2 , inst = 10.0
+        _F(
+            NUME_ORDRE=2,
+            REFERENCE="ANALYTIQUE",
+            POINT=1,
+            SOUS_POINT=10,
+            RESULTAT=TEMPER4,
+            NOM_CHAM="TEMP",
+            NOM_CMP="TEMP",
+            VALE_CALC=20.0,
+            VALE_REFE=20.0,
+            GROUP_MA="M2",
+        ),
+        _F(
+            NUME_ORDRE=2,
+            REFERENCE="ANALYTIQUE",
+            POINT=1,
+            SOUS_POINT=10,
+            RESULTAT=TEMPER4,
+            NOM_CHAM="TEMP",
+            NOM_CMP="TEMP",
+            VALE_CALC=20.0,
+            VALE_REFE=20.0,
+            GROUP_MA="M5",
+        ),
+    )
+)
+
+# Validation de PREP_VARC avec un CHAMP et une FONCTION de (INST EXCEN)
+# ----------------------------------------------------------------------
+#
+# Les coques SONT excentrées
+#   EXCEN = Excen + zic
+C_Excen = 0.3
+CARAC5 = AFFE_CARA_ELEM(
+    MODELE=MO,
+    COQUE=_F(GROUP_MA="TOUT", EPAIS=C_Epais, COQUE_NCOU=5, EXCENTREMENT=C_Excen, INER_ROTA="OUI"),
+)
+
+TEMPZ5 = FORMULE(
+    NOM_PARA=("INST", "EXCENT"),
+    ChampTher=ChampTher,
+    C_Epais=C_Epais,
+    excen=C_Excen,
+    VALE="ChampTher(INST,EXCENT,C_Epais,excen)",
+)
+
+CHTEMF5 = CREA_CHAMP(
+    OPERATION="AFFE",
+    TYPE_CHAM="CART_TEMP_F",
+    MAILLAGE=M,
+    AFFE=_F(TOUT="OUI", NOM_CMP="TEMP", VALE_F=TEMPZ5),
+)
+
+TEMPER5 = CREA_RESU(
+    OPERATION="PREP_VARC",
+    TYPE_RESU="EVOL_THER",
+    PREP_VARC=_F(MODELE=MO, CARA_ELEM=CARAC5, INST=(5.0, 10.0), CHAM_GD=CHTEMF5),
+)
+
+TEST_RESU(
+    RESU=(
+        #  Ordre 1 , inst = 5.0
+        _F(
+            NUME_ORDRE=1,
+            REFERENCE="ANALYTIQUE",
+            POINT=1,
+            SOUS_POINT=10,
+            RESULTAT=TEMPER5,
+            NOM_CHAM="TEMP",
+            NOM_CMP="TEMP",
+            VALE_CALC=10.0,
+            VALE_REFE=10.0,
+            GROUP_MA="M2",
+        ),
+        _F(
+            NUME_ORDRE=1,
+            REFERENCE="ANALYTIQUE",
+            POINT=1,
+            SOUS_POINT=10,
+            RESULTAT=TEMPER5,
+            NOM_CHAM="TEMP",
+            NOM_CMP="TEMP",
+            VALE_CALC=10.0,
+            VALE_REFE=10.0,
+            GROUP_MA="M5",
+        ),
+        #  Ordre 2 , inst = 10.0
+        _F(
+            NUME_ORDRE=2,
+            REFERENCE="ANALYTIQUE",
+            POINT=1,
+            SOUS_POINT=10,
+            RESULTAT=TEMPER5,
+            NOM_CHAM="TEMP",
+            NOM_CMP="TEMP",
+            VALE_CALC=20.0,
+            VALE_REFE=20.0,
+            GROUP_MA="M2",
+        ),
+        _F(
+            NUME_ORDRE=2,
+            REFERENCE="ANALYTIQUE",
+            POINT=1,
+            SOUS_POINT=10,
+            RESULTAT=TEMPER5,
+            NOM_CHAM="TEMP",
+            NOM_CMP="TEMP",
+            VALE_CALC=20.0,
+            VALE_REFE=20.0,
+            GROUP_MA="M5",
+        ),
+    )
+)
+
+# Validation de PREP_VARC avec un CHAMP et une FONCTION de (INST X Y Z)
+# ---------------------------------------------------------------------
+#
+# Les coques SONT excentrées
+def ChampTherXYZ(inst, xic, yic, zic, epais, excen):
+    tpinf = 10.0 * inst
+    tpmoy = 0.0 * inst
+    tpsup = -10.0 * inst
+    #
+    cp1 = tpmoy
+    cp2 = (tpsup - tpinf) / epais
+    cp3 = 2.0 * (tpinf + tpsup - 2.0 * tpmoy) / (epais * epais)
+    # La fonction est définie par rapport au milieu de la coque
+    # Si excentrement il faut changer de repère
+    # On a EXCEN = Excen + zic
+    #    zic : c'est le z, on enlève donc Excen pour être dans la coque
+    zzic = zic + excen
+    tpc = cp3 * zzic * zzic + cp2 * zzic + cp1
+    print("inst %f    excen %f    zic %f    tpc %f" % (inst, excen, zic, tpc))
+    return tpc
+
+
+TEMPZ6 = FORMULE(
+    NOM_PARA=("INST", "X", "Y", "Z"),
+    ChampTher=ChampTherXYZ,
+    C_Epais=C_Epais,
+    excen=C_Excen,
+    VALE="ChampTher(INST,X,Y,Z,C_Epais,excen)",
+)
+
+CHTEMF6 = CREA_CHAMP(
+    OPERATION="AFFE",
+    TYPE_CHAM="CART_TEMP_F",
+    MAILLAGE=M,
+    AFFE=_F(TOUT="OUI", NOM_CMP="TEMP", VALE_F=TEMPZ6),
+)
+
+TEMPER6 = CREA_RESU(
+    OPERATION="PREP_VARC",
+    TYPE_RESU="EVOL_THER",
+    PREP_VARC=_F(MODELE=MO, CARA_ELEM=CARAC5, INST=(5.0, 10.0), CHAM_GD=CHTEMF6),
+)
+
+TEST_RESU(
+    RESU=(
+        #  Ordre 1 , inst = 5.0
+        _F(
+            NUME_ORDRE=1,
+            REFERENCE="ANALYTIQUE",
+            POINT=1,
+            SOUS_POINT=10,
+            RESULTAT=TEMPER6,
+            NOM_CHAM="TEMP",
+            NOM_CMP="TEMP",
+            VALE_CALC=10.0,
+            VALE_REFE=10.0,
+            GROUP_MA="M2",
+        ),
+        _F(
+            NUME_ORDRE=1,
+            REFERENCE="ANALYTIQUE",
+            POINT=1,
+            SOUS_POINT=10,
+            RESULTAT=TEMPER6,
+            NOM_CHAM="TEMP",
+            NOM_CMP="TEMP",
+            VALE_CALC=10.0,
+            VALE_REFE=10.0,
+            GROUP_MA="M5",
+        ),
+        #  Ordre 2 , inst = 10.0
+        _F(
+            NUME_ORDRE=2,
+            REFERENCE="ANALYTIQUE",
+            POINT=1,
+            SOUS_POINT=10,
+            RESULTAT=TEMPER6,
+            NOM_CHAM="TEMP",
+            NOM_CMP="TEMP",
+            VALE_CALC=20.0,
+            VALE_REFE=20.0,
+            GROUP_MA="M2",
+        ),
+        _F(
+            NUME_ORDRE=2,
+            REFERENCE="ANALYTIQUE",
+            POINT=1,
+            SOUS_POINT=10,
+            RESULTAT=TEMPER6,
+            NOM_CHAM="TEMP",
+            NOM_CMP="TEMP",
+            VALE_CALC=20.0,
+            VALE_REFE=20.0,
             GROUP_MA="M5",
         ),
     )

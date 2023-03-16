@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -32,13 +32,11 @@ from cataelem.Options.options import OP
 
 CCACO3D = LocatedComponents(phys=PHY.CACO3D, type="ELEM", components=("CRF",))
 
-
 CCACOQU = LocatedComponents(
     phys=PHY.CACOQU_R,
     type="ELEM",
     components=("EP", "ALPHA", "BETA", "KAPPA", "CTOR", "EXCENT", "INERTIE"),
 )
-
 
 CCAORIE = LocatedComponents(phys=PHY.CAORIE, type="ELEM", components=("ALPHA", "BETA", "REP"))
 
@@ -49,7 +47,6 @@ NDEPLAC = LocatedComponents(
     components=(("EN1", ("DX", "DY", "DZ", "DRX", "DRY", "DRZ")), ("EN2", ("DRX", "DRY", "DRZ"))),
 )
 
-
 DDL_MECA = LocatedComponents(
     phys=PHY.DEPL_R,
     type="ELNO",
@@ -57,11 +54,9 @@ DDL_MECA = LocatedComponents(
     components=(("EN1", ("DX", "DY", "DZ", "DRX", "DRY", "DRZ")), ("EN2", ("DRX", "DRY", "DRZ"))),
 )
 
-
 EENERR = LocatedComponents(
     phys=PHY.ENER_R, type="ELEM", components=("TOTALE", "MEMBRANE", "FLEXION")
 )
-
 
 EDEFOPC = LocatedComponents(
     phys=PHY.EPSI_C,
@@ -70,11 +65,9 @@ EDEFOPC = LocatedComponents(
     components=("EPXX", "EPYY", "EPZZ", "EPXY", "EPXZ", "EPYZ"),
 )
 
-
 EDEFONC = LocatedComponents(
     phys=PHY.EPSI_C, type="ELNO", components=("EPXX", "EPYY", "EPZZ", "EPXY", "EPXZ", "EPYZ")
 )
-
 
 EDEFGPC = LocatedComponents(
     phys=PHY.EPSI_C,
@@ -96,7 +89,6 @@ EDEFONO = LocatedComponents(
     phys=PHY.EPSI_R, type="ELNO", components=("EPXX", "EPYY", "EPZZ", "EPXY", "EPXZ", "EPYZ")
 )
 
-
 EDFEQPG = LocatedComponents(
     phys=PHY.EPSI_R,
     type="ELGA",
@@ -117,7 +109,6 @@ EDFEQPG = LocatedComponents(
     ),
 )
 
-
 EDEFGPG = LocatedComponents(
     phys=PHY.EPSI_R,
     type="ELGA",
@@ -137,11 +128,9 @@ CFORCEF = LocatedComponents(
     phys=PHY.FORC_F, type="ELEM", components=("FX", "FY", "FZ", "MX", "MY", "MZ", "REP")
 )
 
-
 EFORCNO = LocatedComponents(
     phys=PHY.FORC_R, type="ELNO", components=("FX", "FY", "FZ", "MX", "MY", "MZ", "REP")
 )
-
 
 NGEOMER = LocatedComponents(phys=PHY.GEOM_R, type="ELNO", components=("X", "Y", "Z"))
 
@@ -654,6 +643,7 @@ class TemplateElement(Element):
                 (OP.PREP_VRC.PNBSP_I, ENBSP_I),
                 (SP.PTEMPEF, LC.CTEMPEF),
                 (SP.PTEMPER, LC.NTEMPER),
+                (SP.PGEOMER, NGEOMER),
             ),
             para_out=((SP.PTEMPCR, LC.CTEREFE),),
         ),

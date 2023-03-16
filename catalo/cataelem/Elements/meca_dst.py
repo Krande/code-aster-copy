@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -721,6 +721,7 @@ class MEDSQU4(Element):
                 (OP.PREP_VRC.PNBSP_I, ENBSP_I),
                 (SP.PTEMPEF, LC.CTEMPEF),
                 (SP.PTEMPER, LC.NTEMPER),
+                (SP.PGEOMER, NGEOMER),
             ),
             para_out=((SP.PTEMPCR, LC.CTEREFE),),
         ),
