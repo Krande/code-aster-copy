@@ -71,24 +71,39 @@ format MED.
     ),
     10: _(
         """
-  Il n'a pas été possible d'imprimer le champ des variables internes pour la métallurgie en utilisant IMPR_NOM_VARI='OUI'.
-  Cela est dû au fait la structure de données résultat ne contient pas les informations nécessaire
-  N'utilisez pas IMPR_NOM_VARI='OUI' pour imprimer ce champ
+Il n'a pas été possible d'imprimer le champ des variables internes pour la métallurgie
+en utilisant IMPR_NOM_VARI='OUI'.
+Cela est dû au fait la structure de données résultat ne contient pas les informations
+nécessaire.
+N'utilisez pas IMPR_NOM_VARI='OUI' pour imprimer ce champ
 """
     ),
     11: _(
         """
-  Votre champ repose sur un modèle comportant des éléments joints
-  ou interfaces non encore imprimables au format MED.
+Votre champ repose sur un modèle comportant des éléments joints
+ou interfaces non encore imprimables au format MED.
 
-  Conseil : Pour que cette impression soit possible, il vous faut
-            faire une demande d'évolution.
+    Conseil : Pour que cette impression soit possible, il vous faut
+              faire une demande d'évolution.
 """
     ),
     12: _(
         """
-Le modèle contient des éléments de structure. Or le champ  %(k1)s n'a pas la bonne structure pour être imprimé sur ce format.
+Le modèle contient des éléments de structure. Or le champ  %(k1)s n'a pas la bonne
+structure pour être imprimé sur ce format.
 Il ne faut pas imprimer ce champ ou faire deux IMPR_RESU différents.
+"""
+    ),
+    20: _(
+        """
+Impression au format MED d'éléments à sous-points.
+    L'impression pour des éléments %(k1)s avec l'élément support %(k2)s n'est pas géré.
+    Élément MED : %(k3)s
+
+    Conseils :
+        - Restreignez l'impression aux éléments ne contenant pas l'élément support %(k2)s.
+        - Pour que cette impression soit possible sans restriction, il vous faut faire
+          une demande d'évolution.
 """
     ),
 }

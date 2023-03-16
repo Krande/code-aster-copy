@@ -82,8 +82,7 @@ CREA_RESU = OPER(
             "ASSE",
             "PERM_CHAM",
             "PROL_RTZ",
-            "PREP_VRC1",
-            "PREP_VRC2",
+            "PREP_VARC",
             "KUCV",
             "CONV_CHAR",
             "CONV_RESU",
@@ -113,9 +112,7 @@ CREA_RESU = OPER(
             # "EVOL_NOLI"
             # pour bloc PROL_RTZ
             # "EVOL_THER"
-            # pour bloc PREP_VRC1
-            # "EVOL_THER"
-            # pour bloc PREP_VRC2
+            # pour bloc PREP_VARC
             # "EVOL_THER"
         ),
     ),
@@ -378,43 +375,57 @@ CREA_RESU = OPER(
             AXE_Z=SIMP(statut="o", typ="R", min=3, max=3),
         ),
     ),
-    b_prep_vrc1=BLOC(
-        condition="""equal_to("OPERATION", 'PREP_VRC1')""",
-        # calculer la temperature dans les couches des coques multicouche a partir d'un champ de fonctions
-        # de fonctions du temps et de l'espace (epaisseur)
-        PREP_VRC1=FACT(
+    b_prep_varc=BLOC(
+        condition="""equal_to("OPERATION", 'PREP_VARC')""",
+        PREP_VARC=FACT(
             statut="o",
             max=1,
-            CHAM_GD=SIMP(
-                statut="o", typ=(cham_gd_sdaster)
-            ),  # carte de fonctions du temps et de l'epaisseur
-            MODELE=SIMP(
-                statut="o", typ=modele_sdaster
-            ),  # modele mecanique contenant les coques multicouche
-            CARA_ELEM=SIMP(
-                statut="o", typ=cara_elem
-            ),  # CARA_ELEM pour connaitre EPAIS et COQU_NCOU
-            INST=SIMP(statut="o", typ="R", validators=NoRepeat(), max="**"),
-        ),
-    ),
-    b_prep_vrc2=BLOC(
-        condition="""equal_to("OPERATION", 'PREP_VRC2')""",
-        # calculer la temperature dans les couches des coques multicouche a partir d'un evol_ther "coque"
-        # contenant TEMP_MIL/TEMP_INF/TEMP_SUP
-        PREP_VRC2=FACT(
-            statut="o",
-            max=1,
-            EVOL_THER=SIMP(
-                statut="o", typ=(evol_ther)
-            ),  # evol_ther de type "coque" (TEMP_MIL/TEMP_INF/TEMP_SUP)
-            MODELE=SIMP(
-                statut="o", typ=modele_sdaster
-            ),  # modele mecanique contenant les coques multicouche
-            CARA_ELEM=SIMP(
-                statut="o", typ=cara_elem
-            ),  # CARA_ELEM pour connaitre EPAIS et COQU_NCOU
-            TOUT=SIMP(statut="f", typ="TXM", into=("OUI",)),
-            GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
+            # a) CHAM_GD    :   calculer la température dans les couches des
+            #                   coques multicouche à partir d'un champ de fonctions
+            #                   du temps, de l'espace : ( [EPAIS, INST )
+            # b) EVOL_THER  :   calculer la température dans les couches des
+            #                   coques multicouche à partir d'un EVOL_THER "coque"
+            #                   contenant TEMP_MIL/TEMP_INF/TEMP_SUP
+            regles=(UN_PARMI("CHAM_GD", "EVOL_THER"),),
+            # carte de fonctions du temps et de l'épaisseur
+            CHAM_GD=SIMP(statut="f", typ=(cham_gd_sdaster)),
+            # evol_ther de type "coque" (TEMP_MIL/TEMP_INF/TEMP_SUP)
+            EVOL_THER=SIMP(statut="f", typ=(evol_ther)),
+            # modèle mécanique contenant les coques multicouche
+            MODELE=SIMP(statut="o", typ=modele_sdaster),
+            # CARA_ELEM pour connaitre EPAIS et COQU_NCOU
+            CARA_ELEM=SIMP(statut="o", typ=cara_elem),
+            #
+            b_evol_ther=BLOC(
+                condition="""exists('EVOL_THER')""",
+                regles=(EXCLUS("LIST_INST", "INST"), EXCLUS("TOUT", "GROUP_MA", "MAILLE")),
+                TOUT=SIMP(statut="f", typ="TXM", into=("OUI",)),
+                MAILLE=SIMP(statut="c", typ=ma, validators=NoRepeat(), max="**"),
+                GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
+                #
+                LIST_INST=SIMP(statut="f", typ=listr8_sdaster),
+                INST=SIMP(statut="f", typ="R", validators=NoRepeat(), max="**"),
+                b_prec=BLOC(
+                    condition="""(exists("INST")) or (exists("LIST_INST"))""",
+                    CRITERE=SIMP(
+                        statut="f", typ="TXM", defaut="RELATIF", into=("RELATIF", "ABSOLU")
+                    ),
+                    b_prec_rela=BLOC(
+                        condition="""(equal_to("CRITERE", 'RELATIF'))""",
+                        PRECISION=SIMP(statut="f", typ="R", defaut=1.0e-6),
+                    ),
+                    b_prec_abso=BLOC(
+                        condition="""(equal_to("CRITERE", 'ABSOLU'))""",
+                        PRECISION=SIMP(statut="o", typ="R"),
+                    ),
+                ),
+            ),
+            b_cham_gd=BLOC(
+                condition="""exists('CHAM_GD')""",
+                regles=(UN_PARMI("INST", "LIST_INST"),),
+                LIST_INST=SIMP(statut="f", typ=listr8_sdaster),
+                INST=SIMP(statut="f", typ="R", validators=NoRepeat(), max="**"),
+            ),
         ),
     ),
     b_prod_evol_char=BLOC(

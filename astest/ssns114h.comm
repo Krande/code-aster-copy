@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -144,9 +144,9 @@ TEMPLI1T = CREA_RESU(
 )
 
 TEMPLI1 = CREA_RESU(
-    OPERATION="PREP_VRC2",
+    OPERATION="PREP_VARC",
     TYPE_RESU="EVOL_THER",
-    PREP_VRC2=_F(CARA_ELEM=CAEL_G, MODELE=MO_G, EVOL_THER=TEMPLI1T, GROUP_MA="DALLE"),
+    PREP_VARC=_F(CARA_ELEM=CAEL_G, MODELE=MO_G, EVOL_THER=TEMPLI1T, GROUP_MA="DALLE"),
 )
 
 MATER2 = AFFE_MATERIAU(
@@ -174,9 +174,9 @@ TEMPLI2T = CREA_RESU(
 )
 
 TEMPLI2 = CREA_RESU(
-    OPERATION="PREP_VRC2",
+    OPERATION="PREP_VARC",
     TYPE_RESU="EVOL_THER",
-    PREP_VRC2=_F(CARA_ELEM=CAEL_G, MODELE=MO_G, EVOL_THER=TEMPLI2T, GROUP_MA="DALLE"),
+    PREP_VARC=_F(CARA_ELEM=CAEL_G, MODELE=MO_G, EVOL_THER=TEMPLI2T, GROUP_MA="DALLE"),
 )
 
 MATER3 = AFFE_MATERIAU(

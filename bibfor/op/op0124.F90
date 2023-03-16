@@ -30,8 +30,7 @@ subroutine op0124()
 #include "asterfort/crperm.h"
 #include "asterfort/crprol.h"
 #include "asterfort/crtype.h"
-#include "asterfort/crvrc1.h"
-#include "asterfort/crvrc2.h"
+#include "asterfort/crvarc.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
@@ -58,7 +57,7 @@ subroutine op0124()
             call utmess('F', 'ALGORITH17_41', nk=2, valk=valk)
         end if
         call crperm()
-        goto 9999
+        goto 999
     end if
 !
 ! ----------------------------------------------------------------------
@@ -72,7 +71,7 @@ subroutine op0124()
             call utmess('F', 'ALGORITH17_41', nk=2, valk=valk)
         end if
         call crprol()
-        goto 9999
+        goto 999
     end if
 !
 ! ----------------------------------------------------------------------
@@ -82,7 +81,7 @@ subroutine op0124()
     call getfac('AFFE', nbfac)
     if (nbfac .gt. 0) then
         call crtype()
-        goto 9999
+        goto 999
     end if
 !
 ! ----------------------------------------------------------------------
@@ -96,35 +95,22 @@ subroutine op0124()
             call utmess('F', 'ALGORITH17_41', nk=2, valk=valk)
         end if
         call crasse()
-        goto 9999
+        goto 999
     end if
 !
 ! ----------------------------------------------------------------------
-!               TRAITEMENT DU MOT CLE "PREP_VRC1"
+!               TRAITEMENT DU MOT CLE "PREP_VARC"
 ! ----------------------------------------------------------------------
 !
-    call getfac('PREP_VRC1', nbfac)
+    call getfac('PREP_VARC', nbfac)
     if (nbfac .gt. 0) then
         if (typres .ne. 'EVOL_THER') then
-            valk(2) = 'PREP_VRC1'
+            valk(2) = 'PREP_VARC'
             call utmess('F', 'ALGORITH17_41', nk=2, valk=valk)
         end if
-        call crvrc1()
-        goto 9999
-    end if
-!
-! ----------------------------------------------------------------------
-!               TRAITEMENT DU MOT CLE "PREP_VRC2"
-! ----------------------------------------------------------------------
-!
-    call getfac('PREP_VRC2', nbfac)
-    if (nbfac .gt. 0) then
-        if (typres .ne. 'EVOL_THER') then
-            valk(2) = 'PREP_VRC2'
-            call utmess('F', 'ALGORITH17_41', nk=2, valk=valk)
-        end if
-        call crvrc2()
-        goto 9999
+        !
+        call crvarc()
+        goto 999
     end if
 !
 ! ----------------------------------------------------------------------
@@ -134,7 +120,7 @@ subroutine op0124()
     call getfac('KUCV', nbfac)
     if (nbfac .gt. 0) then
         call crkucv()
-        goto 9999
+        goto 999
     end if
 !
 ! ----------------------------------------------------------------------
@@ -144,7 +130,7 @@ subroutine op0124()
     call getfac('CONV_CHAR', nbfac)
     if (nbfac .gt. 0) then
         call crcoch()
-        goto 9999
+        goto 999
     end if
 !
 !
@@ -155,9 +141,9 @@ subroutine op0124()
     call getfac('CONV_RESU', nbfac)
     if (nbfac .gt. 0) then
         call crcore()
-        goto 9999
+        goto 999
     end if
 !
-9999 continue
+999 continue
     call jedema()
 end subroutine

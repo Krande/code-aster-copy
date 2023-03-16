@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -85,14 +85,14 @@ Risques et conseils :
     ),
     14: _(
         """
- Erreur d'utilisation de la commande CREA_RESU / PREP_VRC[1|2] :
+ Erreur d'utilisation de la commande CREA_RESU / PREP_VARC :
     Le CARA_ELEM (%(k1)s) ne contient pas d'éléments à "couches"
- Il n'y a aucune raison d'utiliser l'option PREP_VRC[1|2]
+ Il n'y a aucune raison d'utiliser l'option PREP_VARC
 """
     ),
     15: _(
         """
- Erreur d'utilisation (CREA_RESU/PREP_VRC.) :
+ Erreur d'utilisation (CREA_RESU/PREP_VARC) :
    Le modèle associé au CARA_ELEM (%(k1)s) est différent de celui fourni à la commande.
 """
     ),

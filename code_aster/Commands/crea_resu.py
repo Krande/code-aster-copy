@@ -164,9 +164,7 @@ class ResultCreator(ExecuteCommand):
         if not fkw:
             fkw = keywords.get("ASSE")
         if not fkw:
-            fkw = keywords.get("PREP_VRC2")
-        if not fkw:
-            fkw = keywords.get("PREP_VRC1")
+            fkw = keywords.get("PREP_VARC")
 
         if fkw:
             chamMater = fkw[0].get("CHAM_MATER")
@@ -208,8 +206,7 @@ class ResultCreator(ExecuteCommand):
             self.remove_dependencies(keywords, "RESU_INIT")
             self.remove_dependencies(keywords, "RESU_FINAL")
         self.remove_dependencies(keywords, "PROL_RTZ", "TABLE")
-        self.remove_dependencies(keywords, "PREP_VRC1", "CHAM_GD")
-        self.remove_dependencies(keywords, "PREP_VRC2", "ELAS_THER")
+        self.remove_dependencies(keywords, "PREP_VARC", ("CHAM_GD", "ELAS_THER"))
         self.remove_dependencies(keywords, "KUCV", "RESU_INIT")
         self.remove_dependencies(keywords, "CONV_RESU", "RESU_INIT")
 

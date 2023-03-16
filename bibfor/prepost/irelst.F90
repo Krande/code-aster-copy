@@ -86,19 +86,20 @@ subroutine irelst(nofimd, chanom, nochmd, typech, nomaas, &
     integer :: tymaas, tymamd, connex(9)
     integer :: imasup, jmasup, nbmasu, nbmsmx, nvtymd, edcar2, nbattv, dimest, nbnosu, tygems
     !
-   integer             :: nnotyp(MT_NTYMAX), typgeo(MT_NTYMAX), renumd(MT_NTYMAX), modnum(MT_NTYMAX)
-    integer             :: nuanom(MT_NTYMAX, MT_NNOMAX), numnoa(MT_NTYMAX, MT_NNOMAX)
-    character(len=8)    :: lielrf(MT_NBFAMX)
-    character(len=8)    :: nomtyp(MT_NTYMAX)
+    integer           :: nnotyp(MT_NTYMAX), typgeo(MT_NTYMAX), renumd(MT_NTYMAX), modnum(MT_NTYMAX)
+    integer           :: nuanom(MT_NTYMAX, MT_NNOMAX), numnoa(MT_NTYMAX, MT_NNOMAX)
+    character(len=8)  :: lielrf(MT_NBFAMX)
+    character(len=8)  :: nomtyp(MT_NTYMAX)
     !
-    real(kind=8)        :: refcoo(3*lgmax), gscoo(3*lgmax), wg(lgmax)
+    real(kind=8)      :: refcoo(3*lgmax), gscoo(3*lgmax), wg(lgmax)
     !
-    character(len=8)    :: saux08
-    character(len=16)   :: nomtef, nomfpg, nocoo2(3), uncoo2(3)
-    character(len=64)   :: nomasu, nomaes, nomas2
+    character(len=8)  :: saux08
+    character(len=16) :: nomtef, nomfpg, nocoo2(3), uncoo2(3), valk(3)
+    character(len=64) :: nomasu, nomaes, nomas2
     !
     character(len=64), parameter :: atepai = 'SCALE', atangv = 'ANGLE'
-    character(len=64), parameter :: nocoqu = 'SP_SHELL', nompmf = 'SP_BEAM', notuya = 'SP_PIPE'
+    character(len=64), parameter :: nocoqu = 'SP_SHELL', nompmf = 'SP_BEAM'
+    character(len=64), parameter :: notuya = 'SP_PIPE'
     !
     character(len=200) :: desmed
     !
@@ -111,6 +112,7 @@ subroutine irelst(nofimd, chanom, nochmd, typech, nomaas, &
     character(len=16), parameter :: uncoor(3) = (/'INCONNU         ', &
                                                   'INCONNU         ', &
                                                   'INCONNU         '/)
+
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -183,7 +185,8 @@ subroutine irelst(nofimd, chanom, nochmd, typech, nomaas, &
         nomas2 = ' '
         ! CAS : GRILLE, COQUE, TUYAU, PMF
         okgr = (nummai .eq. 0) .and. (nbcouc .eq. 1) .and. (nbsect .eq. 0) .and. (nbsp .eq. 1)
-       okcq = (nummai .eq. 0) .and. (nbcouc .ge. 1) .and. (nbsect .eq. 0) .and. (nbsp .eq. 3*nbcouc)
+        okcq = (nummai .eq. 0) .and. (nbcouc .ge. 1) .and. (nbsect .eq. 0) .and. &
+               (nbsp .eq. 3*nbcouc)
         oktu = (nummai .eq. 0) .and. (nbcouc .ge. 1) .and. (nbsect .ge. 1)
         okpf = (nummai .ne. 0) .and. (nbcouc .eq. 0) .and. (nbsect .eq. 0)
         if (okgr) then
@@ -196,9 +199,11 @@ subroutine irelst(nofimd, chanom, nochmd, typech, nomaas, &
             else if (nomfpg(1:3) .eq. 'QU4') then
                 nomas2(9:10) = '_4'
             else
-                ASSERT(ASTER_FALSE)
+                valk(1) = 'GRILLE'
+                valk(2) = nomfpg(1:8)
+                valk(3) = nocoqu(1:16)
+                call utmess('F', 'MED2_20', nk=3, valk=valk)
             end if
-
         else if (okcq) then
             ! CAS D'UNE COQUE               : nocoqu=SP_SHELL   (8)
             !   Il faut distinguer les éléments supports TRIA3 et QUA4
@@ -209,7 +214,10 @@ subroutine irelst(nofimd, chanom, nochmd, typech, nomaas, &
             else if (nomfpg(1:3) .eq. 'QU4') then
                 nomas2(9:10) = '_4'
             else
-                ASSERT(ASTER_FALSE)
+                valk(1) = 'COQUE'
+                valk(2) = nomfpg(1:8)
+                valk(3) = nocoqu(1:16)
+                call utmess('F', 'MED2_20', nk=3, valk=valk)
             end if
         else if (oktu) then
             ! CAS D'UN TUYAU                : notuya=SP_PIPE    (7)
@@ -224,7 +232,10 @@ subroutine irelst(nofimd, chanom, nochmd, typech, nomaas, &
                 nbgamm = 4
                 nomas2(8:9) = '_4'
             else
-                ASSERT(ASTER_FALSE)
+                valk(1) = 'TUYAU'
+                valk(2) = nomfpg(1:8)
+                valk(3) = notuya(1:16)
+                call utmess('F', 'MED2_20', nk=3, valk=valk)
             end if
         else if (okpf) then
             ! CAS D'UNE PMF                 : nompmf= SP_BEAM   (7)

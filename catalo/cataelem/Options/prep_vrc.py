@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -35,11 +35,12 @@ PNBSP_I = InputParameter(
 
 
 PREP_VRC = Option(
-    para_in=(SP.PCACOQU, PINST_R, PNBSP_I, SP.PTEMPEF, SP.PTEMPER),
+    para_in=(SP.PCACOQU, SP.PGEOMER, PINST_R, PNBSP_I, SP.PTEMPEF, SP.PTEMPER),
     para_out=(SP.PTEMPCR,),
     condition=(
         CondCalcul("+", ((AT.PHENO, "ME"), (AT.COQUE, "OUI"), (AT.BORD, "0"))),
-        CondCalcul("-", ((AT.PHENO, "ME"), (AT.MODELI, "GRC"))),
+        # Mis en commentaire, pour déclencher l'alarme CALCUL_41 : PREP_VRC(te=-2),
+        # CondCalcul('-', ((AT.PHENO,'ME'),(AT.MODELI,'GRC'),)),
         CondCalcul("-", ((AT.PHENO, "ME"), (AT.MODELI, "GRM"))),
     ),
     comment=""" CALCUL DE LA TEMPERATURE SUR LES COUCHES DES COQUES MULTICOUCHE

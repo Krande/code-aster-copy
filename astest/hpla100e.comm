@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -89,21 +89,21 @@ TEMPLI2 = CREA_RESU(
 )
 
 TEMPER1 = CREA_RESU(
-    OPERATION="PREP_VRC2",
+    OPERATION="PREP_VARC",
     TYPE_RESU="EVOL_THER",
-    PREP_VRC2=_F(MODELE=MO, CARA_ELEM=CARE, EVOL_THER=TEMPLI1),
+    PREP_VARC=_F(MODELE=MO, CARA_ELEM=CARE, EVOL_THER=TEMPLI1),
 )
 
 TEMPER1M = CREA_RESU(
-    OPERATION="PREP_VRC2",
+    OPERATION="PREP_VARC",
     TYPE_RESU="EVOL_THER",
-    PREP_VRC2=_F(MODELE=MO, CARA_ELEM=CARE, EVOL_THER=TEMPLI1M),
+    PREP_VARC=_F(MODELE=MO, CARA_ELEM=CARE, EVOL_THER=TEMPLI1M),
 )
 
 TEMPER2 = CREA_RESU(
-    OPERATION="PREP_VRC2",
+    OPERATION="PREP_VARC",
     TYPE_RESU="EVOL_THER",
-    PREP_VRC2=_F(MODELE=MO, CARA_ELEM=CARE, EVOL_THER=TEMPLI2),
+    PREP_VARC=_F(MODELE=MO, CARA_ELEM=CARE, EVOL_THER=TEMPLI2),
 )
 # ------------------------------------------------------------------
 CHMAT = AFFE_MATERIAU(MAILLAGE=MA, AFFE=_F(TOUT="OUI", MATER=MAT))
@@ -684,9 +684,9 @@ CREA_RESU(
 )
 
 TEMPER3 = CREA_RESU(
-    OPERATION="PREP_VRC2",
+    OPERATION="PREP_VARC",
     TYPE_RESU="EVOL_THER",
-    PREP_VRC2=_F(MODELE=MO, CARA_ELEM=CARE, EVOL_THER=TEMPLI3),
+    PREP_VARC=_F(MODELE=MO, CARA_ELEM=CARE, EVOL_THER=TEMPLI3),
 )
 
 CHMAT3 = AFFE_MATERIAU(

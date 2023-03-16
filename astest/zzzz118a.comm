@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -73,9 +73,9 @@ TEMP = CREA_RESU(
 )
 
 TEMPER1 = CREA_RESU(
-    OPERATION="PREP_VRC2",
+    OPERATION="PREP_VARC",
     TYPE_RESU="EVOL_THER",
-    PREP_VRC2=_F(MODELE=MOD, CARA_ELEM=CARA, EVOL_THER=TEMP),
+    PREP_VARC=_F(MODELE=MOD, CARA_ELEM=CARA, EVOL_THER=TEMP),
 )
 
 CHAR = AFFE_CHAR_MECA(
@@ -91,36 +91,24 @@ ZLIST = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=_F(JUSQU_A=1.0, NOMBRE=1))
 
 YOUN = DEFI_FONCTION(
     NOM_PARA="TEMP",
+    # fmt: off
     VALE=(
-        0.0,
-        205000000000.0,
-        20.0,
-        204000000000.0,
-        50.0,
-        203000000000.0,
-        100.0,
-        200000000000.0,
-        150.0,
-        197000000000.0,
-        200.0,
-        193000000000.0,
-        250.0,
-        189000000000.0,
-        300.0,
-        185000000000.0,
-        350.0,
-        180000000000.0,
-        400.0,
-        176000000000.0,
-        450.0,
-        171000000000.0,
-        500.0,
-        166000000000.0,
-        550.0,
-        160000000000.0,
-        600.0,
-        155000000000.0,
+          0.0, 205000000000.0,
+         20.0, 204000000000.0,
+         50.0, 203000000000.0,
+        100.0, 200000000000.0,
+        150.0, 197000000000.0,
+        200.0, 193000000000.0,
+        250.0, 189000000000.0,
+        300.0, 185000000000.0,
+        350.0, 180000000000.0,
+        400.0, 176000000000.0,
+        450.0, 171000000000.0,
+        500.0, 166000000000.0,
+        550.0, 160000000000.0,
+        600.0, 155000000000.0,
     ),
+    # fmt: on
     PROL_DROITE="EXCLU",
     PROL_GAUCHE="EXCLU",
 )
@@ -133,28 +121,20 @@ NU = DEFI_FONCTION(NOM_PARA="TEMP", VALE=(0.0, 0.3), PROL_DROITE="CONSTANT", PRO
 
 ALPH = DEFI_FONCTION(
     NOM_PARA="TEMP",
+    # fmt: off
     VALE=(
-        20.0,
-        1.122e-05,
-        50.0,
-        1.145e-05,
-        100.0,
-        1.179e-05,
-        150.0,
-        1.214e-05,
-        200.0,
-        1.247e-05,
-        250.0,
-        1.278e-05,
-        300.0,
-        1.308e-05,
-        350.0,
-        1.34e-05,
-        400.0,
-        1.372e-05,
-        450.0,
-        1.402e-05,
+         20.0, 1.122e-05,
+         50.0, 1.145e-05,
+        100.0, 1.179e-05,
+        150.0, 1.214e-05,
+        200.0, 1.247e-05,
+        250.0, 1.278e-05,
+        300.0, 1.308e-05,
+        350.0, 1.340e-05,
+        400.0, 1.372e-05,
+        450.0, 1.402e-05,
     ),
+    # fmt: on
     PROL_DROITE="EXCLU",
     PROL_GAUCHE="EXCLU",
 )

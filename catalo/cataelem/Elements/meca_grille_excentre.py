@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -423,6 +423,7 @@ class MEGCTR3(Element):
             ),
             para_out=((SP.PCOURAN, LC.ECOURAN),),
         ),
+        OP.PREP_VRC(te=-2),
         OP.RAPH_MECA(
             te=431,
             para_in=(

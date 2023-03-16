@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -83,9 +83,9 @@ TEMP = CREA_RESU(
 )
 
 TEMPER = CREA_RESU(
-    OPERATION="PREP_VRC2",
+    OPERATION="PREP_VARC",
     TYPE_RESU="EVOL_THER",
-    PREP_VRC2=_F(MODELE=MOD, CARA_ELEM=CARA, EVOL_THER=TEMP),
+    PREP_VARC=_F(MODELE=MOD, CARA_ELEM=CARA, EVOL_THER=TEMP),
 )
 
 CHMAT = AFFE_MATERIAU(

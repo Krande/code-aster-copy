@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -241,8 +241,8 @@ TEMPLI2 = CREA_RESU(
 
 # ------------------------------------------------------------------
 TEMPER1 = CREA_RESU(
-    OPERATION="PREP_VRC2",
-    PREP_VRC2=_F(CARA_ELEM=CARE, EVOL_THER=TEMPLIN, MODELE=MO),
+    OPERATION="PREP_VARC",
+    PREP_VARC=_F(CARA_ELEM=CARE, EVOL_THER=TEMPLIN, MODELE=MO),
     TYPE_RESU="EVOL_THER",
 )
 
@@ -267,8 +267,8 @@ DEPLDIL = CALC_CHAMP(reuse=DEPLDIL, CONTRAINTE="EFGE_ELNO", RESULTAT=DEPLDIL)
 DEPLDILT = CALC_CHAMP(reuse=DEPLDILT, CONTRAINTE=("EFGE_ELNO", "SIGM_ELNO"), RESULTAT=DEPLDILT)
 
 TEMPER2 = CREA_RESU(
-    OPERATION="PREP_VRC2",
-    PREP_VRC2=_F(CARA_ELEM=CARE, EVOL_THER=TEMPLI2, MODELE=MO),
+    OPERATION="PREP_VARC",
+    PREP_VARC=_F(CARA_ELEM=CARE, EVOL_THER=TEMPLI2, MODELE=MO),
     TYPE_RESU="EVOL_THER",
 )
 
