@@ -1,0 +1,751 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
+
+Mail = LIRE_MAILLAGE(FORMAT="MED", UNITE=20)
+
+Mail = DEFI_GROUP(
+    MAILLAGE=Mail,
+    CREA_GROUP_MA=(
+        _F(NOM="GM206", MAILLE=("M206",)),
+        _F(NOM="GM220", MAILLE=("M220",)),
+        _F(NOM="GM150", MAILLE=("M150",)),
+        _F(NOM="GM458", MAILLE=("M458",)),
+        _F(NOM="GM514", MAILLE=("M514",)),
+    ),
+)
+
+Mail = MODI_MAILLAGE(
+    reuse=Mail,
+    MAILLAGE=Mail,
+    ORIE_NORM_COQUE=(
+        _F(GROUP_MA=("GToleSurf",), VECT_NORM=(0.0, 0.0, 1.0), GROUP_NO="GTolePt00"),
+        _F(GROUP_MA=("GBeton",), VECT_NORM=(0.0, 0.0, 1.0), GROUP_NO="GTolePt00"),
+        _F(GROUP_MA=("GAcierLongi",), VECT_NORM=(0.0, 0.0, 1.0), GROUP_NO="GTolePt00"),
+        _F(GROUP_MA=("GAcierTrans",), VECT_NORM=(0.0, 0.0, 1.0), GROUP_NO="GTolePt00"),
+    ),
+)
+
+# -------------------------------------------------
+# AFFECTATION DES MODELES
+# -------------------------------------------------
+Model = AFFE_MODELE(
+    MAILLAGE=Mail,
+    AFFE=(
+        _F(
+            GROUP_MA=("GAcierLongi", "GAcierTrans"),
+            PHENOMENE="MECANIQUE",
+            MODELISATION="GRILLE_EXCENTRE",
+        ),
+        _F(
+            GROUP_MA=(
+                "GToleSurf",
+                "GRaidSurf",
+                "GBeton",
+                "GToleBord1",
+                "GToleBord2",
+                "GRaidBord1",
+                "GRaidBord2",
+            ),
+            PHENOMENE="MECANIQUE",
+            MODELISATION="DKT",
+        ),
+    ),
+)
+
+# -------------------------------------------------
+# AFFECTATION DES CARACTERISTIQUES
+# -------------------------------------------------
+carelem = AFFE_CARA_ELEM(
+    MODELE=Model,
+    COQUE=(
+        _F(GROUP_MA=("GToleSurf",), EPAIS=8.0000000000e-03, VECTEUR=(0.0, 1.0, 0.0), COQUE_NCOU=3),
+        _F(
+            GROUP_MA=("GRaidSurfSem",),
+            EPAIS=5.0000000000e-03,
+            VECTEUR=(0.0, 1.0, 0.0),
+            COQUE_NCOU=2,
+        ),
+        _F(
+            GROUP_MA=("GRaidSurfAme",),
+            EPAIS=5.0000000000e-03,
+            VECTEUR=(0.0, 1.0, 0.0),
+            COQUE_NCOU=4,
+        ),
+        _F(
+            GROUP_MA=("GBeton",),
+            EPAIS=3.0000000000e-01,
+            VECTEUR=(0.0, 1.0, 0.0),
+            EXCENTREMENT=1.5400000000e-01,
+            COQUE_NCOU=6,
+            INER_ROTA="OUI",
+        ),
+    ),
+    GRILLE=(
+        _F(
+            GROUP_MA=("GAcierLongi",),
+            SECTION=1.5707963268e-03,
+            VECT_1=(0.0, 1.0, 0.0),
+            EXCENTREMENT=2.4400000000e-01,
+        ),
+        _F(
+            GROUP_MA=("GAcierTrans",),
+            SECTION=1.5707963268e-03,
+            VECT_1=(1.0, 0.0, 0.0),
+            EXCENTREMENT=2.2400000000e-01,
+        ),
+    ),
+)
+
+# -----------------------------------------------------
+# DEFINITION DES MATERIAUX
+# -----------------------------------------------------
+ACIER = DEFI_MATERIAU(ELAS=_F(E=2.0e11, NU=0.0, RHO=7800.0, ALPHA=1.0e-05))
+
+BETON = DEFI_MATERIAU(ELAS=_F(E=3.0e10, NU=0.0, RHO=2500.0, ALPHA=0.8e-05))
+#
+# -----------------------------------------------------
+# CHAMPS DE TEMPÉRATURE
+# -----------------------------------------------------
+inst_fin = 10.0
+
+# Tôle Inférieure : DKT
+TToleRef = 20.0
+ToleT00 = CREA_CHAMP(
+    OPERATION="AFFE",
+    TYPE_CHAM="NOEU_TEMP_R",
+    MAILLAGE=Mail,
+    AFFE=_F(GROUP_MA="GToleSurf", NOM_CMP=("TEMP",), VALE=(TToleRef,)),
+)
+ToleT02 = CREA_CHAMP(
+    OPERATION="AFFE",
+    TYPE_CHAM="NOEU_TEMP_R",
+    MAILLAGE=Mail,
+    AFFE=_F(GROUP_MA="GToleSurf", NOM_CMP=("TEMP",), VALE=(TToleRef * 2.0,)),
+)
+ToleT03 = CREA_CHAMP(
+    OPERATION="AFFE",
+    TYPE_CHAM="NOEU_TEMP_R",
+    MAILLAGE=Mail,
+    AFFE=_F(GROUP_MA="GToleSurf", NOM_CMP=("TEMP",), VALE=(TToleRef * 4.0,)),
+)
+ToleT05 = CREA_CHAMP(
+    OPERATION="AFFE",
+    TYPE_CHAM="NOEU_TEMP_R",
+    MAILLAGE=Mail,
+    AFFE=_F(GROUP_MA="GToleSurf", NOM_CMP=("TEMP",), VALE=(TToleRef * 3.0,)),
+)
+ToleT10 = CREA_CHAMP(
+    OPERATION="AFFE",
+    TYPE_CHAM="NOEU_TEMP_R",
+    MAILLAGE=Mail,
+    AFFE=_F(GROUP_MA="GToleSurf", NOM_CMP=("TEMP",), VALE=(TToleRef * 1.5,)),
+)
+TToleT = CREA_RESU(
+    OPERATION="AFFE",
+    TYPE_RESU="EVOL_THER",
+    NOM_CHAM="TEMP",
+    AFFE=(
+        _F(CHAM_GD=ToleT00, INST=0.0),
+        _F(CHAM_GD=ToleT02, INST=2.0),
+        _F(CHAM_GD=ToleT03, INST=3.0),
+        _F(CHAM_GD=ToleT05, INST=5.0),
+        _F(CHAM_GD=ToleT10, INST=10.0),
+    ),
+)
+
+# Béton : DKT
+TBetonRef = 25.0
+BetonT00 = CREA_CHAMP(
+    OPERATION="AFFE",
+    TYPE_CHAM="NOEU_TEMP_R",
+    MAILLAGE=Mail,
+    AFFE=_F(
+        GROUP_MA="GBeton",
+        NOM_CMP=("TEMP_INF", "TEMP_MIL", "TEMP_SUP"),
+        VALE=(TBetonRef, TBetonRef, TBetonRef),
+    ),
+)
+BetonT03 = CREA_CHAMP(
+    OPERATION="AFFE",
+    TYPE_CHAM="NOEU_TEMP_R",
+    MAILLAGE=Mail,
+    AFFE=_F(
+        GROUP_MA="GBeton",
+        NOM_CMP=("TEMP_INF", "TEMP_MIL", "TEMP_SUP"),
+        VALE=(TBetonRef * 2.5, TBetonRef * 4.8, TBetonRef * 3.5),
+    ),
+)
+BetonT10 = CREA_CHAMP(
+    OPERATION="AFFE",
+    TYPE_CHAM="NOEU_TEMP_R",
+    MAILLAGE=Mail,
+    AFFE=_F(
+        GROUP_MA="GBeton",
+        NOM_CMP=("TEMP_INF", "TEMP_MIL", "TEMP_SUP"),
+        VALE=(TBetonRef * 1.5, TBetonRef * 3.8, TBetonRef * 5.5),
+    ),
+)
+TBetonT = CREA_RESU(
+    OPERATION="AFFE",
+    TYPE_RESU="EVOL_THER",
+    NOM_CHAM="TEMP",
+    AFFE=(
+        _F(CHAM_GD=BetonT00, INST=0.0),
+        _F(CHAM_GD=BetonT03, INST=3.0),
+        _F(CHAM_GD=BetonT10, INST=10.0),
+    ),
+)
+CRBetonT = CREA_RESU(
+    OPERATION="PREP_VARC",
+    TYPE_RESU="EVOL_THER",
+    PREP_VARC=_F(MODELE=Model, GROUP_MA="GBeton", CARA_ELEM=carelem, EVOL_THER=TBetonT),
+)
+
+# Nappe d'armature : GRILLE_EXCENTRE
+TNappeRef = 22.0
+NappeLT00 = CREA_CHAMP(
+    OPERATION="AFFE",
+    TYPE_CHAM="NOEU_TEMP_R",
+    MAILLAGE=Mail,
+    AFFE=_F(GROUP_MA="GAcierLongi", NOM_CMP=("TEMP",), VALE=(TNappeRef,)),
+)
+NappeLT05 = CREA_CHAMP(
+    OPERATION="AFFE",
+    TYPE_CHAM="NOEU_TEMP_R",
+    MAILLAGE=Mail,
+    AFFE=_F(GROUP_MA="GAcierLongi", NOM_CMP=("TEMP",), VALE=(TNappeRef * 2.0,)),
+)
+NappeLT10 = CREA_CHAMP(
+    OPERATION="AFFE",
+    TYPE_CHAM="NOEU_TEMP_R",
+    MAILLAGE=Mail,
+    AFFE=_F(GROUP_MA="GAcierLongi", NOM_CMP=("TEMP",), VALE=(TNappeRef * 3.5,)),
+)
+TNappeLT = CREA_RESU(
+    OPERATION="AFFE",
+    TYPE_RESU="EVOL_THER",
+    NOM_CHAM="TEMP",
+    AFFE=(
+        _F(CHAM_GD=NappeLT00, INST=0.0),
+        _F(CHAM_GD=NappeLT05, INST=5.0),
+        _F(CHAM_GD=NappeLT10, INST=10.0),
+    ),
+)
+NappeTT00 = CREA_CHAMP(
+    OPERATION="AFFE",
+    TYPE_CHAM="NOEU_TEMP_R",
+    MAILLAGE=Mail,
+    AFFE=_F(GROUP_MA="GAcierTrans", NOM_CMP=("TEMP",), VALE=(TNappeRef,)),
+)
+NappeTT05 = CREA_CHAMP(
+    OPERATION="AFFE",
+    TYPE_CHAM="NOEU_TEMP_R",
+    MAILLAGE=Mail,
+    AFFE=_F(GROUP_MA="GAcierTrans", NOM_CMP=("TEMP",), VALE=(TNappeRef * 2.5,)),
+)
+NappeTT10 = CREA_CHAMP(
+    OPERATION="AFFE",
+    TYPE_CHAM="NOEU_TEMP_R",
+    MAILLAGE=Mail,
+    AFFE=_F(GROUP_MA="GAcierTrans", NOM_CMP=("TEMP",), VALE=(TNappeRef * 4.0,)),
+)
+TNappeTT = CREA_RESU(
+    OPERATION="AFFE",
+    TYPE_RESU="EVOL_THER",
+    NOM_CHAM="TEMP",
+    AFFE=(
+        _F(CHAM_GD=NappeTT00, INST=0.0),
+        _F(CHAM_GD=NappeTT05, INST=5.0),
+        _F(CHAM_GD=NappeTT10, INST=10.0),
+    ),
+)
+
+# Raidisseurs : DKT . GRaidSurf = GRaidSurfSem + GRaidSurfAme
+TRaidRef = 15.0
+RaidT00 = CREA_CHAMP(
+    OPERATION="AFFE",
+    TYPE_CHAM="NOEU_TEMP_R",
+    MAILLAGE=Mail,
+    AFFE=_F(GROUP_MA="GRaidSurf", NOM_CMP=("TEMP",), VALE=(TRaidRef,)),
+)
+RaidT05 = CREA_CHAMP(
+    OPERATION="AFFE",
+    TYPE_CHAM="NOEU_TEMP_R",
+    MAILLAGE=Mail,
+    AFFE=_F(GROUP_MA="GRaidSurf", NOM_CMP=("TEMP",), VALE=(TRaidRef * 2.0,)),
+)
+RaidT10 = CREA_CHAMP(
+    OPERATION="AFFE",
+    TYPE_CHAM="NOEU_TEMP_R",
+    MAILLAGE=Mail,
+    AFFE=_F(GROUP_MA="GRaidSurf", NOM_CMP=("TEMP",), VALE=(TRaidRef * 1.5,)),
+)
+TRaidT = CREA_RESU(
+    OPERATION="AFFE",
+    TYPE_RESU="EVOL_THER",
+    NOM_CHAM="TEMP",
+    AFFE=(
+        _F(CHAM_GD=RaidT00, INST=0.0),
+        _F(CHAM_GD=RaidT05, INST=5.0),
+        _F(CHAM_GD=RaidT10, INST=10.0),
+    ),
+)
+
+# -------------------------------------------------
+# AFFECTATION DES MATERIAUX
+# -------------------------------------------------
+ChMat = AFFE_MATERIAU(
+    MAILLAGE=Mail,
+    AFFE=(
+        _F(GROUP_MA=("GToleSurf", "GRaidSurf"), MATER=ACIER),
+        _F(GROUP_MA=("GAcierLongi", "GAcierTrans"), MATER=ACIER),
+        _F(GROUP_MA=("GBeton",), MATER=BETON),
+    ),
+    AFFE_VARC=(
+        _F(EVOL=TToleT, NOM_VARC="TEMP", NOM_CHAM="TEMP", VALE_REF=TToleRef, GROUP_MA="GToleSurf"),
+        _F(EVOL=CRBetonT, NOM_VARC="TEMP", NOM_CHAM="TEMP", VALE_REF=TBetonRef, GROUP_MA="GBeton"),
+        _F(
+            EVOL=TNappeLT,
+            NOM_VARC="TEMP",
+            NOM_CHAM="TEMP",
+            VALE_REF=TNappeRef,
+            GROUP_MA="GAcierLongi",
+        ),
+        _F(
+            EVOL=TNappeTT,
+            NOM_VARC="TEMP",
+            NOM_CHAM="TEMP",
+            VALE_REF=TNappeRef,
+            GROUP_MA="GAcierTrans",
+        ),
+        _F(EVOL=TRaidT, NOM_VARC="TEMP", NOM_CHAM="TEMP", VALE_REF=TRaidRef, GROUP_MA="GRaidSurf"),
+    ),
+)
+
+
+# ----------------------------------------------
+# CHARGEMENT
+# ----------------------------------------------
+
+CLIM = AFFE_CHAR_MECA(
+    MODELE=Model,
+    DDL_IMPO=(
+        _F(
+            GROUP_MA=("GToleBord2", "GRaidBord2"), DX=0.0, DY=0.0, DZ=0.0, DRX=0.0, DRY=0.0, DRZ=0.0
+        ),
+        _F(GROUP_MA=("GToleBord1", "GRaidBord1"), DZ=0.0),
+    ),
+)
+
+# ----------------------------------------------
+# CALCUL
+# ----------------------------------------------
+Linst = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=_F(JUSQU_A=inst_fin, PAS=1.0))
+
+Rstnl = STAT_NON_LINE(
+    MODELE=Model,
+    CHAM_MATER=ChMat,
+    CARA_ELEM=carelem,
+    EXCIT=(_F(CHARGE=CLIM),),
+    COMPORTEMENT=(
+        _F(GROUP_MA=("GBeton",), RELATION="ELAS"),
+        _F(GROUP_MA=("GToleSurf",), RELATION="ELAS"),
+        _F(GROUP_MA=("GRaidSurf",), RELATION="ELAS"),
+        _F(GROUP_MA=("GAcierLongi", "GAcierTrans"), RELATION="ELAS"),
+    ),
+    INCREMENT=_F(LIST_INST=Linst, INST_FIN=inst_fin),
+)
+
+LaTemp = CALC_CHAMP(RESULTAT=Rstnl, CARA_ELEM=carelem, SOUS_POINT="TEMP_ELGA")
+
+LGroupe = ["GRaidSurf", "GBeton", "GToleSurf", "GAcierLongi", "GAcierTrans"]
+
+# GToleSurf : M150
+#   INST= 0.0, TToleRef
+#   INST= 2.0, TToleRef*2.0
+#   INST= 3.0, TToleRef*4.0
+#   INST= 5.0, TToleRef*3.0
+#   INST=10.0, TToleRef*1.5
+TEST_RESU(
+    RESU=(
+        _F(
+            INST=0.0,
+            REFERENCE="ANALYTIQUE",
+            POINT=1,
+            SOUS_POINT=1,
+            GROUP_MA="GM150",
+            RESULTAT=LaTemp,
+            NOM_CHAM="TEMP_ELGA",
+            NOM_CMP="TEMP",
+            VALE_CALC=TToleRef,
+            VALE_REFE=TToleRef,
+        ),
+        _F(
+            INST=2.0,
+            REFERENCE="ANALYTIQUE",
+            POINT=1,
+            SOUS_POINT=1,
+            GROUP_MA="GM150",
+            RESULTAT=LaTemp,
+            NOM_CHAM="TEMP_ELGA",
+            NOM_CMP="TEMP",
+            VALE_CALC=TToleRef * 2.0,
+            VALE_REFE=TToleRef * 2.0,
+        ),
+        _F(
+            INST=3.0,
+            REFERENCE="ANALYTIQUE",
+            POINT=1,
+            SOUS_POINT=1,
+            GROUP_MA="GM150",
+            RESULTAT=LaTemp,
+            NOM_CHAM="TEMP_ELGA",
+            NOM_CMP="TEMP",
+            VALE_CALC=TToleRef * 4.0,
+            VALE_REFE=TToleRef * 4.0,
+        ),
+        _F(
+            INST=5.0,
+            REFERENCE="ANALYTIQUE",
+            POINT=1,
+            SOUS_POINT=1,
+            GROUP_MA="GM150",
+            RESULTAT=LaTemp,
+            NOM_CHAM="TEMP_ELGA",
+            NOM_CMP="TEMP",
+            VALE_CALC=TToleRef * 3.0,
+            VALE_REFE=TToleRef * 3.0,
+        ),
+        _F(
+            INST=10.0,
+            REFERENCE="ANALYTIQUE",
+            POINT=1,
+            SOUS_POINT=1,
+            GROUP_MA="GM150",
+            RESULTAT=LaTemp,
+            NOM_CHAM="TEMP_ELGA",
+            NOM_CMP="TEMP",
+            VALE_CALC=TToleRef * 1.5,
+            VALE_REFE=TToleRef * 1.5,
+        ),
+    )
+)
+
+#               GAcierLongi : M458     GAcierTrans : M514
+#   INST= 0.0,  TNappeRef              TNappeRef
+#   INST= 5.0,  TNappeRef*2.0          TNappeRef*2.5
+#   INST=10.0,  TNappeRef*3.5          TNappeRef*4.0
+TEST_RESU(
+    RESU=(
+        # GAcierLongi
+        _F(
+            INST=0.0,
+            REFERENCE="ANALYTIQUE",
+            POINT=1,
+            SOUS_POINT=1,
+            GROUP_MA="GM458",
+            RESULTAT=LaTemp,
+            NOM_CHAM="TEMP_ELGA",
+            NOM_CMP="TEMP",
+            VALE_CALC=TNappeRef,
+            VALE_REFE=TNappeRef,
+        ),
+        _F(
+            INST=5.0,
+            REFERENCE="ANALYTIQUE",
+            POINT=1,
+            SOUS_POINT=1,
+            GROUP_MA="GM458",
+            RESULTAT=LaTemp,
+            NOM_CHAM="TEMP_ELGA",
+            NOM_CMP="TEMP",
+            VALE_CALC=TNappeRef * 2.0,
+            VALE_REFE=TNappeRef * 2.0,
+        ),
+        _F(
+            INST=10.0,
+            REFERENCE="ANALYTIQUE",
+            POINT=1,
+            SOUS_POINT=1,
+            GROUP_MA="GM458",
+            RESULTAT=LaTemp,
+            NOM_CHAM="TEMP_ELGA",
+            NOM_CMP="TEMP",
+            VALE_CALC=TNappeRef * 3.5,
+            VALE_REFE=TNappeRef * 3.5,
+        ),
+        # GAcierTrans
+        _F(
+            INST=0.0,
+            REFERENCE="ANALYTIQUE",
+            POINT=1,
+            SOUS_POINT=1,
+            GROUP_MA="GM514",
+            RESULTAT=LaTemp,
+            NOM_CHAM="TEMP_ELGA",
+            NOM_CMP="TEMP",
+            VALE_CALC=TNappeRef,
+            VALE_REFE=TNappeRef,
+        ),
+        _F(
+            INST=5.0,
+            REFERENCE="ANALYTIQUE",
+            POINT=1,
+            SOUS_POINT=1,
+            GROUP_MA="GM514",
+            RESULTAT=LaTemp,
+            NOM_CHAM="TEMP_ELGA",
+            NOM_CMP="TEMP",
+            VALE_CALC=TNappeRef * 2.5,
+            VALE_REFE=TNappeRef * 2.5,
+        ),
+        _F(
+            INST=10.0,
+            REFERENCE="ANALYTIQUE",
+            POINT=1,
+            SOUS_POINT=1,
+            GROUP_MA="GM514",
+            RESULTAT=LaTemp,
+            NOM_CHAM="TEMP_ELGA",
+            NOM_CMP="TEMP",
+            VALE_CALC=TNappeRef * 4.0,
+            VALE_REFE=TNappeRef * 4.0,
+        ),
+    )
+)
+
+# GRaidSurf : M220
+#   INST= 0.0, TRaidRef
+#   INST= 5.0, TRaidRef*2.0
+#   INST=10.0, TRaidRef*1.5
+TEST_RESU(
+    RESU=(
+        _F(
+            INST=0.0,
+            REFERENCE="ANALYTIQUE",
+            POINT=1,
+            SOUS_POINT=1,
+            GROUP_MA="GM220",
+            RESULTAT=LaTemp,
+            NOM_CHAM="TEMP_ELGA",
+            NOM_CMP="TEMP",
+            VALE_CALC=TRaidRef,
+            VALE_REFE=TRaidRef,
+        ),
+        _F(
+            INST=5.0,
+            REFERENCE="ANALYTIQUE",
+            POINT=1,
+            SOUS_POINT=1,
+            GROUP_MA="GM220",
+            RESULTAT=LaTemp,
+            NOM_CHAM="TEMP_ELGA",
+            NOM_CMP="TEMP",
+            VALE_CALC=TRaidRef * 2.0,
+            VALE_REFE=TRaidRef * 2.0,
+        ),
+        _F(
+            INST=10.0,
+            REFERENCE="ANALYTIQUE",
+            POINT=1,
+            SOUS_POINT=1,
+            GROUP_MA="GM220",
+            RESULTAT=LaTemp,
+            NOM_CHAM="TEMP_ELGA",
+            NOM_CMP="TEMP",
+            VALE_CALC=TRaidRef * 1.5,
+            VALE_REFE=TRaidRef * 1.5,
+        ),
+    )
+)
+
+# GBeton : M206     TEMP_INF        TEMP_MIL        TEMP_SUP
+#   SOUS_POINT      1               9 10            18
+#   INST= 0.0,      TBetonRef       TBetonRef       TBetonRef
+#   INST= 3.0,      TBetonRef*2.5   TBetonRef*4.8   TBetonRef*3.5
+#   INST=10.0,      TBetonRef*1.5   TBetonRef*3.8   TBetonRef*5.5
+TEST_RESU(
+    RESU=(
+        # INST = 0.0
+        _F(
+            INST=0.0,
+            REFERENCE="ANALYTIQUE",
+            POINT=1,
+            SOUS_POINT=1,
+            GROUP_MA="GM206",
+            RESULTAT=LaTemp,
+            NOM_CHAM="TEMP_ELGA",
+            NOM_CMP="TEMP",
+            VALE_CALC=TBetonRef,
+            VALE_REFE=TBetonRef,
+        ),
+        _F(
+            INST=0.0,
+            REFERENCE="ANALYTIQUE",
+            POINT=1,
+            SOUS_POINT=9,
+            GROUP_MA="GM206",
+            RESULTAT=LaTemp,
+            NOM_CHAM="TEMP_ELGA",
+            NOM_CMP="TEMP",
+            VALE_CALC=TBetonRef,
+            VALE_REFE=TBetonRef,
+        ),
+        _F(
+            INST=0.0,
+            REFERENCE="ANALYTIQUE",
+            POINT=1,
+            SOUS_POINT=10,
+            GROUP_MA="GM206",
+            RESULTAT=LaTemp,
+            NOM_CHAM="TEMP_ELGA",
+            NOM_CMP="TEMP",
+            VALE_CALC=TBetonRef,
+            VALE_REFE=TBetonRef,
+        ),
+        _F(
+            INST=0.0,
+            REFERENCE="ANALYTIQUE",
+            POINT=1,
+            SOUS_POINT=18,
+            GROUP_MA="GM206",
+            RESULTAT=LaTemp,
+            NOM_CHAM="TEMP_ELGA",
+            NOM_CMP="TEMP",
+            VALE_CALC=TBetonRef,
+            VALE_REFE=TBetonRef,
+        ),
+        # INST = 3.0
+        _F(
+            INST=3.0,
+            REFERENCE="ANALYTIQUE",
+            POINT=1,
+            SOUS_POINT=1,
+            GROUP_MA="GM206",
+            RESULTAT=LaTemp,
+            NOM_CHAM="TEMP_ELGA",
+            NOM_CMP="TEMP",
+            VALE_CALC=TBetonRef * 2.5,
+            VALE_REFE=TBetonRef * 2.5,
+        ),
+        _F(
+            INST=3.0,
+            REFERENCE="ANALYTIQUE",
+            POINT=1,
+            SOUS_POINT=9,
+            GROUP_MA="GM206",
+            RESULTAT=LaTemp,
+            NOM_CHAM="TEMP_ELGA",
+            NOM_CMP="TEMP",
+            VALE_CALC=TBetonRef * 4.8,
+            VALE_REFE=TBetonRef * 4.8,
+        ),
+        _F(
+            INST=3.0,
+            REFERENCE="ANALYTIQUE",
+            POINT=1,
+            SOUS_POINT=10,
+            GROUP_MA="GM206",
+            RESULTAT=LaTemp,
+            NOM_CHAM="TEMP_ELGA",
+            NOM_CMP="TEMP",
+            VALE_CALC=TBetonRef * 4.8,
+            VALE_REFE=TBetonRef * 4.8,
+        ),
+        _F(
+            INST=3.0,
+            REFERENCE="ANALYTIQUE",
+            POINT=1,
+            SOUS_POINT=18,
+            GROUP_MA="GM206",
+            RESULTAT=LaTemp,
+            NOM_CHAM="TEMP_ELGA",
+            NOM_CMP="TEMP",
+            VALE_CALC=TBetonRef * 3.5,
+            VALE_REFE=TBetonRef * 3.5,
+        ),
+        # INST =10.0
+        _F(
+            INST=10.0,
+            REFERENCE="ANALYTIQUE",
+            POINT=1,
+            SOUS_POINT=1,
+            GROUP_MA="GM206",
+            RESULTAT=LaTemp,
+            NOM_CHAM="TEMP_ELGA",
+            NOM_CMP="TEMP",
+            VALE_CALC=TBetonRef * 1.5,
+            VALE_REFE=TBetonRef * 1.5,
+        ),
+        _F(
+            INST=10.0,
+            REFERENCE="ANALYTIQUE",
+            POINT=1,
+            SOUS_POINT=9,
+            GROUP_MA="GM206",
+            RESULTAT=LaTemp,
+            NOM_CHAM="TEMP_ELGA",
+            NOM_CMP="TEMP",
+            VALE_CALC=TBetonRef * 3.8,
+            VALE_REFE=TBetonRef * 3.8,
+        ),
+        _F(
+            INST=10.0,
+            REFERENCE="ANALYTIQUE",
+            POINT=1,
+            SOUS_POINT=10,
+            GROUP_MA="GM206",
+            RESULTAT=LaTemp,
+            NOM_CHAM="TEMP_ELGA",
+            NOM_CMP="TEMP",
+            VALE_CALC=TBetonRef * 3.8,
+            VALE_REFE=TBetonRef * 3.8,
+        ),
+        _F(
+            INST=10.0,
+            REFERENCE="ANALYTIQUE",
+            POINT=1,
+            SOUS_POINT=18,
+            GROUP_MA="GM206",
+            RESULTAT=LaTemp,
+            NOM_CHAM="TEMP_ELGA",
+            NOM_CMP="TEMP",
+            VALE_CALC=TBetonRef * 5.5,
+            VALE_REFE=TBetonRef * 5.5,
+        ),
+    )
+)
+
+
+"""
+#
+# Ajouter dans le .export : F rmed zzzz413g.rmed R 80
+#
+IMPR_RESU(
+    FORMAT='MED',UNITE=80,
+    RESU=_F(RESULTAT=LaTemp,
+            CARA_ELEM=carelem,
+            GROUP_MA=LGroupe,
+            NOM_CHAM =("TEMP_ELGA",), ),
+)
+"""
+
+FIN()

@@ -138,12 +138,16 @@ subroutine ccaccl(option, modele, mater, carael, ligrel, &
 !        ET LE BON NOMBRE DE VARIABLES INTERNES
 !     ---------------------------------------------------------------
 !
-  if ((option .eq. 'EPEQ_ELGA') .or. (option .eq. 'EPEQ_ELNO') .or. (option .eq. 'EPSI_ELGA') .or. &
-      (option .eq. 'EPSI_ELNO') .or. (option .eq. 'SIEF_ELGA') .or. (option .eq. 'SIEF_ELNO') .or. &
-      (option .eq. 'SIEQ_ELGA') .or. (option .eq. 'SIEQ_ELNO') .or. (option .eq. 'SIGM_ELGA') .or. &
-      (option .eq. 'SIGM_ELNO') .or. (option .eq. 'EPVC_ELGA') .or. (option .eq. 'EPVC_ELNO') .or. &
-      (option .eq. 'EPME_ELGA') .or. (option .eq. 'EPME_ELNO') .or. (option .eq. 'EPSP_ELGA') .or. &
-       (option .eq. 'EPSP_ELNO') .or. (option .eq. 'VARI_ELNO') .or. (option .eq. 'DEPL_ELGA')) then
+    if ((option .eq. 'EPEQ_ELGA') .or. (option .eq. 'EPEQ_ELNO') .or. &
+        (option .eq. 'EPSI_ELGA') .or. (option .eq. 'EPSI_ELNO') .or. &
+        (option .eq. 'SIEF_ELGA') .or. (option .eq. 'SIEF_ELNO') .or. &
+        (option .eq. 'SIEQ_ELGA') .or. (option .eq. 'SIEQ_ELNO') .or. &
+        (option .eq. 'SIGM_ELGA') .or. (option .eq. 'SIGM_ELNO') .or. &
+        (option .eq. 'EPVC_ELGA') .or. (option .eq. 'EPVC_ELNO') .or. &
+        (option .eq. 'EPME_ELGA') .or. (option .eq. 'EPME_ELNO') .or. &
+        (option .eq. 'EPSP_ELGA') .or. (option .eq. 'EPSP_ELNO') .or. &
+        (option .eq. 'VARI_ELNO') .or. (option .eq. 'DEPL_ELGA') .or. &
+        (option .eq. 'TEMP_ELGA')) then
 !
 !       -- CONCERNANT LES VARIABLES INTERNES :
         if (option .eq. 'VARI_ELNO') then

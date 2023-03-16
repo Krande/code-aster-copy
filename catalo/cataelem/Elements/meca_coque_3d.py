@@ -134,6 +134,8 @@ EFORCNO = LocatedComponents(
 
 NGEOMER = LocatedComponents(phys=PHY.GEOM_R, type="ELNO", components=("X", "Y", "Z"))
 
+ETHERGA = LocatedComponents(phys=PHY.TEMP_R, type="ELGA", location="RIGI", components=("TEMP",))
+
 
 EGGEOP_R = LocatedComponents(
     phys=PHY.GEOM_R, type="ELGA", location="MASS", components=("X", "Y", "Z", "W")
@@ -915,6 +917,15 @@ class TemplateElement(Element):
                 (OP.SIGM_ELNO.PNBSP_I, ENBSP_I),
             ),
             para_out=((SP.PSIEFNOC, ECONTNC), (OP.SIGM_ELNO.PSIEFNOR, ECONTNO)),
+        ),
+        OP.TEMP_ELGA(
+            te=126,
+            para_in=(
+                (SP.PCACOQU, CCACOQU),
+                (OP.TEMP_ELGA.PNBSP_I, ENBSP_I),
+                (OP.TEMP_ELGA.PVARCPR, LC.ZVARCPG),
+            ),
+            para_out=((SP.PTEMP_R, ETHERGA),),
         ),
         OP.TOU_INI_ELEM(
             te=99,

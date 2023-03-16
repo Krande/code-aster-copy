@@ -353,7 +353,7 @@ CALC_CHAMP = OPER(
             validators=NoRepeat(),
             max="**",
             fr=tr("Options pour le calcul de champs aux sous-points"),
-            into=("DEPL_ELGA",),
+            into=("DEPL_ELGA", "TEMP_ELGA"),
         ),
         CONTRAINTE=SIMP(
             statut="f",

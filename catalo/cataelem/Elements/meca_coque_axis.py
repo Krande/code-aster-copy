@@ -100,6 +100,7 @@ EGNEUT_R = LocatedComponents(phys=PHY.NEUT_R, type="ELGA", location="RIGI", comp
 
 CPRESSF = LocatedComponents(phys=PHY.PRES_F, type="ELEM", components=("PRES",))
 
+ETHERGA = LocatedComponents(phys=PHY.TEMP_R, type="ELGA", location="RIGI", components=("TEMP",))
 
 EPRESNO = LocatedComponents(phys=PHY.PRES_R, type="ELNO", components=("PRES",))
 
@@ -549,6 +550,15 @@ class MECXSE3(Element):
             te=4,
             para_in=((OP.SIGM_ELNO.PCONTRR, ECONTPG),),
             para_out=((SP.PSIEFNOC, ECONTNC), (OP.SIGM_ELNO.PSIEFNOR, ECONTNO)),
+        ),
+        OP.TEMP_ELGA(
+            te=126,
+            para_in=(
+                (SP.PCACOQU, CCACOQU),
+                (OP.TEMP_ELGA.PNBSP_I, ENBSP_I),
+                (OP.TEMP_ELGA.PVARCPR, LC.ZVARCPG),
+            ),
+            para_out=((SP.PTEMP_R, ETHERGA),),
         ),
         OP.TOU_INI_ELEM(te=99, para_out=((OP.TOU_INI_ELEM.PNBSP_I, ENBSP_I),)),
         OP.TOU_INI_ELGA(

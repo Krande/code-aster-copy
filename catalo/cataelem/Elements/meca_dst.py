@@ -162,6 +162,7 @@ EGGEOP_R = LocatedComponents(
     phys=PHY.GEOM_R, type="ELGA", location="RIGI", components=("X", "Y", "Z", "W")
 )
 
+ETHERGA = LocatedComponents(phys=PHY.TEMP_R, type="ELGA", location="RIGI", components=("TEMP",))
 
 NGEOMER = LocatedComponents(phys=PHY.GEOM_R, type="ELNO", components=("X", "Y", "Z"))
 
@@ -858,6 +859,15 @@ class MEDSQU4(Element):
             te=4,
             para_in=((OP.SIGM_ELNO.PCONTRR, ECONTPG),),
             para_out=((SP.PSIEFNOC, ECONTNC), (OP.SIGM_ELNO.PSIEFNOR, ECONTNO)),
+        ),
+        OP.TEMP_ELGA(
+            te=126,
+            para_in=(
+                (SP.PCACOQU, CCACOQU),
+                (OP.TEMP_ELGA.PNBSP_I, ENBSP_I),
+                (OP.TEMP_ELGA.PVARCPR, LC.ZVARCPG),
+            ),
+            para_out=((SP.PTEMP_R, ETHERGA),),
         ),
         OP.TOU_INI_ELEM(
             te=99,

@@ -115,7 +115,7 @@ subroutine rscrsd(baseZ, resultNameZ, resultTypeZ, nbStore)
 !     ------------------------------------------------------------------
 !                      For mechanic
 !     ------------------------------------------------------------------
-    integer, parameter :: nbFieldMeca = 127
+    integer, parameter :: nbFieldMeca = 128
     character(len=16), parameter :: fieldMeca(nbFieldMeca) = (/ &
                                     'DEPL            ', 'VITE            ', 'ACCE            ', &
                                     'DEPL_ABSOLU     ', 'VITE_ABSOLU     ', 'ACCE_ABSOLU     ', &
@@ -165,7 +165,7 @@ subroutine rscrsd(baseZ, resultNameZ, resultTypeZ, nbStore)
                                     'EPFD_NOEU       ', 'EPFP_NOEU       ', 'PDIL_ELGA       ', &
                                     'MATE_ELGA       ', 'MATE_ELEM       ', &
                                     'HHO_DEPL        ', 'HHO_VITE        ', 'HHO_ACCE        ', &
-                                    'PRES_NOEU       ', 'DEPL_ELGA       '/)
+                                    'PRES_NOEU       ', 'DEPL_ELGA       ', 'TEMP_ELGA       '/)
 
 !     ------------------------------------------------------------------
 !                      For loads (EVOl_CHAR)
@@ -411,13 +411,19 @@ subroutine rscrsd(baseZ, resultNameZ, resultTypeZ, nbStore)
 !
     else if (resultType .eq. 'COMB_FOURIER') then
         nbField = nbFieldMeca+nbFieldTher
+!       Beware : TEMP_ELGA is in fieldMeca and fieldTher
+!                Do not create twice
+        nbField = nbField-1
+!
         call jeecra(resultName//'.DESC', 'NOMMAX', nbField)
         call jeecra(resultName//'.DESC', 'DOCU', cval='COFO')
         do iField = 1, nbFieldMeca
             call jecroc(jexnom(resultName//'.DESC', fieldMeca(iField)))
         end do
         do iField = 1, nbFieldTher
-            call jecroc(jexnom(resultName//'.DESC', fieldTher(iField)))
+            if (fieldTher(iField) (1:9) .ne. 'TEMP_ELGA') then
+                call jecroc(jexnom(resultName//'.DESC', fieldTher(iField)))
+            end if
         end do
 !
     else
