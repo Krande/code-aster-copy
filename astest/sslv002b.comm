@@ -1,0 +1,175 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+# Test de l'orientation automatique des repères locaux massifs calculés à partir de la
+# topologie du maillage par un script MEDCoupling et transmis à code_aster
+# sous forme de carte .CARMASSI (contenant entre autres les angles nautiques
+# et les angles d'euler) via le mot-clé CHAM_ORIE d'AFFE_CARA_ELEM/MASSIF.
+# Ces scripts sont capitalisés dans Salome.
+#
+# On considère un secteur de cylindre d'axe z consituté d'un matériau orthotrope.
+# Les orientations sont calculées de deux manières :
+# - méthode 1 : script de JM Proix capitalisé et validé dans hsnv134b. Il calcule le repère cylindrique, soit repère local "(L,T,N)" = (r, thêta, z)
+# - méthode 2 : script de MEDCoupling qui génère automatiquement les repères à partir de la topologie du maillage. Ici on obtient (L,T,N) = (z, thêta, r)
+# On vient tester la méthode 2 sur la base des résultats de la méthode 1.
+#
+# MODELISATION B : calcul avec la méthode 2
+# Le champ d'orientation est au format MED et est enregistré dans le même fichier que le maillage.
+
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"))
+
+mesh = LIRE_MAILLAGE(UNITE=21, FORMAT="MED")
+
+mesh = MODI_MAILLAGE(reuse=mesh, ECHELLE=0.01, MAILLAGE=mesh)
+
+mesh = MODI_MAILLAGE(reuse=mesh, MAILLAGE=mesh, ORIE_PEAU_3D=_F(GROUP_MA=("FACE_INT", "FACE_SUP")))
+
+# Matériau défini dans le repère (L,T,N) = (z, thêta, r)
+mater2 = DEFI_MATERIAU(
+    ELAS_ORTH=_F(
+        E_N=50e9,
+        E_T=10e9,
+        E_L=10e9,
+        NU_LT=0.1,
+        NU_TN=0.3 * 10 / 50,
+        NU_LN=0.3 * 10 / 50,
+        G_TN=2e9,
+        G_LT=5e9,
+        G_LN=2e9,
+    )
+)
+
+chmater2 = AFFE_MATERIAU(MAILLAGE=mesh, AFFE=_F(TOUT="OUI", MATER=mater2))
+
+model = AFFE_MODELE(MAILLAGE=mesh, AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="3D"))
+
+load = AFFE_CHAR_MECA(
+    MODELE=model,
+    FACE_IMPO=_F(GROUP_MA="FACE_INF", DX=0.0, DY=0.0, DZ=0.0),
+    FORCE_FACE=_F(GROUP_MA="FACE_SUP", FZ=5.0e8, FX=5.0e5, FY=5.0e5),
+)
+
+########################################################################
+# Orientation des repères locaux : METHODE 2
+########################################################################
+
+chamorie = LIRE_CHAMP(
+    MAILLAGE=mesh,
+    UNITE=21,
+    NOM_MED="CHAM_ORIE",
+    NOM_CMP_IDEM="OUI",
+    INST=0.0,
+    TYPE_CHAM="CART_CAMA_R",
+)
+
+orien2 = AFFE_CARA_ELEM(MODELE=model, MASSIF=_F(TOUT="OUI", CHAM_ORIE=chamorie))
+
+IMPR_CONCEPT(UNITE=80, CONCEPT=_F(CARA_ELEM=orien2, REPERE_LOCAL="ELEM", MODELE=model))
+
+########################################################################
+
+resu2 = MECA_STATIQUE(CARA_ELEM=orien2, MODELE=model, CHAM_MATER=chmater2, EXCIT=_F(CHARGE=load))
+
+IMPR_RESU(RESU=_F(RESULTAT=resu2), UNITE=81)
+
+########################################################################
+
+TEST_RESU(
+    RESU=(
+        _F(
+            NUME_ORDRE=1,
+            GROUP_NO="No1",
+            RESULTAT=resu2,
+            REFERENCE="AUTRE_ASTER",
+            NOM_CHAM="DEPL",
+            NOM_CMP="DX",
+            VALE_CALC=0.007628402958378025,
+            VALE_REFE=0.007628402949800763,
+            CRITERE="ABSOLU",
+            PRECISION=1.0e-6,
+        ),
+        _F(
+            NUME_ORDRE=1,
+            GROUP_NO="No1",
+            RESULTAT=resu2,
+            REFERENCE="AUTRE_ASTER",
+            NOM_CHAM="DEPL",
+            NOM_CMP="DY",
+            VALE_CALC=0.007451548830045983,
+            VALE_REFE=0.007451548823456639,
+            CRITERE="ABSOLU",
+            PRECISION=1.0e-6,
+        ),
+        _F(
+            NUME_ORDRE=1,
+            GROUP_NO="No1",
+            RESULTAT=resu2,
+            REFERENCE="AUTRE_ASTER",
+            NOM_CHAM="DEPL",
+            NOM_CMP="DZ",
+            VALE_CALC=0.010491389583619481,
+            VALE_REFE=0.010491389581868186,
+            CRITERE="ABSOLU",
+            PRECISION=1.0e-6,
+        ),
+    )
+)
+
+TEST_RESU(
+    RESU=(
+        _F(
+            NUME_ORDRE=1,
+            GROUP_NO="No3",
+            RESULTAT=resu2,
+            REFERENCE="AUTRE_ASTER",
+            NOM_CHAM="DEPL",
+            NOM_CMP="DX",
+            VALE_CALC=0.00747044822362512,
+            VALE_REFE=0.007470448233278731,
+            CRITERE="ABSOLU",
+            PRECISION=1.0e-6,
+        ),
+        _F(
+            NUME_ORDRE=1,
+            GROUP_NO="No3",
+            RESULTAT=resu2,
+            REFERENCE="AUTRE_ASTER",
+            NOM_CHAM="DEPL",
+            NOM_CMP="DY",
+            VALE_CALC=0.007610171946058204,
+            VALE_REFE=0.007610171940185964,
+            CRITERE="ABSOLU",
+            PRECISION=1.0e-6,
+        ),
+        _F(
+            NUME_ORDRE=1,
+            GROUP_NO="No3",
+            RESULTAT=resu2,
+            REFERENCE="AUTRE_ASTER",
+            NOM_CHAM="DEPL",
+            NOM_CMP="DZ",
+            VALE_CALC=0.010858250671246407,
+            VALE_REFE=0.010858250672208171,
+            CRITERE="ABSOLU",
+            PRECISION=1.0e-6,
+        ),
+    )
+)
+
+FIN()

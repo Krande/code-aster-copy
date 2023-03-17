@@ -1,0 +1,324 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+# Test de l'orientation automatique des repères locaux massifs calculés à partir de la
+# topologie du maillage par un script MEDCoupling et transmis à code_aster
+# sous forme de carte .CARMASSI (contenant entre autres les angles nautiques
+# et les angles d'euler) via le mot-clé CHAM_ORIE d'AFFE_CARA_ELEM/MASSIF.
+# Ces scripts sont capitalisés dans Salome.
+#
+# On considère un secteur de cylindre d'axe z consituté d'un matériau orthotrope.
+# Les orientations sont calculées de deux manières :
+# - méthode 1 : script de JM Proix capitalisé et validé dans hsnv134b. Il calcule le repère cylindrique, soit repère local "(L,T,N)" = (r, thêta, z)
+# - méthode 2 : script de MEDCoupling qui génère automatiquement les repères à partir de la topologie du maillage. Ici on obtient (L,T,N) = (z, thêta, r)
+# On vient tester la méthode 2 sur la base des résultats de la méthode 1.
+#
+# MODELISATION A : calcul avec la méthode 1
+
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"))
+
+mesh = LIRE_MAILLAGE(UNITE=21, FORMAT="MED")
+
+mesh = MODI_MAILLAGE(reuse=mesh, ECHELLE=0.01, MAILLAGE=mesh)
+
+mesh = MODI_MAILLAGE(reuse=mesh, MAILLAGE=mesh, ORIE_PEAU_3D=_F(GROUP_MA=("FACE_INT", "FACE_SUP")))
+
+# Matériau défini dans le repère cylindrique (r, thêta, z)
+mater1 = DEFI_MATERIAU(
+    ELAS_ORTH=_F(
+        E_L=50e9, E_T=10e9, E_N=10e9, NU_LT=0.3, NU_TN=0.1, NU_LN=0.3, G_LT=2e9, G_TN=5e9, G_LN=2e9
+    )
+)
+
+chmater1 = AFFE_MATERIAU(MAILLAGE=mesh, AFFE=_F(TOUT="OUI", MATER=mater1))
+
+model = AFFE_MODELE(MAILLAGE=mesh, AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="3D"))
+
+load = AFFE_CHAR_MECA(
+    MODELE=model,
+    FACE_IMPO=_F(GROUP_MA="FACE_INF", DX=0.0, DY=0.0, DZ=0.0),
+    FORCE_FACE=_F(GROUP_MA="FACE_SUP", FZ=5.0e8, FX=5.0e5, FY=5.0e5),
+)
+
+########################################################################
+# Orientation des repères locaux : METHODE 1
+########################################################################
+
+Centre = (0.0, 0.0, 0.0)
+Axe = (0.0, 0.0, 1.0)
+
+import numpy as NP
+
+
+def ProVec(x, y):
+    z = NP.zeros(3)
+    z[0] = x[1] * y[2] - x[2] * y[1]
+    z[1] = x[2] * y[0] - x[0] * y[2]
+    z[2] = x[0] * y[1] - x[1] * y[0]
+    return z
+
+
+def Norm(x):
+    tmp = NP.sqrt(NP.dot(x, x))
+    return tmp
+
+
+def ProjAxe(point, centre, axe):
+    """
+    Calcul de la projection M de P sur l'axe de vecteur u=VectAxe passant par A=OrigAxe
+    Pour tout point M de l axe
+    on pose :  AM = k .  u donc
+    xm=k.dx+xa ; ym=k.dy+ya ; zm=k.dz+za
+    la distance MP**2 = (xm-xp)**2+(ym-yp)**2+(zm-zp)**2= a.k**2+b.k+c
+    MP**2 est minimum si M est la projection de P sur l axe, donc
+     en -b/2a, pour k = kmin
+                 dx(xp-xa)+dy(yp-ya)+dz(zp-za)      u.AP
+    kmin = ------------------------------------- = ------
+                          dx**2+dy**2+dz**2         u.u
+    ensuite on a un vecteur MP (axe 1 du repere local), et u (axe 3)
+    on calcule v = u ^ MP => repere local : MP, v u
+    """
+    OrigAxe = NP.array(centre)
+    VectAxe = NP.array(axe)
+    P = NP.array(point)
+    norm2 = NP.dot(VectAxe, VectAxe)
+    AP = NP.array(P) - NP.array(OrigAxe)
+    kmin = NP.dot(VectAxe, AP) / norm2
+    M = kmin * VectAxe + OrigAxe
+    MP = P - M
+    v = ProVec(VectAxe, MP)
+    repere = NP.zeros((3, 3))
+    repere[0] = MP / Norm(MP)
+    repere[1] = v / Norm(v)
+    repere[2] = VectAxe / Norm(VectAxe)
+    return M, repere
+
+
+def AngleNaut(repere):
+    """
+    Calcule les angles nautiques correspondant
+    au 3 axes de repere
+    """
+    import copy
+
+    # expression des coordonnees globales des 3 vecteurs de base locale
+    x = NP.array([1.0, 0.0, 0.0])
+    y = NP.array([0.0, 1.0, 0.0])
+    z = NP.array([0.0, 0.0, 1.0])
+    xg = repere[0]
+    yg = repere[1]
+    zg = repere[2]
+
+    # calcul des angles nautiques
+    x1 = copy.copy(xg)
+    # x1 projection de xg sur la plan xy, non norme
+    x1[2] = 0.0
+    # produit scalaire X xg
+    COSA = x1[0] / Norm(x1)
+    # produit vectoriel X xg
+    SINA = x1[1] / Norm(x1)
+    ar = NP.arctan2(SINA, COSA)
+    alpha = ar * 180.0 / NP.pi
+
+    COSB = Norm(x1)
+    SINB = -xg[2]
+    beta = NP.arctan2(SINB, COSB) * 180.0 / NP.pi
+
+    P2 = NP.zeros((3, 3))
+    P2[0, 0] = NP.cos(ar)
+    P2[1, 0] = NP.sin(ar)
+    P2[1, 1] = NP.cos(ar)
+    P2[0, 1] = -NP.sin(ar)
+    y1 = NP.dot(P2, y)
+    y1n = y1 / Norm(y1)
+
+    # calcul de gamma
+    COSG = NP.dot(y1n, yg)
+    SING = NP.dot(xg, ProVec(y1n, yg))
+    gamma = NP.arctan2(SING, COSG) * 180.0 / NP.pi
+
+    PGL = NP.zeros((3, 3))
+    PGL[0, 0] = COSB * COSA
+    PGL[1, 0] = SING * SINB * COSA - COSG * SINA
+    PGL[2, 0] = SING * SINA + COSG * SINB * COSA
+    PGL[0, 1] = COSB * SINA
+    PGL[1, 1] = COSG * COSA + SING * SINB * SINA
+    PGL[2, 1] = COSG * SINB * SINA - COSA * SING
+    PGL[0, 2] = -SINB
+    PGL[1, 2] = SING * COSB
+    PGL[2, 2] = COSG * COSB
+    pgl = NP.transpose(PGL)
+    # print 'Matrice P (Nautiques)= \n ',pgl
+    # print ' '
+    xgl = NP.dot(pgl, x)
+    ygl = NP.dot(pgl, y)
+    zgl = NP.dot(pgl, z)
+
+    return alpha, beta, gamma
+
+
+# test
+# OrigAxe=NP.array([0,0,0])
+# VectAxe=NP.array([0,-1,1])
+# P=NP.array([0,10,10])
+# M, repere = ProjAxe(P, OrigAxe, VectAxe)
+# print "Point projete=", M0.6280000000000001
+# print "repere local=",repere
+# alpha,beta,gamma = AngleNaut(repere)
+# print "alpha,beta,gamma=",alpha,beta,gamma
+
+
+def AngleCyl(GROUP_MA, MAILLAGE, CENTRE, AXE, LISTE_CARA, **args):
+    """
+    Produit une liste de commandes pour orienter les éléments par AFFE_CARA_ELEM/MASSIF
+    """
+    import numpy as NP
+    import copy
+
+    # On recupere la connectivite, les noms des mailles,
+    # les coordonnees et le groupes de mailles GROUP_MA
+    coordo = MAILLAGE.sdj.COORDO.VALE.get()
+    connex = MAILLAGE.sdj.CONNEX.get()
+    nommai = MAILLAGE.sdj.NOMMAI.get()
+    groupma = MAILLAGE.sdj.GROUPEMA.get()[GROUP_MA.ljust(24)]
+    # On met en forme les coordonnees : matrice 3 colonnes
+    coordo = NP.reshape(coordo, [len(coordo) // 3, 3])
+    # On recupere chacune des coordonnees
+    X = coordo[:, 0]
+    Y = coordo[:, 1]
+    Z = coordo[:, 2]
+    # On boucle sur les mailles du groupe de mailles GROUP_MA
+    vec = NP.zeros(3)
+    vex = NP.array([1.0, 0, 0])
+    for ima in groupma:
+        lnoeud = connex[ima]
+        # ATTENTION : dans Python, les tableaux commencent a 0
+        # mais dans la connectivite, les noeuds commencent a 1!
+        un = NP.ones(len(lnoeud), dtype="int")
+        lnoeud = lnoeud - un
+        xg = NP.mean(X[lnoeud])
+        yg = NP.mean(Y[lnoeud])
+        zg = NP.mean(Z[lnoeud])
+
+        P = NP.array([xg, yg, zg])
+        M, repere = ProjAxe(P, CENTRE, AXE)
+
+        # print "Point projete=", M
+        # print "repere local=",repere
+
+        alpha, beta, gamma = AngleNaut(repere)
+
+        # Meme remarque que precedemment sur les listes Python
+        nom_maille = nommai[ima - 1]
+        nom_grma = "CELL_" + str(int(nom_maille[1:]) - 500)
+        mon_dico = {}
+        mon_dico["GROUP_MA"] = nom_grma
+        mon_dico["ANGL_REP"] = (alpha, beta, gamma)
+
+        LISTE_CARA.append(mon_dico)
+
+    return LISTE_CARA
+
+
+DEFI_GROUP(reuse=mesh, MAILLAGE=mesh, CREA_GROUP_MA=_F(NOM="MATIERE", TOUT="OUI", TYPE_MAILLE="3D"))
+
+LISTE_ANGLES = []
+LISTE_CARA = []
+
+LISTE_ANGLES = AngleCyl(
+    GROUP_MA="MATIERE", MAILLAGE=mesh, CENTRE=Centre, AXE=Axe, LISTE_CARA=LISTE_CARA
+)
+
+orien1 = AFFE_CARA_ELEM(MODELE=model, MASSIF=LISTE_ANGLES)
+
+IMPR_CONCEPT(UNITE=80, CONCEPT=_F(CARA_ELEM=orien1, REPERE_LOCAL="ELEM", MODELE=model))
+
+########################################################################
+
+resu1 = MECA_STATIQUE(CARA_ELEM=orien1, MODELE=model, CHAM_MATER=chmater1, EXCIT=_F(CHARGE=load))
+
+IMPR_RESU(RESU=_F(RESULTAT=resu1), UNITE=81)
+
+########################################################################
+
+TEST_RESU(
+    RESU=(
+        _F(
+            NUME_ORDRE=1,
+            GROUP_NO="No1",
+            RESULTAT=resu1,
+            NOM_CHAM="DEPL",
+            NOM_CMP="DX",
+            VALE_CALC=0.007628402949800763,
+            CRITERE="ABSOLU",
+        ),
+        _F(
+            NUME_ORDRE=1,
+            GROUP_NO="No1",
+            RESULTAT=resu1,
+            NOM_CHAM="DEPL",
+            NOM_CMP="DY",
+            VALE_CALC=0.007451548823456639,
+            CRITERE="ABSOLU",
+        ),
+        _F(
+            NUME_ORDRE=1,
+            GROUP_NO="No1",
+            RESULTAT=resu1,
+            NOM_CHAM="DEPL",
+            NOM_CMP="DZ",
+            VALE_CALC=0.010491389581868186,
+            CRITERE="ABSOLU",
+        ),
+    )
+)
+
+TEST_RESU(
+    RESU=(
+        _F(
+            NUME_ORDRE=1,
+            GROUP_NO="No3",
+            RESULTAT=resu1,
+            NOM_CHAM="DEPL",
+            NOM_CMP="DX",
+            VALE_CALC=0.007470448233278731,
+            CRITERE="ABSOLU",
+        ),
+        _F(
+            NUME_ORDRE=1,
+            GROUP_NO="No3",
+            RESULTAT=resu1,
+            NOM_CHAM="DEPL",
+            NOM_CMP="DY",
+            VALE_CALC=0.007610171940185964,
+            CRITERE="ABSOLU",
+        ),
+        _F(
+            NUME_ORDRE=1,
+            GROUP_NO="No3",
+            RESULTAT=resu1,
+            NOM_CHAM="DEPL",
+            NOM_CMP="DZ",
+            VALE_CALC=0.010858250672208171,
+            CRITERE="ABSOLU",
+        ),
+    )
+)
+
+FIN()
