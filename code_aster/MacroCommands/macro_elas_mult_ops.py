@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -116,6 +116,11 @@ def macro_elas_mult_ops(self, MODELE, CAS_CHARGE,
     iocc = 0
     for m in CAS_CHARGE:
         iocc = iocc + 1
+
+        if not "SOUS_TITRE" in m:
+            m["SOUS_TITRE"] = None
+        if not "VECT_ASSE" in m:
+            m["VECT_ASSE"] = None
 
         # calcul de lcharg : liste des listes de char_meca (mots clé CHAR_MECA
         # et CHAR_MECA_GLOBAL)

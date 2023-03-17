@@ -864,7 +864,7 @@ class DynaLineBasis:
                 keywords["CHAR_MECA_GLOBAL"] = char_meca_global
             else:
                 keywords["LIAISON_DISCRET"] = 'OUI'
-            elasCharges = [x for x in self.charges if "CHARGE" in x]
+            elasCharges = [x.copy() for x in self.charges if "CHARGE" in x]
             if len(elasCharges) == 0:
                 self.__elasModes = None
                 return self.__elasModes
