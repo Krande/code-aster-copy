@@ -334,9 +334,10 @@ def main(argv=None):
                 dir=os.getenv("HOME", "/tmp") + "/.tmp_run_aster"
             )
             statfile = osp.join(expdir, "__status__")
+            basn = osp.basename(osp.splitext(args.export)[0])
             expected = export.get("expected_diag", [])
             for exp_i in split_export(export):
-                fexp = osp.join(expdir, "export." + str(exp_i.get("step")))
+                fexp = osp.join(expdir, basn + str(exp_i.get("step")))
                 exp_i.write_to(fexp)
                 argv_i = [i for i in argv if i != args.export]
                 if not args.wrkdir:
