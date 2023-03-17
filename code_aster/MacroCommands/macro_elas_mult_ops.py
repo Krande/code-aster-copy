@@ -135,6 +135,11 @@ def macro_elas_mult_ops(
     for m in CAS_CHARGE:
         iocc = iocc + 1
 
+        if not "SOUS_TITRE" in m:
+            m["SOUS_TITRE"] = None
+        if not "VECT_ASSE" in m:
+            m["VECT_ASSE"] = None
+
         # calcul de lcharg : liste des listes de char_meca (mots clé CHAR_MECA
         # et CHAR_MECA_GLOBAL)
         xx1 = m["CHAR_MECA"]

@@ -44,6 +44,7 @@ dt = 0.0005
 listr = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=_F(JUSQU_A=0.5, PAS=dt))
 
 formula = FORMULE(NOM_PARA=("INST",), VALE="sin(2*pi*15*INST)")
+formula2 = FORMULE(NOM_PARA=("INST",), VALE="0.5*sin(2*pi*15*INST)")
 
 clamp = AFFE_CHAR_MECA(DDL_IMPO=_F(BLOCAGE=("DEPLACEMENT",), GROUP_MA=("ENCAS",)), MODELE=model)
 
@@ -87,7 +88,8 @@ resgene = DYNA_LINE(
     CHAM_MATER=fieldmat,
     CHARGE=(clamp,),
     ENRI_STAT="OUI",
-    EXCIT=_F(CHARGE=gravity, FONC_MULT=formula),
+    #   on sépare en deux pour avoir plusieurs charges (issue32699)
+    EXCIT=(_F(CHARGE=gravity, FONC_MULT=formula2), _F(CHARGE=gravity, FONC_MULT=formula2)),
     INCREMENT=_F(INST_FIN=0.5, PAS=dt),
     MODELE=model,
     SCHEMA_TEMPS=_F(BETA=0.25, GAMMA=0.5, SCHEMA="NEWMARK"),

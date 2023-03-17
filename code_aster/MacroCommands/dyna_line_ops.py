@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -608,8 +608,8 @@ class DynaLineFrequencyBand:
                 __fonc = CALC_FONCTION(FFT=_F(FONCTION=fonction))
                 len_fonc = len(__fonc.Absc()) // 2  # remove negative frequencies of the spectrum
                 l_freq = __fonc.Absc()[:len_fonc]
-                l_real2 = [x ** 2 for x in __fonc.Ordo()[:len_fonc]]
-                l_imag2 = [x ** 2 for x in __fonc.OrdoImg()[:len_fonc]]
+                l_real2 = [x**2 for x in __fonc.Ordo()[:len_fonc]]
+                l_imag2 = [x**2 for x in __fonc.OrdoImg()[:len_fonc]]
                 l_norm2 = [x + y for x, y in zip(l_real2, l_imag2)]
                 # retrieve cutoff value
                 l_serie = []
@@ -1022,7 +1022,7 @@ class DynaLineBasis:
                 keywords["CHAR_MECA_GLOBAL"] = char_meca_global
             else:
                 keywords["LIAISON_DISCRET"] = "OUI"
-            elasCharges = [x for x in self.charges if "CHARGE" in x]
+            elasCharges = [x.copy() for x in self.charges if "CHARGE" in x]
             if len(elasCharges) == 0:
                 self.__elasModes = None
                 return self.__elasModes
