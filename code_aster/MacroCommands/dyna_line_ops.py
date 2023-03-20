@@ -506,6 +506,10 @@ class DynaLineExcit:
             charge = {"COEF_MULT": 1.0}
             self.__setVectOrVectGeneToCharge(charge, __vect)
             self.__charges.append(charge)
+        # kinematic loads
+        if self.dynaLineFEM.char_cine != {}:
+            charge = {"COEF_MULT": 1.0, "CHARGE": self.dynaLineFEM.char_cine["CHAR_CINE"]}
+            self.__charges.append(charge)
 
         for charMecaLoading in self.__getCharMecaLoadings():
             charge = charMecaLoading.copy()
@@ -1368,6 +1372,7 @@ class DynaLineResu:
         keywords = self.__getDynaVibraKeywords()
         if self.base_calcul == "PHYS":
             nomresu = DYNA_VIBRA(
+                MODELE=self.dynaLineFEM.getModele(),
                 TYPE_CALCUL=self.type_calcul,
                 BASE_CALCUL=self.base_calcul,
                 MATR_MASS=self.dynaLineFEM.getMass(),
