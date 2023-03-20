@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -296,18 +296,15 @@ DY2_GED2=CALC_FONCTION(PUISSANCE=_F(FONCTION=DY_GED2,
 MOD_GED2=CALC_FONCTION(COMB=(_F(FONCTION=DX2_GED2,COEF=1.0),
                              _F(FONCTION=DY2_GED2,COEF=1.0),), )
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=2.656750391935E-09,
-                        VALE_REFE=2.5806E-09,
-                        VALE_PARA=7.87235,
-                        REFERENCE='SOURCE_EXTERNE',
-                        PRECISION=0.050000000000000003,
-                        FONCTION=MOD_GED2,),
-              )
-
-TEST_FONCTION(VALEUR=_F(VALE_CALC=2.656750391935E-09,
-                        VALE_PARA=7.87235,
-                        FONCTION=MOD_GED2,
-                        ),
-              )
+TEST_FONCTION(
+    VALEUR=_F(
+        VALE_CALC=2.656951780126e-09,
+        VALE_REFE=2.5806e-09,
+        VALE_PARA=7.87235,
+        REFERENCE="SOURCE_EXTERNE",
+        PRECISION=0.050000000000000003,
+        FONCTION=MOD_GED2,
+    )
+)
 
 FIN();

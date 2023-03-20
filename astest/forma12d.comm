@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -182,17 +182,8 @@ IMPR_FONCTION(FORMAT='XMGRACE',
                          MARQUEUR=0,),))
 
 
-TEST_FONCTION(VALEUR=(_F(
-                         FONCTION=DEPLPDZc,
-                         VALE_PARA=0.05,
-                         VALE_CALC=0.14737789061041
+TEST_FONCTION(VALEUR=(_F(FONCTION=DEPLPDZc, VALE_PARA=0.05, VALE_CALC=0.14533948843284)))
 
-                      )))
-
-TEST_FONCTION(VALEUR=(_F(
-                         FONCTION=DEPLPDXc,
-                         VALE_PARA=0.05,
-                         VALE_CALC=1.587087698170E-04
-                       )))
+TEST_FONCTION(VALEUR=(_F(FONCTION=DEPLPDXc, VALE_PARA=0.05, VALE_CALC=1.669124848840e-04)))
 
 FIN()

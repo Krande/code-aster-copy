@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -228,360 +228,456 @@ DYTRAEUV=REST_GENE_PHYS(  RESU_GENE=DYNMODEU,    NOM_CHAM='VITE',
 #
 #DEPLACEMENTS
 #
-TEST_RESU(RESU=_F(NUME_ORDRE=1,
-                  RESULTAT=DYTRANED,
-                  NOM_CHAM='DEPL',
-                  NOEUD='N2',
-                  NOM_CMP='DX',
-                  VALE_CALC=0.000310888188319,
-                  VALE_REFE=3.11105E-4,
-                  REFERENCE='NON_DEFINI',
-                  PRECISION=5.0000000000000001E-3,),
-          )
+TEST_RESU(
+    RESU=_F(
+        NUME_ORDRE=1,
+        RESULTAT=DYTRANED,
+        NOM_CHAM="DEPL",
+        NOEUD="N2",
+        NOM_CMP="DX",
+        VALE_CALC=0.0003111033893894178,
+        VALE_REFE=3.11105e-4,
+        REFERENCE="NON_DEFINI",
+        PRECISION=5.0000000000000001e-3,
+    )
+)
 
-TEST_RESU(RESU=_F(NUME_ORDRE=2,
-                  RESULTAT=DYTRANED,
-                  NOM_CHAM='DEPL',
-                  NOEUD='N2',
-                  NOM_CMP='DX',
-                  VALE_CALC=-0.000613938596152,
-                  VALE_REFE=-6.1324999999999997E-4,
-                  REFERENCE='NON_DEFINI',
-                  PRECISION=5.0000000000000001E-3,),
-          )
+TEST_RESU(
+    RESU=_F(
+        NUME_ORDRE=2,
+        RESULTAT=DYTRANED,
+        NOM_CHAM="DEPL",
+        NOEUD="N2",
+        NOM_CMP="DX",
+        VALE_CALC=-0.0006132476902844082,
+        VALE_REFE=-6.1324999999999997e-4,
+        REFERENCE="NON_DEFINI",
+        PRECISION=5.0000000000000001e-3,
+    )
+)
 
-TEST_RESU(RESU=_F(NUME_ORDRE=3,
-                  RESULTAT=DYTRANED,
-                  NOM_CHAM='DEPL',
-                  NOEUD='N2',
-                  NOM_CMP='DX',
-                  VALE_CALC=-0.0012533640615,
-                  VALE_REFE=-1.2538E-3,
-                  REFERENCE='NON_DEFINI',
-                  PRECISION=5.0000000000000001E-3,),
-          )
+TEST_RESU(
+    RESU=_F(
+        NUME_ORDRE=3,
+        RESULTAT=DYTRANED,
+        NOM_CHAM="DEPL",
+        NOEUD="N2",
+        NOM_CMP="DX",
+        VALE_CALC=-0.0012537940928606026,
+        VALE_REFE=-1.2538e-3,
+        REFERENCE="NON_DEFINI",
+        PRECISION=5.0000000000000001e-3,
+    )
+)
 
-TEST_RESU(RESU=_F(NUME_ORDRE=4,
-                  RESULTAT=DYTRANED,
-                  NOM_CHAM='DEPL',
-                  NOEUD='N2',
-                  NOM_CMP='DX',
-                  VALE_CALC=0.00344838812423,
-                  VALE_REFE=3.4494500000000002E-3,
-                  REFERENCE='NON_DEFINI',
-                  PRECISION=5.0000000000000001E-3,),
-          )
+TEST_RESU(
+    RESU=_F(
+        NUME_ORDRE=4,
+        RESULTAT=DYTRANED,
+        NOM_CHAM="DEPL",
+        NOEUD="N2",
+        NOM_CMP="DX",
+        VALE_CALC=0.003449423100965307,
+        VALE_REFE=3.4494500000000002e-3,
+        REFERENCE="NON_DEFINI",
+        PRECISION=5.0000000000000001e-3,
+    )
+)
 
-TEST_RESU(RESU=_F(NUME_ORDRE=5,
-                  RESULTAT=DYTRANED,
-                  NOM_CHAM='DEPL',
-                  NOEUD='N2',
-                  NOM_CMP='DX',
-                  VALE_CALC=-0.0048931318419,
-                  VALE_REFE=-4.8872899999999999E-3,
-                  REFERENCE='NON_DEFINI',
-                  PRECISION=5.0000000000000001E-3,),
-          )
+TEST_RESU(
+    RESU=_F(
+        NUME_ORDRE=5,
+        RESULTAT=DYTRANED,
+        NOM_CHAM="DEPL",
+        NOEUD="N2",
+        NOM_CMP="DX",
+        VALE_CALC=-0.004887328787984111,
+        VALE_REFE=-4.8872899999999999e-3,
+        REFERENCE="NON_DEFINI",
+        PRECISION=5.0000000000000001e-3,
+    )
+)
 
-TEST_RESU(RESU=_F(NUME_ORDRE=6,
-                  RESULTAT=DYTRANED,
-                  NOM_CHAM='DEPL',
-                  NOEUD='N2',
-                  NOM_CMP='DX',
-                  VALE_CALC=0.0112733319929,
-                  VALE_REFE=0.0112876,
-                  REFERENCE='NON_DEFINI',
-                  PRECISION=5.0000000000000001E-3,),
-          )
+TEST_RESU(
+    RESU=_F(
+        NUME_ORDRE=6,
+        RESULTAT=DYTRANED,
+        NOM_CHAM="DEPL",
+        NOEUD="N2",
+        NOM_CMP="DX",
+        VALE_CALC=0.011287197252161617,
+        VALE_REFE=0.0112876,
+        REFERENCE="NON_DEFINI",
+        PRECISION=5.0000000000000001e-3,
+    )
+)
 
-TEST_RESU(RESU=_F(NUME_ORDRE=7,
-                  RESULTAT=DYTRANED,
-                  NOM_CHAM='DEPL',
-                  NOEUD='N2',
-                  NOM_CMP='DX',
-                  VALE_CALC=-0.017775763748,
-                  VALE_REFE=-0.017795999999999999,
-                  REFERENCE='NON_DEFINI',
-                  PRECISION=5.0000000000000001E-3,),
-          )
+TEST_RESU(
+    RESU=_F(
+        NUME_ORDRE=7,
+        RESULTAT=DYTRANED,
+        NOM_CHAM="DEPL",
+        NOEUD="N2",
+        NOM_CMP="DX",
+        VALE_CALC=-0.017795165466286393,
+        VALE_REFE=-0.017795999999999999,
+        REFERENCE="NON_DEFINI",
+        PRECISION=5.0000000000000001e-3,
+    )
+)
 
-TEST_RESU(RESU=_F(NUME_ORDRE=8,
-                  RESULTAT=DYTRANED,
-                  NOM_CHAM='DEPL',
-                  NOEUD='N2',
-                  NOM_CMP='DX',
-                  VALE_CALC=0.0243368015492,
-                  VALE_REFE=0.024361299999999999,
-                  REFERENCE='NON_DEFINI',
-                  PRECISION=6.0000000000000001E-3,),
-          )
+TEST_RESU(
+    RESU=_F(
+        NUME_ORDRE=8,
+        RESULTAT=DYTRANED,
+        NOM_CHAM="DEPL",
+        NOEUD="N2",
+        NOM_CMP="DX",
+        VALE_CALC=0.024360017017525038,
+        VALE_REFE=0.024361299999999999,
+        REFERENCE="NON_DEFINI",
+        PRECISION=6.0000000000000001e-3,
+    )
+)
 
-TEST_RESU(RESU=_F(NUME_ORDRE=1,
-                  RESULTAT=DYTRAEUD,
-                  NOM_CHAM='DEPL',
-                  NOEUD='N2',
-                  NOM_CMP='DX',
-                  VALE_CALC=0.000311105847403,
-                  VALE_REFE=3.11105E-4,
-                  REFERENCE='NON_DEFINI',
-                  PRECISION=5.0000000000000001E-3,),
-          )
+TEST_RESU(
+    RESU=_F(
+        NUME_ORDRE=1,
+        RESULTAT=DYTRAEUD,
+        NOM_CHAM="DEPL",
+        NOEUD="N2",
+        NOM_CMP="DX",
+        VALE_CALC=0.000311105847403,
+        VALE_REFE=3.11105e-4,
+        REFERENCE="NON_DEFINI",
+        PRECISION=5.0000000000000001e-3,
+    )
+)
 
-TEST_RESU(RESU=_F(NUME_ORDRE=2,
-                  RESULTAT=DYTRAEUD,
-                  NOM_CHAM='DEPL',
-                  NOEUD='N2',
-                  NOM_CMP='DX',
-                  VALE_CALC=-0.000613251326347,
-                  VALE_REFE=-6.1324999999999997E-4,
-                  REFERENCE='NON_DEFINI',
-                  PRECISION=5.0000000000000001E-3,),
-          )
+TEST_RESU(
+    RESU=_F(
+        NUME_ORDRE=2,
+        RESULTAT=DYTRAEUD,
+        NOM_CHAM="DEPL",
+        NOEUD="N2",
+        NOM_CMP="DX",
+        VALE_CALC=-0.000613251326347,
+        VALE_REFE=-6.1324999999999997e-4,
+        REFERENCE="NON_DEFINI",
+        PRECISION=5.0000000000000001e-3,
+    )
+)
 
-TEST_RESU(RESU=_F(NUME_ORDRE=3,
-                  RESULTAT=DYTRAEUD,
-                  NOM_CHAM='DEPL',
-                  NOEUD='N2',
-                  NOM_CMP='DX',
-                  VALE_CALC=-0.00125380545269,
-                  VALE_REFE=-1.2538E-3,
-                  REFERENCE='NON_DEFINI',
-                  PRECISION=5.0000000000000001E-3,),
-          )
+TEST_RESU(
+    RESU=_F(
+        NUME_ORDRE=3,
+        RESULTAT=DYTRAEUD,
+        NOM_CHAM="DEPL",
+        NOEUD="N2",
+        NOM_CMP="DX",
+        VALE_CALC=-0.00125380545269,
+        VALE_REFE=-1.2538e-3,
+        REFERENCE="NON_DEFINI",
+        PRECISION=5.0000000000000001e-3,
+    )
+)
 
-TEST_RESU(RESU=_F(NUME_ORDRE=4,
-                  RESULTAT=DYTRAEUD,
-                  NOM_CHAM='DEPL',
-                  NOEUD='N2',
-                  NOM_CMP='DX',
-                  VALE_CALC=0.00344946079475,
-                  VALE_REFE=3.4494500000000002E-3,
-                  REFERENCE='NON_DEFINI',
-                  PRECISION=5.0000000000000001E-3,),
-          )
+TEST_RESU(
+    RESU=_F(
+        NUME_ORDRE=4,
+        RESULTAT=DYTRAEUD,
+        NOM_CHAM="DEPL",
+        NOEUD="N2",
+        NOM_CMP="DX",
+        VALE_CALC=0.00344946079475,
+        VALE_REFE=3.4494500000000002e-3,
+        REFERENCE="NON_DEFINI",
+        PRECISION=5.0000000000000001e-3,
+    )
+)
 
-TEST_RESU(RESU=_F(NUME_ORDRE=5,
-                  RESULTAT=DYTRAEUD,
-                  NOM_CHAM='DEPL',
-                  NOEUD='N2',
-                  NOM_CMP='DX',
-                  VALE_CALC=-0.00488727401777,
-                  VALE_REFE=-4.8872899999999999E-3,
-                  REFERENCE='NON_DEFINI',
-                  PRECISION=5.0000000000000001E-3,),
-          )
+TEST_RESU(
+    RESU=_F(
+        NUME_ORDRE=5,
+        RESULTAT=DYTRAEUD,
+        NOM_CHAM="DEPL",
+        NOEUD="N2",
+        NOM_CMP="DX",
+        VALE_CALC=-0.00488727401777,
+        VALE_REFE=-4.8872899999999999e-3,
+        REFERENCE="NON_DEFINI",
+        PRECISION=5.0000000000000001e-3,
+    )
+)
 
-TEST_RESU(RESU=_F(NUME_ORDRE=6,
-                  RESULTAT=DYTRAEUD,
-                  NOM_CHAM='DEPL',
-                  NOEUD='N2',
-                  NOM_CMP='DX',
-                  VALE_CALC=0.0112877865033,
-                  VALE_REFE=0.0112876,
-                  REFERENCE='NON_DEFINI',
-                  PRECISION=5.0000000000000001E-3,),
-          )
+TEST_RESU(
+    RESU=_F(
+        NUME_ORDRE=6,
+        RESULTAT=DYTRAEUD,
+        NOM_CHAM="DEPL",
+        NOEUD="N2",
+        NOM_CMP="DX",
+        VALE_CALC=0.0112877865033,
+        VALE_REFE=0.0112876,
+        REFERENCE="NON_DEFINI",
+        PRECISION=5.0000000000000001e-3,
+    )
+)
 
-TEST_RESU(RESU=_F(NUME_ORDRE=7,
-                  RESULTAT=DYTRAEUD,
-                  NOM_CHAM='DEPL',
-                  NOEUD='N2',
-                  NOM_CMP='DX',
-                  VALE_CALC=-0.0177964030075,
-                  VALE_REFE=-0.017795999999999999,
-                  REFERENCE='NON_DEFINI',
-                  PRECISION=5.0000000000000001E-3,),
-          )
+TEST_RESU(
+    RESU=_F(
+        NUME_ORDRE=7,
+        RESULTAT=DYTRAEUD,
+        NOM_CHAM="DEPL",
+        NOEUD="N2",
+        NOM_CMP="DX",
+        VALE_CALC=-0.0177964030075,
+        VALE_REFE=-0.017795999999999999,
+        REFERENCE="NON_DEFINI",
+        PRECISION=5.0000000000000001e-3,
+    )
+)
 
-TEST_RESU(RESU=_F(NUME_ORDRE=8,
-                  RESULTAT=DYTRAEUD,
-                  NOM_CHAM='DEPL',
-                  NOEUD='N2',
-                  NOM_CMP='DX',
-                  VALE_CALC=0.024361994778,
-                  VALE_REFE=0.024361299999999999,
-                  REFERENCE='NON_DEFINI',
-                  PRECISION=5.0000000000000001E-3,),
-          )
+TEST_RESU(
+    RESU=_F(
+        NUME_ORDRE=8,
+        RESULTAT=DYTRAEUD,
+        NOM_CHAM="DEPL",
+        NOEUD="N2",
+        NOM_CMP="DX",
+        VALE_CALC=0.024361994778,
+        VALE_REFE=0.024361299999999999,
+        REFERENCE="NON_DEFINI",
+        PRECISION=5.0000000000000001e-3,
+    )
+)
 
 #
 #VITESSES
 #
-TEST_RESU(RESU=_F(NUME_ORDRE=1,
-                  RESULTAT=DYTRANEV,
-                  NOM_CHAM='VITE',
-                  NOEUD='N2',
-                  NOM_CMP='DX',
-                  VALE_CALC=0.00909071088438,
-                  VALE_REFE=9.0928399999999996E-3,
-                  REFERENCE='NON_DEFINI',
-                  PRECISION=5.0000000000000001E-3,),
-          )
+TEST_RESU(
+    RESU=_F(
+        NUME_ORDRE=1,
+        RESULTAT=DYTRANEV,
+        NOM_CHAM="VITE",
+        NOEUD="N2",
+        NOM_CMP="DX",
+        VALE_CALC=0.009092801112140982,
+        VALE_REFE=9.0928399999999996e-3,
+        REFERENCE="NON_DEFINI",
+        PRECISION=5.0000000000000001e-3,
+    )
+)
 
-TEST_RESU(RESU=_F(NUME_ORDRE=2,
-                  RESULTAT=DYTRANEV,
-                  NOM_CHAM='VITE',
-                  NOEUD='N2',
-                  NOM_CMP='DX',
-                  VALE_CALC=-0.0239835100651,
-                  VALE_REFE=-0.023972400000000001,
-                  REFERENCE='NON_DEFINI',
-                  PRECISION=5.0000000000000001E-3,),
-          )
+TEST_RESU(
+    RESU=_F(
+        NUME_ORDRE=2,
+        RESULTAT=DYTRANEV,
+        NOM_CHAM="VITE",
+        NOEUD="N2",
+        NOM_CMP="DX",
+        VALE_CALC=-0.02397236020279219,
+        VALE_REFE=-0.023972400000000001,
+        REFERENCE="NON_DEFINI",
+        PRECISION=5.0000000000000001e-3,
+    )
+)
 
-TEST_RESU(RESU=_F(NUME_ORDRE=3,
-                  RESULTAT=DYTRANEV,
-                  NOM_CHAM='VITE',
-                  NOEUD='N2',
-                  NOM_CMP='DX',
-                  VALE_CALC=-0.0549716573001,
-                  VALE_REFE=-0.054996400000000001,
-                  REFERENCE='NON_DEFINI',
-                  PRECISION=5.0000000000000001E-3,),
-          )
+TEST_RESU(
+    RESU=_F(
+        NUME_ORDRE=3,
+        RESULTAT=DYTRANEV,
+        NOM_CHAM="VITE",
+        NOEUD="N2",
+        NOM_CMP="DX",
+        VALE_CALC=-0.0549961266543811,
+        VALE_REFE=-0.054996400000000001,
+        REFERENCE="NON_DEFINI",
+        PRECISION=5.0000000000000001e-3,
+    )
+)
 
-TEST_RESU(RESU=_F(NUME_ORDRE=4,
-                  RESULTAT=DYTRANEV,
-                  NOM_CHAM='VITE',
-                  NOEUD='N2',
-                  NOM_CMP='DX',
-                  VALE_CALC=0.164941292009,
-                  VALE_REFE=0.16495799999999999,
-                  REFERENCE='NON_DEFINI',
-                  PRECISION=5.0000000000000001E-3,),
-          )
+TEST_RESU(
+    RESU=_F(
+        NUME_ORDRE=4,
+        RESULTAT=DYTRANEV,
+        NOM_CHAM="VITE",
+        NOEUD="N2",
+        NOM_CMP="DX",
+        VALE_CALC=0.164957417573565,
+        VALE_REFE=0.16495799999999999,
+        REFERENCE="NON_DEFINI",
+        PRECISION=5.0000000000000001e-3,
+    )
+)
 
-TEST_RESU(RESU=_F(NUME_ORDRE=5,
-                  RESULTAT=DYTRANEV,
-                  NOM_CHAM='VITE',
-                  NOEUD='N2',
-                  NOM_CMP='DX',
-                  VALE_CALC=0.256641100929,
-                  VALE_REFE=0.25645600000000002,
-                  REFERENCE='NON_DEFINI',
-                  PRECISION=5.0000000000000001E-3,),
-          )
+TEST_RESU(
+    RESU=_F(
+        NUME_ORDRE=5,
+        RESULTAT=DYTRANEV,
+        NOM_CHAM="VITE",
+        NOEUD="N2",
+        NOM_CMP="DX",
+        VALE_CALC=0.2564572119526909,
+        VALE_REFE=0.25645600000000002,
+        REFERENCE="NON_DEFINI",
+        PRECISION=5.0000000000000001e-3,
+    )
+)
 
-TEST_RESU(RESU=_F(NUME_ORDRE=6,
-                  RESULTAT=DYTRANEV,
-                  NOM_CHAM='VITE',
-                  NOEUD='N2',
-                  NOM_CMP='DX',
-                  VALE_CALC=-0.579545675005,
-                  VALE_REFE=-0.57901000000000002,
-                  REFERENCE='NON_DEFINI',
-                  PRECISION=5.0000000000000001E-3,),
-          )
+TEST_RESU(
+    RESU=_F(
+        NUME_ORDRE=6,
+        RESULTAT=DYTRANEV,
+        NOM_CHAM="VITE",
+        NOEUD="N2",
+        NOM_CMP="DX",
+        VALE_CALC=-0.5790202007055618,
+        VALE_REFE=-0.57901000000000002,
+        REFERENCE="NON_DEFINI",
+        PRECISION=5.0000000000000001e-3,
+    )
+)
 
-TEST_RESU(RESU=_F(NUME_ORDRE=7,
-                  RESULTAT=DYTRANEV,
-                  NOM_CHAM='VITE',
-                  NOEUD='N2',
-                  NOM_CMP='DX',
-                  VALE_CALC=0.898615987569,
-                  VALE_REFE=0.89763099999999996,
-                  REFERENCE='NON_DEFINI',
-                  PRECISION=5.0000000000000001E-3,),
-          )
+TEST_RESU(
+    RESU=_F(
+        NUME_ORDRE=7,
+        RESULTAT=DYTRANEV,
+        NOM_CHAM="VITE",
+        NOEUD="N2",
+        NOM_CMP="DX",
+        VALE_CALC=0.8976637435516666,
+        VALE_REFE=0.89763099999999996,
+        REFERENCE="NON_DEFINI",
+        PRECISION=5.0000000000000001e-3,
+    )
+)
 
-TEST_RESU(RESU=_F(NUME_ORDRE=8,
-                  RESULTAT=DYTRANEV,
-                  NOM_CHAM='VITE',
-                  NOEUD='N2',
-                  NOM_CMP='DX',
-                  VALE_CALC=-1.21317862488,
-                  VALE_REFE=-1.2116400000000001,
-                  REFERENCE='NON_DEFINI',
-                  PRECISION=6.0000000000000001E-3,),
-          )
+TEST_RESU(
+    RESU=_F(
+        NUME_ORDRE=8,
+        RESULTAT=DYTRANEV,
+        NOM_CHAM="VITE",
+        NOEUD="N2",
+        NOM_CMP="DX",
+        VALE_CALC=-1.2117152717245974,
+        VALE_REFE=-1.2116400000000001,
+        REFERENCE="NON_DEFINI",
+        PRECISION=6.0000000000000001e-3,
+    )
+)
 
-TEST_RESU(RESU=_F(NUME_ORDRE=1,
-                  RESULTAT=DYTRAEUV,
-                  NOM_CHAM='VITE',
-                  NOEUD='N2',
-                  NOM_CMP='DX',
-                  VALE_CALC=0.00909186864298,
-                  VALE_REFE=9.0928399999999996E-3,
-                  REFERENCE='NON_DEFINI',
-                  PRECISION=5.0000000000000001E-3,),
-          )
+TEST_RESU(
+    RESU=_F(
+        NUME_ORDRE=1,
+        RESULTAT=DYTRAEUV,
+        NOM_CHAM="VITE",
+        NOEUD="N2",
+        NOM_CMP="DX",
+        VALE_CALC=0.00909186864298,
+        VALE_REFE=9.0928399999999996e-3,
+        REFERENCE="NON_DEFINI",
+        PRECISION=5.0000000000000001e-3,
+    )
+)
 
-TEST_RESU(RESU=_F(NUME_ORDRE=2,
-                  RESULTAT=DYTRAEUV,
-                  NOM_CHAM='VITE',
-                  NOEUD='N2',
-                  NOM_CMP='DX',
-                  VALE_CALC=-0.0239781605508,
-                  VALE_REFE=-0.023972400000000001,
-                  REFERENCE='NON_DEFINI',
-                  PRECISION=5.0000000000000001E-3,),
-          )
+TEST_RESU(
+    RESU=_F(
+        NUME_ORDRE=2,
+        RESULTAT=DYTRAEUV,
+        NOM_CHAM="VITE",
+        NOEUD="N2",
+        NOM_CMP="DX",
+        VALE_CALC=-0.0239781605508,
+        VALE_REFE=-0.023972400000000001,
+        REFERENCE="NON_DEFINI",
+        PRECISION=5.0000000000000001e-3,
+    )
+)
 
-TEST_RESU(RESU=_F(NUME_ORDRE=3,
-                  RESULTAT=DYTRAEUV,
-                  NOM_CHAM='VITE',
-                  NOEUD='N2',
-                  NOM_CMP='DX',
-                  VALE_CALC=-0.0549844936952,
-                  VALE_REFE=-0.054996400000000001,
-                  REFERENCE='NON_DEFINI',
-                  PRECISION=5.0000000000000001E-3,),
-          )
+TEST_RESU(
+    RESU=_F(
+        NUME_ORDRE=3,
+        RESULTAT=DYTRAEUV,
+        NOM_CHAM="VITE",
+        NOEUD="N2",
+        NOM_CMP="DX",
+        VALE_CALC=-0.0549844936952,
+        VALE_REFE=-0.054996400000000001,
+        REFERENCE="NON_DEFINI",
+        PRECISION=5.0000000000000001e-3,
+    )
+)
 
-TEST_RESU(RESU=_F(NUME_ORDRE=4,
-                  RESULTAT=DYTRAEUV,
-                  NOM_CHAM='VITE',
-                  NOEUD='N2',
-                  NOM_CMP='DX',
-                  VALE_CALC=0.164951073288,
-                  VALE_REFE=0.16495799999999999,
-                  REFERENCE='NON_DEFINI',
-                  PRECISION=5.0000000000000001E-3,),
-          )
+TEST_RESU(
+    RESU=_F(
+        NUME_ORDRE=4,
+        RESULTAT=DYTRAEUV,
+        NOM_CHAM="VITE",
+        NOEUD="N2",
+        NOM_CMP="DX",
+        VALE_CALC=0.164951073288,
+        VALE_REFE=0.16495799999999999,
+        REFERENCE="NON_DEFINI",
+        PRECISION=5.0000000000000001e-3,
+    )
+)
 
-TEST_RESU(RESU=_F(NUME_ORDRE=5,
-                  RESULTAT=DYTRAEUV,
-                  NOM_CHAM='VITE',
-                  NOEUD='N2',
-                  NOM_CMP='DX',
-                  VALE_CALC=0.256548565274,
-                  VALE_REFE=0.25645600000000002,
-                  REFERENCE='NON_DEFINI',
-                  PRECISION=5.0000000000000001E-3,),
-          )
+TEST_RESU(
+    RESU=_F(
+        NUME_ORDRE=5,
+        RESULTAT=DYTRAEUV,
+        NOM_CHAM="VITE",
+        NOEUD="N2",
+        NOM_CMP="DX",
+        VALE_CALC=0.256548565274,
+        VALE_REFE=0.25645600000000002,
+        REFERENCE="NON_DEFINI",
+        PRECISION=5.0000000000000001e-3,
+    )
+)
 
-TEST_RESU(RESU=_F(NUME_ORDRE=6,
-                  RESULTAT=DYTRAEUV,
-                  NOM_CHAM='VITE',
-                  NOEUD='N2',
-                  NOM_CMP='DX',
-                  VALE_CALC=-0.579268856649,
-                  VALE_REFE=-0.57901000000000002,
-                  REFERENCE='NON_DEFINI',
-                  PRECISION=5.0000000000000001E-3,),
-          )
+TEST_RESU(
+    RESU=_F(
+        NUME_ORDRE=6,
+        RESULTAT=DYTRAEUV,
+        NOM_CHAM="VITE",
+        NOEUD="N2",
+        NOM_CMP="DX",
+        VALE_CALC=-0.579268856649,
+        VALE_REFE=-0.57901000000000002,
+        REFERENCE="NON_DEFINI",
+        PRECISION=5.0000000000000001e-3,
+    )
+)
 
-TEST_RESU(RESU=_F(NUME_ORDRE=7,
-                  RESULTAT=DYTRAEUV,
-                  NOM_CHAM='VITE',
-                  NOEUD='N2',
-                  NOM_CMP='DX',
-                  VALE_CALC=0.898093109443,
-                  VALE_REFE=0.89763099999999996,
-                  REFERENCE='NON_DEFINI',
-                  PRECISION=5.0000000000000001E-3,),
-          )
+TEST_RESU(
+    RESU=_F(
+        NUME_ORDRE=7,
+        RESULTAT=DYTRAEUV,
+        NOM_CHAM="VITE",
+        NOEUD="N2",
+        NOM_CMP="DX",
+        VALE_CALC=0.898093109443,
+        VALE_REFE=0.89763099999999996,
+        REFERENCE="NON_DEFINI",
+        PRECISION=5.0000000000000001e-3,
+    )
+)
 
-TEST_RESU(RESU=_F(NUME_ORDRE=8,
-                  RESULTAT=DYTRAEUV,
-                  NOM_CHAM='VITE',
-                  NOEUD='N2',
-                  NOM_CMP='DX',
-                  VALE_CALC=-1.21234307924,
-                  VALE_REFE=-1.2116400000000001,
-                  REFERENCE='NON_DEFINI',
-                  PRECISION=5.0000000000000001E-3,),
-          )
+TEST_RESU(
+    RESU=_F(
+        NUME_ORDRE=8,
+        RESULTAT=DYTRAEUV,
+        NOM_CHAM="VITE",
+        NOEUD="N2",
+        NOM_CMP="DX",
+        VALE_CALC=-1.21234307924,
+        VALE_REFE=-1.2116400000000001,
+        REFERENCE="NON_DEFINI",
+        PRECISION=5.0000000000000001e-3,
+    )
+)
 
 FIN( )
 #

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -106,7 +106,6 @@ subroutine intnewm(sd_dtm_, sd_int_, buffdtm, buffint)
     call intget(sd_int, DEPL    , iocc=1, vr=depl1, lonvec=nbequ, buffer=buffint)
     call intget(sd_int, VITE    , iocc=1, vr=vite1, buffer=buffint)
     call intget(sd_int, ACCE    , iocc=1, vr=acce1, buffer=buffint)
-
 
 !   2 - Detection of the initial call to the Newmark algorithm
 !       DEPL/2 does not exist in the buffer
@@ -225,8 +224,8 @@ subroutine intnewm(sd_dtm_, sd_int_, buffdtm, buffint)
     endif
 
 !   3 - Computing FORCE/2 (t_i+1)
-    call intsav(sd_int, TIME , 1, iocc=2, rscal=t1+dt, buffer=buffint)
-    call intsav(sd_int, STEP , 1, iocc=2, rscal=dt, buffer=buffint)
+    call intsav(sd_int, TIME, 1, iocc=2, rscal=t1+dt, buffer=buffint)
+    call intsav(sd_int, STEP, 1, iocc=2, rscal=dt, buffer=buffint)
     call intsav(sd_int, INDEX, 1, iocc=2, iscal=ind1+1, buffer=buffint)
     call dtmforc(sd_dtm, sd_int, 2, buffdtm, buffint)
     call intget(sd_int, FORCE_EX, iocc=2, vr=fext1, buffer=buffint)

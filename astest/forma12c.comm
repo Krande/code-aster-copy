@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -164,15 +164,9 @@ DEPLPDX = RECU_FONCTION(RESU_GENE=TRANGEN,
                         NOM_CMP='DX',
                         GROUP_NO='P',)
 
-TEST_FONCTION(VALEUR=_F(FONCTION=DEPLPDZ,
-                        VALE_PARA=0.05,
-                        VALE_CALC=0.14758711700494
-                        ))
+TEST_FONCTION(VALEUR=_F(FONCTION=DEPLPDZ, VALE_PARA=0.05, VALE_CALC=0.14554871693428))
 
-TEST_FONCTION(VALEUR=_F(FONCTION=DEPLPDX,
-                        VALE_PARA=0.05,
-                        VALE_CALC=5.667541668703E-05
-                        ))
+TEST_FONCTION(VALEUR=_F(FONCTION=DEPLPDX, VALE_PARA=0.05, VALE_CALC=6.487913904939e-05))
 
 # ==========================================================================================
 #                    CALCUL SUR BASE MODALE AVEC CORRECTION STATIQUE

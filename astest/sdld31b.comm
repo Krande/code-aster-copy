@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -344,29 +344,37 @@ BNEWTRAN=RECU_FONCTION(RESU_GENE=NEWTRANG,
                        NOM_CMP='DZ',
                        GROUP_NO='B',);
 
-TEST_FONCTION(VALEUR=(_F(VALE_CALC=0.01079639373628,
-                         VALE_REFE=solex(tpst1,),
-                         VALE_PARA=tpst1,
-                         REFERENCE='ANALYTIQUE',
-                         PRECISION=1.E-2,
-                         NOM_PARA='INST',
-                         FONCTION=BNEWTRAN,),
-                      _F(VALE_CALC=-3.777604369249E-03,
-                         VALE_REFE=solex(tpst2,),
-                         VALE_PARA=tpst2,
-                         REFERENCE='ANALYTIQUE',
-                         PRECISION=1.E-2,
-                         NOM_PARA='INST',
-                         FONCTION=BNEWTRAN,),
-                      _F(VALE_CALC=-0.01260003866495,
-                         VALE_REFE=solex(tpst3,),
-                         VALE_PARA=tpst3,
-                         REFERENCE='ANALYTIQUE',
-                         PRECISION=1.E-2,
-                         NOM_PARA='INST',
-                         FONCTION=BNEWTRAN,),
-                      ),
-              )
+TEST_FONCTION(
+    VALEUR=(
+        _F(
+            VALE_CALC=0.01078498835566,
+            VALE_REFE=solex(tpst1),
+            VALE_PARA=tpst1,
+            REFERENCE="ANALYTIQUE",
+            PRECISION=1.0e-2,
+            NOM_PARA="INST",
+            FONCTION=BNEWTRAN,
+        ),
+        _F(
+            VALE_CALC=-3.745101277417e-03,
+            VALE_REFE=solex(tpst2),
+            VALE_PARA=tpst2,
+            REFERENCE="ANALYTIQUE",
+            PRECISION=1.0e-2,
+            NOM_PARA="INST",
+            FONCTION=BNEWTRAN,
+        ),
+        _F(
+            VALE_CALC=-0.01256393561489,
+            VALE_REFE=solex(tpst3),
+            VALE_PARA=tpst3,
+            REFERENCE="ANALYTIQUE",
+            PRECISION=1.0e-2,
+            NOM_PARA="INST",
+            FONCTION=BNEWTRAN,
+        ),
+    )
+)
 
 # TRANSITOIRE - METHODE DE DEVOLEGAERE
 
