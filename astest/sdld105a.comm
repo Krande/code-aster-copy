@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -381,41 +381,41 @@ MOD26 = (RECU_FONCTION(RESU_GENE=TRAN_RI6, NOM_CHAM="DEPL", NUME_CMP_GENE=2),)
 TEST_FONCTION(
     VALEUR=(
         _F(
-            VALE_CALC=-0.01135866317682,
-            VALE_REFE=-0.01134877555161,
+            VALE_CALC=-0.01131121107315,
+            VALE_REFE=-0.01130135697227,
             VALE_PARA=19.399999999999999,
             REFERENCE="AUTRE_ASTER",
             PRECISION=1.0e-3,
             FONCTION=N04_DX_1,
         ),
-        _F(VALE_CALC=-0.01134877555161, VALE_PARA=19.399999999999999, FONCTION=N04_DX_2),
+        _F(VALE_CALC=-0.01130135697227, VALE_PARA=19.399999999999999, FONCTION=N04_DX_2),
         _F(
-            VALE_CALC=-0.01135031253091,
-            VALE_REFE=-0.01134877555161,
+            VALE_CALC=-0.01130286042724,
+            VALE_REFE=-0.01130135697227,
             VALE_PARA=19.399999999999999,
             REFERENCE="AUTRE_ASTER",
             PRECISION=1.0e-3,
             FONCTION=N04_DXC3,
         ),
         _F(
-            VALE_CALC=-0.01134877555163,
-            VALE_REFE=-0.01134877555161,
+            VALE_CALC=-0.01130135697227,
+            VALE_REFE=-0.01130135697227,
             VALE_PARA=19.399999999999999,
             REFERENCE="AUTRE_ASTER",
             PRECISION=1.0e-6,
             FONCTION=N04_DX_R,
         ),
         _F(
-            VALE_CALC=-0.01134877555161,
-            VALE_REFE=-0.01134877555161,
+            VALE_CALC=-0.01130135697226,
+            VALE_REFE=-0.01130135697227,
             VALE_PARA=19.399999999999999,
             REFERENCE="AUTRE_ASTER",
             PRECISION=1.0e-6,
             FONCTION=N04_DX_5,
         ),
         _F(
-            VALE_CALC=-0.01134877555163,
-            VALE_REFE=-0.01134877555161,
+            VALE_CALC=-0.01130135697227,
+            VALE_REFE=-0.01130135697227,
             VALE_PARA=19.399999999999999,
             REFERENCE="AUTRE_ASTER",
             PRECISION=1.0e-6,
@@ -427,41 +427,41 @@ TEST_FONCTION(
 TEST_FONCTION(
     VALEUR=(
         _F(
-            VALE_CALC=-1.669580835792e-04,
-            VALE_REFE=7.340082441400e-04,
+            VALE_CALC=-1.647490857393e-04,
+            VALE_REFE=7.331624852539e-04,
             VALE_PARA=19.399999999999999,
             REFERENCE="AUTRE_ASTER",
             PRECISION=1.23,
             FONCTION=N02_DX_1,
         ),
-        _F(VALE_CALC=7.340082441400e-04, VALE_PARA=19.399999999999999, FONCTION=N02_DX_2),
+        _F(VALE_CALC=7.331624852539e-04, VALE_PARA=19.399999999999999, FONCTION=N02_DX_2),
         _F(
-            VALE_CALC=5.939577711279e-04,
-            VALE_REFE=7.340082441400e-04,
+            VALE_CALC=5.961667689677e-04,
+            VALE_REFE=7.331624852539e-04,
             VALE_PARA=19.399999999999999,
             REFERENCE="AUTRE_ASTER",
             PRECISION=0.19500000000000000,
             FONCTION=N02_DXC3,
         ),
         _F(
-            VALE_CALC=7.340082441390e-04,
-            VALE_REFE=7.340082441400e-04,
+            VALE_CALC=7.331624852538e-04,
+            VALE_REFE=7.331624852539e-04,
             VALE_PARA=19.399999999999999,
             REFERENCE="AUTRE_ASTER",
             PRECISION=1.0e-06,
             FONCTION=N02_DX_R,
         ),
         _F(
-            VALE_CALC=7.340082441405e-04,
-            VALE_REFE=7.340082441400e-04,
+            VALE_CALC=7.331624852539e-04,
+            VALE_REFE=7.331624852539e-04,
             VALE_PARA=19.399999999999999,
             REFERENCE="AUTRE_ASTER",
             PRECISION=1.0e-06,
             FONCTION=N02_DX_5,
         ),
         _F(
-            VALE_CALC=7.340082441387e-04,
-            VALE_REFE=7.340082441400e-04,
+            VALE_CALC=7.331624852531e-04,
+            VALE_REFE=7.331624852539e-04,
             VALE_PARA=19.399999999999999,
             REFERENCE="AUTRE_ASTER",
             PRECISION=1.0e-06,

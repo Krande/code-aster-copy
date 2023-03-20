@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -347,7 +347,7 @@ for k in range(1, NF):
                     RESULTAT=EVOL,
                     NOM_CHAM="DEPL",
                     NOM_CMP="DX",
-                    VALE_CALC=-0.0458760352396,
+                    VALE_CALC=-0.045863442438042114,
                 ),
                 _F(
                     GROUP_NO="P3",
@@ -355,7 +355,7 @@ for k in range(1, NF):
                     RESULTAT=EVOL,
                     NOM_CHAM="DEPL",
                     NOM_CMP="DY",
-                    VALE_CALC=0.00568737814334,
+                    VALE_CALC=0.005684003157705126,
                 ),
                 _F(
                     GROUP_NO="P3",
@@ -484,7 +484,7 @@ TEST_RESU(
             RESULTAT=EVOL,
             NOM_CHAM="DEPL",
             NOM_CMP="DX",
-            VALE_CALC=-0.0479746273861,
+            VALE_CALC=-0.04798790918724236,
         ),
         _F(
             GROUP_NO="P3",
@@ -492,7 +492,7 @@ TEST_RESU(
             RESULTAT=EVOL,
             NOM_CHAM="DEPL",
             NOM_CMP="DY",
-            VALE_CALC=0.00643831407138,
+            VALE_CALC=0.006446282333203726,
         ),
         _F(
             GROUP_NO="P3",

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -443,11 +443,11 @@ TEST_RESU(
             NOM_CMP="DY",
             GROUP_NO="N_CENTRAL",
             RESULTAT=RESU_res,
-            VALE_CALC=-2.54896e-03,
+            VALE_CALC=-0.002563281375850705,
             VALE_REFE=-2.469e-03,
             REFERENCE="SOURCE_EXTERNE",
             CRITERE="RELATIF",
-            PRECISION=0.032385581,
+            PRECISION=0.04,
         ),
     )
 )

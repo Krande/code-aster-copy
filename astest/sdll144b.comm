@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -376,7 +376,7 @@ MOD_GED2 = CALC_FONCTION(COMB=(_F(FONCTION=DX2_GED2, COEF=1.0), _F(FONCTION=DY2_
 
 TEST_FONCTION(
     VALEUR=_F(
-        VALE_CALC=2.024424907701e-09,
+        VALE_CALC=2.025378537328e-09,
         VALE_REFE=2.0160099999999999e-09,
         VALE_PARA=3.1956000000000002,
         REFERENCE="SOURCE_EXTERNE",

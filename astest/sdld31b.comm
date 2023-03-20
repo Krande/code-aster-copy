@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -333,7 +333,7 @@ BNEWTRAN = RECU_FONCTION(RESU_GENE=NEWTRANG, NOM_CHAM="DEPL", NOM_CMP="DZ", GROU
 TEST_FONCTION(
     VALEUR=(
         _F(
-            VALE_CALC=0.01079639373628,
+            VALE_CALC=0.01078498835566,
             VALE_REFE=solex(tpst1),
             VALE_PARA=tpst1,
             REFERENCE="ANALYTIQUE",
@@ -342,7 +342,7 @@ TEST_FONCTION(
             FONCTION=BNEWTRAN,
         ),
         _F(
-            VALE_CALC=-3.777604369249e-03,
+            VALE_CALC=-3.745101277417e-03,
             VALE_REFE=solex(tpst2),
             VALE_PARA=tpst2,
             REFERENCE="ANALYTIQUE",
@@ -351,7 +351,7 @@ TEST_FONCTION(
             FONCTION=BNEWTRAN,
         ),
         _F(
-            VALE_CALC=-0.01260003866495,
+            VALE_CALC=-0.01256393561489,
             VALE_REFE=solex(tpst3),
             VALE_PARA=tpst3,
             REFERENCE="ANALYTIQUE",

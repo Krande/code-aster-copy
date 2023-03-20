@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -95,7 +95,7 @@ resgene = DYNA_LINE(
 )
 
 dispRef2 = 0.14537012
-dispCal2 = 0.1471203825182522
+dispCal2 = 0.14639729836990278
 dispTol2 = 1.25 * 0.01
 timeTes2 = 0.05
 

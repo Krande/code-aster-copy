@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -392,7 +392,7 @@ TEST_RESU(
         NOM_CHAM="DEPL",
         GROUP_NO="P3",
         NOM_CMP="DX",
-        VALE_CALC=6.73944583039e-06,
+        VALE_CALC=6.7395002078002784e-06,
         VALE_REFE=6.7394999999999996e-06,
         PRECISION=5.0e-3,
     )
@@ -406,7 +406,7 @@ TEST_RESU(
         NOM_CHAM="DEPL",
         GROUP_NO="P3",
         NOM_CMP="DX",
-        VALE_CALC=1.10194688041e-05,
+        VALE_CALC=1.1019149394033456e-05,
         VALE_REFE=1.1019000000000001e-05,
         PRECISION=7.0e-3,
     )
@@ -420,7 +420,7 @@ TEST_RESU(
         NOM_CHAM="DEPL",
         GROUP_NO="P3",
         NOM_CMP="DX",
-        VALE_CALC=3.66816396476e-05,
+        VALE_CALC=3.668179301523164e-05,
         VALE_REFE=3.6683000000000001e-05,
         CRITERE="ABSOLU",
         PRECISION=1.0e-7,
@@ -435,7 +435,7 @@ TEST_RESU(
         NOM_CHAM="DEPL",
         GROUP_NO="P3",
         NOM_CMP="DX",
-        VALE_CALC=0.000166140288908,
+        VALE_CALC=0.0001661455085375383,
         VALE_REFE=1.6615e-4,
         CRITERE="ABSOLU",
         PRECISION=1.0e-6,
@@ -450,7 +450,7 @@ TEST_RESU(
         NOM_CHAM="VITE",
         GROUP_NO="P3",
         NOM_CMP="DX",
-        VALE_CALC=0.000134247760429,
+        VALE_CALC=0.00013424982358361574,
         VALE_REFE=1.3425000000000001e-4,
         CRITERE="ABSOLU",
         PRECISION=1.0e-6,
@@ -465,7 +465,7 @@ TEST_RESU(
         NOM_CHAM="VITE",
         GROUP_NO="P3",
         NOM_CMP="DX",
-        VALE_CALC=-6.41163650079e-05,
+        VALE_CALC=-6.411088146728429e-05,
         VALE_REFE=-6.4110999999999997e-05,
         PRECISION=5.0e-3,
     )
@@ -479,7 +479,7 @@ TEST_RESU(
         NOM_CHAM="VITE",
         GROUP_NO="P3",
         NOM_CMP="DX",
-        VALE_CALC=1.6079067495e-05,
+        VALE_CALC=1.6100489270203086e-05,
         VALE_REFE=1.6104e-05,
         CRITERE="ABSOLU",
         PRECISION=1.0e-6,
@@ -494,7 +494,7 @@ TEST_RESU(
         NOM_CHAM="VITE",
         GROUP_NO="P3",
         NOM_CMP="DX",
-        VALE_CALC=4.42674770509e-05,
+        VALE_CALC=4.424805188904406e-05,
         VALE_REFE=4.4261999999999997e-05,
         CRITERE="ABSOLU",
         PRECISION=1.0e-6,
@@ -509,7 +509,7 @@ TEST_RESU(
         NOM_CHAM="ACCE",
         GROUP_NO="P3",
         NOM_CMP="DX",
-        VALE_CALC=-0.00356994073406,
+        VALE_CALC=-0.003569163375636143,
         CRITERE="ABSOLU",
         VALE_REFE=-3.5693999999999999e-3,
         PRECISION=1.0e-6,
@@ -524,7 +524,7 @@ TEST_RESU(
         NOM_CHAM="ACCE",
         GROUP_NO="P3",
         NOM_CMP="DX",
-        VALE_CALC=-0.00439221735986,
+        VALE_CALC=-0.004392509765178036,
         CRITERE="ABSOLU",
         VALE_REFE=-4.3924000000000003e-3,
         PRECISION=1.0e-6,
@@ -539,7 +539,7 @@ TEST_RESU(
         NOM_CHAM="ACCE",
         GROUP_NO="P3",
         NOM_CMP="DX",
-        VALE_CALC=0.00437646885645,
+        VALE_CALC=0.004376643902911132,
         VALE_REFE=4.3765999999999996e-3,
         CRITERE="ABSOLU",
         PRECISION=1.0e-6,
@@ -554,7 +554,7 @@ TEST_RESU(
         NOM_CHAM="ACCE",
         GROUP_NO="P3",
         NOM_CMP="DX",
-        VALE_CALC=0.00424572306147,
+        VALE_CALC=0.004246021427473755,
         VALE_REFE=4.2459000000000004e-3,
         CRITERE="ABSOLU",
         PRECISION=1.0e-6,
@@ -569,7 +569,7 @@ TEST_RESU(
         NOM_CHAM="ACCE",
         GROUP_NO="P3",
         NOM_CMP="DX",
-        VALE_CALC=-0.00422330795826,
+        VALE_CALC=-0.004223363091969512,
         VALE_REFE=-4.2233000000000001e-3,
         CRITERE="ABSOLU",
         PRECISION=1.0e-6,
@@ -584,7 +584,7 @@ TEST_RESU(
         NOM_CHAM="DEPL",
         GROUP_NO="P3",
         NOM_CMP="DX",
-        VALE_CALC=6.73944583039e-06,
+        VALE_CALC=6.739500207801992e-06,
         VALE_REFE=6.7394999999999996e-06,
         CRITERE=("RELATIF", "ABSOLU"),
         PRECISION=1.0e-4,
@@ -599,7 +599,7 @@ TEST_RESU(
         NOM_CHAM="DEPL",
         GROUP_NO="P3",
         NOM_CMP="DX",
-        VALE_CALC=1.10194688041e-05,
+        VALE_CALC=1.1019149394031221e-05,
         VALE_REFE=1.1019000000000001e-05,
         CRITERE=("RELATIF", "ABSOLU"),
         PRECISION=1.0e-4,
@@ -614,7 +614,7 @@ TEST_RESU(
         NOM_CHAM="DEPL",
         GROUP_NO="P3",
         NOM_CMP="DX",
-        VALE_CALC=3.66816396476e-05,
+        VALE_CALC=3.668179301528925e-05,
         VALE_REFE=3.6683000000000001e-05,
         CRITERE="ABSOLU",
         PRECISION=1.0e-7,
@@ -629,7 +629,7 @@ TEST_RESU(
         NOM_CHAM="DEPL",
         GROUP_NO="P3",
         NOM_CMP="DX",
-        VALE_CALC=0.000166140288906,
+        VALE_CALC=0.0001661455085356362,
         VALE_REFE=1.6615e-4,
         CRITERE=("ABSOLU"),
         PRECISION=1.0e-4,
@@ -639,7 +639,7 @@ TEST_RESU(
 TEST_FONCTION(
     VALEUR=(
         _F(
-            VALE_CALC=8.098570293387e-06,
+            VALE_CALC=8.098604066139e-06,
             VALE_REFE=8.0986999999999992e-06,
             REFERENCE="NON_DEFINI",
             VALE_PARA=0.18,
@@ -647,7 +647,7 @@ TEST_FONCTION(
             FONCTION=P3MP1,
         ),
         _F(
-            VALE_CALC=-6.224785321241e-06,
+            VALE_CALC=-6.224702915717e-06,
             VALE_REFE=-6.2245999999999997e-06,
             REFERENCE="NON_DEFINI",
             VALE_PARA=0.55,
@@ -655,7 +655,7 @@ TEST_FONCTION(
             FONCTION=P3MP1,
         ),
         _F(
-            VALE_CALC=5.306504582729e-06,
+            VALE_CALC=5.306425697584e-06,
             VALE_REFE=5.3063999999999997e-06,
             REFERENCE="NON_DEFINI",
             VALE_PARA=0.82,
@@ -663,7 +663,7 @@ TEST_FONCTION(
             FONCTION=P3MP1,
         ),
         _F(
-            VALE_CALC=-4.555148264757e-06,
+            VALE_CALC=-4.555233411987e-06,
             VALE_REFE=-4.5552e-06,
             REFERENCE="NON_DEFINI",
             VALE_PARA=1.18,
@@ -671,7 +671,7 @@ TEST_FONCTION(
             FONCTION=P3MP1,
         ),
         _F(
-            VALE_CALC=-3.041636223453e-06,
+            VALE_CALC=-3.041589810325e-06,
             VALE_REFE=-3.0415999999999998e-06,
             REFERENCE="NON_DEFINI",
             VALE_PARA=1.92,
@@ -679,7 +679,7 @@ TEST_FONCTION(
             FONCTION=P3MP1,
         ),
         _F(
-            VALE_CALC=1.844564263320e-06,
+            VALE_CALC=1.844602650427e-06,
             VALE_REFE=1.8447999999999999e-06,
             REFERENCE="NON_DEFINI",
             VALE_PARA=3.55,
@@ -687,7 +687,7 @@ TEST_FONCTION(
             FONCTION=P3MP1,
         ),
         _F(
-            VALE_CALC=1.483306415952e-06,
+            VALE_CALC=1.483305428965e-06,
             VALE_REFE=1.4832e-06,
             REFERENCE="NON_DEFINI",
             VALE_PARA=4.92,
