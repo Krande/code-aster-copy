@@ -32,6 +32,7 @@ void exportPhysicalProblemToPython( py::module_ &mod ) {
 
     py::class_< PhysicalProblem, PhysicalProblemPtr > c1( mod, "PhysicalProblem" );
     // fake initFactoryPtr: not a DataStructure
+    c1.def( py::init( &initFactoryPtr< PhysicalProblem, BaseDOFNumberingPtr > ) );
     c1.def( py::init( &initFactoryPtr< PhysicalProblem, ModelPtr, MaterialFieldPtr > ) );
     c1.def( py::init( &initFactoryPtr< PhysicalProblem, ModelPtr, MaterialFieldPtr,
                                        ElementaryCharacteristicsPtr > ) );

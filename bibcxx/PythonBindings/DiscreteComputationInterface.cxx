@@ -121,15 +121,40 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
               py::arg( "time" ), py::arg( "time_step" ), py::arg( "theta" ),
               py::arg( "previousPrimalField" ) = nullptr )
 
-        .def( "getDirichletBC", &DiscreteComputation::getDirichletBC,
+        .def( "getMechanicalDirichletBC", &DiscreteComputation::getMechanicalDirichletBC,
               R"(
             Return the imposed displacement vector used to remove imposed DDL
+            *for internal use - prefer to use getDirichletBC*
 
             Arguments:
                   time (float): Current time (default 0.0)
 
             Returns:
-                  FieldOnNodes: imposed displacement vector
+                  FieldOnNodesReal: imposed displacement vector
+        )",
+              py::arg( "time" ) = 0.0 )
+        .def( "getThermalDirichletBC", &DiscreteComputation::getThermalDirichletBC,
+              R"(
+            Return the imposed thermal vector used to remove imposed DDL
+            *for internal use - prefer to use getDirichletBC*
+
+            Arguments:
+                  time (float): Current time (default 0.0)
+
+            Returns:
+                  FieldOnNodesReal: imposed thermal vector
+        )",
+              py::arg( "time" ) = 0.0 )
+        .def( "getAcousticDirichletBC", &DiscreteComputation::getAcousticDirichletBC,
+              R"(
+            Return the imposed acoustic vector used to remove imposed DDL
+            *for internal use - prefer to use getDirichletBC*
+
+            Arguments:
+                  time (float): Current time (default 0.0)
+
+            Returns:
+                  FieldOnNodesComplex: imposed accoustic vector
         )",
               py::arg( "time" ) = 0.0 )
         .def( "getIncrementalDirichletBC", &DiscreteComputation::getIncrementalDirichletBC,

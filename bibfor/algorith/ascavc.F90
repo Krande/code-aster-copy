@@ -65,13 +65,14 @@ subroutine ascavc(lchar, infcha, fomult, numedd, inst, vci, dlci_, &
 !----------------------------------------------------------------------
     integer :: idchar, jinfc, idfomu, nchtot, nchci, ichar, icine, ilchno
     integer :: ichci, ifm, niv, neq, ieq, jdlci2, ieqmul
-    character(len=1) :: base
+    character(len=1) :: base, typval
     character(len=8) :: newnom
-    character(len=19) :: charci, chamno, vci2
+    character(len=19) :: charci, chamno, vci2, nume_equa
     character(len=24) :: vachci, dlci
     character(len=8) :: charge
     aster_logical :: l_hho
     integer, pointer :: v_dlci(:) => null()
+
     data chamno/'&&ASCAVC.???????'/
     data vachci/'&&ASCAVC.LISTE_CI'/
     data charci/'&&ASCAVC.LISTE_CHI'/
@@ -126,12 +127,17 @@ subroutine ascavc(lchar, infcha, fomult, numedd, inst, vci, dlci_, &
 !
     call wkvect(vachci, 'V V K24', max(nchci, 1), ilchno)
 !
+! - Get informations about GRANDEUR
+!
+    call dismoi('NUME_EQUA', numedd, 'NUME_DDL', repk=nume_equa)
+    call dismoi('TYPE_SCA', nume_equa, 'NUME_EQUA', repk=typval)
+!
 !     -- S'IL N'Y A PAS DE CHARGES CINEMATIQUES, ON CREE UN CHAMP NUL:
     if (nchci .eq. 0) then
         call gcnco2(newnom)
         chamno(10:16) = newnom(2:8)
         call corich('E', chamno, ichin_=-2)
-        call vtcreb(chamno, 'V', 'R', &
+        call vtcreb(chamno, 'V', typval, &
                     nume_ddlz=numedd, &
                     nb_equa_outz=neq)
         zk24(ilchno-1+1) = chamno
@@ -174,11 +180,10 @@ subroutine ascavc(lchar, infcha, fomult, numedd, inst, vci, dlci_, &
             end if
         end do
     end if
-
 !
 !     -- ON COMBINE LES CHAMPS CALCULES :
     call ascova('D', vachci, fomult, 'INST', inst, &
-                'R', vci2, base)
+                typval, vci2, base)
 !
 !     --SI ON A PAS DE CHARGE CINEMATIQUE, IL FAUT QUAND MEME
 !        FAIRE LE MENAGE

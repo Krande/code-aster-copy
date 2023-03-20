@@ -62,6 +62,12 @@ PhysicalProblem::PhysicalProblem( const ModelPtr curModel, const MaterialFieldPt
     }
 };
 
+PhysicalProblem::PhysicalProblem( const BaseDOFNumberingPtr dofNume )
+    : _model( dofNume->getModel() ),
+      _mesh( dofNume->getMesh() ),
+      _dofNume( dofNume ),
+      _listOfLoads( std::make_shared< ListOfLoads >( _model ) ){};
+
 CodedMaterialPtr PhysicalProblem::getCodedMaterial() const {
     if ( _codedMater && _codedMater->exists() ) {
         _codedMater->updateValuePointers();

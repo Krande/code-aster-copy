@@ -76,6 +76,9 @@ class PhysicalProblem {
     PhysicalProblem( const ModelPtr curModel, const MaterialFieldPtr curMat,
                      const ElementaryCharacteristicsPtr cara = nullptr );
 
+    /** @brief Constructor */
+    PhysicalProblem( const BaseDOFNumberingPtr dofNume );
+
     /** @brief Destructor */
     ~PhysicalProblem(){};
 

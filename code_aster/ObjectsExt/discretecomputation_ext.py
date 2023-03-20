@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -39,6 +39,28 @@ class ExtendedDiscreteComputation:
         object during unpickling.
         """
         return (self.getPhysicalProblem(),)
+
+    @profile
+    def getDirichletBC(self, time=0.0):
+        """Return the imposed displacement vector used to remove imposed DDL
+
+        Arguments:
+              time (float): Current time (default 0.0)
+
+        Returns:
+              FieldOnNodes: imposed BC vector
+        """
+
+        model = self.getPhysicalProblem().getModel()
+
+        if model.isMechanical():
+            return self.getMechanicalDirichletBC(time)
+        elif model.isThermal():
+            return self.getThermalDirichletBC(time)
+        elif model.isAcoustic():
+            return self.getAcousticDirichletBC(time)
+        else:
+            raise RuntimeError("Unknown physics")
 
     @profile
     def getLinearStiffnessMatrix(

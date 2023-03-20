@@ -256,7 +256,11 @@ class DiscreteComputation {
      * @param time Time
      * @return Nodal field for kinematic boundary condition
      */
-    FieldOnNodesRealPtr getDirichletBC( const ASTERDOUBLE time = 0.0 ) const;
+    template < typename T >
+    std::shared_ptr< FieldOnNodes< T > > _getDirichletBC( const ASTERDOUBLE time = 0.0 ) const;
+    FieldOnNodesRealPtr getMechanicalDirichletBC( const ASTERDOUBLE time = 0.0 ) const;
+    FieldOnNodesRealPtr getThermalDirichletBC( const ASTERDOUBLE time = 0.0 ) const;
+    FieldOnNodesComplexPtr getAcousticDirichletBC( const ASTERDOUBLE time = 0.0 ) const;
 
     /**
      * @brief Compute nodal field for incremental kinematic boundary condition

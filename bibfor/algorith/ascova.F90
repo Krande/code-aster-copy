@@ -159,10 +159,13 @@ subroutine ascova(detr, vachar, fomulz, npara, vpara, &
         do k = 1, nbvec
 !
             phase = 0.d0
+            npuis = 0
+            calpha = cmplx(1.d0, 0.d0)
+
             call getvr8('EXCIT', 'PHAS_DEG', iocc=k, scal=phase, nbret=n1)
             call getvis('EXCIT', 'PUIS_PULS', iocc=k, scal=npuis, nbret=n2)
-            calpha = exp(dcmplx(0.d0, phase*dgrd))
-            if (npuis .ne. 0) calpha = calpha*omega**npuis
+            if (n1 .ne. 0) calpha = exp(dcmplx(0.d0, phase*dgrd))
+            if (n2 .ne. 0 .and. npuis .ne. 0) calpha = calpha*omega**npuis
 !
             chamno = zk24(jvec+k-1) (1:19)
             call corich('L', chamno, ichout_=icha)
@@ -180,8 +183,11 @@ subroutine ascova(detr, vachar, fomulz, npara, vpara, &
                 valre = 1.d0
                 valim = 0.d0
                 tval(1) = vpara
-                if (fct) call fointc('F', zk24(jfonct+icha-1) (1:8), 1, npara, tval, &
-                                     valre, valim, ier)
+                if (fct .and. zk24(jfonct+icha-1) .ne. ' ' .and. &
+                    zk24(jfonct+icha-1) .ne. '&&ACDOCH') then
+                    call fointc('F', zk24(jfonct+icha-1) (1:8), 1, npara, tval, &
+                                valre, valim, ier)
+                end if
             end if
 !
             zk8(jtype+k-1) = 'C'

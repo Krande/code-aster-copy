@@ -32,6 +32,7 @@
 #include "MemoryManager/JeveuxVector.h"
 #include "Modeling/Model.h"
 #include "Modeling/XfemModel.h"
+#include "Supervis/CommandSyntax.h"
 #include "Utilities/Tools.h"
 
 FieldOnNodesRealPtr DiscreteComputation::getImposedDualBC( const ASTERDOUBLE time,
@@ -175,10 +176,12 @@ FieldOnNodesRealPtr DiscreteComputation::getDualDisplacement( FieldOnNodesRealPt
     return bume;
 };
 
-FieldOnNodesRealPtr DiscreteComputation::getDirichletBC( const ASTERDOUBLE time ) const {
+template < typename T >
+std::shared_ptr< FieldOnNodes< T > >
+DiscreteComputation::_getDirichletBC( const ASTERDOUBLE time ) const {
 
     auto dofNume = _phys_problem->getDOFNumbering();
-    FieldOnNodesRealPtr vectAsse = std::make_shared< FieldOnNodesReal >( dofNume );
+    auto vectAsse = std::make_shared< FieldOnNodes< T > >( dofNume );
 
     // Prepare loads
     const auto &_listOfLoads = _phys_problem->getListOfLoads();
@@ -207,6 +210,27 @@ FieldOnNodesRealPtr DiscreteComputation::getDirichletBC( const ASTERDOUBLE time 
     return vectAsse;
 };
 
+FieldOnNodesRealPtr DiscreteComputation::getMechanicalDirichletBC( const ASTERDOUBLE time ) const {
+    return this->_getDirichletBC< ASTERDOUBLE >( time );
+}
+
+FieldOnNodesRealPtr DiscreteComputation::getThermalDirichletBC( const ASTERDOUBLE time ) const {
+    return this->_getDirichletBC< ASTERDOUBLE >( time );
+}
+
+FieldOnNodesComplexPtr DiscreteComputation::getAcousticDirichletBC( const ASTERDOUBLE time ) const {
+    CommandSyntax cmdSt( "CALC_CHAR_CINE" );
+    SyntaxMapContainer dict;
+    ListSyntaxMapContainer listeExcit;
+    listeExcit.push_back( dict );
+    SyntaxMapContainer dict2;
+
+    dict.container["EXCIT"] = listeExcit;
+    cmdSt.define( dict );
+
+    return this->_getDirichletBC< ASTERCOMPLEX >( time );
+}
+
 FieldOnNodesRealPtr
 DiscreteComputation::getIncrementalDirichletBC( const ASTERDOUBLE &time,
                                                 const FieldOnNodesRealPtr disp_curr ) const {
@@ -214,7 +238,7 @@ DiscreteComputation::getIncrementalDirichletBC( const ASTERDOUBLE &time,
 
     const auto listOfLoads = _phys_problem->getListOfLoads();
     if ( listOfLoads->hasDirichletBC() ) {
-        auto diri_curr = getDirichletBC( time );
+        auto diri_curr = this->_getDirichletBC< ASTERDOUBLE >( time );
         auto diri_impo = *( diri_curr ) - *( disp_curr );
         diri_impo.updateValuePointers();
 
