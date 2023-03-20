@@ -36,16 +36,12 @@ class ExtendedGeneralizedModel:
     def LIST_SOUS_STRUCT(self):
         """retourne la liste des sous structures du modele generalise
         la liste des macro-elements sous-jacents"""
-        nommodgen = self.getName()
-        ncham = nommodgen + (8 - len(nommodgen)) * " "
-        ssno = aster.getvectjev(ncham + (14 - len(ncham)) * " " + ".MODG.SSNO")
-        ssme = aster.getcolljev(ncham + (14 - len(ncham)) * " " + ".MODG.SSME")
-        return [([ssno[ind], ssme[ind + 1]]) for ind in range(len(ssno))]
+
+        return [(name, self.getDynamicMacroElementFromName(name)) for name in self.getDynamicMacroElementNames()]
 
     def LIST_LIAIS_STRUCT(self):
         """retourne la liste des liaisons entre sous structures du modele generalise sous la forme :
         [ (ss1, nom_liais1,  ss2 , nom_liais2), ...]"""
-        nommodgen = self.getName()
-        ncham = nommodgen + (8 - len(nommodgen)) * " "
-        lidf = aster.getcolljev(ncham + (14 - len(ncham)) * " " + ".MODG.LIDF")
-        return [([(lidf[ind][indb]) for indb in range(4)]) for ind in lidf]
+
+        dynamic_structure_links = self.getDynamicStructureLinks()
+        return [dynamic_structure_links[4*i:4*(i+1)] for i in range(len(dynamic_structure_links)//4)]

@@ -32,5 +32,7 @@ void exportGeneralizedModelToPython( py::module_ &mod ) {
         .def( py::init( &initFactoryPtr< GeneralizedModel > ) )
         .def( py::init( &initFactoryPtr< GeneralizedModel, std::string > ) )
         .def( "addDynamicMacroElement", &GeneralizedModel::addDynamicMacroElement )
+        .def( "getDynamicMacroElementNames", &GeneralizedModel::getDynamicMacroElementNames )
+        .def( "getDynamicStructureLinks", &GeneralizedModel::getDynamicStructureLinks )
         .def( "getDynamicMacroElementFromName", &GeneralizedModel::getDynamicMacroElementFromName );
 };

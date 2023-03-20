@@ -75,13 +75,13 @@ class GeneralizedModel : public DataStructure {
     GeneralizedModel( const std::string name = ResultNaming::getNewResultName() )
         : DataStructure( name, 14, "MODELE_GENE" ),
           _modgDesc( JeveuxVectorLong( getName() + ".MODG.DESC" ) ),
-          _modgLidf( JeveuxCollectionChar8( getName() + ".MODG.DESC" ) ),
-          _modgLipr( JeveuxVectorLong( getName() + ".MODG.DESC" ) ),
-          _modgLima( JeveuxVectorReal( getName() + ".MODG.DESC" ) ),
-          _modgSsme( JeveuxVectorChar8( getName() + ".MODG.DESC" ) ),
-          _modgSsno( JeveuxVectorChar8( getName() + ".MODG.DESC" ) ),
-          _modgSsor( JeveuxVectorReal( getName() + ".MODG.DESC" ) ),
-          _modgSstr( JeveuxVectorReal( getName() + ".MODG.DESC" ) ) {};
+          _modgLidf( JeveuxCollectionChar8( getName() + ".MODG.LIDF" ) ),
+          _modgLipr( JeveuxVectorLong( getName() + ".MODG.LIPR" ) ),
+          _modgLima( JeveuxVectorReal( getName() + ".MODG.LIMA" ) ),
+          _modgSsme( JeveuxVectorChar8( getName() + ".MODG.SSME" ) ),
+          _modgSsno( JeveuxVectorChar8( getName() + ".MODG.SSNO" ) ),
+          _modgSsor( JeveuxVectorReal( getName() + ".MODG.SSOR" ) ),
+          _modgSstr( JeveuxVectorReal( getName() + ".MODG.SSTR" ) ){};
 
     /**
      * @brief Add a DynamicMacroElement associated to a name
@@ -96,6 +96,32 @@ class GeneralizedModel : public DataStructure {
      */
     DynamicMacroElementPtr getDynamicMacroElementFromName( const std::string &name ) {
         return _map[name];
+    };
+    /**
+     * @brief Return DynamicMacroElement names
+     */
+    std::vector< std::string > getDynamicMacroElementNames() const {
+        std::vector< std::string > result;
+        result.reserve( _map.size() );
+        for ( auto it : _map )
+            result.push_back( it.first );
+        return result;
+    };
+    /**
+     * @brief Return StructureLinks
+     */
+    std::vector< std::string > getDynamicStructureLinks() const {
+        std::vector< std::string > result;
+        _modgLidf->build();
+        _modgLidf->updateValuePointer();
+        result.reserve( 4*_modgLidf->size() );
+        for ( int i = 1; i <= _modgLidf->size(); i++ ){
+            auto& collobj = ( *_modgLidf )[i];
+            AS_ASSERT( collobj->size() >= 4 );
+            for ( int j = 0; j < 4; j++ )
+                result.push_back( trim( (* collobj )[j] ) );
+        }
+        return result;
     };
 };
 
