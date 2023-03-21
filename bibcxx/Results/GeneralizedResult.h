@@ -101,6 +101,27 @@ class GeneralizedResult : public DataStructure, DynamicResultsIndexing {
 
         return true;
     };
+
+    std::vector< ValueType > getDisplacement() const { 
+        _displacement->updateValuePointer();
+        return _displacement->toVector();
+    };
+
+    ASTERINTEGER getNumberOfModes() const {
+        _desc->updateValuePointer();
+        return ( *_desc )[1];
+    };
+
+    VectorReal getAbscissasOfSamples() const {
+        _abscissasOfSamples->updateValuePointer();
+        return _abscissasOfSamples->toVector();
+    };
+
+    VectorLong getIndicesOfSamples() const {
+        _indicesOfSamples->updateValuePointer();
+        return _indicesOfSamples->toVector();
+    }
+
 };
 
 /** @typedef Définition d'un résultat généralisé à valeurs réelles */

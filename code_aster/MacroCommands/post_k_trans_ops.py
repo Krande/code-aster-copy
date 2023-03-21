@@ -60,9 +60,8 @@ def post_k_trans_ops(self, **args):
     # Verification de cohérence sur le nombre de modes
     #
     # RESULTAT TRANSITOIRE
-    nomresu = RESU_TRANS.getName()
-    coef = aster.getvectjev(nomresu.ljust(19) + ".DEPL")
-    nmodtr = aster.getvectjev(nomresu.ljust(19) + ".DESC")[1]
+    coef = RESU_TRANS.getDisplacement()
+    nmodtr = RESU_TRANS.getNumberOfModes()
     # BASE MODALE
     if DIME == 2:
         n_mode = len((__kgtheta.EXTR_TABLE())["K1"])
@@ -73,13 +72,13 @@ def post_k_trans_ops(self, **args):
         labsc = (__kgtheta.EXTR_TABLE())["ABSC_CURV"].values()["ABSC_CURV"][0:nbno]
     if nmodtr != n_mode:
         n_mode = min(nmodtr, n_mode)
-        UTMESS("A", "RUPTURE0_50", valk=nomresu, vali=n_mode)
+        UTMESS("A", "RUPTURE0_50", valk=RESU_TRANS.getName(), vali=n_mode)
 
     #
     # Traitement des mots clés ORDRE/INST/LIST_INST et LIST_ORDRE
     #
-    l0_inst = aster.getvectjev(nomresu.ljust(19) + ".DISC")
-    l0_ord = aster.getvectjev(nomresu.ljust(19) + ".ORDR")
+    l0_inst = RESU_TRANS.getAbscissasOfSamples()
+    l0_ord = RESU_TRANS.getIndicesOfSamples()
     nbtrans = len(l0_ord)
     li = [[l0_ord[i], l0_inst[i]] for i in range(nbtrans)]
     ln = [[l0_ord[i], i] for i in range(nbtrans)]
@@ -99,7 +98,7 @@ def post_k_trans_ops(self, **args):
                 NUME_ORDRE = (NUME_ORDRE,)
             ltmp = list(NUME_ORDRE)
         elif LIST_ORDRE:
-            ltmp = aster.getvectjev(LIST_ORDRE.getName().ljust(19) + ".VALE")
+            ltmp = LIST_ORDRE.getValues()
         for ord in ltmp:
             if ord in l0_ord:
                 l_ord.append(ord)
@@ -114,7 +113,7 @@ def post_k_trans_ops(self, **args):
                 INST = (INST,)
             ltmp = list(INST)
         elif LIST_INST:
-            ltmp = aster.getvectjev(LIST_INST.getName().ljust(19) + ".VALE")
+            ltmp = LIST_INST.getValues()
         for ins in ltmp:
             if CRITERE == "RELATIF" and ins != 0.0:
                 match = [x for x in l0_inst if abs((ins - x) / ins) < PRECISION]
