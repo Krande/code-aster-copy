@@ -70,7 +70,7 @@ F_elem = CALC_VECT_ELEM(OPTION="CHAR_MECA", CHARGE=excit)
 F = ASSE_VECTEUR(VECT_ELEM=F_elem, NUME_DDL=nddl)
 
 # Boundary condition
-encas = AFFE_CHAR_CINE(MECA_IMPO=(_F(GROUP_MA=("ENCAS"), DX=0.0, DY=0.0, DZ=0.0)), MODELE=model)
+encas = AFFE_CHAR_CINE(MECA_IMPO=(_F(GROUP_MA=("ENCAS"), DX=0.0, DY=0.0, DZ=1.0)), MODELE=model)
 kineLoad = CALC_CHAR_CINE(NUME_DDL=nddl, CHAR_CINE=encas)
 
 
@@ -78,18 +78,18 @@ kineLoad = CALC_CHAR_CINE(NUME_DDL=nddl, CHAR_CINE=encas)
 freq_amor = np.array([45.0, 179.0, 255.0, 696.0])
 val_refe = np.array(
     [
-        -2.52885263e-06 - 5.26288448e-06j,
-        1.11783628e-09 - 3.30841894e-09j,
-        1.01911277e-07 - 2.96162398e-07j,
-        1.48442697e-08 - 7.13562822e-08j,
+        -4.234457692308581 - 12.747092051776347j,
+        -1.4254706152076393 + 0.07409285990878617j,
+        -5.206103972205018 + 11.669342891303831j,
+        3.596707655832039 - 12.75244312484614j,
     ]
 )
 val_calc = np.array(
     [
-        -2.19729959e-06 - 5.31250496e-06j,
-        1.15296519e-09 - 3.39972232e-09j,
-        1.04664929e-07 - 2.81759671e-07j,
-        1.57582867e-08 - 6.87887584e-08j,
+        -4.2344576992588765 - 12.747092046420414j,
+        -1.425470615222583 + 0.07409285991078836j,
+        -5.206103971895799 + 11.669342891687855j,
+        3.596707655963482 - 12.75244312477191j,
     ]
 )
 Nb_freq = freq_amor.size
@@ -154,5 +154,22 @@ for i in range(Nb_freq):
             PRECISION=1e-1,
         )
     )
+
+    TEST_RESU(
+        RESU=_F(
+            RESULTAT=res_harm,
+            FREQ=freq_amor[i],
+            NOM_CHAM="DEPL",
+            GROUP_NO="NodeTest",
+            NOM_CMP="DZ",
+            REFERENCE="ANALYTIQUE",
+            VALE_REFE_C=1.0 + 0.0j,
+            VALE_CALC_C=1.0 + 0.0j,
+            VALE_ABS="NON",
+            CRITERE="RELATIF",
+            PRECISION=1e-1,
+        )
+    )
+
 
 FIN()
