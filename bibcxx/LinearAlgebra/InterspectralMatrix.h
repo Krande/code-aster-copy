@@ -61,6 +61,8 @@ class InterspectralMatrix : public DataStructure {
     /** @brief Objet Jeveux '.CMPJ' */
     JeveuxVectorChar8 _cmpj;
 
+    static std::vector< std::string > toString( const std::vector< JeveuxChar8 >& );
+
   public:
     /**
      * @typedef InterspectralMatrixPtr
@@ -71,23 +73,21 @@ class InterspectralMatrix : public DataStructure {
     /**
      * @brief Constructeur
      */
-    InterspectralMatrix() : InterspectralMatrix( ResultNaming::getNewResultName() ) {};
+    InterspectralMatrix();
 
     /**
      * @brief Constructeur
      */
-    InterspectralMatrix( const std::string name )
-        : DataStructure( name, 8, "INTERSPECTRE" ),
-          _refe( JeveuxVectorChar16( getName() + ".REFE" ) ),
-          _disc( JeveuxVectorReal( getName() + ".DISC" ) ),
-          _vale( JeveuxCollectionReal( getName() + ".VALE" ) ),
-          _numi( JeveuxVectorLong( getName() + ".NUMI" ) ),
-          _numj( JeveuxVectorLong( getName() + ".NUMJ" ) ),
-          _numeOrdre( JeveuxVectorLong( getName() + ".NUME_ORDRE" ) ),
-          _noei( JeveuxVectorChar8( getName() + ".NOEI" ) ),
-          _noej( JeveuxVectorChar8( getName() + ".NOEJ" ) ),
-          _cmpi( JeveuxVectorChar8( getName() + ".CMPI" ) ),
-          _cmpj( JeveuxVectorChar8( getName() + ".CMPJ" ) ) {};
+    InterspectralMatrix( const std::string name );
+
+    std::vector< ASTERINTEGER > getNumI() const;
+    std::vector< ASTERINTEGER > getNumJ() const;
+    std::vector< std::string > getNoeI() const;
+    std::vector< std::string > getNoeJ() const;
+    std::vector< std::string > getCmpI() const;
+    std::vector< std::string > getCmpJ() const;
+    
+
 };
 
 /**

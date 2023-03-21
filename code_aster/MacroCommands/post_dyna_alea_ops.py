@@ -249,8 +249,6 @@ def post_dyna_alea_ops(self, INFO, **args):
         #                   1- concept interspectre
         #                   2- table de table d interspectre
 
-        intespec = INTE_SPEC.getName().ljust(8)
-
         #     ------------------------------------------------------------------
         #     Repérer les couples d'indices selectionnés
         #     vérification de l'égalité du nombre d indices en i et j
@@ -306,34 +304,34 @@ def post_dyna_alea_ops(self, INFO, **args):
         #     Cas de tous les indices
 
         elif OPTION == "TOUT":
-            if aster.getvectjev(intespec + ".NUMI"):
-                l_ind_i = aster.getvectjev(intespec + ".NUMI")
-                l_ind_j = aster.getvectjev(intespec + ".NUMJ")
+            if INTE_SPEC.getNumI():
+                l_ind_i = INTE_SPEC.getNumI()
+                l_ind_j = INTE_SPEC.getNumJ()
                 tabres.add_para(["NUME_ORDRE_I", "NUME_ORDRE_J"], "I")
-            if aster.getvectjev(intespec + ".NOEI"):
-                l_ind_i = aster.getvectjev(intespec + ".NOEI")
-                l_ind_j = aster.getvectjev(intespec + ".NOEJ")
-                l_cmp_i = aster.getvectjev(intespec + ".CMPI")
-                l_cmp_j = aster.getvectjev(intespec + ".CMPJ")
+            if INTE_SPEC.getNoeI():
+                l_ind_i = INTE_SPEC.getNoeI()
+                l_ind_j = INTE_SPEC.getNoeJ()
+                l_cmp_i = INTE_SPEC.getCmpI()
+                l_cmp_j = INTE_SPEC.getCmpJ()
                 tabres.add_para(["NOEUD_I", "NOEUD_J", "NOM_CMP_I", "NOM_CMP_J"], "K8")
 
         #     ------------------------------------------------------------------
         #     Cas de tous les indices centraux
 
         elif OPTION == "DIAG":
-            if aster.getvectjev(intespec + ".NUMI"):
-                l_ind_i_all = aster.getvectjev(intespec + ".NUMI")
-                l_ind_j_all = aster.getvectjev(intespec + ".NUMJ")
+            if INTE_SPEC.getNumI():
+                l_ind_i_all = INTE_SPEC.getNumI()
+                l_ind_j_all = INTE_SPEC.getNumJ()
                 l_ind_i = [ind for i, ind in enumerate(l_ind_i_all) if l_ind_j_all[i] == ind]
                 l_ind_j = l_ind_i
                 tabres.add_para(["NUME_ORDRE_I", "NUME_ORDRE_J"], "I")
-            if aster.getvectjev(intespec + ".NOEI"):
-                l_ind_i_all = aster.getvectjev(intespec + ".NOEI")
-                l_ind_j_all = aster.getvectjev(intespec + ".NOEJ")
+            if INTE_SPEC.getNoeI():
+                l_ind_i_all = INTE_SPEC.getNoeI()
+                l_ind_j_all = INTE_SPEC.getNoeJ()
                 l_ind_i = [ind for i, ind in enumerate(l_ind_i_all) if l_ind_j_all[i] == ind]
                 l_ind_j = l_ind_i
-                l_cmp_i_all = aster.getvectjev(intespec + ".CMPI")
-                l_cmp_j_all = aster.getvectjev(intespec + ".CMPJ")
+                l_cmp_i_all = INTE_SPEC.getCmpI()
+                l_cmp_j_all = INTE_SPEC.getCmpJ()
                 l_cmp_i = [cmpi for i, cmpi in enumerate(l_cmp_i_all) if l_cmp_j_all[i] == cmpi]
                 l_cmp_j = l_cmp_i
                 tabres.add_para(["NOEUD_I", "NOEUD_J", "NOM_CMP_I", "NOM_CMP_J"], "K8")
@@ -349,7 +347,7 @@ def post_dyna_alea_ops(self, INFO, **args):
         #     ------------------------------------------------------------------
         #     Boucle sur les fonctions
 
-        if aster.getvectjev(intespec + ".NOEI"):
+        if INTE_SPEC.getNoeI():
             l_ind = list(zip(l_ind_i, l_ind_j, l_cmp_i, l_cmp_j))
         else:
             l_ind = list(zip(l_ind_i, l_ind_j))
@@ -394,14 +392,14 @@ def post_dyna_alea_ops(self, INFO, **args):
                 if INFO == 2:
                     aster.affiche("MESSAGE", "INDICES :" + str(ind[0]) + " - " + str(ind[1]) + "\n")
             else:  # TOUT_ORDRE
-                if aster.getvectjev(intespec + ".NUMI"):
+                if INTE_SPEC.getNumI():
                     i_foncstat = ind[0] == ind[1]
                     dlign["NUME_ORDRE_I"], dlign["NUME_ORDRE_J"] = ind[0], ind[1]
                     if ind[0] == ind[1]:
                         dlrecu["NUME_ORDRE_I"] = ind[0]
                     else:
                         dlrecu["NUME_ORDRE_I"], dlrecu["NUME_ORDRE_J"] = ind[0], ind[1]
-                if aster.getvectjev(intespec + ".NOEI"):
+                if INTE_SPEC.getNoeI():
                     i_foncstat = ind[0] == ind[1] and ind[2] == ind[3]
                     dlign["NOEUD_I"], dlign["NOEUD_J"], dlign["NOM_CMP_I"], dlign["NOM_CMP_J"] = (
                         ind[0],

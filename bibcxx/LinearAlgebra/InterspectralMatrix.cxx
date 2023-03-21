@@ -24,3 +24,68 @@
 /* person_in_charge: nicolas.sellenet at edf.fr */
 
 #include "LinearAlgebra/InterspectralMatrix.h"
+
+InterspectralMatrix::InterspectralMatrix( const std::string name )
+        : DataStructure( name, 8, "INTERSPECTRE" ),
+          _refe( JeveuxVectorChar16( getName() + ".REFE" ) ),
+          _disc( JeveuxVectorReal( getName() + ".DISC" ) ),
+          _vale( JeveuxCollectionReal( getName() + ".VALE" ) ),
+          _numi( JeveuxVectorLong( getName() + ".NUMI" ) ),
+          _numj( JeveuxVectorLong( getName() + ".NUMJ" ) ),
+          _numeOrdre( JeveuxVectorLong( getName() + ".NUME_ORDRE" ) ),
+          _noei( JeveuxVectorChar8( getName() + ".NOEI" ) ),
+          _noej( JeveuxVectorChar8( getName() + ".NOEJ" ) ),
+          _cmpi( JeveuxVectorChar8( getName() + ".CMPI" ) ),
+          _cmpj( JeveuxVectorChar8( getName() + ".CMPJ" ) ){};
+
+InterspectralMatrix::InterspectralMatrix() : InterspectralMatrix( ResultNaming::getNewResultName() ){};
+
+std::vector< std::string > InterspectralMatrix::toString( const std::vector< JeveuxChar8 >& vc ) {
+    std::vector< std::string > vs;
+    vs.reserve( vc.size() );
+    for ( auto c : vc )
+        vs.push_back( trim( c.toString() ) );
+    return vs;
+}
+
+std::vector< ASTERINTEGER > InterspectralMatrix::getNumI() const {
+    if (!_numi->exists())
+        return {};
+    _numi->updateValuePointer();
+    return _numi->toVector();
+};
+
+std::vector< ASTERINTEGER > InterspectralMatrix::getNumJ() const {
+    if (!_numj->exists())
+        return {};
+    _numj->updateValuePointer();
+    return _numj->toVector();
+};
+
+std::vector< std::string > InterspectralMatrix::getNoeI() const {
+    if (!_noei->exists())
+        return {};
+    _noei->updateValuePointer();
+    return toString( _noei->toVector() );
+};
+
+std::vector< std::string > InterspectralMatrix::getNoeJ() const {
+    if (!_noej->exists())
+        return {};
+    _noej->updateValuePointer();
+    return toString( _noej->toVector() );
+};
+
+std::vector< std::string > InterspectralMatrix::getCmpI() const {
+    if (!_cmpi->exists())
+        return {};
+    _cmpi->updateValuePointer();
+    return toString( _cmpi->toVector() );
+};
+
+std::vector< std::string > InterspectralMatrix::getCmpJ() const {
+    if (!_cmpj->exists())
+        return {};
+    _cmpj->updateValuePointer();
+    return toString( _cmpj->toVector() );
+};
