@@ -77,7 +77,7 @@ subroutine crcoch()
     character(len=1) :: typmat
     character(len=4) :: typabs
     character(len=8) :: k8b, resu, criter, matr
-    character(len=8) :: materi, carele, blan8, noma
+    character(len=8) :: materi, carele, blan8
     character(len=16) :: type, oper
     character(len=19) :: nomch, listr8, list_load, list_load_resu, resu19, profch
     character(len=24) :: lload_name, lload_info, lload_func
@@ -225,7 +225,6 @@ subroutine crcoch()
     end if
 
     call dismoi('NOM_MODELE', matr, 'MATR_ASSE', repk=modele)
-    call dismoi('NOM_MAILLA', modele, 'MODELE', repk=noma)
     call dismoi('NUME_EQUA', matr, 'MATR_ASSE', repk=profch)
     call dismoi('NB_EQUA', numedd, 'NUME_DDL', repi=neq)
     call dismoi('CHAM_MATER', matr, 'MATR_ASSE', repk=materi)
@@ -298,7 +297,7 @@ subroutine crcoch()
         end if
 !
         call jeveuo(nomch//'.REFE', 'E', jrefe)
-        zk24(jrefe-1+1) = noma
+        zk24(jrefe-1+1) = " "
         zk24(jrefe-1+2) = profch
 
         call rsnoch(resu, nsymb, icompt)

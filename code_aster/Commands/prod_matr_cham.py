@@ -20,7 +20,7 @@
 # person_in_charge: nicolas.sellenet@edf.fr
 
 from ..Objects import FieldOnNodesReal
-from ..Supervis import ExecuteCommand
+from ..Supervis import ExecuteCommand, AsterError
 
 
 class ProdMatrCham(ExecuteCommand):
@@ -43,13 +43,22 @@ class ProdMatrCham(ExecuteCommand):
             keywords (dict): User's keywords.
         """
 
-        mat = keywords["MATR_ASSE"]
+        dofNum = keywords["MATR_ASSE"].getDOFNumbering()
+        try:
+            self._result.setDescription(dofNum.getEquationNumbering())
+        except AsterError:
+            pass
 
-        dofNum = mat.getDOFNumbering()
-        self._result.setDescription(dofNum.getEquationNumbering())
-        self._result.setMesh(dofNum.getMesh())
+        self._result.build(dofNum.getMesh())
 
-        self._result.build()
+    def add_dependencies(self, keywords):
+        """Register input *DataStructure* objects as dependencies.
+        No dependecy here
+        Arguments:
+            keywords (dict): User's keywords.
+        """
+
+        # No dependencies to add
 
 
 PROD_MATR_CHAM = ProdMatrCham.run
