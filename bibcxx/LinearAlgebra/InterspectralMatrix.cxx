@@ -89,3 +89,8 @@ std::vector< std::string > InterspectralMatrix::getCmpJ() const {
     _cmpj->updateValuePointer();
     return toString( _cmpj->toVector() );
 };
+
+VectorReal InterspectralMatrix::getNumberOfFrequencies() const {
+    _disc->updateValuePointer();
+    return _disc->toVector();
+};

@@ -86,6 +86,7 @@ class InterspectralMatrix : public DataStructure {
     std::vector< std::string > getNoeJ() const;
     std::vector< std::string > getCmpI() const;
     std::vector< std::string > getCmpJ() const;
+    VectorReal getNumberOfFrequencies() const;
     
 
 };

@@ -38,5 +38,6 @@ void exportInterspectralMatrixToPython( py::module_ &mod ) {
         .def( "getNoeI", &InterspectralMatrix::getNoeI )
         .def( "getNoeJ", &InterspectralMatrix::getNoeJ )
         .def( "getCmpI", &InterspectralMatrix::getCmpI )
-        .def( "getCmpJ", &InterspectralMatrix::getCmpJ );
+        .def( "getCmpJ", &InterspectralMatrix::getCmpJ )
+        .def( "getNumberOfFrequencies", &InterspectralMatrix::getNumberOfFrequencies );
 };

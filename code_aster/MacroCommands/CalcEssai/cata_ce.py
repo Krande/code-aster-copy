@@ -51,7 +51,7 @@ from ...Cata.DataStructure import (
 from ...Cata.Syntax import _F
 from ...Commands import CREA_CHAMP, DEFI_FONCTION, DEFI_INTE_SPEC, RECU_FONCTION
 from ...Messages import UTMESS
-from ...Objects import DataStructure
+from ...Objects import DataStructure, FullResult, HarmoGeneralizedResult, TransientGeneralizedResult
 
 
 class Resultat:
@@ -134,8 +134,7 @@ class ModeMeca(Resultat):
 
     def get_nume(self):
         """Recuperation de la numerotation et du nume_ddl"""
-        indi = aster.getvectjev(self.nom.ljust(19) + ".INDI")
-        if indi:
+        if isinstance(self.obj, (FullResult, HarmoGeneralizedResult, TransientGeneralizedResult)):
             self.nume_name = self.obj.getDOFNumbering().getName()
             if self.nume_name:
                 self.nume = self.objects.nume_ddl[self.nume_name]
@@ -145,23 +144,11 @@ class ModeMeca(Resultat):
         if not self.nume_name:
             self.get_nume()
         if self.nume_name:  # methode 1
-            maillage = aster.getvectjev(self.nume_name[0:8].ljust(14) + ".NUME.REFN")
-            self.maya_name = maillage[0].strip()
+            self.maya_name = self.nume.getMesh().getName()
             self.maya = self.objects.maillages[self.maya_name]
         else:  # methode 2
-            resu = self.nom
-            liste_ordre = aster.getvectjev(resu.ljust(19) + ".ORDR")
-            if not liste_ordre:
-                return
-            for j in liste_ordre:
-                if j == 0:
-                    continue
-                ordr = "%s.001.%06d" % (resu.ljust(8), j)
-                info = aster.getvectjev(ordr.ljust(19) + ".REFE")
-                if info is not None:
-                    if info[1].strip():
-                        self.maya_name = info[0].strip()
-                        self.maya = self.objects.maillages[self.maya_name]
+            self.maya_name = self.obj.getMesh().getName()
+            self.maya = self.objects.maillages[self.maya_name]
 
     def show_linked_concepts(self):
         """!Affichage du concept resultats et des concepts lies"""
@@ -285,16 +272,8 @@ class DynaHarmo(Resultat):
         return vari_acces
 
     def get_maillage(self):
-        for ind_cham in range(3):
-            # on ne s'interesse qu'aux champ 'DEPL','VITE' et 'ACCE' pour
-            # gagner du temps
-            if self.obj.sdj.TACH.get():
-                tach = self.obj.sdj.TACH.get()[ind_cham + 1][0]
-                if tach.strip():
-                    refe = self.nom.ljust(8) + ".%03i.000001.REFE" % (ind_cham + 1)
-                    if aster.getvectjev(refe):
-                        self.maya_name = aster.getvectjev(refe)[0].strip()
-                    self.maya = self.objects.maillages[self.maya_name]
+        self.maya_name = self.obj.getMesh().getName()
+        self.maya = self.objects.maillages[self.maya_name]
 
     def get_nume(self):
         """Recherche d'un nume_ddl. Le pb est qu'il n'est pas necessaire
@@ -303,13 +282,8 @@ class DynaHarmo(Resultat):
         possede ce meme maillage"""
 
         self.get_maillage()
-        for nume in list(self.objects.nume_ddl.keys()):
-            refe = nume.ljust(14) + ".NUME.REFN"
-            if aster.getvectjev(refe):
-                nom_maya = aster.getvectjev(refe)[0].strip()  # maillage associe au nume_ddl
-                if nom_maya == self.maya_name:
-                    self.nume_ddl_name = nume
-                    self.nume_ddl = self.objects.nume_ddl[nume]
+        self.nume_ddl_name = self.obj.getDOFNumbering().getName()
+        self.nume_ddl = self.objects.nume_ddl[nume]
         return self.nume_ddl
 
     def get_nom_cham(self):
@@ -467,16 +441,15 @@ class InterSpectre:
         coupl_ddl = []
 
         # Cas ou l'inter-spectre est defini par ses noeuds et composantes
-        name = self.obj.getName()
-        noeudi = aster.getvectjev(name.ljust(8) + ".NOEI")
-        noeudj = aster.getvectjev(name.ljust(8) + ".NOEJ")
-        cmpi = aster.getvectjev(name.ljust(8) + ".CMPI")
-        cmpj = aster.getvectjev(name.ljust(8) + ".CMPJ")
+        noeudi = self.obj.getNoeI()
+        noeudj = self.obj.getNoeJ()
+        cmpi = self.obj.getCmpI()
+        cmpj = self.obj.getCmpJ()
 
         # l'inter-spectre n'est defini qu'avec des numeros d'ordre independants
         # du modele
-        numi = aster.getvectjev(name.ljust(8) + ".NUMI")
-        numj = aster.getvectjev(name.ljust(8) + ".NUMJ")
+        numi = self.obj.getNumI()
+        numj = self.obj.getNumJ()
 
         if noeudi:
             self.isnume = 1
@@ -574,8 +547,7 @@ class InterSpectre:
     def extr_freq(self):
         """Extraction des frequences d'etude dans la tabl_intsp qui contient
         les inter-spectres mesures"""
-        freq = aster.getvectjev(self.obj.getName().ljust(8) + ".DISC")
-        self.f = freq
+        self.f = self.obj.getNumberOfFrequencies()
         self.intsp = 1
 
 
@@ -713,10 +685,10 @@ class Modele:
         """
         if self.nume_ddl is None:
             for nume_name, nume in list(self.objects.nume_ddl.items()):
-                model = aster.getvectjev(nume_name.ljust(14) + ".NUME.LILI")
+                model = nume.getModel()
                 if not model:
                     pass
-                elif model[1][:8] == self.nom:
+                elif model.getName() == self.nom:
                     self.nume_ddl = nume
                     self.nume_ddl_name = nume_name
                     return
