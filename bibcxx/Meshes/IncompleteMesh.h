@@ -32,7 +32,7 @@
 #ifdef ASTER_HAVE_MPI
 
 #include "MemoryManager/NamesMap.h"
-#include "Meshes/BaseMesh.h"
+#include "Meshes/Mesh.h"
 #include "Supervis/ResultNaming.h"
 
 /**
@@ -40,7 +40,7 @@
  * @brief Cette classe decrit un maillage Aster parallèle
  * @author Nicolas Sellenet
  */
-class IncompleteMesh : public BaseMesh {
+class IncompleteMesh : public Mesh {
   public:
     /**
      * @typedef IncompleteMeshPtr
@@ -56,7 +56,7 @@ class IncompleteMesh : public BaseMesh {
     /**
      * @brief Constructeur
      */
-    IncompleteMesh( const std::string &name ) : BaseMesh( name, "MAILLAGE_I" ){};
+    IncompleteMesh( const std::string &name ) : Mesh( name, "MAILLAGE_I" ){};
 
     bool isIncomplete() const { return true; };
 

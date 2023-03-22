@@ -390,6 +390,8 @@ class MEDCouplingMeshHelper:
         mrs.setNumberOfCoordsLoadSessions(10)
         medFileUMesh = medc.MEDFileUMesh.LoadPartOf(filename, meshName, cts, params, -1, -1, mrs)
 
+        zeNodes = medFileUMesh.getPartDefAtLevel(1).toDAI()
+
         non_empty_levels = medFileUMesh.getNonEmptyLevels()
         level_shift = 0  # Variable pour la creation d'une numérotation globale
 
@@ -439,6 +441,11 @@ class MEDCouplingMeshHelper:
                     .toNumPyArray()
                     .reshape(mesh_current_type.getNumberOfCells(), number_of_nodes_current_type)
                 )
+                for i in range(len(connectivity_current_type)):
+                    for j in range(len(connectivity_current_type[i])):
+                        connectivity_current_type[i][j] = zeNodes[
+                            int(connectivity_current_type[i][j])
+                        ]
 
                 # if medcoupling_cell_type != medc.NORM_POINT1:
                 # connectivity_current_type = connectivity_current_type[
@@ -461,6 +468,8 @@ class MEDCouplingMeshHelper:
             group_nodes = medFileUMesh.getGroupArr(1, group).deepCopy()
             if not group_nodes:
                 continue
+            for i in range(len(group_nodes)):
+                group_nodes[i] = zeNodes[int(group_nodes[i])]
             group_nodes += 1
             self._groups_of_nodes.setdefault(group, [])
             self._groups_of_nodes[group].extend(group_nodes.toNumPyArray())

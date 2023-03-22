@@ -32,6 +32,8 @@
 #include "ParallelUtilities/AsterMPI.h"
 #include "ParallelUtilities/ObjectBalancer.h"
 
+#include <array>
+
 /**
  * @class MeshBalancer
  * @brief Class describing a mesh which is balanceable across MPI processes
@@ -40,6 +42,7 @@ class MeshBalancer {
     BaseMeshPtr _mesh;
     std::map< int, std::set< int > > _reverseConnex;
     bool _bReverseConnex;
+    std::array< ASTERINTEGER, 2 > _range = {-1, -1};
 
     void buildBalancersAndInterfaces( VectorInt &newLocalNodesList, ObjectBalancer &nodesB,
                                       ObjectBalancer &cellsB, VectorOfVectorsLong &interfaces,
@@ -51,13 +54,13 @@ class MeshBalancer {
 
     void balanceGroups( BaseMeshPtr, const ObjectBalancer &, const ObjectBalancer & );
 
-    VectorInt findExternalNodes( const VectorInt &, const VectorInt & );
-
     /**
      * @brief Find nodes and elements in node neighborhood
      *        !!!! WARNING : return indexes are in C convention (starts at 0) !!!!
      */
-    std::pair< VectorInt, VectorInt > findNodesAndElementsInNodesNeighborhood( const VectorInt & );
+    std::pair< VectorInt, VectorInt > findNodesAndElementsInNodesNeighborhood( const VectorInt &,
+                                                                               std::set< int > & );
+    VectorInt findNodesToSend( const VectorInt &nodesListIn );
 
   public:
     /**

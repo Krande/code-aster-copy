@@ -64,7 +64,7 @@ class ObjectBalancer {
   public:
     /**
      * @class DistributedMask
-     * @brief Class used to apply a mask after sending and reverse after receiveing
+     * @brief Class used to apply a mask before sending and reverse after receiveing
      * @todo maybe a template ??
      * @author Nicolas Sellenet
      */
@@ -98,6 +98,51 @@ class ObjectBalancer {
         const ASTERINTEGER &apply( const ASTERINTEGER &valueIn ) const {
             return _vectMaskIn[valueIn - 1];
         };
+
+        const ASTERINTEGER &reverse( const ASTERINTEGER &valueIn ) const {
+#ifdef ASTER_DEBUG_CXX
+            if ( _mapMaskOut.find( valueIn ) == _mapMaskOut.end() ) {
+                std::cout << "Num glob " << valueIn << " sans correspondance" << std::endl;
+            }
+#endif
+            return _mapMaskOut.find( valueIn )->second;
+        };
+
+        const VectorLong &getBalancedMask() const { return _vectMaskOut; };
+    };
+
+    /**
+     * @class DistributedMask
+     * @brief Class used to apply a mask only after receiveing
+     * @todo maybe a template ??
+     * @author Nicolas Sellenet
+     */
+    class DistributedMaskOut {
+        const ObjectBalancer &_balancer;
+        const VectorLong _vectMaskOut;
+        std::map< ASTERINTEGER, ASTERINTEGER > _mapMaskOut;
+
+        std::map< ASTERINTEGER, ASTERINTEGER > buildMask() const {
+            int cmpt = 1;
+            std::map< ASTERINTEGER, ASTERINTEGER > mapMaskOut;
+            for ( const auto globId : _vectMaskOut ) {
+                mapMaskOut[globId] = cmpt;
+                ++cmpt;
+            }
+            return mapMaskOut;
+        }
+
+      public:
+        DistributedMaskOut( const ObjectBalancer &balancer, const VectorLong &mask )
+            : _balancer( balancer ),
+              _vectMaskOut( _balancer.balanceVectorOverProcesses( mask ) ),
+              _mapMaskOut( buildMask() ){};
+
+        DistributedMaskOut() : _balancer( ObjectBalancer() ) {
+            throw std::runtime_error( "Mask constructor not allowed" );
+        };
+
+        const ASTERINTEGER apply( const ASTERINTEGER &valueIn ) const { return valueIn; };
 
         const ASTERINTEGER &reverse( const ASTERINTEGER &valueIn ) const {
 #ifdef ASTER_DEBUG_CXX
@@ -205,7 +250,7 @@ void ObjectBalancer::balanceSimpleVectorOverProcesses( const T *in, int sizeIn, 
             for ( int iCmp = 0; iCmp < nbCmp; ++iCmp ) {
                 const auto vecPos = nbCmp * curSendList[iPos] + iCmp;
                 if ( vecPos >= sizeIn )
-                    throw std::runtime_error( "Index to send grower to vector size" );
+                    throw std::runtime_error( "Index to send grower than vector size" );
                 if ( sizeToKeep == 0 ) {
                     toKeep[vecPos] = false;
                 } else {
@@ -353,7 +398,7 @@ void ObjectBalancer::balanceObjectOverProcesses3( const T &in, T &out, const Mas
             occSize[proc].push_back( curSizeOC );
             toSend += curSizeOC;
             if ( vecPos >= sizeIn )
-                throw std::runtime_error( "Index to send grower to vector size" );
+                throw std::runtime_error( "Index to send grower than vector size" );
             if ( sizeToKeep == 0 ) {
                 if ( toKeep[vecPos] )
                     toRemove += curSizeOC;

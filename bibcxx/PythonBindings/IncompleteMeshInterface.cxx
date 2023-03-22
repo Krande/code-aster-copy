@@ -31,8 +31,7 @@
 
 void exportIncompleteMeshToPython( py::module_ &mod ) {
 
-    py::class_< IncompleteMesh, IncompleteMesh::IncompleteMeshPtr, BaseMesh >( mod,
-                                                                               "IncompleteMesh" )
+    py::class_< IncompleteMesh, IncompleteMesh::IncompleteMeshPtr, Mesh >( mod, "IncompleteMesh" )
         .def( py::init( &initFactoryPtr< IncompleteMesh > ) )
         .def( py::init( &initFactoryPtr< IncompleteMesh, std::string > ) );
 };
