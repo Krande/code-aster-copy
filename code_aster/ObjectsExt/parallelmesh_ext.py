@@ -74,7 +74,7 @@ class ExtendedParallelMesh:
         """
         if not partitioned:
             splitted = MEDPartitioner(filename)
-            splitted.partitionMesh(verbose & 3)
+            splitted.partitionMesh(verbose - 1 & 2)
             data = splitted.getPartition()
             umesh = data.getMeshes()[0]
             mesh_builder.buildFromMedCouplingMesh(self, umesh, verbose)
