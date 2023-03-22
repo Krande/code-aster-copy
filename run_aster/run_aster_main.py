@@ -330,7 +330,7 @@ def main(argv=None):
         args.test = True
         basename = osp.splitext(osp.basename(args.file))[0]
         output = osp.abspath(basename + ".mess")
-        if osp.isfile(output):
+        if osp.isfile(output) and need_split:
             os.remove(output)
         add = {15: "code"}
         for unit, typ in add.items():
