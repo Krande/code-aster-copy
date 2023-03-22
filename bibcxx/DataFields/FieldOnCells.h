@@ -162,7 +162,7 @@ class FieldOnCells : public DataField {
      * @brief
      * @return
      */
-    SimpleFieldOnCellsValueTypePtr exportToSimpleFieldOnCells() {
+    SimpleFieldOnCellsValueTypePtr toSimpleFieldOnCells() {
         SimpleFieldOnCellsValueTypePtr toReturn( new SimpleFieldOnCellsValueType() );
         const std::string resultName = toReturn->getName();
         const std::string inName = getName();

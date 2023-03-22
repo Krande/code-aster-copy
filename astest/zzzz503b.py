@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -62,7 +62,7 @@ U2 = MECA_STATIQUE(
 
 fieldOnElem = U2.getFieldOnCellsReal("SIEF_ELGA", 31)
 
-sfon = fieldOnElem.exportToSimpleFieldOnCells()
+sfon = fieldOnElem.toSimpleFieldOnCells()
 
 test.assertAlmostEqual(sfon.getValue(0, 0, 0, 0), -325.03920740223253)
 test.assertIn(sfon.getPhysicalQuantity(), ("SIEF_R",))

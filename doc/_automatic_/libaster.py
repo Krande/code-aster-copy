@@ -1807,7 +1807,7 @@ class FieldOnCellsReal(DataField):
             FieldOnCellsReal
         """
 
-    def exportToSimpleFieldOnCells(self):
+    def toSimpleFieldOnCells(self):
         pass
 
     def getComponents(self):

@@ -46,7 +46,7 @@ void exportFieldOnCellsToPython( py::module_ &mod ) {
             Returns:
                 FieldOnCellsReal
             )" )
-        .def( "exportToSimpleFieldOnCells", &FieldOnCellsReal::exportToSimpleFieldOnCells )
+        .def( "toSimpleFieldOnCells", &FieldOnCellsReal::toSimpleFieldOnCells )
         .def( "getDescription", &FieldOnCellsReal::getDescription, R"(
             Return the descriptor associated with the FieldOnCellsReal object
 

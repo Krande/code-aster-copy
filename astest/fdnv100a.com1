@@ -23,7 +23,7 @@ code_aster.init("--test", "--continue")
 
 test = code_aster.TestCase()
 
-sief_elga = RESU.getFieldOnCellsReal("SIEF_ELGA", 8).exportToSimpleFieldOnCells()
+sief_elga = RESU.getFieldOnCellsReal("SIEF_ELGA", 8).toSimpleFieldOnCells()
 values, mask = sief_elga.getValues()
 # test.assertAlmostEqual(values[3,0], 0.000550376598358751, places=6)
 test.assertEqual(mask[3, 0], True)
