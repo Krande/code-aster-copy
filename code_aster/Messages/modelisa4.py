@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -93,7 +93,7 @@ Phase de vérification du maillage - mailles dégénérées
     ),
     19: _(
         """
-On ne peut pas extraire le champ avec l'accès donné pour la SD_RESULTAT.
+On ne peut pas extraire le champ avec l'accès donné pour la structure de données RESULTAT.
 Merci de vérifier si un seul numéro d'ordre est spécifié,
 ou si l'instant spécifié existe.
 """

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -58,11 +58,9 @@ cata_msg = {
     ),
     99: _(
         """
- Le paramètre CHARGE_PROC0_SD du mot-clé facteur DISTRIBUTION est mal renseigné.
  Il faut qu'il reste au moins un sous domaine par processeur une fois affectés tous les sous-domaines du processeur 0.
 
  Conseils :
-   - laissez le mot-clé CHARGE_PROC0_SD à sa valeur par défaut
    - diminuez le nombre de processeurs du calcul ou bien augmentez le nombre de sous-domaines de la partition du mot-clé DISTRIBUTION
 """
     ),

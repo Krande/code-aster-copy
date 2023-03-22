@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -388,19 +388,27 @@ def check_sdprod_safe(cmd):
         return str(exc)
 
 
-def get_entite(obj, typ="values"):
+def get_entite(obj, typ="values", with_into=False):
     """Return the sub-objects (if `typ` is "values") or sub-objects
     names (if `typ` is "key") of a composite object."""
-    entities = obj.keywords
+    entities = obj.entities
     lsub = []
+    if typ == "keys" and obj.name:
+        lsub.append(obj.name)
     for key, sub in entities.items():
+        if with_into:
+            into = sub.definition.get("into")
+            if into:
+                lsub.extend([i for i in into if isinstance(i, str) and i.strip()])
         if sub.getCataTypeId() != IDS.bloc:
             if typ == "values":
                 lsub.append(sub)
             else:
                 lsub.append(key)
         if sub.getCataTypeId() in (IDS.bloc, IDS.fact):
-            lsub.extend(get_entite(sub, typ=typ))
+            lsub.extend(get_entite(sub, typ=typ, with_into=with_into))
+    if typ == "keys":
+        lsub = list(set(lsub))
     return lsub
 
 
@@ -428,7 +436,7 @@ def extractKeywords(commands):
     # keywords of each command
     cmdKwd = {}
     for command in commands:
-        cmdKwd[command.name] = get_entite(command, typ="keys")
+        cmdKwd[command.name] = get_entite(command, typ="keys", with_into=True)
     # reverse dict : commands that use a keyword
     kwdCmd = {}
     for name, words in list(cmdKwd.items()):
@@ -458,8 +466,10 @@ def printKeywordsUsage(commands, fileList=None):
         lines.append(fmt.format(word, *cmds))
     print(os.linesep.join(lines))
     if fileList:
+        content = ["# This file contains all the keywords (SIMP, FACT, into values)"]
+        content.extend(allKwd)
         with open(fileList, "w") as fobj:
-            fobj.write(os.linesep.join(allKwd))
+            fobj.write(os.linesep.join(content))
         line = "\n    {:^60}"
         print(line.format("*" * 60))
         print(line.format("Nom du fichier à recopier pour mettre à jour vocab01a.34"))

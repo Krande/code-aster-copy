@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -212,7 +212,7 @@ Contactez le support technique.
     ),
     38: _(
         """
- Plusieurs champs correspondant à l'accès demandé pour la SD_RESULTAT  %(k1)s
+ Plusieurs champs correspondant à l'accès demandé pour la structure de données RESULTAT  %(k1)s
 """
     ),
     39: _(
@@ -237,7 +237,7 @@ Contactez le support technique.
     ),
     47: _(
         """
- Pas de champ correspondant à un accès demandé pour la SD_RESULTAT  %(k1)s
+ Pas de champ correspondant à un accès demandé pour la structure de données RESULTAT  %(k1)s
 """
     ),
     48: _(
@@ -279,7 +279,7 @@ Conseil:
         """
 L'intégrale d'un champ sur des éléments de structure
 (poutre, plaque, coque, tuyau, poutre multifibre) n'est pas programmée,
-à l’exception des composantes N, VY, VZ, MT, MFY et MFZ sur les  éléments POU_D_T. 
+à l’exception des composantes N, VY, VZ, MT, MFY et MFZ sur les  éléments POU_D_T.
 Réduisez la zone de calcul par le mot-clé GROUP_MA/MAILLE."""
     ),
     61: _(
@@ -317,10 +317,10 @@ Réduisez la zone de calcul par le mot-clé GROUP_MA/MAILLE."""
     75: _(
         """
 Analyse de stabilité ou modale :
-Il n'est pas possible de réaliser    %(k1)s    %(k2)s 
+Il n'est pas possible de réaliser    %(k1)s    %(k2)s
 sur un ou plusieurs instants. Ces instants sont, soit :
    -   antérieurs à l'instant initial (%(r1)f)
-   -   n'existent pas dans LIST_INST de l'analyse.        
+   -   n'existent pas dans LIST_INST de l'analyse.
 """
     ),
 }

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -27,13 +27,13 @@ Il manque les accélérations.
     ),
     2: _(
         """
- pour une SD RESULTAT de type DYNA_TRANS,
+ pour une structure de données RESULTAT de type DYNA_TRANS,
  seuls les mots-clés FONC_MULT et COEF_MULT sont autorisés
 """
     ),
     3: _(
         """
- pour une SD RESULTAT de type  EVOL_ELAS,
+ pour une structure de données RESULTAT de type  EVOL_ELAS,
  seul le mot-clé FONC_MULT est autorisé
 """
     ),
@@ -225,7 +225,7 @@ Conseil :
 Erreur utilisateur (EXTR_RESU / RESTREINT) :
  Le concept fourni après le mot clé CARA_ELEM : (%(k1)s) est associé
  au maillage : %(k3)s.
- Mais le maillage associé à la SD RESULTAT est différent : %(k2)s.
+ Mais le maillage associé à la structure de données RESULTAT est différent : %(k2)s.
 """
     ),
     49: _(
@@ -233,7 +233,7 @@ Erreur utilisateur (EXTR_RESU / RESTREINT) :
 Erreur utilisateur (EXTR_RESU / RESTREINT) :
  Le concept fourni après le mot clé CHAM_MATER : (%(k1)s) est associé
  au maillage : %(k3)s.
- Mais le maillage associé à la SD RESULTAT est différent : %(k2)s.
+ Mais le maillage associé à la structure de données RESULTAT est différent : %(k2)s.
 """
     ),
     50: _(

@@ -323,20 +323,8 @@ def get_personal_dict():
     default = osp.join(os.environ["HOME"], "dev", "codeaster", "devtools")
     devtools = os.environ.get("DEVTOOLS_ROOT", default)
     dictdir = osp.join(devtools, "share", "spell")
-    cata = osp.join(dictdir, "code_aster_cata.aspell.per")
-    if osp.exists(cata):
-        # ignore the first line
-        with open(cata, "r") as fper:
-            cnt.extend(fper.read().splitlines()[1:])
-    else:
-        raise IOError(
-            "no such file: {0}\nAn updated devtools repository is " "required!".format(cata)
-        )
     cata = "fort.34"
-    with open(cata, "r") as fper:
-        lines = fper.read().splitlines()  # [1:]
-        words = [i for i in set(re.split("[ _\n]", "\n".join(lines))) if not re.search("[0-9]", i)]
-    cnt.extend(sorted(words))
+    cnt.extend(build_cata_dict(cata))
 
     cawl = osp.join(dictdir, "code_aster_dict.aspell.per")
     if osp.exists(cawl):
@@ -351,6 +339,33 @@ def get_personal_dict():
     with open(fd, "w") as fobj:
         fobj.write(os.linesep.join([line for line in cnt if line.strip()]))
     return _pws
+
+
+def build_cata_dict(filename):
+    """Build the content of the dictionnary of the code_aster keywords.
+
+    Arguments:
+        repo (str): Path to 'src' repository.
+        branches (list[str]): List of branches to be used.
+        tip (bool): If *True*, uses the tip of each branch. *False* by default.
+
+    Returns:
+        str: Text of the catalog.
+    """
+    rkw = re.compile("([A-Z]+[A-Z_]+)", re.M | re.I)
+    reg_ign = re.compile("(#.*$)", re.MULTILINE)
+    allkw = set()
+    with open(filename, "r") as fobj:
+        txt = fobj.read()
+    txt = reg_ign.sub("", txt)
+    allkw.update(rkw.findall(txt))
+    skw = set()
+    for kw in allkw:
+        skw.update(kw.split("_"))
+    lkw = [kw for kw in skw if len(kw) > 1]
+    lkw.sort()
+    lkw.append("")
+    return lkw
 
 
 def check_catamess(checker, lang, l_cata):

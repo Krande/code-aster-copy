@@ -226,8 +226,8 @@ Erreur utilisateur :
     ),
     63: _(
         """
- On n'a pas pu projeter le champ %(k1)s de la SD_RESULTAT %(k2)s
- vers la SD_RESULTAT %(k3)s pour le numéro d'ordre %(i1)d
+ On n'a pas pu projeter le champ %(k1)s de la structure de données RESULTAT %(k2)s
+ vers la structure de données RESULTAT %(k3)s pour le numéro d'ordre %(i1)d
 """
     ),
     64: _(

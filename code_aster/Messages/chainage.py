@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -57,7 +57,7 @@ Il n'est pas possible de faire du chaînage avec un coefficient d'emmagasinement
     6: _(
         """
 L'instant %(r1)e spécifié en entrée doit être supérieur au dernier
-instant trouvé dans la SD résultat %(k1)s.
+instant trouvé dans la structure de données résultat %(k1)s.
 """
     ),
     7: _(

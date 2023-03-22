@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -165,14 +165,12 @@ cata_msg = {
     ),
     26: _(
         """
- le nom de la fonction  nappe DSIGM
- doit être présent sous le mot clé 'TAHERI_NAPPE'
+ le nom de la fonction nappe doit être présent sous le mot clé 'TAHERI_NAPPE'
 """
     ),
     27: _(
         """
- le nom de la fonction DSIGM
- doit être présent sous le mot clé 'TAHERI_FONC'
+ le nom de la fonction doit être présent sous le mot clé 'TAHERI_FONC'
 """
     ),
     28: _(

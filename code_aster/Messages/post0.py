@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -73,7 +73,7 @@ Nom du modèle absent dans le concept résultat %(k1)s.
 Conseils :
   Si le concept résultat provient des opérateurs LIRE_RESU ou CREA_RESU, il est possible
   de renseigner un concept modèle plutôt qu'un concept maillage.
-  Il est également possible de renseigner un concept modèle directement dans MACR_LIGN_COUP. 
+  Il est également possible de renseigner un concept modèle directement dans MACR_LIGN_COUP.
 """
     ),
     10: _(
@@ -134,7 +134,7 @@ Conseil : il faut transformer le champ ELGA en un champ de type ELNO ou NOEU.
     ),
     19: _(
         """
-La SD RESULTAT ne contient aucun champ pour le numéro d'ordre %(i1)d.
+La structure de données RESULTAT ne contient aucun champ pour le numéro d'ordre %(i1)d.
 On ne peut pas calculer les efforts.
 """
     ),
@@ -168,12 +168,12 @@ Attention la ligne de coupe %(i1)d traverse des zones sans matière :
     ),
     25: _(
         """
-La SD RESULTAT ne contient aucun champ au numéro d ordre %(i1)d.
+La structure de données RESULTAT ne contient aucun champ au numéro d ordre %(i1)d.
 """
     ),
     26: _(
         """
-La SD RESULTAT ne contient aucun champ à l instant %(r1)f.
+La structure de données RESULTAT ne contient aucun champ à l instant %(r1)f.
 """
     ),
     27: _(

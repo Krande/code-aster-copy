@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -159,7 +159,7 @@ Erreur utilisateur dans la commande CREA_CHAMP.
 Erreur utilisateur dans la commande CREA_RESU / TYPE_MAXI= ...
   La commande exige que tous les champs pour lesquels on veut extraire
   le maximum aient la même numérotation pour leurs composantes.
-  Ce n'est pas le cas pour cette structure de donnée SD_RESULTAT.
+  Ce n'est pas le cas pour cette structure de donnée RESULTAT.
 
   Cela est certainement du à la présence de mailles tardives à certains instants
   de calcul et pas à d'autres.
@@ -170,7 +170,7 @@ Erreur utilisateur dans la commande CREA_RESU / TYPE_MAXI= ...
 Erreur utilisateur dans la commande CREA_RESU / TYPE_MAXI= ...
   La commande exige que tous les CHAM_NO pour lesquels on veut extraire
   le maximum aient la même numérotation pour leurs composantes.
-  Ce n'est pas le cas pour cette structure de donnée SD_RESULTAT.
+  Ce n'est pas le cas pour cette structure de donnée RESULTAT.
 """
     ),
     27: _(

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -42,7 +42,7 @@ Conseil :
         """
 Problème dans le calcul de l'option FORC_NODA / REAC_NODA :
 
-Le nombre de sous-point du champ de contrainte contenu dans la SD n'est
+Le nombre de sous-point du champ de contrainte contenu dans la structure de données n'est
 pas cohérent avec ce qui a été défini dans AFFE_CARA_ELEM.
 
 Il est probable que le champ de contrainte a été extrait sur un seul sous-point.

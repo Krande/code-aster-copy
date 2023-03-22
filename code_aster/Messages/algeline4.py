@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -66,11 +66,10 @@ Erreur utilisateur dans la commande CREA_MAILLAGE :
   Pour créer le nouveau maillage, il faut créer de nouveaux noeuds.
   Ici, on cherche à créer le noeud (%(k1)s) mais il existe déjà.
 
-  Par défaut, les nouveaux noeuds ont des noms commençant par le préfixe 'NS', mais ce préfixe
-  peut être modifié par l'utilisateur (mots clés XXXX / PREF_NOEUD).
+  Le préfixe peut être modifié par l'utilisateur (mots clés XXXX / PREF_NOEUD).
 
 Risques & conseils :
-  Quand on utilise 2 fois de suite la commande CREA_MAILLAGE, il est en général nécessaire
+  Quand on utilise deux fois de suite la commande CREA_MAILLAGE, il est en général nécessaire
   d'utiliser au moins une fois l'un des mots clés PREF_NOEUD
 """
     ),

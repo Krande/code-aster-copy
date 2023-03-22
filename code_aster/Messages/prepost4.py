@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -47,12 +47,12 @@ cata_msg = {
     ),
     5: _(
         """
- l'option  %(k1)s n'a pas été calculée pour la SD  %(k2)s
+ l'option  %(k1)s n'a pas été calculée pour la structure de données  %(k2)s
 """
     ),
     6: _(
         """
- le champ " %(k1)s " ( %(k2)s ) n'a pas été noté dans la SD  %(k3)s
+ le champ " %(k1)s " ( %(k2)s ) n'a pas été noté dans la structure de données  %(k3)s
 """
     ),
     7: _(
@@ -102,7 +102,7 @@ cata_msg = {
     ),
     16: _(
         """
- il manque le calcul obligatoire de l'énergie potentielle par POST_ELEM ENER_POT pour TOUT='OUI' 
+ il manque le calcul obligatoire de l'énergie potentielle par POST_ELEM ENER_POT pour TOUT='OUI'
 """
     ),
     17: _(

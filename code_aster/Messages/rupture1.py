@@ -23,7 +23,7 @@ cata_msg = {
     2: _(
         """
 Formalisme de déformation différents au moins pour la maille %(k3)s :
- - type de déformation extrait de la SD Résultat   : %(k1)s
+ - type de déformation extrait de la structure de données Résultat   : %(k1)s
  - type de déformation fourni à l'opérateur CALC_G : %(k2)s
 
 --> Risques & conseils :
@@ -39,7 +39,7 @@ sont identiques.
     3: _(
         """
 Formalisme de déformation non valide au moins pour la maille %(k2)s :
- - type de déformation extrait de la SD Résultat   : %(k1)s
+ - type de déformation extrait de la structure de données Résultat   : %(k1)s
 
 
 --> Risques & conseils :
@@ -274,7 +274,7 @@ Vérifier le paramètre défini sous le mot clé NUME_FOND de POST_K1_K2_K3.
     ),
     39: _(
         """
-La récupération des contraintes à partir de la SD Résultat n'est permise que si les fissures sont maillées.
+La récupération des contraintes à partir de la structure de données Résultat n'est permise que si les fissures sont maillées.
 -> Risque et Conseil :
 Veillez à ne pas vous servir de FISSURE avec le mot-clé CALCUL_CONTRAINTE.
 """
@@ -289,7 +289,7 @@ MECA_STATIQUE ou STAT_NON_LINE.
     42: _(
         """
  Lois de comportement différentes au moins pour la maille %(k3)s :
- - loi de comportement extraite de la SD Résultat   : %(k1)s
+ - loi de comportement extraite de la structure de données Résultat   : %(k1)s
  - loi de comportement fournie à l'opérateur CALC_G : %(k2)s
 
 --> Risques & conseils :
@@ -319,7 +319,7 @@ paramètres ainsi que K3 en 3D. Veuillez vérifier le contenu de votre tableau.
     45: _(
         """
  Formalismes de déformations différents au moins pour la maille %(k3)s :
- - type de déformation extrait de la SD Résultat   : %(k1)s
+ - type de déformation extrait de la structure de données Résultat   : %(k1)s
  - type de déformation fourni à l'opérateur CALC_G : %(k2)s
 
 --> Risques & conseils :
@@ -421,7 +421,7 @@ Pour l'opération %(k1)s, la table doit être réentrante (reuse obligatoire).
 """
     ),
     63: _(
-        """La récupération des contraintes à partir de la SD Résultat
+        """La récupération des contraintes à partir de la structure de données Résultat
 en présence d'un état initial n'est pas permise.
 Pour l'opération %(k1)s, la table ne doit pas être réentrante (reuse interdit).
 """

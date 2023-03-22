@@ -303,7 +303,7 @@ Contactez le support technique.
     56: _(
         """
      En effet, le phénomène %(k1)s de votre modèle n'est pas compatible avec une
-     SD Résultat de type %(k2)s.
+     structure de données Résultat de type %(k2)s.
   -> Risque & Conseil :
      Veuillez fournir à LIRE_RESU un autre modèle ou changer de TYPE_RESU.
 """
@@ -513,7 +513,7 @@ Contactez le support technique.
   Le numéro d'ordre %(i1)d que vous avez renseigné ne figure pas
   dans la liste des numéros d'ordre du résultat MED.
   Conséquence: le champ correspondant ne figurera pas dans la
-  SD Résultat %(k1)s
+  structure de données Résultat %(k1)s
 """
     ),
     88: _(

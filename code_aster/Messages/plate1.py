@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -24,14 +24,14 @@ cata_msg = {
         """On ne sait pas calculer l'option %(k1)s avec une élasticité de type %(k2)s pour cet élément."""
     ),
     2: _(
-        u"""
+        """
  Le nombre de couches défini dans DEFI_COMPOSITE et dans AFFE_CARA_ELEM dans n'est pas cohérent.
  Nombre de couches dans DEFI_COMPOSITE: %(i1)d
  Nombre de couches dans AFFE_CARA_ELEM: %(i2)d
 """
     ),
     3: _(
-        u"""
+        """
  L'épaisseur totale des couches définie dans DEFI_COMPOSITE et celle définie dans AFFE_CARA_ELEM ne sont pas cohérentes.
  Épaisseur totale des couches dans DEFI_COMPOSITE: %(r1)f
  Épaisseur dans AFFE_CARA_ELEM: %(r2)f
@@ -39,7 +39,7 @@ cata_msg = {
     ),
     4: _(
         """Problème dans le calcul de l'option FORC_NODA / REAC_NODA :
-Le nombre de sous-point du champ de contrainte contenu dans la SD n'est pas cohérent avec ce qui a été défini dans AFFE_CARA_ELEM.
+Le nombre de sous-point du champ de contrainte contenu dans la structure de données n'est pas cohérent avec ce qui a été défini dans AFFE_CARA_ELEM.
 Il est probable que le champ de contrainte a été extrait sur un seul sous-point.
 Il est impératif d'utiliser un champ de contrainte complet pour le calcul de FORC_NODA.
 """
@@ -59,7 +59,7 @@ Il est impératif d'utiliser un champ de contrainte complet pour le calcul de FO
     12: _("""La relation %(k1)s n'est pas possible pour les éléments COQUE_3D."""),
     13: _(
         """La réactualisation de la géométrie (DEFORMATION='PETIT_REAC') est déconseillée pour les éléments COQUE_3D.
-Le calcul des déformations à l'aide de PETIT_REAC n'est qu'une approximation des hypothèses des grands déplacements. Elle nécessite d'effectuer de très petits incréments de chargement. 
+Le calcul des déformations à l'aide de PETIT_REAC n'est qu'une approximation des hypothèses des grands déplacements. Elle nécessite d'effectuer de très petits incréments de chargement.
 Pour prendre en compte correctement les grands déplacements et surtout les grandes rotations, il est recommandé d'utiliser DEFORMATION='GROT_GDEP'."""
     ),
     14: _("""La déformation %(k1)s n'est pas possible sur les éléments COQUE_3D."""),

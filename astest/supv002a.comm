@@ -100,10 +100,15 @@ previous_errors = [
     # Pour PHYSICAL GMSH
     "PHYSICAL",
     # Pour LD_LIBRARY_PATH
+    "LD",
     "LIBRARY",
     "PATH",
+    # librairie externe
+    "HDF",
     # Pour Code_Saturne (coupleur IFS)
     "USASTE",
+    # CALC_IFS_DNL dans Contrib
+    "DNL",
 ]
 
 # TEST_TABLE are included in the "macro-command"
