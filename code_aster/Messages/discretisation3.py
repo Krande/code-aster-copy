@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -70,7 +70,7 @@ Nombre de pas maximum: %(i1)d
     50: _("""Le schéma d'adaptation %(i1)d du pas de temps ne se déclenche pas."""),
     51: _("""Le schéma d'adaptation %(i1)d du pas de temps se déclenche à tous les instants."""),
     52: _("""Le schéma d'adaptation %(i1)d du pas de temps se déclenche pour un seuil donné."""),
-    60: _("""La découpe du pas de temps est manuel."""),
+    60: _("""La découpe du pas de temps est manuelle."""),
     61: _(
         """On découpe le pas de temps en %(i1)d incréments jusqu'à ce que le pas atteigne %(r1)13.6G."""
     ),
