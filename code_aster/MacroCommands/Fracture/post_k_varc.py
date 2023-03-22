@@ -59,6 +59,7 @@ class PostKVarc(ExecuteCommand):
         """
 
         self._result.build()
+        self._result.setMesh(keywords["RESULTAT"].getMesh())
 
 
 POST_K_VARC = PostKVarc.run

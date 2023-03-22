@@ -654,6 +654,50 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
      */
     EquationNumberingPtr getDescription( void ) const { return _dofDescription; };
 
+  /**
+   * @brief Extract component cmp at given nodes
+   */
+  std::tuple< VectorLong, VectorString, std::vector< ValueType > > extrComp( VectorLong nodes, std::string cmp ){
+
+    VectorLong v_nodes;
+    VectorString cmps;
+    std::vector< ValueType > values;
+
+    auto num2name = _dofDescription->getComponentsNumber2Name();
+    ASTERINTEGER icmp, ncmp;
+    bool all_cmp = cmp == " ";
+    if (all_cmp){
+        ncmp = getNumberOfComponents();
+        cmps.reserve(ncmp*nodes.size());
+    }
+    else{
+        ncmp = 1;
+        icmp = _dofDescription->getComponentsName2Number()[cmp];
+    }
+    v_nodes.reserve(ncmp*nodes.size());
+    values.reserve(ncmp*nodes.size());
+
+    const auto descr = _dofDescription->getNodesAndComponentsNumberFromDOF();
+
+    _values->updateValuePointer();
+    for ( auto dof = 0; dof < this->size(); ++dof ) {
+        if (all_cmp and descr[dof].second>0 ){
+            if ( std::find(nodes.begin(), nodes.end(), descr[dof].first) != nodes.end() ){
+                v_nodes.push_back( descr[dof].first );
+                cmps.push_back( num2name[descr[dof].second] );
+                values.push_back( (*_values)[dof] );
+            }
+        }
+        else if (icmp == descr[dof].second){
+            if ( std::find(nodes.begin(), nodes.end(), descr[dof].first) != nodes.end() ){
+                v_nodes.push_back( descr[dof].first );
+                values.push_back( (*_values)[dof] );
+            }
+        }
+    }
+    return std::make_tuple(v_nodes, cmps, values);
+  };
+
     /**
      * @brief Update field and build EquationNumbering if necessary
      */

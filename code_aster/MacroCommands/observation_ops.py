@@ -525,7 +525,7 @@ def observation_ops(
                         modele = MODELE_2
                         chnormx = chnorm.EXTR_COMP("DX", [], 1)
                         ind_noeuds = chnormx.noeud
-                        nom_allno = [mayaexp.getNodeName(k - 1) for k in ind_noeuds]
+                        nom_allno = [mayaexp.getNodeName(k) for k in ind_noeuds]
 
                         # on met les noeuds conernes sous forme de liste et on va
                         # chercher les noeuds des mailles pour 'MAILLE' et

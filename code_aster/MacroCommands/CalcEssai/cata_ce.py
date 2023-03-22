@@ -932,7 +932,7 @@ def nume_ddl_phy(resu):
     maya = resu.maya
     nume = []
     for ind in range(nb_ddl):
-        nom_no = maya.getNodeName(num_no[ind] - 1)
+        nom_no = maya.getNodeName(num_no[ind])
         nume.append(nom_no.strip() + "_" + comp[ind].strip())
 
     return nume

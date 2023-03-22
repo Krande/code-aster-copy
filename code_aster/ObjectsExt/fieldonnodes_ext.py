@@ -95,27 +95,22 @@ class ExtendedFieldOnNodesReal:
             eventually, the topological informations of the support.
         """
 
-        ncham = self.getName()
-        ncham = ncham + (19 - len(ncham)) * " "
-        nchams = aster.get_nom_concept_unique("_")
-        ncmp = comp + (8 - len(comp)) * " "
-
-        aster.prepcompcham(ncham, nchams, ncmp, "NO      ", topo, lgno)
-
-        valeurs = numpy.array(aster.getvectjev(nchams + (19 - len(nchams)) * " " + ".V"))
-
-        if topo > 0:
-            noeud = aster.getvectjev(nchams + (19 - len(nchams)) * " " + ".N")
+        mesh = self.getMesh()
+        if lgno:
+            nodes = set()
+            for grNo in lgno:
+                if mesh.hasGroupOfNodes(grNo):
+                    nodes.update(mesh.getNodes(grNo))
+                else:
+                    raise ValueError("no {} group of nodes".format(grNo))
+            nodes = list(nodes)
         else:
-            noeud = None
-
-        if comp[:1] == " ":
-            comp = aster.getvectjev(nchams + (19 - len(nchams)) * " " + ".C")
-            aster.prepcompcham("__DETR__", nchams, ncmp, "NO      ", topo, lgno)
-            return post_comp_cham_no(valeurs, noeud, comp)
-        else:
-            aster.prepcompcham("__DETR__", nchams, ncmp, "NO      ", topo, lgno)
-            return post_comp_cham_no(valeurs, noeud)
+            nodes = mesh.getNodes()
+        nodes, comp, values =self.extrComp(nodes, comp)
+        if topo == 0:
+            nodes = None
+            comp = None
+        return post_comp_cham_no(values, nodes, comp)
 
     @property
     @functools.lru_cache()
@@ -276,27 +271,22 @@ class ExtendedFieldOnNodesComplex:
             eventually, the topological informations of the support.
         """
 
-        ncham = self.getName()
-        ncham = ncham + (19 - len(ncham)) * " "
-        nchams = aster.get_nom_concept_unique("_")
-        ncmp = comp + (8 - len(comp)) * " "
-
-        aster.prepcompcham(ncham, nchams, ncmp, "NO      ", topo, lgno)
-
-        valeurs = numpy.array(aster.getvectjev(nchams + (19 - len(nchams)) * " " + ".V"))
-
-        if topo > 0:
-            noeud = aster.getvectjev(nchams + (19 - len(nchams)) * " " + ".N")
+        mesh = self.getMesh()
+        if lgno:
+            nodes = set()
+            for grNo in lgno:
+                if mesh.hasGroupOfNodes(grNo):
+                    nodes.update(mesh.getNodes(grNo))
+                else:
+                    raise ValueError("no {} group of nodes".format(grNo))
+            nodes = sorted(nodes)
         else:
-            noeud = None
-
-        if comp[:1] == " ":
-            comp = aster.getvectjev(nchams + (19 - len(nchams)) * " " + ".C")
-            aster.prepcompcham("__DETR__", nchams, ncmp, "NO      ", topo, lgno)
-            return post_comp_cham_no(valeurs, noeud, comp)
-        else:
-            aster.prepcompcham("__DETR__", nchams, ncmp, "NO      ", topo, lgno)
-            return post_comp_cham_no(valeurs, noeud)
+            nodes = mesh.getNodes()
+        nodes, comp, values =self.extrComp(nodes, comp)
+        if topo == 0:
+            nodes = None
+            comp = None
+        return post_comp_cham_no(values, nodes, comp)
 
 
 class post_comp_cham_no:
@@ -314,6 +304,6 @@ class post_comp_cham_no:
     """
 
     def __init__(self, valeurs, noeud=None, comp=None):
-        self.valeurs = valeurs
+        self.valeurs = numpy.array(valeurs)
         self.noeud = noeud
         self.comp = tuple(i.strip() for i in comp) if comp else None

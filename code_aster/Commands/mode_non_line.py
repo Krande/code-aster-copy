@@ -63,11 +63,18 @@ class ModeNonLine(ExecuteCommand):
         """
         self._result.build()
         nrow = self._result.get_nrow()
+        etat_init = keywords["ETAT_INIT"]
+        if "MODE_LINE" in etat_init.keys():
+            mesh = etat_init["MODE_LINE"].getMesh()
+        else:
+            nom_obj = etat_init["MODE_NON_LINE"]["NOM_OBJET", 1]
+            mesh = etat_init["MODE_NON_LINE"].getModeResult(nom_obj).getMesh()
         for irow in range(nrow):
             nom_obj = self._result["NOM_OBJET", irow + 1]
             mode_meca = self._result.getModeResult(nom_obj)
             mode_meca.setMassMatrix(keywords["MATR_MASS"])
             mode_meca.setStiffnessMatrix(keywords["MATR_RIGI"])
+            mode_meca.setMesh(mesh)
 
 
 MODE_NON_LINE = ModeNonLine.run

@@ -177,7 +177,18 @@ void exportFieldOnNodesToPython( py::module_ &mod ) {
             Returns:
                 list[complex]: List of values.
             )",
-              py::arg( "cmps" ) = VectorString(), py::arg( "groupsOfCells" ) = VectorString() );
+              py::arg( "cmps" ) = VectorString(), py::arg( "groupsOfCells" ) = VectorString() )
+        .def( "extrComp", &FieldOnNodesReal::extrComp, R"(
+            Return list of nodes, list of components and list of values for given nodes
+
+            Arguments:
+                nodes[list[int]]: list of nodes
+                cmp[str]: component to extract
+                if cmp=' ', extract all components and list of components is filled in
+
+            Returns:
+                tuple[list, list, list]]: List of nodes, list of components, list of values.
+            )" );
     /**
      * Object FieldOnNodesComplex
      */
@@ -280,7 +291,18 @@ void exportFieldOnNodesToPython( py::module_ &mod ) {
                 values (list[complex]): list of values to set
             )",
               py::arg( "values" ) )
-        .def( "updateValuePointers", &FieldOnNodesComplex::updateValuePointers );
+        .def( "updateValuePointers", &FieldOnNodesComplex::updateValuePointers )
+        .def( "extrComp", &FieldOnNodesComplex::extrComp, R"(
+            Return list of nodes, list of components and list of values for given nodes
+
+            Arguments:
+                nodes[list[int]]: list of nodes
+                cmp[str]: compoment to extract
+                if cmp=' ', extract all components and list of components is filled in
+
+            Returns:
+                tuple[list, list, list]]: List of nodes, list of components, list of values.
+            )" );
 
     /**
      * Object FieldOnNodesLong

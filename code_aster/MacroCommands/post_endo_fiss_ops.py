@@ -125,7 +125,7 @@ def cherche_trajet(
     Endono = __ENDOGM.EXTR_COMP(NOM_CMP, [], 1)
     Endo = Endono.valeurs
     Noeybar = Endono.noeud
-    idxNoeud = NP.array(Noeybar) - 1
+    idxNoeud = NP.array(Noeybar)
     Coorx = NP.take(Xtot, idxNoeud)
     Coory = NP.take(Ytot, idxNoeud)
     coorIni3 = int(NP.nonzero(dnor)[0])
@@ -188,8 +188,8 @@ def cherche_trajet(
     #   with associated values, i.e. inside the material
     # "idxpred" : connections between the two half-circles
     NonVide = NP.array(list(dx0.noeud))
-    idxpred1 = NP.where(NonVide == 2 * nbPoints - 1)[0]
-    idxpred2 = NP.where(NonVide == nbPoints)[0]
+    idxpred1 = NP.where(NonVide+1 == 2 * nbPoints - 1)[0]
+    idxpred2 = NP.where(NonVide+1 == nbPoints)[0]
 
     EndoOrth = dx0.valeurs
     Coor0 = __MAI.getCoordinates().getValues()
@@ -197,8 +197,8 @@ def cherche_trajet(
     CooryOrth = NP.array(Coor0[coorIni2 : len(Coor0) : 3], float)
 
     # We eliminate nodes without field values
-    CoorxOrth = NP.take(CoorxOrth, NonVide - 1)
-    CooryOrth = NP.take(CooryOrth, NonVide - 1)
+    CoorxOrth = NP.take(CoorxOrth, NonVide)
+    CooryOrth = NP.take(CooryOrth, NonVide)
     CoorxOrth = NP.delete(CoorxOrth, idxpred1)
     CoorxOrth = NP.delete(CoorxOrth, idxpred2)
     CooryOrth = NP.delete(CooryOrth, idxpred1)
@@ -273,14 +273,14 @@ def cherche_trajet(
     #  Search for the prediction point among the projected points
     #   and elimination of doubled point in the middle
     NonVide = NP.array(list(dx0.noeud))
-    idxpred = NP.where(NonVide == nbPoints)[0]
+    idxpred = NP.where(NonVide+1 == nbPoints)[0]
     EndoOrth = dx0.valeurs
 
     Coor0 = __MAI.getCoordinates().getValues()
     CoorxOrth = NP.array(Coor0[coorIni1 : len(Coor0) : 3], float)
     CooryOrth = NP.array(Coor0[coorIni2 : len(Coor0) : 3], float)
-    CoorxOrth = NP.take(CoorxOrth, NonVide - 1)
-    CooryOrth = NP.take(CooryOrth, NonVide - 1)
+    CoorxOrth = NP.take(CoorxOrth, NonVide)
+    CooryOrth = NP.take(CooryOrth, NonVide)
     CoorxOrth = NP.delete(CoorxOrth, idxpred)
     CooryOrth = NP.delete(CooryOrth, idxpred)
     EndoOrth = NP.delete(EndoOrth, idxpred)
@@ -405,7 +405,7 @@ def cherche_trajet(
             NonVide = NP.array(list(dx0.noeud))
 
             # Search of the prediction point among projected points
-            idxpred = NP.where(NonVide == nbPoints)[0]
+            idxpred = NP.where(NonVide+1 == nbPoints)[0]
 
             # Prediction point outside material
             if len(idxpred) == 0:
@@ -421,8 +421,8 @@ def cherche_trajet(
             Coor0 = __MAI.getCoordinates().getValues()
             CoorxOrth = NP.array(Coor0[coorIni1 : len(Coor0) : 3], float)
             CooryOrth = NP.array(Coor0[coorIni2 : len(Coor0) : 3], float)
-            CoorxOrth = NP.take(CoorxOrth, NonVide - 1)
-            CooryOrth = NP.take(CooryOrth, NonVide - 1)
+            CoorxOrth = NP.take(CoorxOrth, NonVide)
+            CooryOrth = NP.take(CooryOrth, NonVide)
             CoorxOrth = NP.delete(CoorxOrth, idxpred)
             CooryOrth = NP.delete(CooryOrth, idxpred)
             EndoOrth = NP.delete(EndoOrth, idxpred)
@@ -657,9 +657,9 @@ def calcul_ouverture(
             ChampOrthoCH = __OUVECH.EXTR_COMP(composante, [], 1)
             ChampOrtho = ChampOrthoCH.valeurs
             NonVide = NP.array(list(ChampOrthoCH.noeud))
-            idxCentre = NP.where(NonVide == nbPoints)[0]
-            XtotOrtho1 = NP.take(XtotOrtho, NonVide - 1)
-            YtotOrtho1 = NP.take(YtotOrtho, NonVide - 1)
+            idxCentre = NP.where(NonVide+1 == nbPoints)[0]
+            XtotOrtho1 = NP.take(XtotOrtho, NonVide)
+            YtotOrtho1 = NP.take(YtotOrtho, NonVide)
             XtotOrtho1 = NP.delete(XtotOrtho1, idxCentre)
             YtotOrtho1 = NP.delete(YtotOrtho1, idxCentre)
             ChampOrtho = NP.delete(ChampOrtho, idxCentre)
@@ -695,9 +695,9 @@ def calcul_ouverture(
                 EndoOrthoCH = __ENDOCH.EXTR_COMP(cmpEndo, [], 1)
                 EndoOrtho = EndoOrthoCH.valeurs
                 NonVide = NP.array(list(EndoOrthoCH.noeud))
-                idxCentre = NP.where(NonVide == nbPoints)[0]
-                XtotOrtho2 = NP.take(XtotOrtho, NonVide - 1)
-                YtotOrtho2 = NP.take(YtotOrtho, NonVide - 1)
+                idxCentre = NP.where(NonVide+1 == nbPoints)[0]
+                XtotOrtho2 = NP.take(XtotOrtho, NonVide)
+                YtotOrtho2 = NP.take(YtotOrtho, NonVide)
                 XtotOrtho2 = NP.delete(XtotOrtho2, idxCentre)
                 YtotOrtho2 = NP.delete(YtotOrtho2, idxCentre)
                 EndoOrtho = NP.delete(EndoOrtho, idxCentre)

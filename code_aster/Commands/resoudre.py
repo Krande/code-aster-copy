@@ -19,7 +19,7 @@
 
 # person_in_charge: nicolas.sellenet@edf.fr
 
-from ..Objects import FieldOnNodesReal
+from ..Objects import FieldOnNodesReal, FieldOnNodesComplex
 from ..Supervis import ExecuteCommand
 
 
@@ -35,7 +35,10 @@ class SolveLinearSystem(ExecuteCommand):
             keywords (dict): Keywords arguments of user's keywords.
         """
 
-        self._result = FieldOnNodesReal()
+        if keywords["MATR"].getType().endswith("_R"):
+            self._result = FieldOnNodesReal()
+        else:
+            self._result = FieldOnNodesComplex()
 
     def post_exec(self, keywords):
         """Post-execute the command.
