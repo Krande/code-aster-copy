@@ -55,6 +55,7 @@ subroutine pjefco(moa1, moa2, corres, base)
 #include "asterfort/utlisi.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/isParallelMesh.h"
     character(len=8) :: moa1, moa2
     character(len=16) :: corres
     character(len=1) :: base
@@ -245,6 +246,10 @@ subroutine pjefco(moa1, moa2, corres, base)
             call reliem(' ', noma2, 'NU_NOEUD', 'VIS_A_VIS', iocc, &
                         2, motcle, tymocl, '&&PJEFCO.LINOTM2', nbnono2)
 
+            if (isParallelMesh(noma2) .and. nbnono2+nbnoma2 == 0) then
+                goto 99
+            end if
+
             call wkvect('&&PJEFCO.LINONU2', 'V V I', nbnono2+nbnoma2, vi=linonu2)
 
             if (nbnono2 .gt. 0 .and. nbnoma2 .eq. 0) then
@@ -326,6 +331,8 @@ subroutine pjefco(moa1, moa2, corres, base)
                 call copisd('CORRESP_2_MAILLA', 'V', corre3, corre2)
                 call detrsd('CORRESP_2_MAILLA', corre3)
             end if
+!
+99          continue
 !
             call jedetr('&&PJEFCO.LIMANU1')
             call jedetr('&&PJEFCO.LINONU2')
