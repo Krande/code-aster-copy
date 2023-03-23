@@ -585,5 +585,7 @@ Get list of field's description to build internal FieldOnNodes
 Returns:
     list[EquationNumbering]: list of field's description
         )" )
-        .def( "addFiniteElementDescriptor", &Result::addFiniteElementDescriptor );
+        .def( "addFiniteElementDescriptor", &Result::addFiniteElementDescriptor )
+        .def( "getTangentMatrix", &Result::getTangentMatrix )
+        ;
 };

@@ -22,8 +22,6 @@ import pickle
 import numpy as NP
 from numpy import linalg as LA
 
-import aster
-
 from ...Cata.Commons import *
 from ...Cata.DataStructure import *
 from ...Cata.Syntax import *
@@ -31,6 +29,7 @@ from ...Cata.Syntax import _F
 from ...Commands import CREA_TABLE
 from ...Supervis.ExecuteCommand import UserMacro
 
+from ...Objects import Result
 
 class TANGENT:
 
@@ -62,15 +61,14 @@ class TANGENT:
         with open(nom_fichier, "wb") as pick:
             pickle.dump(self.__dict__, pick)
 
-    def Aster(self, suffixe="MATA"):
+    def Aster(self, suffix):
         """lit la matrice depuis l'espace Aster.
         nom : suffixe de l'objet jeveux
         """
-        nom_obj_jeveux = ("PYTHON.TANGENT." + suffixe).ljust(24)
-        obj_jeveux = aster.getvectjev(nom_obj_jeveux)
-        if not obj_jeveux:
-            raise RuntimeError("TANGENT : OBJET JEVEUX DE SUFFIXE " + suffixe + " INEXISTANT")
-        self.Matrice(obj_jeveux)
+        values = Result.getTangentMatrix(suffix)
+        if not values:
+            raise RuntimeError("TANGENT : OBJET JEVEUX DE SUFFIXE " + suffix + " INEXISTANT")
+        self.Matrice(values)
 
     def Eigen(self):
         """Retourne les valeurs propres de la matrice"""
@@ -179,9 +177,9 @@ def veri_matr_tang_ops(self, **args):
 
     prec_zero = args["PREC_ZERO"]
     tgt = TANGENT(prec_zero=prec_zero)
-    tgt.Aster(suffixe="MATA")
+    tgt.Aster("MATA")
     matp = TANGENT(prec_zero=prec_zero)
-    matp.Aster(suffixe="MATC")
+    matp.Aster("MATC")
     prec_diff = args["PRECISION"]
     if args["SYMETRIE"] == "OUI":
         symetgt = tgt.Symetrie(prec_diff)[-2]

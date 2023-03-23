@@ -157,6 +157,9 @@ class Result : public DataStructure, public ListOfTables {
 
     ASTERINTEGER _getInternalIndex( const ASTERINTEGER &index ) const;
 
+    static JeveuxVectorReal _mata;
+    static JeveuxVectorReal _matc;
+
   public:
     /**
      * @typedef ResultPtr
@@ -539,6 +542,8 @@ class Result : public DataStructure, public ListOfTables {
     void clear();
 
     bool exists() const;
+
+    static VectorReal getTangentMatrix( const std::string& );
 };
 
 /**

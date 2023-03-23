@@ -35,6 +35,9 @@
 #include "Supervis/Exceptions.h"
 #include "Utilities/Tools.h"
 
+JeveuxVectorReal Result::_mata( "PYTHON.TANGENT.MATA" );
+JeveuxVectorReal Result::_matc( "PYTHON.TANGENT.MATC" );
+
 ASTERINTEGER Result::_getInternalIndex( const ASTERINTEGER &index ) const {
     // NUME_ORDRE -> NUME
     _serialNumber->updateValuePointer();
@@ -934,4 +937,15 @@ std::vector< FiniteElementDescriptorPtr > Result::getFiniteElementDescriptors() 
 
 std::vector< EquationNumberingPtr > Result::getEquationNumberings() const {
     return _fieldBuidler.getEquationNumberings();
+};
+
+VectorReal Result::getTangentMatrix( const std::string& suffix){
+    if ( suffix == "MATA" && _mata.exists() ){
+        _mata->updateValuePointer();
+        return _mata->toVector();
+    } else if ( suffix == "MATC" && _matc.exists() ){
+        _matc->updateValuePointer();
+        return _matc->toVector();
+    } else
+        return {};
 };
