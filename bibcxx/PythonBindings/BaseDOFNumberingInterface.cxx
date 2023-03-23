@@ -67,4 +67,5 @@ Returns:
         )" );
     c1.def( "getModel", &BaseDOFNumbering::getModel );
     c1.def( "setModel", &BaseDOFNumbering::setModel );
+    c1.def( "getMorseStorage", &BaseDOFNumbering::getMorseStorage );
 };

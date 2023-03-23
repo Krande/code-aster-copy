@@ -106,6 +106,7 @@
 #include "PythonBindings/MaterialFieldInterface.h"
 #include "PythonBindings/MaterialInterface.h"
 #include "PythonBindings/MatrixToPetscInterface.h"
+#include "PythonBindings/MatrixStorageInterface.h"
 #include "PythonBindings/MechanicalLoadInterface.h"
 #include "PythonBindings/MedCouplingConversionInterface.h"
 #include "PythonBindings/MeshCoordinatesFieldInterface.h"
@@ -180,6 +181,7 @@ PYBIND11_MODULE( libaster, mod ) {
     exportMedCouplingConversionToPython( mod );
     exportDiscreteComputationToPython( mod );
     exportEquationNumberingToPython( mod );
+    exportMatrixStorageToPython( mod );
     exportBaseDOFNumberingToPython( mod );
     exportDOFNumberingToPython( mod );
     exportElementaryCharacteristicsToPython( mod );

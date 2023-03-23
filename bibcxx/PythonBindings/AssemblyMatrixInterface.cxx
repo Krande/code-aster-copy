@@ -101,6 +101,9 @@ Arguments:
         // -----------------------------------------------------------------------------------------
         .def( "duplicate", &AssemblyMatrixDisplacementReal::duplicate )
         // -----------------------------------------------------------------------------------------
+        .def( "getUpperValues", &AssemblyMatrixDisplacementReal::getUpperValues )
+        .def( "getLowerValues", &AssemblyMatrixDisplacementReal::getLowerValues )
+        // -----------------------------------------------------------------------------------------
         .def( float() * py::self )
         .def( py::self *= float() )
         .def( py::self -= py::self )

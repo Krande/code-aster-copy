@@ -393,33 +393,22 @@ def posnoeud(typ, noeud1, comp1, comp2, pos):
 
 
 def extr_matr(matr):
-    nommatr = matr.getName().strip()
-    lenm = len(nommatr)
-    nommatr = nommatr + " " * (8 - lenm)
-    nrefa = nommatr + "           .REFA"
-    vrefa = aster.getvectjev(nrefa)
-    numeddl = str(vrefa[1]).strip()
-    lenn = len(numeddl)
-    numeddl = numeddl + " " * (14 - lenn)
-    typm = str(vrefa[8]).strip()
+
+    if matr.getDOFNumbering() is None:
+        matr.updateDOFNumbering()
+
+    dof_num = matr.getDOFNumbering()
+
+    morse_stor = dof_num.getMorseStorage()
+    vsmdi = morse_stor.getRows()
+    vsmhc = morse_stor.getDiagonalPositions()
 
     # on recupere les valeurs de la matrice
-    nvalm = nommatr + "           .VALM"
-    vvalm = aster.getcolljev(nvalm)
-    # print(vvalm[1])
-
-    nsmdi = numeddl + ".SMOS.SMDI"
-    nsmhc = numeddl + ".SMOS.SMHC"
-    vsmdi = aster.getvectjev(nsmdi)
-    vsmhc = aster.getvectjev(nsmhc)
-
-    valm1 = vvalm[1]
-    if typm == "MS":
-        # Si la matrice est symétrique
-        valm2 = vvalm[1]
+    valm1 = matr.getUpperValues()
+    if matr.isSymmetric():
+        valm2 = valm1
     else:
-        # Si la matrice est non-symétrique
-        valm2 = vvalm[2]
+        valm2 = matr.getLowerValues()
 
     # Taille de la matrice avec cdl
     neq = len(vsmdi)
@@ -438,38 +427,28 @@ def extr_matr(matr):
         if (vsmdi[j] - 1) == k:
             j = j + 1
 
-    # print(matriceg)
-
-    # Création du vecteur ind : 1 si ddl phys 0 sinon
-    # Cas CDL = AFFE_CHAR_CINE
-    nccid = nommatr + "           .CCID"
-    vccid = aster.getvectjev(nccid)
-    # print(vccid)
-
-    # Cas CDL = AFFE_CHAR_MECA
-    ndeeq = numeddl + ".NUME.DEEQ"
-    vdeeq = aster.getvectjev(ndeeq)
-    # print('vdeeq')
-    # print(vdeeq)
+    vdeeq = dof_num.getEquationNumbering().getNodesAndComponentsNumberFromDOF()
 
     ind = zeros(neq)
     # Cas CDL = AFFE_CHAR_CINE
-    if vccid is not None:
+    if matr.hasDirichletEliminationDOFs():
+        vccid = matr.getDirichletBCDOFs()
         ind = ones(neq) - vccid[0:neq]
         # print(ind)
         nd = neq - vccid[neq]
         # print(nd)
     # Cas CDL = AFFE_CHAR_MECA
-    elif vdeeq is not None:
+    else:
+        print("here")
         for k in range(neq):
-            if vdeeq[-1 + 2 * k + 2] > 0:
+            if vdeeq[k][1] > 0:
                 ind[k] = 1
-            elif vdeeq[-1 + 2 * k + 2] < 0:
+            elif vdeeq[k][1] < 0:
                 ind[k] = 0
                 j = 0
-                tcmp = -vdeeq[-1 + 2 * k + 2]
-                while (vdeeq[-1 + 2 * j + 1] != vdeeq[-1 + 2 * k + 1]) or (
-                    vdeeq[-1 + 2 * j + 2] != tcmp
+                tcmp = -vdeeq[k][1]
+                while (vdeeq[j][0] != vdeeq[k][0]) or (
+                    vdeeq[j][1] != tcmp
                 ):
                     j = j + 1
                 ind[j] = 0
@@ -500,15 +479,15 @@ def extr_matr(matr):
     i = 0
     for k in range(neq):
         if ind[k] == 1:
-            vectddl[i] = "N" + str(vdeeq[2 * k]).strip() + comp[vdeeq[2 * k + 1] - 1].strip()
+            vectddl[i] = "N" + str(vdeeq[k][0]).strip() + comp[vdeeq[k][1] - 1].strip()
             i = i + 1
-    if vccid is not None:
+    if matr.hasDirichletEliminationDOFs():
         inds = ind
     else:
         inds = zeros(len(ind))
         i = 0
         for k in range(neq):
-            if vdeeq[2 * k + 1] > 0:
+            if vdeeq[k][1] > 0:
                 inds[i] = ind[i]
                 i = i + 1
         inds = inds[0:i]
