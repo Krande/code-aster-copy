@@ -20,6 +20,8 @@
 
 #include "astercxx.h"
 
+#ifdef ASTER_HAVE_MGIS
+
 #include "MGIS/Behaviour/Integrate.hxx"
 #include "MGIS/Behaviour/State.hxx"
 #include "MGIS/LibrariesManager.hxx"
@@ -29,8 +31,6 @@
 #include "Utilities/Tools.h"
 
 #include <algorithm>
-
-#ifdef ASTER_HAVE_MGIS
 
 namespace MGB = mgis::behaviour;
 
@@ -89,7 +89,7 @@ void MGISBehaviour::_load_library(
     if ( !finiteStrain ) {
         _behav = std::make_shared< MGB::Behaviour >( MGB::load( _libpath, _bname, hyp ) );
     } else {
-        auto opts = MGB::FiniteStrainBehaviourOptions{};
+        auto opts = MGB::FiniteStrainBehaviourOptions {};
         opts.stress_measure = stress_measure;
         opts.tangent_operator = tangent_op;
 

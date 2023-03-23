@@ -23,6 +23,7 @@
 
 void exportMGISBehaviourToPython( py::module_ &mod ) {
 
+#ifdef ASTER_HAVE_MGIS
     py::class_< MGISBehaviour, MGISBehaviour::MGISBehaviourPtr, DataStructure >( mod,
                                                                                  "MGISBehaviour" )
         .def( py::init( &initFactoryPtr< MGISBehaviour > ) )
@@ -48,4 +49,5 @@ Returns internal state.
 Returns:
     list[str]: internal state.
         )" );
+#endif
 };

@@ -73,7 +73,7 @@ class MGISBehaviour : public DataStructure {
 #endif
     };
 
-    MGISBehaviour() : MGISBehaviour( ResultNaming::getNewResultName() ){};
+    MGISBehaviour() : MGISBehaviour( ResultNaming::getNewResultName() ) {};
 
     ~MGISBehaviour() { std::cout << "deleting MGISBehaviour with id: " << id() << std::endl; }
 

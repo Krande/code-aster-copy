@@ -19,18 +19,22 @@
 
 # person_in_charge: mathieu.courtois@edf.fr
 """
-Objects only defined in parallel
-********************************
+Objects defined depending on the configuration
+**********************************************
+
+The availability of the objects depends on the configuration.
+Some of them are not available with a sequential version.
+Some others are only defined if a prerequisite is well configured.
 """
 
-from .datastructure_py import OnlyParallelObject
+from .datastructure_py import UnavailableObject
 
 
 try:
     from libaster import Mesh, ParallelMesh
 except ImportError:
 
-    class ParallelMesh(OnlyParallelObject):
+    class ParallelMesh(UnavailableObject):
         pass
 
 
@@ -38,7 +42,7 @@ try:
     from libaster import ConnectionMesh
 except ImportError:
 
-    class ConnectionMesh(OnlyParallelObject):
+    class ConnectionMesh(UnavailableObject):
         pass
 
 
@@ -46,7 +50,7 @@ try:
     from libaster import ParallelFiniteElementDescriptor
 except ImportError:
 
-    class ParallelFiniteElementDescriptor(OnlyParallelObject):
+    class ParallelFiniteElementDescriptor(UnavailableObject):
         pass
 
 
@@ -55,7 +59,7 @@ try:
 
 except ImportError:
 
-    class ParallelMechanicalLoadReal(OnlyParallelObject):
+    class ParallelMechanicalLoadReal(UnavailableObject):
         pass
 
 
@@ -64,7 +68,7 @@ try:
 
 except ImportError:
 
-    class ParallelMechanicalLoadFunction(OnlyParallelObject):
+    class ParallelMechanicalLoadFunction(UnavailableObject):
         pass
 
 
@@ -73,7 +77,7 @@ try:
 
 except ImportError:
 
-    class ParallelThermalLoadReal(OnlyParallelObject):
+    class ParallelThermalLoadReal(UnavailableObject):
         pass
 
 
@@ -82,7 +86,7 @@ try:
 
 except ImportError:
 
-    class ParallelThermalLoadFunction(OnlyParallelObject):
+    class ParallelThermalLoadFunction(UnavailableObject):
         pass
 
 
@@ -90,7 +94,7 @@ try:
     from libaster import ParallelDOFNumbering
 except ImportError:
 
-    class ParallelDOFNumbering(OnlyParallelObject):
+    class ParallelDOFNumbering(UnavailableObject):
         pass
 
 
@@ -98,5 +102,13 @@ try:
     from libaster import ParallelEquationNumbering
 except ImportError:
 
-    class ParallelEquationNumbering(OnlyParallelObject):
+    class ParallelEquationNumbering(UnavailableObject):
+        pass
+
+
+try:
+    from libaster import MGISBehaviour
+except ImportError:
+
+    class MGISBehaviour(UnavailableObject):
         pass

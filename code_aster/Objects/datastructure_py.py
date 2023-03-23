@@ -20,13 +20,12 @@
 from .user_extensions import WithEmbeddedObjects
 
 
-class OnlyParallelObject:
+class UnavailableObject:
     """This object is only available in parallel."""
 
     def __init__(self, *args, **kwargs):
         raise NameError(
-            "The object '{0}' is only available in parallel "
-            "executions.".format(self.__class__.__name__)
+            f"The object '{self.__class__.__name__}' is not available in this installation."
         )
 
 

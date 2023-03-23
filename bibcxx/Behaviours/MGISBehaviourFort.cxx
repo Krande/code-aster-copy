@@ -24,6 +24,7 @@
 
 /* ***** Define fortran interfaces ***** */
 
+#ifdef ASTER_HAVE_MGIS
 inline MGISBehaviour *getPtr( const std::string &hexid ) {
     AS_ASSERT( trim( hexid ) != "" && trim( hexid ) != "VIDE" );
     ASTERINTEGER addr = (ASTERINTEGER)std::stol( hexid, nullptr, 16 );
@@ -34,6 +35,7 @@ inline MGISBehaviour *getPtr( const char *hexid, STRING_SIZE l_id ) {
     std::string str_id( hexid, l_id );
     return getPtr( str_id );
 }
+#endif
 
 /* External State VariableS */
 

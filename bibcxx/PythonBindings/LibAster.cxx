@@ -269,8 +269,8 @@ PYBIND11_MODULE( libaster, mod ) {
     exportMGISBehaviourToPython( mod );
 
 #ifdef ASTER_HAVE_MPI
-    /* These objects must be declared in ObjectsExt/* as
-       OnlyParallelObject for sequential version. */
+    /* These objects must be declared in ObjectsExt
+       as an 'UnavailableObject' for sequential version. */
     exportParallelMeshToPython( mod );
     exportParallelEquationNumberingToPython( mod );
     exportParallelDOFNumberingToPython( mod );

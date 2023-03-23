@@ -25,15 +25,9 @@ This module provides pybind11 DataStructures and low level objects.
 
 from libaster import *
 
-from .datastructure_py import (
-    AsFloat,
-    AsInteger,
-    ThermalResultDict,
-    OnlyParallelObject,
-    PyDataStructure,
-)
-from .parallel_py import (
+from .config_dependent import (
     ConnectionMesh,
+    MGISBehaviour,
     ParallelDOFNumbering,
     ParallelEquationNumbering,
     ParallelFiniteElementDescriptor,
@@ -42,6 +36,13 @@ from .parallel_py import (
     ParallelMesh,
     ParallelThermalLoadFunction,
     ParallelThermalLoadReal,
+)
+from .datastructure_py import (
+    AsFloat,
+    AsInteger,
+    PyDataStructure,
+    ThermalResultDict,
+    UnavailableObject,
 )
 from .Serialization import InternalStateBuilder
 from .user_extensions import WithEmbeddedObjects

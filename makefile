@@ -143,8 +143,6 @@ test_debug:
 	$(MAKE) BUILD=debug test n=$(n)
 
 help : makefile
-	echo jobs: $(JOBS) && false
-	echo options: $(OPTS) $$(jobs) && false
 	@sed -n 's/^#://p' $< | \
 		sed -e 's/%BUILD%/$(BUILD)/g' -e 's/%DEFAULT%/$(DEFAULT)/g'
 
