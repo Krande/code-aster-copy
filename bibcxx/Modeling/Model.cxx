@@ -39,9 +39,28 @@ const char *const ModelSplitingMethodNames[nbModelSplitingMethod] = {"CENTRALISE
                                                                      "GROUP_ELEM"};
 const char *const GraphPartitionerNames[nbGraphPartitioner] = {"SCOTCH", "METIS"};
 
+Model::Partition::Partition( const std::string name )
+    : DataStructure( name, 19, "PARTITION" ),
+        _prti( JeveuxVectorLong( getName() + ".PRTI" ) ),
+        _prtk( JeveuxVectorChar24( getName() + ".PRTK" ) ),
+        _nupr( JeveuxVectorLong( getName() + ".PRTI" ) ),
+        _fdim( JeveuxVectorLong( getName() + ".FDIM" ) ),
+        _feta( JeveuxVectorLong( getName() + ".FETA" ) ),
+        _fref( JeveuxVectorChar8( getName() + ".FREF" ) ){};
+
+const std::string Model::Partition::getMethod() const {
+    if ( !_prtk.exists() )
+        return "";
+    else{
+        _prtk->updateValuePointer();
+        return trim ( (*_prtk)[0].toString() );
+    }
+}
+
 Model::Model( const std::string name, const bool is_xfem )
     : DataStructure( name, 8, "MODELE" ),
       ListOfTables( name ),
+      _partSD( std::make_shared< Partition >( getName() + ".PARTSD" ) ),
       _typeOfCells( JeveuxVectorLong( getName() + ".MAILLE    " ) ),
       _typeOfNodes( JeveuxVectorLong( getName() + ".NOEUD     " ) ),
       _baseMesh( nullptr ),
@@ -177,6 +196,8 @@ bool Model::existsRdM() const { return dismoi( "EXI_RDM" ) == "OUI"; };
 bool Model::existsPartition() const { return dismoi( "PARTITION" ) != ""; }
 
 const std::string Model::getModelisationName() const { return dismoi( "MODELISATION" ); };
+
+const std::string Model::getPartitionMethod() const { return _partSD->getMethod(); };
 
 const std::string Model::dismoi( const std::string &question, bool stop ) const {
     const std::string typeco( "MODELE" );

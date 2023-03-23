@@ -78,6 +78,12 @@ void exportModelToPython( py::module_ &mod ) {
             Returns:
                 str: modelisation name if single modelisation, else '#PLUSIEURS'
             )" )
+        .def( "getPartitionMethod", &Model::getPartitionMethod, R"(
+            Get partition method
+
+            Returns:
+                str: partition method
+            )" )
         .def( "isXfem", &Model::isXfem )
         .def( "existsMultiFiberBeam", &Model::existsMultiFiberBeam )
         .def( "getSaneModel", &Model::getSaneModel )

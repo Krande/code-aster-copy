@@ -76,6 +76,19 @@ extern const char *const GraphPartitionerNames[nbGraphPartitioner];
  * @brief Datastructure for model (AFFE_MODELE)
  */
 class Model : public DataStructure, public ListOfTables {
+    class Partition : public DataStructure {
+        JeveuxVectorLong _prti;
+        JeveuxVectorChar24 _prtk;
+        JeveuxVectorLong _nupr;
+        JeveuxVectorLong _fdim;
+        JeveuxVectorLong _feta;
+        JeveuxVectorChar8 _fref;
+    public:
+        Partition( const std::string );
+        typedef std::shared_ptr< Partition > PartitionPtr;
+        const std::string getMethod() const;
+    };
+
   public:
     typedef std::shared_ptr< Model > ModelPtr;
 
@@ -120,6 +133,8 @@ class Model : public DataStructure, public ListOfTables {
     GraphPartitioner _graphPartitioner;
     /** @brief Object .MODELE */
     FiniteElementDescriptorPtr _ligrel;
+
+    Partition::PartitionPtr _partSD;
 
     /**
      * @brief Ajout d'une nouvelle modelisation sur tout le maillage
@@ -215,6 +230,9 @@ class Model : public DataStructure, public ListOfTables {
 
     /**@brief Name of modelisation */
     const std::string getModelisationName() const;
+
+    /**@brief patition method */
+    const std::string getPartitionMethod() const;
 
     /**
      * @brief Number of super-elements in model

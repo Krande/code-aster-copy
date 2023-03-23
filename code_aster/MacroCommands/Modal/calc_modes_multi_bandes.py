@@ -22,7 +22,7 @@ from ...Messages import UTMESS
 
 from ...Cata.Syntax import _F
 from ...Commands import EXTR_MODE, IMPR_CO, INFO_MODE, MODI_MODELE, NUME_DDL
-from ...Objects import AssemblyMatrixDisplacementReal
+from ...Objects import AssemblyMatrixDisplacementReal, GeneralizedAssemblyMatrixReal, GeneralizedAssemblyMatrixComplex
 from ...Utilities.mpi_utils import MPI
 from .mode_iter_simult import MODE_ITER_SIMULT
 
@@ -113,7 +113,7 @@ def calc_modes_multi_bandes(self, stop_erreur, sturm, INFO, **args):
     # ne sont pas parallelises).
     # On remettra le mode de fonctionnement initial en fin de Macro.
     if nbproc > 1:
-        _, old_prtk1 = recup_modele_partition(MATR_RIGI, dbg)
+        old_prtk1 = recup_modele_partition(MATR_RIGI)
         sd_modele = None
         if MATR_RIGI is not None:
             sd_modele = MATR_RIGI.getDOFNumbering().getModel()
@@ -426,38 +426,17 @@ def calc_modes_multi_bandes(self, stop_erreur, sturm, INFO, **args):
 # Routines auxiliaires
 # ----------------------
 # Routine pour recuperer sd_modele + option de la sd_partition (si elle existe)
-def recup_modele_partition(MATR_RIGI, dbg):
+def recup_modele_partition(MATR_RIGI):
 
-    nommod = None
-    old_prtk1 = None
-    # Recuperation de la sd_modele a partir de la matrice de rigidite
-    # sur le schema des routines DISMOI/DISMMO/DISMMS/DISMNU/DISMPN/DISMLG
-    matr_refa = MATR_RIGI.sdj.REFA.get()
-    nume_lili = matr_refa[1][0:14] + ".NUME.LILI"
-    vlili = aster.getvectjev(nume_lili[0:24])
-    buff_ligrel = vlili[1]
-    if buff_ligrel == "LIAISONS":
+    if isinstance(MATR_RIGI, (GeneralizedAssemblyMatrixReal, GeneralizedAssemblyMatrixComplex)):
         UTMESS("F", "MODAL_18")
-    vlgrf = buff_ligrel[0:19] + ".LGRF"
-    buff_modele = aster.getvectjev(vlgrf[0:24])
-    nommod = buff_modele[1]
 
-    if dbg:
-        aster.affiche("MESSAGE", "Nom du modele retenu: " + str(nommod))
+    model = MATR_RIGI.getDOFNumbering().getModel()
 
-    # Si parallele non centralise recuperation de la sd_partition et de son
-    # option de partitionnement: old_prtk1
-    vprtk = None
-    nompart = nommod[0:8] + ".PARTSD"
-    vprtk = aster.getvectjev(nompart[0:19] + ".PRTK")
-    if vprtk is not None:
-        old_prtk_buff = vprtk[0]
-        old_prtk1 = old_prtk_buff.strip()
-    if dbg:
-        aster.affiche("MESSAGE", "Nom de la partition retenue: " + str(nompart))
-        aster.affiche("MESSAGE", "Ancienne option de distribution: " + str(old_prtk1))
-
-    return nommod, old_prtk1
+    if not model.existsPartition():
+        return None
+    else:
+        return model.getPartitionMethod()
 
 
 # Routine pour recuperer nbre de modes theorique (nbmodeth) determine par l'INFO_MODE
