@@ -12,6 +12,15 @@ Documentation of all other types.
 
 
 ********************************************************************************
+:py:class:`~code_aster.Objects.CodedMaterial` object
+********************************************************************************
+
+.. autoclass:: code_aster.Objects.CodedMaterial
+   :show-inheritance:
+   :members:
+
+
+********************************************************************************
 :py:class:`~code_aster.Objects.ContactAlgo` object
 ********************************************************************************
 

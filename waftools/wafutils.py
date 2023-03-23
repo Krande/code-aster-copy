@@ -32,8 +32,10 @@ def exec_pyaster(self, pyfile, args, **kwargs):
         cmdprefix = env["base_mpiexec"] + ["-n", "1"]
     cmds = " ".join(cmdprefix + cmdexe)
     Logs.debug("os environ: %r" % environ)
-    # do not confuse with installed elementsdir
-    environ["ASTER_ELEMENTSDIR"] = ""
+    if kwargs.get("for_catalo"):
+        del kwargs["for_catalo"]
+        # do not confuse with installed elementsdir
+        environ["ASTER_ELEMENTSDIR"] = ""
     kwargs["output"] = Context.BOTH
     try:
         stdout, stderr = self.cmd_and_log(cmds, env=environ, shell=True, quiet=0, **kwargs)

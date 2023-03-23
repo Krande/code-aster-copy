@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -82,6 +82,7 @@ class printcata(Task.Task):
             env=environ,
             cwd=self.outputs[0].parent.abspath(),
             args=[self.env["OPTDEBUG"] or "", "-o", self.outputs[0].abspath()],
+            for_catalo=True,
         )
 
     def sig_explicit_deps(self):
@@ -138,7 +139,9 @@ def build_cata_ele(self, ojb, elem1, install_path):
         memlim = 4096 + int(float(self.env["addmem"]))
         if "32" in platform.architecture()[0]:
             memlim = 2047
-        exec_pyaster(self, comm, cwd=builddir, args=["--memory={0}".format(memlim)])
+        exec_pyaster(
+            self, comm, cwd=builddir, args=["--memory={0}".format(memlim)], for_catalo=True
+        )
 
     dest = osp.join(install_path, osp.basename(elem1.name))
     shutil.copy(elem1path, dest)

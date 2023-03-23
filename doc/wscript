@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -23,7 +23,7 @@ import shutil
 
 from waflib import Configure, Errors, Logs
 
-from waftools.wafutils import exec_pyaster
+from waftools.wafutils import add_to_env_paths, exec_pyaster
 
 """
 Build code_aster documentation using Sphinx.
@@ -134,12 +134,14 @@ def build_autodoc(self):
     )
     pysrc = self.path.parent.get_src().ant_glob("code_aster/**/*.py")
     pysrc += self.path.parent.get_src().ant_glob("run_aster/**/*.py")
+    elem1 = self.path.parent.get_bld().find_or_declare("catalo/elem.1")
     self(
         rule=run_autodoc,
         always=self.options.force_doc,
         name="rstdevguide",
         source=[
             self.path.ant_glob("scripts/generate_rst.py"),
+            elem1,
             self.path.find_or_declare("_automatic_/libaster.py"),
         ]
         + pysrc,
@@ -197,18 +199,20 @@ def run_pylibaster(task):
     return 0
 
 
-# TODO try to replace generate_rst by sphinx-autodoc/sphinx-apidoc
 def run_autodoc(task):
     script = task.inputs[0].abspath()
     tgt = task.outputs[0].abspath()
+    elem1 = task.inputs[1].abspath()
+    shutil.copyfile(elem1, osp.join(tgt, "elem.1"))
     # remove previously existing files
     for res in task.outputs[0].ant_glob("*.rst"):
         os.remove(res.abspath())
 
+    env = os.environ.copy()
+    env.update(dict(AUTODOC_DESTDIR=tgt, ASTER_ELEMENTSDIR=tgt))
+
     os.makedirs(tgt, exist_ok=True)
-    exec_pyaster(
-        task.generator.bld, script, args=["--objects", "--destdir={0}".format(tgt)], cwd=task.cwd
-    )
+    exec_pyaster(task.generator.bld, script, args=[], cwd=task.cwd, env=env)
     for res in task.outputs[0].ant_glob("*.rst"):
         result = res.get_src().abspath()
         Logs.info("copying {0}...".format(result))

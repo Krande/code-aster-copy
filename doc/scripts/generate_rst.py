@@ -36,7 +36,7 @@ autoclass_block = """.. autoclass:: code_aster.Objects.{0}
 
 auto_documentation = """.. AUTOMATICALLY CREATED BY generate_rst.py - DO NOT EDIT MANUALLY!
 
-.. _devguide-{link}:
+{link}
 
 {intro}
 
@@ -60,6 +60,33 @@ subtitle = """
 :py:class:`~code_aster.Objects.{0}` object
 ********************************************************************************
 """.format
+
+table_decl_type = """
+.. list-table::
+   :widths: 40 25
+   :header-rows: 1
+
+   * - C++/Python object
+     - type in the commands catalog [#f1]_"""
+
+table_line_type = """   * - :py:class:`~code_aster.Objects.{0}`
+     - {1}""".format
+
+table_footer_type = """
+.. rubric:: Footnotes
+
+.. [#f1] If empty, it means that ``.getType()`` can not be called without a full execution,
+         see the related header file.
+"""
+
+table_decl = """
+.. list-table::
+   :widths: 40
+   :header-rows: 1
+
+   * - Class name"""
+
+table_line = """   * - :py:class:`~code_aster.Objects.{0}`""".format
 
 
 def automodule(filename):
@@ -94,7 +121,7 @@ def _build_text():
     sections.append(Exception)
     # print(len(sections), "sections")
 
-    # dict of subclasses
+    # dict of names of subclasses
     dictobj = OrderedDict([(i, []) for i in sections])
     for name, obj in list(OBJ.__dict__.items()):
         # if obj is not OBJ.Material:
@@ -106,57 +133,82 @@ def _build_text():
         found = False
         for subtyp in sections:
             if issubclass(obj, subtyp) or obj is subtyp:
-                dictobj[subtyp].append(name)
+                dictobj[subtyp].append((name, obj))
                 found = True
                 # print("Found:", name ,">>>", subtyp)
                 break
         if not found and not issubclass(obj, OBJ.PyDataStructure):
             raise KeyError("pybind11 class not found: {0}".format(obj.mro()))
 
-    dicttext = OrderedDict()
-    for subtyp, objs in list(dictobj.items()):
+    dictdesc = OrderedDict()
+    dicttabl = OrderedDict()
+    for subtyp, couples in list(dictobj.items()):
         typename = subtyp.__name__
-        lines = []
         # put subclass first
         try:
-            objs.remove(typename)
+            couples.remove((typename, subtyp))
         except ValueError:
             if subtyp not in (pyb_enum, Exception):
                 print(subtyp, typename)
-                print(objs)
+                print([i[0] for i in couples])
                 raise
-        objs.sort()
+        couples.sort()
         if subtyp not in (pyb_enum, Exception):
-            objs.insert(0, typename)
+            couples.insert(0, (typename, subtyp))
+        objs = [i[0] for i in couples]
 
+        lines = []
+        ltab = []
         if len(objs) > 1 and typename in SECTIONS:
             lines.append(title_ds(typename))
         else:
             lines.append(title_ds_alone(typename))
-        for name in objs:
+        nberr = 0
+        for name, astyp in couples:
             if typename in SECTIONS:
                 lines.append(subtitle(name))
+                try:
+                    inst = astyp()
+                    typ_extr = "``" + inst.getType().lower() + "``"
+                except TypeError:
+                    typ_extr = ""
+                    nberr += 1
+                ltab.append(table_line_type(name, typ_extr))
+            else:
+                ltab.append(table_line(name))
             lines.append(autoclass_block(name))
+        print(f"{nberr} errors / {len(couples)} types")
 
-        dicttext[typename] = os.linesep.join(lines)
-    return dicttext
+        dictdesc[typename] = os.linesep.join(lines)
+        if ltab:
+            if typename in SECTIONS:
+                ltab.insert(0, table_decl_type)
+                ltab.append(table_footer_type)
+            dicttabl[typename] = os.linesep.join(ltab)
+    # raise ValueError("DEBUG: dictdesc keys:", list(dictdesc.keys()))
+    return dictdesc, dicttabl
 
 
 def all_objects(destdir):
     """Generate sphinx blocks for all libaster objects."""
-    dicttext = _build_text()
+    descr, tables = _build_text()
 
     # generate a page for each of the section
     for sect in SECTIONS:
-        with open(osp.join(destdir, "objects_{0}.rst".format(sect)), "w") as fobj:
-            params = dict(link="objects_{0}".format(sect), content=dicttext[sect], intro="")
+        cnt = descr.pop(sect)
+        with open(osp.join(destdir, f"objects_{sect}.rst"), "w") as fobj:
+            params = dict(link=f".. _devguide-objects_{sect}:", content=cnt, intro="")
+            fobj.write(auto_documentation(**params))
+        cnt = tables.pop(sect)
+        with open(osp.join(destdir, f"table_{sect}.rst"), "w") as fobj:
+            params = dict(link="", content=cnt, intro="")
             fobj.write(auto_documentation(**params))
 
     # generate a page for all other classes
     with open(osp.join(destdir, "objects_Others.rst"), "w") as fobj:
         params = dict(
-            link="objects_Others",
-            content=os.linesep.join(list(dicttext.values())[2:]),
+            link=".. _devguide-objects_Others:",
+            content=os.linesep.join(list(descr.values())),
             intro="""
 ####################################
 Index of all other available objects
@@ -167,6 +219,13 @@ Documentation of all other types.
         )
         fobj.write(auto_documentation(**params))
 
+    # raise ValueError(list(tables.values())[1])
+    ltabs = list(tables.values())
+    ltabs.insert(0, table_decl)
+    with open(osp.join(destdir, "table_Others.rst"), "w") as fobj:
+        params = dict(link="", content=os.linesep.join(ltabs), intro="")
+        fobj.write(auto_documentation(**params))
+
 
 def main():
     default_dest = os.getcwd()
@@ -174,7 +233,6 @@ def main():
         description=__doc__, epilog=EPILOG, formatter_class=argparse.RawTextHelpFormatter
     )
     parser.add_argument(
-        "--objects",
         action="store_const",
         dest="action",
         const="objects",
@@ -202,4 +260,10 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    import code_aster
+
+    code_aster.init()
+
+    all_objects(os.environ["AUTODOC_DESTDIR"])
+
+    code_aster.close()
