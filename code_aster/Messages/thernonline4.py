@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -29,6 +29,11 @@ Ce n'est possible qu'avec THER_NON_LINE_MO.
     2: _(
         """
 On ne peut pas utiliser d'éléments de structures (coques, plaques, poutres) dans la commande THER_NON_LINE_MO.
+"""
+    ),
+    3: _(
+        """
+La recherche linéaire est incompatible avec un maillage parallèle dans la commande THER_NON_LINE.
 """
     ),
     85: _(

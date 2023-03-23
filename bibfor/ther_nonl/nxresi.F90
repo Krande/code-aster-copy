@@ -121,8 +121,9 @@ subroutine nxresi(matass, vec2nd, cnvabt, cnresi, cn2mbr, &
 !
 ! - Compute relative
 !
-    call asmpi_comm_vect('MPI_MAX', 'R', scr=vnorm)
-    call asmpi_comm_vect('MPI_MAX', 'R', scr=resi_rela)
+    call asmpi_comm_vect('MPI_SUM', 'R', scr=vnorm)
+    call asmpi_comm_vect('MPI_SUM', 'R', scr=resi_rela)
+    call asmpi_comm_vect('MPI_MAX', 'R', scr=resi_maxi)
     ieq_rela = ieq_maxi
     if (vnorm .gt. 0.d0) then
         resi_rela = sqrt(resi_rela/vnorm)

@@ -33,6 +33,7 @@ subroutine nxinit(mesh, model, mate, &
     implicit none
 !
 #include "asterf_types.h"
+#include "asterfort/isParallelMesh.h"
 #include "asterfort/ntcrob.h"
 #include "asterfort/ntcrch.h"
 #include "asterfort/ntcrcv.h"
@@ -45,6 +46,7 @@ subroutine nxinit(mesh, model, mate, &
 #include "asterfort/ntload_chck.h"
 #include "asterfort/romAlgoNLInit.h"
 #include "asterfort/nonlinDSPrintInit.h"
+#include "asterfort/utmess.h"
 !
     character(len=24), intent(in) :: model, mate, cara_elem, compor
     character(len=19), intent(in) :: list_load
@@ -99,6 +101,7 @@ subroutine nxinit(mesh, model, mate, &
 !
     character(len=8) :: result
     character(len=24) :: hydr_init
+    aster_logical :: l_pmesh
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -112,6 +115,9 @@ subroutine nxinit(mesh, model, mate, &
     l_rom = ds_algorom%l_rom
     lnkry = ds_algopara%method == 'NEWTON_KRYLOV'
     l_line_search = ds_algopara%line_search%iter_maxi .gt. 0
+    l_pmesh = isParallelMesh(mesh)
+    if (l_line_search .and. l_pmesh) call utmess('F', 'THERNONLINE4_3')
+
 !
 ! - Create numbering
 !
