@@ -28,6 +28,9 @@
 #include "aster_pybind.h"
 
 #include <Meshes/BaseMesh.h>
+#include "Modal/DynamicMacroElement.h"
+#include "Modal/StaticMacroElement.h"
+
 
 void exportBaseMeshToPython( py::module_ &mod ) {
 
@@ -218,5 +221,22 @@ Check some properties of the mesh.
 Arguments:
     tolerance (float): Tolerance used to detect flat cells.
         )",
-              py::arg( "tolerance" ) );
+              py::arg( "tolerance" ) )
+
+        .def( "addDynamicMacroElement", &BaseMesh::addDynamicMacroElement, R"(
+Add a dynamic macro element.
+        )")
+
+        .def( "getDynamicMacroElements", &BaseMesh::getDynamicMacroElements, R"(
+Return all dynamic macro elements.
+        )")
+
+        .def( "addStaticMacroElement", &BaseMesh::addStaticMacroElement, R"(
+Add a static macro element.
+        )")
+
+        .def( "getStaticMacroElements", &BaseMesh::getStaticMacroElements, R"(
+Return all static macro elements.
+        )");
+
 };

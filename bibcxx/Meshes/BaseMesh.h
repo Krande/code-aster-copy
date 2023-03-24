@@ -36,6 +36,10 @@ template < class ValueType >
 class ConstantFieldOnCells;
 typedef ConstantFieldOnCells< ASTERDOUBLE > ConstantFieldOnCellsReal;
 typedef std::shared_ptr< ConstantFieldOnCellsReal > ConstantFieldOnCellsRealPtr;
+class DynamicMacroElement;
+typedef std::shared_ptr< DynamicMacroElement > DynamicMacroElementPtr;
+class StaticMacroElement;
+typedef std::shared_ptr< StaticMacroElement > StaticMacroElementPtr;
 
 /**
  * @class BaseMesh
@@ -99,6 +103,9 @@ class BaseMesh : public DataStructure, public ListOfTables {
     ConstantFieldOnCellsRealPtr _curvAbsc;
     /** @brief Object to allow loop over connectivity */
     const ConnectivityMeshExplorer _explorer;
+
+    std::vector< DynamicMacroElementPtr > _dynamic_macro_elements;
+    std::vector< StaticMacroElementPtr > _static_macro_elements;
 
     /**
      * @brief Constructeur
@@ -395,6 +402,27 @@ class BaseMesh : public DataStructure, public ListOfTables {
     void show( const int verbosity = 1 ) const;
 
     void check( const ASTERDOUBLE tolerance );
+
+    /**
+     * @brief Add a DynamicMacroElement
+     */
+    bool addDynamicMacroElement( const DynamicMacroElementPtr& );
+
+    /**
+     * @brief Get all DynamicMacroElements
+     */
+    std::vector< DynamicMacroElementPtr > getDynamicMacroElements() const;
+
+    /**
+     * @brief Add a StaticMacroElement
+     */
+    bool addStaticMacroElement( const StaticMacroElementPtr& );
+
+    /**
+     * @brief Get all StaticMacroElements
+     */
+    std::vector< StaticMacroElementPtr > getStaticMacroElements() const;
+
 };
 
 /**

@@ -30,6 +30,8 @@
 #include "aster_fort_utils.h"
 
 #include "DataFields/ConstantFieldOnCells.h"
+#include "Modal/DynamicMacroElement.h"
+#include "Modal/StaticMacroElement.h"
 #include "PythonBindings/LogicalUnitManager.h"
 #include "Supervis/CommandSyntax.h"
 #include "Supervis/Exceptions.h"
@@ -348,6 +350,24 @@ void BaseMesh::check( const ASTERDOUBLE tolerance ) {
     ASTERDOUBLE value = tolerance;
     CALLO_CHCKMA( getName(), &value );
 }
+
+bool BaseMesh::addDynamicMacroElement(const DynamicMacroElementPtr &elem ){
+        _dynamic_macro_elements.push_back( elem );
+        return true;
+};
+
+std::vector< DynamicMacroElementPtr > BaseMesh::getDynamicMacroElements() const {
+    return _dynamic_macro_elements;
+};
+
+bool BaseMesh::addStaticMacroElement(const StaticMacroElementPtr &elem ){
+        _static_macro_elements.push_back( elem );
+        return true;
+};
+
+std::vector< StaticMacroElementPtr > BaseMesh::getStaticMacroElements() const {
+    return _static_macro_elements;
+};
 
 void add_automatic_names( NamesMapChar8 &map, int size, std::string prefix ) {
     map->allocate( size );

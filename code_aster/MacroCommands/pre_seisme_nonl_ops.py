@@ -414,14 +414,8 @@ class MacroElement(object):
             ):
                 reduc_dyna = True
         if self.param["POST_CALC_MISS"]:
-            bamo_nom_long = aster.getvectjev(
-                self.mael.getName() + (8 - len(self.mael.getName())) * " " + ".MAEL_REFE"
-            )
-            bamo_nom_short = bamo_nom_long[0].split()[0]
-            NOEUD_CMP = aster.getvectjev(
-                bamo_nom_short + (19 - len(bamo_nom_short)) * " " + ".RS16"
-            )
-            if NOEUD_CMP[0].strip() == "":
+            noeud_cmp = self.mael.getMechanicalMode().getAccessParameters()["NOEUD_CMP"]
+            if noeud_cmp[0] is None:
                 reduc_dyna = True
         return reduc_dyna
 
@@ -615,12 +609,12 @@ class StatDyna(object):
         if properties["STAT_DYNA"]["COMPORTEMENT"]:
             self.comportement = properties["STAT_DYNA"]["COMPORTEMENT"]
         else:
-            self.comportement = mc_comport(self.resu_snl)
+            self.comportement = None
 
         if properties["STAT_DYNA"]["CONVERGENCE"]:
             self.converge = properties["STAT_DYNA"]["CONVERGENCE"]
         else:
-            self.converge = mc_converge()
+            self.converge = None
 
         self.base_modale = properties["STAT_DYNA"]["BASE_MODALE"]
         self.UL_impe_freq = properties["STAT_DYNA"]["UNITE_IMPE_FREQ"]
@@ -778,33 +772,10 @@ class StatDyna(object):
         keywords.update(kwds)
         return keywords
 
-    def mc_converge(self):
-        """Build 'Converge' keywords set"""
-
-    def mc_comport(self, resu):
-        """Build 'Comportement' keywords set"""
-
-        resu_INST0 = resu.sdj.TACH.get()[64][0]
-        nom_maillage = aster.getvectjev(resu_INST0[0:19] + ".NOMA")[0]
-        lnom_mailles = aster.getvectjev(nom_maillage + (8 - len(nom_maillage)) * " " + ".NOMMAI")
-
-        col_mailles = aster.getcolljev(resu_INST0[0:19] + ".LIMA")
-        num_param = len(col_mailles)
-
-        anom_mailles = NP.array(lnom_mailles)
-        kw_comp = []
-        if col_mailles[3] != (0,):
-            for n in range(num_param):
-                relation = aster.getvectjev(resu_INST0[0:19] + ".VALE")[20 * (n + 2)]
-                grma = anom_mailles(NP.array(col_mailles[n + 1]))
-
-                kw_comp.append(_F(RELATION=relation, GROUP_MA=grma, DEFORMATION="PETIT"))
-        else:
-            kw_comp = _F(RELATION=relation, TOUT="OUI", DEFORMATION="PETIT")
-
     def calc_chsol_equi(self):
         """Compute the corrective force coming from the soil"""
 
+        # compute impedence stiffness
         _NUMGEN = NUME_DDL_GENE(BASE=self.base_modale, STOCKAGE="PLEIN")
 
         _impeF = LIRE_IMPE_MISS(
@@ -834,30 +805,35 @@ class StatDyna(object):
             SANS_CMP="LAGR",
         )
 
-        nom_mail = self.maillage.getName()
-        nom_mael = aster.getvectjev(nom_mail + (8 - len(nom_mail)) * " " + ".NOMACR")[0]
-        maelk = _DIFFK.EXTR_MATR_GENE()
-        nbmod = maelk.shape[0]
+        # backup impedence stiffness
+        mael = self.maillage.getDynamicMacroElements()[0]
+        saved_matr_impe = mael.getImpedanceStiffnessMatrix()
 
-        p_real = []
-        p_imag = []
-        for n2 in range(0, nbmod):
-            for n1 in range(0, n2 + 1):
-                p_real.append(NP.real(maelk[n1, n2]))
-                p_imag.append(NP.imag(maelk[n1, n2]))
+        # set new impedence stiffness
+        mael = MACR_ELEM_DYNA(reuse=mael,
+                              MACR_ELEM_DYNA=mael,
+                              BASE_MODALE=self.base_modale,
+                              MATR_IMPE_RIGI=_DIFFK)
 
-        last_ind = nbmod * (nbmod + 1) // 2
-        p_ind = list(range(1, last_ind + 1))
+        # compute stiffness with new impedence stiffness
+        _rigiEle = CALC_MATR_ELEM(MODELE=self.modele,
+                                  OPTION="RIGI_MECA",
+                                  CALC_ELEM_MODELE="NON",
+                                  CHAM_MATER=self.mater,
+                                  CARA_ELEM=self.cara_elem,
+                                  CHARGE=[elem["CHARGE"] for elem in self.charges])
 
-        aster.putvectjev(
-            nom_mael + (8 - len(nom_mael)) * " " + ".MAEL_RAID_VALE         ",
-            last_ind,
-            tuple(p_ind),
-            tuple(p_real),
-            tuple(p_imag),
-            1,
-        )
 
+        _NUME = NUME_DDL(MATR_RIGI=_rigiEle)
+        _MATKZ = ASSE_MATRICE(MATR_ELEM=_rigiEle, NUME_DDL=_NUME)
+
+        # resore impedence stiffness
+        mael = MACR_ELEM_DYNA(reuse=mael,
+                              MACR_ELEM_DYNA=mael,
+                              BASE_MODALE=self.base_modale,
+                              MATR_IMPE_RIGI=saved_matr_impe)
+
+        # compute load
         _DEPL0 = CREA_CHAMP(
             TYPE_CHAM="NOEU_DEPL_R",
             OPERATION="EXTR",
@@ -866,56 +842,8 @@ class StatDyna(object):
             INST=self.inst_init,
             INFO=1,
         )
-
-        lchar = []
-        for elem in self.charges:
-            lchar.append(elem["CHARGE"])
-
-        _rigiEle = CALC_MATR_ELEM(
-            MODELE=self.modele,
-            OPTION="RIGI_MECA",
-            CALC_ELEM_MODELE="NON",
-            CHAM_MATER=self.mater,
-            CARA_ELEM=self.cara_elem,
-            CHARGE=lchar,
-        )
-
-        _NUME = NUME_DDL(MATR_RIGI=_rigiEle)
-        _MATKZ = ASSE_MATRICE(MATR_ELEM=_rigiEle, NUME_DDL=_NUME)
-
-        _DEPL1 = CREA_CHAMP(
-            TYPE_CHAM="NOEU_DEPL_R",
-            OPERATION="ASSE",
-            NUME_DDL=_NUME,
-            MODELE=self.modele,
-            ASSE=(_F(TOUT="OUI", CHAM_GD=_DEPL0, CUMUL="OUI", COEF_R=1.0),),
-        )
-
-        _VFORC = PROD_MATR_CHAM(MATR_ASSE=_MATKZ, CHAM_NO=_DEPL1)
-
+        _VFORC = PROD_MATR_CHAM(MATR_ASSE=_MATKZ, CHAM_NO=_DEPL0)
         _CHFORC = AFFE_CHAR_MECA(MODELE=self.modele, VECT_ASSE=_VFORC)
-
-        maelZ = _Z0.EXTR_MATR_GENE()
-        nbmod = maelZ.shape[0]
-
-        p_real = []
-        p_imag = []
-        for n2 in range(0, nbmod):
-            for n1 in range(0, n2 + 1):
-                p_real.append(NP.real(maelZ[n1, n2]))
-                p_imag.append(NP.imag(maelZ[n1, n2]))
-
-        last_ind = nbmod * (nbmod + 1) // 2
-        p_ind = list(range(1, last_ind + 1))
-
-        aster.putvectjev(
-            nom_mael + (8 - len(nom_mael)) * " " + ".MAEL_RAID_VALE         ",
-            last_ind,
-            tuple(p_ind),
-            tuple(p_real),
-            tuple(p_imag),
-            1,
-        )
 
         return _CHFORC
 
@@ -1126,33 +1054,23 @@ class Mesh(object):
         self.old_mesh = self.new_mesh
         if self.macro_elem:
             list_SuperMa = self.__set_list_supermaille(self.macro_elem)
-            _MAYADYN = DEFI_MAILLAGE(
-                DEFI_SUPER_MAILLE=list_SuperMa,
-                RECO_GLOBAL=_F(TOUT="OUI"),
-                DEFI_NOEUD=_F(TOUT="OUI", INDEX=(1, 0, 1, 8)),
-            )
-            self.asse_mail = {
-                "MAILLAGE_1": self.old_mesh,
-                "MAILLAGE_2": _MAYADYN,
-                "OPERATION": "SOUS_STR",
-            }
+            _MAYADYN = DEFI_MAILLAGE(DEFI_SUPER_MAILLE=list_SuperMa,
+                                     RECO_GLOBAL=_F(TOUT="OUI"),
+                                     DEFI_NOEUD=_F(TOUT="OUI", INDEX=(1, 0, 1, 8)))
+            _MeshTmp = CREA_MAILLAGE(MAILLAGE=self.old_mesh,
+                                     CREA_POI1=_F(NOM_GROUP_MA="PARA_SOL",
+                                                  GROUP_MA=self.param["POST_CALC_MISS"]["GROUP_MA_INTERF"]))
+            self.new_mesh = ASSE_MAILLAGE(MAILLAGE_1=_MeshTmp,
+                                          MAILLAGE_2=_MAYADYN,
+                                          OPERATION="SOUS_STR")
         self.__builded = True
 
     def DefineOut(self):
         """Define output depending on user choices"""
         if self.__builded:
-            _MeshTmp = ASSE_MAILLAGE(**self.asse_mail)
-            _NewMesh = CREA_MAILLAGE(
-                MAILLAGE=_MeshTmp,
-                CREA_POI1=_F(
-                    NOM_GROUP_MA="PARA_SOL",
-                    GROUP_MA=self.param["POST_CALC_MISS"]["GROUP_MA_INTERF"],
-                ),
-            )
             if "MAILLAGE" in self.param["RESULTAT"]:
-                self.parent.register_result(_NewMesh, self.param["RESULTAT"]["MAILLAGE"])
+                self.parent.register_result(self.new_mesh, self.param["RESULTAT"]["MAILLAGE"])
 
-            self.new_mesh = _NewMesh
 
     def get_new_mesh(self):
         """Return the mesh concept which might contain a superelement"""

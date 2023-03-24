@@ -19,7 +19,7 @@
 
 # person_in_charge: nicolas.sellenet@edf.fr
 
-from ..Objects import Mesh
+from ..Objects import Mesh, DynamicMacroElement
 from ..Supervis import ExecuteCommand
 
 
@@ -43,6 +43,12 @@ class MeshDefinition(ExecuteCommand):
             keywords (dict): User's keywords.
         """
         self._result.build()
+        for super_maille in keywords["DEFI_SUPER_MAILLE"]:
+            for macr_elem in super_maille["MACR_ELEM"]:
+                if type(macr_elem)==DynamicMacroElement:
+                    self._result.addDynamicMacroElement(macr_elem)
+                else:
+                    self._result.addStaticMacroElement(macr_elem)
 
 
 DEFI_MAILLAGE = MeshDefinition.run
