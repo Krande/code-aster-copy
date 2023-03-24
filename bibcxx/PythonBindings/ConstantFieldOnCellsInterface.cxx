@@ -35,7 +35,8 @@ void exportConstantFieldOnCellsToPython( py::module_ &mod ) {
         mod, "ConstantFieldOnCellsReal" )
         .def( py::init( &initFactoryPtr< ConstantFieldOnCellsReal, BaseMeshPtr > ) )
         .def( py::init( &initFactoryPtr< ConstantFieldOnCellsReal, std::string, BaseMeshPtr > ) )
-        .def( "getMesh", &ConstantFieldOnCellsReal::getMesh );
+        .def( "getMesh", &ConstantFieldOnCellsReal::getMesh )
+        .def( "setValueOnCells", &ConstantFieldOnCellsReal::setValueOnCells );
 
     py::class_< ConstantFieldOnCellsChar16, ConstantFieldOnCellsChar16Ptr, DataField >(
         mod, "ConstantFieldOnCellsChar16" )

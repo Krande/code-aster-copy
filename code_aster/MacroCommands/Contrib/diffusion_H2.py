@@ -189,49 +189,25 @@ def char_grad_impo_ops(
             grsigz = 0.0
             fx[ino], fx[ino] = FLUX(cl, grsigx, grsigy, DIME, grsigz, Vh, R, T)
 
-    # pour gagner du temps on evite la construction du mot-cle PRE_GRAD_TEMP
-    nomvale = CHARGRD0.getName().ljust(8) + ".CHTH.GRAIN.VALE"
-    nomlima = CHARGRD0.getName().ljust(8) + ".CHTH.GRAIN.LIMA"
-    nomdesc = CHARGRD0.getName().ljust(8) + ".CHTH.GRAIN.DESC"
-    tabvale = aster.getvectjev(nomvale)
-    tabdesc = aster.getvectjev(nomdesc)
-    dicolima = aster.getcolljev(nomlima)
-
-    nbrvale = len(tabvale)
-    champ = NP.zeros(nbrvale)
-    bidon = NP.zeros(nbrvale)
+    grain = CHARGRD0.getThermalLoadDescription().getConstantLoadField("GRAIN")
 
     connex = mesh.getConnectivity()
     cells = mesh.getCells(GRMAVOL)
-    #   print "tabdesc",tabdesc
-    #   print "tablima",dicolima
 
-    for izone in list(dicolima.keys()):
+    for cell in cells:
+        lnoeu = NP.array(connex[cell]) - 1
+        nbno = len(lnoeu)
 
-        # chaque maille du groupe est affectee
-        for index, ima in enumerate(dicolima[izone]):
-            if ima == 0:
-                break
-            if ima - 1 in cells:
-                # ATTENTION : dans Python, les tableaux commencent a 0
-                # mais dans la connectivite, les noeuds commencent a 1!
-                lnoeu = NP.array(connex[ima - 1]) - 1
-                nbno = len(lnoeu)
+        # calcul de la moyenne par maille de fx
+        lflux = fx[lnoeu]
+        flux = NP.add.reduce(lflux)
+        flux = flux / nbno
 
-                # calcul de la moyenne par maille de fx
-                lflux = fx[lnoeu]
-                flux = NP.add.reduce(lflux)
-                flux = flux / nbno
+        lfluy = fy[lnoeu]
+        fluy = NP.add.reduce(lfluy)
+        fluy = fluy / nbno
 
-                lfluy = fy[lnoeu]
-                fluy = NP.add.reduce(lfluy)
-                fluy = fluy / nbno
-                numa = index
-                #              print 'essai, numa, ima',numa, ima, groupma, lnoeu, nbno
-                champ[9 * (numa - 1) + 1] = -flux
-                champ[9 * (numa - 1) + 2] = -fluy
-
-    aster.putvectjev(nomvale, nbrvale, tuple(range(1, nbrvale + 1)), tuple(champ), tuple(bidon), 1)
+        grain.setValueOnCells([cell+1], ["FLUX", "FLUY", "FLUZ"], [-flux, -fluy, 0.])
 
 
 CHAR_GRAD_IMPO_cata = MACRO(
@@ -392,8 +368,8 @@ def char_source_ops(
         # cela marche
         source[ino] = SOURCE(Cl, p1, dpdt, Ctot0, Nl, Kt, a1, a2, a3)
 
-    nomvect = "%-19s.VALE" % __chtmp.getName()
-    aster.putvectjev(nomvect, nbnode, tuple(range(1, nbnode + 1)), tuple(source), tuple(bidon), 1)
+    __chtmp.setValues(source)
+
     __NEUTG = CREA_CHAMP(
         OPERATION="DISC",
         TYPE_CHAM="ELGA_NEUT_R",
@@ -512,8 +488,8 @@ def champ_detoile_ops(
         p1 = p_t1[ino]
         detoile[ino] = DETOILE(Cl, p1, Ctot0, Nl, Kt, a1, a2, a3)
 
-    nomvect = "%-19s.VALE" % __chtmp.getName()
-    aster.putvectjev(nomvect, nbnode, tuple(range(1, nbnode + 1)), tuple(detoile), tuple(bidon), 1)
+    __chtmp.setValues(detoile)
+
     NEUTG = CREA_CHAMP(
         OPERATION="DISC",
         TYPE_CHAM="ELNO_NEUT_R",

@@ -187,7 +187,11 @@ class ConstantFieldOnCells : public DataField {
         if ( ( code == -1 || code == -3 ) && !_FEDesc )
             throw std::runtime_error(
                 "Build of ConstantFieldOnCells impossible, FiniteElementDescriptor is missing" );
+        if ( !_componentNames.exists() )
+            _componentNames->allocate( 30 );
         _componentNames->updateValuePointer();
+        if ( !_valuesTmp.exists() )
+            _valuesTmp->allocate( 30 );
         _valuesTmp->updateValuePointer();
         const ASTERINTEGER taille = _componentNames->size();
 
@@ -448,6 +452,10 @@ class ConstantFieldOnCells : public DataField {
             return ConstantFieldOnZone( _FEDesc, object->toVector() );
         } else
             throw std::runtime_error( "Error in ConstantFieldOnCells" );
+    };
+
+    bool setValueOnCells( const VectorLong cells, const VectorString cmp, const std::vector< ValueType > values ){
+        return setValueOnZone( ConstantFieldOnZone( _mesh, cells ), ConstantFieldValues< ValueType > ( cmp, values));
     };
 
     /**

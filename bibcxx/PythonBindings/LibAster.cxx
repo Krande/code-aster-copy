@@ -140,6 +140,7 @@
 #include "PythonBindings/TableContainerInterface.h"
 #include "PythonBindings/TableInterface.h"
 #include "PythonBindings/ThermalFourierResultInterface.h"
+#include "PythonBindings/ThermalLoadDescriptionInterface.h"
 #include "PythonBindings/ThermalLoadInterface.h"
 #include "PythonBindings/ThermalResultInterface.h"
 #include "PythonBindings/TimeStepperInterface.h"
@@ -229,6 +230,7 @@ PYBIND11_MODULE( libaster, mod ) {
     exportUnitaryMechanicalLoadToPython( mod );
     exportPhysicalQuantityToPython( mod );
     exportThermalLoadToPython( mod );
+    exportThermalLoadDescriptionToPython( mod );
     exportBehaviourDefinitionToPython( mod );
     exportMaterialToPython( mod );
     exportMaterialFieldToPython( mod );

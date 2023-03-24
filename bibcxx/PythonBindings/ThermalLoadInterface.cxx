@@ -47,7 +47,8 @@ void exportThermalLoadToPython( py::module_ &mod ) {
                 bool: field exists
             )" )
         .def( "getMesh", &ThermalLoadReal::getMesh )
-        .def( "getModel", &ThermalLoadReal::getModel );
+        .def( "getModel", &ThermalLoadReal::getModel )
+        .def( "getThermalLoadDescription", &ThermalLoadReal::getThermalLoadDescription );
 
     py::class_< ThermalLoadFunction, ThermalLoadFunctionPtr, DataStructure >(
         mod, "ThermalLoadFunction" )
