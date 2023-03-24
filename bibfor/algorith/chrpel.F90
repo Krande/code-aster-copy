@@ -106,6 +106,7 @@ subroutine chrpel(champ1, repere, nbcmp, icham, type_cham, &
     integer, parameter :: type_unknown = 0, type_noeud = 1, type_gauss = 2
 !   nb max de points (noeuds|gauss) par élément
     integer, parameter      :: nptmax = 30
+    integer, parameter      :: nb_elem_ok = 3
     integer, dimension(6)   :: permvec
     real(kind=8)                    :: valr, xnormr, tmp
     real(kind=8), dimension(3)      :: xbary, angnot
@@ -123,7 +124,7 @@ subroutine chrpel(champ1, repere, nbcmp, icham, type_cham, &
     character(len=24)   :: mesmai, chgeom, lchin(5), chaout
     character(len=24)   :: valk(3), chcara(18)
 !
-    integer             :: jcesvrepso(3), jcesdrepso(3), adressev(3), elem_supp_num(2)
+    integer             :: jcesvrepso(3), jcesdrepso(3), adressev(3), elem_supp_num(nb_elem_ok)
     integer             :: nbptii, nbspii, ncmpii, jmodemailsupp, mailtypel
     character(len=19)   :: chrel(3), chres(3), nomte
 !
@@ -233,6 +234,7 @@ subroutine chrpel(champ1, repere, nbcmp, icham, type_cham, &
         ! Seulement pour les POU_D_E, POU_D_T
         call jenonu(jexnom('&CATA.TE.NOMTE', 'MECA_POU_D_T'), elem_supp_num(1))
         call jenonu(jexnom('&CATA.TE.NOMTE', 'MECA_POU_D_E'), elem_supp_num(2))
+        call jenonu(jexnom('&CATA.TE.NOMTE', 'MECA_DIS_TR_L'), elem_supp_num(3))
         ! Pointeur sur les éléments supports du modèle
         call jeveuo(model//'.MAILLE', 'L', jmodemailsupp)
     end if
@@ -298,7 +300,7 @@ subroutine chrpel(champ1, repere, nbcmp, icham, type_cham, &
 !                   Est-ce un élément autorisé ?
                     okelem = .false.
                     mailtypel = zi(jmodemailsupp-1+imai)
-                    cii: do ii = 1, 2
+                    cii: do ii = 1, nb_elem_ok
                         if (mailtypel .eq. elem_supp_num(ii)) then
                             okelem = .true.
                             exit cii
