@@ -382,36 +382,11 @@ class GeneratorTRANS(Generator):
                             tup_re2.append(VEC_comp.real * 0.0)
                             tup_im2.append(VEC_comp.imag * 0.0)
 
-        # il peut y avoir des blancs à la fin du noms qui ont été enlevés par le python
-        resu_name = __dyge0.getName() + (19 - len(__dyge0.getName())) * " "
         # affectation des valeurs
-        for k in range(len(self.liste_freq_sig)):
-            #                                     1         2         3
-            #                                   8901234567890123456789012
-            aster.putvectjev(
-                resu_name + ".DEPL        ",
-                nbmodt,
-                tuple(range(nbmodt * k + 1, nbmodt * (k + 1) + 1)),
-                tuple(tup_re1[k]),
-                tuple(tup_im1[k]),
-                1,
-            )
-            aster.putvectjev(
-                resu_name + ".VITE        ",
-                nbmodt,
-                tuple(range(nbmodt * k + 1, nbmodt * (k + 1) + 1)),
-                tuple(tup_re2[k]),
-                tuple(tup_im2[k]),
-                1,
-            )
-            aster.putvectjev(
-                resu_name + ".ACCE        ",
-                nbmodt,
-                tuple(range(nbmodt * k + 1, nbmodt * (k + 1) + 1)),
-                tuple(tup_re[k]),
-                tuple(tup_im[k]),
-                1,
-            )
+        __dyge0.setDisplacement(NP.concatenate(tup_re1) + NP.concatenate(tup_im1)*1j)
+        __dyge0.setVelocity(NP.concatenate(tup_re2) + NP.concatenate(tup_im2)*1j)
+        __dyge0.setAcceleration(NP.concatenate(tup_re) + NP.concatenate(tup_im)*1j)
+        
 
         if self.INFO == 2:
             aster.affiche("MESSAGE", "START REST_SPEC_TEMP")
@@ -475,8 +450,7 @@ class GeneratorTRANS(Generator):
 
     #
     # Ecriture de  tran_gene
-    # 1) on cree un concept harm_gene (factice) et le remplit a
-    #    l'aide de putvectjev avec les bonnes valeurs,
+    # 1) on cree un concept harm_gene (factice) et le remplit
     # 2) On interpole les valeurs non calculés (liste_freq_sig)
     # 3) puis on fait la FFT pour obtenir le signal temporel
 

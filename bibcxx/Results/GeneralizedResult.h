@@ -107,6 +107,30 @@ class GeneralizedResult : public DataStructure, DynamicResultsIndexing {
         return _displacement->toVector();
     };
 
+    bool setDisplacement( const std::vector< ValueType >& values ) {
+        _displacement->updateValuePointer();
+        AS_ASSERT( _displacement->size() <= values.size() );
+        for ( ASTERINTEGER i = 0; i < values.size(); i++ )
+            ( *_displacement )[i] = values[i];
+        return true;
+    };
+
+    bool setVelocity( const std::vector< ValueType >& values ) {
+        _velocity->updateValuePointer();
+        AS_ASSERT( _velocity->size() <= values.size() );
+        for ( ASTERINTEGER i = 0; i < values.size(); i++ )
+            ( *_velocity )[i] = values[i];
+        return true;
+    };
+
+    bool setAcceleration( const std::vector< ValueType >& values ) {
+        _acceleration->updateValuePointer();
+        AS_ASSERT( _acceleration->size() <= values.size() );
+        for ( ASTERINTEGER i = 0; i < values.size(); i++ )
+            ( *_acceleration )[i] = values[i];
+        return true;
+    };
+
     ASTERINTEGER getNumberOfModes() const {
         _desc->updateValuePointer();
         return ( *_desc )[1];
