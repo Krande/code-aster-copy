@@ -21,8 +21,7 @@
 #ifndef ASTER_FONCTIONS_MODULE_H_
 #define ASTER_FONCTIONS_MODULE_H_
 
-#define PY_SSIZE_T_CLEAN
-#include "Python.h"
+#include "aster.h"
 /*
  *   PUBLIC FUNCTIONS
  *

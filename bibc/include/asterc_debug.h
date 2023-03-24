@@ -19,8 +19,7 @@
 #ifndef ASTERC_DEBUG_H_
 #define ASTERC_DEBUG_H_
 
-#define PY_SSIZE_T_CLEAN
-#include "Python.h"
+#include "aster.h"
 
 #include <stdio.h>
 #include <stdlib.h>

@@ -18,9 +18,6 @@
 
 /* person_in_charge: nicolas.sellenet at edf.fr */
 
-#define PY_SSIZE_T_CLEAN
-
-#include "Python.h"
 #include "aster_utils.h"
 
 #ifdef ASTER_HAVE_MED

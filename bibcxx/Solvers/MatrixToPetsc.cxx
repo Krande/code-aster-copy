@@ -25,9 +25,6 @@
 
 #include "Solvers/MatrixToPetsc.h"
 
-#define PY_SSIZE_T_CLEAN
-
-#include "Python.h"
 #include "aster_fort_petsc.h"
 #include "aster_module.h"
 #include "astercxx.h"
