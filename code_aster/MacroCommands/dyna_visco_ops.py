@@ -248,7 +248,6 @@ def dyna_visco_ops(
 
 ###################################################################
 def extr_matr_elim_lagr(self, matr_asse):
-
     matr_lagr = matr_asse.EXTR_MATR()  # function EXTR_MATR available in the official source code
     # -----------------------------------------------------#
     # --                                                 --#
@@ -259,16 +258,9 @@ def extr_matr_elim_lagr(self, matr_asse):
     # --                                                 --#
     # -----------------------------------------------------#
 
-    nom_nume = matr_asse.getDOFNumbering().getName()
-    Nume = aster.getvectjev(nom_nume.ljust(8) + "      .NUME.DELG        ")
-    ind_lag1 = []
-    ind_nolag = []
-
-    for i1 in range(len(Nume)):
-        if Nume[i1] > -0.5:
-            ind_nolag.append(i1)
-        if (Nume[i1] < -0.5) & (Nume[i1] > -1.5):
-            ind_lag1.append(i1)
+    dof_num = matr_asse.getDOFNumbering()
+    ind_lag1 = dof_num.getRowsAssociatedToLagrangeMultipliers()
+    ind_nolag = dof_num.getRowsAssociatedToPhysicalDofs()
 
     nlag1 = len(ind_lag1)
     nnolag = len(ind_nolag)

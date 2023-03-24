@@ -77,7 +77,7 @@ def NRJ(ENEL_ELGA, X, Y, X0, Y0, R, lc, Nume_cop, ccos, ssin):
 #
 
 
-def Calcul_mesure_3D(maya, nbcop, l_copo_tot, ltyma, nd_fiss, normale):
+def Calcul_mesure_3D(maya, nbcop, l_copo_tot, nd_fiss, normale):
     # Calcul de la mesure des mailles appartenant au plan de symetrie
     # On est en petites deformations alors on ne tient pas compte de la deformee
     # lors du calcul de la surface
@@ -471,9 +471,6 @@ def calc_gp_ops(self, **args):
     #
     elif ndim == 3:
 
-        #    type des mailles
-        ltyma = aster.getvectjev("&CATA.TM.NOMTM")
-
         #    liste des copeaux
         l_copo_tot = []
         for tmpocc in TRANCHE_3D:
@@ -487,7 +484,7 @@ def calc_gp_ops(self, **args):
         # calcul de la surface des mailles appartenant au plan de symetrie de
         # l'entaille
         mesure = Calcul_mesure_3D(
-            __maillage, nbcop, l_copo_tot, ltyma, l_noeuds_fissure[0], lnormale
+            __maillage, nbcop, l_copo_tot, l_noeuds_fissure[0], lnormale
         )
 
         # calcul des energies et du gp

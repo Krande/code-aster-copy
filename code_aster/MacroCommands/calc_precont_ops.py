@@ -88,8 +88,7 @@ def calc_precont_ops(
         __L1 = __L0.getValuesAsArray()
     elif type(__L0) == TimeStepper:
         # cas où liste definie par DEFI_LIST_INST
-        tmp = __L0.getName().ljust(8) + ".LIST." + "DITR".ljust(18)
-        __L1 = aster.getvectjev(tmp)
+        __L1 = __L0.getValues()
 
     # Traitement de l'etat initial
     if ETAT_INIT:

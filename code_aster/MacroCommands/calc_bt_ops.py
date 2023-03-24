@@ -2457,19 +2457,8 @@ def calc_bt_ops(self, **args):
     __UNITE_MAILLAGE = logical_unit_file.unit
 
     # Extraction of materials
-    b_mater = BETON.getName()  # Names of the materials inside sd_mater
-    a_mater = ACIER.getName()
-
-    __STEEL_mat = aster.getvectjev(
-        "%s" % (a_mater) + " " * (8 - len(a_mater)) + ".CPT.000001.VALR        "
-    )
-
-    __ES = __STEEL_mat[0]
-
-    __CONCRETE_mat = aster.getvectjev(
-        "%s" % (b_mater) + " " * (8 - len(b_mater)) + ".CPT.000001.VALR        "
-    )
-    __EC = __CONCRETE_mat[0]
+    __EC = BETON.getValueReal("ELAS", "E")
+    __ES = ACIER.getValueReal("ELAS", "E")
 
     # Importing the FE results and mesh
     __Nodes, __Elements, p_n_stress, __U, __V = input_results(__MAIL, __SIEQ)

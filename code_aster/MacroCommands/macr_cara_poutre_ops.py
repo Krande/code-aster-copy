@@ -127,14 +127,12 @@ def macr_cara_poutre_ops(
         # on pourra appliquer des conditions de température imposée
         #
         # les groupes doivent exister
-        collgrma = aster.getcolljev("%-8s.GROUPEMA" % __nomlma.getName())
-        collgrma = list(map(lambda x: x.strip(), collgrma))
         if type(GROUP_MA_BORD) == str:
             l_group_ma_bord = [GROUP_MA_BORD]
         else:
             l_group_ma_bord = GROUP_MA_BORD
         for igr in l_group_ma_bord:
-            if not igr.strip() in collgrma:
+            if not __nomlma.hasGroupOfCells(igr.strip()):
                 UTMESS("F", "POUTRE0_20", valk=[igr, "GROUP_MA_BORD"])
         if "GROUP_MA_INTE" in args:
             if args.get("GROUP_MA_INTE") is not None:
@@ -143,7 +141,7 @@ def macr_cara_poutre_ops(
                 else:
                     l_group_ma_inte = args.get("GROUP_MA_INTE")
                 for igr in l_group_ma_inte:
-                    if not igr.strip() in collgrma:
+                    if not __nomlma.hasGroupOfCells(igr.strip()):
                         UTMESS("F", "POUTRE0_20", valk=[igr, "GROUP_MA_INTE"])
         #
         motscles = {}
@@ -555,14 +553,12 @@ def macr_cara_poutre_ops(
             UTMESS("F", "POUTRE0_1")
         #
         # les groupes doivent exister
-        collgrma = aster.getcolljev("%-8s.GROUPEMA" % __nomlma.getName())
-        collgrma = list(map(lambda x: x.strip(), collgrma))
         for igr in l_group_ma_bord:
-            if not igr.strip() in collgrma:
+            if not __nomlma.hasGroupOfCells(igr.strip()):
                 UTMESS("F", "POUTRE0_20", valk=[igr, "GROUP_MA_BORD"])
         #
         for igr in GROUP_MA:
-            if not igr.strip() in collgrma:
+            if not __nomlma.hasGroupOfCells(igr.strip()):
                 UTMESS("F", "POUTRE0_20", valk=[igr, "GROUP_MA"])
         #
         if "GROUP_MA_INTE" in args:
@@ -572,7 +568,7 @@ def macr_cara_poutre_ops(
                 else:
                     l_group_ma_inte = args.get("GROUP_MA_INTE")
                 for igr in l_group_ma_inte:
-                    if not igr.strip() in collgrma:
+                    if not __nomlma.hasGroupOfCells(igr.strip()):
                         UTMESS("F", "POUTRE0_20", valk=[igr, "GROUP_MA_INTE"])
 
         if args.get("GROUP_NO") is not None:
