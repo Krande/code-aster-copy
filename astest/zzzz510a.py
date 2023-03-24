@@ -107,8 +107,6 @@ bMesh = code_aster.MeshBalancer()
 if rank == 0:
     myMesh = code_aster.Mesh()
     myMesh.readMedFile("fort.20")
-    # myMesh.debugPrint(10+rank)
-    # os.system("cp fort."+str(10+rank)+" /home/H85256/dev/codeaster/tmp")
     bMesh.buildFromBaseMesh(myMesh)
     outMesh = bMesh.applyBalancingStrategy([1, 2, 9, 11, 17, 19, 25, 31])
 elif rank == 1:
@@ -117,14 +115,9 @@ elif rank == 2:
     outMesh = bMesh.applyBalancingStrategy([7, 8, 14, 16, 22, 24, 28, 30])
 elif rank == 3:
     outMesh = bMesh.applyBalancingStrategy([3, 4, 10, 12, 21, 23, 27, 29])
-# outMesh.debugPrint(30+rank)
-# os.system("cp fort."+str(30+rank)+" /home/H85256/dev/codeaster/tmp")
 
 mesh2 = code_aster.IncompleteMesh()
 mesh2.readMedFile("fort.20")
-# mesh2.debugPrint(40+rank)
-# os.system("cp fort."+str(40+rank)+" /home/H85256/dev/codeaster/tmp")
-# outMesh.printMedFile("/home/H85256/dev/codeaster/tmp/test"+str(40+rank)+".med")
 
 bMesh = code_aster.MeshBalancer()
 bMesh.buildFromBaseMesh(mesh2)
@@ -136,8 +129,18 @@ elif rank == 2:
     outMesh = bMesh.applyBalancingStrategy([7, 8, 14, 16, 22, 24, 28, 30])
 elif rank == 3:
     outMesh = bMesh.applyBalancingStrategy([3, 4, 10, 12, 21, 23, 27, 29])
-# outMesh.debugPrint(50+rank)
-# os.system("cp fort."+str(50+rank)+" /home/H85256/dev/codeaster/tmp")
-# outMesh.printMedFile("/home/H85256/dev/codeaster/tmp/test"+str(50+rank)+".med")
+
+part = code_aster.PtScotchPartitioner()
+if rank == 0:
+    part.buildGraph([0, 2, 6, 9], [2, 1, 2, 4, 3, 0, 3, 1, 0])
+elif rank == 1:
+    part.buildGraph([0, 5, 8], [2, 5, 1, 7, 4, 1, 3, 7])
+elif rank == 2:
+    part.buildGraph([0, 3, 6], [3, 7, 6, 5, 7, 8])
+elif rank == 3:
+    part.buildGraph([0, 5, 7], [4, 3, 5, 6, 8, 7, 6])
+part.checkGraph()
+part.writeGraph("/home/H85256/dev/codeaster/tmp/Bis" + str(rank) + ".graph")
+# print(part.partitionGraph())
 
 FIN()

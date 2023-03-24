@@ -134,6 +134,7 @@
 #include "PythonBindings/PhysicsAndModelingsInterface.h"
 #include "PythonBindings/PostProcessingInterface.h"
 #include "PythonBindings/PrestressingCableInterface.h"
+#include "PythonBindings/PtScotchPartitionerInterface.h"
 #include "PythonBindings/ResultInterface.h"
 #include "PythonBindings/ResultNamingInterface.h"
 #include "PythonBindings/SetLoggingLevelInterface.h"
@@ -308,4 +309,5 @@ PYBIND11_MODULE( libaster, mod ) {
     exportObjectBalancerToPython( mod );
     exportMeshBalancerToPython( mod );
     exportIncompleteMeshToPython( mod );
+    exportPtScotchPartitionerToPython( mod );
 };

@@ -30,6 +30,7 @@
 #endif
 #ifdef ASTER_HAVE_SCOTCH
 /* scotch.h may use int64_t without including <sys/types.h> */
+#include "ptscotch.h"
 #include "scotch.h"
 
 #include <sys/types.h>
