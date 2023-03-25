@@ -68,7 +68,7 @@ class Table : public DataStructure {
         : DataStructure( name, 19, type ),
           _memoryLocation( JeveuxVectorChar8( getName() + ".TBBA" ) ),
           _description( JeveuxVectorLong( getName() + ".TBNP" ) ),
-          _parameterDescription( JeveuxVectorChar24( getName() + ".TBLP" ) ){};
+          _parameterDescription( JeveuxVectorChar24( getName() + ".TBLP" ) ) {};
 
     /**
      * @brief Constructeur
@@ -77,7 +77,7 @@ class Table : public DataStructure {
         : DataStructure( ResultNaming::getNewResultName(), 19, "TABLE" ),
           _memoryLocation( JeveuxVectorChar8( getName() + ".TBBA" ) ),
           _description( JeveuxVectorLong( getName() + ".TBNP" ) ),
-          _parameterDescription( JeveuxVectorChar24( getName() + ".TBLP" ) ){};
+          _parameterDescription( JeveuxVectorChar24( getName() + ".TBLP" ) ) {};
 
     ~Table() {
         // #ifdef ASTER_DEBUG_CXX
@@ -124,12 +124,12 @@ class TableOfFunctions : public Table {
      * @brief Constructeur
      * @param name Nom Jeveux du champ aux noeuds
      */
-    TableOfFunctions( const std::string &name ) : Table( name, "TABLE_FONCTION" ){};
+    TableOfFunctions( const std::string &name ) : Table( name, "TABLE_FONCTION" ) {};
 
     /**
      * @brief Constructeur
      */
-    TableOfFunctions() : Table( ResultNaming::getNewResultName(), "TABLE_FONCTION" ){};
+    TableOfFunctions() : Table( ResultNaming::getNewResultName(), "TABLE_FONCTION" ) {};
 
     /**
      * @brief Add function in TableOfFunctions

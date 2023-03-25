@@ -18,9 +18,10 @@
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "astercxx.h"
+
 #include "aster_fort_jeveux.h"
 #include "aster_utils.h"
-#include "astercxx.h"
 
 #include "MemoryManager/JeveuxAllowedTypes.h"
 #include "MemoryManager/JeveuxObject.h"
@@ -157,10 +158,10 @@ class JeveuxCollectionObjectClass : private AllowedJeveuxType< ValueType > {
         const ValueType &valuePtr;
 
         inline const_iterator( ASTERINTEGER memoryPosition, const ValueType &val )
-            : position( memoryPosition ), valuePtr( val ){};
+            : position( memoryPosition ), valuePtr( val ) {};
 
         inline const_iterator( const const_iterator &iter )
-            : position( iter.position ), valuePtr( iter.valuePtr ){};
+            : position( iter.position ), valuePtr( iter.valuePtr ) {};
 
         inline const_iterator &operator=( const const_iterator &testIter ) {
             position = testIter.position;
@@ -403,24 +404,24 @@ class JeveuxCollectionObject {
     /* Default constructor to be initialized with a null pointer
      * and really created later.
      */
-    JeveuxCollectionObject() : _jeveuxCOPtr( nullptr ){};
+    JeveuxCollectionObject() : _jeveuxCOPtr( nullptr ) {};
 
     JeveuxCollectionObject( const std::string &collectionName, const ASTERINTEGER &number,
                             bool isNamed )
         : _jeveuxCOPtr( std::make_shared< JeveuxCollectionObjectClass< ValueType > >(
-              collectionName, number, isNamed ) ){};
+              collectionName, number, isNamed ) ) {};
 
     JeveuxCollectionObject( const std::string &collectionName, const ASTERINTEGER &number,
                             const ASTERINTEGER &size )
         : _jeveuxCOPtr( std::make_shared< JeveuxCollectionObjectClass< ValueType > >(
-              collectionName, number, size ) ){};
+              collectionName, number, size ) ) {};
 
     JeveuxCollectionObject( const std::string &collectionName, const ASTERINTEGER &number,
                             const std::string &objectName, const ASTERINTEGER &size )
         : _jeveuxCOPtr( std::make_shared< JeveuxCollectionObjectClass< ValueType > >(
-              collectionName, number, objectName, size ) ){};
+              collectionName, number, objectName, size ) ) {};
 
-    ~JeveuxCollectionObject(){};
+    ~JeveuxCollectionObject() {};
 
     JeveuxCollectionObject &operator=( const JeveuxCollectionObject< ValueType > &tmp ) {
         _jeveuxCOPtr = tmp._jeveuxCOPtr;

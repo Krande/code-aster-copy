@@ -118,13 +118,13 @@ class MechanicalDirichletBC : public DirichletBC {
      */
     MechanicalDirichletBC( void ) = delete;
 
-    MechanicalDirichletBC( const ModelPtr &model ) : DirichletBC( "_MECA", model ){};
+    MechanicalDirichletBC( const ModelPtr &model ) : DirichletBC( "_MECA", model ) {};
 
     /**
      * @brief Constructeur
      */
     MechanicalDirichletBC( const std::string name, const ModelPtr &model )
-        : DirichletBC( name, "_MECA", model ){};
+        : DirichletBC( name, "_MECA", model ) {};
 
     /**
      * @typedef MechanicalDirichletBCPtr
@@ -210,13 +210,13 @@ class ThermalDirichletBC : public DirichletBC {
     /**
      * @brief Constructeur
      */
-    ThermalDirichletBC( const ModelPtr &model ) : DirichletBC( "_THER", model ){};
+    ThermalDirichletBC( const ModelPtr &model ) : DirichletBC( "_THER", model ) {};
 
     /**
      * @brief Constructeur
      */
     ThermalDirichletBC( const std::string name, const ModelPtr &model )
-        : DirichletBC( name, "_THER", model ){};
+        : DirichletBC( name, "_THER", model ) {};
 
     /**
      * @typedef ThermalDirichletBCPtr
@@ -332,13 +332,13 @@ class AcousticDirichletBC : public DirichletBC {
     /**
      * @brief Constructeur
      */
-    AcousticDirichletBC( const ModelPtr &model ) : DirichletBC( "_ACOU", model ){};
+    AcousticDirichletBC( const ModelPtr &model ) : DirichletBC( "_ACOU", model ) {};
 
     /**
      * @brief Constructeur
      */
     AcousticDirichletBC( const std::string name, const ModelPtr &model )
-        : DirichletBC( name, "_ACOU", model ){};
+        : DirichletBC( name, "_ACOU", model ) {};
 
     /**
      * @typedef AcousticDirichletBCPtr

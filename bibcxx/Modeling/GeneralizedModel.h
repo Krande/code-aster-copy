@@ -81,7 +81,7 @@ class GeneralizedModel : public DataStructure {
           _modgSsme( JeveuxVectorChar8( getName() + ".MODG.DESC" ) ),
           _modgSsno( JeveuxVectorChar8( getName() + ".MODG.DESC" ) ),
           _modgSsor( JeveuxVectorReal( getName() + ".MODG.DESC" ) ),
-          _modgSstr( JeveuxVectorReal( getName() + ".MODG.DESC" ) ){};
+          _modgSstr( JeveuxVectorReal( getName() + ".MODG.DESC" ) ) {};
 
     /**
      * @brief Add a DynamicMacroElement associated to a name

@@ -68,12 +68,12 @@ class GenericFunction : public DataStructure {
                      const std::string &functType )
         : DataStructure( name, 19, type ),
           _property( JeveuxVectorChar24( getName() + ".PROL" ) ),
-          _funct_type( functType ){};
+          _funct_type( functType ) {};
 
     /**
      * @brief Allocate function
      */
-    virtual void allocate( ASTERINTEGER size ){};
+    virtual void allocate( ASTERINTEGER size ) {};
 
     /**
      * @brief Return the properties of the function

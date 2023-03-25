@@ -23,11 +23,12 @@
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "astercxx.h"
+
 #include "aster_fort_calcul.h"
 #include "aster_fort_ds.h"
 #include "aster_fort_superv.h"
 #include "aster_fort_utils.h"
-#include "astercxx.h"
 
 #include "Behaviours/BehaviourProperty.h"
 #include "DataFields/DataField.h"
@@ -76,10 +77,10 @@ class FieldOnCells : public DataField {
           _descriptor( JeveuxVectorLong( getName() + ".CELD" ) ),
           _reference( JeveuxVectorChar24( getName() + ".CELK" ) ),
           _values( JeveuxVector< ValueType >( getName() + ".CELV" ) ),
-          _dofDescription( nullptr ){};
+          _dofDescription( nullptr ) {};
 
     /** @brief Constructor with automatic name */
-    FieldOnCells() : FieldOnCells( ResultNaming::getNewResultName() ){};
+    FieldOnCells() : FieldOnCells( ResultNaming::getNewResultName() ) {};
 
     /** @brief Constructor with automatic name and FE Descriptor*/
     FieldOnCells( const FiniteElementDescriptorPtr FEDesc )
@@ -88,7 +89,7 @@ class FieldOnCells : public DataField {
     };
 
     /** @brief Constructor with automatic name and model*/
-    FieldOnCells( const ModelPtr model ) : FieldOnCells( model->getFiniteElementDescriptor() ){};
+    FieldOnCells( const ModelPtr model ) : FieldOnCells( model->getFiniteElementDescriptor() ) {};
 
     /**
      * @brief Constructor for empty FieldOnCells with dynamic components
@@ -103,13 +104,13 @@ class FieldOnCells : public DataField {
 
     FieldOnCells( const ModelPtr model, const BehaviourPropertyPtr behaviour,
                   const std::string &typcham, const ElementaryCharacteristicsPtr carael = nullptr )
-        : FieldOnCells( model->getFiniteElementDescriptor(), behaviour, typcham, carael ){};
+        : FieldOnCells( model->getFiniteElementDescriptor(), behaviour, typcham, carael ) {};
 
     /**
      * @brief Constructor for empty FieldOnCells based on specific physical quantity
      */
     FieldOnCells( const ModelPtr model, const std::string option, const std::string paraName )
-        : FieldOnCells( model->getFiniteElementDescriptor(), option, paraName ){};
+        : FieldOnCells( model->getFiniteElementDescriptor(), option, paraName ) {};
 
     FieldOnCells( const FiniteElementDescriptorPtr FEDesc, const std::string option,
                   const std::string paraName );
@@ -140,7 +141,7 @@ class FieldOnCells : public DataField {
      * @brief Copy constructor
      */
     FieldOnCells( const FieldOnCells &toCopy )
-        : FieldOnCells( DataStructureNaming::getNewName(), toCopy ){};
+        : FieldOnCells( DataStructureNaming::getNewName(), toCopy ) {};
 
     /**
      * @brief Wrap of copy constructor

@@ -118,7 +118,7 @@ class ParallelMechanicalLoad : public DataStructure {
      */
     ParallelMechanicalLoad( const MechanicalLoadPtr< ConstantFieldOnCellsType > &load,
                             const ModelPtr &model )
-        : ParallelMechanicalLoad( ResultNaming::getNewResultName(), load, model ){};
+        : ParallelMechanicalLoad( ResultNaming::getNewResultName(), load, model ) {};
 
     /**
      * @brief Constructeur

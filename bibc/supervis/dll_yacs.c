@@ -19,6 +19,7 @@
 /* person_in_charge: mathieu.courtois at edf.fr */
 
 #include "aster.h"
+
 #include "aster_fort_utils.h"
 #include "aster_utils.h"
 #include "definition_pt.h"

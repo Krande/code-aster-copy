@@ -65,12 +65,12 @@ class ContactNew : public DataStructure {
      * @brief Constructeur
      */
     ContactNew( const std::string name, const ModelPtr model )
-        : ContactNew( name, model, "CHAR_CONT" ){};
+        : ContactNew( name, model, "CHAR_CONT" ) {};
 
     /**
      * @brief Constructeur
      */
-    ContactNew( const ModelPtr model ) : ContactNew( ResultNaming::getNewResultName(), model ){};
+    ContactNew( const ModelPtr model ) : ContactNew( ResultNaming::getNewResultName(), model ) {};
 
     /**
      * @brief Get Model
@@ -137,12 +137,12 @@ class FrictionNew : public ContactNew {
      * @brief Constructeur
      */
     FrictionNew( const std::string name, const ModelPtr model )
-        : ContactNew( name, model, "CHAR_FROT" ){};
+        : ContactNew( name, model, "CHAR_FROT" ) {};
 
     /**
      * @brief Constructeur
      */
-    FrictionNew( const ModelPtr model ) : FrictionNew( ResultNaming::getNewResultName(), model ){};
+    FrictionNew( const ModelPtr model ) : FrictionNew( ResultNaming::getNewResultName(), model ) {};
 
     bool build() {
         AS_ASSERT( hasFriction() );

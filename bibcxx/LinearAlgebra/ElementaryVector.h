@@ -40,10 +40,10 @@ class ElementaryVector : public GenericElementaryVector< ValueType > {
     ElementaryVector( const std::string name )
         : GenericElementaryVector< ValueType >(
               name, "VECT_ELEM_" + std::string( PhysicalQuantityNames[PhysicalQuantity] ) +
-                        ( typeid( ValueType ) == typeid( ASTERDOUBLE ) ? "_R" : "_C" ) ){};
+                        ( typeid( ValueType ) == typeid( ASTERDOUBLE ) ? "_R" : "_C" ) ) {};
 
     /** @brief Constructor with automatic name */
-    ElementaryVector() : ElementaryVector( ResultNaming::getNewResultName() ){};
+    ElementaryVector() : ElementaryVector( ResultNaming::getNewResultName() ) {};
 
     ElementaryVector( const ModelPtr model, const MaterialFieldPtr mater,
                       const ElementaryCharacteristicsPtr caraElem, const ListOfLoadsPtr lLoads )

@@ -20,8 +20,9 @@
  * You should have received a copy of the GNU General Public License
  * along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
  */
-#include "aster_fort_material.h"
 #include "astercxx.h"
+
+#include "aster_fort_material.h"
 
 #include "DataStructures/DataStructure.h"
 #include "Functions/Function.h"
@@ -35,7 +36,7 @@ class MaterialListReal : public DataStructure {
   public:
     MaterialListReal( const std::string &name, const VectorReal vect )
         : DataStructure( name, 16, "MATER_PROP_LISTR" ),
-          _list( JeveuxVectorReal( getName() + ".LISV_R8", vect ) ){};
+          _list( JeveuxVectorReal( getName() + ".LISV_R8", vect ) ) {};
 
     MaterialListReal( const std::string &name, const MaterialListReal &toCopy );
 };
@@ -113,7 +114,7 @@ class Material : public DataStructure {
     int propIndex( std::string propName );
 
   public:
-    Material() : Material( ResultNaming::getNewResultName() ){};
+    Material() : Material( ResultNaming::getNewResultName() ) {};
 
     Material( const std::string &name );
 

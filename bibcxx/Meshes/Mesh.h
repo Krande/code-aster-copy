@@ -40,7 +40,7 @@ class Mesh : public BaseMesh {
     /**
      * @brief Constructeur
      */
-    Mesh( const std::string name, const std::string type ) : BaseMesh( name, type ){};
+    Mesh( const std::string name, const std::string type ) : BaseMesh( name, type ) {};
 
   public:
     /**
@@ -52,12 +52,12 @@ class Mesh : public BaseMesh {
     /**
      * @brief Constructeur
      */
-    Mesh() : BaseMesh( ResultNaming::getNewResultName(), "MAILLAGE" ){};
+    Mesh() : BaseMesh( ResultNaming::getNewResultName(), "MAILLAGE" ) {};
 
     /**
      * @brief Constructeur
      */
-    Mesh( const std::string name ) : BaseMesh( name, "MAILLAGE" ){};
+    Mesh( const std::string name ) : BaseMesh( name, "MAILLAGE" ) {};
 
     bool hasGroupOfCells( const std::string &name, const bool local = false ) const;
 

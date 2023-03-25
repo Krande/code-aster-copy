@@ -466,12 +466,12 @@ class PhysicalQuantity {
     /**
      * @brief Constructor
      */
-    PhysicalQuantity(){};
+    PhysicalQuantity() {};
 
     /**
      * @brief Destructor
      */
-    ~PhysicalQuantity(){};
+    ~PhysicalQuantity() {};
 
     /**
      * @function hasComponent

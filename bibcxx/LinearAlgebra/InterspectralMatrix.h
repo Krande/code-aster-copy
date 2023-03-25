@@ -71,7 +71,7 @@ class InterspectralMatrix : public DataStructure {
     /**
      * @brief Constructeur
      */
-    InterspectralMatrix() : InterspectralMatrix( ResultNaming::getNewResultName() ){};
+    InterspectralMatrix() : InterspectralMatrix( ResultNaming::getNewResultName() ) {};
 
     /**
      * @brief Constructeur
@@ -87,7 +87,7 @@ class InterspectralMatrix : public DataStructure {
           _noei( JeveuxVectorChar8( getName() + ".NOEI" ) ),
           _noej( JeveuxVectorChar8( getName() + ".NOEJ" ) ),
           _cmpi( JeveuxVectorChar8( getName() + ".CMPI" ) ),
-          _cmpj( JeveuxVectorChar8( getName() + ".CMPJ" ) ){};
+          _cmpj( JeveuxVectorChar8( getName() + ".CMPJ" ) ) {};
 };
 
 /**

@@ -35,7 +35,7 @@ GeneralizedEquationNumbering::GeneralizedEquationNumbering( const std::string na
       _componentsOnNodes( getName() + ".PRNO" ),
       _namesOfGroupOfCells( getName() + ".LILI" ),
       _indexationVector( getName() + ".NUEQ" ),
-      _nodeAndComponentsNumberFromDOF( getName() + ".DEEQ" ){};
+      _nodeAndComponentsNumberFromDOF( getName() + ".DEEQ" ) {};
 
 GeneralizedEquationNumbering::GeneralizedEquationNumbering()
-    : GeneralizedEquationNumbering( ResultNaming::getNewResultName() ){};
+    : GeneralizedEquationNumbering( ResultNaming::getNewResultName() ) {};

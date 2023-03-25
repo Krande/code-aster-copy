@@ -74,7 +74,7 @@ class GeneralizedDOFNumbering : public DataStructure {
     /**
      * @brief Constructeur
      */
-    GeneralizedDOFNumbering() : GeneralizedDOFNumbering( ResultNaming::getNewResultName() ){};
+    GeneralizedDOFNumbering() : GeneralizedDOFNumbering( ResultNaming::getNewResultName() ) {};
 
     /**
      * @brief Constructeur
@@ -89,7 +89,7 @@ class GeneralizedDOFNumbering : public DataStructure {
           _nume( new GeneralizedEquationNumbering( getName() + ".NUME" ) ),
           _model( nullptr ),
           _basis1( nullptr ),
-          _basis2( nullptr ){};
+          _basis2( nullptr ) {};
 
     /**
      * @brief Get the GeneralizedModel

@@ -21,10 +21,11 @@
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "astercxx.h"
+
 #include "Loads/DirichletBC.h"
 
 #include "aster_fort_superv.h"
-#include "astercxx.h"
 
 #include "Supervis/CommandSyntax.h"
 #include "Supervis/ResultNaming.h"

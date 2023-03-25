@@ -27,11 +27,11 @@
 
 #include "Results/GeneralizedModeResult.h"
 
-ForwardGeneralizedModeResultPtr::ForwardGeneralizedModeResultPtr() : _isSet( false ){};
+ForwardGeneralizedModeResultPtr::ForwardGeneralizedModeResultPtr() : _isSet( false ) {};
 
 ForwardGeneralizedModeResultPtr::ForwardGeneralizedModeResultPtr(
     const GeneralizedModeResultPtr &ptr )
-    : _ptr( ptr ), _isSet( true ){};
+    : _ptr( ptr ), _isSet( true ) {};
 
 void ForwardGeneralizedModeResultPtr::operator=( const GeneralizedModeResultPtr &ptr ) {
     _ptr = ptr;

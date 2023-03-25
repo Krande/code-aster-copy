@@ -24,8 +24,9 @@
 
 /* person_in_charge: nicolas.sellenet at edf.fr */
 
-#include "asterc_config.h"
 #include "astercxx.h"
+
+#include "asterc_config.h"
 
 #include "MemoryManager/JeveuxString.h"
 

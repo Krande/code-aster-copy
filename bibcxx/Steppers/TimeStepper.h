@@ -78,29 +78,29 @@ class TimeStepper : public DataStructure, public GenericStepper {
           _subdr( getName() + ".ECHE.SUBDR" ),
           _aevenr( getName() + ".ADAP.EVENR" ),
           _tpluk( getName() + ".ADAP.TPLUK" ),
-          _tplur( getName() + ".ADAP.TPLUR" ){};
+          _tplur( getName() + ".ADAP.TPLUR" ) {};
 
     /**
      * @brief Constructeur
      */
-    TimeStepper() : TimeStepper( DataStructureNaming::getNewName( 8 ) ){};
+    TimeStepper() : TimeStepper( DataStructureNaming::getNewName( 8 ) ) {};
 
     /**
      * @brief Destructeur
      */
-    ~TimeStepper(){};
+    ~TimeStepper() {};
 
     struct const_iterator {
         ASTERDOUBLE *position;
         int rank;
 
-        inline const_iterator() : position( NULL ), rank( 1 ){};
+        inline const_iterator() : position( NULL ), rank( 1 ) {};
 
         inline const_iterator( int curRank, ASTERDOUBLE *memoryPosition )
-            : position( memoryPosition ), rank( curRank ){};
+            : position( memoryPosition ), rank( curRank ) {};
 
         inline const_iterator( const const_iterator &iter )
-            : position( iter.position ), rank( iter.rank ){};
+            : position( iter.position ), rank( iter.rank ) {};
 
         inline const_iterator &operator=( const const_iterator &testIter ) {
             position = testIter.position;

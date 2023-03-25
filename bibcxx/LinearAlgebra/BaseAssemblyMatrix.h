@@ -26,10 +26,11 @@
 
 /* person_in_charge: nicolas.sellenet at edf.fr */
 
+#include "astercxx.h"
+
 #include "aster_fort_calcul.h"
 #include "aster_fort_ds.h"
 #include "aster_fort_petsc.h"
-#include "astercxx.h"
 
 #include "DataFields/FieldOnNodes.h"
 #include "DataStructures/DataStructure.h"
@@ -110,7 +111,7 @@ class BaseAssemblyMatrix : public DataStructure {
      * @brief Constructeur
      */
     BaseAssemblyMatrix( const std::string &type )
-        : BaseAssemblyMatrix( ResultNaming::getNewResultName(), type ){};
+        : BaseAssemblyMatrix( ResultNaming::getNewResultName(), type ) {};
 
     /**
      * @brief Constructeur

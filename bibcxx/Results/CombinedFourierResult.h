@@ -42,7 +42,7 @@ class CombinedFourierResult : public Result {
      * @brief Constructeur
      */
     CombinedFourierResult( const std::string name = ResultNaming::getNewResultName() )
-        : Result( name, "COMB_FOURIER" ){};
+        : Result( name, "COMB_FOURIER" ) {};
 };
 
 /**

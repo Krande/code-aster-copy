@@ -26,8 +26,9 @@
 
 /* person_in_charge: mathieu.courtois@edf.fr */
 
-#include "aster_pybind.h"
 #include "astercxx.h"
+
+#include "aster_pybind.h"
 
 #include "LinearAlgebra/AssemblyMatrix.h"
 #include "Loads/PhysicalQuantity.h"

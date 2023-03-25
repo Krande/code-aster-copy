@@ -26,8 +26,9 @@
 
 /* person_in_charge: nicolas.sellenet at edf.fr */
 
-#include "aster_fort_ds.h"
 #include "astercxx.h"
+
+#include "aster_fort_ds.h"
 
 #include "DataStructures/DataStructure.h"
 #include "MemoryManager/JeveuxVector.h"
@@ -107,13 +108,13 @@ class SimpleFieldOnNodes : public DataStructure {
           _values( JeveuxVector< ValueType >( getName() + ".CNSV" ) ),
           _allocated( JeveuxVectorLogical( getName() + ".CNSL" ) ),
           _nbNodes( 0 ),
-          _nbComp( 0 ){};
+          _nbComp( 0 ) {};
 
     /**
      * @brief Constructeur
 
      */
-    SimpleFieldOnNodes() : SimpleFieldOnNodes( DataStructureNaming::getNewName( 19 ) ){};
+    SimpleFieldOnNodes() : SimpleFieldOnNodes( DataStructureNaming::getNewName( 19 ) ) {};
 
     SimpleFieldOnNodes( const BaseMeshPtr mesh, const std::string quantity,
                         const VectorString &comp, bool zero = false )

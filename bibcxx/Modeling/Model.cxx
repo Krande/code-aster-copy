@@ -21,11 +21,12 @@
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "astercxx.h"
+
 #include "Modeling/Model.h"
 
 #include "aster_fort_superv.h"
 #include "aster_fort_utils.h"
-#include "astercxx.h"
 
 #include "ParallelUtilities/AsterMPI.h"
 #include "Supervis/CommandSyntax.h"
@@ -82,7 +83,7 @@ Model::Model( const std::string name, const ConnectionMeshPtr mesh ) : Model( na
     AS_ASSERT( !_connectionMesh->isEmpty() );
 };
 
-Model::Model( const ConnectionMeshPtr mesh ) : Model( DataStructureNaming::getNewName(), mesh ){};
+Model::Model( const ConnectionMeshPtr mesh ) : Model( DataStructureNaming::getNewName(), mesh ) {};
 #endif /* ASTER_HAVE_MPI */
 
 bool Model::existsSuperElement() { return ( numberOfSuperElement() > 0 ); }

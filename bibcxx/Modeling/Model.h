@@ -24,8 +24,9 @@
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "aster_fort_utils.h"
 #include "astercxx.h"
+
+#include "aster_fort_utils.h"
 
 #include "DataFields/ListOfTables.h"
 #include "DataStructures/DataStructure.h"

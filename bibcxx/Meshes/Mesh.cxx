@@ -23,10 +23,11 @@
 
 /* person_in_charge: nicolas.sellenet at edf.fr */
 
+#include "astercxx.h"
+
 #include "Meshes/Mesh.h"
 
 #include "aster_fort_mesh.h"
-#include "astercxx.h"
 
 #include "Utilities/Tools.h"
 

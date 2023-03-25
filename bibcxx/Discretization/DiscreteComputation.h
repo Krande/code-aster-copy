@@ -99,10 +99,10 @@ class DiscreteComputation {
      * @param PhysicalProblemPtr study
      */
     DiscreteComputation( const PhysicalProblemPtr &currPhysProblem )
-        : _phys_problem( currPhysProblem ){};
+        : _phys_problem( currPhysProblem ) {};
 
     /** @brief Destructor */
-    ~DiscreteComputation(){};
+    ~DiscreteComputation() {};
 
     /** @brief Compute nodal field for external state variables RHS */
     FieldOnNodesRealPtr getExternalStateVariablesForces( const ASTERDOUBLE time ) const;

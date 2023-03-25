@@ -91,12 +91,12 @@ class TableContainer : public Table {
      * @brief Constructeur
      * @param name Nom Jeveux du champ aux noeuds
      */
-    TableContainer( const std::string &name ) : Table( name, "TABLE_CONTAINER" ){};
+    TableContainer( const std::string &name ) : Table( name, "TABLE_CONTAINER" ) {};
 
     /**
      * @brief Constructeur
      */
-    TableContainer() : TableContainer( ResultNaming::getNewResultName() ){};
+    TableContainer() : TableContainer( ResultNaming::getNewResultName() ) {};
 
     /**
      * @brief Add ElementaryMatrixDisplacementReal to TableContainer

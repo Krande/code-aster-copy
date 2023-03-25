@@ -33,7 +33,7 @@
 #ifdef ASTER_HAVE_MPI
 
 ParallelDOFNumbering::ParallelDOFNumbering()
-    : ParallelDOFNumbering( ResultNaming::getNewResultName() ){};
+    : ParallelDOFNumbering( ResultNaming::getNewResultName() ) {};
 
 ParallelDOFNumbering::ParallelDOFNumbering( const std::string name,
                                             const ParallelEquationNumberingPtr globNume,
@@ -44,7 +44,7 @@ ParallelDOFNumbering::ParallelDOFNumbering( const std::string name,
 
 ParallelDOFNumbering::ParallelDOFNumbering( const std::string &name )
     : BaseDOFNumbering( name, "NUME_DDL_P" ),
-      _globalNumbering( std::make_shared< ParallelEquationNumbering >( getName() + ".NUME" ) ){};
+      _globalNumbering( std::make_shared< ParallelEquationNumbering >( getName() + ".NUME" ) ) {};
 
 bool ParallelDOFNumbering::useLagrangeMultipliers() const {
     return _globalNumbering->useLagrangeMultipliers();

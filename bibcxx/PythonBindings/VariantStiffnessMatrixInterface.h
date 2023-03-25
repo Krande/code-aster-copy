@@ -24,8 +24,9 @@
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "aster_pybind.h"
 #include "astercxx.h"
+
+#include "aster_pybind.h"
 
 #include "LinearAlgebra/AssemblyMatrix.h"
 #include "LinearAlgebra/GeneralizedAssemblyMatrix.h"

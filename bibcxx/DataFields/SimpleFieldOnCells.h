@@ -174,13 +174,13 @@ class SimpleFieldOnCells : public DataStructure {
           _nbCells( 0 ),
           _nbComp( 0 ),
           _nbPt( 0 ),
-          _nbSpt( 0 ){};
+          _nbSpt( 0 ) {};
 
     /**
      * @brief Constructeur
 
      */
-    SimpleFieldOnCells() : SimpleFieldOnCells( DataStructureNaming::getNewName( 19 ) ){};
+    SimpleFieldOnCells() : SimpleFieldOnCells( DataStructureNaming::getNewName( 19 ) ) {};
 
     /**
      * @brief Surcharge de l'operateur []

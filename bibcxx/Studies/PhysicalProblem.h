@@ -23,8 +23,9 @@
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "aster_pybind.h"
 #include "astercxx.h"
+
+#include "aster_pybind.h"
 
 #include "Behaviours/BehaviourProperty.h"
 #include "DataFields/FieldOnCells.h"
@@ -80,7 +81,7 @@ class PhysicalProblem {
     PhysicalProblem( const BaseDOFNumberingPtr dofNume );
 
     /** @brief Destructor */
-    ~PhysicalProblem(){};
+    ~PhysicalProblem() {};
 
     /** @brief Add a load (mechanical or dirichlet) with function, formula */
     template < typename... Args >

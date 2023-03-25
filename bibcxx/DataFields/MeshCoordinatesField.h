@@ -69,7 +69,7 @@ class MeshCoordinatesField : public DataField {
     MeshCoordinatesField( const std::string &name )
         : DataField( name, "CHAM_GEOM" ),
           _descriptor( JeveuxVectorLong( getName() + ".DESC" ) ),
-          _valuesList( JeveuxVectorReal( getName() + ".VALE" ) ){};
+          _valuesList( JeveuxVectorReal( getName() + ".VALE" ) ) {};
 
     /**
      * @brief copy constructeur

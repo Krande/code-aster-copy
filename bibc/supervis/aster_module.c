@@ -18,9 +18,10 @@
 
 /* person_in_charge: mathieu.courtois at edf.fr */
 /* ------------------------------------------------------------------ */
+#include "aster.h"
+
 #include "aster_module.h"
 
-#include "aster.h"
 #include "aster_core_module.h"
 #include "aster_exceptions.h"
 #include "aster_fort_ds.h"

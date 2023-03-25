@@ -33,7 +33,7 @@ XfemModel::SubElementTopology::SubElementTopology( const std::string name )
       hea( std::make_shared< FieldOnCellsLong >( getName() + ".HEA" ) ),
       lon( std::make_shared< FieldOnCellsLong >( getName() + ".LON" ) ),
       pai( std::make_shared< FieldOnCellsReal >( getName() + ".PAI" ) ),
-      pmi( std::make_shared< FieldOnCellsReal >( getName() + ".PMI" ) ){};
+      pmi( std::make_shared< FieldOnCellsReal >( getName() + ".PMI" ) ) {};
 
 XfemModel::FacetTopology::FacetTopology( const std::string name )
     : _name( name + ".TOPOFAC" ),
@@ -43,13 +43,13 @@ XfemModel::FacetTopology::FacetTopology( const std::string name )
       length( std::make_shared< FieldOnCellsLong >( getName() + ".LO" ) ),
       base( std::make_shared< FieldOnCellsReal >( getName() + ".BA" ) ),
       _heaviside( std::make_shared< FieldOnCellsLong >( getName() + ".HE" ) ),
-      intersection_pt2( std::make_shared< FieldOnCellsReal >( getName() + ".OE" ) ){};
+      intersection_pt2( std::make_shared< FieldOnCellsReal >( getName() + ".OE" ) ) {};
 
 XfemModel::NodalTopology::NodalTopology( const std::string name )
     : _name( name + ".TOPONO" ),
       hno( std::make_shared< FieldOnCellsLong >( getName() + ".HNO" ) ),
       hfa( std::make_shared< FieldOnCellsLong >( getName() + ".HFA" ) ),
-      hse( std::make_shared< FieldOnCellsLong >( getName() + ".HSE" ) ){};
+      hse( std::make_shared< FieldOnCellsLong >( getName() + ".HSE" ) ) {};
 
 XfemModel::XfemModel( const std::string name )
     : _topose( SubElementTopology( name ) ),

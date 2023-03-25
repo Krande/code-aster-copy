@@ -24,12 +24,13 @@
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "aster_pybind.h"
 #include "astercxx.h"
+
+#include "aster_pybind.h"
 
 template < typename T >
 struct ConstViewer {
-    ConstViewer( std::shared_ptr< const T > p ) : ptr( p ){};
+    ConstViewer( std::shared_ptr< const T > p ) : ptr( p ) {};
 
     std::shared_ptr< const T > ptr;
 };

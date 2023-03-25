@@ -153,7 +153,8 @@ class MechanicalLoadDescription : public DataStructure {
           _vnor( std::make_shared< ConstantFieldOnCellsType >( getName() + ".VNOR", _FEDesc ) ),
           _onde( std::make_shared< ConstantFieldOnCellsType >( getName() + ".ONDE", _FEDesc ) ),
           _ondpl( std::make_shared< ConstantFieldOnCellsType >( getName() + ".ONDPL", _FEDesc ) ),
-          _ondpr( std::make_shared< ConstantFieldOnCellsType >( getName() + ".ONDPR", _FEDesc ) ){};
+          _ondpr(
+              std::make_shared< ConstantFieldOnCellsType >( getName() + ".ONDPR", _FEDesc ) ) {};
 
     /**
      * @brief Get the finite element descriptor

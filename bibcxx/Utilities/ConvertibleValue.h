@@ -47,13 +47,13 @@ class ConvertibleValue {
     bool _existsValue;
 
   public:
-    ConvertibleValue() : _existsValue( false ){};
+    ConvertibleValue() : _existsValue( false ) {};
 
     ConvertibleValue( const mapVal1Val2 &matchMap )
-        : _matchMap( matchMap ), _existsValue( false ){};
+        : _matchMap( matchMap ), _existsValue( false ) {};
 
     ConvertibleValue( const mapVal1Val2 &matchMap, const ValueType1 &val )
-        : _matchMap( matchMap ), _valToConvert( val ), _existsValue( true ){};
+        : _matchMap( matchMap ), _valToConvert( val ), _existsValue( true ) {};
 
     void operator=( const ValueType1 &toSet ) {
         _existsValue = true;

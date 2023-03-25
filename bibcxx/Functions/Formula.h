@@ -23,8 +23,9 @@
 
  * person_in_charge: mathieu.courtois@edf.fr
  */
-#include "aster_pybind.h"
 #include "astercxx.h"
+
+#include "aster_pybind.h"
 #include "definition.h"
 
 #include "Functions/GenericFunction.h"

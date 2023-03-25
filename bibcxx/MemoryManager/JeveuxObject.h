@@ -26,8 +26,9 @@
 
 /* person_in_charge: nicolas.sellenet at edf.fr */
 
-#include "aster_fort_jeveux.h"
 #include "astercxx.h"
+
+#include "aster_fort_jeveux.h"
 #include "shared_vars.h"
 
 #include <string>
@@ -66,7 +67,7 @@ class JeveuxObjectClass {
      * @brief Constructeur
      * @param name Nom jeveux du vecteur
      */
-    JeveuxObjectClass( const std::string &nom ) : _name( nom ), _mem( Permanent ){};
+    JeveuxObjectClass( const std::string &nom ) : _name( nom ), _mem( Permanent ) {};
 
     /**
      * @brief Destructeur

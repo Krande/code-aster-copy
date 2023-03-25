@@ -27,10 +27,10 @@
 
 #include "Results/ModeResult.h"
 
-ForwardModeResultPtr::ForwardModeResultPtr() : _isSet( false ){};
+ForwardModeResultPtr::ForwardModeResultPtr() : _isSet( false ) {};
 
 ForwardModeResultPtr::ForwardModeResultPtr( const ModeResultPtr &ptr )
-    : _ptr( ptr ), _isSet( true ){};
+    : _ptr( ptr ), _isSet( true ) {};
 
 void ForwardModeResultPtr::operator=( const ModeResultPtr &ptr ) {
     _ptr = ptr;

@@ -27,6 +27,7 @@
 /* person_in_charge: nicolas.sellenet at edf.fr */
 
 #include "astercxx.h"
+
 #include "definition.h"
 
 #include "DataStructures/DataStructure.h"
@@ -69,7 +70,7 @@ class FiberGeometry : public DataStructure {
     /**
      * @brief Constructeur
      */
-    FiberGeometry() : FiberGeometry( ResultNaming::getNewResultName() ){};
+    FiberGeometry() : FiberGeometry( ResultNaming::getNewResultName() ) {};
 
     /**
      * @brief Constructeur
@@ -83,12 +84,12 @@ class FiberGeometry : public DataStructure {
           _carfi( JeveuxVectorReal( getName() + ".CARFI" ) ),
           _gfma( JeveuxVectorChar8( getName() + ".GFMA" ) ),
           _caracsd( JeveuxVectorLong( getName() + ".CARACSD" ) ),
-          _isEmpty( true ){};
+          _isEmpty( true ) {};
 
     /**
      * @brief Destructeur
      */
-    ~FiberGeometry(){};
+    ~FiberGeometry() {};
 
     /**
      * @brief Fonction permettant de savoir si un maillage est vide (non relu par exemple)

@@ -23,9 +23,9 @@
 
 /* person_in_charge: nicolas.tardieu at edf.fr */
 
-#include "Crack/XfemCrack.h"
-
 #include "astercxx.h"
+
+#include "Crack/XfemCrack.h"
 
 #include "Crack/CrackShape.h"
 #include "Supervis/CommandSyntax.h"
@@ -82,7 +82,7 @@ XfemCrack::XfemCrack( const std::string name, MeshPtr mesh )
         std::make_shared< EquationNumbering >( getName() + ".BASL.NUMEQ" ) );
 };
 
-XfemCrack::XfemCrack( MeshPtr mesh ) : XfemCrack( ResultNaming::getNewResultName(), mesh ){};
+XfemCrack::XfemCrack( MeshPtr mesh ) : XfemCrack( ResultNaming::getNewResultName(), mesh ) {};
 
 bool XfemCrack::build() {
     CommandSyntax cmdSt( "DEFI_FISS_XFEM" );

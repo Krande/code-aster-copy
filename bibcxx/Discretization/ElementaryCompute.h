@@ -55,7 +55,7 @@ class ElementaryCompute {
 
     /** @brief Constructor by predefined name with calls to Fortran */
     ElementaryCompute( const std::string baseName )
-        : ElementaryCompute( baseName, "WRAP_FORTRAN" ){};
+        : ElementaryCompute( baseName, "WRAP_FORTRAN" ) {};
 
     /** @brief Create descriptor */
     void createDescriptor( const ModelPtr &currentModel, const MaterialFieldPtr &currMaterialField,

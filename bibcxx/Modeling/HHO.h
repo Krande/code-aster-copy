@@ -60,7 +60,7 @@ class HHO {
      * @brief Constructor
      * @param PhysicalProblemPtr study
      */
-    HHO( const PhysicalProblemPtr &currPhysProblem ) : _phys_problem( currPhysProblem ){};
+    HHO( const PhysicalProblemPtr &currPhysProblem ) : _phys_problem( currPhysProblem ) {};
 
     /**
      * @brief Project HHO field to H^1-field

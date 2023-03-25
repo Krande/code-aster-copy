@@ -106,7 +106,7 @@ class ContactZone : public DataStructure {
     /**
      * @brief Constructeur
      */
-    ContactZone( const ModelPtr model ) : ContactZone( ResultNaming::getNewResultName(), model ){};
+    ContactZone( const ModelPtr model ) : ContactZone( ResultNaming::getNewResultName(), model ) {};
 
     ModelPtr getModel() const { return _model; }
 

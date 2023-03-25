@@ -27,13 +27,13 @@
 
 #ifdef ASTER_HAVE_MPI
 
-Joints::Joints() : Joints( DataStructureNaming::getNewName() ){};
+Joints::Joints() : Joints( DataStructureNaming::getNewName() ) {};
 
 Joints::Joints( const std::string name )
     : DataStructure( name, 19, "DOMJOINTS" ),
       _domj( JeveuxVectorLong( getName() + ".DOMJ" ) ),
       _send( JeveuxCollectionLong( getName() + ".SEND" ) ),
-      _recv( JeveuxCollectionLong( getName() + ".RECV" ) ){};
+      _recv( JeveuxCollectionLong( getName() + ".RECV" ) ) {};
 
 void Joints::setOppositeDomains( const VectorLong &oppositeDomains ) {
     ( *_domj ) = oppositeDomains;

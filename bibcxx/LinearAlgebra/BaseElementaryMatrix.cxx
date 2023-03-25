@@ -24,11 +24,11 @@ BaseElementaryMatrix::BaseElementaryMatrix( const std::string name, const std::s
       _model( nullptr ),
       _materialField( nullptr ),
       _elemChara( nullptr ),
-      _elemComp( std::make_shared< ElementaryCompute >( getName() ) ){};
+      _elemComp( std::make_shared< ElementaryCompute >( getName() ) ) {};
 
 /** @brief Constructor with automatic name */
 BaseElementaryMatrix::BaseElementaryMatrix( const std::string type )
-    : BaseElementaryMatrix( ResultNaming::getNewResultName(), type ){};
+    : BaseElementaryMatrix( ResultNaming::getNewResultName(), type ) {};
 
 BaseElementaryMatrix::BaseElementaryMatrix( const ModelPtr model, const MaterialFieldPtr mater,
                                             const ElementaryCharacteristicsPtr caraElem )

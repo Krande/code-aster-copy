@@ -90,7 +90,7 @@ class AcousticLoadDescription : public DataStructure {
      * @brief Constructeur
      */
     AcousticLoadDescription( const ModelPtr &model )
-        : AcousticLoadDescription( ResultNaming::getNewResultName(), model ){};
+        : AcousticLoadDescription( ResultNaming::getNewResultName(), model ) {};
 
     /**
      * @brief Constructeur
@@ -108,7 +108,7 @@ class AcousticLoadDescription : public DataStructure {
           _impedanceValues(
               std::make_shared< ConstantFieldOnCellsType >( getName() + ".IMPED", _FEDesc ) ),
           _speedValues(
-              std::make_shared< ConstantFieldOnCellsType >( getName() + ".VITFA", _FEDesc ) ){};
+              std::make_shared< ConstantFieldOnCellsType >( getName() + ".VITFA", _FEDesc ) ) {};
 
     /**
      * @brief Get the finite element descriptor

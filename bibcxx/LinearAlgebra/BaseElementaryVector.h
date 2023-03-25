@@ -74,10 +74,10 @@ class BaseElementaryVector : public DataStructure {
           _materialField( nullptr ),
           _elemChara( nullptr ),
           _elemComp( std::make_shared< ElementaryCompute >( getName() ) ),
-          _listOfLoads( std::make_shared< ListOfLoads >() ){};
+          _listOfLoads( std::make_shared< ListOfLoads >() ) {};
 
     /** @brief Constructor with automatic name */
-    BaseElementaryVector() : BaseElementaryVector( ResultNaming::getNewResultName() ){};
+    BaseElementaryVector() : BaseElementaryVector( ResultNaming::getNewResultName() ) {};
 
     /** @brief Constructor with automatic name */
     BaseElementaryVector( const ModelPtr model, const MaterialFieldPtr mater,

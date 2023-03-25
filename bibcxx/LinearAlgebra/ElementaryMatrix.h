@@ -24,8 +24,9 @@
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "aster_fort_calcul.h"
 #include "astercxx.h"
+
+#include "aster_fort_calcul.h"
 
 #include "DataFields/ElementaryTerm.h"
 #include "LinearAlgebra/BaseElementaryMatrix.h"
@@ -53,7 +54,7 @@ class ElementaryMatrix : public BaseElementaryMatrix {
     };
 
     /** @brief Constructor with automatic name */
-    ElementaryMatrix() : ElementaryMatrix( ResultNaming::getNewResultName() ){};
+    ElementaryMatrix() : ElementaryMatrix( ResultNaming::getNewResultName() ) {};
 
     ElementaryMatrix( const ModelPtr model, const MaterialFieldPtr mater,
                       const ElementaryCharacteristicsPtr caraElem )

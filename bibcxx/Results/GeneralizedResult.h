@@ -81,10 +81,10 @@ class GeneralizedResult : public DataStructure, DynamicResultsIndexing {
           _acceleration( JeveuxVector< ValueType >( getName() + ".ACCE" ) ),
           _projM( new ProjMesu( ljust( getName(), 8 ) + ".PROJM" ) ),
           _genDOFNum( nullptr ),
-          _DOFNum( nullptr ){};
+          _DOFNum( nullptr ) {};
 
     GeneralizedResult( const std::string &resuTyp )
-        : GeneralizedResult( ResultNaming::getNewResultName(), resuTyp ){};
+        : GeneralizedResult( ResultNaming::getNewResultName(), resuTyp ) {};
 
     GeneralizedDOFNumberingPtr getGeneralizedDOFNumbering() const { return _genDOFNum; };
 
@@ -132,7 +132,7 @@ class NonLinearDescriptor {
         : _type( JeveuxVectorLong( name + ".NL.TYPE" ) ),
           _internalVar( JeveuxVectorReal( name + ".NL.VINT" ) ),
           _vIndi( JeveuxVectorLong( name + ".NL.VIND" ) ),
-          _vInti( JeveuxVectorChar24( name + ".NL.INTI" ) ){};
+          _vInti( JeveuxVectorChar24( name + ".NL.INTI" ) ) {};
 };
 
 class TransientGeneralizedResult : public GeneralizedResultReal {
@@ -164,7 +164,8 @@ class TransientGeneralizedResult : public GeneralizedResultReal {
     /**
      * @brief Constructeur
      */
-    TransientGeneralizedResult() : TransientGeneralizedResult( ResultNaming::getNewResultName() ){};
+    TransientGeneralizedResult()
+        : TransientGeneralizedResult( ResultNaming::getNewResultName() ) {};
 
     /**
      * @brief Constructeur
@@ -176,7 +177,7 @@ class TransientGeneralizedResult : public GeneralizedResultReal {
           _acceExcitFunction( JeveuxVectorChar8( getName() + ".FACC" ) ),
           _veloExcitFunction( JeveuxVectorChar8( getName() + ".FVIT" ) ),
           _displExcitFunction( JeveuxVectorChar8( getName() + ".FDEP" ) ),
-          _ipsd( JeveuxVectorLong( getName() + ".IPSD" ) ){};
+          _ipsd( JeveuxVectorLong( getName() + ".IPSD" ) ) {};
 };
 typedef std::shared_ptr< TransientGeneralizedResult > TransientGeneralizedResultPtr;
 
@@ -198,13 +199,13 @@ class HarmoGeneralizedResult : public GeneralizedResultComplex {
     /**
      * @brief Constructeur
      */
-    HarmoGeneralizedResult() : HarmoGeneralizedResult( ResultNaming::getNewResultName() ){};
+    HarmoGeneralizedResult() : HarmoGeneralizedResult( ResultNaming::getNewResultName() ) {};
 
     /**
      * @brief Constructeur
      */
     HarmoGeneralizedResult( const std::string &name )
-        : GeneralizedResultComplex( name, "HARM_GENE" ){};
+        : GeneralizedResultComplex( name, "HARM_GENE" ) {};
 };
 
 typedef std::shared_ptr< HarmoGeneralizedResult > HarmoGeneralizedResultPtr;

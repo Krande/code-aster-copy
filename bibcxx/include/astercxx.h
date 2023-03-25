@@ -23,6 +23,7 @@
 /* person_in_charge: mathieu.courtois@edf.fr */
 
 #include "aster.h"
+
 #include "asterc_config.h"
 
 #include <algorithm>

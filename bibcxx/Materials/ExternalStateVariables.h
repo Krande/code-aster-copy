@@ -57,7 +57,7 @@ class EvolutionParameter {
           _leftExtension( "EXCLU" ),
           _rightExtension( "EXCLU" ),
           _timeFunction( nullptr ),
-          _timeFormula( nullptr ){};
+          _timeFormula( nullptr ) {};
 
     std::string getFieldName() { return _fieldName; };
 
@@ -261,7 +261,7 @@ class ExternalStateVariable {
           _mesh( mesh ),
           _localization( new AllMeshEntities() ),
           _refValue( 0. ),
-          _evolParameter( nullptr ){};
+          _evolParameter( nullptr ) {};
 
     /** @brief Constructor on all mesh */
     ExternalStateVariable( const std::string _currType, const BaseMeshPtr mesh )
@@ -269,7 +269,7 @@ class ExternalStateVariable {
           _mesh( mesh ),
           _localization( new AllMeshEntities() ),
           _refValue( 0. ),
-          _evolParameter( nullptr ){};
+          _evolParameter( nullptr ) {};
 
     /** @brief Constructor on group of cells */
     ExternalStateVariable( const externVarEnumInt _currType, const BaseMeshPtr mesh,
@@ -296,7 +296,7 @@ class ExternalStateVariable {
     }
 
     /** @brief Destructor */
-    ~ExternalStateVariable(){};
+    ~ExternalStateVariable() {};
 
     /** @brief Function to know if a reference value exists */
     bool isSetRefe() const { return ExternalVariableTraits::externVarHasRefeValue( _type ); };

@@ -28,9 +28,10 @@
  *        than here.
  *  - give informations about the execution.
  */
+#include "aster.h"
+
 #include "aster_core_module.h"
 
-#include "aster.h"
 #include "aster_exceptions.h"
 #include "aster_fort_mpi.h"
 #include "aster_fort_utils.h"

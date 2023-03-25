@@ -114,7 +114,7 @@ class ParallelThermalLoad : public DataStructure {
      */
     ParallelThermalLoad( const ThermalLoadPtr< ConstantFieldOnCellsType > &load,
                          const ModelPtr &model )
-        : ParallelThermalLoad( ResultNaming::getNewResultName(), load, model ){};
+        : ParallelThermalLoad( ResultNaming::getNewResultName(), load, model ) {};
 
     /**
      * @brief Constructeur

@@ -1,5 +1,5 @@
 /* -------------------------------------------------------------------- */
-/* Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org             */
+/* Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org             */
 /* Copyright 1994-2011, Regents of the University of Minnesota          */
 /* This file is part of code_aster.                                     */
 /*                                                                      */
@@ -18,6 +18,7 @@
 /* -------------------------------------------------------------------- */
 
 #include "aster.h"
+
 #include "aster_fort_utils.h"
 
 #ifdef ASTER_HAVE_METIS
@@ -477,7 +478,7 @@ void GPReportResults( params_t *params, graph_t *graph, idx_t *part, idx_t objva
     printf( "  Reporting:    \t\t %7.3" PRREAL " sec\n", gk_getcputimer( params->reporttimer ) );
     printf( "\nMemory Information ----------------------------------------------------------\n" );
     printf( "  Max memory used:\t\t %7.3" PRREAL " MB\n",
-            (real_t)( params->maxmemory / ( 1024.0 * 1024.0 ) ) );
+            ( real_t )( params->maxmemory / ( 1024.0 * 1024.0 ) ) );
     printf( "******************************************************************************\n" );
 }
 /* ComputePartitionInfo */
@@ -544,7 +545,7 @@ void ComputePartitionInfo( params_t *params, graph_t *graph, idx_t *where ) {
         printf( " - Most overweight partition:\n"
                 "     pid: %" PRIDX ", actual: %" PRIDX ", desired: %" PRIDX ", ratio: %.2" PRREAL
                 ".\n\n",
-                k, kpwgts[k], (idx_t)( tvwgt * tpwgts[k] ), unbalance );
+                k, kpwgts[k], ( idx_t )( tvwgt * tpwgts[k] ), unbalance );
     }
 
     gk_free( (void **)&kpwgts, LTERM );

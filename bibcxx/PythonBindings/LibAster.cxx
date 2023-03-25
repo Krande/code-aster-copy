@@ -23,10 +23,11 @@
 
 #define CODEASTER_IMPORT_ARRAY 1
 
+#include "astercxx.h"
+
 #include "aster_init.h"
 #include "aster_numpy.h"
 #include "aster_pybind.h"
-#include "astercxx.h"
 
 // Please keep '*Interface.h' files in alphabetical order to ease merging
 #include "PythonBindings/AcousticLoadInterface.h"

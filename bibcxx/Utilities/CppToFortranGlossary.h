@@ -56,7 +56,7 @@ class Glossary {
     /**
      * @brief Destructeur vide
      */
-    ~Glossary(){};
+    ~Glossary() {};
 
     /**
      * @brief getPhysics

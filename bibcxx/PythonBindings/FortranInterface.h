@@ -26,8 +26,9 @@
 
 /* person_in_charge: mathieu.courtois@edf.fr */
 
-#include "aster_pybind.h"
 #include "astercxx.h"
+
+#include "aster_pybind.h"
 #include "shared_vars.h"
 
 #include "PythonBindings/Fortran.h"

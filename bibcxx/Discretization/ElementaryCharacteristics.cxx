@@ -21,9 +21,9 @@
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "Discretization/ElementaryCharacteristics.h"
-
 #include "astercxx.h"
+
+#include "Discretization/ElementaryCharacteristics.h"
 
 #include "DataFields/FieldBuilder.h"
 
@@ -50,7 +50,7 @@ ElementaryCharacteristics::ElementaryCharacteristics( const std::string name,
       _model_name( JeveuxVectorChar8( getName() + ".MODELE" ) ),
       _lineic( std::make_shared< ConstantFieldOnCellsChar8 >( getName() + ".CVENTCXF", _mesh ) ),
       _infos( std::make_shared< ConstantFieldOnCellsReal >( getName() + ".CARDINFO", _mesh ) ),
-      _isEmpty( true ){};
+      _isEmpty( true ) {};
 
 ModelPtr ElementaryCharacteristics::getModel() const { return _model; };
 

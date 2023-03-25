@@ -56,7 +56,7 @@ class BehaviourDefinition : public DataStructure {
     /**
      * @brief Constructeur
      */
-    BehaviourDefinition() : BehaviourDefinition( ResultNaming::getNewResultName() ){};
+    BehaviourDefinition() : BehaviourDefinition( ResultNaming::getNewResultName() ) {};
 
     /**
      * @brief Constructeur
@@ -65,7 +65,7 @@ class BehaviourDefinition : public DataStructure {
         : DataStructure( name, 8, "COMPOR" ),
           _cprk( JeveuxVectorChar24( getName() + ".CPRK" ) ),
           _cprr( JeveuxVectorReal( getName() + ".CPRR" ) ),
-          _cpri( JeveuxVectorLong( getName() + ".CPRI" ) ){};
+          _cpri( JeveuxVectorLong( getName() + ".CPRI" ) ) {};
 };
 
 /**

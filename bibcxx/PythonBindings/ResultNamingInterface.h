@@ -23,8 +23,9 @@
  * --------------------------------------------------------------------
  */
 
-#include "aster_pybind.h"
 #include "astercxx.h"
+
+#include "aster_pybind.h"
 
 #include "Supervis/ResultNaming.h"
 

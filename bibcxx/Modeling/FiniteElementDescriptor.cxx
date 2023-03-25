@@ -48,13 +48,13 @@ FiniteElementDescriptor::FiniteElementDescriptor( const std::string &name, const
       _explorer(
           FiniteElementDescriptor::ConnectivityVirtualCellsExplorer( _virtualCellsDescriptor ) ),
       _explorer2(
-          FiniteElementDescriptor::ConnectivityVirtualCellsExplorer( _listOfGroupsOfElements ) ){};
+          FiniteElementDescriptor::ConnectivityVirtualCellsExplorer( _listOfGroupsOfElements ) ) {};
 
 FiniteElementDescriptor::FiniteElementDescriptor( const BaseMeshPtr mesh )
-    : FiniteElementDescriptor( DataStructureNaming::getNewName(), mesh ){};
+    : FiniteElementDescriptor( DataStructureNaming::getNewName(), mesh ) {};
 
 FiniteElementDescriptor::FiniteElementDescriptor( const ModelPtr model )
-    : FiniteElementDescriptor( model->getMesh() ){};
+    : FiniteElementDescriptor( model->getMesh() ) {};
 
 FiniteElementDescriptor::FiniteElementDescriptor( const FiniteElementDescriptorPtr FEDesc,
                                                   const VectorString &groupOfCells )

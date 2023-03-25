@@ -78,7 +78,7 @@ class MechanicalLoad : public DataStructure, public ListOfTables {
      * @brief Constructor
      */
     MechanicalLoad( const ModelPtr &currentModel )
-        : MechanicalLoad( ResultNaming::getNewResultName(), currentModel ){};
+        : MechanicalLoad( ResultNaming::getNewResultName(), currentModel ) {};
 
     /**
      * @brief Constructor
@@ -96,7 +96,7 @@ class MechanicalLoad : public DataStructure, public ListOfTables {
           _dualPrdk( JeveuxVectorChar8( getName() + ".DUAL.PRDK" ) ),
           _dualPrdso( JeveuxVectorChar8( getName() + ".DUAL.PRDSO" ) ),
           _dualPrdi( JeveuxVectorLong( getName() + ".DUAL.PRDI" ) ),
-          _poidsMaille( getName() + ".POIDS_MAILLE" ){};
+          _poidsMaille( getName() + ".POIDS_MAILLE" ) {};
 
     /**
      * @brief Get the model

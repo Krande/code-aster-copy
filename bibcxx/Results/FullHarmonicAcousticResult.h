@@ -41,8 +41,8 @@ class FullHarmonicAcousticResult : public FullResult {
      * @brief Constructeur
      * @todo  Ajouter les objets Jeveux de la SD
      */
-    FullHarmonicAcousticResult( const std::string &name ) : FullResult( name, "ACOU_HARMO" ){};
-    FullHarmonicAcousticResult() : FullResult( ResultNaming::getNewResultName(), "ACOU_HARMO" ){};
+    FullHarmonicAcousticResult( const std::string &name ) : FullResult( name, "ACOU_HARMO" ) {};
+    FullHarmonicAcousticResult() : FullResult( ResultNaming::getNewResultName(), "ACOU_HARMO" ) {};
 };
 
 /**

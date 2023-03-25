@@ -21,10 +21,11 @@
  * person_in_charge: mathieu.courtois@edf.fr
  */
 
+#include "astercxx.h"
+
 #include "Functions/Formula.h"
 
 #include "aster_pybind.h"
-#include "astercxx.h"
 
 #include "Supervis/ResultNaming.h"
 #include "Utilities/Tools.h"

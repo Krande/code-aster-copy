@@ -56,7 +56,7 @@ class DynamicResultsIndexing {
      */
     DynamicResultsIndexing( const std::string &name )
         : _refd( JeveuxCollectionChar24( name + ".REFD" ) ),
-          _indi( JeveuxVectorLong( name + ".INDI" ) ){};
+          _indi( JeveuxVectorLong( name + ".INDI" ) ) {};
 };
 
 #endif /* DYNAMICRESULTSINDEXING_H_ */

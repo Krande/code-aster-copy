@@ -65,7 +65,7 @@ class FluidStructureModalBasis : public DataStructure, public ListOfTables {
     /**
      * @brief Constructeur
      */
-    FluidStructureModalBasis() : FluidStructureModalBasis( ResultNaming::getNewResultName() ){};
+    FluidStructureModalBasis() : FluidStructureModalBasis( ResultNaming::getNewResultName() ) {};
     /**
      * @brief Constructeur
      */
@@ -78,7 +78,7 @@ class FluidStructureModalBasis : public DataStructure, public ListOfTables {
           _freq( JeveuxVectorReal( getName() + ".FREQ" ) ),
           _masg( JeveuxVectorReal( getName() + ".MASG" ) ),
           _numo( JeveuxVectorLong( getName() + ".NUMO" ) ),
-          _vite( JeveuxVectorReal( getName() + ".VITE" ) ){};
+          _vite( JeveuxVectorReal( getName() + ".VITE" ) ) {};
 };
 
 /**

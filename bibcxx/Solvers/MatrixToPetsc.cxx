@@ -23,11 +23,12 @@
 
 /* person_in_charge: mathieu.courtois@edf.fr */
 
+#include "astercxx.h"
+
 #include "Solvers/MatrixToPetsc.h"
 
 #include "aster_fort_petsc.h"
 #include "aster_module.h"
-#include "astercxx.h"
 
 #ifdef ASTER_HAVE_PETSC
 void petscFinalize() {

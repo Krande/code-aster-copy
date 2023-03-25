@@ -79,7 +79,7 @@ class ParallelMesh : public BaseMesh {
     /**
      * @brief Constructeur
      */
-    ParallelMesh() : ParallelMesh( ResultNaming::getNewResultName() ){};
+    ParallelMesh() : ParallelMesh( ResultNaming::getNewResultName() ) {};
 
     /**
      * @brief Constructeur
@@ -91,7 +91,7 @@ class ParallelMesh : public BaseMesh {
           _outerNodes( getName() + ".NOEX" ),
           _outerCells( getName() + ".MAEX" ),
           _globalNumbering( getName() + ".NULOGL" ),
-          _joints( std::make_shared< Joints >( getName() + ".JOIN" ) ){};
+          _joints( std::make_shared< Joints >( getName() + ".JOIN" ) ) {};
 
     /**
      * @brief Get the JeveuxVector for outer subdomain nodes

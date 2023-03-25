@@ -41,7 +41,7 @@ class MultipleElasticResult : public Result {
      * @brief Constructeur
      */
     MultipleElasticResult( const std::string name = ResultNaming::getNewResultName() )
-        : Result( name, "MULT_ELAS" ){};
+        : Result( name, "MULT_ELAS" ) {};
 };
 
 /**

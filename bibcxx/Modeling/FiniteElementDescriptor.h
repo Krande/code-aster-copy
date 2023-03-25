@@ -102,7 +102,7 @@ class FiniteElementDescriptor : public DataStructure {
     /**
      * @brief Destructor
      */
-    ~FiniteElementDescriptor(){};
+    ~FiniteElementDescriptor() {};
 
     const ConnectivityVirtualCellsExplorer &getVirtualCellsExplorer() const;
 

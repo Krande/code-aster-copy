@@ -38,7 +38,7 @@ class CellObject {
   public:
     CellObject( const ASTERINTEGER &num, const ASTERINTEGER *const listOfNodes,
                 const ASTERINTEGER &nbNodes, const ASTERINTEGER &type )
-        : _cellIndex( num ), _listOfNodes( listOfNodes ), _nbNodes( nbNodes ), _type( type ){};
+        : _cellIndex( num ), _listOfNodes( listOfNodes ), _nbNodes( nbNodes ), _type( type ) {};
 
     const ASTERINTEGER &getNumberOfNodes() const { return _nbNodes; };
 
@@ -49,10 +49,10 @@ class CellObject {
     struct const_iterator {
         const ASTERINTEGER *positionInList;
 
-        inline const_iterator( const ASTERINTEGER *curList ) : positionInList( curList ){};
+        inline const_iterator( const ASTERINTEGER *curList ) : positionInList( curList ) {};
 
         inline const_iterator( const const_iterator &iter )
-            : positionInList( iter.positionInList ){};
+            : positionInList( iter.positionInList ) {};
 
         inline const_iterator &operator=( const const_iterator &testIter ) {
             positionInList = testIter.positionInList;
@@ -165,22 +165,22 @@ class MeshExplorer {
     /**
      * @brief Constructeur
      */
-    MeshExplorer( const Args... a ) : _builder( a... ){};
+    MeshExplorer( const Args... a ) : _builder( a... ) {};
 
     /**
      * @brief Destructeur
      */
-    ~MeshExplorer(){};
+    ~MeshExplorer() {};
 
     struct const_iterator {
         int position;
         const ElemBuilder &builder;
 
         inline const_iterator( int memoryPosition, const ElemBuilder &test )
-            : position( memoryPosition ), builder( test ){};
+            : position( memoryPosition ), builder( test ) {};
 
         inline const_iterator( const const_iterator &iter )
-            : position( iter.position ), builder( iter.builder ){};
+            : position( iter.position ), builder( iter.builder ) {};
 
         inline const_iterator &operator=( const const_iterator &testIter ) {
             position = testIter.position;

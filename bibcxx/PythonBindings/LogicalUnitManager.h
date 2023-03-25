@@ -26,6 +26,7 @@
 
 // TODO: Refactor LogicalUnit.py in C++
 #include "astercxx.h"
+
 #include "logical_unit.h"
 
 enum FileType { Ascii, Binary, Free };
@@ -52,7 +53,7 @@ class LogicalUnitFile {
      * @param type type du fichier
      * @param access Accés au fichier
      */
-    LogicalUnitFile() : _fileName( "" ), _isUsable( false ){};
+    LogicalUnitFile() : _fileName( "" ), _isUsable( false ) {};
 
     /**
      * @brief Constructeur

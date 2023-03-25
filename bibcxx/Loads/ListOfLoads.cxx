@@ -21,16 +21,17 @@
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "astercxx.h"
+
 #include "Loads/ListOfLoads.h"
 
 #include "aster_fort_calcul.h"
-#include "astercxx.h"
 
 #include "Supervis/CommandSyntax.h"
 
 #include <typeinfo>
 
-ListOfLoads::ListOfLoads() : ListOfLoads( ModelPtr( NULL ) ){};
+ListOfLoads::ListOfLoads() : ListOfLoads( ModelPtr( NULL ) ) {};
 
 ListOfLoads::ListOfLoads( const std::string &name, const ModelPtr model )
     : DataStructure( name, 19, "L_CHARGES" ),
@@ -38,12 +39,12 @@ ListOfLoads::ListOfLoads( const std::string &name, const ModelPtr model )
       _list( JeveuxVectorChar24( getName() + ".LCHA" ) ),
       _listOfFunctions( JeveuxVectorChar24( getName() + ".FCHA" ) ),
       _isEmpty( true ),
-      _model( model ){};
+      _model( model ) {};
 
 ListOfLoads::ListOfLoads( const ModelPtr model )
-    : ListOfLoads( DataStructureNaming::getNewName( 8 ) + ".LIST_LOAD", model ){};
+    : ListOfLoads( DataStructureNaming::getNewName( 8 ) + ".LIST_LOAD", model ) {};
 
-ListOfLoads::ListOfLoads( const std::string &name ) : ListOfLoads( name, nullptr ){};
+ListOfLoads::ListOfLoads( const std::string &name ) : ListOfLoads( name, nullptr ) {};
 
 bool ListOfLoads::checkModelConsistency( const ModelPtr &model ) const {
     if ( _model ) {

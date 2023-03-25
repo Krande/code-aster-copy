@@ -16,10 +16,11 @@
 /* along with code_aster.  If not, see <http://www.gnu.org/licenses/>.  */
 /* -------------------------------------------------------------------- */
 
+#include "astercxx.h"
+
 #include "LinearAlgebra/BaseElementaryVector.h"
 
 #include "aster_fort_calcul.h"
-#include "astercxx.h"
 
 #include "Supervis/CommandSyntax.h"
 #include "Supervis/Exceptions.h"

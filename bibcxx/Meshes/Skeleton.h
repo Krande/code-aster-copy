@@ -60,7 +60,7 @@ class Skeleton : public BaseMesh {
     /**
      * @brief Constructeur
      */
-    Skeleton() : Skeleton( ResultNaming::getNewResultName() ){};
+    Skeleton() : Skeleton( ResultNaming::getNewResultName() ) {};
 
     /**
      * @brief Constructeur
@@ -71,7 +71,7 @@ class Skeleton : public BaseMesh {
           _corres( JeveuxVectorLong( getName() + ".CORRES" ) ),
           _nomSst( JeveuxVectorChar24( getName() + ".NOMSST" ) ),
           _anglNaut( JeveuxVectorReal( getName() + ".ANGL_NAUT" ) ),
-          _trans( JeveuxVectorReal( getName() + ".TRANS" ) ){};
+          _trans( JeveuxVectorReal( getName() + ".TRANS" ) ) {};
 };
 
 /**

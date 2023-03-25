@@ -20,11 +20,12 @@
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "astercxx.h"
+
 #include "Discretization/DiscreteComputation.h"
 
 #include "aster_fort_calcul.h"
 #include "aster_fort_superv.h"
-#include "astercxx.h"
 
 #include "Discretization/Calcul.h"
 #include "Loads/DirichletBC.h"

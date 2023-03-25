@@ -19,10 +19,11 @@
  * along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "astercxx.h"
+
 #include "Materials/Material.h"
 
 #include "aster_fort_material.h"
-#include "astercxx.h"
 
 #include "Utilities/Tools.h"
 

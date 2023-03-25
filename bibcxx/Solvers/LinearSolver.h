@@ -64,7 +64,7 @@ class LinearSolver : public DataStructure {
     /**
      * @brief Constructeur
      */
-    LinearSolver() : LinearSolver( ResultNaming::getNewResultName() ){};
+    LinearSolver() : LinearSolver( ResultNaming::getNewResultName() ) {};
 
     /**
      * @brief Constructeur
@@ -166,31 +166,31 @@ typedef std::shared_ptr< LinearSolver > LinearSolverPtr;
 
 class LdltSolver : public LinearSolver {
   public:
-    LdltSolver( const std::string name ) : LinearSolver( name ){};
-    LdltSolver() : LinearSolver(){};
+    LdltSolver( const std::string name ) : LinearSolver( name ) {};
+    LdltSolver() : LinearSolver() {};
     const std::string getSolverName() const { return "LDLT"; };
 };
 
 class MultFrontSolver : public LinearSolver {
   public:
-    MultFrontSolver( const std::string name ) : LinearSolver( name ){};
-    MultFrontSolver() : LinearSolver(){};
+    MultFrontSolver( const std::string name ) : LinearSolver( name ) {};
+    MultFrontSolver() : LinearSolver() {};
 
     const std::string getSolverName() const { return "MULT_FRONT"; };
 };
 
 class MumpsSolver : public LinearSolver {
   public:
-    MumpsSolver( const std::string name ) : LinearSolver( name ){};
-    MumpsSolver() : LinearSolver(){};
+    MumpsSolver( const std::string name ) : LinearSolver( name ) {};
+    MumpsSolver() : LinearSolver() {};
     const std::string getSolverName() const { return "MUMPS"; };
     const bool supportParallelMesh() const { return true; };
 };
 
 class PetscSolver : public LinearSolver {
   public:
-    PetscSolver( const std::string name ) : LinearSolver( name ){};
-    PetscSolver() : LinearSolver(){};
+    PetscSolver( const std::string name ) : LinearSolver( name ) {};
+    PetscSolver() : LinearSolver() {};
     const std::string getSolverName() const { return "PETSC"; };
     const bool supportParallelMesh() const { return true; };
     /**
@@ -209,8 +209,8 @@ class PetscSolver : public LinearSolver {
 
 class GcpcSolver : public LinearSolver {
   public:
-    GcpcSolver( const std::string name ) : LinearSolver( name ){};
-    GcpcSolver() : LinearSolver(){};
+    GcpcSolver( const std::string name ) : LinearSolver( name ) {};
+    GcpcSolver() : LinearSolver() {};
     const std::string getSolverName() const { return "GCPC"; };
 };
 

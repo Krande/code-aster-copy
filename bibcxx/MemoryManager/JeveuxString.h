@@ -61,7 +61,7 @@ class JeveuxString {
     /**
      * @brief Constructeur par defaut
      */
-    inline JeveuxString(){};
+    inline JeveuxString() {};
 
     /**
      * @brief Constructeur a partir d'un char*

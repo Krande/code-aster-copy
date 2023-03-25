@@ -54,7 +54,7 @@ class Function2D : public GenericFunction {
     /**
      * @brief Constructeur
      */
-    Function2D() : Function2D( ResultNaming::getNewResultName() ){};
+    Function2D() : Function2D( ResultNaming::getNewResultName() ) {};
 
     /**
      * @brief Constructeur
@@ -62,7 +62,7 @@ class Function2D : public GenericFunction {
     Function2D( const std::string name )
         : GenericFunction( name, "NAPPE", "NAPPE" ),
           _parameters( JeveuxVectorReal( getName() + ".PARA" ) ),
-          _value( JeveuxCollectionReal( getName() + ".VALE" ) ){};
+          _value( JeveuxCollectionReal( getName() + ".VALE" ) ) {};
 
     /**
      * @brief Return the parameters values of the function

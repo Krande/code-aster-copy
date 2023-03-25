@@ -76,7 +76,7 @@ class GenericGeneralizedAssemblyMatrix : public DataStructure {
           _refa( JeveuxVectorChar24( getName() + ".REFA" ) ),
           _dofNum( nullptr ),
           _mecaModeC( nullptr ),
-          _geneModeC( nullptr ){};
+          _geneModeC( nullptr ) {};
 
     /**
      * @brief Get GeneralizedDOFNumbering
@@ -182,7 +182,7 @@ class GeneralizedAssemblyMatrix : public GenericGeneralizedAssemblyMatrix {
     /**
      * @brief Constructeur
      */
-    GeneralizedAssemblyMatrix() : GeneralizedAssemblyMatrix( ResultNaming::getNewResultName() ){};
+    GeneralizedAssemblyMatrix() : GeneralizedAssemblyMatrix( ResultNaming::getNewResultName() ) {};
 
     /**
      * @brief Constructeur

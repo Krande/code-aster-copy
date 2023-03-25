@@ -70,7 +70,7 @@ class GeneralizedEquationNumbering : public DataStructure {
     /**
      * @brief Destructor
      */
-    ~GeneralizedEquationNumbering(){};
+    ~GeneralizedEquationNumbering() {};
 };
 
 typedef std::shared_ptr< GeneralizedEquationNumbering > GeneralizedEquationNumberingPtr;

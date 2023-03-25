@@ -41,7 +41,7 @@ class ThermalFourierResult : public Result {
      * @brief Constructeur
      */
     ThermalFourierResult( const std::string name = ResultNaming::getNewResultName() )
-        : Result( name, "FOURIER_THER" ){};
+        : Result( name, "FOURIER_THER" ) {};
 };
 
 /**

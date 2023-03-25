@@ -21,10 +21,11 @@
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "astercxx.h"
+
 #include "Numbering/BaseDOFNumbering.h"
 
 #include "aster_fort_calcul.h"
-#include "astercxx.h"
 
 #include "Supervis/ResultNaming.h"
 
@@ -34,7 +35,7 @@ BaseDOFNumbering::BaseDOFNumbering( const std::string name, const std::string &t
       _smos( new MorseStorage( getName() + ".SMOS" ) ),
       _slcs( new LigneDeCiel( getName() + ".SLCS" ) ),
       _mltf( new MultFrontGarbage( getName() + ".MLTF" ) ),
-      _localNumbering( std::make_shared< LocalEquationNumbering >( getName() ) ){};
+      _localNumbering( std::make_shared< LocalEquationNumbering >( getName() ) ) {};
 
 bool BaseDOFNumbering::computeNumbering( const std::vector< MatrElem > matrix ) {
     ASTERINTEGER nb_matr = matrix.size();

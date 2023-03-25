@@ -26,9 +26,10 @@
 
 /* person_in_charge: nicolas.sellenet at edf.fr */
 
+#include "astercxx.h"
+
 #include "aster_fort_jeveux.h"
 #include "aster_utils.h"
-#include "astercxx.h"
 
 #include "MemoryManager/JeveuxAllowedTypes.h"
 #include "MemoryManager/JeveuxObject.h"
@@ -46,12 +47,12 @@ class NamesMapClass : public JeveuxObjectClass, private AllowedJeveuxType< Value
      * @brief Constructeur
      * @param name Nom Jeveux de l'objet
      */
-    NamesMapClass( std::string name ) : JeveuxObjectClass( name ){};
+    NamesMapClass( std::string name ) : JeveuxObjectClass( name ) {};
 
     /**
      * @brief Destructeur
      */
-    ~NamesMapClass(){};
+    ~NamesMapClass() {};
 
     /**
      * @brief Ajout d'un élément
@@ -184,9 +185,9 @@ class NamesMap {
     NamesMapPtr _namesMapPtr;
 
   public:
-    NamesMap( std::string nom ) : _namesMapPtr( new NamesMapClass< ValueType >( nom ) ){};
+    NamesMap( std::string nom ) : _namesMapPtr( new NamesMapClass< ValueType >( nom ) ) {};
 
-    ~NamesMap(){};
+    ~NamesMap() {};
 
     NamesMap &operator=( const NamesMap< ValueType > &tmp ) {
         _namesMapPtr = tmp._namesMapPtr;

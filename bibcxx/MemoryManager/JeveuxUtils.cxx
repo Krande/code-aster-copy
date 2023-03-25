@@ -20,10 +20,11 @@
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "astercxx.h"
+
 #include "MemoryManager/JeveuxUtils.h"
 
 #include "aster_fort_jeveux.h"
-#include "astercxx.h"
 
 #include <string>
 

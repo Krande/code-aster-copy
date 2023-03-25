@@ -60,13 +60,13 @@ class GeneralizedModeResult : public FullResult {
           _projM( new ProjMesu( ljust( getName(), 8 ) + ".PROJM" ) ),
           _rigidityRealMatrix( nullptr ),
           _rigidityComplexMatrix( nullptr ),
-          _genDOFNum( nullptr ){};
+          _genDOFNum( nullptr ) {};
 
     /**
      * @brief Constructeur
      * @todo  Ajouter les objets Jeveux de la SD
      */
-    GeneralizedModeResult() : GeneralizedModeResult( ResultNaming::getNewResultName() ){};
+    GeneralizedModeResult() : GeneralizedModeResult( ResultNaming::getNewResultName() ) {};
 
     /**
      * @brief Get GeneralizedDOFNumering

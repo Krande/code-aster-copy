@@ -58,7 +58,7 @@ class TurbulentSpectrum : public DataStructure {
     /**
      * @brief Constructeur
      */
-    TurbulentSpectrum() : TurbulentSpectrum( ResultNaming::getNewResultName() ){};
+    TurbulentSpectrum() : TurbulentSpectrum( ResultNaming::getNewResultName() ) {};
 
     /**
      * @brief Constructeur
@@ -68,7 +68,7 @@ class TurbulentSpectrum : public DataStructure {
           _vain( JeveuxVectorLong( getName() + ".REFE" ) ),
           _vare( JeveuxVectorReal( getName() + ".DISC" ) ),
           _vate( JeveuxVectorChar16( getName() + ".VALE" ) ),
-          _nnoe( JeveuxVectorChar8( getName() + ".NUMI" ) ){};
+          _nnoe( JeveuxVectorChar8( getName() + ".NUMI" ) ) {};
 };
 
 /**

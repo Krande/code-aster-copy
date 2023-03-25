@@ -26,8 +26,9 @@
 
 /* person_in_charge: nicolas.sellenet at edf.fr */
 
-#include "aster_pybind.h"
 #include "astercxx.h"
+
+#include "aster_pybind.h"
 
 #include "DataFields/FieldOnNodes.h"
 

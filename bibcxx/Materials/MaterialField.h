@@ -48,10 +48,10 @@ class PartOfMaterialField {
     MeshEntityPtr _meshEntity;
 
   public:
-    PartOfMaterialField() : _meshEntity( nullptr ){};
+    PartOfMaterialField() : _meshEntity( nullptr ) {};
 
     PartOfMaterialField( const listOfMaterials &vecOfMater, const MeshEntityPtr &entity )
-        : _vecOfMater( vecOfMater ), _meshEntity( entity ){};
+        : _vecOfMater( vecOfMater ), _meshEntity( entity ) {};
 
     /** @brief Get the VectorOfMaterial of PartOfMaterialField */
     listOfMaterials getVectorOfMaterial() const { return _vecOfMater; };
@@ -128,11 +128,11 @@ class MaterialField : public DataStructure {
   public:
     /** @brief Constructor */
     MaterialField( const MeshPtr &mesh )
-        : MaterialField( ResultNaming::getNewResultName(), mesh ){};
+        : MaterialField( ResultNaming::getNewResultName(), mesh ) {};
 
     /** @brief Constructor */
     MaterialField( const SkeletonPtr &mesh )
-        : MaterialField( ResultNaming::getNewResultName(), mesh ){};
+        : MaterialField( ResultNaming::getNewResultName(), mesh ) {};
 
     /** @brief Constructor */
     MaterialField( const std::string &, const MeshPtr & );
@@ -143,14 +143,14 @@ class MaterialField : public DataStructure {
 #ifdef ASTER_HAVE_MPI
     /** @brief Constructor */
     MaterialField( const ParallelMeshPtr &mesh )
-        : MaterialField( ResultNaming::getNewResultName(), mesh ){};
+        : MaterialField( ResultNaming::getNewResultName(), mesh ) {};
 
     /** @brief Constructor */
     MaterialField( const std::string &, const ParallelMeshPtr & );
 #endif /* ASTER_HAVE_MPI */
 
     /** @brief Destructor */
-    ~MaterialField(){};
+    ~MaterialField() {};
 
     /** @brief Add a behaviour on all mesh */
     void addBehaviourOnMesh( BehaviourDefinitionPtr &curBehav );

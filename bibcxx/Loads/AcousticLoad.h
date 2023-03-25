@@ -58,7 +58,7 @@ class AcousticLoad : public DataStructure {
      * @brief Constructeur
      */
     AcousticLoad( const ModelPtr &model )
-        : AcousticLoad( ResultNaming::getNewResultName(), model ){};
+        : AcousticLoad( ResultNaming::getNewResultName(), model ) {};
 
     /**
      * @brief Constructeur
@@ -67,7 +67,7 @@ class AcousticLoad : public DataStructure {
         : DataStructure( name, 8, "CHAR_ACOU" ),
           _acouLoadDesc( std::make_shared< AcousticLoadDescription< ConstantFieldOnCellsType > >(
               getName() + ".CHAC", model ) ),
-          _type( getName() + ".TYPE" ){};
+          _type( getName() + ".TYPE" ) {};
 
     /**
      * @brief Get the finite element descriptor

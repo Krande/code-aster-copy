@@ -23,10 +23,11 @@
 
 /* person_in_charge: nicolas.sellenet at edf.fr */
 
+#include "astercxx.h"
+
 #include "Solvers/LinearSolver.h"
 
 #include "aster_pybind.h"
-#include "astercxx.h"
 
 #include "Supervis/CommandSyntax.h"
 #include "Supervis/ResultNaming.h"
@@ -42,7 +43,7 @@ LinearSolver::LinearSolver( const std::string name )
       _matrixPrec( nullptr ),
       _cataPath( std::string() ),
       _xfem( false ),
-      _keywords( py::none() ){
+      _keywords( py::none() ) {
 
       };
 

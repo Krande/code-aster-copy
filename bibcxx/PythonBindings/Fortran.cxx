@@ -23,6 +23,8 @@
 
 /* person_in_charge: mathieu.courtois@edf.fr */
 
+#include "astercxx.h"
+
 #include "PythonBindings/Fortran.h"
 
 #include "aster_fort_ds.h"
@@ -30,7 +32,6 @@
 #include "aster_fort_utils.h"
 #include "aster_mpi.h"
 #include "aster_utils.h"
-#include "astercxx.h"
 #include "shared_vars.h"
 
 void jeveux_init( int fcomm ) {

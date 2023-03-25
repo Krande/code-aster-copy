@@ -28,4 +28,4 @@
 Grid::Grid( const std::string name )
     : Mesh( name, "GRILLE" ),
       _grlr( JeveuxVectorReal( getName() + ".GRLR" ) ),
-      _grli( JeveuxVectorLong( getName() + ".GRLI" ) ){};
+      _grli( JeveuxVectorLong( getName() + ".GRLI" ) ) {};

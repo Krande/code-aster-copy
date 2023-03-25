@@ -81,7 +81,7 @@ class Calcul {
     Calcul( const std::string &option );
 
     /** @brief Destructor */
-    ~Calcul(){};
+    ~Calcul() {};
 
     /** @brief Set option to compute */
     void setOption( const std::string &option ) { _option = option; };

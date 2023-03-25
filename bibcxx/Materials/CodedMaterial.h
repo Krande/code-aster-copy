@@ -65,7 +65,7 @@ class CodedMaterial : public DataStructure {
     CodedMaterial( const std::string &name, const MaterialFieldPtr &mater, const ModelPtr &model );
 
     CodedMaterial( const MaterialFieldPtr &mater, const ModelPtr &model )
-        : CodedMaterial( ResultNaming::getNewResultName(), mater, model ){};
+        : CodedMaterial( ResultNaming::getNewResultName(), mater, model ) {};
 
     /**
      * @brief Function to allocate the coded material

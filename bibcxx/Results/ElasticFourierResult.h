@@ -41,7 +41,7 @@ class ElasticFourierResult : public Result {
      * @brief Constructeur
      */
     ElasticFourierResult( const std::string name = ResultNaming::getNewResultName() )
-        : Result( name, "FOURIER_ELAS" ){};
+        : Result( name, "FOURIER_ELAS" ) {};
 };
 
 /**

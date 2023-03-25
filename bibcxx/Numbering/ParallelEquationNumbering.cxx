@@ -21,11 +21,12 @@
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "astercxx.h"
+
 #include "Numbering/ParallelEquationNumbering.h"
 
 #include "aster_fort_calcul.h"
 #include "aster_fort_ds.h"
-#include "astercxx.h"
 
 #include "ParallelUtilities/AsterMPI.h"
 #include "Supervis/Exceptions.h"
@@ -35,13 +36,13 @@
 #ifdef ASTER_HAVE_MPI
 
 ParallelEquationNumbering::ParallelEquationNumbering()
-    : ParallelEquationNumbering( DataStructureNaming::getNewName() ){};
+    : ParallelEquationNumbering( DataStructureNaming::getNewName() ) {};
 
 ParallelEquationNumbering::ParallelEquationNumbering( const std::string &baseName )
     : EquationNumbering( baseName ),
       _localToGlobal( JeveuxVectorLong( getName() + ".NULG" ) ),
       _localToRank( JeveuxVectorLong( getName() + ".PDDL" ) ),
-      _joints( nullptr ){};
+      _joints( nullptr ) {};
 
 void ParallelEquationNumbering::_buildGlobal2LocalMap() {
     getLocalToGlobalMapping()->updateValuePointer();

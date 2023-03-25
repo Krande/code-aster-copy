@@ -47,29 +47,30 @@ class DataField : public DataStructure {
      * @brief Constructor
      * @param name Jeveux name
      */
-    DataField( const std::string name, const std::string type ) : DataStructure( name, 19, type ){};
+    DataField( const std::string name, const std::string type )
+        : DataStructure( name, 19, type ) {};
 
     /**
      * @brief Constructor
      */
-    DataField( const std::string type ) : DataStructure( 19, type ){};
+    DataField( const std::string type ) : DataStructure( 19, type ) {};
 
     /**
      * @brief Copy Constructor
      * @param other DataField to copy
      */
     DataField( const DataField &other )
-        : DataStructure( other.getName().size(), other.getType() ){};
+        : DataStructure( other.getName().size(), other.getType() ) {};
 
     /**
      * @brief Move Constructor
      */
-    DataField( DataField &&other ) : DataStructure( std::move( other ) ){};
+    DataField( DataField &&other ) : DataStructure( std::move( other ) ) {};
 
     /**
      * @brief Constructor
      */
-    DataField() : DataStructure( 19, "CHAM_GD" ){};
+    DataField() : DataStructure( 19, "CHAM_GD" ) {};
 
     std::string getFieldType() const;
 

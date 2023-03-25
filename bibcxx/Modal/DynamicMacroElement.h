@@ -113,7 +113,7 @@ class DynamicMacroElement : public DataStructure {
     /**
      * @brief Constructeur
      */
-    DynamicMacroElement() : DynamicMacroElement( ResultNaming::getNewResultName() ){};
+    DynamicMacroElement() : DynamicMacroElement( ResultNaming::getNewResultName() ) {};
 
     DynamicMacroElement( const std::string name )
         : DataStructure( name, 8, "MACR_ELEM_DYNA" ),
@@ -145,7 +145,7 @@ class DynamicMacroElement : public DataStructure {
           _impeMatrix( nullptr ),
           _impeRigiMatrix( nullptr ),
           _impeMassMatrix( nullptr ),
-          _impeAmorMatrix( nullptr ){};
+          _impeAmorMatrix( nullptr ) {};
 
     /**
      * @brief Get damping matrix

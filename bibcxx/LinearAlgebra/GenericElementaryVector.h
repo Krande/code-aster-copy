@@ -58,10 +58,10 @@ class GenericElementaryVector : public BaseElementaryVector {
                                                                            typeid( ASTERDOUBLE )
                                                                        ? "_R"
                                                                        : "_C" ) )
-        : BaseElementaryVector( name, type ){};
+        : BaseElementaryVector( name, type ) {};
 
     /** @brief Constructor with automatic name */
-    GenericElementaryVector() : GenericElementaryVector( ResultNaming::getNewResultName() ){};
+    GenericElementaryVector() : GenericElementaryVector( ResultNaming::getNewResultName() ) {};
 
     GenericElementaryVector( const ModelPtr model, const MaterialFieldPtr mater,
                              const ElementaryCharacteristicsPtr caraElem,

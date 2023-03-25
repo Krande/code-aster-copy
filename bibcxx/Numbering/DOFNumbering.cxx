@@ -21,16 +21,16 @@
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "Numbering/DOFNumbering.h"
-
 #include "astercxx.h"
+
+#include "Numbering/DOFNumbering.h"
 
 #include "Supervis/CommandSyntax.h"
 #include "Supervis/ResultNaming.h"
 
 #include <stdexcept>
 
-DOFNumbering::DOFNumbering() : DOFNumbering( ResultNaming::getNewResultName() ){};
+DOFNumbering::DOFNumbering() : DOFNumbering( ResultNaming::getNewResultName() ) {};
 
 DOFNumbering::DOFNumbering( const std::string name, const EquationNumberingPtr globNume,
                             const ModelPtr model )
@@ -40,7 +40,7 @@ DOFNumbering::DOFNumbering( const std::string name, const EquationNumberingPtr g
 
 DOFNumbering::DOFNumbering( const std::string name )
     : BaseDOFNumbering( name, "NUME_DDL" ),
-      _globalNumbering( std::make_shared< EquationNumbering >( getName() + ".NUME" ) ){};
+      _globalNumbering( std::make_shared< EquationNumbering >( getName() + ".NUME" ) ) {};
 
 bool DOFNumbering::useLagrangeMultipliers() const {
     return getEquationNumbering()->useLagrangeMultipliers();

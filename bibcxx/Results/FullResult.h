@@ -47,10 +47,10 @@ class FullResult : public Result, DynamicResultsIndexing {
      * @todo  Ajouter les objets Jeveux de la SD
      */
     FullResult( const std::string &name, const std::string &resuTyp )
-        : Result( name, resuTyp ), DynamicResultsIndexing( getName() ), _dofNum( nullptr ){};
+        : Result( name, resuTyp ), DynamicResultsIndexing( getName() ), _dofNum( nullptr ) {};
 
     FullResult( const std::string &resuTyp )
-        : FullResult( ResultNaming::getNewResultName(), resuTyp ){};
+        : FullResult( ResultNaming::getNewResultName(), resuTyp ) {};
 
     BaseDOFNumberingPtr getDOFNumbering() const { return _dofNum; };
 

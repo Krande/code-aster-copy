@@ -55,7 +55,7 @@ class BucklingModeResult : public FullResult {
     /**
      * @brief Constructeur
      */
-    BucklingModeResult() : BucklingModeResult( ResultNaming::getNewResultName() ){};
+    BucklingModeResult() : BucklingModeResult( ResultNaming::getNewResultName() ) {};
 
     BucklingModeResult( const std::string &name )
         : FullResult( name, "MODE_FLAMB" ),
@@ -64,7 +64,7 @@ class BucklingModeResult : public FullResult {
           _rigidityTempDMatrix( nullptr ),
           _rigidityPressDMatrix( nullptr ),
           _rigidityGDMatrix( nullptr ),
-          _rigidityGCMatrix( nullptr ){};
+          _rigidityGCMatrix( nullptr ) {};
 
     /**
      * @brief Get the rigidity matrix

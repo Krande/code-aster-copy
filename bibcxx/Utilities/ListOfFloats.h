@@ -58,7 +58,7 @@ class ListOfFloats : public DataStructure {
     /**
      * @brief Constructeur
      */
-    ListOfFloats() : ListOfFloats( ResultNaming::getNewResultName() ){};
+    ListOfFloats() : ListOfFloats( ResultNaming::getNewResultName() ) {};
 
     /**
      * @brief Constructeur
@@ -68,7 +68,7 @@ class ListOfFloats : public DataStructure {
           _bint( JeveuxVectorReal( getName() + ".BINT" ) ),
           _lpas( JeveuxVectorReal( getName() + ".LPAS" ) ),
           _nbPa( JeveuxVectorLong( getName() + ".NBPA" ) ),
-          _vale( JeveuxVectorReal( getName() + ".VALE" ) ){};
+          _vale( JeveuxVectorReal( getName() + ".VALE" ) ) {};
 
     VectorReal getValues() const;
 

@@ -19,9 +19,9 @@
  *   You should have received a copy of the GNU General Public License
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
-#include "Materials/ExternalStateVariables.h"
-
 #include "astercxx.h"
+
+#include "Materials/ExternalStateVariables.h"
 
 void ExternalStateVariable::setReferenceValue( const ASTERDOUBLE &value ) {
     AS_ASSERT( ExternalVariableTraits::externVarHasRefeValue( _type ) );

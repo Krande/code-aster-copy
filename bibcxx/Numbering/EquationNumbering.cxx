@@ -21,10 +21,11 @@
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "astercxx.h"
+
 #include "Numbering/EquationNumbering.h"
 
 #include "aster_fort_calcul.h"
-#include "astercxx.h"
 
 #include "Modeling/PhysicalQuantityManager.h"
 #include "ParallelUtilities/AsterMPI.h"
@@ -42,9 +43,9 @@ EquationNumbering::EquationNumbering( const std::string &baseName )
       _indexationVector( getName() + ".NUEQ" ),
       _nodeAndComponentsNumberFromDOF( getName() + ".DEEQ" ),
       _mesh( nullptr ),
-      _model( nullptr ){};
+      _model( nullptr ) {};
 
-EquationNumbering::EquationNumbering() : EquationNumbering( DataStructureNaming::getNewName() ){};
+EquationNumbering::EquationNumbering() : EquationNumbering( DataStructureNaming::getNewName() ) {};
 
 bool EquationNumbering::exists() const {
     return _informations.exists() && _componentsOnNodes.exists() && _indexationVector.exists();

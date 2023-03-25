@@ -27,11 +27,11 @@
 
 #include "Numbering/GeneralizedDOFNumbering.h"
 
-ForwardGeneralizedDOFNumberingPtr::ForwardGeneralizedDOFNumberingPtr() : _isSet( false ){};
+ForwardGeneralizedDOFNumberingPtr::ForwardGeneralizedDOFNumberingPtr() : _isSet( false ) {};
 
 ForwardGeneralizedDOFNumberingPtr::ForwardGeneralizedDOFNumberingPtr(
     const GeneralizedDOFNumberingPtr &ptr )
-    : _ptr( ptr ), _isSet( true ){};
+    : _ptr( ptr ), _isSet( true ) {};
 
 void ForwardGeneralizedDOFNumberingPtr::operator=( const GeneralizedDOFNumberingPtr &ptr ) {
     _ptr = ptr;

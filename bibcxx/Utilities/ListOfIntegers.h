@@ -58,7 +58,7 @@ class ListOfIntegers : public DataStructure {
     /**
      * @brief Constructeur
      */
-    ListOfIntegers() : ListOfIntegers( ResultNaming::getNewResultName() ){};
+    ListOfIntegers() : ListOfIntegers( ResultNaming::getNewResultName() ) {};
 
     /**
      * @brief Constructeur
@@ -68,7 +68,7 @@ class ListOfIntegers : public DataStructure {
           _bint( JeveuxVectorReal( getName() + ".BINT" ) ),
           _lpas( JeveuxVectorReal( getName() + ".LPAS" ) ),
           _nbPa( JeveuxVectorLong( getName() + ".NBPA" ) ),
-          _vale( JeveuxVectorLong( getName() + ".VALE" ) ){};
+          _vale( JeveuxVectorLong( getName() + ".VALE" ) ) {};
 
     VectorLong getValues() const;
 

@@ -23,9 +23,9 @@
 
 /* person_in_charge: nicolas.pignet at edf.fr */
 
-#include "Crack/Crack.h"
-
 #include "astercxx.h"
+
+#include "Crack/Crack.h"
 
 Crack::Crack( const std::string name )
     : DataStructure( name, 8, "FOND_FISSURE" ),

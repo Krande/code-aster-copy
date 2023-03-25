@@ -91,10 +91,10 @@ class ElementaryCharacteristics : public DataStructure {
 
     /** @brief Constructor with automatic name */
     ElementaryCharacteristics( const ModelPtr &model )
-        : ElementaryCharacteristics( ResultNaming::getNewResultName(), model ){};
+        : ElementaryCharacteristics( ResultNaming::getNewResultName(), model ) {};
 
     /** @brief Destructor */
-    ~ElementaryCharacteristics(){};
+    ~ElementaryCharacteristics() {};
 
     /** @brief Get the model */
     ModelPtr getModel() const;

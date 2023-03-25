@@ -21,9 +21,9 @@
  * person_in_charge: mathieu.courtois@edf.fr
  */
 
-#include "Functions/Function.h"
-
 #include "astercxx.h"
+
+#include "Functions/Function.h"
 
 #include "Supervis/ResultNaming.h"
 

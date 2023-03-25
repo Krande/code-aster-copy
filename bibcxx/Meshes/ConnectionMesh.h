@@ -68,7 +68,7 @@ class ConnectionMesh : public BaseMesh {
      */
     ConnectionMesh( const ParallelMeshPtr &mesh, const VectorString &groupsOfNodes,
                     const VectorString &groupsOfCells )
-        : ConnectionMesh( ResultNaming::getNewResultName(), mesh, groupsOfNodes, groupsOfCells ){};
+        : ConnectionMesh( ResultNaming::getNewResultName(), mesh, groupsOfNodes, groupsOfCells ) {};
 
     /**
      * @brief Constructeur

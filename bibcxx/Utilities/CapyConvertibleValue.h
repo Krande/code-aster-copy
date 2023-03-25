@@ -158,7 +158,7 @@ class GenericCapyConvertibleValue {
      */
     GenericCapyConvertibleValue( const bool isMandatory, const std::string keyword,
                                  bool isSet = false )
-        : _isSet( isSet ), _isMandatory( isMandatory ), _name( keyword ){};
+        : _isSet( isSet ), _isMandatory( isMandatory ), _name( keyword ) {};
 
     /**
      * @brief Fonction permettant de desactiver le mot-clé
@@ -291,7 +291,7 @@ class CapyConvertibleValue : public GenericCapyConvertibleValue {
      */
     CapyConvertibleValue( const bool isMandatory, const std::string keyword, const Type &value,
                           bool isSet = true )
-        : GenericCapyConvertibleValue( isMandatory, keyword, isSet ), _value( value ){};
+        : GenericCapyConvertibleValue( isMandatory, keyword, isSet ), _value( value ) {};
 
   private:
     /**
@@ -480,12 +480,12 @@ class CapyConvertibleContainer {
                                                const CapyConvertibleContainer & );
 
   public:
-    CapyConvertibleContainer() : _nameOfFKW( "" ), _isFKW( false ){};
+    CapyConvertibleContainer() : _nameOfFKW( "" ), _isFKW( false ) {};
 
-    CapyConvertibleContainer( const std::string &name ) : _nameOfFKW( name ), _isFKW( true ){};
+    CapyConvertibleContainer( const std::string &name ) : _nameOfFKW( name ), _isFKW( true ) {};
 
     CapyConvertibleContainer( const std::string &name, const ListGenParam &list )
-        : _nameOfFKW( name ), _isFKW( true ), _toAdd( list ){};
+        : _nameOfFKW( name ), _isFKW( true ), _toAdd( list ) {};
 
     /**
      * @brief Opérateur +=
@@ -584,7 +584,7 @@ class CapyConvertibleFactorKeyword {
     VectorCCC _container;
 
   public:
-    CapyConvertibleFactorKeyword( std::string name ) : _name( name ){};
+    CapyConvertibleFactorKeyword( std::string name ) : _name( name ) {};
 
     void addContainer( const CapyConvertibleContainer &toAdd ) { _container.push_back( toAdd ); };
 
@@ -612,7 +612,7 @@ class CapyConvertibleSyntax {
     MapStringCCFK _fkwContainer;
 
   public:
-    CapyConvertibleSyntax(){};
+    CapyConvertibleSyntax() {};
 
     void addFactorKeywordValues( const CapyConvertibleFactorKeyword &toAdd ) {
         _fkwContainer.insert( PairStringCCFK( toAdd.getName(), toAdd ) );

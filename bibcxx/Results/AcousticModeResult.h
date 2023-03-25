@@ -45,9 +45,9 @@ class AcousticModeResult : public FullResult {
      * @brief Constructeur
      */
     AcousticModeResult( const std::string &name )
-        : FullResult( name, "MODE_ACOU" ), _rigidityMatrix( nullptr ){};
+        : FullResult( name, "MODE_ACOU" ), _rigidityMatrix( nullptr ) {};
 
-    AcousticModeResult() : AcousticModeResult( ResultNaming::getNewResultName() ){};
+    AcousticModeResult() : AcousticModeResult( ResultNaming::getNewResultName() ) {};
     /**
      * @brief Set the rigidity matrix
      * @param matr AssemblyMatrixPressureRealPtr

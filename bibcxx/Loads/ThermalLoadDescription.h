@@ -98,7 +98,7 @@ class ThermalLoadDescription : public DataStructure {
           _hechp( std::make_shared< ConstantFieldOnCellsType >( getName() + ".HECHP", _FEDesc ) ),
           _soure( std::make_shared< ConstantFieldOnCellsType >( getName() + ".SOURE", _FEDesc ) ),
           _sourc( std::make_shared< FieldOnCellsReal >( getName() + ".SOURC" ) ),
-          _tExt( std::make_shared< ConstantFieldOnCellsType >( getName() + ".T_EXT", _FEDesc ) ){};
+          _tExt( std::make_shared< ConstantFieldOnCellsType >( getName() + ".T_EXT", _FEDesc ) ) {};
 
     /**
      * @brief Get the finite element descriptor

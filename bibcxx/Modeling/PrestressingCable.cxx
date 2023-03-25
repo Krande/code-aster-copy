@@ -23,9 +23,9 @@
 
 /* person_in_charge: nicolas.sellenet at edf.fr */
 
-#include "Modeling/PrestressingCable.h"
-
 #include "astercxx.h"
+
+#include "Modeling/PrestressingCable.h"
 
 #include "Supervis/ResultNaming.h"
 

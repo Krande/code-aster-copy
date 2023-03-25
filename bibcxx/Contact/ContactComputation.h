@@ -39,7 +39,7 @@ class ContactComputation {
     FieldOnNodesRealPtr convertVirtualField( const FieldOnCellsRealPtr field ) const;
 
   public:
-    ContactComputation( const ContactNewPtr contact ) : _contact( contact ){};
+    ContactComputation( const ContactNewPtr contact ) : _contact( contact ) {};
 
     /**
      * @brief Compute geometric gap

@@ -26,9 +26,10 @@
 
 /* person_in_charge: nicolas.sellenet at edf.fr */
 
+#include "astercxx.h"
+
 #include "aster_fort_calcul.h"
 #include "aster_fort_ds.h"
-#include "astercxx.h"
 
 #include "LinearAlgebra/BaseAssemblyMatrix.h"
 #include "LinearAlgebra/ElementaryMatrix.h"
@@ -97,7 +98,7 @@ class AssemblyMatrix : public BaseAssemblyMatrix {
     /**
      * @brief Constructeur
      */
-    AssemblyMatrix() : AssemblyMatrix( DataStructureNaming::getNewName() ){};
+    AssemblyMatrix() : AssemblyMatrix( DataStructureNaming::getNewName() ) {};
 
     /**
      * @brief Constructeur
@@ -115,7 +116,7 @@ class AssemblyMatrix : public BaseAssemblyMatrix {
     AssemblyMatrix( const std::string &name, const AssemblyMatrix &toCopy );
 
     AssemblyMatrix( const AssemblyMatrix &toCopy )
-        : AssemblyMatrix( DataStructureNaming::getNewName(), toCopy ){};
+        : AssemblyMatrix( DataStructureNaming::getNewName(), toCopy ) {};
 
     AssemblyMatrix( AssemblyMatrix &&other );
 
@@ -405,7 +406,7 @@ AssemblyMatrix< ValueType, PhysicalQuantity >::AssemblyMatrix( const std::string
       _walf( JeveuxVector< ValueType >( getName() + ".WALF" ) ),
       _ualf( JeveuxVector< ValueType >( getName() + ".UALF" ) ),
       _digs( JeveuxVector< ValueType >( getName() + ".DIGS" ) ),
-      _ccva( JeveuxVector< ValueType >( getName() + ".CCVA" ) ){};
+      _ccva( JeveuxVector< ValueType >( getName() + ".CCVA" ) ) {};
 
 template < class ValueType, PhysicalQuantityEnum PhysicalQuantity >
 AssemblyMatrix< ValueType, PhysicalQuantity >::AssemblyMatrix( const PhysicalProblemPtr phys_prob )

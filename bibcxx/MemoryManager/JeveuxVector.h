@@ -24,9 +24,10 @@
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "astercxx.h"
+
 #include "aster_fort_jeveux.h"
 #include "aster_utils.h"
-#include "astercxx.h"
 #include "shared_vars.h"
 
 #include "MemoryManager/JeveuxAllowedTypes.h"
@@ -58,7 +59,7 @@ class JeveuxVectorClass : public JeveuxObjectClass, private AllowedJeveuxType< V
     JeveuxVectorClass( const std::string &nom )
         : JeveuxObjectClass( nom ),
           _valuePtr( nullptr ),
-          _jeveuxAdress( 0 ){
+          _jeveuxAdress( 0 ) {
               // #ifdef ASTER_DEBUG_CXX
               //         std::cout << "DEBUG: JeveuxVector.create: " << _name << std::endl;
               // #endif
@@ -759,24 +760,24 @@ class JeveuxVector {
     /* Default constructor to be initialized with a null pointer
      * and really created later.
      */
-    JeveuxVector() : _jeveuxVectorPtr( nullptr ){};
+    JeveuxVector() : _jeveuxVectorPtr( nullptr ) {};
 
     JeveuxVector( std::string nom )
-        : _jeveuxVectorPtr( std::make_shared< JeveuxVectorClass< ValueType > >( nom ) ){};
+        : _jeveuxVectorPtr( std::make_shared< JeveuxVectorClass< ValueType > >( nom ) ) {};
 
     JeveuxVector( std::string nom, const std::vector< ValueType > &vect ) : JeveuxVector( nom ) {
         ( *_jeveuxVectorPtr ) = vect;
     };
 
     JeveuxVector( const std::vector< ValueType > &vect )
-        : JeveuxVector( ResultNaming::getNewResultName(), vect ){};
+        : JeveuxVector( ResultNaming::getNewResultName(), vect ) {};
 
     JeveuxVector( std::string nom, const ASTERINTEGER &size ) : JeveuxVector( nom ) {
         _jeveuxVectorPtr->allocate( size );
     };
 
     JeveuxVector( const ASTERINTEGER &size )
-        : JeveuxVector( ResultNaming::getNewResultName(), size ){};
+        : JeveuxVector( ResultNaming::getNewResultName(), size ) {};
 
     JeveuxVector( std::string nom, const ASTERINTEGER &size, const ValueType &val )
         : JeveuxVector( nom ) {
@@ -784,9 +785,9 @@ class JeveuxVector {
     };
 
     JeveuxVector( const ASTERINTEGER &size, const ValueType &val )
-        : JeveuxVector( ResultNaming::getNewResultName(), size, val ){};
+        : JeveuxVector( ResultNaming::getNewResultName(), size, val ) {};
 
-    ~JeveuxVector(){};
+    ~JeveuxVector() {};
 
     JeveuxVector &operator=( const JeveuxVector< ValueType > &tmp ) {
         _jeveuxVectorPtr = tmp._jeveuxVectorPtr;

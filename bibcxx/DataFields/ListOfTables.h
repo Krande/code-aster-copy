@@ -68,7 +68,7 @@ class ListOfTables {
     /**
      * @brief Constructeur
      */
-    ListOfTables() : ListOfTables( ResultNaming::getNewResultName() ){};
+    ListOfTables() : ListOfTables( ResultNaming::getNewResultName() ) {};
 
     /**
      * @brief Construire une sd_l_tabke à partir d'objet produit dans le Fortran

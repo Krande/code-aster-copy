@@ -54,7 +54,7 @@ class ContactParameter {
         : _algo( ContactAlgo::Lagrangian ),
           _type( ContactType::Unilateral ),
           _vari( ContactVariant::Empty ),
-          _coeff( 100. ){};
+          _coeff( 100. ) {};
 
     ContactAlgo getAlgorithm() const { return _algo; };
 
@@ -111,7 +111,7 @@ class FrictionParameter {
           _type( FrictionType::Without ),
           _coeff( 100. ),
           _tresca( -1. ),
-          _coulomb( -1. ){};
+          _coulomb( -1. ) {};
 
     FrictionAlgo getAlgorithm() const { return _algo; };
 
@@ -183,7 +183,7 @@ class PairingParameter {
           _beam( false ),
           _dist_supp( nullptr ),
           _shell( false ),
-          _cara( nullptr ){};
+          _cara( nullptr ) {};
 
     PairingAlgo getAlgorithm() const { return _algo; };
 

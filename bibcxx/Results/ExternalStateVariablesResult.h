@@ -44,7 +44,7 @@ class ExternalStateVariablesResult : public TransientResult {
      * @brief Constructeur
      */
     ExternalStateVariablesResult( const std::string name = ResultNaming::getNewResultName() )
-        : TransientResult( name, "EVOL_VARC" ){};
+        : TransientResult( name, "EVOL_VARC" ) {};
 };
 
 /**

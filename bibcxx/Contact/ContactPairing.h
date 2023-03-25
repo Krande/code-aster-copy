@@ -57,7 +57,7 @@ class ContactPairing : public DataStructure {
 
     /** @brief constructor */
     ContactPairing( const ContactNewPtr cont )
-        : ContactPairing( ResultNaming::getNewResultName(), cont ){};
+        : ContactPairing( ResultNaming::getNewResultName(), cont ) {};
 
     /** @brief Get coordinates */
     MeshCoordinatesFieldPtr getCoordinates() const { return _newCoordinates; }

@@ -42,7 +42,7 @@ class LoadResult : public TransientResult {
      * @brief Constructeur
      */
     LoadResult( const std::string name = ResultNaming::getNewResultName() )
-        : TransientResult( name, "EVOL_CHAR" ){};
+        : TransientResult( name, "EVOL_CHAR" ) {};
 };
 
 /**

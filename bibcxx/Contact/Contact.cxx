@@ -72,9 +72,9 @@ Contact::Contact( const std::string name, const ModelPtr model )
       _xfimai( JeveuxVectorChar8( getName() + ".CONTACT.XFIMAI" ) ),
       _xnrell( JeveuxVectorChar24( getName() + ".CONTACT.XNRELL" ) ),
       _maescx( JeveuxVectorLong( getName() + ".CONTACT.MAESCX" ) ),
-      _ptrdclc( JeveuxVectorLong( getName() + ".CONTACT.PTRDCLC" ) ){};
+      _ptrdclc( JeveuxVectorLong( getName() + ".CONTACT.PTRDCLC" ) ) {};
 
-Contact::Contact( const ModelPtr model ) : Contact( ResultNaming::getNewResultName(), model ){};
+Contact::Contact( const ModelPtr model ) : Contact( ResultNaming::getNewResultName(), model ) {};
 
 ModelPtr Contact::getModel() const { return _model; };
 

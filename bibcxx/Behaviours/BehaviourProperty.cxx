@@ -53,7 +53,7 @@ BehaviourProperty::BehaviourProperty()
       _mesh( nullptr ),
       _CARCRI( nullptr ),
       _MULCOM( nullptr ),
-      _COMPOR( nullptr ){};
+      _COMPOR( nullptr ) {};
 
 /** @brief Constructor */
 BehaviourProperty::BehaviourProperty( ModelPtr model, MaterialFieldPtr materialField )

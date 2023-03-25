@@ -72,7 +72,7 @@ class ModeResultComplex : public ModeResult {
     /**
      * @brief Constructeur
      */
-    ModeResultComplex() : ModeResultComplex( ResultNaming::getNewResultName() ){};
+    ModeResultComplex() : ModeResultComplex( ResultNaming::getNewResultName() ) {};
 
     /**
      * @brief Constructeur
@@ -86,7 +86,7 @@ class ModeResultComplex : public ModeResult {
           _rigidityTempDMatrix( nullptr ),
           _rigidityPressDMatrix( nullptr ),
           _rigidityGDMatrix( nullptr ),
-          _rigidityGCMatrix( nullptr ){};
+          _rigidityGCMatrix( nullptr ) {};
 
     /**
      * @brief Obtenir un champ aux noeuds complexe vide à partir de son nom et de son numéro d'ordre

@@ -68,7 +68,7 @@ class ProjMesu : public DataStructure {
           _pjmrf( JeveuxVectorChar16( getName() + ".PJMRF" ) ),
           _pjmor( JeveuxVectorReal( getName() + ".PJMOR" ) ),
           _pjmmm( JeveuxVectorReal( getName() + ".PJMMM" ) ),
-          _pjmig( JeveuxVectorReal( getName() + ".PJMIG" ) ){};
+          _pjmig( JeveuxVectorReal( getName() + ".PJMIG" ) ) {};
 };
 
 /**
@@ -138,7 +138,7 @@ class StaticMacroElement : public DataStructure {
           _maelAmorVale( JeveuxVectorReal( getName() + ".MAEL_AMOR_VALE" ) ),
           _lica( JeveuxCollectionReal( getName() + ".LICA" ) ),
           _lich( JeveuxCollectionChar8( getName() + ".LICH" ) ),
-          _projM( new ProjMesu( getName() + ".PROJM    " ) ){};
+          _projM( new ProjMesu( getName() + ".PROJM    " ) ) {};
 };
 
 /**

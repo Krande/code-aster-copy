@@ -33,7 +33,7 @@ Calcul::Calcul( const std::string &option )
       _stopCompute( true ),
       _completeField( true ),
       _FEDesc( nullptr ),
-      _mesh( nullptr ){};
+      _mesh( nullptr ) {};
 
 /** @brief Compute on partial model */
 void Calcul::setFiniteElementDescriptor( const FiniteElementDescriptorPtr FEDesc ) {

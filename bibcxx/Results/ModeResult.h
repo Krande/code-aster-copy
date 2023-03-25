@@ -70,7 +70,7 @@ class ModeResult : public FullResult {
     /**
      * @brief Constructeur
      */
-    ModeResult() : ModeResult( ResultNaming::getNewResultName(), "MODE_MECA" ){};
+    ModeResult() : ModeResult( ResultNaming::getNewResultName(), "MODE_MECA" ) {};
 
     /**
      * @brief Constructeur
@@ -89,7 +89,7 @@ class ModeResult : public FullResult {
           _massTempDMatrix( nullptr ),
           _massPressDMatrix( nullptr ),
           _massGDMatrix( nullptr ),
-          _massGCMatrix( nullptr ){};
+          _massGCMatrix( nullptr ) {};
 
     /**
      * @brief Get the DOFNumbering

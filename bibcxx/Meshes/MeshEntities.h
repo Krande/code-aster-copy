@@ -64,14 +64,14 @@ class VirtualMeshEntity {
      * @param name nom de l'entite
      */
     VirtualMeshEntity( const std::string &name, EntityType type )
-        : _names( {name} ), _type( type ){};
+        : _names( {name} ), _type( type ) {};
 
     /**
      * @brief Constructor
      * @param names names in entity
      */
     VirtualMeshEntity( const VectorString &names, EntityType type )
-        : _names( names ), _type( type ){};
+        : _names( names ), _type( type ) {};
 
     /**
      * @brief Obtenir le nom de l'entite
@@ -104,13 +104,13 @@ class GroupOfNodes : public VirtualMeshEntity {
      * @brief Constructeur
      * @param name nom de l'entite
      */
-    GroupOfNodes( std::string name ) : VirtualMeshEntity( name, GroupOfNodesType ){};
+    GroupOfNodes( std::string name ) : VirtualMeshEntity( name, GroupOfNodesType ) {};
 
     /**
      * @brief Constructor
      * @param names names in entity
      */
-    GroupOfNodes( const VectorString &names ) : VirtualMeshEntity( names, GroupOfNodesType ){};
+    GroupOfNodes( const VectorString &names ) : VirtualMeshEntity( names, GroupOfNodesType ) {};
 };
 
 /**
@@ -124,13 +124,13 @@ class GroupOfCells : public VirtualMeshEntity {
      * @brief Constructeur
      * @param name nom de l'entite
      */
-    GroupOfCells( std::string name ) : VirtualMeshEntity( name, GroupOfCellsType ){};
+    GroupOfCells( std::string name ) : VirtualMeshEntity( name, GroupOfCellsType ) {};
 
     /**
      * @brief Constructor
      * @param names names in entity
      */
-    GroupOfCells( const VectorString &names ) : VirtualMeshEntity( names, GroupOfCellsType ){};
+    GroupOfCells( const VectorString &names ) : VirtualMeshEntity( names, GroupOfCellsType ) {};
 };
 
 /**
@@ -145,7 +145,7 @@ class AllMeshEntities : public VirtualMeshEntity {
      * @brief Constructeur
      * @param name nom de l'entite
      */
-    AllMeshEntities() : VirtualMeshEntity( "OUI", AllMeshEntitiesType ){};
+    AllMeshEntities() : VirtualMeshEntity( "OUI", AllMeshEntitiesType ) {};
 };
 
 /**
@@ -159,13 +159,13 @@ class Cell : public VirtualMeshEntity {
      * @brief Constructeur
      * @param name nom de l'entite
      */
-    Cell( std::string name ) : VirtualMeshEntity( name, CellType ){};
+    Cell( std::string name ) : VirtualMeshEntity( name, CellType ) {};
 
     /**
      * @brief Constructor
      * @param names names in entity
      */
-    Cell( const VectorString &names ) : VirtualMeshEntity( names, CellType ){};
+    Cell( const VectorString &names ) : VirtualMeshEntity( names, CellType ) {};
 };
 
 /**
@@ -179,13 +179,13 @@ class Node : public VirtualMeshEntity {
      * @brief Constructeur
      * @param name nom de l'entite
      */
-    Node( std::string name ) : VirtualMeshEntity( name, NodeType ){};
+    Node( std::string name ) : VirtualMeshEntity( name, NodeType ) {};
 
     /**
      * @brief Constructor
      * @param names names in entity
      */
-    Node( const VectorString &names ) : VirtualMeshEntity( names, NodeType ){};
+    Node( const VectorString &names ) : VirtualMeshEntity( names, NodeType ) {};
 };
 
 typedef std::shared_ptr< VirtualMeshEntity > MeshEntityPtr;

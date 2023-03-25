@@ -18,9 +18,9 @@
 
 /* person_in_charge: mathieu.courtois at edf.fr */
 
-#include "aster_exceptions.h"
-
 #include "aster.h"
+
+#include "aster_exceptions.h"
 
 #include <setjmp.h>
 #include <signal.h>

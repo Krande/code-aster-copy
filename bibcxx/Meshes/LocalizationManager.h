@@ -43,7 +43,7 @@ class GenericLocalizationManager {
 
   public:
     GenericLocalizationManager( const std::string &name, const bool &mandatory )
-        : _name( name ), _isMandatory( mandatory ){};
+        : _name( name ), _isMandatory( mandatory ) {};
 
     void disable() { _skw->disable(); };
 

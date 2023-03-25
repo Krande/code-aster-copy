@@ -68,7 +68,7 @@ class FluidStructureInteraction : public DataStructure {
     /**
      * @brief Constructeur
      */
-    FluidStructureInteraction() : FluidStructureInteraction( ResultNaming::getNewResultName() ){};
+    FluidStructureInteraction() : FluidStructureInteraction( ResultNaming::getNewResultName() ) {};
     /**
      * @brief Constructeur
      */
@@ -82,7 +82,7 @@ class FluidStructureInteraction : public DataStructure {
           _fsgr( JeveuxVectorReal( getName() + "           .FSGR" ) ),
           _fscr( JeveuxVectorReal( getName() + "           .FSCR" ) ),
           _unitFaisceau( JeveuxVectorLong( getName() + ".UNIT_FAISCEAU" ) ),
-          _unitGrappes( JeveuxVectorLong( getName() + ".UNIT_GRAPPES" ) ){};
+          _unitGrappes( JeveuxVectorLong( getName() + ".UNIT_GRAPPES" ) ) {};
 };
 
 /**

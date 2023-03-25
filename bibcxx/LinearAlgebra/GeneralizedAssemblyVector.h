@@ -52,7 +52,7 @@ class GenericGeneralizedAssemblyVector : public DataStructure {
     GenericGeneralizedAssemblyVector( const std::string name )
         : DataStructure( name, 19, "VECT_ASSE_GENE" ),
           _desc( JeveuxVectorLong( getName() + ".DESC" ) ),
-          _refe( JeveuxVectorChar24( getName() + ".REFE" ) ){};
+          _refe( JeveuxVectorChar24( getName() + ".REFE" ) ) {};
 };
 
 /**
@@ -94,7 +94,7 @@ class GeneralizedAssemblyVector : public GenericGeneralizedAssemblyVector {
     /**
      * @brief Constructeur
      */
-    GeneralizedAssemblyVector() : GeneralizedAssemblyVector( ResultNaming::getNewResultName() ){};
+    GeneralizedAssemblyVector() : GeneralizedAssemblyVector( ResultNaming::getNewResultName() ) {};
 
     /**
      * @brief Constructeur

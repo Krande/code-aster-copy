@@ -40,7 +40,7 @@ class ThermalResult : public TransientResult {
      * @brief Constructeur
      */
     ThermalResult( const std::string name = ResultNaming::getNewResultName() )
-        : TransientResult( name, "EVOL_THER" ){};
+        : TransientResult( name, "EVOL_THER" ) {};
 };
 
 /**

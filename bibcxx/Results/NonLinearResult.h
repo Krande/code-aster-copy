@@ -49,12 +49,12 @@ class NonLinearResult : public TransientResult {
     /**
      * @brief Constructeur
      */
-    NonLinearResult() : TransientResult( "EVOL_NOLI" ){};
+    NonLinearResult() : TransientResult( "EVOL_NOLI" ) {};
 
     /**
      * @brief Constructeur
      */
-    NonLinearResult( const std::string name ) : TransientResult( name, "EVOL_NOLI" ){};
+    NonLinearResult( const std::string name ) : TransientResult( name, "EVOL_NOLI" ) {};
 
     void setContact( const ContactPtr contact );
 

@@ -106,7 +106,7 @@ class StructureInterface : public DataStructure {
     /**
      * @brief Constructeur
      */
-    StructureInterface() : StructureInterface( ResultNaming::getNewResultName() ){};
+    StructureInterface() : StructureInterface( ResultNaming::getNewResultName() ) {};
 
     /**
      * @brief Constructeur
@@ -123,13 +123,13 @@ class StructureInterface : public DataStructure {
           _names( JeveuxVectorChar8( getName() + ".IDC_NOMS" ) ),
           _reference( JeveuxVectorChar24( getName() + ".IDC_REFE" ) ),
           _types( JeveuxVectorChar8( getName() + ".IDC_TYPE" ) ),
-          _frequencyValue( JeveuxVectorReal( getName() + ".IDC_DY_FREQ" ) ){};
+          _frequencyValue( JeveuxVectorReal( getName() + ".IDC_DY_FREQ" ) ) {};
 
     /**
      * @brief Constructeur
      */
     StructureInterface( const DOFNumberingPtr &curDof )
-        : StructureInterface( ResultNaming::getNewResultName(), curDof ){};
+        : StructureInterface( ResultNaming::getNewResultName(), curDof ) {};
 
     /**
      * @brief Constructeur

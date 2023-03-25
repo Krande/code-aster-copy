@@ -21,9 +21,10 @@
  * person_in_charge: mathieu.courtois@edf.fr
  */
 
+#include "aster.h"
+
 #include "Supervis/CommandSyntax.h"
 
-#include "aster.h"
 #include "shared_vars.h"
 
 #include "Utilities/CapyConvertibleValue.h"

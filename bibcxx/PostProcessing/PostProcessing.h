@@ -53,10 +53,10 @@ class PostProcessing {
      * @param PhysicalProblemPtr study
      */
     PostProcessing( const PhysicalProblemPtr &currPhysProblem )
-        : _phys_problem( currPhysProblem ){};
+        : _phys_problem( currPhysProblem ) {};
 
     /** @brief Destructor */
-    ~PostProcessing(){};
+    ~PostProcessing() {};
 };
 
 using PostProcessingPtr = std::shared_ptr< PostProcessing >;

@@ -51,7 +51,7 @@ class BaseFunction : public GenericFunction {
 
     BaseFunction( const std::string name, const std::string type, const std::string type2 );
 
-    ~BaseFunction(){};
+    ~BaseFunction() {};
 
     /**
      * @brief Allocate function
@@ -174,9 +174,9 @@ class Function : public BaseFunction {
     /**
      * Constructeur
      */
-    Function() : BaseFunction( "FONCTION", "FONCTION" ){};
+    Function() : BaseFunction( "FONCTION", "FONCTION" ) {};
 
-    Function( const std::string name ) : BaseFunction( name, "FONCTION", "FONCTION" ){};
+    Function( const std::string name ) : BaseFunction( name, "FONCTION", "FONCTION" ) {};
 };
 
 /**
@@ -196,9 +196,9 @@ class FunctionComplex : public BaseFunction {
     /**
      * Constructeur
      */
-    FunctionComplex( const std::string name ) : BaseFunction( name, "FONCTION_C", "FONCT_C" ){};
+    FunctionComplex( const std::string name ) : BaseFunction( name, "FONCTION_C", "FONCT_C" ) {};
 
-    FunctionComplex() : BaseFunction( "FONCTION_C", "FONCT_C" ){};
+    FunctionComplex() : BaseFunction( "FONCTION_C", "FONCT_C" ) {};
 
     /**
      * @brief Allocate function

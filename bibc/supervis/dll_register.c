@@ -26,9 +26,9 @@
  *
  * *********************************************************************/
 
-#include "dll_register.h"
-
 #include "aster.h"
+
+#include "dll_register.h"
 
 /*
  *   PUBLIC FUNCTIONS

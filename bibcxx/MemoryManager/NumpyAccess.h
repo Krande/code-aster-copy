@@ -25,8 +25,9 @@
 
 /* person_in_charge: mathieu.courtois@edf.fr */
 
-#include "aster_numpy.h"
 #include "astercxx.h"
+
+#include "aster_numpy.h"
 
 #include "MemoryManager/JeveuxVector.h"
 

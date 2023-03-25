@@ -84,7 +84,7 @@ FieldOnNodesRealPtr HHO::_projectOnHHOSpace( bool faces, const GenericFunctionPt
     auto calcul = std::make_unique< Calcul >( option );
     calcul->setModel( model );
 
-    std::map< bool, std::string > dic_faces{{true, "ALL"}, {false, "CELL"}};
+    std::map< bool, std::string > dic_faces {{true, "ALL"}, {false, "CELL"}};
 
     auto funcField = std::make_shared< ConstantFieldOnCellsChar8 >( mesh );
     const std::string physicalName( "NEUT_K8" );
@@ -124,7 +124,7 @@ FieldOnNodesRealPtr HHO::_projectOnHHOSpace( bool faces,
     auto mesh = model->getMesh();
     auto dimMesh = mesh->getDimension();
 
-    std::map< bool, std::string > dic_faces{{true, "ALL"}, {false, "CELL"}};
+    std::map< bool, std::string > dic_faces {{true, "ALL"}, {false, "CELL"}};
 
     AS_ASSERT( model->isMechanical() );
     AS_ASSERT( fct.size() == dimMesh );

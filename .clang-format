@@ -8,18 +8,21 @@ Cpp11BracedListStyle : true
 FixNamespaceComments : true
 IncludeBlocks: Regroup
 IncludeCategories:
+  # aster main header
+  - Regex:           '^"aster[cx]*.h"$'
+    Priority:        -1
   # Headers in "" with extension and without /.
   - Regex:           '"([a-z0-9\._])+"'
-    Priority:        1
+    Priority:        3
   # Headers in "" with extension and with /.
   - Regex:           '"([a-z0-9\./\-_])+"'
-    Priority:        2
+    Priority:        4
   # Headers in <> without extension.
   - Regex:           '<([a-z0-9/\-_])+>'
-    Priority:        3
+    Priority:        5
   # Headers in <> with extension.
   - Regex:           '<([a-z0-9\./\-_])+>'
-    Priority:        4
+    Priority:        6
 IndentWidth: 4
 Language: Cpp
 SpacesInAngles: true

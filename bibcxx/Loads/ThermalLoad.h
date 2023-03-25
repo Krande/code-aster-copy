@@ -59,7 +59,7 @@ class ThermalLoad : public DataStructure {
      * @brief Constructeur
      */
     ThermalLoad( const ModelPtr &currentModel )
-        : ThermalLoad( ResultNaming::getNewResultName(), currentModel ){};
+        : ThermalLoad( ResultNaming::getNewResultName(), currentModel ) {};
 
     /**
      * @brief Constructeur
@@ -68,7 +68,7 @@ class ThermalLoad : public DataStructure {
         : DataStructure( name, 8, "CHAR_THER" ),
           _therLoadDesc( std::make_shared< ThermalLoadDescription< ConstantFieldOnCellsType > >(
               getName() + ".CHTH", currentModel ) ),
-          _type( getName() + ".TYPE" ){};
+          _type( getName() + ".TYPE" ) {};
 
     ThermalLoadDescriptionPtr< ConstantFieldOnCellsType > getThermalLoadDescription() const {
         return _therLoadDesc;

@@ -53,13 +53,13 @@ class GenericModalBasis : public DataStructure {
     /**
      * @brief Constructeur
      */
-    GenericModalBasis() : GenericModalBasis( ResultNaming::getNewResultName() ){};
+    GenericModalBasis() : GenericModalBasis( ResultNaming::getNewResultName() ) {};
 
     /**
      * @brief Constructeur
      */
     GenericModalBasis( const std::string name )
-        : DataStructure( name, 8, "MODE_MECA" ), _isEmpty( true ){};
+        : DataStructure( name, 8, "MODE_MECA" ), _isEmpty( true ) {};
 
   protected:
     CapyConvertibleContainer _container;
@@ -193,12 +193,12 @@ class StandardModalBasis : public GenericModalBasis {
     /**
      * @brief Constructeur
      */
-    StandardModalBasis(){};
+    StandardModalBasis() {};
 
     /**
      * @brief Constructeur
      */
-    StandardModalBasis( const std::string name ) : GenericModalBasis( name ){};
+    StandardModalBasis( const std::string name ) : GenericModalBasis( name ) {};
 
     void setModalBasis( const StructureInterfacePtr &structInterf,
                         const VectorOfMechaModePtr &vecOfMechaMode,
@@ -210,7 +210,7 @@ class StandardModalBasis : public GenericModalBasis {
 
     void setModalBasis( const StructureInterfacePtr &structInterf, const ModeResultPtr &mechaMode,
                         const VectorInt &vecOfInt = {} ) {
-        setModalBasis( structInterf, ( VectorOfMechaModePtr ){mechaMode}, vecOfInt );
+        setModalBasis( structInterf, ( VectorOfMechaModePtr ) {mechaMode}, vecOfInt );
     };
 };
 
@@ -233,7 +233,7 @@ class RitzBasis : public GenericModalBasis {
     /**
      * @brief Constructeur
      */
-    RitzBasis() : RitzBasis( ResultNaming::getNewResultName() ){};
+    RitzBasis() : RitzBasis( ResultNaming::getNewResultName() ) {};
 
     /**
      * @brief Constructeur
@@ -319,7 +319,7 @@ class OrthonormalizedBasis : public GenericModalBasis {
      */
     OrthonormalizedBasis( const ModeResultPtr &basis,
                           const AssemblyMatrixDisplacementRealPtr &matr )
-        : OrthonormalizedBasis( ResultNaming::getNewResultName(), basis, matr ){};
+        : OrthonormalizedBasis( ResultNaming::getNewResultName(), basis, matr ) {};
 
     /**
      * @brief Constructeur
@@ -335,7 +335,7 @@ class OrthonormalizedBasis : public GenericModalBasis {
      */
     OrthonormalizedBasis( const ModeResultPtr &basis,
                           const AssemblyMatrixDisplacementComplexPtr &matr )
-        : OrthonormalizedBasis( ResultNaming::getNewResultName(), basis, matr ){};
+        : OrthonormalizedBasis( ResultNaming::getNewResultName(), basis, matr ) {};
 
     /**
      * @brief Constructeur
@@ -363,7 +363,7 @@ class OrthogonalBasisWithoutMass : public GenericModalBasis {
      * @brief Constructeur
      */
     OrthogonalBasisWithoutMass( const ModeResultPtr &basis, const VectorOfMechaModePtr &vec )
-        : OrthogonalBasisWithoutMass( ResultNaming::getNewResultName(), basis, vec ){};
+        : OrthogonalBasisWithoutMass( ResultNaming::getNewResultName(), basis, vec ) {};
 
     /**
      * @brief Constructeur

@@ -24,10 +24,11 @@
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "astercxx.h"
+
 #include "aster_fort_petsc.h"
 #include "aster_fort_superv.h"
 #include "aster_fort_utils.h"
-#include "astercxx.h"
 
 #include "DataFields/DataField.h"
 #include "DataFields/SimpleFieldOnNodes.h"
@@ -119,10 +120,10 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
         : DataField( name, "CHAM_NO" ),
           _reference( JeveuxVectorChar24( getName() + ".REFE" ) ),
           _values( JeveuxVector< ValueType >( getName() + ".VALE" ) ),
-          _dofDescription( nullptr ){};
+          _dofDescription( nullptr ) {};
 
     /** @brief Constructor with automatic name */
-    FieldOnNodes() : FieldOnNodes( DataStructureNaming::getNewName() ){};
+    FieldOnNodes() : FieldOnNodes( DataStructureNaming::getNewName() ) {};
 
     /** @brief Copy constructor */
     FieldOnNodes( const std::string &name, const FieldOnNodes &toCopy ) : FieldOnNodes( name ) {
@@ -151,7 +152,7 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
      * @brief Copy constructor
      */
     FieldOnNodes( const FieldOnNodes &toCopy )
-        : FieldOnNodes( DataStructureNaming::getNewName(), toCopy ){};
+        : FieldOnNodes( DataStructureNaming::getNewName(), toCopy ) {};
 
     /**
      * @brief Constructor with DOFNumbering

@@ -23,6 +23,7 @@
  */
 
 #include "aster.h"
+
 #include "aster_core_module.h"
 #include "aster_module.h"
 #include "shared_vars.h"

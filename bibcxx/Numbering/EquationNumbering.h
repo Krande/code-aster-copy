@@ -47,7 +47,7 @@ class BaseEquationNumbering : public DataStructure {
 
   public:
     BaseEquationNumbering( const std::string baseName = DataStructureNaming::getNewName() )
-        : DataStructure( baseName, 19, "NUME_EQUA" ){};
+        : DataStructure( baseName, 19, "NUME_EQUA" ) {};
 
     /**
      * @brief Returns the vector of local to global numbering

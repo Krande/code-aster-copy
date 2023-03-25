@@ -22,8 +22,9 @@
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "aster_fort_superv.h"
 #include "astercxx.h"
+
+#include "aster_fort_superv.h"
 
 #include "DataFields/ConstantFieldOnCells.h"
 #include "Loads/MechanicalLoad.h"
@@ -302,13 +303,13 @@ class UnitaryMechanicalLoadReal : public MechanicalLoadReal {
     /**
      * @brief Constructor
      */
-    UnitaryMechanicalLoadReal( const ModelPtr &model ) : MechanicalLoadReal( model ){};
+    UnitaryMechanicalLoadReal( const ModelPtr &model ) : MechanicalLoadReal( model ) {};
 
     /**
      * @brief Constructor
      */
     UnitaryMechanicalLoadReal( const std::string name, const ModelPtr &model )
-        : MechanicalLoadReal( name, model ){};
+        : MechanicalLoadReal( name, model ) {};
 
     /**
      * @brief Set a physical quantity on a MeshEntity (group of nodes

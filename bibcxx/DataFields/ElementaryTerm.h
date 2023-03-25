@@ -57,9 +57,9 @@ class ElementaryTerm : public DataField {
         : DataField( name, "RESUELEM" ),
           _noli( JeveuxVectorChar24( getName() + ".NOLI" ) ),
           _descriptor( JeveuxVectorLong( getName() + ".DESC" ) ),
-          _resl( JeveuxCollection< ValueType >( getName() + ".RESL" ) ){};
+          _resl( JeveuxCollection< ValueType >( getName() + ".RESL" ) ) {};
 
-    ElementaryTerm() : ElementaryTerm( DataStructureNaming::getNewName() ){};
+    ElementaryTerm() : ElementaryTerm( DataStructureNaming::getNewName() ) {};
 
     void setFiniteElementDescriptor( const FiniteElementDescriptorPtr FEDesc ) {
         if ( FEDesc ) {

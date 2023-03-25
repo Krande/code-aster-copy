@@ -191,7 +191,7 @@ class BaseDOFNumbering : public DataStructure {
               _nouv( DOFNumName + ".NOUV" ),
               _pare( DOFNumName + ".PARE" ),
               _sequ( DOFNumName + ".SEQU" ),
-              _supn( DOFNumName + ".SUPN" ){};
+              _supn( DOFNumName + ".SUPN" ) {};
         friend class BaseDOFNumbering;
     };
     typedef std::shared_ptr< MultFrontGarbage > MultFrontGarbagePtr;
@@ -223,7 +223,7 @@ class BaseDOFNumbering : public DataStructure {
               _indexationVector( getName() + ".NUEQ" ),
               _localToGlobal( getName() + ".NULG" ),
               _globalToLocal( getName() + ".NUGL" ),
-              _localToRank( getName() + ".PDDL" ){};
+              _localToRank( getName() + ".PDDL" ) {};
 
         /**
          * @brief Returns the vector of local to global numbering

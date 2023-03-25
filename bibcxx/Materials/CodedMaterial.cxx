@@ -39,7 +39,7 @@ CodedMaterial::CodedMaterial( const std::string &name, const MaterialFieldPtr &m
       _field( std::make_shared< ConstantFieldOnCellsLong >( getName() + ".MATE_CODE",
                                                             _model->getMesh() ) ),
       _grp( JeveuxVectorChar8( ljust( _field->getName() + ".GRP", 24 ) ) ),
-      _nGrp( JeveuxVectorLong( ljust( _field->getName() + ".NGRP", 24 ) ) ){};
+      _nGrp( JeveuxVectorLong( ljust( _field->getName() + ".NGRP", 24 ) ) ) {};
 
 bool CodedMaterial::allocate( bool force ) {
     if ( !force && _field->exists() )

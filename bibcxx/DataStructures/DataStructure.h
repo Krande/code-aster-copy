@@ -27,8 +27,9 @@
 
 #ifdef __cplusplus
 
-#include "aster_pybind.h"
 #include "astercxx.h"
+
+#include "aster_pybind.h"
 
 #include "DataStructures/DataStructureNaming.h"
 #include "MemoryManager/JeveuxAllowedTypes.h"

@@ -43,13 +43,13 @@ class TransientResult : public Result {
      * @brief Constructeur
      */
     TransientResult( const std::string resuTyp = "EVOL" )
-        : TransientResult( ResultNaming::getNewResultName(), resuTyp ){};
+        : TransientResult( ResultNaming::getNewResultName(), resuTyp ) {};
 
     /**
      * @brief Constructeur
      */
     TransientResult( const std::string name, const std::string resuTyp )
-        : Result( name, resuTyp ){};
+        : Result( name, resuTyp ) {};
 };
 
 /**

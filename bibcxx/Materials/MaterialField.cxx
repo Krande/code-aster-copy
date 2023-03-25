@@ -21,10 +21,11 @@
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "astercxx.h"
+
 #include "Materials/MaterialField.h"
 
 #include "aster_fort_superv.h"
-#include "astercxx.h"
 
 #include "Results/TransientResult.h"
 #include "Supervis/CommandSyntax.h"
@@ -41,7 +42,7 @@ MaterialField::MaterialField( const std::string &name, const MeshPtr &mesh )
       _cvrcNom( JeveuxVectorChar8( getName() + ".CVRCNOM" ) ),
       _cvrcGd( JeveuxVectorChar8( getName() + ".CVRCGD" ) ),
       _cvrcVarc( JeveuxVectorChar8( getName() + ".CVRCVARC" ) ),
-      _cvrcCmp( JeveuxVectorChar8( getName() + ".CVRCCMP" ) ){};
+      _cvrcCmp( JeveuxVectorChar8( getName() + ".CVRCCMP" ) ) {};
 
 MaterialField::MaterialField( const std::string &name, const SkeletonPtr &mesh )
     : _mesh( mesh ),
@@ -54,7 +55,7 @@ MaterialField::MaterialField( const std::string &name, const SkeletonPtr &mesh )
       _cvrcNom( JeveuxVectorChar8( getName() + ".CVRCNOM" ) ),
       _cvrcGd( JeveuxVectorChar8( getName() + ".CVRCGD" ) ),
       _cvrcVarc( JeveuxVectorChar8( getName() + ".CVRCVARC" ) ),
-      _cvrcCmp( JeveuxVectorChar8( getName() + ".CVRCCMP" ) ){};
+      _cvrcCmp( JeveuxVectorChar8( getName() + ".CVRCCMP" ) ) {};
 
 #ifdef ASTER_HAVE_MPI
 MaterialField::MaterialField( const std::string &name, const ParallelMeshPtr &mesh )
@@ -68,7 +69,7 @@ MaterialField::MaterialField( const std::string &name, const ParallelMeshPtr &me
       _cvrcNom( JeveuxVectorChar8( getName() + ".CVRCNOM" ) ),
       _cvrcGd( JeveuxVectorChar8( getName() + ".CVRCGD" ) ),
       _cvrcVarc( JeveuxVectorChar8( getName() + ".CVRCVARC" ) ),
-      _cvrcCmp( JeveuxVectorChar8( getName() + ".CVRCCMP" ) ){};
+      _cvrcCmp( JeveuxVectorChar8( getName() + ".CVRCCMP" ) ) {};
 #endif /* ASTER_HAVE_MPI */
 
 listOfMaterials MaterialField::getVectorOfMaterial() const {
@@ -162,7 +163,7 @@ void MaterialField::addMultipleMaterialOnMesh( std::vector< MaterialPtr > curMat
 }
 
 void MaterialField::addMaterialOnMesh( MaterialPtr &curMater ) {
-    addMultipleMaterialOnMesh( ( std::vector< MaterialPtr > ){curMater} );
+    addMultipleMaterialOnMesh( ( std::vector< MaterialPtr > ) {curMater} );
 }
 
 void MaterialField::addMultipleMaterialOnGroupOfCells( std::vector< MaterialPtr > curMaters,
@@ -178,7 +179,7 @@ void MaterialField::addMultipleMaterialOnGroupOfCells( std::vector< MaterialPtr 
 }
 
 void MaterialField::addMaterialOnGroupOfCells( MaterialPtr &curMater, VectorString namesOfGroup ) {
-    addMultipleMaterialOnGroupOfCells( ( std::vector< MaterialPtr > ){curMater}, namesOfGroup );
+    addMultipleMaterialOnGroupOfCells( ( std::vector< MaterialPtr > ) {curMater}, namesOfGroup );
 }
 
 void MaterialField::addExternalStateVariable( ExternalStateVariablePtr &currExte ) {

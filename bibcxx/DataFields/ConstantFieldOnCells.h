@@ -26,10 +26,11 @@
 
 /* person_in_charge: natacha.bereux at edf.fr */
 
+#include "astercxx.h"
+
 #include "aster_fort_calcul.h"
 #include "aster_fort_ds.h"
 #include "aster_fort_utils.h"
-#include "astercxx.h"
 
 #include "DataFields/DataField.h"
 #include "MemoryManager/JeveuxCollection.h"
@@ -68,22 +69,22 @@ class ConstantFieldOnZone {
 
   public:
     ConstantFieldOnZone( BaseMeshPtr mesh )
-        : _mesh( mesh ), _localisation( AllMesh ), _grp( new GroupOfCells( "" ) ){};
+        : _mesh( mesh ), _localisation( AllMesh ), _grp( new GroupOfCells( "" ) ) {};
 
     ConstantFieldOnZone( FiniteElementDescriptorPtr ligrel )
-        : _ligrel( ligrel ), _localisation( AllDelayedCells ), _grp( new GroupOfCells( "" ) ){};
+        : _ligrel( ligrel ), _localisation( AllDelayedCells ), _grp( new GroupOfCells( "" ) ) {};
 
     ConstantFieldOnZone( BaseMeshPtr mesh, GroupOfCellsPtr grp )
-        : _mesh( mesh ), _localisation( OnGroupOfCells ), _grp( grp ){};
+        : _mesh( mesh ), _localisation( OnGroupOfCells ), _grp( grp ) {};
 
     ConstantFieldOnZone( BaseMeshPtr mesh, const VectorLong &indexes )
         : _mesh( mesh ),
           _localisation( ListOfCells ),
           _grp( new GroupOfCells( "" ) ),
-          _indexes( indexes ){};
+          _indexes( indexes ) {};
 
     ConstantFieldOnZone( FiniteElementDescriptorPtr ligrel, const VectorLong &indexes )
-        : _ligrel( ligrel ), _localisation( ListOfDelayedCells ), _indexes( indexes ){};
+        : _ligrel( ligrel ), _localisation( ListOfDelayedCells ), _indexes( indexes ) {};
 
     BaseMeshPtr getMesh() const {
         if ( _localisation != AllMesh and _localisation != OnGroupOfCells and
@@ -117,7 +118,7 @@ class ConstantFieldValues {
 
   public:
     ConstantFieldValues( const VectorString &comp, const std::vector< ValueType > &val )
-        : _components( comp ), _values( val ){};
+        : _components( comp ), _values( val ) {};
 
     const VectorString &getComponents() const { return _components; };
 
@@ -236,7 +237,7 @@ class ConstantFieldOnCells : public DataField {
           _mesh( mesh ),
           _FEDesc( FiniteElementDescriptorPtr() ),
           _componentNames( getName() + ".NCMP" ),
-          _valuesTmp( getName() + ".VALV" ){};
+          _valuesTmp( getName() + ".VALV" ) {};
 
     /**
      * @brief Constructeur
@@ -254,7 +255,7 @@ class ConstantFieldOnCells : public DataField {
      * @param name Nom Jeveux de la carte
      */
     ConstantFieldOnCells( const BaseMeshPtr &mesh )
-        : ConstantFieldOnCells( ResultNaming::getNewResultName(), mesh ){};
+        : ConstantFieldOnCells( ResultNaming::getNewResultName(), mesh ) {};
 
     /**
      * @brief Constructeur
@@ -262,7 +263,7 @@ class ConstantFieldOnCells : public DataField {
      * @param name Nom Jeveux de la carte
      */
     ConstantFieldOnCells( const FiniteElementDescriptorPtr &ligrel )
-        : ConstantFieldOnCells( ResultNaming::getNewResultName(), ligrel ){};
+        : ConstantFieldOnCells( ResultNaming::getNewResultName(), ligrel ) {};
 
     /**
      * @brief Constructeur
@@ -288,7 +289,7 @@ class ConstantFieldOnCells : public DataField {
     /**
      * @brief Destructeur
      */
-    ~ConstantFieldOnCells(){};
+    ~ConstantFieldOnCells() {};
 
     bool exists() const { return _meshName.exists() && _descriptor.exists() && _values.exists(); };
 

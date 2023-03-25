@@ -37,4 +37,4 @@ MeshesMapping::MeshesMapping( const std::string name )
       _pjefEl( JeveuxVectorLong( getName() + ".PJEF_EL" ) ),
       _pjefMp( JeveuxVectorChar8( getName() + ".PJEF_MP" ) ),
       _pjngI1( JeveuxVectorLong( getName() + ".PJNG_I1" ) ),
-      _pjngI2( JeveuxVectorLong( getName() + ".PJNG_I2" ) ){};
+      _pjngI2( JeveuxVectorLong( getName() + ".PJNG_I2" ) ) {};

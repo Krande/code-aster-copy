@@ -21,12 +21,13 @@
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "astercxx.h"
+
 #include "Meshes/BaseMesh.h"
 
 #include "aster_fort_mesh.h"
 #include "aster_fort_superv.h"
 #include "aster_fort_utils.h"
-#include "astercxx.h"
 
 #include "DataFields/ConstantFieldOnCells.h"
 #include "PythonBindings/LogicalUnitManager.h"
@@ -63,7 +64,7 @@ BaseMesh::BaseMesh( const std::string &name, const std::string &type )
       // use BaseMeshPtr(NULL) instead of this to avoid cross destruction
       _curvAbsc( new ConstantFieldOnCellsReal( getName().substr( 0, 8 ) + ".ABSC_CURV ",
                                                BaseMeshPtr( NULL ) ) ),
-      _explorer( ConnectivityMeshExplorer( _connectivity, _cellsType ) ){};
+      _explorer( ConnectivityMeshExplorer( _connectivity, _cellsType ) ) {};
 
 ASTERINTEGER BaseMesh::getNumberOfNodes() const {
     if ( isEmpty() )

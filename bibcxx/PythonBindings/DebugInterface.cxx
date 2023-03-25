@@ -20,11 +20,12 @@
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "astercxx.h"
+
 #include "PythonBindings/DebugInterface.h"
 
 #include "aster_fort_jeveux.h"
 #include "aster_pybind.h"
-#include "astercxx.h"
 
 #include "LinearAlgebra/AssemblyMatrix.h"
 #include "LinearAlgebra/ElementaryMatrix.h"
