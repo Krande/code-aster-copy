@@ -57,6 +57,7 @@ AMOR_MECA = Option(
         CondCalcul("+", ((AT.PHENO, "ME"), (AT.BORD, "0"))),
         CondCalcul("-", ((AT.FLUIDE, "OUI"), (AT.FORMULATION, "U_P"))),
         CondCalcul("-", ((AT.FLUIDE, "OUI"), (AT.FORMULATION, "U_P_PHI"))),
+        CondCalcul("-", ((AT.FLUIDE, "OUI"), (AT.ABSO, "OUI"), (AT.FORMULATION, "U_PSI"))),
         CondCalcul("+", ((AT.FSI, "OUI"), (AT.BORD, "-1"), (AT.FORMULATION, "U_PSI"))),
         CondCalcul("-", ((AT.PHENO, "ME"), (AT.MODELI, "D2D"))),
         CondCalcul("-", ((AT.PHENO, "ME"), (AT.MODELI, "D3D"))),
