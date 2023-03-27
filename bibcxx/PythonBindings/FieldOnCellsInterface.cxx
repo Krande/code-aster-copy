@@ -166,7 +166,17 @@ void exportFieldOnCellsToPython( py::module_ &mod ) {
             Returns:
                 float: dot product
             )",
-              py::arg( "other" ) );
+              py::arg( "other" ) )
+        .def( "extrComp", &FieldOnCellsReal::extrComp, R"(
+            Return list of cells, list of values, list of point and list of subpoints for given cells
+
+            Arguments:
+                cells[list[int]]: list of nodes
+                cmp[str]: component to extract
+
+            Returns:
+                tuple[list, list, list, list]]: List of cells, list of values, list of points, list of subpoints.
+            )" );
 
     py::class_< FieldOnCellsComplex, FieldOnCellsComplexPtr, DataField >( mod,
                                                                           "FieldOnCellsComplex" )

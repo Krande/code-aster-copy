@@ -75,7 +75,20 @@ class FieldProjector(ExecuteCommand):
                 self._result.setMesh(keywords["RESULTAT"].getMesh())
             self._result.build()
         elif "CHAM_GD" in keywords:
-            pass
+            if self._result.getType().startswith("CHAM_EL"):
+                if "MODELE_2" in keywords:
+                    self._result.setDescription(keywords["MODELE_2"].getFiniteElementDescriptor())
+                self._result.build()
+            else:
+                if "MODELE_2" in keywords:
+                    mesh = keywords["MODELE_2"].getMesh()
+                elif "MAILLAGE_2" in keywords:
+                    mesh = keywords["MAILLAGE_2"]
+                elif "MATR_PROJECTION" in keywords:
+                    mesh = keywords["MATR_PROJECTION"].getSecondMesh()
+                else:
+                    mesh = None
+                self._result.build(mesh)
         else:
             if "MAILLAGE_1" in keywords:
                 self._result.setFirstMesh(keywords["MAILLAGE_1"])

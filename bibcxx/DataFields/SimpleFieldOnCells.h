@@ -201,15 +201,10 @@ class SimpleFieldOnCells : public DataStructure {
             throw std::runtime_error( "First call of updateValuePointers is mandatory" );
 #endif
 
-        this->_checkCellOOR( ima );
-        this->_checkPtOOR( ima, ipt );
-        this->_checkSptOOR( ima, ispt );
-        this->_checkCmpAtCellOOR( ima, icmp );
-
         ASTERINTEGER position = this->_positionInArray( icmp, ima, ipt, ispt );
-        bool allocated = ( *_allocated )[position];
 
 #ifdef ASTER_DEBUG_CXX
+        bool allocated = ( *_allocated )[position];
         if ( !allocated ) {
             std::cout << "DEBUG: Position (" + std::to_string( icmp ) + ", " +
                              std::to_string( ima ) + ", " + std::to_string( ipt ) + ", " +
@@ -219,6 +214,28 @@ class SimpleFieldOnCells : public DataStructure {
 #endif
 
         return ( *_values )[position];
+    }
+
+    /**
+     * @brief tell if value exists for (icmp) component of the (ima) cell
+              at the (ipt) point, at the (ispt) sub-point.
+    */
+    bool hasValue( const ASTERINTEGER &ima, const ASTERINTEGER &icmp,
+                   const ASTERINTEGER &ipt, const ASTERINTEGER &ispt ) const {
+
+        ASTERINTEGER position = this->_positionInArray( icmp, ima, ipt, ispt );
+
+#ifdef ASTER_DEBUG_CXX
+        if ( this->getNumberOfCells() == 0 || this->getNumberOfComponents() == 0 )
+            throw std::runtime_error( "First call of updateValuePointers is mandatory" );
+
+        this->_checkCellOOR( ima );
+        this->_checkPtOOR( ima, ipt );
+        this->_checkSptOOR( ima, ispt );
+        this->_checkCmpAtCellOOR( ima, icmp );
+#endif
+
+        return ( *_allocated )[position];
     }
 
     /**

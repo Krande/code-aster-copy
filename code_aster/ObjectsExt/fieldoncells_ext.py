@@ -86,27 +86,26 @@ class ExtendedFieldOnCellsReal:
             eventually, the topological informations of the support.
         """
 
-        ncham = self.getName()
-        ncham = ncham + (19 - len(ncham)) * " "
-        nchams = aster.get_nom_concept_unique("_")
-        ncmp = comp + (8 - len(comp)) * " "
-
-        aster.prepcompcham(ncham, nchams, ncmp, "EL      ", topo, lgma)
-
-        valeurs = numpy.array(aster.getvectjev(nchams + (19 - len(nchams)) * " " + ".V"))
-
-        if topo > 0:
-            maille = aster.getvectjev(nchams + (19 - len(nchams)) * " " + ".M")
-            point = aster.getvectjev(nchams + (19 - len(nchams)) * " " + ".P")
-            sous_point = aster.getvectjev(nchams + (19 - len(nchams)) * " " + ".SP")
+        mesh = self.getMesh()
+        if lgma:
+            cells = set()
+            for grMa in lgma:
+                if mesh.hasGroupOfCells(grMa):
+                    cells.update(mesh.getCells(grMa))
+                else:
+                    raise ValueError("no {} group of cell".format(grMa))
+            cells = sorted(cells)
         else:
-            maille = None
-            point = None
-            sous_point = None
-
-        aster.prepcompcham("__DETR__", nchams, ncmp, "EL      ", topo, lgma)
-
-        return post_comp_cham_el(valeurs, maille, point, sous_point)
+            cells = mesh.getCells()
+        
+        cells, points, subpoints, values = self.extrComp(cells, comp)
+        
+        if topo == 0:
+            cells = None
+            points = None
+            subpoints = None
+        
+        return post_comp_cham_el(values, cells, points, subpoints)
 
 
 @injector(FieldOnCellsLong)
@@ -142,7 +141,7 @@ class post_comp_cham_el:
     """
 
     def __init__(self, valeurs, maille=None, point=None, sous_point=None):
-        self.valeurs = valeurs
+        self.valeurs = numpy.array(valeurs)
         self.maille = maille
         self.point = point
         self.sous_point = sous_point

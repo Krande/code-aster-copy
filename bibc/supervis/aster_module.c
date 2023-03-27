@@ -976,62 +976,6 @@ void gcncon2_( char *type, char *resul, STRING_SIZE ltype, int lresul ) {
 }
 
 /* ------------------------------------------------------------------ */
-static PyObject *aster_prepcompcham( self, args ) PyObject *self; /* Not used */
-PyObject *args;
-{
-    char *nomce, *Fce;
-    char *nomcs, *Fcs;
-    char *nomcmp, *Fcm;
-    char *ktype, *Fty;
-    char *groups;
-    PyObject *list;
-    int inval = 0;
-    ASTERINTEGER nval;
-    int long_nomcham = 19;
-    int long_nomgrp = 24;
-    int itopo;
-    ASTERINTEGER topo;
-
-    if ( !PyArg_ParseTuple( args, "ssssiO:prepcompcham", &nomce, &nomcs, &nomcmp, &ktype, &itopo,
-                            &list ) )
-        return NULL;
-
-    Fce = MakeFStrFromCStr( nomce, long_nomcham );
-    Fcs = MakeFStrFromCStr( nomcs, long_nomcham );
-    Fcm = MakeFStrFromCStr( nomcmp, long_nomcham );
-    Fty = MakeFStrFromCStr( ktype, long_nomcham );
-    inval = PyList_Size( list );
-    nval = (ASTERINTEGER)inval;
-    topo = (ASTERINTEGER)itopo;
-    if ( inval > 0 ) {
-        groups = MakeTabFStr( inval, long_nomgrp );
-        converltx( inval, list, groups, long_nomgrp ); /* conversion  */
-    } else {
-        groups = MakeBlankFStr( long_nomgrp );
-    }
-
-    try {
-        CALL_PRCOCH( Fce, Fcs, Fcm, Fty, &topo, &nval, groups );
-    }
-    exceptAll {
-        FreeStr( groups );
-        FreeStr( Fce );
-        FreeStr( Fcs );
-        FreeStr( Fcm );
-        FreeStr( Fty );
-        raiseException();
-    }
-    endTry();
-    FreeStr( groups );
-    FreeStr( Fce );
-    FreeStr( Fcs );
-    FreeStr( Fcm );
-    FreeStr( Fty );
-    Py_INCREF( Py_None );
-    return Py_None;
-}
-
-/* ------------------------------------------------------------------ */
 static char getvectjev_doc[] = "getvectjev(nomsd)->valsd      \n\
 \n\
 Retourne la valeur du concept nomsd \n\
@@ -2326,7 +2270,6 @@ static PyMethodDef aster_methods[] = {
     {"gmardm", aster_gmardm, METH_VARARGS},
     {"postkutil", aster_postkutil, METH_VARARGS, postkutil_doc},
     {"argv", aster_argv, METH_VARARGS},
-    {"prepcompcham", aster_prepcompcham, METH_VARARGS},
     {"getvectjev", aster_getvectjev, METH_VARARGS, getvectjev_doc},
     {"putvectjev", aster_putvectjev, METH_VARARGS, putvectjev_doc},
     {"putcolljev", aster_putcolljev, METH_VARARGS, putcolljev_doc},
