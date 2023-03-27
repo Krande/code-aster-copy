@@ -29,7 +29,6 @@ class NonLinearOptions(BaseFeaturesOptions):
 
     # description of the system (or study, problem)
     PhysicalProblem = 0x0001
-    # FIXME is a feature?
     PhysicalState = 0x0002
     # object that store the results
     Storage = 0x0004

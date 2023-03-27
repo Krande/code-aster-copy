@@ -17,29 +17,45 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
+from ...NonLinear import NonLinearFeature
+from ...NonLinear import NonLinearOptions as FOP
 from ...Supervis import ConvergenceError
 from ...Utilities import no_new_attributes, profile
-from .convergence_manager import ConvergenceManager
-from .incremental_solver import IncrementalSolver
-from .contact_manager import ContactManager
-from .logging_manager import LoggingManager
-from ...Objects import DiscreteComputation
 
 
-class GeometricSolver:
+class GeometricSolver(NonLinearFeature):
     """Solves a step, loops on iterations."""
 
-    current_incr = phys_state = prediction = None
-    phys_pb = linear_solver = coordinates = None
-    param = logManager = contact_manager = None
-    matr_update_incr = current_matrix = step_rank = None
+    provide = FOP.ConvergenceCriteria
+    required_features = [
+        FOP.PhysicalProblem,
+        FOP.PhysicalState,
+        FOP.ConvergenceManager,
+        FOP.IncrementalSolver,
+    ]
+    optional_features = [FOP.Contact]
+
+    matr_update_incr = prediction = None
+    param = logManager = None
+    current_incr = current_matrix = None
     __setattr__ = no_new_attributes(object.__setattr__)
 
     def __init__(self):
+        super().__init__()
+
+    def initialize(self):
+        """Initialize the object for the next step."""
+        self.check_features()
         self.current_incr = 0
+        self.current_matrix = None
+
+    @property
+    def contact_manager(self):
+        """ContactManager: contact object."""
+        return self.get_feature(FOP.Contact, optional=True)
 
     def setParameters(self, param):
-        """Set parameters from user keywords.
+        """Assign parameters from user keywords.
 
         Arguments:
             param (dict) : user keywords.
@@ -51,22 +67,6 @@ class GeometricSolver:
 
         self.matr_update_incr = self._get("NEWTON", "REAC_INCR", 1)
 
-    def setPhysicalProblem(self, phys_pb):
-        """Assign the physical problem.
-
-        Arguments:
-            phys_pb (PhysicalProblem): Physical problem
-        """
-        self.phys_pb = phys_pb
-
-    def setPhysicalState(self, phys_state):
-        """Assign the physical state.
-
-        Arguments:
-            phys_state (PhysicalState): Physical state
-        """
-        self.phys_state = phys_state
-
     def setLoggingManager(self, logManager):
         """Assign the logging manager.
 
@@ -74,30 +74,6 @@ class GeometricSolver:
             logManager (LoggingManager): Logging manager.
         """
         self.logManager = logManager
-
-    def getPhysicalState(self):
-        """Get the physical state.
-
-        Returns:
-            PhysicalState: Currently used Physical state
-        """
-        return self.phys_state
-
-    def setLinearSolver(self, linear_solver):
-        """Set the linear solver to be used.
-
-        Arguments:
-            linear_solver (LinearSolver): Linear solver object.
-        """
-        self.linear_solver = linear_solver
-
-    def setContactManager(self, contact_manager):
-        """Set contact manager.
-
-        Arguments:
-            contact_manager (ContactManager): contact manager
-        """
-        self.contact_manager = contact_manager
 
     def update(self, primal_incr, internVar, sigma, convManager):
         """Update the physical state.
@@ -119,49 +95,6 @@ class GeometricSolver:
         elif self._get("CONTACT", "ALGO_RESO_GEOM") == "NEWTON":
             self.contact_manager.update(self.phys_state)
             self.contact_manager.pairing(self.phys_pb)
-
-    def createConvergenceManager(self):
-        """Return an object that holds convergence criteria.
-
-        Returns:
-            ConvergenceManager: object that manages the convergency criteria.
-        """
-
-        convMana = ConvergenceManager(self.phys_pb, self.phys_state)
-
-        criterion = ["RESI_GLOB_RELA", "RESI_GLOB_MAXI"]
-
-        for crit in criterion:
-            epsilon = self._get("CONVERGENCE", crit)
-
-            if epsilon is not None:
-                convMana.addCriteria(crit, epsilon)
-
-        if self._get("CONTACT", "ALGO_RESO_GEOM") == "NEWTON":
-            epsilon = self._get("CONTACT", "RESI_GEOM")
-
-            convMana.addCriteria("RESI_GEOM", epsilon)
-
-        return convMana
-
-    def createIncrementalSolver(self, convManager):
-        """Return a solver for the next iteration.
-
-        Arguments:
-            convManager (ConvergenceManager) : convergence manager
-
-        Returns:
-            IncrementalSolver: object to solve the next iteration.
-        """
-
-        is_solver = IncrementalSolver()
-        is_solver.setPhysicalProblem(self.phys_pb)
-        is_solver.setPhysicalState(self.phys_state)
-        is_solver.setLinearSolver(self.linear_solver)
-        is_solver.setContactManager(self.contact_manager)
-        is_solver.setConvergenceManager(convManager)
-
-        return is_solver
 
     def hasFinished(self, convManager):
         """Tell if there are iterations to be computed.
@@ -191,7 +124,7 @@ class GeometricSolver:
             matrix_type = "PRED_" + self.prediction
         else:
             matrix_type = self._get("NEWTON", "MATRICE", "TANGENTE")
-            if self.current_incr % self.matr_update_incr == 0 or self.contact_manager.enable:
+            if self.current_incr % self.matr_update_incr == 0 or self.contact_manager:
                 # make unavailable the current tangent matrix
                 self.current_matrix = None
         return matrix_type
@@ -204,12 +137,14 @@ class GeometricSolver:
             *ConvergenceError* exception in case of error.
         """
         self.current_matrix = current_matrix
-        convManager = self.createConvergenceManager()
+        convManager = self.get_feature(FOP.ConvergenceManager)
+        convManager.initialize()
+        iteration = self.get_feature(FOP.IncrementalSolver)
 
-        self.contact_manager.pairing(self.phys_pb)
+        if self.contact_manager:
+            self.contact_manager.pairing(self.phys_pb)
 
         while not self.hasFinished(convManager):
-            iteration = self.createIncrementalSolver(convManager)
 
             # Select type of matrix
             matrix_type = self._setMatrixType()
@@ -239,7 +174,7 @@ class GeometricSolver:
         if not convManager.hasConverged():
             raise ConvergenceError("MECANONLINE9_7")
 
-        if self.current_incr % self.matr_update_incr == 0 or self.contact_manager.enable:
+        if self.current_incr % self.matr_update_incr == 0 or self.contact_manager:
             self.current_matrix = None
 
         return self.current_matrix
@@ -249,7 +184,6 @@ class GeometricSolver:
         if parameter is not None:
             if keyword in self.param and self.param.get(keyword) is not None:
                 return self.param.get(keyword).get(parameter, default)
-            else:
-                return default
+            return default
 
         return self.param.get(keyword, default)

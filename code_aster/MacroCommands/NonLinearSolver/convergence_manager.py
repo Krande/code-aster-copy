@@ -19,28 +19,28 @@
 
 from math import sqrt
 
-from ...Utilities import no_new_attributes, profile, MPI
+from ...NonLinear import NonLinearFeature
+from ...NonLinear import NonLinearOptions as FOP
 from ...Objects import DiscreteComputation
+from ...Utilities import MPI, no_new_attributes, profile
 
 
-class ConvergenceManager:
-    """Object that decides about the convergence status.
+class ConvergenceManager(NonLinearFeature):
+    """Object that decides about the convergence status."""
 
-    Arguments:
-        criteria (dict): Expected precision for each criteria.
-        values (dict): Current value of criteria.
-        phys_pb (PhysicalProblem): Physical problem.
-        phys_state (PhysicalState): Physical state.
-    """
+    provide = FOP.ConvergenceManager
+    required_features = [FOP.PhysicalProblem, FOP.PhysicalState]
 
     criteria = values = None
-    phys_state = phys_pb = None
     __setattr__ = no_new_attributes(object.__setattr__)
 
-    def __init__(self, phys_pb, phys_state):
-        self.phys_pb = phys_pb
-        self.phys_state = phys_state
+    def __init__(self):
+        super().__init__()
         self.criteria = {}
+        self.values = {}
+
+    def initialize(self):
+        """Initialize the object for a new iteration."""
         self.values = {}
 
     def addCriteria(self, criteria, value):
@@ -66,6 +66,7 @@ class ConvergenceManager:
         return self.values[criteria]
 
     @profile
+    @NonLinearFeature.check_once
     def getDirichletResidual(self, residual):
         """Return the residual with Dirichlet imposed values.
 
@@ -96,6 +97,7 @@ class ConvergenceManager:
         return residual
 
     @profile
+    @NonLinearFeature.check_once
     def getRelativeScaling(self, residuals):
         """Returns the scaling fator to compute the relative error
 
@@ -131,6 +133,7 @@ class ConvergenceManager:
         return MPI.ASTER_COMM_WORLD.allreduce(scaling, MPI.MAX)
 
     @profile
+    @NonLinearFeature.check_once
     def evalNormResidual(self, residuals):
         """Evaluate criteria
 
@@ -150,6 +153,7 @@ class ConvergenceManager:
             self.values["RESI_GLOB_RELA"] = self.values["RESI_GLOB_MAXI"] / scaling
 
     @profile
+    @NonLinearFeature.check_once
     def evalGeometricResidual(self, displ_delta):
         """Evaluate criteria
 
@@ -174,8 +178,8 @@ class ConvergenceManager:
             bool: *True* if converged, *False* otherwise.
         """
 
-        if len(self.values) == 0:
-            if len(self.criteria) == 0:
+        if not self.values:
+            if not self.criteria:
                 return True
             else:
                 return False

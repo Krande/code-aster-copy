@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,12 @@
 This package implements the non linear solver for mechanical analyses.
 """
 
+from .convergence_manager import ConvergenceManager
+from .geometric_solver import GeometricSolver
+from .incremental_solver import IncrementalSolver
 from .non_linear_solver import NonLinearSolver
 from .physical_state import PhysicalState
+from .snes_solver import SNESSolver
+from .step_solver import StepSolver
 from .stepper import TimeStepper
 from .storage_manager import StorageManager

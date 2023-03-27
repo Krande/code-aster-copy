@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,19 +17,25 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
+from ...NonLinear import NonLinearFeature
+from ...NonLinear import NonLinearOptions as FOP
 
-class TimeStepper:
+
+class TimeStepper(NonLinearFeature):
     """ "Basic time stepper.
 
     Arguments:
         times (list[float]): List of time steps.
     """
 
+    provide = FOP.TimeStepper
+
     @property
     def null_increment(self):
         return -1.0e150
 
     def __init__(self, times):
+        super().__init__()
         self.current = 0
         self.level = 0
         assert sorted(times) == times

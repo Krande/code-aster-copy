@@ -17,14 +17,16 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-from libaster import deleteTemporaryObjects
-
-from ...Objects import DiscreteComputation, ContactPairing, ContactComputation
+from ...NonLinear import NonLinearFeature
+from ...NonLinear import NonLinearOptions as FOP
+from ...Objects import ContactComputation, ContactPairing
 from ...Utilities import no_new_attributes, profile
 
 
-class ContactManager:
+class ContactManager(NonLinearFeature):
     """Solve contact problem."""
+
+    provide = FOP.Contact
 
     defi = pair = comp = None
     coef_cont = coef_frot = None
@@ -39,6 +41,7 @@ class ContactManager:
             definition (ContactNew): contact definition
             phys_pb (PhysicalProblem): physical problem
         """
+        super().__init__()
         self.first_pairing = True
         self.defi = definition
         self.phys_pb = phys_pb

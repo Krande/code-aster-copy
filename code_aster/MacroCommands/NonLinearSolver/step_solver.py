@@ -19,25 +19,31 @@
 
 from libaster import deleteTemporaryObjects
 
+from ...NonLinear import NonLinearFeature
+from ...NonLinear import NonLinearOptions as FOP
 from ...Supervis import ConvergenceError
 from ...Utilities import no_new_attributes, profile
-from .contact_manager import ContactManager
-from .convergence_manager import ConvergenceManager
-from .geometric_solver import GeometricSolver
 from .logging_manager import LoggingManager
-from .snes_solver import SNESSolver
 
 
-class StepSolver:
+class StepSolver(NonLinearFeature):
     """Solves a step, loops on iterations."""
 
-    current_incr = phys_state = None
-    phys_pb = linear_solver = contact_manager = None
+    provide = FOP.StepSolver
+    required_features = [
+        FOP.PhysicalProblem,
+        FOP.PhysicalState,
+        FOP.ConvergenceManager,
+        FOP.ConvergenceCriteria,
+    ]
+
+    current_incr = None
     param = None
     geom = geom_step = current_matrix = None
     __setattr__ = no_new_attributes(object.__setattr__)
 
     def __init__(self):
+        super().__init__()
         self.current_incr = 0
 
     def setParameters(self, param):
@@ -48,47 +54,12 @@ class StepSolver:
         """
         self.param = param
 
-    def setPhysicalProblem(self, phys_pb):
-        """Assign the physical problem.
-
-        Arguments:
-            phys_pb (PhysicalProblem): Physical problem
-        """
-        self.phys_pb = phys_pb
-
-    def setPhysicalState(self, phys_state):
-        """Assign the physical state.
-
-        Arguments:
-            phys_state (PhysicalState): Physical state
-        """
-        self.phys_state = phys_state
+    def initialize(self):
+        """Initialization."""
+        self.check_features()
+        self.current_incr = 0
         self.phys_state.primal_step = self.phys_state.createPrimal(self.phys_pb, 0.0)
         self.geom_step = self.phys_state.createPrimal(self.phys_pb, 0.0)
-
-    def getPhysicalState(self):
-        """Get the physical state.
-
-        Returns:
-            PhysicalState: Currently used Physical state
-        """
-        return self.phys_state
-
-    def setContactManager(self, contact_manager):
-        """Set contact manager.
-
-        Arguments:
-            contact_manager (ContactManager): contact manager
-        """
-        self.contact_manager = contact_manager
-
-    def setLinearSolver(self, linear_solver):
-        """Set the linear solver to be used.
-
-        Arguments:
-            linear_solver (LinearSolver): Linear solver object.
-        """
-        self.linear_solver = linear_solver
 
     def update(self, convManager):
         """Update the physical state.
@@ -114,55 +85,6 @@ class StepSolver:
             + self.phys_state.primal
             + self.phys_state.primal_step
         )
-
-    def createConvergenceManager(self):
-        """Return an object that holds convergence criteria.
-
-        Returns:
-            ConvergenceManager: object that manages the convergency criteria.
-        """
-
-        convMana = ConvergenceManager(self.phys_pb, self.phys_state)
-
-        convMana.addCriteria("RESI_GEOM", self._get("CONTACT", "RESI_GEOM", 10e150))
-
-        return convMana
-
-    def createGeometricSolver(self):
-        """Return a solver for the next geometric iteration.
-
-        Returns:
-            GeometricSolver: object to solve the next iteration.
-        """
-
-        geom_solver = GeometricSolver()
-        geom_solver.setParameters(self.param)
-        geom_solver.setPhysicalProblem(self.phys_pb)
-        geom_solver.setPhysicalState(self.phys_state)
-        geom_solver.setLinearSolver(self.linear_solver)
-        geom_solver.setContactManager(self.contact_manager)
-
-        self.contact_manager.setPairingCoordinates(self.geom)
-
-        return geom_solver
-
-    def createSNESSolver(self):
-        """Return a solver for the next nonlinear step.
-
-        Returns:
-            SNESSolver: object to solve the next iteration.
-        """
-
-        snes_solver = SNESSolver()
-        snes_solver.setParameters(self.param)
-        snes_solver.setPhysicalProblem(self.phys_pb)
-        snes_solver.setPhysicalState(self.phys_state)
-        snes_solver.setLinearSolver(self.linear_solver)
-        snes_solver.setContactManager(self.contact_manager)
-
-        self.contact_manager.setPairingCoordinates(self.geom)
-
-        return snes_solver
 
     def createLoggingManager(self):
         """Return a logging manager
@@ -213,26 +135,23 @@ class StepSolver:
         Raises:
             *ConvergenceError* exception in case of error.
         """
-        convManager = self.createConvergenceManager()
+        convManager = self.get_feature(FOP.ConvergenceManager)
         logManager = self.createLoggingManager()
         logManager.printIntro(self.phys_state.time + self.phys_state.time_step, 1)
         logManager.printConvTableEntries()
 
         self.geom = self.phys_pb.getMesh().getCoordinates() + self.phys_state.primal
 
-        method = self._get("METHODE")
+        criteria = self.get_feature(FOP.ConvergenceCriteria)
 
         while not self.hasFinished(convManager):
-            if method == "NEWTON":
-                geometric = self.createGeometricSolver()
-            elif method == "SNES":
-                geometric = self.createSNESSolver()
-            else:
-                assert False
-            geometric.setLoggingManager(logManager)
+            if criteria.has_feature(FOP.Contact):
+                criteria.get_feature(FOP.Contact).setPairingCoordinates(self.geom)
+            criteria.setLoggingManager(logManager)
+            criteria.initialize()
 
             # Solve current iteration
-            self.current_matrix = geometric.solve(self.current_matrix)
+            self.current_matrix = criteria.solve(self.current_matrix)
 
             # Update physical state
             self.update(convManager)

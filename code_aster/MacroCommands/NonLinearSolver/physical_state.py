@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,13 +17,16 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
+from ...NonLinear import NonLinearOptions as FOP
+from ...NonLinear.base_features import BaseFeature
+from ...Objects import DiscreteComputation, FieldOnCellsReal, FieldOnNodesReal, NonLinearResult
 from ...Utilities import no_new_attributes, profile
-from ...Objects import FieldOnNodesReal, FieldOnCellsReal, NonLinearResult
-from ...Objects import DiscreteComputation
 
 
-class PhysicalState:
+class PhysicalState(BaseFeature):
     """This object represents a Physical State of the model."""
+
+    provide = FOP.PhysicalState
 
     _time = _time_step = None
     _primal = _primal_step = _internVar = _stress = _externVar = None
@@ -127,6 +130,7 @@ class PhysicalState:
         """
         self._externVar = field
 
+    # FIXME setPrimalValue?
     @profile
     def createPrimal(self, phys_pb, value):
         """Create primal field with a given value
@@ -264,6 +268,7 @@ class PhysicalState:
                     rank = resu.getNumberOfIndexes() - 1
                     self.extractFieldsFromResult(resu, rank, ["DEPL", "SIEF_ELGA", "VARI_ELGA"])
 
+    # FIXME set 'other' optional? removed?
     @profile
     def update(self, other):
         """Update current physical state with the previous one.

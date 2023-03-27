@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -18,15 +18,19 @@
 # --------------------------------------------------------------------
 
 from ...Messages import UTMESS
-from ...Utilities import no_new_attributes, profile, force_list, SearchList
+from ...NonLinear import NonLinearFeature
+from ...NonLinear import NonLinearOptions as FOP
+from ...Utilities import SearchList, force_list, no_new_attributes, profile
 
 
-class StorageManager:
+class StorageManager(NonLinearFeature):
     """Object that manages the storing of fields in the Result object.
 
     Arguments:
         result (~code_aster.Objects.Result): Result container.
     """
+
+    provide = FOP.Storage
 
     class Slot:
         """Container that holds objects to be saved"""
@@ -60,6 +64,7 @@ class StorageManager:
             kwargs (dict): Valid ARCHIVE keywords (syntax checked, with defaults).
 
         """
+        super().__init__()
         self.result = result
         self.buffer = []
 

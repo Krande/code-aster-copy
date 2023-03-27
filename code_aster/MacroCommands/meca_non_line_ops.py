@@ -23,15 +23,28 @@ from ..Helpers import adapt_for_mgis_behaviour
 from ..Messages import UTMESS
 from ..Objects import (
     FrictionType,
+    LinearSolver,
     MechanicalDirichletBC,
     MechanicalLoadFunction,
     MechanicalLoadReal,
     NonLinearResult,
     ParallelMechanicalLoadFunction,
     ParallelMechanicalLoadReal,
+    PhysicalProblem,
 )
 from ..Utilities import print_stats
-from .NonLinearSolver import NonLinearSolver, TimeStepper
+from .NonLinearSolver import (
+    ConvergenceManager,
+    GeometricSolver,
+    IncrementalSolver,
+    NonLinearSolver,
+    PhysicalState,
+    SNESSolver,
+    StepSolver,
+    StorageManager,
+    TimeStepper,
+)
+from .NonLinearSolver.contact_manager import ContactManager
 
 
 def _contact_check(CONTACT):
@@ -77,7 +90,6 @@ def meca_non_line_ops(self, **args):
     Arguments:
         **args (dict): User's keywords.
     """
-
     UTMESS("A", "QUALITY1_2")
 
     args = _F(args)
@@ -87,11 +99,18 @@ def meca_non_line_ops(self, **args):
     _keywords_check(args)
 
     snl = NonLinearSolver()
+    phys_state = PhysicalState()
+    snl.use(phys_state)
+
+    phys_pb = PhysicalProblem(args["MODELE"], args["CHAM_MATER"], args["CARA_ELEM"])
+    snl.use(phys_pb)
+
+    snl.use(StorageManager(NonLinearResult()))
+
     snl.setLoggingLevel(args["INFO"])
-    snl.setPhysicalProblem(args["MODELE"], args["CHAM_MATER"], args["CARA_ELEM"])
 
     # Add parameters
-    snl.setKeywords(
+    param = dict(
         CONVERGENCE=args["CONVERGENCE"],
         NEWTON=args["NEWTON"],
         ETAT_INIT=args["ETAT_INIT"],
@@ -100,6 +119,7 @@ def meca_non_line_ops(self, **args):
         CONTACT=args["CONTACT"],
         METHODE=args["METHODE"],
     )
+    snl.setKeywords(**param)
 
     # Add behaviour
     adapt_for_mgis_behaviour(self, args)
@@ -118,16 +138,17 @@ def meca_non_line_ops(self, **args):
                     MechanicalDirichletBC,
                 ),
             ):
-                snl.phys_pb.addLoadFromDict(load)
+                phys_pb.addLoadFromDict(load)
             else:
                 raise RuntimeError("Unknown load")
 
     # Add contact
-    if args["CONTACT"] is not None:
-        snl.createContactManager(args["CONTACT"]["DEFINITION"])
-
-    # Add linear solver
-    snl.setLinearSolver(keywords=args["SOLVEUR"])
+    contact_manager = None
+    if args["CONTACT"]:
+        definition = args["CONTACT"]["DEFINITION"]
+        contact_manager = ContactManager(definition, phys_pb)
+        fed_defi = definition.getFiniteElementDescriptor()
+        phys_pb.getListOfLoads().addContactLoadDescriptor(fed_defi, None)
 
     # Add stepper
     timeStepper = TimeStepper(args["INCREMENT"]["LIST_INST"].getValues()[1::])
@@ -140,13 +161,65 @@ def meca_non_line_ops(self, **args):
     if args["ETAT_INIT"] is not None:
         if "EVOL_NOLI" in args["ETAT_INIT"]:
             resu = args["ETAT_INIT"].get("EVOL_NOLI")
-            assert isinstance(resu, NonLinearResult)
+            assert isinstance(resu, NonLinearResult), resu
             tini = resu.getTimeValue(resu.getNumberOfIndexes() - 1)
             if "INST_ETAT_INIT" in args["ETAT_INIT"]:
                 tini = args["ETAT_INIT"].get("INST_ETAT_INIT")
             timeStepper.setInitialStep(tini)
 
-    snl.setStepper(timeStepper)
+    snl.use(timeStepper)
+
+    # Define convergence object for the incremental solver
+    conv_crit = ConvergenceManager()
+    conv_crit.use(phys_pb)
+    conv_crit.use(phys_state)
+    for crit in ("RESI_GLOB_RELA", "RESI_GLOB_MAXI"):
+        epsilon = args["CONVERGENCE"].get(crit)
+        if epsilon is not None:
+            conv_crit.addCriteria(crit, epsilon)
+    if args["CONTACT"]:
+        if args["CONTACT"].get("ALGO_RESO_GEOM") == "NEWTON":
+            conv_crit.addCriteria("RESI_GEOM", args["CONTACT"].get("RESI_GEOM"))
+
+    # Define the linear solver
+    linear_solver = LinearSolver.factory("STAT_NON_LINE", args["SOLVEUR"])
+
+    # Define incremental solver
+    incr_solver = IncrementalSolver()
+    incr_solver.use(phys_pb)
+    incr_solver.use(phys_state)
+    incr_solver.use(linear_solver)
+    incr_solver.use(contact_manager)
+    incr_solver.use(conv_crit)
+
+    # Define the step convergence criteria
+    if args["METHODE"] == "NEWTON":
+        step_conv_solv = GeometricSolver()
+    else:
+        step_conv_solv = SNESSolver()
+    step_conv_solv.use(phys_pb)
+    step_conv_solv.use(phys_state)
+    step_conv_solv.setParameters(param)
+    step_conv_solv.use(contact_manager)
+    step_conv_solv.use(conv_crit)
+    step_conv_solv.use(incr_solver)
+
+    # Define convergence object for the step solver
+    step_crit = ConvergenceManager()
+    step_crit.use(phys_pb)
+    step_crit.use(phys_state)
+    epsilon = 1.0e150
+    epsilon = (args["CONTACT"] or {}).get("RESI_GEOM", epsilon)
+    step_crit.addCriteria("RESI_GEOM", epsilon)
+
+    # Define the step solver
+    step_solver = StepSolver()
+    step_solver.use(phys_pb)
+    step_solver.use(phys_state)
+    step_solver.use(step_conv_solv)
+    step_solver.setParameters(param)
+    step_solver.use(step_crit)
+    snl.use(step_solver)
 
     # Run computation
     snl.run()

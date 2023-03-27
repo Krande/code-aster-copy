@@ -17,28 +17,40 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
+from ...NonLinear import NonLinearFeature
+from ...NonLinear import NonLinearOptions as FOP
 from ...Objects import AssemblyMatrixDisplacementReal, DiscreteComputation
 from ...Supervis import ConvergenceError
 from ...Utilities import PETSc, no_new_attributes, profile
-from .contact_manager import ContactManager
-from .convergence_manager import ConvergenceManager
-from .incremental_solver import IncrementalSolver
-from .logging_manager import LoggingManager
 
 
-class SNESSolver:
+class SNESSolver(NonLinearFeature):
     """Solves a step, loops on iterations."""
 
-    current_incr = phys_state = prediction = None
-    phys_pb = linear_solver = coordinates = None
-    param = logManager = contact_manager = None
-    matr_update_incr = current_matrix = step_rank = None
-    _snes_solver = _incr_solver = _primal_plus = _primal_incr = None
+    provide = FOP.ConvergenceCriteria
+    required_features = [FOP.PhysicalProblem, FOP.PhysicalState, FOP.IncrementalSolver]
+    optional_features = [FOP.Contact, FOP.ConvergenceManager]
+
+    matr_update_incr = prediction = None
+    param = logManager = None
+    current_incr = current_matrix = None
+    _incr_solver = _primal_plus = _primal_incr = None
     _scaling = _options = None
     __setattr__ = no_new_attributes(object.__setattr__)
 
     def __init__(self):
+        super().__init__()
+
+    def initialize(self):
+        """Initialize the object for the next step."""
+        self.check_features()
         self.current_incr = 0
+        self.current_matrix = None
+
+    @property
+    def contact_manager(self):
+        """ContactManager: contact object."""
+        return self.get_feature(FOP.Contact, optional=True)
 
     def setParameters(self, param):
         """Assign parameters from user keywords.
@@ -53,22 +65,6 @@ class SNESSolver:
 
         self.matr_update_incr = self._get("NEWTON", "REAC_ITER", 1)
 
-    def setPhysicalProblem(self, phys_pb):
-        """Assign the physical problem.
-
-        Arguments:
-            phys_pb (PhysicalProblem): Physical problem
-        """
-        self.phys_pb = phys_pb
-
-    def setPhysicalState(self, phys_state):
-        """Assign the physical state.
-
-        Arguments:
-            phys_state (PhysicalState): Physical state
-        """
-        self.phys_state = phys_state
-
     def setLoggingManager(self, logManager):
         """Assign the logging manager.
 
@@ -76,69 +72,6 @@ class SNESSolver:
             logManager (LoggingManager): Logging manager.
         """
         self.logManager = logManager
-
-    def setContactManager(self, contact_manager):
-        """Set contact manager.
-
-        Arguments:
-            contact_manager (ContactManager): contact manager
-        """
-        self.contact_manager = contact_manager
-
-    def getPhysicalState(self):
-        """Get the physical state.
-
-        Returns:
-            PhysicalState: Currently used Physical state
-        """
-        return self.phys_state
-
-    def setLinearSolver(self, linear_solver):
-        """Set the linear solver to be used.
-
-        Arguments:
-            linear_solver (LinearSolver): Linear solver object.
-        """
-        self.linear_solver = linear_solver
-
-    def createConvergenceManager(self):
-        """Return an object that holds convergence criteria.
-
-        Returns:
-            ConvergenceManager: object that manages the convergency criteria.
-        """
-
-        convMana = ConvergenceManager(self.phys_pb, self.phys_state)
-
-        criterion = ["RESI_GLOB_RELA", "RESI_GLOB_MAXI"]
-
-        for crit in criterion:
-            epsilon = self._get("CONVERGENCE", crit)
-
-            if epsilon is not None:
-                convMana.addCriteria(crit, epsilon)
-
-        if self._get("CONTACT", "ALGO_RESO_GEOM") == "NEWTON":
-            epsilon = self._get("CONTACT", "RESI_GEOM")
-
-            convMana.addCriteria("RESI_GEOM", epsilon)
-
-        return convMana
-
-    def createIncrementalSolver(self):
-        """Return a solver for the next iteration.
-
-        Returns:
-            IncrementalSolver: object to solve the next iteration.
-        """
-
-        is_solver = IncrementalSolver()
-        is_solver.setPhysicalProblem(self.phys_pb)
-        is_solver.setPhysicalState(self.phys_state)
-        is_solver.setLinearSolver(self.linear_solver)
-        is_solver.setContactManager(self.contact_manager)
-
-        return is_solver
 
     def _setMatrixType(self):
         """Set matrix type.
@@ -190,8 +123,9 @@ class SNESSolver:
             *ConvergenceError* exception in case of error.
         """
         self.current_matrix = current_matrix
-        self._incr_solver = self.createIncrementalSolver()
-        self.contact_manager.pairing(self.phys_pb)
+        self._incr_solver = self.get_feature(FOP.IncrementalSolver)
+        if self.contact_manager:
+            self.contact_manager.pairing(self.phys_pb)
 
         _jac = AssemblyMatrixDisplacementReal(self.phys_pb)
         _disc_comp = DiscreteComputation(self.phys_pb)
@@ -223,8 +157,9 @@ class SNESSolver:
 
         OptDB = PETSc.Options()
         if not self._options:
-            self.linear_solver.build()
-            self._options = self.linear_solver.getPetscOptions()
+            linear_solver = self._incr_solver.get_feature(FOP.LinearSolver)
+            linear_solver.build()
+            self._options = linear_solver.getPetscOptions()
         OptDB.insertString(self._options)
         snes.setFromOptions()
 

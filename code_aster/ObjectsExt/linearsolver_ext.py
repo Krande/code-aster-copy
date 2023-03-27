@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -24,39 +24,45 @@
 """
 
 from ..Cata.Commons.c_solveur import C_SOLVEUR
+from ..NonLinear import NonLinearOptions as FOP
 from ..Objects import (
     GcpcSolver,
     LdltSolver,
+    LinearSolver,
     MultFrontSolver,
     MumpsSolver,
     PetscSolver,
-    LinearSolver,
 )
 from ..Utilities import injector, logger
 
 
 @injector(LinearSolver)
 class ExtendedLinearSolver:
+
+    provide = FOP.LinearSolver
+
     @classmethod
-    def factory(cls, cmd, mcf=None, **kwargs):
+    def factory(cls, command=None, mcf=None, **kwargs):
         """Create the solver object from the SOLVEUR factor keyword.
 
         Arguments:
-            cmd (str): Command Name.
+            command (str): Command Name (default: "STAT_NON_LINE").
             mcf (list|tuple|dict): Convenient option to pass `(kwargs,)`, the value
                 returned for a factor keyword.
             kwargs (dict): Valid SOLVEUR keywords (syntax checked, with defaults).
 
         Returns:
             :class:`~code_aster.Objects.LinearSolver` (derivated of):
-            Instance of a solver or *None* if none is selected.
+            Instance of a solver.
         """
+        if not command:
+            command = "STAT_NON_LINE"
         if mcf:
             if isinstance(mcf, (list, tuple)):
                 mcf = mcf[0]
             if isinstance(mcf, dict):
                 kwargs = mcf
-        kwargs["command"] = cmd
+        kwargs["command"] = command
         name = kwargs.get("METHODE")
         klass = None
         for sub in cls.__subclasses__():
@@ -77,14 +83,14 @@ class LinearSolverExt:
     def __init__(self, *args, **kwargs):
         assert len(args) <= 1, "at most one argument is expected"
         self._init(*args)
-        cmd = kwargs.pop("command", "MECA_STATIQUE")
-        mcf = C_SOLVEUR(cmd)
+        command = kwargs.pop("command", "MECA_STATIQUE")
+        mcf = C_SOLVEUR(command)
         keywords = dict(METHODE=self._name)
         keywords.update(kwargs)
         mcf.addDefaultKeywords(keywords)
         logger.debug("solver init with: %s", keywords)
         self.setKeywords(keywords)
-        self.setCataPath("code_aster.Cata.Commons.c_solveur.C_SOLVEUR_" + cmd)
+        self.setCataPath("code_aster.Cata.Commons.c_solveur.C_SOLVEUR_" + command)
 
     @classmethod
     def solverName(cls):

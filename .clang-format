@@ -1,10 +1,14 @@
 BasedOnStyle: LLVM
 ---
+Language: Cpp
+Standard: Cpp11
+IndentWidth: 4
+TabWidth: 4
+UseTab: Never
+ColumnLimit: 100
 AlwaysBreakTemplateDeclarations: Yes
 BreakConstructorInitializers : BeforeColon
-ColumnLimit: 100
 ConstructorInitializerAllOnOneLineOrOnePerLine: true
-Cpp11BracedListStyle : true
 FixNamespaceComments : true
 IncludeBlocks: Regroup
 IncludeCategories:
@@ -23,13 +27,10 @@ IncludeCategories:
   # Headers in <> with extension.
   - Regex:           '<([a-z0-9\./\-_])+>'
     Priority:        6
-IndentWidth: 4
-Language: Cpp
 SpacesInAngles: true
+Cpp11BracedListStyle : true
+SpaceBeforeCpp11BracedList: true
 SpacesInParentheses: true
 SpacesInSquareBrackets: false
-SpaceBeforeCpp11BracedList: true
+SpaceAfterCStyleCast: false
 SpacesInCStyleCastParentheses: false
-Standard: Cpp11
-TabWidth: 4
-UseTab: Never

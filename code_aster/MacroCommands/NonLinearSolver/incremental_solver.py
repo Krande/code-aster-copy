@@ -17,10 +17,11 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-from ...Objects import DiscreteComputation, AssemblyMatrixDisplacementReal
+from ...NonLinear import NonLinearFeature
+from ...NonLinear import NonLinearOptions as FOP
+from ...Objects import AssemblyMatrixDisplacementReal, DiscreteComputation
 from ...Supervis import IntegrationError
 from ...Utilities import no_new_attributes, profile
-from .contact_manager import ContactManager
 
 
 class ResiState:
@@ -44,54 +45,20 @@ class ResiState:
             self.resi_cont.updateValuePointers()
 
 
-class IncrementalSolver:
+class IncrementalSolver(NonLinearFeature):
     """Solve an iteration."""
 
-    phys_state = phys_pb = convManager = None
-    linear_solver = contact_manager = None
+    provide = FOP.IncrementalSolver
+    required_features = [FOP.PhysicalProblem, FOP.PhysicalState, FOP.LinearSolver]
+    optional_features = [FOP.Contact, FOP.ConvergenceManager]
+
     __setattr__ = no_new_attributes(object.__setattr__)
 
-    def setPhysicalProblem(self, phys_pb):
-        """Assign the physical problem.
-
-        Arguments:
-            phys_pb (PhysicalProblem): Physical problem
-        """
-        self.phys_pb = phys_pb
-
-    def setPhysicalState(self, phys_state):
-        """Assign the physical state.
-
-        Arguments:
-            phys_state (PhysicalState): Physical state
-        """
-        self.phys_state = phys_state
-
-    def setConvergenceManager(self, convManager):
-        """Set the convergence manager to be used.
-
-        Arguments:
-            convManager (ConvergenceManager): object to be used.
-        """
-        self.convManager = convManager
-
-    def setLinearSolver(self, solver):
-        """Set the linear solver to be used.
-
-        Arguments:
-            solver (LinearSolver): a linear solver object
-        """
-        self.linear_solver = solver
-
-    def setContactManager(self, contact_manager):
-        """Set the contact solver to be used.
-
-        Arguments:
-            contact_manager (ContactManager): a contact solver object
-        """
-        self.contact_manager = contact_manager
+    def __init__(self):
+        super().__init__()
 
     @profile
+    @NonLinearFeature.check_once
     def computeInternalResidual(self, scaling=1.0):
         """Compute internal residual R_int(u, Lagr).
 
@@ -149,6 +116,7 @@ class IncrementalSolver:
         return resi_state, internVar, stress
 
     @profile
+    @NonLinearFeature.check_once
     def computeExternalResidual(self):
         """Compute external residual R_ext(u, Lagr)
 
@@ -168,26 +136,27 @@ class IncrementalSolver:
         return neumann_forces
 
     @profile
+    @NonLinearFeature.check_once
     def computeContactResidual(self):
         """Compute contact residual R_cont(u, Lagr)
 
         Returns:
             FieldOnNodesReal: contact residual.
         """
-
-        if self.contact_manager.enable:
+        contact_manager = self.get_feature(FOP.Contact, optional=True)
+        if contact_manager:
             disc_comp = DiscreteComputation(self.phys_pb)
 
             # Compute contact forces
             contact_forces = disc_comp.getContactForces(
-                self.contact_manager.getPairingCoordinates(),
+                contact_manager.getPairingCoordinates(),
                 self.phys_state.primal,
                 self.phys_state.primal_step,
                 self.phys_state.time,
                 self.phys_state.time_step,
-                self.contact_manager.data(),
-                self.contact_manager.coef_cont,
-                self.contact_manager.coef_frot,
+                contact_manager.data(),
+                contact_manager.coef_cont,
+                contact_manager.coef_frot,
             )
         else:
             contact_forces = self.phys_state.createPrimal(self.phys_pb, 0.0)
@@ -195,6 +164,7 @@ class IncrementalSolver:
         return contact_forces
 
     @profile
+    @NonLinearFeature.check_once
     def computeResidual(self, scaling=1.0):
         """Compute R(u, Lagr) = - (Rint(u, Lagr) + Rcont(u, Lagr) - Rext(u, Lagr)).
 
@@ -208,7 +178,6 @@ class IncrementalSolver:
             Tuple with residuals, internal state variables (VARI_ELGA),
             Cauchy stress tensor (SIEF_ELGA).
         """
-
         # Compute internal residual
         resi_state, internVar, stress = self.computeInternalResidual(scaling)
 
@@ -224,6 +193,7 @@ class IncrementalSolver:
         return resi_state, internVar, stress
 
     @profile
+    @NonLinearFeature.check_once
     def computeInternalJacobian(self, matrix_type):
         """Compute K(u) = d(Rint(u)) / du
 
@@ -270,26 +240,27 @@ class IncrementalSolver:
         return codret, matr_elem_rigi, matr_elem_dual
 
     @profile
+    @NonLinearFeature.check_once
     def computeContactJacobian(self):
         """Compute K(u) = d(Rcont(u) ) / du
 
         Returns:
            ElementaryMatrixDisplacementReal: Contact matrix.
         """
-
-        if self.contact_manager.enable:
+        contact_manager = self.get_feature(FOP.Contact, optional=True)
+        if contact_manager:
             # Main object for discrete computation
             disc_comp = DiscreteComputation(self.phys_pb)
 
             matr_elem_cont = disc_comp.getContactMatrix(
-                self.contact_manager.getPairingCoordinates(),
+                contact_manager.getPairingCoordinates(),
                 self.phys_state.primal,
                 self.phys_state.primal_step,
                 self.phys_state.time,
                 self.phys_state.time_step,
-                self.contact_manager.data(),
-                self.contact_manager.coef_cont,
-                self.contact_manager.coef_frot,
+                contact_manager.data(),
+                contact_manager.coef_cont,
+                contact_manager.coef_frot,
             )
 
             return matr_elem_cont
@@ -297,6 +268,7 @@ class IncrementalSolver:
         return None
 
     @profile
+    @NonLinearFeature.check_once
     def computeJacobian(self, matrix_type):
         """Compute K(u) = d(Rint(u) - Rext(u)) / du
 
@@ -307,9 +279,7 @@ class IncrementalSolver:
             AssemblyMatrixDisplacementReal: Jacobian matrix.
         """
         # Compute elementary matrix
-
         codret, matr_elem_rigi, matr_elem_dual = self.computeInternalJacobian(matrix_type)
-
         if codret > 0:
             raise IntegrationError("MECANONLINE10_1")
 
@@ -339,6 +309,7 @@ class IncrementalSolver:
         return 1.0 * field
 
     @profile
+    @NonLinearFeature.check_once
     def solve(self, matrix_type, matrix=None):
         """Solve the iteration.
 
@@ -353,7 +324,6 @@ class IncrementalSolver:
             internal state variables (VARI_ELGA), Cauchy stress (SIEF_ELGA),
             Jacobian matrix used (if computed).
         """
-
         # we need the matrix to have scaling factor for Lagrange
         if not matrix:
             stiffness = self.computeJacobian(matrix_type)
@@ -367,9 +337,10 @@ class IncrementalSolver:
         resi_state, internVar, stress = self.computeResidual(scaling)
 
         # evaluate convergence
-        self.convManager.evalNormResidual(resi_state)
+        convManager = self.get_feature(FOP.ConvergenceManager)
+        convManager.evalNormResidual(resi_state)
 
-        if not self.convManager.hasConverged():
+        if not convManager.hasConverged():
             # Time at end of current step
             time_curr = self.phys_state.time + self.phys_state.time_step
 
@@ -379,9 +350,10 @@ class IncrementalSolver:
             diriBCs = disc_comp.getIncrementalDirichletBC(time_curr, primal_curr)
 
             # solve linear system
+            linear_solver = self.get_feature(FOP.LinearSolver)
             if not stiffness.isFactorized():
-                self.linear_solver.factorize(stiffness)
-            solution = self.linear_solver.solve(resi_state.resi, diriBCs)
+                linear_solver.factorize(stiffness)
+            solution = linear_solver.solve(resi_state.resi, diriBCs)
 
             # use line search
             primal_incr = self.lineSearch(solution)

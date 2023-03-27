@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,15 +17,12 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-from libaster import deleteTemporaryObjects, setFortranLoggingLevel, resetFortranLoggingLevel
+from libaster import deleteTemporaryObjects, resetFortranLoggingLevel, setFortranLoggingLevel
 
-from ...Objects import NonLinearResult, PhysicalProblem, LinearSolver
+from ...NonLinear import NonLinearFeature
+from ...NonLinear import NonLinearOptions as FOP
 from ...Supervis import ConvergenceError, ExecuteCommand, IntegrationError
-from ...Utilities import logger, no_new_attributes, profile, logger
-from .contact_manager import ContactManager
-from .physical_state import PhysicalState
-from .step_solver import StepSolver
-from .storage_manager import StorageManager
+from ...Utilities import logger, no_new_attributes, profile
 
 """
 Notations to use for mechanics.
@@ -53,30 +50,30 @@ For example for the displacement field and a Newton solver.
 """
 
 
-class NonLinearSolver:
+class NonLinearSolver(NonLinearFeature):
     """Main object to solve a non linear problem."""
 
-    step_rank = stepper = param = phys_state = None
-    phys_pb = None
-    linear_solver = None
-    storage_manager = contact_manager = None
+    provide = FOP.ProblemSolver
+    required_features = [
+        FOP.PhysicalProblem,
+        FOP.PhysicalState,
+        FOP.Storage,
+        FOP.StepSolver,
+        FOP.TimeStepper,
+    ]
+
+    step_rank = param = None
     current_matrix = None
     __setattr__ = no_new_attributes(object.__setattr__)
 
     def __init__(self):
-        self.phys_state = PhysicalState()
-        self.storage_manager = StorageManager(NonLinearResult())
-        self.contact_manager = ContactManager(None, None)
+        super().__init__()
 
-    def setPhysicalProblem(self, model, material, carael=None):
-        """Define the physical problem properties.
-
-        Arguments:
-            model (Model): Model object.
-            material (MaterialField): Material field.
-            carael (ElementaryCharacteristics, optional): Elementary characteristics.
-        """
-        self.phys_pb = PhysicalProblem(model, material, carael)
+    # convenient shortcuts properties
+    @property
+    def stepper(self):
+        """:py:class:`.stepper.TimeStepper`: object to be used."""
+        return self.get_feature(FOP.TimeStepper)
 
     def setKeywords(self, **args):
         """Set parameters from user keywords.
@@ -86,25 +83,6 @@ class NonLinearSolver:
         """
         self.param = args
 
-    def setStepper(self, stepper):
-        """Set time stepper object.
-
-        Arguments:
-            stepper (:py:class:`.stepper.TimeStepper`): object to be used.
-        """
-        self.stepper = stepper
-
-    def createContactManager(self, definition):
-        """Create contact manager.
-
-        Arguments:
-            definition (ContactNew): .
-        """
-        self.contact_manager = ContactManager(definition, self.phys_pb)
-
-        fed_defi = definition.getFiniteElementDescriptor()
-        self.phys_pb.getListOfLoads().addContactLoadDescriptor(fed_defi, None)
-
     def setBehaviourProperty(self, keywords):
         """Set keywords for behaviour
 
@@ -113,50 +91,13 @@ class NonLinearSolver:
         """
         self.phys_pb.computeBehaviourProperty(keywords, "NON", 2)
 
-    def setLinearSolver(self, solver=None, keywords=None):
-        """Set linear solver from keywords or directly.
-
-        Arguments:
-            solver (LinearSolver): a linear solver object
-            keywords (dict) : list of keywords to create linear solver
-        """
-        if solver:
-            self.linear_solver = solver
-        elif keywords is not None:
-            self.linear_solver = LinearSolver.factory("STAT_NON_LINE", keywords)
-        else:
-            raise KeyError("At least one argument is expected: solver or keywords")
-
-    def getStepSolver(self, step_rank):
-        """Return a solver for the next step.
-
-        Arguments:
-            step_rank (int): index of the step.
-
-        Returns:
-            StepSolver: object used to solve the step.
-        """
-
-        solv = StepSolver()
-        solv.setPhysicalProblem(self.phys_pb)
-        solv.setPhysicalState(self.phys_state)
-        solv.setLinearSolver(self.linear_solver)
-        solv.setParameters(self.param)
-        solv.setContactManager(self.contact_manager)
-
-        matr_update_step = self._get("NEWTON", "REAC_ITER", 1)
-        if step_rank % matr_update_step != 0:
-            solv.current_matrix = self.current_matrix
-
-        return solv
-
     def getResult(self):
         """Get the Result object.
 
         Returns:
             NonLinearResult: the Result object.
         """
-        return self.storage_manager.getResult()
+        return self.get_feature(FOP.Storage).getResult()
 
     def hasFinished(self):
         """Tell if there are steps to be computed.
@@ -198,12 +139,15 @@ class NonLinearSolver:
         Arguments:
             time (float): current (pseudo)-time.
         """
-        self.storage_manager.storeState(time, self.phys_pb, self.phys_state)
-        self.storage_manager.completed()
+        storage_manager = self.get_feature(FOP.Storage)
+        storage_manager.storeState(time, self.phys_pb, self.phys_state)
+        storage_manager.completed()
 
     @profile
-    def _initializeRun(self):
+    def initialize(self):
         """Initialize run"""
+        self.check_features()
+
         self.phys_state.readInitialState(self.phys_pb, self.param)
         self.step_rank = 0
         self._storeRank(self.phys_state.time)
@@ -216,14 +160,20 @@ class NonLinearSolver:
         self.setLoggingLevel(self._get("INFO"))
         self.phys_pb.computeListOfLoads()
         self.phys_pb.computeDOFNumbering()
-        self._initializeRun()
+        self.initialize()
+
+        solv = self.get_feature(FOP.StepSolver)
+
+        matr_update_step = self._get("NEWTON", "REAC_ITER", 1)
 
         # Solve nonlinear problem
         while not self.hasFinished():
             timeEndStep = self.stepper.getNext()
             self.phys_state.time_step = timeEndStep - self.phys_state.time
 
-            solv = self.getStepSolver(self.step_rank + 1)
+            solv.initialize()
+            if (self.step_rank + 1) % matr_update_step:
+                solv.current_matrix = self.current_matrix
 
             try:
                 solv.solve()
@@ -233,7 +183,7 @@ class NonLinearSolver:
                 except:
                     self.stepper.split(2)
             else:
-                self.phys_state.update(solv.getPhysicalState())
+                self.phys_state.update(self.phys_state)
                 self.step_rank += 1
                 self._storeRank(timeEndStep)
                 self.stepper.completed()

@@ -21,4 +21,4 @@
 Useful objetcts used for non linear operators.
 """
 
-from .base_features import BaseFeature, BaseFeaturesOptions
+from .nonl_features import NonLinearFeature, NonLinearOptions
