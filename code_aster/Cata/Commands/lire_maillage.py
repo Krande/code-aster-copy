@@ -39,12 +39,12 @@ keywords = dict(
     b_format_autre=BLOC(
         condition=""" ( not equal_to("FORMAT", 'MED') ) """,
         fr=tr("Informations complémentaires pour la lecture ASTER."),
-        UNITE=SIMP(statut="f", typ=UnitType(), defaut=20, inout="in"),
+        UNITE=SIMP(statut="f", typ=UnitType(), defaut=20, inout="in", val_min=2),
     ),
     b_format_med=BLOC(
         condition=""" ( equal_to("FORMAT", 'MED') ) """,
         fr=tr("Informations complémentaires pour la lecture MED."),
-        UNITE=SIMP(statut="f", typ=UnitType("med"), defaut=20, inout="in"),
+        UNITE=SIMP(statut="f", typ=UnitType("med"), defaut=20, inout="in", val_min=2),
         # Pour une lecture dans un fichier MED, on peut préciser le nom sous lequel
         # le maillage y a été enregistré. Par défaut, on va le chercher sous le
         # nom du concept à créer.

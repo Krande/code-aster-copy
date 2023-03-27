@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -547,9 +547,9 @@ class SimpleKeyword(PartOfSyntax):
         super(SimpleKeyword, self).__init__(curDict)
         if "val_min" in self._definition or "val_max" in self._definition:
             typ = self._definition["typ"]
-            assert typ in ("I", "R", "C"), "'val_min/val_max' not allowed for type" " '{0}'".format(
-                typ
-            )
+            assert typ in ("I", "R", "C") or issubclass(
+                typ, UnitBaseType
+            ), "'val_min/val_max' not allowed for type" " '{0}'".format(typ)
 
     def getCataTypeId(self):
         """Get the type id of SimpleKeyword.
