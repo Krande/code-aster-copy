@@ -809,6 +809,17 @@ class DiscreteComputation:
     def __init__(self, arg0):
         pass
 
+    def getAcousticDirichletBC(self, time=0.0):
+        """Return the imposed acoustic vector used to remove imposed DDL
+        *for internal use - prefer to use getDirichletBC*
+
+        Arguments:
+              time (float): Current time (default 0.0)
+
+        Returns:
+              FieldOnNodesComplex: imposed accoustic vector
+        """
+
     def getCompressibilityMatrix(self, groupOfCells=[]):
         """Return the elementary matrices for compressibility acoustic matrix.
         Option MASS_ACOU.
@@ -856,16 +867,6 @@ class DiscreteComputation:
 
         Returns:
             ElementaryMatrixDisplacementReal: contact and friction elementary matrix
-        """
-
-    def getDirichletBC(self, time=0.0):
-        """Return the imposed displacement vector used to remove imposed DDL
-
-        Arguments:
-              time (float): Current time (default 0.0)
-
-        Returns:
-              FieldOnNodes: imposed displacement vector
         """
 
     def getDualDisplacement(self, disp_curr, scaling=1.0):
@@ -1162,6 +1163,17 @@ class DiscreteComputation:
             ElementaryMatrixReal: elementary damping matrix
         """
 
+    def getMechanicalDirichletBC(self, time=0.0):
+        """Return the imposed displacement vector used to remove imposed DDL
+        *for internal use - prefer to use getDirichletBC*
+
+        Arguments:
+              time (float): Current time (default 0.0)
+
+        Returns:
+              FieldOnNodesReal: imposed displacement vector
+        """
+
     def getMechanicalMassMatrix(self, diagonal, time=0.0, groupOfCells=[]):
         """Return the elementary matrices for mechanical mass matrix
         Option MASS_MECA.
@@ -1244,6 +1256,17 @@ class DiscreteComputation:
             tuple (tuple): return code error (FieldOnCellsLong),
             error code flag (int),
             elementary tangent matrix (ElementaryMatrixDisplacementReal)
+        """
+
+    def getThermalDirichletBC(self, time=0.0):
+        """Return the imposed thermal vector used to remove imposed DDL
+        *for internal use - prefer to use getDirichletBC*
+
+        Arguments:
+              time (float): Current time (default 0.0)
+
+        Returns:
+              FieldOnNodesReal: imposed thermal vector
         """
 
     def getTransientThermalForces(self, time, time_step, theta, previousPrimalField=None):
@@ -1807,9 +1830,6 @@ class FieldOnCellsReal(DataField):
             FieldOnCellsReal
         """
 
-    def toSimpleFieldOnCells(self):
-        pass
-
     def getComponents(self):
         """Get list of components
 
@@ -1919,6 +1939,9 @@ class FieldOnCellsReal(DataField):
         Returns:
             int: number of element in the field
         """
+
+    def toSimpleFieldOnCells(self):
+        pass
 
     def transform(self, func):
         """Apply Function to each value of _ValuesList of the FieldOnCells object.
@@ -10780,9 +10803,11 @@ class PhysicalProblem:
     def __init__(self, *args, **kwargs):
         """Overloaded function.
 
-        1. __init__(self: libaster.PhysicalProblem, arg0: libaster.Model, arg1: libaster.MaterialField) -> None
+        1. __init__(self: libaster.PhysicalProblem, arg0: libaster.BaseDOFNumbering) -> None
 
-        2. __init__(self: libaster.PhysicalProblem, arg0: libaster.Model, arg1: libaster.MaterialField, arg2: libaster.ElementaryCharacteristics) -> None
+        2. __init__(self: libaster.PhysicalProblem, arg0: libaster.Model, arg1: libaster.MaterialField) -> None
+
+        3. __init__(self: libaster.PhysicalProblem, arg0: libaster.Model, arg1: libaster.MaterialField, arg2: libaster.ElementaryCharacteristics) -> None
         """
 
     def addDirichletBC(self, *args, **kwargs):
