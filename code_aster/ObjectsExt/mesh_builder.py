@@ -33,7 +33,7 @@ The functions are exposed as class-method in the :py:class:`Mesh` class.
 import math
 
 from .medctoaster import MEDCouplingMeshHelper
-from ..MacroCommands.macr_adap_mail_ops import HOMARD_INFOS
+
 from ..Utilities import medcoupling as medc
 
 MEDCTOL = 1.0e-12

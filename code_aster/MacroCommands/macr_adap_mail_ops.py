@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -53,12 +53,14 @@ class HomardInfoStack:
     - Call MACR_ADAP_MAIL...
 
     If the informations will not be reused, just forget them by calling
-    `HOMARD_INFOS.pop()`.
+    `HOMARD_INFOS.pop().clean()`.
     Otherwise:
 
     - Save these informations for further: `infos = HOMARD_INFOS.pop()`.
 
     - On the next step, assign them using `HOMARD_INFOS.use(infos)`.
+
+    - Cleanup: `infos.clean()`.
     """
 
     def __init__(self) -> None:
@@ -122,10 +124,6 @@ class HomardInfo:
         self._objects = {}
         self._run_params = []
         self._run_idx = 0
-
-    def __del__(self):
-        """Cleanup"""
-        self.clean()
 
     def new_run(self):
         """Initialize variables for a new run."""
@@ -1329,14 +1327,6 @@ def macr_adap_mail_ops(self, INFO, VERSION_HOMARD, LOGICIEL=None, MAILLAGE_FRONT
        INFO = 4 : aucun message pour les commandes annexes
                   2nd niveau de message pour l'execution de HOMARD
     """
-    #
-    # print 'glop'
-    # print args
-    # print args.keys()
-    # if len (args.keys())>0 : print args.keys()[0]
-    # print args.get("MAILLAGE")
-    #
-    #
     # ====================================================================
     # 1. Prealables
     # ====================================================================
