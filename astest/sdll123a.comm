@@ -310,17 +310,10 @@ gyro = GYOM.EXTR_MATR()
 # -- les lignes ind_nolag correspondent aux equations sur
 # -- les DDL physiques
 
-nom_nume = NUMEDDL.getName().strip()
-Nume = aster.getvectjev(nom_nume.ljust(8) + "      .NUME.DELG        ")
-ind_lag1 = []
-ind_nolag = []
-print("Nume=", Nume)
-
-for i1 in range(len(Nume)):
-    if Nume[i1] > -0.5:
-        ind_nolag.append(i1)
-    if (Nume[i1] < -0.5) & (Nume[i1] > -1.5):
-        ind_lag1.append(i1)
+ind_lag1 = NUMEDDL.getRowsAssociatedToLagrangeMultipliers()
+# remove double lagranges
+ind_lag1 = [ind_lag1[i] for i in (0,1,2,6,7,8)]
+ind_nolag = NUMEDDL.getRowsAssociatedToPhysicalDofs()
 
 # -- On recupere la matrice des contraintes "rig[ind_lag1][:,ind_nolag]"
 # -- et on la complete par des zeros.

@@ -144,7 +144,7 @@ MA[nb_raff] = DEFI_GROUP(
     reuse=MA[nb_raff],
     MAILLAGE=MA[nb_raff],
     CREA_GROUP_NO=_F(
-        NOM="NDFGF3", OPTION="ENV_SPHERE", POINT=(0.2, 0.25), RAYON=r_raff / 2, PRECISION=r_raff / 2
+        NOM="NDFGF3", OPTION="ENV_SPHERE", POINT=(0.2, 0.25), RAYON=r_raff / 8, PRECISION=r_raff / 8
     ),
 )
 
@@ -155,33 +155,18 @@ MA[nb_raff] = DEFI_GROUP(
     CREA_GROUP_MA=_F(NOM="MDFGF3", OPTION="APPUI", GROUP_NO="NDFGF3", TYPE_APPUI="TOUT"),
 )
 
-# on aimerait bien faire un TEST_RESU mais TEST_RESU ne fonctionne pas sur les cartes
-# faut attendre la resolution de la fiche 18997
-# ni CREA_TABLE...
-# alors on bidouille un truc en python :
-# creation d'une table contenant le plus petit diametre non nul
+maille = MA[4].getCellName(MA[4].getCells("MDFGF3")[0])
+DEFI_GROUP(MAILLAGE=MA[4], reuse=MA[4], CREA_GROUP_MA=_F(NOM="diam_min", MAILLE=maille))
 
-diam = aster.getvectjev(DIAM[4].getName() + "           .VALE        ")
-
-
-def notzero(n):
-    return n != 0
-
-
-diam = list(filter(notzero, diam))
-
-d = min(diam)
-
-TAB = CREA_TABLE(LISTE=_F(LISTE_R=(d,), PARA="DIAM"))
-
-IMPR_TABLE(TABLE=TAB)
-
-TEST_TABLE(
-    REFERENCE="ANALYTIQUE",
-    VALE_CALC=0.00441941738242,
-    VALE_REFE=4.4194173824159229e-3,
-    NOM_PARA="DIAM",
-    TABLE=TAB,
+TEST_RESU(
+    CARTE=_F(
+        REFERENCE="ANALYTIQUE",
+        NOM_CMP="X1",
+        GROUP_MA="diam_min",
+        VALE_CALC=0.00441941738242,
+        VALE_REFE=4.4194173824159229e-3,
+        CHAM_GD=DIAM[4],
+    )
 )
-
+    
 FIN()

@@ -294,18 +294,12 @@ LSTSSTRUC = MODLGENR.LIST_LIAIS_STRUCT()
 # recuperation du nombre de modes total, dynamique et d'interface
 # pour chaque macro-element
 
-MDYNM1 = aster.getvectjev(MODES.getName() + "           .ORDR")
-MSTAM1 = aster.getvectjev(MODPHY1.getName() + "           .ORDR")
-
-MDYNM1 = len(MDYNM1)
-MSTAM1 = len(MSTAM1)
+MDYNM1 = MODES.getNumberOfIndexes()
+MSTAM1 = MODPHY1.getNumberOfIndexes()
 MTOT_M1 = MDYNM1 + MSTAM1
 
-MDYNM2 = aster.getvectjev(MODES.getName() + "           .ORDR")
-MSTAM2 = aster.getvectjev(MODPHY2.getName() + "           .ORDR")
-
-MDYNM2 = len(MDYNM2)
-MSTAM2 = len(MSTAM2)
+MDYNM2 = MODES.getNumberOfIndexes()
+MSTAM2 = MODPHY2.getNumberOfIndexes()
 MTOT_M2 = MDYNM2 + MSTAM2
 
 # INFOMACR2=MACR2.NBRE_MODES()

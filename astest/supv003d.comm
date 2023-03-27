@@ -20,7 +20,7 @@
 DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
 
 #######################################################################
-# cas test du superviseur dedie a l appel de la methode getvectjev    #
+# cas test du superviseur                                             #
 # Il valide aussi la recuperation en poursuite des parametres python  #
 # de la premiere execution en plus des concepts ASTER standards       #
 #######################################################################
@@ -29,19 +29,19 @@ import aster
 
 MA = LIRE_MAILLAGE(FORMAT="ASTER")
 
-coord = aster.getvectjev(MA.getName() + ".COORDO    .VALE        ")
-assert min(coord) == 0.0, coord
-assert max(coord) == 0.1, coord
+coord = MA.getCoordinates().getValues()
+assert(min(coord) == 0.0, coord)
+assert(max(coord) == 0.1, coord)
 
-conn = aster.getcolljev(MA.getName() + ".CONNEX         ")
-assert list(conn.keys()) == [1], conn
-assert conn[1] == (1, 2), conn
+conn = MA.getConnectivity()
+assert(MA.getNumberOfCells() == 1)
+assert(conn[0] == (1, 2), conn)
 
-nommai = aster.getvectjev(MA.getName() + ".NOMMAI                 ")
-assert nommai == ("ELN1    ",), nommai
+nommai = MA.getGroupsOfCells()
+assert(nommai == ("ELN1",), nommai)
 
-nomno = aster.getvectjev(MA.getName() + ".NOMNOE                 ")
-assert nomno == ("NO1     ", "NO2     "), nomno
+nomno = MA.getGroupsOfNodes()
+assert(nomno == ("NO1", "NO2"), nomno)
 
 UN = 1
 DEUX = 2
@@ -49,14 +49,14 @@ TUP = (10.0, 11.0, 12.0, 13.0)
 
 I02 = DEFI_LIST_ENTI(VALE=UN)
 I03 = DEFI_LIST_ENTI(VALE=(5, 6, 7))
-vale = aster.getvectjev(I02.getName() + "           .VALE")
-assert vale == (1,), vale
+
+vale = I02.getValues()
+assert(vale == (1,), vale)
 
 FO3 = DEFI_FONCTION(NOM_PARA="X", NOM_RESU="Y", VALE=TUP)
 
 # on teste la methode Valeurs de la SD fonction
 # (on fait un traitement pour retrouver l'ordre du VALE)
-# Valeurs fait appel a getvectjev (voir sa definition dans accas.capy)
 lx, ly = FO3.Valeurs()
 lv = []
 for i in range(len(lx)):

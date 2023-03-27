@@ -36,5 +36,13 @@ class GLRCDefinition(ExecuteCommand):
         """
         self._result = Material()
 
+    def post_exec(self, keywords):
+        """Execute the command.
+
+        Arguments:
+            keywords (dict): User's keywords.
+        """
+
+        self._result.build()
 
 DEFI_GLRC = GLRCDefinition.run

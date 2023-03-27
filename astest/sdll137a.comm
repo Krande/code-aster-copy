@@ -540,10 +540,6 @@ MODEDIR = CALC_MODES(
 )
 
 
-# tmodes = aster.getvectjev("MODEDIR            .FREQ        ")
-# tmodes[0] = 7.7807E+0
-# tmodes[1] = 3.2852E+1
-
 TEST_RESU(
     RESU=(
         _F(

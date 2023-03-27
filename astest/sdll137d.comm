@@ -692,11 +692,6 @@ MODEDIR = CALC_MODES(
     SOLVEUR_MODAL=_F(METHODE="TRI_DIAG"),
 )
 
-# tmodes = aster.getvectjev("MODEDIR            .FREQ        ")
-# print 'tmodes : ',tmodes
-tmodes0 = 7.78074
-tmodes1 = 32.8520
-
 TEST_RESU(
     RESU=(
         _F(

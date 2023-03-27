@@ -42,10 +42,6 @@ tmpa = A_EULER.getValues()
 a_euler = NP.array(tmpa[len(tmpa) // 2 : len(tmpa)])
 del tmpa
 
-# tmpf = aster.getvectjev('FC_EULER           .VALE        ')
-# fchoc_euler = NP.array(tmpf[len(tmpf)//2:len(tmpf)])
-# del tmpf
-
 E_pot_euler = 1.0 / 2 * k_rappel * d_euler**2
 E_cin_euler = 1.0 / 2 * m * v_euler**2
 E_choc_euler = 1.0 / 2 * kn_choc * (((d_euler - jeu_choc) + NP.abs(d_euler - jeu_choc)) / 2) ** 2
@@ -78,10 +74,6 @@ del tmpv
 tmpa = A_ADAPT.getValues()
 a_adapt = NP.array(tmpa[len(tmpa) // 2 : len(tmpa)])
 del tmpa
-
-# tmpf = aster.getvectjev('FC_ADAPT           .VALE        ')
-# fchoc_adapt = NP.array(tmpf[len(tmpf)//2:len(tmpf)])
-# del tmpf
 
 E_pot_adapt = 1.0 / 2 * k_rappel * d_adapt**2
 E_cin_adapt = 1.0 / 2 * m * v_adapt**2

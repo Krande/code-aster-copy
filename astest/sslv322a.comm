@@ -118,12 +118,6 @@ Fiss_01 = DEFI_FOND_FISS(
     LEVRE_SUP=_F(GROUP_MA="FACE1"),
     LEVRE_INF=_F(GROUP_MA="FACE2"),
 )
-# # POUR AFFICHER LES COORDONEES DES NOEUDS DU FOND
-# ff =  aster.getvectjev("Fiss_01 .FONDFISS       ")
-# nb_pt=len(ff)/4
-# for i in range(nb_pt) :
-#    coor = [ff[4*i], ff[4*i+1],ff[4*i+2],ff[4*i+3]]
-#    print coor
 
 rinf = 2.0 * h
 rsup = 4.0 * h

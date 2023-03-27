@@ -93,14 +93,15 @@ l_numeros_noeuds_fissure = []
 # Noms des noeuds du fond
 l_noms_noeuds_fissure = FISS0.sdj.FOND_NOEU.get()
 
+coords = M.getCoordinates().getValues()
+
 for i in range(0, len(ndfon)):
     nom = l_noms_noeuds_fissure[i].strip()
     index = index_by_nodename[nom]
     l_numeros_noeuds_fissure.append(index)
 
-    coor = aster.getvectjev(
-        M.getName() + ".COORDO    .VALE        ", l_numeros_noeuds_fissure[i] * 3, 3
-    )
+    coor = coords[l_numeros_noeuds_fissure[i] * 3:l_numeros_noeuds_fissure[i] * 3 + 3]
+
     norme = sqrt(coor[0] ** 2 + coor[1] ** 2 + coor[2] ** 2)
 
     vdirX_ana.append(coor[0] / norme)
