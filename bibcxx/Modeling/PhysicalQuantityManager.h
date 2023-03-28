@@ -28,38 +28,28 @@
 
 #include "MemoryManager/JeveuxCollection.h"
 
-template < typename T >
-class Singleton {
-  public:
-    static T &Class() {
-        static T theSingle;
-        return theSingle;
-    }
-};
-
 /**
  * @class PhysicalQuantityManager
  * @brief Class to manage "catalogue" interactions
  * @author Nicolas Sellenet
  */
-class PhysicalQuantityManager : public Singleton< PhysicalQuantityManager > {
+class PhysicalQuantityManager {
   private:
-    const JeveuxCollectionChar8 _nameOfCmp;
-    const NamesMapChar8 _nameOfPhysicalQuantity;
-
-    PhysicalQuantityManager();
+    static NamesMapChar8 _nameOfPhysicalQuantity;
+    static JeveuxCollectionChar8 _nameOfCmp;
 
   public:
-    friend class Singleton< PhysicalQuantityManager >;
 
-    const JeveuxCollectionObjectChar8 &
-    getComponentNames( const ASTERINTEGER &quantityNumber ) const;
+    static bool hasQuantityOfName( const std::string );
 
-    ASTERINTEGER getNumberOfComponents( const ASTERINTEGER &quantityNumber ) const;
+    static std::string getPhysicalQuantityName( const ASTERINTEGER );
 
-    ASTERINTEGER getNumberOfEncodedInteger( const ASTERINTEGER &quantityNumber ) const;
+    static ASTERINTEGER getNumberOfEncodedInteger( const ASTERINTEGER );
 
-    std::string getPhysicalQuantityName( const ASTERINTEGER &quantityNumber ) const;
+    static ASTERINTEGER getNumberOfComponents( const ASTERINTEGER );
+
+    static const VectorString getComponentNames( const ASTERINTEGER );
+
 };
 
 #endif /* PHYSICALQUANTITYMANAGER_H_ */

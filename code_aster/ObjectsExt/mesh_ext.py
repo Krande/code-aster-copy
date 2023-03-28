@@ -233,17 +233,14 @@ class ExtendedMesh:
 
     def LIST_GROUP_MA(self):
         """Retourne la liste des groupes de mailles sous la forme :
-        [ (gma1, nb mailles gma1, dime max des mailles gma1), ...]"""
-        catama = {x.strip(): y for x, y in aster.getcolljev("&CATA.TM.TMDIM").items()}
+        [ (gma1, nb mailles gma1), ...]"""
         cell_groups = self.getGroupsOfCells()
         if not cell_groups:
             return []
-        print(catama)
         ngpma = []
         for grp in cell_groups:
             cells = self.getCells(grp)
-            dim = max([catama[self.getCellTypeName(cell)] for cell in cells])
-            ngpma.append((grp.strip(), len(cells), dim))
+            ngpma.append((grp.strip(), len(cells)))
         return ngpma
 
     def buildFromMedCouplingMesh(self, mcmesh, verbose=0):

@@ -551,5 +551,5 @@ def get_number_PC(parent, macr_elem, lgrpc):
     mail = macr_elem.getDOFNumbering().getMesh()
     assert mail is not None, "impossible de récupérer le maillage du macro-élément"
     lgrpma = mail.LIST_GROUP_MA()
-    result = sum([nbel for name, nbel, dim in lgrpma if name in lgrpc])
+    result = sum([nbel for name, nbel in lgrpma if name in lgrpc])
     return result

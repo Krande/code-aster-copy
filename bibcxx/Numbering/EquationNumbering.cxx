@@ -122,7 +122,7 @@ std::map< ASTERINTEGER, std::string > EquationNumbering::_getAllComponentsNumber
 
     CALLO_DISMOI( questi, getName(), typeco, &repi, repk, arret, &ier );
 
-    auto list_cmp = PhysicalQuantityManager::Class().getComponentNames( repi )->toVector();
+    auto list_cmp = PhysicalQuantityManager::getComponentNames( repi );
     int nb_cmp = list_cmp.size();
 
     std::map< ASTERINTEGER, std::string > ret;

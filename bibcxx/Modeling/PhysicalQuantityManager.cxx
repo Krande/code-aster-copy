@@ -25,31 +25,36 @@
 
 #include "aster_fort_utils.h"
 
-PhysicalQuantityManager::PhysicalQuantityManager()
-    : _nameOfCmp( JeveuxCollectionChar8( "&CATA.GD.NOMCMP" ) ),
-      _nameOfPhysicalQuantity( NamesMapChar8( "&CATA.GD.NOMGD" ) ) {};
+NamesMapChar8 PhysicalQuantityManager::_nameOfPhysicalQuantity( "&CATA.GD.NOMGD" );
+JeveuxCollectionChar8 PhysicalQuantityManager::_nameOfCmp( "&CATA.GD.NOMCMP" );
 
-const JeveuxCollectionObjectChar8 &
-PhysicalQuantityManager::getComponentNames( const ASTERINTEGER &quantityNumber ) const {
-    _nameOfCmp->build();
-    return ( *_nameOfCmp )[quantityNumber];
+bool PhysicalQuantityManager::hasQuantityOfName( const std::string name ) {
+    return _nameOfPhysicalQuantity->getIndexFromString( name ) != -1;
 };
 
-ASTERINTEGER
-PhysicalQuantityManager::getNumberOfComponents( const ASTERINTEGER &quantityNumber ) const {
-    return _nameOfCmp->getObjectSize( quantityNumber );
+std::string PhysicalQuantityManager::getPhysicalQuantityName( const ASTERINTEGER quantityNumber ) {
+    std::cout << quantityNumber << " " << _nameOfPhysicalQuantity->size() << std::endl;
+    if ( quantityNumber <= 0 || quantityNumber > _nameOfPhysicalQuantity->size() )
+        throw std::runtime_error( "Not a known physical quantity" );
+    return _nameOfPhysicalQuantity->getStringFromIndex( quantityNumber );
 };
 
-ASTERINTEGER
-PhysicalQuantityManager::getNumberOfEncodedInteger( const ASTERINTEGER &quantityNumber ) const {
+ASTERINTEGER PhysicalQuantityManager::getNumberOfEncodedInteger( const ASTERINTEGER quantityNumber ) {
     ASTERINTEGER toReturn = 0;
     toReturn = CALL_NBEC( &quantityNumber );
     return toReturn;
 };
 
-std::string
-PhysicalQuantityManager::getPhysicalQuantityName( const ASTERINTEGER &quantityNumber ) const {
-    if ( quantityNumber <= 0 || quantityNumber > _nameOfPhysicalQuantity->size() )
-        throw std::runtime_error( "Not a known physical quantity" );
-    return _nameOfPhysicalQuantity->getStringFromIndex( quantityNumber );
+ASTERINTEGER PhysicalQuantityManager::getNumberOfComponents( const ASTERINTEGER quantityNumber ) {
+    return _nameOfCmp->getObjectSize( quantityNumber );
+};
+
+const VectorString PhysicalQuantityManager::getComponentNames( const ASTERINTEGER quantityNumber ) {
+    _nameOfCmp->build();
+    auto vc = ( *_nameOfCmp )[quantityNumber]->toVector();
+    VectorString result;
+    result.reserve( vc.size() );
+    for ( int i=0; i < vc.size(); i++ )
+        result.push_back( vc[i].toString() );
+    return result;
 };

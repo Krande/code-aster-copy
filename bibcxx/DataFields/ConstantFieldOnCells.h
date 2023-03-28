@@ -339,7 +339,7 @@ class ConstantFieldOnCells : public DataField {
     std::string getPhysicalQuantityName() const {
         _descriptor->updateValuePointer();
         ASTERINTEGER gdeur = ( *_descriptor )[0];
-        return PhysicalQuantityManager::Class().getPhysicalQuantityName( gdeur );
+        return PhysicalQuantityManager::getPhysicalQuantityName( gdeur );
     };
 
     /**
@@ -357,11 +357,10 @@ class ConstantFieldOnCells : public DataField {
 
         ASTERINTEGER nbZoneMax = ( *_descriptor )[1];
         ASTERINTEGER gdeur = ( *_descriptor )[0];
-        const auto name1 = PhysicalQuantityManager::Class().getPhysicalQuantityName( gdeur );
-        ASTERINTEGER nec = PhysicalQuantityManager::Class().getNumberOfEncodedInteger( gdeur );
-        const auto &compNames = PhysicalQuantityManager::Class().getComponentNames( gdeur );
-        compNames->updateValuePointer();
-        const ASTERINTEGER nbCmpMax = compNames->size();
+        const auto name1 = PhysicalQuantityManager::getPhysicalQuantityName( gdeur );
+        ASTERINTEGER nec = PhysicalQuantityManager::getNumberOfEncodedInteger( gdeur );
+        const auto &compNames = PhysicalQuantityManager::getComponentNames( gdeur );
+        const ASTERINTEGER nbCmpMax = compNames.size();
         VectorString cmpToReturn;
         cmpToReturn.reserve( 30 * nec );
         std::vector< ValueType > valToReturn;
@@ -373,7 +372,7 @@ class ConstantFieldOnCells : public DataField {
             ASTERINTEGER pos = 0;
             for ( const auto &val : vecOfComp ) {
                 if ( val == 1 ) {
-                    cmpToReturn.push_back( ( *compNames )[pos + i * 30].toString() );
+                    cmpToReturn.push_back( compNames[pos + i * 30] );
                     const ASTERINTEGER posInVale = pos + i * 30 + nbCmpMax * position;
                     valToReturn.push_back( ( *_values )[posInVale] );
                 }
@@ -392,10 +391,9 @@ class ConstantFieldOnCells : public DataField {
         ASTERINTEGER nbZoneMax = ( *_descriptor )[1];
         ASTERINTEGER gdeur = ( *_descriptor )[0];
         auto size = ( *_descriptor )[2];
-        ASTERINTEGER nec = PhysicalQuantityManager::Class().getNumberOfEncodedInteger( gdeur );
-        const auto &compNames = PhysicalQuantityManager::Class().getComponentNames( gdeur );
-        compNames->updateValuePointer();
-        const ASTERINTEGER nbCmpMax = compNames->size();
+        ASTERINTEGER nec = PhysicalQuantityManager::getNumberOfEncodedInteger( gdeur );
+        const auto &compNames = PhysicalQuantityManager::getComponentNames( gdeur );
+        const ASTERINTEGER nbCmpMax = compNames.size();
 
         std::vector< ConstantFieldValues< ValueType > > vectorOfConstantFieldValues;
         vectorOfConstantFieldValues.reserve( size );
@@ -412,7 +410,7 @@ class ConstantFieldOnCells : public DataField {
                 ASTERINTEGER pos = 0;
                 for ( const auto &val : vecOfComp ) {
                     if ( val == 1 ) {
-                        cmpToReturn.push_back( ( *compNames )[pos + i * 30].toString() );
+                        cmpToReturn.push_back( compNames[pos + i * 30] );
                         const ASTERINTEGER posInVale = pos + i * 30 + nbCmpMax * position;
                         valToReturn.push_back( ( *_values )[posInVale] );
                     }

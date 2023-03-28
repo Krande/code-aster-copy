@@ -27,7 +27,7 @@ import copy
 
 import numpy
 
-import aster
+from ..Objects import PhysicalQuantityManager
 
 #  1) Utilitaires pour vérifier certaines propriétés.
 #     Ces utilitaires ne provoquent pas d'arret mais écrivent des messages dans un "checker"
@@ -158,36 +158,26 @@ def sdu_monotone(seqini):
 
 def sdu_verif_nom_gd(nomgd):
     """vérifie que nomgd est bien un nom de grandeur"""
-    nomgd2 = nomgd.strip()
-    ptn = aster.getvectjev("&CATA.GD.NOMGD")
-    ok = False
-    for x in ptn:
-        if x.strip() == nomgd2:
-            ok = True
-            break
-    if not ok:
+    if not PhysicalQuantityManager.hasQuantityOfName(nomgd.strip()):
         checker.err(ojb, "condition non respectée : " + nomgd + " n'est pas un nom de grandeur.")
 
 
 def sdu_nom_gd(numgd):
     """retourne le nom de la grandeur de numéro (numgd)"""
     assert numgd > 0 and numgd < 1000, numgd
-    ptn = aster.getvectjev("&CATA.GD.NOMGD")
-    return ptn[numgd - 1].strip()
+    return PhysicalQuantityManager.getPhysicalQuantityName(numgd).strip()
 
 
 def sdu_licmp_gd(numgd):
     """retourne la liste des cmps de la grandeur de numéro (numgd)"""
-    nomgd = sdu_nom_gd(numgd)
-    nocmp = aster.getcolljev("&CATA.GD.NOMCMP")
-    return nocmp[nomgd.ljust(24)]
+    assert numgd > 0 and numgd < 1000, numgd
+    return PhysicalQuantityManager.getComponentNames(numgd)
 
 
 def sdu_nb_ec(numgd):
     """retourne le nombre d'entiers codés pour décrire les composantes de la grandeur (numgd)"""
     assert numgd > 0 and numgd < 1000, numgd
-    descrigd = aster.getcolljev("&CATA.GD.DESCRIGD")
-    return descrigd[numgd][-1 + 3]
+    return PhysicalQuantityManager.getNumberOfEncodedInteger(numgd)
 
 
 #  3) Utilitaires pour la vérification de l'existence des objets :
