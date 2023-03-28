@@ -1125,7 +1125,7 @@ AFFE_CARA_ELEM = OPER(
             PRESENT_PRESENT("TOUT", "CHAM_ORIE"),
         ),
         GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
-        TOUT=SIMP(statut="f", typ="TXM", validators=NoRepeat(), into=("OUI")),
+        TOUT=SIMP(statut="f", typ="TXM", validators=NoRepeat(), into=("OUI",)),
         CHAM_ORIE=SIMP(statut="f", typ=(cham_no_sdaster, carte_sdaster)),
         ANGL_REP=SIMP(statut="f", typ="R", min=1, max=3, fr=tr("Un angle en 2D, 3 angles en 3D.")),
         ANGL_EULER=SIMP(
