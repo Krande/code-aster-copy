@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -26,6 +26,12 @@ L'unique occurrence de RITZ doit obligatoirement contenir MODE_MECA.
 Si BASE_MODALE est utilisée, il faut aussi donner les modes d'interface par MODE_INTF.
 Et si on veut MODE_INTF uniquement, il faut quand même ajouter une 2ème occurrence
 de RITZ avec MODE_MECA et NMAX_MODE mis à 0.
+"""
+    ),
+    2: _(
+        """
+La base modale est composée de vecteurs complexes. Pour la projection, seule leur partie réelle
+sera utilisée. 
 """
     ),
     9: _("""Le mot-clé NUME_REF est obligatoire quand DEFI_BASE_MODALE n'est pas ré-entrant."""),

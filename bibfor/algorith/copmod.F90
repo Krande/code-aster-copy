@@ -92,9 +92,9 @@ subroutine copmod(base, bmodr, bmodz, champ, numer, &
 !
 !     0.2 - DECLARATION DES VARIABLES LOCALES
 !
-    character(len=1) :: typc
+    character(len=1) :: typc, typbase
     character(len=4) :: docu
-    aster_logical :: modnum, exnume, chnoeud, lnumeq1
+    aster_logical :: modnum, exnume, chnoeud, lnumeq1, r2zbase
     integer :: i, iret, neq, nbmode
     integer :: jdeeq, jval
     character(len=16) :: champ2
@@ -179,8 +179,12 @@ subroutine copmod(base, bmodr, bmodz, champ, numer, &
 !
 !     1.1.1 - RECUPERER LE NOM DE CHAMP DU 1ER NUMERO ORDRE
 !
-    call rsexch('F', base, champ2, 1, nomcha, &
-                iret)
+    call rsexch('F', base, champ2, 1, nomcha, iret)
+    valcha = nomcha(1:19)//'.VALE'
+    call jeexin(nomcha(1:19)//'.VALE', iret)
+    if (iret .le. 0) valcha = nomcha(1:19)//'.CELV'
+    call jelira(valcha, 'TYPE', cval=typbase)
+    r2zbase = (typc == 'C') .and. (typbase == 'R')
 !
 !     1.1.2 - POUR TRAITER LES CAS AVEC SS-STRUCTURATION, TESTER SI
 !             L'OBJET .REFE EXISTE DANS CE CHAMP, SI NON (IRET.EQ.0)
@@ -280,9 +284,10 @@ subroutine copmod(base, bmodr, bmodz, champ, numer, &
         call rsexch('F', base, champ2, i, nomcha, &
                     iret)
 !
-!       3.1.2 - NOUVELLE NUMER.? ALORS CREER UN NOUVEAU CHAMP TEMPORAIRE
+!       3.1.2 - NOUVELLE NUMER.? BASE IN REELLE et BASE OUT COMPLEXE?
+!               ALORS CREER UN NOUVEAU CHAMP TEMPORAIRE
 !               AVEC LA BONNE NUMEROTATION
-        if (modnum) then
+        if (modnum .or. r2zbase) then
             crefe(1) = maill2
             crefe(2) = numer2
             tmpcha = '&&COPMOD.CHAMP'
@@ -313,7 +318,7 @@ subroutine copmod(base, bmodr, bmodz, champ, numer, &
 !
 !       3.1.5 - MENAGE ET LIBERATION DE LA MEMOIRE SELON LE BESOIN
         call jelibe(valcha)
-        if (modnum) then
+        if (modnum .or. r2zbase) then
             if (valcha(21:24) .eq. 'VALE') then
                 call detrsd('CHAM_NO', tmpcha)
             else

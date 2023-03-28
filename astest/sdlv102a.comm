@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -21,6 +21,7 @@ import code_aster
 from code_aster.Applications.dynamic_substructuring import SubStructure, Structure, Interface
 from code_aster.Utilities import shared_tmpdir
 import os.path as osp
+import numpy as np
 
 test = code_aster.TestCase()
 
@@ -108,7 +109,7 @@ CHAMAT2 = AFFE_MATERIAU(
 CHARGE_1 = AFFE_CHAR_MECA(
     FACE_IMPO=(
         _F(DX=0.0, DY=0.0, DZ=0.0, GROUP_MA=("s1Tuyau",)),
-        _F(GROUP_MA=("s1Eau",), PRES=0.0),
+        # _F(GROUP_MA=("s1Eau",), PRES=0.0),
         _F(DX=0.0, DY=0.0, DZ=0.0, PRES=0.0, GROUP_MA=("Interface",)),
     ),
     MODELE=MODELE1,
@@ -117,7 +118,7 @@ CHARGE_1 = AFFE_CHAR_MECA(
 CHARGE_2 = AFFE_CHAR_MECA(
     FACE_IMPO=(
         _F(DX=0.0, DY=0.0, DZ=0.0, GROUP_MA=("s2Tuyau",)),
-        _F(GROUP_MA=("s2Eau",), PRES=0.0),
+        # _F(GROUP_MA=("s2Eau",), PRES=0.0),
         _F(DX=0.0, DY=0.0, DZ=0.0, PRES=0.0, GROUP_MA=("Interface",)),
     ),
     MODELE=MODELE2,
@@ -204,7 +205,7 @@ with shared_tmpdir("foo") as tmpdir:
 myStructure = Structure([subS1, subS2], [interface])
 
 nmodes = 6
-omega, resuSub = myStructure.computeGlobalModes(nmodes=nmodes)
+omega, resuSub = myStructure.computeGlobalModes(nmodes=nmodes, shift=25)
 
 with shared_tmpdir("foo") as tmpdir:
     for isub, resu in enumerate(resuSub):
@@ -213,15 +214,8 @@ with shared_tmpdir("foo") as tmpdir:
 print("**** Eigen Pulses ****")
 print(omega)
 
-ref = [
-    13.5530744 + 0.0j,
-    29.2812197 + 0.0j,
-    37.48197441 + 0.0j,
-    56.33309667 + 0.0j,
-    70.41095328 + 0.0j,
-    72.40422053 + 0.0j,
-]
-for idx, val in enumerate(omega):
-    test.assertAlmostEqual(val, ref[idx], delta=1.0e-2)
+ref = [0.0, 1.37970118e01, 2.89138920e01, 3.95359019e01, 5.85297432e01, 6.15141619e01]
+for idx in range(0, nmodes):
+    test.assertAlmostEqual(omega[idx], ref[idx], delta=1.0e-2)
 
 FIN()

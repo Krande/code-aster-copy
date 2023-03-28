@@ -42,7 +42,7 @@ subroutine op0071()
     character(len=1) :: typmat
     character(len=8) :: k8b, nomres, basemo, matras, numgen
     character(len=14) :: nu, numdd1, numdd2
-    character(len=16) :: typres, nomcom, typbas
+    character(len=16) :: typres, nomcom
     character(len=14) :: nugene
     character(len=24) :: matric
     integer, pointer :: smde(:) => null()
@@ -61,12 +61,7 @@ subroutine op0071()
     call getvid(' ', 'NUME_DDL_GENE', scal=numgen, nbret=n2)
     nugene = numgen
 !
-    call gettco(basemo, typbas)
     typmat = typres(16:16)
-!
-    if (n2 .ne. 0) then
-    end if
-!
 !
 !==================================================
 !

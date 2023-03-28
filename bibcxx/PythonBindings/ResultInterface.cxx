@@ -327,6 +327,18 @@ Return the names of the contant real fields on cells as Python list.
 Returns:
     list(str): List of names of the contant fields on cells.
         )" )
+        .def( "getGeneralizedVectorRealNames", &Result::getGeneralizedVectorRealNames, R"(
+Return the names of the real generalized vectors as Python list.
+
+Returns:
+    list(str): List of names of the real generalized vectors.
+        )" )
+        .def( "getGeneralizedVectorComplexNames", &Result::getGeneralizedVectorComplexNames, R"(
+Return the names of the complex generalized vectors as Python list.
+
+Returns:
+    list(str): List of names of the complex generalized vectors.
+        )" )
         .def( "getIndexes", &Result::getIndexes, R"(
 Return the list of indexs used to store fields
 

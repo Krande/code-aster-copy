@@ -37,10 +37,26 @@ void exportGeneralizedAssemblyVectorToPython( py::module_ &mod ) {
     py::class_< GeneralizedAssemblyVectorReal, GeneralizedAssemblyVectorRealPtr,
                 GenericGeneralizedAssemblyVector >( mod, "GeneralizedAssemblyVectorReal" )
         .def( py::init( &initFactoryPtr< GeneralizedAssemblyVectorReal > ) )
-        .def( py::init( &initFactoryPtr< GeneralizedAssemblyVectorReal, std::string > ) );
+        .def( py::init( &initFactoryPtr< GeneralizedAssemblyVectorReal, std::string > ) )
+        .def( "getValues",
+              py::overload_cast<>( &GeneralizedAssemblyVectorReal::getValues, py::const_ ),
+              R"(
+            Return a list of values as (x1, y1, z1, x2, y2, z2...)
+
+            Returns:
+                list[float]: List of values.
+            )" );
 
     py::class_< GeneralizedAssemblyVectorComplex, GeneralizedAssemblyVectorComplexPtr,
                 GenericGeneralizedAssemblyVector >( mod, "GeneralizedAssemblyVectorComplex" )
         .def( py::init( &initFactoryPtr< GeneralizedAssemblyVectorComplex > ) )
-        .def( py::init( &initFactoryPtr< GeneralizedAssemblyVectorComplex, std::string > ) );
+        .def( py::init( &initFactoryPtr< GeneralizedAssemblyVectorComplex, std::string > ) )
+        .def( "getValues",
+              py::overload_cast<>( &GeneralizedAssemblyVectorComplex::getValues, py::const_ ),
+              R"(
+            Return a list of values as (x1, y1, z1, x2, y2, z2...)
+
+            Returns:
+                list[float]: List of values.
+            )" );
 };

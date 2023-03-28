@@ -21,22 +21,27 @@ subroutine projmc(matras, nomres, basemo, nugene, nu, &
     implicit none
 #include "jeveux.h"
 #include "asterfort/gettco.h"
+#include "asterfort/assert.h"
 #include "asterfort/copmod.h"
 #include "asterfort/jecrec.h"
 #include "asterfort/jecroc.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jeecra.h"
 #include "asterfort/jelibe.h"
+#include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/mcmult.h"
 #include "asterfort/mtdscr.h"
+#include "asterfort/rsexch.h"
 #include "asterfort/ualfva.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-#include "asterfort/zeclag.h"
+#include "asterfort/zerlag.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
+#include "blas/zdotc.h"
 !
     integer :: neq, nbmo
     character(len=8) :: matras, nomres, basemo
@@ -48,14 +53,15 @@ subroutine projmc(matras, nomres, basemo, nugene, nu, &
 !
 !-----------------------------------------------------------------------
 !
-    integer :: iddeeq, nueq, ntbloc, nbloc, ialime, iaconl, jrefa, iadesc
-    integer :: i, j, k, imatra, iblo, ldblo, n1bloc, n2bloc, hc
-
-    complex(kind=8) :: pij
-    character(len=16) :: typbas
-    character(len=19) :: resu
+    integer :: iddeeq, nueq, ntbloc, nbloc, ialime, iaconl, jrefa, iadesc, nbj
+    integer :: i, j, k, imatra, iblo, ldblo, n1bloc, n2bloc, hc, ldblo1, ldblo2
+    integer :: iret
+    character(len=1) :: typbase
+    character(len=19) :: matr, resu
+    character(len=24) :: nomcha
     real(kind=8) :: zero
-    complex(kind=8) :: cbid
+    complex(kind=8) :: cbid, pij
+    aster_logical :: lsym
     real(kind=8), pointer :: vbasemo(:) => null()
     complex(kind=8), pointer :: vectass2(:) => null()
     complex(kind=8), pointer :: vectass3(:) => null()
@@ -63,14 +69,20 @@ subroutine projmc(matras, nomres, basemo, nugene, nu, &
     integer(kind=4), pointer :: smhc(:) => null()
     integer, pointer :: smdi(:) => null()
     cbid = dcmplx(0.d0, 0.d0)
-!-----------------------------------------------------------------------
+    !-----------------------------------------------------------------------
 !
     call jemarq()
 !
     zero = 0.d0
     resu = ' '
-    resu(1:8) = nomres
-    call gettco(basemo, typbas)
+    resu = nomres
+    matr = matras
+!
+!   TYPE DE LA BASE MODALE
+    call rsexch('F', basemo, 'DEPL', 1, nomcha, iret)
+    call jelira(nomcha(1:19)//'.VALE', 'TYPE', cval=typbase)
+    if (typbase .eq. 'C') call utmess('A', 'DEFIBASEMODALE1_2')
+!
     call jeveuo(nu//'.NUME.DEEQ', 'L', iddeeq)
 !
     nomsto = nugene//'.SMOS'
@@ -79,8 +91,16 @@ subroutine projmc(matras, nomres, basemo, nugene, nu, &
     ntbloc = smde(2)
     nbloc = smde(3)
 !
-    call jecrec(resu//'.UALF', 'G V C', 'NU', 'DISPERSE', 'CONSTANT', &
-                nbloc)
+    call jeveuo(matr//'.REFA', 'L', jrefa)
+    lsym = zk24(jrefa-1+9) .eq. 'MS'
+    if (lsym) then
+        call jecrec(resu//'.UALF', 'G V C', 'NU', 'DISPERSE', 'CONSTANT', &
+                    nbloc)
+    else
+        call jecrec(resu//'.UALF', 'G V C', 'NU', 'DISPERSE', 'CONSTANT', &
+                    2*nbloc)
+    end if
+!
     call jeecra(resu//'.UALF', 'LONMAX', ntbloc)
 !
     call wkvect(resu//'.LIME', 'G V K24', 1, ialime)
@@ -95,7 +115,11 @@ subroutine projmc(matras, nomres, basemo, nugene, nu, &
     zk24(jrefa-1+11) = 'MPI_COMPLET'
     zk24(jrefa-1+1) = basemo
     zk24(jrefa-1+2) = nugene
-    zk24(jrefa-1+9) = 'MS'
+    if (lsym) then
+        zk24(jrefa-1+9) = 'MS'
+    else
+        zk24(jrefa-1+9) = 'MR'
+    end if
     zk24(jrefa-1+10) = 'GENE'
 !
     call wkvect(resu//'.DESC', 'G V I', 3, iadesc)
@@ -123,52 +147,107 @@ subroutine projmc(matras, nomres, basemo, nugene, nu, &
     call jeveuo(nomsto//'.SMDI', 'L', vi=smdi)
     call jeveuo(nomsto//'.SMHC', 'L', vi4=smhc)
 !
-    do iblo = 1, nbloc
+!     -- CAS DES MATRICES SYMETRIQUES :
+!     ----------------------------------
+    if (lsym) then
+        do iblo = 1, nbloc
 !
-        call jecroc(jexnum(resu//'.UALF', iblo))
-        call jeveuo(jexnum(resu//'.UALF', iblo), 'E', ldblo)
+            call jecroc(jexnum(resu//'.UALF', iblo))
+            call jeveuo(jexnum(resu//'.UALF', iblo), 'E', ldblo)
 !
 ! ------ PROJECTION DE LA MATRICE ASSEMBLEE
 !
 !        BOUCLE SUR LES COLONNES DE LA MATRICE ASSEMBLEE
 !
-        n1bloc = 1
-        n2bloc = smde(1)
+            n1bloc = 1
+            n2bloc = smde(1)
 !
-        do i = n1bloc, n2bloc
+            do i = n1bloc, n2bloc
 !
-            do k = 1, neq
-                vectass2(k) = dcmplx(vbasemo(1+(i-1)*neq+k-1), zero)
-            end do
+! --------- MISE A ZERO PARTIE IMAGINAIRE DU MODE I
+!
+                do k = 1, neq
+                    vectass2(k) = dcmplx(vbasemo(1+(i-1)*neq+k-1), zero)
+                end do
 !
 ! --------- CALCUL PRODUIT MATRICE*MODE I
 !
-            call mcmult('ZERO', imatra, vectass2, vectass3, 1, &
-                        .true._1)
-            call zeclag(vectass3, neq, zi(iddeeq))
+                call mcmult('ZERO', imatra, vectass2, vectass3, 1, &
+                            .true._1)
+                call zerlag(neq, zi(iddeeq), vectz=vectass3)
 !
 ! --------- BOUCLE SUR LES INDICES VALIDES DE LA COLONNE I
 !
-            hc = smdi(i)
-            if (i .gt. 1) hc = hc-smdi(i-1)
-            do j = (i-hc+1), i
+                hc = smdi(i)
+                if (i .gt. 1) hc = hc-smdi(i-1)
+                do j = (i-hc+1), i
 !
 ! ----------- PRODUIT SCALAIRE VECTASS * MODE
 !
-                pij = dcmplx(zero, zero)
-                do k = 1, neq
-                    pij = pij+vectass3(k)*dcmplx(vbasemo(1+(j-1)*neq+k-1), zero)
-                end do
+                    pij = dcmplx(zero, zero)
+                    do k = 1, neq
+                        pij = pij+vectass3(k)*dcmplx(vbasemo(1+(j-1)*neq+k-1), zero)
+                    end do
 !
 ! ----------- STOCKAGE DANS LE .UALF A LA BONNE PLACE (1 BLOC)
 !
-                zc(ldblo+smdi(i)+j-i-1) = pij
+                    zc(ldblo+smdi(i)+j-i-1) = pij
 !
+                end do
+            end do
+            call jelibe(jexnum(resu//'.UALF', iblo))
+        end do
+    else
+!     -- CAS DES MATRICES NON-SYMETRIQUES :
+!     --------------------------------------
+!
+        ASSERT(nbloc .eq. 1)
+        call jecroc(jexnum(resu//'.UALF', 1))
+        call jecroc(jexnum(resu//'.UALF', 2))
+        call jeveuo(jexnum(resu//'.UALF', 1), 'E', ldblo1)
+        call jeveuo(jexnum(resu//'.UALF', 2), 'E', ldblo2)
+        n1bloc = 1
+        n2bloc = smde(1)
+        ASSERT(n1bloc .eq. 1)
+        ASSERT(n2bloc .eq. nueq)
+!
+        do j = 1, nueq
+            hc = smdi(j)
+            if (j .gt. 1) hc = hc-smdi(j-1)
+            nbj = j-hc+1
+            ASSERT(nbj .eq. 1)
+!
+! --------- MISE A ZERO PARTIE IMAGINAIRE DU MODE J
+!
+            do k = 1, neq
+                vectass2(k) = dcmplx(vbasemo(1+(j-1)*neq+k-1), zero)
+            end do
+!
+! --------- CALCUL PRODUIT MATRICE*MODE J
+!
+            call mcmult('ZERO', imatra, vectass2, vectass3, 1, &
+                        .true._1)
+            call zerlag(neq, zi(iddeeq), vectz=vectass3)
+!
+! --------- BOUCLE SUR LES INDICES DE LA COLONNE I
+            do i = 1, nueq
+!
+! ------------ PRODUIT SCALAIRE VECTASS * MODE
+                pij = dcmplx(zero, zero)
+                do k = 1, neq
+                    pij = pij+vectass3(k)*dcmplx(vbasemo(1+(i-1)*neq+k-1), zero)
+                end do
+!
+! ------------ STOCKAGE DANS LE .UALF A LA BONNE PLACE (2 BLOCs)
+                if (j .ge. i) then
+                    zc(ldblo1+smdi(j)-j+i-1) = pij
+                end if
+                if (j .le. i) then
+                    zc(ldblo2+smdi(i)-i+j-1) = pij
+                end if
             end do
         end do
-        call jelibe(jexnum(resu//'.UALF', iblo))
-    end do
-!
+    end if
     AS_DEALLOCATE(vc=vectass2)
     AS_DEALLOCATE(vc=vectass3)
     AS_DEALLOCATE(vr=vbasemo)

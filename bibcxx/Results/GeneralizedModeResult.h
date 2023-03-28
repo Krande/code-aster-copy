@@ -140,6 +140,28 @@ class GeneralizedModeResult : public FullResult {
         return _rigidityComplexMatrix;
     };
 
+    /**
+     * @brief Get a generalized vector from its name and index
+     * @param name name of the vector
+     * @param index index number
+     * @return GeneralizedAssemblyVectorRealPtr
+     */
+    GeneralizedAssemblyVectorRealPtr getGeneralizedVectorReal( const std::string name,
+                                                               const ASTERINTEGER index ) const {
+        return _dictOfMapOfGeneralizedVectorReal.at( name ).at( index );
+    };
+
+    /**
+     * @brief Get a generalized vector from its name and index
+     * @param name name of the vector
+     * @param index index number
+     * @return GeneralizedAssemblyVectorComplexPtr
+     */
+    GeneralizedAssemblyVectorComplexPtr
+    getGeneralizedVectorComplex( const std::string name, const ASTERINTEGER index ) const {
+        return _dictOfMapOfGeneralizedVectorComplex.at( name ).at( index );
+    };
+
     bool build() { return Result::build(); };
 
     ~GeneralizedModeResult() {

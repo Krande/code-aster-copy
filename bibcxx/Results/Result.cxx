@@ -505,6 +505,28 @@ VectorString Result::getConstantFieldsOnCellsRealNames() const {
     return names;
 };
 
+VectorString Result::getGeneralizedVectorRealNames() const {
+    VectorString names;
+    names.reserve( _dictOfMapOfGeneralizedVectorReal.size() );
+
+    for ( auto &it : _dictOfMapOfGeneralizedVectorReal ) {
+        std::string name = it.first;
+        names.push_back( trim( name ) );
+    }
+    return names;
+};
+
+VectorString Result::getGeneralizedVectorComplexNames() const {
+    VectorString names;
+    names.reserve( _dictOfMapOfGeneralizedVectorComplex.size() );
+
+    for ( auto &it : _dictOfMapOfGeneralizedVectorComplex ) {
+        std::string name = it.first;
+        names.push_back( trim( name ) );
+    }
+    return names;
+};
+
 FieldOnNodesRealPtr Result::getFieldOnNodesReal( const std::string name,
                                                  const ASTERINTEGER index ) const {
 
@@ -575,6 +597,12 @@ VectorString Result::getFieldsNames() const {
         vField.push_back( curIter.first );
     }
     for ( auto curIter : _dictOfMapOfConstantFieldOnCellsReal ) {
+        vField.push_back( curIter.first );
+    }
+    for ( auto curIter : _dictOfMapOfGeneralizedVectorReal ) {
+        vField.push_back( curIter.first );
+    }
+    for ( auto curIter : _dictOfMapOfGeneralizedVectorComplex ) {
         vField.push_back( curIter.first );
     }
     return vField;
@@ -764,6 +792,32 @@ bool Result::build( const std::vector< FiniteElementDescriptorPtr > feds,
                     } else {
                         AS_ABORT( "Type not supported: " + scalaire );
                     }
+                } else if ( resu == "VGEN" ) {
+                    if ( scalaire == "R" ) {
+                        if ( _dictOfMapOfGeneralizedVectorReal.count( nomSymb ) == 0 ) {
+                            _dictOfMapOfGeneralizedVectorReal[nomSymb] =
+                                MapOfGeneralizedVectorReal();
+                        }
+
+                        if ( _dictOfMapOfGeneralizedVectorReal[nomSymb].count( index ) == 0 ) {
+                            GeneralizedAssemblyVectorRealPtr result(
+                                new GeneralizedAssemblyVectorReal( name ) );
+                            _dictOfMapOfGeneralizedVectorReal[nomSymb][index] = result;
+                        }
+                    } else if ( scalaire == "C" ) {
+                        if ( _dictOfMapOfGeneralizedVectorComplex.count( nomSymb ) == 0 ) {
+                            _dictOfMapOfGeneralizedVectorComplex[nomSymb] =
+                                MapOfGeneralizedVectorComplex();
+                        }
+
+                        if ( _dictOfMapOfGeneralizedVectorComplex[nomSymb].count( index ) == 0 ) {
+                            GeneralizedAssemblyVectorComplexPtr result(
+                                new GeneralizedAssemblyVectorComplex( name ) );
+                            _dictOfMapOfGeneralizedVectorComplex[nomSymb][index] = result;
+                        }
+                    } else {
+                        AS_ABORT( "Type not supported: " + scalaire );
+                    }
                 } else {
                     std::cout << "Field not build : " << name << " (" << resu << ")" << std::endl;
                 }
@@ -844,6 +898,12 @@ void Result::clear( const ASTERINTEGER &index ) {
                 fields.erase( index_2 );
             }
             for ( auto &[key, fields] : _dictOfMapOfConstantFieldOnCellsChar16 ) {
+                fields.erase( index_2 );
+            }
+            for ( auto &[key, fields] : _dictOfMapOfGeneralizedVectorReal ) {
+                fields.erase( index_2 );
+            }
+            for ( auto &[key, fields] : _dictOfMapOfGeneralizedVectorComplex ) {
                 fields.erase( index_2 );
             }
         }

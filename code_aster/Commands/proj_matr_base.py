@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -23,6 +23,7 @@ from ..Objects import (
     AssemblyMatrixDisplacementReal,
     GeneralizedAssemblyMatrixComplex,
     GeneralizedAssemblyMatrixReal,
+    ModeResult,
 )
 from ..Supervis import ExecuteCommand
 
@@ -41,7 +42,10 @@ class ProjMatrBase(ExecuteCommand):
         if "MATR_ASSE_GENE" in keywords:
             self._result = type(keywords["MATR_ASSE_GENE"])()
         else:
-            if type(keywords["MATR_ASSE"]) == AssemblyMatrixDisplacementReal:
+            if (
+                type(keywords["MATR_ASSE"]) == AssemblyMatrixDisplacementReal
+                and type(keywords["BASE"]) == ModeResult
+            ):
                 self._result = GeneralizedAssemblyMatrixReal()
             else:
                 self._result = GeneralizedAssemblyMatrixComplex()

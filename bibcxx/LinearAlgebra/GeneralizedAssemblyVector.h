@@ -105,6 +105,12 @@ class GeneralizedAssemblyVector : public GenericGeneralizedAssemblyVector {
           _vale( JeveuxVector< ValueType >( getName() + ".VALE" ) ) {
         GeneralizedAssemblyVector< ValueType >::setVectorType();
     };
+
+    /**
+     * @brief Get values of the field
+     *
+     */
+    const JeveuxVector< ValueType > &getValues() const { return _vale; }
 };
 
 /** @typedef Definition d'une matrice assemblee généralisée de double */

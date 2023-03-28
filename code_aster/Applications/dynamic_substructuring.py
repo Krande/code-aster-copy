@@ -20,10 +20,13 @@
 import numpy as np
 import numpy.random
 import scipy.sparse
-import scipy.sparse.linalg
+import scipy.sparse.linalg as spla
 import os
 import inspect
+from ..Objects import FieldOnNodesReal
 from ..Objects.user_extensions import WithEmbeddedObjects
+from ..MacroCommands.macr_lign_coupe_ops import crea_mail_lig_coup
+from ..MacroCommands.Fracture.post_endo_fiss_utils import crea_sd_mail
 
 try:
     import matplotlib.pyplot as plt
@@ -32,7 +35,24 @@ try:
 except ImportError:
     HAS_MATPLOTLIB = False
 
-from ..Commands import CREA_CHAMP, RESOUDRE, CREA_RESU, FACTORISER
+from ..Commands import (
+    CREA_CHAMP,
+    RESOUDRE,
+    CREA_RESU,
+    FACTORISER,
+    NUME_DDL_GENE,
+    ASSE_MATR_GENE,
+    AFFE_MODELE,
+    NUME_DDL,
+    DEFI_MATERIAU,
+    AFFE_MATERIAU,
+    ASSEMBLAGE,
+    CO,
+    PROJ_MATR_BASE,
+    AFFE_CARA_ELEM,
+    CALC_MODES,
+    PROJ_VECT_BASE,
+)
 
 DEBUG = False
 
@@ -75,6 +95,69 @@ def debugPrint(*args, **kwargs):
                 fmt += fmt2
 
         print(fmt, *args)
+
+
+def import_array(np_array, reference_matrix=None):
+    """Import a numpy dense matrix into a code_aster GeneralizedAssemblyMatrix.
+
+    Args:
+        np_mat (numpy array): a numpy array with shape of dimension 1 or 2 (vector or matrix)
+        reference_matrix (GeneralizedAssemblyMatrix, optional): if the user wants to export consistent stiffness and mass matrices, begin by exporting the latter, then give it as reference when exporting the former. Defaults to None.
+
+    Returns:
+        GeneralizedAssemblyMatrix / GeneralizedAssemblyVector: a code_aster generalized matrix or vector
+    """
+    neqg = np_array.shape[-1]
+    is_vect = len(np.shape(np_array)) == 1
+    if reference_matrix:
+        _numgen = reference_matrix.getGeneralizedDOFNumbering()
+        ref_mat = [l for l in reference_matrix.getDependencies() if "MATR_ASSE" in l.getType()][0]
+        _nddl = ref_mat.getDOFNumbering()
+        _model = _nddl.getModel()
+        _modes = reference_matrix.getModalBasis()
+        _cara = AFFE_CARA_ELEM(
+            MODELE=_model,
+            DISCRET_2D=(_F(GROUP_MA="LICOU1", CARA="K_T_L", VALE=[1.0] * 16, SYME="NON"),),
+        )
+
+    else:
+        txt_mesh, _, _, _ = crea_mail_lig_coup(2, [((0.0, 0.0), (1.0, 0.0), neqg)], [], [])
+        _mesh = crea_sd_mail(None, os.linesep.join(txt_mesh))
+        _model = AFFE_MODELE(
+            MAILLAGE=_mesh, AFFE=(_F(TOUT="OUI", MODELISATION="2D_DIS_T", PHENOMENE="MECANIQUE"),)
+        )
+        _nddl = NUME_DDL(MODELE=_model)
+        _field = FieldOnNodesReal(_nddl)
+        _field.setValues(1.0)
+        _cara = AFFE_CARA_ELEM(
+            MODELE=_model,
+            DISCRET_2D=(_F(GROUP_MA="LICOU1", CARA="K_T_L", VALE=[1.0] * 16, SYME="NON"),),
+        )
+        mc_affe = [{"CHAM_GD": _field, "NUME_MODE": i, "CARA_ELEM": _cara} for i in range(neqg)]
+        type_resu = "MODE_MECA_C" if np_array.dtype == np.complex128 else "MODE_MECA"
+        _modes = CREA_RESU(OPERATION="AFFE", TYPE_RESU=type_resu, NOM_CHAM="DEPL", AFFE=mc_affe)
+        _numgen = NUME_DDL_GENE(BASE=_modes, STOCKAGE="PLEIN")
+
+    if is_vect:
+        _field = FieldOnNodesReal(_nddl)
+        _field.setValues(1.0)
+        aster_object = PROJ_VECT_BASE(
+            BASE=_modes, NUME_DDL_GENE=_numgen, VECT_ASSE=_field, TYPE_VECT="FORC"
+        )
+        aster_object.RECU_VECT_GENE_C(np_array)
+    else:
+        # use RIGI_MECA because MASS_MECA is always symmetric!
+        option = "RIGI_MECA"
+        ASSEMBLAGE(
+            MODELE=_model,
+            CARA_ELEM=_cara,
+            NUME_DDL=_nddl,
+            MATR_ASSE=(_F(MATRICE=CO("matrix"), OPTION=option),),
+        )
+        aster_object = PROJ_MATR_BASE(BASE=_modes, NUME_DDL_GENE=_numgen, MATR_ASSE=matrix)
+        aster_object.RECU_MATR_GENE(np_array)
+
+    return aster_object
 
 
 class Interface(WithEmbeddedObjects):
@@ -494,22 +577,24 @@ class Structure(WithEmbeddedObjects):
     """
 
     # Mandatory class attribute in order to manage aster serialization process
-    aster_embedded = ["lSubS", "lInterfaces"]
+    aster_embedded = ["lSubS", "lInterfaces", "Kredred", "Mredred"]
 
     def __init__(self, lSubS: list, lInterfaces: list):
         self.lSubS = lSubS
         self.lInterfaces = lInterfaces
+        self.Kredred = None
+        self.Mredred = None
 
     def __getstate__(self):
         """Method for aster serialization process"""
-        return [self.lSubS, self.lInterfaces]
+        return [self.lSubS, self.lInterfaces, self.Kredred, self.Mredred]
 
     def __setstate__(self, state):
         """Method for aster serialization process"""
-        assert len(state) == 2, state
-        (self.lSubS, self.lInterfaces) = state
+        assert len(state) == 4, state
+        (self.lSubS, self.lInterfaces, self.Kredred, self.Mredred) = state
 
-    def computeGlobalModes(self, nmodes=None, precision=None):
+    def computeGlobalModes(self, nmodes=None, precision=None, shift=0):
         # donne l'index des modes propres et des modes d'interface
         # de la i-ème sous structure
         lIndexOfInterfModes = []
@@ -531,6 +616,8 @@ class Structure(WithEmbeddedObjects):
         # Projection on the kernel
         Kredred = T.T.dot(Kred.dot(T))
         Mredred = T.T.dot(Mred.dot(T))
+        self.Kredred = Kredred
+        self.Mredred = Mredred
         debugPrint(Kredred=Kredred)
         debugPrint(Mredred=Mredred)
 
@@ -543,13 +630,39 @@ class Structure(WithEmbeddedObjects):
             with open("/tmp/matrices.npy", "wb") as f:
                 np.save(f, Kredred)
                 np.save(f, Mredred)
+
         # Solve of the global modal problem
-        nmodes = nmodes or rightVP.shape[0] - 2
+        nmodes = nmodes or Kredred.shape[0] - 2
+
+        asKredred = import_array(Kredred.real)
+        asMredred = import_array(Mredred.real, reference_matrix=asKredred)
+
+        _modes = CALC_MODES(
+            OPTION="CENTRE",
+            CALC_FREQ=_F(NMAX_FREQ=nmodes, FREQ=shift),
+            MATR_RIGI=asKredred,
+            MATR_MASS=asMredred,
+            SOLVEUR=_F(METHODE="MUMPS", NPREC=11),
+            VERI_MODE=_F(STOP_ERREUR="NON"),
+        )
+
+        evredred = np.array(
+            [_modes.getField("DEPL", r).getValues() for r in _modes.getIndexes()]
+        ).transpose()
+        omredred = np.array(_modes.getAccessParameters()["FREQ"])
+
+        """
         # initial vector - mandatory to get same results on different platforms
-        v0 = scipy.sparse.linalg.splu(Kredred).solve(np.random.rand(Kredred.shape[0]) - 0.5)
+        v0 = scipy.sparse.linalg.splu(Kredred.real).solve(np.random.rand(Kredred.shape[0]) - 0.5)
         # we use the shift and invert strategy of arpack in order to get the lowest eigenvalues
         omredred, evredred = scipy.sparse.linalg.eigs(
-            Kredred, M=Mredred, which="LM", k=nmodes, v0=v0, sigma=0, maxiter=1000 * nmodes
+            Kredred.real,
+            M=Mredred.real,
+            which="LM",
+            k=nmodes,
+            v0=v0.real,
+            sigma=shift,
+            maxiter=1000 * nmodes,
         )
 
         # sort the eigenvalues
@@ -557,6 +670,7 @@ class Structure(WithEmbeddedObjects):
         tri = np.real(omredred).argsort()
         omredred = omredred[tri]
         evredred = evredred[:, tri]
+        """
 
         # rotate each ev (aka each column) so that the imaginary part is zero (this is not
         # guaranted by the eigensolver ; see issue32008)
@@ -578,6 +692,16 @@ class Structure(WithEmbeddedObjects):
             resu.append(resuSub)
 
         return omredred, resu
+
+    def getMatrices(self, format="numpy"):
+        if format == "numpy":
+            K, M = self.Kredred, self.Mredred
+        elif format == "aster":
+            K = import_array(self.Kredred)
+            M = import_array(self.Mredred, reference_matrix=K)
+        else:
+            raise ValueError("format must be 'numpy' or 'aster'")
+        return K, M
 
     def _computeKernelBasis(self, number_interfModes, totalNumberOfModes, index_interfModes):
         # each interface generates n interface modes on the left structure

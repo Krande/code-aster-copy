@@ -36,6 +36,8 @@ void exportGeneralizedModeResultToPython( py::module_ &mod ) {
         .def( "setDampingMatrix", &GeneralizedModeResult::setDampingMatrix )
         .def( "getGeneralizedDOFNumbering", &GeneralizedModeResult::getGeneralizedDOFNumbering )
         .def( "setGeneralizedDOFNumbering", &GeneralizedModeResult::setGeneralizedDOFNumbering )
+        .def( "getGeneralizedVectorReal", &GeneralizedModeResult::getGeneralizedVectorReal )
+        .def( "getGeneralizedVectorComplex", &GeneralizedModeResult::getGeneralizedVectorComplex )
         .def( "setStiffnessMatrix", py::overload_cast< const GeneralizedAssemblyMatrixRealPtr & >(
                                         &GeneralizedModeResult::setStiffnessMatrix ) )
         .def( "setStiffnessMatrix",

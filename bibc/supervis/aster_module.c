@@ -1419,6 +1419,7 @@ PyObject *args;
         FreeStr( nomsd32 );
         raiseException();
     }
+    endTry();
     Py_INCREF( Py_None );
     return Py_None;
 }

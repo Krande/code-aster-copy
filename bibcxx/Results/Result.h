@@ -34,6 +34,7 @@
 #include "DataFields/ListOfTables.h"
 #include "DataStructures/DataStructure.h"
 #include "Discretization/ElementaryCharacteristics.h"
+#include "LinearAlgebra/GeneralizedAssemblyVector.h"
 #include "Loads/ListOfLoads.h"
 #include "Materials/MaterialField.h"
 #include "MemoryManager/JeveuxCollection.h"
@@ -63,10 +64,16 @@ class Result : public DataStructure, public ListOfTables {
 
     typedef std::map< ASTERINTEGER, ConstantFieldOnCellsChar16Ptr > MapOfConstantFieldOnCellsChar16;
 
+    typedef std::map< ASTERINTEGER, GeneralizedAssemblyVectorRealPtr > MapOfGeneralizedVectorReal;
+    typedef std::map< ASTERINTEGER, GeneralizedAssemblyVectorComplexPtr >
+        MapOfGeneralizedVectorComplex;
+
     /** @typedef std::map d'une chaine et des pointers vers toutes les DataStructure */
     typedef std::map< std::string, MapOfFieldOnNodesReal > mapStrMoFNR;
     typedef std::map< std::string, MapOfFieldOnCellsReal > mapStrMoFCR;
     typedef std::map< std::string, MapOfConstantFieldOnCellsReal > mapStrMoCFCR;
+    typedef std::map< std::string, MapOfGeneralizedVectorReal > mapStrMoFGVR;
+    typedef std::map< std::string, MapOfGeneralizedVectorComplex > mapStrMoFGVC;
 
     typedef std::map< std::string, MapOfFieldOnNodesComplex > mapStrMoFNC;
     typedef std::map< std::string, MapOfFieldOnCellsComplex > mapStrMoFCC;
@@ -115,6 +122,9 @@ class Result : public DataStructure, public ListOfTables {
     /** @brief Liste des cartes K16 */
     mapStrMoCFCR _dictOfMapOfConstantFieldOnCellsReal;
     mapStrMoCFCK16 _dictOfMapOfConstantFieldOnCellsChar16;
+    /** @brief Liste des champs généralisés */
+    mapStrMoFGVR _dictOfMapOfGeneralizedVectorReal;
+    mapStrMoFGVC _dictOfMapOfGeneralizedVectorComplex;
 
     /** @brief List of ElementaryCharacteristicsPtr */
     mapIndexCaraElem _mapElemCara;
@@ -348,7 +358,7 @@ class Result : public DataStructure, public ListOfTables {
     ModelPtr getModel( ASTERINTEGER index ) const;
 
     /**
-     * @brief Obtenir un champ aux noeuds réel à partir de son nom et de son numéro d'ordre
+     * @brief Obtenir un champ aux noeuds à partir de son nom et de son numéro d'ordre
      * @param name nom Aster du champ
      * @param index numéro d'ordre
      * @return FieldOnCellsRealPtr pointant vers le champ
@@ -363,7 +373,7 @@ class Result : public DataStructure, public ListOfTables {
                                              const ASTERINTEGER index ) const;
 
     /**
-     * @brief Obtenir un champ aux noeuds réel à partir de son nom et de son numéro d'ordre
+     * @brief Obtenir un champ par élément à partir de son nom et de son numéro d'ordre
      * @param name nom Aster du champ
      * @param index numéro d'ordre
      * @return FieldOnCellsRealPtr pointant vers le champ
@@ -432,6 +442,14 @@ class Result : public DataStructure, public ListOfTables {
     VectorString getConstantFieldsOnCellsRealNames() const;
 
     VectorString getConstantFieldsOnCellsChar16Names() const;
+
+    /**
+     * @brief Get the list of generalized vectors
+     * @return std::vector< string >
+     */
+    VectorString getGeneralizedVectorRealNames() const;
+
+    VectorString getGeneralizedVectorComplexNames() const;
 
     /**
      * @brief Obtenir un champ aux noeuds réel à partir de son nom et de son numéro d'ordre

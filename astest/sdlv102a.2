@@ -8,7 +8,7 @@ POURSUITE(CODE='OUI',DEBUG=_F(SDVERI='OUI'))
 myStructure = Structure([subS1, subS2],[interface,])
 
 nmodes=6
-omega, resuSub = myStructure.computeGlobalModes(nmodes=nmodes)
+omega, resuSub = myStructure.computeGlobalModes(nmodes=nmodes, shift=25)
 
 # for isub,resu in enumerate(resuSub) :
 #    resu.printMedFile('/tmp/resu%d.resu.med'%isub)
@@ -16,12 +16,10 @@ omega, resuSub = myStructure.computeGlobalModes(nmodes=nmodes)
 print("**** Eigen Pulses ****")
 print(omega)
 
-ref =[13.5530744 +0.j, 29.2812197 +0.j,
- 37.48197441+0.j, 56.33309667+0.j,
- 70.41095328+0.j, 72.40422053+0.j]
+ref = [0.0, 1.37970118e01, 2.89138920e01, 3.95359019e01, 5.85297432e01, 6.15141619e01]
 
-for idx, val in enumerate(omega):
-    test.assertAlmostEqual(val, ref[idx], delta=1.e-2)
+for idx in range(0, nmodes):
+    test.assertAlmostEqual(omega[idx], ref[idx], delta=1.0e-2)
 
 
 FIN()

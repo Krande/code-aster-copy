@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -126,6 +126,12 @@ class ExtendedGeneralizedAssemblyMatrixComplex:
         desc = NP.array(desc)
         NP.asarray(matrice)
 
+        # Symétrique ou non
+        valm = self.sdj.VALM.get()
+        sym = len(valm) == 1
+
+        # import pdb; pdb.set_trace()
+
         # On teste si la dimension de la matrice python est 2
         if len(NP.shape(matrice)) != 2:
             raise AsException("La dimension de la matrice est incorrecte ")
@@ -142,9 +148,9 @@ class ExtendedGeneralizedAssemblyMatrixComplex:
             for j in range(desc[1] + 1):
                 for i in range(j):
                     k = j * (j - 1) // 2 + i
-                    tmpr[k] = matrice[j - 1, i].real
-                    tmpc[k] = matrice[j - 1, i].imag
-            aster.putvectjev(
+                    tmpr[k] = matrice[i, j - 1].real
+                    tmpc[k] = matrice[i, j - 1].imag
+            aster.putcolljev(
                 "%-19s.VALM" % ncham,
                 len(tmpr),
                 tuple((list(range(1, len(tmpr) + 1)))),
@@ -152,6 +158,23 @@ class ExtendedGeneralizedAssemblyMatrixComplex:
                 tuple(tmpc),
                 1,
             )
+            # Cas non-symétrique
+            if not sym:
+                tmpr = NP.zeros([int(taille)])
+                tmpc = NP.zeros([int(taille)])
+                for j in range(desc[1] + 1):
+                    for i in range(j):
+                        k = j * (j - 1) // 2 + i
+                        tmpr[k] = matrice[j - 1, i].real
+                        tmpc[k] = matrice[j - 1, i].imag
+                aster.putcolljev(
+                    "%-19s.VALM" % ncham,
+                    len(tmpr),
+                    tuple((list(range(1, len(tmpr) + 1)))),
+                    tuple(tmpr),
+                    tuple(tmpc),
+                    2,
+                )
         # Si le stockage est diagonal
         elif desc[2] == 1:
             tmpr = NP.zeros(desc[1])
@@ -159,7 +182,7 @@ class ExtendedGeneralizedAssemblyMatrixComplex:
             for j in range(desc[1]):
                 tmpr[j] = matrice[j, j].real
                 tmpc[j] = matrice[j, j].imag
-            aster.putvectjev(
+            aster.putcolljev(
                 "%-19s.VALM" % ncham,
                 len(tmpr),
                 tuple((list(range(1, len(tmpr) + 1)))),
@@ -237,6 +260,10 @@ class ExtendedGeneralizedAssemblyMatrixReal:
 
         NP.asarray(matrice)
 
+        # Symétrique ou non
+        valm = self.sdj.VALM.get()
+        sym = len(valm) == 1
+
         # On teste si la dimension de la matrice python est 2
         if len(NP.shape(matrice)) != 2:
             raise AsException("La dimension de la matrice est incorrecte ")
@@ -248,11 +275,12 @@ class ExtendedGeneralizedAssemblyMatrixReal:
         # Si le stockage est plein
         if desc[2] == 2:
             taille = desc[1] * desc[1] / 2.0 + desc[1] / 2.0
+            # Triangulaire supérieure
             tmp = NP.zeros([int(taille)])
             for j in range(desc[1] + 1):
                 for i in range(j):
                     k = j * (j - 1) // 2 + i
-                    tmp[k] = matrice[j - 1, i]
+                    tmp[k] = matrice[i, j - 1]
             aster.putcolljev(
                 "%-19s.VALM" % ncham,
                 len(tmp),
@@ -261,6 +289,22 @@ class ExtendedGeneralizedAssemblyMatrixReal:
                 tuple(tmp),
                 1,
             )
+            # Cas non-symétrique
+            if not sym:
+                # Triangulaire inférieure
+                tmp = NP.zeros([int(taille)])
+                for j in range(desc[1] + 1):
+                    for i in range(j):
+                        k = j * (j - 1) // 2 + i
+                        tmp[k] = matrice[j - 1, i]
+                aster.putcolljev(
+                    "%-19s.VALM" % ncham,
+                    len(tmp),
+                    tuple((list(range(1, len(tmp) + 1)))),
+                    tuple(tmp),
+                    tuple(tmp),
+                    2,
+                )
         # Si le stockage est diagonal
         elif desc[2] == 1:
             tmp = NP.zeros(desc[1])

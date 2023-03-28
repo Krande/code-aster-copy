@@ -209,4 +209,12 @@ class ExtendedResult:
         if name in names:
             return self.getConstantFieldOnCellsChar16(name, index)
 
+        names = self.getGeneralizedVectorRealNames()
+        if name in names:
+            return self.getGeneralizedVectorReal(name, index)
+
+        names = self.getGeneralizedVectorComplexNames()
+        if name in names:
+            return self.getGeneralizedVectorComplex(name, index)
+
         raise KeyError("name of field %s not found" % name)

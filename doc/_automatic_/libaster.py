@@ -6600,6 +6600,13 @@ class GeneralizedAssemblyVectorReal(GeneralizedAssemblyVector):
         2. __init__(self: libaster.GeneralizedAssemblyVectorReal, arg0: str) -> None
         """
 
+    def getValues(self):
+        """Return a list of values as (x1, y1, z1, x2, y2, z2...)
+
+        Returns:
+            list[float]: List of values.
+        """
+
 
 # class GeneralizedAssemblyVectorComplex in libaster
 
@@ -6622,6 +6629,13 @@ class GeneralizedAssemblyVectorComplex(GeneralizedAssemblyVector):
         1. __init__(self: libaster.GeneralizedAssemblyVectorComplex) -> None
 
         2. __init__(self: libaster.GeneralizedAssemblyVectorComplex, arg0: str) -> None
+        """
+
+    def getValues(self):
+        """Return a list of values as (x1, y1, z1, x2, y2, z2...)
+
+        Returns:
+            list[float]: List of values.
         """
 
 
@@ -10225,6 +10239,20 @@ class Result(DataStructure):
             list[FiniteElementDescriptor]: list of finite element descriptor
         """
 
+    def getGeneralizedVectorComplexNames(self):
+        """Return the names of the complex generalized vectors as Python list.
+
+        Returns:
+            list(str): List of names of the complex generalized vectors.
+        """
+
+    def getGeneralizedVectorRealNames(self):
+        """Return the names of the real generalized vectors as Python list.
+
+        Returns:
+            list(str): List of names of the real generalized vectors.
+        """
+
     def getIndexes(self):
         """Return the list of indexs used to store fields
 
@@ -11657,6 +11685,12 @@ class GeneralizedModeResult(FullResult):
         pass
 
     def getGeneralizedDOFNumbering(self):
+        pass
+
+    def getGeneralizedVectorComplex(self, arg0, arg1):
+        pass
+
+    def getGeneralizedVectorReal(self, arg0, arg1):
         pass
 
     def getStiffnessMatrix(self):
