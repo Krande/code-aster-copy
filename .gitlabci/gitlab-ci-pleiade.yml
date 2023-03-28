@@ -44,7 +44,7 @@ compile:
       - build/mpi*/*/*.py
       - build/mpi*/*/code_aster/*.py
       - build/mpi*/*/*/*.so
-      - build/mpi*/*/elem.1
+      - build/mpi*/*/catalo/elem.1
       - build/mpi*/*/*.mod
       - install/*
     expire_in: 3 days
