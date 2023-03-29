@@ -220,6 +220,8 @@ class MEDCouplingMeshHelper:
         with timer("completion"):
             if not mesh.isIncomplete():
                 mesh._endDefinition()
+            else:
+                mesh._setRange(self._range)
         # cheat code for debugging and detailed time informations: 1989
         with timer("show details"):
             mesh.show(verbose & 3)
@@ -367,7 +369,7 @@ class MEDCouplingMeshHelper:
         endNode = nbNodesProc * (rank + 1)
         if rank == size - 1:
             endNode = nodeNb
-
+        self._range = [startNode, endNode]
         coords = medc.MEDFileUMesh.LoadPartCoords(
             filename, meshName, -1, -1, ["X", "Y", "Z"], startNode, endNode
         )

@@ -19,6 +19,8 @@
 
 #include "ParallelUtilities/PtScotchPartitioner.h"
 
+#include "ParallelUtilities/ObjectBalancer.h"
+
 PtScotchPartitioner::PtScotchPartitioner() {
     _graph = new SCOTCH_Dgraph;
     _scotchStrat = new SCOTCH_Strat;
@@ -43,10 +45,11 @@ int PtScotchPartitioner::buildGraph( const VectorLong &vertloctab, const VectorL
                                _edges.data(), 0, 0 );
 };
 
-int PtScotchPartitioner::buildGraph( const Graph &graph ) {
-    auto &vert = const_cast< VectorLong & >( graph.getVertices() );
-    auto &edge = const_cast< VectorLong & >( graph.getEdges() );
+int PtScotchPartitioner::buildGraph( const MeshConnectionGraphPtr &graph ) {
+    auto &vert = const_cast< VectorLong & >( graph->getVertices() );
+    auto &edge = const_cast< VectorLong & >( graph->getEdges() );
     _nbVertex = vert.size() - 1;
+    _minId = graph->getRange()[0];
     return SCOTCH_dgraphBuild( _graph, 0, vert.size() - 1, vert.size() - 1, vert.data(), 0, 0, 0,
                                edge.size(), edge.size(), edge.data(), 0, 0 );
 };
@@ -55,10 +58,33 @@ int PtScotchPartitioner::checkGraph() { return SCOTCH_dgraphCheck( _graph ); };
 
 VectorLong PtScotchPartitioner::partitionGraph() {
     const auto nbProcs = getMPISize();
-    VectorLong partition( _nbVertex, -1 );
+    const auto rank = getMPIRank();
+    VectorLong partition( _nbVertex, -1 ), distributed;
     auto cret = SCOTCH_dgraphPart( _graph, nbProcs, _scotchStrat, partition.data() );
-    return partition;
+    buildPartition( partition, distributed );
+    return distributed;
 };
+
+void PtScotchPartitioner::buildPartition( const VectorLong &partition, VectorLong &distributed ) {
+    const auto nbProcs = getMPISize();
+    const auto rank = getMPIRank();
+    VectorLong toDistribute( _nbVertex, -1 );
+    VectorOfVectorsInt sendLists( nbProcs );
+    for ( int pos = 0; pos < _nbVertex; ++pos ) {
+        toDistribute[pos] = pos + _minId + 1;
+        const auto &curProc = partition[pos];
+        sendLists[curProc].push_back( pos );
+    }
+    ObjectBalancer balancer;
+    for ( int curProc = 0; curProc < nbProcs; ++curProc ) {
+        if ( curProc != rank && sendLists[curProc].size() != 0 )
+            balancer.addElementarySend( curProc, sendLists[curProc] );
+    }
+    balancer.endElementarySendDefinition();
+    balancer.prepareCommunications();
+    balancer.balanceObjectOverProcesses( toDistribute, distributed );
+    std::sort( distributed.begin(), distributed.end() );
+}
 
 void PtScotchPartitioner::writeGraph( const std::string &filename ) {
     auto file = fopen( filename.c_str(), "w" );

@@ -112,6 +112,7 @@
 #include "PythonBindings/MechanicalLoadInterface.h"
 #include "PythonBindings/MedCouplingConversionInterface.h"
 #include "PythonBindings/MeshBalancerInterface.h"
+#include "PythonBindings/MeshConnectionGraphInterface.h"
 #include "PythonBindings/MeshCoordinatesFieldInterface.h"
 #include "PythonBindings/MeshEntitiesInterface.h"
 #include "PythonBindings/MeshInterface.h"
@@ -310,4 +311,5 @@ PYBIND11_MODULE( libaster, mod ) {
     exportMeshBalancerToPython( mod );
     exportIncompleteMeshToPython( mod );
     exportPtScotchPartitionerToPython( mod );
+    exportMeshConnectionGraphToPython( mod );
 };

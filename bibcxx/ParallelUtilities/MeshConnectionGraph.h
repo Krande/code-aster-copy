@@ -1,6 +1,9 @@
+#ifndef MESHCONNECTIONGRAPH_H_
+#define MESHCONNECTIONGRAPH_H_
+
 /**
- * @file IncompleteMeshInterface.cxx
- * @brief Interface python de IncompleteMesh
+ * @file MeshConnectionGraph.h
+ * @brief Header of connection graph
  * @author Nicolas Sellenet
  * @section LICENCE
  *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
@@ -22,19 +25,32 @@
  */
 
 /* person_in_charge: nicolas.sellenet at edf.fr */
+#include "aster_mpi.h"
+#include "astercxx.h"
 
-#include "PythonBindings/IncompleteMeshInterface.h"
+#include "Meshes/IncompleteMesh.h"
 
-#include "aster_pybind.h"
+/**
+ * @class MeshConnectionGraph
+ * @brief Class describing the connection graph of a mesh
+ * @author Nicolas Sellenet
+ */
+class MeshConnectionGraph {
+    VectorLong _vertices, _edges;
+    VectorLong _range;
 
-#ifdef ASTER_HAVE_MPI
+  public:
+    MeshConnectionGraph(){};
 
-void exportIncompleteMeshToPython( py::module_ &mod ) {
+    void buildFromIncompleteMesh( const IncompleteMeshPtr &mesh );
 
-    py::class_< IncompleteMesh, IncompleteMesh::IncompleteMeshPtr, Mesh >( mod, "IncompleteMesh" )
-        .def( py::init( &initFactoryPtr< IncompleteMesh > ) )
-        .def( py::init( &initFactoryPtr< IncompleteMesh, std::string > ) )
-        .def( "_setRange", &IncompleteMesh::setRange );
+    const VectorLong &getEdges() const { return _edges; };
+
+    const VectorLong &getRange() const { return _range; };
+
+    const VectorLong &getVertices() const { return _vertices; };
 };
 
-#endif /* ASTER_HAVE_MPI */
+using MeshConnectionGraphPtr = std::shared_ptr< MeshConnectionGraph >;
+
+#endif /* MESHCONNECTIONGRAPH_H_ */

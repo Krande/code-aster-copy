@@ -26,24 +26,12 @@
 #include "astercxx.h"
 
 #include "ParallelUtilities/AsterMPI.h"
+#include "ParallelUtilities/MeshConnectionGraph.h"
 extern "C" {
 #include "ptscotch.h"
 }
 
-/**
- * @class Graph
- * @brief Class describing a graph (must NOT be available in python)
- */
-class Graph {
-    const VectorLong &_vertices, &_edges;
-
-  public:
-    Graph( const VectorLong &vertices, const VectorLong &edges )
-        : _vertices( vertices ), _edges( edges ){};
-
-    const VectorLong &getEdges() const { return _edges; };
-    const VectorLong &getVertices() const { return _vertices; };
-};
+using VectorOfVectorsInt = std::vector< VectorInt >;
 
 /**
  * @class PtScotchPartitioner
@@ -52,8 +40,10 @@ class Graph {
 class PtScotchPartitioner {
     SCOTCH_Dgraph *_graph;
     SCOTCH_Strat *_scotchStrat;
-    int _nbVertex = 0;
+    int _nbVertex = 0, _minId = 0;
     VectorLong _vertices, _edges;
+
+    void buildPartition( const VectorLong &, VectorLong & );
 
   public:
     PtScotchPartitioner();
@@ -71,7 +61,7 @@ class PtScotchPartitioner {
      * @brief Define graph for existing graph (Warning: works with reference)
      * @param graph graph containing vertex and edge description
      */
-    int buildGraph( const Graph &graph );
+    int buildGraph( const MeshConnectionGraphPtr &graph );
 
     /**
      * @brief Ask ptscotch to check graph

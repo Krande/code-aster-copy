@@ -26,11 +26,15 @@
 
 #include "aster_pybind.h"
 
+#include "ParallelUtilities/MeshConnectionGraph.h"
+
 void exportPtScotchPartitionerToPython( py::module_ &mod ) {
 
     py::class_< PtScotchPartitioner, PtScotchPartitionerPtr >( mod, "PtScotchPartitioner" )
         .def( py::init( &initFactoryPtr< PtScotchPartitioner > ) )
         .def( "buildGraph", py::overload_cast< const VectorLong &, const VectorLong & >(
+                                &PtScotchPartitioner::buildGraph ) )
+        .def( "buildGraph", py::overload_cast< const MeshConnectionGraphPtr & >(
                                 &PtScotchPartitioner::buildGraph ) )
         .def( "checkGraph", &PtScotchPartitioner::checkGraph )
         .def( "partitionGraph", &PtScotchPartitioner::partitionGraph )

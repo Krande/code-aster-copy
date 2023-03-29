@@ -1,6 +1,6 @@
 /**
- * @file IncompleteMeshInterface.cxx
- * @brief Interface python de IncompleteMesh
+ * @file MeshConnectionGraphInterface.cxx
+ * @brief Interface python de MeshConnectionGraph
  * @author Nicolas Sellenet
  * @section LICENCE
  *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
@@ -23,18 +23,20 @@
 
 /* person_in_charge: nicolas.sellenet at edf.fr */
 
-#include "PythonBindings/IncompleteMeshInterface.h"
+#include "PythonBindings/MeshConnectionGraphInterface.h"
 
 #include "aster_pybind.h"
 
+// Not DataStructures
+// aslint: disable=C3006
+
 #ifdef ASTER_HAVE_MPI
 
-void exportIncompleteMeshToPython( py::module_ &mod ) {
+void exportMeshConnectionGraphToPython( py::module_ &mod ) {
 
-    py::class_< IncompleteMesh, IncompleteMesh::IncompleteMeshPtr, Mesh >( mod, "IncompleteMesh" )
-        .def( py::init( &initFactoryPtr< IncompleteMesh > ) )
-        .def( py::init( &initFactoryPtr< IncompleteMesh, std::string > ) )
-        .def( "_setRange", &IncompleteMesh::setRange );
+    py::class_< MeshConnectionGraph, MeshConnectionGraphPtr >( mod, "MeshConnectionGraph" )
+        .def( py::init( &initFactoryPtr< MeshConnectionGraph > ) )
+        .def( "buildFromIncompleteMesh", &MeshConnectionGraph::buildFromIncompleteMesh );
 };
 
 #endif /* ASTER_HAVE_MPI */

@@ -37,10 +37,15 @@
 
 /**
  * @class IncompleteMesh
- * @brief Cette classe decrit un maillage Aster parallèle
+ * @brief Class of an incomplete mesh read in parallel from medcoupling
  * @author Nicolas Sellenet
  */
 class IncompleteMesh : public Mesh {
+
+    VectorLong _range;
+    std::map< int, std::set< int > > _reverseConnex;
+    bool _bReverseConnex = false;
+
   public:
     /**
      * @typedef IncompleteMeshPtr
@@ -58,9 +63,17 @@ class IncompleteMesh : public Mesh {
      */
     IncompleteMesh( const std::string &name ) : Mesh( name, "MAILLAGE_I" ){};
 
+    const std::map< int, std::set< int > > &buildReverseConnectivity();
+
+    void deleteReverseConnectivity();
+
+    const VectorLong &getRange() const { return _range; };
+
     bool isIncomplete() const { return true; };
 
     bool isParallel() const { return false; };
+
+    void setRange( const VectorLong &range ) { _range = range; };
 };
 
 /**
