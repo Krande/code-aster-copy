@@ -61,14 +61,17 @@ subroutine panbno(ityp, nbnott)
         if (nbntot .eq. 9) nbnott(3) = 1
     else if (nomtm(1:5) .eq. 'TETRA') then
         nbnott(1) = 4
-        if (nbntot .eq. 10) nbnott(2) = 6
+        if (nbntot .ge. 10) nbnott(2) = 6
+        if (nbntot .eq. 15) nbnott(3) = 5
     else if (nomtm(1:5) .eq. 'PENTA') then
         nbnott(1) = 6
-        if (nbntot .eq. 15) nbnott(2) = 9
+        if (nbntot .ge. 15) nbnott(2) = 9
         if (nbntot .eq. 18) nbnott(3) = 3
+        if (nbntot .eq. 21) nbnott(3) = 6
     else if (nomtm(1:5) .eq. 'PYRAM') then
         nbnott(1) = 5
-        if (nbntot .eq. 13) nbnott(2) = 8
+        if (nbntot .ge. 13) nbnott(2) = 8
+        if (nbntot .eq. 19) nbnott(3) = 6
     else if (nomtm(1:4) .eq. 'HEXA') then
         nbnott(1) = 8
         if (nbntot .ge. 20) nbnott(2) = 12
