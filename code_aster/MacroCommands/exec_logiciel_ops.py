@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -40,7 +40,7 @@ from ..Messages import UTMESS
 from ..Utilities import ExecutionParameter
 
 
-class CommandLine(object):
+class CommandLine:
     """Simple command line builder"""
 
     def __init__(self):
@@ -53,7 +53,7 @@ class CommandLine(object):
         return cmd
 
 
-class ExecProgram(object):
+class ExecProgram:
     """Execute a program from Code_Aster
 
     Attributes:

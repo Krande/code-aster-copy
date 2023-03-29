@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -32,13 +32,13 @@ from .Fracture.post_k_varc import POST_K_VARC
 # ===========================================================================
 
 
-class PostFM(object):
+class PostFM:
     """
     classe POST_FM
     """
 
     epsfcn = np.finfo(np.dtype(float)).eps
-    _eps = epsfcn ** 0.5
+    _eps = epsfcn**0.5
 
     def __init__(self, resultat, inst, temp, g_elas, g_plas, group_no):
         model = resultat.getModel()
@@ -133,14 +133,14 @@ class PostFM(object):
     def k_elas(self):
         """return k_elas"""
         if self._k_elas is None:
-            self._k_elas = np.sqrt(self._young * self._g_elas / (1 - self._nu ** 2))
+            self._k_elas = np.sqrt(self._young * self._g_elas / (1 - self._nu**2))
         return self._k_elas
 
     @property
     def k_plas(self):
         """return k_plas"""
         if self._k_plas is None:
-            self._k_plas = np.sqrt(self._young * self._g_plas / (1 - self._nu ** 2))
+            self._k_plas = np.sqrt(self._young * self._g_plas / (1 - self._nu**2))
         return self._k_plas
 
     @property

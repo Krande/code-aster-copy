@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -29,7 +29,7 @@ code_aster.init("--test", "--abort", "--debug")
 test = code_aster.TestCase()
 
 
-class FakeDS(object):
+class FakeDS:
     """Fake DataStructure object for unittests."""
 
     def __init__(self, name):

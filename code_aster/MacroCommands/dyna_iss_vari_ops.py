@@ -61,7 +61,7 @@ def dyna_iss_vari_ops(self, **kwargs):
         UTMESS("F", "SUPERVIS2_5", valk=("DYNA_ISS_VARI", trace, str(err)))
 
 
-class DynaISSParameters(object):
+class DynaISSParameters:
     def __init__(self, **kwargs):
         """Enregistrement des valeurs des mots-clés dans un dictionnaire.
         - On cree deux dictionnaires de parametres:
@@ -94,7 +94,7 @@ class DynaISSParameters(object):
                 raise NotImplementedError("ISSF only available with INTERF='QUELCONQUE'")
 
 
-class Generator(object):
+class Generator:
 
     """Base class Generator"""
 

@@ -84,7 +84,7 @@ def pre_seisme_nonl_ops(self, **args):
         UTMESS("F", "SUPERVIS2_5", valk=("PRE_SEISME_NONL", trace, str(err)))
 
 
-class PreSeismeNonL(object):
+class PreSeismeNonL:
 
     """Define a general methods for a PRE_SEISME_NONL calculation."""
 
@@ -215,7 +215,7 @@ class PostCalcMiss(PreSeismeNonL):
         """Set the type of MISS calculation"""
 
 
-class BaseModale(object):
+class BaseModale:
 
     """Define a modal basis."""
 
@@ -392,7 +392,7 @@ class BaseModale(object):
             self.bamo = _BAMO
 
 
-class MacroElement(object):
+class MacroElement:
 
     """Define a sub-structure, also known as super-element or macro-element."""
 
@@ -442,7 +442,7 @@ class MacroElement(object):
         self.parent.register_result(_Mael, self.param["RESULTAT"]["MACR_ELEM_DYNA"])
 
 
-class Properties(object):
+class Properties:
 
     """Define a dictionary containing the keywords of the model properties."""
 
@@ -491,7 +491,7 @@ class Properties(object):
         return pprint.pformat(self._keywords)
 
 
-class Model(object):
+class Model:
 
     """Define a numerical model."""
 
@@ -590,7 +590,7 @@ class Model(object):
                     self.parent.register_result(_ACh_CL, mcfact["NOM"])
 
 
-class StatDyna(object):
+class StatDyna:
     def __init__(self, parent, properties):
         """initializations"""
         self.parent = parent
@@ -1031,7 +1031,7 @@ class ModelBaseModale(ModelMacrElem):
         """D"""
 
 
-class Mesh(object):
+class Mesh:
 
     """Define the mesh of the numerical model."""
 

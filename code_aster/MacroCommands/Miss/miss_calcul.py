@@ -58,7 +58,7 @@ from .miss_resu_aster import ResuAsterReader
 from .miss_utils import copie_fichier
 
 
-class CalculMiss(object):
+class CalculMiss:
 
     """Définition d'un calcul MISS3D."""
 

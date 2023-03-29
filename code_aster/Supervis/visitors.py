@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -26,7 +26,7 @@ This module provides visitors of syntax objects (commands and keywords).
 """
 
 
-class GenericVisitor(object):
+class GenericVisitor:
     """Generic visitor to walk accross syntax and keywords values.
 
     NB: The syntax is supposed to be valid before being called!

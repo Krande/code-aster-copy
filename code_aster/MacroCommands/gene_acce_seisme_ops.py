@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -90,7 +90,7 @@ def gene_acce_seisme_ops(self, **kwargs):
         UTMESS("F", "SUPERVIS2_5", valk=("GENE_ACCE_SEISME", trace, str(err)))
 
 
-class GeneAcceParameters(object):
+class GeneAcceParameters:
     def __init__(self, **kwargs):
         """Enregistrement des valeurs des mots-clés dans un dictionnaire.
         - On cree deux dictionnaires de parametres:
@@ -205,7 +205,7 @@ class GeneAcceParameters(object):
         self.simulation_keys.update({"CAS": self.cas})
 
 
-class Generator(object):
+class Generator:
 
     """Base class Generator"""
 
@@ -473,7 +473,7 @@ class GeneratorSpectrum(Generator):
 #  ------------------------------------------------------------------
 
 
-class Sampler(object):
+class Sampler:
 
     """class Sampling: common task for all cases"""
 
@@ -560,7 +560,7 @@ class Sampler(object):
 #     -----------------------------------------------------------------
 
 
-class Modulator(object):
+class Modulator:
 
     """class Modulator: common task for all cases"""
 
@@ -610,7 +610,7 @@ class Modulator(object):
         else:
             # equivalence energie totale avec signal module par CONSTANT sur
             # DUREE
-            int12 = NP.trapz(fqt ** 2, sample_time)
+            int12 = NP.trapz(fqt**2, sample_time)
             fqt = fqt * sqrt(self.DUREE_PHASE_FORTE / int12)
         f_mod = t_fonction(sample_time, fqt, para=self.para_fonc_modul)
         self.fonc_modul = f_mod
@@ -697,7 +697,7 @@ class ModulatorConstant(Modulator):
 #     -----------------------------------------------------------------
 
 
-class Simulator(object):
+class Simulator:
 
     """class Simulation"""
 

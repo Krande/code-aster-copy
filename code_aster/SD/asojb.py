@@ -126,7 +126,7 @@ class AsBase(Type):
 
 
 # -----------------------------------------------------------------------------
-class JeveuxAttr(object):
+class JeveuxAttr:
 
     """Un attribut jeveux"""
 

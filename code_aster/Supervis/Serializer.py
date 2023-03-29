@@ -75,7 +75,7 @@ class FinalizeOptions:
     OnlyProc0 = 8
 
 
-class Serializer(object):
+class Serializer:
 
     """This class manages 'save & reload' feature.
 

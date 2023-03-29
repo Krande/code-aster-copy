@@ -32,7 +32,7 @@ from .miss_utils import double, lire_nb_valeurs
 from ...Messages import UTMESS
 
 
-class ResuAsterReader(object):
+class ResuAsterReader:
 
     """Lit le fichier issu de IMPR_MACR_ELEM"""
 

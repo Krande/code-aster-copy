@@ -32,7 +32,7 @@ from .miss_domain import MissDomains
 from .miss_utils import dict_format
 
 
-class MissCmdeGenerator(object):
+class MissCmdeGenerator:
 
     """Construit un fichier de commandes Miss"""
 

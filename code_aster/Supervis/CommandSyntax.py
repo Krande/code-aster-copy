@@ -78,7 +78,7 @@ from .typeaster import typeaster
 #   only during debugging
 
 
-class CommandSyntax(object):
+class CommandSyntax:
     """This class describes the syntax of command for compatibility
     with the fortran code that use the legacy supervisor.
     """

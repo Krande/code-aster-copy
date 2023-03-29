@@ -33,7 +33,7 @@ def fsolve(func, x0):
     return x
 
 
-class PostRocheAnalytic(object):
+class PostRocheAnalytic:
     """classe pour calcul analytique des valeurs de post roche"""
 
     # loi ramberg osgood

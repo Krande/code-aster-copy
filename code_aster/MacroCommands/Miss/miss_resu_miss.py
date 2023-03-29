@@ -29,7 +29,7 @@ from .miss_utils import double, lire_nb_valeurs
 from ...Messages import UTMESS
 
 
-class MissCsolReader(object):
+class MissCsolReader:
 
     """Lit un fichier csol"""
 

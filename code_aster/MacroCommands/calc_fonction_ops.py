@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -207,7 +207,7 @@ def calc_fonction_ops(self, **args):
     return result
 
 
-class CalcFonctionOper(object):
+class CalcFonctionOper:
     """Base of all CALC_FONCTION operations.
 
     Subclasses must implement the '_run' method and, if necessary, may
@@ -1163,7 +1163,7 @@ class CalcFonction_DERIVE_FREQ(CalcFonctionOper):
         self.resu = result
 
 
-class Context(object):
+class Context:
     """Permet de stocker des éléments de contexte pour aider au
     diagnostic lors de l'émission de message.
     usage :

@@ -99,7 +99,7 @@ def command_execution():
         libaster.cmd_ctxt_exit()
 
 
-class ExecuteCommand(object):
+class ExecuteCommand:
 
     """This class implements an executor of commands.
 

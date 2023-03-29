@@ -68,7 +68,7 @@ from .miss_resu_miss import MissCsolReader
 FKEY = {"DX": "FONC_X", "DY": "FONC_Y", "DZ": "FONC_Z"}
 
 
-class PostMiss(object):
+class PostMiss:
     """Définition d'un post-traitement MISS3D."""
 
     def __init__(self, parent, param):

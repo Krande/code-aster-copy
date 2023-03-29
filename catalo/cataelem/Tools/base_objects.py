@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -61,7 +61,7 @@ from collections import OrderedDict
 from cataelem.Tools.modifier import ChangeComponentsVisitor
 
 
-class BaseCataEntity(object):
+class BaseCataEntity:
 
     """Abstract class for all elements of the catalog"""
 
@@ -571,7 +571,7 @@ class Option(BaseCataEntity):
         return visitor.visitOption(self)
 
 
-class CondCalcul(object):
+class CondCalcul:
 
     """Definition of the set of elements that must (or not) compute an option"""
 
@@ -624,7 +624,7 @@ class Elrefe(BaseCataEntity):
     locations = property(__getLocations)
 
 
-class ElrefeLoc(object):
+class ElrefeLoc:
 
     """Definition of a "local" reference element"""
 
@@ -669,7 +669,7 @@ class ElrefeLoc(object):
     elrefe = property(__getElrefe)
 
 
-class Calcul(object):
+class Calcul:
 
     """Definition of an elementary calculation"""
 
@@ -886,7 +886,7 @@ class Element(BaseCataEntity):
         return visitor.visitElement(self)
 
 
-class Modelisation(object):
+class Modelisation:
 
     """Definition of the properties of a modelisation"""
 
@@ -978,7 +978,7 @@ class Phenomenon(BaseCataEntity):
 
 
 # some utilities
-class AbstractEntityStore(object):
+class AbstractEntityStore:
 
     """Helper class to give access to entities by name"""
 

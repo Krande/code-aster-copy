@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -22,7 +22,7 @@
 from hashlib import sha1
 
 
-class Parmi(object):
+class Parmi:
 
     """Classe qui exprime une contrainte multiple pour un attribut"""
 
@@ -45,7 +45,7 @@ class Parmi(object):
         return "".join(l)
 
 
-class CheckLog(object):
+class CheckLog:
 
     """Un validateur qui enregistre toutes les erreurs trouvées.
     checkedXXX répond True si la "marq" courante est inférieure ou égale

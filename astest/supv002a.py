@@ -66,7 +66,7 @@ except ImportError:
 logdbg = None
 
 
-class Checker(object):
+class Checker:
     """A simple checker object."""
 
     def __init__(self, aspell):
@@ -149,7 +149,7 @@ def read_file(stream, queue):
         queue.put(line)
 
 
-class AspellCall(object):
+class AspellCall:
     """A pipe to call aspell"""
 
     @staticmethod

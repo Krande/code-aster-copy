@@ -138,7 +138,7 @@ def first(args):
     return args[0]
 
 
-class Base(object):
+class Base:
 
     """Classe de base : partie commune loi de comportement/kit."""
 

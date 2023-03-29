@@ -59,7 +59,7 @@ from ..Utilities.logger import logger
 RESERVED_UNIT = (8,)
 
 
-class FileType(object):
+class FileType:
     """Enumeration for file type."""
 
     Ascii = 0
@@ -77,7 +77,7 @@ class FileType(object):
         return {"ASCII": 0, "BINARY": 1, "LIBRE": 2}[name]
 
 
-class FileAccess(object):
+class FileAccess:
     """Enumeration for file access."""
 
     New = 0
@@ -95,7 +95,7 @@ class FileAccess(object):
         return {"NEW": 0, "APPEND": 1, "OLD": 2}[name]
 
 
-class Action(object):
+class Action:
     """Enumeration for action."""
 
     Open = 0
@@ -113,7 +113,7 @@ class Action(object):
         return {"ASSOCIER": 0, "RESERVER": 1, "LIBERER": 2}[name]
 
 
-class LogicalUnitFile(object):
+class LogicalUnitFile:
     """This class defines a file associated to a fortran logical unit"""
 
     _free_number = list(range(19, 100))
@@ -269,7 +269,7 @@ class LogicalUnitFile(object):
         return cls._free_number.pop()
 
 
-class ReservedUnitUsed(object):
+class ReservedUnitUsed:
     """Context manager for usage of reserved logical units.
 
     These units are released when entering the context and register again

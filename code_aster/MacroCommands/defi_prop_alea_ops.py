@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -103,7 +103,7 @@ def evaluate_KL3D(X1, X2, X3, DIM, RANGE, XLISTE, Ux, beta, mediane, pseed):
     return Ux_123
 
 
-class Randomfield(object):
+class Randomfield:
     def __init__(self, **kwargs):
         """Enregistrement des valeurs des mots-clés dans un dictionnaire."""
         # GeneralKeys
@@ -111,7 +111,7 @@ class Randomfield(object):
         self.seed = kwargs.get("INIT_ALEA")
         self.mediane = kwargs.get("MEDIANE")
         self.cov = kwargs.get("COEF_VARI")
-        self.beta = sqrt(log(1.0 + self.cov ** 2))
+        self.beta = sqrt(log(1.0 + self.cov**2))
         self.cas = None
         self.nbtot = None
         self.precision = None
@@ -190,7 +190,7 @@ class Randomfield(object):
             raise ValueError("unknown configuration")
 
 
-class Generator(object):
+class Generator:
 
     """Base class Generator"""
 
@@ -255,7 +255,7 @@ class Generator(object):
             ]
             troots = self.find_roots(v, veck)
         roots = troots[:nbmod]
-        lamk = 2.0 * Lc * (1.0 + np.array(roots) ** 2 * Lc ** 2) ** (-1)
+        lamk = 2.0 * Lc * (1.0 + np.array(roots) ** 2 * Lc**2) ** (-1)
         print("NUMBER of ROOTS:", len(troots), "RETAINED EIGENVALUES:", nbmod)
         phik = []
         for (ii, vk) in enumerate(roots):

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -29,7 +29,7 @@ from ..Utilities import injector
 
 
 @injector(MechanicalLoadReal)
-class ExtendedMechanicalLoadReal(object):
+class ExtendedMechanicalLoadReal:
     cata_sdj = "SD.sd_char_meca.sd_char_meca"
 
     def __getinitargs__(self):
@@ -40,7 +40,7 @@ class ExtendedMechanicalLoadReal(object):
 
 
 @injector(MechanicalLoadFunction)
-class ExtendedMechanicalLoadFunction(object):
+class ExtendedMechanicalLoadFunction:
     cata_sdj = "SD.sd_char_meca.sd_char_meca"
 
     def __getinitargs__(self):
@@ -51,7 +51,7 @@ class ExtendedMechanicalLoadFunction(object):
 
 
 @injector(MechanicalLoadComplex)
-class ExtendedMechanicalLoadComplex(object):
+class ExtendedMechanicalLoadComplex:
     cata_sdj = "SD.sd_char_meca.sd_char_meca"
 
     def __getinitargs__(self):

@@ -41,7 +41,7 @@ def crea_max_array(arr):
     return _arr_resu
 
 
-class PostRocheAnalytic(object):
+class PostRocheAnalytic:
     """classe pour calcul analytique des valeurs de post roche"""
 
     # loi ramberg osgood
