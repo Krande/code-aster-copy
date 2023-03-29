@@ -397,6 +397,19 @@ void MeshBalancer::balanceGroups( BaseMeshPtr outMesh, const ObjectBalancer &nBa
     // Build vectors of all cells and nodes groups names
     AsterMPI::all_gather( toSendCell, toSendCellAll );
     AsterMPI::all_gather( toSendNode, toSendNodeAll );
+    std::set< std::string > checkCellGrp, checkNodeGrp;
+    for ( const auto &name : toSendCellAll )
+        checkCellGrp.insert( name );
+    for ( const auto &name : toSendNodeAll )
+        checkNodeGrp.insert( name );
+    toSendCell = VectorString();
+    toSendNode = VectorString();
+    for ( const auto &name : checkCellGrp )
+        toSendCell.push_back( name );
+    for ( const auto &name : checkNodeGrp )
+        toSendNode.push_back( name );
+    std::sort( toSendCell.begin(), toSendCell.end() );
+    std::sort( toSendNode.begin(), toSendNode.end() );
 
     std::map< int, std::string > mapCellsGrpNum;
     std::map< int, std::string > mapNodesGrpNum;
@@ -410,18 +423,22 @@ void MeshBalancer::balanceGroups( BaseMeshPtr outMesh, const ObjectBalancer &nBa
     // Build a numbering of cells and nodes groups names
     // and find group number (group id) of each cells and nodes
     int cmptCells = 0;
-    for ( const auto &name : toSendCellAll ) {
+    for ( const auto &name : toSendCell ) {
         mapCellsGrpNum[cmptCells] = name;
         for ( const auto &id : _mesh->getCells( name ) ) {
             localCellGroups[id] = cmptCells;
         }
         ++cmptCells;
     }
+
     int cmptNodes = 0;
-    for ( const auto &name : toSendNodeAll ) {
+    for ( const auto &name : toSendNode ) {
         mapNodesGrpNum[cmptNodes] = name;
         for ( const auto &id : _mesh->getNodes( name ) ) {
-            localNodeGroups[id] = cmptNodes;
+            const auto id2 = id - _range[0];
+            if ( id2 >= 0 && id2 < _range[1] ) {
+                localNodeGroups[id2] = cmptNodes;
+            }
         }
         ++cmptNodes;
     }

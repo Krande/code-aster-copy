@@ -356,7 +356,8 @@ void BaseMesh::addGroupsOfNodes( const VectorString &names,
                                  const VectorOfVectorsLong &groupsOfNodes ) {
     int nbGroups = names.size();
     AS_ASSERT( nbGroups == groupsOfNodes.size() );
-    AS_ASSERT( _groupsOfNodes.exists() );
+    if ( !_groupsOfNodes->exists() )
+        _groupsOfNodes->allocateSparseNamed( nbGroups );
     AS_ASSERT( _groupsOfNodes->capacity() >= _groupsOfNodes->size() + nbGroups );
 
     for ( auto i = 0; i < nbGroups; ++i ) {
