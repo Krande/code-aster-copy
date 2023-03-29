@@ -4318,16 +4318,6 @@ phen.add(
 )
 
 phen.add(
-    "D_PLAN_2DG",
-    Modelisation(
-        dim=(2, 2),
-        code="D2G",
-        attrs=((AT.TYPMOD, "D_PLAN"), (AT.D_PLAN, "OUI")),
-        elements=((MT.TRIA7, EL.TR7_DP_2G), (MT.QUAD9, EL.QU9_DP_2G)),
-    ),
-)
-
-phen.add(
     "D_PLAN_ABSO",
     Modelisation(
         dim=(1, 2),

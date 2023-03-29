@@ -36,7 +36,7 @@ subroutine te0005(option, nomte)
 !
 ! Elementary computation
 !
-! Elements: D_PLAN_2DG
+! Elements: D_PLAN_DIL, 3D_DIL
 !
 ! Options: FULL_MECA_*, RIGI_MECA_*, RAPH_MECA
 !          CHAR_MECA_PESA_R
