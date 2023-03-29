@@ -53,7 +53,8 @@ subroutine panbno(ityp, nbnott)
         nbnott(2) = nbntot-2
     else if (nomtm(1:3) .eq. 'TRI') then
         nbnott(1) = 3
-        if (nbntot .eq. 6) nbnott(2) = 3
+        if (nbntot .ge. 6) nbnott(2) = 3
+        if (nbntot .eq. 7) nbnott(3) = 1
     else if (nomtm(1:3) .eq. 'QUA') then
         nbnott(1) = 4
         if (nbntot .ge. 8) nbnott(2) = 4

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -113,6 +113,8 @@ MATERINF = DEFI_MATERIAU(ELAS=_F(E=EE / ratio, NU=0.5 * (1.0 - 1.0 / ratio) + po
 T_FIC = POST_K1_K2_K3(
     ABSC_CURV_MAXI=4e-6, FOND_FISS=FISS, MATER=MATERINF, RESULTAT=RESU, TOUT_ORDRE="OUI", INFO=2
 )
+
+IMPR_TABLE(UNITE=6, TABLE=T_FIC)
 
 # CALCUL DE G PAR CALC_G
 # ON CALCULE G POUR TROIS COURONNES D'INTEGRATIONS

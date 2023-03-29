@@ -251,7 +251,7 @@ subroutine conare(typma, ar, nbar)
         ar(3, 2) = 4
         ar(4, 1) = 4
         ar(4, 2) = 1
-    else if (typma .eq. 'QUAD8') then
+    else if (typma .eq. 'QUAD8' .or. typma .eq. 'QUAD9') then
         nbar = 4
 !       CONNECTIVITÉ DES ARETES POUR UNE MAILLE QUAD8
         ar(1, 1) = 1
@@ -275,7 +275,7 @@ subroutine conare(typma, ar, nbar)
         ar(2, 2) = 3
         ar(3, 1) = 3
         ar(3, 2) = 1
-    else if (typma .eq. 'TRIA6') then
+    else if (typma .eq. 'TRIA6' .or. typma .eq. 'TRIA7') then
         nbar = 3
 !       CONNECTIVITÉ DES ARETES POUR UNE MAILLE TRIA6
         ar(1, 1) = 1

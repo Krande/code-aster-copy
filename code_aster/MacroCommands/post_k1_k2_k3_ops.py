@@ -277,6 +277,17 @@ def verif_config_init(FOND_FISS):
 # -------------------------------------------------------------------------
 
 
+def get_displacement_name(result):
+    """retourne le nom du champ DEPL du resultat à utiliser"""
+    if result.getModel().existsHHO():
+        return "HHO_DEPL"
+
+    return "DEPL"
+
+
+# -------------------------------------------------------------------------
+
+
 def get_noeud_fond_fiss(FOND_FISS):
     """retourne la liste des noeuds de FOND_FISS"""
     Lnoff = FOND_FISS.sdj.FOND_NOEU.get()
@@ -358,7 +369,7 @@ def get_coor_libre(self, Lnoff, RESULTAT, ndim):
             INTITULE="Tab pour coordonnees noeuds du fond",
             NOEUD=Lnoff,
             RESULTAT=RESULTAT,
-            NOM_CHAM="DEPL",
+            NOM_CHAM=get_displacement_name(RESULTAT),
             NUME_ORDRE=1,
             NOM_CMP=("DX",),
             OPERATION="EXTRACTION",
@@ -469,7 +480,7 @@ def get_tab_dep(
 
     __TlibS = MACR_LIGN_COUPE(
         RESULTAT=RESULTAT,
-        NOM_CHAM="DEPL",
+        NOM_CHAM=get_displacement_name(RESULTAT),
         MODELE=MODEL,
         VIS_A_VIS=_F(MAILLE_1=ListmaS),
         LIGN_COUPE=mcfact,
@@ -478,7 +489,7 @@ def get_tab_dep(
     if not is_symmetric:
         __TlibI = MACR_LIGN_COUPE(
             RESULTAT=RESULTAT,
-            NOM_CHAM="DEPL",
+            NOM_CHAM=get_displacement_name(RESULTAT),
             MODELE=MODEL,
             VIS_A_VIS=_F(MAILLE_1=ListmaI),
             LIGN_COUPE=mcfact,
@@ -542,7 +553,7 @@ def get_coor_regle(self, RESULTAT, ndim, Lnoff, Lnocal, dicoS, is_symmetric, dic
             INTITULE="Tab pour coordonnees noeuds des levres",
             NOEUD=Ltot,
             RESULTAT=RESULTAT,
-            NOM_CHAM="DEPL",
+            NOM_CHAM=get_displacement_name(RESULTAT),
             NOM_CMP=nomcmp,
             OPERATION="EXTRACTION",
         )
