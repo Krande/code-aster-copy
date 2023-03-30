@@ -1,0 +1,254 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+N = 1.0
+MPa = 1.0
+mm = 1.0
+
+Pa = MPa * 1e-6
+m = mm * 1.0e3
+kN = N * 1.0e3
+
+L = 12.0 * m
+H = 3.0 * m
+B = 0.3 * m
+A = B * H
+d1 = 3.0 * m
+d2 = 3.15 * m
+
+fx = 100.0 * kN
+fy = 6000.0 * kN
+fz = 600.0 * kN
+
+import sys
+
+DEBUT(
+    CODE=_F(NIV_PUB_WEB="INTERNET"),
+    ERREUR=_F(ERREUR_F="EXCEPTION"),
+    IGNORE_ALARM=("TEST0_12", "ALGELINE5_23"),
+)
+
+mesh = LIRE_MAILLAGE(FORMAT="MED", UNITE=20)
+
+affe = []
+for node in range(1, 100):
+    affe.append(_F(NOM="N" + str(node), NOEUD="N" + str(node)))
+
+mesh = DEFI_GROUP(reuse=mesh, MAILLAGE=mesh, CREA_GROUP_NO=affe)
+
+cls = DEFI_MATERIAU(ELAS=_F(E=30000.0 * MPa, NU=0.3, RHO=2.5e3))
+
+model = AFFE_MODELE(AFFE=_F(MODELISATION="DKT", PHENOMENE="MECANIQUE", TOUT="OUI"), MAILLAGE=mesh)
+
+fieldmat = AFFE_MATERIAU(AFFE=_F(MATER=(cls,), TOUT="OUI"), MODELE=model)
+
+elemprop = AFFE_CARA_ELEM(
+    MODELE=model, INFO=2, COQUE=_F(GROUP_MA="ELEMENTS", EPAIS=300.0 * mm, VECTEUR=(0.0, 1.0, 0.0))
+)
+
+boundary = AFFE_CHAR_MECA(
+    MODELE=model,
+    DDL_IMPO=_F(GROUP_NO=("START",), DX=0.0, DY=0.0, DZ=0.0, DRX=0.0, DRY=0.0, DRZ=0.0),
+)
+
+
+# Forces :
+
+ch1 = AFFE_CHAR_MECA(MODELE=model, FORCE_ARETE=_F(GROUP_MA=("END",), FX=fx / H))
+
+ch2 = AFFE_CHAR_MECA(MODELE=model, FORCE_ARETE=_F(GROUP_MA=("END",), FY=fy / H))
+
+ch3 = AFFE_CHAR_MECA(MODELE=model, FORCE_ARETE=_F(GROUP_MA=("END",), FZ=fz / H))
+
+gravity = AFFE_CHAR_MECA(MODELE=model, PESANTEUR=_F(DIRECTION=(0.0, 0.0, -1.0), GRAVITE=9.81))
+
+reslin = MACRO_ELAS_MULT(
+    MODELE=model,
+    CHAM_MATER=fieldmat,
+    CARA_ELEM=elemprop,
+    CHAR_MECA_GLOBAL=boundary,
+    CAS_CHARGE=(
+        _F(NOM_CAS="FA", SOUS_TITRE="Loading along X-axis", CHAR_MECA=ch1, OPTION="SANS"),
+        _F(NOM_CAS="FB", SOUS_TITRE="Loading along Y-axis", CHAR_MECA=ch2, OPTION="SANS"),
+        _F(NOM_CAS="FC", SOUS_TITRE="Loading along Z-axis", CHAR_MECA=ch3, OPTION="SANS"),
+    ),
+    SOLVEUR=_F(METHODE="MULT_FRONT"),
+)
+
+reslin = CALC_CHAMP(RESULTAT=reslin, reuse=reslin, CONTRAINTE=("EFGE_ELNO", "SIEF_ELGA"))
+reslin2 = MECA_STATIQUE(
+    CARA_ELEM=elemprop,
+    CHAM_MATER=fieldmat,
+    EXCIT=(_F(CHARGE=gravity), _F(CHARGE=boundary)),
+    MODELE=model,
+)
+
+reslin2 = CALC_CHAMP(RESULTAT=reslin2, reuse=reslin2, CONTRAINTE=("EFGE_ELNO"))
+
+ASSEMBLAGE(
+    CARA_ELEM=elemprop,
+    CHAM_MATER=fieldmat,
+    CHARGE=(boundary,),
+    MATR_ASSE=(
+        _F(MATRICE=CO("MASS_M"), OPTION="MASS_MECA"),
+        _F(MATRICE=CO("RIGI_K"), OPTION="RIGI_MECA"),
+    ),
+    MODELE=model,
+    NUME_DDL=CO("ddl"),
+)
+
+modes = CALC_MODES(
+    MATR_MASS=MASS_M, MATR_RIGI=RIGI_K, OPTION="PLUS_PETITE", VERI_MODE=_F(STOP_ERREUR="NON")
+)
+
+modes = CALC_CHAMP(reuse=modes, CONTRAINTE=("EFGE_ELNO", "SIEF_ELGA"), RESULTAT=modes)
+
+amor = CALC_AMOR_MODAL(AMOR_RAYLEIGH=_F(AMOR_ALPHA=0.8, AMOR_BETA=0.2, MODE_MECA=modes))
+
+spec5 = LIRE_FONCTION(
+    FORMAT="LIBRE",
+    INTERPOL=("LIN",),
+    NOM_PARA="FREQ",
+    PROL_DROITE="LINEAIRE",
+    PROL_GAUCHE="LINEAIRE",
+    SEPAR=";",
+    TYPE="FONCTION",
+    UNITE=35,
+)
+
+spec10 = LIRE_FONCTION(
+    FORMAT="LIBRE",
+    INTERPOL=("LIN",),
+    NOM_PARA="FREQ",
+    PROL_DROITE="LINEAIRE",
+    PROL_GAUCHE="LINEAIRE",
+    SEPAR=";",
+    TYPE="FONCTION",
+    UNITE=36,
+)
+
+spec15 = LIRE_FONCTION(
+    FORMAT="LIBRE",
+    INTERPOL=("LIN",),
+    NOM_PARA="FREQ",
+    PROL_DROITE="LINEAIRE",
+    PROL_GAUCHE="LINEAIRE",
+    SEPAR=";",
+    TYPE="FONCTION",
+    UNITE=37,
+)
+
+spectre = DEFI_NAPPE(
+    FONCTION=(spec5, spec10, spec15),
+    INTERPOL=("LIN",),
+    NOM_PARA="AMOR",
+    PARA=(0.05, 0.1, 0.15),
+    PROL_DROITE="LINEAIRE",
+    PROL_GAUCHE="LINEAIRE",
+)
+
+csism = COMB_SISM_MODAL(
+    COMB_DIRECTION=_F(TYPE="QUAD"),
+    COMB_MODE=_F(TYPE="CQC"),
+    EXCIT=_F(AXE=(0.8, 0.8, 0.5), SPEC_OSCI=spectre),
+    LIST_AMOR=amor,
+    MODE_MECA=modes,
+    MONO_APPUI="OUI",
+    OPTION=("DEPL", "EFGE_ELNO", "SIEF_ELGA"),
+)
+
+# ====================================================== #
+# LECTURE DES TABLES DE COEFFICIENTS
+# ====================================================== #
+
+t_coef_1 = LIRE_TABLE(
+    UNITE=38, SEPARATEUR=";", FORMAT="LIBRE", TITRE="TABLE DES COEFFICIENTS ET COMBINAISONS"
+)
+
+# ====================================================== #
+# POST_COMBINAISON ; format 'RESULTAT'
+# ====================================================== #
+
+reslinok = POST_COMBINAISON(
+    MODELE=model,
+    TABLE_COEF=t_coef_1,
+    TABLE_COEF_RESU=CO("MA_TABLE"),
+    TYPE_COMB="RESULTAT",
+    TOUT="OUI",
+    NOM_CHAM=("DEPL", "EFGE_ELNO"),
+    AFFE=(
+        _F(NOM_CAS="G", RESULTAT=reslin2),
+        _F(NOM_CAS="Q", RESULTAT=reslin),
+        _F(NOM_CAS="E", RESULTAT=csism),
+    ),
+)
+
+table_coef = t_coef_1.EXTR_TABLE()
+coef_q = table_coef.Q[0]
+coef_g = table_coef.G[0]
+coef_e = table_coef.E[0]
+
+
+def extract_value(result=None, field=None, order=None, component=None, node=None):
+    result = POST_RELEVE_T(
+        ACTION=_F(
+            OPERATION="EXTRACTION",
+            INTITULE="depl",
+            RESULTAT=result,
+            NOM_CHAM=field,
+            NOEUD="N" + str(node),
+            RESULTANTE=component,
+            NUME_ORDRE=order,
+        )
+    )
+    return getattr(result.EXTR_TABLE(), component)[0]
+
+
+# Validation DEPL
+# 100 premiers noeuds , 3 composantes, 3 ordres
+for node in range(1, 100):
+    for component in ("DX", "DY", "DZ"):
+        for q_order in range(1, 4):
+            # valeur de reference
+            depl_q = extract_value(
+                result=reslin, field="DEPL", order=q_order, component=component, node=node
+            )
+            depl_g = extract_value(
+                result=reslin2, field="DEPL", order=1, component=component, node=node
+            )
+            depl_e = extract_value(
+                result=csism, field="DEPL", order=1, component=component, node=node
+            )
+            ref_result = depl_q * coef_q + depl_g * coef_g + depl_e * coef_e
+
+            # test
+            TEST_RESU(
+                RESU=_F(
+                    NUME_ORDRE=q_order,
+                    REFERENCE="ANALYTIQUE",
+                    RESULTAT=reslinok,
+                    NOM_CHAM="DEPL",
+                    GROUP_NO="N" + str(node),
+                    NOM_CMP=component,
+                    VALE_CALC=ref_result,
+                    VALE_REFE=ref_result,
+                )
+            )
+
+FIN()

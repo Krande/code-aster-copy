@@ -1,0 +1,435 @@
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+N = 1.0
+MPa = 1.0
+mm = 1.0
+
+Pa = MPa * 1e-6
+m = mm * 1.0e3
+kN = N * 1.0e3
+
+L = 12.0 * m
+H = 3.0 * m
+B = 0.3 * m
+A = B * H
+d1 = 3.0 * m
+d2 = 3.15 * m
+
+fx = 100.0 * kN
+fy = 6000.0 * kN
+fz = 600.0 * kN
+
+import sys
+
+
+# temporarly added for compatibility with code_aster legacy
+from math import *
+
+import code_aster
+from code_aster.Commands import *
+
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), ERREUR=_F(ERREUR_F="EXCEPTION"), IGNORE_ALARM=("TEST0_12"))
+
+mesh = LIRE_MAILLAGE(FORMAT="MED", UNITE=20)
+
+mesh = DEFI_GROUP(
+    reuse=mesh,
+    MAILLAGE=mesh,
+    CREA_GROUP_NO=_F(NOM="N8", NOEUD="N8"),
+    CREA_GROUP_MA=_F(NOM="M9", MAILLE="M9"),
+)
+
+mesh = DEFI_GROUP(reuse=mesh, MAILLAGE=mesh, CREA_GROUP_MA=_F(NOM="union", UNION=("START", "END")))
+
+cls = DEFI_MATERIAU(ELAS=_F(E=30000.0 * MPa, NU=0.3, RHO=2.5e-9))
+
+model = AFFE_MODELE(AFFE=_F(MODELISATION="DKT", PHENOMENE="MECANIQUE", TOUT="OUI"), MAILLAGE=mesh)
+
+fieldmat = AFFE_MATERIAU(AFFE=_F(MATER=(cls,), TOUT="OUI"), MODELE=model)
+
+elemprop = AFFE_CARA_ELEM(
+    MODELE=model, COQUE=_F(GROUP_MA="ELEMENTS", EPAIS=300.0 * mm, VECTEUR=(0.0, 1.0, 0.0))
+)
+
+boundary = AFFE_CHAR_MECA(
+    MODELE=model,
+    DDL_IMPO=_F(GROUP_NO=("START",), DX=0.0, DY=0.0, DZ=0.0, DRX=0.0, DRY=0.0, DRZ=0.0),
+)
+
+
+# Forces :
+
+ch1 = AFFE_CHAR_MECA(MODELE=model, FORCE_ARETE=_F(GROUP_MA=("END",), FX=fx / H))
+
+ch2 = AFFE_CHAR_MECA(MODELE=model, FORCE_ARETE=_F(GROUP_MA=("END",), FY=fy / H))
+
+ch3 = AFFE_CHAR_MECA(MODELE=model, FORCE_ARETE=_F(GROUP_MA=("END",), FZ=fz / H))
+
+gravity = AFFE_CHAR_MECA(
+    MODELE=model, PESANTEUR=_F(DIRECTION=(0.0, 0.0, -1.0), GRAVITE=9.81 * 10e3)
+)
+
+reslin = MACRO_ELAS_MULT(
+    MODELE=model,
+    CHAM_MATER=fieldmat,
+    CARA_ELEM=elemprop,
+    CHAR_MECA_GLOBAL=boundary,
+    CAS_CHARGE=(
+        _F(NOM_CAS="FA", SOUS_TITRE="Loading along X-axis", CHAR_MECA=ch1, OPTION="SANS"),
+        _F(NOM_CAS="FB", SOUS_TITRE="Loading along Y-axis", CHAR_MECA=ch2, OPTION="SANS"),
+        _F(NOM_CAS="FC", SOUS_TITRE="Loading along Z-axis", CHAR_MECA=ch3, OPTION="SANS"),
+    ),
+    SOLVEUR=_F(METHODE="MULT_FRONT"),
+)
+
+reslin = CALC_CHAMP(RESULTAT=reslin, reuse=reslin, CONTRAINTE=("EFGE_ELNO", "SIEF_ELGA"))
+
+reslin2 = MECA_STATIQUE(
+    CARA_ELEM=elemprop,
+    CHAM_MATER=fieldmat,
+    EXCIT=(_F(CHARGE=gravity), _F(CHARGE=boundary)),
+    MODELE=model,
+)
+
+reslin2 = CALC_CHAMP(RESULTAT=reslin2, reuse=reslin2, CONTRAINTE=("EFGE_ELNO"))
+
+# ====================================================== #
+# CALCUL DE COUPURES -- RESULTANTE
+# ====================================================== #
+
+tbcoup1 = CALC_COUPURE(
+    RESULTAT=reslin,
+    OPERATION="RESULTANTE",
+    LIGN_COUPE=(
+        _F(
+            INTITULE="coupe 3 m",
+            GROUP_MA="ELEMENTS",
+            COOR_ORIG=(0.0, 1500.0, -1500.0),
+            COOR_EXTR=(0.0, 1500.0, 1500.0),
+            NB_POINTS=100,
+            DISTANCE_MAX=1.0,
+        ),
+        _F(
+            INTITULE="coupe 3.15 m",
+            GROUP_MA="ELEMENTS",
+            COOR_ORIG=(0.0, 1650.0, -1500.0),
+            COOR_EXTR=(0.0, 1650.0, 1500.0),
+            NB_POINTS=3,
+            DISTANCE_MAX=1.0,
+        ),
+    ),
+)
+
+tbcoup2 = CALC_COUPURE(
+    RESULTAT=reslin2,
+    OPERATION="RESULTANTE",
+    LIGN_COUPE=(
+        _F(
+            INTITULE="coupe 3 m",
+            GROUP_MA="ELEMENTS",
+            COOR_ORIG=(0.0, 1500.0, -1500.0),
+            COOR_EXTR=(0.0, 1500.0, 1500.0),
+            NB_POINTS=100,
+            DISTANCE_MAX=1.0,
+        ),
+        _F(
+            INTITULE="coupe 3.15 m",
+            GROUP_MA="ELEMENTS",
+            COOR_ORIG=(0.0, 1650.0, -1500.0),
+            COOR_EXTR=(0.0, 1650.0, 1500.0),
+            NB_POINTS=3,
+            DISTANCE_MAX=1.0,
+        ),
+    ),
+)
+
+# ====================================================== #
+# CALCUL DE COUPURES -- EXTRACTION
+# ====================================================== #
+
+tbextr1 = CALC_COUPURE(
+    RESULTAT=reslin,
+    OPERATION="EXTRACTION",
+    LIGN_COUPE=(
+        _F(
+            INTITULE="coupe 3 m",
+            GROUP_MA="ELEMENTS",
+            COOR_ORIG=(0.0, 1500.0, -1500.0),
+            COOR_EXTR=(0.0, 1500.0, 1500.0),
+            NB_POINTS=5,
+            DISTANCE_MAX=1.0,
+        ),
+        _F(
+            INTITULE="coupe 3.15 m",
+            GROUP_MA="ELEMENTS",
+            COOR_ORIG=(0.0, 1650.0, -1500.0),
+            COOR_EXTR=(0.0, 1650.0, 1500.0),
+            NB_POINTS=3,
+            DISTANCE_MAX=1.0,
+        ),
+    ),
+)
+
+tbextr2 = CALC_COUPURE(
+    RESULTAT=reslin2,
+    OPERATION="EXTRACTION",
+    LIGN_COUPE=(
+        _F(
+            INTITULE="coupe 3 m",
+            GROUP_MA="ELEMENTS",
+            COOR_ORIG=(0.0, 1500.0, -1500.0),
+            COOR_EXTR=(0.0, 1500.0, 1500.0),
+            NB_POINTS=5,
+            DISTANCE_MAX=1.0,
+        ),
+        _F(
+            INTITULE="coupe 3.15 m",
+            GROUP_MA="ELEMENTS",
+            COOR_ORIG=(0.0, 1650.0, -1500.0),
+            COOR_EXTR=(0.0, 1650.0, 1500.0),
+            NB_POINTS=3,
+            DISTANCE_MAX=1.0,
+        ),
+    ),
+)
+
+# ====================================================== #
+# LECTURE DES TABLES DE COEFFICIENTS
+# ====================================================== #
+
+t_coef_1 = LIRE_TABLE(
+    UNITE=38, SEPARATEUR=";", FORMAT="LIBRE", TITRE="TABLE DES COEFFICIENTS ET COMBINAISONS"
+)
+table_coef = t_coef_1.EXTR_TABLE()
+
+# ====================================================== #
+# 1er Essai sur POST_COMBINAISON ; format 'RESULTAT'
+# ====================================================== #
+
+reslinok = POST_COMBINAISON(
+    MODELE=model,
+    TABLE_COEF=t_coef_1,
+    TABLE_COEF_RESU=CO("MA_TABLE"),
+    TYPE_COMB="RESULTAT",
+    TOUT="OUI",
+    NOM_CHAM=("DEPL", "EFGE_ELNO"),
+    AFFE=(_F(NOM_CAS="G", RESULTAT=reslin2), _F(NOM_CAS="Q", RESULTAT=reslin)),
+)
+
+coef_q = table_coef.Q[0]
+coef_g = table_coef.G[0]
+
+# Validation DEPL
+result_q = POST_RELEVE_T(
+    ACTION=_F(
+        OPERATION="EXTRACTION",
+        INTITULE="depl",
+        RESULTAT=reslin,
+        NOM_CHAM="DEPL",
+        NOEUD="N8",
+        RESULTANTE="DY",
+        NUME_ORDRE=3,
+    )
+)
+n8_depl_q = result_q.EXTR_TABLE().DY[0]
+result_g = POST_RELEVE_T(
+    ACTION=_F(
+        OPERATION="EXTRACTION",
+        INTITULE="depl",
+        RESULTAT=reslin2,
+        NOM_CHAM="DEPL",
+        NOEUD="N8",
+        RESULTANTE="DY",
+        NUME_ORDRE=1,
+    )
+)
+n8_depl_g = result_g.EXTR_TABLE().DY[0]
+n8_ref_result = n8_depl_q * coef_q + n8_depl_g * coef_g
+TEST_RESU(
+    RESU=_F(
+        NUME_ORDRE=3,
+        REFERENCE="ANALYTIQUE",
+        RESULTAT=reslinok,
+        NOM_CHAM="DEPL",
+        GROUP_NO="N8",
+        NOM_CMP="DY",
+        VALE_CALC=-0.2577758596618197,
+        VALE_REFE=n8_ref_result,
+    )
+)
+
+# Validation EFGE_ELNO
+result_q = POST_RELEVE_T(
+    ACTION=_F(
+        OPERATION="EXTRACTION",
+        INTITULE="efge",
+        RESULTAT=reslin,
+        NOM_CHAM="EFGE_ELNO",
+        MAILLE="M9",
+        NOEUD="N8",
+        RESULTANTE="NXX",
+        NUME_ORDRE=3,
+    )
+)
+n8_efge_q = result_q.EXTR_TABLE().NXX[0]
+result_g = POST_RELEVE_T(
+    ACTION=_F(
+        OPERATION="EXTRACTION",
+        INTITULE="efge",
+        RESULTAT=reslin2,
+        NOM_CHAM="EFGE_ELNO",
+        MAILLE="M9",
+        NOEUD="N8",
+        RESULTANTE="NXX",
+        NUME_ORDRE=1,
+    )
+)
+n8_efge_g = result_g.EXTR_TABLE().NXX[0]
+n8_ref_result = n8_efge_q * coef_q + n8_efge_g * coef_g
+TEST_RESU(
+    RESU=_F(
+        NUME_ORDRE=3,
+        REFERENCE="ANALYTIQUE",
+        RESULTAT=reslinok,
+        NOM_CHAM="EFGE_ELNO",
+        GROUP_MA="M9",
+        POINT=4,
+        NOM_CMP="NXX",
+        VALE_CALC=-407.4144210064889,
+        VALE_REFE=n8_ref_result,
+    )
+)
+
+# ===================================== #
+# TEST COUPE RESULTANTE
+# ===================================== #
+
+reslinok2 = POST_COMBINAISON(
+    TABLE_COEF=t_coef_1,
+    TABLE_COEF_RESU=CO("MA_TABLE2"),
+    TYPE_COMB="TABLE",
+    FILTRE=(_F(NOM_PARA="INTITULE", VALE_K=("coupe 3 m", "coupe 3.15 m")),),
+    AFFE=(_F(NOM_CAS="Q", TABLE=tbcoup1), _F(NOM_CAS="G", TABLE=tbcoup2)),
+)
+
+n_ordre_g = 1
+nb_nodes = [5, 3]
+for n_comb in range(3):
+    for i, nom_coupure in enumerate(("coupe 3 m", "coupe 3.15 m")):
+        for n_ordre_q in range(1, 4):
+            coef_q = getattr(table_coef, "Q")[n_comb]
+            coef_g = getattr(table_coef, "G")[n_comb]
+            for composante in reslinok2.EXTR_TABLE().para[4:]:
+                tab_q = tbcoup1.EXTR_TABLE()
+                tab_g = tbcoup2.EXTR_TABLE()
+                # restriction sur le nom de coupure
+                tab_q_coup = tab_q.INTITULE == nom_coupure
+                tab_g_coup = tab_g.INTITULE == nom_coupure
+                # restriction sur l'ordre
+                tab_q_order = tab_q_coup.NUME_ORDRE == n_ordre_q
+                tab_g_order = tab_g_coup.NUME_ORDRE == 1
+                # restriction sur la composante
+                column_q = getattr(tab_q_order, composante)
+                column_g = getattr(tab_g_order, composante)
+
+                # valeur de reference
+                value_q = column_q[0]
+                value_g = column_g[0]
+                value_ref_result = value_q * coef_q + value_g * coef_g
+                if n_comb == 1:
+                    nom_cas = "C" + str(n_comb + 1)
+                else:
+                    nom_cas = "C" + str(n_comb + 1) + "." + str(n_ordre_q)
+
+                # test
+                TEST_TABLE(
+                    TABLE=reslinok2,
+                    NOM_PARA=composante,
+                    FILTRE=(
+                        _F(NOM_PARA="INTITULE", VALE_K=nom_coupure),
+                        _F(NOM_PARA="NOM_CAS", VALE_K=nom_cas),
+                    ),
+                    REFERENCE="ANALYTIQUE",
+                    PRECISION=0.001,
+                    VALE_CALC=value_ref_result,
+                    VALE_REFE=value_ref_result,
+                )
+
+# ===================================== #
+# TEST COUPE EXTRACTION
+# ===================================== #
+
+reslinok3 = POST_COMBINAISON(
+    TABLE_COEF=t_coef_1,
+    TABLE_COEF_RESU=CO("MA_TABLE3"),
+    TYPE_COMB="TABLE",
+    FILTRE=(_F(NOM_PARA="INTITULE", VALE_K=("coupe 3 m", "coupe 3.15 m")),),
+    AFFE=(_F(NOM_CAS="Q", TABLE=tbextr1), _F(NOM_CAS="G", TABLE=tbextr2)),
+)
+
+# Test composantes
+n_ordre_g = 1
+nb_nodes = [5, 3]
+for n_comb in range(3):
+    for i, nom_coupure in enumerate(("coupe 3 m", "coupe 3.15 m")):
+        for n_ordre_q in range(1, 4):
+            coef_q = getattr(table_coef, "Q")[n_comb]
+            coef_g = getattr(table_coef, "G")[n_comb]
+
+            for composante in reslinok3.EXTR_TABLE().para[8:]:
+                tab_q = tbextr1.EXTR_TABLE()
+                tab_g = tbextr2.EXTR_TABLE()
+                # restriction sur le nom de coupure
+                tab_q_coup = tab_q.INTITULE == nom_coupure
+                tab_g_coup = tab_g.INTITULE == nom_coupure
+                # restriction sur l'ordre
+                tab_q_order = tab_q_coup.NUME_ORDRE == n_ordre_q
+                tab_g_order = tab_g_coup.NUME_ORDRE == 1
+                # restriction sur la composante
+                column_q = getattr(tab_q_order, composante)
+                column_g = getattr(tab_g_order, composante)
+
+                for n_noeu in range(nb_nodes[i]):
+                    # valeur de reference
+                    value_q = column_q[n_noeu]
+                    value_g = column_g[n_noeu]
+                    value_ref_result = value_q * coef_q + value_g * coef_g
+                    if n_comb == 1:
+                        nom_cas = "C" + str(n_comb + 1)
+                    else:
+                        nom_cas = "C" + str(n_comb + 1) + "." + str(n_ordre_q)
+                    # abcisse_noeud
+                    abscisse_noeud = getattr(tab_q_order, "ABSC_CURV")[n_noeu]
+
+                    # test
+                    TEST_TABLE(
+                        TABLE=reslinok3,
+                        NOM_PARA=composante,
+                        FILTRE=(
+                            _F(NOM_PARA="INTITULE", VALE_K=nom_coupure),
+                            _F(NOM_PARA="NOM_CAS", VALE_K=nom_cas),
+                            _F(NOM_PARA="ABSC_CURV", VALE=abscisse_noeud),
+                        ),
+                        REFERENCE="ANALYTIQUE",
+                        PRECISION=0.001,
+                        VALE_CALC=value_ref_result,
+                        VALE_REFE=value_ref_result,
+                    )
+
+FIN()
