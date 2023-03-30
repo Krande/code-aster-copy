@@ -26,6 +26,7 @@
 #include "ParallelUtilities/MeshConnectionGraph.h"
 
 #include "ParallelUtilities/AsterMPI.h"
+#include "ParallelUtilities/CommGraph.h"
 
 void MeshConnectionGraph::buildFromIncompleteMesh( const IncompleteMeshPtr &mesh ) {
     const auto rank = getMPIRank();
@@ -43,6 +44,8 @@ void MeshConnectionGraph::buildFromIncompleteMesh( const IncompleteMeshPtr &mesh
     const auto size = allRanges[1] - allRanges[0];
     std::vector< std::set< ASTERINTEGER > > foundConnections =
         std::vector< std::set< ASTERINTEGER > >( size );
+    VectorOfVectorsLong connections = VectorOfVectorsLong( nbProcs );
+    CommGraph commGraph;
     std::vector< std::set< ASTERINTEGER > > graph( allRanges[2 * rank + 1] - allRanges[2 * rank] );
     for ( int nodeId = 1; nodeId <= allRanges[allRanges.size() - 1]; ++nodeId ) {
         const auto &curIter = reverseConnect.find( nodeId - 1 );
@@ -61,33 +64,20 @@ void MeshConnectionGraph::buildFromIncompleteMesh( const IncompleteMeshPtr &mesh
             }
         }
         if ( nodeId + 1 > allRanges[2 * curProc + 1] ) {
-            VectorLong toSend, toRecv;
             if ( rank != curProc ) {
                 int cmpt = 0;
                 for ( const auto &nodeList : foundConnections ) {
                     if ( nodeList.size() != 0 ) {
-                        toSend.push_back( cmpt );
-                        toSend.push_back( nodeList.size() );
+                        connections[curProc].push_back( cmpt );
+                        connections[curProc].push_back( nodeList.size() );
                         for ( const auto &nodeId : nodeList ) {
-                            toSend.push_back( nodeId );
+                            connections[curProc].push_back( nodeId );
                         }
                     }
                     ++cmpt;
                 }
-            }
-            AsterMPI::all_gather( toSend, toRecv );
-            if ( rank == curProc ) {
-                const auto vectEnd = toRecv.end();
-                auto curIter = toRecv.begin();
-                while ( curIter != vectEnd ) {
-                    const auto nodeId = ( *curIter );
-                    ++curIter;
-                    const auto size = ( *curIter );
-                    ++curIter;
-                    for ( int pos = 0; pos < size; ++pos ) {
-                        graph[nodeId].insert( *curIter );
-                        ++curIter;
-                    }
+                if ( connections[curProc].size() != 0 ) {
+                    commGraph.addCommunication( curProc );
                 }
             }
             ++curProc;
@@ -100,6 +90,52 @@ void MeshConnectionGraph::buildFromIncompleteMesh( const IncompleteMeshPtr &mesh
     }
     foundConnections = std::vector< std::set< ASTERINTEGER > >();
     mesh->deleteReverseConnectivity();
+
+    commGraph.synchronizeOverProcesses();
+    int tag = 0;
+    for ( const auto proc : commGraph ) {
+        ++tag;
+        if ( proc == -1 )
+            continue;
+        VectorInt tmp( 1, -1 );
+        VectorLong connect;
+        if ( rank > proc ) {
+            tmp[0] = connections[proc].size();
+            AsterMPI::send( tmp, proc, tag );
+            if ( tmp[0] != 0 ) {
+                AsterMPI::send( connections[proc], proc, tag );
+            }
+            AsterMPI::receive( tmp, proc, tag );
+            if ( tmp[0] != 0 ) {
+                connect = VectorLong( tmp[0] );
+                AsterMPI::receive( connect, proc, tag );
+            }
+        } else {
+            AsterMPI::receive( tmp, proc, tag );
+            if ( tmp[0] != 0 ) {
+                connect = VectorLong( tmp[0] );
+                AsterMPI::receive( connect, proc, tag );
+            }
+            tmp[0] = connections[proc].size();
+            AsterMPI::send( tmp, proc, tag );
+            if ( tmp[0] != 0 ) {
+                AsterMPI::send( connections[proc], proc, tag );
+            }
+        }
+        const auto vectEnd = connect.end();
+        auto curIter = connect.begin();
+        while ( curIter != vectEnd ) {
+            const auto nodeId = ( *curIter );
+            ++curIter;
+            const auto size = ( *curIter );
+            ++curIter;
+            for ( int pos = 0; pos < size; ++pos ) {
+                graph[nodeId].insert( *curIter );
+                ++curIter;
+            }
+        }
+    }
+    connections = VectorOfVectorsLong();
 
     int posInEdges = 0;
     const int nbVert = graph.size();

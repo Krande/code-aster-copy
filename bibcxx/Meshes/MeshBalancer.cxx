@@ -210,17 +210,17 @@ void MeshBalancer::buildBalancersAndInterfaces( VectorInt &newLocalNodesList,
             AsterMPI::all_gather( toAddV, test2 );
 
             std::set< int > filter;
-            // In test2 ids starts at 0 in global numbering
+            // In test2 ids start at 0 in global numbering
             for ( const auto &val : test2 )
                 filter.insert( val );
-            // In returnPairToSend.first ids starts at 0 in local numbering
+            // In returnPairToSend.first ids start at 0 in local numbering
             for ( const auto &val : returnPairToKeep.first )
                 filter.insert( val + _range[0] );
             VectorInt filterV;
-            // So in filterV, ids starts at 0 in global numbering
+            // So in filterV, ids start at 0 in global numbering
             for ( const auto &val : filter )
                 filterV.push_back( val );
-            // And in addedNodes, ids starts at 0 in local numbering
+            // And in addedNodes, ids start at 0 in local numbering
             const auto addedNodes = findNodesToSend( filterV );
             if ( filterV.size() != 0 ) {
                 for ( const auto &tmp : addedNodes ) {
@@ -244,23 +244,24 @@ void MeshBalancer::buildBalancersAndInterfaces( VectorInt &newLocalNodesList,
             AsterMPI::all_gather( toAddV, test2 );
 
             std::set< int > filter;
-            // In test2 ids starts at 0 in global numbering
+            // In test2 ids start at 0 in global numbering
             for ( const auto &val : test2 )
                 filter.insert( val );
-            // In returnPairToSend.first ids starts at 0 in local numbering
+            // In returnPairToSend.first ids start at 0 in local numbering
             for ( const auto &val : returnPairToSend.first )
                 filter.insert( val + _range[0] );
             VectorInt filterV;
-            // So in filterV, ids starts at 0 in global numbering
+            // So in filterV, ids start at 0 in global numbering
             for ( const auto &val : filter )
                 filterV.push_back( val );
-            // And in addedNodes, ids starts at 0 in local numbering
+            // And in addedNodes, ids start at 0 in local numbering
             const auto addedNodes = findNodesToSend( filterV );
             if ( filterV.size() != 0 ) {
                 for ( const auto &tmp : addedNodes ) {
                     procInterfaces[tmp].push_back( iProc );
                 }
-                nodesB.addElementarySend( iProc, addedNodes );
+                if ( addedNodes.size() != 0 )
+                    nodesB.addElementarySend( iProc, addedNodes );
             }
             if ( returnPairToSend.second.size() != 0 )
                 cellsB.addElementarySend( iProc, returnPairToSend.second );

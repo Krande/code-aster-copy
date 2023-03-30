@@ -359,6 +359,10 @@ class MEDCouplingMeshHelper:
 
         filename = self._file_name
         meshName = self._mesh_name
+        med_vers_min = 300  # minimal med version 3.0.0
+        med_vers_num = int(medc.MEDFileVersionOfFileStr(self._file_name).replace(".", ""))
+        if med_vers_num < med_vers_min:
+            UTMESS("F", "MED_20", valk=("3.0.0", medc.MEDFileVersionOfFileStr(self._file_name)))
 
         rank = MPI.ASTER_COMM_WORLD.Get_rank()
         size = MPI.ASTER_COMM_WORLD.Get_size()

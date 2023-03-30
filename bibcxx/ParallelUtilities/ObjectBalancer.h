@@ -184,6 +184,8 @@ class ObjectBalancer {
     void addElementarySend( const int &rank, const VectorInt &toSend ) {
         if ( _sendDefined )
             throw std::runtime_error( "Definition of elementary sends already finished" );
+        if ( toSend.size() == 0 )
+            return;
         _sendList[rank] = toSend;
         const auto result2 = std::min_element( toSend.begin(), toSend.end() );
         if ( *result2 < 0 )
