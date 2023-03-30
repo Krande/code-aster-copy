@@ -29,10 +29,25 @@ from libaster import Table, TableContainer, TableOfFunctions
 from ..Objects.table_py import Table as TablePy
 from ..Utilities import injector
 
+from ..Objects.Serialization import InternalStateBuilder
+
+class TableStateBuilder(InternalStateBuilder):
+    """Class that returns the internal state of a *Table*."""
+
+    def restore(self, table):
+        """Restore the *DataStructure* content from the previously saved internal
+        state.
+
+        Arguments:
+            mesh (*DataStructure*): The *DataStructure* object to be pickled.
+        """
+        super().restore(table)
+        table.build()
 
 @injector(Table)
 class ExtendedTable:
     cata_sdj = "SD.sd_table.sd_table"
+    internalStateBuilder = TableStateBuilder
 
     def __getitem__(self, key):
         """Retourne la valeur d'une cellule de la table.
@@ -41,19 +56,25 @@ class ExtendedTable:
             para, numlign = key
         except (TypeError, ValueError):
             raise RuntimeError("Table.__getitem__ takes exactly 2 arguments.")
-        tabnom = self.sdj.TBLP.get()
-        try:
-            i = tabnom.index("%-24s" % para)
-            resu = aster.getvectjev(tabnom[i + 2])
-            exist = aster.getvectjev(tabnom[i + 3])
-            assert resu is not None
-            assert exist is not None
-            assert exist[numlign - 1] != 0
-            res = resu[numlign - 1]
-        except (ValueError, IndexError, AssertionError):
-            # pour __getitem__, il est plus logique de retourner KeyError.
+        if para not in self.getParameters() or numlign > self.get_nrow():
             raise KeyError
-        return res
+
+        column = self.get_column(para)
+        return column[numlign-1]
+
+    def get_column(self, para):
+        """Retourne la colonne para"""
+        exists, columnI, columnR, columnC, columnK = self.getColumn(para)
+        typ = self.getColumnType(para)
+        if typ=="I":
+            column = columnI
+        elif typ=="R":
+            column = columnR
+        elif typ=="C":
+            column = columnC
+        else:
+            column = columnK
+        return [x if y else None for x, y in zip(column, exists)]
 
     def TITRE(self):
         """Retourne le titre d'une table Aster
@@ -69,72 +90,29 @@ class ExtendedTable:
 
     def get_nrow(self):
         """Renvoie le nombre de lignes"""
-        shape = self.sdj.TBNP.get()
-        return shape[1]
+        return self.getNumberOfLines()
 
     def get_nom_para(self):
         """Produit une liste des noms des colonnes"""
-        l_name = []
-        shape = self.sdj.TBNP.get()
-        desc = self.sdj.TBLP.get()
-        for n in range(shape[0]):
-            nom = desc[4 * n]
-            l_name.append(nom.strip())
-        return l_name
+        return self.getParameters()
 
     def EXTR_TABLE(self, para=None):
         """Produit un objet TablePy à partir du contenu d'une table Aster.
         On peut limiter aux paramètres listés dans 'para'.
         """
 
-        def Nonefy(l1, l2):
-            if l2 == 0:
-                return None
-            else:
-                return l1
+        l_para = self.getParameters()
+        if not l_para:
+            return TablePy(titr=self.TITRE(), nom=self.getName())
 
-        # titre
-        titr = self.TITRE()
-        # récupération des paramètres
-        # v_tblp = aster.getvectjev('%-19s.TBLP' % self.getName())
-        v_tblp = self.sdj.TBLP.get()
-        if v_tblp == None:
-            # retourne une table vide
-            return TablePy(titr=titr, nom=self.getName())
-        tabnom = list(v_tblp)
-        nparam = len(tabnom) // 4
-        lparam = [tabnom[4 * i : 4 * i + 4] for i in range(nparam)]
-        # restriction aux paramètres demandés
-        if para is not None:
-            if not isinstance(para, (list, tuple)):
-                para = [para]
-            para = [p.strip() for p in para]
-            restr = []
-            for ip in lparam:
-                if ip[0].strip() in para:
-                    restr.append(ip)
-            lparam = restr
-        dval = {}
-        # liste des paramètres et des types
-        lpar = []
-        ltyp = []
-        for i in lparam:
-            value = list(aster.getvectjev(i[2]))
-            if i[1].strip().startswith("K"):
-                value = [j.strip() for j in value]
-            exist = aster.getvectjev(i[3])
-            dval[i[0].strip()] = list(map(Nonefy, value, exist))
-            lpar.append(i[0].strip())
-            ltyp.append(i[1].strip())
-        n = len(dval[lpar[0]])
-        # contenu : liste de dict
-        lisdic = []
-        for i in range(n):
-            d = {}
-            for p in lpar:
-                d[p] = dval[p][i]
-            lisdic.append(d)
-        return TablePy(lisdic, lpar, ltyp, titr, self.getName())
+        l_type = [self.getColumnType(para) for para in l_para]
+        d_column = {para: self.get_column(para) for para in l_para}
+
+        l_dic_values = []
+        for i in range(self.get_nrow()):
+            l_dic_values.append({para: d_column[para][i] for para in l_para})
+
+        return TablePy(l_dic_values, l_para, l_type, self.TITRE(), self.getName())
 
 
 @injector(TableOfFunctions)

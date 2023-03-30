@@ -36,5 +36,12 @@ class DefiObstacle(ExecuteCommand):
         """
         self._result = TableOfFunctions()
 
+    def post_exec(self, keywords):
+        """
+        Arguments:
+            keywords (dict): Keywords arguments of user's keywords, changed
+                in place.
+        """
+        self._result.build()
 
 DEFI_OBSTACLE = DefiObstacle.run

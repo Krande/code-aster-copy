@@ -55,8 +55,10 @@ bool ListOfTables::update_tables() {
         const auto name = trim( ( *_dsName )[i].toString() );
         if ( id == "" )
             continue;
-        if ( _mapTables[id] == nullptr )
+        if ( _mapTables[id] == nullptr ){
             _mapTables[id] = TablePtr( new Table( name ) );
+            _mapTables[id]->build();
+        }
     }
     // todo: remove previously registered and not available anymore
 

@@ -58,7 +58,8 @@ class TableContainer : public Table {
   private:
     JeveuxVectorChar16 _objectName;
     JeveuxVectorChar16 _objectType;
-    JeveuxVectorChar8 _dsName8;
+    JeveuxVectorChar24 _objectType24;
+    JeveuxVectorChar8 _dsName;
     JeveuxVectorChar24 _dsName24;
 
     std::map< std::string, GeneralizedAssemblyMatrixRealPtr > _mapGAMD;

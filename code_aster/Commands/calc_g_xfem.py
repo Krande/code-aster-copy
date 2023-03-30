@@ -40,6 +40,14 @@ class ComputeGXFEM(ExecuteCommand):
         """
         self._result = Table()
 
+    def post_exec(self, keywords):
+        """Execute the command.
+
+        Arguments:
+            keywords (dict): User's keywords.
+        """
+
+        self._result.build()
 
 def calc_g_xfem_with_co(self, **args):
     """Wrapper around the original CALC_G_XFEM command to return an additional

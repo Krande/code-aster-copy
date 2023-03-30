@@ -83,6 +83,20 @@ class TableCreation(ExecuteCommand):
             keywords (dict): Keywords arguments of user's keywords, changed
                 in place.
         """
+        liste = keywords.get("LISTE")
+        if liste:
+            concepts = None
+            names = None
+            for occ in liste:
+                if "LISTE_CO" in occ:
+                    concepts = occ["LISTE_CO"]
+                if "LISTE_K" in occ:
+                    if "NOM_OBJET" in occ["PARA"]:
+                        names = occ["LISTE_K"]
+
+            if concepts:
+                for name, concept in zip(names, concepts):
+                    self._result.addObject(name, concept)
         self._result.build()
 
 

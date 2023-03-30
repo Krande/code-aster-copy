@@ -41,7 +41,21 @@
  * @author Nicolas Sellenet
  */
 class Table : public DataStructure {
+#ifdef ASTER_DEBUG_CXX
+    bool _build_called = false;
+#endif
+    VectorString _parameters;
+    std::map< std::string, JeveuxTypes > _typeByString;
+    std::map< std::string, JeveuxVectorLong > _columnExists;
+    std::map< std::string, JeveuxVectorLong > _columnLong;
+    std::map< std::string, JeveuxVectorReal > _columnReal;
+    std::map< std::string, JeveuxVectorComplex > _columnComplex;
+    std::map< std::string, JeveuxVectorChar32 > _columnChar32;
+    std::map< std::string, JeveuxVectorChar80 > _columnChar80;
   protected:
+    std::map< std::string, JeveuxVectorChar8 > _columnChar8;
+    std::map< std::string, JeveuxVectorChar16 > _columnChar16;
+    std::map< std::string, JeveuxVectorChar24 > _columnChar24;
     /** @brief Vecteur Jeveux '.TBBA' */
     JeveuxVectorChar8 _memoryLocation;
     /** @brief Vecteur Jeveux '.TBNP' */
@@ -50,6 +64,7 @@ class Table : public DataStructure {
     JeveuxVectorChar24 _parameterDescription;
     /** @brief Booléen indiquant si l'objet est vide */
     bool _isEmpty;
+
 
   public:
     /**
@@ -64,39 +79,39 @@ class Table : public DataStructure {
      * @brief Constructeur
      * @param name Nom Jeveux du champ aux noeuds
      */
-    Table( const std::string &name, const std::string type = "TABLE" )
-        : DataStructure( name, 19, type ),
-          _memoryLocation( JeveuxVectorChar8( getName() + ".TBBA" ) ),
-          _description( JeveuxVectorLong( getName() + ".TBNP" ) ),
-          _parameterDescription( JeveuxVectorChar24( getName() + ".TBLP" ) ) {};
+    Table( const std::string&, const std::string type = "TABLE" );
 
     /**
      * @brief Constructeur
      */
-    Table()
-        : DataStructure( ResultNaming::getNewResultName(), 19, "TABLE" ),
-          _memoryLocation( JeveuxVectorChar8( getName() + ".TBBA" ) ),
-          _description( JeveuxVectorLong( getName() + ".TBNP" ) ),
-          _parameterDescription( JeveuxVectorChar24( getName() + ".TBLP" ) ) {};
+    Table();
 
-    ~Table() {
-        // #ifdef ASTER_DEBUG_CXX
-        //         std::cout << "DEBUG: Table.destr: " << this->getName() << std::endl;
-        // #endif
-        if ( _parameterDescription.exists() && _description.exists() ) {
-            _parameterDescription->updateValuePointer();
-            _description->updateValuePointer();
-            const int nbParam = ( *_description )[0];
-            // Pour que la destruction soit effective, on crée des JeveuxVector pour déclencher
-            // l'appel à JEDETR
-            for ( int i = 0; i < nbParam; ++i ) {
-                const JeveuxChar24 &name1 = ( *_parameterDescription )[i * 4 + 2];
-                JeveuxVectorReal test1( name1.toString() );
-                const JeveuxChar24 &name2 = ( *_parameterDescription )[i * 4 + 3];
-                JeveuxVectorReal test2( name2.toString() );
-            }
-        }
-    };
+    bool build();
+
+    /**
+     * @brief Return number of lines
+     */
+    int getNumberOfLines() const;
+
+    /**
+     * @brief Return parameters
+     */
+    const VectorString getParameters() const;
+
+    /**
+     * @brief Return Column type
+     * @param column parameter
+     */
+    const std::string getColumnType(const std::string& ) const;
+
+    /**
+     * @brief Return Column values
+     * @param column parameter
+     */
+    const std::tuple< VectorLong, VectorLong, VectorReal, VectorComplex, VectorString > getColumn( const std::string& ) const;
+
+
+    ~Table();
 };
 
 /**
@@ -124,33 +139,29 @@ class TableOfFunctions : public Table {
      * @brief Constructeur
      * @param name Nom Jeveux du champ aux noeuds
      */
-    TableOfFunctions( const std::string &name ) : Table( name, "TABLE_FONCTION" ) {};
+    TableOfFunctions( const std::string& );
 
     /**
      * @brief Constructeur
      */
-    TableOfFunctions() : Table( ResultNaming::getNewResultName(), "TABLE_FONCTION" ) {};
+    TableOfFunctions();
 
     /**
      * @brief Add function in TableOfFunctions
      * @param func function to add
      */
-    void addFunction( GenericFunctionPtr func ) { _vecOfFunctions.push_back( func ); };
+    void addFunction( GenericFunctionPtr );
 
     /**
      * @brief Get a function from his position
      * @param pos position
      */
-    GenericFunctionPtr getFunction( int pos ) const {
-        if ( pos < int( _vecOfFunctions.size() ) )
-            return _vecOfFunctions[pos];
-        return BaseFunctionPtr( nullptr );
-    };
+    GenericFunctionPtr getFunction( int ) const;
 
     /**
      * @brief Get the number of functions referenced
      */
-    int getNumberOfFunctions() const { return _vecOfFunctions.size(); };
+    int getNumberOfFunctions() const;
 };
 
 #endif /* TABLE_H_ */

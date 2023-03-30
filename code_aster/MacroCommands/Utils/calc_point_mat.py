@@ -41,5 +41,12 @@ class CalcPointMat(ExecuteCommand):
         """
         self._result = Table()
 
+    def post_exec(self, keywords):
+        """
+        Arguments:
+            keywords (dict): Keywords arguments of user's keywords, changed
+                in place.
+        """
+        self._result.build()
 
 CALC_POINT_MAT = CalcPointMat.run

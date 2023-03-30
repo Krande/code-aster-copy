@@ -19,7 +19,7 @@
 
 # person_in_charge: nicolas.sellenet@edf.fr
 
-from ..Objects import Model, PrestressingCable, Result, Mesh
+from ..Objects import Model, PrestressingCable, Result, Mesh, Table, PrestressingCable
 from ..Supervis import ExecuteCommand
 
 
@@ -71,7 +71,7 @@ class Copier(ExecuteCommand):
                 if other.hasListOfLoads(i):
                     self._result.setListOfLoads(other.getListOfLoads(i), i)
 
-        if isinstance(other, Mesh):
+        if isinstance(other, Mesh) or isinstance(other, PrestressingCable) or isinstance(other, Table):
             self._result.build()
 
     def add_dependencies(self, keywords):

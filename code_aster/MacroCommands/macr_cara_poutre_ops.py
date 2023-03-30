@@ -843,7 +843,6 @@ def macr_cara_poutre_ops(
                 if conceptOld.strip() in zz:
                     dprod["TITRE"][ii] = zz.replace(conceptOld.strip(), conceptNew.strip())
         #
-        dprod["TYPE_TABLE"] = "TABLE_CONTAINER"
         __tabtmp = CREA_TABLE(**dprod)
     #
     if not GROUP_MA_BORD:

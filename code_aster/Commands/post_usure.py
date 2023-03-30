@@ -39,5 +39,14 @@ class PostUsure(ExecuteCommand):
         else:
             self._result = Table()
 
+    def post_exec(self, keywords):
+        """Execute the command.
+
+        Arguments:
+            keywords (dict): User's keywords.
+        """
+
+        if "reuse" not  in keywords:
+            self._result.build()
 
 POST_USURE = PostUsure.run

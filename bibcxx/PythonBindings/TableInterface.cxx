@@ -33,7 +33,11 @@ void exportTableToPython( py::module_ &mod ) {
 
     py::class_< Table, Table::TablePtr, DataStructure >( mod, "Table" )
         .def( py::init( &initFactoryPtr< Table > ) )
-        .def( py::init( &initFactoryPtr< Table, std::string > ) );
+        .def( py::init( &initFactoryPtr< Table, std::string > ) )
+        .def( "getNumberOfLines", &Table::getNumberOfLines )
+        .def( "getParameters", &Table::getParameters )
+        .def( "getColumnType", &Table::getColumnType )
+        .def( "getColumn", &Table::getColumn );
     py::class_< TableOfFunctions, TableOfFunctions::TableOfFunctionsPtr, Table >(
         mod, "TableOfFunctions" )
         .def( py::init( &initFactoryPtr< TableOfFunctions > ) )

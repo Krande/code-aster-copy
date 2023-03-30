@@ -45,5 +45,12 @@ class PostElem(ExecuteCommand):
             keywords (dict): User's keywords.
         """
 
+    def post_exec(self, keywords):
+        """
+        Arguments:
+            keywords (dict): Keywords arguments of user's keywords, changed
+                in place.
+        """
+        self._result.build()
 
 POST_ELEM = PostElem.run

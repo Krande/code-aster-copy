@@ -1295,7 +1295,7 @@ def impr_graphique(
     unite = None
     for iul in range(10, 90 + 1):
         __ULINFO = INFO_EXEC_ASTER(LISTE_INFO="ETAT_UNITE", UNITE=iul)
-        if __ULINFO["ETAT_UNITE", 1] == "FERME   ":
+        if __ULINFO["ETAT_UNITE", 1] == "FERME":
             unite = iul
             break
 

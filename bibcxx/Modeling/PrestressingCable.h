@@ -92,6 +92,8 @@ class PrestressingCable : public DataStructure {
      * @return true si le modele est vide
      */
     bool isEmpty() { return _isEmpty; };
+
+    bool build();
 };
 
 /**

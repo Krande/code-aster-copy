@@ -63,5 +63,12 @@ class PostReleveT(ExecuteCommand):
             keywords (dict): User's keywords.
         """
 
+    def post_exec(self, keywords):
+        """
+        Arguments:
+            keywords (dict): Keywords arguments of user's keywords, changed
+                in place.
+        """
+        self._result.build()
 
 POST_RELEVE_T = PostReleveT.run

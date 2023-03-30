@@ -127,6 +127,7 @@ class ExtrTable(ExecuteCommand):
             "MATR_ELEM_DEPL_R",
             "MATR_ELEM_TEMP_R",
             "CHAM_NO_SDASTER",
+            "TABLE_SDASTER"
         )
         if hasattr(self._result, "build") and keywords["TYPE_RESU"] in supported:
             self._result.build()

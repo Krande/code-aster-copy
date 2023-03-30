@@ -210,142 +210,149 @@ TablePtr TableContainer::getTable( const std::string &a ) const {
 };
 
 bool TableContainer::build() {
-    _parameterDescription->updateValuePointer();
-    const int size = _parameterDescription->size() / 4;
-    for ( int i = 0; i < size; ++i ) {
-        const auto para = trim( ( *_parameterDescription )[i * 4].toString() );
-        const auto type = trim( ( *_parameterDescription )[i * 4 + 1].toString() );
-        const auto objev = trim( ( *_parameterDescription )[i * 4 + 2].toString() );
+    Table::build();
 
-#ifdef ASTER_DEBUG_CXX
-        std::cout << "DEBUG descr: para: " << para << " objev: " << objev << " type: " << type
-                  << std::endl;
-#endif
-        if ( para == "NOM_OBJET" ) {
-            if ( !_objectName.exists() )
-                _objectName = JeveuxVectorChar16( objev );
-        } else if ( para == "TYPE_OBJET" ) {
-            if ( !_objectType.exists() )
-                _objectType = JeveuxVectorChar16( objev );
-        } else if ( para == "NOM_SD" ) {
-            if ( type == "K8" ) {
-                if ( !_dsName8.exists() )
-                    _dsName8 = JeveuxVectorChar8( objev );
-            } else {
-                if ( !_dsName24.exists() )
-                    _dsName24 = JeveuxVectorChar24( objev );
-            }
-        }
+    VectorString parameters = getParameters();
+    for ( std::string parameter : { "NOM_SD", "NOM_OBJET", "TYPE_OBJET" } ){
+        if ( std::find(parameters.begin(), parameters.end(), parameter) == parameters.end() )
+            throw std::runtime_error( "missing parameter " + parameter + " in TableContainer" );
     }
-    const bool usek8 = _dsName8.exists();
-    const bool usek24 = _dsName24.exists();
-    const bool hasDS = usek8 || usek24;
-    AS_ASSERT( !( usek8 && usek24 ) );
-    if ( hasDS && _objectType.exists() && _objectName.exists() ) {
-        int usedSize = 0;
-        if ( usek8 ) {
-            _dsName8->updateValuePointer();
-            usedSize = _dsName8->size();
-        } else {
-            _dsName24->updateValuePointer();
-            usedSize = _dsName24->size();
-        }
-        _objectType->updateValuePointer();
-        _objectName->updateValuePointer();
 
+    bool is_dsname_K24;
+    int usedSize;
+    std::string type = getColumnType( "NOM_SD" );
+    if ( type == "K8" ){
+        _dsName = _columnChar8.at( "NOM_SD" );
+        _dsName->updateValuePointer();
+        usedSize = _dsName->size();
+        is_dsname_K24 = false;
+    } else if ( type == "K24" ){
+        _dsName24 = _columnChar24.at( "NOM_SD" );
+        _dsName24->updateValuePointer();
+        usedSize = _dsName24->size();
+        is_dsname_K24 = true;
+    }
+    else
+        AS_ASSERT( false )
+
+    type = getColumnType( "NOM_OBJET" );
+    AS_ASSERT( type == "K16" );
+    _objectName = _columnChar16.at( "NOM_OBJET" );
+    _objectName->updateValuePointer();
+    if ( usedSize != _objectName->size() )
+        throw std::runtime_error( "Unconsistent size for names" );
+
+    bool is_typeobject_K24;
+    type = getColumnType( "TYPE_OBJET" );
+    if ( type == "K16" ){
+        _objectType = _columnChar16.at( "TYPE_OBJET" );
+        _objectType->updateValuePointer();
+        is_typeobject_K24 = false;
         if ( usedSize != _objectType->size() )
             throw std::runtime_error( "Unconsistent size for types" );
-        if ( usedSize != _objectName->size() )
-            throw std::runtime_error( "Unconsistent size for names" );
-        for ( int i = 0; i < usedSize; ++i ) {
-            std::string type = trim( ( *_objectType )[i].toString() );
-            std::string dsName( "" );
-            if ( usek8 )
-                dsName = trim( ( *_dsName8 )[i].toString() );
-            else
-                dsName = trim( ( *_dsName24 )[i].toString() );
-            const auto name = trim( ( *_objectName )[i].toString() );
+    } else if ( type == "K24" ){
+        _objectType24 = _columnChar24.at( "TYPE_OBJET" );
+        _objectType24->updateValuePointer();
+        is_typeobject_K24 = true;
+        if ( usedSize != _objectType24->size() )
+            throw std::runtime_error( "Unconsistent size for types" );
+    }
+    else
+        AS_ASSERT( false );
+
+    for ( int i = 0; i < usedSize; ++i ) {
+        std::string type;
+        if ( is_typeobject_K24 )
+            type = trim( ( *_objectType24 )[i].toString() );
+        else
+            type = trim( ( *_objectType )[i].toString() );
+        std::string dsName;
+        if ( is_dsname_K24 )
+            dsName = trim( ( *_dsName24 )[i].toString() );
+        else
+            dsName = trim( ( *_dsName )[i].toString() );
+        std::string name = trim( ( *_objectName )[i].toString() );
 
 #ifdef ASTER_DEBUG_CXX
             std::cout << "DEBUG: TableContainer index: " << i << " dsName: " << dsName
                       << " objName: " << name << " objType:" << type << std::endl;
 #endif
-            auto pos = type.find( "_SDASTER" );
-            if ( pos ) {
-                type = type.substr( 0, pos );
-            }
-            if ( type.empty() || dsName.empty() ) {
-                // pass
-            } else if ( type == "MATR_ASSE_GENE_R" ) {
-                if ( _mapGAMD[name] == nullptr ) {
-                    _mapGAMD[name] = std::make_shared< GeneralizedAssemblyMatrixReal >( dsName );
-                }
-            } else if ( type == "MATR_ELEM_DEPL_R" ) {
-                if ( _mapEMDD[name] == nullptr ) {
-                    _mapEMDD[name] = std::make_shared< ElementaryMatrixDisplacementReal >( dsName );
-                }
-            } else if ( type == "MATR_ELEM_TEMP_R" ) {
-                if ( _mapEMTD[name] == nullptr ) {
-                    _mapEMTD[name] = std::make_shared< ElementaryMatrixTemperatureReal >( dsName );
-                }
-            } else if ( type == "VECT_ELEM_DEPL_R" ) {
-                if ( _mapEVDD[name] == nullptr ) {
-                    _mapEVDD[name] = std::make_shared< ElementaryVectorDisplacementReal >( dsName );
-                }
-            } else if ( type == "VECT_ELEM_TEMP_R" ) {
-                if ( _mapEVTD[name] == nullptr ) {
-                    _mapEVTD[name] = std::make_shared< ElementaryVectorTemperatureReal >( dsName );
-                }
-            } else if ( type == "CHAM_GD" ) {
-                if ( _mapGDF[name] == nullptr ) {
-                    _mapGDF[name] = std::make_shared< DataField >( dsName, "CHAM_GD" );
-                }
-            } else if ( type == "CHAM_NO" ) {
-                if ( _mapFOND[name] == nullptr ) {
-                    _mapFOND[name] = std::make_shared< FieldOnNodesReal >( dsName );
-                    _mapFOND[name]->build();
-                }
-                // } else if ( type == "CARTE" ) {
-                //     _mapPCFOMD[name] = std::make_shared< ConstantFieldOnCellsReal >( dsName );
-            } else if ( type == "CHAM_ELEM" ) {
-                if ( _mapFOED[name] == nullptr ) {
-                    _mapFOED[name] = std::make_shared< FieldOnCellsReal >( dsName );
-                }
-            } else if ( type == "MODE_MECA" ) {
-                if ( _mapMMC[name] == nullptr ) {
-                    _mapMMC[name] = std::make_shared< ModeResult >( dsName );
-                }
-            } else if ( type == "TABLE" ) {
-                if ( _mapT[name] == nullptr ) {
-                    _mapT[name] = std::make_shared< Table >( dsName );
-                }
-            } else if ( type == "MAILLAGE" ) {
-                if ( _mapMesh[name] == nullptr ) {
-                    _mapMesh[name] = std::make_shared< Mesh >( dsName );
-                }
-#ifdef ASTER_HAVE_MPI
-            } else if ( type == "MAILLAGE_P" ) {
-                if ( _mapPMesh[name] == nullptr ) {
-                    _mapPMesh[name] = std::make_shared< ParallelMesh >( dsName );
-                }
-#endif
-            } else if ( type == "FONCTION" ) {
-                if ( _mapF[name] == nullptr ) {
-                    _mapF[name] = std::make_shared< Function >( dsName );
-                }
-            } else if ( type == "FONCTION_C" ) {
-                if ( _mapFC[name] == nullptr ) {
-                    _mapFC[name] = std::make_shared< FunctionComplex >( dsName );
-                }
-            } else if ( type == "NAPPE" ) {
-                if ( _mapS[name] == nullptr ) {
-                    _mapS[name] = std::make_shared< Function2D >( dsName );
-                }
-            } else {
-                throw std::runtime_error( "Unsupported type '" + type + "' for '" + name + "'" );
-            }
+        auto pos = type.find( "_SDASTER" );
+        if ( pos ) {
+            type = type.substr( 0, pos );
         }
-    } else
-        return false;
+        if ( type.empty() || dsName.empty() ) {
+            // pass
+        } else if ( type == "MATR_ASSE_GENE_R" ) {
+            if ( _mapGAMD[name] == nullptr ) {
+                _mapGAMD[name] = std::make_shared< GeneralizedAssemblyMatrixReal >( dsName );
+            }
+        } else if ( type == "MATR_ELEM_DEPL_R" ) {
+            if ( _mapEMDD[name] == nullptr ) {
+                _mapEMDD[name] = std::make_shared< ElementaryMatrixDisplacementReal >( dsName );
+            }
+        } else if ( type == "MATR_ELEM_TEMP_R" ) {
+            if ( _mapEMTD[name] == nullptr ) {
+                _mapEMTD[name] = std::make_shared< ElementaryMatrixTemperatureReal >( dsName );
+            }
+        } else if ( type == "VECT_ELEM_DEPL_R" ) {
+            if ( _mapEVDD[name] == nullptr ) {
+                _mapEVDD[name] = std::make_shared< ElementaryVectorDisplacementReal >( dsName );
+            }
+        } else if ( type == "VECT_ELEM_TEMP_R" ) {
+            if ( _mapEVTD[name] == nullptr ) {
+                _mapEVTD[name] = std::make_shared< ElementaryVectorTemperatureReal >( dsName );
+            }
+        } else if ( type == "CHAM_GD" ) {
+            if ( _mapGDF[name] == nullptr ) {
+                _mapGDF[name] = std::make_shared< DataField >( dsName, "CHAM_GD" );
+            }
+        } else if ( type == "CHAM_NO" ) {
+            if ( _mapFOND[name] == nullptr ) {
+                _mapFOND[name] = std::make_shared< FieldOnNodesReal >( dsName );
+                _mapFOND[name]->build();
+            }
+            // } else if ( type == "CARTE" ) {
+            //     _mapPCFOMD[name] = std::make_shared< ConstantFieldOnCellsReal >( dsName );
+        } else if ( type == "CHAM_ELEM" ) {
+            if ( _mapFOED[name] == nullptr ) {
+                _mapFOED[name] = std::make_shared< FieldOnCellsReal >( dsName );
+            }
+        } else if ( type == "MODE_MECA" ) {
+            if ( _mapMMC[name] == nullptr ) {
+                _mapMMC[name] = std::make_shared< ModeResult >( dsName );
+            }
+        } else if ( type == "TABLE" ) {
+            if ( _mapT[name] == nullptr ) {
+                _mapT[name] = std::make_shared< Table >( dsName );
+                _mapT[name]->build();
+            }
+        } else if ( type == "MAILLAGE" ) {
+            if ( _mapMesh[name] == nullptr ) {
+                _mapMesh[name] = std::make_shared< Mesh >( dsName );
+            }
+#ifdef ASTER_HAVE_MPI
+        } else if ( type == "MAILLAGE_P" ) {
+            if ( _mapPMesh[name] == nullptr ) {
+                _mapPMesh[name] = std::make_shared< ParallelMesh >( dsName );
+            }
+#endif
+        } else if ( type == "FONCTION" ) {
+            if ( _mapF[name] == nullptr ) {
+                _mapF[name] = std::make_shared< Function >( dsName );
+            }
+        } else if ( type == "FONCTION_C" ) {
+            if ( _mapFC[name] == nullptr ) {
+                _mapFC[name] = std::make_shared< FunctionComplex >( dsName );
+            }
+        } else if ( type == "NAPPE" ) {
+            if ( _mapS[name] == nullptr ) {
+                _mapS[name] = std::make_shared< Function2D >( dsName );
+            }
+        } else {
+            throw std::runtime_error( "Unsupported type '" + type + "' for '" + name + "'" );
+        }
+    }
+
     return true;
 };

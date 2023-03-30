@@ -42,5 +42,13 @@ class DefiCableOp(ExecuteCommand):
             keywords["MODELE"], keywords["CHAM_MATER"], keywords["CARA_ELEM"]
         )
 
+    def post_exec(self, keywords):
+        """Execute the command.
+
+        Arguments:
+            keywords (dict): User's keywords.
+        """
+
+        self._result.build()
 
 DEFI_CABLE_OP = DefiCableOp.run
