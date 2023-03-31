@@ -29,6 +29,15 @@
 
 void decrement( int &i ) { i--; };
 
+struct LocalIdGlobalId {
+    int localId = -1;
+    int globalId = -1;
+};
+
+bool sortOnGlobalId( const LocalIdGlobalId &lhs, const LocalIdGlobalId &rhs ) {
+    return lhs.globalId < rhs.globalId;
+};
+
 ParallelMeshPtr MeshBalancer::applyBalancingStrategy( VectorInt &newLocalNodesList ) {
     ObjectBalancer nodesBalancer, cellsBalancer;
     const auto rank = getMPIRank();
@@ -67,46 +76,6 @@ ParallelMeshPtr MeshBalancer::applyBalancingStrategy( VectorInt &newLocalNodesLi
     }
     graph.synchronizeOverProcesses();
 
-    // interface completion with local id of opposite nodes
-    VectorLong domains;
-    VectorOfVectorsLong graphInterfaces;
-    int tag = 0, cmpt = 0;
-    for ( const auto &iProc : graph ) {
-        if ( iProc != -1 ) {
-            VectorLong idToSend( interfaces[2 * iProc].size(), 0. );
-            VectorLong idToRecv( interfaces[2 * iProc + 1].size(), 0. );
-            if ( rank > iProc ) {
-                AsterMPI::send( interfaces[2 * iProc], iProc, tag );
-                AsterMPI::receive( idToRecv, iProc, tag );
-                ++tag;
-                AsterMPI::send( interfaces[2 * iProc + 1], iProc, tag );
-                AsterMPI::receive( idToSend, iProc, tag );
-                ++tag;
-            } else if ( rank < iProc ) {
-                AsterMPI::receive( idToRecv, iProc, tag );
-                AsterMPI::send( interfaces[2 * iProc], iProc, tag );
-                ++tag;
-                AsterMPI::receive( idToSend, iProc, tag );
-                AsterMPI::send( interfaces[2 * iProc + 1], iProc, tag );
-                ++tag;
-            }
-            domains.push_back( iProc );
-            graphInterfaces.push_back( VectorLong( 2 * interfaces[2 * iProc].size() ) );
-            graphInterfaces.push_back( VectorLong( 2 * interfaces[2 * iProc + 1].size() ) );
-            for ( int i = 0; i < interfaces[2 * iProc].size(); ++i ) {
-                graphInterfaces[cmpt][2 * i] = interfaces[2 * iProc][i];
-                graphInterfaces[cmpt][2 * i + 1] = idToSend[i];
-            }
-            for ( int i = 0; i < interfaces[2 * iProc + 1].size(); ++i ) {
-                graphInterfaces[cmpt + 1][2 * i] = interfaces[2 * iProc + 1][i];
-                graphInterfaces[cmpt + 1][2 * i + 1] = idToRecv[i];
-            }
-            cmpt += 2;
-        }
-    }
-    // free memory
-    interfaces = VectorOfVectorsLong();
-
     ParallelMeshPtr outMesh( new ParallelMesh() );
 
     // Build a global numbering (if there is not)
@@ -124,6 +93,41 @@ ParallelMeshPtr MeshBalancer::applyBalancingStrategy( VectorInt &newLocalNodesLi
     // Before sending, conversion to global numbering
     // After received go back to "new" local numbering
     auto dMask = ObjectBalancer::DistributedMaskOut( nodesBalancer, nodeGlobNum );
+    const auto &globNumVect = dMask.getBalancedMask();
+
+    // interface completion with local id of opposite nodes
+    VectorLong domains;
+    VectorOfVectorsLong graphInterfaces;
+    int tag = 0, cmpt = 0;
+    for ( const auto &iProc : graph ) {
+        if ( iProc != -1 ) {
+            domains.push_back( iProc );
+            graphInterfaces.push_back( VectorLong( interfaces[2 * iProc].size() ) );
+            graphInterfaces.push_back( VectorLong( interfaces[2 * iProc + 1].size() ) );
+            std::vector< LocalIdGlobalId > tmp( interfaces[2 * iProc].size() );
+            std::vector< LocalIdGlobalId > tmp2( interfaces[2 * iProc + 1].size() );
+            for ( int i = 0; i < interfaces[2 * iProc].size(); ++i ) {
+                tmp[i].localId = interfaces[2 * iProc][i];
+                tmp[i].globalId = globNumVect[interfaces[2 * iProc][i] - 1];
+            }
+            // Sort joints on global id
+            std::sort( tmp.begin(), tmp.end(), sortOnGlobalId );
+            for ( int i = 0; i < interfaces[2 * iProc + 1].size(); ++i ) {
+                tmp2[i].localId = interfaces[2 * iProc + 1][i];
+                tmp2[i].globalId = globNumVect[interfaces[2 * iProc + 1][i] - 1];
+            }
+            std::sort( tmp2.begin(), tmp2.end(), sortOnGlobalId );
+            for ( int i = 0; i < interfaces[2 * iProc].size(); ++i ) {
+                graphInterfaces[cmpt][i] = tmp[i].localId;
+            }
+            for ( int i = 0; i < interfaces[2 * iProc + 1].size(); ++i ) {
+                graphInterfaces[cmpt + 1][i] = tmp2[i].localId;
+            }
+            cmpt += 2;
+        }
+    }
+    // free memory
+    interfaces = VectorOfVectorsLong();
 
     // Build new mesh (nodes, cells types and connectivity)
     if ( _mesh == nullptr )

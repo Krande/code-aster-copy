@@ -219,6 +219,26 @@ Returns global to local numbering mapping for nodes
 Returns:
     dict[int]: global to local numbering mapping.
     )" )
+        .def( "getOppositeDomains", &ParallelMesh::getOppositeDomains,
+              R"(
+Returns the list of opposite domains of local process
+        )" )
+        .def( "getFirstJoint", &ParallelMesh::getFirstJoint,
+              R"(
+Returns ids of nodes in joint (inner nodes) for an opposite process
+
+Arguments:
+    rank: Rank of opposite domain
+        )",
+              py::arg( "rank" ) )
+        .def( "getSecondJoint", &ParallelMesh::getSecondJoint,
+              R"(
+Returns ids of nodes in joint (inner nodes) for an opposite process
+
+Arguments:
+    rank: Rank of opposite domain
+        )",
+              py::arg( "rank" ) )
         .def( "_create_joints", &ParallelMesh::create_joints, R"(
 Create the joints between domains (*for internal use*).
 

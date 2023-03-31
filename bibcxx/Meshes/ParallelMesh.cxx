@@ -44,6 +44,22 @@ void ParallelMesh::_buildGlobal2LocalMap() {
     }
 };
 
+const JeveuxVectorLong ParallelMesh::getLocalToGlobalMapping() const { return _globalNumbering; };
+const JeveuxVectorLong &ParallelMesh::getFirstJoint( const int &id ) const {
+    const auto tmp = _joints.find( id );
+    if ( tmp == _joints.end() ) {
+        throw std::runtime_error( "No joint: #" + std::to_string( id ) );
+    }
+    return _joints.find( id )->second.first;
+};
+const JeveuxVectorLong &ParallelMesh::getSecondJoint( const int &id ) const {
+    const auto &tmp = _joints.find( id );
+    if ( tmp == _joints.end() ) {
+        throw std::runtime_error( "No joint: #" + std::to_string( id ) );
+    }
+    return _joints.find( id )->second.second;
+};
+
 bool ParallelMesh::updateGlobalGroupOfNodes( void ) {
 
     _groupsOfNodes->build();

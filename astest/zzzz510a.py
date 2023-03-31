@@ -18,6 +18,7 @@
 # --------------------------------------------------------------------
 
 import numpy as N
+import os
 import code_aster
 from code_aster.Commands import *
 from code_aster import MPI
@@ -28,10 +29,41 @@ test = code_aster.TestCase()
 
 rank = MPI.ASTER_COMM_WORLD.Get_rank()
 
+
+def checkJoints(mesh):
+    import mpi4py
+    from mpi4py import MPI
+
+    comm = MPI.COMM_WORLD
+    l2G = mesh.getLocalToGlobalMapping()
+
+    j = 0
+    for proc in mesh.getOppositeDomains():
+        fJ = mesh.getFirstJoint(proc)
+        gFJ = []
+        for i in fJ:
+            gFJ.append(l2G[i - 1])
+
+        sJ = mesh.getSecondJoint(proc)
+        gSJ = []
+        for i in sJ:
+            gSJ.append(l2G[i - 1])
+
+        if proc < rank:
+            comm.send(gFJ, dest=proc, tag=j)
+            data1 = comm.recv(source=proc, tag=j)
+            test.assertEqual(data1 == gFJ, True)
+        else:
+            data1 = comm.recv(source=proc, tag=j)
+            comm.send(gSJ, dest=proc, tag=j)
+            test.assertEqual(data1 == gSJ, True)
+        j += 1
+
+
 graph = code_aster.CommGraph()
 balancer = code_aster.ObjectBalancer()
 a = [i + rank * 10 for i in range(10)]
-print(rank, a)
+
 if rank == 0:
     graph.addCommunication(1)
     graph.addCommunication(3)
@@ -100,8 +132,6 @@ elif rank == 3:
     test.assertEqual(result[10], 27.0)
     test.assertEqual(result[11], 1.0)
     test.assertEqual(result[12], 3.0)
-
-import os
 
 bMesh = code_aster.MeshBalancer()
 if rank == 0:
@@ -196,19 +226,19 @@ if rank == 0:
             [2, 1, 3, 5],
             [5, 3, 4, 6],
             [2, 7, 9, 1],
-            [1, 3, 5, 2, 9, 17, 11, 7],
-            [9, 17, 11, 7, 10, 18, 12, 8],
+            [1, 2, 5, 3, 9, 7, 11, 17],
+            [9, 7, 11, 17, 10, 8, 12, 18],
             [7, 8, 10, 9],
             [2, 5, 11, 7],
             [7, 11, 12, 8],
-            [3, 4, 6, 5, 17, 15, 13, 11],
+            [3, 5, 6, 4, 17, 11, 13, 15],
             [2, 7],
             [7, 8],
             [1, 9],
             [9, 10],
             [5, 6, 13, 11],
             [11, 13, 14, 12],
-            [17, 15, 13, 11, 18, 16, 14, 12],
+            [17, 11, 13, 15, 18, 12, 14, 16],
             [4, 3, 17, 15],
             [15, 17, 18, 16],
             [3, 1, 9, 17],
@@ -290,10 +320,10 @@ elif rank == 1:
             [15, 16, 18, 17],
             [16, 6, 5, 18],
             [15, 7, 8, 16],
-            [18, 14, 8, 16, 5, 1, 3, 6],
+            [18, 16, 8, 14, 5, 6, 3, 1],
             [5, 6, 3, 1],
             [1, 3, 4, 2],
-            [17, 13, 7, 15, 18, 14, 8, 16],
+            [17, 15, 7, 13, 18, 16, 8, 14],
             [18, 5],
             [11, 13, 14, 12],
             [12, 14, 1, 2],
@@ -306,8 +336,8 @@ elif rank == 1:
             [16, 8, 3, 6],
             [7, 9, 10, 8],
             [8, 10, 4, 3],
-            [13, 11, 9, 7, 14, 12, 10, 8],
-            [14, 12, 10, 8, 1, 2, 4, 3],
+            [13, 7, 9, 11, 14, 8, 10, 12],
+            [14, 8, 10, 12, 1, 3, 4, 2],
         ],
         True,
     )
@@ -384,8 +414,8 @@ elif rank == 2:
             [6, 8, 18, 17],
             [7, 1, 2, 8],
             [8, 2, 14, 18],
-            [11, 9, 7, 5, 12, 10, 8, 6],
-            [12, 10, 8, 6, 15, 16, 18, 17],
+            [11, 5, 7, 9, 12, 6, 8, 10],
+            [12, 6, 8, 10, 15, 17, 18, 16],
             [1, 2],
             [2, 14],
             [3, 4],
@@ -394,8 +424,8 @@ elif rank == 2:
             [4, 10, 16, 13],
             [9, 11, 12, 10],
             [10, 12, 15, 16],
-            [9, 3, 1, 7, 10, 4, 2, 8],
-            [10, 4, 2, 8, 16, 13, 14, 18],
+            [9, 7, 1, 3, 10, 8, 2, 4],
+            [10, 8, 2, 4, 16, 18, 14, 13],
             [15, 17, 18, 16],
             [16, 18, 14, 13],
             [15, 16],
@@ -481,17 +511,17 @@ elif rank == 3:
             [11, 5, 6, 12],
             [14, 13, 7, 5],
             [5, 7, 8, 6],
-            [14, 17, 18, 16, 5, 11, 9, 3],
-            [5, 11, 9, 3, 6, 12, 10, 4],
+            [14, 16, 18, 17, 5, 3, 9, 11],
+            [5, 3, 9, 11, 6, 4, 10, 12],
             [15, 16, 3, 1],
             [1, 3, 4, 2],
             [16, 18, 9, 3],
             [3, 9, 10, 4],
-            [7, 5, 3, 1, 8, 6, 4, 2],
+            [7, 1, 3, 5, 8, 2, 4, 6],
             [16, 18],
             [10, 9, 11, 12],
             [9, 18, 17, 11],
-            [13, 14, 16, 15, 7, 5, 3, 1],
+            [13, 15, 16, 14, 7, 1, 3, 5],
             [13, 14],
             [14, 17],
             [18, 17],
@@ -501,6 +531,8 @@ elif rank == 3:
         ],
         True,
     )
+
+checkJoints(outMesh)
 
 part = code_aster.PtScotchPartitioner()
 if rank == 0:
@@ -520,6 +552,8 @@ part2.buildGraph(meshGraph)
 scotchPart = part2.partitionGraph()
 outMesh2 = bMesh.applyBalancingStrategy(scotchPart)
 
+checkJoints(outMesh2)
+
 mesh3 = code_aster.IncompleteMesh()
 mesh3.readMedFile("petsc04a.mmed")
 bMesh = code_aster.MeshBalancer()
@@ -531,6 +565,8 @@ part2.buildGraph(meshGraph)
 scotchPart = part2.partitionGraph()
 outMesh3 = bMesh.applyBalancingStrategy(scotchPart)
 
+checkJoints(outMesh3)
+
 mesh3 = code_aster.IncompleteMesh()
 mesh3.readMedFile("forma02a.mmed")
 bMesh = code_aster.MeshBalancer()
@@ -541,5 +577,7 @@ part2 = code_aster.PtScotchPartitioner()
 part2.buildGraph(meshGraph)
 scotchPart = part2.partitionGraph()
 outMesh3 = bMesh.applyBalancingStrategy(scotchPart)
+
+checkJoints(outMesh3)
 
 FIN()

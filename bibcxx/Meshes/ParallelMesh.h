@@ -171,7 +171,7 @@ class ParallelMesh : public BaseMesh {
      * @brief Get the mapping between local and global numbering of nodes
      * @return JeveuxVector of the indirection
      */
-    const JeveuxVectorLong getLocalToGlobalMapping() const { return _globalNumbering; };
+    const JeveuxVectorLong getLocalToGlobalMapping() const;
 
     const std::map< ASTERINTEGER, ASTERINTEGER > getGlobalToLocalMapping() const {
         return _global2localMap;
@@ -192,6 +192,13 @@ class ParallelMesh : public BaseMesh {
 
     VectorLong getNodesFromCells( const VectorLong &cells, const bool localNumbering = true,
                                   const ASTERINTEGER same_rank = PythonBool::None ) const;
+
+    /** @brief Returns the number of joints */
+    const JeveuxVectorLong &getOppositeDomains() const { return _listOfOppositeDomain; };
+
+    /** @brief Returns a joint */
+    const JeveuxVectorLong &getFirstJoint( const int &id ) const;
+    const JeveuxVectorLong &getSecondJoint( const int &id ) const;
 
     /**
      * @brief Fonction permettant de savoir si un maillage est parallel
