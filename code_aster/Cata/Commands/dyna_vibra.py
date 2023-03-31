@@ -365,19 +365,18 @@ DYNA_VIBRA = OPER(
     ),  # end b_bloc_ener
     ##########################################################################################
     #       Definition of the external excitation
-    #       A. Harmonic case
-    b_excit_harm=BLOC(
-        condition="""equal_to("TYPE_CALCUL", 'HARM')""",
+    #       A. Harmonic case, physical basis
+    b_excit_harm_phys=BLOC(
+        condition="""equal_to("TYPE_CALCUL", 'HARM') and equal_to("BASE_CALCUL", 'PHYS')""",
         regles=(AU_MOINS_UN("EXCIT", "EXCIT_RESU"),),
         EXCIT=FACT(
             statut="f",
             max="**",
             regles=(
-                UN_PARMI("VECT_ASSE", "VECT_ASSE_GENE", "CHARGE"),
+                UN_PARMI("VECT_ASSE", "CHARGE"),
                 UN_PARMI("FONC_MULT", "FONC_MULT_C", "COEF_MULT", "COEF_MULT_C"),
             ),
             VECT_ASSE=SIMP(statut="f", typ=cham_no_sdaster),
-            VECT_ASSE_GENE=SIMP(statut="f", typ=vect_asse_gene),
             CHARGE=SIMP(statut="f", typ=(char_meca, char_cine_meca)),
             FONC_MULT_C=SIMP(statut="f", typ=(fonction_c, formule_c)),
             COEF_MULT_C=SIMP(statut="f", typ="C"),
@@ -389,10 +388,35 @@ DYNA_VIBRA = OPER(
         EXCIT_RESU=FACT(
             statut="f",
             max="**",
-            RESULTAT=SIMP(statut="o", typ=(dyna_harmo, harm_gene)),
+            RESULTAT=SIMP(statut="o", typ=(dyna_harmo,)),
             COEF_MULT_C=SIMP(statut="o", typ="C"),
         ),
-    ),  # end b_excit_harm
+    ),  # end b_excit_harm_phys
+    ##########################################################################################
+    #       Definition of the external excitation
+    #       A. Harmonic case, reduced basis
+    b_excit_harm_gene=BLOC(
+        condition="""equal_to("TYPE_CALCUL", 'HARM') and equal_to("BASE_CALCUL", 'GENE')""",
+        regles=(AU_MOINS_UN("EXCIT", "EXCIT_RESU"),),
+        EXCIT=FACT(
+            statut="f",
+            max="**",
+            regles=(UN_PARMI("FONC_MULT", "FONC_MULT_C", "COEF_MULT", "COEF_MULT_C"),),
+            VECT_ASSE_GENE=SIMP(statut="o", typ=vect_asse_gene),
+            FONC_MULT_C=SIMP(statut="f", typ=(fonction_c, formule_c)),
+            COEF_MULT_C=SIMP(statut="f", typ="C"),
+            FONC_MULT=SIMP(statut="f", typ=(fonction_sdaster, nappe_sdaster, formule)),
+            COEF_MULT=SIMP(statut="f", typ="R"),
+            PHAS_DEG=SIMP(statut="f", typ="R", defaut=0.0e0),
+            PUIS_PULS=SIMP(statut="f", typ="I", defaut=0),
+        ),
+        EXCIT_RESU=FACT(
+            statut="f",
+            max="**",
+            RESULTAT=SIMP(statut="o", typ=(harm_gene,)),
+            COEF_MULT_C=SIMP(statut="o", typ="C"),
+        ),
+    ),  # end b_excit_harm_gene
     ##########################################################################################
     #       B. Transient case, physical basis
     b_excit_line_tran=BLOC(
