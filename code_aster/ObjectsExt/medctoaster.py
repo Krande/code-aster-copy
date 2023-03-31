@@ -453,10 +453,10 @@ class MEDCouplingMeshHelper:
                             int(connectivity_current_type[i][j])
                         ]
 
-                # if medcoupling_cell_type != medc.NORM_POINT1:
-                # connectivity_current_type = connectivity_current_type[
-                #:, MEDCouplingMeshHelper.getConnectivityMedToAster(medcoupling_cell_type)
-                # ]
+                if medcoupling_cell_type != medc.NORM_POINT1:
+                    connectivity_current_type = connectivity_current_type[
+                        :, MEDCouplingMeshHelper.getConnectivityMedToAster(medcoupling_cell_type)
+                    ]
 
                 # Shift de 1
                 connectivity_current_type += 1
