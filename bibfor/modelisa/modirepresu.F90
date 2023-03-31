@@ -179,9 +179,10 @@ subroutine modirepresu(resuou, resuin)
 !           Dans le cas 'VECTR_3D'
 !               Obligatoire : modèle , cara_elem
 !                             repere = UTILISATEUR
-!                             option = EFGE_ELNO ou SIEF_ELNO
+!                             option = EFGE_ELNO ou SIEF_ELNO ou champ aux noeuds
             if (type_cham .eq. 'VECTR_3D') then
-                effort_elno = (option .eq. 'EFGE_ELNO') .or. (option .eq. 'SIEF_ELNO')
+                effort_elno = (option .eq. 'EFGE_ELNO') .or. (option .eq. 'SIEF_ELNO') .or. &
+                              (tych(1:4) .eq. 'NOEU' .and. option(6:9) .ne. 'NOEU')
                 if ((model .eq. '') .or. (carele .eq. '') .or. (repere .ne. 'UTILISATEUR') .or. &
                     (.not. effort_elno)) then
                     call utmess('F', 'ALGORITH2_32')
@@ -190,9 +191,6 @@ subroutine modirepresu(resuou, resuin)
 !
 !           RECUPERATION DE LA NATURE DES CHAMPS (CHAM_NO OU CHAM_ELEM)
             if (tych(1:4) .eq. 'NOEU') then
-                if (type_cham .eq. 'VECTR_3D') then
-                    call utmess('F', 'ALGORITH2_31')
-                end if
                 call chrpno(champ1, repere, nbcmp, ioc, type_cham)
             else if (tych(1:2) .eq. 'EL') then
                 call chrpel(champ1, repere, nbcmp, ioc, type_cham, &

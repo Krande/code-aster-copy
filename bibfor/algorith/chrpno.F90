@@ -127,8 +127,9 @@ subroutine chrpno(champ1, repere, nbcmp, icham, type)
     call dismoi('Z_CST', ma, 'MAILLAGE', repk=k8b)
     ndim = 3
     if (k8b .eq. 'OUI') ndim = 2
-
-    if (type(6:7) .eq. '3D') then
+!
+!   VECT_3D ou VECTR_3D
+    if (type(6:7) .eq. '3D' .or. type(7:8) .eq. '3D') then
         if (ndim .ne. 3) then
             valk = type(1:7)
             call utmess('A', 'ALGORITH12_44', sk=valk)
@@ -312,9 +313,10 @@ subroutine chrpno(champ1, repere, nbcmp, icham, type)
                             valed(ii) = zr(jcnsv-1+(inoe-1)*nbcmp+ii)
                         end do
                         if (ndim .eq. 3) then
-                            call utpvgl(1, nbcmp, pgl, valed, valer)
+                            call utpvgl(1, 3, pgl, valed, valer)
+                            if (nbcmp .gt. 3) call utpvgl(1, 3, pgl, valed(4), valer(4))
                         else
-                            call ut2vgl(1, nbcmp, pgl, valed, valer)
+                            call ut2vgl(1, 2, pgl, valed, valer)
                         end if
                         do ii = 1, nbcmp
                             zr(jcnsv-1+(inoe-1)*nbcmp+ii) = valer(ii)
@@ -327,11 +329,15 @@ subroutine chrpno(champ1, repere, nbcmp, icham, type)
                             valet(ii) = dimag(valetc(ii))
                         end do
                         if (ndim .eq. 3) then
-                            call utpvgl(1, nbcmp, pgl, valed, valer)
-                            call utpvgl(1, nbcmp, pgl, valet, valei)
+                            call utpvgl(1, 3, pgl, valed, valer)
+                            call utpvgl(1, 3, pgl, valet, valei)
+                            if (nbcmp .gt. 3) then
+                                call utpvgl(1, 3, pgl, valed(4), valer(4))
+                                call utpvgl(1, 3, pgl, valet(4), valei(4))
+                            end if
                         else
-                            call ut2vgl(1, nbcmp, pgl, valed, valer)
-                            call ut2vgl(1, nbcmp, pgl, valet, valei)
+                            call ut2vgl(1, 2, pgl, valed, valer)
+                            call ut2vgl(1, 2, pgl, valet, valei)
                         end if
                         do ii = 1, nbcmp
                             zc(jcnsv-1+(inoe-1)*nbcmp+ii) = dcmplx(valer(ii), valei(ii))
@@ -534,11 +540,6 @@ subroutine chrpno(champ1, repere, nbcmp, icham, type)
                 end do
             else
 ! VECTEUR
-                if (ndim .eq. 2) then
-                    licmpu(1) = 1
-                    licmpu(2) = 3
-                    licmpu(3) = 2
-                end if
 !
                 do ino = 1, nbnoeu
                     if (nbn .ne. 0) then
@@ -632,13 +633,13 @@ subroutine chrpno(champ1, repere, nbcmp, icham, type)
                             valed(ii) = zr(jcnsv-1+(inoe-1)*nbcmp+ii)
                         end do
                         if (ndim .eq. 3) then
-                            call utpvgl(1, nbcmp, pgl, valed, valer)
+                            call utpvgl(1, 3, pgl, valed, valer)
+                            if (nbcmp .gt. 3) call utpvgl(1, 3, pgl, valed(4), valer(4))
                         else
-                            call ut2vgl(1, nbcmp, pgl, valed, valer)
+                            call ut2vgl(1, 2, pgl, valed, valer)
                         end if
                         do ii = 1, nbcmp
-                            zr(jcnsv-1+(inoe-1)*nbcmp+ii) = valer(licmpu(ii) &
-                                                                  )
+                            zr(jcnsv-1+(inoe-1)*nbcmp+ii) = valer(ii)
                         end do
                     else
 ! VECTEUR COMPLEXE
@@ -648,11 +649,15 @@ subroutine chrpno(champ1, repere, nbcmp, icham, type)
                             valet(ii) = dimag(valetc(ii))
                         end do
                         if (ndim .eq. 3) then
-                            call utpvgl(1, nbcmp, pgl, valed, valer)
-                            call utpvgl(1, nbcmp, pgl, valet, valei)
+                            call utpvgl(1, 3, pgl, valed, valer)
+                            call utpvgl(1, 3, pgl, valet, valei)
+                            if (nbcmp .gt. 3) then
+                                call utpvgl(1, 3, pgl, valed(4), valer(4))
+                                call utpvgl(1, 3, pgl, valet(4), valei(4))
+                            end if
                         else
-                            call ut2vgl(1, nbcmp, pgl, valed, valer)
-                            call ut2vgl(1, nbcmp, pgl, valet, valei)
+                            call ut2vgl(1, 2, pgl, valed, valer)
+                            call ut2vgl(1, 2, pgl, valet, valei)
                         end if
                         do ii = 1, nbcmp
                             zc(jcnsv-1+(inoe-1)*nbcmp+ii) = dcmplx(valer(ii), valei(ii))

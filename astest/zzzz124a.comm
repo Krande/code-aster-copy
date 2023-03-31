@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -47,6 +47,112 @@ MEST1 = CALC_CHAMP(reuse=MEST1, RESULTAT=MEST1, CONTRAINTE=("EFGE_ELNO",), FORCE
 # IMPR_RESU(FORMAT='RESULTAT',RESU=_F(RESULTAT=MEST1,NOM_CHAM=('EFGE_ELNO','REAC_NODA',),),)
 
 
+# Validation de VECT_3D à 6 composantes pour un champ aux noeuds (translation et rotation)
+RESU01TRANS = MODI_REPERE(
+    RESULTAT=MEST1,
+    NUME_ORDRE=1,
+    MODI_CHAM=(_F(NOM_CHAM="DEPL", NOM_CMP=("DX", "DY", "DZ"), TYPE_CHAM="VECT_3D"),),
+    REPERE="UTILISATEUR",
+    AFFE=_F(VECT_X=(1.0, 1.0, 1.0), VECT_Y=(-1.0, 1.0, 0.0), TOUT="OUI"),
+    INFO=1,
+)
+
+RESU01ROT = MODI_REPERE(
+    RESULTAT=MEST1,
+    NUME_ORDRE=1,
+    MODI_CHAM=(_F(NOM_CHAM="DEPL", NOM_CMP=("DRX", "DRY", "DRZ"), TYPE_CHAM="VECT_3D"),),
+    REPERE="UTILISATEUR",
+    AFFE=_F(VECT_X=(1.0, 1.0, 1.0), VECT_Y=(-1.0, 1.0, 0.0), TOUT="OUI"),
+    INFO=1,
+)
+
+RESU01TOUT = MODI_REPERE(
+    RESULTAT=MEST1,
+    NUME_ORDRE=1,
+    MODI_CHAM=(
+        _F(NOM_CHAM="DEPL", NOM_CMP=("DX", "DY", "DZ", "DRX", "DRY", "DRZ"), TYPE_CHAM="VECT_3D"),
+    ),
+    REPERE="UTILISATEUR",
+    AFFE=_F(VECT_X=(1.0, 1.0, 1.0), VECT_Y=(-1.0, 1.0, 0.0), TOUT="OUI"),
+    INFO=1,
+)
+
+TABTRANS = CREA_TABLE(
+    RESU=_F(RESULTAT=RESU01TRANS, NUME_ORDRE=1, TOUT="OUI", NOM_CHAM="DEPL", TOUT_CMP="OUI")
+)
+TABROT = CREA_TABLE(
+    RESU=_F(RESULTAT=RESU01ROT, NUME_ORDRE=1, TOUT="OUI", NOM_CHAM="DEPL", TOUT_CMP="OUI")
+)
+TABTOUT = CREA_TABLE(
+    RESU=_F(RESULTAT=RESU01TOUT, NUME_ORDRE=1, TOUT="OUI", NOM_CHAM="DEPL", TOUT_CMP="OUI")
+)
+
+TABTRANS = CALC_TABLE(
+    reuse=TABTRANS,
+    TABLE=TABTRANS,
+    ACTION=_F(OPERATION="EXTR", NOM_PARA=("NOEUD", "DX", "DY", "DZ")),
+)
+TABROT = CALC_TABLE(
+    reuse=TABROT, TABLE=TABROT, ACTION=_F(OPERATION="EXTR", NOM_PARA=("NOEUD", "DRX", "DRY", "DRZ"))
+)
+TABTOUT = CALC_TABLE(
+    reuse=TABTOUT,
+    TABLE=TABTOUT,
+    ACTION=_F(OPERATION="EXTR", NOM_PARA=("NOEUD", "DX", "DY", "DZ", "DRX", "DRY", "DRZ")),
+)
+
+IMPR_TABLE(UNITE=6, TABLE=TABTRANS)
+IMPR_TABLE(UNITE=6, TABLE=TABTOUT)
+
+
+TABTOUTREF = CALC_TABLE(
+    TABLE=TABTRANS,
+    ACTION=(
+        _F(OPERATION="COMB", TABLE=TABROT, NOM_PARA=("NOEUD")),
+        _F(OPERATION="RENOMME", NOM_PARA=("DX", "DXREF")),
+        _F(OPERATION="RENOMME", NOM_PARA=("DY", "DYREF")),
+        _F(OPERATION="RENOMME", NOM_PARA=("DZ", "DZREF")),
+        _F(OPERATION="RENOMME", NOM_PARA=("DRX", "DRXREF")),
+        _F(OPERATION="RENOMME", NOM_PARA=("DRY", "DRYREF")),
+        _F(OPERATION="RENOMME", NOM_PARA=("DRZ", "DRZREF")),
+        _F(OPERATION="COMB", TABLE=TABTOUT, NOM_PARA=("NOEUD")),
+    ),
+)
+
+F = FORMULE(
+    VALE="(DXREF-DX)**2+(DYREF-DY)**2+(DZREF-DZ)**2+(DRXREF-DRX)**2+(DRYREF-DRY)**2+(DRZREF-DRZ)**2",
+    NOM_PARA=(
+        "DX",
+        "DY",
+        "DZ",
+        "DRX",
+        "DRY",
+        "DRZ",
+        "DXREF",
+        "DYREF",
+        "DZREF",
+        "DRXREF",
+        "DRYREF",
+        "DRZREF",
+    ),
+)
+
+
+TABTOUTREF = CALC_TABLE(
+    reuse=TABTOUTREF, TABLE=TABTOUTREF, ACTION=(_F(OPERATION="OPER", FORMULE=F, NOM_PARA="DIFF"),)
+)
+
+TEST_TABLE(
+    REFERENCE="ANALYTIQUE",
+    VALE_CALC=0,
+    VALE_REFE=0,
+    NOM_PARA="DIFF",
+    TABLE=TABTOUTREF,
+    CRITERE="ABSOLU",
+    TYPE_TEST="MAX",
+    PRECISION=1e-6,
+)
+
 # ==================================================================================================
 # Le repère utilisateur est le repère local : EFGE_ELNO inchangé
 RESU01 = MODI_REPERE(
@@ -61,7 +167,6 @@ RESU01 = MODI_REPERE(
     AFFE=_F(VECT_X=(1.0, 1.0, 1.0), VECT_Y=(-1.0, 1.0, 0.0), TOUT="OUI"),
     INFO=1,
 )
-
 #
 EFGE_ELNO = {}
 REAC_NODA = {}

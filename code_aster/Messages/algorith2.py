@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -172,7 +172,7 @@ Commande MODI_REPERE : le changement de repère sur le type VECT_3D avec
 Commande MODI_REPERE, pour le type VECT_3D (6 composantes) il faut :
  - le MODÈLE, le CARA_ELEM.
  - le repère doit être UTILISATEUR
- - le champ doit être [EFGE|SIEF]_ELNO
+ - le champ doit être [EFGE|SIEF]_ELNO ou un champ aux noeuds
  """
     ),
     33: _(

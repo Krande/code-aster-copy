@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -509,6 +509,140 @@ TEST_RESU(
         ),
     )
 )
+
+# Validation de VECT_3D à 6 composantes pour un champ aux noeuds complexe (translation et rotation)
+RESU01TRANS = MODI_REPERE(
+    RESULTAT=DYNA_AFL,
+    NUME_ORDRE=1,
+    MODI_CHAM=(_F(NOM_CHAM="ACCE", NOM_CMP=("DX", "DY", "DZ"), TYPE_CHAM="VECT_3D"),),
+    REPERE="UTILISATEUR",
+    AFFE=_F(VECT_X=(1.0, 1.0, 1.0), VECT_Y=(-1.0, 1.0, 0.0), TOUT="OUI"),
+    INFO=1,
+)
+
+RESU01ROT = MODI_REPERE(
+    RESULTAT=DYNA_AFL,
+    NUME_ORDRE=1,
+    MODI_CHAM=(_F(NOM_CHAM="ACCE", NOM_CMP=("DRX", "DRY", "DRZ"), TYPE_CHAM="VECT_3D"),),
+    REPERE="UTILISATEUR",
+    AFFE=_F(VECT_X=(1.0, 1.0, 1.0), VECT_Y=(-1.0, 1.0, 0.0), TOUT="OUI"),
+    INFO=1,
+)
+
+RESU01TOUT = MODI_REPERE(
+    RESULTAT=DYNA_AFL,
+    NUME_ORDRE=1,
+    MODI_CHAM=(
+        _F(NOM_CHAM="ACCE", NOM_CMP=("DX", "DY", "DZ", "DRX", "DRY", "DRZ"), TYPE_CHAM="VECT_3D"),
+    ),
+    REPERE="UTILISATEUR",
+    AFFE=_F(VECT_X=(1.0, 1.0, 1.0), VECT_Y=(-1.0, 1.0, 0.0), TOUT="OUI"),
+    INFO=1,
+)
+# IMPR_RESU(UNITE=6, FORMAT='RESULTAT', RESU=_F(RESULTAT=DYNA_AFL, NOM_CHAM='ACCE', NUME_ORDRE=1, GROUP_NO='B'))
+# IMPR_RESU(UNITE=6, FORMAT='RESULTAT', RESU=_F(RESULTAT=RESU01TOUT, NOM_CHAM='ACCE', NUME_ORDRE=1, GROUP_NO='B'))
+
+
+TEST_RESU(
+    RESU=(
+        _F(
+            NUME_ORDRE=1,
+            GROUP_NO="B",
+            VALE_CALC_C=4.79066900425732e01 + 4.15566158206141e00j,
+            RESULTAT=RESU01TRANS,
+            NOM_CHAM="ACCE",
+            NOM_CMP="DX",
+        ),
+        _F(
+            NUME_ORDRE=1,
+            GROUP_NO="B",
+            VALE_CALC_C=5.86734729349880e01 + 5.08962520986876e00j,
+            RESULTAT=RESU01TRANS,
+            NOM_CHAM="ACCE",
+            NOM_CMP="DY",
+        ),
+        _F(
+            NUME_ORDRE=1,
+            GROUP_NO="B",
+            VALE_CALC_C=-3.38751453933056e01 - 2.93849648499204e00j,
+            RESULTAT=RESU01TRANS,
+            NOM_CHAM="ACCE",
+            NOM_CMP="DZ",
+        ),
+        _F(
+            NUME_ORDRE=1,
+            GROUP_NO="B",
+            VALE_CALC_C=1.50594124911973e01 + 2.17052979071808e00j,
+            RESULTAT=RESU01ROT,
+            NOM_CHAM="ACCE",
+            NOM_CMP="DRX",
+        ),
+        _F(
+            NUME_ORDRE=1,
+            GROUP_NO="B",
+            VALE_CALC_C=2.12972253864220e01 + 3.06959266756835e00j,
+            RESULTAT=RESU01ROT,
+            NOM_CHAM="ACCE",
+            NOM_CMP="DRZ",
+        ),
+        _F(
+            NUME_ORDRE=1,
+            GROUP_NO="B",
+            VALE_CALC_C=4.79066900425732e01 + 4.15566158206141e00j,
+            VALE_REFE_C=(4.79066900425732e01 + 4.15566158206141e00j),
+            REFERENCE="ANALYTIQUE",
+            PRECISION=5.0000000000000001e-4,
+            RESULTAT=RESU01TOUT,
+            NOM_CHAM="ACCE",
+            NOM_CMP="DX",
+        ),
+        _F(
+            NUME_ORDRE=1,
+            GROUP_NO="B",
+            VALE_CALC_C=5.86734729349880e01 + 5.08962520986876e00j,
+            VALE_REFE_C=(5.86734729349880e01 + 5.08962520986876e00j),
+            REFERENCE="ANALYTIQUE",
+            PRECISION=5.0000000000000001e-4,
+            RESULTAT=RESU01TOUT,
+            NOM_CHAM="ACCE",
+            NOM_CMP="DY",
+        ),
+        _F(
+            NUME_ORDRE=1,
+            GROUP_NO="B",
+            VALE_CALC_C=-3.38751453933056e01 - 2.93849648499204e00j,
+            VALE_REFE_C=(-3.38751453933056e01 - 2.93849648499204e00j),
+            REFERENCE="ANALYTIQUE",
+            PRECISION=5.0000000000000001e-4,
+            RESULTAT=RESU01TOUT,
+            NOM_CHAM="ACCE",
+            NOM_CMP="DZ",
+        ),
+        _F(
+            NUME_ORDRE=1,
+            GROUP_NO="B",
+            VALE_CALC_C=1.50594124911973e01 + 2.17052979071808e00j,
+            VALE_REFE_C=(1.50594124911973e01 + 2.17052979071808e00j),
+            REFERENCE="ANALYTIQUE",
+            PRECISION=5.0000000000000001e-4,
+            RESULTAT=RESU01TOUT,
+            NOM_CHAM="ACCE",
+            NOM_CMP="DRX",
+        ),
+        _F(
+            NUME_ORDRE=1,
+            GROUP_NO="B",
+            VALE_CALC_C=2.12972253864220e01 + 3.06959266756835e00j,
+            VALE_REFE_C=(2.12972253864220e01 + 3.06959266756835e00j),
+            REFERENCE="ANALYTIQUE",
+            PRECISION=5.0000000000000001e-4,
+            RESULTAT=RESU01TOUT,
+            NOM_CHAM="ACCE",
+            NOM_CMP="DRZ",
+        ),
+    )
+)
+
 
 FIN()
 #
