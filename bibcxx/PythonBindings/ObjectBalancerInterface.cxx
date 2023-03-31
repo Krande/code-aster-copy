@@ -34,12 +34,47 @@ void exportObjectBalancerToPython( py::module_ &mod ) {
 
     py::class_< ObjectBalancer, ObjectBalancerPtr >( mod, "ObjectBalancer" )
         .def( py::init( &initFactoryPtr< ObjectBalancer > ) )
-        .def( "addElementarySend", &ObjectBalancer::addElementarySend )
-        .def( "endElementarySendDefinition", &ObjectBalancer::endElementarySendDefinition )
-        .def( "prepareCommunications", &ObjectBalancer::prepareCommunications )
-        .def( "setElementsToKeep", &ObjectBalancer::setElementsToKeep )
+        .def( "addElementarySend", &ObjectBalancer::addElementarySend, R"(
+Add an elementary send (part of a vector to send to given process)
+
+Arguments:
+    rank: rank of process
+    elemList: list of elements to send to the process
+        )",
+              py::arg( "rank" ), py::arg( "elemList" ) )
+        .def( "endElementarySendDefinition", &ObjectBalancer::endElementarySendDefinition, R"(
+End the definition of sends
+        )" )
+        .def( "prepareCommunications", &ObjectBalancer::prepareCommunications, R"(
+Prepare the communications between processes
+        )" )
+        .def( "setElementsToKeep", &ObjectBalancer::setElementsToKeep, R"(
+Add a list of elements to keep on local process
+
+Arguments:
+    elemList: list of elements to keep
+        )",
+              py::arg( "elemList" ) )
         .def( "balanceVectorOverProcesses",
-              &ObjectBalancer::balanceVectorOverProcesses< VectorReal > )
+              &ObjectBalancer::balanceVectorOverProcesses< VectorReal >, R"(
+Balance a vector of reals over processes
+
+Arguments:
+    vector: list of reals to balance
+
+Returns:
+    list[real]: balanced vector
+        )",
+              py::arg( "vector" ) )
         .def( "balanceVectorOverProcesses",
-              &ObjectBalancer::balanceVectorOverProcesses< VectorInt > );
+              &ObjectBalancer::balanceVectorOverProcesses< VectorInt >, R"(
+Balance a vector of integers over processes
+
+Arguments:
+    vector: list of integers to balance
+
+Returns:
+    list[int]: balanced vector
+        )",
+              py::arg( "vector" ) );
 };

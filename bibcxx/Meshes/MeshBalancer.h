@@ -39,9 +39,13 @@
  * @brief Class describing a mesh which is balanceable across MPI processes
  */
 class MeshBalancer {
+    /** @brief Mesh to balance */
     BaseMeshPtr _mesh;
+    /** @brief Reverse connectivity (nodes to elements) !!! ids starts at 0 */
     std::map< int, std::set< int > > _reverseConnex;
+    /** @brief True if _reverseConnex already build */
     bool _bReverseConnex;
+    /** @brief Range of node ids of _mesh (!!! no overlaping between processes) */
     std::array< ASTERINTEGER, 2 > _range = {-1, -1};
 
     void buildBalancersAndInterfaces( VectorInt &newLocalNodesList, ObjectBalancer &nodesB,
@@ -74,7 +78,12 @@ class MeshBalancer {
      */
     MeshBalancer() : _mesh( nullptr ), _bReverseConnex( false ){};
 
-    ParallelMeshPtr applyBalancingStrategy( VectorInt & );
+    /**
+     * @brief Apply a balancing strategy and return ParallelMeshPtr
+     * @param list vector of nodes to get on local process
+     * @return ParalleMesh
+     */
+    ParallelMeshPtr applyBalancingStrategy( VectorInt &list );
 
     void buildFromBaseMesh( const BaseMeshPtr &mesh ) { _mesh = mesh; };
 };

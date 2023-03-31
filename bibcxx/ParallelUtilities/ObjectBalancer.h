@@ -112,7 +112,7 @@ class ObjectBalancer {
     };
 
     /**
-     * @class DistributedMask
+     * @class DistributedMaskOut
      * @brief Class used to apply a mask only after receiveing
      * @todo maybe a template ??
      * @author Nicolas Sellenet

@@ -32,11 +32,41 @@ void exportPtScotchPartitionerToPython( py::module_ &mod ) {
 
     py::class_< PtScotchPartitioner, PtScotchPartitionerPtr >( mod, "PtScotchPartitioner" )
         .def( py::init( &initFactoryPtr< PtScotchPartitioner > ) )
-        .def( "buildGraph", py::overload_cast< const VectorLong &, const VectorLong & >(
-                                &PtScotchPartitioner::buildGraph ) )
-        .def( "buildGraph", py::overload_cast< const MeshConnectionGraphPtr & >(
-                                &PtScotchPartitioner::buildGraph ) )
-        .def( "checkGraph", &PtScotchPartitioner::checkGraph )
-        .def( "partitionGraph", &PtScotchPartitioner::partitionGraph )
-        .def( "writeGraph", &PtScotchPartitioner::writeGraph );
+        .def( "buildGraph",
+              py::overload_cast< const VectorLong &, const VectorLong & >(
+                  &PtScotchPartitioner::buildGraph ),
+              R"(
+Build the PtScotch graph from 2 integer vectors (PtScotch format)
+
+Arguments:
+    vertloctab: Gives the position of starts of each vertex connections in edgeloctab
+    edgeloctab: Describes vertex connections (at which vertices each vertex is connected)
+        )",
+              py::arg( "vertloctab" ), py::arg( "edgeloctab" ) )
+        .def(
+            "buildGraph",
+            py::overload_cast< const MeshConnectionGraphPtr & >( &PtScotchPartitioner::buildGraph ),
+            R"(
+Build the PtScotch graph from a MeshConnectionGraph
+
+Arguments:
+    meshConnectionGraph: MeshConnectionGraph
+        )",
+            py::arg( "meshConnectionGraph" ) )
+        .def( "checkGraph", &PtScotchPartitioner::checkGraph, R"(
+Ask PtScotch to check the graph
+        )" )
+        .def( "partitionGraph", &PtScotchPartitioner::partitionGraph, R"(
+Call PtScotch partitioning
+
+Returns:
+    list[int]: Owner for each nodes
+        )" )
+        .def( "writeGraph", &PtScotchPartitioner::writeGraph, R"(
+Ask PtScotch to write the graph
+
+Arguments:
+    path: path to output file
+        )",
+              py::arg( "path" ) );
 };

@@ -38,9 +38,13 @@ using VectorOfVectorsInt = std::vector< VectorInt >;
  * @brief Class used to interface ptscotch
  */
 class PtScotchPartitioner {
+    /** @brief Pointer to SCOTCH_Dgraph */
     SCOTCH_Dgraph *_graph;
+    /** @brief Pointer to SCOTCH_Strat */
     SCOTCH_Strat *_scotchStrat;
+    /** @brief Number of vertices in graph and local minimum id */
     int _nbVertex = 0, _minId = 0;
+    /** @brief Graph in PtScotch format */
     VectorLong _vertices, _edges;
 
     void buildPartition( const VectorLong &, VectorLong & );

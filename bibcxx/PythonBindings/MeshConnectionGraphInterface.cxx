@@ -36,7 +36,13 @@ void exportMeshConnectionGraphToPython( py::module_ &mod ) {
 
     py::class_< MeshConnectionGraph, MeshConnectionGraphPtr >( mod, "MeshConnectionGraph" )
         .def( py::init( &initFactoryPtr< MeshConnectionGraph > ) )
-        .def( "buildFromIncompleteMesh", &MeshConnectionGraph::buildFromIncompleteMesh );
+        .def( "buildFromIncompleteMesh", &MeshConnectionGraph::buildFromIncompleteMesh, R"(
+Create the graph corresponding to given IncompleteMesh to be used by PtScotchPartitioner
+
+Arguments:
+    mesh: IncompleteMesh.
+        )",
+              py::arg( "mesh" ) );
 };
 
 #endif /* ASTER_HAVE_MPI */

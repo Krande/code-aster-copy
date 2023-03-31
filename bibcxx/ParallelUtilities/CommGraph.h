@@ -52,6 +52,9 @@ class CommGraph {
         _commGraph.push_back( toAdd );
     }
 
+    /** @brief Get matchings */
+    const VectorInt &getMatchings() const { return _matchings; };
+
     /** @brief Synchronize graph over processes and build matchings */
     void synchronizeOverProcesses();
 

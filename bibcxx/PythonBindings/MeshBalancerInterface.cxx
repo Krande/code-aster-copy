@@ -34,6 +34,23 @@ void exportMeshBalancerToPython( py::module_ &mod ) {
 
     py::class_< MeshBalancer, MeshBalancerPtr >( mod, "MeshBalancer" )
         .def( py::init( &initFactoryPtr< MeshBalancer > ) )
-        .def( "applyBalancingStrategy", &MeshBalancer::applyBalancingStrategy )
-        .def( "buildFromBaseMesh", &MeshBalancer::buildFromBaseMesh );
+        .def( "applyBalancingStrategy", &MeshBalancer::applyBalancingStrategy, R"(
+Apply balancing strategy to given mesh. User must give nodes that local process
+will own (without ghost nodes).
+This function returns a ParallelMesh with joints, ghosts and so on.
+
+Arguments:
+    vector: list of nodes to get on local process
+
+Returns:
+    mesh: ParallelMesh
+        )",
+              py::arg( "vector" ) )
+        .def( "buildFromBaseMesh", &MeshBalancer::buildFromBaseMesh, R"(
+Build balancer on an IncompleteMesh or a Mesh
+
+Arguments:
+    mesh: mesh to balance
+)",
+              py::arg( "mesh" ) );
 };

@@ -36,18 +36,27 @@
  * @author Nicolas Sellenet
  */
 class MeshConnectionGraph {
+    /** @brief PtScotch graph */
     VectorLong _vertices, _edges;
+    /** @brief Range of node ids on local process */
     VectorLong _range;
 
   public:
     MeshConnectionGraph(){};
 
+    /**
+     * @brief Build graph from IncompleteMeshPtr
+     * @param mesh IncompleteMeshPtr
+     */
     void buildFromIncompleteMesh( const IncompleteMeshPtr &mesh );
 
+    /** @brief get edges (PtSctoch format) */
     const VectorLong &getEdges() const { return _edges; };
 
+    /** @brief get node ids range on local process (no overlaping) */
     const VectorLong &getRange() const { return _range; };
 
+    /** @brief get vertices (PtSctoch format) */
     const VectorLong &getVertices() const { return _vertices; };
 };
 

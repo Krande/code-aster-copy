@@ -34,6 +34,20 @@ void exportCommGraphToPython( py::module_ &mod ) {
 
     py::class_< CommGraph, CommGraphPtr >( mod, "CommGraph" )
         .def( py::init( &initFactoryPtr< CommGraph > ) )
-        .def( "addCommunication", &CommGraph::addCommunication )
-        .def( "synchronizeOverProcesses", &CommGraph::synchronizeOverProcesses );
+        .def( "addCommunication", &CommGraph::addCommunication, R"(
+Add a communication with a process
+
+Arguments:
+    rank: rank of opposite process
+        )",
+              py::arg( "rank" ) )
+        .def( "getMatchings", &CommGraph::getMatchings, R"(
+Get matchings of communication graph
+
+Returns:
+    list[int]: list of process to communicate with
+        )" )
+        .def( "synchronizeOverProcesses", &CommGraph::synchronizeOverProcesses, R"(
+Synchronise graph over processes
+        )" );
 };
