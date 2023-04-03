@@ -3,7 +3,7 @@
  * @brief Interface python de ThermalLoadDescription
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -27,8 +27,9 @@
 
 void exportThermalLoadDescriptionToPython( py::module_ &mod ) {
 
-    py::class_< ThermalLoadDescriptionReal, ThermalLoadDescriptionPtr< ConstantFieldOnCellsReal >, DataStructure >( mod, "ThermalLoadDescriptionReal" )
+    py::class_< ThermalLoadDescriptionReal, ThermalLoadDescriptionPtr< ConstantFieldOnCellsReal >,
+                DataStructure >( mod, "ThermalLoadDescriptionReal" )
         .def( py::init( &initFactoryPtr< ThermalLoadDescriptionReal, std::string, ModelPtr & > ) )
+        // fake initFactoryPtr: not directly created by user
         .def( "getConstantLoadField", &ThermalLoadDescriptionReal::getConstantLoadField );
-
 };

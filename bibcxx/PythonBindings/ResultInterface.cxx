@@ -586,6 +586,5 @@ Returns:
     list[EquationNumbering]: list of field's description
         )" )
         .def( "addFiniteElementDescriptor", &Result::addFiniteElementDescriptor )
-        .def( "getTangentMatrix", &Result::getTangentMatrix )
-        ;
+        .def( "getTangentMatrix", &Result::getTangentMatrix );
 };

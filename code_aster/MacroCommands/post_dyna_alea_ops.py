@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -57,7 +57,7 @@ def post_dyna_alea_ops(self, INFO, **args):
             xi = float(liste_def[k])
             val = log(ai / am)
             pfa = normcdf(val / beta)
-            f0 = pfa ** xi * (1.0 - pfa) ** (1 - xi)
+            f0 = pfa**xi * (1.0 - pfa) ** (1 - xi)
             res = res * f0
         return -res
 
@@ -70,7 +70,7 @@ def post_dyna_alea_ops(self, INFO, **args):
             xi = float(liste_def[list_rand[k]])
             val = log(ai / am)
             pfa = normcdf(val / beta)
-            f0 = pfa ** xi * (1.0 - pfa) ** (1 - xi)
+            f0 = pfa**xi * (1.0 - pfa) ** (1 - xi)
             res = res * f0
         return -res
 

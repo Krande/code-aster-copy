@@ -939,11 +939,11 @@ std::vector< EquationNumberingPtr > Result::getEquationNumberings() const {
     return _fieldBuidler.getEquationNumberings();
 };
 
-VectorReal Result::getTangentMatrix( const std::string& suffix){
-    if ( suffix == "MATA" && _mata.exists() ){
+VectorReal Result::getTangentMatrix( const std::string &suffix ) {
+    if ( suffix == "MATA" && _mata.exists() ) {
         _mata->updateValuePointer();
         return _mata->toVector();
-    } else if ( suffix == "MATC" && _matc.exists() ){
+    } else if ( suffix == "MATC" && _matc.exists() ) {
         _matc->updateValuePointer();
         return _matc->toVector();
     } else

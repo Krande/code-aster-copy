@@ -233,6 +233,8 @@
      - ``mater_sdaster``
    * - :py:class:`~code_aster.Objects.MaterialField`
      - 
+   * - :py:class:`~code_aster.Objects.MatrixStorage`
+     - 
    * - :py:class:`~code_aster.Objects.MechanicalDirichletBC`
      - 
    * - :py:class:`~code_aster.Objects.MechanicalLoadComplex`
@@ -252,6 +254,8 @@
    * - :py:class:`~code_aster.Objects.ModeResultComplex`
      - ``mode_meca_c``
    * - :py:class:`~code_aster.Objects.Model`
+     - 
+   * - :py:class:`~code_aster.Objects.MorseStorage`
      - 
    * - :py:class:`~code_aster.Objects.MultFrontSolver`
      - ``solveur_sdaster``
@@ -325,6 +329,8 @@
      - 
    * - :py:class:`~code_aster.Objects.ThermalFourierResult`
      - ``fourier_ther``
+   * - :py:class:`~code_aster.Objects.ThermalLoadDescriptionReal`
+     - 
    * - :py:class:`~code_aster.Objects.ThermalLoadFunction`
      - 
    * - :py:class:`~code_aster.Objects.ThermalLoadReal`

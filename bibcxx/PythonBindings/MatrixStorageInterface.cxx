@@ -26,11 +26,13 @@
 
 void exportMatrixStorageToPython( py::module_ &mod ) {
 
-    py::class_< MatrixStorage, std::shared_ptr< MatrixStorage >, DataStructure >( mod, "MatrixStorage" )
+    py::class_< MatrixStorage, std::shared_ptr< MatrixStorage >, DataStructure >( mod,
+                                                                                  "MatrixStorage" )
+        // fake initFactoryPtr: not directly created by user
         .def( py::init( &initFactoryPtr< MatrixStorage, std::string > ) );
-    py::class_< MorseStorage, MorseStoragePtr, MatrixStorage >(
-        mod, "MorseStorage" )
+    py::class_< MorseStorage, MorseStoragePtr, MatrixStorage >( mod, "MorseStorage" )
+        // fake initFactoryPtr: not directly created by user
+        // fake initFactoryPtr: not directly created by user
         .def( "getRows", &MorseStorage::getRows )
         .def( "getDiagonalPositions", &MorseStorage::getDiagonalPositions );
-
 };

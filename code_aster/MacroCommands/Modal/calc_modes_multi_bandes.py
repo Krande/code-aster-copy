@@ -22,7 +22,11 @@ from ...Messages import UTMESS
 
 from ...Cata.Syntax import _F
 from ...Commands import EXTR_MODE, IMPR_CO, INFO_MODE, MODI_MODELE, NUME_DDL
-from ...Objects import AssemblyMatrixDisplacementReal, GeneralizedAssemblyMatrixReal, GeneralizedAssemblyMatrixComplex
+from ...Objects import (
+    AssemblyMatrixDisplacementReal,
+    GeneralizedAssemblyMatrixReal,
+    GeneralizedAssemblyMatrixComplex,
+)
 from ...Utilities.mpi_utils import MPI
 from .mode_iter_simult import MODE_ITER_SIMULT
 

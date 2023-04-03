@@ -452,8 +452,10 @@ class ConstantFieldOnCells : public DataField {
             throw std::runtime_error( "Error in ConstantFieldOnCells" );
     };
 
-    bool setValueOnCells( const VectorLong cells, const VectorString cmp, const std::vector< ValueType > values ){
-        return setValueOnZone( ConstantFieldOnZone( _mesh, cells ), ConstantFieldValues< ValueType > ( cmp, values));
+    bool setValueOnCells( const VectorLong cells, const VectorString cmp,
+                          const std::vector< ValueType > values ) {
+        return setValueOnZone( ConstantFieldOnZone( _mesh, cells ),
+                               ConstantFieldValues< ValueType >( cmp, values ) );
     };
 
     /**

@@ -316,6 +316,35 @@ def use_count(*args, **kwargs):
     """
 
 
+# class PhysicalQuantityManager in libaster
+
+
+class PhysicalQuantityManager:
+    pass
+
+    # Method resolution order:
+    #     PhysicalQuantityManager
+    #     pybind11_builtins.pybind11_object
+    #     builtins.object
+
+    # Methods defined here:
+
+    def __init__(self, *args, **kwargs):
+        """Initialize self.  See help(type(self)) for accurate signature."""
+
+    def getComponentNames(self):
+        pass
+
+    def getNumberOfEncodedInteger(self):
+        pass
+
+    def getPhysicalQuantityName(self):
+        pass
+
+    def hasQuantityOfName(self):
+        pass
+
+
 # class EntityType in libaster
 
 
@@ -461,6 +490,12 @@ class BaseMesh(DataStructure):
     def __init__(self, *args, **kwargs):
         """Initialize self.  See help(type(self)) for accurate signature."""
 
+    def addDynamicMacroElement(self, arg0):
+        """Add a dynamic macro element."""
+
+    def addStaticMacroElement(self, arg0):
+        """Add a static macro element."""
+
     def build(self):
         """Build list of Tables based on the mesh
 
@@ -526,6 +561,9 @@ class BaseMesh(DataStructure):
             int: 2 or 3
         """
 
+    def getDynamicMacroElements(self):
+        """Return all dynamic macro elements."""
+
     def getMedCellsTypes(self):
         """Return the Med type of each cell.
 
@@ -563,6 +601,9 @@ class BaseMesh(DataStructure):
         Returns:
             int: Number of nodes.
         """
+
+    def getStaticMacroElements(self):
+        """Return all static macro elements."""
 
     def getTable(self, identifier):
         """Extract a Table from the datastructure.
@@ -1403,6 +1444,49 @@ class EquationNumbering(DataStructure):
         """
 
 
+# class MatrixStorage in libaster
+
+
+class MatrixStorage(DataStructure):
+    pass
+
+    # Method resolution order:
+    #     MatrixStorage
+    #     DataStructure
+    #     pybind11_builtins.pybind11_object
+    #     builtins.object
+
+    # Methods defined here:
+
+    def __init__(self, arg0):
+        pass
+
+
+# class MorseStorage in libaster
+
+
+class MorseStorage(MatrixStorage):
+    pass
+
+    # Method resolution order:
+    #     MorseStorage
+    #     MatrixStorage
+    #     DataStructure
+    #     pybind11_builtins.pybind11_object
+    #     builtins.object
+
+    # Methods defined here:
+
+    def __init__(self, *args, **kwargs):
+        """Initialize self.  See help(type(self)) for accurate signature."""
+
+    def getDiagonalPositions(self):
+        pass
+
+    def getRows(self):
+        pass
+
+
 # class BaseDOFNumbering in libaster
 
 
@@ -1449,6 +1533,9 @@ class BaseDOFNumbering(DataStructure):
         """
 
     def getModel(self):
+        pass
+
+    def getMorseStorage(self):
         pass
 
     def getPhysicalQuantity(self):
@@ -1828,6 +1915,19 @@ class FieldOnCellsReal(DataField):
 
         Returns:
             FieldOnCellsReal
+        """
+
+    def extrComp(self, arg0, arg1):
+        """Return list of cells, list of values, list of point and list of subpoints
+            for given cells
+
+        Arguments:
+            cells[list[int]]: list of nodes
+            cmp[str]: component to extract
+
+        Returns:
+            tuple[list, list, list, list]]: List of cells, list of values,
+                list of points, list of subpoints.
         """
 
     def getComponents(self):
@@ -2347,6 +2447,18 @@ class FieldOnNodesReal(DataField):
     def duplicate(self):
         pass
 
+    def extrComp(self, arg0, arg1):
+        """Return list of nodes, list of components and list of values for given nodes
+
+        Arguments:
+            nodes[list[int]]: list of nodes
+            cmp[str]: component to extract
+            if cmp=' ', extract all components and list of components is filled in
+
+        Returns:
+            tuple[list, list, list]]: List of nodes, list of components, list of values.
+        """
+
     def fromPetsc(self, vec, scaling=1.0):
         """Import a PETSc vector into the field.
 
@@ -2529,6 +2641,18 @@ class FieldOnNodesComplex(DataField):
 
         Returns:
             complex: dot product
+        """
+
+    def extrComp(self, arg0, arg1):
+        """Return list of nodes, list of components and list of values for given nodes
+
+        Arguments:
+            nodes[list[int]]: list of nodes
+            cmp[str]: compoment to extract
+            if cmp=' ', extract all components and list of components is filled in
+
+        Returns:
+            tuple[list, list, list]]: List of nodes, list of components, list of values.
         """
 
     def getComponents(self):
@@ -2750,6 +2874,9 @@ class ConstantFieldOnCellsReal(DataField):
         """
 
     def getMesh(self):
+        pass
+
+    def setValueOnCells(self, arg0, arg1, arg2):
         pass
 
 
@@ -3058,6 +3185,18 @@ class Table(DataStructure):
 
         2. __init__(self: libaster.Table, arg0: str) -> None
         """
+
+    def getColumn(self, arg0):
+        pass
+
+    def getColumnType(self, arg0):
+        pass
+
+    def getNumberOfLines(self):
+        pass
+
+    def getParameters(self):
+        pass
 
 
 # class TableOfFunctions in libaster
@@ -5481,6 +5620,9 @@ class AssemblyMatrixDisplacementReal(BaseAssemblyMatrix):
     def duplicate(self):
         pass
 
+    def getLowerValues(self):
+        pass
+
     def getMaterialField(self, *args, **kwargs):
         """Overloaded function.
 
@@ -5490,6 +5632,9 @@ class AssemblyMatrixDisplacementReal(BaseAssemblyMatrix):
         """
 
     def getNumberOfElementaryMatrix(self):
+        pass
+
+    def getUpperValues(self):
         pass
 
     def scale(self, arg0, arg1):
@@ -6660,6 +6805,27 @@ class InterspectralMatrix(DataStructure):
 
         2. __init__(self: libaster.InterspectralMatrix, arg0: str) -> None
         """
+
+    def getCmpI(self):
+        pass
+
+    def getCmpJ(self):
+        pass
+
+    def getNoeI(self):
+        pass
+
+    def getNoeJ(self):
+        pass
+
+    def getNumI(self):
+        pass
+
+    def getNumJ(self):
+        pass
+
+    def getNumberOfFrequencies(self):
+        pass
 
 
 # class LinearSolver in libaster
@@ -8566,6 +8732,9 @@ class ThermalLoadReal(DataStructure):
     def getModel(self):
         pass
 
+    def getThermalLoadDescription(self):
+        pass
+
     def hasLoadField(self, arg0):
         """Return true if the wanted field exists
 
@@ -8631,6 +8800,27 @@ class ThermalLoadFunction(DataStructure):
         Returns:
             bool: field exists
         """
+
+
+# class ThermalLoadDescriptionReal in libaster
+
+
+class ThermalLoadDescriptionReal(DataStructure):
+    pass
+
+    # Method resolution order:
+    #     ThermalLoadDescriptionReal
+    #     DataStructure
+    #     pybind11_builtins.pybind11_object
+    #     builtins.object
+
+    # Methods defined here:
+
+    def __init__(self, arg0, arg1):
+        pass
+
+    def getConstantLoadField(self, arg0):
+        pass
 
 
 # class BehaviourDefinition in libaster
@@ -9291,6 +9481,12 @@ class GeneralizedModel(DataStructure):
     def getDynamicMacroElementFromName(self, arg0):
         pass
 
+    def getDynamicMacroElementNames(self):
+        pass
+
+    def getDynamicStructureLinks(self):
+        pass
+
 
 # class ModelSplitingMethod in libaster
 
@@ -9531,6 +9727,13 @@ class Model(DataStructure):
 
         Returns:
             str: modelisation name if single modelisation, else '#PLUSIEURS'
+        """
+
+    def getPartitionMethod(self):
+        """Get partition method
+
+        Returns:
+            str: partition method
         """
 
     def getPhysics(self):
@@ -10343,6 +10546,9 @@ class Result(DataStructure):
         Returns:
             Table: Table stored with the given identifier.
         """
+
+    def getTangentMatrix(self):
+        pass
 
     def getTimeValue(self, index):
         """Get time at the specified index
@@ -11391,10 +11597,22 @@ class TransientGeneralizedResult(GeneralizedResultReal):
         2. __init__(self: libaster.TransientGeneralizedResult, arg0: str) -> None
         """
 
+    def getAbscissasOfSamples(self):
+        pass
+
     def getDOFNumbering(self):
         pass
 
+    def getDisplacement(self):
+        pass
+
     def getGeneralizedDOFNumbering(self):
+        pass
+
+    def getIndicesOfSamples(self):
+        pass
+
+    def getNumberOfModes(self):
         pass
 
     def setDOFNumbering(self, arg0):
@@ -11433,10 +11651,19 @@ class HarmoGeneralizedResult(GeneralizedResultComplex):
     def getGeneralizedDOFNumbering(self):
         pass
 
+    def setAcceleration(self, arg0):
+        pass
+
     def setDOFNumbering(self, arg0):
         pass
 
+    def setDisplacement(self, arg0):
+        pass
+
     def setGeneralizedDOFNumbering(self, arg0):
+        pass
+
+    def setVelocity(self, arg0):
         pass
 
 

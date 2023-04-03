@@ -1010,6 +1010,15 @@ Subclasses of :py:class:`~code_aster.Objects.DataStructure`
 
 
 ********************************************************************************
+:py:class:`~code_aster.Objects.MatrixStorage` object
+********************************************************************************
+
+.. autoclass:: code_aster.Objects.MatrixStorage
+   :show-inheritance:
+   :members:
+
+
+********************************************************************************
 :py:class:`~code_aster.Objects.MechanicalDirichletBC` object
 ********************************************************************************
 
@@ -1095,6 +1104,15 @@ Subclasses of :py:class:`~code_aster.Objects.DataStructure`
 ********************************************************************************
 
 .. autoclass:: code_aster.Objects.Model
+   :show-inheritance:
+   :members:
+
+
+********************************************************************************
+:py:class:`~code_aster.Objects.MorseStorage` object
+********************************************************************************
+
+.. autoclass:: code_aster.Objects.MorseStorage
    :show-inheritance:
    :members:
 
@@ -1419,6 +1437,15 @@ Subclasses of :py:class:`~code_aster.Objects.DataStructure`
 ********************************************************************************
 
 .. autoclass:: code_aster.Objects.ThermalFourierResult
+   :show-inheritance:
+   :members:
+
+
+********************************************************************************
+:py:class:`~code_aster.Objects.ThermalLoadDescriptionReal` object
+********************************************************************************
+
+.. autoclass:: code_aster.Objects.ThermalLoadDescriptionReal
    :show-inheritance:
    :members:
 

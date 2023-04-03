@@ -351,18 +351,18 @@ void BaseMesh::check( const ASTERDOUBLE tolerance ) {
     CALLO_CHCKMA( getName(), &value );
 }
 
-bool BaseMesh::addDynamicMacroElement(const DynamicMacroElementPtr &elem ){
-        _dynamic_macro_elements.push_back( elem );
-        return true;
+bool BaseMesh::addDynamicMacroElement( const DynamicMacroElementPtr &elem ) {
+    _dynamic_macro_elements.push_back( elem );
+    return true;
 };
 
 std::vector< DynamicMacroElementPtr > BaseMesh::getDynamicMacroElements() const {
     return _dynamic_macro_elements;
 };
 
-bool BaseMesh::addStaticMacroElement(const StaticMacroElementPtr &elem ){
-        _static_macro_elements.push_back( elem );
-        return true;
+bool BaseMesh::addStaticMacroElement( const StaticMacroElementPtr &elem ) {
+    _static_macro_elements.push_back( elem );
+    return true;
 };
 
 std::vector< StaticMacroElementPtr > BaseMesh::getStaticMacroElements() const {

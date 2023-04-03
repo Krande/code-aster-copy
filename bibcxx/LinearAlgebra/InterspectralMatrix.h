@@ -61,7 +61,7 @@ class InterspectralMatrix : public DataStructure {
     /** @brief Objet Jeveux '.CMPJ' */
     JeveuxVectorChar8 _cmpj;
 
-    static std::vector< std::string > toString( const std::vector< JeveuxChar8 >& );
+    static VectorString toString( const std::vector< JeveuxChar8 > & );
 
   public:
     /**
@@ -80,15 +80,13 @@ class InterspectralMatrix : public DataStructure {
      */
     InterspectralMatrix( const std::string name );
 
-    std::vector< ASTERINTEGER > getNumI() const;
-    std::vector< ASTERINTEGER > getNumJ() const;
-    std::vector< std::string > getNoeI() const;
-    std::vector< std::string > getNoeJ() const;
-    std::vector< std::string > getCmpI() const;
-    std::vector< std::string > getCmpJ() const;
+    VectorLong getNumI() const;
+    VectorLong getNumJ() const;
+    VectorString getNoeI() const;
+    VectorString getNoeJ() const;
+    VectorString getCmpI() const;
+    VectorString getCmpJ() const;
     VectorReal getNumberOfFrequencies() const;
-    
-
 };
 
 /**

@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -70,5 +70,6 @@ class PostReleveT(ExecuteCommand):
                 in place.
         """
         self._result.build()
+
 
 POST_RELEVE_T = PostReleveT.run

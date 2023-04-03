@@ -349,6 +349,15 @@ Documentation of all other types.
 
 
 ********************************************************************************
+:py:class:`~code_aster.Objects.PhysicalQuantityManager` object
+********************************************************************************
+
+.. autoclass:: code_aster.Objects.PhysicalQuantityManager
+   :show-inheritance:
+   :members:
+
+
+********************************************************************************
 :py:class:`~code_aster.Objects.Physics` object
 ********************************************************************************
 

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -312,7 +312,7 @@ gyro = GYOM.EXTR_MATR()
 
 ind_lag1 = NUMEDDL.getRowsAssociatedToLagrangeMultipliers()
 # remove double lagranges
-ind_lag1 = [ind_lag1[i] for i in (0,1,2,6,7,8)]
+ind_lag1 = [ind_lag1[i] for i in (0, 1, 2, 6, 7, 8)]
 ind_nolag = NUMEDDL.getRowsAssociatedToPhysicalDofs()
 
 # -- On recupere la matrice des contraintes "rig[ind_lag1][:,ind_nolag]"

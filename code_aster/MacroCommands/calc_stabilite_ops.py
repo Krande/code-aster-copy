@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -211,8 +211,8 @@ def main(U, hu, omega, K, M, nchoc, poschoc, orig, typchoc, alpha, eta, jeu, nbi
     ddphi = zeros((nd, 2 * nd))
 
     a1 = (1.0 - alp) * dt
-    b1 = (0.5 - bet) * dt ** 2
-    a2 = 1.0 / (bet * (dt ** 2))
+    b1 = (0.5 - bet) * dt**2
+    a2 = 1.0 / (bet * (dt**2))
 
     t = 0.0
     phi[:, :nd] = eye(nd, nd)
@@ -279,18 +279,18 @@ def dfdu(t, nd, hu, U, omega, nchoc, poschoc, orig, typchoc, alpha, eta, jeu):
             ux = (ut(U, t, omega, hu, nd, px) - ox) / jeu[k]
             uy = (ut(U, t, omega, hu, nd, py) - oy) / jeu[k]
 
-            ur = sqrt(ux ** 2 + uy ** 2)
+            ur = sqrt(ux**2 + uy**2)
             fn = funilateral(ur, alpha[k], eta[k])
             dfndr = fn / ((2 / alpha[k]) * fn - (ur - 1))
 
             drdux = ux / ur
             drduy = uy / ur
 
-            dfxdux = dfndr * drdux * ux / ur + fn * (ur - drdux * ux) / (ur ** 2)
-            dfxduy = dfndr * drduy * ux / ur + fn * (-drduy * ux) / (ur ** 2)
+            dfxdux = dfndr * drdux * ux / ur + fn * (ur - drdux * ux) / (ur**2)
+            dfxduy = dfndr * drduy * ux / ur + fn * (-drduy * ux) / (ur**2)
 
-            dfyduy = dfndr * drduy * uy / ur + fn * (ur - drduy * uy) / (ur ** 2)
-            dfydux = dfndr * drdux * uy / ur + fn * (-drdux * uy) / (ur ** 2)
+            dfyduy = dfndr * drduy * uy / ur + fn * (ur - drduy * uy) / (ur**2)
+            dfydux = dfndr * drdux * uy / ur + fn * (-drdux * uy) / (ur**2)
 
             dFdU[px, px] = dFdU[px, px] + jeu[k] * dfxdux
             dFdU[px, py] = dFdU[px, py] + jeu[k] * dfxduy
@@ -303,8 +303,8 @@ def dfdu(t, nd, hu, U, omega, nchoc, poschoc, orig, typchoc, alpha, eta, jeu):
             f = fbilateral(x, alpha[k], eta[k])
             val = (
                 jeu[k]
-                * (2.0 * (f ** 2) / alpha[k] - 2.0 * x * f - eta[k])
-                / (3.0 * (f / alpha[k]) ** 2 - 4.0 * x * f / alpha[k] + (x ** 2 - 1.0))
+                * (2.0 * (f**2) / alpha[k] - 2.0 * x * f - eta[k])
+                / (3.0 * (f / alpha[k]) ** 2 - 4.0 * x * f / alpha[k] + (x**2 - 1.0))
             )
             dFdU[pos, pos] = dFdU[pos, pos] + val
 
@@ -324,22 +324,22 @@ def funilateral(x, alpha, eta):
 
 
 def fbilateral(x, alpha, eta):
-    a1 = 1.0 / (alpha ** 2)
+    a1 = 1.0 / (alpha**2)
     b1 = -2.0 * x / alpha
-    c1 = x ** 2 - 1
+    c1 = x**2 - 1
     d1 = eta * x
 
     h = -b1 / (3.0 * a1)
 
-    p = (3.0 * a1 * h ** 2 + 2.0 * b1 * h + c1) / a1
-    q = -(a1 * h ** 3 + b1 * h ** 2 + c1 * h + d1) / a1
+    p = (3.0 * a1 * h**2 + 2.0 * b1 * h + c1) / a1
+    q = -(a1 * h**3 + b1 * h**2 + c1 * h + d1) / a1
 
-    discr1 = q ** 2 + (4.0 * p ** 3) / 27.0
+    discr1 = q**2 + (4.0 * p**3) / 27.0
 
     sd = (1 - sign(discr1)) / 2
 
-    u3 = (q - (1j ** sd) * sqrt(abs(discr1))) / 2.0
-    v3 = (q + (1j ** sd) * sqrt(abs(discr1))) / 2.0
+    u3 = (q - (1j**sd) * sqrt(abs(discr1))) / 2.0
+    v3 = (q + (1j**sd) * sqrt(abs(discr1))) / 2.0
 
     u = u3 ** (1 / 3.0)
     v = v3 ** (1 / 3.0)
@@ -348,9 +348,9 @@ def fbilateral(x, alpha, eta):
 
     a2 = a1
     b2 = b1 + a1 * f1
-    c2 = c1 + b1 * f1 + a1 * f1 ** 2
+    c2 = c1 + b1 * f1 + a1 * f1**2
 
-    f = (-b2 + sqrt(b2 ** 2 - 4.0 * a2 * c2)) / (2.0 * a2)
+    f = (-b2 + sqrt(b2**2 - 4.0 * a2 * c2)) / (2.0 * a2)
 
     return f.real
 
@@ -447,9 +447,7 @@ def extr_matr(matr):
                 ind[k] = 0
                 j = 0
                 tcmp = -vdeeq[k][1]
-                while (vdeeq[j][0] != vdeeq[k][0]) or (
-                    vdeeq[j][1] != tcmp
-                ):
+                while (vdeeq[j][0] != vdeeq[k][0]) or (vdeeq[j][1] != tcmp):
                     j = j + 1
                 ind[j] = 0
         # print(ind)

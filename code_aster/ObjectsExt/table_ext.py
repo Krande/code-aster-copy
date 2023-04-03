@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -31,6 +31,7 @@ from ..Utilities import injector
 
 from ..Objects.Serialization import InternalStateBuilder
 
+
 class TableStateBuilder(InternalStateBuilder):
     """Class that returns the internal state of a *Table*."""
 
@@ -43,6 +44,7 @@ class TableStateBuilder(InternalStateBuilder):
         """
         super().restore(table)
         table.build()
+
 
 @injector(Table)
 class ExtendedTable:
@@ -60,17 +62,17 @@ class ExtendedTable:
             raise KeyError
 
         column = self.get_column(para)
-        return column[numlign-1]
+        return column[numlign - 1]
 
     def get_column(self, para):
         """Retourne la colonne para"""
         exists, columnI, columnR, columnC, columnK = self.getColumn(para)
         typ = self.getColumnType(para)
-        if typ=="I":
+        if typ == "I":
             column = columnI
-        elif typ=="R":
+        elif typ == "R":
             column = columnR
-        elif typ=="C":
+        elif typ == "C":
             column = columnC
         else:
             column = columnK

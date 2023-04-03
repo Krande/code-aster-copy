@@ -383,10 +383,9 @@ class GeneratorTRANS(Generator):
                             tup_im2.append(VEC_comp.imag * 0.0)
 
         # affectation des valeurs
-        __dyge0.setDisplacement(NP.concatenate(tup_re1) + NP.concatenate(tup_im1)*1j)
-        __dyge0.setVelocity(NP.concatenate(tup_re2) + NP.concatenate(tup_im2)*1j)
-        __dyge0.setAcceleration(NP.concatenate(tup_re) + NP.concatenate(tup_im)*1j)
-        
+        __dyge0.setDisplacement(NP.concatenate(tup_re1) + NP.concatenate(tup_im1) * 1j)
+        __dyge0.setVelocity(NP.concatenate(tup_re2) + NP.concatenate(tup_im2) * 1j)
+        __dyge0.setAcceleration(NP.concatenate(tup_re) + NP.concatenate(tup_im) * 1j)
 
         if self.INFO == 2:
             aster.affiche("MESSAGE", "START REST_SPEC_TEMP")

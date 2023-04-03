@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -30,18 +30,18 @@ import aster
 MA = LIRE_MAILLAGE(FORMAT="ASTER")
 
 coord = MA.getCoordinates().getValues()
-assert(min(coord) == 0.0, coord)
-assert(max(coord) == 0.1, coord)
+assert (min(coord) == 0.0, coord)
+assert (max(coord) == 0.1, coord)
 
 conn = MA.getConnectivity()
-assert(MA.getNumberOfCells() == 1)
-assert(conn[0] == (1, 2), conn)
+assert MA.getNumberOfCells() == 1
+assert (conn[0] == (1, 2), conn)
 
 nommai = MA.getGroupsOfCells()
-assert(nommai == ("ELN1",), nommai)
+assert (nommai == ("ELN1",), nommai)
 
 nomno = MA.getGroupsOfNodes()
-assert(nomno == ("NO1", "NO2"), nomno)
+assert (nomno == ("NO1", "NO2"), nomno)
 
 UN = 1
 DEUX = 2
@@ -51,7 +51,7 @@ I02 = DEFI_LIST_ENTI(VALE=UN)
 I03 = DEFI_LIST_ENTI(VALE=(5, 6, 7))
 
 vale = I02.getValues()
-assert(vale == (1,), vale)
+assert (vale == (1,), vale)
 
 FO3 = DEFI_FONCTION(NOM_PARA="X", NOM_RESU="Y", VALE=TUP)
 

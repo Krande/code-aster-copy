@@ -48,8 +48,7 @@ PrestressingCable::PrestressingCable( const ModelPtr &model, const MaterialField
     : PrestressingCable::PrestressingCable( ResultNaming::getNewResultName(), model, mater, cara ) {
 }
 
-
-bool PrestressingCable::build(){
+bool PrestressingCable::build() {
     _cableBP->build();
     _cableGL->build();
     return true;

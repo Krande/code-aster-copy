@@ -43,7 +43,7 @@ class MatrixStorage : public DataStructure {
     /**
      * @brief Constructeur
      */
-    MatrixStorage( const std::string &name ) : DataStructure( name, 19, "STOCKAGE" ){};
+    MatrixStorage( const std::string &name ) : DataStructure( name, 19, "STOCKAGE" ) {};
 };
 
 /**
@@ -80,7 +80,7 @@ class LigneDeCiel : public MatrixStorage {
           _schc( JeveuxVectorLong( getName() + ".SCHC" ) ),
           _scib( JeveuxVectorLong( getName() + ".SCIB" ) ),
           _m2lc( JeveuxVectorLong( getName() + ".M2LC" ) ),
-          _lc2m( JeveuxVectorLong( getName() + ".LC2M" ) ){};
+          _lc2m( JeveuxVectorLong( getName() + ".LC2M" ) ) {};
 };
 
 /**
@@ -111,16 +111,11 @@ class MorseStorage : public MatrixStorage {
         : MatrixStorage( name ),
           _smdi( JeveuxVectorLong( getName() + ".SMDI" ) ),
           _smde( JeveuxVectorLong( getName() + ".SMDE" ) ),
-          _smhc( JeveuxVectorShort( getName() + ".SMHC" ) ){};
+          _smhc( JeveuxVectorShort( getName() + ".SMHC" ) ) {};
 
-    std::vector< ASTERINTEGER > getRows() const {
-        return _smdi->toVector();
-    };
+    VectorLong getRows() const { return _smdi->toVector(); };
 
-    std::vector< ASTERINTEGER4 > getDiagonalPositions() const {
-        return _smhc->toVector();
-    };
-
+    VectorInt getDiagonalPositions() const { return _smhc->toVector(); };
 };
 
 /**
@@ -154,7 +149,7 @@ class MultFrontStorage : public MatrixStorage {
           _adnt( JeveuxVectorShort( getName() + ".ADNT" ) ),
           _glob( JeveuxVectorShort( getName() + ".GLOB" ) ),
           _locl( JeveuxVectorShort( getName() + ".LOCL" ) ),
-          _pnti( JeveuxVectorShort( getName() + ".PNTI" ) ){};
+          _pnti( JeveuxVectorShort( getName() + ".PNTI" ) ) {};
 };
 
 /**

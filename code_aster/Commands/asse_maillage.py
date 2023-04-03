@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -44,12 +44,13 @@ class MeshAssembler(ExecuteCommand):
         """
 
         self._result.build()
-        if keywords["OPERATION"]=="SOUS_STR":
+        if keywords["OPERATION"] == "SOUS_STR":
             mesh_1 = keywords["MAILLAGE_1"]
             mesh_2 = keywords["MAILLAGE_2"]
             for macr_elem in mesh_1.getDynamicMacroElements() + mesh_2.getDynamicMacroElements():
                 self._result.addDynamicMacroElement(macr_elem)
             for macr_elem in mesh_1.getStaticMacroElements() + mesh_2.getStaticMacroElements():
                 self._result.addStaticMacroElement(macr_elem)
+
 
 ASSE_MAILLAGE = MeshAssembler.run

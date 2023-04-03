@@ -220,8 +220,8 @@ class SimpleFieldOnCells : public DataStructure {
      * @brief tell if value exists for (icmp) component of the (ima) cell
               at the (ipt) point, at the (ispt) sub-point.
     */
-    bool hasValue( const ASTERINTEGER &ima, const ASTERINTEGER &icmp,
-                   const ASTERINTEGER &ipt, const ASTERINTEGER &ispt ) const {
+    bool hasValue( const ASTERINTEGER &ima, const ASTERINTEGER &icmp, const ASTERINTEGER &ipt,
+                   const ASTERINTEGER &ispt ) const {
 
         ASTERINTEGER position = this->_positionInArray( icmp, ima, ipt, ispt );
 

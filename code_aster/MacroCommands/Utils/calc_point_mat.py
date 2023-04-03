@@ -49,4 +49,5 @@ class CalcPointMat(ExecuteCommand):
         """
         self._result.build()
 
+
 CALC_POINT_MAT = CalcPointMat.run

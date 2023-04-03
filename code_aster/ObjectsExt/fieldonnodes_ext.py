@@ -106,7 +106,7 @@ class ExtendedFieldOnNodesReal:
             nodes = list(nodes)
         else:
             nodes = mesh.getNodes()
-        nodes, comp, values =self.extrComp(nodes, comp)
+        nodes, comp, values = self.extrComp(nodes, comp)
         if topo == 0:
             nodes = None
             comp = None
@@ -282,7 +282,7 @@ class ExtendedFieldOnNodesComplex:
             nodes = sorted(nodes)
         else:
             nodes = mesh.getNodes()
-        nodes, comp, values =self.extrComp(nodes, comp)
+        nodes, comp, values = self.extrComp(nodes, comp)
         if topo == 0:
             nodes = None
             comp = None

@@ -83,7 +83,8 @@ class Model : public DataStructure, public ListOfTables {
         JeveuxVectorLong _fdim;
         JeveuxVectorLong _feta;
         JeveuxVectorChar8 _fref;
-    public:
+
+      public:
         Partition( const std::string );
         typedef std::shared_ptr< Partition > PartitionPtr;
         const std::string getMethod() const;

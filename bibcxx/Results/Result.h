@@ -543,7 +543,7 @@ class Result : public DataStructure, public ListOfTables {
 
     bool exists() const;
 
-    static VectorReal getTangentMatrix( const std::string& );
+    static VectorReal getTangentMatrix( const std::string & );
 };
 
 /**

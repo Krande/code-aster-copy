@@ -48,6 +48,7 @@
    * - :py:class:`~code_aster.Objects.PartOfMaterialField`
    * - :py:class:`~code_aster.Objects.PhysicalProblem`
    * - :py:class:`~code_aster.Objects.PhysicalQuantityComponent`
+   * - :py:class:`~code_aster.Objects.PhysicalQuantityManager`
    * - :py:class:`~code_aster.Objects.Physics`
    * - :py:class:`~code_aster.Objects.PostProcessing`
    * - :py:class:`~code_aster.Objects.PressureReal`

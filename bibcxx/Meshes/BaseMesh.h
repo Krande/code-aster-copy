@@ -406,7 +406,7 @@ class BaseMesh : public DataStructure, public ListOfTables {
     /**
      * @brief Add a DynamicMacroElement
      */
-    bool addDynamicMacroElement( const DynamicMacroElementPtr& );
+    bool addDynamicMacroElement( const DynamicMacroElementPtr & );
 
     /**
      * @brief Get all DynamicMacroElements
@@ -416,13 +416,12 @@ class BaseMesh : public DataStructure, public ListOfTables {
     /**
      * @brief Add a StaticMacroElement
      */
-    bool addStaticMacroElement( const StaticMacroElementPtr& );
+    bool addStaticMacroElement( const StaticMacroElementPtr & );
 
     /**
      * @brief Get all StaticMacroElements
      */
     std::vector< StaticMacroElementPtr > getStaticMacroElements() const;
-
 };
 
 /**

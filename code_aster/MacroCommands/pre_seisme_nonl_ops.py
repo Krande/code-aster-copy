@@ -810,28 +810,30 @@ class StatDyna(object):
         saved_matr_impe = mael.getImpedanceStiffnessMatrix()
 
         # set new impedence stiffness
-        mael = MACR_ELEM_DYNA(reuse=mael,
-                              MACR_ELEM_DYNA=mael,
-                              BASE_MODALE=self.base_modale,
-                              MATR_IMPE_RIGI=_DIFFK)
+        mael = MACR_ELEM_DYNA(
+            reuse=mael, MACR_ELEM_DYNA=mael, BASE_MODALE=self.base_modale, MATR_IMPE_RIGI=_DIFFK
+        )
 
         # compute stiffness with new impedence stiffness
-        _rigiEle = CALC_MATR_ELEM(MODELE=self.modele,
-                                  OPTION="RIGI_MECA",
-                                  CALC_ELEM_MODELE="NON",
-                                  CHAM_MATER=self.mater,
-                                  CARA_ELEM=self.cara_elem,
-                                  CHARGE=[elem["CHARGE"] for elem in self.charges])
-
+        _rigiEle = CALC_MATR_ELEM(
+            MODELE=self.modele,
+            OPTION="RIGI_MECA",
+            CALC_ELEM_MODELE="NON",
+            CHAM_MATER=self.mater,
+            CARA_ELEM=self.cara_elem,
+            CHARGE=[elem["CHARGE"] for elem in self.charges],
+        )
 
         _NUME = NUME_DDL(MATR_RIGI=_rigiEle)
         _MATKZ = ASSE_MATRICE(MATR_ELEM=_rigiEle, NUME_DDL=_NUME)
 
         # resore impedence stiffness
-        mael = MACR_ELEM_DYNA(reuse=mael,
-                              MACR_ELEM_DYNA=mael,
-                              BASE_MODALE=self.base_modale,
-                              MATR_IMPE_RIGI=saved_matr_impe)
+        mael = MACR_ELEM_DYNA(
+            reuse=mael,
+            MACR_ELEM_DYNA=mael,
+            BASE_MODALE=self.base_modale,
+            MATR_IMPE_RIGI=saved_matr_impe,
+        )
 
         # compute load
         _DEPL0 = CREA_CHAMP(
@@ -1054,15 +1056,21 @@ class Mesh(object):
         self.old_mesh = self.new_mesh
         if self.macro_elem:
             list_SuperMa = self.__set_list_supermaille(self.macro_elem)
-            _MAYADYN = DEFI_MAILLAGE(DEFI_SUPER_MAILLE=list_SuperMa,
-                                     RECO_GLOBAL=_F(TOUT="OUI"),
-                                     DEFI_NOEUD=_F(TOUT="OUI", INDEX=(1, 0, 1, 8)))
-            _MeshTmp = CREA_MAILLAGE(MAILLAGE=self.old_mesh,
-                                     CREA_POI1=_F(NOM_GROUP_MA="PARA_SOL",
-                                                  GROUP_MA=self.param["POST_CALC_MISS"]["GROUP_MA_INTERF"]))
-            self.new_mesh = ASSE_MAILLAGE(MAILLAGE_1=_MeshTmp,
-                                          MAILLAGE_2=_MAYADYN,
-                                          OPERATION="SOUS_STR")
+            _MAYADYN = DEFI_MAILLAGE(
+                DEFI_SUPER_MAILLE=list_SuperMa,
+                RECO_GLOBAL=_F(TOUT="OUI"),
+                DEFI_NOEUD=_F(TOUT="OUI", INDEX=(1, 0, 1, 8)),
+            )
+            _MeshTmp = CREA_MAILLAGE(
+                MAILLAGE=self.old_mesh,
+                CREA_POI1=_F(
+                    NOM_GROUP_MA="PARA_SOL",
+                    GROUP_MA=self.param["POST_CALC_MISS"]["GROUP_MA_INTERF"],
+                ),
+            )
+            self.new_mesh = ASSE_MAILLAGE(
+                MAILLAGE_1=_MeshTmp, MAILLAGE_2=_MAYADYN, OPERATION="SOUS_STR"
+            )
         self.__builded = True
 
     def DefineOut(self):
@@ -1070,7 +1078,6 @@ class Mesh(object):
         if self.__builded:
             if "MAILLAGE" in self.param["RESULTAT"]:
                 self.parent.register_result(self.new_mesh, self.param["RESULTAT"]["MAILLAGE"])
-
 
     def get_new_mesh(self):
         """Return the mesh concept which might contain a superelement"""

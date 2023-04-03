@@ -52,6 +52,7 @@ class Table : public DataStructure {
     std::map< std::string, JeveuxVectorComplex > _columnComplex;
     std::map< std::string, JeveuxVectorChar32 > _columnChar32;
     std::map< std::string, JeveuxVectorChar80 > _columnChar80;
+
   protected:
     std::map< std::string, JeveuxVectorChar8 > _columnChar8;
     std::map< std::string, JeveuxVectorChar16 > _columnChar16;
@@ -64,7 +65,6 @@ class Table : public DataStructure {
     JeveuxVectorChar24 _parameterDescription;
     /** @brief Booléen indiquant si l'objet est vide */
     bool _isEmpty;
-
 
   public:
     /**
@@ -79,7 +79,7 @@ class Table : public DataStructure {
      * @brief Constructeur
      * @param name Nom Jeveux du champ aux noeuds
      */
-    Table( const std::string&, const std::string type = "TABLE" );
+    Table( const std::string &, const std::string type = "TABLE" );
 
     /**
      * @brief Constructeur
@@ -102,14 +102,14 @@ class Table : public DataStructure {
      * @brief Return Column type
      * @param column parameter
      */
-    const std::string getColumnType(const std::string& ) const;
+    const std::string getColumnType( const std::string & ) const;
 
     /**
      * @brief Return Column values
      * @param column parameter
      */
-    const std::tuple< VectorLong, VectorLong, VectorReal, VectorComplex, VectorString > getColumn( const std::string& ) const;
-
+    const std::tuple< VectorLong, VectorLong, VectorReal, VectorComplex, VectorString >
+    getColumn( const std::string & ) const;
 
     ~Table();
 };
@@ -139,7 +139,7 @@ class TableOfFunctions : public Table {
      * @brief Constructeur
      * @param name Nom Jeveux du champ aux noeuds
      */
-    TableOfFunctions( const std::string& );
+    TableOfFunctions( const std::string & );
 
     /**
      * @brief Constructeur

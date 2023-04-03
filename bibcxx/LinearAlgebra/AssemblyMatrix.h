@@ -332,7 +332,7 @@ class AssemblyMatrix : public BaseAssemblyMatrix {
      * @brief Methode permettant de definir si un solveur est attribué à la matrice
      */
     void defineSolver();
-    
+
     std::vector< ValueType > getUpperValues() const {
         _matrixValues->build();
         _matrixValues->updateValuePointer();
@@ -344,7 +344,6 @@ class AssemblyMatrix : public BaseAssemblyMatrix {
         _matrixValues->updateValuePointer();
         return ( *_matrixValues )[2]->toVector();
     };
-
 };
 
 /** @typedef Definition d'une matrice assemblee de double */

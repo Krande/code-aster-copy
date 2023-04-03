@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -37,11 +37,17 @@ class ExtendedGeneralizedModel:
         """retourne la liste des sous structures du modele generalise
         la liste des macro-elements sous-jacents"""
 
-        return [(name, self.getDynamicMacroElementFromName(name)) for name in self.getDynamicMacroElementNames()]
+        return [
+            (name, self.getDynamicMacroElementFromName(name))
+            for name in self.getDynamicMacroElementNames()
+        ]
 
     def LIST_LIAIS_STRUCT(self):
         """retourne la liste des liaisons entre sous structures du modele generalise sous la forme :
         [ (ss1, nom_liais1,  ss2 , nom_liais2), ...]"""
 
         dynamic_structure_links = self.getDynamicStructureLinks()
-        return [dynamic_structure_links[4*i:4*(i+1)] for i in range(len(dynamic_structure_links)//4)]
+        return [
+            dynamic_structure_links[4 * i : 4 * (i + 1)]
+            for i in range(len(dynamic_structure_links) // 4)
+        ]

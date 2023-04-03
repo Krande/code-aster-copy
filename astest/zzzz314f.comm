@@ -104,7 +104,7 @@ for i in range(0, len(ndfon)):
     index = index_by_nodename[nom]
     l_numeros_noeuds_fissure.append(index)
 
-    coor = coords[l_numeros_noeuds_fissure[i] * 3:l_numeros_noeuds_fissure[i] * 3 + 3]
+    coor = coords[l_numeros_noeuds_fissure[i] * 3 : l_numeros_noeuds_fissure[i] * 3 + 3]
 
     norme = sqrt(coor[0] ** 2 + coor[1] ** 2 + coor[2] ** 2)
 

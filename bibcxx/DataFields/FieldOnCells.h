@@ -647,7 +647,8 @@ class FieldOnCells : public DataField {
         return norme;
     }
 
-    std::tuple< VectorLong, VectorLong, VectorLong, std::vector< ValueType > > extrComp( VectorLong cells, std::string cmp ){
+    std::tuple< VectorLong, VectorLong, VectorLong, std::vector< ValueType > >
+    extrComp( VectorLong cells, std::string cmp ) {
 
         VectorLong v_cells;
         std::vector< ValueType > values;
@@ -655,36 +656,36 @@ class FieldOnCells : public DataField {
         VectorLong subpoints;
 
         auto ces = toSimpleFieldOnCells();
-        
+
         ASTERINTEGER ncmp = ces->getNumberOfComponents();
         ASTERINTEGER icmp;
-        for ( icmp=0; icmp<ncmp; icmp++ ){
-            if ( ces->getNameOfComponent( icmp ) == cmp ){
+        for ( icmp = 0; icmp < ncmp; icmp++ ) {
+            if ( ces->getNameOfComponent( icmp ) == cmp ) {
                 break;
             }
         }
 
         if ( icmp != ncmp ) {
 
-            ASTERINTEGER size = cells.size() * ces->getMaxNumberOfPoints() * ces->getMaxNumberOfSubPoints();
+            ASTERINTEGER size =
+                cells.size() * ces->getMaxNumberOfPoints() * ces->getMaxNumberOfSubPoints();
             v_cells.reserve( size );
             values.reserve( size );
             points.reserve( size );
             subpoints.reserve( size );
 
-
-            for ( ASTERINTEGER cell : cells){
+            for ( ASTERINTEGER cell : cells ) {
                 if ( icmp >= ces->getNumberOfComponentsForSubpointsOfCell( cell ) )
                     continue;
 
                 ASTERINTEGER npt = ces->getNumberOfPointsOfCell( cell );
                 ASTERINTEGER nspt = ces->getNumberOfSubPointsOfCell( cell );
 
-                for ( ASTERINTEGER ipt=0; ipt<npt; ipt++ ){
-                    for ( ASTERINTEGER ispt=0; ispt<nspt; ispt++ ){
-                        if ( ces->hasValue( cell, icmp, ipt, ispt ) ){
+                for ( ASTERINTEGER ipt = 0; ipt < npt; ipt++ ) {
+                    for ( ASTERINTEGER ispt = 0; ispt < nspt; ispt++ ) {
+                        if ( ces->hasValue( cell, icmp, ipt, ispt ) ) {
                             v_cells.push_back( cell );
-                            values.push_back( ces->getValue(cell, icmp, ipt, ispt) );
+                            values.push_back( ces->getValue( cell, icmp, ipt, ispt ) );
                             points.push_back( ipt );
                             subpoints.push_back( ispt );
                         }

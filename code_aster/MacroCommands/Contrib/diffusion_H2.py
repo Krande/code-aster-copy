@@ -207,7 +207,7 @@ def char_grad_impo_ops(
         fluy = NP.add.reduce(lfluy)
         fluy = fluy / nbno
 
-        grain.setValueOnCells([cell+1], ["FLUX", "FLUY", "FLUZ"], [-flux, -fluy, 0.])
+        grain.setValueOnCells([cell + 1], ["FLUX", "FLUY", "FLUZ"], [-flux, -fluy, 0.0])
 
 
 CHAR_GRAD_IMPO_cata = MACRO(

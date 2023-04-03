@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -127,7 +127,7 @@ class ExtrTable(ExecuteCommand):
             "MATR_ELEM_DEPL_R",
             "MATR_ELEM_TEMP_R",
             "CHAM_NO_SDASTER",
-            "TABLE_SDASTER"
+            "TABLE_SDASTER",
         )
         if hasattr(self._result, "build") and keywords["TYPE_RESU"] in supported:
             self._result.build()

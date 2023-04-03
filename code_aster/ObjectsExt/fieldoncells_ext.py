@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -97,14 +97,14 @@ class ExtendedFieldOnCellsReal:
             cells = sorted(cells)
         else:
             cells = mesh.getCells()
-        
+
         cells, points, subpoints, values = self.extrComp(cells, comp)
-        
+
         if topo == 0:
             cells = None
             points = None
             subpoints = None
-        
+
         return post_comp_cham_el(values, cells, points, subpoints)
 
 

@@ -102,12 +102,12 @@ class GeneralizedResult : public DataStructure, DynamicResultsIndexing {
         return true;
     };
 
-    std::vector< ValueType > getDisplacement() const { 
+    std::vector< ValueType > getDisplacement() const {
         _displacement->updateValuePointer();
         return _displacement->toVector();
     };
 
-    bool setDisplacement( const std::vector< ValueType >& values ) {
+    bool setDisplacement( const std::vector< ValueType > &values ) {
         _displacement->updateValuePointer();
         AS_ASSERT( _displacement->size() <= values.size() );
         for ( ASTERINTEGER i = 0; i < values.size(); i++ )
@@ -115,7 +115,7 @@ class GeneralizedResult : public DataStructure, DynamicResultsIndexing {
         return true;
     };
 
-    bool setVelocity( const std::vector< ValueType >& values ) {
+    bool setVelocity( const std::vector< ValueType > &values ) {
         _velocity->updateValuePointer();
         AS_ASSERT( _velocity->size() <= values.size() );
         for ( ASTERINTEGER i = 0; i < values.size(); i++ )
@@ -123,7 +123,7 @@ class GeneralizedResult : public DataStructure, DynamicResultsIndexing {
         return true;
     };
 
-    bool setAcceleration( const std::vector< ValueType >& values ) {
+    bool setAcceleration( const std::vector< ValueType > &values ) {
         _acceleration->updateValuePointer();
         AS_ASSERT( _acceleration->size() <= values.size() );
         for ( ASTERINTEGER i = 0; i < values.size(); i++ )
@@ -145,7 +145,6 @@ class GeneralizedResult : public DataStructure, DynamicResultsIndexing {
         _indicesOfSamples->updateValuePointer();
         return _indicesOfSamples->toVector();
     }
-
 };
 
 /** @typedef Définition d'un résultat généralisé à valeurs réelles */

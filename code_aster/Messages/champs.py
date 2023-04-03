@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -20,11 +20,6 @@
 from ..Utilities import _
 
 cata_msg = {
-    1: _(
-        """
- On ne trouve pas de valeurs dans le champ.
-"""
-    ),
     2: _(
         """
  Le champ %(k1)s n'est pas défini sur la totalité des noeuds précisés
@@ -37,16 +32,6 @@ cata_msg = {
         """
 Erreur utilisateur :
  La composante demandée %(k1)s n'est pas trouvée dans le champ.
-"""
-    ),
-    4: _(
-        """
- On ne trouve pas de mailles dans les groupes fournis.
-"""
-    ),
-    5: _(
-        """
- On ne trouve pas de noeuds dans les groupes fournis.
 """
     ),
     6: _(

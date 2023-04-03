@@ -39,7 +39,8 @@ std::string PhysicalQuantityManager::getPhysicalQuantityName( const ASTERINTEGER
     return _nameOfPhysicalQuantity->getStringFromIndex( quantityNumber );
 };
 
-ASTERINTEGER PhysicalQuantityManager::getNumberOfEncodedInteger( const ASTERINTEGER quantityNumber ) {
+ASTERINTEGER
+PhysicalQuantityManager::getNumberOfEncodedInteger( const ASTERINTEGER quantityNumber ) {
     ASTERINTEGER toReturn = 0;
     toReturn = CALL_NBEC( &quantityNumber );
     return toReturn;
@@ -54,7 +55,7 @@ const VectorString PhysicalQuantityManager::getComponentNames( const ASTERINTEGE
     auto vc = ( *_nameOfCmp )[quantityNumber]->toVector();
     VectorString result;
     result.reserve( vc.size() );
-    for ( int i=0; i < vc.size(); i++ )
+    for ( int i = 0; i < vc.size(); i++ )
         result.push_back( vc[i].toString() );
     return result;
 };

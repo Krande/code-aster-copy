@@ -213,26 +213,25 @@ bool TableContainer::build() {
     Table::build();
 
     VectorString parameters = getParameters();
-    for ( std::string parameter : { "NOM_SD", "NOM_OBJET", "TYPE_OBJET" } ){
-        if ( std::find(parameters.begin(), parameters.end(), parameter) == parameters.end() )
+    for ( std::string parameter : {"NOM_SD", "NOM_OBJET", "TYPE_OBJET"} ) {
+        if ( std::find( parameters.begin(), parameters.end(), parameter ) == parameters.end() )
             throw std::runtime_error( "missing parameter " + parameter + " in TableContainer" );
     }
 
     bool is_dsname_K24;
     int usedSize;
     std::string type = getColumnType( "NOM_SD" );
-    if ( type == "K8" ){
+    if ( type == "K8" ) {
         _dsName = _columnChar8.at( "NOM_SD" );
         _dsName->updateValuePointer();
         usedSize = _dsName->size();
         is_dsname_K24 = false;
-    } else if ( type == "K24" ){
+    } else if ( type == "K24" ) {
         _dsName24 = _columnChar24.at( "NOM_SD" );
         _dsName24->updateValuePointer();
         usedSize = _dsName24->size();
         is_dsname_K24 = true;
-    }
-    else
+    } else
         AS_ASSERT( false )
 
     type = getColumnType( "NOM_OBJET" );
@@ -244,20 +243,19 @@ bool TableContainer::build() {
 
     bool is_typeobject_K24;
     type = getColumnType( "TYPE_OBJET" );
-    if ( type == "K16" ){
+    if ( type == "K16" ) {
         _objectType = _columnChar16.at( "TYPE_OBJET" );
         _objectType->updateValuePointer();
         is_typeobject_K24 = false;
         if ( usedSize != _objectType->size() )
             throw std::runtime_error( "Unconsistent size for types" );
-    } else if ( type == "K24" ){
+    } else if ( type == "K24" ) {
         _objectType24 = _columnChar24.at( "TYPE_OBJET" );
         _objectType24->updateValuePointer();
         is_typeobject_K24 = true;
         if ( usedSize != _objectType24->size() )
             throw std::runtime_error( "Unconsistent size for types" );
-    }
-    else
+    } else
         AS_ASSERT( false );
 
     for ( int i = 0; i < usedSize; ++i ) {
@@ -274,8 +272,8 @@ bool TableContainer::build() {
         std::string name = trim( ( *_objectName )[i].toString() );
 
 #ifdef ASTER_DEBUG_CXX
-            std::cout << "DEBUG: TableContainer index: " << i << " dsName: " << dsName
-                      << " objName: " << name << " objType:" << type << std::endl;
+        std::cout << "DEBUG: TableContainer index: " << i << " dsName: " << dsName
+                  << " objName: " << name << " objType:" << type << std::endl;
 #endif
         auto pos = type.find( "_SDASTER" );
         if ( pos ) {

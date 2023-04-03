@@ -39,7 +39,6 @@ class PhysicalQuantityManager {
     static JeveuxCollectionChar8 _nameOfCmp;
 
   public:
-
     static bool hasQuantityOfName( const std::string );
 
     static std::string getPhysicalQuantityName( const ASTERINTEGER );
@@ -49,7 +48,6 @@ class PhysicalQuantityManager {
     static ASTERINTEGER getNumberOfComponents( const ASTERINTEGER );
 
     static const VectorString getComponentNames( const ASTERINTEGER );
-
 };
 
 #endif /* PHYSICALQUANTITYMANAGER_H_ */

@@ -81,7 +81,7 @@ class GeneralizedModel : public DataStructure {
           _modgSsme( JeveuxVectorChar8( getName() + ".MODG.SSME" ) ),
           _modgSsno( JeveuxVectorChar8( getName() + ".MODG.SSNO" ) ),
           _modgSsor( JeveuxVectorReal( getName() + ".MODG.SSOR" ) ),
-          _modgSstr( JeveuxVectorReal( getName() + ".MODG.SSTR" ) ){};
+          _modgSstr( JeveuxVectorReal( getName() + ".MODG.SSTR" ) ) {};
 
     /**
      * @brief Add a DynamicMacroElement associated to a name
@@ -100,8 +100,8 @@ class GeneralizedModel : public DataStructure {
     /**
      * @brief Return DynamicMacroElement names
      */
-    std::vector< std::string > getDynamicMacroElementNames() const {
-        std::vector< std::string > result;
+    VectorString getDynamicMacroElementNames() const {
+        VectorString result;
         result.reserve( _map.size() );
         for ( auto it : _map )
             result.push_back( it.first );
@@ -110,16 +110,16 @@ class GeneralizedModel : public DataStructure {
     /**
      * @brief Return StructureLinks
      */
-    std::vector< std::string > getDynamicStructureLinks() const {
-        std::vector< std::string > result;
+    VectorString getDynamicStructureLinks() const {
+        VectorString result;
         _modgLidf->build();
         _modgLidf->updateValuePointer();
-        result.reserve( 4*_modgLidf->size() );
-        for ( int i = 1; i <= _modgLidf->size(); i++ ){
-            auto& collobj = ( *_modgLidf )[i];
+        result.reserve( 4 * _modgLidf->size() );
+        for ( int i = 1; i <= _modgLidf->size(); i++ ) {
+            auto &collobj = ( *_modgLidf )[i];
             AS_ASSERT( collobj->size() >= 4 );
             for ( int j = 0; j < 4; j++ )
-                result.push_back( trim( (* collobj )[j] ) );
+                result.push_back( trim( ( *collobj )[j] ) );
         }
         return result;
     };

@@ -430,9 +430,8 @@ class BaseDOFNumbering : public DataStructure {
      * @brief Set model
      */
     virtual void setModel( const ModelPtr & ) = 0;
-    
+
     MorseStoragePtr getMorseStorage() const { return _smos; };
-    
 };
 
 /**

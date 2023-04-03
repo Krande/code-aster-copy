@@ -20,16 +20,18 @@
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+// aslint: disable=C3006
+
 #include "PythonBindings/PhysicalQuantityManagerInterface.h"
 
 #include "aster_pybind.h"
 
 void exportPhysicalQuantityManagerToPython( py::module_ &mod ) {
 
-    py::class_< PhysicalQuantityManager >( mod, "PhysicalQuantityManager" )
-    .def( "hasQuantityOfName", &PhysicalQuantityManager::hasQuantityOfName )
-    .def( "getPhysicalQuantityName", &PhysicalQuantityManager::getPhysicalQuantityName )
-    .def( "getComponentNames", &PhysicalQuantityManager::getComponentNames )
-    .def( "getNumberOfEncodedInteger", &PhysicalQuantityManager::getNumberOfEncodedInteger );
-    
+    py::class_< PhysicalQuantityManager, std::shared_ptr< PhysicalQuantityManager > >(
+        mod, "PhysicalQuantityManager" )
+        .def( "hasQuantityOfName", &PhysicalQuantityManager::hasQuantityOfName )
+        .def( "getPhysicalQuantityName", &PhysicalQuantityManager::getPhysicalQuantityName )
+        .def( "getComponentNames", &PhysicalQuantityManager::getComponentNames )
+        .def( "getNumberOfEncodedInteger", &PhysicalQuantityManager::getNumberOfEncodedInteger );
 };

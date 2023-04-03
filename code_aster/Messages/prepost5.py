@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -75,11 +75,6 @@ Séchage moins %(r2)f  Séchage plus %(r3)f
         """
  le numéro du groupe de mailles est trop grand:  %(i1)d
   le numéro du groupe doit être inférieur a  %(i2)d
-"""
-    ),
-    31: _(
-        """
-  On ne trouve pas le groupe %(k1)s.
 """
     ),
     41: _(

@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -48,6 +48,7 @@ class ComputeGXFEM(ExecuteCommand):
         """
 
         self._result.build()
+
 
 def calc_g_xfem_with_co(self, **args):
     """Wrapper around the original CALC_G_XFEM command to return an additional

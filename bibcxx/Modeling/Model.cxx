@@ -41,19 +41,19 @@ const char *const GraphPartitionerNames[nbGraphPartitioner] = {"SCOTCH", "METIS"
 
 Model::Partition::Partition( const std::string name )
     : DataStructure( name, 19, "PARTITION" ),
-        _prti( JeveuxVectorLong( getName() + ".PRTI" ) ),
-        _prtk( JeveuxVectorChar24( getName() + ".PRTK" ) ),
-        _nupr( JeveuxVectorLong( getName() + ".PRTI" ) ),
-        _fdim( JeveuxVectorLong( getName() + ".FDIM" ) ),
-        _feta( JeveuxVectorLong( getName() + ".FETA" ) ),
-        _fref( JeveuxVectorChar8( getName() + ".FREF" ) ){};
+      _prti( JeveuxVectorLong( getName() + ".PRTI" ) ),
+      _prtk( JeveuxVectorChar24( getName() + ".PRTK" ) ),
+      _nupr( JeveuxVectorLong( getName() + ".PRTI" ) ),
+      _fdim( JeveuxVectorLong( getName() + ".FDIM" ) ),
+      _feta( JeveuxVectorLong( getName() + ".FETA" ) ),
+      _fref( JeveuxVectorChar8( getName() + ".FREF" ) ) {};
 
 const std::string Model::Partition::getMethod() const {
     if ( !_prtk.exists() )
         return "";
-    else{
+    else {
         _prtk->updateValuePointer();
-        return trim ( (*_prtk)[0].toString() );
+        return trim( ( *_prtk )[0].toString() );
     }
 }
 

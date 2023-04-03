@@ -483,9 +483,7 @@ def calc_gp_ops(self, **args):
 
         # calcul de la surface des mailles appartenant au plan de symetrie de
         # l'entaille
-        mesure = Calcul_mesure_3D(
-            __maillage, nbcop, l_copo_tot, l_noeuds_fissure[0], lnormale
-        )
+        mesure = Calcul_mesure_3D(__maillage, nbcop, l_copo_tot, l_noeuds_fissure[0], lnormale)
 
         # calcul des energies et du gp
         __enertemp = POST_ELEM(
