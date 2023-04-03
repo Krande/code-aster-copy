@@ -21,6 +21,15 @@ Documentation of all other types.
 
 
 ********************************************************************************
+:py:class:`~code_aster.Objects.CommGraph` object
+********************************************************************************
+
+.. autoclass:: code_aster.Objects.CommGraph
+   :show-inheritance:
+   :members:
+
+
+********************************************************************************
 :py:class:`~code_aster.Objects.ContactAlgo` object
 ********************************************************************************
 
@@ -264,6 +273,24 @@ Documentation of all other types.
 
 
 ********************************************************************************
+:py:class:`~code_aster.Objects.MeshBalancer` object
+********************************************************************************
+
+.. autoclass:: code_aster.Objects.MeshBalancer
+   :show-inheritance:
+   :members:
+
+
+********************************************************************************
+:py:class:`~code_aster.Objects.MeshConnectionGraph` object
+********************************************************************************
+
+.. autoclass:: code_aster.Objects.MeshConnectionGraph
+   :show-inheritance:
+   :members:
+
+
+********************************************************************************
 :py:class:`~code_aster.Objects.MeshEntity` object
 ********************************************************************************
 
@@ -299,6 +326,15 @@ Documentation of all other types.
 ********************************************************************************
 
 .. autoclass:: code_aster.Objects.NormalSpeedReal
+   :show-inheritance:
+   :members:
+
+
+********************************************************************************
+:py:class:`~code_aster.Objects.ObjectBalancer` object
+********************************************************************************
+
+.. autoclass:: code_aster.Objects.ObjectBalancer
    :show-inheritance:
    :members:
 
@@ -380,6 +416,15 @@ Documentation of all other types.
 ********************************************************************************
 
 .. autoclass:: code_aster.Objects.PressureReal
+   :show-inheritance:
+   :members:
+
+
+********************************************************************************
+:py:class:`~code_aster.Objects.PtScotchPartitioner` object
+********************************************************************************
+
+.. autoclass:: code_aster.Objects.PtScotchPartitioner
    :show-inheritance:
    :members:
 

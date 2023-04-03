@@ -625,6 +625,13 @@ class BaseMesh(DataStructure):
             bool : *True* if mesh contains at least one cell of given type, else *False*
         """
 
+    def isIncomplete(self):
+        """Tell if the mesh is complete on parallel instances.
+
+        Returns:
+            bool: *False* for a centralized or parallel mesh, *True* for an incomplete mesh.
+        """
+
     def isParallel(self):
         """Tell if the mesh is distributed on parallel instances.
 
@@ -12087,6 +12094,9 @@ class ParallelMesh(BaseMesh):
             list[int]: MPI-Rank of the owners of the nodes
         """
 
+    def getOppositeDomains(self):
+        """Returns the list of opposite domains of local process"""
+
     def getOuterCells(self):
         """Return the list of the indexes of the outer cells in the mesh
 
@@ -12099,6 +12109,20 @@ class ParallelMesh(BaseMesh):
 
         Returns:
             list[int]: Indexes of the nodes.
+        """
+
+    def getReceiveJoint(self, rank):
+        """Returns ids of nodes in joint (inner nodes) for an opposite process
+
+        Arguments:
+            rank: Rank of opposite domain
+        """
+
+    def getSendJoint(self, rank):
+        """Returns ids of nodes in joint (inner nodes) for an opposite process
+
+        Arguments:
+            rank: Rank of opposite domain
         """
 
     def hasGroupOfCells(self, group_name, local=False):
@@ -13312,4 +13336,244 @@ class HHO:
 
         Returns:
               FieldOnNodesReal: HHO field project on Lagrange space
+        """
+
+
+# class CommGraph in libaster
+
+
+class CommGraph:
+    pass
+
+    # Method resolution order:
+    #     CommGraph
+    #     pybind11_builtins.pybind11_object
+    #     builtins.object
+
+    # Methods defined here:
+
+    def __init__(self):
+        pass
+
+    def addCommunication(self, rank):
+        """Add a communication with a process
+
+        Arguments:
+            rank: rank of opposite process
+        """
+
+    def getMatchings(self):
+        """Get matchings of communication graph
+
+        Returns:
+            list[int]: list of process to communicate with
+        """
+
+    def synchronizeOverProcesses(self):
+        """Synchronise graph over processes"""
+
+
+# class ObjectBalancer in libaster
+
+
+class ObjectBalancer:
+    pass
+
+    # Method resolution order:
+    #     ObjectBalancer
+    #     pybind11_builtins.pybind11_object
+    #     builtins.object
+
+    # Methods defined here:
+
+    def __init__(self):
+        pass
+
+    def addElementarySend(self, rank, elemList):
+        """Add an elementary send (part of a vector to send to given process)
+
+        Arguments:
+            rank: rank of process
+            elemList: list of elements to send to the process
+        """
+
+    def balanceVectorOverProcesses(self, *args, **kwargs):
+        """Overloaded function.
+
+        1. balanceVectorOverProcesses(self: libaster.ObjectBalancer, vector: List[float]) -> List[float]
+
+
+        Balance a vector of reals over processes
+
+        Arguments:
+            vector: list of reals to balance
+
+        Returns:
+            list[real]: balanced vector
+
+
+        2. balanceVectorOverProcesses(self: libaster.ObjectBalancer, vector: List[int]) -> List[int]
+
+
+        Balance a vector of integers over processes
+
+        Arguments:
+            vector: list of integers to balance
+
+        Returns:
+            list[int]: balanced vector
+        """
+
+    def endElementarySendDefinition(self):
+        """End the definition of sends"""
+
+    def prepareCommunications(self):
+        """Prepare the communications between processes"""
+
+    def setElementsToKeep(self, elemList):
+        """Add a list of elements to keep on local process
+
+        Arguments:
+            elemList: list of elements to keep
+        """
+
+
+# class MeshBalancer in libaster
+
+
+class MeshBalancer:
+    pass
+
+    # Method resolution order:
+    #     MeshBalancer
+    #     pybind11_builtins.pybind11_object
+    #     builtins.object
+
+    # Methods defined here:
+
+    def __init__(self):
+        pass
+
+    def applyBalancingStrategy(self, vector):
+        """Apply balancing strategy to given mesh. User must give nodes that local process
+        will own (without ghost nodes).
+        This function returns a ParallelMesh with joints, ghosts and so on.
+
+        Arguments:
+            vector: list of nodes to get on local process
+
+        Returns:
+            mesh: ParallelMesh
+        """
+
+    def buildFromBaseMesh(self, mesh):
+        """Build balancer on an IncompleteMesh or a Mesh
+
+        Arguments:
+            mesh: mesh to balance
+        """
+
+
+# class IncompleteMesh in libaster
+
+
+class IncompleteMesh(Mesh):
+    pass
+
+    # Method resolution order:
+    #     IncompleteMesh
+    #     Mesh
+    #     BaseMesh
+    #     DataStructure
+    #     pybind11_builtins.pybind11_object
+    #     builtins.object
+
+    # Methods defined here:
+
+    def __init__(self, *args, **kwargs):
+        """Overloaded function.
+
+        1. __init__(self: libaster.IncompleteMesh) -> None
+
+        2. __init__(self: libaster.IncompleteMesh, arg0: str) -> None
+        """
+
+
+# class PtScotchPartitioner in libaster
+
+
+class PtScotchPartitioner:
+    pass
+
+    # Method resolution order:
+    #     PtScotchPartitioner
+    #     pybind11_builtins.pybind11_object
+    #     builtins.object
+
+    # Methods defined here:
+
+    def __init__(self):
+        pass
+
+    def buildGraph(self, *args, **kwargs):
+        """Overloaded function.
+
+        1. buildGraph(self: libaster.PtScotchPartitioner, vertloctab: List[int], edgeloctab: List[int]) -> int
+
+
+        Build the PtScotch graph from 2 integer vectors (PtScotch format)
+
+        Arguments:
+            vertloctab: Gives the position of starts of each vertex connections in edgeloctab
+            edgeloctab: Describes vertex connections (at which vertices each vertex is connected)
+
+
+        2. buildGraph(self: libaster.PtScotchPartitioner, meshConnectionGraph: MeshConnectionGraph) -> int
+
+
+        Build the PtScotch graph from a MeshConnectionGraph
+
+        Arguments:
+            meshConnectionGraph: MeshConnectionGraph
+        """
+
+    def checkGraph(self):
+        """Ask PtScotch to check the graph"""
+
+    def partitionGraph(self):
+        """Call PtScotch partitioning
+
+        Returns:
+            list[int]: Owner for each nodes
+        """
+
+    def writeGraph(self, path):
+        """Ask PtScotch to write the graph
+
+        Arguments:
+            path: path to output file
+        """
+
+
+# class MeshConnectionGraph in libaster
+
+
+class MeshConnectionGraph:
+    pass
+
+    # Method resolution order:
+    #     MeshConnectionGraph
+    #     pybind11_builtins.pybind11_object
+    #     builtins.object
+
+    # Methods defined here:
+
+    def __init__(self):
+        pass
+
+    def buildFromIncompleteMesh(self, mesh):
+        """Create the graph corresponding to given IncompleteMesh to be used by PtScotchPartitioner
+
+        Arguments:
+            mesh: IncompleteMesh.
         """

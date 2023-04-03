@@ -11,6 +11,7 @@
 
    * - Class name
    * - :py:class:`~code_aster.Objects.CodedMaterial`
+   * - :py:class:`~code_aster.Objects.CommGraph`
    * - :py:class:`~code_aster.Objects.ContactAlgo`
    * - :py:class:`~code_aster.Objects.ContactComputation`
    * - :py:class:`~code_aster.Objects.ContactParameter`
@@ -38,11 +39,14 @@
    * - :py:class:`~code_aster.Objects.Loads`
    * - :py:class:`~code_aster.Objects.LocalBeamForceReal`
    * - :py:class:`~code_aster.Objects.LocalShellForceReal`
+   * - :py:class:`~code_aster.Objects.MeshBalancer`
+   * - :py:class:`~code_aster.Objects.MeshConnectionGraph`
    * - :py:class:`~code_aster.Objects.MeshEntity`
    * - :py:class:`~code_aster.Objects.AllMeshEntities`
    * - :py:class:`~code_aster.Objects.ModelSplitingMethod`
    * - :py:class:`~code_aster.Objects.Modelings`
    * - :py:class:`~code_aster.Objects.NormalSpeedReal`
+   * - :py:class:`~code_aster.Objects.ObjectBalancer`
    * - :py:class:`~code_aster.Objects.PairingAlgo`
    * - :py:class:`~code_aster.Objects.PairingParameter`
    * - :py:class:`~code_aster.Objects.PartOfMaterialField`
@@ -52,6 +56,7 @@
    * - :py:class:`~code_aster.Objects.Physics`
    * - :py:class:`~code_aster.Objects.PostProcessing`
    * - :py:class:`~code_aster.Objects.PressureReal`
+   * - :py:class:`~code_aster.Objects.PtScotchPartitioner`
    * - :py:class:`~code_aster.Objects.PythonBool`
    * - :py:class:`~code_aster.Objects.ResultNaming`
    * - :py:class:`~code_aster.Objects.StructuralForceReal`

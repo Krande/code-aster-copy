@@ -205,6 +205,8 @@
      - 
    * - :py:class:`~code_aster.Objects.ImposedPressureReal`
      - 
+   * - :py:class:`~code_aster.Objects.IncompleteMesh`
+     - ``maillage_i``
    * - :py:class:`~code_aster.Objects.InternalForceReal`
      - 
    * - :py:class:`~code_aster.Objects.InterspectralMatrix`
