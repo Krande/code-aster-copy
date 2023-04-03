@@ -105,3 +105,10 @@ VectorLong irange( const long begin, const long end ) {
 
     return v;
 }
+
+// Convert integer in string for name of object
+std::string codent( const int varInt, const int stringSize ) {
+    std::stringstream sstream;
+    sstream << std::setfill( '0' ) << std::setw( stringSize ) << varInt;
+    return sstream.str();
+}

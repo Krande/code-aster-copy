@@ -27,6 +27,8 @@
 #include "astercxx.h"
 
 #include <algorithm>
+#include <iomanip>
+#include <sstream>
 
 std::string trim( const std::string &str, const std::string &whitespace = " \t" );
 
@@ -37,6 +39,9 @@ std::string toUpper( const std::string &in_str );
 std::string toLower( const std::string &in_str );
 
 std::string remove_brackets( const std::string &in_str );
+
+// Convert integer in string for name of object
+std::string codent( const int varInt, const int stringSize );
 
 /**
  * @brief irange Create a vector of integer from begin to end (included).
