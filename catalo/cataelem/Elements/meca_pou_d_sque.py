@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -103,35 +103,6 @@ CCAGNP2 = LocatedComponents(
 
 
 CCAORIE = LocatedComponents(phys=PHY.CAORIE, type="ELEM", components=("ALPHA", "BETA", "GAMMA"))
-
-
-CCARCRI = LocatedComponents(
-    phys=PHY.CARCRI,
-    type="ELEM",
-    components=(
-        "ITECREL",
-        "MACOMP",
-        "RESCREL",
-        "THETA",
-        "ITEDEC",
-        "INTLOC",
-        "PERTURB",
-        "TOLDEBO",
-        "ITEDEBO",
-        "RESIRADI",
-        "VARIEXT1",
-        "THETATHM",
-        "POSTITER",
-        "LC_EXT[3]",
-        "MATRNSYM",
-        "ALPHATHM",
-        "LC_EXT2[2]",
-        "POSTINCR",
-        "STRAIN",
-        "VARIEXT2",
-    ),
-)
-
 
 DDL_MECA = LocatedComponents(
     phys=PHY.DEPL_R,
@@ -394,7 +365,7 @@ class MECA_POU_D_SQUE(Element):
             para_in=(
                 (SP.PCAGNPO, CCAGNP2),
                 (OP.FULL_MECA.PCAORIE, CCAORIE),
-                (SP.PCARCRI, CCARCRI),
+                (SP.PCARCRI, LC.CCARCRI),
                 (OP.FULL_MECA.PCOMPOR, LC.CCOMPOR),
                 (OP.FULL_MECA.PCONTMR, ECONTPG),
                 (SP.PDDEPLA, DDL_MECA),
@@ -438,7 +409,7 @@ class MECA_POU_D_SQUE(Element):
             para_in=(
                 (SP.PCAGNPO, CCAGNP2),
                 (OP.RIGI_MECA_TANG.PCAORIE, CCAORIE),
-                (SP.PCARCRI, CCARCRI),
+                (SP.PCARCRI, LC.CCARCRI),
                 (OP.RIGI_MECA_TANG.PCOMPOR, LC.CCOMPOR),
                 (OP.RIGI_MECA_TANG.PCONTMR, ECONTPG),
                 (SP.PDDEPLA, DDL_MECA),

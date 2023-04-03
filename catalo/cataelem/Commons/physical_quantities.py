@@ -315,7 +315,7 @@ CAMA_R = PhysicalQuantity(
     components=("C", "ALPHA", "BETA", "KAPPA", "X", "Y", "Z"),
     comment="""  CAMA_R Type:R Caracteristiques geometriques des elements massifs
       C : indice de definition du repere d'orthotropie (=1 definition par 3
-      angles nautiques, = -1 definition par un axe et un point sur cet axe, 
+      angles nautiques, = -1 definition par un axe et un point sur cet axe,
       = 2 définition par 3 angles d'Euler ou par un champ d'orientation)
       ALPHA : 1er angle nautique
       BETA :  2eme angle nautique
@@ -433,9 +433,6 @@ CARCRI = PhysicalQuantity(
         "POSTINCR",
         "STRAIN",
         "VARIEXT2",
-        "HHO_COEF",
-        "HHO_STAB",
-        "HHO_CALC",
     ),
     comment="""  CARCRI Type :R Critere de convergence d'un probleme non-lineaire materiel
     (pour 1 point de Gauss)
@@ -459,9 +456,6 @@ CARCRI = PhysicalQuantity(
        POSTINCR : type de critere POST_INCR : 0=rien, 1=REST_ECRO
        STRAIN   : modele de deformation pour MFront
        VARIEXT2 : entier code 2 pour les variables d'etat externe (MFront)
-       HHO_COEF : coefficient de stabilisation HHO
-       HHO_STAB : methode pour choisr le parametre de stabilisation HHO
-       HHO_CALC : precalcul des opérateurs HHO
 """,
 )
 

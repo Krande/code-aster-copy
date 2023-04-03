@@ -183,9 +183,6 @@ CCARCRI = LocatedComponents(
         "POSTINCR",
         "STRAIN",
         "VARIEXT2",
-        "HHO_COEF",
-        "HHO_STAB",
-        "HHO_CALC",
     ),
 )
 

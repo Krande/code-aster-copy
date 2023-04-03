@@ -132,7 +132,7 @@
 !
 ! Size
 !
-#define CARCRI_SIZE    26
+#define CARCRI_SIZE    23
 !
 ! Slots
 !
@@ -169,12 +169,6 @@
 !       Strain model for (MFRONT only)
 #define EXTE_STRAIN             22
 
-!       Number and name of external state variables (MFRONT only)
-! EXTE_ESVA_NB            14
-! EXTE_ESVA_PTR_NAME      15
-!       Number and name of material properties (MFRONT only)
-! EXTE_PROP_NB            20
-! EXTE_PROP_PTR_NAME      19
 !
 ! --------------------------------------------------------------------------------------------------
 !
