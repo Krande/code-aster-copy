@@ -25,8 +25,9 @@
  */
 
 /* person_in_charge: nicolas.sellenet at edf.fr */
-#include "aster_mpi.h"
 #include "astercxx.h"
+
+#include "aster_mpi.h"
 
 #include "MemoryManager/JeveuxCollection.h"
 #include "MemoryManager/JeveuxString.h"
@@ -183,10 +184,10 @@ void allocate( JeveuxCollectionClass< T > &in, const int &size1, const int &size
 };
 
 template < typename T >
-void update( const std::vector< T > &in ){};
+void update( const std::vector< T > &in ) {};
 
 template < typename T >
-void update( const std::vector< T > *in ){};
+void update( const std::vector< T > *in ) {};
 
 template < typename T >
 void update( JeveuxCollectionObject< T > in ) {

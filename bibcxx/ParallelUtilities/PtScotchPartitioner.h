@@ -22,8 +22,9 @@
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "aster_mpi.h"
 #include "astercxx.h"
+
+#include "aster_mpi.h"
 
 #include "ParallelUtilities/AsterMPI.h"
 #include "ParallelUtilities/MeshConnectionGraph.h"

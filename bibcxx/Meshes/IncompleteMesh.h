@@ -54,12 +54,12 @@ class IncompleteMesh : public Mesh {
     /**
      * @brief Constructeur
      */
-    IncompleteMesh() : IncompleteMesh( ResultNaming::getNewResultName() ){};
+    IncompleteMesh() : IncompleteMesh( ResultNaming::getNewResultName() ) {};
 
     /**
      * @brief Constructeur
      */
-    IncompleteMesh( const std::string &name ) : Mesh( name, "MAILLAGE_I" ){};
+    IncompleteMesh( const std::string &name ) : Mesh( name, "MAILLAGE_I" ) {};
 
     const VectorLong &getRange() const { return _range; };
 

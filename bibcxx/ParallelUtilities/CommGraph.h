@@ -25,8 +25,9 @@
  */
 
 /* person_in_charge: nicolas.sellenet at edf.fr */
-#include "aster_mpi.h"
 #include "astercxx.h"
+
+#include "aster_mpi.h"
 
 #include "MemoryManager/JeveuxString.h"
 #include "MemoryManager/JeveuxVector.h"

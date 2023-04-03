@@ -134,13 +134,13 @@ public:
     aster_set_mpi_barrier(_commCurrent);
   };
 
-  template < typename T >
-  static void send( const std::vector< T > &in_values, int dest, int tag,
-                    aster_comm_t *_commCurrent = aster_get_current_comm() );
+  template <typename T>
+  static void send(const std::vector<T> &in_values, int dest, int tag,
+                   aster_comm_t *_commCurrent = aster_get_current_comm());
 
-  template < typename T >
-  static void receive( const std::vector< T > &out_values, int source, int tag,
-                       aster_comm_t *_commCurrent = aster_get_current_comm() );
+  template <typename T>
+  static void receive(const std::vector<T> &out_values, int source, int tag,
+                      aster_comm_t *_commCurrent = aster_get_current_comm());
 
   /// Get Current Comm
   aster_comm_t *getCurrentCommunicator() { return aster_get_current_comm(); }
@@ -449,32 +449,34 @@ void AsterMPI::all_reduce(const T in_value, T &out_value, MPI_Op op,
                       1, mpi_type<T>(), op, _commCurrent);
 }
 //---------------------------------------------------------------------------
-template < typename T >
-void AsterMPI::bcast( T &value, int root, aster_comm_t *_commCurrent ) {
-    aster_mpi_bcast( const_cast< T * >( &value ), 1, mpi_type< T >(), root, _commCurrent );
+template <typename T>
+void AsterMPI::bcast(T &value, int root, aster_comm_t *_commCurrent) {
+  aster_mpi_bcast(const_cast<T *>(&value), 1, mpi_type<T>(), root,
+                  _commCurrent);
 }
 //---------------------------------------------------------------------------
-template < typename T >
-void AsterMPI::bcast( std::vector< T > &value, int root, aster_comm_t *_commCurrent ) {
-    aster_mpi_bcast( const_cast< T * >( &value[0] ), value.size(), mpi_type< T >(), root,
-                     _commCurrent );
+template <typename T>
+void AsterMPI::bcast(std::vector<T> &value, int root,
+                     aster_comm_t *_commCurrent) {
+  aster_mpi_bcast(const_cast<T *>(&value[0]), value.size(), mpi_type<T>(), root,
+                  _commCurrent);
 }
 //---------------------------------------------------------------------------
-template < typename T >
-void AsterMPI::send( const std::vector< T > &in_values, int dest, int tag,
-                     aster_comm_t *_commCurrent ) {
-    void *curPtr = (void *)( &( in_values[0] ) );
-    const auto count = in_values.size();
-    MPI_Send( (void *)curPtr, count, mpi_type< T >(), dest, tag, _commCurrent->id );
+template <typename T>
+void AsterMPI::send(const std::vector<T> &in_values, int dest, int tag,
+                    aster_comm_t *_commCurrent) {
+  void *curPtr = (void *)(&(in_values[0]));
+  const auto count = in_values.size();
+  MPI_Send((void *)curPtr, count, mpi_type<T>(), dest, tag, _commCurrent->id);
 }
 
-template < typename T >
-void AsterMPI::receive( const std::vector< T > &out_values, int source, int tag,
-                        aster_comm_t *_commCurrent ) {
-    void *curPtr = (void *)( &( out_values[0] ) );
-    const auto count = out_values.size();
-    MPI_Recv( (void *)curPtr, count, mpi_type< T >(), source, tag, _commCurrent->id,
-              MPI_STATUS_IGNORE );
+template <typename T>
+void AsterMPI::receive(const std::vector<T> &out_values, int source, int tag,
+                       aster_comm_t *_commCurrent) {
+  void *curPtr = (void *)(&(out_values[0]));
+  const auto count = out_values.size();
+  MPI_Recv((void *)curPtr, count, mpi_type<T>(), source, tag, _commCurrent->id,
+           MPI_STATUS_IGNORE);
 }
 
 #endif /* ASTER_HAVE_MPI */

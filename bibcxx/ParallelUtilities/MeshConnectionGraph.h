@@ -25,8 +25,9 @@
  */
 
 /* person_in_charge: nicolas.sellenet at edf.fr */
-#include "aster_mpi.h"
 #include "astercxx.h"
+
+#include "aster_mpi.h"
 
 #include "Meshes/IncompleteMesh.h"
 
@@ -42,7 +43,7 @@ class MeshConnectionGraph {
     VectorLong _range;
 
   public:
-    MeshConnectionGraph(){};
+    MeshConnectionGraph() {};
 
     /**
      * @brief Build graph from IncompleteMeshPtr

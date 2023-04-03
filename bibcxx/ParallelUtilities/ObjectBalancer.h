@@ -25,8 +25,9 @@
  */
 
 /* person_in_charge: nicolas.sellenet at edf.fr */
-#include "aster_mpi.h"
 #include "astercxx.h"
+
+#include "aster_mpi.h"
 
 #include "MemoryManager/JeveuxCollection.h"
 #include "MemoryManager/JeveuxString.h"
@@ -89,7 +90,7 @@ class ObjectBalancer {
             : _balancer( balancer ),
               _vectMaskIn( mask ),
               _vectMaskOut( _balancer.balanceVectorOverProcesses( _vectMaskIn ) ),
-              _mapMaskOut( buildMask() ){};
+              _mapMaskOut( buildMask() ) {};
 
         DistributedMask() : _balancer( ObjectBalancer() ), _vectMaskIn( VectorLong() ) {
             throw std::runtime_error( "Mask constructor not allowed" );
@@ -136,7 +137,7 @@ class ObjectBalancer {
         DistributedMaskOut( const ObjectBalancer &balancer, const VectorLong &mask )
             : _balancer( balancer ),
               _vectMaskOut( _balancer.balanceVectorOverProcesses( mask ) ),
-              _mapMaskOut( buildMask() ){};
+              _mapMaskOut( buildMask() ) {};
 
         DistributedMaskOut() : _balancer( ObjectBalancer() ) {
             throw std::runtime_error( "Mask constructor not allowed" );
@@ -174,7 +175,7 @@ class ObjectBalancer {
           _sizeDelta( 0 ),
           _graph( new CommGraph() ),
           _isOk( false ),
-          _sendDefined( false ){};
+          _sendDefined( false ) {};
 
     /**
      * @brief Add an elementary send

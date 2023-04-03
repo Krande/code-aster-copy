@@ -76,7 +76,7 @@ class MeshBalancer {
     /**
      * @brief Constructeur
      */
-    MeshBalancer() : _mesh( nullptr ), _bReverseConnex( false ){};
+    MeshBalancer() : _mesh( nullptr ), _bReverseConnex( false ) {};
 
     /**
      * @brief Apply a balancing strategy and return ParallelMeshPtr
