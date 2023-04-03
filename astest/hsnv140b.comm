@@ -28,7 +28,6 @@
 
 DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), ERREUR=_F(ALARME="EXCEPTION"), DEBUG=_F(SDVERI="OUI"))
 
-
 MAIL = LIRE_MAILLAGE(FORMAT="ASTER")
 
 #
@@ -226,20 +225,66 @@ ALPHA = DEFI_FONCTION(
 )
 
 
+#
 # PARAMETRES DE RESTAURATION D'ECROUISSAGE
+#
+Tdebut = 600.0
+# Temperature de debut de restauration
+Tfin = 1200.0
+# Temperature de restauration complete
+#
+# Valeurs du coefficient alpha en fonction de la temperature
+L_alpha = [
+    680.0,
+    1.154,
+    750.0,
+    1.335,
+    825.0,
+    1.308,
+    900.0,
+    1.165,
+    1000.0,
+    0.181,
+    1075.0,
+    0.687,
+    1150.0,
+    0.408,
+]
+#
+# Valeurs du coefficient tau_infini en fonction de la temperature
+L_tauinf = [
+    Tdebut,
+    1.0,
+    680.0,
+    0.877,
+    750.0,
+    0.767,
+    825.0,
+    0.682,
+    900.0,
+    0.576,
+    1000.0,
+    0.071,
+    1075.0,
+    0.052,
+    1150.0,
+    0.045,
+    Tfin,
+    0.0,
+]
 # ------------------------------------------------
-Tdebut = 600.0  # Temperature de debut de restauration
-Tfin = 1000.0  # Temperature de restauration complete
-
-REST1 = DEFI_FONCTION(
-    NOM_PARA="TEMP", VALE=(Tdebut, 1.0, Tfin, 0.0), PROL_DROITE="CONSTANT", PROL_GAUCHE="CONSTANT"
+COEF1 = DEFI_FONCTION(
+    NOM_PARA="TEMP", VALE=(L_alpha), PROL_DROITE="CONSTANT", PROL_GAUCHE="LINEAIRE"
 )
-
-
+#
+TAU1 = DEFI_FONCTION(
+    NOM_PARA="TEMP", VALE=(L_tauinf), PROL_DROITE="CONSTANT", PROL_GAUCHE="CONSTANT"
+)
+#
 ACIERME0 = DEFI_MATERIAU(
     ELAS_FO=_F(E=E, NU=NU, ALPHA=ALPHA, TEMP_DEF_ALPHA=20.00),
     ECRO_LINE_FO=_F(D_SIGM_EPSI=DSDE, SY=SIGM),
-    REST_ECRO=_F(FONC_MULT=REST1),
+    REST_ECRO=_F(COEF_ECRO=COEF1, TAU_INF=TAU1, TEMP_MINI=Tdebut, TEMP_MAXI=Tfin),
 )
 
 CHMATM0 = AFFE_MATERIAU(
@@ -258,7 +303,6 @@ U1 = STAT_NON_LINE(
     INCREMENT=_F(LIST_INST=L_INST1, NUME_INST_FIN=800),
     NEWTON=_F(REAC_INCR=1, MATRICE="TANGENTE", REAC_ITER=5),
     CONVERGENCE=_F(RESI_GLOB_RELA=5.0e-05, ITER_GLOB_MAXI=50, ARRET="OUI"),
-    SOLVEUR=_F(RENUM="METIS"),
 )
 
 #
@@ -277,16 +321,15 @@ U1 = CALC_CHAMP(
 TEST_RESU(
     RESU=(
         _F(
-            INST=89.0,
+            INST=100.0,
             RESULTAT=U1,
             NOM_CHAM="VARI_NOEU",
             GROUP_NO="NO1",
             NOM_CMP="V1",
-            VALE_CALC=0.0,
-            VALE_REFE=0.0,
+            VALE_CALC=0.00045181371018,
+            VALE_REFE=0.00044,
             REFERENCE="SOURCE_EXTERNE",
-            ORDRE_GRANDEUR=1e-6,
-            CRITERE="ABSOLU",
+            PRECISION=0.25,
         ),
         _F(
             INST=200.0,
@@ -294,10 +337,10 @@ TEST_RESU(
             NOM_CHAM="SIEF_NOEU",
             GROUP_NO="NO1",
             NOM_CMP="SIYY",
-            VALE_CALC=313428794.37,
+            VALE_CALC=331292179.717,
             VALE_REFE=303.0e06,
             REFERENCE="SOURCE_EXTERNE",
-            PRECISION=0.1,
+            PRECISION=0.25,
         ),
         _F(
             INST=400.0,
@@ -305,10 +348,10 @@ TEST_RESU(
             NOM_CHAM="SIEF_NOEU",
             GROUP_NO="NO1",
             NOM_CMP="SIYY",
-            VALE_CALC=312625600.111,
+            VALE_CALC=348833490.911,
             VALE_REFE=316.0e06,
             REFERENCE="SOURCE_EXTERNE",
-            PRECISION=0.1,
+            PRECISION=0.25,
         ),
         _F(
             INST=600.0,
@@ -316,10 +359,10 @@ TEST_RESU(
             NOM_CHAM="SIEF_NOEU",
             GROUP_NO="NO1",
             NOM_CMP="SIYY",
-            VALE_CALC=311271496.622,
+            VALE_CALC=381695579.874,
             VALE_REFE=325.0e06,
             REFERENCE="SOURCE_EXTERNE",
-            PRECISION=0.1,
+            PRECISION=0.25,
         ),
         _F(
             INST=800.0,
@@ -327,10 +370,10 @@ TEST_RESU(
             NOM_CHAM="SIEF_NOEU",
             GROUP_NO="NO1",
             NOM_CMP="SIYY",
-            VALE_CALC=336504214.735,
+            VALE_CALC=403220958.609,
             VALE_REFE=327.0e06,
             REFERENCE="SOURCE_EXTERNE",
-            PRECISION=0.1,
+            PRECISION=0.25,
         ),
     )
 )

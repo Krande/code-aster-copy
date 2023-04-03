@@ -69,7 +69,8 @@ class PostProcessing {
      * @return Internal state variables (VARI_ELGA)
      */
     FieldOnCellsRealPtr
-    computeAnnealing( const FieldOnCellsRealPtr internVar, const ASTERDOUBLE &time_curr,
+    computeAnnealing( const FieldOnCellsRealPtr internVar, const ASTERDOUBLE &time_prev,
+                      const ASTERDOUBLE &time_curr,
                       const FieldOnCellsRealPtr &externVarPrev = nullptr,
                       const FieldOnCellsRealPtr &externVarCurr = nullptr ) const;
 };

@@ -744,5 +744,6 @@ class PhysicalState(BaseFeature):
         print(
             f"*** {label}Stack contains states for t =",
             [state.time_prev for state in self._stack],
+            f"+ current (t = {self.current.time_curr})",
             flush=True,
         )

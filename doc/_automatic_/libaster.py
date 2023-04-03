@@ -14118,11 +14118,12 @@ class PostProcessing:
     def __init__(self, arg0):
         pass
 
-    def computeAnnealing(self, internVar, time_curr, externVarPrev, externVarCurr):
+    def computeAnnealing(self, internVar, time_prev, time_curr, externVarPrev, externVarCurr):
         """Modification of internal state variables for annealing
 
         Arguments:
             internVar (FieldOnNodesReal): internal state variables before annealing
+            time_prev (float): time at begin of the step
             time_curr (float): time at end of the step
             externVarPrev (FieldOnCellsReal): external state variables at previous time
             externVarCurr (FieldOnCellsReal): external state variables at current time

@@ -43,8 +43,9 @@ subroutine comp_meca_cvar(behaviourPrepPara)
 !
     integer :: iFactorKeyword, nbFactorKeyword
     character(len=16) :: post_iter, extern_addr
-    character(len=16) :: rela_comp, defo_comp, mult_comp, kit_comp(4), type_cpla, regu_visc
-    integer :: numeLawKit(4), nbVari, nbVariKit(4), numeLaw, nbVariUMAT, model_dim
+    character(len=16) :: rela_comp, defo_comp, mult_comp, kit_comp(4), type_cpla
+    character(len=16) :: regu_visc, post_incr
+    integer :: numeLawKit(4), nbVari, nbVariKit(4), numeLaw, nbVariUMAT
     integer :: extern_type
 !
 ! --------------------------------------------------------------------------------------------------
@@ -64,15 +65,15 @@ subroutine comp_meca_cvar(behaviourPrepPara)
         mult_comp = behaviourPrepPara%v_para(iFactorKeyword)%mult_comp
         post_iter = behaviourPrepPara%v_para(iFactorKeyword)%post_iter
         regu_visc = behaviourPrepPara%v_para(iFactorKeyword)%regu_visc
+        post_incr = behaviourPrepPara%v_para(iFactorKeyword)%post_incr
         nbVariUMAT = behaviourPrepPara%v_paraExte(iFactorKeyword)%nbVariUMAT
         extern_addr = behaviourPrepPara%v_paraExte(iFactorKeyword)%extern_addr
         extern_type = behaviourPrepPara%v_paraExte(iFactorKeyword)%extern_type
-        model_dim = behaviourPrepPara%v_paraExte(iFactorKeyword)%model_dim
 
 ! ----- Count the number of internal state variables and index of behaviours
         call comp_nbvari(rela_comp, defo_comp, type_cpla, kit_comp, &
-                         post_iter, mult_comp, regu_visc, &
-                         extern_type, extern_addr, model_dim, &
+                         post_iter, mult_comp, regu_visc, post_incr, &
+                         extern_type, extern_addr, &
                          nbVariUMAT, &
                          nbVari, numeLaw, nbVariKit, numeLawKit)
 

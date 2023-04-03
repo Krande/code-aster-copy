@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,14 +15,13 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+#include "asterf_types.h"
 !
-interface 
-    subroutine dismoi_carcri(questi_, nomobj_, repi, repk, ierd)
-        character(len=*), intent(in) :: questi_
-        character(len=*), intent(in) :: nomobj_
-        integer, intent(out) :: repi
-        character(len=*), intent(out) :: repk
-        integer, intent(out) :: ierd
-    end subroutine dismoi_carcri
-end interface 
+interface
+    subroutine hasBehaviourFeature(model, caraElem, compor, feature, lFlag)
+        character(len=8), intent(in) :: model, caraElem
+        character(len=19), intent(in) :: compor
+        character(len=16), intent(in) :: feature
+        aster_logical, intent(out) :: lFlag
+    end subroutine hasBehaviourFeature
+end interface

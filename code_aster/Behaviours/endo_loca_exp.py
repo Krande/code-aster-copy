@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -23,7 +23,7 @@ from .cata_comportement import LoiComportement
 loi = LoiComportement(
     nom="ENDO_LOCA_EXP",
     lc_type=("MECANIQUE",),
-    doc="""Comportement élastique-fragile, à 
+    doc="""Comportement élastique-fragile, à
 endommagement scalaire, seuil exponentiel et
    non local à gradient d'endommagement - R5.03.25""",
     num_lc=60,
@@ -39,4 +39,5 @@ endommagement scalaire, seuil exponentiel et
     exte_vari=None,
     deform_ldc=("MECANIQUE",),
     regu_visc=("REGU_VISC_ELAS",),
+    post_incr=None,
 )

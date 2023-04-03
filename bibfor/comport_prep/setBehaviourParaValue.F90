@@ -79,7 +79,6 @@ subroutine setBehaviourParaValue(behaviourCrit, parm_theta_thm, parm_alpha_thm, 
         else
             carcriMap_(CARCRI_MATRSYME) = 0
         end if
-        carcriMap_(IPOSTINCR) = behaviourCrit(iFactorKeyword)%ipostincr
 ! ----- For external solvers (UMAT / MFRONT)
         carcriMap_(EXTE_PTR) = behaviourCrit(iFactorKeyword)%extern_ptr
         carcriMap_(EXTE_TYPE) = behaviourCrit(iFactorKeyword)%extern_type
@@ -106,7 +105,6 @@ subroutine setBehaviourParaValue(behaviourCrit, parm_theta_thm, parm_alpha_thm, 
         else
             carcriList_(CARCRI_MATRSYME) = 0
         end if
-        carcriList_(IPOSTINCR) = behaviourCrit(iFactorKeyword)%ipostincr
 ! ----- For external solvers (UMAT / MFRONT)
         carcriList_(EXTE_PTR) = behaviourCrit(iFactorKeyword)%extern_ptr
         carcriList_(EXTE_TYPE) = behaviourCrit(iFactorKeyword)%extern_type

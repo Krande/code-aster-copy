@@ -50,6 +50,7 @@ subroutine comp_meca_init(ds_comporPara)
     ds_comporPara%defo_ldc = 'VIDE'
     ds_comporPara%rigi_geom = 'VIDE'
     ds_comporPara%regu_visc = 'VIDE'
+    ds_comporPara%post_incr = 'VIDE'
     ds_comporPara%nbVari = 0
     ds_comporPara%numeLaw = 0
     ds_comporPara%nbVariKit = 0

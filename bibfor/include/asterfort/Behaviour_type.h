@@ -49,7 +49,7 @@
 !
 ! Size
 !
-#define COMPOR_SIZE 24
+#define COMPOR_SIZE 25
 !
 ! Slots: general
 !
@@ -65,6 +65,7 @@
 #define RIGI_GEOM    22
 #define REGUVISC     23
 #define MGIS_ADDR    24
+#define POSTINCR     25
 !
 ! Slots: for KIT
 !
@@ -132,7 +133,7 @@
 !
 ! Size
 !
-#define CARCRI_SIZE    23
+#define CARCRI_SIZE    22
 !
 ! Slots
 !
@@ -148,12 +149,11 @@
 #define RESI_RADI_RELA          10
 #define IPOSTITER               13
 #define CARCRI_MATRSYME         17
-#define IPOSTINCR               21
 !
 ! Slots: for external state variables
 !
 #define IVARIEXT1               11
-#define IVARIEXT2               23
+#define IVARIEXT2               22
 !
 ! Slots: for THM parameters
 !
@@ -167,7 +167,7 @@
 !       1 for MFRONT official, 2 for MFRONT proto, 4 for UMAT (default: 0 internal)
 #define EXTE_TYPE               15
 !       Strain model for (MFRONT only)
-#define EXTE_STRAIN             22
+#define EXTE_STRAIN             21
 
 !
 ! --------------------------------------------------------------------------------------------------

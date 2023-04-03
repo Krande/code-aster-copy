@@ -156,6 +156,7 @@ class Base:
         "lc_type",
         "deform_ldc",
         "regu_visc",
+        "post_incr",
     )
 
     def copy(self):
@@ -216,6 +217,7 @@ class Base:
    type de la loi de comportement    : %(lc_type)r
    déformations en entrée de la loi  : %(deform_ldc)r
    régularisation visqueuse          : %(regu_visc)r
+   traitements post-incr possibles   : %(post_incr)r
 """
         return template % self.dict_info()
 
@@ -293,6 +295,9 @@ class LoiComportement(Base):
     lc_type = Base.gen_property("lc_type", (str, str), "Type de la loi de comportement")
     deform_ldc = Base.gen_property("deform_ldc", (str, str), "Déformations en entrée de la loi")
     regu_visc = Base.gen_property("regu_visc", (str, str), "Régularisation visqueuse")
+    post_incr = Base.gen_property(
+        "post_incr", (str, str), "Traitements post-incrémentaux possibles"
+    )
 
     def check_vari(self):
         """Vérifie la cohérence de la définition des variables internes"""
@@ -338,6 +343,7 @@ class LoiComportementMFront(LoiComportement):
    types de déformations             : %(deformation)r
    schémas d'intégration             : %(algo_inte)r
    déformations en entrée de la loi  : %(deform_ldc)r
+   traitements post-incr possibles   : %(post_incr)r
 """
         return template % self.dict_info()
 
@@ -378,6 +384,7 @@ class KIT(Base):
         Base.gen_getfunc(first, "deform_ldc")
     )  # On a mis "first" comme sélection de la propriété pour un kit, mais en vrai, on ne peut pas travailler en kit avec des ldc qui n'ont pas la même valeur de "deform_ldc" ?
     regu_visc = property(Base.gen_getfunc(intersection, "regu_visc"))
+    post_incr = property(Base.gen_getfunc(first, "post_incr"))
 
     @property
     def ldctype(self):

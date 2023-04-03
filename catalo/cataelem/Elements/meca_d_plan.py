@@ -1093,10 +1093,10 @@ class MEDPQU8(Element):
         OP.REST_ECRO(
             te=116,
             para_in=(
-                (SP.PCARCRI, LC.CCARCRI),
                 (OP.REST_ECRO.PCOMPOR, LC.CCOMPOR),
                 (SP.PMATERC, LC.CMATERC),
-                (SP.PTEMPSR, LC.MTEMPSR),
+                (SP.PINSTMR, LC.MTEMPSR),
+                (SP.PINSTPR, LC.MTEMPSR),
                 (SP.PVARCMR, LC.ZVARCPG),
                 (OP.REST_ECRO.PVARCPR, LC.ZVARCPG),
                 (OP.REST_ECRO.PVARIMR, LC.ZVARIPG),

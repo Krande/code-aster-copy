@@ -480,11 +480,10 @@ L'identification numérique des paramètres à partir de FT et FC a échoué : v
 Comportement  %(k1)s : avec ELAS_ORTH, il faut renseigner le mot clé MU_MOY.
 """
     ),
-    91: _(
+    90: _(
         """
- REST_ECRO : la fonction de restauration d'écrouissage vaut %(r1)E or elle doit être comprise entre 0 et 1.
-
-Vérifiez les valeurs de la fonction.
+La restauration d'écrouissage (POST_INCR='REST_ECRO') n'est pas disponible pour
+la relation de comportement %(k1)s utilisée.
 """
     ),
     92: _(

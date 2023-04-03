@@ -104,7 +104,7 @@ function isfonc(list_func_acti, func_name_z)
 !       LDLT_SP            :  PRECONDITIONNEUR LDLT_SP
 !       MATR_DISTRIBUEE    :  MATRICES DISTRIBUEES
 !       ELAS_FO            :  elastic properties are functions
-!       POST_INCR          :  post-treatment for comportment laws
+!       ANNEALING          :  post-treatment for annealing
 !       ETAT_INIT          :  initial state
 !       ROM                :  reduced order model
 !       HROM               :  hyper-reduced order model
@@ -248,7 +248,7 @@ function isfonc(list_func_acti, func_name_z)
         isfonc = list_func_acti(56) .eq. 1
     else if (func_name .eq. 'ELAS_FO') then
         isfonc = list_func_acti(57) .eq. 1
-    else if (func_name .eq. 'POST_INCR') then
+    else if (func_name .eq. 'ANNEALING') then
         isfonc = list_func_acti(58) .eq. 1
     else if (func_name .eq. 'ETAT_INIT') then
         isfonc = list_func_acti(59) .eq. 1

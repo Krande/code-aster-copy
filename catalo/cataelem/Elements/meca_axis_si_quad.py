@@ -852,6 +852,19 @@ class MEAXQS8(Element):
             para_in=((SP.PCAMASS, LC.CCAMA2D), (SP.PGEOMER, LC.EGEOM2D)),
             para_out=((SP.PREPLO1, LC.CGEOM2D), (SP.PREPLO2, LC.CGEOM2D)),
         ),
+        OP.REST_ECRO(
+            te=116,
+            para_in=(
+                (OP.REST_ECRO.PCOMPOR, LC.CCOMPOR),
+                (SP.PMATERC, LC.CMATERC),
+                (SP.PINSTMR, LC.MTEMPSR),
+                (SP.PINSTPR, LC.MTEMPSR),
+                (SP.PVARCMR, LC.ZVARCPG),
+                (OP.REST_ECRO.PVARCPR, LC.ZVARCPG),
+                (OP.REST_ECRO.PVARIMR, LC.ZVARIPG),
+            ),
+            para_out=((OP.REST_ECRO.PVARIPR, LC.ZVARIPG),),
+        ),
         OP.RICE_TRACEY(
             te=332,
             para_in=(

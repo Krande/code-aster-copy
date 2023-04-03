@@ -430,7 +430,6 @@ CARCRI = PhysicalQuantity(
         "MATRNSYM",
         "ALPHATHM",
         "LC_EXT2[2]",
-        "POSTINCR",
         "STRAIN",
         "VARIEXT2",
     ),
@@ -453,7 +452,6 @@ CARCRI = PhysicalQuantity(
        MATRNSYM : 1 si la matrice est non-symetrique
        ALPHATHM : parametre ALPHA pour la THM (volumes finis)
        LC_EXT[2]: pointeurs vers routines externes (UMAT / MFRONT) => materiaux
-       POSTINCR : type de critere POST_INCR : 0=rien, 1=REST_ECRO
        STRAIN   : modele de deformation pour MFront
        VARIEXT2 : entier code 2 pour les variables d'etat externe (MFront)
 """,
@@ -588,6 +586,7 @@ COMPOR = PhysicalQuantity(
         "RIGIGEOM",
         "REGUVISC",
         "MGISADDR",
+        "POSTINCR",
     ),
     comment="""  COMPOR Type:K16 Comportement materiel
        RELCOM : relation de comportement : 'ELAS' , 'VMIS_ISOT_LINE' , ...
@@ -614,6 +613,7 @@ COMPOR = PhysicalQuantity(
        RIGIGEOM : travail sur geometrie deformee
        REGUVISC : régularisation visqueuse
        MGISADDR : adresse de l'objet C++ MGISBehaviour
+       POSTINCR : parameter for POST_INCR option
 """,
 )
 

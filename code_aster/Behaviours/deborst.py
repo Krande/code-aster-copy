@@ -35,6 +35,7 @@ loi = LoiComportement(
     proprietes=None,
     syme_matr_tang=None,
     exte_vari=None,
-    deform_ldc=None,
-    regu_visc=None,
+    deform_ldc=("OLD",),
+    regu_visc=("No",),
+    post_incr=None,
 )

@@ -74,7 +74,7 @@ class ProblemSolver(SolverFeature):
         super().__init__()
         self._main = main
         self._result = result
-        self._phys_state = PhysicalState(pb_type)
+        self._phys_state = PhysicalState(pb_type, size=2)
         self._verb = logger.getEffectiveLevel(), ExecutionParameter().option & Options.ShowSyntax
 
     @property

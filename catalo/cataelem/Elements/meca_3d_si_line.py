@@ -896,6 +896,19 @@ class MECA_HEXS8(Element):
             para_in=((SP.PCAMASS, LC.CCAMA3D), (SP.PGEOMER, LC.EGEOM3D)),
             para_out=((SP.PREPLO1, LC.CGEOM3D), (SP.PREPLO2, LC.CGEOM3D), (SP.PREPLO3, LC.CGEOM3D)),
         ),
+        OP.REST_ECRO(
+            te=116,
+            para_in=(
+                (OP.REST_ECRO.PCOMPOR, LC.CCOMPOR),
+                (SP.PMATERC, LC.CMATERC),
+                (SP.PINSTMR, LC.MTEMPSR),
+                (SP.PINSTPR, LC.MTEMPSR),
+                (SP.PVARCMR, LC.ZVARCPG),
+                (OP.REST_ECRO.PVARCPR, LC.ZVARCPG),
+                (OP.REST_ECRO.PVARIMR, LC.ZVARIPG),
+            ),
+            para_out=((OP.REST_ECRO.PVARIPR, LC.ZVARIPG),),
+        ),
         OP.RICE_TRACEY(
             te=339,
             para_in=(

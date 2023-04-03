@@ -68,13 +68,13 @@ subroutine carc_read(behaviourPrepCrit, model_)
     character(len=16), parameter :: factorKeyword = 'COMPORTEMENT'
     character(len=16) :: answer
     integer :: iFactorKeyword, iret, nbFactorKeyword
-    character(len=16) :: type_matr_tang, method, post_iter, post_incr
+    character(len=16) :: type_matr_tang, method, post_iter
     real(kind=8) :: parm_theta, vale_pert_rela
     real(kind=8) :: resi_deborst_max
     real(kind=8) :: resi_radi_rela
     real(kind=8) :: parm_theta_thm, parm_alpha_thm
     integer :: type_matr_t, iter_inte_pas, iter_deborst_max
-    integer :: ipostiter, ipostincr, iveriborne
+    integer :: ipostiter, iveriborne
     character(len=8) :: mesh
     character(len=16) :: rela_code_py, defo_code_py, meca_code_py
     character(len=16) :: veri_borne
@@ -102,7 +102,6 @@ subroutine carc_read(behaviourPrepCrit, model_)
     type_matr_tang = ' '
     method = ' '
     post_iter = ' '
-    post_incr = ' '
     parm_theta = 0.d0
     vale_pert_rela = 0.d0
     resi_deborst_max = 0.d0
@@ -113,7 +112,6 @@ subroutine carc_read(behaviourPrepCrit, model_)
     iter_inte_pas = 0
     iter_deborst_max = 0
     ipostiter = 0
-    ipostincr = 0
     iveriborne = 0
     mesh = ' '
     veri_borne = ' '
@@ -271,19 +269,6 @@ subroutine carc_read(behaviourPrepCrit, model_)
             end if
         end if
 
-! ----- Get POST_INCR
-        ipostincr = 0
-        if (getexm(factorKeyword, 'POST_INCR') .eq. 1) then
-            post_incr = ' '
-            call getvtx(factorKeyword, 'POST_INCR', iocc=iFactorKeyword, &
-                        scal=post_incr, nbret=iret)
-            if (iret .eq. 1) then
-                if (post_incr .eq. 'REST_ECRO') then
-                    ipostincr = 1
-                end if
-            end if
-        end if
-
 ! ----- Get VERI_BORNE
         iveriborne = 0
         if (getexm(factorKeyword, 'VERI_BORNE') .eq. 1) then
@@ -352,7 +337,6 @@ subroutine carc_read(behaviourPrepCrit, model_)
         behaviourPrepCrit%v_crit(iFactorKeyword)%iter_deborst_max = iter_deborst_max
         behaviourPrepCrit%v_crit(iFactorKeyword)%resi_radi_rela = resi_radi_rela
         behaviourPrepCrit%v_crit(iFactorKeyword)%ipostiter = ipostiter
-        behaviourPrepCrit%v_crit(iFactorKeyword)%ipostincr = ipostincr
         behaviourPrepCrit%v_crit(iFactorKeyword)%iveriborne = iveriborne
         behaviourPrepCrit%v_crit(iFactorKeyword)%l_matr_unsymm = l_matr_unsymm
         behaviourPrepCrit%v_crit(iFactorKeyword)%algo_inte_r = algo_inte_r

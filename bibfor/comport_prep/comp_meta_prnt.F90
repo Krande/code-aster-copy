@@ -50,7 +50,7 @@ subroutine comp_meta_prnt(compor_info)
     integer, pointer :: v_info(:) => null()
     integer, pointer :: v_zone(:) => null()
     character(len=16), pointer :: v_vari(:) => null()
-    character(len=16), pointer :: v_rela(:) => null()
+    character(len=16), pointer :: comporInfoRela(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -65,7 +65,7 @@ subroutine comp_meta_prnt(compor_info)
     end if
     call utmess('I', 'METALLURGY1_1')
     nb_zone = v_info(2)
-    call jeveuo(compor_info(1:19)//'.RELA', 'L', vk16=v_rela)
+    call jeveuo(compor_info(1:19)//'.RELA', 'L', vk16=comporInfoRela)
     call jeveuo(compor_info(1:19)//'.ZONE', 'L', vi=v_zone)
 
     do i_zone = 1, nb_zone
@@ -75,8 +75,8 @@ subroutine comp_meta_prnt(compor_info)
             call jeveuo(jexnum(compor_info(1:19)//'.VARI', i_zone), 'L', vk16=v_vari)
             call jelira(jexnum(compor_info(1:19)//'.VARI', i_zone), 'LONMAX', nb_vari)
 ! --------- Get names of relation
-            phase_type = v_rela(2*(i_zone-1)+1)
-            model_meta = v_rela(2*(i_zone-1)+2)
+            phase_type = comporInfoRela(2*(i_zone-1)+1)
+            model_meta = comporInfoRela(2*(i_zone-1)+2)
 ! --------- Print name of internal variables
             call utmess('I', 'METALLURGY1_4', si=nb_elem_zone)
             call utmess('I', 'METALLURGY1_5', sk=phase_type)

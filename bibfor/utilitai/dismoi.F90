@@ -36,7 +36,6 @@ subroutine dismoi(questi, nomob, typeco, repi, repk, &
 #include "asterfort/dismeq.h"
 #include "asterfort/dismff.h"
 #include "asterfort/dismgd.h"
-#include "asterfort/dismoi_carcri.h"
 #include "asterfort/dismic.h"
 #include "asterfort/dismlg.h"
 #include "asterfort/dismli.h"
@@ -63,7 +62,6 @@ subroutine dismoi(questi, nomob, typeco, repi, repk, &
     character(len=*), intent(in), optional :: arret
     integer, intent(out), optional :: ier
 !
-! person_in_charge: jacques.pellet at edf.fr
 !     ------------------------------------------------------------------
 !     in:
 !       (o) questi : texte precisant la question posee
@@ -171,8 +169,6 @@ subroutine dismoi(questi, nomob, typeco, repi, repk, &
         call dismff(quest1, nomo1(1:8), repi1, repk1, ier1)
     else if (typec1 .eq. 'CARTE_COMPOR') then
         call dismco(quest1, nomo1(1:19), repi1, repk1, ier1)
-    else if (typec1 .eq. 'CARTE_CARCRI') then
-        call dismoi_carcri(quest1, nomo1(1:19), repi1, repk1, ier1)
     else if (typec1 .eq. 'RESU_DYNA') then
         call dismdy(quest1, nomo1(1:8), repi1, repk1, ier1)
     else

@@ -19,7 +19,8 @@
 !
 subroutine comp_meca_name(nbVari, nbVariMeca, l_excl, vari_excl, l_kit_meta, &
                           rela_comp, defo_comp, kit_comp, type_cpla, post_iter, &
-                          regu_visc, extern_addr, extern_type, model_dim, infoVari)
+                          regu_visc, post_incr, &
+                          extern_addr, extern_type, model_dim, infoVari)
 !
     implicit none
 !
@@ -37,7 +38,7 @@ subroutine comp_meca_name(nbVari, nbVariMeca, l_excl, vari_excl, l_kit_meta, &
     character(len=16), intent(in) :: vari_excl
     aster_logical, intent(in) :: l_kit_meta
     character(len=16), intent(in) :: extern_addr, rela_comp, defo_comp, kit_comp(4)
-    character(len=16), intent(in) :: type_cpla, post_iter, regu_visc
+    character(len=16), intent(in) :: type_cpla, post_iter, regu_visc, post_incr
     integer, intent(in) :: extern_type, model_dim
     character(len=16), pointer :: infoVari(:)
 !
@@ -58,8 +59,9 @@ subroutine comp_meca_name(nbVari, nbVariMeca, l_excl, vari_excl, l_kit_meta, &
 ! In  defo_comp        : DEFORMATION comportment
 ! In  kit_comp         : KIT comportment
 ! In  type_cpla        : plane stress method
-! In  post_iter        : type of post_treatment
+! In  post_iter        : type of post-treatment at each Newton iteration
 ! In  regu_visc        : keyword for viscuous regularization
+! In  post_incr        : type of post-treatment at end of time step
 ! In  model_dim        : dimension of modelisation (2D or 3D)
 ! Ptr infoVari         : pointer to names of internal state variables
 !
@@ -84,7 +86,7 @@ subroutine comp_meca_name(nbVari, nbVariMeca, l_excl, vari_excl, l_kit_meta, &
         ! UMAT
         if (extern_type .eq. 4) then
             call comp_meca_code(rela_comp, defo_comp, type_cpla, kit_comp, &
-                                post_iter, regu_visc, &
+                                post_iter, regu_visc, post_incr, &
                                 compCodePy)
             nbVariOther = nbVari-nbVariMeca
             do iVariMeca = 1, nbVariMeca
@@ -99,7 +101,8 @@ subroutine comp_meca_name(nbVari, nbVariMeca, l_excl, vari_excl, l_kit_meta, &
         else if (extern_type .eq. 1 .or. extern_type .eq. 2) then
             ASSERT(extern_addr .ne. ' ')
             call comp_meca_code(rela_comp, defo_comp, type_cpla, kit_comp, &
-                                post_iter, regu_visc, compCodePy)
+                                post_iter, regu_visc, post_incr, &
+                                compCodePy)
             nbVariOther = nbVari-nbVariMeca
             call comp_mfront_vname(extern_addr, model_dim, nbVariMeca, infoVari)
             if (nbVariOther .ne. 0) then
@@ -146,14 +149,14 @@ subroutine comp_meca_name(nbVari, nbVariMeca, l_excl, vari_excl, l_kit_meta, &
                 nbVariOther = nbVari-iVari
                 if (nbVariOther .ne. 0) then
                     call comp_meca_code(rela_comp, defo_comp, type_cpla, kit_comp, &
-                                        post_iter, regu_visc, &
+                                        post_iter, regu_visc, post_incr, &
                                         compCodePy)
                     call lcvari(compCodePy, nbVariOther, infoVari(iVari+1:nbVari))
                     call lcdiscard(compCodePy)
                 end if
             else
                 call comp_meca_code(rela_comp, defo_comp, type_cpla, kit_comp, &
-                                    post_iter, regu_visc, &
+                                    post_iter, regu_visc, post_incr, &
                                     compCodePy)
                 call lcvari(compCodePy, nbVari, infoVari)
                 call lcdiscard(compCodePy)

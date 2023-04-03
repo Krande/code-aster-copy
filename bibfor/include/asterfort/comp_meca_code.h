@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,11 +18,11 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine comp_meca_code(rela_comp, defo_comp, type_cpla, kit_comp,&
-                              post_iter, regu_visc, &
+    subroutine comp_meca_code(rela_comp, defo_comp, type_cpla, kit_comp, &
+                              post_iter, regu_visc, post_incr, &
                               comp_code_py)
         character(len=16), intent(in) :: rela_comp, defo_comp, type_cpla, kit_comp(4)
-        character(len=16), intent(in) :: post_iter, regu_visc
+        character(len=16), intent(in) :: post_iter, regu_visc, post_incr
         character(len=16), intent(out) :: comp_code_py
     end subroutine comp_meca_code
 end interface

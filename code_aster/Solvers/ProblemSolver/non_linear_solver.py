@@ -188,7 +188,7 @@ class NonLinearSolver(SolverFeature):
         self.setExternalStateVariables(init_time)
         phys_state.time_curr = init_time
 
-        if init_state and "STAT" in init_state:
+        if init_state and init_state.get("STAT") == "OUI":
             solv = self.get_feature(SOP.StepSolver)
             solv.initialize()
             args = dict(valr=phys_state.time_curr, vali=self.stepper.splitting_level)

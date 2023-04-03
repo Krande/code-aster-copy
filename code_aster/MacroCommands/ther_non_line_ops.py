@@ -149,7 +149,7 @@ def ther_non_line_ops(self, **args):
     solver.use(timeStepper)
 
     class PostHookHydr:
-        """User object to be used as a PostStepHook."""
+        """Hook to compute HYDR_ELGA."""
 
         provide = SOP.PostStepHook
 
@@ -180,7 +180,7 @@ def ther_non_line_ops(self, **args):
                 storage_manager.storeField(hydr_curr, "HYDR_ELGA", phys_state.time_curr)
 
     class PostHookHHO:
-        """User object to be used as a PostStepHook."""
+        """Hook to compute HHO_TEMP."""
 
         provide = SOP.PostStepHook
 

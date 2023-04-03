@@ -18,7 +18,7 @@
 ! person_in_charge: mickael.abbas at edf.fr
 !
 subroutine comp_meca_code(rela_comp, defo_comp, type_cpla, kit_comp, &
-                          post_iter, regu_visc, &
+                          post_iter, regu_visc, post_incr, &
                           comp_code_py)
 !
     implicit none
@@ -27,7 +27,7 @@ subroutine comp_meca_code(rela_comp, defo_comp, type_cpla, kit_comp, &
 #include "asterc/lccree.h"
 !
     character(len=16), intent(in) :: rela_comp, defo_comp, type_cpla, kit_comp(4)
-    character(len=16), intent(in) :: post_iter, regu_visc
+    character(len=16), intent(in) :: post_iter, regu_visc, post_incr
     character(len=16), intent(out) :: comp_code_py
 !
 ! --------------------------------------------------------------------------------------------------
@@ -42,8 +42,9 @@ subroutine comp_meca_code(rela_comp, defo_comp, type_cpla, kit_comp, &
 ! In  defo_comp        : DEFORMATION comportment
 ! In  type_cpla        : plane stress method
 ! In  kit_comp         : KIT comportment
-! In  post_iter        : type of post_treatment
+! In  post_iter        : type of post_treatment at each Newton iteration
 ! In  regu_visc        : keyword for viscuous regularization
+! In  post_incr        : type of post-treatment at end of time step
 ! Out comp_code_py     : composite coded comportment (coding in Python)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -81,6 +82,10 @@ subroutine comp_meca_code(rela_comp, defo_comp, type_cpla, kit_comp, &
     if (post_iter .ne. ' ') then
         nb_comp_elem = nb_comp_elem+1
         comp_elem(nb_comp_elem) = post_iter
+    end if
+    if (post_incr .ne. ' ') then
+        nb_comp_elem = nb_comp_elem+1
+        comp_elem(nb_comp_elem) = post_incr
     end if
 
 ! - Coding composite comportment (Python)

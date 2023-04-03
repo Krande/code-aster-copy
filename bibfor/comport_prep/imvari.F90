@@ -44,61 +44,56 @@ subroutine imvari(compor_info)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: i_vari, i_zone, c_pmf
-    integer :: nb_vari, nb_zone, nb_elem_zone, nt_vari
+    integer :: i_vari, mapZoneNume, c_pmf
+    integer :: nbVari, mapNbZone, nb_elem_zone, nt_vari
     character(len=16) :: vari_excl
-    character(len=16) :: rela_comp, defo_comp, type_cpla, regu_visc
+    character(len=16) :: rela_comp, defo_comp, type_cpla, regu_visc, post_incr
     aster_logical :: l_excl
-    integer, pointer :: v_info(:) => null()
-    integer, pointer :: v_zone(:) => null()
-    character(len=16), pointer :: v_vari(:) => null()
-    character(len=16), pointer :: v_rela(:) => null()
+    integer, pointer :: comporInfoInfo(:) => null()
+    integer, pointer :: comporInfoZone(:) => null()
+    character(len=16), pointer :: comporInfoVari(:) => null()
+    character(len=16), pointer :: comporInfoRela(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
-!
+
 ! - Access to informations
-!
-    call jeveuo(compor_info(1:19)//'.INFO', 'L', vi=v_info)
-    nt_vari = v_info(4)
+    call jeveuo(compor_info(1:19)//'.INFO', 'L', vi=comporInfoInfo)
+    nt_vari = comporInfoInfo(4)
     if (nt_vari .eq. 0) then
         goto 99
     end if
     call utmess('I', 'COMPOR4_1')
-    nb_zone = v_info(2)
-    call jeveuo(compor_info(1:19)//'.RELA', 'L', vk16=v_rela)
-    call jeveuo(compor_info(1:19)//'.ZONE', 'L', vi=v_zone)
+    mapNbZone = comporInfoInfo(2)
+    call jeveuo(compor_info(1:19)//'.RELA', 'L', vk16=comporInfoRela)
+    call jeveuo(compor_info(1:19)//'.ZONE', 'L', vi=comporInfoZone)
 
     c_pmf = 0
-    do i_zone = 1, nb_zone
+    do mapZoneNume = 1, mapNbZone
 
-        nb_elem_zone = v_zone(i_zone)
+        nb_elem_zone = comporInfoZone(mapZoneNume)
 !
         if (nb_elem_zone .ne. 0) then
-!
 ! --------- Acces to list of name of internal variables
-!
-            call jeveuo(jexnum(compor_info(1:19)//'.VARI', i_zone), 'L', vk16=v_vari)
-            call jelira(jexnum(compor_info(1:19)//'.VARI', i_zone), 'LONMAX', nb_vari)
-!
+            call jeveuo(jexnum(compor_info(1:19)//'.VARI', mapZoneNume), 'L', vk16=comporInfoVari)
+            call jelira(jexnum(compor_info(1:19)//'.VARI', mapZoneNume), 'LONMAX', nbVari)
+
 ! --------- Exceptions ?
-!
             l_excl = .false.
-            vari_excl = v_vari(1)
+            vari_excl = comporInfoVari(1)
             if (vari_excl(1:2) .eq. '&&') then
                 l_excl = .true.
             end if
-!
+
 ! --------- Get names of relation
-!
-            rela_comp = v_rela(4*(i_zone-1)+1)
-            defo_comp = v_rela(4*(i_zone-1)+2)
-            type_cpla = v_rela(4*(i_zone-1)+3)
-            regu_visc = v_rela(4*(i_zone-1)+4)
-!
+            rela_comp = comporInfoRela(5*(mapZoneNume-1)+1)
+            defo_comp = comporInfoRela(5*(mapZoneNume-1)+2)
+            type_cpla = comporInfoRela(5*(mapZoneNume-1)+3)
+            regu_visc = comporInfoRela(5*(mapZoneNume-1)+4)
+            post_incr = comporInfoRela(5*(mapZoneNume-1)+5)
+
 ! --------- Print name of internal variables
-!
             if (l_excl) then
                 if (vari_excl .eq. '&&MULT_COMP') then
                     call utmess('I', 'COMPOR4_4', si=nb_elem_zone)
@@ -108,7 +103,12 @@ subroutine imvari(compor_info)
                     else
                         call utmess('I', 'COMPOR4_7', sk=regu_visc)
                     end if
-                    call utmess('I', 'COMPOR4_9', si=nb_vari)
+                    if (post_incr .eq. 'VIDE') then
+                        call utmess('I', 'COMPOR4_19')
+                    else
+                        call utmess('I', 'COMPOR4_27', sk=post_incr)
+                    end if
+                    call utmess('I', 'COMPOR4_9', si=nbVari)
                     call utmess('I', 'COMPOR4_15')
                 else if (vari_excl .eq. '&&PROT_COMP') then
                     call utmess('I', 'COMPOR4_4', si=nb_elem_zone)
@@ -119,7 +119,12 @@ subroutine imvari(compor_info)
                     else
                         call utmess('I', 'COMPOR4_7', sk=regu_visc)
                     end if
-                    call utmess('I', 'COMPOR4_9', si=nb_vari)
+                    if (post_incr .eq. 'VIDE') then
+                        call utmess('I', 'COMPOR4_19')
+                    else
+                        call utmess('I', 'COMPOR4_27', sk=post_incr)
+                    end if
+                    call utmess('I', 'COMPOR4_9', si=nbVari)
                     call utmess('I', 'COMPOR4_16')
                 else if (vari_excl .eq. '&&MULT_PMF') then
                     c_pmf = c_pmf+1
@@ -135,12 +140,17 @@ subroutine imvari(compor_info)
                 else
                     call utmess('I', 'COMPOR4_7', sk=regu_visc)
                 end if
+                if (post_incr .eq. 'VIDE') then
+                    call utmess('I', 'COMPOR4_19')
+                else
+                    call utmess('I', 'COMPOR4_27', sk=post_incr)
+                end if
                 if (type_cpla .eq. 'DEBORST') then
                     call utmess('I', 'COMPOR4_8')
                 end if
-                call utmess('I', 'COMPOR4_9', si=nb_vari)
-                do i_vari = 1, nb_vari
-                    call utmess('I', 'COMPOR4_20', sk=v_vari(i_vari), si=i_vari)
+                call utmess('I', 'COMPOR4_9', si=nbVari)
+                do i_vari = 1, nbVari
+                    call utmess('I', 'COMPOR4_20', sk=comporInfoVari(i_vari), si=i_vari)
                 end do
             end if
         end if

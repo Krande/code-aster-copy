@@ -226,7 +226,6 @@ CCARCRI = LocatedComponents(
         "MATRNSYM",
         "ALPHATHM",
         "LC_EXT2[2]",
-        "POSTINCR",
         "STRAIN",
         "VARIEXT2",
     ),
@@ -284,6 +283,7 @@ CCOMPOR = LocatedComponents(
         "RIGIGEOM",
         "REGUVISC",
         "MGISADDR",
+        "POSTINCR",
     ),
 )
 

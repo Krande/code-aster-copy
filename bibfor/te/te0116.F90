@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine te0116(nomopt, nomte)
 !
     implicit none
@@ -25,8 +25,9 @@ subroutine te0116(nomopt, nomte)
 #include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
 #include "asterfort/rcvalb.h"
+#include "asterfort/rcvarc.h"
 #include "asterfort/utmess.h"
-!
+#include "asterfort/Behaviour_type.h"
 !
     character(len=16), intent(in) :: nomte
     character(len=16), intent(in) :: nomopt
@@ -37,135 +38,138 @@ subroutine te0116(nomopt, nomte)
 !
 ! --------------------------------------------------------------------------------------------------
 !
+    integer, parameter :: nbResu = 3
+    integer :: codret(nbResu)
+    character(len=16), parameter :: resuName(nbResu) = &
+                                    (/'TEMP_MINI', 'TEMP_MAXI', 'EPSQ_MINI'/)
+    real(kind=8) :: resuVale(nbResu)
     integer :: ipg, npg, nb_vari, ivari, ispg
-    integer :: jmate, jcompo, j_vari_out, j_vari_in, jtime, jcarcri
-    character(len=16) :: rela_comp
-    integer :: nb_res_mx
-    parameter(nb_res_mx=1)
-    real(kind=8) :: valres(nb_res_mx), vvalres, check_rest
-    integer :: codret(nb_res_mx)
+    integer :: jmate, jcompo, j_vari_out, j_vari_in, jtimem, jtimep
+    character(len=16) :: rela_comp, postIncr
+    real(kind=8) :: instp, instm
+    real(kind=8) :: tau_inf(1), x0, alpha(1)
+    real(kind=8) :: T1, T2, temp, k, dt
+    real(kind=8) :: p_in, p_out, ecro_in, ecro_out, valExp
+    integer :: iret, i_ecro_init
+    integer, parameter :: indxEpseq = 1
+    real(kind=8) :: epsq_min
+    aster_logical :: l_anneal, l_end_anneal
+! - Protect against large overflow for exponential
+    real(kind=8), parameter :: maxExp = 500.
+! - Protect agains division by zero
+    real(kind=8), parameter :: toleTemp = 1.
 !
 ! --------------------------------------------------------------------------------------------------
 !
     ASSERT(nomopt .eq. 'REST_ECRO')
-!
+
+! - Initialisation
+    x0 = 0.0
+    ispg = 1
+    p_in = 0.d0
+    p_out = 0.d0
+    ecro_in = 0.d0
+    ecro_out = 0.d0
+
 ! - Get informations on current element
-!
     call elrefe_info(fami='RIGI', npg=npg)
-!
+
 ! - Get input fields
-!
     call jevech('PMATERC', 'L', jmate)
     call jevech('PCOMPOR', 'L', jcompo)
     call jevech('PVARIMR', 'L', j_vari_in)
-    call jevech('PTEMPSR', 'L', jtime)
-    call jevech('PCARCRI', 'L', jcarcri)
+    call jevech('PINSTPR', 'L', jtimep)
+    call jevech('PINSTMR', 'L', jtimem)
 !
-    rela_comp = zk16(jcompo-1+1)
-    read (zk16(jcompo-1+2), '(I16)') nb_vari
-!
+    rela_comp = zk16(jcompo-1+RELA_NAME)
+    read (zk16(jcompo-1+NVAR), '(I16)') nb_vari
+    postIncr = zk16(jcompo-1+POSTINCR)
+
 ! - Get output field
-!
     call jevech('PVARIPR', 'E', j_vari_out)
 !
-    check_rest = zr(jcarcri-1+21)
+    if (postIncr .eq. 'REST_ECRO') then
+! -     Compute dt
+        instm = zr(jtimem)
+        instp = zr(jtimep)
+        dt = instp-instm
+
+! -     Get T1 et T2 : temperatures of the start and end of annealing!
+!       and EPSQ_MIN : minimal strain for annealing to occur
+        call rcvalb('RIGI', 1, ispg, &
+                    '+', zi(jmate), ' ', 'REST_ECRO', &
+                    0, ' ', [0.d0], &
+                    nbResu, resuName, resuVale, codret, 2)
+        T1 = resuVale(1)
+        T2 = resuVale(2)
+        epsq_min = resuVale(3)
+
+! -     Get position of cumulative plastic strain of start of annealing (last internal variable)
+        i_ecro_init = nb_vari
+
+! -     Modify internal variables
+        do ipg = 1, npg
 !
-    if (check_rest .gt. 0.1) then
+            p_in = zr(j_vari_in-1+nb_vari*(ipg-1)+indxEpseq)
+            ecro_in = zr(j_vari_in-1+nb_vari*(ipg-1)+i_ecro_init)
 !
-!     - Modify internal variables
+            call rcvarc(' ', 'TEMP', '+', 'RIGI', ipg, ispg, temp, iret)
+            ASSERT(iret .eq. 0)
 !
-        ispg = 1
-        vvalres = zr(jtime)
+            l_anneal = ((temp .gt. T1) .and. (p_in .gt. epsq_min) .and. (temp .lt. T2))
+
+            ! Je suis très poroche de la borne fin de la restauration
+            ! Pour éviter la division par zéro je décide
+            l_end_anneal = ASTER_FALSE
+            if (abs(temp-T2) .le. toleTemp) then
+                l_end_anneal = ASTER_TRUE
+            end if
 !
+            if (.not. l_anneal) then
+                p_out = p_in
+                ecro_out = p_in
 !
-        if ((rela_comp .eq. 'VMIS_ISOT_LINE') .or. (rela_comp .eq. 'VMIS_ISOT_TRAC')) then
-            do ipg = 1, npg
-!
-!             - Evaluate annealing function
-!
-                call rcvalb('RIGI', ipg, ispg, '+', zi(jmate), &
-                            ' ', 'REST_ECRO', 1, 'INST', [vvalres], &
-                            nb_res_mx, 'FONC_MULT', valres, codret, 2)
-!
-!             - Annealing function bound's checking
-!
-                if ((valres(1) .gt. 1.d0) .or. (valres(1) .lt. 0.d0)) then
-                    call utmess('F', 'COMPOR1_91', nr=2, valr=valres(1))
+            else if (l_anneal) then
+                if (l_end_anneal) then
+                    p_out = 0.
+                    ecro_out = ecro_in
+                else
+                    x0 = ecro_in
+                    call rcvalb('RIGI', ipg, ispg, &
+                                '+', zi(jmate), ' ', 'REST_ECRO', &
+                                1, 'EPSI', [epsq_min], 1, 'COEF_ECRO', alpha, codret(1), 2)
+                    call rcvalb('RIGI', ipg, ispg, &
+                                '+', zi(jmate), ' ', 'REST_ECRO', &
+                                1, 'EPSI', [epsq_min], 1, 'TAU_INF', tau_inf, codret(1), 2)
+                    if (p_in .gt. (x0*tau_inf(1))) then
+                        valExp = alpha(1)*(temp-T1)/(T2-temp)
+                        if (valExp .ge. maxExp) then
+                            p_out = 0.
+                        else
+                            k = exp(valExp)-1.d0
+                            p_out = p_in*(1./(1.+k*dt))+ &
+                                    (1-1./(1+k*dt))*(x0*tau_inf(1))
+                            p_out = max(p_out, 0.)
+                        end if
+                    else
+                        p_out = p_in
+                    end if
+                    ecro_out = ecro_in
                 end if
+            end if
 !
-                zr(j_vari_out-1+nb_vari*(ipg-1)+1) = zr(j_vari_in-1+nb_vari*(ipg-1)+1)*valres(1)
-                zr(j_vari_out-1+nb_vari*(ipg-1)+2) = zr(j_vari_in-1+nb_vari*(ipg-1)+2)
+            do ivari = 1, nb_vari
+                zr(j_vari_out-1+nb_vari*(ipg-1)+ivari) = zr(j_vari_in-1+nb_vari*(ipg-1)+ivari)
             end do
-        elseif (rela_comp .eq. 'VMIS_CINE_LINE') then
-            do ipg = 1, npg
+            zr(j_vari_out-1+nb_vari*(ipg-1)+indxEpseq) = p_out
+            zr(j_vari_out-1+nb_vari*(ipg-1)+i_ecro_init) = ecro_out
+
 !
-!             - Evaluate annealing function
-!
-                call rcvalb('RIGI', ipg, ispg, '+', zi(jmate), &
-                            ' ', 'REST_ECRO', 1, 'INST', [vvalres], &
-                            nb_res_mx, 'FONC_MULT', valres, codret, 2)
-!
-!             - Annealing function bound's checking
-!
-                if ((valres(1) .gt. 1.d0) .or. (valres(1) .lt. 0.d0)) then
-                    call utmess('F', 'COMPOR1_91', nr=2, valr=valres(1))
-                end if
-!
-                do ivari = 1, 6
-                    zr(j_vari_out-1+nb_vari*(ipg-1)+ivari) = zr(j_vari_in-1+nb_vari*(ipg-1)+ivari) &
-                                                             *valres(1)
-                end do
-                zr(j_vari_out-1+nb_vari*(ipg-1)+7) = zr(j_vari_in-1+nb_vari*(ipg-1)+7)
-            end do
-        elseif ((rela_comp .eq. 'VMIS_ECMI_LINE') .or. (rela_comp .eq. 'VMIS_CIN1_CHAB')) then
-            do ipg = 1, npg
-!
-!             - Evaluate annealing function
-!
-                call rcvalb('RIGI', ipg, ispg, '+', zi(jmate), &
-                            ' ', 'REST_ECRO', 1, 'INST', [vvalres], &
-                            nb_res_mx, 'FONC_MULT', valres, codret, 2)
-!
-!             - Annealing function bound's checking
-!
-                if ((valres(1) .gt. 1.d0) .or. (valres(1) .lt. 0.d0)) then
-                    call utmess('F', 'COMPOR1_91', nr=2, valr=valres(1))
-                end if
-!
-                zr(j_vari_out-1+nb_vari*(ipg-1)+1) = zr(j_vari_in-1+nb_vari*(ipg-1)+1)*valres(1)
-                do ivari = 3, 8
-                    zr(j_vari_out-1+nb_vari*(ipg-1)+ivari) = zr(j_vari_in-1+nb_vari*(ipg-1)+ivari) &
-                                                             *valres(1)
-                end do
-                zr(j_vari_out-1+nb_vari*(ipg-1)+2) = zr(j_vari_in-1+nb_vari*(ipg-1)+2)
-            end do
-        elseif (rela_comp .eq. 'VMIS_CIN2_CHAB') then
-            do ipg = 1, npg
-!
-!             - Evaluate annealing function
-!
-                call rcvalb('RIGI', ipg, ispg, '+', zi(jmate), &
-                            ' ', 'REST_ECRO', 1, 'INST', [vvalres], &
-                            nb_res_mx, 'FONC_MULT', valres, codret, 2)
-!
-!             - Annealing function bound's checking
-!
-                if ((valres(1) .gt. 1.d0) .or. (valres(1) .lt. 0.d0)) then
-                    call utmess('F', 'COMPOR1_91', nr=2, valr=valres(1))
-                end if
-!
-                zr(j_vari_out-1+nb_vari*(ipg-1)+1) = zr(j_vari_in-1+nb_vari*(ipg-1)+1)*valres(1)
-                do ivari = 3, 14
-                    zr(j_vari_out-1+nb_vari*(ipg-1)+ivari) = zr(j_vari_in-1+nb_vari*(ipg-1)+ivari) &
-                                                             *valres(1)
-                end do
-                zr(j_vari_out-1+nb_vari*(ipg-1)+2) = zr(j_vari_in-1+nb_vari*(ipg-1)+2)
-            end do
-        end if
+        end do
 !
     else
 !
-!     - Internal variables OUT = Internal variables IN (no modifications)
+!     - Internal variables OUT = Internal variables IN (no REST_ECRO)
 !
         do ipg = 1, npg
             do ivari = 1, nb_vari

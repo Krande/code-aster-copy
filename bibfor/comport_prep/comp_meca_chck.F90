@@ -34,6 +34,7 @@ subroutine comp_meca_chck(model, mesh, chmate, &
 #include "asterfort/compMecaSelectPlaneStressAlgo.h"
 #include "asterfort/comp_read_mesh.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/utmess.h"
 !
 #include "asterc/asmpi_comm.h"
@@ -61,12 +62,12 @@ subroutine comp_meca_chck(model, mesh, chmate, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    character(len=16), parameter :: keywordfact = 'COMPORTEMENT'
+    character(len=16), parameter :: factorKeyword = 'COMPORTEMENT'
     character(len=24), parameter :: cellAffe = '&&COMPMECASAVE.LIST'
     aster_logical :: lAllCellAffe
     integer :: nbCellAffe
     integer :: iFactorKeyword, nbFactorKeyword, exteDefo, lctestIret
-    character(len=16) :: defoComp, relaComp, typeCpla, typeComp, reguVisc
+    character(len=16) :: defoComp, relaComp, typeCpla, typeComp, reguVisc, postIncr
     character(len=16) :: relaCompPY, defoCompPY
     character(len=19) :: partit, answer
     character(len=24) :: modelLigrel
@@ -98,7 +99,7 @@ subroutine comp_meca_chck(model, mesh, chmate, &
     do iFactorKeyword = 1, nbFactorKeyword
 
 ! ----- Get list of cells where behaviour is defined
-        call comp_read_mesh(mesh, keywordfact, iFactorKeyword, &
+        call comp_read_mesh(mesh, factorKeyword, iFactorKeyword, &
                             cellAffe, lAllCellAffe, nbCellAffe)
 
 ! ----- Get main parameters for this behaviour
@@ -109,6 +110,7 @@ subroutine comp_meca_chck(model, mesh, chmate, &
         lMfront = behaviourPrepPara%v_paraExte(iFactorKeyword)%l_mfront_offi .or. &
                   behaviourPrepPara%v_paraExte(iFactorKeyword)%l_mfront_proto
         exteDefo = behaviourPrepPara%v_paraExte(iFactorKeyword)%strain_model
+        postIncr = behaviourPrepPara%v_para(iFactorKeyword)%post_incr
 
 ! ----- Coding comportment (Python)
         call lccree(1, relaComp, relaCompPY)
@@ -139,6 +141,14 @@ subroutine comp_meca_chck(model, mesh, chmate, &
             call lctest(relaCompPY, 'REGU_VISC', reguVisc, lctestIret)
             if (lctestIret .eq. 0) then
                 call utmess('F', 'COMPOR1_33', nk=2, valk=[reguVisc, relaComp])
+            end if
+        end if
+
+! ----- Check POST_INCR
+        if (postIncr .eq. 'REST_ECRO') then
+            call lctest(relaCompPY, 'post_incr', 'REST_ECRO', lctestIret)
+            if (lctestIret .eq. 0) then
+                call utmess('F', 'COMPOR1_90', nk=1, valk=relaComp)
             end if
         end if
 

@@ -56,7 +56,6 @@ subroutine nonlinDSConstitutiveInit(model, cara_elem, ds_constitutive, verbose_)
 !
     integer :: ifm, niv
     aster_logical :: lLinear, lDisCtc, verbose
-    character(len=8) :: answer
     integer :: nb_affe, i_affe
     character(len=16), pointer :: v_compor_vale(:) => null()
     integer, pointer :: v_compor_desc(:) => null()
@@ -82,8 +81,7 @@ subroutine nonlinDSConstitutiveInit(model, cara_elem, ds_constitutive, verbose_)
 !
     call nmcpqu(ds_constitutive%compor, 'C_PLAN', 'DEBORST', ds_constitutive%l_deborst)
     call nmcpqu(ds_constitutive%compor, 'RELCOM', 'DIS_CHOC', ds_constitutive%l_dis_choc)
-    call dismoi('POST_INCR', ds_constitutive%carcri, 'CARTE_CARCRI', repk=answer)
-    ds_constitutive%l_post_incr = answer .eq. 'OUI'
+    call nmcpqu(ds_constitutive%compor, 'POSTINCR', 'REST_ECRO', ds_constitutive%lAnnealing)
 !
 ! - Look if geometric matrix is included in global tangent matrix
 !

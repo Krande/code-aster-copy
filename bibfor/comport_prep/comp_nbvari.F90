@@ -18,8 +18,8 @@
 ! person_in_charge: mickael.abbas at edf.fr
 !
 subroutine comp_nbvari(rela_comp, defo_comp, type_cpla, kit_comp, &
-                       post_iter, mult_comp, regu_visc, &
-                       extern_type, extern_addr, model_dim, &
+                       post_iter, mult_comp, regu_visc, post_incr, &
+                       extern_type, extern_addr, &
                        nbVariUMAT, &
                        nbVari, numeLaw, nbVariKit, numeLawKit)
 !
@@ -35,8 +35,8 @@ subroutine comp_nbvari(rela_comp, defo_comp, type_cpla, kit_comp, &
 !
     character(len=16), intent(in) :: rela_comp, defo_comp, type_cpla
     character(len=16), intent(in) :: kit_comp(4), post_iter
-    character(len=16), intent(in) :: mult_comp, regu_visc, extern_addr
-    integer, intent(in) :: extern_type, model_dim
+    character(len=16), intent(in) :: mult_comp, regu_visc, post_incr, extern_addr
+    integer, intent(in) :: extern_type
     integer, intent(in) :: nbVariUMAT
     integer, intent(out) :: nbVari, numeLaw, nbVariKit(4), numeLawKit(4)
 !
@@ -52,12 +52,12 @@ subroutine comp_nbvari(rela_comp, defo_comp, type_cpla, kit_comp, &
 ! In  defo_comp        : DEFORMATION comportment
 ! In  type_cpla        : plane stress method
 ! In  kit_comp         : KIT comportment
-! In  post_iter        : type of post_treatment
 ! In  mult_comp        : multi-comportment (for crystal)
+! In  post_iter        : type of post-treatment at each Newton iteration
 ! In  regu_visc        : keyword for viscuous regularization
+! In  post_incr        : type of post-treatment at end of time step
 ! In  external_type    : type of type of integration (internal, official, proto, umat)
 ! In  external_ptr     : address of external behaviour
-! In  model_dim        : dimension of modelisation (2D or 3D)
 ! In  nbVariUMAT       : number of internal state variables for UMAT
 ! Out nbVari           : number of internal state variables
 ! Out numeLaw          : index of subroutine for behaviour
@@ -105,7 +105,7 @@ subroutine comp_nbvari(rela_comp, defo_comp, type_cpla, kit_comp, &
 
 ! - Get number of internal state variables
     call comp_nbvari_std(rela_comp, defo_comp, type_cpla, &
-                         kit_comp, post_iter, regu_visc, &
+                         kit_comp, post_iter, regu_visc, post_incr, &
                          nbVari, numeLaw)
 
 ! - Get number of internal state variables for external behaviours

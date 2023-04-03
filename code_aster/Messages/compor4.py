@@ -70,6 +70,7 @@ Comportement - Occurrence  %(i1)d"""
         """Vous utilisez des variables de commande et il y a au moins un comportement qui ne peut pas prendre en compte les déformations anélastiques (thermique par exemple)."""
     ),
     18: _("""     Pas de régularisation visqueuse"""),
+    19: _("""     Pas de post-traitement à la fin du pas de temps"""),
     20: _("""            V%(i1)d : %(k1)s"""),
     21: _(
         """
@@ -93,6 +94,7 @@ Ce n'est actuellement pas possible.
     26: _(
         """Le comportement utilise la variable d'état externe %(k1)s, or la température n'est pas définie dans AFFE_VARC."""
     ),
+    27: _("""     Post-traitement fin du pas de temps  : %(k1)s"""),
     32: _(
         """Le comportement %(k1)s n'est pas possible pour les éléments de type barre, grille ou autres éléments unidimensionnels."""
     ),

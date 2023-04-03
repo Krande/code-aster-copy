@@ -197,4 +197,5 @@ loi = LoiComportement(
     exte_vari=("ELTSIZE2",),
     deform_ldc=("OLD",),
     regu_visc=("No",),
+    post_incr=None,
 )

@@ -253,6 +253,7 @@ DICT_NOM_VARI = {
         "JOINT_BA : variable scalaire de l'écrouissage isotrope pour l'endommagement en mode 2"
     ),
     "ECROCINE": _("JOINT_BA : valeur de l'écrouissage cinématique par frottement des fissures"),
+    "ECROINIT": _("Variable d'écrouissage isotrope au début de la restauration d'écrouissage"),
     "ECROISOT": _("Variable d'écrouissage isotrope"),
     "EDISSCUM": _("énergie dissipée cumulée à chaque pas pour CRIT_RUPT"),
     "EDISS": _("énergie dissipée pour CRIT_RUPT"),

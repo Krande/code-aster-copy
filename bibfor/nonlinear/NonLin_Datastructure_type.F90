@@ -211,7 +211,6 @@ module NonLin_Datastructure_type
         aster_logical     :: l_store = ASTER_FALSE
         aster_logical     :: l_obsv = ASTER_FALSE
         character(len=24) :: algo_name = ' '
-
         character(len=24) :: init_name = ' '
         character(len=4)  :: init_type = ' '
     end type NL_DS_Field
@@ -466,8 +465,8 @@ module NonLin_Datastructure_type
         aster_logical         :: l_deborst = ASTER_FALSE
 ! ----- Flag for DIS_CHOC
         aster_logical         :: l_dis_choc = ASTER_FALSE
-! ----- Flag for POST_INCR
-        aster_logical         :: l_post_incr = ASTER_FALSE
+! ----- Flag for annealing
+        aster_logical         :: lAnnealing = ASTER_FALSE
 ! ----- Flag for if large strains are in tangent matrix
         aster_logical         :: l_matr_geom = ASTER_FALSE
 ! ----- Flag for if everything is linear in behaviour

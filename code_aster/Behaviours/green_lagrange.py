@@ -38,4 +38,5 @@ loi = LoiComportement(
     exte_vari=None,
     deform_ldc=("MECANIQUE",),
     regu_visc=("No",),
+    post_incr=None,
 )

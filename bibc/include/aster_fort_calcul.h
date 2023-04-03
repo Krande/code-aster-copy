@@ -276,6 +276,11 @@ void DEFSSSSPSPSSPPPSS( ME2MME_EVOL, me2mme_evol, const char *, STRING_SIZE, con
                         STRING_SIZE, const char *, STRING_SIZE, ASTERDOUBLE *, ASTERDOUBLE *,
                         ASTERDOUBLE *, const char *, STRING_SIZE, const char *, STRING_SIZE );
 
+#define CALLO_HASBEHAVIOURFEATURE( a, b, c, d, e )                                                 \
+    CALLOOOOP( HASBEHAVIOURFEATURE, hasbehaviourfeature, a, b, c, d, e )
+void DEFSSSSP( HASBEHAVIOURFEATURE, hasbehaviourfeature, const char *, STRING_SIZE, const char *,
+               STRING_SIZE, const char *, STRING_SIZE, const char *, STRING_SIZE, ASTERLOGICAL * );
+
 #ifdef __cplusplus
 }
 #endif

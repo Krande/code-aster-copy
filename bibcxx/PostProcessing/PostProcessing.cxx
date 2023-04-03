@@ -62,10 +62,9 @@ FieldOnCellsRealPtr PostProcessing::computeHydration( const FieldOnNodesRealPtr 
 };
 
 /** @brief Compute annealing */
-FieldOnCellsRealPtr
-PostProcessing::computeAnnealing( const FieldOnCellsRealPtr internVar, const ASTERDOUBLE &time_curr,
-                                  const FieldOnCellsRealPtr &externVarPrev,
-                                  const FieldOnCellsRealPtr &externVarCurr ) const {
+FieldOnCellsRealPtr PostProcessing::computeAnnealing(
+    const FieldOnCellsRealPtr internVar, const ASTERDOUBLE &time_prev, const ASTERDOUBLE &time_curr,
+    const FieldOnCellsRealPtr &externVarPrev, const FieldOnCellsRealPtr &externVarCurr ) const {
 
     AS_ASSERT( _phys_problem->getModel()->isMechanical() );
 
@@ -96,7 +95,8 @@ PostProcessing::computeAnnealing( const FieldOnCellsRealPtr internVar, const AST
         calcul->addInputField( "PVARCMR", externVarPrev );
         calcul->addInputField( "PVARCPR", externVarCurr );
     }
-    calcul->addTimeField( "PTEMPSR", time_curr );
+    calcul->addTimeField( "PINSTMR", time_prev );
+    calcul->addTimeField( "PINSTPR", time_curr );
 
     // Set current physical state
     calcul->addInputField( "PVARIMR", internVar );

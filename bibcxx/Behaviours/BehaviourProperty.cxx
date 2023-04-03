@@ -127,16 +127,16 @@ bool BehaviourProperty::hasBehaviour( const std::string &behaviour ) const {
 
 void BehaviourProperty::detectFunctionnalities() {
     // Detect annealing
-    const std::string question( "POST_INCR" );
-    const std::string typeco( "CARTE_CARCRI" );
-    ASTERINTEGER repi = 0, ier = 0;
-    JeveuxChar32 repk( " " );
-    const std::string arret( "F" );
-    CALLO_DISMOI( question, this->getConvergenceCriteria()->getName(), typeco, &repi, repk, arret,
-                  &ier );
+    std::string feature( "Annealing" );
+    feature.resize( 16, ' ' );
+    std::string caraElem( " " );
+    caraElem.resize( 8, ' ' );
+    bool flag;
+    CALLO_HASBEHAVIOURFEATURE( this->getModel()->getName(), caraElem,
+                               this->getBehaviourField()->getName(), feature,
+                               (ASTERLOGICAL *)&flag );
     _annealing = false;
-    auto retour = strip( repk.toString() );
-    if ( retour == "OUI" ) {
+    if ( flag ) {
         _annealing = true;
     }
 };

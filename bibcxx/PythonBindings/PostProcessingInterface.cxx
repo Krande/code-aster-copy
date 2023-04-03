@@ -49,6 +49,7 @@ void exportPostProcessingToPython( py::module_ &mod ) {
 
             Arguments:
                 internVar (FieldOnNodesReal): internal state variables before annealing
+                time_prev (float): time at begin of the step
                 time_curr (float): time at end of the step
                 externVarPrev (FieldOnCellsReal): external state variables at previous time
                 externVarCurr (FieldOnCellsReal): external state variables at current time
@@ -56,6 +57,6 @@ void exportPostProcessingToPython( py::module_ &mod ) {
             Returns:
                 FieldOnCellReals: internal state variables after annealing
         )",
-              py::arg( "internVar" ), py::arg( "time_curr" ), py::arg( "externVarPrev" ),
-              py::arg( "externVarCurr" ) );
+              py::arg( "internVar" ), py::arg( "time_prev" ), py::arg( "time_curr" ),
+              py::arg( "externVarPrev" ), py::arg( "externVarCurr" ) );
 };

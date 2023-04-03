@@ -96,7 +96,7 @@ subroutine nmfonc(ds_conv, ds_algopara, solver, model, ds_contact, &
     integer :: ifm, niv
     integer :: nocc, iret, nb_subs_stat, nb_sst
     integer :: i_cont_form
-    aster_logical :: l_deborst, l_frot, l_dis_choc, l_all_verif, l_refe, l_comp, l_post_incr
+    aster_logical :: l_deborst, l_frot, l_dis_choc, l_all_verif, l_refe, l_comp, lAnnealing
     aster_logical :: l_loop_geom, l_loop_frot, l_loop_cont, l_pena
     integer :: ixfem
     aster_logical :: l_load_undead, l_load_elim, l_load_didi
@@ -115,7 +115,7 @@ subroutine nmfonc(ds_conv, ds_algopara, solver, model, ds_contact, &
     l_unil = ds_contact%l_meca_unil
     l_deborst = ds_constitutive%l_deborst
     l_dis_choc = ds_constitutive%l_dis_choc
-    l_post_incr = ds_constitutive%l_post_incr
+    lAnnealing = ds_constitutive%lAnnealing
 !
 ! - Print
 !
@@ -455,10 +455,9 @@ subroutine nmfonc(ds_conv, ds_algopara, solver, model, ds_contact, &
 !
     call dismoi('ELAS_FO', mater, 'CHAM_MATER', repk=repk)
     if (repk .eq. 'OUI') list_func_acti(57) = 1
-!
-! - Post-treatment on comportment laws ?
-!
-    if (l_post_incr) then
+
+! - Annealing ?
+    if (lAnnealing) then
         list_func_acti(58) = 1
     end if
 !
@@ -649,7 +648,7 @@ subroutine nmfonc(ds_conv, ds_algopara, solver, model, ds_contact, &
         if (isfonc(list_func_acti, 'ERRE_TEMPS_THM')) then
             call utmess('I', 'MECANONLINE14_51')
         end if
-        if (isfonc(list_func_acti, 'POST_INCR')) then
+        if (isfonc(list_func_acti, 'ANNEALING')) then
             call utmess('I', 'MECANONLINE14_52')
         end if
         if (isfonc(list_func_acti, 'EXI_VARC')) then

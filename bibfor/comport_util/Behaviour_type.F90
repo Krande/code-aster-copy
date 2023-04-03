@@ -190,6 +190,8 @@ module Behaviour_type
         character(len=16) :: regu_visc = ' '
 ! ----- Mechanical part of behaviour
         character(len=16) :: meca_comp = ' '
+! ----- Keyword POST_INCR
+        character(len=16) :: post_incr = ' '
     end type Behaviour_Para
 
 ! - Behaviour - Preparation - Criteria for behaviour
@@ -209,7 +211,6 @@ module Behaviour_type
         integer                   :: iter_deborst_max = 0
         real(kind=8)              :: resi_radi_rela = 0.d0
         integer                   :: ipostiter = 0
-        integer                   :: ipostincr = 0
         integer                   :: iveriborne = 0
         aster_logical             :: l_matr_unsymm = ASTER_FALSE
         real(kind=8)              :: algo_inte_r = 0.d0

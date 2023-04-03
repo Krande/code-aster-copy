@@ -27,24 +27,21 @@ class Annealing:
     This class can be used to calculate the mechanical state after annealing for
     non-linear mechanical calculations.
 
-     Arguments:
+    It does:
 
+    ..math::
+
+        NewInternVar^{n} = f( InterVar^{n}, t^{n-1}, t^{n}, ExtVar^{n-1}, ExtVar^{n})
     """
 
     provide = SOP.PostStepHook
     required_features = [SOP.PhysicalProblem, SOP.PhysicalState]
 
-    def __init__(self):
-        pass
-
     def __call__(self, nl_solver):
-        time = nl_solver.phys_state.time_curr
-        internVar = nl_solver.phys_state.internVar
+        previous = nl_solver.phys_state.getState(-2)
+        last = nl_solver.phys_state.getState(-1)
         post_process = PostProcessing(nl_solver.phys_pb)
         internVar_anneal = post_process.computeAnnealing(
-            nl_solver.phys_state.internVar,
-            time,
-            nl_solver.phys_state.getState(-1).externVar,
-            nl_solver.phys_state.externVar,
+            last.internVar, previous.time_curr, last.time_curr, previous.externVar, last.externVar
         )
-        nl_solver.phys_state.internVar = internVar_anneal
+        nl_solver.phys_state.internVar = last._internVar = internVar_anneal

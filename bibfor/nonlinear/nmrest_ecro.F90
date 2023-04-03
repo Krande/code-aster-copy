@@ -15,6 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
+! person_in_charge: sofiane.hendili at edf.fr
 
 subroutine nmrest_ecro(model_, mate_, ds_constitutive, hval_incr)
 !
@@ -51,7 +52,7 @@ subroutine nmrest_ecro(model_, mate_, ds_constitutive, hval_incr)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: nbin = 7
+    integer, parameter :: nbin = 8
     integer, parameter :: nbout = 1
     character(len=8)   :: lpaout(nbout), lpain(nbin)
     character(len=19)  :: lchout(nbout), lchin(nbin)
@@ -62,7 +63,7 @@ subroutine nmrest_ecro(model_, mate_, ds_constitutive, hval_incr)
     character(len=19) :: ligrmo
     character(len=1)  :: base
     character(len=19) :: vari_curr, varc_prev, varc_curr, vari_curr_modi
-    character(len=19) :: vrcplu, vrcmoi, time_curr
+    character(len=19) :: vrcplu, vrcmoi, time_prev, time_curr
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -79,6 +80,7 @@ subroutine nmrest_ecro(model_, mate_, ds_constitutive, hval_incr)
     call nmchex(hval_incr, 'VALINC', 'COMPLU', varc_curr)
     call nmvcex('TOUT', varc_prev, vrcmoi)
     call nmvcex('TOUT', varc_curr, vrcplu)
+    call nmvcex('INST', varc_prev, time_prev)
     call nmvcex('INST', varc_curr, time_curr)
 !
     vari_curr_modi = '&&VARI_TMP'
@@ -96,10 +98,12 @@ subroutine nmrest_ecro(model_, mate_, ds_constitutive, hval_incr)
     lchin(4) = vrcmoi
     lpain(5) = 'PVARCPR'
     lchin(5) = vrcplu
-    lpain(6) = 'PTEMPSR'
+    lpain(6) = 'PINSTPR'
     lchin(6) = time_curr
     lpain(7) = 'PCARCRI'
     lchin(7) = ds_constitutive%carcri(1:19)
+    lpain(8) = 'PINSTMR'
+    lchin(8) = time_prev
 !
 ! - Output field
 !

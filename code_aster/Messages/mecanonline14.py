@@ -74,7 +74,7 @@ cata_msg = {
     49: _("""  Activation du calcul des modes vibratoires."""),
     50: _("""  Activation du calcul du bilan d'énergie."""),
     51: _("""  Activation du calcul de l'indicateur d'erreur en temps pour la THM."""),
-    52: _("""  Activation du post-traitement pour le comportement."""),
+    52: _("""  Activation du post-traitement pour la restauration d'écrouissage."""),
     53: _("""  Activation des variables de commande."""),
     54: _("""  Activation des paramètres élastiques fonction des variables de commande."""),
     55: _("""  Activation d'un concept enrichi."""),

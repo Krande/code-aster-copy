@@ -17,7 +17,7 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-# Copy of hsnv140b test-case
+# Copy of hsnv140b test-case with PETIT (and NOT PETIT_REAC) to être plus rapide
 
 import code_aster
 from code_aster.Commands import *
@@ -166,21 +166,64 @@ hardeningCoef = DEFI_FONCTION(
 )
 
 
-# REST_ECRO
+# Annealing
 Tdebut = 600.0  # Temperature de debut de restauration
-Tfin = 1000.0  # Temperature de restauration complete
+Tfin = 1200.0  # Temperature de restauration complete
 
-restEcroPara = DEFI_FONCTION(
-    NOM_PARA="TEMP", VALE=(Tdebut, 1.0, Tfin, 0.0), PROL_DROITE="CONSTANT", PROL_GAUCHE="CONSTANT"
+# Valeurs du coefficient alpha en fonction de la temperature
+annealingCoefFunc = [
+    680.0,
+    1.154,
+    750.0,
+    1.335,
+    825.0,
+    1.308,
+    900.0,
+    1.165,
+    1000.0,
+    0.181,
+    1075.0,
+    0.687,
+    1150.0,
+    0.408,
+]
+
+# Valeurs du coefficient tau_infini en fonction de la temperature
+annealingTauFunc = [
+    Tdebut,
+    1.0,
+    680.0,
+    0.877,
+    750.0,
+    0.767,
+    825.0,
+    0.682,
+    900.0,
+    0.576,
+    1000.0,
+    0.071,
+    1075.0,
+    0.052,
+    1150.0,
+    0.045,
+    Tfin,
+    0.0,
+]
+# ------------------------------------------------
+annealingCoef = DEFI_FONCTION(
+    NOM_PARA="TEMP", VALE=(annealingCoefFunc), PROL_DROITE="CONSTANT", PROL_GAUCHE="LINEAIRE"
 )
-
+#
+annealingTau = DEFI_FONCTION(
+    NOM_PARA="TEMP", VALE=(annealingTauFunc), PROL_DROITE="CONSTANT", PROL_GAUCHE="CONSTANT"
+)
 steel = DEFI_MATERIAU(
     ELAS_FO=_F(E=elasticityModulus, NU=PoissonCoef, ALPHA=thermalCoef, TEMP_DEF_ALPHA=20.0),
     ECRO_LINE_FO=_F(D_SIGM_EPSI=hardeningCoef, SY=elasticityYield),
-    REST_ECRO=_F(FONC_MULT=restEcroPara),
+    REST_ECRO=_F(COEF_ECRO=annealingCoef, TAU_INF=annealingTau, TEMP_MINI=Tdebut, TEMP_MAXI=Tfin),
 )
 
-timeList = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=_F(JUSQU_A=800.0, NOMBRE=5))
+timeList = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=_F(JUSQU_A=800.0, NOMBRE=8))
 timeStepper = DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST=timeList))
 
 # Create thermal result
@@ -242,29 +285,16 @@ materialField = AFFE_MATERIAU(
 )
 
 # Mechanic non-linear
-# nonlinearResultRefe = STAT_NON_LINE(
-#     MODELE=modelMeca,
-#     CHAM_MATER=materialField,
-#     EXCIT=_F(CHARGE=clampBC),
-#     COMPORTEMENT=_F(
-#         RELATION="VMIS_ISOT_LINE", DEFORMATION="PETIT_REAC", TOUT="OUI", POST_INCR="REST_ECRO"
-#     ),
-#     INCREMENT=_F(LIST_INST=timeStepper),
-#     NEWTON=_F(REAC_INCR=1, MATRICE="TANGENTE", REAC_ITER=5),
-#     CONVERGENCE=_F(RESI_GLOB_RELA=5.0e-05, ITER_GLOB_MAXI=50),
-# )
-
-
 nonlinearResult = MECA_NON_LINE(
     MODELE=modelMeca,
     CHAM_MATER=materialField,
     EXCIT=_F(CHARGE=clampBC),
     COMPORTEMENT=_F(
-        RELATION="VMIS_ISOT_LINE", DEFORMATION="PETIT_REAC", TOUT="OUI", POST_INCR="REST_ECRO"
+        RELATION="VMIS_ISOT_LINE", DEFORMATION="PETIT", TOUT="OUI", POST_INCR="REST_ECRO"
     ),
     INCREMENT=_F(LIST_INST=timeStepper),
     NEWTON=_F(REAC_INCR=1, MATRICE="TANGENTE", REAC_ITER=5),
-    CONVERGENCE=_F(RESI_GLOB_RELA=5.0e-05, ITER_GLOB_MAXI=50),
+    CONVERGENCE=_F(RESI_GLOB_RELA=1.0e-6, ITER_GLOB_MAXI=50),
 )
 
 # Post traitement
@@ -276,32 +306,40 @@ nonlinearResult = CALC_CHAMP(
     VARI_INTERNE=("VARI_NOEU"),
     RESULTAT=nonlinearResult,
 )
-#
+
+# Mêmes valeurs que la version STAT_NON_LINE
+variRefe = 6.514218250410631e-06
+sigmRefe = 378658087.77723074
 TEST_RESU(
     RESU=(
         _F(
-            INST=800.0,
+            INST=100.0,
             RESULTAT=nonlinearResult,
             NOM_CHAM="VARI_NOEU",
             GROUP_NO="NO1",
             NOM_CMP="V1",
-            VALE_CALC=0.01834538584519512,
-            VALE_REFE=0.01834599252008838,
+            VALE_CALC=6.514218250410631e-06,
+            VALE_REFE=variRefe,
             REFERENCE="SOURCE_EXTERNE",
-            PRECISION=0.01,
+            PRECISION=0.0001,
         ),
+    )
+)
+TEST_RESU(
+    RESU=(
         _F(
             INST=800.0,
             RESULTAT=nonlinearResult,
             NOM_CHAM="SIEF_NOEU",
             GROUP_NO="NO1",
             NOM_CMP="SIYY",
-            VALE_CALC=330164415.9254925,
-            VALE_REFE=327.0e06,
+            VALE_CALC=378658087.77723074,
+            VALE_REFE=sigmRefe,
             REFERENCE="SOURCE_EXTERNE",
-            PRECISION=0.1,
+            PRECISION=0.0001,
         ),
     )
 )
+
 
 FIN()

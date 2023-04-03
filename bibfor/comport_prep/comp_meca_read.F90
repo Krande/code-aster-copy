@@ -59,7 +59,7 @@ subroutine comp_meca_read(l_etat_init, behaviourPrepPara, model)
     character(len=8) :: mesh
     integer :: iFactorKeyword, nbFactorKeyword, iret
     character(len=16) :: defo_comp, rela_comp, type_cpla, mult_comp, type_comp, meca_comp
-    character(len=16) :: post_iter, defo_ldc, rigi_geom, regu_visc
+    character(len=16) :: post_iter, defo_ldc, rigi_geom, regu_visc, post_incr
     character(len=16) :: kit_comp(4), answer
     aster_logical :: l_cristal, l_kit, lTotalStrain
     integer, pointer :: modelCell(:) => null()
@@ -98,7 +98,7 @@ subroutine comp_meca_read(l_etat_init, behaviourPrepPara, model)
             rigi_geom = 'VIDE'
         end if
 
-! ----- Damage post-treatment
+! ----- Post-treatment at each Newton iteration
         post_iter = 'VIDE'
         call getvtx(factorKeyword, 'POST_ITER', iocc=iFactorKeyword, &
                     scal=post_iter, nbret=iret)
@@ -117,6 +117,14 @@ subroutine comp_meca_read(l_etat_init, behaviourPrepPara, model)
             else
                 ASSERT(ASTER_FALSE)
             end if
+        end if
+
+! ----- Post-treatment at each time step
+        post_incr = "VIDE"
+        call getvtx(factorKeyword, 'POST_INCR', iocc=iFactorKeyword, &
+                    scal=post_incr, nbret=iret)
+        if (iret .eq. 0) then
+            post_incr = 'VIDE'
         end if
 
 ! ----- For KIT
@@ -165,6 +173,7 @@ subroutine comp_meca_read(l_etat_init, behaviourPrepPara, model)
         behaviourPrepPara%v_para(iFactorKeyword)%defo_ldc = defo_ldc
         behaviourPrepPara%v_para(iFactorKeyword)%rigi_geom = rigi_geom
         behaviourPrepPara%v_para(iFactorKeyword)%regu_visc = regu_visc
+        behaviourPrepPara%v_para(iFactorKeyword)%post_incr = post_incr
 
     end do
 
@@ -183,6 +192,7 @@ subroutine comp_meca_read(l_etat_init, behaviourPrepPara, model)
             WRITE (6, *) "--- defo_ldc  : ", behaviourPrepPara%v_para(iFactorKeyword)%defo_ldc
             WRITE (6, *) "--- rigi_geom : ", behaviourPrepPara%v_para(iFactorKeyword)%rigi_geom
             WRITE (6, *) "--- regu_visc : ", behaviourPrepPara%v_para(iFactorKeyword)%regu_visc
+            WRITE (6, *) "--- post_incr : ", behaviourPrepPara%v_para(iFactorKeyword)%post_incr
         end do
     end if
 

@@ -87,6 +87,7 @@ subroutine setBehaviourTypeValue(behaviourPrepPara, iFactorKeyword_, &
         comporMap_(DEFO_LDC) = para%defo_ldc
         comporMap_(RIGI_GEOM) = para%rigi_geom
         comporMap_(REGUVISC) = para%regu_visc
+        comporMap_(POSTINCR) = para%post_incr
         if (l_kit_thm) then
             comporMap_(MECA_NAME) = para%kit_comp(1)
             comporMap_(HYDR_NAME) = para%kit_comp(2)
@@ -145,6 +146,7 @@ subroutine setBehaviourTypeValue(behaviourPrepPara, iFactorKeyword_, &
         comporList_(DEFO_LDC) = para%defo_ldc
         comporList_(RIGI_GEOM) = para%rigi_geom
         comporList_(REGUVISC) = para%regu_visc
+        comporList_(POSTINCR) = para%post_incr
         if (l_kit_thm) then
             ASSERT(ASTER_FALSE)
         end if

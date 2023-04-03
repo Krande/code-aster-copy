@@ -93,14 +93,14 @@ subroutine comp_meca_pvar(model_, comporMap_, comporList_, comporInfo)
     integer, pointer :: comporInfoZone(:) => null()
     integer, pointer :: zoneRead(:) => null()
     integer, pointer :: modelCell(:) => null()
-    character(len=16), pointer :: infoVari(:) => null()
+    character(len=16), pointer :: comporInfoVari(:) => null()
     character(len=16), pointer :: comporInfoRela(:) => null()
     character(len=16), pointer :: comporVale(:) => null()
     integer, pointer :: comporDesc(:) => null()
     integer, pointer :: comporPtma(:) => null()
     integer :: nbVale, mapNbCmpMax, mapNbZone, nbVari, nt_vari, nb_vari_maxi, nb_zone_acti, nb_zone2
     integer :: mapZoneNume, iCellMesh, nbCellMesh, iret, nutyel, nbVariMeca
-    character(len=16) :: post_iter, vari_excl, regu_visc
+    character(len=16) :: post_iter, vari_excl, regu_visc, post_incr
     character(len=16) :: rela_comp, defo_comp, kit_comp(4), type_cpla, type_comp
     character(len=255) :: libr_name, subr_name
     character(len=16) :: extern_addr, notype
@@ -173,7 +173,7 @@ subroutine comp_meca_pvar(model_, comporMap_, comporList_, comporInfo)
     end if
 
 ! - Create list of comportment information (RELATION, DEFORMATION, etc.)
-    call wkvect(comporInfo(1:19)//'.RELA', 'V V K16', 4*mapNbZone, vk16=comporInfoRela)
+    call wkvect(comporInfo(1:19)//'.RELA', 'V V K16', 5*mapNbZone, vk16=comporInfoRela)
 !
 ! - Create list of internal variables names
 !
@@ -214,6 +214,7 @@ subroutine comp_meca_pvar(model_, comporMap_, comporList_, comporInfo)
                     read (comporVale(mapNbCmpMax*(mapZoneNume-1)+MECA_NVAR), '(I16)') nbVariMeca
                 end if
                 regu_visc = comporVale(mapNbCmpMax*(mapZoneNume-1)+REGUVISC)
+                post_incr = comporVale(mapNbCmpMax*(mapZoneNume-1)+POSTINCR)
             else
                 rela_comp = comporList_(RELA_NAME)
                 defo_comp = comporList_(DEFO)
@@ -230,6 +231,7 @@ subroutine comp_meca_pvar(model_, comporMap_, comporList_, comporInfo)
                     read (comporList_(MECA_NVAR), '(I16)') nbVariMeca
                 end if
                 regu_visc = comporList_(REGUVISC)
+                post_incr = comporList_(POSTINCR)
             end if
 ! --------- Detection of specific cases
             call comp_meca_l(rela_comp, 'KIT_THM', l_kit_thm)
@@ -260,17 +262,19 @@ subroutine comp_meca_pvar(model_, comporMap_, comporList_, comporInfo)
                                 l_excl, vari_excl)
 
 ! --------- Save names of relation
-            comporInfoRela(4*(mapZoneNume-1)+1) = rela_comp
-            comporInfoRela(4*(mapZoneNume-1)+2) = defo_comp
-            comporInfoRela(4*(mapZoneNume-1)+3) = type_cpla
-            comporInfoRela(4*(mapZoneNume-1)+4) = regu_visc
+            comporInfoRela(5*(mapZoneNume-1)+1) = rela_comp
+            comporInfoRela(5*(mapZoneNume-1)+2) = defo_comp
+            comporInfoRela(5*(mapZoneNume-1)+3) = type_cpla
+            comporInfoRela(5*(mapZoneNume-1)+4) = regu_visc
+            comporInfoRela(5*(mapZoneNume-1)+5) = post_incr
 
 ! --------- Get names of internal state variables
             call jeecra(jexnum(comporInfo(1:19)//'.VARI', mapZoneNume), 'LONMAX', nbVari)
-            call jeveuo(jexnum(comporInfo(1:19)//'.VARI', mapZoneNume), 'E', vk16=infoVari)
+            call jeveuo(jexnum(comporInfo(1:19)//'.VARI', mapZoneNume), 'E', vk16=comporInfoVari)
             call comp_meca_name(nbVari, nbVariMeca, l_excl, vari_excl, l_kit_meta, &
                                 rela_comp, defo_comp, kit_comp, type_cpla, post_iter, &
-                                regu_visc, extern_addr, extern_type, model_dim, infoVari)
+                                regu_visc, post_incr, &
+                                extern_addr, extern_type, model_dim, comporInfoVari)
 
 ! --------- Save current zone
             zoneRead(mapZoneNume) = 1

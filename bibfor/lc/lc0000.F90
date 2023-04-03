@@ -230,9 +230,9 @@ subroutine lc0000(BEHinteg, &
     real(kind=8), dimension(6), parameter:: r2 = [1.d0, 1.d0, 1.d0, rac2, rac2, rac2]
     integer, parameter                 :: nvi_regu_visc = 8
     integer, parameter                 :: nvi_gdef_log = 6
-    character(len=16) :: defo_ldc, defo_comp, regu_visc
+    character(len=16) :: defo_ldc, defo_comp, regu_visc, postIncr
     aster_logical :: l_pred, l_czm, l_defo_meca, l_large, lVari, lSigm, lMatr, l_grad_vari
-    aster_logical :: l_regu_visc, l_gdef_log, lImplex
+    aster_logical :: l_regu_visc, l_gdef_log, lImplex, lAnnealing
     integer:: nvi, idx_regu_visc, ndimsi
     real(kind=8):: sigm(nsig), epsm(neps), deps(neps)
 ! --------------------------------------------------------------------------------------------------
@@ -244,49 +244,52 @@ subroutine lc0000(BEHinteg, &
 
     ndt = 2*ndim
     ndi = ndim
+
+! - Get parameters from COMPOR map
     read (compor(DEFO_LDC), '(A16)') defo_ldc
     read (compor(DEFO), '(A16)') defo_comp
     read (compor(REGUVISC), '(A16)') regu_visc
-    l_pred = L_PRED(option)
-    l_czm = typmod(2) .eq. 'ELEMJOIN'
-    l_grad_vari = typmod(2) .eq. 'GRADVARI'
+    read (compor(POSTINCR), '(A16)') postIncr
     l_large = defo_comp .eq. 'SIMO_MIEHE' .or. defo_comp .eq. 'GROT_GDEP'
     l_gdef_log = defo_comp .eq. 'GDEF_LOG'
     l_defo_meca = defo_ldc .eq. 'MECANIQUE'
     l_regu_visc = regu_visc .eq. 'REGU_VISC_ELAS'
+    lAnnealing = postIncr .eq. "REST_ECRO"
+
+! - Get parameters from modelization
+    l_czm = typmod(2) .eq. 'ELEMJOIN'
+    l_grad_vari = typmod(2) .eq. 'GRADVARI'
+
+! - Get parameters from option
     lImplex = option .eq. "RIGI_MECA_IMPLEX" .or. option .eq. "RAPH_MECA_IMPLEX"
+    l_pred = L_PRED(option)
     lVari = L_VARI(option)
     lSigm = L_SIGM(option)
     lMatr = L_MATR(option)
 
+! - Initializations
     codret = 0
     if (lSigm) sigp = 0.d0
     if (lMatr) dsidep = 0.d0
 
-!
 ! - Prepare parameters at Gauss point
-!
     call behaviourPrepESVAGauss(carcri, defo_ldc, imate, &
                                 fami, kpg, ksp, &
                                 neps, instap, BEHinteg)
-!
-! - Prepare input strains for the behaviour law
-!
 
+! - Prepare input strains for the behaviour law
     epsm = epsm_tot
     deps = deps_tot
     call behaviourPrepStrain(l_pred, l_czm, l_large, l_defo_meca, &
                              l_grad_vari, imate, fami, kpg, ksp, &
                              neps, BEHinteg%esva, epsm, deps)
-!
+
 ! - Prepare external state variables for external solvers (UMAT/MFRONT)
-!
     if (BEHinteg%l_mfront .or. BEHinteg%l_umat) then
         call behaviourPrepESVAExte(compor, fami, kpg, ksp, BEHinteg)
     end if
-!
+
 ! - Prepare index of behaviour law
-!
     if (typmod(2) .eq. 'GDVARINO') then
         numlc = numlc+3000
     end if
@@ -303,9 +306,8 @@ subroutine lc0000(BEHinteg, &
     if (lImplex) then
         numlc = numlc+2000
     end if
-!
+
 ! - How many internal variables really for the constitutive law
-!
     nvi = nvi_all
     if (l_gdef_log) then
         nvi = nvi-nvi_gdef_log
@@ -315,20 +317,21 @@ subroutine lc0000(BEHinteg, &
         idx_regu_visc = nvi+1
     end if
     ASSERT(nvi .ge. 1)
-!
+
 ! - What is the stress at t- for the constitutive law
-!
     sigm(1:nsig) = sigm_all(1:nsig)
     if (l_regu_visc) then
         ASSERT(nsig .ge. 2*ndim)
         sigm(1:2*ndim) = sigm(1:2*ndim)-vim(idx_regu_visc:idx_regu_visc-1+2*ndim)*r2(1:2*ndim)
     end if
 
-!
+! - Copy internal states variables
+    if (lAnnealing) then
+        vip(nvi_all) = vim(nvi_all)
+    end if
+
 ! --------------------------------------------------------------------------------------------------
-!
     select case (numlc)
-!
     case (1)
 !     ELAS
         call lc0001(BEHinteg, fami, kpg, ksp, ndim, imate, &
@@ -960,16 +963,14 @@ subroutine lc0000(BEHinteg, &
     case default
         call utmess('F', 'COMPOR1_43', si=numlc)
     end select
-!
 ! --------------------------------------------------------------------------------------------------
 
 ! - Prediction
-    if (l_Pred .and. lSigm .and. .not. l_defo_meca) sigp = sigm
-! --------------------------------------------------------------------------------------------------
+    if (l_Pred .and. lSigm .and. .not. l_defo_meca) then
+        sigp = sigm
+    end if
 
-!
 ! - Viscous regularisation
-!
     if (l_regu_visc .and. codret .ne. 1) then
         ndimsi = 2*ndim
         ASSERT(.not. l_large)
@@ -983,6 +984,6 @@ subroutine lc0000(BEHinteg, &
                     vip(idx_regu_visc:idx_regu_visc+nvi_regu_visc-1), &
                     dsidep(1:ndimsi, 1:ndimsi))
     end if
-
+!
     ASSERT(codret .ge. 0 .and. codret .le. 2)
 end subroutine

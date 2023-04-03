@@ -113,7 +113,7 @@ subroutine nmpost(model, mesh, cara_elem, list_load, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    aster_logical :: l_mode_vibr, l_crit_stab, lerrt, lcont, lener, l_post_incr, l_obsv
+    aster_logical :: l_mode_vibr, l_crit_stab, lerrt, lcont, lener, lAnnealing, l_obsv
     character(len=4) :: etfixe
     real(kind=8) :: time
     character(len=19) :: varc_curr, disp_curr, strx_curr
@@ -125,7 +125,7 @@ subroutine nmpost(model, mesh, cara_elem, list_load, &
     l_mode_vibr = isfonc(list_func_acti, 'MODE_VIBR')
     l_crit_stab = isfonc(list_func_acti, 'CRIT_STAB')
     lener = isfonc(list_func_acti, 'ENERGIE')
-    l_post_incr = isfonc(list_func_acti, 'POST_INCR')
+    lAnnealing = isfonc(list_func_acti, 'ANNEALING')
 !
 ! - Extract variables
 !
@@ -182,7 +182,7 @@ subroutine nmpost(model, mesh, cara_elem, list_load, &
                         ds_contact, ds_system)
         end if
 ! ----- Post-treatment for behavior laws.
-        if (l_post_incr) then
+        if (lAnnealing) then
             call nmrest_ecro(model, ds_material%mateco, ds_constitutive, hval_incr)
         end if
 ! ----- Make observation

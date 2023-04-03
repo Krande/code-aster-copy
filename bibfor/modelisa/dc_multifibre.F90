@@ -66,7 +66,7 @@ subroutine dc_multifibre(nbocci, sdcomp)
 !
     character(len=8)  :: materi, sdgf, mator
     character(len=16) :: rela_comp, defo_comp, type_cpla, rela_comp_py, kit_comp(4)
-    character(len=16) :: regu_visc, post_iter
+    character(len=16) :: regu_visc, post_iter, post_incr
     character(len=24) :: vnbfig, vnmfig, kgroup
     character(len=80) :: valmk(5)
 !
@@ -128,10 +128,11 @@ subroutine dc_multifibre(nbocci, sdcomp)
         kit_comp(:) = 'VIDE'
         post_iter = 'VIDE'
         regu_visc = 'VIDE'
+        post_incr = 'VIDE'
         ! Get number of internal state variables
         call comp_nbvari_std(rela_comp, defo_comp, type_cpla, &
                              kit_comp, post_iter, &
-                             regu_visc, &
+                             regu_visc, post_incr, &
                              nbVari, numeLaw)
         !
         do ig = 1, nbg

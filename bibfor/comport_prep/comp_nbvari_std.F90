@@ -18,7 +18,7 @@
 ! person_in_charge: mickael.abbas at edf.fr
 !
 subroutine comp_nbvari_std(rela_comp, defo_comp, type_cpla, &
-                           kit_comp, post_iter, regu_visc, &
+                           kit_comp, post_iter, regu_visc, post_incr, &
                            nbVari, numeLaw)
 !
     implicit none
@@ -30,7 +30,7 @@ subroutine comp_nbvari_std(rela_comp, defo_comp, type_cpla, &
 #include "asterfort/comp_meca_code.h"
 !
     character(len=16), intent(in) :: rela_comp, defo_comp, type_cpla
-    character(len=16), intent(in) :: kit_comp(4), post_iter, regu_visc
+    character(len=16), intent(in) :: kit_comp(4), post_iter, regu_visc, post_incr
     integer, intent(out) :: nbVari, numeLaw
 !
 ! --------------------------------------------------------------------------------------------------
@@ -45,8 +45,9 @@ subroutine comp_nbvari_std(rela_comp, defo_comp, type_cpla, &
 ! In  defo_comp        : DEFORMATION comportment
 ! In  type_cpla        : plane stress method
 ! In  kit_comp         : KIT comportment
-! In  post_iter        : type of post_treatment
+! In  post_iter        : type of post-treatment at each Newton iteration
 ! In  regu_visc        : keyword for viscuous regularization
+! In  post_incr        : type of post-treatment at end of time step
 ! Out nbVari           : number of internal state variables
 ! Out numeLaw          : index of subroutine for behaviour
 !
@@ -62,7 +63,7 @@ subroutine comp_nbvari_std(rela_comp, defo_comp, type_cpla, &
 
 ! - Coding composite comportment (Python)
     call comp_meca_code(rela_comp, defo_comp, type_cpla, kit_comp, &
-                        post_iter, regu_visc, &
+                        post_iter, regu_visc, post_incr, &
                         comp_code_py)
 
 ! - Get number of total internal state variables and index of law
