@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -48,6 +48,7 @@ On ne trouve aucun numéro d'ordre dans la structure de données résultat de no
     7: _(
         """On ne peut pas utiliser NOM_VARI car on n'a pas accès à la définition du comportement."""
     ),
+    8: _("""Le paramètre d'accès n'existe pas dans le résultat."""),
     37: _(
         """
 Le MODELE fourni par l'utilisateur est différent de celui présent dans la structure de données Résultat.

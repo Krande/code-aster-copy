@@ -71,6 +71,8 @@ class Result : public DataStructure, public ListOfTables {
     using mapIndexMaterial = std::map< ASTERINTEGER, MaterialFieldPtr >;
     using mapIndexModel = std::map< ASTERINTEGER, ModelPtr >;
 
+    using mapParameters = std::map< std::string, std::string >;
+
     /** @brief Pointeur de nom Jeveux '.DESC' */
     NamesMapChar16 _symbolicNamesOfFields;
     /** @brief Collection '.TACH' */
@@ -105,6 +107,9 @@ class Result : public DataStructure, public ListOfTables {
     mapStrMoCFCK16 _dictOfMapOfConstantFieldOnCellsChar16;
     mapStrMoFGVR _dictOfMapOfGeneralizedVectorReal;
     mapStrMoFGVC _dictOfMapOfGeneralizedVectorComplex;
+
+    /** @brief Parameters */
+    mapParameters _dictParameters;
 
     /** @brief List of ElementaryCharacteristicsPtr */
     mapIndexCaraElem _mapElemCara;
@@ -153,6 +158,11 @@ class Result : public DataStructure, public ListOfTables {
      * @param storageIndex Index to store field
      */
     ASTERINTEGER _getInternalIndex( const ASTERINTEGER &storageIndex ) const;
+
+    /**
+     * @brief Prepare list of parameters
+     */
+    void _listOfParameters( void );
 
     static JeveuxVectorReal _mata;
     static JeveuxVectorReal _matc;
@@ -244,7 +254,8 @@ class Result : public DataStructure, public ListOfTables {
     /**
      * @brief Add parameter value for one index
      */
-    void setParameterValue( std::string name, ASTERDOUBLE value, ASTERINTEGER storageIndex );
+    void setParameterValue( std::string namePara, ASTERDOUBLE value, ASTERINTEGER storageIndex );
+    void setParameterValue( std::string namePara, std::string value, ASTERINTEGER storageIndex );
 
     ASTERDOUBLE getTimeValue( ASTERINTEGER storageIndex );
 

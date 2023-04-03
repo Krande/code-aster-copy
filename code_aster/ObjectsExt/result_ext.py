@@ -25,8 +25,8 @@
 
 import aster
 from libaster import Result
-
-from ..Utilities import injector, logger, SearchList
+from ..Messages import UTMESS
+from ..Utilities import injector, logger, SearchList, is_number
 from ..Objects.Serialization import InternalStateBuilder
 
 
@@ -139,7 +139,7 @@ class ExtendedResult:
 
         Arguments:
             para (str) : name of the access parameter (NUME_ORDRE, INST, etc..)
-            value (float|int) : value of the access parameter
+            value (float|int|str) : value of the access parameter
             crit (str) : search criterion ABSOLU or RELATIF
             prec (float) : precision for the search criterion
 
@@ -148,14 +148,16 @@ class ExtendedResult:
 
         """
         acpara = self.getAccessParameters()
-
-        if not para in acpara:
-            msg = "Missing parameter {}".format(para)
-            raise ValueError(msg)
-
-        slist = SearchList(acpara[para], prec, crit)
-        idx = slist.index(value)
-
+        if para not in acpara:
+            UTMESS("F", "RESULT1_8")
+        if is_number(value):
+            slist = SearchList(acpara[para], prec, crit)
+            idx = slist.index(value)
+        elif isinstance(value, str):
+            slist = acpara[para]
+            idx = slist.index(value)
+        else:
+            raise ValueError(f"Type of access to result is invalid {value!r}")
         return acpara["NUME_ORDRE"][idx]
 
     def getField(self, name, value=None, para="NUME_ORDRE", crit="RELATIF", prec=1.0e-6):
@@ -164,7 +166,7 @@ class ExtendedResult:
 
         Arguments:
             name (str): symbolic name of the field in the result (ex: 'DEPL', 'VITE'...)
-            value (float|int) : value of the access parameter
+            value (float|int|str) : value of the access parameter
             para (str) : name of the access parameter (NUME_ORDRE, INST, etc..)
             crit (str) : search criterion ABSOLU or RELATIF
             prec (float) : precision for the search criterion

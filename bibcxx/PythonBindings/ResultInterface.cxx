@@ -63,15 +63,31 @@ Arguments:
     index (int):  index where to save time value
         )",
               py::arg( "time" ), py::arg( "index" ) )
-        .def( "setParameterValue", &Result::setParameterValue, R"(
-Add theta at the specified index
+        .def( "setParameterValue",
+              py::overload_cast< std::string, ASTERDOUBLE, ASTERINTEGER >(
+                  &Result::setParameterValue ),
+
+              R"(
+Add parameter at the specified index
 
 Arguments:
-    name (float): parameter name to store
-    value (float): parameter value to store
-    index (int):  index where to save time value
+    para_name (float): parameter name to store
+    para_value (float): parameter value to store
+    index (int):  index where to save value of parameter
         )",
-              py::arg( "para_name" ), py::arg( "value" ), py::arg( "index" ) )
+              py::arg( "para_name" ), py::arg( "para_value" ), py::arg( "index" ) )
+        .def( "setParameterValue",
+              py::overload_cast< std::string, std::string, ASTERINTEGER >(
+                  &Result::setParameterValue ),
+              R"(
+Add parameter at the specified index
+
+Arguments:
+    para_name (float): parameter name to store
+    para_value (str): parameter value to store
+    index (int):  index where to save value of parameter
+        )",
+              py::arg( "para_name" ), py::arg( "para_value" ), py::arg( "index" ) )
         .def( "getTimeValue", &Result::getTimeValue, R"(
 Get time at the specified index
 

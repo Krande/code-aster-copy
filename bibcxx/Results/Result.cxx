@@ -165,11 +165,31 @@ void Result::setParameterValue( std::string name, ASTERDOUBLE value, ASTERINTEGE
     CALLO_RSADPA_ZR_WRAP( getName(), &storageIndex, &value, name );
 };
 
-ASTERDOUBLE Result::getTimeValue( ASTERINTEGER index ) {
+void Result::setParameterValue( std::string name, std::string value, ASTERINTEGER storageIndex ) {
+
+    auto paraIndx = _dictParameters.find( name );
+    if ( paraIndx == _dictParameters.end() ) {
+        raiseAsterError( "Parameter not available" );
+    }
+
+    auto paraType = _dictParameters.find( name )->second;
+    std::string cel( "E" );
+    if ( paraType == "Char8" ) {
+        CALLO_RSADPA_ZK8_WRAP( getName(), &storageIndex, value, name, cel );
+    } else if ( paraType == "Char16" ) {
+        CALLO_RSADPA_ZK16_WRAP( getName(), &storageIndex, value, name, cel );
+    } else if ( paraType == "Char24" ) {
+        CALLO_RSADPA_ZK24_WRAP( getName(), &storageIndex, value, name, cel );
+    } else {
+        raiseAsterError( "Wrapper not available" );
+    }
+};
+
+ASTERDOUBLE Result::getTimeValue( ASTERINTEGER storageIndex ) {
 
     ASTERINTEGER nb_indexs = getNumberOfIndexes();
 
-    AS_ASSERT( index <= nb_indexs );
+    AS_ASSERT( storageIndex <= nb_indexs );
 
     _rspr->updateValuePointer();
 
@@ -186,7 +206,7 @@ ASTERDOUBLE Result::getTimeValue( ASTERINTEGER index ) {
 
                 AS_ASSERT( nosuff == ".RSPR" )
 
-                return ( *_rspr )[nmax * _getInternalIndex( index ) + ivar - 1];
+                return ( *_rspr )[nmax * _getInternalIndex( storageIndex ) + ivar - 1];
             }
         }
     }
@@ -203,7 +223,39 @@ void Result::allocate( ASTERINTEGER nbIndexes ) {
 
     AS_ASSERT( _calculationParameter->build( true ) );
     AS_ASSERT( _namesOfFields->build( true ) );
+
+    _listOfParameters();
 };
+
+void Result::_listOfParameters() {
+
+    _calculationParameter->updateValuePointer();
+
+    for ( const auto &[i, item] : *_calculationParameter ) {
+        item->updateValuePointer();
+        auto objectSuffix = trim( ( *item )[0].toString() );
+        auto paraName = trim( _accessVariables->getStringFromIndex( i ) );
+        std::string paraType;
+        if ( objectSuffix == ".RSPR" ) {
+            paraType = "Real";
+        } else if ( objectSuffix == ".RSPI" ) {
+            paraType = "Integer";
+        } else if ( objectSuffix == ".RSP8" ) {
+            paraType = "Char8";
+        } else if ( objectSuffix == ".RS16" ) {
+            paraType = "Char16";
+        } else if ( objectSuffix == ".RS24" ) {
+            paraType = "Char24";
+        } else {
+            AS_ABORT( "Unknown type" );
+        }
+        _dictParameters.insert( std::make_pair( paraName, paraType ) );
+    }
+
+    // for ( const auto &entry : _dictParameters ) {
+    //     std::cout << "{" << entry.first << ", " << entry.second << "}" << std::endl;
+    // }
+}
 
 void Result::setElementaryCharacteristics( const ElementaryCharacteristicsPtr &cara ) {
     auto indexes = getIndexes();
