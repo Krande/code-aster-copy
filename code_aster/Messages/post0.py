@@ -284,11 +284,10 @@ CALC_NEWMARK ne sait pas traiter des maillages 3D
     ),
     52: _(
         """
-L'option VERIF_MASSE de POST_NEWMARK n'est pas disponible pour un calcul dynnamique 
+L'option VERIF_MASSE de POST_NEWMARK n'est pas disponible pour un calcul dynamique 
 réalisé directement avec les matrices de rigidité et masse.
-Voux pouvez réaliser le même calcul en fournissant directement le champ matériau
+Vous pouvez réaliser le même calcul en fournissant directement le champ matériau
 obtenu par AFFE_MATERIAU, via le mot-clé CHAM_MATER.
 """
     ),
-
 }

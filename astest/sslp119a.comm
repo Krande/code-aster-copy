@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,7 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), IMPR_MACRO="OUI")
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), IMPR_MACRO="NON")
 
 MA = LIRE_MAILLAGE(FORMAT="MED")
 
@@ -123,7 +123,8 @@ TAB_RES = POST_NEWMARK(
     #                RAYON = r,
     #                CENTRE_X = posx,
     #                CENTRE_Y = posy,
-    GROUP_MA_CALC="SLOPE",
+    # GROUP_MA_CALC="SLOPE",
+    GROUP_MA_CALC="SLID_ZONE",
     CHAM_PHI=CHAPHI,
     CHAM_COHESION=CHACO,
     CHAM_FS=CO("CHAM_FS"),
@@ -139,11 +140,40 @@ TEST_TABLE(
     FILTRE=_F(NOM_PARA="INST", VALE=0.0, CRITERE="RELATIF"),
     REFERENCE="SOURCE_EXTERNE",
     VALE_REFE=1.82,
-    VALE_CALC=1.8101360825610746,
-    PRECISION=0.01,
+    VALE_CALC=1.8198281161046488,
+    PRECISION=0.002,
     CRITERE="RELATIF",
     VALE_ABS="NON",
 )
+####################################################
 
+TAB_RES1 = POST_NEWMARK(
+    RESULTAT_PESANTEUR=STATIC,
+    RAYON=r,
+    CENTRE_X=posx,
+    CENTRE_Y=posy,
+    RAFF_CERCLE=7,
+    # GROUP_MA_CALC="SLOPE",
+    GROUP_MA_CALC="SLID_ZONE",
+    CHAM_PHI=CHAPHI,
+    CHAM_COHESION=CHACO,
+    CHAM_FS=CO("CHAM_FS1"),
+)
+
+IMPR_TABLE(UNITE=38, TABLE=TAB_RES1)
+
+IMPR_RESU(FORMAT="MED", RESU=_F(CHAM_GD=CHAM_FS1), UNITE=80)
+
+TEST_TABLE(
+    TABLE=TAB_RES1,
+    NOM_PARA="FS",
+    FILTRE=_F(NOM_PARA="INST", VALE=0.0, CRITERE="RELATIF"),
+    REFERENCE="SOURCE_EXTERNE",
+    VALE_REFE=1.82,
+    VALE_CALC=1.8173117301925172,
+    PRECISION=0.002,
+    CRITERE="RELATIF",
+    VALE_ABS="NON",
+)
 
 FIN()

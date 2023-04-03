@@ -28,33 +28,26 @@ from ..Cata.Syntax import _F
 from ..Commands import (
     AFFE_MATERIAU,
     AFFE_MODELE,
-    ASSE_MATRICE,
     CALC_CHAMP,
     CALC_FONCTION,
-    CALC_MATR_ELEM,
     CALC_TABLE,
     CREA_CHAMP,
     CREA_MAILLAGE,
     CREA_RESU,
     CREA_TABLE,
-    DEFI_FICHIER,
     DEFI_FONCTION,
     DEFI_GROUP,
     DEFI_MATERIAU,
     FORMULE,
     IMPR_RESU,
-    IMPR_TABLE,
-    MACR_LIGN_COUPE,
+    MACR_ADAP_MAIL,
     MODI_MAILLAGE,
-    NUME_DDL,
     POST_ELEM,
     POST_RELEVE_T,
     PROJ_CHAMP,
-    DEFI_LIST_REEL,
-    MACR_ADAP_MAIL,
 )
-from ..Helpers import LogicalUnitFile
-from ..Messages import ASSERT, UTMESS, MasquerAlarme, RetablirAlarme
+from ..Messages import UTMESS, MasquerAlarme, RetablirAlarme
+from ..Objects import Mesh
 from ..Objects.table_py import Table
 from ..Supervis import CO
 
@@ -68,7 +61,7 @@ def get_static_shear(sign_static, sigt_static, phi, cohesion):
     ##         sigt_static : tangential stress (T)
     ##         phi : friction angle (rad) (phi)
     ##         cohesion (c)
-    ## Output : available_shear : total shear stress along the slinding line 
+    ## Output : available_shear : total shear stress along the slinding line
     ##                            sum(N*tan(phi)-c)
     ##          static_shear : total shear stress mobilised along the sliding line
     ##                            sum(T)
@@ -103,7 +96,7 @@ def get_dynamic_shear(sign1_dyn, sigt1_dyn, phi, cohesion, inst):
     ##         phi : friction angle (rad) (phi)
     ##         cohesion (c)
     ##         inst : time list from dynamic calculation
-    ## Output : available_shear : total shear stress along the slinding line at 
+    ## Output : available_shear : total shear stress along the slinding line at
     ##                            each time step
     ##                            sum(N*tan(phi)-c)
     ##          static_shear : total shear stress mobilised along the sliding line
@@ -147,7 +140,7 @@ def get_dynamic_shear_vector(sigt1_dyn, inst):
 
 
 def get_local_FS(sign, sigt, phi, cohesion):
-    ## Obtain local FS values 
+    ## Obtain local FS values
     ## Can be used as fonction to get Fs values direct on mesh for visualisation
     ## Mohr-Coulomb criteria for friction materials
     ##
@@ -167,7 +160,8 @@ def get_local_FS(sign, sigt, phi, cohesion):
 
     return FS
 
-def getMaterialonNewMesh(chmat,TYPE,pos=None):
+
+def getMaterialonNewMesh(chmat, TYPE, pos=None):
     ## Get Material from a given mesh and duplicate on a more reffined mesh
     ## by using MACR_ADAP_MAIL command
     ##
@@ -179,18 +173,24 @@ def getMaterialonNewMesh(chmat,TYPE,pos=None):
     posy = pos[1]
     r = pos[2]
 
-    if TYPE == 'MAILLAGE':
+    if TYPE == "MAILLAGE":
         MACR_ADAP_MAIL(
-            MAILLAGE_N=chmat.getMesh(), MAILLAGE_NP1=CO("NEWMESH"), ADAPTATION="RAFFINEMENT_UNIFORME"
+            MAILLAGE_N=chmat.getMesh(),
+            MAILLAGE_NP1=CO("NEWMESH"),
+            ADAPTATION="RAFFINEMENT_UNIFORME",
         )
-    elif TYPE=='CERCLE' :
+    elif TYPE == "CERCLE":
         MACR_ADAP_MAIL(
-            MAILLAGE_N=chmat.getMesh(), MAILLAGE_NP1=CO("NEWMESH"), ADAPTATION="RAFF_DERA_ZONE",
-            ZONE = _F(TYPE = 'DISQUE', USAGE = 'RAFFINEMENT', X_CENTRE=posx, Y_CENTRE=posy, RAYON=1.5*r),
+            MAILLAGE_N=chmat.getMesh(),
+            MAILLAGE_NP1=CO("NEWMESH"),
+            ADAPTATION="RAFF_DERA_ZONE",
+            ZONE=_F(
+                TYPE="DISQUE", USAGE="RAFFINEMENT", X_CENTRE=posx, Y_CENTRE=posy, RAYON=1.2 * r
+            ),
         )
 
     mater = []
-    # get materials and mesh objects 
+    # get materials and mesh objects
     MatOnMeshEnt = chmat.getVectorOfPartOfMaterialField()
 
     # loop on materials
@@ -198,7 +198,7 @@ def getMaterialonNewMesh(chmat,TYPE,pos=None):
         # material
         list_mat = mat.getVectorOfMaterial()
         OriginMat = list_mat[0]
-        
+
         # necessary only to get material properties
         Matnames = OriginMat.getMaterialNames()
 
@@ -301,7 +301,7 @@ def getMeshwithGLISSEGroupMAILLAGE(__mail, __mail_2):
             NOM="GLISSE_",
             OPTION="INCLUSION",
             MAILLAGE_INCL=__mail_2,
-            GROUP_MA_INCL="RUPTURE",
+            GROUP_MA_INCL="DOMAIN_",
             GROUP_MA="ALL",
             CAS_FIGURE="2D",
         ),
@@ -380,15 +380,16 @@ def cleanRuptureMeshwithCreatedGroup(__mail_1):
     )
     return None
 
+
 def cleanRuptureMeshwithCreatedGroupYASEG(__mail_1, yaseg2, yaseg3):
     ## Clean mesh groups on sliding zone mesh if no slinding line group was given
     ## Input : __mail_1 : sliding zone mesh
     ##        yaseg2 : if SEG2 elements were found
     ##        yaseg3 : if SEG3 elements were found
 
-    if yaseg2 == "OUI":
+    if yaseg2:
         __mail_1 = DEFI_GROUP(reuse=__mail_1, MAILLAGE=__mail_1, DETR_GROUP_NO=_F(NOM=("LIGNE_2",)))
-    if yaseg3 == "OUI":
+    if yaseg3:
         __mail_1 = DEFI_GROUP(reuse=__mail_1, MAILLAGE=__mail_1, DETR_GROUP_NO=_F(NOM=("LIGNE_3",)))
 
     return None
@@ -396,12 +397,6 @@ def cleanRuptureMeshwithCreatedGroupYASEG(__mail_1, yaseg2, yaseg3):
 
 def post_newmark_ops(self, **args):
     """
-    FR : 
-    Macro commande pour évaluer la stabilité d'un ouvrage en remblai
-    (digue / barrage) au séisme par la méthode simplifiée de Newmark.
-    Uniquement possible pour une modélisation 2D.
-    
-    EN : 
     Command to evaluate seismic performance of earth dams and embankments
     for Newamrk approach (sliding block)
     Only available for 2D models
@@ -429,7 +424,7 @@ def post_newmark_ops(self, **args):
             ## 3D models not supported by the command
             UTMESS("F", "POST0_51")
         ## possibly necessary to deal with the case of multiple materials on Result
-        
+
     else:
         ONLY_FS = True
 
@@ -469,7 +464,9 @@ def post_newmark_ops(self, **args):
         if args["POSITION"] == "AMONT":
             fac_cercle = -1.0
 
-    pos=None
+    pos = None
+    TYPE = "MAILLAGE"
+    getMeshwithALLGroup(__mail, grpma)
     ### Slinding zone defined as circle
     if args["RAYON"] is not None:
         TYPE = "CERCLE"
@@ -478,133 +475,141 @@ def post_newmark_ops(self, **args):
         posy = args["CENTRE_Y"]
         pos = [posx, posy, r]
 
-        getMeshwithALLGroup(__mail, grpma)
         getMeshwithGLISSEGroupCERCLE(__mail, pos)
 
-    else:
-         ### Slinding zone defined as mesh
-        TYPE = "MAILLAGE"
+        ### Create a disk mesh to compute safety factors
+        ### refine value (7) is taken from discretisation used for static FS validation
+        raff = 7
+        if args["RAFF_CERCLE"] is not None:
+            raff = args["RAFF_CERCLE"]
+        __mail_1 = Mesh.buildDisk(radius=r, refine=raff)
+        __mail_1 = MODI_MAILLAGE(reuse=__mail_1, MAILLAGE=__mail_1, TRANSLATION=(posx, posy))
 
-        getMeshwithALLGroup(__mail, grpma)
-
+    if TYPE == "MAILLAGE":
         __mail_1 = args["MAILLAGE_GLIS"]
 
+    __mail_1 = DEFI_GROUP(
+        reuse=__mail_1,
+        MAILLAGE=__mail_1,
+        CREA_GROUP_MA=_F(
+            NOM="ALL",
+            # TYPE_MAILLE = '2D',
+            TOUT="OUI",
+        ),
+    )
+
+    DEFI_GROUP(
+        reuse=__mail_1,
+        MAILLAGE=__mail_1,
+        CREA_GROUP_NO=_F(
+            NOM="DOMAIN_",
+            OPTION="INCLUSION",
+            MAILLAGE_INCL=__mail,
+            GROUP_MA_INCL="ALL",
+            GROUP_MA="ALL",
+            CAS_FIGURE="2D",
+        ),
+    )
+
+    DEFI_GROUP(
+        reuse=__mail_1,
+        MAILLAGE=__mail_1,
+        CREA_GROUP_MA=_F(
+            NOM="DOMAIN_", OPTION="APPUI", TYPE_APPUI="AU_MOINS_UN", GROUP_NO="DOMAIN_"
+        ),
+    ),
+
+    if args["GROUP_MA_GLIS"] is not None:
         __mail_1 = DEFI_GROUP(
             reuse=__mail_1,
             MAILLAGE=__mail_1,
-            CREA_GROUP_MA=_F(
-                NOM="ALL",
-                # TYPE_MAILLE = '2D',
-                TOUT="OUI",
-            ),
+            CREA_GROUP_MA=_F(NOM="RUPTURE", UNION=args["GROUP_MA_GLIS"]),
         )
 
-        DEFI_GROUP(
-            reuse=__mail_1,
-            MAILLAGE=__mail_1,
-            CREA_GROUP_NO=_F(
-                NOM="DOMAIN_",
-                OPTION="INCLUSION",
-                MAILLAGE_INCL=__mail,
-                GROUP_MA_INCL="ALL",
-                GROUP_MA="ALL",
-                CAS_FIGURE="2D",
-            ),
-        )
-
-        DEFI_GROUP(
-            reuse=__mail_1,
-            MAILLAGE=__mail_1,
-            CREA_GROUP_MA=_F(
-                NOM="DOMAIN_", OPTION="APPUI", TYPE_APPUI="AU_MOINS_UN", GROUP_NO="DOMAIN_"
-            ),
-        ),
-
-        if args["GROUP_MA_GLIS"] is not None:
-            __mail_1 = DEFI_GROUP(
-                reuse=__mail_1,
-                MAILLAGE=__mail_1,
-                CREA_GROUP_MA=_F(NOM="RUPTURE", UNION=args["GROUP_MA_GLIS"]),
-            )
-
-        else:
-            __mail_1 = DEFI_GROUP(
-                reuse=__mail_1,
-                MAILLAGE=__mail_1,
-                CREA_GROUP_MA=_F(NOM="RUPTURE", TYPE_MAILLE="2D", TOUT="OUI"),
-            )
-
+    else:
         __mail_1 = DEFI_GROUP(
-            reuse=__mail_1, MAILLAGE=__mail_1, CREA_GROUP_NO=_F(NOM="RUPTURE", GROUP_MA="RUPTURE")
-        )
-
-        if args["GROUP_MA_LIGNE"] is not None:
-
-            ma_ligne = args["GROUP_MA_LIGNE"]
-
-        ## In case GROUP_MA_LIGNE not available : all SEG2 and SEG3 meshs are considered
-        else:
-            seg = []
-            yaseg2 = __mail_1.hasCellsOfType("SEG2")
-            if yaseg2:
-                seg.append("LIGNE_2")
-                __mail_1 = DEFI_GROUP(
-                    reuse=__mail_1,
-                    MAILLAGE=__mail_1,
-                    CREA_GROUP_MA=_F(NOM="LIGNE_2", TYPE_MAILLE=("SEG2"), TOUT="OUI"),
-                )
-
-            yaseg3 = __mail_1.hasCellsOfType("SEG3")
-            if yaseg3:
-                seg.append("LIGNE_3")
-                __mail_1 = DEFI_GROUP(
-                    reuse=__mail_1,
-                    MAILLAGE=__mail_1,
-                    CREA_GROUP_MA=_F(NOM="LIGNE_3", TYPE_MAILLE=("SEG3"), TOUT="OUI"),
-                )
-
-            ma_ligne = seg
-
-        DEFI_GROUP(
             reuse=__mail_1,
             MAILLAGE=__mail_1,
-            CREA_GROUP_NO=_F(
-                NOM="LIGNE_",
-                OPTION="INCLUSION",
-                MAILLAGE_INCL=__mail,
-                GROUP_MA_INCL="ALL",
-                GROUP_MA=ma_ligne,
-                CAS_FIGURE="2D",
-            ),
+            CREA_GROUP_MA=_F(NOM="RUPTURE", TYPE_MAILLE="2D", TOUT="OUI"),
         )
 
-        DEFI_GROUP(
-            reuse=__mail_1,
-            MAILLAGE=__mail_1,
-            CREA_GROUP_MA=_F(NOM="LIGNE_", OPTION="APPUI", TYPE_APPUI="SOMMET", GROUP_NO="LIGNE_"),
+    __mail_1 = DEFI_GROUP(
+        reuse=__mail_1, MAILLAGE=__mail_1, CREA_GROUP_NO=_F(NOM="RUPTURE", GROUP_MA="RUPTURE")
+    )
+
+    if args["GROUP_MA_LIGNE"] is not None:
+
+        ma_ligne = args["GROUP_MA_LIGNE"]
+
+    ## In case GROUP_MA_LIGNE not available : all SEG2 and SEG3 meshs are considered
+    else:
+        seg = []
+        yaseg2 = __mail_1.hasCellsOfType("SEG2")
+        if yaseg2:
+            seg.append("LIGNE_2")
+            __mail_1 = DEFI_GROUP(
+                reuse=__mail_1,
+                MAILLAGE=__mail_1,
+                CREA_GROUP_MA=_F(NOM="LIGNE_2", TYPE_MAILLE=("SEG2"), TOUT="OUI"),
+            )
+
+        yaseg3 = __mail_1.hasCellsOfType("SEG3")
+        if yaseg3:
+            seg.append("LIGNE_3")
+            __mail_1 = DEFI_GROUP(
+                reuse=__mail_1,
+                MAILLAGE=__mail_1,
+                CREA_GROUP_MA=_F(NOM="LIGNE_3", TYPE_MAILLE=("SEG3"), TOUT="OUI"),
+            )
+
+        ma_ligne = seg
+
+    DEFI_GROUP(
+        reuse=__mail_1,
+        MAILLAGE=__mail_1,
+        CREA_GROUP_NO=_F(
+            NOM="LIGNE_",
+            OPTION="INCLUSION",
+            MAILLAGE_INCL=__mail,
+            GROUP_MA_INCL="ALL",
+            GROUP_MA=ma_ligne,
+            CAS_FIGURE="2D",
         ),
+    )
 
-        # mesh orientation on slinding line
-        __mail_1 = MODI_MAILLAGE(
-            reuse=__mail_1,
-            MAILLAGE=__mail_1,
-            ORIE_PEAU=_F(GROUP_MA_PEAU=("LIGNE_",), GROUP_MA_INTERNE=("RUPTURE")),
-        )
+    DEFI_GROUP(
+        reuse=__mail_1,
+        MAILLAGE=__mail_1,
+        CREA_GROUP_MA=_F(NOM="LIGNE_", OPTION="APPUI", TYPE_APPUI="SOMMET", GROUP_NO="LIGNE_"),
+    ),
 
-        ## Restrain sliding mesh to the commun zone to the structure mesh to increase numerical performance
-        __mail_2 = CREA_MAILLAGE(
-            MAILLAGE=__mail_1,  # INFO=2,
-            RESTREINT=_F(
-                GROUP_MA=("LIGNE_", "DOMAIN_", "RUPTURE"), GROUP_NO=("LIGNE_", "DOMAIN_", "RUPTURE")
-            ),
-        )
+    # mesh orientation on slinding line
+    __mail_1 = MODI_MAILLAGE(
+        reuse=__mail_1,
+        MAILLAGE=__mail_1,
+        # ORIE_PEAU=_F(GROUP_MA_PEAU=("LIGNE_",), GROUP_MA_INTERNE=("RUPTURE")),
+        ORIE_PEAU=_F(GROUP_MA_PEAU=("LIGNE_",), GROUP_MA_INTERNE=("DOMAIN_")),
+    )
 
-        __mail_L = CREA_MAILLAGE(
-            MAILLAGE=__mail_2, RESTREINT=_F(GROUP_MA=("LIGNE_",), GROUP_NO=("LIGNE_",))  # INFO=2,
-        )
+    ## Restrain sliding mesh to the commun zone to the structure mesh to increase numerical performance
+    __mail_2 = CREA_MAILLAGE(
+        MAILLAGE=__mail_1,  # INFO=2,
+        RESTREINT=_F(
+            # GROUP_MA=("LIGNE_", "DOMAIN_", "RUPTURE"), GROUP_NO=("LIGNE_", "DOMAIN_", "RUPTURE")
+            GROUP_MA=("LIGNE_", "DOMAIN_"),
+            GROUP_NO=("LIGNE_", "DOMAIN_"),
+        ),
+    )
 
+    IMPR_RESU(RESU=_F(MAILLAGE=__mail_2), FORMAT="MED", UNITE=22)
+
+    __mail_L = CREA_MAILLAGE(
+        MAILLAGE=__mail_2, RESTREINT=_F(GROUP_MA=("LIGNE_",), GROUP_NO=("LIGNE_",))  # INFO=2,
+    )
+
+    if TYPE == "MAILLAGE":
         getMeshwithGLISSEGroupMAILLAGE(__mail, __mail_2)
-        # IMPR_RESU(RESU=_F(MAILLAGE = __mail_2,),FORMAT='MED',UNITE=23)
+    # IMPR_RESU(RESU=_F(MAILLAGE = __mail_2,),FORMAT='MED',UNITE=23)
 
     ###############################################################################
     ####
@@ -612,245 +617,277 @@ def post_newmark_ops(self, **args):
     ####
     ###############################################################################
 
-    if TYPE == "MAILLAGE":
+    if args["RESULTAT_PESANTEUR"] is not None:
 
-        if args["RESULTAT_PESANTEUR"] is not None:
+        ## ASSERT necessary if original model other than D_PLAN
+        ## model in this case on slinding mesh
+        __MODST = AFFE_MODELE(
+            MAILLAGE=__mail_2,
+            AFFE=(_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="D_PLAN"),),
+            VERI_JACOBIEN="NON",
+        )
 
-            ## ASSERT necessary if original model other than D_PLAN
-            ## model in this case on slinding mesh
-            __MODST = AFFE_MODELE(
+        __MODL = AFFE_MODELE(
+            MAILLAGE=__mail_L,
+            AFFE=(_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="D_PLAN"),),
+            VERI_JACOBIEN="NON",
+        )
+
+        ## False material only necessary for CREA_RESU
+        ## Stress are true as they are projected from structure mesh
+        __MATBID = DEFI_MATERIAU(ELAS=_F(E=1.0, NU=0.3, RHO=1.0))
+
+        __MATST = AFFE_MATERIAU(MAILLAGE=__mail_2, AFFE=_F(MATER=__MATBID, TOUT="OUI"))
+
+        ## Obtain static stress field on the auxiliary model at the sliding mesh
+        ## Result with true stresses and flase material for SIRO_ELEM
+
+        __instFS = RESULTAT_PESANTEUR.LIST_PARA()["INST"][-1]
+
+        __CSTPGO = CREA_CHAMP(
+            OPERATION="EXTR",
+            NOM_CHAM="SIEF_ELGA",
+            TYPE_CHAM="ELGA_SIEF_R",
+            RESULTAT=RESULTAT_PESANTEUR,
+            INST=__instFS,
+        )
+
+        __CSTPGF = PROJ_CHAMP(
+            METHODE="ECLA_PG",
+            CHAM_GD=__CSTPGO,
+            MODELE_1=__modST,
+            MODELE_2=__MODST,
+            CAS_FIGURE="2D",
+            PROL_ZERO="OUI",
+            #                     DISTANCE_MAX=0.1,
+        )
+
+        ## Static result with SIEF_ELGA obtained at the sliding mesh
+        __recoST = CREA_RESU(
+            OPERATION="AFFE",
+            TYPE_RESU="DYNA_TRANS",
+            NOM_CHAM="SIEF_ELGA",
+            AFFE=(_F(MODELE=__MODST, CHAM_MATER=__MATST, CHAM_GD=__CSTPGF, INST=0.0),),
+        )
+
+        __recoST = CALC_CHAMP(
+            reuse=__recoST,
+            RESULTAT=__recoST,
+            GROUP_MA="LIGNE_",
+            MODELE=__MODST,
+            CONTRAINTE=("SIRO_ELEM",),
+        )
+
+        ## Get SIRO_ELEM stresses from static calculation
+        __CSIST = CREA_CHAMP(
+            OPERATION="EXTR",
+            NOM_CHAM="SIRO_ELEM",
+            TYPE_CHAM="ELEM_SIEF_R",
+            RESULTAT=__recoST,
+            NUME_ORDRE=1,
+        )
+
+        SIGN_stat = __CSIST.EXTR_COMP("SIG_N", [])
+        SIGTN_stat = __CSIST.EXTR_COMP("SIG_TN", [])
+
+        ## Obtain friction angle phi and cohesion to static analysis
+        __chPHNO = PROJ_CHAMP(
+            METHODE="COLLOCATION",
+            CHAM_GD=args["CHAM_PHI"],
+            MAILLAGE_1=__mail,
+            MAILLAGE_2=__mail_2,
+            PROL_ZERO="OUI",
+            #                     DISTANCE_MAX=0.1,
+        )
+
+        __chPHEL = CREA_CHAMP(
+            OPERATION="DISC",
+            CHAM_GD=__chPHNO,
+            MODELE=__MODST,
+            TYPE_CHAM="ELEM_NEUT_R",
+            PROL_ZERO="OUI",
+        )
+
+        __chCONO = PROJ_CHAMP(
+            METHODE="COLLOCATION",
+            CHAM_GD=args["CHAM_COHESION"],
+            MAILLAGE_1=__mail,
+            MAILLAGE_2=__mail_2,
+            PROL_ZERO="OUI",
+            #                     DISTANCE_MAX=0.1,
+        )
+
+        __chCOEL = CREA_CHAMP(
+            OPERATION="DISC",
+            CHAM_GD=__chCONO,
+            MODELE=__MODST,
+            TYPE_CHAM="ELEM_NEUT_R",
+            PROL_ZERO="OUI",
+            # INFO=2,
+        )
+
+        __chCPEL = CREA_CHAMP(
+            OPERATION="ASSE",
+            TYPE_CHAM="ELEM_NEUT_R",
+            MODELE=__MODST,
+            PROL_ZERO="OUI",
+            ASSE=(
+                _F(GROUP_MA="LIGNE_", CHAM_GD=__chPHEL, CUMUL="OUI", COEF_R=1.0),
+                _F(GROUP_MA="LIGNE_", CHAM_GD=__chCOEL, CUMUL="OUI", COEF_R=1.0),
+            ),
+        )
+
+        ## Friction angle phi and cohesion on sliding line
+        __chCPLG = PROJ_CHAMP(
+            METHODE="COLLOCATION",
+            CHAM_GD=__chCPEL,
+            MODELE_1=__MODST,
+            MODELE_2=__MODL,
+            CAS_FIGURE="1.5D",
+            PROL_ZERO="OUI",
+            INFO=2,
+            #                     DISTANCE_MAX=0.1,
+        )
+
+        ## Local static safety factor on mesh
+        __FstS = FORMULE(
+            VALE="get_local_FS(SIG_N,SIG_TN,X1,X2)",
+            NOM_PARA=("SIG_N", "SIG_TN", "X1", "X2"),
+            get_local_FS=get_local_FS,
+        )
+
+        __chSTSF = CREA_CHAMP(
+            OPERATION="AFFE",
+            TYPE_CHAM="ELEM_NEUT_F",
+            MODELE=__MODST,
+            PROL_ZERO="OUI",
+            AFFE=_F(GROUP_MA="LIGNE_", NOM_CMP="X1", VALE_F=__FstS),
+        )
+
+        __chSTSR = CREA_CHAMP(
+            TYPE_CHAM="ELEM_NEUT_R",
+            OPERATION="EVAL",
+            CHAM_F=__chSTSF,
+            CHAM_PARA=(__CSIST, __chCPEL),
+            INFO=1,
+        )
+
+        __chSTSL = PROJ_CHAMP(
+            METHODE="COLLOCATION",
+            CHAM_GD=__chSTSR,
+            MODELE_1=__MODST,
+            MODELE_2=__MODL,
+            CAS_FIGURE="1.5D",
+            PROL_ZERO="OUI",
+            INFO=2,
+            #                     DISTANCE_MAX=0.1,
+        )
+
+        ## Global static safety factor Fsp
+        phiL = __chCPLG.EXTR_COMP("X1", [])
+        cohesionL = __chCPLG.EXTR_COMP("X2", [])
+
+        available_shear, static_shear = get_static_shear(
+            SIGN_stat.valeurs, SIGTN_stat.valeurs, phiL.valeurs, cohesionL.valeurs
+        )
+        available_shear_v, static_shear_v = get_static_shear_vector(
+            SIGN_stat.valeurs, SIGTN_stat.valeurs, phiL.valeurs, cohesionL.valeurs
+        )
+
+        FSp = fac_cercle * available_shear / (static_shear)
+
+        ## Global static safety factor node by node FspL
+        FSpL = []
+        for k in range(len(available_shear_v)):
+            try:
+                FSpL.append(fac_cercle * available_shear_v[k] / (static_shear_v[k]))
+            except:
+                FSpL.append(0.0)
+
+        ## Table for output static safety factor
+        if args["RESULTAT"] is None:
+            tabini = Table(para=["INST", "FS"], typ=["R", "R"])
+            if args["RESULTAT"] is None:
+                tabini.append({"INST": 0.0, "FS": FSp})
+                self.register_result(__chSTSL, args["CHAM_FS"])
+
+            dprod = tabini.dict_CREA_TABLE()
+            tabout = CREA_TABLE(**dprod)
+
+        ################################################################################
+        #### FR:
+        #### CALCUL FACTEUR DE SECURITE EN DYNAMIQUE (uniquement si RESULTAT_PESANTEUR est fourni)
+        #### Dans ce cas, il faut qu'une phase statique prélable au calcul dynamique soit
+        #### réalisé, afin que les contraintes du résultat dynamique intégrent les
+        #### contraintes statiques
+        ####
+        #### EN:
+        #### DYNAMIC SAFETY FACTOR CALCULATION (only if RESULTAT_PESANTEUR is available)
+        #### In this case, a static analysis previously conduct to the dynamic analysis is
+        #### necessary, as to integrated statci stresses to the dyanmic results
+        ################################################################################
+
+        ##### Only with sliding mesh
+        if args["RESULTAT"] is not None:
+
+            __MODYN = AFFE_MODELE(
                 MAILLAGE=__mail_2,
-                AFFE=(_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="D_PLAN"),),
-                VERI_JACOBIEN="NON",
-            )
-
-            __MODL = AFFE_MODELE(
-                MAILLAGE=__mail_L,
                 AFFE=(_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="D_PLAN"),),
                 VERI_JACOBIEN="NON",
             )
 
             ## False material only necessary for CREA_RESU
             ## Stress are true as they are projected from structure mesh
-            __MATBID = DEFI_MATERIAU(ELAS=_F(E=1.0, NU=0.3, RHO=1.0))
+            __MATBIDD = DEFI_MATERIAU(ELAS=_F(E=1.0, NU=0.3, RHO=1.0))
 
-            __MATST = AFFE_MATERIAU(MAILLAGE=__mail_2, AFFE=_F(MATER=__MATBID, TOUT="OUI"))
+            __MATDYN = AFFE_MATERIAU(MAILLAGE=__mail_2, AFFE=_F(MATER=__MATBIDD, TOUT="OUI"))
 
-            ## Obtain static stress field on the auxiliary model at the sliding mesh
-            ## Result with true stresses and flase material for SIRO_ELEM
+            __instSD = RESULTAT.LIST_PARA()["INST"]
 
-            __instFS = RESULTAT_PESANTEUR.LIST_PARA()["INST"][-1]
-
-            __CSTPGO = CREA_CHAMP(
-                OPERATION="EXTR",
-                NOM_CHAM="SIEF_ELGA",
-                TYPE_CHAM="ELGA_SIEF_R",
-                RESULTAT=RESULTAT_PESANTEUR,
-                INST=__instFS,
-            )
-
-            __CSTPGF = PROJ_CHAMP(
-                METHODE="ECLA_PG",
-                CHAM_GD=__CSTPGO,
-                MODELE_1=__modST,
-                MODELE_2=__MODST,
-                CAS_FIGURE="2D",
-                PROL_ZERO="OUI",
-                #                     DISTANCE_MAX=0.1,
-            )
-
-            ## Static result with SIEF_ELGA obtained at the sliding mesh
-            __recoST = CREA_RESU(
-                OPERATION="AFFE",
-                TYPE_RESU="DYNA_TRANS",
-                NOM_CHAM="SIEF_ELGA",
-                AFFE=(_F(MODELE=__MODST, CHAM_MATER=__MATST, CHAM_GD=__CSTPGF, INST=0.0),),
-            )
-
-            __recoST = CALC_CHAMP(
-                reuse=__recoST,
-                RESULTAT=__recoST,
-                GROUP_MA="LIGNE_",
-                MODELE=__MODST,
-                CONTRAINTE=("SIRO_ELEM",),
-            )
-
-            ## Get SIRO_ELEM stresses from static calculation
-            __CSIST = CREA_CHAMP(
-                OPERATION="EXTR",
-                NOM_CHAM="SIRO_ELEM",
-                TYPE_CHAM="ELEM_SIEF_R",
-                RESULTAT=__recoST,
-                NUME_ORDRE=1,
-            )
-
-            SIGN_stat = __CSIST.EXTR_COMP("SIG_N", [])
-            SIGTN_stat = __CSIST.EXTR_COMP("SIG_TN", [])
-
-            ## Obtain friction angle phi and cohesion to static analysis
-            __chPHNO = PROJ_CHAMP(
-                METHODE="COLLOCATION",
-                CHAM_GD=args["CHAM_PHI"],
-                MAILLAGE_1=__mail,
-                MAILLAGE_2=__mail_2,
-                PROL_ZERO="OUI",
-                #                     DISTANCE_MAX=0.1,
-            )
-
-            __chPHEL = CREA_CHAMP(
-                OPERATION="DISC",
-                CHAM_GD=__chPHNO,
-                MODELE=__MODST,
-                TYPE_CHAM="ELEM_NEUT_R",
-                PROL_ZERO="OUI",
-            )
-
-            __chCONO = PROJ_CHAMP(
-                METHODE="COLLOCATION",
-                CHAM_GD=args["CHAM_COHESION"],
-                MAILLAGE_1=__mail,
-                MAILLAGE_2=__mail_2,
-                PROL_ZERO="OUI",
-                #                     DISTANCE_MAX=0.1,
-            )
-
-            __chCOEL = CREA_CHAMP(
-                OPERATION="DISC",
-                CHAM_GD=__chCONO,
-                MODELE=__MODST,
-                TYPE_CHAM="ELEM_NEUT_R",
-                PROL_ZERO="OUI",
-                # INFO=2,
-            )
-
-            __chCPEL = CREA_CHAMP(
-                OPERATION="ASSE",
-                TYPE_CHAM="ELEM_NEUT_R",
-                MODELE=__MODST,
-                PROL_ZERO="OUI",
-                ASSE=(
-                    _F(GROUP_MA="LIGNE_", CHAM_GD=__chPHEL, CUMUL="OUI", COEF_R=1.0),
-                    _F(GROUP_MA="LIGNE_", CHAM_GD=__chCOEL, CUMUL="OUI", COEF_R=1.0),
-                ),
-            )
-
-            ## Friction angle phi and cohesion on sliding line
-            __chCPLG = PROJ_CHAMP(
-                METHODE="COLLOCATION",
-                CHAM_GD=__chCPEL,
-                MODELE_1=__MODST,
-                MODELE_2=__MODL,
-                CAS_FIGURE="1.5D",
-                PROL_ZERO="OUI",
-                INFO=2,
-                #                     DISTANCE_MAX=0.1,
-            )
-
-            ## Local static safety factor on mesh
-            __FstS = FORMULE(
-                VALE="get_local_FS(SIG_N,SIG_TN,X1,X2)",
-                NOM_PARA=("SIG_N", "SIG_TN", "X1", "X2"),
-                get_local_FS=get_local_FS,
-            )
-
-            __chSTSF = CREA_CHAMP(
-                OPERATION="AFFE",
-                TYPE_CHAM="ELEM_NEUT_F",
-                MODELE=__MODST,
-                PROL_ZERO="OUI",
-                AFFE=_F(GROUP_MA="LIGNE_", NOM_CMP="X1", VALE_F=__FstS),
-            )
-
-            __chSTSR = CREA_CHAMP(
-                TYPE_CHAM="ELEM_NEUT_R",
-                OPERATION="EVAL",
-                CHAM_F=__chSTSF,
-                CHAM_PARA=(__CSIST, __chCPEL),
-                INFO=1,
-            )
-
-            __chSTSL = PROJ_CHAMP(
-                METHODE="COLLOCATION",
-                CHAM_GD=__chSTSR,
-                MODELE_1=__MODST,
-                MODELE_2=__MODL,
-                CAS_FIGURE="1.5D",
-                PROL_ZERO="OUI",
-                INFO=2,
-                #                     DISTANCE_MAX=0.1,
-            )
-
-            ## Global static safety factor Fsp
-            phiL = __chCPLG.EXTR_COMP("X1", [])
-            cohesionL = __chCPLG.EXTR_COMP("X2", [])
-
-            available_shear, static_shear = get_static_shear(
-                SIGN_stat.valeurs, SIGTN_stat.valeurs, phiL.valeurs, cohesionL.valeurs
-            )
-            available_shear_v, static_shear_v = get_static_shear_vector(
-                SIGN_stat.valeurs, SIGTN_stat.valeurs, phiL.valeurs, cohesionL.valeurs
-            )
-
-            FSp = fac_cercle * available_shear / (static_shear)
-
-            ## Global static safety factor node by node FspL
-            FSpL = []
-            for k in range(len(available_shear_v)):
-                try:
-                    FSpL.append(fac_cercle * available_shear_v[k] / (static_shear_v[k]))
-                except:
-                    FSpL.append(0.0)
-
-            ## Table for output static safety factor
-            if args["RESULTAT"] is None:
-                tabini = Table(para=["INST", "FS"], typ=["R", "R"])
-                if args["RESULTAT"] is None:
-                    tabini.append({"INST": 0.0, "FS": FSp})
-                    self.register_result(__chSTSL, args["CHAM_FS"])
-
-                dprod = tabini.dict_CREA_TABLE()
-                tabout = CREA_TABLE(**dprod)
-
-            ################################################################################
-            #### FR: 
-            #### CALCUL FACTEUR DE SECURITE EN DYNAMIQUE (uniquement si RESULTAT_PESANTEUR est fourni)
-            #### Dans ce cas, il faut qu'une phase statique prélable au calcul dynamique soit
-            #### réalisé, afin que les contraintes du résultat dynamique intégrent les
-            #### contraintes statiques
-            ####
-            #### EN: 
-            #### DYNAMIC SAFETY FACTOR CALCULATION (only if RESULTAT_PESANTEUR is available)
-            #### In this case, a static analysis previously conduct to the dynamic analysis is 
-            #### necessary, as to integrated statci stresses to the dyanmic results
-            ################################################################################
-
-            ##### Only with sliding mesh
-            if args["RESULTAT"] is not None:
-
-                __MODYN = AFFE_MODELE(
-                    MAILLAGE=__mail_2,
-                    AFFE=(_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="D_PLAN"),),
-                    VERI_JACOBIEN="NON",
+            ## Loop to create dynamic result with stresses from structure mesh using ECLA_PG projection
+            ## on slinding mesh
+            METHODE_PROJECTION = "ECLA_PG"
+            if METHODE_PROJECTION == "ECLA_PG":
+                __CSDPGI = CREA_CHAMP(
+                    OPERATION="EXTR",
+                    NOM_CHAM="SIEF_ELGA",
+                    TYPE_CHAM="ELGA_SIEF_R",
+                    RESULTAT=RESULTAT,
+                    INST=__instSD[0],
                 )
 
-                ## False material only necessary for CREA_RESU
-                ## Stress are true as they are projected from structure mesh
-                __MATBIDD = DEFI_MATERIAU(ELAS=_F(E=1.0, NU=0.3, RHO=1.0))
+                __CSDPGF = PROJ_CHAMP(
+                    METHODE="ECLA_PG",
+                    CHAM_GD=__CSDPGI,
+                    MODELE_1=__model,
+                    MODELE_2=__MODYN,
+                    CAS_FIGURE="2D",
+                    PROL_ZERO="OUI",
+                    #                     DISTANCE_MAX=0.1,
+                )
 
-                __MATDYN = AFFE_MATERIAU(MAILLAGE=__mail_2, AFFE=_F(MATER=__MATBIDD, TOUT="OUI"))
+                ## Create dynamic result with SEIF_ELGA on sliding mesh
+                __recoSD = CREA_RESU(
+                    OPERATION="AFFE",
+                    TYPE_RESU="DYNA_TRANS",
+                    NOM_CHAM="SIEF_ELGA",
+                    AFFE=(
+                        _F(MODELE=__MODYN, CHAM_MATER=__MATDYN, CHAM_GD=__CSDPGF, INST=__instSD[0]),
+                    ),
+                )
 
-                __instSD = RESULTAT.LIST_PARA()["INST"]
+                for inst in __instSD[1:]:
 
-                ## Loop to create dynamic result with stresses from structure mesh using ECLA_PG projection
-                ## on slinding mesh
-                METHODE_PROJECTION = 'ECLA_PG'
-                if METHODE_PROJECTION == "ECLA_PG":
+                    __instSD = RESULTAT.LIST_PARA()["INST"]
+
+                    ## Loop to create dynamic result with stresses from structure mesh using ECLA_PG projection
+                    ## on slinding mesh
                     __CSDPGI = CREA_CHAMP(
                         OPERATION="EXTR",
                         NOM_CHAM="SIEF_ELGA",
                         TYPE_CHAM="ELGA_SIEF_R",
                         RESULTAT=RESULTAT,
-                        INST=__instSD[0],
+                        INST=inst,
                     )
 
                     __CSDPGF = PROJ_CHAMP(
@@ -862,136 +899,99 @@ def post_newmark_ops(self, **args):
                         PROL_ZERO="OUI",
                         #                     DISTANCE_MAX=0.1,
                     )
-                    
-                    ## Create dynamic result with SEIF_ELGA on sliding mesh
+
                     __recoSD = CREA_RESU(
+                        reuse=__recoSD,
+                        RESULTAT=__recoSD,
                         OPERATION="AFFE",
                         TYPE_RESU="DYNA_TRANS",
                         NOM_CHAM="SIEF_ELGA",
                         AFFE=(
-                            _F(
-                                MODELE=__MODYN,
-                                CHAM_MATER=__MATDYN,
-                                CHAM_GD=__CSDPGF,
-                                INST=__instSD[0],
-                            ),
+                            _F(MODELE=__MODYN, CHAM_MATER=__MATDYN, CHAM_GD=__CSDPGF, INST=inst),
                         ),
                     )
 
-                    for inst in __instSD[1:]:
+            ## In case static analysis was performed, dynamic safety factor can be calculated
+            if args["RESULTAT_PESANTEUR"] is not None:
 
-                        __CSDPGI = CREA_CHAMP(
-                            OPERATION="EXTR",
-                            NOM_CHAM="SIEF_ELGA",
-                            TYPE_CHAM="ELGA_SIEF_R",
-                            RESULTAT=RESULTAT,
-                            INST=inst,
-                        )
+                ## Obtain SIRO_ELEM on sliding line
+                __recoSD = CALC_CHAMP(
+                    reuse=__recoSD,
+                    RESULTAT=__recoSD,
+                    GROUP_MA="LIGNE_",
+                    MODELE=__MODYN,
+                    CONTRAINTE=("SIRO_ELEM",),
+                )
 
-                        __CSDPGF = PROJ_CHAMP(
-                            METHODE="ECLA_PG",
-                            CHAM_GD=__CSDPGI,
-                            MODELE_1=__model,
-                            MODELE_2=__MODYN,
-                            CAS_FIGURE="2D",
-                            PROL_ZERO="OUI",
-                            #                     DISTANCE_MAX=0.1,
-                        )
+                ## Get normal and shear stresses at the sliding line at each time step
+                SIGN_dyn = []
+                SIGT_dyn = []
 
-                        __recoSD = CREA_RESU(
-                            reuse=__recoSD,
-                            RESULTAT=__recoSD,
-                            OPERATION="AFFE",
-                            TYPE_RESU="DYNA_TRANS",
-                            NOM_CHAM="SIEF_ELGA",
-                            AFFE=(
-                                _F(
-                                    MODELE=__MODYN, CHAM_MATER=__MATDYN, CHAM_GD=__CSDPGF, INST=inst
-                                ),
-                            ),
-                        )
+                for inst in __instSD:
 
-                ## In case static analysis was performed, dynamic safety factor can be calculated
-                if args["RESULTAT_PESANTEUR"] is not None:
-                    
-                    ## Obtain SIRO_ELEM on sliding line
-                    __recoSD = CALC_CHAMP(
-                        reuse=__recoSD,
+                    # print ("Instant de calcul = "+str(inst))
+
+                    __CSISD = CREA_CHAMP(
+                        OPERATION="EXTR",
+                        NOM_CHAM="SIRO_ELEM",
+                        TYPE_CHAM="ELEM_SIEF_R",
                         RESULTAT=__recoSD,
-                        GROUP_MA="LIGNE_",
-                        MODELE=__MODYN,
-                        CONTRAINTE=("SIRO_ELEM",),
+                        INST=inst,
                     )
 
-                    ## Get normal and shear stresses at the sliding line at each time step
-                    SIGN_dyn = []
-                    SIGT_dyn = []
+                    SIGN_dyna = __CSISD.EXTR_COMP("SIG_N", [])
+                    SIGTN_dyna = __CSISD.EXTR_COMP("SIG_TN", [])
 
-                    for inst in __instSD:
+                    SIGN_dyn.append(SIGN_dyna)
+                    SIGT_dyn.append(SIGTN_dyna)
 
-                        # print ("Instant de calcul = "+str(inst))
+                ## Available and mobilized stresses at the slinding line
+                available_shear_dyn, dynamic_shear = get_dynamic_shear(
+                    SIGN_dyn, SIGT_dyn, phiL.valeurs, cohesionL.valeurs, __instSD
+                )
+                dynamic_shear_v = get_dynamic_shear_vector(SIGT_dyn, __instSD)
 
-                        __CSISD = CREA_CHAMP(
-                            OPERATION="EXTR",
-                            NOM_CHAM="SIRO_ELEM",
-                            TYPE_CHAM="ELEM_SIEF_R",
-                            RESULTAT=__recoSD,
-                            INST=inst,
+                shear_factor = 1.0
+                # if args["RESULTAT"].getType().lower() == "dyna_trans":
+                #     shear_factor = np.sqrt(2.0)
+                #     shear_factor = 1.0
+
+                ## Dynamic safety factor defined as considering dynamic variation
+                ## of available shear
+                FSp = (
+                    fac_cercle
+                    * (available_shear - available_shear_dyn)
+                    / (static_shear - shear_factor * dynamic_shear)
+                )
+
+                ## Dynamic safety factor neglecting dynamic variation of available shear
+                ## (static value is considered)
+                # FSp = (
+                #     fac_cercle
+                #     * (available_shear)
+                #     / (static_shear - shear_factor * dynamic_shear)
+                # )
+
+                ## Global static safety factor node by node FspL
+                FSpL = []
+                for k in range(len(available_shear_v)):
+                    try:
+                        FSpL.append(
+                            fac_cercle
+                            * available_shear_v[k]
+                            / (static_shear_v[k] - shear_factor * dynamic_shear_v[k])
                         )
+                    except:
+                        FSpL.append(0.0)
 
-                        SIGN_dyna = __CSISD.EXTR_COMP("SIG_N", [])
-                        SIGTN_dyna = __CSISD.EXTR_COMP("SIG_TN", [])
+                tabini = Table(para=["INST", "FS"], typ=["R", "R"])
 
-                        SIGN_dyn.append(SIGN_dyna)
-                        SIGT_dyn.append(SIGTN_dyna)
+                ## Table for output static safety factor
+                for j in range(len(__instSD)):
+                    tabini.append({"INST": __instSD[j], "FS": FSp[j]})
 
-                    ## Available and mobilized stresses at the slinding line
-                    available_shear_dyn, dynamic_shear = get_dynamic_shear(
-                        SIGN_dyn, SIGT_dyn, phiL.valeurs, cohesionL.valeurs, __instSD
-                    )
-                    dynamic_shear_v = get_dynamic_shear_vector(SIGT_dyn, __instSD)
-
-                    shear_factor = 1.0
-                    # if args["RESULTAT"].getType().lower() == "dyna_trans":
-                    #     shear_factor = np.sqrt(2.0)
-                    #     shear_factor = 1.0
-
-                    ## Dynamic safety factor defined as considering dynamic variation 
-                    ## of available shear
-                    FSp = (
-                        fac_cercle
-                        * (available_shear - available_shear_dyn)
-                        / (static_shear - shear_factor * dynamic_shear)
-                    )
-
-                    ## Dynamic safety factor neglecting dynamic variation of available shear
-                    ## (static value is considered)
-                    # FSp = (
-                    #     fac_cercle
-                    #     * (available_shear)
-                    #     / (static_shear - shear_factor * dynamic_shear)
-                    # )
-
-                    ## Global static safety factor node by node FspL
-                    FSpL = []
-                    for k in range(len(available_shear_v)):
-                        try:
-                            FSpL.append(
-                                fac_cercle
-                                * available_shear_v[k]
-                                / (static_shear_v[k] - shear_factor * dynamic_shear_v[k])
-                            )
-                        except:
-                            FSpL.append(0.0)
-
-                    tabini = Table(para=["INST", "FS"], typ=["R", "R"])
-
-                    ## Table for output static safety factor
-                    for j in range(len(__instSD)):
-                        tabini.append({"INST": __instSD[j], "FS": FSp[j]})
-
-                    dprod = tabini.dict_CREA_TABLE()
-                    __TFS = CREA_TABLE(**dprod)
+                dprod = tabini.dict_CREA_TABLE()
+                __TFS = CREA_TABLE(**dprod)
 
     ###############################################################################
     ####
@@ -1003,7 +1003,7 @@ def post_newmark_ops(self, **args):
 
         ## Some mesh group definitions on structure mesh to obtain center of mass of sliding zone
         ## Mass obtained from GROUPE_MA 'GLISSE'
-        
+
         __tabmas = POST_ELEM(RESULTAT=RESULTAT, MASS_INER=_F(GROUP_MA="GLISSE"))
 
         masse = __tabmas["MASSE", 1]
@@ -1043,7 +1043,7 @@ def post_newmark_ops(self, **args):
             while (error > args["RESI_RELA"]) and (iterat < args["ITER_MAXI"] + 1):
                 cleanStructureMeshwithCreatedGroup(__mail, TYPE)
 
-                NewMesh, CHMAT = getMaterialonNewMesh(CHMATs[-1],TYPE,pos)
+                NewMesh, CHMAT = getMaterialonNewMesh(CHMATs[-1], TYPE, pos)
                 CHMATs.append(CHMAT)
                 __MODMAT = AFFE_MODELE(
                     MAILLAGE=NewMesh,
@@ -1106,6 +1106,13 @@ def post_newmark_ops(self, **args):
             )
         )
 
+        ################################################################################
+        ####
+        #### CACUL DE L'ACCELERATION MOYENNE A PARTIR DE LA RESULTANTE ET DE LA MASSE
+        #### DE LA ZONE DE GLISSEMENT
+        ####
+        ################################################################################
+
         fresu = __tabFLI.EXTR_TABLE()
         forcex = fresu.values()["DX"]
         forcey = fresu.values()["DY"]
@@ -1147,7 +1154,7 @@ def post_newmark_ops(self, **args):
         #     )
 
         ###############################################################################
-        ##  Obtain irreversible displacements from mean acceleration 
+        ##  Obtain irreversible displacements from mean acceleration
         ##############################################################################
 
         acc = accxFLI
@@ -1177,7 +1184,7 @@ def post_newmark_ops(self, **args):
 
         __vitAFa = CALC_FONCTION(INTEGRE=_F(FONCTION=__accAF))
 
-        ### Velocity correction by imposing v>0 only 
+        ### Velocity correction by imposing v>0 only
         ### necessary to get correct residual displacements
         vitAFv = __vitAFa.Ordo()
         vitA = np.zeros(len(time))

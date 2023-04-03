@@ -32,7 +32,7 @@ POST_NEWMARK = MACRO(
         UN_PARMI("RAYON", "MAILLAGE_GLIS"),
         AU_MOINS_UN("RESULTAT", "RESULTAT_PESANTEUR"),
         ENSEMBLE("RESULTAT", "KY"),
-        EXCLUS("RESULTAT_PESANTEUR", "RAYON"),
+        # EXCLUS("RESULTAT_PESANTEUR", "RAYON"),
     ),
     MAILLAGE_GLIS=SIMP(statut="f", typ=maillage_sdaster, fr="Maillage de la zone de glissement"),
     RAYON=SIMP(statut="f", typ="R", fr="Rayon du cercle de glissement"),
@@ -40,6 +40,7 @@ POST_NEWMARK = MACRO(
         condition="""exists("RAYON")""",
         CENTRE_X=SIMP(statut="o", typ="R", fr="Position de la coordonée X du cercle de glissement"),
         CENTRE_Y=SIMP(statut="o", typ="R", fr="Position de la coordonée Y du cercle de glissement"),
+        RAFF_CERCLE=SIMP(statut="f", typ="I", default=7, fr="Raffinement du maillage de cercle"),
     ),
     b_MAIL_GLIS=BLOC(
         condition="""exists("MAILLAGE_GLIS")""",
@@ -56,14 +57,22 @@ POST_NEWMARK = MACRO(
     ),
     b_RESULTAT=BLOC(
         condition="""exists("RESULTAT")""",
-        VERI_MASSE = SIMP(statut="f", typ="TXM", into=("OUI", "NON"), defaut="NON"),
+        VERI_MASSE=SIMP(statut="f", typ="TXM", into=("OUI", "NON"), defaut="NON"),
         b_VERI_MASS=BLOC(
             condition="""equal_to("VERI_MASSE", 'OUI')""",
-            RESI_RELA = SIMP(statut='f',typ='R',default=0.05, val_min=0.,fr="Tolérance d'arrêt des itérations"),                    
-            ITER_MAXI=SIMP(statut='f',typ='I',default=2, val_min=1,fr="Nombre maximal d'itérations"),  
+            RESI_RELA=SIMP(
+                statut="f",
+                typ="R",
+                default=0.05,
+                val_min=0.0,
+                fr="Tolérance d'arrêt des itérations",
+            ),
+            ITER_MAXI=SIMP(
+                statut="f", typ="I", default=2, val_min=1, fr="Nombre maximal d'itérations"
+            ),
             CHAM_MATER=SIMP(statut="f", typ=cham_mater),
-                        ),
-                    ),
+        ),
+    ),
     RESULTAT_PESANTEUR=SIMP(
         statut="f",
         typ=(evol_noli, evol_elas),
@@ -74,7 +83,7 @@ POST_NEWMARK = MACRO(
         CHAM_PHI=SIMP(statut="o", typ=cham_no_sdaster, fr="Champ de phi en dégrées"),
         CHAM_COHESION=SIMP(statut="o", typ=cham_no_sdaster, fr="Champ de cohesion"),
         CHAM_FS=SIMP(statut="f", typ=CO, fr="Champ du facteur de sécurité local"),
-                            ),
+    ),
     KY=SIMP(statut="f", typ="R", fr="Valeur de ky pour le calcul de l'accélération critique"),
     GROUP_MA_CALC=SIMP(statut="o", typ=grma, max="**", fr="GROUP_MA associé au modèle utilisé"),
     INFO=SIMP(statut="f", typ="I", defaut=1, into=(1, 2)),
