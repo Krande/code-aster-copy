@@ -43,8 +43,6 @@
 class IncompleteMesh : public Mesh {
 
     VectorLong _range;
-    std::map< int, std::set< int > > _reverseConnex;
-    bool _bReverseConnex = false;
 
   public:
     /**
@@ -62,10 +60,6 @@ class IncompleteMesh : public Mesh {
      * @brief Constructeur
      */
     IncompleteMesh( const std::string &name ) : Mesh( name, "MAILLAGE_I" ){};
-
-    const std::map< int, std::set< int > > &buildReverseConnectivity();
-
-    void deleteReverseConnectivity();
 
     const VectorLong &getRange() const { return _range; };
 

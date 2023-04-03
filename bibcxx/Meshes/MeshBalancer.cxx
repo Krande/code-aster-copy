@@ -177,9 +177,6 @@ void MeshBalancer::buildBalancersAndInterfaces( VectorInt &newLocalNodesList,
                                                 ObjectBalancer &nodesB, ObjectBalancer &cellsB,
                                                 VectorOfVectorsLong &interfaces,
                                                 VectorLong &nOwners ) {
-    // Build reverse connectivity to be able to build ObjectBalancer (what to send to which process)
-    buildReverseConnectivity();
-
     const auto nbProcs = getMPISize();
     const auto rank = getMPIRank();
     VectorOfVectorsLong procInterfaces, balanceProcInterfaces;
@@ -283,7 +280,9 @@ void MeshBalancer::buildBalancersAndInterfaces( VectorInt &newLocalNodesList,
         }
     }
     // Save memory by destroying reverse connectivity
-    deleteReverseConnectivity();
+    if ( _mesh != nullptr )
+        _mesh->deleteReverseConnectivity();
+
     nodesB.endElementarySendDefinition();
     cellsB.endElementarySendDefinition();
     // Prepare ObjectBalancer (graph and sizes of what to send)
@@ -318,13 +317,14 @@ void MeshBalancer::buildBalancersAndInterfaces( VectorInt &newLocalNodesList,
 std::pair< VectorInt, VectorInt >
 MeshBalancer::findNodesAndElementsInNodesNeighborhood( const VectorInt &nodesListIn,
                                                        std::set< int > &toAddSet ) {
+
     std::pair< VectorInt, VectorInt > toReturn;
     auto &nodesList = toReturn.first;
     auto &elemList = toReturn.second;
     if ( _mesh == nullptr )
         return toReturn;
-    if ( !_bReverseConnex )
-        throw std::runtime_error( "No reverse connectivity build" );
+    // Build reverse connectivity to be able to build ObjectBalancer (what to send to which process)
+    const auto &reverseConnex = _mesh->buildReverseConnectivity();
 
     const auto connex = _mesh->getConnectivityExplorer();
     std::set< int > inSet;
@@ -339,7 +339,7 @@ MeshBalancer::findNodesAndElementsInNodesNeighborhood( const VectorInt &nodesLis
     // !!!! WARNING : node and cell ids start at 0 !!!!
     VectorBool checkedElem( _mesh->getNumberOfCells(), false );
     VectorBool checkedNodes( _mesh->getNumberOfNodes(), false );
-    const auto endPtr = _reverseConnex.end();
+    const auto endPtr = reverseConnex.end();
     for ( const auto &nodeId : nodesListIn ) {
         if ( nodeId >= _range[0] && nodeId < _range[1] ) {
             const auto idBis = nodeId - _range[0];
@@ -348,7 +348,7 @@ MeshBalancer::findNodesAndElementsInNodesNeighborhood( const VectorInt &nodesLis
                 checkedNodes[idBis] = true;
             }
         }
-        const auto &elemSetPtr = _reverseConnex.find( nodeId );
+        const auto &elemSetPtr = reverseConnex.find( nodeId );
         if ( elemSetPtr == endPtr )
             continue;
         const auto elemSet = elemSetPtr->second;

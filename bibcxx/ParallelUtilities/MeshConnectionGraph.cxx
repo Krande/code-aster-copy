@@ -89,7 +89,6 @@ void MeshConnectionGraph::buildFromIncompleteMesh( const IncompleteMeshPtr &mesh
         }
     }
     foundConnections = std::vector< std::set< ASTERINTEGER > >();
-    mesh->deleteReverseConnectivity();
 
     commGraph.synchronizeOverProcesses();
     int tag = 0;

@@ -420,3 +420,24 @@ void add_automatic_names( NamesMapChar8 &map, int size, std::string prefix ) {
         }
     }
 }
+
+const std::map< int, std::set< int > > &BaseMesh::buildReverseConnectivity() {
+    if ( _bReverseConnex )
+        return _reverseConnex;
+    const auto connex = getConnectivityExplorer();
+    int elemId = 0;
+    for ( const auto &element : connex ) {
+        for ( const auto &nodeId : element ) {
+            _reverseConnex[nodeId - 1].insert( elemId );
+        }
+        ++elemId;
+    }
+    _bReverseConnex = true;
+    return _reverseConnex;
+};
+
+void BaseMesh::deleteReverseConnectivity() {
+    // free memory
+    _reverseConnex = std::map< int, std::set< int > >();
+    _bReverseConnex = false;
+};

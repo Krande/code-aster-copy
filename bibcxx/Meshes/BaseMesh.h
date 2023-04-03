@@ -103,6 +103,9 @@ class BaseMesh : public DataStructure, public ListOfTables {
     ConstantFieldOnCellsRealPtr _curvAbsc;
     /** @brief Object to allow loop over connectivity */
     const ConnectivityMeshExplorer _explorer;
+    /** @brief Reverse connectivity */
+    std::map< int, std::set< int > > _reverseConnex;
+    bool _bReverseConnex = false;
 
     std::vector< DynamicMacroElementPtr > _dynamic_macro_elements;
     std::vector< StaticMacroElementPtr > _static_macro_elements;
@@ -395,6 +398,10 @@ class BaseMesh : public DataStructure, public ListOfTables {
      * @return true if success
      */
     bool build();
+
+    const std::map< int, std::set< int > > &buildReverseConnectivity();
+
+    void deleteReverseConnectivity();
 
     /* Mesh builder functions */
     void initDefinition( const int &dim, const VectorReal &coord,
