@@ -39,7 +39,7 @@ void Joints::setOppositeDomains( const VectorLong &oppositeDomains ) {
     ( *_domj ) = oppositeDomains;
 };
 
-JeveuxVectorLong Joints::getOppositeDomains() const {
+const JeveuxVectorLong &Joints::getOppositeDomains() const {
     if ( _domj->exists() ) {
         _domj->updateValuePointer();
     }
@@ -80,6 +80,19 @@ void Joints::setReceivedElements( const VectorOfVectorsLong &recv ) {
             i++;
         }
     }
+};
+
+VectorLong Joints::getSendedElements( const ASTERINTEGER &id ) const {
+    const auto &obj = ( *_send )[id];
+    obj->updateValuePointer();
+    return obj->toVector();
+};
+
+VectorLong Joints::getReceivedElements( const ASTERINTEGER &id ) const {
+    std::cout << "Taille " << _recv->size() << " " << id << std::endl;
+    const auto &obj = ( *_recv )[id];
+    obj->updateValuePointer();
+    return obj->toVector();
 };
 
 #endif /* ASTER_HAVE_MPI */

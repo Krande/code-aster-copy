@@ -223,8 +223,6 @@ class MeshCoordinatesField : public DataField {
     void updateValuePointers() const {
         if ( _descriptor->exists() )
             _descriptor->updateValuePointer();
-        if ( _reference->exists() )
-            _reference->updateValuePointer();
         if ( _valuesList->exists() )
             _valuesList->updateValuePointer();
     };

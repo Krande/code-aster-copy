@@ -223,7 +223,7 @@ Returns:
               R"(
 Returns the list of opposite domains of local process
         )" )
-        .def( "getFirstJoint", &ParallelMesh::getFirstJoint,
+        .def( "getSendJoint", &ParallelMesh::getSendJoint,
               R"(
 Returns ids of nodes in joint (inner nodes) for an opposite process
 
@@ -231,7 +231,7 @@ Arguments:
     rank: Rank of opposite domain
         )",
               py::arg( "rank" ) )
-        .def( "getSecondJoint", &ParallelMesh::getSecondJoint,
+        .def( "getReceiveJoint", &ParallelMesh::getReceiveJoint,
               R"(
 Returns ids of nodes in joint (inner nodes) for an opposite process
 

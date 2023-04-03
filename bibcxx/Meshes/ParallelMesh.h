@@ -194,11 +194,11 @@ class ParallelMesh : public BaseMesh {
                                   const ASTERINTEGER same_rank = PythonBool::None ) const;
 
     /** @brief Returns the number of joints */
-    const JeveuxVectorLong &getOppositeDomains() const { return _listOfOppositeDomain; };
+    const JeveuxVectorLong &getOppositeDomains() const { return _joints->getOppositeDomains(); };
 
     /** @brief Returns a joint */
-    const JeveuxVectorLong &getFirstJoint( const int &id ) const;
-    const JeveuxVectorLong &getSecondJoint( const int &id ) const;
+    VectorLong getSendJoint( const int &id ) const;
+    VectorLong getReceiveJoint( const int &id ) const;
 
     /**
      * @brief Fonction permettant de savoir si un maillage est parallel

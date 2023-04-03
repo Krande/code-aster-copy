@@ -63,7 +63,11 @@ class Joints : public DataStructure {
 
     void setOppositeDomains( const VectorLong &oppositeDomains );
 
-    JeveuxVectorLong getOppositeDomains() const;
+    const JeveuxVectorLong &getOppositeDomains() const;
+
+    VectorLong getSendedElements( const ASTERINTEGER &id ) const;
+
+    VectorLong getReceivedElements( const ASTERINTEGER &id ) const;
 
     void setSendedElements( const VectorOfVectorsLong &send );
 
