@@ -30,7 +30,7 @@ void NonLinearResult::setContact( const ContactPtr contact, const ASTERINTEGER &
 
     _mapContact[rank] = contact;
     const auto fed = contact->getFiniteElementDescriptor();
-    _fieldBuidler.addFiniteElementDescriptor( fed );
+    _fieldBuilder.addFiniteElementDescriptor( fed );
 };
 
 void NonLinearResult::setContact( const ContactPtr contact ) {

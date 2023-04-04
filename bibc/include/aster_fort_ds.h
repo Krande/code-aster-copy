@@ -176,17 +176,25 @@ extern void DEFSPPSPPPSP( RSACPA, rsacpa, char *, STRING_SIZE, ASTERINTEGER *, A
                           char *, STRING_SIZE, ASTERINTEGER *, ASTERINTEGER *, ASTERDOUBLE *,
                           char *, STRING_SIZE, ASTERINTEGER * );
 
-#define CALLO_RSADPA_ZK8_WRAP( a, b, c, d ) CALLOPOO( RSADPA_ZK8_WRAP, rsadpa_zk8_wrap, a, b, c, d )
-extern void DEFSPSS( RSADPA_ZK8_WRAP, rsadpa_zk8_wrap, const char *, STRING_SIZE, ASTERINTEGER *,
-                     const char *, STRING_SIZE, const char *, STRING_SIZE );
+#define CALLO_RSADPA_ZK8_WRAP( a, b, c, d, e )                                                     \
+    CALLOPOOO( RSADPA_ZK8_WRAP, rsadpa_zk8_wrap, a, b, c, d, e )
+extern void DEFSPSSS( RSADPA_ZK8_WRAP, rsadpa_zk8_wrap, const char *, STRING_SIZE, ASTERINTEGER *,
+                      const char *, STRING_SIZE, const char *, STRING_SIZE, const char *,
+                      STRING_SIZE );
+
+#define CALLO_RSADPA_ZK16_WRAP( a, b, c, d, e )                                                    \
+    CALLOPOOO( RSADPA_ZK16_WRAP, rsadpa_zk16_wrap, a, b, c, d, e )
+extern void DEFSPSSS( RSADPA_ZK16_WRAP, rsadpa_zk16_wrap, const char *, STRING_SIZE, ASTERINTEGER *,
+                      const char *, STRING_SIZE, const char *, STRING_SIZE, const char *,
+                      STRING_SIZE );
 
 #define CALLO_RSADPA_ZR_WRAP( a, b, c, d ) CALLOPPO( RSADPA_ZR_WRAP, rsadpa_zr_wrap, a, b, c, d )
 extern void DEFSPPS( RSADPA_ZR_WRAP, rsadpa_zr_wrap, const char *, STRING_SIZE, ASTERINTEGER *,
                      ASTERDOUBLE *, const char *, STRING_SIZE );
 
 #define CALLO_RSADPA_ZK24_WRAP( a, b, c, d, e )                                                    \
-    CALLPOOOO( RSADPA_ZK24_WRAP, rsadpa_zk24_wrap, a, b, c, d, e )
-extern void DEFPSSSS( RSADPA_ZK24_WRAP, rsadpa_zk24_wrap, ASTERINTEGER *, const char *, STRING_SIZE,
+    CALLOPOOO( RSADPA_ZK24_WRAP, rsadpa_zk24_wrap, a, b, c, d, e )
+extern void DEFSPSSS( RSADPA_ZK24_WRAP, rsadpa_zk24_wrap, const char *, STRING_SIZE, ASTERINTEGER *,
                       const char *, STRING_SIZE, const char *, STRING_SIZE, const char *,
                       STRING_SIZE );
 

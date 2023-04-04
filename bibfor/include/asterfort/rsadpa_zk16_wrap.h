@@ -16,23 +16,12 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine rsadpa_zk24_wrap(nomsd, nuordr, value, typesd, cel)
-    implicit none
-#include "jeveux.h"
-#include "asterfort/rsadpa.h"
-! ----------------------------------------------------------------------
-    integer, intent(in) :: nuordr
-    character(len=*), intent(in) :: typesd
-    character(len=8), intent(in) :: nomsd
-    character(len=*), intent(inout) :: value
-    character(len=1), intent(in) :: cel
-!
-    integer :: jpara
-! ----------------------------------------------------------------------
-    call rsadpa(nomsd, cel, 1, typesd, nuordr, 0, sjv=jpara)
-    if (cel .eq. 'E') then
-        zk24(jpara) = value
-    else
-        value = zk24(jpara)
-    end if
-end subroutine
+interface
+    subroutine rsadpa_zk16_wrap(nomsd, nuordr, value, typesd, cel)
+        integer, intent(in) :: nuordr
+        character(len=8), intent(in) :: nomsd
+        character(len=*), intent(inout) :: value
+        character(len=*), intent(in) :: typesd
+        character(len=1), intent(in) :: cel
+    end subroutine rsadpa_zk16_wrap
+end interface

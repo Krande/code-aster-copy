@@ -27,6 +27,6 @@ void FullResult::setDOFNumbering( const BaseDOFNumberingPtr dofNum ) {
         BaseMeshPtr mesh = _dofNum->getMesh();
         if ( mesh )
             setMesh( mesh );
-        _fieldBuidler.addEquationNumbering( _dofNum->getEquationNumbering() );
+        _fieldBuilder.addEquationNumbering( _dofNum->getEquationNumbering() );
     }
 }

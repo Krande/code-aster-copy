@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,10 +17,11 @@
 ! --------------------------------------------------------------------
 
 interface
-    subroutine rsadpa_zk8_wrap(nomsd, nuordr, modele, typesd)
+    subroutine rsadpa_zk8_wrap(nomsd, nuordr, value, typesd, cel)
         integer, intent(in) :: nuordr
         character(len=8), intent(in) :: nomsd
-        character(len=*), intent(in) :: modele
+        character(len=*), intent(inout) :: value
         character(len=*), intent(in) :: typesd
+        character(len=1), intent(in) :: cel
     end subroutine rsadpa_zk8_wrap
 end interface

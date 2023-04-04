@@ -31,7 +31,7 @@
 
 /**
  * @class MultipleElasticResult
- * @brief Cette classe correspond a un mode_meca
+ * @brief Cette classe correspond a un mult_elas
  * @author Nicolas Sellenet
  */
 class MultipleElasticResult : public Result {
@@ -48,6 +48,6 @@ class MultipleElasticResult : public Result {
  * @typedef MultipleElasticResultPtr
  * @brief Pointeur intelligent vers un MultipleElasticResult
  */
-typedef std::shared_ptr< MultipleElasticResult > MultipleElasticResultPtr;
+using MultipleElasticResultPtr = std::shared_ptr< MultipleElasticResult >;
 
 #endif /* MULTELASCONTAINER_H_ */

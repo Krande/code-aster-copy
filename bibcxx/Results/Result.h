@@ -31,20 +31,12 @@
 #include "DataFields/FieldBuilder.h"
 #include "DataFields/FieldOnCells.h"
 #include "DataFields/FieldOnNodes.h"
-#include "DataFields/ListOfTables.h"
-#include "DataStructures/DataStructure.h"
 #include "Discretization/ElementaryCharacteristics.h"
 #include "LinearAlgebra/GeneralizedAssemblyVector.h"
 #include "Loads/ListOfLoads.h"
 #include "Materials/MaterialField.h"
-#include "MemoryManager/JeveuxCollection.h"
-#include "MemoryManager/JeveuxVector.h"
-#include "MemoryManager/NamesMap.h"
 #include "Meshes/Mesh.h"
 #include "Modeling/Model.h"
-#include "Numbering/DOFNumbering.h"
-#include "Numbering/ParallelDOFNumbering.h"
-#include "Supervis/ResultNaming.h"
 
 /**
  * @class Result
@@ -53,43 +45,31 @@
  */
 class Result : public DataStructure, public ListOfTables {
   protected:
-    typedef std::map< ASTERINTEGER, FieldOnNodesRealPtr > MapOfFieldOnNodesReal;
-    typedef std::map< ASTERINTEGER, FieldOnCellsRealPtr > MapOfFieldOnCellsReal;
-    typedef std::map< ASTERINTEGER, ConstantFieldOnCellsRealPtr > MapOfConstantFieldOnCellsReal;
+    using MapOfFieldOnNodesReal = std::map< ASTERINTEGER, FieldOnNodesRealPtr >;
+    using MapOfFieldOnCellsReal = std::map< ASTERINTEGER, FieldOnCellsRealPtr >;
+    using MapOfConstantFieldOnCellsReal = std::map< ASTERINTEGER, ConstantFieldOnCellsRealPtr >;
+    using MapOfFieldOnNodesComplex = std::map< ASTERINTEGER, FieldOnNodesComplexPtr >;
+    using MapOfFieldOnCellsComplex = std::map< ASTERINTEGER, FieldOnCellsComplexPtr >;
+    using MapOfFieldOnCellsLong = std::map< ASTERINTEGER, FieldOnCellsLongPtr >;
+    using MapOfConstantFieldOnCellsChar16 = std::map< ASTERINTEGER, ConstantFieldOnCellsChar16Ptr >;
+    using MapOfGeneralizedVectorReal = std::map< ASTERINTEGER, GeneralizedAssemblyVectorRealPtr >;
+    using MapOfGeneralizedVectorComplex =
+        std::map< ASTERINTEGER, GeneralizedAssemblyVectorComplexPtr >;
 
-    typedef std::map< ASTERINTEGER, FieldOnNodesComplexPtr > MapOfFieldOnNodesComplex;
-    typedef std::map< ASTERINTEGER, FieldOnCellsComplexPtr > MapOfFieldOnCellsComplex;
+    using mapStrMoFNR = std::map< std::string, MapOfFieldOnNodesReal >;
+    using mapStrMoFCR = std::map< std::string, MapOfFieldOnCellsReal >;
+    using mapStrMoCFCR = std::map< std::string, MapOfConstantFieldOnCellsReal >;
+    using mapStrMoFNC = std::map< std::string, MapOfFieldOnNodesComplex >;
+    using mapStrMoFCC = std::map< std::string, MapOfFieldOnCellsComplex >;
+    using mapStrMoFCI = std::map< std::string, MapOfFieldOnCellsLong >;
+    using mapStrMoCFCK16 = std::map< std::string, MapOfConstantFieldOnCellsChar16 >;
+    using mapStrMoFGVR = std::map< std::string, MapOfGeneralizedVectorReal >;
+    using mapStrMoFGVC = std::map< std::string, MapOfGeneralizedVectorComplex >;
 
-    typedef std::map< ASTERINTEGER, FieldOnCellsLongPtr > MapOfFieldOnCellsLong;
-
-    typedef std::map< ASTERINTEGER, ConstantFieldOnCellsChar16Ptr > MapOfConstantFieldOnCellsChar16;
-
-    typedef std::map< ASTERINTEGER, GeneralizedAssemblyVectorRealPtr > MapOfGeneralizedVectorReal;
-    typedef std::map< ASTERINTEGER, GeneralizedAssemblyVectorComplexPtr >
-        MapOfGeneralizedVectorComplex;
-
-    /** @typedef std::map d'une chaine et des pointers vers toutes les DataStructure */
-    typedef std::map< std::string, MapOfFieldOnNodesReal > mapStrMoFNR;
-    typedef std::map< std::string, MapOfFieldOnCellsReal > mapStrMoFCR;
-    typedef std::map< std::string, MapOfConstantFieldOnCellsReal > mapStrMoCFCR;
-    typedef std::map< std::string, MapOfGeneralizedVectorReal > mapStrMoFGVR;
-    typedef std::map< std::string, MapOfGeneralizedVectorComplex > mapStrMoFGVC;
-
-    typedef std::map< std::string, MapOfFieldOnNodesComplex > mapStrMoFNC;
-    typedef std::map< std::string, MapOfFieldOnCellsComplex > mapStrMoFCC;
-
-    typedef std::map< std::string, MapOfFieldOnCellsLong > mapStrMoFCI;
-
-    typedef std::map< std::string, MapOfConstantFieldOnCellsChar16 > mapStrMoCFCK16;
-
-    /** @typedef std::map du rang et des pointers vers ElementaryCharacteristicsPtr */
-    typedef std::map< ASTERINTEGER, ElementaryCharacteristicsPtr > mapIndexCaraElem;
-    /** @typedef std::map du rang et des pointers vers ListOfLoadsPtr */
-    typedef std::map< ASTERINTEGER, ListOfLoadsPtr > mapIndexLoads;
-    /** @typedef std::map du rang et des pointers vers MaterialFieldPtr */
-    typedef std::map< ASTERINTEGER, MaterialFieldPtr > mapIndexMaterial;
-    /** @typedef std::map du rang et des pointers vers ModelPtr */
-    typedef std::map< ASTERINTEGER, ModelPtr > mapIndexModel;
+    using mapIndexCaraElem = std::map< ASTERINTEGER, ElementaryCharacteristicsPtr >;
+    using mapIndexLoads = std::map< ASTERINTEGER, ListOfLoadsPtr >;
+    using mapIndexMaterial = std::map< ASTERINTEGER, MaterialFieldPtr >;
+    using mapIndexModel = std::map< ASTERINTEGER, ModelPtr >;
 
     /** @brief Pointeur de nom Jeveux '.DESC' */
     NamesMapChar16 _symbolicNamesOfFields;
@@ -112,17 +92,17 @@ class Result : public DataStructure, public ListOfTables {
     /** @brief Vecteur Jeveux '.RS24' */
     JeveuxVectorChar24 _rs24;
 
-    /** @brief Liste des champs aux noeuds */
+    //
+    // Objects for C++
+    //
+    /** @brief Fields */
     mapStrMoFNR _dictOfMapOfFieldOnNodesReal;
     mapStrMoFNC _dictOfMapOfFieldOnNodesComplex;
-    /** @brief Liste des champs aux éléments */
     mapStrMoFCR _dictOfMapOfFieldOnCellsReal;
     mapStrMoFCC _dictOfMapOfFieldOnCellsComplex;
     mapStrMoFCI _dictOfMapOfFieldOnCellsLong;
-    /** @brief Liste des cartes K16 */
     mapStrMoCFCR _dictOfMapOfConstantFieldOnCellsReal;
     mapStrMoCFCK16 _dictOfMapOfConstantFieldOnCellsChar16;
-    /** @brief Liste des champs généralisés */
     mapStrMoFGVR _dictOfMapOfGeneralizedVectorReal;
     mapStrMoFGVC _dictOfMapOfGeneralizedVectorComplex;
 
@@ -135,37 +115,50 @@ class Result : public DataStructure, public ListOfTables {
     /** @brief List of ModelPtr */
     mapIndexModel _mapModel;
 
-    /** @brief Maillage sur lequel repose la resultat */
+    /** @brief Mesh */
     BaseMeshPtr _mesh;
     /** @brief Object to correctly manage fields and field descriptions */
-    FieldBuilder _fieldBuidler;
+    FieldBuilder _fieldBuilder;
 
+  protected:
     /**
-     * @brief Get a name for field (wrap to rsexch.F90)
-     * @param name Symbolic name of the field
-     * @param index Index
+     * @brief Get a JEVEUX name for field
+     * @param symbName Symbolic name of the field
+     * @param storageIndex Index
      */
     std::pair< ASTERINTEGER, std::string > _getNewFieldName( const std::string &name,
                                                              const ASTERINTEGER &index ) const;
 
+    /**
+     * @brief Set field in datastructure
+     * @param symbName Symbolic name of the field
+     * @param storageIndex Index
+     * @param field Field to save
+     * @param dict Index
+     */
     template < typename T >
     void
-    _setFieldBase( const std::string &name, const ASTERINTEGER &index, std::shared_ptr< T > field,
+    _setFieldBase( const std::string &symbName, const ASTERINTEGER &storageIndex,
+                   std::shared_ptr< T > field,
                    std::map< std::string, std::map< ASTERINTEGER, std::shared_ptr< T > > > &dict );
 
+    /**
+     * @brief Check consistency of mesh
+     * @param BaseMeshPtr mesh
+     */
     void _checkMesh( const BaseMeshPtr mesh ) const;
 
-    ASTERINTEGER _getInternalIndex( const ASTERINTEGER &index ) const;
+    /**
+     * @brief Get internal index
+     * @param storageIndex Index to store field
+     */
+    ASTERINTEGER _getInternalIndex( const ASTERINTEGER &storageIndex ) const;
 
     static JeveuxVectorReal _mata;
     static JeveuxVectorReal _matc;
 
   public:
-    /**
-     * @typedef ResultPtr
-     * @brief Pointeur intelligent vers un Result
-     */
-    typedef std::shared_ptr< Result > ResultPtr;
+    using ResultPtr = std::shared_ptr< Result >;
 
     /**
      * @brief Constructeur
@@ -189,7 +182,7 @@ class Result : public DataStructure, public ListOfTables {
           _rs16( JeveuxVectorChar16( getName() + ".RS16" ) ),
           _rs24( JeveuxVectorChar24( getName() + ".RS24" ) ),
           _mesh( nullptr ),
-          _fieldBuidler( FieldBuilder() ) {};
+          _fieldBuilder( FieldBuilder() ) {};
 
     /**
      * @brief Add a FiniteElementDescriptor to elementary matrix
@@ -211,10 +204,10 @@ class Result : public DataStructure, public ListOfTables {
     void setElementaryCharacteristics( const ElementaryCharacteristicsPtr &, ASTERINTEGER index );
 
     /**
-     * @brief Add a existing EquationNumbering in _fieldBuidler
+     * @brief Add a existing EquationNumbering in _fieldBuilder
      */
     void addEquationNumbering( const EquationNumberingPtr &fond ) {
-        _fieldBuidler.addEquationNumbering( fond );
+        _fieldBuilder.addEquationNumbering( fond );
     };
 
     /**
@@ -251,9 +244,9 @@ class Result : public DataStructure, public ListOfTables {
     /**
      * @brief Add parameter value for one index
      */
-    void setParameterValue( std::string name, ASTERDOUBLE value, ASTERINTEGER index );
+    void setParameterValue( std::string name, ASTERDOUBLE value, ASTERINTEGER storageIndex );
 
-    ASTERDOUBLE getTimeValue( ASTERINTEGER index );
+    ASTERDOUBLE getTimeValue( ASTERINTEGER storageIndex );
 
     /**
      * @brief Append a elementary characteristics on all index of Result
@@ -361,7 +354,7 @@ class Result : public DataStructure, public ListOfTables {
     ModelPtr getModel( ASTERINTEGER index ) const;
 
     /**
-     * @brief Obtenir un champ aux noeuds à partir de son nom et de son numéro d'ordre
+     * @brief Obtenir un champ aux noeuds réel à partir de son nom et de son numéro d'ordre
      * @param name nom Aster du champ
      * @param index numéro d'ordre
      * @return FieldOnCellsRealPtr pointant vers le champ
@@ -376,7 +369,7 @@ class Result : public DataStructure, public ListOfTables {
                                              const ASTERINTEGER index ) const;
 
     /**
-     * @brief Obtenir un champ par élément à partir de son nom et de son numéro d'ordre
+     * @brief Obtenir un champ aux noeuds réel à partir de son nom et de son numéro d'ordre
      * @param name nom Aster du champ
      * @param index numéro d'ordre
      * @return FieldOnCellsRealPtr pointant vers le champ
@@ -495,7 +488,7 @@ class Result : public DataStructure, public ListOfTables {
     ASTERINTEGER getNumberOfIndexes() const;
 
     /**
-     * @brief Get the number of steps stored in the Result
+     * @brief Get the steps stored in the Result
      * @return nbIndexes
      */
     VectorLong getIndexes() const;
@@ -546,10 +539,6 @@ class Result : public DataStructure, public ListOfTables {
     static VectorReal getTangentMatrix( const std::string & );
 };
 
-/**
- * @typedef ResultPtr
- * @brief Pointeur intelligent vers un Result
- */
-typedef std::shared_ptr< Result > ResultPtr;
+using ResultPtr = std::shared_ptr< Result >;
 
 #endif /* RESULTS_H_ */
