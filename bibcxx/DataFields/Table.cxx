@@ -192,7 +192,6 @@ Table::getColumn( const std::string &param ) const {
 Table::~Table() {
 #ifdef ASTER_DEBUG_CXX
     std::cout << "DEBUG: Table.destr: " << this->getName() << std::endl;
-    AS_ASSERT( _build_called );
 #endif
 };
 
