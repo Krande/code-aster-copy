@@ -27,6 +27,8 @@
 /* person_in_charge: nicolas.sellenet at edf.fr */
 #include "astercxx.h"
 
+#ifdef ASTER_HAVE_MPI
+
 #include "aster_mpi.h"
 
 #include "Meshes/IncompleteMesh.h"
@@ -62,5 +64,7 @@ class MeshConnectionGraph {
 };
 
 using MeshConnectionGraphPtr = std::shared_ptr< MeshConnectionGraph >;
+
+#endif /* ASTER_HAVE_MPI */
 
 #endif /* MESHCONNECTIONGRAPH_H_ */

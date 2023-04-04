@@ -24,10 +24,14 @@
 
 #include "astercxx.h"
 
+#include "ParallelUtilities/MeshConnectionGraph.h"
+
+#ifdef ASTER_HAVE_MPI
+
 #include "aster_mpi.h"
 
 #include "ParallelUtilities/AsterMPI.h"
-#include "ParallelUtilities/MeshConnectionGraph.h"
+
 extern "C" {
 #include "ptscotch.h"
 }
@@ -86,5 +90,7 @@ class PtScotchPartitioner {
 };
 
 typedef std::shared_ptr< PtScotchPartitioner > PtScotchPartitionerPtr;
+
+#endif /* ASTER_HAVE_MPI */
 
 #endif /* PTSCOTCHPARTITIONER_H_ */

@@ -30,6 +30,10 @@
 
 #include "ParallelUtilities/CommGraph.h"
 
+#ifdef ASTER_HAVE_MPI
+
 void exportCommGraphToPython( py::module_ &mod );
+
+#endif /* ASTER_HAVE_MPI */
 
 #endif /* COMMGRAPHINTERFACE_H_ */

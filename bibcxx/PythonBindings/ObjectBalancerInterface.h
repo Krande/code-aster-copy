@@ -26,10 +26,14 @@
 
 #include "astercxx.h"
 
+#ifdef ASTER_HAVE_MPI
+
 #include "aster_pybind.h"
 
 #include "ParallelUtilities/ObjectBalancer.h"
 
 void exportObjectBalancerToPython( py::module_ &mod );
+
+#endif /* ASTER_HAVE_MPI */
 
 #endif /* OBJECTBALANCERINTERFACE_H_ */

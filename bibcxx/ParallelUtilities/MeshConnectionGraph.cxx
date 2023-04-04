@@ -25,6 +25,8 @@
 
 #include "ParallelUtilities/MeshConnectionGraph.h"
 
+#ifdef ASTER_HAVE_MPI
+
 #include "ParallelUtilities/AsterMPI.h"
 #include "ParallelUtilities/CommGraph.h"
 
@@ -150,3 +152,5 @@ void MeshConnectionGraph::buildFromIncompleteMesh( const IncompleteMeshPtr &mesh
     }
     _vertices.push_back( posInEdges );
 }
+
+#endif /* ASTER_HAVE_MPI */

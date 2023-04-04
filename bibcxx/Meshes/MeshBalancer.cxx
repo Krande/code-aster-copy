@@ -25,6 +25,8 @@
 
 #include "Meshes/MeshBalancer.h"
 
+#ifdef ASTER_HAVE_MPI
+
 #include "Meshes/Mesh.h"
 
 void decrement( int &i ) { i--; };
@@ -492,3 +494,5 @@ void MeshBalancer::balanceGroups( BaseMeshPtr outMesh, const ObjectBalancer &nBa
     if ( nodesGrpNames.size() != 0 )
         outMesh->addGroupsOfNodes( nodesGrpNames, nodesGrpList );
 };
+
+#endif /* ASTER_HAVE_MPI */

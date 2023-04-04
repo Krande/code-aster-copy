@@ -25,6 +25,8 @@
 
 #include "PythonBindings/MeshBalancerInterface.h"
 
+#ifdef ASTER_HAVE_MPI
+
 #include "aster_pybind.h"
 
 // Not DataStructures
@@ -54,3 +56,5 @@ Arguments:
 )",
               py::arg( "mesh" ) );
 };
+
+#endif /* ASTER_HAVE_MPI */

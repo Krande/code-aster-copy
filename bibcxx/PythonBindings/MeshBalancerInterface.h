@@ -26,10 +26,14 @@
 
 #include "astercxx.h"
 
+#ifdef ASTER_HAVE_MPI
+
 #include "aster_pybind.h"
 
 #include "Meshes/MeshBalancer.h"
 
 void exportMeshBalancerToPython( py::module_ &mod );
+
+#endif /* ASTER_HAVE_MPI */
 
 #endif /* MESHBALANCERINTERFACE_H_ */

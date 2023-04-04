@@ -27,6 +27,7 @@ from libaster import *
 
 from .config_dependent import (
     ConnectionMesh,
+    IncompleteMesh,
     MGISBehaviour,
     ParallelDOFNumbering,
     ParallelEquationNumbering,

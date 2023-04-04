@@ -25,6 +25,8 @@
 
 #include "ParallelUtilities/ObjectBalancer.h"
 
+#ifdef ASTER_HAVE_MPI
+
 void ObjectBalancer::prepareCommunications() {
     if ( !_sendDefined ) {
         throw std::runtime_error( "The definition of elementary sends must finished"
@@ -84,3 +86,5 @@ void ObjectBalancer::balanceObjectOverProcesses( const MeshCoordinatesFieldPtr &
     balanceSimpleVectorOverProcesses< ASTERDOUBLE, 3 >( &( *valuesIn )[0], vecSize,
                                                         &( *valuesOut )[0] );
 };
+
+#endif /* ASTER_HAVE_MPI */

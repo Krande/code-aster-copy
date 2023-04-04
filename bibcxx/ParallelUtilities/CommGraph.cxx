@@ -25,6 +25,8 @@
 
 #include "ParallelUtilities/CommGraph.h"
 
+#ifdef ASTER_HAVE_MPI
+
 #include "ParallelUtilities/AsterMPI.h"
 
 void CommGraph::synchronizeOverProcesses() {
@@ -88,3 +90,5 @@ void CommGraph::synchronizeOverProcesses() {
         }
     }
 };
+
+#endif /* ASTER_HAVE_MPI */

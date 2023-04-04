@@ -25,6 +25,8 @@
 
 #include "PythonBindings/CommGraphInterface.h"
 
+#ifdef ASTER_HAVE_MPI
+
 #include "aster_pybind.h"
 
 // Not DataStructures
@@ -51,3 +53,5 @@ Returns:
 Synchronise graph over processes
         )" );
 };
+
+#endif /* ASTER_HAVE_MPI */

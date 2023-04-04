@@ -47,6 +47,14 @@ except ImportError:
 
 
 try:
+    from libaster import IncompleteMesh
+except ImportError:
+
+    class IncompleteMesh(UnavailableObject):
+        pass
+
+
+try:
     from libaster import ParallelFiniteElementDescriptor
 except ImportError:
 

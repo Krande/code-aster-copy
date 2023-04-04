@@ -24,6 +24,8 @@
 
 #include "PythonBindings/PtScotchPartitionerInterface.h"
 
+#ifdef ASTER_HAVE_MPI
+
 #include "aster_pybind.h"
 
 #include "ParallelUtilities/MeshConnectionGraph.h"
@@ -70,3 +72,5 @@ Arguments:
         )",
               py::arg( "path" ) );
 };
+
+#endif /* ASTER_HAVE_MPI */

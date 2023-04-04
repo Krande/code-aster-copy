@@ -25,6 +25,8 @@
 
 #include "PythonBindings/ObjectBalancerInterface.h"
 
+#ifdef ASTER_HAVE_MPI
+
 #include "aster_pybind.h"
 
 // Not DataStructures
@@ -78,3 +80,5 @@ Returns:
         )",
               py::arg( "vector" ) );
 };
+
+#endif /* ASTER_HAVE_MPI */

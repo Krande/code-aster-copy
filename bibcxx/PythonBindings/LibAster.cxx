@@ -306,10 +306,12 @@ PYBIND11_MODULE( libaster, mod ) {
     exportSetLoggingLevelToPython( mod );
     exportPostProcessingToPython( mod );
     exportHHOToPython( mod );
+#ifdef ASTER_HAVE_MPI
     exportCommGraphToPython( mod );
     exportObjectBalancerToPython( mod );
     exportMeshBalancerToPython( mod );
     exportIncompleteMeshToPython( mod );
     exportPtScotchPartitionerToPython( mod );
     exportMeshConnectionGraphToPython( mod );
+#endif /* ASTER_HAVE_MPI */
 };

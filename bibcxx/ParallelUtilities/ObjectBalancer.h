@@ -27,6 +27,8 @@
 /* person_in_charge: nicolas.sellenet at edf.fr */
 #include "astercxx.h"
 
+#ifdef ASTER_HAVE_MPI
+
 #include "aster_mpi.h"
 
 #include "MemoryManager/JeveuxCollection.h"
@@ -529,5 +531,6 @@ void ObjectBalancer::balanceObjectOverProcesses3( const T &in, T &out, const Mas
         }
     }
 };
+#endif /* ASTER_HAVE_MPI */
 
 #endif /* OBJECTBALANCER_H_ */

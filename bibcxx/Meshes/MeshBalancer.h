@@ -27,6 +27,8 @@
 
 #include "astercxx.h"
 
+#ifdef ASTER_HAVE_MPI
+
 #include "Meshes/BaseMesh.h"
 #include "Meshes/ParallelMesh.h"
 #include "ParallelUtilities/AsterMPI.h"
@@ -93,5 +95,7 @@ class MeshBalancer {
  * @brief Pointeur intelligent vers un MeshBalancer
  */
 typedef std::shared_ptr< MeshBalancer > MeshBalancerPtr;
+
+#endif /* ASTER_HAVE_MPI */
 
 #endif /* MESHBALANCER_H_ */
