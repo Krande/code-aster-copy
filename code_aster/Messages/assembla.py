@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -195,10 +195,13 @@ Risques & conseils :
    Êtes-vous sur d'avoir indiqué cette charge derrière le mot clé CHAR_MECA_GLOBAL ?
    En effet, il faut indiquer TOUTES les charges dualisées derrière CHAR_MECA_GLOBAL.
 
- Si vous utilisez directement la commande ASSE_VECTEUR :
+ Si vous utilisez directement la commande ASSE_VECTEUR ou la commande DYNA_VIBRA :
    Si %(k5)s est une charge contenant des conditions aux limites dualisées (DDL_IMPO, ...),
-   Êtes-vous sur d'avoir indiqué cette charge derrière le mot clé CHARGE
-   de la commande CALC_MATR_ELEM/OPTION='RIGI_MECA' ?
+   Êtes-vous sur d'avoir indiqué cette charge à la commande NUME_DDL ?
+      - Soit en utilisant le mot-clé CHARGE (associé à MODELE) de l'opérateur NUME_DDL.
+      - Soit en utilisant le mot-clé MATR_RIGI (de NUME_DDL) avec une matrice élémentaire
+      issue de la commande CALC_MATR_ELEM/OPTION='RIGI_MECA' à laquelle vous avez indiqué 
+      cette charge via le mot-clé CHARGE
 """),
 
     46 : _("""
