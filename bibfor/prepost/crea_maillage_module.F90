@@ -2544,22 +2544,20 @@ contains
                         end do
                     end if
                 end do
-                ASSERT(nb_nodes_keep == n_coor_recv)
+                ASSERT(nb_nodes_keep >= n_coor_recv)
 !
-                if (this%debug) then
-                    !  On regarde que les noeuds ne sont pas confondu.
-                    do i_node = 1, nb_nodes_keep
-                        tole_comp = max(tole, tole*norm2(this%nodes(v_nkeep(i_node))%coor))
-                        do j_node = i_node+1, nb_nodes_keep
-                            coor_diff = abs(this%nodes(v_nkeep(i_node))%coor- &
-                                            this%nodes(v_nkeep(j_node))%coor)
-                            if (maxval(coor_diff) < tole_comp) then
+                !  On regarde que les noeuds ne sont pas confondu.
+                do i_node = 1, nb_nodes_keep
+                    tole_comp = max(tole, tole*norm2(this%nodes(v_nkeep(i_node))%coor))
+                    do j_node = i_node+1, nb_nodes_keep
+                        coor_diff = abs(this%nodes(v_nkeep(i_node))%coor- &
+                                        this%nodes(v_nkeep(j_node))%coor)
+                        if (maxval(coor_diff) < tole_comp) then
                                 !! Verif pas de noeud double
-                                ASSERT(ASTER_FALSE)
-                            end if
-                        end do
+                            ASSERT(ASTER_FALSE)
+                        end if
                     end do
-                end if
+                end do
 !
                 if (this%info >= 2) then
                     print *, "-Domaine: ", proc_id, &
