@@ -26,7 +26,7 @@
 
 #include "ParallelUtilities/MeshConnectionGraph.h"
 
-#ifdef ASTER_HAVE_MPI
+#ifdef ASTER_HAVE_SCOTCH
 
 #include "aster_mpi.h"
 
@@ -91,6 +91,6 @@ class PtScotchPartitioner {
 
 typedef std::shared_ptr< PtScotchPartitioner > PtScotchPartitionerPtr;
 
-#endif /* ASTER_HAVE_MPI */
+#endif /* ASTER_HAVE_SCOTCH */
 
 #endif /* PTSCOTCHPARTITIONER_H_ */

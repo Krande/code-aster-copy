@@ -311,7 +311,9 @@ PYBIND11_MODULE( libaster, mod ) {
     exportObjectBalancerToPython( mod );
     exportMeshBalancerToPython( mod );
     exportIncompleteMeshToPython( mod );
+#ifdef ASTER_HAVE_SCOTCH
     exportPtScotchPartitionerToPython( mod );
     exportMeshConnectionGraphToPython( mod );
+#endif /* ASTER_HAVE_SCOTCH */
 #endif /* ASTER_HAVE_MPI */
 };

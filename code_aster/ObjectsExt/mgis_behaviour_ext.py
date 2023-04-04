@@ -24,8 +24,7 @@
 """
 
 
-from libaster import MGISBehaviour
-
+from ..Objects import MGISBehaviour
 from ..Objects.Serialization import InternalStateBuilder
 from ..Utilities import injector
 

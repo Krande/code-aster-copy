@@ -24,7 +24,7 @@
 
 #include "PythonBindings/PtScotchPartitionerInterface.h"
 
-#ifdef ASTER_HAVE_MPI
+#ifdef ASTER_HAVE_SCOTCH
 
 #include "aster_pybind.h"
 
@@ -73,4 +73,4 @@ Arguments:
               py::arg( "path" ) );
 };
 
-#endif /* ASTER_HAVE_MPI */
+#endif /* ASTER_HAVE_SCOTCH */

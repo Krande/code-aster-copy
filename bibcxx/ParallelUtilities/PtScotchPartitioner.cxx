@@ -19,7 +19,7 @@
 
 #include "ParallelUtilities/PtScotchPartitioner.h"
 
-#ifdef ASTER_HAVE_MPI
+#ifdef ASTER_HAVE_SCOTCH
 
 #include "ParallelUtilities/ObjectBalancer.h"
 
@@ -94,4 +94,4 @@ void PtScotchPartitioner::writeGraph( const std::string &filename ) {
     fclose( file );
 };
 
-#endif /* ASTER_HAVE_MPI */
+#endif /* ASTER_HAVE_SCOTCH */
