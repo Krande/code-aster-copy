@@ -280,11 +280,6 @@ class MECA_POU_D_E(Element):
             para_in=((SP.PFRELEC, LC.CFRELEC), (SP.PGEOMER, NGEOMER)),
             para_out=((SP.PVECTUR, MVECTUR),),
         ),
-        OP.CHAR_MECA_FRLAPL(
-            te=148,
-            para_in=((SP.PFLAPLA, LC.CFLAPLA), (SP.PGEOMER, NGEOMER), (SP.PLISTMA, LC.CLISTMA)),
-            para_out=((SP.PVECTUR, MVECTUR),),
-        ),
         OP.CHAR_MECA_HYDR_R(
             te=312,
             para_in=((SP.PMATERC, LC.CMATERC), (OP.CHAR_MECA_HYDR_R.PVARCPR, LC.ZVARCPG)),

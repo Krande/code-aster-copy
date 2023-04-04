@@ -80,7 +80,7 @@ subroutine nmcrch(numeDof, listFuncActi, sddyna, nlDynaDamping, &
     character(len=19) :: cnfext
     character(len=19) :: cnfedo, cnfsdo, cndidi
     character(len=19) :: cndido, cncine, cndiri
-    character(len=19) :: cnondp, cnlapl, cnviss, cnfint
+    character(len=19) :: cnondp, cnviss, cnfint
     character(len=19) :: cnsstf, cnsstr
     character(len=19) :: cnimpe
     character(len=19) :: cnfepi, cndipi, cnrefe, cneltc, cneltf
@@ -281,8 +281,6 @@ subroutine nmcrch(numeDof, listFuncActi, sddyna, nlDynaDamping, &
             call vtcreb(cnfint, 'V', 'R', nume_ddlz=numeDof)
             call ndynkk(sddyna, 'OLDP_CNONDP', cnondp)
             call vtcreb(cnondp, 'V', 'R', nume_ddlz=numeDof)
-            call ndynkk(sddyna, 'OLDP_CNLAPL', cnlapl)
-            call vtcreb(cnlapl, 'V', 'R', nume_ddlz=numeDof)
             call ndynkk(sddyna, 'OLDP_CNSSTF', cnsstf)
             call vtcreb(cnsstf, 'V', 'R', nume_ddlz=numeDof)
             call ndynkk(sddyna, 'OLDP_CNCINE', cncine)

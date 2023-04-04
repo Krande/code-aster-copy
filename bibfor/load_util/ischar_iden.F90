@@ -58,7 +58,6 @@ function ischar_iden(v_load_info, i_load, nb_load, load_type_1, load_type_2, loa
 ! -> For Neumann loads
 !                'ONDE' - ONDE PLANE
 !                'SIGM' - SIGMA_INTERNE
-!                'LAPL' - FORCE DE LAPLACE
 !                'TARD' - ELEMENTS TARDIFS
 !                'SUIV' - Undead load
 !                '    ' - All types
@@ -67,7 +66,7 @@ function ischar_iden(v_load_info, i_load, nb_load, load_type_1, load_type_2, loa
 !
     integer :: load_nume_diri, load_nume_neum, jafci
     aster_logical :: ldiri, lelim, ldual, ldidi, lneum
-    aster_logical :: londe, llapl, lsigm, lelem, lsuiv, lpilo
+    aster_logical :: londe, lsigm, lelem, lsuiv, lpilo
     character(len=19) :: char19
 !
 ! --------------------------------------------------------------------------------------------------
@@ -79,7 +78,6 @@ function ischar_iden(v_load_info, i_load, nb_load, load_type_1, load_type_2, loa
     ldidi = ASTER_FALSE
     lneum = ASTER_FALSE
     londe = ASTER_FALSE
-    llapl = ASTER_FALSE
     lsigm = ASTER_FALSE
     lsuiv = ASTER_FALSE
     lelem = ASTER_FALSE
@@ -154,10 +152,6 @@ function ischar_iden(v_load_info, i_load, nb_load, load_type_1, load_type_2, loa
             lneum = ASTER_TRUE
             lsigm = ASTER_TRUE
         else if (load_nume_neum .eq. 0) then
-            if (v_load_info(2*nb_load+3) .ne. 0) then
-                lneum = ASTER_TRUE
-                llapl = ASTER_TRUE
-            end if
         else
             ASSERT(ASTER_FALSE)
         end if
@@ -196,8 +190,6 @@ function ischar_iden(v_load_info, i_load, nb_load, load_type_1, load_type_2, loa
                 ischar_iden = londe
             else if (load_type_2 .eq. 'SIGM') then
                 ischar_iden = lsigm
-            else if (load_type_2 .eq. 'LAPL') then
-                ischar_iden = llapl
             else if (load_type_2 .eq. 'TARD') then
                 ischar_iden = lelem
             else if (load_type_2 .eq. 'SUIV') then

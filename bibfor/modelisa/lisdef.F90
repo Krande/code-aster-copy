@@ -179,7 +179,7 @@ subroutine lisdef(oper, optkz, opti, valkz, vali)
      &     'PRES_REP', 'FLUX_THM_REP', 'VITE_FACE',&
      &     'IMPE_FACE', 'EVOL_CHAR', 'PESANTEUR',&
      &     'ROTATION', 'RELA_CINE_BP', 'FORCE_ELEC',&
-     &     'INTE_ELEC', 'ONDE_FLUI', 'ONDE_PLANE',&
+     &     ' ', 'ONDE_FLUI', 'ONDE_PLANE',&
      &     'VECT_ASSE_CHAR', 'FORCE_CONTOUR', 'FORCE_INTERNE#3D',&
      &     'FORCE_INTERNE#2D', 'FORCE_ARETE', 'FORCE_FACE',&
      &     'FORCE_POUTRE', 'FORCE_COQUE#3D', 'FORCE_COQUE#2D',&
@@ -207,7 +207,7 @@ subroutine lisdef(oper, optkz, opti, valkz, vali)
      &     'NEUM_MECA', 'NEUM_MECA', 'VITE_FACE',&
      &     'IMPE_FACE', 'EVOL_CHAR', 'NEUM_MECA',&
      &     'NEUM_MECA', 'SIGM_CABLE', 'FORCE_ELEC',&
-     &     'INTE_ELEC', 'ONDE_FLUI', 'ONDE_PLANE',&
+     &     ' ', 'ONDE_FLUI', 'ONDE_PLANE',&
      &     'VECT_ASSE_CHAR', 'NEUM_MECA', 'NEUM_MECA',&
      &     'NEUM_MECA', 'NEUM_MECA', 'NEUM_MECA',&
      &     'NEUM_MECA', 'NEUM_MECA', 'NEUM_MECA',&
@@ -233,7 +233,7 @@ subroutine lisdef(oper, optkz, opti, valkz, vali)
      &     'LIGRMO', 'LIGRMO', 'LIGRMO',&
      &     'LIGRMO', 'LIGRMO', 'LIGRMO',&
      &     'LIGRMO', 'LIGRMO', 'LIGRMO',&
-     &     'LIGRMO', 'LIGRMO', 'LIGRMO',&
+     &     ' ', 'LIGRMO', 'LIGRMO',&
      &     'LIGRMO', 'LIGRMO', 'LIGRMO',&
      &     'LIGRMO', 'LIGRMO', 'LIGRMO',&
      &     'LIGRMO', 'LIGRMO', 'LIGRMO',&

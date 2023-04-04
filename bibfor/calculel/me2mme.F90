@@ -47,7 +47,7 @@ subroutine me2mme(modelz, nb_load, lchar, mate, mateco, caraz, &
 #include "asterfort/vrcref.h"
 #include "asterfort/me2mme_evol.h"
 !
-    character(len=8) :: model, cara_elem, kbid, lcmp(5)
+    character(len=8) :: model, cara_elem, kbid
     character(len=*) :: modelz, caraz, vect_elem_, lchar(*), mate, mateco, basez
     character(len=19) :: vect_elem
     real(kind=8) :: time
@@ -87,7 +87,6 @@ subroutine me2mme(modelz, nb_load, lchar, mate, mateco, caraz, &
 !        LCHAR(ICHA)//'.CHME.PESAN'
 !        LCHAR(ICHA)//'.CHME.ROTAT'
 !        LCHAR(ICHA)//'.CHME.FELEC'
-!        LCHAR(ICHA)//'.CHME.FL1??'
 !        LCHAR(ICHA)//'.CHME.PRESS'
 !        LCHAR(ICHA)//'.CHME.EPSIN'
 !        LCHAR(ICHA)//'.CHME.TEMPE'
@@ -102,15 +101,15 @@ subroutine me2mme(modelz, nb_load, lchar, mate, mateco, caraz, &
     integer :: nbin
 !-----------------------------------------------------------------------
     integer :: i_load, ier, ifla, ilires, iret
-    integer :: j, jveass, nharm
+    integer :: jveass, nharm
 !-----------------------------------------------------------------------
     parameter(nbin=44)
     character(len=8) :: lpain(nbin), lpaout(1), noma, exiele, load_name
     character(len=16) :: option
     character(len=19) :: pintto, cnseto, heavto, loncha, basloc, lsn, lst, stano
     character(len=19) :: pmilto, fissno, pinter, hea_no
-    character(len=24) :: chgeom, lchin(nbin), lchout(1), kcmp(5)
-    character(len=24) :: ligrmo, ligrch, chtime, chlapl, chcara(18)
+    character(len=24) :: chgeom, lchin(nbin), lchout(1)
+    character(len=24) :: ligrmo, ligrch, chtime, chcara(18)
     character(len=24) :: chharm
     character(len=19) :: chvarc, chvref
     real(kind=8) :: inst_prev, inst_curr, inst_theta
@@ -543,39 +542,6 @@ subroutine me2mme(modelz, nb_load, lchar, mate, mateco, caraz, &
                         'OUI')
             call reajre(vect_elem, lchout(1), base)
         end if
-! ====================================================================
-!         -- LA BOUCLE 30 SERT A TRAITER LES FORCES ELECTRIQUES LAPLACE
-!
-        do j = 1, 99
-            lchin(13) (1:17) = ligrch(1:13)//'.FL1'
-            call codent(j, 'D0', lchin(13) (18:19))
-            lchin(13) = lchin(13) (1:19)//'.DESC'
-            call jeexin(lchin(13), iret)
-            if (iret .eq. 0) goto 30
-            lpain(12) = 'PHARMON'
-            lchin(12) = ' '
-            lpain(13) = 'PLISTMA'
-            if (ifla .eq. 0) then
-                chlapl = '&&ME2MME.CH_FLAPLA'
-                lcmp(1) = 'NOMAIL'
-                lcmp(2) = 'NOGEOM'
-                kcmp(1) = noma
-                kcmp(2) = chgeom(1:19)
-                call mecact('V', chlapl, 'MAILLA', noma, 'FLAPLA  ', &
-                            ncmp=2, lnomcmp=lcmp(1), vk=kcmp(1))
-                ifla = 1
-            end if
-            option = 'CHAR_MECA_FRLAPL'
-            lpain(4) = 'PFLAPLA'
-            lchin(4) = chlapl
-            ilires = ilires+1
-            call codent(ilires, 'D0', lchout(1) (12:14))
-            call calcul('S', option, ligrmo, nbin, lchin, &
-                        lpain, 1, lchout, lpaout, base, &
-                        'OUI')
-            call reajre(vect_elem, lchout(1), base)
-        end do
-30      continue
 ! ====================================================================
         call exisd('CHAMP_GD', ligrch(1:13)//'.PRESS', iret)
         if (iret .ne. 0) then

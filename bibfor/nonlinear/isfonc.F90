@@ -83,7 +83,6 @@ function isfonc(list_func_acti, func_name_z)
 !       DIRI_CINE          :  PRESENCE DE CHARGEMENTS DE DIRICHLET
 !                             DE TYPE ELIMINATION (AFFE_CHAR_CINE)
 !       NEUM_UNDEAD        :  undead Neumann load
-!       LAPLACE            :  FORCE DE LAPLACE
 !       DIDI               :  FORCE DE TYPE DIFF. DIRICHLET
 !       THM                :  MODELISATION THM
 !       HHO                :  MODELISATION HHO
@@ -185,8 +184,6 @@ function isfonc(list_func_acti, func_name_z)
         isfonc = list_func_acti(13) .eq. 1
     else if (func_name .eq. 'DIRI_UNDEAD') then
         isfonc = list_func_acti(60) .eq. 1
-    else if (func_name .eq. 'LAPLACE') then
-        isfonc = list_func_acti(20) .eq. 1
     else if (func_name .eq. 'DIDI') then
         isfonc = list_func_acti(22) .eq. 1
 !

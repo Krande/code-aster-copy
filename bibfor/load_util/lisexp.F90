@@ -41,9 +41,9 @@ subroutine lisexp(list_load)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: nb_excl_load = 6
+    integer, parameter :: nb_excl_load = 5
     character(len=6), parameter :: ligr_excl_char(nb_excl_load) = (/ &
-                                   '.ROTAT', '.FL1  ', &
+                                   '.ROTAT', &
                                    '.FELEC', '.EPSIN', &
                                    '.ONDPL', '.SIINT'/)
     character(len=24) :: lload_name, lload_info

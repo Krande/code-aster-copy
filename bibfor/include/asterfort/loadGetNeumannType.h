@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,8 +20,7 @@
 interface
     subroutine loadGetNeumannType(l_stat      , load_name   , ligrch        ,&
                                   load_apply  , load_type   ,&
-                                  nb_info_type, nb_info_maxi, list_info_type,&
-                                  i_neum_lapl)
+                                  nb_info_type, nb_info_maxi, list_info_type)
         aster_logical, intent(in) :: l_stat
         character(len=8), intent(in) :: load_name
         character(len=19), intent(in) :: ligrch
@@ -30,6 +29,5 @@ interface
         integer, intent(inout) :: nb_info_type
         integer, intent(in) :: nb_info_maxi
         character(len=24), intent(inout)  :: list_info_type(nb_info_maxi)
-        integer, intent(out) :: i_neum_lapl
     end subroutine loadGetNeumannType
 end interface

@@ -40,7 +40,7 @@ subroutine nmch5p(veasse)
 !
     character(len=19) :: cnfedo, cnfepi, cnfsdo, cndidi
     character(len=19) :: cndido, cndipi, cncine, cndiri
-    character(len=19) :: cnbudi, cnlapl, cnsstr, cnondp
+    character(len=19) :: cnbudi, cnsstr, cnondp
     character(len=19) :: cnsstf
     character(len=19) :: cnrefe
     character(len=19) :: cndyna, cnamod
@@ -51,7 +51,7 @@ subroutine nmch5p(veasse)
     data cndido, cnfepi/'&&NMCH5P.CNDIDO', '&&NMCH5P.CNFEPI'/
     data cndipi/'&&NMCH5P.CNDIPI'/
     data cnbudi, cndidi/'&&NMCH5P.CNBUDI', '&&NMCH5P.CNDIDI'/
-    data cnondp, cnlapl/'&&NMCH5P.CNONDP', '&&NMCH5P.CNLAPL'/
+    data cnondp/'&&NMCH5P.CNONDP'/
     data cndiri/'&&NMCH5P.CNDIRI'/
     data cnsstf/'&&NMCH5P.CNSSTF'/
     data cnrefe/'&&NMCH5P.CNREFE'/
@@ -71,7 +71,6 @@ subroutine nmch5p(veasse)
     call nmcha0('VEASSE', 'CNDIPI', cndipi, veasse)
     call nmcha0('VEASSE', 'CNFEDO', cnfedo, veasse)
     call nmcha0('VEASSE', 'CNFEPI', cnfepi, veasse)
-    call nmcha0('VEASSE', 'CNLAPL', cnlapl, veasse)
     call nmcha0('VEASSE', 'CNONDP', cnondp, veasse)
     call nmcha0('VEASSE', 'CNFSDO', cnfsdo, veasse)
     call nmcha0('VEASSE', 'CNIMPE', cnimpe, veasse)

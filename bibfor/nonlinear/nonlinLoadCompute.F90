@@ -42,7 +42,6 @@ subroutine nonlinLoadCompute(mode, list_load, &
 #include "asterfort/ascova.h"
 #include "asterfort/vedpme.h"
 #include "asterfort/assvec.h"
-#include "asterfort/velame.h"
 #include "asterfort/vecgme.h"
 #include "asterfort/vefpme.h"
 #include "asterfort/nmcvci.h"
@@ -99,7 +98,7 @@ subroutine nonlinLoadCompute(mode, list_load, &
     character(len=24) :: lload_name, lload_info, lload_func, lload_fcss
     character(len=24) :: vect_elem, vect_asse
     character(len=24) :: vect_alem
-    aster_logical :: l_pilo, l_lapl, l_diri_undead, l_sstf, l_hho, l_load_cine
+    aster_logical :: l_pilo, l_diri_undead, l_sstf, l_hho, l_load_cine
     real(kind=8) :: time_list(3)
     character(len=19) :: disp_prev, strx_prev
     character(len=19) :: vite_curr, varc_curr, disp_curr, acce_curr
@@ -121,7 +120,6 @@ subroutine nonlinLoadCompute(mode, list_load, &
     lload_func = list_load(1:19)//'.FCHA'
     lload_fcss = list_load(1:19)//'.FCSS'
 !
-    l_lapl = isfonc(list_func_acti, 'LAPLACE')
     l_pilo = isfonc(list_func_acti, 'PILOTAGE')
     l_diri_undead = isfonc(list_func_acti, 'DIRI_UNDEAD')
     l_sstf = isfonc(list_func_acti, 'SOUS_STRUC')
@@ -207,23 +205,6 @@ subroutine nonlinLoadCompute(mode, list_load, &
                     'R', vect_asse)
         if (niv .ge. 2) then
             call nmdebg('VECT', vect_asse, 6)
-        end if
-    end if
-!
-! - Laplace
-!
-    if (l_lapl) then
-        if (mode .eq. 'FIXE') then
-            call nmchex(hval_veelem, 'VEELEM', 'CNLAPL', vect_elem)
-            call nmchex(hval_veasse, 'VEASSE', 'CNLAPL', vect_asse)
-            call velame(model, lload_name, lload_info, disp_prev, &
-                        vect_elem)
-            call asasve(vect_elem, nume_dof, 'R', vect_alem)
-            call ascova('D', vect_alem, lload_func, 'INST', time_curr, &
-                        'R', vect_asse)
-            if (niv .ge. 2) then
-                call nmdebg('VECT', vect_asse, 6)
-            end if
         end if
     end if
 !

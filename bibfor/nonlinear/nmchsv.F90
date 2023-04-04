@@ -55,12 +55,12 @@ subroutine nmchsv(fonact, veasse, sddyna, ds_system, ds_contact)
 !
 !
     character(len=19) :: olfedo, olfsdo, oldido, oldidi, olfint
-    character(len=19) :: olondp, ollapl, olcine, olviss, olsstf
+    character(len=19) :: olondp, olcine, olviss, olsstf
     character(len=19) :: cnfedo, cnfsdo, cndido, cndidi, cnfint
-    character(len=19) :: cnondp, cnlapl, cncine, cnviss, cnsstf
+    character(len=19) :: cnondp, cncine, cnviss, cnsstf
     character(len=19) :: olsstr, cnsstr
     character(len=19) :: oleltc, oleltf
-    aster_logical :: londe, llapl, ldidi, lviss, lsstf, l_macr
+    aster_logical :: londe, ldidi, lviss, lsstf, l_macr
 !
 ! ----------------------------------------------------------------------
 !
@@ -71,7 +71,6 @@ subroutine nmchsv(fonact, veasse, sddyna, ds_system, ds_contact)
     londe = ndynlo(sddyna, 'ONDE_PLANE')
     lviss = ndynlo(sddyna, 'VECT_ISS')
     lsstf = isfonc(fonact, 'SOUS_STRUC')
-    llapl = isfonc(fonact, 'LAPLACE')
     ldidi = isfonc(fonact, 'DIDI')
     l_macr = isfonc(fonact, 'MACR_ELEM_STAT')
 !
@@ -83,7 +82,6 @@ subroutine nmchsv(fonact, veasse, sddyna, ds_system, ds_contact)
     call ndynkk(sddyna, 'OLDP_CNDIDI', oldidi)
     call ndynkk(sddyna, 'OLDP_CNFINT', olfint)
     call ndynkk(sddyna, 'OLDP_CNONDP', olondp)
-    call ndynkk(sddyna, 'OLDP_CNLAPL', ollapl)
     call ndynkk(sddyna, 'OLDP_CNCINE', olcine)
     call ndynkk(sddyna, 'OLDP_CNVISS', olviss)
     call ndynkk(sddyna, 'OLDP_CNSSTF', olsstf)
@@ -99,7 +97,6 @@ subroutine nmchsv(fonact, veasse, sddyna, ds_system, ds_contact)
     call nmchex(veasse, 'VEASSE', 'CNDIDI', cndidi)
     cnfint = ds_system%cnfint
     call nmchex(veasse, 'VEASSE', 'CNONDP', cnondp)
-    call nmchex(veasse, 'VEASSE', 'CNLAPL', cnlapl)
     call nmchex(veasse, 'VEASSE', 'CNCINE', cncine)
     call nmchex(veasse, 'VEASSE', 'CNVISS', cnviss)
     call nmchex(veasse, 'VEASSE', 'CNSSTF', cnsstf)
@@ -117,9 +114,6 @@ subroutine nmchsv(fonact, veasse, sddyna, ds_system, ds_contact)
     end if
     if (ldidi) then
         call copisd('CHAMP_GD', 'V', cndidi, oldidi)
-    end if
-    if (llapl) then
-        call copisd('CHAMP_GD', 'V', cnlapl, ollapl)
     end if
     if (lviss) then
         call copisd('CHAMP_GD', 'V', cnviss, olviss)

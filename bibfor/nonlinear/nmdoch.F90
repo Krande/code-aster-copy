@@ -80,7 +80,7 @@ subroutine nmdoch(list_load, l_load_user, list_load_resu_, base, l_calc_user, &
     character(len=24) :: info_type
     character(len=19) :: lisdbl, list_load_resu, func_cont
     character(len=24) :: ligrch, lchin
-    integer :: i_neum_lapl, i_diri_suiv
+    integer :: i_diri_suiv
     aster_logical :: l_func_c, l_zero_allowed, l_diri_undead, l_stat, l_calc
     integer :: nb_info_type
     integer, pointer :: v_ll_infc(:) => null()
@@ -315,8 +315,7 @@ subroutine nmdoch(list_load, l_load_user, list_load_resu_, base, l_calc_user, &
 !
             call loadGetNeumannType(l_stat, load_name, ligrch, &
                                     load_apply, load_type, &
-                                    nb_info_type, nb_info_maxi, list_info_type, &
-                                    i_neum_lapl)
+                                    nb_info_type, nb_info_maxi, list_info_type)
 !
 ! --------- Add new load(s) in list
 !
@@ -324,7 +323,7 @@ subroutine nmdoch(list_load, l_load_user, list_load_resu_, base, l_calc_user, &
             if (nb_info_type .gt. 0) then
                 i_load_new = i_load_new+1
                 call liscad('MECA', list_load, i_load_new, load_name, load_func, &
-                            nb_info_type, list_info_type, i_neum_laplz=i_neum_lapl)
+                            nb_info_type, list_info_type)
             end if
 !
         end do

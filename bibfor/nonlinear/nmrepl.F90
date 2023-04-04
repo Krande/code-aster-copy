@@ -113,7 +113,7 @@ subroutine nmrepl(modele, numedd, ds_material, carele, ds_system, &
     integer :: ifm, niv
     integer, parameter :: zsolal = 17, zvalin = 28
     character(len=19) :: solalt(zsolal), valint(zvalin, 2)
-    integer, parameter :: zveass = 19
+    integer, parameter :: zveass = 18
     character(len=19) :: veasst(zveass)
     aster_logical :: exopt, mieux, irecli
     integer :: itrlmx, iterho, act, opt

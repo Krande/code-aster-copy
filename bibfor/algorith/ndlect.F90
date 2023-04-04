@@ -95,10 +95,10 @@ subroutine ndlect(model, materialField, caraElem, listLoad, &
     aster_logical :: lmuap, lshima, lviss
     aster_logical :: londe, limped, ldyna, lexpl
     character(len=19) :: vefsdo, vefint, vedido, vesstf
-    character(len=19) :: vefedo, veondp, vedidi, velapl
+    character(len=19) :: vefedo, veondp, vedidi
     character(len=19) :: cdfedo, cdfsdo, cddidi, cdfint
     character(len=19) :: cddido, cdcine
-    character(len=19) :: cdondp, cdlapl, cdeltc, cdeltf
+    character(len=19) :: cdondp, cdeltc, cdeltf
     character(len=19) :: cdsstf, cdviss, cdsstr
     character(len=19) :: depent, vitent, accent
     character(len=19) :: depabs, vitabs, accabs
@@ -106,7 +106,7 @@ subroutine ndlect(model, materialField, caraElem, listLoad, &
     data cdfedo, cdfsdo/'&&NDLECT.CNFEDO', '&&NDLECT.CNFSDO'/
     data cddido, cddidi/'&&NDLECT.CNDIDO', '&&NDLECT.CNDIDI'/
     data cdfint, cdviss/'&&NDLECT.CNFINT', '&&NDLECT.CNVISS'/
-    data cdondp, cdlapl/'&&NDLECT.CNONDP', '&&NDLECT.CNLAPL'/
+    data cdondp/'&&NDLECT.CNONDP'/
     data cdcine, cdsstf/'&&NDLECT.CNCINE', '&&NDLECT.CNSSTF'/
     data cdsstr/'&&NDLECT.CNSSTR'/
     data cdeltc, cdeltf/'&&NDLECT.CNELTC', '&&NDLECT.CNELTF'/
@@ -114,7 +114,7 @@ subroutine ndlect(model, materialField, caraElem, listLoad, &
     data vefedo, vefsdo/'&&NDLECT.VEFEDO', '&&NDLECT.VEFSDO'/
     data vedido, vedidi/'&&NDLECT.VEDIDO', '&&NDLECT.VEDIDI'/
     data vefint/'&&NDLECT.VEFINT'/
-    data veondp, velapl/'&&NDLECT.VEONDP', '&&NDLECT.VELAPL'/
+    data veondp/'&&NDLECT.VEONDP'/
     data vesstf/'&&NDLECT.VESSTF'/
 !
     data depent/'&&NDLECT.DEPENT'/
@@ -338,7 +338,6 @@ subroutine ndlect(model, materialField, caraElem, listLoad, &
         zk24(jveol+4-1) = vedidi
         zk24(jveol+5-1) = vefint
         zk24(jveol+6-1) = veondp
-        zk24(jveol+7-1) = velapl
         zk24(jveol+8-1) = vesstf
         zk24(jvaol+1-1) = cdfedo
         zk24(jvaol+2-1) = cdfsdo
@@ -346,7 +345,6 @@ subroutine ndlect(model, materialField, caraElem, listLoad, &
         zk24(jvaol+4-1) = cddidi
         zk24(jvaol+5-1) = cdfint
         zk24(jvaol+6-1) = cdondp
-        zk24(jvaol+7-1) = cdlapl
         zk24(jvaol+8-1) = cdsstf
         zk24(jvaol+9-1) = cdcine
         zk24(jvaol+10-1) = cdviss

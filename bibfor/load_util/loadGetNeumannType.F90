@@ -18,8 +18,7 @@
 !
 subroutine loadGetNeumannType(l_stat, load_name, ligrch, &
                               load_apply, load_type, &
-                              nb_info_type, nb_info_maxi, list_info_type, &
-                              i_neum_lapl)
+                              nb_info_type, nb_info_maxi, list_info_type)
 !
     implicit none
 !
@@ -40,7 +39,6 @@ subroutine loadGetNeumannType(l_stat, load_name, ligrch, &
     integer, intent(inout) :: nb_info_type
     integer, intent(in) :: nb_info_maxi
     character(len=24), intent(inout)  :: list_info_type(nb_info_maxi)
-    integer, intent(out) :: i_neum_lapl
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -55,18 +53,16 @@ subroutine loadGetNeumannType(l_stat, load_name, ligrch, &
 ! In  ligrch         : LIGREL (list of elements) where apply load
 ! IO  nb_info_type   : number of type of loads to assign (list)
 ! IO  list_info_type : list of type of loads to assign (list)
-! Out i_neum_lapl    : special index for Laplace load
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: nb_lapl_maxi = 99
     integer, parameter :: nb_type_neum = 20
 character(len=6), parameter :: ligr_name(nb_type_neum) = (/'.FORNO', '.F3D3D', '.F2D3D', '.F1D3D', &
                                                            '.F2D2D', '.F1D2D', '.F1D1D', '.PESAN', &
                                                            '.ROTAT', '.PRESS', '.FELEC', '.FCO3D', &
                                                            '.FCO2D', '.EPSIN', '.FLUX ', '.VEASS', &
                                                             '.ONDPL', '.SIINT', '.ETHM ', '.VFACE'/)
-    integer :: i_type_neum, iret, iret_cable_cine, infc, i_lapl
+    integer :: i_type_neum, iret, iret_cable_cine
     character(len=5) :: suffix, para_inst, para_vite, para_acce
     character(len=24) :: info_type, lchin
     aster_logical :: l_para_inst, l_para_vite, l_para_acce
@@ -234,30 +230,6 @@ character(len=6), parameter :: ligr_name(nb_type_neum) = (/'.FORNO', '.F3D3D', '
             else
                 ASSERT(ASTER_FALSE)
             end if
-        end if
-! ----- Add load
-        if (info_type .ne. 'RIEN') then
-            nb_info_type = nb_info_type+1
-            ASSERT(nb_info_type .lt. nb_info_maxi)
-            list_info_type(nb_info_type) = info_type
-        end if
-! ----- For LAPLACE case
-        infc = 0
-        info_type = 'RIEN'
-        do i_lapl = 1, nb_lapl_maxi
-            lchin(1:17) = ligrch(1:13)//'.FL1'
-            call codent(i_lapl, 'D0', lchin(18:19))
-            lchin = lchin(1:19)//'.DESC'
-            call jeexin(lchin, iret)
-            if (iret .ne. 0) then
-                infc = infc+1
-            else
-                exit
-            end if
-        end do
-        if (infc .ne. 0) then
-            i_neum_lapl = max(0, infc)
-            info_type = 'NEUM_LAPL'
         end if
 ! ----- Add load
         if (info_type .ne. 'RIEN') then

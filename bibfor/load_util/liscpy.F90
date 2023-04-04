@@ -52,7 +52,7 @@ subroutine liscpy(list_load_in, list_load_out, base)
     parameter(nb_info_maxi=99)
     character(len=24) :: list_info_type(nb_info_maxi)
 !
-    integer :: nb_load_in, i_load_in, i_load_out, nb_load_out, i_neum_lapl, i_type_info
+    integer :: nb_load_in, i_load_in, i_load_out, nb_load_out, i_type_info
     character(len=8) :: load_name, load_func
     integer :: nb_info_type
     character(len=24) :: lload_info
@@ -112,9 +112,9 @@ subroutine liscpy(list_load_in, list_load_out, base)
         i_type_info = v_load_info(nb_load_in+i_load_in+1)
         if (i_type_info .ne. 10) then
             call liscli(list_load_in, i_load_in, nb_info_maxi, list_info_type, load_name, &
-                        load_func, nb_info_type, i_neum_lapl)
+                        load_func, nb_info_type)
             call liscad('MECA', list_load_out, i_load_out, load_name, load_func, &
-                        nb_info_type, list_info_type, i_neum_laplz=i_neum_lapl)
+                        nb_info_type, list_info_type)
             i_load_out = i_load_out+1
         end if
     end do

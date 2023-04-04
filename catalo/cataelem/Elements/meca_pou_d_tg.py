@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -266,11 +266,6 @@ class MECA_POU_D_TG(Element):
         OP.CHAR_MECA_FRELEC(
             te=145,
             para_in=((SP.PFRELEC, LC.CFRELEC), (SP.PGEOMER, NGEOMER)),
-            para_out=((SP.PVECTUR, MVECTUR),),
-        ),
-        OP.CHAR_MECA_FRLAPL(
-            te=148,
-            para_in=((SP.PFLAPLA, LC.CFLAPLA), (SP.PGEOMER, NGEOMER), (SP.PLISTMA, LC.CLISTMA)),
             para_out=((SP.PVECTUR, MVECTUR),),
         ),
         OP.CHAR_MECA_HYDR_R(

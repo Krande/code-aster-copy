@@ -69,7 +69,6 @@ de données renseignée sous le mot-clé INCREMENT/LIST_INST et construite par l
         """
  Le calcul de l'accélération initiale a ignoré les chargements de type:
  - ONDE_PLANE
- - LAPLACE
  - GRAPPE_FLUIDE
 """
     ),

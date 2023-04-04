@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 !
 subroutine liscli(list_load, i_load, nb_info_maxi, list_info_type, load_namez, &
-                  load_funcz, nb_info_type, i_neum_lapl)
+                  load_funcz, nb_info_type)
 !
     implicit none
 !
@@ -33,7 +33,6 @@ subroutine liscli(list_load, i_load, nb_info_maxi, list_info_type, load_namez, &
     character(len=*), intent(out) :: load_namez
     character(len=*), intent(out) :: load_funcz
     integer, intent(out) :: nb_info_type
-    integer, intent(out) :: i_neum_lapl
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -50,7 +49,6 @@ subroutine liscli(list_load, i_load, nb_info_maxi, list_info_type, load_namez, &
 ! In  nb_info_maxi   : maximum length of list_info_type
 ! Out nb_info_type   : number of type of loads to assign (list)
 ! IO  list_info_type : list of type of loads to assign (list)
-! Out i_neum_lapl    : special index for Laplace load
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -79,7 +77,6 @@ subroutine liscli(list_load, i_load, nb_info_maxi, list_info_type, load_namez, &
     load_namez = v_load_name(i_load) (1:8)
     load_funcz = v_load_func(i_load)
     list_info_type(1:nb_info_maxi) = ' '
-    i_neum_lapl = 0
     nb_info_type = 0
     i_info_type = 0
 !
@@ -192,13 +189,6 @@ subroutine liscli(list_load, i_load, nb_info_maxi, list_info_type, load_namez, &
         i_info_type = i_info_type+1
         ASSERT(i_info_type .le. nb_info_maxi)
         list_info_type(i_info_type) = 'NEUM_CSTE'
-    end if
-!
-    if (v_load_info(2*nb_load+3) .ne. 0) then
-        i_info_type = i_info_type+1
-        ASSERT(i_info_type .le. nb_info_maxi)
-        list_info_type(i_info_type) = 'NEUM_LAPL'
-        i_neum_lapl = v_load_info(2*nb_load+3)
     end if
 !
     nb_info_type = i_info_type

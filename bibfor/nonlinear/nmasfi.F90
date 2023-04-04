@@ -52,13 +52,11 @@ subroutine nmasfi(list_func_acti, hval_veasse, cnffdo, sddyna_)
 ! --------------------------------------------------------------------------------------------------
 !
     real(kind=8) :: coeext, coeex2
-    aster_logical :: l_lapl
     aster_logical :: l_wave, l_sstf, l_mult_step, l_dyna, l_viss
     type(NL_DS_VectComb) :: ds_vectcomb
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    l_lapl = isfonc(list_func_acti, 'LAPLACE')
     l_sstf = isfonc(list_func_acti, 'SOUS_STRUC')
     l_dyna = ASTER_FALSE
     l_mult_step = ASTER_FALSE
@@ -89,12 +87,6 @@ subroutine nmasfi(list_func_acti, hval_veasse, cnffdo, sddyna_)
 !
     call nonlinDSVectCombAddHat(hval_veasse, 'CNFEDO', coeex2, ds_vectcomb)
 !
-! - Laplace load
-!
-    if (l_lapl) then
-        call nonlinDSVectCombAddHat(hval_veasse, 'CNLAPL', coeex2, ds_vectcomb)
-    end if
-!
 ! - Wave load
 !
     if (l_wave) then
@@ -117,9 +109,6 @@ subroutine nmasfi(list_func_acti, hval_veasse, cnffdo, sddyna_)
 !
     if (l_mult_step) then
         call nonlinDSVectCombAddDyna(sddyna_, 'CNFEDO', coeext, ds_vectcomb)
-        if (l_lapl) then
-            call nonlinDSVectCombAddDyna(sddyna_, 'CNLAPL', coeext, ds_vectcomb)
-        end if
         if (l_wave) then
             call nonlinDSVectCombAddDyna(sddyna_, 'CNONDP', -1.d0*coeext, ds_vectcomb)
         end if

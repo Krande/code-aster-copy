@@ -57,7 +57,6 @@ function ischar(list_load, load_type_1, load_type_2, i_load_)
 ! -> For Neumann loads
 !                'ONDE' - ONDE PLANE
 !                'SIGM' - SIGMA_INTERNE
-!                'LAPL' - FORCE DE LAPLACE
 !                'TARD' - ELEMENTS TARDIFS
 !                'SUIV' - Undead load
 !                '    ' - All types

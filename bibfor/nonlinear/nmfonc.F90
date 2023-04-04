@@ -99,7 +99,7 @@ subroutine nmfonc(ds_conv, ds_algopara, solver, model, ds_contact, &
     aster_logical :: l_deborst, l_frot, l_dis_choc, l_all_verif, l_refe, l_comp, l_post_incr
     aster_logical :: l_loop_geom, l_loop_frot, l_loop_cont, l_pena
     integer :: ixfem
-    aster_logical :: l_load_undead, l_load_laplace, l_load_elim, l_load_didi
+    aster_logical :: l_load_undead, l_load_elim, l_load_didi
     character(len=8) :: k8bid, repk
     character(len=16) :: command, k16bid
     character(len=3)  :: matr_distr
@@ -325,13 +325,6 @@ subroutine nmfonc(ds_conv, ds_algopara, solver, model, ds_contact, &
     l_load_elim = isdiri(list_load, 'ELIM')
     if (l_load_elim) then
         list_func_acti(36) = 1
-    end if
-!
-! - At least, one Laplace load ?
-!
-    l_load_laplace = ischar(list_load, 'NEUM', 'LAPL')
-    if (l_load_laplace) then
-        list_func_acti(20) = 1
     end if
 !
 ! - Static substructuring
@@ -622,9 +615,6 @@ subroutine nmfonc(ds_conv, ds_algopara, solver, model, ds_contact, &
         end if
         if (isfonc(list_func_acti, 'DIRI_CINE')) then
             call utmess('I', 'MECANONLINE14_42')
-        end if
-        if (isfonc(list_func_acti, 'LAPLACE')) then
-            call utmess('I', 'MECANONLINE14_43')
         end if
 !
 ! ----- MODELISATION

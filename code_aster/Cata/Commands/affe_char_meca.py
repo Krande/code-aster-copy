@@ -92,7 +92,6 @@ AFFE_CHAR_MECA = OPER(
             "LIAISON_COQUE",
             "RELA_CINE_BP",
             "FORCE_ELEC",
-            "INTE_ELEC",
             "IMPE_FACE",
             "VITE_FACE",
             "ONDE_FLUI",
@@ -1136,24 +1135,6 @@ AFFE_CHAR_MECA = OPER(
             POINT1=SIMP(statut="o", typ="R", max=3),
             POINT2=SIMP(statut="o", typ="R", max=3),
         ),
-    ),
-    INTE_ELEC=FACT(
-        statut="f",
-        max="**",
-        fr=tr(
-            "Appliquer la force de LAPLACE agissant sur un conducteur principal, due à la présence d'un conducteur "
-            "secondaire non nécessairement droit"
-        ),
-        regles=(
-            UN_PARMI("TOUT", "GROUP_MA"),
-            AU_MOINS_UN("GROUP_MA_2", "TRANS", "SYME"),
-            EXCLUS("TRANS", "SYME"),
-        ),
-        TOUT=SIMP(statut="f", typ="TXM", into=("OUI",)),
-        GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
-        GROUP_MA_2=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
-        TRANS=SIMP(statut="f", typ="R", max="**"),
-        SYME=SIMP(statut="f", typ="R", max="**"),
     ),
     IMPE_FACE=FACT(
         statut="f",

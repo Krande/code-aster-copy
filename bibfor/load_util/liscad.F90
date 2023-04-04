@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 !
 subroutine liscad(phenom, list_load, i_load, load_namez, load_funcz, &
-                  nb_info_typez, list_info_typez, info_typez, i_neum_laplz)
+                  nb_info_typez, list_info_typez, info_typez)
 !
     implicit none
 !
@@ -34,7 +34,6 @@ subroutine liscad(phenom, list_load, i_load, load_namez, load_funcz, &
     integer, optional, intent(in) :: nb_info_typez
     character(len=*), optional, intent(in) :: list_info_typez(*)
     character(len=*), optional, intent(in) :: info_typez
-    integer, optional, intent(in) :: i_neum_laplz
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -52,7 +51,6 @@ subroutine liscad(phenom, list_load, i_load, load_namez, load_funcz, &
 ! In  nb_info_type   : number of type of loads to assign (list)
 ! In  list_info_type : list of type of loads to assign (list)
 ! In  info_type      : type of load to assign (only one)
-! In  i_neum_lapl    : special index for Laplace load
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -158,8 +156,6 @@ subroutine liscad(phenom, list_load, i_load, load_namez, load_funcz, &
             else if (info_type .eq. 'NEUM_SIGM_INT') then
                 v_load_info(nb_load+i_load+1) = 55
                 v_load_info(4*nb_load+5) = 99
-            else if (info_type .eq. 'NEUM_LAPL') then
-                v_load_info(2*nb_load+3) = i_neum_laplz
             else
                 write (6, *) 'LISCAD: ', info_type
                 ASSERT(ASTER_FALSE)

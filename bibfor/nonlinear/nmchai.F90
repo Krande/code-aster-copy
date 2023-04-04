@@ -55,8 +55,8 @@ subroutine nmchai(tychap, tyvarz, vali, tychap_out)
 !
     integer, parameter :: zmeelm = 8
     integer, parameter :: zmeass = 4
-    integer, parameter :: zveelm = 13
-    integer, parameter :: zveass = 19
+    integer, parameter :: zveelm = 12
+    integer, parameter :: zveass = 18
     integer, parameter :: zsolal = 17
     integer, parameter :: zvalin = 28
 !
@@ -72,11 +72,11 @@ subroutine nmchai(tychap, tyvarz, vali, tychap_out)
     data lmeass/'MERIGI', 'MEMASS', 'MEAMOR', 'MESSTR'/
 !
     data lveelm/'CNDIRI', 'CNBUDI', 'CNDIDO',&
-     &             'CNDIPI', 'CNFEDO', 'CNFEPI', 'CNLAPL', 'CNONDP',&
+     &             'CNDIPI', 'CNFEDO', 'CNFEPI', 'CNONDP',&
      &             'CNFSDO', 'CNIMPE', 'CNDIDI', 'CNSSTF',&
      &             'CNREFE'/
     data lveass/'CNDIRI', 'CNBUDI', 'CNDIDO',&
-     &             'CNDIPI', 'CNFEDO', 'CNFEPI', 'CNLAPL', 'CNONDP',&
+     &             'CNDIPI', 'CNFEDO', 'CNFEPI', 'CNONDP',&
      &             'CNFSDO', 'CNIMPE', 'CNDIDI', 'CNSSTF',&
      &             'CNREFE',&
      &             'CNCINE', 'CNSSTR', 'CNDYNA',&

@@ -88,15 +88,15 @@ subroutine nmchht(model, ds_material, cara_elem, ds_constitutive, &
 ! --------------------------------------------------------------------------------------------------
 !
     integer, parameter :: phaseType = CORR_NEWTON
-    integer, parameter:: zveass = 19, zveelm = 13
+    integer, parameter:: zveass = 18, zveelm = 12
     character(len=19) :: hval_veelem(zveelm)
     character(len=19) :: hval_veasse(zveass)
     aster_logical :: l_didi, l_comp_mstp, l_macr
     character(len=19) :: vefint, vedido
-    character(len=19) :: vefedo, veondp, vedidi, velapl, vesstf
+    character(len=19) :: vefedo, veondp, vedidi, vesstf
     character(len=19) :: cnfedo, cndidi, cnfint
     character(len=19) :: cndido, cncine, cnviss
-    character(len=19) :: cnondp, cnlapl, cnsstf, cnsstr
+    character(len=19) :: cnondp, cnsstf, cnsstr
     character(len=19) :: disp_prev
     character(len=19) :: varc_prev, varc_curr, time_prev, time_curr
     real(kind=8) :: time_init, time_prev_step
@@ -155,14 +155,12 @@ subroutine nmchht(model, ds_material, cara_elem, ds_constitutive, &
         call ndynkk(sddyna, 'OLDP_VEDIDI', vedidi)
         call ndynkk(sddyna, 'OLDP_VEFINT', vefint)
         call ndynkk(sddyna, 'OLDP_VEONDP', veondp)
-        call ndynkk(sddyna, 'OLDP_VELAPL', velapl)
         call ndynkk(sddyna, 'OLDP_VESSTF', vesstf)
         call ndynkk(sddyna, 'OLDP_CNFEDO', cnfedo)
         call ndynkk(sddyna, 'OLDP_CNDIDO', cndido)
         call ndynkk(sddyna, 'OLDP_CNDIDI', cndidi)
         call ndynkk(sddyna, 'OLDP_CNFINT', cnfint)
         call ndynkk(sddyna, 'OLDP_CNONDP', cnondp)
-        call ndynkk(sddyna, 'OLDP_CNLAPL', cnlapl)
         call ndynkk(sddyna, 'OLDP_CNCINE', cncine)
         call ndynkk(sddyna, 'OLDP_CNVISS', cnviss)
         call ndynkk(sddyna, 'OLDP_CNSSTF', cnsstf)
@@ -173,14 +171,12 @@ subroutine nmchht(model, ds_material, cara_elem, ds_constitutive, &
         call nmcha0('VEELEM', 'CNDIDO', vedido, hval_veelem)
         call nmcha0('VEELEM', 'CNDIDI', vedidi, hval_veelem)
         call nmcha0('VEELEM', 'CNONDP', veondp, hval_veelem)
-        call nmcha0('VEELEM', 'CNLAPL', velapl, hval_veelem)
         call nmcha0('VEELEM', 'CNSSTF', vesstf, hval_veelem)
         call nmcha0('VEASSE', 'ALLINI', ' ', hval_veasse)
         call nmcha0('VEASSE', 'CNFEDO', cnfedo, hval_veasse)
         call nmcha0('VEASSE', 'CNDIDO', cndido, hval_veasse)
         call nmcha0('VEASSE', 'CNDIDI', cndidi, hval_veasse)
         call nmcha0('VEASSE', 'CNONDP', cnondp, hval_veasse)
-        call nmcha0('VEASSE', 'CNLAPL', cnlapl, hval_veasse)
         call nmcha0('VEASSE', 'CNCINE', cncine, hval_veasse)
         call nmcha0('VEASSE', 'CNVISS', cnviss, hval_veasse)
         call nmcha0('VEASSE', 'CNSSTF', cnsstf, hval_veasse)

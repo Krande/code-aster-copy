@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@
 !
 interface
     subroutine liscad(phenom       , list_load      , i_load    , load_namez  , load_funcz,&
-                      nb_info_typez, list_info_typez, info_typez, i_neum_laplz)
+                      nb_info_typez, list_info_typez, info_typez)
         character(len=4), intent(in) :: phenom
         character(len=19), intent(in) :: list_load
         integer, intent(in) :: i_load
@@ -29,6 +29,5 @@ interface
         integer, optional, intent(in) :: nb_info_typez
         character(len=*), optional, intent(in) :: list_info_typez(*)
         character(len=*), optional, intent(in) :: info_typez
-        integer, optional, intent(in) :: i_neum_laplz
     end subroutine liscad
 end interface

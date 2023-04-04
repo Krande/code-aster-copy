@@ -51,7 +51,7 @@ subroutine verif_affe(modele, sd, non_lin)
     character(len=24) :: typres
     character(len=80) :: comment
     integer :: n1, k, iret
-    character(len=5)  :: l_cart_char_meca(26), l_cart_char_ther(11)
+    character(len=5)  :: l_cart_char_meca(24), l_cart_char_ther(11)
     character(len=8)  :: l_cart_cara_elem(14)
     character(len=80) :: l_comm_char_meca(26), l_comm_char_ther(11), l_comm_cara_elem(14)
 
@@ -63,7 +63,7 @@ subroutine verif_affe(modele, sd, non_lin)
 !   -----------------------------
     l_cart_char_meca = (/ &
                   'EFOND', 'EPSIN', 'F1D1D', 'F1D2D', 'F1D3D', 'F2D2D', 'F2D3D', 'F3D3D', 'FCO2D', &
-                  'FCO3D', 'FELEC', 'FL101', 'FL102', 'FLUX ', 'FORNO', 'IMPE ', 'ONDE ', 'ONDPL', &
+                       'FCO3D', 'FELEC', 'FLUX ', 'FORNO', 'IMPE ', 'ONDE ', 'ONDPL', &
                        'ONDPR', 'PESAN', 'PREFF', 'PRESS', 'ROTAT', 'SIGIN', 'SIINT', 'VFACE'/)
 
     l_comm_char_meca = ' '

@@ -54,7 +54,7 @@ subroutine nmdoct(list_load, ds_contact)
     integer, parameter :: nb_info_maxi = 99
     character(len=24) :: list_info_type(nb_info_maxi)
     integer :: nb_load_init, nb_load_new, nb_info_type, iret
-    integer :: i_neum_lapl, i_load
+    integer :: i_load
     character(len=8) :: ligrel_link_slav, ligrel_link, ligrel_link_cont, lag12
     character(len=19) :: list_load_new
     character(len=24) :: lload_info, lload_list, load_n
@@ -133,9 +133,9 @@ subroutine nmdoct(list_load, ds_contact)
             do i_load = 1, nb_load_init
                 nb_info_type = nb_info_maxi
                 call liscli(list_load, i_load, nb_info_maxi, list_info_type, load_name, &
-                            load_func, nb_info_type, i_neum_lapl)
+                            load_func, nb_info_type)
                 call liscad('MECA', list_load_new, i_load, load_name, load_func, &
-                            nb_info_type, list_info_type, i_neum_laplz=i_neum_lapl)
+                            nb_info_type, list_info_type)
             end do
 !
 ! --------- Add elements (slave)

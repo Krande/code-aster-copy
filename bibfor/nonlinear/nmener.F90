@@ -94,7 +94,7 @@ subroutine nmener(valinc, veasse, measse, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter:: zveass = 19
+    integer, parameter:: zveass = 18
     integer :: iret(zveass)
     character(len=19) :: depmoi, depplu, vitmoi, vitplu, massAsse, dampAsse, rigiAsse
     character(len=19) :: fexmoi, fexplu, fammoi, fnomoi
@@ -240,11 +240,10 @@ subroutine nmener(valinc, veasse, measse, &
             call jeveuo(veasse(i)//'.VALE', 'L', vr=veass)
 ! --------------------------------------------------------------------
 ! 5  - CNFEDO : CHARGES MECANIQUES FIXES DONNEES
-! 7  - CNLAPL : FORCES DE LAPLACE
 ! 9  - CNFSDO : FORCES SUIVEUSES
 ! 12 - CNSSTF : FORCES ISSUES DU CALCUL PAR SOUS-STRUCTURATION
 ! --------------------------------------------------------------------
-            if ((i .eq. 5) .or. (i .eq. 7) .or. (i .eq. 9) .or. (i .eq. 12)) then
+            if ((i .eq. 5) .or. (i .eq. 8) .or. (i .eq. 11)) then
                 fexpl(:) = fexpl(:)+veass(:)
 ! --------------------------------------------------------------------
 ! 6  - CNFEPI : FORCES PILOTEES PARAMETRE ETA A PRENDRE EN COMPTE
@@ -255,29 +254,29 @@ subroutine nmener(valinc, veasse, measse, &
 ! 1  - CNDIRI : BtLAMBDA                : IL FAUT PRENDRE L OPPOSE
 ! 8  - CNONDP : CHARGEMENT ONDES PLANES : IL FAUT PRENDRE L OPPOSE
 ! --------------------------------------------------------------------
-            else if ((i .eq. 1) .or. (i .eq. 8)) then
+            else if ((i .eq. 1) .or. (i .eq. 7)) then
                 fexpl(:) = fexpl(:)-veass(:)
 ! --------------------------------------------------------------------
 ! 17 - CNAMOD : FORCE D AMORTISSEMENT MODAL
 ! --------------------------------------------------------------------
-            else if (i .eq. 17) then
+            else if (i .eq. 16) then
                 fampl(:) = fampl(:)+veass(:)
 ! --------------------------------------------------------------------
 ! 10 - CNIMPE : FORCES IMPEDANCE
 ! --------------------------------------------------------------------
-            else if (i .eq. 10) then
+            else if (i .eq. 9) then
                 flipl(:) = flipl(:)+veass(:)
 ! --------------------------------------------------------------------
 ! 19 - CNVISS : CHARGEMENT VEC_ISS (FORCE_SOL)
 ! --------------------------------------------------------------------
-            else if (i .eq. 19) then
+            else if (i .eq. 18) then
 ! CHARGEMENT FORCE_SOL CNVISS. SI ON COMPTE SA CONTRIBUTION EN TANT
 ! QUE FORCE DISSIPATIVE DE LIAISON, ON DOIT PRENDRE L OPPOSE.
                 flipl(:) = flipl(:)-veass(:)
 ! --------------------------------------------------------------------
 ! 14 - CNCINE : INCREMENTS DE DEPLACEMENT IMPOSES (AFFE_CHAR_CINE)
 ! --------------------------------------------------------------------
-            else if (i .eq. 14) then
+            else if (i .eq. 13) then
 ! ON DOIT RECONSTRUIRE LA MATRICE DE MASSE CAR ELLE A ETE MODIFIEE
 ! POUR SUPPRIMER DES DEGRES DE LIBERTE EN RAISON DE AFFE_CHAR_CINE.
                 reassm = .true.

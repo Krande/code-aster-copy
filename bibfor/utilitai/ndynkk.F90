@@ -111,8 +111,6 @@ subroutine ndynkk(sddyna, chaine, nomsd)
         cham24 = zk24(jveol+5-1)
     else if (chaine(1:11) .eq. 'OLDP_VEONDP') then
         cham24 = zk24(jveol+6-1)
-    else if (chaine(1:11) .eq. 'OLDP_VELAPL') then
-        cham24 = zk24(jveol+7-1)
     else if (chaine(1:11) .eq. 'OLDP_VESSTF') then
         cham24 = zk24(jveol+8-1)
 !

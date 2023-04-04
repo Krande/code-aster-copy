@@ -53,7 +53,6 @@ subroutine charme(load, valeType)
 #include "asterfort/cbchei.h"
 #include "asterfort/cbelec.h"
 #include "asterfort/cbimpe.h"
-#include "asterfort/cblapl.h"
 #include "asterfort/cbonde.h"
 #include "asterfort/cbondp.h"
 #include "asterfort/cbpesa.h"
@@ -195,9 +194,6 @@ subroutine charme(load, valeType)
 
 ! ----- FORCE_ELEC
         call cbelec(load, mesh)
-
-! ----- INTE_ELEC
-        call cblapl(load, mesh, model)
 
 ! ----- VECT_ASSE
         call caveas(load)

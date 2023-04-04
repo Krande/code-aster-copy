@@ -115,8 +115,6 @@ subroutine char_crea_cart(phenom, loadType, load, mesh, valeType, &
         nbMap = 1
     else if (loadType .eq. 'FORCE_ELEC') then
         nbMap = 1
-    else if (loadType .eq. 'INTE_ELEC') then
-        nbMap = 1
     else if (loadType .eq. 'VITE_FACE') then
         nbMap = 1
     else if (loadType .eq. 'IMPE_FACE') then
@@ -147,8 +145,6 @@ subroutine char_crea_cart(phenom, loadType, load, mesh, valeType, &
         map(1) = obje_pref(1:13)//'.PESAN'
     else if (loadType .eq. 'FORCE_ELEC') then
         map(1) = obje_pref(1:13)//'.FELEC'
-    else if (loadType .eq. 'INTE_ELEC') then
-        map(1) = obje_pref(1:13)//'.FL1'
     else if (loadType .eq. 'VITE_FACE') then
         map(1) = obje_pref(1:13)//'.VFACE'
     else if (loadType .eq. 'IMPE_FACE') then
@@ -220,12 +216,6 @@ subroutine char_crea_cart(phenom, loadType, load, mesh, valeType, &
     else if (loadType .eq. 'FORCE_ELEC') then
         if (valeType .eq. 'REEL') then
             physQuantity(1) = 'FLAP_R'
-        else
-            ASSERT(ASTER_FALSE)
-        end if
-    else if (loadType .eq. 'INTE_ELEC') then
-        if (valeType .eq. 'REEL') then
-            physQuantity(1) = 'NEUT_K16'
         else
             ASSERT(ASTER_FALSE)
         end if
@@ -319,12 +309,6 @@ subroutine char_crea_cart(phenom, loadType, load, mesh, valeType, &
         else
             ASSERT(ASTER_FALSE)
         end if
-    else if (loadType .eq. 'INTE_ELEC') then
-        if (valeType .eq. 'REEL') then
-            mapType(1) = 'K16'
-        else
-            ASSERT(ASTER_FALSE)
-        end if
     else if (loadType .eq. 'VITE_FACE') then
         if (valeType .eq. 'COMP') then
             mapType(1) = 'C'
@@ -413,10 +397,6 @@ subroutine char_crea_cart(phenom, loadType, load, mesh, valeType, &
         cmpName(1, 5) = 'Y2'
         cmpName(1, 6) = 'Z2'
         cmpName(1, 7) = 'CODE'
-    else if (loadType .eq. 'INTE_ELEC') then
-        nbCmp(1) = 2
-        cmpName(1, 1) = 'Z1'
-        cmpName(1, 2) = 'Z2'
     else if (loadType .eq. 'VITE_FACE') then
         nbCmp(1) = 5
         cmpName(1, 1) = 'VITE'

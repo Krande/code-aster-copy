@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@
 !
 interface
     subroutine liscli(list_load  , i_load      , nb_info_maxi, list_info_type, load_namez,&
-                      load_funcz , nb_info_type, i_neum_lapl)
+                      load_funcz , nb_info_type)
         character(len=19), intent(in) :: list_load
         integer, intent(in) :: i_load
         integer, intent(in) :: nb_info_maxi
@@ -28,6 +28,5 @@ interface
         character(len=*), intent(out) :: load_namez
         character(len=*), intent(out) :: load_funcz
         integer, intent(out) :: nb_info_type
-        integer, intent(out) :: i_neum_lapl
     end subroutine liscli
 end interface

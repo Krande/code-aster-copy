@@ -60,7 +60,7 @@ subroutine nmassi(list_func_acti, sddyna, ds_system, hval_veasse, cndonn)
 !
     integer :: ifm, niv
     character(len=19) :: cnffdo, cndfdo, cnfvdo
-    aster_logical :: l_wave, l_lapl
+    aster_logical :: l_wave
     type(NL_DS_VectComb) :: ds_vectcomb
 !
 ! --------------------------------------------------------------------------------------------------
@@ -73,8 +73,7 @@ subroutine nmassi(list_func_acti, sddyna, ds_system, hval_veasse, cndonn)
 ! - Active functionnalities
 !
     l_wave = ndynlo(sddyna, 'ONDE_PLANE')
-    l_lapl = isfonc(list_func_acti, 'LAPLACE')
-    if (l_wave .or. l_lapl) then
+    if (l_wave) then
         call utmess('A', 'MECANONLINE_23')
     end if
 !

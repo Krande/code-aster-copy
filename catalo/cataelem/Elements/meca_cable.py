@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -124,11 +124,6 @@ class MECABL2(Element):
         OP.CHAR_MECA_FR1D1D(
             te=161,
             para_in=((SP.PFR1D1D, CFORCER), (SP.PGEOMER, NGEOMER)),
-            para_out=((SP.PVECTUR, MVECTUR),),
-        ),
-        OP.CHAR_MECA_FRLAPL(
-            te=163,
-            para_in=((SP.PFLAPLA, LC.CFLAPLA), (SP.PGEOMER, NGEOMER), (SP.PLISTMA, LC.CLISTMA)),
             para_out=((SP.PVECTUR, MVECTUR),),
         ),
         OP.CHAR_MECA_PESA_R(
