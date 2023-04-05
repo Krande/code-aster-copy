@@ -24,14 +24,13 @@
 
 #include "PythonBindings/PtScotchPartitionerInterface.h"
 
-#ifdef ASTER_HAVE_SCOTCH
-
 #include "aster_pybind.h"
 
 #include "ParallelUtilities/MeshConnectionGraph.h"
 
 void exportPtScotchPartitionerToPython( py::module_ &mod ) {
 
+#ifdef ASTER_HAVE_PTSCOTCH
     py::class_< PtScotchPartitioner, PtScotchPartitionerPtr >( mod, "PtScotchPartitioner" )
         .def( py::init( &initFactoryPtr< PtScotchPartitioner > ) )
         .def( "buildGraph",
@@ -71,6 +70,5 @@ Arguments:
     path: path to output file
         )",
               py::arg( "path" ) );
+#endif /* ASTER_HAVE_PTSCOTCH */
 };
-
-#endif /* ASTER_HAVE_SCOTCH */

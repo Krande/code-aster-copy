@@ -28,12 +28,8 @@
 
 #include "aster_pybind.h"
 
-#ifdef ASTER_HAVE_MPI
-
 #include "ParallelUtilities/PtScotchPartitioner.h"
 
 void exportPtScotchPartitionerToPython( py::module_ &mod );
-
-#endif /* ASTER_HAVE_MPI */
 
 #endif /* PTSCOTCHPARTITIONERINTERFACE_H_ */

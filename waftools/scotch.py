@@ -62,10 +62,13 @@ def configure(self):
         self.reset_msg()
         self.env.revert()
         self.undefine("ASTER_HAVE_SCOTCH")
+        self.undefine("ASTER_HAVE_PTSCOTCH")
         if self.options.enable_scotch is True:
             raise
     else:
         self.define("ASTER_HAVE_SCOTCH", 1)
+        if self.env.BUILD_MPI:
+            self.define("ASTER_HAVE_PTSCOTCH", 1)
 
 
 ###############################################################################
@@ -112,8 +115,13 @@ def check_scotch_libs(self):
 def check_scotch_headers(self):
     self.start_msg("Checking for header scotch.h")
     headers = "stdio.h stdlib.h sys/types.h scotch.h"
+    # can not test 'ptscotch.h' without including 'mpi.h' before...
+    # if self.env.BUILD_MPI:
+    #     headers += " ptscotch.h"
     try:
-        check = partial(self.check, header_name=headers, uselib_store="SCOTCH", uselib="SCOTCH MPI")
+        check = partial(
+            self.check, header_name=headers, uselib_store="SCOTCH", use="MPI", uselib="SCOTCH MPI"
+        )
 
         if not check(mandatory=False):
             if not check(includes=[osp.join(self.env.INCLUDEDIR, "scotch")], mandatory=False):
