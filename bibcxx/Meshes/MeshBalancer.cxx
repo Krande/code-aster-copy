@@ -40,6 +40,21 @@ bool sortOnGlobalId( const LocalIdGlobalId &lhs, const LocalIdGlobalId &rhs ) {
     return lhs.globalId < rhs.globalId;
 };
 
+void buildSortedVectorToSend( const VectorLong &localIds, const VectorLong &globalNum,
+                              VectorLong &sortedLocalIds ) {
+    std::vector< LocalIdGlobalId > toSort( localIds.size() );
+    const auto size = localIds.size();
+    for ( int i = 0; i < size; ++i ) {
+        toSort[i].localId = localIds[i];
+        toSort[i].globalId = globalNum[localIds[i] - 1];
+    }
+    std::sort( toSort.begin(), toSort.end(), sortOnGlobalId );
+    sortedLocalIds = VectorLong( size );
+    for ( int i = 0; i < size; ++i ) {
+        sortedLocalIds[i] = toSort[i].localId;
+    }
+}
+
 ParallelMeshPtr MeshBalancer::applyBalancingStrategy( VectorInt &newLocalNodesList ) {
     ObjectBalancer nodesBalancer, cellsBalancer;
     const auto rank = getMPIRank();
@@ -103,9 +118,32 @@ ParallelMeshPtr MeshBalancer::applyBalancingStrategy( VectorInt &newLocalNodesLi
     int tag = 0, cmpt = 0;
     for ( const auto &iProc : graph ) {
         if ( iProc != -1 ) {
+            VectorLong idToSend( interfaces[2 * iProc].size(), 0. );
+            VectorLong idToRecv( interfaces[2 * iProc + 1].size(), 0. );
+            if ( rank > iProc ) {
+                VectorLong vec1, vec2;
+                buildSortedVectorToSend( interfaces[2 * iProc], globNumVect, vec1 );
+                AsterMPI::send( vec1, iProc, tag );
+                AsterMPI::receive( idToRecv, iProc, tag );
+                ++tag;
+                buildSortedVectorToSend( interfaces[2 * iProc + 1], globNumVect, vec2 );
+                AsterMPI::send( vec2, iProc, tag );
+                AsterMPI::receive( idToSend, iProc, tag );
+                ++tag;
+            } else if ( rank < iProc ) {
+                VectorLong vec1, vec2;
+                buildSortedVectorToSend( interfaces[2 * iProc], globNumVect, vec1 );
+                AsterMPI::receive( idToRecv, iProc, tag );
+                AsterMPI::send( vec1, iProc, tag );
+                ++tag;
+                buildSortedVectorToSend( interfaces[2 * iProc + 1], globNumVect, vec2 );
+                AsterMPI::receive( idToSend, iProc, tag );
+                AsterMPI::send( vec2, iProc, tag );
+                ++tag;
+            }
             domains.push_back( iProc );
-            graphInterfaces.push_back( VectorLong( interfaces[2 * iProc].size() ) );
-            graphInterfaces.push_back( VectorLong( interfaces[2 * iProc + 1].size() ) );
+            graphInterfaces.push_back( VectorLong( 2 * interfaces[2 * iProc].size() ) );
+            graphInterfaces.push_back( VectorLong( 2 * interfaces[2 * iProc + 1].size() ) );
             std::vector< LocalIdGlobalId > tmp( interfaces[2 * iProc].size() );
             std::vector< LocalIdGlobalId > tmp2( interfaces[2 * iProc + 1].size() );
             for ( int i = 0; i < interfaces[2 * iProc].size(); ++i ) {
@@ -120,10 +158,12 @@ ParallelMeshPtr MeshBalancer::applyBalancingStrategy( VectorInt &newLocalNodesLi
             }
             std::sort( tmp2.begin(), tmp2.end(), sortOnGlobalId );
             for ( int i = 0; i < interfaces[2 * iProc].size(); ++i ) {
-                graphInterfaces[cmpt][i] = tmp[i].localId;
+                graphInterfaces[cmpt][2 * i] = tmp[i].localId;
+                graphInterfaces[cmpt][2 * i + 1] = idToSend[i];
             }
             for ( int i = 0; i < interfaces[2 * iProc + 1].size(); ++i ) {
-                graphInterfaces[cmpt + 1][i] = tmp2[i].localId;
+                graphInterfaces[cmpt + 1][2 * i] = tmp2[i].localId;
+                graphInterfaces[cmpt + 1][2 * i + 1] = idToRecv[i];
             }
             cmpt += 2;
         }

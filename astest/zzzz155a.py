@@ -38,16 +38,15 @@ def checkJoints(mesh):
 
     j = 0
     for proc in mesh.getOppositeDomains():
-        print("proc", proc, j)
         fJ = mesh.getSendJoint(j + 1)
         gFJ = []
-        for i in fJ:
-            gFJ.append(l2G[i - 1])
+        for i in range(int(len(fJ) / 2)):
+            gFJ.append(l2G[fJ[2 * i] - 1])
 
         sJ = mesh.getReceiveJoint(j + 1)
         gSJ = []
-        for i in sJ:
-            gSJ.append(l2G[i - 1])
+        for i in range(int(len(sJ) / 2)):
+            gSJ.append(l2G[sJ[2 * i] - 1])
 
         if proc < rank:
             comm.send(gFJ, dest=proc, tag=j)

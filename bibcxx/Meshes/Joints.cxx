@@ -89,7 +89,6 @@ VectorLong Joints::getSendedElements( const ASTERINTEGER &id ) const {
 };
 
 VectorLong Joints::getReceivedElements( const ASTERINTEGER &id ) const {
-    std::cout << "Taille " << _recv->size() << " " << id << std::endl;
     const auto &obj = ( *_recv )[id];
     obj->updateValuePointer();
     return obj->toVector();
