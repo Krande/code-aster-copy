@@ -33,10 +33,41 @@ void exportFunctionToPython( py::module_ &mod ) {
                                                                                 "BaseFunction" )
         // fake initFactoryPtr: created by subclasses
         // fake initFactoryPtr: created by subclasses
-        .def( "setParameterName", &Function::setParameterName )
-        .def( "setResultName", &Function::setResultName )
-        .def( "setInterpolation", &Function::setInterpolation )
-        .def( "setValues", &Function::setValues )
+        .def( "setParameterName", &Function::setParameterName, R"(
+Define the name of the abscissa.
+
+Arguments:
+    name (str): Name of the abscissa.
+        )",
+              py::arg( "name" ) )
+        .def( "setResultName", &Function::setResultName, R"(
+Define the name of the ordinates.
+
+Arguments:
+    name (str): Name of the ordinates.
+        )",
+              py::arg( "name" ) )
+        .def( "setInterpolation", &Function::setInterpolation, R"(
+Define the type of interpolation.
+
+Supported interpolation types are: "LIN" for linear, "LOG" for logarithmic and
+"NON" for no interpolation allowed.
+
+Arguments:
+    type (str): Type of interpolation for abscissa and ordinates. Examples: "LIN LIN",
+        "LIN LOG"...
+        )",
+              py::arg( "type" ) )
+        .def( "setValues", &Function::setValues, R"(
+Set the values of abscissa and ordinates.
+
+If the function already exists, its size can not be changed.
+
+Arguments:
+    absc (list): List of abscissa.
+    ordo (list): List of ordinates.
+        )",
+              py::arg( "absc" ), py::arg( "ordo" ) )
         .def( "getValues", &Function::getValues, R"(
 Return a list of the values of the function as (x1, x2, ..., y1, y2, ...)
 
@@ -54,9 +85,10 @@ Return the number of points of the function.
 
 Returns:
     int: Number of points.
-
         )" )
-        .def( "setAsConstant", &Function::setAsConstant );
+        .def( "setAsConstant", &Function::setAsConstant, R"(
+To be called for a constant function.
+        )" );
 
     py::class_< FunctionComplex, FunctionComplex::FunctionComplexPtr, BaseFunction >(
         mod, "FunctionComplex" )

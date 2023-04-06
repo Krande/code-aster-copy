@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -49,6 +49,11 @@ class ExtendedFunction:
         new = Function()
         absc, ordo = self.Valeurs()
         new.setValues(absc, NP.abs(ordo))
+        _, interp, para, result, extra, _ = self.getProperties()
+        new.setParameterName(para)
+        new.setResultName(result)
+        new.setInterpolation(interp)
+        new.setExtrapolation(extra)
         return new
 
     def getValuesAsArray(self):
@@ -63,9 +68,10 @@ class ExtendedFunction:
         return values.transpose()
 
     def convert(self, arg="real"):
-        """
-        Retourne un objet de la classe t_fonction
-        représentation python de la fonction
+        """Returns a `t_fonction` object, a Python copy of the function.
+
+        Returns:
+            t_fonction: Python object of the function.
         """
         class_fonction = t_fonction
         if arg == "complex":
@@ -74,18 +80,28 @@ class ExtendedFunction:
         return class_fonction(absc, ordo, self.Parametres(), nom=self.getName())
 
     def Valeurs(self):
-        """
-        Retourne deux listes de valeurs : abscisses et ordonnees
+        """Returns two lists of values for the abscissas and the ordinates.
+
+        Returns:
+            tuple: Lists of abscissas and list of ordinates.
         """
         values = self.getValuesAsArray()
         return values[:, 0], values[:, 1]
 
     def Absc(self):
-        """Retourne la liste des abscisses"""
+        """Returns the list of the abscissas.
+
+        Returns:
+            list: List of abscissas.
+        """
         return self.Valeurs()[0]
 
     def Ordo(self):
-        """Retourne la liste des ordonnées"""
+        """Returns the list of the ordinates.
+
+        Returns:
+            list: List of ordinates.
+        """
         return self.Valeurs()[1]
 
     def __call__(self, val, tol=1.0e-6):
@@ -99,32 +115,28 @@ class ExtendedFunction:
         return __ff(val, tol=tol)
 
     def Parametres(self):
-        """
-        Retourne un dictionnaire contenant les parametres de la fonction ;
-        le type jeveux (FONCTION, FONCT_C, NAPPE) n'est pas retourne,
-        le dictionnaire peut ainsi etre fourni a CALC_FONC_INTERP tel quel.
+        """Returns a dict containing the properties of the function.
+
+        Returns:
+            dict: keys of the dict are "INTERPOL", "NOM_PARA", "NOM_RESU",
+            "PROL_GAUCHE", "PROL_DROITE", see `getProperties()` for the content.
         """
         TypeProl = {"E": "EXCLU", "L": "LINEAIRE", "C": "CONSTANT"}
-        objev = "%-19s.PROL" % self.getName()
-        prol = self.sdj.PROL.get()
+        _, interp, para, result, extra, _ = self.getProperties()
         dico = {
-            "INTERPOL": [prol[1][0:3], prol[1][4:7]],
-            "NOM_PARA": prol[2][0:16].strip(),
-            "NOM_RESU": prol[3][0:16].strip(),
-            "PROL_DROITE": TypeProl[prol[4][1]],
-            "PROL_GAUCHE": TypeProl[prol[4][0]],
+            "INTERPOL": interp.split(),
+            "NOM_PARA": para,
+            "NOM_RESU": result,
+            "PROL_GAUCHE": TypeProl[extra[0]],
+            "PROL_DROITE": TypeProl[extra[1]],
         }
         return dico
 
     def Trace(self, FORMAT="TABLEAU", **kargs):
-        """Tracé d'une fonction"""
+        """Plot a function."""
         gr = Graph()
         para = self.Parametres()
-        gr.AjoutCourbe(
-            Val=self.Valeurs(),
-            Lab=[para["NOM_PARA"], para["NOM_RESU"]],
-            Leg=os.linesep.join(self.sdj.TITR.get() or []),
-        )
+        gr.AjoutCourbe(Val=self.Valeurs(), Lab=[para["NOM_PARA"], para["NOM_RESU"]])
         gr.Trace(FORMAT=FORMAT, **kargs)
 
 
@@ -150,6 +162,13 @@ class ExtendedFunctionComplex:
         return NP.hstack([abscissas, ordinates])
 
     def Valeurs(self):
+        """Returns three lists of values for the abscissas, the real part of the
+        ordinates and the imaginary part of the ordinates.
+
+        Returns:
+            tuple: Lists of the abscissas, real part and imaginary part of the
+            ordinates.
+        """
         """
         Retourne trois listes de valeurs : abscisses, parties reelles et imaginaires.
         """
@@ -157,21 +176,46 @@ class ExtendedFunctionComplex:
         return values[:, 0], values[:, 1], values[:, 2]
 
     def Absc(self):
-        """Retourne la liste des abscisses"""
+        """Returns the list of the abscissas.
+
+        Returns:
+            list: List of abscissas.
+        """
         return self.Valeurs()[0]
 
     def Ordo(self):
-        """Retourne la liste des parties réelles des ordonnées"""
+        """Returns the list of the real part of the ordinates.
+
+        Returns:
+            list: List of the real part of the ordinates.
+        """
         return self.Valeurs()[1]
 
     def OrdoImg(self):
-        """Retourne la liste des parties imaginaires des ordonnées"""
+        """Returns the list of the imaginary part of the ordinates.
+
+        Returns:
+            list: List of the imaginary part of the ordinates.
+        """
         return self.Valeurs()[2]
 
     def convert(self, arg="real"):
-        """
-        Retourne un objet de la classe t_fonction ou t_fonction_c,
-        représentation python de la fonction complexe
+        """Returns a `t_fonction` or `t_fonction_c` object, a Python copy of
+        the function.
+
+        The values of the created function depends on `arg` value.
+        Select `arg` is "real" for the real part, "imag" for the imaginary part,
+        "modul" for the modulus, "phase" for the angle. In these cases the
+        created function is a `t_fonction`.
+        If `arg` is "complex", the created function is a `t_fonction_c`
+        containing the complex values.
+
+        Arguments:
+            arg (str): type of conversion, possible values are "real", "imag",
+                "modul", "phase" or "complex".
+
+        Returns:
+            misc: a `t_fonction_c` if `arg="complex"`, a `t_fonction` otherwise.
         """
         class_fonction = t_fonction
         if arg == "complex":
@@ -203,30 +247,29 @@ class ExtendedFunctionComplex:
         return __ff(val, tol=tol)
 
     def Parametres(self):
-        """
-        Retourne un dictionnaire contenant les parametres de la fonction ;
-        le type jeveux (FONCTION, FONCT_C, NAPPE) n'est pas retourne,
-        le dictionnaire peut ainsi etre fourni a CALC_FONC_INTERP tel quel.
+        """Returns a dict containing the properties of the function.
+
+        Returns:
+            dict: keys of the dict are "INTERPOL", "NOM_PARA", "NOM_RESU",
+            "PROL_GAUCHE", "PROL_DROITE", see `getProperties()` for the content.
         """
         TypeProl = {"E": "EXCLU", "L": "LINEAIRE", "C": "CONSTANT"}
-        objev = "%-19s.PROL" % self.getName()
-        prol = self.sdj.PROL.get()
+        _, interp, para, result, extra, _ = self.getProperties()
         dico = {
-            "INTERPOL": [prol[1][0:3], prol[1][4:7]],
-            "NOM_PARA": prol[2][0:16].strip(),
-            "NOM_RESU": prol[3][0:16].strip(),
-            "PROL_DROITE": TypeProl[prol[4][1]],
-            "PROL_GAUCHE": TypeProl[prol[4][0]],
+            "INTERPOL": interp.split(),
+            "NOM_PARA": para,
+            "NOM_RESU": result,
+            "PROL_GAUCHE": TypeProl[extra[0]],
+            "PROL_DROITE": TypeProl[extra[1]],
         }
         return dico
 
     def Trace(self, FORMAT="TABLEAU", **kargs):
-        """Tracé d'une fonction"""
+        """Plot a function."""
         gr = Graph()
         para = self.Parametres()
         gr.AjoutCourbe(
             Val=self.Valeurs(),
             Lab=[para["NOM_PARA"], para["NOM_RESU"] + "_R", para["NOM_RESU"] + "_I"],
-            Leg=os.linesep.join(self.sdj.TITR.get() or []),
         )
         gr.Trace(FORMAT=FORMAT, **kargs)

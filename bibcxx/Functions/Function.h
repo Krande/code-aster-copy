@@ -67,12 +67,7 @@ class BaseFunction : public GenericFunction {
      * @brief Get the result name
      * @return  name of the result
      */
-    std::string getResultName() {
-        if ( !_property.exists() )
-            return "";
-        _property->updateValuePointer();
-        return ( *_property )[3].toString();
-    }
+    std::string getResultName();
 
     /**
      * @brief Set the function type to CONSTANT
@@ -84,22 +79,14 @@ class BaseFunction : public GenericFunction {
      * @param name name of the parameter
      * @type  name string
      */
-    void setParameterName( const std::string name ) {
-        if ( !_property.exists() )
-            propertyAllocate();
-        ( *_property )[2] = name.substr( 0, 8 ).c_str();
-    }
+    void setParameterName( const std::string name );
 
     /**
      * @brief Definition of the name of the result (ordinate)
      * @param name name of the result
      * @type  name string
      */
-    void setResultName( const std::string name ) {
-        if ( !_property.exists() )
-            propertyAllocate();
-        ( *_property )[3] = name.substr( 0, 8 ).c_str();
-    }
+    void setResultName( const std::string name );
 
     /**
      * @brief Definition of the type of interpolation

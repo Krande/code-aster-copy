@@ -3477,10 +3477,24 @@ class GenericFunction(DataStructure):
         """Initialize self.  See help(type(self)) for accurate signature."""
 
     def getProperties(self):
-        pass
+        """Returns the properties of the function.
 
-    def setExtrapolation(self, arg0):
-        pass
+        Returns:
+            tuple[str]: Tuple containing: type of the function (same as `getType()`),
+            type of interpolation, parameter name, result name,
+            type of extrapolation, object name (same as `getName()`).
+        """
+
+    def setExtrapolation(self, type):
+        """Define the type of extrapolation.
+
+        Supported extrapolation types are: "L" for linear, "C" for constant and
+        "E" for no extrapolation allowed.
+
+        Arguments:
+            type (str): Type of extrapolation on left and on right. Examples: "CC",
+                "LE"...
+        """
 
 
 # class ListOfLoads in libaster
@@ -3714,17 +3728,40 @@ class BaseFunction(GenericFunction):
             list[float]: List of values (size = 2 * *size()*).
         """
 
-    def setInterpolation(self, arg0):
-        pass
+    def setInterpolation(self, type):
+        """Define the type of interpolation.
 
-    def setParameterName(self, arg0):
-        pass
+        Supported interpolation types are: "LIN" for linear, "LOG" for logarithmic and
+        "NON" for no interpolation allowed.
 
-    def setResultName(self, arg0):
-        pass
+        Arguments:
+            type (str): Type of interpolation for abscissa and ordinates. Examples: "LIN LIN",
+                "LIN LOG"...
+        """
 
-    def setValues(self, arg0, arg1):
-        pass
+    def setParameterName(self, name):
+        """Define the name of the abscissa.
+
+        Arguments:
+            name (str): Name of the abscissa.
+        """
+
+    def setResultName(self, name):
+        """Define the name of the ordinates.
+
+        Arguments:
+            name (str): Name of the ordinates.
+        """
+
+    def setValues(self, absc, ordo):
+        """Set the values of abscissa and ordinates.
+
+        If the function already exists, its size can not be changed.
+
+        Arguments:
+            absc (list): List of abscissa.
+            ordo (list): List of ordinates.
+        """
 
 
 # class Function in libaster
@@ -3752,7 +3789,7 @@ class Function(BaseFunction):
         """
 
     def setAsConstant(self):
-        pass
+        """To be called for a constant function."""
 
     def setValues(self, arg0, arg1):
         pass
@@ -4102,7 +4139,15 @@ class Function2D(GenericFunction):
         """
 
     def getProperties(self):
-        pass
+        """Returns the properties of the function.
+
+        Returns:
+            tuple[str]: Tuple containing: type of the function (same as `getType()`),
+            type of interpolation, parameter name, result name,
+            type of extrapolation, object name (same as `getName()`),
+            parameter name of functions + a list of dict for each functions that contain
+            the type of interpolation and extrapolation.
+        """
 
     def getValues(self):
         """Return a list of the values of the functions as [F1, F2, ...]

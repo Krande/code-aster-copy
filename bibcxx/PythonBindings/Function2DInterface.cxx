@@ -46,5 +46,14 @@ where Fi is (x1, x2, ..., y1, y2, ...).
 Returns:
     list[list [float]]: List of values (size = number of functions).
         )" )
-        .def( "getProperties", &Function2D::getProperties );
+        .def( "getProperties", &Function2D::getProperties, R"(
+Returns the properties of the function.
+
+Returns:
+    tuple[str]: Tuple containing: type of the function (same as `getType()`),
+    type of interpolation, parameter name, result name,
+    type of extrapolation, object name (same as `getName()`),
+    parameter name of functions + a list of dict for each functions that contain
+    the type of interpolation and extrapolation.
+        )" );
 };

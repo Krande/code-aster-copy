@@ -31,11 +31,25 @@ void exportGenericFunctionToPython( py::module_ &mod ) {
 
     py::class_< GenericFunction, GenericFunction::GenericFunctionPtr, DataStructure >(
         mod, "GenericFunction" )
-        //         .def( py::init(
-        //             &initFactoryPtr< GenericFunction >) )
-        //         .def( py::init(
-        //             &initFactoryPtr< GenericFunction,
-        //                              std::string >) )
-        .def( "getProperties", &GenericFunction::getProperties )
-        .def( "setExtrapolation", &GenericFunction::setExtrapolation );
+        // fake initFactoryPtr: created by subclasses
+        // fake initFactoryPtr: created by subclasses
+        .def( "getProperties", &GenericFunction::getProperties, R"(
+Returns the properties of the function.
+
+Returns:
+    tuple[str]: Tuple containing: type of the function (same as `getType()`),
+    type of interpolation, parameter name, result name,
+    type of extrapolation, object name (same as `getName()`).
+        )" )
+        .def( "setExtrapolation", &GenericFunction::setExtrapolation, R"(
+Define the type of extrapolation.
+
+Supported extrapolation types are: "L" for linear, "C" for constant and
+"E" for no extrapolation allowed.
+
+Arguments:
+    type (str): Type of extrapolation on left and on right. Examples: "CC",
+        "LE"...
+        )",
+              py::arg( "type" ) );
 };

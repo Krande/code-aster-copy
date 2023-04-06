@@ -34,8 +34,10 @@ class ExtendedFunction2D:
     cata_sdj = "SD.sd_fonction.sd_fonction_aster"
 
     def convert(self):
-        """
-        Retourne un objet de la classe t_nappe, représentation python de la nappe
+        """Returns a `t_nappe` object, a Python copy of the 2D-function.
+
+        Returns:
+            t_nappe: Python object of the function.
         """
         para = self.Parametres()
         vale = self.Valeurs()
@@ -54,11 +56,11 @@ class ExtendedFunction2D:
         return t_nappe(vale[0], l_fonc, para[0], nom=self.getName())
 
     def Parametres(self):
-        """
-        Retourne un dictionnaire contenant les parametres de la nappe,
-        le type jeveux (NAPPE) n'est pas retourne,
-        le dictionnaire peut ainsi etre fourni a CALC_FONC_INTERP tel quel,
-        et une liste de dictionnaire des parametres de chaque fonction.
+        """Returns a dict containing the properties of the function.
+
+        Returns:
+            dict: keys of the dict are "INTERPOL", "NOM_PARA", "NOM_RESU",
+            "PROL_GAUCHE", "PROL_DROITE", see `getProperties()` for the content.
         """
         prol = self.getProperties()
         TypeProl = {"E": "EXCLU", "L": "LINEAIRE", "C": "CONSTANT"}
@@ -82,9 +84,11 @@ class ExtendedFunction2D:
         return [dico, lparf]
 
     def Valeurs(self):
-        """
-        Retourne la liste des valeurs du parametre,
-        et une liste de couples (abscisses,ordonnees) de chaque fonction.
+        """Returns the list of the parameter values and a liste of couples
+        (absc, ord) for each function.
+
+        Returns:
+            (list, list(couples)): List of parameter values and list of couples.
         """
         values = self.getValues()
         old = []

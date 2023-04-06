@@ -55,8 +55,23 @@ void BaseFunction::deallocate() {
     _value->deallocate();
 }
 
-void FunctionComplex::allocate( ASTERINTEGER size ) {
-    throw std::runtime_error( "Not yet implemented!" );
+std::string BaseFunction::getResultName() {
+    if ( !_property.exists() )
+        return "";
+    _property->updateValuePointer();
+    return ( *_property )[3].toString();
+}
+
+void BaseFunction::setParameterName( const std::string name ) {
+    if ( !_property.exists() )
+        propertyAllocate();
+    ( *_property )[2] = name.substr( 0, 8 ).c_str();
+}
+
+void BaseFunction::setResultName( const std::string name ) {
+    if ( !_property.exists() )
+        propertyAllocate();
+    ( *_property )[3] = name.substr( 0, 8 ).c_str();
 }
 
 void BaseFunction::setValues( const VectorReal &absc, const VectorReal &ordo ) {
@@ -65,7 +80,12 @@ void BaseFunction::setValues( const VectorReal &absc, const VectorReal &ordo ) {
 
     // Create Jeveux vector ".VALE"
     const int nbpts = absc.size();
-    _value->allocate( 2 * nbpts );
+    if ( _value.exists() && _value->size() != 2 * nbpts )
+        throw std::runtime_error( "Function: the function size is " + std::to_string( nbpts ) +
+                                  ", lists of this size are expected" );
+
+    if ( !_value.exists() )
+        _value->allocate( 2 * nbpts );
 
     // Loop on the points
     VectorReal::const_iterator abscIt = absc.begin();
@@ -105,6 +125,16 @@ void BaseFunction::setAsConstant() {
 }
 
 /* Complex function */
+void FunctionComplex::allocate( ASTERINTEGER size ) {
+    if ( _property.exists() )
+        _property->deallocate();
+    propertyAllocate();
+
+    if ( _value.exists() )
+        _value->deallocate();
+    _value->allocate( 3 * size );
+}
+
 void FunctionComplex::setValues( const VectorReal &absc, const VectorReal &ordo ) {
     if ( absc.size() * 2 != ordo.size() )
         throw std::runtime_error(
@@ -112,7 +142,12 @@ void FunctionComplex::setValues( const VectorReal &absc, const VectorReal &ordo 
 
     // Create Jeveux vector ".VALE"
     const int nbpts = absc.size();
-    _value->allocate( 3 * nbpts );
+    if ( _value.exists() && _value->size() != 3 * nbpts )
+        throw std::runtime_error( "Function: the function size is " + std::to_string( nbpts ) +
+                                  ", abscissas of this size are expected" );
+
+    if ( !_value.exists() )
+        _value->allocate( 3 * nbpts );
 
     // Loop on the points
     VectorReal::const_iterator abscIt = absc.begin();

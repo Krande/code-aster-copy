@@ -31,6 +31,22 @@
 #include <string>
 #include <vector>
 
+GenericFunction::GenericFunction( const std::string &name, const std::string &type,
+                                  const std::string &functType )
+    : DataStructure( name, 19, type ),
+      _property( JeveuxVectorChar24( getName() + ".PROL" ) ),
+      _funct_type( functType ) {}
+
+VectorString GenericFunction::getProperties() const {
+    _property->updateValuePointer();
+    const auto size = _property->size();
+    VectorString prop;
+    for ( int i = 0; i < size; ++i ) {
+        prop.push_back( ( *_property )[i].rstrip() );
+    }
+    return prop;
+}
+
 void GenericFunction::setExtrapolation( const std::string type ) {
     if ( !_property.exists() )
         propertyAllocate();

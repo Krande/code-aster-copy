@@ -65,10 +65,7 @@ class GenericFunction : public DataStructure {
      * @brief Constructeur
      */
     GenericFunction( const std::string &name, const std::string &type,
-                     const std::string &functType )
-        : DataStructure( name, 19, type ),
-          _property( JeveuxVectorChar24( getName() + ".PROL" ) ),
-          _funct_type( functType ) {};
+                     const std::string &functType );
 
     /**
      * @brief Allocate function
@@ -79,15 +76,7 @@ class GenericFunction : public DataStructure {
      * @brief Return the properties of the function
      * @return vector of strings
      */
-    VectorString getProperties() const {
-        _property->updateValuePointer();
-        const auto size = _property->size();
-        VectorString prop;
-        for ( int i = 0; i < size; ++i ) {
-            prop.push_back( ( *_property )[i].rstrip() );
-        }
-        return prop;
-    };
+    VectorString getProperties() const;
 
     /**
      * @brief Get the result name
