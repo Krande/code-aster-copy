@@ -41,7 +41,7 @@ std::string toLower( const std::string &in_str );
 std::string remove_brackets( const std::string &in_str );
 
 // Convert integer in string for name of object
-std::string codent( const int varInt, const int stringSize );
+std::string to_string( const int varInt, const int stringSize );
 
 /**
  * @brief irange Create a vector of integer from begin to end (included).
