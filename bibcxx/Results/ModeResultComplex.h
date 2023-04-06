@@ -41,14 +41,11 @@
  */
 class ModeResultComplex : public ModeResult {
   private:
-    typedef std::vector< FieldOnNodesComplexPtr > VectorOfComplexFieldsNodes;
+    using VectorOfComplexFieldsNodes = std::vector< FieldOnNodesComplexPtr >;
+    using mapStrVOCFN = std::map< std::string, VectorOfComplexFieldsNodes >;
+    using mapStrVOCFNIterator = mapStrVOCFN::iterator;
+    using mapStrVOCFNValue = mapStrVOCFN::value_type;
 
-    /** @typedef std::map d'une chaine et des pointers vers toutes les DataStructure */
-    typedef std::map< std::string, VectorOfComplexFieldsNodes > mapStrVOCFN;
-    /** @typedef Iterateur sur le std::map */
-    typedef mapStrVOCFN::iterator mapStrVOCFNIterator;
-    /** @typedef Valeur contenue dans mapStrVOFN */
-    typedef mapStrVOCFN::value_type mapStrVOCFNValue;
     /** @brief Liste des champs aux noeuds */
     mapStrVOCFN _dictOfVectorOfComplexFieldsNodes;
     /** */
@@ -87,22 +84,6 @@ class ModeResultComplex : public ModeResult {
           _rigidityPressDMatrix( nullptr ),
           _rigidityGDMatrix( nullptr ),
           _rigidityGCMatrix( nullptr ) {};
-
-    /**
-     * @brief Obtenir un champ aux noeuds complexe vide à partir de son nom et de son numéro d'ordre
-     * @param name nom Aster du champ
-     * @param rank numéro d'ordre
-     * @return FieldOnNodesRealPtr pointant vers le champ
-     */
-    FieldOnNodesComplexPtr getEmptyFieldOnNodesComplex( const std::string name, const int rank );
-
-    /**
-     * @brief Obtenir un champ aux noeuds complexe à partir de son nom et de son numéro d'ordre
-     * @param name nom Aster du champ
-     * @param rank numéro d'ordre
-     * @return FieldOnNodesRealPtr pointant vers le champ
-     */
-    FieldOnNodesComplexPtr getComplexFieldOnNodes( const std::string name, const int rank ) const;
 
     /**
      * @brief Set the damping matrix
@@ -226,10 +207,6 @@ class ModeResultComplex : public ModeResult {
     };
 };
 
-/**
- * @typedef ModeResultComplexPtr
- * @brief Pointeur intelligent vers un ModeResultComplex
- */
-typedef std::shared_ptr< ModeResultComplex > ModeResultComplexPtr;
+using ModeResultComplexPtr = std::shared_ptr< ModeResultComplex >;
 
 #endif /* MECHANICALMODECOMPLEXCONTAINER_H_ */

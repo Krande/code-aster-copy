@@ -30,6 +30,7 @@
 #include "aster_fort_superv.h"
 #include "aster_fort_utils.h"
 
+#include "Messages/Messages.h"
 #include "PythonBindings/LogicalUnitManager.h"
 #include "Supervis/CommandSyntax.h"
 #include "Supervis/Exceptions.h"
@@ -39,68 +40,80 @@ JeveuxVectorReal Result::_mata( "PYTHON.TANGENT.MATA" );
 JeveuxVectorReal Result::_matc( "PYTHON.TANGENT.MATC" );
 
 ASTERINTEGER Result::_getInternalIndex( const ASTERINTEGER &storageIndex ) const {
-    // NUME_ORDRE -> NUME
     _serialNumber->updateValuePointer();
-    auto nbVal = _serialNumber->size();
-    for ( ASTERINTEGER i = 0; i < nbVal; i++ ) {
-        if ( ( *_serialNumber )[i] == storageIndex ) {
-            return i;
+    const auto nbIndexes = getNumberOfIndexes();
+    for ( ASTERINTEGER internalIndex = 0; internalIndex < nbIndexes; internalIndex++ ) {
+        if ( ( *_serialNumber )[internalIndex] == storageIndex ) {
+            return internalIndex;
         }
     }
-    AS_ABORT( "Error: internal index not found" );
     return -1;
 };
 
-std::pair< ASTERINTEGER, std::string > Result::_getNewFieldName( const std::string &name,
-                                                                 const ASTERINTEGER &index ) const {
-    auto trim_name = trim( name );
-    ASTERINTEGER retour;
-    retour = 0;
-    std::string null( " " );
-    std::string returnName( 19, ' ' );
-    CALLO_RSEXCH( null, getName(), trim_name, &index, returnName, &retour );
+std::string Result::_generateFieldName( const ASTERINTEGER &indexSymbName,
+                                        const ASTERINTEGER &internalIndex ) const {
 
-    return std::make_pair( retour, returnName );
+    // Generate name for field symbol
+    auto nuch = to_string( indexSymbName, 3 );
+
+    // Generate name for index
+    auto chford = to_string( internalIndex, 6 );
+
+    // Generate name of field
+    auto fieldName = std::string( trim( this->getName() ) + "." + nuch + "." + chford );
+
+    return fieldName;
 };
 
 template < typename T >
 void Result::_setFieldBase(
-    const std::string &name, const ASTERINTEGER &index, std::shared_ptr< T > field,
+    const std::string &symbName, const ASTERINTEGER &storageIndex, std::shared_ptr< T > field,
     std::map< std::string, std::map< ASTERINTEGER, std::shared_ptr< T > > > &dict ) {
-
-    CALL_JEMARQ();
-
     if ( !field )
         raiseAsterError( "ValueError: field is empty" );
 
-    auto trim_name = trim( name );
-    auto rschex = _getNewFieldName( trim_name, index );
-    AS_ASSERT( rschex.first == 0 || rschex.first == 100 || rschex.first == 110 );
+    // Get index of this symbolic name
+    auto indexSymbName = _symbolicNamesOfFields->getIndexFromString( trim( symbName ) );
 
-    if ( rschex.first == 110 ) {
-        resize( std::max( (ASTERINTEGER)1, 2 * getNumberOfIndexes() ) );
-        rschex = _getNewFieldName( trim_name, index );
-    };
-
-    CALLO_RSNOCH_FORWARD( getName(), name, &index );
-    std::string internalName( rschex.second.c_str(), 19 );
-
-    if ( dict.count( trim_name ) == 0 ) {
-        dict[trim_name] = std::map< ASTERINTEGER, std::shared_ptr< T > >();
+    if ( indexSymbName == 0 ) {
+        UTMESS( "F", "RESULT2_4" );
     }
 
-    // if field arlreday exist, destroy it befor to create new one
-    if ( dict[trim_name].count( index ) > 0 ) {
-        dict[trim_name][index] = nullptr;
+    // Get internal index
+    auto internalIndex = _getInternalIndex( storageIndex );
+
+    // Add storage index
+    if ( internalIndex < 0 ) {
+        addStorageIndex( storageIndex );
+        internalIndex = _getInternalIndex( storageIndex );
+        AS_ASSERT( internalIndex >= 0 );
     }
 
+    // Generate internal name of field
+    std::string internalName;
+    internalName = _generateFieldName( indexSymbName, internalIndex );
+
+    // Note field in datastructure
+    auto storageStructure = _namesOfFields->getObjects()[indexSymbName - 1];
+    storageStructure->updateValuePointer();
+    ( *storageStructure )[internalIndex] = internalName;
+
+    // Save field in dictionnary
+    if ( dict.count( trim( symbName ) ) == 0 ) {
+        dict[trim( symbName )] = std::map< ASTERINTEGER, std::shared_ptr< T > >();
+    }
+
+    // if field already exist, destroy it before to create new one
+    if ( dict[trim( symbName )].count( storageIndex ) > 0 ) {
+        dict[trim( symbName )][storageIndex] = nullptr;
+    }
+
+    // Create smart pointer
     auto result = std::make_shared< T >( internalName, *field );
-    dict[trim_name][index] = result;
-
-    CALL_JEDEMA();
+    dict[trim( symbName )][storageIndex] = result;
 };
 
-void Result::_checkMesh( const BaseMeshPtr mesh ) const {
+void Result::_checkMesh( const BaseMeshPtr &mesh ) const {
     if ( !mesh )
         raiseAsterError( "ValueError: Mesh is empty" );
 
@@ -116,70 +129,72 @@ void Result::setMesh( const BaseMeshPtr &mesh ) {
 };
 
 void Result::setElementaryCharacteristics( const ElementaryCharacteristicsPtr &cara,
-                                           ASTERINTEGER index ) {
+                                           ASTERINTEGER storageIndex ) {
     if ( !cara )
         raiseAsterError( "ValueError: ElementaryCharacteristics is empty" );
 
-    _mapElemCara[index] = cara;
+    _mapElemCara[storageIndex] = cara;
     std::string type( "CARAELEM" );
     std::string cel( "E" );
-    CALLO_RSADPA_ZK8_WRAP( getName(), &index, cara->getName(), type, cel );
+    CALLO_RSADPA_ZK8_WRAP( getName(), &storageIndex, cara->getName(), type, cel );
     setMesh( cara->getMesh() );
 };
 
-void Result::setListOfLoads( const ListOfLoadsPtr &load, ASTERINTEGER index ) {
+void Result::setListOfLoads( const ListOfLoadsPtr &load, ASTERINTEGER storageIndex ) {
     if ( !load )
         raiseAsterError( "ValueError: Load is empty" );
 
-    _mapLoads[index] = load;
+    _mapLoads[storageIndex] = load;
     std::string type( "EXCIT" );
     std::string cel( "E" );
-    CALLO_RSADPA_ZK24_WRAP( getName(), &index, load->getName(), type, cel );
+    CALLO_RSADPA_ZK24_WRAP( getName(), &storageIndex, load->getName(), type, cel );
 };
 
-void Result::setMaterialField( const MaterialFieldPtr &mater, ASTERINTEGER index ) {
+void Result::setMaterialField( const MaterialFieldPtr &mater, ASTERINTEGER storageIndex ) {
     if ( !mater )
         raiseAsterError( "ValueError: MaterialField is empty" );
 
-    _mapMaterial[index] = mater;
+    _mapMaterial[storageIndex] = mater;
     std::string type( "CHAMPMAT" );
     std::string cel( "E" );
-    CALLO_RSADPA_ZK8_WRAP( getName(), &index, mater->getName(), type, cel );
+    CALLO_RSADPA_ZK8_WRAP( getName(), &storageIndex, mater->getName(), type, cel );
     setMesh( mater->getMesh() );
 };
 
-void Result::setModel( const ModelPtr &model, ASTERINTEGER index ) {
+void Result::setModel( const ModelPtr &model, ASTERINTEGER storageIndex ) {
     if ( !model )
         raiseAsterError( "ValueError: Model is empty" );
 
-    _mapModel[index] = model;
+    _mapModel[storageIndex] = model;
     std::string type( "MODELE" );
     std::string cel( "E" );
-    CALLO_RSADPA_ZK8_WRAP( getName(), &index, model->getName(), type, cel );
+    CALLO_RSADPA_ZK8_WRAP( getName(), &storageIndex, model->getName(), type, cel );
     const auto fed = model->getFiniteElementDescriptor();
     _fieldBuilder.addFiniteElementDescriptor( fed );
     setMesh( model->getMesh() );
 };
 
-void Result::setParameterValue( std::string name, ASTERDOUBLE value, ASTERINTEGER storageIndex ) {
-    CALLO_RSADPA_ZR_WRAP( getName(), &storageIndex, &value, name );
+void Result::setParameterValue( std::string paraName, ASTERDOUBLE paraValue,
+                                ASTERINTEGER storageIndex ) {
+    CALLO_RSADPA_ZR_WRAP( getName(), &storageIndex, &paraValue, paraName );
 };
 
-void Result::setParameterValue( std::string name, std::string value, ASTERINTEGER storageIndex ) {
+void Result::setParameterValue( std::string paraName, std::string paraValue,
+                                ASTERINTEGER storageIndex ) {
 
-    auto paraIndx = _dictParameters.find( name );
+    auto paraIndx = _dictParameters.find( paraName );
     if ( paraIndx == _dictParameters.end() ) {
         raiseAsterError( "Parameter not available" );
     }
 
-    auto paraType = _dictParameters.find( name )->second;
+    auto paraType = _dictParameters.find( paraName )->second;
     std::string cel( "E" );
     if ( paraType == "Char8" ) {
-        CALLO_RSADPA_ZK8_WRAP( getName(), &storageIndex, value, name, cel );
+        CALLO_RSADPA_ZK8_WRAP( getName(), &storageIndex, paraValue, paraName, cel );
     } else if ( paraType == "Char16" ) {
-        CALLO_RSADPA_ZK16_WRAP( getName(), &storageIndex, value, name, cel );
+        CALLO_RSADPA_ZK16_WRAP( getName(), &storageIndex, paraValue, paraName, cel );
     } else if ( paraType == "Char24" ) {
-        CALLO_RSADPA_ZK24_WRAP( getName(), &storageIndex, value, name, cel );
+        CALLO_RSADPA_ZK24_WRAP( getName(), &storageIndex, paraValue, paraName, cel );
     } else {
         raiseAsterError( "Wrapper not available" );
     }
@@ -187,9 +202,9 @@ void Result::setParameterValue( std::string name, std::string value, ASTERINTEGE
 
 ASTERDOUBLE Result::getTimeValue( ASTERINTEGER storageIndex ) {
 
-    ASTERINTEGER nb_indexs = getNumberOfIndexes();
+    ASTERINTEGER nbIndexes = getNumberOfIndexes();
 
-    AS_ASSERT( storageIndex <= nb_indexs );
+    AS_ASSERT( storageIndex <= nbIndexes );
 
     _rspr->updateValuePointer();
 
@@ -206,7 +221,12 @@ ASTERDOUBLE Result::getTimeValue( ASTERINTEGER storageIndex ) {
 
                 AS_ASSERT( nosuff == ".RSPR" )
 
-                return ( *_rspr )[nmax * _getInternalIndex( storageIndex ) + ivar - 1];
+                auto internalIndex = _getInternalIndex( storageIndex );
+                if ( internalIndex < 0 ) {
+                    AS_ABORT( "Error: internal index not found" );
+                }
+
+                return ( *_rspr )[nmax * internalIndex + ivar - 1];
             }
         }
     }
@@ -251,30 +271,26 @@ void Result::_listOfParameters() {
         }
         _dictParameters.insert( std::make_pair( paraName, paraType ) );
     }
-
-    // for ( const auto &entry : _dictParameters ) {
-    //     std::cout << "{" << entry.first << ", " << entry.second << "}" << std::endl;
-    // }
 }
 
 void Result::setElementaryCharacteristics( const ElementaryCharacteristicsPtr &cara ) {
-    auto indexes = getIndexes();
-    for ( auto &index : indexes ) {
-        setElementaryCharacteristics( cara, index );
+    auto allStorageIndexes = getIndexes();
+    for ( auto &storageIndex : allStorageIndexes ) {
+        setElementaryCharacteristics( cara, storageIndex );
     }
 };
 
 void Result::setMaterialField( const MaterialFieldPtr &mater ) {
-    auto indexes = getIndexes();
-    for ( auto &index : indexes ) {
-        setMaterialField( mater, index );
+    auto allStorageIndexes = getIndexes();
+    for ( auto &storageIndex : allStorageIndexes ) {
+        setMaterialField( mater, storageIndex );
     }
 };
 
 void Result::setModel( const ModelPtr &model ) {
-    auto indexes = getIndexes();
-    for ( auto &index : indexes ) {
-        setModel( model, index );
+    auto allStorageIndexes = getIndexes();
+    for ( auto &storageIndex : allStorageIndexes ) {
+        setModel( model, storageIndex );
     }
 };
 
@@ -292,23 +308,26 @@ ElementaryCharacteristicsPtr Result::getElementaryCharacteristics() const {
     return ElementaryCharacteristicsPtr( nullptr );
 };
 
-ElementaryCharacteristicsPtr Result::getElementaryCharacteristics( ASTERINTEGER index ) const {
-    return _mapElemCara.at( index );
+ElementaryCharacteristicsPtr
+Result::getElementaryCharacteristics( ASTERINTEGER storageIndex ) const {
+    return _mapElemCara.at( storageIndex );
 };
 
-bool Result::hasElementaryCharacteristics( ASTERINTEGER index ) const {
-    return _mapElemCara.count( index ) > 0;
+bool Result::hasElementaryCharacteristics( ASTERINTEGER storageIndex ) const {
+    return _mapElemCara.count( storageIndex ) > 0;
 };
 
 bool Result::hasElementaryCharacteristics() const { return !_mapElemCara.empty(); };
 
 bool Result::hasListOfLoads() const { return !_mapLoads.empty(); };
 
-bool Result::hasListOfLoads( const ASTERINTEGER &index ) const {
-    return _mapLoads.count( index ) > 0;
+bool Result::hasListOfLoads( const ASTERINTEGER &storageIndex ) const {
+    return _mapLoads.count( storageIndex ) > 0;
 };
 
-ListOfLoadsPtr Result::getListOfLoads( ASTERINTEGER index ) const { return _mapLoads.at( index ); };
+ListOfLoadsPtr Result::getListOfLoads( ASTERINTEGER storageIndex ) const {
+    return _mapLoads.at( storageIndex );
+};
 
 std::vector< MaterialFieldPtr > Result::getMaterialFields() const {
     return unique( _mapMaterial );
@@ -324,8 +343,8 @@ MaterialFieldPtr Result::getMaterialField() const {
     return MaterialFieldPtr( nullptr );
 };
 
-MaterialFieldPtr Result::getMaterialField( ASTERINTEGER index ) const {
-    return _mapMaterial.at( index );
+MaterialFieldPtr Result::getMaterialField( ASTERINTEGER storageIndex ) const {
+    return _mapMaterial.at( storageIndex );
 };
 
 BaseMeshPtr Result::getMesh() const {
@@ -349,10 +368,12 @@ bool Result::hasMultipleModel() const {
     return false;
 }
 
-bool Result::hasModel( const ASTERINTEGER &index ) const { return _mapModel.count( index ) > 0; }
+bool Result::hasModel( const ASTERINTEGER &storageIndex ) const {
+    return _mapModel.count( storageIndex ) > 0;
+}
 
-bool Result::hasMaterialField( const ASTERINTEGER &index ) const {
-    return _mapMaterial.count( index ) > 0;
+bool Result::hasMaterialField( const ASTERINTEGER &storageIndex ) const {
+    return _mapMaterial.count( storageIndex ) > 0;
 }
 
 std::vector< ModelPtr > Result::getModels() const { return unique( _mapModel ); };
@@ -371,35 +392,49 @@ ModelPtr Result::getModel() const {
     return ModelPtr( nullptr );
 };
 
-ModelPtr Result::getModel( ASTERINTEGER index ) const { return _mapModel.at( index ); };
+ModelPtr Result::getModel( ASTERINTEGER storageIndex ) const {
+    return _mapModel.at( storageIndex );
+};
 
 ASTERINTEGER Result::getNumberOfIndexes() const { return _serialNumber->size(); };
 
 VectorLong Result::getIndexes() const { return _serialNumber->toVector(); };
 
+ASTERINTEGER Result::getLastIndex() const {
+    _serialNumber->updateValuePointer();
+    return ( *_serialNumber )[_serialNumber->size() - 1];
+};
+
+ASTERINTEGER Result::getFirstIndex() const {
+    _serialNumber->updateValuePointer();
+    return ( *_serialNumber )[0];
+};
+
 FieldOnCellsRealPtr Result::getFieldOnCellsReal( const std::string name,
-                                                 const ASTERINTEGER index ) const {
-    return _dictOfMapOfFieldOnCellsReal.at( name ).at( index );
+                                                 const ASTERINTEGER storageIndex ) const {
+    return _dictOfMapOfFieldOnCellsReal.at( name ).at( storageIndex );
 };
 
 FieldOnCellsComplexPtr Result::getFieldOnCellsComplex( const std::string name,
-                                                       const ASTERINTEGER index ) const {
-    return _dictOfMapOfFieldOnCellsComplex.at( name ).at( index );
+                                                       const ASTERINTEGER storageIndex ) const {
+    return _dictOfMapOfFieldOnCellsComplex.at( name ).at( storageIndex );
 };
 
 FieldOnCellsLongPtr Result::getFieldOnCellsLong( const std::string name,
-                                                 const ASTERINTEGER index ) const {
-    return _dictOfMapOfFieldOnCellsLong.at( name ).at( index );
+                                                 const ASTERINTEGER storageIndex ) const {
+    return _dictOfMapOfFieldOnCellsLong.at( name ).at( storageIndex );
 };
 
 ConstantFieldOnCellsChar16Ptr
-Result::getConstantFieldOnCellsChar16( const std::string name, const ASTERINTEGER index ) const {
-    return _dictOfMapOfConstantFieldOnCellsChar16.at( name ).at( index );
+Result::getConstantFieldOnCellsChar16( const std::string name,
+                                       const ASTERINTEGER storageIndex ) const {
+    return _dictOfMapOfConstantFieldOnCellsChar16.at( name ).at( storageIndex );
 };
 
-ConstantFieldOnCellsRealPtr Result::getConstantFieldOnCellsReal( const std::string name,
-                                                                 const ASTERINTEGER index ) const {
-    return _dictOfMapOfConstantFieldOnCellsReal.at( name ).at( index );
+ConstantFieldOnCellsRealPtr
+Result::getConstantFieldOnCellsReal( const std::string name,
+                                     const ASTERINTEGER storageIndex ) const {
+    return _dictOfMapOfConstantFieldOnCellsReal.at( name ).at( storageIndex );
 };
 
 py::dict Result::getAccessParameters() const {
@@ -423,12 +458,12 @@ py::dict Result::getAccessParameters() const {
 
     AS_ASSERT( _calculationParameter->build() );
 
-    ASTERINTEGER nb_indexs = getNumberOfIndexes();
+    ASTERINTEGER nbIndexes = getNumberOfIndexes();
 
     var_name = "NUME_ORDRE";
     py::list listValues;
-    for ( ASTERINTEGER j = 0; j < nb_indexs; ++j ) {
-        listValues.append( ( *_serialNumber )[j] );
+    for ( ASTERINTEGER internalIndex = 0; internalIndex < nbIndexes; ++internalIndex ) {
+        listValues.append( ( *_serialNumber )[internalIndex] );
     }
     returnDict[var_name.c_str()] = listValues;
 
@@ -446,21 +481,21 @@ py::dict Result::getAccessParameters() const {
             py::list listV;
 
             if ( nosuff == ".RSPI" ) {
-                for ( ASTERINTEGER j = 0; j < nb_indexs; ++j ) {
+                for ( ASTERINTEGER j = 0; j < nbIndexes; ++j ) {
                     index = nmax * ( j ) + ivar - 1;
                     listV.append( ( *_rspi )[index] );
                 }
             }
 
             else if ( nosuff == ".RSPR" ) {
-                for ( ASTERINTEGER j = 0; j < nb_indexs; ++j ) {
+                for ( ASTERINTEGER j = 0; j < nbIndexes; ++j ) {
                     index = nmax * ( j ) + ivar - 1;
                     listV.append( ( *_rspr )[index] );
                 }
             }
 
             else {
-                for ( ASTERINTEGER j = 0; j < nb_indexs; ++j ) {
+                for ( ASTERINTEGER j = 0; j < nbIndexes; ++j ) {
                     index = nmax * ( j ) + ivar - 1;
                     if ( nosuff == ".RSP8" ) {
                         str_val = trim( ( ( *_rsp8 )[index] ).toString() );
@@ -586,15 +621,15 @@ VectorString Result::getGeneralizedVectorComplexNames() const {
 };
 
 FieldOnNodesRealPtr Result::getFieldOnNodesReal( const std::string name,
-                                                 const ASTERINTEGER index ) const {
+                                                 const ASTERINTEGER storageIndex ) const {
 
-    return _dictOfMapOfFieldOnNodesReal.at( name ).at( index );
+    return _dictOfMapOfFieldOnNodesReal.at( name ).at( storageIndex );
 };
 
 FieldOnNodesComplexPtr Result::getFieldOnNodesComplex( const std::string name,
-                                                       const ASTERINTEGER index ) const {
+                                                       const ASTERINTEGER storageIndex ) const {
 
-    return _dictOfMapOfFieldOnNodesComplex.at( name ).at( index );
+    return _dictOfMapOfFieldOnNodesComplex.at( name ).at( storageIndex );
 };
 
 void Result::setField( const FieldOnNodesRealPtr field, const std::string &name,
@@ -724,7 +759,7 @@ bool Result::build( const std::vector< FiniteElementDescriptorPtr > feds,
     AS_ASSERT( _calculationParameter->build( true ) );
     AS_ASSERT( _namesOfFields->build( true ) );
 
-    const auto nbIndexes = getNumberOfIndexes();
+    auto nbIndexes = getNumberOfIndexes();
 
     for ( auto &fed : feds ) {
         _fieldBuilder.addFiniteElementDescriptor( fed );
@@ -739,11 +774,10 @@ bool Result::build( const std::vector< FiniteElementDescriptorPtr > feds,
         obj->updateValuePointer();
         auto nomSymb = trim( _symbolicNamesOfFields->getStringFromIndex( cmpt ) );
         AS_ASSERT( nbIndexes <= obj->size() );
-
-        for ( ASTERINTEGER indexIntern = 0; indexIntern < nbIndexes; ++indexIntern ) {
-            std::string name( trim( ( *obj )[indexIntern].toString() ) );
+        for ( ASTERINTEGER internalIndex = 0; internalIndex < nbIndexes; ++internalIndex ) {
+            std::string name( trim( ( *obj )[internalIndex].toString() ) );
             if ( name != "" ) {
-                const ASTERINTEGER storageIndex = ( *_serialNumber )[indexIntern];
+                const ASTERINTEGER storageIndex = ( *_serialNumber )[internalIndex];
                 CALL_JEMARQ();
                 std::string questi( "TYPE_CHAMP" );
                 const std::string typeco( "CHAMP" );
@@ -894,10 +928,10 @@ bool Result::build( const std::vector< FiniteElementDescriptorPtr > feds,
     if ( _accessVariables->getIndexFromString( type ) > 0 ) {
         auto indexes = getIndexes();
         std::string cel( "L" );
-        for ( auto &index : indexes ) {
-            std::string value( 24, ' ' );
-            CALLO_RSADPA_ZK24_WRAP( getName(), &index, value, type, cel );
-            std::string name = value.substr( 0, 19 );
+        for ( auto &storageIndex : indexes ) {
+            std::string paraValue( 24, ' ' );
+            CALLO_RSADPA_ZK24_WRAP( getName(), &storageIndex, paraValue, type, cel );
+            std::string name = paraValue.substr( 0, 19 );
             // only if created by a fortran command
             if ( name.substr( 0, 8 ) != getName().substr( 0, 8 ) )
                 continue;
@@ -907,9 +941,9 @@ bool Result::build( const std::vector< FiniteElementDescriptorPtr > feds,
                     break;
             }
             if ( it == _mapLoads.end() ) {
-                _mapLoads[index] = std::make_shared< ListOfLoads >( name );
+                _mapLoads[storageIndex] = std::make_shared< ListOfLoads >( name );
             } else
-                _mapLoads[index] = it->second;
+                _mapLoads[storageIndex] = it->second;
         }
     }
 
@@ -927,15 +961,15 @@ void Result::resize( ASTERINTEGER nbIndexes ) {
     }
 }
 
-void Result::clear( const ASTERINTEGER &index ) {
+void Result::clear( const ASTERINTEGER &storageIndex ) {
 
     auto old_index = getIndexes();
 
-    ASTERINTEGER nume_ordre = index;
+    ASTERINTEGER nume_ordre = storageIndex;
     CALLO_RSRUSD( getName(), &nume_ordre );
 
     for ( auto &index_2 : old_index ) {
-        if ( index_2 >= index ) {
+        if ( index_2 >= storageIndex ) {
             _mapModel.erase( index_2 );
             _mapMaterial.erase( index_2 );
             _mapLoads.erase( index_2 );
@@ -973,8 +1007,8 @@ void Result::clear( const ASTERINTEGER &index ) {
 };
 
 void Result::clear() {
-    auto index = getIndexes()[0];
-    CALLO_RSRUSD( getName(), &index );
+    auto storageIndex = getFirstIndex();
+    CALLO_RSRUSD( getName(), &storageIndex );
 
     _mapModel.clear();
     _mapMaterial.clear();
@@ -1008,3 +1042,97 @@ VectorReal Result::getTangentMatrix( const std::string &suffix ) {
     } else
         return {};
 };
+
+void Result::addStorageIndex( const ASTERINTEGER storageIndex ) {
+
+    CALL_JEMARQ();
+    auto nbIndexes = getNumberOfIndexes();
+    auto nbIndexMaxi = _serialNumber->capacity();
+    if ( nbIndexes >= nbIndexMaxi ) {
+        Result::resize( std::max( (ASTERINTEGER)1, 2 * nbIndexes ) );
+    }
+    _serialNumber->updateValuePointer();
+    nbIndexes = getNumberOfIndexes();
+    if ( nbIndexes >= 1 ) {
+        auto lastIndex = getLastIndex();
+        if ( storageIndex <= lastIndex ) {
+            UTMESS( "F", "RESULT2_5" );
+        }
+    }
+    _serialNumber->push_back( storageIndex );
+    CALL_JEDEMA();
+};
+
+ASTERINTEGER Result::createIndexFromParameter( const std::string &paraName,
+                                               const std::string &paraValue ) {
+    CALL_JEMARQ();
+
+    ASTERINTEGER internalIndex;
+    internalIndex = getParameterValue( paraName, paraValue );
+    if ( internalIndex != -1 ) {
+        AS_ABORT( "Parameter exists" );
+    }
+
+    // Test and resize object if require
+    auto nbIndexes = getNumberOfIndexes();
+    auto nbIndexMaxi = _serialNumber->capacity();
+    if ( nbIndexes >= nbIndexMaxi ) {
+        Result::resize( std::max( (ASTERINTEGER)1, 2 * getNumberOfIndexes() ) );
+    }
+
+    _serialNumber->updateValuePointer();
+    nbIndexes = getNumberOfIndexes();
+
+    // Generate new storage index
+    ASTERINTEGER storageIndex;
+    if ( nbIndexes >= 1 ) {
+        auto lastIndex = getLastIndex();
+        storageIndex = lastIndex + 1;
+    } else {
+        storageIndex = 1;
+    }
+
+    // Save new storage index
+    addStorageIndex( storageIndex );
+
+    // Add parameter
+    setParameterValue( paraName, paraValue, storageIndex );
+    CALL_JEDEMA();
+    return storageIndex;
+};
+
+ASTERINTEGER Result::getParameterValue( std::string paraName, std::string paraValue ) {
+
+    ASTERINTEGER internalIndex;
+
+    internalIndex = -1;
+
+    auto paraIndx = _dictParameters.find( paraName );
+    if ( paraIndx == _dictParameters.end() ) {
+        raiseAsterError( "Parameter not available" );
+    }
+
+    auto paraType = _dictParameters.find( paraName )->second;
+    std::string cel( "L" );
+    std::string valueInResult( 24, ' ' );
+
+    auto allStorageIndexes = getIndexes();
+    for ( auto storageIndex : allStorageIndexes ) {
+
+        if ( paraType == "Char8" ) {
+
+            CALLO_RSADPA_ZK8_WRAP( getName(), &storageIndex, valueInResult, paraName, cel );
+        } else if ( paraType == "Char16" ) {
+            CALLO_RSADPA_ZK16_WRAP( getName(), &storageIndex, valueInResult, paraName, cel );
+        } else if ( paraType == "Char24" ) {
+            CALLO_RSADPA_ZK24_WRAP( getName(), &storageIndex, valueInResult, paraName, cel );
+        } else {
+            raiseAsterError( "Wrapper not available" );
+        }
+        if ( trim( paraValue ) == trim( valueInResult ) ) {
+
+            return _getInternalIndex( storageIndex );
+        }
+    }
+    return internalIndex;
+}

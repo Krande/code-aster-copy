@@ -205,19 +205,6 @@ void DEFSP( RSAGSD, rsagsd, const char *, STRING_SIZE, ASTERINTEGER * );
 void DEFSSSP( RSCRSD, rscrsd, const char *, STRING_SIZE, const char *, STRING_SIZE, const char *,
               STRING_SIZE, const ASTERINTEGER * );
 
-#define CALLO_RSEXCH( a, b, c, d, e, f ) CALLOOOPOP( RSEXCH, rsexch, a, b, c, d, e, f )
-void DEFSSSPSP( RSEXCH, rsexch, const char *, STRING_SIZE, const char *, STRING_SIZE, const char *,
-                STRING_SIZE, const ASTERINTEGER *, const char *, STRING_SIZE,
-                const ASTERINTEGER * );
-
-#define CALLO_RSNOCH( a, b, c ) CALLOOP( RSNOCH, rsnoch, a, b, c )
-void DEFSSP( RSNOCH, rsnoch, const char *, STRING_SIZE, const char *, STRING_SIZE,
-             const ASTERINTEGER * );
-
-#define CALLO_RSNOCH_FORWARD( a, b, c ) CALLOOP( RSNOCH_FORWARD, rsnoch_forward, a, b, c )
-void DEFSSP( RSNOCH_FORWARD, rsnoch_forward, const char *, STRING_SIZE, const char *, STRING_SIZE,
-             const ASTERINTEGER * );
-
 #define CALLO_RSRUSD( a, b ) CALLOP( RSRUSD, rsrusd, a, b )
 void DEFSP( RSRUSD, rsrusd, const char *, STRING_SIZE, ASTERINTEGER * );
 

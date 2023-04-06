@@ -133,6 +133,32 @@ class ExtendedResult:
     def LIST_PARA(self):
         return aster.GetResu(self.getName(), "PARAMETRES")
 
+    def _createIndexFromParameter(self, para, value, crit, prec):
+        """
+        Create the index corresponding to a given value of an access parameter.
+
+        Arguments:
+            para (str) : name of the access parameter (NUME_ORDRE, INST, etc..)
+            value (float|int|str) : value of the access parameter
+            crit (str) : search criterion ABSOLU or RELATIF
+            prec (float) : precision for the search criterion
+
+        Returns:
+            index (int) : the corresponding index (index)
+
+        """
+        acpara = self.getAccessParameters()
+        if para not in acpara:
+            UTMESS("F", "RESULT1_8")
+        if isinstance(value, int):
+            storageIndex = self.createIndexFromParameter(para, value)
+        elif isinstance(value, str):
+            storageIndex = self.createIndexFromParameter(para, value)
+        else:
+            raise ValueError(f"Type of access to result is invalid {value!r}")
+
+        return storageIndex
+
     def _getIndexFromParameter(self, para, value, crit, prec):
         """
         Get the index corresponding to a given value of an access parameter.
@@ -152,13 +178,19 @@ class ExtendedResult:
             UTMESS("F", "RESULT1_8")
         if is_number(value):
             slist = SearchList(acpara[para], prec, crit)
-            idx = slist.index(value)
+            internalStorage = slist.index(value)
+
         elif isinstance(value, str):
             slist = acpara[para]
-            idx = slist.index(value)
+            try:
+                internalStorage = slist.index(value)
+            except ValueError:
+                internalStorage = -1
+                return internalStorage
         else:
             raise ValueError(f"Type of access to result is invalid {value!r}")
-        return acpara["NUME_ORDRE"][idx]
+
+        return acpara["NUME_ORDRE"][internalStorage]
 
     def getField(self, name, value=None, para="NUME_ORDRE", crit="RELATIF", prec=1.0e-6):
         """Get the specified field. This is an overlay to existing methods
@@ -179,44 +211,77 @@ class ExtendedResult:
         assert crit in ("ABSOLU", "RELATIF")
 
         if para in ("NUME_ORDRE"):
-            index = value
+            storageIndex = value
         else:
-            index = self._getIndexFromParameter(para, value, crit, prec)
+            storageIndex = self._getIndexFromParameter(para, value, crit, prec)
+
+        if storageIndex == -1:
+            UTMESS("F", "RESULT1_9")
 
         names = self.getFieldsOnNodesRealNames()
         if name in names:
-            return self.getFieldOnNodesReal(name, index)
+            return self.getFieldOnNodesReal(name, storageIndex)
 
         names = self.getFieldsOnNodesComplexNames()
         if name in names:
-            return self.getFieldOnNodesComplex(name, index)
+            return self.getFieldOnNodesComplex(name, storageIndex)
 
         names = self.getFieldsOnCellsRealNames()
         if name in names:
-            return self.getFieldOnCellsReal(name, index)
+            return self.getFieldOnCellsReal(name, storageIndex)
 
         names = self.getFieldsOnCellsComplexNames()
         if name in names:
-            return self.getFieldOnCellsComplex(name, index)
+            return self.getFieldOnCellsComplex(name, storageIndex)
 
         names = self.getFieldsOnCellsLongNames()
         if name in names:
-            return self.getFieldOnCellsLong(name, index)
+            return self.getFieldOnCellsLong(name, storageIndex)
 
         names = self.getConstantFieldsOnCellsRealNames()
         if name in names:
-            return self.getConstantFieldOnCellsReal(name, index)
+            return self.getConstantFieldOnCellsReal(name, storageIndex)
 
         names = self.getConstantFieldsOnCellsChar16Names()
         if name in names:
-            return self.getConstantFieldOnCellsChar16(name, index)
+            return self.getConstantFieldOnCellsChar16(name, storageIndex)
 
         names = self.getGeneralizedVectorRealNames()
         if name in names:
-            return self.getGeneralizedVectorReal(name, index)
+            return self.getGeneralizedVectorReal(name, storageIndex)
 
         names = self.getGeneralizedVectorComplexNames()
         if name in names:
-            return self.getGeneralizedVectorComplex(name, index)
+            return self.getGeneralizedVectorComplex(name, storageIndex)
 
         raise KeyError("name of field %s not found" % name)
+
+    def setField(self, field, name, value=None, para="NUME_ORDRE", crit="RELATIF", prec=1.0e-6):
+        """Set the specified field. This is an overlay to existing methods
+        for each type of field.
+
+        Arguments:
+            name (str): symbolic name of the field in the result (ex: 'DEPL', 'VITE'...)
+            field : field
+            value (float|int|str) : value of the access parameter
+            para (str) : name of the access parameter (NUME_ORDRE, INST, etc..)
+            crit (str) : search criterion ABSOLU or RELATIF
+            prec (float) : precision for the search criterion
+
+        Returns:
+            Nothing
+        """
+
+        assert crit in ("ABSOLU", "RELATIF")
+
+        if para in ("NUME_ORDRE"):
+            storageIndex = value
+        else:
+            storageIndex = self._getIndexFromParameter(para, value, crit, prec)
+
+        if storageIndex < 0:
+            storageIndex = self._createIndexFromParameter(para, value, crit, prec)
+            if storageIndex < 0:
+                raise KeyError("Echec lors de la création du paramètre")
+
+        self._setField(field, name, storageIndex)

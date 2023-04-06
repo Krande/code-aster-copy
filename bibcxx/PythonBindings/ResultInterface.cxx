@@ -293,12 +293,36 @@ Get the number of index stored in the result
 Returns:
     int: number of index stored.
         )" )
+        .def( "getLastIndex", &Result::getLastIndex, R"(
+Get the last index stored in the result
+
+Returns:
+    int: last index stored.
+        )" )
+        .def( "getFirstIndex", &Result::getFirstIndex, R"(
+Get the first index stored in the result
+
+Returns:
+    int: first index stored.
+        )" )
         .def( "getAccessParameters", &Result::getAccessParameters, R"(
 Return the access parameters of the result as Python dict.
 
 Returns:
     dict{str : list[int,float,str]}: Dict of values for each access variable.
         )" )
+
+        .def( "createIndexFromParameter",
+              py::overload_cast< const std::string &, const std::string & >(
+                  &Result::createIndexFromParameter ),
+              R"(
+Create an index in the result
+
+Arguments:
+    para_name (str): parameter name to store
+    para_value (str): parameter value to store
+        )",
+              py::arg( "para_name" ), py::arg( "para_value" ) )
         .def( "getFieldsOnNodesRealNames", &Result::getFieldsOnNodesRealNames, R"(
 Return the names of the real fields on nodes as Python list.
 
@@ -487,7 +511,7 @@ Arguments:
         )",
               py::arg( "nbIndexes" ) )
         .def(
-            "setField",
+            "_setField",
             py::overload_cast< const FieldOnNodesRealPtr, const std::string &, const ASTERINTEGER >(
                 &Result::setField ),
             R"(
@@ -499,7 +523,7 @@ Arguments:
     index (int): index to set the field
         )",
             py::arg( "field" ), py::arg( "name" ), py::arg( "index" ) )
-        .def( "setField",
+        .def( "_setField",
               py::overload_cast< const FieldOnNodesComplexPtr, const std::string &,
                                  const ASTERINTEGER >( &Result::setField ),
               R"(
@@ -512,7 +536,7 @@ Arguments:
         )",
               py::arg( "field" ), py::arg( "name" ), py::arg( "index" ) )
         .def(
-            "setField",
+            "_setField",
             py::overload_cast< const FieldOnCellsRealPtr, const std::string &, const ASTERINTEGER >(
                 &Result::setField ),
             R"(
@@ -524,7 +548,7 @@ Arguments:
     index (int): index to set the field
         )",
             py::arg( "field" ), py::arg( "name" ), py::arg( "index" ) )
-        .def( "setField",
+        .def( "_setField",
               py::overload_cast< const FieldOnCellsComplexPtr, const std::string &,
                                  const ASTERINTEGER >( &Result::setField ),
               R"(
@@ -537,7 +561,7 @@ Arguments:
         )",
               py::arg( "field" ), py::arg( "name" ), py::arg( "index" ) )
         .def(
-            "setField",
+            "_setField",
             py::overload_cast< const FieldOnCellsLongPtr, const std::string &, const ASTERINTEGER >(
                 &Result::setField ),
             R"(
@@ -549,7 +573,7 @@ Arguments:
     index (int): index to set the field
         )",
             py::arg( "field" ), py::arg( "name" ), py::arg( "index" ) )
-        .def( "setField",
+        .def( "_setField",
               py::overload_cast< const ConstantFieldOnCellsChar16Ptr, const std::string &,
                                  const ASTERINTEGER >( &Result::setField ),
               R"(
@@ -561,7 +585,7 @@ Arguments:
     index (int): index to set the field
         )",
               py::arg( "field" ), py::arg( "name" ), py::arg( "index" ) )
-        .def( "setField",
+        .def( "_setField",
               py::overload_cast< const ConstantFieldOnCellsRealPtr, const std::string &,
                                  const ASTERINTEGER >( &Result::setField ),
               R"(

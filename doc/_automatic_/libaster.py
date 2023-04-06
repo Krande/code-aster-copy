@@ -10249,6 +10249,14 @@ class Result(DataStructure):
             index (int): index from begin cleaning
         """
 
+    def createIndexFromParameter(self, para_name, para_value):
+        """Create an index in the result
+
+        Arguments:
+            para_name (str): parameter name to store
+            para_value (str): parameter value to store
+        """
+
     def exists(self):
         """The result exists or nor
 
@@ -10449,6 +10457,13 @@ class Result(DataStructure):
             list[FiniteElementDescriptor]: list of finite element descriptor
         """
 
+    def getFirstIndex(self):
+        """Get the first index stored in the result
+
+        Returns:
+            int: first index stored.
+        """
+
     def getGeneralizedVectorComplexNames(self):
         """Return the names of the complex generalized vectors as Python list.
 
@@ -10468,6 +10483,13 @@ class Result(DataStructure):
 
         Returns:
             list[int]: List of indexs used to store fields.
+        """
+
+    def getLastIndex(self):
+        """Get the last index stored in the result
+
+        Returns:
+            int: last index stored.
         """
 
     def getListOfLoads(self, index):
@@ -10668,86 +10690,6 @@ class Result(DataStructure):
             index (int): index to set
         """
 
-    def setField(self, *args, **kwargs):
-        """Overloaded function.
-
-        1. setField(self: libaster.Result, field: libaster.FieldOnNodesReal, name: str, index: int) -> None
-
-
-        Set a real FieldOnNodes to result.
-
-        Arguments:
-            field (FieldOnNodesReal): field to set
-            name (str): symbolic name of the field in the result (ex: 'DEPL', 'VITE'...)
-            index (int): index to set the field
-
-
-        2. setField(self: libaster.Result, field: libaster.FieldOnNodesComplex, name: str, index: int) -> None
-
-
-        Set a complex FieldOnNodes to result.
-
-        Arguments:
-            field (FieldOnNodesComplex): field to set
-            name (str): symbolic name of the field in the result (ex: 'DEPL', 'VITE'...)
-            index (int): index to set the field
-
-
-        3. setField(self: libaster.Result, field: libaster.FieldOnCellsReal, name: str, index: int) -> None
-
-
-        Set a real FieldOnCells to result
-
-        Arguments:
-            field (FieldOnCellsReal): field to set
-            name (str): symbolic name of the field in the result (ex: 'VARI_ELGA', 'SIEF_ELGA'...)
-            index (int): index to set the field
-
-
-        4. setField(self: libaster.Result, field: libaster.FieldOnCellsComplex, name: str, index: int) -> None
-
-
-        Set a complex FieldOnCells to result
-
-        Arguments:
-            field (FieldOnCellsComplex): field to set
-            name (str): symbolic name of the field in the result (ex: 'VARI_ELGA', 'SIEF_ELGA'...)
-            index (int): index to set the field
-
-
-        5. setField(self: libaster.Result, field: libaster.FieldOnCellsLong, name: str, index: int) -> None
-
-
-        Set a long FieldOnCells to result
-
-        Arguments:
-            field (FieldOnCellsLong): field to set
-            name (str): symbolic name of the field in the result (ex: 'VARI_ELGA', 'SIEF_ELGA'...)
-            index (int): index to set the field
-
-
-        6. setField(self: libaster.Result, field: libaster.ConstantFieldOnCellsChar16, name: str, index: int) -> None
-
-
-        Set a ConstantFieldOnCellsChar16 to result
-
-        Arguments:
-            field (ConstantFieldOnCellsChar16): field to set
-            name (str): symbolic name of the field in the result (ex: 'COMPOR', ...)
-            index (int): index to set the field
-
-
-        7. setField(self: libaster.Result, field: libaster.ConstantFieldOnCellsReal, name: str, index: int) -> None
-
-
-        Set a ConstantFieldOnCellsReal to result
-
-        Arguments:
-            field (ConstantFieldOnCellsReal): field to set
-            name (str): symbolic name of the field in the result (ex: 'COMPOR', ...)
-            index (int): index to set the field
-        """
-
     def setListOfLoads(self, load, index):
         """Set list of loads on the specified index
 
@@ -10807,13 +10749,29 @@ class Result(DataStructure):
             index (int): index to set
         """
 
-    def setParameterValue(self, para_name, value, index):
-        """Add theta at the specified index
+    def setParameterValue(self, *args, **kwargs):
+        """Overloaded function.
+
+        1. setParameterValue(self: libaster.Result, para_name: str, para_value: float, index: int) -> None
+
+
+        Add parameter at the specified index
 
         Arguments:
-            name (float): parameter name to store
-            value (float): parameter value to store
-            index (int):  index where to save time value
+            para_name (float): parameter name to store
+            para_value (float): parameter value to store
+            index (int):  index where to save value of parameter
+
+
+        2. setParameterValue(self: libaster.Result, para_name: str, para_value: str, index: int) -> None
+
+
+        Add parameter at the specified index
+
+        Arguments:
+            para_name (float): parameter name to store
+            para_value (str): parameter value to store
+            index (int):  index where to save value of parameter
         """
 
     def setTimeValue(self, time, index):
