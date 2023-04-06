@@ -487,7 +487,7 @@ def post_combinaison_ops(self, TABLE_COEF_FIN=None, **args):
 
         datas_table = np.concatenate(
             [
-                table[rank.argsort(kind="stable"), :].T.reshape(nb_components, order, -1)
+                table[rank.argsort(kind="mergesort"), :].T.reshape(nb_components, order, -1)
                 for table, rank, order in zip(raw_tables, ranks, orders)
             ],
             axis=1,
@@ -566,7 +566,7 @@ def post_combinaison_ops(self, TABLE_COEF_FIN=None, **args):
         for j, column_name in enumerate(islice(column_names, 4, None)):
             sorted_indices = np.tile(
                 np.repeat(np.arange(nb_nodes.shape[0]), nb_nodes), combination_results.shape[0]
-            ).argsort(kind="stable")
+            ).argsort(kind="mergesort")
             column_values = combination_results[:, j, :].flatten()[sorted_indices]
             columns_r.append(_F(LISTE_R=column_values, PARA=column_name))
 
