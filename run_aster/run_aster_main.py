@@ -300,10 +300,14 @@ def main(argv=None):
         for unit, typ in add.items():
             if export.files_of_type(typ):
                 continue
-            export.add_file(File(osp.abspath(basename + "." + typ),
-                                 filetype=typ,
-                                 unit=unit,
-                                 resu=True))
+            export.add_file(
+                File(
+                    osp.abspath(basename + "." + typ),
+                    filetype=typ,
+                    unit=unit,
+                    resu=True,
+                )
+            )
     if args.time_limit:
         export.set_time_limit(args.time_limit)
     # use FACMTPS from environment
@@ -337,7 +341,7 @@ def main(argv=None):
             basn = osp.basename(osp.splitext(args.export)[0])
             expected = export.get("expected_diag", [])
             for exp_i in split_export(export):
-                fexp = osp.join(expdir, basn + str(exp_i.get("step")))
+                fexp = osp.join(expdir, basn + "." + str(exp_i.get("step")))
                 exp_i.write_to(fexp)
                 argv_i = [i for i in argv if i != args.export]
                 if not args.wrkdir:
