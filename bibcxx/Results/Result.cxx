@@ -94,9 +94,9 @@ void Result::_setFieldBase(
     internalName = _generateFieldName( indexSymbName, internalIndex );
 
     // Note field in datastructure
-    auto storageStructure = _namesOfFields->getObjects()[indexSymbName - 1];
+    JeveuxCollectionObjectChar24 storageStructure = _namesOfFields->getObjects()[indexSymbName - 1];
     storageStructure->updateValuePointer();
-    ( *storageStructure )[internalIndex] = internalName;
+    storageStructure[internalIndex] = ljust( internalName, 24, ' ' );
 
     // Save field in dictionnary
     if ( dict.count( trim( symbName ) ) == 0 ) {
@@ -243,7 +243,6 @@ void Result::allocate( ASTERINTEGER nbIndexes ) {
 
     AS_ASSERT( _calculationParameter->build( true ) );
     AS_ASSERT( _namesOfFields->build( true ) );
-
     _listOfParameters();
 };
 
@@ -958,6 +957,8 @@ void Result::resize( ASTERINTEGER nbIndexes ) {
         allocate( nbIndexes );
     } else {
         CALLO_RSAGSD( getName(), &nbIndexes );
+        AS_ASSERT( _calculationParameter->build( true ) );
+        AS_ASSERT( _namesOfFields->build( true ) );
     }
 }
 
