@@ -28,12 +28,7 @@ POST_NEWMARK = MACRO(
     fr=tr("Calcul des déplacements résiduels des ouvrages en remblai par méthode de Newmark"),
     sd_prod=table_sdaster,
     reentrant="n",
-    regles=(
-        UN_PARMI("RAYON", "MAILLAGE_GLIS"),
-        AU_MOINS_UN("RESULTAT", "RESULTAT_PESANTEUR"),
-        ENSEMBLE("RESULTAT", "KY"),
-        # EXCLUS("RESULTAT_PESANTEUR", "RAYON"),
-    ),
+    regles=(UN_PARMI("RAYON", "MAILLAGE_GLIS"), AU_MOINS_UN("RESULTAT", "RESULTAT_PESANTEUR")),
     MAILLAGE_GLIS=SIMP(statut="f", typ=maillage_sdaster, fr="Maillage de la zone de glissement"),
     RAYON=SIMP(statut="f", typ="R", fr="Rayon du cercle de glissement"),
     b_RAYON=BLOC(

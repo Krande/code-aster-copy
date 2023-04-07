@@ -23,6 +23,7 @@
 
 import aster
 import numpy as np
+from scipy.optimize import curve_fit
 
 from ..Cata.Syntax import _F
 from ..Commands import (
@@ -395,6 +396,58 @@ def cleanRuptureMeshwithCreatedGroupYASEG(__mail_1, yaseg2, yaseg3):
     return None
 
 
+def linear_function(x, a, b):
+    ## Define linear function for ky calculation
+    y = a * x + b
+
+    return y
+
+
+def root_linear_function(a, b, y):
+    x = (-b + y) / a
+
+    return x
+
+
+def slice_array(x, val_min, val_max):
+    x = np.array(x)
+    filter_array = (x > val_min) & (x < val_max)
+
+    return filter_array
+
+
+def get_ky_value(FsP, acc):
+    ## Obtain ky value from dynamic safety factors and mean acceleration
+    ## Input : FsP : list of dynamic safety values
+    ##        acc : mean acceleration of sliding zone
+    ## Output : ay : limit acceleration leading to unitary safty factor
+
+    ## we look at safety factor values around 1
+    filter_array = slice_array(FsP, val_min=0.8, val_max=1.2)
+    reduced_acce = acc[filter_array]
+    reduced_fs = FsP[filter_array]
+
+    # verify if reduced_acce list is empty
+    if len(reduced_acce) == 0:
+        val_min = min(FsP)
+        val_max = max(FsP)
+        if val_min > 1.0:
+            ay = 1.1 * max(acc)
+        elif val_max < 1.0:
+            ay = 0.0
+    else:
+        accN = np.linspace(min(acc), max(acc), 50)
+        popt, pcov = curve_fit(linear_function, reduced_acce, reduced_fs)
+        fs_nume = linear_function(accN, popt[0], popt[1])
+        mean_ay = root_linear_function(popt[0], popt[1], y=1)  # y=1 as root for FS=1
+        perr = np.sqrt(np.diag(pcov))
+        ## ay is chosen 3 sigma lower from the obtained mean regression value
+        ay = root_linear_function(popt[0] - 3 * perr[0], popt[1] - 3 * perr[1], y=1)
+
+    ky = ay / 9.81
+    return ky
+
+
 def post_newmark_ops(self, **args):
     """
     Command to evaluate seismic performance of earth dams and embankments
@@ -404,6 +457,7 @@ def post_newmark_ops(self, **args):
 
     MasquerAlarme("MODELE1_63")
     MasquerAlarme("MODELE1_64")
+    MasquerAlarme("CALCULEL5_48")
     ##sys.stdout.flush() pour vider les #prints
 
     args = _F(args)
@@ -986,7 +1040,7 @@ def post_newmark_ops(self, **args):
 
                 tabini = Table(para=["INST", "FS"], typ=["R", "R"])
 
-                ## Table for output static safety factor
+                ## Table for output dynamic safety factor
                 for j in range(len(__instSD)):
                     tabini.append({"INST": __instSD[j], "FS": FSp[j]})
 
@@ -1159,6 +1213,23 @@ def post_newmark_ops(self, **args):
 
         acc = accxFLI
 
+        ## verify if ky is given, otherwise obtain it from dynamic safety factor
+        if args["RESULTAT_PESANTEUR"] is not None:
+            if args["KY"] is None:
+                ky = get_ky_value(FSp, acc)
+                ay = ky * 9.81
+
+                tabini = Table(para=["INST", "KY"], typ=["R", "R"])
+                ## Table for output critical acceleration
+                for j in range(len(__instSD)):
+                    tabini.append({"INST": __instSD[j], "KY": ky})
+                dprod = tabini.dict_CREA_TABLE()
+                __TKY = CREA_TABLE(**dprod)
+
+                if INFO == 2:
+                    text = "Accélération critique : " + str(ky) + " g"
+                    aster.affiche("MESSAGE", text)
+
         ## Modification of mean acceleration to consider ay limit value
         ## Counting of bins a<ay in order to maintain the same bin values after a<ay
         ## This allows to correctly integrate acceleration to velocity and displacements
@@ -1235,6 +1306,10 @@ def post_newmark_ops(self, **args):
             tabout = CALC_TABLE(
                 TABLE=tabout, ACTION=_F(OPERATION="COMB", TABLE=__TFS, NOM_PARA="INST")
             )
+            if args["KY"] is None:
+                tabout = CALC_TABLE(
+                    TABLE=tabout, ACTION=_F(OPERATION="COMB", TABLE=__TKY, NOM_PARA="INST")
+                )
 
     ## Cleaning of mesh groups created in the command
 
@@ -1248,4 +1323,5 @@ def post_newmark_ops(self, **args):
 
     RetablirAlarme("MODELE1_63")
     RetablirAlarme("MODELE1_64")
+    RetablirAlarme("CALCULEL5_48")
     return tabout
