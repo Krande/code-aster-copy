@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -24,7 +24,7 @@ from subprocess import call
 from code_aster.Commands import *
 
 # person_in_charge: mathieu.courtois@edf.fr
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'))
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"))
 
 # This testcase checks the import of the commands catalog as done by AsterStudy
 
@@ -38,7 +38,14 @@ os.rename("fort.33", "asterstudy/common/session.py")
 
 with open("test_import.py", "w") as ftest:
     ftest.write(
-"""
+        """
+try:
+    import mpi4py.rc
+    mpi4py.rc.initialize = False
+    import mpi4py.MPI
+except ImportError:
+    pass
+
 import code_aster
 import code_aster.Cata
 import code_aster.Cata.aster_version
@@ -51,7 +58,8 @@ from code_aster.Cata.Commands import *
 from code_aster.Cata.DataStructure import *
 
 assert hasattr(DataStructure, "getType"), code_aster.Cata.DataStructure.__file__
-""")
+"""
+    )
 
 print("=" * 80)
 print("Checking import of code_aster...")
@@ -61,12 +69,14 @@ iret = call(["python3", "test_import.py"])
 
 print("=" * 80)
 
-tab = CREA_TABLE(LISTE=_F(PARA='EXIT_CODE', LISTE_I=iret))
+tab = CREA_TABLE(LISTE=_F(PARA="EXIT_CODE", LISTE_I=iret))
 
-TEST_TABLE(REFERENCE='ANALYTIQUE',
-           VALE_CALC_I=0,
-           VALE_REFE_I=0,
-           NOM_PARA='EXIT_CODE',
-           TABLE=tab,)
+TEST_TABLE(
+    REFERENCE="ANALYTIQUE",
+    VALE_CALC_I=0,
+    VALE_REFE_I=0,
+    NOM_PARA="EXIT_CODE",
+    TABLE=tab,
+)
 
 FIN()

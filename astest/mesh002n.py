@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@
 import code_aster
 from code_aster.Commands import *
 from code_aster import MPI
-
+from code_aster.Utilities import config
 
 code_aster.init("--test")
 
@@ -50,10 +50,7 @@ elif nbproc == 4:
 test.assertEqual(pMesh.getDimension(), 3)
 test.assertEqual(pMesh.getNumberOfNodes(), nbNodes[rank])
 test.assertEqual(pMesh.getNumberOfCells(), nbCells[rank])
-if nbproc > 1:
-    test.assertTrue(pMesh.isParallel())
-else:
-    test.assertFalse(pMesh.isParallel())
+test.assertTrue(pMesh.isParallel() or not config.get("ASTER_HAVE_MPI"))
 
 test.printSummary()
 

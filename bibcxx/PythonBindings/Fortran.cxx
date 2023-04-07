@@ -3,7 +3,7 @@
  * @brief Definition of interface functions between C++ and Fortran
  * @author Mathieu Courtois
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -28,12 +28,14 @@
 #include "aster_fort_ds.h"
 #include "aster_fort_superv.h"
 #include "aster_fort_utils.h"
+#include "aster_mpi.h"
 #include "aster_utils.h"
 #include "astercxx.h"
 #include "shared_vars.h"
 
 void jeveux_init() {
     ASTERINTEGER dbg = 0;
+    aster_mpi_init( 0, NULL );
     CALL_IBMAIN();
 
     // now Jeveux is available
