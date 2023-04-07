@@ -18,10 +18,10 @@
 # --------------------------------------------------------------------
 
 import code_aster
-from code_aster import LinearSolver, PhysicalProblem
+from code_aster import LinearSolver, NonLinearResult, PhysicalProblem
 from code_aster.Commands import *
 from code_aster.MacroCommands.NonLinearSolver import NonLinearSolver, TimeStepper
-from code_aster.NonLinear import NonLinearOptions as FOP
+from code_aster.MacroCommands.NonLinearSolver.problem_solver import ProblemSolver
 
 DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"), INFO=1)
 
@@ -63,7 +63,7 @@ SOLUT = STAT_NON_LINE(
     INFO=1,
 )
 
-snl = NonLinearSolver()
+snl = ProblemSolver(NonLinearSolver(), NonLinearResult())
 snl.use(PhysicalProblem(model, mater))
 snl.use(LinearSolver.factory(METHODE="MUMPS", RENUM="METIS", NPREC=8))
 snl.phys_pb.addLoadFromDict({"CHARGE": encast, "FONC_MULT": RAMPE})
@@ -72,9 +72,8 @@ snl.setKeywords(
     METHODE="NEWTON",
     CONVERGENCE={"RESI_GLOB_MAXI": 1.0e-8, "ITER_GLOB_MAXI": 20},
     NEWTON={"PREDICTION": "ELASTIQUE"},
+    COMPORTEMENT={"RELATION": "VMIS_ISOT_LINE"},
 )
-snl.setBehaviourProperty({"RELATION": "VMIS_ISOT_LINE"})
-
 snl.use(TimeStepper([0.5, 1.0]))
 
 snl.run()

@@ -19,17 +19,17 @@
 
 from math import sqrt
 
-from ...NonLinear import NonLinearFeature
-from ...NonLinear import NonLinearOptions as FOP
+from ...NonLinear import SolverFeature
+from ...NonLinear import SolverOptions as SOP
 from ...Objects import DiscreteComputation
 from ...Utilities import MPI, no_new_attributes, profile
 
 
-class ConvergenceManager(NonLinearFeature):
+class ConvergenceManager(SolverFeature):
     """Object that decides about the convergence status."""
 
-    provide = FOP.ConvergenceManager
-    required_features = [FOP.PhysicalProblem, FOP.PhysicalState]
+    provide = SOP.ConvergenceManager
+    required_features = [SOP.PhysicalProblem, SOP.PhysicalState]
 
     criteria = values = None
     __setattr__ = no_new_attributes(object.__setattr__)
@@ -66,7 +66,7 @@ class ConvergenceManager(NonLinearFeature):
         return self.values[criteria]
 
     @profile
-    @NonLinearFeature.check_once
+    @SolverFeature.check_once
     def getDirichletResidual(self, residual):
         """Return the residual with Dirichlet imposed values.
 
@@ -97,7 +97,7 @@ class ConvergenceManager(NonLinearFeature):
         return residual
 
     @profile
-    @NonLinearFeature.check_once
+    @SolverFeature.check_once
     def getRelativeScaling(self, residuals):
         """Returns the scaling fator to compute the relative error
 
@@ -133,7 +133,7 @@ class ConvergenceManager(NonLinearFeature):
         return MPI.ASTER_COMM_WORLD.allreduce(scaling, MPI.MAX)
 
     @profile
-    @NonLinearFeature.check_once
+    @SolverFeature.check_once
     def evalNormResidual(self, residuals):
         """Evaluate criteria
 
@@ -153,7 +153,7 @@ class ConvergenceManager(NonLinearFeature):
             self.values["RESI_GLOB_RELA"] = self.values["RESI_GLOB_MAXI"] / scaling
 
     @profile
-    @NonLinearFeature.check_once
+    @SolverFeature.check_once
     def evalGeometricResidual(self, displ_delta):
         """Evaluate criteria
 

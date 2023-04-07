@@ -17,18 +17,18 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-from ...NonLinear import NonLinearFeature
-from ...NonLinear import NonLinearOptions as FOP
+from ...NonLinear import SolverFeature
+from ...NonLinear import SolverOptions as SOP
 
 
-class TimeStepper(NonLinearFeature):
+class TimeStepper(SolverFeature):
     """ "Basic time stepper.
 
     Arguments:
         times (list[float]): List of time steps.
     """
 
-    provide = FOP.TimeStepper
+    provide = SOP.TimeStepper
 
     @property
     def null_increment(self):

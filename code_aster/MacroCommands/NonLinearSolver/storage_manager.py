@@ -18,19 +18,19 @@
 # --------------------------------------------------------------------
 
 from ...Messages import UTMESS
-from ...NonLinear import NonLinearFeature
-from ...NonLinear import NonLinearOptions as FOP
+from ...NonLinear import SolverFeature
+from ...NonLinear import SolverOptions as SOP
 from ...Utilities import SearchList, force_list, no_new_attributes, profile
 
 
-class StorageManager(NonLinearFeature):
+class StorageManager(SolverFeature):
     """Object that manages the storing of fields in the Result object.
 
     Arguments:
         result (~code_aster.Objects.Result): Result container.
     """
 
-    provide = FOP.Storage
+    provide = SOP.Storage
 
     class Slot:
         """Container that holds objects to be saved"""

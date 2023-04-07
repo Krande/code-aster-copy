@@ -19,22 +19,22 @@
 
 from libaster import deleteTemporaryObjects
 
-from ...NonLinear import NonLinearFeature
-from ...NonLinear import NonLinearOptions as FOP
+from ...NonLinear import SolverFeature
+from ...NonLinear import SolverOptions as SOP
 from ...Supervis import ConvergenceError
 from ...Utilities import no_new_attributes, profile
 from .logging_manager import LoggingManager
 
 
-class StepSolver(NonLinearFeature):
+class StepSolver(SolverFeature):
     """Solves a step, loops on iterations."""
 
-    provide = FOP.StepSolver
+    provide = SOP.StepSolver
     required_features = [
-        FOP.PhysicalProblem,
-        FOP.PhysicalState,
-        FOP.ConvergenceManager,
-        FOP.ConvergenceCriteria,
+        SOP.PhysicalProblem,
+        SOP.PhysicalState,
+        SOP.ConvergenceManager,
+        SOP.ConvergenceCriteria,
     ]
 
     current_incr = None
@@ -135,18 +135,18 @@ class StepSolver(NonLinearFeature):
         Raises:
             *ConvergenceError* exception in case of error.
         """
-        convManager = self.get_feature(FOP.ConvergenceManager)
+        convManager = self.get_feature(SOP.ConvergenceManager)
         logManager = self.createLoggingManager()
         logManager.printIntro(self.phys_state.time + self.phys_state.time_step, 1)
         logManager.printConvTableEntries()
 
         self.geom = self.phys_pb.getMesh().getCoordinates() + self.phys_state.primal
 
-        criteria = self.get_feature(FOP.ConvergenceCriteria)
+        criteria = self.get_feature(SOP.ConvergenceCriteria)
 
         while not self.hasFinished(convManager):
-            if criteria.has_feature(FOP.Contact):
-                criteria.get_feature(FOP.Contact).setPairingCoordinates(self.geom)
+            if criteria.has_feature(SOP.Contact):
+                criteria.get_feature(SOP.Contact).setPairingCoordinates(self.geom)
             criteria.setLoggingManager(logManager)
             criteria.initialize()
 

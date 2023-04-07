@@ -23,7 +23,7 @@
 ******************************************************
 """
 
-from ..NonLinear import NonLinearOptions as FOP
+from ..NonLinear import SolverOptions as SOP
 from ..Objects import DirichletBC, PhysicalProblem
 from ..Utilities import injector
 
@@ -31,7 +31,7 @@ from ..Utilities import injector
 @injector(PhysicalProblem)
 class ExtendedPhysicalProblem:
 
-    provide = FOP.PhysicalProblem
+    provide = SOP.PhysicalProblem
 
     def __getinitargs__(self):
         """Returns the argument required to reinitialize a MaterialField

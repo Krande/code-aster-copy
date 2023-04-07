@@ -17,16 +17,16 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-from ...NonLinear import NonLinearFeature
-from ...NonLinear import NonLinearOptions as FOP
+from ...NonLinear import SolverFeature
+from ...NonLinear import SolverOptions as SOP
 from ...Objects import ContactComputation, ContactPairing
 from ...Utilities import no_new_attributes, profile
 
 
-class ContactManager(NonLinearFeature):
+class ContactManager(SolverFeature):
     """Solve contact problem."""
 
-    provide = FOP.Contact
+    provide = SOP.Contact
 
     defi = pair = comp = None
     coef_cont = coef_frot = None

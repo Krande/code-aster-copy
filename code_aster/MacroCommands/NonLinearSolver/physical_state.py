@@ -17,7 +17,7 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-from ...NonLinear import NonLinearOptions as FOP
+from ...NonLinear import SolverOptions as SOP
 from ...NonLinear.base_features import BaseFeature
 from ...Objects import DiscreteComputation, FieldOnCellsReal, FieldOnNodesReal, NonLinearResult
 from ...Utilities import no_new_attributes, profile
@@ -26,7 +26,7 @@ from ...Utilities import no_new_attributes, profile
 class PhysicalState(BaseFeature):
     """This object represents a Physical State of the model."""
 
-    provide = FOP.PhysicalState
+    provide = SOP.PhysicalState
 
     _time = _time_step = None
     _primal = _primal_step = _internVar = _stress = _externVar = None

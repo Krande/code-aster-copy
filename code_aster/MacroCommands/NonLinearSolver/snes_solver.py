@@ -17,19 +17,19 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-from ...NonLinear import NonLinearFeature
-from ...NonLinear import NonLinearOptions as FOP
+from ...NonLinear import SolverFeature
+from ...NonLinear import SolverOptions as SOP
 from ...Objects import AssemblyMatrixDisplacementReal, DiscreteComputation
 from ...Supervis import ConvergenceError
 from ...Utilities import PETSc, no_new_attributes, profile
 
 
-class SNESSolver(NonLinearFeature):
+class SNESSolver(SolverFeature):
     """Solves a step, loops on iterations."""
 
-    provide = FOP.ConvergenceCriteria
-    required_features = [FOP.PhysicalProblem, FOP.PhysicalState, FOP.IncrementalSolver]
-    optional_features = [FOP.Contact, FOP.ConvergenceManager]
+    provide = SOP.ConvergenceCriteria
+    required_features = [SOP.PhysicalProblem, SOP.PhysicalState, SOP.IncrementalSolver]
+    optional_features = [SOP.Contact, SOP.ConvergenceManager]
 
     matr_update_incr = prediction = None
     param = logManager = None
@@ -50,7 +50,7 @@ class SNESSolver(NonLinearFeature):
     @property
     def contact_manager(self):
         """ContactManager: contact object."""
-        return self.get_feature(FOP.Contact, optional=True)
+        return self.get_feature(SOP.Contact, optional=True)
 
     def setParameters(self, param):
         """Assign parameters from user keywords.
@@ -123,7 +123,7 @@ class SNESSolver(NonLinearFeature):
             *ConvergenceError* exception in case of error.
         """
         self.current_matrix = current_matrix
-        self._incr_solver = self.get_feature(FOP.IncrementalSolver)
+        self._incr_solver = self.get_feature(SOP.IncrementalSolver)
         if self.contact_manager:
             self.contact_manager.pairing(self.phys_pb)
 
@@ -157,7 +157,7 @@ class SNESSolver(NonLinearFeature):
 
         OptDB = PETSc.Options()
         if not self._options:
-            linear_solver = self._incr_solver.get_feature(FOP.LinearSolver)
+            linear_solver = self._incr_solver.get_feature(SOP.LinearSolver)
             linear_solver.build()
             self._options = linear_solver.getPetscOptions()
         OptDB.insertString(self._options)

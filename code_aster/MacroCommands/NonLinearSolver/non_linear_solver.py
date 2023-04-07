@@ -19,8 +19,8 @@
 
 from libaster import deleteTemporaryObjects, resetFortranLoggingLevel, setFortranLoggingLevel
 
-from ...NonLinear import NonLinearFeature
-from ...NonLinear import NonLinearOptions as FOP
+from ...NonLinear import SolverFeature
+from ...NonLinear import SolverOptions as SOP
 from ...Supervis import ConvergenceError, ExecuteCommand, IntegrationError
 from ...Utilities import logger, no_new_attributes, profile
 
@@ -50,20 +50,20 @@ For example for the displacement field and a Newton solver.
 """
 
 
-class NonLinearSolver(NonLinearFeature):
+class NonLinearSolver(SolverFeature):
     """Main object to solve a non linear problem."""
 
-    provide = FOP.ProblemSolver
+    provide = SOP.ProblemSolver
     required_features = [
-        FOP.PhysicalProblem,
-        FOP.PhysicalState,
-        FOP.Storage,
-        FOP.StepSolver,
-        FOP.TimeStepper,
+        SOP.PhysicalProblem,
+        SOP.PhysicalState,
+        SOP.Storage,
+        SOP.StepSolver,
+        SOP.TimeStepper,
+        SOP.Keywords,
     ]
 
-    step_rank = param = None
-    current_matrix = None
+    step_rank = current_matrix = None
     __setattr__ = no_new_attributes(object.__setattr__)
 
     def __init__(self):
@@ -73,23 +73,12 @@ class NonLinearSolver(NonLinearFeature):
     @property
     def stepper(self):
         """:py:class:`.stepper.TimeStepper`: object to be used."""
-        return self.get_feature(FOP.TimeStepper)
+        return self.get_feature(SOP.TimeStepper)
 
-    def setKeywords(self, **args):
-        """Set parameters from user keywords.
-
-        Arguments:
-            args (dict) : user keywords.
-        """
-        self.param = args
-
-    def setBehaviourProperty(self, keywords):
-        """Set keywords for behaviour
-
-        Arguments:
-            keywords (dict) : keywords as dict
-        """
-        self.phys_pb.computeBehaviourProperty(keywords, "NON", 2)
+    @property
+    def param(self):
+        """dict: object to be used."""
+        return self.get_feature(SOP.Keywords)
 
     def getResult(self):
         """Get the Result object.
@@ -97,7 +86,7 @@ class NonLinearSolver(NonLinearFeature):
         Returns:
             NonLinearResult: the Result object.
         """
-        return self.get_feature(FOP.Storage).getResult()
+        return self.get_feature(SOP.Storage).getResult()
 
     def hasFinished(self):
         """Tell if there are steps to be computed.
@@ -139,7 +128,7 @@ class NonLinearSolver(NonLinearFeature):
         Arguments:
             time (float): current (pseudo)-time.
         """
-        storage_manager = self.get_feature(FOP.Storage)
+        storage_manager = self.get_feature(SOP.Storage)
         storage_manager.storeState(time, self.phys_pb, self.phys_state)
         storage_manager.completed()
 
@@ -148,6 +137,8 @@ class NonLinearSolver(NonLinearFeature):
         """Initialize run"""
         self.check_features()
 
+        args = self.get_feature(SOP.Keywords)
+        self.phys_pb.computeBehaviourProperty(args["COMPORTEMENT"], "NON", 2)
         self.phys_state.readInitialState(self.phys_pb, self.param)
         self.step_rank = 0
         self._storeRank(self.phys_state.time)
@@ -162,7 +153,7 @@ class NonLinearSolver(NonLinearFeature):
         self.phys_pb.computeDOFNumbering()
         self.initialize()
 
-        solv = self.get_feature(FOP.StepSolver)
+        solv = self.get_feature(SOP.StepSolver)
 
         matr_update_step = self._get("NEWTON", "REAC_ITER", 1)
 
@@ -195,8 +186,9 @@ class NonLinearSolver(NonLinearFeature):
 
     def _get(self, keyword, parameter=None, default=None):
         """ "Return a keyword value"""
+        args = self.param
         if parameter is not None:
-            assert keyword in self.param
-            return self.param.get(keyword).get(parameter, default)
+            assert keyword in args
+            return args.get(keyword).get(parameter, default)
 
-        return self.param.get(keyword, default)
+        return args.get(keyword, default)

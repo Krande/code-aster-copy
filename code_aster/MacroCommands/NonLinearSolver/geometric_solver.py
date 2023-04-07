@@ -17,23 +17,23 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-from ...NonLinear import NonLinearFeature
-from ...NonLinear import NonLinearOptions as FOP
+from ...NonLinear import SolverFeature
+from ...NonLinear import SolverOptions as SOP
 from ...Supervis import ConvergenceError
 from ...Utilities import no_new_attributes, profile
 
 
-class GeometricSolver(NonLinearFeature):
+class GeometricSolver(SolverFeature):
     """Solves a step, loops on iterations."""
 
-    provide = FOP.ConvergenceCriteria
+    provide = SOP.ConvergenceCriteria
     required_features = [
-        FOP.PhysicalProblem,
-        FOP.PhysicalState,
-        FOP.ConvergenceManager,
-        FOP.IncrementalSolver,
+        SOP.PhysicalProblem,
+        SOP.PhysicalState,
+        SOP.ConvergenceManager,
+        SOP.IncrementalSolver,
     ]
-    optional_features = [FOP.Contact]
+    optional_features = [SOP.Contact]
 
     matr_update_incr = prediction = None
     param = logManager = None
@@ -52,7 +52,7 @@ class GeometricSolver(NonLinearFeature):
     @property
     def contact_manager(self):
         """ContactManager: contact object."""
-        return self.get_feature(FOP.Contact, optional=True)
+        return self.get_feature(SOP.Contact, optional=True)
 
     def setParameters(self, param):
         """Assign parameters from user keywords.
@@ -137,9 +137,9 @@ class GeometricSolver(NonLinearFeature):
             *ConvergenceError* exception in case of error.
         """
         self.current_matrix = current_matrix
-        convManager = self.get_feature(FOP.ConvergenceManager)
+        convManager = self.get_feature(SOP.ConvergenceManager)
         convManager.initialize()
-        iteration = self.get_feature(FOP.IncrementalSolver)
+        iteration = self.get_feature(SOP.IncrementalSolver)
 
         if self.contact_manager:
             self.contact_manager.pairing(self.phys_pb)

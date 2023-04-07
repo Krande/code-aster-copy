@@ -20,7 +20,7 @@
 import unittest
 
 from code_aster.NonLinear.nl_integr_features import NLIntegrFeature
-from code_aster.NonLinear.nl_integr_features import NLIntegrOptions as FOP
+from code_aster.NonLinear.nl_integr_features import NLIntegrOptions as SOP
 
 
 class TimeStepper(NLIntegrFeature):
@@ -32,7 +32,7 @@ class TimeStepper(NLIntegrFeature):
             (default: 1.e-6).
     """
 
-    provide = FOP.TimeStepper
+    provide = SOP.TimeStepper
 
     def __init__(self, times, epsilon=1e-6):
         super().__init__()

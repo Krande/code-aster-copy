@@ -50,7 +50,7 @@ class BaseFeaturesOptions:
         for expo in range(last + 1):
             if idx & 2**expo:
                 lab.append(values[2**expo])
-        return "&".join(lab)
+        return "|".join(lab)
 
 
 class FeatureMeta(type):
@@ -109,10 +109,8 @@ class BaseFeature(metaclass=FeatureMeta):
         """Check that required features are defined."""
         for feat in self.required_features:
             if not self.has_feature(feat):
-                print("DEBUG:", feat, flush=True)
-                raise TypeError(
-                    f"{self.__class__.__name__} requires the {self.options.name(feat)!r} feature"
-                )
+                name = self.options.name(feat)
+                raise TypeError(f"{self.__class__.__name__} requires the {name!r} feature")
         self._checked = True
 
     def has_feature(self, feature):
@@ -163,7 +161,9 @@ class BaseFeature(metaclass=FeatureMeta):
         features = self.get_features(feature)
         if optional and not features:
             return None
-        assert len(features) == 1, features
+        if len(features) != 1:
+            name = self.options.name(feature)
+            raise ValueError(f"expecting one {name!r} feature, found {features!r}")
         return features[0]
 
     @staticmethod

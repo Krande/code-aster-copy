@@ -17,8 +17,8 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-from ...NonLinear import NonLinearFeature
-from ...NonLinear import NonLinearOptions as FOP
+from ...NonLinear import SolverFeature
+from ...NonLinear import SolverOptions as SOP
 from ...Objects import AssemblyMatrixDisplacementReal, DiscreteComputation
 from ...Supervis import IntegrationError
 from ...Utilities import no_new_attributes, profile
@@ -45,12 +45,12 @@ class ResiState:
             self.resi_cont.updateValuePointers()
 
 
-class IncrementalSolver(NonLinearFeature):
+class IncrementalSolver(SolverFeature):
     """Solve an iteration."""
 
-    provide = FOP.IncrementalSolver
-    required_features = [FOP.PhysicalProblem, FOP.PhysicalState, FOP.LinearSolver]
-    optional_features = [FOP.Contact, FOP.ConvergenceManager]
+    provide = SOP.IncrementalSolver
+    required_features = [SOP.PhysicalProblem, SOP.PhysicalState, SOP.LinearSolver]
+    optional_features = [SOP.Contact, SOP.ConvergenceManager]
 
     __setattr__ = no_new_attributes(object.__setattr__)
 
@@ -58,7 +58,7 @@ class IncrementalSolver(NonLinearFeature):
         super().__init__()
 
     @profile
-    @NonLinearFeature.check_once
+    @SolverFeature.check_once
     def computeInternalResidual(self, scaling=1.0):
         """Compute internal residual R_int(u, Lagr).
 
@@ -116,7 +116,7 @@ class IncrementalSolver(NonLinearFeature):
         return resi_state, internVar, stress
 
     @profile
-    @NonLinearFeature.check_once
+    @SolverFeature.check_once
     def computeExternalResidual(self):
         """Compute external residual R_ext(u, Lagr)
 
@@ -136,14 +136,14 @@ class IncrementalSolver(NonLinearFeature):
         return neumann_forces
 
     @profile
-    @NonLinearFeature.check_once
+    @SolverFeature.check_once
     def computeContactResidual(self):
         """Compute contact residual R_cont(u, Lagr)
 
         Returns:
             FieldOnNodesReal: contact residual.
         """
-        contact_manager = self.get_feature(FOP.Contact, optional=True)
+        contact_manager = self.get_feature(SOP.Contact, optional=True)
         if contact_manager:
             disc_comp = DiscreteComputation(self.phys_pb)
 
@@ -164,7 +164,7 @@ class IncrementalSolver(NonLinearFeature):
         return contact_forces
 
     @profile
-    @NonLinearFeature.check_once
+    @SolverFeature.check_once
     def computeResidual(self, scaling=1.0):
         """Compute R(u, Lagr) = - (Rint(u, Lagr) + Rcont(u, Lagr) - Rext(u, Lagr)).
 
@@ -193,7 +193,7 @@ class IncrementalSolver(NonLinearFeature):
         return resi_state, internVar, stress
 
     @profile
-    @NonLinearFeature.check_once
+    @SolverFeature.check_once
     def computeInternalJacobian(self, matrix_type):
         """Compute K(u) = d(Rint(u)) / du
 
@@ -240,14 +240,14 @@ class IncrementalSolver(NonLinearFeature):
         return codret, matr_elem_rigi, matr_elem_dual
 
     @profile
-    @NonLinearFeature.check_once
+    @SolverFeature.check_once
     def computeContactJacobian(self):
         """Compute K(u) = d(Rcont(u) ) / du
 
         Returns:
            ElementaryMatrixDisplacementReal: Contact matrix.
         """
-        contact_manager = self.get_feature(FOP.Contact, optional=True)
+        contact_manager = self.get_feature(SOP.Contact, optional=True)
         if contact_manager:
             # Main object for discrete computation
             disc_comp = DiscreteComputation(self.phys_pb)
@@ -268,7 +268,7 @@ class IncrementalSolver(NonLinearFeature):
         return None
 
     @profile
-    @NonLinearFeature.check_once
+    @SolverFeature.check_once
     def computeJacobian(self, matrix_type):
         """Compute K(u) = d(Rint(u) - Rext(u)) / du
 
@@ -309,7 +309,7 @@ class IncrementalSolver(NonLinearFeature):
         return 1.0 * field
 
     @profile
-    @NonLinearFeature.check_once
+    @SolverFeature.check_once
     def solve(self, matrix_type, matrix=None):
         """Solve the iteration.
 
@@ -337,7 +337,7 @@ class IncrementalSolver(NonLinearFeature):
         resi_state, internVar, stress = self.computeResidual(scaling)
 
         # evaluate convergence
-        convManager = self.get_feature(FOP.ConvergenceManager)
+        convManager = self.get_feature(SOP.ConvergenceManager)
         convManager.evalNormResidual(resi_state)
 
         if not convManager.hasConverged():
@@ -350,7 +350,7 @@ class IncrementalSolver(NonLinearFeature):
             diriBCs = disc_comp.getIncrementalDirichletBC(time_curr, primal_curr)
 
             # solve linear system
-            linear_solver = self.get_feature(FOP.LinearSolver)
+            linear_solver = self.get_feature(SOP.LinearSolver)
             if not stiffness.isFactorized():
                 linear_solver.factorize(stiffness)
             solution = linear_solver.solve(resi_state.resi, diriBCs)

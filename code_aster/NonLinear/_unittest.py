@@ -55,7 +55,7 @@ class BasicTest(unittest.TestCase):
         opt = FOP.Storage
         assert FOP.name(opt) == "Storage"
         opt |= FOP.System
-        assert FOP.name(opt) == "System&Storage", FOP.name(opt)
+        assert FOP.name(opt) == "System|Storage", FOP.name(opt)
 
         syst = SystemDefinition()
         stor = Storage()

@@ -33,18 +33,9 @@ from ..Objects import (
     PhysicalProblem,
 )
 from ..Utilities import print_stats
-from .NonLinearSolver import (
-    ConvergenceManager,
-    GeometricSolver,
-    IncrementalSolver,
-    NonLinearSolver,
-    PhysicalState,
-    SNESSolver,
-    StepSolver,
-    StorageManager,
-    TimeStepper,
-)
+from .NonLinearSolver import NonLinearSolver, TimeStepper
 from .NonLinearSolver.contact_manager import ContactManager
+from .NonLinearSolver.problem_solver import ProblemSolver
 
 
 def _contact_check(CONTACT):
@@ -94,23 +85,19 @@ def meca_non_line_ops(self, **args):
 
     args = _F(args)
 
-    # add contact check:
+    # keywords checking
     _contact_check(args["CONTACT"])
     _keywords_check(args)
+    adapt_for_mgis_behaviour(self, args)
 
-    snl = NonLinearSolver()
-    phys_state = PhysicalState()
-    snl.use(phys_state)
+    solver = ProblemSolver(NonLinearSolver(), NonLinearResult())
 
     phys_pb = PhysicalProblem(args["MODELE"], args["CHAM_MATER"], args["CARA_ELEM"])
-    snl.use(phys_pb)
-
-    snl.use(StorageManager(NonLinearResult()))
-
-    snl.setLoggingLevel(args["INFO"])
+    solver.use(phys_pb)
 
     # Add parameters
     param = dict(
+        COMPORTEMENT=args["COMPORTEMENT"],
         CONVERGENCE=args["CONVERGENCE"],
         NEWTON=args["NEWTON"],
         ETAT_INIT=args["ETAT_INIT"],
@@ -118,12 +105,9 @@ def meca_non_line_ops(self, **args):
         INFO=args["INFO"],
         CONTACT=args["CONTACT"],
         METHODE=args["METHODE"],
+        SOLVEUR=args["SOLVEUR"],
     )
-    snl.setKeywords(**param)
-
-    # Add behaviour
-    adapt_for_mgis_behaviour(self, args)
-    snl.setBehaviourProperty(args["COMPORTEMENT"])
+    solver.setKeywords(**param)
 
     # Add loads
     if args["EXCIT"] is not None:
@@ -150,6 +134,8 @@ def meca_non_line_ops(self, **args):
         fed_defi = definition.getFiniteElementDescriptor()
         phys_pb.getListOfLoads().addContactLoadDescriptor(fed_defi, None)
 
+    solver.use(contact_manager)
+
     # Add stepper
     timeStepper = TimeStepper(args["INCREMENT"]["LIST_INST"].getValues()[1::])
     if "INST_INIT" in args["INCREMENT"]:
@@ -167,61 +153,9 @@ def meca_non_line_ops(self, **args):
                 tini = args["ETAT_INIT"].get("INST_ETAT_INIT")
             timeStepper.setInitialStep(tini)
 
-    snl.use(timeStepper)
-
-    # Define convergence object for the incremental solver
-    conv_crit = ConvergenceManager()
-    conv_crit.use(phys_pb)
-    conv_crit.use(phys_state)
-    for crit in ("RESI_GLOB_RELA", "RESI_GLOB_MAXI"):
-        epsilon = args["CONVERGENCE"].get(crit)
-        if epsilon is not None:
-            conv_crit.addCriteria(crit, epsilon)
-    if args["CONTACT"]:
-        if args["CONTACT"].get("ALGO_RESO_GEOM") == "NEWTON":
-            conv_crit.addCriteria("RESI_GEOM", args["CONTACT"].get("RESI_GEOM"))
-
-    # Define the linear solver
-    linear_solver = LinearSolver.factory("STAT_NON_LINE", args["SOLVEUR"])
-
-    # Define incremental solver
-    incr_solver = IncrementalSolver()
-    incr_solver.use(phys_pb)
-    incr_solver.use(phys_state)
-    incr_solver.use(linear_solver)
-    incr_solver.use(contact_manager)
-    incr_solver.use(conv_crit)
-
-    # Define the step convergence criteria
-    if args["METHODE"] == "NEWTON":
-        step_conv_solv = GeometricSolver()
-    else:
-        step_conv_solv = SNESSolver()
-    step_conv_solv.use(phys_pb)
-    step_conv_solv.use(phys_state)
-    step_conv_solv.setParameters(param)
-    step_conv_solv.use(contact_manager)
-    step_conv_solv.use(conv_crit)
-    step_conv_solv.use(incr_solver)
-
-    # Define convergence object for the step solver
-    step_crit = ConvergenceManager()
-    step_crit.use(phys_pb)
-    step_crit.use(phys_state)
-    epsilon = 1.0e150
-    epsilon = (args["CONTACT"] or {}).get("RESI_GEOM", epsilon)
-    step_crit.addCriteria("RESI_GEOM", epsilon)
-
-    # Define the step solver
-    step_solver = StepSolver()
-    step_solver.use(phys_pb)
-    step_solver.use(phys_state)
-    step_solver.use(step_conv_solv)
-    step_solver.setParameters(param)
-    step_solver.use(step_crit)
-    snl.use(step_solver)
+    solver.use(timeStepper)
 
     # Run computation
-    snl.run()
+    solver.run()
     print_stats()
-    return snl.getResult()
+    return solver.result

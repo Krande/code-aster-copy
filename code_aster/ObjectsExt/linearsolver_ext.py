@@ -24,7 +24,7 @@
 """
 
 from ..Cata.Commons.c_solveur import C_SOLVEUR
-from ..NonLinear import NonLinearOptions as FOP
+from ..NonLinear import SolverOptions as SOP
 from ..Objects import (
     GcpcSolver,
     LdltSolver,
@@ -39,7 +39,7 @@ from ..Utilities import injector, logger
 @injector(LinearSolver)
 class ExtendedLinearSolver:
 
-    provide = FOP.LinearSolver
+    provide = SOP.LinearSolver
 
     @classmethod
     def factory(cls, command=None, mcf=None, **kwargs):

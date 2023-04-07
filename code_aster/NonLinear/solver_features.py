@@ -18,43 +18,56 @@
 # --------------------------------------------------------------------
 
 """
-Objects used to build non linear operators.
+Objects used to build generic problems solvers.
 """
 
 from .base_features import BaseFeature, BaseFeaturesOptions
 
 
-class NonLinearOptions(BaseFeaturesOptions):
+class SolverOptions(BaseFeaturesOptions):
     """Enumeration of non linear options."""
 
+    # main object
+    ProblemSolver = 0x1
     # description of the system (or study, problem)
-    PhysicalProblem = 0x0001
-    PhysicalState = 0x0002
-    # object that store the results
-    Storage = 0x0004
+    PhysicalProblem = 0x2
+    PhysicalState = 0x4
+    # storage of the results
+    Storage = 0x8
+    # time steps management
+    TimeStepper = 0x10
+    # solves a step
+    StepSolver = 0x20
+    # criteria that must be checked for a step
+    ConvergenceCriteria = 0x40
+    ConvergenceManager = 0x80
+    # solves an increment
+    IncrementalSolver = 0x100
+    # linear solver
+    LinearSolver = 0x200
+    # contact object
+    Contact = 0x400
+    # container of keywords
+    Keywords = 0x800
 
-    ProblemSolver = 0x0008
-    TimeStepper = 0x0010
-    StepSolver = 0x0020
-    ConvergenceCriteria = 0x040
-    ConvergenceManager = 0x080
-    LinearSolver = 0x0100
-    IncrementalSolver = 0x0200
-    Contact = 0x0400
+    # flag added "for a step" object
+    ForStep = 0x1000
+    # flag added "for an increment" object
+    ForIncr = 0x2000
 
 
-class NonLinearFeature(BaseFeature):
+class SolverFeature(BaseFeature):
     """Feature object for non linear operators."""
 
-    options = NonLinearOptions
+    options = SolverOptions
 
     # convenient shortcuts properties
     @property
     def phys_pb(self):
         """PhysicalProblem: current problem description."""
-        return self.get_feature(NonLinearOptions.PhysicalProblem)
+        return self.get_feature(SolverOptions.PhysicalProblem)
 
     @property
     def phys_state(self):
         """PhysicalState: current state."""
-        return self.get_feature(NonLinearOptions.PhysicalState)
+        return self.get_feature(SolverOptions.PhysicalState)
