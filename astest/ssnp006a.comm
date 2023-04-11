@@ -1,0 +1,78 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
+
+
+g = 9.81
+
+mesh = LIRE_MAILLAGE(UNITE=20)
+
+# -------------PARAMETERS FOR THE TEST CASE PLAXIS2D-------------
+
+rho = 16e3 / g
+nu = 0.3
+E = 2.6e6
+c = 5e3
+phi = 20
+
+sol = DEFI_MATERIAU(
+    ELAS=_F(ALPHA=0.0, E=E, NU=nu, RHO=rho), MOHR_COULOMB=_F(ANGDIL=phi, COHESION=c, PHI=phi)
+)
+
+CHSEEP = CREA_CHAMP(
+    MAILLAGE=mesh,
+    AFFE=_F(NOM_CMP=("PTOT",), TOUT="OUI", VALE=(0.0,)),
+    OPERATION="AFFE",
+    TYPE_CHAM="NOEU_DEPL_R",
+)
+
+__CHMAT = AFFE_MATERIAU(
+    AFFE=_F(TOUT="OUI", MATER=(sol,)),
+    AFFE_VARC=_F(NOM_VARC="PTOT", TOUT="OUI", CHAM_GD=CHSEEP),
+    MAILLAGE=mesh,
+)
+
+TABFS = CALC_STAB_PENTE(
+    CHAM_MATER=__CHMAT,
+    METHODE_STAB="LEM",
+    METHODE_LEM="BISHOP",
+    GROUP_MA=("range_pente",),
+    NB_TRANCHE=5,
+    RAFF_MAIL=_F(NB_RAFF_MAXI=4),
+    X1_MINI=3.0,
+    X1_MAXI=3.0,
+    X2_MINI=13.4,
+    X2_MAXI=13.4,
+    NB_POINT_1=1,
+    NB_POINT_2=1,
+    CHAM_DEFO=CO("chamdef"),
+)
+
+TEST_TABLE(
+    FILTRE=_F(NOM_PARA="NUME_RAFF", VALE_I=4),
+    NOM_PARA="FS",
+    TABLE=TABFS,
+    VALE_CALC=(1.5469235715723666,),
+    VALE_REFE=(1.534),
+    REFERENCE="SOURCE_EXTERNE",
+    PRECISION=1e-2,
+)
+
+FIN()

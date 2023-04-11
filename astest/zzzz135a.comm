@@ -18,7 +18,7 @@
 # --------------------------------------------------------------------
 DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
 
-# Cas test pour valider les fonctionnalités informatiques de la macro CALC_SRM.
+# Cas test pour valider les fonctionnalités informatiques de la macro CALC_STAB_PENTE.
 
 # Modélisation A valide :
 #   - L'introduction des variables de commande dans le cham_mater en entrée.

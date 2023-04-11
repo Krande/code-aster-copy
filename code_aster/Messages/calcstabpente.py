@@ -94,4 +94,44 @@ Un groupe_ma ne peut être affecté par qu'un seul matériau.
 Le FS initial doit être strictement positif.     
 """
     ),
+    14: _(
+        """
+X1_MINI, X1_MAXI, X2_MINI, X2_MAXI doivent prendre les valeurs d'ordre croissante.     
+"""
+    ),
+    15: _(
+        """
+Le champ PTOT doit affecter le modèle entier via TOUT = 'OUI' dans AFFE_VARC.     
+"""
+    ),
+    16: _(
+        """
+Les zones des points d'extrémité sont en dehors du profil de la pente. 
+"""
+    ),
+    17: _(
+        """
+La résolution du FS selon la procédure MORGENSTERN_PRICE diverge. 
+"""
+    ),
+    18: _(
+        """
+Les opérandes Y_MINI et Y_MAXI doivent apparaître en paire.    
+"""
+    ),
+    19: _(
+        """
+La valeur de Y_MINI est trop grande.   
+"""
+    ),
+    20: _(
+        """
+La population des feux d'artifices doit être strictement positive.    
+"""
+    ),
+    21: _(
+        """
+Impossible de déterminer les limites de l'ordonnée du point %(i1)d sur la surface de rupture. 
+"""
+    ),
 }

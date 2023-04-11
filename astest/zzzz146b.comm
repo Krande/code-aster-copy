@@ -1,0 +1,251 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
+
+import math
+
+
+def Heaviside(x):
+    if x < 0:
+        return 0.0
+    else:
+        return x
+
+
+g = 9.81
+
+rho = 16e3 / g
+
+nu = 0.3
+
+E = 2.6e6
+
+c = 5e3
+
+phi = 20
+
+k = 1e-7 / 1e3 / g * 1e-3
+
+lev_up = 4
+
+lev_dn = 2
+
+levup_below = lev_up - 1
+
+levdn_below = lev_dn - 1
+
+incr_p = 1e3 * g
+
+mesh = LIRE_MAILLAGE(UNITE=20)
+
+MODHY = AFFE_MODELE(
+    AFFE=_F(MODELISATION=("D_PLAN_HS",), PHENOMENE="MECANIQUE", TOUT="OUI"), MAILLAGE=mesh
+)
+
+MODLIN = AFFE_MODELE(
+    AFFE=_F(MODELISATION=("D_PLAN",), PHENOMENE="MECANIQUE", TOUT="OUI"), MAILLAGE=mesh
+)
+
+ZERO = DEFI_CONSTANTE(VALE=0.0)
+
+FPERM = DEFI_CONSTANTE(VALE=k)
+
+VISCO = DEFI_CONSTANTE(VALE=1e-3)
+
+sol = DEFI_MATERIAU(
+    COMP_THM="LIQU_SATU",
+    ELAS=_F(E=E, NU=nu, RHO=rho),
+    MOHR_COULOMB=_F(COHESION=c, PHI=phi, ANGDIL=phi),
+    THM_DIFFU=_F(BIOT_COEF=1.0, PERM_IN=FPERM, PESA_X=0.0, PESA_Y=-9.81, PESA_Z=0.0, RHO=1000.0),
+    THM_INIT=_F(PORO=0.62),
+    THM_LIQU=_F(D_VISC_TEMP=ZERO, RHO=1000.0, UN_SUR_K=0.0, VISC=VISCO),
+)
+
+CHMAT = AFFE_MATERIAU(AFFE=_F(MATER=(sol,), TOUT="OUI"), MAILLAGE=mesh)
+
+PRESUP = DEFI_FONCTION(
+    NOM_PARA="Y",
+    PROL_DROITE="LINEAIRE",
+    PROL_GAUCHE="LINEAIRE",
+    VALE=(levup_below, incr_p, lev_up, 0.0),
+)
+
+PRESDN = DEFI_FONCTION(
+    NOM_PARA="Y",
+    PROL_DROITE="LINEAIRE",
+    PROL_GAUCHE="LINEAIRE",
+    VALE=(levdn_below, incr_p, lev_dn, 0.0),
+)
+
+LTr = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=_F(JUSQU_A=1.0, NOMBRE=1))
+
+PRES = AFFE_CHAR_MECA_F(
+    DDL_IMPO=(_F(GROUP_MA=("AM",), PRE1=PRESUP), _F(GROUP_MA=("AVAL",), PRE1=PRESDN)), MODELE=MODHY
+)
+
+IMPERM = AFFE_CHAR_MECA(FLUX_THM_REP=_F(FLUN_HYDR1=0.0, GROUP_MA=("FOND",)), MODELE=MODHY)
+
+REHY = STAT_NON_LINE(
+    CHAM_MATER=CHMAT,
+    COMPORTEMENT=_F(RELATION="KIT_H", RELATION_KIT=("LIQU_SATU", "HYDR_UTIL")),
+    EXCIT=(_F(CHARGE=PRES), _F(CHARGE=IMPERM)),
+    INCREMENT=_F(LIST_INST=LTr),
+    MODELE=MODHY,
+)
+
+CHPROJ = PROJ_CHAMP(
+    METHODE="COLLOCATION", MODELE_1=MODHY, MODELE_2=MODLIN, PROL_ZERO="OUI", RESULTAT=REHY
+)
+
+Heavi = FORMULE(NOM_PARA=("PRE1",), VALE="Heaviside(PRE1)", Heaviside=Heaviside)
+
+CHPRE1 = CREA_CHAMP(
+    INST=1, NOM_CHAM="DEPL", OPERATION="EXTR", RESULTAT=CHPROJ, TYPE_CHAM="NOEU_DEPL_R"
+)
+
+CHFonc = CREA_CHAMP(
+    AFFE=_F(NOM_CMP=("X1",), TOUT="OUI", VALE_F=(Heavi,)),
+    MAILLAGE=mesh,
+    OPERATION="AFFE",
+    TYPE_CHAM="NOEU_NEUT_F",
+)
+
+CHEVAL = CREA_CHAMP(CHAM_F=CHFonc, CHAM_PARA=(CHPRE1,), OPERATION="EVAL", TYPE_CHAM="NOEU_NEUT_R")
+
+CHSEEP = CREA_CHAMP(
+    ASSE=_F(CHAM_GD=CHEVAL, NOM_CMP=("X1",), NOM_CMP_RESU=("PTOT",), TOUT="OUI"),
+    MAILLAGE=mesh,
+    OPERATION="ASSE",
+    TYPE_CHAM="NOEU_DEPL_R",
+)
+
+CHMAT1 = AFFE_MATERIAU(
+    AFFE=_F(TOUT="OUI", MATER=(sol,)),
+    AFFE_VARC=_F(NOM_VARC="PTOT", TOUT="OUI", CHAM_GD=CHSEEP),
+    MAILLAGE=mesh,
+)
+
+TAB_INIT = LIRE_TABLE(UNITE=40)
+
+TABFS = CALC_STAB_PENTE(
+    CHAM_MATER=CHMAT1,
+    METHODE_STAB="LEM",
+    METHODE_LEM="MORGENSTERN_PRICE",
+    CRITERE="MOHR_COULOMB",
+    GROUP_MA=("range_pente",),
+    NB_TRANCHE=5,
+    RAFF_MAIL=_F(NB_RAFF_MAXI=1),
+    X1_MINI=3.0,
+    X1_MAXI=3.0,
+    X2_MINI=13.2,
+    X2_MAXI=13.2,
+    ALGO_EFWA=_F(ETAT_INIT=TAB_INIT, ITER_MAXI=1, A=50, N=2, M=2, MG=1, MARGE_PENTE=0.8),
+    CHAM_DEFO=CO("chamdef"),
+)
+
+IMPR_TABLE(TABLE=TABFS, UNITE=80)
+
+# Indicateur de glissement sur un neoud N391 autour de la surface de rupture
+TEST_RESU(
+    RESU=_F(
+        GROUP_NO=("N391",),
+        INST=0,
+        NOM_CHAM="DEPL",
+        NOM_CMP="DX",
+        RESULTAT=chamdef,
+        VALE_CALC=(0.0,),
+    )
+)
+
+# Test TABFS
+
+TEST_TABLE(
+    FILTRE=_F(NOM_PARA="NUME_RAFF", VALE_I=0),
+    NOM_PARA="FS",
+    TABLE=TABFS,
+    VALE_CALC=(1.598078371690653,),
+)
+
+TEST_TABLE(
+    FILTRE=_F(NOM_PARA="NUME_RAFF", VALE_I=1),
+    NOM_PARA="FS",
+    TABLE=TABFS,
+    VALE_CALC=(1.60025990801935,),
+)
+
+TEST_TABLE(
+    FILTRE=_F(NOM_PARA="NUME_POINT", VALE_I=0), NOM_PARA="COOR_X", TABLE=TABFS, VALE_CALC=(3.0,)
+)
+
+TEST_TABLE(
+    FILTRE=_F(NOM_PARA="NUME_POINT", VALE_I=1), NOM_PARA="COOR_X", TABLE=TABFS, VALE_CALC=(5.04,)
+)
+
+TEST_TABLE(
+    FILTRE=_F(NOM_PARA="NUME_POINT", VALE_I=2), NOM_PARA="COOR_X", TABLE=TABFS, VALE_CALC=(7.08,)
+)
+
+TEST_TABLE(
+    FILTRE=_F(NOM_PARA="NUME_POINT", VALE_I=3), NOM_PARA="COOR_X", TABLE=TABFS, VALE_CALC=(9.12,)
+)
+
+TEST_TABLE(
+    FILTRE=_F(NOM_PARA="NUME_POINT", VALE_I=4), NOM_PARA="COOR_X", TABLE=TABFS, VALE_CALC=(11.16,)
+)
+
+TEST_TABLE(
+    FILTRE=_F(NOM_PARA="NUME_POINT", VALE_I=5), NOM_PARA="COOR_X", TABLE=TABFS, VALE_CALC=(13.2,)
+)
+
+TEST_TABLE(
+    FILTRE=_F(NOM_PARA="NUME_POINT", VALE_I=0), NOM_PARA="COOR_Y", TABLE=TABFS, VALE_CALC=(2.0,)
+)
+
+TEST_TABLE(
+    FILTRE=_F(NOM_PARA="NUME_POINT", VALE_I=1),
+    NOM_PARA="COOR_Y",
+    TABLE=TABFS,
+    VALE_CALC=(1.3204982436523225,),
+)
+
+TEST_TABLE(
+    FILTRE=_F(NOM_PARA="NUME_POINT", VALE_I=2), NOM_PARA="COOR_Y", TABLE=TABFS, VALE_CALC=(1.64236,)
+)
+
+TEST_TABLE(
+    FILTRE=_F(NOM_PARA="NUME_POINT", VALE_I=3),
+    NOM_PARA="COOR_Y",
+    TABLE=TABFS,
+    VALE_CALC=(2.4161917507978594,),
+)
+
+TEST_TABLE(
+    FILTRE=_F(NOM_PARA="NUME_POINT", VALE_I=4),
+    NOM_PARA="COOR_Y",
+    TABLE=TABFS,
+    VALE_CALC=(4.163712522802285,),
+)
+
+TEST_TABLE(
+    FILTRE=_F(NOM_PARA="NUME_POINT", VALE_I=5), NOM_PARA="COOR_Y", TABLE=TABFS, VALE_CALC=(6.5,)
+)
+
+
+FIN()
