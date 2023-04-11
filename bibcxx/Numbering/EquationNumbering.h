@@ -169,7 +169,12 @@ class EquationNumbering : public BaseEquationNumbering {
     /** @brief Model */
     ModelPtr _model;
 
-    std::map< ASTERINTEGER, std::string > _getAllComponentsNumber2Name() const;
+    std::map< ASTERINTEGER, std::string > _componentsNumber2Name;
+
+    /**
+     * @brief Build the mapping between the component number to its name
+     */
+    void _buildAllComponentsNumber2Name();
 
   public:
     /**

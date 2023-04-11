@@ -113,7 +113,7 @@ EquationNumbering::getNumberOfDofs( const bool local ) const {
     return _nodeAndComponentsNumberFromDOF->size() / 2;
 };
 
-std::map< ASTERINTEGER, std::string > EquationNumbering::_getAllComponentsNumber2Name() const {
+void EquationNumbering::_buildAllComponentsNumber2Name() {
     const std::string typeco( "NUME_EQUA" );
     ASTERINTEGER repi = 0, ier = 0;
     JeveuxChar32 repk( " " );
@@ -125,15 +125,12 @@ std::map< ASTERINTEGER, std::string > EquationNumbering::_getAllComponentsNumber
     auto list_cmp = PhysicalQuantityManager::getComponentNames( repi );
     int nb_cmp = list_cmp.size();
 
-    std::map< ASTERINTEGER, std::string > ret;
-    ret[0] = "LAGR:MPC";
+    _componentsNumber2Name[0] = "LAGR:MPC";
     for ( int icmp = 1; icmp <= nb_cmp; icmp++ ) {
         auto name = trim( list_cmp[icmp - 1] );
-        ret[icmp] = name;
-        ret[-icmp] = "LAGR:" + name;
+        _componentsNumber2Name[icmp] = name;
+        _componentsNumber2Name[-icmp] = "LAGR:" + name;
     }
-
-    return ret;
 };
 
 VectorString EquationNumbering::getComponents() const {
@@ -176,11 +173,20 @@ std::map< std::string, ASTERINTEGER > EquationNumbering::getComponentsName2Numbe
 std::map< ASTERINTEGER, std::string > EquationNumbering::getComponentsNumber2Name() const {
     std::map< ASTERINTEGER, std::string > ret;
 
-    auto an2n = this->_getAllComponentsNumber2Name();
+    if ( _componentsNumber2Name.empty() )
+        const_cast< EquationNumbering * >( this )->_buildAllComponentsNumber2Name();
+
     auto cmpIds = this->getComponentsNumber();
 
     for ( auto &cmpId : cmpIds ) {
-        ret[cmpId] = an2n[cmpId];
+        ret[cmpId] = _componentsNumber2Name.find( cmpId )->second;
+
+#ifdef ASTER_DEBUG_CXX
+        if ( _componentsNumber2Name.find( cmpId ) == _componentsNumber2Name.end() ) {
+            std::cout << "Composante " << cmpId << " sans correspondance" << std::endl;
+            raiseAsterError( "Erreur dans EquationNumbering" );
+        }
+#endif
     }
 
     return ret;
@@ -240,13 +246,21 @@ EquationNumbering::getNodesAndComponentsFromDOF( const bool local ) const {
     auto nodesAndComponentsNumberFromDOF = this->getNodesAndComponentsNumberFromDOF( local );
 
     const ASTERINTEGER nb_eq = this->getNumberOfDofs( true );
-    auto num2name = this->_getAllComponentsNumber2Name();
+    if ( _componentsNumber2Name.empty() )
+        const_cast< EquationNumbering * >( this )->_buildAllComponentsNumber2Name();
 
     std::vector< std::pair< ASTERINTEGER, std::string > > ret;
     ret.reserve( nodesAndComponentsNumberFromDOF.size() );
 
     for ( auto &[nodeId, cmpId] : nodesAndComponentsNumberFromDOF ) {
-        ret.push_back( std::make_pair( nodeId, num2name[cmpId] ) );
+        ret.push_back( std::make_pair( nodeId, _componentsNumber2Name.find( cmpId )->second ) );
+
+#ifdef ASTER_DEBUG_CXX
+        if ( _componentsNumber2Name.find( cmpId ) == _componentsNumber2Name.end() ) {
+            std::cout << "Composante " << cmpId << " sans correspondance" << std::endl;
+            raiseAsterError( "Erreur dans EquationNumbering" );
+        }
+#endif
     }
 
     return ret;
@@ -255,9 +269,16 @@ EquationNumbering::getNodesAndComponentsFromDOF( const bool local ) const {
 std::pair< ASTERINTEGER, std::string >
 EquationNumbering::getNodeAndComponentFromDOF( const ASTERINTEGER dof, const bool local ) const {
     auto [nodeId, cmpId] = this->getNodeAndComponentNumberFromDOF( dof, local );
-    auto num2name = this->_getAllComponentsNumber2Name();
+    if ( _componentsNumber2Name.empty() )
+        const_cast< EquationNumbering * >( this )->_buildAllComponentsNumber2Name();
 
-    return std::make_pair( nodeId, num2name[cmpId] );
+#ifdef ASTER_DEBUG_CXX
+    if ( _componentsNumber2Name.find( cmpId ) == _componentsNumber2Name.end() ) {
+        std::cout << "Composante " << cmpId << " sans correspondance" << std::endl;
+        raiseAsterError( "Erreur dans EquationNumbering" );
+    }
+#endif
+    return std::make_pair( nodeId, _componentsNumber2Name.find( cmpId )->second );
 };
 
 std::map< PairLong, ASTERINTEGER >

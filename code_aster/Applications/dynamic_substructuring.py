@@ -815,8 +815,8 @@ class Structure(WithEmbeddedObjects):
             im[lag, :] = 0.0  # mise a zero des Lagrange
 
             allModesSub = np.hstack((em, im))
-            Kred.append(allModesSub.T.dot(K.dot(allModesSub)))
-            Mred.append(allModesSub.T.dot(M.dot(allModesSub)))
+            Kred.append(allModesSub.T.dot(K.tocsr().dot(allModesSub)))
+            Mred.append(allModesSub.T.dot(M.tocsr().dot(allModesSub)))
             allModes.append(allModesSub)
 
         allModes = scipy.sparse.block_diag(allModes)
