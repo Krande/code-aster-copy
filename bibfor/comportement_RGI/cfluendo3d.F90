@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -105,6 +105,8 @@ subroutine cfluendo3d(fami, kpg, ksp, ndim, imate, &
     aster_logical :: iso1, local11, end3d, fl3d
 !   temperatures debut et fin de pas , moyenne, pas de temps, volule rgi
     real(kind=8) :: dt3d
+! - Indicateur du type de matrice
+    aster_logical :: matrEndo
 !
     character(len=16) :: rela_name
 !
@@ -123,6 +125,11 @@ subroutine cfluendo3d(fami, kpg, ksp, ndim, imate, &
 !   nombre totale de paramètres et variables internes (option comprise)
     nmat3d = nbelas3d+nmatflu+NMATRAG+NMATAILX
     nvari3d = nvarflu+NVARRAG
+
+! - Flag for elastic matrix
+    matrEndo = nint(carcri(TYPE_MATR_T)) .eq. 4
+
+    codret = 0
 !
 !
     sig03d(:) = 0.d0

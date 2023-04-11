@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -191,7 +191,7 @@ loi = LoiComportement(
     modelisation=("3D", "D_PLAN", "AXIS"),
     deformation=("PETIT", "PETIT_REAC"),
     algo_inte=("SPECIFIQUE",),
-    type_matr_tang=("PERTURBATION", "VERIFICATION"),
+    type_matr_tang=("MATR_ELAS", "MATR_ENDO"),
     proprietes=None,
     syme_matr_tang=("Yes",),
     exte_vari=("ELTSIZE2",),

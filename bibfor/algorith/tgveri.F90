@@ -21,7 +21,7 @@ subroutine tgveri(option, carcri, compor, nno, geom, &
                   svect, ncont, contp, scont, nvari, &
                   varip, svari, matuu, smatr, matsym, &
                   epsilo, varia, iret)
-! person_in_charge: jean-michel.proix at edf.fr
+!
 ! aslint: disable=W1504
     implicit none
 #include "asterf_types.h"
@@ -35,11 +35,12 @@ subroutine tgveri(option, carcri, compor, nno, geom, &
 #include "asterfort/r8inir.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/Behaviour_type.h"
 #include "blas/dcopy.h"
     aster_logical :: matsym
-    character(len=16) :: option, compor(*)
+    character(len=16) :: option, compor(COMPOR_SIZE)
     integer :: iret, nno, ndim
-    real(kind=8) :: carcri(*), sdepl(*), scont(*), svect(*), smatr(*), varia(*)
+    real(kind=8) :: carcri(CARCRI_SIZE), sdepl(*), scont(*), svect(*), smatr(*), varia(*)
     real(kind=8) :: geom(*), deplp(*), vectu(*), contp(*), matuu(*)
     real(kind=8) :: varip(*), svari(*)
 !
@@ -67,7 +68,7 @@ subroutine tgveri(option, carcri, compor, nno, geom, &
 !      CHARACTER*24 DDLD,VECTU,MATRA,MATRC,VARIA,CONT,VARI
     character(len=24) :: matra, matrc
     integer :: ematra, ematrc, exi
-    integer :: nddl
+    integer :: nddl, typeMatr
     integer :: nvari, ncont
     integer :: i, j, k, indi, nvar, init, pos
     real(kind=8) :: v, epsilo, fp, fm, pertu, maxdep, maxgeo
@@ -83,11 +84,12 @@ subroutine tgveri(option, carcri, compor, nno, geom, &
 !     Calcul de la matrice TGTE par PERTURBATION
 !
     iret = 0
-    if (abs(carcri(2)) .lt. 0.1d0) then
+    typeMatr = nint(carcri(TYPE_MATR_T))
+    if (typeMatr .eq. 0 .or. typeMatr .eq. 3 .or. typeMatr .eq. 4) then
         goto 999
     else
 ! INCOMATIBILITE AVEC LES COMPORTEMENTS QUI UTILISENT PVARIMP
-        if (compor(5) (1:7) .eq. 'DEBORST') then
+        if (compor(PLANESTRESS) .eq. 'DEBORST') then
             goto 999
         end if
     end if
@@ -116,7 +118,7 @@ subroutine tgveri(option, carcri, compor, nno, geom, &
         do i = 1, nno*ndim
             maxgeo = max(maxgeo, abs(geom(i)))
         end do
-        pertu = carcri(7)
+        pertu = carcri(VALE_PERT_RELA)
         if (maxdep .gt. pertu*maxgeo) then
             epsilo = pertu*maxdep
         else
@@ -209,7 +211,7 @@ subroutine tgveri(option, carcri, compor, nno, geom, &
 !     PERTURBATION => SAUVEGARDE DE LA MATRICE CALCULEE PAR
 !     DIFFERENCES FINIES COMME MATRICE TANGENTE
 !
-    if (abs(carcri(2)-1.d0) .lt. 0.1d0) then
+    if (typeMatr .eq. 1) then
         if (matsym) then
             call mavec(matper, nddl, matuu, nddl*(nddl+1)/2)
         else
@@ -218,7 +220,7 @@ subroutine tgveri(option, carcri, compor, nno, geom, &
 !
 !     VERIFICATION
 !
-    else if (abs(carcri(2)-2.d0) .lt. 0.1d0) then
+    else if (typeMatr .eq. 2) then
         if (matsym) then
             call mavec(smatr, nddl, matuu, nddl*(nddl+1)/2)
         else
@@ -240,8 +242,6 @@ subroutine tgveri(option, carcri, compor, nno, geom, &
         call wkvect(matrc, 'G V R', nddl*nddl, ematrc)
         call dcopy(nddl*nddl, smatr, 1, zr(ematra), 1)
         call dcopy(nddl*nddl, matper, 1, zr(ematrc), 1)
-!         CALL JELIBE(MATRA)
-!         CALL JELIBE(MATRC)
     end if
 !
 999 continue

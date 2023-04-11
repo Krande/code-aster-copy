@@ -432,23 +432,37 @@ def C_COMPORTEMENT(command):
                     "SANS_OBJET",
                 ),
             ),
-            TYPE_MATR_TANG=SIMP(statut="f", typ="TXM", into=("PERTURBATION", "VERIFICATION")),
-            b_perturb=BLOC(
-                condition=""" (exists("TYPE_MATR_TANG")) """,
-                fr=tr("Calcul de la matrice tangente par perturbation, valeur de la perturbation"),
-                VALE_PERT_RELA=SIMP(statut="f", typ="R", defaut=1.0e-5),
+            b_type_matr=BLOC(
+                condition="""not is_in("RELATION", ('RGI_BETON','FLUA_PORO_BETON','FLUA_ENDO_PORO', 'RGI_BETON_BA',))""",
+                TYPE_MATR_TANG=SIMP(statut="f", typ="TXM", into=("PERTURBATION", "VERIFICATION")),
+                b_perturb=BLOC(
+                    condition=""" (exists("TYPE_MATR_TANG")) """,
+                    fr=tr(
+                        "Calcul de la matrice tangente par perturbation, valeur de la perturbation"
+                    ),
+                    VALE_PERT_RELA=SIMP(statut="f", typ="R", defaut=1.0e-5),
+                ),
+                b_tangsec=BLOC(
+                    condition=""" equal_to("TYPE_MATR_TANG", 'TANGENTE_SECANTE') """,
+                    fr=tr("Modification evolutive de la matrice tangente/secante"),
+                    SEUIL=SIMP(statut="f", typ="R", defaut=3.0),
+                    AMPLITUDE=SIMP(statut="f", typ="R", defaut=1.5),
+                    TAUX_RETOUR=SIMP(statut="f", typ="R", defaut=0.05),
+                ),
+                PARM_THETA=SIMP(statut="f", typ="R", val_min=0.0, val_max=1.0, defaut=1.0),
+                b_radi=BLOC(
+                    condition="""not exists("TYPE_MATR_TANG")""",
+                    RESI_RADI_RELA=SIMP(statut="f", typ="R"),
+                ),
             ),
-            b_tangsec=BLOC(
-                condition=""" equal_to("TYPE_MATR_TANG", 'TANGENTE_SECANTE') """,
-                fr=tr("Modification evolutive de la matrice tangente/secante"),
-                SEUIL=SIMP(statut="f", typ="R", defaut=3.0),
-                AMPLITUDE=SIMP(statut="f", typ="R", defaut=1.5),
-                TAUX_RETOUR=SIMP(statut="f", typ="R", defaut=0.05),
-            ),
-            PARM_THETA=SIMP(statut="f", typ="R", val_min=0.0, val_max=1.0, defaut=1.0),
-            b_radi=BLOC(
-                condition="""not exists("TYPE_MATR_TANG")""",
-                RESI_RADI_RELA=SIMP(statut="f", typ="R"),
+            b_ntype_matr=BLOC(
+                condition="""is_in("RELATION", ('RGI_BETON','FLUA_PORO_BETON','FLUA_ENDO_PORO', 'RGI_BETON_BA',))""",
+                TYPE_MATR_TANG=SIMP(statut="f", typ="TXM", into=("MATR_ELAS", "MATR_ENDO"), defaut="MATR_ELAS"),
+                PARM_THETA=SIMP(statut="f", typ="R", val_min=0.0, val_max=1.0, defaut=1.0),
+                b_radi=BLOC(
+                    condition="""not exists("TYPE_MATR_TANG")""",
+                    RESI_RADI_RELA=SIMP(statut="f", typ="R"),
+                ),
             ),
             **opts
         )

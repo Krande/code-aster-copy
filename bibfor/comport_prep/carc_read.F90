@@ -228,8 +228,12 @@ subroutine carc_read(behaviourPrepCrit, model_)
                 type_matr_t = 2
                 call getvr8(factorKeyword, 'VALE_PERT_RELA', iocc=iFactorKeyword, &
                             scal=vale_pert_rela)
+            else if (type_matr_tang .eq. 'MATR_ELAS') then
+                type_matr_t = 3
+            else if (type_matr_tang .eq. 'MATR_ENDO') then
+                type_matr_t = 4
             else
-                ASSERT(.false.)
+                ASSERT(ASTER_FALSE)
             end if
             call lctest(rela_code_py, 'TYPE_MATR_TANG', type_matr_tang, iret)
             if (iret .eq. 0) then
