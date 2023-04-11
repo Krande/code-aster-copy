@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -717,9 +717,9 @@ RESU1 = MODI_REPERE(
     RESULTAT=RESU,
     NUME_ORDRE=1,
     MODI_CHAM=(
-        _F(NOM_CHAM="SIGM_ELNO", NOM_CMP=("SIXX", "SIYY", "SIZZ", "SIXY"), TYPE_CHAM="TENS_2D"),
-        _F(NOM_CHAM="SIGM_NOEU", NOM_CMP=("SIXX", "SIYY", "SIZZ", "SIXY"), TYPE_CHAM="TENS_2D"),
-        _F(NOM_CHAM="DEPL", NOM_CMP=("DX", "DY"), TYPE_CHAM="VECT_2D"),
+        _F(NOM_CHAM="SIGM_ELNO", TYPE_CHAM="TENS_2D"),
+        _F(NOM_CHAM="SIGM_NOEU", TYPE_CHAM="TENS_2D"),
+        _F(NOM_CHAM="DEPL", TYPE_CHAM="VECT_2D"),
     ),
     REPERE="UTILISATEUR",
     AFFE=_F(ANGL_NAUT=0.0, TOUT="OUI"),
@@ -909,9 +909,9 @@ RESU2 = MODI_REPERE(
     RESULTAT=RESU,
     NUME_ORDRE=1,
     MODI_CHAM=(
-        _F(NOM_CHAM="SIGM_ELNO", NOM_CMP=("SIXX", "SIYY", "SIZZ", "SIXY"), TYPE_CHAM="TENS_2D"),
-        _F(NOM_CHAM="SIGM_NOEU", NOM_CMP=("SIXX", "SIYY", "SIZZ", "SIXY"), TYPE_CHAM="TENS_2D"),
-        _F(NOM_CHAM="DEPL", NOM_CMP=("DX", "DY"), TYPE_CHAM="VECT_2D"),
+        _F(NOM_CHAM="SIGM_ELNO", TYPE_CHAM="TENS_2D"),
+        _F(NOM_CHAM="SIGM_NOEU", TYPE_CHAM="TENS_2D"),
+        _F(NOM_CHAM="DEPL", TYPE_CHAM="VECT_2D"),
     ),
     REPERE="CYLINDRIQUE",
     AFFE=_F(

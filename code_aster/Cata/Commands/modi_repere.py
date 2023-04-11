@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -88,28 +88,45 @@ MODI_REPERE = OPER(
             TYPE_CHAM=SIMP(
                 statut="o",
                 typ="TXM",
-                into=("VECT_2D", "VECT_3D", "TENS_2D", "TENS_3D", "COQUE_GENE"),
+                into=("VECT_2D", "VECT_3D", "TENS_2D", "TENS_3D", "COQUE_GENE", "1D_GENE"),
             ),
-            NOM_CHAM=SIMP(statut="o", typ="TXM", validators=NoRepeat(), into=C_NOM_CHAM_INTO()),
-            b_vect_2d=BLOC(
-                condition="""equal_to("TYPE_CHAM", 'VECT_2D')""",
-                NOM_CMP=SIMP(statut="o", typ="TXM", min=2, max=2),
+            b_vect=BLOC(
+                condition="""(equal_to("TYPE_CHAM", "VECT_2D") or equal_to("TYPE_CHAM", "VECT_3D"))""",
+                NOM_CHAM=SIMP(
+                    statut="o",
+                    typ="TXM",
+                    max=1,
+                    into=("DEPL", "VITE", "ACCE", "FORC_NODA", "REAC_NODA", "FLUX_NOEU"),
+                ),
             ),
-            b_vect_3d=BLOC(
-                condition="""equal_to("TYPE_CHAM", 'VECT_3D')""",
-                NOM_CMP=SIMP(statut="o", typ="TXM", min=3, max=6),
+            b_1d=BLOC(
+                condition="""(equal_to("TYPE_CHAM", "1D_GENE"))""",
+                NOM_CHAM=SIMP(
+                    statut="o",
+                    typ="TXM",
+                    max=1,
+                    into=("EFGE_ELNO", "EFGE_ELGA", "SIEF_ELNO", "SIEF_ELGA"),
+                ),
             ),
-            b_tens_2d=BLOC(
-                condition="""equal_to("TYPE_CHAM", 'TENS_2D')""",
-                NOM_CMP=SIMP(statut="o", typ="TXM", min=4, max=4),
+            b_cgene=BLOC(
+                condition="""(equal_to("TYPE_CHAM", "COQUE_GENE"))""",
+                NOM_CHAM=SIMP(
+                    statut="o",
+                    typ="TXM",
+                    max=1,
+                    into=(
+                        "EFGE_ELNO",
+                        "EFGE_ELGA",
+                        "SIEF_ELGA",
+                        "SIEF_ELNO",
+                        "DEGE_ELNO",
+                        "DEGE_ELGA",
+                    ),
+                ),
             ),
-            b_tens_3d=BLOC(
-                condition="""equal_to("TYPE_CHAM", 'TENS_3D')""",
-                NOM_CMP=SIMP(statut="o", typ="TXM", min=6, max=6),
-            ),
-            b_coque_gene=BLOC(
-                condition="""equal_to("TYPE_CHAM", 'COQUE_GENE')""",
-                NOM_CMP=SIMP(statut="o", typ="TXM", min=8, max=8),
+            b_tens=BLOC(
+                condition="""(equal_to("TYPE_CHAM", "TENS_2D") or equal_to("TYPE_CHAM", "TENS_3D"))""",
+                NOM_CHAM=SIMP(statut="o", typ="TXM", into=C_NOM_CHAM_INTO(), max=1),
             ),
         ),
     ),

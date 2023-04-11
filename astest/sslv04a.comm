@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -1165,17 +1165,9 @@ RESU1 = MODI_REPERE(
     RESULTAT=RESU,
     NUME_ORDRE=1,
     MODI_CHAM=(
-        _F(
-            NOM_CHAM="SIGM_ELNO",
-            NOM_CMP=("SIXX", "SIYY", "SIZZ", "SIXY", "SIXZ", "SIYZ"),
-            TYPE_CHAM="TENS_3D",
-        ),
-        _F(
-            NOM_CHAM="SIGM_NOEU",
-            NOM_CMP=("SIXX", "SIYY", "SIZZ", "SIXY", "SIXZ", "SIYZ"),
-            TYPE_CHAM="TENS_3D",
-        ),
-        _F(NOM_CHAM="DEPL", NOM_CMP=("DX", "DY", "DZ"), TYPE_CHAM="VECT_3D"),
+        _F(NOM_CHAM="SIGM_ELNO", TYPE_CHAM="TENS_3D"),
+        _F(NOM_CHAM="SIGM_NOEU", TYPE_CHAM="TENS_3D"),
+        _F(NOM_CHAM="DEPL", TYPE_CHAM="VECT_3D"),
     ),
     REPERE="UTILISATEUR",
     AFFE=_F(ANGL_NAUT=(0.0, 0.0, 0.0), TOUT="OUI"),
@@ -1367,22 +1359,10 @@ RESU2 = MODI_REPERE(
     RESULTAT=RESU,
     NUME_ORDRE=1,
     MODI_CHAM=(
-        _F(
-            NOM_CHAM="SIGM_ELNO",
-            NOM_CMP=("SIXX", "SIYY", "SIZZ", "SIXY", "SIXZ", "SIYZ"),
-            TYPE_CHAM="TENS_3D",
-        ),
-        _F(
-            NOM_CHAM="SIGM_NOEU",
-            NOM_CMP=("SIXX", "SIYY", "SIZZ", "SIXY", "SIXZ", "SIYZ"),
-            TYPE_CHAM="TENS_3D",
-        ),
-        _F(
-            NOM_CHAM="SIGM_ELGA",
-            NOM_CMP=("SIXX", "SIYY", "SIZZ", "SIXY", "SIXZ", "SIYZ"),
-            TYPE_CHAM="TENS_3D",
-        ),
-        _F(NOM_CHAM="DEPL", NOM_CMP=("DX", "DY", "DZ"), TYPE_CHAM="VECT_3D"),
+        _F(NOM_CHAM="SIGM_ELNO", TYPE_CHAM="TENS_3D"),
+        _F(NOM_CHAM="SIGM_NOEU", TYPE_CHAM="TENS_3D"),
+        _F(NOM_CHAM="SIGM_ELGA", TYPE_CHAM="TENS_3D"),
+        _F(NOM_CHAM="DEPL", TYPE_CHAM="VECT_3D"),
     ),
     REPERE="CYLINDRIQUE",
     AFFE=_F(ORIGINE=(0.0, 0.0, 0.0), AXE_Z=(0.0, 0.0, 1.0), TOUT="OUI"),
@@ -1608,17 +1588,9 @@ RESU3 = MODI_REPERE(
     RESULTAT=RESU2,
     NUME_ORDRE=1,
     MODI_CHAM=(
-        _F(
-            NOM_CHAM="SIGM_ELNO",
-            NOM_CMP=("SIXX", "SIYY", "SIZZ", "SIXY", "SIXZ", "SIYZ"),
-            TYPE_CHAM="TENS_3D",
-        ),
-        _F(
-            NOM_CHAM="SIGM_NOEU",
-            NOM_CMP=("SIXX", "SIYY", "SIZZ", "SIXY", "SIXZ", "SIYZ"),
-            TYPE_CHAM="TENS_3D",
-        ),
-        _F(NOM_CHAM="DEPL", NOM_CMP=("DX", "DY", "DZ"), TYPE_CHAM="VECT_3D"),
+        _F(NOM_CHAM="SIGM_ELNO", TYPE_CHAM="TENS_3D"),
+        _F(NOM_CHAM="SIGM_NOEU", TYPE_CHAM="TENS_3D"),
+        _F(NOM_CHAM="DEPL", TYPE_CHAM="VECT_3D"),
     ),
     REPERE="UTILISATEUR",
     AFFE=_F(VECT_X=(1.0, 1.0, 0.0), VECT_Y=(-1, 1, 0.0), TOUT="OUI"),
@@ -1628,17 +1600,9 @@ RESU4 = MODI_REPERE(
     RESULTAT=RESU3,
     NUME_ORDRE=1,
     MODI_CHAM=(
-        _F(
-            NOM_CHAM="SIGM_ELNO",
-            NOM_CMP=("SIXX", "SIYY", "SIZZ", "SIXY", "SIXZ", "SIYZ"),
-            TYPE_CHAM="TENS_3D",
-        ),
-        _F(
-            NOM_CHAM="SIGM_NOEU",
-            NOM_CMP=("SIXX", "SIYY", "SIZZ", "SIXY", "SIXZ", "SIYZ"),
-            TYPE_CHAM="TENS_3D",
-        ),
-        _F(NOM_CHAM="DEPL", NOM_CMP=("DX", "DY", "DZ"), TYPE_CHAM="VECT_3D"),
+        _F(NOM_CHAM="SIGM_ELNO", TYPE_CHAM="TENS_3D"),
+        _F(NOM_CHAM="SIGM_NOEU", TYPE_CHAM="TENS_3D"),
+        _F(NOM_CHAM="DEPL", TYPE_CHAM="VECT_3D"),
     ),
     REPERE="UTILISATEUR",
     AFFE=_F(ANGL_NAUT=(-45.0, 0.0, 0.0), TOUT="OUI"),
@@ -1804,17 +1768,9 @@ RESU5 = MODI_REPERE(
     RESULTAT=RESU2,
     NUME_ORDRE=1,
     MODI_CHAM=(
-        _F(
-            NOM_CHAM="SIGM_ELNO",
-            NOM_CMP=("SIXX", "SIYY", "SIZZ", "SIXY", "SIXZ", "SIYZ"),
-            TYPE_CHAM="TENS_3D",
-        ),
-        _F(
-            NOM_CHAM="SIGM_NOEU",
-            NOM_CMP=("SIXX", "SIYY", "SIZZ", "SIXY", "SIXZ", "SIYZ"),
-            TYPE_CHAM="TENS_3D",
-        ),
-        _F(NOM_CHAM="DEPL", NOM_CMP=("DX", "DY", "DZ"), TYPE_CHAM="VECT_3D"),
+        _F(NOM_CHAM="SIGM_ELNO", TYPE_CHAM="TENS_3D"),
+        _F(NOM_CHAM="SIGM_NOEU", TYPE_CHAM="TENS_3D"),
+        _F(NOM_CHAM="DEPL", TYPE_CHAM="VECT_3D"),
     ),
     REPERE="UTILISATEUR",
     AFFE=_F(VECT_X=(0.70710678, 0.70710678, -1.0), VECT_Y=(-1.0, 1, 0.0), TOUT="OUI"),
@@ -1824,17 +1780,9 @@ RESU6 = MODI_REPERE(
     RESULTAT=RESU5,
     NUME_ORDRE=1,
     MODI_CHAM=(
-        _F(
-            NOM_CHAM="SIGM_ELNO",
-            NOM_CMP=("SIXX", "SIYY", "SIZZ", "SIXY", "SIXZ", "SIYZ"),
-            TYPE_CHAM="TENS_3D",
-        ),
-        _F(
-            NOM_CHAM="SIGM_NOEU",
-            NOM_CMP=("SIXX", "SIYY", "SIZZ", "SIXY", "SIXZ", "SIYZ"),
-            TYPE_CHAM="TENS_3D",
-        ),
-        _F(NOM_CHAM="DEPL", NOM_CMP=("DX", "DY", "DZ"), TYPE_CHAM="VECT_3D"),
+        _F(NOM_CHAM="SIGM_ELNO", TYPE_CHAM="TENS_3D"),
+        _F(NOM_CHAM="SIGM_NOEU", TYPE_CHAM="TENS_3D"),
+        _F(NOM_CHAM="DEPL", TYPE_CHAM="VECT_3D"),
     ),
     REPERE="UTILISATEUR",
     AFFE=_F(ANGL_NAUT=(0.0, -45.0, 0.0), TOUT="OUI"),
@@ -1844,17 +1792,9 @@ RESU7 = MODI_REPERE(
     RESULTAT=RESU6,
     NUME_ORDRE=1,
     MODI_CHAM=(
-        _F(
-            NOM_CHAM="SIGM_ELNO",
-            NOM_CMP=("SIXX", "SIYY", "SIZZ", "SIXY", "SIXZ", "SIYZ"),
-            TYPE_CHAM="TENS_3D",
-        ),
-        _F(
-            NOM_CHAM="SIGM_NOEU",
-            NOM_CMP=("SIXX", "SIYY", "SIZZ", "SIXY", "SIXZ", "SIYZ"),
-            TYPE_CHAM="TENS_3D",
-        ),
-        _F(NOM_CHAM="DEPL", NOM_CMP=("DX", "DY", "DZ"), TYPE_CHAM="VECT_3D"),
+        _F(NOM_CHAM="SIGM_ELNO", TYPE_CHAM="TENS_3D"),
+        _F(NOM_CHAM="SIGM_NOEU", TYPE_CHAM="TENS_3D"),
+        _F(NOM_CHAM="DEPL", TYPE_CHAM="VECT_3D"),
     ),
     REPERE="UTILISATEUR",
     AFFE=_F(ANGL_NAUT=(-45.0, 0.0, 0.0), TOUT="OUI"),
@@ -2020,17 +1960,9 @@ RESU8 = MODI_REPERE(
     RESULTAT=RESU2,
     NUME_ORDRE=1,
     MODI_CHAM=(
-        _F(
-            NOM_CHAM="SIGM_ELNO",
-            NOM_CMP=("SIXX", "SIYY", "SIZZ", "SIXY", "SIXZ", "SIYZ"),
-            TYPE_CHAM="TENS_3D",
-        ),
-        _F(
-            NOM_CHAM="SIGM_NOEU",
-            NOM_CMP=("SIXX", "SIYY", "SIZZ", "SIXY", "SIXZ", "SIYZ"),
-            TYPE_CHAM="TENS_3D",
-        ),
-        _F(NOM_CHAM="DEPL", NOM_CMP=("DX", "DY", "DZ"), TYPE_CHAM="VECT_3D"),
+        _F(NOM_CHAM="SIGM_ELNO", TYPE_CHAM="TENS_3D"),
+        _F(NOM_CHAM="SIGM_NOEU", TYPE_CHAM="TENS_3D"),
+        _F(NOM_CHAM="DEPL", TYPE_CHAM="VECT_3D"),
     ),
     REPERE="UTILISATEUR",
     AFFE=_F(VECT_X=(0.70710678, -0.70710678, 1.0), VECT_Y=(1.0, 1.0, 0.0), TOUT="OUI"),
@@ -2040,17 +1972,9 @@ RESU9 = MODI_REPERE(
     RESULTAT=RESU8,
     NUME_ORDRE=1,
     MODI_CHAM=(
-        _F(
-            NOM_CHAM="SIGM_ELNO",
-            NOM_CMP=("SIXX", "SIYY", "SIZZ", "SIXY", "SIXZ", "SIYZ"),
-            TYPE_CHAM="TENS_3D",
-        ),
-        _F(
-            NOM_CHAM="SIGM_NOEU",
-            NOM_CMP=("SIXX", "SIYY", "SIZZ", "SIXY", "SIXZ", "SIYZ"),
-            TYPE_CHAM="TENS_3D",
-        ),
-        _F(NOM_CHAM="DEPL", NOM_CMP=("DX", "DY", "DZ"), TYPE_CHAM="VECT_3D"),
+        _F(NOM_CHAM="SIGM_ELNO", TYPE_CHAM="TENS_3D"),
+        _F(NOM_CHAM="SIGM_NOEU", TYPE_CHAM="TENS_3D"),
+        _F(NOM_CHAM="DEPL", TYPE_CHAM="VECT_3D"),
     ),
     REPERE="UTILISATEUR",
     AFFE=_F(ANGL_NAUT=(0.0, 45.0, 0.0), TOUT="OUI"),
@@ -2060,17 +1984,9 @@ RESU10 = MODI_REPERE(
     RESULTAT=RESU9,
     NUME_ORDRE=1,
     MODI_CHAM=(
-        _F(
-            NOM_CHAM="SIGM_ELNO",
-            NOM_CMP=("SIXX", "SIYY", "SIZZ", "SIXY", "SIXZ", "SIYZ"),
-            TYPE_CHAM="TENS_3D",
-        ),
-        _F(
-            NOM_CHAM="SIGM_NOEU",
-            NOM_CMP=("SIXX", "SIYY", "SIZZ", "SIXY", "SIXZ", "SIYZ"),
-            TYPE_CHAM="TENS_3D",
-        ),
-        _F(NOM_CHAM="DEPL", NOM_CMP=("DX", "DY", "DZ"), TYPE_CHAM="VECT_3D"),
+        _F(NOM_CHAM="SIGM_ELNO", TYPE_CHAM="TENS_3D"),
+        _F(NOM_CHAM="SIGM_NOEU", TYPE_CHAM="TENS_3D"),
+        _F(NOM_CHAM="DEPL", TYPE_CHAM="VECT_3D"),
     ),
     REPERE="UTILISATEUR",
     AFFE=_F(ANGL_NAUT=(45.0, 0.0, 0.0), TOUT="OUI"),

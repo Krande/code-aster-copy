@@ -477,7 +477,7 @@ def observation_ops(
                     nomchamx = "DEPL"
 
                 if nomcham == nomchamx:
-                    mcfact1 = {"NOM_CMP": nom_cmp, "TYPE_CHAM": type_cham, "NOM_CHAM": nomcham}
+                    mcfact1 = {"TYPE_CHAM": type_cham, "NOM_CHAM": nomcham}
 
                     mcfact2 = {}
 

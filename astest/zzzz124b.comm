@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -308,12 +308,8 @@ CORST1 = MODI_REPERE(
     RESULTAT=CORST,
     TOUT_ORDRE="OUI",
     MODI_CHAM=(
-        _F(
-            NOM_CHAM="EFGE_ELNO", NOM_CMP=("N", "VY", "VZ", "MT", "MFY", "MFZ"), TYPE_CHAM="VECT_3D"
-        ),
-        _F(
-            NOM_CHAM="SIEF_ELNO", NOM_CMP=("N", "VY", "VZ", "MT", "MFY", "MFZ"), TYPE_CHAM="VECT_3D"
-        ),
+        _F(NOM_CHAM="EFGE_ELNO", TYPE_CHAM="1D_GENE"),
+        _F(NOM_CHAM="SIEF_ELNO", TYPE_CHAM="1D_GENE"),
     ),
     REPERE="UTILISATEUR",
     AFFE=(
@@ -397,12 +393,8 @@ CORST = MODI_REPERE(
     RESULTAT=CORST,
     TOUT_ORDRE="OUI",
     MODI_CHAM=(
-        _F(
-            NOM_CHAM="EFGE_ELNO", NOM_CMP=("N", "VY", "VZ", "MT", "MFY", "MFZ"), TYPE_CHAM="VECT_3D"
-        ),
-        _F(
-            NOM_CHAM="SIEF_ELNO", NOM_CMP=("N", "VY", "VZ", "MT", "MFY", "MFZ"), TYPE_CHAM="VECT_3D"
-        ),
+        _F(NOM_CHAM="EFGE_ELNO", TYPE_CHAM="1D_GENE"),
+        _F(NOM_CHAM="SIEF_ELNO", TYPE_CHAM="1D_GENE"),
     ),
     REPERE="UTILISATEUR",
     AFFE=(
@@ -559,12 +551,8 @@ MODES1 = MODI_REPERE(
     RESULTAT=MODES,
     TOUT_ORDRE="OUI",
     MODI_CHAM=(
-        _F(
-            NOM_CHAM="EFGE_ELNO", NOM_CMP=("N", "VY", "VZ", "MT", "MFY", "MFZ"), TYPE_CHAM="VECT_3D"
-        ),
-        _F(
-            NOM_CHAM="SIEF_ELNO", NOM_CMP=("N", "VY", "VZ", "MT", "MFY", "MFZ"), TYPE_CHAM="VECT_3D"
-        ),
+        _F(NOM_CHAM="EFGE_ELNO", TYPE_CHAM="1D_GENE"),
+        _F(NOM_CHAM="SIEF_ELNO", TYPE_CHAM="1D_GENE"),
     ),
     REPERE="UTILISATEUR",
     AFFE=(
@@ -647,11 +635,7 @@ MODES = MODI_REPERE(
     reuse=MODES,
     RESULTAT=MODES,
     TOUT_ORDRE="OUI",
-    MODI_CHAM=(
-        _F(
-            NOM_CHAM="EFGE_ELNO", NOM_CMP=("N", "VY", "VZ", "MT", "MFY", "MFZ"), TYPE_CHAM="VECT_3D"
-        ),
-    ),
+    MODI_CHAM=(_F(NOM_CHAM="EFGE_ELNO", TYPE_CHAM="1D_GENE"),),
     REPERE="UTILISATEUR",
     AFFE=(_F(GROUP_MA=("POU1", "POU2"), ANGL_NAUT=(0.0, 0.0, 0.0)),),
     INFO=1,

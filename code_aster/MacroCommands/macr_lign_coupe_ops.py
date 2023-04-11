@@ -259,7 +259,7 @@ def crea_resu_local(self, dime, NOM_CHAM, m, resin, mail, nomgrma):
         motscles = {}
         motscles["MODI_CHAM"] = []
         motscles["AFFE"] = []
-        motscles["MODI_CHAM"].append(_F(NOM_CHAM=NOM_CHAM, NOM_CMP=LCMP, TYPE_CHAM=TYPE_CHAM))
+        motscles["MODI_CHAM"].append(_F(NOM_CHAM=NOM_CHAM, TYPE_CHAM=TYPE_CHAM))
         ANGL_NAUT = []
         ANGL_NAUT.append(alpha)
         if dime == 3:
@@ -273,7 +273,7 @@ def crea_resu_local(self, dime, NOM_CHAM, m, resin, mail, nomgrma):
             motscles = {}
             motscles["MODI_CHAM"] = []
             motscles["AFFE"] = []
-            motscles["MODI_CHAM"].append(_F(NOM_CHAM=NOM_CHAM, NOM_CMP=LCMP, TYPE_CHAM=TYPE_CHAM))
+            motscles["MODI_CHAM"].append(_F(NOM_CHAM=NOM_CHAM, TYPE_CHAM=TYPE_CHAM))
             ORIGINE = []
             ORIGINE.append(m["CENTRE"][0])
             ORIGINE.append(m["CENTRE"][1])
@@ -408,9 +408,7 @@ def crea_resu_local(self, dime, NOM_CHAM, m, resin, mail, nomgrma):
                 motscles = {}
                 motscles["MODI_CHAM"] = []
                 motscles["AFFE"] = []
-                motscles["MODI_CHAM"].append(
-                    _F(NOM_CHAM=NOM_CHAM, NOM_CMP=LCMP, TYPE_CHAM=TYPE_CHAM)
-                )
+                motscles["MODI_CHAM"].append(_F(NOM_CHAM=NOM_CHAM, TYPE_CHAM=TYPE_CHAM))
                 ANGL_NAUT = []
                 ANGL_NAUT.append(alpha)
                 if dime == 3:
@@ -423,7 +421,7 @@ def crea_resu_local(self, dime, NOM_CHAM, m, resin, mail, nomgrma):
         motscles = {}
         motscles["MODI_CHAM"] = []
         motscles["AFFE"] = []
-        motscles["MODI_CHAM"].append(_F(NOM_CHAM=NOM_CHAM, NOM_CMP=LCMP, TYPE_CHAM=TYPE_CHAM))
+        motscles["MODI_CHAM"].append(_F(NOM_CHAM=NOM_CHAM, TYPE_CHAM=TYPE_CHAM))
         if m["REPERE"] == "CYLINDRIQUE":
             if dime == 3:
                 motscles["AFFE"].append(_F(ORIGINE=m["ORIGINE"], AXE_Z=m["AXE_Z"], TOUT="OUI"))

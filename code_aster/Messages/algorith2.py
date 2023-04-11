@@ -45,9 +45,16 @@ Erreur utilisateur dans la commande CREA_RESU / AFFE :
  Le repère utilisateur défini par VECT_X et VECT_Y ne peut être utilisé qu'en 3D.
 """
     ),
+    5: _(
+        """
+Commande MODI_REPERE : le champ fourni est de grandeur %(k1)s.
+Cette grandeur n'est pas traitée par le type %(k2)s.
+"""
+    ),
     6: _(
         """
- il faut définir NOM_CMP
+Commande MODI_REPERE : La valeur de TYPE_CHAM %(k1)s n'est pas disponible 
+pour les champs aux noeuds.
 """
     ),
     7: _(
@@ -75,6 +82,12 @@ Erreur utilisateur dans la commande CREA_RESU / AFFE :
  L'axe z n'a pas de sens en 2D. Le mot-clé AXE_Z est inutile.
 """
     ),
+    12: _(
+        """
+Commande MODI_REPERE : le champ %(k1)s ne possèdent pas toutes les composantes attendues 
+pour le cas %(k2)s. La composante %(k3)s est manquante.
+"""
+    ),
     13: _(
         """
   -> Lors du passage au repère cylindrique, un noeud a été localisé sur l'axe
@@ -83,6 +96,12 @@ Erreur utilisateur dans la commande CREA_RESU / AFFE :
   -> Risque & Conseil :
      Si ce centre de gravité se trouve également sur l'axe du repère, le calcul
      s'arrête en erreur fatale.
+"""
+    ),
+    14: _(
+        """
+Commande MODI_REPERE : La valeur de TYPE_CHAM %(k1)s n'est pas disponible 
+pour les champs par éléments.
 """
     ),
     15: _(
@@ -169,36 +188,10 @@ Commande MODI_REPERE : le changement de repère sur le type VECT_3D avec
     ),
     32: _(
         """
-Commande MODI_REPERE, pour le type VECT_3D (6 composantes) il faut :
+Commande MODI_REPERE, pour le type POUTRE il faut :
  - le MODÈLE, le CARA_ELEM.
  - le repère doit être UTILISATEUR
- - le champ doit être [EFGE|SIEF]_ELNO ou un champ aux noeuds
  """
-    ),
-    33: _(
-        """
-Commande MODI_REPERE : pour [EFGE|SIEF]_ELNO et VECT_3D, les 6 composantes doivent être
-dans l'ordre suivant : N, VY, VZ, MT, MFY, MFZ
-"""
-    ),
-    34: _(
-        """
-Commande MODI_REPERE : pour le type VECT_3D et [EFGE|SIEF]_ELNO, les éléments traités sont :
-    POU_D_E  POU_D_T
-Le changement de repère des [EFGE|SIEF]_ELNO sur des %(k1)s ne sera pas réalisé.
-"""
-    ),
-    35: _(
-        """
-Commande MODI_REPERE : pour le champ [EFGE|SIEF]_ELNO le type doit être
-    VECT_3D à 6 composantes ou COQUE_GENE et pas %(k1)s.
-"""
-    ),
-    36: _(
-        """
-Commande MODI_REPERE :
-    Pour VECT_3D c'est 3 ou 6 composantes et pas %(i1)d.
-"""
     ),
     43: _(
         """

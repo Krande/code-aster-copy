@@ -15,14 +15,14 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-!
 !
 interface
-    subroutine chrpno(champ1, repere, nom_cham, type)
-        character(len=*) :: champ1
-        character(len=*) :: repere
-        character(len=*) :: nom_cham
-        character(len=*) :: type
-    end subroutine chrpno
+    subroutine selectCompN(chams0, nom_cham, type_cham, nbcmp, nom_cmp, ndim_type)
+        character(len=19), intent(in) :: chams0
+        character(len=*), intent(in) :: nom_cham
+        character(len=*), intent(in) :: type_cham
+        integer, intent(out) :: nbcmp
+        integer, intent(out) :: ndim_type
+        character(len=8), intent(out) :: nom_cmp(*)
+    end subroutine selectCompN
 end interface

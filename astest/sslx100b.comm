@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -130,11 +130,7 @@ DEPPOS = POST_CHAMP(
 
 SIG = MODI_REPERE(
     RESULTAT=DEPPOS,
-    MODI_CHAM=_F(
-        NOM_CHAM="SIGM_ELNO",
-        NOM_CMP=("SIXX", "SIYY", "SIZZ", "SIXY", "SIXZ", "SIYZ"),
-        TYPE_CHAM="TENS_3D",
-    ),
+    MODI_CHAM=_F(NOM_CHAM="SIGM_ELNO", TYPE_CHAM="TENS_3D"),
     REPERE="COQUE",
     #         AFFE=_F(ANGL_REP=(0.0,0.0,),),)
     AFFE=_F(VECTEUR=(1.0, 0.0, 0.0), TOUT="OUI"),
@@ -142,11 +138,7 @@ SIG = MODI_REPERE(
 
 EFGE = MODI_REPERE(
     RESULTAT=DEP,
-    MODI_CHAM=_F(
-        NOM_CHAM="EFGE_ELNO",
-        NOM_CMP=("NXX", "NYY", "NXY", "MXX", "MYY", "MXY", "QX", "QY"),
-        TYPE_CHAM="COQUE_GENE",
-    ),
+    MODI_CHAM=_F(NOM_CHAM="EFGE_ELNO", TYPE_CHAM="COQUE_GENE"),
     REPERE="COQUE",
     AFFE=_F(ANGL_REP=(0.0, 0.0), TOUT="OUI"),
 )

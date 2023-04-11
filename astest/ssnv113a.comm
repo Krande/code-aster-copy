@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -198,13 +198,7 @@ U = CALC_CHAMP(reuse=U, RESULTAT=U, DEFORMATION=("EPSI_ELNO"))
 RESCYL1 = MODI_REPERE(
     RESULTAT=U,
     TOUT_ORDRE="OUI",
-    MODI_CHAM=(
-        _F(
-            NOM_CHAM="EPSI_ELNO",
-            NOM_CMP=("EPXX", "EPYY", "EPZZ", "EPXY", "EPXZ", "EPYZ"),
-            TYPE_CHAM="TENS_3D",
-        ),
-    ),
+    MODI_CHAM=(_F(NOM_CHAM="EPSI_ELNO", TYPE_CHAM="TENS_3D"),),
     REPERE="CYLINDRIQUE",
     AFFE=_F(ORIGINE=(-1.0, -1.0, 0.0), AXE_Z=(0.0, 1.0, 0.0), TOUT="OUI"),
     INFO=2,
@@ -213,13 +207,7 @@ RESCYL1 = MODI_REPERE(
 RESCYL2 = MODI_REPERE(
     RESULTAT=U,
     TOUT_ORDRE="OUI",
-    MODI_CHAM=(
-        _F(
-            NOM_CHAM="SIEF_ELGA",
-            NOM_CMP=("SIXX", "SIYY", "SIZZ", "SIXY", "SIXZ", "SIYZ"),
-            TYPE_CHAM="TENS_3D",
-        ),
-    ),
+    MODI_CHAM=(_F(NOM_CHAM="SIEF_ELGA", TYPE_CHAM="TENS_3D"),),
     REPERE="CYLINDRIQUE",
     AFFE=_F(ORIGINE=(-1.0, -1.0, 0.0), AXE_Z=(0.0, 1.0, 0.0), TOUT="OUI"),
     INFO=2,
@@ -230,13 +218,7 @@ U = CALC_CHAMP(reuse=U, RESULTAT=U, DEFORMATION=("EPSP_ELNO"))
 RESCYL2 = MODI_REPERE(
     RESULTAT=U,
     TOUT_ORDRE="OUI",
-    MODI_CHAM=(
-        _F(
-            NOM_CHAM="EPSP_ELNO",
-            NOM_CMP=("EPXX", "EPYY", "EPZZ", "EPXY", "EPXZ", "EPYZ"),
-            TYPE_CHAM="TENS_3D",
-        ),
-    ),
+    MODI_CHAM=(_F(NOM_CHAM="EPSP_ELNO", TYPE_CHAM="TENS_3D"),),
     REPERE="CYLINDRIQUE",
     AFFE=_F(ORIGINE=(-1.0, -1.0, 0.0), AXE_Z=(0.0, 1.0, 0.0), TOUT="OUI"),
     INFO=2,

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -544,11 +544,7 @@ TEST_RESU(
 
 RESU1 = MODI_REPERE(
     RESULTAT=DYNAH,
-    MODI_CHAM=_F(
-        TYPE_CHAM="TENS_3D",
-        NOM_CHAM="SIGM_ELNO",
-        NOM_CMP=("SIXX", "SIYY", "SIZZ", "SIXY", "SIXZ", "SIYZ"),
-    ),
+    MODI_CHAM=_F(TYPE_CHAM="TENS_3D", NOM_CHAM="SIGM_ELNO"),
     REPERE="CYLINDRIQUE",
     AFFE=_F(AXE_Z=(0.0, 0.0, 1.0), GROUP_MA=("MA253",), ORIGINE=(0.0, 0.0, 0.0)),
 )
@@ -643,11 +639,7 @@ TEST_RESU(
 
 RESU2 = MODI_REPERE(
     RESULTAT=DYNAH,
-    MODI_CHAM=_F(
-        TYPE_CHAM="TENS_3D",
-        NOM_CHAM="SIGM_NOEU",
-        NOM_CMP=("SIXX", "SIYY", "SIZZ", "SIXY", "SIXZ", "SIYZ"),
-    ),
+    MODI_CHAM=_F(TYPE_CHAM="TENS_3D", NOM_CHAM="SIGM_NOEU"),
     REPERE="CYLINDRIQUE",
     AFFE=_F(AXE_Z=(0.0, 0.0, 1.0), GROUP_MA=("MA253",), ORIGINE=(0.0, 0.0, 0.0)),
 )
@@ -700,11 +692,7 @@ TEST_RESU(
 
 RESU3 = MODI_REPERE(
     RESULTAT=DYNAH,
-    MODI_CHAM=_F(
-        TYPE_CHAM="TENS_3D",
-        NOM_CHAM="SIGM_ELNO",
-        NOM_CMP=("SIXX", "SIYY", "SIZZ", "SIXY", "SIXZ", "SIYZ"),
-    ),
+    MODI_CHAM=_F(TYPE_CHAM="TENS_3D", NOM_CHAM="SIGM_ELNO"),
     REPERE="UTILISATEUR",
     AFFE=_F(GROUP_MA=("MA253",), ANGL_NAUT=(0.0, 0.0, 0.0)),
 )
@@ -756,11 +744,7 @@ TEST_RESU(
 
 RESU4 = MODI_REPERE(
     RESULTAT=DYNAH,
-    MODI_CHAM=_F(
-        TYPE_CHAM="TENS_3D",
-        NOM_CHAM="SIGM_NOEU",
-        NOM_CMP=("SIXX", "SIYY", "SIZZ", "SIXY", "SIXZ", "SIYZ"),
-    ),
+    MODI_CHAM=_F(TYPE_CHAM="TENS_3D", NOM_CHAM="SIGM_NOEU"),
     REPERE="UTILISATEUR",
     AFFE=_F(GROUP_MA=("MA253",), ANGL_NAUT=(0.0, 0.0, 0.0)),
 )
@@ -809,7 +793,7 @@ TEST_RESU(
 
 RESU5 = MODI_REPERE(
     RESULTAT=DYNAH,
-    MODI_CHAM=_F(TYPE_CHAM="VECT_3D", NOM_CHAM="DEPL", NOM_CMP=("DX", "DY", "DZ")),
+    MODI_CHAM=_F(TYPE_CHAM="VECT_3D", NOM_CHAM="DEPL"),
     REPERE="UTILISATEUR",
     AFFE=_F(GROUP_MA=("MA253",), ANGL_NAUT=(0.0, 0.0, 0.0)),
 )

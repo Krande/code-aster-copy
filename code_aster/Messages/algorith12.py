@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -218,6 +218,13 @@ Contactez le support technique.
  La modélisation détectée à partir du maillage est de dimension 2 (2D).
  Mais le mot-clé TYPE_CHAM %(k1)s indique la dimension 3 (3D).
  La dimension 3 (3D) est retenue.
+"""
+    ),
+    45: _(
+        """
+ Le mot-clé TYPE_CHAM %(k1)s indique un problème de dimension 2 (2D) alors que
+ la modélisation détectée à partir du maillage est de dimension 3 (3D).
+ Relancez en modifiant TYPE_CHAM.
 """
     ),
     49: _(

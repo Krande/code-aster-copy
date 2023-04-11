@@ -566,7 +566,7 @@ def calcul_ouverture(
     composante = "DY"
     champ = "DEPL"
     typeChamp = "NOEU_DEPL_R"
-    motclefs["MODI_CHAM"] = [_F(NOM_CHAM="DEPL", NOM_CMP=("DX", "DY"), TYPE_CHAM="VECT_2D")]
+    motclefs["MODI_CHAM"] = [_F(NOM_CHAM="DEPL", TYPE_CHAM="VECT_2D")]
 
     nbPrec = NP.finfo(NP.float).precision
     distMax = 10.0 ** (-nbPrec + 2)
@@ -575,9 +575,7 @@ def calcul_ouverture(
         composante = "EPYY"
         champ = "EPSI_NOEU"
         typeChamp = "NOEU_EPSI_R"
-        motclefs["MODI_CHAM"] = [
-            _F(NOM_CHAM=champ, NOM_CMP=("EPXX", "EPYY", "EPZZ", "EPXY"), TYPE_CHAM="TENS_2D")
-        ]
+        motclefs["MODI_CHAM"] = [_F(NOM_CHAM=champ, TYPE_CHAM="TENS_2D")]
 
     # ---------------------
     # LOOP CRACK PATH POINTS

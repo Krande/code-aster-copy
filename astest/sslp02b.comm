@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -92,9 +92,7 @@ TEST_RESU(
 RESU1 = MODI_REPERE(
     RESULTAT=RESU,
     NUME_ORDRE=1,
-    MODI_CHAM=_F(
-        NOM_CHAM="SIGM_NOEU", NOM_CMP=("SIXX", "SIYY", "SIZZ", "SIXY"), TYPE_CHAM="TENS_2D"
-    ),
+    MODI_CHAM=_F(NOM_CHAM="SIGM_NOEU", TYPE_CHAM="TENS_2D"),
     REPERE="CYLINDRIQUE",
     AFFE=_F(ORIGINE=(0.0, 0.0), TOUT="OUI"),
 )

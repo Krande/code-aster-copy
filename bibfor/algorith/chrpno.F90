@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine chrpno(champ1, repere, nbcmp, icham, type)
+subroutine chrpno(champ1, repere, nom_cham, type)
 ! aslint: disable=W1501
     implicit none
 #include "jeveux.h"
@@ -41,6 +41,7 @@ subroutine chrpno(champ1, repere, nbcmp, icham, type)
 #include "asterfort/normev.h"
 #include "asterfort/provec.h"
 #include "asterfort/reliem.h"
+#include "asterfort/selectCompN.h"
 #include "asterfort/ut2vgl.h"
 #include "asterfort/utmess.h"
 #include "asterfort/utpsgl.h"
@@ -49,8 +50,7 @@ subroutine chrpno(champ1, repere, nbcmp, icham, type)
 #include "asterfort/as_allocate.h"
 #include "blas/ddot.h"
 !
-    integer :: nbcmp, icham
-    character(len=*) :: champ1, repere, type
+    character(len=*) :: champ1, repere, type, nom_cham
 ! ----------------------------------------------------------------------
 !
 !     BUT : CHANGEMENT DE REPERE DANS LE CAS D'UN CHAM_NO
@@ -58,12 +58,10 @@ subroutine chrpno(champ1, repere, nbcmp, icham, type)
 !     ARGUMENTS :
 !     CHAMP1   IN  K16  : NOM DU CHAMP A TRAITER
 !     REPERE   IN  K16  : TYPE DE REPERE (UTILISATEUR OU CYLINDRIQUE)
-!     NBCMP    IN  I    : NOMBRE DE COMPOSANTES A TRAITER
-!     ICHAM    IN  I    : NUMERO D'OCCURRENCE
 ! ----------------------------------------------------------------------
 ! ---------------------------------------------------------------------
 !
-    integer :: i, nbno, ino, ibid
+    integer :: i, nbno, ino, ibid, nbcmp, ndim_type
     integer ::  ii, nbma, ipt2, inel
     integer ::   jcnsv, jconx1, jconx2, nbpt
     integer :: ipt, inot, ndim, licmpu(6), jcnsl
@@ -80,10 +78,12 @@ subroutine chrpno(champ1, repere, nbcmp, icham, type)
     character(len=19) :: chams1, chams0
     character(len=24) :: mesnoe
     character(len=24) :: valk
-    character(len=8), pointer :: nom_cmp(:) => null()
+    integer, parameter  :: nbCmpMax = 8
+    character(len=8) :: nom_cmp(nbCmpMax)
     real(kind=8), pointer :: vale(:) => null()
     integer, pointer :: cnsd(:) => null()
     character(len=8), pointer :: cnsk(:) => null()
+    character(len=8), pointer :: cnsc(:) => null()
     integer iocc, nocc
 !
     call jemarq()
@@ -98,25 +98,20 @@ subroutine chrpno(champ1, repere, nbcmp, icham, type)
     typmcl(4) = 'MAILLE'
     mesnoe = '&&CHRPEL.MES_NOEUDS'
 !
-    if (nbcmp .gt. 0) then
-        AS_ALLOCATE(vk8=nom_cmp, size=nbcmp)
-        call getvtx('MODI_CHAM', 'NOM_CMP', iocc=icham, nbval=nbcmp, vect=nom_cmp, &
-                    nbret=ibid)
-    else
-        call utmess('F', 'ALGORITH2_6')
-    end if
-!
 ! ----- DEFINITION ET CREATION DU CHAM_NO SIMPLE CHAMS1
 ! ----- A PARTIR DU CHAM_NO CHAMP1
 !
     chams0 = '&&CHRPNO.CHAMS0'
     chams1 = '&&CHRPNO.CHAMS1'
     call cnocns(champ1, 'V', chams0)
+!   sélection des composantes :
+    call selectCompN(chams0, nom_cham, type, nbcmp, nom_cmp, ndim_type)
     call cnsred(chams0, 0, [0], nbcmp, nom_cmp, &
                 'V', chams1)
     call detrsd('CHAM_NO_S', chams0)
     call jeveuo(chams1//'.CNSK', 'L', vk8=cnsk)
     call jeveuo(chams1//'.CNSD', 'L', vi=cnsd)
+    call jeveuo(chams1//'.CNSC', 'L', vk8=cnsc)
     ma = cnsk(1)
     nomgd = cnsk(2)
     call dismoi('TYPE_SCA', nomgd, 'GRANDEUR', repk=tsca)
@@ -128,15 +123,13 @@ subroutine chrpno(champ1, repere, nbcmp, icham, type)
     ndim = 3
     if (k8b .eq. 'OUI') ndim = 2
 !
-!   VECT_3D ou VECTR_3D
-    if (type(6:7) .eq. '3D' .or. type(7:8) .eq. '3D') then
-        if (ndim .ne. 3) then
-            valk = type(1:7)
-            call utmess('A', 'ALGORITH12_44', sk=valk)
-        end if
+    if (ndim .gt. ndim_type) then
+        call utmess('F', 'ALGORITH12_45', sk=type)
+    elseif (ndim .lt. ndim_type) then
+        call utmess('A', 'ALGORITH12_44', sk=type)
         ndim = 3
     end if
-
+!
     call dismoi('NB_MA_MAILLA', ma, 'MAILLAGE', repi=nbma)
 !
 !
@@ -676,7 +669,6 @@ subroutine chrpno(champ1, repere, nbcmp, icham, type)
     call cnscno(chams1, ' ', 'NON', 'G', champ1, &
                 'F', ibid)
     call detrsd('CHAM_NO_S', chams1)
-    AS_DEALLOCATE(vk8=nom_cmp)
 
     call jedema()
 !

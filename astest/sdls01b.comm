@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -445,11 +445,7 @@ TEST_RESU(
 
 DYNHARM2 = MODI_REPERE(
     RESULTAT=DYNHARM,
-    MODI_CHAM=_F(
-        NOM_CHAM="EFGE_ELNO",
-        TYPE_CHAM="COQUE_GENE",
-        NOM_CMP=("NXX", "NYY", "NXY", "MXX", "MYY", "MXY", "QX", "QY"),
-    ),
+    MODI_CHAM=_F(NOM_CHAM="EFGE_ELNO", TYPE_CHAM="COQUE_GENE"),
     PRECISION=9.9999999999999995e-07,
     REPERE="COQUE",
     AFFE=_F(GROUP_MA=("M251", "M252", "M255"), ANGL_REP=(0.0, 0.0)),

@@ -116,7 +116,7 @@ subroutine chrgd(nbcmp, jcesd, jcesl, jcesv, imai, &
             call dgemv(trans='T', m=3, n=3, alpha=1.d0, a=p, &
                        lda=3, x=val1i, incx=1, beta=0.d0, y=vali, incy=1)
         end select
-    case ('VECTR_3')
+    case ('1D_GENE')
 !           val = P val1 sur 2 blocs de 3 composantes  X,Y,Z  RX,RY,RZ
         select case (rc)
         case ('R')

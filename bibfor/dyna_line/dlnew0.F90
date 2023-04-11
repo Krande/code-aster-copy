@@ -266,7 +266,7 @@ subroutine dlnew0(result, force0, force1, iinteg, neq, &
 !                   second membre des charges cinématiques
                     if (nchar .gt. 0) then
                         call ascavc(charge, infoch, fomult, numedd, temps, kineLoad)
-                    endif
+                    end if
 !
                     if (nondp .ne. 0) then
                         do 43, ieq = 1, neq

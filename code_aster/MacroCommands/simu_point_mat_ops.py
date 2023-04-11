@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -572,7 +572,7 @@ def simu_point_mat_ops(
 
         if MODELISATION == "3D":
 
-            r33 = 3 ** -0.5
+            r33 = 3**-0.5
             __S[0] = AFFE_CHAR_MECA(
                 MODELE=__MO, FORCE_FACE=(_F(GROUP_MA="F1", FX=-1), _F(GROUP_MA="F4", FX=r33))
             )
@@ -613,7 +613,7 @@ def simu_point_mat_ops(
             )
 
         else:
-            r22 = 2 ** -0.5
+            r22 = 2**-0.5
             __S[0] = AFFE_CHAR_MECA(
                 MODELE=__MO, FORCE_CONTOUR=(_F(GROUP_MA="S1", FX=-1), _F(GROUP_MA="S3", FX=r22))
             )
@@ -1116,17 +1116,9 @@ def simu_point_mat_ops(
             __EVOL = MODI_REPERE(
                 RESULTAT=__EVOL1,
                 MODI_CHAM=(
-                    _F(NOM_CHAM="DEPL", NOM_CMP=("DX", "DY", "DZ"), TYPE_CHAM="VECT_3D"),
-                    _F(
-                        NOM_CHAM="SIGM_ELNO",
-                        NOM_CMP=("SIXX", "SIYY", "SIZZ", "SIXY", "SIXZ", "SIYZ"),
-                        TYPE_CHAM="TENS_3D",
-                    ),
-                    _F(
-                        NOM_CHAM=nomepsi,
-                        NOM_CMP=("EPXX", "EPYY", "EPZZ", "EPXY", "EPXZ", "EPYZ"),
-                        TYPE_CHAM="TENS_3D",
-                    ),
+                    _F(NOM_CHAM="DEPL", TYPE_CHAM="VECT_3D"),
+                    _F(NOM_CHAM="SIGM_ELNO", TYPE_CHAM="TENS_3D"),
+                    _F(NOM_CHAM=nomepsi, TYPE_CHAM="TENS_3D"),
                 ),
                 REPERE="UTILISATEUR",
                 AFFE=_F(ANGL_NAUT=angles, TOUT="OUI"),
@@ -1136,17 +1128,9 @@ def simu_point_mat_ops(
             __EVOL = MODI_REPERE(
                 RESULTAT=__EVOL1,
                 MODI_CHAM=(
-                    _F(NOM_CHAM="DEPL", NOM_CMP=("DX", "DY"), TYPE_CHAM="VECT_2D"),
-                    _F(
-                        NOM_CHAM="SIGM_ELNO",
-                        NOM_CMP=("SIXX", "SIYY", "SIZZ", "SIXY"),
-                        TYPE_CHAM="TENS_2D",
-                    ),
-                    _F(
-                        NOM_CHAM=nomepsi,
-                        NOM_CMP=("EPXX", "EPYY", "EPZZ", "EPXY"),
-                        TYPE_CHAM="TENS_2D",
-                    ),
+                    _F(NOM_CHAM="DEPL", TYPE_CHAM="VECT_2D"),
+                    _F(NOM_CHAM="SIGM_ELNO", TYPE_CHAM="TENS_2D"),
+                    _F(NOM_CHAM=nomepsi, TYPE_CHAM="TENS_2D"),
                 ),
                 REPERE="UTILISATEUR",
                 AFFE=_F(ANGL_NAUT=angles, TOUT="OUI"),

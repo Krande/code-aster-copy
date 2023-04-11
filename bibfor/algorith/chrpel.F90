@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine chrpel(champ1, repere, nbcmp, icham, type_cham, &
+subroutine chrpel(champ1, repere, nom_cham, icham, type_chamz, &
                   nomch, model, carele, lModelVariable)
 ! aslint: disable=W1501
 !
@@ -62,6 +62,7 @@ subroutine chrpel(champ1, repere, nbcmp, icham, type_cham, &
 #include "asterfort/megeom.h"
 #include "asterfort/normev.h"
 #include "asterfort/reliem.h"
+#include "asterfort/selectComp.h"
 #include "asterfort/sepach.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
@@ -69,8 +70,8 @@ subroutine chrpel(champ1, repere, nbcmp, icham, type_cham, &
 #include "asterfort/as_allocate.h"
 #include "blas/ddot.h"
     !
-    integer :: nbcmp, icham
-    character(len=*) :: champ1, repere, type_cham, nomch
+    integer :: icham
+    character(len=*) :: champ1, repere, type_chamz, nomch, nom_cham
     character(len=8) :: model, carele
     aster_logical, intent(in) :: lModelVariable
 !
@@ -84,29 +85,28 @@ subroutine chrpel(champ1, repere, nbcmp, icham, type_cham, &
 !       repere      : type de repere (utilisateur ou cylindrique
 !                         ou coque ou coque_util_intr ou coque_intr_util
 !                         ou coque_util_cyl)
-!       nbcmp       : nombre de composantes a traiter
+!       nom_cham    : nom de type de champ
 !       icham       : numero d'occurrence
-!       type_cham   : type du champ :'tens' 'vect' ou 'coque'
+!       type_chamz  : type du champ :'tens' 'vect' ou 'coque'
 !       nomch       : nom de champ
 !
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: ii, jj, kk, ino, iad, ipt, isp
-    integer :: jcesd, jcesv, jcesl, nbpt, ncmp
+    integer :: jcesd, jcesv, jcesl, nbpt, nbcmp
     integer :: ilcnx1, nbsp, inel, npain
     integer :: ibid, nbma, iret, inbno
     integer :: ndim, nbm, idmail, nbmail, imai
     integer :: inoeu, iret0, iret1, nbgno, igno, nncp
     integer :: ierk, ipaxe, ipaxe2
     integer :: nbno, nbpg, nuno, ipg
-    integer :: type_pt
+    integer :: type_pt, ndim_type
     integer :: iocc, nocc
     integer :: iexist, jcesd_gauss, jcesl_gauss, icoo
 !
     integer, parameter :: type_unknown = 0, type_noeud = 1, type_gauss = 2
 !   nb max de points (noeuds|gauss) par élément
     integer, parameter      :: nptmax = 30
-    integer, parameter      :: nb_elem_ok = 3
     integer, dimension(6)   :: permvec
     real(kind=8)                    :: valr, xnormr, tmp
     real(kind=8), dimension(3)      :: xbary, angnot
@@ -114,28 +114,27 @@ subroutine chrpel(champ1, repere, nbcmp, icham, type_cham, &
     real(kind=8), dimension(3, 3)    :: pgl, pgcyl, pgu, pglelem
     real(kind=8), dimension(3, nptmax), target :: xno, xpg
     character(len=3)    :: tsca
-
-    character(len=8)    :: ma, k8b, typmcl(2), nomgd, tych
+    integer, parameter  :: nbCmpMax = 8
+    character(len=8)    :: ma, k8b, typmcl(2), nomgd, tych, nom_cmp(nbCmpMax)
     character(len=8)    :: lpain(5), paout, licmp(9), nomgdr, paoutc
-    character(len=16)   :: option, motcle(2)
+    character(len=16)   :: option, motcle(2), type_cham
     character(len=19)   :: chams1, chams0, ligrel, canbsp
     character(len=19)   :: changl, carte, chr, chi, ch1, ch2
     character(len=19)   :: celgauss, cesgauss
     character(len=24)   :: mesmai, chgeom, lchin(5), chaout
     character(len=24)   :: valk(3), chcara(18)
 !
-    integer             :: jcesvrepso(3), jcesdrepso(3), adressev(3), elem_supp_num(nb_elem_ok)
-    integer             :: nbptii, nbspii, ncmpii, jmodemailsupp, mailtypel
-    character(len=19)   :: chrel(3), chres(3), nomte
+    integer             :: jcesvrepso(3), jcesdrepso(3), adressev(3)
+    integer             :: nbptii, nbspii, ncmpii
+    character(len=19)   :: chrel(3), chres(3)
 !
     integer, pointer                        :: connex(:) => null()
     real(kind=8), pointer                   :: vale(:) => null()
     real(kind=8), pointer                   :: coo_gauss(:) => null()
     real(kind=8), dimension(:, :), pointer   :: xpt => null()
-    character(len=8), pointer               :: nom_cmp(:) => null()
     character(len=8), pointer               :: cesk(:) => null()
 !
-    aster_logical :: exi_cmp, exi_local, okelem, effort_elno
+    aster_logical :: exi_cmp, exi_local
 ! --------------------------------------------------------------------------------------------------
     call jemarq()
     ipaxe = 0
@@ -144,15 +143,9 @@ subroutine chrpel(champ1, repere, nbcmp, icham, type_cham, &
     motcle(2) = 'MAILLE'
     typmcl(2) = 'MAILLE'
     canbsp = '&&CHRPEL.NBSP'
+    type_cham = type_chamz
 !
     mesmai = '&&CHRPEL.MES_MAILLES'
-!
-    if (nbcmp .gt. 0) then
-        AS_ALLOCATE(vk8=nom_cmp, size=nbcmp)
-        call getvtx('MODI_CHAM', 'NOM_CMP', iocc=icham, nbval=nbcmp, vect=nom_cmp, nbret=ibid)
-    else
-        call utmess('F', 'ALGORITH2_6')
-    end if
 !
     call dismoi('NOM_LIGREL', champ1, 'CHAM_ELEM', repk=ligrel)
 !
@@ -160,6 +153,8 @@ subroutine chrpel(champ1, repere, nbcmp, icham, type_cham, &
     chams0 = '&&CHRPEL.CHAMS0'
     chams1 = '&&CHRPEL.CHAMS1'
     call celces(champ1, 'V', chams0)
+!   sélection des composantes :
+    call selectComp(chams0, nom_cham, type_cham, nbcmp, nom_cmp, ndim_type)
     call cesred(chams0, 0, [0], nbcmp, nom_cmp, 'V', chams1)
     call detrsd('CHAM_ELEM_S', chams0)
     call jeveuo(chams1//'.CESK', 'L', vk8=cesk)
@@ -190,14 +185,16 @@ subroutine chrpel(champ1, repere, nbcmp, icham, type_cham, &
     call jedetr('&&CHRPEL.GROUP_NO')
 !   nombre total de mailles dans le maillage
     nbma = zi(jcesd-1+1)
-!   nombre de composantes du champ simple chams1
-    ncmp = zi(jcesd-1+2)
-!   chams1 a été créé à partir des composantes sélectionnées par l'utilisateur, on doit avoir:
-    ASSERT(ncmp == nbcmp)
-!   Détermination de la dimension à partir du maillage
+!
     ndim = 3
     call dismoi('Z_CST', ma, 'MAILLAGE', repk=k8b)
     if (k8b .eq. 'OUI') ndim = 2
+    if (ndim .gt. ndim_type) then
+        call utmess('F', 'ALGORITH12_45', sk=type_cham)
+    elseif (ndim .lt. ndim_type) then
+        ndim = 3
+        call utmess('A', 'ALGORITH12_44', sk=type_cham)
+    end if
 !
     call jeexin(ma//'.CONNEX', iret)
     ASSERT(iret .ne. 0)
@@ -205,21 +202,11 @@ subroutine chrpel(champ1, repere, nbcmp, icham, type_cham, &
     call jeveuo(jexatr(ma//'.CONNEX', 'LONCUM'), 'L', ilcnx1)
     call jeveuo(chams1//'.CESV', 'E', jcesv)
     call jeveuo(chams1//'.CESL', 'L', jcesl)
-!
-    effort_elno = (nomch .eq. 'EFGE_ELNO') .or. (nomch .eq. 'SIEF_ELNO')
-!
-    if (effort_elno .and. ((type_cham .ne. 'VECTR_3D') .and. (type_cham .ne. 'COQUE_GENE'))) then
-        call utmess('F', 'ALGORITH2_35', sk=type_cham)
-    end if
+
 !   Si le champ est exprimé dans le repère local des éléments
 !       Construction du champ des repère locaux
     exi_local = .false.
-    if (effort_elno .and. (type_cham .eq. 'VECTR_3D')) then
-!       Les noms des composantes : N, VX, VY, MT, MFY, MFZ DANS CETTE ORDRE
-        if ((nom_cmp(1) .ne. 'N') .or. (nom_cmp(2) .ne. 'VY') .or. (nom_cmp(3) .ne. 'VZ') .or. &
-            (nom_cmp(4) .ne. 'MT') .or. (nom_cmp(5) .ne. 'MFY') .or. (nom_cmp(6) .ne. 'MFZ')) then
-            call utmess('F', 'ALGORITH2_33')
-        end if
+    if (type_cham .eq. '1D_GENE') then
         chrel(1) = '&&CHRPEL.REPLO_1'; chrel(2) = '&&CHRPEL.REPLO_2'; chrel(3) = '&&CHRPEL.REPLO_3'
         chres(1) = '&&CHRPEL.REPSO_1'; chres(2) = '&&CHRPEL.REPSO_2'; chres(3) = '&&CHRPEL.REPSO_3'
         call carelo(model, carele, 'V', chrel(1), chrel(2), chrel(3))
@@ -231,12 +218,6 @@ subroutine chrpel(champ1, repere, nbcmp, icham, type_cham, &
             call jeveuo(chres(ii)//'.CESD', 'L', jcesdrepso(ii))
             call detrsd('CHAM_ELEM', chrel(ii))
         end do
-        ! Seulement pour les POU_D_E, POU_D_T
-        call jenonu(jexnom('&CATA.TE.NOMTE', 'MECA_POU_D_T'), elem_supp_num(1))
-        call jenonu(jexnom('&CATA.TE.NOMTE', 'MECA_POU_D_E'), elem_supp_num(2))
-        call jenonu(jexnom('&CATA.TE.NOMTE', 'MECA_DIS_TR_L'), elem_supp_num(3))
-        ! Pointeur sur les éléments supports du modèle
-        call jeveuo(model//'.MAILLE', 'L', jmodemailsupp)
     end if
 !   Le mot-clé AFFE définit les caractéristiques du nouveau repère
 !   On peut définir un repère variable en définissant ces paramètres par mailles/groupes de mailles
@@ -297,20 +278,6 @@ subroutine chrpel(champ1, repere, nbcmp, icham, type_cham, &
 !               Si le champ est dans le repère local de l'élément on va chercher la matrice
 !               de passage du repére local au global
                 if (exi_local) then
-!                   Est-ce un élément autorisé ?
-                    okelem = .false.
-                    mailtypel = zi(jmodemailsupp-1+imai)
-                    cii: do ii = 1, nb_elem_ok
-                        if (mailtypel .eq. elem_supp_num(ii)) then
-                            okelem = .true.
-                            exit cii
-                        end if
-                    end do cii
-                    if (.not. okelem) then
-                        call jenuno(jexnum('&CATA.TE.NOMTE', mailtypel), nomte)
-                        call utmess('A', 'ALGORITH2_34', sk=nomte)
-                        exit cinel
-                    end if
 !                   Vérification du nombre : de point, de sous points, des composantes
 !                   Récupération de l'adresse des valeurs des composantes
                     do ii = 1, 3
@@ -345,7 +312,7 @@ subroutine chrpel(champ1, repere, nbcmp, icham, type_cham, &
                     do isp = 1, nbsp
                         exi_cmp = .false.
                         do ii = 1, nbcmp
-                            call cesexi('S', jcesd, jcesl, imai, ipt, isp, ii, iad)
+                            call cesexi('C', jcesd, jcesl, imai, ipt, isp, ii, iad)
                             if (iad .gt. 0) then
                                 exi_cmp = .true.
                             end if
@@ -698,7 +665,6 @@ subroutine chrpel(champ1, repere, nbcmp, icham, type_cham, &
         call copisd('CHAMP_GD', 'G', chaout, champ1)
     end if
 !
-    AS_DEALLOCATE(vk8=nom_cmp)
     call exisd('CHAM_ELEM_S', canbsp, iret1)
     if (iret1 .ne. 0) call detrsd('CHAM_ELEM_S', canbsp)
 

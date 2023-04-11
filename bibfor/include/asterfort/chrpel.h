@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,11 +17,11 @@
 ! --------------------------------------------------------------------
 !
 interface
-    subroutine chrpel(champ1, repere, nbcmp, icham, type_cham,&
+    subroutine chrpel(champ1, repere, nom_cham, icham, type_cham,&
                       nomch, model, carele, lModelVariable)
         character(len=*) :: champ1
         character(len=*) :: repere
-        integer :: nbcmp
+        character(len=*) :: nom_cham
         integer :: icham
         character(len=*) :: type_cham
         character(len=*) :: nomch

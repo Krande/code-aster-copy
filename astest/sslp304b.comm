@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -154,9 +154,7 @@ TEST_RESU(
 
 DEF2 = MODI_REPERE(
     RESULTAT=DEF,
-    MODI_CHAM=_F(
-        NOM_CHAM="SIGM_ELNO", NOM_CMP=("SIXX", "SIYY", "SIZZ", "SIXY"), TYPE_CHAM="TENS_2D"
-    ),
+    MODI_CHAM=_F(NOM_CHAM="SIGM_ELNO", TYPE_CHAM="TENS_2D"),
     REPERE="UTILISATEUR",
     AFFE=_F(TOUT="OUI", ANGL_NAUT=(30.0)),
 )
@@ -343,9 +341,7 @@ TEST_RESU(
 
 DEFNL2 = MODI_REPERE(
     RESULTAT=DEFNL,
-    MODI_CHAM=_F(
-        NOM_CHAM="SIGM_ELNO", NOM_CMP=("SIXX", "SIYY", "SIZZ", "SIXY"), TYPE_CHAM="TENS_2D"
-    ),
+    MODI_CHAM=_F(NOM_CHAM="SIGM_ELNO", TYPE_CHAM="TENS_2D"),
     REPERE="UTILISATEUR",
     AFFE=_F(TOUT="OUI", ANGL_NAUT=(30.0)),
 )

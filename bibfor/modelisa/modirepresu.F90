@@ -61,7 +61,7 @@ subroutine modirepresu(resuou, resuin)
 #include "asterfort/utmess.h"
 !
     integer :: n0, nbordr, iret, nocc, i, j, np, iordr
-    integer :: n1, nbcmp, iord, ioc, ibid, nc
+    integer :: iord, ioc, ibid, nc
     integer :: jordr, nbnosy, jpa, iadin, iadou
     integer :: nbpara, nbac, nbpa, ifm, niv, nncp
     real(kind=8) :: prec
@@ -75,7 +75,7 @@ subroutine modirepresu(resuou, resuin)
     character(len=24) :: nompar, champ0, champ1
     character(len=24) :: valk(2)
 !
-    aster_logical :: lreuse, lcumu(2), lcoc(2), effort_elno, lModelVariable
+    aster_logical :: lreuse, lcumu(2), lcoc(2), lModelVariable
 !
     data lcumu/.false., .false./
     data lcoc/.false., .false./
@@ -137,16 +137,6 @@ subroutine modirepresu(resuou, resuin)
     do ioc = 1, nocc
         call getvtx('MODI_CHAM', 'NOM_CHAM', iocc=ioc, scal=option, nbret=n0)
         call getvtx('MODI_CHAM', 'TYPE_CHAM', iocc=ioc, scal=type_cham, nbret=n0)
-        call getvtx('MODI_CHAM', 'NOM_CMP', iocc=ioc, nbval=0, nbret=n1)
-        nbcmp = -n1
-        if (type_cham .eq. 'VECT_3D') then
-            if ((nbcmp .ne. 3) .and. (nbcmp .ne. 6)) then
-                call utmess('F', 'ALGORITH2_36', si=nbcmp)
-            end if
-            if (nbcmp .eq. 6) then
-                type_cham = 'VECTR_3D'
-            end if
-        end if
         do iord = 1, nbordr
             call jemarq()
             call jerecu('V')
@@ -176,24 +166,20 @@ subroutine modirepresu(resuou, resuin)
                     call utmess('F', 'ALGORITH3_7')
                 end if
             end if
-!           Dans le cas 'VECTR_3D'
 !               Obligatoire : modèle , cara_elem
 !                             repere = UTILISATEUR
-!                             option = EFGE_ELNO ou SIEF_ELNO ou champ aux noeuds
-            if (type_cham .eq. 'VECTR_3D') then
-                effort_elno = (option .eq. 'EFGE_ELNO') .or. (option .eq. 'SIEF_ELNO') .or. &
-                              (tych(1:4) .eq. 'NOEU' .and. option(6:9) .ne. 'NOEU')
-                if ((model .eq. '') .or. (carele .eq. '') .or. (repere .ne. 'UTILISATEUR') .or. &
-                    (.not. effort_elno)) then
+
+            if (type_cham .eq. '1D_GENE') then
+                if ((model .eq. '') .or. (carele .eq. '') .or. (repere .ne. 'UTILISATEUR')) then
                     call utmess('F', 'ALGORITH2_32')
                 end if
             end if
 !
 !           RECUPERATION DE LA NATURE DES CHAMPS (CHAM_NO OU CHAM_ELEM)
             if (tych(1:4) .eq. 'NOEU') then
-                call chrpno(champ1, repere, nbcmp, ioc, type_cham)
+                call chrpno(champ1, repere, option, type_cham)
             else if (tych(1:2) .eq. 'EL') then
-                call chrpel(champ1, repere, nbcmp, ioc, type_cham, &
+                call chrpel(champ1, repere, option, ioc, type_cham, &
                             option, model, carele, lModelVariable)
             else
                 valk(1) = tych
