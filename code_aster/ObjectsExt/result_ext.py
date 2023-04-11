@@ -159,7 +159,7 @@ class ExtendedResult:
 
         return storageIndex
 
-    def _getIndexFromParameter(self, para, value, crit, prec):
+    def _getIndexFromParameter(self, para, value, crit, prec, throw_except):
         """
         Get the index corresponding to a given value of an access parameter.
 
@@ -173,7 +173,12 @@ class ExtendedResult:
             index (int) : the corresponding index (index)
 
         """
+
         acpara = self.getAccessParameters()
+        if not para in acpara:
+            msg = "Missing parameter {}".format(para)
+            raise ValueError(msg)
+
         if para not in acpara:
             UTMESS("F", "RESULT1_8")
         if is_number(value):
@@ -182,11 +187,14 @@ class ExtendedResult:
 
         elif isinstance(value, str):
             slist = acpara[para]
-            try:
+            if throw_except:
                 internalStorage = slist.index(value)
-            except ValueError:
-                internalStorage = -1
-                return internalStorage
+            else:
+                try:
+                    internalStorage = slist.index(value)
+                except ValueError:
+                    internalStorage = -1
+                    return internalStorage
         else:
             raise ValueError(f"Type of access to result is invalid {value!r}")
 
@@ -213,7 +221,7 @@ class ExtendedResult:
         if para in ("NUME_ORDRE"):
             storageIndex = value
         else:
-            storageIndex = self._getIndexFromParameter(para, value, crit, prec)
+            storageIndex = self._getIndexFromParameter(para, value, crit, prec, throw_except=True)
 
         if storageIndex == -1:
             UTMESS("F", "RESULT1_9")
@@ -277,7 +285,7 @@ class ExtendedResult:
         if para in ("NUME_ORDRE"):
             storageIndex = value
         else:
-            storageIndex = self._getIndexFromParameter(para, value, crit, prec)
+            storageIndex = self._getIndexFromParameter(para, value, crit, prec, throw_except=False)
 
         if storageIndex < 0:
             storageIndex = self._createIndexFromParameter(para, value, crit, prec)
