@@ -24,7 +24,7 @@
 """
 
 from ..Cata.Commons.c_solveur import C_SOLVEUR
-from ..NonLinear import SolverOptions as SOP
+from ..Solvers import SolverOptions as SOP
 from ..Objects import (
     GcpcSolver,
     LdltSolver,

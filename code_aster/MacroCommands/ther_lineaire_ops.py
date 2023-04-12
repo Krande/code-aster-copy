@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -17,25 +17,25 @@
 # You should have received a copy of the GNU General Public License
 # along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
 
-from libaster import deleteCachedObjects, setFortranLoggingLevel, resetFortranLoggingLevel
+from libaster import deleteCachedObjects, resetFortranLoggingLevel, setFortranLoggingLevel
 
 from ..Commands import CALC_CHAMP
 from ..Objects import (
+    HHO,
     AssemblyMatrixTemperatureReal,
     DiscreteComputation,
-    ThermalResult,
+    FieldOnNodesReal,
     LinearSolver,
-    ThermalDirichletBC,
-    ThermalLoadFunction,
-    ThermalLoadReal,
     ParallelThermalLoadFunction,
     ParallelThermalLoadReal,
     PhysicalProblem,
-    FieldOnNodesReal,
-    HHO,
+    ThermalDirichletBC,
+    ThermalLoadFunction,
+    ThermalLoadReal,
+    ThermalResult,
 )
-from ..Utilities import logger, print_stats, profile, SearchList
-from .NonLinearSolver import PhysicalState, StorageManager, TimeStepper
+from ..Solvers import PhysicalState, StorageManager, TimeStepper
+from ..Utilities import SearchList, logger, print_stats, profile
 
 
 def _checkArgs(args):

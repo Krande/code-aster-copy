@@ -20,8 +20,7 @@
 import code_aster
 from code_aster import LinearSolver, NonLinearResult, PhysicalProblem
 from code_aster.Commands import *
-from code_aster.MacroCommands.NonLinearSolver import GeometricSolver, NonLinearSolver, TimeStepper
-from code_aster.MacroCommands.NonLinearSolver.problem_solver import ProblemSolver
+from code_aster.Solvers import GeometricSolver, NonLinearSolver, ProblemSolver, TimeStepper
 
 DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"), INFO=1)
 

@@ -17,10 +17,10 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-from ...NonLinear import SolverOptions as SOP
-from ...NonLinear.base_features import BaseFeature
-from ...Objects import DiscreteComputation, FieldOnCellsReal, FieldOnNodesReal, NonLinearResult
-from ...Utilities import no_new_attributes, profile
+from ..Objects import DiscreteComputation, FieldOnCellsReal, FieldOnNodesReal, NonLinearResult
+from ..Utilities import no_new_attributes, profile
+from .base_features import BaseFeature
+from .solver_features import SolverOptions as SOP
 
 
 class PhysicalState(BaseFeature):

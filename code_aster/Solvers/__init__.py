@@ -18,15 +18,18 @@
 # --------------------------------------------------------------------
 
 """
-This package implements the non linear solver for mechanical analyses.
+Useful objects used for various problem solvers.
 """
 
+from .contact_manager import ContactManager
 from .convergence_manager import ConvergenceManager
 from .geometric_solver import GeometricSolver
 from .incremental_solver import IncrementalSolver
 from .non_linear_solver import NonLinearSolver
 from .physical_state import PhysicalState
+from .problem_solver import ProblemSolver
 from .snes_solver import SNESSolver
+from .solver_features import SolverFeature, SolverOptions
 from .step_solver import StepSolver
 from .stepper import TimeStepper
 from .storage_manager import StorageManager

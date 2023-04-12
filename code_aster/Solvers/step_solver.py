@@ -19,10 +19,10 @@
 
 from libaster import deleteTemporaryObjects
 
-from ...NonLinear import SolverFeature
-from ...NonLinear import SolverOptions as SOP
-from ...Supervis import ConvergenceError
-from ...Utilities import no_new_attributes, profile
+from .solver_features import SolverFeature
+from .solver_features import SolverOptions as SOP
+from ..Supervis import ConvergenceError
+from ..Utilities import no_new_attributes, profile
 from .logging_manager import LoggingManager
 
 

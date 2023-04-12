@@ -19,8 +19,8 @@
 
 import unittest
 
-from code_aster.NonLinear.nl_integr_features import NLIntegrFeature
-from code_aster.NonLinear.nl_integr_features import NLIntegrOptions as SOP
+from code_aster.Solvers.nl_integr_features import NLIntegrFeature
+from code_aster.Solvers.nl_integr_features import NLIntegrOptions as SOP
 
 
 class TimeStepper(NLIntegrFeature):

@@ -7,4 +7,4 @@ Pure Python implementation
 ..  toctree::
     :maxdepth: 3
 
-    nonlinearsolver
+    solvers

@@ -17,19 +17,17 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-from ...NonLinear import SolverFeature
-from ...NonLinear import SolverOptions as SOP
-from ...Objects import LinearSolver
-from ...Utilities import logger, no_new_attributes
-from . import (
-    ConvergenceManager,
-    GeometricSolver,
-    IncrementalSolver,
-    PhysicalState,
-    SNESSolver,
-    StepSolver,
-    StorageManager,
-)
+from ..Objects import LinearSolver
+from ..Utilities import logger, no_new_attributes
+from .convergence_manager import ConvergenceManager
+from .geometric_solver import GeometricSolver
+from .incremental_solver import IncrementalSolver
+from .physical_state import PhysicalState
+from .snes_solver import SNESSolver
+from .solver_features import SolverFeature
+from .solver_features import SolverOptions as SOP
+from .step_solver import StepSolver
+from .storage_manager import StorageManager
 
 
 class ProblemSolver(SolverFeature):

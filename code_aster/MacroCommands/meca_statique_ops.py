@@ -17,7 +17,7 @@
 # You should have received a copy of the GNU General Public License
 # along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
 
-from libaster import deleteTemporaryObjects, setFortranLoggingLevel, resetFortranLoggingLevel
+from libaster import deleteTemporaryObjects, resetFortranLoggingLevel, setFortranLoggingLevel
 
 from ..Commands import CALC_CHAMP
 from ..Objects import (
@@ -32,8 +32,8 @@ from ..Objects import (
     ParallelMechanicalLoadReal,
     PhysicalProblem,
 )
+from ..Solvers import PhysicalState, StorageManager, TimeStepper
 from ..Utilities import logger, print_stats, profile
-from .NonLinearSolver import PhysicalState, StorageManager, TimeStepper
 
 
 @profile

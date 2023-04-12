@@ -43,13 +43,13 @@ For convenience the objects are direcly available here:
 
 Here is the diagram of the package organization:
 
-.. image:: img/diagr_code_aster.png
+.. image:: ../../img/diagr_code_aster.png
    :align: center
 
 """
 
 # image generated with:
-#   diagr_import --pkg --grp -g doc/devguide/img/diagr_code_aster.png \
+#   diagr_import --pkg --grp -g doc/img/diagr_code_aster.png \
 #       code_aster/**/*.py
 
 # discourage import *

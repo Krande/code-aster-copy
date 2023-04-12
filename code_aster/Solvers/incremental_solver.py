@@ -17,11 +17,11 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-from ...NonLinear import SolverFeature
-from ...NonLinear import SolverOptions as SOP
-from ...Objects import AssemblyMatrixDisplacementReal, DiscreteComputation
-from ...Supervis import IntegrationError
-from ...Utilities import no_new_attributes, profile
+from .solver_features import SolverFeature
+from .solver_features import SolverOptions as SOP
+from ..Objects import AssemblyMatrixDisplacementReal, DiscreteComputation
+from ..Supervis import IntegrationError
+from ..Utilities import no_new_attributes, profile
 
 
 class ResiState:

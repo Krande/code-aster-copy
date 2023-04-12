@@ -19,10 +19,10 @@
 
 from libaster import deleteTemporaryObjects, resetFortranLoggingLevel, setFortranLoggingLevel
 
-from ...NonLinear import SolverFeature
-from ...NonLinear import SolverOptions as SOP
-from ...Supervis import ConvergenceError, ExecuteCommand, IntegrationError
-from ...Utilities import logger, no_new_attributes, profile
+from .solver_features import SolverFeature
+from .solver_features import SolverOptions as SOP
+from ..Supervis import ConvergenceError, ExecuteCommand, IntegrationError
+from ..Utilities import logger, no_new_attributes, profile
 
 """
 Notations to use for mechanics.

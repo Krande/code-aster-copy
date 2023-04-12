@@ -23,7 +23,7 @@
 ******************************************************
 """
 
-from ..NonLinear import SolverOptions as SOP
+from ..Solvers import SolverOptions as SOP
 from ..Objects import DirichletBC, PhysicalProblem
 from ..Utilities import injector
 

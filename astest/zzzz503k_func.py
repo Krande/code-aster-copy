@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -42,7 +42,7 @@ from code_aster.Commands import *
 import code_aster
 from code_aster.Commands import *
 from code_aster.Utilities import force_list
-from code_aster.MacroCommands.NonLinearSolver import TimeStepper
+from code_aster.Solvers import TimeStepper
 
 
 class CoupledState:

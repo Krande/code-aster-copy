@@ -19,10 +19,10 @@
 
 from math import sqrt
 
-from ...NonLinear import SolverFeature
-from ...NonLinear import SolverOptions as SOP
-from ...Objects import DiscreteComputation
-from ...Utilities import MPI, no_new_attributes, profile
+from .solver_features import SolverFeature
+from .solver_features import SolverOptions as SOP
+from ..Objects import DiscreteComputation
+from ..Utilities import MPI, no_new_attributes, profile
 
 
 class ConvergenceManager(SolverFeature):

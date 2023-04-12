@@ -17,10 +17,10 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-from ...NonLinear import SolverFeature
-from ...NonLinear import SolverOptions as SOP
-from ...Supervis import ConvergenceError
-from ...Utilities import no_new_attributes, profile
+from .solver_features import SolverFeature
+from .solver_features import SolverOptions as SOP
+from ..Supervis import ConvergenceError
+from ..Utilities import no_new_attributes, profile
 
 
 class GeometricSolver(SolverFeature):

@@ -23,7 +23,6 @@ from ..Helpers import adapt_for_mgis_behaviour
 from ..Messages import UTMESS
 from ..Objects import (
     FrictionType,
-    LinearSolver,
     MechanicalDirichletBC,
     MechanicalLoadFunction,
     MechanicalLoadReal,
@@ -32,10 +31,8 @@ from ..Objects import (
     ParallelMechanicalLoadReal,
     PhysicalProblem,
 )
+from ..Solvers import ContactManager, NonLinearSolver, ProblemSolver, TimeStepper
 from ..Utilities import print_stats
-from .NonLinearSolver import NonLinearSolver, TimeStepper
-from .NonLinearSolver.contact_manager import ContactManager
-from .NonLinearSolver.problem_solver import ProblemSolver
 
 
 def _contact_check(CONTACT):
