@@ -148,6 +148,8 @@ subroutine mm_cycl_algo(ds_contact, l_frot_zone, &
     coef_bussetta = 0.0
     dist_max = 0.0
     coe1 = 0.d0
+
+    mmcvca = ASTER_FALSE
 !
     i_reso_cont = cfdisi(ds_contact%sdcont_defi, 'ALGO_RESO_CONT')
 !
@@ -283,12 +285,16 @@ subroutine mm_cycl_algo(ds_contact, l_frot_zone, &
 !
 ! Step 4. Traitement du CYCLAGE : NEWTON SUR LE CONTACT
     if ((ds_contact%iteration_newton .ge. 3) .and. &
-        (v_sdcont_cyceta(4*(i_cont_poin-1)+1) .gt. 0 .and. treatment)) then
-!    Cas 1 : Le point fait du FLIP-FLOP, meme traitement que POINT_FIXE
-        if (v_sdcont_cyceta(4*(i_cont_poin-1)+4) .eq. -10) then
-            if (ds_contact%resi_pressure .lt. 1.d-4*ds_contact%cont_pressure) &
+        v_sdcont_cyceta(4*(i_cont_poin-1)+1) .ne. 0 .and. &
+        treatment) then
+        if (v_sdcont_cyceta(4*(i_cont_poin-1)+1) .eq. 1) then
+            ! critere contact ignoré : grezillant
+            mmcvca = .true.
+        else if (v_sdcont_cyceta(4*(i_cont_poin-1)+4) .eq. -10 .and. .false.) then
+            if (ds_contact%resi_pressure .lt. 1.d-4*ds_contact%cont_pressure) then
+!           Cas 1 : Le point fait du FLIP-FLOP, meme traitement que POINT_FIXE
                 mmcvca = .true.
-            ctcsta = 0
+            end if
         else
             !ADAPTATION DE MATRICES, VECTEURS ET COEFF POUR LES TE :
             v_sdcont_cychis(n_cychis*(i_cont_poin-1)+57) = 1.0
@@ -437,7 +443,7 @@ subroutine mm_cycl_algo(ds_contact, l_frot_zone, &
 
 ! - Convergence ?
 !
-    mmcvca = (indi_cont_prev .eq. indi_cont_curr) .and. mmcvca_frot
+    mmcvca = (indi_cont_prev .eq. indi_cont_curr) .or. mmcvca
     if (.not. mmcvca .and. treatment) then
 !       On Bascule en mode penalise automatiquement jusqu'à convergence puis
 !       On revient en standard quand le statut de contact se stabilise : ssnv128z

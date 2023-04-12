@@ -85,10 +85,8 @@ subroutine mm_cycl_d1(ds_contact, i_cont_poin, &
 !
     cycl_long_acti = ds_contact%cycl_long_acti
     cycl_type = 1
-    cycl_ecod = 0
-    detect = .false.
     !on definit une pression rasante proche du zero
-    pres_near_zero = 1.d-2*ds_contact%arete_min
+    pres_near_zero = 1.d-3 * ds_contact%arete_min
     alpha_cont_matr = 1.0d0
     alpha_cont_vect = 1.0d0
 !
@@ -111,43 +109,42 @@ subroutine mm_cycl_d1(ds_contact, i_cont_poin, &
 !
 ! - Cycle state
 !
-    cycl_long = p_sdcont_cycnbr(4*(i_cont_poin-1)+cycl_type)
-    cycl_ecod = p_sdcont_cyclis(4*(i_cont_poin-1)+cycl_type)
-    cycl_ecod = cycl_ecod+(2**cycl_long)*indi_cont_eval
+    if (ds_contact%iteration_newton .eq. 0) then
+        cycl_long = 0
+        cycl_ecod = 0
+    else
+        cycl_long = p_sdcont_cycnbr(4*(i_cont_poin-1)+cycl_type)
+        cycl_ecod = p_sdcont_cyclis(4*(i_cont_poin-1)+cycl_type)
+    endif
+    cycl_ecod  = cycl_ecod + 2**(cycl_long+1)*indi_cont_eval
 
 !
 ! - Cycling detection
 !
-    cycl_stat = 0
+    cycl_stat = p_sdcont_cyceta(4*(i_cont_poin-1)+cycl_type)
     if (cycl_long+1 .eq. cycl_long_acti) then
-        detect = iscycl(cycl_ecod, cycl_long_acti)
-        if (p_sdcont_cyceta(4*(i_cont_poin-1)+cycl_type) .ge. 10) then
-            cycl_stat = 10
-            if (indi_cont_eval .eq. indi_cont_prev) cycl_stat = 0
-        elseif (detect) then
-            cycl_stat = 10
-            call mm_cycl_d1_ss(pres_near_zero, laug_cont_prev, laug_cont_curr, zone_cont_prev, &
-                               zone_cont_curr, cycl_sub_type, alpha_cont_matr, alpha_cont_vect)
+        ! décalage à gauche
+        cycl_ecod = cycl_ecod / 2
+        detect = iscycl(cycl_ecod*2, cycl_long_acti)
+        if (detect) then
+            call mm_cycl_d1_ss(pres_near_zero, laug_cont_prev, laug_cont_curr, zone_cont_prev,&
+                               zone_cont_curr, cycl_sub_type,alpha_cont_matr,alpha_cont_vect)
+            cycl_stat = cycl_sub_type
+        else
+            cycl_stat = 0
+        endif
+    else
+        cycl_long = cycl_long+1
+    endif
 
-            cycl_stat = cycl_stat+cycl_sub_type
-            alpha_cont_matr = 0.99d0
-            alpha_cont_vect = 0.99d0
-        end if
-    end if
 
 !
 ! - Cycling save : incrementation of cycle objects
 !
-    cycl_long = cycl_long+1
     p_sdcont_cyceta(4*(i_cont_poin-1)+cycl_type) = cycl_stat
     p_sdcont_cyclis(4*(i_cont_poin-1)+cycl_type) = cycl_ecod
-    if (cycl_long .eq. cycl_long_acti) then
-        cycl_long = 0
-        cycl_ecod = 0
-    end if
     p_sdcont_cycnbr(4*(i_cont_poin-1)+cycl_type) = cycl_long
-    p_sdcont_cyclis(4*(i_cont_poin-1)+cycl_type) = cycl_ecod
-    ASSERT(cycl_long .le. cycl_long_acti)
+    ASSERT(cycl_long .lt. cycl_long_acti)
 !
     call jedema()
 end subroutine
