@@ -20,7 +20,7 @@
 import code_aster
 from code_aster import LinearSolver, NonLinearResult, PhysicalProblem
 from code_aster.Commands import *
-from code_aster.MacroCommands.NonLinearSolver import NonLinearSolver, TimeStepper
+from code_aster.MacroCommands.NonLinearSolver import NonLinearSolver, StepSolver, TimeStepper
 from code_aster.MacroCommands.NonLinearSolver.problem_solver import ProblemSolver
 
 DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"), INFO=1)
@@ -63,6 +63,29 @@ SOLUT = STAT_NON_LINE(
     INFO=1,
 )
 
+
+class CustomStepSolver(StepSolver):
+    """Example of custom object: just add a print.
+
+    Whatever type of inherited from BaseFeature object can be used (not necessarly
+    StepSolver inherited).
+    It must provide the StepSolver feature and must have the expected interface.
+    """
+
+    def solve(self):
+        """Solve the step."""
+        try:
+            super().solve()
+        except code_aster.ConvergenceError as exc:
+            print(f"+++ CustomStepSolver raises ConvergenceError: {exc}")
+            raise
+        else:
+            print(
+                "+++ CustomStepSolver ends successfully, time:",
+                self.phys_state.time + self.phys_state.time_step,
+            )
+
+
 snl = ProblemSolver(NonLinearSolver(), NonLinearResult())
 snl.use(PhysicalProblem(model, mater))
 snl.use(LinearSolver.factory(METHODE="MUMPS"))
@@ -73,9 +96,10 @@ snl.setKeywords(
     CONVERGENCE={"RESI_GLOB_MAXI": 1.0e-6, "ITER_GLOB_MAXI": 20},
     NEWTON={"PREDICTION": "ELASTIQUE"},
     COMPORTEMENT={"RELATION": "VMIS_ISOT_LINE"},
+    INFO=1,
 )
+snl.use(CustomStepSolver())
 snl.use(TimeStepper([0.5, 1.0]))
-
 snl.run()
 
 # =========================================================

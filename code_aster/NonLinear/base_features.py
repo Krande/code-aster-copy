@@ -58,9 +58,11 @@ class FeatureMeta(type):
 
     def __new__(cls, name, base, defcl):
         obj = super().__new__(cls, name, base, defcl)
+        # obj.required_features = defcl.get("required_features", getattr(base, "required_features"))
+        # obj.optional_features = defcl.get("optional_features", getattr(base, "optional_features"))
         # compute '_supported' attribute value
         obj._supported = getattr(base, "_supported", 0)
-        for feat in defcl.get("required_features", []) + defcl.get("optional_features", []):
+        for feat in obj.required_features + obj.optional_features:
             obj._supported |= feat
         return obj
 
@@ -91,7 +93,7 @@ class BaseFeature(metaclass=FeatureMeta):
             obj (BaseFeature|misc): Object that to be used.
             provide (FeaturesOptions, optional): Features provided by the object.
         """
-        if not obj:
+        if not obj or obj in [reg for reg, _ in self._use]:
             return
         try:
             provide |= obj.provide
@@ -123,6 +125,21 @@ class BaseFeature(metaclass=FeatureMeta):
             bool: *True* if the feature is available, *False* otherwise.
         """
         return bool(self.get_features(feature))
+
+    def undefined(self):
+        """Returns the list of the undefined features.
+
+        For each option, a bool indicates if the feature is required or not.
+
+        Returns:
+            list[int, bool]: List of undefined options. bool is *True* for required
+            options, *False* otherwise.
+        """
+        undef = [(feat, True) for feat in self.required_features if not self.has_feature(feat)]
+        undef.extend(
+            [(feat, False) for feat in self.optional_features if not self.has_feature(feat)]
+        )
+        return undef
 
     def discard(self, worker):
         """Remove a registered worker if it is a member.

@@ -20,7 +20,7 @@
 from ...NonLinear import SolverFeature
 from ...NonLinear import SolverOptions as SOP
 from ...Objects import LinearSolver
-from ...Utilities import no_new_attributes
+from ...Utilities import logger, no_new_attributes
 from . import (
     ConvergenceManager,
     GeometricSolver,
@@ -87,6 +87,8 @@ class ProblemSolver(SolverFeature):
     def initialize(self):
         """Initialize default objects when required."""
         args = self.get_feature(SOP.Keywords, optional=True)
+        # FIXME 'use()' or a global logger
+        self._main.setLoggingLevel(args.get("INFO", 1))
         # required to build other default objects
         self._main.use(self.phys_pb)
         self._main.use(self._phys_state)
@@ -94,9 +96,6 @@ class ProblemSolver(SolverFeature):
         self._main.use(self.get_feature(SOP.TimeStepper))
         self._main.use(self._get_storage())
         self._main.use(self._get_step_solver())
-        # FIXME 'use()' or a global logger
-        self._main.setLoggingLevel(args.get("INFO", 1))
-
         self.check_features()
 
     def run(self):
@@ -111,25 +110,30 @@ class ProblemSolver(SolverFeature):
 
     # methods that build and return objects (allowing dependencies)
     def _get_storage(self):
-        if not self.has_feature(SOP.Storage):
-            self.use(StorageManager(self._result))
-        return self.get_feature(SOP.Storage)
+        logger.debug("+++ get StorageManager")
+        store = self.get_feature(SOP.Storage, optional=True)
+        if not store:
+            store = StorageManager(self._result)
+        self.use(store)
+        return store
 
     def _get_linear_solver(self):
+        logger.debug("+++ get LinearSolver")
         if not self.has_feature(SOP.LinearSolver):
             args = self.get_feature(SOP.Keywords)
             self.use(LinearSolver.factory("STAT_NON_LINE", args["SOLVEUR"]))
         return self.get_feature(SOP.LinearSolver)
 
     def _get_contact_manager(self):
+        logger.debug("+++ get ContactManager")
         return self.get_feature(SOP.Contact, optional=True)
 
     def _get_incr_conv(self):
-        if not self.has_feature(SOP.ConvergenceManager | SOP.ForIncr):
+        logger.debug("+++ get ConvergenceManager ForIncr")
+        converg = self.get_feature(SOP.ConvergenceManager | SOP.ForIncr, optional=True)
+        if not converg:
             args = self.get_feature(SOP.Keywords)
             converg = ConvergenceManager()
-            converg.use(self.phys_pb)
-            converg.use(self.phys_state)
             for crit in ("RESI_GLOB_RELA", "RESI_GLOB_MAXI"):
                 epsilon = args["CONVERGENCE"].get(crit)
                 if epsilon is not None:
@@ -137,56 +141,86 @@ class ProblemSolver(SolverFeature):
             if args.get("CONTACT"):
                 if args["CONTACT"].get("ALGO_RESO_GEOM") == "NEWTON":
                     converg.addCriteria("RESI_GEOM", args["CONTACT"].get("RESI_GEOM"))
-            self.use(converg, SOP.ForIncr)
-        return self.get_feature(SOP.ConvergenceManager | SOP.ForIncr)
+        for feat, required in converg.undefined():
+            converg.use(self._get(feat | SOP.ForIncr, required))
+        self.use(converg, SOP.ForIncr)
+        return converg
 
     def _get_incremental_solver(self):
-        if not self.has_feature(SOP.IncrementalSolver):
+        logger.debug("+++ get IncrementalSolver")
+        incr_solver = self.get_feature(SOP.IncrementalSolver, optional=True)
+        if not incr_solver:
             incr_solver = IncrementalSolver()
-            incr_solver.use(self.get_feature(SOP.PhysicalProblem))
-            incr_solver.use(self.phys_state)
-            incr_solver.use(self._get_linear_solver())
-            incr_solver.use(self._get_contact_manager())
-            incr_solver.use(self._get_incr_conv())
-            self.use(incr_solver)
-        return self.get_feature(SOP.IncrementalSolver)
+        for feat, required in incr_solver.undefined():
+            incr_solver.use(self._get(feat | SOP.ForIncr, required))
+        self.use(incr_solver)
+        return incr_solver
 
     def _get_step_conv(self):
-        if not self.has_feature(SOP.ConvergenceManager | SOP.ForStep):
+        logger.debug("+++ get ConvergenceManager ForStep")
+        step_crit = self.get_feature(SOP.ConvergenceManager | SOP.ForStep, optional=True)
+        if not step_crit:
             args = self.get_feature(SOP.Keywords)
             step_crit = ConvergenceManager()
-            step_crit.use(self.phys_pb)
-            step_crit.use(self.phys_state)
             epsilon = 1.0e150
             epsilon = (args.get("CONTACT") or {}).get("RESI_GEOM", epsilon)
             step_crit.addCriteria("RESI_GEOM", epsilon)
-            self.use(step_crit, SOP.ForStep)
-        return self.get_feature(SOP.ConvergenceManager | SOP.ForStep)
+        for feat, required in step_crit.undefined():
+            step_crit.use(self._get(feat, required))
+        self.use(step_crit, SOP.ForStep)
+        return step_crit
 
     def _get_step_conv_solver(self):
-        if not self.has_feature(SOP.ConvergenceCriteria):
-            args = self.get_feature(SOP.Keywords)
+        logger.debug("+++ get ConvergenceCriteria")
+        step_conv_solv = self.get_feature(SOP.ConvergenceCriteria, optional=True)
+        args = self.get_feature(SOP.Keywords)
+        if not step_conv_solv:
             if args.get("METHODE", "NEWTON") == "NEWTON":
                 step_conv_solv = GeometricSolver()
             else:
                 step_conv_solv = SNESSolver()
-            step_conv_solv.use(self.phys_pb)
-            step_conv_solv.use(self.phys_state)
+        # FIXME replace by 'use(*, Keywords)'
+        if not step_conv_solv.param:
             step_conv_solv.setParameters(args)
-            step_conv_solv.use(self._get_contact_manager())
-            step_conv_solv.use(self._get_incr_conv())
-            step_conv_solv.use(self._get_incremental_solver())
-            self.use(step_conv_solv)
-        return self.get_feature(SOP.ConvergenceCriteria)
+        for feat, required in step_conv_solv.undefined():
+            step_conv_solv.use(self._get(feat | SOP.ForIncr, required))
+        self.use(step_conv_solv)
+        return step_conv_solv
 
     def _get_step_solver(self):
-        if not self.has_feature(SOP.StepSolver):
-            args = self.get_feature(SOP.Keywords)
+        logger.debug("+++ get StepSolver")
+        step_solver = self.get_feature(SOP.StepSolver, optional=True)
+        if not step_solver:
             step_solver = StepSolver()
-            step_solver.use(self.phys_pb)
-            step_solver.use(self.phys_state)
-            step_solver.use(self._get_step_conv_solver())
-            step_solver.setParameters(args)
-            step_solver.use(self._get_step_conv())
-            self.use(step_solver)
-        return self.get_feature(SOP.StepSolver)
+        # FIXME replace by 'use(*, Keywords)'
+        if not step_solver.param:
+            step_solver.setParameters(self.get_feature(SOP.Keywords))
+        for feat, required in step_solver.undefined():
+            step_solver.use(self._get(feat | SOP.ForStep, required))
+        self.use(step_solver)
+        return step_solver
+
+    def _get(self, option, required):
+        logger.debug(f"--- requesting for {SOP.name(option)}")
+        if option & SOP.PhysicalProblem:
+            return self.phys_pb
+        if option & SOP.PhysicalState:
+            return self.phys_state
+        if option & SOP.Storage:
+            return self._get_storage()
+        if option & SOP.LinearSolver:
+            return self._get_linear_solver()
+        if option & SOP.Contact:
+            return self._get_contact_manager()
+        if option & (SOP.ConvergenceManager | SOP.ForIncr) == option:
+            return self._get_incr_conv()
+        if option & SOP.IncrementalSolver:
+            return self._get_incremental_solver()
+        if option & (SOP.ConvergenceManager | SOP.ForStep) == option:
+            return self._get_step_conv()
+        if option & SOP.ConvergenceCriteria:
+            return self._get_step_conv_solver()
+        if option & SOP.StepSolver:
+            return self._get_step_solver()
+        if required:
+            raise NotImplementedError(f"unsupported feature id: {option}")

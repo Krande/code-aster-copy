@@ -68,12 +68,16 @@ class BasicTest(unittest.TestCase):
             optional_features = [FOP.Storage]
 
         op = TestFeature()
+        self.assertEqual(len(op._use), 0)
         op.use(syst)
         op.use(stor)
         op.use(syssto, FOP.Storage)
-        op.use(anonym, FOP.State)
         with self.assertRaises(TypeError):
             op.use(anonym, FOP.Unused)
+        op.use(anonym, FOP.State)
+        self.assertEqual(len(op._use), 4)
+        op.use(syst)
+        self.assertEqual(len(op._use), 4)
 
         self.assertCountEqual(op.get_features(FOP.System), [syst, syssto])
         self.assertCountEqual(op.get_features(FOP.Storage), [stor, syssto])
@@ -96,6 +100,7 @@ class BasicTest(unittest.TestCase):
         op.use(object(), FOP.System)
         with self.assertRaises(TypeError):
             op.use(object(), FOP.Unused)
+        self.assertSequenceEqual(op.undefined(), [(FOP.Storage, True), (FOP.Contact, False)])
 
         self.assertEqual(len(op.required_features), 2)
         self.assertEqual(len(op.optional_features), 1)
