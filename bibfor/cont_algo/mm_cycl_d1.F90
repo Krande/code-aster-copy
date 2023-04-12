@@ -25,6 +25,7 @@ subroutine mm_cycl_d1(ds_contact, i_cont_poin, &
 !
     implicit none
 !
+#include "asterc/r8prem.h"
 #include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/iscycl.h"
@@ -76,6 +77,7 @@ subroutine mm_cycl_d1(ds_contact, i_cont_poin, &
     real(kind=8) :: laug_cont_prev, laug_cont_curr
     real(kind=8) :: pres_near_zero
     integer :: zone_cont_prev, zone_cont_curr
+    logical :: indi_cont_prev_modified
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -86,7 +88,7 @@ subroutine mm_cycl_d1(ds_contact, i_cont_poin, &
     cycl_long_acti = ds_contact%cycl_long_acti
     cycl_type = 1
     !on definit une pression rasante proche du zero
-    pres_near_zero = 1.d-3 * ds_contact%arete_min
+    pres_near_zero = 1.d-3*ds_contact%arete_min
     alpha_cont_matr = 1.0d0
     alpha_cont_vect = 1.0d0
 !
@@ -115,8 +117,14 @@ subroutine mm_cycl_d1(ds_contact, i_cont_poin, &
     else
         cycl_long = p_sdcont_cycnbr(4*(i_cont_poin-1)+cycl_type)
         cycl_ecod = p_sdcont_cyclis(4*(i_cont_poin-1)+cycl_type)
-    endif
-    cycl_ecod  = cycl_ecod + 2**(cycl_long+1)*indi_cont_eval
+    end if
+
+!   info pour savoir si indi_cont_prev a été modifié
+    indi_cont_prev_modified = cycl_long/4 .ne. indi_cont_prev
+!   indi_cont_prev peut avoir été modifié, on écrase donc sa valeur dans cycl_ecod
+    cycl_ecod = mod(cycl_ecod, 2**cycl_long) &
+                +2**cycl_long*indi_cont_prev &
+                +2**(cycl_long+1)*indi_cont_eval
 
 !
 ! - Cycling detection
@@ -124,19 +132,23 @@ subroutine mm_cycl_d1(ds_contact, i_cont_poin, &
     cycl_stat = p_sdcont_cyceta(4*(i_cont_poin-1)+cycl_type)
     if (cycl_long+1 .eq. cycl_long_acti) then
         ! décalage à gauche
-        cycl_ecod = cycl_ecod / 2
+        cycl_ecod = cycl_ecod/2
         detect = iscycl(cycl_ecod*2, cycl_long_acti)
         if (detect) then
-            call mm_cycl_d1_ss(pres_near_zero, laug_cont_prev, laug_cont_curr, zone_cont_prev,&
-                               zone_cont_curr, cycl_sub_type,alpha_cont_matr,alpha_cont_vect)
+            if (indi_cont_prev_modified) then
+                if (indi_cont_prev .eq. 1 .and. laug_cont_prev .ge. 0.d0) then
+                    laug_cont_prev = -r8prem()
+                end if
+            end if
+            call mm_cycl_d1_ss(pres_near_zero, laug_cont_prev, laug_cont_curr, zone_cont_prev, &
+                               zone_cont_curr, cycl_sub_type, alpha_cont_matr, alpha_cont_vect)
             cycl_stat = cycl_sub_type
         else
             cycl_stat = 0
-        endif
+        end if
     else
         cycl_long = cycl_long+1
-    endif
-
+    end if
 
 !
 ! - Cycling save : incrementation of cycle objects
