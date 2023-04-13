@@ -238,8 +238,8 @@ class CoupledSolver:
         state_curr.projectOnLagrangeSpace(hho_meca, hho_dama)
 
         while not stepper.hasFinished():
-            state_curr.time = stepper.getNext()
-            print("Time : %f" % stepper.getNext())
+            state_curr.time = stepper.getCurrent()
+            print("Time : %f" % stepper.getCurrent())
             for it in range(100):
                 u_iter = state_curr.u.duplicate()
                 dx_iter = state_curr.dx.duplicate()

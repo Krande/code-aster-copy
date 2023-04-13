@@ -49,7 +49,7 @@ Non Linear Solver for Mechanical Analyses
    :members:
    :special-members: __init__
 
-.. automodule:: code_aster.Solvers.stepper
+.. automodule:: code_aster.Solvers.time_stepper
    :show-inheritance:
    :members:
    :special-members: __init__

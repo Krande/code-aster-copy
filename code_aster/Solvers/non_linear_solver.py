@@ -142,7 +142,7 @@ class NonLinearSolver(SolverFeature):
         self.phys_state.readInitialState(self.phys_pb, self.param)
         self.step_rank = 0
         self._storeRank(self.phys_state.time)
-        self.stepper.insertStep(self.step_rank, self.phys_state.time)
+        self.stepper.setInitialStep(self.phys_state.time)
         self.stepper.completed()
 
     @profile
@@ -159,7 +159,7 @@ class NonLinearSolver(SolverFeature):
 
         # Solve nonlinear problem
         while not self.hasFinished():
-            timeEndStep = self.stepper.getNext()
+            timeEndStep = self.stepper.getCurrent()
             self.phys_state.time_step = timeEndStep - self.phys_state.time
 
             solv.initialize()

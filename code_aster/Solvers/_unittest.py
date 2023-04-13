@@ -18,7 +18,9 @@
 # --------------------------------------------------------------------
 
 import unittest
+
 from base_features import BaseFeature, BaseFeaturesOptions
+from time_stepper import TimeStepper
 
 
 class UnittestOptions(BaseFeaturesOptions):
@@ -112,6 +114,170 @@ class BasicTest(unittest.TestCase):
         inherit = InheritedFeature()
         self.assertEqual(len(inherit.required_features), 2)
         self.assertEqual(len(inherit.optional_features), 2)
+
+
+class TestTimeStepper(unittest.TestCase):
+    """Check for internal methods."""
+
+    def test_initial(self):
+        stp = TimeStepper([0.0, 0.25, 1.0, 2.0])
+        stp.setInitialStep(0.0)
+        step = stp.getCurrent()
+        self.assertAlmostEqual(step, 0.0)
+        stp.start()
+        self.assertEqual(stp.size(), 4)
+        step = stp.getCurrent()
+        self.assertAlmostEqual(step, 0.25)
+
+        eps = 1.0e-3
+        stp = TimeStepper([0.25, 1.0, 2.0], eps)
+        stp.setInitialStep(0.0)
+        self.assertEqual(stp.size(), 4)
+        stp.start()
+        step = stp.getCurrent()
+        self.assertAlmostEqual(step, 0.25)
+
+        stp.setInitialStep(0.3)
+        self.assertEqual(stp.size(), 3)
+        stp.start()
+        step = stp.getCurrent()
+        self.assertAlmostEqual(step, 1.0)
+
+        stp.setInitialStep(0.1)
+        stp.start()
+        self.assertEqual(stp.size(), 5)
+        step = stp.getCurrent()
+        self.assertAlmostEqual(step, 0.25)
+
+        stp.setInitialStep(0.1 + eps * 0.999)
+        stp.start()
+        self.assertEqual(stp.size(), 5)
+        step = stp.getCurrent()
+        self.assertAlmostEqual(step, 0.25)
+
+        stp = TimeStepper([0.0, 0.25, 1.0, 2.0])
+        stp.setInitialStep(1.0)
+        self.assertEqual(stp.size(), 2)
+        step = stp.getCurrent()
+        self.assertAlmostEqual(step, 1.0)
+
+        stp.setInitialStep(2.5)
+        self.assertEqual(stp.size(), 1)
+        self.assertFalse(stp.hasFinished())
+        stp.start()
+        self.assertTrue(stp.hasFinished())
+
+    def test_final(self):
+        eps = 1.0e-3
+        stp = TimeStepper([0.0, 0.25, 1.0, 2.0], eps)
+        stp.setFinalStep(2.0 - eps * 0.999)
+        self.assertEqual(stp.size(), 4)
+        stp.setFinalStep(2.0 + eps * 0.999)
+        self.assertEqual(stp.size(), 4)
+
+        stp.setFinalStep(1.9)
+        self.assertEqual(stp.size(), 4)
+        for _ in range(3):
+            stp.completed()
+        step = stp.getCurrent()
+        self.assertAlmostEqual(step, 1.9)
+
+        stp = TimeStepper([0.0, 0.25, 1.0, 2.0])
+        stp.setFinalStep(2.5)
+        self.assertEqual(stp.size(), 5)
+        for _ in range(4):
+            stp.completed()
+        step = stp.getCurrent()
+        self.assertAlmostEqual(step, 2.5)
+
+        stp = TimeStepper([0.0, 0.25, 1.0, 2.0])
+        self.assertEqual(stp.size(), 4)
+        stp.setFinalStep(0.8)
+        self.assertEqual(stp.size(), 3)
+        stp.setFinalStep()
+        self.assertEqual(stp.size(), 5)
+
+    def test_basic(self):
+        stp = TimeStepper([0.0, 0.25, 1.0, 2.0, 3.0])
+        self.assertFalse(stp.hasFinished())
+
+        step = stp.getCurrent()
+        self.assertAlmostEqual(step, 0.0)
+        delta_t = stp.getIncrement()
+        self.assertEqual(delta_t, stp.null_increment)
+
+        stp.setInitialStep(0.0)
+        step = stp.getCurrent()
+        self.assertAlmostEqual(step, 0.0)
+        stp.start()
+        step = stp.getCurrent()
+        self.assertAlmostEqual(step, 0.25)
+        delta_t = stp.getIncrement()
+        self.assertAlmostEqual(delta_t, 0.25)
+        stp.completed()
+
+        step = stp.getCurrent()
+        self.assertAlmostEqual(step, 1.0)
+        delta_t = stp.getIncrement()
+        self.assertAlmostEqual(delta_t, 0.75)
+        stp.completed()
+
+        step = stp.getCurrent()
+        self.assertAlmostEqual(step, 2.0)
+        step = stp.getCurrent()
+        self.assertAlmostEqual(step, 2.0)
+
+        with self.assertRaises(ValueError):
+            stp.raiseError(ValueError())
+
+        self.assertFalse(stp.hasFinished())
+        step = stp.getCurrent()
+        self.assertAlmostEqual(step, 1.0)
+        stp.completed()
+        step = stp.getCurrent()
+        self.assertAlmostEqual(step, 2.0)
+        stp.completed()
+        step = stp.getCurrent()
+        self.assertAlmostEqual(step, 3.0)
+        step = stp.getCurrent()
+        self.assertAlmostEqual(step, 3.0)
+        self.assertFalse(stp.hasFinished())
+
+    def test_restart(self):
+        stp = TimeStepper([0.0, 0.25, 1.0, 2.0, 3.0])
+        self.assertEqual(stp.size(), 5)
+        stp.setFinalStep(1.0)
+        self.assertEqual(stp.size(), 3)
+
+        stp.start()
+        self.assertAlmostEqual(stp.getCurrent(), 0.25)
+        stp.completed()
+        self.assertAlmostEqual(stp.getCurrent(), 1.0)
+        stp.completed()
+        self.assertTrue(stp.hasFinished())
+
+        stp.setInitialStep(1.0)
+        self.assertEqual(stp.size(), 1)
+        stp.setFinalStep(3.0)
+        self.assertEqual(stp.size(), 3)
+        stp.start()
+        self.assertAlmostEqual(stp.getCurrent(), 2.0)
+
+    def test_split(self):
+        stp = TimeStepper([0.0, 1.0, 2.0, 3.0])
+        self.assertEqual(stp.size(), 4)
+        stp.start()
+        self.assertAlmostEqual(stp.getCurrent(), 1.0)
+        stp.split(2)
+        self.assertEqual(stp.size(), 5)
+        self.assertAlmostEqual(stp.getCurrent(), 0.5)
+        stp.completed()
+        self.assertAlmostEqual(stp.getCurrent(), 1.0)
+        stp.split(5)
+        self.assertEqual(stp.size(), 9)
+        self.assertAlmostEqual(stp.getCurrent(), 0.6)
+        stp.completed()
+        self.assertAlmostEqual(stp.getCurrent(), 0.7)
 
 
 if __name__ == "__main__":

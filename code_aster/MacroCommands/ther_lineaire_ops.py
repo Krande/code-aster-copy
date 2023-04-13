@@ -414,7 +414,7 @@ def ther_lineaire_ops(self, **args):
 
     # Compute initial state
     if is_evol:
-        phys_state.time = timeStepper.getNext()
+        phys_state.time = timeStepper.getCurrent()
         time_theta = 1.0
         time_delta = timeStepper.null_increment
         if is_stat_init:
@@ -444,7 +444,7 @@ def ther_lineaire_ops(self, **args):
 
     # Loop on time step
     while not timeStepper.hasFinished():
-        phys_state.time = timeStepper.getNext()
+        phys_state.time = timeStepper.getCurrent()
 
         if is_evol:
             time_theta = args.get("PARM_THETA")

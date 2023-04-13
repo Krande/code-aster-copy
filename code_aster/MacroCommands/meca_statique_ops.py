@@ -237,7 +237,7 @@ def meca_statique_ops(self, **args):
     # Run computation
     logger.debug("<MECA_STATIQUE>: Run computation")
     while not timeStepper.hasFinished():
-        phys_state.time = timeStepper.getNext()
+        phys_state.time = timeStepper.getCurrent()
 
         # compute matrix and factorize it
         if not isConst or isFirst:

@@ -134,12 +134,14 @@ def meca_non_line_ops(self, **args):
     solver.use(contact_manager)
 
     # Add stepper
-    timeStepper = TimeStepper(args["INCREMENT"]["LIST_INST"].getValues()[1::])
+    timeStepper = TimeStepper(
+        args["INCREMENT"]["LIST_INST"].getValues()[1::], epsilon=args["INCREMENT"]["PRECISION"]
+    )
     if "INST_INIT" in args["INCREMENT"]:
-        timeStepper.setInitialStep(args["INCREMENT"]["INST_INIT"], args["INCREMENT"]["PRECISION"])
+        timeStepper.setInitialStep(args["INCREMENT"]["INST_INIT"])
 
     if "INST_FIN" in args["INCREMENT"]:
-        timeStepper.setFinalStep(args["INCREMENT"]["INST_FIN"], args["INCREMENT"]["PRECISION"])
+        timeStepper.setFinalStep(args["INCREMENT"]["INST_FIN"])
 
     if args["ETAT_INIT"] is not None:
         if "EVOL_NOLI" in args["ETAT_INIT"]:
