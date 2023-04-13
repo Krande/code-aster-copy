@@ -27,6 +27,11 @@
 
 /* person_in_charge: nicolas.sellenet at edf.fr */
 void MeshCoordinatesField::assign( const JeveuxVectorReal &values ) {
+    buildDescriptor();
+    *_valuesList = *values;
+}
+
+void MeshCoordinatesField::buildDescriptor() {
     JeveuxVectorLong descr( 3 );
     JeveuxChar32 objName( " " );
     const std::string quantities( "&CATA.GD.NOMGD" );
@@ -40,7 +45,6 @@ void MeshCoordinatesField::assign( const JeveuxVectorReal &values ) {
     descr->setInformationParameter( "CHGO" );
 
     *_descriptor = *descr;
-    *_valuesList = *values;
 }
 
 MeshCoordinatesField &MeshCoordinatesField::operator+=( const FieldOnNodesReal &rhs ) {

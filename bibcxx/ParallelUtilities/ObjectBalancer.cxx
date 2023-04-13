@@ -85,6 +85,7 @@ void ObjectBalancer::balanceObjectOverProcesses( const MeshCoordinatesFieldPtr &
     valuesOut->resize( vecSize + 3 * _sizeDelta );
     balanceSimpleVectorOverProcesses< ASTERDOUBLE, 3 >( &( *valuesIn )[0], vecSize,
                                                         &( *valuesOut )[0] );
+    coordsOut->buildDescriptor();
 };
 
 #endif /* ASTER_HAVE_MPI */

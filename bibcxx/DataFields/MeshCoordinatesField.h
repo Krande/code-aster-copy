@@ -85,6 +85,8 @@ class MeshCoordinatesField : public DataField {
 
     void assign( const JeveuxVectorReal &values );
 
+    void buildDescriptor();
+
     /**
      * @brief Shorthand + operator assignement
      * @return Updated field

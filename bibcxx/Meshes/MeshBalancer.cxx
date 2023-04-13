@@ -187,11 +187,22 @@ ParallelMeshPtr MeshBalancer::applyBalancingStrategy( VectorInt &newLocalNodesLi
 
     // Build cells and nodes groups
     balanceGroups( outMesh, nodesBalancer, cellsBalancer );
-    outMesh->buildInformations( 3 );
+    if ( _mesh->isIncomplete() ) {
+        outMesh->buildInformations( _mesh->getDimension() );
+    } else {
+        VectorInt dimension( 1, 0 );
+        if ( rank == 0 )
+            dimension[0] = _mesh->getDimension();
+        AsterMPI::bcast( dimension, 0 );
+        outMesh->buildInformations( dimension[0] );
+    }
 
     // Build "dummy" name vectors (for cells and nodes)
     outMesh->buildNamesVectors();
     outMesh->create_joints( domains, dMask.getBalancedMask(), nOwners, graphInterfaces );
+    outMesh->updateGlobalGroupOfNodes();
+    outMesh->updateGlobalGroupOfCells();
+    outMesh->endDefinition();
     return outMesh;
 };
 

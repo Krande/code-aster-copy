@@ -327,7 +327,6 @@ subroutine ircame(ifi, nochmd, chanom, typech, modele, &
         call jedetr('&&IRCAME.CMPLOC')
         ncmpvl = ncmpve
         ncmpve = cmpt
-        ncmprf = cmpt
     else
         call wkvect(indcmp, 'V V I', ncmpve, jindir)
         do icmp1 = 1, ncmpve
