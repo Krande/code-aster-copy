@@ -131,28 +131,13 @@ class BaseAssemblyMatrixReal(BaseAssemblyMatrix):
             rows = NP.array(smhc) - 1
             diag = NP.array(smdi) - 1
 
-            class SparseMatrixIterator:
-                """classe d'itération pour la liste de la colonne"""
-
-                def __init__(self):
-                    self.jcol = 0
-                    self.kterm = 0
-
-                def __iter__(self):
-                    return self
-
-                def __next__(self):
-                    if self.kterm == 0:
-                        self.kterm += 1
-                        return self.jcol
-                    if diag[self.jcol] < self.kterm:
-                        self.jcol += 1
-                    self.kterm += 1
-                    return self.jcol
-
-            col_iter = SparseMatrixIterator()
             # generate the columns indices
-            cols = NP.fromiter(col_iter, count=nnz, dtype=int)
+            cols = NP.zeros(nnz, dtype=int)
+            jcol = 0
+            for i in range(1, nnz):
+                if i > diag[jcol]:
+                    jcol += 1
+                cols[i] = jcol
 
             # diag is where "row == col"
             helper = rows - cols
@@ -249,28 +234,13 @@ class BaseAssemblyMatrixComplex(BaseAssemblyMatrix):
             rows = NP.array(smhc) - 1
             diag = NP.array(smdi) - 1
 
-            class SparseMatrixIterator:
-                """classe d'itération pour la liste de la colonne"""
-
-                def __init__(self):
-                    self.jcol = 0
-                    self.kterm = 0
-
-                def __iter__(self):
-                    return self
-
-                def __next__(self):
-                    if self.kterm == 0:
-                        self.kterm += 1
-                        return self.jcol
-                    if diag[self.jcol] < self.kterm:
-                        self.jcol += 1
-                    self.kterm += 1
-                    return self.jcol
-
-            col_iter = SparseMatrixIterator()
             # generate the columns indices
-            cols = NP.fromiter(col_iter, count=nnz, dtype=int)
+            cols = NP.zeros(nnz, dtype=int)
+            jcol = 0
+            for i in range(1, nnz):
+                if i > diag[jcol]:
+                    jcol += 1
+                cols[i] = jcol
 
             # diag is where "row == col"
             helper = rows - cols
