@@ -39,7 +39,7 @@ subroutine dlfext(nveca, nchar, temps, neq, liad, &
 #include "asterfort/utmess.h"
 #include "asterfort/vechme.h"
 #include "asterfort/vedime.h"
-#include "blas/dcopy.h"
+#include "blas/daxpy.h"
 !
     integer :: nveca, nchar, neq, liad(*)
     real(kind=8) :: temps, f(*)
@@ -104,6 +104,7 @@ subroutine dlfext(nveca, nchar, temps, neq, liad, &
 !
     call getvtx('SCHEMA_TEMPS', 'SCHEMA', iocc=1, scal=method, nbret=n1)
 !
+    call r8inir(neq, 0.d0, f, 1)
 !
 ! 2.1. ==> --- CAS D'UN CHARGEMENT DEFINI PAR VECT_ASSE ---
 !
@@ -111,9 +112,11 @@ subroutine dlfext(nveca, nchar, temps, neq, liad, &
 !
         call fext(temps, neq, nveca, liad, lifo, f)
 !
+    end if
+!
 ! 2.2. ==> --- CAS D'UN CHARGEMENT DEFINI PAR CHARGE ---
 !
-    else if (nchar .ne. 0) then
+    if (nchar .ne. 0) then
 !
 ! 2.2.1 ==>
 !
@@ -125,9 +128,9 @@ subroutine dlfext(nveca, nchar, temps, neq, liad, &
         call ascova('D', vachmp, fomult, 'INST', temps, &
                     typmat, cnchmp)
         call jelira(cnchmp(1:19)//'.VALE', 'LONMAX', lonch)
-        call jeveuo(cnchmp(1:19)//'.VALE', 'E', vr=f1)
+        call jeveuo(cnchmp(1:19)//'.VALE', 'L', vr=f1)
 !
-        call dcopy(neq, f1, 1, f, 1)
+        call daxpy(neq, 1.d0, f1, 1, f, 1)
 !
 ! 2.2.2. ==> -- LES DIRICHLETS
 !
@@ -148,12 +151,7 @@ subroutine dlfext(nveca, nchar, temps, neq, liad, &
             call utmess('F', 'DYNALINE1_20')
         end if
 !
-        do ieq = 1, lonch
-            f(ieq) = f(ieq)+f2(ieq)
-        end do
-!
-    else
-        call r8inir(neq, 0.d0, f, 1)
+        call daxpy(lonch, 1.d0, f2, 1, f, 1)
     end if
 !
     call jedetr(cnchmp)

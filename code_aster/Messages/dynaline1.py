@@ -65,11 +65,6 @@ Nombre de pas de calcul : %(i1)d
 Nombre d'itérations     : %(i2)d
 """
     ),
-    22: _(
-        """
-Il n'est pas possible de combiner les chargements CHARGE et VECT_ASSE sauf pour les ondes planes et les chargements cinématiques.
-"""
-    ),
     23: _(
         """
 Vous calculez une impédance absorbante.

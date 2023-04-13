@@ -253,12 +253,6 @@ subroutine dltlec(result, modele, numedd, materi, mate, &
         end do
     end if
 !
-    if (nveca .ne. 0 .and. nchar .ne. 0) then
-        if (nchar .ne. nondp .and. nchar .ne. nbCine) then
-            call utmess('F', 'DYNALINE1_22')
-        end if
-    end if
-!
 ! 3.3. ==> RECUPERATION DES DONNEES DE CHARGEMENT PAR ONDE PLANE
 !
     if (nondp .eq. 0) then
