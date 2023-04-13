@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,9 +17,7 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-import unittest
-
-import numpy as N
+import numpy as NP
 
 from . import TensorModule
 
@@ -61,7 +59,7 @@ def dif(i, j, n, m):
 def HookeIsotropic(E, NU):
     lamda = E * NU / ((1 + NU) * (1 - 2 * NU))
     mu = E / (2 * (1 + NU))
-    C = N.resize(None, (3, 3, 3, 3))
+    C = NP.resize(None, (3, 3, 3, 3))
     for i in range(3):
         for j in range(3):
             for k in range(3):
@@ -77,9 +75,9 @@ def Rotation(alpha, beta, gamma):
     alpha = float(alpha)
     beta = float(beta)
     gamma = float(gamma)
-    Ralpha = N.resize(0.0, (3, 3))
-    Rbeta = N.resize(0.0, (3, 3))
-    Rgamma = N.resize(0.0, (3, 3))
+    Ralpha = NP.resize(0.0, (3, 3))
+    Rbeta = NP.resize(0.0, (3, 3))
+    Rgamma = NP.resize(0.0, (3, 3))
     for i in range(3):
         for j in range(3):
             Ralpha[i, j] = sympy.cos(alpha * antikron(i, 2)) * kron(i, j) + sympy.sin(
@@ -88,7 +86,7 @@ def Rotation(alpha, beta, gamma):
         # Rbeta[i,j]=sympy.cos(-beta*antikron(i,1))*kron(i,j)+dif(i,j,2,1)*sympy.sin(-beta)*antikron(i,j)
         # Rgamma[i,j]=sympy.cos(gamma*antikron(i,0))*kron(i,j)+dif(i,j,1,0)*sympy.sin(gamma)*antikron(i,j)
     Rotation = Ralpha  # sympy.Matrix(Ralpha.tolist())*sympy.Matrix(Rbeta.tolist())*sympy.Matrix(Rgamma.tolist())
-    return TensorModule.Tensor(N.array(Rotation.tolist()))
+    return TensorModule.Tensor(NP.array(Rotation.tolist()))
 
 
 def HookeIsotropicP(E, NU):
@@ -97,7 +95,7 @@ def HookeIsotropicP(E, NU):
     A = (lamda * ones(3) + 2 * mu * eye(3)).row_join(zeros(3))
     B = zeros(3).row_join(mu * eye(3))
     C = A.col_join(B)
-    return TensorModule.Tensor(N.array(C))
+    return TensorModule.Tensor(NP.array(C))
 
 
 def HookeOrthotropic(E_L, E_T, E_N, NU_LT, NU_LN, NU_TN, G_LT, G_LN, G_TN):
@@ -116,7 +114,7 @@ def HookeOrthotropic(E_L, E_T, E_N, NU_LT, NU_LN, NU_TN, G_LT, G_LN, G_TN):
     DELTA = (1 - NU_TN * NU_NT - NU_NL * NU_LN - NU_LT * NU_TL - 2 * NU_TN * NU_NL * NU_LT) / (
         E_L * E_T * E_N
     )
-    C_reduit = N.resize(0.0, (6, 6))
+    C_reduit = NP.resize(0.0, (6, 6))
     C_reduit[0, 0] = (1 - NU_TN * NU_NT) / (E_T * E_N)
     C_reduit[0, 1] = (NU_TL + NU_NL * NU_TN) / (E_T * E_N)
     C_reduit[0, 2] = (NU_NL + NU_TL * NU_NT) / (E_T * E_N)
@@ -130,8 +128,8 @@ def HookeOrthotropic(E_L, E_T, E_N, NU_LT, NU_LN, NU_TN, G_LT, G_LN, G_TN):
     C_reduit[4, 4] = G_LN * DELTA
     C_reduit[5, 5] = G_TN * DELTA
     C_reduit = C_reduit / DELTA
-    C = N.resize(0.0, (3, 3, 3, 3))
-    I = N.array([[0, 3, 4], [3, 1, 5], [4, 5, 2]])
+    C = NP.resize(0.0, (3, 3, 3, 3))
+    I = NP.array([[0, 3, 4], [3, 1, 5], [4, 5, 2]])
     K = I
     for i in range(3):
         for j in range(3):
@@ -146,7 +144,7 @@ def HookeOrthotropicOrienteQuelconque(
 ):
     R = Rotation(alpha, beta, gamma)
     H_Ortho = HookeOrthotropic(E_L, E_T, E_N, NU_LT, NU_LN, NU_TN, G_LT, G_LN, G_TN)
-    Tens = N.resize(0.0, (3, 3, 3, 3))
+    Tens = NP.resize(0.0, (3, 3, 3, 3))
     for i in range(3):
         for j in range(3):
             for k in range(3):
@@ -164,42 +162,3 @@ def HookeOrthotropicOrienteQuelconque(
                                         * H_Ortho[I][J][K][L]
                                     )
     return TensorModule.Tensor(Tens)
-
-
-class TensorUnitTest(unittest.TestCase):
-    def setUp(self):
-        if not ASTER_HAVE_SYMPY:
-            return
-        self.U = TensorModule.Tensor(N.array(([X ** 3, Y ** 3, Z ** 3])))
-
-    def testType(self):
-        if not ASTER_HAVE_SYMPY:
-            return
-        self.assertEqual(TensorModule.isTensor(self.U), 1)
-
-    def testRank(self):
-        if not ASTER_HAVE_SYMPY:
-            return
-        self.assertEqual(self.U.rank, 1)
-        self.assertEqual(TensorModule.grad(self.U).rank, 2)
-
-    def testProduitDoubleContracte(self):
-        if not ASTER_HAVE_SYMPY:
-            return
-        tensDiff = HookeOrthotropic(
-            200.0, 100.0, 150.0, 0.4, 0.2, 0.3, 100.0, 100.0, 200.0
-        ).produitDoubleContracte(TensorModule.Tensor(N.ones((3, 3)))) - TensorModule.Tensor(
-            N.array(
-                [
-                    [375.52155772, 200.0, 200.0],
-                    [200.0, 273.99165508, 400.0],
-                    [200.0, 400.0, 329.62447844],
-                ]
-            )
-        )
-        diff = max(N.fabs(TensorModule.flatten(tensDiff.array.tolist())))
-        self.assertAlmostEqual(diff, 0.0, 8)
-
-
-if __name__ == "__main__":
-    unittest.main()

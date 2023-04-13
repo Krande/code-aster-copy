@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -21,10 +21,7 @@
 # Based on tensor.py written by Konrad Hinsen <hinsen@cnrs-orleans.fr>
 # =====================================================================
 
-import unittest
-
 import numpy as NP
-
 
 try:
     import sympy
@@ -135,7 +132,7 @@ class Tensor:
             return Tensor(self.array * other, 1)
 
     def sqrt(self):
-        return Tensor(self.array ** 0.5, 1)
+        return Tensor(self.array**0.5, 1)
 
     def diagonal(self, axis1=0, axis2=1):
         if self.rank == 2:
@@ -251,7 +248,7 @@ class Tensor:
     def produitSimpleContracte(self, other):
         rank = self.rank + other.rank - 2
         # Ruse pour produire un objet Sympy nul
-        out_array = NP.array([X] * (3 ** rank))
+        out_array = NP.array([X] * (3**rank))
         out_array.shape = [3] * rank
         if not (self.rank >= 1 and other.rank >= 1):
             raise ValueError("range of each Tensor must be at least 1")
@@ -381,175 +378,3 @@ def gradsym(F):
         raise ValueError("Argument must be a Tensor")
     gradsymF = 0.5 * (grad(F) + grad(F).transpose())
     return gradsymF
-
-
-#
-class TensorUnitTest(unittest.TestCase):
-    def setUp(self):
-        if not ASTER_HAVE_SYMPY:
-            return
-        self.U = Tensor(
-            NP.array(
-                (
-                    [X ** 3, sympy.sin(X), sympy.exp(X)],
-                    [Y ** 3, sympy.sin(Y), sympy.exp(Y)],
-                    [Z ** 3, sympy.sin(Z), sympy.exp(Z)],
-                )
-            )
-        )
-
-    def testType(self):
-        if not ASTER_HAVE_SYMPY:
-            return
-        self.assertEqual(isTensor(self.U), 1)
-
-    def testRank(self):
-        if not ASTER_HAVE_SYMPY:
-            return
-        self.assertEqual(self.U.rank, 2)
-        self.assertEqual(grad(self.U).rank, 3)
-
-    def testGrad(self):
-        if not ASTER_HAVE_SYMPY:
-            return
-        self.assertEqual(
-            grad(self.U),
-            Tensor(
-                NP.array(
-                    [
-                        [[3 * X ** 2, 0, 0], [0, 3 * Y ** 2, 0], [0, 0, 3 * Z ** 2]],
-                        [[sympy.cos(X), 0, 0], [0, sympy.cos(Y), 0], [0, 0, sympy.cos(Z)]],
-                        [[sympy.exp(X), 0, 0], [0, sympy.exp(Y), 0], [0, 0, sympy.exp(Z)]],
-                    ]
-                )
-            ),
-        )
-
-    def testGradSym(self):
-        if not ASTER_HAVE_SYMPY:
-            return
-        # attention: sensible 3.0*X**2 != 3*X**2
-        self.assertEqual(
-            gradsym(self.U),
-            Tensor(
-                NP.array(
-                    [
-                        [
-                            [3.0 * X ** 2, 0.5 * sympy.cos(X), 0.5 * sympy.exp(X)],
-                            [0, 1.5 * Y ** 2, 0],
-                            [0, 0, 1.5 * Z ** 2],
-                        ],
-                        [
-                            [0.5 * sympy.cos(X), 0, 0],
-                            [1.5 * Y ** 2, 1.0 * sympy.cos(Y), 0.5 * sympy.exp(Y)],
-                            [0, 0, 0.5 * sympy.cos(Z)],
-                        ],
-                        [
-                            [0.5 * sympy.exp(X), 0, 0],
-                            [0, 0.5 * sympy.exp(Y), 0],
-                            [1.5 * Z ** 2, 0.5 * sympy.cos(Z), 1.0 * sympy.exp(Z)],
-                        ],
-                    ]
-                )
-            ),
-        )
-
-    def testLaplacien(self):
-        if not ASTER_HAVE_SYMPY:
-            return
-        self.assertEqual(
-            laplacien(self.U),
-            Tensor(
-                NP.array(
-                    [
-                        [6 * X, 6 * Y, 6 * Z],
-                        [-sympy.sin(X), -sympy.sin(Y), -sympy.sin(Z)],
-                        [sympy.exp(X), sympy.exp(Y), sympy.exp(Z)],
-                    ]
-                )
-            ),
-        )
-
-    def testDivergence(self):
-        if not ASTER_HAVE_SYMPY:
-            return
-        self.assertEqual(
-            div(grad(self.U)),
-            Tensor(
-                NP.array(
-                    [
-                        [6 * X, 6 * Y, 6 * Z],
-                        [-sympy.sin(X), -sympy.sin(Y), -sympy.sin(Z)],
-                        [sympy.exp(X), sympy.exp(Y), sympy.exp(Z)],
-                    ]
-                )
-            ),
-        )
-
-    def testProduitDoubleContracte(self):
-        if not ASTER_HAVE_SYMPY:
-            return
-        TensO4Sym = Tensor(
-            NP.array(
-                [
-                    [
-                        [[400.0, 0.0, 0.0], [0.0, 200.0, 0.0], [0.0, 0.0, 200.0]],
-                        [[0.0, 66.66666667, 0.0], [66.66666667, 0.0, 0.0], [0.0, 0.0, 0.0]],
-                        [[0.0, 0.0, 133.33333333], [0.0, 0.0, 0.0], [133.33333333, 0.0, 0.0]],
-                    ],
-                    [
-                        [[0.0, 66.66666667, 0.0], [66.66666667, 0.0, 0.0], [0.0, 0.0, 0.0]],
-                        [[200.0, 0.0, 0.0], [0.0, 233.33333333, 0.0], [0.0, 0.0, 166.66666667]],
-                        [[0.0, 0.0, 0.0], [0.0, 0.0, 66.66666667], [0.0, 66.66666667, 0.0]],
-                    ],
-                    [
-                        [[0.0, 0.0, 133.33333333], [0.0, 0.0, 0.0], [133.33333333, 0.0, 0.0]],
-                        [[0.0, 0.0, 0.0], [0.0, 0.0, 66.66666667], [0.0, 66.66666667, 0.0]],
-                        [[200.0, 0.0, 0.0], [0.0, 166.66666667, 0.0], [0.0, 0.0, 233.33333333]],
-                    ],
-                ]
-            )
-        )
-
-        self.assertEqual(
-            TensO4Sym.produitDoubleContracte(self.U),
-            Tensor(
-                NP.array(
-                    [
-                        [
-                            200.000000000000 * sympy.sin(Y)
-                            + 400.000000000000 * X ** 3
-                            + 200.000000000000 * sympy.exp(Z),
-                            66.6666666700000 * sympy.sin(X) + 66.6666666700000 * Y ** 3,
-                            133.333333330000 * Z ** 3 + 133.333333330000 * sympy.exp(X),
-                        ],
-                        [
-                            66.6666666700000 * sympy.sin(X) + 66.6666666700000 * Y ** 3,
-                            233.333333330000 * sympy.sin(Y)
-                            + 200.000000000000 * X ** 3
-                            + 166.666666670000 * sympy.exp(Z),
-                            66.6666666700000 * sympy.sin(Z) + 66.6666666700000 * sympy.exp(Y),
-                        ],
-                        [
-                            133.333333330000 * Z ** 3 + 133.333333330000 * sympy.exp(X),
-                            66.6666666700000 * sympy.sin(Z) + 66.6666666700000 * sympy.exp(Y),
-                            166.666666670000 * sympy.sin(Y)
-                            + 200.000000000000 * X ** 3
-                            + 233.333333330000 * sympy.exp(Z),
-                        ],
-                    ]
-                )
-            ),
-        )
-
-    def testproduitSimpleContracte(self):
-        if not ASTER_HAVE_SYMPY:
-            return
-        self.assertEqual(
-            self.U.produitSimpleContracte(Tensor(NP.array([-1, 0, 0]))),
-            Tensor(NP.array([-(X ** 3), -(Y ** 3), -(Z ** 3)])),
-        )
-
-
-if __name__ == "__main__":
-    unittest.main()

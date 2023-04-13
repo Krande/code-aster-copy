@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -21,15 +21,11 @@
 
 """Module permettant de lire un fichier produit par Miss"""
 
-import os
-import os.path as osp
 import re
-import unittest
 
 import numpy as NP
 
 from .miss_utils import double, lire_nb_valeurs
-from ...Objects.table_py import Table
 from ...Messages import UTMESS
 
 
@@ -98,31 +94,3 @@ class ResultatPC:
     def set(self, component, real, imag):
         """register the value for a component"""
         self.comp[component] = (real, imag)
-
-
-class TestMissCsolReader(unittest.TestCase):
-
-    """test the reader of csol files"""
-
-    fcsol = "ZZZZ108B.01.csol.a"
-
-    # unittest.skipIf(not osp.isfile(faster),   # decorator requires python 2.7
-    # "requires %s" % faster)
-    def test01_ext(self):
-        """test creation of the .ext file"""
-        if not osp.isfile(self.fcsol):
-            return
-        reader = MissCsolReader(3, 201)
-        lfreq, values = reader.read(self.fcsol)
-        self.tab = tab = Table()
-        tab["FREQ"] = lfreq
-        for ipc, respc in enumerate(values):
-            for iddl, comp in enumerate(("X", "Y", "Z")):
-                lab = "PC_{}_{}_REEL".format(ipc + 1, comp)
-                tab[lab] = respc.comp[iddl][0]
-                lab = "PC_{}_{}_IMAG".format(ipc + 1, comp)
-                tab[lab] = respc.comp[iddl][1]
-
-
-if __name__ == "__main__":
-    unittest.main()

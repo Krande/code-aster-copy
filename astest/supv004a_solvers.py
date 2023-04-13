@@ -19,8 +19,8 @@
 
 import unittest
 
-from base_features import BaseFeature, BaseFeaturesOptions
-from time_stepper import TimeStepper
+from code_aster.Solvers.base_features import BaseFeature, BaseFeaturesOptions
+from code_aster.Solvers import TimeStepper
 
 
 class UnittestOptions(BaseFeaturesOptions):

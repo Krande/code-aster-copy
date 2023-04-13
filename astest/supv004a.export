@@ -1,12 +1,15 @@
 P time_limit 60
-P memory_limit 128
-P testlist submit verification sequential
-
-F comm supv004a.comm D 1
+P memory_limit 512
 P ncpus 1
 P mpi_nbcpu 1
 P mpi_nbnoeud 1
+P testlist submit verification sequential
 
 # Cet argument est activé ipour la couverture de code.
 # aslint: disable=E2003
 A args --hide-command --post=vale_calc
+
+F comm supv004a.comm D 1
+F nom supv004a_miss.py D 0
+F nom supv004a_solvers.py D 0
+F nom supv004a_contrib_tensor.py D 0

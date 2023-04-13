@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -21,85 +21,34 @@
 
 # Note: "--hide-command" is used in the '.export' file.
 import unittest
+import sys
 
 
-DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"))
+import code_aster
+from code_aster.Commands import FIN
 
+code_aster.init("--test")
+test = code_aster.TestCase()
 
-ldr = unittest.defaultTestLoader
-suite = unittest.TestSuite()
+result = unittest.main(argv=["comm"], module="supv004a_solvers", exit=False, verbosity=2).result
+test.assertTrue(result.wasSuccessful())
 
-if hasattr(ldr, "discover"):  # only python >= 2.7
-    count = suite.countTestCases()
-    suite.addTests(ldr.discover("code_aster.MacroCommands.Miss", pattern="*.py"))
-    suite.addTests(ldr.discover("code_aster.MacroCommands.Contrib", pattern="*.py"))
-else:
-    TESTLIST = [
-        "Miss.miss_fichier_cmde",
-        "Miss.miss_resu_aster",
-        "Miss.miss_resu_miss",
-        "Utilitai.calc_fonction_utils",
-        "Utilitai.TensorModule",
-        "Utilitai.HookeTensor",
-    ]
-    suite.addTest(ldr.loadTestsFromNames(TESTLIST))
+result = unittest.main(argv=["comm"], module="supv004a_miss", exit=False, verbosity=2).result
+test.assertTrue(result.wasSuccessful())
 
-# info = 0 (quiet), 1 (print tests titles), 2 (debug, stop on first error)
-info = 1
-if info < 2:
-    runner = unittest.TextTestRunner(verbosity=info + 1)
-    result = runner.run(suite)
-else:
-    result = None
-    suite.debug()
-    raise AssertionError("only for debug purpose")
+result = unittest.main(
+    argv=["comm"], module="supv004a_contrib_tensor", exit=False, verbosity=2
+).result
+test.assertTrue(result.wasSuccessful())
 
-# add TEST_TABLE: True=1, False=0
-keys = ["GLOBAL", "NBRUN", "ERROR", "FAILURE"]
-values = [int(result.wasSuccessful()), result.testsRun, len(result.errors), len(result.failures)]
+# to flush printings from unittest
+sys.stdout.flush()
+sys.stderr.flush()
 
-tab1 = CREA_TABLE(
-    LISTE=(_F(PARA="TEST", TYPE_K="K8", LISTE_K=keys), _F(PARA="RESULT", LISTE_I=values))
-)
+test.printSummary()
 
-# all tests ended with success
-TEST_TABLE(
-    TABLE=tab1,
-    FILTRE=_F(NOM_PARA="TEST", VALE_K="GLOBAL"),
-    NOM_PARA="RESULT",
-    REFERENCE="ANALYTIQUE",
-    VALE_CALC_I=1,
-    VALE_REFE_I=1,
-)
+# suite.addTests(ldr.discover(".", pattern="*.py"))
+# suite.addTests(ldr.discover("code_aster.MacroCommands.Miss", pattern="*.py"))
+# suite.addTests(ldr.discover("code_aster.MacroCommands.Contrib", pattern="*.py"))
 
-# number of unittests expected to run
-TEST_TABLE(
-    TABLE=tab1,
-    FILTRE=_F(NOM_PARA="TEST", VALE_K="NBRUN"),
-    NOM_PARA="RESULT",
-    REFERENCE="ANALYTIQUE",
-    VALE_CALC_I=21,
-    VALE_REFE_I=21,
-)
-
-# number of errors
-TEST_TABLE(
-    TABLE=tab1,
-    FILTRE=_F(NOM_PARA="TEST", VALE_K="ERROR"),
-    NOM_PARA="RESULT",
-    REFERENCE="ANALYTIQUE",
-    VALE_CALC_I=0,
-    VALE_REFE_I=0,
-)
-
-# number of failures
-TEST_TABLE(
-    TABLE=tab1,
-    FILTRE=_F(NOM_PARA="TEST", VALE_K="FAILURE"),
-    NOM_PARA="RESULT",
-    REFERENCE="ANALYTIQUE",
-    VALE_CALC_I=0,
-    VALE_REFE_I=0,
-)
-
-FIN()
+code_aster.close()

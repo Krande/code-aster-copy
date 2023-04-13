@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -26,9 +26,7 @@ Cette structure est potentiellement volumineuse et sera donc détruite dès que 
 """
 
 import os
-import os.path as osp
 import traceback
-import unittest
 
 from .miss_utils import double, lire_nb_valeurs
 from ...Messages import UTMESS
@@ -203,20 +201,20 @@ class ResuAsterReader(object):
     def _read_mode_stat_mass(self):
         """modes statiques : masse"""
         self.ln += lire_nb_valeurs(
-            self.fobj, self.struct.mode_stat_nb ** 2, self.struct.mode_stat_mass, double, 1, 1
+            self.fobj, self.struct.mode_stat_nb**2, self.struct.mode_stat_mass, double, 1, 1
         )
 
     def _read_mode_stat_rigi(self):
         """modes statiques : rigidité"""
         self.ln += lire_nb_valeurs(
-            self.fobj, self.struct.mode_stat_nb ** 2, self.struct.mode_stat_rigi, double, 1, 1
+            self.fobj, self.struct.mode_stat_nb**2, self.struct.mode_stat_rigi, double, 1, 1
         )
 
     def _read_mode_stat_amor(self):
         """modes statiques : amortissements (facultatifs)"""
         unused = lire_nb_valeurs(
             self.fobj,
-            self.struct.mode_stat_nb ** 2,
+            self.struct.mode_stat_nb**2,
             self.struct.mode_stat_amor,
             double,
             1,
@@ -319,9 +317,9 @@ class STRUCT_RESULTAT:
             len(self.mode_stat_vale) == 0
             or len(self.mode_stat_vale) == self.mode_stat_nb * self.noeud_nb * 3
         )
-        assert len(self.mode_stat_amor) == 0 or len(self.mode_stat_amor) == self.mode_stat_nb ** 2
-        assert len(self.mode_stat_mass) == self.mode_stat_nb ** 2
-        assert len(self.mode_stat_rigi) == self.mode_stat_nb ** 2
+        assert len(self.mode_stat_amor) == 0 or len(self.mode_stat_amor) == self.mode_stat_nb**2
+        assert len(self.mode_stat_mass) == self.mode_stat_nb**2
+        assert len(self.mode_stat_rigi) == self.mode_stat_nb**2
         assert self.coupl_nb == (self.mode_dyna_nb, self.mode_stat_nb)
         assert (
             len(self.coupl_amor) == 0
@@ -355,28 +353,3 @@ class STRUCT_RESULTAT:
                         val[i] = val[i][:8]
             txt.append("%-14s : %s" % (attr, val))
         return os.linesep.join(txt)
-
-
-class TestMissInterface(unittest.TestCase):
-
-    """test interface functions to create miss datafiles"""
-
-    faster = "ZZZZ108B.aster"
-
-    # unittest.skipIf(not osp.isfile(faster),   # decorator requires python 2.7
-    # "requires %s" % faster)
-    def test01_ext(self):
-        """test creation of the .ext file"""
-        if not osp.isfile(self.faster):
-            return
-        rdr = ResuAsterReader(nbgrp=2)
-        data = rdr.read(self.faster)
-        assert data.noeud_nb == 100, data.noeud_nb
-        assert data.maille_nb_tot == 99, data.maille_nb_tot
-        assert data.maille_nb == [96, 3], data.maille_nb
-        assert data.mode_dyna_nb == 0, data.mode_dyna_nb
-        assert data.mode_stat_nb == 291, data.mode_stat_nb
-
-
-if __name__ == "__main__":
-    unittest.main()

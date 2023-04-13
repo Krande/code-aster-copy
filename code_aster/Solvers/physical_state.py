@@ -243,7 +243,7 @@ class PhysicalState(BaseFeature):
 
         # Get initial state: primal, stress, internal state variables
         init_params = params.get("ETAT_INIT")
-        if init_params is not None:
+        if init_params:
             if "DEPL" in init_params:
                 primal = init_params.get("DEPL")
                 assert isinstance(primal, FieldOnNodesReal)
