@@ -27,10 +27,13 @@ subroutine nmrecz(nume_dof, ds_contact, list_func_acti, &
     implicit none
 !
 #include "asterf_types.h"
+#include "asterfort/asmpi_comm_vect.h"
+#include "asterfort/asmpi_info.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/nmequi.h"
 #include "asterfort/isfonc.h"
+#include "asterfort/isParallelMesh.h"
 !
     integer, intent(in) :: list_func_acti(*)
     character(len=24), intent(in) :: nume_dof
@@ -58,16 +61,30 @@ subroutine nmrecz(nume_dof, ds_contact, list_func_acti, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    character(len=19) :: cnequi
+    character(len=19) :: cnequi, nommai, nume_equa
     real(kind=8), pointer :: v_cnequi(:) => null()
-    integer :: i_equa, nb_equa
-    aster_logical :: l_disp, l_pilo, l_macr
+    integer :: nb_equa, rang
+    aster_logical :: l_disp, l_pilo, l_macr, l_parallel_mesh
     real(kind=8), pointer :: v_disp_iter(:) => null()
-!
+    integer, pointer :: pddl(:) => null()
+    real(kind=8), dimension(:), allocatable:: disp, resi
+    mpi_int :: mrank
+    !
 ! --------------------------------------------------------------------------------------------------
 !
     call dismoi('NB_EQUA', nume_dof, 'NUME_DDL', repi=nb_equa)
     call jeveuo(disp_iter(1:19)//'.VALE', 'L', vr=v_disp_iter)
+!
+! - hpc context or not
+!
+    call dismoi('NUME_EQUA', disp_iter, 'CHAM_NO', repk=nume_equa)
+    call dismoi('NOM_MAILLA', nume_equa, 'NUME_EQUA', repk=nommai)
+    l_parallel_mesh = isParallelMesh(nommai)
+    if (l_parallel_mesh) then
+        call jeveuo(nume_equa//'.PDDL', 'L', vi=pddl)
+        call asmpi_info(rank=mrank)
+        rang = to_aster_int(mrank)
+    end if
 !
 ! - Compute lack of balance forces
 !
@@ -82,9 +99,15 @@ subroutine nmrecz(nume_dof, ds_contact, list_func_acti, &
 !
 ! - Compute function
 !
-    func = 0.d0
-    do i_equa = 1, nb_equa
-        func = func+v_disp_iter(i_equa)*v_cnequi(i_equa)
-    end do
+    if (.not. l_parallel_mesh) then
+        func = dot_product(v_disp_iter, v_cnequi)
+    else
+        disp = pack(v_disp_iter, pddl == rang)
+        resi = pack(v_cnequi, pddl == rang)
+        func = dot_product(disp, resi)
+        call asmpi_comm_vect('MPI_SUM', 'R', scr=func)
+        deallocate (disp)
+        deallocate (resi)
+    end if
 !
 end subroutine
