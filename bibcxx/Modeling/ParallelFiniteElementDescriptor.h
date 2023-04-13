@@ -67,6 +67,12 @@ class ParallelFiniteElementDescriptor : public FiniteElementDescriptor {
                                      const ConnectionMeshPtr &mesh, const ModelPtr &model );
 
     /**
+     * @brief Constructeur
+     */
+    ParallelFiniteElementDescriptor( const std::string &name, const std::string &jName,
+                                     const BaseMeshPtr &mesh );
+
+    /**
      * @brief Get vector of delayed elements keeped from the base FiniteElementDescriptor
      * @return reference on VectorLong
      */
@@ -77,6 +83,7 @@ class ParallelFiniteElementDescriptor : public FiniteElementDescriptor {
      * @return reference on VectorLong
      */
     const JeveuxVectorLong getJoints() const { return _joints->getOppositeDomains(); };
+    std::string getJointObjectName() const { return _joints->getName(); };
 
     /**
      * @brief Get the mapping between local and global numbering of nodes

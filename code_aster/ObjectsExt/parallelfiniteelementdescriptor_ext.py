@@ -19,32 +19,21 @@
 
 # person_in_charge: mathieu.courtois@edf.fr
 """
-:py:class:`ParallelMechanicalLoad` --- Assignment of parallel mechanical load
+:py:class:`ParallelFiniteElementDescriptor` --- Assignment of parallel mechanical load
 *****************************************************************************
 """
 
-from ..Objects import ParallelMechanicalLoadFunction, ParallelMechanicalLoadReal
+from ..Objects import ParallelFiniteElementDescriptor
 
 from ..Utilities import injector
 
 
-@injector(ParallelMechanicalLoadReal)
-class ExtendedParallelMechanicalLoadReal:
-    cata_sdj = "SD.sd_char_meca.sd_parallel_char_meca"
+@injector(ParallelFiniteElementDescriptor)
+class ExtendedParallelFiniteElementDescriptor:
+    cata_sdj = "SD.sd_ligrel.sd_ligrel"
 
     def __getinitargs__(self):
-        """Returns the argument required to reinitialize a ParallelMechanicalLoadReal
+        """Returns the argument required to reinitialize a ParallelFiniteElementDescriptor
         object during unpickling.
         """
-        return (self.getName(), self.getFiniteElementDescriptor(), self.getModel())
-
-
-@injector(ParallelMechanicalLoadFunction)
-class ExtendedParallelMechanicalLoadFunction:
-    cata_sdj = "SD.sd_char_meca.sd_parallel_char_meca"
-
-    def __getinitargs__(self):
-        """Returns the argument required to reinitialize a ExtendedParallelMechanicalLoadFunction
-        object during unpickling.
-        """
-        return (self.getName(), self.getFiniteElementDescriptor(), self.getModel())
+        return (self.getName(), self.getJointObjectName(), self.getMesh())

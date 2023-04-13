@@ -83,6 +83,7 @@ from .model_ext import Model
 from .moderesult_ext import ModeResult
 from .paralleldofnumbering_ext import ParallelDOFNumbering
 from .parallelequationnumbering_ext import ParallelEquationNumbering
+from .parallelfiniteelementdescriptor_ext import ParallelFiniteElementDescriptor
 from .parallelmechanicalload_ext import ParallelMechanicalLoadReal, ParallelMechanicalLoadFunction
 from .parallelmesh_ext import ConnectionMesh, ParallelMesh
 from .prestressingcable_ext import PrestressingCable

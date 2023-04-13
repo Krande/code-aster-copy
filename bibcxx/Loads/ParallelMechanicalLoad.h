@@ -152,6 +152,22 @@ class ParallelMechanicalLoad : public DataStructure {
     };
 
     /**
+     * @brief Constructeur
+     */
+    ParallelMechanicalLoad( const std::string &name,
+                            const ParallelFiniteElementDescriptorPtr &fEDesc,
+                            const ModelPtr &model )
+        : DataStructure( name, 8, "CHAR_MECA" ),
+          _FEDesc( fEDesc ),
+          _cimpo(
+              std::make_shared< ConstantFieldOnCellsType >( getName() + ".CHME.CIMPO", _FEDesc ) ),
+          _cmult(
+              std::make_shared< ConstantFieldOnCellsReal >( getName() + ".CHME.CMULT", _FEDesc ) ),
+          _type( getName() + ".TYPE" ),
+          _modelName( getName() + ".CHME.MODEL.NOMO" ),
+          _model( model ) {};
+
+    /**
      * @brief Function membre debugPrint
      * @param logicalUnit Unite logique d'impression
      */

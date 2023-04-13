@@ -246,7 +246,7 @@ ParallelFiniteElementDescriptor::ParallelFiniteElementDescriptor(
     ( *_parameters )[1] = model->getName();
     ( *_parameters )[2] = ( *param )[2];
     ( *_parameters )[3] = _joints->getName();
-    std::cout << ( *_parameters )[3] << std::endl;
+
     auto docu = FEDesc->getParameters()->getInformationParameter();
     _parameters->setInformationParameter( docu );
     /** @todo ajouter un assert sur le maillage sous-jacent au modele */
@@ -285,6 +285,19 @@ ParallelFiniteElementDescriptor::ParallelFiniteElementDescriptor(
     }
 
     build();
+};
+
+ParallelFiniteElementDescriptor::ParallelFiniteElementDescriptor( const std::string &name,
+                                                                  const std::string &jName,
+                                                                  const BaseMeshPtr &mesh )
+    : FiniteElementDescriptor( name, mesh ),
+      _joints( std::make_shared< Joints >( jName ) ),
+      _owner( JeveuxVectorLong( getName() + ".PNOE" ) ),
+      _multiplicity( JeveuxVectorLong( getName() + ".MULT" ) ),
+      _outerMultiplicity( JeveuxVectorLong( getName() + ".MUL2" ) ),
+      _globalNumberingVirtualNodes( JeveuxVectorLong( getName() + ".NULG" ) ) {
+    std::cout << "Ici" << std::endl;
+    _joints->debugPrint();
 };
 
 #endif /* ASTER_HAVE_MPI */

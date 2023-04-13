@@ -35,6 +35,8 @@ void exportParallelMechanicalLoadToPython( py::module_ &mod ) {
             &initFactoryPtr< ParallelMechanicalLoadReal, MechanicalLoadRealPtr, ModelPtr > ) )
         .def( py::init( &initFactoryPtr< ParallelMechanicalLoadReal, std::string,
                                          MechanicalLoadRealPtr, ModelPtr > ) )
+        .def( py::init( &initFactoryPtr< ParallelMechanicalLoadReal, std::string,
+                                         ParallelFiniteElementDescriptorPtr, ModelPtr > ) )
         .def( "getFiniteElementDescriptor",
               &ParallelMechanicalLoadReal::getFiniteElementDescriptor )
         .def( "getModel", &ParallelMechanicalLoadReal::getModel );
@@ -46,6 +48,8 @@ void exportParallelMechanicalLoadToPython( py::module_ &mod ) {
                                          ModelPtr > ) )
         .def( py::init( &initFactoryPtr< ParallelMechanicalLoadFunction, std::string,
                                          MechanicalLoadFunctionPtr, ModelPtr > ) )
+        .def( py::init( &initFactoryPtr< ParallelMechanicalLoadFunction, std::string,
+                                         ParallelFiniteElementDescriptorPtr, ModelPtr > ) )
         .def( "getFiniteElementDescriptor",
               &ParallelMechanicalLoadFunction::getFiniteElementDescriptor )
         .def( "getModel", &ParallelMechanicalLoadFunction::getModel );

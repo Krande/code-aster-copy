@@ -35,7 +35,9 @@ void exportParallelFiniteElementDescriptorToPython( py::module_ &mod ) {
                 ParallelFiniteElementDescriptor::ParallelFiniteElementDescriptorPtr,
                 FiniteElementDescriptor >( mod, "ParallelFiniteElementDescriptor" )
         // fake initFactoryPtr: not directly created by user
-        // fake initFactoryPtr: not directly created by user
+        .def( py::init( &initFactoryPtr< ParallelFiniteElementDescriptor, std::string, std::string,
+                                         BaseMeshPtr > ) )
+        .def( "getJointObjectName", &ParallelFiniteElementDescriptor::getJointObjectName )
         .def( "getJoints", &ParallelFiniteElementDescriptor::getJoints,
               py::return_value_policy::copy,
               R"(
