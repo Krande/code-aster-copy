@@ -17,12 +17,11 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-from libaster import deleteTemporaryObjects, resetFortranLoggingLevel, setFortranLoggingLevel
 
+from ..Supervis import ConvergenceError, IntegrationError
+from ..Utilities import logger, no_new_attributes, profile
 from .solver_features import SolverFeature
 from .solver_features import SolverOptions as SOP
-from ..Supervis import ConvergenceError, ExecuteCommand, IntegrationError
-from ..Utilities import logger, no_new_attributes, profile
 
 """
 Notations to use for mechanics.
@@ -96,32 +95,6 @@ class NonLinearSolver(SolverFeature):
         """
         return self.stepper.hasFinished()
 
-    def setLoggingLevel(self, level):
-        """Set logging level.
-
-        Arguments:
-            level (int): verbosity level.
-        """
-        info = {0: 0, 1: 20, 2: 10, 3: 10, 4: 10}
-        if level is not None:
-            setFortranLoggingLevel(level)
-            logger.setLevel(info[level])
-            # Disable printing of python command
-            if level < 3:
-                ExecuteCommand.level += 1
-
-    def _resetLoggingLevel(self, level):
-        """Reset logging level
-
-        Arguments:
-            level (int): verbosity level.
-        """
-        if level is not None:
-            if level < 3:
-                ExecuteCommand.level -= 1
-        resetFortranLoggingLevel()
-        logger.setLevel(20)
-
     def _storeRank(self, time):
         """Store the current physical state.
 
@@ -148,7 +121,6 @@ class NonLinearSolver(SolverFeature):
     @profile
     def run(self):
         """Solve the problem."""
-        self.setLoggingLevel(self._get("INFO"))
         self.phys_pb.computeListOfLoads()
         self.phys_pb.computeDOFNumbering()
         self.initialize()
@@ -179,10 +151,6 @@ class NonLinearSolver(SolverFeature):
                 self._storeRank(timeEndStep)
                 self.stepper.completed()
                 self.current_matrix = solv.current_matrix
-
-        self._resetLoggingLevel(self._get("INFO"))
-
-        deleteTemporaryObjects()
 
     def _get(self, keyword, parameter=None, default=None):
         """ "Return a keyword value"""

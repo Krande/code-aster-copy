@@ -17,8 +17,11 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
+from libaster import deleteTemporaryObjects, resetFortranLoggingLevel, setFortranLoggingLevel
+
 from ..Objects import LinearSolver
-from ..Utilities import logger, no_new_attributes
+from ..Supervis import ExecuteCommand
+from ..Utilities import DEBUG, INFO, WARNING, ExecutionParameter, Options, logger, no_new_attributes
 from .convergence_manager import ConvergenceManager
 from .geometric_solver import GeometricSolver
 from .incremental_solver import IncrementalSolver
@@ -55,6 +58,7 @@ class ProblemSolver(SolverFeature):
 
     _main = _result = None
     _phys_state = None
+    _verb = None
     __setattr__ = no_new_attributes(object.__setattr__)
 
     def __init__(self, main, result) -> None:
@@ -62,6 +66,7 @@ class ProblemSolver(SolverFeature):
         self._main = main
         self._result = result
         self._phys_state = PhysicalState()
+        self._verb = logger.getEffectiveLevel(), ExecutionParameter().option & Options.ShowSyntax
 
     @property
     def phys_state(self):
@@ -85,8 +90,7 @@ class ProblemSolver(SolverFeature):
     def initialize(self):
         """Initialize default objects when required."""
         args = self.get_feature(SOP.Keywords, optional=True)
-        # FIXME 'use()' or a global logger
-        self._main.setLoggingLevel(args.get("INFO", 1))
+        self._setLoggingLevel(args.get("INFO", 1))
         # required to build other default objects
         self._main.use(self.phys_pb)
         self._main.use(self._phys_state)
@@ -102,9 +106,36 @@ class ProblemSolver(SolverFeature):
         Returns:
             *misc*: result object.
         """
-        self.initialize()
-        self._main.run()
+        try:
+            self.initialize()
+            self._main.run()
+        finally:
+            self._resetLoggingLevel()
+            deleteTemporaryObjects()
         return self._result
+
+    def _setLoggingLevel(self, level):
+        """Set logging level.
+
+        Arguments:
+            level (int): verbosity level (meaning INFO keyword).
+        """
+        info = {0: WARNING, 1: INFO, 2: DEBUG, 3: DEBUG, 4: DEBUG}
+        if level is None:
+            level = 1
+        setFortranLoggingLevel(level)
+        logger.setLevel(info[level])
+        # Disable printing of python command
+        if level < 3:
+            ExecutionParameter().disable(Options.ShowSyntax)
+
+    def _resetLoggingLevel(self):
+        """Reset logging level."""
+        level, show = self._verb
+        resetFortranLoggingLevel()
+        logger.setLevel(level)
+        if show:
+            ExecutionParameter().enable(Options.ShowSyntax)
 
     # methods that build and return objects (allowing dependencies)
     def _get_storage(self):

@@ -274,7 +274,9 @@ class ExecuteCommand(object):
             bool: *True* if the syntax should be printed.
         """
         opt = ExecutionParameter().option
-        return opt & Options.ShowSyntax and (cls.level <= 1 or opt & Options.ShowChildCmd)
+        return opt & Options.ShowSyntax and (
+            ExecuteCommand.level <= 1 or opt & Options.ShowChildCmd
+        )
 
     def _call_oper(self, syntax):
         """Call fortran operator.
