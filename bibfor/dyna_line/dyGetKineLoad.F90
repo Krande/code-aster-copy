@@ -25,6 +25,7 @@ subroutine dyGetKineLoad(matrRigiz, matrMassz, matrDampz, lDamp, listLoadz, kine
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
+#include "asterfort/ascavc.h"
 #include "asterfort/calvci.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/idenob.h"
@@ -50,6 +51,7 @@ subroutine dyGetKineLoad(matrRigiz, matrMassz, matrDampz, lDamp, listLoadz, kine
 !
     character(len=14) :: numeDof
     character(len=19) :: matrRigi, matrMass, matrDamp, listload
+    character(len=24) :: multFunc, listLoadInfoName, listLoadName
     character(len=8) :: answer, kineLoadName
     character(len=8) :: matrRigiMesh, matrMassMesh, matrDampMesh, kineLoadMesh
     aster_logical :: lKineLoadInRigi, lKineLoadInMass, lKineLoadInDamp, lKineLoad, lTransient
@@ -57,7 +59,7 @@ subroutine dyGetKineLoad(matrRigiz, matrMassz, matrDampz, lDamp, listLoadz, kine
     integer :: iLoad, nbLoad, iLoadKine, genrec
     real(kind=8) :: time
     integer, pointer :: listLoadInfo(:) => null()
-    character(len=24), pointer :: listLoadName(:) => null()
+    character(len=24), pointer :: vlistLoadName(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -74,14 +76,17 @@ subroutine dyGetKineLoad(matrRigiz, matrMassz, matrDampz, lDamp, listLoadz, kine
 ! - Get CHAM_CINE from list of loads
     if (lTransient) then
         call lisnch(listLoad, nbLoad)
+        listLoadName = listLoad(1:19)//'.LCHA'
+        multFunc = listLoad(1:19)//'.FCHA'
+        listLoadInfoName = listLoad(1:19)//'.INFC'
         if (nbLoad .ne. 0) then
-            call jeveuo(listLoad(1:19)//'.INFC', 'L', vi=listLoadInfo)
-            call jeveuo(listLoad(1:19)//'.LCHA', 'L', vk24=listLoadName)
+            call jeveuo(listLoadInfoName, 'L', vi=listLoadInfo)
+            call jeveuo(listLoadName, 'L', vk24=vlistLoadName)
         end if
         iLoadKine = 0
         kineLoadName = ' '
         do iLoad = 1, nbLoad
-            if (ischar_iden(listLoadInfo, iLoad, nbLoad, 'DIRI', 'ELIM', listLoadName(iLoad))) then
+            if (ischar_iden(listLoadInfo, iLoad, nbLoad, 'DIRI', 'ELIM', vlistLoadName(iLoad))) then
                 if (iLoadKine .ne. 0) then
                     call utmess('F', 'DYNALINE2_13')
                 end if
@@ -90,7 +95,7 @@ subroutine dyGetKineLoad(matrRigiz, matrMassz, matrDampz, lDamp, listLoadz, kine
         end do
         lKineLoad = iLoadKine .ne. 0
         if (lKineLoad) then
-            kineLoadName = listLoadName(iLoadKine) (1:8)
+            kineLoadName = vlistLoadName(iLoadKine) (1:8)
         end if
     else
         call lisnnb(listLoad, nbLoad)
@@ -210,7 +215,11 @@ subroutine dyGetKineLoad(matrRigiz, matrMassz, matrDampz, lDamp, listLoadz, kine
         kineLoad = '&&COMDLT.KINELOAD'
         time = 0.d0
         call dismoi('NOM_NUME_DDL', matrRigi, 'MATR_ASSE', repk=numeDof)
-        call calvci(kineLoad, numeDof, 1, kineLoadName, time, 'V', ASTER_FALSE)
+        if (lTransient) then
+!            call ascavc(listLoadName, listLoadInfoName, multFunc, numeDof, time, kineLoad)
+        else
+            call calvci(kineLoad, numeDof, 1, kineLoadName, time, 'V', ASTER_FALSE)
+        end if
     end if
 
 !

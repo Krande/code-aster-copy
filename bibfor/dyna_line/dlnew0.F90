@@ -89,6 +89,7 @@ subroutine dlnew0(result, force0, force1, iinteg, neq, &
 #include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterfort/assert.h"
+#include "asterfort/ascavc.h"
 #include "asterfort/copisd.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/dlarch.h"
@@ -261,6 +262,11 @@ subroutine dlnew0(result, force0, force1, iinteg, neq, &
                     call dlfext(nveca, nchar, temps, neq, liad, &
                                 lifo, charge, infoch, fomult, modele, &
                                 mate, mateco, carele, numedd, zr(iforc1))
+
+!                   second membre des charges cinématiques
+                    if (nchar .gt. 0) then
+                        call ascavc(charge, infoch, fomult, numedd, temps, kineLoad)
+                    endif
 !
                     if (nondp .ne. 0) then
                         do 43, ieq = 1, neq
