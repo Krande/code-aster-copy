@@ -17,7 +17,7 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-
+from ..Objects import NonLinearResult
 from ..Supervis import ConvergenceError, IntegrationError
 from ..Utilities import logger, no_new_attributes, profile
 from .solver_features import SolverFeature
@@ -111,12 +111,45 @@ class NonLinearSolver(SolverFeature):
         self.check_features()
 
         args = self.get_feature(SOP.Keywords)
+        # essential to be called enough soon (may change the size of VARI field)
         self.phys_pb.computeBehaviourProperty(args["COMPORTEMENT"], "NON", 2)
-        self.phys_state.readInitialState(self.phys_pb, self.param)
+        self.setInitialState()
         self.step_rank = 0
         self._storeRank(self.phys_state.time)
-        self.stepper.setInitialStep(self.phys_state.time)
         self.stepper.completed()
+
+    @profile
+    def setInitialState(self):
+        """Initialize the physical state."""
+        phys_state = self.phys_state
+        phys_state.zeroInitialState(self.phys_pb)
+        init_time = self.stepper.getInitialTime()
+        init_state = self._get("ETAT_INIT")
+        if init_state:
+            if "INST_ETAT_INIT" in init_state:
+                init_time = init_state.get("INST_ETAT_INIT")
+            if "EVOL_NOLI" in init_state:
+                resu = init_state.get("EVOL_NOLI")
+                assert isinstance(resu, NonLinearResult), resu
+                extract_time = init_state.get("INST")
+                if extract_time is None:
+                    extract_time = resu.getTimeValue(resu.getNumberOfIndexes() - 1)
+                if init_time is None:
+                    init_time = extract_time
+                phys_state.primal = resu.getField("DEPL", para="INST", value=extract_time)
+                phys_state.stress = resu.getField("SIEF_ELGA", para="INST", value=extract_time)
+                phys_state.internVar = resu.getField("VARI_ELGA", para="INST", value=extract_time)
+            if "DEPL" in init_state:
+                phys_state.primal = init_state.get("DEPL")
+            if "SIGM" in init_state:
+                phys_state.stress = init_state.get("SIGM")
+            if "VARI" in init_state:
+                phys_state.internVar = init_state.get("VARI")
+
+            if init_time is not None:
+                self.stepper.setInitialStep(init_time)
+
+        phys_state.time = init_time
 
     @profile
     def run(self):

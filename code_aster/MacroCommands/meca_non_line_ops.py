@@ -63,6 +63,8 @@ def _keywords_check(keywords):
     if "INCREMENT" in keywords:
         if "NUME_INST_INIT" in keywords["INCREMENT"] or "NUME_INST_FIN" in keywords["INCREMENT"]:
             raise RuntimeError("unsupported value in INCREMENT")
+    # FIXME todo: check consistency between INST_INIT and INST_ETAT_INIT
+
     if "CONVERGENCE" in keywords:
         for key in keywords["CONVERGENCE"]:
             if key in ("RESI_REFE_RELA", "RESI_COMP_RELA"):
@@ -134,23 +136,14 @@ def meca_non_line_ops(self, **args):
     solver.use(contact_manager)
 
     # Add stepper
-    timeStepper = TimeStepper(
-        args["INCREMENT"]["LIST_INST"].getValues()[1::], epsilon=args["INCREMENT"]["PRECISION"]
-    )
+    times = args["INCREMENT"]["LIST_INST"].getValues()
+    timeStepper = TimeStepper(times[1:], epsilon=args["INCREMENT"]["PRECISION"])
+    timeStepper.setInitialStep(times[0])
     if "INST_INIT" in args["INCREMENT"]:
         timeStepper.setInitialStep(args["INCREMENT"]["INST_INIT"])
 
     if "INST_FIN" in args["INCREMENT"]:
         timeStepper.setFinalStep(args["INCREMENT"]["INST_FIN"])
-
-    if args["ETAT_INIT"] is not None:
-        if "EVOL_NOLI" in args["ETAT_INIT"]:
-            resu = args["ETAT_INIT"].get("EVOL_NOLI")
-            assert isinstance(resu, NonLinearResult), resu
-            tini = resu.getTimeValue(resu.getNumberOfIndexes() - 1)
-            if "INST_ETAT_INIT" in args["ETAT_INIT"]:
-                tini = args["ETAT_INIT"].get("INST_ETAT_INIT")
-            timeStepper.setInitialStep(tini)
 
     solver.use(timeStepper)
 

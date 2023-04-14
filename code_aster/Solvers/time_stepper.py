@@ -128,6 +128,14 @@ class TimeStepper(SolverFeature):
             self._last += 1
         # print("insert at", index, self._first, self._last, self._current)
 
+    def getInitialTime(self):
+        """Returns the initial time.
+
+        Returns:
+            float: Initial time value.
+        """
+        return self._times[self._first]
+
     def getPrevious(self):
         """Returns the previous calculated step.
 

@@ -72,6 +72,7 @@ class PhysicalState(BaseFeature):
         Arguments:
            field (FieldOnNodesReal): primal
         """
+        assert isinstance(field, FieldOnNodesReal), f"unexpected type: {field}"
         self._primal = field
 
     @property
@@ -100,6 +101,7 @@ class PhysicalState(BaseFeature):
         Arguments:
             field (FieldOnCellsReal): Stress field
         """
+        assert isinstance(field, FieldOnCellsReal), f"unexpected type: {field}"
         self._stress = field
 
     @property
@@ -114,6 +116,7 @@ class PhysicalState(BaseFeature):
         Arguments:
             field (FieldOnCellsReal): Internal state variables
         """
+        assert isinstance(field, FieldOnCellsReal), f"unexpected type: {field}"
         self._internVar = field
 
     @property
@@ -128,9 +131,9 @@ class PhysicalState(BaseFeature):
         Arguments:
             field (FieldOnCellsReal): external state variables
         """
+        assert isinstance(field, FieldOnCellsReal), f"unexpected type: {field}"
         self._externVar = field
 
-    # FIXME setPrimalValue?
     @profile
     def createPrimal(self, phys_pb, value):
         """Create primal field with a given value
@@ -158,6 +161,7 @@ class PhysicalState(BaseFeature):
         Returns:
             FieldOnCells: field with a given value of type "type"
         """
+        assert phys_pb.getBehaviourProperty(), "unexpected empty BehaviourProperty"
         field = FieldOnCellsReal(
             phys_pb.getModel(),
             phys_pb.getBehaviourProperty(),
@@ -178,7 +182,6 @@ class PhysicalState(BaseFeature):
         Returns:
             FieldOnCells: Stress field with a given value (SIEF_ELGA)
         """
-
         return self.createFieldOnCells(phys_pb, "ELGA_SIEF_R", value)
 
     @profile
@@ -192,7 +195,6 @@ class PhysicalState(BaseFeature):
         Returns:
             FieldOnCells: internal state variables field with a given value (VARI_ELGA)
         """
-
         return self.createFieldOnCells(phys_pb, "ELGA_VARI_R", value)
 
     @profile
@@ -222,52 +224,6 @@ class PhysicalState(BaseFeature):
         self._time = 0.0
         self._time_step = 0.0
 
-    @profile
-    def readInitialState(self, phys_pb, params):
-        """Initialize states
-
-        Arguments:
-            phys_pb (PhysicalProblem): Physical problem
-            params (dict): dict of user's keywords
-        """
-
-        # Complete initial state: zero
-        self.zeroInitialState(phys_pb)
-
-        # Get initial time
-        try:
-            init_time = params.get("INCREMENT").get("LIST_INST").getValues()[0]
-        except AttributeError:
-            init_time = 0
-        self._time = init_time
-
-        # Get initial state: primal, stress, internal state variables
-        init_params = params.get("ETAT_INIT")
-        if init_params:
-            if "DEPL" in init_params:
-                primal = init_params.get("DEPL")
-                assert isinstance(primal, FieldOnNodesReal)
-                self._primal = primal
-            if "TEMP" in init_params:
-                primal = init_params.get("TEMP")
-                assert isinstance(primal, FieldOnNodesReal)
-                self._primal = primal
-            if "SIGM" in init_params:
-                stress = init_params.get("SIGM")
-                assert isinstance(stress, FieldOnCellsReal)
-                self._stress = stress
-            if "VARI" in init_params:
-                internVar = init_params.get("VARI")
-                assert isinstance(internVar, FieldOnCellsReal)
-                self._internVar = internVar
-            if "EVOL_NOLI" in init_params:
-                resu = init_params.get("EVOL_NOLI")
-                assert isinstance(resu, NonLinearResult)
-                if "INST_ETAT_INIT" in init_params:
-                    self._time = float(init_params.get("INST_ETAT_INIT"))
-                    rank = resu.getNumberOfIndexes() - 1
-                    self.extractFieldsFromResult(resu, rank, ["DEPL", "SIEF_ELGA", "VARI_ELGA"])
-
     # FIXME set 'other' optional? removed?
     @profile
     def update(self, other):
@@ -283,31 +239,6 @@ class PhysicalState(BaseFeature):
         self._stress = other.stress
         self._time += other.time_step
 
-    @profile
-    def extractFieldsFromResult(self, resu, rank, fields):
-        """Extract fields at a rank
-
-        Arguments:
-            resu (NonLinearResult):
-            rank (int): rank
-            fields (str|tuple(str)): list of field to extract
-        """
-
-        if isinstance(fields, str):
-            fields = tuple(fields)
-
-        for field in fields:
-            if field == "DEPL":
-                self._primal = resu.getFieldOnNodesReal("DEPL", rank)
-            elif field == "TEMP":
-                self._primal = resu.getFieldOnNodesReal("TEMP", rank)
-            elif field == "SIEF_ELGA":
-                self._stress = resu.getFieldOnCellsReal("SIEF_ELGA", rank)
-            elif field == "VARI_ELGA":
-                self._internVar = resu.getFieldOnCellsReal("VARI_ELGA", rank)
-            else:
-                raise RuntimeError("Unknown field")
-
     def as_dict(self):
         """Returns the fields as a dict.
 
@@ -315,5 +246,4 @@ class PhysicalState(BaseFeature):
             dict: Dict of fields.
         """
         quantity, fld_type = self._primal.getPhysicalQuantity().split("_")
-
         return {"SIEF_ELGA": self._stress, "VARI_ELGA": self.internVar, quantity: self._primal}
