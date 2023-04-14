@@ -251,12 +251,7 @@ class Result : public DataStructure, public ListOfTables {
      * @brief Add time for one storageIndex
      * @param storageIndex
      */
-    void setTimeValue( const ASTERDOUBLE &time, ASTERINTEGER storageIndex ) {
-        std::cout << "Add time:" << time << std::endl;
-        std::cout << "... at storage :" << storageIndex << std::endl;
-
-        this->setParameterValue( "INST", time, storageIndex );
-    };
+    void setTimeValue( const ASTERDOUBLE &time, ASTERINTEGER storageIndex );
 
     /**
      * @brief Add storage index

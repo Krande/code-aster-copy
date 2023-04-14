@@ -60,7 +60,7 @@ std::string Result::_generateFieldName( const ASTERINTEGER &indexSymbName,
     auto chford = to_string( internalIndex, 6 );
 
     // Generate name of field
-    auto fieldName = std::string( trim( this->getName() ) + "." + nuch + "." + chford );
+    auto fieldName = std::string( trim( getName() ) + "." + nuch + "." + chford );
 
     return fieldName;
 };
@@ -1043,6 +1043,10 @@ VectorReal Result::getTangentMatrix( const std::string &suffix ) {
     } else
         return {};
 };
+
+void Result::setTimeValue( const ASTERDOUBLE &time, ASTERINTEGER storageIndex ) {
+    setParameterValue( "INST", time, storageIndex );
+}
 
 void Result::addStorageIndex( const ASTERINTEGER storageIndex ) {
 
