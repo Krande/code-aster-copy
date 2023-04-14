@@ -80,11 +80,12 @@ void ObjectBalancer::balanceObjectOverProcesses( const MeshCoordinatesFieldPtr &
         throw std::runtime_error( "ObjectBalancer not prepared" );
     auto valuesIn = coordsIn->getValues();
     const auto vecSize = valuesIn->size();
-    auto valuesOut = coordsOut->getValues();
 
-    valuesOut->resize( vecSize + 3 * _sizeDelta );
-    balanceSimpleVectorOverProcesses< ASTERDOUBLE, 3 >( &( *valuesIn )[0], vecSize,
-                                                        &( *valuesOut )[0] );
+    auto valuesOut = coordsOut->getValues();
+    valuesOut->allocate( vecSize + 3 * _sizeDelta );
+    valuesOut->updateValuePointer();
+    balanceSimpleVectorOverProcesses< ASTERDOUBLE, 3 >( valuesIn->getDataPtr(), vecSize,
+                                                        valuesOut->getDataPtr() );
     coordsOut->buildDescriptor();
 };
 

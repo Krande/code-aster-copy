@@ -95,7 +95,7 @@ T *getAddress( std::vector< T > &toCopy ) {
 
 template < typename T >
 T *getAddress( const JeveuxVector< T > &toCopy ) {
-    return &( *toCopy )[0];
+    return toCopy->getDataPtr();
 };
 
 template < typename T >
