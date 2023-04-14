@@ -356,7 +356,6 @@ class MEDCouplingMeshHelper:
 
     def parseIncomplete(self):
         """Walk the medcoupling mesh to extract informations."""
-
         filename = self._file_name
         meshName = self._mesh_name
         med_vers_min = 300  # minimal med version 3.0.0
@@ -395,6 +394,8 @@ class MEDCouplingMeshHelper:
         mrs = medc.MEDFileMeshReadSelector()
         mrs.setNumberOfCoordsLoadSessions(10)
         medFileUMesh = medc.MEDFileUMesh.LoadPartOf(filename, meshName, cts, params, -1, -1, mrs)
+
+        self._dim = medFileUMesh.getMeshDimension()
 
         zeNodes = medFileUMesh.getPartDefAtLevel(1).toDAI()
 

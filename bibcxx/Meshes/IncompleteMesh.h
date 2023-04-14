@@ -61,6 +61,8 @@ class IncompleteMesh : public Mesh {
      */
     IncompleteMesh( const std::string &name ) : Mesh( name, "MAILLAGE_I" ) {};
 
+    ASTERINTEGER getDimension() const;
+
     const VectorLong &getRange() const { return _range; };
 
     bool isIncomplete() const { return true; };

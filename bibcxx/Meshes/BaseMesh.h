@@ -207,7 +207,7 @@ class BaseMesh : public DataStructure, public ListOfTables {
     /**
      * @brief Recuperation de la dimension du maillage
      */
-    ASTERINTEGER getDimension() const;
+    virtual ASTERINTEGER getDimension() const;
 
     /**
      * @brief Teste l'existence d'un groupe de mailles dans le maillage

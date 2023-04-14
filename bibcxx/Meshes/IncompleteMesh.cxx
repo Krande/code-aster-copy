@@ -28,4 +28,15 @@
 
 #include "Meshes/IncompleteMesh.h"
 
+ASTERINTEGER IncompleteMesh::getDimension() const {
+    if ( isEmpty() )
+        return 0;
+    if ( !_dimensionInformations.exists() )
+        return 0;
+
+    _dimensionInformations->updateValuePointer();
+    const auto dimGeom = ( *_dimensionInformations )[5];
+    return dimGeom;
+}
+
 #endif /* ASTER_HAVE_MPI */
