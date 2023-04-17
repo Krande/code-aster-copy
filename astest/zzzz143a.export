@@ -6,4 +6,5 @@ P mpi_nbnoeud 1
 P testlist submit verification sequential
 
 F comm zzzz143a.comm D 1
+F comm zzzz143a.com1 D 1
 F mmed zzzz143a.med D 20

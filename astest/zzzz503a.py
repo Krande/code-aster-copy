@@ -20,6 +20,7 @@
 import code_aster
 from code_aster.Commands import *
 import libaster
+import tempfile
 import numpy as np
 from code_aster.Utilities import PETSc
 
@@ -209,6 +210,18 @@ full_nodes1 = fcells0.toFieldOnNodes()
 test.assertAlmostEqual(
     full_nodes1.norm("NORM_2"), 12.99038105676658, places=6, msg="Conversion SimpleFieldOnCells"
 )
+
+### medcoupling conversion
+
+medmesh = resu.getMesh().createMedCouplingMesh()
+medfield = resu.createMedCouplingField(medmesh)
+
+with tempfile.NamedTemporaryFile(prefix="test_", suffix=".rmed", mode="w", delete=True) as f:
+    medmesh.write(f.name, 2)
+    medfield.write(f.name, 0)
+
+test.assertEqual(medfield.getName(), "DEPL_R")
+test.assertEqual(medfield.getNumberOfComponents(), 3)
 
 # To be sure that vcine is Permanent #30689
 libaster.deleteTemporaryObjects()

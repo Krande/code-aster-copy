@@ -26,7 +26,7 @@
 import aster
 from libaster import Result
 from ..Messages import UTMESS
-from ..Utilities import injector, logger, SearchList, is_number
+from ..Utilities import injector, logger, SearchList, is_number, medcoupling as medc
 from ..Objects.Serialization import InternalStateBuilder
 
 
@@ -245,7 +245,7 @@ class ExtendedResult:
 
         assert crit in ("ABSOLU", "RELATIF")
 
-        if para in ("NUME_ORDRE"):
+        if para in ("NUME_ORDRE",):
             storageIndex = value
         else:
             storageIndex = self._getIndexFromParameter(para, value, crit, prec, throw_except=True)
@@ -309,7 +309,7 @@ class ExtendedResult:
 
         assert crit in ("ABSOLU", "RELATIF")
 
-        if para in ("NUME_ORDRE"):
+        if para in ("NUME_ORDRE",):
             storageIndex = value
         else:
             storageIndex = self._getIndexFromParameter(para, value, crit, prec, throw_except=False)
@@ -320,3 +320,56 @@ class ExtendedResult:
                 raise KeyError("Echec lors de la création du paramètre")
 
         self._setField(field, name, storageIndex)
+
+    def createMedCouplingResult(self, medmesh=None):
+        """Export the result to a new MED container.
+
+        The export is limited to fields on nodes (Real) only.
+
+        Arguments:
+            medmesh, optional (*MEDFileUMesh*): The medcoupling support mesh.
+
+        Returns:
+            field ( MEDFileData ) : The result in med format ( medcoupling ).
+        """
+
+        # Get NUME_ORDRE
+        para = self.getAccessParameters()
+
+        ranks = para.get("NUME_ORDRE")
+        assert ranks is not None
+
+        # Get the variable to be associated to time in the med file
+        times = None
+        for i in ("INST", "FREQ", "NUME_MODE"):
+            if i in para:
+                times = para.get(i)
+                break
+        assert times is not None
+
+        # Only works for fields on nodes real
+        save_fields = self.getFieldsOnNodesRealNames()
+        if len(save_fields) == 0:
+            msg = "None of the fields can be exported to medcoupling"
+            raise RuntimeError(msg)
+
+        # Init medcoupling objets
+        medresult = medc.MEDFileData()
+        meshes = medc.MEDFileMeshes()
+        fields = medc.MEDFileFields()
+
+        # Set mesh
+        medmesh = medmesh or self.getMesh().createMedCouplingMesh()
+        meshes.pushMesh(medmesh)
+
+        for fname in save_fields:
+            fmts = medc.MEDFileFieldMultiTS()
+            for rank, time in zip(ranks, times):
+                medcfield = self.getField(fname, rank).createMedCouplingField(medmesh)
+                medcfield.setTime(rank, 0, time)
+                fmts.pushBackTimeStep(medcfield)
+            fields.pushField(fmts)
+
+        medresult.setMeshes(meshes)
+        medresult.setFields(fields)
+        return medresult
