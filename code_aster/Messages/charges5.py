@@ -73,4 +73,12 @@ cata_msg = {
  La charge de nom <%(k1)s> doit être de type suiveuse (ECHANGE_THM).
 """),
 
+    14: _(
+        """
+ La charge de nom <%(k1)s> ne peut pas être associée à une fonction multiplicatrice complexe.
+ Les charges de type Dirichlet par élimination (AFFE_CHAR_CINE) ne peuvent pas être associées une fonction multiplicatrice complexe .
+ Utilisez COEF_MULT ou FONC_MULT au lieu de COEF_MULT_C ou FONC_MULT_C.
+"""
+    ),
+
 }
