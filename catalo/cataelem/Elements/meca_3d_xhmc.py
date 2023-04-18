@@ -575,21 +575,6 @@ class MECA_XH2C_HEXA8(Element):
                 (SP.PVECTUR, MVECTUR),
             ),
         ),
-        OP.GEOM_FAC(
-            te=519,
-            para_in=(
-                (SP.NOMFIS, E1NEUTK),
-                (SP.PDEPLA, DDL_MECA),
-                (OP.GEOM_FAC.PFISNO, LC.FISNO_I),
-                (OP.GEOM_FAC.PGESCLO, LC.E54NEUTR),
-                (OP.GEOM_FAC.PHEA_FA, E24NEUTI),
-                (OP.GEOM_FAC.PHEA_NO, LC.N5NEUTI),
-                (OP.GEOM_FAC.PLONGCO, LC.E3NEUTI),
-                (OP.GEOM_FAC.PLST, LC.N1NEUT_R),
-                (OP.GEOM_FAC.PPINTER, LC.E54NEUTR),
-            ),
-            para_out=((SP.PNEWGEM, LC.E54NEUTR), (SP.PNEWGES, LC.E54NEUTR)),
-        ),
         OP.GRAD_NEUT9_R(
             te=398,
             para_in=((SP.PGEOMER, NGEOMER), (SP.PNEUTER, LC.N9NEUT_R)),
@@ -778,7 +763,10 @@ class MECA_XH2C_HEXA8(Element):
                 (OP.TOPOSE.PPINTTO, LC.E132NEUR),
             ),
         ),
-        OP.TOU_INI_ELEM(te=99, para_out=((OP.TOU_INI_ELEM.PGEOM_R, LC.CGEOM3D),)),
+        OP.TOU_INI_ELEM(
+            te=99,
+            para_out=((OP.TOU_INI_ELEM.PGEOM_R, LC.CGEOM3D), (OP.TOU_INI_ELEM.PNEUT_K8, E1NEUTK)),
+        ),
         OP.TOU_INI_ELGA(
             te=99,
             para_out=(

@@ -25,7 +25,6 @@ subroutine xmctcg(model, mesh, ds_contact, ds_measure)
 #include "asterf_types.h"
 #include "asterfort/infdbg.h"
 #include "asterfort/xappar.h"
-#include "asterfort/xreacg.h"
 #include "asterfort/nmrinc.h"
 #include "asterfort/nmtime.h"
 !
@@ -40,7 +39,7 @@ subroutine xmctcg(model, mesh, ds_contact, ds_measure)
 !
 ! Contact - Solve
 !
-! XFEM method - Geometric loop: geometric actualisation and pairing
+! XFEM method - Geometric loop: pairing
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -68,10 +67,6 @@ subroutine xmctcg(model, mesh, ds_contact, ds_measure)
 !
     call nmtime(ds_measure, 'Init', 'Cont_Geom')
     call nmtime(ds_measure, 'Launch', 'Cont_Geom')
-!
-! - Geometric actualisation
-!
-    call xreacg(model, ds_contact)
 !
 ! - Pairing
 !

@@ -336,18 +336,6 @@ class MEAXTR3_XHC(Element):
                 (SP.PVECTUR, MVECTUR),
             ),
         ),
-        OP.GEOM_FAC(
-            te=519,
-            para_in=(
-                (SP.NOMFIS, E1NEUTK),
-                (SP.PDEPLA, DDL_MECA),
-                (OP.GEOM_FAC.PGESCLO, LC.E14NEUTR),
-                (OP.GEOM_FAC.PLONGCO, LC.E3NEUTI),
-                (OP.GEOM_FAC.PLST, LC.N1NEUT_R),
-                (OP.GEOM_FAC.PPINTER, LC.E14NEUTR),
-            ),
-            para_out=((SP.PNEWGEM, LC.E14NEUTR), (SP.PNEWGES, LC.E14NEUTR)),
-        ),
         OP.INIT_VARC(te=99, para_out=((OP.INIT_VARC.PVARCPR, LC.ZVARCPG),)),
         OP.INI_XFEM_ELNO(
             te=99,
@@ -572,7 +560,10 @@ class MEAXTR3_XHC(Element):
                 (OP.TOPOSE.PPMILTO, LC.E22NEUTR),
             ),
         ),
-        OP.TOU_INI_ELEM(te=99, para_out=((OP.TOU_INI_ELEM.PGEOM_R, LC.CGEOM2D),)),
+        OP.TOU_INI_ELEM(
+            te=99,
+            para_out=((OP.TOU_INI_ELEM.PGEOM_R, LC.CGEOM2D), (OP.TOU_INI_ELEM.PNEUT_K8, E1NEUTK)),
+        ),
         OP.TOU_INI_ELGA(
             te=99,
             para_out=(

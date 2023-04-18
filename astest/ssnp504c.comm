@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -141,6 +141,7 @@ for i in [1, 2, 3, 4]:  # Boucle sur les increments
         FORMAT_R="1PE12.7",
         NOM_PARA=("NOEUD", "INST", "COOR_X", "LAGS_C", "LAGS_F1"),
         IMPR_FONCTION="NON",
+        FILTRE=_F(NOM_PARA="LAGS_F1", CRIT_COMP="NE", VALE=0.0, PRECISION=1.0e-1, CRITERE="ABSOLU"),
         TRI=_F(NOM_PARA=("COOR_X",), ORDRE="CROISSANT"),
     )
 

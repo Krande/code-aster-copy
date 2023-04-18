@@ -393,19 +393,6 @@ class TemplateElement(Element):
                 (SP.PVECTUR, MVECTUR),
             ),
         ),
-        OP.GEOM_FAC(
-            te=519,
-            para_in=(
-                (SP.NOMFIS, E2NEUTK),
-                (SP.PDEPLA, DDL_MECA),
-                (OP.GEOM_FAC.PGESCLO, LC.E14NEUTR),
-                (OP.GEOM_FAC.PHEA_NO, LC.N5NEUTI),
-                (OP.GEOM_FAC.PLONGCO, LC.E3NEUTI),
-                (OP.GEOM_FAC.PLST, LC.N1NEUT_R),
-                (OP.GEOM_FAC.PPINTER, LC.E14NEUTR),
-            ),
-            para_out=((SP.PNEWGEM, LC.E14NEUTR), (SP.PNEWGES, LC.E14NEUTR)),
-        ),
         OP.INDL_ELGA(
             te=30,
             para_in=(
@@ -634,7 +621,10 @@ class TemplateElement(Element):
                 (OP.TOU_INI_ELGA.PVARI_R, ZVARIPG),
             ),
         ),
-        OP.TOU_INI_ELEM(te=99, para_out=((OP.TOU_INI_ELEM.PGEOM_R, LC.CGEOM2D),)),
+        OP.TOU_INI_ELEM(
+            te=99,
+            para_out=((OP.TOU_INI_ELEM.PGEOM_R, LC.CGEOM2D), (OP.TOU_INI_ELEM.PNEUT_K8, E2NEUTK)),
+        ),
         OP.TOU_INI_ELNO(
             te=99,
             para_out=(

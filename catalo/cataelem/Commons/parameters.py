@@ -25,8 +25,6 @@ import cataelem.Commons.physical_quantities as PHY
 # Parametres 'In' :
 # -----------------
 
-NOMFIS = InputParameter(phys=PHY.NEUT_K8, comment="""""")
-
 PABSCUR = InputParameter(
     phys=PHY.ABSC_R,
     container="MAIL!.ABSC_CURV",

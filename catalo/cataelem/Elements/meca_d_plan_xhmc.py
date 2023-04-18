@@ -530,21 +530,6 @@ class MEDPTR3_XH2C(Element):
                 (SP.PVECTUR, MVECTUR),
             ),
         ),
-        OP.GEOM_FAC(
-            te=519,
-            para_in=(
-                (SP.NOMFIS, E1NEUTK),
-                (SP.PDEPLA, DDL_MECA),
-                (OP.GEOM_FAC.PFISNO, LC.FISNO_I),
-                (OP.GEOM_FAC.PGESCLO, E16NEUTR),
-                (OP.GEOM_FAC.PHEA_FA, E8NEUTI),
-                (OP.GEOM_FAC.PHEA_NO, LC.N5NEUTI),
-                (OP.GEOM_FAC.PLONGCO, LC.E3NEUTI),
-                (OP.GEOM_FAC.PLST, LC.N1NEUT_R),
-                (OP.GEOM_FAC.PPINTER, E16NEUTR),
-            ),
-            para_out=((SP.PNEWGEM, E16NEUTR), (SP.PNEWGES, E16NEUTR)),
-        ),
         OP.INIT_MAIL_VOIS(te=99, para_out=((OP.INIT_MAIL_VOIS.PVOISIN, LC.EVOISIN),)),
         OP.INIT_VARC(te=99, para_out=((OP.INIT_VARC.PVARCPR, LC.ZVARCPG),)),
         OP.INI_XFEM_ELNO(
@@ -733,7 +718,10 @@ class MEDPTR3_XH2C(Element):
                 (OP.TOPOSE.PPMILTO, LC.E22NEUTR),
             ),
         ),
-        OP.TOU_INI_ELEM(te=99, para_out=((OP.TOU_INI_ELEM.PGEOM_R, LC.CGEOM2D),)),
+        OP.TOU_INI_ELEM(
+            te=99,
+            para_out=((OP.TOU_INI_ELEM.PGEOM_R, LC.CGEOM2D), (OP.TOU_INI_ELEM.PNEUT_K8, E1NEUTK)),
+        ),
         OP.TOU_INI_ELGA(
             te=99,
             para_out=(

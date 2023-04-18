@@ -263,7 +263,7 @@ subroutine xconno(mox, chfis, base, opt, param, &
     if (lstno) then
         call jeveuo(mox//'.XFEM_CONT', 'L', vi=xfem_cont)
         if (xfem_cont(1) .gt. 0) then
-            call cescel(ces2, ligrel, 'GEOM_FAC', 'NOMFIS', 'NON', &
+            call cescel(ces2, ligrel, ' ', ' ', 'NON', &
                         nncp, base, mox//'.XMAFIS', 'F', ibid)
         end if
     end if
