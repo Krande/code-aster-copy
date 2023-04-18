@@ -28,6 +28,7 @@ subroutine lisver(lischa)
 #include "asterfort/lislch.h"
 #include "asterfort/lislco.h"
 #include "asterfort/lislta.h"
+#include "asterfort/lisltf.h"
 #include "asterfort/lisnnb.h"
 #include "asterfort/utmess.h"
     character(len=19) :: lischa
@@ -49,7 +50,7 @@ subroutine lisver(lischa)
     integer :: ichar, nbchar
     character(len=8) :: charge
     integer :: genrec
-    character(len=16) :: typapp
+    character(len=16) :: typapp, typfct
     aster_logical :: lelim, ldual, levoc
 !
 ! ----------------------------------------------------------------------
@@ -94,6 +95,11 @@ subroutine lisver(lischa)
             end if
             if (typapp .eq. 'FIXE_PILO') then
                 call utmess('F', 'CHARGES5_9', sk=charge)
+            end if
+! --- ---   interdiction des fonctions multiplicatrices complexes
+            call lisltf(lischa, ichar, typfct)
+            if (typfct(7:10) .eq. 'COMP') then
+                call utmess('F', 'CHARGES5_12', sk=charge)
             end if
         end if
 !
