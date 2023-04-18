@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -32,4 +32,13 @@ cata_msg = {
     4: _(
         """Certaines normales entre fluide et structure ne sont pas orientées dans le bon sens."""
     ),
+    5: _(
+        """Le paramètre %(k1)s ne peut pas être supérieure ou égale à 1. Si vous ne voulez pas insérer une condition d'absorption fluide,
+            il faut tout simplement enlever les éléments absorbants fluides de la modélisation"""
+    ),
+    6: _(
+        """Le paramètre %(k1)s ne peut pas être inférieure ou égale à 0. Si vous ne voulez pas insérer une condition d'absorption fluide,
+            il faut tout simplement enlever les éléments absorbants fluides de la modélisation"""
+    ),
+    7: _("""Le paramètre %(k1)s ne peut pas être inférieure à 0"""),
 }

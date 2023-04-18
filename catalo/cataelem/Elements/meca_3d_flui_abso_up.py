@@ -40,6 +40,8 @@ EGGEOP_R = LocatedComponents(
     phys=PHY.GEOM_R, type="ELGA", location="RIGI", components=("X", "Y", "Z", "W")
 )
 
+EAMORFL = LocatedComponents(phys=PHY.NEUT_I, type="ELEM", components=("X[2]"))
+
 
 MVECTUR = ArrayOfComponents(phys=PHY.VDEP_R, locatedComponents=DDL_MECA)
 
@@ -66,9 +68,33 @@ class MEFA_FACE3UP(Element):
             ),
             para_out=((SP.PVECTUR, MVECTUR),),
         ),
-        OP.IMPE_MECA(
+        OP.AMOR_MECA(
             te=10,
-            para_in=((SP.PGEOMER, NGEOMER), (SP.PIMPEDR, LC.EIMPEDR), (SP.PMATERC, LC.CMATERC)),
+            para_in=(
+                (SP.PGEOMER, NGEOMER),
+                (SP.PMATERC, LC.CMATERC),
+                (OP.AMOR_MECA.PAMORFL, EAMORFL),
+            ),
+            para_out=((SP.PMATUUR, MMATUUR),),
+        ),
+        OP.CHAR_MECA_VFAC(
+            te=173,
+            para_in=((SP.PGEOMER, LC.EGEOM3D), (SP.PMATERC, LC.CMATERC), (SP.PVITEFR, LC.EVITEFR)),
+            para_out=((SP.PVECTUR, MVECTUR),),
+        ),
+        OP.CHAR_MECA_VFAC_F(
+            te=173,
+            para_in=((SP.PGEOMER, LC.EGEOM3D), (SP.PMATERC, LC.CMATERC), (SP.PVITEFF, LC.EVITEFF)),
+            para_out=((SP.PVECTUR, MVECTUR),),
+        ),
+        OP.RIGI_MECA(
+            te=174,
+            para_in=((SP.PGEOMER, NGEOMER), (SP.PMATERC, LC.CMATERC)),
+            para_out=((SP.PMATUUR, MMATUUR),),
+        ),
+        OP.MASS_MECA(
+            te=186,
+            para_in=((SP.PGEOMER, NGEOMER), (SP.PMATERC, LC.CMATERC)),
             para_out=((SP.PMATUUR, MMATUUR),),
         ),
         OP.TOU_INI_ELGA(te=99, para_out=((OP.TOU_INI_ELGA.PGEOM_R, EGGEOP_R),)),

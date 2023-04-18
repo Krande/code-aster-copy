@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -32,31 +32,42 @@ MA = LIRE_MAILLAGE(FORMAT="IDEAS", UNITE=19)
 
 MO = AFFE_MODELE(
     MAILLAGE=MA,
-    AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", FORMULATION="U_PSI", MODELISATION="3D_FLUIDE"),
+    AFFE=(
+        _F(TOUT="OUI", PHENOMENE="MECANIQUE", FORMULATION="U_PSI", MODELISATION="3D_FLUIDE"),
+        _F(
+            GROUP_MA=("impe", "velo"),
+            PHENOMENE="MECANIQUE",
+            FORMULATION="U_PSI",
+            MODELISATION="3D_FLUI_ABSO",
+        ),
+    ),
 )
 
 #
 # PROPRIETES MECANIQUES
 #
 AIR = DEFI_MATERIAU(FLUIDE=_F(RHO=1.2, CELE_R=340.0))
+AIR2 = DEFI_MATERIAU(FLUIDE=_F(RHO=1.2, CELE_R=340.0))
+AIR3 = DEFI_MATERIAU(FLUIDE=_F(RHO=1.2, CELE_R=340.0, COEF_AMOR=0.42045454545454547))
 
-CHM = AFFE_MATERIAU(MAILLAGE=MA, AFFE=_F(TOUT="OUI", MATER=AIR))
+CHM = AFFE_MATERIAU(
+    MAILLAGE=MA,
+    AFFE=(
+        _F(TOUT="OUI", MATER=AIR),
+        _F(GROUP_MA="impe", MATER=AIR2),
+        _F(GROUP_MA="velo", MATER=AIR3),
+    ),
+)
 
 #
 # CONDITIONS AUX LIMITES
 #
 VITES = AFFE_CHAR_MECA(MODELE=MO, VITE_FACE=_F(GROUP_MA="velo", VNOR=-1.0))
 
-IMPE = AFFE_CHAR_MECA(
-    MODELE=MO, IMPE_FACE=(_F(GROUP_MA="impe", IMPE=-408.0), _F(GROUP_MA="velo", IMPE=-1000.0))
-)
-
-
 # Matrice elementaire
 K_elem = CALC_MATR_ELEM(CHAM_MATER=CHM, MODELE=MO, OPTION="RIGI_MECA")
 M_elem = CALC_MATR_ELEM(CHAM_MATER=CHM, MODELE=MO, OPTION="MASS_MECA")
-C_elem = CALC_MATR_ELEM(CHAM_MATER=CHM, MODELE=MO, OPTION="AMOR_MECA", RIGI_MECA=K_elem)
-Imp_elem = CALC_MATR_ELEM(CHAM_MATER=CHM, MODELE=MO, OPTION="IMPE_MECA", CHARGE=IMPE)
+C_elem = CALC_MATR_ELEM(CHAM_MATER=CHM, MODELE=MO, OPTION="AMOR_MECA", RIGI_MECA=K_elem, VNOR=-1.0)
 
 # Seconde membre elementaire
 F_elem = CALC_VECT_ELEM(OPTION="CHAR_MECA", CHARGE=VITES, CHAM_MATER=CHM)
@@ -66,14 +77,6 @@ numedd = NUME_DDL(MATR_RIGI=(K_elem,))
 MatK = ASSE_MATRICE(MATR_ELEM=K_elem, NUME_DDL=numedd)
 MatM = ASSE_MATRICE(MATR_ELEM=M_elem, NUME_DDL=numedd)
 MatC = ASSE_MATRICE(MATR_ELEM=C_elem, NUME_DDL=numedd)
-MatImp = ASSE_MATRICE(MATR_ELEM=Imp_elem, NUME_DDL=numedd)
-
-MatC = COMB_MATR_ASSE(
-    reuse=MatC,
-    MATR_ASSE=MatC,
-    COMB_R=(_F(MATR_ASSE=MatC, COEF_R=1.0), _F(MATR_ASSE=MatImp, COEF_R=1.0)),
-)
-
 Fmtx = ASSE_VECTEUR(VECT_ELEM=F_elem, NUME_DDL=numedd)
 
 

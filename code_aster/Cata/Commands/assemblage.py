@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -117,8 +117,10 @@ ASSEMBLAGE = MACRO(
                 "AMOR_ACOU",
             ),
         ),
-        b_gyro=BLOC(
-            condition="""is_in("OPTION", ('RIGI_GYRO', 'MECA_GYRO'))""",
+        b_group_ma=BLOC(
+            condition="""is_in("OPTION", ('RIGI_GYRO', 'MECA_GYRO', 'IMPE_MECA',
+                                          'AMOR_MECA', 'MASS_MECA', 'RIGI_MECA',
+                                          'MASS_MECA_DIAG','MASS_FLUI_STRU'))""",
             GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
         ),
         b_rigi_meca=BLOC(
@@ -133,6 +135,19 @@ ASSEMBLAGE = MACRO(
         b_rigi_ther=BLOC(
             condition="""equal_to("OPTION", 'RIGI_THER')""",
             MODE_FOURIER=SIMP(statut="f", typ="I", defaut=0),
+        ),
+        b_amor_meca=BLOC(
+            condition="""equal_to("OPTION", 'AMOR_MECA')""",
+            AMOR_FLUI=SIMP(statut="f", typ="TXM", into=("OUI", "NON"), defaut="OUI"),
+            VNOR=SIMP(statut="f", typ="R", into=(1.0, -1.0), defaut=1.0),
+        ),
+        b_impe_meca=BLOC(
+            condition="""equal_to("OPTION", 'IMPE_MECA')""",
+            VNOR=SIMP(statut="f", typ="R", into=(1.0, -1.0), defaut=1.0),
+        ),
+        b_amor_acou=BLOC(
+            condition="""equal_to("OPTION", 'AMOR_ACOU')""",
+            VNOR=SIMP(statut="f", typ="R", into=(1.0, -1.0), defaut=1.0),
         ),
         #
     ),  # fin MATR_ASSE

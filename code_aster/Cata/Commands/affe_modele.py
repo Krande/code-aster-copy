@@ -94,6 +94,7 @@ AFFE_MODELE = OPER(
                     "3D_INTERFACE_S",  # person_in_charge: kyrylo.kazymyrenko at edf.fr
                     "AXIS",  # person_in_charge: j-pierre.lefebvre at edf.fr
                     "AXIS_FLUI_STRU",  # person_in_charge: nicolas.greffet at edf.fr
+                    "AXIS_FLUI_ABSO",  # person_in_charge: stefano.cherubini at edf.fr
                     "AXIS_FLUIDE",  # person_in_charge: nicolas.greffet at edf.fr
                     "AXIS_FOURIER",  # person_in_charge: ayaovi-dzifa.kudawoo at edf.fr
                     "AXIS_INCO_UPG",  # person_in_charge: mickael.abbas at edf.fr
@@ -258,7 +259,7 @@ AFFE_MODELE = OPER(
                 ),
             ),
             b_formu_fsi=BLOC(
-                condition="""equal_to('MODELISATION', ('2D_FLUIDE', '2D_FLUI_ABSO', '2D_FLUI_PESA', '2D_FLUI_STRU','3D_FLUIDE','3D_FLUI_ABSO', 'AXIS_FLUIDE', 'AXIS_FLUI_STRU', 'FLUI_STRU'))""",
+                condition="""equal_to('MODELISATION', ('2D_FLUIDE', '2D_FLUI_ABSO', '2D_FLUI_PESA', '2D_FLUI_STRU','3D_FLUIDE','3D_FLUI_ABSO', 'AXIS_FLUIDE', 'AXIS_FLUI_STRU', 'AXIS_FLUI_ABSO', 'FLUI_STRU'))""",
                 fr=tr("FSI formulation"),
                 FORMULATION=SIMP(
                     statut="f", typ="TXM", max=1, into=("U_P_PHI", "U_P", "U_PSI"), defaut="U_P_PHI"
@@ -307,6 +308,8 @@ AFFE_MODELE = OPER(
                 into=(
                     "3D",  # person_in_charge: mickael.abbas at edf.fr
                     "PLAN",  # person_in_charge: mickael.abbas at edf.fr
+                    "3D_ABSO",  # person_in_charge: mickael.abbas at edf.fr
+                    "PLAN_ABSO",  # person_in_charge: mickael.abbas at edf.fr
                 ),
             ),
         ),

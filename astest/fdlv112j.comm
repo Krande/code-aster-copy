@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -101,11 +101,6 @@ CLF = AFFE_CHAR_MECA(
         _F(GROUP_MA=("FOND_AM", "FOND_AV"), DX=0),
     ),
     #              VITE_FACE=(_F(GROUP_MA='infeau',VNOR=0,),),
-    IMPE_FACE=(
-        _F(GROUP_MA="infeau", IMPE=1440000.0 * 1.0e0),
-        # _F(GROUP_MA='fonfeau2',
-        #   IMPE=5760000.0,),
-    ),
 )
 
 ASSEMBLAGE(

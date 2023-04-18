@@ -2808,11 +2808,12 @@ DEFI_MATERIAU = MACRO(
     #
     FLUIDE=FACT(
         statut="f",
-        regles=(EXCLUS("CELE_C", "CELE_R"),),
         RHO=SIMP(statut="o", typ="R"),
         PESA_Z=SIMP(statut="f", typ="R", min=1, max=1),
-        CELE_C=SIMP(statut="f", typ="C"),
         CELE_R=SIMP(statut="f", typ="R"),
+        COEF_AMOR=SIMP(statut="f", typ="R", defaut=0.0),
+        CELE_I=SIMP(statut="f", typ="R", defaut=0.0),
+        LONG_CARA=SIMP(statut="f", typ="R", defaut=0.0),
     ),
     # =================================================================================
     # COMPORTEMENT THERMO_HYDRO_MECANIQUE

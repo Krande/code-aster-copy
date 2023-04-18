@@ -30,14 +30,14 @@ from cataelem.Options.options import OP
 # ----------------
 
 
-DDL_MECA = LocatedComponents(phys=PHY.DEPL_R, type="ELNO", components=("PSI"))
+DDL_MECA = LocatedComponents(phys=PHY.DEPL_R, type="ELNO", components=("PRES"))
 
 
-NGEOMER = LocatedComponents(phys=PHY.GEOM_R, type="ELNO", components=("X", "Y", "Z"))
+NGEOMER = LocatedComponents(phys=PHY.GEOM_R, type="ELNO", components=("X", "Y"))
 
 
 EGGEOP_R = LocatedComponents(
-    phys=PHY.GEOM_R, type="ELGA", location="RIGI", components=("X", "Y", "Z", "W")
+    phys=PHY.GEOM_R, type="ELGA", location="RIGI", components=("X", "Y", "W")
 )
 
 EAMORFL = LocatedComponents(phys=PHY.NEUT_I, type="ELEM", components=("X[2]"))
@@ -49,14 +49,14 @@ MMATUUR = ArrayOfComponents(phys=PHY.MDEP_R, locatedComponents=DDL_MECA)
 
 
 # ------------------------------------------------------------
-class MEFA_FACE3UPSI(Element):
+class MEFAXSE2UP(Element):
     """Please document this element"""
 
-    meshType = MT.TRIA3
-    elrefe = (ElrefeLoc(MT.TR3, gauss=("RIGI=COT3", "FPG1=FPG1"), mater=("RIGI", "FPG1")),)
+    meshType = MT.SEG2
+    elrefe = (ElrefeLoc(MT.SE2, gauss=("RIGI=FPG2", "FPG1=FPG1"), mater=("RIGI", "FPG1")),)
     calculs = (
         OP.COOR_ELGA(
-            te=488, para_in=((SP.PGEOMER, NGEOMER),), para_out=((OP.COOR_ELGA.PCOORPG, EGGEOP_R),)
+            te=478, para_in=((SP.PGEOMER, NGEOMER),), para_out=((OP.COOR_ELGA.PCOORPG, EGGEOP_R),)
         ),
         OP.IMPE_ABSO(
             te=99,
@@ -69,7 +69,7 @@ class MEFA_FACE3UPSI(Element):
             para_out=((SP.PVECTUR, MVECTUR),),
         ),
         OP.AMOR_MECA(
-            te=10,
+            te=258,
             para_in=(
                 (SP.PGEOMER, NGEOMER),
                 (SP.PMATERC, LC.CMATERC),
@@ -78,58 +78,34 @@ class MEFA_FACE3UPSI(Element):
             para_out=((SP.PMATUUR, MMATUUR),),
         ),
         OP.CHAR_MECA_VFAC(
-            te=173,
-            para_in=((SP.PGEOMER, LC.EGEOM3D), (SP.PMATERC, LC.CMATERC), (SP.PVITEFR, LC.EVITEFR)),
+            te=255,
+            para_in=((SP.PGEOMER, LC.EGEOM2D), (SP.PMATERC, LC.CMATERC), (SP.PVITEFR, LC.EVITEFR)),
             para_out=((SP.PVECTUR, MVECTUR),),
         ),
         OP.CHAR_MECA_VFAC_F(
-            te=173,
-            para_in=((SP.PGEOMER, LC.EGEOM3D), (SP.PMATERC, LC.CMATERC), (SP.PVITEFF, LC.EVITEFF)),
+            te=255,
+            para_in=((SP.PGEOMER, LC.EGEOM2D), (SP.PMATERC, LC.CMATERC), (SP.PVITEFF, LC.EVITEFF)),
             para_out=((SP.PVECTUR, MVECTUR),),
         ),
         OP.RIGI_MECA(
-            te=174,
+            te=167,
             para_in=((SP.PGEOMER, NGEOMER), (SP.PMATERC, LC.CMATERC)),
             para_out=((SP.PMATUUR, MMATUUR),),
         ),
         OP.MASS_MECA(
-            te=186,
+            te=184,
             para_in=((SP.PGEOMER, NGEOMER), (SP.PMATERC, LC.CMATERC)),
             para_out=((SP.PMATUUR, MMATUUR),),
         ),
         OP.TOU_INI_ELGA(te=99, para_out=((OP.TOU_INI_ELGA.PGEOM_R, EGGEOP_R),)),
-        OP.TOU_INI_ELEM(te=99, para_out=((OP.TOU_INI_ELEM.PGEOM_R, LC.CGEOM3D),)),
+        OP.TOU_INI_ELEM(te=99, para_out=((OP.TOU_INI_ELEM.PGEOM_R, LC.CGEOM2D),)),
         OP.TOU_INI_ELNO(te=99, para_out=((OP.TOU_INI_ELNO.PGEOM_R, NGEOMER),)),
     )
 
 
 # ------------------------------------------------------------
-class MEFA_FACE4UPSI(MEFA_FACE3UPSI):
+class MEFAXSE3UP(MEFAXSE2UP):
     """Please document this element"""
 
-    meshType = MT.QUAD4
-    elrefe = (ElrefeLoc(MT.QU4, gauss=("RIGI=FPG4", "FPG1=FPG1"), mater=("RIGI", "FPG1")),)
-
-
-# ------------------------------------------------------------
-class MEFA_FACE6UPSI(MEFA_FACE3UPSI):
-    """Please document this element"""
-
-    meshType = MT.TRIA6
-    elrefe = (ElrefeLoc(MT.TR6, gauss=("RIGI=FPG4", "FPG1=FPG1"), mater=("RIGI", "FPG1")),)
-
-
-# ------------------------------------------------------------
-class MEFA_FACE8UPSI(MEFA_FACE3UPSI):
-    """Please document this element"""
-
-    meshType = MT.QUAD8
-    elrefe = (ElrefeLoc(MT.QU8, gauss=("RIGI=FPG9", "FPG1=FPG1"), mater=("RIGI", "FPG1")),)
-
-
-# ------------------------------------------------------------
-class MEFA_FACE9UPSI(MEFA_FACE3UPSI):
-    """Please document this element"""
-
-    meshType = MT.QUAD9
-    elrefe = (ElrefeLoc(MT.QU9, gauss=("RIGI=FPG9", "FPG1=FPG1"), mater=("RIGI", "FPG1")),)
+    meshType = MT.SEG3
+    elrefe = (ElrefeLoc(MT.SE3, gauss=("RIGI=FPG4", "FPG1=FPG1"), mater=("RIGI", "FPG1")),)

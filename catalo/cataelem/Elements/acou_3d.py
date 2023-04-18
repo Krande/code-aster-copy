@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -47,6 +47,7 @@ EINTENO = LocatedComponents(
 
 DDL_ACOU = LocatedComponents(phys=PHY.PRES_C, type="ELNO", components=("PRES",))
 
+MVECTTC = ArrayOfComponents(phys=PHY.VPRE_C, locatedComponents=DDL_ACOU)
 
 MMATTTC = ArrayOfComponents(phys=PHY.MPRE_C, locatedComponents=DDL_ACOU)
 
@@ -172,3 +173,56 @@ class ACOU_TETRA4(ACOU_HEXA20):
         ),
         ElrefeLoc(MT.TR3, gauss=("RIGI=COT3", "MASS=COT3", "NOEU=NOEU")),
     )
+
+
+# ------------------------------------------------------------
+class ACOUNA_FACE3(Element):
+    """Please document this element"""
+
+    meshType = MT.TRIA3
+    elrefe = (ElrefeLoc(MT.TR3, gauss=("RIGI=COT3", "FPG1=FPG1"), mater=("FPG1",)),)
+    calculs = (
+        OP.CHAR_ACOU_VFAC_C(
+            te=183,
+            para_in=((SP.PGEOMER, NGEOMER), (SP.PMATERC, LC.CMATERC), (SP.PVITEFC, LC.EVITEFC)),
+            para_out=((SP.PVECTTC, MVECTTC),),
+        ),
+        OP.COOR_ELGA(
+            te=488, para_in=((SP.PGEOMER, NGEOMER),), para_out=((OP.COOR_ELGA.PCOORPG, EGGEOP_R),)
+        ),
+        OP.TOU_INI_ELGA(te=99, para_out=((OP.TOU_INI_ELGA.PGEOM_R, EGGEOP_R),)),
+        OP.TOU_INI_ELEM(te=99, para_out=((OP.TOU_INI_ELEM.PGEOM_R, LC.CGEOM3D),)),
+        OP.TOU_INI_ELNO(te=99, para_out=((OP.TOU_INI_ELNO.PGEOM_R, NGEOMER),)),
+    )
+
+
+# ------------------------------------------------------------
+class ACOUNA_FACE4(ACOUNA_FACE3):
+    """Please document this element"""
+
+    meshType = MT.QUAD4
+    elrefe = (ElrefeLoc(MT.QU4, gauss=("RIGI=FPG4", "FPG1=FPG1"), mater=("FPG1",)),)
+
+
+# ------------------------------------------------------------
+class ACOUNA_FACE6(ACOUNA_FACE3):
+    """Please document this element"""
+
+    meshType = MT.TRIA6
+    elrefe = (ElrefeLoc(MT.TR6, gauss=("RIGI=FPG4", "FPG1=FPG1"), mater=("FPG1",)),)
+
+
+# ------------------------------------------------------------
+class ACOUNA_FACE8(ACOUNA_FACE3):
+    """Please document this element"""
+
+    meshType = MT.QUAD8
+    elrefe = (ElrefeLoc(MT.QU8, gauss=("RIGI=FPG9", "FPG1=FPG1"), mater=("FPG1",)),)
+
+
+# ------------------------------------------------------------
+class ACOUNA_FACE9(ACOUNA_FACE3):
+    """Please document this element"""
+
+    meshType = MT.QUAD9
+    elrefe = (ElrefeLoc(MT.QU9, gauss=("RIGI=FPG9", "FPG1=FPG1"), mater=("FPG1",)),)

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -31,12 +31,18 @@ MAYA = LIRE_MAILLAGE(FORMAT="MED")
 #
 # DEFINITION DU MODELE
 #
-MODEL = AFFE_MODELE(MAILLAGE=MAYA, AFFE=_F(TOUT="OUI", PHENOMENE="ACOUSTIQUE", MODELISATION="PLAN"))
+MODEL = AFFE_MODELE(
+    MAILLAGE=MAYA,
+    AFFE=(
+        _F(TOUT="OUI", PHENOMENE="ACOUSTIQUE", MODELISATION="PLAN"),
+        _F(GROUP_MA="IMPE", PHENOMENE="ACOUSTIQUE", MODELISATION="PLAN_ABSO"),
+    ),
+)
 
 #
 # DEFINITION DU MATERIAU
 #
-AIR = DEFI_MATERIAU(FLUIDE=_F(RHO=1.3, CELE_C=("RI", 343.0, 0.0)))
+AIR = DEFI_MATERIAU(FLUIDE=_F(RHO=1.3, CELE_R=343.0))
 
 MATER = AFFE_MATERIAU(MAILLAGE=MAYA, AFFE=_F(TOUT="OUI", MATER=AIR))
 
@@ -45,14 +51,11 @@ MATER = AFFE_MATERIAU(MAILLAGE=MAYA, AFFE=_F(TOUT="OUI", MATER=AIR))
 #
 VITE = AFFE_CHAR_ACOU(MODELE=MODEL, VITE_FACE=_F(GROUP_MA="VELO", VNOR=("RI", 0.014, 0.0)))
 
-IMPE = AFFE_CHAR_ACOU(MODELE=MODEL, IMPE_FACE=_F(GROUP_MA="IMPE", IMPE=("RI", 445.9, 0.0)))
-
 #
 # ASSEMBLAGE
 #
 ASSEMBLAGE(
     MODELE=MODEL,
-    CHARGE=IMPE,
     CHAM_MATER=MATER,
     NUME_DDL=CO("NUMERO"),
     MATR_ASSE=(

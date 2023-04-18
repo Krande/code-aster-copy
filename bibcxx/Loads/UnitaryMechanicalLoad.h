@@ -50,7 +50,6 @@ enum LoadEnum {
     PressureOnPipe,
     ImposedDoF,
     DistributedPressure,
-    ImpedanceOnFace,
     NormalSpeedOnFace,
     WavePressureOnFace,
     THMFlux
@@ -206,20 +205,6 @@ struct LoadTraits< DistributedPressure > {
     static const std::string factorKeyword;
     // Authorized MeshEntity
     static bool const isAllowedOnWholeMesh = true;
-    static bool const isAllowedOnGroupOfCells = true;
-    static bool const isAllowedOnGroupOfNodes = false;
-};
-
-/**
- * @def LoadTraits<ImpedanceOnFace>
- * @brief Declare specialization for ImpedanceOnFace
- */
-template <>
-struct LoadTraits< ImpedanceOnFace > {
-    // Mot clé facteur pour AFFE_CHAR_MECA
-    static const std::string factorKeyword;
-    // Authorized MeshEntity
-    static bool const isAllowedOnWholeMesh = false;
     static bool const isAllowedOnGroupOfCells = true;
     static bool const isAllowedOnGroupOfNodes = false;
 };
@@ -486,11 +471,6 @@ typedef std::shared_ptr< ImposedPressureReal > ImposedPressureRealPtr;
 template class UnitaryMechanicalLoadReal< PressureReal, DistributedPressure >;
 typedef UnitaryMechanicalLoadReal< PressureReal, DistributedPressure > DistributedPressureReal;
 typedef std::shared_ptr< DistributedPressureReal > DistributedPressureRealPtr;
-
-/** @typedef ImpedanceOnFaceReal  */
-template class UnitaryMechanicalLoadReal< ImpedanceReal, ImpedanceOnFace >;
-typedef UnitaryMechanicalLoadReal< ImpedanceReal, ImpedanceOnFace > ImpedanceOnFaceReal;
-typedef std::shared_ptr< ImpedanceOnFaceReal > ImpedanceOnFaceRealPtr;
 
 /** @typedef NormalSpeedOnFaceReal  */
 template class UnitaryMechanicalLoadReal< NormalSpeedReal, NormalSpeedOnFace >;

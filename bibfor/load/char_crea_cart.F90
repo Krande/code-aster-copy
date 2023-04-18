@@ -117,8 +117,6 @@ subroutine char_crea_cart(phenom, loadType, load, mesh, valeType, &
         nbMap = 1
     else if (loadType .eq. 'VITE_FACE') then
         nbMap = 1
-    else if (loadType .eq. 'IMPE_FACE') then
-        nbMap = 1
     else
         ASSERT(ASTER_FALSE)
     end if
@@ -147,8 +145,6 @@ subroutine char_crea_cart(phenom, loadType, load, mesh, valeType, &
         map(1) = obje_pref(1:13)//'.FELEC'
     else if (loadType .eq. 'VITE_FACE') then
         map(1) = obje_pref(1:13)//'.VFACE'
-    else if (loadType .eq. 'IMPE_FACE') then
-        map(1) = obje_pref(1:13)//'.IMPED'
     else
         ASSERT(ASTER_FALSE)
     end if
@@ -229,16 +225,6 @@ subroutine char_crea_cart(phenom, loadType, load, mesh, valeType, &
         else
             ASSERT(ASTER_FALSE)
         end if
-    else if (loadType .eq. 'IMPE_FACE') then
-        if (valeType .eq. 'COMP') then
-            physQuantity(1) = 'IMPE_C'
-        elseif (valeType .eq. 'REEL') then
-            physQuantity(1) = 'IMPE_R'
-        elseif (valeType .eq. 'FONC') then
-            physQuantity(1) = 'IMPE_F'
-        else
-            ASSERT(ASTER_FALSE)
-        end if
     else
         ASSERT(ASTER_FALSE)
     end if
@@ -310,16 +296,6 @@ subroutine char_crea_cart(phenom, loadType, load, mesh, valeType, &
             ASSERT(ASTER_FALSE)
         end if
     else if (loadType .eq. 'VITE_FACE') then
-        if (valeType .eq. 'COMP') then
-            mapType(1) = 'C'
-        elseif (valeType .eq. 'REEL') then
-            mapType(1) = 'R'
-        elseif (valeType .eq. 'FONC') then
-            mapType(1) = 'K8'
-        else
-            ASSERT(ASTER_FALSE)
-        end if
-    else if (loadType .eq. 'IMPE_FACE') then
         if (valeType .eq. 'COMP') then
             mapType(1) = 'C'
         elseif (valeType .eq. 'REEL') then
@@ -404,9 +380,6 @@ subroutine char_crea_cart(phenom, loadType, load, mesh, valeType, &
         cmpName(1, 3) = 'DIRX'
         cmpName(1, 4) = 'DIRY'
         cmpName(1, 5) = 'DIRZ'
-    else if (loadType .eq. 'IMPE_FACE') then
-        nbCmp(1) = 1
-        cmpName(1, 1) = 'IMPE'
     else
         ASSERT(ASTER_FALSE)
     end if

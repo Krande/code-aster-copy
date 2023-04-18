@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -25,9 +25,10 @@ import cataelem.Commons.physical_quantities as PHY
 import cataelem.Commons.parameters as SP
 import cataelem.Commons.attributes as AT
 
+PWATFLAC = InputParameter(phys=PHY.NEUT_I)
 
 AMOR_ACOU = Option(
-    para_in=(SP.PGEOMER, SP.PIMPEDC, SP.PMATERC),
+    para_in=(SP.PGEOMER, SP.PMATERC, PWATFLAC),
     para_out=(SP.PMATTTC,),
-    condition=(CondCalcul("+", ((AT.PHENO, "AC"), (AT.BORD, "-1"))),),
+    condition=(CondCalcul("+", ((AT.PHENO, "AC"), (AT.ABSO, "OUI"))),),
 )

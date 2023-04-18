@@ -15,14 +15,164 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine te0167(option, nomte)
 !
     implicit none
+!
+#include "jeveux.h"
+#include "asterfort/elrefe_info.h"
+#include "asterfort/teattr.h"
+#include "asterfort/assert.h"
+#include "asterfort/jevech.h"
+#include "asterfort/lteatt.h"
+#include "asterfort/vff2dn.h"
 #include "asterfort/utmess.h"
+#include "asterfort/getFluidPara.h"
+#include "asterc/r8prem.h"
 !
+    character(len=16), intent(in) :: option, nomte
 !
-    character(len=16) :: option, nomte
-    call utmess('F', 'FERMETUR_8')
+! --------------------------------------------------------------------------------------------------
 !
+! Elementary computation
+!
+! Elements: 2D_FLUI_ABSO, AXIS_FLUI_ABSO
+!
+! Options: RIGI_MECA
+!
+! --------------------------------------------------------------------------------------------------
+!
+! In  option           : name of option to compute
+! In  nomte            : type of finite element
+!
+! --------------------------------------------------------------------------------------------------
+!
+    real(kind=8) :: nx, ny
+    real(kind=8) :: poids
+    real(kind=8) :: rho, alpha, r_impe, rhon, q_alpha, q_c
+    integer :: ipoids, ivf, idfde
+    integer :: jv_geom, jv_mate, jv_matr
+    integer :: ndim, nno, ndi, ipg, npg
+    integer :: ldec
+    integer :: i, ij, j
+    integer :: j_mater, iret
+    character(len=16) :: FEForm
+    aster_logical :: l_axis
+    real(kind=8) :: r
+!
+! --------------------------------------------------------------------------------------------------
+!
+    call teattr('S', 'FORMULATION', FEForm, iret)
+    l_axis = (lteatt('AXIS', 'OUI'))
+!
+! - Get parameters of element
+!
+    call elrefe_info(fami='RIGI', &
+                     ndim=ndim, nno=nno, npg=npg, &
+                     jpoids=ipoids, jvf=ivf, jdfde=idfde)
+    ASSERT(nno .le. 3)
+    if (FEForm .eq. 'U_P_PHI') then
+        ndi = nno*(2*nno+1)
+    elseif (FEForm .eq. 'U_P' .or. FEForm .eq. 'U_PSI') then
+        ndi = nno*(nno+1)/2
+    else
+        call utmess('F', 'FLUID1_2', sk=FEForm)
+    end if
+!
+! - Input fields
+!
+    call jevech('PGEOMER', 'L', jv_geom)
+    call jevech('PMATERC', 'L', jv_mate)
+!
+! - Get material properties for fluid
+!
+    j_mater = zi(jv_mate)
+    call getFluidPara(j_mater, rho_=rho, alpha_=alpha, r_=r_impe)
+!
+! - Conditions on fluid parameters
+!
+    if ((1.d0-alpha) .ge. r8prem()) then
+        q_alpha = (1.d0+alpha)/(1.d0-alpha)
+    else
+        call utmess('F', 'FLUID1_5', sk='ALPHA')
+    end if
+
+    if ((abs(rho)-rho) .gt. r8prem()) then
+        call utmess('F', 'FLUID1_7', sk='RHO')
+    end if
+
+    if ((abs(r_impe)-r_impe) .gt. r8prem()) then
+        call utmess('F', 'FLUID1_7', sk='R')
+    end if
+!
+! - Output field
+!
+!   for u-p-phi : K = 0
+!   for u-p     : K =  rho  /Zr =  1.d0/(r_impe*q_alpha)
+!   for u-psi   : K = -rho^2/Zr = -rho/(r_impe*q_alpha)
+    rhon = -rho
+    q_alpha = (1.d0+alpha)/(1.d0-alpha)
+    q_c = r_impe*q_alpha
+
+    call jevech('PMATUUR', 'E', jv_matr)
+
+    do i = 1, ndi
+        zr(jv_matr+i-1) = 0.d0
+    end do
+!
+! - Compute
+!
+    do ipg = 1, npg
+        ldec = (ipg-1)*nno
+! --------- Compute normal
+        nx = 0.0d0
+        ny = 0.0d0
+        call vff2dn(ndim, nno, ipg, ipoids, idfde, &
+                    zr(jv_geom), nx, ny, poids)
+! --------- Radius for axisymmetric model
+        if (l_axis) then
+            r = 0.d0
+            do i = 1, nno
+                r = r+zr(jv_geom+2*(i-1))*zr(ivf+ldec+i-1)
+            end do
+            poids = poids*r
+        end if
+! --------- Compute matrix
+        if (FEForm .eq. 'U_P_PHI') then
+            goto 120
+        elseif (FEForm .eq. 'U_P') then
+            if (r_impe .le. r8prem()) then
+                goto 120
+            else
+                do i = 1, nno
+                    do j = 1, i
+                        ij = (i-1)*i/2+j
+                        zr(jv_matr+ij-1) = zr(jv_matr+ij-1)+ &
+                                           poids* &
+                                           1.d0/q_c* &
+                                           zr(ivf+ldec+i-1)*zr(ivf+ldec+j-1)
+                    end do
+                end do
+            end if
+        elseif (FEForm .eq. 'U_PSI') then
+            if (r_impe .le. r8prem()) then
+                goto 120
+            else
+                do i = 1, nno
+                    do j = 1, i
+                        ij = (i-1)*i/2+j
+                        zr(jv_matr+ij-1) = zr(jv_matr+ij-1)+ &
+                                           poids* &
+                                           rhon/q_c* &
+                                           zr(ivf+ldec+i-1)*zr(ivf+ldec+j-1)
+                    end do
+                end do
+            end if
+        else
+            call utmess('F', 'FLUID1_2', sk=FEForm)
+        end if
+
+120     continue
+    end do
 end subroutine

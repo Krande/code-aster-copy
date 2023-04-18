@@ -18,15 +18,12 @@
 ! person_in_charge: mickael.abbas at edf.fr
 !
 subroutine getFluidPara(j_mater, &
-                        rho_, cele_r_, pesa_)
+                        rho_, cele_r_, pesa_, alpha_, cele_i_, r_)
 !
     implicit none
 !
 #include "asterfort/assert.h"
 #include "asterfort/rcvalb.h"
-!
-    integer, intent(in) :: j_mater
-    real(kind=8), optional, intent(out) :: rho_, cele_r_, pesa_
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -38,16 +35,23 @@ subroutine getFluidPara(j_mater, &
 !
 ! In  j_mater          : coded material address
 ! Out rho              : density of fluid
-! Out cele_r           : sound speed in fluid
+! Out alpha            : reflection coefficient
+! Out cele_i           : imaginary part of sound speed in fluid
+! Out r                : geometric lenght for first order Sommerfeld condition
+! Out cele_r           : real part of sound speed in fluid
 ! Out pesa             : gravity
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: nb_resu = 3
+    integer, intent(in) :: j_mater
+    real(kind=8), optional, intent(out) :: rho_, cele_r_, pesa_, alpha_, cele_i_, r_
+    integer, parameter :: nb_resu = 6
     integer :: icodre(nb_resu)
-    character(len=16), parameter :: resu_name(nb_resu) = (/'RHO   ', 'CELE_R', 'PESA_Z'/)
+    character(len=16), parameter :: resu_name(nb_resu) = &
+                                    (/'RHO      ', 'COEF_AMOR', 'CELE_I   ', 'LONG_CARA', &
+                                      'CELE_R   ', 'PESA_Z   '/)
     real(kind=8) :: resu_vale(nb_resu)
-    real(kind=8) :: rho, cele_r, pesa
+    real(kind=8) :: rho, cele_r, pesa, alpha, cele_i, r_impe
     character(len=8) :: fami
     character(len=1) :: poum
     integer :: ipg, ispg
@@ -64,20 +68,29 @@ subroutine getFluidPara(j_mater, &
                     ' ', 'FLUIDE', 0, ' ', [0.d0], &
                     nb_resu, resu_name, resu_vale, icodre, 1)
         rho = resu_vale(1)
-        cele_r = resu_vale(2)
-        pesa = resu_vale(3)
+        alpha = resu_vale(2)
+        cele_i = resu_vale(3)
+        r_impe = resu_vale(4)
+        cele_r = resu_vale(5)
+        pesa = resu_vale(6)
     else
         if (present(cele_r_)) then
             call rcvalb(fami, ipg, ispg, poum, j_mater, &
                         ' ', 'FLUIDE', 0, ' ', [0.d0], &
-                        2, resu_name, resu_vale, icodre, 1)
+                        5, resu_name, resu_vale, icodre, 1)
             rho = resu_vale(1)
-            cele_r = resu_vale(2)
+            alpha = resu_vale(2)
+            cele_i = resu_vale(3)
+            r_impe = resu_vale(4)
+            cele_r = resu_vale(5)
         else
             call rcvalb(fami, ipg, ispg, poum, j_mater, &
                         ' ', 'FLUIDE', 0, ' ', [0.d0], &
-                        1, resu_name, resu_vale, icodre, 1)
+                        4, resu_name, resu_vale, icodre, 1)
             rho = resu_vale(1)
+            alpha = resu_vale(2)
+            cele_i = resu_vale(3)
+            r_impe = resu_vale(4)
         end if
     end if
 !
@@ -90,5 +103,15 @@ subroutine getFluidPara(j_mater, &
     if (present(pesa_)) then
         pesa_ = pesa
     end if
+    if (present(alpha_)) then
+        alpha_ = alpha
+    end if
+    if (present(cele_i_)) then
+        cele_i_ = cele_i
+    end if
+    if (present(r_)) then
+        r_ = r_impe
+    end if
+
 !
 end subroutine

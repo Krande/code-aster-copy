@@ -130,3 +130,46 @@ CalculPtr DiscreteComputation::createCalculForNonLinear(
 
     return calcul;
 };
+
+ConstantFieldOnCellsLongPtr
+DiscreteComputation::createDampingFluidField( const ASTERINTEGER damping,
+                                              const ASTERINTEGER onde_flui ) const {
+
+    VectorString para_names = {"X1", "X2"};
+    VectorLong para_values = {damping, onde_flui};
+
+    // Get mesh
+    auto mesh = _phys_problem->getMesh();
+
+    // Create field
+    auto field = std::make_shared< ConstantFieldOnCellsLong >( mesh );
+
+    const std::string physicalName( "NEUT_I" );
+    field->allocate( physicalName );
+    ConstantFieldOnZone a( mesh );
+    ConstantFieldValues< ASTERINTEGER > b( para_names, para_values );
+    field->setValueOnZone( a, b );
+
+    return field;
+};
+
+ConstantFieldOnCellsLongPtr
+DiscreteComputation::createWaveTypeFluidField( const ASTERINTEGER onde_flui ) const {
+
+    VectorString para_names = {"X1"};
+    VectorLong para_values = {onde_flui};
+
+    // Get mesh
+    auto mesh = _phys_problem->getMesh();
+
+    // Create field
+    auto field = std::make_shared< ConstantFieldOnCellsLong >( mesh );
+
+    const std::string physicalName( "NEUT_I" );
+    field->allocate( physicalName );
+    ConstantFieldOnZone a( mesh );
+    ConstantFieldValues< ASTERINTEGER > b( para_names, para_values );
+    field->setValueOnZone( a, b );
+
+    return field;
+};

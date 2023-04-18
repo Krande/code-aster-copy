@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -53,8 +53,6 @@ rho_visc_ad = rho_visc / rho_eau
 
 # Condition d'impédance
 r_impe = 0.15  # rayon pour condition d impedance BGT
-ZiAd = r_impe
-ZrAd = 1.0
 
 # Maillage
 mesh = LIRE_MAILLAGE(FORMAT="MED")
@@ -78,9 +76,10 @@ mesh = DEFI_GROUP(
 model = AFFE_MODELE(
     MAILLAGE=mesh,
     AFFE=(
-        _F(GROUP_MA=("fluide", "fluext"), PHENOMENE="MECANIQUE", MODELISATION="2D_FLUIDE"),
+        _F(GROUP_MA=("fluide"), PHENOMENE="MECANIQUE", MODELISATION="2D_FLUIDE"),
         _F(GROUP_MA=("acier1", "acier2", "visco"), PHENOMENE="MECANIQUE", MODELISATION="D_PLAN"),
         _F(GROUP_MA="ifspar", PHENOMENE="MECANIQUE", MODELISATION="2D_FLUI_STRU"),
+        _F(GROUP_MA="fluext", PHENOMENE="MECANIQUE", MODELISATION="2D_FLUI_ABSO"),
     ),
 )
 
@@ -102,30 +101,25 @@ CALC_MATR_IFS(
     GROUP_MA_ELAS=("acier1", "acier2"),
     GROUP_MA_FLUI=("fluide", "ifspar", "fluext"),
     GROUP_MA_VISC=("visco",),
-    GROUP_MA_IMPE=("fluext",),
     # MATERIAL PROPERTIES
     RHO_ELAS=rho_elas_ad,
     NU_ELAS=nu_elas,
     RHO_FLUI=rho_eau_ad,
+    R_FLUI=r_impe,
     C_FLUI=cele_eau_ad,
     RHO_VISC=rho_visc_ad,
     NU_VISC=nu_visc,
-    CHAR_IMPE_R=ZrAd,
-    CHAR_IMPE_C=ZiAd,
     # Sorties (matrices)
     MASS_E=CO("MASS_E"),
     MASS_F=CO("MASS_F"),
-    MASS_FI=CO("MASS_FI"),
     RIGI_E=CO("RIGI_E"),
     RIGI_F=CO("RIGI_F"),
     RIGI_V=CO("RIGI_V"),
     IMPE_R=CO("IMPE_R"),
-    IMPE_I=CO("IMPE_I"),
 )
 
 # Conversion en complexe
 MASS_Ec = COMB_MATR_ASSE(COMB_C=_F(MATR_ASSE=MASS_E, COEF_R=1.0))
-MASS_FIc = COMB_MATR_ASSE(COMB_C=_F(MATR_ASSE=MASS_FI, COEF_R=1.0))
 IMPE_Rc = COMB_MATR_ASSE(COMB_C=_F(MATR_ASSE=IMPE_R, COEF_R=1.0))
 RIGI_Ec = COMB_MATR_ASSE(COMB_C=_F(MATR_ASSE=RIGI_E, COEF_R=1.0))
 RIGI_Fc = COMB_MATR_ASSE(COMB_C=_F(MATR_ASSE=RIGI_F, COEF_R=1.0))

@@ -121,11 +121,7 @@ MODELE2 = AFFE_MODELE(
 )
 
 ###Conditions aux limites dont impedance pour l'absorption des ondes en bout de retenue et pression nulle en surface libre
-CL2 = AFFE_CHAR_MECA(
-    MODELE=MODELE2,
-    DDL_IMPO=_F(GROUP_MA="Bord_Eau_Sup", PRES=0.0),
-    IMPE_FACE=(_F(GROUP_MA="Bord_Eau_Gauche", IMPE=Rho_Eau * Cele_R),),
-)
+CL2 = AFFE_CHAR_MECA(MODELE=MODELE2, DDL_IMPO=_F(GROUP_MA="Bord_Eau_Sup", PRES=0.0))
 
 
 ###Calcul et assemblage des matrices de masses, raideur et amortissement
@@ -144,14 +140,12 @@ amor_ele = CALC_MATR_ELEM(
     CHARGE=CL2,
 )
 
-impe_ele = CALC_MATR_ELEM(MODELE=MODELE2, OPTION="IMPE_MECA", CHAM_MATER=CHMAT, CHARGE=CL2)
-
 nume_ddl = NUME_DDL(MATR_RIGI=rigi_ele)
 
 
 RIGI = ASSE_MATRICE(MATR_ELEM=rigi_ele, NUME_DDL=nume_ddl)
 MASSE = ASSE_MATRICE(MATR_ELEM=mass_ele, NUME_DDL=nume_ddl)
-AMOR = ASSE_MATRICE(MATR_ELEM=(amor_ele, impe_ele), NUME_DDL=nume_ddl)
+AMOR = ASSE_MATRICE(MATR_ELEM=amor_ele, NUME_DDL=nume_ddl)
 
 # Definition Chargement
 
@@ -282,8 +276,8 @@ TEST_FONCTION(
     VALEUR=(
         _F(
             VALE_CALC=0.50284523960811,
-            VALE_REFE=0.49806914835900,
-            PRECISION=1.0e-2,
+            VALE_REFE=0.50284523960761,
+            PRECISION=0.6e-2,
             REFERENCE="AUTRE_ASTER",
             CRITERE="RELATIF",
             VALE_PARA=1.37,
@@ -291,8 +285,8 @@ TEST_FONCTION(
         ),
         _F(
             VALE_CALC=-0.78928949109671,
-            VALE_REFE=-0.79112658488034,
-            PRECISION=1.0e-2,
+            VALE_REFE=-0.78928949110213,
+            PRECISION=0.6e-2,
             REFERENCE="AUTRE_ASTER",
             CRITERE="RELATIF",
             VALE_PARA=1.37,
@@ -300,8 +294,8 @@ TEST_FONCTION(
         ),
         _F(
             VALE_CALC=1.749631601751,
-            VALE_REFE=1.702110951886,
-            PRECISION=3.0e-2,
+            VALE_REFE=1.749631601745,
+            PRECISION=0.6e-2,
             REFERENCE="AUTRE_ASTER",
             CRITERE="RELATIF",
             VALE_PARA=1.37,
@@ -309,8 +303,8 @@ TEST_FONCTION(
         ),
         _F(
             VALE_CALC=-0.43733005304495,
-            VALE_REFE=-0.45352940136683,
-            PRECISION=4.0e-2,
+            VALE_REFE=-0.43733005305105,
+            PRECISION=0.6e-2,
             REFERENCE="AUTRE_ASTER",
             CRITERE="RELATIF",
             VALE_PARA=1.37,
@@ -318,8 +312,8 @@ TEST_FONCTION(
         ),
         _F(
             VALE_CALC=2.427826837434,
-            VALE_REFE=2.351873776118,
-            PRECISION=4.0e-2,
+            VALE_REFE=2.427826837424,
+            PRECISION=0.6e-2,
             REFERENCE="AUTRE_ASTER",
             CRITERE="RELATIF",
             VALE_PARA=1.37,
@@ -327,8 +321,8 @@ TEST_FONCTION(
         ),
         _F(
             VALE_CALC=-0.39519162885525,
-            VALE_REFE=-0.41341930768157,
-            PRECISION=5.0e-2,
+            VALE_REFE=-0.39519162886253,
+            PRECISION=0.6e-2,
             REFERENCE="AUTRE_ASTER",
             CRITERE="RELATIF",
             VALE_PARA=1.37,
@@ -336,8 +330,8 @@ TEST_FONCTION(
         ),
         _F(
             VALE_CALC=0.51977182483112,
-            VALE_REFE=0.51328166791096,
-            PRECISION=2.0e-2,
+            VALE_REFE=0.51977182484662,
+            PRECISION=0.6e-2,
             REFERENCE="AUTRE_ASTER",
             CRITERE="RELATIF",
             VALE_PARA=1.37,
@@ -345,8 +339,8 @@ TEST_FONCTION(
         ),
         _F(
             VALE_CALC=-1.156054412952,
-            VALE_REFE=-1.146783347512,
-            PRECISION=1.0e-2,
+            VALE_REFE=-1.156054412947,
+            PRECISION=0.6e-2,
             REFERENCE="AUTRE_ASTER",
             CRITERE="RELATIF",
             VALE_PARA=1.37,

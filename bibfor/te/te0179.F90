@@ -69,7 +69,7 @@ subroutine te0179(option, nomte)
 
 ! - Get material properties
     j_mater = zi(jvMate)
-    call getFluidPara(j_mater, rho)
+    call getFluidPara(j_mater, rho_=rho)
 
 ! - Output field
     call jevech('PVECTTC', 'E', jvVect)

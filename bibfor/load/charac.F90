@@ -25,7 +25,6 @@ subroutine charac(load)
 #include "asterfort/caddli.h"
 #include "asterfort/cagene.h"
 #include "asterfort/cagrou.h"
-#include "asterfort/cbimpe.h"
 #include "asterfort/cbvite.h"
 #include "asterfort/cormgi.h"
 #include "asterfort/initel.h"
@@ -76,9 +75,6 @@ subroutine charac(load)
 
 ! - Load VITE_FACE
     call cbvite(phenom, load, mesh, valeType)
-
-! - Load IMPE_FACE
-    call cbimpe(phenom, load, mesh, valeType)
 
 ! - Kinematic PRES_IMPO
     call caddli(keywFactEnforceDOF, load, mesh, model, valeType)

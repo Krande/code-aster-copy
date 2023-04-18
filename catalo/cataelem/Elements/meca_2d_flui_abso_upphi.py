@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -40,10 +40,15 @@ EGGEOP_R = LocatedComponents(
     phys=PHY.GEOM_R, type="ELGA", location="RIGI", components=("X", "Y", "W")
 )
 
+EAMORFL = LocatedComponents(phys=PHY.NEUT_I, type="ELEM", components=("X[2]"))
+
+EWAVETFL = LocatedComponents(phys=PHY.NEUT_I, type="ELEM", components=("X[1]"))
 
 MVECTUR = ArrayOfComponents(phys=PHY.VDEP_R, locatedComponents=DDL_MECA)
 
 MMATUUR = ArrayOfComponents(phys=PHY.MDEP_R, locatedComponents=DDL_MECA)
+
+MMATUNS = ArrayOfComponents(phys=PHY.MDNS_R, locatedComponents=DDL_MECA)
 
 
 # ------------------------------------------------------------
@@ -57,7 +62,7 @@ class MEFASE2(Element):
             te=478, para_in=((SP.PGEOMER, NGEOMER),), para_out=((OP.COOR_ELGA.PCOORPG, EGGEOP_R),)
         ),
         OP.IMPE_ABSO(
-            te=550,
+            te=99,
             para_in=(
                 (SP.PGEOMER, NGEOMER),
                 (SP.PMATERC, LC.CMATERC),
@@ -67,8 +72,41 @@ class MEFASE2(Element):
             para_out=((SP.PVECTUR, MVECTUR),),
         ),
         OP.IMPE_MECA(
+            te=148,
+            para_in=(
+                (SP.PGEOMER, NGEOMER),
+                (SP.PMATERC, LC.CMATERC),
+                (OP.IMPE_MECA.PWAVETFL, EWAVETFL),
+            ),
+            para_out=((SP.PMATUUR, MMATUUR),),
+        ),
+        OP.AMOR_MECA(
             te=258,
-            para_in=((SP.PGEOMER, NGEOMER), (SP.PIMPEDR, LC.EIMPEDR), (SP.PMATERC, LC.CMATERC)),
+            para_in=(
+                (SP.PGEOMER, NGEOMER),
+                (SP.PMATERC, LC.CMATERC),
+                (OP.AMOR_MECA.PAMORFL, EAMORFL),
+            ),
+            para_out=((SP.PMATUNS, MMATUNS),),
+        ),
+        OP.CHAR_MECA_VFAC(
+            te=255,
+            para_in=((SP.PGEOMER, LC.EGEOM2D), (SP.PMATERC, LC.CMATERC), (SP.PVITEFR, LC.EVITEFR)),
+            para_out=((SP.PVECTUR, MVECTUR),),
+        ),
+        OP.CHAR_MECA_VFAC_F(
+            te=255,
+            para_in=((SP.PGEOMER, LC.EGEOM2D), (SP.PMATERC, LC.CMATERC), (SP.PVITEFF, LC.EVITEFF)),
+            para_out=((SP.PVECTUR, MVECTUR),),
+        ),
+        OP.RIGI_MECA(
+            te=167,
+            para_in=((SP.PGEOMER, NGEOMER), (SP.PMATERC, LC.CMATERC)),
+            para_out=((SP.PMATUUR, MMATUUR),),
+        ),
+        OP.MASS_MECA(
+            te=184,
+            para_in=((SP.PGEOMER, NGEOMER), (SP.PMATERC, LC.CMATERC)),
             para_out=((SP.PMATUUR, MMATUUR),),
         ),
         OP.TOU_INI_ELGA(te=99, para_out=((OP.TOU_INI_ELGA.PGEOM_R, EGGEOP_R),)),

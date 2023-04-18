@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -25,13 +25,12 @@ import cataelem.Commons.physical_quantities as PHY
 import cataelem.Commons.parameters as SP
 import cataelem.Commons.attributes as AT
 
+PWAVETFL = InputParameter(phys=PHY.NEUT_I)
 
 IMPE_MECA = Option(
-    para_in=(SP.PGEOMER, SP.PIMPEDR, SP.PMATERC),
+    para_in=(SP.PGEOMER, SP.PMATERC, PWAVETFL),
     para_out=(SP.PMATUUR,),
     condition=(
-        CondCalcul("+", ((AT.FLUIDE, "OUI"), (AT.ABSO, "OUI"))),
-        CondCalcul("+", ((AT.FLUIDE, "OUI"), (AT.BORD, "-1"))),
-        CondCalcul("-", ((AT.FSI, "OUI"),)),
+        CondCalcul("+", ((AT.FLUIDE, "OUI"), (AT.ABSO, "OUI"), (AT.FORMULATION, "U_P_PHI"))),
     ),
 )

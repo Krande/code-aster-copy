@@ -69,8 +69,6 @@ class AcousticLoadDescription : public DataStructure {
     ConstantFieldOnCellsTypePtr _imposedValues;
     /** @brief Carte '.CMULT' */
     ConstantFieldOnCellsComplexPtr _multiplier;
-    /** @brief Carte '.CIMPED' */
-    ConstantFieldOnCellsTypePtr _impedanceValues;
     /** @brief Carte '.VITFA' */
     ConstantFieldOnCellsTypePtr _speedValues;
 
@@ -105,8 +103,6 @@ class AcousticLoadDescription : public DataStructure {
               std::make_shared< ConstantFieldOnCellsType >( getName() + ".CIMPO", _FEDesc ) ),
           _multiplier(
               std::make_shared< ConstantFieldOnCellsComplex >( getName() + ".CMULT", _FEDesc ) ),
-          _impedanceValues(
-              std::make_shared< ConstantFieldOnCellsType >( getName() + ".IMPED", _FEDesc ) ),
           _speedValues(
               std::make_shared< ConstantFieldOnCellsType >( getName() + ".VITFA", _FEDesc ) ) {};
 
@@ -117,22 +113,10 @@ class AcousticLoadDescription : public DataStructure {
 
     ConstantFieldOnCellsComplexPtr getMultiplicativeField() const { return _multiplier; };
 
-    ConstantFieldOnCellsTypePtr getImpedanceField() const { return _impedanceValues; };
-
     /**
      * @brief Get the model
      */
     ModelPtr getModel() { return _model; };
-
-    bool hasLoadField( const std::string &load_name ) const {
-        if ( load_name == "IMPED" ) {
-            return _impedanceValues->exists();
-        } else {
-            AS_ASSERT( false );
-        }
-
-        return false;
-    }
 
     /**
      * @brief Get the model

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -72,19 +72,22 @@ pair.compute()
 # check FED creation
 fed = pair.getFiniteElementDescriptor()
 nema = fed.getVirtualCellsDescriptor()
+nemab = []
+for k in range(len(nema)):
+    nemab.append(nema[k][:-1])
 grel = fed.getListOfGroupsOfElements()
 test.assertEqual(len(grel), 1)
 test.assertEqual(len(grel[0]), 7)
 test.assertEqual(len(grel[0]), len(nema) + 1)
 test.assertSequenceEqual(
-    nema,
+    nemab,
     [
-        [11, 2, 17, 24, 97],
-        [11, 2, 24, 25, 97],
-        [12, 11, 24, 25, 97],
-        [12, 11, 25, 26, 97],
-        [12, 11, 26, 19, 97],
-        [4, 12, 26, 19, 97],
+        [11, 2, 17, 24],
+        [11, 2, 24, 25],
+        [12, 11, 24, 25],
+        [12, 11, 25, 26],
+        [12, 11, 26, 19],
+        [4, 12, 26, 19],
     ],
 )
 
@@ -126,21 +129,17 @@ pair.compute()
 
 fed = pair.getFiniteElementDescriptor()
 nema = fed.getVirtualCellsDescriptor()
+nemab = []
+for k in range(len(nema)):
+    nemab.append(nema[k][:-1])
 grel = fed.getListOfGroupsOfElements()
 test.assertEqual(len(grel), 2)
 test.assertEqual(len(grel[0]), 2)
 test.assertEqual(len(grel[1]), 6)
 test.assertEqual(len(grel[0]) + len(grel[1]), len(nema) + 2)
 test.assertSequenceEqual(
-    nema,
-    [
-        [17, 24, 11, 2, 97],
-        [17, 24, 12, 11, 97],
-        [24, 25, 12, 11, 97],
-        [24, 25, 4, 12, 97],
-        [25, 26, 4, 12, 97],
-        [19, 72],
-    ],
+    nemab,
+    [[17, 24, 11, 2], [17, 24, 12, 11], [24, 25, 12, 11], [24, 25, 4, 12], [25, 26, 4, 12], [19]],
 )
 
 CD = ContactComputation(DEFICO_HAUT)

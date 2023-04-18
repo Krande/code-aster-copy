@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,8 +18,8 @@
 !
 interface
     subroutine getFluidPara(j_mater,&
-                            rho_   , cele_r_, pesa_)
+                            rho_   , cele_r_, pesa_, alpha_, cele_i_, r_)
         integer, intent(in) :: j_mater
-        real(kind=8), optional, intent(out) :: rho_, cele_r_, pesa_
+        real(kind=8), optional, intent(out) :: rho_, cele_r_, pesa_, alpha_, cele_i_, r_
     end subroutine getFluidPara
 end interface

@@ -33,17 +33,18 @@ subroutine te0178(option, nomte)
 #include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
 #include "asterfort/lteatt.h"
-#include "asterfort/rcvalb.h"
+#include "asterfort/rcvalc.h"
 #include "asterfort/vff2dn.h"
+#include "asterfort/getFluidPara.h"
+#include "asterc/r8prem.h"
+#include "asterfort/utmess.h"
 !
-    complex(kind=8) :: rhosz
-    character(len=8) :: fami, poum
+    complex(kind=8) :: rhosz, cele_c
     character(len=16) :: option, nomte
-    integer :: icodre(1)
-    real(kind=8) :: poids, r, nx, ny, rho(1)
-    integer :: nno, kp, npg, ipoids, ivf, idfde, igeom
+    real(kind=8) :: poids, r, nx, ny, rho, alpha, q_alpha, cele_r, cele_i, onde_flui
+    integer :: nno, kp, npg, ipoids, ivf, idfde, igeom, jv_amor
     integer :: imattt, i, j, ij, l, li, lj
-    integer :: imate, iimpe, kpg, spt
+    integer :: imate
     aster_logical :: laxi
 !
 !
@@ -57,24 +58,47 @@ subroutine te0178(option, nomte)
     if (lteatt('AXIS', 'OUI')) laxi = .true.
 !
     call jevech('PGEOMER', 'L', igeom)
-    call jevech('PIMPEDC', 'L', iimpe)
     call jevech('PMATERC', 'L', imate)
     call jevech('PMATTTC', 'E', imattt)
+    call jevech('PWATFLAC', 'L', jv_amor)
 !
-    fami = 'FPG1'
-    kpg = 1
-    spt = 1
-    poum = '+'
+! - Get material properties for fluid
+!
     mater = zi(imate)
-    call rcvalb(fami, kpg, spt, poum, mater, &
-                ' ', 'FLUIDE', 0, ' ', [0.d0], &
-                1, 'RHO', rho, icodre, 1)
+
+    call getFluidPara(mater, rho_=rho, cele_r_=cele_r, cele_i_=cele_i, alpha_=alpha)
+
+    cele_c = dcmplx(cele_r, cele_i)
 !
-    if (zc(iimpe) .ne. (0.d0, 0.d0)) then
-        rhosz = rho(1)/zc(iimpe)
+! - Conditions on fluid parameters
+!
+    if ((1.d0-alpha) .ge. r8prem()) then
+        q_alpha = (1.d0+alpha)/(1.d0-alpha)
     else
-        goto 50
+        call utmess('F', 'FLUID1_5', sk='ALPHA')
     end if
+
+    if (rho .le. r8prem()) then
+        call utmess('F', 'FLUID1_6', sk='RHO')
+    end if
+
+    if ((abs(cele_r) .le. r8prem()) .and. (abs(cele_i) .le. r8prem())) then
+        call utmess('F', 'FLUID1_7', sk='CELE_R + i*CELE_I')
+    end if
+
+    if (zi(jv_amor-1+1) .eq. 1) then
+        onde_flui = +1.d0
+    else
+        onde_flui = -1.d0
+    end if
+!
+! - Output field
+!
+
+    rhosz = 1.d0/(q_alpha*cele_c)
+
+!
+! - Compute
 !
     do kp = 1, npg
         call vff2dn(ndim, nno, kp, ipoids, idfde, &
@@ -93,9 +117,8 @@ subroutine te0178(option, nomte)
             do j = 1, i
                 lj = ivf+(kp-1)*nno+j-1
                 ij = ij+1
-                zc(ij) = zc(ij)+poids*rhosz*zr(li)*zr(lj)
+                zc(ij) = zc(ij)+poids*onde_flui*rhosz*zr(li)*zr(lj)
             end do
         end do
     end do
-50  continue
 end subroutine

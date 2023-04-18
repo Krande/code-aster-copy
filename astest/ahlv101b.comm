@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -40,18 +40,20 @@ CHAMPMAT = AFFE_MATERIAU(MAILLAGE=MAIL, AFFE=_F(TOUT="OUI", MATER=AIR))
 
 GUIDE = AFFE_MODELE(
     MAILLAGE=MAIL,
-    AFFE=_F(TOUT="OUI", MODELISATION="2D_FLUIDE", FORMULATION="U_P_PHI", PHENOMENE="MECANIQUE"),
+    AFFE=(
+        _F(TOUT="OUI", MODELISATION="2D_FLUIDE", FORMULATION="U_P_PHI", PHENOMENE="MECANIQUE"),
+        _F(
+            GROUP_MA="SORTIE",
+            MODELISATION="2D_FLUI_ABSO",
+            FORMULATION="U_P_PHI",
+            PHENOMENE="MECANIQUE",
+        ),
+    ),
 )
 
 #
 
 CHARMECA = AFFE_CHAR_MECA(MODELE=GUIDE, ONDE_FLUI=_F(GROUP_MA="ENTREE", PRES=1.0))
-
-#
-
-IMPEMECA = AFFE_CHAR_MECA(MODELE=GUIDE, IMPE_FACE=_F(GROUP_MA="SORTIE", IMPE=445.9))
-
-#
 
 ASSEMBLAGE(
     MODELE=GUIDE,
@@ -68,7 +70,6 @@ ASSEMBLAGE(
 
 ASSEMBLAGE(
     MODELE=GUIDE,
-    CHARGE=IMPEMECA,
     CHAM_MATER=CHAMPMAT,
     NUME_DDL=NUM,
     MATR_ASSE=_F(MATRICE=CO("MATASI2"), OPTION="IMPE_MECA"),

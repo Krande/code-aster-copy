@@ -37,7 +37,6 @@ void exportUnitaryMechanicalLoadToPython( py::module_ &mod ) {
         .value( "PressureOnPipe", PressureOnPipe )
         .value( "ImposedDoF", ImposedDoF )
         .value( "DistributedPressure", DistributedPressure )
-        .value( "ImpedanceOnFace", ImpedanceOnFace )
         .value( "NormalSpeedOnFace", NormalSpeedOnFace )
         .value( "WavePressureOnFace", WavePressureOnFace )
         .value( "THMFlux", THMFlux )
@@ -155,13 +154,6 @@ void exportUnitaryMechanicalLoadToPython( py::module_ &mod ) {
         .def( py::init( &initFactoryPtr< DistributedPressureReal, std::string, ModelPtr > ) )
         .def( "build", &DistributedPressureReal::build )
         .def( "setValue", &DistributedPressureReal::setValue );
-
-    py::class_< ImpedanceOnFaceReal, ImpedanceOnFaceReal::UnitaryMechanicalLoadRealPtr,
-                MechanicalLoadReal >( mod, "ImpedanceOnFaceReal" )
-        .def( py::init( &initFactoryPtr< ImpedanceOnFaceReal, ModelPtr > ) )
-        .def( py::init( &initFactoryPtr< ImpedanceOnFaceReal, std::string, ModelPtr > ) )
-        .def( "build", &ImpedanceOnFaceReal::build )
-        .def( "setValue", &ImpedanceOnFaceReal::setValue );
 
     py::class_< NormalSpeedOnFaceReal, NormalSpeedOnFaceReal::UnitaryMechanicalLoadRealPtr,
                 MechanicalLoadReal >( mod, "NormalSpeedOnFaceReal" )

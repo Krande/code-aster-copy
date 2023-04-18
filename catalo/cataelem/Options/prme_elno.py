@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -29,7 +29,10 @@ import cataelem.Commons.attributes as AT
 PRME_ELNO = Option(
     para_in=(SP.PDEPLAC,),
     para_out=(SP.PPRME_R,),
-    condition=(CondCalcul("+", ((AT.PHENO, "ME"), (AT.FLUIDE, "OUI"), (AT.BORD, "0"))),),
+    condition=(
+        CondCalcul("+", ((AT.PHENO, "ME"), (AT.FLUIDE, "OUI"), (AT.BORD, "0"))),
+        CondCalcul("-", ((AT.FLUIDE, "OUI"), (AT.ABSO, "OUI"))),
+    ),
     comment="""  PRME_ELNO : CALCUL DE LA PRESSION AUX NOEUDS,
            POUR LES ELEMENTS MECANIQUES XXX_FLUIDE """,
 )

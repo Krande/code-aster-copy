@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -235,7 +235,7 @@ RESH = DEFI_BASE_REDUITE(
         _F(MATRICE=RIGI_V, FONC_C=fRIGI_V),
         _F(MATRICE=RIGI_E, FONC_R=fRIGI_E),
         _F(MATRICE=MASS_E, FONC_R=fMASS_E),
-        _F(MATRICE=MASS_FI, FONC_R=fMASS_FI),
+        _F(MATRICE=MASS_F, FONC_R=fMASS_FI),
         _F(MATRICE=IMPE_R, FONC_C=fIMPE_R),
     ),
     VECT_ASSE=(_F(VECTEUR=Force, COEF_R=1.0),),

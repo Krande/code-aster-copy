@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -40,6 +40,8 @@ EGGEOP_R = LocatedComponents(
 
 DDL_ACOU = LocatedComponents(phys=PHY.PRES_C, type="ELNO", components=("PRES",))
 
+EWATFLAC = LocatedComponents(phys=PHY.NEUT_I, type="ELEM", components=("X[1]"))
+
 
 MVECTTC = ArrayOfComponents(phys=PHY.VPRE_C, locatedComponents=DDL_ACOU)
 
@@ -55,7 +57,11 @@ class ACOU_FACE3(Element):
     calculs = (
         OP.AMOR_ACOU(
             te=182,
-            para_in=((SP.PGEOMER, NGEOMER), (SP.PIMPEDC, LC.CIMPEDC), (SP.PMATERC, LC.CMATERC)),
+            para_in=(
+                (SP.PGEOMER, NGEOMER),
+                (SP.PMATERC, LC.CMATERC),
+                (OP.AMOR_ACOU.PWATFLAC, EWATFLAC),
+            ),
             para_out=((SP.PMATTTC, MMATTTC),),
         ),
         OP.CHAR_ACOU_VFAC_C(

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -76,19 +76,15 @@ CD = ContactComputation(DEFICO_BAS)
 
 fed = pair.getFiniteElementDescriptor()
 nema = fed.getVirtualCellsDescriptor()
+nemab = []
+for k in range(len(nema)):
+    nemab.append(nema[k][:-1])
 grel = fed.getListOfGroupsOfElements()
 test.assertEqual(len(grel), 2)
 test.assertEqual(len(grel[0]), 2)
 test.assertSequenceEqual(
-    nema,
-    [
-        [58, 59, 13, 1, 97],
-        [59, 60, 14, 13, 97],
-        [59, 60, 15, 14, 97],
-        [60, 8, 15, 14, 97],
-        [60, 8, 2, 15, 97],
-        [11, 72],
-    ],
+    nemab,
+    [[58, 59, 13, 1], [59, 60, 14, 13], [59, 60, 15, 14], [60, 8, 15, 14], [60, 8, 2, 15], [11]],
 )
 
 gap, i_gap = CD.geometricGap(pair)
@@ -136,19 +132,15 @@ CD = ContactComputation(DEFICO_HAUT)
 
 fed = pair.getFiniteElementDescriptor()
 nema = fed.getVirtualCellsDescriptor()
+nemab = []
+for k in range(len(nema)):
+    nemab.append(nema[k][:-1])
 grel = fed.getListOfGroupsOfElements()
 test.assertEqual(len(grel), 2)
 test.assertEqual(len(grel[0]), 2)
 test.assertSequenceEqual(
-    nema,
-    [
-        [14, 13, 58, 59, 97],
-        [14, 13, 11, 58, 97],
-        [15, 14, 59, 60, 97],
-        [15, 14, 60, 8, 97],
-        [2, 15, 60, 8, 97],
-        [1, 72],
-    ],
+    nemab,
+    [[14, 13, 58, 59], [14, 13, 11, 58], [15, 14, 59, 60], [15, 14, 60, 8], [2, 15, 60, 8], [1]],
 )
 
 gap, i_gap = CD.geometricGap(pair)

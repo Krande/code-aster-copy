@@ -340,12 +340,15 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
                 time (float): Current time for external state variable evaluation (default: 0.0)
                 groupOfCells (list[str]): compute matrices on given groups of cells.
                     If it empty, the full model is used
+                flui_int (int): integer to activate damping impedance fluid matrix
+                onde_flui (int): integer to indicate if we have an outgoing or incoming wave
             Returns:
                 ElementaryMatrixReal: elementary damping matrix
             )",
               py::arg( "getMechanicalMassMatrix" ) = nullptr,
               py::arg( "stiffnessMatrix" ) = nullptr, py::arg( "time" ) = 0.0,
-              py::arg( "groupOfCells" ) = VectorString() )
+              py::arg( "groupOfCells" ) = VectorString(), py::arg( "flui_int" ) = 1,
+              py::arg( "onde_flui" ) = 1 )
 
         .def( "getImpedanceMatrix", &DiscreteComputation::getImpedanceMatrix, R"(
             Return the elementary matrices for impedance (acoustic) damping matrix.
@@ -359,10 +362,14 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
             Return the elementary matrices for impedance (mechanical) matrix.
             Option IMPE_MECA.
 
+            Arguments:
+                groupOfCells (list[str]): compute matrices on given groups of cells.
+                    If it empty, the full model is used
+                onde_flui (int): integer to indicate if we have an outgoing or incoming wave
             Returns:
                 ElementaryMatrixReal: impedance mechanical matrix
             )",
-              py::arg( "groupOfCells" ) = VectorString() )
+              py::arg( "groupOfCells" ) = VectorString(), py::arg( "onde_flui" ) = 1 )
 
         .def( "getImpedanceWaveMatrix", &DiscreteComputation::getImpedanceWaveMatrix, R"(
             Return the elementary matrices for impedance (mechanical) matrix

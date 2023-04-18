@@ -34,57 +34,73 @@ subroutine te0182(option, nomte)
 #include "jeveux.h"
 #include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
-#include "asterfort/rcvalb.h"
+#include "asterfort/rcvalc.h"
+#include "asterfort/getFluidPara.h"
+#include "asterc/r8prem.h"
+#include "asterfort/utmess.h"
 !
-    integer :: icodre(1), kpg, spt
-    character(len=8) :: fami, poum
     character(len=16) :: nomte, option
     real(kind=8) :: nx, ny, nz, sx(9, 9), sy(9, 9), sz(9, 9), jac
-    real(kind=8) :: rho(1)
-    complex(kind=8) :: rhosz
-    integer :: ipoids, ivf, idfdx, idfdy, igeom, imate
+    complex(kind=8) :: rhosz, cele_c
+    real(kind=8) :: rho, alpha, q_alpha, cele_r, cele_i, onde_flui
+    integer :: ipoids, ivf, idfdx, idfdy, igeom, imate, jv_amor
     integer :: ndim, nno, ndi, ipg, imattt
     integer :: idec, jdec, kdec, ldec, nnos, npg2, jgano
-!
-!**
-!-----------------------------------------------------------------------
-    integer :: i, iimp, ij, ino, j, jno, mater
+    integer :: i, ij, ino, j, jno, mater
 !
 !-----------------------------------------------------------------------
     call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg2, &
                      jpoids=ipoids, jvf=ivf, jdfde=idfdx, jgano=jgano)
-!**
+!
     idfdy = idfdx+1
     ndi = nno*(nno+1)/2
 !
     call jevech('PGEOMER', 'L', igeom)
-!**
-    call jevech('PIMPEDC', 'L', iimp)
-!**
     call jevech('PMATTTC', 'E', imattt)
-!**
     call jevech('PMATERC', 'L', imate)
+    call jevech('PWATFLAC', 'L', jv_amor)
+!
+! - Get material properties for fluid
+!
     mater = zi(imate)
-    fami = 'FPG1'
-    kpg = 1
-    spt = 1
-    poum = '+'
-    call rcvalb(fami, kpg, spt, poum, mater, &
-                ' ', 'FLUIDE', 0, ' ', [0.d0], &
-                1, 'RHO', rho, icodre, 1)
+
+    call getFluidPara(mater, rho_=rho, cele_r_=cele_r, cele_i_=cele_i, alpha_=alpha)
+
+    cele_c = dcmplx(cele_r, cele_i)
+!
+! - Conditions on fluid parameters
+!
+    if ((1.d0-alpha) .ge. r8prem()) then
+        q_alpha = (1.d0+alpha)/(1.d0-alpha)
+    else
+        call utmess('F', 'FLUID1_5', sk='ALPHA')
+    end if
+
+    if (rho .le. r8prem()) then
+        call utmess('F', 'FLUID1_6', sk='RHO')
+    end if
+
+    if ((abs(cele_r) .le. r8prem()) .and. (abs(cele_i) .le. r8prem())) then
+        call utmess('F', 'FLUID1_7', sk='CELE_R + i*CELE_I')
+    end if
+
+    if (zi(jv_amor-1+1) .eq. 1) then
+        onde_flui = +1.d0
+    else
+        onde_flui = -1.d0
+    end if
+!
+! - Output field
+!
+
+    rhosz = 1.d0/(q_alpha*cele_c)
+
+!
+! - Compute
 !
     do i = 1, ndi
-!*
         zc(imattt+i-1) = (0.0d0, 0.0d0)
     end do
-!**
-    rhosz = (0.0d0, 0.0d0)
-    if (zc(iimp) .ne. (0.d0, 0.d0)) then
-        rhosz = rho(1)/zc(iimp)
-    else
-        goto 120
-    end if
-!**
 !
 !    CALCUL DES PRODUITS VECTORIELS OMI X OMJ
 !
@@ -129,20 +145,10 @@ subroutine te0182(option, nomte)
         do i = 1, nno
             do j = 1, i
                 ij = (i-1)*i/2+j
-!**
-                zc(imattt+ij-1) = zc(imattt+ij-1)+jac*rhosz*zr(ipoids+ipg-1)*zr(ivf+ldec+i-&
-                                  &1)*zr(ivf+ldec+j-1)
-!
-!**
+                zc(imattt+ij-1) = zc(imattt+ij-1)+jac*onde_flui*rhosz*&
+                                          &zr(ipoids+ipg-1)*zr(ivf+ldec+i-&
+                                          &1)*zr(ivf+ldec+j-1)
             end do
         end do
-!
     end do
-!
-120 continue
-!
-!**
-    do i = 1, ndi
-    end do
-!**
 end subroutine

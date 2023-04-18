@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -29,30 +29,44 @@ MA = LIRE_MAILLAGE(FORMAT="IDEAS", UNITE=19)
 
 MO = AFFE_MODELE(
     MAILLAGE=MA,
-    AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", FORMULATION="U_P", MODELISATION="3D_FLUIDE"),
+    AFFE=(
+        _F(TOUT="OUI", PHENOMENE="MECANIQUE", FORMULATION="U_P", MODELISATION="3D_FLUIDE"),
+        _F(
+            GROUP_MA=("impe", "velo"),
+            PHENOMENE="MECANIQUE",
+            FORMULATION="U_P",
+            MODELISATION="3D_FLUI_ABSO",
+        ),
+    ),
 )
 
 #
 # PROPRIETES MECANIQUES
 #
 AIR = DEFI_MATERIAU(FLUIDE=_F(RHO=1.2, CELE_R=340.0))
+AIR2 = DEFI_MATERIAU(FLUIDE=_F(RHO=1.2, CELE_R=340.0))
+AIR3 = DEFI_MATERIAU(FLUIDE=_F(RHO=1.2, CELE_R=340.0, COEF_AMOR=0.42045454545454547))
 
-CHM = AFFE_MATERIAU(MAILLAGE=MA, AFFE=_F(TOUT="OUI", MATER=AIR))
+CHM = AFFE_MATERIAU(
+    MAILLAGE=MA,
+    AFFE=(
+        _F(TOUT="OUI", MATER=AIR),
+        _F(GROUP_MA="impe", MATER=AIR2),
+        _F(GROUP_MA="velo", MATER=AIR3),
+    ),
+)
 
 #
 # CONDITIONS AUX LIMITES
 #
 VITES = AFFE_CHAR_MECA(MODELE=MO, VITE_FACE=_F(GROUP_MA="velo", VNOR=-1.0))
 
-IMPE = AFFE_CHAR_MECA(
-    MODELE=MO, IMPE_FACE=(_F(GROUP_MA="impe", IMPE=-408.0), _F(GROUP_MA="velo", IMPE=-1000.0))
-)
-
-
 # Matrice elementaire
 K_elem = CALC_MATR_ELEM(CHAM_MATER=CHM, MODELE=MO, OPTION="RIGI_MECA")
 M_elem = CALC_MATR_ELEM(CHAM_MATER=CHM, MODELE=MO, OPTION="MASS_MECA")
-Imp_elem = CALC_MATR_ELEM(CHAM_MATER=CHM, MODELE=MO, OPTION="IMPE_MECA", CHARGE=IMPE)
+Imp_elem = CALC_MATR_ELEM(
+    CHAM_MATER=CHM, MODELE=MO, OPTION="AMOR_MECA", VNOR=-1.0, RIGI_MECA=K_elem
+)
 
 # Seconde membre elementaire
 F_elem = CALC_VECT_ELEM(OPTION="CHAR_MECA", CHARGE=VITES, CHAM_MATER=CHM)

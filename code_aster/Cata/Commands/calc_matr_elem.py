@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -160,6 +160,8 @@ CALC_MATR_ELEM = MACRO(
         RIGI_MECA=SIMP(statut="f", typ=matr_elem_depl_r),
         MASS_MECA=SIMP(statut="f", typ=matr_elem_depl_r),
         CHARGE=SIMP(statut="f", typ=char_meca, validators=NoRepeat(), max="**"),
+        AMOR_FLUI=SIMP(statut="f", typ="TXM", into=("OUI", "NON"), defaut="OUI"),
+        VNOR=SIMP(statut="f", typ="R", into=(1.0, -1.0), defaut=1.0),
     ),
     b_rigi_hyst=BLOC(
         condition="""equal_to("OPTION", 'RIGI_MECA_HYST')""",
@@ -190,6 +192,10 @@ CALC_MATR_ELEM = MACRO(
         condition="""(equal_to("OPTION", 'MASS_ACOU')) or (equal_to("OPTION", 'AMOR_ACOU'))""",
         CHAM_MATER=SIMP(statut="o", typ=cham_mater),
         CHARGE=SIMP(statut="f", typ=char_acou, validators=NoRepeat(), max="**"),
+        b_direction_ac=BLOC(
+            condition="""(equal_to("OPTION", 'AMOR_ACOU'))""",
+            VNOR=SIMP(statut="f", typ="R", into=(1.0, -1.0), defaut=1.0),
+        ),
     ),
     b_rigi_flui=BLOC(
         condition="""equal_to("OPTION", 'RIGI_FLUI_STRU')""",
@@ -207,6 +213,11 @@ CALC_MATR_ELEM = MACRO(
     b_impe_meca=BLOC(
         condition="""(equal_to("OPTION", 'IMPE_MECA')) or (equal_to("OPTION", 'ONDE_FLUI'))""",
         CHAM_MATER=SIMP(statut="o", typ=cham_mater),
-        CHARGE=SIMP(statut="o", typ=char_meca, validators=NoRepeat(), max="**"),
+        GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
+        CHARGE=SIMP(statut="f", typ=char_meca, validators=NoRepeat(), max="**"),
+        b_direction_me=BLOC(
+            condition="""(equal_to("OPTION", 'IMPE_MECA'))""",
+            VNOR=SIMP(statut="f", typ="R", into=(1.0, -1.0), defaut=1.0),
+        ),
     ),
 )

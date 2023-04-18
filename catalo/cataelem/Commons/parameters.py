@@ -802,10 +802,6 @@ PHECHPF = InputParameter(phys=PHY.COEH_F, comment="""""")
 
 PHECHPR = InputParameter(phys=PHY.COEH_R, comment="""""")
 
-PIMPEDC = InputParameter(phys=PHY.IMPE_C, comment="""""")
-
-PIMPEDR = InputParameter(phys=PHY.IMPE_R, comment="""""")
-
 PINDCOI = InputParameter(
     phys=PHY.NEUT_I,
     comment=""" XFEM

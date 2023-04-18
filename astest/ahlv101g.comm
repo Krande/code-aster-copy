@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -37,18 +37,20 @@ CHAMPMAT = AFFE_MATERIAU(MAILLAGE=MAIL, AFFE=_F(TOUT="OUI", MATER=AIR))
 
 GUIDE = AFFE_MODELE(
     MAILLAGE=MAIL,
-    AFFE=_F(TOUT="OUI", MODELISATION="3D_FLUIDE", FORMULATION="U_PSI", PHENOMENE="MECANIQUE"),
+    AFFE=(
+        _F(TOUT="OUI", MODELISATION="3D_FLUIDE", FORMULATION="U_PSI", PHENOMENE="MECANIQUE"),
+        _F(
+            GROUP_MA="SORTIE",
+            MODELISATION="3D_FLUI_ABSO",
+            FORMULATION="U_PSI",
+            PHENOMENE="MECANIQUE",
+        ),
+    ),
 )
 
 #
 
 CHARMECA = AFFE_CHAR_MECA(MODELE=GUIDE, ONDE_FLUI=_F(GROUP_MA="ENTREE", PRES=1.0))
-
-#
-
-IMPEMECA = AFFE_CHAR_MECA(MODELE=GUIDE, IMPE_FACE=_F(GROUP_MA="SORTIE", IMPE=445.9))
-
-#
 
 ASSEMBLAGE(
     MODELE=GUIDE,
@@ -64,22 +66,8 @@ ASSEMBLAGE(
     VECT_ASSE=(_F(VECTEUR=CO("VECTASS"), OPTION="CHAR_MECA")),
 )
 
-ASSEMBLAGE(
-    MODELE=GUIDE,
-    CHARGE=IMPEMECA,
-    CHAM_MATER=CHAMPMAT,
-    NUME_DDL=NUM,
-    MATR_ASSE=_F(MATRICE=CO("MATASI2"), OPTION="IMPE_MECA"),
-)
-
-#
-
 MATASI = COMB_MATR_ASSE(
-    COMB_R=(
-        _F(MATR_ASSE=MATASI1, COEF_R=1.0),
-        _F(MATR_ASSE=MATASI2, COEF_R=1.0),
-        _F(MATR_ASSE=MATASC, COEF_R=1.0),
-    )
+    COMB_R=(_F(MATR_ASSE=MATASI1, COEF_R=1.0), _F(MATR_ASSE=MATASC, COEF_R=1.0))
 )
 
 #

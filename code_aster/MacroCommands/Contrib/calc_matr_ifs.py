@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -41,7 +41,6 @@ from ...Supervis import UserMacro
 
 
 def calc_matr_ifs_ops(self, **args):
-
     MAILLAGE = args.get("MAILLAGE")
     MODELE = args.get("MODELE")
     CHAR_CINE = args.get("CHAR_CINE")
@@ -49,10 +48,10 @@ def calc_matr_ifs_ops(self, **args):
     GROUP_MA_ELAS = args.get("GROUP_MA_ELAS")
     GROUP_MA_FLUI = args.get("GROUP_MA_FLUI")
     GROUP_MA_VISC = args.get("GROUP_MA_VISC")
-    GROUP_MA_IMPE = args.get("GROUP_MA_IMPE")
     RHO_ELAS = args.get("RHO_ELAS")
     NU_ELAS = args.get("NU_ELAS")
     RHO_FLUI = args.get("RHO_FLUI")
+    R_FLUI = args.get("R_FLUI")
     C_FLUI = args.get("C_FLUI")
     RHO_VISC = args.get("RHO_VISC")
     NU_VISC = args.get("NU_VISC")
@@ -60,17 +59,15 @@ def calc_matr_ifs_ops(self, **args):
     CHAR_IMPE_C = args.get("CHAR_IMPE_C")
     MASS_E_OUT = args.get("MASS_E")
     MASS_F_OUT = args.get("MASS_F")
-    MASS_FI_OUT = args.get("MASS_FI")
     RIGI_E_OUT = args.get("RIGI_E")
     RIGI_F_OUT = args.get("RIGI_F")
     RIGI_V_OUT = args.get("RIGI_V")
     IMPE_R_OUT = args.get("IMPE_R")
-    IMPE_I_OUT = args.get("IMPE_I")
 
     # Commandes utilisées dans la macro
 
     # Définition des propriétés matériaux
-    _FLUI = DEFI_MATERIAU(FLUIDE=_F(RHO=RHO_FLUI, CELE_R=C_FLUI))
+    _FLUI = DEFI_MATERIAU(FLUIDE=_F(RHO=RHO_FLUI, CELE_R=C_FLUI, LONG_CARA=R_FLUI))
     _FLUI_0 = DEFI_MATERIAU(FLUIDE=_F(RHO=RHO_FLUI, CELE_R=0))
     _FLUI_00 = DEFI_MATERIAU(FLUIDE=_F(RHO=0.0, CELE_R=0))
 
@@ -175,28 +172,6 @@ def calc_matr_ifs_ops(self, **args):
     numeddl = NUME_DDL(MODELE=MODELE)
     self.register_result(numeddl, NUME_DDL_OUT)
 
-    # Calcul des matrices d'impédance
-
-    if GROUP_MA_IMPE is not None:
-        _CLIMPR = AFFE_CHAR_MECA(
-            MODELE=MODELE, IMPE_FACE=_F(GROUP_MA=GROUP_MA_IMPE, IMPE=CHAR_IMPE_R)
-        )
-        _CLIMPI = AFFE_CHAR_MECA(
-            MODELE=MODELE, IMPE_FACE=_F(GROUP_MA=GROUP_MA_IMPE, IMPE=CHAR_IMPE_C)
-        )
-        _ElIMPEr = CALC_MATR_ELEM(
-            OPTION="IMPE_MECA", MODELE=MODELE, CHARGE=_CLIMPR, CHAM_MATER=_MAT_MK1
-        )
-        _ElIMPEi = CALC_MATR_ELEM(
-            OPTION="IMPE_MECA", MODELE=MODELE, CHARGE=_CLIMPI, CHAM_MATER=_MAT_MK1
-        )
-
-        IMPE_I = ASSE_MATRICE(MATR_ELEM=_ElIMPEi, NUME_DDL=numeddl, CHAR_CINE=CHAR_CINE)
-        self.register_result(IMPE_I, IMPE_I_OUT)
-
-        IMPE_R = ASSE_MATRICE(MATR_ELEM=_ElIMPEr, NUME_DDL=numeddl, CHAR_CINE=CHAR_CINE)
-        self.register_result(IMPE_R, IMPE_R_OUT)
-
     # Calcul des matrices de masse
 
     _ElMASSe = CALC_MATR_ELEM(OPTION="MASS_MECA", MODELE=MODELE, CHAM_MATER=_MAT_MSE)
@@ -208,12 +183,6 @@ def calc_matr_ifs_ops(self, **args):
     MASS_F = ASSE_MATRICE(MATR_ELEM=_ElMASSf, NUME_DDL=numeddl, CHAR_CINE=CHAR_CINE)
     self.register_result(MASS_F, MASS_F_OUT)
 
-    if GROUP_MA_IMPE is not None:
-        MASS_FI = COMB_MATR_ASSE(
-            COMB_R=(_F(MATR_ASSE=MASS_F, COEF_R=1.0), _F(MATR_ASSE=IMPE_I, COEF_R=1.0))
-        )
-        self.register_result(MASS_FI, MASS_FI_OUT)
-
     # Calcul des matrices de rigidité
 
     _ElRIGIf = CALC_MATR_ELEM(OPTION="RIGI_MECA", MODELE=MODELE, CHAM_MATER=_MAT_MK1)
@@ -224,6 +193,11 @@ def calc_matr_ifs_ops(self, **args):
     self.register_result(RIGI_F, RIGI_F_OUT)
     RIGI_E = ASSE_MATRICE(MATR_ELEM=_ElRIGIe, NUME_DDL=numeddl, CHAR_CINE=CHAR_CINE)
     self.register_result(RIGI_E, RIGI_E_OUT)
+
+    _ElIMPEr = CALC_MATR_ELEM(OPTION="IMPE_MECA", MODELE=MODELE, CHAM_MATER=_MAT_MK1)
+
+    IMPE_R = ASSE_MATRICE(MATR_ELEM=_ElIMPEr, NUME_DDL=numeddl, CHAR_CINE=CHAR_CINE)
+    self.register_result(IMPE_R, IMPE_R_OUT)
 
     if GROUP_MA_VISC is not None:
         _ElRIGf1 = CALC_MATR_ELEM(OPTION="RIGI_MECA", MODELE=MODELE, CHAM_MATER=_MAT_MK3)
@@ -238,12 +212,10 @@ def calc_matr_ifs_ops(self, **args):
 def calc_matr_ifs_prod(self, **args):
     MASS_E = args.get("MASS_E")
     MASS_F = args.get("MASS_F")
-    MASS_FI = args.get("MASS_FI")
     RIGI_E = args.get("RIGI_E")
     RIGI_F = args.get("RIGI_F")
     RIGI_V = args.get("RIGI_V")
     IMPE_R = args.get("IMPE_R")
-    IMPE_I = args.get("IMPE_I")
     NUME_DDL = args.get("NUME_DDL")
     if args.get("__all__"):
         return (
@@ -253,9 +225,7 @@ def calc_matr_ifs_prod(self, **args):
             [None, matr_asse_depl_r],
             [None, matr_asse_depl_r],
             [None, matr_asse_depl_r],
-            [None, matr_asse_depl_r],
             [None, matr_asse_depl_c],
-            [None, matr_asse_depl_r],
             [None, matr_asse_depl_r],
         )
 
@@ -271,9 +241,6 @@ def calc_matr_ifs_prod(self, **args):
     if MASS_F:
         self.type_sdprod(MASS_F, matr_asse_depl_r)
 
-    if MASS_FI:
-        self.type_sdprod(MASS_FI, matr_asse_depl_r)
-
     if RIGI_E:
         self.type_sdprod(RIGI_E, matr_asse_depl_r)
 
@@ -285,9 +252,6 @@ def calc_matr_ifs_prod(self, **args):
 
     if IMPE_R:
         self.type_sdprod(IMPE_R, matr_asse_depl_r)
-
-    if IMPE_I:
-        self.type_sdprod(IMPE_I, matr_asse_depl_r)
 
     return
 
@@ -307,25 +271,21 @@ CALC_MATR_IFS_CATA = MACRO(
     GROUP_MA_ELAS=SIMP(statut="o", typ=grma, validators=NoRepeat(), max="**"),
     GROUP_MA_FLUI=SIMP(statut="o", typ=grma, validators=NoRepeat(), max="**"),
     GROUP_MA_VISC=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
-    GROUP_MA_IMPE=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
     # MATERIAL PROPERTIES
     RHO_ELAS=SIMP(statut="o", typ="R"),
     NU_ELAS=SIMP(statut="o", typ="R"),
     RHO_FLUI=SIMP(statut="o", typ="R"),
+    R_FLUI=SIMP(statut="o", typ="R", default=0.0),
     C_FLUI=SIMP(statut="o", typ="R"),
     RHO_VISC=SIMP(statut="f", typ="R"),
     NU_VISC=SIMP(statut="f", typ="R"),
-    CHAR_IMPE_R=SIMP(statut="f", typ="R"),
-    CHAR_IMPE_C=SIMP(statut="f", typ="R"),
     # Sorties (matrices)
     MASS_E=SIMP(statut="f", typ=typCO),
     MASS_F=SIMP(statut="f", typ=typCO),
-    MASS_FI=SIMP(statut="f", typ=typCO),
     RIGI_E=SIMP(statut="f", typ=typCO),
     RIGI_F=SIMP(statut="f", typ=typCO),
     RIGI_V=SIMP(statut="f", typ=typCO),
     IMPE_R=SIMP(statut="f", typ=typCO),
-    IMPE_I=SIMP(statut="f", typ=typCO),
 )
 
 CALC_MATR_IFS = UserMacro("CALC_MATR_IFS", CALC_MATR_IFS_CATA, calc_matr_ifs_ops)

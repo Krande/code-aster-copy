@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -29,6 +29,7 @@ CHAR_MECA_VFAC_F = Option(
     para_out=(SP.PVECTUR,),
     condition=(
         CondCalcul("+", ((AT.PHENO, "ME"), (AT.FLUIDE, "OUI"), (AT.BORD, "-1"))),
+        CondCalcul("+", ((AT.PHENO, "ME"), (AT.FLUIDE, "OUI"), (AT.ABSO, "OUI"))),
         CondCalcul("+", ((AT.FSI, "OUI"),)),
     ),
     comment=""" Elementary vector of right-hand side for load VITE_FACE (function)""",

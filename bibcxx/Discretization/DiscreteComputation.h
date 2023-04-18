@@ -52,6 +52,13 @@ class DiscreteComputation {
                                                  const ASTERDOUBLE time_step = 0.0,
                                                  const ASTERDOUBLE theta = 0.0 ) const;
 
+    /** @brief Create damping fluid field */
+    ConstantFieldOnCellsLongPtr createDampingFluidField( const ASTERINTEGER damping,
+                                                         const ASTERINTEGER onde_flui ) const;
+
+    /** @brief Create wave type fluid field (for IMPE_MECA and AMOR_ACOU option) */
+    ConstantFieldOnCellsLongPtr createWaveTypeFluidField( const ASTERINTEGER onde_flui ) const;
+
     /** @brief Preparation for non-linear computations */
     CalculPtr createCalculForNonLinear( const std::string option, const ASTERDOUBLE &time_prev,
                                         const ASTERDOUBLE &time_step,
@@ -233,12 +240,20 @@ class DiscreteComputation {
     ElementaryMatrixDisplacementRealPtr getMechanicalDampingMatrix(
         const ElementaryMatrixDisplacementRealPtr &massMatrix = nullptr,
         const ElementaryMatrixDisplacementRealPtr &stiffnessMatrix = nullptr,
-        const ASTERDOUBLE &time = 0.0, const VectorString &groupOfCells = VectorString() ) const;
+        const ASTERDOUBLE &time = 0.0, const VectorString &groupOfCells = VectorString(),
+        const ASTERINTEGER &flui_int = 1, const ASTERINTEGER &onde_flui = 1 ) const;
+    /**
+     * @brief Compute elementary matrices for damping matrix (AMOR_ACOU)
+     */
+    ElementaryMatrixPressureComplexPtr
+    getImpedanceMatrix( const ASTERINTEGER &onde_flui = 1 ) const;
 
-    ElementaryMatrixPressureComplexPtr getImpedanceMatrix() const;
-
+    /**
+     * @brief Compute third order elementary matrices for absorbing fluid elements (IMPE_MECA)
+     */
     ElementaryMatrixDisplacementRealPtr
-    getImpedanceBoundaryMatrix( const VectorString &groupOfCells = VectorString() ) const;
+    getImpedanceBoundaryMatrix( const VectorString &groupOfCells = VectorString(),
+                                const ASTERINTEGER &onde_flui = 1 ) const;
 
     ElementaryMatrixDisplacementRealPtr
     getImpedanceWaveMatrix( const VectorString &groupOfCells = VectorString() ) const;

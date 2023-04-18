@@ -189,9 +189,6 @@ subroutine w039ca(ifi, form)
             titre = 'Chargement de FLUX_THM_REP'
             call w039c1(charge//'.CHME.FLUX', ifi, form, ligrel, titre)
 !
-            titre = 'Chargement d''IMPE_FACE'
-            call w039c1(charge//'.CHME.IMPED', ifi, form, ligrel, titre)
-!
             titre = 'Chargement d''ONDE_FLUI'
             call w039c1(charge//'.CHME.ONDE', ifi, form, ligrel, titre)
 !

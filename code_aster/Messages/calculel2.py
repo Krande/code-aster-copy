@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -438,17 +438,6 @@ Erreur utilisateur :
     82: _(
         """
  il faut un MODELE
-"""
-    ),
-    83: _(
-        """
-Erreur utilisateur :
-  Vous demandez le calcul de la matrice correspondant à l'option IMPE_MECA.
-  Mais on ne peut rien calculer, faute de données.
-
-Risques et conseils :
-  Il faut fournir en argument du mot clé CHARGE au moins une charge
-  mécanique qui utilise le mot clé IMPE_FACE.
 """
     ),
     86: _(

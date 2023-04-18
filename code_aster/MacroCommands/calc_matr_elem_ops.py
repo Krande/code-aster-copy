@@ -91,10 +91,20 @@ def calc_matr_elem_ops(self, **args):
         matr_elem = disc_comp.getMechanicalMassMatrix(True, time, group_ma)
 
     elif myOption == "AMOR_MECA":
+        amorflui = args["AMOR_FLUI"]
+        v_nor = args["VNOR"]
+        if amorflui == "OUI":
+            flui_int = int(1)
+        else:
+            flui_int = int(0)
+        if v_nor == 1.0:
+            onde_flui = int(1)
+        else:
+            onde_flui = int(0)
         getMechanicalMassMatrix = args.get("MASS_MECA")
         stiffnessMatrix = args.get("RIGI_MECA")
         matr_elem = disc_comp.getMechanicalDampingMatrix(
-            getMechanicalMassMatrix, stiffnessMatrix, time, group_ma
+            getMechanicalMassMatrix, stiffnessMatrix, time, group_ma, flui_int, onde_flui
         )
 
     elif myOption == "RIGI_MECA_HYST":
@@ -102,7 +112,12 @@ def calc_matr_elem_ops(self, **args):
         matr_elem = disc_comp.getHystereticStiffnessMatrix(stiffnessMatrix, time, group_ma)
 
     elif myOption == "AMOR_ACOU":
-        matr_elem = disc_comp.getImpedanceMatrix()
+        v_nor = args["VNOR"]
+        if v_nor == 1.0:
+            onde_flui = int(1)
+        else:
+            onde_flui = int(0)
+        matr_elem = disc_comp.getImpedanceMatrix(onde_flui)
 
     elif myOption == "RIGI_FLUI_STRU":
         matr_elem = disc_comp.getFluidStructureStiffnessMatrix(time, groupOfCells=group_ma)
@@ -115,7 +130,12 @@ def calc_matr_elem_ops(self, **args):
         matr_elem = disc_comp.getFluidStructureMassMatrix(groupOfCells=group_ma)
 
     elif myOption == "IMPE_MECA":
-        matr_elem = disc_comp.getImpedanceBoundaryMatrix(group_ma)
+        v_nor = args["VNOR"]
+        if v_nor == 1.0:
+            onde_flui = int(1)
+        else:
+            onde_flui = int(0)
+        matr_elem = disc_comp.getImpedanceBoundaryMatrix(group_ma, onde_flui)
 
     elif myOption == "ONDE_FLUI":
         matr_elem = disc_comp.getImpedanceWaveMatrix(group_ma)

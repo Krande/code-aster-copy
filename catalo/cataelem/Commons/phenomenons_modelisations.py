@@ -139,6 +139,22 @@ phen.add(
 )
 
 phen.add(
+    "AXIS_FLUI_ABSO#1",
+    Modelisation(
+        dim=(1, 2),
+        code="AFA",
+        attrs=(
+            (AT.TYPMOD, "PLAN"),
+            (AT.FLUIDE, "OUI"),
+            (AT.ABSO, "OUI"),
+            (AT.FORMULATION, "U_P_PHI"),
+            (AT.AXIS, "OUI"),
+        ),
+        elements=((MT.SEG2, EL.MEFAXSE2), (MT.SEG3, EL.MEFAXSE3)),
+    ),
+)
+
+phen.add(
     "2D_FLUI_ABSO#2",
     Modelisation(
         dim=(1, 2),
@@ -149,10 +165,26 @@ phen.add(
 )
 
 phen.add(
+    "AXIS_FLUI_ABSO#2",
+    Modelisation(
+        dim=(1, 2),
+        code="AFX",
+        attrs=(
+            (AT.TYPMOD, "PLAN"),
+            (AT.FLUIDE, "OUI"),
+            (AT.ABSO, "OUI"),
+            (AT.FORMULATION, "U_P"),
+            (AT.AXIS, "OUI"),
+        ),
+        elements=((MT.SEG2, EL.MEFAXSE2UP), (MT.SEG3, EL.MEFAXSE3UP)),
+    ),
+)
+
+phen.add(
     "2D_FLUI_ABSO#3",
     Modelisation(
         dim=(1, 2),
-        code="2FZ",
+        code="2FY",
         attrs=(
             (AT.TYPMOD, "PLAN"),
             (AT.FLUIDE, "OUI"),
@@ -160,6 +192,22 @@ phen.add(
             (AT.FORMULATION, "U_PSI"),
         ),
         elements=((MT.SEG2, EL.MEFASE2UPSI), (MT.SEG3, EL.MEFASE3UPSI)),
+    ),
+)
+
+phen.add(
+    "AXIS_FLUI_ABSO#3",
+    Modelisation(
+        dim=(1, 2),
+        code="AFY",
+        attrs=(
+            (AT.TYPMOD, "PLAN"),
+            (AT.FLUIDE, "OUI"),
+            (AT.ABSO, "OUI"),
+            (AT.FORMULATION, "U_PSI"),
+            (AT.AXIS, "OUI"),
+        ),
+        elements=((MT.SEG2, EL.MEFAXSE2UPSI), (MT.SEG3, EL.MEFAXSE3UPSI)),
     ),
 )
 
@@ -722,7 +770,7 @@ phen.add(
     "3D_FLUI_ABSO#3",
     Modelisation(
         dim=(2, 3),
-        code="3FZ",
+        code="3FY",
         attrs=((AT.FLUIDE, "OUI"), (AT.ABSO, "OUI"), (AT.FORMULATION, "U_PSI")),
         elements=(
             (MT.TRIA3, EL.MEFA_FACE3UPSI),
@@ -6443,12 +6491,29 @@ phen.add(
             (MT.HEXA8, EL.ACOU_HEXA8),
             (MT.PENTA6, EL.ACOU_PENTA6),
             (MT.TETRA4, EL.ACOU_TETRA4),
-            (MT.QUAD4, EL.ACOU_FACE4),
-            (MT.TRIA3, EL.ACOU_FACE3),
+            (MT.QUAD4, EL.ACOUNA_FACE4),
+            (MT.TRIA3, EL.ACOUNA_FACE3),
             (MT.HEXA27, EL.ACOU_HEXA27),
             (MT.HEXA20, EL.ACOU_HEXA20),
             (MT.PENTA15, EL.ACOU_PENTA15),
             (MT.TETRA10, EL.ACOU_TETRA10),
+            (MT.QUAD9, EL.ACOUNA_FACE9),
+            (MT.QUAD8, EL.ACOUNA_FACE8),
+            (MT.TRIA6, EL.ACOUNA_FACE6),
+        ),
+    ),
+)
+
+
+phen.add(
+    "3D_ABSO",
+    Modelisation(
+        dim=(3, 3),
+        code="3AA",
+        attrs=((AT.TYPMOD, "3D"), (AT.ABSO, "OUI")),
+        elements=(
+            (MT.QUAD4, EL.ACOU_FACE4),
+            (MT.TRIA3, EL.ACOU_FACE3),
             (MT.QUAD9, EL.ACOU_FACE9),
             (MT.QUAD8, EL.ACOU_FACE8),
             (MT.TRIA6, EL.ACOU_FACE6),
@@ -6467,9 +6532,19 @@ phen.add(
             (MT.QUAD4, EL.ACPLQU4),
             (MT.QUAD8, EL.ACPLQU8),
             (MT.QUAD9, EL.ACPLQU9),
-            (MT.SEG2, EL.ACPLSE2),
-            (MT.SEG3, EL.ACPLSE3),
+            (MT.SEG2, EL.ACPLNASE2),
+            (MT.SEG3, EL.ACPLNASE3),
         ),
+    ),
+)
+
+phen.add(
+    "PLAN_ABSO",
+    Modelisation(
+        dim=(2, 2),
+        code="PAA",
+        attrs=((AT.TYPMOD, "PLAN"), (AT.ABSO, "OUI")),
+        elements=((MT.SEG2, EL.ACPLSE2), (MT.SEG3, EL.ACPLSE3)),
     ),
 )
 

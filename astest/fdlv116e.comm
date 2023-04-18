@@ -143,7 +143,6 @@ MODELE2 = AFFE_MODELE(
 CL2 = AFFE_CHAR_MECA(
     MODELE=MODELE2,
     DDL_IMPO=(_F(GROUP_MA="Bord_Eau_Sup_3D", PSI=0.0), _F(GROUP_MA="SUT", DY=0.0)),
-    IMPE_FACE=(_F(GROUP_MA="Bord_Eau_Gauche_3D", IMPE=Rho_Eau * Cele_R),),
     LIAISON_GROUP=(
         _F(
             GROUP_NO_1="SUF_NO",
@@ -190,14 +189,12 @@ amor_ele = CALC_MATR_ELEM(
     CHARGE=CL2,
 )
 
-impe_ele = CALC_MATR_ELEM(MODELE=MODELE2, OPTION="IMPE_MECA", CHAM_MATER=CHMAT, CHARGE=CL2)
-
 nume_ddl = NUME_DDL(MATR_RIGI=rigi_ele)
 
 
 RIGI = ASSE_MATRICE(MATR_ELEM=rigi_ele, NUME_DDL=nume_ddl)
 MASSE = ASSE_MATRICE(MATR_ELEM=mass_ele, NUME_DDL=nume_ddl)
-AMOR = ASSE_MATRICE(MATR_ELEM=(amor_ele, impe_ele), NUME_DDL=nume_ddl)
+AMOR = ASSE_MATRICE(MATR_ELEM=amor_ele, NUME_DDL=nume_ddl)
 
 
 # Definition Chargement

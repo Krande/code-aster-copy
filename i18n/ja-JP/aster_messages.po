@@ -15680,10 +15680,6 @@ msgid ""
 "  Vous demandez le calcul de la matrice correspondant à l'option IMPE_MECA.\n"
 "  Mais on ne peut rien calculer, faute de données.\n"
 "\n"
-"Risques et conseils :\n"
-"  Il faut fournir en argument du mot clé CHARGE au moins une charge \n"
-"  mécanique qui utilise le mot clé IMPE_FACE.\n"
-msgstr ""
 
 #: /home/I26352/dev/integration-default/src/bibpyt/Messages/calculel2.py:378
 msgid ""

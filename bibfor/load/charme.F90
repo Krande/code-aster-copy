@@ -52,7 +52,6 @@ subroutine charme(load, valeType)
 #include "asterfort/caveis.h"
 #include "asterfort/cbchei.h"
 #include "asterfort/cbelec.h"
-#include "asterfort/cbimpe.h"
 #include "asterfort/cbonde.h"
 #include "asterfort/cbondp.h"
 #include "asterfort/cbpesa.h"
@@ -121,9 +120,6 @@ subroutine charme(load, valeType)
 ! ----- RELA_CINE_BP
         call caprec(load, loadLigrel, mesh, model, valeType)
 
-! ----- IMPE_FACE
-        call cbimpe(phenom, load, mesh, valeType)
-
 ! ----- VITE_FACE
         call cbvite(phenom, load, mesh, valeType)
 
@@ -142,9 +138,6 @@ subroutine charme(load, valeType)
     else if (valeType .eq. 'COMP') then
 
     else if (valeType .eq. 'FONC') then
-
-! ----- IMPE_FACE
-        call cbimpe(phenom, load, mesh, valeType)
 
 ! ----- VITE_FACE
         call cbvite(phenom, load, mesh, valeType)

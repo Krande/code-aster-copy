@@ -121,11 +121,7 @@ MODELE2 = AFFE_MODELE(
 )
 
 ###Conditions aux limites dont impedance pour l'absorption des ondes en bout de retenue et pression nulle en surface libre
-CL2 = AFFE_CHAR_MECA(
-    MODELE=MODELE2,
-    DDL_IMPO=_F(GROUP_MA="Bord_Eau_Sup", PSI=0.0),
-    IMPE_FACE=(_F(GROUP_MA="Bord_Eau_Gauche", IMPE=Rho_Eau * Cele_R),),
-)
+CL2 = AFFE_CHAR_MECA(MODELE=MODELE2, DDL_IMPO=_F(GROUP_MA="Bord_Eau_Sup", PSI=0.0))
 
 
 ###Calcul et assemblage des matrices de masses, raideur et amortissement
@@ -144,14 +140,12 @@ amor_ele = CALC_MATR_ELEM(
     CHARGE=CL2,
 )
 
-impe_ele = CALC_MATR_ELEM(MODELE=MODELE2, OPTION="IMPE_MECA", CHAM_MATER=CHMAT, CHARGE=CL2)
-
 nume_ddl = NUME_DDL(MATR_RIGI=rigi_ele)
 
 
 RIGI = ASSE_MATRICE(MATR_ELEM=rigi_ele, NUME_DDL=nume_ddl)
 MASSE = ASSE_MATRICE(MATR_ELEM=mass_ele, NUME_DDL=nume_ddl)
-AMOR = ASSE_MATRICE(MATR_ELEM=(amor_ele, impe_ele), NUME_DDL=nume_ddl)
+AMOR = ASSE_MATRICE(MATR_ELEM=amor_ele, NUME_DDL=nume_ddl)
 
 # Definition Chargement
 

@@ -28,6 +28,8 @@ PCOMPOR = InputParameter(phys=PHY.COMPOR)
 
 PVARCPR = InputParameter(phys=PHY.VARI_R)
 
+PAMORFL = InputParameter(phys=PHY.NEUT_I)
+
 
 PCAORIE = InputParameter(
     phys=PHY.CAORIE,
@@ -51,13 +53,14 @@ AMOR_MECA = Option(
         SP.PVARCRR,
         SP.PNONLIN,
         SP.PVARIPG,
+        PAMORFL,
     ),
     para_out=(SP.PMATUNS, SP.PMATUUR),
     condition=(
         CondCalcul("+", ((AT.PHENO, "ME"), (AT.BORD, "0"))),
         CondCalcul("-", ((AT.FLUIDE, "OUI"), (AT.FORMULATION, "U_P"))),
         CondCalcul("-", ((AT.FLUIDE, "OUI"), (AT.FORMULATION, "U_P_PHI"))),
-        CondCalcul("-", ((AT.FLUIDE, "OUI"), (AT.ABSO, "OUI"), (AT.FORMULATION, "U_PSI"))),
+        CondCalcul("+", ((AT.FLUIDE, "OUI"), (AT.ABSO, "OUI"))),
         CondCalcul("+", ((AT.FSI, "OUI"), (AT.BORD, "-1"), (AT.FORMULATION, "U_PSI"))),
         CondCalcul("-", ((AT.PHENO, "ME"), (AT.MODELI, "D2D"))),
         CondCalcul("-", ((AT.PHENO, "ME"), (AT.MODELI, "D3D"))),

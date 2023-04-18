@@ -161,7 +161,8 @@ DiscreteComputation::getCompressibilityMatrix( const VectorString &groupOfCells 
     return elemMatr;
 };
 
-ElementaryMatrixPressureComplexPtr DiscreteComputation::getImpedanceMatrix() const {
+ElementaryMatrixPressureComplexPtr
+DiscreteComputation::getImpedanceMatrix( const ASTERINTEGER &onde_flui ) const {
 
     AS_ASSERT( _phys_problem->getModel()->isAcoustic() );
 
@@ -177,26 +178,20 @@ ElementaryMatrixPressureComplexPtr DiscreteComputation::getImpedanceMatrix() con
     auto currCodedMater = _phys_problem->getCodedMaterial();
     auto currModel = _phys_problem->getModel();
 
-    auto loads = _phys_problem->getListOfLoads()->getAcousticLoadsComplex();
+    auto calcul = std::make_unique< Calcul >( option );
+    calcul->setModel( currModel );
 
-    for ( auto &load : loads ) {
-        auto field = load->getImpedanceField();
-        if ( field && field->exists() ) {
-            auto calcul = std::make_unique< Calcul >( option );
-            calcul->setModel( currModel );
+    // Add input fields
+    calcul->addInputField( "PGEOMER", currMesh->getCoordinates() );
+    calcul->addInputField( "PMATERC", currCodedMater->getCodedMaterialField() );
 
-            // Add input fields
-            calcul->addInputField( "PGEOMER", currMesh->getCoordinates() );
-            calcul->addInputField( "PMATERC", currCodedMater->getCodedMaterialField() );
-            calcul->addInputField( "PIMPEDC", field );
+    auto carteFluid = createWaveTypeFluidField( onde_flui );
+    calcul->addInputField( "PWATFLAC", carteFluid );
 
-            calcul->addOutputElementaryTerm( "PMATTTC",
-                                             std::make_shared< ElementaryTermComplex >() );
-            calcul->compute();
-            if ( calcul->hasOutputElementaryTerm( "PMATTTC" ) ) {
-                elemMatr->addElementaryTerm( calcul->getOutputElementaryTermComplex( "PMATTTC" ) );
-            }
-        }
+    calcul->addOutputElementaryTerm( "PMATTTC", std::make_shared< ElementaryTermComplex >() );
+    calcul->compute();
+    if ( calcul->hasOutputElementaryTerm( "PMATTTC" ) ) {
+        elemMatr->addElementaryTerm( calcul->getOutputElementaryTermComplex( "PMATTTC" ) );
     }
 
     elemMatr->build();

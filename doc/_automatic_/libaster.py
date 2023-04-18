@@ -1067,15 +1067,19 @@ class DiscreteComputation:
             ElementaryMatrixComplex: elementary viscoelastic rigidity matrix
         """
 
-    def getImpedanceBoundaryMatrix(self, groupOfCells=[]):
+    def getImpedanceBoundaryMatrix(self, groupOfCells=[], onde_flui=1):
         """Return the elementary matrices for impedance (mechanical) matrix.
         Option IMPE_MECA.
 
+        Arguments:
+            groupOfCells (list[str]): compute matrices on given groups of cells.
+                If it empty, the full model is used
+            onde_flui (int): integer to indicate if we have an outgoing or incoming wave
         Returns:
             ElementaryMatrixReal: impedance mechanical matrix
         """
 
-    def getImpedanceMatrix(self):
+    def getImpedanceMatrix(self, arg0):
         """Return the elementary matrices for impedance (acoustic) damping matrix.
         Option AMOR_ACOU.
 
@@ -1196,7 +1200,13 @@ class DiscreteComputation:
         """
 
     def getMechanicalDampingMatrix(
-        self, getMechanicalMassMatrix=None, stiffnessMatrix=None, time=0.0, groupOfCells=[]
+        self,
+        getMechanicalMassMatrix=None,
+        stiffnessMatrix=None,
+        time=0.0,
+        groupOfCells=[],
+        flui_int=1,
+        onde_flui=1,
     ):
         """Return the elementary matrices for damping matrix.
         Option AMOR_MECA.
@@ -1207,6 +1217,8 @@ class DiscreteComputation:
             time (float): Current time for external state variable evaluation (default: 0.0)
             groupOfCells (list[str]): compute matrices on given groups of cells.
                 If it empty, the full model is used
+            flui_int (int): integer to activate damping impedance fluid matrix
+            onde_flui (int): integer to indicate if we have an outgoing or incoming wave
         Returns:
             ElementaryMatrixReal: elementary damping matrix
         """
@@ -7613,8 +7625,6 @@ class Loads:
 
     DistributedPressure
 
-    ImpedanceOnFace
-
     NormalSpeedOnFace
 
     WavePressureOnFace
@@ -7687,8 +7697,6 @@ class Loads:
 
     ForceOnShell = 6
 
-    ImpedanceOnFace = 10
-
     ImposedDoF = 8
 
     InternalForce = 4
@@ -7697,13 +7705,13 @@ class Loads:
 
     NodalForce = 0
 
-    NormalSpeedOnFace = 11
+    NormalSpeedOnFace = 10
 
     PressureOnPipe = 7
 
-    THMFlux = 13
+    THMFlux = 12
 
-    WavePressureOnFace = 12
+    WavePressureOnFace = 11
 
 
 # class NodalForceReal in libaster
@@ -8177,36 +8185,6 @@ class DistributedPressureReal(MechanicalLoadReal):
         1. __init__(self: libaster.DistributedPressureReal, arg0: Model) -> None
 
         2. __init__(self: libaster.DistributedPressureReal, arg0: str, arg1: Model) -> None
-        """
-
-    def build(self):
-        pass
-
-    def setValue(self, arg0, arg1):
-        pass
-
-
-# class ImpedanceOnFaceReal in libaster
-
-
-class ImpedanceOnFaceReal(MechanicalLoadReal):
-    pass
-
-    # Method resolution order:
-    #     ImpedanceOnFaceReal
-    #     MechanicalLoadReal
-    #     DataStructure
-    #     pybind11_builtins.pybind11_object
-    #     builtins.object
-
-    # Methods defined here:
-
-    def __init__(self, *args, **kwargs):
-        """Overloaded function.
-
-        1. __init__(self: libaster.ImpedanceOnFaceReal, arg0: Model) -> None
-
-        2. __init__(self: libaster.ImpedanceOnFaceReal, arg0: str, arg1: Model) -> None
         """
 
     def build(self):

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -106,12 +106,19 @@ def assemblage_ops(self, MODELE, NUME_DDL, INFO, **args):
                     UTMESS("F", "MATRICE0_10")
                 motscles["RIGI_MECA"] = rigel
             if option == "AMOR_MECA":
+                amor_fl = m["AMOR_FLUI"]
+                v_nor = m["VNOR"]
                 if not lrigel:
                     UTMESS("F", "MATRICE0_11")
                 if CHAM_MATER:
                     motscles["RIGI_MECA"] = rigel
                     if lmasel:
                         motscles["MASS_MECA"] = masel
+                motscles["AMOR_FLUI"] = amor_fl
+                motscles["VNOR"] = v_nor
+            if option == "IMPE_MECA" or option == "AMOR_ACOU":
+                v_nor = m["VNOR"]
+                motscles["VNOR"] = v_nor
             if CHARGE:
                 if option[0:9] != "RIGI_GEOM":
                     motscles["CHARGE"] = CHARGE

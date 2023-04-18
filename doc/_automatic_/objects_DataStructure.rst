@@ -857,15 +857,6 @@ Subclasses of :py:class:`~code_aster.Objects.DataStructure`
 
 
 ********************************************************************************
-:py:class:`~code_aster.Objects.ImpedanceOnFaceReal` object
-********************************************************************************
-
-.. autoclass:: code_aster.Objects.ImpedanceOnFaceReal
-   :show-inheritance:
-   :members:
-
-
-********************************************************************************
 :py:class:`~code_aster.Objects.ImposedDisplacementReal` object
 ********************************************************************************
 

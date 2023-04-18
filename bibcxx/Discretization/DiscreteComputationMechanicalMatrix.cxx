@@ -391,7 +391,8 @@ DiscreteComputation::getFluidStructureMassMatrix( const ASTERDOUBLE &time,
 ElementaryMatrixDisplacementRealPtr DiscreteComputation::getMechanicalDampingMatrix(
     const ElementaryMatrixDisplacementRealPtr &massMatrix,
     const ElementaryMatrixDisplacementRealPtr &stiffnessMatrix, const ASTERDOUBLE &time,
-    const VectorString &groupOfCells ) const {
+    const VectorString &groupOfCells, const ASTERINTEGER &flui_int,
+    const ASTERINTEGER &onde_flui ) const {
 
     AS_ASSERT( _phys_problem->getModel()->isMechanical() );
 
@@ -423,6 +424,8 @@ ElementaryMatrixDisplacementRealPtr DiscreteComputation::getMechanicalDampingMat
 
     // Add input fields
     calcul->addInputField( "PGEOMER", currModel->getMesh()->getCoordinates() );
+    auto carteFluid = createDampingFluidField( flui_int, onde_flui );
+    calcul->addInputField( "PAMORFL", carteFluid );
     if ( currMater ) {
         calcul->addInputField( "PMATERC", currCodedMater->getCodedMaterialField() );
         calcul->addInputField( "PCOMPOR", currMater->getBehaviourField() );
@@ -1125,7 +1128,8 @@ DiscreteComputation::getGyroscopicDampingMatrix( const VectorString &groupOfCell
 };
 
 ElementaryMatrixDisplacementRealPtr
-DiscreteComputation::getImpedanceBoundaryMatrix( const VectorString &groupOfCells ) const {
+DiscreteComputation::getImpedanceBoundaryMatrix( const VectorString &groupOfCells,
+                                                 const ASTERINTEGER &onde_flui ) const {
     AS_ASSERT( _phys_problem->getModel()->isMechanical() );
     const std::string option = "IMPE_MECA";
 
@@ -1134,51 +1138,29 @@ DiscreteComputation::getImpedanceBoundaryMatrix( const VectorString &groupOfCell
         _phys_problem->getElementaryCharacteristics() );
     elemMatr->prepareCompute( option );
 
-    // Prepare loads
-    const auto listOfLoads = _phys_problem->getListOfLoads();
     const auto model = _phys_problem->getModel();
     auto currMater = _phys_problem->getMaterialField();
     auto currCodedMater = _phys_problem->getCodedMaterial();
 
-    // Get impedance fields
-    std::vector< std::pair< std::string, DataFieldPtr > > impe;
-    auto impl = [&impe]( auto loads, std::string param ) {
-        for ( const auto &load : loads ) {
-            if ( load->hasLoadField( "IMPED" ) ) {
-                impe.push_back( std::make_pair( param, load->getConstantLoadField( "IMPED" ) ) );
-            }
-        }
-    };
-
-    impl( listOfLoads->getMechanicalLoadsReal(), "PIMPEDR" );
-    impl( listOfLoads->getMechanicalLoadsFunction(), "PIMPEDF" );
-
-    if ( impe.empty() ) {
-        UTMESS( "F", "CALCULEL2_83" );
+    auto calcul = std::make_unique< Calcul >( option );
+    if ( groupOfCells.empty() ) {
+        calcul->setModel( model );
+    } else {
+        calcul->setGroupsOfCells( model, groupOfCells );
     }
 
-    for ( const auto &[param, field] : impe ) {
-        // Prepare computing
-        auto calcul = std::make_unique< Calcul >( option );
-        if ( groupOfCells.empty() ) {
-            calcul->setModel( model );
-        } else {
-            calcul->setGroupsOfCells( model, groupOfCells );
-        }
+    // Add input fields
+    calcul->addInputField( "PGEOMER", model->getMesh()->getCoordinates() );
+    if ( currMater ) {
+        calcul->addInputField( "PMATERC", currCodedMater->getCodedMaterialField() );
+    }
+    auto carteFluid = createWaveTypeFluidField( onde_flui );
+    calcul->addInputField( "PWAVETFL", carteFluid );
 
-        // Add input fields
-        calcul->addInputField( "PGEOMER", model->getMesh()->getCoordinates() );
-        if ( currMater ) {
-            calcul->addInputField( "PMATERC", currCodedMater->getCodedMaterialField() );
-        }
-
-        calcul->addInputField( param, field );
-
-        calcul->addOutputElementaryTerm( "PMATUUR", std::make_shared< ElementaryTermReal >() );
-        calcul->compute();
-        if ( calcul->hasOutputElementaryTerm( "PMATUUR" ) ) {
-            elemMatr->addElementaryTerm( calcul->getOutputElementaryTermReal( "PMATUUR" ) );
-        }
+    calcul->addOutputElementaryTerm( "PMATUUR", std::make_shared< ElementaryTermReal >() );
+    calcul->compute();
+    if ( calcul->hasOutputElementaryTerm( "PMATUUR" ) ) {
+        elemMatr->addElementaryTerm( calcul->getOutputElementaryTermReal( "PMATUUR" ) );
     }
 
     elemMatr->build();

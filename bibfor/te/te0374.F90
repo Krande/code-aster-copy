@@ -15,8 +15,6 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! aslint: disable=W0413
-! => zr(jv_onde) is a real zero from AFFE_CHAR_MECA
 !
 subroutine te0374(option, nomte)
 !
@@ -29,6 +27,7 @@ subroutine te0374(option, nomte)
 #include "asterfort/getFluidPara.h"
 #include "asterfort/teattr.h"
 #include "asterfort/utmess.h"
+#include "asterc/r8prem.h"
 !
     character(len=16), intent(in) :: option, nomte
 !
@@ -82,7 +81,7 @@ subroutine te0374(option, nomte)
 ! - Get material properties for fluid
 !
     j_mater = zi(jv_mate)
-    call getFluidPara(j_mater, rho, celer)
+    call getFluidPara(j_mater, rho_=rho, cele_r_=celer)
 !
 ! - Output field
 !
@@ -93,7 +92,7 @@ subroutine te0374(option, nomte)
 !
 ! - Compute
 !
-    if (zr(jv_onde) .ne. 0.d0) then
+    if (abs(zr(jv_onde)) .gt. r8prem()) then
         do ino = 1, nno
             i = jv_geom+3*(ino-1)-1
             do jno = 1, nno

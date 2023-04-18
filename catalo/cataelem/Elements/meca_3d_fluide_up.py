@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -47,6 +47,7 @@ MMATUUC = ArrayOfComponents(phys=PHY.MDEP_C, locatedComponents=NDEPLAC)
 MMATUUR = ArrayOfComponents(phys=PHY.MDEP_R, locatedComponents=DDL_MECA)
 
 MVECTUR = ArrayOfComponents(phys=PHY.VDEP_R, locatedComponents=DDL_MECA)
+
 
 # ----------------------------------------------------------------------------------------------
 class MEFL_HEXA20P(Element):
@@ -236,11 +237,6 @@ class MEFL_FACE3P(Element):
             te=488,
             para_in=((SP.PGEOMER, LC.EGEOM3D),),
             para_out=((OP.COOR_ELGA.PCOORPG, LC.EGGAU3D),),
-        ),
-        OP.IMPE_MECA(
-            te=10,
-            para_in=((SP.PGEOMER, LC.EGEOM3D), (SP.PIMPEDR, LC.EIMPEDR), (SP.PMATERC, LC.CMATERC)),
-            para_out=((SP.PMATUUR, MMATUUR),),
         ),
         OP.ONDE_FLUI(
             te=374,

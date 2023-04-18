@@ -23,7 +23,9 @@ subroutine te0177(option, nomte)
 #include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
 #include "asterfort/lteatt.h"
-#include "asterfort/rcvalc.h"
+#include "asterfort/getFluidPara.h"
+#include "asterfort/utmess.h"
+#include "asterc/r8prem.h"
 !
     character(len=16) :: option, nomte
 ! ......................................................................
@@ -39,9 +41,8 @@ subroutine te0177(option, nomte)
 !
     integer :: kp, i, j, k, ij, imattt, igeom, imate
     integer :: ndim, nno, nnos, npg, ipoids, ivf, idfde, jgano
-    real(kind=8) :: poids, r
-    integer :: icodre(1)
-    complex(kind=8) :: valres(1)
+    real(kind=8) :: poids, r, cele_r, cele_i
+    complex(kind=8) :: cele_c
 !
     call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, &
                      npg=npg, jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
@@ -50,8 +51,19 @@ subroutine te0177(option, nomte)
     call jevech('PMATERC', 'L', imate)
     call jevech('PMATTTC', 'E', imattt)
 !
-    call rcvalc(zi(imate), 'FLUIDE', 1, 'CELE_C', valres, &
-                icodre, 1)
+! - Get material properties for fluid
+!
+    call getFluidPara(zi(imate), cele_r_=cele_r, cele_i_=cele_i)
+
+    cele_c = dcmplx(cele_r, cele_i)
+!
+! - Conditions on fluid parameters
+!
+    if ((abs(cele_r) .le. r8prem()) .and. (abs(cele_i) .le. r8prem())) then
+        call utmess('F', 'FLUID1_7', sk='CELE_R + i*CELE_I')
+    end if
+!
+! - Compute
 !
     do kp = 1, npg
         k = (kp-1)*nno
@@ -69,7 +81,7 @@ subroutine te0177(option, nomte)
         do i = 1, nno
             do j = 1, i
                 ij = ij+1
-                zc(ij) = zc(ij)+poids*((1.0d0, 0.0d0)/(valres(1)**2))*zr(ivf+k+i-1)*zr(ivf+k+j-1)
+                zc(ij) = zc(ij)+poids*((1.0d0, 0.0d0)/(cele_c**2))*zr(ivf+k+i-1)*zr(ivf+k+j-1)
             end do
         end do
     end do

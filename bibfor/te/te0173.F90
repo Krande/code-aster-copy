@@ -97,7 +97,7 @@ subroutine te0173(option, nomte)
 
 ! - Get material properties for fluid
     j_mater = zi(jvMate)
-    call getFluidPara(j_mater, rho)
+    call getFluidPara(j_mater, rho_=rho)
 
 ! - Output field
     call jevech('PVECTUR', 'E', jvVect)

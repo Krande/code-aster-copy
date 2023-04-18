@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -76,20 +76,23 @@ CD = ContactComputation(DEFICO_BAS)
 
 fed = pair.getFiniteElementDescriptor()
 nema = fed.getVirtualCellsDescriptor()
+nemab = []
+for k in range(len(nema)):
+    nemab.append(nema[k][:-1])
 grel = fed.getListOfGroupsOfElements()
 test.assertEqual(len(grel), 2)
 test.assertEqual(len(grel[0]), 3)
 test.assertSequenceEqual(
-    nema,
+    nemab,
     [
-        [58, 59, 176, 14, 13, 116, 104],
-        [58, 59, 176, 13, 1, 115, 104],
-        [59, 60, 177, 14, 13, 116, 104],
-        [59, 60, 177, 15, 14, 117, 104],
-        [60, 8, 178, 15, 14, 117, 104],
-        [60, 8, 178, 2, 15, 118, 104],
-        [11, 72],
-        [175, 72],
+        [58, 59, 176, 14, 13, 116],
+        [58, 59, 176, 13, 1, 115],
+        [59, 60, 177, 14, 13, 116],
+        [59, 60, 177, 15, 14, 117],
+        [60, 8, 178, 15, 14, 117],
+        [60, 8, 178, 2, 15, 118],
+        [11],
+        [175],
     ],
 )
 
@@ -151,19 +154,22 @@ CD = ContactComputation(DEFICO_HAUT)
 
 fed = pair.getFiniteElementDescriptor()
 nema = fed.getVirtualCellsDescriptor()
+nemab = []
+for k in range(len(nema)):
+    nemab.append(nema[k][:-1])
 grel = fed.getListOfGroupsOfElements()
 test.assertEqual(len(grel), 2)
 test.assertEqual(len(grel[0]), 3)
 test.assertSequenceEqual(
-    nema,
+    nemab,
     [
-        [14, 13, 116, 58, 59, 176, 104],
-        [14, 13, 116, 11, 58, 175, 104],
-        [15, 14, 117, 59, 60, 177, 104],
-        [15, 14, 117, 60, 8, 178, 104],
-        [2, 15, 118, 60, 8, 178, 104],
-        [1, 72],
-        [115, 72],
+        [14, 13, 116, 58, 59, 176],
+        [14, 13, 116, 11, 58, 175],
+        [15, 14, 117, 59, 60, 177],
+        [15, 14, 117, 60, 8, 178],
+        [2, 15, 118, 60, 8, 178],
+        [1],
+        [115],
     ],
 )
 

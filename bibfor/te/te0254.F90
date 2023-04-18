@@ -15,8 +15,6 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! aslint: disable=W0413
-! => celer is a real zero from DEFI_MATERIAU
 !
 subroutine te0254(option, nomte)
 !
@@ -32,6 +30,7 @@ subroutine te0254(option, nomte)
 #include "asterfort/assert.h"
 #include "asterfort/utmess.h"
 #include "asterfort/getFluidPara.h"
+#include "asterc/r8prem.h"
 !
     character(len=16), intent(in) :: option, nomte
 !
@@ -81,7 +80,7 @@ subroutine te0254(option, nomte)
 ! - Get material properties for fluid
 !
     j_mater = zi(jv_mate)
-    call getFluidPara(j_mater, rho, celer)
+    call getFluidPara(j_mater, rho_=rho, cele_r_=celer)
 !
 ! - Loop on Gauss points
 !
@@ -105,36 +104,36 @@ subroutine te0254(option, nomte)
                                           (dfdx(ino1)*dfdx(ino2)+ &
                                            dfdy(ino1)*dfdy(ino2))
 ! ----------------- Compute (P*PHI)/(CEL**2)
-                    if (celer .eq. 0.d0) then
+                    if (abs(celer) .le. r8prem()) then
                         a(1, 2, ino1, ino2) = 0.d0
                     else
                         a(1, 2, ino1, ino2) = a(1, 2, ino1, ino2)+ &
                                               poids*zr(ivf+ldec+ino1-1)* &
-                                              zr(ivf+ldec+ino2-1)/celer/celer
+                                              zr(ivf+ldec+ino2-1)/celer**2.d0
                     end if
                 end do
             end do
         elseif (FEForm .eq. 'U_P') then
             do ino2 = 1, nno
                 do ino1 = 1, ino2
-                    if (celer .eq. 0.d0) then
+                    if (abs(celer) .le. r8prem()) then
                         mmat(ino1, ino2) = 0.d0
                     else
                         mmat(ino1, ino2) = mmat(ino1, ino2)+ &
                                            poids*zr(ivf+ldec+ino1-1)* &
-                                           zr(ivf+ldec+ino2-1)/celer/celer
+                                           zr(ivf+ldec+ino2-1)/celer**2.d0
                     end if
                 end do
             end do
         elseif (FEForm .eq. 'U_PSI') then
             do ino2 = 1, nno
                 do ino1 = 1, ino2
-                    if (celer .eq. 0.d0) then
+                    if (abs(celer) .le. r8prem()) then
                         mmat(ino1, ino2) = 0.d0
                     else
                         mmat(ino1, ino2) = mmat(ino1, ino2)-rho* &
                                            poids*zr(ivf+ldec+ino1-1)* &
-                                           zr(ivf+ldec+ino2-1)/celer/celer
+                                           zr(ivf+ldec+ino2-1)/celer**2.d0
                     end if
                 end do
             end do

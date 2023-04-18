@@ -15,8 +15,6 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! aslint: disable=W0413
-! => celer/rho are real zero from DEFI_MATERIAU
 !
 subroutine te0253(option, nomte)
 !
@@ -35,6 +33,7 @@ subroutine te0253(option, nomte)
 #include "asterfort/getFluidPara.h"
 #include "asterfort/utmess.h"
 #include "asterfort/Behaviour_type.h"
+#include "asterc/r8prem.h"
 !
     character(len=16), intent(in) :: option, nomte
 !
@@ -118,7 +117,7 @@ subroutine te0253(option, nomte)
 ! - Get material properties for fluid
 !
     j_mater = zi(jv_mate)
-    call getFluidPara(j_mater, rho, celer)
+    call getFluidPara(j_mater, rho_=rho, cele_r_=celer)
 !
 ! - Loop on Gauss points
 !
@@ -136,18 +135,18 @@ subroutine te0253(option, nomte)
         if (FEForm .eq. 'U_P_PHI') then
             do i = 1, nno
                 do j = 1, i
-                    if (celer .eq. 0.d0 .or. rho .eq. 0.d0) then
+                    if (abs(celer) .le. r8prem() .or. abs(rho) .le. r8prem()) then
                         a(1, 1, i, j) = 0.d0
                     else
                         a(1, 1, i, j) = a(1, 1, i, j)+ &
-                                        poids*zr(ivf+k+i-1)*zr(ivf+k+j-1)/rho/celer/celer
+                                        poids*zr(ivf+k+i-1)*zr(ivf+k+j-1)/rho/celer**2.d0
                     end if
                 end do
             end do
         elseif (FEForm .eq. 'U_P') then
             do j = 1, nno
                 do i = 1, j
-                    if (celer .eq. 0.d0 .or. rho .eq. 0.d0) then
+                    if (abs(celer) .le. r8prem() .or. abs(rho) .le. r8prem()) then
                         mmat(i, j) = 0.d0
                     else
                         mmat(i, j) = mmat(i, j)+ &
@@ -158,7 +157,7 @@ subroutine te0253(option, nomte)
         elseif (FEForm .eq. 'U_PSI') then
             do j = 1, nno
                 do i = 1, j
-                    if (celer .eq. 0.d0 .or. rho .eq. 0.d0) then
+                    if (abs(celer) .le. r8prem() .or. abs(rho) .le. r8prem()) then
                         mmat(i, j) = 0.d0
                     else
                         mmat(i, j) = mmat(i, j)-rho* &

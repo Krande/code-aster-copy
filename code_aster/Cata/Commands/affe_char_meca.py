@@ -92,7 +92,6 @@ AFFE_CHAR_MECA = OPER(
             "LIAISON_COQUE",
             "RELA_CINE_BP",
             "FORCE_ELEC",
-            "IMPE_FACE",
             "VITE_FACE",
             "ONDE_FLUI",
             "FLUX_THM_REP",
@@ -1135,13 +1134,6 @@ AFFE_CHAR_MECA = OPER(
             POINT1=SIMP(statut="o", typ="R", max=3),
             POINT2=SIMP(statut="o", typ="R", max=3),
         ),
-    ),
-    IMPE_FACE=FACT(
-        statut="f",
-        fr=tr("Applique une impédance acoustique à une face"),
-        max="**",
-        GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
-        IMPE=SIMP(statut="o", typ="R"),
     ),
     VITE_FACE=FACT(
         statut="f",

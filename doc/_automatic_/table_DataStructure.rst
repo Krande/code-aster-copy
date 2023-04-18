@@ -199,8 +199,6 @@
      - ``grille_sdaster``
    * - :py:class:`~code_aster.Objects.HarmoGeneralizedResult`
      - ``harm_gene``
-   * - :py:class:`~code_aster.Objects.ImpedanceOnFaceReal`
-     - 
    * - :py:class:`~code_aster.Objects.ImposedDisplacementReal`
      - 
    * - :py:class:`~code_aster.Objects.ImposedPressureReal`

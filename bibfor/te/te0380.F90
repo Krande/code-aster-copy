@@ -86,7 +86,7 @@ subroutine te0380(option, nomte)
 ! - Get material properties for fluid
 !
     j_mater = zi(jv_mate)
-    call getFluidPara(j_mater, rho)
+    call getFluidPara(j_mater, rho_=rho)
 !
 ! - Loop on Gauss points
 !

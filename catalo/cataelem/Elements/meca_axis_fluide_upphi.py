@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -47,6 +47,7 @@ MMATUUC = ArrayOfComponents(phys=PHY.MDEP_C, locatedComponents=NDEPLAC)
 MMATUUR = ArrayOfComponents(phys=PHY.MDEP_R, locatedComponents=DDL_MECA)
 
 MVECTUR = ArrayOfComponents(phys=PHY.VDEP_R, locatedComponents=DDL_MECA)
+
 
 # ----------------------------------------------------------------------------------------------
 class MEAXFLQ4(Element):
@@ -152,11 +153,6 @@ class MEAXFLS2(Element):
             te=478,
             para_in=((SP.PGEOMER, LC.EGEOM2D),),
             para_out=((OP.COOR_ELGA.PCOORPG, LC.EGGAU2D),),
-        ),
-        OP.IMPE_MECA(
-            te=258,
-            para_in=((SP.PGEOMER, LC.EGEOM2D), (SP.PIMPEDR, LC.EIMPEDR), (SP.PMATERC, LC.CMATERC)),
-            para_out=((SP.PMATUUR, MMATUUR),),
         ),
         OP.ONDE_FLUI(
             te=372,

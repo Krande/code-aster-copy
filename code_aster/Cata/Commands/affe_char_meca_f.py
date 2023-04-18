@@ -47,7 +47,6 @@ AFFE_CHAR_MECA_F = OPER(
             "PRES_REP",
             "FORCE_POUTRE",
             "VITE_FACE",
-            "IMPE_FACE",
             "ONDE_PLANE",
             "LIAISON_OBLIQUE",
             "PRE_EPSI",
@@ -592,16 +591,6 @@ AFFE_CHAR_MECA_F = OPER(
             condition="""exists("DIRECTION")""",
             VITE=SIMP(statut="o", typ=(fonction_sdaster, nappe_sdaster, formule)),
         ),
-    ),
-    IMPE_FACE=FACT(
-        statut="f",
-        max="**",
-        fr=tr(
-            "Applique à une face une impédance acoustique dont la valeur est fournie par l'intermédiaire"
-            " d'un concept fonction"
-        ),
-        GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
-        IMPE=SIMP(statut="o", typ=(fonction_sdaster, nappe_sdaster, formule)),
     ),
     ONDE_PLANE=FACT(
         statut="f",

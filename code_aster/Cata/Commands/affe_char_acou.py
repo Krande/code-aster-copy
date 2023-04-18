@@ -27,7 +27,7 @@ AFFE_CHAR_ACOU = OPER(
     sd_prod=char_acou,
     fr=tr("Affectation de charges et conditions aux limites acoustiques constantes"),
     reentrant="n",
-    regles=(AU_MOINS_UN("PRES_IMPO", "VITE_FACE", "IMPE_FACE", "LIAISON_UNIF"),),
+    regles=(AU_MOINS_UN("PRES_IMPO", "VITE_FACE", "LIAISON_UNIF"),),
     MODELE=SIMP(statut="o", typ=modele_sdaster),
     DOUBLE_LAGRANGE=SIMP(statut="f", typ="TXM", into=("OUI",), defaut="OUI"),
     PRES_IMPO=FACT(
@@ -47,14 +47,6 @@ AFFE_CHAR_ACOU = OPER(
         regles=(UN_PARMI("VNOR", "DIRECTION"),),
         GROUP_MA=SIMP(statut="o", typ=grma, validators=NoRepeat(), max="**"),
         VNOR=SIMP(statut="o", typ="C"),
-    ),
-    IMPE_FACE=FACT(
-        statut="f",
-        max="**",
-        regles=(UN_PARMI("TOUT", "GROUP_MA"),),
-        TOUT=SIMP(statut="f", typ="TXM", into=("OUI",)),
-        GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
-        IMPE=SIMP(statut="o", typ="C"),
     ),
     LIAISON_UNIF=FACT(
         statut="f",

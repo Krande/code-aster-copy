@@ -15,8 +15,6 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! aslint: disable=W0413
-! => zr(jv_impe) is a real zero from AFFE_CHAR_MECA
 !
 subroutine te0010(option, nomte)
 !
@@ -29,6 +27,7 @@ subroutine te0010(option, nomte)
 #include "asterfort/jevech.h"
 #include "asterfort/utmess.h"
 #include "asterfort/getFluidPara.h"
+#include "asterc/r8prem.h"
 !
     character(len=16), intent(in) :: option, nomte
 !
@@ -36,10 +35,9 @@ subroutine te0010(option, nomte)
 !
 ! Elementary computation
 !
-! Elements: 3D_FLUIDE (boundary)
-!           3D_FLUI_ABSO
+! Elements: 3D_FLUI_ABSO
 !
-! Options: IMPE_MECA
+! Options: AMOR_MECA
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -50,12 +48,12 @@ subroutine te0010(option, nomte)
 !
     real(kind=8) :: nx, ny, nz
     real(kind=8) :: sx(9, 9), sy(9, 9), sz(9, 9), jac
-    real(kind=8) :: rho, rho2
+    real(kind=8) :: rho, rhon, cele_r, alpha, q_alpha, q_c, coef_ordre, onde_flui
     integer :: ipoids, ivf, idfdx, idfdy
-    integer :: jv_geom, jv_mate, jv_matr, jv_impe
+    integer :: jv_geom, jv_mate, jv_matr, jv_amor
     integer :: ndim, nno, ndi, ipg, npg
     integer :: idec, jdec, kdec, ldec
-    integer :: i, ii, ij, ino, j, jj, jno
+    integer :: i, ij, ino, j, jno
     integer :: j_mater, iret
     character(len=16) :: FEForm
 !
@@ -71,7 +69,7 @@ subroutine te0010(option, nomte)
     ASSERT(nno .le. 9)
     idfdy = idfdx+1
     if (FEForm .eq. 'U_P_PHI') then
-        ndi = nno*(2*nno+1)
+        ndi = 4*nno*nno
     elseif (FEForm .eq. 'U_P' .or. FEForm .eq. 'U_PSI') then
         ndi = nno*(nno+1)/2
     else
@@ -82,87 +80,130 @@ subroutine te0010(option, nomte)
 !
     call jevech('PGEOMER', 'L', jv_geom)
     call jevech('PMATERC', 'L', jv_mate)
-    call jevech('PIMPEDR', 'L', jv_impe)
+    call jevech('PAMORFL', 'L', jv_amor)
 !
 ! - Get material properties for fluid
 !
     j_mater = zi(jv_mate)
-    call getFluidPara(j_mater, rho)
-    rho2 = -rho*rho
+    call getFluidPara(j_mater, rho_=rho, cele_r_=cele_r, alpha_=alpha)
+!
+! - Conditions on fluid parameters
+!
+    if ((1.d0-alpha) .ge. r8prem()) then
+        q_alpha = (1.d0+alpha)/(1.d0-alpha)
+    else
+        call utmess('F', 'FLUID1_5', sk='ALPHA')
+    end if
+
+    if (rho .le. r8prem()) then
+        call utmess('F', 'FLUID1_6', sk='RHO')
+    end if
+
+    if (cele_r .le. r8prem()) then
+        call utmess('F', 'FLUID1_6', sk='CELE_R')
+    end if
+
+    if (FEForm .eq. 'U_P_PHI') then
+        if (zi(jv_amor-1+1) .eq. 1) then
+            coef_ordre = 1.d0
+        else
+            coef_ordre = 0.d0
+        end if
+    else
+        coef_ordre = 1.d0
+    end if
+
+    if (zi(jv_amor-1+2) .eq. 1) then
+        onde_flui = +1.d0
+    else
+        onde_flui = -1.d0
+    end if
 !
 ! - Output field
 !
-    call jevech('PMATUUR', 'E', jv_matr)
+!   for u-p-phi : Q =  rho  /Zc =  1.d0/(cele_r*q_alpha)
+!   for u-p     : Q =  rho  /Zc =  1.d0/(cele_r*q_alpha)
+!   for u-psi   : Q = -rho^2/Zc = -rho/(cele_r*q_alpha)
+    rhon = -rho
+    q_alpha = (1.d0+alpha)/(1.d0-alpha)
+    q_c = cele_r*q_alpha
+
+    if (FEForm .eq. 'U_P_PHI') then
+        call jevech('PMATUNS', 'E', jv_matr)
+    elseif (FEForm .eq. 'U_P') then
+        call jevech('PMATUUR', 'E', jv_matr)
+    elseif (FEForm .eq. 'U_PSI') then
+        call jevech('PMATUUR', 'E', jv_matr)
+    else
+        call utmess('F', 'FLUID1_2', sk=FEForm)
+    end if
+
     do i = 1, ndi
         zr(jv_matr+i-1) = 0.d0
     end do
 !
 ! - Compute
 !
-    if (zr(jv_impe) .ne. 0.d0) then
-        do ino = 1, nno
-            i = jv_geom+3*(ino-1)-1
-            do jno = 1, nno
-                j = jv_geom+3*(jno-1)-1
-                sx(ino, jno) = zr(i+2)*zr(j+3)-zr(i+3)*zr(j+2)
-                sy(ino, jno) = zr(i+3)*zr(j+1)-zr(i+1)*zr(j+3)
-                sz(ino, jno) = zr(i+1)*zr(j+2)-zr(i+2)*zr(j+1)
-            end do
+    do ino = 1, nno
+        i = jv_geom+3*(ino-1)-1
+        do jno = 1, nno
+            j = jv_geom+3*(jno-1)-1
+            sx(ino, jno) = zr(i+2)*zr(j+3)-zr(i+3)*zr(j+2)
+            sy(ino, jno) = zr(i+3)*zr(j+1)-zr(i+1)*zr(j+3)
+            sz(ino, jno) = zr(i+1)*zr(j+2)-zr(i+2)*zr(j+1)
         end do
-        do ipg = 1, npg
-            kdec = (ipg-1)*nno*ndim
-            ldec = (ipg-1)*nno
+    end do
+    do ipg = 1, npg
+        kdec = (ipg-1)*nno*ndim
+        ldec = (ipg-1)*nno
 ! --------- Compute normal
-            nx = 0.0d0
-            ny = 0.0d0
-            nz = 0.0d0
+        nx = 0.0d0
+        ny = 0.0d0
+        nz = 0.0d0
+        do i = 1, nno
+            idec = (i-1)*ndim
+            do j = 1, nno
+                jdec = (j-1)*ndim
+                nx = nx+zr(idfdx+kdec+idec)*zr(idfdy+kdec+jdec)*sx(i, j)
+                ny = ny+zr(idfdx+kdec+idec)*zr(idfdy+kdec+jdec)*sy(i, j)
+                nz = nz+zr(idfdx+kdec+idec)*zr(idfdy+kdec+jdec)*sz(i, j)
+            end do
+        end do
+! --------- Compute jacobian
+        jac = sqrt(nx*nx+ny*ny+nz*nz)
+! --------- Compute matrix
+        if (FEForm .eq. 'U_P_PHI') then
             do i = 1, nno
-                idec = (i-1)*ndim
                 do j = 1, nno
-                    jdec = (j-1)*ndim
-                    nx = nx+zr(idfdx+kdec+idec)*zr(idfdy+kdec+jdec)*sx(i, j)
-                    ny = ny+zr(idfdx+kdec+idec)*zr(idfdy+kdec+jdec)*sy(i, j)
-                    nz = nz+zr(idfdx+kdec+idec)*zr(idfdy+kdec+jdec)*sz(i, j)
+                    ij = 4*nno*(i-1)+2*j
+                    zr(jv_matr+ij-1) = zr(jv_matr+ij-1)+ &
+                                       jac*zr(ipoids+ipg-1)* &
+                                       onde_flui*coef_ordre/q_c* &
+                                       zr(ivf+ldec+i-1)*zr(ivf+ldec+j-1)
                 end do
             end do
-! --------- Compute jacobian
-            jac = sqrt(nx*nx+ny*ny+nz*nz)
-! --------- Compute matrix
-            if (FEForm .eq. 'U_P_PHI') then
-                do i = 1, nno
-                    do j = 1, i
-                        ii = 2*i
-                        jj = 2*j
-                        ij = (ii-1)*ii/2+jj
-                        zr(jv_matr+ij-1) = zr(jv_matr+ij-1)+ &
-                                           jac*zr(ipoids+ipg-1)* &
-                                           rho2/zr(jv_impe+ipg-1)* &
-                                           zr(ivf+ldec+i-1)*zr(ivf+ldec+j-1)
-                    end do
+        elseif (FEForm .eq. 'U_P') then
+            do i = 1, nno
+                do j = 1, i
+                    ij = (i-1)*i/2+j
+                    zr(jv_matr+ij-1) = zr(jv_matr+ij-1)+ &
+                                       jac*zr(ipoids+ipg-1)* &
+                                       onde_flui*coef_ordre/q_c* &
+                                       zr(ivf+ldec+i-1)*zr(ivf+ldec+j-1)
                 end do
-            elseif (FEForm .eq. 'U_P') then
-                do i = 1, nno
-                    do j = 1, i
-                        ij = (i-1)*i/2+j
-                        zr(jv_matr+ij-1) = zr(jv_matr+ij-1)+ &
-                                           jac*zr(ipoids+ipg-1)* &
-                                           rho/zr(jv_impe+ipg-1)* &
-                                           zr(ivf+ldec+i-1)*zr(ivf+ldec+j-1)
-                    end do
+            end do
+        elseif (FEForm .eq. 'U_PSI') then
+            do i = 1, nno
+                do j = 1, i
+                    ij = (i-1)*i/2+j
+                    zr(jv_matr+ij-1) = zr(jv_matr+ij-1)+ &
+                                       jac*zr(ipoids+ipg-1)* &
+                                       onde_flui*coef_ordre*rhon/q_c* &
+                                       zr(ivf+ldec+i-1)*zr(ivf+ldec+j-1)
                 end do
-            elseif (FEForm .eq. 'U_PSI') then
-                do i = 1, nno
-                    do j = 1, i
-                        ij = (i-1)*i/2+j
-                        zr(jv_matr+ij-1) = zr(jv_matr+ij-1)+ &
-                                           jac*zr(ipoids+ipg-1)* &
-                                           rho2/zr(jv_impe+ipg-1)* &
-                                           zr(ivf+ldec+i-1)*zr(ivf+ldec+j-1)
-                    end do
-                end do
-            else
-                call utmess('F', 'FLUID1_2', sk=FEForm)
-            end if
-        end do
-    end if
+            end do
+        else
+            call utmess('F', 'FLUID1_2', sk=FEForm)
+        end if
+    end do
 end subroutine

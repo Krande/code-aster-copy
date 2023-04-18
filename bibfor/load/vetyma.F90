@@ -81,7 +81,7 @@ subroutine vetyma(mesh, ndim, loadType, listCell, nbCell)
     orderMini = -1
     if (loadType .eq. 'FLUX_REP' .or. loadType .eq. 'PRES_REP' .or. &
         loadType .eq. 'ECHANGE' .or. loadType .eq. 'FORCE_FACE' .or. &
-        loadType .eq. 'IMPE_FACE' .or. loadType .eq. 'VITE_FACE' .or. &
+        loadType .eq. 'VITE_FACE' .or. &
         loadType .eq. 'FORCE_CONTOUR' .or. loadType .eq. 'EFFE_FOND' .or. &
         loadType .eq. 'ONDE_PLAN') then
         topo_2d = 'LINE'
