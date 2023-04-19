@@ -26,7 +26,7 @@ from ..Language.Syntax import *
 DEFI_MAILLAGE = OPER(
     nom="DEFI_MAILLAGE",
     op=88,
-    sd_prod=maillage_sdaster,
+    sd_prod=super_mesh,
     fr=tr("Définition d'un nouveau maillage à partir de macro-éléments"),
     reentrant="n",
     DEFI_SUPER_MAILLE=FACT(

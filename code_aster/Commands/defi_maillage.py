@@ -19,7 +19,7 @@
 
 # person_in_charge: nicolas.sellenet@edf.fr
 
-from ..Objects import Mesh, DynamicMacroElement
+from ..Objects import SuperMesh, DynamicMacroElement
 from ..Supervis import ExecuteCommand
 
 
@@ -34,7 +34,7 @@ class MeshDefinition(ExecuteCommand):
         Arguments:
             keywords (dict): Keywords arguments of user's keywords.
         """
-        self._result = Mesh()
+        self._result = SuperMesh()
 
     def post_exec(self, keywords):
         """Execute the command.

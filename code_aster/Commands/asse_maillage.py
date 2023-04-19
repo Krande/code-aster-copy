@@ -19,7 +19,7 @@
 
 # person_in_charge: nicolas.sellenet@edf.fr
 
-from ..Objects import Mesh
+from ..Objects import Mesh, SuperMesh
 from ..Supervis import ExecuteCommand
 
 
@@ -34,7 +34,10 @@ class MeshAssembler(ExecuteCommand):
         Arguments:
             keywords (dict): Keywords arguments of user's keywords.
         """
-        self._result = Mesh()
+        if keywords["OPERATION"] == "SOUS_STR":
+            self._result = SuperMesh()
+        else:
+            self._result = Mesh()
 
     def post_exec(self, keywords):
         """Execute the command.
@@ -45,12 +48,12 @@ class MeshAssembler(ExecuteCommand):
 
         self._result.build()
         if keywords["OPERATION"] == "SOUS_STR":
-            mesh_1 = keywords["MAILLAGE_1"]
-            mesh_2 = keywords["MAILLAGE_2"]
-            for macr_elem in mesh_1.getDynamicMacroElements() + mesh_2.getDynamicMacroElements():
-                self._result.addDynamicMacroElement(macr_elem)
-            for macr_elem in mesh_1.getStaticMacroElements() + mesh_2.getStaticMacroElements():
-                self._result.addStaticMacroElement(macr_elem)
+            for mesh in (keywords["MAILLAGE_1"], keywords["MAILLAGE_2"]):
+                if type(mesh) == SuperMesh:
+                    for macr_elem in mesh.getDynamicMacroElements():
+                        self._result.addDynamicMacroElement(macr_elem)
+                    for macr_elem in mesh.getStaticMacroElements():
+                        self._result.addStaticMacroElement(macr_elem)
 
 
 ASSE_MAILLAGE = MeshAssembler.run

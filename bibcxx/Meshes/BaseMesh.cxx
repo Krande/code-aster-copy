@@ -30,8 +30,6 @@
 #include "aster_fort_utils.h"
 
 #include "DataFields/ConstantFieldOnCells.h"
-#include "Modal/DynamicMacroElement.h"
-#include "Modal/StaticMacroElement.h"
 #include "PythonBindings/LogicalUnitManager.h"
 #include "Supervis/CommandSyntax.h"
 #include "Supervis/Exceptions.h"
@@ -60,9 +58,6 @@ BaseMesh::BaseMesh( const std::string &name, const std::string &type )
       _nodePatchConnectivity( JeveuxVectorLong( getName() + ".CONOPA" ) ),
       _cellPatchConnectivity( JeveuxVectorLong( getName() + ".COMAPA" ) ),
       _namePatch( JeveuxVectorChar24( getName() + ".PTRNOMPAT" ) ),
-      _superElementName( JeveuxVectorLong( getName() + ".NOMACR" ) ),
-      _superElementPara( JeveuxVectorReal( getName() + ".PARA_R" ) ),
-      _superElements( JeveuxCollectionLong( getName() + ".SUPMAIL" ) ),
       // use BaseMeshPtr(NULL) instead of this to avoid cross destruction
       _curvAbsc( new ConstantFieldOnCellsReal( getName().substr( 0, 8 ) + ".ABSC_CURV ",
                                                BaseMeshPtr( NULL ) ) ),
@@ -280,7 +275,6 @@ bool BaseMesh::hasCellsOfType( const std::string typma ) const {
 bool BaseMesh::build() {
     _groupsOfNodes->build();
     _groupsOfCells->build();
-    _superElements->build();
     _patch->build();
     _connectivity->build();
     return update_tables();
@@ -386,24 +380,6 @@ void BaseMesh::check( const ASTERDOUBLE tolerance ) {
     ASTERDOUBLE value = tolerance;
     CALLO_CHCKMA( getName(), &value );
 }
-
-bool BaseMesh::addDynamicMacroElement( const DynamicMacroElementPtr &elem ) {
-    _dynamic_macro_elements.push_back( elem );
-    return true;
-};
-
-std::vector< DynamicMacroElementPtr > BaseMesh::getDynamicMacroElements() const {
-    return _dynamic_macro_elements;
-};
-
-bool BaseMesh::addStaticMacroElement( const StaticMacroElementPtr &elem ) {
-    _static_macro_elements.push_back( elem );
-    return true;
-};
-
-std::vector< StaticMacroElementPtr > BaseMesh::getStaticMacroElements() const {
-    return _static_macro_elements;
-};
 
 void add_automatic_names( NamesMapChar8 &map, int size, std::string prefix ) {
     map->allocate( size );

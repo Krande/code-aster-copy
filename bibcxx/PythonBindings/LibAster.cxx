@@ -144,6 +144,7 @@
 #include "PythonBindings/SkeletonInterface.h"
 #include "PythonBindings/StaticMacroElementInterface.h"
 #include "PythonBindings/StructureInterfaceInterface.h"
+#include "PythonBindings/SuperMeshInterface.h"
 #include "PythonBindings/TableContainerInterface.h"
 #include "PythonBindings/TableInterface.h"
 #include "PythonBindings/ThermalFourierResultInterface.h"
@@ -247,6 +248,7 @@ PYBIND11_MODULE( libaster, mod ) {
     exportSkeletonToPython( mod );
     exportDynamicMacroElementToPython( mod );
     exportStaticMacroElementToPython( mod );
+    exportSuperMeshToPython( mod );
     exportCrackShapeToPython( mod );
     exportCrackToPython( mod );
     exportGeneralizedModelToPython( mod );

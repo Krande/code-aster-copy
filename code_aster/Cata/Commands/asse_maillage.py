@@ -23,10 +23,16 @@ from ..Commons import *
 from ..Language.DataStructure import *
 from ..Language.Syntax import *
 
+def asse_maillage_prod(self, **args):
+    if args["OPERATION"]=="SOUS_STR":
+        return super_mesh
+    else:
+        return maillage_sdaster
+
 ASSE_MAILLAGE = OPER(
     nom="ASSE_MAILLAGE",
     op=105,
-    sd_prod=maillage_sdaster,
+    sd_prod=asse_maillage_prod,
     fr=tr("Assembler deux maillages pour en former un nouveau"),
     reentrant="n",
     MAILLAGE_1=SIMP(statut="o", typ=maillage_sdaster),

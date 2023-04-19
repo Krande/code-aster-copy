@@ -36,10 +36,6 @@ template < class ValueType >
 class ConstantFieldOnCells;
 typedef ConstantFieldOnCells< ASTERDOUBLE > ConstantFieldOnCellsReal;
 typedef std::shared_ptr< ConstantFieldOnCellsReal > ConstantFieldOnCellsRealPtr;
-class DynamicMacroElement;
-typedef std::shared_ptr< DynamicMacroElement > DynamicMacroElementPtr;
-class StaticMacroElement;
-typedef std::shared_ptr< StaticMacroElement > StaticMacroElementPtr;
 
 /**
  * @class BaseMesh
@@ -93,12 +89,6 @@ class BaseMesh : public DataStructure, public ListOfTables {
     JeveuxVectorLong _cellPatchConnectivity;
     /** @brief jeveux vector '.PTRNOMPAT' */
     JeveuxVectorChar24 _namePatch;
-    /** @brief jeveux vector '.NOMACR' */
-    JeveuxVectorLong _superElementName;
-    /** @brief jeveux vector '.PARA_R' */
-    JeveuxVectorReal _superElementPara;
-    /** @brief jeveux vector '.SUPMAIL' */
-    JeveuxCollectionLong _superElements;
     /** @brief card '.ABSC_CURV' */
     ConstantFieldOnCellsRealPtr _curvAbsc;
     /** @brief Object to allow loop over connectivity */
@@ -106,9 +96,6 @@ class BaseMesh : public DataStructure, public ListOfTables {
     /** @brief Reverse connectivity */
     std::map< int, std::set< int > > _reverseConnex;
     bool _bReverseConnex = false;
-
-    std::vector< DynamicMacroElementPtr > _dynamic_macro_elements;
-    std::vector< StaticMacroElementPtr > _static_macro_elements;
 
     /**
      * @brief Constructeur
@@ -422,25 +409,6 @@ class BaseMesh : public DataStructure, public ListOfTables {
 
     void check( const ASTERDOUBLE tolerance );
 
-    /**
-     * @brief Add a DynamicMacroElement
-     */
-    bool addDynamicMacroElement( const DynamicMacroElementPtr & );
-
-    /**
-     * @brief Get all DynamicMacroElements
-     */
-    std::vector< DynamicMacroElementPtr > getDynamicMacroElements() const;
-
-    /**
-     * @brief Add a StaticMacroElement
-     */
-    bool addStaticMacroElement( const StaticMacroElementPtr & );
-
-    /**
-     * @brief Get all StaticMacroElements
-     */
-    std::vector< StaticMacroElementPtr > getStaticMacroElements() const;
 };
 
 /**

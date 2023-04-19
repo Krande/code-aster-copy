@@ -435,6 +435,8 @@ class macr_elem_stat(ASSD):
 class maillage_sdaster(ASSD):
     pass
 
+class super_mesh(maillage_sdaster):
+    pass
 
 class maillage_p(maillage_sdaster):
     pass
