@@ -33,7 +33,7 @@ from cataelem.Options.options import OP
 # ----------------
 
 
-CCAMASS = LocatedComponents(phys=PHY.CAMASS, type="ELEM", components=("C", "ALPHA"))
+CCAMASS = LocatedComponents(phys=PHY.CAMA_R, type="ELEM", components=("C", "ALPHA"))
 
 
 DDL_MECA = LocatedComponents(

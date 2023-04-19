@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,12 +17,13 @@
 ! --------------------------------------------------------------------
 !
 interface
-    subroutine dilcar(option, icompo, icontm, ideplm, ideplp,&
+    subroutine dilcar(option, icompo, icontm, ivarim, ideplm, ideplp,&
                       igeom, imate, imatuu, ivectu, icontp,&
-                      ivarip, ichg, ichn, jcret, idefo)
+                      ivarip, ichg, ichn, jcret, icarcr, iinstm, iinstp)
         character(len=16) :: option
         integer :: icompo
         integer :: icontm
+        integer :: ivarim
         integer :: ideplm
         integer :: ideplp
         integer :: igeom
@@ -34,6 +35,8 @@ interface
         integer :: ichg
         integer :: ichn
         integer :: jcret
-        integer :: idefo
+        integer :: icarcr
+        integer :: iinstm
+        integer :: iinstp
     end subroutine dilcar
 end interface

@@ -25,9 +25,9 @@ subroutine te0005(option, nomte)
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
-#include "asterfort/dilcar_u.h"
+#include "asterfort/dilcar.h"
 #include "asterfort/dilele.h"
-#include "asterfort/dilini_u.h"
+#include "asterfort/dilini.h"
 #include "asterfort/fnodil.h"
 #include "asterfort/Behaviour_type.h"
 #include "asterfort/terefe.h"
@@ -71,17 +71,17 @@ subroutine te0005(option, nomte)
 ! - Get adresses for fields
 !
 
-    call dilcar_u(option, icompo, icontm, ivarim, ideplm, ideplp, &
-                  igeom, imate, imatuu, ivectu, icontp, &
-                  ivarip, ichg, ichn, jcret, icarcr, iinstm, iinstp)
+    call dilcar(option, icompo, icontm, ivarim, ideplm, ideplp, &
+                igeom, imate, imatuu, ivectu, icontp, &
+                ivarip, ichg, ichn, jcret, icarcr, iinstm, iinstp)
 
 ! ======================================================================
 ! --- INITIALISATION DES VARIABLES DE L'ELEMENT ------------------------
 ! ======================================================================
-    call dilini_u(option, ivf, ivf2, idfde, &
-                  idfde2, jgano, ndim, ipoids, ipoid2, &
-                  npi, dimdef, nddls, nddlm, lgpg, &
-                  dimcon, typmod, dimuel, nnom, nnos, ds_dil)
+    call dilini(option, ivf, ivf2, idfde, &
+                idfde2, jgano, ndim, ipoids, ipoid2, &
+                npi, dimdef, nddls, nddlm, lgpg, &
+                dimcon, typmod, dimuel, nnom, nnos, ds_dil)
 
 ! ======================================================================
 ! --- CALCUL DES OPTIONS -----------------------------------------------

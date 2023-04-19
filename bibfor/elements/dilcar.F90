@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine dilcar(option, icompo, icontm, ideplm, ideplp, &
+subroutine dilcar(option, icompo, icontm, ivarim, ideplm, ideplp, &
                   igeom, imate, imatuu, ivectu, icontp, &
-                  ivarip, ichg, ichn, jcret, idefo)
+                  ivarip, ichg, ichn, jcret, icarcr, iinstm, iinstp)
 !
     use Behaviour_module, only: behaviourOption
 !
@@ -30,8 +30,8 @@ subroutine dilcar(option, icompo, icontm, ideplm, ideplp, &
 #include "asterfort/assert.h"
 #include "asterfort/jevech.h"
 !
-    integer :: icompo, icontm, ideplm, ideplp, igeom, imate, jcret, idefo
-    integer :: imatuu, ivectu, icontp, ichg, ichn, ivarip
+    integer :: icompo, icontm, ivarim, ideplm, ideplp, igeom, imate, jcret
+    integer :: imatuu, ivectu, icontp, ichg, ichn, ivarip, icarcr, iinstm, iinstp
     character(len=16) :: option
 !
 ! --------------------------------------------------------------------------------------------------
@@ -52,6 +52,7 @@ subroutine dilcar(option, icompo, icontm, ideplm, ideplp, &
     lVari = ASTER_FALSE
     icompo = ismaem()
     icontm = ismaem()
+    ivarim = ismaem()
     ideplm = ismaem()
     ideplp = ismaem()
     igeom = ismaem()
@@ -63,59 +64,66 @@ subroutine dilcar(option, icompo, icontm, ideplm, ideplp, &
     ichg = ismaem()
     ichn = ismaem()
     jcret = ismaem()
-    idefo = ismaem()
+    icarcr = ismaem()
+    iinstm = ismaem()
+    iinstp = ismaem()
 !
 ! - Input fields
 !
     if (option(1:9) .eq. 'RIGI_MECA') then
+        call jevech('PCOMPOR', 'L', icompo)
         call jevech('PCONTMR', 'L', icontm)
+        call jevech('PVARIMR', 'L', ivarim)
         call jevech('PDEPLMR', 'L', ideplm)
         call jevech('PDEPLPR', 'L', ideplp)
         call jevech('PGEOMER', 'L', igeom)
         call jevech('PMATERC', 'L', imate)
+        call jevech('PCARCRI', 'L', icarcr)
+        call jevech('PINSTMR', 'L', iinstm)
+        call jevech('PINSTPR', 'L', iinstp)
     else if (option .eq. 'RAPH_MECA') then
+        call jevech('PCOMPOR', 'L', icompo)
         call jevech('PCONTMR', 'L', icontm)
+        call jevech('PVARIMR', 'L', ivarim)
         call jevech('PDEPLMR', 'L', ideplm)
         call jevech('PDEPLPR', 'L', ideplp)
         call jevech('PGEOMER', 'L', igeom)
         call jevech('PMATERC', 'L', imate)
+        call jevech('PCARCRI', 'L', icarcr)
+        call jevech('PINSTMR', 'L', iinstm)
+        call jevech('PINSTPR', 'L', iinstp)
     else if (option(1:9) .eq. 'FULL_MECA') then
+        call jevech('PCOMPOR', 'L', icompo)
         call jevech('PCONTMR', 'L', icontm)
+        call jevech('PVARIMR', 'L', ivarim)
         call jevech('PDEPLMR', 'L', ideplm)
         call jevech('PDEPLPR', 'L', ideplp)
         call jevech('PGEOMER', 'L', igeom)
         call jevech('PMATERC', 'L', imate)
+        call jevech('PCARCRI', 'L', icarcr)
+        call jevech('PINSTMR', 'L', iinstm)
+        call jevech('PINSTPR', 'L', iinstp)
     else if (option .eq. 'FORC_NODA') then
+        call jevech('PCOMPOR', 'L', icompo)
         call jevech('PCONTMR', 'L', icontm)
-        call jevech('PDEPLMR', 'L', ideplm)
         call jevech('PGEOMER', 'L', igeom)
-        call jevech('PMATERC', 'L', imate)
-    else if (option .eq. 'EPSI_ELGA') then
-        call jevech('PGEOMER', 'L', igeom)
-        call jevech('PDEPLAR', 'L', ideplp)
     else
         ASSERT(ASTER_FALSE)
     end if
 !
 ! - Select objects to construct from option name
 !
-    if (option .ne. 'EPSI_ELGA') then
-        call jevech('PCOMPOR', 'L', icompo)
-        call behaviourOption(option, zk16(icompo), &
-                             lMatr, lVect, &
-                             lVari, lSigm)
-    end if
-!
-    if (option .eq. 'CHAR_MECA_PESA_R') then
-        ASSERT(ASTER_FALSE)
-    end if
+    call jevech('PCOMPOR', 'L', icompo)
+    call behaviourOption(option, zk16(icompo), &
+                         lMatr, lVect, &
+                         lVari, lSigm)
+
 !
 ! - Output fields
 !
+
     if (option .eq. 'FORC_NODA') then
         call jevech('PVECTUR', 'E', ivectu)
-    else if (option .eq. 'EPSI_ELGA') then
-        call jevech('PDEFOPG', 'E', idefo)
     else
         if (lMatr) then
             call jevech('PMATUNS', 'E', imatuu)

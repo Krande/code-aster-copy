@@ -32,7 +32,7 @@ from cataelem.Options.options import OP
 # Modes locaux :
 # ----------------
 
-CCAMASS = LocatedComponents(phys=PHY.CAMASS, type="ELEM", components=("C", "ALPHA"))
+CCAMASS = LocatedComponents(phys=PHY.CAMA_R, type="ELEM", components=("C", "ALPHA"))
 
 CTEMPSR = LocatedComponents(phys=PHY.INST_R, type="ELEM", components=("INST",))
 

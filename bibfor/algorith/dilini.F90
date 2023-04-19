@@ -15,13 +15,13 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! aslint: disable=W1504
 !
-subroutine dilini(ivf, ivf2, idfde, &
+subroutine dilini(option, ivf, ivf2, idfde, &
                   idfde2, jgano, ndim, ipoids, ipoid2, &
-                  npi, dimdef, nddls, nddlm, &
-                  dimcon, typmod, dimuel, nno, nnom, &
-                  nnos, regula, axi, interp)
+                  npi, dimdef, nddls, nddlm, lgpg, &
+                  dimcon, typmod, dimuel, nnom, nnos, ds_dil)
+!
+    use dil_type
 !
     implicit none
 !
@@ -35,13 +35,16 @@ subroutine dilini(ivf, ivf2, idfde, &
 #include "asterfort/elrefe_info.h"
 #include "asterfort/utmess.h"
 #include "asterfort/lteatt.h"
+#include "asterfort/tecach.h"
+
 !
-    aster_logical :: axi
-    integer :: ivf, ivf2, idfde, idfde2, jgano, ndim, ipoids, npi, nnom
-    integer :: ipoid2, dimdef, dimuel, dimcon, nno, nnos, nddls, nddlm
-    integer :: regula(6), nddlc
+    integer :: ivf, ivf2, idfde, idfde2, jgano, ndim, ipoids, npi
+    integer :: ipoid2, dimdef, dimuel, dimcon, nnom, nnos, nddls, nddlm
+    integer :: lgpg, iret, itab(7)
     character(len=2) :: interp
     character(len=8) :: typmod(2)
+    character(len=16) :: option
+    type(dil_modelisation) :: ds_dil
 !
 ! ======================================================================
 ! --- BUT : INITIALISATION DES GRANDEURS NECESSAIRES POUR LA GESTION ---
@@ -51,48 +54,32 @@ subroutine dilini(ivf, ivf2, idfde, &
 ! =====================================================================
 ! --- VARIABLES LOCALES ------------------------------------------------
 ! ======================================================================
-    integer :: nnoc
+    integer :: nno, def1, def2, def3, cont1, cont2, cont3
     character(len=8) :: elrefe, elrf1, elrf2
 ! ======================================================================
 ! --- INITIALISATION ---------------------------------------------------
 ! ======================================================================
-    interp = '  '
     typmod(2) = '        '
     elrf1 = '        '
     elrf2 = '        '
-    axi = ASTER_FALSE
-    dimdef = 0
-    dimcon = 0
+    lgpg = 0
 ! ======================================================================
 ! --- TYPE D'ELEMENT ---------------------------------------------------
 ! ======================================================================
     call elref1(elrefe)
-    if (elrefe .eq. 'TR7') then
-        interp = 'P0'
-        elrf1 = 'TR6'
-        elrf2 = 'TR3'
-    else if (elrefe .eq. 'QU9') then
-        interp = 'P0'
-        elrf1 = 'QU8'
-        elrf2 = 'QU4'
-    else if (elrefe .eq. 'TR6') then
-        interp = 'SL'
+    if (elrefe .eq. 'TR6') then
         elrf1 = 'TR6'
         elrf2 = 'TR3'
     else if (elrefe .eq. 'QU8') then
-        interp = 'SL'
         elrf1 = 'QU8'
         elrf2 = 'QU4'
     else if (elrefe .eq. 'T10') then
-        interp = 'P1'
         elrf1 = 'T10'
         elrf2 = 'TE4'
     else if (elrefe .eq. 'P15') then
-        interp = 'P1'
         elrf1 = 'P15'
         elrf2 = 'PE6'
     else if (elrefe .eq. 'H20') then
-        interp = 'P1'
         elrf1 = 'H20'
         elrf2 = 'HE8'
     else
@@ -115,24 +102,38 @@ subroutine dilini(ivf, ivf2, idfde, &
         typmod(1) = 'D_PLAN'
     else if (lteatt('DIM_TOPO_MODELI', '3')) then
         typmod(1) = '3D'
-    else
-        ASSERT(ASTER_FALSE)
+    end if
+! ======================================================================
+! --- RECUPERATION DE LA FORMULATION
+! ======================================================================
+    if (lteatt('FORMULATION', 'DIL')) then
+        ds_dil%inco = ASTER_FALSE
+    else if (lteatt('FORMULATION', 'DIL_INCO')) then
+        ds_dil%inco = ASTER_TRUE
+    end if
+! ======================================================================
+! --- RECUPERATION DU NOMBRE DE VARIABLES INTERNES
+! ======================================================================
+    if (option(1:9) .ne. 'FORC_NODA') then
+        call tecach('OOO', 'PVARIMR', 'L', iret, nval=7, itab=itab)
+        lgpg = max(itab(6), 1)*itab(7)
     end if
 !
-    if (interp .eq. 'P0') then
-        call dimp0(ndim, nno, nnos, dimdef, dimcon, &
-                   nnom, nnoc, nddls, nddlm, nddlc, &
-                   dimuel, regula)
-    else if (interp .eq. 'SL') then
-        call dimsl(ndim, nno, nnos, dimdef, dimcon, &
-                   nnom, nnoc, nddls, nddlm, nddlc, &
-                   dimuel, regula)
-    else if (interp .eq. 'P1') then
-        call dimp1(ndim, nno, nnos, dimdef, dimcon, &
-                   nnom, nnoc, nddls, nddlm, nddlc, &
-                   dimuel, regula)
-    else
-        ASSERT(ASTER_FALSE)
-    end if
-!
+! ======================================================================
+! --- CALCUL DES DIMENSIONS
+! ======================================================================
+    def1 = 1+2*ndim
+    def2 = ndim+1
+    def3 = 1
+    dimdef = def1+def2+def3
+    cont1 = 1+2*ndim
+    cont2 = ndim+1
+    cont3 = 1
+    dimcon = cont1+cont2+cont3
+! ======================================================================
+    nddls = ndim+2
+    nddlm = ndim
+! ======================================================================
+    nnom = nno-nnos
+    dimuel = nnos*nddls+nnom*nddlm
 end subroutine

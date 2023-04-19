@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,11 +18,12 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine dilini(ivf, ivf2, idfde,&
+    subroutine dilini(option, ivf, ivf2, idfde,&
                       idfde2, jgano, ndim, ipoids, ipoid2,&
-                      npi, dimdef, nddls, nddlm,&
-                      dimcon, typmod, dimuel, nno, nnom,&
-                      nnos, regula, axi, interp)
+                      npi, dimdef, nddls, nddlm, lgpg,&
+                      dimcon, typmod, dimuel, nnom, nnos, ds_dil)
+        use dil_type
+        character(len=16) :: option
         integer :: ivf
         integer :: ivf2
         integer :: idfde
@@ -35,14 +36,12 @@ interface
         integer :: dimdef
         integer :: nddls
         integer :: nddlm
+        integer :: lgpg
         integer :: dimcon
         character(len=8) :: typmod(2)
         integer :: dimuel
-        integer :: nno
         integer :: nnom
         integer :: nnos
-        integer :: regula(6)
-        aster_logical :: axi
-        character(len=2) :: interp
+        type(dil_modelisation) :: ds_dil
     end subroutine dilini
 end interface
