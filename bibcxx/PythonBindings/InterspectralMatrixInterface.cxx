@@ -33,11 +33,11 @@ void exportInterspectralMatrixToPython( py::module_ &mod ) {
         mod, "InterspectralMatrix" )
         .def( py::init( &initFactoryPtr< InterspectralMatrix > ) )
         .def( py::init( &initFactoryPtr< InterspectralMatrix, std::string > ) )
-        .def( "getNumI", &InterspectralMatrix::getNumI )
-        .def( "getNumJ", &InterspectralMatrix::getNumJ )
-        .def( "getNoeI", &InterspectralMatrix::getNoeI )
-        .def( "getNoeJ", &InterspectralMatrix::getNoeJ )
-        .def( "getCmpI", &InterspectralMatrix::getCmpI )
-        .def( "getCmpJ", &InterspectralMatrix::getCmpJ )
+        .def( "getLineIndexes", &InterspectralMatrix::getLineIndexes )
+        .def( "getColumnIndexes", &InterspectralMatrix::getColumnIndexes )
+        .def( "getLineNodes", &InterspectralMatrix::getLineNodes )
+        .def( "getColumnNodes", &InterspectralMatrix::getColumnNodes )
+        .def( "getLineComponents", &InterspectralMatrix::getLineComponents )
+        .def( "getColumnComponents", &InterspectralMatrix::getColumnComponents )
         .def( "getNumberOfFrequencies", &InterspectralMatrix::getNumberOfFrequencies );
 };

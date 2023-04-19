@@ -66,7 +66,7 @@ class ExtendedTable:
 
     def get_column(self, para):
         """Retourne la colonne para"""
-        exists, columnI, columnR, columnC, columnK = self.getColumn(para)
+        exists, columnI, columnR, columnC, columnK = self.getValues(para)
         typ = self.getColumnType(para)
         if typ == "I":
             column = columnI

@@ -111,7 +111,7 @@ const std::string Table::getColumnType( const std::string &param ) const {
 };
 
 const std::tuple< VectorLong, VectorLong, VectorReal, VectorComplex, VectorString >
-Table::getColumn( const std::string &param ) const {
+Table::getValues( const std::string &param ) const {
     VectorLong exists;
     VectorLong vlong;
     VectorReal vreal;

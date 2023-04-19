@@ -49,42 +49,42 @@ VectorString InterspectralMatrix::toString( const std::vector< JeveuxChar8 > &vc
     return vs;
 }
 
-VectorLong InterspectralMatrix::getNumI() const {
+VectorLong InterspectralMatrix::getLineIndexes() const {
     if ( !_numi->exists() )
         return {};
     _numi->updateValuePointer();
     return _numi->toVector();
 };
 
-VectorLong InterspectralMatrix::getNumJ() const {
+VectorLong InterspectralMatrix::getColumnIndexes() const {
     if ( !_numj->exists() )
         return {};
     _numj->updateValuePointer();
     return _numj->toVector();
 };
 
-VectorString InterspectralMatrix::getNoeI() const {
+VectorString InterspectralMatrix::getLineNodes() const {
     if ( !_noei->exists() )
         return {};
     _noei->updateValuePointer();
     return toString( _noei->toVector() );
 };
 
-VectorString InterspectralMatrix::getNoeJ() const {
+VectorString InterspectralMatrix::getColumnNodes() const {
     if ( !_noej->exists() )
         return {};
     _noej->updateValuePointer();
     return toString( _noej->toVector() );
 };
 
-VectorString InterspectralMatrix::getCmpI() const {
+VectorString InterspectralMatrix::getLineComponents() const {
     if ( !_cmpi->exists() )
         return {};
     _cmpi->updateValuePointer();
     return toString( _cmpi->toVector() );
 };
 
-VectorString InterspectralMatrix::getCmpJ() const {
+VectorString InterspectralMatrix::getColumnComponents() const {
     if ( !_cmpj->exists() )
         return {};
     _cmpj->updateValuePointer();

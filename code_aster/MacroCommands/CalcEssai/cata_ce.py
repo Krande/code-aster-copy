@@ -441,15 +441,15 @@ class InterSpectre:
         coupl_ddl = []
 
         # Cas ou l'inter-spectre est defini par ses noeuds et composantes
-        noeudi = self.obj.getNoeI()
-        noeudj = self.obj.getNoeJ()
-        cmpi = self.obj.getCmpI()
-        cmpj = self.obj.getCmpJ()
+        noeudi = self.obj.getLineNodes()
+        noeudj = self.obj.getColumnNodes()
+        cmpi = self.obj.getLineComponents()
+        cmpj = self.obj.getColumnComponents()
 
         # l'inter-spectre n'est defini qu'avec des numeros d'ordre independants
         # du modele
-        numi = self.obj.getNumI()
-        numj = self.obj.getNumJ()
+        numi = self.obj.getLineIndexes()
+        numj = self.obj.getColumnIndexes()
 
         if noeudi:
             self.isnume = 1

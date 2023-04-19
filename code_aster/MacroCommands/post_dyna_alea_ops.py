@@ -304,34 +304,34 @@ def post_dyna_alea_ops(self, INFO, **args):
         #     Cas de tous les indices
 
         elif OPTION == "TOUT":
-            if INTE_SPEC.getNumI():
-                l_ind_i = INTE_SPEC.getNumI()
-                l_ind_j = INTE_SPEC.getNumJ()
+            if INTE_SPEC.getLineIndexes():
+                l_ind_i = INTE_SPEC.getLineIndexes()
+                l_ind_j = INTE_SPEC.getColumnIndexes()
                 tabres.add_para(["NUME_ORDRE_I", "NUME_ORDRE_J"], "I")
-            if INTE_SPEC.getNoeI():
-                l_ind_i = INTE_SPEC.getNoeI()
-                l_ind_j = INTE_SPEC.getNoeJ()
-                l_cmp_i = INTE_SPEC.getCmpI()
-                l_cmp_j = INTE_SPEC.getCmpJ()
+            if INTE_SPEC.getLineNodes():
+                l_ind_i = INTE_SPEC.getLineNodes()
+                l_ind_j = INTE_SPEC.getColumnNodes()
+                l_cmp_i = INTE_SPEC.getLineComponents()
+                l_cmp_j = INTE_SPEC.getColumnComponents()
                 tabres.add_para(["NOEUD_I", "NOEUD_J", "NOM_CMP_I", "NOM_CMP_J"], "K8")
 
         #     ------------------------------------------------------------------
         #     Cas de tous les indices centraux
 
         elif OPTION == "DIAG":
-            if INTE_SPEC.getNumI():
-                l_ind_i_all = INTE_SPEC.getNumI()
-                l_ind_j_all = INTE_SPEC.getNumJ()
+            if INTE_SPEC.getLineIndexes():
+                l_ind_i_all = INTE_SPEC.getLineIndexes()
+                l_ind_j_all = INTE_SPEC.getColumnIndexes()
                 l_ind_i = [ind for i, ind in enumerate(l_ind_i_all) if l_ind_j_all[i] == ind]
                 l_ind_j = l_ind_i
                 tabres.add_para(["NUME_ORDRE_I", "NUME_ORDRE_J"], "I")
-            if INTE_SPEC.getNoeI():
-                l_ind_i_all = INTE_SPEC.getNoeI()
-                l_ind_j_all = INTE_SPEC.getNoeJ()
+            if INTE_SPEC.getLineNodes():
+                l_ind_i_all = INTE_SPEC.getLineNodes()
+                l_ind_j_all = INTE_SPEC.getColumnNodes()
                 l_ind_i = [ind for i, ind in enumerate(l_ind_i_all) if l_ind_j_all[i] == ind]
                 l_ind_j = l_ind_i
-                l_cmp_i_all = INTE_SPEC.getCmpI()
-                l_cmp_j_all = INTE_SPEC.getCmpJ()
+                l_cmp_i_all = INTE_SPEC.getLineComponents()
+                l_cmp_j_all = INTE_SPEC.getColumnComponents()
                 l_cmp_i = [cmpi for i, cmpi in enumerate(l_cmp_i_all) if l_cmp_j_all[i] == cmpi]
                 l_cmp_j = l_cmp_i
                 tabres.add_para(["NOEUD_I", "NOEUD_J", "NOM_CMP_I", "NOM_CMP_J"], "K8")
@@ -347,7 +347,7 @@ def post_dyna_alea_ops(self, INFO, **args):
         #     ------------------------------------------------------------------
         #     Boucle sur les fonctions
 
-        if INTE_SPEC.getNoeI():
+        if INTE_SPEC.getLineNodes():
             l_ind = list(zip(l_ind_i, l_ind_j, l_cmp_i, l_cmp_j))
         else:
             l_ind = list(zip(l_ind_i, l_ind_j))
@@ -392,14 +392,14 @@ def post_dyna_alea_ops(self, INFO, **args):
                 if INFO == 2:
                     aster.affiche("MESSAGE", "INDICES :" + str(ind[0]) + " - " + str(ind[1]) + "\n")
             else:  # TOUT_ORDRE
-                if INTE_SPEC.getNumI():
+                if INTE_SPEC.getLineIndexes():
                     i_foncstat = ind[0] == ind[1]
                     dlign["NUME_ORDRE_I"], dlign["NUME_ORDRE_J"] = ind[0], ind[1]
                     if ind[0] == ind[1]:
                         dlrecu["NUME_ORDRE_I"] = ind[0]
                     else:
                         dlrecu["NUME_ORDRE_I"], dlrecu["NUME_ORDRE_J"] = ind[0], ind[1]
-                if INTE_SPEC.getNoeI():
+                if INTE_SPEC.getLineNodes():
                     i_foncstat = ind[0] == ind[1] and ind[2] == ind[3]
                     dlign["NOEUD_I"], dlign["NOEUD_J"], dlign["NOM_CMP_I"], dlign["NOM_CMP_J"] = (
                         ind[0],

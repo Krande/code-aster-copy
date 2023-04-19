@@ -80,12 +80,12 @@ class InterspectralMatrix : public DataStructure {
      */
     InterspectralMatrix( const std::string name );
 
-    VectorLong getNumI() const;
-    VectorLong getNumJ() const;
-    VectorString getNoeI() const;
-    VectorString getNoeJ() const;
-    VectorString getCmpI() const;
-    VectorString getCmpJ() const;
+    VectorLong getLineIndexes() const;
+    VectorLong getColumnIndexes() const;
+    VectorString getLineNodes() const;
+    VectorString getColumnNodes() const;
+    VectorString getLineComponents() const;
+    VectorString getColumnComponents() const;
     VectorReal getNumberOfFrequencies() const;
 };
 

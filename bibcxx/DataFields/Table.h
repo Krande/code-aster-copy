@@ -109,7 +109,7 @@ class Table : public DataStructure {
      * @param column parameter
      */
     const std::tuple< VectorLong, VectorLong, VectorReal, VectorComplex, VectorString >
-    getColumn( const std::string & ) const;
+    getValues( const std::string & ) const;
 
     ~Table();
 };
