@@ -17,15 +17,11 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="NON"))
-# SDVERI='NON' car la verification est trop couteuse en CPU
+
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"))
 
 import sys
 import os
-import numpy as NP
-
-
-MAILLAGE = LIRE_MAILLAGE(FORMAT="ASTER")
 
 
 def Pcdesat(PR, SR, n, S):
@@ -40,7 +36,7 @@ def Pcdesat(PR, SR, n, S):
 def Pldehygro(Patm, rhol, hr):
     rgaz = 8.313
     Mamolv = 0.018
-    Pl = Patm + rhol * (rgaz * 303 / Mamolv) * NP.log(hr)
+    Pl = Patm + rhol * (rgaz * 303 / Mamolv) * log(hr)
     return Pl
 
 
@@ -78,12 +74,11 @@ RHOW0 = 1000.0
 P2THMINIT = 10.0
 
 # AGO = argile gonflante
-
 NAGO = 1.61
 PRAGO = 16.0e6
 SRAGO = 0.0
-SMAXAGO = 0.999
-SATUAGO = 0.99999
+SMAXAGO = 0.99
+SATUAGO = 1.0
 
 SITOTAGO0 = -0.1e6
 SATAGO0 = 0.5
@@ -100,20 +95,27 @@ print("PCAGO0    ", PCAGO0)
 print("SATAGO0   ", SATAGO0)
 print("SIPAGO0   ", SIPAGO0)
 print("SINETAGO0 ", SINETAGO0)
-
 #
 #
 # ***********************************************************************
 
 
+MAILLAGE = LIRE_MAILLAGE(FORMAT="ASTER")
+
+MAILLAGE = MODI_MAILLAGE(
+    reuse=MAILLAGE,
+    MAILLAGE=MAILLAGE,
+    ORIE_PEAU=_F(GROUP_MA_PEAU=("HAUT", "BAS", "DEVANT", "DERRIERE", "DROITE", "GAUCHE")),
+)
 MAILLAGE = DEFI_GROUP(
     reuse=MAILLAGE,
     MAILLAGE=MAILLAGE,
-    CREA_GROUP_NO=(_F(NOM="GROUP_NO3", GROUP_NO="N3"), _F(NOM="GROUP_NO4", GROUP_NO="N4")),
+    CREA_GROUP_MA=_F(NOM="ROCHE", TOUT="OUI"),
+    CREA_GROUP_NO=_F(GROUP_MA="ROCHE"),
 )
 
 MODELE = AFFE_MODELE(
-    MAILLAGE=MAILLAGE, AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="D_PLAN_HH2MS")
+    MAILLAGE=MAILLAGE, AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="3D_THH2MS")
 )
 ################### DEFINITION DU MATERIAU ARGILEUX
 LI1 = DEFI_LIST_REEL(DEBUT=1000.0, INTERVALLE=(_F(JUSQU_A=2.0e7, NOMBRE=2000),))
@@ -123,7 +125,7 @@ LI2 = DEFI_LIST_REEL(DEBUT=0.8, INTERVALLE=(_F(JUSQU_A=0.99999999993, NOMBRE=200
 FICKARG = DEFI_CONSTANTE(VALE=3.8475e-5)
 
 #
-FFVPPG = FORMULE(VALE="(101000.0/PG)", NOM_PARA="PG")
+FFVPPG = FORMULE(NOM_PARA="PG", VALE="(101000.0/PG)")
 #
 FVPPG = CALC_FONC_INTERP(
     FONCTION=FFVPPG,
@@ -134,7 +136,7 @@ FVPPG = CALC_FONC_INTERP(
     INFO=2,
 )
 #
-FDFVPPG = FORMULE(VALE="-101000.0/(PG**2)", NOM_PARA="PG")
+FDFVPPG = FORMULE(NOM_PARA="PG", VALE="-101000.0/(PG**2)")
 #
 DFVPPG = CALC_FONC_INTERP(
     FONCTION=FDFVPPG,
@@ -147,7 +149,7 @@ DFVPPG = CALC_FONC_INTERP(
 
 FICKWAR = DEFI_CONSTANTE(VALE=2.14206e-10)
 
-FFAS = FORMULE(VALE="SAT", NOM_PARA="SAT")
+FFAS = FORMULE(NOM_PARA="SAT", VALE="SAT")
 FAS = CALC_FONC_INTERP(
     FONCTION=FFAS,
     LIST_PARA=LI2,
@@ -177,8 +179,9 @@ nu = 0.3
 betam = 0.1142
 pref = 1.0e6
 biot = BIOTAGO
+
 MATAGO = DEFI_MATERIAU(
-    ELAS=_F(E=young, NU=nu, RHO=2085.0, ALPHA=1.0e-5),
+    ELAS=_F(E=150e6, NU=0.3, RHO=2085.0, ALPHA=1.0e-5),
     GonfElas=_F(
         YoungModulus=young, PoissonRatio=nu, BiotCoef=biot, ReferencePressure=pref, betaM=betam
     ),
@@ -218,31 +221,38 @@ MATAGO = DEFI_MATERIAU(
 
 CHMAT = AFFE_MATERIAU(MAILLAGE=MAILLAGE, AFFE=_F(TOUT="OUI", MATER=MATAGO))
 
-
 DEP_FIX = (
-    AFFE_CHAR_MECA(
+    AFFE_CHAR_CINE(
         MODELE=MODELE,
-        FACE_IMPO=(
-            _F(GROUP_MA="HAUT", DY=0.0),
-            _F(GROUP_MA="DROITE", DX=0.0),
-            _F(GROUP_MA="BAS", DY=0.0),
-            _F(GROUP_MA="GAUCHE", DX=0.0),
+        MECA_IMPO=(
+            # _F(GROUP_MA="HAUT", DZ=0.0),
+            _F(GROUP_MA="BAS", DZ=0.0),
+            # _F(GROUP_MA="DEVANT", DX=0.0),
+            _F(GROUP_MA="DERRIERE", DX=0.0),
+            _F(GROUP_MA="GAUCHE", DY=0.0),
+            #  _F(GROUP_MA="DROITE", DY=0.0),
+            _F(GROUP_MA="HAUT", TEMP=0.0),
+            _F(GROUP_MA="DEVANT", TEMP=0.0),
+            _F(GROUP_MA="GAUCHE", TEMP=0.0),
+            _F(GROUP_MA="BAS", TEMP=0.0),
+            _F(GROUP_MA="DERRIERE", TEMP=0.0),
+            _F(GROUP_MA="DROITE", TEMP=0.0),
+            _F(TOUT="OUI", PRE2=PGAGO0),
         ),
-        DDL_IMPO=(_F(TOUT="OUI", PRE2=PGAGO0),),
     ),
 )
 
-DEP_VAR = (AFFE_CHAR_MECA(MODELE=MODELE, DDL_IMPO=(_F(TOUT="OUI", PRE1=1.0),)),)
 
+DEP_VAR = (AFFE_CHAR_CINE(MODELE=MODELE, MECA_IMPO=(_F(TOUT="OUI", PRE1=1.0),)),)
 
 DEPINAR = CREA_CHAMP(
     MAILLAGE=MAILLAGE,
     OPERATION="AFFE",
     TYPE_CHAM="NOEU_DEPL_R",
     AFFE=(
-        _F(TOUT="OUI", NOM_CMP=("DX", "DY"), VALE=(0.0, 0.0)),
         _F(TOUT="OUI", NOM_CMP=("PRE1",), VALE=PCAGO0),
         _F(TOUT="OUI", NOM_CMP=("PRE2",), VALE=PGAGO0),
+        _F(TOUT="OUI", NOM_CMP=("TEMP",), VALE=0.0),
     ),
 )
 
@@ -270,15 +280,27 @@ SIGINIT = CREA_CHAMP(
                 "M11",
                 "FH11X",
                 "FH11Y",
+                "FH11Z",
+                "ENT11",
                 "M12",
                 "FH12X",
                 "FH12Y",
+                "FH12Z",
+                "ENT12",
                 "M21",
                 "FH21X",
                 "FH21Y",
+                "FH21Z",
+                "ENT21",
                 "M22",
                 "FH22X",
                 "FH22Y",
+                "FH22Z",
+                "ENT22",
+                "QPRIM",
+                "FHTX",
+                "FHTY",
+                "FHTZ",
             ),
             VALE=(
                 SINETAGO0,
@@ -305,13 +327,25 @@ SIGINIT = CREA_CHAMP(
                 0.0,
                 0.0,
                 0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
             ),
         ),
     ),
 )
 
 
-TEMPS2 = (DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=(_F(JUSQU_A=1.0, NOMBRE=500),)),)
+TEMPS2 = (DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=(_F(JUSQU_A=1.0, NOMBRE=10),)),)
 
 MSTEP = DEFI_FONCTION(
     NOM_PARA="INST",
@@ -325,26 +359,30 @@ MSTEP = DEFI_FONCTION(
 #    CALCUL DE LA SOLUTION
 # ***********************************************************************
 
-
 U2 = STAT_NON_LINE(
     MODELE=MODELE,
     CHAM_MATER=CHMAT,
     EXCIT=(_F(CHARGE=DEP_FIX), _F(CHARGE=DEP_VAR, FONC_MULT=MSTEP)),
-    COMPORTEMENT=_F(RELATION="KIT_HH2M", RELATION_KIT=("GonfElas", "LIQU_AD_GAZ_VAPE", "HYDR_VGM")),
+    COMPORTEMENT=_F(
+        RELATION="KIT_THH2M", RELATION_KIT=("GonfElas", "LIQU_AD_GAZ_VAPE", "HYDR_VGM")
+    ),
     ETAT_INIT=_F(SIGM=SIGINIT, DEPL=DEPINAR),
     INCREMENT=_F(LIST_INST=TEMPS2),
     NEWTON=_F(MATRICE="TANGENTE", REAC_ITER=1),
-    CONVERGENCE=_F(ITER_GLOB_MAXI=40, RESI_GLOB_RELA=RESI_GLOB_RELA),
+    CONVERGENCE=_F(ITER_GLOB_MAXI=10, RESI_GLOB_RELA=RESI_GLOB_RELA),
 )
+
 
 #############################
 # CALCULS ET POST TRAITEMENT
 #############################
 
-U2 = CALC_CHAMP(reuse=U2, CONTRAINTE=("SIEF_ELNO"), VARI_INTERNE=("VARI_ELNO"), RESULTAT=U2)
-
-
-U2 = CALC_CHAMP(reuse=U2, CONTRAINTE="SIEF_NOEU", VARI_INTERNE="VARI_NOEU", RESULTAT=U2)
+U2 = CALC_CHAMP(
+    reuse=U2,
+    RESULTAT=U2,
+    CONTRAINTE=("SIEF_ELNO", "SIEF_NOEU"),
+    VARI_INTERNE=("VARI_ELNO", "VARI_NOEU"),
+)
 
 
 SIG3 = POST_RELEVE_T(
@@ -353,7 +391,7 @@ SIG3 = POST_RELEVE_T(
         INTITULE="SIEF_NOEU",
         RESULTAT=U2,
         NOM_CHAM="SIEF_NOEU",
-        GROUP_NO="N3",
+        GROUP_NO="NO8",
         NOM_CMP=("SIXX", "SIPXX"),
     )
 )
@@ -369,7 +407,7 @@ PRES = POST_RELEVE_T(
         INTITULE="DEPL",
         RESULTAT=U2,
         NOM_CHAM="DEPL",
-        GROUP_NO="N3",
+        GROUP_NO="NO8",
         NOM_CMP=("PRE1", "PRE2"),
     )
 )
@@ -384,12 +422,14 @@ DEPL = POST_RELEVE_T(
         INTITULE="DEPL",
         RESULTAT=U2,
         NOM_CHAM="DEPL",
-        GROUP_NO="N3",
-        NOM_CMP=("DX", "DY"),
+        GROUP_NO="NO8",
+        NOM_CMP=("DX", "DY", "DZ"),
     )
 )
 
-IMPR_TABLE(TABLE=DEPL, TRI=_F(NOM_PARA="INST", ORDRE="CROISSANT"), NOM_PARA=("INST", "DX", "DY"))
+IMPR_TABLE(
+    TABLE=DEPL, TRI=_F(NOM_PARA="INST", ORDRE="CROISSANT"), NOM_PARA=("INST", "DX", "DY", "DZ")
+)
 
 
 SAT = POST_RELEVE_T(
@@ -398,46 +438,42 @@ SAT = POST_RELEVE_T(
         INTITULE="VARI_NOEU",
         RESULTAT=U2,
         NOM_CHAM="VARI_NOEU",
-        GROUP_NO="N3",
+        GROUP_NO="NO8",
         NOM_CMP=("V4",),
     )
 )
 
 IMPR_TABLE(TABLE=SAT, TRI=_F(NOM_PARA="INST", ORDRE="CROISSANT"), NOM_PARA=("INST", "V4"))
 
-TEST_RESU(
-    RESU=_F(
-        INST=2.0e-3,
-        RESULTAT=U2,
-        NOM_CHAM="DEPL",
-        GROUP_NO="N3",
-        NOM_CMP="PRE1",
-        VALE_CALC=4.4602082210399e07,
-        CRITERE="RELATIF",
-    )
-)
 
 TEST_RESU(
     RESU=_F(
-        INST=0.7,
         RESULTAT=U2,
-        NOM_CHAM="SIEF_NOEU",
-        GROUP_NO="N3",
-        NOM_CMP="SIXX",
-        VALE_CALC=-45635.827065448,
-        CRITERE="RELATIF",
-    )
-)
-
-TEST_RESU(
-    RESU=_F(
         INST=0.8,
+        NOM_CHAM="DEPL",
+        NOM_CMP="DX",
+        GROUP_NO="NO8",
+        VALE_CALC=0.01537911234186,
+    )
+)
+TEST_RESU(
+    RESU=_F(
         RESULTAT=U2,
-        NOM_CHAM="SIEF_NOEU",
-        GROUP_NO="N3",
-        NOM_CMP="SIXX",
-        VALE_CALC=-5.667167128196e06,
-        CRITERE="RELATIF",
+        INST=0.8,
+        NOM_CHAM="DEPL",
+        NOM_CMP="DY",
+        GROUP_NO="NO8",
+        VALE_CALC=0.01537911234186,
+    )
+)
+TEST_RESU(
+    RESU=_F(
+        RESULTAT=U2,
+        INST=0.8,
+        NOM_CHAM="DEPL",
+        NOM_CMP="DZ",
+        GROUP_NO="NO8",
+        VALE_CALC=0.01537911234186,
     )
 )
 

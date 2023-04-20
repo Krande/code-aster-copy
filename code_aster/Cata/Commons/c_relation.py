@@ -82,7 +82,6 @@ def C_RELATION(command):
             "DIS_ECRO_TRAC",
             "DRUCK_PRAGER",
             "DRUCK_PRAG_N_A",
-            "GONF_ELAS",
             "ELAS_MEMBRANE_NH",
             "ELAS_MEMBRANE_SV",
             "ENDO_PORO_BETON",
@@ -222,6 +221,7 @@ def C_RELATION(command):
             "META_LEMA_ANI",
             "MetaAcierEPIL_PT",
             "MohrCoulombAS",
+            "GonfElas",
             "KH_CSSM",
             "NLH_CSRM",
         )

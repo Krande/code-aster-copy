@@ -150,7 +150,7 @@ subroutine thmGetBehaviour(compor, ds_thm)
 !
 ! - For stress measures
 !
-    if (ds_thm%ds_behaviour%rela_meca .eq. 'GONF_ELAS') then
+    if (ds_thm%ds_behaviour%rela_meca .eq. 'GonfElas') then
         ds_thm%ds_behaviour%l_stress_bishop = ASTER_FALSE
     end if
 !

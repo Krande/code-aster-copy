@@ -1,0 +1,51 @@
+@DSL Default;
+@Behaviour GonfElas;
+@Author G. Melot, S. Raude;
+@Description{"Simple elastic model with the effect of capillary pressure"}
+
+@MaterialProperty stress young; // Young modulus (>0,Pa)
+@MaterialProperty real nu;      // Poisson ratio (-1<..<0.5,-)
+@MaterialProperty real bc;      // Biot coeffficient (0<..<1,-)
+@MaterialProperty stress pRef;  // Reference pressure (>0,Pa)
+@MaterialProperty real betaM;   // Kinematical parameter (>0,-)
+
+young.setGlossaryName("YoungModulus");
+nu.setGlossaryName("PoissonRatio");
+bc.setEntryName("BiotCoef");
+pRef.setEntryName("ReferencePressure");
+betaM.setEntryName("betaM");
+
+@LocalVariable StiffnessTensor Ce; // Stiffness tensor
+@LocalVariable stress pSwellM;     // Swelling pressure at previous time step
+@LocalVariable stress pSwellP;     // Swelling pressure at current time step
+
+@ExternalStateVariable stress PCAP; // Declare the capillary pressure
+
+@AuxiliaryStateVariable strain dSdPCAP; // One of the component of the serivative of sig w.r.t dPCAP
+dSdPCAP.setEntryName("dSdPCAP");
+
+@InitLocalVariables{
+    Ce=young*(Stensor4::J()/(1.-2.*nu)+Stensor4::K()/(1.+nu));
+    const stress pCapM=PCAP;
+    const stress pCapP=PCAP+dPCAP;
+    const real rpi=sqrt(4.*atan(1.));
+    const real rbetaM=sqrt(betaM);
+    pSwellM=pCapM>stress{0}?pRef*bc*(.5*rpi*erf(pCapM*rbetaM/pRef)/rbetaM+.5*(1.-exp(-betaM*pCapM*pCapM/pRef/pRef))/betaM):bc*pCapM;
+    pSwellP=pCapP>stress{0}?pRef*bc*(.5*rpi*erf(pCapP*rbetaM/pRef)/rbetaM+.5*(1.-exp(-betaM*pCapP*pCapP/pRef/pRef))/betaM):bc*pCapP;
+}
+
+@PredictionOperator{
+    Dt=Ce;
+}
+
+@Integrator{
+    sig+=Ce*deto+(pSwellP-pSwellM)*Stensor::Id();
+}
+
+@UpdateAuxiliaryStateVariables{
+     dSdPCAP=PCAP+dPCAP>stress{0}?bc*((1.+(PCAP+dPCAP)/pRef)*exp(-betaM*(PCAP+dPCAP)*(PCAP+dPCAP)/pRef/pRef)):bc;
+}
+
+@TangentOperator{
+    Dt=Ce;
+}

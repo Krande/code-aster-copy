@@ -36,7 +36,6 @@ subroutine thmMecaSpecial(ds_thm, option, lMatr, meca, &
 #include "asterfort/assert.h"
 #include "asterfort/utmess.h"
 #include "asterfort/nmbarc.h"
-#include "asterfort/elagon.h"
 #include "asterfort/dsipdp.h"
 #include "asterfort/lchbr2.h"
 #include "asterfort/mxwell_mt.h"
@@ -138,40 +137,6 @@ subroutine thmMecaSpecial(ds_thm, option, lMatr, meca, &
                                                         dsdeme(i, j)
                 end do
             end do
-        end if
-! ----- Compute thermic dilatation
-        if (ds_thm%ds_elem%l_dof_ther) then
-            do i = 1, 3
-                ther_meca(i) = -alpha0*( &
-                               dsde(adcome-1+i, addeme+ndim-1+1)+ &
-                               dsde(adcome-1+i, addeme+ndim-1+2)+ &
-                               dsde(adcome-1+i, addeme+ndim-1+3))/3.d0
-            end do
-        end if
-    elseif (meca .eq. 'GONF_ELAS') then
-! ----- Compute behaviour
-        sipm = congem(adcome+6)
-        call elagon(ndim, j_mater, tbiot(1), &
-                    alpha0, deps, young, &
-                    nu, congem(adcome), option, congep(adcome), dsdeme, &
-                    p1, dp1, dsidp1, dsidp2)
-! ----- Add mecanic and p1 matrix
-        if (lMatr) then
-            do i = 1, 2*ndim
-                dsde(adcome+i-1, addep1) = dsde(adcome+i-1, addep1)+dsidp1(i)
-                do j = 1, 2*ndim
-                    dsde(adcome+i-1, addeme+ndim+j-1) = dsde(adcome+i-1, addeme+ndim+j-1)+ &
-                                                        dsdeme(i, j)
-                end do
-            end do
-        end if
-! ----- Add p2 matrix
-        if (lMatr) then
-            if (ds_thm%ds_elem%l_dof_pre2) then
-                do i = 1, 2*ndim
-                    dsde(adcome+i-1, addep2) = dsde(adcome+i-1, addep2)+dsidp2(i)
-                end do
-            end if
         end if
 ! ----- Compute thermic dilatation
         if (ds_thm%ds_elem%l_dof_ther) then

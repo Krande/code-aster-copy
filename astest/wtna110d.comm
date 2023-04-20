@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -171,10 +171,16 @@ FICKWAG = DEFI_CONSTANTE(VALE=8.60651e-11)
 
 
 THMALP1 = DEFI_CONSTANTE(VALE=0.000100)
-
+young = 150e6
+nu = 0.3
+betam = 0.1142
+pref = 1.0e6
+biot = BIOTAGO
 MATAGO = DEFI_MATERIAU(
-    ELAS=_F(E=150e6, NU=0.3, RHO=2085.0, ALPHA=1.0e-5),
-    GONF_ELAS=_F(BETAM=0.1142, PREF=1.0e6),
+    ELAS=_F(E=young, NU=nu, RHO=2085.0, ALPHA=1.0e-5),
+    GonfElas=_F(
+        YoungModulus=young, PoissonRatio=nu, BiotCoef=biot, ReferencePressure=pref, betaM=betam
+    ),
     COMP_THM="LIQU_GAZ",
     THM_LIQU=_F(
         RHO=1000.0, UN_SUR_K=5.0e-10, ALPHA=THMALP1, CP=4180.0, VISC=VISCOLIQ, D_VISC_TEMP=DVISCOL
@@ -333,7 +339,7 @@ U2 = STAT_NON_LINE(
     MODELE=MODELE,
     CHAM_MATER=CHMAT,
     EXCIT=(_F(CHARGE=DEP_FIX), _F(CHARGE=DEP_VAR, FONC_MULT=MSTEP)),
-    COMPORTEMENT=_F(RELATION="KIT_THHM", RELATION_KIT=("GONF_ELAS", "LIQU_GAZ", "HYDR_VGM")),
+    COMPORTEMENT=_F(RELATION="KIT_THHM", RELATION_KIT=("GonfElas", "LIQU_GAZ", "HYDR_VGM")),
     ETAT_INIT=_F(SIGM=SIGINIT, DEPL=DEPINAR),
     INCREMENT=_F(LIST_INST=TEMPS2),
     NEWTON=_F(MATRICE="TANGENTE", REAC_ITER=1),

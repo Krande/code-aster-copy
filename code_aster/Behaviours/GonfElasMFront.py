@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,27 +17,25 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-# person_in_charge: sylvie.granet at edf.fr
+# person_in_charge: simon.raude at edf.fr
 
-from .cata_comportement import LoiComportement
+from .cata_comportement import LoiComportementMFront
 
-loi = LoiComportement(
-    nom="GONF_ELAS",
-    lc_type=("MECANIQUE_THM",),
-    doc="""Relation décrivant le comportement mécanique élasto-plastique des sols non saturés
-            pour des argiles gonflantes. Modèle reliant la pression de gonflement a la succion.
-            Ce modèle doit être utilisé dans des relations KIT_HHM ou KIT_THHM.""",
-    num_lc=0,
+loi = LoiComportementMFront(
+    nom="GonfElas",
+    lc_type=("MECANIQUE",),
+    doc="""To complete ...""",
+    num_lc=58,
     nb_vari=0,
     nom_vari=None,
-    mc_mater=("ELAS", "GONF_ELAS"),
-    modelisation=("KIT_HHM", "KIT_THHM"),
-    deformation=("PETIT", "PETIT_REAC", "GROT_GDEP"),
-    algo_inte=("ANALYTIQUE",),
+    mc_mater=None,
+    modelisation=("3D", "AXIS", "D_PLAN"),
+    deformation=("PETIT", "PETIT_REAC", "GDEF_LOG"),
+    algo_inte=("NEWTON", "NEWTON_PERT"),
     type_matr_tang=("PERTURBATION", "VERIFICATION"),
     proprietes=None,
     syme_matr_tang=("Yes",),
     exte_vari=None,
-    deform_ldc=("OLD",),
+    deform_ldc=("MECANIQUE",),
     regu_visc=("No",),
 )
