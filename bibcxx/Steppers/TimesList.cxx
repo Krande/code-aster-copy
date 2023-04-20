@@ -1,6 +1,6 @@
 /**
- * @file TimeStepperInterface.cxx
- * @brief Interface python de TimeStepper
+ * @file TimesList.cxx
+ * @brief Implementation de TimesList
  * @author Nicolas Sellenet
  * @section LICENCE
  *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
@@ -21,19 +21,25 @@
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "Steppers/TimesList.h"
+
 /* person_in_charge: nicolas.sellenet at edf.fr */
 
-#include "PythonBindings/TimeStepperInterface.h"
+bool TimesList::setValues( const VectorReal &values ) {
+    _values->clear();
+    _values->reserve( values.size() );
+    _values->updateValuePointer();
 
-#include "aster_pybind.h"
+    ASTERINTEGER compteur = 0;
+    ASTERDOUBLE save = 0.;
+    for ( VectorRealCIter tmp = values.begin(); tmp != values.end(); ++tmp ) {
+        _values->push_back( *tmp );
+        const ASTERDOUBLE &curVal = *tmp;
+        if ( compteur != 0 && save >= curVal )
+            throw std::runtime_error( "Time function not strictly increasing" );
+        save = *tmp;
+        ++compteur;
+    }
 
-#include "PythonBindings/DataStructureInterface.h"
-
-void exportTimeStepperToPython( py::module_ &mod ) {
-
-    py::class_< TimeStepper, TimeStepper::TimeStepperPtr, DataStructure >( mod, "TimeStepper" )
-        .def( py::init( &initFactoryPtr< TimeStepper > ) )
-        .def( py::init( &initFactoryPtr< TimeStepper, std::string > ) )
-        .def( "getValues", &TimeStepper::getValues )
-        .def( "setValues", &TimeStepper::setValues );
+    return true;
 };

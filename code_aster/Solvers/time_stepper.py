@@ -19,88 +19,106 @@
 
 from .solver_features import SolverFeature
 from .solver_features import SolverOptions as SOP
+from ..Utilities import no_new_attributes, logger
 
 
 class TimeStepper(SolverFeature):
     """This object deals with the time steps.
 
+    It gives the list of the time steps to be calculated. The initial time is
+    not in the list since it is already known. The final time is.
+    The initial time may be *None*, undeterminated. In this case, the first
+    increment is also *None*.
+
     Arguments:
-        times (list[float]): List of time steps.
-        epsilon (float): Value used to check equality between two times
+        times (list[float]): List of time steps to be calculated.
+        epsilon (float, optional): Value used to check equality between two times
             (default: 1.e-6).
+        initial (float, optional): Initial time (default: 0.0).
+        final (float, optional): Final time (default: the last given).
     """
 
     provide = SOP.TimeStepper
 
-    def __init__(self, times, epsilon=1e-6):
+    _times = _eps = _current = _initial = _final = _last = _level = None
+    __setattr__ = no_new_attributes(object.__setattr__)
+
+    def __init__(self, times, epsilon=1e-6, initial=0.0, final=None):
         super().__init__()
         times = list(times)
-        assert sorted(times) == times
+        if sorted(times) != times:
+            raise ValueError("the time steps must be ordered")
         self._times = times
         self._eps = epsilon
-        self._current = 0
-        self._first = 0
-        self._last = len(times) - 1
+        self._initial = initial
+        self._final = final
+        logger.debug("TimeStepper.init: %s, %s, %s", initial, final, times)
+        self._check_bounds()
         self._level = 0
 
     @property
     def null_increment(self):
-        """float: Value of a null increment."""
-        # FIXME could be just less than `self._eps`, no?
-        return -1.0e150
+        """float: delta between two steps to be considered as null."""
+        return self._eps
+
+    def _check_bounds(self):
+        """Remove out of bounds values."""
+        times = self._times
+        if self._initial is not None:
+            while times and times[0] < self._initial + self._eps:
+                times.pop(0)
+        if self._final is not None:
+            while times and times[-1] > self._final + self._eps:
+                times.pop()
+            if not times or self._final > times[-1] + self._eps:
+                times.append(self._final)
+        if not times:
+            raise ValueError("the list of timesteps is empty")
+        self._current = 0
+        self._last = len(times) - 1
+        self._final = times[-1]
 
     def setInitialStep(self, time):
-        """Only use the times greater than `time`.
-        If `time` is not already in the sequence, it is inserted.
-        The initial time should be validated by `start()` to point to the next
-        time step.
+        """Define the initial time. Lesser values are removed.
+
+        The next calculated time is reset to the first in the list.
+        Calling `setInitialStep` resets the current step at the first position.
 
         Arguments:
             time (float): First time to be used.
         """
-        times = self._times
-        size = len(times)
-        for idx in range(size):
-            if time < times[idx] - self._eps:
-                self._insert(idx, time)
-                self._current = self._first = idx
-                return
-            elif abs(times[idx] - time) <= self._eps:
-                self._current = self._first = idx
-                return
-        self._insert(size, time)
-        self._current = self._first = size
-        self._last = max(self._first, self._last)
+        self._initial = time
+        self._check_bounds()
 
     def setFinalStep(self, time=None):
         """Limit the sequence to the times lower than `time`.
-        If `time` is not already in the sequence, it is inserted.
-        If `time` is not provided, use the sequence up to its end.
+
+        If `time` is not already in the sequence, it is appended.
+        If `time` is not provided, the final time is set to the last one of
+        the sequence.
+        Calling `setFinalStep` resets the current step at the first position.
 
         Arguments:
             time (float, optional): Last time to be used.
         """
-        times = self._times
-        time = times[-1] if time is None else time
-        size = len(times)
-        for idx in range(size):
-            if time < times[idx] - self._eps:
-                self._insert(idx, time)
-                self._last = idx
-                return
-            elif abs(times[idx] - time) <= self._eps:
-                self._last = idx
-                return
-        self._insert(size, time)
-        self._last = size
+        self._final = time
+        self._check_bounds()
 
     def size(self):
-        """Return the number of steps to be calculated.
+        """Return the total number of steps in the list.
 
         Returns:
-            int: Number of steps, including the initial one.
+            int: Number of steps.
         """
-        return self._last - self._first + 1
+        return len(self._times)
+
+    def remaining(self):
+        """Return the number of steps not yet calculated.
+
+        Returns:
+            int: Number of steps.
+        """
+        return self._last - self._current + 1
 
     def hasFinished(self):
         """Tell if there are steps to be computed.
@@ -118,6 +136,7 @@ class TimeStepper(SolverFeature):
             index (int): index to insert nex step
             time (float): time value to insert.
         """
+        raise NotImplementedError("to be rewritten")
         if index <= self._first:
             self._first += 1
         if index <= self._current:
@@ -128,13 +147,21 @@ class TimeStepper(SolverFeature):
             self._last += 1
         # print("insert at", index, self._first, self._last, self._current)
 
-    def getInitialTime(self):
-        """Returns the initial time.
+    def getInitial(self):
+        """Returns the initial time (not calculated).
 
         Returns:
             float: Initial time value.
         """
-        return self._times[self._first]
+        return self._initial
+
+    def getFinal(self):
+        """Returns the last time to be calculated.
+
+        Returns:
+            float: Final time value.
+        """
+        return self._final
 
     def getPrevious(self):
         """Returns the previous calculated step.
@@ -142,8 +169,10 @@ class TimeStepper(SolverFeature):
         Returns:
             float: Previous time value.
         """
-        if self.hasFinished() or self._current - 1 < 0:
+        if self.hasFinished():
             raise IndexError
+        if self._current == 0:
+            return self._initial
 
         return self._times[self._current - 1]
 
@@ -163,17 +192,15 @@ class TimeStepper(SolverFeature):
         Returns:
             float: increment to the next time value.
         """
-        if self._current == 0:
-            return self.null_increment
-
-        return self.getCurrent() - self.getPrevious()
-
-    def start(self):
-        """Start, move at the first step."""
-        self._current = self._first + 1
+        prev = self.getInitial() if self._current == 0 else self.getPrevious()
+        if prev is None:
+            return None
+        return self.getCurrent() - prev
 
     def completed(self):
         """Register the current step as completed successfully."""
+        if self.remaining() <= 0:
+            raise IndexError("no more timesteps")
         self._current += 1
 
     def split(self, nb_steps):
@@ -203,6 +230,29 @@ class TimeStepper(SolverFeature):
         self._current = max(self._current - 1, 0)
         raise exc
 
-    def _debug_(self, prefix=""):
-        prefix = prefix or "TimeStepper"
-        print(prefix, self._first, self._last, self._current, self._times)
+    def __repr__(self):
+        return f"<TimeStepper(from {self._initial} to {self._final}, size {self.size()}: {self._times})>"
+
+    @staticmethod
+    def from_keywords(**args):
+        """Initialize a TimeStepper from user keywords as provided to
+        the INCREMENT common set of keywords.
+
+        Arguments:
+            args (dict): keywords as for INCREMENT.
+
+        Returns:
+            TimeStepper: a new TimeStepper.
+        """
+        assert "LIST_INST" in args, "THER_NON_LINE not yet supported!"
+        times = args["LIST_INST"].getValues()
+        initial = times[0]
+        if "INST_INIT" in args:  # because None has a special meaning
+            initial = args["INST_INIT"]
+        if args.get("NUME_INST_INIT"):
+            initial = times[args["NUME_INST_INIT"]]
+        final = args.get("INST_FIN")
+        if args.get("NUME_INST_FIN"):
+            final = times[args["NUME_INST_FIN"]]
+        stp = TimeStepper(times, initial=initial, final=final, epsilon=args["PRECISION"])
+        return stp

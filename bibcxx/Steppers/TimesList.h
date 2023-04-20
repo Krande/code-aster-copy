@@ -2,8 +2,8 @@
 #define TIMESTEPPER_H_
 
 /**
- * @file TimeStepper.h
- * @brief Fichier entete de la classe TimeStepper
+ * @file TimesList.h
+ * @brief Fichier entete de la classe TimesList
  * @author Nicolas Sellenet
  * @section LICENCE
  *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
@@ -34,11 +34,11 @@
 typedef VectorReal::const_iterator VectorRealCIter;
 
 /**
- * @class TimeStepper
+ * @class TimesList
  * @brief Cette classe permet de definir une liste d'instants
  * @author Nicolas Sellenet
  */
-class TimeStepper : public DataStructure, public GenericStepper {
+class TimesList : public DataStructure, public GenericStepper {
   private:
     /** @brief Liste des instants '.LIST'*/
     JeveuxVectorReal _values;
@@ -61,15 +61,15 @@ class TimeStepper : public DataStructure, public GenericStepper {
 
   public:
     /**
-     * @typedef TimeStepperPtr
-     * @brief Pointeur intelligent vers un TimeStepper
+     * @typedef TimesListPtr
+     * @brief Pointeur intelligent vers un TimesList
      */
-    typedef std::shared_ptr< TimeStepper > TimeStepperPtr;
+    typedef std::shared_ptr< TimesList > TimesListPtr;
 
     /**
      * @brief Constructeur
      */
-    TimeStepper( const std::string name )
+    TimesList( const std::string name )
         : DataStructure( name, 8, "LIST_INST" ),
           _values( getName() + ".LIST.DITR" ),
           _infor( getName() + ".LIST.INFOR" ),
@@ -83,12 +83,12 @@ class TimeStepper : public DataStructure, public GenericStepper {
     /**
      * @brief Constructeur
      */
-    TimeStepper() : TimeStepper( DataStructureNaming::getNewName( 8 ) ) {};
+    TimesList() : TimesList( DataStructureNaming::getNewName( 8 ) ) {};
 
     /**
      * @brief Destructeur
      */
-    ~TimeStepper() {};
+    ~TimesList() {};
 
     struct const_iterator {
         ASTERDOUBLE *position;
@@ -177,9 +177,9 @@ class TimeStepper : public DataStructure, public GenericStepper {
 };
 
 /**
- * @typedef TimeStepperPtr
- * @brief Pointeur intelligent vers un TimeStepper
+ * @typedef TimesListPtr
+ * @brief Pointeur intelligent vers un TimesList
  */
-typedef std::shared_ptr< TimeStepper > TimeStepperPtr;
+typedef std::shared_ptr< TimesList > TimesListPtr;
 
 #endif /* TIMESTEPPER_H_ */

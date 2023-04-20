@@ -30,20 +30,32 @@ from code_aster.Commands import FIN
 code_aster.init("--test")
 test = code_aster.TestCase()
 
+print("\n\n+++ testing supv004a_solvers...\n", flush=True)
 result = unittest.main(argv=["comm"], module="supv004a_solvers", exit=False, verbosity=2).result
+# to flush printings from unittest
+sys.stdout.flush()
+sys.stderr.flush()
+
 test.assertTrue(result.wasSuccessful())
 
+print("\n\n+++ testing supv004a_miss...\n", flush=True)
 result = unittest.main(argv=["comm"], module="supv004a_miss", exit=False, verbosity=2).result
+# to flush printings from unittest
+sys.stdout.flush()
+sys.stderr.flush()
+
 test.assertTrue(result.wasSuccessful())
+
+print("\n\n+++ testing supv004a_contrib_tensor...\n", flush=True)
 
 result = unittest.main(
     argv=["comm"], module="supv004a_contrib_tensor", exit=False, verbosity=2
 ).result
-test.assertTrue(result.wasSuccessful())
-
 # to flush printings from unittest
 sys.stdout.flush()
 sys.stderr.flush()
+
+test.assertTrue(result.wasSuccessful())
 
 test.printSummary()
 

@@ -79,25 +79,19 @@ def _createTimeStepper(args):
     Returns:
         (TimeStepper): a time stepper.
     """
-
-    timeValues = [0.0]
-    inst = args.get("INST")
-    if inst is not None:
-        timeValues = [inst]
-    else:
-        listInst = args.get("LIST_INST")
-        if listInst is not None:
-            timeValues = listInst.getValues()
-            inst_fin = args.get("INST_FIN")
-            if inst_fin is not None:
-                timeValues = [time for time in timeValues if time <= (inst_fin + 1.0e-6)]
-
-            if "RESULTAT" in args:
-                nbIndex = args["RESULTAT"].getNumberOfIndexes()
-                inst_deb = args["RESULTAT"].getTimeValue(nbIndex)
-                timeValues = [time for time in timeValues if time >= (inst_deb + 1.0e-6)]
-
-    return TimeStepper(timeValues)
+    stepper = TimeStepper([args.get("INST", 0.0)], initial=None)
+    listInst = args.get("LIST_INST")
+    if listInst:
+        # there is no initial state, all times are calculated
+        stepper = TimeStepper.from_keywords(
+            LIST_INST=listInst, INST_INIT=None, INST_FIN=args.get("INST_FIN"), PRECISION=1.0e-6
+        )
+        resu = args.get("RESULTAT")
+        if resu:
+            last = resu.getTimeValue(resu.getNumberOfIndexes() - 1)
+            stepper.setInitialStep(last)
+    logger.debug(repr(stepper))
+    return stepper
 
 
 @profile

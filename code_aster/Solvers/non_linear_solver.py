@@ -123,7 +123,7 @@ class NonLinearSolver(SolverFeature):
         """Initialize the physical state."""
         phys_state = self.phys_state
         phys_state.zeroInitialState(self.phys_pb)
-        init_time = self.stepper.getInitialTime()
+        init_time = self.stepper.getInitial()
         init_state = self._get("ETAT_INIT")
         if init_state:
             if "INST_ETAT_INIT" in init_state:

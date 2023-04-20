@@ -27,11 +27,13 @@ import inspect
 import re
 import unittest
 import unittest.case as case
-from functools import wraps
+from functools import wraps, partial
 
 # TODO use the logger object
 # TODO tell the Helpers to increase the exit status in case of failure
 #      (through the logger) ?
+
+_print = partial(print, flush=True)
 
 
 def addSuccess(method):
@@ -135,15 +137,15 @@ class TestCase(unittest.TestCase):
 
     def printSummary(self):
         """Print a summary of the tests"""
-        print(("-" * 70))
+        _print(("-" * 70))
         count = self._passed + self._failure
-        print(
+        _print(
             ("Ran {0} tests, {1} passed, {2} in failure".format(count, self._passed, self._failure))
         )
         if self._failure:
-            print("\nNOOK\n")
+            _print("\nNOOK\n")
         else:
-            print("\n OK \n")
+            _print("\n OK \n")
 
     def writeResult(self, ok, funcTest, msg, exc=None):
         """Write a message in the result file"""
@@ -161,7 +163,7 @@ class TestCase(unittest.TestCase):
         else:
             self._failure += 1
             fmt = "NOOK {func:>16} failed{s1}{exc} - {here}"
-        print(fmt.format(func=funcTest, msg=msg, exc=exc, s1=s1, s2=s2, here=here))
+        _print(fmt.format(func=funcTest, msg=msg, exc=exc, s1=s1, s2=s2, here=here))
 
     # just use a derivated context class
     def assertRaises(self, excClass, callableObj=None, *args, **kwargs):

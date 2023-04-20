@@ -39,7 +39,6 @@ from ..Utilities import SearchList, logger, print_stats, profile
 
 
 def _checkArgs(args):
-
     if args.get("RESULTAT") is not None and args.get("reuse") is not None:
         assert args.get("RESULTAT") is args.get("reuse")
 
@@ -98,7 +97,6 @@ def _addLoads(phys_pb, args):
 
 @profile
 def _setupInitialField(phys_pb, args):
-
     logger.debug("<THER_LINEAIRE><ETAT_INIT>: Start")
 
     initial_field = None
@@ -157,88 +155,33 @@ def _setupInitialField(phys_pb, args):
 
 @profile
 def _createTimeStepper(args):
-    """Create time stepper from catalogues
+    """Create time stepper from keywords
 
     Arguments:
-        **args (dict): User's keywords.
+        args (dict): User's keywords.
 
     Returns:
-        (TimeStepper): a time stepper.
+        TimeStepper: a time stepper.
     """
-
     logger.debug("<THER_LINEAIRE><TIMESTEPPER>: Start")
+    stepper = TimeStepper([0.0], initial=None)
+    if args.get("INCREMENT"):
+        # specific for the stationary case?
+        if "INST_INIT" not in args["INCREMENT"]:
+            times = args["INCREMENT"]["LIST_INST"].getValues()
+            if len(times) == 1:
+                args["INCREMENT"]["INST_INIT"] = None
+        stepper = TimeStepper.from_keywords(**args["INCREMENT"])
+        resu = args.get("RESULTAT")
+        if resu:
+            last = resu.getTimeValue(resu.getNumberOfIndexes() - 1)
+            stepper.setInitialStep(last)
 
-    # Create result
-    result = args.get("RESULTAT") or args.get("reuse")
-    if result is None:
-        last_prev_inst = None
-        if args["TYPE_CALCUL"] == "STAT":
-            first_index = 1
-        else:
-            first_index = 0
-    else:
-        para = result.getAccessParameters()
-        inst_prev = para["INST"]
-        last_prev_inst = inst_prev[-1]
-        index_prev = para["NUME_ORDRE"]
-
-    increment = args.get("INCREMENT")
-
-    time_values = [0.0]
-    if increment is not None:
-        listInst = increment.get("LIST_INST")
-        prec = increment.get("PRECISION")
-
-        list_values = listInst.getValues()
-
-        timelist_current = SearchList(list_values, prec)
-
-        logger.debug("<THER_LINEAIRE><TIMESTEPPER>: list_values = %s" % list_values)
-
-        nume_inst_init = increment.get("NUME_INST_INIT") or 0
-        nume_inst_fin = increment.get("NUME_INST_FIN") or len(list_values)
-
-        if increment.get("INST_INIT") is None:
-            inst_init = last_prev_inst or list_values[0]
-        else:
-            inst_init = increment.get("INST_INIT")
-
-        inst_fin = increment.get("INST_FIN") or list_values[-1]
-
-        logger.debug("<THER_LINEAIRE><TIMESTEPPER>: nume_inst_init = %s" % nume_inst_init)
-        logger.debug("<THER_LINEAIRE><TIMESTEPPER>: nume_inst_fin = %s" % nume_inst_fin)
-        logger.debug("<THER_LINEAIRE><TIMESTEPPER>: inst_init = %s" % inst_init)
-        logger.debug("<THER_LINEAIRE><TIMESTEPPER>: inst_fin = %s" % inst_fin)
-
-        assert nume_inst_init >= 0
-        assert nume_inst_fin <= len(list_values)
-        assert nume_inst_init < nume_inst_fin
-
-        assert inst_init >= list_values[0]
-        assert inst_fin <= list_values[-1]
-        assert inst_init <= inst_fin
-
-        assert timelist_current.unique(inst_init)
-        assert timelist_current.unique(inst_fin)
-
-        time_values = [
-            time
-            for time in list_values[nume_inst_init : nume_inst_fin + 1]
-            if ((inst_init - prec) <= time <= (inst_fin + prec))
-        ]
-
-        assert len(time_values) > 0
-
-        # first index to use
-        if last_prev_inst is not None:
-            assert result is not None
-            timelist_prev = SearchList(inst_prev, prec)
-            idx = timelist_prev.index(last_prev_inst)
-            first_index = index_prev[idx]
-
-    logger.debug("<THER_LINEAIRE><TIMESTEPPER>: first_index = %s" % first_index)
-    logger.debug("<THER_LINEAIRE><TIMESTEPPER>: time_values = %s" % time_values)
-    return first_index, TimeStepper(time_values)
+    logger.debug("<THER_LINEAIRE><TIMESTEPPER>: initial = %s", stepper.getInitial())
+    logger.debug("<THER_LINEAIRE><TIMESTEPPER>: final = %s", stepper.getFinal())
+    logger.debug("<THER_LINEAIRE><TIMESTEPPER>: size = %s", stepper.size())
+    logger.debug("<THER_LINEAIRE><TIMESTEPPER>: times = %s", stepper._times)
+    return stepper
 
 
 @profile
@@ -365,18 +308,17 @@ def ther_lineaire_ops(self, **args):
     initial_field, is_stat_init = _setupInitialField(phys_pb, args)
 
     # Create time stepper
-    first_index, timeStepper = _createTimeStepper(args)
+    timeStepper = _createTimeStepper(args)
 
-    # do not erase initial state if there are equals
+    # do not erase initial state if the same result is reused
+    first_index = 0
     save_initial_state = True
-    if (
-        is_evol
-        and "reuse" in args
-        and "EVOL_THER" in args["ETAT_INIT"]
-        and args["reuse"] == args["ETAT_INIT"]["EVOL_THER"]
-    ):
+    if not is_evol:
+        first_index = 1
+    elif args.get("reuse") and args["reuse"] is args["ETAT_INIT"].get("EVOL_THER"):
         first_index += 1
         save_initial_state = False
+    logger.debug("<THER_LINEAIRE><STORAGE>: first_index = %s", first_index)
 
     # Create linear solver
     linear_solver = LinearSolver.factory("THER_LINEAIRE", args["SOLVEUR"])
@@ -414,7 +356,8 @@ def ther_lineaire_ops(self, **args):
 
     # Compute initial state
     if is_evol:
-        phys_state.time = timeStepper.getCurrent()
+        phys_state.time = timeStepper.getInitial()
+        print("DBGTS: initial state", phys_state.time)
         time_theta = 1.0
         time_delta = timeStepper.null_increment
         if is_stat_init:
@@ -440,7 +383,6 @@ def ther_lineaire_ops(self, **args):
                 storage_manager.storeField(hho_field, "HHO_TEMP", phys_state.time)
 
             storage_manager.completed()
-        timeStepper.completed()
 
     # Loop on time step
     while not timeStepper.hasFinished():
@@ -452,6 +394,7 @@ def ther_lineaire_ops(self, **args):
         else:
             time_theta = 1.0
             time_delta = timeStepper.null_increment
+        print("DBGTS: loop", phys_state.time, time_delta)
 
         logger.debug("<THER_LINEAIRE>:     IS_EVOL %s" % is_evol)
         logger.debug("<THER_LINEAIRE>:     IS_CONST = %s" % is_const)
@@ -463,12 +406,11 @@ def ther_lineaire_ops(self, **args):
 
         if (
             not is_const
-            or (is_const and time_delta is timeStepper.null_increment)
+            or (is_const and time_delta == timeStepper.null_increment)
             or (is_const and has_exchange_fields)
-            or (is_const and abs(time_delta - time_delta_prev) > 1.0e-12)
+            or (is_const and abs(time_delta - time_delta_prev) > timeStepper.null_increment)
             or (is_const and hasExternalStateVariable)
         ):
-
             matrix = _computeMatrix(
                 disc_comp, matrix, is_evol, phys_state.time, time_delta, time_theta
             )

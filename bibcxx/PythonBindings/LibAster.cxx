@@ -150,7 +150,7 @@
 #include "PythonBindings/ThermalLoadDescriptionInterface.h"
 #include "PythonBindings/ThermalLoadInterface.h"
 #include "PythonBindings/ThermalResultInterface.h"
-#include "PythonBindings/TimeStepperInterface.h"
+#include "PythonBindings/TimesListInterface.h"
 #include "PythonBindings/TransientResultInterface.h"
 #include "PythonBindings/TurbulentSpectrumInterface.h"
 #include "PythonBindings/UnitaryMechanicalLoadInterface.h"
@@ -204,7 +204,7 @@ PYBIND11_MODULE( libaster, mod ) {
     exportSimpleFieldOnNodesToPython( mod );
     exportTableToPython( mod );
     exportTableContainerToPython( mod );
-    exportTimeStepperToPython( mod );
+    exportTimesListToPython( mod );
     exportGeneralizedDOFNumberingToPython( mod );
     exportFluidStructureInteractionToPython( mod );
     exportTurbulentSpectrumToPython( mod );

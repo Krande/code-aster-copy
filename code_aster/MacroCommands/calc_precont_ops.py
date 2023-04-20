@@ -34,7 +34,7 @@ from ..Commands import (
     RECU_TABLE,
     STAT_NON_LINE,
 )
-from ..Objects import ListOfFloats, TimeStepper
+from ..Objects import ListOfFloats, TimesList
 from ..Utilities import is_sequence
 from ..Messages import UTMESS, MasquerAlarme, RetablirAlarme
 
@@ -86,7 +86,7 @@ def calc_precont_ops(
     if type(__L0) == ListOfFloats:
         # cas où liste definie par DEFI_LIST_REEL
         __L1 = __L0.getValuesAsArray()
-    elif type(__L0) == TimeStepper:
+    elif type(__L0) == TimesList:
         # cas où liste definie par DEFI_LIST_INST
         __L1 = __L0.getValues()
 
@@ -557,7 +557,6 @@ def calc_precont_ops(
             table_cable = __TCAB1.EXTR_TABLE()
 
             for icable in range(nb_cable):
-
                 __typ_ancr = (
                     table_cable.TYPE_ANCRAGE1.values()[icable],
                     table_cable.TYPE_ANCRAGE2.values()[icable],
@@ -891,7 +890,6 @@ def calc_precont_ops(
             )
 
         if __recul_exists:
-
             dIncrement["INST_FIN"] = __TMAX
 
             RES = STAT_NON_LINE(

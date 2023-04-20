@@ -1,9 +1,6 @@
-#ifndef TIMESTEPPERINTERFACE_H_
-#define TIMESTEPPERINTERFACE_H_
-
 /**
- * @file TimeStepperInterface.h
- * @brief Fichier entete de la classe TimeStepperInterface
+ * @file TimesListInterface.cxx
+ * @brief Interface python de TimesList
  * @author Nicolas Sellenet
  * @section LICENCE
  *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
@@ -26,12 +23,17 @@
 
 /* person_in_charge: nicolas.sellenet at edf.fr */
 
-#include "astercxx.h"
+#include "PythonBindings/TimesListInterface.h"
 
 #include "aster_pybind.h"
 
-#include "Steppers/TimeStepper.h"
+#include "PythonBindings/DataStructureInterface.h"
 
-void exportTimeStepperToPython( py::module_ &mod );
+void exportTimesListToPython( py::module_ &mod ) {
 
-#endif /* TIMESTEPPERINTERFACE_H_ */
+    py::class_< TimesList, TimesList::TimesListPtr, DataStructure >( mod, "TimesList" )
+        .def( py::init( &initFactoryPtr< TimesList > ) )
+        .def( py::init( &initFactoryPtr< TimesList, std::string > ) )
+        .def( "getValues", &TimesList::getValues )
+        .def( "setValues", &TimesList::setValues );
+};

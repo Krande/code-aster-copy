@@ -161,6 +161,6 @@ DICT_SDJ = {
     "Skeleton": "SD.sd_squelette.sd_squelette",
     "StaticMacroElement": "SD.sd_macr_elem_stat.sd_macr_elem_stat",
     "StructureInterface": "SD.sd_interf_dyna_clas.sd_interf_dyna_clas",
-    "TimeStepper": "SD.sd_list_inst.sd_list_inst",
+    "TimesList": "SD.sd_list_inst.sd_list_inst",
     "TurbulentSpectrum": "SD.sd_spectre.sd_spectre",
 }

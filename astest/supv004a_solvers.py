@@ -21,6 +21,11 @@ import unittest
 
 from code_aster.Solvers.base_features import BaseFeature, BaseFeaturesOptions
 from code_aster.Solvers import TimeStepper
+from code_aster.Commands import DEFI_LIST_REEL
+
+
+list0 = DEFI_LIST_REEL(VALE=0.0)
+listr = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=_F(JUSQU_A=10.0, PAS=1.0))
 
 
 class UnittestOptions(BaseFeaturesOptions):
@@ -119,101 +124,216 @@ class BasicTest(unittest.TestCase):
 class TestTimeStepper(unittest.TestCase):
     """Check for internal methods."""
 
-    def test_initial(self):
+    def test00_init(self):
+        stp = TimeStepper([0.0, 1.0, 2.0, 3.0])
+        self.assertSequenceEqual(stp._times, [1.0, 2.0, 3.0])
+        self.assertEqual(stp.size(), 3)
+        self.assertEqual(stp.remaining(), stp.size())
+
+        stp = TimeStepper([0.0, 1.0, 2.0, 3.0], initial=1.0)
+        self.assertSequenceEqual(stp._times, [2.0, 3.0])
+        self.assertEqual(stp.size(), 2)
+        self.assertEqual(stp.remaining(), stp.size())
+
+        stp = TimeStepper([0.0, 1.0, 2.0, 3.0])
+        self.assertSequenceEqual(stp._times, [1.0, 2.0, 3.0])
+        self.assertEqual(stp.size(), 3)
+        self.assertEqual(stp.remaining(), stp.size())
+
+        stp.setInitialStep(1.0)
+        self.assertSequenceEqual(stp._times, [2.0, 3.0])
+        self.assertEqual(stp.size(), 2)
+        self.assertEqual(stp.remaining(), stp.size())
+
+        stp = TimeStepper([0.0, 1.0, 2.0, 3.0], initial=0.0, final=2.5)
+        self.assertSequenceEqual(stp._times, [1.0, 2.0, 2.5])
+        self.assertEqual(stp.size(), 3)
+        self.assertEqual(stp.remaining(), stp.size())
+
+        stp = TimeStepper([0.0, 1.0, 2.0, 3.0])
+        stp.setInitialStep(0.0)
+        stp.setFinalStep(2.5)
+        self.assertSequenceEqual(stp._times, [1.0, 2.0, 2.5])
+        self.assertEqual(stp.size(), 3)
+        self.assertEqual(stp.remaining(), stp.size())
+
+        with self.assertRaisesRegex(ValueError, "list.*empty"):
+            TimeStepper([0.0, 1.0, 2.0, 3.0], initial=3.0)
+
+        stp = TimeStepper([0.0, 1.0, 2.0, 3.0], initial=2.0, final=2.5)
+        self.assertSequenceEqual(stp._times, [2.5])
+        self.assertEqual(stp.size(), 1)
+        self.assertEqual(stp.remaining(), stp.size())
+
+        stp = TimeStepper([1.0, 2.0, 3.0], final=0.5)
+        self.assertSequenceEqual(stp._times, [0.5])
+        self.assertEqual(stp.size(), 1)
+        self.assertEqual(stp.remaining(), stp.size())
+
+        stp = TimeStepper([], final=1.0)
+        self.assertSequenceEqual(stp._times, [1.0])
+        self.assertEqual(stp.size(), 1)
+        self.assertEqual(stp.remaining(), stp.size())
+
+        with self.assertRaisesRegex(ValueError, "ordered"):
+            TimeStepper([0.0, 1.0, 3.0, 2.0])
+
+    def test01_initial(self):
         stp = TimeStepper([0.0, 0.25, 1.0, 2.0])
         stp.setInitialStep(0.0)
-        step = stp.getCurrent()
-        self.assertAlmostEqual(step, 0.0)
-        stp.start()
-        self.assertEqual(stp.size(), 4)
+        self.assertAlmostEqual(stp.getInitial(), 0.0)
+        self.assertEqual(stp.size(), 3)
+        self.assertEqual(stp.remaining(), stp.size())
         step = stp.getCurrent()
         self.assertAlmostEqual(step, 0.25)
+        stp.completed()
+        self.assertEqual(stp.remaining(), 2)
+        self.assertFalse(stp.hasFinished())
+        step = stp.getCurrent()
+        self.assertAlmostEqual(step, 1.0)
+        self.assertAlmostEqual(stp.getInitial(), 0.0)
+        stp.completed()
+        self.assertEqual(stp.remaining(), 1)
+        self.assertFalse(stp.hasFinished())
+        step = stp.getCurrent()
+        self.assertAlmostEqual(step, 2.0)
+        stp.completed()
+        self.assertEqual(stp.remaining(), 0)
+        self.assertTrue(stp.hasFinished())
+        with self.assertRaises(IndexError):
+            stp.completed()
 
         eps = 1.0e-3
         stp = TimeStepper([0.25, 1.0, 2.0], eps)
-        stp.setInitialStep(0.0)
-        self.assertEqual(stp.size(), 4)
-        stp.start()
-        step = stp.getCurrent()
-        self.assertAlmostEqual(step, 0.25)
-
-        stp.setInitialStep(0.3)
-        self.assertEqual(stp.size(), 3)
-        stp.start()
+        stp.setInitialStep(0.25 + eps * 0.999)
+        self.assertLess(stp.getInitial() - 0.25, eps)
+        self.assertSequenceEqual(stp._times, [1.0, 2.0])
         step = stp.getCurrent()
         self.assertAlmostEqual(step, 1.0)
+        self.assertEqual(stp.size(), 2)
+        stp.completed()
+        self.assertEqual(stp.remaining(), 1)
+        self.assertFalse(stp.hasFinished())
+        step = stp.getCurrent()
+        self.assertAlmostEqual(step, 2.0)
+        self.assertSequenceEqual(stp._times, [1.0, 2.0])
+
+        stp.setInitialStep(0.3)
+        self.assertSequenceEqual(stp._times, [1.0, 2.0])
+        self.assertAlmostEqual(stp.getInitial(), 0.3)
+        step = stp.getCurrent()
+        self.assertAlmostEqual(step, 1.0)
+        self.assertEqual(stp.size(), 2)
+        stp.completed()
+        step = stp.getCurrent()
+        self.assertAlmostEqual(step, 2.0)
 
         stp.setInitialStep(0.1)
-        stp.start()
-        self.assertEqual(stp.size(), 5)
+        self.assertSequenceEqual(stp._times, [1.0, 2.0])
+        self.assertAlmostEqual(stp.getInitial(), 0.1)
         step = stp.getCurrent()
-        self.assertAlmostEqual(step, 0.25)
+        self.assertAlmostEqual(step, 1.0)
+        self.assertEqual(stp.size(), 2)
+        stp.completed()
+        step = stp.getCurrent()
+        self.assertAlmostEqual(step, 2.0)
 
         stp.setInitialStep(0.1 + eps * 0.999)
-        stp.start()
-        self.assertEqual(stp.size(), 5)
+        self.assertSequenceEqual(stp._times, [1.0, 2.0])
+        stp.completed()
+        self.assertEqual(stp.size(), 2)
         step = stp.getCurrent()
-        self.assertAlmostEqual(step, 0.25)
+        self.assertAlmostEqual(step, 2.0)
 
         stp = TimeStepper([0.0, 0.25, 1.0, 2.0])
         stp.setInitialStep(1.0)
-        self.assertEqual(stp.size(), 2)
+        self.assertAlmostEqual(stp.getInitial(), 1.0)
+        self.assertEqual(stp.size(), 1)
+        self.assertSequenceEqual(stp._times, [2.0])
         step = stp.getCurrent()
-        self.assertAlmostEqual(step, 1.0)
+        self.assertAlmostEqual(step, 2.0)
 
         stp.setInitialStep(2.5)
+        self.assertAlmostEqual(stp.getInitial(), 2.5)
         self.assertEqual(stp.size(), 1)
         self.assertFalse(stp.hasFinished())
-        stp.start()
+        stp.completed()
         self.assertTrue(stp.hasFinished())
 
-    def test_final(self):
-        eps = 1.0e-3
-        stp = TimeStepper([0.0, 0.25, 1.0, 2.0], eps)
-        stp.setFinalStep(2.0 - eps * 0.999)
-        self.assertEqual(stp.size(), 4)
-        stp.setFinalStep(2.0 + eps * 0.999)
+    def test02_initial(self):
+        stp = TimeStepper([2.0, 4.0, 6.0, 8.0, 10.0])
+        self.assertAlmostEqual(stp.getInitial(), 0.0)
+        self.assertEqual(stp.size(), 5)
+        stp.setInitialStep(2.0)
+        self.assertAlmostEqual(stp.getInitial(), 2.0)
         self.assertEqual(stp.size(), 4)
 
-        stp.setFinalStep(1.9)
+        stp = TimeStepper([2.0, 4.0, 6.0, 8.0, 10.0])
+        stp.setInitialStep(3.0)
+        self.assertAlmostEqual(stp.getInitial(), 3.0)
         self.assertEqual(stp.size(), 4)
+
+        stp = TimeStepper([2.0, 4.0, 6.0, 8.0, 10.0])
+        stp.setInitialStep(1.0)
+        self.assertAlmostEqual(stp.getInitial(), 1.0)
+        self.assertEqual(stp.size(), 5)
+
+        stp = TimeStepper([2.0, 4.0, 6.0, 8.0, 10.0])
+        stp.setInitialStep(2.0)
+        stp.setInitialStep(1.0)
+        self.assertEqual(stp.size(), 4)
+
+    def test03_final(self):
+        eps = 1.0e-3
+        stp = TimeStepper([0.0, 0.25, 1.0, 2.0], eps)
+        stp.setInitialStep(0.0)
+        stp.setFinalStep(2.0 - eps * 0.999)
+        self.assertLess(stp.getFinal() - 2.0, eps)
+        self.assertEqual(stp.size(), 3)
+        stp.setFinalStep(2.0 + eps * 0.999)
+        self.assertLess(stp.getFinal() - 2.0, eps)
+        self.assertEqual(stp.size(), 3)
+
+        stp.setFinalStep(1.9)
+        self.assertAlmostEqual(stp.getFinal(), 1.9)
+        self.assertEqual(stp.size(), 3)
+        self.assertSequenceEqual(stp._times, [0.25, 1.0, 1.9])
+        for _ in range(3):
+            stp.completed()
+        with self.assertRaises(IndexError):
+            stp.completed()
+        with self.assertRaises(IndexError):
+            step = stp.getCurrent()
+
+        stp = TimeStepper([0.0, 0.25, 1.0, 2.0])
+        stp.setInitialStep(0.0)
+        stp.setFinalStep(2.5)
+        self.assertEqual(stp.size(), 4)
+        self.assertSequenceEqual(stp._times, [0.25, 1.0, 2.0, 2.5])
         for _ in range(3):
             stp.completed()
         step = stp.getCurrent()
-        self.assertAlmostEqual(step, 1.9)
-
-        stp = TimeStepper([0.0, 0.25, 1.0, 2.0])
-        stp.setFinalStep(2.5)
-        self.assertEqual(stp.size(), 5)
-        for _ in range(4):
-            stp.completed()
-        step = stp.getCurrent()
         self.assertAlmostEqual(step, 2.5)
+        stp.completed()
+        self.assertTrue(stp.hasFinished())
 
         stp = TimeStepper([0.0, 0.25, 1.0, 2.0])
-        self.assertEqual(stp.size(), 4)
-        stp.setFinalStep(0.8)
+        stp.setInitialStep(0.0)
         self.assertEqual(stp.size(), 3)
+        stp.setFinalStep(0.8)
+        self.assertEqual(stp.size(), 2)
         stp.setFinalStep()
-        self.assertEqual(stp.size(), 5)
+        self.assertEqual(stp.size(), 2)
 
-    def test_basic(self):
+    def test04_basic(self):
         stp = TimeStepper([0.0, 0.25, 1.0, 2.0, 3.0])
+        self.assertEqual(stp.size(), 4)
         self.assertFalse(stp.hasFinished())
 
         step = stp.getCurrent()
-        self.assertAlmostEqual(step, 0.0)
-        delta_t = stp.getIncrement()
-        self.assertEqual(delta_t, stp.null_increment)
-
-        stp.setInitialStep(0.0)
-        step = stp.getCurrent()
-        self.assertAlmostEqual(step, 0.0)
-        stp.start()
-        step = stp.getCurrent()
         self.assertAlmostEqual(step, 0.25)
         delta_t = stp.getIncrement()
-        self.assertAlmostEqual(delta_t, 0.25)
+        self.assertEqual(delta_t, 0.25)
         stp.completed()
 
         step = stp.getCurrent()
@@ -224,60 +344,74 @@ class TestTimeStepper(unittest.TestCase):
 
         step = stp.getCurrent()
         self.assertAlmostEqual(step, 2.0)
+        delta_t = stp.getIncrement()
+        self.assertAlmostEqual(delta_t, 1.0)
+        stp.completed()
         step = stp.getCurrent()
-        self.assertAlmostEqual(step, 2.0)
+        self.assertAlmostEqual(step, 3.0)
+        delta_t = stp.getIncrement()
+        self.assertAlmostEqual(delta_t, 1.0)
+        stp.completed()
 
+        self.assertTrue(stp.hasFinished())
+        with self.assertRaises(IndexError):
+            stp.completed()
         with self.assertRaises(ValueError):
             stp.raiseError(ValueError())
 
-        self.assertFalse(stp.hasFinished())
-        step = stp.getCurrent()
-        self.assertAlmostEqual(step, 1.0)
-        stp.completed()
-        step = stp.getCurrent()
-        self.assertAlmostEqual(step, 2.0)
-        stp.completed()
-        step = stp.getCurrent()
-        self.assertAlmostEqual(step, 3.0)
-        step = stp.getCurrent()
-        self.assertAlmostEqual(step, 3.0)
-        self.assertFalse(stp.hasFinished())
+    def test06_split(self):
+        with self.assertRaises(NotImplementedError):
+            stp = TimeStepper([0.0, 1.0, 2.0, 3.0])
+            stp.setInitialStep(0.0)
+            self.assertEqual(stp.size(), 3)
+            self.assertAlmostEqual(stp.getCurrent(), 1.0)
+            stp.split(2)
+            self.assertEqual(stp.size(), 5)
+            self.assertAlmostEqual(stp.getCurrent(), 0.5)
+            stp.completed()
+            self.assertAlmostEqual(stp.getCurrent(), 1.0)
+            stp.split(5)
+            self.assertEqual(stp.size(), 9)
+            self.assertAlmostEqual(stp.getCurrent(), 0.6)
+            stp.completed()
+            self.assertAlmostEqual(stp.getCurrent(), 0.7)
 
-    def test_restart(self):
-        stp = TimeStepper([0.0, 0.25, 1.0, 2.0, 3.0])
-        self.assertEqual(stp.size(), 5)
-        stp.setFinalStep(1.0)
-        self.assertEqual(stp.size(), 3)
-
-        stp.start()
-        self.assertAlmostEqual(stp.getCurrent(), 0.25)
-        stp.completed()
-        self.assertAlmostEqual(stp.getCurrent(), 1.0)
+    def test07_meca_statique(self):
+        stp = TimeStepper([0.0], initial=None)
+        self.assertEqual(stp.size(), 1)
+        step = stp.getCurrent()
+        self.assertAlmostEqual(step, 0.0)
+        self.assertIsNone(stp.getPrevious())
+        self.assertIsNone(stp.getIncrement())
         stp.completed()
         self.assertTrue(stp.hasFinished())
 
-        stp.setInitialStep(1.0)
+    def test08_ther_lineaire(self):
+        stp = TimeStepper.from_keywords(LIST_INST=list0, INST_INIT=None, PRECISION=1.0e-6)
         self.assertEqual(stp.size(), 1)
-        stp.setFinalStep(3.0)
-        self.assertEqual(stp.size(), 3)
-        stp.start()
-        self.assertAlmostEqual(stp.getCurrent(), 2.0)
+        self.assertAlmostEqual(stp.getInitial(), None)
+        self.assertAlmostEqual(stp.getFinal(), 0.0)
 
-    def test_split(self):
-        stp = TimeStepper([0.0, 1.0, 2.0, 3.0])
-        self.assertEqual(stp.size(), 4)
-        stp.start()
-        self.assertAlmostEqual(stp.getCurrent(), 1.0)
-        stp.split(2)
+        stp = TimeStepper.from_keywords(LIST_INST=listr, INST_FIN=5.0, PRECISION=1.0e-6)
         self.assertEqual(stp.size(), 5)
-        self.assertAlmostEqual(stp.getCurrent(), 0.5)
+        self.assertAlmostEqual(stp.getInitial(), 0.0)
+        self.assertAlmostEqual(stp.getFinal(), 5.0)
+        step = stp.getCurrent()
+        self.assertAlmostEqual(step, 1.0)
         stp.completed()
-        self.assertAlmostEqual(stp.getCurrent(), 1.0)
-        stp.split(5)
-        self.assertEqual(stp.size(), 9)
-        self.assertAlmostEqual(stp.getCurrent(), 0.6)
-        stp.completed()
-        self.assertAlmostEqual(stp.getCurrent(), 0.7)
+        self.assertEqual(stp.remaining(), 4)
+
+        stp = TimeStepper([-0.5, 5.5, 11.5], initial=-0.5)
+        self.assertEqual(stp.size(), 2)
+        self.assertAlmostEqual(stp.getInitial(), -0.5)
+        self.assertAlmostEqual(stp.getFinal(), 11.5)
+
+        stp = TimeStepper.from_keywords(
+            LIST_INST=listr, NUME_INST_INIT=0, NUME_INST_FIN=1, PRECISION=1.0e-6
+        )
+        self.assertEqual(stp.size(), 1)
+        self.assertAlmostEqual(stp.getInitial(), 0.0)
+        self.assertAlmostEqual(stp.getFinal(), 1.0)
 
 
 if __name__ == "__main__":
