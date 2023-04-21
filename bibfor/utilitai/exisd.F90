@@ -96,6 +96,12 @@ subroutine exisd(typesd, nomsd, iret)
         call jeexin(ch//'.REFE', i1)
         call jeexin(ch//'.VALE', i2)
         if (i1*i2 .ne. 0) iret = 1
+
+    else if (typ2sd .eq. 'CHAM_GEOM') then
+!     ------------------------------
+        ch = nomsd
+        call jeexin(ch//'.VALE', i1)
+        if (i1 .ne. 0) iret = 1
 !
 !
     else if (typ2sd .eq. 'CHAM_ELEM') then

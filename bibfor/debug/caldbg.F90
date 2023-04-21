@@ -17,18 +17,17 @@
 ! --------------------------------------------------------------------
 !
 subroutine caldbg(inout, ncham, lcham, lparam)
+!
     implicit none
 !
-! person_in_charge: jacques.pellet at edf.fr
-!     ARGUMENTS:
-!     ----------
 #include "jeveux.h"
+#include "asterfort/assert.h"
 #include "asterfort/dbgobj.h"
 #include "asterfort/exisd.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 !
-    integer :: ncham, i, iret
+    integer :: ncham
     character(len=*) :: inout
     character(len=19) :: lcham(*)
     character(len=8) :: lparam(*)
@@ -39,16 +38,18 @@ subroutine caldbg(inout, ncham, lcham, lparam)
     character(len=19) :: champ
     character(len=24) :: ojb
     character(len=4) :: inou2
+    integer :: i, iret
 ! DEB-------------------------------------------------------------------
 !
     call jemarq()
     inou2 = inout
 !
-!     1- POUR FAIRE DU DEBUG PAR COMPARAISON DE 2 VERSIONS:
-!     -----------------------------------------------------
     do i = 1, ncham
         champ = lcham(i)
+        ojb = " "
         call exisd('CARTE', champ, iret)
+        if (iret .gt. 0) ojb = champ//'.VALE'
+        call exisd('CHAM_GEOM', champ, iret)
         if (iret .gt. 0) ojb = champ//'.VALE'
         call exisd('CHAM_NO', champ, iret)
         if (iret .gt. 0) ojb = champ//'.VALE'
@@ -56,7 +57,6 @@ subroutine caldbg(inout, ncham, lcham, lparam)
         if (iret .gt. 0) ojb = champ//'.CELV'
         call exisd('RESUELEM', champ, iret)
         if (iret .gt. 0) ojb = champ//'.RESL'
-!
         call dbgobj(ojb, 'OUI', 6, '&&CALCUL|'//inou2//'|'//lparam(i))
     end do
 !
