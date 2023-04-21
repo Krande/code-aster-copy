@@ -163,6 +163,10 @@ def _createTimeStepper(args):
     Returns:
         TimeStepper: a time stepper.
     """
+    # <tpla06a> TYPE_CALCUL="STAT": initial=None, t=[0.]
+    # <ttll01a.1> TYPE_CALCUL="TRAN" + STAT="OUI": initial=0., t=[0.001, ...]
+    # <ttll01a.2> TYPE_CALCUL="TRAN" + STAT=None/EVOL_THER: initial=0.02, t=[0.03, ...]
+    # si TRAN + STAT="OUI", comment faire initial=0 et t1=0 ?
     logger.debug("<THER_LINEAIRE><TIMESTEPPER>: Start")
     stepper = TimeStepper([0.0], initial=None)
     if args.get("INCREMENT"):

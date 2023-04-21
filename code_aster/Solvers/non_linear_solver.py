@@ -116,7 +116,6 @@ class NonLinearSolver(SolverFeature):
         self.setInitialState()
         self.step_rank = 0
         self._storeRank(self.phys_state.time)
-        self.stepper.completed()
 
     @profile
     def setInitialState(self):

@@ -232,8 +232,7 @@ def macr_cara_poutre_ops(
             MODELE=__nomoth,
             CHAM_MATER=__chmath,
             SOLVEUR=_F(STOP_SINGULIER="NON"),
-            TYPE_CALCUL="TRAN",
-            ETAT_INIT=_F(STAT="OUI"),
+            TYPE_CALCUL="STAT",
             INCREMENT=_F(LIST_INST=DLZ),
             **motscles
         )
@@ -283,8 +282,7 @@ def macr_cara_poutre_ops(
             CHAM_MATER=__chmath,
             EXCIT=_F(CHARGE=__chart2),
             SOLVEUR=_F(STOP_SINGULIER="NON"),
-            TYPE_CALCUL="TRAN",
-            ETAT_INIT=_F(STAT="OUI"),
+            TYPE_CALCUL="STAT",
             INCREMENT=_F(LIST_INST=DLZ),
         )
 
@@ -314,8 +312,7 @@ def macr_cara_poutre_ops(
             CHAM_MATER=__chmath,
             EXCIT=_F(CHARGE=__chart3),
             SOLVEUR=_F(STOP_SINGULIER="NON"),
-            TYPE_CALCUL="TRAN",
-            ETAT_INIT=_F(STAT="OUI"),
+            TYPE_CALCUL="STAT",
             INCREMENT=_F(LIST_INST=DLZ),
         )
 
@@ -525,8 +522,7 @@ def macr_cara_poutre_ops(
             CHAM_MATER=__chmat2,
             EXCIT=(_F(CHARGE=__chart5), _F(CHARGE=__chart6)),
             SOLVEUR=_F(STOP_SINGULIER="NON", METHODE="LDLT"),
-            TYPE_CALCUL="TRAN",
-            ETAT_INIT=_F(STAT="OUI"),
+            TYPE_CALCUL="STAT",
             INCREMENT=_F(LIST_INST=DLZ),
         )
 
@@ -644,8 +640,7 @@ def macr_cara_poutre_ops(
                 CHAM_MATER=__chmath,
                 EXCIT=_F(CHARGE=__chart1),
                 SOLVEUR=_F(STOP_SINGULIER="NON"),
-                TYPE_CALCUL="TRAN",
-                ETAT_INIT=_F(STAT="OUI"),
+                TYPE_CALCUL="STAT",
                 INCREMENT=_F(LIST_INST=DLZ),
             )
 
@@ -682,8 +677,7 @@ def macr_cara_poutre_ops(
                 CHAM_MATER=__chmath,
                 EXCIT=_F(CHARGE=__chart2),
                 SOLVEUR=_F(STOP_SINGULIER="NON"),
-                TYPE_CALCUL="TRAN",
-                ETAT_INIT=_F(STAT="OUI"),
+                TYPE_CALCUL="STAT",
                 INCREMENT=_F(LIST_INST=DLZ),
             )
 
@@ -714,8 +708,7 @@ def macr_cara_poutre_ops(
                 CHAM_MATER=__chmath,
                 EXCIT=_F(CHARGE=__chart3),
                 SOLVEUR=_F(STOP_SINGULIER="NON"),
-                TYPE_CALCUL="TRAN",
-                ETAT_INIT=_F(STAT="OUI"),
+                TYPE_CALCUL="STAT",
                 INCREMENT=_F(LIST_INST=DLZ),
             )
 
@@ -861,7 +854,6 @@ def macr_cara_poutre_ops(
     # Si TABLE_CARA == "OUI" et GROUP_MA la ligne est supprimée
 
     if not (TABLE_CARA == "OUI" and GROUP_MA):
-
         TabTmp = nomres.EXTR_TABLE()
         for ii in range(len(TabTmp.rows)):
             zz = TabTmp.rows[ii]["LIEU"]
@@ -884,7 +876,6 @@ def macr_cara_poutre_ops(
     # On retourne une table exploitable par AFFE_CARA_ELEM, avec seulement les
     # caractéristiques nécessaires
     if TABLE_CARA == "OUI":
-
         #
         if GROUP_MA_BORD and not GROUP_MA:
             nomres = CALC_TABLE(

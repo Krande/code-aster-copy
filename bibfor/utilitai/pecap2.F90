@@ -183,9 +183,9 @@ subroutine pecap2(chgeoz, iy, iz, s, alpha, &
 !
 ! --- RECUPERATION DES CHAMPS DE TEMPERATURES DES RESULTATS :
 !     -----------------------------------------------------
-    call rsexch('F', tempe1, 'TEMP', 0, chtem1, &
+    call rsexch('F', tempe1, 'TEMP', 1, chtem1, &
                 iret)
-    call rsexch('F', tempe2, 'TEMP', 0, chtem2, &
+    call rsexch('F', tempe2, 'TEMP', 1, chtem2, &
                 iret)
 !
 ! --- RECUPERATION DU NUME_DDL ASSOCIE AU CHAMP DE TEMPERATURES :

@@ -129,7 +129,7 @@ subroutine pecap3(chgeoz, tempez, iomega)
 !
 ! --- RECUPERATION DU CHAMP DE TEMPERATURES DU RESULTAT :
 !     -------------------------------------------------
-    call rsexch('F', temper, 'TEMP', 0, chtemp, &
+    call rsexch('F', temper, 'TEMP', 1, chtemp, &
                 iret)
 !
 ! --- RECUPERATION DU NUME_DDL ASSOCIE AU CHAMP DE TEMPERATURES :
