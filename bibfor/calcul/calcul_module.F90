@@ -269,6 +269,12 @@ module calcul_module
 !     ca_ctempm_ : for previous temperature when coupled variable (non external state variable)
 !     ca_ctempp_ : for end temperature when coupled variable (non external state variable)
 !======================================================================
+    integer :: ca_cpcapl_
+    real(kind=8) :: ca_cpcapm_, ca_cpcapp_
+!     ca_cpcapl_ : 1 if capillar pressure is coupled variable (non external state variable)
+!     ca_cpcapm_ : for previous pressure when coupled variable (non external state variable)
+!     ca_cpcapp_ : for end pressure when coupled variable (non external state variable)
+!======================================================================
     integer :: ca_nfpgmx_
     parameter(ca_nfpgmx_=10)
     integer :: ca_nfpg_, ca_jfpgl_, ca_decala_(ca_nfpgmx_), ca_km_, ca_kp_, ca_kr_, ca_iredec_

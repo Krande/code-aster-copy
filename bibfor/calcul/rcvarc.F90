@@ -25,7 +25,8 @@ subroutine rcvarc(arret, varc_name_, poum, &
                              ca_jfpgl_, ca_jvcnom_, ca_km_, ca_kp_, &
                              ca_kr_, ca_nbcvrc_, ca_nfpg_, ca_nomte_, ca_option_, &
                              ca_td1_, ca_tf1_, ca_timed1_, ca_timef1_, &
-                             ca_ctempl_, ca_ctempr_, ca_ctempm_, ca_ctempp_
+                             ca_ctempl_, ca_ctempr_, ca_ctempm_, ca_ctempp_, &
+                             ca_cpcapl_, ca_cpcapm_, ca_cpcapp_
 !
     implicit none
 !
@@ -98,9 +99,8 @@ subroutine rcvarc(arret, varc_name_, poum, &
         call rcvarp(arret, varc_name, poum, varc_vale, iret)
         goto 999
     end if
-!
+
 ! - For coupled problems
-!
     if (ca_ctempl_ .eq. 1) then
         if (varc_name .eq. 'TEMP') then
             if (poum .eq. '-') then
@@ -116,6 +116,20 @@ subroutine rcvarc(arret, varc_name_, poum, &
             goto 999
         end if
     end if
+    if (ca_cpcapl_ .eq. 1) then
+        if (varc_name .eq. 'PCAP') then
+            if (poum .eq. '-') then
+                varc_vale = ca_cpcapm_
+            elseif (poum .eq. '+') then
+                varc_vale = ca_cpcapp_
+            else
+                ASSERT(.false.)
+            end if
+            iret = 0
+            goto 999
+        end if
+    end if
+
 !
 ! - No external state variable
 !

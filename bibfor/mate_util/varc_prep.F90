@@ -18,7 +18,8 @@
 
 subroutine varc_prep(chmate, l_thm)
 !
-    use calcul_module, only: ca_jvcnom_, ca_nbcvrc_, ca_ctempr_, ca_ctempm_, ca_ctempp_
+    use calcul_module, only: ca_jvcnom_, ca_nbcvrc_, ca_ctempr_, ca_ctempm_, ca_ctempp_, &
+                             ca_cpcapm_, ca_cpcapp_
 !
     implicit none
 !
@@ -86,6 +87,21 @@ subroutine varc_prep(chmate, l_thm)
             ca_ctempp_ = r8nnem()
         end if
     end if
+    ! Test plus fin que l_Thm (voir calcul_module.F90)
+    if (l_thm) then
+        if (ca_nbcvrc_ .eq. 0) then
+            ca_cpcapm_ = r8nnem()
+            ca_cpcapp_ = r8nnem()
+        else
+            varc_indx = indik8(zk8(ca_jvcnom_), varc_name, 1, ca_nbcvrc_)
+            if (varc_indx .ne. 0) then
+                call utmess('F', 'MATERIAL2_52')
+            end if
+            ca_cpcapm_ = r8nnem()
+            ca_cpcapp_ = r8nnem()
+        end if
+    end if
+
 !
     call jedema()
 end subroutine

@@ -113,4 +113,10 @@ Erreur utilisateur dans la commande AFFE_MATERIAU / AFFE_VARC
  Ce n'est pas possible.
 """
     ),
+    52: _(
+        """
+ Vous utilisez la variable de commande de pression capillaire alors que votre problème est couplé.
+ Ce n'est pas possible.
+"""
+    ),
 }

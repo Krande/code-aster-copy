@@ -27,7 +27,8 @@ subroutine calcva(ds_thm, kpi, ndim, &
                   p2, dp2, grad_p2, &
                   retcom)
 !
-    use calcul_module, only: ca_ctempr_, ca_ctempm_, ca_ctempp_
+    use calcul_module, only: ca_ctempr_, ca_ctempm_, ca_ctempp_, &
+                             ca_cpcapm_, ca_cpcapp_
     use THM_type
 !
     implicit none
@@ -89,10 +90,9 @@ subroutine calcva(ds_thm, kpi, ndim, &
 ! --------------------------------------------------------------------------------------------------
 !
     retcom = 0
-!
+
 ! - Mechanic - Full coupled
-!
-    deps(:) = 0.d0
+    deps = 0.d0
     depsv = 0.d0
     epsv = 0.d0
     if (ds_thm%ds_elem%l_dof_meca) then
@@ -106,18 +106,16 @@ subroutine calcva(ds_thm, kpi, ndim, &
             epsv = epsv+defgep(addeme+ndim-1+i)
         end do
     end if
-!
+
 ! - Mechanic - Weak coupled
-!
     if (ds_thm%ds_elem%l_weak_coupling) then
         call rcvarc(' ', 'DIVU', '-', 'RIGI', kpi, 1, epsvm, iret1)
         call rcvarc(' ', 'DIVU', '+', 'RIGI', kpi, 1, epsvp, iret2)
         depsv = epsvp-epsvm
         epsv = epsvp
     end if
-!
+
 ! - Hydraulic
-!
     p1 = ds_thm%ds_parainit%pre1_init
     dp1 = 0.d0
     p2 = ds_thm%ds_parainit%pre2_init
@@ -128,6 +126,8 @@ subroutine calcva(ds_thm, kpi, ndim, &
         do i = 1, ndim
             grad_p1(i) = defgep(addep1+i)
         end do
+        ca_cpcapm_ = p1-dp1
+        ca_cpcapp_ = p1
         if (ds_thm%ds_elem%l_dof_pre2) then
             p2 = defgep(addep2)+ds_thm%ds_parainit%pre2_init
             if (abs(p2) .le. r8prem()) then
@@ -141,10 +141,12 @@ subroutine calcva(ds_thm, kpi, ndim, &
                 grad_p2(i) = defgep(addep2+i)
             end do
         end if
+    else
+        ca_cpcapm_ = 0.d0
+        ca_cpcapp_ = 0.d0
     end if
-!
+
 ! - Thermic
-!
     temp = ds_thm%ds_parainit%temp_init
     dtemp = 0.d0
     if (ds_thm%ds_elem%l_dof_ther) then
@@ -167,5 +169,6 @@ subroutine calcva(ds_thm, kpi, ndim, &
         ca_ctempm_ = 0.d0
         ca_ctempp_ = 0.d0
     end if
+
 !
 end subroutine

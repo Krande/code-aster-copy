@@ -27,7 +27,8 @@ subroutine calcul(stop, option_, ligrel_, nin, lchin, &
                              ca_nbobj_, ca_nbobtr_, ca_nomte_, ca_nomtm_, ca_nute_, &
                              ca_nuop_, ca_ligrel_, ca_option_, ca_iactif_, &
                              ca_ldist_, ca_ldgrel_, ca_rang_, ca_nbproc_, ca_numsd_, &
-                             ca_lparal_, ca_paral_, ca_iel_, ca_ctempl_
+                             ca_lparal_, ca_paral_, ca_iel_, &
+                             ca_ctempl_, ca_cpcapl_
 !
     implicit none
 !
@@ -376,6 +377,10 @@ subroutine calcul(stop, option_, ligrel_, nin, lchin, &
 
             ca_ctempl_ = 0
             if (l_thm) ca_ctempl_ = 1
+
+            ! Vérifier que attribut HYRD2 > 0 pour activer pressio capillaire
+            ca_cpcapl_ = 0
+            if (l_thm) ca_cpcapl_ = 1
             call te0000(numc, ca_nuop_, ca_nute_)
             ca_iactif_ = 1
 
