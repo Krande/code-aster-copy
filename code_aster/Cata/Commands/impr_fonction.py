@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -239,10 +239,20 @@ IMPR_FONCTION = MACRO(
             fr=tr("Type d'échelle pour les ordonnées"),
         ),
         GRILLE_X=SIMP(
-            statut="f", typ="R", max=1, val_min=0.0, fr=tr("Pas du quadrillage vertical")
+            statut="f",
+            typ="R",
+            max=1,
+            val_min=0.0,
+            val_min_included=False,
+            fr=tr("Pas du quadrillage vertical"),
         ),
         GRILLE_Y=SIMP(
-            statut="f", typ="R", max=1, val_min=0.0, fr=tr("Pas du quadrillage horizontal")
+            statut="f",
+            typ="R",
+            max=1,
+            val_min=0.0,
+            val_min_included=False,
+            fr=tr("Pas du quadrillage horizontal"),
         ),
         LEGENDE_X=SIMP(statut="f", typ="TXM", fr=tr("Légende associée à l'axe des abscisses")),
         LEGENDE_Y=SIMP(statut="f", typ="TXM", fr=tr("Légende associée à l'axe des ordonnées")),

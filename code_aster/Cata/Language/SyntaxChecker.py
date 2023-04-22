@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -229,7 +229,8 @@ class SyntaxCheckerVisitor:
         It checks that :
         - the type is well known,
         - the values are in ``into`` list,
-        - the values are in ``[val_min, val_max]``,
+        - the values are in ``[val_min, val_max]`` (using ``val_min_included``
+        and ``val_max_included``),
         - the number of values is in ``[min, max]``.
         """
         if step.undefined(skwValue):
@@ -255,7 +256,9 @@ class SyntaxCheckerVisitor:
 
         # Vérification des valeurs max et min
         valMin = step.definition.get("val_min")
+        minIncl = step.definition.get("val_min_included", True)
         valMax = step.definition.get("val_max")
+        maxIncl = step.definition.get("val_max_included", True)
 
         if value_is_sequence(skwValue):
             # Vérification du nombre de valeurs
@@ -331,38 +334,38 @@ class SyntaxCheckerVisitor:
                     )
             # val_min/val_max
             if valMax is not None:
+                or_equal = " or equalf" if maxIncl else ""
                 if complex in validType:
                     ValMax = old_complex(ValMax)
-                    if i.real > valMax.real or i.imag > valMax.imag:
+                    if (i.real > valMax.real or (i.real == valMax.real and not maxIncl)) or (
+                        i.imag > valMax.imag or (i.imag == valMax.imag and not maxIncl)
+                    ):
                         self.error(
                             ValueError,
-                            "Real and imaginary parts must be smaller than the real"
-                            " and the imaginary parts of {0}, respectively, {1} is not".format(
-                                valMax, i
-                            ),
+                            f"Real and imaginary parts must be smaller{or_equal} than the real"
+                            f" and the imaginary parts of {valMax}, respectively, {i} is not",
                         )
                 else:
-                    if i > valMax:
+                    if i > valMax or (i == valMax and not maxIncl):
                         self.error(
-                            ValueError,
-                            "Value must be smaller than {0}, {1} is not".format(valMax, i),
+                            ValueError, f"Value must be smaller{or_equal} than {valMax}, {i} is not"
                         )
             if valMin is not None:
+                or_equal = " or equalf" if minIncl else ""
                 if complex in validType:
                     ValMin = old_complex(ValMin)
-                    if i.real < valMin.real or i.imag < valMin.imag:
+                    if (i.real < valMin.real or (i.real == valMin.real and not minIncl)) or (
+                        i.imag < valMin.imag or (i.imag == valMin.imag and not minIncl)
+                    ):
                         self.error(
                             ValueError,
-                            "Real and imaginary parts must be greater than the real"
-                            " and the imaginary parts of {0}, respectively, {1} is not".format(
-                                valMax, i
-                            ),
+                            f"Real and imaginary parts must be greater{or_equal} than the real"
+                            f" and the imaginary parts of {valMin}, respectively, {i} is not",
                         )
                 else:
-                    if i < valMin:
+                    if i < valMin or (i == valMin and not minIncl):
                         self.error(
-                            ValueError,
-                            "Value must be bigger than {0}, {1} is not".format(valMin, i),
+                            ValueError, f"Value must be bigger{or_equal} than {valMin}, {i} is not"
                         )
 
         # call validators
