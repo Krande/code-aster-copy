@@ -371,21 +371,19 @@ class TestTimeStepper(unittest.TestCase):
             stp.raiseError(ValueError())
 
     def test06_split(self):
-        with self.assertRaises(NotImplementedError):
-            stp = TimeStepper([0.0, 1.0, 2.0, 3.0])
-            stp.setInitialStep(0.0)
-            self.assertEqual(stp.size(), 3)
-            self.assertAlmostEqual(stp.getCurrent(), 1.0)
-            stp.split(2)
-            self.assertEqual(stp.size(), 5)
-            self.assertAlmostEqual(stp.getCurrent(), 0.5)
-            stp.completed()
-            self.assertAlmostEqual(stp.getCurrent(), 1.0)
-            stp.split(5)
-            self.assertEqual(stp.size(), 9)
-            self.assertAlmostEqual(stp.getCurrent(), 0.6)
-            stp.completed()
-            self.assertAlmostEqual(stp.getCurrent(), 0.7)
+        stp = TimeStepper([0.0, 1.0, 2.0, 3.0])
+        self.assertAlmostEqual(stp.getCurrent(), 1.0)
+        stp.split(2)
+        # [0.5, 1.0, 2.0, 3.0]
+        self.assertAlmostEqual(stp.getCurrent(), 0.5)
+        stp.completed()
+        self.assertAlmostEqual(stp.getCurrent(), 1.0)
+        stp.split(5)
+        # [0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 2.0, 3.0]
+        self.assertEqual(stp.size(), 8)
+        self.assertAlmostEqual(stp.getCurrent(), 0.6)
+        stp.completed()
+        self.assertAlmostEqual(stp.getCurrent(), 0.7)
 
     def test07_meca_statique(self):
         stp = TimeStepper([0.0], initial=None)

@@ -139,16 +139,12 @@ class TimeStepper(SolverFeature):
             index (int): index to insert nex step
             time (float): time value to insert.
         """
-        raise NotImplementedError("to be rewritten")
-        if index <= self._first:
-            self._first += 1
-        if index <= self._current:
-            # raise KeyError("can not insert a step before the current time.")
-            self._current += 1
+        # print("\ninsert at", index, time, self._current, end=" ")
+        if index < self._current:
+            raise KeyError("can not insert a step before the current time.")
         self._times.insert(index, time)
-        if index <= self._last:
-            self._last += 1
-        # print("insert at", index, self._first, self._last, self._current)
+        self._last = len(self._times) - 1
+        # print("\n->", self._current, self._last, self._times, flush=True)
 
     def getInitial(self):
         """Returns the initial time (not calculated).
@@ -213,6 +209,7 @@ class TimeStepper(SolverFeature):
             nb_steps (int): Number of sub-steps.
         """
         assert nb_steps > 1 and self._level < 20
+        # not a splitting level, but a number of splits
         self._level += 1
 
         time_step = self.getIncrement() / nb_steps
@@ -220,7 +217,6 @@ class TimeStepper(SolverFeature):
         for _ in range(max(0, nb_steps - 1)):
             new -= time_step
             self._insert(self._current, new)
-            self._current -= 1
 
     def raiseError(self, exc):
         """Raise an error executing the last step.
